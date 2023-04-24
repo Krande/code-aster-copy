@@ -157,8 +157,19 @@ class TestTimeStepper(unittest.TestCase):
         self.assertEqual(stp.size(), 3)
         self.assertEqual(stp.remaining(), stp.size())
 
-        with self.assertRaisesRegex(ValueError, "list.*empty"):
-            TimeStepper([0.0, 1.0, 2.0, 3.0], initial=3.0)
+        stp = TimeStepper([0.0])
+        self.assertAlmostEqual(stp.getInitial(), 0.0)
+        self.assertAlmostEqual(stp.getInitial(), stp.getFinal())
+        self.assertSequenceEqual(stp._times, [])
+        self.assertEqual(stp.size(), 0)
+        self.assertEqual(stp.remaining(), stp.size())
+
+        stp = TimeStepper([0.0, 1.0, 2.0, 3.0], initial=3.0)
+        self.assertAlmostEqual(stp.getInitial(), 3.0)
+        self.assertAlmostEqual(stp.getInitial(), stp.getFinal())
+        self.assertSequenceEqual(stp._times, [])
+        self.assertEqual(stp.size(), 0)
+        self.assertEqual(stp.remaining(), stp.size())
 
         stp = TimeStepper([0.0, 1.0, 2.0, 3.0], initial=2.0, final=2.5)
         self.assertSequenceEqual(stp._times, [2.5])

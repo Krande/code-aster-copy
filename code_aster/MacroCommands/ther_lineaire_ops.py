@@ -154,10 +154,11 @@ def _setupInitialField(phys_pb, args):
 
 
 @profile
-def _createTimeStepper(args):
+def _createTimeStepper(stationary, args):
     """Create time stepper from keywords
 
     Arguments:
+        stationary (bool): *True* for a stationary study.
         args (dict): User's keywords.
 
     Returns:
@@ -166,20 +167,15 @@ def _createTimeStepper(args):
     # <tpla06a> TYPE_CALCUL="STAT": initial=None, t=[0.]
     # <ttll01a.1> TYPE_CALCUL="TRAN" + STAT="OUI": initial=0., t=[0.001, ...]
     # <ttll01a.2> TYPE_CALCUL="TRAN" + STAT=None/EVOL_THER: initial=0.02, t=[0.03, ...]
-    # si TRAN + STAT="OUI", comment faire initial=0 et t1=0 ?
+    # <zzzz185a> TYPE_CALCUL="TRAN" + STAT="OUI": initial=0., t=[]
     logger.debug("<THER_LINEAIRE><TIMESTEPPER>: Start")
-    stepper = TimeStepper([0.0], initial=None)
-    if args.get("INCREMENT"):
-        # specific for the stationary case?
-        if "INST_INIT" not in args["INCREMENT"]:
-            times = args["INCREMENT"]["LIST_INST"].getValues()
-            if len(times) == 1:
-                args["INCREMENT"]["INST_INIT"] = None
-        stepper = TimeStepper.from_keywords(**args["INCREMENT"])
-        resu = args.get("RESULTAT")
-        if resu:
-            last = resu.getTimeValue(resu.getNumberOfIndexes() - 1)
-            stepper.setInitialStep(last)
+    if stationary:
+        return TimeStepper([0.0], initial=None)
+    stepper = TimeStepper.from_keywords(**args["INCREMENT"])
+    resu = args.get("RESULTAT")
+    if resu:
+        last = resu.getTimeValue(resu.getNumberOfIndexes() - 1)
+        stepper.setInitialStep(last)
 
     logger.debug("<THER_LINEAIRE><TIMESTEPPER>: initial = %s", stepper.getInitial())
     logger.debug("<THER_LINEAIRE><TIMESTEPPER>: final = %s", stepper.getFinal())
@@ -312,16 +308,19 @@ def ther_lineaire_ops(self, **args):
     initial_field, is_stat_init = _setupInitialField(phys_pb, args)
 
     # Create time stepper
-    timeStepper = _createTimeStepper(args)
+    timeStepper = _createTimeStepper(not is_evol, args)
 
     # do not erase initial state if the same result is reused
     first_index = 0
     save_initial_state = True
     if not is_evol:
         first_index = 1
-    elif args.get("reuse") and args["reuse"] is args["ETAT_INIT"].get("EVOL_THER"):
-        first_index += 1
-        save_initial_state = False
+    elif args.get("RESULTAT"):
+        resu = args["RESULTAT"]
+        first_index = resu.getLastIndex()
+        if resu is args["ETAT_INIT"].get("EVOL_THER"):
+            first_index += 1
+            save_initial_state = False
     logger.debug("<THER_LINEAIRE><STORAGE>: first_index = %s", first_index)
 
     # Create linear solver

@@ -72,9 +72,12 @@ class TimeStepper(SolverFeature):
                 times.pop()
             if not times or self._final > times[-1] + self._eps:
                 times.append(self._final)
-        if not times:
-            raise ValueError("the list of timesteps is empty")
         self._current = 0
+        if not times:
+            # empty list
+            self._last = -1
+            self._final = self._initial
+            return
         self._last = len(times) - 1
         self._final = times[-1]
 
