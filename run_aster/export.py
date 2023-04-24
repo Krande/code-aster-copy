@@ -108,6 +108,8 @@ PARAMS_TYPE = {
     "testlist": "list[str]",
     # command line arguments
     "args": "list[str]",
+    # for backwaard compatibility
+    "service": "str",
 }
 
 # deprecated for simple execution
@@ -140,7 +142,6 @@ PARAMS_TYPE.update(
             "origine",
             "server",
             "serveur",
-            "service",
             "soumbtc",
             "studyid",
             "tpsjob",

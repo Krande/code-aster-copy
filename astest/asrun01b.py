@@ -268,7 +268,7 @@ class TestExportParameter(unittest.TestCase):
         para = ExportParameter.factory(PARAMS_TYPE, "xxxx")
         self.assertIsNone(para)
         # deprecated as None: ignored
-        para = ExportParameter.factory(PARAMS_TYPE, "service")
+        para = ExportParameter.factory(PARAMS_TYPE, "serveur")
         self.assertIsNone(para)
 
 

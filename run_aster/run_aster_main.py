@@ -292,6 +292,7 @@ def main(argv=None):
     export = Export(
         args.file if not direct else None, " ", test=args.test or args.ctest, check=False
     )
+    args.test = args.test or export.get("service") == "testcase"
     make_env = args.env or "make_env" in export.get("actions", [])
     need_split = len(export.commfiles) > 1
     if need_split and (CFG.get("parallel", 0) and procid >= 0):
