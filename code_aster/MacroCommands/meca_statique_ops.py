@@ -88,7 +88,7 @@ def _createTimeStepper(args):
         )
         resu = args.get("RESULTAT")
         if resu:
-            last = resu.getTimeValue(resu.getNumberOfIndexes() - 1)
+            last = resu.getLastTime()
             stepper.setInitialStep(last)
     logger.debug(repr(stepper))
     return stepper

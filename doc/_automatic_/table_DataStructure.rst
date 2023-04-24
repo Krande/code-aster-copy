@@ -337,7 +337,7 @@
      - 
    * - :py:class:`~code_aster.Objects.ThermalResult`
      - ``evol_ther``
-   * - :py:class:`~code_aster.Objects.TimeStepper`
+   * - :py:class:`~code_aster.Objects.TimesList`
      - ``list_inst``
    * - :py:class:`~code_aster.Objects.TransientGeneralizedResult`
      - ``tran_gene``

@@ -153,7 +153,7 @@ class StorageManager(SolverFeature):
             self.result.setModel(kwargs["model"], self.curr_index)
 
         if "time" in kwargs:
-            self.result.setTimeValue(kwargs["time"], self.curr_index)
+            self.result.setTime(kwargs["time"], self.curr_index)
 
     @profile
     def storeState(self, time, phys_pb, phys_state, param=None):
@@ -202,7 +202,7 @@ class StorageManager(SolverFeature):
         for slot in self.buffer:
             curr_index = slot.index
             if slot.time is not None:
-                self.result.setTimeValue(slot.time, curr_index)
+                self.result.setTime(slot.time, curr_index)
             if slot.param is not None:
                 for param, value in slot.param.items():
                     self.result.setParameterValue(param, value, curr_index)

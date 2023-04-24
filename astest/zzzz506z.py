@@ -69,7 +69,7 @@ dtemps = temps_max / npas
 ltemps = [dtemps * i for i in range(npas + 1)]
 
 TEMPS = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=20, NOMBRE=10),))
-TEMPS2 = DEFI_LIST_REEL(DEBUT=20, INTERVALLE=(_F(JUSQU_A=temps_max, NOMBRE=5),))
+TEMPS2 = DEFI_LIST_REEL(DEBUT=20.0, INTERVALLE=(_F(JUSQU_A=temps_max, NOMBRE=9),))
 
 # ***********************************************************************
 #
@@ -106,8 +106,6 @@ P0 = 5.0e3
 EPZZ = 0.03
 
 npas = 300
-dtemps = temps_max / npas
-linst = [dtemps * i for i in range(npas)]
 
 SIGLAT = AFFE_CHAR_MECA(MODELE=MODELE, PRES_REP=_F(GROUP_MA=("DROIT",), PRES=P0))
 
@@ -172,7 +170,8 @@ def testRestart(command, restart_from, info=1):
         INCREMENT=_F(LIST_INST=TEMPS),
     )
 
-    last = first.getAccessParameters()["INST"][-1]
+    last = first.getLastTime()
+    assert last == first.getAccessParameters()["INST"][-1]
 
     if restart_from == "result":
         pass
@@ -258,8 +257,11 @@ def compareResults(res1, res2, time, fields=("DEPL", "SIEF_ELGA", "VARI_ELGA"), 
 
 snl1 = testRestart(STAT_NON_LINE, restart_from="result")
 mnl1 = testRestart(MECA_NON_LINE, restart_from="result")
-compareResults(snl1, mnl1, time_init)
-compareResults(snl1, mnl1, time_last)
+# compareResults(snl1, mnl1, time_init)
+# compareResults(snl1, mnl1, time_last)
+
+for time_i in TEMPS2.getValues():
+    compareResults(snl1, mnl1, time_i)
 
 # snl2 = testRestart(STAT_NON_LINE, restart_from="crea_champ")
 # mnl2 = testRestart(MECA_NON_LINE, restart_from="crea_champ")

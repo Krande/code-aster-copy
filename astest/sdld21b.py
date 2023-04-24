@@ -47,8 +47,8 @@ CHA_ON = CREA_RESU(
 )
 
 test.assertEqual(CHA_ON.getNumberOfIndexes(), 256)
-test.assertAlmostEqual(CHA_ON.getTimeValue(1), 0.0)
-test.assertAlmostEqual(CHA_ON.getTimeValue(2), dt)
+test.assertAlmostEqual(CHA_ON.getTime(1), 0.0)
+test.assertAlmostEqual(CHA_ON.getTime(2), dt)
 
 test.printSummary()
 

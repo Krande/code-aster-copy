@@ -70,7 +70,7 @@ for rank in (0, 1, 2, 2, 1):
     SOLUN.setField(SOLUT.getField("VARI_ELGA", rank), "VARI_ELGA", rank)
     compor = SOLUT.getField("COMPORTEMENT", rank)
     SOLUN.setField(compor, "COMPORTEMENT", rank)
-    SOLUN.setTimeValue(SOLUT.getTimeValue(rank), rank)
+    SOLUN.setTime(SOLUT.getTime(rank), rank)
 
     depl = CREA_CHAMP(
         OPERATION="EXTR", TYPE_CHAM="NOEU_DEPL_R", NOM_CHAM="DEPL", RESULTAT=SOLUN, NUME_ORDRE=rank
@@ -106,7 +106,6 @@ with test.assertRaises(IndexError):
 # ON EXTRAIT LES CHAMPS A TESTER au dernier instant
 
 for rank in range(SOLUT.getNumberOfIndexes()):
-
     DEPL_REF = SOLUT.getField("DEPL", rank)
     SIGMA_REF = SOLUT.getField("SIEF_ELGA", rank)
     VARI_REF = SOLUT.getField("VARI_ELGA", rank)

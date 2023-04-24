@@ -55,7 +55,7 @@ Arguments:
     index (int): index from begin cleaning
         )",
               py::arg( "index" ) )
-        .def( "setTimeValue", &Result::setTimeValue, R"(
+        .def( "setTime", &Result::setTime, R"(
 Add time at the specified index
 
 Arguments:
@@ -88,7 +88,7 @@ Arguments:
     index (int):  index where to save value of parameter
         )",
               py::arg( "para_name" ), py::arg( "para_value" ), py::arg( "index" ) )
-        .def( "getTimeValue", &Result::getTimeValue, R"(
+        .def( "getTime", &Result::getTime, R"(
 Get time at the specified index
 
 Arguments:
@@ -304,6 +304,12 @@ Get the first index stored in the result
 
 Returns:
     int: first index stored.
+        )" )
+        .def( "getLastTime", &Result::getLastTime, R"(
+Get the last time value stored in the result
+
+Returns:
+    float: last time value.
         )" )
         .def( "getAccessParameters", &Result::getAccessParameters, R"(
 Return the access parameters of the result as Python dict.

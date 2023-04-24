@@ -1478,10 +1478,10 @@ Subclasses of :py:class:`~code_aster.Objects.DataStructure`
 
 
 ********************************************************************************
-:py:class:`~code_aster.Objects.TimeStepper` object
+:py:class:`~code_aster.Objects.TimesList` object
 ********************************************************************************
 
-.. autoclass:: code_aster.Objects.TimeStepper
+.. autoclass:: code_aster.Objects.TimesList
    :show-inheritance:
    :members:
 

@@ -153,7 +153,6 @@ def _setupInitialField(phys_pb, args):
     return initial_field, is_stat_init
 
 
-@profile
 def _createTimeStepper(stationary, args):
     """Create time stepper from keywords
 
@@ -174,7 +173,7 @@ def _createTimeStepper(stationary, args):
     stepper = TimeStepper.from_keywords(**args["INCREMENT"])
     resu = args.get("RESULTAT")
     if resu:
-        last = resu.getTimeValue(resu.getNumberOfIndexes() - 1)
+        last = resu.getLastTime()
         stepper.setInitialStep(last)
 
     logger.debug("<THER_LINEAIRE><TIMESTEPPER>: initial = %s", stepper.getInitial())

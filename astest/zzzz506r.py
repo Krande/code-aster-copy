@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -282,8 +282,8 @@ test = code_aster.TestCase()
 nbIndexes3 = U3.getNumberOfIndexes()
 nbIndexes4 = U4.getNumberOfIndexes()
 
-range3 = [U3.getTimeValue(i) for i in range(nbIndexes3)]
-range4 = [U3.getTimeValue(i) for i in range(nbIndexes4)]
+range3 = [U3.getTime(i) for i in range(nbIndexes3)]
+range4 = [U3.getTime(i) for i in range(nbIndexes4)]
 
 test.assertEqual(nbIndexes3, nbIndexes4)
 test.assertEqual(range3, range4)

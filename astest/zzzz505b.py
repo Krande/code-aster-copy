@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -76,7 +76,7 @@ for rank in range(nbIndexes):
     SOLUN.setField(SOLUT.getField("VARI_ELGA", rank), "VARI_ELGA", rank)
     compor = SOLUT.getField("COMPORTEMENT", rank)
     SOLUN.setField(compor, "COMPORTEMENT", rank)
-    SOLUN.setTimeValue(SOLUT.getTimeValue(rank), rank)
+    SOLUN.setTime(SOLUT.getTime(rank), rank)
 
 list_field = []
 list_field += SOLUN.getFieldsOnNodesRealNames()
@@ -141,7 +141,6 @@ test.assertSequenceEqual(SOLUR.getIndexes(), [0, 1, 2])
 # ON EXTRAIT LES CHAMPS A TESTER au dernier instant
 
 for rank in range(SOLUT.getNumberOfIndexes()):
-
     DEPL_REF = SOLUT.getFieldOnNodesReal("DEPL", rank)
     SIGMA_REF = SOLUT.getFieldOnCellsReal("SIEF_ELGA", rank)
     VARI_REF = SOLUT.getFieldOnCellsReal("VARI_ELGA", rank)

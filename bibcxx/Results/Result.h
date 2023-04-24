@@ -251,7 +251,7 @@ class Result : public DataStructure, public ListOfTables {
      * @brief Add time for one storageIndex
      * @param storageIndex
      */
-    void setTimeValue( const ASTERDOUBLE &time, ASTERINTEGER storageIndex );
+    void setTime( const ASTERDOUBLE &time, ASTERINTEGER storageIndex );
 
     /**
      * @brief Add storage index
@@ -277,7 +277,7 @@ class Result : public DataStructure, public ListOfTables {
     ASTERINTEGER
     createIndexFromParameter( const std::string &paraName, const std::string &paraValue );
 
-    ASTERDOUBLE getTimeValue( ASTERINTEGER storageIndex );
+    ASTERDOUBLE getTime( ASTERINTEGER storageIndex ) const;
 
     /**
      * @brief Append a elementary characteristics on all index of Result
@@ -523,6 +523,12 @@ class Result : public DataStructure, public ListOfTables {
      * @return lastIndex
      */
     ASTERINTEGER getLastIndex() const;
+
+    /**
+     * @brief Get last time value
+     * @return last time value
+     */
+    ASTERDOUBLE getLastTime() const;
 
     /**
      * @brief Get firs storageIndex stored in the Result

@@ -200,11 +200,7 @@ void Result::setParameterValue( std::string paraName, std::string paraValue,
     }
 };
 
-ASTERDOUBLE Result::getTimeValue( ASTERINTEGER storageIndex ) {
-
-    ASTERINTEGER nbIndexes = getNumberOfIndexes();
-
-    AS_ASSERT( storageIndex <= nbIndexes );
+ASTERDOUBLE Result::getTime( ASTERINTEGER storageIndex ) const {
 
     _rspr->updateValuePointer();
 
@@ -403,6 +399,8 @@ ASTERINTEGER Result::getLastIndex() const {
     _serialNumber->updateValuePointer();
     return ( *_serialNumber )[_serialNumber->size() - 1];
 };
+
+ASTERDOUBLE Result::getLastTime() const { return getTime( getLastIndex() ); };
 
 ASTERINTEGER Result::getFirstIndex() const {
     _serialNumber->updateValuePointer();
@@ -1044,7 +1042,7 @@ VectorReal Result::getTangentMatrix( const std::string &suffix ) {
         return {};
 };
 
-void Result::setTimeValue( const ASTERDOUBLE &time, ASTERINTEGER storageIndex ) {
+void Result::setTime( const ASTERDOUBLE &time, ASTERINTEGER storageIndex ) {
     setParameterValue( "INST", time, storageIndex );
 }
 

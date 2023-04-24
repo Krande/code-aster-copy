@@ -3356,14 +3356,14 @@ class TableContainer(Table):
         pass
 
 
-# class TimeStepper in libaster
+# class TimesList in libaster
 
 
-class TimeStepper(DataStructure):
+class TimesList(DataStructure):
     pass
 
     # Method resolution order:
-    #     TimeStepper
+    #     TimesList
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
@@ -3373,9 +3373,9 @@ class TimeStepper(DataStructure):
     def __init__(self, *args, **kwargs):
         """Overloaded function.
 
-        1. __init__(self: libaster.TimeStepper) -> None
+        1. __init__(self: libaster.TimesList) -> None
 
-        2. __init__(self: libaster.TimeStepper, arg0: str) -> None
+        2. __init__(self: libaster.TimesList, arg0: str) -> None
         """
 
     def getValues(self):
@@ -10515,6 +10515,13 @@ class Result(DataStructure):
             int: last index stored.
         """
 
+    def getLastTime(self):
+        """Get the last time value stored in the result
+
+        Returns:
+            float: last time value.
+        """
+
     def getListOfLoads(self, index):
         """Get list of loads on the specified index
 
@@ -10602,7 +10609,7 @@ class Result(DataStructure):
     def getTangentMatrix(self):
         pass
 
-    def getTimeValue(self, index):
+    def getTime(self, index):
         """Get time at the specified index
 
         Arguments:
@@ -10797,7 +10804,7 @@ class Result(DataStructure):
             index (int):  index where to save value of parameter
         """
 
-    def setTimeValue(self, time, index):
+    def setTime(self, time, index):
         """Add time at the specified index
 
         Arguments:

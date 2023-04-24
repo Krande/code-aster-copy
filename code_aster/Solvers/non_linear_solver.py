@@ -132,7 +132,7 @@ class NonLinearSolver(SolverFeature):
                 assert isinstance(resu, NonLinearResult), resu
                 extract_time = init_state.get("INST")
                 if extract_time is None:
-                    extract_time = resu.getTimeValue(resu.getNumberOfIndexes() - 1)
+                    extract_time = resu.getLastTime()
                 if init_time is None:
                     init_time = extract_time
                 phys_state.primal = resu.getField("DEPL", para="INST", value=extract_time)
