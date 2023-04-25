@@ -145,7 +145,6 @@ class GeometricSolver(SolverFeature):
             self.contact_manager.pairing(self.phys_pb)
 
         while not self.hasFinished(convManager):
-
             # Select type of matrix
             matrix_type = self._setMatrixType()
 
@@ -174,6 +173,7 @@ class GeometricSolver(SolverFeature):
         if not convManager.hasConverged():
             raise ConvergenceError("MECANONLINE9_7")
 
+        # print(f"| Nombre d'itérations de Newton : {self.current_incr - 1}")
         if self.current_incr % self.matr_update_incr == 0 or self.contact_manager:
             self.current_matrix = None
 

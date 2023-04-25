@@ -17,132 +17,54 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+import os
 import numpy
+from functools import lru_cache
 
 import code_aster
 from code_aster.Commands import *
 
 test = code_aster.TestCase()
 
-# ***********************************************************************
-#
-# TITRE: ESSAI DE TRACTION AVEC LA LOI DE RANKINE
-# MODIFICATION DU TEST SSNV515C
-#
-# ***********************************************************************
-
-# ======================================================================
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 
-# ***********************************************************************
-#
-#    MAILLAGE ET MODELE
-#
-# ***********************************************************************
+# mesh and properties extracted from forma03
+mesh = LIRE_MAILLAGE(FORMAT="MED")
 
-MAILLAGE = LIRE_MAILLAGE(FORMAT="MED", PARTITIONNEUR="PTSCOTCH")
+mesh = MODI_MAILLAGE(reuse=mesh, MAILLAGE=mesh, ORIE_PEAU=_F(GROUP_MA_PEAU="haut"))
 
-MODELE = AFFE_MODELE(
-    MAILLAGE=MAILLAGE, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="AXIS")
+model = AFFE_MODELE(
+    MAILLAGE=mesh, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="C_PLAN")
 )
 
-MAILLAGE = MODI_MAILLAGE(
-    reuse=MAILLAGE,
-    MAILLAGE=MAILLAGE,
-    ORIE_PEAU=_F(GROUP_MA_PEAU=("DROIT", "GAUCHE", "BAS", "HAUT")),
-    INFO=1,
+curve = LIRE_FONCTION(UNITE=21, NOM_PARA="EPSI", PROL_DROITE="CONSTANT")
+
+steel = DEFI_MATERIAU(
+    ELAS=_F(E=200000.0, NU=0.3), TRACTION=_F(SIGM=curve), ECRO_LINE=_F(D_SIGM_EPSI=1930.0, SY=181.0)
 )
 
-# ***********************************************************************
-#
-#    LISTE D'INSTANTS
-#
-# ***********************************************************************
+material = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", MATER=steel))
 
-tarret = 10.0
-tfin = 20.0
-npas = 30
-temps_max = 30.0
-
-dtemps = temps_max / npas
-
-ltemps = [dtemps * i for i in range(npas + 1)]
-
-TEMPS = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=20, NOMBRE=10),))
-TEMPS2 = DEFI_LIST_REEL(DEBUT=20.0, INTERVALLE=(_F(JUSQU_A=temps_max, NOMBRE=9),))
-
-# ***********************************************************************
-#
-#    DONNEES MATERIAU
-#
-# ***********************************************************************
-
-# modules mecaniques [kPa]
-# ------------------------
-# K=516.2E6
-# G=238.2E6
-# # =>
-# YOUNG = 9.*K*G /(3.*K+G)
-# POISSON = (3.*K-2.*G) /(6.*K+2.*G)
-
-YOUNG = 1e6
-POISSON = 0.25
-SIGMA_T = 1.0e3
-K = YOUNG / 3.0 / (1.0 - 2.0 * POISSON)
-G = YOUNG / 2.0 / (1.0 + POISSON)
-
-SOL = DEFI_MATERIAU(ELAS=_F(E=YOUNG, NU=POISSON, ALPHA=0.0), RANKINE=_F(SIGMA_T=SIGMA_T), INFO=1)
-
-CHMAT = AFFE_MATERIAU(MAILLAGE=MAILLAGE, AFFE=_F(TOUT="OUI", MATER=SOL))
-
-# ***********************************************************************
-#
-#    CHARGEMENTS
-#
-# ***********************************************************************
-
-# pression de preconsolidation [en kPa]
-P0 = 5.0e3
-EPZZ = 0.03
-
-npas = 300
-
-SIGLAT = AFFE_CHAR_MECA(MODELE=MODELE, PRES_REP=_F(GROUP_MA=("DROIT",), PRES=P0))
-
-DEPHAUT = AFFE_CHAR_CINE(MODELE=MODELE, MECA_IMPO=(_F(GROUP_MA=("HAUT",), DY=1.0),))
-
-DEPL_1 = AFFE_CHAR_CINE(
-    MODELE=MODELE, MECA_IMPO=(_F(GROUP_MA="BAS", DY=0.0), _F(GROUP_NO="B", DX=0.0))
+symmetry = AFFE_CHAR_CINE(
+    MODELE=model, MECA_IMPO=(_F(GROUP_MA="bas", DY=0.0), _F(GROUP_MA="gauche", DX=0.0))
 )
 
+load = AFFE_CHAR_MECA(MODELE=model, FORCE_CONTOUR=_F(GROUP_MA="haut", FY=1.0))
 
-COEF2 = DEFI_FONCTION(
-    NOM_PARA="INST", PROL_DROITE="CONSTANT", VALE=(0.0, 0.0, 20, EPZZ, temps_max, 0)
+mult_func = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 200.0, 1000.0))
+
+time_start = 0.0
+time_inter = 20.0
+time_end = 30.0
+
+time_values = DEFI_LIST_REEL(
+    DEBUT=time_start, INTERVALLE=(_F(JUSQU_A=time_inter, NOMBRE=4), _F(JUSQU_A=time_end, NOMBRE=8))
 )
-
-COEF3 = DEFI_FONCTION(NOM_PARA="INST", PROL_DROITE="CONSTANT", VALE=(0.0, 1.0))
-
-
-# ***********************************************************************
-#
-#    PRECONSOLIDATION INITIALE A 5KPA
-#
-# ***********************************************************************
-
-SIG0 = CREA_CHAMP(
-    INFO=2,
-    TYPE_CHAM="ELGA_SIEF_R",
-    OPERATION="AFFE",
-    MODELE=MODELE,
-    PROL_ZERO="OUI",
-    AFFE=_F(GROUP_MA="BLOC", NOM_CMP=("SIXX", "SIYY", "SIZZ"), VALE=(-P0, -P0, -P0)),
-)
-
-time_init = 20.0
-time_last = temps_max
+times = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=time_values))
 
 
-def testRestart(command, restart_from, info=1):
+@lru_cache(maxsize=16)
+def testRestart(command, restart_from, time_restart, reuse=False, info=1):
     """unittest for restarting from a Result or from Fields.
 
     *Needs previously created objects from parent context.*
@@ -150,28 +72,29 @@ def testRestart(command, restart_from, info=1):
     Arguments:
         command (Command): Command to be used, STAT_NON_LINE or MECA_NON_LINE.
         restart_from (str): One of "result", "crea_champ", "getField".
+        time_restart (float): Time of the assignment of the initial state
+            (INST_ETAT_INIT). The initial state of the second stage is always
+            extracted from the last step of the first stage.
+        reuse (bool): Reuse the same result object or not.
+        info (int): Verbosity level.
 
     Returns:
-        Result: Result of the second step.
+        tuple: Results of the both steps.
     """
-    first = command(
-        MODELE=MODELE,
-        CHAM_MATER=CHMAT,
-        EXCIT=(
-            _F(CHARGE=SIGLAT, FONC_MULT=COEF3),
-            _F(CHARGE=DEPHAUT, FONC_MULT=COEF2),
-            _F(CHARGE=DEPL_1, FONC_MULT=COEF3),
-        ),
-        ETAT_INIT=_F(SIGM=SIG0),
-        COMPORTEMENT=_F(RELATION="RANKINE"),
-        NEWTON=_F(MATRICE="TANGENTE", PREDICTION="ELASTIQUE", REAC_ITER=1),
-        CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6, ITER_GLOB_MAXI=30, ARRET="OUI"),
-        SOLVEUR=_F(METHODE="MUMPS", NPREC=8),
-        INCREMENT=_F(LIST_INST=TEMPS),
+    args = _F(
+        MODELE=model,
+        CHAM_MATER=material,
+        EXCIT=(_F(CHARGE=symmetry), _F(CHARGE=load, FONC_MULT=mult_func)),
+        COMPORTEMENT=_F(RELATION="VMIS_ISOT_LINE"),
+        # CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6),  # test default
+        INFO=info,
     )
 
+    first = command(INCREMENT=_F(LIST_INST=times, INST_FIN=time_inter), **args)
+    first.userName = ("SNL1" if command is STAT_NON_LINE else "MNL1") + "_" + restart_from
+
     last = first.getLastTime()
-    assert last == first.getAccessParameters()["INST"][-1]
+    test.assertAlmostEqual(last, time_inter)
 
     if restart_from == "result":
         pass
@@ -198,28 +121,16 @@ def testRestart(command, restart_from, info=1):
             INST=last,
         )
 
-    args = _F(
-        MODELE=MODELE,
-        CHAM_MATER=CHMAT,
-        EXCIT=(
-            _F(CHARGE=SIGLAT, FONC_MULT=COEF3),
-            _F(CHARGE=DEPHAUT, FONC_MULT=COEF2),
-            _F(CHARGE=DEPL_1, FONC_MULT=COEF3),
-        ),
-        COMPORTEMENT=_F(RELATION="RANKINE"),
-        NEWTON=_F(MATRICE="TANGENTE", PREDICTION="ELASTIQUE", REAC_ITER=1),
-        CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6, ITER_GLOB_MAXI=10, ARRET="OUI"),
-        SOLVEUR=_F(METHODE="MUMPS", NPREC=8),
-        INCREMENT=_F(LIST_INST=TEMPS2),
-        INFO=info,
-    )
     if restart_from == "result":
-        args["ETAT_INIT"] = _F(EVOL_NOLI=first, INST_ETAT_INIT=time_init)  # INST=last,
+        args["ETAT_INIT"] = _F(EVOL_NOLI=first, INST_ETAT_INIT=time_restart)  # INST=last,
+        if reuse:
+            args["RESULTAT"] = first
     else:
-        args["ETAT_INIT"] = _F(INST_ETAT_INIT=time_init, DEPL=depl, SIGM=sigm, VARI=vari)
-    cont = command(**args)
-    cont.userName = ("SNL" if command is STAT_NON_LINE else "MNL") + "_" + restart_from
-    return cont
+        args["ETAT_INIT"] = _F(INST_ETAT_INIT=time_restart, DEPL=depl, SIGM=sigm, VARI=vari)
+
+    cont = command(INCREMENT=_F(LIST_INST=times), **args)
+    cont.userName = ("SNL2" if command is STAT_NON_LINE else "MNL2") + "_" + restart_from
+    return first, cont
 
 
 def compareResults(res1, res2, time, fields=("DEPL", "SIEF_ELGA", "VARI_ELGA"), label=""):
@@ -255,33 +166,141 @@ def compareResults(res1, res2, time, fields=("DEPL", "SIEF_ELGA", "VARI_ELGA"), 
         test.assertLessEqual(diff, 1.0e-10, msg=msg)
 
 
-snl1 = testRestart(STAT_NON_LINE, restart_from="result")
-mnl1 = testRestart(MECA_NON_LINE, restart_from="result")
-# compareResults(snl1, mnl1, time_init)
-# compareResults(snl1, mnl1, time_last)
+def compare_exec(case1, case2):
+    """Compare two executions.
 
-for time_i in TEMPS2.getValues():
-    compareResults(snl1, mnl1, time_i)
+    Arguments:
+        case1 (dict): keywords defining the first execution.
+        case2 (dict): keywords defining the second execution.
+    """
 
-# snl2 = testRestart(STAT_NON_LINE, restart_from="crea_champ")
-# mnl2 = testRestart(MECA_NON_LINE, restart_from="crea_champ")
-# compareResults(snl2, mnl2, time_init)
-# compareResults(snl2, mnl2, time_last)
+    def _key(case):
+        key = case.copy()
+        key["command"] = "SNL" if case["command"] is STAT_NON_LINE else "MNL"
+        key = dict([(k, str(v)) for k, v in key.items()])
+        key = tuple(sorted(key.values()))
+        return key
 
-# compareResults(snl1, snl2, time_init)
-# compareResults(snl1, snl2, time_last)
-# compareResults(mnl1, mnl2, time_init)
-# compareResults(mnl1, mnl2, time_last)
+    res10, res11 = testRestart(**case1)
+    res20, res21 = testRestart(**case2)
 
-# # snl3 = testRestart(STAT_NON_LINE, restart_from="getField")
-# mnl3 = testRestart(MECA_NON_LINE, restart_from="getField")
+    key1 = _key(case1)
+    key2 = _key(case2)
+    print(f"\n\n+++ comparing\n{key1}\n{key2}\n", flush=True)
+    for time_i in res10.getAccessParameters()["INST"]:
+        compareResults(res10, res20, time_i)
+    for time_i in res11.getAccessParameters()["INST"]:
+        compareResults(res11, res21, time_i)
 
 
-# compareResults(mnl1, mnl3, time_init)
-# compareResults(mnl1, mnl3, time_last)
-# compareResults(snl3, mnl3, time_last)
+def check_fields(result, names):
+    """Print a checksum of some fields of a result.
 
-test.assertTrue(True)
-test.printSummary()
+    Arguments:
+        result (Result): Result object
+        names (str): Field to be extracted.
+    """
+    params = result.getAccessParameters()
+    for idx, time_i in zip(params["NUME_ORDRE"], params["INST"]):
+        for field_name in names:
+            field = result.getField(field_name, idx)
+            ojb = ".VALE" if isinstance(field, code_aster.FieldOnNodesReal) else ".CELV"
+            print("UTIMSD:", idx, time_i, field_name, flush=True)
+            IMPR_CO(CHAINE=field.getName() + ojb, NIVEAU=-1, UNITE=6)
+
+
+# for debugging a case, use: CASE=4 .../run_aster astest/zzzz506z.export
+case = int(os.environ.get("CASE", "0"))
+run_failed = case != 0
+
+# --- from last previous step
+# classic restart using 2 different results
+if case in (0, 1):
+    compare_exec(
+        _F(command=STAT_NON_LINE, restart_from="result", reuse=False, time_restart=20.0),
+        _F(command=MECA_NON_LINE, restart_from="result", reuse=False, time_restart=20.0),
+    )
+
+# classic restart using the same result
+if case in (0, 2):
+    compare_exec(
+        _F(command=STAT_NON_LINE, restart_from="result", reuse=True, time_restart=20.0),
+        _F(command=MECA_NON_LINE, restart_from="result", reuse=True, time_restart=20.0),
+    )
+
+# restart from the result or fields from CREA_CHAMP for SNL
+if case in (0, 3):
+    compare_exec(
+        _F(command=STAT_NON_LINE, restart_from="result", reuse=False, time_restart=20.0),
+        _F(command=STAT_NON_LINE, restart_from="crea_champ", reuse=False, time_restart=20.0),
+    )
+
+# restart from the result or fields from CREA_CHAMP for MNL
+if case in (0, 4):
+    compare_exec(
+        _F(command=MECA_NON_LINE, restart_from="result", reuse=False, time_restart=20.0),
+        _F(command=MECA_NON_LINE, restart_from="crea_champ", reuse=False, time_restart=20.0),
+    )
+
+# restart from fields from CREA_CHAMP or getField for SNL
+if case in (0, 5) and run_failed:
+    compare_exec(
+        _F(command=STAT_NON_LINE, restart_from="getField", reuse=False, time_restart=20.0),
+        _F(command=STAT_NON_LINE, restart_from="crea_champ", reuse=False, time_restart=20.0),
+    )
+
+# restart from fields from CREA_CHAMP or getField for MNL
+if case in (0, 6):
+    compare_exec(
+        _F(command=MECA_NON_LINE, restart_from="getField", reuse=False, time_restart=20.0),
+        _F(command=MECA_NON_LINE, restart_from="crea_champ", reuse=False, time_restart=20.0),
+    )
+
+# --- using INST_ETAT_INIT
+# restart using 2 different results
+if case in (0, 7) and run_failed:
+    compare_exec(
+        _F(command=STAT_NON_LINE, restart_from="result", reuse=False, time_restart=15.0),
+        _F(command=MECA_NON_LINE, restart_from="result", reuse=False, time_restart=15.0),
+    )
+
+# restart using the same result
+if case in (0, 8) and run_failed:
+    compare_exec(
+        _F(command=STAT_NON_LINE, restart_from="result", reuse=True, time_restart=15.0),
+        _F(command=MECA_NON_LINE, restart_from="result", reuse=True, time_restart=15.0),
+    )
+
+# restart from the result or fields from CREA_CHAMP for SNL
+if case in (0, 9):
+    compare_exec(
+        _F(command=STAT_NON_LINE, restart_from="result", reuse=False, time_restart=15.0),
+        _F(command=STAT_NON_LINE, restart_from="crea_champ", reuse=False, time_restart=15.0),
+    )
+
+# restart from the result or fields from CREA_CHAMP for MNL
+if case in (0, 10):
+    compare_exec(
+        _F(command=MECA_NON_LINE, restart_from="result", reuse=False, time_restart=15.0),
+        _F(command=MECA_NON_LINE, restart_from="crea_champ", reuse=False, time_restart=15.0),
+    )
+
+# restart from fields from CREA_CHAMP or getField for MNL
+if case in (0, 11):
+    compare_exec(
+        _F(command=MECA_NON_LINE, restart_from="getField", reuse=False, time_restart=15.0),
+        _F(command=MECA_NON_LINE, restart_from="crea_champ", reuse=False, time_restart=15.0),
+    )
+
+# debugging each step of case 7:
+if case == 70:
+    res = testRestart(command=STAT_NON_LINE, restart_from="result", reuse=False, time_restart=15.0)
+    check_fields(res[0], ["DEPL", "SIEF_ELGA", "VARI_ELGA"])
+    check_fields(res[1], ["DEPL", "SIEF_ELGA", "VARI_ELGA"])
+
+if case == 71:
+    res = testRestart(command=MECA_NON_LINE, restart_from="result", reuse=False, time_restart=15.0)
+    check_fields(res[0], ["DEPL", "SIEF_ELGA", "VARI_ELGA"])
+    check_fields(res[1], ["DEPL", "SIEF_ELGA", "VARI_ELGA"])
 
 FIN()

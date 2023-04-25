@@ -21,6 +21,7 @@ from ..Objects import DiscreteComputation, FieldOnCellsReal, FieldOnNodesReal, N
 from ..Utilities import no_new_attributes, profile
 from .base_features import BaseFeature
 from .solver_features import SolverOptions as SOP
+from ..Commands import IMPR_CO
 
 
 class PhysicalState(BaseFeature):
@@ -247,3 +248,24 @@ class PhysicalState(BaseFeature):
         """
         quantity, fld_type = self._primal.getPhysicalQuantity().split("_")
         return {"SIEF_ELGA": self._stress, "VARI_ELGA": self.internVar, quantity: self._primal}
+
+    def debugPrint(self):
+        if len(self._primal.getName()) > 8:
+            IMPR_CO(CHAINE=self._primal.getName() + ".VALE", NIVEAU=-1, UNITE=6)
+        else:
+            IMPR_CO(CONCEPT=_F(NOM=self._primal), NIVEAU=-1, UNITE=6)
+        if self._primal_step:
+            if len(self._primal_step.getName()) > 8:
+                IMPR_CO(CHAINE=self._primal_step.getName() + ".VALE", NIVEAU=-1, UNITE=6)
+            else:
+                IMPR_CO(CONCEPT=_F(NOM=self._primal_step), NIVEAU=-1, UNITE=6)
+        if self._stress:
+            if len(self._stress.getName()) > 8:
+                IMPR_CO(CHAINE=self._stress.getName() + ".CELV", NIVEAU=-1, UNITE=6)
+            else:
+                IMPR_CO(CONCEPT=_F(NOM=self._stress), NIVEAU=-1, UNITE=6)
+        if self._internVar:
+            if len(self._internVar.getName()) > 8:
+                IMPR_CO(CHAINE=self._internVar.getName() + ".CELV", NIVEAU=-1, UNITE=6)
+            else:
+                IMPR_CO(CONCEPT=_F(NOM=self._internVar), NIVEAU=-1, UNITE=6)

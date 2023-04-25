@@ -333,6 +333,7 @@ def main(argv=None):
         output = osp.abspath(basename + ".mess")
         if osp.isfile(output) and export.get("step", 0) == 0:
             os.remove(output)
+        ctest_results.append(output)
         add = {15: "code"}
         for unit, typ in add.items():
             if export.files_of_type(typ):

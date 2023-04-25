@@ -20,7 +20,6 @@
 from libaster import deleteTemporaryObjects, resetFortranLoggingLevel, setFortranLoggingLevel
 
 from ..Objects import LinearSolver
-from ..Supervis import ExecuteCommand
 from ..Utilities import DEBUG, INFO, WARNING, ExecutionParameter, Options, logger, no_new_attributes
 from .convergence_manager import ConvergenceManager
 from .geometric_solver import GeometricSolver
@@ -84,7 +83,7 @@ class ProblemSolver(SolverFeature):
         Arguments:
             args (dict) : user keywords.
         """
-        # check requirements or set defaults
+        args = _F(args)
         self.use(args, SOP.Keywords)
 
     def initialize(self):
@@ -170,6 +169,8 @@ class ProblemSolver(SolverFeature):
             if args.get("CONTACT"):
                 if args["CONTACT"].get("ALGO_RESO_GEOM") == "NEWTON":
                     converg.addCriteria("RESI_GEOM", args["CONTACT"].get("RESI_GEOM"))
+            if not converg.isEmpty():
+                converg.addCriteria("RESI_GLOB_RELA", 1.0e-6)
         for feat, required in converg.undefined():
             converg.use(self._get(feat | SOP.ForIncr, required))
         self.use(converg, SOP.ForIncr)

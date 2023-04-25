@@ -27,7 +27,7 @@ import os
 import time
 from contextlib import contextmanager
 
-from .compatibility import deprecated
+
 from .i18n import translate as _
 
 
@@ -276,7 +276,7 @@ class Timer:
 
 if __name__ == "__main__":
     chrono = Timer(format="aster")
-    with chrono.measure("Global"):
+    with chrono("Global"):
         chrono.Start("Compilation")
         chrono.Start("CALC_FONCTION")
         chrono.Start(23, name="CALC_FONCTION")
@@ -284,4 +284,7 @@ if __name__ == "__main__":
         chrono.Stop("Compilation")
         chrono.Stop(23)
         chrono.Start("Child")
+    with chrono("Other"):
+        time.sleep(0.15)
+    # first CALC_FONCTION will be stop by 'repr()'
     print(chrono)

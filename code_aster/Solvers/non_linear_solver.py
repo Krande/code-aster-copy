@@ -146,7 +146,7 @@ class NonLinearSolver(SolverFeature):
                 phys_state.internVar = init_state.get("VARI")
 
             if init_time is not None:
-                self.stepper.setInitialStep(init_time)
+                self.stepper.setInitial(init_time)
 
         phys_state.time = init_time
 

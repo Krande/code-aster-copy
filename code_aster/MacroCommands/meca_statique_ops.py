@@ -89,7 +89,7 @@ def _createTimeStepper(args):
         resu = args.get("RESULTAT")
         if resu:
             last = resu.getLastTime()
-            stepper.setInitialStep(last)
+            stepper.setInitial(last)
     logger.debug(repr(stepper))
     return stepper
 

@@ -43,6 +43,14 @@ class ConvergenceManager(SolverFeature):
         """Initialize the object for a new iteration."""
         self.values = {}
 
+    def isEmpty(self):
+        """Tell if there is no criteria.
+
+        Returns:
+            bool: *False* if at least one criteria is defined, *True* otherwise.
+        """
+        return bool(self.criteria)
+
     def addCriteria(self, criteria, value):
         """Add a convergence criteria to verify
 
@@ -50,7 +58,6 @@ class ConvergenceManager(SolverFeature):
             criteria (str): name of the criteria.
             value (float): criteria value
         """
-
         self.criteria[criteria] = value
 
     def getCriteria(self, criteria):
@@ -62,7 +69,6 @@ class ConvergenceManager(SolverFeature):
         Returns:
             (float): criteria value
         """
-
         return self.values[criteria]
 
     @profile
@@ -107,9 +113,7 @@ class ConvergenceManager(SolverFeature):
         Returns:
             float: scaling factor.
         """
-
         scaling = 0.0
-
         eliminatedDofs = self.phys_pb.getDirichletBCDOFs()
         nb_dofs = len(eliminatedDofs)
 
@@ -140,7 +144,6 @@ class ConvergenceManager(SolverFeature):
         Arguments:
             residuals (ResiState): Collections of residuals.
         """
-
         residual = self.getDirichletResidual(residuals.resi)
 
         self.values["RESI_GLOB_MAXI"] = residual.norm("NORM_INFINITY")
@@ -160,7 +163,6 @@ class ConvergenceManager(SolverFeature):
         Arguments:
             displ_dela (FieldOnNodesReal): variation of displacement.
         """
-
         # scaling with diagonal of bounding box
         TABG = self.phys_pb.getMesh().getTable("CARA_GEOM")
         x_diag = TABG["X_MAX", 1] - TABG["X_MIN", 1]
@@ -177,7 +179,6 @@ class ConvergenceManager(SolverFeature):
         Returns:
             bool: *True* if converged, *False* otherwise.
         """
-
         if not self.values:
             if not self.criteria:
                 return True

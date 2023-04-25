@@ -174,7 +174,7 @@ def _createTimeStepper(stationary, args):
     resu = args.get("RESULTAT")
     if resu:
         last = resu.getLastTime()
-        stepper.setInitialStep(last)
+        stepper.setInitial(last)
 
     logger.debug("<THER_LINEAIRE><TIMESTEPPER>: initial = %s", stepper.getInitial())
     logger.debug("<THER_LINEAIRE><TIMESTEPPER>: final = %s", stepper.getFinal())
@@ -359,7 +359,6 @@ def ther_lineaire_ops(self, **args):
     # Compute initial state
     if is_evol:
         phys_state.time = timeStepper.getInitial()
-        print("DBGTS: initial state", phys_state.time)
         time_theta = 1.0
         time_delta = timeStepper.null_increment
         if is_stat_init:
@@ -396,7 +395,6 @@ def ther_lineaire_ops(self, **args):
         else:
             time_theta = 1.0
             time_delta = timeStepper.null_increment
-        print("DBGTS: loop", phys_state.time, time_delta)
 
         logger.debug("<THER_LINEAIRE>:     IS_EVOL %s" % is_evol)
         logger.debug("<THER_LINEAIRE>:     IS_CONST = %s" % is_const)

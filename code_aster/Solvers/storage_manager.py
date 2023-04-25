@@ -161,8 +161,9 @@ class StorageManager(SolverFeature):
 
         Arguments:
             time (float): current (pseudo)-time.
-            phys_pb (PhysicalProblem): Physical problem
-            phys_state (PhysicalState): Physical state
+            phys_pb (PhysicalProblem): Physical problem.
+            phys_state (PhysicalState): Physical state.
+            param (dict, optional): Dict of parameters to be stored.
         """
         slot = StorageManager.Slot()
         slot.index = self.curr_index

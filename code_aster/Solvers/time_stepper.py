@@ -81,11 +81,11 @@ class TimeStepper(SolverFeature):
         self._last = len(times) - 1
         self._final = times[-1]
 
-    def setInitialStep(self, time):
+    def setInitial(self, time):
         """Define the initial time. Lesser values are removed.
 
         The next calculated time is reset to the first in the list.
-        Calling `setInitialStep` resets the current step at the first position.
+        Calling `setInitial` resets the current step at the first position.
 
         Arguments:
             time (float): First time to be used.
@@ -93,13 +93,13 @@ class TimeStepper(SolverFeature):
         self._initial = time
         self._check_bounds()
 
-    def setFinalStep(self, time=None):
+    def setFinal(self, time=None):
         """Limit the sequence to the times lower than `time`.
 
         If `time` is not already in the sequence, it is appended.
         If `time` is not provided, the final time is set to the last one of
         the sequence.
-        Calling `setFinalStep` resets the current step at the first position.
+        Calling `setFinal` resets the current step at the first position.
 
         Arguments:
             time (float, optional): Last time to be used.

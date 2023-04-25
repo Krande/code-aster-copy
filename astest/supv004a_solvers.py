@@ -140,7 +140,7 @@ class TestTimeStepper(unittest.TestCase):
         self.assertEqual(stp.size(), 3)
         self.assertEqual(stp.remaining(), stp.size())
 
-        stp.setInitialStep(1.0)
+        stp.setInitial(1.0)
         self.assertSequenceEqual(stp._times, [2.0, 3.0])
         self.assertEqual(stp.size(), 2)
         self.assertEqual(stp.remaining(), stp.size())
@@ -151,8 +151,8 @@ class TestTimeStepper(unittest.TestCase):
         self.assertEqual(stp.remaining(), stp.size())
 
         stp = TimeStepper([0.0, 1.0, 2.0, 3.0])
-        stp.setInitialStep(0.0)
-        stp.setFinalStep(2.5)
+        stp.setInitial(0.0)
+        stp.setFinal(2.5)
         self.assertSequenceEqual(stp._times, [1.0, 2.0, 2.5])
         self.assertEqual(stp.size(), 3)
         self.assertEqual(stp.remaining(), stp.size())
@@ -191,7 +191,7 @@ class TestTimeStepper(unittest.TestCase):
 
     def test01_initial(self):
         stp = TimeStepper([0.0, 0.25, 1.0, 2.0])
-        stp.setInitialStep(0.0)
+        stp.setInitial(0.0)
         self.assertAlmostEqual(stp.getInitial(), 0.0)
         self.assertEqual(stp.size(), 3)
         self.assertEqual(stp.remaining(), stp.size())
@@ -216,7 +216,7 @@ class TestTimeStepper(unittest.TestCase):
 
         eps = 1.0e-3
         stp = TimeStepper([0.25, 1.0, 2.0], eps)
-        stp.setInitialStep(0.25 + eps * 0.999)
+        stp.setInitial(0.25 + eps * 0.999)
         self.assertLess(stp.getInitial() - 0.25, eps)
         self.assertSequenceEqual(stp._times, [1.0, 2.0])
         step = stp.getCurrent()
@@ -229,7 +229,7 @@ class TestTimeStepper(unittest.TestCase):
         self.assertAlmostEqual(step, 2.0)
         self.assertSequenceEqual(stp._times, [1.0, 2.0])
 
-        stp.setInitialStep(0.3)
+        stp.setInitial(0.3)
         self.assertSequenceEqual(stp._times, [1.0, 2.0])
         self.assertAlmostEqual(stp.getInitial(), 0.3)
         step = stp.getCurrent()
@@ -239,7 +239,7 @@ class TestTimeStepper(unittest.TestCase):
         step = stp.getCurrent()
         self.assertAlmostEqual(step, 2.0)
 
-        stp.setInitialStep(0.1)
+        stp.setInitial(0.1)
         self.assertSequenceEqual(stp._times, [1.0, 2.0])
         self.assertAlmostEqual(stp.getInitial(), 0.1)
         step = stp.getCurrent()
@@ -249,7 +249,7 @@ class TestTimeStepper(unittest.TestCase):
         step = stp.getCurrent()
         self.assertAlmostEqual(step, 2.0)
 
-        stp.setInitialStep(0.1 + eps * 0.999)
+        stp.setInitial(0.1 + eps * 0.999)
         self.assertSequenceEqual(stp._times, [1.0, 2.0])
         stp.completed()
         self.assertEqual(stp.size(), 2)
@@ -257,14 +257,14 @@ class TestTimeStepper(unittest.TestCase):
         self.assertAlmostEqual(step, 2.0)
 
         stp = TimeStepper([0.0, 0.25, 1.0, 2.0])
-        stp.setInitialStep(1.0)
+        stp.setInitial(1.0)
         self.assertAlmostEqual(stp.getInitial(), 1.0)
         self.assertEqual(stp.size(), 1)
         self.assertSequenceEqual(stp._times, [2.0])
         step = stp.getCurrent()
         self.assertAlmostEqual(step, 2.0)
 
-        stp.setInitialStep(2.5)
+        stp.setInitial(2.5)
         self.assertAlmostEqual(stp.getInitial(), 2.5)
         self.assertEqual(stp.size(), 1)
         self.assertFalse(stp.hasFinished())
@@ -275,37 +275,37 @@ class TestTimeStepper(unittest.TestCase):
         stp = TimeStepper([2.0, 4.0, 6.0, 8.0, 10.0])
         self.assertAlmostEqual(stp.getInitial(), 0.0)
         self.assertEqual(stp.size(), 5)
-        stp.setInitialStep(2.0)
+        stp.setInitial(2.0)
         self.assertAlmostEqual(stp.getInitial(), 2.0)
         self.assertEqual(stp.size(), 4)
 
         stp = TimeStepper([2.0, 4.0, 6.0, 8.0, 10.0])
-        stp.setInitialStep(3.0)
+        stp.setInitial(3.0)
         self.assertAlmostEqual(stp.getInitial(), 3.0)
         self.assertEqual(stp.size(), 4)
 
         stp = TimeStepper([2.0, 4.0, 6.0, 8.0, 10.0])
-        stp.setInitialStep(1.0)
+        stp.setInitial(1.0)
         self.assertAlmostEqual(stp.getInitial(), 1.0)
         self.assertEqual(stp.size(), 5)
 
         stp = TimeStepper([2.0, 4.0, 6.0, 8.0, 10.0])
-        stp.setInitialStep(2.0)
-        stp.setInitialStep(1.0)
+        stp.setInitial(2.0)
+        stp.setInitial(1.0)
         self.assertEqual(stp.size(), 4)
 
     def test03_final(self):
         eps = 1.0e-3
         stp = TimeStepper([0.0, 0.25, 1.0, 2.0], eps)
-        stp.setInitialStep(0.0)
-        stp.setFinalStep(2.0 - eps * 0.999)
+        stp.setInitial(0.0)
+        stp.setFinal(2.0 - eps * 0.999)
         self.assertLess(stp.getFinal() - 2.0, eps)
         self.assertEqual(stp.size(), 3)
-        stp.setFinalStep(2.0 + eps * 0.999)
+        stp.setFinal(2.0 + eps * 0.999)
         self.assertLess(stp.getFinal() - 2.0, eps)
         self.assertEqual(stp.size(), 3)
 
-        stp.setFinalStep(1.9)
+        stp.setFinal(1.9)
         self.assertAlmostEqual(stp.getFinal(), 1.9)
         self.assertEqual(stp.size(), 3)
         self.assertSequenceEqual(stp._times, [0.25, 1.0, 1.9])
@@ -317,8 +317,8 @@ class TestTimeStepper(unittest.TestCase):
             step = stp.getCurrent()
 
         stp = TimeStepper([0.0, 0.25, 1.0, 2.0])
-        stp.setInitialStep(0.0)
-        stp.setFinalStep(2.5)
+        stp.setInitial(0.0)
+        stp.setFinal(2.5)
         self.assertEqual(stp.size(), 4)
         self.assertSequenceEqual(stp._times, [0.25, 1.0, 2.0, 2.5])
         for _ in range(3):
@@ -329,11 +329,11 @@ class TestTimeStepper(unittest.TestCase):
         self.assertTrue(stp.hasFinished())
 
         stp = TimeStepper([0.0, 0.25, 1.0, 2.0])
-        stp.setInitialStep(0.0)
+        stp.setInitial(0.0)
         self.assertEqual(stp.size(), 3)
-        stp.setFinalStep(0.8)
+        stp.setFinal(0.8)
         self.assertEqual(stp.size(), 2)
-        stp.setFinalStep()
+        stp.setFinal()
         self.assertEqual(stp.size(), 2)
 
     def test04_basic(self):

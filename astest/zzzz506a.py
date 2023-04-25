@@ -91,7 +91,6 @@ snl.use(LinearSolver.factory(METHODE="MUMPS"))
 snl.phys_pb.addLoadFromDict({"CHARGE": encast, "FONC_MULT": RAMPE})
 snl.phys_pb.addLoadFromDict({"CHARGE": depl, "FONC_MULT": RAMPE})
 snl.setKeywords(
-    METHODE="NEWTON",
     CONVERGENCE={"RESI_GLOB_MAXI": 1.0e-6, "ITER_GLOB_MAXI": 20},
     NEWTON={"PREDICTION": "ELASTIQUE"},
     COMPORTEMENT={"RELATION": "VMIS_ISOT_LINE"},
