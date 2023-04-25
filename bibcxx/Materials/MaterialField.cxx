@@ -31,7 +31,7 @@
 #include "Supervis/CommandSyntax.h"
 #include "Utilities/SyntaxDictionary.h"
 
-MaterialField::MaterialField( const std::string &name, const MeshPtr &mesh )
+MaterialField::MaterialField( const std::string &name, const BaseMeshPtr &mesh )
     : _mesh( mesh ),
       _model( nullptr ),
       DataStructure( name, 8, "CHAM_MATER" ),
@@ -43,34 +43,6 @@ MaterialField::MaterialField( const std::string &name, const MeshPtr &mesh )
       _cvrcGd( JeveuxVectorChar8( getName() + ".CVRCGD" ) ),
       _cvrcVarc( JeveuxVectorChar8( getName() + ".CVRCVARC" ) ),
       _cvrcCmp( JeveuxVectorChar8( getName() + ".CVRCCMP" ) ) {};
-
-MaterialField::MaterialField( const std::string &name, const SkeletonPtr &mesh )
-    : _mesh( mesh ),
-      _model( nullptr ),
-      DataStructure( name, 8, "CHAM_MATER" ),
-      _champ_mat( ConstantFieldOnCellsChar8Ptr(
-          new ConstantFieldOnCellsChar8( getName() + ".CHAMP_MAT ", mesh ) ) ),
-      _compor( ConstantFieldOnCellsRealPtr(
-          new ConstantFieldOnCellsReal( getName() + ".COMPOR ", mesh ) ) ),
-      _cvrcNom( JeveuxVectorChar8( getName() + ".CVRCNOM" ) ),
-      _cvrcGd( JeveuxVectorChar8( getName() + ".CVRCGD" ) ),
-      _cvrcVarc( JeveuxVectorChar8( getName() + ".CVRCVARC" ) ),
-      _cvrcCmp( JeveuxVectorChar8( getName() + ".CVRCCMP" ) ) {};
-
-#ifdef ASTER_HAVE_MPI
-MaterialField::MaterialField( const std::string &name, const ParallelMeshPtr &mesh )
-    : _mesh( mesh ),
-      _model( nullptr ),
-      DataStructure( name, 8, "CHAM_MATER" ),
-      _champ_mat( ConstantFieldOnCellsChar8Ptr(
-          new ConstantFieldOnCellsChar8( getName() + ".CHAMP_MAT ", mesh ) ) ),
-      _compor( ConstantFieldOnCellsRealPtr(
-          new ConstantFieldOnCellsReal( getName() + ".COMPOR ", mesh ) ) ),
-      _cvrcNom( JeveuxVectorChar8( getName() + ".CVRCNOM" ) ),
-      _cvrcGd( JeveuxVectorChar8( getName() + ".CVRCGD" ) ),
-      _cvrcVarc( JeveuxVectorChar8( getName() + ".CVRCVARC" ) ),
-      _cvrcCmp( JeveuxVectorChar8( getName() + ".CVRCCMP" ) ) {};
-#endif /* ASTER_HAVE_MPI */
 
 listOfMaterials MaterialField::getVectorOfMaterial() const {
     listOfMaterials toReturn;

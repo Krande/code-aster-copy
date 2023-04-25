@@ -127,27 +127,11 @@ class MaterialField : public DataStructure {
 
   public:
     /** @brief Constructor */
-    MaterialField( const MeshPtr &mesh )
+    MaterialField( const BaseMeshPtr &mesh )
         : MaterialField( ResultNaming::getNewResultName(), mesh ) {};
 
     /** @brief Constructor */
-    MaterialField( const SkeletonPtr &mesh )
-        : MaterialField( ResultNaming::getNewResultName(), mesh ) {};
-
-    /** @brief Constructor */
-    MaterialField( const std::string &, const MeshPtr & );
-
-    /** @brief Constructor */
-    MaterialField( const std::string &, const SkeletonPtr & );
-
-#ifdef ASTER_HAVE_MPI
-    /** @brief Constructor */
-    MaterialField( const ParallelMeshPtr &mesh )
-        : MaterialField( ResultNaming::getNewResultName(), mesh ) {};
-
-    /** @brief Constructor */
-    MaterialField( const std::string &, const ParallelMeshPtr & );
-#endif /* ASTER_HAVE_MPI */
+    MaterialField( const std::string &, const BaseMeshPtr & );
 
     /** @brief Destructor */
     ~MaterialField() {};

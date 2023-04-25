@@ -35,14 +35,8 @@ void exportMaterialFieldToPython( py::module_ &mod ) {
         .def( "getMeshEntity", &PartOfMaterialField::getMeshEntity );
 
     py::class_< MaterialField, MaterialFieldPtr, DataStructure >( mod, "MaterialField" )
-        .def( py::init( &initFactoryPtr< MaterialField, const MeshPtr & > ) )
-        .def( py::init( &initFactoryPtr< MaterialField, const SkeletonPtr & > ) )
-        .def( py::init( &initFactoryPtr< MaterialField, const std::string &, const MeshPtr & > ) )
-#ifdef ASTER_HAVE_MPI
-        .def( py::init( &initFactoryPtr< MaterialField, const ParallelMeshPtr & > ) )
-        .def( py::init(
-            &initFactoryPtr< MaterialField, const std::string &, const ParallelMeshPtr & > ) )
-#endif /* ASTER_HAVE_MPI */
+        .def( py::init( &initFactoryPtr< MaterialField, const BaseMeshPtr & > ) )
+        .def( py::init( &initFactoryPtr< MaterialField, const std::string &, const BaseMeshPtr & > ) )
         .def( "addBehaviourOnMesh", &MaterialField::addBehaviourOnMesh, R"(
             Add behaviour (from DEFI_COMPOR) on mesh
 
