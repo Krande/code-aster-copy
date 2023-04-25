@@ -263,7 +263,9 @@ DiscreteComputation::getIncrementalDirichletBC( const ASTERDOUBLE &time,
 };
 
 FieldOnNodesRealPtr
-DiscreteComputation::getExternalStateVariablesForces( const ASTERDOUBLE time ) const {
+DiscreteComputation::getExternalStateVariablesForces( const ASTERDOUBLE time,
+                                                      const FieldOnCellsRealPtr externVar,
+                                                      const FieldOnCellsLongPtr maskField ) const {
 
     // Get main parameters
     auto currModel = _phys_problem->getModel();
@@ -273,6 +275,7 @@ DiscreteComputation::getExternalStateVariablesForces( const ASTERDOUBLE time ) c
     auto currExternVarRefe = _phys_problem->getReferenceExternalStateVariables();
 
     // Some checks
+    AS_ASSERT( externVar );
     AS_ASSERT( currMater );
     AS_ASSERT( currMater->hasExternalStateVariableForLoad() );
     if ( currMater->hasExternalStateVariableWithReference() ) {
@@ -314,7 +317,14 @@ DiscreteComputation::getExternalStateVariablesForces( const ASTERDOUBLE time ) c
             if ( currElemChara ) {
                 calcul->addElementaryCharacteristicsField( currElemChara );
             }
-            calcul->addInputField( "PVARCPR", _phys_problem->getExternalStateVariables( time ) );
+
+            if ( externVar ) {
+                calcul->addInputField( "PVARCPR", externVar );
+            } else {
+                calcul->addInputField( "PVARCPR",
+                                       _phys_problem->getExternalStateVariables( time ) );
+            }
+
             calcul->addTimeField( "PTEMPSR", time );
             if ( currExternVarRefe ) {
                 calcul->addInputField( "PVARCRR", currExternVarRefe );
@@ -334,6 +344,10 @@ DiscreteComputation::getExternalStateVariablesForces( const ASTERDOUBLE time ) c
     // Build elementary vectors
     elemVect->build();
 
-    // Assemble
-    return elemVect->assemble( _phys_problem->getDOFNumbering() );
+    // Assemble vector
+    if ( maskField ) {
+        return elemVect->assembleWithMask( _phys_problem->getDOFNumbering(), maskField, 1 );
+    } else {
+        return elemVect->assemble( _phys_problem->getDOFNumbering() );
+    }
 }

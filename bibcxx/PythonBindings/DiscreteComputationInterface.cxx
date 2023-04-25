@@ -45,6 +45,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             FieldOnNodes: imposed dual field
         )",
               py::arg( "time" ), py::arg( "time_step" ), py::arg( "theta" ) )
+
         .def( "getImposedDualBC",
               py::overload_cast< const ASTERDOUBLE >( &DiscreteComputation::getImposedDualBC,
                                                       py::const_ ),
@@ -58,6 +59,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             FieldOnNodes: imposed dual field
         )",
               py::arg( "time" ) )
+
         .def( "getDualForces", &DiscreteComputation::getDualForces,
               R"(
       Return the imposed displacement assembled vector
@@ -69,6 +71,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             FieldOnNodes: dual reaction vector (B^T*lambda)
         )",
               py::arg( "disp_curr" ) )
+
         .def( "getDualDisplacement", &DiscreteComputation::getDualDisplacement,
               R"(
       Return the Dirichlet load vector
@@ -80,6 +83,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             FieldOnNodes: Dirichlet load vector
               )",
               py::arg( "disp_curr" ), py::arg( "scaling" ) = 1.0 )
+
         .def( "getNeumannForces", &DiscreteComputation::getNeumannForces,
               R"(
       Return the Neumann forces vector
@@ -95,17 +99,21 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
         )",
               py::arg( "time" ) = 0.0, py::arg( "time_step" ) = 0.0, py::arg( "theta" ) = 1.0,
               py::arg( "previousPrimalField" ) = nullptr )
+
         .def( "getExternalStateVariablesForces",
               &DiscreteComputation::getExternalStateVariablesForces, R"(
             Compute load from external state variables
 
             Arguments:
                   time (float): Current time
+                  externVar (FieldOnCellsRealPtr): mask to assemble
+                  mask (FieldOnCellsLongPtr): mask to assemble
 
             Returns:
                   FieldOnNodes: load from external state variables
             )",
-              py::arg( "time" ) )
+              py::arg( "time" ), py::arg( "externVar" ) = nullptr, py::arg( "mask" ) = nullptr )
+
         .def( "getTransientThermalForces", &DiscreteComputation::getTransientThermalForces, R"(
             Compute Transient Thermal Load
 
@@ -133,6 +141,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                   FieldOnNodesReal: imposed displacement vector
         )",
               py::arg( "time" ) = 0.0 )
+
         .def( "getThermalDirichletBC", &DiscreteComputation::getThermalDirichletBC,
               R"(
             Return the imposed thermal vector used to remove imposed DDL
@@ -145,6 +154,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                   FieldOnNodesReal: imposed thermal vector
         )",
               py::arg( "time" ) = 0.0 )
+
         .def( "getAcousticDirichletBC", &DiscreteComputation::getAcousticDirichletBC,
               R"(
             Return the imposed acoustic vector used to remove imposed DDL
@@ -157,6 +167,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                   FieldOnNodesComplex: imposed accoustic vector
         )",
               py::arg( "time" ) = 0.0 )
+
         .def( "getIncrementalDirichletBC", &DiscreteComputation::getIncrementalDirichletBC,
               R"(
             Return the incremental imposed displacement vector used to remove imposed DDL
@@ -172,6 +183,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                   FieldOnNodes: incremental imposed displacement vector
         )",
               py::arg( "time" ), py::arg( "disp" ) )
+
         .def( "getElasticStiffnessMatrix", &DiscreteComputation::getElasticStiffnessMatrix, R"(
             Return the elementary matrices for elastic Stiffness matrix.
             Option RIGI_MECA.
@@ -225,6 +237,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             Returns:
                   PhysicalProblem: physical problem
             )" )
+
         .def( "getDualElasticStiffnessMatrix", &DiscreteComputation::getDualElasticStiffnessMatrix,
               R"(
             Return elementary matrices for dual mechanical BC
@@ -240,6 +253,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             Returns:
                 ElementaryMatrix: elementary matrices
         )" )
+
         .def( "getDualLinearConductivityMatrix",
               &DiscreteComputation::getDualLinearConductivityMatrix,
               R"(
@@ -248,6 +262,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             Returns:
                 ElementaryMatrix: elementary matrices
         )" )
+
         .def( "getLinearConductivityMatrix", &DiscreteComputation::getLinearConductivityMatrix,
               R"(
             Return the elementary matices for linear thermal matrix.

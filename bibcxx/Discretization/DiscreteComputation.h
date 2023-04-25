@@ -112,7 +112,10 @@ class DiscreteComputation {
     ~DiscreteComputation() {};
 
     /** @brief Compute nodal field for external state variables RHS */
-    FieldOnNodesRealPtr getExternalStateVariablesForces( const ASTERDOUBLE time ) const;
+    FieldOnNodesRealPtr
+    getExternalStateVariablesForces( const ASTERDOUBLE time,
+                                     const FieldOnCellsRealPtr externVar = nullptr,
+                                     const FieldOnCellsLongPtr maskField = nullptr ) const;
 
     /**
      * @brief Compute imposed displacement U_impo with Lagrange
