@@ -1,0 +1,315 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+# ESSAI DE COMPRESSION TRIAXIALE THM
+# PRESSION DE CONFINEMENT DE 5 MPA
+# MODELE DE COMPORTEMENT : NLH_CSRM
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
+
+# >>>>
+# Mesh
+# <<<<
+
+MAILLAGE = LIRE_MAILLAGE(FORMAT="MED")
+
+MAILLAGE = MODI_MAILLAGE(
+    reuse=MAILLAGE, MAILLAGE=MAILLAGE, ORIE_PEAU=_F(GROUP_MA_PEAU=("HAUT", "DEVANT", "DROITE"))
+)
+
+MAILLAGE = DEFI_GROUP(
+    reuse=MAILLAGE,
+    MAILLAGE=MAILLAGE,
+    CREA_GROUP_MA=_F(NOM="ROCHE", TOUT="OUI"),
+    CREA_GROUP_NO=_F(NOM="ROCHES", CRIT_NOEUD="SOMMET", GROUP_MA="ROCHE"),
+)
+
+# >>>>>
+# Model
+# <<<<<
+
+MODELE = AFFE_MODELE(
+    MAILLAGE=MAILLAGE, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D_THM")
+)
+
+# >>>>>>>>>>
+# Time steps
+# <<<<<<<<<<
+
+TEMPS1 = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=7000.0, NOMBRE=1),))
+
+DEFLIST1 = DEFI_LIST_INST(
+    DEFI_LIST=_F(LIST_INST=TEMPS1),
+    ECHEC=_F(EVENEMENT="ERREUR", ACTION="DECOUPE", SUBD_METHODE="MANUEL", SUBD_NIVEAU=5),
+)
+
+TEMPS2 = DEFI_LIST_REEL(DEBUT=7000.0, INTERVALLE=(_F(JUSQU_A=13000.0, NOMBRE=250),))
+
+DEFLIST2 = DEFI_LIST_INST(
+    DEFI_LIST=_F(LIST_INST=TEMPS2),
+    ECHEC=_F(
+        EVENEMENT="ERREUR", ACTION="DECOUPE", SUBD_METHODE="MANUEL", SUBD_NIVEAU=5, SUBD_PAS=2
+    ),
+)
+
+ARCHI2 = DEFI_LIST_REEL(DEBUT=7000.0, INTERVALLE=(_F(JUSQU_A=13000.0, NOMBRE=250),))
+
+# >>>>>>>>
+# Material
+# <<<<<<<<
+
+young = 7.0e9
+nu = 0.3
+pci = 50.0e6
+ci = 0.1e6
+MCC = 0.5
+Nd = 1.0
+mB = 10.0
+aB = 0.75
+om = 15.0
+tau = 2.0e2
+nv = 2.0
+Hp = young / 2.5
+Hv = 0.01 * young
+alphaT = 1.0e-5
+rho = 2400.0
+
+VISCOLIQ = DEFI_CONSTANTE(VALE=1.0e-3)
+DVISCOL = DEFI_CONSTANTE(VALE=0.0)
+KINT = DEFI_CONSTANTE(VALE=1.0e-18)
+ALPHAT = DEFI_CONSTANTE(VALE=1.0e-4)
+
+rho_w = 1000.0
+un_s_k_w = 5.0e-10
+cp_w = 4180.0
+
+cp_s = 1065.0
+b_s = 1.0
+poro = 0.14
+
+SOL = DEFI_MATERIAU(
+    ELAS=_F(E=young, NU=nu, ALPHA=alphaT, RHO=rho),
+    NLH_CSRM=_F(
+        YoungModulus=young,
+        PoissonRatio=nu,
+        IsoCompElasLim=pci,
+        IsoTensElasLim=ci,
+        MCCSlopeCSL=MCC,
+        NLHIndex=Nd,
+        mBigoCritCoef=mB,
+        aBigoCritCoef=aB,
+        IncompIndex=om,
+        Tau=tau,
+        PerzynaExpo=nv,
+        NLHModulusP=Hp,
+        NLHModulusV=Hv,
+    ),
+    COMP_THM="LIQU_SATU",
+    THM_LIQU=_F(
+        RHO=rho_w, UN_SUR_K=un_s_k_w, ALPHA=ALPHAT, CP=cp_w, VISC=VISCOLIQ, D_VISC_TEMP=DVISCOL
+    ),
+    THM_DIFFU=_F(RHO=rho, CP=cp_s, BIOT_COEF=b_s, PESA_X=0.0, PESA_Y=0.0, PESA_Z=0.0, PERM_IN=KINT),
+    THM_INIT=_F(TEMP=273.15, PRE1=0.0, PORO=poro),
+)
+
+CHMAT = AFFE_MATERIAU(MAILLAGE=MAILLAGE, AFFE=_F(TOUT="OUI", MATER=SOL))
+
+# >>>>>>>>>>>>>>>>>>>
+# Boundary conditions
+# <<<<<<<<<<<<<<<<<<<
+
+# Confining pressure
+
+conf = 5.0e6
+
+PR_LATE = AFFE_CHAR_MECA(MODELE=MODELE, PRES_REP=_F(GROUP_MA=("DEVANT", "DROITE"), PRES=1.0))
+
+PR_V = AFFE_CHAR_MECA(MODELE=MODELE, PRES_REP=_F(GROUP_MA="HAUT", PRES=1.0))
+
+EVOL_HYD = DEFI_FONCTION(NOM_PARA="INST", PROL_DROITE="CONSTANT", VALE=(0.0, 0.0, 7000.0, conf))
+
+# Prescribed displacement
+
+DEP_SYM = AFFE_CHAR_MECA(
+    MODELE=MODELE,
+    FACE_IMPO=(
+        _F(GROUP_MA="BAS", DZ=0.0),
+        _F(GROUP_MA="DERRIERE", DX=0.0),
+        _F(GROUP_MA="GAUCHE", DY=0.0),
+    ),
+)
+
+# Prescribed water pressure
+
+P0 = AFFE_CHAR_MECA(MODELE=MODELE, DDL_IMPO=_F(GROUP_NO="ROCHES", PRE1=0.0))
+
+# Prescribed temperature
+
+TIMPO = AFFE_CHAR_MECA(MODELE=MODELE, DDL_IMPO=_F(TOUT="OUI", TEMP=1.0))
+
+EVOL_TH = DEFI_FONCTION(
+    NOM_PARA="INST", PROL_DROITE="CONSTANT", VALE=(0.0, 0.0, 7000.0, 0.0, 13000.0, 100.0)
+)
+
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>
+# Solution for the first step
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+U1 = STAT_NON_LINE(
+    INFO=1,
+    MODELE=MODELE,
+    CHAM_MATER=CHMAT,
+    SOLVEUR=_F(METHODE="MUMPS"),
+    EXCIT=(
+        _F(CHARGE=PR_LATE, FONC_MULT=EVOL_HYD),
+        _F(CHARGE=PR_V, FONC_MULT=EVOL_HYD),
+        _F(CHARGE=DEP_SYM),
+        _F(CHARGE=P0),
+        _F(CHARGE=TIMPO, FONC_MULT=EVOL_TH),
+    ),
+    COMPORTEMENT=_F(
+        ALGO_INTE="NEWTON",
+        RELATION="KIT_THM",
+        RELATION_KIT=("NLH_CSRM", "LIQU_SATU", "HYDR_UTIL"),
+        RESI_INTE_RELA=1.0e-14,
+        ITER_INTE_MAXI=100,
+    ),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-8, ITER_GLOB_MAXI=20),
+    INCREMENT=_F(LIST_INST=DEFLIST1),
+)
+
+# >>>>>>>>>>>>>>>>>>>>>>
+# Post-processing step 1
+# <<<<<<<<<<<<<<<<<<<<<<
+
+U1 = CALC_CHAMP(
+    reuse=U1, RESULTAT=U1, CONTRAINTE="SIGM_ELNO", VARI_INTERNE="VARI_ELNO", DEFORMATION="EPSI_ELNO"
+)
+
+U1 = CALC_CHAMP(
+    reuse=U1,
+    RESULTAT=U1,
+    TOUT_ORDRE="OUI",
+    CONTRAINTE="SIGM_NOEU",
+    VARI_INTERNE="VARI_NOEU",
+    DEFORMATION="EPSI_NOEU",
+)
+
+# >>>>>>>>>>>><>>>>>>>>>>>>>>>>>>>>>>>>>>
+# Boundary conditions for the second step
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+# Prescribed displacement at the top
+
+DEP_IMP = AFFE_CHAR_MECA(MODELE=MODELE, DDL_IMPO=(_F(GROUP_MA="HAUT", DZ=1.0),))
+
+dz_ini = -0.00028571428571428416
+dz_end = dz_ini * 100.0
+
+EVOL_DEV = DEFI_FONCTION(
+    NOM_PARA="INST",
+    PROL_DROITE="LINEAIRE",
+    PROL_GAUCHE="CONSTANT",
+    VALE=(7000.0, dz_ini, 13000.0, dz_end),
+)
+
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>
+# Solution for the second step
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+U2 = STAT_NON_LINE(
+    INFO=1,
+    MODELE=MODELE,
+    SOLVEUR=_F(METHODE="MUMPS"),
+    CHAM_MATER=CHMAT,
+    EXCIT=(
+        _F(CHARGE=PR_LATE, FONC_MULT=EVOL_HYD),
+        _F(CHARGE=DEP_IMP, FONC_MULT=EVOL_DEV),
+        _F(CHARGE=DEP_SYM),
+        _F(CHARGE=P0),
+        _F(CHARGE=TIMPO, FONC_MULT=EVOL_TH),
+    ),
+    ETAT_INIT=_F(EVOL_NOLI=U1),
+    COMPORTEMENT=_F(
+        ALGO_INTE="NEWTON",
+        RELATION="KIT_THM",
+        RELATION_KIT=("NLH_CSRM", "LIQU_SATU", "HYDR_UTIL"),
+        RESI_INTE_RELA=1.0e-14,
+        ITER_INTE_MAXI=100,
+    ),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-8, ITER_GLOB_MAXI=20),
+    INCREMENT=_F(LIST_INST=DEFLIST2),
+    ARCHIVAGE=_F(LIST_INST=ARCHI2),
+)
+
+# >>>>>>>>>>>>>>>>>>>>>>
+# Post-processing step 2
+# <<<<<<<<<<<<<<<<<<<<<<
+
+U2 = CALC_CHAMP(
+    reuse=U2, RESULTAT=U2, CONTRAINTE="SIGM_ELNO", VARI_INTERNE="VARI_ELNO", DEFORMATION="EPSI_ELNO"
+)
+
+U2 = CALC_CHAMP(
+    reuse=U2,
+    RESULTAT=U2,
+    TOUT_ORDRE="OUI",
+    CONTRAINTE="SIGM_NOEU",
+    VARI_INTERNE="VARI_NOEU",
+    DEFORMATION="EPSI_NOEU",
+)
+
+TEST_RESU(
+    RESU=_F(
+        INST=13000.0,
+        RESULTAT=U2,
+        NOM_CHAM="DEPL",
+        GROUP_NO="NO8",
+        NOM_CMP="DX",
+        VALE_CALC=0.03126404395346402,
+    )
+)
+
+TEST_RESU(
+    RESU=_F(
+        INST=13000.0,
+        RESULTAT=U2,
+        NOM_CHAM="SIGM_NOEU",
+        GROUP_NO="NO8",
+        NOM_CMP="SIZZ",
+        VALE_CALC=-25197120.854501635,
+    )
+)
+
+TEST_RESU(
+    RESU=_F(
+        INST=13000.0,
+        RESULTAT=U2,
+        NOM_CHAM="VARI_NOEU",
+        GROUP_NO="NO8",
+        NOM_CMP="V8",
+        VALE_CALC=0.035393995403485416,
+    )
+)
+
+FIN()

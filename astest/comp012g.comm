@@ -1,0 +1,95 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+
+# >>>>>>>>>>
+#  Materials
+# <<<<<<<<<<
+
+youngPA = 7.0e9
+nu = 0.3
+pciPA = 50.0e6
+ciPA = 0.1e6
+MCC = 0.5
+Nd = 1.0
+mB = 10.0
+aB = 0.75
+om = 15.0
+tau = 2.0e2
+nv = 2.0
+HpPA = youngPA / 2.5
+HvPA = 0.01 * youngPA
+
+SOL = DEFI_MATERIAU(
+    ELAS=_F(E=youngPA, NU=nu, ALPHA=0.0),
+    NLH_CSRM=_F(
+        YoungModulus=youngPA,
+        PoissonRatio=nu,
+        IsoCompElasLim=pciPA,
+        IsoTensElasLim=ciPA,
+        MCCSlopeCSL=MCC,
+        NLHIndex=Nd,
+        mBigoCritCoef=mB,
+        aBigoCritCoef=aB,
+        IncompIndex=om,
+        Tau=tau,
+        PerzynaExpo=nv,
+        NLHModulusP=HpPA,
+        NLHModulusV=HvPA,
+    ),
+)
+
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+#  Solution for drained triaxial compression test
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+nb_inst = 200
+epzz_max = 2.0e-2
+conf = 5.0e6
+
+CALC_ESSAI_GEOMECA(
+    INFO=2,
+    MATER=SOL,
+    COMPORTEMENT=_F(RELATION="NLH_CSRM", RESI_INTE_RELA=1.0e-14),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-10, ITER_GLOB_MAXI=10),
+    ESSAI_TRIA_DR_M_D=_F(
+        PRES_CONF=conf, EPSI_IMPOSE=epzz_max, NB_INST=nb_inst, TABLE_RESU=CO("TSIMU")
+    ),
+)
+
+# >>>>>
+# Tests
+# <<<<<
+
+TEST_TABLE(
+    NOM_PARA="SIG_LAT",
+    TABLE=TSIMU,
+    FILTRE=_F(NOM_PARA="EPS_AXI", VALE=epzz_max, CRITERE="ABSOLU", PRECISION=1.0e-10),
+    VALE_CALC=conf,
+)
+
+TEST_TABLE(
+    NOM_PARA="SIG_AXI",
+    TABLE=TSIMU,
+    FILTRE=_F(NOM_PARA="EPS_AXI", VALE=epzz_max, CRITERE="ABSOLU", PRECISION=1.0e-10),
+    VALE_CALC=27433365.80434943,
+)
+
+FIN()
