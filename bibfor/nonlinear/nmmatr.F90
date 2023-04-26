@@ -32,6 +32,7 @@ subroutine nmmatr(phaseType, listFuncActi, listLoad, numeDof, &
 #include "asterfort/ascoma.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/lccmst.h"
@@ -84,7 +85,8 @@ subroutine nmmatr(phaseType, listFuncActi, listLoad, numeDof, &
     character(len=24) :: matrName(3)
     character(len=4), parameter :: coefType(3) = (/'R', 'R', 'R'/)
     integer :: nbMatr
-    character(len=19) :: rigiAsse, massAsse, dampAsse
+    character(len=19) :: rigiAsse, massAsse, dampAsse, matrRefe
+    character(len=24) :: matrType
     aster_logical :: lUnil, lUnilPena
 !
 ! --------------------------------------------------------------------------------------------------
@@ -162,7 +164,18 @@ subroutine nmmatr(phaseType, listFuncActi, listLoad, numeDof, &
             if (lExpl) then
                 call mtdefs(matrAsse, massAsse, 'V', 'R')
             else
-                call mtdefs(matrAsse, rigiAsse, 'V', 'R')
+                matrRefe = rigiAsse
+                call dismoi('NOM_NUME_DDL', massAsse, 'MATR_ASSE', repk=matrType)
+                if (matrType .eq. 'NON_SYM') then
+                    matrRefe = massAsse
+                end if
+                if (lDampMatrix) then
+                    call dismoi('NOM_NUME_DDL', dampAsse, 'MATR_ASSE', repk=matrType)
+                    if (matrType .eq. 'NON_SYM') then
+                        matrRefe = dampAsse
+                    end if
+                end if
+                call mtdefs(matrAsse, matrRefe, 'V', 'R')
             end if
         end if
     end if
