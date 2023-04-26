@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,6 +28,7 @@ implicit none
 #include "asterfort/ascoma.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/mtcmbl.h"
@@ -85,7 +86,8 @@ character(len=19) :: lischa
     character(len=4) :: typcsm(3)
     integer :: nbmat
     character(len=10) :: phase
-    character(len=19) :: rigid, masse, amort
+    character(len=19) :: rigid, masse, amort, matrRefe
+    character(len=24) :: matrType
     aster_logical :: lunil, l_unil_pena
 !
 ! --------------------------------------------------------------------------------------------------
@@ -196,7 +198,18 @@ character(len=19) :: lischa
             if (lexpl) then
                 call mtdefs(matass, masse, 'V', 'R')
             else
-                call mtdefs(matass, rigid, 'V', 'R')
+                matrRefe = rigid
+                call dismoi('NOM_NUME_DDL', masse, 'MATR_ASSE', repk=matrType)
+                if (matrType .eq. 'NON_SYM') then
+                    matrRefe = masse
+                end if
+                if (lamor) then
+                    call dismoi('NOM_NUME_DDL', amort, 'MATR_ASSE', repk=matrType)
+                    if (matrType .eq. 'NON_SYM') then
+                        matrRefe = amort
+                    end if
+                end if
+                call mtdefs(matass, matrRefe, 'V', 'R')
             endif
         endif
     endif
