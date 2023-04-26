@@ -160,7 +160,7 @@ subroutine assthm(ds_thm, option, j_mater, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ASSERT(nddls*nno .le. dimmat)
+    ASSERT(nddls*nnos .le. dimmat)
     ASSERT(dimuel .le. dimmat)
     codret = 0
     defgep(:) = 0.d0
@@ -256,19 +256,19 @@ subroutine assthm(ds_thm, option, j_mater, &
         end do
 ! ----- Compute generalized stresses and derivatives at current Gauss point
         call equthm(ds_thm, option, j_mater, &
-                        lMatr, lSigm, &
-                        lVari, lMatrPred, &
-                        typmod, angl_naut, parm_theta, &
-                        ndim, nbvari, &
-                        kpi, npg, &
-                        dimdef, dimcon, &
-                        mecani, press1, press2, tempe, second, &
-                        carcri, &
-                        defgem, defgep, &
-                        congem((kpi-1)*dimcon+1), congep((kpi-1)*dimcon+1), &
-                        vintm((kpi-1)*nbvari+1), vintp((kpi-1)*nbvari+1), &
-                        time_prev, time_curr, time_incr, &
-                        r, drds, dsde, codret)
+                    lMatr, lSigm, &
+                    lVari, lMatrPred, &
+                    typmod, angl_naut, parm_theta, &
+                    ndim, nbvari, &
+                    kpi, npg, &
+                    dimdef, dimcon, &
+                    mecani, press1, press2, tempe, second, &
+                    carcri, &
+                    defgem, defgep, &
+                    congem((kpi-1)*dimcon+1), congep((kpi-1)*dimcon+1), &
+                    vintm((kpi-1)*nbvari+1), vintp((kpi-1)*nbvari+1), &
+                    time_prev, time_curr, time_incr, &
+                    r, drds, dsde, codret)
 ! --------- For selective integrations => move Gauss points to nodes
         if (ds_thm%ds_elem%l_dof_meca) then
             if (kpi .gt. npg) then
