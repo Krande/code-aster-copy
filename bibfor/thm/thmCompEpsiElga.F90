@@ -49,7 +49,7 @@ subroutine thmCompEpsiElga(ds_thm)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: elrefe, elref2
-    integer :: addeme, addep1, addep2, addete
+    integer :: addeme, addep1, addep2, addete, adde2nd
     integer :: ipg, i_cmp
     integer :: jv_geom, jv_disp, jv_strain
     real(kind=8) :: epsm(6, 27)
@@ -58,12 +58,12 @@ subroutine thmCompEpsiElga(ds_thm)
     integer :: jv_poids, jv_poids2
     integer :: jv_func, jv_func2, jv_dfunc, jv_dfunc2, jv_gano
     integer :: nddls, nddlm
-    integer :: nddl_meca, nddl_p1, nddl_p2
+    integer :: nddl_meca, nddl_p1, nddl_p2, nddl_2nd
     integer :: dimdep, dimdef, dimcon, dimuel
     aster_logical :: l_axi, l_vf
     character(len=3) :: inte_type
     integer :: ndim
-    integer :: mecani(5), press1(7), press2(7), tempe(5)
+    integer :: mecani(5), press1(7), press2(7), tempe(5), second(5)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -84,7 +84,7 @@ subroutine thmCompEpsiElga(ds_thm)
 ! - Get generalized coordinates
 !
     call thmGetGene(ds_thm, l_vf, ndim, &
-                    mecani, press1, press2, tempe)
+                    mecani, press1, press2, tempe, second)
 !
 ! - Get reference elements
 !
@@ -110,9 +110,9 @@ subroutine thmCompEpsiElga(ds_thm)
 ! - Get dimensions about element
 !
     call thmGetElemDime(ndim, nnos, nnom, &
-                        mecani, press1, press2, tempe, &
+                        mecani, press1, press2, tempe, second, &
                         nddls, nddlm, &
-                        nddl_meca, nddl_p1, nddl_p2, &
+                        nddl_meca, nddl_p1, nddl_p2, nddl_2nd, &
                         dimdep, dimdef, dimcon, dimuel)
 !
 ! - Input fields
@@ -123,10 +123,10 @@ subroutine thmCompEpsiElga(ds_thm)
 ! - Compute strains
 !
     call epsthm(ds_thm, l_axi, ndim, &
-                addeme, addep1, addep2, addete, &
+                addeme, addep1, addep2, addete, adde2nd, &
                 nno, nnos, &
                 dimuel, dimdef, nddls, nddlm, &
-                nddl_meca, nddl_p1, nddl_p2, &
+                nddl_meca, nddl_p1, nddl_p2, nddl_2nd, &
                 npi, zr(jv_geom), zr(jv_disp), &
                 jv_poids, jv_poids2, &
                 jv_func, jv_func2, jv_dfunc, jv_dfunc2, &

@@ -55,7 +55,7 @@ subroutine thmCompSiefElno(ds_thm)
     aster_logical :: l_axi, l_vf
     character(len=3) :: inte_type
     integer :: ndim
-    integer :: mecani(5), press1(7), press2(7), tempe(5)
+    integer :: mecani(5), press1(7), press2(7), tempe(5), second(5)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -72,7 +72,7 @@ subroutine thmCompSiefElno(ds_thm)
 ! - Get generalized coordinates
 !
     call thmGetGene(ds_thm, l_vf, ndim, &
-                    mecani, press1, press2, tempe)
+                    mecani, press1, press2, tempe, second)
     nvim = mecani(5)
 !
 ! - Get reference elements
@@ -83,7 +83,7 @@ subroutine thmCompSiefElno(ds_thm)
 ! - Get dimensions of generalized vectors
 !
     call thmGetGeneDime(ndim, &
-                        mecani, press1, press2, tempe, &
+                        mecani, press1, press2, tempe, second, &
                         dimdep, dimdef, dimcon)
 !
 ! - Compute

@@ -18,7 +18,7 @@
 !
 subroutine fonoda(ds_thm, &
                   jv_mater, ndim, fnoevo, &
-                  mecani, press1, press2, tempe, &
+                  mecani, press1, press2, tempe, second, &
                   dimdef, dimcon, dt, congem, &
                   r)
 !
@@ -33,7 +33,7 @@ subroutine fonoda(ds_thm, &
     integer, intent(in) :: jv_mater
     integer, intent(in) :: ndim
     aster_logical, intent(in) :: fnoevo
-    integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5)
+    integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5), second(5)
     integer, intent(in) :: dimdef, dimcon
     real(kind=8), intent(in) :: dt
     real(kind=8), intent(inout) :: congem(dimcon)
@@ -55,6 +55,7 @@ subroutine fonoda(ds_thm, &
 ! In  press1           : parameters for hydraulic (first pressure)
 ! In  press1           : parameters for hydraulic (second pressure)
 ! In  tempe            : parameters for thermic
+! In  second           : parameters for second gradient
 ! In  dimdef           : number of generalized strains
 ! In  dimcon           : number of generalized stresses
 ! In  dt               : time increment

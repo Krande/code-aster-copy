@@ -56,9 +56,9 @@ subroutine thmCompNonLin(option, ds_thm)
     integer :: jv_dispp, jv_compor, jv_carcri, jv_varip, jv_sigmp
     aster_logical :: l_axi
     character(len=3) :: inte_type
-    integer :: mecani(5), press1(7), press2(7), tempe(5)
+    integer :: mecani(5), press1(7), press2(7), tempe(5), second(5)
     integer :: dimdep, dimdef, dimcon, dimuel
-    integer :: nddls, nddlm, nddl_p1, nddl_p2, nddl_meca
+    integer :: nddls, nddlm, nddl_p1, nddl_p2, nddl_meca, nddl_2nd
     integer :: ndim, nno, nnos
     integer :: npi, npg, nbvari
     integer :: jv_poids, jv_func, jv_dfunc, jv_poids2, jv_func2, jv_dfunc2, jv_gano
@@ -76,9 +76,9 @@ subroutine thmCompNonLin(option, ds_thm)
 !
     call thmGetElemPara(ds_thm, l_axi, &
                         type_elem, inte_type, ndim, &
-                        mecani, press1, press2, tempe, &
+                        mecani, press1, press2, tempe, second, &
                         dimdep, dimdef, dimcon, dimuel, &
-                        nddls, nddlm, nddl_meca, nddl_p1, nddl_p2, &
+                        nddls, nddlm, nddl_meca, nddl_p1, nddl_p2, nddl_2nd, &
                         nno, nnos, &
                         npi, npg, &
                         jv_poids, jv_func, jv_dfunc, &
@@ -162,9 +162,9 @@ subroutine thmCompNonLin(option, ds_thm)
                 ndim, nbvari, nno, nnos, &
                 npg, npi, &
                 nddls, nddlm, nddl_meca, &
-                nddl_p1, nddl_p2, &
+                nddl_p1, nddl_p2, nddl_2nd, &
                 dimdef, dimcon, dimuel, &
-                mecani, press1, press2, tempe, &
+                mecani, press1, press2, tempe, second, &
                 zk16(jv_compor), zr(jv_carcri), &
                 jv_poids, jv_poids2, &
                 jv_func, jv_func2, &

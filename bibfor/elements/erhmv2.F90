@@ -18,14 +18,14 @@
 ! aslint: disable=W1306,W1504
 !
 subroutine erhmv2(ds_thm, axi, deltat, dimdep, dimdef, &
-                  nmec, np1, np2, ndim, nno, &
+                  nmec, np1, np2, n2nd, ndim, nno, &
                   nnos, npg, nddls, nddlm, &
                   dimuel, ipoids, ivf, idfde, ipoid2, &
                   ivf2, idfde2, elem_coor, fovo, deplp, &
                   deplm, sielnp, sielnm, nbcmp, biot, &
                   unsurm, fpx, fpy, frx, fry, &
                   addeme, addep1, &
-                  addep2, addete, tm2h1v)
+                  addep2, addete, adde2nd, tm2h1v)
 !
     use THM_type
 !
@@ -103,10 +103,10 @@ subroutine erhmv2(ds_thm, axi, deltat, dimdep, dimdef, &
     type(THM_DS), intent(inout) :: ds_thm
     aster_logical :: axi
     integer :: dimuel
-    integer :: ndim, nno, nnos, dimdep, dimdef, nmec, np1, np2
+    integer :: ndim, nno, nnos, dimdep, dimdef, nmec, np1, np2, n2nd
     integer :: nbcmp, npg, nddls, nddlm, ipoids, ivf, idfde
     integer :: ipoid2, ivf2, idfde2
-    integer :: addeme, addete, addep1, addep2
+    integer :: addeme, addete, addep1, addep2, adde2nd
     real(kind=8) :: deltat, biot, unsurm
     real(kind=8) :: deplp(nno*dimdep), deplm(nno*dimdep)
     real(kind=8) :: fovo(ndim)
@@ -147,10 +147,10 @@ subroutine erhmv2(ds_thm, axi, deltat, dimdep, dimdef, &
 ! ----- Compute [B] matrix for generalized strains
         call cabthm(ds_thm, axi, ndim, &
                     nddls, nddlm, &
-                    nmec, np1, np2, &
+                    nmec, np1, np2, n2nd, &
                     nno, nnos, &
                     dimuel, dimdef, kpi, &
-                    addeme, addete, addep1, addep2, &
+                    addeme, addete, addep1, addep2, adde2nd, &
                     elem_coor, &
                     ipoids, ipoid2, &
                     ivf, ivf2, &

@@ -69,6 +69,7 @@ subroutine thmGetElemModel(ds_thm, l_axi_, l_vf_, ndim_, type_elem_)
     ds_thm%ds_elem%l_dof_meca = lteatt('MECA', 'OUI')
     ds_thm%ds_elem%l_dof_pre1 = .not. lteatt('HYDR1', '0')
     ds_thm%ds_elem%l_dof_pre2 = .not. lteatt('HYDR2', '0')
+    ds_thm%ds_elem%l_dof_2nd = lteatt('DIL', 'OUI')
     ds_thm%ds_elem%nb_phase(1) = 0
     ds_thm%ds_elem%nb_phase(2) = 0
     if (lteatt('HYDR1', '1')) then

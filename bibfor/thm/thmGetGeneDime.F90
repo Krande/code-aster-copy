@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine thmGetGeneDime(ndim, &
-                          mecani, press1, press2, tempe, &
+                          mecani, press1, press2, tempe, second, &
                           dimdep, dimdef, dimcon)
 !
     implicit none
@@ -26,7 +26,7 @@ subroutine thmGetGeneDime(ndim, &
 #include "asterfort/assert.h"
 !
     integer, intent(in) :: ndim
-    integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5)
+    integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5), second(5)
     integer, intent(out) :: dimdep, dimdef, dimcon
 !
 ! --------------------------------------------------------------------------------------------------
@@ -41,6 +41,7 @@ subroutine thmGetGeneDime(ndim, &
 ! In  press1       : parameters for hydraulic (first pressure)
 ! In  press1       : parameters for hydraulic (second pressure)
 ! In  tempe        : parameters for thermic
+! In  second       : parameters for second gradient
 ! In  ndim         : dimension of element (2 ou 3)
 ! Out dimdep       : dimension of generalized displacement vector
 ! Out dimdef       : dimension of generalized strains vector
@@ -48,8 +49,8 @@ subroutine thmGetGeneDime(ndim, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    dimdep = ndim*mecani(1)+press1(1)+press2(1)+tempe(1)
-    dimdef = mecani(4)+press1(6)+press2(6)+tempe(4)
-    dimcon = mecani(5)+press1(2)*press1(7)+press2(2)*press2(7)+tempe(5)
+    dimdep = ndim*mecani(1)+press1(1)+press2(1)+tempe(1)+2*second(1)
+    dimdef = mecani(4)+press1(6)+press2(6)+tempe(4)+second(4)
+    dimcon = mecani(5)+press1(2)*press1(7)+press2(2)*press2(7)+tempe(5)+second(5)
 !
 end subroutine

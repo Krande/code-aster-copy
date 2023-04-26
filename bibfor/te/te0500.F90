@@ -74,8 +74,8 @@ subroutine te0500(option, nomte)
     integer :: itab(7), nbcmp
     integer :: dimdep, dimdef, dimcon
     integer :: jv_poids, jv_func, jv_dfunc, jv_poids2, jv_func2, jv_dfunc2
-    integer :: nddl_meca, npi, nddl_p1, nddl_p2, nnos, nddls, nddlm
-    integer :: mecani(5), press1(7), press2(7), tempe(5), dimuel
+    integer :: nddl_meca, npi, nddl_p1, nddl_p2, nddl_2nd, nnos, nddls, nddlm
+    integer :: mecani(5), press1(7), press2(7), tempe(5), second(5), dimuel
 !
     real(kind=8) :: poids2
     real(kind=8) :: ovfl
@@ -114,9 +114,9 @@ subroutine te0500(option, nomte)
 !
     call thmGetElemPara(ds_thm, l_axi, &
                         type_elem, inte_type, ndim, &
-                        mecani, press1, press2, tempe, &
+                        mecani, press1, press2, tempe, second, &
                         dimdep, dimdef, dimcon, dimuel, &
-                        nddls, nddlm, nddl_meca, nddl_p1, nddl_p2, &
+                        nddls, nddlm, nddl_meca, nddl_p1, nddl_p2, nddl_2nd, &
                         nno, nnos, &
                         npi, npg, &
                         jv_poids, jv_func, jv_dfunc, &

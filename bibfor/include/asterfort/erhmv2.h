@@ -19,14 +19,14 @@
 !
 interface
     subroutine erhmv2(ds_thm, axi, deltat, dimdep, dimdef,&
-                      nmec, np1, np2, ndim, nno,&
+                      nmec, np1, np2, n2nd, ndim, nno,&
                       nnos, npg, nddls, nddlm,&
                       dimuel, ipoids, ivf, idfde, ipoid2,&
                       ivf2, idfde2, elem_coor, fovo, deplp,&
                       deplm, sielnp, sielnm, nbcmp, biot,&
                       unsurm, fpx, fpy, frx, fry,&
                       addeme, addep1,&
-                      addep2, addete, tm2h1v)
+                      addep2, addete, adde2nd, tm2h1v)
         use THM_type
         type(THM_DS), intent(inout) :: ds_thm
         integer :: dimuel
@@ -40,6 +40,7 @@ interface
         integer :: nmec
         integer :: np1
         integer :: np2
+        integer :: n2nd
         integer :: npg
         integer :: nddls
         integer :: nddlm
@@ -66,6 +67,7 @@ interface
         integer :: addep1
         integer :: addep2
         integer :: addete
+        integer :: adde2nd
         real(kind=8) :: tm2h1v(3)
     end subroutine erhmv2
 end interface

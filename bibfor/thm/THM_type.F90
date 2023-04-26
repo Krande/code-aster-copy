@@ -43,6 +43,8 @@ module THM_type
         aster_logical :: l_dof_pre2 = ASTER_FALSE
 ! ----- Type of FE: element where dof PRE1 and PRE2 exist
         aster_logical :: l_dof_hydr = ASTER_FALSE
+! ----- Type of FE: element where dof GONF and PRES exist
+        aster_logical :: l_dof_2nd = ASTER_FALSE
 ! ----- Type of FE: number of phasis for each fluid
         integer :: nb_phase(2) = 0
 ! ----- Flag for weak coupling

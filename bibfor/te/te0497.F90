@@ -79,11 +79,11 @@ subroutine te0497(option, nomte)
     integer :: iade2, iava2, iaptm2, igd2, ncmpm2
     integer :: iade3, iava3, iaptm3, igd3, ncmpm3
     integer :: igrdca, dimdep, dimdef, dimcon
-    integer :: nddl_meca, npi, nddl_p1, nddl_p2, nddls, nddlm
-    integer :: mecani(5), press1(7), press2(7), tempe(5), dimuel
+    integer :: nddl_meca, npi, nddl_p1, nddl_p2, nddl_2nd, nddls, nddlm
+    integer :: mecani(5), press1(7), press2(7), tempe(5), second(5), dimuel
     integer :: adsip, addeme, adcome, addete
     integer :: addep1, adcp11
-    integer :: addep2, ii, noe(9, 6, 4)
+    integer :: addep2, adde2nd, ii, noe(9, 6, 4)
 !
     real(kind=8) :: ovfl
     real(kind=8) :: r8bid3(2)
@@ -155,9 +155,9 @@ subroutine te0497(option, nomte)
 !
     call thmGetElemPara(ds_thm, l_axi, &
                         type_elem, inte_type, ndim, &
-                        mecani, press1, press2, tempe, &
+                        mecani, press1, press2, tempe, second, &
                         dimdep, dimdef, dimcon, dimuel, &
-                        nddls, nddlm, nddl_meca, nddl_p1, nddl_p2, &
+                        nddls, nddlm, nddl_meca, nddl_p1, nddl_p2, nddl_2nd, &
                         nno, nnos, &
                         npi, npg, &
                         jv_poids, jv_func, jv_dfunc, &
@@ -174,6 +174,7 @@ subroutine te0497(option, nomte)
     addep2 = press2(3)
     addete = tempe(2)
     adsip = adcp11-adcome-5
+    adde2nd = second(2)
 !
 ! =====================================================================
 ! C. --- RECUPERATION DES DONNEES NECESSAIRES AU CALCUL ---------------
@@ -477,14 +478,14 @@ subroutine te0497(option, nomte)
 ! 2.3. --- TERME VOLUMIQUE ---
 !
     call erhmv2(ds_thm, l_axi, deltat, dimdep, dimdef, &
-                nddl_meca, nddl_p1, nddl_p2, ndim, nno, &
+                nddl_meca, nddl_p1, nddl_p2, nddl_2nd, ndim, nno, &
                 nnos, npg, nddls, nddlm, &
                 dimuel, jv_poids, jv_func, jv_dfunc, jv_poids2, &
                 jv_func2, jv_dfunc2, zr(igeom), fovo, zr(ideplp), &
                 zr(ideplm), zr(isienp), zr(isienm), nbcmp, biot, &
                 unsurm, fpx, fpy, frx, fry, &
                 addeme, addep1, &
-                addep2, addete, tm2h1v)
+                addep2, addete, adde2nd, tm2h1v)
 !
 ! ON ADIMENSIONNE LES INDICATEURS VOLUMIQUES
 !

@@ -17,9 +17,9 @@
 ! --------------------------------------------------------------------
 !
 subroutine thmGetElemDime(ndim, nnos, nnom, &
-                          mecani, press1, press2, tempe, &
+                          mecani, press1, press2, tempe, second, &
                           nddls, nddlm, &
-                          nddl_meca, nddl_p1, nddl_p2, &
+                          nddl_meca, nddl_p1, nddl_p2, nddl_2nd, &
                           dimdep, dimdef, dimcon, dimuel)
 !
     implicit none
@@ -29,9 +29,9 @@ subroutine thmGetElemDime(ndim, nnos, nnom, &
 #include "asterfort/thmGetGeneDime.h"
 !
     integer, intent(in) :: ndim, nnos, nnom
-    integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5)
+    integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5), second(5)
     integer, intent(out) :: nddls, nddlm
-    integer, intent(out) :: nddl_meca, nddl_p1, nddl_p2
+    integer, intent(out) :: nddl_meca, nddl_p1, nddl_p2, nddl_2nd
     integer, intent(out) :: dimdep, dimdef, dimcon, dimuel
 !
 ! --------------------------------------------------------------------------------------------------
@@ -49,11 +49,13 @@ subroutine thmGetElemDime(ndim, nnos, nnom, &
 ! In  press1           : parameters for hydraulic (capillary pressure)
 ! In  press2           : parameters for hydraulic (gaz pressure)
 ! In  tempe            : parameters for thermic
+! In  second           : parameters for second gradient
 ! Out nddls            : number of dof at nodes (not middle ones)
 ! Out nddlm            : number of dof at nodes (middle ones)
 ! Out nddl_meca        : number of dof for mechanical quantity
 ! Out nddl_p1          : number of dof for first hydraulic quantity
 ! Out nddl_p2          : number of dof for second hydraulic quantity
+! Out nddl_2nd         : number of dof for second gradient
 ! Out dimdep           : dimension of generalized displacement vector
 ! Out dimdef           : dimension of generalized strains vector
 ! Out dimcon           : dimension of generalized stresses vector
@@ -68,6 +70,7 @@ subroutine thmGetElemDime(ndim, nnos, nnom, &
     nddl_meca = 0
     nddl_p1 = 0
     nddl_p2 = 0
+    nddl_2nd = 0
     nddls = 0
     nddlm = 0
     if (mecani(1) .eq. 1) then
@@ -79,17 +82,20 @@ subroutine thmGetElemDime(ndim, nnos, nnom, &
     if (press2(1) .eq. 1) then
         nddl_p2 = 1
     end if
+    if (second(1) .eq. 1) then
+        nddl_2nd = 2
+    end if
 !
 ! - Get dimensions of generalized vectors
 !
     call thmGetGeneDime(ndim, &
-                        mecani, press1, press2, tempe, &
+                        mecani, press1, press2, tempe, second, &
                         dimdep, dimdef, dimcon)
 !
 ! - Count dof
 !
-    nddls = mecani(1)*ndim+press1(1)+press2(1)+tempe(1)
-    nddlm = mecani(1)*ndim
+    nddls = mecani(1)*nddl_meca+press1(1)+press2(1)+tempe(1)+second(1)*nddl_2nd
+    nddlm = mecani(1)*nddl_meca
     dimuel = nnos*nddls+nnom*nddlm
 !
 end subroutine

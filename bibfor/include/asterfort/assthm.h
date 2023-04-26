@@ -24,9 +24,9 @@ interface
                       typmod   , inte_type, angl_naut,&
                       ndim     , nbvari   ,&
                       nno      , nnos     , npg      , npi      ,&
-                      nddls    , nddlm    , nddl_meca, nddl_p1, nddl_p2, &
+                      nddls    , nddlm    , nddl_meca, nddl_p1, nddl_p2, nddl_2nd, &
                       dimdef   , dimcon   , dimuel   ,&
-                      mecani   , press1   , press2   , tempe  ,&
+                      mecani   , press1   , press2   , tempe  , second, &
                       compor   , carcri   ,&
                       jv_poids , jv_poids2,&
                       jv_func  , jv_func2 ,&
@@ -49,9 +49,9 @@ interface
         integer, intent(in) :: nbvari, ndim
         integer, intent(in) :: nno, nnos
         integer, intent(in) :: npg, npi
-        integer, intent(in) :: nddls, nddlm, nddl_meca, nddl_p1, nddl_p2
+        integer, intent(in) :: nddls, nddlm, nddl_meca, nddl_p1, nddl_p2, nddl_2nd
         integer, intent(in) :: dimuel, dimdef, dimcon
-        integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5)
+        integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5), second(5) 
         character(len=16), intent(in)  :: compor(*)
         real(kind=8), intent(in) :: carcri(*)
         integer, intent(in) :: jv_poids, jv_poids2

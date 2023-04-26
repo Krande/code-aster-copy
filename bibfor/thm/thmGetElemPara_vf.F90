@@ -94,7 +94,7 @@ subroutine thmGetElemPara_vf(ds_thm, l_axi, l_vf, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: elrefe, elref2
-    integer :: dimdep, nddlfa, nddlk
+    integer :: dimdep, nddlfa, nddlk, second(5)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -108,12 +108,12 @@ subroutine thmGetElemPara_vf(ds_thm, l_axi, l_vf, &
 ! - Get generalized coordinates
 !
     call thmGetGene(ds_thm, l_vf, ndim, &
-                    mecani, press1, press2, tempe)
+                    mecani, press1, press2, tempe,second)
 !
 ! - Get dimensions of generalized vectors
 !
     call thmGetGeneDime(ndim, &
-                        mecani, press1, press2, tempe, &
+                        mecani, press1, press2, tempe, second, &
                         dimdep, dimdef, dimcon)
 !
 ! - Get reference elements

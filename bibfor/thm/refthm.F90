@@ -19,12 +19,12 @@
 !
 subroutine refthm(ds_thm, &
                   jv_mater, ndim, l_axi, fnoevo, &
-                  mecani, press1, press2, tempe, &
+                  mecani, press1, press2, tempe, second, &
                   nno, nnos, npi, npg, &
                   elem_coor, dt, dimdef, dimcon, dimuel, &
                   jv_poids, jv_poids2, &
                   jv_func, jv_func2, jv_dfunc, jv_dfunc2, &
-                  nddls, nddlm, nddl_meca, nddl_p1, nddl_p2, &
+                  nddls, nddlm, nddl_meca, nddl_p1, nddl_p2, nddl_2nd, &
                   b, r, vectu)
 !
     use THM_type
@@ -45,7 +45,7 @@ subroutine refthm(ds_thm, &
     integer, intent(in) :: ndim
     aster_logical, intent(in) :: l_axi
     aster_logical, intent(in) :: fnoevo
-    integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5)
+    integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5), second(5)
     integer, intent(in) :: nno, nnos
     integer, intent(in) :: npi, npg
     real(kind=8) :: elem_coor(ndim, nno)
@@ -54,7 +54,7 @@ subroutine refthm(ds_thm, &
     integer, intent(in) :: jv_poids, jv_poids2
     integer, intent(in) :: jv_func, jv_func2, jv_dfunc, jv_dfunc2
     integer, intent(in) :: nddls, nddlm
-    integer, intent(in) :: nddl_meca, nddl_p1, nddl_p2
+    integer, intent(in) :: nddl_meca, nddl_p1, nddl_p2, nddl_2nd
     real(kind=8), intent(out) :: b(dimdef, dimuel)
     real(kind=8), intent(out) :: r(1:dimdef+1)
     real(kind=8), intent(out) :: vectu(dimuel)
@@ -76,6 +76,7 @@ subroutine refthm(ds_thm, &
 ! In  press1           : parameters for hydraulic (first pressure)
 ! In  press1           : parameters for hydraulic (second pressure)
 ! In  tempe            : parameters for thermic
+! In  second           : parameters for second gradient
 ! In  nno              : number of nodes (all)
 ! In  nnos             : number of nodes (not middle ones)
 ! In  npi              : number of Gauss points for linear
@@ -96,6 +97,7 @@ subroutine refthm(ds_thm, &
 ! In  nddl_meca        : number of dof for mechanical quantity
 ! In  nddl_p1          : number of dof for first hydraulic quantity
 ! In  nddl_p2          : number of dof for second hydraulic quantity
+! In  nddl_second      : number of dof for second gradient quantity
 ! Out b                : [B] matrix for generalized strains
 ! Out r                : stress vector
 ! Out vectu            : nodal force vector (FORC_NODA)
@@ -173,12 +175,12 @@ subroutine refthm(ds_thm, &
             if (vale_refe .ne. r8vide()) then
                 sigtm(i_dim+dimcon*(kpi-1)) = vale_refe
                 call fnothm(ds_thm, jv_mater, ndim, l_axi, fnoevo, &
-                            mecani, press1, press2, tempe, &
+                            mecani, press1, press2, tempe, second, &
                             nno, nnos, npi, npg, &
                             elem_coor, dt, dimdef, dimcon, dimuel, &
                             jv_poids, jv_poids2, &
                             jv_func, jv_func2, jv_dfunc, jv_dfunc2, &
-                            nddls, nddlm, nddl_meca, nddl_p1, nddl_p2, &
+                            nddls, nddlm, nddl_meca, nddl_p1, nddl_p2, nddl_2nd, &
                             sigtm, b, r, bsigm(1))
                 do k = 1, dimuel
                     ftemp(k) = ftemp(k)+abs(bsigm(k))

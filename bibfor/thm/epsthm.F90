@@ -18,10 +18,10 @@
 ! aslint: disable=W1504,W1306
 !
 subroutine epsthm(ds_thm, l_axi, ndim, &
-                  addeme, addep1, addep2, addete, &
+                  addeme, addep1, addep2, addete, adde2nd, &
                   nno, nnos, &
                   dimuel, dimdef, nddls, nddlm, &
-                  nddl_meca, nddl_p1, nddl_p2, &
+                  nddl_meca, nddl_p1, nddl_p2, nddl_2nd, &
                   npi, elem_coor, disp, &
                   jv_poids, jv_poids2, &
                   jv_func, jv_func2, jv_dfunc, jv_dfunc2, &
@@ -39,11 +39,11 @@ subroutine epsthm(ds_thm, l_axi, ndim, &
     type(THM_DS), intent(in) :: ds_thm
     aster_logical, intent(in) :: l_axi
     integer, intent(in) :: ndim
-    integer, intent(in) :: addeme, addep1, addep2, addete
+    integer, intent(in) :: addeme, addep1, addep2, addete, adde2nd
     integer, intent(in) :: nno, nnos
     integer, intent(in) :: dimuel, dimdef
     integer, intent(in) :: nddls, nddlm
-    integer, intent(in) :: nddl_meca, nddl_p1, nddl_p2
+    integer, intent(in) :: nddl_meca, nddl_p1, nddl_p2, nddl_2nd
     integer, intent(in) :: npi
     real(kind=8), intent(in) :: elem_coor(ndim, nno)
     real(kind=8), intent(in) :: disp(*)
@@ -66,6 +66,7 @@ subroutine epsthm(ds_thm, l_axi, ndim, &
 ! In  addep1           : adress of first hydraulic dof in vector and matrix (generalized quantities)
 ! In  addep2           : adress of second hydraulic dof in vector and matrix (generalized quantitie)
 ! In  addete           : adress of thermic dof in vector and matrix (generalized quantities)
+! In  adde2nd          : adress of second gradient dof in vector and matrix (generalized quantities)
 ! In  nno              : number of nodes (all)
 ! In  nnos             : number of nodes (not middle ones)
 ! In  dimuel           : number of dof for element
@@ -75,6 +76,7 @@ subroutine epsthm(ds_thm, l_axi, ndim, &
 ! In  nddl_meca        : number of dof for mechanical quantity
 ! In  nddl_p1          : number of dof for first hydraulic quantity
 ! In  nddl_p2          : number of dof for second hydraulic quantity
+! In  nddl_2nd         : number of dof for second gradient quantity
 ! In  npi              : number of Gauss points
 ! In  elem_coor        : coordinates of nodes for current element
 ! In  disp             : displacement at nodes for current element
@@ -105,10 +107,10 @@ subroutine epsthm(ds_thm, l_axi, ndim, &
 ! ----- Compute [B] matrix for generalized strains
         call cabthm(ds_thm, l_axi, ndim, &
                     nddls, nddlm, &
-                    nddl_meca, nddl_p1, nddl_p2, &
+                    nddl_meca, nddl_p1, nddl_p2, nddl_2nd, &
                     nno, nnos, &
                     dimuel, dimdef, kpi, &
-                    addeme, addete, addep1, addep2, &
+                    addeme, addete, addep1, addep2, adde2nd, &
                     elem_coor, &
                     jv_poids, jv_poids2, &
                     jv_func, jv_func2, &

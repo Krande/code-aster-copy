@@ -20,10 +20,10 @@
 !
 subroutine cabthm(ds_thm, l_axi, ndim, &
                   nddls, nddlm, &
-                  nddl_meca, nddl_p1, nddl_p2, &
+                  nddl_meca, nddl_p1, nddl_p2, nddl_2nd, &
                   nno, nnos, &
                   dimuel, dimdef, kpi, &
-                  addeme, addete, addep1, addep2, &
+                  addeme, addete, addep1, addep2, adde2nd, &
                   elem_coor, &
                   jv_poids, jv_poids2, &
                   jv_func, jv_func2, &
@@ -45,10 +45,10 @@ subroutine cabthm(ds_thm, l_axi, ndim, &
     type(THM_DS), intent(in) :: ds_thm
     aster_logical, intent(in) :: l_axi
     integer, intent(in) :: ndim, nddls, nddlm
-    integer, intent(in) :: nddl_meca, nddl_p1, nddl_p2
+    integer, intent(in) :: nddl_meca, nddl_p1, nddl_p2, nddl_2nd
     integer, intent(in) :: nno, nnos
     integer, intent(in) :: dimuel, dimdef, kpi
-    integer, intent(in) :: addeme, addete, addep1, addep2
+    integer, intent(in) :: addeme, addete, addep1, addep2, adde2nd
     real(kind=8), intent(in) :: elem_coor(ndim, nno)
     integer, intent(in) :: jv_poids, jv_poids2
     integer, intent(in) :: jv_func, jv_func2
@@ -86,6 +86,7 @@ subroutine cabthm(ds_thm, l_axi, ndim, &
 ! In  nddl_meca        : number of dof for mechanical quantity
 ! In  nddl_p1          : number of dof for first hydraulic quantity
 ! In  nddl_p2          : number of dof for second hydraulic quantity
+! In  nddl_2nd         : number of dof for second gradient quantity
 ! In  nno              : number of nodes (all)
 ! In  nnos             : number of nodes (not middle ones)
 ! In  dimuel           : number of dof for element
@@ -95,6 +96,7 @@ subroutine cabthm(ds_thm, l_axi, ndim, &
 ! In  addete           : adress of thermic components in generalized strains vector
 ! In  addep1           : adress of capillary pressure in generalized strains vector
 ! In  addep2           : adress of gaz pressure in generalized strains vector
+! In  adde2nd          : adress of second gradient in generalized strains vector
 ! In  elem_coor        : coordinates of node for current element
 ! In  jv_poids         : JEVEUX adress for weight of Gauss points (linear functions)
 ! In  jv_poids2        : JEVEUX adress for weight of Gauss points (quadratic functions)

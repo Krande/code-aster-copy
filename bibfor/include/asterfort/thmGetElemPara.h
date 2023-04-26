@@ -20,9 +20,10 @@
 interface
     subroutine thmGetElemPara(ds_thm   , l_axi    , &
                               type_elem, inte_type, ndim     ,&
-                              mecani   , press1   , press2   , tempe  ,&
+                              mecani   , press1   , press2   , tempe  , second, &
                               dimdep   , dimdef   , dimcon   , dimuel ,&
-                              nddls    , nddlm    , nddl_meca, nddl_p1, nddl_p2,&
+                              nddls    , nddlm    , &
+                              nddl_meca, nddl_p1, nddl_p2, nddl_2nd,&
                               nno      , nnos     , &
                               npi      , npg      ,&
                               jv_poids , jv_func  , jv_dfunc ,&
@@ -34,9 +35,9 @@ interface
         character(len=8), intent(out) :: type_elem(2)
         character(len=3), intent(out) :: inte_type
         integer, intent(out) :: ndim
-        integer, intent(out) :: mecani(5), press1(7), press2(7), tempe(5)
+        integer, intent(out) :: mecani(5), press1(7), press2(7), tempe(5), second(5)
         integer, intent(out) :: dimdep, dimdef, dimcon, dimuel
-        integer, intent(out) :: nddls, nddlm, nddl_meca, nddl_p1, nddl_p2
+        integer, intent(out) :: nddls, nddlm, nddl_meca, nddl_p1, nddl_p2, nddl_2nd
         integer, intent(out) :: nno, nnos
         integer, intent(out) :: npi, npg
         integer, intent(out) :: jv_func, jv_dfunc, jv_poids

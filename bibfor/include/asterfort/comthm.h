@@ -25,8 +25,8 @@ interface
                       type_elem, angl_naut,&
                       ndim     , nbvari   ,&
                       dimdef   , dimcon   ,&
-                      adcome   , adcote   , adcp11  , adcp12, adcp21, adcp22,&
-                      addeme   , addete   , addep1  , addep2,&
+                      adcome   , adcote   , adcp11  , adcp12, adcp21, adcp22, adco2nd,&
+                      addeme   , addete   , addep1  , addep2, adde2nd, &
                       kpi      , npg      ,&
                       carcri   ,&
                       defgem   , defgep   ,&
@@ -43,8 +43,8 @@ interface
         real(kind=8), intent(in) :: angl_naut(3)
         integer, intent(in) :: ndim, nbvari
         integer, intent(in) :: dimdef, dimcon
-        integer, intent(in) :: adcome, adcote, adcp11, adcp12, adcp21, adcp22
-        integer, intent(in) :: addeme, addete, addep1, addep2
+        integer, intent(in) :: adcome, adcote, adcp11, adcp12, adcp21, adcp22, adco2nd
+        integer, intent(in) :: addeme, addete, addep1, addep2, adde2nd
         integer, intent(in) :: kpi, npg
         real(kind=8), intent(in) :: carcri(*)
         real(kind=8), intent(in) :: defgem(1:dimdef), defgep(1:dimdef)

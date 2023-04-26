@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,14 +19,14 @@
 !
 interface
     subroutine thmGetElemDime(ndim     , nnos   , nnom   ,&
-                              mecani   , press1 , press2 , tempe ,&
+                              mecani   , press1 , press2 , tempe , second, &
                               nddls    , nddlm  , &
-                              nddl_meca, nddl_p1, nddl_p2,&
+                              nddl_meca, nddl_p1, nddl_p2, nddl_2nd, &
                               dimdep   , dimdef , dimcon , dimuel)
         integer, intent(in) :: ndim, nnos, nnom
-        integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5)
+        integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5), second(5)
         integer, intent(out) :: nddls, nddlm
-        integer, intent(out) :: nddl_meca, nddl_p1, nddl_p2
+        integer, intent(out) :: nddl_meca, nddl_p1, nddl_p2, nddl_2nd
         integer, intent(out) :: dimdep, dimdef, dimcon, dimuel
     end subroutine thmGetElemDime
 end interface

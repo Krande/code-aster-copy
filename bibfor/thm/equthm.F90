@@ -25,7 +25,7 @@ subroutine equthm(ds_thm, option, j_mater, &
                   ndim, nbvari, &
                   kpi, npg, &
                   dimdef, dimcon, &
-                  mecani, press1, press2, tempe, &
+                  mecani, press1, press2, tempe, second, &
                   carcri, &
                   defgem, defgep, &
                   congem, congep, &
@@ -51,7 +51,7 @@ subroutine equthm(ds_thm, option, j_mater, &
     integer, intent(in) :: ndim, nbvari
     integer, intent(in) :: npg, kpi
     integer, intent(in) :: dimdef, dimcon
-    integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5)
+    integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5), second(5)
     real(kind=8), intent(in) :: carcri(*)
     real(kind=8), intent(in) :: defgem(dimdef), defgep(dimdef)
     real(kind=8), intent(inout) :: congem(dimcon), congep(dimcon)
@@ -86,6 +86,7 @@ subroutine equthm(ds_thm, option, j_mater, &
 ! In  press1           : parameters for hydraulic (capillary pressure)
 ! In  press2           : parameters for hydraulic (gaz pressure)
 ! In  tempe            : parameters for thermic
+! In  second           : parameters for second gradient
 ! In  defgem           : generalized strains - At begin of current step
 ! In  defgep           : generalized strains - At end of current step
 ! IO  congem           : generalized stresses - At begin of current step
@@ -103,9 +104,9 @@ subroutine equthm(ds_thm, option, j_mater, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: i
-    integer :: addeme, addete, addep1, addep2
+    integer :: addeme, addete, addep1, addep2, adde2nd
     integer :: adcp11, adcp12, adcp21, adcp22
-    integer :: adcome, adcote
+    integer :: adcome, adcote, adco2nd
     real(kind=8) :: gravity(3)
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
 !
@@ -123,6 +124,7 @@ subroutine equthm(ds_thm, option, j_mater, &
     addete = tempe(2)
     addep1 = press1(3)
     addep2 = press2(3)
+    adde2nd = second(2)
 !
 ! - Address in generalized stresses vector
 !
@@ -132,6 +134,7 @@ subroutine equthm(ds_thm, option, j_mater, &
     adcp12 = press1(5)
     adcp21 = press2(4)
     adcp22 = press2(5)
+    adco2nd = second(3)
 !
 ! - Add sqrt(2) for stresses
 !
@@ -159,8 +162,8 @@ subroutine equthm(ds_thm, option, j_mater, &
                 typmod, angl_naut, &
                 ndim, nbvari, &
                 dimdef, dimcon, &
-                adcome, adcote, adcp11, adcp12, adcp21, adcp22, &
-                addeme, addete, addep1, addep2, &
+                adcome, adcote, adcp11, adcp12, adcp21, adcp22, adco2nd, &
+                addeme, addete, addep1, addep2, adde2nd, &
                 kpi, npg, &
                 carcri, &
                 defgem, defgep, &

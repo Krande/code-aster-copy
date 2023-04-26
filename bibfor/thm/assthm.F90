@@ -24,9 +24,9 @@ subroutine assthm(ds_thm, option, j_mater, &
                   typmod, inte_type, angl_naut, &
                   ndim, nbvari, nno, nnos, &
                   npg, npi, &
-                  nddls, nddlm, nddl_meca, nddl_p1, nddl_p2, &
+                  nddls, nddlm, nddl_meca, nddl_p1, nddl_p2, nddl_2nd, &
                   dimdef, dimcon, dimuel, &
-                  mecani, press1, press2, tempe, &
+                  mecani, press1, press2, tempe, second, &
                   compor, carcri, &
                   jv_poids, jv_poids2, &
                   jv_func, jv_func2, &
@@ -67,9 +67,9 @@ subroutine assthm(ds_thm, option, j_mater, &
     integer, intent(in) :: nbvari, ndim
     integer, intent(in) :: nno, nnos
     integer, intent(in) :: npg, npi
-    integer, intent(in) :: nddls, nddlm, nddl_meca, nddl_p1, nddl_p2
+    integer, intent(in) :: nddls, nddlm, nddl_meca, nddl_p1, nddl_p2, nddl_2nd
     integer, intent(in) :: dimuel, dimdef, dimcon
-    integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5)
+    integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5), second(5)
     character(len=16), intent(in)  :: compor(*)
     real(kind=8), intent(in) :: carcri(*)
     integer, intent(in) :: jv_poids, jv_poids2
@@ -113,6 +113,7 @@ subroutine assthm(ds_thm, option, j_mater, &
 ! In  nddl_meca        : number of dof for mechanical quantity
 ! In  nddl_p1          : number of dof for first hydraulic quantity
 ! In  nddl_p2          : number of dof for second hydraulic quantity
+! In  nddl_2nd         : number of dof for second gradient
 ! In  dimdef           : dimension of generalized strains vector
 ! In  dimcon           : dimension of generalized stresses vector
 ! In  dimuel           : number of dof for element
@@ -120,6 +121,7 @@ subroutine assthm(ds_thm, option, j_mater, &
 ! In  press1           : parameters for hydraulic (capillary pressure)
 ! In  press2           : parameters for hydraulic (gaz pressure)
 ! In  tempe            : parameters for thermic
+! In  second           : parameters for second gradient
 ! In  compor           : behaviour
 ! In  carcri           : parameters for comportment
 ! In  jv_poids         : JEVEUX adress for weight of Gauss points (linear)
@@ -149,7 +151,7 @@ subroutine assthm(ds_thm, option, j_mater, &
     integer :: nb_vari_meca
     real(kind=8) :: a(2), as(2), ak(2), poids, poids2
     real(kind=8) :: c(21), ck(21), cs(21)
-    integer :: addeme, addep1, addep2, addete, ii, jj
+    integer :: addeme, addep1, addep2, addete, adde2nd, ii, jj
     real(kind=8) :: defgep(dimdef), defgem(dimdef)
     real(kind=8) :: dfdi(nno, 3), dfdi2(nnos, 3), b(dimdef, dimuel)
     real(kind=8) :: drds(dimdef+1, dimcon), drdsr(dimdef, dimcon), dsde(dimcon, dimdef)
@@ -177,6 +179,7 @@ subroutine assthm(ds_thm, option, j_mater, &
     addep1 = press1(3)
     addep2 = press2(3)
     addete = tempe(2)
+    adde2nd = second(2)
 !
 ! - Get parameters for behaviour
 !
@@ -210,7 +213,7 @@ subroutine assthm(ds_thm, option, j_mater, &
 !
     call thmSelectMatrix(ds_thm, &
                          ndim, dimdef, inte_type, &
-                         addeme, addete, addep1, addep2, &
+                         addeme, addete, addep1, addep2, adde2nd, &
                          a, as, &
                          c, cs)
 !
@@ -231,10 +234,10 @@ subroutine assthm(ds_thm, option, j_mater, &
 ! ----- Compute [B] matrix for generalized strains
         call cabthm(ds_thm, l_axi, ndim, &
                     nddls, nddlm, &
-                    nddl_meca, nddl_p1, nddl_p2, &
+                    nddl_meca, nddl_p1, nddl_p2, nddl_2nd, &
                     nno, nnos, &
                     dimuel, dimdef, kpi, &
-                    addeme, addete, addep1, addep2, &
+                    addeme, addete, addep1, addep2, adde2nd, &
                     elem_coor, &
                     jv_poids, jv_poids2, &
                     jv_func, jv_func2, &
@@ -253,19 +256,19 @@ subroutine assthm(ds_thm, option, j_mater, &
         end do
 ! ----- Compute generalized stresses and derivatives at current Gauss point
         call equthm(ds_thm, option, j_mater, &
-                    lMatr, lSigm, &
-                    lVari, lMatrPred, &
-                    typmod, angl_naut, parm_theta, &
-                    ndim, nbvari, &
-                    kpi, npg, &
-                    dimdef, dimcon, &
-                    mecani, press1, press2, tempe, &
-                    carcri, &
-                    defgem, defgep, &
-                    congem((kpi-1)*dimcon+1), congep((kpi-1)*dimcon+1), &
-                    vintm((kpi-1)*nbvari+1), vintp((kpi-1)*nbvari+1), &
-                    time_prev, time_curr, time_incr, &
-                    r, drds, dsde, codret)
+                        lMatr, lSigm, &
+                        lVari, lMatrPred, &
+                        typmod, angl_naut, parm_theta, &
+                        ndim, nbvari, &
+                        kpi, npg, &
+                        dimdef, dimcon, &
+                        mecani, press1, press2, tempe, second, &
+                        carcri, &
+                        defgem, defgep, &
+                        congem((kpi-1)*dimcon+1), congep((kpi-1)*dimcon+1), &
+                        vintm((kpi-1)*nbvari+1), vintp((kpi-1)*nbvari+1), &
+                        time_prev, time_curr, time_incr, &
+                        r, drds, dsde, codret)
 ! --------- For selective integrations => move Gauss points to nodes
         if (ds_thm%ds_elem%l_dof_meca) then
             if (kpi .gt. npg) then

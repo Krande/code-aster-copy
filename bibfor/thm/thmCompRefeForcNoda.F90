@@ -59,12 +59,12 @@ subroutine thmCompRefeForcNoda(ds_thm)
     integer :: jv_poids, jv_poids2
     integer :: jv_func, jv_func2, jv_dfunc, jv_dfunc2, jv_gano
     integer :: nddls, nddlm
-    integer :: nddl_meca, nddl_p1, nddl_p2
+    integer :: nddl_meca, nddl_p1, nddl_p2, nddl_2nd
     integer :: dimdep, dimdef, dimcon, dimuel
     aster_logical :: l_axi, l_vf
     character(len=3) :: inte_type
     integer :: ndim
-    integer :: mecani(5), press1(7), press2(7), tempe(5)
+    integer :: mecani(5), press1(7), press2(7), tempe(5), second(5)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -86,7 +86,7 @@ subroutine thmCompRefeForcNoda(ds_thm)
 ! - Get generalized coordinates
 !
     call thmGetGene(ds_thm, l_vf, ndim, &
-                    mecani, press1, press2, tempe)
+                    mecani, press1, press2, tempe, second)
 !
 ! - Get reference elements
 !
@@ -105,15 +105,15 @@ subroutine thmCompRefeForcNoda(ds_thm)
 ! - Get dimensions of generalized vectors
 !
     call thmGetGeneDime(ndim, &
-                        mecani, press1, press2, tempe, &
+                        mecani, press1, press2, tempe, second, &
                         dimdep, dimdef, dimcon)
 !
 ! - Get dimensions about element
 !
     call thmGetElemDime(ndim, nnos, nnom, &
-                        mecani, press1, press2, tempe, &
+                        mecani, press1, press2, tempe, second, &
                         nddls, nddlm, &
-                        nddl_meca, nddl_p1, nddl_p2, &
+                        nddl_meca, nddl_p1, nddl_p2, nddl_2nd, &
                         dimdep, dimdef, dimcon, dimuel)
 !
 ! - Intput/output fields
@@ -126,12 +126,12 @@ subroutine thmCompRefeForcNoda(ds_thm)
 !
     call refthm(ds_thm, &
                 zi(jv_mater), ndim, l_axi, fnoevo, &
-                mecani, press1, press2, tempe, &
+                mecani, press1, press2, tempe, second, &
                 nno, nnos, npi, npg, &
                 zr(jv_geom), dt, dimdef, dimcon, dimuel, &
                 jv_poids, jv_poids2, &
                 jv_func, jv_func2, jv_dfunc, jv_dfunc2, &
-                nddls, nddlm, nddl_meca, nddl_p1, nddl_p2, &
+                nddls, nddlm, nddl_meca, nddl_p1, nddl_p2, nddl_2nd, &
                 b, r, zr(jv_vectu))
 !
 end subroutine

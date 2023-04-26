@@ -20,9 +20,10 @@
 !
 subroutine thmGetElemPara(ds_thm, l_axi, &
                           type_elem, inte_type, ndim, &
-                          mecani, press1, press2, tempe, &
+                          mecani, press1, press2, tempe, second, &
                           dimdep, dimdef, dimcon, dimuel, &
-                          nddls, nddlm, nddl_meca, nddl_p1, nddl_p2, &
+                          nddls, nddlm, &
+                          nddl_meca, nddl_p1, nddl_p2, nddl_2nd, &
                           nno, nnos, &
                           npi, npg, &
                           jv_poids, jv_func, jv_dfunc, &
@@ -47,9 +48,9 @@ subroutine thmGetElemPara(ds_thm, l_axi, &
     character(len=8), intent(out) :: type_elem(2)
     character(len=3), intent(out) :: inte_type
     integer, intent(out) :: ndim
-    integer, intent(out) :: mecani(5), press1(7), press2(7), tempe(5)
+    integer, intent(out) :: mecani(5), press1(7), press2(7), tempe(5), second(5)
     integer, intent(out) :: dimdep, dimdef, dimcon, dimuel
-    integer, intent(out) :: nddls, nddlm, nddl_meca, nddl_p1, nddl_p2
+    integer, intent(out) :: nddls, nddlm, nddl_meca, nddl_p1, nddl_p2, nddl_2nd
     integer, intent(out) :: nno, nnos
     integer, intent(out) :: npi, npg
     integer, intent(out) :: jv_func, jv_dfunc, jv_poids
@@ -97,6 +98,12 @@ subroutine thmGetElemPara(ds_thm, l_axi, &
 !                    (3) - Adress of first component in generalized stress vector
 !                    (4) - Number of components for strains
 !                    (5) - Number of components for stresses
+! Out second           : parameters for second gradient
+!                    (1) - Flag if physic exists (1 if exists)
+!                    (2) - Adress of first component in generalized strain vector
+!                    (3) - Adress of first component in generalized stress vector
+!                    (4) - Number of components for strains
+!                    (5) - Number of components for stresses
 ! Out dimdep           : dimension of generalized displacement vector
 ! Out dimdef           : dimension of generalized strains vector
 ! Out dimcon           : dimension of generalized stresses vector
@@ -106,6 +113,7 @@ subroutine thmGetElemPara(ds_thm, l_axi, &
 ! Out nddl_meca        : number of dof for mechanical quantity
 ! Out nddl_p1          : number of dof for capillary pressure
 ! Out nddl_p2          : number of dof for gaz pressure
+! Out nddl_2nd         : number of dof for second gradient
 ! Out nno              : number of nodes (all)
 ! Out nnos             : number of nodes (not middle ones)
 ! Out npi              : number of Gauss points for linear
@@ -132,6 +140,7 @@ subroutine thmGetElemPara(ds_thm, l_axi, &
 !
     call thmGetElemModel(ds_thm, l_axi, l_vf, ndim, type_elem)
     ASSERT(.not. l_vf)
+    ASSERT(.not. ((l_axi) .and. (ds_thm%ds_elem%l_dof_2nd)))
 !
 ! - Get type of integration
 !
@@ -140,7 +149,7 @@ subroutine thmGetElemPara(ds_thm, l_axi, &
 ! - Get generalized coordinates
 !
     call thmGetGene(ds_thm, l_vf, ndim, &
-                    mecani, press1, press2, tempe)
+                    mecani, press1, press2, tempe, second)
 !
 ! - Get reference elements
 !
@@ -158,9 +167,9 @@ subroutine thmGetElemPara(ds_thm, l_axi, &
 ! - Get dimensions about element
 !
     call thmGetElemDime(ndim, nnos, nnom, &
-                        mecani, press1, press2, tempe, &
+                        mecani, press1, press2, tempe, second, &
                         nddls, nddlm, &
-                        nddl_meca, nddl_p1, nddl_p2, &
+                        nddl_meca, nddl_p1, nddl_p2, nddl_2nd, &
                         dimdep, dimdef, dimcon, dimuel)
 !
 end subroutine

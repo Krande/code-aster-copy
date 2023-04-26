@@ -25,8 +25,8 @@ subroutine comthm(ds_thm, &
                   type_elem, angl_naut, &
                   ndim, nbvari, &
                   dimdef, dimcon, &
-                  adcome, adcote, adcp11, adcp12, adcp21, adcp22, &
-                  addeme, addete, addep1, addep2, &
+                  adcome, adcote, adcp11, adcp12, adcp21, adcp22, adco2nd, &
+                  addeme, addete, addep1, addep2, adde2nd, &
                   kpi, npg, &
                   carcri, &
                   defgem, defgep, &
@@ -65,8 +65,8 @@ subroutine comthm(ds_thm, &
     real(kind=8), intent(in) :: angl_naut(3)
     integer, intent(in) :: ndim, nbvari
     integer, intent(in) :: dimdef, dimcon
-    integer, intent(in) :: adcome, adcote, adcp11, adcp12, adcp21, adcp22
-    integer, intent(in) :: addeme, addete, addep1, addep2
+    integer, intent(in) :: adcome, adcote, adcp11, adcp12, adcp21, adcp22, adco2nd
+    integer, intent(in) :: addeme, addete, addep1, addep2, adde2nd
     integer, intent(in) :: kpi, npg
     real(kind=8), intent(in) :: carcri(*)
     real(kind=8), intent(in) :: defgem(1:dimdef), defgep(1:dimdef)
@@ -102,10 +102,12 @@ subroutine comthm(ds_thm, &
 ! In  adcp12           : adress of first component and second phase in generalized stresses vector
 ! In  adcp21           : adress of second component and first phase in generalized stresses vector
 ! In  adcp22           : adress of second component and second phase in generalized stresses vector
+! In  adcp22           : adress of second gradient in generalized stresses vector
 ! In  addeme           : adress of mechanic components in generalized strains vector
 ! In  addete           : adress of thermic components in generalized strains vector
 ! In  addep1           : adress of capillary pressure in generalized strains vector
 ! In  addep2           : adress of gaz pressure in generalized strains vector
+! In  adde2nd          : adress of second gradient in generalized strains vector
 ! In  kpi              : current Gauss point
 ! In  npg              : number of Gauss points
 ! In  carcri           : parameters for comportment

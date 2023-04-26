@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,10 +19,10 @@
 !
 interface
     subroutine epsthm(ds_thm   , l_axi    , ndim     ,&
-                      addeme   , addep1   , addep2  , addete   ,&
+                      addeme   , addep1   , addep2  , addete   , adde2nd, &
                       nno      , nnos     ,&
                       dimuel   , dimdef   , nddls   , nddlm    ,&
-                      nddl_meca, nddl_p1  , nddl_p2 ,&
+                      nddl_meca, nddl_p1  , nddl_p2 , nddl_2nd, &
                       npi      , elem_coor, disp    ,&
                       jv_poids , jv_poids2,&
                       jv_func  , jv_func2 , jv_dfunc, jv_dfunc2,&
@@ -31,11 +31,11 @@ interface
         type(THM_DS), intent(in) :: ds_thm
         aster_logical, intent(in) :: l_axi
         integer, intent(in) :: ndim
-        integer, intent(in) :: addeme, addep1, addep2, addete
+        integer, intent(in) :: addeme, addep1, addep2, addete, adde2nd
         integer, intent(in) :: nno, nnos
         integer, intent(in) :: dimuel, dimdef
         integer, intent(in) :: nddls, nddlm
-        integer, intent(in) :: nddl_meca, nddl_p1, nddl_p2
+        integer, intent(in) :: nddl_meca, nddl_p1, nddl_p2, nddl_2nd
         integer, intent(in) :: npi
         real(kind=8), intent(in) :: elem_coor(ndim, nno)
         real(kind=8), intent(in) :: disp(*)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,10 +20,10 @@
 interface
     subroutine cabthm(ds_thm   , l_axi    , ndim   ,&
                       nddls    , nddlm    ,&
-                      nddl_meca, nddl_p1  , nddl_p2,&
+                      nddl_meca, nddl_p1  , nddl_p2, nddl_2nd, &
                       nno      , nnos     , &
                       dimuel   , dimdef   , kpi    ,&
-                      addeme   , addete   , addep1 , addep2,&
+                      addeme   , addete   , addep1 , addep2, adde2nd, &
                       elem_coor,&
                       jv_poids , jv_poids2,&
                       jv_func  , jv_func2 ,&
@@ -35,10 +35,10 @@ interface
         type(THM_DS), intent(in) :: ds_thm
         aster_logical, intent(in) :: l_axi
         integer, intent(in) :: ndim, nddls, nddlm
-        integer, intent(in) :: nddl_meca, nddl_p1, nddl_p2
+        integer, intent(in) :: nddl_meca, nddl_p1, nddl_p2, nddl_2nd
         integer, intent(in) :: nno, nnos
         integer, intent(in) :: dimuel, dimdef, kpi
-        integer, intent(in) :: addeme, addete, addep1, addep2
+        integer, intent(in) :: addeme, addete, addep1, addep2, adde2nd
         real(kind=8), intent(in) :: elem_coor(ndim, nno)
         integer, intent(in) :: jv_poids, jv_poids2
         integer, intent(in) :: jv_func, jv_func2

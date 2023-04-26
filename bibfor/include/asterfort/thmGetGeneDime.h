@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,10 +22,10 @@
 !
 interface
     subroutine thmGetGeneDime(ndim     ,&
-                              mecani   , press1 , press2 , tempe ,&
+                              mecani   , press1 , press2 , tempe , second, &
                               dimdep   , dimdef , dimcon )
         integer, intent(in) :: ndim
-        integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5)
+        integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5), second(5)
         integer, intent(out) :: dimdep, dimdef, dimcon
     end subroutine thmGetGeneDime
 end interface

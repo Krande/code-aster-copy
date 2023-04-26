@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 !
 subroutine thmGetGene(ds_thm, l_vf, ndim, &
-                      mecani, press1, press2, tempe)
+                      mecani, press1, press2, tempe, second)
 !
     use THM_type
 !
@@ -29,7 +29,7 @@ subroutine thmGetGene(ds_thm, l_vf, ndim, &
     type(THM_DS), intent(in) :: ds_thm
     aster_logical, intent(in) :: l_vf
     integer, intent(in)  :: ndim
-    integer, intent(out) :: mecani(5), press1(7), press2(7), tempe(5)
+    integer, intent(out) :: mecani(5), press1(7), press2(7), tempe(5), second(5)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -70,13 +70,19 @@ subroutine thmGetGene(ds_thm, l_vf, ndim, &
 !                    (3) - Adress of first component in generalized stress vector
 !                    (4) - Number of components for strains
 !                    (5) - Number of components for stresses
-!
+! Out second           : parameters for second gradient
+!                    (1) - Flag if physic exists (1 if exists)
+!                    (2) - Adress of first component in generalized strain vector
+!                    (3) - Adress of first component in generalized stress vector
+!                    (4) - Number of components for strains
+!                    (5) - Number of components for stresses
 ! --------------------------------------------------------------------------------------------------
 !
     mecani(:) = 0
     press1(:) = 0
     press2(:) = 0
     tempe(:) = 0
+    second(:) = 0
 !
 ! - Main parameters: mechanic, thermic, hydraulic
 !
@@ -91,6 +97,9 @@ subroutine thmGetGene(ds_thm, l_vf, ndim, &
     end if
     if (ds_thm%ds_elem%l_dof_pre2) then
         press2(1) = 1
+    end if
+    if (ds_thm%ds_elem%l_dof_2nd) then
+        second(1) = 1
     end if
     press1(2) = ds_thm%ds_elem%nb_phase(1)
     press2(2) = ds_thm%ds_elem%nb_phase(2)
@@ -130,6 +139,13 @@ subroutine thmGetGene(ds_thm, l_vf, ndim, &
         press2(7) = 2
     end if
 !
+! - Number of (generalized) stress/strain components - Second gradient
+!
+    if (second(1) .eq. 1) then
+        second(4) = ndim+2
+        second(5) = ndim+2
+    end if
+!
 ! - Index for adress in (generalized) vectors - Mechanic
 !
     if (mecani(1) .eq. 1) then
@@ -162,4 +178,12 @@ subroutine thmGetGene(ds_thm, l_vf, ndim, &
         tempe(3) = mecani(5)+press1(2)*press1(7)+press2(2)*press2(7)+1
     end if
 !
+! - Index for adress in (generalized) vectors - Second gradient
+!
+    if (second(1) .eq. 1) then
+        second(2) = mecani(4)+press1(6)+press2(6)+tempe(4)+1
+        second(3) = mecani(5)+press1(2)*press1(7)+press2(2)*press2(7)+tempe(5)+1
+    end if
+!
+
 end subroutine
