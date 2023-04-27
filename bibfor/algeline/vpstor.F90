@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -177,7 +177,7 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq,&
             typcon(1:10) .eq. 'MODE_FLAMB' .or. typcon(1:9) .eq. 'MODE_STAB') then
             call dismoi('NOM_MODELE', raide, 'MATR_ASSE', repk=modele)
             call dismoi('CHAM_MATER', raide, 'MATR_ASSE', repk=chmat, arret='C')
-            call dismoi('CARA_ELEM', raide, 'MATR_ASSE', repk=carael)
+            call dismoi('CARA_ELEM', raide, 'MATR_ASSE', repk=carael, arret='C')
         else if (typcon(1:9).eq.'MODE_GENE') then
             call jeveuo(raide(1:19)//'.LIME', 'L', jmodg)
             if (zk24(jmodg)(1:8) .eq. '        ') then
@@ -239,8 +239,8 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq,&
                 endif
             endif
             call dismoi('NOM_MODELE', raide2(1:8), 'MATR_ASSE', repk=modele)
-            call dismoi('CHAM_MATER', raide2(1:8), 'MATR_ASSE', repk=chmat)
-            call dismoi('CARA_ELEM', raide2(1:8), 'MATR_ASSE', repk=carael)
+            call dismoi('CHAM_MATER', raide2(1:8), 'MATR_ASSE', repk=chmat, arret='C')
+            call dismoi('CARA_ELEM', raide2(1:8), 'MATR_ASSE', repk=carael, arret='C')
         endif
     endif
 !
