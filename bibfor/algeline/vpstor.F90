@@ -181,7 +181,7 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq, &
             typcon(1:10) .eq. 'MODE_FLAMB' .or. typcon(1:9) .eq. 'MODE_STAB') then
             call dismoi('NOM_MODELE', raide, 'MATR_ASSE', repk=modele)
             call dismoi('CHAM_MATER', raide, 'MATR_ASSE', repk=chmat, arret='C')
-            call dismoi('CARA_ELEM', raide, 'MATR_ASSE', repk=carael)
+            call dismoi('CARA_ELEM', raide, 'MATR_ASSE', repk=carael, arret='C')
         else if (typcon(1:9) .eq. 'MODE_GENE') then
             call jeveuo(raide(1:19)//'.LIME', 'L', jmodg)
             if (zk24(jmodg) (1:8) .eq. '        ') then
@@ -243,8 +243,8 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq, &
                 end if
             end if
             call dismoi('NOM_MODELE', raide2(1:8), 'MATR_ASSE', repk=modele)
-            call dismoi('CHAM_MATER', raide2(1:8), 'MATR_ASSE', repk=chmat)
-            call dismoi('CARA_ELEM', raide2(1:8), 'MATR_ASSE', repk=carael)
+            call dismoi('CHAM_MATER', raide2(1:8), 'MATR_ASSE', repk=chmat, arret='C')
+            call dismoi('CARA_ELEM', raide2(1:8), 'MATR_ASSE', repk=carael, arret='C')
         end if
     end if
 !

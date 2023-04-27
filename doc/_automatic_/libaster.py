@@ -10665,7 +10665,6 @@ class Result(DataStructure):
             Table: Table stored with the given identifier.
         """
 
-
     def getTime(self, index):
         """Get time at the specified index
 
