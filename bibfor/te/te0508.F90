@@ -34,6 +34,7 @@ subroutine te0508(option, nomte)
 #include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
 #include "asterfort/terefe.h"
+#include "asterfort/utmess.h"
 !
     character(len=16), intent(in) :: option, nomte
 !
@@ -204,8 +205,8 @@ subroutine te0508(option, nomte)
         deallocate (b, w, ni2ldc)
 
     else
+        call utmess('F', 'ELEMENTS_2')
         ! Combinaison inconnue
-        ASSERT(ASTER_FALSE)
     end if
 
     if (refe) then

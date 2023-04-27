@@ -28,6 +28,7 @@ cata_msg = {
  %(r2)f
 """
     ),
+    2: _("""La modélisation ne peut être utilisée qu'avec un modèle de grande déformation."""),
     3: _(
         """
 Vous utilisez des éléments de type GRILLE_MEMBRANE. Le mot-clé ANGL_REP de la commande AFFE_CARA_ELEM
