@@ -49,7 +49,7 @@ subroutine dil2gr(imate, ndim, dimdef, &
     end do
 
     call rcvalb(fami, kpg, spt, poum, imate, &
-                ' ', 'LINE_2NDG', 0, ' ', [0.0d0], &
+                ' ', 'SECOND_ELAS', 0, ' ', [0.0d0], &
                 1, ncra(1), val(1), icodre(1), 1)
 
     do i = 1, ndim

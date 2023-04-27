@@ -38,9 +38,7 @@ young = 1.0
 
 
 MAT = DEFI_MATERIAU(
-    ELAS=_F(E=young, NU=poisson),
-    LINE_2NDG=_F(A1=0.25, A2=0.0, A3=0.0, A4=0.0, A5=0.0),
-    NON_LOCAL=_F(PENA_LAGR=young * 100),
+    ELAS=_F(E=young, NU=poisson), SECOND_ELAS=_F(A1=0.25), NON_LOCAL=_F(PENA_LAGR=young * 100)
 )
 
 CHMAT = AFFE_MATERIAU(MAILLAGE=MA, AFFE=(_F(GROUP_MA="CUBE", MATER=MAT)))

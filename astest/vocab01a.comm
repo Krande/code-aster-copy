@@ -57,6 +57,6 @@ except IOError:
 #    ************************************************************
 
 # TEST_TABLE are included in the "macro-command"
-VOCAB01(EXISTANT=existing_keywords, INFO=1)
+VOCAB01(EXISTANT=existing_keywords, INFO=2)
 
 FIN()

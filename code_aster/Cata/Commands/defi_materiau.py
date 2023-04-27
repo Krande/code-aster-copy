@@ -134,6 +134,7 @@ DEFI_MATERIAU = MACRO(
             "ELAS_COQUE",
             "ELAS_COQUE_FO",
             "ELAS_MEMBRANE",
+            "SECOND_ELAS",
             "FONDA_SUPERFI",
             "ELAS_HYPER",
             "ELAS_GLRC",
@@ -840,14 +841,7 @@ DEFI_MATERIAU = MACRO(
         RHO=SIMP(statut="f", typ="R"),
         ALPHA=SIMP(statut="f", typ="R"),
     ),
-    LINE_2NDG=FACT(
-        statut="f",
-        A1=SIMP(statut="o", typ="R"),
-        A2=SIMP(statut="f", typ="R"),
-        A3=SIMP(statut="f", typ="R"),
-        A4=SIMP(statut="f", typ="R"),
-        A5=SIMP(statut="f", typ="R"),
-    ),
+    SECOND_ELAS=FACT(statut="f", A1=SIMP(statut="o", typ="R")),
     ELAS_GLRC=FACT(
         statut="f",
         regles=(PRESENT_PRESENT("BT1", "BT2"),),
