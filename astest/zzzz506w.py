@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -94,11 +94,11 @@ fieldResuRefe = RESOUDRE(MATR=matrAsseRef, CHAM_NO=zero, CHAM_CINE=kinematicFiel
 
 # Compute tangent prediction matrices
 res1 = disc_comp.getTangentStiffnessMatrix(
-    disp, disp_incr, stress, internVar, timeBeginStep, timeEndStep, ["CoucheHaut"]
+    disp, disp_incr, stress, internVar, timeBeginStep, timeEndStep, groupOfCells=["CoucheHaut"]
 )
 matrElem1 = res1[2]
 res2 = disc_comp.getTangentStiffnessMatrix(
-    disp, disp_incr, stress, internVar, timeBeginStep, timeEndStep, ["CoucheBas"]
+    disp, disp_incr, stress, internVar, timeBeginStep, timeEndStep, groupOfCells=["CoucheBas"]
 )
 matrElem2 = res2[2]
 
