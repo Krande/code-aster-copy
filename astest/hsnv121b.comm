@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -127,11 +127,10 @@ VL=STAT_NON_LINE(
               )
 
 VL=STAT_NON_LINE( reuse=VL,
-                            MODELE=MO,
-                        CHAM_MATER=CHP_MATL,
-                         ETAT_INIT=_F(
-                EVOL_NOLI = VL,
-                NUME_ORDRE = 1),EXCIT=(
+                MODELE=MO,
+                CHAM_MATER=CHP_MATL,
+                ETAT_INIT=_F(EVOL_NOLI = VL,NUME_ORDRE = 1, NUME_DIDI=1),
+                EXCIT=(
                              _F(
                 CHARGE = CHR_LIAI), _F(
                 CHARGE = CHR_TRAC,

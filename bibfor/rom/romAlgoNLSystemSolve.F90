@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -86,6 +86,7 @@ aster_logical, optional, intent(in) :: l_update_redu_
     real(kind=8), pointer :: v_mode(:) => null()
     real(kind=8), pointer :: v_vect_cine(:) => null()
     real(kind=8), pointer :: v_vect_solu(:) => null()
+    character(len=24), pointer :: refa(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -121,10 +122,12 @@ aster_logical, optional, intent(in) :: l_update_redu_
     call jeveuo(vect_2mbr(1:19)//'.VALE', 'E'     , vr = v_vect_2mbr)
     call jelira(vect_2mbr(1:19)//'.VALE', 'LONMAX', nbEqua_2mbr)
     ASSERT(nbEqua .eq. nbEqua_2mbr)
-!
+
 ! - Access to matrix
-!
-    call mtmchc(matr_asse, 'ELIMF')
+    call jeveuo(matr_asse(1:19)//'.REFA', 'L', vk24=refa)
+    if (refa(3) .eq. 'ELIML') then
+        call mtmchc(matr_asse, 'ELIMF')
+    end if
     call jeveuo(matr_asse(1:19)//'.&INT', 'L', jv_matr)
     call dismoi('NB_EQUA', matr_asse, 'MATR_ASSE', repi = nbEqua_matr)
     ASSERT(nbEqua .eq. zi(jv_matr+2))
