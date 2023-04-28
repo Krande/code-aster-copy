@@ -30,7 +30,8 @@ class PhysicalState(BaseFeature):
     provide = SOP.PhysicalState
 
     _time = _time_step = None
-    _primal = _primal_step = _internVar = _stress = _externVar = None
+    _primal = _primal_step = _internVar = _stress = None
+    _externVar = _externVar_next = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
     @property
@@ -135,6 +136,21 @@ class PhysicalState(BaseFeature):
         assert isinstance(field, FieldOnCellsReal), f"unexpected type: {field}"
         self._externVar = field
 
+    @property
+    def externVar_next(self):
+        """FieldOnCellsReal: External state variables at end of step."""
+        return self._externVar_next
+
+    @externVar_next.setter
+    def externVar_next(self, field):
+        """Set external state variables at end of step
+
+        Arguments:
+            field (FieldOnCellsReal): external state variables at end of step
+        """
+        self._externVar_next = field
+
+    # FIXME setPrimalValue?
     @profile
     def createPrimal(self, phys_pb, value):
         """Create primal field with a given value
@@ -237,6 +253,7 @@ class PhysicalState(BaseFeature):
         primal_up = self._primal + other.primal_step
         self._primal = primal_up
         self._internVar = other.internVar
+        self._externVar = other.externVar_next
         self._stress = other.stress
         self._time += other.time_step
 

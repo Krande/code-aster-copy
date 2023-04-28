@@ -43,24 +43,23 @@ DiscreteComputation::getInternalForces( const FieldOnNodesRealPtr displ,
                                         const FieldOnCellsRealPtr stress,
                                         const FieldOnCellsRealPtr internVar,
                                         const ASTERDOUBLE &time_prev, const ASTERDOUBLE &time_step,
+                                        const FieldOnCellsRealPtr &externVarPrev,
+                                        const FieldOnCellsRealPtr &externVarCurr,
                                         const VectorString &groupOfCells ) const {
 
-    FieldOnCellsRealPtr _externVarFieldPrev;
-    FieldOnCellsRealPtr _externVarFieldCurr;
+    AS_ASSERT( _phys_problem->getModel()->isMechanical() );
 
     // Get main parameters
     auto currModel = _phys_problem->getModel();
-    auto currMater = _phys_problem->getMaterialField();
     auto currElemChara = _phys_problem->getElementaryCharacteristics();
     auto currBehaviour = _phys_problem->getBehaviourProperty();
 
-    // Select option for matrix
+    // Select option to compute
     std::string option = "RAPH_MECA";
 
     // Prepare computing:
-    CalculPtr calcul =
-        createCalculForNonLinear( option, time_prev, time_prev + time_step, _externVarFieldPrev,
-                                  _externVarFieldCurr, groupOfCells );
+    CalculPtr calcul = createCalculForNonLinear( option, time_prev, time_prev + time_step,
+                                                 externVarPrev, externVarCurr, groupOfCells );
     FiniteElementDescriptorPtr FEDesc = calcul->getFiniteElementDescriptor();
 
     // Set current physical state
@@ -95,7 +94,7 @@ DiscreteComputation::getInternalForces( const FieldOnNodesRealPtr displ,
     // Add output elementary
     calcul->addOutputElementaryTerm( "PVECTUR", std::make_shared< ElementaryTermReal >() );
 
-    // Compute
+    // Compute and assemble vector
     FieldOnNodesRealPtr internalForces;
     if ( currModel->existsFiniteElement() ) {
         calcul->compute();

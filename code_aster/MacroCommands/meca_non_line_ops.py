@@ -36,7 +36,7 @@ from ..Utilities import print_stats
 
 
 def _contact_check(CONTACT):
-    """Add check to forbid not convered functionnalities"""
+    """Add controls to prohibit unconverted features in contact"""
     if CONTACT is not None:
         defi = CONTACT["DEFINITION"]
 
@@ -53,7 +53,7 @@ def _contact_check(CONTACT):
 
 
 def _keywords_check(keywords):
-    """To forbid unsupported keywords."""
+    """Add controls to prohibit unconverted features."""
 
     if "EXCIT" in keywords:
         for load in keywords["EXCIT"]:
@@ -84,7 +84,7 @@ def meca_non_line_ops(self, **args):
 
     args = _F(args)
 
-    # keywords checking
+    # Add controls to prohibit unconverted features
     _contact_check(args["CONTACT"])
     _keywords_check(args)
     adapt_for_mgis_behaviour(self, args)

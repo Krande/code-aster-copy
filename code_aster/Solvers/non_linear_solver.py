@@ -110,10 +110,14 @@ class NonLinearSolver(SolverFeature):
     def initialize(self):
         """Initialize run"""
         self.check_features()
-
         args = self.get_feature(SOP.Keywords)
         # essential to be called enough soon (may change the size of VARI field)
-        self.phys_pb.computeBehaviourProperty(args["COMPORTEMENT"], "NON", 2)
+        phys_pb = self.phys_pb
+        phys_pb.computeBehaviourProperty(args["COMPORTEMENT"], "NON", 2)
+        phys_pb.computeListOfLoads()
+        phys_pb.computeDOFNumbering()
+        if phys_pb.getMaterialField().hasExternalStateVariableForLoad():
+            phys_pb.computeReferenceExternalStateVariables()
         self.setInitialState()
         self.step_rank = 0
         self._storeRank(self.phys_state.time)
@@ -154,18 +158,23 @@ class NonLinearSolver(SolverFeature):
     @profile
     def run(self):
         """Solve the problem."""
-        self.phys_pb.computeListOfLoads()
-        self.phys_pb.computeDOFNumbering()
         self.initialize()
 
         solv = self.get_feature(SOP.StepSolver)
 
         matr_update_step = self._get("NEWTON", "REAC_ITER", 1)
 
+        # Create field for external state variables
+        if self.phys_pb.getMaterialField().hasExternalStateVariable():
+            self.phys_state.externVar = self.phys_pb.getExternalStateVariables(self.phys_state.time)
+
         # Solve nonlinear problem
         while not self.hasFinished():
             timeEndStep = self.stepper.getCurrent()
             self.phys_state.time_step = timeEndStep - self.phys_state.time
+
+            if self.phys_pb.getMaterialField().hasExternalStateVariable():
+                self.phys_state.externVar_next = self.phys_pb.getExternalStateVariables(timeEndStep)
 
             solv.initialize()
             if (self.step_rank + 1) % matr_update_step:

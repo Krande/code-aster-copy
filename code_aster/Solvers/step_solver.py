@@ -65,9 +65,6 @@ class StepSolver(SolverFeature):
         """Update the physical state.
 
         Arguments:
-            primal_step (FieldOnNodes): Displacement step.
-            internVar (FieldOnCells): Internal state variables.
-            sigma (FieldOnCells): Stress field.
             convManager (ConvergenceManager): Object that manages the
                 convergency criteria.
         """

@@ -65,10 +65,12 @@ DiscreteComputation::createTimeField( const ASTERDOUBLE time_value, const ASTERD
     return field;
 }
 
-CalculPtr DiscreteComputation::createCalculForNonLinear(
-    const std::string option, const ASTERDOUBLE &time_prev, const ASTERDOUBLE &time_curr,
-    const FieldOnCellsRealPtr _externVarFieldPrev, const FieldOnCellsRealPtr _externVarFieldCurr,
-    const VectorString &groupOfCells ) const {
+CalculPtr DiscreteComputation::createCalculForNonLinear( const std::string option,
+                                                         const ASTERDOUBLE &time_prev,
+                                                         const ASTERDOUBLE &time_curr,
+                                                         const FieldOnCellsRealPtr _externVarPrev,
+                                                         const FieldOnCellsRealPtr _externVarCurr,
+                                                         const VectorString &groupOfCells ) const {
 
     // Get main parameters
     auto currModel = _phys_problem->getModel();
@@ -101,15 +103,15 @@ CalculPtr DiscreteComputation::createCalculForNonLinear(
         calcul->addInputField( "PVARCRR", currExternVarRefe );
     }
     if ( currMater->hasExternalStateVariable() ) {
-        if ( !_externVarFieldPrev ) {
+        if ( !_externVarPrev ) {
             AS_ABORT( "External state variables vector for beginning of time step is missing" )
         }
-        if ( !_externVarFieldCurr ) {
+        if ( !_externVarCurr ) {
             AS_ABORT( "External state variables vector for end of time step is missing" )
         }
         AS_ASSERT( currExternVarRefe );
-        calcul->addInputField( "PVARCMR", _externVarFieldPrev );
-        calcul->addInputField( "PVARCPR", _externVarFieldCurr );
+        calcul->addInputField( "PVARCMR", _externVarPrev );
+        calcul->addInputField( "PVARCPR", _externVarCurr );
     }
 
     // Add time fields

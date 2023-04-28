@@ -478,6 +478,8 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                 internVar (FieldOnCells): field of internal state variables at begin of current time
                 time_prev (float): time at begin of the step
                 time_curr (float): delta time between begin and end of the step
+                externVarPrev (FieldOnCells): external state variables at begin of current time
+                externVarCurr (FieldOnCells): internal state variables at end of current time
                 groupOfCells (list[str]): compute matrices on given groups of cells.
 
             Returns:
@@ -489,6 +491,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
         )",
               py::arg( "displ" ), py::arg( "displ_step" ), py::arg( "stress" ),
               py::arg( "internVar" ), py::arg( "time_prev" ), py::arg( "time_step" ),
+              py::arg( "externVarPrev" ) = nullptr, py::arg( "externVarCurr" ) = nullptr,
               py::arg( "groupOfCells" ) = VectorString() )
 
         .def( "getTangentStiffnessMatrix", &DiscreteComputation::getTangentStiffnessMatrix,
@@ -499,9 +502,11 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                 displ (FieldOnNodes): displacement field at begin of current time
                 displ_step (FieldOnNodes): field of increment of displacement
                 stress (FieldOnCells): field of stress at begin of current time
-                internVar (FieldOnCells): field of internal state variables at begin of current time
+                internVar (FieldOnCells): internal state variables at begin of current time
                 time_prev (float): time at begin of the step
                 time_curr (float): delta time between begin and end of the step
+                externVarPrev (FieldOnCells): external state variables at begin of current time
+                externVarCurr (FieldOnCells): internal state variables at end of current time
                 groupOfCells (list[str]): compute matrices on given groups of cells.
 
             Returns:
@@ -511,6 +516,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
         )",
               py::arg( "displ" ), py::arg( "displ_step" ), py::arg( "stress" ),
               py::arg( "internVar" ), py::arg( "time_prev" ), py::arg( "time_step" ),
+              py::arg( "externVarPrev" ) = nullptr, py::arg( "externVarCurr" ) = nullptr,
               py::arg( "groupOfCells" ) = VectorString() )
 
         .def( "getPredictionTangentStiffnessMatrix",
@@ -521,19 +527,23 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                 displ (FieldOnNodes): displacement field at begin of current time
                 displ_step (FieldOnNodes): field of increment of displacement
                 stress (FieldOnCells): field of stress at begin of current time
-                internVar (FieldOnCells): field of internal state variables at begin of current time
+                internVar (FieldOnCells): internal state variables at begin of current time
                 time_prev (float): time at begin of the step
                 time_curr (float): delta time between begin and end of the step
+                externVarPrev (FieldOnCells): external state variables at begin of current time
+                externVarCurr (FieldOnCells): internal state variables at end of current time
                 groupOfCells (list[str]): compute matrices on given groups of cells.
 
             Returns:
                 tuple (tuple): return code error (FieldOnCellsLong),
                 error code flag (int),
-                elementary tangent matrix (ElementaryMatrixDisplacementReal),
+                elementary tangent matrix (ElementaryMatrixDisplacementReal)
         )",
               py::arg( "displ" ), py::arg( "displ_step" ), py::arg( "stress" ),
               py::arg( "internVar" ), py::arg( "time_prev" ), py::arg( "time_step" ),
+              py::arg( "externVarPrev" ) = nullptr, py::arg( "externVarCurr" ) = nullptr,
               py::arg( "groupOfCells" ) = VectorString() )
+
         .def( "getContactForces", &DiscreteComputation::getContactForces, R"(
             Compute contact and friction forces
 
@@ -554,6 +564,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
               py::arg( "geom" ), py::arg( "displ" ), py::arg( "displ_step" ),
               py::arg( "time_prev" ), py::arg( "time_step" ), py::arg( "data" ),
               py::arg( "coef_cont" ), py::arg( "coef_frot" ) )
+
         .def( "getContactMatrix", &DiscreteComputation::getContactMatrix, R"(
             Compute contact matrix
 

@@ -83,6 +83,8 @@ class IncrementalSolver(SolverFeature):
             self.phys_state.internVar,
             self.phys_state.time,
             self.phys_state.time_step,
+            self.phys_state.externVar,
+            self.phys_state.externVar_next,
         )
 
         resi_state = ResiState()
@@ -99,11 +101,11 @@ class IncrementalSolver(SolverFeature):
             dualizedBC_forces = disc_comp.getDualForces(primal_curr)
             resi_state.resi_dual = dualizedBC_forces
 
-            # Compute dualiazed BC (B^t.primal_curr - primal_impo)
-            # Compute dualiazed BC (B^t.primal_curr)
+            # Compute dualized BC (B^t.primal_curr - primal_impo)
+            # Compute dualized BC (B^t.primal_curr)
             dualizedBC_disp = disc_comp.getDualDisplacement(primal_curr, scaling)
 
-            # Imposed dualisez BC (primal_impo)
+            # Imposed dualized BC (primal_impo)
             time_curr = self.phys_state.time + self.phys_state.time_step
             dualizedBC_impo = disc_comp.getImposedDualBC(time_curr)
 
@@ -178,6 +180,7 @@ class IncrementalSolver(SolverFeature):
             Tuple with residuals, internal state variables (VARI_ELGA),
             Cauchy stress tensor (SIEF_ELGA).
         """
+
         # Compute internal residual
         resi_state, internVar, stress = self.computeInternalResidual(scaling)
 
@@ -221,6 +224,8 @@ class IncrementalSolver(SolverFeature):
                 self.phys_state.internVar,
                 self.phys_state.time,
                 self.phys_state.time_step,
+                self.phys_state.externVar,
+                self.phys_state.externVar_next,
             )
         elif matrix_type == "TANGENTE":
             _, codret, matr_elem_rigi = disc_comp.getTangentStiffnessMatrix(
@@ -230,6 +235,8 @@ class IncrementalSolver(SolverFeature):
                 self.phys_state.internVar,
                 self.phys_state.time,
                 self.phys_state.time_step,
+                self.phys_state.externVar,
+                self.phys_state.externVar_next,
             )
         else:
             raise RuntimeError("Matrix not supported: %s" % (matrix_type))
@@ -301,7 +308,7 @@ class IncrementalSolver(SolverFeature):
         """Apply linear search.
 
         Arguments:
-            field (FieldOnNodes): DIsplacement field.
+            field (FieldOnNodes): Displacement field.
 
         Returns:
             FieldOnNodes: Accelerated field by linear search.
@@ -344,18 +351,18 @@ class IncrementalSolver(SolverFeature):
             # Time at end of current step
             time_curr = self.phys_state.time + self.phys_state.time_step
 
-            # compute Dirichlet BC:
+            # Compute Dirichlet BC:
             disc_comp = DiscreteComputation(self.phys_pb)
             primal_curr = self.phys_state.primal + self.phys_state.primal_step
             diriBCs = disc_comp.getIncrementalDirichletBC(time_curr, primal_curr)
 
-            # solve linear system
+            # Solve linear system
             linear_solver = self.get_feature(SOP.LinearSolver)
             if not stiffness.isFactorized():
                 linear_solver.factorize(stiffness)
             solution = linear_solver.solve(resi_state.resi, diriBCs)
 
-            # use line search
+            # Use line search
             primal_incr = self.lineSearch(solution)
         else:
             primal_incr = self.phys_state.createPrimal(self.phys_pb, 0.0)

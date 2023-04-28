@@ -275,7 +275,6 @@ DiscreteComputation::getExternalStateVariablesForces( const ASTERDOUBLE time,
     auto currExternVarRefe = _phys_problem->getReferenceExternalStateVariables();
 
     // Some checks
-    AS_ASSERT( externVar );
     AS_ASSERT( currMater );
     AS_ASSERT( currMater->hasExternalStateVariableForLoad() );
     if ( currMater->hasExternalStateVariableWithReference() ) {

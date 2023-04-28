@@ -679,17 +679,13 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::getDualElasticStiffness
 
 /** @brief Compute tangent matrix (not assembled) */
 std::tuple< FieldOnCellsLongPtr, ASTERINTEGER, ElementaryMatrixDisplacementRealPtr >
-DiscreteComputation::getTangentStiffnessMatrix( const FieldOnNodesRealPtr displ,
-                                                const FieldOnNodesRealPtr displ_step,
-                                                const FieldOnCellsRealPtr stress,
-                                                const FieldOnCellsRealPtr internVar,
-                                                const ASTERDOUBLE &time_prev,
-                                                const ASTERDOUBLE &time_step,
-                                                const VectorString &groupOfCells ) const {
+DiscreteComputation::getTangentStiffnessMatrix(
+    const FieldOnNodesRealPtr displ, const FieldOnNodesRealPtr displ_step,
+    const FieldOnCellsRealPtr stress, const FieldOnCellsRealPtr internVar,
+    const ASTERDOUBLE &time_prev, const ASTERDOUBLE &time_step,
+    const FieldOnCellsRealPtr &externVarPrev, const FieldOnCellsRealPtr &externVarCurr,
+    const VectorString &groupOfCells ) const {
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
-
-    FieldOnCellsRealPtr _externVarFieldPrev;
-    FieldOnCellsRealPtr _externVarFieldCurr;
 
     // Get main parameters
     auto currModel = _phys_problem->getModel();
@@ -700,9 +696,8 @@ DiscreteComputation::getTangentStiffnessMatrix( const FieldOnNodesRealPtr displ,
     std::string option = "FULL_MECA";
 
     // Prepare computing:
-    CalculPtr calcul =
-        createCalculForNonLinear( option, time_prev, time_prev + time_step, _externVarFieldPrev,
-                                  _externVarFieldCurr, groupOfCells );
+    CalculPtr calcul = createCalculForNonLinear( option, time_prev, time_prev + time_step,
+                                                 externVarPrev, externVarCurr, groupOfCells );
     FiniteElementDescriptorPtr FEDesc = calcul->getFiniteElementDescriptor();
 
     // Set current physical state
@@ -714,7 +709,7 @@ DiscreteComputation::getTangentStiffnessMatrix( const FieldOnNodesRealPtr displ,
     // Provisoire: pour TANGENTE=VERIFICATION, nécessité de variables internes à chaque itération
     FieldOnCellsRealPtr vari_iter =
         std::make_shared< FieldOnCellsReal >( FEDesc, currBehaviour, "ELGA_VARI_R", currElemChara );
-    calcul->addInputField( "PVARIMP", vari_iter );
+    calcul->addInputField( "PVARIMP", internVar );
 
     // Create output matrix
     auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >(
@@ -772,17 +767,13 @@ DiscreteComputation::getTangentStiffnessMatrix( const FieldOnNodesRealPtr displ,
 
 /** @brief Compute tangent prediction matrix (not assembled) */
 std::tuple< FieldOnCellsLongPtr, ASTERINTEGER, ElementaryMatrixDisplacementRealPtr >
-DiscreteComputation::getPredictionTangentStiffnessMatrix( const FieldOnNodesRealPtr displ,
-                                                          const FieldOnNodesRealPtr displ_step,
-                                                          const FieldOnCellsRealPtr stress,
-                                                          const FieldOnCellsRealPtr internVar,
-                                                          const ASTERDOUBLE &time_prev,
-                                                          const ASTERDOUBLE &time_step,
-                                                          const VectorString &groupOfCells ) const {
+DiscreteComputation::getPredictionTangentStiffnessMatrix(
+    const FieldOnNodesRealPtr displ, const FieldOnNodesRealPtr displ_step,
+    const FieldOnCellsRealPtr stress, const FieldOnCellsRealPtr internVar,
+    const ASTERDOUBLE &time_prev, const ASTERDOUBLE &time_step,
+    const FieldOnCellsRealPtr &externVarPrev, const FieldOnCellsRealPtr &externVarCurr,
+    const VectorString &groupOfCells ) const {
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
-
-    FieldOnCellsRealPtr _externVarFieldPrev;
-    FieldOnCellsRealPtr _externVarFieldCurr;
 
     // Get main parameters
     auto currModel = _phys_problem->getModel();
@@ -793,9 +784,8 @@ DiscreteComputation::getPredictionTangentStiffnessMatrix( const FieldOnNodesReal
     std::string option = "RIGI_MECA_TANG";
 
     // Prepare computing:
-    CalculPtr calcul =
-        createCalculForNonLinear( option, time_prev, time_prev + time_step, _externVarFieldPrev,
-                                  _externVarFieldCurr, groupOfCells );
+    CalculPtr calcul = createCalculForNonLinear( option, time_prev, time_prev + time_step,
+                                                 externVarPrev, externVarCurr, groupOfCells );
     FiniteElementDescriptorPtr FEDesc = calcul->getFiniteElementDescriptor();
 
     // Set current physical state

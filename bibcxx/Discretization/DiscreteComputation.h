@@ -326,6 +326,8 @@ class DiscreteComputation {
     getInternalForces( const FieldOnNodesRealPtr displ, const FieldOnNodesRealPtr displ_step,
                        const FieldOnCellsRealPtr stress, const FieldOnCellsRealPtr internVar,
                        const ASTERDOUBLE &time_prev, const ASTERDOUBLE &time_step,
+                       const FieldOnCellsRealPtr &externVarPrev = nullptr,
+                       const FieldOnCellsRealPtr &externVarCurr = nullptr,
                        const VectorString &groupOfCells = VectorString() ) const;
 
     /**
@@ -341,6 +343,8 @@ class DiscreteComputation {
                                const FieldOnCellsRealPtr stress,
                                const FieldOnCellsRealPtr internVar, const ASTERDOUBLE &time_prev,
                                const ASTERDOUBLE &time_step,
+                               const FieldOnCellsRealPtr &externVarPrev = nullptr,
+                               const FieldOnCellsRealPtr &externVarCurr = nullptr,
                                const VectorString &groupOfCells = VectorString() ) const;
 
     /**
@@ -356,6 +360,8 @@ class DiscreteComputation {
                                          const FieldOnCellsRealPtr stress,
                                          const FieldOnCellsRealPtr internVar,
                                          const ASTERDOUBLE &time_prev, const ASTERDOUBLE &time_step,
+                                         const FieldOnCellsRealPtr &externVarPrev = nullptr,
+                                         const FieldOnCellsRealPtr &externVarCurr = nullptr,
                                          const VectorString &groupOfCells = VectorString() ) const;
 
     /**
