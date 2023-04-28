@@ -86,6 +86,7 @@ subroutine romAlgoNLSystemSolve(matr_asse, vect_2mbr, vect_cine, &
     real(kind=8), pointer :: v_mode(:) => null()
     real(kind=8), pointer :: v_vect_cine(:) => null()
     real(kind=8), pointer :: v_vect_solu(:) => null()
+    character(len=24), pointer :: refa(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -121,10 +122,12 @@ subroutine romAlgoNLSystemSolve(matr_asse, vect_2mbr, vect_cine, &
     call jeveuo(vect_2mbr(1:19)//'.VALE', 'E', vr=v_vect_2mbr)
     call jelira(vect_2mbr(1:19)//'.VALE', 'LONMAX', nbEqua_2mbr)
     ASSERT(nbEqua .eq. nbEqua_2mbr)
-!
+
 ! - Access to matrix
-!
-    call mtmchc(matr_asse, 'ELIMF')
+    call jeveuo(matr_asse(1:19)//'.REFA', 'L', vk24=refa)
+    if (refa(3) .eq. 'ELIML') then
+        call mtmchc(matr_asse, 'ELIMF')
+    end if
     call jeveuo(matr_asse(1:19)//'.&INT', 'L', jv_matr)
     call dismoi('NB_EQUA', matr_asse, 'MATR_ASSE', repi=nbEqua_matr)
     ASSERT(nbEqua .eq. zi(jv_matr+2))

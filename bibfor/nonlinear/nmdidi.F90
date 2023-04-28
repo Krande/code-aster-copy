@@ -15,7 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+! person_in_charge: mickael.abbas at edf.fr
+!
 subroutine nmdidi(ds_inout, model, list_load, nume_dof, valinc, &
                   veelem, veasse)
 !
@@ -25,11 +26,12 @@ subroutine nmdidi(ds_inout, model, list_load, nume_dof, valinc, &
 !
 #include "asterfort/rsexch.h"
 #include "asterfort/vecdid.h"
+#include "asterfort/vtcopy.h"
+#include "asterfort/vtcreb.h"
 #include "asterfort/assvec.h"
 #include "asterfort/nmchex.h"
+#include "asterfort/detrsd.h"
 #include "asterfort/utmess.h"
-!
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=24), intent(in) :: model
@@ -57,8 +59,8 @@ subroutine nmdidi(ds_inout, model, list_load, nume_dof, valinc, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret, didi_nume
-    character(len=19) :: disp_didi, disp_prev, vect_elem, vect_asse
+    integer :: iret, didi_nume, codret
+    character(len=19) :: disp_didi, disp_prev, vect_elem, vect_asse, fieldFromResult
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -71,10 +73,14 @@ subroutine nmdidi(ds_inout, model, list_load, nume_dof, valinc, &
 !
     didi_nume = ds_inout%didi_nume
     if ((didi_nume .ge. 0) .and. (ds_inout%l_stin_evol)) then
-        call rsexch(' ', ds_inout%stin_evol, 'DEPL', didi_nume, disp_didi, iret)
+        call rsexch(' ', ds_inout%stin_evol, 'DEPL', didi_nume, fieldFromResult, iret)
         if (iret .ne. 0) then
             call utmess('F', 'MECANONLINE5_20', sk=ds_inout%stin_evol)
         end if
+        disp_didi = "&&NMDIDI.VECR"
+        call detrsd('CHAM_NO', disp_didi)
+        call vtcreb(disp_didi, 'V', 'R', nume_ddlz=nume_dof)
+        call vtcopy(fieldFromResult, disp_didi, 'F', codret)
     end if
 !
 ! - Compute elementary vectors
@@ -84,5 +90,6 @@ subroutine nmdidi(ds_inout, model, list_load, nume_dof, valinc, &
 ! - Assembly
 !
     call assvec('V', vect_asse, 1, vect_elem, [1.d0], nume_dof)
+
 !
 end subroutine
