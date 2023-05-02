@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -104,23 +104,8 @@
 
 
 #define _YACS_NOEUD 89
-#define _YACS_CHAM 90
-#define _YACS_CMP 91
-#define _YACS_DIR 92
-#define _YACS_ID 93
 #define _YACS_IDDL 94
-#define _YACS_N_DEPL 95
-#define _YACS_N_VIT 96
-#define _YACS_N_FORCE 97
-#define _YACS_VEC_DEPL 98
-#define _YACS_VEC_VIT 99
-#define _YACS_VEC_FORCE 100
-#define _YACS_INITIALIZED 101
-#define _YACS_PORT_NAME 102
 #define _NUM_PALIER 103
-
-
-
 
 
 #define _NL_NB_TYPES     10
