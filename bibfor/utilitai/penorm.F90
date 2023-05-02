@@ -86,12 +86,12 @@ subroutine penorm(resu, modele)
     complex(kind=8) :: c16b
     aster_logical :: exiord, filtr, l_pmesh
     character(len=4) :: tych, ki, exirdm
-    character(len=8) :: mailla, k8b, resuco, chamg, typmcl(1), tout
+    character(len=8) :: mailla, k8b, resuco, typmcl(1), tout
     character(len=8) :: tmpres, nomgd, crit
     character(len=8) :: nopar, infoma
     character(len=16) :: tynorm
     character(len=19) :: knum, kins, lisins, cham2, chamtm, celmod, ligrel
-    character(len=19) :: liscoe, field_resu
+    character(len=19) :: liscoe, field_resu, chamg
     character(len=19) :: tmpcha, cham1, chgaus, chgeom, chcalc
     character(len=16) :: optio2, nomcha, valk, mocles(1)
     character(len=24) :: mesmai, mesmaf, valr, vali

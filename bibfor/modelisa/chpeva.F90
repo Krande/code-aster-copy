@@ -46,9 +46,9 @@ subroutine chpeva(chou)
 #include "asterfort/as_allocate.h"
     integer :: n1, ib, npara, k, nncp, ibid
     character(len=4) :: typ1, typ2, knum
-    character(len=8) :: chin, chou, nomgd
-    character(len=19) :: ligrel, chs1, chs2, chins
-    character(len=8), pointer :: lpara1(:) => null()
+    character(len=8) :: chou, nomgd
+    character(len=19) :: ligrel, chs1, chs2, chins, chin
+    character(len=24), pointer :: lpara1(:) => null()
     character(len=24), pointer :: lpara2(:) => null()
 !     -----------------------------------------------------------------
 !
@@ -74,7 +74,7 @@ subroutine chpeva(chou)
 !
     call getvid(' ', 'CHAM_PARA', nbval=0, nbret=n1)
     npara = -n1
-    AS_ALLOCATE(vk8=lpara1, size=npara)
+    AS_ALLOCATE(vk24=lpara1, size=npara)
     call getvid(' ', 'CHAM_PARA', nbval=npara, vect=lpara1, nbret=n1)
 !
 !
@@ -131,7 +131,7 @@ subroutine chpeva(chou)
 !
 ! 7. MENAGE :
 ! -----------------------------------------------------
-    AS_DEALLOCATE(vk8=lpara1)
+    AS_DEALLOCATE(vk24=lpara1)
     do k = 1, npara
         if (typ1 .eq. 'NOEU') then
             call detrsd('CHAM_NO_S', lpara2(k))

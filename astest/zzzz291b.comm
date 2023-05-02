@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -57,17 +57,11 @@ RESU = CALC_CHAMP(reuse=RESU, RESULTAT=RESU, THERMIQUE=("FLUX_ELGA", "FLUX_ELNO"
 
 # Extraction des champs (TEMP, FLUX)
 
-TEMP0 = CREA_CHAMP(
-    OPERATION="EXTR", TYPE_CHAM="NOEU_TEMP_R", NOM_CHAM="TEMP", NUME_ORDRE=1, RESULTAT=RESU
-)
+TEMP0 = RESU.getField("TEMP", 1).duplicate()
 
-FLUX0 = CREA_CHAMP(
-    OPERATION="EXTR", TYPE_CHAM="ELGA_FLUX_R", NOM_CHAM="FLUX_ELGA", NUME_ORDRE=1, RESULTAT=RESU
-)
+FLUX0 = RESU.getField("FLUX_ELGA", 1).duplicate()
 
-FLUX1 = CREA_CHAMP(
-    OPERATION="EXTR", TYPE_CHAM="ELNO_FLUX_R", NOM_CHAM="FLUX_ELNO", NUME_ORDRE=1, RESULTAT=RESU
-)
+FLUX1 = RESU.getField("FLUX_ELNO", 1).duplicate()
 
 
 # Formule
