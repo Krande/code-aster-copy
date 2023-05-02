@@ -522,7 +522,7 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel, &
         if (typech(1:4) .eq. 'ELGA') then
             call lrmpga(nrofic, ligrel, nochmd, nbma, npgma, &
                         npgmm, nspmm, ntypel, npgmax, indpg, &
-                        numpt, numord, option, param)
+                        numpt, numord, option, param, nomaas)
             call cescre('V', chames, typech, nomaas, nomgd, &
                         ncmprf, zk8(jnocmp), npgma, nspmm, [-ncmprf])
         else if (typech(1:4) .eq. 'CART') then

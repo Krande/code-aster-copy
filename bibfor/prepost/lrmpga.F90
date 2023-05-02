@@ -18,7 +18,7 @@
 
 subroutine lrmpga(fileUnit, ligrel, MEDFieldName, nbCell, pgmail, &
                   pgmmil, spmmil, ntypel, npgmax, indpg, &
-                  numpt, numord, option, param)
+                  numpt, numord, option, param, nomaas)
 !
 ! person_in_charge: nicolas.sellenet at edf.fr
 !     LECTURE FICHIER MED - LOCALISATION POINTS DE GAUSS
@@ -62,6 +62,7 @@ subroutine lrmpga(fileUnit, ligrel, MEDFieldName, nbCell, pgmail, &
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infniv.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -87,6 +88,7 @@ subroutine lrmpga(fileUnit, ligrel, MEDFieldName, nbCell, pgmail, &
     character(len=19) :: ligrel
     character(len=24) :: option
     character(len=*) :: MEDFieldName
+    character(len=8) :: nomaas
 !
     character(len=6) :: nompro
     parameter(nompro='LRMPGA')
@@ -127,6 +129,7 @@ subroutine lrmpga(fileUnit, ligrel, MEDFieldName, nbCell, pgmail, &
     integer, pointer :: MEDCellType(:) => null()
     !character(len=8), pointer :: asterElemType(:) => null()
     integer, pointer :: tmfpg(:) => null()
+    aster_logical :: l_parallel_mesh
 !
     integer, parameter :: MED_GEOMETRY_TYPE(nbCellType) = &
                           (/1, 102, 103, 104, &
@@ -150,6 +153,7 @@ subroutine lrmpga(fileUnit, ligrel, MEDFieldName, nbCell, pgmail, &
     if (nivinf .gt. 1) then
         write (ifm, 101) 'DEBUT DE '//nompro
     end if
+    l_parallel_mesh = isParallelMesh(nomaas)
 
     call dismoi('DIM_GEOM', ligrel(1:8), 'MODELE', repi=modelDime)
     if (.not. (modelDime .eq. 2 .or. modelDime .eq. 3)) then
@@ -360,9 +364,11 @@ subroutine lrmpga(fileUnit, ligrel, MEDFieldName, nbCell, pgmail, &
                         MEDNbPg = zi(jnonpg+iProfile-1)
 
                         ! on ne compare que le meme profile du meme type element
-                        if ((fapg(1:l_fapg) .ne. localizationName(9:8+l_fapg)) .and. &
-                            (localizationName .ne. ' ')) then
-                            if (localizationName(1:17) .ne. "NOM_LOC_GAUSS_001") goto 999
+                        if (.not. l_parallel_mesh) then
+                            if ((fapg(1:l_fapg) .ne. localizationName(9:8+l_fapg)) .and. &
+                                (localizationName .ne. ' ')) then
+                                if (localizationName(1:17) .ne. "NOM_LOC_GAUSS_001") goto 999
+                            end if
                         end if
 
 ! --------------------- Check consistency of integration points between Aster and MED

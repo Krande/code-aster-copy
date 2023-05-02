@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 interface
     subroutine lrmpga(fileUnit, ligrel, MEDFieldName, nbCell, pgmail,&
                       pgmmil, spmmil, ntypel, npgmax, indpg,&
-                      numpt, numord, option, param)
+                      numpt, numord, option, param, nomaas)
         integer :: npgmax
         integer :: ntypel
         integer :: nbCell
@@ -34,5 +34,6 @@ interface
         integer :: numord
         character(len=24) :: option
         character(len=8) :: param
+        character(len=8) :: nomaas
     end subroutine lrmpga
 end interface
