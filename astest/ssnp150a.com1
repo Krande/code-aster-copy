@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -76,7 +76,7 @@ BlocBase = AFFE_CHAR_CINE(MODELE=Modele, MECA_IMPO=_F(GROUP_MA="MAITRE", DX=0, D
 Evol = STAT_NON_LINE(
     MODELE=Modele,
     CHAM_MATER=Chmat,
-    COMPORTEMENT=_F(RELATION="ELAS", DEFORMATION="GROT_GDEP", TOUT="OUI"),
+    COMPORTEMENT=_F(RELATION="ELAS", DEFORMATION="GREEN_LAGRANGE", TOUT="OUI"),
     INCREMENT=_F(LIST_INST=LINST),
     NEWTON=_F(REAC_ITER=1),
     CONVERGENCE=_F(ITER_GLOB_MAXI=100),

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -62,7 +62,7 @@ V = STAT_NON_LINE(
     MODELE=MO,
     CHAM_MATER=CHP_MATE,
     EXCIT=(_F(CHARGE=CHR_ROTA, FONC_MULT=F_ROTA), _F(CHARGE=CHR_FORC, FONC_MULT=F_CHAR)),
-    COMPORTEMENT=_F(RELATION="ELAS", DEFORMATION="GROT_GDEP"),
+    COMPORTEMENT=_F(RELATION="ELAS", DEFORMATION="GREEN_LAGRANGE"),
     INCREMENT=_F(LIST_INST=L_INST),
     NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
     CONVERGENCE=_F(RESI_GLOB_MAXI=1.0e-3, ITER_GLOB_MAXI=50),
