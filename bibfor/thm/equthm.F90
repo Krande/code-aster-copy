@@ -182,7 +182,7 @@ subroutine equthm(ds_thm, option, j_mater, &
         call thmComputeResidual(ds_thm, parm_theta, gravity, &
                                 ndim, &
                                 dimdef, dimcon, &
-                                mecani, press1, press2, tempe, &
+                                mecani, press1, press2, tempe, second, &
                                 congem, congep, &
                                 time_incr, &
                                 r)
@@ -194,7 +194,7 @@ subroutine equthm(ds_thm, option, j_mater, &
         call thmComputeMatrix(ds_thm, parm_theta, gravity, &
                               ndim, &
                               dimdef, dimcon, &
-                              mecani, press1, press2, tempe, &
+                              mecani, press1, press2, tempe, second, &
                               congem, congep, &
                               time_incr, &
                               drds)

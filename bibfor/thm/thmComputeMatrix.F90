@@ -20,7 +20,7 @@
 subroutine thmComputeMatrix(ds_thm, parm_theta, gravity, &
                             ndim, &
                             dimdef, dimcon, &
-                            mecani, press1, press2, tempe, &
+                            mecani, press1, press2, tempe, second, &
                             congem, congep, &
                             time_incr, &
                             drds)
@@ -35,7 +35,7 @@ subroutine thmComputeMatrix(ds_thm, parm_theta, gravity, &
     real(kind=8), intent(in)  :: parm_theta, gravity(3)
     integer, intent(in) :: ndim
     integer, intent(in) :: dimdef, dimcon
-    integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5)
+    integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5), second(5)
     real(kind=8), intent(in) :: congem(dimcon), congep(dimcon)
     real(kind=8), intent(in) :: time_incr
     real(kind=8), intent(out) :: drds(dimdef+1, dimcon)
@@ -67,8 +67,8 @@ subroutine thmComputeMatrix(ds_thm, parm_theta, gravity, &
 !
     integer :: i
     integer :: nbpha1, nbpha2
-    integer :: addeme, addete, addep1, addep2
-    integer :: adcome, adcote, adcp11, adcp12, adcp21, adcp22
+    integer :: addeme, addete, addep1, addep2, adde2nd
+    integer :: adcome, adcote, adcp11, adcp12, adcp21, adcp22, adco2nd
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -80,6 +80,7 @@ subroutine thmComputeMatrix(ds_thm, parm_theta, gravity, &
     addete = tempe(2)
     addep1 = press1(3)
     addep2 = press2(3)
+    adde2nd = second(2)
 !
 ! - Address in generalized stresses vector
 !
@@ -89,6 +90,7 @@ subroutine thmComputeMatrix(ds_thm, parm_theta, gravity, &
     adcp12 = press1(5)
     adcp21 = press2(4)
     adcp22 = press2(5)
+    adco2nd = second(3)
 !
 ! - Number of phases
 !
@@ -240,4 +242,11 @@ subroutine thmComputeMatrix(ds_thm, parm_theta, gravity, &
         end if
     end if
 !
+! - Second gradient DOF
+!
+    if (ds_thm%ds_elem%l_dof_2nd) then
+        do i = 1, ndim+3
+            drds(adde2nd-1+i, adco2nd-1+i) = drds(adde2nd-1+i, adco2nd-1+i)+1.0d0
+        end do
+    end if
 end subroutine

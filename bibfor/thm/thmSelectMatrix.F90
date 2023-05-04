@@ -18,7 +18,7 @@
 !
 subroutine thmSelectMatrix(ds_thm, &
                            ndim, dimdef, inte_type, &
-                           addeme, addete, addep1, addep2, &
+                           addeme, addete, addep1, addep2, adde2nd, &
                            a, as, &
                            c, cs)
 !
@@ -31,7 +31,7 @@ subroutine thmSelectMatrix(ds_thm, &
     type(THM_DS), intent(in) :: ds_thm
     integer, intent(in) :: ndim, dimdef
     character(len=3), intent(in) :: inte_type
-    integer, intent(in) :: addeme, addete, addep1, addep2
+    integer, intent(in) :: addeme, addete, addep1, addep2, adde2nd
     real(kind=8), intent(out) :: a(2), as(2)
     real(kind=8), intent(out) :: c(21), cs(21)
 !
@@ -51,6 +51,7 @@ subroutine thmSelectMatrix(ds_thm, &
 ! In  addete           : adress of thermic components in generalized strains vector
 ! In  addep1           : adress of capillary pressure in generalized strains vector
 ! In  addep2           : adress of gaz pressure in generalized strains vector
+! In  adde2nd          : adress of second gradient in generalized strains vector
 ! Out a                :
 ! Out as               :
 ! Out c                :
@@ -99,6 +100,11 @@ subroutine thmSelectMatrix(ds_thm, &
             as(1) = 0.d0
             do i = 1, ndim
                 cs(addete-1+1+i) = 0.d0
+            end do
+        end if
+        if (ds_thm%ds_elem%l_dof_2nd) then
+            do i = 1, ndim+3
+                cs(adde2nd-1+i) = 0.d0
             end do
         end if
     end if

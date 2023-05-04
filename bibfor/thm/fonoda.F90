@@ -66,8 +66,8 @@ subroutine fonoda(ds_thm, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nbpha1, nbpha2
-    integer :: addeme, addete, addep1, addep2
-    integer :: adcome, adcote, adcp11, adcp12, adcp21, adcp22
+    integer :: addeme, addete, addep1, addep2, adde2nd
+    integer :: adcome, adcote, adcp11, adcp12, adcp21, adcp22, adco2nd
     integer :: i_dim
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
     real(kind=8) :: gravity(3)
@@ -98,6 +98,8 @@ subroutine fonoda(ds_thm, &
     addep2 = press2(3)
     adcp21 = press2(4)
     adcp22 = press2(5)
+    adde2nd = second(2)
+    adco2nd = second(3)
 
 !
 ! - Transforms stress with sqrt(2)
@@ -213,6 +215,12 @@ subroutine fonoda(ds_thm, &
                 r(addete+i_dim) = r(addete+i_dim)+dt*congem(adcote+i_dim)
             end do
         end if
+    end if
+! - Second gradient terms
+    if (ds_thm%ds_elem%l_dof_2nd) then
+        do i_dim = 1, ndim+3
+            r(adde2nd-1+i_dim) = r(adde2nd-1+i_dim)+congem(adco2nd-1+i_dim)
+        end do
     end if
 !
 end subroutine

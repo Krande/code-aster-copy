@@ -106,6 +106,7 @@ subroutine thmCompEpsiElga(ds_thm)
     addete = tempe(2)
     addep1 = press1(3)
     addep2 = press2(3)
+    adde2nd = second(2)
 !
 ! - Get dimensions about element
 !

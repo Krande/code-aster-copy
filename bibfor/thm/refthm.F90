@@ -109,7 +109,7 @@ subroutine refthm(ds_thm, &
     integer, parameter :: partmp = 27*6
     integer, parameter :: parbsi = 27*6
     real(kind=8) :: sigtm(parsig), ftemp(partmp), bsigm(parbsi)
-    real(kind=8) :: vale_refe, list_vale_refe(4)
+    real(kind=8) :: vale_refe, list_vale_refe(6)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -142,6 +142,14 @@ subroutine refthm(ds_thm, &
         indx_vale_refe = 4
         list_vale_refe(indx_vale_refe) = vale_refe
     end if
+    if (ds_thm%ds_elem%l_dof_2nd) then
+        call terefe('LAGR_REFE', 'THM', vale_refe)
+        indx_vale_refe = 5
+        list_vale_refe(indx_vale_refe) = vale_refe
+        call terefe('EPSI_REFE', 'THM', vale_refe)
+        indx_vale_refe = 6
+        list_vale_refe(indx_vale_refe) = vale_refe
+    end if
 !
 ! - Compute
 !
@@ -168,6 +176,16 @@ subroutine refthm(ds_thm, &
                 end if
             else if (i_dim .le. (mecani(5)+tempe(5))) then
                 indx_vale_refe = 4
+            else if (i_dim .ge. second(3)) then
+                if (i_dim .eq. second(3)) then
+                    indx_vale_refe = 5
+                else if (i_dim .eq. (second(3)+1)) then
+                    indx_vale_refe = 5
+                else if ((i_dim .ge. (second(3)+2)) .and. (i_dim .le. (second(3)+1+ndim))) then
+                    indx_vale_refe = 1
+                else if (i_dim .eq. (second(3)+second(5)-1)) then
+                    indx_vale_refe = 6
+                end if
             end if
 ! --------- Get *_REFE value
             vale_refe = list_vale_refe(indx_vale_refe)

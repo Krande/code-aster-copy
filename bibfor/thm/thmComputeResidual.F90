@@ -20,7 +20,7 @@
 subroutine thmComputeResidual(ds_thm, parm_theta, gravity, &
                               ndim, &
                               dimdef, dimcon, &
-                              mecani, press1, press2, tempe, &
+                              mecani, press1, press2, tempe, second, &
                               congem, congep, &
                               time_incr, &
                               r)
@@ -35,7 +35,7 @@ subroutine thmComputeResidual(ds_thm, parm_theta, gravity, &
     real(kind=8), intent(in)  :: parm_theta, gravity(3)
     integer, intent(in) :: ndim
     integer, intent(in) :: dimdef, dimcon
-    integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5)
+    integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5), second(5)
     real(kind=8), intent(in) :: congem(dimcon), congep(dimcon)
     real(kind=8), intent(in) :: time_incr
     real(kind=8), intent(out) :: r(dimdef+1)
@@ -58,6 +58,7 @@ subroutine thmComputeResidual(ds_thm, parm_theta, gravity, &
 ! In  press1           : parameters for hydraulic (capillary pressure)
 ! In  press2           : parameters for hydraulic (gaz pressure)
 ! In  tempe            : parameters for thermic
+! In  second           : parameters for second gradient
 ! In  congem           : generalized stresses - At begin of current step
 ! In  congep           : generalized stresses - At end of current step
 ! In  time_incr        : time increment
@@ -67,8 +68,8 @@ subroutine thmComputeResidual(ds_thm, parm_theta, gravity, &
 !
     integer :: i
     integer :: nbpha1, nbpha2
-    integer :: addeme, addete, addep1, addep2
-    integer :: adcome, adcote, adcp11, adcp12, adcp21, adcp22
+    integer :: addeme, addete, addep1, addep2, adde2nd
+    integer :: adcome, adcote, adcp11, adcp12, adcp21, adcp22, adco2nd
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -80,6 +81,8 @@ subroutine thmComputeResidual(ds_thm, parm_theta, gravity, &
     addete = tempe(2)
     addep1 = press1(3)
     addep2 = press2(3)
+    adde2nd = second(2)
+
 !
 ! - Address in generalized stresses vector
 !
@@ -89,6 +92,8 @@ subroutine thmComputeResidual(ds_thm, parm_theta, gravity, &
     adcp12 = press1(5)
     adcp21 = press2(4)
     adcp22 = press2(5)
+    adco2nd = second(3)
+
 !
 ! - Number of phases
 !
@@ -250,5 +255,15 @@ subroutine thmComputeResidual(ds_thm, parm_theta, gravity, &
                                      (1.d0-parm_theta)*congem(adcote+i))
         end do
     end if
+
+!
+! - Second gradient DOFs (PRES and GONF)
+!
+    if (ds_thm%ds_elem%l_dof_2nd) then
+        do i = 1, ndim+3
+            r(adde2nd-1+i) = r(adde2nd-1+i)+congep(adco2nd-1+i)
+        end do
+    end if
+
 !
 end subroutine

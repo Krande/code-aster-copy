@@ -40,6 +40,7 @@ subroutine comthm(ds_thm, &
     implicit none
 !
 #include "asterf_types.h"
+#include "asterfort/calc2nd.h"
 #include "asterfort/calcco.h"
 #include "asterfort/calcfh.h"
 #include "asterfort/calcft.h"
@@ -102,7 +103,7 @@ subroutine comthm(ds_thm, &
 ! In  adcp12           : adress of first component and second phase in generalized stresses vector
 ! In  adcp21           : adress of second component and first phase in generalized stresses vector
 ! In  adcp22           : adress of second component and second phase in generalized stresses vector
-! In  adcp22           : adress of second gradient in generalized stresses vector
+! In  adco2nd          : adress of second gradient in generalized stresses vector
 ! In  addeme           : adress of mechanic components in generalized strains vector
 ! In  addete           : adress of thermic components in generalized strains vector
 ! In  addep1           : adress of capillary pressure in generalized strains vector
@@ -235,7 +236,6 @@ subroutine comthm(ds_thm, &
 !
 ! - Get permeability tensor
 !
-
     call thmGetPermeabilityTensor(ds_thm, ndim, angl_naut, j_mater, phi, vintp(1), &
                                   tperm)
 !
@@ -277,6 +277,18 @@ subroutine comthm(ds_thm, &
                     lambs, dlambs, lambp, dlambp, &
                     tlambt, tlamct, tdlamt, &
                     congep, dsde)
+    end if
+!
+! - Compute second gradient
+!
+    if (ds_thm%ds_elem%l_dof_2nd) then
+        call calc2nd(ds_thm, j_mater, &
+                     lMatr, lSigm, &
+                     ndim, dimdef, dimcon, &
+                     adde2nd, adco2nd, &
+                     defgem, defgep, &
+                     congem, congep, &
+                     dsde)
     end if
 !
 99  continue

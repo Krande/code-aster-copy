@@ -18,21 +18,22 @@
 #include "asterf_types.h"
 !
 interface 
-    subroutine thmComputeMatrix(ds_thm    , parm_theta, gravity,&
-                                ndim      ,&
-                                dimdef    , dimcon ,&
-                                mecani    , press1 , press2, tempe, second, &
-                                congem    , congep ,&
-                                time_incr ,&
-                                drds      )
+    subroutine calc2nd( ds_thm, j_mater, &
+                        lMatr, lSigm, &
+                        ndim, dimdef, dimcon, &
+                        adde2nd, adco2nd, &
+                        defgem, defgep, &
+                        congem, congep, &
+                        dsde)
         use THM_type
-        type(THM_DS), intent(in) :: ds_thm
-        real(kind=8), intent(in)  :: parm_theta, gravity(3)
-        integer, intent(in) :: ndim
-        integer, intent(in) :: dimdef, dimcon
-        integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5), second(5)
-        real(kind=8), intent(in) :: congem(dimcon), congep(dimcon)
-        real(kind=8), intent(in) :: time_incr
-        real(kind=8), intent(out) :: drds(dimdef+1, dimcon)
-    end subroutine thmComputeMatrix
-end interface
+        type(THM_DS), intent(inout) :: ds_thm
+        aster_logical, intent(in) :: lMatr, lSigm
+        integer, intent(in) :: j_mater, ndim, dimdef, dimcon
+        integer, intent(in) :: adde2nd, adco2nd
+        real(kind=8), intent(in) :: defgem(dimdef)
+        real(kind=8), intent(in) :: defgep(dimdef)
+        real(kind=8), intent(in) :: congem(dimcon)
+        real(kind=8), intent(inout) :: congep(dimcon)
+        real(kind=8), intent(inout) :: dsde(dimcon, dimdef)
+    end subroutine calc2nd
+end interface 

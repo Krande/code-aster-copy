@@ -65,18 +65,24 @@ subroutine cabthm(ds_thm, l_axi, ndim, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!                     Not MIDDLE           |    MIDDLE
-!           u v p t u v p t u v p t u v p t u v u v u v u v
-!          ------------------------------------------------
-!        u|                                |               |
-!        v|         Shape function         |               |
-!        E|              P2                |       P2      |
-!          ------------------------------------------------
-!        P|                                |               |
-!       DP|              P1                |       0       |
-!        T|                                |               |
-!       DT|                                |               |
-!          ------------------------------------------------
+!                     Not MIDDLE                   |    MIDDLE
+!           u v p t g u v p t g u v p t g u v p t g u v u v u v u v
+!          --------------------------------------------------------
+!        u|                                        |               |
+!        v|         Shape function                 |               |
+!        E|              P2                        |       P2      |
+!          --------------------------------------------------------
+!        P|                                        |               |
+!       DP|              P1                        |       0       |
+!        T|                                        |               |
+!       DT|                                        |               |
+!          --------------------------------------------------------
+!       EV|             P2                         |       P2      |
+!       G |             P1                         |       0       |
+!       DG|             P1                         |       0       |
+!       P |             P1                         |       0       |
+!          --------------------------------------------------------
+!
 !
 ! In  ds_thm           : datastructure for THM
 ! In  l_axi            : flag is axisymmetric model
@@ -114,7 +120,7 @@ subroutine cabthm(ds_thm, l_axi, ndim, &
 !
     real(kind=8), parameter :: rac = sqrt(2.d0)
     real(kind=8) :: r, rmax
-    integer :: i_dim, i_node, kk, nnom
+    integer :: i_dim, i_node, kk, nnom, nddl_pres, nddl_gonf, nddl_ther
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -122,6 +128,21 @@ subroutine cabthm(ds_thm, l_axi, ndim, &
     dfdi(:, :) = 0.d0
     dfdi2(:, :) = 0.d0
     nnom = nno-nnos
+
+! - Second gradient pres and gonf quantities
+    nddl_pres = 0
+    nddl_gonf = 0
+    if (ds_thm%ds_elem%l_dof_2nd) then
+        nddl_pres = nddl_2nd/2
+        nddl_gonf = nddl_2nd/2
+    end if
+
+! - Thermic quantities
+    nddl_ther = 0
+    if (ds_thm%ds_elem%l_dof_ther) then
+        nddl_ther = 1
+    end if
+
 !
 ! - Get derivatives of shape function
 !
@@ -165,12 +186,12 @@ subroutine cabthm(ds_thm, l_axi, ndim, &
     do i_node = 1, nnos
 ! ----- Mechanic terms
         if (ds_thm%ds_elem%l_dof_meca) then
-! --------- EPSX, EPSY, EPSZ
+! --------- UX, UY, UZ
             do i_dim = 1, ndim
                 b(addeme-1+i_dim, (i_node-1)*nddls+i_dim) = &
                     b(addeme-1+i_dim, (i_node-1)*nddls+i_dim)+zr(jv_func+i_node+(kpi-1)*nno-1)
             end do
-! --------- DEPSX, DEPSY, DEPSZ
+! --------- EPSX, EPSY, EPSZ
             do i_dim = 1, ndim
                 b(addeme+ndim-1+i_dim, (i_node-1)*nddls+i_dim) = &
                     b(addeme+ndim-1+i_dim, (i_node-1)*nddls+i_dim)+dfdi(i_node, i_dim)
@@ -203,41 +224,65 @@ subroutine cabthm(ds_thm, l_axi, ndim, &
                     b(addeme+ndim+5, (i_node-1)*nddls+3)+dfdi(i_node, 2)/rac
             end if
         end if
+! ----- Second gradient terms (PRES)
+        if (ds_thm%ds_elem%l_dof_2nd) then
+            b(adde2nd+ndim+2, (i_node-1)*nddls+nddl_meca+1) = &
+                b(adde2nd+ndim+2, (i_node-1)*nddls+nddl_meca+1)+zr(jv_func2+i_node+(kpi-1)*nnos-1)
+        end if
 ! ----- Hydraulic terms (PRESS1)
         if (ds_thm%ds_elem%l_dof_pre1) then
-            b(addep1, (i_node-1)*nddls+nddl_meca+1) = &
-                b(addep1, (i_node-1)*nddls+nddl_meca+1)+zr(jv_func2+i_node+(kpi-1)*nnos-1)
+            b(addep1, (i_node-1)*nddls+nddl_meca+nddl_pres+1) = &
+                b(addep1, (i_node-1)*nddls+nddl_meca+nddl_pres+1)+zr(jv_func2+i_node+(kpi-1)*nnos-1)
             do i_dim = 1, ndim
-                b(addep1+i_dim, (i_node-1)*nddls+nddl_meca+1) = &
-                    b(addep1+i_dim, (i_node-1)*nddls+nddl_meca+1)+dfdi2(i_node, i_dim)
+                b(addep1+i_dim, (i_node-1)*nddls+nddl_pres+nddl_meca+1) = &
+                    b(addep1+i_dim, (i_node-1)*nddls+nddl_meca+nddl_pres+1)+dfdi2(i_node, i_dim)
             end do
         end if
 ! ----- Hydraulic terms (PRESS2)
         if (ds_thm%ds_elem%l_dof_pre2) then
-            b(addep2, (i_node-1)*nddls+nddl_meca+nddl_p1+1) = &
-                b(addep2, (i_node-1)*nddls+nddl_meca+nddl_p1+1)+zr(jv_func2+i_node+(kpi-1)*nnos-1)
+            b(addep2, (i_node-1)*nddls+nddl_meca+nddl_pres+nddl_p1+1) = &
+                b(addep2, (i_node-1)*nddls+nddl_meca+nddl_pres+nddl_p1+1) &
+                +zr(jv_func2+i_node+(kpi-1)*nnos-1)
             do i_dim = 1, ndim
-                b(addep2+i_dim, (i_node-1)*nddls+nddl_meca+nddl_p1+1) = &
-                    b(addep2+i_dim, (i_node-1)*nddls+nddl_meca+nddl_p1+1)+dfdi2(i_node, i_dim)
+                b(addep2+i_dim, (i_node-1)*nddls+nddl_meca+nddl_pres+nddl_p1+1) = &
+                    b(addep2+i_dim, (i_node-1)*nddls+nddl_meca+nddl_pres+nddl_p1+1) &
+                    +dfdi2(i_node, i_dim)
             end do
         end if
 ! ----- Thermic terms
         if (ds_thm%ds_elem%l_dof_ther) then
-            b(addete, (i_node-1)*nddls+nddl_meca+nddl_p1+nddl_p2+1) = &
-                b(addete, (i_node-1)*nddls+nddl_meca+nddl_p1+nddl_p2+1)+ &
+            b(addete, (i_node-1)*nddls+nddl_meca+nddl_pres+nddl_p1+nddl_p2+1) = &
+                b(addete, (i_node-1)*nddls+nddl_meca+nddl_pres+nddl_p1+nddl_p2+1)+ &
                 zr(jv_func2+i_node+(kpi-1)*nnos-1)
             do i_dim = 1, ndim
-                b(addete+i_dim, (i_node-1)*nddls+nddl_meca+nddl_p1+nddl_p2+1) = &
-                    b(addete+i_dim, (i_node-1)*nddls+nddl_meca+nddl_p1+nddl_p2+1)+ &
+                b(addete+i_dim, (i_node-1)*nddls+nddl_meca+nddl_pres+nddl_p1+nddl_p2+1) = &
+                    b(addete+i_dim, (i_node-1)*nddls+nddl_meca+nddl_pres+nddl_p1+nddl_p2+1)+ &
+                    dfdi2(i_node, i_dim)
+            end do
+        end if
+! ----- Second gradient terms (EPV and GONF)
+        if (ds_thm%ds_elem%l_dof_2nd) then
+            do i_dim = 1, ndim
+                b(adde2nd, (i_node-1)*nddls+i_dim) = &
+                    b(adde2nd, (i_node-1)*nddls+i_dim)+dfdi(i_node, i_dim)
+            end do
+            b(adde2nd+1, (i_node-1)*nddls+nddl_meca+nddl_pres+nddl_p1+nddl_p2+nddl_ther+1) = &
+                b(adde2nd+1, (i_node-1)*nddls+nddl_meca+nddl_pres+nddl_p1+nddl_p2+nddl_ther+1)+ &
+                zr(jv_func2+i_node+(kpi-1)*nnos-1)
+            do i_dim = 1, ndim
+            b(adde2nd+1+i_dim, (i_node-1)*nddls+nddl_meca+nddl_pres+nddl_p1+nddl_p2+nddl_ther+1) = &
+             b(adde2nd+1+i_dim, (i_node-1)*nddls+nddl_meca+nddl_pres+nddl_p1+nddl_p2+nddl_ther+1)+ &
                     dfdi2(i_node, i_dim)
             end do
         end if
     end do
+
 !
-! - Compute right part of [B] operator (only P2 for mechanic)
+! - Compute right part of [B] operator (only P2 for mechanic and second gradient)
 !
-    if (ds_thm%ds_elem%l_dof_meca) then
-        do i_node = 1, nnom
+    do i_node = 1, nnom
+! ----- Mechanic terms
+        if (ds_thm%ds_elem%l_dof_meca) then
             do i_dim = 1, ndim
                 b(addeme-1+i_dim, nnos*nddls+(i_node-1)*nddlm+i_dim) = &
                     b(addeme-1+i_dim, nnos*nddls+(i_node-1)*nddlm+i_dim)+ &
@@ -276,7 +321,14 @@ subroutine cabthm(ds_thm, l_axi, ndim, &
                 b(addeme+ndim+5, nnos*nddls+(i_node-1)*nddlm+3) = &
                     b(addeme+ndim+5, nnos*nddls+(i_node-1)*nddlm+3)+dfdi(i_node+nnos, 2)/rac
             end if
-        end do
-    end if
+        end if
+! ----- Second gradient terms (EPV)
+        if (ds_thm%ds_elem%l_dof_2nd) then
+            do i_dim = 1, ndim
+                b(adde2nd, nnos*nddls+(i_node-1)*nddlm+i_dim) = &
+                    b(adde2nd, nnos*nddls+(i_node-1)*nddlm+i_dim)+dfdi(i_node+nnos, i_dim)
+            end do
+        end if
+    end do
 !
 end subroutine

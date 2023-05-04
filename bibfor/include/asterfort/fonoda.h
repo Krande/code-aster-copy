@@ -28,7 +28,8 @@ interface
         integer, intent(in) :: jv_mater
         integer, intent(in) :: ndim
         aster_logical, intent(in) :: fnoevo
-        integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5), second(5)
+        integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5)
+        integer, intent(in) :: second(5)
         integer, intent(in) :: dimdef, dimcon
         real(kind=8), intent(in) :: dt
         real(kind=8), intent(inout) :: congem(dimcon)

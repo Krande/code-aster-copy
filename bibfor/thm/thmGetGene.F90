@@ -142,8 +142,8 @@ subroutine thmGetGene(ds_thm, l_vf, ndim, &
 ! - Number of (generalized) stress/strain components - Second gradient
 !
     if (second(1) .eq. 1) then
-        second(4) = ndim+2
-        second(5) = ndim+2
+        second(4) = ndim+3
+        second(5) = ndim+3
     end if
 !
 ! - Index for adress in (generalized) vectors - Mechanic
