@@ -20,7 +20,9 @@
 import code_aster
 from code_aster import LinearSolver, NonLinearResult, PhysicalProblem
 from code_aster.Commands import *
-from code_aster.Solvers import NonLinearSolver, ProblemSolver, StepSolver, TimeStepper
+from code_aster.Solvers import NonLinearSolver, ProblemSolver
+from code_aster.Solvers import SolverOptions as SOP
+from code_aster.Solvers import StepSolver, TimeStepper
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), INFO=1)
 
@@ -85,6 +87,25 @@ class CustomStepSolver(StepSolver):
             )
 
 
+def post_hook(phys_state):
+    """Example of hook function.
+
+    Arguments:
+        phys_state (PhysicalState): Current physical state.
+    """
+    print(f"calling hook at time = {phys_state.time}...", flush=True)
+
+
+class PostHook:
+    """User object to be used as a PostStepHook."""
+
+    provide = SOP.PostStepHook
+
+    def __call__(self, phys_state):
+        """Example of hook."""
+        phys_state.debugPrint()
+
+
 snl = ProblemSolver(NonLinearSolver(), NonLinearResult())
 snl.use(PhysicalProblem(model, mater))
 snl.use(LinearSolver.factory(METHODE="MUMPS"))
@@ -98,6 +119,8 @@ snl.setKeywords(
 )
 snl.use(CustomStepSolver())
 snl.use(TimeStepper([0.5, 1.0]))
+snl.use(post_hook, provide=SOP.PostStepHook)
+snl.use(PostHook())
 snl.run()
 
 # =========================================================

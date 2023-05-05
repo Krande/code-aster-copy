@@ -61,6 +61,7 @@ class NonLinearSolver(SolverFeature):
         SOP.TimeStepper,
         SOP.Keywords,
     ]
+    optional_features = [SOP.PostStepHook]
 
     step_rank = current_matrix = None
     __setattr__ = no_new_attributes(object.__setattr__)
@@ -179,10 +180,16 @@ class NonLinearSolver(SolverFeature):
                     self.stepper.split(2)
             else:
                 self.phys_state.update(self.phys_state)
-                self.step_rank += 1
                 self._storeRank(timeEndStep)
                 self.stepper.completed()
                 self.current_matrix = solv.current_matrix
+                self.post_hooks()
+                self.step_rank += 1
+
+    def post_hooks(self):
+        """Call post hooks"""
+        for hook in self.get_features(SOP.PostStepHook):
+            hook(self.phys_state)
 
     def _get(self, keyword, parameter=None, default=None):
         """ "Return a keyword value"""

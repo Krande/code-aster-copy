@@ -57,6 +57,9 @@ class SolverOptions(IntFlag):
     # flag added "for an increment" object
     ForIncr = auto()
 
+    # hooks called after a step
+    PostStepHook = auto()
+
 
 class SolverFeature(BaseFeature):
     """Feature object for non linear operators."""

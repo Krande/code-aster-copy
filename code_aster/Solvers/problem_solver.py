@@ -53,7 +53,7 @@ class ProblemSolver(SolverFeature):
         SOP.ForStep,
         SOP.ForIncr,
     ]
-    optional_features = [SOP.Contact]
+    optional_features = [SOP.Contact, SOP.PostStepHook]
 
     _main = _result = None
     _phys_state = None
@@ -97,6 +97,7 @@ class ProblemSolver(SolverFeature):
         self._main.use(self.get_feature(SOP.TimeStepper))
         self._main.use(self._get_storage())
         self._main.use(self._get_step_solver())
+        self._main.use(self.get_features(SOP.PostStepHook), provide=SOP.PostStepHook)
         self.check_features()
 
     def run(self):

@@ -63,6 +63,9 @@ class BaseFeature(metaclass=FeatureMeta):
             obj (BaseFeature|misc): Object that to be used.
             provide (FeaturesOptions, optional): Features provided by the object.
         """
+        if type(obj) in (list, tuple):
+            assert provide, "provide is required using list of features"
+            return [self.use(obj_i, provide) for obj_i in obj]
         if not obj or obj in [reg for reg, _ in self._use]:
             return
         try:
