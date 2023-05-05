@@ -98,6 +98,7 @@ test.assertAlmostEqual(field.dot(field), norm_2 * norm_2)
 
 fr = field.restrict(["DX"])
 test.assertAlmostEqual(fr.norm("NORM_1"), nbNodes)
+test.assertAlmostEqual(fr.norm("NORM_1"), fr.toSimpleFieldOnNodes().toFieldOnNodes().norm("NORM_1"))
 
 f0 = field.duplicate()
 f = field.duplicate()

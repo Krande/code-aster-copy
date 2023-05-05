@@ -30,11 +30,16 @@
 
 #include "aster_fort_ds.h"
 
-#include "DataStructures/DataStructure.h"
+#include "DataFields/DataField.h"
+#include "DataFields/FieldOnNodes.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "MemoryManager/NumpyAccess.h"
 #include "Meshes/BaseMesh.h"
 #include "Utilities/Tools.h"
+
+// Forward declaration
+template < typename >
+class FieldOnNodes;
 
 /**
  * @class SimpleFieldOnNodes
@@ -42,7 +47,7 @@
  * @author Nicolas Sellenet
  */
 template < class ValueType >
-class SimpleFieldOnNodes : public DataStructure {
+class SimpleFieldOnNodes : public DataField {
   private:
     /** @brief Vecteur Jeveux '.CNSK' */
     JeveuxVectorChar8 _descriptor;
@@ -101,7 +106,7 @@ class SimpleFieldOnNodes : public DataStructure {
      * @param name Nom Jeveux du champ aux noeuds
      */
     SimpleFieldOnNodes( const std::string name )
-        : DataStructure( name, 19, "CHAM_NO_S" ),
+        : DataField( name, "CHAM_NO_S" ),
           _descriptor( JeveuxVectorChar8( getName() + ".CNSK" ) ),
           _size( JeveuxVectorLong( getName() + ".CNSD" ) ),
           _component( JeveuxVectorChar8( getName() + ".CNSC" ) ),

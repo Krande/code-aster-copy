@@ -30,7 +30,7 @@
 #include "PythonBindings/DataStructureInterface.h"
 
 void exportSimpleFieldOnNodesToPython( py::module_ &mod ) {
-    py::class_< SimpleFieldOnNodesReal, SimpleFieldOnNodesRealPtr, DataStructure >(
+    py::class_< SimpleFieldOnNodesReal, SimpleFieldOnNodesRealPtr, DataField >(
         mod, "SimpleFieldOnNodesReal" )
         .def( py::init( &initFactoryPtr< SimpleFieldOnNodesReal > ) )
         .def( py::init( &initFactoryPtr< SimpleFieldOnNodesReal, std::string > ) )
@@ -42,6 +42,7 @@ void exportSimpleFieldOnNodesToPython( py::module_ &mod ) {
               +[]( SimpleFieldOnNodesReal &v, const PairLong &i, ASTERDOUBLE f ) {
                   return v.operator()( i.first, i.second ) = f;
               } )
+        .def( "toFieldOnNodes", &SimpleFieldOnNodesReal::toFieldOnNodes )
         .def( "restrict", &SimpleFieldOnNodesReal::restrict,
               R"(
             Return a new field restricted to the list of components and groups of nodes given
@@ -78,7 +79,8 @@ Returns:
         .def( "getComponent", &SimpleFieldOnNodesReal::getComponent )
         .def( "getPhysicalQuantity", &SimpleFieldOnNodesReal::getPhysicalQuantity )
         .def( "updateValuePointers", &SimpleFieldOnNodesReal::updateValuePointers );
-    py::class_< SimpleFieldOnNodesComplex, SimpleFieldOnNodesComplexPtr, DataStructure >(
+
+    py::class_< SimpleFieldOnNodesComplex, SimpleFieldOnNodesComplexPtr, DataField >(
         mod, "SimpleFieldOnNodesComplex" )
         .def( py::init( &initFactoryPtr< SimpleFieldOnNodesComplex > ) )
         .def( py::init( &initFactoryPtr< SimpleFieldOnNodesComplex, std::string > ) )

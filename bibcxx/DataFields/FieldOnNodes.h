@@ -49,6 +49,10 @@
 
 #include <typeinfo>
 
+// Forward declaration
+template < typename >
+class SimpleFieldOnNodes;
+
 /**
  * @struct AllowedFieldType
  * @brief Structure template permettant de limiter le type instanciable de

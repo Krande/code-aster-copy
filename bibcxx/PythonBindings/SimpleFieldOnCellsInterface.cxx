@@ -30,7 +30,7 @@
 #include "PythonBindings/DataStructureInterface.h"
 
 void exportSimpleFieldOnCellsToPython( py::module_ &mod ) {
-    py::class_< SimpleFieldOnCellsReal, SimpleFieldOnCellsRealPtr, DataStructure >(
+    py::class_< SimpleFieldOnCellsReal, SimpleFieldOnCellsRealPtr, DataField >(
         mod, "SimpleFieldOnCellsReal" )
         .def( py::init( &initFactoryPtr< SimpleFieldOnCellsReal > ) )
         .def( py::init( &initFactoryPtr< SimpleFieldOnCellsReal, std::string > ) )

@@ -28,7 +28,7 @@
 
 #include "astercxx.h"
 
-#include "DataStructures/DataStructure.h"
+#include "DataFields/DataField.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "MemoryManager/NumpyAccess.h"
 #include "Utilities/Tools.h"
@@ -39,7 +39,7 @@
  * @author Nicolas Sellenet
  */
 template < class ValueType >
-class SimpleFieldOnCells : public DataStructure {
+class SimpleFieldOnCells : public DataField {
   private:
     /** @brief Vecteur Jeveux '.CESK' */
     JeveuxVectorChar8 _descriptor;
@@ -165,7 +165,7 @@ class SimpleFieldOnCells : public DataStructure {
      * @param name Nom Jeveux du champ aux éléments
      */
     SimpleFieldOnCells( const std::string name )
-        : DataStructure( name, 19, "CHAM_ELEM_S" ),
+        : DataField( name, "CHAM_ELEM_S" ),
           _descriptor( JeveuxVectorChar8( getName() + ".CESK" ) ),
           _size( JeveuxVectorLong( getName() + ".CESD" ) ),
           _component( JeveuxVectorChar8( getName() + ".CESC" ) ),
