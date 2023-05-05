@@ -21,45 +21,45 @@
 Objects used to build generic problems solvers.
 """
 
-from .base_features import BaseFeature, BaseFeaturesOptions
+from enum import IntFlag, auto
+from .base_features import BaseFeature
 
 
-class SolverOptions(BaseFeaturesOptions):
+class SolverOptions(IntFlag):
     """Enumeration of non linear options."""
 
+    Nothing = 0
     # main object
-    ProblemSolver = 0x1
+    ProblemSolver = auto()
     # description of the system (or study, problem)
-    PhysicalProblem = 0x2
-    PhysicalState = 0x4
+    PhysicalProblem = auto()
+    PhysicalState = auto()
     # storage of the results
-    Storage = 0x8
+    Storage = auto()
     # time steps management
-    TimeStepper = 0x10
+    TimeStepper = auto()
     # solves a step
-    StepSolver = 0x20
+    StepSolver = auto()
     # criteria that must be checked for a step
-    ConvergenceCriteria = 0x40
-    ConvergenceManager = 0x80
+    ConvergenceCriteria = auto()
+    ConvergenceManager = auto()
     # solves an increment
-    IncrementalSolver = 0x100
+    IncrementalSolver = auto()
     # linear solver
-    LinearSolver = 0x200
+    LinearSolver = auto()
     # contact object
-    Contact = 0x400
+    Contact = auto()
     # container of keywords
-    Keywords = 0x800
+    Keywords = auto()
 
     # flag added "for a step" object
-    ForStep = 0x1000
+    ForStep = auto()
     # flag added "for an increment" object
-    ForIncr = 0x2000
+    ForIncr = auto()
 
 
 class SolverFeature(BaseFeature):
     """Feature object for non linear operators."""
-
-    options = SolverOptions
 
     # convenient shortcuts properties
     @property

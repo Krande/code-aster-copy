@@ -18,24 +18,24 @@
 # --------------------------------------------------------------------
 
 import unittest
+from enum import IntFlag, auto
 
-from code_aster.Solvers.base_features import BaseFeature, BaseFeaturesOptions
-from code_aster.Solvers import TimeStepper
 from code_aster.Commands import DEFI_LIST_REEL
-
+from code_aster.Solvers import TimeStepper
+from code_aster.Solvers.base_features import BaseFeature
 
 list0 = DEFI_LIST_REEL(VALE=0.0)
 listr = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=10.0, PAS=1.0))
 
 
-class UnittestOptions(BaseFeaturesOptions):
+class UnittestOptions(IntFlag):
     """Enumeration of options for unittest."""
 
-    System = 0x001
-    Storage = 0x002
-    State = 0x004
-    Unused = 0x008
-    Contact = 0x010
+    System = auto()
+    Storage = auto()
+    State = auto()
+    Unused = auto()
+    Contact = auto()
 
 
 class SystemDefinition(BaseFeature):
@@ -60,9 +60,9 @@ class BasicTest(unittest.TestCase):
     def test01_basics(self):
         FOP = UnittestOptions
         opt = FOP.Storage
-        assert FOP.name(opt) == "Storage"
+        assert str(opt) == "UnittestOptions.Storage"
         opt |= FOP.System
-        assert FOP.name(opt) == "System|Storage", FOP.name(opt)
+        assert str(opt) == "UnittestOptions.Storage|System", str(opt)
 
         syst = SystemDefinition()
         stor = Storage()
@@ -79,7 +79,7 @@ class BasicTest(unittest.TestCase):
         op.use(syst)
         op.use(stor)
         op.use(syssto, FOP.Storage)
-        with self.assertRaises(TypeError):
+        with self.assertRaisesRegex(TypeError, "not support.*UnittestOptions.Unused"):
             op.use(anonym, FOP.Unused)
         op.use(anonym, FOP.State)
         self.assertEqual(len(op._use), 4)
@@ -105,7 +105,7 @@ class BasicTest(unittest.TestCase):
 
         op = TestFeature()
         op.use(object(), FOP.System)
-        with self.assertRaises(TypeError):
+        with self.assertRaisesRegex(TypeError, "not support.*UnittestOptions.Unused"):
             op.use(object(), FOP.Unused)
         self.assertSequenceEqual(op.undefined(), [(FOP.Storage, True), (FOP.Contact, False)])
 
@@ -211,7 +211,7 @@ class TestTimeStepper(unittest.TestCase):
         stp.completed()
         self.assertEqual(stp.remaining(), 0)
         self.assertTrue(stp.hasFinished())
-        with self.assertRaises(IndexError):
+        with self.assertRaisesRegex(IndexError, "no more timesteps"):
             stp.completed()
 
         eps = 1.0e-3
@@ -311,9 +311,9 @@ class TestTimeStepper(unittest.TestCase):
         self.assertSequenceEqual(stp._times, [0.25, 1.0, 1.9])
         for _ in range(3):
             stp.completed()
-        with self.assertRaises(IndexError):
+        with self.assertRaisesRegex(IndexError, "no more timesteps"):
             stp.completed()
-        with self.assertRaises(IndexError):
+        with self.assertRaisesRegex(IndexError, "no more timesteps"):
             step = stp.getCurrent()
 
         stp = TimeStepper([0.0, 0.25, 1.0, 2.0])
@@ -365,10 +365,10 @@ class TestTimeStepper(unittest.TestCase):
         stp.completed()
 
         self.assertTrue(stp.hasFinished())
-        with self.assertRaises(IndexError):
+        with self.assertRaisesRegex(IndexError, "no more timesteps"):
             stp.completed()
-        with self.assertRaises(ValueError):
-            stp.raiseError(ValueError())
+        with self.assertRaisesRegex(ValueError, "to be tested"):
+            stp.raiseError(ValueError("to be tested"))
 
     def test06_split(self):
         stp = TimeStepper([0.0, 1.0, 2.0, 3.0])

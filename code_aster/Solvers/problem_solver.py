@@ -231,7 +231,7 @@ class ProblemSolver(SolverFeature):
         return step_solver
 
     def _get(self, option, required):
-        logger.debug(f"--- requesting for {SOP.name(option)}")
+        logger.debug(f"--- requesting for {option}")
         if option & SOP.PhysicalProblem:
             return self.phys_pb
         if option & SOP.PhysicalState:

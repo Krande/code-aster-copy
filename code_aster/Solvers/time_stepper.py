@@ -169,7 +169,7 @@ class TimeStepper(SolverFeature):
             float: Previous time value.
         """
         if self.hasFinished():
-            raise IndexError
+            raise IndexError("no more timesteps")
         if self._current == 0:
             return self._initial
 
@@ -182,7 +182,7 @@ class TimeStepper(SolverFeature):
             float: Next time value.
         """
         if self.hasFinished():
-            raise IndexError
+            raise IndexError("no more timesteps")
         return self._times[self._current]
 
     def getIncrement(self):
@@ -198,7 +198,7 @@ class TimeStepper(SolverFeature):
 
     def completed(self):
         """Register the current step as completed successfully."""
-        if self.remaining() <= 0:
+        if self.hasFinished():
             raise IndexError("no more timesteps")
         self._current += 1
 

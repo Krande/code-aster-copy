@@ -22,35 +22,6 @@ Useful objects used to build operators.
 """
 
 from functools import wraps
-from math import log
-
-
-class BaseFeaturesOptions:
-    """Options that describes the features an object can provide."""
-
-    Nothing = 0
-
-    @classmethod
-    def name(cls, idx):
-        """Return the features names from an option.
-
-        Arguments:
-            idx (int): Enabled options.
-
-        Returns:
-            str: Features names, "&" separated.
-        """
-        attrs = dir(cls)
-        lab = []
-        values = {1: ""}
-        for attr in attrs:
-            if isinstance(getattr(cls, attr), int):
-                values[getattr(cls, attr)] = attr
-        last = round(log(max(values.keys())) / log(2))
-        for expo in range(last + 1):
-            if idx & 2**expo:
-                lab.append(values[2**expo])
-        return "|".join(lab)
 
 
 class FeatureMeta(type):
@@ -72,8 +43,7 @@ class BaseFeature(metaclass=FeatureMeta):
     services it provides. A feature *uses* other features.
     """
 
-    options = BaseFeaturesOptions
-    provide = BaseFeaturesOptions.Nothing
+    provide = 0
     required_features = []
     optional_features = []
     # for no_new_attributes
@@ -83,7 +53,7 @@ class BaseFeature(metaclass=FeatureMeta):
         self._use = []
         self._checked = False
 
-    def use(self, obj, provide=BaseFeaturesOptions.Nothing, replace=False):
+    def use(self, obj, provide=0):
         """Add a feature to be used.
 
         The provided services are defined by the
@@ -102,17 +72,14 @@ class BaseFeature(metaclass=FeatureMeta):
         if not provide:
             raise ValueError("This object provides no feature, use 'provide'.")
         if not provide & self._supported:
-            raise TypeError(
-                f"{self.__class__.__name__} does not support {self.options.name(provide)!r}"
-            )
+            raise TypeError(f"{self.__class__.__name__} does not support {provide!r}")
         self._use.append((obj, provide))
 
     def check_features(self):
         """Check that required features are defined."""
         for feat in self.required_features:
             if not self.has_feature(feat):
-                name = self.options.name(feat)
-                raise TypeError(f"{self.__class__.__name__} requires the {name!r} feature")
+                raise TypeError(f"{self.__class__.__name__} requires the {feat!r} feature")
         self._checked = True
 
     def has_feature(self, feature):
@@ -179,8 +146,7 @@ class BaseFeature(metaclass=FeatureMeta):
         if optional and not features:
             return None
         if len(features) != 1:
-            name = self.options.name(feature)
-            raise ValueError(f"expecting one {name!r} feature, found {features!r}")
+            raise ValueError(f"expecting one {feature!r} feature, found {features!r}")
         return features[0]
 
     @staticmethod
