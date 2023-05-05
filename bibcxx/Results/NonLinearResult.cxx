@@ -24,6 +24,9 @@
 
 #include "Supervis/Exceptions.h"
 
+JeveuxVectorReal NonLinearResult::_mata( "PYTHON.TANGENT.MATA" );
+JeveuxVectorReal NonLinearResult::_matc( "PYTHON.TANGENT.MATC" );
+
 void NonLinearResult::setContact( const ContactPtr contact, const ASTERINTEGER &rank ) {
     if ( !contact )
         raiseAsterError( "ValueError: Contact is empty" );
@@ -38,4 +41,15 @@ void NonLinearResult::setContact( const ContactPtr contact ) {
     for ( auto &index : indexes ) {
         setContact( contact, index );
     }
+};
+
+VectorReal NonLinearResult::getTangentMatrix( const std::string &suffix ) {
+    if ( suffix == "MATA" && _mata.exists() ) {
+        _mata->updateValuePointer();
+        return _mata->toVector();
+    } else if ( suffix == "MATC" && _matc.exists() ) {
+        _matc->updateValuePointer();
+        return _matc->toVector();
+    } else
+        return {};
 };

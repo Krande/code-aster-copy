@@ -167,9 +167,6 @@ class Result : public DataStructure, public ListOfTables {
      */
     void _listOfParameters( void );
 
-    static JeveuxVectorReal _mata;
-    static JeveuxVectorReal _matc;
-
   public:
     using ResultPtr = std::shared_ptr< Result >;
 
@@ -584,8 +581,6 @@ class Result : public DataStructure, public ListOfTables {
     void clear();
 
     bool exists() const;
-
-    static VectorReal getTangentMatrix( const std::string & );
 };
 
 using ResultPtr = std::shared_ptr< Result >;

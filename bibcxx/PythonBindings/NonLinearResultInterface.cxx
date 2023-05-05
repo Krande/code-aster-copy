@@ -32,5 +32,6 @@ void exportNonLinearResultToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< NonLinearResult, std::string > ) )
         .def( "setContact", py::overload_cast< const ContactPtr >( &NonLinearResult::setContact ) )
         .def( "setContact", py::overload_cast< const ContactPtr, const ASTERINTEGER & >(
-                                &NonLinearResult::setContact ) );
+                                &NonLinearResult::setContact ) )
+        .def( "getTangentMatrix", &NonLinearResult::getTangentMatrix );
 };

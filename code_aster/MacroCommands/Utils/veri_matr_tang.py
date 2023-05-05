@@ -29,7 +29,7 @@ from ...Cata.Syntax import _F
 from ...Commands import CREA_TABLE
 from ...Supervis.ExecuteCommand import UserMacro
 
-from ...Objects import Result
+from ...Objects import NonLinearResult
 
 
 class TANGENT:
@@ -66,7 +66,7 @@ class TANGENT:
         """lit la matrice depuis l'espace Aster.
         nom : suffixe de l'objet jeveux
         """
-        values = Result.getTangentMatrix(suffix)
+        values = NonLinearResult.getTangentMatrix(suffix)
         if not values:
             raise RuntimeError("TANGENT : OBJET JEVEUX DE SUFFIXE " + suffix + " INEXISTANT")
         self.Matrice(values)

@@ -36,9 +36,6 @@
 #include "Supervis/Exceptions.h"
 #include "Utilities/Tools.h"
 
-JeveuxVectorReal Result::_mata( "PYTHON.TANGENT.MATA" );
-JeveuxVectorReal Result::_matc( "PYTHON.TANGENT.MATC" );
-
 ASTERINTEGER Result::_getInternalIndex( const ASTERINTEGER &storageIndex ) const {
     _serialNumber->updateValuePointer();
     const auto nbIndexes = getNumberOfIndexes();
@@ -1031,16 +1028,6 @@ std::vector< EquationNumberingPtr > Result::getEquationNumberings() const {
     return _fieldBuilder.getEquationNumberings();
 };
 
-VectorReal Result::getTangentMatrix( const std::string &suffix ) {
-    if ( suffix == "MATA" && _mata.exists() ) {
-        _mata->updateValuePointer();
-        return _mata->toVector();
-    } else if ( suffix == "MATC" && _matc.exists() ) {
-        _matc->updateValuePointer();
-        return _matc->toVector();
-    } else
-        return {};
-};
 
 void Result::setTime( const ASTERDOUBLE &time, ASTERINTEGER storageIndex ) {
     setParameterValue( "INST", time, storageIndex );

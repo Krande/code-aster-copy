@@ -45,6 +45,9 @@ class NonLinearResult : public TransientResult {
     /** @brief List of ContactPtr */
     mapRankContact _mapContact;
 
+    static JeveuxVectorReal _mata;
+    static JeveuxVectorReal _matc;
+
   public:
     /**
      * @brief Constructeur
@@ -59,6 +62,9 @@ class NonLinearResult : public TransientResult {
     void setContact( const ContactPtr contact );
 
     void setContact( const ContactPtr contact, const ASTERINTEGER &rank );
+
+    static VectorReal getTangentMatrix( const std::string & );
+
 };
 
 /**
