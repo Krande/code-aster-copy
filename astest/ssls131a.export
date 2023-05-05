@@ -6,5 +6,8 @@ P mpi_nbnoeud 1
 P testlist verification sequential
 
 F comm ssls131a.comm D 1
-F msh ssls131a.msh D 19
-F libr ssls131a.38 D 38
+F mail ssls131a.51 D 51
+F mail ssls131a.52 D 52
+F mail ssls131a.53 D 53
+F mail ssls131a.54 D 54
+F mail ssls131a.55 D 55

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -48,9 +48,6 @@ interactif = 0
 if "DISPLAY" not in os.environ:
     interactif = 0
 
-# Commande Gmsh (elle ne fait rien si c'est la version batch de Gmsh)
-cmd_gmsh = ExecutionParameter().get_option("prog:gmsh")
-
 # Definition des parametres
 # - Geometriques
 
@@ -83,25 +80,14 @@ RC = 0.3
 #                   (voir for statement dans PYTHON REF MANUAL)
 
 for k in range(1, 10):
-
-    # Appel à GMSH pour générer le maillage
-    with open("coque.geo", "w") as fgeo:
-        fgeo.write("RC= %3f ;" % RC)
-    os.system("cat fort.38 >> coque.geo")
-    os.system(cmd_gmsh + " -2 coque.geo -o coque.med")
-    if interactif == 1:
-        # visualisation du maillage initial sous GMSH
-        os.system(cmd_gmsh + " coque.med")
-    # Si gmsh n'est pas disponible, le fichier n'est pas créé, on sort en OK
-    if not os.path.exists("coque.med") and cmd_gmsh == "gmsh":
-        # pour forcer à valider le test
+    if not os.path.exists(f"fort.{50 + k}"):
         k = -1
         break
 
     os.system("cp coque.med fort.19")
 
     # Calcul Aster avec ce maillage
-    MAIL = LIRE_MAILLAGE(FORMAT="MED", UNITE=19)
+    MAIL = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=50 + k)
 
     MAIL = DEFI_GROUP(
         reuse=MAIL, MAILLAGE=MAIL, CREA_GROUP_NO=(_F(GROUP_MA="G_2D_30"), _F(GROUP_MA="G_0D_31"))
@@ -156,13 +142,6 @@ for k in range(1, 10):
         ),
     )
 
-    # Post-traitement avec GMSH
-    if interactif == 1:
-        # visualisation de la deformee, de la contrainte de mises sous GMSH
-        DEFI_FICHIER(ACTION="LIBERER", UNITE=unit)
-        os.system("cp fort." + str(unit) + " resu.pos")
-        os.system(cmd_gmsh + " resu.pos")
-
     RELV = POST_RELEVE_T(
         ACTION=_F(
             RESULTAT=RESU2,
@@ -215,7 +194,7 @@ for k in range(1, 10):
 fres.close()
 
 if k < 0:
-    print("gmsh ne semble pas disponible !")
+    print("le maillage n'est pas disponible !")
 else:
     # Le critère doit être atteint en 5 itérations
     test.assertEqual(k, 5, "number of itérations")
