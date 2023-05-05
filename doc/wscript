@@ -23,7 +23,7 @@ import shutil
 
 from waflib import Configure, Errors, Logs
 
-from waftools.wafutils import add_to_env_paths, exec_pyaster
+from waftools.wafutils import exec_pyaster
 
 """
 Build code_aster documentation using Sphinx.

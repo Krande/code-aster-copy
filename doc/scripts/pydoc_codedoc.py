@@ -328,11 +328,22 @@ def pybind_args(name, doc, remove_sign=True):
         argstr = mat.group(1)
         # remove template arguments
         argstr = _remove_enclosed(argstr, "<")
-        argstr = re.sub(": .*?(?P<sep>[=,]|$)", r"\g<sep>", argstr)
-        # default value has been removed
-        argstr = re.sub("= *(?P<sep>, *|$)", r"\g<sep>", argstr)
-    if remove_sign:
-        doc = expr.sub("", doc).lstrip()
+        # split args
+        decls = re.sub(", +(?P<var>\**\w+):", "_||_\g<var>:", argstr).split("_||_")
+        clean = []
+        for decl in decls:
+            # get default value if any
+            wdef = decl.split("=")
+            decl = wdef.pop(0)
+            # remove type "var: ClassName" -> "var"
+            arg = decl.split(":")[0]
+            wdef = "".join(wdef).strip()
+            if wdef:
+                arg += "=" + wdef
+            clean.append(arg)
+        argstr = ", ".join(clean)
+        if remove_sign:
+            doc = expr.sub("", doc).lstrip()
     return "(" + argstr + ")", doc
 
 
@@ -340,7 +351,9 @@ def _remove_enclosed(string, mark):
     end = ">]"["<[".index(mark)]
     contains = re.compile("{beg}.*{end}".format(beg=mark, end=end), re.M)
     expr = re.compile("{beg}([^{beg}{end}]+){end}".format(beg=mark, end=end), re.M)
-    while contains.search(string):
+    prev = ""
+    while string != prev and contains.search(string):
+        prev = string
         string = expr.sub("", string)
     return string
 
