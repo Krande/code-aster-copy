@@ -156,8 +156,8 @@ with shared_tmpdir("zzzz504a_") as tmpdir:
 MyFieldOnNodes = resu.getFieldOnNodesReal("DEPL", 1)
 sfon = MyFieldOnNodes.toSimpleFieldOnNodes()
 if parallel:
-    test.assertAlmostEqual(sfon.getValue(2, 0), 0.5175556367605225)
+    test.assertAlmostEqual(sfon[2, 0], 0.5175556367605225)
 else:
-    test.assertAlmostEqual(sfon.getValue(6, 0), 0.0)
+    test.assertAlmostEqual(sfon[6, 0], 0.0)
 
 FIN()

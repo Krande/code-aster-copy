@@ -74,10 +74,10 @@ MyFieldOnNodes = resu.getFieldOnNodesReal("DEPL", 1)
 sfon = MyFieldOnNodes.toSimpleFieldOnNodes()
 
 if rank == 0:
-    test.assertAlmostEqual(sfon.getValue(0, 0), 1.0)
-    test.assertAlmostEqual(sfon.getValue(2, 0), 0.5175556151165849)
+    test.assertAlmostEqual(sfon[0, 0], 1.0)
+    test.assertAlmostEqual(sfon[2, 0], 0.5175556151165849)
 elif rank == 1:
-    test.assertAlmostEqual(sfon.getValue(0, 0), 1.0)
-    test.assertAlmostEqual(sfon.getValue(2, 0), 0.5175556151165849)
+    test.assertAlmostEqual(sfon[0, 0], 1.0)
+    test.assertAlmostEqual(sfon[2, 0], 0.5175556151165849)
 
 FIN()

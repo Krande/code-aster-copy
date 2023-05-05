@@ -93,7 +93,7 @@ SIEF = resu.getFieldOnCellsReal("SIEF_ELGA", 1)
 
 
 val = [0.134228076192, 0.134176297047, 0.154099687654, 0.154189676715]
-test.assertAlmostEqual(sfon.getValue(4, 1), val[rank])
+test.assertAlmostEqual(sfon[4, 1], val[rank])
 
 
 with shared_tmpdir("zzzz503c_") as tmpdir:

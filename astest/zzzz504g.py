@@ -67,8 +67,8 @@ sfon.debugPrint(10 + rank)
 sfon.build()
 
 if rank == 0:
-    test.assertAlmostEqual(sfon.getValue(2, 0), 0.4245510586973997)
+    test.assertAlmostEqual(sfon[2, 0], 0.4245510586973997)
 elif rank == 1:
-    test.assertAlmostEqual(sfon.getValue(2, 0), 0.4245510586973997)
+    test.assertAlmostEqual(sfon[2, 0], 0.4245510586973997)
 
 FIN()

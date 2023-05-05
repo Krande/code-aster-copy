@@ -136,6 +136,9 @@ class ParallelMesh : public BaseMesh {
      * @return list of Nodes
      */
 
+    VectorLong getNodes( const VectorString &names, const bool localNumbering = true,
+                         const ASTERINTEGER same_rank = PythonBool::None ) const;
+
     VectorLong getNodes( const std::string name = std::string(), const bool localNumbering = true,
                          const ASTERINTEGER same_rank = PythonBool::None ) const;
 

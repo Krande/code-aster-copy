@@ -126,16 +126,35 @@ VectorLong Mesh::getCells( const VectorString &names ) const {
     return all_cells;
 }
 
+VectorLong Mesh::getNodes( const VectorString &names, const bool, const ASTERINTEGER ) const {
+
+    if ( names.empty() ) {
+        return irange( long( 0 ), long( getNumberOfNodes() - 1 ) );
+    }
+
+    std::vector< VectorLong > nodes;
+    nodes.reserve( names.size() );
+
+    for ( auto &name : names ) {
+        if ( hasGroupOfNodes( name ) ) {
+            nodes.push_back( ( *_groupsOfNodes )[name]->toVector() );
+        }
+    }
+
+    auto all_nodes = unique( concatenate( nodes ) );
+    for ( auto &node : all_nodes ) {
+        node -= 1;
+    }
+
+    return all_nodes;
+}
+
 VectorLong Mesh::getNodes( const std::string name, const bool, const ASTERINTEGER ) const {
     if ( name.empty() ) {
-        return irange( long( 0 ), long( getNumberOfNodes() - 1 ) );
-    } else if ( !hasGroupOfNodes( name ) ) {
-        return VectorLong();
+        return getNodes( VectorString() );
     }
-    VectorLong nodes = ( *_groupsOfNodes )[name]->toVector();
-    for ( auto &node : nodes )
-        node -= 1;
-    return nodes;
+
+    return getNodes( VectorString( {name} ) );
 }
 
 VectorLong Mesh::getNodesFromCells( const VectorLong &cells, const bool,

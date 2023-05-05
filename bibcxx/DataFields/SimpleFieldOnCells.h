@@ -285,7 +285,7 @@ class SimpleFieldOnCells : public DataStructure {
     /**
      * @brief Get the name of the i-th component
      */
-    std::string getNameOfComponent( const ASTERINTEGER &icmp ) const {
+    std::string getComponent( const ASTERINTEGER &icmp ) const {
 
         if ( icmp < 0 || icmp >= this->getNumberOfComponents() ) {
             throw std::runtime_error( "Component '" + std::to_string( icmp ) +
@@ -297,7 +297,7 @@ class SimpleFieldOnCells : public DataStructure {
     /**
      * @Brief Get the names of all the components
      */
-    VectorString getNameOfComponents() const {
+    VectorString getComponents() const {
 
         ASTERINTEGER size = this->getNumberOfComponents();
         VectorString names;

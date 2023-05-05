@@ -72,8 +72,8 @@ sfon.debugPrint(10 + rank)
 sfon.build()
 
 resu1 = [0.6980073863837113, 1.0]
-test.assertAlmostEqual(sfon.getValue(1, 0), resu1[rank])
+test.assertAlmostEqual(sfon[1, 0], resu1[rank])
 resu2 = [0.5461603079530792, 0.5461603079530792]
-test.assertAlmostEqual(sfon.getValue(2, 0), resu2[rank])
+test.assertAlmostEqual(sfon[2, 0], resu2[rank])
 
 FIN()

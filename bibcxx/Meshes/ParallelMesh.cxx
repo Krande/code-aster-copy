@@ -282,6 +282,27 @@ VectorLong ParallelMesh::getNodes( const std::string name, const bool localNumbe
     return newNumbering;
 }
 
+VectorLong ParallelMesh::getNodes( const VectorString &names, const bool localNumbering,
+                                   const ASTERINTEGER same_rank ) const {
+
+    if ( names.empty() ) {
+        return getNodes( "", localNumbering, same_rank );
+    }
+
+    std::vector< VectorLong > nodes;
+    nodes.reserve( names.size() );
+
+    for ( auto &name : names ) {
+        if ( hasGroupOfNodes( name ) ) {
+            nodes.push_back( getNodes( name, localNumbering, same_rank ) );
+        }
+    }
+
+    auto all_nodes = unique( concatenate( nodes ) );
+
+    return all_nodes;
+}
+
 VectorLong ParallelMesh::getNodesFromCells( const VectorLong &cells, const bool localNumbering,
                                             const ASTERINTEGER same_rank ) const {
     if ( cells.empty() ) {

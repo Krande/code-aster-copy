@@ -64,13 +64,13 @@ sf = rf.toSimpleFieldOnNodes()
 values, mask = sf.getValues()
 test.assertAlmostEqual(values[3, 0], 0.314065725792971)
 test.assertEqual(mask[3, 0], True)
-test.assertEqual(sf.getNameOfComponents(), ["DX", "DY"])
+test.assertEqual(sf.getComponents(), ["DX", "DY"])
 test.assertEqual(sf.getNumberOfComponents(), 2)
 test.assertEqual(sf.getNumberOfNodes(), 16)
-test.assertEqual(sf.getNameOfComponent(0), "DX")
+test.assertEqual(sf.getComponent(0), "DX")
 
 with test.assertRaisesRegex(RuntimeError, "Out of range"):
-    name = sf.getNameOfComponent(5)
+    name = sf.getComponent(5)
 
 test.printSummary()
 

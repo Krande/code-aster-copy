@@ -71,7 +71,7 @@ resu = STAT_NON_LINE(
 MyFieldOnNodes = resu.getFieldOnNodesReal("DEPL", 1)
 sfon = MyFieldOnNodes.toSimpleFieldOnNodes()
 
-test.assertAlmostEqual(sfon.getValue(0, 0), 1.0)
-test.assertAlmostEqual(sfon.getValue(4, 0), 0.517555615116595)
+test.assertAlmostEqual(sfon[0, 0], 1.0)
+test.assertAlmostEqual(sfon[4, 0], 0.517555615116595)
 
 FIN()

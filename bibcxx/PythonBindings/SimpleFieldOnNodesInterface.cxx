@@ -34,19 +34,28 @@ void exportSimpleFieldOnNodesToPython( py::module_ &mod ) {
         mod, "SimpleFieldOnNodesReal" )
         .def( py::init( &initFactoryPtr< SimpleFieldOnNodesReal > ) )
         .def( py::init( &initFactoryPtr< SimpleFieldOnNodesReal, std::string > ) )
-        .def( "getValue", &SimpleFieldOnNodesReal::getValue, py::return_value_policy::copy,
+        .def( "__getitem__",
+              +[]( const SimpleFieldOnNodesReal &v, const PairLong &i ) {
+                  return v.operator()( i.first, i.second );
+              } )
+        .def( "__setitem__",
+              +[]( SimpleFieldOnNodesReal &v, const PairLong &i, ASTERDOUBLE f ) {
+                  return v.operator()( i.first, i.second ) = f;
+              } )
+        .def( "restrict", &SimpleFieldOnNodesReal::restrict,
               R"(
-Returns the value of the `icmp` component of the field on the `ino` node.
+            Return a new field restricted to the list of components and groups of nodes given
 
-Arguments:
-        ino (int): Index of node.
-        icmp (int): Index of component.
+            Arguments:
+                cmps[list[str]]: filter on list of components
+                If empty, all components are used used
+                groupsOfNodes[list[str]]: filter on list of groups of nodes (default=" ").
+                If empty, the full mesh is used
 
-Returns:
-    (float): The field value. NaN is returned if the position is not allocated.
-        )",
-              py::arg( "ino" ), py::arg( "icmp" ) )
-
+            Returns:
+                FieldOnNodesReal: field restricted.
+            )",
+              py::arg( "cmps" ) = VectorString(), py::arg( "groupsOfNodes" ) = VectorString() )
         .def( "getValues", &SimpleFieldOnNodesReal::getValues, R"(
 Returns two numpy arrays with shape ( number_of_components, space_dimension )
 The first array contains the field values while the second one is a mask
@@ -65,28 +74,22 @@ Returns:
 
         .def( "getNumberOfComponents", &SimpleFieldOnNodesReal::getNumberOfComponents )
         .def( "getNumberOfNodes", &SimpleFieldOnNodesReal::getNumberOfNodes )
-        .def( "getNameOfComponents", &SimpleFieldOnNodesReal::getNameOfComponents )
-        .def( "getNameOfComponent", &SimpleFieldOnNodesReal::getNameOfComponent )
+        .def( "getComponents", &SimpleFieldOnNodesReal::getComponents )
+        .def( "getComponent", &SimpleFieldOnNodesReal::getComponent )
         .def( "getPhysicalQuantity", &SimpleFieldOnNodesReal::getPhysicalQuantity )
         .def( "updateValuePointers", &SimpleFieldOnNodesReal::updateValuePointers );
     py::class_< SimpleFieldOnNodesComplex, SimpleFieldOnNodesComplexPtr, DataStructure >(
         mod, "SimpleFieldOnNodesComplex" )
         .def( py::init( &initFactoryPtr< SimpleFieldOnNodesComplex > ) )
         .def( py::init( &initFactoryPtr< SimpleFieldOnNodesComplex, std::string > ) )
-
-        .def( "getValue", &SimpleFieldOnNodesComplex::getValue, py::return_value_policy::copy,
-              R"(
-Returns the value of the `icmp` component of the field on the `ino` node.
-
-Arguments:
-    ino (int): Index of node.
-    icmp (int): Index of component.
-
-Returns:
-    complex: The field value. NaN is returned if the position is not allocated.
-        )",
-              py::arg( "ino" ), py::arg( "icmp" ) )
-
+        .def( "__getitem__",
+              +[]( const SimpleFieldOnNodesComplex &v, const PairLong &i ) {
+                  return v.operator()( i.first, i.second );
+              } )
+        .def( "__setitem__",
+              +[]( SimpleFieldOnNodesComplex &v, const PairLong &i, ASTERCOMPLEX f ) {
+                  return v.operator()( i.first, i.second ) = f;
+              } )
         .def( "getValues", &SimpleFieldOnNodesComplex::getValues,
               R"(
 Returns two numpy arrays with shape ( number_of_components, space_dimension )
@@ -106,8 +109,8 @@ Returns:
 
         .def( "getNumberOfComponents", &SimpleFieldOnNodesComplex::getNumberOfComponents )
         .def( "getNumberOfNodes", &SimpleFieldOnNodesComplex::getNumberOfNodes )
-        .def( "getNameOfComponents", &SimpleFieldOnNodesComplex::getNameOfComponents )
-        .def( "getNameOfComponent", &SimpleFieldOnNodesComplex::getNameOfComponent )
+        .def( "getComponents", &SimpleFieldOnNodesComplex::getComponents )
+        .def( "getComponent", &SimpleFieldOnNodesComplex::getComponent )
         .def( "getPhysicalQuantity", &SimpleFieldOnNodesComplex::getPhysicalQuantity )
         .def( "updateValuePointers", &SimpleFieldOnNodesComplex::updateValuePointers );
 };

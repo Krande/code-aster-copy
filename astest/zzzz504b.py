@@ -85,9 +85,9 @@ sfon.build()
 
 # DX displacement on nodes "N1" and "N3", comparison with sequential results
 if rank == 0:
-    test.assertAlmostEqual(sfon.getValue(1, 0), 1.14977255749554, 6)
+    test.assertAlmostEqual(sfon[1, 0], 1.14977255749554, 6)
 elif rank == 1:
-    test.assertAlmostEqual(sfon.getValue(1, 0), 1.14977255749554, 6)
+    test.assertAlmostEqual(sfon[1, 0], 1.14977255749554, 6)
 
 myOptions = "-pc_type lu -pc_factor_mat_solver_type mumps -ksp_type fgmres -snes_linesearch_type basic  -snes_max_it 10"
 resu2 = MECA_NON_LINE(

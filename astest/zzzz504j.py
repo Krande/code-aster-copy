@@ -73,9 +73,9 @@ MyFieldOnNodes = resu.getFieldOnNodesReal("DEPL", 1)
 sfon = MyFieldOnNodes.toSimpleFieldOnNodes()
 
 value = [1.0, 1.0, 0.0, 0.0]
-test.assertAlmostEqual(sfon.getValue(0, 0), value[rank])
+test.assertAlmostEqual(sfon[0, 0], value[rank])
 value = [0.0712953407513, 0.0609114486676, -0.00116776983364, 0.000584732584462]
-test.assertAlmostEqual(sfon.getValue(240, 0), value[rank])
+test.assertAlmostEqual(sfon[240, 0], value[rank])
 
 test.printSummary()
 

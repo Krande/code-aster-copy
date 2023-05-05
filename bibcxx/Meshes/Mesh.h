@@ -92,6 +92,8 @@ class Mesh : public BaseMesh {
     VectorLong getNodes( const std::string name = std::string(), const bool localNumbering = true,
                          const ASTERINTEGER same_rank = PythonBool::None ) const;
 
+    VectorLong getNodes( const VectorString &names, const bool localNumbering = true,
+                         const ASTERINTEGER same_rank = PythonBool::None ) const;
     /**
      * @brief Returns the nodes indexes of a group of cells
      * @param name name of group of cells

@@ -660,7 +660,7 @@ class FieldOnCells : public DataField {
         ASTERINTEGER ncmp = ces->getNumberOfComponents();
         ASTERINTEGER icmp;
         for ( icmp = 0; icmp < ncmp; icmp++ ) {
-            if ( ces->getNameOfComponent( icmp ) == cmp ) {
+            if ( ces->getComponent( icmp ) == cmp ) {
                 break;
             }
         }

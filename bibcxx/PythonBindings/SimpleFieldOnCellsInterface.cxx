@@ -74,8 +74,8 @@ Returns:
     tuple (int): Indexes of cells where the field is defined.
         )" )
         .def( "getNumberOfComponents", &SimpleFieldOnCellsReal::getNumberOfComponents )
-        .def( "getNameOfComponent", &SimpleFieldOnCellsReal::getNameOfComponent )
-        .def( "getNameOfComponents", &SimpleFieldOnCellsReal::getNameOfComponents )
+        .def( "getComponent", &SimpleFieldOnCellsReal::getComponent )
+        .def( "getComponents", &SimpleFieldOnCellsReal::getComponents )
         .def( "getNumberOfCells", &SimpleFieldOnCellsReal::getNumberOfCells )
         .def( "getMaxNumberOfPoints", &SimpleFieldOnCellsReal::getMaxNumberOfPoints )
         .def( "getMaxNumberOfSubPoints", &SimpleFieldOnCellsReal::getMaxNumberOfSubPoints )

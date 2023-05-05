@@ -67,8 +67,8 @@ sfon = MyFieldOnNodes.toSimpleFieldOnNodes()
 sfon.build()
 
 val = [0.134202362865, 0.134202362865, 0.154144849556, 0.154144849556]
-print(rank, sfon.getValue(4, 1))
-test.assertAlmostEqual(sfon.getValue(4, 1), val[rank])
+print(rank, sfon[4, 1])
+test.assertAlmostEqual(sfon[4, 1], val[rank])
 
 # test for issue32395
 test.assertEqual(affectMat, resu.getMaterialField())

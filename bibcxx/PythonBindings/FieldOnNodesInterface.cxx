@@ -46,7 +46,7 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
         .def( "__getitem__",
               +[]( const FieldOnNodesReal &v, ASTERINTEGER i ) { return v.operator[]( i ); } )
         .def( "__setitem__", +[]( FieldOnNodesReal &v, ASTERINTEGER i,
-                                  float f ) { return v.operator[]( i ) = f; } )
+                                  ASTERDOUBLE f ) { return v.operator[]( i ) = f; } )
         .def( py::self += py::self )
         .def( py::self -= py::self )
         .def( py::self + py::self )
@@ -62,6 +62,20 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
         .def( "build", &FieldOnNodesReal::build, py::arg( "mesh" ) = nullptr )
         .def( "getMesh", &FieldOnNodesReal::getMesh )
         .def( "getDescription", &FieldOnNodesReal::getDescription )
+        .def( "restrict", &FieldOnNodesReal::restrict,
+              R"(
+            Return a new field restricted to the list of components and groups of nodes given
+
+            Arguments:
+                cmps[list[str]]: filter on list of components
+                If empty, all components are used used
+                groupsOfNodes[list[str]]: filter on list of groups of nodes (default=" ").
+                If empty, the full mesh is used
+
+            Returns:
+                FieldOnNodesReal: field restricted.
+            )",
+              py::arg( "cmps" ) = VectorString(), py::arg( "groupsOfNodes" ) = VectorString() )
         .def( "updateValuePointers", &FieldOnNodesReal::updateValuePointers )
         .def( "getComponents", &FieldOnNodesReal::getComponents, R"(
             Get list of components
@@ -212,6 +226,20 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
         .def( "build", &FieldOnNodesComplex::build, py::arg( "mesh" ) = nullptr )
         .def( "getMesh", &FieldOnNodesComplex::getMesh )
         .def( "getDescription", &FieldOnNodesComplex::getDescription )
+        .def( "restrict", &FieldOnNodesComplex::restrict,
+              R"(
+            Return a new field restricted to the list of components and groups of nodes given
+
+            Arguments:
+                cmps[list[str]]: filter on list of components
+                If empty, all components are used used
+                groupsOfNodes[list[str]]: filter on list of groups of nodes (default=" ").
+                If empty, the full mesh is used
+
+            Returns:
+                FieldOnNodesComplex: field restricted.
+            )",
+              py::arg( "cmps" ) = VectorString(), py::arg( "groupsOfNodes" ) = VectorString() )
         .def( "getValues", py::overload_cast<>( &FieldOnNodesComplex::getValues, py::const_ ),
               R"(
             Return a list of values as (x1, y1, z1, x2, y2, z2...)

@@ -114,18 +114,22 @@ Arguments:
     localNumbering=false (bool): not used (for compatibilty with ParallelMesh)
         )",
               py::arg( "group_name" ), py::arg( "node_ids" ), py::arg( "localNumbering" ) = false )
-        .def( "_getNodes", &Mesh::getNodes, R"(
-Return the list of the indexes of the nodes that belong to a group of nodes.
+        .def( "_getNodes",
+              py::overload_cast< const VectorString &, const bool, const ASTERINTEGER >(
+                  &Mesh::getNodes, py::const_ ),
+              R"(
+Return the list of the indexes of the nodes that belong to groups of nodes.
+* For internal use only *
 
 Arguments:
-    group_name (str): Name of the group (default: "").
+    group_name (list[str]): Name of groups (default: "").
     localNumbering (bool): not used (for compatibilty with ParallelMesh)
     same_rank (bool): not used (for compatibilty with ParallelMesh)
 
 Returns:
-    list[int]: Indexes of the nodes of the group.
+    list[int]: Indexes of the nodes of groups.
         )",
-              py::arg( "group_name" ) = std::string(), py::arg( "localNumbering" ) = true,
+              py::arg( "group_name" ) = VectorString(), py::arg( "localNumbering" ) = true,
               py::arg( "same_rank" ) = PythonBool::None )
         .def( "getInnerNodes", &Mesh::getInnerNodes, R"(
 Return the list of the indexes of the nodes in the mesh

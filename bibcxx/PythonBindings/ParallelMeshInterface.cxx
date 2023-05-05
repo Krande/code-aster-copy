@@ -117,10 +117,13 @@ Arguments:
     localNumbering=false (bool): ids are given in the local numbering ?
         )",
               py::arg( "group_name" ), py::arg( "node_ids" ), py::arg( "localNumbering" ) = false )
-        .def( "_getNodes", &ParallelMesh::getNodes,
+        .def( "_getNodes",
+              py::overload_cast< const VectorString &, const bool, const ASTERINTEGER >(
+                  &ParallelMesh::getNodes, py::const_ ),
               R"(
 Return the list of the indexes of the nodes that belong to a group of nodes
 with (local or global) indexing and a restriction to MPI-rank.
+* For internal use only *
 
 Arguments:
     group_name (str): Name of the group (default: "" = all nodes).
@@ -132,7 +135,7 @@ Arguments:
 Returns:
     list[int]: Indexes of the nodes of the group.
         )",
-              py::arg( "group_name" ) = std::string(), py::arg( "localNumbering" ) = true,
+              py::arg( "group_name" ) = VectorString(), py::arg( "localNumbering" ) = true,
               py::arg( "same_rank" ) = PythonBool::None )
         .def( "getInnerNodes", &ParallelMesh::getInnerNodes, R"(
 Return the list of the indexes of the inner nodes in the mesh

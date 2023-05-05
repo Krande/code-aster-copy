@@ -116,10 +116,11 @@ class SimpleFieldOnNodes : public DataStructure {
      */
     SimpleFieldOnNodes() : SimpleFieldOnNodes( DataStructureNaming::getNewName( 19 ) ) {};
 
+    SimpleFieldOnNodes( const BaseMeshPtr mesh ) : SimpleFieldOnNodes() { _mesh = mesh; };
+
     SimpleFieldOnNodes( const BaseMeshPtr mesh, const std::string quantity,
                         const VectorString &comp, bool zero = false )
-        : SimpleFieldOnNodes() {
-        _mesh = mesh;
+        : SimpleFieldOnNodes( mesh ) {
         ASTERINTEGER nbComp = comp.size();
         std::string base = "G";
 
@@ -133,34 +134,34 @@ class SimpleFieldOnNodes : public DataStructure {
         build();
     }
 
+    BaseMeshPtr getMesh() const { return _mesh; };
+
     /**
      * @brief Surcharge de l'operateur []
      * @param i Indice dans le tableau Jeveux
      * @return la valeur du tableau Jeveux a la position i
      */
-    ValueType &operator[]( const ASTERINTEGER &i ) { return _values->operator[]( i ); };
+    inline ValueType &operator[]( const ASTERINTEGER &i ) { return _values->operator[]( i ); };
 
-    const ValueType &getValue( const ASTERINTEGER &ino, const ASTERINTEGER &icmp ) const {
+    inline const ValueType &operator[]( const ASTERINTEGER &i ) const {
+        return _values->operator[]( i );
+    };
 
+    const ValueType &operator()( const ASTERINTEGER &ino, const ASTERINTEGER &icmp ) const {
 #ifdef ASTER_DEBUG_CXX
-        _checkSize( ino, icmp );
-#endif
 
-        const ASTERINTEGER position = ino * this->getNumberOfComponents() + icmp;
-
-#ifdef ASTER_DEBUG_CXX
-        bool allocated = ( *_allocated )[position];
-
-        if ( !allocated ) {
+        if ( !this->hasValue( ino, icmp ) ) {
             AS_ABORT( "DEBUG: Position (" + std::to_string( ino ) + ", " + std::to_string( icmp ) +
                       ") is valid but not allocated!" )
         };
 #endif
 
-        return ( *_values )[position];
+        const ASTERINTEGER position = ino * this->getNumberOfComponents() + icmp;
+
+        return this->operator[]( position );
     };
 
-    void setValue( const ASTERINTEGER &ino, const ASTERINTEGER &icmp, const ValueType &val ) {
+    ValueType &operator()( const ASTERINTEGER &ino, const ASTERINTEGER &icmp ) {
 #ifdef ASTER_DEBUG_CXX
         _checkSize( ino, icmp );
 #endif
@@ -168,29 +169,29 @@ class SimpleFieldOnNodes : public DataStructure {
         const ASTERINTEGER position = ino * this->getNumberOfComponents() + icmp;
 
         ( *_allocated )[position] = true;
-        ( *_values )[position] = val;
-    }
+        return this->operator[]( position );
+    };
 
-    void addValue( const ASTERINTEGER &ino, const ASTERINTEGER &icmp, const ValueType &val ) {
+    bool hasValue( const ASTERINTEGER &ino, const ASTERINTEGER &icmp ) const {
+
 #ifdef ASTER_DEBUG_CXX
         _checkSize( ino, icmp );
 #endif
 
         const ASTERINTEGER position = ino * this->getNumberOfComponents() + icmp;
 
-        ( *_allocated )[position] = true;
-        ( *_values )[position] += val;
-    }
+        return ( *_allocated )[position];
+    };
 
     /**
      * @brief Get number of components
      */
-    ASTERINTEGER getNumberOfComponents() const { return _nbComp; }
+    inline ASTERINTEGER getNumberOfComponents() const { return _nbComp; }
 
     /**
      * @brief Get number of nodes
      */
-    ASTERINTEGER getNumberOfNodes() const { return _nbNodes; }
+    inline ASTERINTEGER getNumberOfNodes() const { return _nbNodes; }
 
     /**
      * @brief Return a pointer to the vector of data
@@ -248,7 +249,7 @@ class SimpleFieldOnNodes : public DataStructure {
     /**
      * @brief Get the name of the i-th component
      */
-    std::string getNameOfComponent( const ASTERINTEGER &i ) const {
+    std::string getComponent( const ASTERINTEGER &i ) const {
 
         if ( i < 0 || i >= _nbComp ) {
             throw std::runtime_error( "Out of range" );
@@ -261,16 +262,30 @@ class SimpleFieldOnNodes : public DataStructure {
     /**
      * @Brief Get the names of all the components
      */
-    VectorString getNameOfComponents() const {
+    VectorString getComponents() const {
 
         ASTERINTEGER size = this->getNumberOfComponents();
         VectorString names;
         names.reserve( size );
         for ( ASTERINTEGER i = 0; i < size; i++ ) {
-            names.push_back( this->getNameOfComponent( i ) );
+            names.push_back( this->getComponent( i ) );
         }
         return names;
     }
+
+    /**
+     * @brief Maps between name of components and the nimber
+     */
+    std::map< std::string, ASTERINTEGER > getComponentsName2Number() const {
+        std::map< std::string, ASTERINTEGER > ret;
+
+        auto nbCmp = this->getNumberOfComponents();
+        for ( ASTERINTEGER i = 0; i < nbCmp; i++ ) {
+            ret[this->getComponent( i )] = i;
+        }
+
+        return ret;
+    };
 
     /**
      * @brief Get physical quantity
@@ -281,7 +296,7 @@ class SimpleFieldOnNodes : public DataStructure {
      * @brief Mise a jour des pointeurs Jeveux
      * @return renvoie true si la mise a jour s'est bien deroulee, false sinon
      */
-    void updateValuePointers() {
+    void updateValuePointers() const {
         _descriptor->updateValuePointer();
         _size->updateValuePointer();
         _component->updateValuePointer();
@@ -313,6 +328,46 @@ class SimpleFieldOnNodes : public DataStructure {
         cham_no->build( _mesh );
         return cham_no;
     }
+
+    SimpleFieldOnNodesPtr restrict( const VectorString &cmps = {},
+                                    const VectorString &groupsOfNodes = {} ) const {
+
+        this->updateValuePointers();
+
+        VectorString list_cmp;
+        auto list_cmp_in = this->getComponents();
+        if ( cmps.empty() ) {
+            list_cmp = list_cmp_in;
+        } else {
+            auto set_cmps = toSet( cmps );
+
+            for ( auto &cmp : list_cmp_in ) {
+                if ( set_cmps.count( cmp ) > 0 ) {
+                    list_cmp.push_back( cmp );
+                }
+            }
+        }
+
+        auto ret = std::make_shared< SimpleFieldOnNodes< ValueType > >(
+            this->getMesh(), this->getPhysicalQuantity(), list_cmp );
+
+        VectorLong nodes = _mesh->getNodes( groupsOfNodes );
+
+        auto mapIn = this->getComponentsName2Number();
+        auto map = ret->getComponentsName2Number();
+
+        for ( auto &cmp : list_cmp ) {
+            auto icmp_in = mapIn[cmp];
+            auto icmp = map[cmp];
+            for ( auto &node : nodes ) {
+                if ( this->hasValue( node, icmp_in ) ) {
+                    ( *ret )( node, icmp ) = ( *this )( node, icmp_in );
+                }
+            }
+        }
+
+        return ret;
+    };
 };
 
 /** @typedef SimpleFieldOnNodesReal Class d'une champ simple de doubles */

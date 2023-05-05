@@ -2577,6 +2577,19 @@ class FieldOnNodesReal(DataField):
     def printMedFile(self, fileName, local=True):
         pass
 
+    def restrict(self, cmps=[], groupsOfNodes=[]):
+        """Return a new field restricted to the list of components and groups of nodes given
+
+        Arguments:
+            cmps[list[str]]: filter on list of components
+            If empty, all components are used used
+            groupsOfNodes[list[str]]: filter on list of groups of nodes (default=" ").
+            If empty, the full mesh is used
+
+        Returns:
+            FieldOnNodesReal: field restricted.
+        """
+
     def scale(self, vect):
         """Scale in-place the field by a diagonal matrix stored as an array
 
@@ -2764,6 +2777,19 @@ class FieldOnNodesComplex(DataField):
 
     def printMedFile(self, arg0, arg1):
         pass
+
+    def restrict(self, cmps=[], groupsOfNodes=[]):
+        """Return a new field restricted to the list of components and groups of nodes given
+
+        Arguments:
+            cmps[list[str]]: filter on list of components
+            If empty, all components are used used
+            groupsOfNodes[list[str]]: filter on list of groups of nodes (default=" ").
+            If empty, the full mesh is used
+
+        Returns:
+            FieldOnNodesComplex: field restricted.
+        """
 
     def scale(self, vect):
         """Scale in-place the field by a diagonal matrix stored as an array
@@ -3005,6 +3031,12 @@ class SimpleFieldOnCellsReal(DataStructure):
             tuple (int): Indexes of cells where the field is defined.
         """
 
+    def getComponent(self, arg0):
+        pass
+
+    def getComponents(self):
+        pass
+
     def getFieldLocation(self):
         pass
 
@@ -3012,12 +3044,6 @@ class SimpleFieldOnCellsReal(DataStructure):
         pass
 
     def getMaxNumberOfSubPoints(self):
-        pass
-
-    def getNameOfComponent(self, arg0):
-        pass
-
-    def getNameOfComponents(self):
         pass
 
     def getNumberOfCells(self):
@@ -3086,6 +3112,9 @@ class SimpleFieldOnNodesReal(DataStructure):
 
     # Methods defined here:
 
+    def __getitem__(self, arg0, int):
+        pass
+
     def __init__(self, *args, **kwargs):
         """Overloaded function.
 
@@ -3094,10 +3123,13 @@ class SimpleFieldOnNodesReal(DataStructure):
         2. __init__(self: libaster.SimpleFieldOnNodesReal, arg0: str) -> None
         """
 
-    def getNameOfComponent(self, arg0):
+    def __setitem__(self, arg0, int, arg1):
         pass
 
-    def getNameOfComponents(self):
+    def getComponent(self, arg0):
+        pass
+
+    def getComponents(self):
         pass
 
     def getNumberOfComponents(self):
@@ -3108,17 +3140,6 @@ class SimpleFieldOnNodesReal(DataStructure):
 
     def getPhysicalQuantity(self):
         pass
-
-    def getValue(self, ino, icmp):
-        """Returns the value of the `icmp` component of the field on the `ino` node.
-
-        Arguments:
-                ino (int): Index of node.
-                icmp (int): Index of component.
-
-        Returns:
-            (float): The field value. NaN is returned if the position is not allocated.
-        """
 
     def getValues(self, copy=False):
         """Returns two numpy arrays with shape ( number_of_components, space_dimension )
@@ -3133,6 +3154,19 @@ class SimpleFieldOnNodesReal(DataStructure):
         Returns:
             ndarray (float): Field values.
             ndarray (bool): Mask for the field values.
+        """
+
+    def restrict(self, cmps=[], groupsOfNodes=[]):
+        """Return a new field restricted to the list of components and groups of nodes given
+
+        Arguments:
+            cmps[list[str]]: filter on list of components
+            If empty, all components are used used
+            groupsOfNodes[list[str]]: filter on list of groups of nodes (default=" ").
+            If empty, the full mesh is used
+
+        Returns:
+            FieldOnNodesReal: field restricted.
         """
 
     def updateValuePointers(self):
@@ -3153,6 +3187,9 @@ class SimpleFieldOnNodesComplex(DataStructure):
 
     # Methods defined here:
 
+    def __getitem__(self, arg0, int):
+        pass
+
     def __init__(self, *args, **kwargs):
         """Overloaded function.
 
@@ -3161,10 +3198,13 @@ class SimpleFieldOnNodesComplex(DataStructure):
         2. __init__(self: libaster.SimpleFieldOnNodesComplex, arg0: str) -> None
         """
 
-    def getNameOfComponent(self, arg0):
+    def __setitem__(self, arg0, int, arg1):
         pass
 
-    def getNameOfComponents(self):
+    def getComponent(self, arg0):
+        pass
+
+    def getComponents(self):
         pass
 
     def getNumberOfComponents(self):
@@ -3175,17 +3215,6 @@ class SimpleFieldOnNodesComplex(DataStructure):
 
     def getPhysicalQuantity(self):
         pass
-
-    def getValue(self, ino, icmp):
-        """Returns the value of the `icmp` component of the field on the `ino` node.
-
-        Arguments:
-            ino (int): Index of node.
-            icmp (int): Index of component.
-
-        Returns:
-            complex: The field value. NaN is returned if the position is not allocated.
-        """
 
     def getValues(self, copy=False):
         """Returns two numpy arrays with shape ( number_of_components, space_dimension )

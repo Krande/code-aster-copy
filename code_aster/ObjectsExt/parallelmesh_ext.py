@@ -268,23 +268,23 @@ class ExtendedParallelMesh:
             mesh_p.readMedFile(filename, verbose=info - 1)
             return mesh_p.refine(refine_1, info)
 
-    def getNodes(self, group_name="", localNumbering=True, same_rank=None):
+    def getNodes(self, group_name=[], localNumbering=True, same_rank=None):
         """Return the list of the indexes of the nodes that belong to a group of nodes.
 
         Arguments:
-            group_name (str): Name of the group (default: "" = all nodes).
+            group_name (str): Name of groups (default: [] = all nodes).
             localNumbering (bool) : use local or global numbering (default: True)
             same_rank : - None: keep all nodes (default: None)
                         - True: keep the nodes which are owned by the current MPI-rank
                         - False: keep the nodes which are not owned by the current MPI-rank
 
         Returns:
-            list[int]: Indexes of the nodes of the group.
+            list[int]: Indexes of the nodes of groups.
         """
 
         val = {None: PythonBool.NONE, True: PythonBool.TRUE, False: PythonBool.FALSE}
 
-        return self._getNodes(group_name, localNumbering, val[same_rank])
+        return self._getNodes(force_list(group_name), localNumbering, val[same_rank])
 
     def getNodesFromCells(self, group_name, localNumbering=True, same_rank=None):
         """Returns the nodes indexes of a group of cells.

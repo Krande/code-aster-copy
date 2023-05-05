@@ -291,21 +291,21 @@ class ExtendedMesh:
 
         return convertMesh2MedCoupling(self)
 
-    def getNodes(self, group_name="", localNumbering=True, same_rank=None):
+    def getNodes(self, group_name=[], localNumbering=True, same_rank=None):
         """Return the list of the indexes of the nodes that belong to a group of nodes.
 
         Arguments:
-            group_name (str): Name of the group (default: "").
+            group_name (list[str]): Name of groups (default: []).
             localNumbering (bool): not used (for compatibilty with ParallelMesh)
             same_rank (bool): not used (for compatibilty with ParallelMesh)
 
         Returns:
-            list[int]: Indexes of the nodes of the group.
+            list[int]: Indexes of the nodes of groups.
         """
 
         val = {None: PythonBool.NONE, True: PythonBool.TRUE, False: PythonBool.FALSE}
 
-        return self._getNodes(group_name, localNumbering, val[same_rank])
+        return self._getNodes(force_list(group_name), localNumbering, val[same_rank])
 
     def getNodesFromCells(self, group_name, localNumbering=True, same_rank=None):
         """Returns the nodes indexes of a group of cells.
