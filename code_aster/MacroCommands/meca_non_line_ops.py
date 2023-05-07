@@ -100,7 +100,6 @@ def meca_non_line_ops(self, **args):
         CONVERGENCE=args["CONVERGENCE"],
         NEWTON=args["NEWTON"],
         ETAT_INIT=args["ETAT_INIT"],
-        INCREMENT=args["INCREMENT"],
         INFO=args["INFO"],
         CONTACT=args["CONTACT"],
         METHODE=args["METHODE"],
@@ -137,7 +136,6 @@ def meca_non_line_ops(self, **args):
 
     # Add stepper
     timeStepper = TimeStepper.from_keywords(**args["INCREMENT"])
-
     solver.use(timeStepper)
 
     # Run computation

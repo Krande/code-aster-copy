@@ -23,7 +23,7 @@ from ..Objects import TimesList
 from ..Supervis import ExecuteCommand
 
 
-class DefiListInst(ExecuteCommand):
+class TimesListBuilder(ExecuteCommand):
     """Command that defines :class:`~code_aster.Objects.TimesList`."""
 
     command_name = "DEFI_LIST_INST"
@@ -36,5 +36,14 @@ class DefiListInst(ExecuteCommand):
         """
         self._result = TimesList()
 
+    def exec_(self, keywords):
+        """Execute the command.
 
-DEFI_LIST_INST = DefiListInst.run
+        Arguments:
+            keywords (dict): User's keywords.
+        """
+        super().exec_(keywords)
+        self._result.buildStepperFromKeywords(keywords)
+
+
+DEFI_LIST_INST = TimesListBuilder.run

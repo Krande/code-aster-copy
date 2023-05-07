@@ -364,6 +364,14 @@ class TestTimeStepper(unittest.TestCase):
         self.assertAlmostEqual(delta_t, 1.0)
         stp.completed()
 
+        other = stp.copy()
+        self.assertEqual(other.size(), 4)
+        self.assertFalse(other.hasFinished())
+        step = other.getCurrent()
+        self.assertAlmostEqual(step, 0.25)
+        delta_t = other.getIncrement()
+        self.assertEqual(delta_t, 0.25)
+
         self.assertTrue(stp.hasFinished())
         with self.assertRaisesRegex(IndexError, "no more timesteps"):
             stp.completed()

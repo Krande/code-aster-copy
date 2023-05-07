@@ -34,6 +34,7 @@ void exportTimesListToPython( py::module_ &mod ) {
     py::class_< TimesList, TimesList::TimesListPtr, DataStructure >( mod, "TimesList" )
         .def( py::init( &initFactoryPtr< TimesList > ) )
         .def( py::init( &initFactoryPtr< TimesList, std::string > ) )
+        .def_readwrite( "stepper", &TimesList::pyStepper )
         .def( "getValues", &TimesList::getValues )
         .def( "setValues", &TimesList::setValues );
 };

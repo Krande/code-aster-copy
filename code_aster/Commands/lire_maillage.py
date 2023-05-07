@@ -17,10 +17,6 @@
 # You should have received a copy of the GNU General Public License
 # along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
 
-# person_in_charge: nicolas.sellenet@edf.fr
-
-import os
-import os.path as osp
 
 from ..Helpers import FileAccess, LogicalUnitFile
 from ..Messages import UTMESS

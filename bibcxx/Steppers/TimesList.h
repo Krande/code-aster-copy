@@ -27,6 +27,8 @@
 /* person_in_charge: nicolas.sellenet at edf.fr */
 #include "astercxx.h"
 
+#include "aster_pybind.h"
+
 #include "DataStructures/DataStructure.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "Steppers/GenericStepper.h"
@@ -65,6 +67,9 @@ class TimesList : public DataStructure, public GenericStepper {
      * @brief Pointeur intelligent vers un TimesList
      */
     typedef std::shared_ptr< TimesList > TimesListPtr;
+
+    /* stored here before removing this object */
+    py::object pyStepper;
 
     /**
      * @brief Constructeur

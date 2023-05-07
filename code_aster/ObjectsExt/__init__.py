@@ -86,13 +86,14 @@ from .parallelequationnumbering_ext import ParallelEquationNumbering
 from .parallelfiniteelementdescriptor_ext import ParallelFiniteElementDescriptor
 from .parallelmechanicalload_ext import ParallelMechanicalLoadReal, ParallelMechanicalLoadFunction
 from .parallelmesh_ext import ConnectionMesh, ParallelMesh
+from .parallelthermalload_ext import ParallelThermalLoadReal, ParallelThermalLoadFunction
 from .prestressingcable_ext import PrestressingCable
 from .physicalproblem_ext import PhysicalProblem
 from .result_ext import Result
 from .table_ext import Table
+from .timeslist_ext import TimesList
 from .thermalload_ext import ThermalLoadReal, ThermalLoadFunction
 from .thermalresult_ext import ThermalResult
 from .fullresult_ext import FullResult
 from .generalizedresults_ext import TransientGeneralizedResult, HarmoGeneralizedResult
 from .xfemcrack_ext import XfemCrack
-from .parallelthermalload_ext import ParallelThermalLoadReal, ParallelThermalLoadFunction

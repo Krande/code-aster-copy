@@ -17,9 +17,12 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+import numpy
+
+from ..Cata.Syntax import _F
+from ..Utilities import logger, no_new_attributes
 from .solver_features import SolverFeature
 from .solver_features import SolverOptions as SOP
-from ..Utilities import no_new_attributes, logger
 
 
 class TimeStepper(SolverFeature):
@@ -60,6 +63,14 @@ class TimeStepper(SolverFeature):
     def null_increment(self):
         """float: delta between two steps to be considered as null."""
         return self._eps
+
+    def copy(self):
+        """Return a copy of the object.
+
+        Returns:
+            *TimeStepper: copy of the object.
+        """
+        return TimeStepper(self._times, initial=self._initial, final=self._final, epsilon=self._eps)
 
     def _check_bounds(self):
         """Remove out of bounds values."""
@@ -203,7 +214,7 @@ class TimeStepper(SolverFeature):
         self._current += 1
 
     def split(self, nb_steps):
-        """Split last time step in uniform sub-steps.
+        """Split the current step in uniform sub-steps.
 
         Arguments:
             nb_steps (int): Number of sub-steps.
@@ -241,10 +252,16 @@ class TimeStepper(SolverFeature):
             args (dict): keywords as for INCREMENT.
 
         Returns:
-            TimeStepper: a new TimeStepper.
+            TimeStepper: a new TimeStepper or a copy of the object from INCREMENT.
         """
         assert "LIST_INST" in args, "THER_NON_LINE not yet supported!"
-        times = args["LIST_INST"].getValues()
+        try:
+            stp = args["LIST_INST"].stepper.copy()
+            times = stp._times
+        except AttributeError:
+            # ListOfFloats
+            times = args["LIST_INST"].getValues()
+            stp = None
         initial = times[0]
         eps = args.get("PRECISION", 1.0e-6)
         if "INST_INIT" in args:  # because None has a special meaning
@@ -254,5 +271,40 @@ class TimeStepper(SolverFeature):
         final = args.get("INST_FIN")
         if args.get("NUME_INST_FIN"):
             final = times[args["NUME_INST_FIN"]]
-        stp = TimeStepper(times, initial=initial, final=final, epsilon=eps)
+        if stp is None:
+            stp = TimeStepper(times, initial=initial, final=final, epsilon=eps)
+        else:
+            stp.setInitial(initial)
+            stp.setFinal(final)
+            stp._eps = eps
+        return stp
+
+    @staticmethod
+    def command_factory(args):
+        """Create a TimeStepper from DEFI_LIST_INST keywords.
+
+        *Transitional function during migration from legacy operators that need
+        a TimesList object and the ones are used a TimeStepper.*
+
+        Argumentss:
+            args (dict): User keywords
+
+        Returns:
+            TimeStepper: a new TimeStepper.
+        """
+        args = _F(args)
+        definition = args["DEFI_LIST"]
+        if "VALE" in definition:
+            times = definition["VALE"]
+        elif "LIST_INST" in definition:
+            times = definition["LIST_INST"].getValues()
+        else:
+            # this option did not exist with AUTO
+            result = definition["RESULTAT"]
+            div = definition["SUBD_PAS"]
+            orig = [result.getTime(idx) for idx in result.getIndexes()]
+            times = [orig.pop(0)]
+            for step in orig:
+                times.extend(numpy.linspace(times[-1], step, div + 1)[1:])
+        stp = TimeStepper(times, initial=None)
         return stp
