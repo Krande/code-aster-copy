@@ -160,10 +160,18 @@ def calc_spectre_ipm_ops(
                         ok2 = ok2 and (para in nomcol)
                     #
                     if not ok1 ^ ok2:
-                        print(nomcol)
-                        assert ok1 ^ ok2
+                        UTMESS("F", "SPECTRAL0_21", valk=(",".join(lst1), ",".join(lst2)))
                     #
+                    col_cham = resu["TABLE"].get_column("NOM_CHAM")
+                    if not "ACCE" in col_cham:
+                        UTMESS("F", "SPECTRAL0_22")
+
                     if ok1:
+
+                        col_cham = resu["TABLE"].get_column("NOM_CMP")
+                        if not "DZ" in col_cham:
+                            UTMESS("F", "SPECTRAL0_23")
+
                         __ACCE_E = RECU_FONCTION(
                             TABLE=resu["TABLE"],
                             PARA_X="INST",
@@ -187,6 +195,8 @@ def calc_spectre_ipm_ops(
                                 _F(NOM_PARA="NOM_CHAM", VALE_K="ACCE"),
                             ),
                         )
+                elif resu["FONCTION"] is not None:
+                    __ACCE_E = resu["FONCTION"]
                 # Etape 2: Combinaisons
                 if CALCUL == "RELATIF":
                     # Combinaison avec fonction d'accélération

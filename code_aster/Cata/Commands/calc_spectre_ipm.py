@@ -69,13 +69,21 @@ CALC_SPECTRE_IPM = MACRO(
         RESU=FACT(
             statut="o",
             max=1,
-            TABLE=SIMP(statut="o", typ=table_sdaster),
+            regles=(UN_PARMI("TABLE", "FONCTION"),),
+            TABLE=SIMP(statut="f", typ=table_sdaster),
+            FONCTION=SIMP(statut="f", typ=fonction_sdaster),
             ACCE_Z=SIMP(statut="o", typ=fonction_sdaster),
         ),
     ),
     b_abso=BLOC(
         condition="""equal_to("CALCUL", 'ABSOLU')""",
-        RESU=FACT(statut="o", max=1, TABLE=SIMP(statut="o", typ=table_sdaster)),
+        RESU=FACT(
+            statut="o",
+            max=1,
+            regles=(UN_PARMI("TABLE", "FONCTION"),),
+            TABLE=SIMP(statut="f", typ=table_sdaster),
+            FONCTION=SIMP(statut="f", typ=fonction_sdaster),
+        ),
     ),
     TOLE_INIT=SIMP(statut="f", typ="R", max=1, defaut=1e-3),
     CORR_INIT=SIMP(statut="f", typ="TXM", defaut="NON", into=("OUI", "NON")),

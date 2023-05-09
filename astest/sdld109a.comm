@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -160,6 +160,28 @@ ACCE0 = DEFI_CONSTANTE(VALE=1.0e-8)
 # )
 
 TAB = CREA_TABLE(RESU=_F(RESULTAT=TRAN_LA, NOM_CHAM="ACCE", TOUT_CMP="OUI", TOUT="OUI"))
+# la table TAB est au bon format pour être fournie à CALC_SPECTRE_IPM.
+# Cependant dans certains cas, les informations sont uniquement disponible dans un fichier.
+# Dans ce cas, la première étape consiste à utiliser la commande LIRE_FONCTION pour récupérer les infos.
+# On montre ensuite les étapes pour transformer la fonction en une table contenant toutes les données nécessaires.
+
+# On peut aussi fournir directement la fonction à CALC_SPECTRE_IPM.
+
+FDZ = RECU_FONCTION(RESULTAT=TRAN_LA, NOM_CHAM="ACCE", GROUP_NO="N02", NOM_CMP="DZ")
+
+TAB2 = CREA_TABLE(FONCTION=_F(FONCTION=FDZ, PARA=("INST", "DZ_0")))
+
+# La table doit contenir les colonnes INST, DZ, NOEUD, NOM_CHAM (qui doit valoir ACCE)
+# On renomme si besoin (ici DZ_0) et on ajoute NOEUD et NOM_CHAM
+TAB2 = CALC_TABLE(
+    reuse=TAB2,
+    TABLE=TAB2,
+    ACTION=(
+        _F(OPERATION="RENOMME", NOM_PARA=("DZ_0", "DZ")),
+        _F(OPERATION="AJOUT_COLONNE", NOM_PARA="NOEUD", VALE="N02"),
+        _F(OPERATION="AJOUT_COLONNE", NOM_PARA="NOM_CHAM", VALE="ACCE"),
+    ),
+)
 
 tabl_spe = CALC_SPECTRE_IPM(
     MAILLAGE=MAILLAGE,
@@ -180,7 +202,7 @@ tabl_spe = CALC_SPECTRE_IPM(
     CALCUL="RELATIF",
     LIST_FREQ=L_FREQ,
     NORME=1.0,
-    RESU=(_F(TABLE=TAB, ACCE_Z=ACCE),),
+    RESU=(_F(TABLE=TAB2, ACCE_Z=ACCE),),
 )
 
 #
@@ -208,7 +230,7 @@ tabl_rel = CALC_SPECTRE_IPM(
     CALCUL="RELATIF",
     LIST_FREQ=L_FREQ,
     NORME=1.0,
-    RESU=(_F(TABLE=TAB, ACCE_Z=ACCE00),),
+    RESU=(_F(FONCTION=FDZ, ACCE_Z=ACCE00),),
 )
 
 tabl_abs = CALC_SPECTRE_IPM(

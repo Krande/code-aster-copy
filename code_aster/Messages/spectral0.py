@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -110,6 +110,30 @@ Cette librairie est disponible en lançant le calcul depuis salome_meca.
     20: _(
         """
 Le mot-clé ELARG n'a pas d'effet avec l'option CONCEPTION.
+"""
+    ),
+    21: _(
+        """
+La table renseignée ne comporte pas toutes les colonnes attendues.
+Il y a deux formats possibles: 
+ - présence des colonnes : %(k1)s
+ - présence des colonnes : %(k2)s
+"""
+    ),
+    22: _(
+        """
+La table renseignée ne comporte pas certaines valeurs attendues.
+
+Vérifiez qu'il existe des valeurs "ACCE" dans le colonne NOM_CHAM
+car seules les lignes correspondantes sont considérées.
+"""
+    ),
+    23: _(
+        """
+La table renseignée ne comporte pas certaines valeurs attendues.
+
+Vérifiez qu'il existe des valeurs "DZ" dans le colonne NOM_CMP
+car seules les lignes correspondantes sont considérées.
 """
     ),
 }
