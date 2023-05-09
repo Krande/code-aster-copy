@@ -436,7 +436,6 @@ DYNA_VIBRA = OPER(
             max="**",
             regles=(
                 UN_PARMI("CHARGE", "VECT_ASSE"),
-                EXCLUS("CHARGE", "COEF_MULT"),
                 EXCLUS("FONC_MULT", "COEF_MULT"),
                 EXCLUS("ACCE", "COEF_MULT"),
                 PRESENT_ABSENT("ACCE", "FONC_MULT"),

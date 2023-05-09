@@ -137,8 +137,17 @@ subroutine lislfc(list_load_resu, i_load, i_excit, l_load_user, &
                 call getvid(load_keyword, 'ACCE', iocc=i_excit, nbval=0, nbret=i_coef_a)
             end if
         end if
+! ----- Detect COEF_MULT
+        nb_coef_r = 0
+        if (l_load_user) then
+            if (nb_func_r .eq. 0 .and. i_coef_a .eq. 0) then
+                if (getexm(load_keyword, 'COEF_MULT') .eq. 1) then
+                    call getvr8(load_keyword, 'COEF_MULT', iocc=i_excit, nbval=0, nbret=nb_coef_r)
+                end if
+            end if
+        end if
 ! ----- Create constant function
-        if (nb_func_r .eq. 0 .and. i_coef_a .eq. 0) then
+        if (nb_func_r .eq. 0 .and. i_coef_a .eq. 0 .and. nb_coef_r .eq. 0) then
             nomf19 = const_func
             call jeexin(nomf19//'.PROL', iret)
             if (iret .eq. 0) then
@@ -158,6 +167,12 @@ subroutine lislfc(list_load_resu, i_load, i_excit, l_load_user, &
             end if
             if (i_coef_a .ne. 0) then
                 call getvid(load_keyword, 'ACCE', iocc=i_excit, scal=load_func)
+            end if
+            if (nb_coef_r .ne. 0) then
+                call codent(i_load, 'D0', knum)
+                load_func = '&&NC'//knum
+                call getvr8(load_keyword, 'COEF_MULT', iocc=i_excit, scal=coef_r, nbret=nb_coef_r)
+                call focste(load_func, 'TOUTRESU', coef_r, base)
             end if
         end if
     end if

@@ -87,7 +87,7 @@ subroutine comdlt()
     integer :: neq, idepl0, ivite0, iacce0, iwk, iordr
     integer :: iinteg, iret, nbpas, nbpas_min, nbpas_max
     integer :: nbord, jchar, jinst, pasar, nbar
-    integer :: lresu, lcrre, iresu, nbexre, l
+    integer :: lresu, lcrre, iresu, nbexre, l, ncomu
     integer :: nbchre, iocc, nfon, nbexcl, i, counter, lsize
     real(kind=8) :: t0, time, rundf, alpha, tinit
     real(kind=8) :: tfin, dt, dtmin, dtmax, cdivi
@@ -140,6 +140,7 @@ subroutine comdlt()
     alpha = 0.d0
     calpha = (0.d0, 0.d0)
     nfon = 0
+    ncomu = 0
     typcoe = ' '
     charep = ' '
     chtime = ' '
@@ -457,10 +458,13 @@ subroutine comdlt()
                 if (iocc .gt. 0) then
                     call getvid('EXCIT', 'CHARGE', iocc=iocc, scal=charep, nbret=iret)
                     call getvid('EXCIT', 'FONC_MULT', iocc=iocc, scal=nomfon, nbret=nfon)
+                    if (nfon .ne. 0) then
+                        call getvr8('EXCIT', 'COEF_MULT', iocc=iocc, scal=alpha, nbret=ncomu)
+                    end if
                 end if
             end if
             typcoe = 'R'
-            alpha = 1.d0
+            if (ncomu .eq. 0) alpha = 1.d0
         end if
         do iordr = 0, nbord
             call rsexch(' ', result, 'DEPL', iordr, chamgd, &
