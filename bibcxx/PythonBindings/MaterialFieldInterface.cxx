@@ -36,7 +36,8 @@ void exportMaterialFieldToPython( py::module_ &mod ) {
 
     py::class_< MaterialField, MaterialFieldPtr, DataStructure >( mod, "MaterialField" )
         .def( py::init( &initFactoryPtr< MaterialField, const BaseMeshPtr & > ) )
-        .def( py::init( &initFactoryPtr< MaterialField, const std::string &, const BaseMeshPtr & > ) )
+        .def(
+            py::init( &initFactoryPtr< MaterialField, const std::string &, const BaseMeshPtr & > ) )
         .def( "addBehaviourOnMesh", &MaterialField::addBehaviourOnMesh, R"(
             Add behaviour (from DEFI_COMPOR) on mesh
 

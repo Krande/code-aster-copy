@@ -319,6 +319,8 @@
      - 
    * - :py:class:`~code_aster.Objects.StructureInterface`
      - ``interf_dyna_clas``
+   * - :py:class:`~code_aster.Objects.SuperMesh`
+     - ``maillage_sdaster``
    * - :py:class:`~code_aster.Objects.Table`
      - ``table_sdaster``
    * - :py:class:`~code_aster.Objects.TableContainer`

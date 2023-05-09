@@ -1397,6 +1397,15 @@ Subclasses of :py:class:`~code_aster.Objects.DataStructure`
 
 
 ********************************************************************************
+:py:class:`~code_aster.Objects.SuperMesh` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.SuperMesh
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
 :py:class:`~code_aster.Objects.Table` object
 ********************************************************************************
 

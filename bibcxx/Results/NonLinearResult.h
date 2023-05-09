@@ -64,7 +64,6 @@ class NonLinearResult : public TransientResult {
     void setContact( const ContactPtr contact, const ASTERINTEGER &rank );
 
     static VectorReal getTangentMatrix( const std::string & );
-
 };
 
 /**

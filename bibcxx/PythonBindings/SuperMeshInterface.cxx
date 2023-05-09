@@ -24,10 +24,10 @@
 
 //#include "aster_pybind.h"
 
-#include <Meshes/SuperMesh.h>
-
 #include "Modal/DynamicMacroElement.h"
 #include "Modal/StaticMacroElement.h"
+
+#include <Meshes/SuperMesh.h>
 
 void exportSuperMeshToPython( py::module_ &mod ) {
 
@@ -53,6 +53,4 @@ Add a static macro element.
         .def( "getStaticMacroElements", &SuperMesh::getStaticMacroElements, R"(
 Return all static macro elements.
         )" );
-
 };
-

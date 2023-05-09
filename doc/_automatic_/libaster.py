@@ -490,12 +490,6 @@ class BaseMesh(DataStructure):
     def __init__(self, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
-    def addDynamicMacroElement(self, arg0):
-        """Add a dynamic macro element."""
-
-    def addStaticMacroElement(self, arg0):
-        """Add a static macro element."""
-
     def build(self):
         """Build list of Tables based on the mesh
 
@@ -561,9 +555,6 @@ class BaseMesh(DataStructure):
             int: 2 or 3
         """
 
-    def getDynamicMacroElements(self):
-        """Return all dynamic macro elements."""
-
     def getMedCellsTypes(self):
         """Return the Med type of each cell.
 
@@ -601,9 +592,6 @@ class BaseMesh(DataStructure):
         Returns:
             int: Number of nodes.
         """
-
-    def getStaticMacroElements(self):
-        """Return all static macro elements."""
 
     def getTable(self, identifier):
         """Extract a Table from the datastructure.
@@ -3205,9 +3193,6 @@ class Table(DataStructure):
         2. __init__(self: libaster.Table, arg0: str) -> None
         """
 
-    def getColumn(self, arg0):
-        pass
-
     def getColumnType(self, arg0):
         pass
 
@@ -3215,6 +3200,9 @@ class Table(DataStructure):
         pass
 
     def getParameters(self):
+        pass
+
+    def getValues(self, arg0):
         pass
 
 
@@ -6870,22 +6858,22 @@ class InterspectralMatrix(DataStructure):
         2. __init__(self: libaster.InterspectralMatrix, arg0: str) -> None
         """
 
-    def getCmpI(self):
+    def getColumnComponents(self):
         pass
 
-    def getCmpJ(self):
+    def getColumnIndexes(self):
         pass
 
-    def getNoeI(self):
+    def getColumnNodes(self):
         pass
 
-    def getNoeJ(self):
+    def getLineComponents(self):
         pass
 
-    def getNumI(self):
+    def getLineIndexes(self):
         pass
 
-    def getNumJ(self):
+    def getLineNodes(self):
         pass
 
     def getNumberOfFrequencies(self):
@@ -9001,15 +8989,9 @@ class MaterialField(DataStructure):
     def __init__(self, *args, **kwargs):
         """Overloaded function.
 
-        1. __init__(self: libaster.MaterialField, arg0: libaster.Mesh) -> None
+        1. __init__(self: libaster.MaterialField, arg0: libaster.BaseMesh) -> None
 
-        2. __init__(self: libaster.MaterialField, arg0: Skeleton) -> None
-
-        3. __init__(self: libaster.MaterialField, arg0: str, arg1: libaster.Mesh) -> None
-
-        4. __init__(self: libaster.MaterialField, arg0: ParallelMesh) -> None
-
-        5. __init__(self: libaster.MaterialField, arg0: str, arg1: ParallelMesh) -> None
+        2. __init__(self: libaster.MaterialField, arg0: str, arg1: libaster.BaseMesh) -> None
         """
 
     def addBehaviourOnGroupOfCells(self, behaviour, nameOfGroups):
@@ -9346,6 +9328,48 @@ class StaticMacroElement(DataStructure):
 
         2. __init__(self: libaster.StaticMacroElement, arg0: str) -> None
         """
+
+
+# class SuperMesh in libaster
+
+
+class SuperMesh(Mesh):
+    pass
+
+    # Method resolution order:
+    #     SuperMesh
+    #     Mesh
+    #     BaseMesh
+    #     DataStructure
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. __init__(self: libaster.SuperMesh) -> None
+
+        2. __init__(self: libaster.SuperMesh, arg0: str) -> None
+        """
+
+    def addDynamicMacroElement(self, arg0):
+        """Add a dynamic macro element."""
+
+    def addStaticMacroElement(self, arg0):
+        """Add a static macro element."""
+
+    def build(self):
+        """Returns:
+        bool: true if building is ok
+        """
+
+    def getDynamicMacroElements(self):
+        """Return all dynamic macro elements."""
+
+    def getStaticMacroElements(self):
+        """Return all static macro elements."""
 
 
 # class CrackShape in libaster
@@ -10606,8 +10630,6 @@ class Result(DataStructure):
             Table: Table stored with the given identifier.
         """
 
-    def getTangentMatrix(self):
-        pass
 
     def getTime(self, index):
         """Get time at the specified index
@@ -11006,6 +11028,9 @@ class NonLinearResult(TransientResult):
 
         2. __init__(self: libaster.NonLinearResult, arg0: str) -> None
         """
+
+    def getTangentMatrix(self):
+        pass
 
     def setContact(self, *args, **kwargs):
         """Overloaded function.

@@ -40,7 +40,6 @@ class SuperMesh : public Mesh {
     std::vector< StaticMacroElementPtr > _static_macro_elements;
 
   public:
-
     /**
      * @brief Constructor
      */
@@ -72,5 +71,4 @@ class SuperMesh : public Mesh {
     std::vector< StaticMacroElementPtr > getStaticMacroElements() const;
 
     bool build();
-
 };

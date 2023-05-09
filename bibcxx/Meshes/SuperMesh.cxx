@@ -24,15 +24,15 @@
 
 #include "Modal/DynamicMacroElement.h"
 #include "Modal/StaticMacroElement.h"
-
 #include "Supervis/ResultNaming.h"
 
-SuperMesh::SuperMesh(): SuperMesh( ResultNaming::getNewResultName() ){};
+SuperMesh::SuperMesh() : SuperMesh( ResultNaming::getNewResultName() ) {};
 
-SuperMesh::SuperMesh( const std::string &name ): Mesh( name ),
+SuperMesh::SuperMesh( const std::string &name )
+    : Mesh( name ),
       _superElementName( JeveuxVectorLong( getName() + ".NOMACR" ) ),
       _superElementPara( JeveuxVectorReal( getName() + ".PARA_R" ) ),
-      _superElements( JeveuxCollectionLong( getName() + ".SUPMAIL" ) ){};
+      _superElements( JeveuxCollectionLong( getName() + ".SUPMAIL" ) ) {};
 
 bool SuperMesh::addDynamicMacroElement( const DynamicMacroElementPtr &elem ) {
     _dynamic_macro_elements.push_back( elem );

@@ -408,7 +408,6 @@ class BaseMesh : public DataStructure, public ListOfTables {
     void show( const int verbosity = 1 ) const;
 
     void check( const ASTERDOUBLE tolerance );
-
 };
 
 /**
