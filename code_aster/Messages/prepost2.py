@@ -33,7 +33,7 @@ Conseil :
 """),
 
     7 : _("""
-Le filtre TYPE_MAILLE a éliminé %(i1)d mailles .
+Le filtre TYPE_MAILLE a éliminé %(i1)d mailles.
 """),
 
     8 : _("""
