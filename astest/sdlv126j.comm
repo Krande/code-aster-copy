@@ -70,8 +70,10 @@ F_elem = CALC_VECT_ELEM(OPTION="CHAR_MECA", CHARGE=excit)
 F = ASSE_VECTEUR(VECT_ELEM=F_elem, NUME_DDL=nddl)
 
 # Boundary condition
-encas = AFFE_CHAR_CINE(MECA_IMPO=(_F(GROUP_MA=("ENCAS"), DX=0.0, DY=0.0, DZ=0.5)), MODELE=model)
-kineLoad = CALC_CHAR_CINE(NUME_DDL=nddl, CHAR_CINE=encas)
+ZERO = DEFI_CONSTANTE(VALE=0.0)
+DZ = FORMULE(VALE="FREQ", NOM_PARA="FREQ")
+FONCZ = FORMULE(VALE="1./FREQ", NOM_PARA="FREQ")
+encas = AFFE_CHAR_CINE_F(MECA_IMPO=(_F(GROUP_MA=("ENCAS"), DX=ZERO, DY=ZERO, DZ=DZ)), MODELE=model)
 
 
 # Loop on frequencies
@@ -135,7 +137,7 @@ for i in range(Nb_freq):
         SOLVEUR=_F(METHODE="MUMPS"),
         FREQ=freq,
         TOUT_CHAM="OUI",
-        EXCIT=(_F(VECT_ASSE=F, COEF_MULT=1.0), _F(CHARGE=encas, COEF_MULT=2.0)),
+        EXCIT=(_F(VECT_ASSE=F, COEF_MULT=1.0), _F(CHARGE=encas, FONC_MULT=FONCZ)),
     )
 
     # recupération des accélération aux points de postraitement

@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ascavc(lchar, infcha, fomult, numedd, inst, vci, dlci_, &
-                  l_hho_, hhoField_, basez)
+subroutine ascavc(lchar, infcha, fomult, numedd, vpara, vci, dlci_, &
+                  l_hho_, hhoField_, basez, nom_para)
 !
     use HHO_type
 !
@@ -37,16 +37,23 @@ subroutine ascavc(lchar, infcha, fomult, numedd, inst, vci, dlci_, &
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/lisico.h"
+#include "asterfort/lislco.h"
+#include "asterfort/lisnnb.h"
+#include "asterfort/lislch.h"
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=24) :: lchar, infcha, fomult
     character(len=*) :: vci, numedd
-    real(kind=8) :: inst
+    real(kind=8) :: vpara
     character(len=*), optional :: dlci_
     aster_logical, intent(in), optional :: l_hho_
     type(HHO_Field), intent(in), optional :: hhoField_
     character(len=1), intent(in), optional :: basez
+    character(len=8), intent(in), optional :: nom_para
 ! ----------------------------------------------------------------------
 ! BUT  :  CALCUL DU CHAM_NO CONTENANT LE VECTEUR LE CINEMATIQUE
 ! ---     ASSOCIE A LA LISTE DE CHAR_CINE_* LCHAR A UN INSTANT INST
@@ -56,7 +63,7 @@ subroutine ascavc(lchar, infcha, fomult, numedd, inst, vci, dlci_, &
 ! IN  K*19 INFCHA : NOM DE L'OJB S V I CONTENANT LA LISTE DES INFO.
 ! IN  K*24 FOMULT : NOM DE L'OJB S V K24 CONTENANT LA LISTE DES FONC.
 ! IN  K*14 NUMEDD  : NOM DE LA NUMEROTATION SUPPORTANT LE CHAM_NO
-! IN  R*8  INST   : VALE DU PARAMETRE INST.
+! IN  R*8  VPARA   : VALE DU PARAMETRE NOM_PARA, 'INST' PAR DEFAUT.
 ! VAR/JXOUT  K*19 VCI    :  CHAM_NO RESULTAT
 !   -------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -64,14 +71,15 @@ subroutine ascavc(lchar, infcha, fomult, numedd, inst, vci, dlci_, &
 !     VARIABLES LOCALES
 !----------------------------------------------------------------------
     integer :: idchar, jinfc, idfomu, nchtot, nchci, ichar, icine, ilchno
-    integer :: ichci, ifm, niv, neq, ieq, jdlci2, ieqmul
+    integer :: ichci, ifm, niv, neq, ieq, jdlci2, ieqmul, genrec
     character(len=1) :: base, typval
-    character(len=8) :: newnom
-    character(len=19) :: charci, chamno, vci2, nume_equa
+    character(len=8) :: newnom, npara
+    character(len=19) :: charci, chamno, vci2, nume_equa, listLoad
     character(len=24) :: vachci, dlci
     character(len=8) :: charge
-    aster_logical :: l_hho
+    aster_logical :: l_hho, l_new_sd_load
     integer, pointer :: v_dlci(:) => null()
+    aster_logical, pointer :: v_kine(:) => null()
 
     data chamno/'&&ASCAVC.???????'/
     data vachci/'&&ASCAVC.LISTE_CI'/
@@ -99,6 +107,7 @@ subroutine ascavc(lchar, infcha, fomult, numedd, inst, vci, dlci_, &
     end if
 !
     newnom = '.0000000'
+    listLoad = lchar(1:19)
 !
 ! - For HHO
 !
@@ -107,22 +116,50 @@ subroutine ascavc(lchar, infcha, fomult, numedd, inst, vci, dlci_, &
         l_hho = l_hho_
     end if
 !
+    npara = 'INST'
+    if (present(nom_para)) then
+        npara = nom_para
+    end if
+!
     call jedetr(vachci)
     call jedetr(vci2//'.DLCI')
     call jeveuo(lchar, 'L', idchar)
-    call jeveuo(infcha, 'L', jinfc)
-    call jeveuo(fomult, 'L', idfomu)
 !
-    nchtot = zi(jinfc)
+!   récupération du nombre de chargement selon le type de SD (ancienne ou nouvelle)
+!
+    l_new_sd_load = ASTER_TRUE
+    call lisnnb(listLoad, nchtot)
+    if (nchtot .eq. 0) then
+        call jeveuo(infcha, 'L', jinfc)
+        nchtot = zi(jinfc)
+        l_new_sd_load = ASTER_FALSE
+    end if
+    call jeveuo(fomult, 'L', idfomu)
+    AS_ALLOCATE(vl=v_kine, size=max(nchtot, 1))
+    v_kine(:) = ASTER_FALSE
+!
     nchci = 0
     ieqmul = 0
 !
-    do ichar = 1, nchtot
-        icine = zi(jinfc+ichar)
-        if (icine .lt. 0) nchci = nchci+1
-!       -- UNE CHARGE NON "CINEMATIQUE" PEUT EN CONTENIR UNE :
-        charge = zk24(idchar-1+ichar) (1:8)
-    end do
+    if (l_new_sd_load) then
+        do ichar = 1, nchtot
+            call lislco(listLoad, ichar, genrec)
+            if (lisico('DIRI_ELIM', genrec)) then
+                nchci = nchci+1
+                v_kine(ichar) = ASTER_TRUE
+            end if
+        end do
+    else
+        do ichar = 1, nchtot
+            icine = zi(jinfc+ichar)
+            if (icine .lt. 0) then
+                nchci = nchci+1
+                v_kine(ichar) = ASTER_TRUE
+            end if
+            !       -- UNE CHARGE NON "CINEMATIQUE" PEUT EN CONTENIR UNE :
+            charge = zk24(idchar-1+ichar) (1:8)
+        end do
+    end if
 !
 !
     call wkvect(vachci, 'V V K24', max(nchci, 1), ilchno)
@@ -150,20 +187,23 @@ subroutine ascavc(lchar, infcha, fomult, numedd, inst, vci, dlci_, &
         call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
         call wkvect(dlci, base//' V I', neq, jdlci2)
         do ichar = 1, nchtot
-            charge = zk24(idchar-1+ichar) (1:8)
-            icine = zi(jinfc+ichar)
-            if (icine .lt. 0) then
+            if (l_new_sd_load) then
+                call lislch(listLoad, ichar, charge)
+            else
+                charge = zk24(idchar-1+ichar) (1:8)
+            end if
+            if (v_kine(ichar)) then
                 ichci = ichci+1
                 call gcnco2(newnom)
                 chamno(10:16) = newnom(2:8)
                 call corich('E', chamno, ichin_=ichar)
                 zk24(ilchno-1+ichci) = chamno
                 if (l_hho) then
-                    call calvci(chamno, numedd, 1, charge, inst, &
-                                'V', l_hho, hhoField_)
+                    call calvci(chamno, numedd, 1, charge, vpara, &
+                                'V', l_hho, hhoField_, nom_para=npara)
                 else
-                    call calvci(chamno, numedd, 1, charge, inst, &
-                                'V', l_hho)
+                    call calvci(chamno, numedd, 1, charge, vpara, &
+                                'V', l_hho, nom_para=npara)
                 end if
                 call jeveuo(chamno//'.DLCI', 'L', vi=v_dlci)
 !           --- COMBINAISON DES DLCI (OBJET CONTENANT DES 0 OU DES 1),
@@ -182,7 +222,7 @@ subroutine ascavc(lchar, infcha, fomult, numedd, inst, vci, dlci_, &
     end if
 !
 !     -- ON COMBINE LES CHAMPS CALCULES :
-    call ascova('D', vachci, fomult, 'INST', inst, &
+    call ascova('D', vachci, fomult, npara, vpara, &
                 typval, vci2, base)
 !
 !     --SI ON A PAS DE CHARGE CINEMATIQUE, IL FAUT QUAND MEME
@@ -193,6 +233,7 @@ subroutine ascavc(lchar, infcha, fomult, numedd, inst, vci, dlci_, &
     if (.not. present(dlci_)) then
         call jedetr(dlci)
     end if
+    AS_DEALLOCATE(vl=v_kine)
 !
     call jedema()
 end subroutine

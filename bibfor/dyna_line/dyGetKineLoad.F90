@@ -49,15 +49,13 @@ subroutine dyGetKineLoad(matrRigiz, matrMassz, matrDampz, lDamp, listLoadz, kine
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=14) :: numeDof
     character(len=19) :: matrRigi, matrMass, matrDamp, listload
-    character(len=24) :: multFunc, listLoadInfoName, listLoadName
+    character(len=24) :: listLoadInfoName, listLoadName
     character(len=8) :: answer, kineLoadName
     character(len=8) :: matrRigiMesh, matrMassMesh, matrDampMesh, kineLoadMesh
     aster_logical :: lKineLoadInRigi, lKineLoadInMass, lKineLoadInDamp, lKineLoad, lTransient
     integer :: matrRigiNbEqua, matrMassNbEqua, matrDampNbEqua
     integer :: iLoad, nbLoad, iLoadKine, genrec
-    real(kind=8) :: time
     integer, pointer :: listLoadInfo(:) => null()
     character(len=24), pointer :: vlistLoadName(:) => null()
 !
@@ -77,7 +75,6 @@ subroutine dyGetKineLoad(matrRigiz, matrMassz, matrDampz, lDamp, listLoadz, kine
     if (lTransient) then
         call lisnch(listLoad, nbLoad)
         listLoadName = listLoad(1:19)//'.LCHA'
-        multFunc = listLoad(1:19)//'.FCHA'
         listLoadInfoName = listLoad(1:19)//'.INFC'
         if (nbLoad .ne. 0) then
             call jeveuo(listLoadInfoName, 'L', vi=listLoadInfo)
@@ -213,13 +210,6 @@ subroutine dyGetKineLoad(matrRigiz, matrMassz, matrDampz, lDamp, listLoadz, kine
 ! - Convert in nodal field
     if (lKineLoad) then
         kineLoad = '&&COMDLT.KINELOAD'
-        time = 0.d0
-        call dismoi('NOM_NUME_DDL', matrRigi, 'MATR_ASSE', repk=numeDof)
-        if (lTransient) then
-!            call ascavc(listLoadName, listLoadInfoName, multFunc, numeDof, time, kineLoad)
-        else
-            call calvci(kineLoad, numeDof, 1, kineLoadName, time, 'V', ASTER_FALSE)
-        end if
     end if
 
 !

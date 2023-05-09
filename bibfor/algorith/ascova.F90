@@ -76,7 +76,7 @@ subroutine ascova(detr, vachar, fomulz, npara, vpara, &
 !
 !
     integer :: kk, nbvec, nchar, iret, jvec, jfonct, jcoef, jtype, k
-    integer :: icha, ier, n1, npuis, n2
+    integer :: icha, ier, n1, npuis, n2, ltyp
     real(kind=8) :: valres, valre, valim, dgrd, omega, phase
     aster_logical :: fct
     character(len=19) :: chamno
@@ -113,6 +113,7 @@ subroutine ascova(detr, vachar, fomulz, npara, vpara, &
         call jelira(fomult, 'LONMAX', nchar)
         ASSERT(nchar .ne. 0)
         call jeveuo(fomult, 'L', jfonct)
+        call jelira(fomult, 'LTYP', ltyp)
     end if
 !
 !
@@ -136,11 +137,18 @@ subroutine ascova(detr, vachar, fomulz, npara, vpara, &
             else
                 ASSERT(icha .le. nchar)
                 valres = 1.d0
-                if (fct .and. zk24(jfonct+icha-1) .ne. ' ') then
-                    call fointe('F ', zk24(jfonct+icha-1), 1, [npara], [vpara], &
-                                valres, ier)
-                else
-                    valres = 1.d0
+                if (fct) then
+                    if (ltyp .eq. 8) then
+                        if (zk8(jfonct+icha-1) .ne. ' ') then
+                            call fointe('F ', zk8(jfonct+icha-1), 1, [npara], &
+                                        [vpara], valres, ier)
+                        end if
+                    else
+                        if (zk24(jfonct+icha-1) .ne. ' ') then
+                            call fointe('F ', zk24(jfonct+icha-1), 1, [npara], &
+                                        [vpara], valres, ier)
+                        end if
+                    end if
                 end if
             end if
 !
