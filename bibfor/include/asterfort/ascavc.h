@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,18 +18,19 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine ascavc(lchar, infcha, fomult, numedd, inst, vci, dlci_, &
-                      l_hho_, hhoField_, basez)
+    subroutine ascavc(lchar, infcha, fomult, numedd, vpara, vci, dlci_, &
+                      l_hho_, hhoField_, basez, nom_para)
         use HHO_type
         character(len=24) :: lchar
         character(len=24) :: infcha
         character(len=24) :: fomult
         character(len=*) :: numedd
-        real(kind=8) :: inst
+        real(kind=8) :: vpara
         character(len=*) :: vci
         character(len=*), optional :: dlci_
         aster_logical, intent(in), optional :: l_hho_
         type(HHO_Field), intent(in), optional :: hhoField_
         character(len=1), intent(in), optional :: basez
+        character(len=8), intent(in), optional :: nom_para
     end subroutine ascavc
 end interface

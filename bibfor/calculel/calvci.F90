@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine calvci(nomci, nume_ddlz, nbchci   , lchci, inst,&
-                  base , l_hho    , hhoField_)
+subroutine calvci(nomci, nume_ddlz, nbchci, lchci, vpara, &
+                  base, l_hho, hhoField_, nom_para)
 !
 use HHO_type
 use HHO_Dirichlet_module
@@ -47,10 +47,11 @@ implicit none
 !
 character(len=*) :: nomci, lchci(*), nume_ddlz
 character(len=1) :: base
-real(kind=8) :: inst
+real(kind=8) :: vpara
 integer :: nbchci
 aster_logical, intent(in) :: l_hho
 type(HHO_Field), intent(in), optional :: hhoField_
+    character(len=8), intent(in), optional :: nom_para
 ! ----------------------------------------------------------------------
 ! BUT  :  CALCUL DU CHAM_NO CONTENANT UN VECTEUR LE CINEMATIQUE
 ! ---     ASSOCIE A UNE LISTE DE CHAR_CINE_* A UN INSTANT INST
@@ -71,7 +72,7 @@ type(HHO_Field), intent(in), optional :: hhoField_
 ! IN  I    NBCHCI : NOMBRE DE CHAR_CINE DE LA LISTE LCHCI
 ! IN  K*24 LCHCI  : LISTE DES NOMS DES CHARGES CINEMATIQUES ENTRANT
 !                   DANS LE CALCUL DU CHAM_NO NOMCI
-! IN  R*8  INST   : INSTANT
+! IN  R*8  VPARA   : VALEUR DU PARAMETRE (INSTANT PAR DEFAUT)
 ! IN  K*1  BASE   : BASE SUR LAQUELLE ON CREE LE CHAM_NO
 !-----------------------------------------------------------------------
 !     FONCTIONS JEVEUX
@@ -91,7 +92,7 @@ type(HHO_Field), intent(in), optional :: hhoField_
     character(len=4) :: phen
     aster_logical :: fonc
     real(kind=8) :: valp(4), res, valr(1)
-    character(len=8) :: mesh, gd, nomf, evoim, cmp_name, nomch
+    character(len=8) :: mesh, gd, nomf, evoim, cmp_name, nomch, npara
     character(len=14) :: nume_ddl
     character(len=16) :: nomp(4)
     character(len=19) :: vcine, charci, cnoimp, cnsimp, prof_chno
@@ -113,7 +114,7 @@ type(HHO_Field), intent(in), optional :: hhoField_
     vcine = nomci
     nume_ddl = nume_ddlz
     vvale = vcine//'.VALE'
-    valr(1)=inst
+    valr(1) = vpara
     cnoimp='&&CALVCI.CNOIMP'
     cnsimp='&&CALVCI.CNSIMP'
 !
@@ -122,6 +123,11 @@ type(HHO_Field), intent(in), optional :: hhoField_
     if (l_hho) then
         ASSERT(present(hhoField_))
     endif
+!
+    npara = 'INST'
+    if (present(nom_para)) then
+        npara = nom_para
+    end if
 !
 ! - Get informations about NUME_DDL
 !
@@ -183,7 +189,7 @@ type(HHO_Field), intent(in), optional :: hhoField_
                 ASSERT(.false.)
             endif
             ASSERT(fonc)
-            call rsinch(evoim, nomch, 'INST', inst, cnoimp,&
+            call rsinch(evoim, nomch, npara, vpara, cnoimp, &
                         'EXCLU', 'EXCLU', 2, 'V', ier)
             call cnocns(cnoimp, 'V', cnsimp)
             call detrsd('CHAMP', cnoimp)
@@ -244,11 +250,11 @@ type(HHO_Field), intent(in), optional :: hhoField_
                         zr(ivvale-1+i_eq) = res
                     else
                         nomf = zk8(jafcv-1+i_affe_cine)
-                        nomp(1)='INST'
+                        nomp(1) = npara
                         nomp(2)='X'
                         nomp(3)='Y'
                         nomp(4)='Z'
-                        valp(1)=inst
+                        valp(1) = vpara
                         valp(2)=vale(1+3*(i_node-1)+0)
                         valp(3)=vale(1+3*(i_node-1)+1)
                         valp(4)=vale(1+3*(i_node-1)+2)

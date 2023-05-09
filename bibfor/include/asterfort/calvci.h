@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,16 +18,17 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine calvci(nomci, nume_ddlz, nbchci, lchci, inst,&
-                      base , l_hho    , hhoField_)
+    subroutine calvci(nomci, nume_ddlz, nbchci, lchci, vpara,&
+                      base , l_hho    , hhoField_, nom_para)
         use HHO_type
         character(len=*) :: nomci
         character(len=*) :: nume_ddlz
         integer :: nbchci
         character(len=*) :: lchci(*)
-        real(kind=8) :: inst
+        real(kind=8) :: vpara
         character(len=1) :: base
         aster_logical, intent(in) :: l_hho
         type(HHO_Field), intent(in), optional :: hhoField_
+        character(len=8), intent(in), optional :: nom_para
     end subroutine calvci
 end interface

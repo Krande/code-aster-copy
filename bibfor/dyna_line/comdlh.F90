@@ -29,6 +29,7 @@ implicit none
 #include "asterc/r8depi.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
+#include "asterfort/ascavc.h"
 #include "asterfort/cresol.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/dy2mbr.h"
@@ -115,7 +116,7 @@ implicit none
     complex(kind=8) :: cval, czero
     character(len=1) :: typres, coef_type(4)
     character(len=4) :: typcal, nomsym(4)
-    character(len=8) :: nomo, matass, modgen
+    character(len=8) :: nomo, matass, modgen, nom_para
     character(len=24) :: carele, mate, mateco
     character(len=14) :: numddl, nddlphys
     character(len=16) :: typcon, nomcmd, tysd, champs
@@ -124,6 +125,7 @@ implicit none
     character(len=19) :: print_type
     character(len=24) :: matr_list(4), basemo, nume24, typco
     character(len=24) :: exreco, exresu, kineLoadReal, kineLoad
+    character(len=24) :: charge, multFunc, infoch
     integer :: nbexre, tmod(1)
     integer, pointer :: ordr(:) => null()
     character(len=24), pointer :: refa(:) => null()
@@ -152,6 +154,7 @@ implicit none
     epsi   = r8prem()
     typres = 'C'
     czero  = dcmplx(0.d0,0.d0)
+    nom_para = 'FREQ'
 !
 ! - Names of datastructures
 !
@@ -250,21 +253,13 @@ implicit none
 
 ! - Get kinematic loads
     call dyGetKineLoad(masse, raide, amor, l_damp, listLoad, kineLoadReal)
-
-! - Convert value in complex
     kineLoad = ' '
-    if (kineLoadReal .ne. ' ') then
-        kineLoad = '&&COMDLH.KINE'
-        call dismoi('NB_EQUA', kineLoadReal, 'CHAM_NO', repi = nbEqua)
-        call vtcrec(kineLoad, kineLoadReal, 'V', 'C', nbEqua)
-        call jeveuo(kineLoadReal(1:19)//'.VALE', 'L', vr = kineRealVale)
-        call jeveuo(kineLoad(1:19)//'.VALE', 'E', vc = kineVale)
-        kineVale(1:nbEqua) = kineRealVale(1:nbEqua)
-    endif
 
-    if (kineLoad .ne. ' ') then
+    if (kineLoadReal .ne. ' ') then
         if (calgen) then
             call utmess('F', 'DYNALINE2_12')
+        else
+            kineLoad = '&&COMDLH.KINE'
         endif
     endif 
 
@@ -505,6 +500,25 @@ implicit none
 !
         call dy2mbr(numddl, nb_equa, listLoad, freq, vediri,&
                     veneum, vevoch, vassec, lsecmb)
+!
+! ----- calcul du second membre du aux charges cinématiques
+!
+        if (kineLoadReal .ne. ' ') then
+            charge = listLoad(1:19)//'.NCHA'
+            multFunc = listLoad(1:19)//'.NFON'
+            infoch = listLoad(1:19)//'.GENC'
+            call ascavc(charge, infoch, multFunc, numddl, freq, kineLoadReal, nom_para=nom_para)
+
+! --------- Convert value in complex
+
+            if (ifreq .eq. 1) then
+                call dismoi('NB_EQUA', kineLoadReal, 'CHAM_NO', repi=nbEqua)
+                call vtcrec(kineLoad, kineLoadReal, 'V', 'C', nbEqua)
+            end if
+            call jeveuo(kineLoadReal(1:19)//'.VALE', 'L', vr=kineRealVale)
+            call jeveuo(kineLoad(1:19)//'.VALE', 'E', vc=kineVale)
+            kineVale(1:nbEqua) = kineRealVale(1:nbEqua)
+        end if
 !
 ! ----- APPLICATION EVENTUELLE EXCIT_RESU
 !
