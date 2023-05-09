@@ -969,11 +969,13 @@ class DiscreteComputation:
             ElementaryMatrix: elementary exchange thermal matrices
         """
 
-    def getExternalStateVariablesForces(self, time):
+    def getExternalStateVariablesForces(self, time, externVar=None, mask=None):
         """Compute load from external state variables
 
         Arguments:
               time (float): Current time
+              externVar (FieldOnCellsRealPtr): mask to assemble
+              mask (FieldOnCellsLongPtr): mask to assemble
 
         Returns:
               FieldOnNodes: load from external state variables
@@ -1128,7 +1130,16 @@ class DiscreteComputation:
         """
 
     def getInternalForces(
-        self, displ, displ_step, stress, internVar, time_prev, time_step, groupOfCells=[]
+        self,
+        displ,
+        displ_step,
+        stress,
+        internVar,
+        time_prev,
+        time_step,
+        externVarPrev=None,
+        externVarCurr=None,
+        groupOfCells=[],
     ):
         """Compute internal forces (integration of behaviour)
 
@@ -1139,6 +1150,8 @@ class DiscreteComputation:
             internVar (FieldOnCells): field of internal state variables at begin of current time
             time_prev (float): time at begin of the step
             time_curr (float): delta time between begin and end of the step
+            externVarPrev (FieldOnCells): external state variables at begin of current time
+            externVarCurr (FieldOnCells): internal state variables at end of current time
             groupOfCells (list[str]): compute matrices on given groups of cells.
 
         Returns:
@@ -1256,7 +1269,16 @@ class DiscreteComputation:
         """
 
     def getPredictionTangentStiffnessMatrix(
-        self, displ, displ_step, stress, internVar, time_prev, time_step, groupOfCells=[]
+        self,
+        displ,
+        displ_step,
+        stress,
+        internVar,
+        time_prev,
+        time_step,
+        externVarPrev=None,
+        externVarCurr=None,
+        groupOfCells=[],
     ):
         """Compute jacobian matrix for Newton algorithm, Euler prediction
 
@@ -1264,15 +1286,17 @@ class DiscreteComputation:
             displ (FieldOnNodes): displacement field at begin of current time
             displ_step (FieldOnNodes): field of increment of displacement
             stress (FieldOnCells): field of stress at begin of current time
-            internVar (FieldOnCells): field of internal state variables at begin of current time
+            internVar (FieldOnCells): internal state variables at begin of current time
             time_prev (float): time at begin of the step
             time_curr (float): delta time between begin and end of the step
+            externVarPrev (FieldOnCells): external state variables at begin of current time
+            externVarCurr (FieldOnCells): internal state variables at end of current time
             groupOfCells (list[str]): compute matrices on given groups of cells.
 
         Returns:
             tuple (tuple): return code error (FieldOnCellsLong),
             error code flag (int),
-            elementary tangent matrix (ElementaryMatrixDisplacementReal),
+            elementary tangent matrix (ElementaryMatrixDisplacementReal)
         """
 
     def getRotationalStiffnessMatrix(self, groupOfCells=[]):
@@ -1287,7 +1311,16 @@ class DiscreteComputation:
         """
 
     def getTangentStiffnessMatrix(
-        self, displ, displ_step, stress, internVar, time_prev, time_step, groupOfCells=[]
+        self,
+        displ,
+        displ_step,
+        stress,
+        internVar,
+        time_prev,
+        time_step,
+        externVarPrev=None,
+        externVarCurr=None,
+        groupOfCells=[],
     ):
         """Compute jacobian matrix for Newton algorithm
 
@@ -1295,9 +1328,11 @@ class DiscreteComputation:
             displ (FieldOnNodes): displacement field at begin of current time
             displ_step (FieldOnNodes): field of increment of displacement
             stress (FieldOnCells): field of stress at begin of current time
-            internVar (FieldOnCells): field of internal state variables at begin of current time
+            internVar (FieldOnCells): internal state variables at begin of current time
             time_prev (float): time at begin of the step
             time_curr (float): delta time between begin and end of the step
+            externVarPrev (FieldOnCells): external state variables at begin of current time
+            externVarCurr (FieldOnCells): internal state variables at end of current time
             groupOfCells (list[str]): compute matrices on given groups of cells.
 
         Returns:
