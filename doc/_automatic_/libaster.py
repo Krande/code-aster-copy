@@ -3005,11 +3005,12 @@ class ConstantFieldOnCellsLong(DataField):
 # class SimpleFieldOnCellsReal in libaster
 
 
-class SimpleFieldOnCellsReal(DataStructure):
+class SimpleFieldOnCellsReal(DataField):
     pass
 
     # Method resolution order:
     #     SimpleFieldOnCellsReal
+    #     DataField
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
@@ -3101,19 +3102,25 @@ class SimpleFieldOnCellsReal(DataStructure):
 # class SimpleFieldOnNodesReal in libaster
 
 
-class SimpleFieldOnNodesReal(DataStructure):
+class SimpleFieldOnNodesReal(DataField):
     pass
 
     # Method resolution order:
     #     SimpleFieldOnNodesReal
+    #     DataField
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
 
     # Methods defined here:
 
-    def __getitem__(self, arg0, int):
-        pass
+    def __getitem__(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. __getitem__(self: libaster.SimpleFieldOnNodesReal, arg0: Tuple[int, int]) -> float
+
+        2. __getitem__(self: libaster.SimpleFieldOnNodesReal, arg0: Tuple[int, str]) -> float
+        """
 
     def __init__(self, *args, **kwargs):
         """Overloaded function.
@@ -3123,8 +3130,13 @@ class SimpleFieldOnNodesReal(DataStructure):
         2. __init__(self: libaster.SimpleFieldOnNodesReal, arg0: str) -> None
         """
 
-    def __setitem__(self, arg0, int, arg1):
-        pass
+    def __setitem__(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. __setitem__(self: libaster.SimpleFieldOnNodesReal, arg0: Tuple[int, int], arg1: float) -> float
+
+        2. __setitem__(self: libaster.SimpleFieldOnNodesReal, arg0: Tuple[int, str]) -> float
+        """
 
     def getComponent(self, arg0):
         pass
@@ -3169,6 +3181,9 @@ class SimpleFieldOnNodesReal(DataStructure):
             FieldOnNodesReal: field restricted.
         """
 
+    def toFieldOnNodes(self):
+        pass
+
     def updateValuePointers(self):
         pass
 
@@ -3176,18 +3191,19 @@ class SimpleFieldOnNodesReal(DataStructure):
 # class SimpleFieldOnNodesComplex in libaster
 
 
-class SimpleFieldOnNodesComplex(DataStructure):
+class SimpleFieldOnNodesComplex(DataField):
     pass
 
     # Method resolution order:
     #     SimpleFieldOnNodesComplex
+    #     DataField
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
 
     # Methods defined here:
 
-    def __getitem__(self, arg0, int):
+    def __getitem__(self, arg0):
         pass
 
     def __init__(self, *args, **kwargs):
@@ -3198,7 +3214,7 @@ class SimpleFieldOnNodesComplex(DataStructure):
         2. __init__(self: libaster.SimpleFieldOnNodesComplex, arg0: str) -> None
         """
 
-    def __setitem__(self, arg0, int, arg1):
+    def __setitem__(self, arg0, arg1):
         pass
 
     def getComponent(self, arg0):

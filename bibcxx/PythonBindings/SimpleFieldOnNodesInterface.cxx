@@ -38,9 +38,18 @@ void exportSimpleFieldOnNodesToPython( py::module_ &mod ) {
               +[]( const SimpleFieldOnNodesReal &v, const PairLong &i ) {
                   return v.operator()( i.first, i.second );
               } )
+        .def( "__getitem__",
+              +[]( const SimpleFieldOnNodesReal &v,
+                   const std::pair< ASTERINTEGER, std::string > &i ) {
+                  return v.operator()( i.first, i.second );
+              } )
         .def( "__setitem__",
               +[]( SimpleFieldOnNodesReal &v, const PairLong &i, ASTERDOUBLE f ) {
                   return v.operator()( i.first, i.second ) = f;
+              } )
+        .def( "__setitem__",
+              +[]( SimpleFieldOnNodesReal &v, const std::pair< ASTERINTEGER, std::string > &i ) {
+                  return v.operator()( i.first, i.second );
               } )
         .def( "toFieldOnNodes", &SimpleFieldOnNodesReal::toFieldOnNodes )
         .def( "restrict", &SimpleFieldOnNodesReal::restrict,

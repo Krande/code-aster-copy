@@ -35,6 +35,7 @@
 #include "MemoryManager/JeveuxVector.h"
 #include "MemoryManager/NumpyAccess.h"
 #include "Meshes/BaseMesh.h"
+#include "Supervis/Exceptions.h"
 #include "Utilities/Tools.h"
 
 // Forward declaration
@@ -65,6 +66,18 @@ class SimpleFieldOnNodes : public DataField {
     ASTERINTEGER _nbComp;
     /** @brief Mesh */
     BaseMeshPtr _mesh;
+
+    std::map< std::string, ASTERINTEGER > _name2number;
+
+    void _buildComponentsName2Number() {
+        if ( _name2number.empty() ) {
+
+            auto nbCmp = this->getNumberOfComponents();
+            for ( ASTERINTEGER i = 0; i < nbCmp; i++ ) {
+                _name2number[this->getComponent( i )] = i;
+            }
+        }
+    }
 
     /**
      * Functions to check an out-of-range condition
@@ -152,6 +165,17 @@ class SimpleFieldOnNodes : public DataField {
         return _values->operator[]( i );
     };
 
+    ValueType &operator()( const ASTERINTEGER &ino, const ASTERINTEGER &icmp ) {
+#ifdef ASTER_DEBUG_CXX
+        _checkSize( ino, icmp );
+#endif
+
+        const ASTERINTEGER position = ino * this->getNumberOfComponents() + icmp;
+
+        ( *_allocated )[position] = true;
+        return this->operator[]( position );
+    };
+
     const ValueType &operator()( const ASTERINTEGER &ino, const ASTERINTEGER &icmp ) const {
 #ifdef ASTER_DEBUG_CXX
 
@@ -166,15 +190,14 @@ class SimpleFieldOnNodes : public DataField {
         return this->operator[]( position );
     };
 
-    ValueType &operator()( const ASTERINTEGER &ino, const ASTERINTEGER &icmp ) {
-#ifdef ASTER_DEBUG_CXX
-        _checkSize( ino, icmp );
-#endif
+    ValueType &operator()( const ASTERINTEGER &ino, const std::string &cmp ) {
+        auto icmp = _name2number.at( cmp );
+        return this->operator()( ino, icmp );
+    };
 
-        const ASTERINTEGER position = ino * this->getNumberOfComponents() + icmp;
-
-        ( *_allocated )[position] = true;
-        return this->operator[]( position );
+    const ValueType &operator()( const ASTERINTEGER &ino, const std::string &cmp ) const {
+        auto icmp = _name2number.at( cmp );
+        return this->operator()( ino, icmp );
     };
 
     bool hasValue( const ASTERINTEGER &ino, const ASTERINTEGER &icmp ) const {
@@ -186,6 +209,12 @@ class SimpleFieldOnNodes : public DataField {
         const ASTERINTEGER position = ino * this->getNumberOfComponents() + icmp;
 
         return ( *_allocated )[position];
+    };
+
+    bool hasValue( const ASTERINTEGER &ino, const std::string &cmp ) const {
+        auto icmp = _name2number.at( cmp );
+
+        return this->hasValue( ino, icmp );
     };
 
     /**
@@ -282,14 +311,12 @@ class SimpleFieldOnNodes : public DataField {
      * @brief Maps between name of components and the nimber
      */
     std::map< std::string, ASTERINTEGER > getComponentsName2Number() const {
-        std::map< std::string, ASTERINTEGER > ret;
 
-        auto nbCmp = this->getNumberOfComponents();
-        for ( ASTERINTEGER i = 0; i < nbCmp; i++ ) {
-            ret[this->getComponent( i )] = i;
+        if ( _name2number.empty() ) {
+            raiseAsterError( "getComponentsName2Number: build field before" );
         }
 
-        return ret;
+        return _name2number;
     };
 
     /**
@@ -314,6 +341,9 @@ class SimpleFieldOnNodes : public DataField {
 
         _nbNodes = ( *_size )[0];
         _nbComp = ( *_size )[1];
+
+        _buildComponentsName2Number();
+
         AS_ASSERT( _values->size() == _nbNodes * _nbComp );
         AS_ASSERT( _values->size() > 0 );
 
@@ -358,12 +388,9 @@ class SimpleFieldOnNodes : public DataField {
 
         VectorLong nodes = _mesh->getNodes( groupsOfNodes );
 
-        auto mapIn = this->getComponentsName2Number();
-        auto map = ret->getComponentsName2Number();
-
         for ( auto &cmp : list_cmp ) {
-            auto icmp_in = mapIn[cmp];
-            auto icmp = map[cmp];
+            auto icmp_in = ( *this )._name2number.at( cmp );
+            auto icmp = ( *ret )._name2number.at( cmp );
             for ( auto &node : nodes ) {
                 if ( this->hasValue( node, icmp_in ) ) {
                     ( *ret )( node, icmp ) = ( *this )( node, icmp_in );

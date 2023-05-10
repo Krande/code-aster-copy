@@ -169,7 +169,7 @@ test.assertEqual(len(y.valeurs), 81)
 
 resu2 = resu.toSimpleFieldOnNodes()
 resu2.updateValuePointers()
-test.assertAlmostEqual(resu2[6, 0], 0.000757555469653289)
+test.assertAlmostEqual(resu2[6, "DX"], 0.000757555469653289)
 
 resu.printMedFile("fort.med")
 
