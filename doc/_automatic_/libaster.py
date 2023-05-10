@@ -12535,6 +12535,8 @@ class ParallelMechanicalLoadReal(DataStructure):
         1. __init__(self: libaster.ParallelMechanicalLoadReal, arg0: libaster.MechanicalLoadReal, arg1: libaster.Model) -> None
 
         2. __init__(self: libaster.ParallelMechanicalLoadReal, arg0: str, arg1: libaster.MechanicalLoadReal, arg2: libaster.Model) -> None
+
+        3. __init__(self: libaster.ParallelMechanicalLoadReal, arg0: str, arg1: ParallelFiniteElementDescriptor, arg2: libaster.Model) -> None
         """
 
     def getFiniteElementDescriptor(self):
@@ -12564,6 +12566,8 @@ class ParallelMechanicalLoadFunction(DataStructure):
         1. __init__(self: libaster.ParallelMechanicalLoadFunction, arg0: libaster.MechanicalLoadFunction, arg1: libaster.Model) -> None
 
         2. __init__(self: libaster.ParallelMechanicalLoadFunction, arg0: str, arg1: libaster.MechanicalLoadFunction, arg2: libaster.Model) -> None
+
+        3. __init__(self: libaster.ParallelMechanicalLoadFunction, arg0: str, arg1: ParallelFiniteElementDescriptor, arg2: libaster.Model) -> None
         """
 
     def getFiniteElementDescriptor(self):
@@ -12646,8 +12650,11 @@ class ParallelFiniteElementDescriptor(FiniteElementDescriptor):
 
     # Methods defined here:
 
-    def __init__(self, *args, **kwargs):
-        """Initialize self.  See help(type(self)) for accurate signature."""
+    def __init__(self, arg0, arg1, arg2):
+        pass
+
+    def getJointObjectName(self):
+        pass
 
     def getJoints(self):
         """Return the vector of joints between the curent domain and the others subdomains.

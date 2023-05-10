@@ -379,7 +379,8 @@ subroutine lrmpga(fileUnit, ligrel, MEDFieldName, nbCell, pgmail, &
 
                         if (codret .ne. 4) then
                             if (profileName .ne. ' ') then
-                               call lrcmpr(MEDFileIden, profileName, '&&LRMPGA.TMP', lgproa, codre2)
+                                call lrcmpr(MEDFileIden, profileName, '&&LRMPGA.TMP', lgproa, &
+                                            codre2)
                                 do iElem = 1, min(lgproa, nbElem)
                                     ASSERT(zi(jvGrel+iElem-1+l_iprof) .le. nbCell)
                                     pgmail(zi(jvGrel+iElem-1+l_iprof)) = AsterNbPg

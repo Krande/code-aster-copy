@@ -33,6 +33,12 @@ from ..Objects.Serialization import InternalStateBuilder
 class ResultStateBuilder(InternalStateBuilder):
     """Class that returns the internal state of a *Result*."""
 
+    def _addFields(self, result, fieldNames, indexes):
+        for i in indexes:
+            for fieldName in fieldNames:
+                curField = result.getField(fieldName, i)
+                self._st["fields"][i][fieldName] = curField
+
     def save(self, result):
         """Return the internal state of a *Result* to be pickled.
 
@@ -93,6 +99,19 @@ class ResultStateBuilder(InternalStateBuilder):
                 f"{len(self._st['index'])} indexs, {len(self._st['loads'])} list of loads"
             )
             self._st["loads"] = []
+
+        indexes = result.getIndexes()
+        self._st["fields"] = {}
+        for i in indexes:
+            self._st["fields"][i] = {}
+        self._addFields(result, result.getFieldsOnNodesRealNames(), indexes)
+        self._addFields(result, result.getFieldsOnNodesComplexNames(), indexes)
+        self._addFields(result, result.getFieldsOnCellsRealNames(), indexes)
+        self._addFields(result, result.getFieldsOnCellsComplexNames(), indexes)
+        self._addFields(result, result.getFieldsOnCellsLongNames(), indexes)
+        self._addFields(result, result.getConstantFieldsOnCellsRealNames(), indexes)
+        self._addFields(result, result.getConstantFieldsOnCellsChar16Names(), indexes)
+
         return self
 
     def restore(self, result):
@@ -113,9 +132,10 @@ class ResultStateBuilder(InternalStateBuilder):
                 result.setElementaryCharacteristics(self._st["cara_elem"][i], index)
             if len(self._st["loads"]) > 0 and self._st["loads"]:
                 result.setListOfLoads(self._st["loads"][i], index)
-
-        if result.getMesh():
-            result.build(self._st["feds"], self._st["fnds"])
+        for index in self._st["fields"]:
+            fields = self._st["fields"][index]
+            for fieldName in fields:
+                result.setField(fields[fieldName], fieldName, index)
 
 
 @injector(Result)

@@ -90,6 +90,10 @@ void Result::_setFieldBase(
     std::string internalName;
     internalName = _generateFieldName( indexSymbName, internalIndex );
 
+    if ( _namesOfFields->empty() ) {
+        _namesOfFields->build( true );
+    }
+
     // Note field in datastructure
     JeveuxCollectionObjectChar24 storageStructure = _namesOfFields->getObjects()[indexSymbName - 1];
     storageStructure->updateValuePointer();
@@ -106,8 +110,12 @@ void Result::_setFieldBase(
     }
 
     // Create smart pointer
-    auto result = std::make_shared< T >( internalName, *field );
-    dict[trim( symbName )][storageIndex] = result;
+    if ( internalName == field->getName() ) {
+        dict[trim( symbName )][storageIndex] = field;
+    } else {
+        auto result = std::make_shared< T >( internalName, *field );
+        dict[trim( symbName )][storageIndex] = result;
+    }
 };
 
 void Result::_checkMesh( const BaseMeshPtr &mesh ) const {
@@ -1027,7 +1035,6 @@ std::vector< FiniteElementDescriptorPtr > Result::getFiniteElementDescriptors() 
 std::vector< EquationNumberingPtr > Result::getEquationNumberings() const {
     return _fieldBuilder.getEquationNumberings();
 };
-
 
 void Result::setTime( const ASTERDOUBLE &time, ASTERINTEGER storageIndex ) {
     setParameterValue( "INST", time, storageIndex );
