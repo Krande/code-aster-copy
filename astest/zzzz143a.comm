@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -185,6 +185,9 @@ norm_diff_temp_t1 = (
     TEMP_FONC.getFieldOnNodesReal("TEMP", 1) - TEMP_TEMP1.getFieldOnNodesReal("TEMP", 1)
 ).norm("NORM_2")
 
+# test issue32843
+test_field = DEPL31_FONC.getField("DEPL", 1)
+ma_mod = MODI_MAILLAGE(MAILLAGE=MA, DEFORME=_F(OPTION="TRAN", DEPL=test_field))
 
 test = code_aster.TestCase()
 
