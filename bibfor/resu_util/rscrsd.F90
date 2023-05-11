@@ -79,11 +79,11 @@ subroutine rscrsd(baseZ, resultNameZ, resultTypeZ, nbStore)
 !     ------------------------------------------------------------------
 !                      For external state variables
 !     ------------------------------------------------------------------
-    integer, parameter :: nbFieldVarc = 9
+    integer, parameter :: nbFieldVarc = 8
     character(len=16), parameter :: fieldVarc(nbFieldVarc) = (/ &
                                     'IRRA            ', 'TEMP            ', 'HYDR_ELNO       ', &
                                     'HYDR_NOEU       ', 'EPSA_ELNO       ', 'META_ELNO       ', &
-                                    'PTOT            ', 'DIVU            ', 'NEUT            '/)
+                                    'PTOT            ', 'NEUT            '/)
 
 !     ------------------------------------------------------------------
 !                      For acoustic (transient)

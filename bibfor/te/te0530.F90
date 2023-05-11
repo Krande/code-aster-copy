@@ -37,7 +37,7 @@ subroutine te0530(option, nomte)
     integer :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano, ipg, iret
     integer :: jpvarc, ivrc
     integer :: nbvarc
-    parameter(nbvarc=9)
+    parameter(nbvarc=8)
     character(len=8) :: nomvrc(nbvarc)
 !
 ! ---------------------------------------------------------------------
@@ -47,16 +47,15 @@ subroutine te0530(option, nomte)
     call jevech('PVARC_R', 'E', jpvarc)
     rvid = r8vide()
 !
-!     VARC_R   = R    TEMP HYDR SECH IRRA CORR PTOT DIVU NEUT1 NEUT2
+!     VARC_R   = R    TEMP HYDR SECH IRRA CORR PTOT NEUT1 NEUT2
     nomvrc(1) = 'TEMP'
     nomvrc(2) = 'HYDR'
     nomvrc(3) = 'SECH'
     nomvrc(4) = 'IRRA'
     nomvrc(5) = 'CORR'
     nomvrc(6) = 'PTOT'
-    nomvrc(7) = 'DIVU'
-    nomvrc(8) = 'NEUT1'
-    nomvrc(9) = 'NEUT2'
+    nomvrc(7) = 'NEUT1'
+    nomvrc(8) = 'NEUT2'
 !
     do ipg = 1, npg
 !

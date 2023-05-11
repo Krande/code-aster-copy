@@ -21,17 +21,6 @@
 from ..Utilities import _
 
 cata_msg = {
-    1: _(
-        """
-Vous cherchez à faire du chaînage HM avec une modélisation Thermo-hydro-mécanique comportant de la mécanique.
-Le chaînage est donc inutile !
-"""
-    ),
-    2: _(
-        """
-Le champ d'entrée div(u) est mal construit. Il manque soit l'instant actuel soit l'instant précédent de div(u).
-"""
-    ),
     3: _(
         """
 Vous n'êtes pas sur une modélisation autorisée pour faire du chaînage.
@@ -49,11 +38,6 @@ Conseil : Vérifiez que votre modélisation %(k2)s est 'D_PLAN' ou '3D'
 ou une modélisation THM
 """
     ),
-    5: _(
-        """
-Il n'est pas possible de faire du chaînage avec un coefficient d'emmagasinement non nul.
-"""
-    ),
     6: _(
         """
 L'instant %(r1)e spécifié en entrée doit être supérieur au dernier
@@ -63,11 +47,6 @@ instant trouvé dans la structure de données résultat %(k1)s.
     7: _(
         """
   Impression du champ %(k1)s à l'instant %(r1)e sur le modèle %(k2)s
-"""
-    ),
-    12: _(
-        """
-Vous cherchez à faire du chaînage HM dans une modélisation qui ne le permet pas.
 """
     ),
 }

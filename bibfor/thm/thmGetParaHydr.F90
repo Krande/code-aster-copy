@@ -91,9 +91,6 @@ subroutine thmGetParaHydr(j_mater, ds_thm)
         if (ds_thm%ds_elem%l_dof_meca) then
             call utmess('F', 'THM1_5')
         end if
-        if (ds_thm%ds_elem%l_weak_coupling) then
-            call utmess('F', 'CHAINAGE_5')
-        end if
     end if
     ds_thm%ds_material%hydr%emmag = para_vale(1)
 !

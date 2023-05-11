@@ -85,18 +85,6 @@ subroutine thmGetElemModel(ds_thm, l_axi_, l_vf_, ndim_, type_elem_)
         ds_thm%ds_elem%nb_phase(2) = 2
     end if
 !
-! - Weak coupling
-!
-    call rcvarc(' ', 'DIVU', '-', 'RIGI', 1, 1, r8bid, iret1)
-    call rcvarc(' ', 'DIVU', '+', 'RIGI', 1, 1, r8bid, iret2)
-    ds_thm%ds_elem%l_weak_coupling = (iret1 .eq. 0) .and. (iret2 .eq. 0)
-    if ((ds_thm%ds_elem%l_dof_meca) .and. ds_thm%ds_elem%l_weak_coupling) then
-        call utmess('F', 'CHAINAGE_1')
-    end if
-    if ((ds_thm%ds_elem%l_weak_coupling) .and. (iret1 .ne. iret2)) then
-        call utmess('F', 'CHAINAGE_2')
-    end if
-!
 ! - Get general model
 !
     l_axi = lteatt('AXIS', 'OUI')

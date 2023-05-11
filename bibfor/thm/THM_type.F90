@@ -47,8 +47,6 @@ module THM_type
         aster_logical :: l_dof_2nd = ASTER_FALSE
 ! ----- Type of FE: number of phasis for each fluid
         integer :: nb_phase(2) = 0
-! ----- Flag for weak coupling
-        aster_logical :: l_weak_coupling = ASTER_FALSE
 ! ----- Flag for *JHMS elements
         aster_logical :: l_jhms = ASTER_FALSE
     end type THM_Element

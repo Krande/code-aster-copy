@@ -78,9 +78,6 @@ subroutine te0558(option, nomte)
 ! - Get model of finite element
 !
     call thmGetElemModel(ds_thm)
-    if (ds_thm%ds_elem%l_weak_coupling) then
-        call utmess('F', 'CHAINAGE_12')
-    end if
     rela = 0.d0
     nbspg = 0
     incoca = 0

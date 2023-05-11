@@ -43,7 +43,7 @@ subroutine afvarc_read_cata(varc_cata)
 ! --------------------------------------------------------------------------------------------------
 !
     integer, parameter :: nmCmpMax = 9
-    integer, parameter :: nbExteStatVari = 14
+    integer, parameter :: nbExteStatVari = 13
     integer :: iExteStatVari, nb_cmp, i_cmp
     character(len=8) :: varc_name, phys_para
     character(len=16) :: field_type
@@ -53,21 +53,21 @@ subroutine afvarc_read_cata(varc_cata)
                                                                         "EPSA    ", "M_ACIER ", &
                                                                         "M_ZIRC  ", "NEUT1   ", &
                                                                         "NEUT2   ", "NEUT3   ", &
-                                                                        "PTOT    ", "DIVU    "/)
+                                                                        "PTOT    "/)
     character(len=8), parameter :: listPhysQuantity(nbExteStatVari) = (/"TEMP_R  ", "GEOM_R  ", &
                                                                         "CORR_R  ", "IRRA_R  ", &
                                                                         "HYDR_R  ", "TEMP_R  ", &
                                                                         "EPSI_R  ", "VARI_R  ", &
                                                                         "VARI_R  ", "NEUT_R  ", &
                                                                         "NEUT_R  ", "NEUT_R  ", &
-                                                                        "DEPL_R  ", "EPSI_R  "/)
+                                                                        "DEPL_R  "/)
     integer, parameter :: listNbCmp(nbExteStatVari) = (/7, 3, &
                                                         1, 1, &
                                                         1, 1, &
                                                         6, 9, &
                                                         5, 1, &
                                                         1, 1, &
-                                                        1, 1/)
+                                                        1/)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -146,12 +146,6 @@ subroutine afvarc_read_cata(varc_cata)
             varc_cata%list_cata_varc(iExteStatVari)%list_cmp(1)%varc_cmp = "IRRA"
             ASSERT(nb_cmp .eq. 1)
             field_type = 'IRRA'
-
-        elseif (varc_name .eq. 'DIVU') then
-            varc_cata%list_cata_varc(iExteStatVari)%list_cmp(1)%phys_para_cmp = "DIVU"
-            varc_cata%list_cata_varc(iExteStatVari)%list_cmp(1)%varc_cmp = "DIVU"
-            ASSERT(nb_cmp .eq. 1)
-            field_type = 'DIVU'
 
         elseif (varc_name .eq. 'HYDR') then
             varc_cata%list_cata_varc(iExteStatVari)%list_cmp(1)%phys_para_cmp = "HYDR"

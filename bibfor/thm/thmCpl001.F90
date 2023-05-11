@@ -228,7 +228,7 @@ subroutine thmCpl001(ds_thm, &
 !
     if (lVari) then
 ! ----- Compute standard porosity
-        if (ds_thm%ds_elem%l_dof_meca .or. ds_thm%ds_elem%l_weak_coupling) then
+        if (ds_thm%ds_elem%l_dof_meca) then
             if (ds_thm%ds_elem%l_jhms) then
                 phi = vintp(advico+vicphi)
             else

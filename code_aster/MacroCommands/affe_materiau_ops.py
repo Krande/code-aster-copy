@@ -165,8 +165,6 @@ def createExternalStateVariable(fkw, nomVarc, mesh, kwTout, grp):
                 evolParameter = EvolutionParameter(evol, "CORR")
             elif nomVarc == "IRRA":
                 evolParameter = EvolutionParameter(evol, "IRRA")
-            elif nomVarc == "DIVU":
-                evolParameter = EvolutionParameter(evol, "DIVU")
             elif nomVarc == "HYDR":
                 evolParameter = EvolutionParameter(evol, "HYDR_ELNO")
             elif nomVarc == "SECH":

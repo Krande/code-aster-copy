@@ -1093,7 +1093,7 @@ EVARC_R = LocatedComponents(
     phys=PHY.VARC_R,
     type="ELGA",
     location="RIGI",
-    components=("TEMP", "HYDR", "SECH", "IRRA", "CORR", "PTOT", "DIVU", "NEUT[2]"),
+    components=("TEMP", "HYDR", "SECH", "IRRA", "CORR", "PTOT", "NEUT[2]"),
 )
 
 

@@ -107,14 +107,6 @@ subroutine calcva(ds_thm, kpi, ndim, &
         end do
     end if
 
-! - Mechanic - Weak coupled
-    if (ds_thm%ds_elem%l_weak_coupling) then
-        call rcvarc(' ', 'DIVU', '-', 'RIGI', kpi, 1, epsvm, iret1)
-        call rcvarc(' ', 'DIVU', '+', 'RIGI', kpi, 1, epsvp, iret2)
-        depsv = epsvp-epsvm
-        epsv = epsvp
-    end if
-
 ! - Hydraulic
     p1 = ds_thm%ds_parainit%pre1_init
     dp1 = 0.d0

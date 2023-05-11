@@ -81,7 +81,7 @@ subroutine inithm(ds_thm, &
 ! - Get parameters
 !
     emmag = ds_thm%ds_material%hydr%emmag
-    if (ds_thm%ds_elem%l_dof_meca .or. ds_thm%ds_elem%l_weak_coupling) then
+    if (ds_thm%ds_elem%l_dof_meca) then
 ! ----- Compute inverse of bulk modulus (solid matrix)
         if (ds_thm%ds_material%biot%type .eq. BIOT_TYPE_ISOT .and. .not. ds_thm%ds_elem%l_jhms) then
             young = ds_thm%ds_material%elas%e

@@ -179,7 +179,7 @@ subroutine comthm_vf(ds_thm, &
 !
 ! - Get elastic parameters
 !
-    if (ds_thm%ds_elem%l_dof_meca .or. ds_thm%ds_elem%l_weak_coupling) then
+    if (ds_thm%ds_elem%l_dof_meca) then
         call thmGetParaElas(j_mater, kpi, temp, ndim, ds_thm)
         call thmMatrHooke(ds_thm, angl_naut)
     end if

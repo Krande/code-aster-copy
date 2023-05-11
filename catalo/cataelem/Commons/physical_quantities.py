@@ -3699,7 +3699,7 @@ VAR2_R = PhysicalQuantity(
 
 VARC_R = PhysicalQuantity(
     type="R",
-    components=("TEMP", "HYDR", "SECH", "IRRA", "CORR", "PTOT", "DIVU", "NEUT[2]"),
+    components=("TEMP", "HYDR", "SECH", "IRRA", "CORR", "PTOT", "NEUT[2]"),
     comment="""  VARC_R Type:R Variables de commande (nommees) :
        TEMP : temperature
        HYDR : hydratation
@@ -3707,7 +3707,6 @@ VARC_R = PhysicalQuantity(
        IRRA : irradiation
        CORR : corrosion
        PTOT : pression totale de fluide (chainage HM)
-       DIVU : dilatation volumique (chainage HM)
        NEUT1 : "neutre 1" (definie par l'utilisateur)
        NEUT2 : "neutre 2" (definie par l'utilisateur)
 """,
