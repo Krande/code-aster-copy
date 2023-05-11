@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,9 +62,9 @@ implicit none
 !
     integer :: n1, n2, nbocc, iOcc, nbDime, ier
     aster_logical :: bidim, lModiTopo
-    character(len=8) :: mesh, meshReuse, disp, dispMesh
+    character(len=8) :: mesh, meshReuse, dispMesh
     character(len=16) :: kbi1, kbi2, option
-    character(len=19) :: geomInit, geomModi
+    character(len=19) :: geomInit, geomModi, disp
     real(kind=8) :: ltchar, pt(3), pt2(3), dir(3), angl
     real(kind=8) :: axe1(3), axe2(3), perp(3), alea
 !
