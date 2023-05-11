@@ -403,7 +403,7 @@ contains
             call compDampMatrix(model, caraElem, &
                                 ds_material, ds_constitutive, &
                                 timeInit, listLoad, numeDof, nlDynaDamping, &
-                                ds_system, hval_incr, hval_meelem)
+                                ds_system, hval_incr, hval_meelem, sddyna)
         end if
 !
 !   -----------------------------------------------------------------------------------------------
@@ -430,14 +430,14 @@ contains
     subroutine compDampMatrix(model, caraElem, &
                               ds_material, ds_constitutive, &
                               time, listLoad, numeDof, nlDynaDamping, &
-                              ds_system, hval_incr, hval_meelem)
+                              ds_system, hval_incr, hval_meelem, sddyna)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         character(len=24), intent(in) :: model, caraElem
         type(NL_DS_Material), intent(in) :: ds_material
         type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         real(kind=8), intent(in) :: time
-        character(len=19), intent(in) :: listLoad
+        character(len=19), intent(in) :: listLoad, sddyna
         character(len=14), intent(in) :: numeDof
         type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
         type(NL_DS_System), intent(in) :: ds_system
@@ -461,7 +461,7 @@ contains
                                    ds_constitutive%compor, &
                                    variPrev, time, listLoad, numeDof, &
                                    rigiElem, massElem, &
-                                   dampAsse)
+                                   dampAsse, sddyna)
         end if
 
 ! - Get damping matrix from user

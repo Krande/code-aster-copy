@@ -218,6 +218,11 @@ subroutine ndynkk(sddyna, chaine, nomsd)
     else if (chaine(1:11) .eq. 'MUAP_MAPSID') then
         sdmuap = zk24(jnosd-1+1) (1:15)
         cham24 = sdmuap(1:15)//'.PSD'
+!
+! --- Carte fluide (damping)
+!
+    else if (chaine(1:9) .eq. 'AMOR_FLUI') then
+        cham24 = zk24(jnosd-1+8)
     else
         ASSERT(.false.)
     end if

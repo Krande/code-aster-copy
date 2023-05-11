@@ -81,16 +81,16 @@ subroutine ndlect(model, materialField, caraElem, listLoad, &
     character(len=24) :: tcha, ncha, veol, vaol
     integer :: jtcha, jncha, jveol, jvaol
     character(len=24) :: vecent, vecabs
-    integer :: jvecen, jvecab
+    integer :: jvecen, jvecab, amfl(2)
     character(len=8) :: k8bid, licmp(3), rep
     character(len=16) :: schema, kform
     character(len=24) :: texte
-    character(len=19) :: stadyn
+    character(len=19) :: stadyn, sdamfl
     character(len=15) :: sdmuap, sdprmo, sdexso
     character(len=24) :: chondp
     integer :: iform
     integer :: ifm, niv
-    real(kind=8) :: alpha, beta, gamma, phi
+    real(kind=8) :: alpha, beta, gamma, phi, vnor
     real(kind=8) :: rcmp(3), shima
     aster_logical :: lmuap, lshima, lviss
     aster_logical :: londe, limped, ldyna, lexpl
@@ -129,6 +129,7 @@ subroutine ndlect(model, materialField, caraElem, listLoad, &
     data sdprmo/'&&NDLECT.SDPRMO'/
     data sdmuap/'&&NDLECT.SDMUAP'/
     data sdexso/'&&NDLECT.SDEXSO'/
+    data sdamfl/'&&NDLECT.SDAMFL'/
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -172,6 +173,10 @@ subroutine ndlect(model, materialField, caraElem, listLoad, &
 ! - Get parameters for damping
     call dampGetParameters(model, materialField, caraElem, &
                            nlDynaDamping)
+
+! - Fluid damping
+
+    call getvr8(' ', 'VNOR', iocc=1, scal=vnor, nbret=iret)
 
 ! --- PARAMETRES DU SCHEMA TEMPS
     beta = 0.d0
@@ -223,6 +228,7 @@ subroutine ndlect(model, materialField, caraElem, listLoad, &
     zk24(jnosd+4-1) = stadyn
     zk24(jnosd+1-1) = sdmuap
     zk24(jnosd+5-1) = sdexso
+    zk24(jnosd+8-1) = sdamfl
 !
 ! --- DECALAGE MASSE
 !
@@ -264,7 +270,7 @@ subroutine ndlect(model, materialField, caraElem, listLoad, &
         end if
     end if
     if (ndynlo(sddyna, 'HHT_COMPLET')) then
-        if (alpha .eq. -1.d0) then
+        if ((alpha+1.d0) .le. r8prem()) then
             call utmess('F', 'MECANONLINE5_17')
         end if
     end if
@@ -352,6 +358,20 @@ subroutine ndlect(model, materialField, caraElem, listLoad, &
         zk24(jvaol+12-1) = cdeltc
         zk24(jvaol+13-1) = cdeltf
     end if
+!
+! --- CARTE FLUID DAMPING
+!
+    licmp(1) = 'X1'
+    licmp(2) = 'X2'
+    amfl(1) = 1
+    amfl(2) = 1
+    if (VNOR .le. 0.d0) then
+        amfl(2) = 0
+    end if
+
+    call mecact('V', sdamfl, 'MODELE', model(1:8)//'.MODELE', 'NEUT_I', &
+                ncmp=2, lnomcmp=licmp, vi=amfl)
+
 !
 ! --- CARTE STADYN POUR POUTRES
 !

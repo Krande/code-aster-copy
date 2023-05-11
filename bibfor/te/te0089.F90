@@ -15,10 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W0413
-! => celer is a real zero from DEFI_MATERIAU
 !
 subroutine te0089(option, nomte)
+!
+    use Behaviour_module, only: behaviourOption
 !
     implicit none
 !
@@ -32,6 +32,8 @@ subroutine te0089(option, nomte)
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 #include "asterfort/getFluidPara.h"
+#include "asterfort/Behaviour_type.h"
+#include "asterc/r8prem.h"
 !
     character(len=16), intent(in) :: option, nomte
 !
@@ -41,26 +43,53 @@ subroutine te0089(option, nomte)
 !
 ! Elements: AXIS_FLUI_STRU, 2D_FLUI_STRU
 !
-! Option: RIGI_MECA
+! Option: RIGI_MECA/FORC_NODA/FULL_MECA/RAPH_MECA/RIGI_MECA_HYST/RIGI_MECA_TANG
+! RIGI_MECA_HYST actuellement pas possible car matrice complexe non symétrique
+! n'est pas prevue
 !
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: mmat(9, 9)
-    real(kind=8) :: nx, ny, norm(2)
+    real(kind=8) :: nx, ny, norm(2), ul(9)
     real(kind=8) :: poids, celer
     integer :: jv_geom, jv_mate, jv_matr
+    integer :: jv_vect, jv_deplm, jv_deplp, jv_compo, jv_codret
     integer :: ipoids, ivf, idfde
     integer :: nno, npg, ndim
-    integer :: ij
+    integer :: ij, i
+    integer :: n1, n2
     integer :: ino1, ino2, ipg, ind1, ind2, jdim
     integer :: ldec
-    integer :: j_mater, iret
-    character(len=16) :: FEForm
+    integer :: j_mater, iret, codret
+    character(len=16) :: FEForm, rela_comp
     aster_logical :: l_axis
     real(kind=8) :: r
+    aster_logical :: lVect, lMatr, lVari, lSigm
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    lVect = ASTER_FALSE
+    lMatr = ASTER_FALSE
+    lVari = ASTER_FALSE
+    lSigm = ASTER_FALSE
+!
+! - Check behaviour
+!
+    if (option(1:9) .eq. 'FULL_MECA' .or. &
+        option .eq. 'RAPH_MECA' .or. &
+        option .eq. 'RIGI_MECA_TANG') then
+        call jevech('PCOMPOR', 'L', jv_compo)
+! ----- Select objects to construct from option name
+        call behaviourOption(option, zk16(jv_compo), &
+                             lMatr, lVect, &
+                             lVari, lSigm, &
+                             codret)
+        rela_comp = zk16(jv_compo-1+RELA_NAME)
+        if (rela_comp .ne. 'ELAS') then
+            call utmess('F', 'FLUID1_1')
+        end if
+    end if
+
     mmat = 0.d0
 !
 ! - Input fields
@@ -103,7 +132,7 @@ subroutine te0089(option, nomte)
                     do jdim = 1, 2
                         ind1 = 3*(ino1-1)+jdim
                         ind2 = 3*(ino2-1)+3
-                        if (celer .eq. 0.d0) then
+                        if (celer .le. r8prem()) then
                             mmat(ind1, ind2) = 0.d0
                         else
                             mmat(ind1, ind2) = mmat(ind1, ind2)- &
@@ -120,16 +149,51 @@ subroutine te0089(option, nomte)
 !
 ! - Output field
 !
-    if (FEForm .eq. 'U_P') then
-        call jevech('PMATUNS', 'E', jv_matr)
-        do ino2 = 1, 3*nno
-            do ino1 = 1, 3*nno
-                ij = ino2+3*nno*(ino1-1)
-                zr(jv_matr+ij-1) = mmat(ino1, ino2)
+    if (option(1:9) .eq. 'RIGI_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
+        if (FEForm .eq. 'U_P') then
+            call jevech('PMATUNS', 'E', jv_matr)
+            do ino2 = 1, 3*nno
+                do ino1 = 1, 3*nno
+                    ij = ino2+3*nno*(ino1-1)
+                    zr(jv_matr+ij-1) = mmat(ino1, ino2)
+                end do
             end do
-        end do
-    else
-        call utmess('F', 'FLUID1_2', sk=FEForm)
+        else
+            call utmess('F', 'FLUID1_2', sk=FEForm)
+        end if
+    end if
+!
+! - Save vector
+!
+    if (lVect .or. option .eq. 'FORC_NODA') then
+        if (FEForm .eq. 'U_P') then
+            call jevech('PVECTUR', 'E', jv_vect)
+            call jevech('PDEPLMR', 'L', jv_deplm)
+            call jevech('PDEPLPR', 'L', jv_deplp)
+            do i = 1, 3*nno
+                zr(jv_vect+i-1) = 0.d0
+                ul(i) = zr(jv_deplm+i-1)+zr(jv_deplp+i-1)
+            end do
+            do n1 = 1, 3*nno
+                do n2 = 1, 3*nno
+                    zr(jv_vect+n1-1) = zr(jv_vect+n1-1)+mmat(n1, n2)*ul(n2)
+                end do
+            end do
+        else
+            call utmess('F', 'FLUID1_2', sk=FEForm)
+        end if
+    end if
+
+!
+! - Save return code
+!
+    if (lSigm) then
+        if (FEForm .eq. 'U_P') then
+            call jevech('PCODRET', 'E', jv_codret)
+            zi(jv_codret) = 0
+        else
+            call utmess('F', 'FLUID1_2', sk=FEForm)
+        end if
     end if
 !
 end subroutine

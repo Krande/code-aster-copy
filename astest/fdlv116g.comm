@@ -1,0 +1,384 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
+
+maild = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
+
+maild = DEFI_GROUP(
+    reuse=maild,
+    MAILLAGE=maild,
+    CREA_GROUP_MA=(
+        _F(UNION=("Sol_3D", "Barrage_3D", "Eau_3D"), NOM="Group_All"),
+        _F(
+            UNION=("Bord_G_Sol_3D", "Bord_D_Sol_3D", "Bord_Bas_Sol_3D", "Bord_Eau_Gauche_3D"),
+            NOM="Bords_All",
+        ),
+        _F(UNION=("Sol_top", "Barrage_top"), NOM="SUF"),
+        _F(UNION=("Sol", "Barrage"), NOM="SUT"),
+    ),
+)
+
+
+maild = DEFI_GROUP(
+    reuse=maild,
+    MAILLAGE=maild,
+    CREA_GROUP_NO=(_F(GROUP_MA="SUF", NOM="SUF_NO"), _F(GROUP_MA="SUT", NOM="SUT_NO")),
+)
+
+maild = MODI_MAILLAGE(
+    reuse=maild,
+    MAILLAGE=maild,
+    ORIE_PEAU=(
+        _F(GROUP_MA_PEAU="Bords_All", GROUP_MA_INTERNE="Group_All"),
+        _F(GROUP_MA_PEAU="IFS_Structure_Eau_3D", GROUP_MA_INTERNE="Eau_3D"),
+        _F(GROUP_MA_PEAU="IFS_Sol_Eau_3D", GROUP_MA_INTERNE="Eau_3D"),
+    ),
+)
+
+betond = DEFI_MATERIAU(
+    ELAS=_F(E=22410000000.0, NU=0.2, RHO=2483.0, AMOR_ALPHA=0.0005, AMOR_BETA=0.750)
+)
+
+# paramètres mécanique dynamique du sol
+Esol = 22410000000
+Nusol = 0.2
+Msol = 2483.0
+
+# dans cette modélisation, ne pas mettre d'amortissement dans le sol car non cohérent avec le chargement par onde plane modélisé ici
+sold = DEFI_MATERIAU(ELAS=_F(E=Esol, NU=Nusol, RHO=Msol))
+
+# matériau frontière absorbante
+f_absorb = DEFI_MATERIAU(
+    ELAS=_F(
+        E=Esol,
+        NU=Nusol,
+        RHO=Msol,
+        # LONG_CARA=lcara,
+        # COEF_AMOR=beta,
+    )
+)
+
+# caractéristique meca eau
+
+Rho_Eau = 1000.0
+Cele_R = 1440.0
+EAU = DEFI_MATERIAU(FLUIDE=_F(RHO=1000.0, CELE_R=1440.0))
+
+###affectation des matériaux aux groupes de mailles adéquats
+CHMAT = AFFE_MATERIAU(
+    MAILLAGE=maild,
+    AFFE=(
+        _F(GROUP_MA="Sol_3D", MATER=sold),
+        _F(GROUP_MA=("Bord_G_Sol_3D", "Bord_D_Sol_3D", "Bord_Bas_Sol_3D"), MATER=f_absorb),
+        _F(GROUP_MA="Barrage_3D", MATER=betond),
+        _F(
+            GROUP_MA=("Eau_3D", "IFS_Sol_Eau_3D", "IFS_Structure_Eau_3D", "Bord_Eau_Gauche_3D"),
+            MATER=EAU,
+        ),
+    ),
+)
+
+###definition du modele avec Fluide
+MODELE2 = AFFE_MODELE(
+    MAILLAGE=maild,
+    AFFE=(
+        _F(
+            GROUP_MA=(
+                "Barrage_3D",
+                "Sol_3D",
+                "Bord_G_Sol_3D",
+                "Bord_D_Sol_3D",
+                "Bord_Bas_Sol_3D",
+                "IFS_Structure_Eau_3D",
+                "IFS_Sol_Eau_3D",
+            ),
+            PHENOMENE="MECANIQUE",
+            MODELISATION="3D",
+        ),
+        _F(
+            GROUP_MA=("Bord_G_Sol_3D", "Bord_D_Sol_3D", "Bord_Bas_Sol_3D"),
+            PHENOMENE="MECANIQUE",
+            MODELISATION="3D_ABSO",
+        ),
+        _F(
+            GROUP_MA=("Eau_3D"),
+            PHENOMENE="MECANIQUE",
+            MODELISATION="3D_FLUIDE",
+            FORMULATION="U_P_PHI",
+        ),
+        _F(
+            GROUP_MA=("IFS_Sol_Eau_3D", "IFS_Structure_Eau_3D"),
+            PHENOMENE="MECANIQUE",
+            MODELISATION="FLUI_STRU",
+            FORMULATION="U_P_PHI",
+        ),
+        _F(
+            GROUP_MA=("Bord_Eau_Gauche_3D",),
+            PHENOMENE="MECANIQUE",
+            MODELISATION="3D_FLUI_ABSO",
+            FORMULATION="U_P_PHI",
+        ),
+    ),
+)
+
+
+###Conditions aux limites dont impedance pour l'absorption des ondes en bout de retenue et pression nulle en surface libre
+CL2 = AFFE_CHAR_MECA(
+    MODELE=MODELE2,
+    DDL_IMPO=(_F(GROUP_MA="Bord_Eau_Sup_3D", PRES=0.0, PHI=0.0), _F(GROUP_MA="SUT", DY=0.0)),
+    LIAISON_GROUP=(
+        _F(
+            GROUP_NO_1="SUF_NO",
+            GROUP_NO_2="SUT_NO",
+            DDL_1=("DX",),
+            DDL_2=("DX",),
+            COEF_MULT_1=1.0,
+            COEF_MULT_2=-1.0,
+            COEF_IMPO=0.0,
+        ),
+        _F(
+            GROUP_NO_1="SUF_NO",
+            GROUP_NO_2="SUT_NO",
+            DDL_1=("DY",),
+            DDL_2=("DY",),
+            COEF_MULT_1=1.0,
+            COEF_MULT_2=-1.0,
+            COEF_IMPO=0.0,
+        ),
+        _F(
+            GROUP_NO_1="SUF_NO",
+            GROUP_NO_2="SUT_NO",
+            DDL_1=("DZ",),
+            DDL_2=("DZ",),
+            COEF_MULT_1=1.0,
+            COEF_MULT_2=-1.0,
+            COEF_IMPO=0.0,
+        ),
+    ),
+)
+
+
+# Definition Chargement
+
+import numpy as np
+
+T_max = 2.0
+Pdt = 0.01
+f = 1.5
+T_0 = 1.0
+
+T = np.arange(0.0, T_max, Pdt)
+
+n = len(T)
+
+A_r = np.zeros((n))
+
+for i in range(n):
+    A_r[i] = (1.0 - 2.0 * (np.pi * f * (T[i] - T_0)) ** 2.0) * np.e ** (
+        -((np.pi * f * (T[i] - T_0)) ** 2.0)
+    )
+
+
+Time_Real = T.tolist()
+Acce_Real = A_r.tolist()
+
+ACCE = DEFI_LIST_REEL(VALE=Acce_Real)
+LINST = DEFI_LIST_REEL(VALE=Time_Real)
+
+ACCE_T = DEFI_FONCTION(NOM_PARA="INST", VALE_PARA=LINST, VALE_FONC=ACCE)
+
+
+fc0 = 0.05
+fc = 35.0
+
+VITE_T = CALC_FONCTION(
+    INTEGRE_FREQ=_F(FONCTION=ACCE_T, FREQ_FILTRE=fc0, FREQ_COUP=fc, NIVEAU=1),
+    PROL_DROITE="CONSTANT",
+    PROL_GAUCHE="CONSTANT",
+)
+
+T_max = 1.0
+
+TEMPL2A = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=T_max, PAS=Pdt))
+
+
+Vit_IntP = CALC_FONCTION(
+    COMB=_F(FONCTION=VITE_T, COEF=1.0),
+    LIST_PARA=TEMPL2A,
+    PROL_DROITE="CONSTANT",
+    PROL_GAUCHE="CONSTANT",
+)
+Vit_IntS = CALC_FONCTION(
+    COMB=_F(FONCTION=VITE_T, COEF=1.0),
+    LIST_PARA=TEMPL2A,
+    PROL_DROITE="CONSTANT",
+    PROL_GAUCHE="CONSTANT",
+)
+
+from math import *
+
+# Coordonnées du point de départ de l'onde.
+
+x0 = -100.0
+y0 = 0.0
+z0 = -50.0
+
+x1 = -100.0
+y1 = 0.0
+z1 = 0.0
+
+# Angle d'incidence par rapport à la verticale de propagation de l'onde (0=vertical)
+a = 20
+a2 = radians(a)
+cosa = cos(a2)
+sina = sin(a2)
+
+
+ONDES = AFFE_CHAR_MECA_F(
+    MODELE=MODELE2,
+    ONDE_PLANE=_F(
+        DIRECTION=(sina, 0.0, cosa),
+        TYPE_ONDE="SV",
+        FONC_SIGNAL=Vit_IntS,
+        COOR_SOURCE=(x0, y0, z0),
+        COOR_REFLECHI=(x1, y1, z1),
+        GROUP_MA=("Bord_G_Sol_3D", "Bord_D_Sol_3D", "Bord_Bas_Sol_3D"),
+    ),
+)
+
+ONDEP = AFFE_CHAR_MECA_F(
+    MODELE=MODELE2,
+    ONDE_PLANE=_F(
+        DIRECTION=(sina, 0.0, cosa),
+        TYPE_ONDE="P",
+        FONC_SIGNAL=Vit_IntP,
+        COOR_SOURCE=(x0, y0, z0),
+        COOR_REFLECHI=(x1, y1, z1),
+        GROUP_MA=("Bord_G_Sol_3D", "Bord_D_Sol_3D", "Bord_Bas_Sol_3D"),
+    ),
+)
+
+
+###calcul dynamique transitoire avec dyna_non_line
+dyna = DYNA_NON_LINE(
+    MODELE=MODELE2,
+    CHAM_MATER=CHMAT,
+    EXCIT=(_F(CHARGE=ONDES), _F(CHARGE=ONDEP), _F(CHARGE=CL2)),
+    COMPORTEMENT=(_F(RELATION="ELAS", TOUT="OUI"),),
+    NEWTON=_F(MATRICE="ELASTIQUE", REAC_INCR=0, REAC_ITER=0),
+    SCHEMA_TEMPS=_F(SCHEMA="NEWMARK", FORMULATION="ACCELERATION"),
+    INCREMENT=_F(LIST_INST=TEMPL2A),
+)
+
+# Extraction des accelerations en crete et en pied
+acc_Ax = RECU_FONCTION(RESULTAT=dyna, NOM_CHAM="ACCE", NOM_CMP="DX", GROUP_NO="Node_A")
+
+acc_Az = RECU_FONCTION(RESULTAT=dyna, NOM_CHAM="ACCE", NOM_CMP="DZ", GROUP_NO="Node_A")
+
+acc_Bx = RECU_FONCTION(RESULTAT=dyna, NOM_CHAM="ACCE", NOM_CMP="DX", GROUP_NO="Node_B")
+
+acc_Bz = RECU_FONCTION(RESULTAT=dyna, NOM_CHAM="ACCE", NOM_CMP="DZ", GROUP_NO="Node_B")
+
+acc_Cx = RECU_FONCTION(RESULTAT=dyna, NOM_CHAM="ACCE", NOM_CMP="DX", GROUP_NO="Node_C")
+
+acc_Cz = RECU_FONCTION(RESULTAT=dyna, NOM_CHAM="ACCE", NOM_CMP="DZ", GROUP_NO="Node_C")
+
+acc_Dx = RECU_FONCTION(RESULTAT=dyna, NOM_CHAM="ACCE", NOM_CMP="DX", GROUP_NO="Node_D")
+
+acc_Dz = RECU_FONCTION(RESULTAT=dyna, NOM_CHAM="ACCE", NOM_CMP="DZ", GROUP_NO="Node_D")
+
+TEST_FONCTION(
+    VALEUR=(
+        _F(
+            VALE_CALC=-0.51822321854824,
+            VALE_REFE=-0.51822321854850,
+            PRECISION=1.0e-10,
+            REFERENCE="AUTRE_ASTER",
+            CRITERE="RELATIF",
+            VALE_PARA=0.98,
+            FONCTION=acc_Ax,
+        ),
+        _F(
+            VALE_CALC=2.153930991419,
+            VALE_REFE=2.153930991416,
+            PRECISION=1.0e-10,
+            REFERENCE="AUTRE_ASTER",
+            CRITERE="RELATIF",
+            VALE_PARA=0.98,
+            FONCTION=acc_Az,
+        ),
+        _F(
+            VALE_CALC=0.38102918463101,
+            VALE_REFE=0.38102918463262,
+            PRECISION=1.0e-10,
+            REFERENCE="AUTRE_ASTER",
+            CRITERE="RELATIF",
+            VALE_PARA=0.98,
+            FONCTION=acc_Bx,
+        ),
+        _F(
+            VALE_CALC=2.445920138222,
+            VALE_REFE=2.445920138223,
+            PRECISION=1.0e-10,
+            REFERENCE="AUTRE_ASTER",
+            CRITERE="RELATIF",
+            VALE_PARA=0.98,
+            FONCTION=acc_Bz,
+        ),
+        _F(
+            VALE_CALC=0.86236325618831,
+            VALE_REFE=0.86236325618903,
+            PRECISION=1.0e-10,
+            REFERENCE="AUTRE_ASTER",
+            CRITERE="RELATIF",
+            VALE_PARA=0.98,
+            FONCTION=acc_Cx,
+        ),
+        _F(
+            VALE_CALC=2.477310891844,
+            VALE_REFE=2.477310891840,
+            PRECISION=1.0e-10,
+            REFERENCE="AUTRE_ASTER",
+            CRITERE="RELATIF",
+            VALE_PARA=0.98,
+            FONCTION=acc_Cz,
+        ),
+        _F(
+            VALE_CALC=-0.43673206552767,
+            VALE_REFE=-0.43673206552775,
+            PRECISION=1.0e-10,
+            REFERENCE="AUTRE_ASTER",
+            CRITERE="RELATIF",
+            VALE_PARA=0.98,
+            FONCTION=acc_Dx,
+        ),
+        _F(
+            VALE_CALC=1.786821368781,
+            VALE_REFE=1.786821368781,
+            PRECISION=1.0e-10,
+            REFERENCE="AUTRE_ASTER",
+            CRITERE="RELATIF",
+            VALE_PARA=0.98,
+            FONCTION=acc_Dz,
+        ),
+    )
+)
+
+FIN()

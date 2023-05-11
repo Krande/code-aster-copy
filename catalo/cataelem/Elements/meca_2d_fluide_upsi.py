@@ -61,6 +61,16 @@ class MEFLQU4PSI(Element):
             para_in=((SP.PGEOMER, LC.EGEOM2D),),
             para_out=((OP.COOR_ELGA.PCOORPG, LC.EGGAU2D),),
         ),
+        OP.FORC_NODA(
+            te=253,
+            para_in=(
+                (SP.PDEPLMR, DDL_MECA),
+                (SP.PDEPLPR, DDL_MECA),
+                (SP.PGEOMER, LC.EGEOM2D),
+                (SP.PMATERC, LC.CMATERC),
+            ),
+            para_out=((SP.PVECTUR, MVECTUR),),
+        ),
         OP.FULL_MECA(
             te=253,
             para_in=(
@@ -100,6 +110,17 @@ class MEFLQU4PSI(Element):
         OP.PRME_ELNO(
             te=420, para_in=((SP.PDEPLAC, NDEPLAC),), para_out=((SP.PPRME_R, LC.EPRMENO),)
         ),
+        OP.RAPH_MECA(
+            te=253,
+            para_in=(
+                (SP.PCOMPOR, LC.CCOMPOR),
+                (SP.PDEPLMR, DDL_MECA),
+                (SP.PDEPLPR, DDL_MECA),
+                (SP.PGEOMER, LC.EGEOM2D),
+                (SP.PMATERC, LC.CMATERC),
+            ),
+            para_out=((SP.PCODRET, LC.ECODRET), (SP.PVECTUR, MVECTUR)),
+        ),
         OP.RIGI_MECA(
             te=253,
             para_in=((SP.PGEOMER, LC.EGEOM2D), (SP.PMATERC, LC.CMATERC)),
@@ -109,6 +130,22 @@ class MEFLQU4PSI(Element):
             te=253,
             para_in=((SP.PGEOMER, LC.EGEOM2D), (SP.PMATERC, LC.CMATERC)),
             para_out=((SP.PMATUUC, MMATUUC),),
+        ),
+        OP.RIGI_MECA_TANG(
+            te=253,
+            para_in=(
+                (SP.PCOMPOR, LC.CCOMPOR),
+                (SP.PDEPLMR, DDL_MECA),
+                (SP.PDEPLPR, DDL_MECA),
+                (SP.PGEOMER, LC.EGEOM2D),
+                (SP.PMATERC, LC.CMATERC),
+            ),
+            para_out=(
+                (SP.PMATUUR, MMATUUR),
+                (SP.PVECTUR, MVECTUR),
+                (SP.PCOPRED, LC.ECODRET),
+                (SP.PCODRET, LC.ECODRET),
+            ),
         ),
         OP.TOU_INI_ELEM(te=99, para_out=((SP.PGEOM_R, LC.CGEOM2D),)),
         OP.TOU_INI_ELGA(te=99, para_out=((SP.PGEOM_R, LC.EGGEO2D),)),

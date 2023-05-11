@@ -75,6 +75,27 @@ class MEFL_HEXA20P(Element):
             ),
             para_out=((SP.PCODRET, LC.ECODRET), (SP.PMATUUR, MMATUUR), (SP.PVECTUR, MVECTUR)),
         ),
+        OP.FORC_NODA(
+            te=170,
+            para_in=(
+                (SP.PDEPLMR, DDL_MECA),
+                (SP.PDEPLPR, DDL_MECA),
+                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PMATERC, LC.CMATERC),
+            ),
+            para_out=((SP.PVECTUR, MVECTUR),),
+        ),
+        OP.RAPH_MECA(
+            te=170,
+            para_in=(
+                (SP.PCOMPOR, LC.CCOMPOR),
+                (SP.PDEPLMR, DDL_MECA),
+                (SP.PDEPLPR, DDL_MECA),
+                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PMATERC, LC.CMATERC),
+            ),
+            para_out=((SP.PCODRET, LC.ECODRET), (SP.PVECTUR, MVECTUR)),
+        ),
         OP.MASS_INER(
             te=152,
             para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC)),
@@ -107,6 +128,22 @@ class MEFL_HEXA20P(Element):
             te=170,
             para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC)),
             para_out=((SP.PMATUUC, MMATUUC),),
+        ),
+        OP.RIGI_MECA_TANG(
+            te=170,
+            para_in=(
+                (SP.PCOMPOR, LC.CCOMPOR),
+                (SP.PDEPLMR, DDL_MECA),
+                (SP.PDEPLPR, DDL_MECA),
+                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PMATERC, LC.CMATERC),
+            ),
+            para_out=(
+                (SP.PMATUUR, MMATUUR),
+                (SP.PVECTUR, MVECTUR),
+                (SP.PCOPRED, LC.ECODRET),
+                (SP.PCODRET, LC.ECODRET),
+            ),
         ),
         OP.TOU_INI_ELEM(te=99, para_out=((SP.PGEOM_R, LC.CGEOM3D),)),
         OP.TOU_INI_ELGA(te=99, para_out=((SP.PGEOM_R, LC.EGGEO3D),)),

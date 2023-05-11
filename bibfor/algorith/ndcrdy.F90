@@ -87,7 +87,7 @@ subroutine ndcrdy(result, sddyna)
         vecabs = sddyna(1:15)//'.VECABS'
         call wkvect(psch, 'V V R', 7, jpsch)
         call wkvect(losd, 'V V L', 16, jlosd)
-        call wkvect(nosd, 'V V K24', 7, jnosd)
+        call wkvect(nosd, 'V V K24', 8, jnosd)
         call wkvect(tfor, 'V V I', 2, jtfor)
         call wkvect(cfsc, 'V V R', 24, jcfsc)
         call wkvect(tcha, 'V V K24', 4, jtcha)

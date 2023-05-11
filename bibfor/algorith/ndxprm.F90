@@ -197,7 +197,7 @@ subroutine ndxprm(modelz, ds_material, carele, ds_constitutive, ds_algopara, &
         call compDampMatrix(modelz, carele, &
                             ds_material, ds_constitutive, &
                             time, lischa, numedd, nlDynaDamping, &
-                            ds_system, valinc, meelem)
+                            ds_system, valinc, meelem, sddyna)
     end if
 
 ! - No error => continue

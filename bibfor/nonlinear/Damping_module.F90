@@ -253,7 +253,7 @@ contains
                                  behaviourField, &
                                  vari, time, listLoad, numeDof, &
                                  rigiElem, massElem, &
-                                 dampAsse)
+                                 dampAsse, sddyna)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         character(len=24), intent(in) :: model, caraElem
@@ -262,7 +262,7 @@ contains
         character(len=24), intent(in) :: vari
         real(kind=8), intent(in) :: time
         character(len=14), intent(in) :: numeDof
-        character(len=19), intent(in) :: listLoad
+        character(len=19), intent(in) :: listLoad, sddyna
         character(len=24), intent(in) :: rigiElem, massElem, dampAsse
 ! - Local
         character(len=24), parameter :: dampElem = '&&NMCH3P.MEAMOR'
@@ -275,7 +275,7 @@ contains
                       behaviourField, &
                       vari, time, &
                       rigiElem, massElem, &
-                      dampElem)
+                      dampElem, sddyna)
 
 ! - Assemble elementary matrices for damp
         call asseDamp(numeDof, listLoad, dampElem, dampAsse)

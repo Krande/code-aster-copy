@@ -331,13 +331,14 @@ contains
                         behaviourField, &
                         vari, time, &
                         rigiElem, massElem, &
-                        dampElem)
+                        dampElem, sddyna)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         character(len=24), intent(in) :: model, caraElem
         character(len=24), intent(in) :: materialField, materialCoding
         character(len=24), intent(in) :: behaviourField
         character(len=24), intent(in) :: vari
+        character(len=19), intent(in) :: sddyna
         real(kind=8), intent(in) :: time
         character(len=24), intent(in) :: rigiElem, massElem
         character(len=24), intent(in) :: dampElem
@@ -356,7 +357,7 @@ contains
                     time, jvBase, &
                     rigiElem, massElem, &
                     dampElem, &
-                    vari, behaviourField)
+                    vari, behaviourField, sddyna)
 !
 !   ------------------------------------------------------------------------------------------------
     end subroutine

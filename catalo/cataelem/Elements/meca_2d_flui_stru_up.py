@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -65,15 +65,63 @@ class MEFSSE2P(Element):
             para_in=((SP.PGEOMER, LC.EGEOM2D), (SP.PMATERC, LC.CMATERC), (SP.PVITEFF, LC.EVITEFF)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
+        OP.FORC_NODA(
+            te=89,
+            para_in=(
+                (SP.PDEPLMR, DDL_MECA),
+                (SP.PDEPLPR, DDL_MECA),
+                (SP.PGEOMER, LC.EGEOM2D),
+                (SP.PMATERC, LC.CMATERC),
+            ),
+            para_out=((SP.PVECTUR, MVECTUR),),
+        ),
+        OP.FULL_MECA(
+            te=89,
+            para_in=(
+                (SP.PCOMPOR, LC.CCOMPOR),
+                (SP.PDEPLMR, DDL_MECA),
+                (SP.PDEPLPR, DDL_MECA),
+                (SP.PGEOMER, LC.EGEOM2D),
+                (SP.PMATERC, LC.CMATERC),
+            ),
+            para_out=((SP.PCODRET, LC.ECODRET), (SP.PMATUNS, MMATUNS), (SP.PVECTUR, MVECTUR)),
+        ),
         OP.MASS_MECA(
             te=257,
             para_in=((SP.PGEOMER, LC.EGEOM2D), (SP.PMATERC, LC.CMATERC)),
             para_out=((SP.PMATUNS, MMATUNS),),
         ),
+        OP.RAPH_MECA(
+            te=89,
+            para_in=(
+                (SP.PCOMPOR, LC.CCOMPOR),
+                (SP.PDEPLMR, DDL_MECA),
+                (SP.PDEPLPR, DDL_MECA),
+                (SP.PGEOMER, LC.EGEOM2D),
+                (SP.PMATERC, LC.CMATERC),
+            ),
+            para_out=((SP.PCODRET, LC.ECODRET), (SP.PVECTUR, MVECTUR)),
+        ),
         OP.RIGI_MECA(
             te=89,
             para_in=((SP.PGEOMER, LC.EGEOM2D), (SP.PMATERC, LC.CMATERC)),
             para_out=((SP.PMATUNS, MMATUNS),),
+        ),
+        OP.RIGI_MECA_TANG(
+            te=89,
+            para_in=(
+                (SP.PCOMPOR, LC.CCOMPOR),
+                (SP.PDEPLMR, DDL_MECA),
+                (SP.PDEPLPR, DDL_MECA),
+                (SP.PGEOMER, LC.EGEOM2D),
+                (SP.PMATERC, LC.CMATERC),
+            ),
+            para_out=(
+                (SP.PMATUNS, MMATUNS),
+                (SP.PVECTUR, MVECTUR),
+                (SP.PCOPRED, LC.ECODRET),
+                (SP.PCODRET, LC.ECODRET),
+            ),
         ),
         OP.TOU_INI_ELEM(te=99, para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM2D),)),
         OP.TOU_INI_ELGA(te=99, para_out=((OP.TOU_INI_ELGA.PGEOM_R, LC.EGGAU2D),)),

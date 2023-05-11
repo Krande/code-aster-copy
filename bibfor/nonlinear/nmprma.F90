@@ -247,7 +247,7 @@ subroutine nmprma(listFuncActi, &
             call compDampMatrix(modelz, caraElem, &
                                 ds_material, ds_constitutive, &
                                 time, listLoad, numeDof, nlDynaDamping, &
-                                ds_system, hval_incr, hval_meelem)
+                                ds_system, hval_incr, hval_meelem, sddyna)
         end if
 
 ! ----- Compute global matrix of system

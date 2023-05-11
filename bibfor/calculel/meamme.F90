@@ -21,7 +21,7 @@ subroutine meamme(modelz, &
                   time, basez, &
                   matrRigiz, matrMassz, &
                   matrElemz, &
-                  variz, comporz)
+                  variz, comporz, sddyna)
 !
     implicit none
 !
@@ -42,6 +42,7 @@ subroutine meamme(modelz, &
 #include "asterfort/mecham.h"
 #include "asterfort/memare.h"
 #include "asterfort/mecact.h"
+#include "asterfort/ndynkk.h"
 #include "asterfort/reajre.h"
 #include "asterfort/redetr.h"
 #include "asterfort/utmess.h"
@@ -53,6 +54,7 @@ subroutine meamme(modelz, &
     character(len=*), intent(in) :: basez
     character(len=*), intent(in) :: matrRigiz, matrMassz, matrElemz
     character(len=*), intent(in) :: variz, comporz
+    character(len=19), intent(in) :: sddyna
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -98,7 +100,7 @@ subroutine meamme(modelz, &
     character(len=24) :: chgeom, chcara(18), chharm
     character(len=1) :: base
     character(len=8) :: model, caraElem, mesh
-    character(len=24) :: mate, mateco
+    character(len=24) :: mate, mateco, amor_flui
     character(len=19) :: matrElem
     integer :: nbResuElem, iResuElem, idxResuElemRigi
     integer :: nbSubstruct
@@ -143,6 +145,9 @@ subroutine meamme(modelz, &
     call jedetr(nonLinearMap)
     call mecact('V', nonLinearMap, 'MAILLA', mesh, 'NEUT_I', &
                 ncmp=nbCmp, nomcmp=cmpName, si=cmpVale)
+
+! - Special map for fluid damping
+    call ndynkk(sddyna, 'AMOR_FLUI', amor_flui)
 
 ! - Field for external state variables
     call vrcins(model, mate, caraElem, time, chvarc, codret)
@@ -222,7 +227,9 @@ subroutine meamme(modelz, &
     lchin(12) = nonLinearMap(1:19)
     lpain(13) = 'PVARIPG'
     lchin(13) = vari(1:19)
-    nbFieldIn = 13
+    lpain(14) = 'PAMORFL'
+    lchin(14) = amor_flui(1:19)
+    nbFieldIn = 14
 
 ! - Get symmetric or unsymmetric rigidity matrix
     if (resuElemRigi .ne. ' ') then

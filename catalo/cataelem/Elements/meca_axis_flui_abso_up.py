@@ -32,6 +32,8 @@ from cataelem.Options.options import OP
 
 DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("PRES"))
 
+NDEPLAC = LocatedComponents(phys=PHY.DEPL_C, type="ELNO", components=("PRES",))
+
 
 NGEOMER = LocatedComponents(phys=PHY.GEOM_R, type="ELNO", components=("X", "Y"))
 
@@ -47,6 +49,8 @@ MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
 MMATUUR = ArrayOfComponents(phys=PHY.MDEP_R, locatedComponents=DDL_MECA)
 
+MMATUUC = ArrayOfComponents(phys=PHY.MDEP_C, locatedComponents=NDEPLAC)
+
 
 # ------------------------------------------------------------
 class MEFAXSE2UP(Element):
@@ -57,6 +61,27 @@ class MEFAXSE2UP(Element):
     calculs = (
         OP.COOR_ELGA(
             te=478, para_in=((SP.PGEOMER, NGEOMER),), para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R),)
+        ),
+        OP.FORC_NODA(
+            te=167,
+            para_in=(
+                (SP.PDEPLMR, DDL_MECA),
+                (SP.PDEPLPR, DDL_MECA),
+                (SP.PGEOMER, LC.EGEOM2D),
+                (SP.PMATERC, LC.CMATERC),
+            ),
+            para_out=((SP.PVECTUR, MVECTUR),),
+        ),
+        OP.FULL_MECA(
+            te=167,
+            para_in=(
+                (SP.PCOMPOR, LC.CCOMPOR),
+                (SP.PDEPLMR, DDL_MECA),
+                (SP.PDEPLPR, DDL_MECA),
+                (SP.PGEOMER, LC.EGEOM2D),
+                (SP.PMATERC, LC.CMATERC),
+            ),
+            para_out=((SP.PCODRET, LC.ECODRET), (SP.PMATUUR, MMATUUR), (SP.PVECTUR, MVECTUR)),
         ),
         OP.IMPE_ABSO(
             te=99,
@@ -87,15 +112,47 @@ class MEFAXSE2UP(Element):
             para_in=((SP.PGEOMER, LC.EGEOM2D), (SP.PMATERC, LC.CMATERC), (SP.PVITEFF, LC.EVITEFF)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
+        OP.MASS_MECA(
+            te=184,
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC)),
+            para_out=((SP.PMATUUR, MMATUUR),),
+        ),
+        OP.RAPH_MECA(
+            te=167,
+            para_in=(
+                (SP.PCOMPOR, LC.CCOMPOR),
+                (SP.PDEPLMR, DDL_MECA),
+                (SP.PDEPLPR, DDL_MECA),
+                (SP.PGEOMER, LC.EGEOM2D),
+                (SP.PMATERC, LC.CMATERC),
+            ),
+            para_out=((SP.PCODRET, LC.ECODRET), (SP.PVECTUR, MVECTUR)),
+        ),
         OP.RIGI_MECA(
             te=167,
             para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC)),
             para_out=((SP.PMATUUR, MMATUUR),),
         ),
-        OP.MASS_MECA(
-            te=184,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC)),
-            para_out=((SP.PMATUUR, MMATUUR),),
+        OP.RIGI_MECA_HYST(
+            te=167,
+            para_in=((SP.PGEOMER, LC.EGEOM2D), (SP.PMATERC, LC.CMATERC)),
+            para_out=((SP.PMATUUC, MMATUUC),),
+        ),
+        OP.RIGI_MECA_TANG(
+            te=167,
+            para_in=(
+                (SP.PCOMPOR, LC.CCOMPOR),
+                (SP.PDEPLMR, DDL_MECA),
+                (SP.PDEPLPR, DDL_MECA),
+                (SP.PGEOMER, LC.EGEOM2D),
+                (SP.PMATERC, LC.CMATERC),
+            ),
+            para_out=(
+                (SP.PMATUUR, MMATUUR),
+                (SP.PVECTUR, MVECTUR),
+                (SP.PCOPRED, LC.ECODRET),
+                (SP.PCODRET, LC.ECODRET),
+            ),
         ),
         OP.TOU_INI_ELGA(te=99, para_out=((OP.TOU_INI_ELGA.PGEOM_R, EGGEOP_R),)),
         OP.TOU_INI_ELEM(te=99, para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM2D),)),

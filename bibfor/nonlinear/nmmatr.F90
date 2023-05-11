@@ -165,12 +165,12 @@ subroutine nmmatr(phaseType, listFuncActi, listLoad, numeDof, &
                 call mtdefs(matrAsse, massAsse, 'V', 'R')
             else
                 matrRefe = rigiAsse
-                call dismoi('NOM_NUME_DDL', massAsse, 'MATR_ASSE', repk=matrType)
+                call dismoi('TYPE_MATRICE', massAsse, 'MATR_ASSE', repk=matrType)
                 if (matrType .eq. 'NON_SYM') then
                     matrRefe = massAsse
                 end if
                 if (lDampMatrix) then
-                    call dismoi('NOM_NUME_DDL', dampAsse, 'MATR_ASSE', repk=matrType)
+                    call dismoi('TYPE_MATRICE', dampAsse, 'MATR_ASSE', repk=matrType)
                     if (matrType .eq. 'NON_SYM') then
                         matrRefe = dampAsse
                     end if

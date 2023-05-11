@@ -54,14 +54,14 @@ subroutine te0253(option, nomte)
 !
     integer :: i, j, k, l
     integer :: n1, n2
-    integer :: nn, nno2, nt2
+    integer :: nn, nno2, nt1, nt2
     integer :: ipg, ij, ik, ijkl, codret
     integer :: jv_compo, jv_deplm, jv_deplp
     integer :: jv_geom, jv_mate
     integer :: jv_vect, jv_codret, jv_matr
     character(len=16) :: rela_comp
     real(kind=8) :: a(2, 2, 9, 9), mmat(9, 9)
-    real(kind=8) :: b(18, 18), ul(18), c(171)
+    real(kind=8) :: b(18, 18), e(9, 9), ul(18), us(9), c(171), d(45)
     real(kind=8) :: dfdx(9), dfdy(9)
     real(kind=8) :: poids, rho, celer
     integer :: ipoids, ivf, idfde
@@ -113,6 +113,7 @@ subroutine te0253(option, nomte)
     ASSERT(nno .le. 9)
     nno2 = nno*2
     nt2 = nno*(nno2+1)
+    nt1 = nno*(nno+1)/2
 !
 ! - Get material properties for fluid
 !
@@ -184,6 +185,13 @@ subroutine te0253(option, nomte)
                 end do
             end do
         end do
+    elseif (FEForm .eq. 'U_P' .or. FEForm .eq. 'U_PSI') then
+        do j = 1, nno
+            do i = 1, j
+                ij = (j-1)*j/2+i
+                d(ij) = mmat(i, j)
+            end do
+        end do
     end if
 !
 ! - Save matrix
@@ -204,31 +212,35 @@ subroutine te0253(option, nomte)
         else
             call utmess('F', 'FLUID1_2', sk=FEForm)
         end if
-    elseif (option(1:9) .eq. 'FULL_MECA') then
-        call jevech('PMATUUR', 'E', jv_matr)
-        if (FEForm .eq. 'U_P_PHI') then
-            do i = 1, nt2
-                zr(jv_matr+i-1) = c(i)
-            end do
-        else
-            call utmess('F', 'FLUID1_2', sk=FEForm)
-        end if
-    elseif (option(1:9) .eq. 'RIGI_MECA') then
+    elseif (option(1:9) .eq. 'FULL_MECA' .or. option(1:9) .eq. 'RIGI_MECA') then
         call jevech('PMATUUR', 'E', jv_matr)
         if (FEForm .eq. 'U_P_PHI') then
             do i = 1, nt2
                 zr(jv_matr+i-1) = c(i)
             end do
         elseif (FEForm .eq. 'U_P' .or. FEForm .eq. 'U_PSI') then
-            do j = 1, nno
-                do i = 1, j
-                    ij = (j-1)*j/2+i
-                    zr(jv_matr+ij-1) = mmat(i, j)
-                end do
+            do i = 1, nt1
+                zr(jv_matr+i-1) = d(i)
             end do
         else
             call utmess('F', 'FLUID1_2', sk=FEForm)
         end if
+        ! elseif (option(1:9) .eq. 'RIGI_MECA') then
+        !     call jevech('PMATUUR', 'E', jv_matr)
+        !     if (FEForm .eq. 'U_P_PHI') then
+        !         do i = 1, nt2
+        !             zr(jv_matr+i-1) = c(i)
+        !         end do
+        !     elseif (FEForm .eq. 'U_P' .or. FEForm .eq. 'U_PSI') then
+        !         do j = 1, nno
+        !             do i = 1, j
+        !                 ij = (j-1)*j/2+i
+        !                 zr(jv_matr+ij-1) = mmat(i, j)
+        !             end do
+        !         end do
+        !     else
+        !         call utmess('F', 'FLUID1_2', sk=FEForm)
+        !     end if
     end if
 !
 ! - Save vector
@@ -255,6 +267,27 @@ subroutine te0253(option, nomte)
                     zr(jv_vect+n1-1) = zr(jv_vect+n1-1)+b(n1, n2)*ul(n2)
                 end do
             end do
+        elseif (FEForm .eq. 'U_P' .or. FEForm .eq. 'U_PSI') then
+            call jevech('PVECTUR', 'E', jv_vect)
+            call jevech('PDEPLMR', 'L', jv_deplm)
+            call jevech('PDEPLPR', 'L', jv_deplp)
+            do i = 1, nno
+                zr(jv_vect+i-1) = 0.d0
+                us(i) = zr(jv_deplm+i-1)+zr(jv_deplp+i-1)
+            end do
+            nn = 0
+            do n1 = 1, nno
+                do n2 = 1, n1
+                    nn = nn+1
+                    e(n1, n2) = d(nn)
+                    e(n2, n1) = d(nn)
+                end do
+            end do
+            do n1 = 1, nno
+                do n2 = 1, nno
+                    zr(jv_vect+n1-1) = zr(jv_vect+n1-1)+e(n1, n2)*us(n2)
+                end do
+            end do
         else
             call utmess('F', 'FLUID1_2', sk=FEForm)
         end if
@@ -263,7 +296,7 @@ subroutine te0253(option, nomte)
 ! - Save return code
 !
     if (lSigm) then
-        if (FEForm .eq. 'U_P_PHI') then
+        if (FEForm .eq. 'U_P_PHI' .or. FEForm .eq. 'U_P' .or. FEForm .eq. 'U_PSI') then
             call jevech('PCODRET', 'E', jv_codret)
             zi(jv_codret) = 0
         else
