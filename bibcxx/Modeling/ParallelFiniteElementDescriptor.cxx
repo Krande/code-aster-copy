@@ -295,9 +295,6 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor( const std::str
       _owner( JeveuxVectorLong( getName() + ".PNOE" ) ),
       _multiplicity( JeveuxVectorLong( getName() + ".MULT" ) ),
       _outerMultiplicity( JeveuxVectorLong( getName() + ".MUL2" ) ),
-      _globalNumberingVirtualNodes( JeveuxVectorLong( getName() + ".NULG" ) ) {
-    std::cout << "Ici" << std::endl;
-    _joints->debugPrint();
-};
+      _globalNumberingVirtualNodes( JeveuxVectorLong( getName() + ".NULG" ) ) {};
 
 #endif /* ASTER_HAVE_MPI */

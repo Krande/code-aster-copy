@@ -32,6 +32,7 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato, &
 #include "asterc/asmpi_comm.h"
 #include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/asmpi_info.h"
+#include "asterfort/assert.h"
 #include "asterfort/celfpg.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/infniv.h"
@@ -113,7 +114,7 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato, &
     integer :: jcesc, jcesl, jcesv, nrefma
     integer :: nrcmp, nrpg, nrsp, nbpg, nbsp, nb_fpg, typmas, nbimp0, nrimpr
     integer :: nbtcou, nbqcou, nbsec, nbfib, jnbimpr, jnbimpr2, jnbimpr3
-    integer :: adcaii, adcaik, nbgrf, nbmaect, nbimprl(1)
+    integer :: adcaii, adcaik, nbgrf, nbmaect, nbimprl(1), jindir
     integer :: nbgrf2, nbtcou2, nbqcou2, nbsec2, nbfib2, ima2, nbimprt
     integer :: igrfi, imafib, rang, nbproc, jma, jnbma, ityp, nbmal, iaux
     character(len=16) :: nomfpg
@@ -462,13 +463,24 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato, &
                 zi(jnbimpr3+10*nbimprl(1)+jaux) = zi(jnbimpr2+10*(iaux-1)+jaux)
             end do
             zi(jnbimpr3+10*nbimprl(1)+6) = 0
+            nbimprl(1) = nbimprl(1)+1
+        end do
+        if (nbimpr .ne. 0) then
+            call wkvect('&&IRCMPE.INDIR', 'V V I', nbimpr, jindir)
+        end if
+        do iaux = 1, nbimprl(1)
+            nrefma = zi(jnbimpr3+10*(iaux-1))
+            nbsp = zi(jnbimpr3+10*(iaux-1)+2)
+            nbpg = zi(jnbimpr3+10*(iaux-1)+1)
             do jaux = 1, nbimpr
                 if (nrefma .eq. zi(adcaii+10*(jaux-1)) .and. &
                     nbsp .eq. zi(adcaii+10*(jaux-1)+2)) then
-                    zi(jnbimpr3+10*nbimprl(1)+6) = zi(adcaii+10*(jaux-1)+6)
+                    zi(jnbimpr3+10*(iaux-1)+6) = zi(adcaii+10*(jaux-1)+6)
+                    ASSERT(nbimpr .ne. 0)
+                    zi(jindir+jaux-1) = iaux
+                    cycle
                 end if
             end do
-            nbimprl(1) = nbimprl(1)+1
         end do
         call jedetr(ncaimi)
         nbimpr = nbimprl(1)
@@ -481,6 +493,10 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato, &
         call jedetr('&&IRCMPE.NBIMPR3')
     else
         nbimprt = nbimpr
+        call wkvect('&&IRCMPE.INDIR', 'V V I', nbimpr, jindir)
+        do jaux = 1, nbimpr
+            zi(jindir+jaux-1) = jaux
+        end do
     end if
     if (nbimprt .eq. 0) then
         goto 999
@@ -517,12 +533,14 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato, &
         typmas = typmai(ima)
         nmaty0(typmas) = nmaty0(typmas)+1
         if (prorec(ima) .ne. 0) then
-            jaux = nroimp(ima)
+            jaux = zi(jindir+nroimp(ima)-1)
             adraux(jaux) = adraux(jaux)+1
+            ASSERT(adraux(jaux) .le. nbvato)
             promed(adraux(jaux)) = nmaty0(typmas)
             profas(adraux(jaux)) = ima
         end if
     end do
+    call jedetr('&&IRCMPE.INDIR')
     !
     ! MEMORISATION DANS LES CARACTERISTIQUES DE L'IMPRESSION
     !
