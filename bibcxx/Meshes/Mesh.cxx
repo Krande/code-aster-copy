@@ -141,7 +141,18 @@ VectorLong Mesh::getNodes( const VectorString &names, const bool, const ASTERINT
         }
     }
 
-    auto all_nodes = unique( concatenate( nodes ) );
+    if ( nodes.empty() ) {
+        return VectorLong();
+    }
+
+    VectorLong all_nodes;
+
+    if ( nodes.size() == 1 ) {
+        all_nodes = nodes[0];
+    } else {
+        all_nodes = unique( concatenate( nodes ) );
+    }
+
     for ( auto &node : all_nodes ) {
         node -= 1;
     }
