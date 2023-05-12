@@ -106,9 +106,9 @@ def build_ksp(matrix, nmbrng=NUM):
     rank = comm.rank
 
     ms, me = matrix.getOwnershipRange()
-    phys = np.array(nmbrng.getPhysicalDOF())  # 0-based
+    phys = np.array(nmbrng.getPhysicalDOFs())  # 0-based
     phys = phys[np.where((ms <= phys) & (phys < me))]  # hack to handle parallelism
-    lags = np.array(nmbrng.getLagrangeDOF())  # 0-based
+    lags = np.array(nmbrng.getLagrangeDOFs())  # 0-based
     lags = lags[np.where((ms <= lags) & (lags < me))]  # hack to handle parallelism
 
     phys = getattr(phys, "tolist", lambda: value)()

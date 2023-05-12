@@ -34,7 +34,7 @@ void exportParallelEquationNumberingToPython( py::module_ &mod ) {
         mod, "ParallelEquationNumbering" )
         .def( py::init( &initFactoryPtr< ParallelEquationNumbering > ) )
         .def( py::init( &initFactoryPtr< ParallelEquationNumbering, std::string > ) )
-        .def( "getGhostDOF", &ParallelEquationNumbering::getGhostDOF,
+        .def( "getGhostDOFs", &ParallelEquationNumbering::getGhostDOFs,
               R"(
 Returns the indexes of the ghost DOFs.
 
@@ -46,7 +46,7 @@ Returns:
         )",
               py::arg( "local" ) = true )
         // ---------------------------------------------------------------------
-        .def( "getNoGhostDOF", &ParallelEquationNumbering::getNoGhostDOF,
+        .def( "getNoGhostDOFs", &ParallelEquationNumbering::getNoGhostDOFs,
               R"(
 Returns the indexes of the DOFs owned locally (aka not ghost).
 
@@ -54,7 +54,7 @@ Returns:
     int: indexes of the DOFs owned locally.
         )" )
         // ---------------------------------------------------------------------
-        .def( "getNumberOfDOF", &ParallelEquationNumbering::getNumberOfDOF,
+        .def( "getNumberOfDOFs", &ParallelEquationNumbering::getNumberOfDOFs,
               R"(
 Returns the number of DOFs.
 

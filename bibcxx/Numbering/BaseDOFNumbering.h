@@ -360,21 +360,21 @@ class BaseDOFNumbering : public DataStructure {
     /**
      * @brief Get The total number of Dofs
      */
-    virtual ASTERINTEGER getNumberOfDOF( const bool local = false ) const {
+    virtual ASTERINTEGER getNumberOfDOFs( const bool local = false ) const {
         AS_ABORT( "Not allowed" );
     };
 
     /**
      * @brief Get Rows Associated to all Physical Dof
      */
-    virtual VectorLong getPhysicalDOF( const bool local = false ) const {
+    virtual VectorLong getPhysicalDOFs( const bool local = false ) const {
         AS_ABORT( "Not allowed" );
     }
 
     /**
      * @brief Get Rows Associated to Lagrange Multipliers Dof
      */
-    virtual VectorLong getLagrangeDOF( const bool local = false ) const {
+    virtual VectorLong getLagrangeDOFs( const bool local = false ) const {
         AS_ABORT( "Not allowed" );
     }
 

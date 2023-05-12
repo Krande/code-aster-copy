@@ -63,7 +63,7 @@ bool ParallelEquationNumbering::useLagrangeDOF() const {
     return global_answer;
 };
 
-VectorLong ParallelEquationNumbering::getPhysicalDOF( const bool local ) const {
+VectorLong ParallelEquationNumbering::getPhysicalDOFs( const bool local ) const {
     auto dofInformation = this->getLagrangianInformations();
     dofInformation->updateValuePointer();
     ASTERINTEGER size = dofInformation->size();
@@ -84,7 +84,7 @@ VectorLong ParallelEquationNumbering::getPhysicalDOF( const bool local ) const {
     return physicalRows;
 };
 
-VectorLong ParallelEquationNumbering::getGhostDOF( const bool local ) const {
+VectorLong ParallelEquationNumbering::getGhostDOFs( const bool local ) const {
     auto localToRank = this->getLocalToRank();
     localToRank->updateValuePointer();
     VectorLong ghostRows;
@@ -94,7 +94,7 @@ VectorLong ParallelEquationNumbering::getGhostDOF( const bool local ) const {
     if ( !local )
         loc2glo->updateValuePointer();
 
-    for ( int i = 0; i < getNumberOfDOF( true ); i++ ) {
+    for ( int i = 0; i < getNumberOfDOFs( true ); i++ ) {
         dofOwner = ( *localToRank )[i];
         if ( dofOwner != rank )
             if ( local )
@@ -106,14 +106,14 @@ VectorLong ParallelEquationNumbering::getGhostDOF( const bool local ) const {
     return ghostRows;
 };
 
-VectorLong ParallelEquationNumbering::getNoGhostDOF() const {
+VectorLong ParallelEquationNumbering::getNoGhostDOFs() const {
     auto localToRank = this->getLocalToRank();
     localToRank->updateValuePointer();
     const auto rank = getMPIRank();
     ASTERINTEGER dofOwner;
     VectorLong noGhostRows;
 
-    for ( int i = 0; i < getNumberOfDOF( true ); i++ ) {
+    for ( int i = 0; i < getNumberOfDOFs( true ); i++ ) {
         dofOwner = ( *localToRank )[i];
         if ( dofOwner == rank )
             noGhostRows.push_back( i );
@@ -121,7 +121,7 @@ VectorLong ParallelEquationNumbering::getNoGhostDOF() const {
     return noGhostRows;
 };
 
-VectorLong ParallelEquationNumbering::getLagrangeDOF( const bool local ) const {
+VectorLong ParallelEquationNumbering::getLagrangeDOFs( const bool local ) const {
     auto dofInformation = this->getLagrangianInformations();
     dofInformation->updateValuePointer();
     ASTERINTEGER size = dofInformation->size();
@@ -173,7 +173,7 @@ bool ParallelEquationNumbering::isPhysicalDOF( const ASTERINTEGER dof, const boo
 };
 
 ASTERINTEGER
-ParallelEquationNumbering::getNumberOfDOF( const bool local ) const {
+ParallelEquationNumbering::getNumberOfDOFs( const bool local ) const {
     this->getNumberOfEquations()->updateValuePointer();
     if ( local )
         return ( *this->getNumberOfEquations() )[0];
@@ -189,7 +189,7 @@ bool ParallelEquationNumbering::useSingleLagrangeDOF() const {
 };
 
 const ASTERINTEGER ParallelEquationNumbering::localToGlobalDOF( const ASTERINTEGER loc ) {
-    if ( loc < 0 or loc >= getNumberOfDOF( true ) )
+    if ( loc < 0 or loc >= getNumberOfDOFs( true ) )
         throw std::out_of_range( "Invalid dof index" );
     auto loc2glo = getLocalToGlobalMapping();
     loc2glo->updateValuePointer();

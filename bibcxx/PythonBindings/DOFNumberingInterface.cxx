@@ -78,7 +78,7 @@ Returns:
         )",
               py::arg( "dof" ), py::arg( "local" ) = false )
         // ----------------------------------------------------------------------
-        .def( "getPhysicalDOF", &DOFNumbering::getPhysicalDOF,
+        .def( "getPhysicalDOFs", &DOFNumbering::getPhysicalDOFs,
               R"(
 Returns the indexes of the physical dof.
 
@@ -90,7 +90,7 @@ Returns:
         )",
               py::arg( "local" ) = false )
         // ----------------------------------------------------------------------
-        .def( "getLagrangeDOF", &DOFNumbering::getLagrangeDOF,
+        .def( "getLagrangeDOFs", &DOFNumbering::getLagrangeDOFs,
               R"(
 Returns the indexes of the Lagrange multipliers dof.
 
@@ -145,7 +145,7 @@ Returns:
         )",
               py::arg( "node" ), py::arg( "local" ) = false )
         // ----------------------------------------------------------------------
-        .def( "getNumberOfDOF", &DOFNumbering::getNumberOfDOF,
+        .def( "getNumberOfDOFs", &DOFNumbering::getNumberOfDOFs,
               R"(
 Returns the number of DOFs.
 

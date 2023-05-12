@@ -51,7 +51,7 @@ Returns:
     bool: *True* if used, *False* otherwise.
         )" )
         // ---------------------------------------------------------------------
-        .def( "getNumberOfDOF", &EquationNumbering::getNumberOfDOF,
+        .def( "getNumberOfDOFs", &EquationNumbering::getNumberOfDOFs,
               R"(
 Returns the number of DOFs.
 

@@ -1477,7 +1477,7 @@ class EquationNumbering(DataStructure):
                         tuple[int, int] : node id and component if for each dofs
         """
 
-    def getNumberOfDOF(self, local=False):
+    def getNumberOfDOFs(self, local=False):
         """Returns the number of DOFs.
 
         Arguments:
@@ -1698,7 +1698,7 @@ class DOFNumbering(BaseDOFNumbering):
             str: component names.
         """
 
-    def getLagrangeDOF(self, local=False):
+    def getLagrangeDOFs(self, local=False):
         """Returns the indexes of the Lagrange multipliers dof.
 
         Arguments:
@@ -1719,7 +1719,7 @@ class DOFNumbering(BaseDOFNumbering):
             int: index of the dof.
         """
 
-    def getNumberOfDOF(self, local=False):
+    def getNumberOfDOFs(self, local=False):
         """Returns the number of DOFs.
 
         Arguments:
@@ -1729,7 +1729,7 @@ class DOFNumbering(BaseDOFNumbering):
             int: number of DOFs.
         """
 
-    def getPhysicalDOF(self, local=False):
+    def getPhysicalDOFs(self, local=False):
         """Returns the indexes of the physical dof.
 
         Arguments:
@@ -12304,7 +12304,7 @@ class ParallelEquationNumbering(EquationNumbering):
         2. __init__(self: libaster.ParallelEquationNumbering, arg0: str) -> None
         """
 
-    def getGhostDOF(self, local=True):
+    def getGhostDOFs(self, local=True):
         """Returns the indexes of the ghost DOFs.
 
         Arguments:
@@ -12321,14 +12321,14 @@ class ParallelEquationNumbering(EquationNumbering):
             int: global number of the DOF.
         """
 
-    def getNoGhostDOF(self):
+    def getNoGhostDOFs(self):
         """Returns the indexes of the DOFs owned locally (aka not ghost).
 
         Returns:
             int: indexes of the DOFs owned locally.
         """
 
-    def getNumberOfDOF(self, local=False):
+    def getNumberOfDOFs(self, local=False):
         """Returns the number of DOFs.
 
         Arguments:
@@ -12413,7 +12413,7 @@ class ParallelDOFNumbering(BaseDOFNumbering):
             str: component names.
         """
 
-    def getGhostDOF(self, local=True):
+    def getGhostDOFs(self, local=True):
         """Returns the indexes of the ghost DOFs.
 
         Arguments:
@@ -12423,7 +12423,7 @@ class ParallelDOFNumbering(BaseDOFNumbering):
             int: indexes of the ghost DOFs.
         """
 
-    def getLagrangeDOF(self, local=False):
+    def getLagrangeDOFs(self, local=False):
         """Returns the indexes of the Lagrange multipliers dof.
 
         Arguments:
@@ -12440,7 +12440,7 @@ class ParallelDOFNumbering(BaseDOFNumbering):
             int: global number of the DOF.
         """
 
-    def getNoGhostDOF(self):
+    def getNoGhostDOFs(self):
         """Returns the indexes of the DOFs owned locally (aka not ghost).
 
         Returns:
@@ -12458,7 +12458,7 @@ class ParallelDOFNumbering(BaseDOFNumbering):
             int: index of the dof.
         """
 
-    def getNumberOfDOF(self, local=False):
+    def getNumberOfDOFs(self, local=False):
         """Returns the number of DOFs.
 
         Arguments:
@@ -12468,7 +12468,7 @@ class ParallelDOFNumbering(BaseDOFNumbering):
             int: number of DOFs.
         """
 
-    def getPhysicalDOF(self, local=False):
+    def getPhysicalDOFs(self, local=False):
         """Returns the indexes of the physical dof.
 
         Arguments:

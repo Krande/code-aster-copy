@@ -137,7 +137,7 @@ test.assertEqual((U - V.fromPetsc(pU)).norm("NORM_2"), 0)
 
 scaling = 1000.0
 V.fromPetsc(pU, scaling)
-for lag in numeDDL.getLagrangeDOF(local=True):
+for lag in numeDDL.getLagrangeDOFs(local=True):
     test.assertEqual((V[lag] - U[lag] * 1000.0), 0)
 
 U.applyLagrangeScaling(scaling)

@@ -110,9 +110,9 @@ TEST_RESU(
 
 
 # tests in local numbering
-physicalRows = numeDDL.getPhysicalDOF(local=True)
+physicalRows = numeDDL.getPhysicalDOFs(local=True)
 test.assertListEqual(physicalRows, list(range(len(pMesh.getNodes(localNumbering=True)))))
-multipliersRows = numeDDL.getLagrangeDOF(local=True)
+multipliersRows = numeDDL.getLagrangeDOFs(local=True)
 test.assertListEqual(multipliersRows, [])
 test.assertFalse(numeDDL.useLagrangeDOF())
 test.assertFalse(numeDDL.useSingleLagrangeDOF())
@@ -120,21 +120,21 @@ test.assertEqual(numeDDL.getComponents(), ["TEMP"])
 test.assertEqual(numeDDL.getComponentFromNode(0, local=True), ["TEMP"])
 test.assertEqual(numeDDL.getNodeFromDOF(0, local=True), 0)
 test.assertTrue(numeDDL.isPhysicalDOF(0, local=True))
-test.assertEqual(numeDDL.getNumberOfDOF(local=True), len(pMesh.getNodes(localNumbering=True)))
-test.assertEqual(numeDDL.getNumberOfDOF(local=False), 8)
+test.assertEqual(numeDDL.getNumberOfDOFs(local=True), len(pMesh.getNodes(localNumbering=True)))
+test.assertEqual(numeDDL.getNumberOfDOFs(local=False), 8)
 test.assertEqual(numeDDL.getPhysicalQuantity(), "TEMP_R")
-ghostRows = numeDDL.getGhostDOF(local=True)
+ghostRows = numeDDL.getGhostDOFs(local=True)
 test.assertListEqual(ghostRows, [[3, 5], [2, 4]][rank])
 
 
 # tests in global numbering
-physicalRows = numeDDL.getPhysicalDOF(local=False)
+physicalRows = numeDDL.getPhysicalDOFs(local=False)
 test.assertListEqual(
     physicalRows, [numeDDL.localToGlobalDOF(i) for i in range(pMesh.getNumberOfNodes())]
 )
 test.assertListEqual(physicalRows, [[0, 1, 2, 6, 3, 7], [4, 5, 2, 6, 3, 7]][rank])
 
-ghostRows = numeDDL.getGhostDOF(local=False)
+ghostRows = numeDDL.getGhostDOFs(local=False)
 test.assertListEqual(ghostRows, [numeDDL.localToGlobalDOF(i) for i in [[3, 5], [2, 4]][rank]])
 test.assertListEqual(ghostRows, [[6, 7], [2, 3]][rank])
 

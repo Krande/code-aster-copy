@@ -48,20 +48,20 @@ ParallelDOFNumbering::ParallelDOFNumbering( const std::string &name )
 
 bool ParallelDOFNumbering::useLagrangeDOF() const { return _globalNumbering->useLagrangeDOF(); };
 
-VectorLong ParallelDOFNumbering::getPhysicalDOF( const bool local ) const {
-    return _globalNumbering->getPhysicalDOF( local );
+VectorLong ParallelDOFNumbering::getPhysicalDOFs( const bool local ) const {
+    return _globalNumbering->getPhysicalDOFs( local );
 };
 
-VectorLong ParallelDOFNumbering::getGhostDOF( const bool local ) const {
-    return _globalNumbering->getGhostDOF( local );
+VectorLong ParallelDOFNumbering::getGhostDOFs( const bool local ) const {
+    return _globalNumbering->getGhostDOFs( local );
 };
 
-VectorLong ParallelDOFNumbering::getNoGhostDOF() const {
-    return _globalNumbering->getNoGhostDOF();
+VectorLong ParallelDOFNumbering::getNoGhostDOFs() const {
+    return _globalNumbering->getNoGhostDOFs();
 };
 
-VectorLong ParallelDOFNumbering::getLagrangeDOF( const bool local ) const {
-    return _globalNumbering->getLagrangeDOF( local );
+VectorLong ParallelDOFNumbering::getLagrangeDOFs( const bool local ) const {
+    return _globalNumbering->getLagrangeDOFs( local );
 };
 
 std::string ParallelDOFNumbering::getComponentFromDOF( const ASTERINTEGER dof,
@@ -79,8 +79,8 @@ bool ParallelDOFNumbering::isPhysicalDOF( const ASTERINTEGER dof, const bool loc
 };
 
 ASTERINTEGER
-ParallelDOFNumbering::getNumberOfDOF( const bool local ) const {
-    return _globalNumbering->getNumberOfDOF( local );
+ParallelDOFNumbering::getNumberOfDOFs( const bool local ) const {
+    return _globalNumbering->getNumberOfDOFs( local );
 };
 
 bool ParallelDOFNumbering::useSingleLagrangeDOF() const {

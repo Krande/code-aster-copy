@@ -795,7 +795,7 @@ class Structure(WithEmbeddedObjects):
             lNumberOfPhysicalEqs.append(neq)
 
             numb = sub.dofNumbering
-            lag = np.array(numb.getLagrangeDOF())
+            lag = np.array(numb.getLagrangeDOFs())
 
             modes = sub.modes
             em = [modes.getField("DEPL", r).getValues() for r in modes.getIndexes()]
@@ -902,7 +902,7 @@ def macPlot(
         res1 = lres1[istru]
         res2 = lres2[istru]
         # selection of the dofs
-        lPhysical = np.array(mass.getDOFNumbering().getPhysicalDOF())
+        lPhysical = np.array(mass.getDOFNumbering().getPhysicalDOFs())
         lDOF = lPhysical
         if dof:
             dict_dof = {}

@@ -113,27 +113,27 @@ class ParallelDOFNumbering : public BaseDOFNumbering {
     /**
      * @brief Get The total number of Dofs
      */
-    ASTERINTEGER getNumberOfDOF( const bool local = false ) const;
+    ASTERINTEGER getNumberOfDOFs( const bool local = false ) const;
 
     /**
      * @brief Get Rows Associated to all Physical Dof
      */
-    VectorLong getPhysicalDOF( const bool local = false ) const;
+    VectorLong getPhysicalDOFs( const bool local = false ) const;
 
     /**
      * @brief Get Rows Associated to all Ghost Dof
      */
-    VectorLong getGhostDOF( const bool local = false ) const;
+    VectorLong getGhostDOFs( const bool local = false ) const;
 
     /**
      * @brief Get Rows owned locally (aka not Ghost)
      */
-    VectorLong getNoGhostDOF() const;
+    VectorLong getNoGhostDOFs() const;
 
     /**
      * @brief Get Rows Associated to Lagrange Multipliers Dof
      */
-    VectorLong getLagrangeDOF( const bool local = false ) const;
+    VectorLong getLagrangeDOFs( const bool local = false ) const;
 
     /**
      * @brief Get Assigned Components

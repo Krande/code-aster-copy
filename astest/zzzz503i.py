@@ -67,9 +67,9 @@ matrAsse.assemble()
 # ------------------------------------
 # tests in local numbering
 numeDDL = phys_pb.getDOFNumbering()
-physicalRows = numeDDL.getPhysicalDOF(local=True)
+physicalRows = numeDDL.getPhysicalDOFs(local=True)
 test.assertListEqual(physicalRows, [2, 3, 8, 9, 12, 13, 14, 15, 18, 19, 24, 25, 28, 29, 30, 31])
-multipliersRows = numeDDL.getLagrangeDOF(local=True)
+multipliersRows = numeDDL.getLagrangeDOFs(local=True)
 test.assertListEqual(multipliersRows, [0, 1, 4, 5, 6, 7, 10, 11, 16, 17, 20, 21, 22, 23, 26, 27])
 test.assertTrue(numeDDL.useLagrangeDOF())
 test.assertFalse(numeDDL.useSingleLagrangeDOF())
@@ -77,14 +77,14 @@ test.assertEqual(numeDDL.getComponents(), ["DX", "DY", "LAGR:DX", "LAGR:DY"])
 test.assertEqual(numeDDL.getComponentFromNode(0, local=True), ["DX", "DY"])
 test.assertEqual(numeDDL.getNodeFromDOF(0, local=True), 0)
 test.assertFalse(numeDDL.isPhysicalDOF(0, local=True))
-test.assertEqual(numeDDL.getNumberOfDOF(local=True), 32)
-test.assertEqual(numeDDL.getNumberOfDOF(local=False), 32)
+test.assertEqual(numeDDL.getNumberOfDOFs(local=True), 32)
+test.assertEqual(numeDDL.getNumberOfDOFs(local=False), 32)
 test.assertEqual(numeDDL.getPhysicalQuantity(), "DEPL_R")
 
 # TODO A compléter après correction de issue32247
 # ------------------------------------
 # tests in global numbering
-# physicalRows = numeDDL.getPhysicalDOF(local=False)
+# physicalRows = numeDDL.getPhysicalDOFs(local=False)
 # test.assertListEqual(physicalRows,  [numeDDL.localToGlobalDOF(d)
 #                                      for d in [i*2+j for i in range(mesh.getNumberOfNodes())
 #                                      for j in range(2)]])

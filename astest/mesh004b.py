@@ -93,11 +93,11 @@ resu = monSolver.solve(retour)
 
 # ------------------------------------
 # tests in local numbering
-physicalRows = numeDDL.getPhysicalDOF(local=True)
+physicalRows = numeDDL.getPhysicalDOFs(local=True)
 test.assertListEqual(
     physicalRows, [i * 2 + j for i in range(pMesh.getNumberOfNodes()) for j in range(2)]
 )
-multipliersRows = numeDDL.getLagrangeDOF(local=True)
+multipliersRows = numeDDL.getLagrangeDOFs(local=True)
 test.assertListEqual(multipliersRows, [])
 test.assertFalse(numeDDL.useLagrangeDOF())
 test.assertFalse(numeDDL.useSingleLagrangeDOF())
@@ -105,16 +105,16 @@ test.assertEqual(numeDDL.getComponents(), ["DX", "DY"])
 test.assertEqual(numeDDL.getComponentFromNode(0, local=True), ["DX", "DY"])
 test.assertEqual(numeDDL.getNodeFromDOF(0, local=True), 0)
 test.assertTrue(numeDDL.isPhysicalDOF(0, local=True))
-test.assertEqual(numeDDL.getNumberOfDOF(local=True), 2 * pMesh.getNumberOfNodes())
-test.assertEqual(numeDDL.getNumberOfDOF(local=False), 16)
+test.assertEqual(numeDDL.getNumberOfDOFs(local=True), 2 * pMesh.getNumberOfNodes())
+test.assertEqual(numeDDL.getNumberOfDOFs(local=False), 16)
 test.assertEqual(numeDDL.getPhysicalQuantity(), "DEPL_R")
-ghostRows = numeDDL.getGhostDOF(local=True)
+ghostRows = numeDDL.getGhostDOFs(local=True)
 test.assertListEqual(ghostRows, [[6, 7, 10, 11], [4, 5, 8, 9]][rank])
 
 
 # ------------------------------------
 # tests in global numbering
-physicalRows = numeDDL.getPhysicalDOF(local=False)
+physicalRows = numeDDL.getPhysicalDOFs(local=False)
 test.assertListEqual(
     physicalRows,
     [
@@ -127,7 +127,7 @@ test.assertListEqual(
     [[0, 1, 2, 3, 4, 5, 12, 13, 6, 7, 14, 15], [8, 9, 10, 11, 4, 5, 12, 13, 6, 7, 14, 15]][rank],
 )
 
-ghostRows = numeDDL.getGhostDOF(local=False)
+ghostRows = numeDDL.getGhostDOFs(local=False)
 test.assertListEqual(
     ghostRows, [numeDDL.localToGlobalDOF(i) for i in [[6, 7, 10, 11], [4, 5, 8, 9]][rank]]
 )

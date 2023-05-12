@@ -257,8 +257,8 @@ def extr_matr_elim_lagr(self, matr_asse):
     # -----------------------------------------------------#
 
     dof_num = matr_asse.getDOFNumbering()
-    ind_lag1 = dof_num.getLagrangeDOF()
-    ind_nolag = dof_num.getPhysicalDOF()
+    ind_lag1 = dof_num.getLagrangeDOFs()
+    ind_nolag = dof_num.getPhysicalDOFs()
 
     nlag1 = len(ind_lag1)
     nnolag = len(ind_nolag)

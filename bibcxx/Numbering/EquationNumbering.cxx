@@ -109,7 +109,7 @@ bool EquationNumbering::useSingleLagrangeDOF() const {
 };
 
 ASTERINTEGER
-EquationNumbering::getNumberOfDOF( const bool local ) const {
+EquationNumbering::getNumberOfDOFs( const bool local ) const {
     return _nodeAndComponentsIdFromDOF->size() / 2;
 };
 
@@ -194,7 +194,7 @@ std::map< ASTERINTEGER, std::string > EquationNumbering::getComponentsIdToName()
 
 VectorLong EquationNumbering::getNodesFromDOF() const {
     _nodeAndComponentsIdFromDOF->updateValuePointer();
-    const ASTERINTEGER nb_eq = this->getNumberOfDOF( true );
+    const ASTERINTEGER nb_eq = this->getNumberOfDOFs( true );
 
     VectorLong nodes( nb_eq );
     for ( ASTERINTEGER i_eq = 0; i_eq < nb_eq; i_eq++ ) {
@@ -206,7 +206,7 @@ VectorLong EquationNumbering::getNodesFromDOF() const {
 }
 
 VectorPairLong EquationNumbering::getNodeAndComponentIdFromDOF( const bool local ) const {
-    const ASTERINTEGER nb_eq = this->getNumberOfDOF( true );
+    const ASTERINTEGER nb_eq = this->getNumberOfDOFs( true );
 
     VectorPairLong ret;
     ret.reserve( nb_eq );
@@ -227,7 +227,7 @@ VectorPairLong EquationNumbering::getNodeAndComponentIdFromDOF( const bool local
 PairLong EquationNumbering::getNodeAndComponentIdFromDOF( const ASTERINTEGER dof,
                                                           const bool local ) const {
 
-    if ( dof < 0 or dof >= this->getNumberOfDOF( true ) ) {
+    if ( dof < 0 or dof >= this->getNumberOfDOFs( true ) ) {
         throw std::out_of_range( "Invalid node index: " + std::to_string( dof ) );
     }
 
@@ -245,7 +245,7 @@ std::vector< std::pair< ASTERINTEGER, std::string > >
 EquationNumbering::getNodeAndComponentFromDOF( const bool local ) const {
     auto nodesAndComponentsIdFromDOF = this->getNodeAndComponentIdFromDOF( local );
 
-    const ASTERINTEGER nb_eq = this->getNumberOfDOF( true );
+    const ASTERINTEGER nb_eq = this->getNumberOfDOFs( true );
     if ( _componentsNumber2Name.empty() )
         const_cast< EquationNumbering * >( this )->_buildAllComponentsId2Name();
 
@@ -351,7 +351,7 @@ VectorLong EquationNumbering::getDOF( const bool sameRank, const VectorString &l
     return dofUsed;
 };
 
-VectorLong EquationNumbering::getPhysicalDOF( const bool local ) const {
+VectorLong EquationNumbering::getPhysicalDOFs( const bool local ) const {
     auto lagrInfo = this->getLagrangianInformations();
     lagrInfo->updateValuePointer();
     ASTERINTEGER size = lagrInfo->size();
@@ -365,7 +365,7 @@ VectorLong EquationNumbering::getPhysicalDOF( const bool local ) const {
     return physicalRows;
 };
 
-VectorLong EquationNumbering::getLagrangeDOF( const bool local ) const {
+VectorLong EquationNumbering::getLagrangeDOFs( const bool local ) const {
     auto lagrInfo = this->getLagrangianInformations();
     lagrInfo->updateValuePointer();
     ASTERINTEGER size = lagrInfo->size();

@@ -48,12 +48,12 @@ bool DOFNumbering::useSingleLagrangeDOF() const {
     return getEquationNumbering()->useSingleLagrangeDOF();
 };
 
-VectorLong DOFNumbering::getPhysicalDOF( const bool local ) const {
-    return getEquationNumbering()->getPhysicalDOF( local );
+VectorLong DOFNumbering::getPhysicalDOFs( const bool local ) const {
+    return getEquationNumbering()->getPhysicalDOFs( local );
 };
 
-VectorLong DOFNumbering::getLagrangeDOF( const bool local ) const {
-    return getEquationNumbering()->getLagrangeDOF( local );
+VectorLong DOFNumbering::getLagrangeDOFs( const bool local ) const {
+    return getEquationNumbering()->getLagrangeDOFs( local );
 };
 
 std::string DOFNumbering::getComponentFromDOF( const ASTERINTEGER dof, const bool local ) const {
@@ -68,8 +68,8 @@ bool DOFNumbering::isPhysicalDOF( const ASTERINTEGER dof, const bool local ) con
     return getEquationNumbering()->isPhysicalDOF( dof, local );
 };
 
-ASTERINTEGER DOFNumbering::getNumberOfDOF( const bool local ) const {
-    return getEquationNumbering()->getNumberOfDOF();
+ASTERINTEGER DOFNumbering::getNumberOfDOFs( const bool local ) const {
+    return getEquationNumbering()->getNumberOfDOFs();
 };
 
 VectorString DOFNumbering::getComponents() const {

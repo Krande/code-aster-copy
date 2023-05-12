@@ -94,31 +94,31 @@ class BaseEquationNumbering : public DataStructure {
     /**
      * @brief Get The total number of Dofs
      */
-    virtual ASTERINTEGER getNumberOfDOF( const bool local = false ) const = 0;
+    virtual ASTERINTEGER getNumberOfDOFs( const bool local = false ) const = 0;
 
     /**
      * @brief Get Rows Associated to all Physical Dof
      */
-    virtual VectorLong getPhysicalDOF( const bool local = false ) const = 0;
+    virtual VectorLong getPhysicalDOFs( const bool local = false ) const = 0;
 
     /**
      * @brief Get Rows Associated to Lagrange Multipliers Dof
      */
-    virtual VectorLong getLagrangeDOF( const bool local = false ) const = 0;
+    virtual VectorLong getLagrangeDOFs( const bool local = false ) const = 0;
 
     /**
      * @brief Get Rows Associated to all Ghost Dof
      */
-    VectorLong getGhostDOF( const bool local = false ) const {
-        throw std::runtime_error( "Vector LocagetGhostDOFlToRank doesn't exist in sequential" );
+    VectorLong getGhostDOFs( const bool local = false ) const {
+        throw std::runtime_error( "Vector LocagetGhostDOFslToRank doesn't exist in sequential" );
         return VectorLong();
     };
 
     /**
      * @brief Get Rows owned locally (aka not Ghost)
      */
-    VectorLong getNoGhostDOF() const {
-        throw std::runtime_error( "Vector LocagetGhostDOFlToRank doesn't exist in sequential" );
+    VectorLong getNoGhostDOFs() const {
+        throw std::runtime_error( "Vector LocagetGhostDOFslToRank doesn't exist in sequential" );
         return VectorLong();
     };
 
@@ -309,17 +309,17 @@ class EquationNumbering : public BaseEquationNumbering {
     /**
      * @brief Get The total number of Dofs
      */
-    ASTERINTEGER getNumberOfDOF( const bool local = false ) const;
+    ASTERINTEGER getNumberOfDOFs( const bool local = false ) const;
 
     /**
      * @brief Get Rows Associated to all Physical Dof
      */
-    VectorLong getPhysicalDOF( const bool local = false ) const;
+    VectorLong getPhysicalDOFs( const bool local = false ) const;
 
     /**
      * @brief Get Rows Associated to Lagrange Multipliers Dof
      */
-    VectorLong getLagrangeDOF( const bool local = false ) const;
+    VectorLong getLagrangeDOFs( const bool local = false ) const;
 
     /**
      * @brief Mise a jour des pointeurs Jeveux

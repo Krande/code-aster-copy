@@ -27,16 +27,16 @@ POURSUITE(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 test = code_aster.TestCase()
 
 test.assertEqual(NUSTR.getComponents(), ["DX", "DY", "LAGR:DY"])
-for row in NUSTR.getLagrangeDOF():
+for row in NUSTR.getLagrangeDOFs():
     test.assertEqual(NUSTR.getComponentFromDOF(row), "LAGR:DY")
     test.assertFalse(NUSTR.isPhysicalDOF(row))
-for row in NUSTR.getPhysicalDOF():
+for row in NUSTR.getPhysicalDOFs():
     test.assertTrue(NUSTR.getComponentFromDOF(row) in ["DX", "DY"])
     test.assertTrue(NUSTR.isPhysicalDOF(row))
 test.assertEqual(NUSTR.getNodeFromDOF(0), 0)
 test.assertEqual(NUSTR.getDOFFromNodeAndComponent(0, "DX"), 1)
-test.assertEqual(len(NUSTR.getLagrangeDOF()), 512)
-test.assertEqual(len(NUSTR.getPhysicalDOF()), 514)
+test.assertEqual(len(NUSTR.getLagrangeDOFs()), 512)
+test.assertEqual(len(NUSTR.getPhysicalDOFs()), 514)
 test.assertTrue(NUSTR.useLagrangeDOF())
 test.assertFalse(NUSTR.useSingleLagrangeDOF())
 test.assertEqual(NUSTR.getPhysicalQuantity(), "DEPL_R")

@@ -42,7 +42,7 @@ class ExtendedParallelDOFNumbering:
     @functools.lru_cache()
     def __Components2Rows(self, local=True):
         """Build the dictionary from the components to the rows."""
-        ndofs = self.getNumberOfDOF(local=True)  # iterate on the dof of the subdomain
+        ndofs = self.getNumberOfDOFs(local=True)  # iterate on the dof of the subdomain
         dict_dof = {}
         for row in range(ndofs):
             component = self.getComponentFromDOF(int(row), local=True)

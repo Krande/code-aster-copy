@@ -122,7 +122,7 @@ class ExtendedFieldOnNodesReal:
         dofNumbering = [dep for dep in self.getDependencies() if isinstance(dep, DOFNumbering)][-1]
         # build the indirection table between (nodeid, dof) and row
         indir = {}
-        for row in dofNumbering.getLagrangeDOF():
+        for row in dofNumbering.getLagrangeDOFs():
             if not dofNumbering.isPhysicalDOF(row):
                 dof = dofNumbering.getComponentFromDOF(row).split(":")[-1]
                 if dof != "MPC":
@@ -146,9 +146,9 @@ class ExtendedFieldOnNodesReal:
             _vec = PETSc.Vec().create(comm=comm)
             _vec.setType("mpi")
             globNume = self.getDescription()
-            ownedRows = globNume.getNoGhostDOF()
+            ownedRows = globNume.getNoGhostDOFs()
             neql = len(ownedRows)
-            neqg = globNume.getNumberOfDOF(local=False)
+            neqg = globNume.getNumberOfDOFs(local=False)
             _vec.setSizes((neql, neqg))
             val = self.getValues()
             l2g = globNume.getLocalToGlobalMapping()

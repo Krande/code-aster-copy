@@ -81,7 +81,7 @@ Returns:
         )",
               py::arg( "dof" ), py::arg( "local" ) = false )
         // ---------------------------------------------------------------------
-        .def( "getPhysicalDOF", &ParallelDOFNumbering::getPhysicalDOF,
+        .def( "getPhysicalDOFs", &ParallelDOFNumbering::getPhysicalDOFs,
               R"(
 Returns the indexes of the physical dof.
 
@@ -93,7 +93,7 @@ Returns:
         )",
               py::arg( "local" ) = false )
         // ---------------------------------------------------------------------
-        .def( "getLagrangeDOF", &ParallelDOFNumbering::getLagrangeDOF,
+        .def( "getLagrangeDOFs", &ParallelDOFNumbering::getLagrangeDOFs,
               R"(
 Returns the indexes of the Lagrange multipliers dof.
 
@@ -148,7 +148,7 @@ Returns:
         )",
               py::arg( "node" ), py::arg( "local" ) = false )
         // ---------------------------------------------------------------------
-        .def( "getNumberOfDOF", &ParallelDOFNumbering::getNumberOfDOF,
+        .def( "getNumberOfDOFs", &ParallelDOFNumbering::getNumberOfDOFs,
               R"(
 Returns the number of DOFs.
 
@@ -160,7 +160,7 @@ Returns:
         )",
               py::arg( "local" ) = false )
         // ---------------------------------------------------------------------
-        .def( "getGhostDOF", &ParallelDOFNumbering::getGhostDOF,
+        .def( "getGhostDOFs", &ParallelDOFNumbering::getGhostDOFs,
               R"(
 Returns the indexes of the ghost DOFs.
 
@@ -172,7 +172,7 @@ Returns:
         )",
               py::arg( "local" ) = true )
         // ---------------------------------------------------------------------
-        .def( "getNoGhostDOF", &ParallelDOFNumbering::getNoGhostDOF,
+        .def( "getNoGhostDOFs", &ParallelDOFNumbering::getNoGhostDOFs,
               R"(
 Returns the indexes of the DOFs owned locally (aka not ghost).
 
