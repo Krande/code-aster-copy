@@ -572,7 +572,7 @@ TEST_RESU(
 # -------------------------------------------------------
 import numpy as np
 
-M = MASSC.EXTR_MATR()
+M = MASSC.toNumpy()
 data, rows, cols, dim = MASSC.EXTR_MATR(sparse=True)
 
 # Comparaison des matrices creuse et pleine

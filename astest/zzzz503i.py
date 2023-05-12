@@ -102,13 +102,13 @@ logger.setLevel(2)
 S = MatrixScaler.MatrixScaler()
 nt = PETSc.NormType.NORM_INFINITY
 test.assertAlmostEqual(matrAsse.toPetsc().norm(nt), 1527.7777777794063)
-test.assertAlmostEqual(matrAsse.toPetsc().norm(nt), norm(matrAsse.EXTR_MATR(), np.inf))
+test.assertAlmostEqual(matrAsse.toPetsc().norm(nt), norm(matrAsse.toNumpy(), np.inf))
 
 S.computeScaling(matrAsse)
 S.scaleMatrix(matrAsse)
 
 test.assertAlmostEqual(matrAsse.toPetsc().norm(nt), 1.0977480819609067)
-test.assertAlmostEqual(matrAsse.toPetsc().norm(nt), norm(matrAsse.EXTR_MATR(), np.inf))
+test.assertAlmostEqual(matrAsse.toPetsc().norm(nt), norm(matrAsse.toNumpy(), np.inf))
 
 logger.setLevel(0)
 

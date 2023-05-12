@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,10 +22,10 @@ POURSUITE(CODE="OUI")
 import numpy as np
 
 # extract as dense matrix
-matr_dense = stiff.EXTR_MATR()
+matr_dense = stiff.toNumpy()
 
 # extract as sparse matrix by keeping almost null values
-data, row, col, dim = stiff.EXTR_MATR(sparse="True", epsilon=0.0)
+data, row, col, dim = stiff.getValuesWithDescription(epsilon=0.0)
 
 matr_sparse = np.zeros((dim, dim))
 for i, j, value in zip(row, col, data):
@@ -42,7 +42,7 @@ TEST_TABLE(REFERENCE="ANALYTIQUE", VALE_CALC_I=196, VALE_REFE_I=196, NOM_PARA="T
 
 # extract as sparse matrix
 epsilon = 1.0e-10
-data, row, col, dim = stiff.EXTR_MATR(sparse="True", epsilon=epsilon)
+data, row, col, dim = stiff.getValuesWithDescription(epsilon=epsilon)
 
 matr_sparse = np.zeros((dim, dim))
 for i, j, value in zip(row, col, data):

@@ -337,7 +337,7 @@ DETRUIRE(NOM=(TAB1))
 nu4 = NUME_DDL(MATR_RIGI=rigiel)
 matas4 = ASSE_MATRICE(MATR_ELEM=rigiel, NUME_DDL=nu4, CHAR_CINE=chcine)
 
-Kf = matas4.EXTR_MATR()
+Kf = matas4.toNumpy()
 data, rows, cols, dim = matas4.EXTR_MATR(sparse=True)
 import numpy as np
 

@@ -113,9 +113,9 @@ class MorseStorage : public MatrixStorage {
           _smde( JeveuxVectorLong( getName() + ".SMDE" ) ),
           _smhc( JeveuxVectorShort( getName() + ".SMHC" ) ) {};
 
-    VectorLong getRows() const { return _smdi->toVector(); };
+    JeveuxVectorLong getRows() const { return _smdi; };
 
-    VectorInt getDiagonalPositions() const { return _smhc->toVector(); };
+    JeveuxVectorShort getDiagonalPositions() const { return _smhc; };
 };
 
 /**

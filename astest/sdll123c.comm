@@ -1581,8 +1581,8 @@ MG_QZ = CALC_MODES(
 )
 
 # CALCUL VIA PYTHON
-rigF = MATK.EXTR_MATR()
-masF = MATM.EXTR_MATR()
+rigF = MATK.toNumpy()
+masF = MATM.toNumpy()
 
 # -----------------------------------------------------#
 # --                                                 --#
@@ -1731,9 +1731,9 @@ MQ_QZ = CALC_MODES(
 )
 
 # CALCUL VIA PYTHON
-rigF = MATK1.EXTR_MATR()
-masF = MATM1.EXTR_MATR()
-amorF = MATC1.EXTR_MATR()
+rigF = MATK1.toNumpy()
+masF = MATM1.toNumpy()
+amorF = MATC1.toNumpy()
 
 # -----------------------------------------------------#
 # --                                                 --#

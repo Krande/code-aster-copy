@@ -246,7 +246,7 @@ def dyna_visco_ops(
 
 ###################################################################
 def extr_matr_elim_lagr(self, matr_asse):
-    matr_lagr = matr_asse.EXTR_MATR()  # function EXTR_MATR available in the official source code
+    matr_lagr = matr_asse.toNumpy()  # function EXTR_MATR available in the official source code
     # -----------------------------------------------------#
     # --                                                 --#
     # -- Elimination des degres de libertes de Lagranges --#

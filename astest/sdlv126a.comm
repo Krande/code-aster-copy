@@ -2,7 +2,7 @@
 # coding: utf-8
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -148,12 +148,12 @@ Kvc = ASSE_MATRICE(MATR_ELEM=Kvc_elem, NUME_DDL=nddl)
 # In[ ]:
 
 
-k1 = K1.EXTR_MATR()
-k1_c = K1c.EXTR_MATR()
-k2 = K2.EXTR_MATR()
-k2_c = K2c.EXTR_MATR()
-kv = Kv.EXTR_MATR()
-kv_c = Kvc.EXTR_MATR()
+k1 = K1.toNumpy()
+k1_c = K1c.toNumpy()
+k2 = K2.toNumpy()
+k2_c = K2c.toNumpy()
+kv = Kv.toNumpy()
+kv_c = Kvc.toNumpy()
 
 # Test de la bonne construction des matrices elastiques
 np.savetxt("test.txt", k1 - np.real(k1_c))

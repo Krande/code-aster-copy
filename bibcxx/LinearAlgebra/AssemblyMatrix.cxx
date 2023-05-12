@@ -36,6 +36,7 @@ void AssemblyMatrix< ASTERDOUBLE, Displacement >::setValues( const VectorLong &i
     }
     CALLO_MATR_ASSE_SET_VALUES( getName(), &dim, idx.data(), jdx.data(), values.data() );
     _isFactorized = false;
+    _matrixValues->build( true );
 };
 
 template <>
@@ -80,6 +81,7 @@ void AssemblyMatrix< ASTERDOUBLE, Temperature >::setValues( const VectorLong &id
     }
     CALLO_MATR_ASSE_SET_VALUES( getName(), &dim, idx.data(), jdx.data(), values.data() );
     _isFactorized = false;
+    _matrixValues->build( true );
 };
 
 template <>
@@ -119,6 +121,7 @@ void AssemblyMatrix< ASTERDOUBLE, Pressure >::setValues( const VectorLong &idx,
     }
     CALLO_MATR_ASSE_SET_VALUES( getName(), &dim, idx.data(), jdx.data(), values.data() );
     _isFactorized = false;
+    _matrixValues->build( true );
 };
 
 template <>

@@ -788,9 +788,9 @@ class Structure(WithEmbeddedObjects):
         for sub in self.lSubS:
             stiff = sub.stiffness
             mass = sub.mass
-            values, idx, jdx, neq = stiff.EXTR_MATR(sparse=True)
+            values, idx, jdx, neq = stiff.getValuesWithDescription()
             K = scipy.sparse.coo_matrix((values, (idx, jdx)), shape=(neq, neq))
-            values, idx, jdx, neq = mass.EXTR_MATR(sparse=True)
+            values, idx, jdx, neq = mass.getValuesWithDescription()
             M = scipy.sparse.coo_matrix((values, (idx, jdx)), shape=(neq, neq))
             lNumberOfPhysicalEqs.append(neq)
 
@@ -911,7 +911,7 @@ def macPlot(
                 dict_dof.setdefault(dd, []).append(row)
             lDOF = sum([dict_dof[d] for d in dof], [])
         # extract mass matrix in the form a 3 arrays
-        Mp = mass.EXTR_MATR(sparse=True)
+        Mp = mass.getValuesWithDescription()
         # turn it into a sparse matrix
         M = scipy.sparse.coo_matrix((Mp[0], (Mp[1], Mp[2])), shape=(Mp[3], Mp[3]))
         # extract considered dofs (only csr format support it)

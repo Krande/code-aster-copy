@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ POURSUITE(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 # --------------------------------------------------------------
 import numpy.linalg as LA
 
-MAT1P = MAT1.EXTR_MATR()
+MAT1P = MAT1.toNumpy()
 VEC1P = VEC1.sdj.VALE.get()
 SOL2P = LA.solve(MAT1P, VEC1P)
 

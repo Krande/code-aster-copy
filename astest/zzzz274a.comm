@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -208,22 +208,22 @@ ASSEMBLAGE(
     NUME_DDL=CO("NUME"),
 )
 
-K = RIGIDITE.EXTR_MATR()
+K = RIGIDITE.toNumpy()
 RIGIDITE.transpose()
-Kt = RIGIDITE.EXTR_MATR()
+Kt = RIGIDITE.toNumpy()
 test.assertEqual(np.linalg.norm(K.transpose() - Kt), 0)
 
 # Complex Matrix
 RIGIDITC = COMB_MATR_ASSE(COMB_C=_F(MATR_ASSE=RIGIDITE, COEF_C=("RI", 0.0, 1.0)))
 
-KC = RIGIDITC.EXTR_MATR()
+KC = RIGIDITC.toNumpy()
 RIGIDITC.transpose()
-KCt = RIGIDITC.EXTR_MATR()
+KCt = RIGIDITC.toNumpy()
 test.assertEqual(np.linalg.norm(KC.transpose() - KCt), 0)
 
-KC = RIGIDITC.EXTR_MATR()
+KC = RIGIDITC.toNumpy()
 RIGIDITC.transposeConjugate()
-KCh = RIGIDITC.EXTR_MATR()
+KCh = RIGIDITC.toNumpy()
 test.assertEqual(np.linalg.norm(KC.transpose().conj() - KCh), 0)
 
 

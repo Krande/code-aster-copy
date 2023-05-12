@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,10 +22,10 @@ POURSUITE(CODE="OUI")
 import numpy as np
 
 # extract as dense matrix
-matr_dense = GOM.EXTR_MATR()
+matr_dense = GOM.toNumpy()
 
 # extract as sparse matrix
-data, row, col, dim = GOM.EXTR_MATR(sparse="True")
+data, row, col, dim = GOM.getValuesWithDescription()
 
 matr_sparse = np.zeros((dim, dim))
 for i, j, value in zip(row, col, data):

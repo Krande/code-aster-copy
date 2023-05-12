@@ -163,6 +163,9 @@ Arguments:
         // -----------------------------------------------------------------------------------------
         .def( "duplicate", &AssemblyMatrixDisplacementComplex::duplicate )
         // -----------------------------------------------------------------------------------------
+        .def( "getUpperValues", &AssemblyMatrixDisplacementComplex::getUpperValues )
+        .def( "getLowerValues", &AssemblyMatrixDisplacementComplex::getLowerValues )
+        // -----------------------------------------------------------------------------------------
         .def( float() * py::self )
         .def( py::self *= float() )
         .def( -py::self )
@@ -235,6 +238,9 @@ Arguments:
               py::arg( "local" ) = true )
         // -----------------------------------------------------------------------------------------
         .def( "duplicate", &AssemblyMatrixTemperatureReal::duplicate )
+        // -----------------------------------------------------------------------------------------
+        .def( "getUpperValues", &AssemblyMatrixTemperatureReal::getUpperValues )
+        .def( "getLowerValues", &AssemblyMatrixTemperatureReal::getLowerValues )
         // -----------------------------------------------------------------------------------------
         .def( float() * py::self )
         .def( py::self *= float() )
@@ -358,6 +364,9 @@ Arguments:
         .def( "defineSolver", &AssemblyMatrixPressureComplex::defineSolver )
         // -----------------------------------------------------------------------------------------
         .def( "duplicate", &AssemblyMatrixPressureComplex::duplicate )
+        // -----------------------------------------------------------------------------------------
+        .def( "getUpperValues", &AssemblyMatrixPressureComplex::getUpperValues )
+        .def( "getLowerValues", &AssemblyMatrixPressureComplex::getLowerValues )
         // -----------------------------------------------------------------------------------------
         .def( float() * py::self )
         .def( py::self *= float() )

@@ -125,21 +125,21 @@ ccid = matrAsse.getDirichletBCDOFs()
 test.assertEqual(sum(ccid), 0)
 test.assertEqual(len(ccid), numeDDL.getNumberOfDOFs() + 1)
 
-x = matrAsse.EXTR_MATR(sparse=True)
+x = matrAsse.getValuesWithDescription()
 test.assertTrue("numpy" in str(type(x[0])))
 
 # test setValues
 # -----------------
-values, idx, jdx, neq = matrAsse.EXTR_MATR(sparse=True)
-K1 = matrAsse.EXTR_MATR()
+values, idx, jdx, neq = matrAsse.getValuesWithDescription()
+K1 = matrAsse.toNumpy()
 
 neq = K1.shape[0]
 matrAsse.setValues([0, 1], [0, 1], [1.0, 1.0])
-K2 = matrAsse.EXTR_MATR()
+K2 = matrAsse.toNumpy()
 test.assertAlmostEqual(np.linalg.norm(K2), np.sqrt(2))
 
 matrAsse.setValues(idx.tolist(), jdx.tolist(), values.tolist())
-K3 = matrAsse.EXTR_MATR()
+K3 = matrAsse.toNumpy()
 test.assertEqual(np.linalg.norm(K1 - K3), 0)
 
 A = matrAsse.toPetsc()

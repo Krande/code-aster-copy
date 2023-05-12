@@ -2,7 +2,7 @@
 # coding: utf-8
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -120,8 +120,8 @@ KVh = ASSE_MATRICE(MATR_ELEM=KVhc_elem, NUME_DDL=nddl)
 # In[9]:
 
 
-kv = KV.EXTR_MATR()
-kvh = KVh.EXTR_MATR()
+kv = KV.toNumpy()
+kvh = KVh.toNumpy()
 np.savetxt("test.txt", np.real(kv - kvh))
 TEST_FICHIER(FICHIER="test.txt", TYPE_TEST="SOMM_ABS", NB_VALE=64, VALE_CALC=1e-7, CRITERE="ABSOLU")
 np.savetxt("test.txt", np.imag(kv - kvh))

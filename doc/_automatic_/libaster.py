@@ -5911,10 +5911,16 @@ class AssemblyMatrixDisplacementComplex(BaseAssemblyMatrix):
     def duplicate(self):
         pass
 
+    def getLowerValues(self):
+        pass
+
     def getMaterialField(self):
         pass
 
     def getNumberOfElementaryMatrix(self):
+        pass
+
+    def getUpperValues(self):
         pass
 
     def setValues(self, arg0, arg1, arg2):
@@ -6008,10 +6014,16 @@ class AssemblyMatrixTemperatureReal(BaseAssemblyMatrix):
     def duplicate(self):
         pass
 
+    def getLowerValues(self):
+        pass
+
     def getMaterialField(self):
         pass
 
     def getNumberOfElementaryMatrix(self):
+        pass
+
+    def getUpperValues(self):
         pass
 
     def scale(self, arg0, arg1):
@@ -6240,10 +6252,16 @@ class AssemblyMatrixPressureComplex(BaseAssemblyMatrix):
     def duplicate(self):
         pass
 
+    def getLowerValues(self):
+        pass
+
     def getMaterialField(self):
         pass
 
     def getNumberOfElementaryMatrix(self):
+        pass
+
+    def getUpperValues(self):
         pass
 
     def transposeConjugate(self):
