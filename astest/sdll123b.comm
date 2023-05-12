@@ -151,10 +151,10 @@ masF = MATM.EXTR_MATR()
 # --                                                 --#
 # -----------------------------------------------------#
 
-ind_lag1 = NUMEDDL.getRowsAssociatedToLagrangeMultipliers()
+ind_lag1 = NUMEDDL.getLagrangeDOF()
 # remove double lagranges
 ind_lag1 = [ind_lag1[i] for i in (0, 1, 2, 3, 8, 9, 10, 11)]
-ind_nolag = NUMEDDL.getRowsAssociatedToPhysicalDofs()
+ind_nolag = NUMEDDL.getPhysicalDOF()
 
 nlag1 = len(ind_lag1)
 nnolag = len(ind_nolag)
@@ -374,10 +374,10 @@ amorF = MATC1.EXTR_MATR()
 # --                                                 --#
 # -----------------------------------------------------#
 
-ind_lag1 = NUMEDDL.getRowsAssociatedToLagrangeMultipliers()
+ind_lag1 = NUMEDDL.getLagrangeDOF()
 # remove double lagranges
 ind_lag1 = [ind_lag1[i] for i in (0, 1, 2, 3, 8, 9, 10, 11)]
-ind_nolag = NUMEDDL.getRowsAssociatedToPhysicalDofs()
+ind_nolag = NUMEDDL.getPhysicalDOF()
 
 nlag1 = len(ind_lag1)
 nnolag = len(ind_nolag)

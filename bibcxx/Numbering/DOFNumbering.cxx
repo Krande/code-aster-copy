@@ -42,46 +42,41 @@ DOFNumbering::DOFNumbering( const std::string name )
     : BaseDOFNumbering( name, "NUME_DDL" ),
       _globalNumbering( std::make_shared< EquationNumbering >( getName() + ".NUME" ) ) {};
 
-bool DOFNumbering::useLagrangeMultipliers() const {
-    return getEquationNumbering()->useLagrangeMultipliers();
+bool DOFNumbering::useLagrangeDOF() const { return getEquationNumbering()->useLagrangeDOF(); };
+
+bool DOFNumbering::useSingleLagrangeDOF() const {
+    return getEquationNumbering()->useSingleLagrangeDOF();
 };
 
-bool DOFNumbering::useSingleLagrangeMultipliers() const {
-    return getEquationNumbering()->useSingleLagrangeMultipliers();
+VectorLong DOFNumbering::getPhysicalDOF( const bool local ) const {
+    return getEquationNumbering()->getPhysicalDOF( local );
 };
 
-VectorLong DOFNumbering::getRowsAssociatedToPhysicalDofs( const bool local ) const {
-    return getEquationNumbering()->getRowsAssociatedToPhysicalDofs( local );
+VectorLong DOFNumbering::getLagrangeDOF( const bool local ) const {
+    return getEquationNumbering()->getLagrangeDOF( local );
 };
 
-VectorLong DOFNumbering::getRowsAssociatedToLagrangeMultipliers( const bool local ) const {
-    return getEquationNumbering()->getRowsAssociatedToLagrangeMultipliers( local );
+std::string DOFNumbering::getComponentFromDOF( const ASTERINTEGER dof, const bool local ) const {
+    return getEquationNumbering()->getComponentFromDOF( dof, local );
 };
 
-std::string DOFNumbering::getComponentAssociatedToRow( const ASTERINTEGER row,
-                                                       const bool local ) const {
-    return getEquationNumbering()->getComponentAssociatedToRow( row, local );
+ASTERINTEGER DOFNumbering::getNodeFromDOF( const ASTERINTEGER dof, const bool local ) const {
+    return getEquationNumbering()->getNodeFromDOF( dof, local );
 };
 
-ASTERINTEGER DOFNumbering::getNodeAssociatedToRow( const ASTERINTEGER row,
-                                                   const bool local ) const {
-    return getEquationNumbering()->getNodeAssociatedToRow( row, local );
+bool DOFNumbering::isPhysicalDOF( const ASTERINTEGER dof, const bool local ) const {
+    return getEquationNumbering()->isPhysicalDOF( dof, local );
 };
 
-bool DOFNumbering::isRowAssociatedToPhysical( const ASTERINTEGER row, const bool local ) const {
-    return getEquationNumbering()->isRowAssociatedToPhysical( row, local );
-};
-
-ASTERINTEGER DOFNumbering::getNumberOfDofs( const bool local ) const {
-    return getEquationNumbering()->getNumberOfDofs();
+ASTERINTEGER DOFNumbering::getNumberOfDOF( const bool local ) const {
+    return getEquationNumbering()->getNumberOfDOF();
 };
 
 VectorString DOFNumbering::getComponents() const {
     return getEquationNumbering()->getComponents();
 };
 
-VectorString DOFNumbering::getComponentsAssociatedToNode( const ASTERINTEGER node,
-                                                          const bool local ) const {
+VectorString DOFNumbering::getComponentFromNode( const ASTERINTEGER node, const bool local ) const {
     ASTERINTEGER ncmp, maxCmp = 100;
     char *stringArray;
     VectorString stringVector;
@@ -97,23 +92,4 @@ VectorString DOFNumbering::getComponentsAssociatedToNode( const ASTERINTEGER nod
     }
     FreeStr( stringArray );
     return stringVector;
-};
-
-ASTERINTEGER DOFNumbering::getRowAssociatedToNodeComponent( const ASTERINTEGER node,
-                                                            const std::string compoName,
-                                                            const bool local ) const {
-    if ( node < 0 or node >= getMesh()->getNumberOfNodes() )
-        throw std::runtime_error( "Invalid node index" );
-    NamesMapChar8 nodeNameMap = getMesh()->getNameOfNodesMap();
-    const std::string nodeName = nodeNameMap->getStringFromIndex( node + 1 );
-    const std::string objectType( "NUME_DDL" );
-    ASTERINTEGER node2, row;
-    CALLO_POSDDL( objectType, getName(), nodeName, compoName, &node2, &row );
-    assert( node + 1 == node2 );
-    if ( node2 == 0 )
-        throw std::runtime_error( "No node " + std::to_string( node2 ) + " in the mesh" );
-    if ( row == 0 )
-        throw std::runtime_error( "Node " + std::to_string( node2 ) + " has no " + compoName +
-                                  " dof" );
-    return row - 1;
 };

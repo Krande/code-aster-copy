@@ -94,7 +94,7 @@ class IncrementalSolver(SolverFeature):
         if codret > 0:
             raise IntegrationError("MECANONLINE10_1")
 
-        if self.phys_pb.getDOFNumbering().useLagrangeMultipliers():
+        if self.phys_pb.getDOFNumbering().useLagrangeDOF():
             primal_curr = self.phys_state.primal + self.phys_state.primal_step
 
             # Compute kinematic forces (B^t.Lagr_curr)

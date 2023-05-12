@@ -208,7 +208,7 @@ def _computeMatrix(disr_comp, matrix, is_evol, time_value, time_delta, time_thet
     matr_elem_exch = disr_comp.getExchangeThermalMatrix(time_value)
     matrix.addElementaryMatrix(matr_elem_exch, time_theta)
 
-    if phys_pb.getDOFNumbering().useLagrangeMultipliers():
+    if phys_pb.getDOFNumbering().useLagrangeDOF():
         logger.debug("<THER_LINEAIRE><MATRIX>: Dual Conductivity")
         matr_elem_dual = disr_comp.getDualLinearConductivityMatrix()
         matrix.addElementaryMatrix(matr_elem_dual)

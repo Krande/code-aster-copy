@@ -1593,8 +1593,8 @@ masF = MATM.EXTR_MATR()
 # --                                                 --#
 # -----------------------------------------------------#
 
-ind_lag1 = NUMEDDL.getRowsAssociatedToLagrangeMultipliers()
-ind_nolag = NUMEDDL.getRowsAssociatedToPhysicalDofs()
+ind_lag1 = NUMEDDL.getLagrangeDOF()
+ind_nolag = NUMEDDL.getPhysicalDOF()
 
 nlag1 = len(ind_lag1)
 nnolag = len(ind_nolag)
@@ -1741,8 +1741,8 @@ amorF = MATC1.EXTR_MATR()
 # --                                                 --#
 # -----------------------------------------------------#
 
-ind_lag1 = NUMEDDL.getRowsAssociatedToLagrangeMultipliers()
-ind_nolag = NUMEDDL.getRowsAssociatedToPhysicalDofs()
+ind_lag1 = NUMEDDL.getLagrangeDOF()
+ind_nolag = NUMEDDL.getPhysicalDOF()
 
 nlag1 = len(ind_lag1)
 nnolag = len(ind_nolag)

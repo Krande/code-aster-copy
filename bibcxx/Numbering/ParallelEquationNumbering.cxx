@@ -53,9 +53,9 @@ void ParallelEquationNumbering::_buildGlobal2LocalMap() {
         _global2localMap[( *getLocalToGlobalMapping() )[j]] = j;
 };
 
-bool ParallelEquationNumbering::useLagrangeMultipliers() const {
+bool ParallelEquationNumbering::useLagrangeDOF() const {
 
-    bool local_answer = EquationNumbering::useLagrangeMultipliers();
+    bool local_answer = EquationNumbering::useLagrangeDOF();
     bool global_answer;
 
     AsterMPI::all_reduce( local_answer, global_answer, MPI_LOR );
@@ -63,7 +63,7 @@ bool ParallelEquationNumbering::useLagrangeMultipliers() const {
     return global_answer;
 };
 
-VectorLong ParallelEquationNumbering::getRowsAssociatedToPhysicalDofs( const bool local ) const {
+VectorLong ParallelEquationNumbering::getPhysicalDOF( const bool local ) const {
     auto dofInformation = this->getLagrangianInformations();
     dofInformation->updateValuePointer();
     ASTERINTEGER size = dofInformation->size();
@@ -84,7 +84,7 @@ VectorLong ParallelEquationNumbering::getRowsAssociatedToPhysicalDofs( const boo
     return physicalRows;
 };
 
-VectorLong ParallelEquationNumbering::getGhostRows( const bool local ) const {
+VectorLong ParallelEquationNumbering::getGhostDOF( const bool local ) const {
     auto localToRank = this->getLocalToRank();
     localToRank->updateValuePointer();
     VectorLong ghostRows;
@@ -94,7 +94,7 @@ VectorLong ParallelEquationNumbering::getGhostRows( const bool local ) const {
     if ( !local )
         loc2glo->updateValuePointer();
 
-    for ( int i = 0; i < getNumberOfDofs( true ); i++ ) {
+    for ( int i = 0; i < getNumberOfDOF( true ); i++ ) {
         dofOwner = ( *localToRank )[i];
         if ( dofOwner != rank )
             if ( local )
@@ -106,14 +106,14 @@ VectorLong ParallelEquationNumbering::getGhostRows( const bool local ) const {
     return ghostRows;
 };
 
-VectorLong ParallelEquationNumbering::getNoGhostRows() const {
+VectorLong ParallelEquationNumbering::getNoGhostDOF() const {
     auto localToRank = this->getLocalToRank();
     localToRank->updateValuePointer();
     const auto rank = getMPIRank();
     ASTERINTEGER dofOwner;
     VectorLong noGhostRows;
 
-    for ( int i = 0; i < getNumberOfDofs( true ); i++ ) {
+    for ( int i = 0; i < getNumberOfDOF( true ); i++ ) {
         dofOwner = ( *localToRank )[i];
         if ( dofOwner == rank )
             noGhostRows.push_back( i );
@@ -121,8 +121,7 @@ VectorLong ParallelEquationNumbering::getNoGhostRows() const {
     return noGhostRows;
 };
 
-VectorLong
-ParallelEquationNumbering::getRowsAssociatedToLagrangeMultipliers( const bool local ) const {
+VectorLong ParallelEquationNumbering::getLagrangeDOF( const bool local ) const {
     auto dofInformation = this->getLagrangianInformations();
     dofInformation->updateValuePointer();
     ASTERINTEGER size = dofInformation->size();
@@ -143,40 +142,38 @@ ParallelEquationNumbering::getRowsAssociatedToLagrangeMultipliers( const bool lo
     return lagrangeRows;
 };
 
-std::string ParallelEquationNumbering::getComponentAssociatedToRow( const ASTERINTEGER row,
-                                                                    const bool local ) const {
-    auto localrow = row;
+std::string ParallelEquationNumbering::getComponentFromDOF( const ASTERINTEGER dof,
+                                                            const bool local ) const {
+    auto localrow = dof;
     if ( !local )
-        localrow = globalToLocalRow( row );
+        localrow = globalToLocalDOF( dof );
 
     auto [nodeId, cmpName] = this->getNodeAndComponentFromDOF( localrow );
     return cmpName;
 };
 
 ASTERINTEGER
-ParallelEquationNumbering::getNodeAssociatedToRow( const ASTERINTEGER row,
-                                                   const bool local ) const {
-    auto localrow = row;
+ParallelEquationNumbering::getNodeFromDOF( const ASTERINTEGER dof, const bool local ) const {
+    auto localrow = dof;
     if ( !local )
-        localrow = globalToLocalRow( row );
+        localrow = globalToLocalDOF( dof );
 
-    auto [nodeId, cmpId] = this->getNodeAndComponentNumberFromDOF( localrow, local );
+    auto [nodeId, cmpId] = this->getNodeAndComponentIdFromDOF( localrow, local );
 
     return nodeId;
 };
 
-bool ParallelEquationNumbering::isRowAssociatedToPhysical( const ASTERINTEGER row,
-                                                           const bool local ) const {
-    auto localrow = row;
+bool ParallelEquationNumbering::isPhysicalDOF( const ASTERINTEGER dof, const bool local ) const {
+    auto localrow = dof;
     if ( !local )
-        localrow = globalToLocalRow( row );
-    auto [nodeId, cmpId] = this->getNodeAndComponentNumberFromDOF( localrow );
+        localrow = globalToLocalDOF( dof );
+    auto [nodeId, cmpId] = this->getNodeAndComponentIdFromDOF( localrow );
 
     return cmpId > 0;
 };
 
 ASTERINTEGER
-ParallelEquationNumbering::getNumberOfDofs( const bool local ) const {
+ParallelEquationNumbering::getNumberOfDOF( const bool local ) const {
     this->getNumberOfEquations()->updateValuePointer();
     if ( local )
         return ( *this->getNumberOfEquations() )[0];
@@ -184,22 +181,22 @@ ParallelEquationNumbering::getNumberOfDofs( const bool local ) const {
         return ( *this->getNumberOfEquations() )[1];
 };
 
-bool ParallelEquationNumbering::useSingleLagrangeMultipliers() const {
-    bool local_answer = EquationNumbering::useSingleLagrangeMultipliers(), global_answer;
+bool ParallelEquationNumbering::useSingleLagrangeDOF() const {
+    bool local_answer = EquationNumbering::useSingleLagrangeDOF(), global_answer;
     AsterMPI::all_reduce( local_answer, global_answer, MPI_LAND );
 
     return global_answer;
 };
 
-const ASTERINTEGER ParallelEquationNumbering::localToGlobalRow( const ASTERINTEGER loc ) {
-    if ( loc < 0 or loc >= getNumberOfDofs( true ) )
-        throw std::out_of_range( "Invalid row index" );
+const ASTERINTEGER ParallelEquationNumbering::localToGlobalDOF( const ASTERINTEGER loc ) {
+    if ( loc < 0 or loc >= getNumberOfDOF( true ) )
+        throw std::out_of_range( "Invalid dof index" );
     auto loc2glo = getLocalToGlobalMapping();
     loc2glo->updateValuePointer();
     return ( *loc2glo )[loc];
 }
 
-const ASTERINTEGER ParallelEquationNumbering::globalToLocalRow( const ASTERINTEGER glob ) const {
+const ASTERINTEGER ParallelEquationNumbering::globalToLocalDOF( const ASTERINTEGER glob ) const {
     if ( _global2localMap.empty() )
         const_cast< ParallelEquationNumbering * >( this )->_buildGlobal2LocalMap();
 
@@ -214,9 +211,8 @@ const ASTERINTEGER ParallelEquationNumbering::globalToLocalRow( const ASTERINTEG
     }
 };
 
-VectorPairLong
-ParallelEquationNumbering::getNodesAndComponentsNumberFromDOF( const bool local ) const {
-    auto ret = EquationNumbering::getNodesAndComponentsNumberFromDOF();
+VectorPairLong ParallelEquationNumbering::getNodeAndComponentIdFromDOF( const bool local ) const {
+    auto ret = EquationNumbering::getNodeAndComponentIdFromDOF();
 
     AS_ASSERT( _mesh->isParallel() );
     if ( !local ) {
@@ -231,9 +227,9 @@ ParallelEquationNumbering::getNodesAndComponentsNumberFromDOF( const bool local 
     return ret;
 };
 
-PairLong ParallelEquationNumbering::getNodeAndComponentNumberFromDOF( const ASTERINTEGER dof,
-                                                                      const bool local ) const {
-    auto ret = EquationNumbering::getNodeAndComponentNumberFromDOF( dof, local );
+PairLong ParallelEquationNumbering::getNodeAndComponentIdFromDOF( const ASTERINTEGER dof,
+                                                                  const bool local ) const {
+    auto ret = EquationNumbering::getNodeAndComponentIdFromDOF( dof, local );
 
     AS_ASSERT( _mesh->isParallel() );
     if ( !local ) {
@@ -254,9 +250,9 @@ VectorString ParallelEquationNumbering::getComponents() const {
     return unique( cmp_glb );
 };
 
-SetLong ParallelEquationNumbering::getComponentsNumber() const {
+SetLong ParallelEquationNumbering::getComponentsId() const {
 
-    auto cmp_set = EquationNumbering::getComponentsNumber();
+    auto cmp_set = EquationNumbering::getComponentsId();
 
     SetLong cmp_glb;
     AsterMPI::all_gather( cmp_set, cmp_glb );
@@ -267,9 +263,9 @@ SetLong ParallelEquationNumbering::getComponentsNumber() const {
 /**
  * @brief Maps between name of components and the nimber
  */
-std::map< std::string, ASTERINTEGER > ParallelEquationNumbering::getComponentsName2Number() const {
+std::map< std::string, ASTERINTEGER > ParallelEquationNumbering::getComponentsNameToId() const {
 
-    auto cmp_std = EquationNumbering::getComponentsName2Number();
+    auto cmp_std = EquationNumbering::getComponentsNameToId();
     std::map< std::string, ASTERINTEGER > cmp_glb;
     AsterMPI::all_gather( cmp_std, cmp_glb );
 

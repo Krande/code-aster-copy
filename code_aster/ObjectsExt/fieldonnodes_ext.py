@@ -122,11 +122,11 @@ class ExtendedFieldOnNodesReal:
         dofNumbering = [dep for dep in self.getDependencies() if isinstance(dep, DOFNumbering)][-1]
         # build the indirection table between (nodeid, dof) and row
         indir = {}
-        for row in dofNumbering.getRowsAssociatedToLagrangeMultipliers():
-            if not dofNumbering.isRowAssociatedToPhysical(row):
-                dof = dofNumbering.getComponentAssociatedToRow(row).split(":")[-1]
+        for row in dofNumbering.getLagrangeDOF():
+            if not dofNumbering.isPhysicalDOF(row):
+                dof = dofNumbering.getComponentFromDOF(row).split(":")[-1]
                 if dof != "MPC":
-                    node = dofNumbering.getNodeAssociatedToRow(row)
+                    node = dofNumbering.getNodeFromDOF(row)
                     # there may be 2 Lagrange multipliers per constraint
                     indir.setdefault((node, dof), []).append(row)
         return indir
@@ -146,9 +146,9 @@ class ExtendedFieldOnNodesReal:
             _vec = PETSc.Vec().create(comm=comm)
             _vec.setType("mpi")
             globNume = self.getDescription()
-            ownedRows = globNume.getNoGhostRows()
+            ownedRows = globNume.getNoGhostDOF()
             neql = len(ownedRows)
-            neqg = globNume.getNumberOfDofs(local=False)
+            neqg = globNume.getNumberOfDOF(local=False)
             _vec.setSizes((neql, neqg))
             val = self.getValues()
             l2g = globNume.getLocalToGlobalMapping()
@@ -224,7 +224,7 @@ class ExtendedFieldOnNodesReal:
         assignedDOF = 0
         self.updateValuePointers()  # update Jeveux pointers before assignment
         for node in lNodes:
-            for (dof, val) in kwargs.items():
+            for dof, val in kwargs.items():
                 if dof in ["GROUP_MA", "GROUP_NO", "NOEUD"]:  # only process DOF here
                     continue
                 if (node, dof) in self.__NodeDOF2Row.keys():

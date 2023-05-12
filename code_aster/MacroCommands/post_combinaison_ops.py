@@ -150,9 +150,7 @@ def values_from_simple_field_on_nodes(field, model, nodes_groups=()):
         np_array: new array containing values.
         np_array: the boolean mask of the new array.
     """
-    field_all_components = np.array(field.getDescription().getNodesAndComponentsNumberFromDOF())[
-        :, 1
-    ]
+    field_all_components = np.array(field.getDescription().getNodeAndComponentIdFromDOF())[:, 1]
     field = restrain_field(field, model, nodes_groups, True)
     simple_field = field.toSimpleFieldOnNodes()
     simple_field_values, simple_field_mask = simple_field.getValues()

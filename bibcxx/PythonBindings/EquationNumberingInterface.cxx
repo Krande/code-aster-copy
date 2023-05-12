@@ -36,14 +36,14 @@ void exportEquationNumberingToPython( py::module_ &mod ) {
         .def( "getMesh", &EquationNumbering::getMesh )
         .def( "setMesh", &EquationNumbering::setMesh )
         // ---------------------------------------------------------------------
-        .def( "useLagrangeMultipliers", &EquationNumbering::useLagrangeMultipliers, R"(
+        .def( "useLagrangeDOF", &EquationNumbering::useLagrangeDOF, R"(
 Lagrange multipliers are used for BC or MPC.
 
 Returns:
     bool: *True* if used, *False* otherwise.
         )" )
         // ---------------------------------------------------------------------
-        .def( "useSingleLagrangeMultipliers", &EquationNumbering::useSingleLagrangeMultipliers,
+        .def( "useSingleLagrangeDOF", &EquationNumbering::useSingleLagrangeDOF,
               R"(
 Single Lagrange multipliers are used for BC or MPC.
 
@@ -51,7 +51,7 @@ Returns:
     bool: *True* if used, *False* otherwise.
         )" )
         // ---------------------------------------------------------------------
-        .def( "getNumberOfDofs", &EquationNumbering::getNumberOfDofs,
+        .def( "getNumberOfDOF", &EquationNumbering::getNumberOfDOF,
               R"(
 Returns the number of DOFs.
 
@@ -74,7 +74,10 @@ The numbering is distributed across MPI processes for High Performance Computing
 Returns:
     bool: *True* if used, *False* otherwise.
         )" )
-        .def( "getNodesAndComponentsFromDOF", &EquationNumbering::getNodesAndComponentsFromDOF, R"(
+        .def( "getNodeAndComponentFromDOF",
+              py::overload_cast< const bool >( &EquationNumbering::getNodeAndComponentFromDOF,
+                                               py::const_ ),
+              R"(
             Return the list of node id and name of component for each dofs
 
             Arguments:
@@ -84,8 +87,24 @@ Returns:
                 list[tuple[int, str]] : node id and name of component for each dofs
             )",
               py::arg( "local" ) = true )
-        .def( "getNodesAndComponentsNumberFromDOF",
-              &EquationNumbering::getNodesAndComponentsNumberFromDOF, R"(
+        .def( "getNodeAndComponentFromDOF",
+              py::overload_cast< const ASTERINTEGER, const bool >(
+                  &EquationNumbering::getNodeAndComponentFromDOF, py::const_ ),
+              R"(
+            Return the node id and name of component for given DOF
+
+            Arguments:
+                dof (int): DOF index
+                local (bool) = True: if True use local node index else use global index in HPC
+
+            Returns:
+                tuple[int, str] : node id and name of component
+            )",
+              py::arg( "dof" ), py::arg( "local" ) = true )
+        .def( "getNodeAndComponentIdFromDOF",
+              py::overload_cast< const bool >( &EquationNumbering::getNodeAndComponentIdFromDOF,
+                                               py::const_ ),
+              R"(
             Return the list of node id and component id for each dofs
 
             Arguments:
@@ -95,8 +114,24 @@ Returns:
                 list[tuple[int, int]] : node id and component if for each dofs
             )",
               py::arg( "local" ) = true )
-        .def( "getDOFsFromNodesAndComponentsNumber",
-              &EquationNumbering::getDOFsFromNodesAndComponentsNumber, R"(
+        .def( "getNodeAndComponentIdFromDOF",
+              py::overload_cast< const ASTERINTEGER, const bool >(
+                  &EquationNumbering::getNodeAndComponentIdFromDOF, py::const_ ),
+              R"(
+            Return the node id and component id for given DOF
+
+            Arguments:
+                dof (int): DOF index
+                local (bool) = True: if True use local node index else use global index in HPC
+
+            Returns:
+                tuple[int, int] : node id and component if for each dofs
+            )",
+              py::arg( "dof" ), py::arg( "local" ) = true )
+        .def( "getDOFFromNodeAndComponentId",
+              py::overload_cast< const bool >( &EquationNumbering::getDOFFromNodeAndComponentId,
+                                               py::const_ ),
+              R"(
             Return the dict of dofs with the pair (node id, name id) as keys
 
             Arguments:
@@ -106,7 +141,9 @@ Returns:
                 dict[int, str] : dofs id for each node id and component id
             )",
               py::arg( "local" ) = true )
-        .def( "getDOFsFromNodesAndComponents", &EquationNumbering::getDOFsFromNodesAndComponents,
+        .def( "getDOFFromNodeAndComponent",
+              py::overload_cast< const bool >( &EquationNumbering::getDOFFromNodeAndComponent,
+                                               py::const_ ),
               R"(
            Return the dict of dofs with the pair (node id, component's name) as keys
 

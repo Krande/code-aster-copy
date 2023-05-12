@@ -381,7 +381,6 @@ class SubStructure(WithEmbeddedObjects):
     ]
 
     def __init__(self, stiffness, mass, modes):
-
         self.mass = mass
         self.mesh = stiffness.getMesh()
         self.modes = modes
@@ -455,9 +454,7 @@ class SubStructure(WithEmbeddedObjects):
         createOutputFile = True
 
         for iName, iDispl, iNodes in zip(self.lIName, self.lIDispl, self.lINodes):
-
             for displ in iDispl:
-
                 Cham = CREA_CHAMP(
                     MODELE=model,
                     NUME_DDL=dofNumbering,
@@ -798,7 +795,7 @@ class Structure(WithEmbeddedObjects):
             lNumberOfPhysicalEqs.append(neq)
 
             numb = sub.dofNumbering
-            lag = np.array(numb.getRowsAssociatedToLagrangeMultipliers())
+            lag = np.array(numb.getLagrangeDOF())
 
             modes = sub.modes
             em = [modes.getField("DEPL", r).getValues() for r in modes.getIndexes()]
@@ -905,12 +902,12 @@ def macPlot(
         res1 = lres1[istru]
         res2 = lres2[istru]
         # selection of the dofs
-        lPhysical = np.array(mass.getDOFNumbering().getRowsAssociatedToPhysicalDofs())
+        lPhysical = np.array(mass.getDOFNumbering().getPhysicalDOF())
         lDOF = lPhysical
         if dof:
             dict_dof = {}
             for row in lPhysical:
-                dd = mass.getDOFNumbering().getComponentAssociatedToRow(int(row))
+                dd = mass.getDOFNumbering().getComponentFromDOF(int(row))
                 dict_dof.setdefault(dd, []).append(row)
             lDOF = sum([dict_dof[d] for d in dof], [])
         # extract mass matrix in the form a 3 arrays

@@ -110,32 +110,32 @@ TEST_RESU(
 
 
 # tests in local numbering
-physicalRows = numeDDL.getRowsAssociatedToPhysicalDofs(local=True)
+physicalRows = numeDDL.getPhysicalDOF(local=True)
 test.assertListEqual(physicalRows, list(range(len(pMesh.getNodes(localNumbering=True)))))
-multipliersRows = numeDDL.getRowsAssociatedToLagrangeMultipliers(local=True)
+multipliersRows = numeDDL.getLagrangeDOF(local=True)
 test.assertListEqual(multipliersRows, [])
-test.assertFalse(numeDDL.useLagrangeMultipliers())
-test.assertFalse(numeDDL.useSingleLagrangeMultipliers())
+test.assertFalse(numeDDL.useLagrangeDOF())
+test.assertFalse(numeDDL.useSingleLagrangeDOF())
 test.assertEqual(numeDDL.getComponents(), ["TEMP"])
-test.assertEqual(numeDDL.getComponentsAssociatedToNode(0, local=True), ["TEMP"])
-test.assertEqual(numeDDL.getNodeAssociatedToRow(0, local=True), 0)
-test.assertTrue(numeDDL.isRowAssociatedToPhysical(0, local=True))
-test.assertEqual(numeDDL.getNumberOfDofs(local=True), len(pMesh.getNodes(localNumbering=True)))
-test.assertEqual(numeDDL.getNumberOfDofs(local=False), 8)
+test.assertEqual(numeDDL.getComponentFromNode(0, local=True), ["TEMP"])
+test.assertEqual(numeDDL.getNodeFromDOF(0, local=True), 0)
+test.assertTrue(numeDDL.isPhysicalDOF(0, local=True))
+test.assertEqual(numeDDL.getNumberOfDOF(local=True), len(pMesh.getNodes(localNumbering=True)))
+test.assertEqual(numeDDL.getNumberOfDOF(local=False), 8)
 test.assertEqual(numeDDL.getPhysicalQuantity(), "TEMP_R")
-ghostRows = numeDDL.getGhostRows(local=True)
+ghostRows = numeDDL.getGhostDOF(local=True)
 test.assertListEqual(ghostRows, [[3, 5], [2, 4]][rank])
 
 
 # tests in global numbering
-physicalRows = numeDDL.getRowsAssociatedToPhysicalDofs(local=False)
+physicalRows = numeDDL.getPhysicalDOF(local=False)
 test.assertListEqual(
-    physicalRows, [numeDDL.localToGlobalRow(i) for i in range(pMesh.getNumberOfNodes())]
+    physicalRows, [numeDDL.localToGlobalDOF(i) for i in range(pMesh.getNumberOfNodes())]
 )
 test.assertListEqual(physicalRows, [[0, 1, 2, 6, 3, 7], [4, 5, 2, 6, 3, 7]][rank])
 
-ghostRows = numeDDL.getGhostRows(local=False)
-test.assertListEqual(ghostRows, [numeDDL.localToGlobalRow(i) for i in [[3, 5], [2, 4]][rank]])
+ghostRows = numeDDL.getGhostDOF(local=False)
+test.assertListEqual(ghostRows, [numeDDL.localToGlobalDOF(i) for i in [[3, 5], [2, 4]][rank]])
 test.assertListEqual(ghostRows, [[6, 7], [2, 3]][rank])
 
 

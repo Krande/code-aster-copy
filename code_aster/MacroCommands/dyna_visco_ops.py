@@ -87,7 +87,6 @@ def dyna_visco_ops(
 
     if MATER_ELAS:
         for n in MATER_ELAS:
-
             if n["MATER"] is None:
                 __new_matnv = DEFI_MATERIAU(
                     ELAS=_F(E=n["E"], NU=n["NU"], RHO=n["RHO"], AMOR_HYST=n["AMOR_HYST"])
@@ -221,7 +220,6 @@ def dyna_visco_ops(
 
     # FREQUENCY RESPONSE COMPUTATION
     if TYPE_RESU == "HARM":
-
         if args.get("MODE_MECA") is not None:
             self.register_result(_modes, args["MODE_MECA"])
 
@@ -259,8 +257,8 @@ def extr_matr_elim_lagr(self, matr_asse):
     # -----------------------------------------------------#
 
     dof_num = matr_asse.getDOFNumbering()
-    ind_lag1 = dof_num.getRowsAssociatedToLagrangeMultipliers()
-    ind_nolag = dof_num.getRowsAssociatedToPhysicalDofs()
+    ind_lag1 = dof_num.getLagrangeDOF()
+    ind_nolag = dof_num.getPhysicalDOF()
 
     nlag1 = len(ind_lag1)
     nnolag = len(ind_nolag)

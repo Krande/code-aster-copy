@@ -64,7 +64,6 @@ def calc_stabilite_ops(self, **args):
 
     recup_para = 0
     for num_ordr in l_ordre:
-
         filtre = {}
         filtre["FILTRE"] = _F(NOM_PARA="NUME_ORDRE", VALE_I=num_ordr)
         nom_obj = mnl["NOM_OBJET", num_ordr]
@@ -393,7 +392,6 @@ def posnoeud(typ, noeud1, comp1, comp2, pos):
 
 
 def extr_matr(matr):
-
     if matr.getDOFNumbering() is None:
         matr.updateDOFNumbering()
 
@@ -427,7 +425,7 @@ def extr_matr(matr):
         if (vsmdi[j] - 1) == k:
             j = j + 1
 
-    vdeeq = dof_num.getEquationNumbering().getNodesAndComponentsNumberFromDOF()
+    vdeeq = dof_num.getEquationNumbering().getNodeAndComponentIdFromDOF()
 
     ind = zeros(neq)
     # Cas CDL = AFFE_CHAR_CINE

@@ -35,50 +35,50 @@ void exportDOFNumberingToPython( py::module_ &mod ) {
         .def( py::init(
             &initFactoryPtr< DOFNumbering, std::string, EquationNumberingPtr, ModelPtr > ) )
         // ----------------------------------------------------------------------
-        .def( "useLagrangeMultipliers", &DOFNumbering::useLagrangeMultipliers, R"(
+        .def( "useLagrangeDOF", &DOFNumbering::useLagrangeDOF, R"(
 Lagrange multipliers are used for BC or MPC.
 
 Returns:
     bool: *True* if used, *False* otherwise.
         )" )
         // ----------------------------------------------------------------------
-        .def( "useSingleLagrangeMultipliers", &DOFNumbering::useSingleLagrangeMultipliers, R"(
+        .def( "useSingleLagrangeDOF", &DOFNumbering::useSingleLagrangeDOF, R"(
 Single Lagrange multipliers are used for BC or MPC.
 
 Returns:
     bool: *True* if used, *False* otherwise.
         )" )
         // ----------------------------------------------------------------------
-        .def( "getNodeAssociatedToRow", &DOFNumbering::getNodeAssociatedToRow,
+        .def( "getNodeFromDOF", &DOFNumbering::getNodeFromDOF,
               R"(
 Returns the node index associated to a dof index.
 
 Arguments:
-    row (int): Index of the dof.
+    dof (int): Index of the dof.
     local (bool, optional): not used (default: false).
 
 Returns:
     int: index of the dof.
         )",
               // ----------------------------------------------------------------------
-              py::arg( "row" ), py::arg( "local" ) = false )
-        .def( "isRowAssociatedToPhysical", &DOFNumbering::isRowAssociatedToPhysical,
+              py::arg( "dof" ), py::arg( "local" ) = false )
+        .def( "isPhysicalDOF", &DOFNumbering::isPhysicalDOF,
               R"(
-If the row is associated to a physical DOF, return True
+If the dof is associated to a physical DOF, return True
 
-If the row is associated to a Lagrange multiplier DOF for a Dirichlet boundary
+If the dof is associated to a Lagrange multiplier DOF for a Dirichlet boundary
   condition, return False
 
 Arguments:
-    row (int): Index of the dof.
+    dof (int): Index of the dof.
     local (bool, optional): not used (default: false).
 
 Returns:
     int: index of the dof.
         )",
-              py::arg( "row" ), py::arg( "local" ) = false )
+              py::arg( "dof" ), py::arg( "local" ) = false )
         // ----------------------------------------------------------------------
-        .def( "getRowsAssociatedToPhysicalDofs", &DOFNumbering::getRowsAssociatedToPhysicalDofs,
+        .def( "getPhysicalDOF", &DOFNumbering::getPhysicalDOF,
               R"(
 Returns the indexes of the physical dof.
 
@@ -90,22 +90,7 @@ Returns:
         )",
               py::arg( "local" ) = false )
         // ----------------------------------------------------------------------
-        .def( "getRowAssociatedToNodeComponent", &DOFNumbering::getRowAssociatedToNodeComponent,
-              R"(
-Returns the index of the dof associated to a node.
-
-Arguments:
-    node (int): Index of the node.
-    component (str): name of the component
-    local (bool, optional): not used (default: false).
-
-Returns:
-    int: index of the dof.
-        )",
-              py::arg( "node" ), py::arg( "component" ), py::arg( "local" ) = false )
-        // ----------------------------------------------------------------------
-        .def( "getRowsAssociatedToLagrangeMultipliers",
-              &DOFNumbering::getRowsAssociatedToLagrangeMultipliers,
+        .def( "getLagrangeDOF", &DOFNumbering::getLagrangeDOF,
               R"(
 Returns the indexes of the Lagrange multipliers dof.
 
@@ -124,30 +109,30 @@ Returns:
     str: component names.
         )" )
         // ---------------------------------------------------------------------
-        .def( "getComponentAssociatedToRow", &DOFNumbering::getComponentAssociatedToRow,
+        .def( "getComponentFromDOF", &DOFNumbering::getComponentFromDOF,
               R"(
 Returns the component name associated to a dof index.
 
-- If the row is associated to a physical DOF, the name of the component is returned.
+- If the dof is associated to a physical DOF, the name of the component is returned.
 
-- If the row is associated to a Lagrange multiplier DOF for a Dirichlet boundary
+- If the dof is associated to a Lagrange multiplier DOF for a Dirichlet boundary
   condition, the name of the component which is constrained by the multiplier is
   returned, precedeed by 'LAGR:', e.g. 'LAGR:DX'.
 
-- If the row is associated to a Lagrange multiplier DOF for a multipoint-constraint
+- If the dof is associated to a Lagrange multiplier DOF for a multipoint-constraint
   (MPC) implying several DOF, 'LAGR:MPC' is returned (since no component can be
   identified).
 
 Arguments:
-    row (int): Index of the dof.
+    dof (int): Index of the dof.
     local (bool, optional): not used (default: false).
 
 Returns:
     str: component name.
         )",
-              py::arg( "row" ), py::arg( "local" ) = false )
+              py::arg( "dof" ), py::arg( "local" ) = false )
         // ----------------------------------------------------------------------
-        .def( "getComponentsAssociatedToNode", &DOFNumbering::getComponentsAssociatedToNode,
+        .def( "getComponentFromNode", &DOFNumbering::getComponentFromNode,
               R"(
 Returns the components name associated to a node index.
 
@@ -160,7 +145,7 @@ Returns:
         )",
               py::arg( "node" ), py::arg( "local" ) = false )
         // ----------------------------------------------------------------------
-        .def( "getNumberOfDofs", &DOFNumbering::getNumberOfDofs,
+        .def( "getNumberOfDOF", &DOFNumbering::getNumberOfDOF,
               R"(
 Returns the number of DOFs.
 

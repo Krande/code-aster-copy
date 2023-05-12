@@ -256,7 +256,7 @@ ContactComputation::contactCoefficient() const {
         std::make_shared< FieldOnNodesReal >( _contact->getFiniteElementDescriptor(), "ECFROT" );
     cfrot->updateValuePointers();
 
-    auto dof2nodes = ccont->getDescription()->getNodesAndComponentsNumberFromDOF();
+    auto dof2nodes = ccont->getDescription()->getNodeAndComponentIdFromDOF();
     std::map< ASTERINTEGER, ASTERINTEGER > nodes2dof;
     for ( ASTERINTEGER i_eq = 0; i_eq < dof2nodes.size(); i_eq++ ) {
         auto [node, cmp] = dof2nodes[i_eq];

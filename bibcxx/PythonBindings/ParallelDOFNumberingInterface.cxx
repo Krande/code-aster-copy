@@ -37,14 +37,14 @@ void exportParallelDOFNumberingToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< ParallelDOFNumbering, std::string,
                                          ParallelEquationNumberingPtr, ModelPtr > ) )
         // ---------------------------------------------------------------------
-        .def( "useLagrangeMultipliers", &ParallelDOFNumbering::useLagrangeMultipliers, R"(
+        .def( "useLagrangeDOF", &ParallelDOFNumbering::useLagrangeDOF, R"(
 Lagrange multipliers are used for BC or MPC.
 
 Returns:
     bool: *True* if used, *False* otherwise.
         )" )
         // ---------------------------------------------------------------------
-        .def( "useSingleLagrangeMultipliers", &ParallelDOFNumbering::useSingleLagrangeMultipliers,
+        .def( "useSingleLagrangeDOF", &ParallelDOFNumbering::useSingleLagrangeDOF,
               R"(
 Single Lagrange multipliers are used for BC or MPC.
 
@@ -52,37 +52,36 @@ Returns:
     bool: *True* if used, *False* otherwise.
         )" )
         // ---------------------------------------------------------------------
-        .def( "getNodeAssociatedToRow", &ParallelDOFNumbering::getNodeAssociatedToRow,
+        .def( "getNodeFromDOF", &ParallelDOFNumbering::getNodeFromDOF,
               R"(
 Returns the node index associated to a dof index.
 
 Arguments:
-    row (int): Index of the dof.
+    dof (int): Index of the dof.
     local (bool, optional): not used (default: false).
 
 Returns:
     int: index of the dof.
         )",
-              py::arg( "row" ), py::arg( "local" ) = false )
+              py::arg( "dof" ), py::arg( "local" ) = false )
         // ---------------------------------------------------------------------
-        .def( "isRowAssociatedToPhysical", &ParallelDOFNumbering::isRowAssociatedToPhysical,
+        .def( "isPhysicalDOF", &ParallelDOFNumbering::isPhysicalDOF,
               R"(
-If the row is associated to a physical DOF, return True
+If the dof is associated to a physical DOF, return True
 
-If the row is associated to a Lagrange multiplier DOF for a Dirichlet boundary
+If the dof is associated to a Lagrange multiplier DOF for a Dirichlet boundary
   condition, return False
 
 Arguments:
-    row (int): Index of the dof.
+    dof (int): Index of the dof.
     local (bool, optional): not used (default: false).
 
 Returns:
     int: index of the dof.
         )",
-              py::arg( "row" ), py::arg( "local" ) = false )
+              py::arg( "dof" ), py::arg( "local" ) = false )
         // ---------------------------------------------------------------------
-        .def( "getRowsAssociatedToPhysicalDofs",
-              &ParallelDOFNumbering::getRowsAssociatedToPhysicalDofs,
+        .def( "getPhysicalDOF", &ParallelDOFNumbering::getPhysicalDOF,
               R"(
 Returns the indexes of the physical dof.
 
@@ -94,23 +93,7 @@ Returns:
         )",
               py::arg( "local" ) = false )
         // ---------------------------------------------------------------------
-        .def( "getRowAssociatedToNodeComponent",
-              &ParallelDOFNumbering::getRowAssociatedToNodeComponent,
-              R"(
-Returns the index of the dof associated to a node.
-
-Arguments:
-    node (int): Index of the node.
-    component (str): name of the component
-    local (bool, optional): not used (default: false).
-
-Returns:
-    int: index of the dof.
-        )",
-              py::arg( "node" ), py::arg( "component" ), py::arg( "local" ) = false )
-        // ---------------------------------------------------------------------
-        .def( "getRowsAssociatedToLagrangeMultipliers",
-              &ParallelDOFNumbering::getRowsAssociatedToLagrangeMultipliers,
+        .def( "getLagrangeDOF", &ParallelDOFNumbering::getLagrangeDOF,
               R"(
 Returns the indexes of the Lagrange multipliers dof.
 
@@ -129,30 +112,30 @@ Returns:
     str: component names.
         )" )
         // ---------------------------------------------------------------------
-        .def( "getComponentAssociatedToRow", &ParallelDOFNumbering::getComponentAssociatedToRow,
+        .def( "getComponentFromDOF", &ParallelDOFNumbering::getComponentFromDOF,
               R"(
 Returns the component name associated to a dof index.
 
-- If the row is associated to a physical DOF, the name of the component is returned.
+- If the dof is associated to a physical DOF, the name of the component is returned.
 
-- If the row is associated to a Lagrange multiplier DOF for a Dirichlet boundary
+- If the dof is associated to a Lagrange multiplier DOF for a Dirichlet boundary
   condition, the name of the component which is constrained by the multiplier is
   returned, precedeed by 'LAGR:', e.g. 'LAGR:DX'.
 
-- If the row is associated to a Lagrange multiplier DOF for a multipoint-constraint
+- If the dof is associated to a Lagrange multiplier DOF for a multipoint-constraint
   (MPC) implying several DOF, 'LAGR:MPC' is returned (since no component can be
   identified).
 
 Arguments:
     node (int): Index of the node.
-    local (bool): row in local or global numbering
+    local (bool): dof in local or global numbering
 
 Returns:
     str: component names.
               )",
-              py::arg( "row" ), py::arg( "local" ) = false )
+              py::arg( "dof" ), py::arg( "local" ) = false )
         // ---------------------------------------------------------------------
-        .def( "getComponentsAssociatedToNode", &ParallelDOFNumbering::getComponentsAssociatedToNode,
+        .def( "getComponentFromNode", &ParallelDOFNumbering::getComponentFromNode,
               R"(
 Returns the components name associated to a node index.
 
@@ -165,7 +148,7 @@ Returns:
         )",
               py::arg( "node" ), py::arg( "local" ) = false )
         // ---------------------------------------------------------------------
-        .def( "getNumberOfDofs", &ParallelDOFNumbering::getNumberOfDofs,
+        .def( "getNumberOfDOF", &ParallelDOFNumbering::getNumberOfDOF,
               R"(
 Returns the number of DOFs.
 
@@ -177,7 +160,7 @@ Returns:
         )",
               py::arg( "local" ) = false )
         // ---------------------------------------------------------------------
-        .def( "getGhostRows", &ParallelDOFNumbering::getGhostRows,
+        .def( "getGhostDOF", &ParallelDOFNumbering::getGhostDOF,
               R"(
 Returns the indexes of the ghost DOFs.
 
@@ -189,7 +172,7 @@ Returns:
         )",
               py::arg( "local" ) = true )
         // ---------------------------------------------------------------------
-        .def( "getNoGhostRows", &ParallelDOFNumbering::getNoGhostRows,
+        .def( "getNoGhostDOF", &ParallelDOFNumbering::getNoGhostDOF,
               R"(
 Returns the indexes of the DOFs owned locally (aka not ghost).
 
@@ -197,7 +180,7 @@ Returns:
     int: indexes of the DOFs owned locally.
         )" )
         // ---------------------------------------------------------------------
-        .def( "localToGlobalRow", &ParallelDOFNumbering::localToGlobalRow,
+        .def( "localToGlobalDOF", &ParallelDOFNumbering::localToGlobalDOF,
               R"(
 Returns the global number of a local DOF.
 
@@ -217,7 +200,7 @@ Returns:
     int: global number of the DOF.
         )" )
         // ---------------------------------------------------------------------
-        .def( "globalToLocalRow", &ParallelDOFNumbering::globalToLocalRow,
+        .def( "globalToLocalDOF", &ParallelDOFNumbering::globalToLocalDOF,
               R"(
 Returns the local number of a global DOF.
 

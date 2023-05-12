@@ -68,78 +68,77 @@ class BaseEquationNumbering : public DataStructure {
     /**
      * @brief Are Lagrange Multipliers used for BC or MPC
      */
-    virtual bool useLagrangeMultipliers() const = 0;
+    virtual bool useLagrangeDOF() const = 0;
 
     /**
      * @brief Are Single Lagrange Multipliers used for BC or MPC
      */
-    virtual bool useSingleLagrangeMultipliers() const = 0;
+    virtual bool useSingleLagrangeDOF() const = 0;
 
     /**
      * @brief Get The Component Associated To A Given Row
      */
-    virtual std::string getComponentAssociatedToRow( const ASTERINTEGER row,
-                                                     const bool local = false ) const = 0;
+    virtual std::string getComponentFromDOF( const ASTERINTEGER dof,
+                                             const bool local = false ) const = 0;
     /**
      * @brief Get The Node Id Associated To A Given Row
      */
-    virtual ASTERINTEGER getNodeAssociatedToRow( const ASTERINTEGER row,
-                                                 const bool local = false ) const = 0;
+    virtual ASTERINTEGER getNodeFromDOF( const ASTERINTEGER dof,
+                                         const bool local = false ) const = 0;
 
     /**
      * @brief Return true if a physical dof is Associated To A Given Row
      */
-    virtual bool isRowAssociatedToPhysical( const ASTERINTEGER row,
-                                            const bool local = false ) const = 0;
+    virtual bool isPhysicalDOF( const ASTERINTEGER dof, const bool local = false ) const = 0;
 
     /**
      * @brief Get The total number of Dofs
      */
-    virtual ASTERINTEGER getNumberOfDofs( const bool local = false ) const = 0;
+    virtual ASTERINTEGER getNumberOfDOF( const bool local = false ) const = 0;
 
     /**
      * @brief Get Rows Associated to all Physical Dof
      */
-    virtual VectorLong getRowsAssociatedToPhysicalDofs( const bool local = false ) const = 0;
+    virtual VectorLong getPhysicalDOF( const bool local = false ) const = 0;
 
     /**
      * @brief Get Rows Associated to Lagrange Multipliers Dof
      */
-    virtual VectorLong getRowsAssociatedToLagrangeMultipliers( const bool local = false ) const = 0;
+    virtual VectorLong getLagrangeDOF( const bool local = false ) const = 0;
 
     /**
      * @brief Get Rows Associated to all Ghost Dof
      */
-    VectorLong getGhostRows( const bool local = false ) const {
-        throw std::runtime_error( "Vector LocagetGhostRowslToRank doesn't exist in sequential" );
+    VectorLong getGhostDOF( const bool local = false ) const {
+        throw std::runtime_error( "Vector LocagetGhostDOFlToRank doesn't exist in sequential" );
         return VectorLong();
     };
 
     /**
      * @brief Get Rows owned locally (aka not Ghost)
      */
-    VectorLong getNoGhostRows() const {
-        throw std::runtime_error( "Vector LocagetGhostRowslToRank doesn't exist in sequential" );
+    VectorLong getNoGhostDOF() const {
+        throw std::runtime_error( "Vector LocagetGhostDOFlToRank doesn't exist in sequential" );
         return VectorLong();
     };
 
     /**
      * @brief Return the local number of a global Dof
-     * @return Return the local number if the row if present on the subdomain ; otherwise
+     * @return Return the local number if the dof if present on the subdomain ; otherwise
      * raise an exception
      */
-    const ASTERINTEGER globalToLocalRow( const ASTERINTEGER ) const {
-        throw std::runtime_error( "Vector globalToLocalRow doesn't exist in sequential" );
+    const ASTERINTEGER globalToLocalDOF( const ASTERINTEGER ) const {
+        throw std::runtime_error( "Vector globalToLocalDOF doesn't exist in sequential" );
         return -1;
     };
 
     /**
      * @brief Return the global number of a local Dof
-     * @return Return the global number if the row if present on the subdomain ; otherwise
+     * @return Return the global number if the dof if present on the subdomain ; otherwise
      * raise an exception
      */
-    const ASTERINTEGER localToGlobalRow( const ASTERINTEGER ) {
-        throw std::runtime_error( "Vector globalToLocalRow doesn't exist in sequential" );
+    const ASTERINTEGER localToGlobalDOF( const ASTERINTEGER ) {
+        throw std::runtime_error( "Vector globalToLocalDOF doesn't exist in sequential" );
         return -1;
     };
 };
@@ -163,7 +162,7 @@ class EquationNumbering : public BaseEquationNumbering {
     /** @brief Objet Jeveux '.NUEQ' */
     JeveuxVectorLong _indexationVector;
     /** @brief Objet Jeveux '.DEEQ' */
-    JeveuxVectorLong _nodeAndComponentsNumberFromDOF;
+    JeveuxVectorLong _nodeAndComponentsIdFromDOF;
     /** @brief Mesh */
     BaseMeshPtr _mesh;
     /** @brief Model */
@@ -174,7 +173,7 @@ class EquationNumbering : public BaseEquationNumbering {
     /**
      * @brief Build the mapping between the component number to its name
      */
-    void _buildAllComponentsNumber2Name();
+    void _buildAllComponentsId2Name();
 
   public:
     /**
@@ -244,22 +243,21 @@ class EquationNumbering : public BaseEquationNumbering {
      * @param list_cmp empty: Use all cmp / keep only cmp given
      * @param groupsOfCells empty: Use all nodes / keep only nodes given
      */
-    VectorLong getDOFs( const bool sameRank = false, const VectorString &list_cmp = {},
-                        const VectorLong &list_nodes = {} ) const;
+    VectorLong getDOF( const bool sameRank = false, const VectorString &list_cmp = {},
+                       const VectorLong &list_nodes = {} ) const;
 
     /**
      * @brief Returns a vector with node index and component name for each DOFs
      */
-    VectorPairLong getNodesAndComponentsNumberFromDOF( const bool local = true ) const;
+    VectorPairLong getNodeAndComponentIdFromDOF( const bool local = true ) const;
 
-    PairLong getNodeAndComponentNumberFromDOF( const ASTERINTEGER dof,
-                                               const bool local = true ) const;
+    PairLong getNodeAndComponentIdFromDOF( const ASTERINTEGER dof, const bool local = true ) const;
 
     /**
      * @brief Returns a vector with node index and component name for each DOFs
      */
     std::vector< std::pair< ASTERINTEGER, std::string > >
-    getNodesAndComponentsFromDOF( const bool local = true ) const;
+    getNodeAndComponentFromDOF( const bool local = true ) const;
     std::pair< ASTERINTEGER, std::string >
     getNodeAndComponentFromDOF( const ASTERINTEGER dof, const bool local = true ) const;
 
@@ -267,62 +265,61 @@ class EquationNumbering : public BaseEquationNumbering {
      * @brief Maps between node id and name of components to DOF
      */
     std::map< PairLong, ASTERINTEGER >
-    getDOFsFromNodesAndComponentsNumber( const bool local = true ) const;
+    getDOFFromNodeAndComponentId( const bool local = true ) const;
 
     std::map< std::pair< ASTERINTEGER, std::string >, ASTERINTEGER >
-    getDOFsFromNodesAndComponents( const bool local = true ) const;
+    getDOFFromNodeAndComponent( const bool local = true ) const;
 
     /**
      * @brief Get componants
      */
     VectorString getComponents() const;
-    SetLong getComponentsNumber() const;
+    SetLong getComponentsId() const;
 
     /**
      * @brief Maps between name of components and the number
      */
-    std::map< std::string, ASTERINTEGER > getComponentsName2Number() const;
-    std::map< ASTERINTEGER, std::string > getComponentsNumber2Name() const;
+    std::map< std::string, ASTERINTEGER > getComponentsNameToId() const;
+    std::map< ASTERINTEGER, std::string > getComponentsIdToName() const;
 
     /**
      * @brief Are Lagrange Multipliers used for BC or MPC
      */
-    bool useLagrangeMultipliers() const;
+    bool useLagrangeDOF() const;
 
     /**
      * @brief Are Single Lagrange Multipliers used for BC or MPC
      */
-    bool useSingleLagrangeMultipliers() const;
+    bool useSingleLagrangeDOF() const;
 
     /**
      * @brief Get The Component Associated To A Given Row
      */
-    std::string getComponentAssociatedToRow( const ASTERINTEGER row,
-                                             const bool local = false ) const;
+    std::string getComponentFromDOF( const ASTERINTEGER dof, const bool local = false ) const;
     /**
      * @brief Get The Node Id Associated To A Given Row
      */
-    ASTERINTEGER getNodeAssociatedToRow( const ASTERINTEGER row, const bool local = false ) const;
+    ASTERINTEGER getNodeFromDOF( const ASTERINTEGER dof, const bool local = false ) const;
 
     /**
      * @brief Return true if a physical dof is Associated To A Given Row
      */
-    bool isRowAssociatedToPhysical( const ASTERINTEGER row, const bool local = false ) const;
+    bool isPhysicalDOF( const ASTERINTEGER dof, const bool local = false ) const;
 
     /**
      * @brief Get The total number of Dofs
      */
-    ASTERINTEGER getNumberOfDofs( const bool local = false ) const;
+    ASTERINTEGER getNumberOfDOF( const bool local = false ) const;
 
     /**
      * @brief Get Rows Associated to all Physical Dof
      */
-    VectorLong getRowsAssociatedToPhysicalDofs( const bool local = false ) const;
+    VectorLong getPhysicalDOF( const bool local = false ) const;
 
     /**
      * @brief Get Rows Associated to Lagrange Multipliers Dof
      */
-    VectorLong getRowsAssociatedToLagrangeMultipliers( const bool local = false ) const;
+    VectorLong getLagrangeDOF( const bool local = false ) const;
 
     /**
      * @brief Mise a jour des pointeurs Jeveux

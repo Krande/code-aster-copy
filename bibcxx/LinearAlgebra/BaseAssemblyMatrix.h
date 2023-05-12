@@ -160,7 +160,7 @@ class BaseAssemblyMatrix : public DataStructure {
     VectorLong size( const bool local = true ) const {
         if ( !_dofNum )
             raiseAsterError( "Sizes not available" );
-        ASTERINTEGER shape = _dofNum->getNumberOfDofs( local );
+        ASTERINTEGER shape = _dofNum->getNumberOfDOF( local );
         return VectorLong( 2, shape );
     };
 
@@ -306,7 +306,7 @@ class BaseAssemblyMatrix : public DataStructure {
             _ccid->updateValuePointer();
             return _ccid->toVector();
         } else {
-            ASTERINTEGER shape = _dofNum->getNumberOfDofs( true );
+            ASTERINTEGER shape = _dofNum->getNumberOfDOF( true );
             return VectorLong( shape + 1, 0 );
         }
     }

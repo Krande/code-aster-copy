@@ -43,10 +43,10 @@ class ExtendedDOFNumbering:
     @functools.lru_cache()
     def __Components2Rows(self, local=True):
         """Build the dictionary from the components to the rows."""
-        ndofs = self.getNumberOfDofs()
+        ndofs = self.getNumberOfDOF()
         dict_dof = {}
         for row in range(ndofs):
-            component = self.getComponentAssociatedToRow(int(row))
+            component = self.getComponentFromDOF(int(row))
             dict_dof.setdefault(component, []).append(row)
         return dict_dof
 

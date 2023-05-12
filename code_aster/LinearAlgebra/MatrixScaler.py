@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -74,6 +74,7 @@ def _busymscalinf(A: Mat, niter, atol):
     DDr.set(1.0)
     DDl = Dl.duplicate()
     DDl.set(1.0)
+
     # usefull func to evaluate convergence
     def _isConverged(Dr, Dl, atol, Dr_2, Dl_2):
         Dr_2.pointwiseMult(Dr, Dr)
@@ -203,7 +204,7 @@ class MatrixScaler:
         lvect = np.zeros(lsize)
         rvect = np.zeros(lsize)
         for row in range(lsize):
-            dof = nmbrg.getComponentAssociatedToRow(row, local=True)
+            dof = nmbrg.getComponentFromDOF(row, local=True)
             lvect[row] = nmat_lvect[norm_dof2row[dof]]
             rvect[row] = nmat_rvect[norm_dof2row[dof]]
         # We do *not* scale the dof that have Dirichlet BC

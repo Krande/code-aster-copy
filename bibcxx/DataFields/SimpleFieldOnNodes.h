@@ -67,14 +67,14 @@ class SimpleFieldOnNodes : public DataField {
     /** @brief Mesh */
     BaseMeshPtr _mesh;
 
-    std::map< std::string, ASTERINTEGER > _name2number;
+    std::map< std::string, ASTERINTEGER > _name2Index;
 
-    void _buildComponentsName2Number() {
-        if ( _name2number.empty() ) {
+    void _buildComponentsName2Index() {
+        if ( _name2Index.empty() ) {
 
             auto nbCmp = this->getNumberOfComponents();
             for ( ASTERINTEGER i = 0; i < nbCmp; i++ ) {
-                _name2number[this->getComponent( i )] = i;
+                _name2Index[this->getComponent( i )] = i;
             }
         }
     }
@@ -191,12 +191,12 @@ class SimpleFieldOnNodes : public DataField {
     };
 
     ValueType &operator()( const ASTERINTEGER &ino, const std::string &cmp ) {
-        auto icmp = _name2number.at( cmp );
+        auto icmp = _name2Index.at( cmp );
         return this->operator()( ino, icmp );
     };
 
     const ValueType &operator()( const ASTERINTEGER &ino, const std::string &cmp ) const {
-        auto icmp = _name2number.at( cmp );
+        auto icmp = _name2Index.at( cmp );
         return this->operator()( ino, icmp );
     };
 
@@ -212,7 +212,7 @@ class SimpleFieldOnNodes : public DataField {
     };
 
     bool hasValue( const ASTERINTEGER &ino, const std::string &cmp ) const {
-        auto icmp = _name2number.at( cmp );
+        auto icmp = _name2Index.at( cmp );
 
         return this->hasValue( ino, icmp );
     };
@@ -310,13 +310,13 @@ class SimpleFieldOnNodes : public DataField {
     /**
      * @brief Maps between name of components and the nimber
      */
-    std::map< std::string, ASTERINTEGER > getComponentsName2Number() const {
+    std::map< std::string, ASTERINTEGER > getComponentsName2Index() const {
 
-        if ( _name2number.empty() ) {
-            raiseAsterError( "getComponentsName2Number: build field before" );
+        if ( _name2Index.empty() ) {
+            raiseAsterError( "getComponentsName2Index: build field before" );
         }
 
-        return _name2number;
+        return _name2Index;
     };
 
     /**
@@ -342,7 +342,7 @@ class SimpleFieldOnNodes : public DataField {
         _nbNodes = ( *_size )[0];
         _nbComp = ( *_size )[1];
 
-        _buildComponentsName2Number();
+        _buildComponentsName2Index();
 
         AS_ASSERT( _values->size() == _nbNodes * _nbComp );
         AS_ASSERT( _values->size() > 0 );
@@ -389,8 +389,8 @@ class SimpleFieldOnNodes : public DataField {
         VectorLong nodes = _mesh->getNodes( groupsOfNodes );
 
         for ( auto &cmp : list_cmp ) {
-            auto icmp_in = ( *this )._name2number.at( cmp );
-            auto icmp = ( *ret )._name2number.at( cmp );
+            auto icmp_in = ( *this )._name2Index.at( cmp );
+            auto icmp = ( *ret )._name2Index.at( cmp );
             for ( auto &node : nodes ) {
                 if ( this->hasValue( node, icmp_in ) ) {
                     ( *ret )( node, icmp ) = ( *this )( node, icmp_in );

@@ -109,7 +109,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     VectorLong _getDOFsToUse( const bool sameRank, const VectorString &list_cmp,
                               const VectorString &groupsOfCells = {} ) const {
         auto list_nodes = this->getMesh()->getNodesFromCells( groupsOfCells );
-        return _dofDescription->getDOFs( sameRank, list_cmp, list_nodes );
+        return _dofDescription->getDOF( sameRank, list_cmp, list_nodes );
     }
 
   public:
@@ -443,7 +443,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     void applyLagrangeScaling( const ValueType scaling ) {
         _values->updateValuePointer();
 
-        const auto descr = _dofDescription->getNodesAndComponentsNumberFromDOF();
+        const auto descr = _dofDescription->getNodeAndComponentIdFromDOF();
 
         auto nbDofs = this->size();
 
@@ -476,8 +476,8 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
                     VectorString groupsOfCells = {} ) {
         _values->updateValuePointer();
 
-        auto num2name = _dofDescription->getComponentsNumber2Name();
-        const auto descr = _dofDescription->getNodesAndComponentsNumberFromDOF();
+        auto num2name = _dofDescription->getComponentsIdToName();
+        const auto descr = _dofDescription->getNodeAndComponentIdFromDOF();
 
         auto nbDofs = this->size();
 
@@ -675,7 +675,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         VectorString cmps;
         std::vector< ValueType > values;
 
-        auto num2name = _dofDescription->getComponentsNumber2Name();
+        auto num2name = _dofDescription->getComponentsIdToName();
         ASTERINTEGER icmp, ncmp;
         bool all_cmp = cmp == " ";
         if ( all_cmp ) {
@@ -683,12 +683,12 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
             cmps.reserve( ncmp * nodes.size() );
         } else {
             ncmp = 1;
-            icmp = _dofDescription->getComponentsName2Number()[cmp];
+            icmp = _dofDescription->getComponentsNameToId()[cmp];
         }
         v_nodes.reserve( ncmp * nodes.size() );
         values.reserve( ncmp * nodes.size() );
 
-        const auto descr = _dofDescription->getNodesAndComponentsNumberFromDOF();
+        const auto descr = _dofDescription->getNodeAndComponentIdFromDOF();
 
         _values->updateValuePointer();
         for ( auto dof = 0; dof < this->size(); ++dof ) {

@@ -1395,7 +1395,7 @@ class EquationNumbering(DataStructure):
             list[str]: list of components
         """
 
-    def getDOFsFromNodesAndComponents(self, local=True):
+    def getDOFFromNodeAndComponent(self, local=True):
         """Return the dict of dofs with the pair (node id, component's name) as keys
 
         Arguments:
@@ -1405,7 +1405,7 @@ class EquationNumbering(DataStructure):
             dict[int, str] : dofs id for each node id and component's name
         """
 
-    def getDOFsFromNodesAndComponentsNumber(self, local=True):
+    def getDOFFromNodeAndComponentId(self, local=True):
         """Return the dict of dofs with the pair (node id, name id) as keys
 
         Arguments:
@@ -1421,27 +1421,63 @@ class EquationNumbering(DataStructure):
     def getModel(self):
         pass
 
-    def getNodesAndComponentsFromDOF(self, local=True):
-        """Return the list of node id and name of component for each dofs
+    def getNodeAndComponentFromDOF(self, *args, **kwargs):
+        """Overloaded function.
 
-        Arguments:
-            local (bool) = True: if True use local node index else use global index in HPC
+        1. getNodeAndComponentFromDOF(self: libaster.EquationNumbering, local: bool = True) -> List[Tuple[int, str]]
 
-        Returns:
-            list[tuple[int, str]] : node id and name of component for each dofs
+
+                    Return the list of node id and name of component for each dofs
+
+                    Arguments:
+                        local (bool) = True: if True use local node index else use global index in HPC
+
+                    Returns:
+                        list[tuple[int, str]] : node id and name of component for each dofs
+
+
+        2. getNodeAndComponentFromDOF(self: libaster.EquationNumbering, dof: int, local: bool = True) -> Tuple[int, str]
+
+
+                    Return the node id and name of component for given DOF
+
+                    Arguments:
+                        dof (int): DOF index
+                        local (bool) = True: if True use local node index else use global index in HPC
+
+                    Returns:
+                        tuple[int, str] : node id and name of component
         """
 
-    def getNodesAndComponentsNumberFromDOF(self, local=True):
-        """Return the list of node id and component id for each dofs
+    def getNodeAndComponentIdFromDOF(self, *args, **kwargs):
+        """Overloaded function.
 
-        Arguments:
-            local (bool) = True: if True use local node index else use global index in HPC
+        1. getNodeAndComponentIdFromDOF(self: libaster.EquationNumbering, local: bool = True) -> List[Tuple[int, int]]
 
-        Returns:
-            list[tuple[int, int]] : node id and component if for each dofs
+
+                    Return the list of node id and component id for each dofs
+
+                    Arguments:
+                        local (bool) = True: if True use local node index else use global index in HPC
+
+                    Returns:
+                        list[tuple[int, int]] : node id and component if for each dofs
+
+
+        2. getNodeAndComponentIdFromDOF(self: libaster.EquationNumbering, dof: int, local: bool = True) -> Tuple[int, int]
+
+
+                    Return the node id and component id for given DOF
+
+                    Arguments:
+                        dof (int): DOF index
+                        local (bool) = True: if True use local node index else use global index in HPC
+
+                    Returns:
+                        tuple[int, int] : node id and component if for each dofs
         """
 
-    def getNumberOfDofs(self, local=False):
+    def getNumberOfDOF(self, local=False):
         """Returns the number of DOFs.
 
         Arguments:
@@ -1471,14 +1507,14 @@ class EquationNumbering(DataStructure):
     def setModel(self, arg0):
         pass
 
-    def useLagrangeMultipliers(self):
+    def useLagrangeDOF(self):
         """Lagrange multipliers are used for BC or MPC.
 
         Returns:
             bool: *True* if used, *False* otherwise.
         """
 
-    def useSingleLagrangeMultipliers(self):
+    def useSingleLagrangeDOF(self):
         """Single Lagrange multipliers are used for BC or MPC.
 
         Returns:
@@ -1623,35 +1659,28 @@ class DOFNumbering(BaseDOFNumbering):
         3. __init__(self: libaster.DOFNumbering, arg0: str, arg1: libaster.EquationNumbering, arg2: Model) -> None
         """
 
-    def getComponentAssociatedToRow(self, row, local=False):
+    def getComponentFromDOF(self, dof, local=False):
         """Returns the component name associated to a dof index.
 
-        - If the row is associated to a physical DOF, the name of the component is returned.
+        - If the dof is associated to a physical DOF, the name of the component is returned.
 
-        - If the row is associated to a Lagrange multiplier DOF for a Dirichlet boundary
+        - If the dof is associated to a Lagrange multiplier DOF for a Dirichlet boundary
           condition, the name of the component which is constrained by the multiplier is
           returned, precedeed by 'LAGR:', e.g. 'LAGR:DX'.
 
-        - If the row is associated to a Lagrange multiplier DOF for a multipoint-constraint
+        - If the dof is associated to a Lagrange multiplier DOF for a multipoint-constraint
           (MPC) implying several DOF, 'LAGR:MPC' is returned (since no component can be
           identified).
 
         Arguments:
-            row (int): Index of the dof.
+            dof (int): Index of the dof.
             local (bool, optional): not used (default: false).
 
         Returns:
             str: component name.
         """
 
-    def getComponents(self):
-        """Returns all the component names assigned in the numbering.
-
-        Returns:
-            str: component names.
-        """
-
-    def getComponentsAssociatedToNode(self, node, local=False):
+    def getComponentFromNode(self, node, local=False):
         """Returns the components name associated to a node index.
 
         Arguments:
@@ -1662,40 +1691,14 @@ class DOFNumbering(BaseDOFNumbering):
             str: component names.
         """
 
-    def getNodeAssociatedToRow(self, row, local=False):
-        """Returns the node index associated to a dof index.
-
-        Arguments:
-            row (int): Index of the dof.
-            local (bool, optional): not used (default: false).
+    def getComponents(self):
+        """Returns all the component names assigned in the numbering.
 
         Returns:
-            int: index of the dof.
+            str: component names.
         """
 
-    def getNumberOfDofs(self, local=False):
-        """Returns the number of DOFs.
-
-        Arguments:
-            local (bool, optional): not used (default: false).
-
-        Returns:
-            int: number of DOFs.
-        """
-
-    def getRowAssociatedToNodeComponent(self, node, component, local=False):
-        """Returns the index of the dof associated to a node.
-
-        Arguments:
-            node (int): Index of the node.
-            component (str): name of the component
-            local (bool, optional): not used (default: false).
-
-        Returns:
-            int: index of the dof.
-        """
-
-    def getRowsAssociatedToLagrangeMultipliers(self, local=False):
+    def getLagrangeDOF(self, local=False):
         """Returns the indexes of the Lagrange multipliers dof.
 
         Arguments:
@@ -1705,7 +1708,28 @@ class DOFNumbering(BaseDOFNumbering):
             [int]: indexes of the Lagrange multipliers dof.
         """
 
-    def getRowsAssociatedToPhysicalDofs(self, local=False):
+    def getNodeFromDOF(self, dof, local=False):
+        """Returns the node index associated to a dof index.
+
+        Arguments:
+            dof (int): Index of the dof.
+            local (bool, optional): not used (default: false).
+
+        Returns:
+            int: index of the dof.
+        """
+
+    def getNumberOfDOF(self, local=False):
+        """Returns the number of DOFs.
+
+        Arguments:
+            local (bool, optional): not used (default: false).
+
+        Returns:
+            int: number of DOFs.
+        """
+
+    def getPhysicalDOF(self, local=False):
         """Returns the indexes of the physical dof.
 
         Arguments:
@@ -1715,28 +1739,28 @@ class DOFNumbering(BaseDOFNumbering):
             [int]: indexes of the physical dof.
         """
 
-    def isRowAssociatedToPhysical(self, row, local=False):
-        """If the row is associated to a physical DOF, return True
+    def isPhysicalDOF(self, dof, local=False):
+        """If the dof is associated to a physical DOF, return True
 
-        If the row is associated to a Lagrange multiplier DOF for a Dirichlet boundary
+        If the dof is associated to a Lagrange multiplier DOF for a Dirichlet boundary
           condition, return False
 
         Arguments:
-            row (int): Index of the dof.
+            dof (int): Index of the dof.
             local (bool, optional): not used (default: false).
 
         Returns:
             int: index of the dof.
         """
 
-    def useLagrangeMultipliers(self):
+    def useLagrangeDOF(self):
         """Lagrange multipliers are used for BC or MPC.
 
         Returns:
             bool: *True* if used, *False* otherwise.
         """
 
-    def useSingleLagrangeMultipliers(self):
+    def useSingleLagrangeDOF(self):
         """Single Lagrange multipliers are used for BC or MPC.
 
         Returns:
@@ -12280,7 +12304,7 @@ class ParallelEquationNumbering(EquationNumbering):
         2. __init__(self: libaster.ParallelEquationNumbering, arg0: str) -> None
         """
 
-    def getGhostRows(self, local=True):
+    def getGhostDOF(self, local=True):
         """Returns the indexes of the ghost DOFs.
 
         Arguments:
@@ -12297,14 +12321,14 @@ class ParallelEquationNumbering(EquationNumbering):
             int: global number of the DOF.
         """
 
-    def getNoGhostRows(self):
+    def getNoGhostDOF(self):
         """Returns the indexes of the DOFs owned locally (aka not ghost).
 
         Returns:
             int: indexes of the DOFs owned locally.
         """
 
-    def getNumberOfDofs(self, local=False):
+    def getNumberOfDOF(self, local=False):
         """Returns the number of DOFs.
 
         Arguments:
@@ -12314,7 +12338,7 @@ class ParallelEquationNumbering(EquationNumbering):
             int: number of DOFs.
         """
 
-    def globalToLocalRow(self, glob):
+    def globalToLocalDOF(self, glob):
         """Returns the local number of a global DOF.
 
         Arguments:
@@ -12350,22 +12374,33 @@ class ParallelDOFNumbering(BaseDOFNumbering):
         3. __init__(self: libaster.ParallelDOFNumbering, arg0: str, arg1: libaster.ParallelEquationNumbering, arg2: libaster.Model) -> None
         """
 
-    def getComponentAssociatedToRow(self, row, local=False):
+    def getComponentFromDOF(self, dof, local=False):
         """Returns the component name associated to a dof index.
 
-        - If the row is associated to a physical DOF, the name of the component is returned.
+        - If the dof is associated to a physical DOF, the name of the component is returned.
 
-        - If the row is associated to a Lagrange multiplier DOF for a Dirichlet boundary
+        - If the dof is associated to a Lagrange multiplier DOF for a Dirichlet boundary
           condition, the name of the component which is constrained by the multiplier is
           returned, precedeed by 'LAGR:', e.g. 'LAGR:DX'.
 
-        - If the row is associated to a Lagrange multiplier DOF for a multipoint-constraint
+        - If the dof is associated to a Lagrange multiplier DOF for a multipoint-constraint
           (MPC) implying several DOF, 'LAGR:MPC' is returned (since no component can be
           identified).
 
         Arguments:
             node (int): Index of the node.
-            local (bool): row in local or global numbering
+            local (bool): dof in local or global numbering
+
+        Returns:
+            str: component names.
+        """
+
+    def getComponentFromNode(self, node, local=False):
+        """Returns the components name associated to a node index.
+
+        Arguments:
+            node (int): Index of the node.
+            local (bool): local or parallel request
 
         Returns:
             str: component names.
@@ -12378,18 +12413,7 @@ class ParallelDOFNumbering(BaseDOFNumbering):
             str: component names.
         """
 
-    def getComponentsAssociatedToNode(self, node, local=False):
-        """Returns the components name associated to a node index.
-
-        Arguments:
-            node (int): Index of the node.
-            local (bool): local or parallel request
-
-        Returns:
-            str: component names.
-        """
-
-    def getGhostRows(self, local=True):
+    def getGhostDOF(self, local=True):
         """Returns the indexes of the ghost DOFs.
 
         Arguments:
@@ -12399,54 +12423,7 @@ class ParallelDOFNumbering(BaseDOFNumbering):
             int: indexes of the ghost DOFs.
         """
 
-    def getLocalToGlobalMapping(self):
-        """Returns the mapping from the local to the global number of the DOFs.
-
-        Returns:
-            int: global number of the DOF.
-        """
-
-    def getNoGhostRows(self):
-        """Returns the indexes of the DOFs owned locally (aka not ghost).
-
-        Returns:
-            int: indexes of the DOFs owned locally.
-        """
-
-    def getNodeAssociatedToRow(self, row, local=False):
-        """Returns the node index associated to a dof index.
-
-        Arguments:
-            row (int): Index of the dof.
-            local (bool, optional): not used (default: false).
-
-        Returns:
-            int: index of the dof.
-        """
-
-    def getNumberOfDofs(self, local=False):
-        """Returns the number of DOFs.
-
-        Arguments:
-            local (bool): local or parallel request
-
-        Returns:
-            int: number of DOFs.
-        """
-
-    def getRowAssociatedToNodeComponent(self, node, component, local=False):
-        """Returns the index of the dof associated to a node.
-
-        Arguments:
-            node (int): Index of the node.
-            component (str): name of the component
-            local (bool, optional): not used (default: false).
-
-        Returns:
-            int: index of the dof.
-        """
-
-    def getRowsAssociatedToLagrangeMultipliers(self, local=False):
+    def getLagrangeDOF(self, local=False):
         """Returns the indexes of the Lagrange multipliers dof.
 
         Arguments:
@@ -12456,7 +12433,42 @@ class ParallelDOFNumbering(BaseDOFNumbering):
             int: indexes of the Lagrange multipliers dof.
         """
 
-    def getRowsAssociatedToPhysicalDofs(self, local=False):
+    def getLocalToGlobalMapping(self):
+        """Returns the mapping from the local to the global number of the DOFs.
+
+        Returns:
+            int: global number of the DOF.
+        """
+
+    def getNoGhostDOF(self):
+        """Returns the indexes of the DOFs owned locally (aka not ghost).
+
+        Returns:
+            int: indexes of the DOFs owned locally.
+        """
+
+    def getNodeFromDOF(self, dof, local=False):
+        """Returns the node index associated to a dof index.
+
+        Arguments:
+            dof (int): Index of the dof.
+            local (bool, optional): not used (default: false).
+
+        Returns:
+            int: index of the dof.
+        """
+
+    def getNumberOfDOF(self, local=False):
+        """Returns the number of DOFs.
+
+        Arguments:
+            local (bool): local or parallel request
+
+        Returns:
+            int: number of DOFs.
+        """
+
+    def getPhysicalDOF(self, local=False):
         """Returns the indexes of the physical dof.
 
         Arguments:
@@ -12466,7 +12478,7 @@ class ParallelDOFNumbering(BaseDOFNumbering):
             int: indexes of the physical dof.
         """
 
-    def globalToLocalRow(self, glob):
+    def globalToLocalDOF(self, glob):
         """Returns the local number of a global DOF.
 
         Arguments:
@@ -12476,21 +12488,21 @@ class ParallelDOFNumbering(BaseDOFNumbering):
             int: local number of the DOF.
         """
 
-    def isRowAssociatedToPhysical(self, row, local=False):
-        """If the row is associated to a physical DOF, return True
+    def isPhysicalDOF(self, dof, local=False):
+        """If the dof is associated to a physical DOF, return True
 
-        If the row is associated to a Lagrange multiplier DOF for a Dirichlet boundary
+        If the dof is associated to a Lagrange multiplier DOF for a Dirichlet boundary
           condition, return False
 
         Arguments:
-            row (int): Index of the dof.
+            dof (int): Index of the dof.
             local (bool, optional): not used (default: false).
 
         Returns:
             int: index of the dof.
         """
 
-    def localToGlobalRow(self, loc):
+    def localToGlobalDOF(self, loc):
         """Returns the global number of a local DOF.
 
         Arguments:
@@ -12500,14 +12512,14 @@ class ParallelDOFNumbering(BaseDOFNumbering):
             int: global number of the DOF.
         """
 
-    def useLagrangeMultipliers(self):
+    def useLagrangeDOF(self):
         """Lagrange multipliers are used for BC or MPC.
 
         Returns:
             bool: *True* if used, *False* otherwise.
         """
 
-    def useSingleLagrangeMultipliers(self):
+    def useSingleLagrangeDOF(self):
         """Single Lagrange multipliers are used for BC or MPC.
 
         Returns:

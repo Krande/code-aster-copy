@@ -46,48 +46,45 @@ ParallelDOFNumbering::ParallelDOFNumbering( const std::string &name )
     : BaseDOFNumbering( name, "NUME_DDL_P" ),
       _globalNumbering( std::make_shared< ParallelEquationNumbering >( getName() + ".NUME" ) ) {};
 
-bool ParallelDOFNumbering::useLagrangeMultipliers() const {
-    return _globalNumbering->useLagrangeMultipliers();
+bool ParallelDOFNumbering::useLagrangeDOF() const { return _globalNumbering->useLagrangeDOF(); };
+
+VectorLong ParallelDOFNumbering::getPhysicalDOF( const bool local ) const {
+    return _globalNumbering->getPhysicalDOF( local );
 };
 
-VectorLong ParallelDOFNumbering::getRowsAssociatedToPhysicalDofs( const bool local ) const {
-    return _globalNumbering->getRowsAssociatedToPhysicalDofs( local );
+VectorLong ParallelDOFNumbering::getGhostDOF( const bool local ) const {
+    return _globalNumbering->getGhostDOF( local );
 };
 
-VectorLong ParallelDOFNumbering::getGhostRows( const bool local ) const {
-    return _globalNumbering->getGhostRows( local );
+VectorLong ParallelDOFNumbering::getNoGhostDOF() const {
+    return _globalNumbering->getNoGhostDOF();
 };
 
-VectorLong ParallelDOFNumbering::getNoGhostRows() const {
-    return _globalNumbering->getNoGhostRows();
+VectorLong ParallelDOFNumbering::getLagrangeDOF( const bool local ) const {
+    return _globalNumbering->getLagrangeDOF( local );
 };
 
-VectorLong ParallelDOFNumbering::getRowsAssociatedToLagrangeMultipliers( const bool local ) const {
-    return _globalNumbering->getRowsAssociatedToLagrangeMultipliers( local );
-};
-
-std::string ParallelDOFNumbering::getComponentAssociatedToRow( const ASTERINTEGER row,
-                                                               const bool local ) const {
-    return _globalNumbering->getComponentAssociatedToRow( row, local );
-};
-
-ASTERINTEGER
-ParallelDOFNumbering::getNodeAssociatedToRow( const ASTERINTEGER row, const bool local ) const {
-    return _globalNumbering->getNodeAssociatedToRow( row, local );
-};
-
-bool ParallelDOFNumbering::isRowAssociatedToPhysical( const ASTERINTEGER row,
-                                                      const bool local ) const {
-    return _globalNumbering->isRowAssociatedToPhysical( row, local );
+std::string ParallelDOFNumbering::getComponentFromDOF( const ASTERINTEGER dof,
+                                                       const bool local ) const {
+    return _globalNumbering->getComponentFromDOF( dof, local );
 };
 
 ASTERINTEGER
-ParallelDOFNumbering::getNumberOfDofs( const bool local ) const {
-    return _globalNumbering->getNumberOfDofs( local );
+ParallelDOFNumbering::getNodeFromDOF( const ASTERINTEGER dof, const bool local ) const {
+    return _globalNumbering->getNodeFromDOF( dof, local );
 };
 
-bool ParallelDOFNumbering::useSingleLagrangeMultipliers() const {
-    return _globalNumbering->useSingleLagrangeMultipliers();
+bool ParallelDOFNumbering::isPhysicalDOF( const ASTERINTEGER dof, const bool local ) const {
+    return _globalNumbering->isPhysicalDOF( dof, local );
+};
+
+ASTERINTEGER
+ParallelDOFNumbering::getNumberOfDOF( const bool local ) const {
+    return _globalNumbering->getNumberOfDOF( local );
+};
+
+bool ParallelDOFNumbering::useSingleLagrangeDOF() const {
+    return _globalNumbering->useSingleLagrangeDOF();
 };
 
 VectorString ParallelDOFNumbering::getComponents() const {
@@ -98,16 +95,16 @@ const JeveuxVectorLong ParallelDOFNumbering::getLocalToGlobalMapping() const {
     return _globalNumbering->getLocalToGlobal();
 };
 
-const ASTERINTEGER ParallelDOFNumbering::localToGlobalRow( const ASTERINTEGER loc ) {
-    return _globalNumbering->localToGlobalRow( loc );
+const ASTERINTEGER ParallelDOFNumbering::localToGlobalDOF( const ASTERINTEGER loc ) {
+    return _globalNumbering->localToGlobalDOF( loc );
 }
 
-const ASTERINTEGER ParallelDOFNumbering::globalToLocalRow( const ASTERINTEGER glob ) const {
-    return _globalNumbering->globalToLocalRow( glob );
+const ASTERINTEGER ParallelDOFNumbering::globalToLocalDOF( const ASTERINTEGER glob ) const {
+    return _globalNumbering->globalToLocalDOF( glob );
 };
 
-VectorString ParallelDOFNumbering::getComponentsAssociatedToNode( const ASTERINTEGER node,
-                                                                  const bool local ) const {
+VectorString ParallelDOFNumbering::getComponentFromNode( const ASTERINTEGER node,
+                                                         const bool local ) const {
     auto localnode = node;
     if ( !local )
         localnode =
@@ -129,34 +126,6 @@ VectorString ParallelDOFNumbering::getComponentsAssociatedToNode( const ASTERINT
     }
     FreeStr( stringArray );
     return stringVector;
-};
-
-ASTERINTEGER
-ParallelDOFNumbering::getRowAssociatedToNodeComponent( const ASTERINTEGER node,
-                                                       const std::string compoName,
-                                                       const bool local ) const {
-    auto localnode = node;
-    auto loc2glo = getLocalToGlobalMapping();
-    loc2glo->updateValuePointer();
-    if ( !local )
-        localnode =
-            std::static_pointer_cast< ParallelMesh >( getMesh() )->globalToLocalNodeId( node );
-    if ( localnode < 0 or localnode >= getMesh()->getNumberOfNodes() )
-        throw std::out_of_range( "Invalid node index" );
-    NamesMapChar8 nodeNameMap = getMesh()->getNameOfNodesMap();
-    const std::string nodeName = nodeNameMap->getStringFromIndex( localnode + 1 );
-    const std::string objectType( "NUME_DDL" );
-    ASTERINTEGER node2, row;
-
-    CALLO_POSDDL( objectType, getName(), nodeName, compoName, &node2, &row );
-    assert( localnode + 1 == node2 );
-    if ( node2 == 0 )
-        throw std::out_of_range( "No node " + std::to_string( node2 ) + " in the mesh" );
-    if ( row == 0 )
-        throw std::runtime_error( "Node " + std::to_string( node2 ) + " has no " + compoName +
-                                  " dof" );
-    auto outrow = local ? row - 1 : ( *loc2glo )[row - 1];
-    return outrow;
 };
 
 bool ParallelDOFNumbering::build() { return _globalNumbering->build(); }

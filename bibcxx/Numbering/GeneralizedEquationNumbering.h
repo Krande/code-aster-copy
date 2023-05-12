@@ -52,7 +52,7 @@ class GeneralizedEquationNumbering : public DataStructure {
     /** @brief Objet Jeveux '.NUEQ' */
     JeveuxVectorLong _indexationVector;
     /** @brief Objet Jeveux '.DEEQ' */
-    JeveuxVectorLong _nodeAndComponentsNumberFromDOF;
+    JeveuxVectorLong _nodeAndComponentsIdFromDOF;
 
   public:
     /**

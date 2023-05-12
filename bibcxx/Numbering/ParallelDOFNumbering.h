@@ -83,65 +83,57 @@ class ParallelDOFNumbering : public BaseDOFNumbering {
     /**
      * @brief Are Lagrange Multipliers used for BC or MPC
      */
-    bool useLagrangeMultipliers() const;
+    bool useLagrangeDOF() const;
 
     /**
      * @brief Are Single Lagrange Multipliers used for BC or MPC
      */
-    bool useSingleLagrangeMultipliers() const;
+    bool useSingleLagrangeDOF() const;
 
     /**
      * @brief Get The Component Associated To A Given Row
      */
-    std::string getComponentAssociatedToRow( const ASTERINTEGER row,
-                                             const bool local = false ) const;
+    std::string getComponentFromDOF( const ASTERINTEGER dof, const bool local = false ) const;
 
     /**
      * @brief Get The Components Associated To A Given Node
      */
-    VectorString getComponentsAssociatedToNode( const ASTERINTEGER node,
-                                                const bool local = false ) const;
+    VectorString getComponentFromNode( const ASTERINTEGER node, const bool local = false ) const;
 
     /**
      * @brief Get The Node Id Associated To A Given Row
      */
-    ASTERINTEGER getNodeAssociatedToRow( const ASTERINTEGER row, const bool local = false ) const;
+    ASTERINTEGER getNodeFromDOF( const ASTERINTEGER dof, const bool local = false ) const;
 
     /**
      * @brief Return true if a physical dof is Associated To A Given Row
      */
-    bool isRowAssociatedToPhysical( const ASTERINTEGER row, const bool local = false ) const;
+    bool isPhysicalDOF( const ASTERINTEGER dof, const bool local = false ) const;
 
     /**
      * @brief Get The total number of Dofs
      */
-    ASTERINTEGER getNumberOfDofs( const bool local = false ) const;
-
-    /**
-     * @brief get the Row index Associated To the Component of a Node
-     */
-    ASTERINTEGER getRowAssociatedToNodeComponent( const ASTERINTEGER node, const std::string comp,
-                                                  const bool local = false ) const;
+    ASTERINTEGER getNumberOfDOF( const bool local = false ) const;
 
     /**
      * @brief Get Rows Associated to all Physical Dof
      */
-    VectorLong getRowsAssociatedToPhysicalDofs( const bool local = false ) const;
+    VectorLong getPhysicalDOF( const bool local = false ) const;
 
     /**
      * @brief Get Rows Associated to all Ghost Dof
      */
-    VectorLong getGhostRows( const bool local = false ) const;
+    VectorLong getGhostDOF( const bool local = false ) const;
 
     /**
      * @brief Get Rows owned locally (aka not Ghost)
      */
-    VectorLong getNoGhostRows() const;
+    VectorLong getNoGhostDOF() const;
 
     /**
      * @brief Get Rows Associated to Lagrange Multipliers Dof
      */
-    VectorLong getRowsAssociatedToLagrangeMultipliers( const bool local = false ) const;
+    VectorLong getLagrangeDOF( const bool local = false ) const;
 
     /**
      * @brief Get Assigned Components
@@ -155,17 +147,17 @@ class ParallelDOFNumbering : public BaseDOFNumbering {
 
     /**
      * @brief Return the local number of a global Dof
-     * @return Return the local number if the row if present on the subdomain ; otherwise
+     * @return Return the local number if the dof if present on the subdomain ; otherwise
      * raise an exception
      */
-    const ASTERINTEGER globalToLocalRow( const ASTERINTEGER ) const;
+    const ASTERINTEGER globalToLocalDOF( const ASTERINTEGER ) const;
 
     /**
      * @brief Return the global number of a local Dof
-     * @return Return the global number if the row if present on the subdomain ; otherwise
+     * @return Return the global number if the dof if present on the subdomain ; otherwise
      * raise an exception
      */
-    const ASTERINTEGER localToGlobalRow( const ASTERINTEGER );
+    const ASTERINTEGER localToGlobalDOF( const ASTERINTEGER );
 
     /**
      * @brief Get model

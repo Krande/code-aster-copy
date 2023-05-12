@@ -41,7 +41,7 @@ EquationNumbering::EquationNumbering( const std::string &baseName )
       _componentsOnNodes( getName() + ".PRNO" ),
       _namesOfGroupOfCells( getName() + ".LILI" ),
       _indexationVector( getName() + ".NUEQ" ),
-      _nodeAndComponentsNumberFromDOF( getName() + ".DEEQ" ),
+      _nodeAndComponentsIdFromDOF( getName() + ".DEEQ" ),
       _mesh( nullptr ),
       _model( nullptr ) {};
 
@@ -80,7 +80,7 @@ std::string EquationNumbering::getPhysicalQuantity() const {
     return physicalQuantity.rstrip();
 };
 
-bool EquationNumbering::useLagrangeMultipliers() const {
+bool EquationNumbering::useLagrangeDOF() const {
     const std::string typeco( "NUME_EQUA" );
     ASTERINTEGER repi = 0, ier = 0;
     JeveuxChar32 repk( " " );
@@ -94,7 +94,7 @@ bool EquationNumbering::useLagrangeMultipliers() const {
     return false;
 };
 
-bool EquationNumbering::useSingleLagrangeMultipliers() const {
+bool EquationNumbering::useSingleLagrangeDOF() const {
     const std::string typeco( "NUME_EQUA" );
     ASTERINTEGER repi = 0, ier = 0;
     JeveuxChar32 repk( " " );
@@ -109,11 +109,11 @@ bool EquationNumbering::useSingleLagrangeMultipliers() const {
 };
 
 ASTERINTEGER
-EquationNumbering::getNumberOfDofs( const bool local ) const {
-    return _nodeAndComponentsNumberFromDOF->size() / 2;
+EquationNumbering::getNumberOfDOF( const bool local ) const {
+    return _nodeAndComponentsIdFromDOF->size() / 2;
 };
 
-void EquationNumbering::_buildAllComponentsNumber2Name() {
+void EquationNumbering::_buildAllComponentsId2Name() {
     const std::string typeco( "NUME_EQUA" );
     ASTERINTEGER repi = 0, ier = 0;
     JeveuxChar32 repk( " " );
@@ -136,7 +136,7 @@ void EquationNumbering::_buildAllComponentsNumber2Name() {
 VectorString EquationNumbering::getComponents() const {
     SetString ret;
 
-    auto number2name = this->getComponentsNumber2Name();
+    auto number2name = this->getComponentsIdToName();
 
     for ( auto &[num, name] : number2name ) {
         ret.insert( name );
@@ -145,8 +145,8 @@ VectorString EquationNumbering::getComponents() const {
     return toVector( ret );
 };
 
-SetLong EquationNumbering::getComponentsNumber() const {
-    auto ret = this->getNodesAndComponentsNumberFromDOF( true );
+SetLong EquationNumbering::getComponentsId() const {
+    auto ret = this->getNodeAndComponentIdFromDOF( true );
 
     SetLong cmpIds;
     for ( const auto &[nodeId, cmpId] : ret ) {
@@ -159,10 +159,10 @@ SetLong EquationNumbering::getComponentsNumber() const {
 /**
  * @brief Maps between name of components and the nimber
  */
-std::map< std::string, ASTERINTEGER > EquationNumbering::getComponentsName2Number() const {
+std::map< std::string, ASTERINTEGER > EquationNumbering::getComponentsNameToId() const {
     std::map< std::string, ASTERINTEGER > ret;
 
-    auto number2name = this->getComponentsNumber2Name();
+    auto number2name = this->getComponentsIdToName();
     for ( auto &[num, name] : number2name ) {
         ret[name] = num;
     }
@@ -170,13 +170,13 @@ std::map< std::string, ASTERINTEGER > EquationNumbering::getComponentsName2Numbe
     return ret;
 };
 
-std::map< ASTERINTEGER, std::string > EquationNumbering::getComponentsNumber2Name() const {
+std::map< ASTERINTEGER, std::string > EquationNumbering::getComponentsIdToName() const {
     std::map< ASTERINTEGER, std::string > ret;
 
     if ( _componentsNumber2Name.empty() )
-        const_cast< EquationNumbering * >( this )->_buildAllComponentsNumber2Name();
+        const_cast< EquationNumbering * >( this )->_buildAllComponentsId2Name();
 
-    auto cmpIds = this->getComponentsNumber();
+    auto cmpIds = this->getComponentsId();
 
     for ( auto &cmpId : cmpIds ) {
         ret[cmpId] = _componentsNumber2Name.find( cmpId )->second;
@@ -193,28 +193,28 @@ std::map< ASTERINTEGER, std::string > EquationNumbering::getComponentsNumber2Nam
 };
 
 VectorLong EquationNumbering::getNodesFromDOF() const {
-    _nodeAndComponentsNumberFromDOF->updateValuePointer();
-    const ASTERINTEGER nb_eq = this->getNumberOfDofs( true );
+    _nodeAndComponentsIdFromDOF->updateValuePointer();
+    const ASTERINTEGER nb_eq = this->getNumberOfDOF( true );
 
     VectorLong nodes( nb_eq );
     for ( ASTERINTEGER i_eq = 0; i_eq < nb_eq; i_eq++ ) {
         // 0-based in c++
-        nodes[i_eq] = ( *_nodeAndComponentsNumberFromDOF )[2 * i_eq] - 1;
+        nodes[i_eq] = ( *_nodeAndComponentsIdFromDOF )[2 * i_eq] - 1;
     }
 
     return nodes;
 }
 
-VectorPairLong EquationNumbering::getNodesAndComponentsNumberFromDOF( const bool local ) const {
-    const ASTERINTEGER nb_eq = this->getNumberOfDofs( true );
+VectorPairLong EquationNumbering::getNodeAndComponentIdFromDOF( const bool local ) const {
+    const ASTERINTEGER nb_eq = this->getNumberOfDOF( true );
 
     VectorPairLong ret;
     ret.reserve( nb_eq );
 
-    _nodeAndComponentsNumberFromDOF->updateValuePointer();
+    _nodeAndComponentsIdFromDOF->updateValuePointer();
     for ( ASTERINTEGER i_eq = 0; i_eq < nb_eq; i_eq++ ) {
-        auto node_id = ( *_nodeAndComponentsNumberFromDOF )[2 * i_eq] - 1;
-        auto cmp = ( *_nodeAndComponentsNumberFromDOF )[2 * i_eq + 1];
+        auto node_id = ( *_nodeAndComponentsIdFromDOF )[2 * i_eq] - 1;
+        auto cmp = ( *_nodeAndComponentsIdFromDOF )[2 * i_eq + 1];
 #ifdef ASTER_DEBUG_CXX
         AS_ASSERT( node_id >= 0 && node_id < getMesh()->getNumberOfNodes() );
 #endif
@@ -224,16 +224,16 @@ VectorPairLong EquationNumbering::getNodesAndComponentsNumberFromDOF( const bool
     return ret;
 };
 
-PairLong EquationNumbering::getNodeAndComponentNumberFromDOF( const ASTERINTEGER dof,
-                                                              const bool local ) const {
+PairLong EquationNumbering::getNodeAndComponentIdFromDOF( const ASTERINTEGER dof,
+                                                          const bool local ) const {
 
-    if ( dof < 0 or dof >= this->getNumberOfDofs( true ) ) {
+    if ( dof < 0 or dof >= this->getNumberOfDOF( true ) ) {
         throw std::out_of_range( "Invalid node index: " + std::to_string( dof ) );
     }
 
-    _nodeAndComponentsNumberFromDOF->updateValuePointer();
-    auto node_id = ( *_nodeAndComponentsNumberFromDOF )[2 * dof] - 1;
-    auto cmp = ( *_nodeAndComponentsNumberFromDOF )[2 * dof + 1];
+    _nodeAndComponentsIdFromDOF->updateValuePointer();
+    auto node_id = ( *_nodeAndComponentsIdFromDOF )[2 * dof] - 1;
+    auto cmp = ( *_nodeAndComponentsIdFromDOF )[2 * dof + 1];
 
 #ifdef ASTER_DEBUG_CXX
     AS_ASSERT( node_id >= 0 && node_id < getMesh()->getNumberOfNodes() );
@@ -242,17 +242,17 @@ PairLong EquationNumbering::getNodeAndComponentNumberFromDOF( const ASTERINTEGER
 };
 
 std::vector< std::pair< ASTERINTEGER, std::string > >
-EquationNumbering::getNodesAndComponentsFromDOF( const bool local ) const {
-    auto nodesAndComponentsNumberFromDOF = this->getNodesAndComponentsNumberFromDOF( local );
+EquationNumbering::getNodeAndComponentFromDOF( const bool local ) const {
+    auto nodesAndComponentsIdFromDOF = this->getNodeAndComponentIdFromDOF( local );
 
-    const ASTERINTEGER nb_eq = this->getNumberOfDofs( true );
+    const ASTERINTEGER nb_eq = this->getNumberOfDOF( true );
     if ( _componentsNumber2Name.empty() )
-        const_cast< EquationNumbering * >( this )->_buildAllComponentsNumber2Name();
+        const_cast< EquationNumbering * >( this )->_buildAllComponentsId2Name();
 
     std::vector< std::pair< ASTERINTEGER, std::string > > ret;
-    ret.reserve( nodesAndComponentsNumberFromDOF.size() );
+    ret.reserve( nodesAndComponentsIdFromDOF.size() );
 
-    for ( auto &[nodeId, cmpId] : nodesAndComponentsNumberFromDOF ) {
+    for ( auto &[nodeId, cmpId] : nodesAndComponentsIdFromDOF ) {
         ret.push_back( std::make_pair( nodeId, _componentsNumber2Name.find( cmpId )->second ) );
 
 #ifdef ASTER_DEBUG_CXX
@@ -268,9 +268,9 @@ EquationNumbering::getNodesAndComponentsFromDOF( const bool local ) const {
 
 std::pair< ASTERINTEGER, std::string >
 EquationNumbering::getNodeAndComponentFromDOF( const ASTERINTEGER dof, const bool local ) const {
-    auto [nodeId, cmpId] = this->getNodeAndComponentNumberFromDOF( dof, local );
+    auto [nodeId, cmpId] = this->getNodeAndComponentIdFromDOF( dof, local );
     if ( _componentsNumber2Name.empty() )
-        const_cast< EquationNumbering * >( this )->_buildAllComponentsNumber2Name();
+        const_cast< EquationNumbering * >( this )->_buildAllComponentsId2Name();
 
 #ifdef ASTER_DEBUG_CXX
     if ( _componentsNumber2Name.find( cmpId ) == _componentsNumber2Name.end() ) {
@@ -282,8 +282,8 @@ EquationNumbering::getNodeAndComponentFromDOF( const ASTERINTEGER dof, const boo
 };
 
 std::map< PairLong, ASTERINTEGER >
-EquationNumbering::getDOFsFromNodesAndComponentsNumber( const bool local ) const {
-    auto descr = this->getNodesAndComponentsNumberFromDOF( local );
+EquationNumbering::getDOFFromNodeAndComponentId( const bool local ) const {
+    auto descr = this->getNodeAndComponentIdFromDOF( local );
 
     std::map< PairLong, ASTERINTEGER > ret;
 
@@ -297,8 +297,8 @@ EquationNumbering::getDOFsFromNodesAndComponentsNumber( const bool local ) const
 };
 
 std::map< std::pair< ASTERINTEGER, std::string >, ASTERINTEGER >
-EquationNumbering::getDOFsFromNodesAndComponents( const bool local ) const {
-    auto descr = this->getNodesAndComponentsFromDOF( local );
+EquationNumbering::getDOFFromNodeAndComponent( const bool local ) const {
+    auto descr = this->getNodeAndComponentFromDOF( local );
 
     std::map< std::pair< ASTERINTEGER, std::string >, ASTERINTEGER > ret;
 
@@ -311,8 +311,8 @@ EquationNumbering::getDOFsFromNodesAndComponents( const bool local ) const {
     return ret;
 };
 
-VectorLong EquationNumbering::getDOFs( const bool sameRank, const VectorString &list_cmp,
-                                       const VectorLong &list_nodes ) const {
+VectorLong EquationNumbering::getDOF( const bool sameRank, const VectorString &list_cmp,
+                                      const VectorLong &list_nodes ) const {
     const bool all_cmp = list_cmp.empty();
     const bool all_nodes = list_nodes.empty();
     const bool all_rank = !sameRank;
@@ -326,12 +326,12 @@ VectorLong EquationNumbering::getDOFs( const bool sameRank, const VectorString &
 
     SetLong set_nodes = toSet( list_nodes );
     SetLong set_cmp;
-    auto name2num = this->getComponentsName2Number();
+    auto name2num = this->getComponentsNameToId();
     for ( auto &cmp : list_cmp ) {
         set_cmp.insert( name2num[trim( cmp )] );
     }
 
-    auto descr = this->getNodesAndComponentsNumberFromDOF();
+    auto descr = this->getNodeAndComponentIdFromDOF();
     auto nbDof = descr.size();
 
     VectorLong dofUsed;
@@ -351,7 +351,7 @@ VectorLong EquationNumbering::getDOFs( const bool sameRank, const VectorString &
     return dofUsed;
 };
 
-VectorLong EquationNumbering::getRowsAssociatedToPhysicalDofs( const bool local ) const {
+VectorLong EquationNumbering::getPhysicalDOF( const bool local ) const {
     auto lagrInfo = this->getLagrangianInformations();
     lagrInfo->updateValuePointer();
     ASTERINTEGER size = lagrInfo->size();
@@ -365,7 +365,7 @@ VectorLong EquationNumbering::getRowsAssociatedToPhysicalDofs( const bool local 
     return physicalRows;
 };
 
-VectorLong EquationNumbering::getRowsAssociatedToLagrangeMultipliers( const bool local ) const {
+VectorLong EquationNumbering::getLagrangeDOF( const bool local ) const {
     auto lagrInfo = this->getLagrangianInformations();
     lagrInfo->updateValuePointer();
     ASTERINTEGER size = lagrInfo->size();
@@ -379,21 +379,19 @@ VectorLong EquationNumbering::getRowsAssociatedToLagrangeMultipliers( const bool
     return lagrangeRows;
 };
 
-std::string EquationNumbering::getComponentAssociatedToRow( const ASTERINTEGER row,
-                                                            const bool local ) const {
-    auto [nodeId, cmpName] = this->getNodeAndComponentFromDOF( row );
+std::string EquationNumbering::getComponentFromDOF( const ASTERINTEGER dof,
+                                                    const bool local ) const {
+    auto [nodeId, cmpName] = this->getNodeAndComponentFromDOF( dof );
     return cmpName;
 };
 
-ASTERINTEGER EquationNumbering::getNodeAssociatedToRow( const ASTERINTEGER row,
-                                                        const bool local ) const {
-    auto [nodeId, cmpId] = this->getNodeAndComponentNumberFromDOF( row );
+ASTERINTEGER EquationNumbering::getNodeFromDOF( const ASTERINTEGER dof, const bool local ) const {
+    auto [nodeId, cmpId] = this->getNodeAndComponentIdFromDOF( dof );
     return nodeId;
 };
 
-bool EquationNumbering::isRowAssociatedToPhysical( const ASTERINTEGER row,
-                                                   const bool local ) const {
-    auto [nodeId, cmpId] = this->getNodeAndComponentNumberFromDOF( row );
+bool EquationNumbering::isPhysicalDOF( const ASTERINTEGER dof, const bool local ) const {
+    auto [nodeId, cmpId] = this->getNodeAndComponentIdFromDOF( dof );
     return cmpId > 0;
 };
 
@@ -404,7 +402,7 @@ bool EquationNumbering::isRowAssociatedToPhysical( const ASTERINTEGER row,
 void EquationNumbering::updateValuePointers() {
     _componentsOnNodes->build();
     _indexationVector->updateValuePointer();
-    _nodeAndComponentsNumberFromDOF->updateValuePointer();
+    _nodeAndComponentsIdFromDOF->updateValuePointer();
     _lagrangianInformations->updateValuePointer();
 };
 
@@ -415,8 +413,7 @@ bool EquationNumbering::operator==( EquationNumbering &toCompare ) {
     // TO FIX
     // if ( ( *_componentsOnNodes ) == ( *toCompare._componentsOnNodes ) ) {
     if ( ( *_indexationVector ) == ( *toCompare._indexationVector ) ) {
-        if ( ( *_nodeAndComponentsNumberFromDOF ) ==
-             ( *toCompare._nodeAndComponentsNumberFromDOF ) ) {
+        if ( ( *_nodeAndComponentsIdFromDOF ) == ( *toCompare._nodeAndComponentsIdFromDOF ) ) {
             ret = true;
         }
     }

@@ -123,7 +123,7 @@ matrAsse.assemble()
 
 ccid = matrAsse.getDirichletBCDOFs()
 test.assertEqual(sum(ccid), 0)
-test.assertEqual(len(ccid), numeDDL.getNumberOfDofs() + 1)
+test.assertEqual(len(ccid), numeDDL.getNumberOfDOF() + 1)
 
 x = matrAsse.EXTR_MATR(sparse=True)
 test.assertTrue("numpy" in str(type(x[0])))
