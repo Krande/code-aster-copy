@@ -372,10 +372,7 @@ class FieldOnCells : public DataField {
      */
     ValueType &operator[]( int i ) { return _values->operator[]( i ); };
 
-    const ValueType &operator[]( int i ) const {
-        return const_cast< ValueType & >(
-            const_cast< FieldOnCells< ValueType > * >( this )->operator[]( i ) );
-    };
+    const ValueType &operator[]( int i ) const { return _values->operator[]( i ); };
 
     /**
      * @brief Plus overloading
