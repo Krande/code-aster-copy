@@ -36,8 +36,11 @@ class ResultStateBuilder(InternalStateBuilder):
     def _addFields(self, result, fieldNames, indexes):
         for i in indexes:
             for fieldName in fieldNames:
-                curField = result.getField(fieldName, i)
-                self._st["fields"][i][fieldName] = curField
+                try:
+                    curField = result.getField(fieldName, i)
+                    self._st["fields"][i][fieldName] = curField
+                except:
+                    pass
 
     def save(self, result):
         """Return the internal state of a *Result* to be pickled.
@@ -132,6 +135,11 @@ class ResultStateBuilder(InternalStateBuilder):
                 result.setElementaryCharacteristics(self._st["cara_elem"][i], index)
             if len(self._st["loads"]) > 0 and self._st["loads"]:
                 result.setListOfLoads(self._st["loads"][i], index)
+
+        for fed in self._st["feds"]:
+            result.addFiniteElementDescriptor(fed)
+        for fnd in self._st["fnds"]:
+            result.addEquationNumbering(fnd)
         for index in self._st["fields"]:
             fields = self._st["fields"][index]
             for fieldName in fields:
