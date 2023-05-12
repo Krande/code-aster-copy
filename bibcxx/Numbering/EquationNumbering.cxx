@@ -216,7 +216,7 @@ VectorPairLong EquationNumbering::getNodeAndComponentIdFromDOF( const bool local
         auto node_id = ( *_nodeAndComponentsIdFromDOF )[2 * i_eq] - 1;
         auto cmp = ( *_nodeAndComponentsIdFromDOF )[2 * i_eq + 1];
 #ifdef ASTER_DEBUG_CXX
-        AS_ASSERT( node_id >= 0 && node_id < getMesh()->getNumberOfNodes() );
+        AS_ASSERT( node_id < 0 || node_id < getMesh()->getNumberOfNodes() );
 #endif
         ret.push_back( std::make_pair( node_id, cmp ) );
     }
@@ -236,7 +236,7 @@ PairLong EquationNumbering::getNodeAndComponentIdFromDOF( const ASTERINTEGER dof
     auto cmp = ( *_nodeAndComponentsIdFromDOF )[2 * dof + 1];
 
 #ifdef ASTER_DEBUG_CXX
-    AS_ASSERT( node_id >= 0 && node_id < getMesh()->getNumberOfNodes() );
+    AS_ASSERT( node_id < 0 || node_id < getMesh()->getNumberOfNodes() );
 #endif
     return std::make_pair( node_id, cmp );
 };
