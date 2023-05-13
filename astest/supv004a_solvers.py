@@ -20,8 +20,9 @@
 import unittest
 from enum import IntFlag, auto
 
+from code_aster import ConvergenceError, SolverError
 from code_aster.Commands import DEFI_LIST_REEL
-from code_aster.Solvers import TimeStepper
+from code_aster.Solvers import Event, TimeStepper
 from code_aster.Solvers.base_features import BaseFeature
 
 list0 = DEFI_LIST_REEL(VALE=0.0)
@@ -375,23 +376,12 @@ class TestTimeStepper(unittest.TestCase):
         self.assertTrue(stp.hasFinished())
         with self.assertRaisesRegex(IndexError, "no more timesteps"):
             stp.completed()
-        with self.assertRaisesRegex(ValueError, "to be tested"):
-            stp.raiseError(ValueError("to be tested"))
 
-    def test06_split(self):
-        stp = TimeStepper([0.0, 1.0, 2.0, 3.0])
-        self.assertAlmostEqual(stp.getCurrent(), 1.0)
-        stp.split(2)
-        # [0.5, 1.0, 2.0, 3.0]
-        self.assertAlmostEqual(stp.getCurrent(), 0.5)
-        stp.completed()
-        self.assertAlmostEqual(stp.getCurrent(), 1.0)
-        stp.split(5)
-        # [0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 2.0, 3.0]
-        self.assertEqual(stp.size(), 8)
-        self.assertAlmostEqual(stp.getCurrent(), 0.6)
-        stp.completed()
-        self.assertAlmostEqual(stp.getCurrent(), 0.7)
+    def test05_cmp(self):
+        stp = TimeStepper([1.0], epsilon=0.01)
+        self.assertEqual(stp.cmp(1.0, 1.0001), 0)
+        self.assertEqual(stp.cmp(1.0, 1.1), -1)
+        self.assertEqual(stp.cmp(1.2, 1.1), 1)
 
     def test07_meca_statique(self):
         stp = TimeStepper([0.0], initial=None)
@@ -429,6 +419,68 @@ class TestTimeStepper(unittest.TestCase):
         self.assertEqual(stp.size(), 1)
         self.assertAlmostEqual(stp.getInitial(), 0.0)
         self.assertAlmostEqual(stp.getFinal(), 1.0)
+
+    def test20_event(self):
+        stp = TimeStepper([1.0, 1.1, 2.0])
+        stp.register_event(TimeStepper.Interrupt(Event.Error))
+        with self.assertRaisesRegex(ConvergenceError, "MESSAGEID"):
+            stp.failed(ConvergenceError("MESSAGEID"))
+
+        stp = TimeStepper([1.0, 1.1, 2.0])
+        self.assertAlmostEqual(stp.getCurrent(), 1.0)
+        stp.completed()
+        self.assertAlmostEqual(stp.getCurrent(), 1.1)
+
+    def test21_split(self):
+        stp = TimeStepper([0.0, 1.0, 1.1, 2.0, 3.0])
+        self.assertEqual(stp.size(), 4)
+        self.assertAlmostEqual(stp.getCurrent(), 1.0)
+        stp.register_event(TimeStepper.Split(Event.Error, nbSteps=2, maxLevel=3, minStep=0.05))
+        # print("\n+ split #1")
+        stp.failed(ConvergenceError("MESSAGEID"))
+        # [0.5, 1.0, 1.1, 2.0, 3.0]
+        self.assertEqual(stp.size(), 5)
+        self.assertAlmostEqual(stp.getCurrent(), 0.5)
+        # print("+ split #2")
+        stp.failed(ConvergenceError("MESSAGEID"))
+        # [0.25, 0.5, 1.0, 1.1, 2.0, 3.0]
+        self.assertEqual(stp.size(), 6)
+        self.assertAlmostEqual(stp.getCurrent(), 0.25)
+        stp.completed()
+        self.assertAlmostEqual(stp.getCurrent(), 0.5)
+        stp.completed()
+        self.assertAlmostEqual(stp.getCurrent(), 1.0)
+        # print("+ split #1")
+        stp.failed(ConvergenceError("MESSAGEID"))
+        # [0.25, 0.5, 0.75, 1.0, 1.1, 2.0, 3.0]
+        self.assertEqual(stp.size(), 7)
+        self.assertAlmostEqual(stp.getCurrent(), 0.75)
+        # print("+ split #2")
+        stp.failed(ConvergenceError("MESSAGEID"))
+        # [0.25, 0.5, 0.625, 0.75, 1.0, 1.1, 2.0, 3.0]
+        self.assertEqual(stp.size(), 8)
+        self.assertAlmostEqual(stp.getCurrent(), 0.625)
+        # print("+ split #3")
+        stp.failed(ConvergenceError("MESSAGEID"))
+        # [0.25, 0.5, 0.5625, 0.625, 0.75, 1.0, 1.1, 2.0, 3.0]
+        self.assertEqual(stp.size(), 9)
+        self.assertAlmostEqual(stp.getCurrent(), 0.5625)
+        # print("+ split #4")
+        with self.assertRaisesRegex(SolverError, "max.*subdivision"):
+            stp.failed(ConvergenceError("MESSAGEID"))
+        stp.completed()
+        stp.completed()
+        stp.completed()
+        stp.completed()
+        self.assertAlmostEqual(stp.getCurrent(), 1.1)
+        # print("+ split #1")
+        stp.failed(ConvergenceError("MESSAGEID"))
+        # [0.25, 0.5, 0.5625, 0.625, 0.75, 1.0, 1.05, 1.1, 2.0, 3.0]
+        self.assertEqual(stp.size(), 10)
+        self.assertAlmostEqual(stp.getCurrent(), 1.05)
+        # print("+ split #2")
+        with self.assertRaisesRegex(SolverError, "trop petit"):
+            stp.failed(ConvergenceError("MESSAGEID"))
 
 
 if __name__ == "__main__":

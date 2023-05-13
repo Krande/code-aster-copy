@@ -3564,6 +3564,13 @@ class TimesList(DataStructure):
     def setValues(self, arg0):
         pass
 
+    # ----------------------------------------------------------------------
+    # Data descriptors defined here:
+
+    @property
+    def stepper(self):
+        pass
+
 
 # class GeneralizedDOFNumbering in libaster
 

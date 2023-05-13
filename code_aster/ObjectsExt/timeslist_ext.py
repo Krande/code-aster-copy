@@ -53,6 +53,7 @@ class TimesListStateBuilder(InternalStateBuilder):
         self._st["initial"] = stp.getInitial()
         self._st["final"] = stp.getFinal()
         self._st["eps"] = stp._eps
+        self._st["actions"] = stp._actions
         return self
 
     def restore(self, obj):
@@ -69,6 +70,8 @@ class TimesListStateBuilder(InternalStateBuilder):
             final=self._st["final"],
             epsilon=self._st["eps"],
         )
+        for act in self._st["actions"]:
+            obj.stepper.register_event(act)
 
 
 @injector(TimesList)

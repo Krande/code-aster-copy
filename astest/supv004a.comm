@@ -25,10 +25,12 @@ import sys
 
 
 import code_aster
-from code_aster.Commands import FIN
+from code_aster.Utilities.logger import WARNING, logger
 
 code_aster.init("--test")
 test = code_aster.TestCase()
+
+logger.setLevel(WARNING)
 
 print("\n\n+++ testing supv004a_solvers...\n", flush=True)
 result = unittest.main(argv=["comm"], module="supv004a_solvers", exit=False, verbosity=2).result

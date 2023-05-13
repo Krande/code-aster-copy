@@ -19,6 +19,7 @@
 
 import code_aster
 from code_aster.Commands import *
+from code_aster.Solvers import Event, TimeStepper
 
 code_aster.init("--test")
 
@@ -31,5 +32,7 @@ list_i = DEFI_LIST_INST(METHODE="MANUEL", DEFI_LIST=_F(LIST_INST=list_t))
 test.assertEqual(list_i.size(), 11, msg="nbsteps")
 test.assertIsNone(list_i.getInitial())
 test.assertAlmostEqual(list_i.getFinal(), 10.0)
+
+list_i.register_event(TimeStepper.Split(Event.Error, nbSteps=2, maxLevel=3, minStep=0.05))
 
 code_aster.close()

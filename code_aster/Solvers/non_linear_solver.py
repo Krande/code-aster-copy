@@ -183,11 +183,17 @@ class NonLinearSolver(SolverFeature):
             try:
                 solv.solve()
             except (ConvergenceError, IntegrationError) as exc:
+                # if not self.stepper.failed(exc.event / exc.reason, self.phys_state):
+                #     logger.error(exc.message)
+                # DIVE_RESI, RESI_MAXI must be raised during iterations
                 try:
                     logger.error(exc.message)
                 except:
-                    self.stepper.split(2)
+                    self.stepper.failed(exc)
             else:
+                # self.stepper.save_state(self.phys_state)  # save residual value...
+                # if self.stepper.check_event(self.phys_state)
+                # DELTA_GRANDEUR, COLLISION, INTERPENETRATION, INSTABILITE (post_hook ?)
                 self.phys_state.update(self.phys_state)
                 self._storeRank(timeEndStep)
                 self.stepper.completed()

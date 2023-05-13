@@ -105,7 +105,7 @@ class ConvergenceManager(SolverFeature):
     @profile
     @SolverFeature.check_once
     def getRelativeScaling(self, residuals):
-        """Returns the scaling fator to compute the relative error
+        """Returns the scaling factor to compute the relative error
 
         Arguments:
             residuals (ResiState): Collections of residuals.

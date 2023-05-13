@@ -28,4 +28,6 @@ test.assertEqual(list_i.size(), 11, msg="nbsteps")
 test.assertIsNone(list_i.getInitial())
 test.assertAlmostEqual(list_i.getFinal(), 10.0)
 
+print("ACTIONS:", list_i._actions)
+
 code_aster.close()
