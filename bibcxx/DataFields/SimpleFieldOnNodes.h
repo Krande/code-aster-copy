@@ -144,8 +144,8 @@ class SimpleFieldOnNodes : public DataField {
 
         char *tabNames = vectorStringAsFStrArray( comp, 8 );
 
-        CALL_CNSCRE( _mesh->getName().c_str(), quantity.c_str(), &nbComp, tabNames, base.c_str(),
-                     getName().c_str(), (ASTERLOGICAL *)&zero );
+        CALL_CNSCRE_WRAP( _mesh->getName().c_str(), quantity.c_str(), &nbComp, tabNames,
+                          base.c_str(), getName().c_str(), (ASTERLOGICAL *)&zero );
 
         FreeStr( tabNames );
 

@@ -43,9 +43,11 @@ void DEFSSS( CELCES_WRAP, celces_wrap, const char *, STRING_SIZE, const char *, 
 void DEFSSS( CNOCNS_WRAP, cnocns_wrap, const char *, STRING_SIZE, const char *, STRING_SIZE,
              const char *, STRING_SIZE );
 
-#define CALL_CNSCRE( a, b, c, d, e, g, h ) CALLSSPSSSP( CNSCRE, cnscre, a, b, c, d, e, g, h )
-#define CALLO_CNSCRE( a, b, c, d, e, g, h ) CALLOOPOOOP( CNSCRE, cnscre, a, b, c, d, e, g, h )
-void DEFSSPSSSP( CNSCRE, cnscre, const char *, STRING_SIZE, const char *, STRING_SIZE,
+#define CALL_CNSCRE_WRAP( a, b, c, d, e, g, h )                                                    \
+    CALLSSPSSSP( CNSCRE_WRAP, cnscre_wrap, a, b, c, d, e, g, h )
+#define CALLO_CNSCRE_WRAP( a, b, c, d, e, g, h )                                                   \
+    CALLOOPOOOP( CNSCRE_WRAP, cnscre_wrap, a, b, c, d, e, g, h )
+void DEFSSPSSSP( CNSCRE_WRAP, cnscre_wrap, const char *, STRING_SIZE, const char *, STRING_SIZE,
                  ASTERINTEGER *, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
                  STRING_SIZE, ASTERLOGICAL * );
 

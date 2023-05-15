@@ -18,14 +18,14 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine cnscre(maz, nomgdz, ncmp, licmp, basez,&
-                      cnsz, undf0_)
+    subroutine cnscre_wrap(maz, nomgdz, ncmp, licmp, basez,&
+                      cnsz, undf0)
         integer :: ncmp
         character(len=*) :: maz
         character(len=*) :: nomgdz
-        character(len=*) :: licmp(ncmp)
+        character(len=8) :: licmp(ncmp)
         character(len=*) :: basez
         character(len=*) :: cnsz
-        aster_logical, optional, intent(in) :: undf0_
-    end subroutine cnscre
+        aster_logical,  intent(in) :: undf0
+    end subroutine cnscre_wrap
 end interface

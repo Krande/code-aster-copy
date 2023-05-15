@@ -96,8 +96,8 @@ test.assertAlmostEqual(field.norm("NORM_1", ["DX"]), nbNodes)
 test.assertAlmostEqual(max(field.getValues()), norm_inf)
 test.assertAlmostEqual(field.dot(field), norm_2 * norm_2)
 
-fr = field.restrict(["DX"])
-test.assertAlmostEqual(fr.norm("NORM_1"), nbNodes)
+fr = field.restrict(["DX", "DY", "YD"])
+test.assertAlmostEqual(fr.norm("NORM_1"), 3.0 * nbNodes)
 test.assertAlmostEqual(fr.norm("NORM_1"), fr.toSimpleFieldOnNodes().toFieldOnNodes().norm("NORM_1"))
 
 f0 = field.duplicate()

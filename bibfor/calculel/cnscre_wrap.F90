@@ -15,17 +15,18 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+
+subroutine cnscre_wrap(maz, nomgdz, ncmp, licmp, basez, cnsz, undf0)
+! person_in_charge: jacques.pellet at edf.fr
+! A_UTIL
+    implicit none
 #include "asterf_types.h"
-!
-interface
-    subroutine cnscre(maz, nomgdz, ncmp, licmp, basez,&
-                      cnsz, undf0_)
-        integer :: ncmp
-        character(len=*) :: maz
-        character(len=*) :: nomgdz
-        character(len=*) :: licmp(ncmp)
-        character(len=*) :: basez
-        character(len=*) :: cnsz
-        aster_logical, optional, intent(in) :: undf0_
-    end subroutine cnscre
-end interface
+#include "jeveux.h"
+#include "asterfort/cnscre.h"
+    character(len=*) :: maz, nomgdz, cnsz, basez
+    integer :: ncmp
+    character(len=8) :: licmp(ncmp)
+    aster_logical, intent(in) :: undf0
+
+    call cnscre(maz, nomgdz, ncmp, licmp, basez, cnsz, undf0)
+end subroutine
