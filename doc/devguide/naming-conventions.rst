@@ -38,6 +38,13 @@ that does not recommend *CamelCase* naming.
   :py:meth:`~code_aster.Objects.MaterialField.addMaterialsOnMesh` with the both
   interfaces.
 
+- Use same method name to return a single value or a vector if the argumets are differents.
+  Prefer singular version.
+  Example: Do not define :py:obj:`getNodesFromDOFs()` and
+  :py:obj:`getNodeFromDOF(DOFId)`, but only
+  :py:meth:`~code_aster.Objects.EquationNumbering.getNodeFromDOF` with the both
+  interfaces.
+
 - Use same method name to pass a differents values.
   Example: Do not define :py:meth:`addRealValue( realVal )` and
   :py:meth:`addComplexValue(cmplxVal)`, but only
@@ -58,6 +65,8 @@ that does not recommend *CamelCase* naming.
 - updateValuePointers : method to update all JeveuxVector of a class
 
 - computeSomething : a method begins with compute if it return an object which is explicitely computed and not an internal object (exemple: computeDirichletBC, computeLoads)
+
+- prefer FromSomethong to AssociatedToSomething: this is shorter and explicit.
 
 Another rule is to define elementary methods not to create objects with a huge size.
 For example, the groups names can be extracted from a mesh and cells indexes can be
@@ -108,3 +117,10 @@ Result objects
 --------------
 
 - *result* is an object that contains several fields and eventually some other properties.
+
+
+Numbering objects
+-----------------
+
+- *DOF* is a degree of freedom (*DOFs* for the plural form").
+- *LagrangeDOF* is a Lagrange DOF on a virtual node.

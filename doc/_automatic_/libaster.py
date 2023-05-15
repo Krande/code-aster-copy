@@ -1698,6 +1698,18 @@ class DOFNumbering(BaseDOFNumbering):
             str: component names.
         """
 
+    def getDOFFromNodeAndComponent(self, node, cmp, local=False):
+        """Returns the DOF index associated to a node and component.
+
+        Arguments:
+            node (int): Index of the node.
+            cmp (str): name of the component
+            local (bool, optional): not used (default: false).
+
+        Returns:
+            int: index of the dof.
+        """
+
     def getLagrangeDOFs(self, local=False):
         """Returns the indexes of the Lagrange multipliers dof.
 
@@ -1716,7 +1728,7 @@ class DOFNumbering(BaseDOFNumbering):
             local (bool, optional): not used (default: false).
 
         Returns:
-            int: index of the dof.
+            int: index of the node.
         """
 
     def getNumberOfDOFs(self, local=False):
@@ -1750,7 +1762,7 @@ class DOFNumbering(BaseDOFNumbering):
             local (bool, optional): not used (default: false).
 
         Returns:
-            int: index of the dof.
+            bool: True if the DOF is a physical DOF else False.
         """
 
     def useLagrangeDOF(self):

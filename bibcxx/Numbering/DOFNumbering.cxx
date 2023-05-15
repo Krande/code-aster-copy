@@ -64,6 +64,12 @@ ASTERINTEGER DOFNumbering::getNodeFromDOF( const ASTERINTEGER dof, const bool lo
     return getEquationNumbering()->getNodeFromDOF( dof, local );
 };
 
+ASTERINTEGER DOFNumbering::getDOFFromNodeAndComponent( const ASTERINTEGER &node,
+                                                       const std::string &comp,
+                                                       const bool local ) const {
+    return getEquationNumbering()->getDOFFromNodeAndComponent( node, comp, local );
+}
+
 bool DOFNumbering::isPhysicalDOF( const ASTERINTEGER dof, const bool local ) const {
     return getEquationNumbering()->isPhysicalDOF( dof, local );
 };

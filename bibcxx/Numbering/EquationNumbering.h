@@ -106,6 +106,10 @@ class BaseEquationNumbering : public DataStructure {
      */
     virtual VectorLong getLagrangeDOFs( const bool local = false ) const = 0;
 
+    virtual ASTERINTEGER getDOFFromNodeAndComponent( const ASTERINTEGER &node,
+                                                     const std::string &comp,
+                                                     const bool local = false ) const = 0;
+
     /**
      * @brief Get Rows Associated to all Ghost Dof
      */
@@ -270,6 +274,8 @@ class EquationNumbering : public BaseEquationNumbering {
     std::map< std::pair< ASTERINTEGER, std::string >, ASTERINTEGER >
     getDOFFromNodeAndComponent( const bool local = true ) const;
 
+    ASTERINTEGER getDOFFromNodeAndComponent( const ASTERINTEGER &node, const std::string &comp,
+                                             const bool local = false ) const;
     /**
      * @brief Get componants
      */

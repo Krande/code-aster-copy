@@ -311,6 +311,23 @@ EquationNumbering::getDOFFromNodeAndComponent( const bool local ) const {
     return ret;
 };
 
+ASTERINTEGER EquationNumbering::getDOFFromNodeAndComponent( const ASTERINTEGER &node,
+                                                            const std::string &comp,
+                                                            const bool local ) const {
+    auto dofs = this->getDOFFromNodeAndComponent( local );
+
+    for ( auto it = dofs.cbegin(); it != dofs.cend(); ++it ) {
+        auto [nodeId, cmp] = it->first;
+        if ( node == nodeId && comp == cmp ) {
+            return it->second;
+        }
+    }
+
+    throw std::runtime_error( "DOF nout found" );
+
+    return -1;
+};
+
 VectorLong EquationNumbering::getDOF( const bool sameRank, const VectorString &list_cmp,
                                       const VectorLong &list_nodes ) const {
     const bool all_cmp = list_cmp.empty();

@@ -358,6 +358,15 @@ class BaseDOFNumbering : public DataStructure {
     };
 
     /**
+     * @brief get the Row index Associated To the Component of a Node
+     */
+    virtual ASTERINTEGER getDOFFromNodeAndComponent( const ASTERINTEGER &node,
+                                                     const std::string &comp,
+                                                     const bool local = false ) const {
+        AS_ABORT( "Not allowed" );
+    }
+
+    /**
      * @brief Get The total number of Dofs
      */
     virtual ASTERINTEGER getNumberOfDOFs( const bool local = false ) const {

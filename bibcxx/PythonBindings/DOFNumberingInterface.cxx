@@ -58,10 +58,24 @@ Arguments:
     local (bool, optional): not used (default: false).
 
 Returns:
+    int: index of the node.
+        )",
+              py::arg( "dof" ), py::arg( "local" ) = false )
+        // ----------------------------------------------------------------------
+        .def( "getDOFFromNodeAndComponent", &DOFNumbering::getDOFFromNodeAndComponent,
+              R"(
+Returns the DOF index associated to a node and component.
+
+Arguments:
+    node (int): Index of the node.
+    cmp (str): name of the component
+    local (bool, optional): not used (default: false).
+
+Returns:
     int: index of the dof.
         )",
-              // ----------------------------------------------------------------------
-              py::arg( "dof" ), py::arg( "local" ) = false )
+              py::arg( "node" ), py::arg( "cmp" ), py::arg( "local" ) = false )
+        // ----------------------------------------------------------------------
         .def( "isPhysicalDOF", &DOFNumbering::isPhysicalDOF,
               R"(
 If the dof is associated to a physical DOF, return True
@@ -74,7 +88,7 @@ Arguments:
     local (bool, optional): not used (default: false).
 
 Returns:
-    int: index of the dof.
+    bool: True if the DOF is a physical DOF else False.
         )",
               py::arg( "dof" ), py::arg( "local" ) = false )
         // ----------------------------------------------------------------------

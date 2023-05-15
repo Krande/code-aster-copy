@@ -120,6 +120,9 @@ class DOFNumbering : public BaseDOFNumbering {
      */
     ASTERINTEGER getNodeFromDOF( const ASTERINTEGER dof, const bool local = false ) const;
 
+    ASTERINTEGER getDOFFromNodeAndComponent( const ASTERINTEGER &node, const std::string &comp,
+                                             const bool local = false ) const;
+
     /**
      * @brief Return true if a physical dof is Associated To A Given Row
      */
