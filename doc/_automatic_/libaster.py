@@ -1415,6 +1415,16 @@ class EquationNumbering(DataStructure):
             dict[int, str] : dofs id for each node id and component id
         """
 
+    def getDOFsWithDescription(self, arg0, arg1):
+        """Get list of components
+        Arguments:
+            str: component to extract
+            list[str]: group names
+        Returns:
+            pair[list[int], list[str]]: list of nodes and list of components
+            list[int]: list of dofs
+        """
+
     def getMesh(self):
         pass
 
@@ -1995,19 +2005,6 @@ class FieldOnCellsReal(DataField):
             FieldOnCellsReal
         """
 
-    def extrComp(self, arg0, arg1):
-        """Return list of cells, list of values, list of point and list of subpoints
-            for given cells
-
-        Arguments:
-            cells[list[int]]: list of nodes
-            cmp[str]: component to extract
-
-        Returns:
-            tuple[list, list, list, list]]: List of cells, list of values,
-                list of points, list of subpoints.
-        """
-
     def getComponents(self):
         """Get list of components
 
@@ -2525,18 +2522,6 @@ class FieldOnNodesReal(DataField):
     def duplicate(self):
         pass
 
-    def extrComp(self, arg0, arg1):
-        """Return list of nodes, list of components and list of values for given nodes
-
-        Arguments:
-            nodes[list[int]]: list of nodes
-            cmp[str]: component to extract
-            if cmp=' ', extract all components and list of components is filled in
-
-        Returns:
-            tuple[list, list, list]]: List of nodes, list of components, list of values.
-        """
-
     def fromPetsc(self, vec, scaling=1.0):
         """Import a PETSc vector into the field.
 
@@ -2596,7 +2581,19 @@ class FieldOnNodesReal(DataField):
                         If empty, the full mesh is used
 
                     Returns:
-                        list[complex]: List of values.
+                        list[double]: List of values.
+
+
+        3. getValues(self: libaster.FieldOnNodesReal, dofs: List[int] = []) -> List[float]
+
+
+                    Return a list of values as (x1, y1, z1, x2, y2, z2...) corresponding to list of dofs
+
+                    Arguments:
+                        dofs: dofs to extract
+
+                    Returns:
+                        list[double]: List of values.
         """
 
     def norm(self, normType, list_cmp=[]):
@@ -2734,18 +2731,6 @@ class FieldOnNodesComplex(DataField):
             complex: dot product
         """
 
-    def extrComp(self, arg0, arg1):
-        """Return list of nodes, list of components and list of values for given nodes
-
-        Arguments:
-            nodes[list[int]]: list of nodes
-            cmp[str]: compoment to extract
-            if cmp=' ', extract all components and list of components is filled in
-
-        Returns:
-            tuple[list, list, list]]: List of nodes, list of components, list of values.
-        """
-
     def getComponents(self):
         """Get list of components
 
@@ -2795,6 +2780,18 @@ class FieldOnNodesComplex(DataField):
                         cmps[list[str]]: filter on list of components
                         groupsOfCells[list[str]]: filter on list of groups of cells (default=" ").
                         If empty, the full mesh is used
+
+                    Returns:
+                        list[complex]: List of values.
+
+
+        3. getValues(self: libaster.FieldOnNodesComplex, dofs: List[int] = []) -> List[complex]
+
+
+                    Return a list of values as (x1, y1, z1, x2, y2, z2...) corresponding to list of dofs
+
+                    Arguments:
+                        dofs: dofs to extract
 
                     Returns:
                         list[complex]: List of values.
@@ -3129,6 +3126,18 @@ class SimpleFieldOnCellsReal(DataField):
         Returns:
             ndarray (float): Field values.
             ndarray (bool): Mask for the field values.
+        """
+
+    def getValuesWithDescription(self, arg0, arg1):
+        """Returns values and description corresponding to given cmp and given cells
+
+        Args:
+            cells[list[int]]: list of nodes
+            cmp[str]: component to extract
+
+        Returns:
+            values[list[double],
+            tuple[cells[list[int]], points[list[int]], subpoints[list[int]]]
         """
 
     def updateValuePointers(self):

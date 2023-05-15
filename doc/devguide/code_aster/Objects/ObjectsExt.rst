@@ -13,15 +13,7 @@ Pure Python extensions for :py:class:`~code_aster.Objects.DataStructure`
 
 .. automodule:: code_aster.ObjectsExt.fieldoncells_ext
 
-.. autoclass:: code_aster.ObjectsExt.fieldoncells_ext.post_comp_cham_el
-   :show-inheritance:
-   :members:
-
 .. automodule:: code_aster.ObjectsExt.fieldonnodes_ext
-
-.. autoclass:: code_aster.ObjectsExt.fieldonnodes_ext.post_comp_cham_no
-   :show-inheritance:
-   :members:
 
 .. automodule:: code_aster.ObjectsExt.listoffloats_ext
 
