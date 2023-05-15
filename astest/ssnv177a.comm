@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -141,15 +141,15 @@ DEFO = CREA_CHAMP(
     TYPE_CHAM="ELGA_EPSI_R", OPERATION="EXTR", INST=2.0, RESULTAT=U, NOM_CHAM="EPSI_ELGA"
 )
 
-D_xx = ENDO.EXTR_COMP("V1", [])
-D_yy = ENDO.EXTR_COMP("V2", [])
-D_xy = ENDO.EXTR_COMP("V4", [])
+D_xx = ENDO.getValuesWithDescription("V1", [])
+D_yy = ENDO.getValuesWithDescription("V2", [])
+D_xy = ENDO.getValuesWithDescription("V4", [])
 
-EPSI_xx = DEFO.EXTR_COMP("EPXX", [])
-EPSI_yy = DEFO.EXTR_COMP("EPYY", [])
-EPSI_xy = DEFO.EXTR_COMP("EPXY", [])
+EPSI_xx = DEFO.getValuesWithDescription("EPXX", [])
+EPSI_yy = DEFO.getValuesWithDescription("EPYY", [])
+EPSI_xy = DEFO.getValuesWithDescription("EPXY", [])
 
-nb = EPSI_xx.valeurs.shape[0]
+nb = len(EPSI_xx[0])
 
 print("nb = ", nb)
 
@@ -158,16 +158,16 @@ print("nb = ", nb)
 aster_core.matfpe(-1)
 
 tenseurD = NP.zeros((2, 2))
-tenseurD[0, 0] = D_xx.valeurs[0]
-tenseurD[0, 1] = D_xy.valeurs[0]
-tenseurD[1, 0] = D_xy.valeurs[0]
-tenseurD[1, 1] = D_yy.valeurs[0]
+tenseurD[0, 0] = D_xx[0][0]
+tenseurD[0, 1] = D_xy[0][0]
+tenseurD[1, 0] = D_xy[0][0]
+tenseurD[1, 1] = D_yy[0][0]
 
 tenseurE = NP.zeros((2, 2))
-tenseurE[0, 0] = EPSI_xx.valeurs[0]
-tenseurE[0, 1] = EPSI_xy.valeurs[0]
-tenseurE[1, 0] = EPSI_xy.valeurs[0]
-tenseurE[1, 1] = EPSI_yy.valeurs[0]
+tenseurE[0, 0] = EPSI_xx[0][0]
+tenseurE[0, 1] = EPSI_xy[0][0]
+tenseurE[1, 0] = EPSI_xy[0][0]
+tenseurE[1, 1] = EPSI_yy[0][0]
 
 print(tenseurE)
 evalues_epsi, evectors_epsi = LA.eig(tenseurE)

@@ -110,11 +110,11 @@ def get_dynamic_shear(sign1_dyn, sigt1_dyn, phi, cohesion, inst):
     available_shear = []
     for jj in range(len(inst)):
         ###### value limited to static result
-        #      for j,value in enumerate(sigt1_dyn[jj].valeurs):
+        #      for j,value in enumerate(sigt1_dyn[jj][0]):
         #        if value > 0:
-        #          sigt1_dyn[jj].valeurs[j] = 0
-        available_shear.append(np.sum(np.array(sign1_dyn[jj].valeurs) * tanphi))
-        dynamic_shear.append(np.sum(np.array(sigt1_dyn[jj].valeurs)))
+        #          sigt1_dyn[jj][0][j] = 0
+        available_shear.append(np.sum(np.array(sign1_dyn[jj][0]) * tanphi))
+        dynamic_shear.append(np.sum(np.array(sigt1_dyn[jj][0])))
 
     available_shear = np.array(available_shear)
     dynamic_shear = np.array(dynamic_shear)
@@ -129,11 +129,11 @@ def get_dynamic_shear_vector(sigt1_dyn, inst):
     dynamic_shear = []
     for jj in range(len(inst)):
         ###### value limited to static FS
-        #      for j,value in enumerate(sigt1_dyn[jj].valeurs):
+        #      for j,value in enumerate(sigt1_dyn[jj][0]):
         #        if value < 0:
-        #          sigt1_dyn[jj].valeurs[j] = 0
+        #          sigt1_dyn[jj][0][j] = 0
 
-        dynamic_shear.append(np.array(sigt1_dyn[jj].valeurs))
+        dynamic_shear.append(np.array(sigt1_dyn[jj][0][0]))
 
     dynamic_shear = np.array(dynamic_shear)
 
@@ -741,8 +741,8 @@ def post_newmark_ops(self, **args):
             NUME_ORDRE=1,
         )
 
-        SIGN_stat = __CSIST.EXTR_COMP("SIG_N", [])
-        SIGTN_stat = __CSIST.EXTR_COMP("SIG_TN", [])
+        SIGN_stat = __CSIST.getValuesWithDescription("SIG_N", [])
+        SIGTN_stat = __CSIST.getValuesWithDescription("SIG_TN", [])
 
         ## Obtain friction angle phi and cohesion to static analysis
         __chPHNO = PROJ_CHAMP(
@@ -838,14 +838,14 @@ def post_newmark_ops(self, **args):
         )
 
         ## Global static safety factor Fsp
-        phiL = __chCPLG.EXTR_COMP("X1", [])
-        cohesionL = __chCPLG.EXTR_COMP("X2", [])
+        phiL = __chCPLG.getValuesWithDescription("X1", [])
+        cohesionL = __chCPLG.getValuesWithDescription("X2", [])
 
         available_shear, static_shear = get_static_shear(
-            SIGN_stat.valeurs, SIGTN_stat.valeurs, phiL.valeurs, cohesionL.valeurs
+            SIGN_stat[0], SIGTN_stat[0], phiL[0], cohesionL[0]
         )
         available_shear_v, static_shear_v = get_static_shear_vector(
-            SIGN_stat.valeurs, SIGTN_stat.valeurs, phiL.valeurs, cohesionL.valeurs
+            SIGN_stat[0], SIGTN_stat[0], phiL[0], cohesionL[0]
         )
 
         FSp = fac_cercle * available_shear / (static_shear)
@@ -993,15 +993,15 @@ def post_newmark_ops(self, **args):
                         INST=inst,
                     )
 
-                    SIGN_dyna = __CSISD.EXTR_COMP("SIG_N", [])
-                    SIGTN_dyna = __CSISD.EXTR_COMP("SIG_TN", [])
+                    SIGN_dyna = __CSISD.getValuesWithDescription("SIG_N", [])
+                    SIGTN_dyna = __CSISD.getValuesWithDescription("SIG_TN", [])
 
                     SIGN_dyn.append(SIGN_dyna)
                     SIGT_dyn.append(SIGTN_dyna)
 
                 ## Available and mobilized stresses at the slinding line
                 available_shear_dyn, dynamic_shear = get_dynamic_shear(
-                    SIGN_dyn, SIGT_dyn, phiL.valeurs, cohesionL.valeurs, __instSD
+                    SIGN_dyn, SIGT_dyn, phiL[0], cohesionL[0], __instSD
                 )
                 dynamic_shear_v = get_dynamic_shear_vector(SIGT_dyn, __instSD)
 

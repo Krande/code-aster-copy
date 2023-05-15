@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -129,8 +129,8 @@ RESU = STAT_NON_LINE(
 
 COOR = CALC_CHAM_ELEM(MODELE=MODE, OPTION="COOR_ELGA")
 
-COORX = COOR.EXTR_COMP("X", ["NT4"]).valeurs
-COORY = COOR.EXTR_COMP("Y", ["NT4"]).valeurs
+COORX, _ = COOR.getValuesWithDescription("X", ["NT4"])
+COORY, _ = COOR.getValuesWithDescription("Y", ["NT4"])
 
 # PREMIER POINT A TESTER: PG LE PLUS PROCHE DE L'ORIGINE j
 # DEUXIEME POINT A TESTER: PG MILIEU
@@ -150,7 +150,7 @@ SIGMA1 = CREA_CHAMP(
     TYPE_CHAM="ELGA_SIEF_R", OPERATION="EXTR", RESULTAT=RESU, NOM_CHAM="SIEF_ELGA", INST=inst_fin
 )
 
-SIYY1 = SIGMA1.EXTR_COMP("SIYY", ["NT4"]).valeurs
+SIYY1, _ = SIGMA1.getValuesWithDescription("SIYY", ["NT4"])
 
 SXX11 = CREA_TABLE(LISTE=(_F(PARA="SIYY", LISTE_R=SIYY1[j])))
 SXX12 = CREA_TABLE(LISTE=(_F(PARA="SIYY", LISTE_R=SIYY1[k])))
@@ -184,7 +184,7 @@ VI1 = CREA_CHAMP(
 )
 
 #   VARIABLE D'ECROUISSAGE
-V11 = VI1.EXTR_COMP("V1", ["NT4"]).valeurs
+V11, _ = VI1.getValuesWithDescription("V1", ["NT4"])
 V111 = CREA_TABLE(LISTE=(_F(PARA="V1", LISTE_R=V11[j])))
 V112 = CREA_TABLE(LISTE=(_F(PARA="V1", LISTE_R=V11[k])))
 
@@ -208,7 +208,7 @@ TEST_TABLE(
 )
 
 #  POROSITE
-V12 = VI1.EXTR_COMP("V2", ["NT4"]).valeurs
+V12, _ = VI1.getValuesWithDescription("V2", ["NT4"])
 V121 = CREA_TABLE(LISTE=(_F(PARA="V2", LISTE_R=V12[j])))
 V122 = CREA_TABLE(LISTE=(_F(PARA="V2", LISTE_R=V12[k])))
 

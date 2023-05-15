@@ -380,6 +380,53 @@ class SimpleFieldOnCells : public DataField {
         return tuple;
     }
 
+    std::pair< std::vector< ValueType >, std::tuple< VectorLong, VectorLong, VectorLong > >
+    getValuesWithDescription( VectorLong cells, std::string cmp ) {
+
+        std::vector< ValueType > values;
+        VectorLong v_cells;
+        VectorLong points;
+        VectorLong subpoints;
+
+        ASTERINTEGER ncmp = getNumberOfComponents();
+        ASTERINTEGER icmp;
+        for ( icmp = 0; icmp < ncmp; icmp++ ) {
+            if ( getComponent( icmp ) == cmp ) {
+                break;
+            }
+        }
+
+        if ( icmp != ncmp ) {
+
+            ASTERINTEGER size = cells.size() * getMaxNumberOfPoints() * getMaxNumberOfSubPoints();
+            v_cells.reserve( size );
+            values.reserve( size );
+            points.reserve( size );
+            subpoints.reserve( size );
+
+            for ( ASTERINTEGER cell : cells ) {
+                if ( icmp >= getNumberOfComponentsForSubpointsOfCell( cell ) )
+                    continue;
+
+                ASTERINTEGER npt = getNumberOfPointsOfCell( cell );
+                ASTERINTEGER nspt = getNumberOfSubPointsOfCell( cell );
+
+                for ( ASTERINTEGER ipt = 0; ipt < npt; ipt++ ) {
+                    for ( ASTERINTEGER ispt = 0; ispt < nspt; ispt++ ) {
+                        if ( hasValue( cell, icmp, ipt, ispt ) ) {
+                            v_cells.push_back( cell );
+                            values.push_back( getValue( cell, icmp, ipt, ispt ) );
+                            points.push_back( ipt );
+                            subpoints.push_back( ispt );
+                        }
+                    }
+                }
+            }
+        }
+
+        return make_pair( values, make_tuple( v_cells, points, subpoints ) );
+    }
+
     /**
      * @brief Mise a jour des pointeurs Jeveux
      * @return renvoie true si la mise a jour s'est bien deroulee, false sinon

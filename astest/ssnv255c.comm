@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -174,8 +174,8 @@ RESU = STAT_NON_LINE(
 
 COOR = CALC_CHAM_ELEM(MODELE=MODE, OPTION="COOR_ELGA")
 
-COORX = COOR.EXTR_COMP("X", ["F_Bar2D"]).valeurs
-COORY = COOR.EXTR_COMP("Y", ["F_Bar2D"]).valeurs
+COORX, _ = COOR.getValuesWithDescription("X", ["F_Bar2D"])
+COORY, _ = COOR.getValuesWithDescription("Y", ["F_Bar2D"])
 
 # PREMIER POINT A TESTER: PG LE PLUS ELOIGNE DE L'ORIGINE j
 # DEUXIEME POINT A TESTER: PG LE PLUS PROCHE DE L'ORIGINE k
@@ -196,7 +196,7 @@ SIGMA1 = CREA_CHAMP(
     TYPE_CHAM="ELGA_SIEF_R", OPERATION="EXTR", RESULTAT=RESU, NOM_CHAM="SIEF_ELGA", INST=0.50
 )
 
-SIXX1 = SIGMA1.EXTR_COMP("SIXX", ["F_Bar2D"]).valeurs
+SIXX1, _ = SIGMA1.getValuesWithDescription("SIXX", ["F_Bar2D"])
 
 SXX11 = CREA_TABLE(LISTE=(_F(PARA="SIXX", LISTE_R=SIXX1[j])))
 SXX12 = CREA_TABLE(LISTE=(_F(PARA="SIXX", LISTE_R=SIXX1[k])))
@@ -225,7 +225,7 @@ SIGMA2 = CREA_CHAMP(
     TYPE_CHAM="ELGA_SIEF_R", OPERATION="EXTR", RESULTAT=RESU, NOM_CHAM="SIEF_ELGA", INST=0.80
 )
 
-SIXX2 = SIGMA2.EXTR_COMP("SIXX", ["F_Bar2D"]).valeurs
+SIXX2, _ = SIGMA2.getValuesWithDescription("SIXX", ["F_Bar2D"])
 
 SXX21 = CREA_TABLE(LISTE=(_F(PARA="SIXX", LISTE_R=SIXX2[j])))
 SXX22 = CREA_TABLE(LISTE=(_F(PARA="SIXX", LISTE_R=SIXX2[k])))
@@ -264,7 +264,7 @@ VI1 = CREA_CHAMP(
 
 
 #   VARIABLE D'ECROUISSAGE
-V11 = VI1.EXTR_COMP("V1", ["F_Bar2D"]).valeurs
+V11, _ = VI1.getValuesWithDescription("V1", ["F_Bar2D"])
 V111 = CREA_TABLE(LISTE=(_F(PARA="V1", LISTE_R=V11[j])))
 V112 = CREA_TABLE(LISTE=(_F(PARA="V1", LISTE_R=V11[k])))
 
@@ -288,7 +288,7 @@ TEST_TABLE(
 )
 
 #  POROSITE
-V12 = VI1.EXTR_COMP("V2", ["F_Bar2D"]).valeurs
+V12, _ = VI1.getValuesWithDescription("V2", ["F_Bar2D"])
 V121 = CREA_TABLE(LISTE=(_F(PARA="V2", LISTE_R=V12[j])))
 V122 = CREA_TABLE(LISTE=(_F(PARA="V2", LISTE_R=V12[k])))
 
@@ -320,7 +320,7 @@ VI2 = CREA_CHAMP(
 )
 
 #   VARIABLE D'ECROUISSAGE
-V21 = VI2.EXTR_COMP("V1", ["F_Bar2D"]).valeurs
+V21, _ = VI2.getValuesWithDescription("V1", ["F_Bar2D"])
 V211 = CREA_TABLE(LISTE=(_F(PARA="V1", LISTE_R=V21[j])))
 V212 = CREA_TABLE(LISTE=(_F(PARA="V1", LISTE_R=V21[k])))
 
@@ -344,7 +344,7 @@ TEST_TABLE(
 )
 
 #  POROSITE
-V22 = VI2.EXTR_COMP("V2", ["F_Bar2D"]).valeurs
+V22, _ = VI2.getValuesWithDescription("V2", ["F_Bar2D"])
 V221 = CREA_TABLE(LISTE=(_F(PARA="V2", LISTE_R=V22[j])))
 V222 = CREA_TABLE(LISTE=(_F(PARA="V2", LISTE_R=V22[k])))
 

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -73,11 +73,11 @@ def post_czm_fiss_ops(self, OPTION, RESULTAT, **args):
 
         # Calcul des coordonnees des points de Gauss
         __CHAMEL = CALC_CHAM_ELEM(MODELE=__MODEL, GROUP_MA=GROUP_MA, OPTION="COOR_ELGA")
-        __CORX = __CHAMEL.EXTR_COMP("X", list(GROUP_MA), 1)
-        __CORY = __CHAMEL.EXTR_COMP("Y", list(GROUP_MA), 1)
+        __CORX = __CHAMEL.getValuesWithDescription("X", list(GROUP_MA))
+        __CORY = __CHAMEL.getValuesWithDescription("Y", list(GROUP_MA))
 
-        xg = __CORX.valeurs
-        yg = __CORY.valeurs
+        xg = array(__CORX[0])
+        yg = array(__CORY[0])
         nbpg = len(xg)
 
         xmin = min(xg)
@@ -93,12 +93,12 @@ def post_czm_fiss_ops(self, OPTION, RESULTAT, **args):
         # norme
         vx = xmax - xmin
         vy = ymax - ymin
-        nv = (vx ** 2 + vy ** 2) ** 0.5
+        nv = (vx**2 + vy**2) ** 0.5
 
         # vecteur directeur dans la direction ou l'on calcule la longueur
         xdir = VECT_TANG[0]
         ydir = VECT_TANG[1]
-        ndir = (xdir ** 2 + ydir ** 2) ** 0.5
+        ndir = (xdir**2 + ydir**2) ** 0.5
         # point de reference a partir duquel on calcule la longueur
         xref = POINT_ORIG[0]
         yref = POINT_ORIG[1]
@@ -144,9 +144,9 @@ def post_czm_fiss_ops(self, OPTION, RESULTAT, **args):
                 NUME_ORDRE=j,
             )
 
-            __VI3 = __VI[j].EXTR_COMP("V3", list(GROUP_MA), 1)
+            __VI3 = __VI[j].getValuesWithDescription("V3", list(GROUP_MA))
 
-            mat_v3 = __VI3.valeurs
+            mat_v3 = __VI3[0]
             nbpg = len(mat_v3)
 
             # Evaluation du nombre de points de gauss dans chaque etat

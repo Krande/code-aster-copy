@@ -1399,8 +1399,8 @@ def grad_elno(self, MAIL, MODE, MATE, listElemTMAIL, __EPSI_ELGA, __FIELD_CAL, i
     Gradient of ELNO field
     """
 
-    lValues = [iVal for iVal in __FIELD_CAL.valeurs]
-    lMailles = __FIELD_CAL.maille
+    lValues = [iVal for iVal in __FIELD_CAL[0]]
+    lMailles = __FIELD_CAL[1][0]
 
     lMaillesReduce = []
     for iMail in lMailles:
@@ -5630,7 +5630,7 @@ def post_jmod_ops(
 
                     if grad_elno_type_j03 == "OUI":
 
-                        __EPS0_CAL = __EPS0_ELNO.EXTR_COMP(iEPS_CMP, ["TMAIL"], 1)
+                        __EPS0_CAL = __EPS0_ELNO.getValuesWithDescription(iEPS_CMP, ["TMAIL"])
 
                         __GRAD_EPS0 = grad_elno(
                             self, MAIL, MODE, MATE, listElemTMAIL, __EPS0_ELGA, __EPS0_CAL, inst
@@ -5682,7 +5682,7 @@ def post_jmod_ops(
 
                     if grad_elno_type_j04 == "OUI":
 
-                        __EPSI_CAL = __EPSI_ELNO.EXTR_COMP(iEPS_CMP, ["TMAIL"], 1)
+                        __EPSI_CAL = __EPSI_ELNO.getValuesWithDescription(iEPS_CMP, ["TMAIL"])
 
                         __GRAD_EPSI = grad_elno(
                             self, MAIL, MODE, MATE, listElemTMAIL, __EPSI_ELGA, __EPSI_CAL, inst
@@ -5724,7 +5724,7 @@ def post_jmod_ops(
                         TYPE_CHAM="ELNO_VARI_R", OPERATION="DISC", MODELE=MODE, CHAM_GD=__WELASV
                     )
 
-                    __WELAS_CAL = __WELAS_ELNO.EXTR_COMP("V1", ["TMAIL"], 1)
+                    __WELAS_CAL = __WELAS_ELNO.getValuesWithDescription("V1", ["TMAIL"])
 
                     __GRAD_WELAS = grad_elno(
                         self, MAIL, MODE, MATE, listElemTMAIL, __EPSI_ELGA, __WELAS_CAL, inst

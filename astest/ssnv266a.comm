@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -169,9 +169,9 @@ RESU = STAT_NON_LINE(
 
 COOR = CALC_CHAM_ELEM(MODELE=MODE, OPTION="COOR_ELGA")
 
-COORX = COOR.EXTR_COMP("X", ["V_Bar3D"]).valeurs
-COORY = COOR.EXTR_COMP("Y", ["V_Bar3D"]).valeurs
-COORZ = COOR.EXTR_COMP("Z", ["V_Bar3D"]).valeurs
+COORX, _ = COOR.getValuesWithDescription("X", ["V_Bar3D"])
+COORY, _ = COOR.getValuesWithDescription("Y", ["V_Bar3D"])
+COORZ, _ = COOR.getValuesWithDescription("Z", ["V_Bar3D"])
 
 # PREMIER POINT A TESTER  PL : PG LE PLUS LOIN DE L'ORIGINE j
 # DEUXIEME POINT A TESTER PP : PG LE PLUS PROCHE DE L'ORIGINE k
@@ -202,7 +202,7 @@ VI = CREA_CHAMP(
 
 # Contrainte SIXX
 
-SIXX = SIGMA.EXTR_COMP("SIXX", ["V_Bar3D"]).valeurs
+SIXX, _ = SIGMA.getValuesWithDescription("SIXX", ["V_Bar3D"])
 SIXX_PL = CREA_TABLE(LISTE=(_F(PARA="SIXX", LISTE_R=SIXX[ipl])))
 SIXX_PP = CREA_TABLE(LISTE=(_F(PARA="SIXX", LISTE_R=SIXX[ipp])))
 
@@ -232,7 +232,7 @@ TEST_TABLE(
 
 #   VARIABLE D'ECROUISSAGE
 
-PLAS = VI.EXTR_COMP("V1", ["V_Bar3D"]).valeurs
+PLAS, _ = VI.getValuesWithDescription("V1", ["V_Bar3D"])
 PLAS_PL = CREA_TABLE(LISTE=(_F(PARA="V1", LISTE_R=PLAS[ipl])))
 PLAS_PP = CREA_TABLE(LISTE=(_F(PARA="V1", LISTE_R=PLAS[ipp])))
 
@@ -259,7 +259,7 @@ TEST_TABLE(
 
 #  POROSITE
 
-PORO = VI.EXTR_COMP("V2", ["V_Bar3D"]).valeurs
+PORO, _ = VI.getValuesWithDescription("V2", ["V_Bar3D"])
 PORO_PL = CREA_TABLE(LISTE=(_F(PARA="V2", LISTE_R=PORO[ipl])))
 PORO_PP = CREA_TABLE(LISTE=(_F(PARA="V2", LISTE_R=PORO[ipp])))
 

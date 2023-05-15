@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -72,9 +72,9 @@ def post_bordet_ops(
     __VOL_PG = CALC_CHAM_ELEM(MODELE=model, TOUT="OUI", OPTION="COOR_ELGA")
     if GROUP_MA:
         GROUP_MA = list(GROUP_MA)
-        vol = __VOL_PG.EXTR_COMP("W", GROUP_MA)
+        vol = NP.array(__VOL_PG.getValuesWithDescription("W", GROUP_MA)[0])
     elif TOUT:
-        vol = __VOL_PG.EXTR_COMP("W", [])
+        vol = NP.array(__VOL_PG.getValuesWithDescription("W")[0])
 
     # contrainte principale max et deformation plastique
     __RESU = CALC_CHAMP(RESULTAT=RESULTAT, CRITERES="SIEQ_ELGA", DEFORMATION="EPSP_ELGA")
@@ -191,27 +191,27 @@ def post_bordet_ops(
         # On recupere la valeur des champs au niveau des groupes qui nous
         # interessent
         if GROUP_MA:
-            PRIN[ordre] = __S_TOT.EXTR_COMP("PRIN_3", GROUP_MA, 0).valeurs
+            PRIN[ordre] = NP.array(__S_TOT.getValuesWithDescription("PRIN_3", GROUP_MA)[0])
 
             # Pour la deformation plastique, on construit de quoi calculer sa
             # norme de VMises
-            EP[ordre][0] = __EPSP.EXTR_COMP("EPXX", GROUP_MA, 0).valeurs
-            EP[ordre][1] = __EPSP.EXTR_COMP("EPYY", GROUP_MA, 0).valeurs
-            EP[ordre][2] = __EPSP.EXTR_COMP("EPZZ", GROUP_MA, 0).valeurs
-            EP[ordre][3] = __EPSP.EXTR_COMP("EPXY", GROUP_MA, 0).valeurs
+            EP[ordre][0] = NP.array(__EPSP.getValuesWithDescription("EPXX", GROUP_MA)[0])
+            EP[ordre][1] = NP.array(__EPSP.getValuesWithDescription("EPYY", GROUP_MA)[0])
+            EP[ordre][2] = NP.array(__EPSP.getValuesWithDescription("EPZZ", GROUP_MA)[0])
+            EP[ordre][3] = NP.array(__EPSP.getValuesWithDescription("EPXY", GROUP_MA)[0])
             if ndim == 3:
-                EP[ordre][4] = __EPSP[ordre].EXTR_COMP("EPXZ", GROUP_MA, 0).valeurs
-                EP[ordre][5] = __EPSP[ordre].EXTR_COMP("EPYZ", GROUP_MA, 0).valeurs
+                EP[ordre][4] = NP.array(__EPSP[ordre].getValuesWithDescription("EPXZ", GROUP_MA)[0])
+                EP[ordre][5] = NP.array(__EPSP[ordre].getValuesWithDescription("EPYZ", GROUP_MA)[0])
 
         elif TOUT:
-            PRIN[ordre] = __S_TOT.EXTR_COMP("PRIN_3", [], 0).valeurs
-            EP[ordre][0] = __EPSP.EXTR_COMP("EPXX", [], 0).valeurs
-            EP[ordre][1] = __EPSP.EXTR_COMP("EPYY", [], 0).valeurs
-            EP[ordre][2] = __EPSP.EXTR_COMP("EPZZ", [], 0).valeurs
-            EP[ordre][3] = __EPSP.EXTR_COMP("EPXY", [], 0).valeurs
+            PRIN[ordre] = NP.array(__S_TOT.getValuesWithDescription("PRIN_3")[0])
+            EP[ordre][0] = NP.array(__EPSP.getValuesWithDescription("EPXX")[0])
+            EP[ordre][1] = NP.array(__EPSP.getValuesWithDescription("EPYY")[0])
+            EP[ordre][2] = NP.array(__EPSP.getValuesWithDescription("EPZZ")[0])
+            EP[ordre][3] = NP.array(__EPSP.getValuesWithDescription("EPXY")[0])
             if ndim == 3:
-                EP[ordre][4] = __EPSP.EXTR_COMP("EPXZ", [], 0).valeurs
-                EP[ordre][5] = __EPSP.EXTR_COMP("EPYZ", [], 0).valeurs
+                EP[ordre][4] = NP.array(__EPSP.getValuesWithDescription("EPXZ")[0])
+                EP[ordre][5] = NP.array(__EPSP.getValuesWithDescription("EPYZ")[0])
 
         nval = len(PRIN[ordre])
         nval2 = len(EP[ordre][0])
@@ -271,7 +271,7 @@ def post_bordet_ops(
                 sigy = __TAB.EXTR_TABLE().values()["TSIGY"]
                 sigy = NP.array(sigy)
 
-            T1 = sigy / sig0 * (PR_BAR[ordre] ** m - sigth ** m)
+            T1 = sigy / sig0 * (PR_BAR[ordre] ** m - sigth**m)
             T1 = list(T1)
             __TABT1 = CREA_TABLE(LISTE=(_F(PARA="T1", LISTE_R=T1),))
             __TABT1 = CALC_TABLE(
@@ -287,7 +287,7 @@ def post_bordet_ops(
             elif PROBA_NUCL == "NON":
                 T2 = 1.0
             T3 = DEP[ordre]
-            T4 = vol.valeurs / V0
+            T4 = vol / V0
             BORDTI = BORDTI + NP.cumsum(T1 * T2 * T3 * T4)[-1]
 
         BORDTT[ordre] = (c_mult * BORDTI) ** (1 / m)

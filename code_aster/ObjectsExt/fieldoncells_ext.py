@@ -33,7 +33,7 @@ import numpy
 import aster
 from libaster import FieldOnCellsReal, FieldOnCellsLong, FieldOnCellsChar8, FieldOnCellsComplex
 from ..Objects.Serialization import InternalStateBuilder
-from ..Utilities import injector
+from ..Utilities import injector, deprecated
 
 
 class FieldOnCellsStateBuilder(InternalStateBuilder):
@@ -69,23 +69,11 @@ class ExtendedFieldOnCellsReal:
     cata_sdj = "SD.sd_champ.sd_cham_elem_class"
     internalStateBuilder = FieldOnCellsStateBuilder
 
-    def EXTR_COMP(self, comp, lgma=[], topo=0):
+    def getValuesWithDescription(self, comp, lgma=[]):
         """Retourne les valeurs de la composante comp du champ sur la liste
-        de groupes de mailles lgma avec eventuellement l'info de la
-        topologie si topo>0. Si lgma est une liste vide, c'est equivalent
-        a un TOUT='OUI' dans les commandes aster
-
-        Arguments:
-            comp (str): Name of the component.
-            lgma (list[str]): List of groups of elements.
-            topo (int): ``topo == 1`` means to return informations about the
-                support of the field.
-
-        Returns:
-            :py:class:`.post_comp_cham_el`: Object containing the values and,
-            eventually, the topological informations of the support.
+        de groupes de mailles lgma avec avec la description.
+        Si lgma est une liste vide, c'est equivalent a un TOUT='OUI'
         """
-
         mesh = self.getMesh()
         if lgma:
             cells = set()
@@ -98,14 +86,27 @@ class ExtendedFieldOnCellsReal:
         else:
             cells = mesh.getCells()
 
-        cells, points, subpoints, values = self.extrComp(cells, comp)
+        return self.toSimpleFieldOnCells().getValuesWithDescription(cells, comp)
 
-        if topo == 0:
-            cells = None
-            points = None
-            subpoints = None
-
-        return post_comp_cham_el(values, cells, points, subpoints)
+    @deprecated
+    def EXTR_COMP(self, comp, lgma=[], topo=0):
+        raise Exception(
+            """EXTR_COMP has been removed, use getValuesWithDescription instead
+        Ex1:
+            extrcmp = chamele.EXTR_COMP(cmp, groups)
+            values = extrcmp.valeurs
+            cells = extrcmp.maille
+            points = extrcmp.point
+            subpoints = extrcmp.sous_point
+        =>
+            values, (cells, points, subpoints) = chamele.getValuesWithDescription(cmp, groups)
+        Ex2:
+            extrcmp = chamele.EXTR_COMP(cmp, groups)
+            values = extrcmp.valeurs
+        =>
+            values, _  = chamele.getValuesWithDescription(cmp, groups)
+        """
+        )
 
 
 @injector(FieldOnCellsLong)
@@ -124,24 +125,3 @@ class ExtendedFieldOnCellsChar8:
 class ExtendedFieldOnCellsComplex:
     cata_sdj = "SD.sd_champ.sd_cham_elem_class"
     internalStateBuilder = FieldOnCellsStateBuilder
-
-
-class post_comp_cham_el:
-    """Container object that store the results of
-    :py:meth:`code_aster.Objects.FieldOnCellsReal.EXTR_COMP`.
-
-    The support of the field may be unknown. In this case, :py:attr:`maille`,
-    :py:attr:`point` and :py:attr:`sous_point` are set to *None*.
-
-    Attributes:
-        valeurs (numpy.ndarray): Values of the field.
-        maille (list[int]): List of elements numbers.
-        point (list[int]): List of points numbers in the element.
-        sous_point (list[int]): List of subpoints numbers in the element.
-    """
-
-    def __init__(self, valeurs, maille=None, point=None, sous_point=None):
-        self.valeurs = numpy.array(valeurs)
-        self.maille = maille
-        self.point = point
-        self.sous_point = sous_point

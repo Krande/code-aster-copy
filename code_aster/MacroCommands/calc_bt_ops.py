@@ -1934,11 +1934,9 @@ def calc_bt_ops(self, **args):
             TYPE_CHAM="ELGA_SIEF_R",
         )
 
-        __forc_i = __EFA.EXTR_COMP("N", [], 0)
+        a, _ = __EFA.getValuesWithDescription("N")
 
-        a = __forc_i.valeurs
-
-        return a, __resu, 1, 1
+        return np.array(a), __resu, 1, 1
 
     # ===============================================================================
     def run_truss_computation_(
@@ -2090,11 +2088,9 @@ def calc_bt_ops(self, **args):
             TYPE_CHAM="ELGA_SIEF_R",
         )
 
-        __forc_i = __EFA.EXTR_COMP("N", [], 0)
+        a, _ = __EFA.getValuesWithDescription("N")
 
-        a = __forc_i.valeurs
-
-        return a
+        return np.array(a)
 
     # ==============================================================================
     def second_elem(Nonodes):

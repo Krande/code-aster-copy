@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -317,12 +317,12 @@ CHAMELG=CALC_CHAM_ELEM(MODELE=MO,
                        GROUP_MA='BETON',
                        OPTION='COOR_ELGA',)
 
-x=CHAMELG.EXTR_COMP("X",[])
-y=CHAMELG.EXTR_COMP("Y",[])
-w=CHAMELG.EXTR_COMP("W",[])
+x,_=CHAMELG.getValuesWithDescription("X",[])
+y,_=CHAMELG.getValuesWithDescription("Y",[])
+w,_=CHAMELG.getValuesWithDescription("W",[])
 
-r=sqrt(x.valeurs**2+y.valeurs**2)
-theta=arctan(y.valeurs/x.valeurs)
+r=sqrt(x**2+y**2)
+theta=arctan(y/x)
 
 CONT  = CREA_CHAMP(
              TYPE_CHAM = 'ELGA_SIEF_R',
@@ -332,9 +332,9 @@ CONT  = CREA_CHAMP(
              INST      = 1.,
              )
 
-sxx=CONT.EXTR_COMP("SIXX",['BETON']).valeurs
-syy=CONT.EXTR_COMP("SIYY",['BETON']).valeurs
-sxy=CONT.EXTR_COMP("SIXY",['BETON']).valeurs
+sxx,_=CONT.getValuesWithDescription("SIXX",['BETON'])
+syy,_=CONT.getValuesWithDescription("SIYY",['BETON'])
+sxy,_=CONT.getValuesWithDescription("SIXY",['BETON'])
 
 srr=sxx*cos(theta)**2+syy*sin(theta)**2+2*sxy*sin(theta)*cos(theta)
 stt=sxx*sin(theta)**2+syy*cos(theta)**2-2*sxy*sin(theta)*cos(theta)

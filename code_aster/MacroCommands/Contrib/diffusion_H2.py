@@ -167,11 +167,10 @@ def char_grad_impo_ops(
         MODELE=moth, CHAM_MATER=__CMT1, GROUP_MA=GRMAVOL, OPTION="FLUX_ELGA", TEMP=__TRSIG
     )
 
-    gradsighe = __GRSH.EXTR_COMP("FLUX", [], 1)
-    gradsighx = gradsighe.valeurs
-    gradsighy = __GRSH.EXTR_COMP("FLUY", [], 0).valeurs
+    gradsighx, _ = __GRSH.getValuesWithDescription("FLUX")
+    gradsighy, _ = __GRSH.getValuesWithDescription("FLUY")
     if DIME == 3:
-        gradsighz = __GRSH.EXTR_COMP("FLUZ", [], 0).valeurs
+        gradsighz, _ = __GRSH.getValuesWithDescription("FLUZ")
 
     fx = NP.zeros(nbnode)
     fy = NP.zeros(nbnode)

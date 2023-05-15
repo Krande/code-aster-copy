@@ -66,7 +66,18 @@ Returns:
     ndarray (bool): Mask for the field values.
         )",
               ( py::arg( "self" ), py::arg( "copy" ) = false ) )
+        .def( "getValuesWithDescription", &SimpleFieldOnCellsReal::getValuesWithDescription,
+              R"(
+Returns values and description corresponding to given cmp and given cells
 
+Args:
+    cells[list[int]]: list of nodes
+    cmp[str]: component to extract
+
+Returns:
+    values[list[double],
+    tuple[cells[list[int]], points[list[int]], subpoints[list[int]]]
+        )" )
         .def( "getCellsWithComponents", &SimpleFieldOnCellsReal::getCellsWithComponents, R"(
 Returns the list of cells where the field is defined.
 
