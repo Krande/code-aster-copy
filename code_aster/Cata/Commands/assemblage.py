@@ -140,6 +140,9 @@ ASSEMBLAGE = MACRO(
             condition="""equal_to("OPTION", 'AMOR_MECA')""",
             AMOR_FLUI=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="OUI"),
             VNOR=SIMP(statut="f", typ="R", into=(1.0, -1.0), defaut=1.0),
+            TYPE_AMOR=SIMP(
+                statut="f", typ="TXM", min=1, max=1, into=("TOUT", "ABSO"), defaut="TOUT"
+            ),
         ),
         b_impe_meca=BLOC(
             condition="""equal_to("OPTION", 'IMPE_MECA')""",

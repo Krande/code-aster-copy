@@ -153,7 +153,6 @@ CALC_MATR_ELEM = MACRO(
     ),
     b_amor_meca=BLOC(
         condition="""equal_to("OPTION", 'AMOR_MECA')""",
-        regles=(AU_MOINS_UN("CARA_ELEM", "RIGI_MECA"), ENSEMBLE("RIGI_MECA", "CHAM_MATER")),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         CARA_ELEM=SIMP(statut="f", typ=cara_elem),
         CHAM_MATER=SIMP(statut="f", typ=cham_mater),
@@ -162,6 +161,14 @@ CALC_MATR_ELEM = MACRO(
         CHARGE=SIMP(statut="f", typ=char_meca, validators=NoRepeat(), max="**"),
         AMOR_FLUI=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="OUI"),
         VNOR=SIMP(statut="f", typ="R", into=(1.0, -1.0), defaut=1.0),
+        TYPE_AMOR=SIMP(statut="f", typ="TXM", min=1, max=1, into=("TOUT", "ABSO"), defaut="TOUT"),
+        b_amor_tout=BLOC(
+            condition="""equal_to("TYPE_AMOR", ('TOUT'))""",
+            regles=(AU_MOINS_UN("CARA_ELEM", "RIGI_MECA"), ENSEMBLE("RIGI_MECA", "CHAM_MATER")),
+        ),
+        b_amor_flui=BLOC(
+            condition="""equal_to("TYPE_AMOR", 'ABSO')""", regles=(AU_MOINS_UN("CHAM_MATER"))
+        ),
     ),
     b_rigi_hyst=BLOC(
         condition="""equal_to("OPTION", 'RIGI_MECA_HYST')""",

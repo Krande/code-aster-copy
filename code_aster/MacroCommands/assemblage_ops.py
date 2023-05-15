@@ -106,16 +106,20 @@ def assemblage_ops(self, MODELE, NUME_DDL, INFO, **args):
                     UTMESS("F", "MATRICE0_10")
                 motscles["RIGI_MECA"] = rigel
             if option == "AMOR_MECA":
+                type_amor = m["TYPE_AMOR"]
                 amor_fl = m["AMOR_FLUI"]
                 v_nor = m["VNOR"]
-                if not lrigel:
-                    UTMESS("F", "MATRICE0_11")
+                if type_amor == "TOUT":
+                    if not lrigel:
+                        UTMESS("F", "MATRICE0_11")
                 if CHAM_MATER:
-                    motscles["RIGI_MECA"] = rigel
+                    if lrigel:
+                        motscles["RIGI_MECA"] = rigel
                     if lmasel:
                         motscles["MASS_MECA"] = masel
                 motscles["AMOR_FLUI"] = amor_fl
                 motscles["VNOR"] = v_nor
+                motscles["TYPE_AMOR"] = type_amor
             if option == "IMPE_MECA" or option == "AMOR_ACOU":
                 v_nor = m["VNOR"]
                 motscles["VNOR"] = v_nor
