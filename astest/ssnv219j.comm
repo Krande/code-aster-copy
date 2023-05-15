@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -452,7 +452,7 @@ for Raff in range(0, Nb_Raffinement):
     EVOLNOLI = STAT_NON_LINE(
         MODELE=modl,
         CHAM_MATER=chmat,
-        COMPORTEMENT=_F(RELATION="ELAS", DEFORMATION="GROT_GDEP", TOUT="OUI"),
+        COMPORTEMENT=_F(RELATION="ELAS", DEFORMATION="GREEN_LAGRANGE", TOUT="OUI"),
         INCREMENT=_F(LIST_INST=LINST),
         NEWTON=_F(REAC_ITER=1),
         CONVERGENCE=_F(ITER_GLOB_MAXI=100, RESI_GLOB_MAXI=1.0e-8),

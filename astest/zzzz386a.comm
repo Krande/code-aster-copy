@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -52,8 +52,8 @@ INSTANT1 = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=tfin, NOMBRE=20))
 INSTANT2 = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=tfin, NOMBRE=nbpas))
 
 
-vcalc1 = 0.555231839762
-vcalc2 = 0.555232677163
+vcalc1 = 0.4256423354080107
+vcalc2 = 0.4256417351005548
 
 
 # -----------------------------------------------------------------------------
@@ -72,7 +72,7 @@ if 1:
             _F(CHARGE=CL1, TYPE_CHARGE="FIXE_CSTE"),
             _F(CHARGE=CL2, FONC_MULT=RAMPE, TYPE_CHARGE="FIXE_CSTE"),
         ),
-        COMPORTEMENT=_F(RELATION="ELAS", TOUT="OUI", DEFORMATION="GROT_GDEP"),
+        COMPORTEMENT=_F(RELATION="ELAS", TOUT="OUI", DEFORMATION="GDEF_LOG"),
         INCREMENT=_F(LIST_INST=INSTANT1, INST_FIN=tfin),
         NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
         CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6, ITER_GLOB_MAXI=10),
@@ -106,7 +106,7 @@ if 1:
             _F(CHARGE=chdunl3, TYPE_CHARGE="SUIV"),
             _F(CHARGE=CL2, FONC_MULT=RAMPE, TYPE_CHARGE="FIXE_CSTE"),
         ),
-        COMPORTEMENT=_F(RELATION="ELAS", TOUT="OUI", DEFORMATION="GROT_GDEP"),
+        COMPORTEMENT=_F(RELATION="ELAS", TOUT="OUI", DEFORMATION="GDEF_LOG"),
         INCREMENT=_F(LIST_INST=INSTANT2, INST_FIN=tfin),
         NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
         CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6, ITER_GLOB_MAXI=30),
@@ -139,7 +139,7 @@ if 1:
             _F(CHARGE=chdunl4, TYPE_CHARGE="SUIV"),
             _F(CHARGE=CL2, FONC_MULT=RAMPE, TYPE_CHARGE="FIXE_CSTE"),
         ),
-        COMPORTEMENT=_F(RELATION="ELAS", TOUT="OUI", DEFORMATION="GROT_GDEP"),
+        COMPORTEMENT=_F(RELATION="ELAS", TOUT="OUI", DEFORMATION="GDEF_LOG"),
         INCREMENT=_F(LIST_INST=INSTANT2, INST_FIN=tfin),
         NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
         CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6, ITER_GLOB_MAXI=30),

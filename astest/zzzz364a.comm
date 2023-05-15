@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -209,6 +209,7 @@ for modeli in lmodeli:
         nbdecoup = 3
         maxiter = 10
         preci = 3.0e-10
+        deformation = "GREEN_LAGRANGE"
     elif modeli == "COQUE_3D":
         phi0 = math.pi / 10.0
         solide = "BAS1"
@@ -219,6 +220,7 @@ for modeli in lmodeli:
         maxiter = 30
         preci = 7.0e-9
         epais = 0.1
+        deformation = "GROT_GDEP"
     elif modeli == "POU_D_T_GD":
         phi0 = math.pi / 4.0
         solide = "AB1"
@@ -228,6 +230,7 @@ for modeli in lmodeli:
         nbdecoup = 10
         maxiter = 80
         preci = 5.0e-6
+        deformation = "GROT_GDEP"
     elif modeli in ("POU_D_EM", "POU_D_TGM"):
         phi0 = math.pi / 4.0
         solide = "AB1"
@@ -236,6 +239,7 @@ for modeli in lmodeli:
         relation = "MULTIFIBRE"
         nbdecoup = 100
         maxiter = 30
+        deformation = "GROT_GDEP"
         if modeli == "POU_D_EM":
             preci = 1.8  # Anomalie !
         elif modeli == "POU_D_TGM":
@@ -355,7 +359,7 @@ for modeli in lmodeli:
         CARA_ELEM=CAREL,
         INFO=1,
         EXCIT=_F(CHARGE=UIMP),
-        COMPORTEMENT=_F(RELATION=relation, DEFORMATION="GROT_GDEP"),
+        COMPORTEMENT=_F(RELATION=relation, DEFORMATION=deformation),
         INCREMENT=_F(LIST_INST=L_INST1, INST_FIN=inst_fin),
         NEWTON=_F(REAC_ITER=1),
         CONVERGENCE=_F(ARRET="OUI", RESI_GLOB_MAXI=resi_glob_maxi, ITER_GLOB_MAXI=maxiter),
