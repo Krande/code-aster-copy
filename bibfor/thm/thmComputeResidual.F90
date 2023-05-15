@@ -182,7 +182,8 @@ subroutine thmComputeResidual(ds_thm, parm_theta, gravity, &
                 do i = 1, ndim
                     r(addete+i) = r(addete+i)+ &
                                   time_incr*(parm_theta*congep(adcp12+ndim+1)*congep(adcp12+i)+ &
-                                           (1.d0-parm_theta)*congem(adcp12+ndim+1)*congem(adcp12+i))
+                                             (1.d0-parm_theta)*congem(adcp12+ndim+1) &
+                                             *congem(adcp12+i))
                 end do
             end if
         end if
@@ -239,7 +240,8 @@ subroutine thmComputeResidual(ds_thm, parm_theta, gravity, &
                 do i = 1, ndim
                     r(addete+i) = r(addete+i)+ &
                                   time_incr*((parm_theta)*congep(adcp22+ndim+1)*congep(adcp22+i)+ &
-                                           (1.d0-parm_theta)*congem(adcp22+ndim+1)*congem(adcp22+i))
+                                             (1.d0-parm_theta)*congem(adcp22+ndim+1) &
+                                             *congem(adcp22+i))
                 end do
             end if
         end if

@@ -108,7 +108,7 @@ subroutine thmGetElemPara_vf(ds_thm, l_axi, l_vf, &
 ! - Get generalized coordinates
 !
     call thmGetGene(ds_thm, l_vf, ndim, &
-                    mecani, press1, press2, tempe,second)
+                    mecani, press1, press2, tempe, second)
 !
 ! - Get dimensions of generalized vectors
 !
