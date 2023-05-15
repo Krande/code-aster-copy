@@ -395,8 +395,8 @@ class DynaLineFEM:
             __vect = ASSE_VECTEUR(VECT_ELEM=__vectelem, NUME_DDL=self.getNumeddl())
 
             __champ = RESOUDRE(MATR=self.__getRigiPhyInv(), CHAM_NO=__vect)
-            py = __champ.EXTR_COMP(dof, [])
-            if max(abs(py.valeurs)) > np.finfo(float).eps:
+            py = np.array(__champ.getValuesWithDescription()[0])
+            if max(abs(py)) > np.finfo(float).eps:
                 active_dofs.append(dof)
         assert active_dofs
         return active_dofs

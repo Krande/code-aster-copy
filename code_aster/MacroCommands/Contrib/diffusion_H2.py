@@ -120,9 +120,8 @@ def char_grad_impo_ops(
 
     # on suppose que les noeuds du maillage thermique et mecaniqeu sont les
     # memes (pour eviter un PROJ_CHAMP)
-    lc_t0 = __C20.EXTR_COMP("TEMP", [], 1)
-    c_t0 = lc_t0.valeurs
-    node_th = lc_t0.noeud
+    c_t0, description = __C20.getValuesWithDescription("TEMP")
+    node_th = description[0]
     nbnode = len(node_th)
 
     # contruction du terme Grad SigmaH
@@ -347,14 +346,12 @@ def char_source_ops(
 
     # on suppose que les noeuds du maillage thermique et mecaniqeu sont les
     # memes (pour eviter un PROJ_CHAMP)
-    lc_t0 = __C20.EXTR_COMP("TEMP", [], 1)
-    c_t0 = lc_t0.valeurs
-    node_th = lc_t0.noeud
+    c_t0, description = __C20.getValuesWithDescription("TEMP")
+    node_th = description[0]
     # print 'node_th=',node_th
-    lp_t0 = __VINT0.EXTR_COMP("V1", [], 1)
-    p_t0 = lp_t0.valeurs
-    node_me = lp_t0.noeud
-    p_t1 = __VINT1.EXTR_COMP("V1", [], 0).valeurs
+    p_t0, description = __VINT0.getValuesWithDescription("V1")
+    node_me = description[0]
+    p_t1, _ = __VINT1.getValuesWithDescription("V1")
     nbnode = len(node_th)
     assert nbnode == len(node_me)
     source = NP.zeros(nbnode)
@@ -473,12 +470,10 @@ def champ_detoile_ops(
 
     # on suppose que les noeuds du maillage thermique et mecaniqeu sont les
     # memes (pour eviter un PROJ_CHAMP)
-    lc_t0 = __C20.EXTR_COMP("TEMP", [], 1)
-    c_t0 = lc_t0.valeurs
-    node_th = lc_t0.noeud
-    lp_t1 = __VINT1.EXTR_COMP("V1", [], 1)
-    p_t1 = lp_t1.valeurs
-    node_me = lp_t1.noeud
+    c_t0, description = __C20.getValuesWithDescription("TEMP")
+    node_th = description[0]
+    p_t1, description = __VINT1.getValuesWithDescription("V1")
+    node_me = description[0]
     nbnode = len(node_th)
     assert nbnode == len(node_me)
     detoile = NP.zeros(nbnode)

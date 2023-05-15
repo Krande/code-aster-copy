@@ -164,8 +164,8 @@ test.assertTrue(isinstance(precond, code_aster.AssemblyMatrixDisplacementReal))
 vcine = dComputation.getDirichletBC(0.0)
 resu = monSolver.solve(retour, vcine)
 
-y = resu.EXTR_COMP()
-test.assertEqual(len(y.valeurs), 81)
+y, _ = resu.getValuesWithDescription()
+test.assertEqual(len(y), 81)
 
 resu2 = resu.toSimpleFieldOnNodes()
 resu2.updateValuePointers()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -213,8 +213,8 @@ CH = CREA_CHAMP(
     NUME_ORDRE=1,
 )
 
-forcX = numpy.sum(numpy.array(CH.EXTR_COMP("DX", [], 1).valeurs))
-forcY = numpy.sum(numpy.array(CH.EXTR_COMP("DY", [], 1).valeurs))
+forcX = numpy.sum(numpy.array(CH.getValuesWithDescription("DX")[0]))
+forcY = numpy.sum(numpy.array(CH.getValuesWithDescription("DY")[0]))
 
 resX = forcX + 2.9443664e6 * (tan12[0] + tan14[0])
 resY = forcY + 2.9443664e6 * (tan12[1] + tan14[1])

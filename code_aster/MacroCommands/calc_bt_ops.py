@@ -2190,28 +2190,17 @@ def calc_bt_ops(self, **args):
 
         __Elements = __Elements[__Elements[:, 0] > 0, :]
 
-        __S3 = __STRESS.EXTR_COMP("PRIN_1", [], 0)
-        __S2 = __STRESS.EXTR_COMP("PRIN_2", [], 0)
+        __c, _ = __STRESS.getValuesWithDescription("PRIN_1")
+        __b, _ = __STRESS.getValuesWithDescription("PRIN_2")
+        __a, _ = __STRESS.getValuesWithDescription("PRIN_3")
 
-        __S1 = __STRESS.EXTR_COMP("PRIN_3", [], 0)
-
-        __COS = __STRESS.EXTR_COMP("VECT_1_X", [], 0)
-        __SIN = __STRESS.EXTR_COMP("VECT_2_X", [], 0)
-
-        __c = __S3.valeurs
-        __b = __S2.valeurs
-        __a = __S1.valeurs
+        __U, _ = __STRESS.getValuesWithDescription("VECT_1_X")
+        __V, _ = __STRESS.getValuesWithDescription("VECT_1_Y")
 
         p_n_stress = np.zeros((len(__a), 6))
         p_n_stress[:, 1] = __a
         p_n_stress[:, 2] = __b
         p_n_stress[:, 3] = __c
-
-        __COS = __STRESS.EXTR_COMP("VECT_1_X", [], 0)
-        __SIN = __STRESS.EXTR_COMP("VECT_1_Y", [], 0)
-
-        __U = __COS.valeurs
-        __V = __SIN.valeurs
 
         return __Nodes, __Elements.astype(int), p_n_stress, __U, __V
 

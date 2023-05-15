@@ -834,7 +834,7 @@ def calc_precont_ops(
             rapMax = 0.0
             for dic in info_actif_actif:
                 grno = dic["GROUP_NO"]
-                GLIS = __REAC1.EXTR_COMP("GLIS", [grno]).valeurs
+                GLIS, _ = __REAC1.getValuesWithDescription("GLIS", [grno])
                 rap = abs(GLIS[0]) / dic["tension"]
 
                 if rap > rapMax:

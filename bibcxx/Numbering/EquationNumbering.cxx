@@ -412,6 +412,58 @@ bool EquationNumbering::isPhysicalDOF( const ASTERINTEGER dof, const bool local 
     return cmpId > 0;
 };
 
+std::pair< std::pair< VectorLong, VectorString >, VectorLong >
+EquationNumbering::getDOFsWithDescription( const std::string cmp,
+                                           const VectorString groupNames ) const {
+
+    VectorLong v_nodes;
+    VectorString cmps;
+    VectorLong dofs;
+
+    std::set< ASTERINTEGER > nodes;
+    if ( groupNames.size() == 0 ) {
+        auto group = _mesh->getNodes();
+        std::copy( group.begin(), group.end(), std::inserter( nodes, nodes.end() ) );
+    } else {
+        for ( auto groupName : groupNames ) {
+            auto group = _mesh->getNodes( groupName );
+            std::copy( group.begin(), group.end(), std::inserter( nodes, nodes.end() ) );
+        }
+    }
+
+    auto num2name = getComponentsNumber2Name();
+
+    ASTERINTEGER icmp, ncmp;
+    bool all_cmp = cmp == " ";
+    if ( all_cmp ) {
+        ncmp = getComponents().size();
+        cmps.reserve( ncmp * nodes.size() );
+    } else {
+        ncmp = 1;
+        icmp = getComponentsName2Number()[cmp];
+    }
+    v_nodes.reserve( ncmp * nodes.size() );
+
+    const auto descr = getNodesAndComponentsNumberFromDOF();
+
+    for ( auto dof = 0; dof < descr.size(); ++dof ) {
+        if ( all_cmp and descr[dof].second > 0 ) {
+            if ( nodes.find( descr[dof].first ) != nodes.end() ) {
+                v_nodes.push_back( descr[dof].first );
+                cmps.push_back( num2name[descr[dof].second] );
+                dofs.push_back( dof );
+            }
+        } else if ( icmp == descr[dof].second ) {
+            if ( nodes.find( descr[dof].first ) != nodes.end() ) {
+                v_nodes.push_back( descr[dof].first );
+                dofs.push_back( dof );
+            }
+        }
+    }
+
+    return std::make_pair( std::make_pair( v_nodes, cmps ), dofs );
+};
+
 /**
  * @brief Mise a jour des pointeurs Jeveux
  * @return renvoie true si la mise a jour s'est bien deroulee, false sinon

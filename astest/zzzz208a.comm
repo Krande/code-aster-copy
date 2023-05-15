@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -607,7 +607,7 @@ MASSC = FACTORISER(reuse=MASSC, MATR_ASSE=MASSC, METHODE="LDLT")
 VCINE = CALC_CHAR_CINE(NUME_DDL=NUME, CHAR_CINE=CHARCINE)
 VCINEC = CREA_CHAMP(OPERATION="R2C", TYPE_CHAM="NOEU_DEPL_C", CHAM_GD=VCINE)
 u = RESOUDRE(MATR=MASSC, CHAM_NO=FASC2, CHAM_CINE=VCINEC)
-uref = u.EXTR_COMP().valeurs
+uref = u.getValues()
 
 f = np.zeros(1260, dtype=complex)
 f[287] = 1.0 + 1j * 0.0

@@ -189,20 +189,21 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
                 If empty, the full mesh is used
 
             Returns:
-                list[complex]: List of values.
+                list[double]: List of values.
             )",
               py::arg( "cmps" ) = VectorString(), py::arg( "groupsOfCells" ) = VectorString() )
-        .def( "extrComp", &FieldOnNodesReal::extrComp, R"(
-            Return list of nodes, list of components and list of values for given nodes
+        .def( "getValues",
+              py::overload_cast< const VectorLong & >( &FieldOnNodesReal::getValues, py::const_ ),
+              R"(
+            Return a list of values as (x1, y1, z1, x2, y2, z2...) corresponding to list of dofs
 
             Arguments:
-                nodes[list[int]]: list of nodes
-                cmp[str]: component to extract
-                if cmp=' ', extract all components and list of components is filled in
+                dofs: dofs to extract
 
             Returns:
-                tuple[list, list, list]]: List of nodes, list of components, list of values.
-            )" );
+                list[double]: List of values.
+            )",
+              py::arg( "dofs" ) = VectorLong() );
     /**
      * Object FieldOnNodesComplex
      */
@@ -262,6 +263,19 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
                 list[complex]: List of values.
             )",
               py::arg( "cmps" ) = VectorString(), py::arg( "groupsOfCells" ) = VectorString() )
+        .def(
+            "getValues",
+            py::overload_cast< const VectorLong & >( &FieldOnNodesComplex::getValues, py::const_ ),
+            R"(
+            Return a list of values as (x1, y1, z1, x2, y2, z2...) corresponding to list of dofs
+
+            Arguments:
+                dofs: dofs to extract
+
+            Returns:
+                list[complex]: List of values.
+            )",
+            py::arg( "dofs" ) = VectorLong() )
         .def( "getComponents", &FieldOnNodesComplex::getComponents, R"(
             Get list of components
 
@@ -319,18 +333,7 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
                 values (list[complex]): list of values to set
             )",
               py::arg( "values" ) )
-        .def( "updateValuePointers", &FieldOnNodesComplex::updateValuePointers )
-        .def( "extrComp", &FieldOnNodesComplex::extrComp, R"(
-            Return list of nodes, list of components and list of values for given nodes
-
-            Arguments:
-                nodes[list[int]]: list of nodes
-                cmp[str]: compoment to extract
-                if cmp=' ', extract all components and list of components is filled in
-
-            Returns:
-                tuple[list, list, list]]: List of nodes, list of components, list of values.
-            )" );
+        .def( "updateValuePointers", &FieldOnNodesComplex::updateValuePointers );
 
     /**
      * Object FieldOnNodesLong

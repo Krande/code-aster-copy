@@ -919,9 +919,14 @@ def macPlot(
         # function to retrieve left and right modes from a modal result
 
         def getLeftAndRightModes(_res, _idx, _imode, _dof, _lFreq):
-            vectot = _res.getField("DEPL", _imode).EXTR_COMP().valeurs
+            vectot = np.array(_res.getField("DEPL", _imode).getValuesWithDescription()[0])
             v0_right = (
-                np.concatenate([_res.getField("DEPL", _imode).EXTR_COMP(d).valeurs for d in _dof])
+                np.concatenate(
+                    [
+                        np.array(_res.getField("DEPL", _imode).getValuesWithDescription(d)[0])
+                        for d in _dof
+                    ]
+                )
                 if _dof
                 else None
             )
@@ -931,9 +936,9 @@ def macPlot(
                     [
                         rhof
                         * (2 * np.pi * _lFreq[_idx]) ** 2
-                        * _res.getField("DEPL", _imode).EXTR_COMP(d).valeurs
+                        * np.array(_res.getField("DEPL", _imode).getValuesWithDescription(d)[0])
                         if d in ["DX", "DY", "DZ"]
-                        else _res.getField("DEPL", _imode).EXTR_COMP(d).valeurs
+                        else np.array(_res.getField("DEPL", _imode).getValuesWithDescription(d)[0])
                         for d in _dof
                     ]
                 )
@@ -948,7 +953,9 @@ def macPlot(
                         rhof * (2 * np.pi * _lFreq[_idx]) ** 2 * vectot[id]
                         if d in ["DX", "DY", "DZ"]
                         else vectot[id]
-                        for id, d in enumerate(_res.getField("DEPL", _imode).EXTR_COMP(topo=1).comp)
+                        for id, d in enumerate(
+                            _res.getField("DEPL", _imode).getValuesWithDescription()[1][1]
+                        )
                     ]
                 )
             )

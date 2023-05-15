@@ -523,8 +523,8 @@ def observation_ops(
                             self, MODELE_1, MODELE_2, NUME_DDL, cham_mater, cara_elem
                         )
                         modele = MODELE_2
-                        chnormx = chnorm.EXTR_COMP("DX", [], 1)
-                        ind_noeuds = chnormx.noeud
+                        chnormx, description = chnorm.getValuesWithDescription("DX")
+                        ind_noeuds = description[0]
                         nom_allno = [mayaexp.getNodeName(k) for k in ind_noeuds]
 
                         # on met les noeuds conernes sous forme de liste et on va
@@ -802,11 +802,11 @@ def crea_repere(chnorm, ind_no, vect):
 
     # 1) pour tous les noeuds du maillage experimental, recuperer la normale
     #    calculee a partir du maillage numerique
-    chnormx = chnorm.EXTR_COMP("DX", [], 1)
-    chnormy = chnorm.EXTR_COMP("DY", [], 1)
-    chnormz = chnorm.EXTR_COMP("DZ", [], 1)
+    chnormx, _ = chnorm.getValuesWithDescription("DX")
+    chnormy, _ = chnorm.getValuesWithDescription("DY")
+    chnormz, _ = chnorm.getValuesWithDescription("DZ")
 
-    normale = [chnormx.valeurs[ind_no], chnormy.valeurs[ind_no], chnormz.valeurs[ind_no]]
+    normale = [chnormx[ind_no], chnormy[ind_no], chnormz[ind_no]]
 
     # 2.1) soit l'utilisateur a donne un deuxieme vecteur explicitement
     # (option VECT_X Ou VECT_Y). Dans ce cas la, le 3e est le produit

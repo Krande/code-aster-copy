@@ -42,7 +42,7 @@ from libaster import (
 )
 
 from ..Objects.Serialization import InternalStateBuilder
-from ..Utilities import MPI, PETSc, config, injector
+from ..Utilities import MPI, PETSc, config, injector, deprecated
 
 
 class FieldOnNodesStateBuilder(InternalStateBuilder):
@@ -78,39 +78,37 @@ class ExtendedFieldOnNodesReal:
     cata_sdj = "SD.sd_champ.sd_cham_no_class"
     internalStateBuilder = FieldOnNodesStateBuilder
 
-    def EXTR_COMP(self, comp=" ", lgno=[], topo=0):
-        """retourne les valeurs de la composante comp du champ sur la liste
-        de groupes de noeuds lgno avec eventuellement l'info de la
-        topologie si topo>0. Si lgno est une liste vide, c'est equivalent
-        a un TOUT='OUI' dans les commandes aster
-
-        Arguments:
-            comp (str): Name of the component.
-            lgno (list[str]): List of groups of nodes.
-            topo (int): ``topo == 1`` means to return informations about the
-                support of the field.
-
-        Returns:
-            :py:class:`.post_comp_cham_no`: Object containing the values and,
-            eventually, the topological informations of the support.
+    def getValuesWithDescription(self, comp=" ", lgno=[]):
+        """retourne les valeurs de la composante cmp du champ sur la liste
+        de groupes de noeuds lgno avec la description.
+        Si lgno est une liste vide, c'est equivalent a un TOUT='OUI'
+        Si cmp= ' ', c'est équivalent à TOUT_CMP='OUI'
+        la description est sous la forme d'une paire de liste (noeuds, composantes)
         """
 
-        mesh = self.getMesh()
-        if lgno:
-            nodes = set()
-            for grNo in lgno:
-                if mesh.hasGroupOfNodes(grNo):
-                    nodes.update(mesh.getNodes(grNo))
-                else:
-                    raise ValueError("no {} group of nodes".format(grNo))
-            nodes = list(nodes)
-        else:
-            nodes = mesh.getNodes()
-        nodes, comp, values = self.extrComp(nodes, comp)
-        if topo == 0:
-            nodes = None
-            comp = None
-        return post_comp_cham_no(values, nodes, comp)
+        description, dofs = self.getDescription().getDOFsWithDescription(comp, lgno)
+        values = self.getValues(dofs)
+
+        return values, description
+
+    @deprecated
+    def EXTR_COMP(self, comp, lgma=[], topo=0):
+        raise Exception(
+            """EXTR_COMP has been removed, use getValuesWithDescription instead
+        Ex1:
+            extrcmp = chamno.EXTR_COMP(cmp, groups, 1)
+            values = extrcmp.valeurs
+            nodes = extrcmp.noeud
+            components = extrcmp.comp
+        =>
+            values, (nodes, components) = chamno.getValuesWithDescription(cmp, groups)
+        Ex2:
+            extrcmp = chamno.EXTR_COMP(cmp, groups, 0)
+            values = extrcmp.valeurs
+        =>
+            values, _ = chamno.getValuesWithDescription(cmp, groups)
+        """
+        )
 
     @property
     @functools.lru_cache()
@@ -254,56 +252,34 @@ class ExtendedFieldOnNodesComplex:
     cata_sdj = "SD.sd_champ.sd_cham_no_class"
     internalStateBuilder = FieldOnNodesStateBuilder
 
-    def EXTR_COMP(self, comp=" ", lgno=[], topo=0):
-        """retourne les valeurs de la composante comp du champ sur la liste
-        de groupes de noeuds lgno avec eventuellement l'info de la
-        topologie si topo>0. Si lgno est une liste vide, c'est equivalent
-        a un TOUT='OUI' dans les commandes aster
-
-        Arguments:
-            comp (str): Name of the component.
-            lgno (list[str]): List of groups of nodes.
-            topo (int): ``topo == 1`` means to return informations about the
-                support of the field.
-
-        Returns:
-            :py:class:`.post_comp_cham_no`: Object containing the values and,
-            eventually, the topological informations of the support.
+    def getValuesWithDescription(self, comp=" ", lgno=[]):
+        """retourne les valeurs de la composante cmp du champ sur la liste
+        de groupes de noeuds lgno avec la description.
+        Si lgno est une liste vide, c'est equivalent a un TOUT='OUI'
+        Si cmp= ' ', c'est équivalent à TOUT_CMP='OUI'
+        la description est sous la forme d'une liste de pair (noeuds, composantes)
         """
 
-        mesh = self.getMesh()
-        if lgno:
-            nodes = set()
-            for grNo in lgno:
-                if mesh.hasGroupOfNodes(grNo):
-                    nodes.update(mesh.getNodes(grNo))
-                else:
-                    raise ValueError("no {} group of nodes".format(grNo))
-            nodes = sorted(nodes)
-        else:
-            nodes = mesh.getNodes()
-        nodes, comp, values = self.extrComp(nodes, comp)
-        if topo == 0:
-            nodes = None
-            comp = None
-        return post_comp_cham_no(values, nodes, comp)
+        description, dofs = self.getDescription().getDOFsWithDescription(comp, lgno)
+        values = self.getValues(dofs)
 
+        return values, description
 
-class post_comp_cham_no:
-    """Container object that store the results of
-    :py:meth:`code_aster.Objects.FieldOnNodesReal.EXTR_COMP` and
-    :py:meth:`code_aster.Objects.FieldOnNodesComplex.EXTR_COMP`.
-
-    The support of the field may be unknown. In this case, :py:attr:`noeud`
-    and :py:attr:`comp` are set to *None*.
-
-    Attributes:
-        valeurs (numpy.ndarray): Values of the field.
-        noeud (list[int]): List of nodes numbers.
-        comp (list[int]): List of components.
-    """
-
-    def __init__(self, valeurs, noeud=None, comp=None):
-        self.valeurs = numpy.array(valeurs)
-        self.noeud = noeud
-        self.comp = tuple(i.strip() for i in comp) if comp else None
+    @deprecated
+    def EXTR_COMP(self, comp, lgma=[], topo=0):
+        raise Exception(
+            """EXTR_COMP has been removed, use getValuesWithDescription instead
+        Ex1:
+            extrcmp = chamno.EXTR_COMP(cmp, groups, 1)
+            values = extrcmp.valeurs
+            nodes = extrcmp.noeud
+            components = extrcmp.comp
+        =>
+            values, (nodes, components) = chamno.getValuesWithDescription(cmp, groups)
+        Ex2:
+            extrcmp = chamno.EXTR_COMP(cmp, groups, 0)
+            values = extrcmp.valeurs
+        =>
+            values, _ = chamno.getValuesWithDescription(cmp, groups)
+        """
+        )

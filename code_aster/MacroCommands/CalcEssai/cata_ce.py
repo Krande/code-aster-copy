@@ -882,8 +882,7 @@ def crea_champ(resu, ind_mod):
         NUME_ORDRE=ind_mod,
     )
 
-    champy = __CHANO.EXTR_COMP(topo=1)
-    vale = champy.valeurs
+    vale, _ = __CHANO.getValuesWithDescription()
 
     return vale
 
@@ -895,17 +894,15 @@ def nume_ddl_phy(resu):
     __CHAMP0 = CREA_CHAMP(
         RESULTAT=resu.obj, OPERATION="EXTR", NUME_ORDRE=1, TYPE_CHAM="NOEU_DEPL_R", NOM_CHAM="DEPL"
     )
-    champy0 = __CHAMP0.EXTR_COMP(topo=1)
-    num_no = champy0.noeud
-    comp = champy0.comp
-    nb_ddl = len(comp)
+    _, description = __CHAMP0.getValuesWithDescription()
+    nb_ddl = len(description[0])
 
     # Recherche des noms des noeuds associes a leur numero
     maya = resu.maya
     nume = []
     for ind in range(nb_ddl):
-        nom_no = maya.getNodeName(num_no[ind])
-        nume.append(nom_no.strip() + "_" + comp[ind].strip())
+        nom_no = maya.getNodeName(description[0][ind])
+        nume.append(nom_no.strip() + "_" + description[1][ind])
 
     return nume
 

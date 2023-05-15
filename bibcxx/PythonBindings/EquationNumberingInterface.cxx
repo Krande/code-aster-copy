@@ -159,5 +159,14 @@ Returns:
 
             Returns:
                 list[str]: list of components
+            )" )
+        .def( "getDOFsWithDescription", &EquationNumbering::getDOFsWithDescription, R"(
+            Get list of components
+            Arguments:
+                str: component to extract
+                list[str]: group names
+            Returns:
+                pair[list[int], list[str]]: list of nodes and list of components
+                list[int]: list of dofs
             )" );
 };

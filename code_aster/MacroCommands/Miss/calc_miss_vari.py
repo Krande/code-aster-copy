@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -104,7 +104,7 @@ def compute_POD(COHE, PRECISION, INFO):
     eig = NP.take(eig, order)
     vec = NP.take(vec, order, 0)
     # Nombre de modes POD a retenir
-    etot = NP.sum(eig ** 2)
+    etot = NP.sum(eig**2)
     ener = 0.0
     nbme = 0
     nbno = len(eig)
@@ -144,11 +144,11 @@ def compute_mecmode(NOM_CMP, GROUP_NO_INTER, resultat, nbmods, nbmodd):
             RESULTAT=resultat,
             NOM_CHAM="DEPL",
         )
-        MCMP = __CHAM.EXTR_COMP(NOM_CMP, [GROUP_NO_INTER]).valeurs
+        MCMP, _ = __CHAM.getValuesWithDescription(NOM_CMP, [GROUP_NO_INTER])
         # on recupere la composante COMP (dx,dy,dz) des modes
-        MCMP2 = __CHAM.EXTR_COMP(" ", [GROUP_NO_INTER], 0).valeurs
+        MCMP2, description = __CHAM.getValuesWithDescription(" ", [GROUP_NO_INTER])
         if mods == 0:
-            NCMP2 = __CHAM.EXTR_COMP(" ", [GROUP_NO_INTER], topo=1).comp
+            NCMP2 = description[1]
             nddi = len(MCMP2)
             dict_modes["NCMP2"] = NCMP2
             dict_modes["nddi"] = nddi
@@ -192,7 +192,7 @@ def compute_force_vari(self, dict_modes, VEC, *KRS):
                         UTMESS("F", "ALGORITH6_86")
                 else:
                     fact = 1.0 / dict_modes["nbno"]
-                    XO[mods] = 1.0 / (maxm ** 2.0) * fact * abs(NP.inner(MCMP, VEC))
+                    XO[mods] = 1.0 / (maxm**2.0) * fact * abs(NP.inner(MCMP, VEC))
         FS = NP.dot(KRS, NP.array(XO))
     # CAS 2: MODES EF
     elif self.interf_params["MODE_INTERF"] == "TOUT":
@@ -226,7 +226,7 @@ def compute_corr_vari(dict_modes, VEC, KRS, FS0):
     SI0 = 0.0
     for k1 in range(dict_modes["nbpod"]):
         XOe = abs(NP.sum(VEC[k1])) / dict_modes["nbno"]
-        SI0 = SI0 + XOe ** 2
+        SI0 = SI0 + XOe**2
     SI = sqrt(SI0)
     for idd in range(0, dict_modes["nddi"]):
         if NCMP2[idd][0:2] == dict_modes["NOM_CMP"]:

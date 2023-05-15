@@ -52,8 +52,8 @@ def char_rota_ops(self, MODELE, ANGLE_DEGRES, TINI, TFIN, RESU, MAIL, **args):
     __DEPL1 = CREA_CHAMP(
         OPERATION="EXTR", TYPE_CHAM="NOEU_DEPL_R", NOM_CHAM="DEPL", RESULTAT=RESU, INST=TINI
     )
-    dx = __DEPL1.EXTR_COMP("DX", [], 1).valeurs
-    dz = __DEPL1.EXTR_COMP("DZ", [], 1).valeurs
+    dx, _ = __DEPL1.getValuesWithDescription("DX")
+    dz, _ = __DEPL1.getValuesWithDescription("DZ")
     ddlimpo = []
 
     for ino in range(2, 8):

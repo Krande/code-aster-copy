@@ -98,9 +98,9 @@ def force_iss_vari(
             RESULTAT=resultat,
             NOM_CHAM="DEPL",
         )
-        MCMP2 = __CHAM.EXTR_COMP(" ", [GROUP_NO_INTER], 0).valeurs
+        MCMP2, description = __CHAM.getValuesWithDescription(" ", [GROUP_NO_INTER])
         if mods == 0:
-            NCMP2 = __CHAM.EXTR_COMP(" ", [GROUP_NO_INTER], topo=1).comp
+            NCMP2 = description[1]
             nddi = len(MCMP2)
             PHI = NP.zeros((nddi, nbmods))
         PHI[:, mods] = MCMP2

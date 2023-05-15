@@ -122,9 +122,8 @@ def cherche_trajet(
     Coortot = __mail.getCoordinates().getValues()
     Xtot = Coortot[coorIni1 : len(Coortot) : 3]
     Ytot = Coortot[coorIni2 : len(Coortot) : 3]
-    Endono = __ENDOGM.EXTR_COMP(NOM_CMP, [], 1)
-    Endo = Endono.valeurs
-    Noeybar = Endono.noeud
+    Endo, description = __ENDOGM.getValuesWithDescription(NOM_CMP)
+    Noeybar = description[0]
     idxNoeud = NP.array(Noeybar)
     Coorx = NP.take(Xtot, idxNoeud)
     Coory = NP.take(Ytot, idxNoeud)
@@ -136,8 +135,6 @@ def cherche_trajet(
     xmax = Coorx[idxmax]
     ymax = Coory[idxmax]
     endomax = Endo[idxmax]
-
-    Endono2 = __ENDO.EXTR_COMP(NOM_CMP, [], 1)
 
     # First crack path point
     PtMax = xmax * dplan1 + ymax * dplan2 + zCoupe * dnor
@@ -182,16 +179,15 @@ def cherche_trajet(
         NUME_ORDRE=1,
     )
 
-    dx0 = __YBARCH.EXTR_COMP(NOM_CMP, [], 1)
+    EndoOrth, description = __YBARCH.getValuesWithDescription(NOM_CMP)
 
     # "NonVide" : list of the circle nodes
     #   with associated values, i.e. inside the material
     # "idxpred" : connections between the two half-circles
-    NonVide = NP.array(list(dx0.noeud))
+    NonVide = NP.array(description[0])
     idxpred1 = NP.where(NonVide + 1 == 2 * nbPoints - 1)[0]
     idxpred2 = NP.where(NonVide + 1 == nbPoints)[0]
 
-    EndoOrth = dx0.valeurs
     Coor0 = __MAI.getCoordinates().getValues()
     CoorxOrth = NP.array(Coor0[coorIni1 : len(Coor0) : 3], float)
     CooryOrth = NP.array(Coor0[coorIni2 : len(Coor0) : 3], float)
@@ -268,13 +264,12 @@ def cherche_trajet(
         NUME_ORDRE=1,
     )
 
-    dx0 = __YBARCH.EXTR_COMP(NOM_CMP, [], 1)
+    EndoOrth, description = __YBARCH.getValuesWithDescription(NOM_CMP)
 
     #  Search for the prediction point among the projected points
     #   and elimination of doubled point in the middle
-    NonVide = NP.array(list(dx0.noeud))
+    NonVide = NP.array(description[0])
     idxpred = NP.where(NonVide + 1 == nbPoints)[0]
-    EndoOrth = dx0.valeurs
 
     Coor0 = __MAI.getCoordinates().getValues()
     CoorxOrth = NP.array(Coor0[coorIni1 : len(Coor0) : 3], float)
@@ -401,8 +396,8 @@ def cherche_trajet(
                 NUME_ORDRE=1,
             )
 
-            dx0 = __YBARCH.EXTR_COMP(NOM_CMP, [], 1)
-            NonVide = NP.array(list(dx0.noeud))
+            EndoOrth, description = __YBARCH.getValuesWithDescription(NOM_CMP)
+            NonVide = NP.array(description[0])
 
             # Search of the prediction point among projected points
             idxpred = NP.where(NonVide + 1 == nbPoints)[0]
@@ -417,7 +412,6 @@ def cherche_trajet(
                     condSort = seuil * 0.1
                     break
 
-            EndoOrth = dx0.valeurs
             Coor0 = __MAI.getCoordinates().getValues()
             CoorxOrth = NP.array(Coor0[coorIni1 : len(Coor0) : 3], float)
             CooryOrth = NP.array(Coor0[coorIni2 : len(Coor0) : 3], float)
@@ -654,9 +648,8 @@ def calcul_ouverture(
 
             # Retrieving to Python objects the strain or displacement field values
             #    on the orthogonal profile, and the orthogonal mesh.
-            ChampOrthoCH = __OUVECH.EXTR_COMP(composante, [], 1)
-            ChampOrtho = ChampOrthoCH.valeurs
-            NonVide = NP.array(list(ChampOrthoCH.noeud))
+            ChampOrtho, description = __OUVECH.getValuesWithDescription(composante)
+            NonVide = NP.array(description[0])
             idxCentre = NP.where(NonVide + 1 == nbPoints)[0]
             XtotOrtho1 = NP.take(XtotOrtho, NonVide)
             YtotOrtho1 = NP.take(YtotOrtho, NonVide)
@@ -692,9 +685,8 @@ def calcul_ouverture(
                     INST=inst,
                 )
 
-                EndoOrthoCH = __ENDOCH.EXTR_COMP(cmpEndo, [], 1)
-                EndoOrtho = EndoOrthoCH.valeurs
-                NonVide = NP.array(list(EndoOrthoCH.noeud))
+                EndoOrtho, description = __ENDOCH.getValuesWithDescription(cmpEndo)
+                NonVide = NP.array(description[0])
                 idxCentre = NP.where(NonVide + 1 == nbPoints)[0]
                 XtotOrtho2 = NP.take(XtotOrtho, NonVide)
                 YtotOrtho2 = NP.take(YtotOrtho, NonVide)

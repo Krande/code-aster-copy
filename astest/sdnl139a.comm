@@ -345,12 +345,12 @@ for i in range(nbpas):
         PRECISION=1e-15,
     )
 
-    Upx = DEP.EXTR_COMP("DX", ["AllNode"]).valeurs
-    Upy = DEP.EXTR_COMP("DY", ["AllNode"]).valeurs
-    Upz = DEP.EXTR_COMP("DZ", ["AllNode"]).valeurs
-    Uprx = DEP.EXTR_COMP("DRX", ["AllNode"]).valeurs
-    Upry = DEP.EXTR_COMP("DRY", ["AllNode"]).valeurs
-    Uprz = DEP.EXTR_COMP("DRZ", ["AllNode"]).valeurs
+    Upx, _ = DEP.getValuesWithDescription("DX", ["AllNode"])
+    Upy, _ = DEP.getValuesWithDescription("DY", ["AllNode"])
+    Upz, _ = DEP.getValuesWithDescription("DZ", ["AllNode"])
+    Uprx, _ = DEP.getValuesWithDescription("DRX", ["AllNode"])
+    Upry, _ = DEP.getValuesWithDescription("DRY", ["AllNode"])
+    Uprz, _ = DEP.getValuesWithDescription("DRZ", ["AllNode"])
 
     ACC = CREA_CHAMP(
         OPERATION="EXTR",
@@ -361,12 +361,12 @@ for i in range(nbpas):
         PRECISION=1e-15,
     )
 
-    ddotUpx = ACC.EXTR_COMP("DX", ["AllNode"]).valeurs
-    ddotUpy = ACC.EXTR_COMP("DY", ["AllNode"]).valeurs
-    ddotUpz = ACC.EXTR_COMP("DZ", ["AllNode"]).valeurs
-    ddotUprx = ACC.EXTR_COMP("DRX", ["AllNode"]).valeurs
-    ddotUpry = ACC.EXTR_COMP("DRY", ["AllNode"]).valeurs
-    ddotUprz = ACC.EXTR_COMP("DRZ", ["AllNode"]).valeurs
+    ddotUpx, _ = ACC.getValuesWithDescription("DX", ["AllNode"])
+    ddotUpy, _ = ACC.getValuesWithDescription("DY", ["AllNode"])
+    ddotUpz, _ = ACC.getValuesWithDescription("DZ", ["AllNode"])
+    ddotUprx, _ = ACC.getValuesWithDescription("DRX", ["AllNode"])
+    ddotUpry, _ = ACC.getValuesWithDescription("DRY", ["AllNode"])
+    ddotUprz, _ = ACC.getValuesWithDescription("DRZ", ["AllNode"])
 
     PUp = []
     ddotPUp = []

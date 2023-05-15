@@ -103,11 +103,11 @@ test.assertAlmostEqual(fr.norm("NORM_1"), fr.toSimpleFieldOnNodes().toFieldOnNod
 f0 = field.duplicate()
 f = field.duplicate()
 f += f
-f.EXTR_COMP().valeurs
+f.getValues()
 f2 = 2 * f0
-f2.EXTR_COMP().valeurs
+f2.getValues()
 f3 = -f + f2
-f3.EXTR_COMP().valeurs
+f3.getValues()
 test.assertAlmostEqual(f3.norm("NORM_2"), 0)
 
 myField = code_aster.FieldOnNodesReal(dofNume)
@@ -139,11 +139,11 @@ test.assertAlmostEqual(fieldp.dot(fieldp), norm_2 * norm_2)
 f0 = fieldp.duplicate()
 f = fieldp.duplicate()
 f += f
-f.EXTR_COMP().valeurs
+f.getValuesWithDescription()
 f2 = 2 * f0
-f2.EXTR_COMP().valeurs
+f2.getValuesWithDescription()
 f3 = -f + f2
-f3.EXTR_COMP().valeurs
+f3.getValuesWithDescription()
 test.assertAlmostEqual(f3.norm("NORM_2"), 0)
 
 # Test TEST_RESU with TEST_TYPE='MIN','MAX', 'SOMME', 'SOMME_ABS'
@@ -244,10 +244,10 @@ TEST_RESU(
     )
 )
 
-# TEST EXTR_COMP for FieldOnNodesReal
+# TEST getValuesWithDescription for FieldOnNodesReal
 f_real = code_aster.FieldOnNodesReal(dofNume)
 f_real.setValues(1.0)
-vals_real = f_real.EXTR_COMP("DX").valeurs
+vals_real, _ = f_real.getValuesWithDescription("DX")
 test.assertEqual(vals_real[0], 1.0)
 
 sf_real = f_real.toSimpleFieldOnNodes()
@@ -255,10 +255,10 @@ sf_real_values, sf_real_mask = sf_real.getValues()
 test.assertEqual(sf_real_values[0][0], 1.0)
 test.assertEqual(sf_real_mask.all(), True)
 
-# TEST EXTR_COMP for FieldOnNodesComplex
+# TEST getValuesWithDescription for FieldOnNodesComplex
 f_complex = code_aster.FieldOnNodesComplex(dofNume)
 f_complex.setValues(1 + 2j)
-vals_complex = f_complex.EXTR_COMP("DX").valeurs
+vals_complex, _ = f_complex.getValuesWithDescription("DX")
 test.assertEqual(vals_complex[0], 1 + 2j)
 
 f2_complex = code_aster.FieldOnNodesComplex(dofNume)

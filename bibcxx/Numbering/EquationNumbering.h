@@ -328,6 +328,13 @@ class EquationNumbering : public BaseEquationNumbering {
     VectorLong getLagrangeDOFs( const bool local = false ) const;
 
     /**
+     * @brief Get (Nodes And Components) and dofs corresponding to component name and list of node
+     * groups
+     */
+    std::pair< std::pair< VectorLong, VectorString >, VectorLong >
+    getDOFsWithDescription( const std::string, const VectorString ) const;
+
+    /**
      * @brief Mise a jour des pointeurs Jeveux
      * @return renvoie true si la mise a jour s'est bien deroulee, false sinon
      */

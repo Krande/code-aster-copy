@@ -1064,9 +1064,9 @@ def get_propmat_varc_fem(
     nomgd_2_nomcmp = {"TEMP_R": "TEMP", "NEUT_R": "X1"}
     nomgd = __CHNOVRC.getPhysicalQuantity()
     assert nomgd in list(nomgd_2_nompar.keys())
-    ChnoVrcExtr = __CHNOVRC.EXTR_COMP(topo=1)
-    ChnoVrcNoeu = ChnoVrcExtr.noeud
-    ChnoVrcComp = ChnoVrcExtr.comp
+    ChnoVrcVale, description = __CHNOVRC.getValuesWithDescription()
+    ChnoVrcNoeu = description[0]
+    ChnoVrcComp = description[1]
     assert list(set(ChnoVrcComp)) in [["TEMP"], ["X1"]]
 
     # blindage sur le nombre de noeuds du champ / nombre de noeuds du maillage
@@ -1144,10 +1144,9 @@ def get_propmat_varc_xfem(
     nomgd_2_nompar = {"TEMP_R": "TEMP", "NEUT_R": "NEUT1"}
     nomgd = __CHNOVRC.getPhysicalQuantity()
     assert nomgd in list(nomgd_2_nompar.keys())
-    ChnoVrcExtr = __CHNOVRC.EXTR_COMP(topo=1)
-    ChnoVrcVale = ChnoVrcExtr.valeurs
-    ChnoVrcNoeu = ChnoVrcExtr.noeud
-    ChnoVrcComp = ChnoVrcExtr.comp
+    ChnoVrcVale, description = __CHNOVRC.getValuesWithDescription()
+    ChnoVrcNoeu = description[0]
+    ChnoVrcComp = description[1]
     assert list(set(ChnoVrcComp)) in [["TEMP"], ["X1"]]
 
     # blindage sur le nombre de noeuds du champ / nombre de noeuds du maillage
