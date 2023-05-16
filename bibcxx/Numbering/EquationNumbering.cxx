@@ -431,7 +431,7 @@ EquationNumbering::getDOFsWithDescription( const std::string cmp,
         }
     }
 
-    auto num2name = getComponentsNumber2Name();
+    auto idToName = getComponentsIdToName();
 
     ASTERINTEGER icmp, ncmp;
     bool all_cmp = cmp == " ";
@@ -440,17 +440,17 @@ EquationNumbering::getDOFsWithDescription( const std::string cmp,
         cmps.reserve( ncmp * nodes.size() );
     } else {
         ncmp = 1;
-        icmp = getComponentsName2Number()[cmp];
+        icmp = getComponentsNameToId()[cmp];
     }
     v_nodes.reserve( ncmp * nodes.size() );
 
-    const auto descr = getNodesAndComponentsNumberFromDOF();
+    const auto descr = getNodeAndComponentIdFromDOF();
 
     for ( auto dof = 0; dof < descr.size(); ++dof ) {
         if ( all_cmp and descr[dof].second > 0 ) {
             if ( nodes.find( descr[dof].first ) != nodes.end() ) {
                 v_nodes.push_back( descr[dof].first );
-                cmps.push_back( num2name[descr[dof].second] );
+                cmps.push_back( idToName[descr[dof].second] );
                 dofs.push_back( dof );
             }
         } else if ( icmp == descr[dof].second ) {
