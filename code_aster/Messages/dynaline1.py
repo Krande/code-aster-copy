@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -169,6 +169,13 @@ On ne garde donc que les  %(i3)d premiers coefficients.
         """
 Le nombre de coefficients d'amortissement réduit est trop petit, il en manque %(i1)d car il y a %(i2)d modes propres.
 On rajoute  %(i3)d amortissements réduits avec la valeur de celui du dernier mode propre.
+"""
+    ),
+    98: _(
+        """
+Vous utilisez MATR_AMOR et MATR_IMPE_PHI au même temps. Si vous n'avez pas désactivé le calcul de l'amortissement
+des éléments absorbants fluides dans l'option AMOR_MECA, vous prenez en compte l'amortissement deux fois. Pour désactiver
+cet alarme, il suffit de donner AMOR_FLUI = "NON" dans DYNA_VIBRA.
 """
     ),
 }

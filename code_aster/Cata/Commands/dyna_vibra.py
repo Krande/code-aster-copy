@@ -93,6 +93,11 @@ DYNA_VIBRA = OPER(
         MATR_RIGI=SIMP(statut="o", typ=(matr_asse_depl_r, matr_asse_depl_c, matr_asse_pres_c)),
         MATR_AMOR=SIMP(statut="f", typ=(matr_asse_depl_r, matr_asse_pres_c)),
         MATR_IMPE_PHI=SIMP(statut="f", typ=(matr_asse_depl_r)),
+        # Fluid absorbing damping condition
+        b_amor_flui=BLOC(
+            condition="""exists("MATR_AMOR") and exists("MATR_IMPE_PHI")""",
+            AMOR_FLUI=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="OUI"),
+        ),
     ),
     # Reduced basis, harmonic calculation
     b_matr_harm_gene=BLOC(
@@ -101,6 +106,11 @@ DYNA_VIBRA = OPER(
         MATR_RIGI=SIMP(statut="o", typ=(matr_asse_gene_r, matr_asse_gene_c)),
         MATR_AMOR=SIMP(statut="f", typ=(matr_asse_gene_r)),
         MATR_IMPE_PHI=SIMP(statut="f", typ=(matr_asse_gene_r)),
+        # Fluid absorbing damping condition
+        b_amor_flui=BLOC(
+            condition="""exists("MATR_AMOR") and exists("MATR_IMPE_PHI")""",
+            AMOR_FLUI=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="OUI"),
+        ),
     ),
     RESULTAT=SIMP(statut="f", typ=(dyna_harmo, harm_gene)),
     # Modal damping

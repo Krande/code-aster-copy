@@ -26,6 +26,7 @@ subroutine dylema(matr_rigi, matr_mass, matr_damp, matr_impe, &
 #include "asterf_types.h"
 #include "asterfort/gettco.h"
 #include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
@@ -75,10 +76,10 @@ subroutine dylema(matr_rigi, matr_mass, matr_damp, matr_impe, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: n1, n2, n
-    integer :: nb_damp_read
+    integer :: nb_damp_read, ibid
     character(len=1) :: ktyp, resu_type
     character(len=8) :: list_damp, matr_res8
-    character(len=16) :: typobj
+    character(len=16) :: typobj, amor_flui
     character(len=14) :: numdl1, numdl2, numdl3
     aster_logical :: l_cplx, l_harm
     real(kind=8), pointer :: l_damp_read(:) => null()
@@ -134,6 +135,7 @@ subroutine dylema(matr_rigi, matr_mass, matr_damp, matr_impe, &
     if (l_damp) then
         call mtdscr(matr_damp)
     end if
+
 !
 ! --- TEST: LES MATRICES SONT TOUTES BASEES SUR LA MEME NUMEROTATION ?
 !
@@ -189,6 +191,18 @@ subroutine dylema(matr_rigi, matr_mass, matr_damp, matr_impe, &
     if (l_impe) then
         call mtdscr(matr_impe)
     end if
+
+!
+! - Verification on fluid absorbing damping
+!
+
+    if ((l_impe) .and. (l_damp)) then
+        call getvtx(' ', 'AMOR_FLUI', scal=amor_flui, nbret=ibid)
+        if (amor_flui .eq. 'OUI') then
+            call utmess('A', 'DYNALINE1_98')
+        end if
+    end if
+
 !
 ! - Linear combiantion
 !
