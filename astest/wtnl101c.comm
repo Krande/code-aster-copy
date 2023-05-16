@@ -139,6 +139,8 @@ TEST_RESU(
             GROUP_NO="N22",
             NOM_CMP="PRE1",
             VALE_CALC=4872529.625730457,
+            VALE_REFE=4872529.625730457,
+            REFERENCE="AUTRE_ASTER",
         ),
         _F(
             NUME_ORDRE=10,
@@ -147,6 +149,8 @@ TEST_RESU(
             GROUP_NO="N17",
             NOM_CMP="PRE1",
             VALE_CALC=6103879.4937303215,
+            VALE_REFE=6103879.4937303215,
+            REFERENCE="AUTRE_ASTER",
         ),
         _F(
             NUME_ORDRE=10,
@@ -155,6 +159,8 @@ TEST_RESU(
             GROUP_NO="N12",
             NOM_CMP="PRE1",
             VALE_CALC=7120944.223780098,
+            VALE_REFE=7120944.223780098,
+            REFERENCE="AUTRE_ASTER",
         ),
         _F(
             NUME_ORDRE=10,
@@ -163,6 +169,8 @@ TEST_RESU(
             GROUP_NO="N7",
             NOM_CMP="PRE1",
             VALE_CALC=7793157.1788174575,
+            VALE_REFE=7793157.1788174575,
+            REFERENCE="AUTRE_ASTER",
         ),
         _F(
             NUME_ORDRE=10,
@@ -171,6 +179,8 @@ TEST_RESU(
             GROUP_NO="N2",
             NOM_CMP="PRE1",
             VALE_CALC=8027209.935986509,
+            VALE_REFE=8027209.935986509,
+            REFERENCE="AUTRE_ASTER",
         ),
     )
 )
@@ -184,6 +194,8 @@ TEST_RESU(
             GROUP_NO="N22",
             NOM_CMP="TEMP",
             VALE_CALC=12.687444489211854,
+            VALE_REFE=12.687444489211854,
+            REFERENCE="AUTRE_ASTER",
         ),
         _F(
             NUME_ORDRE=10,
@@ -192,6 +204,8 @@ TEST_RESU(
             GROUP_NO="N17",
             NOM_CMP="TEMP",
             VALE_CALC=17.93639135730917,
+            VALE_REFE=17.93639135730917,
+            REFERENCE="AUTRE_ASTER",
         ),
         _F(
             NUME_ORDRE=10,
@@ -200,6 +214,8 @@ TEST_RESU(
             GROUP_NO="N12",
             NOM_CMP="TEMP",
             VALE_CALC=24.68692676216173,
+            VALE_REFE=24.68692676216173,
+            REFERENCE="AUTRE_ASTER",
         ),
         _F(
             NUME_ORDRE=10,
@@ -208,6 +224,8 @@ TEST_RESU(
             GROUP_NO="N7",
             NOM_CMP="TEMP",
             VALE_CALC=33.10827989729661,
+            VALE_REFE=33.10827989729661,
+            REFERENCE="AUTRE_ASTER",
         ),
         _F(
             NUME_ORDRE=10,
@@ -216,6 +234,8 @@ TEST_RESU(
             GROUP_NO="N2",
             NOM_CMP="TEMP",
             VALE_CALC=43.310555265874385,
+            VALE_REFE=43.310555265874385,
+            REFERENCE="AUTRE_ASTER",
         ),
     )
 )

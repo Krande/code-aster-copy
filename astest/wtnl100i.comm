@@ -131,6 +131,8 @@ TEST_RESU(
             GROUP_NO="NO168",
             NOM_CMP="PRE1",
             VALE_CALC=1.000000000,
+            VALE_REFE=1.000000000,
+            REFERENCE="AUTRE_ASTER",
         ),
         _F(
             NUME_ORDRE=1,
@@ -139,6 +141,8 @@ TEST_RESU(
             GROUP_NO="NO170",
             NOM_CMP="PRE1",
             VALE_CALC=1.000000000,
+            VALE_REFE=1.000000000,
+            REFERENCE="AUTRE_ASTER",
         ),
         _F(
             NUME_ORDRE=1,
@@ -147,6 +151,8 @@ TEST_RESU(
             GROUP_NO="NO172",
             NOM_CMP="PRE1",
             VALE_CALC=1.000000000,
+            VALE_REFE=1.000000000,
+            REFERENCE="AUTRE_ASTER",
         ),
         _F(
             NUME_ORDRE=1,
@@ -155,6 +161,8 @@ TEST_RESU(
             GROUP_NO="NO174",
             NOM_CMP="PRE1",
             VALE_CALC=1.000000000,
+            VALE_REFE=1.000000000,
+            REFERENCE="AUTRE_ASTER",
         ),
         _F(
             NUME_ORDRE=1,
@@ -163,6 +171,8 @@ TEST_RESU(
             GROUP_NO="NO176",
             NOM_CMP="PRE1",
             VALE_CALC=1.000000000,
+            VALE_REFE=1.000000000,
+            REFERENCE="AUTRE_ASTER",
         ),
         _F(
             NUME_ORDRE=1,
@@ -171,6 +181,8 @@ TEST_RESU(
             GROUP_NO="NO178",
             NOM_CMP="PRE1",
             VALE_CALC=1.000001077754452,
+            VALE_REFE=1.000001077754452,
+            REFERENCE="AUTRE_ASTER",
         ),
         _F(
             NUME_ORDRE=1,
@@ -179,6 +191,8 @@ TEST_RESU(
             GROUP_NO="NO180",
             NOM_CMP="PRE1",
             VALE_CALC=0.9999959399163574,
+            VALE_REFE=0.9999959399163574,
+            REFERENCE="AUTRE_ASTER",
         ),
         _F(
             NUME_ORDRE=1,
@@ -187,6 +201,8 @@ TEST_RESU(
             GROUP_NO="NO182",
             NOM_CMP="PRE1",
             VALE_CALC=1.000015295036687,
+            VALE_REFE=1.000015295036687,
+            REFERENCE="AUTRE_ASTER",
         ),
         _F(
             NUME_ORDRE=1,
@@ -195,6 +211,8 @@ TEST_RESU(
             GROUP_NO="NO184",
             NOM_CMP="PRE1",
             VALE_CALC=0.9999423809493585,
+            VALE_REFE=0.9999423809493585,
+            REFERENCE="AUTRE_ASTER",
         ),
         _F(
             NUME_ORDRE=1,
@@ -203,6 +221,8 @@ TEST_RESU(
             GROUP_NO="NO186",
             NOM_CMP="PRE1",
             VALE_CALC=1.0002170609416887,
+            VALE_REFE=1.0002170609416887,
+            REFERENCE="AUTRE_ASTER",
         ),
         _F(
             NUME_ORDRE=1,
@@ -211,6 +231,8 @@ TEST_RESU(
             GROUP_NO="NO188",
             NOM_CMP="PRE1",
             VALE_CALC=0.9991822938361286,
+            VALE_REFE=0.9991822938361286,
+            REFERENCE="AUTRE_ASTER",
         ),
         _F(
             NUME_ORDRE=1,
@@ -219,6 +241,8 @@ TEST_RESU(
             GROUP_NO="NO190",
             NOM_CMP="PRE1",
             VALE_CALC=1.00308044075389,
+            VALE_REFE=1.00308044075389,
+            REFERENCE="AUTRE_ASTER",
         ),
         _F(
             NUME_ORDRE=1,
@@ -227,6 +251,8 @@ TEST_RESU(
             GROUP_NO="NO192",
             NOM_CMP="PRE1",
             VALE_CALC=0.9883954461239586,
+            VALE_REFE=0.9883954461239586,
+            REFERENCE="AUTRE_ASTER",
         ),
         _F(
             NUME_ORDRE=1,
@@ -235,6 +261,8 @@ TEST_RESU(
             GROUP_NO="NO194",
             NOM_CMP="PRE1",
             VALE_CALC=1.043716363518018,
+            VALE_REFE=1.043716363518018,
+            REFERENCE="AUTRE_ASTER",
         ),
         _F(
             NUME_ORDRE=1,
@@ -243,6 +271,8 @@ TEST_RESU(
             GROUP_NO="NO196",
             NOM_CMP="PRE1",
             VALE_CALC=0.8353139382291944,
+            VALE_REFE=0.8353139382291944,
+            REFERENCE="AUTRE_ASTER",
         ),
         _F(
             NUME_ORDRE=1,
@@ -251,6 +281,8 @@ TEST_RESU(
             GROUP_NO="NO198",
             NOM_CMP="PRE1",
             VALE_CALC=1.619217068047969,
+            VALE_REFE=1.619217068047969,
+            REFERENCE="AUTRE_ASTER",
         ),
     )
 )
@@ -264,7 +296,9 @@ TEST_RESU(
             GROUP_NO="NO83",
             NOM_CMP="VMIS",
             VALE_CALC=0.008925326186564289,
+            VALE_REFE=0.008925326186564289,
             GROUP_MA="MA16",
+            REFERENCE="AUTRE_ASTER",
         ),
         _F(
             NUME_ORDRE=1,
@@ -273,7 +307,9 @@ TEST_RESU(
             GROUP_NO="NO83",
             NOM_CMP="TRESCA",
             VALE_CALC=0.00892532618656523,
+            VALE_REFE=0.00892532618656523,
             GROUP_MA="MA16",
+            REFERENCE="AUTRE_ASTER",
         ),
         _F(
             NUME_ORDRE=1,
@@ -282,7 +318,9 @@ TEST_RESU(
             GROUP_NO="NO83",
             NOM_CMP="PRIN_1",
             VALE_CALC=-0.0089253261865643,
+            VALE_REFE=-0.0089253261865643,
             GROUP_MA="MA16",
+            REFERENCE="AUTRE_ASTER",
         ),
         _F(
             NUME_ORDRE=1,
@@ -291,7 +329,9 @@ TEST_RESU(
             GROUP_NO="NO83",
             NOM_CMP="VMIS_SG",
             VALE_CALC=-0.008925326186564289,
+            VALE_REFE=-0.008925326186564289,
             GROUP_MA="MA16",
+            REFERENCE="AUTRE_ASTER",
         ),
     )
 )

@@ -419,6 +419,8 @@ TEST_RESU(
         GROUP_NO="N3",
         NOM_CMP="PRE1",
         VALE_CALC=4.4602082210399e07,
+        VALE_REFE=4.4602082210399e07,
+        REFERENCE="AUTRE_ASTER",
         CRITERE="RELATIF",
     )
 )
@@ -431,6 +433,8 @@ TEST_RESU(
         GROUP_NO="N3",
         NOM_CMP="SIXX",
         VALE_CALC=-45635.827065448,
+        VALE_REFE=-45635.827065448,
+        REFERENCE="AUTRE_ASTER",
         CRITERE="RELATIF",
     )
 )
@@ -443,6 +447,8 @@ TEST_RESU(
         GROUP_NO="N3",
         NOM_CMP="SIXX",
         VALE_CALC=-5.667167128196e06,
+        VALE_REFE=-5.667167128196e06,
+        REFERENCE="AUTRE_ASTER",
         CRITERE="RELATIF",
     )
 )

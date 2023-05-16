@@ -103,6 +103,8 @@ TEST_RESU(
             NOM_CMP="GONF",
             VALE_CALC=-0.09999999999999998,
             CRITERE="RELATIF",
+            REFERENCE="ANALYTIQUE",
+            VALE_REFE=-0.1,
         ),
         _F(
             INST=1.0,
@@ -112,6 +114,8 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=0.024999999999999998,
             CRITERE="RELATIF",
+            REFERENCE="ANALYTIQUE",
+            VALE_REFE=0.025,
         ),
         _F(
             INST=1.0,
@@ -122,6 +126,8 @@ TEST_RESU(
             VALE_CALC=1.4999999999999998,
             CRITERE="RELATIF",
             GROUP_MA="M1",
+            REFERENCE="ANALYTIQUE",
+            VALE_REFE=1.5,
         ),
     )
 )
@@ -147,6 +153,8 @@ TEST_RESU(
             NOM_CMP="GONF",
             VALE_CALC=-0.09999999999999998,
             CRITERE="RELATIF",
+            REFERENCE="ANALYTIQUE",
+            VALE_REFE=-0.1,
         ),
         _F(
             INST=1.0,
@@ -156,6 +164,8 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=0.024999999999999998,
             CRITERE="RELATIF",
+            REFERENCE="ANALYTIQUE",
+            VALE_REFE=0.025,
         ),
         _F(
             INST=1.0,
@@ -166,6 +176,8 @@ TEST_RESU(
             VALE_CALC=1.4999999999999998,
             CRITERE="RELATIF",
             GROUP_MA="M1",
+            REFERENCE="ANALYTIQUE",
+            VALE_REFE=1.5,
         ),
     )
 )
