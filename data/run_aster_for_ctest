@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# Wrapper of run_aster internally used within run_ctest
+
+set_prefix() {
+    local this=$(readlink -n -f "$1")
+    prefix=$(dirname $(dirname $(dirname "${this}")))
+}
+
+set_prefix "${0}"
+
+if [ $# -ne 1 ]; then
+    echo "usage: ${0} study.export"
+    exit 1
+fi
+export="${1}"
+base=$(basename "${export%%.*}")
+
+export RUNASTER_ROOT="${prefix}"
+rm -f "${base}.{mess,code}"
+"${prefix}/bin/run_aster" --ctest "${export}" > "${base}.mess" 2>&1
+iret=${?}
+
+if [ ${iret} -eq 0 ] && [ ! -z "${ASTER_ONLY_FAILED_RESULTS}" ]; then
+    rm -f "${base}".{mess,code}
+fi
+
+exit ${iret}

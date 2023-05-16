@@ -190,10 +190,9 @@ def parse_args(argv):
         "--ctest",
         action="store_true",
         help="testcase execution inside ctest (implies "
-        "'--test'), the 'mess' file is saved into "
+        "'--test'), the 'code' file is saved into "
         "the current directory (which is '--resutest' "
-        "directory for 'run_ctest') and is not duplicated "
-        "on stdout.",
+        "directory for 'run_ctest').",
     )
     parser.add_argument(
         "-n",
@@ -258,8 +257,6 @@ def parse_args(argv):
     )
 
     args = parser.parse_args(argv)
-    if args.ctest:
-        logger.setLevel(WARNING)
     if args.debug:
         logger.setLevel(DEBUG)
         os.environ["DEBUG"] = str(os.environ.get("DEBUG") or 1)
@@ -325,22 +322,16 @@ def main(argv=None):
             fobj.write(AUTO_IMPORT.format(starter=SAVE_ARGV))
             export.add_file(File(fobj.name, filetype="comm", unit=1))
             tmpf = fobj.name
-    ctest_results = []
-    output = None
+    # output = None
     if args.ctest:
         args.test = True
         basename = osp.splitext(osp.basename(args.file))[0]
-        output = osp.abspath(basename + ".mess")
-        if osp.isfile(output) and export.get("step", 0) == 0:
-            os.remove(output)
-        ctest_results.append(output)
         add = {15: "code"}
         for unit, typ in add.items():
             if export.files_of_type(typ):
                 continue
             res = File(osp.abspath(basename + "." + typ), filetype=typ, unit=unit, resu=True)
             export.add_file(res)
-            ctest_results.append(res.path)
     if args.time_limit:
         export.set_time_limit(args.time_limit)
     # use FACMTPS from environment
@@ -409,8 +400,7 @@ def main(argv=None):
         opts = {}
         opts["test"] = args.test
         opts["env"] = make_env
-        opts["tee"] = not args.ctest and (not args.only_proc0 or procid == 0)
-        opts["output"] = output
+        opts["tee"] = not args.only_proc0 or procid == 0
         opts["interactive"] = args.interactive
         if args.exectool:
             wrapper = CFG.get("exectool", {}).get(args.exectool)
@@ -428,13 +418,6 @@ def main(argv=None):
             status.save(args.statusfile)
         if tmpf and not opts["env"]:
             os.remove(tmpf)
-        # remove results file
-        if args.ctest and os.environ.get("ONLY_FAILED_RESULTS") and exitcode == 0:
-            for res in ctest_results:
-                try:
-                    os.remove(res)
-                except FileNotFoundError:
-                    pass
     finally:
         if not args.wrkdir:
             shutil.rmtree(wrkdir)

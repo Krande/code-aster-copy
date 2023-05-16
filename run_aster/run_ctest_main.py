@@ -239,7 +239,7 @@ def main(argv=None):
     # options passed through environment
     os.environ["FACMTPS"] = str(args.timefactor)
     if args.only_failed_results:
-        os.environ["ONLY_FAILED_RESULTS"] = "1"
+        os.environ["ASTER_ONLY_FAILED_RESULTS"] = "1"
         print("only the results files of testcases in failure will be kept!")
 
     use_tmp = args.resutest.lower() == "none"
@@ -325,11 +325,12 @@ def create_ctest_file(testlist, exclude, filename):
 
 CTEST_DEF = """
 set(TEST_NAME ${{COMPONENT_NAME}}_{testname})
-add_test(${{TEST_NAME}} {BINDIR}/run_aster --ctest {ASTERDATADIR}/tests/{testname}.export)
+add_test(${{TEST_NAME}} {ASTERDATADIR}/run_aster_for_ctest {ASTERDATADIR}/tests/{testname}.export)
 set_tests_properties(${{TEST_NAME}} PROPERTIES
                      LABELS "${{COMPONENT_NAME}} {labels}"
                      PROCESSORS {processors}
-                     TIMEOUT {timeout})
+                     TIMEOUT {timeout}
+                     COST {timeout})
 """
 
 TEST_FILES_INTEGR = """
@@ -388,7 +389,6 @@ def _build_def(bindir, datadir, lexport):
                 processors=mpi * thr,
                 timeout=int(tim * 1.1 * float(os.environ["FACMTPS"])),
                 ASTERDATADIR=datadir,
-                BINDIR=bindir,
             )
         )
     return "\n".join(text)

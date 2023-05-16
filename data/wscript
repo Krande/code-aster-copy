@@ -29,6 +29,7 @@ Build some data files (dest: share/aster)
 - 'post_install': update some paths after moving the installed files.
 - 'profile.sh': environment script.
 - 'run_aster': script that executes code_aster.
+- 'run_aster_for_ctest': script that executes code_aster used by 'run_ctest'.
 - 'run_ctest': script that executes a list of testcases using 'ctest'.
 - 'run_sbatch': script that executes code_aster through sbatch.
 """
@@ -257,7 +258,7 @@ def build(self):
     )
     self.install_files(
         self.env.ASTERDATADIR,
-        [self.path.get_src().find_node(src) for src in ("post_install",)],
+        [self.path.get_src().find_node(src) for src in ("post_install", "run_aster_for_ctest")],
         chmod=Utils.O755,
     )
     self.install_files(
