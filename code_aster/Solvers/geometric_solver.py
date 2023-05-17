@@ -105,13 +105,10 @@ class GeometricSolver(SolverFeature):
         Returns:
             bool: *True* if there is no iteration to be computed, *False* otherwise.
         """
-
         if self.current_incr > self._get("CONVERGENCE", "ITER_GLOB_MAXI"):
             return True
-
         if self.current_incr < 2:
             return False
-
         return convManager.hasConverged()
 
     def _setMatrixType(self):
@@ -181,9 +178,10 @@ class GeometricSolver(SolverFeature):
 
     def _get(self, keyword, parameter=None, default=None):
         """ "Return a keyword value"""
+        args = self.param
         if parameter is not None:
-            if keyword in self.param and self.param.get(keyword) is not None:
-                return self.param.get(keyword).get(parameter, default)
-            return default
+            if args.get(keyword) is None:
+                return default
+            return _F(args[keyword])[0].get(parameter, default)
 
-        return self.param.get(keyword, default)
+        return args.get(keyword, default)

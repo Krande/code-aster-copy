@@ -118,6 +118,7 @@ class NonLinearSolver(SolverFeature):
         phys_pb.computeDOFNumbering()
         if phys_pb.getMaterialField().hasExternalStateVariableForLoad():
             phys_pb.computeReferenceExternalStateVariables()
+        self.get_childs(SOP.IncrementalSolver)[0].add_observer(self.stepper)
         self.setInitialState()
         self.step_rank = 0
         self._storeRank(self.phys_state.time)
@@ -210,7 +211,8 @@ class NonLinearSolver(SolverFeature):
         """ "Return a keyword value"""
         args = self.param
         if parameter is not None:
-            assert keyword in args
-            return args.get(keyword).get(parameter, default)
+            if args.get(keyword) is None:
+                return default
+            return _F(args[keyword])[0].get(parameter, default)
 
         return args.get(keyword, default)

@@ -26,6 +26,7 @@ from libaster import ConvergenceError, IntegrationError, SolverError
 from ..Cata.Syntax import _F
 from ..Messages import MessageLog
 from ..Utilities import logger, no_new_attributes
+from .base_features import Observer
 from .solver_features import SolverFeature
 from .solver_features import SolverOptions as SOP
 
@@ -46,7 +47,7 @@ class Event(Flag):
     # COLLISION, INTERPENETRATION, INSTABILITE
 
 
-class TimeStepper(SolverFeature):
+class TimeStepper(SolverFeature, Observer):
     """This object deals with the time steps.
 
     It gives the list of the time steps to be calculated. The initial time is
@@ -92,7 +93,11 @@ class TimeStepper(SolverFeature):
         Returns:
             TimeStepper: copy of the object.
         """
-        return TimeStepper(self._times, initial=self._initial, final=self._final, epsilon=self._eps)
+        new = TimeStepper(self._times, initial=self._initial, final=self._final, epsilon=self._eps)
+        for act in self._actions:
+            new.register_event(act.copy())
+        new.register_default_error_event()
+        return new
 
     def _check_bounds(self):
         """Remove out of bounds values."""
@@ -235,6 +240,15 @@ class TimeStepper(SolverFeature):
             raise IndexError("no more timesteps")
         self._current += 1
 
+    def update(self, event):
+        """Receive update from event (only *Incremental* solver).
+
+        Arguments:
+            event (EventSource): Object that sends the notification.
+        """
+        residuals = event.get_state()
+        print("#DBG stepper", residuals, flush=True)
+
     def cmp(self, time1, time2):
         """Compare two times using epsilon.
 
@@ -322,27 +336,34 @@ class TimeStepper(SolverFeature):
             # "DIVE_RESI": Event.ResidueDivergence,
             # "DELTA_GRANDEUR": Event.MaximumIncrement,
         }
+        maxLevel = 0
         for fail in args["ECHEC"]:
             event = conv_event.get(fail["EVENEMENT"])
             if not event:  # not yet supported, ignored
                 continue
-            if args["ACTION"] == "ARRET":
+            if fail["ACTION"] == "ARRET":
                 act = TimeStepper.Interrupt(event)
-            elif args["ACTION"] == "DECOUPE":
-                if args["SUBD_METHODE"] == "MANUEL":
+            elif fail["ACTION"] == "DECOUPE":
+                if fail["SUBD_METHODE"] == "MANUEL":
+                    maxLevel = max(maxLevel, fail["SUBD_NIVEAU"])
                     act = TimeStepper.Split(
                         event,
-                        nbSteps=args["SUBD_PAS"],
-                        maxLevel=args["SUBD_NIVEAU"],
-                        minStep=args["SUBD_PAS_MINI"],
+                        nbSteps=fail["SUBD_PAS"],
+                        maxLevel=maxLevel,
+                        minStep=fail["SUBD_PAS_MINI"],
                     )
                 else:
-                    assert args["SUBD_METHODE"] == "AUTO"
-                    act = TimeStepper.Split(event, minStep=args["SUBD_PAS_MINI"])
+                    assert fail["SUBD_METHODE"] == "AUTO"
+                    act = TimeStepper.Split(event, minStep=fail["SUBD_PAS_MINI"])
             else:  # not yet supported, ignored
                 continue
             stp.register_event(act)
         stp.register_default_error_event()
+        for act in stp._actions:
+            try:
+                act.setMaxLevel(maxLevel)
+            except AttributeError:
+                pass
         return stp
 
     # event management
@@ -380,6 +401,10 @@ class TimeStepper(SolverFeature):
 
         def __init__(self, event) -> None:
             self._event = event
+
+        def copy(self):
+            """Return a copy of the object."""
+            return self.__class__(self._event)
 
         @property
         def event(self):
@@ -436,6 +461,18 @@ class TimeStepper(SolverFeature):
             self._reset = []
             self._stop = TimeStepper.Interrupt(event)
 
+        def copy(self):
+            """Return a copy of the object."""
+            return self.__class__(self._event, self._nbSteps, self._maxLevel, self._minStep)
+
+        def setMaxLevel(self, maxLevel):
+            """Set the maximum number of levels.
+
+            Arguments:
+                maxLevel (int): Maximal number of levels.
+            """
+            self._maxLevel = maxLevel
+
         def call(self, **context):
             """Execute the action.
 
@@ -458,6 +495,7 @@ class TimeStepper(SolverFeature):
             time_step = stp.getIncrement() / self._nbSteps
             if time_step < self._minStep:
                 self._stop.call(exception=SolverError("SUBDIVISE_53", (), (), (self._minStep,)))
+            logger.info(MessageLog.GetText("I", "SUBDIVISE_51"))
             new = stp.getCurrent()
             for _ in range(max(0, self._nbSteps - 1)):
                 new -= time_step
@@ -478,6 +516,10 @@ class TimeStepper(SolverFeature):
             super().__init__(event)
             self._minStep = minStep
             self._manual = TimeStepper.Split(event, nbSteps=4, minStep=minStep)
+
+        def copy(self):
+            """Return a copy of the object."""
+            return self.__class__(self._event, self._minStep)
 
         def call(self, **context):
             """Execute the action.

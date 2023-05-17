@@ -27,14 +27,7 @@ legacy operators and pure Python instructions.
 import numpy
 
 from . import DataStructure as DS
-from .SyntaxUtils import (
-    debug_message2,
-    force_list,
-    mixedcopy,
-    old_complex,
-    remove_none,
-    value_is_sequence,
-)
+from .SyntaxUtils import debug_message2, force_list, old_complex, remove_none, value_is_sequence
 
 
 class CheckerError(Exception):

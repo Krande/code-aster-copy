@@ -180,9 +180,10 @@ class SNESSolver(SolverFeature):
 
     def _get(self, keyword, parameter=None, default=None):
         """ "Return a keyword value"""
+        args = self.param
         if parameter is not None:
-            if keyword in self.param and self.param.get(keyword) is not None:
-                return self.param.get(keyword).get(parameter, default)
-            return default
+            if args.get(keyword) is None:
+                return default
+            return _F(args[keyword])[0].get(parameter, default)
 
-        return self.param.get(keyword, default)
+        return args.get(keyword, default)

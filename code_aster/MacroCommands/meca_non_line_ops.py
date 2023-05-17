@@ -37,8 +37,8 @@ from ..Utilities import print_stats
 
 def _contact_check(CONTACT):
     """Add controls to prohibit unconverted features in contact"""
-    if CONTACT is not None:
-        defi = CONTACT["DEFINITION"]
+    if CONTACT:
+        defi = CONTACT[0]["DEFINITION"]
 
         for zone in defi.getContactZones():
             assert not zone.hasSmoothing
@@ -49,7 +49,7 @@ def _contact_check(CONTACT):
                 assert zone.getFrictionParameter().getType() == FrictionType.Without
 
         if defi.hasFriction:
-            assert CONTACT["ALGO_RESO_FROT"] == "NEWTON"
+            assert CONTACT[0]["ALGO_RESO_FROT"] == "NEWTON"
 
 
 def _keywords_check(keywords):
@@ -108,7 +108,7 @@ def meca_non_line_ops(self, **args):
     solver.setKeywords(**param)
 
     # Add loads
-    if args["EXCIT"] is not None:
+    if args["EXCIT"]:
         for load in args["EXCIT"]:
             if isinstance(
                 load["CHARGE"],
@@ -127,7 +127,7 @@ def meca_non_line_ops(self, **args):
     # Add contact
     contact_manager = None
     if args["CONTACT"]:
-        definition = args["CONTACT"]["DEFINITION"]
+        definition = args["CONTACT"][0]["DEFINITION"]
         contact_manager = ContactManager(definition, phys_pb)
         fed_defi = definition.getFiniteElementDescriptor()
         phys_pb.getListOfLoads().addContactLoadDescriptor(fed_defi, None)
@@ -135,7 +135,7 @@ def meca_non_line_ops(self, **args):
     solver.use(contact_manager)
 
     # Add stepper
-    timeStepper = TimeStepper.from_keywords(**args["INCREMENT"])
+    timeStepper = TimeStepper.from_keywords(**args["INCREMENT"][0])
     solver.use(timeStepper)
 
     # Run computation

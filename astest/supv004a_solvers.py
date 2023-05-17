@@ -121,6 +121,25 @@ class BasicTest(unittest.TestCase):
         self.assertEqual(len(inherit.required_features), 2)
         self.assertEqual(len(inherit.optional_features), 2)
 
+    def test03_child(self):
+        FOP = UnittestOptions
+
+        class Main(BaseFeature):
+            provide = FOP.System
+            required_features = [FOP.Storage]
+
+        class SubFeat(BaseFeature):
+            provide = FOP.Storage
+            required_features = [FOP.Contact]
+
+        op = Main()
+        sub = SubFeat()
+        sub.use(object(), FOP.Contact)
+        op.use(sub)
+        self.assertEqual(len(op.get_features(FOP.Contact)), 0)
+        self.assertEqual(len(sub.get_features(FOP.Contact)), 1)
+        self.assertEqual(len(op.get_childs(FOP.Contact)), 1)
+
 
 class TestTimeStepper(unittest.TestCase):
     """Check for internal methods."""

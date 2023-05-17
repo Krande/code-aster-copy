@@ -50,6 +50,7 @@ class BaseFeature(metaclass=FeatureMeta):
     _use = _checked = None
 
     def __init__(self):
+        super().__init__()
         self._use = []
         self._checked = False
 
@@ -152,6 +153,25 @@ class BaseFeature(metaclass=FeatureMeta):
             raise ValueError(f"expecting one {feature!r} feature, found {features!r}")
         return features[0]
 
+    def get_childs(self, feature):
+        """Get the features that provide a feature from all known features from childs.
+
+        Arguments:
+            feature (FeatureOptions): Resquested feature.
+
+        Returns:
+            list[object]: List of feature objects. If *feature* is None, it returns
+            list of tuple (object, provide value).
+        """
+        all_feat = self._use[:]
+        for obj, _ in self._use:
+            if not hasattr(obj, "get_childs"):
+                continue
+            all_feat.extend(obj.get_childs(None))
+        if not feature:
+            return all_feat
+        return [obj for obj, provide in all_feat if provide & feature == feature]
+
     @staticmethod
     def check_once(method):
         """Decorator that checks that the required features are registered
@@ -169,3 +189,52 @@ class BaseFeature(metaclass=FeatureMeta):
             return method(inst, *args, **kwds)
 
         return wrapper
+
+
+class Observer:
+    """The Observer interface declares the update method, used by events."""
+
+    def update(self, event):
+        """Receive update from event.
+
+        Arguments:
+            event (EventSource): Object that sends the notification.
+        """
+        # calls event.get_state()
+        raise NotImplementedError("must be subclassed")
+
+
+class EventSource:
+    """The EventSource interface declares a set of methods for managing observers."""
+
+    # for no_new_attributes
+    _observers = None
+
+    def __init__(self) -> None:
+        super().__init__()
+        self._observers = []
+
+    def add_observer(self, observer):
+        """Attach an observer to the event.
+
+        Arguments:
+            observer (Observer): Observer object to be added.
+        """
+        self._observers.append(observer)
+
+    def remove_observer(self, observer):
+        """Detach an observer from the event.
+
+        Arguments:
+            observer (Observer): Observer object to be removed.
+        """
+        self._observers.remove(observer)
+
+    def notify(self):
+        """Notify all observers about an event."""
+        for obs in self._observers:
+            obs.update(self)
+
+    def get_state(self):
+        """Returns the current state to be shared with observers."""
+        raise NotImplementedError("must be subclassed")

@@ -1,6 +1,6 @@
 # coding: utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -110,7 +110,7 @@ def get_caller_context(level):
 def force_list(values):
     """Ensure `values` is iterable (list, tuple, array...) and return it as
     a list."""
-    if not value_is_sequence(values):
+    if not is_sequence(values):
         values = [values]
     return list(values)
 
@@ -120,11 +120,6 @@ def force_tuple(values):
     a tuple.
     """
     return tuple(force_list(values))
-
-
-def value_is_sequence(value):
-    """Tell if *value* is a valid object if max > 1."""
-    return isinstance(value, (list, tuple, array, numpy.ndarray))
 
 
 def is_int(obj, onvalue=False):
@@ -174,7 +169,10 @@ def is_str(obj):
 
 def is_sequence(obj):
     """Is a sequence (allow iteration, not a string)?"""
-    return isinstance(obj, (list, tuple, numpy.ndarray))
+    return isinstance(obj, (list, tuple, array, numpy.ndarray))
+
+
+value_is_sequence = is_sequence
 
 
 def array_to_list(obj):

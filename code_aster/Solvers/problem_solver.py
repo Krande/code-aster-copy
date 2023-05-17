@@ -170,7 +170,7 @@ class ProblemSolver(SolverFeature):
             if args.get("CONTACT"):
                 if args["CONTACT"].get("ALGO_RESO_GEOM") == "NEWTON":
                     converg.addCriteria("RESI_GEOM", args["CONTACT"].get("RESI_GEOM"))
-            if not converg.isEmpty():
+            if converg.isEmpty():
                 converg.addCriteria("RESI_GLOB_RELA", 1.0e-6)
         for feat, required in converg.undefined():
             converg.use(self._get(feat | SOP.ForIncr, required))

@@ -49,7 +49,7 @@ class ConvergenceManager(SolverFeature):
         Returns:
             bool: *False* if at least one criteria is defined, *True* otherwise.
         """
-        return bool(self.criteria)
+        return not bool(self.criteria)
 
     def addCriteria(self, criteria, value):
         """Add a convergence criteria to verify
@@ -108,7 +108,7 @@ class ConvergenceManager(SolverFeature):
         """Returns the scaling factor to compute the relative error
 
         Arguments:
-            residuals (ResiState): Collections of residuals.
+            residuals (Residuals): Collections of residuals.
 
         Returns:
             float: scaling factor.
@@ -142,7 +142,7 @@ class ConvergenceManager(SolverFeature):
         """Evaluate criteria
 
         Arguments:
-            residuals (ResiState): Collections of residuals.
+            residuals (Residuals): Collections of residuals.
         """
         residual = self.getDirichletResidual(residuals.resi)
 

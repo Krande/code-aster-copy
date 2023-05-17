@@ -17,58 +17,84 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from .solver_features import SolverFeature
-from .solver_features import SolverOptions as SOP
 from ..Objects import AssemblyMatrixDisplacementReal, DiscreteComputation
 from ..Supervis import IntegrationError
 from ..Utilities import no_new_attributes, profile
+from .base_features import EventSource
+from .solver_features import SolverFeature
+from .solver_features import SolverOptions as SOP
 
 
-class ResiState:
-    """Container to store intermediate field."""
+class Residuals:
+    """Container to store intermediate field.
+
+    Attributes:
+        resi (FieldOnNodesReal): Global residual.
+        resi_int (FieldOnNodesReal):  Internal residual.
+        resi_ext (FieldOnNodesReal): External residual.
+        resi_dual (FieldOnNodesReal): Dirichlet reactions.
+        resi_stress (FieldOnNodesReal): Internal forces.
+        resi_cont (FieldOnNodesReal): Contact residual.
+    """
 
     resi = resi_int = resi_ext = resi_dual = resi_stress = resi_cont = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
     def update(self):
-        if self.resi is not None:
+        if self.resi:
             self.resi.updateValuePointers()
-        if self.resi_int is not None:
+        if self.resi_int:
             self.resi_int.updateValuePointers()
-        if self.resi_ext is not None:
+        if self.resi_ext:
             self.resi_ext.updateValuePointers()
-        if self.resi_dual is not None:
+        if self.resi_dual:
             self.resi_dual.updateValuePointers()
-        if self.resi_stress is not None:
+        if self.resi_stress:
             self.resi_stress.updateValuePointers()
-        if self.resi_cont is not None:
+        if self.resi_cont:
             self.resi_cont.updateValuePointers()
 
 
-class IncrementalSolver(SolverFeature):
+class IncrementalSolver(SolverFeature, EventSource):
     """Solve an iteration."""
 
     provide = SOP.IncrementalSolver
     required_features = [SOP.PhysicalProblem, SOP.PhysicalState, SOP.LinearSolver]
     optional_features = [SOP.Contact, SOP.ConvergenceManager]
 
+    _crit = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
     def __init__(self):
         super().__init__()
+        self._crit = {}
+
+    def notify(self, convManager):
+        """Notify all observers about the convergence.
+
+        Arguments:
+            convManager (ConvergenceManager): Object that holds the criteria values.
+        """
+        self._crit = convManager.values.copy()
+        self._crit["hasConverged"] = convManager.hasConverged()
+        super().notify()
+
+    def get_state(self):
+        """Returns the current residuals to be shared with observers."""
+        return self._crit
 
     @profile
     @SolverFeature.check_once
-    def computeInternalResidual(self, scaling=1.0):
+    def computeInternalResidual(self, residuals, scaling=1.0):
         """Compute internal residual R_int(u, Lagr).
 
             R_int(u, Lagr) = [B^t.Sig(u) + B^t.Lagr, B^t.primal-primal_impo]
 
         Arguments:
+            residuals (Residuals):
             scaling (float): Scaling factor for Lagrange multipliers (default: 1.0)
 
         Returns:
-            ResiState: residuals (stress, dual, internal)
             FieldOnCellsReal: internal state variables (VARI_ELGA)
             FieldOnCellsReal: Cauchy stress tensor (SIEF_ELGA)
         """
@@ -87,8 +113,7 @@ class IncrementalSolver(SolverFeature):
             self.phys_state.externVar_next,
         )
 
-        resi_state = ResiState()
-        resi_state.resi_stress = r_stress
+        residuals.resi_stress = r_stress
         r_int = r_stress
 
         if codret > 0:
@@ -99,7 +124,7 @@ class IncrementalSolver(SolverFeature):
 
             # Compute kinematic forces (B^t.Lagr_curr)
             dualizedBC_forces = disc_comp.getDualForces(primal_curr)
-            resi_state.resi_dual = dualizedBC_forces
+            residuals.resi_dual = dualizedBC_forces
 
             # Compute dualized BC (B^t.primal_curr - primal_impo)
             # Compute dualized BC (B^t.primal_curr)
@@ -111,18 +136,21 @@ class IncrementalSolver(SolverFeature):
 
             r_int += dualizedBC_forces + dualizedBC_disp - dualizedBC_impo
         else:
-            resi_state.resi_dual = self.phys_state.createPrimal(self.phys_pb, 0.0)
+            residuals.resi_dual = self.phys_state.createPrimal(self.phys_pb, 0.0)
 
-        resi_state.resi_int = r_int
+        residuals.resi_int = r_int
 
-        return resi_state, internVar, stress
+        return internVar, stress
 
     @profile
     @SolverFeature.check_once
-    def computeExternalResidual(self):
+    def computeExternalResidual(self, residuals):
         """Compute external residual R_ext(u, Lagr)
 
             R_ext(u, Lagr) = [(f(u),v), 0]
+
+        Arguments:
+            residuals (Residuals):
 
         Returns:
             FieldOnNodesReal: External residual.
@@ -134,16 +162,15 @@ class IncrementalSolver(SolverFeature):
         neumann_forces = disc_comp.getNeumannForces(
             self.phys_state.time + self.phys_state.time_step
         )
-
-        return neumann_forces
+        residuals.resi_ext = neumann_forces
 
     @profile
     @SolverFeature.check_once
-    def computeContactResidual(self):
+    def computeContactResidual(self, residuals):
         """Compute contact residual R_cont(u, Lagr)
 
-        Returns:
-            FieldOnNodesReal: contact residual.
+        Arguments:
+            residuals (Residuals):
         """
         contact_manager = self.get_feature(SOP.Contact, optional=True)
         if contact_manager:
@@ -163,7 +190,7 @@ class IncrementalSolver(SolverFeature):
         else:
             contact_forces = self.phys_state.createPrimal(self.phys_pb, 0.0)
 
-        return contact_forces
+        residuals.resi_cont = contact_forces
 
     @profile
     @SolverFeature.check_once
@@ -176,24 +203,18 @@ class IncrementalSolver(SolverFeature):
             scaling (float): Scaling factor for Lagrange multipliers (default: 1.0).
 
         Returns:
-            tuple (ResiState(), FieldOnCellsReal, FieldOnCellsReal):
+            tuple(Residuals, FieldOnCellsReal, FieldOnCellsReal):
             Tuple with residuals, internal state variables (VARI_ELGA),
             Cauchy stress tensor (SIEF_ELGA).
         """
-
-        # Compute internal residual
-        resi_state, internVar, stress = self.computeInternalResidual(scaling)
-
-        # Compute external residual
-        resi_state.resi_ext = self.computeExternalResidual()
-
-        # Compute contact residual
-        resi_state.resi_cont = self.computeContactResidual()
-
+        residuals = Residuals()
+        internVar, stress = self.computeInternalResidual(residuals, scaling)
+        self.computeExternalResidual(residuals)
+        self.computeContactResidual(residuals)
         # Compute residual
-        resi_state.resi = -(resi_state.resi_int + resi_state.resi_cont - resi_state.resi_ext)
+        residuals.resi = -(residuals.resi_int + residuals.resi_cont - residuals.resi_ext)
 
-        return resi_state, internVar, stress
+        return residuals, internVar, stress
 
     @profile
     @SolverFeature.check_once
@@ -341,11 +362,12 @@ class IncrementalSolver(SolverFeature):
         scaling = stiffness.getLagrangeScaling()
 
         # compute residual
-        resi_state, internVar, stress = self.computeResidual(scaling)
+        residuals, internVar, stress = self.computeResidual(scaling)
 
         # evaluate convergence
         convManager = self.get_feature(SOP.ConvergenceManager)
-        convManager.evalNormResidual(resi_state)
+        convManager.evalNormResidual(residuals)
+        self.notify(convManager)
 
         if not convManager.hasConverged():
             # Time at end of current step
@@ -360,7 +382,7 @@ class IncrementalSolver(SolverFeature):
             linear_solver = self.get_feature(SOP.LinearSolver)
             if not stiffness.isFactorized():
                 linear_solver.factorize(stiffness)
-            solution = linear_solver.solve(resi_state.resi, diriBCs)
+            solution = linear_solver.solve(residuals.resi, diriBCs)
 
             # Use line search
             primal_incr = self.lineSearch(solution)
