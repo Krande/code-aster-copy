@@ -26,6 +26,7 @@ from ..Objects import (
     DiscreteComputation,
     FieldOnNodesReal,
     LinearSolver,
+    ListOfFloats,
     ParallelThermalLoadFunction,
     ParallelThermalLoadReal,
     PhysicalProblem,
@@ -169,7 +170,13 @@ def _createTimeStepper(stationary, args):
     # <zzzz185a> TYPE_CALCUL="TRAN" + STAT="OUI": initial=0., t=[]
     logger.debug("<THER_LINEAIRE><TIMESTEPPER>: Start")
     if stationary:
-        return TimeStepper([0.0], initial=None)
+        args = args.copy()
+        args.setdefault("INCREMENT", {})
+        if "LIST_INST" not in args["INCREMENT"]:
+            list_0 = ListOfFloats()
+            list_0.setVectorValues([0.0])
+            args["INCREMENT"]["LIST_INST"] = list_0
+        args["INCREMENT"].setdefault("INST_INIT", None)
     stepper = TimeStepper.from_keywords(**args["INCREMENT"])
     resu = args.get("RESULTAT")
     if resu:

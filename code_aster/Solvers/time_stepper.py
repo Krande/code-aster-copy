@@ -246,6 +246,7 @@ class TimeStepper(SolverFeature):
         assert "LIST_INST" in args, "THER_NON_LINE not yet supported!"
         times = args["LIST_INST"].getValues()
         initial = times[0]
+        eps = args.get("PRECISION", 1.0e-6)
         if "INST_INIT" in args:  # because None has a special meaning
             initial = args["INST_INIT"]
         if args.get("NUME_INST_INIT"):
@@ -253,5 +254,5 @@ class TimeStepper(SolverFeature):
         final = args.get("INST_FIN")
         if args.get("NUME_INST_FIN"):
             final = times[args["NUME_INST_FIN"]]
-        stp = TimeStepper(times, initial=initial, final=final, epsilon=args["PRECISION"])
+        stp = TimeStepper(times, initial=initial, final=final, epsilon=eps)
         return stp

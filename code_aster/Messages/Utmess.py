@@ -682,7 +682,7 @@ def ASSERT(condition, message=""):
     if condition:
         return
     stack = traceback.format_stack(limit=10)
-    UTMESS("F", "DVP_9", valk=[("".join(stack[:-1]),), message])
+    UTMESS("F", "DVP_9", valk=["".join(stack[:-1]), message])
 
 
 def message_exception(code, exc):
