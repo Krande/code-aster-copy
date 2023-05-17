@@ -130,6 +130,9 @@ subroutine modelPrint(model)
                 if (type_elem .eq. 'MECA_HEXS8') then
                     call utmess('A', 'MODELE1_7')
                 end if
+                if (type_elem .eq. 'MECA_PYRAM13') then
+                    call utmess('I', 'MODELE1_15')
+                end if
                 nume_elem = p_model_liel(numvec)
                 if (nume_elem .lt. 0) then
                     nume_type_geom = nume_type_poi1

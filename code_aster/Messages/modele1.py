@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -51,6 +51,12 @@ modélisations nécessitant des informations sur les mailles voisines (3D_JOINT,
 Parfois, cela empêche de faire le "bon choix". Cette alarme risque de se transformer en erreur fatale dans la suite du calcul.
 """
     ),
+    15: {
+        "message": _(
+            """Attention l'élément PYRAM13 donne des résultats imprécis à cause de l'intégration."""
+        ),
+        "flags": "DECORATED",
+    },
     20: _(""" Modélisation     Formulation      Type maille  Élément fini     Nombre"""),
     21: _(""" %(k1)-16s %(k2)-16s %(k3)-12s %(k4)-16s %(i1)d"""),
     38: _("""%(k1)-8s %(k2)-8s %(k3)-8s %(k4)-8s %(k5)-8s %(k6)-8s %(k7)-8s %(k8)-8s"""),
