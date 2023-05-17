@@ -256,9 +256,6 @@ class BaseAssemblyMatrixComplex(BaseAssemblyMatrix):
     """Base object for complex AssemblyMatrix."""
 
 
-_orig_DisplReal_getType = AssemblyMatrixDisplacementReal.getType
-
-
 @injector(AssemblyMatrixDisplacementReal)
 class ExtendedAssemblyMatrixDisplacementReal(BaseAssemblyMatrixReal):
     pass

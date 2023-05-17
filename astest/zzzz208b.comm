@@ -24,6 +24,7 @@
 import numpy as NP
 import numpy.linalg as LA
 
+
 # DEFINITION DE LA METHODE DE CREATION DE MATRICE BLOC DIAGONALE
 def blkdiag(varargin):
     """
@@ -350,8 +351,8 @@ KPYR = ASSE_MATR_GENE(NUME_DDL_GENE=NUGER, METHODE="INITIAL")
 MPYR = ASSE_MATR_GENE(NUME_DDL_GENE=NUGER, METHODE="INITIAL")
 
 # Recuperation des matrices dans Aster depuis Python
-KPYR.RECU_MATR_GENE(MACK)
-MPYR.RECU_MATR_GENE(MACM)
+KPYR.fromNumpy(MACK)
+MPYR.fromNumpy(MACM)
 
 # calcul des modes generalises avec numpy
 MPYPI = LA.inv(MACM)

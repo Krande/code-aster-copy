@@ -6833,11 +6833,32 @@ class GeneralizedAssemblyMatrix(DataStructure):
     def __init__(self, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
+    def exists(self):
+        """Return True if the matrix exists
+
+        Returns:
+            bool: True if the matrix exists else False.
+        """
+
     def getGeneralizedDOFNumbering(self):
         pass
 
     def getModalBasis(self):
         pass
+
+    def isDense(self):
+        """Return True if the matrix is dense
+
+        Returns:
+            bool: True if the matrix is dense else False.
+        """
+
+    def isDiagonal(self):
+        """Return True if the matrix is diagonal
+
+        Returns:
+            bool: True if the matrix is diagonal else False.
+        """
 
     def setGeneralizedDOFNumbering(self, arg0):
         pass
@@ -6848,6 +6869,13 @@ class GeneralizedAssemblyMatrix(DataStructure):
         1. setModalBasis(self: libaster.GeneralizedAssemblyMatrix, arg0: GeneralizedModeResult) -> bool
 
         2. setModalBasis(self: libaster.GeneralizedAssemblyMatrix, arg0: ModeResult) -> bool
+        """
+
+    def size(self):
+        """Return the size of the matrix
+
+        Returns:
+            int: size of the matrix.
         """
 
 
@@ -6874,6 +6902,41 @@ class GeneralizedAssemblyMatrixReal(GeneralizedAssemblyMatrix):
         2. __init__(self: libaster.GeneralizedAssemblyMatrixReal, arg0: str) -> None
         """
 
+    def getLowerValues(self):
+        """Return the lower part of the matrix.
+
+        Returns:
+            list[float]: lower part of the matrix.
+        """
+
+    def getUpperValues(self):
+        """Return the upper part of the matrix.
+
+        Returns:
+            list[float]: upper part of the matrix.
+        """
+
+    def isSymmetric(self):
+        """Return True if the matrix is symmetric
+
+        Returns:
+            bool: True if the matrix is symmetric else False.
+        """
+
+    def setLowerValues(self, values):
+        """Set the lower part of the matrix.
+
+        Arguments:
+            values [list[float]]: set lower part of the matrix.
+        """
+
+    def setUpperValues(self, values):
+        """Set the upper part of the matrix.
+
+        Arguments:
+            values [list[float]]: set upper part of the matrix.
+        """
+
 
 # class GeneralizedAssemblyMatrixComplex in libaster
 
@@ -6896,6 +6959,41 @@ class GeneralizedAssemblyMatrixComplex(GeneralizedAssemblyMatrix):
         1. __init__(self: libaster.GeneralizedAssemblyMatrixComplex) -> None
 
         2. __init__(self: libaster.GeneralizedAssemblyMatrixComplex, arg0: str) -> None
+        """
+
+    def getLowerValues(self):
+        """Return the lower part of the matrix.
+
+        Returns:
+            list[complex]: lower part of the matrix.
+        """
+
+    def getUpperValues(self):
+        """Return the upper part of the matrix.
+
+        Returns:
+            list[complex]: upper part of the matrix.
+        """
+
+    def isSymmetric(self):
+        """Return True if the matrix is symmetric
+
+        Returns:
+            bool: True if the matrix is symmetric else False.
+        """
+
+    def setLowerValues(self, values):
+        """Set the lower part of the matrix.
+
+        Arguments:
+            values [list[complex]]: set lower part of the matrix.
+        """
+
+    def setUpperValues(self, values):
+        """Set the upper part of the matrix.
+
+        Arguments:
+            values [list[complex]]: set upper part of the matrix.
         """
 
 

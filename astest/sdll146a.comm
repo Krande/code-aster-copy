@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -207,7 +207,7 @@ __NUMG = NUME_DDL_GENE(BASE=__BAMO, STOCKAGE="PLEIN")
 
 __MR = PROJ_MATR_BASE(BASE=__BAMO, NUME_DDL_GENE=__NUMG, MATR_ASSE=MASS)
 
-mr_py = __MR.EXTR_MATR_GENE()
+mr_py = __MR.toNumpy()
 
 # MATRICE DIAGONALE
 
@@ -240,7 +240,7 @@ __NUMG_D = NUME_DDL_GENE(BASE=__BAMO_D, STOCKAGE="PLEIN")
 
 __MR_D = PROJ_MATR_BASE(BASE=__BAMO_D, NUME_DDL_GENE=__NUMG_D, MATR_ASSE=MASS_DIA)
 
-mr_py_d = __MR_D.EXTR_MATR_GENE()
+mr_py_d = __MR_D.toNumpy()
 
 # ***********************************************************************
 # ENERGIE CINETIQUE

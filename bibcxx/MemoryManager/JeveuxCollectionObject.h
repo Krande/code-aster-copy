@@ -309,6 +309,7 @@ class JeveuxCollectionObjectClass : private AllowedJeveuxType< ValueType > {
             AS_ABORT( "Sizes do not match: " + std::to_string( size() ) + " vs " +
                       std::to_string( toCopy.size() ) );
         }
+        this->updateValuePointer();
         ASTERINTEGER pos = 0;
         for ( const auto &val : toCopy ) {
             _valuePtr[pos] = val;

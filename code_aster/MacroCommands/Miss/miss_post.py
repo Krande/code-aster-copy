@@ -952,14 +952,14 @@ class PostMissFichierTemps(PostMissFichier):
             s_laplace = GammaZ / self.dt
 
             if MATR_GENE["MATR_AMOR"]:
-                self.Cg = MATR_GENE["MATR_AMOR"].EXTR_MATR_GENE()
+                self.Cg = MATR_GENE["MATR_AMOR"].toNumpy()
 
             if MATR_GENE["MATR_RIGI"]:
-                self.Kg = MATR_GENE["MATR_RIGI"].EXTR_MATR_GENE()
+                self.Kg = MATR_GENE["MATR_RIGI"].toNumpy()
 
             if MATR_GENE["DECOMP_IMPE"] == "PRODUIT":
                 if MATR_GENE["MATR_MASS"]:
-                    self.Mg = MATR_GENE["MATR_MASS"].EXTR_MATR_GENE()
+                    self.Mg = MATR_GENE["MATR_MASS"].toNumpy()
                 Hyst = NP.imag(Z_Laplace[:, :, 0])
                 for r in range(0, self.L_points):
                     mat = self.Mg * (s_laplace[r] ** 2) + self.Cg * s_laplace[r] + self.Kg
@@ -1132,7 +1132,6 @@ class PostMissFichierTemps(PostMissFichier):
                 int(self.param["NB_MODE"] / nb_colonne) == self.param["NB_MODE"] / nb_colonne
                 or self.param["NB_MODE"] < 6
             ):
-
                 fmt_ligne = " %13.6E" * nb_colonne
 
                 for n in range(0, self.L_point2):
@@ -1142,7 +1141,6 @@ class PostMissFichierTemps(PostMissFichier):
                             txt.append(fmt_ligne % tuple(Zdt[l, c : c + nb_colonne, n]))
 
             else:
-
                 for n in range(0, self.L_point2):
                     Z_temp_t = NP.zeros((int(self.param["NB_MODE"] * self.param["NB_MODE"])))
                     txt.append("%s" % str(n * self.dt))

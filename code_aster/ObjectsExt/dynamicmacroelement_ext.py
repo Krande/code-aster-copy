@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,28 @@ import aster
 from libaster import DynamicMacroElement
 
 from ..Utilities import injector
-from .generalizedassemblymatrix_ext import VALM_triang2array
+
+
+def VALE_triang2array(dict_VALM, dim, dtype=None):
+    # stockage symetrique ou non (triang inf+sup)
+    sym = len(dict_VALM) == 1
+    triang_sup = numpy.array(dict_VALM[1])
+    assert dim * (dim + 1) // 2 == len(triang_sup), "Matrice non pleine : %d*(%d+1)/2 != %d" % (
+        dim,
+        dim,
+        len(triang_sup),
+    )
+    if sym:
+        triang_inf = triang_sup
+    else:
+        triang_inf = numpy.array(dict_VALM[2])
+    valeur = numpy.zeros([dim, dim], dtype=dtype)
+    for i in range(1, dim + 1):
+        for j in range(1, i + 1):
+            k = i * (i - 1) // 2 + j
+            valeur[i - 1, j - 1] = triang_inf[k - 1]
+            valeur[j - 1, i - 1] = triang_sup[k - 1]
+    return valeur
 
 
 @injector(DynamicMacroElement)
@@ -37,7 +58,6 @@ class ExtendedDynamicMacroElement:
     cata_sdj = "SD.sd_macr_elem_dyna.sd_macr_elem_dyna"
 
     def EXTR_MATR_GENE(self, typmat):
-
         if typmat == "MASS_GENE":
             macr_elem = self.sdj.MAEL_MASS
         elif typmat == "RIGI_GENE":
@@ -53,7 +73,7 @@ class ExtendedDynamicMacroElement:
             raise AsException("L'objet matrice {0!r} n'existe pas".format(macr_elem.DESC.nomj()))
         desc = numpy.array(desc)
 
-        matrice = VALM_triang2array(macr_elem.VALE.get(), desc[1])
+        matrice = VALE_triang2array(macr_elem.VALE.get(), desc[1])
         return matrice
 
     def RECU_MATR_GENE(self, typmat, matrice):

@@ -489,7 +489,7 @@ class GeneratorTRANS(Generator):
         )
 
         # IMPEDANCE
-        MIMPE = __impe.EXTR_MATR_GENE()
+        MIMPE = __impe.toNumpy()
         #  extraction de la partie modes interface
         KRS = MIMPE[nbmodd:nbmodt, nbmodd:nbmodt]
         #  CALCUL FORCE SISMIQUE
@@ -580,7 +580,7 @@ class GeneratorSPEC(Generator):
         )
 
         # IMPEDANCE
-        MIMPE = __impe.EXTR_MATR_GENE()
+        MIMPE = __impe.toNumpy()
         #  extraction de la partie modes interface
         KRS = MIMPE[nbmodd:nbmodt, nbmodd:nbmodt]
         #  CALCUL FORCE SISMIQUE AVEC VARIABILITE

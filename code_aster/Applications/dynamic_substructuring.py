@@ -155,7 +155,7 @@ def import_array(np_array, reference_matrix=None):
             MATR_ASSE=(_F(MATRICE=CO("matrix"), OPTION=option),),
         )
         aster_object = PROJ_MATR_BASE(BASE=_modes, NUME_DDL_GENE=_numgen, MATR_ASSE=matrix)
-        aster_object.RECU_MATR_GENE(np_array)
+        aster_object.fromNumpy(np_array)
 
     return aster_object
 

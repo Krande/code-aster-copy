@@ -182,7 +182,7 @@ def force_iss_vari(
         )
 
         # -------------- impedance--------------------------------
-        MIMPE = __impe.EXTR_MATR_GENE()
+        MIMPE = __impe.toNumpy()
         #  extraction de la partie modes interface
         KRS = MIMPE[nbmodd:nbmodt, nbmodd:nbmodt]
 

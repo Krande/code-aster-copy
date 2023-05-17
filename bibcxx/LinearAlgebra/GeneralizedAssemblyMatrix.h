@@ -139,6 +139,23 @@ class GenericGeneralizedAssemblyMatrix : public DataStructure {
         }
         return false;
     };
+
+    bool isDiagonal() const {
+        _desc->updateValuePointer();
+        return ( *_desc )[2] == 1;
+    }
+
+    bool isDense() const {
+        _desc->updateValuePointer();
+        return ( *_desc )[2] == 2;
+    }
+
+    ASTERINTEGER size() const {
+        _desc->updateValuePointer();
+        return ( *_desc )[1];
+    }
+
+    bool exists() const { return _desc.exists(); }
 };
 
 /**
@@ -150,7 +167,7 @@ template < class ValueType >
 class GeneralizedAssemblyMatrix : public GenericGeneralizedAssemblyMatrix {
   private:
     /** @brief Objet Jeveux '.VALM' */
-    JeveuxCollection< ValueType > _valm;
+    JeveuxCollection< ValueType > _matrixValues;
     /** @brief V Jeveux C or I '.CONL' */
     JeveuxVector< ValueType > _conl;
 
@@ -189,10 +206,43 @@ class GeneralizedAssemblyMatrix : public GenericGeneralizedAssemblyMatrix {
      */
     GeneralizedAssemblyMatrix( const std::string name )
         : GenericGeneralizedAssemblyMatrix( name ),
-          _valm( JeveuxCollection< ValueType >( getName() + ".VALM" ) ),
+          _matrixValues( JeveuxCollection< ValueType >( getName() + ".VALM" ) ),
           _conl( JeveuxVector< ValueType >( getName() + ".CONL" ) ) {
         GeneralizedAssemblyMatrix< ValueType >::setMatrixType();
     };
+
+    JeveuxCollection< ValueType > getValues() const { return _matrixValues; };
+
+    std::vector< ValueType > getUpperValues() const {
+        _matrixValues->build();
+        _matrixValues->updateValuePointer();
+        return ( *_matrixValues )[1]->toVector();
+    };
+
+    std::vector< ValueType > getLowerValues() const {
+        _matrixValues->build();
+        _matrixValues->updateValuePointer();
+        return ( *_matrixValues )[2]->toVector();
+    };
+
+    void setUpperValues( const std::vector< ValueType > &values ) {
+        _matrixValues->build();
+        _matrixValues->updateValuePointer();
+        ( *_matrixValues )[1]->setValues( values );
+    };
+
+    void setLowerValues( const std::vector< ValueType > &values ) {
+        _matrixValues->build();
+        _matrixValues->updateValuePointer();
+        ( *_matrixValues )[2]->setValues( values );
+    };
+
+    bool isSymmetric() const {
+        _matrixValues->build();
+        return _matrixValues->size() == 1;
+    };
+
+    bool build() { return _matrixValues->build( true ); }
 };
 
 /** @typedef Definition d'une matrice assemblee généralisée de double */

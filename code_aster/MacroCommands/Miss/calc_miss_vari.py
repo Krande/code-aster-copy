@@ -267,7 +267,7 @@ def compute_freqk_quelconque(self, k, RESU, VEC, dict_modes):
         SANS_CMP="LAGR",
     )
 
-    MIMPE = __impe.EXTR_MATR_GENE()
+    MIMPE = __impe.toNumpy()
     #  extraction de la partie modes interface
     KRS = MIMPE[nbmodd:nbmodt, nbmodd:nbmodt]
     FSISM = __fosi.EXTR_VECT_GENE_C()

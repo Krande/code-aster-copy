@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -215,7 +215,7 @@ V1 = PROJ_VECT_BASE(BASE=modes, VECT_ASSE=FEXT1, NUME_DDL_GENE=numgen, TYPE_VECT
 
 # INTERCOMPARAISON ENTRE LE RESULTAT ISSU DE MACRO_MATR_AJOU ET CELUI CALCULE
 # A PARTIR DE LA PRESSION ISSUE DE CALC_CHAM_FLUI
-matr = massaj.EXTR_MATR_GENE()
+matr = massaj.EXTR_MATR()
 m00 = matr[0, 0]
 f0 = DEFI_FONCTION(NOM_PARA="X", VALE=(0.0, m00))
 TEST_FONCTION(
