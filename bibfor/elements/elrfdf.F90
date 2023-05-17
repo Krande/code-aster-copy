@@ -649,12 +649,12 @@ subroutine elrfdf(elrefz, x, dff, nno_, ndim_)
             dff(1:2, 1:13) = zero
             dff(1, 1) = -undemi
             dff(1, 3) = undemi
-            dff(1, 9) = deux
-            dff(1, 11) = -deux
+            dff(1, 10) = deux
+            dff(1, 12) = -deux
             dff(2, 2) = -undemi
             dff(2, 4) = undemi
-            dff(2, 10) = deux
-            dff(2, 12) = -deux
+            dff(2, 11) = deux
+            dff(2, 13) = -deux
             dff(3, 1) = un/quatre
             dff(3, 2) = un/quatre
             dff(3, 3) = un/quatre
