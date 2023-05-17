@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -130,6 +130,9 @@ character(len=8), intent(in) :: model
                 if (type_elem .eq. 'MECA_HEXS8') then
                     call utmess('A', 'MODELE1_7')
                 endif
+                if (type_elem .eq. 'MECA_PYRAM13') then
+                    call utmess('I', 'MODELE1_15')
+                end if
                 nume_elem = p_model_liel(numvec)
                 if (nume_elem .lt. 0) then
                     nume_type_geom = nume_type_poi1
