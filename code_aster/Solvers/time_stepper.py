@@ -25,26 +25,10 @@ from libaster import ConvergenceError, IntegrationError, SolverError
 
 from ..Cata.Syntax import _F
 from ..Messages import MessageLog
-from ..Utilities import logger, no_new_attributes
+from ..Utilities import force_list, logger, no_new_attributes
 from .base_features import Observer
 from .solver_features import SolverFeature
 from .solver_features import SolverOptions as SOP
-
-
-class Event(Flag):
-    """Enumeration of events that may occur during evolutive resolutions."""
-
-    # generic error
-    Error = auto()
-
-    # raised if resi_t+2 > min(resi_t, resi_t+1) (DIVE_RESI)
-    ResidueDivergence = auto()
-    # raised if RESI_GLOB_MAXI > value before the end of iterations (RESI_MAXI)
-    MaximumResidue = auto()
-
-    # raised if the increment of a field > value (DELTA_GRANDEUR)
-    MaximumIncrement = auto()
-    # COLLISION, INTERPENETRATION, INSTABILITE
 
 
 class TimeStepper(SolverFeature, Observer):
@@ -66,7 +50,7 @@ class TimeStepper(SolverFeature, Observer):
     provide = SOP.TimeStepper
 
     _times = _eps = _current = _initial = _final = _last = None
-    _actions = None
+    _actions = _state = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
     def __init__(self, times, epsilon=1e-6, initial=0.0, final=None):
@@ -81,6 +65,8 @@ class TimeStepper(SolverFeature, Observer):
         logger.debug("TimeStepper.init: %s, %s, %s", initial, final, times)
         self._check_bounds()
         self._actions = []
+        # FIXME the previous phys_state should be hold by NonLinearSolver
+        self._state = {}
 
     @property
     def null_increment(self):
@@ -122,8 +108,8 @@ class TimeStepper(SolverFeature, Observer):
     def setInitial(self, time):
         """Define the initial time. Lesser values are removed.
 
-        The next calculated time is reset to the first in the list.
-        Calling `setInitial` resets the current step at the first position.
+        Calling `setInitial` resets the next calculated time at the first
+        position.
 
         Arguments:
             time (float): First time to be used.
@@ -137,7 +123,8 @@ class TimeStepper(SolverFeature, Observer):
         If `time` is not already in the sequence, it is appended.
         If `time` is not provided, the final time is set to the last one of
         the sequence.
-        Calling `setFinal` resets the current step at the first position.
+        Calling `setInitial` resets the next calculated time at the first
+        position.
 
         Arguments:
             time (float, optional): Last time to be used.
@@ -241,13 +228,14 @@ class TimeStepper(SolverFeature, Observer):
         self._current += 1
 
     def update(self, event):
-        """Receive update from event (only *Incremental* solver).
+        """Receive update from event.
 
         Arguments:
             event (EventSource): Object that sends the notification.
         """
-        residuals = event.get_state()
-        print("#DBG stepper", residuals, flush=True)
+        eid, data = event.get_state()
+        if eid & SOP.IncrementalSolver:
+            logger.info("#DBG from incr: %s", data)
 
     def cmp(self, time1, time2):
         """Compare two times using epsilon.
@@ -330,15 +318,17 @@ class TimeStepper(SolverFeature, Observer):
             for step in orig:
                 times.extend(numpy.linspace(times[-1], step, div + 1)[1:])
         stp = TimeStepper(times, initial=None)
-        conv_event = {
-            "ERREUR": Event.Error,
-            # "RESI_MAXI": Event.MaximumResidue,
-            # "DIVE_RESI": Event.ResidueDivergence,
-            # "DELTA_GRANDEUR": Event.MaximumIncrement,
-        }
         maxLevel = 0
         for fail in args["ECHEC"]:
-            event = conv_event.get(fail["EVENEMENT"])
+            if fail["EVENEMENT"] == "ERREUR":
+                event = TimeStepper.Error()
+            elif fail["EVENEMENT"] == "DELTA_GRANDEUR":
+                event = TimeStepper.MaximumIncrement(
+                    fieldName=fail["NOM_CHAM"],
+                    component=fail["NOM_CMP"],
+                    maxValue=fail["VALE_REF"],
+                    group=None,
+                )
             if not event:  # not yet supported, ignored
                 continue
             if fail["ACTION"] == "ARRET":
@@ -371,14 +361,14 @@ class TimeStepper(SolverFeature, Observer):
         """Register an action to react to an event.
 
         Args:
-            action (OnEvent): Type of action.
+            action (~TimeStepper.Action): Type of action.
         """
         self._actions.append(action)
 
     def register_default_error_event(self):
         """Register a default action for Error event if there is no one."""
-        if not [act for act in self._actions if act.event == Event.Error]:
-            self.register_event(TimeStepper.Split(Event.Error, nbSteps=2, maxLevel=4))
+        if not [act for act in self._actions if isinstance(act.event, TimeStepper.Error)]:
+            self.register_event(TimeStepper.Split(TimeStepper.Error(), nbSteps=2, maxLevel=4))
 
     def failed(self, exc):
         """React to a raised exception.
@@ -387,12 +377,104 @@ class TimeStepper(SolverFeature, Observer):
             exc (AsterError): The exception just raised.
         """
         for act in self._actions:
-            if isinstance(exc, (ConvergenceError, IntegrationError)) and act.event == Event.Error:
+            if not isinstance(act.event, TimeStepper.Error):
+                continue
+            if act.event.is_raised(exception=exc):
                 act.call(timeStepper=self, exception=exc)
                 return
-        raise TypeError("should not pass here!")
+        raise TypeError("should not pass here!")  # because of default error
 
-    class OnEvent:
+    def check_event(self, phys_state):
+        """Check if an event should be raised.
+
+        Arguments:
+            phys_state (PhysicalState): Current physical state.
+
+        Returns:
+            bool: *False* if something went wrong, *True** if the step is ok.
+        """
+        # compute increment
+        prev = self._state.get("previous")
+        delta = phys_state.as_dict()
+        if prev:
+            for name, field in delta.items():
+                delta[name] - prev[name]
+        self._state["previous"] = phys_state.as_dict()
+
+        for act in self._actions:
+            if not isinstance(act.event, TimeStepper.MaximumIncrement):
+                continue
+            if act.event.is_raised(delta=delta):
+                act.call(timeStepper=self)
+                # the exit code of 'call()' could be be ok (ADAPTATION?)...
+                return False
+        return True
+
+    class Event:
+        """Event raised in case of error."""
+
+        # TODO
+        # ResidueDivergence: raised if resi_t+2 > min(resi_t, resi_t+1) (DIVE_RESI)
+        # MaximumResidue: raised if RESI_GLOB_MAXI > value before the end of iterations (RESI_MAXI)
+        # COLLISION, INTERPENETRATION, INSTABILITE
+
+        def is_raised(self, **context):
+            """Tell if the event is raised in this context.
+
+            Returns:
+                bool: *True* if the event is raised, *False* otherwise.
+            """
+            raise NotImplementedError("must be subclassed!")
+
+    class Error(Event):
+        """Event raised in case of generic error."""
+
+        @staticmethod
+        def is_raised(**context):
+            """Tell if the event is raised in this context.
+
+            Returns:
+                bool: *True* if the event is raised, *False* otherwise.
+            """
+            return isinstance(context.get("exception"), (ConvergenceError, IntegrationError))
+
+    class MaximumIncrement(Event):
+        """Event raised when the increment of a component exceeds a value
+        (DELTA_GRANDEUR keyword).
+
+        Arguments:
+            fieldName (str): Name of the field to be checked.
+            component (str): Component name.
+            maxValue (float): Maximum increment.
+            group (*misc*): Restrict the checking to a part of the model.
+        """
+
+        def __init__(self, fieldName, component, maxValue, group=None):
+            self._fieldName = fieldName
+            self._cmp = component
+            self._value = maxValue
+            self._group = force_list(group or [])
+
+        def is_raised(self, **context):
+            """Tell if the event is raised in this context.
+
+            Returns:
+                bool: *True* if the event is raised, *False* otherwise.
+            """
+            delta = context.get("delta")
+            if not delta:
+                return False
+            field = delta.get(self._fieldName)
+            if not field:
+                return False
+            maxIncr = max(field.getValuesWithDescription(self._cmp, self._group)[0])
+            logger.info("#DBG check delta %s >? %s", maxIncr, self._value)
+            raised = maxIncr > self._value
+            if raised:
+                logger.info(MessageLog.GetText("I", "MECANONLINE10_24"))
+            return raised
+
+    class Action:
         """This object allow to execute an action on a TimeStepper when an event
         occurs."""
 
@@ -408,17 +490,8 @@ class TimeStepper(SolverFeature, Observer):
 
         @property
         def event(self):
-            """Event: event to react."""
+            """TimeStepper.Event: event to react."""
             return self._event
-
-        def failed(self, exc):
-            """React to a raised exception.
-
-            Args:
-                exc (AsterError): The exception just raised.
-            """
-            if isinstance(exc, ConvergenceError) and self._event == Event.Error:
-                self.call(exc)
 
         def call(self, **context):
             """Execute the action.
@@ -428,7 +501,7 @@ class TimeStepper(SolverFeature, Observer):
             """
             raise NotImplementedError("must be subclassed!")
 
-    class Interrupt(OnEvent):
+    class Interrupt(Action):
         """This action stops the calculation (keyword value: ARRET)."""
 
         def call(self, **context):
@@ -440,7 +513,7 @@ class TimeStepper(SolverFeature, Observer):
             logger.info(MessageLog.GetText("I", "MECANONLINE10_30"))
             raise context["exception"]
 
-    class Split(OnEvent):
+    class Split(Action):
         """This action adds intermediate timesteps (keyword value: DECOUPE).
 
         Arguments:
@@ -501,7 +574,7 @@ class TimeStepper(SolverFeature, Observer):
                 new -= time_step
                 stp._insert(stp._current, new)
 
-    class AutoSplit(OnEvent):
+    class AutoSplit(Action):
         """This action adds intermediate timesteps (keyword value: DECOUPE)
         using less parameters than the *Split* action.
 
@@ -538,7 +611,7 @@ class TimeStepper(SolverFeature, Observer):
             syx = 0.0
             for i, resi in enumerate(residuals):
                 xx = log10(resi)
-                if i >= len(self._resid) - 2:
+                if i >= len(residuals) - 2:
                     weight = 2.0
                 else:
                     weight = 1.0

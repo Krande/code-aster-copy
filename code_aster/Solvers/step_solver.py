@@ -19,11 +19,11 @@
 
 from libaster import deleteTemporaryObjects
 
-from .solver_features import SolverFeature
-from .solver_features import SolverOptions as SOP
 from ..Supervis import ConvergenceError
 from ..Utilities import no_new_attributes, profile
 from .logging_manager import LoggingManager
+from .solver_features import SolverFeature
+from .solver_features import SolverOptions as SOP
 
 
 class StepSolver(SolverFeature):
@@ -37,8 +37,7 @@ class StepSolver(SolverFeature):
         SOP.ConvergenceCriteria,
     ]
 
-    current_incr = None
-    param = None
+    current_incr = param = None
     geom = geom_step = current_matrix = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
@@ -107,7 +106,6 @@ class StepSolver(SolverFeature):
         Returns:
             bool: *True* if there is no iteration to be computed, *False* otherwise.
         """
-        print("#DBG step", self.current_incr, convManager.values, flush=True)
         if self.current_incr == 0:
             return False
 

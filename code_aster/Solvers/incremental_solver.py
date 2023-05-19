@@ -62,12 +62,12 @@ class IncrementalSolver(SolverFeature, EventSource):
     required_features = [SOP.PhysicalProblem, SOP.PhysicalState, SOP.LinearSolver]
     optional_features = [SOP.Contact, SOP.ConvergenceManager]
 
-    _crit = None
+    _data = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
     def __init__(self):
         super().__init__()
-        self._crit = {}
+        self._data = {}
 
     def notify(self, convManager):
         """Notify all observers about the convergence.
@@ -75,13 +75,13 @@ class IncrementalSolver(SolverFeature, EventSource):
         Arguments:
             convManager (ConvergenceManager): Object that holds the criteria values.
         """
-        self._crit = convManager.values.copy()
-        self._crit["hasConverged"] = convManager.hasConverged()
+        self._data = convManager.values.copy()
+        self._data["hasConverged"] = convManager.hasConverged()
         super().notify()
 
     def get_state(self):
         """Returns the current residuals to be shared with observers."""
-        return self._crit
+        return SOP.IncrementalSolver, self._data
 
     @profile
     @SolverFeature.check_once

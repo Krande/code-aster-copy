@@ -22,7 +22,7 @@ from enum import IntFlag, auto
 
 from code_aster import ConvergenceError, SolverError
 from code_aster.Commands import DEFI_LIST_REEL
-from code_aster.Solvers import Event, TimeStepper
+from code_aster.Solvers import TimeStepper
 from code_aster.Solvers.base_features import BaseFeature
 
 list0 = DEFI_LIST_REEL(VALE=0.0)
@@ -441,7 +441,7 @@ class TestTimeStepper(unittest.TestCase):
 
     def test20_event(self):
         stp = TimeStepper([1.0, 1.1, 2.0])
-        stp.register_event(TimeStepper.Interrupt(Event.Error))
+        stp.register_event(TimeStepper.Interrupt(TimeStepper.Error()))
         with self.assertRaisesRegex(ConvergenceError, "MESSAGEID"):
             stp.failed(ConvergenceError("MESSAGEID"))
 
@@ -454,7 +454,9 @@ class TestTimeStepper(unittest.TestCase):
         stp = TimeStepper([0.0, 1.0, 1.1, 2.0, 3.0])
         self.assertEqual(stp.size(), 4)
         self.assertAlmostEqual(stp.getCurrent(), 1.0)
-        stp.register_event(TimeStepper.Split(Event.Error, nbSteps=2, maxLevel=3, minStep=0.05))
+        stp.register_event(
+            TimeStepper.Split(TimeStepper.Error(), nbSteps=2, maxLevel=3, minStep=0.05)
+        )
         # print("\n+ split #1")
         stp.failed(ConvergenceError("MESSAGEID"))
         # [0.5, 1.0, 1.1, 2.0, 3.0]

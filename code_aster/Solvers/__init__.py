@@ -32,4 +32,4 @@ from .snes_solver import SNESSolver
 from .solver_features import SolverFeature, SolverOptions
 from .step_solver import StepSolver
 from .storage_manager import StorageManager
-from .time_stepper import Event, TimeStepper
+from .time_stepper import TimeStepper

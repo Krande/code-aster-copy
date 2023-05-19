@@ -72,7 +72,7 @@ class NonLinearSolver(SolverFeature):
     # convenient shortcuts properties
     @property
     def stepper(self):
-        """:py:class:`.stepper.TimeStepper`: object to be used."""
+        """:py:class:`~.time_stepper.TimeStepper`: object to be used."""
         return self.get_feature(SOP.TimeStepper)
 
     @property
@@ -118,10 +118,11 @@ class NonLinearSolver(SolverFeature):
         phys_pb.computeDOFNumbering()
         if phys_pb.getMaterialField().hasExternalStateVariableForLoad():
             phys_pb.computeReferenceExternalStateVariables()
-        self.get_childs(SOP.IncrementalSolver)[0].add_observer(self.stepper)
         self.setInitialState()
         self.step_rank = 0
         self._storeRank(self.phys_state.time)
+        # register observers
+        self.get_childs(SOP.IncrementalSolver)[0].add_observer(self.stepper)
 
     @profile
     def setInitialState(self):
@@ -184,17 +185,12 @@ class NonLinearSolver(SolverFeature):
             try:
                 solv.solve()
             except (ConvergenceError, IntegrationError) as exc:
-                # if not self.stepper.failed(exc.event / exc.reason, self.phys_state):
-                #     logger.error(exc.message)
-                # DIVE_RESI, RESI_MAXI must be raised during iterations
-                try:
-                    logger.error(exc.message)
-                except:
-                    self.stepper.failed(exc)
+                logger.warning(exc.message)
+                self.stepper.failed(exc)
             else:
-                # self.stepper.save_state(self.phys_state)  # save residual value...
-                # if self.stepper.check_event(self.phys_state)
                 # DELTA_GRANDEUR, COLLISION, INTERPENETRATION, INSTABILITE (post_hook ?)
+                if not self.stepper.check_event(self.phys_state):
+                    continue
                 self.phys_state.update(self.phys_state)
                 self._storeRank(timeEndStep)
                 self.stepper.completed()

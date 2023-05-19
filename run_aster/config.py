@@ -264,6 +264,7 @@ class Config:
         else:
             params = content
         for key, value in params.items():
+            logger.debug("+ %s: %s", key, value)
             self._storage.set(key, value)
 
     @staticmethod
