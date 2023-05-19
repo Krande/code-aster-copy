@@ -80,7 +80,7 @@ class CrackPropagation(ExecuteCommand):
 
     def post_exec(self, keywords):
         self._result.setDiscontinuityType(keywords["FISS_PROP"].getDiscontinuityType())
-        self._result.update()
+        self._result.updateInternalState()
 
 
 PROPA_XFEM = CrackPropagation.run

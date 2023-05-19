@@ -145,13 +145,13 @@ Returns:
     list[int]: List of Med types.
         )" )
 
-        .def( "update", &ListOfTables::update_tables, R"(
+        .def( "updateInternalState", &BaseMesh::update_tables, R"(
 Update the internal state of the datastructure.
 
 Returns:
     bool: *True* in case of success, *False* otherwise.
         )" )
-        .def( "getTable", &ListOfTables::getTable, R"(
+        .def( "getTable", &BaseMesh::getTable, R"(
 Extract a Table from the datastructure.
 
 Arguments:

@@ -282,7 +282,6 @@ def no_lips(self, NP, FOND_FISS, NB_COUCHES, is_symmetric, closedCrack):
     lip_sup_nodes = list(map(lambda x: x.rstrip(), lip_sup_nodes))
 
     if not is_symmetric:
-
         if NB_COUCHES < 10:
             lip_inf_nodes = FOND_FISS.sdj.INFNORM_NOEU2.get()
         else:
@@ -302,7 +301,6 @@ def no_lips(self, NP, FOND_FISS, NB_COUCHES, is_symmetric, closedCrack):
             TLIPINF[i + 1] = [x.strip() for x in TLIPINFX if x.strip()]
 
     if closedCrack == "OUI":
-
         no_cross_lip_sup = None
         no_cross_lip_inf = None
 
@@ -317,7 +315,6 @@ def no_lips(self, NP, FOND_FISS, NB_COUCHES, is_symmetric, closedCrack):
                 TLIPSUP[iNP + 1] = TLIPSUP[iNP + 1][: idx + 1]
 
         if not is_symmetric:
-
             for i in TLIPINF[1]:
                 for j in TLIPINF[2]:
                     if i == j:
@@ -380,7 +377,6 @@ def na_lips(self, MAIL__, FOND_FISS, is_symmetric):
     lipInfName = None
 
     if not is_symmetric:
-
         lipInfName = FOND_FISS.getLowerLipGroupName()
 
         ListmaI = FOND_FISS.sdj.LEVREINF_MAIL.get()
@@ -417,7 +413,6 @@ def crea_group_no_from_group_ma(self, MAIL, nameGroupNo, nameGroupMa):
 
 
 def crea_group_ma_from_list_ma(self, MAIL, listma, nameGroupMa):
-
     DEFI_GROUP(reuse=MAIL, MAILLAGE=MAIL, CREA_GROUP_MA=_F(NOM=nameGroupMa, MAILLE=listma))
 
 
@@ -674,7 +669,6 @@ def calc_area(self, MAILAREA, nameGroupMa):
 
 
 def calc_vari_area_no_bord(self, MAIL, NB_COUCHES, lNode1, lNode2, NODESBOUGE, lVect, is_symmetric):
-
     """
     Calculate varied area
     """
@@ -1429,7 +1423,6 @@ def grad_elno(self, MAIL, MODE, MATE, listElemTMAIL, __EPSI_ELGA, __FIELD_CAL, i
     dicGrad = {}
 
     for iElemTMAIL in listElemTMAIL:
-
         texte = (
             "#"
             + "-" * 55
@@ -1788,7 +1781,6 @@ def cal_j04(
     __J04_J = [0.0]
 
     for iSIG, iEPS in zip(SIG_CMP, EPS_CMP):
-
         __CHJ04 = CREA_CHAMP(
             OPERATION="ASSE",
             TYPE_CHAM="ELGA_NEUT_R",
@@ -1982,7 +1974,6 @@ def list_node_calc(self, LIST_NODE, NB_POINT_FOND, TPFISS, NP):
         UTMESS("F", "RUPTURE4_7")
 
     elif (LIST_NODE is not None) and (NB_POINT_FOND is None):
-
         listNP = []
         for iNode in LIST_NODE:
             for jKeyNode in range(NP):
@@ -1992,7 +1983,6 @@ def list_node_calc(self, LIST_NODE, NB_POINT_FOND, TPFISS, NP):
                 listNP.append(NP)
 
     elif (LIST_NODE is None) and (NB_POINT_FOND is not None):
-
         listNP = []
         if (NB_POINT_FOND < 1) or (NB_POINT_FOND > NP):
             UTMESS("F", "RUPTURE4_8")
@@ -2011,7 +2001,6 @@ def list_node_calc(self, LIST_NODE, NB_POINT_FOND, TPFISS, NP):
                     listNP.append(range(NP)[1 + int(iSelect * (i + 1))])
                 listNP.append(range(NP)[-1])
     else:
-
         listNP = range(NP)
 
     return listNP
@@ -2031,7 +2020,6 @@ def normalize(v):
 def get_result2D(
     self, J, __J01, linst, liord, nom_modelisation, NB_COUCHES, e, nu, is_symmetric, TITRE
 ):
-
     # CREA_TABLE = self.get_cmd('CREA_TABLE')
 
     if is_symmetric:
@@ -2122,7 +2110,6 @@ def get_result(
     params = params + ("J",)
 
     if iord == 0 and iNP == listNP[0]:
-
         tab_result = CREA_TABLE(LISTE=mcfact, TITRE=titre)
         tab_result = CALC_TABLE(
             TABLE=tab_result,
@@ -2130,7 +2117,6 @@ def get_result(
             ACTION=(_F(OPERATION="EXTR", NOM_PARA=tuple(params))),
         )
     else:
-
         __tabi = CREA_TABLE(LISTE=mcfact, TITRE=titre)
         __tabi = CALC_TABLE(
             TABLE=__tabi, reuse=__tabi, ACTION=(_F(OPERATION="EXTR", NOM_PARA=tuple(params)))
@@ -2162,7 +2148,6 @@ def post_jmod_ops(
     TITRE=None,
     **args
 ):
-
     """
     Macro POST_J - Calculate J-integral
     """
@@ -2242,7 +2227,6 @@ def post_jmod_ops(
     """
 
     if ndim == 2:
-
         # print("Macro POST_JMOD - Calculate J-integral in 2D")
         # get material
         # On recupere le materiau et le nom de la modelisation
@@ -2259,7 +2243,7 @@ def post_jmod_ops(
         if MATER is None:
             mater, MODELISATION = aster.postkutil(1, RESULTAT.getName(), nom_fiss)
             if RESULTAT.getNumberOfIndexes() == 0:
-                RESULTAT.update()
+                RESULTAT.updateInternalState()
             if RESULTAT.getNumberOfIndexes() > 0:
                 cham_maters = []
                 for j in RESULTAT.getIndexes():
@@ -2319,7 +2303,6 @@ def post_jmod_ops(
             UTMESS("F", "RUPTURE4_10")
 
         if PropadirSup is not None:
-
             # determine top edge nodes
 
             PropadirSup = list(map(lambda x: x.rstrip(), PropadirSup))
@@ -2377,7 +2360,6 @@ def post_jmod_ops(
                             VECTEURSUP.append(coorVECTEURSUP)
 
         if PropadirInf is not None:
-
             # determine bottom edge nodes
 
             PropadirInf = list(map(lambda x: x.rstrip(), PropadirInf))
@@ -2443,7 +2425,6 @@ def post_jmod_ops(
             VECTEUR = normalize(VECTEURINF)
 
         if (PropadirSup is not None) and (PropadirInf is not None):
-
             for i in range(2):
                 if l_coorfisSup[i][0] == Pfiss[0]:
                     l_coorPfiss = l_coorfisSup[i]
@@ -2490,7 +2471,6 @@ def post_jmod_ops(
         )
 
         for INB_COUCHE in range(1, NB_COUCHES + 1):
-
             DEFI_GROUP(
                 reuse=MAIL,
                 MAILLAGE=MAIL,
@@ -2518,7 +2498,6 @@ def post_jmod_ops(
         )
 
         if modified_J:
-
             DEFI_GROUP(
                 reuse=MAIL,
                 MAILLAGE=MAIL,
@@ -2537,7 +2516,6 @@ def post_jmod_ops(
             )
 
             for INB_COUCHE in range(1, 3):
-
                 DEFI_GROUP(
                     reuse=MAIL,
                     MAILLAGE=MAIL,
@@ -2568,7 +2546,6 @@ def post_jmod_ops(
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
         if ETAT_INIT is not None:
-
             DATAINIT = ETAT_INIT[0].cree_dict_valeurs(ETAT_INIT[0].mc_liste)
 
             __INITEPSI = DATAINIT["EPSI"]
@@ -2647,7 +2624,6 @@ def post_jmod_ops(
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
         if MODELISATION == "AXIS":
-
             # get coordinate r
 
             __CHCOOR_NOEU = CREA_CHAMP(
@@ -2680,13 +2656,11 @@ def post_jmod_ops(
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
         if PropadirSup is not None:
-
             tinst = __ncoorfisSup.EXTR_TABLE().NUME_ORDRE == dicLPfissSup["NUME_ORDRE"]
             tinst = tinst["INST"].values()["INST"]
             l_inst = [tinst[i] for i in range(len(tinst)) if tinst[i] not in tinst[:i]]
 
         if (PropadirSup is None) and (PropadirInf is not None):
-
             tinst = __ncoorfisInf.EXTR_TABLE().NUME_ORDRE == dicLPfissInf["NUME_ORDRE"]
             tinst = tinst["INST"].values()["INST"]
             l_inst = [tinst[i] for i in range(len(tinst)) if tinst[i] not in tinst[:i]]
@@ -2695,7 +2669,6 @@ def post_jmod_ops(
         linst = []
 
         if NUME_ORDRE is None:
-
             for iordre, iinst in enumerate(l_inst):
                 liord.append(iordre)
                 linst.append(iinst)
@@ -2704,7 +2677,6 @@ def post_jmod_ops(
                 liord[0] = 1
 
         else:
-
             for iordre, iinst in enumerate(l_inst):
                 for inume in range(len(NUME_ORDRE)):
                     if iordre == NUME_ORDRE[inume]:
@@ -2722,7 +2694,6 @@ def post_jmod_ops(
         J = []
 
         for iord, inst in zip(liord, linst):
-
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
             # CREATE Q AND CALCUL GRAD Q
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -2957,7 +2928,6 @@ def post_jmod_ops(
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
             if ETAT_INIT is None:
-
                 __RESU = CALC_CHAMP(reuse=__RESU, RESULTAT=__RESU, ENERGIE=("ETOT_ELGA"))
 
                 __WELAS = CREA_CHAMP(
@@ -2979,7 +2949,6 @@ def post_jmod_ops(
                 )
 
             else:
-
                 # W = 1/2 * (EPS - EPS_0) * SIG
 
                 __RESU = CALC_CHAMP(reuse=__RESU, RESULTAT=__RESU, DEFORMATION=("EPSI_ELGA"))
@@ -3040,7 +3009,6 @@ def post_jmod_ops(
             # J01 = W * DIVQ
 
             if MODELISATION != "AXIS":
-
                 __CHJ01 = CREA_CHAMP(
                     OPERATION="ASSE",
                     TYPE_CHAM="ELGA_NEUT_R",
@@ -3056,7 +3024,6 @@ def post_jmod_ops(
                 __FMULTJ01 = FORMULE(NOM_PARA=("X1", "X2", "X3"), VALE="X1*(X2+X3)")
 
             else:
-
                 __CHJ01 = CREA_CHAMP(
                     OPERATION="ASSE",
                     TYPE_CHAM="ELGA_NEUT_R",
@@ -3186,7 +3153,6 @@ def post_jmod_ops(
             # SIGMA * (GRAD U * GRAD Q)
 
             if MODELISATION != "AXIS":
-
                 __CHJ02 = CREA_CHAMP(
                     OPERATION="ASSE",
                     TYPE_CHAM="ELGA_NEUT_R",
@@ -3209,7 +3175,6 @@ def post_jmod_ops(
                 )
 
             else:
-
                 __CHJ02 = CREA_CHAMP(
                     OPERATION="ASSE",
                     TYPE_CHAM="ELGA_NEUT_R",
@@ -3278,7 +3243,6 @@ def post_jmod_ops(
             __J = __J + __J02_J[0]
 
             if ETAT_INIT is not None:
-
                 # -------------------------------------------------------------
                 # J03
                 # -------------------------------------------------------------
@@ -3294,7 +3258,6 @@ def post_jmod_ops(
                 __J03_J = [0.0]
 
                 for ISIGCOMP, IEPSCOMP in zip(SIGCOMP, EPSCOMP):
-
                     # GRAD EPSI_0
 
                     __CHEPS0 = CREA_CHAMP(
@@ -3376,7 +3339,6 @@ def post_jmod_ops(
                     )
 
                     if MODELISATION != "AXIS":
-
                         # SIGMA*(GRAD EPSI_0*Q)
 
                         __CHJ03 = CREA_CHAMP(
@@ -3424,7 +3386,6 @@ def post_jmod_ops(
                         )
 
                     else:
-
                         __CHJ03 = CREA_CHAMP(
                             OPERATION="ASSE",
                             TYPE_CHAM="ELGA_NEUT_R",
@@ -3527,7 +3488,6 @@ def post_jmod_ops(
                 __J = __J + __J03_J[0]
 
             if modified_J:
-
                 # -------------------------------------------------------------
                 # J04
                 # -------------------------------------------------------------
@@ -3541,11 +3501,9 @@ def post_jmod_ops(
                 __J04_J = [0.0]
 
                 for ISIGCOMP, IEPSCOMP in zip(SIGCOMP, EPSCOMP):
-
                     # GRAD EPSI
 
                     if ETAT_INIT is not None:
-
                         # EPS - EPS0
 
                         __CHEPSNOEU0 = CREA_CHAMP(
@@ -3663,7 +3621,6 @@ def post_jmod_ops(
                         )
 
                     else:
-
                         # EPS
 
                         __CHEPS = CREA_CHAMP(
@@ -3745,7 +3702,6 @@ def post_jmod_ops(
                     )
 
                     if MODELISATION != "AXIS":
-
                         # SIGMA * (GRAD EPSI * Q)
 
                         __CHJ04 = CREA_CHAMP(
@@ -3793,7 +3749,6 @@ def post_jmod_ops(
                         )
 
                     else:
-
                         __CHJ04 = CREA_CHAMP(
                             OPERATION="ASSE",
                             TYPE_CHAM="ELGA_NEUT_R",
@@ -3984,7 +3939,6 @@ def post_jmod_ops(
                 )
 
                 if MODELISATION != "AXIS":
-
                     # GRAD W * Q
 
                     __CHJ05 = CREA_CHAMP(
@@ -4025,7 +3979,6 @@ def post_jmod_ops(
                     )
 
                 else:
-
                     __CHJ05 = CREA_CHAMP(
                         OPERATION="ASSE",
                         TYPE_CHAM="ELGA_NEUT_R",
@@ -4115,7 +4068,6 @@ def post_jmod_ops(
                 __J = __J - __J05_J[0]
 
             if MODELISATION == "AXIS":
-
                 # -------------------------------------------------------------
                 # J06
                 # -------------------------------------------------------------
@@ -4277,7 +4229,6 @@ def post_jmod_ops(
                 __J = __J - __J07_J[0]
 
             if MODELISATION == "AXIS":
-
                 __J = __J / R_CrackTip
 
             J.append(__J)
@@ -4290,7 +4241,6 @@ def post_jmod_ops(
         )
 
         if modified_J:
-
             DEFI_GROUP(
                 reuse=MAIL,
                 MAILLAGE=MAIL,
@@ -4369,7 +4319,6 @@ def post_jmod_ops(
         VNPF = unit_normal(POINSF, all_co[TPFISS[1]], all_co[TPFISS[2]])
 
         if closedCrack != "OUI":
-
             if elemType == "SEG2":
                 PI1 = TLIPSUP[1][1]
                 PF1 = TLIPSUP[NP][1]
@@ -4384,7 +4333,6 @@ def post_jmod_ops(
                 for iNP in range(2, NP):
                     TVECTEUR[iNP] = calc_tvect(self, all_co, TPFISS, VNPF, iNP - 1, iNP, iNP + 1)
         else:
-
             TVECTEUR[1] = calc_tvect(self, all_co, TPFISS, VNPF, NP, 1, 2)
             TVECTEUR[NP] = calc_tvect(self, all_co, TPFISS, VNPF, NP - 1, NP, 1)
 
@@ -4414,7 +4362,6 @@ def post_jmod_ops(
             UTMESS("F", "RUPTURE4_13")
 
         else:
-
             #       -----------------------------------
             #       Domain calculation
 
@@ -4427,16 +4374,13 @@ def post_jmod_ops(
 
             crea_group_ma_appui_group_no(self, MAIL, "TMAIL", lGroupNo_TMAIL)
             for iCONT in range(1, NB_COUCHES):
-
                 if elemType == "SEG2":
-
                     for iNP in range(NP):
                         nameGroupNo = "TMBOUGER" + str(iNP + 1)
                         nameGroupMa = "Block_tem" + str(iNP + 1)
                         crea_group_ma_appui_group_no(self, MAIL, nameGroupMa, nameGroupNo)
 
                 else:
-
                     for iNP in range((NP + 1) // 2):
                         nameGroupNo = "TMBOUGER" + str(2 * iNP + 1)
                         nameGroupMa = "Block_tem" + str(2 * iNP + 1)
@@ -4446,7 +4390,6 @@ def post_jmod_ops(
                     crea_group_ma_appui_group_no(self, MAIL, "Block1", "TMBOUGER1")
 
                     if elemType == "SEG2":
-
                         for iNP in range(1, NP - 1):
                             nameGroupMa = "Block" + str(iNP + 1)
                             lMail1 = "Block_tem" + str(iNP + 1)
@@ -4479,13 +4422,11 @@ def post_jmod_ops(
                             del_group_ma(self, MAIL, lMail)
 
                     if elemType == "SEG2":
-
                         crea_group_ma_appui_group_no_2d(self, MAIL, "TX1", "TMBOUGER1")
                         crea_group_ma_appui_group_no_2d(self, MAIL, "TX2", "TMBOUGER2")
                         crea_group_ma_appui_group_no_2d(self, MAIL, "TX3", "TMBOUGER" + str(NP))
                         crea_group_ma_appui_group_no_2d(self, MAIL, "TX4", "TMBOUGER" + str(NP - 1))
                     else:
-
                         crea_group_ma_appui_group_no_2d(self, MAIL, "TX1", "TMBOUGER1")
                         crea_group_ma_appui_group_no_2d(self, MAIL, "TX2", "TMBOUGER3")
                         crea_group_ma_appui_group_no_2d(self, MAIL, "TX3", "TMBOUGER" + str(NP))
@@ -4505,9 +4446,7 @@ def post_jmod_ops(
                         del_group_ma(self, MAIL, iTX)
 
                     if elemType == "SEG2":
-
                         if NP > 2:
-
                             for iNP in range(1, NP - 1):
                                 nameGroupNo = "TMBOUGER" + str(iNP + 1)
                                 lNode1 = "Block" + str(iNP)
@@ -4518,7 +4457,6 @@ def post_jmod_ops(
                             lNode = "Block" + str(iNP + 1)
                             del_group_no(self, MAIL, lNode)
                     else:
-
                         if NP > 3:
                             for iNP in range(1, (NP - 1) // 2):
                                 nameGroupNo = "TMBOUGER" + str(2 * iNP + 1)
@@ -4537,9 +4475,7 @@ def post_jmod_ops(
                             lNode = "Block" + str(2 * iNP + 1)
                             del_group_no(self, MAIL, lNode)
                 else:
-
                     if elemType == "SEG2":
-
                         nameGroupMa = "Block1"
                         lMail1 = "Block_tem" + str(1)
                         lMail2 = "Block_tem" + str(NP)
@@ -4560,7 +4496,6 @@ def post_jmod_ops(
                             lMail = "Block_tem" + str(iNP + 1)
                             del_group_ma(self, MAIL, lMail)
                     else:
-
                         nameGroupMa = "Block1"
                         lMail1 = "Block_tem" + str(1)
                         lMail2 = "Block_tem" + str(NP - 1)
@@ -4586,7 +4521,6 @@ def post_jmod_ops(
                         del_group_no(self, MAIL, lGroupNo)
 
                     if elemType == "SEG2":
-
                         nameGroupNo = "TMBOUGER1"
                         lNode1 = "Block1"
                         lNode2 = "Block" + str(NP)
@@ -4602,7 +4536,6 @@ def post_jmod_ops(
                             lNode = "Block" + str(iNP + 1)
                             del_group_no(self, MAIL, lNode)
                     else:
-
                         nameGroupNo = "TMBOUGER1"
                         lNode1 = "Block1"
                         lNode2 = "Block" + str(NP - 1)
@@ -4656,7 +4589,6 @@ def post_jmod_ops(
             TLIPINFCAL = {}
 
             if elemType == "SEG2":
-
                 for iNP in range(NP):
                     TLIPSUPCAL[iNP + 1] = TLIPSUP[iNP + 1][0 : NB_COUCHES + 1]
 
@@ -4664,7 +4596,6 @@ def post_jmod_ops(
                         TLIPINFCAL[iNP + 1] = TLIPINF[iNP + 1][0 : NB_COUCHES + 1]
 
             else:
-
                 for iNP in range((NP + 1) // 2):
                     TLIPSUPCAL[2 * iNP + 1] = TLIPSUP[2 * iNP + 1][0 : 2 * NB_COUCHES + 1]
 
@@ -4672,7 +4603,6 @@ def post_jmod_ops(
                         TLIPINFCAL[2 * iNP + 1] = TLIPINF[2 * iNP + 1][0 : 2 * NB_COUCHES + 1]
 
                 if closedCrack != "OUI":
-
                     for iNP in range(1, (NP + 1) // 2):
                         TLIPSUPCAL[2 * iNP] = TLIPSUP[2 * iNP][0 : NB_COUCHES + 1]
 
@@ -4680,7 +4610,6 @@ def post_jmod_ops(
                             TLIPINFCAL[2 * iNP] = TLIPINF[2 * iNP][0 : NB_COUCHES + 1]
 
                 else:
-
                     for iNP in range(1, NP // 2 + 1):
                         TLIPSUPCAL[2 * iNP] = TLIPSUP[2 * iNP][0 : NB_COUCHES + 1]
 
@@ -4688,11 +4617,8 @@ def post_jmod_ops(
                             TLIPINFCAL[2 * iNP] = TLIPINF[2 * iNP][0 : NB_COUCHES + 1]
 
             if elemType == "SEG2":
-
                 if is_symmetric:
-
                     if closedCrack != "OUI":
-
                         #                   ---------------
                         #                   TQ[1]
 
@@ -4734,7 +4660,6 @@ def post_jmod_ops(
 
                         if NP > 2:
                             for iNP in range(1, NP - 1):
-
                                 NODESBOUGE = [
                                     int(iNo[1:]) - 1 for iNo in TLIPSUPCAL[iNP + 1][0:NB_COUCHES]
                                 ]
@@ -4793,12 +4718,10 @@ def post_jmod_ops(
                             TQGLOB[iKey] = (np.array(TVECGLOB[iKey]) * XMULT / XAIRE).tolist()
 
                     else:
-
                         #                   ---------------
                         #                   TQ[iNP]
 
                         for iNP in range(NP):
-
                             NODESBOUGE = [
                                 int(iNo[1:]) - 1 for iNo in TLIPSUPCAL[iNP + 1][0:NB_COUCHES]
                             ]
@@ -4845,9 +4768,7 @@ def post_jmod_ops(
                             TQGLOB[iKey] = (np.array(TVECGLOB[iKey]) * XMULT / XAIRE).tolist()
 
                 else:
-
                     if closedCrack != "OUI":
-
                         #                   ---------------
                         #                   TQ[1]
 
@@ -4895,7 +4816,6 @@ def post_jmod_ops(
 
                         if NP > 2:
                             for iNP in range(1, NP - 1):
-
                                 NODESBOUGE = [
                                     int(iNo[1:]) - 1
                                     for iNo in TLIPSUPCAL[iNP + 1][0:NB_COUCHES]
@@ -4958,12 +4878,10 @@ def post_jmod_ops(
                             TQGLOB[iKey] = (np.array(TVECGLOB[iKey]) * XMULT / XAIRE).tolist()
 
                     else:
-
                         #                   ---------------
                         #                   TQ[iNP]
 
                         for iNP in range(NP):
-
                             NODESBOUGE = [
                                 int(iNo[1:]) - 1
                                 for iNo in TLIPSUPCAL[iNP + 1][0:NB_COUCHES]
@@ -5014,11 +4932,8 @@ def post_jmod_ops(
                             TQGLOB[iKey] = (np.array(TVECGLOB[iKey]) * XMULT / XAIRE).tolist()
 
             else:
-
                 if is_symmetric:
-
                     if closedCrack != "OUI":
-
                         #                   ---------------
                         #                   TQ[1]
 
@@ -5064,7 +4979,6 @@ def post_jmod_ops(
 
                         if NP > 3:
                             for iNP in range(1, (NP - 1) // 2):
-
                                 NODESBOUGE = [
                                     int(iNo[1:]) - 1
                                     for iNo in TLIPSUPCAL[2 * iNP + 1][0 : 2 * NB_COUCHES - 1]
@@ -5091,7 +5005,6 @@ def post_jmod_ops(
                         #                   TQ[2*iNP]
 
                         for iNP in range(1, (NP + 1) // 2):
-
                             NODESBOUGE = [
                                 int(iNo[1:]) - 1 for iNo in TLIPSUPCAL[2 * iNP][0:NB_COUCHES]
                             ]
@@ -5155,7 +5068,6 @@ def post_jmod_ops(
                             TQGLOB[iKey] = (np.array(TVECGLOB[iKey]) * XMULT / XAIRE).tolist()
 
                     else:
-
                         #                   ---------------
                         #                   TQ[2*iNP+1]
 
@@ -5185,7 +5097,6 @@ def post_jmod_ops(
                         #                   TQ[2*iNP]
 
                         for iNP in range(1, NP // 2 + 1):
-
                             NODESBOUGE = [
                                 int(iNo[1:]) - 1 for iNo in TLIPSUPCAL[2 * iNP][0:NB_COUCHES]
                             ]
@@ -5238,9 +5149,7 @@ def post_jmod_ops(
                             TQGLOB[iKey] = (np.array(TVECGLOB[iKey]) * XMULT / XAIRE).tolist()
 
                 else:
-
                     if closedCrack != "OUI":
-
                         #                   ---------------
                         #                   TQ[1]
 
@@ -5290,7 +5199,6 @@ def post_jmod_ops(
 
                         if NP > 3:
                             for iNP in range(1, (NP - 1) // 2):
-
                                 NODESBOUGE = [
                                     int(iNo[1:]) - 1
                                     for iNo in TLIPSUPCAL[2 * iNP + 1][0:NB_COUCHES]
@@ -5318,7 +5226,6 @@ def post_jmod_ops(
                         #                   TQ[2*iNP]
 
                         for iNP in range(1, (NP + 1) // 2):
-
                             NODESBOUGE = [
                                 int(iNo[1:]) - 1
                                 for iNo in TLIPSUPCAL[2 * iNP][0:NB_COUCHES]
@@ -5387,12 +5294,10 @@ def post_jmod_ops(
                             TQGLOB[iKey] = (np.array(TVECGLOB[iKey]) * XMULT / XAIRE).tolist()
 
                     else:
-
                         #                   ---------------
                         #                   TQ[2*iNP+1]
 
                         for iNP in range((NP + 1) // 2):
-
                             NODESBOUGE = [
                                 int(iNo[1:]) - 1
                                 for iNo in TLIPSUPCAL[2 * iNP + 1][0:NB_COUCHES]
@@ -5420,7 +5325,6 @@ def post_jmod_ops(
                         #                   TQ[2*iNP]
 
                         for iNP in range(1, NP // 2 + 1):
-
                             NODESBOUGE = [
                                 int(iNo[1:]) - 1
                                 for iNo in TLIPSUPCAL[2 * iNP][0:NB_COUCHES]
@@ -5503,7 +5407,6 @@ def post_jmod_ops(
             # print("cnom ",cnom)
 
             for knodes in MAIL.getGroupsOfNodes:
-
                 for incr_gno in range(len(GROUP_NO)):
                     # print("GROUP_NO",GROUP_NO[incr_gno], knodes.strip())
                     # print("incr_gno",incr_gno)
@@ -5538,7 +5441,6 @@ def post_jmod_ops(
         EPS_CMP = ["EPXX", "EPYY", "EPZZ", "EPXY", "EPXZ", "EPYZ"]
 
         for iord, inst in enumerate(lInst):
-
             __SIGF = get_contraint(self, __RESU, inst)
 
             __DEPINT = get_displacement(self, __RESU, inst)
@@ -5548,7 +5450,6 @@ def post_jmod_ops(
             __GDEPZ = grad_u(self, MAIL, MODE, MATE, ["0.", "0.", "DZ"], __DEPINT, inst)
 
             if ETAT_INIT is None:
-
                 __WELAS = get_strain_energy(self, __RESU, inst)
 
                 __WELAS = CREA_CHAMP(
@@ -5562,11 +5463,9 @@ def post_jmod_ops(
                 )
 
                 if OPTION == "JMOD":
-
                     __EPSI_ELGA = get_deformation(self, __RESU, "ELGA", inst)
 
             else:
-
                 __EPSI_TOTA = get_deformation(self, __RESU, "ELGA", inst)
 
                 DATA_INIT = ETAT_INIT[0].cree_dict_valeurs(ETAT_INIT[0].mc_liste)
@@ -5583,11 +5482,9 @@ def post_jmod_ops(
 
                 # if __EPSI_INIT['TYPE_CHAM'][:4] == 'ELGA':
                 if __EPSI_INIT.getType() == "CHAM_ELEM":
-
                     __EPS0_ELGA = __EPSI_INIT
 
                 else:
-
                     __EPS0_ELGA = CREA_CHAMP(
                         TYPE_CHAM="ELGA_EPSI_R", OPERATION="DISC", MODELE=MODE, CHAM_GD=__EPSI_INIT
                     )
@@ -5608,18 +5505,15 @@ def post_jmod_ops(
             #       INITIAL STRAIN - GRADIENT
             #
             if ETAT_INIT is not None:
-
                 #           ------------------------------------------------------------------
                 #           J03: GRAD EPS0
 
                 if grad_elno_type_j03 == "OUI":
-
                     __EPS0_ELNO = CREA_CHAMP(
                         TYPE_CHAM="ELNO_EPSI_R", OPERATION="DISC", MODELE=MODE, CHAM_GD=__EPS0_ELGA
                     )
 
                 else:
-
                     __EPS0_NOEU = CREA_CHAMP(
                         TYPE_CHAM="NOEU_EPSI_R", OPERATION="DISC", MODELE=MODE, CHAM_GD=__EPS0_ELGA
                     )
@@ -5627,9 +5521,7 @@ def post_jmod_ops(
                 dicGradEps0 = {}
 
                 for iEPS_CMP in EPS_CMP:
-
                     if grad_elno_type_j03 == "OUI":
-
                         __EPS0_CAL = __EPS0_ELNO.getValuesWithDescription(iEPS_CMP, ["TMAIL"])
 
                         __GRAD_EPS0 = grad_elno(
@@ -5637,7 +5529,6 @@ def post_jmod_ops(
                         )
 
                     else:
-
                         __EPS0_CAL = CREA_CHAMP(
                             OPERATION="ASSE",
                             MODELE=MODE,
@@ -5660,18 +5551,15 @@ def post_jmod_ops(
             #       MODIFIED J - GRADIENT
             #
             if OPTION == "JMOD":
-
                 #           ------------------------------------------------------------------
                 #           J04: GRAD EPSI
 
                 if grad_elno_type_j04 == "OUI":
-
                     __EPSI_ELNO = CREA_CHAMP(
                         TYPE_CHAM="ELNO_EPSI_R", OPERATION="DISC", MODELE=MODE, CHAM_GD=__EPSI_ELGA
                     )
 
                 else:
-
                     __EPSI_NOEU = CREA_CHAMP(
                         TYPE_CHAM="NOEU_EPSI_R", OPERATION="DISC", MODELE=MODE, CHAM_GD=__EPSI_ELGA
                     )
@@ -5679,9 +5567,7 @@ def post_jmod_ops(
                 dicGradEps = {}
 
                 for iEPS_CMP in EPS_CMP:
-
                     if grad_elno_type_j04 == "OUI":
-
                         __EPSI_CAL = __EPSI_ELNO.getValuesWithDescription(iEPS_CMP, ["TMAIL"])
 
                         __GRAD_EPSI = grad_elno(
@@ -5689,7 +5575,6 @@ def post_jmod_ops(
                         )
 
                     else:
-
                         __EPSI_CAL = CREA_CHAMP(
                             OPERATION="ASSE",
                             MODELE=MODE,
@@ -5719,7 +5604,6 @@ def post_jmod_ops(
                 )
 
                 if grad_elno_type_j05 == "OUI":
-
                     __WELAS_ELNO = CREA_CHAMP(
                         TYPE_CHAM="ELNO_VARI_R", OPERATION="DISC", MODELE=MODE, CHAM_GD=__WELASV
                     )
@@ -5731,7 +5615,6 @@ def post_jmod_ops(
                     )
 
                 else:
-
                     __WELAS_NOEU = CREA_CHAMP(
                         TYPE_CHAM="NOEU_VAR2_R", OPERATION="DISC", MODELE=MODE, CHAM_GD=__WELASV
                     )
@@ -5756,11 +5639,9 @@ def post_jmod_ops(
             #       LOOP ON THE CALCULATED NODES OF CRACK FRONT
             #
             for iNP in listNP:
-
                 display_node_inst(FOND_FISS, iNP, inst, NB_COUCHES, NP, closedCrack)
 
                 if iNP < NP:
-
                     __GQX = grad_q(
                         self,
                         MAIL,
@@ -5793,7 +5674,6 @@ def post_jmod_ops(
                     )
 
                 else:
-
                     __GQX = grad_q_glob(self, MAIL, MODE, MATE, NP, "DX", TQGLOB, 0, inst)
                     __GQY = grad_q_glob(self, MAIL, MODE, MATE, NP, "DY", TQGLOB, 1, inst)
                     __GQZ = grad_q_glob(self, MAIL, MODE, MATE, NP, "DZ", TQGLOB, 2, inst)
@@ -5828,7 +5708,6 @@ def post_jmod_ops(
                 #           MODIFIED J OR ETAT_INIT
                 #
                 if OPTION == "JMOD" or ETAT_INIT is not None:
-
                     if iNP < NP:
                         __QX, __QY, __QZ = field_q_local(
                             self, MAIL, "TMBOUGER" + str(iNP + 1), ["DX", "DY", "DZ"], TQ[iNP + 1]
@@ -5848,7 +5727,6 @@ def post_jmod_ops(
                 #           INITIAL STRAIN
                 #
                 if ETAT_INIT is not None:
-
                     #               --------------------------------------------------------------
                     #               J03 = SIGF * GRAD EPS0 * Q
                     #
@@ -5872,12 +5750,10 @@ def post_jmod_ops(
                 #           MODIFIED J
                 #
                 if OPTION == "JMOD":
-
                     #               --------------------------------------------------------------
                     #               J04 = SIGF * GRAD EPSI * Q
                     #
                     if j_correction != "OUI":
-
                         __J04_J = cal_j04(
                             self,
                             MODE,
@@ -5893,7 +5769,6 @@ def post_jmod_ops(
                         )
 
                     else:
-
                         __J04_J = cal_j04(
                             self,
                             MODE,
@@ -5914,13 +5789,11 @@ def post_jmod_ops(
                     #               J05 = GRAD W * Q
                     #
                     if j_correction != "OUI":
-
                         __J05_J = cal_j05(
                             self, MODE, "TMAIL", inst, __GRAD_WELAS, __QX_GA, __QY_GA, __QZ_GA
                         )
 
                     else:
-
                         __J05_J = cal_j05(
                             self, MODE, "TMAIL_IMPR", inst, __GRAD_WELAS, __QX_GA, __QY_GA, __QZ_GA
                         )

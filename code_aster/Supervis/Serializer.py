@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -64,6 +64,7 @@ ARGS = "_MARK_DS_ARGS_"
 STATE = "_MARK_DS_STATE_"
 LIST = "_MARK_LIST_"
 DICT = "_MARK_DICT_"
+
 
 # same values in op9999
 class FinalizeOptions:
@@ -566,8 +567,8 @@ class AsterUnpickler(pickle.Unpickler):
                 logger.debug("setting state: %s", self.state)
                 _restore(f"{self._name} .state", self.state)
                 getattr(self._inst, "__setstate__")(self.state)
-                if hasattr(self._inst, "update"):
-                    self._inst.update()
+                if hasattr(self._inst, "updateInternalState"):
+                    self._inst.updateInternalState()
             return self._inst
 
     class BufferStack(object):

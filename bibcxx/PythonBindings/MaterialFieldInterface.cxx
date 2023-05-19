@@ -193,7 +193,10 @@ void exportMaterialFieldToPython( py::module_ &mod ) {
             Build material field
             )" )
 
-        .def( "update", &MaterialField::update, R"(
-            Update material field
+        .def( "updateInternalState", &MaterialField::updateInternalState, R"(
+Update the internal state of the datastructure.
+
+Returns:
+    bool: *True* in case of success, *False* otherwise.
             )" );
 };

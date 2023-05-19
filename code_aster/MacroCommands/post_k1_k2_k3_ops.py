@@ -1822,7 +1822,7 @@ def post_k1_k2_k3_ops(
     if MATER is None:
         mater, MODELISATION = aster.postkutil(1, RESULTAT.getName(), nom_fiss)
         if RESULTAT.getNumberOfIndexes() == 0:
-            RESULTAT.update()
+            RESULTAT.updateInternalState()
         if RESULTAT.getNumberOfIndexes() > 0:
             cham_maters = []
             for j in RESULTAT.getIndexes():

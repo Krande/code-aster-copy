@@ -362,7 +362,7 @@ void MaterialField::updateExtStateVariablesObjects() {
     }
 };
 
-bool MaterialField::update() {
+bool MaterialField::updateInternalState() {
     updateExtStateVariablesObjects();
     return true;
 };

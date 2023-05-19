@@ -645,7 +645,7 @@ class BaseMesh(DataStructure):
             verbosity (int): Verbosity level (default: 1)
         """
 
-    def update(self):
+    def updateInternalState(self):
         """Update the internal state of the datastructure.
 
         Returns:
@@ -9280,8 +9280,12 @@ class MaterialField(DataStructure):
             model (Model): model
         """
 
-    def update(self):
-        """Update material field"""
+    def updateInternalState(self):
+        """Update the internal state of the datastructure.
+
+        Returns:
+            bool: *True* in case of success, *False* otherwise.
+        """
 
 
 # class Grid in libaster
@@ -10368,7 +10372,7 @@ class XfemCrack(DataStructure):
     def setTangentialLevelSetFunction(self, arg0):
         pass
 
-    def update(self):
+    def updateInternalState(self):
         pass
 
 

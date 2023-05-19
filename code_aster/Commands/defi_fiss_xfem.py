@@ -42,7 +42,7 @@ class XFEMCrackDefinition(ExecuteCommand):
                 self._result.setDiscontinuityType("Interface")
             elif keywords["TYPE_DISCONTINUITE"] == "COHESIF":
                 self._result.setDiscontinuityType("Cohesive")
-        self._result.update()
+        self._result.updateInternalState()
 
 
 DEFI_FISS_XFEM = XFEMCrackDefinition.run
