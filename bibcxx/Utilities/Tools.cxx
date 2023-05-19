@@ -25,7 +25,7 @@
 
 #include "aster_utils.h"
 
-std::string trim( const std::string &str, const std::string &whitespace ) {
+std::string strip( const std::string &str, const std::string &whitespace ) {
     const std::size_t strBegin = str.find_first_not_of( whitespace );
     if ( strBegin == std::string::npos )
         return ""; // no content

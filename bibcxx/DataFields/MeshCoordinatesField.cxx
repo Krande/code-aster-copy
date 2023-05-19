@@ -80,7 +80,7 @@ VectorLong MeshCoordinatesField::_getDOFsToUse( const VectorString &list_cmp ) c
     std::map< ASTERINTEGER, std::string > map_cmp;
     if ( !all_cmp ) {
         for ( auto &name : list_cmp ) {
-            auto name_trim = trim( name );
+            auto name_trim = strip( name );
             if ( name_trim == "X" ) {
                 map_cmp[0] = name_trim;
             } else if ( name_trim == "Y" ) {

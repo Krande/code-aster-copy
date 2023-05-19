@@ -73,7 +73,7 @@ class SimpleFieldOnCells : public DataField {
     ASTERINTEGER _shiftCell( const ASTERINTEGER &ima ) const { return ( *_size )[4 + 4 * ima + 4]; }
 
     std::string _nameCmp( const ASTERINTEGER &icmp ) const {
-        return trim( ( *_component )[icmp].toString() );
+        return strip( ( *_component )[icmp].toString() );
     }
 
     /**
@@ -311,12 +311,12 @@ class SimpleFieldOnCells : public DataField {
     /**
      * @brief Get physical quantity
      */
-    std::string getPhysicalQuantity() const { return trim( ( *_descriptor )[1].toString() ); }
+    std::string getPhysicalQuantity() const { return strip( ( *_descriptor )[1].toString() ); }
 
     /**
      * @brief Get field location
      */
-    std::string getFieldLocation() const { return trim( ( *_descriptor )[2].toString() ); }
+    std::string getFieldLocation() const { return strip( ( *_descriptor )[2].toString() ); }
 
     /**
      * @brief Get cells holding components

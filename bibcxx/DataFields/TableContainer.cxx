@@ -75,7 +75,7 @@ void TableContainer::addObject( const std::string &a, TablePtr b ) { _mapT[a] = 
 
 ElementaryMatrixDisplacementRealPtr
 TableContainer::getElementaryMatrixDisplacementReal( const std::string &a ) const {
-    const auto aa = trim( a );
+    const auto aa = strip( a );
     const auto curIter = _mapEMDD.find( aa );
     if ( curIter == _mapEMDD.end() )
         return ElementaryMatrixDisplacementRealPtr( nullptr );
@@ -84,7 +84,7 @@ TableContainer::getElementaryMatrixDisplacementReal( const std::string &a ) cons
 
 ElementaryMatrixTemperatureRealPtr
 TableContainer::getElementaryMatrixTemperatureReal( const std::string &a ) const {
-    const auto aa = trim( a );
+    const auto aa = strip( a );
     const auto curIter = _mapEMTD.find( aa );
     if ( curIter == _mapEMTD.end() )
         return ElementaryMatrixTemperatureRealPtr( nullptr );
@@ -93,7 +93,7 @@ TableContainer::getElementaryMatrixTemperatureReal( const std::string &a ) const
 
 ElementaryVectorDisplacementRealPtr
 TableContainer::getElementaryVectorDisplacementReal( const std::string &a ) const {
-    const auto aa = trim( a );
+    const auto aa = strip( a );
     const auto curIter = _mapEVDD.find( aa );
     if ( curIter == _mapEVDD.end() )
         return ElementaryVectorDisplacementRealPtr( nullptr );
@@ -102,7 +102,7 @@ TableContainer::getElementaryVectorDisplacementReal( const std::string &a ) cons
 
 ElementaryVectorTemperatureRealPtr
 TableContainer::getElementaryVectorTemperatureReal( const std::string &a ) const {
-    const auto aa = trim( a );
+    const auto aa = strip( a );
     const auto curIter = _mapEVTD.find( aa );
     if ( curIter == _mapEVTD.end() )
         return ElementaryVectorTemperatureRealPtr( nullptr );
@@ -110,7 +110,7 @@ TableContainer::getElementaryVectorTemperatureReal( const std::string &a ) const
 };
 
 FieldOnCellsRealPtr TableContainer::getFieldOnCellsReal( const std::string &a ) const {
-    const auto aa = trim( a );
+    const auto aa = strip( a );
     const auto curIter = _mapFOED.find( aa );
     if ( curIter == _mapFOED.end() )
         return FieldOnCellsRealPtr( nullptr );
@@ -118,7 +118,7 @@ FieldOnCellsRealPtr TableContainer::getFieldOnCellsReal( const std::string &a ) 
 };
 
 FieldOnNodesRealPtr TableContainer::getFieldOnNodesReal( const std::string &a ) const {
-    const auto aa = trim( a );
+    const auto aa = strip( a );
     const auto curIter = _mapFOND.find( aa );
     if ( curIter == _mapFOND.end() )
         return FieldOnNodesRealPtr( nullptr );
@@ -126,7 +126,7 @@ FieldOnNodesRealPtr TableContainer::getFieldOnNodesReal( const std::string &a ) 
 };
 
 MeshPtr TableContainer::getMesh( const std::string &a ) const {
-    const auto aa = trim( a );
+    const auto aa = strip( a );
     const auto curIter = _mapMesh.find( aa );
     if ( curIter == _mapMesh.end() )
         return MeshPtr( nullptr );
@@ -135,7 +135,7 @@ MeshPtr TableContainer::getMesh( const std::string &a ) const {
 
 #ifdef ASTER_HAVE_MPI
 ParallelMeshPtr TableContainer::getParallelMesh( const std::string &a ) const {
-    const auto aa = trim( a );
+    const auto aa = strip( a );
     const auto curIter = _mapPMesh.find( aa );
     if ( curIter == _mapPMesh.end() )
         return ParallelMeshPtr( nullptr );
@@ -144,7 +144,7 @@ ParallelMeshPtr TableContainer::getParallelMesh( const std::string &a ) const {
 #endif
 
 FunctionPtr TableContainer::getFunction( const std::string &a ) const {
-    const auto aa = trim( a );
+    const auto aa = strip( a );
     const auto curIter = _mapF.find( aa );
     if ( curIter == _mapF.end() )
         return FunctionPtr( nullptr );
@@ -152,7 +152,7 @@ FunctionPtr TableContainer::getFunction( const std::string &a ) const {
 };
 
 FunctionComplexPtr TableContainer::getFunctionComplex( const std::string &a ) const {
-    const auto aa = trim( a );
+    const auto aa = strip( a );
     const auto curIter = _mapFC.find( aa );
     if ( curIter == _mapFC.end() )
         return FunctionComplexPtr( nullptr );
@@ -161,7 +161,7 @@ FunctionComplexPtr TableContainer::getFunctionComplex( const std::string &a ) co
 
 GeneralizedAssemblyMatrixRealPtr
 TableContainer::getGeneralizedAssemblyMatrix( const std::string &a ) const {
-    const auto aa = trim( a );
+    const auto aa = strip( a );
     const auto curIter = _mapGAMD.find( aa );
     if ( curIter == _mapGAMD.end() )
         return GeneralizedAssemblyMatrixRealPtr( nullptr );
@@ -169,7 +169,7 @@ TableContainer::getGeneralizedAssemblyMatrix( const std::string &a ) const {
 };
 
 DataFieldPtr TableContainer::getDataField( const std::string &a ) const {
-    const auto aa = trim( a );
+    const auto aa = strip( a );
     const auto curIter = _mapGDF.find( aa );
     if ( curIter == _mapGDF.end() )
         return DataFieldPtr( nullptr );
@@ -177,7 +177,7 @@ DataFieldPtr TableContainer::getDataField( const std::string &a ) const {
 };
 
 ModeResultPtr TableContainer::getModeResult( const std::string &a ) const {
-    const auto aa = trim( a );
+    const auto aa = strip( a );
     const auto curIter = _mapMMC.find( aa );
     if ( curIter == _mapMMC.end() )
         return ModeResultPtr( nullptr );
@@ -186,7 +186,7 @@ ModeResultPtr TableContainer::getModeResult( const std::string &a ) const {
 
 ConstantFieldOnCellsRealPtr
 TableContainer::getConstantFieldOnCellsReal( const std::string &a ) const {
-    const auto aa = trim( a );
+    const auto aa = strip( a );
     const auto curIter = _mapPCFOMD.find( aa );
     if ( curIter == _mapPCFOMD.end() )
         return ConstantFieldOnCellsRealPtr( nullptr );
@@ -194,7 +194,7 @@ TableContainer::getConstantFieldOnCellsReal( const std::string &a ) const {
 };
 
 Function2DPtr TableContainer::getFunction2D( const std::string &a ) const {
-    const auto aa = trim( a );
+    const auto aa = strip( a );
     const auto curIter = _mapS.find( aa );
     if ( curIter == _mapS.end() )
         return Function2DPtr( nullptr );
@@ -202,7 +202,7 @@ Function2DPtr TableContainer::getFunction2D( const std::string &a ) const {
 };
 
 TablePtr TableContainer::getTable( const std::string &a ) const {
-    const auto aa = trim( a );
+    const auto aa = strip( a );
     const auto curIter = _mapT.find( aa );
     if ( curIter == _mapT.end() )
         return TablePtr( nullptr );
@@ -261,15 +261,15 @@ bool TableContainer::build() {
     for ( int i = 0; i < usedSize; ++i ) {
         std::string type;
         if ( is_typeobject_K24 )
-            type = trim( ( *_objectType24 )[i].toString() );
+            type = strip( ( *_objectType24 )[i].toString() );
         else
-            type = trim( ( *_objectType )[i].toString() );
+            type = strip( ( *_objectType )[i].toString() );
         std::string dsName;
         if ( is_dsname_K24 )
-            dsName = trim( ( *_dsName24 )[i].toString() );
+            dsName = strip( ( *_dsName24 )[i].toString() );
         else
-            dsName = trim( ( *_dsName )[i].toString() );
-        std::string name = trim( ( *_objectName )[i].toString() );
+            dsName = strip( ( *_dsName )[i].toString() );
+        std::string name = strip( ( *_objectName )[i].toString() );
 
 #ifdef ASTER_DEBUG_CXX
         std::cout << "DEBUG: TableContainer index: " << i << " dsName: " << dsName

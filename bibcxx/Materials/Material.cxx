@@ -275,7 +275,7 @@ VectorString Material::getMaterialNames() {
     VectorString names;
     names.reserve( size() );
     for ( auto &elt : *_names ) {
-        names.push_back( trim( elt.toString() ) );
+        names.push_back( strip( elt.toString() ) );
     }
     return names;
 }
@@ -289,7 +289,7 @@ ASTERDOUBLE Material::getValueReal( const std::string matName, const std::string
     std::string objName = "";
     int nbObj = prop->getNumberOfReal();
     for ( int i = 0; i < nbObj; i++ ) {
-        if ( trim( prop->getValueString( i ) ) == propName ) {
+        if ( strip( prop->getValueString( i ) ) == propName ) {
             return prop->getValueReal( i );
         }
     }
@@ -306,7 +306,7 @@ ASTERCOMPLEX Material::getValueComplex( const std::string matName, const std::st
     int first = prop->getNumberOfReal();
     int nbObj = prop->getNumberOfComplex();
     for ( int i = 0; i < nbObj; i++ ) {
-        if ( trim( prop->getValueString( first + i ) ) == propName ) {
+        if ( strip( prop->getValueString( first + i ) ) == propName ) {
             return prop->getValueComplex( first + i );
         }
     }
@@ -326,7 +326,7 @@ GenericFunctionPtr Material::getFunction( const std::string matName, const std::
     std::cout << "DEBUG: search from pos: " << first << " with nbObj: " << nbObj << std::endl;
 #endif
     for ( int i = 0; i < nbObj; i++ ) {
-        if ( trim( prop->getValueString( first + i ) ) == propName ) {
+        if ( strip( prop->getValueString( first + i ) ) == propName ) {
             objName = prop->getValueString( first + nbObj + i );
             break;
         }
@@ -340,7 +340,7 @@ GenericFunctionPtr Material::getFunction( const std::string matName, const std::
     // getDependencyByName
     GenericFunctionPtr ds( nullptr );
     for ( auto &elt : getDependencies() ) {
-        if ( trim( elt->getName() ) == trim( objName ) ) {
+        if ( strip( elt->getName() ) == strip( objName ) ) {
             ds = std::static_pointer_cast< GenericFunction >( elt );
             break;
         }

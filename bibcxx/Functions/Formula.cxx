@@ -71,7 +71,7 @@ VectorString Formula::getVariables() const {
 }
 
 void Formula::setExpression( const std::string expression ) {
-    std::string name( trim( "code_of_" + getName() ) );
+    std::string name( strip( "code_of_" + getName() ) );
     _expression = expression;
     PyCompilerFlags flags;
     flags.cf_flags = CO_FUTURE_DIVISION;
@@ -139,7 +139,7 @@ VectorReal evaluate_formula( const py::object &code, const py::object &globals,
 
     py::object locals = py::dict();
     for ( int i = 0; i < nbvars; ++i ) {
-        locals[trim( variables[i] ).c_str()] = values[i];
+        locals[strip( variables[i] ).c_str()] = values[i];
     }
 
     // res = py::eval( expression, globals, locals );

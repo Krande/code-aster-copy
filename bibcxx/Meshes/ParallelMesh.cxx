@@ -62,7 +62,7 @@ bool ParallelMesh::updateGlobalGroupOfNodes( void ) {
     AsterMPI::all_gather( gONNames, allgONNames );
 
     for ( auto &nameOfGrp : allgONNames )
-        _setOfAllGON.insert( trim( nameOfGrp.toString() ) );
+        _setOfAllGON.insert( strip( nameOfGrp.toString() ) );
 
     if ( _globalGroupOfNodes.exists() )
         _globalGroupOfNodes->deallocate();
@@ -87,7 +87,7 @@ bool ParallelMesh::updateGlobalGroupOfCells( void ) {
     AsterMPI::all_gather( gOENames, allgOENames );
 
     for ( auto &nameOfGrp : allgOENames )
-        _setOfAllGOE.insert( trim( nameOfGrp.toString() ) );
+        _setOfAllGOE.insert( strip( nameOfGrp.toString() ) );
 
     if ( _globalGroupOfCells.exists() )
         _globalGroupOfCells->deallocate();
@@ -133,7 +133,7 @@ VectorString ParallelMesh::getGroupsOfCells( const bool local ) const {
         ASTERINTEGER size = _nameOfGrpCells->size();
         VectorString names;
         for ( int i = 0; i < size; i++ ) {
-            names.push_back( trim( _nameOfGrpCells->getStringFromIndex( i + 1 ) ) );
+            names.push_back( strip( _nameOfGrpCells->getStringFromIndex( i + 1 ) ) );
         }
         return names;
     }
@@ -147,7 +147,7 @@ VectorString ParallelMesh::getGroupsOfNodes( const bool local ) const {
         ASTERINTEGER size = _nameOfGrpNodes->size();
         VectorString names;
         for ( int i = 0; i < size; i++ ) {
-            names.push_back( trim( _nameOfGrpNodes->getStringFromIndex( i + 1 ) ) );
+            names.push_back( strip( _nameOfGrpNodes->getStringFromIndex( i + 1 ) ) );
         }
         return names;
     }
@@ -158,7 +158,7 @@ VectorString ParallelMesh::getGroupsOfNodes( const bool local ) const {
 void ParallelMesh::setGroupOfCells( const std::string &name, const VectorLong &cell_ids ) {
     if ( !name.empty() && !cell_ids.empty() ) {
         ASTERLOGICAL isAdded = false;
-        const auto name_s = ljust( trim( name ), 24, ' ' );
+        const auto name_s = ljust( strip( name ), 24, ' ' );
         auto cell_ids_u = unique( cell_ids );
         std::for_each( cell_ids_u.begin(), cell_ids_u.end(), []( ASTERINTEGER &d ) { d += 1; } );
         ASTERINTEGER size = cell_ids_u.size(), un = 1;
@@ -173,7 +173,7 @@ void ParallelMesh::setGroupOfNodes( const std::string &name, const VectorLong &n
                                     const bool localNumbering ) {
     if ( !name.empty() && !node_ids.empty() ) {
         ASTERLOGICAL isAdded = false;
-        const auto name_s = ljust( trim( name ), 24, ' ' );
+        const auto name_s = ljust( strip( name ), 24, ' ' );
         auto node_ids_u = unique( node_ids );
         if ( !localNumbering ) {
             VectorLong node_g;

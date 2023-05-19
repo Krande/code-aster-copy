@@ -54,7 +54,7 @@ private:
    */
   FiniteElementDescriptorPtr
   newFiniteElementDescriptor(const std::string &name, const BaseMeshPtr mesh) {
-    if (_setLigrel.count(trim(name)) > 0) {
+    if (_setLigrel.count(strip(name)) > 0) {
       raiseAsterError("LIGREL already exists: " + name);
     }
 
@@ -70,7 +70,7 @@ private:
    */
   EquationNumberingPtr newEquationNumbering(const std::string &name,
                                             const BaseMeshPtr mesh) {
-    if (_setGlobNume.count(trim(name)) > 0) {
+    if (_setGlobNume.count(strip(name)) > 0) {
       raiseAsterError("NUME_EQUA already exists: " + name);
     }
 
@@ -88,7 +88,7 @@ private:
   GeneralizedEquationNumberingPtr
   newGeneralizedEquationNumbering(const std::string &name) {
     AS_ABORT(name);
-    if (_setGlobNume.count(trim(name)) > 0) {
+    if (_setGlobNume.count(strip(name)) > 0) {
       raiseAsterError("nume_equa_gene already exists: " + name);
     }
 
@@ -109,8 +109,8 @@ public:
   void addEquationNumbering(const EquationNumberingPtr &fond) {
     AS_ASSERT(fond);
 
-    _mapGlobNume[trim(fond->getName())] = fond;
-    _setGlobNume.insert(trim(fond->getName()));
+    _mapGlobNume[strip(fond->getName())] = fond;
+    _setGlobNume.insert(strip(fond->getName()));
   };
 
   /**
@@ -119,8 +119,8 @@ public:
   void addFiniteElementDescriptor(const FiniteElementDescriptorPtr &fed) {
     AS_ASSERT(fed);
 
-    _mapLigrel[trim(fed->getName())] = fed;
-    _setLigrel.insert(trim(fed->getName()));
+    _mapLigrel[strip(fed->getName())] = fed;
+    _setLigrel.insert(strip(fed->getName()));
   };
 
   void clear() {
@@ -138,7 +138,7 @@ public:
         std::make_shared<FieldOnCells<ValueType>>(name);
     field->updateValuePointers();
 
-    const std::string ligrel = trim((*(*field)._reference)[0].toString());
+    const std::string ligrel = strip((*(*field)._reference)[0].toString());
 
     if (!ligrel.empty()) {
       auto curIter = _mapLigrel.find(ligrel);
@@ -178,7 +178,7 @@ public:
         std::make_shared<FieldOnNodes<ValueType>>(name);
     field->updateValuePointers();
 
-    const std::string globNume = trim((*(*field)._reference)[1].toString());
+    const std::string globNume = strip((*(*field)._reference)[1].toString());
     AS_ASSERT(!globNume.empty());
 
     auto curIter = _mapGlobNume.find(globNume);

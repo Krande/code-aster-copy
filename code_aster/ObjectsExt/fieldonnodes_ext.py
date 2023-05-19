@@ -78,37 +78,45 @@ class ExtendedFieldOnNodesReal:
     cata_sdj = "SD.sd_champ.sd_cham_no_class"
     internalStateBuilder = FieldOnNodesStateBuilder
 
-    def getValuesWithDescription(self, comp=" ", lgno=[]):
-        """retourne les valeurs de la composante cmp du champ sur la liste
-        de groupes de noeuds lgno avec la description.
-        Si lgno est une liste vide, c'est equivalent a un TOUT='OUI'
-        Si cmp= ' ', c'est équivalent à TOUT_CMP='OUI'
-        la description est sous la forme d'une paire de liste (noeuds, composantes)
+    def getValuesWithDescription(self, component="", groups=[]):
+        """Return the values of a component of the field.
+
+        Arguments:
+            component (str, optional): Extracted component or all components if
+                it is empty.
+            groups (list[str], optional): The extraction is limited to the given
+                groups of nodes.
+
+        Returns:
+            tuple(values, description): List of values and description.
+            The description provides a tuple with (nodes ids, components).
         """
-
-        description, dofs = self.getDescription().getDOFsWithDescription(comp, lgno)
+        description, dofs = self.getDescription().getDOFsWithDescription(component, groups)
         values = self.getValues(dofs)
-
         return values, description
 
-    @deprecated
+    @deprecated(case=4, help="Use 'getValuesWithDescription()' instead")
     def EXTR_COMP(self, comp, lgma=[], topo=0):
-        raise Exception(
-            """EXTR_COMP has been removed, use getValuesWithDescription instead
-        Ex1:
+        """Deprecated: Use 'getValuesWithDescription()' instead.
+
+        Examples:
+
+        .. code-block:: python
+
+            # previously:
             extrcmp = chamno.EXTR_COMP(cmp, groups, 1)
             values = extrcmp.valeurs
             nodes = extrcmp.noeud
             components = extrcmp.comp
-        =>
+            # replaced by:
             values, (nodes, components) = chamno.getValuesWithDescription(cmp, groups)
-        Ex2:
+
+            # previously:
             extrcmp = chamno.EXTR_COMP(cmp, groups, 0)
             values = extrcmp.valeurs
-        =>
+            # replaced by:
             values, _ = chamno.getValuesWithDescription(cmp, groups)
         """
-        )
 
     @property
     @functools.lru_cache()
@@ -252,34 +260,42 @@ class ExtendedFieldOnNodesComplex:
     cata_sdj = "SD.sd_champ.sd_cham_no_class"
     internalStateBuilder = FieldOnNodesStateBuilder
 
-    def getValuesWithDescription(self, comp=" ", lgno=[]):
-        """retourne les valeurs de la composante cmp du champ sur la liste
-        de groupes de noeuds lgno avec la description.
-        Si lgno est une liste vide, c'est equivalent a un TOUT='OUI'
-        Si cmp= ' ', c'est équivalent à TOUT_CMP='OUI'
-        la description est sous la forme d'une liste de pair (noeuds, composantes)
+    def getValuesWithDescription(self, component="", groups=[]):
+        """Return the values of a component of the field.
+
+        Arguments:
+            component (str, optional): Extracted component or all components if
+                it is empty.
+            groups (list[str], optional): The extraction is limited to the given
+                groups of nodes.
+
+        Returns:
+            tuple(values, description): List of values and description.
+            The description provides a tuple with (nodes ids, components).
         """
-
-        description, dofs = self.getDescription().getDOFsWithDescription(comp, lgno)
+        description, dofs = self.getDescription().getDOFsWithDescription(component, groups)
         values = self.getValues(dofs)
-
         return values, description
 
-    @deprecated
+    @deprecated(case=4, help="Use 'getValuesWithDescription()' instead")
     def EXTR_COMP(self, comp, lgma=[], topo=0):
-        raise Exception(
-            """EXTR_COMP has been removed, use getValuesWithDescription instead
-        Ex1:
+        """Deprecated: Use 'getValuesWithDescription()' instead.
+
+        Examples:
+
+        .. code-block:: python
+
+            # previously:
             extrcmp = chamno.EXTR_COMP(cmp, groups, 1)
             values = extrcmp.valeurs
             nodes = extrcmp.noeud
             components = extrcmp.comp
-        =>
+            # replaced by:
             values, (nodes, components) = chamno.getValuesWithDescription(cmp, groups)
-        Ex2:
+
+            # previously:
             extrcmp = chamno.EXTR_COMP(cmp, groups, 0)
             values = extrcmp.valeurs
-        =>
+            # replaced by:
             values, _ = chamno.getValuesWithDescription(cmp, groups)
         """
-        )

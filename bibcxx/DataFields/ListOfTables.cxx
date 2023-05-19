@@ -51,8 +51,8 @@ bool ListOfTables::update_tables() {
 
     const int size = _dsId->size();
     for ( int i = 0; i < size; i++ ) {
-        const auto id = trim( ( *_dsId )[i].toString() );
-        const auto name = trim( ( *_dsName )[i].toString() );
+        const auto id = strip( ( *_dsId )[i].toString() );
+        const auto name = strip( ( *_dsName )[i].toString() );
         if ( id == "" )
             continue;
         if ( _mapTables[id] == nullptr ) {
@@ -68,7 +68,7 @@ bool ListOfTables::update_tables() {
 
 TablePtr ListOfTables::getTable( const std::string id ) {
     this->update_tables();
-    const auto id_ = trim( id );
+    const auto id_ = strip( id );
     const auto curIter = _mapTables.find( id_ );
     if ( curIter == _mapTables.end() )
         return TablePtr( nullptr );

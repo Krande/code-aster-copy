@@ -154,13 +154,13 @@ class GenericElementaryVector : public BaseElementaryVector {
 
             SetString elemSave;
             for ( auto &elemTerm : _elemTerm ) {
-                elemSave.insert( trim( elemTerm->getName() ) );
+                elemSave.insert( strip( elemTerm->getName() ) );
             }
 
             auto elemTermNames = _elemComp->getNameOfElementaryTerms();
             SetString elemKeep;
             for ( auto &elemTerm : elemTermNames ) {
-                const std::string name = trim( elemTerm.toString() );
+                const std::string name = strip( elemTerm.toString() );
                 elemKeep.insert( name );
                 if ( name != " " && elemSave.count( name ) == 0 ) {
                     std::string name2( name );
@@ -190,7 +190,7 @@ class GenericElementaryVector : public BaseElementaryVector {
             std::vector< std::shared_ptr< ElementaryTerm< ValueType > > > elemTermNew;
             elemTermNew.reserve( _elemTerm.size() );
             for ( auto &elemTerm : _elemTerm ) {
-                auto name = trim( elemTerm->getName() );
+                auto name = strip( elemTerm->getName() );
                 if ( elemKeep.count( name ) > 0 ) {
                     if ( !elemTerm->getFiniteElementDescriptor() ) {
                         std::cout << "Missing FED " << std::endl;

@@ -57,7 +57,7 @@ std::string Result::_generateFieldName( const ASTERINTEGER &indexSymbName,
     auto chford = to_string( internalIndex, 6 );
 
     // Generate name of field
-    auto fieldName = std::string( trim( getName() ) + "." + nuch + "." + chford );
+    auto fieldName = std::string( strip( getName() ) + "." + nuch + "." + chford );
 
     return fieldName;
 };
@@ -70,7 +70,7 @@ void Result::_setFieldBase(
         raiseAsterError( "ValueError: field is empty" );
 
     // Get index of this symbolic name
-    auto indexSymbName = _symbolicNamesOfFields->getIndexFromString( trim( symbName ) );
+    auto indexSymbName = _symbolicNamesOfFields->getIndexFromString( strip( symbName ) );
 
     if ( indexSymbName == 0 ) {
         UTMESS( "F", "RESULT2_4" );
@@ -100,21 +100,21 @@ void Result::_setFieldBase(
     storageStructure[internalIndex] = ljust( internalName, 24, ' ' );
 
     // Save field in dictionnary
-    if ( dict.count( trim( symbName ) ) == 0 ) {
-        dict[trim( symbName )] = std::map< ASTERINTEGER, std::shared_ptr< T > >();
+    if ( dict.count( strip( symbName ) ) == 0 ) {
+        dict[strip( symbName )] = std::map< ASTERINTEGER, std::shared_ptr< T > >();
     }
 
     // if field already exist, destroy it before to create new one
-    if ( dict[trim( symbName )].count( storageIndex ) > 0 ) {
-        dict[trim( symbName )][storageIndex] = nullptr;
+    if ( dict[strip( symbName )].count( storageIndex ) > 0 ) {
+        dict[strip( symbName )][storageIndex] = nullptr;
     }
 
     // Create smart pointer
     if ( internalName == field->getName() ) {
-        dict[trim( symbName )][storageIndex] = field;
+        dict[strip( symbName )][storageIndex] = field;
     } else {
         auto result = std::make_shared< T >( internalName, *field );
-        dict[trim( symbName )][storageIndex] = result;
+        dict[strip( symbName )][storageIndex] = result;
     }
 };
 
@@ -211,14 +211,14 @@ ASTERDOUBLE Result::getTime( ASTERINTEGER storageIndex ) const {
 
     for ( const auto &[i, item] : *_calculationParameter ) {
         item->updateValuePointer();
-        auto typevar = trim( ( *item )[3].toString() );
+        auto typevar = strip( ( *item )[3].toString() );
 
         if ( typevar == "ACCES" ) {
-            auto var_name = trim( _accessVariables->getStringFromIndex( i ) );
+            auto var_name = strip( _accessVariables->getStringFromIndex( i ) );
             if ( var_name == "INST" ) {
-                auto nosuff = trim( ( *item )[0].toString() );
-                auto ivar = std::stoi( trim( ( *item )[1].toString() ) );
-                auto nmax = std::stoi( trim( ( *item )[2].toString() ) );
+                auto nosuff = strip( ( *item )[0].toString() );
+                auto ivar = std::stoi( strip( ( *item )[1].toString() ) );
+                auto nmax = std::stoi( strip( ( *item )[2].toString() ) );
 
                 AS_ASSERT( nosuff == ".RSPR" )
 
@@ -253,8 +253,8 @@ void Result::_listOfParameters() {
 
     for ( const auto &[i, item] : *_calculationParameter ) {
         item->updateValuePointer();
-        auto objectSuffix = trim( ( *item )[0].toString() );
-        auto paraName = trim( _accessVariables->getStringFromIndex( i ) );
+        auto objectSuffix = strip( ( *item )[0].toString() );
+        auto paraName = strip( _accessVariables->getStringFromIndex( i ) );
         std::string paraType;
         if ( objectSuffix == ".RSPR" ) {
             paraType = "Real";
@@ -472,13 +472,13 @@ py::dict Result::getAccessParameters() const {
     auto items = _calculationParameter->getObjects();
     for ( auto &item : items ) {
         item->updateValuePointer();
-        typevar = trim( ( *item )[3].toString() );
+        typevar = strip( ( *item )[3].toString() );
 
         if ( typevar == "ACCES" ) {
-            var_name = trim( _accessVariables->getStringFromIndex( item->getIndex() ) );
-            nosuff = trim( ( *item )[0].toString() );
-            ivar = std::stoi( trim( ( *item )[1].toString() ) );
-            nmax = std::stoi( trim( ( *item )[2].toString() ) );
+            var_name = strip( _accessVariables->getStringFromIndex( item->getIndex() ) );
+            nosuff = strip( ( *item )[0].toString() );
+            ivar = std::stoi( strip( ( *item )[1].toString() ) );
+            nmax = std::stoi( strip( ( *item )[2].toString() ) );
 
             py::list listV;
 
@@ -500,11 +500,11 @@ py::dict Result::getAccessParameters() const {
                 for ( ASTERINTEGER j = 0; j < nbIndexes; ++j ) {
                     index = nmax * ( j ) + ivar - 1;
                     if ( nosuff == ".RSP8" ) {
-                        str_val = trim( ( ( *_rsp8 )[index] ).toString() );
+                        str_val = strip( ( ( *_rsp8 )[index] ).toString() );
                     } else if ( nosuff == ".RS16" ) {
-                        str_val = trim( ( ( *_rs16 )[index] ).toString() );
+                        str_val = strip( ( ( *_rs16 )[index] ).toString() );
                     } else if ( nosuff == ".RS24" ) {
-                        str_val = trim( ( ( *_rs24 )[index] ).toString() );
+                        str_val = strip( ( ( *_rs24 )[index] ).toString() );
                     } else {
                         AS_ASSERT( false );
                     }
@@ -529,7 +529,7 @@ VectorString Result::getFieldsOnNodesRealNames() const {
 
     for ( auto &it : _dictOfMapOfFieldOnNodesReal ) {
         std::string name = it.first;
-        names.push_back( trim( name ) );
+        names.push_back( strip( name ) );
     }
     return names;
 };
@@ -540,7 +540,7 @@ VectorString Result::getFieldsOnNodesComplexNames() const {
 
     for ( auto &it : _dictOfMapOfFieldOnNodesComplex ) {
         std::string name = it.first;
-        names.push_back( trim( name ) );
+        names.push_back( strip( name ) );
     }
     return names;
 };
@@ -551,7 +551,7 @@ VectorString Result::getFieldsOnCellsRealNames() const {
 
     for ( auto &it : _dictOfMapOfFieldOnCellsReal ) {
         std::string name = it.first;
-        names.push_back( trim( name ) );
+        names.push_back( strip( name ) );
     }
     return names;
 };
@@ -562,7 +562,7 @@ VectorString Result::getFieldsOnCellsComplexNames() const {
 
     for ( auto &it : _dictOfMapOfFieldOnCellsComplex ) {
         std::string name = it.first;
-        names.push_back( trim( name ) );
+        names.push_back( strip( name ) );
     }
     return names;
 };
@@ -573,7 +573,7 @@ VectorString Result::getFieldsOnCellsLongNames() const {
 
     for ( auto &it : _dictOfMapOfFieldOnCellsLong ) {
         std::string name = it.first;
-        names.push_back( trim( name ) );
+        names.push_back( strip( name ) );
     }
     return names;
 };
@@ -584,7 +584,7 @@ VectorString Result::getConstantFieldsOnCellsChar16Names() const {
 
     for ( auto &it : _dictOfMapOfConstantFieldOnCellsChar16 ) {
         std::string name = it.first;
-        names.push_back( trim( name ) );
+        names.push_back( strip( name ) );
     }
     return names;
 };
@@ -595,7 +595,7 @@ VectorString Result::getConstantFieldsOnCellsRealNames() const {
 
     for ( auto &it : _dictOfMapOfConstantFieldOnCellsReal ) {
         std::string name = it.first;
-        names.push_back( trim( name ) );
+        names.push_back( strip( name ) );
     }
     return names;
 };
@@ -606,7 +606,7 @@ VectorString Result::getGeneralizedVectorRealNames() const {
 
     for ( auto &it : _dictOfMapOfGeneralizedVectorReal ) {
         std::string name = it.first;
-        names.push_back( trim( name ) );
+        names.push_back( strip( name ) );
     }
     return names;
 };
@@ -617,7 +617,7 @@ VectorString Result::getGeneralizedVectorComplexNames() const {
 
     for ( auto &it : _dictOfMapOfGeneralizedVectorComplex ) {
         std::string name = it.first;
-        names.push_back( trim( name ) );
+        names.push_back( strip( name ) );
     }
     return names;
 };
@@ -774,10 +774,10 @@ bool Result::build( const std::vector< FiniteElementDescriptorPtr > feds,
     ASTERINTEGER cmpt = 1;
     for ( const auto &[key, obj] : _namesOfFields ) {
         obj->updateValuePointer();
-        auto nomSymb = trim( _symbolicNamesOfFields->getStringFromIndex( cmpt ) );
+        auto nomSymb = strip( _symbolicNamesOfFields->getStringFromIndex( cmpt ) );
         AS_ASSERT( nbIndexes <= obj->size() );
         for ( ASTERINTEGER internalIndex = 0; internalIndex < nbIndexes; ++internalIndex ) {
-            std::string name( trim( ( *obj )[internalIndex].toString() ) );
+            std::string name( strip( ( *obj )[internalIndex].toString() ) );
             if ( name != "" ) {
                 const ASTERINTEGER storageIndex = ( *_serialNumber )[internalIndex];
                 CALL_JEMARQ();
@@ -788,12 +788,12 @@ bool Result::build( const std::vector< FiniteElementDescriptorPtr > feds,
                 const std::string arret( "C" );
 
                 CALLO_DISMOI( questi, name, typeco, &repi, repk, arret, &ier );
-                const std::string resu( trim( repk.toString() ) );
+                const std::string resu( strip( repk.toString() ) );
 
                 questi = "TYPE_SCA";
                 repk = " ";
                 CALLO_DISMOI( questi, name, typeco, &repi, repk, arret, &ier );
-                const std::string scalaire( trim( repk.toString() ) );
+                const std::string scalaire( strip( repk.toString() ) );
 
                 if ( resu == "NOEU" ) {
                     AS_ASSERT( _mesh != nullptr );
@@ -1126,7 +1126,7 @@ ASTERINTEGER Result::getParameterValue( std::string paraName, std::string paraVa
         } else {
             raiseAsterError( "Wrapper not available" );
         }
-        if ( trim( paraValue ) == trim( valueInResult ) ) {
+        if ( strip( paraValue ) == strip( valueInResult ) ) {
 
             return _getInternalIndex( storageIndex );
         }

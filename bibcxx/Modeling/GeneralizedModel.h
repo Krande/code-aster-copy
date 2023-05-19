@@ -119,7 +119,7 @@ class GeneralizedModel : public DataStructure {
             auto &collobj = ( *_modgLidf )[i];
             AS_ASSERT( collobj->size() >= 4 );
             for ( int j = 0; j < 4; j++ )
-                result.push_back( trim( ( *collobj )[j] ) );
+                result.push_back( strip( ( *collobj )[j] ) );
         }
         return result;
     };

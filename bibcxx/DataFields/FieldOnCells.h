@@ -237,14 +237,14 @@ class FieldOnCells : public DataField {
         if ( !_dofDescription ) {
             CALL_JEMARQ();
             _reference->updateValuePointer();
-            const std::string ligrel = trim( ( *_reference )[0].toString() );
+            const std::string ligrel = strip( ( *_reference )[0].toString() );
             CALL_JEDEMA();
 
             if ( ligrel.substr( 0, 8 ) == getName().substr( 0, 8 ) ) {
                 setDescription( std::make_shared< FiniteElementDescriptor >( ligrel, getMesh() ) );
             } else {
                 for ( auto &fed : FEDs ) {
-                    if ( fed && trim( fed->getName() ) == ligrel ) {
+                    if ( fed && strip( fed->getName() ) == ligrel ) {
                         setDescription( fed );
                         break;
                     }
@@ -460,7 +460,7 @@ class FieldOnCells : public DataField {
         CALLO_JEXNUM( objName, cata, &gd );
         CALLO_JENUNO( objName, charName );
 
-        return trim( charName.toString() );
+        return strip( charName.toString() );
     }
 
     VectorString getComponents() const {
@@ -476,7 +476,7 @@ class FieldOnCells : public DataField {
         cmps.reserve( cmp->size() );
 
         for ( auto &cm : cmp ) {
-            cmps.push_back( trim( cm.toString() ) );
+            cmps.push_back( strip( cm.toString() ) );
         }
 
         return cmps;
@@ -535,7 +535,7 @@ class FieldOnCells : public DataField {
             if ( mode > 0 ) {
                 CALLO_JEXNUM( objName, cata, &mode );
                 CALLO_JENUNO( objName, charName );
-                auto modeN = trim( charName.toString().substr( 14, 10 ) );
+                auto modeN = strip( charName.toString().substr( 14, 10 ) );
                 if ( modeName.empty() ) {
                     modeName = modeN;
                 } else {

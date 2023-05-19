@@ -88,7 +88,7 @@ bool EquationNumbering::useLagrangeDOF() const {
     const std::string questi( "EXIS_LAGR" );
 
     CALLO_DISMOI( questi, getName(), typeco, &repi, repk, arret, &ier );
-    auto retour = trim( repk.toString() );
+    auto retour = strip( repk.toString() );
     if ( retour == "OUI" )
         return true;
     return false;
@@ -102,7 +102,7 @@ bool EquationNumbering::useSingleLagrangeDOF() const {
     const std::string questi( "SIMP_LAGR" );
 
     CALLO_DISMOI( questi, getName(), typeco, &repi, repk, arret, &ier );
-    auto retour = trim( repk.toString() );
+    auto retour = strip( repk.toString() );
     if ( retour == "OUI" )
         return true;
     return false;
@@ -127,7 +127,7 @@ void EquationNumbering::_buildAllComponentsId2Name() {
 
     _componentsNumber2Name[0] = "LAGR:MPC";
     for ( int icmp = 1; icmp <= nb_cmp; icmp++ ) {
-        auto name = trim( list_cmp[icmp - 1] );
+        auto name = strip( list_cmp[icmp - 1] );
         _componentsNumber2Name[icmp] = name;
         _componentsNumber2Name[-icmp] = "LAGR:" + name;
     }
@@ -345,7 +345,7 @@ VectorLong EquationNumbering::getDOF( const bool sameRank, const VectorString &l
     SetLong set_cmp;
     auto name2num = this->getComponentsNameToId();
     for ( auto &cmp : list_cmp ) {
-        set_cmp.insert( name2num[trim( cmp )] );
+        set_cmp.insert( name2num[strip( cmp )] );
     }
 
     auto descr = this->getNodeAndComponentIdFromDOF();
@@ -434,7 +434,7 @@ EquationNumbering::getDOFsWithDescription( const std::string cmp,
     auto idToName = getComponentsIdToName();
 
     ASTERINTEGER icmp, ncmp;
-    bool all_cmp = cmp == " ";
+    bool all_cmp = strip( cmp ) == "";
     if ( all_cmp ) {
         ncmp = getComponents().size();
         cmps.reserve( ncmp * nodes.size() );

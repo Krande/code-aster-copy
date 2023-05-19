@@ -59,17 +59,17 @@ void Crack::updateValuePointers() {
 
 std::string Crack::getCrackTipCellsType() {
     this->updateValuePointers();
-    return trim( ( *_info )[4].toString() );
+    return strip( ( *_info )[4].toString() );
 }
 
 std::string Crack::getUpperLipGroupName() {
     this->updateValuePointers();
-    return trim( ( *_info )[5].toString() );
+    return strip( ( *_info )[5].toString() );
 }
 
 std::string Crack::getLowerLipGroupName() {
     this->updateValuePointers();
-    return trim( ( *_info )[6].toString() );
+    return strip( ( *_info )[6].toString() );
 }
 
 const JeveuxVectorReal Crack::getCrackFrontBasis() {
@@ -84,10 +84,10 @@ const JeveuxVectorReal Crack::getCrackFrontPosition() {
 
 bool Crack::isSymmetric() {
     this->updateValuePointers();
-    return trim( ( *_info )[0].toString() ) == "OUI";
+    return strip( ( *_info )[0].toString() ) == "OUI";
 };
 
 std::string Crack::getConfigInit() {
     this->updateValuePointers();
-    return trim( ( *_info )[1].toString() );
+    return strip( ( *_info )[1].toString() );
 };

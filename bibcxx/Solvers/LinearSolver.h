@@ -203,7 +203,7 @@ class PetscSolver : public LinearSolver {
         for ( auto i = 0; i < _petscOptions->size(); i++ ) {
             opt.append( ( *_petscOptions )[i] );
         }
-        return trim( opt );
+        return strip( opt );
     };
 };
 

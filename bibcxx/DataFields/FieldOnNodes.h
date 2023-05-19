@@ -235,8 +235,8 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
                            dofNum->getName() );
 
         _reference->updateValuePointer();
-        const std::string name2 = trim( ( *_reference )[1].toString() );
-        if ( trim( _dofDescription->getName() ) != name2 ) {
+        const std::string name2 = strip( ( *_reference )[1].toString() );
+        if ( strip( _dofDescription->getName() ) != name2 ) {
             _dofDescription = std::make_shared< EquationNumbering >( name2 );
             _dofDescription->setMesh( dofNum->getMesh() );
         }
@@ -660,7 +660,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         const std::string arret( "F" );
         const std::string questi( "NOM_GD" );
         CALLO_DISMOI( questi, this->getName(), typeco, &repi, repk, arret, &ier );
-        auto retour = trim( repk.toString() );
+        auto retour = strip( repk.toString() );
         return retour;
     }
 
@@ -682,7 +682,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
             CALL_JEMARQ();
 
             _reference->updateValuePointer();
-            const std::string name2 = trim( ( *_reference )[1].toString() );
+            const std::string name2 = strip( ( *_reference )[1].toString() );
             if ( !name2.empty() ) {
                 _dofDescription = std::make_shared< EquationNumbering >( name2 );
                 if ( mesh ) {

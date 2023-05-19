@@ -69,8 +69,8 @@ class ElementaryTerm : public DataField {
                 AS_ABORT( mess );
             } else {
                 _noli->updateValuePointer();
-                auto FEDname = trim( ( *_noli )[0].toString() );
-                if ( FEDname != trim( FEDesc->getName() ) ) {
+                auto FEDname = strip( ( *_noli )[0].toString() );
+                if ( FEDname != strip( FEDesc->getName() ) ) {
                     std::string mess = "Incompatible FED: " + FEDname + " vs " + FEDesc->getName();
                     raiseAsterError( mess );
                 }
@@ -86,7 +86,7 @@ class ElementaryTerm : public DataField {
 
     std::string getOption() {
         _noli->updateValuePointer();
-        return trim( ( *_noli )[1].toString() );
+        return strip( ( *_noli )[1].toString() );
     };
 
     BaseMeshPtr getMesh() const {
@@ -103,7 +103,7 @@ class ElementaryTerm : public DataField {
         const std::string arret( "F" );
         const std::string questi( "NOM_GD" );
         CALLO_DISMOI( questi, getName(), typeco, &repi, repk, arret, &ier );
-        return trim( repk.toString() );
+        return strip( repk.toString() );
     }
 
     ASTERINTEGER getNumberOfGroupOfCells() const {
@@ -127,7 +127,7 @@ class ElementaryTerm : public DataField {
             if ( mode > 0 ) {
                 CALLO_JEXNUM( objName, cata, &mode );
                 CALLO_JENUNO( objName, charName );
-                auto modeN = trim( charName.toString().substr( 14, 10 ) );
+                auto modeN = strip( charName.toString().substr( 14, 10 ) );
                 if ( modeName.empty() ) {
                     modeName = modeN;
                 } else {
@@ -144,7 +144,7 @@ class ElementaryTerm : public DataField {
     bool isMPIFull() {
         AS_ASSERT( _noli.exists() );
         _noli->updateValuePointer();
-        return trim( ( *_noli )[2].toString() ) == "MPI_COMPLET";
+        return strip( ( *_noli )[2].toString() ) == "MPI_COMPLET";
     }
 
     bool isEmpty() { return !( _noli.exists() && _descriptor.exists() ); }

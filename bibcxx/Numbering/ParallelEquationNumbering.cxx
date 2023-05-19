@@ -275,7 +275,7 @@ std::map< std::string, ASTERINTEGER > ParallelEquationNumbering::getComponentsNa
 bool ParallelEquationNumbering::build() {
     if ( !_joints ) {
         _informations->updateValuePointer();
-        auto name = trim( ( *_informations )[4] );
+        auto name = strip( ( *_informations )[4] );
         _joints = std::make_shared< Joints >( name );
     }
     return _joints->build();

@@ -64,7 +64,7 @@ bool BaseElementaryMatrix::isSymmetric() const {
     const std::string arret( "F" );
     const std::string questi( "TYPE_MATRICE" );
     CALLO_DISMOI( questi, getName(), typeco, &repi, repk, arret, &ier );
-    return trim( repk.toString() ) == "SYMETRI";
+    return strip( repk.toString() ) == "SYMETRI";
 }
 
 ASTERINTEGER BaseElementaryMatrix::numberOfSuperElement() const {

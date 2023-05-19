@@ -26,7 +26,7 @@
 
 #ifdef ASTER_HAVE_MGIS
 inline MGISBehaviour *getPtr( const std::string &hexid ) {
-    AS_ASSERT( trim( hexid ) != "" && trim( hexid ) != "VIDE" );
+    AS_ASSERT( strip( hexid ) != "" && strip( hexid ) != "VIDE" );
     ASTERINTEGER addr = (ASTERINTEGER)std::stol( hexid, nullptr, 16 );
     return (MGISBehaviour *)( addr );
 }
@@ -161,7 +161,7 @@ void DEFSP( MGIS_SET_ROTATION_MATRIX, mgis_set_rotation_matrix, const char *hexi
 void DEFSSP( MGIS_SET_DOUBLE_PARAMETER, mgis_set_double_parameter, const char *hexid,
              STRING_SIZE l_id, const char *param_, STRING_SIZE l_par, ASTERDOUBLE *value ) {
 #ifdef ASTER_HAVE_MGIS
-    std::string param = trim( std::string( param_, l_par ) );
+    std::string param = strip( std::string( param_, l_par ) );
     getPtr( hexid, l_id )->setParameter( param, *value );
 #endif
 }
@@ -169,7 +169,7 @@ void DEFSSP( MGIS_SET_DOUBLE_PARAMETER, mgis_set_double_parameter, const char *h
 void DEFSSP( MGIS_SET_INTEGER_PARAMETER, mgis_set_integer_parameter, const char *hexid,
              STRING_SIZE l_id, const char *param_, STRING_SIZE l_par, ASTERINTEGER *value ) {
 #ifdef ASTER_HAVE_MGIS
-    std::string param = trim( std::string( param_, l_par ) );
+    std::string param = strip( std::string( param_, l_par ) );
     getPtr( hexid, l_id )->setParameter( param, *value );
 #endif
 }
@@ -224,7 +224,7 @@ void DEFSPP( MGIS_LOAD_LIBRARY, mgis_load_library, const char *hexid, STRING_SIZ
     int strain = (int)( *strain_ );
 #ifdef ASTER_DEBUG_CXX
     std::string str_hexid( hexid, l_id );
-    std::cout << "MGISDBG: request MGISBehaviour from id: " << trim( str_hexid )
+    std::cout << "MGISDBG: request MGISBehaviour from id: " << strip( str_hexid )
               << ", model: " << model << ", strain: " << strain << std::endl
               << std::flush;
 #endif

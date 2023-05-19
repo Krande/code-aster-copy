@@ -94,7 +94,7 @@ VectorString DOFNumbering::getComponentFromNode( const ASTERINTEGER node, const 
     CALL_NUMEDDL_GET_COMPONENTS( getName().c_str(), all.c_str(), &aster_node, &ncmp, stringArray,
                                  &maxCmp );
     for ( int k = 0; k < ncmp; k++ ) {
-        stringVector.push_back( trim( std::string( stringArray + 8 * k, 8 ) ) );
+        stringVector.push_back( strip( std::string( stringArray + 8 * k, 8 ) ) );
     }
     FreeStr( stringArray );
     return stringVector;

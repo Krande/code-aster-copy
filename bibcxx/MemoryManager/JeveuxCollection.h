@@ -320,7 +320,7 @@ public:
     auto newIndex = getNewIndex();
     JeveuxCollObjValType obj(_name, newIndex, name, nbValues);
 
-    _mapNumObject[std::string(trim(name.c_str()))] = newIndex;
+    _mapNumObject[std::string(strip(name.c_str()))] = newIndex;
 
     _listObjects[newIndex] = obj;
     return obj;
@@ -514,7 +514,7 @@ public:
       AS_ABORT("Collection " + _name + " is not named");
     }
 #endif
-    const auto &curIter = _mapNumObject.find(trim(name));
+    const auto &curIter = _mapNumObject.find(strip(name));
     if (curIter == _mapNumObject.end()) {
       AS_ABORT("Name not in collection: " + name);
     }
@@ -532,7 +532,7 @@ public:
       AS_ABORT("Collection " + _name + " is not named");
     }
 #endif
-    const auto &curIter = _mapNumObject.find(trim(name));
+    const auto &curIter = _mapNumObject.find(strip(name));
     if (curIter == _mapNumObject.end()) {
       AS_ABORT("Name not in collection: " + name);
     }
@@ -564,7 +564,7 @@ public:
     JeveuxChar8 param("STOCKAGE");
     std::string charval(32, ' ');
     CALLO_JELIRA(_name, param, &nothin, charval);
-    if (trim(charval) == "CONTIG") {
+    if (strip(charval) == "CONTIG") {
       return true;
     } else {
       return false;

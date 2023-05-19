@@ -251,7 +251,7 @@ void Calcul::postCompute() {
         std::string fieldType = field->getFieldType();
         if ( fieldType == "ELEM" || fieldType == "ELNO" || fieldType == "ELGA" ) {
             CALLO_DISMOI( questi2, fieldName, typeco, &repi, repk, arret, &ier );
-            std::string fieldScalar( trim( repk.toString() ) );
+            std::string fieldScalar( strip( repk.toString() ) );
             if ( fieldScalar == "R" ) {
                 std::static_pointer_cast< FieldOnCellsReal >( field )->setDescription( _FEDesc );
             } else if ( fieldScalar == "C" ) {
@@ -271,7 +271,7 @@ void Calcul::postCompute() {
         std::string elemTermName = elemTerm->getName();
         CALLO_DISMOI( questi1, elemTermName, typeco, &repi, repk, arret, &ier );
 
-        std::string fieldType( trim( repk.toString() ) );
+        std::string fieldType( strip( repk.toString() ) );
         if ( fieldType == "RESL" ) {
             _outputElemTermsExist.at( parameterName ) = true;
             std::static_pointer_cast< ElementaryTermReal >( elemTerm )

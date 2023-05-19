@@ -45,7 +45,7 @@ VectorString InterspectralMatrix::toString( const std::vector< JeveuxChar8 > &vc
     VectorString vs;
     vs.reserve( vc.size() );
     for ( auto c : vc )
-        vs.push_back( trim( c.toString() ) );
+        vs.push_back( strip( c.toString() ) );
     return vs;
 }
 

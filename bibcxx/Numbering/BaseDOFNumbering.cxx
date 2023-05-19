@@ -128,7 +128,7 @@ bool BaseDOFNumbering::computeNumbering( const std::vector< FiniteElementDescrip
 
 bool BaseDOFNumbering::addFiniteElementDescriptor( const FiniteElementDescriptorPtr &curFED ) {
     if ( curFED ) {
-        const auto name = trim( curFED->getName() );
+        const auto name = strip( curFED->getName() );
         if ( _FEDNames.find( name ) == _FEDNames.end() ) {
             _FEDVector.push_back( curFED );
             _FEDNames.insert( name );

@@ -58,7 +58,7 @@ VectorString Mesh::getGroupsOfCells( const bool ) const {
     ASTERINTEGER size = _nameOfGrpCells->size();
     VectorString names;
     for ( auto i = 0; i < size; i++ ) {
-        names.push_back( trim( _nameOfGrpCells->getStringFromIndex( i + 1 ) ) );
+        names.push_back( strip( _nameOfGrpCells->getStringFromIndex( i + 1 ) ) );
     }
     return names;
 }
@@ -67,7 +67,7 @@ VectorString Mesh::getGroupsOfNodes( const bool ) const {
     ASTERINTEGER size = _nameOfGrpNodes->size();
     VectorString names;
     for ( auto i = 0; i < size; i++ ) {
-        names.push_back( trim( _nameOfGrpNodes->getStringFromIndex( i + 1 ) ) );
+        names.push_back( strip( _nameOfGrpNodes->getStringFromIndex( i + 1 ) ) );
     }
     return names;
 }
@@ -75,7 +75,7 @@ VectorString Mesh::getGroupsOfNodes( const bool ) const {
 void Mesh::setGroupOfCells( const std::string &name, const VectorLong &cell_ids ) {
     if ( !name.empty() && !cell_ids.empty() ) {
         ASTERLOGICAL isAdded = false;
-        const auto name_s = ljust( trim( name ), 24, ' ' );
+        const auto name_s = ljust( strip( name ), 24, ' ' );
         auto cell_ids_u = unique( cell_ids );
         std::for_each( cell_ids_u.begin(), cell_ids_u.end(), []( ASTERINTEGER &d ) { d += 1; } );
         ASTERINTEGER size = cell_ids_u.size(), un = 1;
@@ -89,7 +89,7 @@ void Mesh::setGroupOfNodes( const std::string &name, const VectorLong &node_ids,
                             const bool localNumbering ) {
     if ( !name.empty() && !node_ids.empty() ) {
         ASTERLOGICAL isAdded = false;
-        const auto name_s = ljust( trim( name ), 24, ' ' );
+        const auto name_s = ljust( strip( name ), 24, ' ' );
         auto node_ids_u = unique( node_ids );
         std::for_each( node_ids_u.begin(), node_ids_u.end(), []( ASTERINTEGER &d ) { d += 1; } );
         ASTERINTEGER size = node_ids_u.size(), un = 1;

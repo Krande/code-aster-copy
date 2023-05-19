@@ -110,7 +110,7 @@ class JeveuxCollectionObjectClass : private AllowedJeveuxType< ValueType > {
         std::string charJeveuxName = getJeveuxName();
         if ( isNamed ) {
             CALLO_JENUNO( charJeveuxName, collectionObjectName );
-            _nameOfObject = trim( std::string( collectionObjectName ) );
+            _nameOfObject = strip( std::string( collectionObjectName ) );
         }
 
         ASTERINTEGER valTmp;
@@ -146,7 +146,7 @@ class JeveuxCollectionObjectClass : private AllowedJeveuxType< ValueType > {
                                  const std::string &objectName, const ASTERINTEGER &size )
         : _collectionName( collectionName ),
           _numberInCollection( number ),
-          _nameOfObject( trim( objectName ) ),
+          _nameOfObject( strip( objectName ) ),
           _valuePtr( nullptr ),
           _size( size ),
           _jeveuxAdress( 0 ) {

@@ -121,7 +121,7 @@ extern "C" void DEFPSPSPPPP( UEXCEP, uexcep, _IN ASTERINTEGER *exc_id, _IN char 
     VectorLong argi = {};
     VectorReal argr = {};
     for ( int i = 0; i < *nbk; ++i ) {
-        argk.push_back( trim( std::string( valk + i * lvk, lvk ) ) );
+        argk.push_back( strip( std::string( valk + i * lvk, lvk ) ) );
     }
     for ( int i = 0; i < *nbi; ++i ) {
         argi.push_back( vali[i] );
@@ -131,7 +131,7 @@ extern "C" void DEFPSPSPPPP( UEXCEP, uexcep, _IN ASTERINTEGER *exc_id, _IN char 
     }
 
     // The identifier of each Python exception is defined in 'LibAster.cxx'
-    std::string idm( trim( std::string( idmess, lidmess ) ) );
+    std::string idm( strip( std::string( idmess, lidmess ) ) );
 
     switch ( *exc_id ) {
     case ASTER_CONVERGENCE_ERROR:

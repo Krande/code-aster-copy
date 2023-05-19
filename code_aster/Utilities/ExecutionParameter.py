@@ -227,6 +227,9 @@ class ExecutionParameter(metaclass=Singleton):
         if option & Options.ShowDeprecated:
             # disabled by default in python>=2.7
             warnings.simplefilter("default")
+            warnings.filterwarnings(
+                "error", message=".*EXTR_COMP.*removed", category=DeprecationWarning
+            )
 
     def disable(self, option):
         """Disable a boolean option.

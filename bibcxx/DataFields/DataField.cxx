@@ -34,5 +34,5 @@ std::string DataField::getFieldType() const {
 
     CALLO_DISMOI( questi1, getName(), typeco, &repi, repk, arret, &ier );
 
-    return trim( repk.toString() );
+    return strip( repk.toString() );
 };

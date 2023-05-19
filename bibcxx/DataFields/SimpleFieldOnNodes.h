@@ -289,7 +289,7 @@ class SimpleFieldOnNodes : public DataField {
             throw std::runtime_error( "Out of range" );
         };
 
-        std::string name = trim( ( *_component )[i].toString() );
+        std::string name = strip( ( *_component )[i].toString() );
         return name;
     };
 
@@ -322,7 +322,7 @@ class SimpleFieldOnNodes : public DataField {
     /**
      * @brief Get physical quantity
      */
-    std::string getPhysicalQuantity() const { return trim( ( *_descriptor )[1].toString() ); }
+    std::string getPhysicalQuantity() const { return strip( ( *_descriptor )[1].toString() ); }
 
     /**
      * @brief Mise a jour des pointeurs Jeveux

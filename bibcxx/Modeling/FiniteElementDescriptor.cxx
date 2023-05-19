@@ -148,7 +148,7 @@ const BaseMeshPtr FiniteElementDescriptor::getMesh() const { return _mesh; };
 void FiniteElementDescriptor::setMesh( const BaseMeshPtr &currentMesh ) { _mesh = currentMesh; };
 
 int FiniteElementDescriptor::getPhysics( void ) const {
-    const std::string docu = trim( _parameters->getInformationParameter() );
+    const std::string docu = strip( _parameters->getInformationParameter() );
 
     if ( docu == "MECA" )
         return Physics::Mechanics;
@@ -186,7 +186,7 @@ bool FiniteElementDescriptor::existsFiniteElement() {
     const std::string questi( "EXI_ELEM" );
 
     CALLO_DISMOI( questi, getName(), typeco, &repi, repk, arret, &ier );
-    auto retour = trim( repk.toString() );
+    auto retour = strip( repk.toString() );
     if ( retour == "OUI" )
         return true;
     return false;

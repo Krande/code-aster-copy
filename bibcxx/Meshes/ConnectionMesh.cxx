@@ -566,7 +566,7 @@ VectorString ConnectionMesh::getGroupsOfCells( const bool ) const {
     auto size = _nameOfGrpCells->size();
     VectorString names;
     for ( auto i = 0; i < size; i++ ) {
-        names.push_back( trim( _nameOfGrpCells->getStringFromIndex( i + 1 ) ) );
+        names.push_back( strip( _nameOfGrpCells->getStringFromIndex( i + 1 ) ) );
     }
     return names;
 }
@@ -575,7 +575,7 @@ VectorString ConnectionMesh::getGroupsOfNodes( const bool ) const {
     auto size = _nameOfGrpNodes->size();
     VectorString names;
     for ( auto i = 0; i < size; i++ ) {
-        names.push_back( trim( _nameOfGrpNodes->getStringFromIndex( i + 1 ) ) );
+        names.push_back( strip( _nameOfGrpNodes->getStringFromIndex( i + 1 ) ) );
     }
     return names;
 }

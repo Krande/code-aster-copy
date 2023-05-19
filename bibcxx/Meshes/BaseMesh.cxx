@@ -216,11 +216,11 @@ const JeveuxCollectionLong BaseMesh::getInverseConnectivity() const {
 };
 
 std::string BaseMesh::getNodeName( const ASTERINTEGER &index ) const {
-    return trim( _nameOfNodes->getStringFromIndex( index + 1 ) );
+    return strip( _nameOfNodes->getStringFromIndex( index + 1 ) );
 };
 
 std::string BaseMesh::getCellName( const ASTERINTEGER &index ) const {
-    return trim( _nameOfCells->getStringFromIndex( index + 1 ) );
+    return strip( _nameOfCells->getStringFromIndex( index + 1 ) );
 };
 
 ASTERINTEGER BaseMesh::getCellType( const ASTERINTEGER &index ) const {
@@ -245,7 +245,7 @@ std::string BaseMesh::getCellTypeName( const ASTERINTEGER &index ) const {
 
     CALLO_JEXNUM( objName, cata, &cellType );
     CALLO_JENUNO( objName, charName );
-    return trim( charName.toString() );
+    return strip( charName.toString() );
 };
 
 bool BaseMesh::hasCellsOfType( const std::string typma ) const {

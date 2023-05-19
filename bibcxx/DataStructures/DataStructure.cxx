@@ -36,7 +36,7 @@ DataStructure::DataStructure( const std::string name, const int nameLength, cons
     _name.resize( nameLength, ' ' );
 
     // #ifdef ASTER_DEBUG_CXX
-    //     std::cout << "Creating " << trim( this->getName() )
+    //     std::cout << "Creating " << strip( this->getName() )
     //             << " <" << type << "> "
     //             << this->getUserName() << std::endl;
     // #endif
@@ -47,7 +47,7 @@ DataStructure::DataStructure( const std::string name, const int nameLength, cons
     if ( !_tco.exists() && name != "" ) {
         _tco->allocate( 1 );
         if ( type.size() <= 8 && type != "FORMULE" )
-            ( *_tco )[0] = std::string( trim( type ) + "_SDASTER" );
+            ( *_tco )[0] = std::string( strip( type ) + "_SDASTER" );
         else
             ( *_tco )[0] = type;
     }
@@ -101,7 +101,7 @@ DataStructure &DataStructure::operator=( DataStructure &&other ) {
 DataStructure::~DataStructure() {
     // user/main datastructures aka 'concept' (== without ".").
     bool mainDs = _name.find( "." ) == std::string::npos && _name[0] != '&';
-    std::string nameWithoutBlanks = trim( _name );
+    std::string nameWithoutBlanks = strip( _name );
     // empty name or no memory manager : skip silently
     if ( nameWithoutBlanks == "" || get_sh_jeveux_status() != 1 )
         return;
@@ -111,7 +111,7 @@ DataStructure::~DataStructure() {
 #ifdef ASTER_DEBUG_CXX
     if ( mainDs && this->getType() != "not_found" ) {
         // Too low-level to call UTMESS.
-        std::cout << "Deleting " << trim( this->getName() ) << " <" << this->getType() << "> "
+        std::cout << "Deleting " << strip( this->getName() ) << " <" << this->getType() << "> "
                   << this->getUserName() << std::endl;
     }
 #endif
@@ -182,7 +182,7 @@ void DataStructure::debugPrint( int logicalUnit ) const {
     ipos = 1;
     JeveuxString< 1 > base( " " );
     JeveuxString< 3 > no( "NON" );
-    std::string nameWithoutBlanks = trim( _name );
+    std::string nameWithoutBlanks = strip( _name );
     try {
         CALLO_UTIMSD( &unit, &niveau, &False, &True, nameWithoutBlanks, &ipos, base, no );
     } catch ( ... ) {
@@ -194,7 +194,7 @@ void DataStructure::setType( const std::string newType ) {
     CALL_JEMARQ();
     _tco->updateValuePointer();
     if ( newType.size() <= 8 && newType != "FORMULE" )
-        ( *_tco )[0] = std::string( trim( newType ) + "_SDASTER" );
+        ( *_tco )[0] = std::string( strip( newType ) + "_SDASTER" );
     else
         ( *_tco )[0] = newType;
     CALL_JEDEMA();

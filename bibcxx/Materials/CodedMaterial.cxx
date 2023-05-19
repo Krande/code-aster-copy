@@ -119,7 +119,7 @@ bool CodedMaterial::constant() const {
         AS_ASSERT( false );
     }
     CALLO_DISMOI( questi, _mater->getName(), typeco, &repi, repk, arret, &ier );
-    auto retour = trim( repk.toString() );
+    auto retour = strip( repk.toString() );
     if ( retour == "OUI" )
         return false;
     return true;

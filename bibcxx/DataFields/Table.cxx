@@ -45,8 +45,8 @@ bool Table::build() {
         const int nbParam = ( *_description )[0];
         _parameters.reserve( nbParam );
         for ( int i = 0; i < nbParam; ++i ) {
-            std::string param = trim( ( *_parameterDescription )[i * 4].toString() );
-            std::string type_name = trim( ( *_parameterDescription )[i * 4 + 1].toString() );
+            std::string param = strip( ( *_parameterDescription )[i * 4].toString() );
+            std::string type_name = strip( ( *_parameterDescription )[i * 4 + 1].toString() );
             if ( type_name == "R8" )
                 type_name = "R";
             int typ;
@@ -143,7 +143,7 @@ Table::getValues( const std::string &param ) const {
                 auto v = _columnChar8.at( param )->toVector();
                 vstring.reserve( v.size() );
                 for ( auto c : v )
-                    vstring.push_back( trim( c.toString() ) );
+                    vstring.push_back( strip( c.toString() ) );
             }
             break;
         case JeveuxTypes::Char16:
@@ -152,7 +152,7 @@ Table::getValues( const std::string &param ) const {
                 auto v = _columnChar16.at( param )->toVector();
                 vstring.reserve( v.size() );
                 for ( auto c : v )
-                    vstring.push_back( trim( c.toString() ) );
+                    vstring.push_back( strip( c.toString() ) );
             }
             break;
         case JeveuxTypes::Char24:
@@ -161,7 +161,7 @@ Table::getValues( const std::string &param ) const {
                 auto v = _columnChar24.at( param )->toVector();
                 vstring.reserve( v.size() );
                 for ( auto c : v )
-                    vstring.push_back( trim( c.toString() ) );
+                    vstring.push_back( strip( c.toString() ) );
             }
             break;
         case JeveuxTypes::Char32:
@@ -170,7 +170,7 @@ Table::getValues( const std::string &param ) const {
                 auto v = _columnChar32.at( param )->toVector();
                 vstring.reserve( v.size() );
                 for ( auto c : v )
-                    vstring.push_back( trim( c.toString() ) );
+                    vstring.push_back( strip( c.toString() ) );
             }
             break;
         case JeveuxTypes::Char80:
@@ -179,7 +179,7 @@ Table::getValues( const std::string &param ) const {
                 auto v = _columnChar80.at( param )->toVector();
                 vstring.reserve( v.size() );
                 for ( auto c : v )
-                    vstring.push_back( trim( c.toString() ) );
+                    vstring.push_back( strip( c.toString() ) );
             }
             break;
         default:

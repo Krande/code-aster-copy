@@ -317,7 +317,7 @@ void ContactPairing::buildFiniteElementDescriptor() {
             if ( slaveCellPaired.count( slavCellNume ) == 0 ) {
                 slaveCellPaired.insert( slavCellNume );
                 auto slav_cell_con = ( *meshConnectivty )[slavCellNume + 1]->toVector();
-                auto cellType = trim( mesh->getCellTypeName( slavCellNume ) );
+                auto cellType = strip( mesh->getCellTypeName( slavCellNume ) );
                 ASTERINTEGER nno_lgar = 0, nno = 0;
 
                 if ( cellType == "SEG2" ) {

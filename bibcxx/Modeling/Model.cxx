@@ -53,7 +53,7 @@ const std::string Model::Partition::getMethod() const {
         return "";
     else {
         _prtk->updateValuePointer();
-        return trim( ( *_prtk )[0].toString() );
+        return strip( ( *_prtk )[0].toString() );
     }
 }
 
@@ -209,7 +209,7 @@ const std::string Model::dismoi( const std::string &question, bool stop ) const 
     else
         arret = "C";
     CALLO_DISMOI( question, getName(), typeco, &repi, repk, arret, &ier );
-    return trim( repk.toString() );
+    return strip( repk.toString() );
 };
 
 ASTERINTEGER Model::numberOfSuperElement() { return _ligrel->numberOfSuperElement(); };

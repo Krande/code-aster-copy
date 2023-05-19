@@ -30,7 +30,7 @@
 #include <iomanip>
 #include <sstream>
 
-std::string trim( const std::string &str, const std::string &whitespace = " \t" );
+std::string strip( const std::string &str, const std::string &whitespace = " \t" );
 
 std::string ljust( const std::string &str, const ASTERINTEGER &length, char fillchar = ' ' );
 
