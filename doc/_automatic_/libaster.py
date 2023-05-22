@@ -2570,14 +2570,14 @@ class FieldOnNodesReal(DataField):
                         list[float]: List of values.
 
 
-        2. getValues(self: libaster.FieldOnNodesReal, cmps: List[str] = [], groupsOfCells: List[str] = []) -> List[float]
+        2. getValues(self: libaster.FieldOnNodesReal, cmps: List[str] = [], groupsOfNodes: List[str] = []) -> List[float]
 
 
                     Return a list of values as (x1, y1, z1, x2, y2, z2...)
 
                     Arguments:
                         cmps[list[str]]: filter on list of components
-                        groupsOfCells[list[str]]: filter on list of groups of cells (default=" ").
+                        groupsOfNodes[list[str]]: filter on list of groups of nodes (default=" ").
                         If empty, the full mesh is used
 
                     Returns:
@@ -2771,14 +2771,14 @@ class FieldOnNodesComplex(DataField):
                         list[complex]: List of values.
 
 
-        2. getValues(self: libaster.FieldOnNodesComplex, cmps: List[str] = [], groupsOfCells: List[str] = []) -> List[complex]
+        2. getValues(self: libaster.FieldOnNodesComplex, cmps: List[str] = [], groupsOfNodes: List[str] = []) -> List[complex]
 
 
                     Return a list of values as (x1, y1, z1, x2, y2, z2...)
 
                     Arguments:
                         cmps[list[str]]: filter on list of components
-                        groupsOfCells[list[str]]: filter on list of groups of cells (default=" ").
+                        groupsOfNodes[list[str]]: filter on list of groups of nodes (default=" ").
                         If empty, the full mesh is used
 
                     Returns:

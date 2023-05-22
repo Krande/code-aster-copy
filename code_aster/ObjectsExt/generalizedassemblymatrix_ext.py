@@ -186,7 +186,7 @@ class BaseGeneralizedAssemblyMatrix:
 
         return self.toNumpy()
 
-    @deprecated(case=1, help="Use 'toNumpy() instead.")
+    @deprecated(case=4, help="Use 'toNumpy() instead.")
     def EXTR_MATR_GENE(self):
         """Returns the matrix values as `numpy.array`."""
 
@@ -200,7 +200,7 @@ class BaseGeneralizedAssemblyMatrix:
 
         self.fromNumpy(matrix)
 
-    @deprecated(case=1, help="Use 'fromNumpy() instead.")
+    @deprecated(case=4, help="Use 'fromNumpy() instead.")
     def RECU_MATR_GENE(self):
         """Returns the matrix values as `numpy.array`."""
 
