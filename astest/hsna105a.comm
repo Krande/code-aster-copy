@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -126,27 +126,27 @@ THER0 = THER_NON_LINE(
 )
 
 # 2 Calcul thermomecanique
-NBPAS = len(L_REEL.getValues())
+times = L_REEL.getValues()
 
-for k in range(1, NBPAS):
+for k in range(1, NB_PAS + 1):
     # 2.1 Premier pas de chargement
     if k == 1:
         # 2.1.1 Projection du champ de temperature definit sur le maillage thermique
         #      sur le maillage mecanique
-        __a = PROJ_CHAMP(METHODE="AUTO", RESULTAT=THER0, MAILLAGE_1=MAIL_THE, MAILLAGE_2=MAIL_MEC)
+        a = PROJ_CHAMP(METHODE="AUTO", RESULTAT=THER0, MAILLAGE_1=MAIL_THE, MAILLAGE_2=MAIL_MEC)
 
         # 2.1.2 Utilisation AFFE_VARC pour la dependance des parametres materiaux
         #      vis a vis de la temperature
-        __b = AFFE_MATERIAU(
+        b = AFFE_MATERIAU(
             MAILLAGE=MAIL_MEC,
             AFFE=_F(TOUT="OUI", MATER=MATER),
-            AFFE_VARC=_F(NOM_VARC="TEMP", EVOL=__a, VALE_REF=TREF),
+            AFFE_VARC=_F(NOM_VARC="TEMP", EVOL=a, VALE_REF=TREF),
         )
 
         # 2.1.3 Calcul mecanique du premier pas de temps
         RESU_MEC = STAT_NON_LINE(
             MODELE=MOD_MEC,
-            CHAM_MATER=__b,
+            CHAM_MATER=b,
             INCREMENT=_F(LIST_INST=L_INST, NUME_INST_FIN=k),
             NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
             CONVERGENCE=_F(ITER_GLOB_MAXI=20),
@@ -155,45 +155,43 @@ for k in range(1, NBPAS):
         )
 
         # 2.1.4 Creation d'un champ de deplacement par extraction
-        __dep = CREA_CHAMP(
+        dep = CREA_CHAMP(
             TYPE_CHAM="NOEU_DEPL_R",
             OPERATION="EXTR",
             RESULTAT=RESU_MEC,
             NOM_CHAM="DEPL",
-            INST=L_REEL.getValues()[k],
+            INST=times[k],
         )
 
         # 2.1.5 Projection du champ de deplacement definit sur le maillage mecanique
         #      sur le maillage thermique
-        __depth = PROJ_CHAMP(
-            METHODE="AUTO", CHAM_GD=__dep, MAILLAGE_1=MAIL_MEC, MAILLAGE_2=MAIL_THE
-        )
+        depth = PROJ_CHAMP(METHODE="AUTO", CHAM_GD=dep, MAILLAGE_1=MAIL_MEC, MAILLAGE_2=MAIL_THE)
 
         l_para = RESU_MEC.LIST_VARI_ACCES()
         nb_nu_ord = len(l_para["NUME_ORDRE"])
 
         if nb_nu_ord == 2:
             # 2.1.6 Creation d'un champ de variables internes aux points de Gauss par extraction du champ
-            __ch1 = CREA_CHAMP(
+            ch1 = CREA_CHAMP(
                 TYPE_CHAM="ELGA_VARI_R",
                 OPERATION="EXTR",
                 RESULTAT=RESU_MEC,
                 NOM_CHAM="VARI_ELGA",
-                INST=L_REEL.getValues()[k],
+                INST=times[k],
             )
 
             # 2.1.7 Creation d'un champ de type source thermique par assemblage
             #      du champ de dissipation mecanique (variable interne V5 de VMIS_JOHN_COOK)
-            __ch2 = CREA_CHAMP(
+            ch2 = CREA_CHAMP(
                 TYPE_CHAM="ELGA_SOUR_R",
                 OPERATION="ASSE",
                 MODELE=MOD_MEC,
-                ASSE=_F(TOUT="OUI", CHAM_GD=__ch1, NOM_CMP=VARI_DISS, NOM_CMP_RESU=("SOUR")),
+                ASSE=_F(TOUT="OUI", CHAM_GD=ch1, NOM_CMP=VARI_DISS, NOM_CMP_RESU=("SOUR")),
             )
         elif nb_nu_ord > 2:
             # 2.1.6 Creation d'un champ de variables internes aux points de Gauss par sommation des
             #      champs de dissipations sur tous les numeros d'ordres entre t_n et t_n+1
-            __chnu1 = CREA_CHAMP(
+            chnu1 = CREA_CHAMP(
                 TYPE_CHAM="ELGA_VARI_R",
                 OPERATION="EXTR",
                 RESULTAT=RESU_MEC,
@@ -201,7 +199,7 @@ for k in range(1, NBPAS):
                 NUME_ORDRE=1,
             )
 
-            __chnu2 = CREA_CHAMP(
+            chnu2 = CREA_CHAMP(
                 TYPE_CHAM="ELGA_VARI_R",
                 OPERATION="EXTR",
                 RESULTAT=RESU_MEC,
@@ -209,19 +207,19 @@ for k in range(1, NBPAS):
                 NUME_ORDRE=2,
             )
 
-            __chtot = CREA_CHAMP(
+            chtot = CREA_CHAMP(
                 TYPE_CHAM="ELGA_VARI_R",
                 OPERATION="ASSE",
                 MODELE=MOD_MEC,
                 ASSE=(
                     _F(
-                        CHAM_GD=__chnu1,
+                        CHAM_GD=chnu1,
                         TOUT="OUI",
                         CUMUL="OUI",
                         COEF_R=l_para["INST"][1] - l_para["INST"][0],
                     ),
                     _F(
-                        CHAM_GD=__chnu2,
+                        CHAM_GD=chnu2,
                         TOUT="OUI",
                         CUMUL="OUI",
                         COEF_R=l_para["INST"][2] - l_para["INST"][1],
@@ -229,10 +227,10 @@ for k in range(1, NBPAS):
                 ),
             )
 
-            DETRUIRE(NOM=(__chnu1, __chnu2), INFO=1)
+            DETRUIRE(NOM=(chnu1, chnu2), INFO=1)
 
             for NUME_ORDRE in range(3, nb_nu_ord):
-                __chnu1 = CREA_CHAMP(
+                chnu1 = CREA_CHAMP(
                     TYPE_CHAM="ELGA_VARI_R",
                     OPERATION="EXTR",
                     RESULTAT=RESU_MEC,
@@ -240,65 +238,61 @@ for k in range(1, NBPAS):
                     NUME_ORDRE=NUME_ORDRE,
                 )
 
-                __chnu2 = CREA_CHAMP(
+                chnu2 = CREA_CHAMP(
                     TYPE_CHAM="ELGA_VARI_R",
                     OPERATION="ASSE",
                     MODELE=MOD_MEC,
-                    ASSE=_F(CHAM_GD=__chtot, TOUT="OUI"),
+                    ASSE=_F(CHAM_GD=chtot, TOUT="OUI"),
                 )
 
-                DETRUIRE(NOM=(__chtot,), INFO=1)
+                DETRUIRE(NOM=(chtot,), INFO=1)
 
-                __chtot = CREA_CHAMP(
+                chtot = CREA_CHAMP(
                     TYPE_CHAM="ELGA_VARI_R",
                     OPERATION="ASSE",
                     MODELE=MOD_MEC,
                     ASSE=(
                         _F(
-                            CHAM_GD=__chnu1,
+                            CHAM_GD=chnu1,
                             CUMUL="OUI",
                             TOUT="OUI",
                             COEF_R=l_para["INST"][NUME_ORDRE] - l_para["INST"][NUME_ORDRE - 1],
                         ),
-                        _F(CHAM_GD=__chnu2, CUMUL="OUI", TOUT="OUI"),
+                        _F(CHAM_GD=chnu2, CUMUL="OUI", TOUT="OUI"),
                     ),
                 )
 
-                DETRUIRE(NOM=(__chnu1, __chnu2), INFO=1)
+                DETRUIRE(NOM=(chnu1, chnu2), INFO=1)
 
-            __ch1 = CREA_CHAMP(
+            ch1 = CREA_CHAMP(
                 TYPE_CHAM="ELGA_VARI_R",
                 OPERATION="ASSE",
                 MODELE=MOD_MEC,
-                ASSE=_F(
-                    CHAM_GD=__chtot,
-                    TOUT="OUI",
-                    COEF_R=1.0 / (L_REEL.getValues()[k] - L_REEL.getValues()[k - 1]),
-                ),
+                ASSE=_F(CHAM_GD=chtot, TOUT="OUI", COEF_R=1.0 / (times[k] - times[k - 1])),
             )
 
-            DETRUIRE(NOM=(__chtot,), INFO=1)
+            DETRUIRE(NOM=(chtot,), INFO=1)
 
             # 2.1.7 Creation d'un champ de type source thermique par assemblage
             #      du champ de dissipation mecanique (variable interne V5 de VMIS_JOHN_COOK)
-            __ch2 = CREA_CHAMP(
+            ch2 = CREA_CHAMP(
                 TYPE_CHAM="ELGA_SOUR_R",
                 OPERATION="ASSE",
                 MODELE=MOD_MEC,
-                ASSE=_F(TOUT="OUI", CHAM_GD=__ch1, NOM_CMP=VARI_DISS, NOM_CMP_RESU=("SOUR")),
+                ASSE=_F(TOUT="OUI", CHAM_GD=ch1, NOM_CMP=VARI_DISS, NOM_CMP_RESU=("SOUR")),
             )
 
         # 2.1.8 Projection du champ source definit sur le maillage mecanique
         #      sur le maillage thermique
-        __champ = PROJ_CHAMP(METHODE="AUTO", CHAM_GD=__ch2, MODELE_1=MOD_MEC, MODELE_2=MOD_THE)
+        champ = PROJ_CHAMP(METHODE="AUTO", CHAM_GD=ch2, MODELE_1=MOD_MEC, MODELE_2=MOD_THE)
 
         # 2.1.9 Definition du champ source comme condition aux limites pour le calcul thermique
-        __source = AFFE_CHAR_THER(MODELE=MOD_THE, SOURCE=_F(SOUR_CALCULEE=__champ))
+        source = AFFE_CHAR_THER(MODELE=MOD_THE, SOURCE=_F(SOUR_CALCULEE=champ))
 
         # 2.1.10 Modification du maillage thermique pour qu'il soit representatif
         #       de la deformee du maillage mecanique
         MAIL_THE = MODI_MAILLAGE(
-            reuse=MAIL_THE, MAILLAGE=MAIL_THE, DEFORME=_F(OPTION="TRAN", DEPL=__depth)
+            reuse=MAIL_THE, MAILLAGE=MAIL_THE, DEFORME=_F(OPTION="TRAN", DEPL=depth)
         )
 
         # 2.1.11 Calcul thermique du premier pas de temps
@@ -306,68 +300,64 @@ for k in range(1, NBPAS):
             ETAT_INIT=_F(VALE=TREF),
             CHAM_MATER=MAT_THE,
             MODELE=MOD_THE,
-            EXCIT=(_F(CHARGE=CH_THE), _F(CHARGE=__source)),
+            EXCIT=(_F(CHARGE=CH_THE), _F(CHARGE=source)),
             INCREMENT=_F(LIST_INST=L_REEL, NUME_INST_FIN=k),
         )
 
         # 2.1.12 Creation d'un champ representant la temperature au numero d'ordre 0 par extraction
-        __t0 = CREA_CHAMP(
+        t0 = CREA_CHAMP(
             TYPE_CHAM="NOEU_TEMP_R",
             OPERATION="EXTR",
             RESULTAT=RESU_TH,
             NOM_CHAM="TEMP",
-            INST=L_REEL.getValues()[k - 1],
+            INST=times[k - 1],
         )
 
         # 2.1.13 Creation d'un champ representant la temperature au numero d'ordre 1 par extraction
-        __t1 = CREA_CHAMP(
+        t1 = CREA_CHAMP(
             TYPE_CHAM="NOEU_TEMP_R",
             OPERATION="EXTR",
             RESULTAT=RESU_TH,
             NOM_CHAM="TEMP",
-            INST=L_REEL.getValues()[k],
+            INST=times[k],
         )
 
         # 2.1.14 Creation d un evol_ther a partir des champs au numero d ordre 0 et 1
         #       pour lequel on modifie les numeros d'ordres 0 --> 1 et 1 --> 2
         #       Cette etape est necessaire car il faut que le champ de temperature soit definit
         #       au pas de temps k + 1 pour que le calcul mecanique puisse a etre realise
-        __thd = CREA_RESU(
+        thd = CREA_RESU(
             TYPE_RESU="EVOL_THER",
             NOM_CHAM="TEMP",
             OPERATION="AFFE",
-            AFFE=(
-                _F(CHAM_GD=__t0, INST=L_REEL.getValues()[k]),
-                _F(CHAM_GD=__t1, INST=L_REEL.getValues()[k + 1]),
-            ),
+            AFFE=(_F(CHAM_GD=t0, INST=times[k]), _F(CHAM_GD=t1, INST=times[k + 1])),
         )
 
     # 2.2 Pas de chargement suivant
-    if (k > 1) and (k < NBPAS):
-
-        DETRUIRE(NOM=(__ch1, __ch2, __champ, __a, __b), INFO=1)
+    if (k > 1) and (k < NB_PAS):
+        DETRUIRE(NOM=(ch1, ch2, champ, a, b), INFO=1)
 
         # 2.2.1 Creation d un champ de deplacement par combinaison correspondant a l inverse
         #      du champ de daplcement a l instant k
-        __demth = CREA_CHAMP(
-            TYPE_CHAM="NOEU_DEPL_R", OPERATION="COMB", COMB=_F(CHAM_GD=__depth, COEF_R=-1.0)
+        demth = CREA_CHAMP(
+            TYPE_CHAM="NOEU_DEPL_R", OPERATION="COMB", COMB=_F(CHAM_GD=depth, COEF_R=-1.0)
         )
 
         # 2.2.2 Modification du maillage thermique pour le remettre dans sa configuration initiale
         MAIL_THE = MODI_MAILLAGE(
-            reuse=MAIL_THE, MAILLAGE=MAIL_THE, DEFORME=_F(OPTION="TRAN", DEPL=__demth)
+            reuse=MAIL_THE, MAILLAGE=MAIL_THE, DEFORME=_F(OPTION="TRAN", DEPL=demth)
         )
 
         # 2.2.3 Projection du champ de temperature definit sur le maillage thermique
         #      sur le maillage mecanique
-        __a = PROJ_CHAMP(METHODE="AUTO", RESULTAT=__thd, MAILLAGE_1=MAIL_THE, MAILLAGE_2=MAIL_MEC)
+        a = PROJ_CHAMP(METHODE="AUTO", RESULTAT=thd, MAILLAGE_1=MAIL_THE, MAILLAGE_2=MAIL_MEC)
 
         # 2.2.4 Utilisation AFFE_VARC pour la dependance des parametres materiaux
         #      vis a vis de la temperature
-        __b = AFFE_MATERIAU(
+        b = AFFE_MATERIAU(
             MAILLAGE=MAIL_MEC,
             AFFE=_F(TOUT="OUI", MATER=MATER),
-            AFFE_VARC=_F(NOM_VARC="TEMP", EVOL=__a, VALE_REF=TREF),
+            AFFE_VARC=_F(NOM_VARC="TEMP", EVOL=a, VALE_REF=TREF),
         )
 
         nb_nu_orb = RESU_MEC.getNumberOfIndexes()
@@ -377,7 +367,7 @@ for k in range(1, NBPAS):
             reuse=RESU_MEC,
             ETAT_INIT=_F(EVOL_NOLI=RESU_MEC),
             MODELE=MOD_MEC,
-            CHAM_MATER=__b,
+            CHAM_MATER=b,
             INCREMENT=_F(LIST_INST=L_INST, NUME_INST_FIN=k),
             NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
             CONVERGENCE=_F(ITER_GLOB_MAXI=20),
@@ -385,22 +375,20 @@ for k in range(1, NBPAS):
             EXCIT=_F(CHARGE=CH_MEC, FONC_MULT=Fcond),
         )
 
-        DETRUIRE(NOM=(__dep, __depth), INFO=1)
+        DETRUIRE(NOM=(dep, depth), INFO=1)
 
         # 2.2.6 Creation d'un champ de deplacement par extraction
-        __dep = CREA_CHAMP(
+        dep = CREA_CHAMP(
             TYPE_CHAM="NOEU_DEPL_R",
             OPERATION="EXTR",
             RESULTAT=RESU_MEC,
             NOM_CHAM="DEPL",
-            INST=L_REEL.getValues()[k],
+            INST=times[k],
         )
 
         # 2.2.7 Projection du champ de deplacement definit sur le maillage mecanique
         #      sur le maillage thermique
-        __depth = PROJ_CHAMP(
-            METHODE="AUTO", CHAM_GD=__dep, MAILLAGE_1=MAIL_MEC, MAILLAGE_2=MAIL_THE
-        )
+        depth = PROJ_CHAMP(METHODE="AUTO", CHAM_GD=dep, MAILLAGE_1=MAIL_MEC, MAILLAGE_2=MAIL_THE)
 
         l_para = RESU_MEC.LIST_VARI_ACCES()
         nb_nu_ord = len(l_para["NUME_ORDRE"])
@@ -408,27 +396,27 @@ for k in range(1, NBPAS):
 
         if dnb_nu_or == 1:
             # 2.2.8 Creation d'un champ de variables internes aux points de Gauss par extraction du champ
-            __ch1 = CREA_CHAMP(
+            ch1 = CREA_CHAMP(
                 TYPE_CHAM="ELGA_VARI_R",
                 OPERATION="EXTR",
                 RESULTAT=RESU_MEC,
                 NOM_CHAM="VARI_ELGA",
-                INST=L_REEL.getValues()[k],
+                INST=times[k],
             )
 
             # 2.2.9 Creation d'un champ de type source thermique par assemblage
             #      du champ de dissipation mecanique (variable interne V5 de VMIS_JOHN_COOK)
-            __ch2 = CREA_CHAMP(
+            ch2 = CREA_CHAMP(
                 TYPE_CHAM="ELGA_SOUR_R",
                 OPERATION="ASSE",
                 MODELE=MOD_MEC,
-                ASSE=_F(TOUT="OUI", CHAM_GD=__ch1, NOM_CMP=VARI_DISS, NOM_CMP_RESU=("SOUR")),
+                ASSE=_F(TOUT="OUI", CHAM_GD=ch1, NOM_CMP=VARI_DISS, NOM_CMP_RESU=("SOUR")),
             )
 
         elif dnb_nu_or > 1:
             # 2.2.8 Creation d'un champ de variables internes aux points de Gauss par sommation des
             #      champs de dissipations sur tous les numeros d'ordres entre t_n et t_n+1
-            __chnu1 = CREA_CHAMP(
+            chnu1 = CREA_CHAMP(
                 TYPE_CHAM="ELGA_VARI_R",
                 OPERATION="EXTR",
                 RESULTAT=RESU_MEC,
@@ -436,7 +424,7 @@ for k in range(1, NBPAS):
                 NUME_ORDRE=l_para["NUME_ORDRE"][-dnb_nu_or],
             )
 
-            __chnu2 = CREA_CHAMP(
+            chnu2 = CREA_CHAMP(
                 TYPE_CHAM="ELGA_VARI_R",
                 OPERATION="EXTR",
                 RESULTAT=RESU_MEC,
@@ -444,19 +432,19 @@ for k in range(1, NBPAS):
                 NUME_ORDRE=l_para["NUME_ORDRE"][-dnb_nu_or + 1],
             )
 
-            __chtot = CREA_CHAMP(
+            chtot = CREA_CHAMP(
                 TYPE_CHAM="ELGA_VARI_R",
                 OPERATION="ASSE",
                 MODELE=MOD_MEC,
                 ASSE=(
                     _F(
-                        CHAM_GD=__chnu1,
+                        CHAM_GD=chnu1,
                         TOUT="OUI",
                         CUMUL="OUI",
                         COEF_R=(l_para["INST"][-dnb_nu_or] - l_para["INST"][-dnb_nu_or - 1]),
                     ),
                     _F(
-                        CHAM_GD=__chnu2,
+                        CHAM_GD=chnu2,
                         TOUT="OUI",
                         CUMUL="OUI",
                         COEF_R=(l_para["INST"][-dnb_nu_or + 1] - l_para["INST"][-dnb_nu_or]),
@@ -464,10 +452,10 @@ for k in range(1, NBPAS):
                 ),
             )
 
-            DETRUIRE(NOM=(__chnu1, __chnu2), INFO=1)
+            DETRUIRE(NOM=(chnu1, chnu2), INFO=1)
 
             for NUME_ORDRE in range(3, dnb_nu_or + 1):
-                __chnu1 = CREA_CHAMP(
+                chnu1 = CREA_CHAMP(
                     TYPE_CHAM="ELGA_VARI_R",
                     OPERATION="EXTR",
                     RESULTAT=RESU_MEC,
@@ -475,110 +463,102 @@ for k in range(1, NBPAS):
                     NUME_ORDRE=l_para["NUME_ORDRE"][-dnb_nu_or + NUME_ORDRE - 1],
                 )
 
-                __chnu2 = CREA_CHAMP(
+                chnu2 = CREA_CHAMP(
                     TYPE_CHAM="ELGA_VARI_R",
                     OPERATION="ASSE",
                     MODELE=MOD_MEC,
-                    ASSE=_F(CHAM_GD=__chtot, TOUT="OUI"),
+                    ASSE=_F(CHAM_GD=chtot, TOUT="OUI"),
                 )
 
-                DETRUIRE(NOM=(__chtot,), INFO=1)
+                DETRUIRE(NOM=(chtot,), INFO=1)
 
-                __chtot = CREA_CHAMP(
+                chtot = CREA_CHAMP(
                     TYPE_CHAM="ELGA_VARI_R",
                     OPERATION="ASSE",
                     MODELE=MOD_MEC,
                     ASSE=(
                         _F(
-                            CHAM_GD=__chnu1,
+                            CHAM_GD=chnu1,
                             TOUT="OUI",
                             CUMUL="OUI",
                             COEF_R=l_para["INST"][-dnb_nu_or + NUME_ORDRE - 1]
                             - l_para["INST"][-dnb_nu_or + NUME_ORDRE - 2],
                         ),
-                        _F(CHAM_GD=__chnu2, TOUT="OUI", CUMUL="OUI"),
+                        _F(CHAM_GD=chnu2, TOUT="OUI", CUMUL="OUI"),
                     ),
                 )
 
-                DETRUIRE(NOM=(__chnu1, __chnu2), INFO=1)
+                DETRUIRE(NOM=(chnu1, chnu2), INFO=1)
 
-            __ch1 = CREA_CHAMP(
+            ch1 = CREA_CHAMP(
                 TYPE_CHAM="ELGA_VARI_R",
                 OPERATION="ASSE",
                 MODELE=MOD_MEC,
-                ASSE=_F(
-                    CHAM_GD=__chtot,
-                    TOUT="OUI",
-                    COEF_R=1.0 / (L_REEL.getValues()[k] - L_REEL.getValues()[k - 1]),
-                ),
+                ASSE=_F(CHAM_GD=chtot, TOUT="OUI", COEF_R=1.0 / (times[k] - times[k - 1])),
             )
 
-            DETRUIRE(NOM=(__chtot,), INFO=1)
+            DETRUIRE(NOM=(chtot,), INFO=1)
 
             # 2.2.9 Creation d'un champ de type source thermique par assemblage
             #      du champ de dissipation mecanique (variable interne V5 de VMIS_JOHN_COOK)
-            __ch2 = CREA_CHAMP(
+            ch2 = CREA_CHAMP(
                 TYPE_CHAM="ELGA_SOUR_R",
                 OPERATION="ASSE",
                 MODELE=MOD_MEC,
-                ASSE=_F(TOUT="OUI", CHAM_GD=__ch1, NOM_CMP=VARI_DISS, NOM_CMP_RESU=("SOUR")),
+                ASSE=_F(TOUT="OUI", CHAM_GD=ch1, NOM_CMP=VARI_DISS, NOM_CMP_RESU=("SOUR")),
             )
 
-        DETRUIRE(NOM=(__source, __demth, __t0, __t1, __thd), INFO=1)
+        DETRUIRE(NOM=(source, demth, t0, t1, thd), INFO=1)
 
         # 2.2.10 Projection du champ source definit sur le maillage mecanique
         #       sur le maillage thermique
-        __champ = PROJ_CHAMP(METHODE="AUTO", CHAM_GD=__ch2, MODELE_1=MOD_MEC, MODELE_2=MOD_THE)
+        champ = PROJ_CHAMP(METHODE="AUTO", CHAM_GD=ch2, MODELE_1=MOD_MEC, MODELE_2=MOD_THE)
 
         # 2.2.11 Definition du champ source comme condition aux limites pour le calcul thermique
-        __source = AFFE_CHAR_THER(MODELE=MOD_THE, SOURCE=_F(SOUR_CALCULEE=__champ))
+        source = AFFE_CHAR_THER(MODELE=MOD_THE, SOURCE=_F(SOUR_CALCULEE=champ))
 
         # 2.2.12 Modification du maillage thermique pour qu'il soit representatif
         #       de la deformee du maillage mecanique
         MAIL_THE = MODI_MAILLAGE(
-            reuse=MAIL_THE, MAILLAGE=MAIL_THE, DEFORME=_F(OPTION="TRAN", DEPL=__depth)
+            reuse=MAIL_THE, MAILLAGE=MAIL_THE, DEFORME=_F(OPTION="TRAN", DEPL=depth)
         )
 
         # 2.2.13 Calcul thermique du pas de temps k
         RESU_TH = THER_NON_LINE(
             reuse=RESU_TH,
-            ETAT_INIT=_F(EVOL_THER=RESU_TH, INST=L_REEL.getValues()[k - 1]),
+            ETAT_INIT=_F(EVOL_THER=RESU_TH, INST=times[k - 1]),
             CHAM_MATER=MAT_THE,
             MODELE=MOD_THE,
-            EXCIT=(_F(CHARGE=CH_THE), _F(CHARGE=__source)),
+            EXCIT=(_F(CHARGE=CH_THE), _F(CHARGE=source)),
             INCREMENT=_F(LIST_INST=L_REEL, NUME_INST_FIN=k),
         )
 
-        if (k > 1) and (k < NBPAS - 1):
-
+        if (k > 1) and (k < NB_PAS - 1):
             # 2.2.14 Creation d'un champ representant la temperature au numero d'ordre k-1 par extraction
-            __t0 = CREA_CHAMP(
+            t0 = CREA_CHAMP(
                 TYPE_CHAM="NOEU_TEMP_R",
                 OPERATION="EXTR",
                 RESULTAT=RESU_TH,
                 NOM_CHAM="TEMP",
-                INST=L_REEL.getValues()[k - 1],
+                INST=times[k - 1],
             )
 
             # 2.2.15 Creation d'un champ representant la temperature au numero d'ordre k par extraction
-            __t1 = CREA_CHAMP(
+            t1 = CREA_CHAMP(
                 TYPE_CHAM="NOEU_TEMP_R",
                 OPERATION="EXTR",
                 RESULTAT=RESU_TH,
                 NOM_CHAM="TEMP",
-                INST=L_REEL.getValues()[k],
+                INST=times[k],
             )
 
             # 2.2.16 Creation d un evol_ther a partir des champs au numero d ordre k-1 et k
             #       pour lequel on modifie les numeros d'ordres k-1 --> k et k --> k+1
-            __thd = CREA_RESU(
+            thd = CREA_RESU(
                 TYPE_RESU="EVOL_THER",
                 NOM_CHAM="TEMP",
                 OPERATION="AFFE",
-                AFFE=(
-                    _F(CHAM_GD=__t0, INST=L_REEL.getValues()[k]),
-                    _F(CHAM_GD=__t1, INST=L_REEL.getValues()[k + 1]),
-                ),
+                AFFE=(_F(CHAM_GD=t0, INST=times[k]), _F(CHAM_GD=t1, INST=times[k + 1])),
             )
 
 ###################################################################
