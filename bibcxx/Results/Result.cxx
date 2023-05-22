@@ -208,6 +208,9 @@ void Result::setParameterValue( std::string paraName, std::string paraValue,
 ASTERDOUBLE Result::getTime( ASTERINTEGER storageIndex ) const {
 
     _rspr->updateValuePointer();
+    if ( _calculationParameter->empty() ) {
+        _calculationParameter->build( true );
+    }
 
     for ( const auto &[i, item] : *_calculationParameter ) {
         item->updateValuePointer();
