@@ -40,6 +40,8 @@ mesh0 = code_aster.ParallelMesh.buildCube(refine=1)
 
 mesh = CREA_MAILLAGE(MAILLAGE=mesh0, MODI_HHO=_F(TOUT="OUI"))
 
+mesh = DEFI_GROUP(reuse=mesh, MAILLAGE=mesh, CREA_GROUP_NO=(_F(GROUP_MA="VOLUME", NOM="VOLUME"),))
+
 # define material
 coeff = DEFI_MATERIAU(ELAS=_F(E=100.0, NU=0.3))
 
@@ -47,7 +49,6 @@ mater = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", MATER=coeff))
 
 
 for form in ("LINEAIRE", "QUADRATIQUE"):
-
     model = AFFE_MODELE(
         MAILLAGE=mesh,
         AFFE=_F(TOUT="OUI", MODELISATION="3D_HHO", FORMULATION=form, PHENOMENE="MECANIQUE"),
