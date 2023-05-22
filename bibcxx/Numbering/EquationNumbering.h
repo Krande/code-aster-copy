@@ -247,8 +247,8 @@ class EquationNumbering : public BaseEquationNumbering {
      * @param list_cmp empty: Use all cmp / keep only cmp given
      * @param groupsOfCells empty: Use all nodes / keep only nodes given
      */
-    VectorLong getDOF( const bool sameRank = false, const VectorString &list_cmp = {},
-                       const VectorLong &list_nodes = {} ) const;
+    VectorLong getDOFs( const bool sameRank = false, const VectorString &list_cmp = {},
+                        const VectorString &list_grpno = {} ) const;
 
     /**
      * @brief Returns a vector with node index and component name for each DOFs

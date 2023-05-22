@@ -185,13 +185,13 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
 
             Arguments:
                 cmps[list[str]]: filter on list of components
-                groupsOfCells[list[str]]: filter on list of groups of cells (default=" ").
+                groupsOfNodes[list[str]]: filter on list of groups of nodes (default=" ").
                 If empty, the full mesh is used
 
             Returns:
                 list[double]: List of values.
             )",
-              py::arg( "cmps" ) = VectorString(), py::arg( "groupsOfCells" ) = VectorString() )
+              py::arg( "cmps" ) = VectorString(), py::arg( "groupsOfNodes" ) = VectorString() )
         .def( "getValues",
               py::overload_cast< const VectorLong & >( &FieldOnNodesReal::getValues, py::const_ ),
               R"(
@@ -256,13 +256,13 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
 
             Arguments:
                 cmps[list[str]]: filter on list of components
-                groupsOfCells[list[str]]: filter on list of groups of cells (default=" ").
+                groupsOfNodes[list[str]]: filter on list of groups of nodes (default=" ").
                 If empty, the full mesh is used
 
             Returns:
                 list[complex]: List of values.
             )",
-              py::arg( "cmps" ) = VectorString(), py::arg( "groupsOfCells" ) = VectorString() )
+              py::arg( "cmps" ) = VectorString(), py::arg( "groupsOfNodes" ) = VectorString() )
         .def(
             "getValues",
             py::overload_cast< const VectorLong & >( &FieldOnNodesComplex::getValues, py::const_ ),

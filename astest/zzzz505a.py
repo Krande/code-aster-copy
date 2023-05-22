@@ -28,6 +28,8 @@ test = code_aster.TestCase()
 # For a Mesh
 mesh = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
 
+print(mesh.getGroupsOfNodes(), flush=True)
+
 nbNodes = mesh.getNumberOfNodes()
 
 model = AFFE_MODELE(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"))
@@ -99,6 +101,10 @@ test.assertAlmostEqual(field.dot(field), norm_2 * norm_2)
 fr = field.restrict(["DX", "DY", "YD"])
 test.assertAlmostEqual(fr.norm("NORM_1"), 3.0 * nbNodes)
 test.assertAlmostEqual(fr.norm("NORM_1"), fr.toSimpleFieldOnNodes().toFieldOnNodes().norm("NORM_1"))
+test.assertEqual(len(fr.getValues(["DY"], ["A"])), 1)
+test.assertAlmostEqual(fr.getValues(["DY"], ["A"])[0], 2.0)
+test.assertEqual(len(fr.getValues(["DY"], ["ZZ"])), 0)
+
 
 f0 = field.duplicate()
 f = field.duplicate()

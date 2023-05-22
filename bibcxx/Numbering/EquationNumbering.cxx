@@ -328,10 +328,10 @@ ASTERINTEGER EquationNumbering::getDOFFromNodeAndComponent( const ASTERINTEGER &
     return -1;
 };
 
-VectorLong EquationNumbering::getDOF( const bool sameRank, const VectorString &list_cmp,
-                                      const VectorLong &list_nodes ) const {
+VectorLong EquationNumbering::getDOFs( const bool sameRank, const VectorString &list_cmp,
+                                       const VectorString &list_grpno ) const {
     const bool all_cmp = list_cmp.empty();
-    const bool all_nodes = list_nodes.empty();
+    const bool all_nodes = list_grpno.empty();
     const bool all_rank = !sameRank;
     const auto rank = getMPIRank();
 
@@ -341,7 +341,7 @@ VectorLong EquationNumbering::getDOF( const bool sameRank, const VectorString &l
     const JeveuxVectorLong nodesRank = _mesh->getNodesRank();
     nodesRank->updateValuePointer();
 
-    SetLong set_nodes = toSet( list_nodes );
+    SetLong set_nodes = toSet( getMesh()->getNodes( list_grpno ) );
     SetLong set_cmp;
     auto name2num = this->getComponentsNameToId();
     for ( auto &cmp : list_cmp ) {

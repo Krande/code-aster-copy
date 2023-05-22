@@ -101,17 +101,6 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     /** @brief Dof description */
     EquationNumberingPtr _dofDescription;
 
-    /**
-     * @brief Return list of dof to use
-     * @param sameRank True: Use only owned nodes / False: Use all nodes
-     * @param list_cmp empty: Use all cmp / keep only cmp given
-     */
-    VectorLong _getDOFsToUse( const bool sameRank, const VectorString &list_cmp,
-                              const VectorString &groupsOfCells = {} ) const {
-        auto list_nodes = this->getMesh()->getNodesFromCells( groupsOfCells );
-        return _dofDescription->getDOF( sameRank, list_cmp, list_nodes );
-    }
-
   public:
     /** @typedef FieldOnNodesPtr */
     typedef std::shared_ptr< FieldOnNodes > FieldOnNodesPtr;
@@ -498,10 +487,10 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     const JeveuxVector< ValueType > &getValues() const { return _values; }
 
     std::vector< ValueType > getValues( const VectorString &cmps,
-                                        const VectorString &groupsOfCells = {} ) const {
+                                        const VectorString &groupsOfNodes = {} ) const {
         std::vector< ValueType > val;
 
-        auto usedDof = this->_getDOFsToUse( false, cmps, groupsOfCells );
+        auto usedDof = _dofDescription->getDOFs( false, cmps, groupsOfNodes );
         val.reserve( usedDof.size() );
         _values->updateValuePointer();
 
@@ -575,7 +564,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         CALL_JEMARQ();
         ASTERDOUBLE norme = 0.0;
         _values->updateValuePointer();
-        auto dofUsed = this->_getDOFsToUse( true, list_cmp );
+        auto dofUsed = _dofDescription->getDOFs( true, list_cmp );
 
         if ( normType == "NORM_1" ) {
             for ( auto &dof : dofUsed ) {
@@ -621,7 +610,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         if ( taille != tmp->size() )
             raiseAsterError( "Incompatible size" );
 
-        auto dofUsed = this->_getDOFsToUse( true, VectorString() );
+        auto dofUsed = _dofDescription->getDOFs( true );
 
         ValueType ret;
         if constexpr ( std::is_same_v< ValueType, ASTERDOUBLE > ||
