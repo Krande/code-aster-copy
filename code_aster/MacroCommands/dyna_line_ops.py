@@ -65,9 +65,9 @@ class DynaLineFEM:
         self,
         parent,
         MODELE,
-        CHARGE,
         TYPE_CALCUL,
         BASE_CALCUL,
+        CHARGE=None,
         AMORTISSEMENT=None,
         CHAM_MATER=None,
         CARA_ELEM=None,
@@ -171,7 +171,13 @@ class DynaLineFEM:
             keywords["MASS_MECA"] = self.__getMasselem()
         else:
             keywords = self.keywords
-        __amorelem = CALC_MATR_ELEM(OPTION="AMOR_MECA", **keywords)
+        if self.amortissement["MATR_IMPE_PHI"] == "OUI":
+            amor_flui = "NON"
+        else:
+            amor_flui = "OUI"
+        __amorelem = CALC_MATR_ELEM(
+            OPTION="AMOR_MECA", **keywords, AMOR_FLUI=amor_flui, VNOR=self.amortissement["VNOR"]
+        )
         self.__amorelem = __amorelem
         return self.__amorelem
 
@@ -179,8 +185,13 @@ class DynaLineFEM:
         """return elementary impedances"""
         if hasattr(self, "_DynaLineFEM__impeelem"):
             return self.__impeelem
-        __impeelem = CALC_MATR_ELEM(OPTION="IMPE_MECA", **self.keywords)
-        self.__impeelem = __impeelem
+        if self.amortissement != None:
+            if self.amortissement["MATR_IMPE_PHI"]:
+                if self.amortissement["MATR_IMPE_PHI"] == "OUI":
+                    __impeelem = CALC_MATR_ELEM(
+                        OPTION="IMPE_MECA", **self.keywords, VNOR=self.amortissement["VNOR"]
+                    )
+                    self.__impeelem = __impeelem
         return self.__impeelem
 
     def getRigiPhy(self):
@@ -222,14 +233,16 @@ class DynaLineFEM:
         if hasattr(self, "_DynaLineFEM__impePhy"):
             return self.__impePhy
         self.__impePhy = None
-        if "CHARGE" in self.keywords:
-            for charge in self.keywords["CHARGE"]:
-                if charge.hasLoadField("IMPED"):
+        # if "CHARGE" in self.keywords:
+        # for charge in self.keywords["CHARGE"]:
+        # if charge.hasLoadField("IMPED"):
+        if self.amortissement != None:
+            if self.amortissement["MATR_IMPE_PHI"]:
+                if self.amortissement["MATR_IMPE_PHI"] == "OUI":
                     __impePhy = ASSE_MATRICE(
                         MATR_ELEM=self.__getImpeelem(), NUME_DDL=self.getNumeddl(), **self.char_cine
                     )
                     self.__impePhy = __impePhy
-                    break
         return self.__impePhy
 
     def __getRigiGen(self):
@@ -1355,6 +1368,8 @@ class DynaLineResu:
             keywords["MATR_AMOR"] = self.dynaLineFEM.getAmor()
         if self.dynaLineFEM.getImpe():
             keywords["MATR_IMPE_PHI"] = self.dynaLineFEM.getImpe()
+        if self.dynaLineFEM.getAmor() and self.dynaLineFEM.getImpe():
+            keywords["AMOR_FLUI"] = "NON"
         if self.dynaLineFEM.getAmorModal():
             keywords["AMOR_MODAL"] = {"AMOR_REDUIT": self.dynaLineFEM.getAmorModal()}
         if self.dynaLineInitialState.get():

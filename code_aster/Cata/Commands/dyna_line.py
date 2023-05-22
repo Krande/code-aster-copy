@@ -54,7 +54,7 @@ DYNA_LINE = MACRO(
     MODELE=SIMP(statut="o", typ=modele_sdaster),
     CHAM_MATER=SIMP(statut="f", typ=cham_mater),
     CARA_ELEM=SIMP(statut="f", typ=cara_elem),
-    CHARGE=SIMP(statut="o", typ=(char_meca, char_cine_meca), max="**"),
+    CHARGE=SIMP(statut="f", typ=(char_meca, char_cine_meca), max="**"),
     # if no value, F_max computed automaticaly, F_min set to 0
     # if only one value => F_max, F_min set to 0
     # if two value F_min set to the first one, F_max set to the second one
@@ -272,12 +272,24 @@ DYNA_LINE = MACRO(
     # Damping
     b_amor_tran_phys=BLOC(
         condition="""equal_to("TYPE_CALCUL", 'TRAN') and equal_to("BASE_CALCUL", 'PHYS')""",
-        AMORTISSEMENT=FACT(statut="f", TYPE_AMOR=SIMP(statut="o", typ="TXM", into=("RAYLEIGH",))),
+        AMORTISSEMENT=FACT(
+            statut="f",
+            TYPE_AMOR=SIMP(statut="o", typ="TXM", into=("RAYLEIGH",)),
+            VNOR=SIMP(statut="f", typ="R", into=(1.0, -1.0), defaut=1.0),
+        ),
     ),  # end b_amor_tran_phys
     b_amor_harm_phys=BLOC(
         condition="""equal_to("TYPE_CALCUL", 'HARM') and equal_to("BASE_CALCUL", 'PHYS')""",
         AMORTISSEMENT=FACT(
-            statut="f", TYPE_AMOR=SIMP(statut="o", typ="TXM", into=("RAYLEIGH", "HYST"))
+            statut="f",
+            TYPE_AMOR=SIMP(statut="o", typ="TXM", into=("RAYLEIGH", "HYST")),
+            b_amor_flui_abso=BLOC(
+                condition="""equal_to("TYPE_AMOR", 'RAYLEIGH')""",
+                VNOR=SIMP(statut="f", typ="R", into=(1.0, -1.0), defaut=1.0),
+                MATR_IMPE_PHI=SIMP(
+                    statut="f", typ="TXM", defaut="NON", into=("OUI", "NON"), min=1, max=1
+                ),
+            ),
         ),
     ),  # end b_amor_harm_phys
     b_amor_tran_gene=BLOC(
@@ -289,6 +301,10 @@ DYNA_LINE = MACRO(
                 condition="""equal_to("TYPE_AMOR", 'MODAL')""",
                 AMOR_REDUIT=SIMP(statut="o", typ="R", max="**"),
             ),
+            b_amor_flui_abso=BLOC(
+                condition="""equal_to("TYPE_AMOR", 'RAYLEIGH')""",
+                VNOR=SIMP(statut="f", typ="R", into=(1.0, -1.0), defaut=1.0),
+            ),
         ),
     ),  # end b_amor_tran_gene
     b_amor_harm_gene=BLOC(
@@ -299,6 +315,13 @@ DYNA_LINE = MACRO(
             b_modal=BLOC(
                 condition="""equal_to("TYPE_AMOR", 'MODAL')""",
                 AMOR_REDUIT=SIMP(statut="o", typ="R", max="**"),
+            ),
+            b_amor_flui_abso=BLOC(
+                condition="""equal_to("TYPE_AMOR", 'RAYLEIGH')""",
+                VNOR=SIMP(statut="f", typ="R", into=(1.0, -1.0), defaut=1.0),
+                MATR_IMPE_PHI=SIMP(
+                    statut="f", typ="TXM", defaut="NON", into=("OUI", "NON"), min=1, max=1
+                ),
             ),
         ),
     ),  # end b_amor_harm_gene
