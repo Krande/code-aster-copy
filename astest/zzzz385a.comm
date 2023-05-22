@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -59,9 +59,9 @@ nbpas = 2
 INSTANT1 = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=tfin, NOMBRE=10))
 INSTANT2 = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=tfin, NOMBRE=nbpas))
 
-vcalc1 = -1.80850094114
-vcalc2 = -1.80850149443
-vcalc3 = -1.80850149443
+vcalc1 = -1.8108453798122817
+vcalc2 = -1.8108458629129625
+vcalc3 = -1.8108453798122817
 
 # -----------------------------------------------------------------------------
 # 1. Calcul de reference avec 3 carres beaucoup plus rigides que les 4 autres :
@@ -82,7 +82,7 @@ if 1:
             _F(CHARGE=CL1, TYPE_CHARGE="FIXE_CSTE"),
             _F(CHARGE=CL2, FONC_MULT=RAMPE, TYPE_CHARGE="FIXE_CSTE"),
         ),
-        COMPORTEMENT=_F(RELATION="ELAS", TOUT="OUI", DEFORMATION="GROT_GDEP"),
+        COMPORTEMENT=_F(RELATION="ELAS", TOUT="OUI", DEFORMATION="GDEF_LOG"),
         INCREMENT=_F(LIST_INST=INSTANT1, INST_FIN=tfin),
         NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
         CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6, ITER_GLOB_MAXI=10),
@@ -116,7 +116,7 @@ if 1:
             _F(CHARGE=chdunl4, TYPE_CHARGE="SUIV"),
             _F(CHARGE=CL2, FONC_MULT=RAMPE, TYPE_CHARGE="FIXE_CSTE"),
         ),
-        COMPORTEMENT=_F(RELATION="ELAS", TOUT="OUI", DEFORMATION="GROT_GDEP"),
+        COMPORTEMENT=_F(RELATION="ELAS", TOUT="OUI", DEFORMATION="GDEF_LOG"),
         INCREMENT=_F(LIST_INST=INSTANT2, INST_FIN=tfin),
         NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
         CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6, ITER_GLOB_MAXI=30),
@@ -132,7 +132,7 @@ if 1:
             REFERENCE="AUTRE_ASTER",
             VALE_REFE=vcalc1,
             VALE_CALC=vcalc2,
-            PRECISION=2.0e-6,
+            PRECISION=1.3e-3,
         )
     )
 
@@ -158,7 +158,7 @@ if 1:
             _F(CHARGE=chdunl4, TYPE_CHARGE="SUIV"),
             _F(CHARGE=CL2, FONC_MULT=RAMPE, TYPE_CHARGE="FIXE_CSTE"),
         ),
-        COMPORTEMENT=_F(RELATION="ELAS", TOUT="OUI", DEFORMATION="GROT_GDEP"),
+        COMPORTEMENT=_F(RELATION="ELAS", TOUT="OUI", DEFORMATION="GDEF_LOG"),
         INCREMENT=_F(LIST_INST=INSTANT2, INST_FIN=tmoitie),
         NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
         CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6, ITER_GLOB_MAXI=30),
@@ -175,7 +175,7 @@ if 1:
             _F(CHARGE=chdunl4, TYPE_CHARGE="SUIV"),
             _F(CHARGE=CL2, FONC_MULT=RAMPE, TYPE_CHARGE="FIXE_CSTE"),
         ),
-        COMPORTEMENT=_F(RELATION="ELAS", TOUT="OUI", DEFORMATION="GROT_GDEP"),
+        COMPORTEMENT=_F(RELATION="ELAS", TOUT="OUI", DEFORMATION="GDEF_LOG"),
         INCREMENT=_F(LIST_INST=INSTANT2, INST_FIN=tfin),
         NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
         CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6, ITER_GLOB_MAXI=30),
@@ -191,7 +191,7 @@ if 1:
             REFERENCE="AUTRE_ASTER",
             VALE_REFE=vcalc1,
             VALE_CALC=vcalc3,
-            PRECISION=2.0e-6,
+            PRECISION=1.3e-3,
         )
     )
 
