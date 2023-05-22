@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -87,7 +87,7 @@ RESU = STAT_NON_LINE(
     CHAM_MATER=MA,
     EXCIT=(_F(CHARGE=Force, FONC_MULT=FONC), _F(CHARGE=CL)),
     CONTACT=Cont,
-    COMPORTEMENT=_F(RELATION="ELAS", DEFORMATION="GROT_GDEP"),
+    COMPORTEMENT=_F(RELATION="ELAS", DEFORMATION="GREEN_LAGRANGE"),
     INCREMENT=_F(LIST_INST=L_INST),
     CONVERGENCE=_F(ITER_GLOB_MAXI=50),
     SOLVEUR=_F(),
@@ -108,7 +108,7 @@ RESUFr = STAT_NON_LINE(
     CHAM_MATER=MA,
     EXCIT=(_F(CHARGE=Force, FONC_MULT=FONC), _F(CHARGE=CL)),
     CONTACT=ContFr,
-    COMPORTEMENT=_F(RELATION="ELAS", DEFORMATION="GROT_GDEP"),
+    COMPORTEMENT=_F(RELATION="ELAS", DEFORMATION="GREEN_LAGRANGE"),
     INCREMENT=_F(LIST_INST=L_INST),
     CONVERGENCE=_F(ITER_GLOB_MAXI=50),
     SOLVEUR=_F(),
