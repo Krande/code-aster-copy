@@ -105,6 +105,11 @@ test.assertEqual(len(fr.getValues(["DY"], ["A"])), 1)
 test.assertAlmostEqual(fr.getValues(["DY"], ["A"])[0], 2.0)
 test.assertEqual(len(fr.getValues(["DY"], ["ZZ"])), 0)
 
+with test.assertRaises(code_aster.AsterError):
+    ferror = field.restrict(groupsOfNodes=["NOEXI"])
+
+with test.assertRaises(code_aster.AsterError):
+    ferror = field.restrict(["YD"])
 
 f0 = field.duplicate()
 f = field.duplicate()

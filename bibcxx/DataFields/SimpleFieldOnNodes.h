@@ -107,6 +107,24 @@ class SimpleFieldOnNodes : public DataField {
         this->_checkCmpOOR( icmp );
     }
 
+    void _existsValue() const {
+        if ( this->getNumberOfNodes() == 0 || this->getNumberOfComponents() == 0 )
+            throw std::runtime_error( "First call of updateValuePointers is mandatory" );
+
+        auto size = _allocated->size();
+        bool isAlloc = false;
+        for ( ASTERINTEGER i = 0; i < size; i++ ) {
+            if ( ( *_allocated )[i] ) {
+                isAlloc = true;
+                break;
+            }
+        }
+
+        if ( !isAlloc ) {
+            throw std::runtime_error( "No values affected in the field" );
+        }
+    }
+
   public:
     /**
      * @typedef SimpleFieldOnNodesPtr
@@ -353,6 +371,8 @@ class SimpleFieldOnNodes : public DataField {
     std::shared_ptr< FieldOnNodes< ValueType > > toFieldOnNodes() const {
         auto cham_no = std::make_shared< FieldOnNodes< ValueType > >();
 
+        this->_existsValue();
+
         // Convert to CHAM_NO
         std::string prof = " ", prol0 = "NON", base = "G", kstop = "F";
         ASTERINTEGER iret = 0;
@@ -383,10 +403,18 @@ class SimpleFieldOnNodes : public DataField {
             }
         }
 
+        if ( list_cmp.empty() ) {
+            raiseAsterError( "Restriction on list of components is empty" );
+        }
+
         auto ret = std::make_shared< SimpleFieldOnNodes< ValueType > >(
             this->getMesh(), this->getPhysicalQuantity(), list_cmp );
 
         VectorLong nodes = _mesh->getNodes( groupsOfNodes );
+
+        if ( nodes.empty() ) {
+            raiseAsterError( "Restriction on list of ²nodes is empty" );
+        }
 
         for ( auto &cmp : list_cmp ) {
             auto icmp_in = ( *this )._name2Index.at( cmp );
