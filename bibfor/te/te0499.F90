@@ -22,6 +22,7 @@ subroutine te0499(option, nomte)
 !
 #include "jeveux.h"
 #include "asterc/r8vide.h"
+#include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
@@ -30,6 +31,7 @@ subroutine te0499(option, nomte)
 #include "asterfort/rcvalb.h"
 #include "asterfort/trigom.h"
 #include "asterfort/vff2dn.h"
+#include "asterfort/utmess.h"
 !
 !
     character(len=16), intent(in) :: option
@@ -199,35 +201,43 @@ subroutine te0499(option, nomte)
         sina = dirx
         cosa = diry
         a2 = asin(sina)
-        if (type .eq. 'P') then
-            b2 = asin(sina/rc1c2)
-            cosb2 = cos(b2)
-            sinb2 = sin(b2)
 
-! Coefficients de réflexions (Calcul intégré au script).
-            kr = 1.d0/rc1c2
-            nr = (kr)**2*sin(2.d0*b2)*sin(2.d0*a2)+cos(2.d0*b2)**2
-            ra12 = (kr**2*sin(2.d0*a2)*sin(2.d0*b2)-cos(2.d0*b2)**2)/nr
-            ra13 = 2.d0*kr*sin(2.d0*a2)*cos(2.d0*b2)/nr
-        else
-!          b2=asin(sina*rc1c2)
-            b2 = trigom('ASIN', sina*rc1c2)
-            cosb2 = cos(b2)
-            sinb2 = sin(b2)
+        if (h .ne. r8vide()) then
+            if (h2 .ne. r8vide()) then
 
-! Coefficients de réflexions (Calcul intégré au script).
-            kr = 1.d0/rc1c2
-            nr = (kr)**2*sin(2.d0*b2)*sin(2.d0*a2)+cos(2.d0*a2)**2
-            ra12 = (kr**2*sin(2.d0*a2)*sin(2.d0*b2)-cos(2.d0*a2)**2)/nr
-            ra13 = -2.d0*kr*sin(2.d0*a2)*cos(2.d0*a2)/nr
-        end if
+                if (type .eq. 'P') then
+                    b2 = asin(sina/rc1c2)
+                    cosb2 = cos(b2)
+                    sinb2 = sin(b2)
+
+                    ! Coefficients de réflexions (Calcul intégré au script).
+                    kr = 1.d0/rc1c2
+                    nr = (kr)**2*sin(2.d0*b2)*sin(2.d0*a2)+cos(2.d0*b2)**2
+                    ra12 = (kr**2*sin(2.d0*a2)*sin(2.d0*b2)-cos(2.d0*b2)**2)/nr
+                    ra13 = 2.d0*kr*sin(2.d0*a2)*cos(2.d0*b2)/nr
+                else
+
+                    if ((abs(sina*rc1c2)-1.d0) .gt. r8prem()) then
+                        call utmess('F', 'ALGORITH2_82')
+                    end if
+
+                    !          b2=asin(sina*rc1c2)
+                    b2 = trigom('ASIN', sina*rc1c2)
+                    cosb2 = cos(b2)
+                    sinb2 = sin(b2)
+
+                    ! Coefficients de réflexions (Calcul intégré au script).
+                    kr = 1.d0/rc1c2
+                    nr = (kr)**2*sin(2.d0*b2)*sin(2.d0*a2)+cos(2.d0*a2)**2
+                    ra12 = (kr**2*sin(2.d0*a2)*sin(2.d0*b2)-cos(2.d0*a2)**2)/nr
+                    ra13 = -2.d0*kr*sin(2.d0*a2)*cos(2.d0*a2)/nr
+                end if
 
 ! Calcul des bons paramètres dist à insérer dans le calcul.
-        if (h .ne. r8vide()) then
+
 !          x0=0.d0
             z0 = (h-x0*sina)/cosa
             dist = h
-            if (h2 .ne. r8vide()) then
                 z1 = (h2-x0*sina)/cosa
                 dist1 = x0*sina+(2.d0*z1-z0)*(-cosa)
                 if (type .eq. 'P') then
@@ -309,18 +319,24 @@ subroutine te0499(option, nomte)
 !
             if (abs(cosa) .gt. 0.d0) then
                 grad(1, 1) = dirx*valfon*dirx
-                grad(1, 1) = grad(1, 1)+dirx*valfon1*dirx
-                grad(1, 1) = grad(1, 1)+sinb2*valfon2*cosb2
                 grad(1, 2) = diry*valfon*dirx
-                grad(1, 2) = grad(1, 2)-diry*valfon1*dirx
-                grad(1, 2) = grad(1, 2)-cosb2*valfon2*cosb2
-!
+
                 grad(2, 1) = dirx*valfon*diry
-                grad(2, 1) = grad(2, 1)-dirx*valfon1*diry
-                grad(2, 1) = grad(2, 1)+sinb2*valfon2*sinb2
                 grad(2, 2) = diry*valfon*diry
-                grad(2, 2) = grad(2, 2)+diry*valfon1*diry
-                grad(2, 2) = grad(2, 2)-cosb2*valfon2*sinb2
+
+                if (h .ne. r8vide()) then
+                    if (h2 .ne. r8vide()) then
+                        grad(1, 1) = grad(1, 1)+dirx*valfon1*dirx
+                        grad(1, 1) = grad(1, 1)+sinb2*valfon2*cosb2
+                        grad(1, 2) = grad(1, 2)-diry*valfon1*dirx
+                        grad(1, 2) = grad(1, 2)-cosb2*valfon2*cosb2
+
+                        grad(2, 1) = grad(2, 1)-dirx*valfon1*diry
+                        grad(2, 1) = grad(2, 1)+sinb2*valfon2*sinb2
+                        grad(2, 2) = grad(2, 2)+diry*valfon1*diry
+                        grad(2, 2) = grad(2, 2)-cosb2*valfon2*sinb2
+                    end if
+                end if
             else
                 grad(1, 1) = dirx*(valfon-valfon1)*dirx
                 grad(1, 2) = diry*(valfon-valfon1)*dirx
@@ -331,18 +347,24 @@ subroutine te0499(option, nomte)
 !
             if (abs(cosa) .gt. 0.d0) then
                 grad(1, 1) = dirx*valfon*norx
-                grad(1, 1) = grad(1, 1)-dirx*valfon1*norx
-                grad(1, 1) = grad(1, 1)+sinb2*valfon2*sinb2
                 grad(1, 2) = diry*valfon*norx
-                grad(1, 2) = grad(1, 2)+diry*valfon1*norx
-                grad(1, 2) = grad(1, 2)-cosb2*valfon2*sinb2
-!
+
                 grad(2, 1) = dirx*valfon*nory
-                grad(2, 1) = grad(2, 1)+dirx*valfon1*nory
-                grad(2, 1) = grad(2, 1)-cosb2*valfon2*sinb2
                 grad(2, 2) = diry*valfon*nory
-                grad(2, 2) = grad(2, 2)-diry*valfon1*nory
-                grad(2, 2) = grad(2, 2)+cosb2*valfon2*cosb2
+
+                if (h .ne. r8vide()) then
+                    if (h2 .ne. r8vide()) then
+                        grad(1, 1) = grad(1, 1)-dirx*valfon1*norx
+                        grad(1, 1) = grad(1, 1)+sinb2*valfon2*sinb2
+                        grad(1, 2) = grad(1, 2)+diry*valfon1*norx
+                        grad(1, 2) = grad(1, 2)-cosb2*valfon2*sinb2
+
+                        grad(2, 1) = grad(2, 1)+dirx*valfon1*nory
+                        grad(2, 1) = grad(2, 1)-cosb2*valfon2*sinb2
+                        grad(2, 2) = grad(2, 2)-diry*valfon1*nory
+                        grad(2, 2) = grad(2, 2)+cosb2*valfon2*cosb2
+                    end if
+                end if
             else
                 grad(1, 1) = dirx*(valfon-valfon1)*norx
                 grad(1, 2) = diry*(valfon-valfon1)*norx
@@ -407,11 +429,17 @@ subroutine te0499(option, nomte)
         if (type .eq. 'P') then
             if (abs(cosa) .gt. 0.d0) then
                 vondt(1) = -cele*valfon*dirx
-                vondt(1) = vondt(1)-cele*valfon1*dirx
-                vondt(1) = vondt(1)-cele2*valfon2*cosb2
                 vondt(2) = -cele*valfon*diry
-                vondt(2) = vondt(2)+cele*valfon1*diry
-                vondt(2) = vondt(2)-cele2*valfon2*sinb2
+
+                if (h .ne. r8vide()) then
+                    if (h2 .ne. r8vide()) then
+                        vondt(1) = vondt(1)-cele*valfon1*dirx
+                        vondt(1) = vondt(1)-cele2*valfon2*cosb2
+                        vondt(2) = vondt(2)+cele*valfon1*diry
+                        vondt(2) = vondt(2)-cele2*valfon2*sinb2
+                    end if
+                end if
+
             else
                 vondt(1) = -cele*(valfon+valfon1)*dirx
                 vondt(2) = -cele*(valfon+valfon1)*diry
@@ -419,11 +447,16 @@ subroutine te0499(option, nomte)
         else if (type .eq. 'S') then
             if (abs(cosa) .gt. 0.d0) then
                 vondt(1) = -cele*valfon*norx
-                vondt(1) = vondt(1)+cele*valfon1*norx
-                vondt(1) = vondt(1)-cele2*valfon2*sinb2
                 vondt(2) = -cele*valfon*nory
-                vondt(2) = vondt(2)-cele*valfon1*nory
-                vondt(2) = vondt(2)+cele2*valfon2*cosb2
+
+                if (h .ne. r8vide()) then
+                    if (h2 .ne. r8vide()) then
+                        vondt(1) = vondt(1)+cele*valfon1*norx
+                        vondt(1) = vondt(1)-cele2*valfon2*sinb2
+                        vondt(2) = vondt(2)-cele*valfon1*nory
+                        vondt(2) = vondt(2)+cele2*valfon2*cosb2
+                    end if
+                end if
             else
                 vondt(1) = -cele*(valfon+valfon1)*norx
                 vondt(2) = -cele*(valfon+valfon1)*nory
@@ -492,11 +525,16 @@ subroutine te0499(option, nomte)
         if (type .eq. 'P') then
             if (abs(cosa) .gt. 0.d0) then
                 uondt(1) = valfon*dirx
-                uondt(1) = uondt(1)+valfon1*dirx
-                uondt(1) = uondt(1)+valfon2*cosb2
                 uondt(2) = valfon*diry
-                uondt(2) = uondt(2)-valfon1*diry
-                uondt(2) = uondt(2)+valfon2*sinb2
+
+                if (h .ne. r8vide()) then
+                    if (h2 .ne. r8vide()) then
+                        uondt(1) = uondt(1)+valfon1*dirx
+                        uondt(1) = uondt(1)+valfon2*cosb2
+                        uondt(2) = uondt(2)-valfon1*diry
+                        uondt(2) = uondt(2)+valfon2*sinb2
+                    end if
+                end if
             else
                 uondt(1) = (valfon+valfon1)*dirx
                 uondt(2) = (valfon+valfon1)*diry
@@ -504,11 +542,16 @@ subroutine te0499(option, nomte)
         else if (type .eq. 'S') then
             if (abs(cosa) .gt. 0.d0) then
                 uondt(1) = valfon*norx
-                uondt(1) = uondt(1)-valfon1*norx
-                uondt(1) = uondt(1)+valfon2*sinb2
                 uondt(2) = valfon*nory
-                uondt(2) = uondt(2)+valfon1*nory
-                uondt(2) = uondt(2)-valfon2*cosb2
+
+                if (h .ne. r8vide()) then
+                    if (h2 .ne. r8vide()) then
+                        uondt(1) = uondt(1)-valfon1*norx
+                        uondt(1) = uondt(1)+valfon2*sinb2
+                        uondt(2) = uondt(2)+valfon1*nory
+                        uondt(2) = uondt(2)-valfon2*cosb2
+                    end if
+                end if
             else
                 uondt(1) = (valfon+valfon1)*norx
                 uondt(2) = (valfon+valfon1)*nory
