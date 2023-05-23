@@ -322,4 +322,12 @@ Contactez le support technique.
  Le calcul s'arrête en erreur fatale par précautions.
 """
     ),
+    82: _(
+        """
+ La direction de propagation de l'onde plane n'est pas admissible.
+ Puisque on essaie d'imposer également l'onde réfléchie (COOR_REFLECHI),
+ l'angle d'inclinaison imposé ne permet pas de calculer le coefficient
+ de réflexion à travers la théorie des ondes planes.
+"""
+    ),
 }
