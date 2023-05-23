@@ -93,6 +93,7 @@ subroutine nonlinDSConstitutiveInit(model, cara_elem, ds_constitutive, verbose_)
     do i_affe = 1, nb_affe
         if ((v_compor_vale(DEFO+COMPOR_SIZE*(i_affe-1)) .eq. 'GROT_GDEP') .or. &
             (v_compor_vale(DEFO+COMPOR_SIZE*(i_affe-1)) .eq. 'SIMO_MIEHE') .or. &
+            (v_compor_vale(DEFO+COMPOR_SIZE*(i_affe-1)) .eq. 'GREEN_LAGRANGE') .or. &
             (v_compor_vale(DEFO+COMPOR_SIZE*(i_affe-1)) .eq. 'GDEF_LOG')) then
             ds_constitutive%l_matr_geom = ASTER_TRUE
         end if
