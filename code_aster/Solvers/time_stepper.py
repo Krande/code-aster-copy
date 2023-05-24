@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from enum import Flag, auto
 from math import log10
 
 import numpy
@@ -51,6 +50,7 @@ class TimeStepper(SolverFeature, Observer):
 
     _times = _eps = _current = _initial = _final = _last = None
     _actions = _state = None
+    _split = _maxLevel = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
     def __init__(self, times, epsilon=1e-6, initial=0.0, final=None):
@@ -65,6 +65,8 @@ class TimeStepper(SolverFeature, Observer):
         logger.debug("TimeStepper.init: %s, %s, %s", initial, final, times)
         self._check_bounds()
         self._actions = []
+        self._split = []
+        self._maxLevel = 4
         # FIXME the previous phys_state should be hold by NonLinearSolver
         self._state = {}
 
@@ -226,6 +228,11 @@ class TimeStepper(SolverFeature, Observer):
         if self.hasFinished():
             raise IndexError("no more timesteps")
         self._current += 1
+        if not self.hasFinished():
+            last = self.getCurrent()
+            logger.debug("check splitting level: %s %s", self._split, last)
+            while self._split and self.cmp(last, self._split[-1]) >= 0:
+                self._split.pop()
 
     def update(self, event):
         """Receive update from event.
@@ -235,7 +242,20 @@ class TimeStepper(SolverFeature, Observer):
         """
         eid, data = event.get_state()
         if eid & SOP.IncrementalSolver:
-            logger.info("#DBG from incr: %s", data)
+            logger.debug("+ received from incr: %s", data)
+
+    @property
+    def splitting_level(self):
+        """int: The current splitting level."""
+        return len(self._split)
+
+    def _append_split(self, value):
+        """Store the next target for unsplitting.
+
+        Arguments:
+            value (int): Level.
+        """
+        self._split.append(value)
 
     def cmp(self, time1, time2):
         """Compare two times using epsilon.
@@ -318,7 +338,6 @@ class TimeStepper(SolverFeature, Observer):
             for step in orig:
                 times.extend(numpy.linspace(times[-1], step, div + 1)[1:])
         stp = TimeStepper(times, initial=None)
-        maxLevel = 0
         for fail in args["ECHEC"]:
             if fail["EVENEMENT"] == "ERREUR":
                 event = TimeStepper.Error()
@@ -335,12 +354,9 @@ class TimeStepper(SolverFeature, Observer):
                 act = TimeStepper.Interrupt(event)
             elif fail["ACTION"] == "DECOUPE":
                 if fail["SUBD_METHODE"] == "MANUEL":
-                    maxLevel = max(maxLevel, fail["SUBD_NIVEAU"])
+                    stp._maxLevel = max(stp._maxLevel, fail["SUBD_NIVEAU"])
                     act = TimeStepper.Split(
-                        event,
-                        nbSteps=fail["SUBD_PAS"],
-                        maxLevel=maxLevel,
-                        minStep=fail["SUBD_PAS_MINI"],
+                        event, nbSteps=fail["SUBD_PAS"], minStep=fail["SUBD_PAS_MINI"]
                     )
                 else:
                     assert fail["SUBD_METHODE"] == "AUTO"
@@ -349,11 +365,6 @@ class TimeStepper(SolverFeature, Observer):
                 continue
             stp.register_event(act)
         stp.register_default_error_event()
-        for act in stp._actions:
-            try:
-                act.setMaxLevel(maxLevel)
-            except AttributeError:
-                pass
         return stp
 
     # event management
@@ -368,7 +379,7 @@ class TimeStepper(SolverFeature, Observer):
     def register_default_error_event(self):
         """Register a default action for Error event if there is no one."""
         if not [act for act in self._actions if isinstance(act.event, TimeStepper.Error)]:
-            self.register_event(TimeStepper.Split(TimeStepper.Error(), nbSteps=2, maxLevel=4))
+            self.register_event(TimeStepper.Split(TimeStepper.Error(), nbSteps=4))
 
     def failed(self, exc):
         """React to a raised exception.
@@ -394,12 +405,16 @@ class TimeStepper(SolverFeature, Observer):
             bool: *False* if something went wrong, *True** if the step is ok.
         """
         # compute increment
-        prev = self._state.get("previous")
+        # prev = self._state.get("previous")
+        # delta = phys_state.as_dict()
+        # if prev:
+        #     for name, field in delta.items():
+        #         delta[name] = delta[name] - prev[name]
+        # self._state["previous"] = phys_state.as_dict()
+        prev = phys_state._stash.as_dict()
         delta = phys_state.as_dict()
-        if prev:
-            for name, field in delta.items():
-                delta[name] - prev[name]
-        self._state["previous"] = phys_state.as_dict()
+        for name, field in delta.items():
+            delta[name] = delta[name] - prev[name]
 
         for act in self._actions:
             if not isinstance(act.event, TimeStepper.MaximumIncrement):
@@ -467,9 +482,10 @@ class TimeStepper(SolverFeature, Observer):
             field = delta.get(self._fieldName)
             if not field:
                 return False
-            maxIncr = max(field.getValuesWithDescription(self._cmp, self._group)[0])
-            logger.info("#DBG check delta %s >? %s", maxIncr, self._value)
+            array = numpy.array(field.getValuesWithDescription(self._cmp, self._group)[0])
+            maxIncr = max(abs(array))
             raised = maxIncr > self._value
+            logger.debug("check delta of %s: %s >? %s: %s", self._cmp, maxIncr, self._value, raised)
             if raised:
                 logger.info(MessageLog.GetText("I", "MECANONLINE10_24"))
             return raised
@@ -518,33 +534,22 @@ class TimeStepper(SolverFeature, Observer):
 
         Arguments:
             nbSteps (int): Number of sub-steps.
-            maxLevel (int): Maximal number of levels.
             minStep (float): Minimal value of a step.
         """
 
-        _nbSteps = _maxLevel = _minStep = None
-        _reset = _stop = None
+        _nbSteps = _minStep = None
+        _stop = None
 
-        def __init__(self, event, nbSteps, maxLevel=1e6, minStep=1.0e-12):
+        def __init__(self, event, nbSteps, minStep=1.0e-12):
             super().__init__(event)
             assert nbSteps > 1, nbSteps
             self._nbSteps = nbSteps
-            self._maxLevel = maxLevel
             self._minStep = minStep
-            self._reset = []
             self._stop = TimeStepper.Interrupt(event)
 
         def copy(self):
             """Return a copy of the object."""
-            return self.__class__(self._event, self._nbSteps, self._maxLevel, self._minStep)
-
-        def setMaxLevel(self, maxLevel):
-            """Set the maximum number of levels.
-
-            Arguments:
-                maxLevel (int): Maximal number of levels.
-            """
-            self._maxLevel = maxLevel
+            return self.__class__(self._event, self._nbSteps, self._minStep)
 
         def call(self, **context):
             """Execute the action.
@@ -556,18 +561,15 @@ class TimeStepper(SolverFeature, Observer):
             logger.info(MessageLog.GetText("I", "SUBDIVISE_1"))
             stp = context["timeStepper"]
             last = stp.getCurrent()
-            # TODO check that minStep > epsilon
-            logger.debug("check splitting level: %s %s", self._reset, last)
-            while self._reset and stp.cmp(last, self._reset[-1]) >= 0:
-                self._reset.pop()
-            self._reset.append(last)
-            # not a splitting level, but a number of splits
-            if len(self._reset) > self._maxLevel:
-                self._stop.call(exception=SolverError("SUBDIVISE_17", (), (self._maxLevel,), ()))
+            stp._append_split(last)
+            if stp.splitting_level > stp._maxLevel:
+                self._stop.call(exception=SolverError("SUBDIVISE_17", (), (stp._maxLevel,), ()))
 
             time_step = stp.getIncrement() / self._nbSteps
             if time_step < self._minStep:
                 self._stop.call(exception=SolverError("SUBDIVISE_53", (), (), (self._minStep,)))
+            if time_step < stp.null_increment:
+                logger.warning(MessageLog.GetText("A", "SUBDIVISE_54"))
             logger.info(MessageLog.GetText("I", "SUBDIVISE_51"))
             new = stp.getCurrent()
             for _ in range(max(0, self._nbSteps - 1)):

@@ -452,11 +452,10 @@ class TestTimeStepper(unittest.TestCase):
 
     def test21_split(self):
         stp = TimeStepper([0.0, 1.0, 1.1, 2.0, 3.0])
+        stp._maxLevel = 3
         self.assertEqual(stp.size(), 4)
         self.assertAlmostEqual(stp.getCurrent(), 1.0)
-        stp.register_event(
-            TimeStepper.Split(TimeStepper.Error(), nbSteps=2, maxLevel=3, minStep=0.05)
-        )
+        stp.register_event(TimeStepper.Split(TimeStepper.Error(), nbSteps=2, minStep=0.05))
         # print("\n+ split #1")
         stp.failed(ConvergenceError("MESSAGEID"))
         # [0.5, 1.0, 1.1, 2.0, 3.0]

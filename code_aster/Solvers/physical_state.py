@@ -17,11 +17,10 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ..Objects import DiscreteComputation, FieldOnCellsReal, FieldOnNodesReal, NonLinearResult
+from ..Objects import DiscreteComputation, FieldOnCellsReal, FieldOnNodesReal
 from ..Utilities import no_new_attributes, profile
 from .base_features import BaseFeature
 from .solver_features import SolverOptions as SOP
-from ..Commands import IMPR_CO
 
 
 class PhysicalState(BaseFeature):
@@ -32,7 +31,12 @@ class PhysicalState(BaseFeature):
     _time = _time_step = None
     _primal = _primal_step = _internVar = _stress = None
     _externVar = _externVar_next = None
+    _stash = None
     __setattr__ = no_new_attributes(object.__setattr__)
+
+    def __init__(self):
+        super().__init__()
+        self._stash = None
 
     @property
     def time(self):
@@ -150,6 +154,41 @@ class PhysicalState(BaseFeature):
         """
         self._externVar_next = field
 
+    def copy(self, other):
+        """Copy the content of an object into the current one.
+
+        Arguments:
+            other (PhysicalState): Object to be copied.
+        """
+        self._time = other.time
+        self._time_step = other.time_step
+        self._primal = other.primal and other.primal.duplicate()
+        self._primal_step = other.primal_step and other.primal_step.duplicate()
+        self._stress = other.stress and other.stress.duplicate()
+        self._internVar = other.internVar and other.internVar.duplicate()
+        self._externVar = other.externVar and other.externVar.duplicate()
+        self._externVar_next = other.externVar_next and other.externVar_next.duplicate()
+
+    def stash(self):
+        """Stores the object state to provide transactionality semantics."""
+        self._stash = PhysicalState()
+        self._stash.copy(self)
+
+    def revert(self):
+        """Revert the object to its previous state."""
+        assert self._stash, "stash is empty!"
+        self.copy(self._stash)
+
+    @profile
+    def commit(self):
+        """Commits the current changes."""
+        # do not use '+=' to create a new object (and not modified previous values)
+        self._primal = self._primal + self._primal_step
+        self._primal_step = None
+        self._time += self._time_step
+        self._time_step = 0.0
+        self._stash = None
+
     # FIXME setPrimalValue?
     @profile
     def createPrimal(self, phys_pb, value):
@@ -237,27 +276,14 @@ class PhysicalState(BaseFeature):
         Arguments:
             phys_pb (PhysicalProblem): Physical problem
         """
-        self._primal = self.createPrimal(phys_pb, 0.0)
-        self._internVar = self.createInternalVariablesNext(phys_pb, 0.0)
-        self._stress = self.createStress(phys_pb, 0.0)
         self._time = 0.0
         self._time_step = 0.0
-
-    # FIXME set 'other' optional? removed?
-    @profile
-    def update(self, other):
-        """Update current physical state with the previous one.
-
-        Arguments:
-            other (PhysicalState): physical model
-        """
-        # primal in two steps to create a new object (and not modified previous values)
-        primal_up = self._primal + other.primal_step
-        self._primal = primal_up
-        self._internVar = other.internVar
-        self._externVar = other.externVar_next
-        self._stress = other.stress
-        self._time += other.time_step
+        self._primal = self.createPrimal(phys_pb, 0.0)
+        self._primal_step = None
+        self._stress = self.createStress(phys_pb, 0.0)
+        self._internVar = self.createInternalVariablesNext(phys_pb, 0.0)
+        self._externVar = None
+        self._externVar_next = None
 
     def as_dict(self):
         """Returns the fields as a dict.
@@ -268,23 +294,16 @@ class PhysicalState(BaseFeature):
         quantity, fld_type = self._primal.getPhysicalQuantity().split("_")
         return {"SIEF_ELGA": self._stress, "VARI_ELGA": self.internVar, quantity: self._primal}
 
-    def debugPrint(self):
-        if len(self._primal.getName()) > 8:
-            IMPR_CO(CHAINE=self._primal.getName() + ".VALE", NIVEAU=-1, UNITE=6)
-        else:
-            IMPR_CO(CONCEPT=_F(NOM=self._primal), NIVEAU=-1, UNITE=6)
+    def debugPrint(self, label=""):
+        print(f"*** {label}Physical State at", self._time, flush=True)
+        values = self._primal.getValues()
+        print("* primal     ", sum(values) / len(values), flush=True)
         if self._primal_step:
-            if len(self._primal_step.getName()) > 8:
-                IMPR_CO(CHAINE=self._primal_step.getName() + ".VALE", NIVEAU=-1, UNITE=6)
-            else:
-                IMPR_CO(CONCEPT=_F(NOM=self._primal_step), NIVEAU=-1, UNITE=6)
+            values = self._primal_step.getValues()
+            print("* primal_step", sum(values) / len(values), flush=True)
         if self._stress:
-            if len(self._stress.getName()) > 8:
-                IMPR_CO(CHAINE=self._stress.getName() + ".CELV", NIVEAU=-1, UNITE=6)
-            else:
-                IMPR_CO(CONCEPT=_F(NOM=self._stress), NIVEAU=-1, UNITE=6)
+            values = self._stress.getValues()
+            print("* stress     ", sum(values) / len(values), flush=True)
         if self._internVar:
-            if len(self._internVar.getName()) > 8:
-                IMPR_CO(CHAINE=self._internVar.getName() + ".CELV", NIVEAU=-1, UNITE=6)
-            else:
-                IMPR_CO(CONCEPT=_F(NOM=self._internVar), NIVEAU=-1, UNITE=6)
+            values = self._internVar.getValues()
+            print("* internVar  ", sum(values) / len(values), flush=True)

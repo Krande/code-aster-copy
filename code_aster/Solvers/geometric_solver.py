@@ -85,7 +85,6 @@ class GeometricSolver(SolverFeature):
             convManager (ConvergenceManager): Object that manages the
                 convergency criteria.
         """
-
         convManager.evalGeometricResidual(primal_incr)
         self.phys_state.primal_step += primal_incr
 
@@ -152,6 +151,7 @@ class GeometricSolver(SolverFeature):
 
             # Update
             self.update(primal_incr, internVar, sigma, convManager)
+            # self.phys_state.debugPrint("<iter+> ")
 
             if self.current_incr > 0:
                 self.logManager.printConvTableRow(

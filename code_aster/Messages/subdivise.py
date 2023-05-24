@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -57,6 +57,14 @@ cata_msg = {
     51: _(""" <Action> On découpe le pas de temps."""),
     52: _(""" <Action> On ne découpe pas le pas de temps."""),
     53: _(""" <Action><Échec> Le pas de temps est devenu trop petit: %(r1)19.12e"""),
+    54: _(
+        """
+Le pas de temps est devenu plus petit que la précision de la liste d'instant.
+- Diminuer la valeur de INCREMENT/PRECISION pour le découpage soit cohérent avec cette valeur.
+- Pour sélectionner un instant dans le résultat, il faudra probablement utiliser une précision
+  équivalente pour éviter la confusion entre deux instants successifs.
+"""
+    ),
     99: _(
         """Avec PREDICTION = 'DEPL_CALCULE', la subdivision du pas de temps n'est pas autorisée. """
     ),

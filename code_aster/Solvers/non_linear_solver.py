@@ -17,6 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+from ..Messages import MessageLog
 from ..Objects import NonLinearResult
 from ..Supervis import ConvergenceError, IntegrationError
 from ..Utilities import logger, no_new_attributes, profile
@@ -174,6 +175,11 @@ class NonLinearSolver(SolverFeature):
         while not self.hasFinished():
             timeEndStep = self.stepper.getCurrent()
             self.phys_state.time_step = timeEndStep - self.phys_state.time
+            logger.info(
+                MessageLog.GetText(
+                    "I", "MECANONLINE6_1", valr=timeEndStep, vali=self.stepper.splitting_level
+                )
+            )
 
             if self.phys_pb.getMaterialField().hasExternalStateVariable():
                 self.phys_state.externVar_next = self.phys_pb.getExternalStateVariables(timeEndStep)
@@ -182,6 +188,8 @@ class NonLinearSolver(SolverFeature):
             if (self.step_rank + 1) % matr_update_step:
                 solv.current_matrix = self.current_matrix
 
+            self.phys_state.debugPrint("<t-> ")
+            self.phys_state.stash()
             try:
                 solv.solve()
             except (ConvergenceError, IntegrationError) as exc:
@@ -190,8 +198,10 @@ class NonLinearSolver(SolverFeature):
             else:
                 # DELTA_GRANDEUR, COLLISION, INTERPENETRATION, INSTABILITE (post_hook ?)
                 if not self.stepper.check_event(self.phys_state):
+                    # + reset current_matrix to None (REAC_INCR)
+                    self.phys_state.revert()
                     continue
-                self.phys_state.update(self.phys_state)
+                self.phys_state.commit()
                 self._storeRank(timeEndStep)
                 self.stepper.completed()
                 self.current_matrix = solv.current_matrix

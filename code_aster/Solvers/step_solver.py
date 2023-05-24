@@ -132,7 +132,7 @@ class StepSolver(SolverFeature):
         """
         convManager = self.get_feature(SOP.ConvergenceManager)
         logManager = self.createLoggingManager()
-        logManager.printIntro(self.phys_state.time + self.phys_state.time_step, 1)
+        # logManager.printIntro(self.phys_state.time + self.phys_state.time_step, 1)
         logManager.printConvTableEntries()
 
         self.geom = self.phys_pb.getMesh().getCoordinates() + self.phys_state.primal
