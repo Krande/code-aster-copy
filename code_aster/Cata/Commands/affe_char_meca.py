@@ -100,6 +100,7 @@ AFFE_CHAR_MECA = OPER(
         ),
         PRESENT_PRESENT("EFFE_FOND", "PRES_REP"),
     ),
+    VERI_AFFE=SIMP(statut="f", typ="TXM", defaut="OUI", into=("OUI", "NON")),
     VERI_NORM=SIMP(statut="f", typ="TXM", defaut="OUI", into=("OUI", "NON")),
     MODELE=SIMP(statut="o", typ=(modele_sdaster)),
     EVOL_CHAR=SIMP(

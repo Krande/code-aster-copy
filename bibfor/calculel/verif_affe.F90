@@ -26,6 +26,7 @@ subroutine verif_affe(modele, sd, non_lin)
 #include "asterc/getres.h"
 #include "asterfort/gettco.h"
 #include "asterc/indik8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/exisd.h"
 #include "asterfort/assert.h"
 #include "asterfort/verif_affe_carte.h"
@@ -47,6 +48,7 @@ subroutine verif_affe(modele, sd, non_lin)
 !
 !-----------------------------------------------------------------------
     character(len=8) :: sd_, modele_
+    character(len=16) :: verif
     character(len=19) :: carte, ligrmo
     character(len=24) :: typres
     character(len=80) :: comment
@@ -59,11 +61,15 @@ subroutine verif_affe(modele, sd, non_lin)
 !
     call jemarq()
 
+    verif = 'OUI'
+    call getvtx(' ', 'VERI_AFFE', scal=verif, nbret=n1)
+    if (verif .eq. 'NON') goto 999
+
 !   -- cartes des sd_char_meca :
 !   -----------------------------
     l_cart_char_meca = (/ &
-                  'EFOND', 'EPSIN', 'F1D1D', 'F1D2D', 'F1D3D', 'F2D2D', 'F2D3D', 'F3D3D', 'FCO2D', &
-                       'FCO3D', 'FELEC', 'FLUX ', 'FORNO', 'IMPE ', 'ONDE ', 'ONDPL', &
+                       'EFOND', 'EPSIN', 'F1D1D', 'F1D2D', 'F1D3D', 'F2D2D', 'F2D3D', 'F3D3D', &
+                       'FCO2D', 'FCO3D', 'FELEC', 'FLUX ', 'FORNO', 'IMPE ', 'ONDE ', 'ONDPL', &
                        'ONDPR', 'PESAN', 'PREFF', 'PRESS', 'ROTAT', 'SIGIN', 'SIINT', 'VFACE'/)
 
     l_comm_char_meca = ' '
@@ -72,8 +78,8 @@ subroutine verif_affe(modele, sd, non_lin)
 !   -- cartes des sd_char_ther :
 !   -----------------------------
     l_cart_char_ther = (/ &
-         'SOURE', 'COEFH', 'FLUNL', 'SOUNL', 'FLUR2', 'FLURE', 'GRAIN', 'HECHP', 'RAYO ', 'T_EXT', &
-                       'SOURC'/)
+                       'SOURE', 'COEFH', 'FLUNL', 'SOUNL', 'FLUR2', 'FLURE', 'GRAIN', 'HECHP', &
+                       'RAYO ', 'T_EXT', 'SOURC'/)
 
     l_comm_char_ther = ' '
     l_comm_char_ther(1) = 'Chargement provenant du mot cle SOURCE'
@@ -81,8 +87,9 @@ subroutine verif_affe(modele, sd, non_lin)
 !   -- cartes des sd_cara_elem :
 !   -----------------------------
     l_cart_cara_elem = (/ &
-               'CARGENBA', 'CARMASSI', 'CARCABLE', 'CARCOQUE', 'CARDISCK', 'CARARCPO', 'CARGENPO', &
-                'CARDISCM', 'CARORIEN', 'CARDISCA', 'CVENTCXF', 'CARPOUFL', 'CARGEOPO', 'CARDINFO'/)
+                       'CARGENBA', 'CARMASSI', 'CARCABLE', 'CARCOQUE', 'CARDISCK', 'CARARCPO', &
+                       'CARGENPO', 'CARDISCM', 'CARORIEN', 'CARDISCA', 'CVENTCXF', 'CARPOUFL', &
+                       'CARGEOPO', 'CARDINFO'/)
 
     l_comm_cara_elem = ' '
     l_comm_cara_elem(1) = 'Caracteristiques provenant du mot cle BARRE'
@@ -146,6 +153,8 @@ subroutine verif_affe(modele, sd, non_lin)
         end if
 
     end if
+
+999 continue
 
     call jedema()
 end subroutine
