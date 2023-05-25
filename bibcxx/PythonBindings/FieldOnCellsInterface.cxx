@@ -35,10 +35,13 @@ void exportFieldOnCellsToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< FieldOnCellsReal > ) )
         .def( py::init( &initFactoryPtr< FieldOnCellsReal, std::string > ) )
         .def( py::init( &initFactoryPtr< FieldOnCellsReal, ModelPtr > ) )
-        .def( py::init(
-            &initFactoryPtr< FieldOnCellsReal, ModelPtr, BehaviourPropertyPtr, std::string > ) )
-        .def( py::init( &initFactoryPtr< FieldOnCellsReal, ModelPtr, BehaviourPropertyPtr,
-                                         std::string, ElementaryCharacteristicsPtr > ) )
+        .def( py::init( &initFactoryPtr< FieldOnCellsReal, ModelPtr, std::string, std::string > ) )
+        .def( py::init( &initFactoryPtr< FieldOnCellsReal, ModelPtr, std::string, std::string,
+                                         BehaviourPropertyPtr, ElementaryCharacteristicsPtr > ) )
+        .def( py::init( &initFactoryPtr< FieldOnCellsReal, ModelPtr, std::string, std::string,
+                                         BehaviourPropertyPtr > ) )
+        .def( py::init( &initFactoryPtr< FieldOnCellsReal, ModelPtr, std::string, std::string,
+                                         ElementaryCharacteristicsPtr > ) )
         .def( py::init( &initFactoryPtr< FieldOnCellsReal, const FieldOnCellsReal & > ) )
         .def( "duplicate", &FieldOnCellsReal::duplicate, R"(
             Return a duplicated FieldOnCellsReal as a copy
@@ -166,7 +169,22 @@ void exportFieldOnCellsToPython( py::module_ &mod ) {
             Returns:
                 float: dot product
             )",
-              py::arg( "other" ) );
+              py::arg( "other" ) )
+        .def( "restrict", &FieldOnCellsReal::restrict,
+              R"(
+            Return a new field restricted to the list of components and groups of cells given
+
+            Arguments:
+                cmps[list[str]]: filter on list of components
+                If empty, all components are used used
+                groupsOfCells[list[str]]: filter on list of groups of cells (default=" ").
+                If empty, the full mesh is used
+
+            Returns:
+                FieldOnCellsReal: field restricted.
+            )",
+              py::arg( "cmps" ) = VectorString(), py::arg( "groupsOfCells" ) = VectorString() );
+    ;
 
     py::class_< FieldOnCellsComplex, FieldOnCellsComplexPtr, DataField >( mod,
                                                                           "FieldOnCellsComplex" )

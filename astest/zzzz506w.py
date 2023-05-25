@@ -58,15 +58,13 @@ disp_incr.setValues(value)
 
 # Create stress field
 value = 0.0
-stress = code_aster.FieldOnCellsReal(
-    phys_pb.getModel(), phys_pb.getBehaviourProperty(), "ELGA_SIEF_R"
-)
+stress = code_aster.FieldOnCellsReal(phys_pb.getModel(), "ELGA", "SIEF_R")
 stress.setValues(value)
 
 # Create internal state variable field
 value = 0.0
 internVar = code_aster.FieldOnCellsReal(
-    phys_pb.getModel(), phys_pb.getBehaviourProperty(), "ELGA_VARI_R"
+    phys_pb.getModel(), "ELGA", "VARI_R", phys_pb.getBehaviourProperty()
 )
 internVar.setValues(value)
 

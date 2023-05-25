@@ -28,66 +28,52 @@
 // explicit declaration
 template <>
 FieldOnCells< ASTERDOUBLE >::FieldOnCells( const FiniteElementDescriptorPtr FEDesc,
+                                           const std::string &loc, const std::string &quantity,
                                            const BehaviourPropertyPtr behaviour,
-                                           const std::string &typcham,
                                            const ElementaryCharacteristicsPtr carael )
     : FieldOnCells< ASTERDOUBLE >() {
     std::string inName = getName();
-    std::string carele = " ";
-    std::string test;
     std::string option;
     std::string nompar;
-    test = typcham;
-    test.resize( 4 );
 
-    if ( test == "ELGA" ) {
+    if ( loc == "ELGA" ) {
         option = "TOU_INI_ELGA";
-    } else if ( test == "ELNO" ) {
+    } else if ( loc == "ELNO" ) {
         option = "TOU_INI_ELNO";
     } else {
         AS_ASSERT( false )
     };
-    if ( typcham == test + "_SIEF_R" ) {
+
+    if ( quantity == "SIEF_R" ) {
         nompar = "PSIEF_R";
-    } else if ( typcham == test + "_VARI_R" ) {
+    } else if ( quantity == "VARI_R" ) {
         nompar = "PVARI_R";
     } else {
         AS_ASSERT( false )
     };
 
-    if ( carael )
-        carele = carael->getName();
-
     ASTERINTEGER iret = 0;
 
     setDescription( FEDesc );
 
-    _DCEL = std::make_shared< SimpleFieldOnCellsLong >( inName );
+    std::string dcel = " ";
 
-    std::string comporName = " ";
     if ( behaviour ) {
         auto compor = behaviour->getBehaviourField();
-        comporName = compor->getName();
+        const auto comporName = compor->getName();
+
+        std::string carele = " ";
+
+        if ( carael )
+            carele = carael->getName();
+
+        _DCEL = std::make_shared< SimpleFieldOnCellsLong >( inName );
+        CALLO_CESVAR( carele, comporName, _dofDescription->getName(), _DCEL->getName() );
+        dcel = _DCEL->getName();
     }
 
-    CALLO_CESVAR( carele, comporName, _dofDescription->getName(), _DCEL->getName() );
     CALLO_ALCHML( _dofDescription->getName(), option, nompar, JeveuxMemoryTypesNames[Permanent],
-                  getName(), &iret, _DCEL->getName() );
-    AS_ASSERT( iret == 0 );
-
-    updateValuePointers();
-};
-
-template <>
-FieldOnCells< ASTERDOUBLE >::FieldOnCells( const FiniteElementDescriptorPtr FEDesc,
-                                           const std::string option, const std::string paraName )
-    : FieldOnCells< ASTERDOUBLE >() {
-    ASTERINTEGER iret = 0;
-    std::string extended = " ";
-
-    setDescription( FEDesc );
-    CALLO_ALCHML( _dofDescription->getName(), option, paraName, JeveuxMemoryTypesNames[Permanent],
-                  getName(), &iret, extended );
+                  getName(), &iret, dcel );
     AS_ASSERT( iret == 0 );
 
     updateValuePointers();

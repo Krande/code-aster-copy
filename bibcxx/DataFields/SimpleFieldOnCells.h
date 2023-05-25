@@ -28,10 +28,19 @@
 
 #include "astercxx.h"
 
+#include "aster_fort_ds.h"
+
 #include "DataFields/DataField.h"
+#include "DataFields/FieldOnCells.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "MemoryManager/NumpyAccess.h"
+#include "Modeling/FiniteElementDescriptor.h"
+#include "Supervis/Exceptions.h"
 #include "Utilities/Tools.h"
+
+// Forward declaration
+template < typename >
+class FieldOnCells;
 
 /**
  * @class SimpleFieldOnCells
@@ -51,6 +60,8 @@ class SimpleFieldOnCells : public DataField {
     JeveuxVector< ValueType > _values;
     /** @brief Vecteur Jeveux '.CESL' */
     JeveuxVectorLogical _allocated;
+    /** @brief Mesh */
+    BaseMeshPtr _mesh;
     /** @brief Nombre de éléments */
     ASTERINTEGER _nbCells;
     /** @brief Nombre de composantes */
@@ -60,10 +71,22 @@ class SimpleFieldOnCells : public DataField {
     /** @brief Number of subpoints */
     ASTERINTEGER _nbSpt;
 
+    std::map< std::string, ASTERINTEGER > _name2Index;
+
     /**
      * Some unsafe functions to access values without checking dimension
      * Their public version add an if statement
      */
+
+    void _buildComponentsName2Index() {
+        if ( _name2Index.empty() ) {
+
+            auto nbCmp = this->getNumberOfComponents();
+            for ( ASTERINTEGER i = 0; i < nbCmp; i++ ) {
+                _name2Index[this->getComponent( i )] = i;
+            }
+        }
+    }
 
     ASTERINTEGER _ptCell( const ASTERINTEGER &ima ) const { return ( *_size )[4 + 4 * ima + 1]; }
     ASTERINTEGER _sptCell( const ASTERINTEGER &ima ) const { return ( *_size )[4 + 4 * ima + 2]; }
@@ -182,12 +205,38 @@ class SimpleFieldOnCells : public DataField {
      */
     SimpleFieldOnCells() : SimpleFieldOnCells( DataStructureNaming::getNewName( 19 ) ) {};
 
+    SimpleFieldOnCells( const BaseMeshPtr mesh ) : SimpleFieldOnCells() { _mesh = mesh; };
+
+    SimpleFieldOnCells( const BaseMeshPtr mesh, const std::string &loc, const std::string &quantity,
+                        const VectorString &comp, const ASTERINTEGER &nbPG,
+                        const ASTERINTEGER &nbSP, bool zero = false )
+        : SimpleFieldOnCells( mesh ) {
+        const ASTERINTEGER nbComp = comp.size();
+        const std::string base = "G";
+
+        char *tabNames = vectorStringAsFStrArray( comp, 8 );
+
+        CALL_CESCRE_WRAP( base.c_str(), getName().c_str(), loc.c_str(), _mesh->getName().c_str(),
+                          quantity.c_str(), &nbComp, tabNames, &nbPG, &nbSP, &nbComp,
+                          (ASTERLOGICAL *)&zero );
+
+        FreeStr( tabNames );
+
+        build();
+    }
+
+    BaseMeshPtr getMesh() const { return _mesh; };
+
     /**
      * @brief Surcharge de l'operateur []
      * @param i Indice dans le tableau Jeveux
      * @return la valeur du tableau Jeveux a la position i
      */
-    ValueType &operator[]( ASTERINTEGER i ) { return _values->operator[]( i ); };
+    ValueType &operator[]( const ASTERINTEGER &i ) { return _values->operator[]( i ); };
+
+    inline const ValueType &operator[]( const ASTERINTEGER &i ) const {
+        return _values->operator[]( i );
+    };
 
     /**
      * @brief Access to the (icmp) component of the (ima) cell
@@ -316,7 +365,7 @@ class SimpleFieldOnCells : public DataField {
     /**
      * @brief Get field location
      */
-    std::string getFieldLocation() const { return strip( ( *_descriptor )[2].toString() ); }
+    std::string getLocalization() const { return strip( ( *_descriptor )[2].toString() ); }
 
     /**
      * @brief Get cells holding components
@@ -431,18 +480,117 @@ class SimpleFieldOnCells : public DataField {
      * @brief Mise a jour des pointeurs Jeveux
      * @return renvoie true si la mise a jour s'est bien deroulee, false sinon
      */
-    void updateValuePointers() {
+    void updateValuePointers() const {
         _descriptor->updateValuePointer();
         _size->updateValuePointer();
         _component->updateValuePointer();
         _values->updateValuePointer();
         _allocated->updateValuePointer();
+    }
+
+    bool build() {
+        updateValuePointers();
+
+        _buildComponentsName2Index();
+
         _nbCells = ( *_size )[0];
         _nbComp = ( *_size )[1];
         _nbPt = ( *_size )[2];
         _nbSpt = ( *_size )[3];
 
         AS_ASSERT( _values->size() == this->_nbValArray() );
+
+        return true;
+    };
+
+    std::shared_ptr< FieldOnCells< ValueType > >
+    toFieldOnCells( const FiniteElementDescriptorPtr fed, const std::string option = std::string(),
+                    const std::string nompar = std::string() ) const {
+        auto cham_elem = std::make_shared< FieldOnCells< ValueType > >();
+
+        // Convert to CHAM_ELEM
+        const std::string prol0 = "NON", base = "G", kstop = "F";
+        ASTERINTEGER iret = 0, nncp = 0;
+        CALLO_CESCEL( getName(), fed->getName(), option, nompar, prol0, &nncp, base,
+                      cham_elem->getName(), kstop, &iret );
+
+        AS_ASSERT( iret == 0 );
+
+        cham_elem->build( {fed} );
+        cham_elem->updateValuePointers();
+        return cham_elem;
+    }
+
+    // std::shared_ptr< SimpleFieldOnNodes< ValueType > > toSimpleFieldOnNodes() const {
+    //     auto chs = std::make_shared< SimpleFieldOnNodes< ValueType > >( getMesh() );
+
+    //     // Convert to CHAM_NO_S
+    //     const std::string base = "G", kstop = "F";
+    //     ASTERINTEGER iret = 0;
+    //     std::string celpg = " ";
+
+    //     if ( getLocalization() == "ELGA" ) {
+    //         // todo
+    //     }
+
+    //     CALLO_CESCNS( getName(), celpg, base, chs->getName(), kstop, &iret );
+
+    //     AS_ASSERT( iret == 0 );
+
+    //     chs->build();
+    //     return chs;
+    // }
+
+    // std::shared_ptr< FieldOnNodes< ValueType > > toFieldOnNodes() const {
+    //     auto ret0 = toSimpleFieldOnNodes();
+    //     return ret0->toFieldOnNodes();
+    // }
+
+    SimpleFieldOnCellsPtr restrict( const VectorString &cmps = {},
+                                    const VectorString &groupsOfCells = {} ) const {
+
+        this->updateValuePointers();
+
+        VectorString list_cmp;
+        auto list_cmp_in = this->getComponents();
+        if ( cmps.empty() ) {
+            list_cmp = list_cmp_in;
+        } else {
+            auto set_cmps = toSet( cmps );
+
+            for ( auto &cmp : list_cmp_in ) {
+                if ( set_cmps.count( cmp ) > 0 ) {
+                    list_cmp.push_back( cmp );
+                }
+            }
+        }
+
+        if ( list_cmp.empty() ) {
+            raiseAsterError( "Restriction on list of components is empty" );
+        }
+
+        auto ret = std::make_shared< SimpleFieldOnCells< ValueType > >( getMesh() );
+
+        VectorLong cells = _mesh->getCells( groupsOfCells );
+        for ( auto &cell : cells ) {
+            cell += 1;
+        }
+
+        if ( cells.empty() ) {
+            raiseAsterError( "Restriction on list of cells is empty" );
+        }
+
+        char *tabNames = vectorStringAsFStrArray( list_cmp, 8 );
+        ASTERINTEGER nbCells = cells.size(), nbCmp = list_cmp.size();
+        const std::string base = "G";
+
+        CALL_CESRED_WRAP( getName().c_str(), &nbCells, cells.data(), &nbCmp, tabNames, base.c_str(),
+                          ret->getName().c_str() );
+
+        FreeStr( tabNames );
+
+        ret->build();
+        return ret;
     };
 };
 

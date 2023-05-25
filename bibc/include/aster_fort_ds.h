@@ -39,6 +39,34 @@ void DEFSSSS( ALCART, alcart, const char *, STRING_SIZE, const char *, STRING_SI
 void DEFSSS( CELCES_WRAP, celces_wrap, const char *, STRING_SIZE, const char *, STRING_SIZE,
              const char *, STRING_SIZE );
 
+#define CALLO_CESCEL( a, b, c, d, e, f, g, h, i, j )                                               \
+    CALLOOOOOPOOOP( CESCEL, cescel, a, b, c, d, e, f, g, h, i, j )
+void DEFSSSSSPSSSP( CESCEL, cescel, const char *, STRING_SIZE, const char *, STRING_SIZE,
+                    const char *, STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE,
+                    ASTERINTEGER *, const char *, STRING_SIZE, const char *, STRING_SIZE,
+                    const char *, STRING_SIZE, ASTERINTEGER * );
+
+#define CALLO_CESCNS( a, b, c, d, e, f ) CALLOOOOOP( CESCNS, cescns, a, b, c, d, e, f )
+void DEFSSSSSP( CESCNS, cescns, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
+                STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE, ASTERINTEGER * );
+
+#define CALL_CESCRE_WRAP( a, b, c, d, e, f, g, h, i, j, k )                                        \
+    CALLSSSSSPSPPPP( CESCRE_WRAP, cescre_wrap, a, b, c, d, e, f, g, h, i, j, k )
+#define CALLO_CESCRE_WRAP( a, b, c, d, e, f, g, h, i, j, k )                                       \
+    CALLOOOOOPOPPPP( CESCRE_WRAP, cescre_wrap, a, b, c, d, e, f, g, h, i, j, k )
+void DEFSSSSSPSPPPP( CESCRE_WRAP, cescre_wrap, const char *, STRING_SIZE, const char *, STRING_SIZE,
+                     const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
+                     STRING_SIZE, ASTERINTEGER *, const char *, STRING_SIZE, ASTERINTEGER *,
+                     ASTERINTEGER *, ASTERINTEGER *, ASTERLOGICAL * );
+
+#define CALL_CESRED_WRAP( a, b, c, d, e, g, h )                                                    \
+    CALLSPPPSSS( CESRED_WRAP, cesred_wrap, a, b, c, d, e, g, h )
+#define CALLO_CESRED_WRAP( a, b, c, d, e, g, h )                                                   \
+    CALLOPPPOOO( CESRED_WRAP, cesred_wrap, a, b, c, d, e, g, h )
+void DEFSPPPSSS( CESRED_WRAP, cesred_wrap, const char *, STRING_SIZE, ASTERINTEGER *,
+                 ASTERINTEGER *, ASTERINTEGER *, const char *, STRING_SIZE, const char *,
+                 STRING_SIZE, const char *, STRING_SIZE );
+
 #define CALLO_CNOCNS_WRAP( a, b, c ) CALLOOO( CNOCNS_WRAP, cnocns_wrap, a, b, c )
 void DEFSSS( CNOCNS_WRAP, cnocns_wrap, const char *, STRING_SIZE, const char *, STRING_SIZE,
              const char *, STRING_SIZE );

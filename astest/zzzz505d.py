@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -61,10 +61,10 @@ study = code_aster.PhysicalProblem(model, mater)
 study.computeBehaviourProperty(COMPORTEMENT=(_F(RELATION="VMIS_ISOT_LINE", TOUT="OUI"),))
 behav = study.getBehaviourProperty()
 # Build testfield with model and compor
-testfield1 = code_aster.FieldOnCellsReal(model, behav, "ELGA_SIEF_R")
+testfield1 = code_aster.FieldOnCellsReal(model, "ELGA", "SIEF_R")
 testfield1.setValues(value)
 
-testfield2 = code_aster.FieldOnCellsReal(model, behav, "ELGA_VARI_R")
+testfield2 = code_aster.FieldOnCellsReal(model, "ELGA", "VARI_R", behav)
 testfield2.setValues(value)
 
 # Test
@@ -73,6 +73,17 @@ test.assertAlmostEqual(len(refe2.getValues()), len(testfield2.getValues()))
 test.assertAlmostEqual(refe1.getValues(), testfield1.getValues())
 test.assertAlmostEqual(refe2.getValues(), testfield2.getValues())
 
+
+sf2 = testfield2.toSimpleFieldOnCells()
+test.assertSequenceEqual(["V1", "V2"], sf2.getComponents())
+test.assertEqual(sf2.getPhysicalQuantity(), "VARI_R")
+test.assertEqual(sf2.getLocalization(), "ELGA")
+
+sfr2 = sf2.restrict(["V1"])
+test.assertSequenceEqual(["V1"], sfr2.getComponents())
+test.assertEqual(sfr2.getPhysicalQuantity(), "VARI_R")
+test.assertEqual(sfr2.getLocalization(), "ELGA")
+test.assertAlmostEqual(sf2.getValue(0, 0, 0, 0), sfr2.getValue(0, 0, 0, 0))
 
 # Test constructeur avec le caraelem
 
@@ -116,11 +127,12 @@ refe1 = CREA_CHAMP(
     ),
 )
 
+
 study = code_aster.PhysicalProblem(MODELE, CHMAT, CAREL)
 
 study.computeBehaviourProperty(COMPORTEMENT=(_F(RELATION="VMIS_ISOT_LINE", TOUT="OUI"),))
 behav = study.getBehaviourProperty()
-testfield1 = code_aster.FieldOnCellsReal(MODELE, behav, "ELGA_SIEF_R", CAREL)
+testfield1 = code_aster.FieldOnCellsReal(MODELE, "ELGA", "SIEF_R", behav, CAREL)
 
 # TEST LENGTH EQUALITY
 test.assertAlmostEqual(len(refe1.getValues()), len(testfield1.getValues()))

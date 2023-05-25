@@ -413,7 +413,7 @@ class SimpleFieldOnNodes : public DataField {
         VectorLong nodes = _mesh->getNodes( groupsOfNodes );
 
         if ( nodes.empty() ) {
-            raiseAsterError( "Restriction on list of ²nodes is empty" );
+            raiseAsterError( "Restriction on list of nodes is empty" );
         }
 
         for ( auto &cmp : list_cmp ) {

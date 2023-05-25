@@ -44,6 +44,9 @@
 class ElementaryCharacteristics;
 using ElementaryCharacteristicsPtr = std::shared_ptr< ElementaryCharacteristics >;
 
+template < typename >
+class SimpleFieldOnCells;
+
 /**
  * @class FieldOnCells
  * @brief Template class for FieldOnCells
@@ -63,7 +66,7 @@ class FieldOnCells : public DataField {
     /** @brief Finite element description */
     FiniteElementDescriptorPtr _dofDescription;
     /** @brief Object for dynamic fields  (as VARI_ELGA) */
-    SimpleFieldOnCellsLongPtr _DCEL;
+    std::shared_ptr< SimpleFieldOnCells< ASTERINTEGER > > _DCEL;
 
   public:
     using FieldOnCellsPtr = std::shared_ptr< FieldOnCells >;
@@ -99,21 +102,22 @@ class FieldOnCells : public DataField {
      * VARI_ELGA)
      * @param typcham Type de champ à calculer
      */
-    FieldOnCells( const FiniteElementDescriptorPtr FEDesc, const BehaviourPropertyPtr behaviour,
-                  const std::string &typcham, const ElementaryCharacteristicsPtr carael = nullptr );
+    FieldOnCells( const FiniteElementDescriptorPtr FEDesc, const std::string &loc,
+                  const std::string &quantity, const BehaviourPropertyPtr behaviour = nullptr,
+                  const ElementaryCharacteristicsPtr carael = nullptr );
 
-    FieldOnCells( const ModelPtr model, const BehaviourPropertyPtr behaviour,
-                  const std::string &typcham, const ElementaryCharacteristicsPtr carael = nullptr )
-        : FieldOnCells( model->getFiniteElementDescriptor(), behaviour, typcham, carael ) {};
+    FieldOnCells( const FiniteElementDescriptorPtr FEDesc, const std::string &loc,
+                  const std::string &quantity, const ElementaryCharacteristicsPtr carael )
+        : FieldOnCells( FEDesc, loc, quantity, nullptr, carael ) {};
 
-    /**
-     * @brief Constructor for empty FieldOnCells based on specific physical quantity
-     */
-    FieldOnCells( const ModelPtr model, const std::string option, const std::string paraName )
-        : FieldOnCells( model->getFiniteElementDescriptor(), option, paraName ) {};
+    FieldOnCells( const ModelPtr model, const std::string &loc, const std::string &quantity,
+                  const BehaviourPropertyPtr behaviour = nullptr,
+                  const ElementaryCharacteristicsPtr carael = nullptr )
+        : FieldOnCells( model->getFiniteElementDescriptor(), loc, quantity, behaviour, carael ) {};
 
-    FieldOnCells( const FiniteElementDescriptorPtr FEDesc, const std::string option,
-                  const std::string paraName );
+    FieldOnCells( const ModelPtr model, const std::string &loc, const std::string &quantity,
+                  const ElementaryCharacteristicsPtr carael )
+        : FieldOnCells( model->getFiniteElementDescriptor(), loc, quantity, nullptr, carael ) {};
 
     /** @brief Copy constructor */
     FieldOnCells( const std::string &name, const FieldOnCells &toCopy ) : FieldOnCells( name ) {
@@ -163,14 +167,25 @@ class FieldOnCells : public DataField {
      * @brief
      * @return
      */
-    SimpleFieldOnCellsValueTypePtr toSimpleFieldOnCells() {
-        SimpleFieldOnCellsValueTypePtr toReturn( new SimpleFieldOnCellsValueType() );
+    SimpleFieldOnCellsValueTypePtr toSimpleFieldOnCells() const {
+        auto toReturn = std::make_shared< SimpleFieldOnCellsValueType >( getMesh() );
         const std::string resultName = toReturn->getName();
         const std::string inName = getName();
         const std::string copyNan( "OUI" );
         CALLO_CELCES_WRAP( inName, JeveuxMemoryTypesNames[Permanent], resultName );
-        toReturn->updateValuePointers();
+        toReturn->build();
         return toReturn;
+    };
+
+    FieldOnCellsPtr restrict( const VectorString &cmps = {},
+                              const VectorString &groupsOfCells = {} ) const {
+
+        auto simpField = this->toSimpleFieldOnCells();
+        auto simpFieldRest = simpField->restrict( cmps, groupsOfCells );
+
+        _reference->updateValuePointer();
+
+        return simpFieldRest->toFieldOnCells( _dofDescription, strip( ( *_reference )[1] ) );
     };
 
     /**
@@ -461,6 +476,12 @@ class FieldOnCells : public DataField {
         CALLO_JENUNO( objName, charName );
 
         return strip( charName.toString() );
+    }
+
+    std::string getLocalization() const {
+        _reference->updateValuePointer();
+
+        return strip( ( *_reference )[2] );
     }
 
     VectorString getComponents() const {

@@ -1957,11 +1957,15 @@ class FieldOnCellsReal(DataField):
 
         3. __init__(self: libaster.FieldOnCellsReal, arg0: Model) -> None
 
-        4. __init__(self: libaster.FieldOnCellsReal, arg0: Model, arg1: BehaviourProperty, arg2: str) -> None
+        4. __init__(self: libaster.FieldOnCellsReal, arg0: Model, arg1: str, arg2: str) -> None
 
-        5. __init__(self: libaster.FieldOnCellsReal, arg0: Model, arg1: BehaviourProperty, arg2: str, arg3: libaster.ElementaryCharacteristics) -> None
+        5. __init__(self: libaster.FieldOnCellsReal, arg0: Model, arg1: str, arg2: str, arg3: BehaviourProperty, arg4: libaster.ElementaryCharacteristics) -> None
 
-        6. __init__(self: libaster.FieldOnCellsReal, arg0: libaster.FieldOnCellsReal) -> None
+        6. __init__(self: libaster.FieldOnCellsReal, arg0: Model, arg1: str, arg2: str, arg3: BehaviourProperty) -> None
+
+        7. __init__(self: libaster.FieldOnCellsReal, arg0: Model, arg1: str, arg2: str, arg3: libaster.ElementaryCharacteristics) -> None
+
+        8. __init__(self: libaster.FieldOnCellsReal, arg0: libaster.FieldOnCellsReal) -> None
         """
 
     def __isub__(self, arg0):
@@ -2082,6 +2086,19 @@ class FieldOnCellsReal(DataField):
 
         Returns:
             bool: *True* if succeeds, *False* otherwise.
+        """
+
+    def restrict(self, cmps=[], groupsOfCells=[]):
+        """Return a new field restricted to the list of components and groups of cells given
+
+        Arguments:
+            cmps[list[str]]: filter on list of components
+            If empty, all components are used used
+            groupsOfCells[list[str]]: filter on list of groups of cells (default=" ").
+            If empty, the full mesh is used
+
+        Returns:
+            FieldOnCellsReal: field restricted.
         """
 
     def setDescription(self, arg0):
@@ -3071,7 +3088,7 @@ class SimpleFieldOnCellsReal(DataField):
     def getComponents(self):
         pass
 
-    def getFieldLocation(self):
+    def getLocalization(self):
         pass
 
     def getMaxNumberOfPoints(self):
@@ -3139,6 +3156,22 @@ class SimpleFieldOnCellsReal(DataField):
             values[list[double],
             tuple[cells[list[int]], points[list[int]], subpoints[list[int]]]
         """
+
+    def restrict(self, cmps=[], groupsOfCells=[]):
+        """Return a new field restricted to the list of components and groups of cells given
+
+        Arguments:
+            cmps[list[str]]: filter on list of components
+            If empty, all components are used used
+            groupsOfCells[list[str]]: filter on list of groups of cells (default=" ").
+            If empty, the full mesh is used
+
+        Returns:
+            SimpleFieldOnCellsReal: field restricted.
+        """
+
+    def toFieldOnCells(self, arg0, arg1, arg2):
+        pass
 
     def updateValuePointers(self):
         pass
@@ -3223,7 +3256,7 @@ class SimpleFieldOnNodesReal(DataField):
             If empty, the full mesh is used
 
         Returns:
-            FieldOnNodesReal: field restricted.
+            SimpleFieldOnNodesReal: field restricted.
         """
 
     def toFieldOnNodes(self):
@@ -13470,6 +13503,17 @@ class HHO:
     def __init__(self, arg0):
         pass
 
+    def getMicroDamageTerms(self, arg0, arg1, arg2):
+        """Compute terms for micro-damage.
+
+        Arguments:
+
+        Returns:
+              FieldOnNodesReal: micro-damage field (HHO)
+              FieldOnNodesReal: micro-damage forces
+              AssemblyMatrixTemperatureReal: micro-damage matrix
+        """
+
     def projectOnHHOCellSpace(self, *args, **kwargs):
         """Overloaded function.
 
@@ -13502,19 +13546,6 @@ class HHO:
 
 
         3. projectOnHHOCellSpace(self: libaster.HHO, value: float) -> libaster.FieldOnNodesReal
-
-
-              Project real value to HHO Cell-space
-              Cell space is the restriction of HHO-space to cells only
-
-              Arguments:
-                    value (float): value to project
-
-              Returns:
-                    FieldOnNodesReal: HHO field
-
-
-        4. projectOnHHOCellSpace(self: libaster.HHO, value: List[float]) -> libaster.FieldOnNodesReal
 
 
               Project real value to HHO Cell-space

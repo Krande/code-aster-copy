@@ -167,12 +167,13 @@ class PhysicalState(BaseFeature):
         return field
 
     @profile
-    def createFieldOnCells(self, phys_pb, type, value):
+    def createFieldOnCells(self, phys_pb, localization, quantity, value):
         """Create a field with a given value
 
         Arguments:
             phys_pb (PhysicalProblem): Physical problem
-            type (str): type of the field to create
+            localization (str): localization of the field to create (ELNO, ELEM, ELGA)
+            quantity (str): type of the field to create (ex: SIEF_R, ...)
             value (float): value to set everywhere
 
         Returns:
@@ -181,8 +182,9 @@ class PhysicalState(BaseFeature):
         assert phys_pb.getBehaviourProperty(), "unexpected empty BehaviourProperty"
         field = FieldOnCellsReal(
             phys_pb.getModel(),
+            localization,
+            quantity,
             phys_pb.getBehaviourProperty(),
-            type,
             phys_pb.getElementaryCharacteristics(),
         )
         field.setValues(value)
@@ -199,7 +201,7 @@ class PhysicalState(BaseFeature):
         Returns:
             FieldOnCells: Stress field with a given value (SIEF_ELGA)
         """
-        return self.createFieldOnCells(phys_pb, "ELGA_SIEF_R", value)
+        return self.createFieldOnCells(phys_pb, "ELGA", "SIEF_R", value)
 
     @profile
     def createInternalVariablesNext(self, phys_pb, value):
@@ -212,7 +214,7 @@ class PhysicalState(BaseFeature):
         Returns:
             FieldOnCells: internal state variables field with a given value (VARI_ELGA)
         """
-        return self.createFieldOnCells(phys_pb, "ELGA_VARI_R", value)
+        return self.createFieldOnCells(phys_pb, "ELGA", "VARI_R", value)
 
     @profile
     def createTimeField(self, phys_pb, value):

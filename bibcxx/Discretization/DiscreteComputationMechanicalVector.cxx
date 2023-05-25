@@ -69,8 +69,8 @@ DiscreteComputation::getInternalForces( const FieldOnNodesRealPtr displ,
     calcul->addInputField( "PVARIMR", internVar );
 
     // Provisoire: pour TANGENTE=VERIFICATION, nécessité de variables internes à chaque itération
-    FieldOnCellsRealPtr vari_iter =
-        std::make_shared< FieldOnCellsReal >( FEDesc, currBehaviour, "ELGA_VARI_R", currElemChara );
+    FieldOnCellsRealPtr vari_iter = std::make_shared< FieldOnCellsReal >(
+        FEDesc, "ELGA", "VARI_R", currBehaviour, currElemChara );
     calcul->addInputField( "PVARIMP", vari_iter );
 
     // Create output vector
@@ -81,10 +81,10 @@ DiscreteComputation::getInternalForces( const FieldOnNodesRealPtr displ,
 
     // Create output fields
     FieldOnCellsRealPtr stress_curr =
-        std::make_shared< FieldOnCellsReal >( FEDesc, nullptr, "ELGA_SIEF_R", currElemChara );
+        std::make_shared< FieldOnCellsReal >( FEDesc, "ELGA", "SIEF_R", currElemChara );
     FieldOnCellsLongPtr exitField = std::make_shared< FieldOnCellsLong >( FEDesc );
-    FieldOnCellsRealPtr vari_curr =
-        std::make_shared< FieldOnCellsReal >( FEDesc, currBehaviour, "ELGA_VARI_R", currElemChara );
+    FieldOnCellsRealPtr vari_curr = std::make_shared< FieldOnCellsReal >(
+        FEDesc, "ELGA", "VARI_R", currBehaviour, currElemChara );
 
     // Add output fields
     calcul->addOutputField( "PVARIPR", vari_curr );

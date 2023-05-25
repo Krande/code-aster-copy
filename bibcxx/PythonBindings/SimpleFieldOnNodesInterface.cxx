@@ -63,7 +63,7 @@ void exportSimpleFieldOnNodesToPython( py::module_ &mod ) {
                 If empty, the full mesh is used
 
             Returns:
-                FieldOnNodesReal: field restricted.
+                SimpleFieldOnNodesReal: field restricted.
             )",
               py::arg( "cmps" ) = VectorString(), py::arg( "groupsOfNodes" ) = VectorString() )
         .def( "getValues", &SimpleFieldOnNodesReal::getValues, R"(

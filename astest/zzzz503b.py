@@ -66,7 +66,7 @@ sfon = fieldOnElem.toSimpleFieldOnCells()
 
 test.assertAlmostEqual(sfon.getValue(0, 0, 0, 0), -325.03920740223253)
 test.assertIn(sfon.getPhysicalQuantity(), ("SIEF_R",))
-test.assertIn(sfon.getFieldLocation(), ("ELGA",))
+test.assertIn(sfon.getLocalization(), ("ELGA",))
 test.assertSequenceEqual(sfon.getComponents(), ["SIXX", "SIYY", "SIZZ", "SIXZ"])
 test.assertEqual(sfon.getMaxNumberOfPoints(), 4)
 test.assertEqual(sfon.getNumberOfPointsOfCell(0), 4)

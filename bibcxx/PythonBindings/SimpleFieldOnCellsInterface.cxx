@@ -95,6 +95,23 @@ Returns:
         .def( "getNumberOfComponentsForSubpointsOfCell",
               &SimpleFieldOnCellsReal::getNumberOfComponentsForSubpointsOfCell )
         .def( "getPhysicalQuantity", &SimpleFieldOnCellsReal::getPhysicalQuantity )
-        .def( "getFieldLocation", &SimpleFieldOnCellsReal::getFieldLocation )
-        .def( "updateValuePointers", &SimpleFieldOnCellsReal::updateValuePointers );
+        .def( "getLocalization", &SimpleFieldOnCellsReal::getLocalization )
+        .def( "updateValuePointers", &SimpleFieldOnCellsReal::updateValuePointers )
+        .def( "toFieldOnCells", &SimpleFieldOnCellsReal::toFieldOnCells )
+        // .def( "toFieldOnNodes", &SimpleFieldOnCellsReal::toFieldOnNodes )
+        // .def( "toSimpleFieldOnNodes", &SimpleFieldOnCellsReal::toSimpleFieldOnNodes )
+        .def( "restrict", &SimpleFieldOnCellsReal::restrict,
+              R"(
+            Return a new field restricted to the list of components and groups of cells given
+
+            Arguments:
+                cmps[list[str]]: filter on list of components
+                If empty, all components are used used
+                groupsOfCells[list[str]]: filter on list of groups of cells (default=" ").
+                If empty, the full mesh is used
+
+            Returns:
+                SimpleFieldOnCellsReal: field restricted.
+            )",
+              py::arg( "cmps" ) = VectorString(), py::arg( "groupsOfCells" ) = VectorString() );
 };
