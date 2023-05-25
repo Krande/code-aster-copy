@@ -17,16 +17,17 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from .solver_features import SolverFeature
-from .solver_features import SolverOptions as SOP
 from ..Supervis import ConvergenceError
 from ..Utilities import no_new_attributes, profile
+from .base_features import EventSource
+from .solver_features import SolverFeature
+from .solver_features import SolverOptions as SOP
 
 
-class GeometricSolver(SolverFeature):
+class GeometricSolver(SolverFeature, EventSource):
     """Solves a step, loops on iterations."""
 
-    provide = SOP.ConvergenceCriteria
+    provide = SOP.ConvergenceCriteria | SOP.EventSource
     required_features = [
         SOP.PhysicalProblem,
         SOP.PhysicalState,
@@ -38,16 +39,32 @@ class GeometricSolver(SolverFeature):
     matr_update_incr = prediction = None
     param = logManager = None
     current_incr = current_matrix = None
+    _data = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
     def __init__(self):
         super().__init__()
+        self._data = {}
 
     def initialize(self):
         """Initialize the object for the next step."""
         self.check_features()
         self.current_incr = 0
         self.current_matrix = None
+
+    def notify(self, convManager):
+        """Notify all observers about the convergence.
+
+        Arguments:
+            convManager (ConvergenceManager): Object that holds the criteria values.
+        """
+        self._data = convManager.values.copy()
+        self._data["hasConverged"] = convManager.hasConverged()
+        super().notify()
+
+    def get_state(self):
+        """Returns the current residuals to be shared with observers."""
+        return SOP.ConvergenceCriteria, self._data
 
     @property
     def contact_manager(self):
@@ -151,6 +168,7 @@ class GeometricSolver(SolverFeature):
 
             # Update
             self.update(primal_incr, internVar, sigma, convManager)
+            convManager.setIteration(self.current_incr)
             # self.phys_state.debugPrint("<iter+> ")
 
             if self.current_incr > 0:
@@ -166,6 +184,7 @@ class GeometricSolver(SolverFeature):
 
             self.current_incr += 1
             matrix_pred = matrix_type
+            self.notify(convManager)
 
         if not convManager.hasConverged():
             raise ConvergenceError("MECANONLINE9_7")

@@ -20,7 +20,7 @@
 from ..Messages import MessageLog
 from ..Objects import NonLinearResult
 from ..Supervis import ConvergenceError, IntegrationError
-from ..Utilities import logger, no_new_attributes, profile
+from ..Utilities import DEBUG, logger, no_new_attributes, profile
 from .solver_features import SolverFeature
 from .solver_features import SolverOptions as SOP
 
@@ -123,7 +123,10 @@ class NonLinearSolver(SolverFeature):
         self.step_rank = 0
         self._storeRank(self.phys_state.time)
         # register observers
-        self.get_childs(SOP.IncrementalSolver)[0].add_observer(self.stepper)
+        for source in self.get_childs(SOP.IncrementalSolver | SOP.EventSource):
+            source.add_observer(self.stepper)
+        for source in self.get_childs(SOP.ConvergenceCriteria | SOP.EventSource):
+            source.add_observer(self.stepper)
 
     @profile
     def setInitialState(self):
@@ -188,7 +191,8 @@ class NonLinearSolver(SolverFeature):
             if (self.step_rank + 1) % matr_update_step:
                 solv.current_matrix = self.current_matrix
 
-            self.phys_state.debugPrint("<t-> ")
+            if logger.getEffectiveLevel() <= DEBUG:
+                self.phys_state.debugPrint("<t-> ")
             self.phys_state.stash()
             try:
                 solv.solve()

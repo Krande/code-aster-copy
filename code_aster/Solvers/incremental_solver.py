@@ -58,7 +58,7 @@ class Residuals:
 class IncrementalSolver(SolverFeature, EventSource):
     """Solve an iteration."""
 
-    provide = SOP.IncrementalSolver
+    provide = SOP.IncrementalSolver | SOP.EventSource
     required_features = [SOP.PhysicalProblem, SOP.PhysicalState, SOP.LinearSolver]
     optional_features = [SOP.Contact, SOP.ConvergenceManager]
 

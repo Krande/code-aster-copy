@@ -174,10 +174,27 @@ class PhysicalState(BaseFeature):
         self._stash = PhysicalState()
         self._stash.copy(self)
 
+    @profile
+    def getIncrement(self):
+        """Return the delta between the previous and the current state.
+
+        The previous state is expected to be found in the stash.
+
+        Returns:
+            dict: Delta between states as returned by py:method:`as_dict`.
+        """
+        quantity, _ = self._primal.getPhysicalQuantity().split("_")
+        return {
+            "SIEF_ELGA": self._stress - self._stash._stress,
+            "VARI_ELGA": self.internVar - self._stash._internVar,
+            quantity: self._primal + self._primal_step - self._stash._primal,
+        }
+
     def revert(self):
         """Revert the object to its previous state."""
         assert self._stash, "stash is empty!"
         self.copy(self._stash)
+        self._stash = None
 
     @profile
     def commit(self):
@@ -291,7 +308,7 @@ class PhysicalState(BaseFeature):
         Returns:
             dict: Dict of fields.
         """
-        quantity, fld_type = self._primal.getPhysicalQuantity().split("_")
+        quantity, _ = self._primal.getPhysicalQuantity().split("_")
         return {"SIEF_ELGA": self._stress, "VARI_ELGA": self.internVar, quantity: self._primal}
 
     def debugPrint(self, label=""):

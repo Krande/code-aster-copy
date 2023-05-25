@@ -599,7 +599,10 @@ def get_program_path(program):
         if osp.isfile(fname):
             with open(fname, "rb") as fcfg:
                 if osp.splitext(fname)[-1] == ".yaml":
-                    prog_cfg = yaml.load(fcfg)
+                    assert (
+                        yaml
+                    ), f"yaml not available, can not use {fname}, please convert it into '.json' instead"
+                    prog_cfg = yaml.load(fcfg, Loader=yaml.Loader)
                 else:
                     prog_cfg = json.load(fcfg)
         get_program_path._cache = prog_cfg

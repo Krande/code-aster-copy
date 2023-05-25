@@ -56,6 +56,8 @@ class SolverOptions(IntFlag):
     ForStep = auto()
     # flag added "for an increment" object
     ForIncr = auto()
+    # flag for notification support
+    EventSource = auto()
 
     # hooks called after a step
     PostStepHook = auto()

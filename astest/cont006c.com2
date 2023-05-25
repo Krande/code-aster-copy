@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,6 +20,7 @@
 import math
 import code_aster
 from code_aster.MacroCommands.defi_cont import DEFI_CONT
+
 
 # ================================================================================================================================================================================
 def NormeAster(RESULTAT, Depl_Ana, P_ana, MAIL, MODELE, GROUP_MA_VOL, GROUP_MA_SUR):
@@ -413,7 +414,6 @@ RAMPE = DEFI_FONCTION(
 
 
 for Raff in range(0, Nb_Raffinement):
-
     # ========================================================================================
     #          Preparation de calcul sur le nouveau maillage
     # ========================================================================================
@@ -634,7 +634,6 @@ IMPR_RESU(
 TEST_RESU(
     CHAM_NO=_F(
         REFERENCE="ANALYTIQUE",
-        PRECISION=1.0e-10,
         TYPE_TEST="MAX",
         CHAM_GD=dicResu["DIFFUN"],
         VALE_CALC=4.13934475645e-05,
@@ -666,7 +665,7 @@ BIDONP = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 1.0, 1.0, PenteL2P))
 
 TEST_FONCTION(
     VALEUR=_F(
-        VALE_CALC=2.578144711984,
+        VALE_CALC=2.577980701862,
         VALE_REFE=2.5,
         VALE_PARA=1.0,
         REFERENCE="ANALYTIQUE",
@@ -675,6 +674,6 @@ TEST_FONCTION(
     )
 )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=2.578144711984, VALE_PARA=1.0, FONCTION=BIDONP))
+TEST_FONCTION(VALEUR=_F(VALE_CALC=2.577980701862, VALE_PARA=1.0, FONCTION=BIDONP))
 
 FIN()

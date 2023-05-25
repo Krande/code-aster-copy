@@ -172,6 +172,14 @@ class ConvergenceManager(SolverFeature):
 
         self.values["RESI_GEOM"] = displ_delta.norm("NORM_INFINITY", ["DX", "DY", "DZ"]) / diag
 
+    def setIteration(self, value):
+        """Update the current iteration step.
+
+        Arguments:
+            value (int): Current iteration number.
+        """
+        self.values["ITER_GLOB_MAXI"] = value
+
     @profile
     def hasConverged(self):
         """Tell if convergence criteria are verified.

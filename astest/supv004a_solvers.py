@@ -22,7 +22,7 @@ from enum import IntFlag, auto
 
 from code_aster import ConvergenceError, SolverError
 from code_aster.Commands import DEFI_LIST_REEL
-from code_aster.Solvers import TimeStepper
+from code_aster.Solvers import PhysicalState, TimeStepper
 from code_aster.Solvers.base_features import BaseFeature
 
 list0 = DEFI_LIST_REEL(VALE=0.0)
@@ -56,7 +56,7 @@ class Anonymous:
 
 
 class BasicTest(unittest.TestCase):
-    """Check for internal methods."""
+    """Check for Feature object."""
 
     def test01_basics(self):
         FOP = UnittestOptions
@@ -142,7 +142,7 @@ class BasicTest(unittest.TestCase):
 
 
 class TestTimeStepper(unittest.TestCase):
-    """Check for internal methods."""
+    """Check for TimeStepper."""
 
     def test00_init(self):
         stp = TimeStepper([0.0, 1.0, 2.0, 3.0])
@@ -455,7 +455,7 @@ class TestTimeStepper(unittest.TestCase):
         stp._maxLevel = 3
         self.assertEqual(stp.size(), 4)
         self.assertAlmostEqual(stp.getCurrent(), 1.0)
-        stp.register_event(TimeStepper.Split(TimeStepper.Error(), nbSteps=2, minStep=0.05))
+        stp.register_event(TimeStepper.Split(TimeStepper.Error(), nbSubSteps=2, minStep=0.05))
         # print("\n+ split #1")
         stp.failed(ConvergenceError("MESSAGEID"))
         # [0.5, 1.0, 1.1, 2.0, 3.0]
@@ -501,6 +501,52 @@ class TestTimeStepper(unittest.TestCase):
         # print("+ split #2")
         with self.assertRaisesRegex(SolverError, "trop petit"):
             stp.failed(ConvergenceError("MESSAGEID"))
+
+
+class TestPhysicalState(unittest.TestCase):
+    """Check for PhysicalState"""
+
+    class FakeField:
+        def __init__(self, value):
+            self.value = value
+
+        def duplicate(self):
+            return TestPhysicalState.FakeField(self.value)
+
+    def test01_stash(self):
+        phys = PhysicalState()
+        assert phys._time is None
+        assert phys._primal is None
+        assert phys._stash is None
+
+        phys.stash()
+
+        phys.time = 0.0
+        phys._primal = TestPhysicalState.FakeField(100.0)
+        assert phys.time == 0.0
+        assert phys.primal.value == 100.0
+        assert phys._stash is not None
+        assert phys._stash._time is None
+        assert phys._stash._primal is None
+
+        phys.stash()
+
+        phys.time = 1.0
+        phys._primal = TestPhysicalState.FakeField(123.0)
+        assert phys.time == 1.0
+        assert phys.primal.value == 123.0
+        assert phys._stash is not None
+        assert phys._stash._time == 0.0
+        assert phys._stash._primal.value == 100.0
+
+        phys.revert()
+        assert phys.time == 0.0
+        assert phys.primal.value == 100.0
+
+        phys.time = 1.0
+        phys.primal.value += 99.0
+        assert phys.time == 1.0
+        assert phys.primal.value == 199.0
 
 
 if __name__ == "__main__":
