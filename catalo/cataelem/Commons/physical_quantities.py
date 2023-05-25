@@ -1128,7 +1128,6 @@ EPSI_C = PhysicalQuantity(
         "PRES2[3]",
         "PRES3[3]",
         "EPPTOT",
-        "DIVU",
     ),
     comment=""" EPSI_C Type:C
 """,
@@ -1144,7 +1143,6 @@ EPSI_F = PhysicalQuantity(
         "EPXY",
         "EPXZ",
         "EPYZ",
-        "DIVU",
         "EXX",
         "EYY",
         "EXY",
@@ -1162,7 +1160,6 @@ EPSI_F = PhysicalQuantity(
        EPXY : epsilon_xy deformation d'un milieu continu
        EPXZ : epsilon_xz deformation d'un milieu continu
        EPYZ : epsilon_yz deformation d'un milieu continu
-       DIVU    : dilatation volumique (chainage HM)
        EXX coque : deformations generalisees
        EYY coque : deformations generalisees
        EXY coque : deformations generalisees
@@ -1250,7 +1247,6 @@ EPSI_R = PhysicalQuantity(
         "PRES2[3]",
         "PRES3[3]",
         "EPPTOT",
-        "DIVU",
     ),
     comment="""  EPSI_R Type:R Deformation
        EPXX : epsilon_xx deformation d'un milieu continu
@@ -1334,8 +1330,7 @@ EPSI_R = PhysicalQuantity(
        PRES31 :
        PRES32 :
        PRES33 :
-       EPPTOT : deformation liee a la variable de commande ptot en chainage HM
-       DIVU   : dilatation volumique (chainage HM mecanique vers hydraulique)
+       EPPTOT : deformation liee a la variable de commande ptot
 """,
 )
 
