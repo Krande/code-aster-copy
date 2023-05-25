@@ -18,7 +18,7 @@
 !
 subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe, &
                   icabl, nbnoca, xnoca, ynoca, znoca, &
-                  ncncin, nmabet)
+                  ncncin, nmabet, gromai)
     implicit none
 !  DESCRIPTION : IMMERSION DES NOEUDS D'UN CABLE DANS LE MAILLAGE BETON
 !  -----------   ET DETERMINATION DES RELATIONS CINEMATIQUES ENTRE LES
@@ -60,6 +60,10 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe, &
 !                    OBJET CONNECTIVITE INVERSE POUR LES MAILLES BETON
 !  IN     : NMABET : CHARACTER*24 ,
 !                    OBJET CONTENANT LES MAILLES BETON
+!  IN     : GROMAI   CHARACTER*24
+!                    NOM DU VECTEUR CONTENANT LES PLUS GRANDS
+!                    DIAMETRES DES MAILLES DE BETON SELON LES
+!                    DIRECTIONS X, Y ET Z
 !
 !-------------------   DECLARATION DES VARIABLES   ---------------------
 !
@@ -67,7 +71,6 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe, &
 ! ARGUMENTS
 ! ---------
 #include "jeveux.h"
-#include "asterc/r8maem.h"
 #include "asterc/r8prem.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
@@ -91,18 +94,18 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe, &
     character(len=8) :: mailla
     character(len=19) :: lirela, nunobe, xnoca, ynoca, znoca, tablca
     integer :: nbnobe, icabl, nbnoca(*)
-    character(len=24) :: ncncin, nmabet
+    character(len=24) :: ncncin, nmabet, gromai
     character(len=24) :: valk(2)
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: nselec
+    integer :: nselec, nbnob2
     parameter(nselec=5)
     integer :: ideca, immer, inob1, inob2, inobe, inoca, ipara, itetra, jcoor
     integer :: jnoca, jnunob, jxca
     integer :: jyca, jzca, nbcnx, nblign, nbno, nbpara, nnomax, noe
     integer :: noebe(nselec), numail, nbval, nbval2, iret, ibid, noebec
-    real(kind=8) :: d2, d2min(nselec), dx, dy, dz, rbid, x3dca(3)
+    real(kind=8) :: d2, d2min(nselec), dx, dy, dz, rbid, x3dca(3), d2_max
     real(kind=8) :: x3dca2(3), axe(3), xnorm, xnorm2, zero, xbar(4)
     real(kind=8) :: rayon
     real(kind=8) :: long, longcy, longca, d2minc
@@ -112,7 +115,7 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe, &
     character(len=3) :: k3b
     character(len=8) :: nnoeca, voisin(2)
     character(len=24) :: coorno, nomama, nonoca, nonoma, nogrna(2)
-    integer :: n1, ibe, jbe
+    integer :: n1, ibe, jbe, jgmai
 !
     character(len=24) :: param(3), parcr
     integer, pointer :: cnx_maille(:) => null()
@@ -147,6 +150,13 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe, &
 !
 ! 1.1 OBJETS DU MAILLAGE
 ! ---
+
+    call jeveuo(gromai, 'L', jgmai)
+    dx = zr(jgmai)*.55
+    dy = zr(jgmai+1)*.55
+    dz = zr(jgmai+2)*.55
+    d2_max = dx**2+dy**2+dz**2
+
     coorno = mailla//'.COORDO    .VALE'
     call jeveuo(coorno, 'L', jcoor)
     nomama = mailla//'.NOMMAI'
@@ -397,20 +407,32 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe, &
 ! 2.2.1  DETERMINATION DU NOEUD DE LA STRUCTURE BETON LE PLUS PROCHE
 ! .....  DU NOEUD CABLE COURANT
 !
-! ON DETERMINE LES NSELEC NOEUDS LES PLUS PROCHES
 !
-        do ibe = 1, nselec
-            d2min(ibe) = r8maem()
-            noebe(ibe) = 0
-        end do
+! FILTRE DES NOEUDS TROP LOIN
 !
-        noebec = 0
+        nbnob2 = 0
         do inobe = 1, nbnobe
             noe = zi(jnunob+inobe-1)
             dx = x3dca(1)-zr(jcoor+3*(noe-1))
             dy = x3dca(2)-zr(jcoor+3*(noe-1)+1)
             dz = x3dca(3)-zr(jcoor+3*(noe-1)+2)
             d2 = dx*dx+dy*dy+dz*dz
+            if (d2 .lt. d2_max) then
+                nbnob2 = nbnob2+1
+                d2_min_max(nbnob2) = d2
+                no_min_max(nbnob2) = noe
+            end if
+        end do
+!
+! ON DETERMINE LES NSELEC NOEUDS LES PLUS PROCHES
+!
+        do ibe = 1, nselec
+            d2min(ibe) = d2_max
+            noebe(ibe) = 0
+        end do
+        do inobe = 1, nbnob2
+            d2 = d2_min_max(inobe)
+            if (d2 .gt. d2min(nselec)) goto 113
             do ibe = 1, nselec
                 if (d2 .lt. d2min(ibe)) then
                     do jbe = 0, nselec-ibe-1
@@ -418,13 +440,11 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe, &
                         noebe(nselec-jbe) = noebe(nselec-jbe-1)
                     end do
                     d2min(ibe) = d2
-                    noebe(ibe) = noe
+                    noebe(ibe) = no_min_max(inobe)
                     goto 113
                 end if
             end do
 113         continue
-            d2_min_max(inobe) = d2
-            no_min_max(inobe) = noe
         end do
 !
         if (niv .eq. 2) then
@@ -434,6 +454,8 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe, &
 ! 2.2.2  TENTATIVE D'IMMERSION DU NOEUD CABLE DANS LES MAILLES
 ! .....  AUXQUELLES APPARTIENT LE NOEUD BETON LE PLUS PROCHE
 !
+        noebec = 0
+        immer = -1
         do ibe = 1, nselec
 !          ATTENTION IL PEUT Y AVOIR MOINS QUE NSELEC NOEUDS
 !          DE BETON
@@ -462,11 +484,11 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe, &
 !.......... ON CREE UNE LISTE ORDONNEE DES NOEUDS DE LA STRUCTURE BETON
 !.......... DU PLUS PROCHE AU PLUS ELOIGNE DU NOEUD CABLE CONSIDERE
 !
-            do inob1 = 1, nbnobe-1
+            do inob1 = 1, nbnob2-1
                 d2minc = d2_min_max(inob1)
                 noebec = no_min_max(inob1)
                 inobe = inob1
-                do inob2 = inob1+1, nbnobe
+                do inob2 = inob1+1, nbnob2
                     if (d2_min_max(inob2) .lt. d2minc) then
                         d2minc = d2_min_max(inob2)
                         noebec = no_min_max(inob2)
@@ -494,7 +516,7 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe, &
 !.......... ON EFFECTUE DE NOUVELLES TENTATIVES EN UTILISANT LES NOEUDS
 !.......... DE LA LISTE ORDONNEE PRECEDENTE, DU SECOND JUSQU'AU DERNIER
 !.......... REPETER
-            do inobe = nselec, nbnobe
+            do inobe = nselec, nbnob2
                 noebec = no_min_max(inobe)
 !............. TENTATIVE D'IMMERSION DU NOEUD CABLE DANS LES MAILLES
 !............. AUXQUELLES APPARTIENT LE NOEUD BETON COURANT

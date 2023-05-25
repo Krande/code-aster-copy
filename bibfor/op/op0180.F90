@@ -470,7 +470,7 @@ subroutine op0180()
         else
             call immeca(nomt19, lirela, mailla, nbnobi, nunobi, &
                         icabl, zi(jnbno), xnoca, ynoca, znoca, &
-                        ncncin, nmabet)
+                        ncncin, nmabet, gromai)
         end if
 !
     end do
