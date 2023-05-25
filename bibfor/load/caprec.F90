@@ -295,7 +295,7 @@ subroutine caprec(load, loadLigrel, mesh, model, valeType)
                         else if (pass == 2) then
                             call copisd(' ', 'V', list_rela_old, list_rela_tmp)
                             l_prealloc = .true.
-                            call aflrch(list_rela_tmp, load, 'NLIN', &
+                            call aflrch(list_rela_tmp, load, 'NLIN', elim='NON', &
                                         l_preallocz=l_prealloc)
                         end if
                     end if
@@ -359,8 +359,9 @@ subroutine caprec(load, loadLigrel, mesh, model, valeType)
                                                         list_node, &
                                                         cmp_index_drz, list_rela, nom_noeuds_tmp)
                                         else
-                                        call solide_tran('2D', mesh, valeType, dist_mini, nb_node, &
-                                                          list_node, list_rela, nom_noeuds_tmp, dim)
+                                            call solide_tran('2D', mesh, valeType, dist_mini, &
+                                                             nb_node, list_node, &
+                                                             list_rela, nom_noeuds_tmp, dim)
                                         end if
 !
 ! ----------------------------- Set LIAISON_SOLIDE for ndim = 3
@@ -396,14 +397,15 @@ subroutine caprec(load, loadLigrel, mesh, model, valeType)
 !
                                         if (l_rota_3d) then
                                             call drz13d(mesh, modelLigrel, valeType, nb_node, &
-                                                        list_node, &
-                                                        cmp_index_dx, cmp_index_dy, cmp_index_dz, &
-                                                      cmp_index_drx, cmp_index_dry, cmp_index_drz, &
+                                                        list_node, cmp_index_dx, &
+                                                        cmp_index_dy, cmp_index_dz, cmp_index_drx, &
+                                                        cmp_index_dry, cmp_index_drz, &
                                                         list_rela, nom_noeuds_tmp)
                                         else
 
-                                        call solide_tran('3D', mesh, valeType, dist_mini, nb_node, &
-                                                          list_node, list_rela, nom_noeuds_tmp, dim)
+                                            call solide_tran('3D', mesh, valeType, dist_mini, &
+                                                             nb_node, list_node, list_rela, &
+                                                             nom_noeuds_tmp, dim)
                                         end if
                                     else
                                         ASSERT(.false.)
