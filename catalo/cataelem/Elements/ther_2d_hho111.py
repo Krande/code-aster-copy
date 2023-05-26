@@ -35,7 +35,6 @@ CCOMPOR = LocatedComponents(
     phys=PHY.COMPOR, type="ELEM", components=("RELCOM", "NBVARI", "DEFORM", "INCELA", "C_PLAN")
 )
 
-
 NVITESR = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY"))
 
 
@@ -170,6 +169,11 @@ class THER2DQ9_HHO111(Element):
                 (OP.HHO_PROJ_THER.PFUNC_R, PFONC),
                 (SP.PINSTPR, CINSTR),
             ),
+            para_out=((OP.HHO_PROJ_THER.PTEMP_R, DDL_THER),),
+        ),
+        OP.HHO_PROJ2_THER(
+            te=484,
+            para_in=((SP.PGEOMER, NGEOMER), (OP.HHO_PROJ2_THER.PH1TP_R, TEMPHHO)),
             para_out=((OP.HHO_PROJ_THER.PTEMP_R, DDL_THER),),
         ),
         OP.MASS_THER(

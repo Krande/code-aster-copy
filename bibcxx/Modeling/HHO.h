@@ -68,6 +68,11 @@ class HHO {
     FieldOnNodesRealPtr projectOnLagrangeSpace( const FieldOnNodesRealPtr hho_field ) const;
 
     /**
+     * @brief Project H^1-field to HHO field
+     */
+    FieldOnNodesRealPtr projectOnHHOSpace( const FieldOnNodesRealPtr h1_field ) const;
+
+    /**
      * @brief Project real value on HHO space
      */
     FieldOnNodesRealPtr projectOnHHOSpace( const ASTERDOUBLE &value ) const;

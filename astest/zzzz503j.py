@@ -108,9 +108,10 @@ sol_ref = 28.544813405889784
 test.assertAlmostEqual((solution.norm("NORM_2") - sol_ref) / sol_ref, 0.0, delta=1e-4)
 
 # project HHO solution
-hho_field = hho.projectOnLagrangeSpace(solution)
-hho_ref = 32.400164138793706
-test.assertAlmostEqual((hho_field.norm("NORM_2") - hho_ref) / hho_ref, 0.0, delta=1e-6)
+h1_field = hho.projectOnLagrangeSpace(solution)
+hho_field = hho.projectOnHHOSpace(h1_field)
+h1_ref = 32.400164138793706
+test.assertAlmostEqual((h1_field.norm("NORM_2") - h1_ref) / h1_ref, 0.0, delta=1e-6)
 
 # save result
 hho_field.printMedFile("hhoField.med")
@@ -136,6 +137,22 @@ for i in range(100):
 
 u_hho_ref = 27.931912612339957
 test.assertAlmostEqual((u_hho.norm("NORM_2") - u_hho_ref) / u_hho_ref, 0.0, delta=1e-4)
+
+# test projection
+const = FORMULE(VALE="X-X+Y-Y+100", NOM_PARA=["X", "Y"])
+f_hho = hho.projectOnHHOSpace(const)
+f_lagr = hho.projectOnLagrangeSpace(f_hho)
+f2_hho = hho.projectOnHHOSpace(f_lagr)
+diff = f_hho - f2_hho
+test.assertAlmostEqual(diff.norm("NORM_2"), 0.0, delta=1e-4)
+
+f0 = FORMULE(VALE="X+Y", NOM_PARA=["X", "Y"])
+f_hho = hho.projectOnHHOSpace(f0)
+f_lagr = hho.projectOnLagrangeSpace(f_hho)
+f2_hho = hho.projectOnHHOSpace(f_lagr)
+f2_lagr = hho.projectOnLagrangeSpace(f2_hho)
+diff = f_lagr - f2_lagr
+test.assertAlmostEqual(diff.norm("NORM_2"), 0.0, delta=0.7)
 
 test.printSummary()
 

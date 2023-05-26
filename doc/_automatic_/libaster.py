@@ -1992,6 +1992,9 @@ class FieldOnCellsReal(DataField):
     def build(self, feds=[]):
         pass
 
+    def changeLocalization(self, arg0):
+        pass
+
     def dot(self, other):
         """Return the dot product of two fields
 
@@ -2029,6 +2032,13 @@ class FieldOnCellsReal(DataField):
 
 
         2. getDescription(self: libaster.FieldOnCellsReal) -> libaster.FiniteElementDescriptor
+        """
+
+    def getLocalization(self):
+        """Get localization between ELEM, ELNO and ELGA
+
+        Returns:
+            str: localization
         """
 
     def getMesh(self):
@@ -2207,6 +2217,13 @@ class FieldOnCellsComplex(DataField):
     def getDescription(self):
         pass
 
+    def getLocalization(self):
+        """Get localization between ELEM, ELNO and ELGA
+
+        Returns:
+            str: localization
+        """
+
     def getMesh(self):
         """Return the Mesh associated with the FieldOnCellsReal object
 
@@ -2219,6 +2236,13 @@ class FieldOnCellsComplex(DataField):
 
         Returns:
             Model: Model object
+        """
+
+    def getPhysicalQuantity(self):
+        """Get physical quantity
+
+        Returns:
+            str: physical quantity
         """
 
     def getValues(self):
@@ -13503,17 +13527,6 @@ class HHO:
     def __init__(self, arg0):
         pass
 
-    def getMicroDamageTerms(self, arg0, arg1, arg2):
-        """Compute terms for micro-damage.
-
-        Arguments:
-
-        Returns:
-              FieldOnNodesReal: micro-damage field (HHO)
-              FieldOnNodesReal: micro-damage forces
-              AssemblyMatrixTemperatureReal: micro-damage matrix
-        """
-
     def projectOnHHOCellSpace(self, *args, **kwargs):
         """Overloaded function.
 
@@ -13556,12 +13569,37 @@ class HHO:
 
               Returns:
                     FieldOnNodesReal: HHO field
+
+
+        4. projectOnHHOCellSpace(self: libaster.HHO, value: List[float]) -> libaster.FieldOnNodesReal
+
+
+              Project real value to HHO Cell-space
+              Cell space is the restriction of HHO-space to cells only
+
+              Arguments:
+                    value (float): value to project
+
+              Returns:
+                    FieldOnNodesReal: HHO field
         """
 
     def projectOnHHOSpace(self, *args, **kwargs):
         """Overloaded function.
 
-        1. projectOnHHOSpace(self: libaster.HHO, func: libaster.GenericFunction, time: float = 0.0) -> libaster.FieldOnNodesReal
+        1. projectOnHHOSpace(self: libaster.HHO, H1_field: libaster.FieldOnNodesReal) -> libaster.FieldOnNodesReal
+
+
+              Project field from Lagrange-space to HHO-space
+
+              Arguments:
+                    H1_field (FieldOnNodesReal): Lagrange field
+
+              Returns:
+                    FieldOnNodesReal: HHO field
+
+
+        2. projectOnHHOSpace(self: libaster.HHO, func: libaster.GenericFunction, time: float = 0.0) -> libaster.FieldOnNodesReal
 
 
               Project real function to HHO-space
@@ -13574,7 +13612,7 @@ class HHO:
                     FieldOnNodesReal: HHO field
 
 
-        2. projectOnHHOSpace(self: libaster.HHO, func: List[libaster.GenericFunction], time: float = 0.0) -> libaster.FieldOnNodesReal
+        3. projectOnHHOSpace(self: libaster.HHO, func: List[libaster.GenericFunction], time: float = 0.0) -> libaster.FieldOnNodesReal
 
 
               Project real function to HHO-space
@@ -13587,7 +13625,7 @@ class HHO:
                     FieldOnNodesReal: HHO field
 
 
-        3. projectOnHHOSpace(self: libaster.HHO, value: float) -> libaster.FieldOnNodesReal
+        4. projectOnHHOSpace(self: libaster.HHO, value: float) -> libaster.FieldOnNodesReal
 
 
               Project real value to HHO-space
@@ -13599,7 +13637,7 @@ class HHO:
                     FieldOnNodesReal: HHO field
 
 
-        4. projectOnHHOSpace(self: libaster.HHO, value: List[float]) -> libaster.FieldOnNodesReal
+        5. projectOnHHOSpace(self: libaster.HHO, value: List[float]) -> libaster.FieldOnNodesReal
 
 
               Project real value to HHO-space

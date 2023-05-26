@@ -39,6 +39,18 @@ void exportHHOToPython( py::module_ &mod ) {
         )",
               py::arg( "hho_field" ) )
         .def( "projectOnHHOSpace",
+              py::overload_cast< const FieldOnNodesRealPtr >( &HHO::projectOnHHOSpace, py::const_ ),
+              R"(
+      Project field from Lagrange-space to HHO-space
+
+      Arguments:
+            H1_field (FieldOnNodesReal): Lagrange field
+
+      Returns:
+            FieldOnNodesReal: HHO field
+        )",
+              py::arg( "H1_field" ) )
+        .def( "projectOnHHOSpace",
               py::overload_cast< const GenericFunctionPtr, ASTERDOUBLE >( &HHO::projectOnHHOSpace,
                                                                           py::const_ ),
               R"(

@@ -106,6 +106,8 @@ module HHO_type
         real(kind=8), dimension(3, 2) :: axes = 0.d0
 ! ----- Longueur de la boite englobante (orientee ou non) de la cellule
         real(kind=8), dimension(2)  :: length_box = 0.d0
+! ----- Index locale des noeuds de la cellule
+        integer, dimension(4)       :: nodes_loc = 0
 ! ----- member function
     contains
         procedure, public, pass :: print => print_face

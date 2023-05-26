@@ -43,7 +43,7 @@ module HHO_eval_module
 !
 ! --------------------------------------------------------------------------------------------------
     public :: hhoEvalScalCell, hhoEvalScalFace, hhoEvalVecCell, hhoEvalVecFace
-    public :: hhoEvalMatCell, hhoEvalSymMatCell
+    public :: hhoEvalMatCell, hhoEvalSymMatCell, hhoFuncRScalEvalCellQp
     public :: hhoFuncFScalEvalQp, hhoFuncRScalEvalQp, hhoFuncRVecEvalQp, hhoFuncRVecEvalCellQp
 !    private  ::
 !
@@ -432,8 +432,7 @@ contains
         do ipg = 1, npg
             call elrfvf(typma, hhoQuad%points(1:3, ipg), ff)
             do ino = 1, hhoFace%nbnodes
-                FuncValuesQP(ipg) = FuncValuesQP(ipg)+ &
-                                    ff(ino)*funcnoEF(ino)
+                FuncValuesQP(ipg) = FuncValuesQP(ipg)+ff(ino)*funcnoEF(ino)
             end do
         end do
 !
@@ -543,6 +542,55 @@ contains
 !
         if (present(coeff_mult)) then
             call dscal(3*npg, coeff_mult, FuncValuesQP, 1)
+        end if
+!
+    end subroutine
+!
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hhoFuncRScalEvalCellQp(hhoCell, hhoQuad, funcnoEF, FuncValuesQp, coeff_mult)
+!
+        implicit none
+!
+        type(HHO_Cell), intent(in)         :: hhoCell
+        type(HHO_Quadrature), intent(in)   :: hhoQuad
+        real(kind=8), intent(in)           :: funcnoEF(*)
+        real(kind=8), intent(out)          :: FuncValuesQP(MAX_QP_CELL)
+        real(kind=8), optional, intent(in) :: coeff_mult
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO
+!
+!   Evaluate a function (*_R) at the quadrature points (given at the nodes)
+!   In hhoCell  : Cell HHO
+!   In hhoQuad  : Quadrature
+!   In funcnoEF : values of the function at the nodes of the EF cell
+!   Out FuncValues : values of the function at the quadrature points
+!   In coeff_mult  : multply all values by this coefficient (optional)
+!
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: npg, ino, ipg
+        real(kind=8) :: ff(27)
+        character(len=8) :: typma
+!
+        FuncValuesQP = 0.d0
+        npg = hhoQuad%nbQuadPoints
+        ASSERT(npg <= MAX_QP_CELL)
+        call cellNameL2S(hhoCell%typema, typma)
+!
+        do ipg = 1, npg
+            call elrfvf(typma, hhoQuad%points(1:3, ipg), ff)
+            do ino = 1, hhoCell%nbnodes
+                FuncValuesQP(ipg) = FuncValuesQP(ipg)+ff(ino)*funcnoEF(ino)
+            end do
+        end do
+!
+        if (present(coeff_mult)) then
+            call dscal(npg, coeff_mult, FuncValuesQP, 1)
         end if
 !
     end subroutine

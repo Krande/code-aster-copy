@@ -43,7 +43,7 @@ module HHO_L2proj_module
 !
 ! --------------------------------------------------------------------------------------------------
     public :: hhoL2ProjFaceScal, hhoL2ProjFaceVec, hhoL2ProjScal, hhoL2ProjVec
-    public :: hhoL2ProjCellScal, hhoL2ProjCellVec
+    public :: hhoL2ProjCellScal, hhoL2ProjCellVec, hhoL2ProjFieldScal
 !    private  ::
 !
 contains
@@ -470,6 +470,79 @@ contains
 !
         call hhoL2ProjCellVec(hhoCell, hhoQuadCell, FuncValuesCellQP, hhoData%cell_degree(), &
                               coeff_L2Proj(ind))
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hhoL2ProjFieldScal(hhoCell, hhoData, field, coeff_L2Proj)
+!
+        implicit none
+!
+        type(HHO_Cell), intent(in)          :: hhoCell
+        type(HHO_Data), intent(in)          :: hhoData
+        real(kind=8), intent(in)            :: field(*)
+        real(kind=8), intent(out)           :: coeff_L2Proj(MSIZE_TDOFS_SCAL)
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO
+!
+!   Compute the L2-prjoection of a scalar field on a local space (cell + face)
+!   In hhoCell      : the current HHO Cell
+!   In FuncValuesQP : Values of the function to project at the quadrature points
+!   Out coeff_L2Proj: coefficient after projection
+!
+! --------------------------------------------------------------------------------------------------
+!
+        type(HHO_Face) :: hhoFace
+        type(HHO_Quadrature) :: hhoQuadFace, hhoQuadCell
+        integer :: cbs, fbs, total_dofs, iFace, ind, ino
+        real(kind=8) :: FuncValuesCellQP(MAX_QP_CELL), FuncValuesFaceQP(MAX_QP_FACE)
+        real(kind=8) :: FieldValuesNodes(27)
+! --------------------------------------------------------------------------------------------------
+!
+        call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
+!
+        coeff_L2Proj = 0
+        FuncValuesCellQP = 0.d0
+!
+! --- Loop on faces
+!
+        ind = 1
+        do iFace = 1, hhoCell%nbfaces
+            hhoFace = hhoCell%faces(iFace)
+!
+! ----- get quadrature
+!
+            call hhoQuadFace%GetQuadFace(hhoface, 2*hhoData%face_degree()+1)
+!
+! -------------- Value of the field at the quadrature point
+!
+            FieldValuesNodes = 0.d0
+            do ino = 1, hhoFace%nbnodes
+                FieldValuesNodes(ino) = field(hhoFace%nodes_loc(ino))
+            end do
+            call hhoFuncRScalEvalQp(hhoFace, hhoQuadFace, FieldValuesNodes, FuncValuesFaceQP)
+!
+! -------------- Compute L2 projection
+!
+            call hhoL2ProjFaceScal(hhoFace, hhoQuadFace, FuncValuesFaceQP, &
+                                   hhoData%face_degree(), coeff_L2Proj(ind))
+            ind = ind+fbs
+        end do
+!
+! --- On cell
+!
+        call hhoQuadCell%GetQuadCell(hhoCell, 2*hhoData%cell_degree()+1)
+!
+! -------------- Value of the field at the quadrature point
+!
+        call hhoFuncRScalEvalCellQp(hhoCell, hhoQuadCell, field, FuncValuesCellQP)
+!
+        call hhoL2ProjCellScal(hhoCell, hhoQuadCell, FuncValuesCellQP, hhoData%cell_degree(), &
+                               coeff_L2Proj(ind))
 !
     end subroutine
 !

@@ -18,12 +18,55 @@
 !
 subroutine te0484(option, nomte)
 !
+    use HHO_type
+    use HHO_size_module
+    use HHO_init_module, only: hhoInfoInitCell
+    use HHO_L2proj_module
+!
     implicit none
 !
-#include "asterfort/utmess.h"
+#include "asterf_types.h"
+#include "asterfort/HHO_size_module.h"
+#include "asterfort/writeVector.h"
+#include "asterfort/assert.h"
+#include "jeveux.h"
+#include "asterfort/jevech.h"
 !
+! --------------------------------------------------------------------------------------------------
+!  HHO
+!  Thermics - HHO_PROJ2_THER
+!
+! In  option           : name of option to compute
+! In  nomte            : type of finite element
+! --------------------------------------------------------------------------------------------------
     character(len=16), intent(in) :: option, nomte
 !
-    call utmess('F', 'FERMETUR_8')
+! --- Local variables
+!
+    type(HHO_Data) :: hhoData
+    type(HHO_Cell) :: hhoCell
+    integer :: cbs, fbs, total_dofs
+    real(kind=8), dimension(MSIZE_TDOFS_VEC) :: coeff_L2Proj
+    real(kind=8), pointer :: field(:) => null()
+!
+! --- Get HHO informations
+!
+    call hhoInfoInitCell(hhoCell, hhoData)
+!
+    if (option == "HHO_PROJ2_THER") then
+!
+        call jevech("PH1TP_R", "L", vr=field)
+        call hhoL2ProjFieldScal(hhoCell, hhoData, field, coeff_L2Proj)
+!
+        call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
+        call writeVector("PTEMP_R", total_dofs, coeff_L2Proj)
+    elseif (option == "HHO_PROJ_MECA") then
+        ASSERT(ASTER_FALSE)
+!
+        call hhoMecaDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
+        call writeVector("PDEPL_R", total_dofs, coeff_L2Proj)
+    else
+        ASSERT(ASTER_FALSE)
+    end if
 !
 end subroutine

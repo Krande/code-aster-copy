@@ -271,7 +271,7 @@ contains
 !===================================================================================================
 !
     subroutine hhoFaceInit(hhoFace, typma, ndim, nbnodes, nodes_coor, numnodes, &
-                           barycenter_cell)
+                           barycenter_cell, num_nodes_loc)
 !
         implicit none
 !
@@ -281,6 +281,7 @@ contains
         integer, dimension(4), intent(in)               :: numnodes
         integer, intent(in)                             :: nbnodes
         real(kind=8), dimension(3), optional, intent(in):: barycenter_cell
+        integer, dimension(4), optional, intent(in)     :: num_nodes_loc
         type(HHO_Face), intent(out)                     :: hhoFace
 !
 ! --------------------------------------------------------------------------------------------------
@@ -318,6 +319,9 @@ contains
         hhoFace%diameter = hhoDiameterFace(hhoFace)
         hhoFace%axes = hhoLocalAxesFace(hhoFace)
         hhoFace%length_box = hhoLengthBoundingBoxFace(hhoFace)
+        if (present(num_nodes_loc)) then
+            hhoFace%nodes_loc(1:nbnodes) = num_nodes_loc(1:nbnodes)
+        end if
 !
     end subroutine
 !
@@ -544,7 +548,7 @@ contains
             end do
             call hhoFaceInit(hhoCell%faces(i_face), type_faces(i_face), hhoCell%ndim-1, &
                              nbnodes_faces(i_face), coor_face, numnodes_face, &
-                             hhoCell%barycenter)
+                             hhoCell%barycenter, nodes_faces(:, i_face))
         end do
 !
         if (l_debug) then

@@ -206,3 +206,27 @@ FieldOnNodesRealPtr HHO::projectOnHHOCellSpace( const VectorReal &values ) const
 
     return projectOnHHOCellSpace( fct );
 };
+
+FieldOnNodesRealPtr HHO::projectOnHHOSpace( const FieldOnNodesRealPtr h1_field ) const {
+    auto model = _phys_problem->getModel();
+    auto mesh = model->getMesh();
+
+    const std::string option = model->isThermal() ? "HHO_PROJ2_THER" : "HHO_PROJ2_MECA";
+    auto calcul = std::make_unique< Calcul >( option );
+    calcul->setModel( model );
+
+    // Input fields
+    calcul->addInputField( "PGEOMER", mesh->getCoordinates() );
+    calcul->addInputField( "PH1TP_R", h1_field );
+
+    // Output fields
+    auto hho_elno = std::make_shared< FieldOnCellsReal >( model );
+    calcul->addOutputField( "PTEMP_R", hho_elno );
+
+    // Compute
+    if ( model->existsFiniteElement() ) {
+        calcul->compute();
+    };
+
+    return hho_elno->toFieldOnNodes();
+};
