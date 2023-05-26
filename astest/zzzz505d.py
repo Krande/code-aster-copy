@@ -73,6 +73,10 @@ test.assertAlmostEqual(len(refe2.getValues()), len(testfield2.getValues()))
 test.assertAlmostEqual(refe1.getValues(), testfield1.getValues())
 test.assertAlmostEqual(refe2.getValues(), testfield2.getValues())
 
+fno = testfield1.toFieldOnNodes()
+fsno = testfield1.toSimpleFieldOnNodes()
+felno = testfield1.changeLocalization("ELNO")
+
 
 sf2 = testfield2.toSimpleFieldOnCells()
 test.assertSequenceEqual(["V1", "V2"], sf2.getComponents())

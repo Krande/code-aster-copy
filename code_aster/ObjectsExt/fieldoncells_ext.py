@@ -30,10 +30,10 @@ complex numbers (:py:class:`FieldOnCellsComplex`).
 
 import numpy
 
-import aster
 from libaster import FieldOnCellsReal, FieldOnCellsLong, FieldOnCellsChar8, FieldOnCellsComplex
 from ..Objects.Serialization import InternalStateBuilder
 from ..Utilities import injector, deprecated
+from ..Commands import CREA_CHAMP
 
 
 class FieldOnCellsStateBuilder(InternalStateBuilder):
@@ -62,6 +62,19 @@ class FieldOnCellsStateBuilder(InternalStateBuilder):
         super().restore(field)
         if self._st["fed"]:
             field.setDescription(self._st["fed"])
+
+
+def _toFieldOnNodes(field):
+    """Convert FieldOnCells to FieldOnNodes"""
+
+    type_field = "NOEU_" + field.getPhysicalQuantity()
+    return CREA_CHAMP(OPERATION="DISC", TYPE_CHAM=type_field, CHAM_GD=field)
+
+
+def _toSimpleFieldOnNodes(field):
+    """Convert FieldOnCells to SimpleFieldOnNodes"""
+
+    return _toFieldOnNodes(field).toSimpleFieldOnNodes()
 
 
 @injector(FieldOnCellsReal)
@@ -94,6 +107,24 @@ class ExtendedFieldOnCellsReal:
         else:
             cells = mesh.getCells()
         return self.toSimpleFieldOnCells().getValuesWithDescription(cells, component)
+
+    def toFieldOnNodes(self):
+        """Convert to FieldOnNodes
+
+        Returns:
+            FieldOnNodesReal : field after conversion
+        """
+
+        return _toFieldOnNodes(self)
+
+    def toSimpleFieldOnNodes(self):
+        """Convert to SimpleFieldOnNodes
+
+        Returns:
+            SimpleFieldOnNodesReal : field after conversion
+        """
+
+        return _toSimpleFieldOnNodes(self)
 
     @deprecated(case=4, help="Use 'getValuesWithDescription()' instead")
     def EXTR_COMP(self, comp, lgma=[], topo=0):
@@ -136,3 +167,12 @@ class ExtendedFieldOnCellsChar8:
 class ExtendedFieldOnCellsComplex:
     cata_sdj = "SD.sd_champ.sd_cham_elem_class"
     internalStateBuilder = FieldOnCellsStateBuilder
+
+    def toFieldOnNodes(self):
+        """Convert to FieldOnNodes
+
+        Returns:
+            FieldOnNodesComplex : field after conversion
+        """
+
+        return _toFieldOnNodes(self)

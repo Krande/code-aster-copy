@@ -50,6 +50,7 @@ void exportFieldOnCellsToPython( py::module_ &mod ) {
                 FieldOnCellsReal
             )" )
         .def( "toSimpleFieldOnCells", &FieldOnCellsReal::toSimpleFieldOnCells )
+        .def( "changeLocalization", &FieldOnCellsReal::changeLocalization )
         .def( "getDescription", &FieldOnCellsReal::getDescription, R"(
             Return the descriptor associated with the FieldOnCellsReal object
 
@@ -126,6 +127,12 @@ void exportFieldOnCellsToPython( py::module_ &mod ) {
 
             Returns:
                 str: physical quantity
+            )" )
+        .def( "getLocalization", &FieldOnCellsReal::getLocalization, R"(
+            Get localization between ELEM, ELNO and ELGA
+
+            Returns:
+                str: localization
             )" )
         .def( "getComponents", &FieldOnCellsReal::getComponents, R"(
             Get list of components
@@ -242,6 +249,18 @@ void exportFieldOnCellsToPython( py::module_ &mod ) {
         .def( py::self -= py::self )
         .def( py::self * float() )
         .def( float() * py::self )
+        .def( "getPhysicalQuantity", &FieldOnCellsComplex::getPhysicalQuantity, R"(
+            Get physical quantity
+
+            Returns:
+                str: physical quantity
+            )" )
+        .def( "getLocalization", &FieldOnCellsComplex::getLocalization, R"(
+            Get localization between ELEM, ELNO and ELGA
+
+            Returns:
+                str: localization
+            )" )
         .def( "size", &FieldOnCellsComplex::size, R"(
             Return the size of the field
 

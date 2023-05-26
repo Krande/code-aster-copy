@@ -705,6 +705,27 @@ class FieldOnCells : public DataField {
         return chamno;
     }
 
+    FieldOnCellsPtr changeLocalization( const std::string &loc ) const {
+        if ( loc == getLocalization() ) {
+            return std::make_shared< FieldOnCells< ValueType > >( *this );
+        }
+
+        auto cham_elem = std::make_shared< FieldOnCells< ValueType > >();
+
+        std::string base = "G";
+        std::string prol = "OUI", model = " ";
+
+        if ( getModel() ) {
+            model = getModel()->getName();
+        }
+
+        CALLO_CHPCHD( getName(), loc, getName(), prol, base, cham_elem->getName(), model );
+
+        cham_elem->build( {_dofDescription} );
+
+        return cham_elem;
+    }
+
     friend class FieldBuilder;
 };
 
