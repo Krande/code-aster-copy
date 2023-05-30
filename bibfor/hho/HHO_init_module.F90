@@ -301,6 +301,7 @@ contains
 ! Out hhoFace           : a HHO Face
 ! --------------------------------------------------------------------------------------------------
 !
+        integer :: numsorted(4), ino
         ASSERT(nbnodes .le. 4)
 !
 ! --- Init: be carefull the order to call the functions is important
@@ -308,7 +309,7 @@ contains
         hhoFace%typema = typma
         hhoFace%nbnodes = nbnodes
         hhoFace%ndim = ndim
-        hhoFace%coorno = hhoFaceInitCoor(nodes_coor, numnodes, nbnodes, ndim)
+        hhoFace%coorno = hhoFaceInitCoor(nodes_coor, numnodes, nbnodes, ndim, numsorted)
         hhoFace%barycenter = barycenter(hhoFace%coorno, hhoFace%nbnodes)
         if (present(barycenter_cell)) then
             hhoFace%normal = hhoNormalFace(hhoFace, barycenter_cell)
@@ -320,7 +321,9 @@ contains
         hhoFace%axes = hhoLocalAxesFace(hhoFace)
         hhoFace%length_box = hhoLengthBoundingBoxFace(hhoFace)
         if (present(num_nodes_loc)) then
-            hhoFace%nodes_loc(1:nbnodes) = num_nodes_loc(1:nbnodes)
+            do ino = 1, hhoFace%nbnodes
+                hhoFace%nodes_loc(ino) = num_nodes_loc(numsorted(ino))
+            end do
         end if
 !
     end subroutine

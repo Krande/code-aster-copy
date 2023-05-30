@@ -48,6 +48,7 @@ module HHO_quadrature_module
         integer                             :: nbQuadPoints = 0
         real(kind=8), dimension(3, MAX_QP)   :: points = 0.d0
         real(kind=8), dimension(MAX_QP)     :: weights = 0.d0
+        real(kind=8), dimension(3, MAX_QP)   :: points_param = 0.d0
 ! ----- member functions
     contains
         procedure, private, pass :: hho_edge_rules
@@ -161,6 +162,7 @@ contains
         this%nbQuadPoints = nbpg
 !
         do ipg = 1, nbpg
+            this%points_param(1, ipg) = xpg(ipg)
             this%points(1:3, ipg) = barycenter+xpg(ipg)*v1
             this%weights(ipg) = meas_2*poidpg(ipg)
         end do
@@ -290,6 +292,7 @@ contains
             x = coorpg(dimp*(ipg-1)+1)
             y = coorpg(dimp*(ipg-1)+2)
             call hho_transfo_quad(coorno, (/x, y/), ndim, jaco, coorpgglo)
+            this%points_param(1:2, ipg) = (/x, y/)
             this%points(1:3, ipg) = coorpgglo
             this%weights(ipg) = abs(jaco)*poidpg(ipg)
         end do
@@ -403,6 +406,7 @@ contains
             y = coorpg(dimp*(ipg-1)+2)
             z = coorpg(dimp*(ipg-1)+3)
             call hho_transfo_hexa(coorno, (/x, y, z/), coorac, jaco)
+            this%points_param(1:3, ipg) = (/x, y, z/)
             this%points(1:3, ipg) = coorac(1:3)
             this%weights(ipg) = abs(jaco)*poidpg(ipg)
         end do
@@ -460,6 +464,7 @@ contains
         do ipg = 1, nbpg
             x = coorpg(dimp*(ipg-1)+1)
             y = coorpg(dimp*(ipg-1)+2)
+            this%points_param(1:2, ipg) = (/x, y/)
             this%points(1:3, ipg) = alpha+beta*x+gamma*y
             this%weights(ipg) = deuxmeas*poidpg(ipg)
         end do
@@ -519,6 +524,7 @@ contains
             x = coorpg(dimp*(ipg-1)+1)
             y = coorpg(dimp*(ipg-1)+2)
             z = coorpg(dimp*(ipg-1)+3)
+            this%points_param(1:3, ipg) = (/x, y, z/)
             this%points(1:3, ipg) = alpha+beta*x+gamma*y+kappa*z
             this%weights(ipg) = sixmeas*poidpg(ipg)
         end do
@@ -632,6 +638,7 @@ contains
             y = coorpg(dimp*(ipg-1)+2)
             z = coorpg(dimp*(ipg-1)+3)
             call hho_transfo_pyram(coorno, (/x, y, z/), coorac, jaco)
+            this%points_param(1:3, ipg) = (/x, y, z/)
             this%points(1:3, ipg) = coorac(1:3)
             this%weights(ipg) = abs(jaco)*poidpg(ipg)
         end do
@@ -745,6 +752,7 @@ contains
             y = coorpg(dimp*(ipg-1)+2)
             z = coorpg(dimp*(ipg-1)+3)
             call hho_transfo_prism(coorno, (/x, y, z/), coorac, jaco)
+            this%points_param(1:3, ipg) = (/x, y, z/)
             this%points(1:3, ipg) = coorac(1:3)
             this%weights(ipg) = abs(jaco)*poidpg(ipg)
         end do

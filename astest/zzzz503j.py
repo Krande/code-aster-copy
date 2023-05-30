@@ -152,7 +152,19 @@ f_lagr = hho.projectOnLagrangeSpace(f_hho)
 f2_hho = hho.projectOnHHOSpace(f_lagr)
 f2_lagr = hho.projectOnLagrangeSpace(f2_hho)
 diff = f_lagr - f2_lagr
-test.assertAlmostEqual(diff.norm("NORM_2"), 0.0, delta=0.7)
+test.assertAlmostEqual(diff.norm("NORM_2"), 0.0, delta=1e-4)
+diff = f_hho - f2_hho
+test.assertAlmostEqual(diff.norm("NORM_2"), 0.0, delta=1e-4)
+
+f1 = FORMULE(VALE="X*X+Y*Y", NOM_PARA=["X", "Y"])
+f_hho = hho.projectOnHHOSpace(f1)
+f_lagr = hho.projectOnLagrangeSpace(f_hho)
+f2_hho = hho.projectOnHHOSpace(f_lagr)
+f2_lagr = hho.projectOnLagrangeSpace(f2_hho)
+diff = f_lagr - f2_lagr
+test.assertAlmostEqual(diff.norm("NORM_2"), 0.0, delta=1e-4)
+diff = f_hho - f2_hho
+test.assertAlmostEqual(diff.norm("NORM_2"), 0.0, delta=5e-2)
 
 test.printSummary()
 

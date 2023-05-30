@@ -323,7 +323,7 @@ contains
 !
 !===================================================================================================
 !
-    function hhoFaceInitCoor(coorno, numnodes, nbnodes, ndimF) result(nodes_face)
+    function hhoFaceInitCoor(coorno, numnodes, nbnodes, ndimF, numsorted_) result(nodes_face)
 !
         implicit none
 !
@@ -332,6 +332,7 @@ contains
         integer, dimension(4), intent(in)           :: numnodes
         integer, intent(in)                         :: nbnodes
         real(kind=8), dimension(3, 4)                :: nodes_face
+        integer, intent(out), optional              ::  numsorted_(4)
 !
 ! --------------------------------------------------------------------------------------------------
 !   We have to reorder the nodes of the face to use the same basis functions for a face
@@ -433,6 +434,10 @@ contains
         do ino = 1, nbnodes
             nodes_face(1:3, ino) = coorno(1:3, numsorted(ino))
         end do
+
+        if (present(numsorted_)) then
+            numsorted_ = numsorted
+        end if
 !
     end function
 !

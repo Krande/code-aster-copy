@@ -429,8 +429,9 @@ contains
         npg = hhoQuad%nbQuadPoints
         ASSERT(npg <= MAX_QP_FACE)
 !
+        ff = 0.d0
         do ipg = 1, npg
-            call elrfvf(typma, hhoQuad%points(1:3, ipg), ff)
+            call elrfvf(typma, hhoQuad%points_param(1:3, ipg), ff)
             do ino = 1, hhoFace%nbnodes
                 FuncValuesQP(ipg) = FuncValuesQP(ipg)+ff(ino)*funcnoEF(ino)
             end do
@@ -479,7 +480,7 @@ contains
         call cellNameL2S(hhoFace%typema, typma)
 !
         do ipg = 1, npg
-            call elrfvf(typma, hhoQuad%points(1:3, ipg), ff)
+            call elrfvf(typma, hhoQuad%points_param(1:3, ipg), ff)
             do idim = 1, celldim
                 do ino = 1, hhoFace%nbnodes
                     FuncValuesQP(idim, ipg) = FuncValuesQP(idim, ipg)+ &
@@ -531,7 +532,7 @@ contains
         call cellNameL2S(hhoCell%typema, typma)
 !
         do ipg = 1, npg
-            call elrfvf(typma, hhoQuad%points(1:3, ipg), ff)
+            call elrfvf(typma, hhoQuad%points_param(1:3, ipg), ff)
             do idim = 1, hhoCell%ndim
                 do ino = 1, hhoCell%nbnodes
                     FuncValuesQP(idim, ipg) = FuncValuesQP(idim, ipg)+ &
@@ -582,8 +583,9 @@ contains
         ASSERT(npg <= MAX_QP_CELL)
         call cellNameL2S(hhoCell%typema, typma)
 !
+        ff = 0.d0
         do ipg = 1, npg
-            call elrfvf(typma, hhoQuad%points(1:3, ipg), ff)
+            call elrfvf(typma, hhoQuad%points_param(1:3, ipg), ff)
             do ino = 1, hhoCell%nbnodes
                 FuncValuesQP(ipg) = FuncValuesQP(ipg)+ff(ino)*funcnoEF(ino)
             end do
