@@ -33,8 +33,6 @@ test.assertEqual(list_i.size(), 11, msg="nbsteps")
 test.assertIsNone(list_i.getInitial())
 test.assertAlmostEqual(list_i.getFinal(), 10.0)
 
-list_i.register_event(
-    TimeStepper.Split(TimeStepper.Error(), nbSubSteps=2, maxLevel=3, minStep=0.05)
-)
+list_i.register_event(TimeStepper.Split(TimeStepper.Error(), nbSubSteps=2, minStep=0.05))
 
 code_aster.close()

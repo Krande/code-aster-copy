@@ -52,15 +52,16 @@ class GeometricSolver(SolverFeature, EventSource):
         self.current_incr = 0
         self.current_matrix = None
 
-    def notify(self, convManager):
+    def notifyObservers(self, convManager):
         """Notify all observers about the convergence.
 
         Arguments:
             convManager (ConvergenceManager): Object that holds the criteria values.
         """
         self._data = convManager.values.copy()
+        self._data["criteria"] = convManager.criteria.copy()
         self._data["hasConverged"] = convManager.hasConverged()
-        super().notify()
+        super().notifyObservers()
 
     def get_state(self):
         """Returns the current residuals to be shared with observers."""
@@ -184,7 +185,7 @@ class GeometricSolver(SolverFeature, EventSource):
 
             self.current_incr += 1
             matrix_pred = matrix_type
-            self.notify(convManager)
+            self.notifyObservers(convManager)
 
         if not convManager.hasConverged():
             raise ConvergenceError("MECANONLINE9_7")

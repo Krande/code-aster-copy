@@ -946,9 +946,7 @@ class DiscreteComputation:
             ElementaryMatrix: elementary matrices
         """
 
-    def getElasticStiffnessMatrix(
-        self, time=0.0, fourierMode=-1, groupOfCells=[], with_dual=True
-    ):
+    def getElasticStiffnessMatrix(self, time=0.0, fourierMode=-1, groupOfCells=[], with_dual=True):
         """Return the elementary matrices for elastic Stiffness matrix.
         Option RIGI_MECA.
 
@@ -995,9 +993,7 @@ class DiscreteComputation:
               ElementaryMatrixReal: elementary fluid-structure mass matrix
         """
 
-    def getFluidStructureStiffnessMatrix(
-        self, time=0.0, fourierMode=-1, groupOfCells=[]
-    ):
+    def getFluidStructureStiffnessMatrix(self, time=0.0, fourierMode=-1, groupOfCells=[]):
         """Return the elementary matrices for fluid-structure stiffness matrix.
         Option RIGI_FLUI_STRUC.
 
@@ -1178,9 +1174,7 @@ class DiscreteComputation:
             ElementaryMatrix: elementary mass matrix
         """
 
-    def getLinearConductivityMatrix(
-        self, time, fourierMode=0, groupOfCells=[], with_dual=True
-    ):
+    def getLinearConductivityMatrix(self, time, fourierMode=0, groupOfCells=[], with_dual=True):
         """Return the elementary matices for linear thermal matrix.
         Option RIGI_THER.
 
@@ -1254,9 +1248,7 @@ class DiscreteComputation:
             ElementaryMatrix: elementary mass matrix
         """
 
-    def getNeumannForces(
-        self, time=0.0, time_step=0.0, theta=1.0, previousPrimalField=None
-    ):
+    def getNeumannForces(self, time=0.0, time_step=0.0, theta=1.0, previousPrimalField=None):
         """Return the Neumann forces vector
 
         Arguments:
@@ -1360,9 +1352,7 @@ class DiscreteComputation:
               FieldOnNodesReal: imposed thermal vector
         """
 
-    def getTransientThermalForces(
-        self, time, time_step, theta, previousPrimalField=None
-    ):
+    def getTransientThermalForces(self, time, time_step, theta, previousPrimalField=None):
         """Compute Transient Thermal Load
 
         Arguments:

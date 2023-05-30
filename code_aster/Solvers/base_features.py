@@ -192,10 +192,10 @@ class BaseFeature(metaclass=FeatureMeta):
 
 
 class Observer:
-    """The Observer interface declares the update method, used by events."""
+    """The Observer interface declares the `notify` method, used by events."""
 
-    def update(self, event):
-        """Receive update from event.
+    def notify(self, event):
+        """Receive notification from event.
 
         Arguments:
             event (EventSource): Object that sends the notification.
@@ -230,10 +230,10 @@ class EventSource:
         """
         self._observers.remove(observer)
 
-    def notify(self):
+    def notifyObservers(self):
         """Notify all observers about an event."""
         for obs in self._observers:
-            obs.update(self)
+            obs.notify(self)
 
     def get_state(self):
         """Returns the current state to be shared with observers."""

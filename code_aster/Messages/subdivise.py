@@ -25,33 +25,33 @@ cata_msg = {
     1: _("""          On utilise la découpe manuelle."""),
     2: _("""          On utilise la découpe automatique."""),
     3: _(
-        """          On ne peut pas découper le pas de temps car la fonctionnalité n'est pas activée.
-                    Pour activer la découpe du pas de temps, utilisez la commande DEFI_LIST_INST."""
+        """On ne peut pas découper le pas de temps car la fonctionnalité n'est pas activée.
+Pour activer la découpe du pas de temps, utilisez la commande DEFI_LIST_INST."""
     ),
     10: _(
-        """          Découpe uniforme à partir de l'instant <%(r1)19.12e> en <%(i1)d> pas de temps.
-                    (soit un incrément constant de <%(r2)19.12e>)"""
+        """Découpe uniforme à partir de l'instant %(r1)19.12e en %(i1)d pas de temps.
+(soit un incrément constant de %(r2)19.12e)"""
     ),
     11: _(
-        """          Découpe non uniforme à partir de l'instant <%(r1)19.12e> en <%(i1)d> pas de temps.
-                    (avec un incrément initial de <%(r2)19.12e>, puis des incréments de <%(r3)19.12e>)"""
+        """Découpe non uniforme à partir de l'instant %(r1)19.12e en %(i1)d pas de temps.
+(avec un incrément initial de %(r2)19.12e,  puis des incréments de %(r3)19.12e)"""
     ),
     12: _(
-        """          Découpe non uniforme à partir de l'instant <%(r1)19.12e> en <%(i1)d> pas de temps.
-                    (avec des incréments de <%(r2)19.12e>, puis un incrément final de <%(r3)19.12e>)"""
+        """Découpe non uniforme à partir de l'instant %(r1)19.12e en %(i1)d pas de temps.
+(avec des incréments de %(r2)19.12e, puis un incrément final de %(r3)19.12e)"""
     ),
     13: _(
-        """          On tente de découper les pas de temps au delà de l'instant <%(r1)19.12e>, pendant une durée de <%(r2)19.12e>."""
+        """On tente de découper les pas de temps au delà de l'instant %(r1)19.12e, pendant une durée de %(r2)19.12e."""
     ),
-    14: _("""          On a découpé les pas de temps jusqu'à l'instant <%(r1)19.12e>."""),
+    14: _("""On a découpé les pas de temps jusqu'à l'instant %(r1)19.12e."""),
     15: _(
-        """          On ne découpe pas les pas de temps au delà de l'instant <%(r1)19.12e>.
-                    Les incréments de temps au delà de cet instant sont tous plus petits que SUBD_INST."""
+        """On ne découpe pas les pas de temps au delà de l'instant %(r1)19.12e.
+Les incréments de temps au delà de cet instant sont tous plus petits que SUBD_INST."""
     ),
-    16: _("""          Le pas de temps minimum <%(r1)19.12e> (SUBD_PAS_MINI) est atteint."""),
-    17: _("""          Le nombre maximal <%(i1)d> de niveaux de subdivision est atteint."""),
+    16: _("""Le pas de temps minimum %(r1)19.12e (SUBD_PAS_MINI) est atteint."""),
+    17: _("""Le nombre maximal %(i1)d de niveaux de subdivision est atteint."""),
     18: _(
-        """          La découpe sera maintenue au delà de l'instant <%(r1)19.12e>, pendant une durée de <%(r2)19.12e>."""
+        """La découpe sera maintenue au delà de l'instant %(r1)19.12e, pendant une durée de %(r2)19.12e."""
     ),
     50: _(""" <Action><Échec> Échec dans la tentative de découper le pas de temps."""),
     51: _(""" <Action> On découpe le pas de temps."""),

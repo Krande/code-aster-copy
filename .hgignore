@@ -3,7 +3,6 @@ syntax: glob
 *.pyc
 *.bak
 *.orig
-fichierOut.txt
 
 syntax: regexp
 ^build/
@@ -18,5 +17,5 @@ syntax: regexp
 .*%$
 ^.*/fort\.*
 ^fort\.*
-glob\.*
-vola\.*
+^glob\.*
+^vola\.*

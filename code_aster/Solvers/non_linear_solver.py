@@ -178,11 +178,11 @@ class NonLinearSolver(SolverFeature):
         while not self.hasFinished():
             timeEndStep = self.stepper.getCurrent()
             self.phys_state.time_step = timeEndStep - self.phys_state.time
-            logger.info(
-                MessageLog.GetText(
-                    "I", "MECANONLINE6_1", valr=timeEndStep, vali=self.stepper.splitting_level
-                )
-            )
+            if self.stepper.splitting_level <= 0:
+                logger.info(MessageLog.GetText("I", "MECANONLINE6_7", valr=timeEndStep))
+            else:
+                args = dict(valr=timeEndStep, vali=self.stepper.splitting_level)
+                logger.info(MessageLog.GetText("I", "MECANONLINE6_5", **args))
 
             if self.phys_pb.getMaterialField().hasExternalStateVariable():
                 self.phys_state.externVar_next = self.phys_pb.getExternalStateVariables(timeEndStep)

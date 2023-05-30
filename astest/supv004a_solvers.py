@@ -502,6 +502,25 @@ class TestTimeStepper(unittest.TestCase):
         with self.assertRaisesRegex(SolverError, "trop petit"):
             stp.failed(ConvergenceError("MESSAGEID"))
 
+    def test30_autosplit(self):
+        residuals = [
+            0.54505899475475184,
+            0.28564664846422366,
+            0.54818981044729176,
+            0.28745504803237071,
+            0.54742632449177908,
+            0.28701074524171433,
+            0.54761426225949084,
+        ]
+        xdet, xa0, xa1 = TimeStepper.AutoSplit._extrapol(residuals)
+        self.assertAlmostEqual(xdet, 10.0202568758)
+        self.assertAlmostEqual(xa0, 68.5865097516)
+        self.assertAlmostEqual(xa1, 2.8476138960)
+        crit = dict(RESI_GLOB_RELA=1.0e-10, ITER_GLOB_MAXI=10)
+        nbSteps, ratio = TimeStepper.AutoSplit._splittingRatio(residuals, crit)
+        self.assertEqual(nbSteps, 4)
+        self.assertAlmostEqual(ratio, 0.14285714285)
+
 
 class TestPhysicalState(unittest.TestCase):
     """Check for PhysicalState"""

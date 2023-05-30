@@ -163,10 +163,10 @@ class ProblemSolver(SolverFeature):
         if not converg:
             args = self.get_feature(SOP.Keywords)
             converg = ConvergenceManager()
-            for crit in ("RESI_GLOB_RELA", "RESI_GLOB_MAXI"):
-                epsilon = args["CONVERGENCE"].get(crit)
-                if epsilon is not None:
-                    converg.addCriteria(crit, epsilon)
+            for crit in ("RESI_GLOB_RELA", "RESI_GLOB_MAXI"):  # "ITER_GLOB_MAXI"
+                value = args["CONVERGENCE"].get(crit)
+                if value is not None:
+                    converg.addCriteria(crit, value)
             if args.get("CONTACT"):
                 if args["CONTACT"].get("ALGO_RESO_GEOM") == "NEWTON":
                     converg.addCriteria("RESI_GEOM", args["CONTACT"].get("RESI_GEOM"))
@@ -193,9 +193,9 @@ class ProblemSolver(SolverFeature):
         if not step_crit:
             args = self.get_feature(SOP.Keywords)
             step_crit = ConvergenceManager()
-            epsilon = 1.0e150
-            epsilon = (args.get("CONTACT") or {}).get("RESI_GEOM", epsilon)
-            step_crit.addCriteria("RESI_GEOM", epsilon)
+            value = 1.0e150
+            value = (args.get("CONTACT") or {}).get("RESI_GEOM", value)
+            step_crit.addCriteria("RESI_GEOM", value)
         for feat, required in step_crit.undefined():
             step_crit.use(self._get(feat, required))
         self.use(step_crit, SOP.ForStep)
@@ -232,7 +232,6 @@ class ProblemSolver(SolverFeature):
         return step_solver
 
     def _get(self, option, required):
-        logger.debug(f"--- requesting for {option}")
         if option & SOP.PhysicalProblem:
             return self.phys_pb
         if option & SOP.PhysicalState:

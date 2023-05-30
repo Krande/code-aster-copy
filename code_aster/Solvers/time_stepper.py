@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from math import log10, sqrt
+from math import log, sqrt, exp
 
 import numpy
 from libaster import ConvergenceError, IntegrationError, SolverError
@@ -239,6 +239,7 @@ class TimeStepper(SolverFeature, Observer):
 
     def completed(self):
         """Register the current step as completed successfully."""
+        self._state = {}
         if self.hasFinished():
             raise IndexError("no more timesteps")
         self._current += 1
@@ -248,19 +249,30 @@ class TimeStepper(SolverFeature, Observer):
             while self._split and self.cmp(last, self._split[-1]) >= 0:
                 self._split.pop()
 
-    def update(self, event):
-        """Receive update from event.
+    def notify(self, event):
+        """Receive notification from event, store the data from a future use
+        by actions.
 
         Arguments:
             event (EventSource): Object that sends the notification.
         """
+        state = self._state
         eid, data = event.get_state()
         if eid & SOP.IncrementalSolver:
             logger.debug("+ received from incremental: %s", data)
+            if "PRED" not in data.get("matrix", ""):
+                state.setdefault("RESI_GLOB_RELA", [])
+                state["RESI_GLOB_RELA"].append(data["RESI_GLOB_RELA"])
+                state.setdefault("RESI_GLOB_MAXI", [])
+                state["RESI_GLOB_MAXI"].append(data["RESI_GLOB_MAXI"])
+                crit = state.setdefault("criteria", {})
+                # FIXME default value for zzzz510c is 10, not yet added by ProblemSolver
+                crit["ITER_GLOB_MAXI"] = data.get("criteria", {}).get("ITER_GLOB_MAXI", 10)
+                crit["RESI_GLOB_RELA"] = data.get("criteria", {}).get("RESI_GLOB_RELA", 1.0e-12)
         if eid & SOP.ConvergenceCriteria:
             logger.debug("+ received from conv.crit.: %s", data)
             if data.get("hasConverged"):
-                self._state["ITER_GLOB_MAXI"] = data.get("ITER_GLOB_MAXI", 0)
+                state["ITER_GLOB_MAXI"] = data.get("ITER_GLOB_MAXI", 0)
 
     def getData(self, key, default=None):
         """Get a value from the data shared by iterator objects.
@@ -379,7 +391,7 @@ class TimeStepper(SolverFeature, Observer):
                     maxValue=fail["VALE_REF"],
                     group=fail["GROUP_MA"] or fail["GROUP_NO"],
                 )
-            if not event:  # not yet supported, ignored
+            else:  # not yet supported, ignored
                 continue
             if fail["ACTION"] == "ARRET":
                 act = TimeStepper.Interrupt(event)
@@ -454,7 +466,12 @@ class TimeStepper(SolverFeature, Observer):
             if not isinstance(act.event, TimeStepper.Error):
                 continue
             if act.event.is_raised(exception=exc):
-                act.call(timeStepper=self, exception=exc)
+                act.call(
+                    timeStepper=self,
+                    exception=exc,
+                    residuals=self.getData("RESI_GLOB_RELA", []),
+                    criteria=self.getData("criteria", {}),
+                )
                 return
         raise TypeError("should not pass here!")  # because of default error
 
@@ -522,8 +539,7 @@ class TimeStepper(SolverFeature, Observer):
                 )
                 delta_t = self._maxStep
             if delta_t <= self._minStep:
-                logger.info(MessageLog.GetText("I", "ADAPTATION_11", valr=delta_t))
-                delta_t = self._minStep
+                logger.error(MessageLog.GetText("F", "ADAPTATION_11", valr=delta_t))
             new = self.getCurrent() + delta_t
             index = self._current + 1
             if self.cmp(new, self._times[index]) < 0:
@@ -669,7 +685,6 @@ class TimeStepper(SolverFeature, Observer):
         """
 
         _nbSubSteps = _minStep = None
-        _stop = None
         __setattr__ = no_new_attributes(object.__setattr__)
 
         def __init__(self, event, nbSubSteps, minStep=1.0e-12):
@@ -677,7 +692,6 @@ class TimeStepper(SolverFeature, Observer):
             assert nbSubSteps > 1, nbSubSteps
             self._nbSubSteps = nbSubSteps
             self._minStep = minStep
-            self._stop = TimeStepper.Interrupt(event)
 
         def copy(self):
             """Return a copy of the object."""
@@ -689,20 +703,23 @@ class TimeStepper(SolverFeature, Observer):
             Arguments:
                 context (dict): Context of the event.
             """
-            logger.info(MessageLog.GetText("I", "MECANONLINE10_33"))
             logger.info(MessageLog.GetText("I", "SUBDIVISE_1"))
             stp = context["timeStepper"]
             last = stp.getCurrent()
             stp._append_split(last)
             if stp.splitting_level > stp._maxLevel:
-                self._stop.call(exception=SolverError("SUBDIVISE_17", (), (stp._maxLevel,), ()))
+                stop = TimeStepper.Interrupt(self._event)
+                stop.call(exception=SolverError("SUBDIVISE_17", (), (stp._maxLevel,), ()))
 
             time_step = stp.getIncrement() / self._nbSubSteps
+            logger.info(
+                MessageLog.GetText("I", "SUBDIVISE_10", (), (self._nbSubSteps,), (last, time_step))
+            )
             if time_step < self._minStep:
-                self._stop.call(exception=SolverError("SUBDIVISE_53", (), (), (self._minStep,)))
+                stop = TimeStepper.Interrupt(self._event)
+                stop.call(exception=SolverError("SUBDIVISE_53", (), (), (self._minStep,)))
             if time_step < stp.null_increment:
                 logger.warning(MessageLog.GetText("A", "SUBDIVISE_54"))
-            logger.info(MessageLog.GetText("I", "SUBDIVISE_51"))
             new = stp.getCurrent()
             for _ in range(max(0, self._nbSubSteps - 1)):
                 new -= time_step
@@ -735,30 +752,98 @@ class TimeStepper(SolverFeature, Observer):
             Arguments:
                 context (dict): Context of the event.
             """
-            logger.info(MessageLog.GetText("I", "MECANONLINE10_33"))
             logger.info(MessageLog.GetText("I", "SUBDIVISE_2"))
+            logger.info(MessageLog.GetText("I", "EXTRAPOLATION_1"))
             stp = context["timeStepper"]
+            last = stp.getCurrent()
             residuals = context["residuals"]
+            if len(residuals) < 6:
+                logger.info(MessageLog.GetText("I", "EXTRAPOLATION_3"))
+                split = TimeStepper.Split(self._event, nbSubSteps=4, minStep=self._minStep)
+                ctxt = context.copy()
+                ctxt["exception"] = SolverError("EXTRAPOLATION_3")
+                split.call(**ctxt)
+                return
+
+            stp._append_split(last)
+            if stp.splitting_level > stp._maxLevel:
+                stop = TimeStepper.Interrupt(self._event)
+                stop.call(exception=SolverError("SUBDIVISE_17", (), (stp._maxLevel,), ()))
+            # ignore the first three points
+            residuals = residuals[3:]
+            nbSteps, ratio = self._splittingRatio(residuals, context["criteria"])
+
+            dt0 = ratio * stp.getIncrement()
+            dtn = (1.0 - ratio) * stp.getIncrement() / (nbSteps - 1)
+            logger.info(MessageLog.GetText("I", "SUBDIVISE_11", (), (nbSteps,), (last, dt0, dtn)))
+            if dtn < self._minStep:
+                stop = TimeStepper.Interrupt(self._event)
+                stop.call(exception=SolverError("SUBDIVISE_53", (), (), (self._minStep,)))
+            if dtn < stp.null_increment:
+                logger.warning(MessageLog.GetText("A", "SUBDIVISE_54"))
+            new = stp.getCurrent()
+            for _ in range(nbSteps - 1):
+                new -= dtn
+                stp._insert(stp._current, new)
+
+        @staticmethod
+        def _splittingRatio(residuals, criteria):
+            """Compute the ratio of the first step."""
+            cresi = criteria["RESI_GLOB_RELA"]
+            minIter = criteria["ITER_GLOB_MAXI"]
+            maxIter = criteria["ITER_GLOB_MAXI"]
+            # nmdcae
+            xdet, xa0, xa1 = TimeStepper.AutoSplit._extrapol(residuals)
+            nbSteps = 4
+            ratio0 = 24.0 / ((3.0 * nbSteps + 1) ** 2 - 1.0)
+            if xdet < 1.0e-16:
+                ratio = ratio0
+            else:
+                ciblen = (xa0 + xa1 * log(cresi)) / xdet
+                if 1.2 * ciblen < minIter:
+                    ratio = ratio0
+                else:
+                    if xa1 < 1.0e-16:
+                        ratio = ratio0
+                    else:
+                        if ciblen - maxIter <= -10.0 * xa1 / xdet:
+                            ratio = exp((ciblen - maxIter) * xdet / xa1)
+                        else:
+                            ratio = exp(-10.0)
+                        ratio = 0.48485 * ratio
+                        xxbb = (-1.0 + sqrt(1.0 + 24.0 / ratio)) / 3.0
+                        if xxbb < 2.0:
+                            nbSteps = 2
+                            ratio = 0.5
+                        else:
+                            nbSteps = round(xxbb)
+            logger.debug("splittingRatio: %s, %s", nbSteps, ratio)
+            return nbSteps, ratio
+
+        @staticmethod
+        def _extrapol(residuals):
+            """Extrapolation: (xa0 + iter*xa1) / xdet"""
+            # nmdcrg
             xn = 0.0
             sx = 0.0
             sy = 0.0
             sxx = 0.0
             syx = 0.0
             for i, resi in enumerate(residuals):
-                xx = log10(resi)
-                if i >= len(residuals) - 2:
+                xx = log(resi)
+                if i >= len(residuals) - 3:
                     weight = 2.0
                 else:
                     weight = 1.0
                 xn += weight
                 sx += weight * xx
-                sy += weight * (i + 1)
-                sxx += weight * xx * 2
-                syx += weight * xx * (i + 1)
-            a1 = sxx * sy - sx * syx
-            a2 = -sx * sy + syx * xn
-            b = -(sx**2) + sxx * xn
-            assert False, "WTF"
+                sy += weight * (i + 3)
+                sxx += weight * xx**2
+                syx += weight * xx * (i + 3)
+            xdet = -(sx**2) + sxx * xn
+            xa0 = sxx * sy - sx * syx
+            xa1 = -sx * sy + syx * xn
+            return xdet, xa0, xa1
 
     class AdaptConst(AdaptAction):
         """This action returns a constant multiplicative factor for the next timestep.
@@ -813,7 +898,7 @@ class TimeStepper(SolverFeature, Observer):
                 context (dict): Context of the event.
             """
             stp = context["timeStepper"]
-            nbIter = stp.getData("ITER_GLOB_MAX", self._nbRef - 1)
+            nbIter = stp.getData("ITER_GLOB_MAXI", self._nbRef - 1)
             return sqrt(self._nbRef / (nbIter + 1))
 
     class AdaptIncrement(AdaptAction):

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,32 +24,44 @@ from ..Utilities import _
 cata_msg = {
     1: _(
         """
- Instant de calcul: %(r1)19.12e - Niveau de découpe: %(i1)d
+Instant de calcul: %(r1)19.12e - Niveau de découpe: %(i1)d
 """
     ),
     2: _(
         """
- Post-traitement: calcul d'un mode de flambement
+Post-traitement: calcul d'un mode de flambement
 """
     ),
     3: _(
         """
- Post-traitement: calcul d'un mode vibratoire
+Post-traitement: calcul d'un mode vibratoire
 """
     ),
     4: _(
         """
- La gestion automatique du pas de temps (DEFI_LIST_INST/METHODE='AUTO')
- avec le schéma IMPLEX (DEFI_LIST_INST/MODE_CALCUL_TPLUS='IMPLEX') nécessite
- de traiter la résolution par la méthode IMPLEX (STAT/DYNA_NON_LINE/METHODE='IMPLEX').
- Conseil :
+La gestion automatique du pas de temps (DEFI_LIST_INST/METHODE='AUTO')
+avec le schéma IMPLEX (DEFI_LIST_INST/MODE_CALCUL_TPLUS='IMPLEX') nécessite
+de traiter la résolution par la méthode IMPLEX (STAT/DYNA_NON_LINE/METHODE='IMPLEX').
+Conseil :
    - Choisissez STAT/DYNA_NON_LINE/METHODE='IMPLEX'
    - ou bien choisissez un autre schéma d'adaptation du pas de temps (DEFI_LIST_INST/MODE_CALCUL_TPLUS).
  """
     ),
+    5: _(
+        """
+---------------------------------------------------------------------
+Instant de calcul: %(r1)19.12e - Niveau de découpe: %(i1)d
+"""
+    ),
     6: _(
         """
- Instant de calcul: %(r1)19.12e
+Instant de calcul: %(r1)19.12e
+"""
+    ),
+    7: _(
+        """
+---------------------------------------------------------------------
+Instant de calcul: %(r1)19.12e
 """
     ),
     10: _("""  Le mode vibratoire de numéro d'ordre %(i1)d a pour fréquence %(r1)19.12e."""),

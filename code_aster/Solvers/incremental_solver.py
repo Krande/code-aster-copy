@@ -69,15 +69,18 @@ class IncrementalSolver(SolverFeature, EventSource):
         super().__init__()
         self._data = {}
 
-    def notify(self, convManager):
+    def notifyObservers(self, convManager, matrix_type):
         """Notify all observers about the convergence.
 
         Arguments:
             convManager (ConvergenceManager): Object that holds the criteria values.
+            matrix_type (str): Type of matrix used.
         """
         self._data = convManager.values.copy()
+        self._data["criteria"] = convManager.criteria.copy()
+        self._data["matrix"] = matrix_type
         self._data["hasConverged"] = convManager.hasConverged()
-        super().notify()
+        super().notifyObservers()
 
     def get_state(self):
         """Returns the current residuals to be shared with observers."""
@@ -367,7 +370,7 @@ class IncrementalSolver(SolverFeature, EventSource):
         # evaluate convergence
         convManager = self.get_feature(SOP.ConvergenceManager)
         convManager.evalNormResidual(residuals)
-        self.notify(convManager)
+        self.notifyObservers(convManager, matrix_type)
 
         if not convManager.hasConverged():
             # Time at end of current step
