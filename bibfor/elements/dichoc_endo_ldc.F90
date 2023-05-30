@@ -30,7 +30,7 @@ subroutine dichoc_endo_ldc(for_discret, iret)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    use te0047_type
+    use te0047_type, only: te0047_dscr
     implicit none
 !
 #include "jeveux.h"
@@ -60,16 +60,14 @@ subroutine dichoc_endo_ldc(for_discret, iret)
 !
     integer :: imatri, ivarim, irep, ifono, icontp, ivarip, iadzi, iazk24, iiter, iterat
     integer :: icarcr, idf, ipi, imate, jmater, nbmater
-    integer :: ii, neq, kk
+    integer :: ii, kk
     character(len=24) :: messak(6)
 !
     integer             :: icompo, imater, igeom, icontm, jdc, ivitp, idepen, iviten, jtm, jtp
     integer             :: iretlc
-    real(kind=8)        :: klc(for_discret%nno*for_discret%nc*2*for_discret%nno*for_discret%nc*2)
-    real(kind=8)        :: dvl(for_discret%nno*for_discret%nc)
-    real(kind=8)        :: dpe(for_discret%nno*for_discret%nc)
-    real(kind=8)        :: dve(for_discret%nno*for_discret%nc)
-    real(kind=8)        :: klv(for_discret%nbt), fl(for_discret%nno*for_discret%nc)
+    real(kind=8)        :: klc(for_discret%neq*for_discret%neq), klv(for_discret%nbt)
+    real(kind=8)        :: dvl(for_discret%neq), dpe(for_discret%neq), dve(for_discret%neq)
+    real(kind=8)        :: fl(for_discret%neq)
     real(kind=8)        :: raide(6), force(1)
     real(kind=8)        :: r8bid
     character(len=8)    :: k8bid
@@ -84,7 +82,7 @@ subroutine dichoc_endo_ldc(for_discret, iret)
 !   Pour l'intégration de la loi de comportement
     real(kind=8)            :: temps0, temps1, dtemps
 !   Paramètres de la loi :     jeu
-    integer, parameter       :: ijeu = 1
+    integer, parameter      :: ijeu = 1
     integer, parameter      :: nbpara = 1, nbpain = 2*3+3
     real(kind=8)            :: ldcpar(nbpara)
     integer                 :: ldcpai(nbpain)
@@ -94,7 +92,7 @@ subroutine dichoc_endo_ldc(for_discret, iret)
     real(kind=8)            :: y0(nbequa), dy0(nbequa), resu(nbequa*2), errmax, ynorme(nbequa)
     integer                 :: nbdecp
 !   Variables internes
-    integer, parameter       :: nbvari = 5, nbcorr = 4, idebut = nbvari
+    integer, parameter      :: nbvari = 5, nbcorr = 4, idebut = nbvari
     integer                 :: Correspond(nbcorr)
     real(kind=8)            :: varmo(nbvari), varpl(nbvari)
 ! --------------------------------------------------------------------------------------------------
@@ -124,8 +122,6 @@ subroutine dichoc_endo_ldc(for_discret, iret)
         call utmess('F', 'DISCRETS_22', nk=5, valk=messak)
     end if
 ! --------------------------------------------------------------------------------------------------
-!   Nombre de degré de liberté
-    neq = for_discret%nno*for_discret%nc
 !   Paramètres en entrée
     call jevech('PMATERC', 'L', imater)
     call jevech('PGEOMER', 'L', igeom)
@@ -383,9 +379,9 @@ subroutine dichoc_endo_ldc(for_discret, iret)
     if (resi) then
         call jevech('PCONTPR', 'E', icontp)
 !       demi-matrice klv transformée en matrice pleine klc
-        call vecma(klv, for_discret%nbt, klc, neq)
+        call vecma(klv, for_discret%nbt, klc, for_discret%neq)
 !       calcul de fl = klc.dul (incrément d'effort)
-        call pmavec('ZERO', neq, klc, for_discret%dul, fl)
+        call pmavec('ZERO', for_discret%neq, klc, for_discret%dul, fl)
 !       efforts généralisés aux noeuds 1 et 2 (repère local)
 !       on change le signe des efforts sur le premier noeud pour les MECA_DIS_TR_L et MECA_DIS_T_L
         do ii = 1, for_discret%nc

@@ -31,7 +31,7 @@ subroutine dis_contact_frot(for_discret, iret)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    use te0047_type
+    use te0047_type, only: te0047_dscr
     implicit none
 !
 #include "asterf_types.h"
@@ -64,14 +64,13 @@ subroutine dis_contact_frot(for_discret, iret)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jdc, irep, imat, ivarim, ii, ivitp, idepen, iviten, neq, igeom, ivarip
+    integer :: jdc, irep, imat, ivarim, ii, ivitp, idepen, iviten, igeom, ivarip
     integer :: iretlc, ifono, imatsym, icarcr, iiter, iterat
     integer :: icontm, icontp
 !
-    real(kind=8)     :: klc(for_discret%nno*for_discret%nc*2*for_discret%nno*for_discret%nc*2)
-    real(kind=8)     :: dvl(for_discret%nno*for_discret%nc), dpe(for_discret%nno*for_discret%nc)
-    real(kind=8)     :: dve(for_discret%nno*for_discret%nc)
-    real(kind=8)     :: klv(for_discret%nbt), fl(for_discret%nno*for_discret%nc)
+    real(kind=8)     :: klc(for_discret%neq*for_discret%neq), klv(for_discret%nbt)
+    real(kind=8)     :: dvl(for_discret%neq), dpe(for_discret%neq), dve(for_discret%neq)
+    real(kind=8)     :: fl(for_discret%neq)
     real(kind=8)     :: force(3), raide(6)
     real(kind=8)     :: r8bid
     character(len=8) :: k8bid
@@ -91,8 +90,9 @@ subroutine dis_contact_frot(for_discret, iret)
 ! --------------------------------------------------------------------------------------------------
 !   Pour l'intégration de la loi de comportement
     real(kind=8)            :: temps0, temps1, dtemps
-!   Paramètres de la loi :     Kn      Kt    mu     cn     ct     jeu,    ky,    kz
- integer, parameter       :: ikn = 1, ikt = 2, imu = 3, icn = 4, ict = 5, ijeu = 6, iky = 7, ikz = 8
+!   Paramètres de la loi :     Kn       Kt       mu       cn       ct       jeu,      ky,    kz
+    integer, parameter      :: ikn = 1, ikt = 2, imu = 3, icn = 4, ict = 5, ijeu = 6, &
+                               iky = 7, ikz = 8
     integer, parameter      :: nbpara = 8
     real(kind=8)            :: ldcpar(nbpara)
     integer                 :: ldcpai(2)
@@ -102,7 +102,7 @@ subroutine dis_contact_frot(for_discret, iret)
     real(kind=8)            :: y0(nbequa), dy0(nbequa), resu(nbequa*2), errmax
     integer                 :: nbdecp
 !   Variables internes
-    integer, parameter       :: nbvari = 9, nbcorr = 8, idebut = 9
+    integer, parameter      :: nbvari = 9, nbcorr = 8, idebut = 9
     integer                 :: Correspond(nbcorr)
     real(kind=8)            :: varmo(nbvari), varpl(nbvari)
 
@@ -113,8 +113,6 @@ subroutine dis_contact_frot(for_discret, iret)
 ! --------------------------------------------------------------------------------------------------
 !
     iret = 0
-!   Nombre de degré de liberté
-    neq = for_discret%nno*for_discret%nc
 !   Paramètres en entrée
     call jevech('PCADISK', 'L', jdc)
     call jevech('PGEOMER', 'L', igeom)
@@ -398,7 +396,7 @@ subroutine dis_contact_frot(for_discret, iret)
 !
 888 continue
 ! --------------------------------------------------------------------------------------------------
-    ! Actualisation de la matrice tangente : klv(i,i) = raide(i)
+!   Actualisation de la matrice tangente : klv(i,i) = raide(i)
     call diklvraid(for_discret%nomte, klv, raide)
     if (for_discret%lMatr) then
         call jevech('PMATUUR', 'E', imatsym)
@@ -408,12 +406,12 @@ subroutine dis_contact_frot(for_discret, iret)
             call ut2mlg(for_discret%nno, for_discret%nc, for_discret%pgl, klv, zr(imatsym))
         end if
     end if
-    !
+!
     if (for_discret%lVect .or. for_discret%lSigm) then
         ! Demi-matrice klv transformée en matrice pleine klc
-        call vecma(klv, for_discret%nbt, klc, neq)
+        call vecma(klv, for_discret%nbt, klc, for_discret%neq)
         ! Calcul de fl = klc.dul (incrément d'effort)
-        call pmavec('ZERO', neq, klc, for_discret%dul, fl)
+        call pmavec('ZERO', for_discret%neq, klc, for_discret%dul, fl)
     end if
     !
     ! calcul des efforts généralisés et des forces nodales
@@ -421,7 +419,7 @@ subroutine dis_contact_frot(for_discret, iret)
         call jevech('PCONTPR', 'E', icontp)
         ! Attention aux signes des efforts sur le premier noeud pour MECA_DIS_TR_L et MECA_DIS_T_L
         if (for_discret%nno .eq. 1) then
-            do ii = 1, neq
+            do ii = 1, for_discret%neq
                 zr(icontp-1+ii) = fl(ii)+zr(icontm-1+ii)
             end do
         else if (for_discret%nno .eq. 2) then
@@ -453,7 +451,7 @@ subroutine dis_contact_frot(for_discret, iret)
         call jevech('PVECTUR', 'E', ifono)
         ! Attention aux signes des efforts sur le premier noeud pour MECA_DIS_TR_L et MECA_DIS_T_L
         if (for_discret%nno .eq. 1) then
-            do ii = 1, neq
+            do ii = 1, for_discret%neq
                 fl(ii) = fl(ii)+zr(icontm-1+ii)
             end do
         else if (for_discret%nno .eq. 2) then

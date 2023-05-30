@@ -44,13 +44,12 @@ subroutine disjvp(for_discret, iret)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    use te0047_type
+    use te0047_type, only: te0047_dscr
     implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
-#include "asterfort/assert.h"
 #include "asterfort/diraidklv.h"
 #include "asterfort/diklvraid.h"
 #include "asterfort/infdis.h"
@@ -82,17 +81,17 @@ subroutine disjvp(for_discret, iret)
     integer :: imat, ivarim, jdc, irep, jtp, jtm, idepen, imatsym, ifono, iretlc, icontp, ivarip
     integer :: iadzi, iazk24, icompo, igeom
     integer :: icarcr
-    integer :: icontm, ii, neq
+    integer :: icontm, ii
     character(len=24) :: messak(5)
 !
 !
-    real(kind=8)     :: klc(for_discret%nno*for_discret%nc*2*for_discret%nno*for_discret%nc*2)
-    real(kind=8)     :: dpe(for_discret%nno*for_discret%nc)
-    real(kind=8)     :: klv(for_discret%nbt), fl(for_discret%nno*for_discret%nc)
+    real(kind=8)     :: klc(for_discret%neq*for_discret%neq), klv(for_discret%nbt)
+    real(kind=8)     :: dpe(for_discret%neq)
+    real(kind=8)     :: fl(for_discret%neq)
     real(kind=8)     :: force(3), raide(6)
     real(kind=8)     :: r8bid
     character(len=8) :: k8bid
-
+!
 ! --------------------------------------------------------------------------------------------------
     integer, parameter  :: nbre1 = 8
     real(kind=8)        :: valre1(nbre1)
@@ -118,17 +117,15 @@ subroutine disjvp(for_discret, iret)
     real(kind=8)            :: y0(nbequa), dy0(nbequa), resu(nbequa*2), errmax, ynorme(nbequa)
     integer                 :: nbdecp
 !   Variables internes
-    integer, parameter       :: nbvari = 9, nbcorr = 6, idebut = nbvari, iddp = 7, iddm = 8
+    integer, parameter      :: nbvari = 9, nbcorr = 6, idebut = nbvari, iddp = 7, iddm = 8
     integer                 :: Correspond(nbcorr)
     real(kind=8)            :: varmo(nbvari), varpl(nbvari)
 !
 !   système d'équations :
-!   integer :: imoment, itheta, ithetap, idp, idm, ixm, idiss
-!   parameter (imoment=1,itheta=2,ithetap=3,idp=4,idm=5,ixm=6,idiss=7)
-    integer, parameter      :: imoment=1,itheta=2,ithetap=3,idp=4,idm=5,ixm=6,idiss=7
-! ----------------------------------------------------------------------------------
-    real(kind=8)    :: xl(7), deplac, Dp, Dm
+    integer, parameter      :: imoment = 1, itheta = 2, ithetap = 3, idp = 4, idm = 5, ixm = 6, &
+                               idiss = 7
 ! --------------------------------------------------------------------------------------------------
+    real(kind=8)    :: xl(7), deplac, Dp, Dm
 ! --------------------------------------------------------------------------------------------------
 !   Seulement sur SEG2
     if (for_discret%nomte .ne. 'MECA_DIS_TR_L') then
@@ -140,13 +137,8 @@ subroutine disjvp(for_discret, iret)
         messak(5) = zk24(iazk24-1+3)
         call utmess('F', 'DISCRETS_11', nk=5, valk=messak)
     end if
-!   RIGI_MECA_TANG ->        DSIDEP        -->  RIGI
-!   FULL_MECA      ->  SIGP  DSIDEP  VARP  -->  RIGI  RESI
-!   RAPH_MECA      ->  SIGP          VARP  -->        RESI
 !
     iret = 0
-!   Nombre de degré de liberté
-    neq = for_discret%nno*for_discret%nc
 !   Paramètres en entrée
     call jevech('PCOMPOR', 'L', icompo)
     call jevech('PGEOMER', 'L', igeom)
@@ -191,7 +183,6 @@ subroutine disjvp(for_discret, iret)
         varmo(ii) = zr(ivarim+ii-1)
         varpl(ii) = varmo(ii)
     end do
-!
 !
 !   loi de comportement non-linéaire : récupération du temps + et - , calcul de dt
     call jevech('PINSTPR', 'L', jtp)
@@ -300,9 +291,9 @@ subroutine disjvp(for_discret, iret)
 !
     if (for_discret%lVect .or. for_discret%lSigm) then
         ! Demi-matrice klv transformée en matrice pleine klc
-        call vecma(klv, for_discret%nbt, klc, neq)
+        call vecma(klv, for_discret%nbt, klc, for_discret%neq)
         ! Calcul de fl = klc.dul (incrément d'effort)
-        call pmavec('ZERO', neq, klc, for_discret%dul, fl)
+        call pmavec('ZERO', for_discret%neq, klc, for_discret%dul, fl)
     end if
     !
     ! calcul des efforts généralisés et des forces nodales
@@ -323,7 +314,7 @@ subroutine disjvp(for_discret, iret)
         fl(6) = -force(1)
         fl(6+for_discret%nc) = force(1)
     end if
-!       forces nodales aux noeuds 1 et 2 (repère global)
+!   forces nodales aux noeuds 1 et 2 (repère global)
     if (for_discret%lVect) then
         if (for_discret%nc .ne. 2) then
             call utpvlg(for_discret%nno, for_discret%nc, for_discret%pgl, fl, zr(ifono))
@@ -331,7 +322,7 @@ subroutine disjvp(for_discret, iret)
             call ut2vlg(for_discret%nno, for_discret%nc, for_discret%pgl, fl, zr(ifono))
         end if
     end if
-!       Mise à jour des variables internes
+!   Mise à jour des variables internes
     if (for_discret%lVari) then
         call jevech('PVARIPR', 'E', ivarip)
         if (for_discret%nno .eq. 1) then

@@ -70,7 +70,6 @@ subroutine te0047(optioz, nomtez)
 #include "asterfort/dizeng.h"
 #include "asterfort/disjvp.h"
 #include "asterfort/infdis.h"
-#include "asterfort/infted.h"
 #include "asterfort/jevech.h"
 #include "asterfort/matrot.h"
 #include "asterfort/tecach.h"
@@ -78,13 +77,11 @@ subroutine te0047(optioz, nomtez)
 #include "asterfort/ut2vgl.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
-#include "asterfort/Behaviour_type.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: neq, ideplm, ideplp, icompo, jtempsm, jtempsp
-    integer :: ii, jcret, itype, lorien
-    integer :: iadzi, iazk24, ibid, infodi, codret, IsSymetrique
+    integer :: jcret, lorien
+    integer :: iadzi, iazk24, ibid, infodi, codret
     !
     real(kind=8) :: r8bid
     !
@@ -115,37 +112,14 @@ subroutine te0047(optioz, nomtez)
         call infdis('DUMP', ibid, r8bid, 'A+')
     end if
     ! Discrets symétriques ou pas
-    call infdis('SYMK', IsSymetrique, r8bid, k8bid)
-    ! informations sur les discrets :
-    !     nbt   = nombre de coefficients dans k
-    !     nno   = nombre de noeuds
-    !     nc    = nombre de composante par noeud
-    !     ndim  = dimension de l'élément
-    !     itype = type de l'élément
-    call infted(for_discret%nomte, IsSymetrique, &
-                for_discret%nbt, for_discret%nno, for_discret%nc, for_discret%ndim, itype)
+    call infdis('SYMK', for_discret%syme, r8bid, k8bid)
+    ! Récupérations de plein d'informations sur les discrets
+    call getDiscretInformations(for_discret)
     !
     ASSERT((for_discret%ndim .eq. 2) .or. (for_discret%ndim .eq. 3))
     !
-    neq = for_discret%nno*for_discret%nc
-    ! récupération des adresses jeveux
-    call jevech('PDEPLMR', 'L', ideplm)
-    call jevech('PDEPLPR', 'L', ideplp)
-    !
-    ! Récupération des infos concernant les comportements :
-    !     rela_comp   zk16(icompo-1+RELA_NAME)   NOM_DU_COMPORTEMENT
-    !     nbvar       zk16(icompo-1+NVAR)        nbvar = read (zk16(icompo-1+NVAR),'(i16)')
-    !     defo_comp   zk16(icompo-1+DEFO)        PETIT   PETIT_REAC  GROT_GDEP
-    !     type_comp   zk16(icompo-1+INCRELAS)    COMP_ELAS   COMP_INCR
-    !
-    ! Properties of behaviour
-    call jevech('PCOMPOR', 'L', icompo)
-    for_discret%rela_comp = zk16(icompo-1+RELA_NAME)
-    for_discret%defo_comp = zk16(icompo-1+DEFO)
-    for_discret%type_comp = zk16(icompo-1+INCRELAS)
-    !
     ! Discrets non-symétriques
-    if (IsSymetrique .ne. 1) then
+    if (for_discret%syme .ne. 1) then
         ! Discrets non-symétriques, c'est ok si 'ELAS'
         if (for_discret%rela_comp .eq. 'ELAS') then
             for_discret%rela_comp = 'ELAS_NOSYME'
@@ -153,18 +127,6 @@ subroutine te0047(optioz, nomtez)
             call utmess('F', 'DISCRETS_40')
         end if
     end if
-    ! Select objects to construct from option name
-    !   lVari       : 'RAPH_MECA'  (1:9)'FULL_MECA'
-    !   lSigm       : 'RAPH_MECA'  (1:9)'FULL_MECA'       'RIGI_MECA_TANG'
-    !   lVect       : 'RAPH_MECA'  (1:9)'FULL_MECA'       'RIGI_MECA_TANG'
-    !   lMatr       :              (1:9)'FULL_MECA'  (1:9)'RIGI_MECA'
-    !   lPred       :                                     'RIGI_MECA_TANG'
-    !   lMatrPred   :                                (1:4)'RIGI'
-    call behaviourOption(for_discret%option, zk16(icompo), &
-                         for_discret%lMatr, for_discret%lVect, &
-                         for_discret%lVari, for_discret%lSigm, codret)
-    for_discret%lMatrPred = for_discret%option(1:4) .eq. 'RIGI'
-    for_discret%lPred = for_discret%option .eq. 'RIGI_MECA_TANG'
     !
     if (for_discret%defo_comp .ne. 'PETIT') then
         call utmess('A', 'DISCRETS_18')
@@ -206,13 +168,6 @@ subroutine te0047(optioz, nomtez)
         messak(5) = zk24(iazk24-1+3)
         call utmess('F', 'DISCRETS_6', nk=5, valk=messak)
     end if
-    ! déplacements dans le repère global :
-    !     ugm = déplacement précédent
-    !     dug = incrément de déplacement
-    do ii = 1, neq
-        for_discret%ugm(ii) = zr(ideplm+ii-1)
-        for_discret%dug(ii) = zr(ideplp+ii-1)
-    end do
     !
     ! matrice pgl de passage repère global -> repère local
     call matrot(zr(lorien), for_discret%pgl)
@@ -230,12 +185,6 @@ subroutine te0047(optioz, nomtez)
         call ut2vgl(for_discret%nno, for_discret%nc, for_discret%pgl, &
                     for_discret%dug, for_discret%dul)
     end if
-    !
-    ! Temps + et - , calcul de dt
-    call jevech('PINSTMR', 'L', jtempsm)
-    call jevech('PINSTPR', 'L', jtempsp)
-    for_discret%TempsPlus = zr(jtempsp)
-    for_discret%TempsMoins = zr(jtempsm)
     !
     ! Pour ELAS_NOSYME :
     okelem = (for_discret%ndim .eq. 3) .and. &
