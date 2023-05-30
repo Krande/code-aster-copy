@@ -40,16 +40,20 @@ FieldOnCells< ASTERDOUBLE >::FieldOnCells( const FiniteElementDescriptorPtr FEDe
         option = "TOU_INI_ELGA";
     } else if ( loc == "ELNO" ) {
         option = "TOU_INI_ELNO";
+    } else if ( loc == "ELEM" ) {
+        option = "TOU_INI_ELEM";
     } else {
-        AS_ASSERT( false )
+        option = loc;
     };
 
     if ( quantity == "SIEF_R" ) {
         nompar = "PSIEF_R";
     } else if ( quantity == "VARI_R" ) {
         nompar = "PVARI_R";
+    } else if ( quantity[0] != 'P' ) {
+        AS_ASSERT( false );
     } else {
-        AS_ASSERT( false )
+        nompar = quantity;
     };
 
     ASTERINTEGER iret = 0;
@@ -58,14 +62,16 @@ FieldOnCells< ASTERDOUBLE >::FieldOnCells( const FiniteElementDescriptorPtr FEDe
 
     std::string dcel = " ";
 
-    if ( behaviour ) {
-        auto compor = behaviour->getBehaviourField();
-        const auto comporName = compor->getName();
+    if ( behaviour || carael ) {
+        std::string carele = " ", comporName = " ";
 
-        std::string carele = " ";
+        if ( behaviour ) {
+            comporName = behaviour->getBehaviourField()->getName();
+        }
 
-        if ( carael )
+        if ( carael ) {
             carele = carael->getName();
+        }
 
         _DCEL = std::make_shared< SimpleFieldOnCellsLong >( inName );
         CALLO_CESVAR( carele, comporName, _dofDescription->getName(), _DCEL->getName() );
