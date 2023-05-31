@@ -220,8 +220,8 @@ def perm_mac3coeur_ops(self, **args):
     indice = 1
 
     for nom in list(_coeurp1.nameAC.keys()):
-        for i in range(len(_l_coeur)):
-            _coeur = _l_coeur[i]
+        for i, _coeur in enumerate(_l_coeur):
+
             last_i = l_last_i[i]
             RESUI = l_RESUI[i]
             _MA_N = _l_MA_N[i]

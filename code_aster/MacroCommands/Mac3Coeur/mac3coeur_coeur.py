@@ -26,11 +26,14 @@ Définition d'une conception de coeur (ensemble d'assemblages).
 """
 
 import os
+from ...Utilities import logger
+from ...Objects import Mesh
 
 from ...Cata.Syntax import _F
 from ...Commands import (
     AFFE_CARA_ELEM,
     AFFE_CHAR_CINE,
+    AFFE_CHAR_CINE_F,
     AFFE_CHAR_MECA,
     AFFE_CHAR_MECA_F,
     AFFE_MATERIAU,
@@ -54,7 +57,7 @@ from .mac3coeur_assemblage import ACFactory
 from .mac3coeur_factory import Mac3Factory
 
 
-class Coeur(object):
+class Coeur:
 
     """Classe définissant un coeur de reacteur."""
 
@@ -118,13 +121,25 @@ class Coeur(object):
 
     _time = ("T0", "T0b", "T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T8b", "T9")
     _subtime = ("N0", "N0b", "N1", "N2", "N3", "N4", "N5", "N6", "N7", "N8", "N8b", "N9")
+    _nb_nodes_grid = 0
+
+    @property
+    def nb_nodes_grid(self):
+        """Number of nodes of a grid"""
+        assert self._nb_nodes_grid > 0, "Parameter not set"
+        return self._nb_nodes_grid
+
+    @nb_nodes_grid.setter
+    def nb_nodes_grid(self, val):
+        assert val >= 4, "Invalid Parameter"
+        self._nb_nodes_grid = val
 
     def __init__(self, name, typ_coeur, macro, datg, longueur=None):
         """Initialisation d'un type de coeur."""
         self.name = name
         self.macro = macro
         self.typ_coeur = typ_coeur
-        self.nbac = 0
+        self.NBAC = 0
         self.factory = ACFactory(datg)
         self.collAC = {}
         self._mateAC = {}
@@ -184,9 +199,9 @@ class Coeur(object):
     def get_index(self, letter):
         return self.ALPHA_MAC.index(letter)
 
-    def init_from_table(self, tab, mater=True):
+    def init_from_table(self, tab):
         """Initialise le coeur à partir d'une table."""
-        self.nbac = len(tab)
+        self.NBAC = len(tab)
         for rows in tab:
             idAC = rows["idAC"].strip()
             # print 'idAC = ',idAC
@@ -199,8 +214,8 @@ class Coeur(object):
                 self._mateAC[typeAC] = MateriauAC(typeAC, self.macro)
             ac_def = {}
             for igr in range(0, ac._para["NBGR"]):
-                ac_def["DY" + str(igr + 1)] = rows["XG" + str(igr + 1)] / 1000.0
-                ac_def["DZ" + str(igr + 1)] = rows["YG" + str(igr + 1)] / 1000.0
+                ac_def["DY%d" % (igr + 1)] = rows["XG%d" % (igr + 1)] / 1000.0
+                ac_def["DZ%d" % (igr + 1)] = rows["YG%d" % (igr + 1)] / 1000.0
             ac.set_deforDAM(ac_def)
             ac.set_materiau(self._mateAC[typeAC])
             ac.check()
@@ -213,16 +228,6 @@ class Coeur(object):
         for ac in list(self.collAC.values()):
             mcf.extend(ac.mcf_deform_impo())
         return mcf
-
-    def repr(self):
-        """Liste les assemblages."""
-        txt = ["Lecture du Coeur %s - composé de %d assemblages" % (self.name, self.nbac)]
-        all = list(self.collAC.items())
-        all.sort()
-        txt.append("position_DAMAC correspondance_Code_Aster Type_de_conception Nombre_de_cycle")
-        for idAC, ac in all:
-            txt.append("%8s %8s %8s %i" % (idAC, ac.idAST, ac.typeAC, ac._cycle))
-        return os.linesep.join(txt)
 
     def mcf_geom_fibre(self):
         """Retourne les mots-clés facteurs pour DEFI_GEOM_FIBRE."""
@@ -444,9 +449,11 @@ class Coeur(object):
         """Retourne le chargement dû au couvercle de la cuve selon le type"""
         assert typ in ("FORCE", "DEPL_PSC")
         if typ != "FORCE":
-            return self.definition_effor_maintien(model, compression_init)
+            head_load = self.definition_effor_maintien(model, compression_init)
         else:
-            return self.definition_effor_maintien_force(model, force, compression_init)
+            head_load = self.definition_effor_maintien_force(model, force, compression_init)
+
+        return head_load
 
     def definition_effor_maintien(self, MODELE, compression_init):
         """Retourne les déplacements imposés aux noeuds modélisant la PSC
@@ -506,7 +513,7 @@ class Coeur(object):
                 PROL_GAUCHE="CONSTANT",
             )
 
-        _F_EMBO = AFFE_CHAR_MECA_F(MODELE=MODELE, DDL_IMPO=_F(GROUP_NO="PMNT_S", DX=_DXpsc))
+        _F_EMBO = AFFE_CHAR_CINE_F(MODELE=MODELE, MECA_IMPO=_F(GROUP_NO="PMNT_S", DX=_DXpsc))
         return _F_EMBO
 
     def definition_effor_maintien_force(self, MODELE, ForceMaintien, compression_init):
@@ -581,26 +588,26 @@ class Coeur(object):
             nbgrmax = max(nbgrmax, ac._para["NBGR"])
             LIS_GNO = []
             for igr in range(0, ac._para["NBGR"]):
-                LIS_GNO.append("G_" + ac.idAST + "_" + str(igr + 1))
-                LIS_PG.append("P_" + ac.idAST + "_" + str(igr + 1))
+                LIS_GNO.append("G_%s_%d" % (ac.idAST, igr + 1))
+                LIS_PG.append("P_%s_%d" % (ac.idAST, igr + 1))
 
             DICG = {}
             DICG["GROUP_NO"] = tuple(LIS_GNO)
-            DICG["NOM_GROUP_MA"] = "GR_" + ac.idAST
+            DICG["NOM_GROUP_MA"] = "GR_%s" % ac.idAST
             LISG.append(DICG)
 
         for igr in range(0, nbgrmax):
             DICGRIL = {}
-            DICGRIL["GROUP_NO"] = "GRIL_" + str(igr + 1)
-            DICGRIL["NOM_GROUP_MA"] = "GRIL_" + str(igr + 1)
+            DICGRIL["GROUP_NO"] = "GRIL_%d" % (igr + 1)
+            DICGRIL["NOM_GROUP_MA"] = "GRIL_%d" % (igr + 1)
             LISGRIL.append(DICGRIL)
 
             if igr == 0:
-                LISGRILE.append("GRIL_" + str(igr + 1))
+                LISGRILE.append("GRIL_%d" % (igr + 1))
             elif igr == (nbgrmax - 1):
-                LISGRILE.append("GRIL_" + str(igr + 1))
+                LISGRILE.append("GRIL_%d" % (igr + 1))
             else:
-                LISGRILI.append("GRIL_" + str(igr + 1))
+                LISGRILI.append("GRIL_%d" % (igr + 1))
 
         _MA1 = CREA_MAILLAGE(MAILLAGE=MA0, CREA_POI1=tuple(LISGRIL + LISG))
 
@@ -646,15 +653,42 @@ class Coeur(object):
         # --- recuperation de donnees géometriques ---
         # nombre d'assemblages dans le coeur
         self.NBAC = len(list(self.collAC.values()))
+        gcells = MAILL.getGroupsOfCells()
+        gnodes = MAILL.getGroupsOfNodes()
+
+        for pos_damac, ac in self.collAC.items():
+
+            id_cr = "CR_%s" % ac.idAST
+            grp_cr = [i for i in gcells if (i.startswith(id_cr) and i != id_cr)]
+            ac.nb_cr_mesh = max(1, len(grp_cr))
+
+            id_tg = "TG_%s" % ac.idAST
+            grp_tg = [i for i in gcells if (i.startswith(id_tg) and i != id_tg)]
+            ac.nb_tg_mesh = max(1, len(grp_tg))
+
+            id_grid = "G_%s" % ac.idAST
+            grp_grid = [i for i in gnodes if (i.startswith(id_grid) and i != id_grid)]
+            ls_nodes_grid = list(set(len(MAILL.getNodes(i)) for i in grp_grid))
+            assert len(ls_nodes_grid) == 1, "Invalid mesh"
+            ac.nb_nodes_grid = ls_nodes_grid[0]
+
+        assert len(set((ac.nb_cr_mesh for ac in self.collAC.values()))) == 1, "Invalid mesh"
+        assert len(set((ac.nb_tg_mesh for ac in self.collAC.values()))) == 1, "Invalid mesh"
+        assert len(set((ac.nb_nodes_grid for ac in self.collAC.values()))) == 1, "Invalid mesh"
+        self.nb_nodes_grid = ac.nb_nodes_grid
+
+        logger.debug("<MAC3_COEUR>: nb_nodes_grid = %s" % (self.nb_nodes_grid))
 
         # altitudes mini et maxi de la cavité de coeur
         _ma_tmp = CREA_MAILLAGE(MAILLAGE=MAILL, RESTREINT=_F(GROUP_MA="EBOINF"))
         _TAB_tmp = RECU_TABLE(CO=_ma_tmp, NOM_TABLE="CARA_GEOM")
         self.XINFCUVE = _TAB_tmp["X_MIN", 1]
+        logger.debug("<MAC3_COEUR>: xinfcuve = %s" % (self.XINFCUVE))
 
         _ma_tmp = CREA_MAILLAGE(MAILLAGE=MAILL, RESTREINT=_F(GROUP_MA="MAINTIEN"))
         _TAB_tmp = RECU_TABLE(CO=_ma_tmp, NOM_TABLE="CARA_GEOM")
         self.XSUPCUVE = _TAB_tmp["X_MAX", 1]
+        logger.debug("<MAC3_COEUR>: xsupcuve = %s" % (self.XSUPCUVE))
 
         # altitudes mini et maxi, et longueur de l'ensemble des crayons
         _ma_tmp = CREA_MAILLAGE(MAILLAGE=MAILL, RESTREINT=_F(GROUP_MA="CRAYON"))
@@ -662,6 +696,9 @@ class Coeur(object):
         self.XINFC = _TAB_tmp["X_MIN", 1]
         self.XSUPC = _TAB_tmp["X_MAX", 1]
         self.LONCR = _TAB_tmp["X_MAX", 1] - _TAB_tmp["X_MIN", 1]
+        logger.debug("<MAC3_COEUR>: xinfcrayon = %s" % (self.XINFC))
+        logger.debug("<MAC3_COEUR>: xsupcrayon = %s" % (self.XSUPC))
+        logger.debug("<MAC3_COEUR>: lcrayon = %s" % (self.LONCR))
 
         # altitudes mini et maxi, et longueur de l'ensemble des tubes
         _ma_tmp = CREA_MAILLAGE(MAILLAGE=MAILL, RESTREINT=_F(GROUP_MA="T_GUIDE"))
@@ -669,6 +706,9 @@ class Coeur(object):
         self.XINFT = _TAB_tmp["X_MIN", 1]
         self.XSUPT = _TAB_tmp["X_MAX", 1]
         self.LONTU = _TAB_tmp["X_MAX", 1] - _TAB_tmp["X_MIN", 1]
+        logger.debug("<MAC3_COEUR>: xinftube = %s" % (self.XINFT))
+        logger.debug("<MAC3_COEUR>: xsuptube = %s" % (self.XSUPT))
+        logger.debug("<MAC3_COEUR>: ltube = %s" % (self.LONTU))
 
         # altitudes moyennes des grilles
         self.altitude = []
@@ -678,20 +718,22 @@ class Coeur(object):
         altimaxtmp = 0
         while altimaxtmp != altimax:  # tant que l'on ne dépasse pas la grille la plus haute
             _ma_tmp = CREA_MAILLAGE(
-                MAILLAGE=MAILL, RESTREINT=_F(GROUP_MA="GRIL_" + str(len(self.altitude) + 1))
+                MAILLAGE=MAILL, RESTREINT=_F(GROUP_MA="GRIL_%d" % (len(self.altitude) + 1))
             )
             _TAB_tmp = RECU_TABLE(CO=_ma_tmp, NOM_TABLE="CARA_GEOM")
             altimintmp = _TAB_tmp["X_MAX", 1]
             altimaxtmp = _TAB_tmp["X_MAX", 1]
-            self.altitude.append((altimintmp + altimaxtmp) / 2.0)
+            h_gri = (altimintmp + altimaxtmp) / 2.0
+            logger.debug("<MAC3_COEUR>: h_gri %s = %s" % (len(self.altitude) + 1, h_gri))
+
+            self.altitude.append(h_gri)
 
     def cl_rigidite_grille(self):
-
-        mcf = []
-        for ac in list(self.collAC.values()):
-            for igr in range(0, ac._para["NBGR"]):
-                mcf.append(_F(GROUP_NO="G_" + ac.idAST + "_" + str(igr + 1)))
-        return mcf
+        return [
+            _F(GROUP_NO="G_%s_%d" % (ac.idAST, igr + 1))
+            for ac in self.collAC.values()
+            for igr in range(ac._para["NBGR"])
+        ]
 
     def affectation_modele(self, MAILLAGE):
         _MODELE = AFFE_MODELE(
@@ -914,11 +956,7 @@ class Coeur(object):
             mcf1.append(mtmp1)
 
         _INST_M = CREA_CHAMP(
-            OPERATION="AFFE",
-            TYPE_CHAM="NOEU_INST_R",
-            MAILLAGE=MAILLAGE,
-            # AFFE=(_F(GROUP_MA=('T_GUIDE', 'CRAYON', 'ELA', 'MAINTIEN',), NOM_CMP='INST', VALE=0.0),),)
-            AFFE=mcfm,
+            OPERATION="AFFE", TYPE_CHAM="NOEU_INST_R", MAILLAGE=MAILLAGE, AFFE=mcfm
         )
 
         _REST_M = CREA_CHAMP(
@@ -943,11 +981,7 @@ class Coeur(object):
         )
 
         _INST_0 = CREA_CHAMP(
-            OPERATION="AFFE",
-            TYPE_CHAM="NOEU_INST_R",
-            MAILLAGE=MAILLAGE,
-            # AFFE=(_F(GROUP_MA=('T_GUIDE', 'CRAYON', 'ELA', 'MAINTIEN',), NOM_CMP='INST', VALE=0.0),),)
-            AFFE=mcf0,
+            OPERATION="AFFE", TYPE_CHAM="NOEU_INST_R", MAILLAGE=MAILLAGE, AFFE=mcf0
         )
 
         _REST_0 = CREA_CHAMP(
@@ -972,11 +1006,7 @@ class Coeur(object):
         )
 
         _INST_1 = CREA_CHAMP(
-            OPERATION="AFFE",
-            TYPE_CHAM="NOEU_INST_R",
-            MAILLAGE=MAILLAGE,
-            # AFFE=(_F(GROUP_MA=('T_GUIDE', 'CRAYON', 'ELA', 'MAINTIEN',), NOM_CMP='INST', VALE=fluence),),)
-            AFFE=mcf1,
+            OPERATION="AFFE", TYPE_CHAM="NOEU_INST_R", MAILLAGE=MAILLAGE, AFFE=mcf1
         )
 
         _REST_1 = CREA_CHAMP(
@@ -1030,7 +1060,7 @@ class Coeur(object):
                 _alpha = 1.0
                 _dilatbu = [0.0] * ac._para["NBGR"]
 
-            if all([i == 0.0 for i in _dilatbu]):
+            if all(i == 0.0 for i in _dilatbu):
                 groups_ma_tini.extend(
                     ["DI_%s%d" % (ac.idAST, (igr + 1)) for igr in range(ac._para["NBGR"])]
                 )
@@ -1322,7 +1352,7 @@ class Coeur(object):
                 _alpha = ac._para["AL_DIL"]
                 _dilatbu = ac._para["dilatBU"]
 
-                if not all([i == 0.0 for i in _dilatbu]):
+                if not all(i == 0.0 for i in _dilatbu):
                     for igr in range(ac._para["NBGR"]):
                         Ttmp = self.TP_REF - _dilatbu[igr] / _alpha
                         mtmp = (
@@ -1350,21 +1380,23 @@ class Coeur(object):
                 GEOM_FIBRE=GFF,
                 MATER_SECT=ac.mate.mate["CR"],
                 MULTIFIBRE=_F(
-                    GROUP_FIBRE="CR_" + ac.idAST, MATER=ac.mate.mate["CR"], RELATION="GRAN_IRRA_LOG"
+                    GROUP_FIBRE="CR_%s" % ac.idAST,
+                    MATER=ac.mate.mate["CR"],
+                    RELATION="GRAN_IRRA_LOG",
                 ),
             )
             _CMPT = DEFI_COMPOR(
                 GEOM_FIBRE=GFF,
                 MATER_SECT=ac.mate.mate["TG"],
                 MULTIFIBRE=_F(
-                    GROUP_FIBRE=("LG_" + ac.idAST, "BI_" + ac.idAST, "RE_" + ac.idAST),
+                    GROUP_FIBRE=("LG_%s" % ac.idAST, "BI_%s" % ac.idAST, "RE_%s" % ac.idAST),
                     MATER=ac.mate.mate["TG"],
                     RELATION="GRAN_IRRA_LOG",
                 ),
             )
             mtmp = (
-                _F(GROUP_MA="CR_" + ac.idAST, COMPOR=_CMPC),
-                _F(GROUP_MA="TG_" + ac.idAST, COMPOR=_CMPT),
+                _F(GROUP_MA="CR_%s" % ac.idAST, COMPOR=_CMPC),
+                _F(GROUP_MA="TG_%s" % ac.idAST, COMPOR=_CMPT),
             )
             mcf.extend(mtmp)
 
@@ -1382,9 +1414,9 @@ class Coeur(object):
         for ac in list(self.collAC.values()):
             mcf.extend(ac.mcf_AC_mater())
             mtmp = (
-                _F(GROUP_MA=("GT_" + ac.idAST + "_M", "GT_" + ac.idAST + "_E"), MATER=_MAT_BID),
-                _F(GROUP_MA="GR_" + ac.idAST, MATER=_MAT_GR),
-                _F(GROUP_MA="DI_" + ac.idAST, MATER=ac.mate.mate["DIL"]),
+                _F(GROUP_MA=("GT_%s_M" % ac.idAST, "GT_%s_E" % ac.idAST), MATER=_MAT_BID),
+                _F(GROUP_MA="GR_%s" % ac.idAST, MATER=_MAT_GR),
+                _F(GROUP_MA="DI_%s" % ac.idAST, MATER=ac.mate.mate["DIL"]),
             )
             mcf.extend(mtmp)
         mtmp = (_F(GROUP_MA="CREIC", MATER=_M_BCR),)
@@ -1396,9 +1428,11 @@ class Coeur(object):
     ):
         """Retourne les déplacements imposés aux noeuds modélisant les internes de cuves
         (supports inférieur (PIC ou FSC), supérieur (PSC) et cloisons)
-        et traduisant les dilatations thermiques des internes et leurs deformations de natures mecaniques"""
-        # XXX trop long pour être lisible, création des formules fragile
-        assert self.temps_simu["T0"] is not None, "`definition_time` must be called first!"
+        et traduisant les dilatations thermiques des internes
+        et leurs deformations de natures mecaniques"""
+
+        err_msg = "`definition_time` must be called first!"
+        assert self.temps_simu["T0"] is not None, err_msg
 
         # definition des evolutions de températures
         # sur la PIC/FSC, la PSC et l'enveloppe
@@ -1471,16 +1505,6 @@ class Coeur(object):
             PROL_GAUCHE="CONSTANT",
         )
 
-        TP_REFlocal = self.TP_REF
-
-        # interpolation linéaire du coefficient de dilatation
-        # des internes de cuve en fonction de la température
-        ALPH1local = self.ALPH1
-        ALPH2local = self.ALPH2
-        ALPHENV = "(%(ALPH1local)e*_TEMPENV(INST) + %(ALPH2local)e)"
-        ALPHPIC = "(%(ALPH1local)e*_TEMPPIC(INST) + %(ALPH2local)e)"
-        ALPHPSC = "(%(ALPH1local)e*_TEMPPSC(INST) + %(ALPH2local)e)"
-
         # Donnees geometriques
         # coordonnees centre cuve
         _TABG = RECU_TABLE(CO=MAILL, NOM_TABLE="CARA_GEOM")
@@ -1493,122 +1517,54 @@ class Coeur(object):
         Y0 = (ymin + ymax) / 2.0
         Z0 = (zmin + zmax) / 2.0
         # rayon de la PSC
-        Rpsc = (ymax - ymin) / 2.0
+        radius_psc = (ymax - ymin) / 2.0
+
+        # interpolation linéaire du coefficient de dilatation
+        # des internes de cuve en fonction de la température
+        alpha_part = "({alpha1:e} * func_temp_part(INST) + {alpha2:e})".format(
+            alpha1=self.ALPH1, alpha2=self.ALPH2
+        )
 
         # ---------------------------------------------------------------
         # --                  Dilatations radiales                     --
         # --      du cloisonnement, de la PIC/FSC, et de la PSC        --
         # ---------------------------------------------------------------
-        L = "(sqrt( ((Y-%(Y0)f)**2)+ ((Z-%(Z0)f)**2)))"
+        ac_pos = "(sqrt(((Y - {y0:f})**2) + ((Z - {z0:f})**2)))".format(y0=Y0, z0=Z0)
+
         epsilon = 1.0e-6
         # on rentre un epsilon pour le cas où L=0 (assemblage central)
         # pour éviter la division par zéro
-        COSTE = "(Y-%(Y0)f)/(" + L + "+%(epsilon)e)"
-        SINTE = "(Z-%(Z0)f)/(" + L + "+%(epsilon)e)"
-        Dcth = L + " * " + ALPHENV + " * (_TEMPENV(INST)-%(TP_REFlocal)f) "
-        f_DthY = Dcth + "*" + COSTE
-        f_DthZ = Dcth + "*" + SINTE
-        _DthY = FORMULE(
-            NOM_PARA=("X", "Y", "Z", "INST"),
-            VALE=f_DthY % locals(),
-            Dcth=Dcth,
-            COSTE=COSTE,
-            ALPHPIC=ALPHPIC,
-            ALPH1local=ALPH1local,
-            ALPH2local=ALPH2local,
-            _TEMPENV=_TEMPENV,
-            TP_REFlocal=TP_REFlocal,
-            L=L,
-            ALPHENV=ALPHENV,
-            epsilon=epsilon,
-            Y0=Y0,
-            Z0=Z0,
+        ac_pos_cos = "(Y - {y0:f})/({dist} + {eps:e})".format(y0=Y0, eps=epsilon, dist=ac_pos)
+        ac_pos_sin = "(Z - {z0:f})/({dist} + {eps:e})".format(z0=Z0, eps=epsilon, dist=ac_pos)
+
+        ac_pos_dilat = "{radial_pos} * {alpha} * (func_temp_part(INST) - {t_ref:f})".format(
+            radial_pos=ac_pos, alpha=alpha_part, t_ref=self.TP_REF
         )
-        _DthZ = FORMULE(
-            NOM_PARA=("X", "Y", "Z", "INST"),
-            VALE=f_DthZ % locals(),
-            Dcth=Dcth,
-            SINTE=SINTE,
-            ALPHPIC=ALPHPIC,
-            ALPH1local=ALPH1local,
-            ALPH2local=ALPH2local,
-            _TEMPENV=_TEMPENV,
-            TP_REFlocal=TP_REFlocal,
-            L=L,
-            ALPHENV=ALPHENV,
-            epsilon=epsilon,
-            Y0=Y0,
-            Z0=Z0,
+        dilat_function_Y = "{radius} * {coef}".format(radius=ac_pos_dilat, coef=ac_pos_cos)
+        dilat_function_Z = "{radius} * {coef}".format(radius=ac_pos_dilat, coef=ac_pos_sin)
+
+        _DthYenv = FORMULE(
+            NOM_PARA=("X", "Y", "Z", "INST"), VALE=dilat_function_Y, func_temp_part=_TEMPENV
         )
 
-        Dthpic = L + " * " + ALPHPIC + " * (_TEMPPIC(INST)-%(TP_REFlocal)f) "
-        f_DthYpic = Dthpic + "*" + COSTE
-        f_DthZpic = Dthpic + "*" + SINTE
+        _DthZenv = FORMULE(
+            NOM_PARA=("X", "Y", "Z", "INST"), VALE=dilat_function_Z, func_temp_part=_TEMPENV
+        )
+
         _DthYpic = FORMULE(
-            NOM_PARA=("X", "Y", "Z", "INST"),
-            VALE=f_DthYpic % locals(),
-            Dthpic=Dthpic,
-            COSTE=COSTE,
-            ALPHPIC=ALPHPIC,
-            ALPH1local=ALPH1local,
-            ALPH2local=ALPH2local,
-            _TEMPENV=_TEMPENV,
-            TP_REFlocal=TP_REFlocal,
-            L=L,
-            ALPHENV=ALPHENV,
-            epsilon=epsilon,
-            Y0=Y0,
-            Z0=Z0,
-            _TEMPPIC=_TEMPPIC,
-        )
-        _DthZpic = FORMULE(
-            NOM_PARA=("X", "Y", "Z", "INST"),
-            VALE=f_DthZpic % locals(),
-            Dthpic=Dthpic,
-            SINTE=SINTE,
-            ALPHPIC=ALPHPIC,
-            ALPH1local=ALPH1local,
-            ALPH2local=ALPH2local,
-            TP_REFlocal=TP_REFlocal,
-            L=L,
-            epsilon=epsilon,
-            Y0=Y0,
-            Z0=Z0,
-            _TEMPPIC=_TEMPPIC,
+            NOM_PARA=("X", "Y", "Z", "INST"), VALE=dilat_function_Y, func_temp_part=_TEMPPIC
         )
 
-        Dthpsc = L + " * " + ALPHPSC + " * (_TEMPPSC(INST)-%(TP_REFlocal)f) "
-        f_DthYpsc = Dthpsc + "*" + COSTE
-        f_DthZpsc = Dthpsc + "*" + SINTE
-        _DthYpsc = FORMULE(
-            NOM_PARA=("X", "Y", "Z", "INST"),
-            VALE=f_DthYpsc % locals(),
-            Dthpic=Dthpic,
-            COSTE=COSTE,
-            ALPHPSC=ALPHPSC,
-            ALPH1local=ALPH1local,
-            ALPH2local=ALPH2local,
-            TP_REFlocal=TP_REFlocal,
-            L=L,
-            epsilon=epsilon,
-            Y0=Y0,
-            Z0=Z0,
-            _TEMPPSC=_TEMPPSC,
+        _DthZpic = FORMULE(
+            NOM_PARA=("X", "Y", "Z", "INST"), VALE=dilat_function_Z, func_temp_part=_TEMPPIC
         )
+
+        _DthYpsc = FORMULE(
+            NOM_PARA=("X", "Y", "Z", "INST"), VALE=dilat_function_Y, func_temp_part=_TEMPPSC
+        )
+
         _DthZpsc = FORMULE(
-            NOM_PARA=("X", "Y", "Z", "INST"),
-            VALE=f_DthZpsc % locals(),
-            Dthpic=Dthpic,
-            SINTE=SINTE,
-            ALPHPSC=ALPHPSC,
-            ALPH1local=ALPH1local,
-            ALPH2local=ALPH2local,
-            TP_REFlocal=TP_REFlocal,
-            L=L,
-            epsilon=epsilon,
-            Y0=Y0,
-            Z0=Z0,
-            _TEMPPSC=_TEMPPSC,
+            NOM_PARA=("X", "Y", "Z", "INST"), VALE=dilat_function_Z, func_temp_part=_TEMPPSC
         )
 
         # ---------------------------------------------------------------
@@ -1666,62 +1622,55 @@ class Coeur(object):
         )
 
         f_DthXpic = (
-            "( (_DthXpicPeriph(INST) -_DthXpicCentre(INST) ) /(%(Rpsc)f)**2   )*("
-            + L
-            + ")**2   +_DthXpicCentre(INST)"
+            "((dx_ext(INST) - dx_int(INST)) / ({radius:f}**2) * ({dist})**2 + dx_int(INST))".format(
+                radius=radius_psc, dist=ac_pos
+            )
         )
+
         _DthXpic = FORMULE(
             NOM_PARA=("X", "Y", "Z", "INST"),
-            VALE=f_DthXpic % locals(),
-            _DthXpicPeriph=_DthXpicPeriph,
-            _DthXpicCentre=_DthXpicCentre,
+            VALE=f_DthXpic,
+            dx_ext=_DthXpicPeriph,
+            dx_int=_DthXpicCentre,
         )
 
         # ---------------------------------------------------------------
         # --                Deplacements  verticaux                    --
         # --               des noeuds du cloisonnement                 --
         # ---------------------------------------------------------------
-        XINFCUVElocal = self.XINFCUVE
-        XSUPCUVElocal = self.XSUPCUVE
-        f_DthX = (
-            "(-1.*_DthXpicPeriph"
-            + "(INST)/(%(XSUPCUVElocal)f-%(XINFCUVElocal)f) * X  +"
-            + "_DthXpicPeriph(INST))"
+
+        f_DthX = "(-1. * dx_ext(INST) / ({x_max:f} - {x_min:f}) * X + dx_ext(INST))".format(
+            x_min=self.XINFCUVE, x_max=self.XSUPCUVE
         )
-        _DthX = FORMULE(
-            NOM_PARA=("X", "INST"),
-            VALE=f_DthX % locals(),
-            _DthXpicPeriph=_DthXpicPeriph,
-            XSUPCUVElocal=XSUPCUVElocal,
-            XINFCUVElocal=XINFCUVElocal,
-        )
+
+        _DthXenv = FORMULE(NOM_PARA=("X", "INST"), VALE=f_DthX, dx_ext=_DthXpicPeriph)
 
         # ---------------------------------------------------------------
         # --                  chargement resultant                     --
         # ---------------------------------------------------------------
         if is_char_ini:
-            _dilatation = AFFE_CHAR_MECA_F(
+            _dilatation = AFFE_CHAR_CINE_F(
                 MODELE=MODEL,
-                DDL_IMPO=(_F(GROUP_NO="FIX", DX=_DthXpic), _F(GROUP_NO="P_CUV", DX=_DthX)),
+                MECA_IMPO=(_F(GROUP_NO="FIX", DX=_DthXpic), _F(GROUP_NO="P_CUV", DX=_DthXenv)),
             )
         else:
             if maintien_grille:
-                _dilatation = AFFE_CHAR_MECA_F(
+                _dilatation = AFFE_CHAR_CINE_F(
                     MODELE=MODEL,
-                    DDL_IMPO=(
+                    MECA_IMPO=(
                         _F(GROUP_NO="FIX", DX=_DthXpic, DY=_DthYpic, DZ=_DthZpic),
                         _F(GROUP_NO="PMNT_S", DY=_DthYpsc, DZ=_DthZpsc),
                         _F(GROUP_NO="LISPG", DY=_DthYpsc, DZ=_DthZpsc),
-                        _F(GROUP_NO="P_CUV", DX=_DthX, DY=_DthY, DZ=_DthZ),
+                        _F(GROUP_NO="P_CUV", DX=_DthXenv, DY=_DthYenv, DZ=_DthZenv),
                     ),
                 )
             else:
-                _dilatation = AFFE_CHAR_MECA_F(
+                _dilatation = AFFE_CHAR_CINE_F(
                     MODELE=MODEL,
-                    DDL_IMPO=(
+                    MECA_IMPO=(
                         _F(GROUP_NO="FIX", DX=_DthXpic, DY=_DthYpic, DZ=_DthZpic),
                         _F(GROUP_NO="PMNT_S", DY=_DthYpsc, DZ=_DthZpsc),
-                        _F(GROUP_NO="P_CUV", DX=_DthX, DY=_DthY, DZ=_DthZ),
+                        _F(GROUP_NO="P_CUV", DX=_DthXenv, DY=_DthYenv, DZ=_DthZenv),
                     ),
                 )
 
@@ -1740,12 +1689,12 @@ class CoeurFactory(Mac3Factory):
         """Construit la liste des types autorisés."""
         ctxt = {}
         for obj, val in list(globals().items()):
-            if type(val) is type and issubclass(val, Coeur):
+            if isinstance(val, type) and issubclass(val, Coeur):
                 ctxt[obj] = val
         return ctxt
 
 
-class MateriauAC(object):
+class MateriauAC:
 
     """Conteneur des matériaux d'un assemblage."""
 
@@ -1763,5 +1712,8 @@ class MateriauAC(object):
 
         for typ in self._types:
             self.mate[typ] = INCLUDE_MATERIAU(
-                NOM_AFNOR=self.typeAC + "_" + typ, TYPE_MODELE="REF", VARIANTE="A", TYPE_VALE="NOMI"
+                NOM_AFNOR="%s_%s" % (self.typeAC, typ),
+                TYPE_MODELE="REF",
+                VARIANTE="A",
+                TYPE_VALE="NOMI",
             )

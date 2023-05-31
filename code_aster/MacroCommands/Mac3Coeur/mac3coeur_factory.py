@@ -32,7 +32,7 @@ et produisent les objets Assemblages ou Coeurs correspondants.
 import os.path as osp
 
 
-class Mac3Factory(object):
+class Mac3Factory:
 
     """Classe chapeau des factories."""
 

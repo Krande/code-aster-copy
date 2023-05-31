@@ -19,10 +19,8 @@
 
 # person_in_charge: francesco.bettonte at edf.fr
 
-from ...Cata.Commons import *
-from ...Cata.DataStructure import *
-from ...Cata.Syntax import *
-from ...Cata.Syntax import _F
+from ...Cata.DataStructure import maillage_sdaster, modele_sdaster, evol_noli
+from ...Cata.Syntax import _F, NoRepeat, SIMP, MACRO
 from ...Commands import CREA_RESU
 from ...Supervis import UserMacro
 
@@ -53,68 +51,68 @@ def mac3coeur_ac_permute(self, **args):
         MAILLAGE_FINAL=MA_FIN,
         PERM_CHAM=(
             _F(
-                GROUP_MA_INIT="CR_" + POS_INIT,
-                GROUP_MA_FINAL="CR_" + POS_FIN,
+                GROUP_MA_INIT="CR_%s" % POS_INIT,
+                GROUP_MA_FINAL="CR_%s" % POS_FIN,
                 TRAN=VECT,
                 PRECISION=1.0e-10,
             ),
             _F(
-                GROUP_MA_INIT="TG_" + POS_INIT,
-                GROUP_MA_FINAL="TG_" + POS_FIN,
+                GROUP_MA_INIT="TG_%s" % POS_INIT,
+                GROUP_MA_FINAL="TG_%s" % POS_FIN,
                 TRAN=VECT,
                 PRECISION=1.0e-10,
             ),
             _F(
-                GROUP_MA_INIT="ES_" + POS_INIT,
-                GROUP_MA_FINAL="ES_" + POS_FIN,
+                GROUP_MA_INIT="ES_%s" % POS_INIT,
+                GROUP_MA_FINAL="ES_%s" % POS_FIN,
                 TRAN=VECT,
                 PRECISION=1.0e-10,
             ),
             _F(
-                GROUP_MA_INIT="EI_" + POS_INIT,
-                GROUP_MA_FINAL="EI_" + POS_FIN,
+                GROUP_MA_INIT="EI_%s" % POS_INIT,
+                GROUP_MA_FINAL="EI_%s" % POS_FIN,
                 TRAN=VECT,
                 PRECISION=1.0e-10,
             ),
             _F(
-                GROUP_MA_INIT="DI_" + POS_INIT,
-                GROUP_MA_FINAL="DI_" + POS_FIN,
+                GROUP_MA_INIT="DI_%s" % POS_INIT,
+                GROUP_MA_FINAL="DI_%s" % POS_FIN,
                 TRAN=VECT,
                 PRECISION=1.0e-10,
             ),
             _F(
-                GROUP_MA_INIT="GC_" + POS_INIT + "_B",
-                GROUP_MA_FINAL="GC_" + POS_FIN + "_B",
+                GROUP_MA_INIT="GC_%s_B" % POS_INIT,
+                GROUP_MA_FINAL="GC_%s_B" % POS_FIN,
                 TRAN=VECT,
                 PRECISION=1.0e-10,
             ),
             _F(
-                GROUP_MA_INIT="GC_" + POS_INIT + "_T",
-                GROUP_MA_FINAL="GC_" + POS_FIN + "_T",
+                GROUP_MA_INIT="GC_%s_T" % POS_INIT,
+                GROUP_MA_FINAL="GC_%s_T" % POS_FIN,
                 TRAN=VECT,
                 PRECISION=1.0e-10,
             ),
             _F(
-                GROUP_MA_INIT="GC_" + POS_INIT + "_M",
-                GROUP_MA_FINAL="GC_" + POS_FIN + "_M",
+                GROUP_MA_INIT="GC_%s_M" % POS_INIT,
+                GROUP_MA_FINAL="GC_%s_M" % POS_FIN,
                 TRAN=VECT,
                 PRECISION=1.0e-10,
             ),
             _F(
-                GROUP_MA_INIT="GT_" + POS_INIT + "_E",
-                GROUP_MA_FINAL="GT_" + POS_FIN + "_E",
+                GROUP_MA_INIT="GT_%s_E" % POS_INIT,
+                GROUP_MA_FINAL="GT_%s_E" % POS_FIN,
                 TRAN=VECT,
                 PRECISION=1.0e-10,
             ),
             _F(
-                GROUP_MA_INIT="GT_" + POS_INIT + "_M",
-                GROUP_MA_FINAL="GT_" + POS_FIN + "_M",
+                GROUP_MA_INIT="GT_%s_M" % POS_INIT,
+                GROUP_MA_FINAL="GT_%s_M" % POS_FIN,
                 TRAN=VECT,
                 PRECISION=1.0e-10,
             ),
             _F(
-                GROUP_MA_INIT="MNT_" + POS_INIT,
-                GROUP_MA_FINAL="MNT_" + POS_FIN,
+                GROUP_MA_INIT="MNT_%s" % POS_INIT,
+                GROUP_MA_FINAL="MNT_%s" % POS_FIN,
                 TRAN=VECT,
                 PRECISION=1.0e-10,
             ),

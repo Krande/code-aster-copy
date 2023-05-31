@@ -19,8 +19,8 @@
 
 # person_in_charge: francesco.bettonte at edf.fr
 
-import numpy as np
 from collections import OrderedDict
+import numpy as np
 from .mac3coeur_commons import (
     get_first_digit,
     check_centers_and_size as check,
@@ -210,14 +210,15 @@ class ThycResult:
                 self._thyc_mesh[self._Ep] = np.roll(self._thyc_mesh[self._Ep], 1)
                 self._thyc_mesh[self._Ep][0] = ep0
                 if check(self._thyc_mesh[self._Z], self._thyc_mesh[self._Ep], 0) is False:
-                    msg = "Invalid THYC file : {} and {} do not match".format(self._Z, self._Ep)
+                    msg = "Invalid THYC file : %s and %s do not match" % (self._Z, self._Ep)
                     raise IOError(msg)
             # Second cas, decalage de 1 vérifié sur 2 positions, on tolere.
             elif check(self._thyc_mesh[self._Z][:2], self._thyc_mesh[self._Ep][:2], 0) is True:
                 pass
             else:
-                msg = "Invalid THYC file : {} and {} do not match and cannot be repaired".format(
-                    self._Z, self._Ep
+                msg = "Invalid THYC file : %s and %s do not match and cannot be repaired" % (
+                    self._Z,
+                    self._Ep,
                 )
                 raise IOError(msg)
 
@@ -261,7 +262,7 @@ class ThycResult:
                             raise IOError(errmsg % (key_block, i, j))
                     elif key_block in ("AXIAL",):
                         self._thyc_data[key_block][i, j] = forces
-                        if not len(forces) == 1:
+                        if len(forces) != 1:
                             raise IOError(errmsg % (key_block, i, j))
                     else:
                         assert False

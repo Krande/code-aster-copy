@@ -130,6 +130,7 @@ class CollectionPostAC:
         self.moyenneRho = 0.0
         self.moyenneGravite = 0.0
         self.sigmaGravite = 0.0
+        self.maxRhoParType = {}
         self.maxGraviteParType = {}
         self.moyenneRhoParType = {}
         self.moyenneGraviteParType = {}
@@ -407,7 +408,7 @@ def post_mac3coeur_ops(self, **args):
 
     datamac.Renomme(core_name, "idAC")
     core_mac3 = coeur_factory.get(core_type)(core_name, core_type, self, datg, row_size)
-    core_mac3.init_from_table(datamac, mater=False)
+    core_mac3.init_from_table(datamac)
 
     #
     # LAME
@@ -482,7 +483,7 @@ def post_mac3coeur_ops(self, **args):
                 RESU=_F(
                     RESULTAT=RESU,
                     NOM_CMP=("DY", "DZ"),
-                    GROUP_MA="GR_%s" % AC.idAST,
+                    GROUP_NO=["G_%s_%d" % (AC.idAST, g + 1) for g in range(AC.NBGR)],
                     NOM_CHAM="DEPL",
                     INST=inst,
                     PRECISION=1.0e-08,
@@ -490,8 +491,11 @@ def post_mac3coeur_ops(self, **args):
             )
             # Extraction des valeurs
             vals = np.stack((TMP.EXTR_TABLE().values()[i] for i in ("COOR_X", "DY", "DZ")))
-            # Moyenne sur les 4 discrets de la grille (qui portent tous la meme valeur)
-            vals = np.mean(vals.reshape(vals.shape[0], vals.shape[1] // 4, 4), axis=2)
+            # Sort
+            vals = vals[:, vals[0].argsort()]
+            # Moyenne sur les discrets de la grille (qui portent tous la meme valeur)
+            nb_disc = vals.shape[1] // AC.NBGR
+            vals = np.mean(vals.reshape(vals.shape[0], AC.NBGR, nb_disc), axis=2)
             # Passage en mm et arrondi
             coor_x, dy, dz = np.around(1000.0 * vals[:, vals[0].argsort()], MAC3_ROUND)
 

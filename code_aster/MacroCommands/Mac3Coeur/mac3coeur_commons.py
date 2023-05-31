@@ -25,12 +25,17 @@ MAC3_ROUND = 14
 
 
 def get_first_digit(spline):
+
+    digit = 0
     for i, v in enumerate(spline):
         try:
             float(v)
-            return i
-        except ValueError as err:
+            digit = i
+            break
+        except ValueError:
             continue
+
+    return digit
 
 
 def check_centers_and_size(z, ep, s):

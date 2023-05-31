@@ -40,7 +40,7 @@ def DEFI_FONCTION_PROFILE(px, py):
     return func
 
 
-class ThycLoadManager(object):
+class ThycLoadManager:
 
     """Object to represent a result read from THYC"""
 
@@ -103,8 +103,8 @@ def lire_resu_thyc(coeur, MODELE, nom_fic):
 
         for j, grid_j in enumerate(thyc_resu.grids_index):
             grid_grp_no = "G_%s_%d" % (posi_aster, j + 1)
-            chThyc["X"] = tr_x[grid_j] / 4.0
-            chThyc["Y"] = tr_y[grid_j] / 4.0
+            chThyc["X"] = tr_x[grid_j] / coeur.nb_nodes_grid
+            chThyc["Y"] = tr_y[grid_j] / coeur.nb_nodes_grid
 
             logger.debug(
                 "<THYC_LOAD><TRANSVERSAL>: Grid group %s : LoadX = %s, LoadY = %s"
@@ -143,21 +143,21 @@ def lire_resu_thyc(coeur, MODELE, nom_fic):
 
         # Force axiale pour une grille extremite (inf)
         grp_ax_g1 = "G_%s_1" % posi_aster
-        f_ax_g1 = force_ax / FOHYCH_1 * ac.K_GRE / KTOT / 4.0
+        f_ax_g1 = force_ax / FOHYCH_1 * ac.K_GRE / KTOT / coeur.nb_nodes_grid
         nodal_ax.extend([_F(GROUP_NO=grp_ax_g1, FX=f_ax_g1)])
         logger.debug("<THYC_LOAD><AXIAL>: Grid group %s : Axial Load = %s" % (grp_ax_g1, f_ax_g1))
 
         # Force axiale pour chacune des grilles de mélange
         for j in range(1, ac.NBGR - 1):
             grp_ax_gi = "G_%s_%d" % (posi_aster, j + 1)
-            f_ax_gi = force_ax / FOHYCH_1 * ac.K_GRM / KTOT / 4.0
+            f_ax_gi = force_ax / FOHYCH_1 * ac.K_GRM / KTOT / coeur.nb_nodes_grid
             nodal_ax.extend([_F(GROUP_NO=grp_ax_gi, FX=f_ax_gi)])
             logger.debug(
                 "<THYC_LOAD><AXIAL>: Grid group %s : Axial Load = %s" % (grp_ax_gi, f_ax_gi)
             )
 
         grp_ax_glast = "G_%s_%d" % (posi_aster, ac.NBGR)
-        f_ax_glast = force_ax / FOHYCH_1 * ac.K_GRE / KTOT / 4.0
+        f_ax_glast = force_ax / FOHYCH_1 * ac.K_GRE / KTOT / coeur.nb_nodes_grid
         nodal_ax.extend([_F(GROUP_NO=grp_ax_glast, FX=f_ax_glast)])
         logger.debug(
             "<THYC_LOAD><AXIAL>: Grid group %s : Axial Load = %s" % (grp_ax_glast, f_ax_glast)
