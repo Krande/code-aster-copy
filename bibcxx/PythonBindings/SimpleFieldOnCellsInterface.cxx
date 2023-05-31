@@ -155,7 +155,7 @@ Returns:
 
             Arguments:
                 cmps[list[str]]: filter on list of components
-                If empty, all components are used used
+                If empty, all components are used
                 groupsOfCells[list[str]]: filter on list of groups of cells (default=" ").
                 If empty, the full mesh is used
 
