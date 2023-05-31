@@ -57,9 +57,6 @@ class PhysicalProblem {
     /** @brief Elementary characteristics */
     ElementaryCharacteristicsPtr _elemChara;
 
-    /** @brief Material parameters */
-    CodedMaterialPtr _codedMater;
-
     /** @brief Behaviour properties */
     BehaviourPropertyPtr _behavProp;
 

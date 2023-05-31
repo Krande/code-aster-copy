@@ -101,6 +101,7 @@ bool CodedMaterial::allocate( bool force ) {
             }
         }
     }
+
     return true;
 };
 
@@ -123,11 +124,6 @@ bool CodedMaterial::constant() const {
     if ( retour == "OUI" )
         return false;
     return true;
-};
-
-void CodedMaterial::updateValuePointers() const {
-    bool thm( _model->existsThm() );
-    bool ther = _model->isThermal();
 };
 
 bool CodedMaterial::exists() const { return _field->exists(); };

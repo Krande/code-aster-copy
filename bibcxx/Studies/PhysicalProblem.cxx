@@ -37,7 +37,6 @@ PhysicalProblem::PhysicalProblem( const ModelPtr curModel, const MaterialFieldPt
       _elemChara( cara ),
       _listOfLoads( std::make_shared< ListOfLoads >( _model ) ),
       _dofNume( nullptr ),
-      _codedMater( nullptr ),
       _behavProp( nullptr ),
       _externVarRefe( nullptr ) {
 
@@ -56,9 +55,6 @@ PhysicalProblem::PhysicalProblem( const ModelPtr curModel, const MaterialFieldPt
                                     _materialField->getMesh()->getName();
             AS_ABORT( msg );
         }
-
-        _codedMater = std::make_shared< CodedMaterial >( _materialField, _model );
-        _codedMater->allocate( true );
     }
 };
 
@@ -66,14 +62,17 @@ PhysicalProblem::PhysicalProblem( const BaseDOFNumberingPtr dofNume )
     : _model( dofNume->getModel() ),
       _mesh( dofNume->getMesh() ),
       _dofNume( dofNume ),
-      _listOfLoads( std::make_shared< ListOfLoads >( _model ) ){};
+      _listOfLoads( std::make_shared< ListOfLoads >( _model ) ) {};
 
 CodedMaterialPtr PhysicalProblem::getCodedMaterial() const {
-    if ( _codedMater && _codedMater->exists() ) {
-        _codedMater->updateValuePointers();
+
+    if ( _materialField ) {
+        auto codedMater = std::make_shared< CodedMaterial >( _materialField, _model );
+        codedMater->allocate( true );
+        return codedMater;
     }
 
-    return _codedMater;
+    return nullptr;
 };
 
 void PhysicalProblem::computeBehaviourProperty( py::object &keywords,

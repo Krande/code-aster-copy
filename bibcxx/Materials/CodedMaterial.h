@@ -89,8 +89,6 @@ class CodedMaterial : public DataStructure {
      */
     MaterialFieldPtr getMaterialField() const { return _mater; };
 
-    void updateValuePointers() const;
-
     bool exists() const;
 };
 

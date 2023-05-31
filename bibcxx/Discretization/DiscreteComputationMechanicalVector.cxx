@@ -68,6 +68,10 @@ DiscreteComputation::getInternalForces( const FieldOnNodesRealPtr displ,
     calcul->addInputField( "PCONTMR", stress );
     calcul->addInputField( "PVARIMR", internVar );
 
+    // Coded Material
+    auto currCodedMater = _phys_problem->getCodedMaterial();
+    calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
+
     // Provisoire: pour TANGENTE=VERIFICATION, nécessité de variables internes à chaque itération
     FieldOnCellsRealPtr vari_iter = std::make_shared< FieldOnCellsReal >(
         FEDesc, "ELGA", "VARI_R", currBehaviour, currElemChara );

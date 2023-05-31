@@ -706,6 +706,10 @@ DiscreteComputation::getTangentStiffnessMatrix(
     calcul->addInputField( "PCONTMR", stress );
     calcul->addInputField( "PVARIMR", internVar );
 
+    // Coded Material
+    auto currCodedMater = _phys_problem->getCodedMaterial();
+    calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
+
     // Provisoire: pour TANGENTE=VERIFICATION, nécessité de variables internes à chaque itération
     FieldOnCellsRealPtr vari_iter = std::make_shared< FieldOnCellsReal >(
         FEDesc, "ELGA", "VARI_R", currBehaviour, currElemChara );
@@ -787,6 +791,10 @@ DiscreteComputation::getPredictionTangentStiffnessMatrix(
     CalculPtr calcul = createCalculForNonLinear( option, time_prev, time_prev + time_step,
                                                  externVarPrev, externVarCurr, groupOfCells );
     FiniteElementDescriptorPtr FEDesc = calcul->getFiniteElementDescriptor();
+
+    // Coded Material
+    auto currCodedMater = _phys_problem->getCodedMaterial();
+    calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
 
     // Set current physical state
     calcul->addInputField( "PDEPLMR", displ );

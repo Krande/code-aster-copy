@@ -75,7 +75,6 @@ CalculPtr DiscreteComputation::createCalculForNonLinear( const std::string optio
     // Get main parameters
     auto currModel = _phys_problem->getModel();
     auto currMater = _phys_problem->getMaterialField();
-    auto currCodedMater = _phys_problem->getCodedMaterial();
     auto currElemChara = _phys_problem->getElementaryCharacteristics();
     auto currBehaviour = _phys_problem->getBehaviourProperty();
     auto currExternVarRefe = _phys_problem->getReferenceExternalStateVariables();
@@ -120,7 +119,6 @@ CalculPtr DiscreteComputation::createCalculForNonLinear( const std::string optio
 
     // Add input fields
     calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
-    calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
     if ( currElemChara ) {
         calcul->addElementaryCharacteristicsField( currElemChara );
     }
