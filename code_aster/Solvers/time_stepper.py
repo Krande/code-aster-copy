@@ -68,7 +68,7 @@ class TimeStepper(SolverFeature, Observer):
         self._minStep = 1.0e-99
         self._maxStep = 1.0e99
         self._maxNbSteps = 1.0e6
-        self._state = {}
+        self._resetState()
         logger.debug("TimeStepper.init: %s, %s, %s", initial, final, times)
         self._check_bounds()
 
@@ -152,7 +152,7 @@ class TimeStepper(SolverFeature, Observer):
         """
         return self._last - self._current + 1
 
-    def hasFinished(self):
+    def isFinished(self):
         """Tell if there are steps to be computed.
 
         Returns:
@@ -199,7 +199,7 @@ class TimeStepper(SolverFeature, Observer):
         Returns:
             float: Previous time value.
         """
-        if self.hasFinished():
+        if self.isFinished():
             raise IndexError("no more timesteps")
         if self._current == 0:
             return self._initial
@@ -212,7 +212,7 @@ class TimeStepper(SolverFeature, Observer):
         Returns:
             float: Current time value, this to be calculated.
         """
-        if self.hasFinished():
+        if self.isFinished():
             raise IndexError("no more timesteps")
         return self._times[self._current]
 
@@ -239,15 +239,21 @@ class TimeStepper(SolverFeature, Observer):
 
     def completed(self):
         """Register the current step as completed successfully."""
-        self._state = {}
-        if self.hasFinished():
+        self._resetState()
+        if self.isFinished():
             raise IndexError("no more timesteps")
         self._current += 1
-        if not self.hasFinished():
+        if not self.isFinished():
             last = self.getCurrent()
             logger.debug("check splitting level: %s %s", self._split, last)
             while self._split and self.cmp(last, self._split[-1]) >= 0:
                 self._split.pop()
+
+    def _resetState(self):
+        self._state = {}
+        self._state.setdefault("history", {})
+        self._state.setdefault("criteria", {})
+        self._state.setdefault("converged", {})
 
     def notify(self, event):
         """Receive notification from event, store the data from a future use
@@ -261,30 +267,16 @@ class TimeStepper(SolverFeature, Observer):
         if eid & SOP.IncrementalSolver:
             logger.debug("+ received from incremental: %s", data)
             if "PRED" not in data.get("matrix", ""):
-                state.setdefault("RESI_GLOB_RELA", [])
-                state["RESI_GLOB_RELA"].append(data["RESI_GLOB_RELA"])
-                state.setdefault("RESI_GLOB_MAXI", [])
-                state["RESI_GLOB_MAXI"].append(data["RESI_GLOB_MAXI"])
-                crit = state.setdefault("criteria", {})
-                # FIXME default value for zzzz510c is 10, not yet added by ProblemSolver
-                crit["ITER_GLOB_MAXI"] = data.get("criteria", {}).get("ITER_GLOB_MAXI", 10)
-                crit["RESI_GLOB_RELA"] = data.get("criteria", {}).get("RESI_GLOB_RELA", 1.0e-12)
+                hist = state["history"]
+                crit = state["criteria"]
+                for para in ("ITER_GLOB_MAXI", "RESI_GLOB_RELA", "RESI_GLOB_MAXI"):
+                    hist.setdefault(para, []).append(data[para].value)
+                    crit[para] = data[para].reference
         if eid & SOP.ConvergenceCriteria:
             logger.debug("+ received from conv.crit.: %s", data)
-            if data.get("hasConverged"):
-                state["ITER_GLOB_MAXI"] = data.get("ITER_GLOB_MAXI", 0)
-
-    def getData(self, key, default=None):
-        """Get a value from the data shared by iterator objects.
-
-        Arguments:
-            key (str): Parameter name.
-            default (misc): Value returned if the key is not found.
-
-        Returns:
-            misc: Value if it exists, *default* otherwise.
-        """
-        return self._state.get(key, default)
+            if data.get("isConverged"):
+                conv = state["converged"]
+                conv["ITER_GLOB_MAXI"] = data["ITER_GLOB_MAXI"].value
 
     @property
     def splitting_level(self):
@@ -469,8 +461,8 @@ class TimeStepper(SolverFeature, Observer):
                 act.call(
                     timeStepper=self,
                     exception=exc,
-                    residuals=self.getData("RESI_GLOB_RELA", []),
-                    criteria=self.getData("criteria", {}),
+                    residuals=self._state["history"].get("RESI_GLOB_RELA", []),
+                    criteria=self._state["criteria"],
                 )
                 return
         raise TypeError("should not pass here!")  # because of default error
@@ -898,7 +890,7 @@ class TimeStepper(SolverFeature, Observer):
                 context (dict): Context of the event.
             """
             stp = context["timeStepper"]
-            nbIter = stp.getData("ITER_GLOB_MAXI", self._nbRef - 1)
+            nbIter = stp._state["converged"].get("ITER_GLOB_MAXI", self._nbRef - 1)
             return sqrt(self._nbRef / (nbIter + 1))
 
     class AdaptIncrement(AdaptAction):

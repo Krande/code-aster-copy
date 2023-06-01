@@ -76,10 +76,9 @@ class IncrementalSolver(SolverFeature, EventSource):
             convManager (ConvergenceManager): Object that holds the criteria values.
             matrix_type (str): Type of matrix used.
         """
-        self._data = convManager.values.copy()
-        self._data["criteria"] = convManager.criteria.copy()
+        self._data = convManager.getParameters()
         self._data["matrix"] = matrix_type
-        self._data["hasConverged"] = convManager.hasConverged()
+        self._data["isConverged"] = convManager.isConverged()
         super().notifyObservers()
 
     def get_state(self):
@@ -161,7 +160,7 @@ class IncrementalSolver(SolverFeature, EventSource):
         # Main object for discrete computation
         disc_comp = DiscreteComputation(self.phys_pb)
 
-        # Compute neuamnn forces
+        # Compute Neumann forces
         neumann_forces = disc_comp.getNeumannForces(
             self.phys_state.time + self.phys_state.time_step
         )
@@ -372,7 +371,7 @@ class IncrementalSolver(SolverFeature, EventSource):
         convManager.evalNormResidual(residuals)
         self.notifyObservers(convManager, matrix_type)
 
-        if not convManager.hasConverged():
+        if not convManager.isConverged():
             # Time at end of current step
             time_curr = self.phys_state.time + self.phys_state.time_step
 

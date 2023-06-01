@@ -73,5 +73,5 @@ MECA_NON_LINE = MACRO(
         condition="""equal_to("METHODE", 'SNES')""", SOLVEUR=C_SOLVEUR("STAT_NON_LINE_SNES")
     ),
     # -------------------------------------------------------------------
-    INFO=SIMP(statut="f", typ="I", into=(1, 2)),
+    INFO=SIMP(statut="f", typ="I", into=(1, 2, 3, 4)),
 )

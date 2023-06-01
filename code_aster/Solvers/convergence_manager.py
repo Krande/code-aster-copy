@@ -17,12 +17,14 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+import copy
+import re
 from math import sqrt
 
+from ..Objects import DiscreteComputation
+from ..Utilities import MPI, logger, no_new_attributes, profile, with_loglevel
 from .solver_features import SolverFeature
 from .solver_features import SolverOptions as SOP
-from ..Objects import DiscreteComputation
-from ..Utilities import MPI, no_new_attributes, profile
 
 
 class ConvergenceManager(SolverFeature):
@@ -31,45 +33,243 @@ class ConvergenceManager(SolverFeature):
     provide = SOP.ConvergenceManager
     required_features = [SOP.PhysicalProblem, SOP.PhysicalState]
 
-    criteria = values = None
+    _param = None
     __setattr__ = no_new_attributes(object.__setattr__)
+
+    class UnDefined:
+        """Used to identify undefined values."""
+
+        def __repr__(self):
+            return "UNDEF"
+
+    undef = UnDefined()
+
+    class Parameter:
+        """A parameter to be checked for convergence.
+
+        Arguments:
+            reference (float|int): Reference value.
+        """
+
+        match = None
+        _refe = _value = None
+        __setattr__ = no_new_attributes(object.__setattr__)
+
+        @classmethod
+        def factory(cls, name, reference):
+            """Build a parameter object.
+
+            Arguments:
+                name (str): Parameter name.
+                reference (float|int): Reference value.
+            """
+            for subclass in cls.__subclasses__():
+                if subclass.match(name):
+                    return subclass(reference)
+            raise TypeError(f"unknown parameter: {name!r}")
+
+        def __init__(self, reference):
+            self._refe = reference
+            self._value = ConvergenceManager.undef
+
+        def __repr__(self) -> str:
+            return f"{self._value} (ref.: {self._refe})"
+
+        def isSet(self):
+            """Tell if the parameter value has been assigned.
+
+            Returns:
+                bool: *True* if the parameter has a value, *False* if not.
+            """
+            return self._value is not ConvergenceManager.undef
+
+        def hasRef(self):
+            """Tell if a reference value is defined for the parameter.
+
+            Returns:
+                bool: *True* if the parameter has a reference value, *False* if not.
+            """
+            return self._refe is not ConvergenceManager.undef
+
+        def reset(self):
+            """Reset the parameter value."""
+            self._value = ConvergenceManager.undef
+
+        @property
+        def reference(self):
+            """float|int: Reference value of the parameter."""
+            return self._refe
+
+        @property
+        def value(self):
+            """float|int: Current value of the parameter."""
+            return self._value
+
+        @value.setter
+        def value(self, value):
+            """Set the parameter value.
+
+            Arguments:
+                value (float|int): Parameter value.
+            """
+            self._value = value
+
+        def isConverged(self):
+            """Tell if the current value is converged.
+
+            Returns:
+                bool: *True* if the value is converged, *False* otherwise.
+            """
+            raise NotImplementedError("must be subclassed!")
+
+        def isFinished(self):
+            """Tell if the current parameter should stop the calculation.
+
+            Returns:
+                bool: *True* if the calculation should be stopped, *False* otherwise.
+            """
+            raise NotImplementedError("must be subclassed!")
+
+    class ResidueParameter(Parameter):
+        """Type of *Parameter* for a residue.
+
+        Arguments:
+            name (str): Parameter name.
+            reference (float|int): Reference value.
+        """
+
+        match = re.compile("^RESI_").search
+
+        def isConverged(self):
+            """Tell if the current value is converged.
+
+            Returns:
+                bool: *True* if the value is converged, *False* otherwise.
+            """
+            if not self.hasRef() or not self.isSet():
+                return True
+            return 0.0 <= self._value <= self._refe
+
+        def isFinished(self):
+            """Tell if the current parameter should stop the calculation.
+
+            Returns:
+                bool: *True* if the calculation should be stopped, *False* otherwise.
+            """
+            return self.isConverged()
+
+    class IterationParameter(Parameter):
+        """Type of *Parameter* for a number of iteration.
+
+        Arguments:
+            name (str): Parameter name.
+            reference (float|int): Reference value.
+        """
+
+        match = re.compile("^ITER_").search
+
+        def isConverged(self):
+            """The number of iteration is not a convergence criteria.
+
+            Returns:
+                bool: *True*.
+            """
+            return True
+
+        def isFinished(self):
+            """Tell if the current parameter should stop the calculation.
+
+            Returns:
+                bool: *True* if the calculation should be stopped, *False* otherwise.
+            """
+            return self.isSet() and self._value >= self._refe
 
     def __init__(self):
         super().__init__()
-        self.criteria = {}
-        self.values = {}
+        self._param = {}
 
-    def initialize(self):
-        """Initialize the object for a new iteration."""
-        self.values = {}
+    def initialize(self, *needed):
+        """Initialize the object for a new iteration.
+
+        Mandatory parameters must be defined before checking their convergency
+        (here they are assigned to a negative value, not converged).
+
+        Arguments:
+            needed (tuple): Name of parameters that are needed.
+        """
+        for para in self._param.values():
+            para.reset()
+        for name in needed:
+            para = self.get(name)
+            if para:
+                para.value = -1.0
 
     def isEmpty(self):
-        """Tell if there is no criteria.
+        """Tell if there is no convergence parameter.
 
         Returns:
-            bool: *False* if at least one criteria is defined, *True* otherwise.
+            bool: *False* if at least one parameter is defined, *True* otherwise.
         """
-        return not bool(self.criteria)
+        return not bool(self._param)
 
-    def addCriteria(self, criteria, value):
-        """Add a convergence criteria to verify
+    def addParameter(self, name, reference):
+        """Add a convergence parameter to be checked.
 
         Arguments:
-            criteria (str): name of the criteria.
-            value (float): criteria value
+            name (str): Name of the parameter.
+            reference (float): Reference value of the parameter.
         """
-        self.criteria[criteria] = value
+        self._param[name] = ConvergenceManager.Parameter.factory(name, reference)
 
-    def getCriteria(self, criteria):
-        """Get current value of the criteria
+    def setdefault(self, name, reference=undef):
+        """Add a convergence parameter if it does not yet exist.
 
         Arguments:
-            criteria (str): name of the criteria.
+            name (str): Name of the parameter.
+            reference (float): Reference value of the parameter.
 
         Returns:
-            (float): criteria value
+            *Parameter*: The existing parameter if it already exists or a newly
+            created one.
         """
-        return self.values[criteria]
+        if name not in self._param:
+            self._param[name] = ConvergenceManager.Parameter.factory(name, reference)
+        return self._param[name]
+
+    def get(self, name):
+        """Return a convergence parameter.
+
+        Arguments:
+            name (str): Name of the parameter.
+
+        Returns:
+            *Parameter*: Parameter or *None* it the parameter is not defined.
+        """
+        return self._param.get(name)
+
+    @property
+    def _residuals(self):
+        return [
+            (name, para)
+            for name, para in self._param.items()
+            if isinstance(para, ConvergenceManager.ResidueParameter)
+        ]
+
+    @property
+    def _iterations(self):
+        return [
+            (name, para)
+            for name, para in self._param.items()
+            if isinstance(para, ConvergenceManager.IterationParameter)
+        ]
+
+    def getParameters(self):
+        """Return a copy of the parameters with their current values.
+
+        Returns:
+            dict: Dict of parameters
+        """
+        return copy.deepcopy(self._param)
 
     @profile
     @SolverFeature.check_once
@@ -139,26 +339,26 @@ class ConvergenceManager(SolverFeature):
     @profile
     @SolverFeature.check_once
     def evalNormResidual(self, residuals):
-        """Evaluate criteria
+        """Evaluate global residual.
 
         Arguments:
             residuals (Residuals): Collections of residuals.
         """
         residual = self.getDirichletResidual(residuals.resi)
+        resi_maxi = self.setdefault("RESI_GLOB_MAXI")
+        resi_rela = self.setdefault("RESI_GLOB_RELA")
 
-        self.values["RESI_GLOB_MAXI"] = residual.norm("NORM_INFINITY")
-
+        resi_maxi.value = residual.norm("NORM_INFINITY")
         scaling = self.getRelativeScaling(residuals)
-
         if scaling == 0.0:
-            self.values["RESI_GLOB_RELA"] = -1.0
+            resi_rela.value = -1.0
         else:
-            self.values["RESI_GLOB_RELA"] = self.values["RESI_GLOB_MAXI"] / scaling
+            resi_rela.value = resi_maxi.value / scaling
 
     @profile
     @SolverFeature.check_once
     def evalGeometricResidual(self, displ_delta):
-        """Evaluate criteria
+        """Evaluate geometric residue.
 
         Arguments:
             displ_dela (FieldOnNodesReal): variation of displacement.
@@ -170,7 +370,8 @@ class ConvergenceManager(SolverFeature):
         z_diag = TABG["Z_MAX", 1] - TABG["Z_MIN", 1]
         diag = sqrt(pow(x_diag, 2) + pow(y_diag, 2) + pow(z_diag, 2))
 
-        self.values["RESI_GEOM"] = displ_delta.norm("NORM_INFINITY", ["DX", "DY", "DZ"]) / diag
+        resi_geom = self.setdefault("RESI_GEOM")
+        resi_geom.value = displ_delta.norm("NORM_INFINITY", ["DX", "DY", "DZ"]) / diag
 
     def setIteration(self, value):
         """Update the current iteration step.
@@ -178,26 +379,40 @@ class ConvergenceManager(SolverFeature):
         Arguments:
             value (int): Current iteration number.
         """
-        self.values["ITER_GLOB_MAXI"] = value
+        iter = self.setdefault("ITER_GLOB_MAXI", int(1e9))
+        iter.value = value
 
-    @profile
-    def hasConverged(self):
-        """Tell if convergence criteria are verified.
+    def isConverged(self):
+        """Tell if the convergence parameters are verified.
 
         Returns:
             bool: *True* if converged, *False* otherwise.
         """
-        if not self.values:
-            if not self.criteria:
+        logger.debug("isConverged ? %r", self._param)
+        defined = [para for para in self._param.values() if para.isSet() and para.hasRef()]
+        if not defined:
+            logger.debug("no parameters are set: not converged")
+            return False
+        for name, para in self._param.items():
+            if not para.isConverged():
+                logger.debug("parameter %s is not converged", name)
+                return False
+        return True
+
+    def isFinished(self):
+        """Tell if a parameter is stopping the calculation.
+
+        Returns:
+                bool: *True* if the calculation should be stopped, *False* otherwise.
+        """
+        # one iteration parameter can stop
+        for name, para in self._iterations:
+            if para.isFinished():
+                logger.debug("parameter %s would finish", name)
                 return True
-            else:
-                return False
-
-        for crit in self.criteria:
-            if crit in self.values:
-                if self.values[crit] > self.criteria[crit] or self.values[crit] < 0.0:
-                    return False
-            else:
-                return False
-
+        # all residue parameters must be finished
+        resi = [para for _, para in self._residuals if not para.isFinished()]
+        if resi:
+            logger.debug("at least one residue is not converged")
+            return False
         return True

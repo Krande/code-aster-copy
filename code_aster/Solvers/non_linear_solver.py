@@ -89,13 +89,13 @@ class NonLinearSolver(SolverFeature):
         """
         return self.get_feature(SOP.Storage).getResult()
 
-    def hasFinished(self):
+    def isFinished(self):
         """Tell if there are steps to be computed.
 
         Returns:
             bool: *True* if there is no step to be computed, *False* otherwise.
         """
-        return self.stepper.hasFinished()
+        return self.stepper.isFinished()
 
     def _storeRank(self, time):
         """Store the current physical state.
@@ -175,7 +175,7 @@ class NonLinearSolver(SolverFeature):
             self.phys_state.externVar = self.phys_pb.getExternalStateVariables(self.phys_state.time)
 
         # Solve nonlinear problem
-        while not self.hasFinished():
+        while not self.isFinished():
             timeEndStep = self.stepper.getCurrent()
             self.phys_state.time_step = timeEndStep - self.phys_state.time
             if self.stepper.splitting_level <= 0:

@@ -33,7 +33,7 @@ global access (no C interface currently)...
 import logging
 import os
 import sys
-from functools import partial
+from functools import partial, wraps
 
 from libaster import AsterError
 
@@ -138,6 +138,45 @@ def build_logger(level=INFO, raise_exception=True):
 
 
 logger = build_logger()
+
+
+def with_loglevel(level=DEBUG, with_result=False):
+    """Decorator to temporarly change the logging level for a function
+    (only for debuging a priori).
+
+    Example:
+
+    .. code-block:: python
+
+        @with_loglevel()
+        def my_function(its_args):
+            [...]
+
+    Arguments:
+        level (int): Logger level.
+        with_result (bool): If *True*, the result is logged (debug mode).
+    """
+
+    def change_level(func):
+        """Raw decorator"""
+
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            """Wrapper"""
+            previous = logger.getEffectiveLevel()
+            logger.setLevel(level)
+            try:
+                result = func(*args, **kwargs)
+                if with_result:
+                    logger.debug("returns: %s", result)
+            finally:
+                logger.setLevel(previous)
+            return result
+
+        return wrapper
+
+    return change_level
+
 
 COLOR = {
     "red": r"\033[1;31m",

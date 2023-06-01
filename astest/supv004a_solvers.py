@@ -22,7 +22,7 @@ from enum import IntFlag, auto
 
 from code_aster import ConvergenceError, SolverError
 from code_aster.Commands import DEFI_LIST_REEL
-from code_aster.Solvers import PhysicalState, TimeStepper
+from code_aster.Solvers import ConvergenceManager, PhysicalState, TimeStepper
 from code_aster.Solvers.base_features import BaseFeature
 
 list0 = DEFI_LIST_REEL(VALE=0.0)
@@ -61,9 +61,9 @@ class BasicTest(unittest.TestCase):
     def test01_basics(self):
         FOP = UnittestOptions
         opt = FOP.Storage
-        assert str(opt) == "UnittestOptions.Storage"
+        self.assertEqual(str(opt), "UnittestOptions.Storage")
         opt |= FOP.System
-        assert str(opt) == "UnittestOptions.Storage|System", str(opt)
+        self.assertEqual(str(opt), "UnittestOptions.Storage|System", str(opt))
 
         syst = SystemDefinition()
         stor = Storage()
@@ -219,18 +219,18 @@ class TestTimeStepper(unittest.TestCase):
         self.assertAlmostEqual(step, 0.25)
         stp.completed()
         self.assertEqual(stp.remaining(), 2)
-        self.assertFalse(stp.hasFinished())
+        self.assertFalse(stp.isFinished())
         step = stp.getCurrent()
         self.assertAlmostEqual(step, 1.0)
         self.assertAlmostEqual(stp.getInitial(), 0.0)
         stp.completed()
         self.assertEqual(stp.remaining(), 1)
-        self.assertFalse(stp.hasFinished())
+        self.assertFalse(stp.isFinished())
         step = stp.getCurrent()
         self.assertAlmostEqual(step, 2.0)
         stp.completed()
         self.assertEqual(stp.remaining(), 0)
-        self.assertTrue(stp.hasFinished())
+        self.assertTrue(stp.isFinished())
         with self.assertRaisesRegex(IndexError, "no more timesteps"):
             stp.completed()
 
@@ -244,7 +244,7 @@ class TestTimeStepper(unittest.TestCase):
         self.assertEqual(stp.size(), 2)
         stp.completed()
         self.assertEqual(stp.remaining(), 1)
-        self.assertFalse(stp.hasFinished())
+        self.assertFalse(stp.isFinished())
         step = stp.getCurrent()
         self.assertAlmostEqual(step, 2.0)
         self.assertSequenceEqual(stp._times, [1.0, 2.0])
@@ -287,9 +287,9 @@ class TestTimeStepper(unittest.TestCase):
         stp.setInitial(2.5)
         self.assertAlmostEqual(stp.getInitial(), 2.5)
         self.assertEqual(stp.size(), 1)
-        self.assertFalse(stp.hasFinished())
+        self.assertFalse(stp.isFinished())
         stp.completed()
-        self.assertTrue(stp.hasFinished())
+        self.assertTrue(stp.isFinished())
 
     def test02_initial(self):
         stp = TimeStepper([2.0, 4.0, 6.0, 8.0, 10.0])
@@ -346,7 +346,7 @@ class TestTimeStepper(unittest.TestCase):
         step = stp.getCurrent()
         self.assertAlmostEqual(step, 2.5)
         stp.completed()
-        self.assertTrue(stp.hasFinished())
+        self.assertTrue(stp.isFinished())
 
         stp = TimeStepper([0.0, 0.25, 1.0, 2.0])
         stp.setInitial(0.0)
@@ -359,7 +359,7 @@ class TestTimeStepper(unittest.TestCase):
     def test04_basic(self):
         stp = TimeStepper([0.0, 0.25, 1.0, 2.0, 3.0])
         self.assertEqual(stp.size(), 4)
-        self.assertFalse(stp.hasFinished())
+        self.assertFalse(stp.isFinished())
 
         step = stp.getCurrent()
         self.assertAlmostEqual(step, 0.25)
@@ -386,13 +386,13 @@ class TestTimeStepper(unittest.TestCase):
 
         other = stp.copy()
         self.assertEqual(other.size(), 4)
-        self.assertFalse(other.hasFinished())
+        self.assertFalse(other.isFinished())
         step = other.getCurrent()
         self.assertAlmostEqual(step, 0.25)
         delta_t = other.getIncrement()
         self.assertEqual(delta_t, 0.25)
 
-        self.assertTrue(stp.hasFinished())
+        self.assertTrue(stp.isFinished())
         with self.assertRaisesRegex(IndexError, "no more timesteps"):
             stp.completed()
 
@@ -410,7 +410,7 @@ class TestTimeStepper(unittest.TestCase):
         self.assertIsNone(stp.getPrevious())
         self.assertIsNone(stp.getIncrement())
         stp.completed()
-        self.assertTrue(stp.hasFinished())
+        self.assertTrue(stp.isFinished())
 
     def test08_ther_lineaire(self):
         stp = TimeStepper.from_keywords(LIST_INST=list0, INST_INIT=None, PRECISION=1.0e-6)
@@ -534,38 +534,128 @@ class TestPhysicalState(unittest.TestCase):
 
     def test01_stash(self):
         phys = PhysicalState()
-        assert phys._time is None
-        assert phys._primal is None
-        assert phys._stash is None
+        self.assertIsNone(phys._time)
+        self.assertIsNone(phys._primal)
+        self.assertIsNone(phys._stash)
 
         phys.stash()
 
         phys.time = 0.0
         phys._primal = TestPhysicalState.FakeField(100.0)
-        assert phys.time == 0.0
-        assert phys.primal.value == 100.0
-        assert phys._stash is not None
-        assert phys._stash._time is None
-        assert phys._stash._primal is None
+        self.assertEqual(phys.time, 0.0)
+        self.assertEqual(phys.primal.value, 100.0)
+        self.assertIsNotNone(phys._stash)
+        self.assertIsNone(phys._stash._time)
+        self.assertIsNone(phys._stash._primal)
 
         phys.stash()
 
         phys.time = 1.0
         phys._primal = TestPhysicalState.FakeField(123.0)
-        assert phys.time == 1.0
-        assert phys.primal.value == 123.0
-        assert phys._stash is not None
-        assert phys._stash._time == 0.0
-        assert phys._stash._primal.value == 100.0
+        self.assertEqual(phys.time, 1.0)
+        self.assertEqual(phys.primal.value, 123.0)
+        self.assertIsNotNone(phys._stash)
+        self.assertEqual(phys._stash._time, 0.0)
+        self.assertEqual(phys._stash._primal.value, 100.0)
 
         phys.revert()
-        assert phys.time == 0.0
-        assert phys.primal.value == 100.0
+        self.assertEqual(phys.time, 0.0)
+        self.assertEqual(phys.primal.value, 100.0)
 
         phys.time = 1.0
         phys.primal.value += 99.0
-        assert phys.time == 1.0
-        assert phys.primal.value == 199.0
+        self.assertEqual(phys.time, 1.0)
+        self.assertEqual(phys.primal.value, 199.0)
+
+
+class TestConvergenceManager(unittest.TestCase):
+    """Check for ConvergenceManager"""
+
+    def test01_param(self):
+        resi = ConvergenceManager.Parameter.factory("RESI_GLOB_RELA", 1.0e-6)
+        iter = ConvergenceManager.Parameter.factory("ITER_GLOB_MAXI", 10)
+        with self.assertRaisesRegex(TypeError, "unknown parameter"):
+            ConvergenceManager.Parameter.factory("PARA", 0.0)
+
+        self.assertFalse(resi.isSet())
+        self.assertTrue(resi.isConverged())
+        self.assertTrue(resi.isFinished())
+
+        resi.value = 1.123e-4
+        self.assertTrue(resi.isSet())
+        self.assertFalse(resi.isConverged())
+        self.assertFalse(resi.isFinished())
+
+        self.assertFalse(iter.isSet())
+        self.assertTrue(iter.isConverged())
+        self.assertFalse(iter.isFinished())
+
+        iter.value = 5
+        self.assertTrue(iter.isSet())
+        self.assertTrue(iter.isConverged())
+        self.assertFalse(iter.isFinished())
+        iter.value = 10
+        self.assertTrue(iter.isFinished())
+
+        iter.reset()
+        self.assertFalse(iter.isSet())
+
+    def test02_conv(self):
+        conv = ConvergenceManager()
+        conv.addParameter("RESI_GLOB_RELA", 1.0e-6)
+        self.assertIsNotNone(conv.get("RESI_GLOB_RELA"))
+        resi_rela = conv.get("RESI_GLOB_RELA")
+        self.assertAlmostEqual(resi_rela.reference, 1.0e-6)
+
+        self.assertIsNone(conv.get("PARAMETER"))
+        conv.setdefault("RESI_GLOB_RELA", 1.0e99)
+        self.assertAlmostEqual(conv.get("RESI_GLOB_RELA").reference, 1.0e-6)
+
+        # done by evalNormResidual
+        conv.get("RESI_GLOB_RELA").value = 1.123e-4
+        conv.setdefault("RESI_GLOB_MAXI", 1.0e99).value = 9.87e3
+        self.assertFalse(conv.isConverged())
+        self.assertFalse(conv.isFinished())
+
+        conv.addParameter("ITER_GLOB_MAXI", 20)
+        conv.setIteration(15)
+        self.assertFalse(conv.isConverged())
+        self.assertFalse(conv.isFinished())
+        conv.setIteration(21)
+        self.assertFalse(conv.isConverged())
+        self.assertTrue(conv.isFinished())
+
+        # test copy
+        self.assertEqual(len(conv._param), 3)
+        params = conv.getParameters()
+        self.assertEqual(len(conv._param), 3)
+        refk = ["ITER_GLOB_MAXI", "RESI_GLOB_MAXI", "RESI_GLOB_RELA"]
+        keys = sorted(list(params.keys()))
+        self.assertSequenceEqual(refk, keys)
+        for key in refk:
+            ref = conv.get(key)
+            copy = params[key]
+            self.assertIsNot(ref, copy)
+            self.assertAlmostEqual(ref.reference, copy.reference)
+            self.assertAlmostEqual(ref.value, copy.value)
+
+    def test03_resi_geom(self):
+        conv = ConvergenceManager()
+        conv.setdefault("RESI_GLOB_RELA", 1.0e-6)
+        conv.setdefault("RESI_GEOM", 1.0e-6)
+
+        conv.initialize()  # RESI_GEOM will be ignored if not defined
+        conv.get("RESI_GLOB_RELA").value = 1.0e-8
+        self.assertTrue(conv.isConverged())
+
+        conv.initialize("RESI_GEOM")  # RESI_GEOM will be initialized to -1.0
+        conv.get("RESI_GLOB_RELA").value = 1.0e-8
+        self.assertFalse(conv.isConverged())
+
+        conv.initialize("RESI_GEOM")
+        conv.get("RESI_GLOB_RELA").value = 1.0e-8
+        conv.get("RESI_GEOM").value = 1.0e-8
+        self.assertTrue(conv.isConverged())
 
 
 if __name__ == "__main__":

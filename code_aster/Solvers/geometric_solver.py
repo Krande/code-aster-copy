@@ -58,9 +58,8 @@ class GeometricSolver(SolverFeature, EventSource):
         Arguments:
             convManager (ConvergenceManager): Object that holds the criteria values.
         """
-        self._data = convManager.values.copy()
-        self._data["criteria"] = convManager.criteria.copy()
-        self._data["hasConverged"] = convManager.hasConverged()
+        self._data = convManager.getParameters()
+        self._data["isConverged"] = convManager.isConverged()
         super().notifyObservers()
 
     def get_state(self):
@@ -106,14 +105,14 @@ class GeometricSolver(SolverFeature, EventSource):
         convManager.evalGeometricResidual(primal_incr)
         self.phys_state.primal_step += primal_incr
 
-        if convManager.hasConverged():
+        if convManager.isConverged():
             self.phys_state.internVar = internVar
             self.phys_state.stress = sigma
         elif self._get("CONTACT", "ALGO_RESO_GEOM") == "NEWTON":
             self.contact_manager.update(self.phys_state)
             self.contact_manager.pairing(self.phys_pb)
 
-    def hasFinished(self, convManager):
+    def isFinished(self, convManager):
         """Tell if there are iterations to be computed.
 
         Arguments:
@@ -126,7 +125,7 @@ class GeometricSolver(SolverFeature, EventSource):
             return True
         if self.current_incr < 2:
             return False
-        return convManager.hasConverged()
+        return convManager.isConverged()
 
     def _setMatrixType(self):
         """Set matrix type.
@@ -152,13 +151,13 @@ class GeometricSolver(SolverFeature, EventSource):
         """
         self.current_matrix = current_matrix
         convManager = self.get_feature(SOP.ConvergenceManager)
-        convManager.initialize()
+        convManager.initialize("RESI_GEOM")
         iteration = self.get_feature(SOP.IncrementalSolver)
 
         if self.contact_manager:
             self.contact_manager.pairing(self.phys_pb)
 
-        while not self.hasFinished(convManager):
+        while not self.isFinished(convManager):
             # Select type of matrix
             matrix_type = self._setMatrixType()
 
@@ -176,9 +175,9 @@ class GeometricSolver(SolverFeature, EventSource):
                 self.logManager.printConvTableRow(
                     [
                         self.current_incr - 1,
-                        convManager.getCriteria("RESI_GLOB_RELA"),
-                        convManager.getCriteria("RESI_GLOB_MAXI"),
-                        convManager.getCriteria("RESI_GEOM"),
+                        convManager.get("RESI_GLOB_RELA").value,
+                        convManager.get("RESI_GLOB_MAXI").value,
+                        convManager.get("RESI_GEOM").value,
                         matrix_pred,
                     ]
                 )
@@ -187,7 +186,7 @@ class GeometricSolver(SolverFeature, EventSource):
             matrix_pred = matrix_type
             self.notifyObservers(convManager)
 
-        if not convManager.hasConverged():
+        if not convManager.isConverged():
             raise ConvergenceError("MECANONLINE9_7")
 
         # print(f"| Nombre d'itérations de Newton : {self.current_incr - 1}")

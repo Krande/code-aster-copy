@@ -97,7 +97,7 @@ class StepSolver(SolverFeature):
 
         return logManager
 
-    def hasFinished(self, convManager):
+    def isFinished(self, convManager):
         """Tell if there are iterations to be computed.
 
         Arguments:
@@ -121,7 +121,7 @@ class StepSolver(SolverFeature):
         if self.current_incr >= nb_iter:
             return True
 
-        return convManager.hasConverged()
+        return convManager.isConverged()
 
     @profile
     def solve(self):
@@ -139,7 +139,7 @@ class StepSolver(SolverFeature):
 
         criteria = self.get_feature(SOP.ConvergenceCriteria)
 
-        while not self.hasFinished(convManager):
+        while not self.isFinished(convManager):
             if criteria.has_feature(SOP.Contact):
                 criteria.get_feature(SOP.Contact).setPairingCoordinates(self.geom)
             criteria.setLoggingManager(logManager)
@@ -155,16 +155,10 @@ class StepSolver(SolverFeature):
 
             if self._get("CONTACT", "ALGO_RESO_GEOM") == "POINT_FIXE":
                 logManager.printConvTableRow(
-                    [
-                        self.current_incr,
-                        " ",
-                        " ",
-                        convManager.getCriteria("RESI_GEOM"),
-                        "POINT_FIXE",
-                    ]
+                    [self.current_incr, " ", " ", convManager.get("RESI_GEOM").value, "POINT_FIXE"]
                 )
 
-        if not convManager.hasConverged():
+        if not convManager.isConverged():
             raise ConvergenceError("MECANONLINE9_9")
 
         deleteTemporaryObjects()

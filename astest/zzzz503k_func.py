@@ -46,7 +46,6 @@ from code_aster.Solvers import TimeStepper
 
 
 class CoupledState:
-
     u = dx = d = None
     sief_elga = vari_elga = None
     u_nodes = dx_nodes = d_nodes = None
@@ -59,7 +58,6 @@ class CoupledState:
         self.time = time
 
     def projectOnLagrangeSpace(self, hho_meca, hho_dama):
-
         self.u_nodes = hho_meca.projectOnLagrangeSpace(self.u)
         self.dx_nodes = hho_dama.projectOnLagrangeSpace(self.dx)
         self.d_nodes = hho_dama.projectOnLagrangeSpace(self.d)
@@ -205,7 +203,6 @@ class DamageSolver:
 
 
 class CoupledSolver:
-
     dama_para = meca_para = None
 
     def __init__(self, MECA, DAMA):
@@ -213,7 +210,6 @@ class CoupledSolver:
         self.meca_para = MECA
 
     def solve(self, timeList):
-
         print("Coupled solver")
         # init solver
         meca_solver = MecaSolver(self.meca_para)
@@ -237,7 +233,7 @@ class CoupledSolver:
         state_prev.projectOnLagrangeSpace(hho_meca, hho_dama)
         state_curr.projectOnLagrangeSpace(hho_meca, hho_dama)
 
-        while not stepper.hasFinished():
+        while not stepper.isFinished():
             state_curr.time = stepper.getCurrent()
             print("Time : %f" % stepper.getCurrent())
             for it in range(100):

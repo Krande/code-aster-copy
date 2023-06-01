@@ -393,7 +393,7 @@ def ther_lineaire_ops(self, **args):
             storage_manager.completed()
 
     # Loop on time step
-    while not timeStepper.hasFinished():
+    while not timeStepper.isFinished():
         phys_state.time = timeStepper.getCurrent()
 
         if is_evol:
