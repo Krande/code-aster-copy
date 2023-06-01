@@ -310,7 +310,7 @@ class TimeStepper(SolverFeature, Observer):
             int: -1 if time1 < time2, 0 if time1 == time2, +1 if time1 > time2
             using epsilon.
         """
-        return (time1 > time2 + self._eps) - (time1 + self._eps < time2)
+        return int(time1 > time2 + self._eps) - int(time1 + self._eps < time2)
 
     def __repr__(self):
         return f"<TimeStepper(from {self._initial} to {self._final}, size {self.size()}: {self._times})>"
@@ -366,7 +366,7 @@ class TimeStepper(SolverFeature, Observer):
             TimeStepper: a new TimeStepper.
         """
         args = _F(args)
-        definition = args["DEFI_LIST"]
+        definition = args["DEFI_LIST"][0]
         if "VALE" in definition:
             times = definition["VALE"]
         elif "LIST_INST" in definition:
