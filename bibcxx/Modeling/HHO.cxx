@@ -231,6 +231,30 @@ FieldOnNodesRealPtr HHO::projectOnHHOSpace( const FieldOnNodesRealPtr h1_field )
     return hho_elno->toFieldOnNodes();
 };
 
+FieldOnNodesRealPtr HHO::projectOnHHOCellSpace( const FieldOnCellsRealPtr field_elga ) const {
+    auto model = _phys_problem->getModel();
+    auto mesh = model->getMesh();
+
+    const std::string option = model->isThermal() ? "HHO_PROJ3_THER" : "HHO_PROJ3_MECA";
+    auto calcul = std::make_unique< Calcul >( option );
+    calcul->setModel( model );
+
+    // Input fields
+    calcul->addInputField( "PGEOMER", mesh->getCoordinates() );
+    calcul->addInputField( "PQPTP_R", field_elga );
+
+    // Output fields
+    auto hho_elno = std::make_shared< FieldOnCellsReal >( model );
+    calcul->addOutputField( "PTEMP_R", hho_elno );
+
+    // Compute
+    if ( model->existsFiniteElement() ) {
+        calcul->compute();
+    };
+
+    return hho_elno->toFieldOnNodes();
+};
+
 FieldOnCellsRealPtr HHO::evaluateAtQuadraturePoints( const FieldOnNodesRealPtr hho_field ) const {
     auto model = _phys_problem->getModel();
     auto mesh = model->getMesh();

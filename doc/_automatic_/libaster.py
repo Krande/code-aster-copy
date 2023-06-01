@@ -13547,11 +13547,26 @@ class HHO:
     def projectOnHHOCellSpace(self, *args, **kwargs):
         """Overloaded function.
 
-        1. projectOnHHOCellSpace(self: libaster.HHO, func: libaster.GenericFunction, time: float = 0.0) -> libaster.FieldOnNodesReal
+        1. projectOnHHOCellSpace(self: libaster.HHO, field_elga: libaster.FieldOnCellsReal) -> libaster.FieldOnNodesReal
+
+
+              Project field defined at the quadrature poitns to HHO-cell_space
+              Cell space is the restriction of HHO-space to cells only
+              Face values are setted to zero
+
+              Arguments:
+                    field_elga (FieldOnNodesReal): values of the field at the quadrature poitns
+
+              Returns:
+                    FieldOnNodesReal: HHO field
+
+
+        2. projectOnHHOCellSpace(self: libaster.HHO, func: libaster.GenericFunction, time: float = 0.0) -> libaster.FieldOnNodesReal
 
 
               Project real function to HHO Cell-space
               Cell space is the restriction of HHO-space to cells only
+              Face values are setted to zero
 
               Arguments:
                     func (Function): real function to project
@@ -13561,11 +13576,12 @@ class HHO:
                     FieldOnNodesReal: HHO field
 
 
-        2. projectOnHHOCellSpace(self: libaster.HHO, func: List[libaster.GenericFunction], time: float = 0.0) -> libaster.FieldOnNodesReal
+        3. projectOnHHOCellSpace(self: libaster.HHO, func: List[libaster.GenericFunction], time: float = 0.0) -> libaster.FieldOnNodesReal
 
 
               Project real function to HHO Cell-space
               Cell space is the restriction of HHO-space to cells only
+              Face values are setted to zero
 
               Arguments:
                     func (Function): real function to project
@@ -13575,11 +13591,12 @@ class HHO:
                     FieldOnNodesReal: HHO field
 
 
-        3. projectOnHHOCellSpace(self: libaster.HHO, value: float) -> libaster.FieldOnNodesReal
+        4. projectOnHHOCellSpace(self: libaster.HHO, value: float) -> libaster.FieldOnNodesReal
 
 
               Project real value to HHO Cell-space
               Cell space is the restriction of HHO-space to cells only
+              Face values are setted to zero
 
               Arguments:
                     value (float): value to project
@@ -13588,11 +13605,12 @@ class HHO:
                     FieldOnNodesReal: HHO field
 
 
-        4. projectOnHHOCellSpace(self: libaster.HHO, value: List[float]) -> libaster.FieldOnNodesReal
+        5. projectOnHHOCellSpace(self: libaster.HHO, value: List[float]) -> libaster.FieldOnNodesReal
 
 
               Project real value to HHO Cell-space
               Cell space is the restriction of HHO-space to cells only
+              Face values are setted to zero
 
               Arguments:
                     value (float): value to project

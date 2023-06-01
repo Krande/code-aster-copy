@@ -114,11 +114,27 @@ void exportHHOToPython( py::module_ &mod ) {
         )",
               py::arg( "value" ) )
         .def( "projectOnHHOCellSpace",
+              py::overload_cast< const FieldOnCellsRealPtr >( &HHO::projectOnHHOCellSpace,
+                                                              py::const_ ),
+              R"(
+      Project field defined at the quadrature poitns to HHO-cell_space
+      Cell space is the restriction of HHO-space to cells only
+      Face values are setted to zero
+
+      Arguments:
+            field_elga (FieldOnNodesReal): values of the field at the quadrature poitns
+
+      Returns:
+            FieldOnNodesReal: HHO field
+        )",
+              py::arg( "field_elga" ) )
+        .def( "projectOnHHOCellSpace",
               py::overload_cast< const GenericFunctionPtr, ASTERDOUBLE >(
                   &HHO::projectOnHHOCellSpace, py::const_ ),
               R"(
       Project real function to HHO Cell-space
       Cell space is the restriction of HHO-space to cells only
+      Face values are setted to zero
 
       Arguments:
             func (Function): real function to project
@@ -134,6 +150,7 @@ void exportHHOToPython( py::module_ &mod ) {
               R"(
       Project real function to HHO Cell-space
       Cell space is the restriction of HHO-space to cells only
+      Face values are setted to zero
 
       Arguments:
             func (Function): real function to project
@@ -148,6 +165,7 @@ void exportHHOToPython( py::module_ &mod ) {
               R"(
       Project real value to HHO Cell-space
       Cell space is the restriction of HHO-space to cells only
+      Face values are setted to zero
 
       Arguments:
             value (float): value to project
@@ -161,6 +179,7 @@ void exportHHOToPython( py::module_ &mod ) {
               R"(
       Project real value to HHO Cell-space
       Cell space is the restriction of HHO-space to cells only
+      Face values are setted to zero
 
       Arguments:
             value (float): value to project

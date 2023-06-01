@@ -175,6 +175,11 @@ class THER2DQ9_HHO111(Element):
             para_in=((SP.PGEOMER, NGEOMER), (OP.HHO_PROJ2_THER.PH1TP_R, TEMPHHO)),
             para_out=((OP.HHO_PROJ_THER.PTEMP_R, DDL_THER),),
         ),
+        OP.HHO_PROJ3_THER(
+            te=484,
+            para_in=((SP.PGEOMER, NGEOMER), (OP.HHO_PROJ3_THER.PQPTP_R, LC.ETEMPPG)),
+            para_out=((OP.HHO_PROJ3_THER.PTEMP_R, DDL_THER),),
+        ),
         OP.MASS_THER(
             te=449,
             para_in=(

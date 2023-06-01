@@ -78,6 +78,11 @@ class HHO {
     FieldOnNodesRealPtr projectOnHHOSpace( const FieldOnNodesRealPtr h1_field ) const;
 
     /**
+     * @brief Project ELGA-field to HHO field
+     */
+    FieldOnNodesRealPtr projectOnHHOCellSpace( const FieldOnCellsRealPtr field_elga ) const;
+
+    /**
      * @brief Project real value on HHO space
      */
     FieldOnNodesRealPtr projectOnHHOSpace( const ASTERDOUBLE &value ) const;

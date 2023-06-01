@@ -22,15 +22,17 @@ subroutine te0484(option, nomte)
     use HHO_size_module
     use HHO_init_module, only: hhoInfoInitCell
     use HHO_L2proj_module
+    use HHO_quadrature_module
 !
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/HHO_size_module.h"
-#include "asterfort/writeVector.h"
 #include "asterfort/assert.h"
-#include "jeveux.h"
+#include "asterfort/elrefe_info.h"
+#include "asterfort/HHO_size_module.h"
 #include "asterfort/jevech.h"
+#include "asterfort/writeVector.h"
+#include "jeveux.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !  HHO
@@ -45,8 +47,10 @@ subroutine te0484(option, nomte)
 !
     type(HHO_Data) :: hhoData
     type(HHO_Cell) :: hhoCell
-    integer :: cbs, fbs, total_dofs
+    type(HHO_Quadrature) :: hhoQuad
+    integer :: cbs, fbs, total_dofs, npg
     real(kind=8), dimension(MSIZE_TDOFS_VEC) :: coeff_L2Proj
+    real(kind=8), dimension(MSIZE_CELL_SCAL) :: cell_L2Proj
     real(kind=8), pointer :: field(:) => null()
 !
 ! --- Get HHO informations
@@ -59,6 +63,17 @@ subroutine te0484(option, nomte)
         call hhoL2ProjFieldScal(hhoCell, hhoData, field, coeff_L2Proj)
 !
         call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
+        call writeVector("PTEMP_R", total_dofs, coeff_L2Proj)
+    elseif (option == "HHO_PROJ3_THER") then
+!
+        call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
+        call elrefe_info(fami='RIGI', npg=npg)
+        call hhoQuad%initCell(hhoCell, npg)
+        call jevech("PQPTP_R", "L", vr=field)
+        call hhoL2ProjCellScal(hhoCell, hhoQuad, field, hhoData%cell_degree(), cell_L2Proj)
+!
+        coeff_L2Proj = 0.d0
+        coeff_L2Proj(total_dofs-cbs+1:total_dofs) = cell_L2Proj(1:cbs)
         call writeVector("PTEMP_R", total_dofs, coeff_L2Proj)
     elseif (option == "HHO_PROJ_MECA") then
         ASSERT(ASTER_FALSE)

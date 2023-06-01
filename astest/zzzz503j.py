@@ -169,6 +169,9 @@ test.assertAlmostEqual(diff.norm("NORM_2"), 0.0, delta=5e-2)
 hho_elga = hho.evaluateAtQuadraturePoints(f_hho)
 test.assertAlmostEqual(max(hho_elga.getValues()), 1.8957, delta=1e-2)
 
+f_proj = hho.projectOnHHOCellSpace(hho_elga)
+test.assertAlmostEqual(f_proj.norm("NORM_2"), 6.376190569410008, delta=1e-2)
+
 test.printSummary()
 
 FIN()
