@@ -425,10 +425,8 @@ EquationNumbering::getDOFsWithDescription( const std::string cmp,
         auto group = _mesh->getNodes();
         std::copy( group.begin(), group.end(), std::inserter( nodes, nodes.end() ) );
     } else {
-        for ( auto groupName : groupNames ) {
-            auto group = _mesh->getNodes( groupName );
-            std::copy( group.begin(), group.end(), std::inserter( nodes, nodes.end() ) );
-        }
+        auto group = _mesh->getNodes( groupNames );
+        std::copy( group.begin(), group.end(), std::inserter( nodes, nodes.end() ) );
     }
 
     auto idToName = getComponentsIdToName();

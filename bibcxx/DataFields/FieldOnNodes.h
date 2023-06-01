@@ -462,7 +462,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     };
 
     void setValues( const std::map< std::string, ValueType > &values,
-                    VectorString groupsOfCells = {} ) {
+                    VectorString groupsOfNodes = {} ) {
         _values->updateValuePointer();
 
         auto num2name = _dofDescription->getComponentsIdToName();
@@ -470,12 +470,16 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
 
         auto nbDofs = this->size();
 
-        auto nodes = this->getMesh()->getNodesFromCells( groupsOfCells );
+        auto nodes = this->getMesh()->getNodes( groupsOfNodes );
+        SetInt nodes_set;
+        std::copy( nodes.begin(), nodes.end(), std::inserter( nodes_set, nodes_set.end() ) );
 
         for ( ASTERINTEGER dof = 0; dof < nbDofs; dof++ ) {
             auto search = values.find( num2name[descr[dof].second] );
             if ( search != values.end() ) {
-                ( *this )[dof] = search->second;
+                if ( nodes_set.count( descr[dof].first ) > 0 ) {
+                    ( *this )[dof] = search->second;
+                }
             }
         }
     };

@@ -167,9 +167,9 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
 
             Arguments:
                 value (dict[str, float]): dict of values to set (key: str, value: float)
-                groupsOfCells (list[str]): list of groups. If empty, the full mesh is considered
+                groupsOfNodes (list[str]): list of groups. If empty, the full mesh is considered
             )",
-              py::arg( "value" ), py::arg( "groupsOfCells" ) = VectorString() )
+              py::arg( "value" ), py::arg( "groupsOfNodes" ) = VectorString() )
         .def( "getValues", py::overload_cast<>( &FieldOnNodesReal::getValues, py::const_ ),
               R"(
             Return a list of values as (x1, y1, z1, x2, y2, z2...)
