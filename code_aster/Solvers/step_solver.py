@@ -106,6 +106,7 @@ class StepSolver(SolverFeature):
         Returns:
             bool: *True* if there is no iteration to be computed, *False* otherwise.
         """
+        # FIXME to be replaced by convManager.isFinished()
         if self.current_incr == 0:
             return False
 

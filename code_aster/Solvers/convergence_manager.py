@@ -52,7 +52,7 @@ class ConvergenceManager(SolverFeature):
         """
 
         match = None
-        _refe = _value = None
+        _refe = _value = _minValue = None
         __setattr__ = no_new_attributes(object.__setattr__)
 
         @classmethod
@@ -71,9 +71,13 @@ class ConvergenceManager(SolverFeature):
         def __init__(self, reference):
             self._refe = reference
             self._value = ConvergenceManager.undef
+            self._minValue = ConvergenceManager.undef
 
         def __repr__(self) -> str:
-            return f"{self._value} (ref.: {self._refe})"
+            minV = ""
+            if self.minSet():
+                minV = f", min: {self._minValue}"
+            return f"{self._value} (ref.: {self._refe}{minV})"
 
         def isSet(self):
             """Tell if the parameter value has been assigned.
@@ -82,6 +86,14 @@ class ConvergenceManager(SolverFeature):
                 bool: *True* if the parameter has a value, *False* if not.
             """
             return self._value is not ConvergenceManager.undef
+
+        def minSet(self):
+            """Tell if a minimal value has been assigned.
+
+            Returns:
+                bool: *True* if the parameter has a minimum, *False* if not.
+            """
+            return self._minValue is not ConvergenceManager.undef
 
         def hasRef(self):
             """Tell if a reference value is defined for the parameter.
@@ -114,6 +126,20 @@ class ConvergenceManager(SolverFeature):
             """
             self._value = value
 
+        @property
+        def minValue(self):
+            """float|int: Current minimal value of the parameter."""
+            return self._minValue
+
+        @minValue.setter
+        def minValue(self, value):
+            """Set the parameter value.
+
+            Arguments:
+                value (float|int): Parameter value.
+            """
+            self._minValue = value
+
         def isConverged(self):
             """Tell if the current value is converged.
 
@@ -140,6 +166,10 @@ class ConvergenceManager(SolverFeature):
 
         match = re.compile("^RESI_").search
 
+        def __init__(self, reference):
+            super().__init__(reference)
+            self.minValue = 0.0
+
         def isConverged(self):
             """Tell if the current value is converged.
 
@@ -148,7 +178,8 @@ class ConvergenceManager(SolverFeature):
             """
             if not self.hasRef() or not self.isSet():
                 return True
-            return 0.0 <= self._value <= self._refe
+            checkMin = not self.minSet() or self._minValue <= self._value
+            return checkMin and self._value <= self._refe
 
         def isFinished(self):
             """Tell if the current parameter should stop the calculation.
@@ -174,7 +205,9 @@ class ConvergenceManager(SolverFeature):
             Returns:
                 bool: *True*.
             """
-            return True
+            if not self.hasRef() or not self.isSet() or not self.minSet():
+                return True
+            return self._minValue <= self._value
 
         def isFinished(self):
             """Tell if the current parameter should stop the calculation.
@@ -188,21 +221,21 @@ class ConvergenceManager(SolverFeature):
         super().__init__()
         self._param = {}
 
-    def initialize(self, *needed):
+    def initialize(self, *mandatory):
         """Initialize the object for a new iteration.
 
         Mandatory parameters must be defined before checking their convergency
         (here they are assigned to a negative value, not converged).
 
         Arguments:
-            needed (tuple): Name of parameters that are needed.
+            mandatory (tuple): Name of parameters that are mandatory.
         """
         for para in self._param.values():
             para.reset()
-        for name in needed:
+        for name in mandatory:
             para = self.get(name)
             if para:
-                para.value = -1.0
+                para.value = -1
 
     def isEmpty(self):
         """Tell if there is no convergence parameter.
@@ -211,15 +244,6 @@ class ConvergenceManager(SolverFeature):
             bool: *False* if at least one parameter is defined, *True* otherwise.
         """
         return not bool(self._param)
-
-    def addParameter(self, name, reference):
-        """Add a convergence parameter to be checked.
-
-        Arguments:
-            name (str): Name of the parameter.
-            reference (float): Reference value of the parameter.
-        """
-        self._param[name] = ConvergenceManager.Parameter.factory(name, reference)
 
     def setdefault(self, name, reference=undef):
         """Add a convergence parameter if it does not yet exist.
@@ -374,7 +398,7 @@ class ConvergenceManager(SolverFeature):
         resi_geom.value = displ_delta.norm("NORM_INFINITY", ["DX", "DY", "DZ"]) / diag
 
     def setIteration(self, value):
-        """Update the current iteration step.
+        """Update the current iteration number.
 
         Arguments:
             value (int): Current iteration number.
@@ -391,14 +415,15 @@ class ConvergenceManager(SolverFeature):
         logger.debug("isConverged ? %r", self._param)
         defined = [para for para in self._param.values() if para.isSet() and para.hasRef()]
         if not defined:
-            logger.debug("no parameters are set: not converged")
+            logger.debug("no parameter set: not converged")
             return False
-        for name, para in self._param.items():
+        for name, para in self._residuals:
             if not para.isConverged():
                 logger.debug("parameter %s is not converged", name)
                 return False
         return True
 
+    # @with_loglevel()
     def isFinished(self):
         """Tell if a parameter is stopping the calculation.
 
@@ -410,9 +435,7 @@ class ConvergenceManager(SolverFeature):
             if para.isFinished():
                 logger.debug("parameter %s would finish", name)
                 return True
-        # all residue parameters must be finished
-        resi = [para for _, para in self._residuals if not para.isFinished()]
-        if resi:
-            logger.debug("at least one residue is not converged")
-            return False
-        return True
+            if not para.isConverged():
+                logger.debug("parameter %s is not converged", name)
+                return False
+        return self.isConverged()

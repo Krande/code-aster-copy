@@ -163,15 +163,15 @@ class ProblemSolver(SolverFeature):
         if not converg:
             args = self.get_feature(SOP.Keywords)
             converg = ConvergenceManager()
-            for crit in ("RESI_GLOB_RELA", "RESI_GLOB_MAXI"):  # "ITER_GLOB_MAXI"
+            for crit in ("RESI_GLOB_RELA", "RESI_GLOB_MAXI", "ITER_GLOB_MAXI"):
                 value = args["CONVERGENCE"].get(crit)
                 if value is not None:
-                    converg.addParameter(crit, value)
+                    converg.setdefault(crit, value)
             if args.get("CONTACT"):
                 if args["CONTACT"].get("ALGO_RESO_GEOM") == "NEWTON":
-                    converg.addParameter("RESI_GEOM", args["CONTACT"].get("RESI_GEOM"))
+                    converg.setdefault("RESI_GEOM", args["CONTACT"].get("RESI_GEOM"))
             if converg.isEmpty():
-                converg.addParameter("RESI_GLOB_RELA", 1.0e-6)
+                converg.setdefault("RESI_GLOB_RELA", 1.0e-6)
         for feat, required in converg.undefined():
             converg.use(self._get(feat | SOP.ForIncr, required))
         self.use(converg, SOP.ForIncr)
@@ -195,7 +195,7 @@ class ProblemSolver(SolverFeature):
             step_crit = ConvergenceManager()
             value = 1.0e150
             value = (args.get("CONTACT") or {}).get("RESI_GEOM", value)
-            step_crit.addParameter("RESI_GEOM", value)
+            step_crit.setdefault("RESI_GEOM", value)
         for feat, required in step_crit.undefined():
             step_crit.use(self._get(feat, required))
         self.use(step_crit, SOP.ForStep)

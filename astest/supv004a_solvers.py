@@ -580,29 +580,36 @@ class TestConvergenceManager(unittest.TestCase):
         self.assertFalse(resi.isSet())
         self.assertTrue(resi.isConverged())
         self.assertTrue(resi.isFinished())
-
         resi.value = 1.123e-4
         self.assertTrue(resi.isSet())
         self.assertFalse(resi.isConverged())
         self.assertFalse(resi.isFinished())
+        resi.reset()
+        self.assertFalse(resi.isSet())
 
         self.assertFalse(iter.isSet())
         self.assertTrue(iter.isConverged())
         self.assertFalse(iter.isFinished())
-
-        iter.value = 5
+        iter.value = 0
         self.assertTrue(iter.isSet())
         self.assertTrue(iter.isConverged())
         self.assertFalse(iter.isFinished())
+        iter.minValue = 1
+        self.assertFalse(iter.isConverged())
+        self.assertFalse(iter.isFinished())
+        iter.value = 1
+        self.assertTrue(iter.isConverged())
+        self.assertFalse(iter.isFinished())
+        iter.value = 9
+        self.assertTrue(iter.isConverged())
+        self.assertFalse(iter.isFinished())
         iter.value = 10
+        self.assertTrue(iter.isConverged())
         self.assertTrue(iter.isFinished())
-
-        iter.reset()
-        self.assertFalse(iter.isSet())
 
     def test02_conv(self):
         conv = ConvergenceManager()
-        conv.addParameter("RESI_GLOB_RELA", 1.0e-6)
+        conv.setdefault("RESI_GLOB_RELA", 1.0e-6)
         self.assertIsNotNone(conv.get("RESI_GLOB_RELA"))
         resi_rela = conv.get("RESI_GLOB_RELA")
         self.assertAlmostEqual(resi_rela.reference, 1.0e-6)
@@ -617,7 +624,7 @@ class TestConvergenceManager(unittest.TestCase):
         self.assertFalse(conv.isConverged())
         self.assertFalse(conv.isFinished())
 
-        conv.addParameter("ITER_GLOB_MAXI", 20)
+        conv.setdefault("ITER_GLOB_MAXI", 20)
         conv.setIteration(15)
         self.assertFalse(conv.isConverged())
         self.assertFalse(conv.isFinished())

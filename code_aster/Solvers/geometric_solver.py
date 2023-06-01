@@ -49,7 +49,7 @@ class GeometricSolver(SolverFeature, EventSource):
     def initialize(self):
         """Initialize the object for the next step."""
         self.check_features()
-        self.current_incr = 0
+        self.current_incr = -1
         self.current_matrix = None
 
     def notifyObservers(self, convManager):
@@ -112,21 +112,6 @@ class GeometricSolver(SolverFeature, EventSource):
             self.contact_manager.update(self.phys_state)
             self.contact_manager.pairing(self.phys_pb)
 
-    def isFinished(self, convManager):
-        """Tell if there are iterations to be computed.
-
-        Arguments:
-            convManager (ConvergenceManager): convergence manager.
-
-        Returns:
-            bool: *True* if there is no iteration to be computed, *False* otherwise.
-        """
-        if self.current_incr > self._get("CONVERGENCE", "ITER_GLOB_MAXI"):
-            return True
-        if self.current_incr < 2:
-            return False
-        return convManager.isConverged()
-
     def _setMatrixType(self):
         """Set matrix type.
 
@@ -151,13 +136,18 @@ class GeometricSolver(SolverFeature, EventSource):
         """
         self.current_matrix = current_matrix
         convManager = self.get_feature(SOP.ConvergenceManager)
-        convManager.initialize("RESI_GEOM")
+        # start at current_incr=0, minValue is current_incr=1, print "current_incr - 1"
+        convManager.setdefault("ITER_GLOB_MAXI").minValue = 1
+        convManager.initialize("RESI_GEOM", "ITER_GLOB_MAXI")
         iteration = self.get_feature(SOP.IncrementalSolver)
 
         if self.contact_manager:
             self.contact_manager.pairing(self.phys_pb)
 
-        while not self.isFinished(convManager):
+        matrix_pred = "-"
+        while not convManager.isFinished():
+            self.current_incr += 1
+            convManager.setIteration(self.current_incr)
             # Select type of matrix
             matrix_type = self._setMatrixType()
 
@@ -168,7 +158,6 @@ class GeometricSolver(SolverFeature, EventSource):
 
             # Update
             self.update(primal_incr, internVar, sigma, convManager)
-            convManager.setIteration(self.current_incr)
             # self.phys_state.debugPrint("<iter+> ")
 
             if self.current_incr > 0:
@@ -182,14 +171,13 @@ class GeometricSolver(SolverFeature, EventSource):
                     ]
                 )
 
-            self.current_incr += 1
             matrix_pred = matrix_type
             self.notifyObservers(convManager)
 
         if not convManager.isConverged():
             raise ConvergenceError("MECANONLINE9_7")
 
-        # print(f"| Nombre d'itérations de Newton : {self.current_incr - 1}")
+        # print(f"| Nombre d'itérations de Newton : {self.current_incr}")
         if self.current_incr % self.matr_update_incr == 0 or self.contact_manager:
             self.current_matrix = None
 
