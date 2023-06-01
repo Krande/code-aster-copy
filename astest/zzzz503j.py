@@ -166,6 +166,9 @@ test.assertAlmostEqual(diff.norm("NORM_2"), 0.0, delta=1e-4)
 diff = f_hho - f2_hho
 test.assertAlmostEqual(diff.norm("NORM_2"), 0.0, delta=5e-2)
 
+hho_elga = hho.evaluateAtQuadraturePoints(f_hho)
+test.assertAlmostEqual(max(hho_elga.getValues()), 1.8957, delta=1e-2)
+
 test.printSummary()
 
 FIN()

@@ -342,6 +342,13 @@ GRILLE = Attribute(
 """,
 )
 
+HHO = Attribute(
+    value=("OUI",),
+    comment="""
+  HHO = 'OUI'.
+""",
+)
+
 
 INCO = Attribute(
     value=("C2", "C2O", "C3", "C5GV"),

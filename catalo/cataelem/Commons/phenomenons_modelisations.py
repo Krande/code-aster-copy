@@ -6186,6 +6186,7 @@ phen.add(
             (AT.TYPMOD2, "HHO"),
             (AT.NBSIGM, "6"),
             (AT.TYPMOD, "3D"),
+            (AT.HHO, "OUI"),
         ),
         elements=(
             (MT.HEXA27, EL.MECA3DH27_HHO222),
@@ -6207,6 +6208,7 @@ phen.add(
             (AT.TYPMOD2, "HHO"),
             (AT.NBSIGM, "6"),
             (AT.TYPMOD, "3D"),
+            (AT.HHO, "OUI"),
         ),
         elements=(
             (MT.HEXA27, EL.MECA3DH27_HHO111),
@@ -6229,6 +6231,7 @@ phen.add(
             (AT.D_PLAN, "OUI"),
             (AT.TYPMOD, "D_PLAN"),
             (AT.NBSIGM, "4"),
+            (AT.HHO, "OUI"),
         ),
         elements=(
             (MT.QUAD9, EL.MECA_DPQ9_HHO222),
@@ -6249,6 +6252,7 @@ phen.add(
             (AT.D_PLAN, "OUI"),
             (AT.TYPMOD, "D_PLAN"),
             (AT.NBSIGM, "4"),
+            (AT.HHO, "OUI"),
         ),
         elements=(
             (MT.QUAD9, EL.MECA_DPQ9_HHO111),
@@ -6270,6 +6274,7 @@ phen.add(
             (AT.D_PLAN, "OUI"),
             (AT.TYPMOD, "D_PLAN"),
             (AT.NBSIGM, "4"),
+            (AT.HHO, "OUI"),
         ),
         elements=(
             (MT.QUAD9, EL.MECA_DGVQ_HHO111),
@@ -6290,6 +6295,7 @@ phen.add(
             (AT.D_PLAN, "OUI"),
             (AT.TYPMOD, "D_PLAN"),
             (AT.NBSIGM, "4"),
+            (AT.HHO, "OUI"),
         ),
         elements=(
             (MT.QUAD9, EL.MECA_DGVQ_HHO222),
@@ -6309,6 +6315,7 @@ phen.add(
             (AT.TYPMOD2, "HHO_GRAD"),
             (AT.TYPMOD, "3D"),
             (AT.NBSIGM, "6"),
+            (AT.HHO, "OUI"),
         ),
         elements=(
             (MT.HEXA27, EL.MECA3DGVH_HHO111),
@@ -6329,6 +6336,7 @@ phen.add(
             (AT.TYPMOD2, "HHO_GRAD"),
             (AT.TYPMOD, "3D"),
             (AT.NBSIGM, "6"),
+            (AT.HHO, "OUI"),
         ),
         elements=(
             (MT.HEXA27, EL.MECA3DGVH_HHO222),
@@ -6664,7 +6672,12 @@ phen.add(
     Modelisation(
         dim=(3, 3),
         code="HT1",
-        attrs=((AT.FORMULATION, "HHO_QUAD"), (AT.TYPMOD2, "HHO"), (AT.TYPMOD, "3D")),
+        attrs=(
+            (AT.FORMULATION, "HHO_QUAD"),
+            (AT.TYPMOD2, "HHO"),
+            (AT.TYPMOD, "3D"),
+            (AT.HHO, "OUI"),
+        ),
         elements=(
             (MT.HEXA27, EL.THER3DH27_HHO222),
             (MT.TETRA15, EL.THER3DT15_HHO222),
@@ -6680,7 +6693,12 @@ phen.add(
     Modelisation(
         dim=(3, 3),
         code="HT2",
-        attrs=((AT.FORMULATION, "HHO_LINE"), (AT.TYPMOD2, "HHO"), (AT.TYPMOD, "3D")),
+        attrs=(
+            (AT.FORMULATION, "HHO_LINE"),
+            (AT.TYPMOD2, "HHO"),
+            (AT.TYPMOD, "3D"),
+            (AT.HHO, "OUI"),
+        ),
         elements=(
             (MT.HEXA27, EL.THER3DH27_HHO111),
             (MT.TETRA15, EL.THER3DT15_HHO111),
@@ -6696,7 +6714,12 @@ phen.add(
     Modelisation(
         dim=(2, 2),
         code="PT3",
-        attrs=((AT.FORMULATION, "HHO_QUAD"), (AT.TYPMOD2, "HHO"), (AT.TYPMOD, "PLAN")),
+        attrs=(
+            (AT.FORMULATION, "HHO_QUAD"),
+            (AT.TYPMOD2, "HHO"),
+            (AT.TYPMOD, "PLAN"),
+            (AT.HHO, "OUI"),
+        ),
         elements=(
             (MT.QUAD9, EL.THER2DQ9_HHO222),
             (MT.TRIA7, EL.THER2DT7_HHO222),
@@ -6710,7 +6733,12 @@ phen.add(
     Modelisation(
         dim=(2, 2),
         code="PT4",
-        attrs=((AT.FORMULATION, "HHO_LINE"), (AT.TYPMOD2, "HHO"), (AT.TYPMOD, "PLAN")),
+        attrs=(
+            (AT.FORMULATION, "HHO_LINE"),
+            (AT.TYPMOD2, "HHO"),
+            (AT.TYPMOD, "PLAN"),
+            (AT.HHO, "OUI"),
+        ),
         elements=(
             (MT.QUAD9, EL.THER2DQ9_HHO111),
             (MT.TRIA7, EL.THER2DT7_HHO111),

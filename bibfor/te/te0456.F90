@@ -19,7 +19,8 @@
 subroutine te0456(nomopt, nomte)
 !
     use HHO_type
-    use HHO_postpro_module, only: hhoPostMeca, hhoPostTher
+    use HHO_quadrature_module
+    use HHO_postpro_module, only: hhoPostMeca, hhoPostTher, hhoPostTherElga
     use HHO_init_module, only: hhoInfoInitCell
 !
     implicit none
@@ -39,20 +40,24 @@ subroutine te0456(nomopt, nomte)
 !
     type(HHO_Data) :: hhoData
     type(HHO_Cell) :: hhoCell
-    integer :: nbnodes
+    type(HHO_Quadrature) :: hhoQuad
+    integer :: nbnodes, npg
 ! --------------------------------------------------------------------------------------------------
 !
 ! --- Retrieve HHO informations
 !
     call hhoInfoInitCell(hhoCell, hhoData)
 !
-    call elrefe_info(fami='RIGI', nno=nbnodes)
+    call elrefe_info(fami='RIGI', nno=nbnodes, npg=npg)
 !
     if (nomopt == 'HHO_DEPL_MECA') then
 ! --- post-traitement
         call hhoPostMeca(hhoCell, hhoData, nbnodes)
     else if (nomopt == 'HHO_TEMP_THER') then
         call hhoPostTher(hhoCell, hhoData, nbnodes)
+    else if (nomopt == 'TEMP_ELGA') then
+        call hhoQuad%initCell(hhoCell, npg)
+        call hhoPostTherElga(hhoCell, hhoData, hhoQuad)
     else
         ASSERT(ASTER_FALSE)
     end if

@@ -27,6 +27,17 @@ void exportHHOToPython( py::module_ &mod ) {
     py::class_< HHO, HHO::HHOPtr >( mod, "HHO" )
         .def( py::init( &initFactoryPtr< HHO, PhysicalProblemPtr > ) )
         // fake initFactoryPtr: not a DataStructure
+        .def( "evaluateAtQuadraturePoints", &HHO::evaluateAtQuadraturePoints,
+              R"(
+      Evaluate HHO-field at quadrature points
+
+      Arguments:
+            hho_field (FieldOnNodesReal): hho field like displacement or thermic
+
+      Returns:
+            FieldOnCellsReal: HHO field evaluated at quadrature points (ELGA)
+        )",
+              py::arg( "hho_field" ) )
         .def( "projectOnLagrangeSpace", &HHO::projectOnLagrangeSpace,
               R"(
       Project field from HHO-space to Lagrange-space

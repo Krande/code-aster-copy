@@ -74,6 +74,7 @@ TEMP_ELGA = Option(
     para_out=(SP.PTEMP_R,),
     condition=(
         CondCalcul("+", ((AT.PHENO, "TH"), (AT.BORD, "0"), (AT.LXFEM, "OUI"))),
+        CondCalcul("+", ((AT.PHENO, "TH"), (AT.BORD, "0"), (AT.HHO, "OUI"))),
         CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),
         CondCalcul("-", ((AT.PHENO, "ME"), (AT.ABSO, "OUI"))),
         CondCalcul("-", ((AT.PHENO, "ME"), (AT.FLUIDE, "OUI"))),
@@ -83,5 +84,7 @@ TEMP_ELGA = Option(
         POUR LES ELEMENTS X-FEM
             CALCUL DE LA TEMPERATURE ET DE SON GRADIENT AUX POINTS DE GAUSS
         POUR LES ELEMENTS A SOUS-POINTS
-             CALCUL DE LA TEMPERATURE AUX SOUS-POINTS""",
+             CALCUL DE LA TEMPERATURE AUX SOUS-POINTS
+        POUR LES ELEMENTS HHO
+            CALCUL DE LA TEMPERATURE AUX POINTS DE GAUSS""",
 )

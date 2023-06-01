@@ -68,6 +68,11 @@ class HHO {
     FieldOnNodesRealPtr projectOnLagrangeSpace( const FieldOnNodesRealPtr hho_field ) const;
 
     /**
+     * @brief Evaluate HHO field at quadrature points
+     */
+    FieldOnCellsRealPtr evaluateAtQuadraturePoints( const FieldOnNodesRealPtr hho_field ) const;
+
+    /**
      * @brief Project H^1-field to HHO field
      */
     FieldOnNodesRealPtr projectOnHHOSpace( const FieldOnNodesRealPtr h1_field ) const;

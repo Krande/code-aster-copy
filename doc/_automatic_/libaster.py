@@ -13534,6 +13534,16 @@ class HHO:
     def __init__(self, arg0):
         pass
 
+    def evaluateAtQuadraturePoints(self, hho_field):
+        """Evaluate HHO-field at quadrature points
+
+        Arguments:
+              hho_field (FieldOnNodesReal): hho field like displacement or thermic
+
+        Returns:
+              FieldOnCellsReal: HHO field evaluated at quadrature points (ELGA)
+        """
+
     def projectOnHHOCellSpace(self, *args, **kwargs):
         """Overloaded function.
 

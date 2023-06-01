@@ -24,6 +24,7 @@ module HHO_postpro_module
     use HHO_utils_module
     use HHO_size_module
     use HHO_eval_module
+    use HHO_quadrature_module
     use NonLin_Datastructure_type
 !
     implicit none
@@ -57,7 +58,7 @@ module HHO_postpro_module
 ! Post-processing function to vizualize HHO results
 !
 ! --------------------------------------------------------------------------------------------------
-    public  :: hhoPostMeca, hhoPostDeplMeca, hhoPostTher
+    public  :: hhoPostMeca, hhoPostDeplMeca, hhoPostTher, hhoPostTherElga
     private :: hhoPostDeplMecaOP
 !
 contains
@@ -343,6 +344,59 @@ contains
 ! --- Copy of post_sol in PTEMP_R ('OUT' to fill)
 !
         call writeVector("PTEMP_R", nbnodes, post_sol)
+!
+    end subroutine
+!
+! ==================================================================================================
+! ==================================================================================================
+!
+    subroutine hhoPostTherElga(hhoCell, hhoData, hhoQuad)
+!
+        implicit none
+!
+        type(HHO_Cell), intent(in)  :: hhoCell
+        type(HHO_Data), intent(in)  :: hhoData
+        type(HHO_Quadrature), intent(in) :: hhoQuad
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO - thermics
+!
+!   Evaluate HHO cell unknowns at quadrature points
+!   In hhoCell         : a HHO Cell
+!   In hhoData         : information on HHO methods
+!   In nbnodes         : number of nodes
+! --------------------------------------------------------------------------------------------------
+!
+        type(HHO_basis_cell) :: hhoBasisCell
+        integer :: total_dofs, cbs, fbs, ipg
+        real(kind=8), dimension(MSIZE_CELL_SCAL) :: sol_T
+        real(kind=8), dimension(MAX_QP_CELL) :: post_sol
+!
+        sol_T = 0.d0
+        post_sol = 0.d0
+!
+! --- number of dofs
+!
+        call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
+!
+! --- We get the solution on the cell
+!
+        call readVector('PTEMPER', cbs, sol_T, total_dofs-cbs)
+!
+! --- init cell basis
+!
+        call hhoBasisCell%initialize(hhoCell)
+!
+! --- Compute the solution in the cell nodes
+!
+        do ipg = 1, hhoQuad%nbQuadPoints
+            post_sol(ipg) = hhoEvalScalCell(hhoCell, hhoBasisCell, hhoData%cell_degree(), &
+                                            hhoQuad%points(1:3, ipg), sol_T, cbs)
+        end do
+!
+! --- Copy of post_sol in PTEMP_R ('OUT' to fill)
+!
+        call writeVector("PTEMP_R", hhoQuad%nbQuadPoints, post_sol)
 !
     end subroutine
 !
