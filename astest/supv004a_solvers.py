@@ -609,26 +609,24 @@ class TestConvergenceManager(unittest.TestCase):
 
     def test02_conv(self):
         conv = ConvergenceManager()
-        conv.setdefault("RESI_GLOB_RELA", 1.0e-6)
-        self.assertIsNotNone(conv.get("RESI_GLOB_RELA"))
-        resi_rela = conv.get("RESI_GLOB_RELA")
+        resi_rela = conv.setdefault("RESI_GLOB_RELA", 1.0e-6)
         self.assertAlmostEqual(resi_rela.reference, 1.0e-6)
 
-        self.assertIsNone(conv.get("PARAMETER"))
-        conv.setdefault("RESI_GLOB_RELA", 1.0e99)
-        self.assertAlmostEqual(conv.get("RESI_GLOB_RELA").reference, 1.0e-6)
+        self.assertIs(conv.get("PARAMETER"), ConvergenceManager.undef)
+        resi_rela = conv.setdefault("RESI_GLOB_RELA", 1.0e99)
+        self.assertAlmostEqual(resi_rela.reference, 1.0e-6)
 
         # done by evalNormResidual
-        conv.get("RESI_GLOB_RELA").value = 1.123e-4
+        resi_rela.value = 1.123e-4
         conv.setdefault("RESI_GLOB_MAXI", 1.0e99).value = 9.87e3
         self.assertFalse(conv.isConverged())
         self.assertFalse(conv.isFinished())
 
-        conv.setdefault("ITER_GLOB_MAXI", 20)
-        conv.setIteration(15)
+        iter = conv.setdefault("ITER_GLOB_MAXI", 20)
+        iter.value = 15
         self.assertFalse(conv.isConverged())
         self.assertFalse(conv.isFinished())
-        conv.setIteration(21)
+        iter.value = 20
         self.assertFalse(conv.isConverged())
         self.assertTrue(conv.isFinished())
 
@@ -640,7 +638,7 @@ class TestConvergenceManager(unittest.TestCase):
         keys = sorted(list(params.keys()))
         self.assertSequenceEqual(refk, keys)
         for key in refk:
-            ref = conv.get(key)
+            ref = conv._param.get(key)
             copy = params[key]
             self.assertIsNot(ref, copy)
             self.assertAlmostEqual(ref.reference, copy.reference)
@@ -648,20 +646,20 @@ class TestConvergenceManager(unittest.TestCase):
 
     def test03_resi_geom(self):
         conv = ConvergenceManager()
-        conv.setdefault("RESI_GLOB_RELA", 1.0e-6)
-        conv.setdefault("RESI_GEOM", 1.0e-6)
+        resi_rela = conv.setdefault("RESI_GLOB_RELA", 1.0e-6)
+        resi_geom = conv.setdefault("RESI_GEOM", 1.0e-6)
 
         conv.initialize()  # RESI_GEOM will be ignored if not defined
-        conv.get("RESI_GLOB_RELA").value = 1.0e-8
+        resi_rela.value = 1.0e-8
         self.assertTrue(conv.isConverged())
 
         conv.initialize("RESI_GEOM")  # RESI_GEOM will be initialized to -1.0
-        conv.get("RESI_GLOB_RELA").value = 1.0e-8
+        resi_rela.value = 1.0e-8
         self.assertFalse(conv.isConverged())
 
         conv.initialize("RESI_GEOM")
-        conv.get("RESI_GLOB_RELA").value = 1.0e-8
-        conv.get("RESI_GEOM").value = 1.0e-8
+        resi_rela.value = 1.0e-8
+        resi_geom.value = 1.0e-8
         self.assertTrue(conv.isConverged())
 
 

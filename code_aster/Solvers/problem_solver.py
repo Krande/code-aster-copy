@@ -193,9 +193,20 @@ class ProblemSolver(SolverFeature):
         if not step_crit:
             args = self.get_feature(SOP.Keywords)
             step_crit = ConvergenceManager()
-            value = 1.0e150
-            value = (args.get("CONTACT") or {}).get("RESI_GEOM", value)
-            step_crit.setdefault("RESI_GEOM", value)
+            nbIterMini = 0
+            nbIterMaxi = 1
+            if args.get("CONTACT"):
+                contact = args["CONTACT"]
+                value = 1.0e150
+                value = contact.get("RESI_GEOM", value)
+                step_crit.setdefault("RESI_GEOM", value)
+                if contact.get("REAC_GEOM") == "AUTOMATIQUE":
+                    nbIterMini = 0
+                    nbIterMaxi = contact["ITER_GEOM_MAXI"]
+                elif contact.get("REAC_GEOM") == "CONTROLE":
+                    nbIterMaxi = contact["NB_ITER_GEOM"]
+                    nbIterMini = nbIterMaxi - 1
+            step_crit.setdefault("ITER_GEOM", nbIterMaxi).minValue = nbIterMini
         for feat, required in step_crit.undefined():
             step_crit.use(self._get(feat, required))
         self.use(step_crit, SOP.ForStep)

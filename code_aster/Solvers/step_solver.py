@@ -20,7 +20,7 @@
 from libaster import deleteTemporaryObjects
 
 from ..Supervis import ConvergenceError
-from ..Utilities import no_new_attributes, profile
+from ..Utilities import with_loglevel, no_new_attributes, profile
 from .logging_manager import LoggingManager
 from .solver_features import SolverFeature
 from .solver_features import SolverOptions as SOP
@@ -43,7 +43,6 @@ class StepSolver(SolverFeature):
 
     def __init__(self):
         super().__init__()
-        self.current_incr = 0
 
     def setParameters(self, param):
         """Set parameters from user keywords.
@@ -56,7 +55,7 @@ class StepSolver(SolverFeature):
     def initialize(self):
         """Initialization."""
         self.check_features()
-        self.current_incr = 0
+        self.current_incr = -1
         self.phys_state.primal_step = self.phys_state.createPrimal(self.phys_pb, 0.0)
         self.geom_step = self.phys_state.createPrimal(self.phys_pb, 0.0)
 
@@ -97,33 +96,6 @@ class StepSolver(SolverFeature):
 
         return logManager
 
-    def isFinished(self, convManager):
-        """Tell if there are iterations to be computed.
-
-        Arguments:
-            convManager (ConvergenceManager): convergence manager.
-
-        Returns:
-            bool: *True* if there is no iteration to be computed, *False* otherwise.
-        """
-        # FIXME to be replaced by convManager.isFinished()
-        if self.current_incr == 0:
-            return False
-
-        reac_geom = self._get("CONTACT", "REAC_GEOM")
-
-        if reac_geom == "AUTOMATIQUE":
-            nb_iter = self._get("CONTACT", "ITER_GEOM_MAXI")
-        elif reac_geom == "CONTROLE":
-            nb_iter = self._get("CONTACT", "NB_ITER_GEOM")
-        else:
-            nb_iter = 1
-
-        if self.current_incr >= nb_iter:
-            return True
-
-        return convManager.isConverged()
-
     @profile
     def solve(self):
         """Solve a step.
@@ -132,6 +104,8 @@ class StepSolver(SolverFeature):
             *ConvergenceError* exception in case of error.
         """
         convManager = self.get_feature(SOP.ConvergenceManager)
+        iter_geom = convManager.setdefault("ITER_GEOM")
+        iter_geom.value = -1
         logManager = self.createLoggingManager()
         # logManager.printIntro(self.phys_state.time + self.phys_state.time_step, 1)
         logManager.printConvTableEntries()
@@ -140,7 +114,10 @@ class StepSolver(SolverFeature):
 
         criteria = self.get_feature(SOP.ConvergenceCriteria)
 
-        while not self.isFinished(convManager):
+        while not convManager.isFinished():
+            self.current_incr += 1
+            iter_geom.value = self.current_incr
+
             if criteria.has_feature(SOP.Contact):
                 criteria.get_feature(SOP.Contact).setPairingCoordinates(self.geom)
             criteria.setLoggingManager(logManager)
@@ -152,11 +129,9 @@ class StepSolver(SolverFeature):
             # Update physical state
             self.update(convManager)
 
-            self.current_incr += 1
-
             if self._get("CONTACT", "ALGO_RESO_GEOM") == "POINT_FIXE":
                 logManager.printConvTableRow(
-                    [self.current_incr, " ", " ", convManager.get("RESI_GEOM").value, "POINT_FIXE"]
+                    [self.current_incr, " ", " ", convManager.get("RESI_GEOM"), "POINT_FIXE"]
                 )
 
         if not convManager.isConverged():

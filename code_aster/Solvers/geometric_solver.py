@@ -137,7 +137,8 @@ class GeometricSolver(SolverFeature, EventSource):
         self.current_matrix = current_matrix
         convManager = self.get_feature(SOP.ConvergenceManager)
         # start at current_incr=0, minValue is current_incr=1, print "current_incr - 1"
-        convManager.setdefault("ITER_GLOB_MAXI").minValue = 1
+        iter_glob = convManager.setdefault("ITER_GLOB_MAXI")
+        iter_glob.minValue = 1
         convManager.initialize("RESI_GEOM", "ITER_GLOB_MAXI")
         iteration = self.get_feature(SOP.IncrementalSolver)
 
@@ -147,7 +148,7 @@ class GeometricSolver(SolverFeature, EventSource):
         matrix_pred = "-"
         while not convManager.isFinished():
             self.current_incr += 1
-            convManager.setIteration(self.current_incr)
+            iter_glob.value = self.current_incr
             # Select type of matrix
             matrix_type = self._setMatrixType()
 
@@ -164,9 +165,9 @@ class GeometricSolver(SolverFeature, EventSource):
                 self.logManager.printConvTableRow(
                     [
                         self.current_incr - 1,
-                        convManager.get("RESI_GLOB_RELA").value,
-                        convManager.get("RESI_GLOB_MAXI").value,
-                        convManager.get("RESI_GEOM").value,
+                        convManager.get("RESI_GLOB_RELA"),
+                        convManager.get("RESI_GLOB_MAXI"),
+                        convManager.get("RESI_GEOM"),
                         matrix_pred,
                     ]
                 )

@@ -200,7 +200,6 @@ class NonLinearSolver(SolverFeature):
                 logger.warning(exc.message)
                 self.stepper.failed(exc)
             else:
-                # DELTA_GRANDEUR, COLLISION, INTERPENETRATION, INSTABILITE (post_hook ?)
                 if not self.stepper.check_event(self.phys_state):
                     # + reset current_matrix to None (REAC_INCR)
                     self.phys_state.revert()

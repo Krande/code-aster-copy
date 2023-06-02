@@ -61,7 +61,7 @@ from .i18n import localization
 from .i18n import translate as _
 from .import_helper import PETSc, medcoupling
 from .injector import injector
-from .logger import DEBUG, ERROR, INFO, WARNING, logger, with_loglevel
+from .logger import DEBUG, ERROR, INFO, WARNING, logger, loglevel, with_loglevel
 from .misc import get_shared_tmpdir, shared_tmpdir
 from .mpi_utils import MPI, haveMPI
 from .options import Options

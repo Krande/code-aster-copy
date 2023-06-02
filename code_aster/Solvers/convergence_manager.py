@@ -22,7 +22,7 @@ import re
 from math import sqrt
 
 from ..Objects import DiscreteComputation
-from ..Utilities import MPI, logger, no_new_attributes, profile, with_loglevel
+from ..Utilities import MPI, logger, no_new_attributes, profile
 from .solver_features import SolverFeature
 from .solver_features import SolverOptions as SOP
 
@@ -233,7 +233,7 @@ class ConvergenceManager(SolverFeature):
         for para in self._param.values():
             para.reset()
         for name in mandatory:
-            para = self.get(name)
+            para = self._param.get(name)
             if para:
                 para.value = -1
 
@@ -261,15 +261,17 @@ class ConvergenceManager(SolverFeature):
         return self._param[name]
 
     def get(self, name):
-        """Return a convergence parameter.
+        """Return the value of a convergence parameter.
 
         Arguments:
             name (str): Name of the parameter.
 
         Returns:
-            *Parameter*: Parameter or *None* it the parameter is not defined.
+            float|int: Parameter value or *undef* it the parameter is not defined.
         """
-        return self._param.get(name)
+        if name not in self._param:
+            return ConvergenceManager.undef
+        return self._param.get(name).value
 
     @property
     def _residuals(self):
@@ -397,15 +399,7 @@ class ConvergenceManager(SolverFeature):
         resi_geom = self.setdefault("RESI_GEOM")
         resi_geom.value = displ_delta.norm("NORM_INFINITY", ["DX", "DY", "DZ"]) / diag
 
-    def setIteration(self, value):
-        """Update the current iteration number.
-
-        Arguments:
-            value (int): Current iteration number.
-        """
-        iter = self.setdefault("ITER_GLOB_MAXI", int(1e9))
-        iter.value = value
-
+    # @with_loglevel()
     def isConverged(self):
         """Tell if the convergence parameters are verified.
 
