@@ -46,12 +46,8 @@ FieldOnCells< ASTERDOUBLE >::FieldOnCells( const FiniteElementDescriptorPtr FEDe
         option = loc;
     };
 
-    if ( quantity == "SIEF_R" ) {
-        nompar = "PSIEF_R";
-    } else if ( quantity == "VARI_R" ) {
-        nompar = "PVARI_R";
-    } else if ( quantity[0] != 'P' ) {
-        AS_ASSERT( false );
+    if ( quantity[0] != 'P' ) {
+        nompar = "P" + quantity;
     } else {
         nompar = quantity;
     };

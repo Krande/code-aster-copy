@@ -34,6 +34,15 @@ void exportSimpleFieldOnCellsToPython( py::module_ &mod ) {
         mod, "SimpleFieldOnCellsReal" )
         .def( py::init( &initFactoryPtr< SimpleFieldOnCellsReal > ) )
         .def( py::init( &initFactoryPtr< SimpleFieldOnCellsReal, std::string > ) )
+        .def( py::init( &initFactoryPtr< SimpleFieldOnCellsReal, std::string > ) )
+        .def( "__getitem__",
+              +[]( const SimpleFieldOnCellsReal &v, const VectorLong &i ) {
+                  return v.operator()( i[0], i[1], i[2], i[3] );
+              } )
+        .def( "__setitem__",
+              +[]( SimpleFieldOnCellsReal &v, const VectorLong &i, ASTERDOUBLE f ) {
+                  return v.operator()( i[0], i[1], i[2], i[3] ) = f;
+              } )
         .def( "getValue", &SimpleFieldOnCellsReal::getValue, py::return_value_policy::copy, R"(
 Returns the value of the `icmp` component of the field on the `ima` cell,
 at the `ipt` point, at the `ispt` sub-point.
@@ -49,7 +58,33 @@ Returns:
              NaN if the position is not allocated.
         )",
               py::arg( "ima" ), py::arg( "icmp" ), py::arg( "ipt" ), py::arg( "ispt" ) )
+        .def( "hasValue", &SimpleFieldOnCellsReal::hasValue, R"(
+Returns True  if the value of the `icmp` component of the field on the `ima` cell,
+at the `ipt` point, at the `ispt` sub-point is affected.
 
+Args:
+    ima  (int): Index of cells.
+    icmp (int): Index of component.
+    ipt  (int): Index of point.
+    ispt (int): Index of sub-point.
+
+Returns:
+    bool: True  if the value is affected
+        )",
+              py::arg( "ima" ), py::arg( "icmp" ), py::arg( "ipt" ), py::arg( "ispt" ) )
+        .def( "setValue", &SimpleFieldOnCellsReal::setValue, R"(
+Set the value of the `icmp` component of the field on the `ima` cell,
+at the `ipt` point, at the `ispt` sub-point.
+
+Args:
+    ima  (int): Index of cells.
+    icmp (int): Index of component.
+    ipt  (int): Index of point.
+    ispt (int): Index of sub-point.
+    val (float) : value to set
+        )",
+              py::arg( "ima" ), py::arg( "icmp" ), py::arg( "ipt" ), py::arg( "ispt" ),
+              py::arg( "val" ) )
         .def( "getValues", &SimpleFieldOnCellsReal::getValues,
               R"(
 Returns two numpy arrays with shape ( number_of_cells_with_components, number_of_components )
@@ -97,7 +132,21 @@ Returns:
         .def( "getPhysicalQuantity", &SimpleFieldOnCellsReal::getPhysicalQuantity )
         .def( "getLocalization", &SimpleFieldOnCellsReal::getLocalization )
         .def( "updateValuePointers", &SimpleFieldOnCellsReal::updateValuePointers )
-        .def( "toFieldOnCells", &SimpleFieldOnCellsReal::toFieldOnCells )
+        .def( "toFieldOnCells", &SimpleFieldOnCellsReal::toFieldOnCells,
+              R"(
+            Converts to FieldOnCellsReal
+
+            Arguments:
+                fed [FiniteElementDescriptor]: finite element descriptor
+                If empty, all components are used
+                groupsOfCells[list[str]]: filter on list of groups of cells (default=" ").
+                If empty, the full mesh is used
+
+            Returns:
+                SimpleFieldOnCellsReal: field restricted.
+            )",
+              py::arg( "fed" ), py::arg( "option" ) = std::string(),
+              py::arg( "nompar" ) = std::string() )
         // .def( "toFieldOnNodes", &SimpleFieldOnCellsReal::toFieldOnNodes )
         // .def( "toSimpleFieldOnNodes", &SimpleFieldOnCellsReal::toSimpleFieldOnNodes )
         .def( "restrict", &SimpleFieldOnCellsReal::restrict,

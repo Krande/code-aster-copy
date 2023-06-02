@@ -238,6 +238,38 @@ class SimpleFieldOnCells : public DataField {
         return _values->operator[]( i );
     };
 
+    ValueType &operator()( const ASTERINTEGER &ima, const ASTERINTEGER &icmp,
+                           const ASTERINTEGER &ipt, const ASTERINTEGER &ispt ) {
+#ifdef ASTER_DEBUG_CXX
+        if ( this->getNumberOfCells() == 0 || this->getNumberOfComponents() == 0 )
+            throw std::runtime_error( "First call of updateValuePointers is mandatory" );
+#endif
+
+        ASTERINTEGER position = this->_positionInArray( icmp, ima, ipt, ispt );
+
+        ( *_allocated )[position] = true;
+        return this->operator[]( position );
+    };
+
+    const ValueType &operator()( const ASTERINTEGER &ima, const ASTERINTEGER &icmp,
+                                 const ASTERINTEGER &ipt, const ASTERINTEGER &ispt ) const {
+#ifdef ASTER_DEBUG_CXX
+        if ( this->getNumberOfCells() == 0 || this->getNumberOfComponents() == 0 )
+            throw std::runtime_error( "First call of updateValuePointers is mandatory" );
+#endif
+
+        ASTERINTEGER position = this->_positionInArray( icmp, ima, ipt, ispt );
+
+        if ( !( *_allocated )[position] ) {
+            std::string mess = "DEBUG: Position (" + std::to_string( icmp ) + ", " +
+                               std::to_string( ima ) + ", " + std::to_string( ipt ) + ", " +
+                               std::to_string( ispt ) + ") is valid but not allocated!";
+            raiseAsterError( mess );
+        };
+
+        return this->operator[]( position );
+    };
+
     /**
      * @brief Access to the (icmp) component of the (ima) cell
               at the (ipt) point, at the (ispt) sub-point.
@@ -263,6 +295,21 @@ class SimpleFieldOnCells : public DataField {
 #endif
 
         return ( *_values )[position];
+    }
+
+    void setValue( const ASTERINTEGER &ima, const ASTERINTEGER &icmp, const ASTERINTEGER &ipt,
+                   const ASTERINTEGER &ispt, const ValueType &val ) {
+
+#ifdef ASTER_DEBUG_CXX
+        if ( this->getNumberOfCells() == 0 || this->getNumberOfComponents() == 0 )
+            throw std::runtime_error( "First call of updateValuePointers is mandatory" );
+#endif
+
+        ASTERINTEGER position = this->_positionInArray( icmp, ima, ipt, ispt );
+
+        ( *_allocated )[position] = true;
+
+        ( *_values )[position] = val;
     }
 
     /**

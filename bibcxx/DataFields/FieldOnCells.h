@@ -459,7 +459,10 @@ class FieldOnCells : public DataField {
     };
 
     void setValues( const std::vector< ValueType > &values ) {
-        AS_ASSERT( values.size() == size() );
+        if ( values.size() != size() ) {
+            raiseAsterError( "Incompatible size in setValues, expected: " +
+                             std::to_string( size() ) );
+        }
 
         *_values = values;
     };
