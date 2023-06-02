@@ -156,8 +156,8 @@ class ConvergenceManager(SolverFeature):
             """
             raise NotImplementedError("must be subclassed!")
 
-    class ResidueParameter(Parameter):
-        """Type of *Parameter* for a residue.
+    class ResidualParameter(Parameter):
+        """Type of *Parameter* for a residual.
 
         Arguments:
             name (str): Parameter name.
@@ -237,13 +237,13 @@ class ConvergenceManager(SolverFeature):
             if para:
                 para.value = -1
 
-    def isEmpty(self):
-        """Tell if there is no convergence parameter.
+    def hasResidual(self):
+        """Tell if there is at least one residual convergence parameter.
 
         Returns:
-            bool: *False* if at least one parameter is defined, *True* otherwise.
+            bool: *True* if at least one parameter is defined, *False* otherwise.
         """
-        return not bool(self._param)
+        return bool(self._residuals)
 
     def setdefault(self, name, reference=undef):
         """Add a convergence parameter if it does not yet exist.
@@ -278,7 +278,7 @@ class ConvergenceManager(SolverFeature):
         return [
             (name, para)
             for name, para in self._param.items()
-            if isinstance(para, ConvergenceManager.ResidueParameter)
+            if isinstance(para, ConvergenceManager.ResidualParameter)
         ]
 
     @property
@@ -384,7 +384,7 @@ class ConvergenceManager(SolverFeature):
     @profile
     @SolverFeature.check_once
     def evalGeometricResidual(self, displ_delta):
-        """Evaluate geometric residue.
+        """Evaluate geometric residual.
 
         Arguments:
             displ_dela (FieldOnNodesReal): variation of displacement.

@@ -544,8 +544,8 @@ class TimeStepper(SolverFeature, Observer):
         """Event raised in case of error."""
 
         # TODO
-        # ResidueDivergence: raised if resi_t+2 > min(resi_t, resi_t+1) (DIVE_RESI)
-        # MaximumResidue: raised if RESI_GLOB_MAXI > value before the end of iterations (RESI_MAXI)
+        # ResidualDivergence: raised if resi_t+2 > min(resi_t, resi_t+1) (DIVE_RESI)
+        # MaximumResidual: raised if RESI_GLOB_MAXI > value before the end of iterations (RESI_MAXI)
         # COLLISION, INTERPENETRATION, INSTABILITE
 
         __setattr__ = no_new_attributes(object.__setattr__)
