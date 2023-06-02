@@ -23,8 +23,6 @@
 ************************************************************************
 """
 
-import aster
-
 from ..Commands import CREA_MAILLAGE
 from ..Objects import Mesh, PythonBool
 from ..Objects.Serialization import InternalStateBuilder

@@ -21,11 +21,9 @@
 import os.path as osp
 
 import code_aster
-from code_aster.Commands import *
-from code_aster.Utilities.MedUtils.MEDPartitioner import MEDPartitioner
 from code_aster import MPI
+from code_aster.Commands import *
 from code_aster.Utilities import shared_tmpdir
-
 
 code_aster.init("--test")
 
@@ -45,9 +43,6 @@ q_elv = 380
 
 
 def checkJoints(mesh):
-    import mpi4py
-    from mpi4py import MPI
-
     comm = MPI.COMM_WORLD
     l2G = mesh.getLocalToGlobalMapping()
 

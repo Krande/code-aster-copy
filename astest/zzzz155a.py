@@ -17,10 +17,9 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import os
 import code_aster
-from code_aster.Commands import *
 from code_aster import MPI
+from code_aster.Commands import *
 
 code_aster.init("--test")
 
@@ -30,9 +29,6 @@ rank = MPI.ASTER_COMM_WORLD.Get_rank()
 
 
 def checkJoints(mesh):
-    import mpi4py
-    from mpi4py import MPI
-
     comm = MPI.COMM_WORLD
     l2G = mesh.getLocalToGlobalMapping()
 

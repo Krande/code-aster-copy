@@ -20,7 +20,9 @@
 import numpy as np
 
 from ..Messages import UTMESS
-from ..Utilities import MPI, Timer, medcoupling as medc
+from ..Utilities import MPI, Timer
+from ..Utilities import medcoupling as medc
+from ..Utilities import no_new_attributes
 
 ASTER_TYPES = [1, 2, 4, 6, 7, 9, 11, 12, 14, 16, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27]
 
@@ -135,7 +137,12 @@ class MEDCouplingMeshHelper:
     to create or manipulate a code_aster mesh.
     """
 
+    _mesh = _mesh_name = _file_name = _dim = _timer = None
+    _coords = _groups_of_cells = _groups_of_nodes = _connectivity_aster = _types = None
+    _domains = _djoints = _nodesOwner = _gNumbering = _range = None
     _medc2aster_connect = {}
+
+    __setattr__ = no_new_attributes(object.__setattr__)
 
     def __init__(self):
         self._mesh = None
@@ -147,6 +154,7 @@ class MEDCouplingMeshHelper:
         self._groups_of_nodes = {}
         self._connectivity_aster = []
         self._types = []
+        self._range = []
         # for the joints
         self._domains = []
         self._djoints = {}
@@ -177,7 +185,7 @@ class MEDCouplingMeshHelper:
         """Convert the MEDCoupling mesh.
 
         Arguments:
-            mesh (Mesh|ParallelMesh): The Mesh object to be filled.
+            mesh (Mesh|ParallelMesh|IncompleteMesh): The Mesh object to be filled.
             verbose (int): Verbosity between 0 (a few details) to 2 (more verbosy).
 
         Returns:
@@ -187,12 +195,7 @@ class MEDCouplingMeshHelper:
         UTMESS("I", "MED_10", valk=self.name)
         timer = self._timer
         with timer("medcoupling parsing"):
-            if not mesh.isIncomplete():
-                self.parse()
-                with timer("extracting joints"):
-                    self.extract_joints()
-            else:
-                self.parseIncomplete()
+            self.parse(mesh)
         if verbose & 4:
             self.debugPrint()
         with timer("nodes, connectivity"):
@@ -204,6 +207,8 @@ class MEDCouplingMeshHelper:
                 len(self._groups_of_cells),
                 len(self._groups_of_nodes),
             )
+            if self._range:
+                mesh._setRange(self._range)
         groups = self.groupsOfCells
         if groups:
             with timer("groups of cells"):
@@ -220,8 +225,6 @@ class MEDCouplingMeshHelper:
         with timer("completion"):
             if not mesh.isIncomplete():
                 mesh._endDefinition()
-            else:
-                mesh._setRange(self._range)
         # cheat code for debugging and detailed time informations: 1989
         with timer("show details"):
             mesh.show(verbose & 3)
@@ -255,7 +258,25 @@ class MEDCouplingMeshHelper:
             print(f"+ joints: {key}, size {len(jts)}: {jts[:10]}...")
         print(f"+ number of joints: {len(self._djoints) // 2}", flush=True)
 
-    def parse(self):
+    def parse(self, mesh):
+        """Walk the medcoupling mesh to extract informations.
+
+        Arguments:
+            mesh (Mesh|ParallelMesh|IncompleteMesh): The Mesh object to be filled.
+        """
+        inc = mesh.isIncomplete()
+        if self._file_name:
+            min_vers = "3.0.0" if inc else "2.0.0"
+            check_medfile_version(self._file_name, min_vers)
+        if not inc:
+            self.parseMesh()
+        else:
+            self.parseIncomplete()
+        if not inc:
+            with self._timer("extracting joints"):
+                self.extract_joints()
+
+    def parseMesh(self):
         """Walk the medcoupling mesh to extract informations."""
         mesh = self._mesh
         self._dim = mesh.getSpaceDimension()
@@ -287,7 +308,6 @@ class MEDCouplingMeshHelper:
             # Loop sur toutes les types du niveau
             types_at_level = mesh_level.getAllGeoTypesSorted()
             for medcoupling_cell_type in types_at_level:
-
                 # Cells du meme type
                 cells_current_type = mesh_level.giveCellsWithType(medcoupling_cell_type)
 
@@ -327,7 +347,7 @@ class MEDCouplingMeshHelper:
                 groups = mesh.getGroupsOnSpecifiedLev(level)
                 for group in groups:
                     if len(group) > 24:
-                        UTMESS("A", "MED_7")
+                        UTMESS("A", "MED_7", valk=group)
                         continue
                     group_cells = mesh.getGroupArr(level, group).deepCopy()
                     if not group_cells:
@@ -345,7 +365,7 @@ class MEDCouplingMeshHelper:
             groups = mesh.getGroupsOnSpecifiedLev(1)
             for group in groups:
                 if len(group) > 24:
-                    UTMESS("A", "MED_7")
+                    UTMESS("A", "MED_7", valk=group)
                     continue
                 group_nodes = mesh.getGroupArr(1, group).deepCopy()
                 if not group_nodes:
@@ -358,10 +378,6 @@ class MEDCouplingMeshHelper:
         """Walk the medcoupling mesh to extract informations."""
         filename = self._file_name
         meshName = self._mesh_name
-        med_vers_min = 300  # minimal med version 3.0.0
-        med_vers_num = int(medc.MEDFileVersionOfFileStr(self._file_name).replace(".", ""))
-        if med_vers_num < med_vers_min:
-            UTMESS("F", "MED_20", valk=("3.0.0", medc.MEDFileVersionOfFileStr(self._file_name)))
 
         rank = MPI.ASTER_COMM_WORLD.Get_rank()
         size = MPI.ASTER_COMM_WORLD.Get_size()
@@ -416,7 +432,7 @@ class MEDCouplingMeshHelper:
             groups = medFileUMesh.getGroupsOnSpecifiedLev(level)
             for group in groups:
                 if len(group) > 24:
-                    UTMESS("A", "MED_7")
+                    UTMESS("A", "MED_7", valk=group)
                     continue
                 group_cells = medFileUMesh.getGroupArr(level, group)
                 group_cells += 1
@@ -427,7 +443,6 @@ class MEDCouplingMeshHelper:
             # Loop sur toutes les types du niveau
             types_at_level = mesh_level.getAllGeoTypesSorted()
             for medcoupling_cell_type in types_at_level:
-
                 # Cells du meme type
                 cells_current_type = mesh_level.giveCellsWithType(medcoupling_cell_type)
 
@@ -470,7 +485,7 @@ class MEDCouplingMeshHelper:
         groups = medFileUMesh.getGroupsOnSpecifiedLev(1)
         for group in groups:
             if len(group) > 24:
-                UTMESS("A", "MED_7")
+                UTMESS("A", "MED_7", valk=group)
                 continue
             group_nodes = medFileUMesh.getGroupArr(1, group).deepCopy()
             if not group_nodes:
@@ -611,3 +626,27 @@ class MEDCouplingMeshHelper:
                 getattr(medc, "NORM_%s" % elem): nodes for elem, nodes in MED2ASTER_CONNECT.items()
             }
         return cls._medc2aster_connect[medcoupling_type]
+
+
+def check_medfile_version(file_name, min_vers):
+    """Check MED file version.
+
+    Arguments:
+        file_name (str): Path to the MED file.
+        min_vers (str): Minimal required version (ex.: 3.0.0).
+    """
+
+    def _vers2tupl(verstr):
+        res = []
+        for i in verstr.split("."):
+            try:
+                num = int(i)
+            except ValueError:
+                num = i
+            res.append(num)
+        return tuple(res)
+
+    med_vers_min = _vers2tupl(min_vers)
+    med_vers_num = _vers2tupl(medc.MEDFileVersionOfFileStr(file_name))
+    if med_vers_num < med_vers_min:
+        UTMESS("F", "MED_20", valk=(min_vers, medc.MEDFileVersionOfFileStr(file_name)))
