@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -33,7 +33,6 @@ def defi_materiau_ops(self, **args):
     """
 
     args = _F(args)
-
     setFortranLoggingLevel(args["INFO"])
 
     # reuse, copy from or new object
@@ -61,7 +60,11 @@ def defi_materiau_ops(self, **args):
 
 def check_young_consistency(mater):
     """Check the consistency between E provided as a constant under 'ELAS'
-    and the first point of the 'TRACTION' function."""
+    and the first point of the 'TRACTION' function.
+
+    Arguments:
+        mater (Material): Object to be checked.
+    """
 
     def _check(valP, name, young, point):
         slope = point[len(point) // 2] / point[0]
@@ -115,13 +118,13 @@ def check_keywords(kwargs):
     """
 
     if "DIS_ECRO_TRAC" in kwargs:
-        kwargs["DIS_ECRO_TRAC"] = check_dis_ecro_trac(kwargs["DIS_ECRO_TRAC"])
+        check_dis_ecro_trac(kwargs["DIS_ECRO_TRAC"])
     if "DIS_CHOC_ENDO" in kwargs:
-        kwargs["DIS_CHOC_ENDO"] = check_dis_choc_endo(kwargs["DIS_CHOC_ENDO"])
+        check_dis_choc_endo(kwargs["DIS_CHOC_ENDO"])
     if "JONC_ENDO_PLAS" in kwargs:
-        kwargs["JONC_ENDO_PLAS"] = check_dis_jvp(kwargs["JONC_ENDO_PLAS"])
+        check_dis_jvp(kwargs["JONC_ENDO_PLAS"])
     if "THER_NL" in kwargs:
-        kwargs["THER_NL"] = add_enthalpy(kwargs["THER_NL"])
+        add_enthalpy(kwargs["THER_NL"])
 
 
 def check_dis_ecro_trac(keywords):
@@ -129,30 +132,21 @@ def check_dis_ecro_trac(keywords):
 
     Arguments:
         keywords (dict): DIS_ECRO_TRAC keyword, changed in place.
-
-    Returns:
-        dict: DIS_ECRO_TRAC keyword changed in place.
-
-        Raises '<F>' in case of error.
     """
-    #
+
     # jean-luc.flejou@edf.fr
-    #
     def _message(num, mess=""):
         UTMESS(
             "F", "DISCRETS_62", valk=("DIS_ECRO_TRAC", "FX=f(DX) | FTAN=f(DTAN)", mess), vali=num
         )
 
     precis = 1.0e-08
-    #
-    Clefs = keywords
-    #
-    if "FX" in Clefs:
+    if "FX" in keywords:
         iffx = True
-        fct = Clefs["FX"]
-    elif "FTAN" in Clefs:
+        fct = keywords["FX"]
+    elif "FTAN" in keywords:
         iffx = False
-        fct = Clefs["FTAN"]
+        fct = keywords["FTAN"]
     else:
         _message(1)
     # Les vérifications sur la fonction
@@ -176,13 +170,13 @@ def check_dis_ecro_trac(keywords):
     if iffx:
         OkFct = OkFct and len(absc) >= 3
     else:
-        if Clefs["ECROUISSAGE"] == "ISOTROPE":
+        if keywords["ECROUISSAGE"] == "ISOTROPE":
             OkFct = OkFct and len(absc) >= 3
-        elif Clefs["ECROUISSAGE"] == "CINEMATIQUE":
+        elif keywords["ECROUISSAGE"] == "CINEMATIQUE":
             OkFct = OkFct and len(absc) == 3
         else:
             raise RuntimeError("Unknown value")
-    #
+
     if not OkFct:
         _message(3, "%s" % len(absc))
     # Point n°1: (DX=0, FX=0)
@@ -218,34 +212,24 @@ def check_dis_ecro_trac(keywords):
         fx = ordo[ii]
         raidex = dfx
 
-    return Clefs
-
 
 def check_dis_choc_endo(keywords):
     """Check for functions for DIS_CHOC_ENDO
 
     Arguments:
         keywords (dict): DIS_CHOC_ENDO keyword, changed in place.
-
-    Returns:
-        dict: DIS_CHOC_ENDO keyword changed in place. Raises '<F>' in case of
-        error.
     """
-    #
+
     # jean-luc.flejou@edf.fr
-    #
     def _message(num, mess2="", mess3=""):
         UTMESS("F", "DISCRETS_63", valk=("DIS_CHOC_ENDO", mess2, mess3), vali=(num,))
 
     precis = 1.0e-08
-    #
-    Clefs = keywords
-
     # Conditions communes aux 3 fonctions
     #   paramètre 'DX'
     #   interpolation LIN LIN
     #   prolongée à gauche et à droite : constant ou exclue (donc pas linéaire)
-    LesFcts = [Clefs["FX"], Clefs["RIGI_NOR"], Clefs["AMOR_NOR"]]
+    LesFcts = [keywords["FX"], keywords["RIGI_NOR"], keywords["AMOR_NOR"]]
     LesFctsName = []
     for fct in LesFcts:
         OkFct = type(fct) is Function
@@ -259,9 +243,9 @@ def check_dis_choc_endo(keywords):
         if not OkFct:
             _message(2, fct.getName(), "%s" % param)
     # Même nombre de point, 5 points minimum
-    Fxx, Fxy = Clefs["FX"].Valeurs()
-    Rix, Riy = Clefs["RIGI_NOR"].Valeurs()
-    Amx, Amy = Clefs["AMOR_NOR"].Valeurs()
+    Fxx, Fxy = keywords["FX"].Valeurs()
+    Rix, Riy = keywords["RIGI_NOR"].Valeurs()
+    Amx, Amy = keywords["AMOR_NOR"].Valeurs()
     OkFct = len(Fxx) == len(Rix) == len(Amx)
     OkFct = OkFct and (len(Fxx) >= 5)
     if not OkFct:
@@ -292,10 +276,10 @@ def check_dis_choc_endo(keywords):
         xp1 = x1
     # FX : les 2 premiers points ont la même valeur à la précision relative près
     if abs(Fxy[0] - Fxy[1]) > Fxy[0] * precis:
-        _message(7, Clefs["FX"].getName())
+        _message(7, keywords["FX"].userName)
     # RIGI_NOR : les 2 premiers points ont la même valeur à la précision relative près
     if abs(Riy[0] - Riy[1]) > Riy[0] * precis:
-        _message(8, Clefs["RIGI_NOR"].getName())
+        _message(8, keywords["RIGI_NOR"].userName)
     # RIGI_NOR : pente décroissante, à partir du 3ème point.
     #   Au lieu de la boucle, on peut faire :
     #       xx=np.where(np.diff(Riy[2:]) > 0.0 )[0]+2
@@ -304,7 +288,7 @@ def check_dis_choc_endo(keywords):
     pente = Riy[2]
     for ii in range(3, len(Riy)):
         if Riy[ii] - pente > Riy[0] * precis:
-            _message(9, "%s" % Clefs["RIGI_NOR"].getName(), "(%d) : %s %s" % (ii, pente, Riy[ii]))
+            _message(9, "%s" % keywords["RIGI_NOR"].userName, "(%d) : %s %s" % (ii, pente, Riy[ii]))
         pente = Riy[ii]
     # --------------------------------------------------------------- Fin des vérifications
     # Création des fonctions
@@ -337,17 +321,15 @@ def check_dis_choc_endo(keywords):
         if pp > pp9[ii]:
             _message(10, mess3="(%d) : %s %s" % (ii, pp, pp9[ii]))
         pp = pp9[ii]
-    #
+
     # Affectations des valeurs
     newFx.setValues(pp9, Fxy)
     newRi.setValues(pp9, Riy)
     newAm.setValues(pp9, Amy)
     # Affectation des nouvelles fonctions
-    Clefs["FXP"] = newFx
-    Clefs["RIGIP"] = newRi
-    Clefs["AMORP"] = newAm
-    #
-    return Clefs
+    keywords["FXP"] = newFx
+    keywords["RIGIP"] = newRi
+    keywords["AMORP"] = newAm
 
 
 def check_dis_jvp(keywords):
@@ -355,27 +337,20 @@ def check_dis_jvp(keywords):
 
     Arguments:
         keywords (dict): JONC_ENDO_PLAS keyword, changed in place.
-
-    Returns:
-        dict: JONC_ENDO_PLAS keyword changed in place.
-
-        Raises '<F>' in case of error.
     """
 
     def _message(num):
         UTMESS("F", "DISCRETS_65", valk=("JONC_ENDO_PLAS"), vali=num)
 
-    #
-    Clefs = keywords
-    ke = Clefs["KE"]
-    kp = Clefs["KP"]
-    kdp = Clefs["KDP"]
-    kdm = Clefs["KDM"]
-    myp = Clefs["MYP"]
-    mym = Clefs["MYM"]
-    rdp = Clefs["RDP"]
-    rdm = Clefs["RDM"]
-    #
+    ke = keywords["KE"]
+    kp = keywords["KP"]
+    kdp = keywords["KDP"]
+    kdm = keywords["KDM"]
+    myp = keywords["MYP"]
+    mym = keywords["MYM"]
+    rdp = keywords["RDP"]
+    rdm = keywords["RDM"]
+
     if ke < kp:
         _message(1)
     elif kdp < kp or kdp > ke:
@@ -386,7 +361,6 @@ def check_dis_jvp(keywords):
         _message(4)
     elif mym > ke * rdm:
         _message(5)
-    return Clefs
 
 
 def add_enthalpy(keywords):
@@ -394,17 +368,10 @@ def add_enthalpy(keywords):
 
     Arguments:
         keywords (dict): THER_NL keyword, changed in place.
-
-    Returns:
-        dict: THER_NL keyword changed in place. Raises '<F>' in case of
-        error.
     """
 
     # Create "Beta" from "Rho_CP" if not given
     if keywords["BETA"] is None:
         beta = Function()
         createEnthalpy(keywords["RHO_CP"], beta)
-
         keywords["BETA"] = beta
-
-    return keywords

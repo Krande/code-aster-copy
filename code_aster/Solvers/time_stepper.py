@@ -556,8 +556,11 @@ class TimeStepper(SolverFeature, Observer):
         Arguments:
             min (int): Minimal value.
         """
-        if self._maxLevel < min:
-            raise ValueError(f"DEFI_LIST_INST/SUBD_NIVEAU must be greater than or equal to {min}.")
+        if -1 < self._maxLevel < min:
+            raise ValueError(
+                f"DEFI_LIST_INST/SUBD_NIVEAU is {self._maxLevel}, "
+                f"it must be greater than or equal to {min}."
+            )
 
     class Event:
         """Event raised in case of error."""
