@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -71,7 +71,7 @@ RES = STAT_NON_LINE(
         _F(CHARGE=CHAR1, FONC_MULT=RAMPE, TYPE_CHARGE="FIXE_CSTE"),
         _F(CHARGE=CHAR2, FONC_MULT=RAMPE, TYPE_CHARGE="FIXE_CSTE"),
     ),
-    INCREMENT=_F(LIST_INST=lisi, PRECISION=1e-06),
+    INCREMENT=_F(LIST_INST=LINST, PRECISION=1e-06),
     INFO=1,
     MODELE=MODI,
     NEWTON=_F(MATRICE="TANGENTE", PREDICTION="TANGENTE", REAC_INCR=1, REAC_ITER=1),
@@ -86,7 +86,7 @@ RES_NEW = MECA_NON_LINE(
         _F(CHARGE=CHAR1, FONC_MULT=RAMPE, TYPE_CHARGE="FIXE_CSTE"),
         _F(CHARGE=CHAR2, FONC_MULT=RAMPE, TYPE_CHARGE="FIXE_CSTE"),
     ),
-    INCREMENT=_F(LIST_INST=lisi, PRECISION=1e-06),
+    INCREMENT=_F(LIST_INST=LINST, PRECISION=1e-06),
     INFO=1,
     MODELE=MODI,
     NEWTON=_F(MATRICE="TANGENTE", PREDICTION="TANGENTE", REAC_INCR=1, REAC_ITER=1),

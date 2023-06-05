@@ -53,7 +53,7 @@ bloc_manu = BLOC(
         fr=tr("Nombre maximum de niveau de subdivision d'un pas de temps"),
         statut="f",
         typ="I",
-        val_min=2,
+        val_min=0,
         max=1,
         defaut=3,
     ),

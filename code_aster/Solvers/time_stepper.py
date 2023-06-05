@@ -64,7 +64,7 @@ class TimeStepper(SolverFeature, Observer):
         self._final = final
         self._actions = []
         self._split = []
-        self._maxLevel = 4
+        self._maxLevel = -1
         self._minStep = 1.0e-99
         self._maxStep = 1.0e99
         self._maxNbSteps = 1.0e6
@@ -84,6 +84,10 @@ class TimeStepper(SolverFeature, Observer):
             TimeStepper: copy of the object.
         """
         new = TimeStepper(self._times, initial=self._initial, final=self._final, epsilon=self._eps)
+        new._maxLevel = self._maxLevel
+        new._minStep = self._minStep
+        new._maxStep = self._maxStep
+        new._maxNbSteps = self._maxNbSteps
         for act in self._actions:
             new.register_event(act.copy())
         new.register_default_error_event()
@@ -402,7 +406,8 @@ class TimeStepper(SolverFeature, Observer):
             stp.register_event(act)
 
         if args["METHODE"] == "AUTO":
-            stp._minStep = definition["PAS_MINI"]
+            if "PAS_MINI" in definition:
+                stp._minStep = definition["PAS_MINI"]
             if "PAS_MAXI" in definition:
                 stp._maxStep = definition["PAS_MAXI"]
             stp._maxNbSteps = definition["NB_PAS_MAXI"]
@@ -446,7 +451,11 @@ class TimeStepper(SolverFeature, Observer):
     def register_default_error_event(self):
         """Register a default action for Error event if there is no one."""
         if not [act for act in self._actions if isinstance(act.event, TimeStepper.Error)]:
+            self._maxLevel = 4
             self.register_event(TimeStepper.Split(TimeStepper.Error(), nbSubSteps=4))
+        elif self._maxLevel < 0:
+            # AutoSplit and no other Split defined: only use minStep
+            self._maxLevel = int(1e6)
 
     def failed(self, exc):
         """React to a raised exception.
@@ -539,6 +548,16 @@ class TimeStepper(SolverFeature, Observer):
         elif delta_t < 2.0e6:
             logger.info(MessageLog.GetText("I", "ADAPTATION_4", valr=currIncr))
         return True
+
+    def checkMaxLevel(self, min):
+        """Check that 'maxLevel' is greater than 'min'
+        (for compatibility with STAT_NON_LINE).
+
+        Arguments:
+            min (int): Minimal value.
+        """
+        if self._maxLevel < min:
+            raise ValueError(f"DEFI_LIST_INST/SUBD_NIVEAU must be greater than or equal to {min}.")
 
     class Event:
         """Event raised in case of error."""

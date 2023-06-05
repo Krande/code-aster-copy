@@ -17,7 +17,9 @@
 # You should have received a copy of the GNU General Public License
 # along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
 
+from ..Cata.SyntaxChecker import CheckerError
 from ..Helpers import adapt_for_mgis_behaviour
+from ..Messages import UTMESS
 from ..Objects import FieldOnCellsComplex, FieldOnCellsReal, NonLinearResult
 from ..Supervis import ExecuteCommand
 
@@ -26,8 +28,24 @@ class NonLinearStaticAnalysis(ExecuteCommand):
     """Command that defines :class:`~code_aster.Objects.NonLinearResult`."""
 
     command_name = "STAT_NON_LINE"
-    # Change the content of the COMPORTEMENT keyword.
-    adapt_syntax = adapt_for_mgis_behaviour
+
+    def adapt_syntax(self, keywords):
+        """Hook to adapt syntax *after* syntax checking.
+
+        Arguments:
+            keywords (dict): Keywords arguments of user's keywords, changed
+                in place.
+        """
+        # Change the content of the COMPORTEMENT keyword.
+        adapt_for_mgis_behaviour(self, keywords)
+        # because MNL support SUBD_NIVEAU={0, 1} and SNL does not
+        stepper = keywords["INCREMENT"][0]["LIST_INST"]
+        try:
+            stepper.checkMaxLevel(min=2)
+        except AttributeError:
+            pass
+        except ValueError as exc:
+            UTMESS("F", "SUPERVIS_4", valk=(self.command_name, str(exc)))
 
     def create_result(self, keywords):
         """Initialize the result.
