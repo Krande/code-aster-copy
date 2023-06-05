@@ -66,7 +66,7 @@ subroutine dtmforc_ants(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl, &
     integer           :: ino, start, finish
     real(kind=8)      :: sina, cosa, sinb, cosb, sing
     real(kind=8)      :: cosg, depglo(3), vitglo(3), deploc(6), vitloc(6)
-    real(kind=8)      :: dvitlo(3), xjeu, knorm, coefk1, coefk2
+    real(kind=8)      :: dvitlo(3), xjeu, coefk1, coefk2
     real(kind=8)      :: coefpy, coefcc, coefad, xmax, dnorm
     real(kind=8)      :: cost, sint, fdispo, flocal(3), vnorm
     real(kind=8)      :: fgloba(3)
@@ -180,7 +180,8 @@ subroutine dtmforc_ants(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl, &
 
         !   --- Conversion of these vectors to the local basis
         call gloloc(depglo, origob, sina, cosa, sinb, cosb, sing, cosg, deploc(1+(ino-1)*3))
-    call gloloc(vitglo, [0.d0, 0.d0, 0.d0], sina, cosa, sinb, cosb, sing, cosg, vitloc(1+(ino-1)*3))
+        call gloloc(vitglo, [0.d0, 0.d0, 0.d0], sina, cosa, sinb, cosb, sing, cosg, &
+                    vitloc(1+(ino-1)*3))
     end do
 
     if (nbno .eq. 2) then
@@ -194,7 +195,6 @@ subroutine dtmforc_ants(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl, &
     end if
 !
     call nlget(sd_nl, _GAP, iocc=nl_ind, rscal=xjeu, buffer=buffnl)
-    call nlget(sd_nl, _STIF_NORMAL, iocc=nl_ind, rscal=knorm, buffer=buffnl)
     call nlget(sd_nl, _ANTISISMIC_K1, iocc=nl_ind, rscal=coefk1, buffer=buffnl)
     call nlget(sd_nl, _ANTISISMIC_K2, iocc=nl_ind, rscal=coefk2, buffer=buffnl)
     call nlget(sd_nl, _ANTISISMIC_SEUIL_FX, iocc=nl_ind, rscal=coefpy, buffer=buffnl)
