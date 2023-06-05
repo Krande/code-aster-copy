@@ -170,10 +170,10 @@ void Calcul::compute() {
     inputFields.reserve( inputNb );
     inputParams.reserve( inputNb );
     for ( const auto &[parameterName, field] : _inputFields ) {
-#ifdef ASTER_DEBUG_CXX
-        std::cout << "Input Field :" << parameterName << ", " << field->getName() << ", "
-                  << field->exists() << std::endl;
-#endif
+        // #ifdef ASTER_DEBUG_CXX
+        //         std::cout << "Input Field :" << parameterName << ", " << field->getName() << ", "
+        //                   << field->exists() << std::endl;
+        // #endif
         inputParams.push_back( parameterName );
         inputFields.push_back( field->getName() );
     }
