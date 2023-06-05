@@ -2103,7 +2103,7 @@ class FieldOnCellsReal(DataField):
 
         Arguments:
             cmps[list[str]]: filter on list of components
-            If empty, all components are used used
+            If empty, all components are used
             groupsOfCells[list[str]]: filter on list of groups of cells (default=" ").
             If empty, the full mesh is used
 
@@ -2656,7 +2656,7 @@ class FieldOnNodesReal(DataField):
 
         Arguments:
             cmps[list[str]]: filter on list of components
-            If empty, all components are used used
+            If empty, all components are used
             groupsOfNodes[list[str]]: filter on list of groups of nodes (default=" ").
             If empty, the full mesh is used
 
@@ -2698,7 +2698,7 @@ class FieldOnNodesReal(DataField):
                         values (list[float]): list of values to set
 
 
-        3. setValues(self: libaster.FieldOnNodesReal, value: Dict[str, float], groupsOfCells: List[str] = []) -> None
+        3. setValues(self: libaster.FieldOnNodesReal, value: Dict[str, float], groupsOfNodes: List[str] = []) -> None
 
 
                     Set values of the field where components and values are given as a dict.
@@ -2707,7 +2707,7 @@ class FieldOnNodesReal(DataField):
 
                     Arguments:
                         value (dict[str, float]): dict of values to set (key: str, value: float)
-                        groupsOfCells (list[str]): list of groups. If empty, the full mesh is considered
+                        groupsOfNodes (list[str]): list of groups. If empty, the full mesh is considered
         """
 
     def size(self):
@@ -2857,7 +2857,7 @@ class FieldOnNodesComplex(DataField):
 
         Arguments:
             cmps[list[str]]: filter on list of components
-            If empty, all components are used used
+            If empty, all components are used
             groupsOfNodes[list[str]]: filter on list of groups of nodes (default=" ").
             If empty, the full mesh is used
 
@@ -3091,13 +3091,21 @@ class SimpleFieldOnCellsReal(DataField):
 
     # Methods defined here:
 
+    def __getitem__(self, arg0):
+        pass
+
     def __init__(self, *args, **kwargs):
         """Overloaded function.
 
         1. __init__(self: libaster.SimpleFieldOnCellsReal) -> None
 
         2. __init__(self: libaster.SimpleFieldOnCellsReal, arg0: str) -> None
+
+        3. __init__(self: libaster.SimpleFieldOnCellsReal, arg0: str) -> None
         """
+
+    def __setitem__(self, arg0, arg1):
+        pass
 
     def getCellsWithComponents(self):
         """Returns the list of cells where the field is defined.
@@ -3181,12 +3189,26 @@ class SimpleFieldOnCellsReal(DataField):
             tuple[cells[list[int]], points[list[int]], subpoints[list[int]]]
         """
 
+    def hasValue(self, ima, icmp, ipt, ispt):
+        """Returns True  if the value of the `icmp` component of the field on the `ima` cell,
+        at the `ipt` point, at the `ispt` sub-point is affected.
+
+        Args:
+            ima  (int): Index of cells.
+            icmp (int): Index of component.
+            ipt  (int): Index of point.
+            ispt (int): Index of sub-point.
+
+        Returns:
+            bool: True  if the value is affected
+        """
+
     def restrict(self, cmps=[], groupsOfCells=[]):
         """Return a new field restricted to the list of components and groups of cells given
 
         Arguments:
             cmps[list[str]]: filter on list of components
-            If empty, all components are used used
+            If empty, all components are used
             groupsOfCells[list[str]]: filter on list of groups of cells (default=" ").
             If empty, the full mesh is used
 
@@ -3194,8 +3216,30 @@ class SimpleFieldOnCellsReal(DataField):
             SimpleFieldOnCellsReal: field restricted.
         """
 
-    def toFieldOnCells(self, arg0, arg1, arg2):
-        pass
+    def setValue(self, ima, icmp, ipt, ispt, val):
+        """Set the value of the `icmp` component of the field on the `ima` cell,
+        at the `ipt` point, at the `ispt` sub-point.
+
+        Args:
+            ima  (int): Index of cells.
+            icmp (int): Index of component.
+            ipt  (int): Index of point.
+            ispt (int): Index of sub-point.
+            val (float) : value to set
+        """
+
+    def toFieldOnCells(self, fed, option="", nompar=""):
+        """Converts to FieldOnCellsReal
+
+        Arguments:
+            fed [FiniteElementDescriptor]: finite element descriptor
+            If empty, all components are used
+            groupsOfCells[list[str]]: filter on list of groups of cells (default=" ").
+            If empty, the full mesh is used
+
+        Returns:
+            SimpleFieldOnCellsReal: field restricted.
+        """
 
     def updateValuePointers(self):
         pass
@@ -3275,7 +3319,7 @@ class SimpleFieldOnNodesReal(DataField):
 
         Arguments:
             cmps[list[str]]: filter on list of components
-            If empty, all components are used used
+            If empty, all components are used
             groupsOfNodes[list[str]]: filter on list of groups of nodes (default=" ").
             If empty, the full mesh is used
 
