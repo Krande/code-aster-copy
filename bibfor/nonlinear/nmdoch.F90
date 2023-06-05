@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -137,6 +137,7 @@ character(len=1), optional, intent(in) :: base
                          nomcmd.eq.'MECA_STATIQUE'.or.&
                          nomcmd.eq.'CALC_FORC_NONL'.or.&
                          nomcmd.eq.'CALC_CHAMP'.or.&
+                         nomcmd .eq. 'CALCUL' .or. &
                          nomcmd.eq.'POST_ELEM'.or.&
                          nomcmd.eq.'LIRE_RESU'.or.&
                          nomcmd.eq.'CREA_RESU'
