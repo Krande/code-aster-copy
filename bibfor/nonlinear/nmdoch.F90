@@ -144,6 +144,7 @@ subroutine nmdoch(list_load, l_load_user, list_load_resu_, base, l_calc_user, &
                          nomcmd .eq. 'MECA_STATIQUE' .or. &
                          nomcmd .eq. 'CALC_FORC_NONL' .or. &
                          nomcmd .eq. 'CALC_CHAMP' .or. &
+                         nomcmd .eq. 'CALCUL' .or. &
                          nomcmd .eq. 'POST_ELEM' .or. &
                          nomcmd .eq. 'LIRE_RESU' .or. &
                          nomcmd .eq. 'CREA_RESU'
