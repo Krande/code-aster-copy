@@ -152,6 +152,12 @@ class StorageManager(SolverFeature):
         if "model" in kwargs:
             self.result.setModel(kwargs["model"], self.curr_index)
 
+        if "materialField" in kwargs:
+            self.result.setMaterialField(kwargs["materialField"], self.curr_index)
+
+        if "listOfLoads" in kwargs:
+            self.result.setListOfLoads(kwargs["listOfLoads"], self.curr_index)
+
         if "time" in kwargs:
             self.result.setTime(kwargs["time"], self.curr_index)
 
