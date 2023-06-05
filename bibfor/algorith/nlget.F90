@@ -158,7 +158,15 @@ subroutine nlget(sd_nl_, ip, iocc, lonvec, savejv, &
             elseif (present(cscal)) then
                 cscal = zc(addr)
             elseif (present(kscal)) then
-                kscal = zk24(addr)
+                if (partyp(ip) .eq. 'K8 ') then
+                    kscal = zk8(addr)
+                else if (partyp(ip) .eq. 'K16') then
+                    kscal = zk16(addr)
+                else if (partyp(ip) .eq. 'K24') then
+                    kscal = zk24(addr)
+                else
+                    ASSERT(.false.)
+                end if
             elseif (present(ivect)) then
                 do i = 1, lvec
                     ivect(i) = zi(addr+i-1)
@@ -168,9 +176,21 @@ subroutine nlget(sd_nl_, ip, iocc, lonvec, savejv, &
             elseif (present(cvect)) then
                 call zcopy(lvec, zc(addr), 1, cvect, 1)
             elseif (present(kvect)) then
-                do i = 1, lvec
-                    kvect(i) = zk24(addr+i-1)
-                end do
+                if (partyp(ip) .eq. 'K8 ') then
+                    do i = 1, lvec
+                        kvect(i) = zk8(addr+i-1)
+                    end do
+                else if (partyp(ip) .eq. 'K16') then
+                    do i = 1, lvec
+                        kvect(i) = zk16(addr+i-1)
+                    end do
+                else if (partyp(ip) .eq. 'K24') then
+                    do i = 1, lvec
+                        kvect(i) = zk24(addr+i-1)
+                    end do
+                else
+                    ASSERT(.false.)
+                end if
             else if (present(vi)) then
                 call jgetptc(addr, pc, vi=zi(1))
                 call c_f_pointer(pc, vi, [lvec])

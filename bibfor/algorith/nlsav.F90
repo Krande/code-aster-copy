@@ -142,36 +142,50 @@ subroutine nlsav(sd_nl_, ip, lonvec, iocc, kscal, &
 
         if ((addr .ne. 0) .and. (lonvec .eq. lvec)) then
             if (present(iscal)) then
+                ASSERT(partyp(ip) .eq. 'I  ')
                 zi(addr) = iscal
             elseif (present(rscal)) then
+                ASSERT(partyp(ip) .eq. 'R  ')
                 zr(addr) = rscal
             elseif (present(cscal)) then
+                ASSERT(partyp(ip) .eq. 'C  ')
                 zc(addr) = cscal
             elseif (present(kscal)) then
-                if (partyp(ip) .eq. 'K8 ') zk8(addr) = kscal
-                if (partyp(ip) .eq. 'K16') zk16(addr) = kscal
-                if (partyp(ip) .eq. 'K24') zk24(addr) = kscal
+                if (partyp(ip) .eq. 'K8 ') then
+                    zk8(addr) = kscal
+                else if (partyp(ip) .eq. 'K16') then
+                    zk16(addr) = kscal
+                else if (partyp(ip) .eq. 'K24') then
+                    zk24(addr) = kscal
+                else
+                    ASSERT(.false.)
+                end if
             elseif (present(ivect)) then
+                ASSERT(partyp(ip) .eq. 'I  ')
                 do i = 1, lvec
                     zi(addr+i-1) = ivect(i)
                 end do
             elseif (present(rvect)) then
+                ASSERT(partyp(ip) .eq. 'R  ')
                 call dcopy(lvec, rvect, 1, zr(addr), 1)
             elseif (present(cvect)) then
+                ASSERT(partyp(ip) .eq. 'C  ')
                 call zcopy(lvec, cvect, 1, zc(addr), 1)
             elseif (present(kvect)) then
                 if (partyp(ip) .eq. 'K8 ') then
                     do i = 1, lvec
                         zk8(addr+i-1) = kvect(i)
                     end do
-                elseif (partyp(ip) .eq. 'K16') then
+                else if (partyp(ip) .eq. 'K16') then
                     do i = 1, lvec
                         zk16(addr+i-1) = kvect(i)
                     end do
-                elseif (partyp(ip) .eq. 'K24') then
+                else if (partyp(ip) .eq. 'K24') then
                     do i = 1, lvec
                         zk24(addr+i-1) = kvect(i)
                     end do
+                else
+                    ASSERT(.false.)
                 end if
             end if
             goto 99
