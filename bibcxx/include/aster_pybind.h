@@ -36,7 +36,7 @@ namespace py = pybind11;
  */
 template < typename DSType, typename... Args >
 static std::shared_ptr< DSType > initFactoryPtr( Args... args ) {
-    return std::shared_ptr< DSType >( std::make_shared< DSType >( args... ) );
+    return std::make_shared< DSType >( args... );
 };
 
 namespace pybind11 {
@@ -56,7 +56,8 @@ struct type_caster< JeveuxVector< T > > {
                         handle /* parent */ ) {
         py::list pylist;
         vect->updateValuePointer();
-        for ( int i = 0; i < vect->size(); ++i ) {
+        auto size = vect->size();
+        for ( int i = 0; i < size; ++i ) {
             pylist.append( ( *vect )[i] );
         }
         return pylist.inc_ref();
@@ -79,11 +80,13 @@ struct type_caster< JeveuxCollection< T > > {
         if ( !coll->build() || coll->size() < 0 ) {
             return pylist.inc_ref();
         }
-        for ( int i = 0; i < coll->size(); ++i ) {
+        auto coll_size = coll->size();
+        for ( int i = 0; i < coll_size; ++i ) {
             auto &obj = ( *coll )[i + 1];
             obj->updateValuePointer();
             py::list items;
-            for ( int j = 0; j < obj->size(); ++j ) {
+            auto obj_size = obj->size();
+            for ( int j = 0; j < obj_size; ++j ) {
                 items.append( ( *obj )[j] );
             }
             items.inc_ref();
