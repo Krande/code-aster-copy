@@ -30,7 +30,14 @@ complex numbers (:py:class:`FieldOnCellsComplex`).
 
 import numpy
 
-from libaster import FieldOnCellsReal, FieldOnCellsLong, FieldOnCellsChar8, FieldOnCellsComplex
+from libaster import (
+    FieldOnCellsReal,
+    FieldOnCellsLong,
+    FieldOnCellsChar8,
+    FieldOnCellsComplex,
+    toFieldOnNodes,
+    toSimpleFieldOnNodes,
+)
 from ..Objects.Serialization import InternalStateBuilder
 from ..Utilities import injector, deprecated
 from ..Commands import CREA_CHAMP
@@ -62,19 +69,6 @@ class FieldOnCellsStateBuilder(InternalStateBuilder):
         super().restore(field)
         if self._st["fed"]:
             field.setDescription(self._st["fed"])
-
-
-def _toFieldOnNodes(field):
-    """Convert FieldOnCells to FieldOnNodes"""
-
-    type_field = "NOEU_" + field.getPhysicalQuantity()
-    return CREA_CHAMP(OPERATION="DISC", TYPE_CHAM=type_field, CHAM_GD=field)
-
-
-def _toSimpleFieldOnNodes(field):
-    """Convert FieldOnCells to SimpleFieldOnNodes"""
-
-    return _toFieldOnNodes(field).toSimpleFieldOnNodes()
 
 
 @injector(FieldOnCellsReal)
@@ -115,7 +109,7 @@ class ExtendedFieldOnCellsReal:
             FieldOnNodesReal : field after conversion
         """
 
-        return _toFieldOnNodes(self)
+        return toFieldOnNodes(self)
 
     def toSimpleFieldOnNodes(self):
         """Convert to SimpleFieldOnNodes
@@ -124,7 +118,7 @@ class ExtendedFieldOnCellsReal:
             SimpleFieldOnNodesReal : field after conversion
         """
 
-        return _toSimpleFieldOnNodes(self)
+        return toSimpleFieldOnNodes(self)
 
     @deprecated(case=4, help="Use 'getValuesWithDescription()' instead")
     def EXTR_COMP(self, comp, lgma=[], topo=0):
@@ -175,4 +169,4 @@ class ExtendedFieldOnCellsComplex:
             FieldOnNodesComplex : field after conversion
         """
 
-        return _toFieldOnNodes(self)
+        return toFieldOnNodes(self)

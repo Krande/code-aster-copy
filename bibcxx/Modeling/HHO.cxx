@@ -20,6 +20,7 @@
 
 #include "Modeling/HHO.h"
 
+#include "DataFields/FieldConverter.h"
 #include "Discretization/Calcul.h"
 
 FunctionPtr HHO::_createFunc( const ASTERDOUBLE &value ) const {
@@ -69,7 +70,7 @@ FieldOnNodesRealPtr HHO::projectOnLagrangeSpace( const FieldOnNodesRealPtr hho_f
         calcul->compute();
     }
 
-    return exitField->toFieldOnNodes();
+    return toFieldOnNodes( exitField );
 };
 
 FieldOnNodesRealPtr HHO::_projectOnHHOSpace( bool faces, const GenericFunctionPtr fct,
@@ -107,7 +108,7 @@ FieldOnNodesRealPtr HHO::_projectOnHHOSpace( bool faces, const GenericFunctionPt
         calcul->compute();
     };
 
-    return hho_elno->toFieldOnNodes();
+    return toFieldOnNodes( hho_elno );
 };
 
 FieldOnNodesRealPtr HHO::projectOnHHOSpace( const GenericFunctionPtr fct, ASTERDOUBLE time ) const {
@@ -162,7 +163,7 @@ FieldOnNodesRealPtr HHO::_projectOnHHOSpace( bool faces,
         calcul->compute();
     };
 
-    return hho_elno->toFieldOnNodes();
+    return toFieldOnNodes( hho_elno );
 };
 
 FieldOnNodesRealPtr HHO::projectOnHHOSpace( const std::vector< GenericFunctionPtr > fct,
@@ -228,7 +229,7 @@ FieldOnNodesRealPtr HHO::projectOnHHOSpace( const FieldOnNodesRealPtr h1_field )
         calcul->compute();
     };
 
-    return hho_elno->toFieldOnNodes();
+    return toFieldOnNodes( hho_elno );
 };
 
 FieldOnNodesRealPtr HHO::projectOnHHOCellSpace( const FieldOnCellsRealPtr field_elga ) const {
@@ -252,7 +253,7 @@ FieldOnNodesRealPtr HHO::projectOnHHOCellSpace( const FieldOnCellsRealPtr field_
         calcul->compute();
     };
 
-    return hho_elno->toFieldOnNodes();
+    return toFieldOnNodes( hho_elno );
 };
 
 FieldOnCellsRealPtr HHO::evaluateAtQuadraturePoints( const FieldOnNodesRealPtr hho_field ) const {

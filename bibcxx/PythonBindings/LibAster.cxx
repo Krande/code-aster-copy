@@ -74,6 +74,7 @@
 #include "PythonBindings/ExternalStateVariablesInterface.h"
 #include "PythonBindings/ExternalStateVariablesResultInterface.h"
 #include "PythonBindings/FiberGeometryInterface.h"
+#include "PythonBindings/FieldConverterInterface.h"
 #include "PythonBindings/FieldOnCellsInterface.h"
 #include "PythonBindings/FieldOnNodesInterface.h"
 #include "PythonBindings/FiniteElementDescriptorInterface.h"
@@ -203,6 +204,7 @@ PYBIND11_MODULE( libaster, mod ) {
     exportConstantFieldOnCellsToPython( mod );
     exportSimpleFieldOnCellsToPython( mod );
     exportSimpleFieldOnNodesToPython( mod );
+    exportFieldConverterToPython( mod );
     exportTableToPython( mod );
     exportTableContainerToPython( mod );
     exportTimesListToPython( mod );

@@ -1,0 +1,126 @@
+/**
+ *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *
+ *   This file is part of Code_Aster.
+ *
+ *   Code_Aster is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   Code_Aster is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#pragma once
+
+#include "astercxx.h"
+
+#include "aster_fort_ds.h"
+
+#include "DataFields/ConstantFieldOnCells.h"
+#include "DataFields/FieldOnCells.h"
+#include "DataFields/FieldOnNodes.h"
+#include "DataFields/SimpleFieldOnCells.h"
+#include "DataFields/SimpleFieldOnNodes.h"
+#include "Supervis/Exceptions.h"
+
+//////// Convert to FieldOnNodes ////////////////
+template < typename ValueType >
+std::shared_ptr< FieldOnNodes< ValueType > >
+toFieldOnNodes( const std::shared_ptr< FieldOnCells< ValueType > > field ) {
+    auto chamno = std::make_shared< FieldOnNodes< ValueType > >();
+
+    std::string type = "NOEU", celmod = " ", base = "G";
+    std::string prol = "OUI", model = " ";
+
+    if ( field->getModel() ) {
+        model = field->getModel()->getName();
+    }
+
+    CALLO_CHPCHD( field->getName(), type, celmod, prol, base, chamno->getName(), model );
+
+    chamno->build( field->getMesh() );
+
+    return chamno;
+};
+
+template < typename ValueType >
+std::shared_ptr< FieldOnNodes< ValueType > >
+toFieldOnNodes( const std::shared_ptr< SimpleFieldOnNodes< ValueType > > field ) {
+    auto cham_no = std::make_shared< FieldOnNodes< ValueType > >();
+
+    // Convert to CHAM_NO
+    std::string prof = " ", prol0 = "NON", base = "G", kstop = "F";
+    ASTERINTEGER iret = 0;
+    CALLO_CNSCNO_WRAP( field->getName(), prof, prol0, base, cham_no->getName(), kstop, &iret );
+
+    AS_ASSERT( iret == 0 );
+
+    cham_no->build( field->getMesh() );
+    return cham_no;
+};
+
+////// Convert to SimpleFieldOnNodes ////////////
+template < typename ValueType >
+std::shared_ptr< SimpleFieldOnNodes< ValueType > >
+toSimpleFieldOnNodes( const std::shared_ptr< FieldOnNodes< ValueType > > field ) {
+    auto toReturn = std::make_shared< SimpleFieldOnNodes< ValueType > >( field->getMesh() );
+    const std::string resultName = toReturn->getName();
+    const std::string inName = field->getName();
+    CALLO_CNOCNS_WRAP( inName, JeveuxMemoryTypesNames[Permanent], resultName );
+    toReturn->build();
+    return toReturn;
+};
+
+template < typename ValueType >
+std::shared_ptr< SimpleFieldOnNodes< ValueType > >
+toSimpleFieldOnNodes( const std::shared_ptr< FieldOnCells< ValueType > > field ) {
+    return toSimpleFieldOnNodes( toFieldOnNodes( field ) );
+};
+
+template < typename ValueType >
+std::shared_ptr< SimpleFieldOnNodes< ValueType > >
+toSimpleFieldOnNodes( const std::shared_ptr< SimpleFieldOnCells< ValueType > > field ) {
+    auto chs = std::make_shared< SimpleFieldOnNodes< ValueType > >( field->getMesh() );
+
+    // Convert to CHAM_NO_S
+    const std::string base = "G", kstop = "F";
+    ASTERINTEGER iret = 0;
+    std::string celpg = " ";
+
+    if ( field->getLocalization() == "ELGA" ) {
+        raiseAsterError( "Not implemented: conversion to ELGA" );
+    }
+
+    CALLO_CESCNS( field->getName(), celpg, base, chs->getName(), kstop, &iret );
+
+    AS_ASSERT( iret == 0 );
+
+    chs->build();
+    return chs;
+}
+
+////// Convert to SimpleFieldOnCells ////////////
+template < typename ValueType >
+std::shared_ptr< SimpleFieldOnCells< ValueType > >
+toSimpleFieldOnCells( const std::shared_ptr< ConstantFieldOnCells< ValueType > > field ) {
+    auto chs = std::make_shared< SimpleFieldOnCells< ValueType > >( field->getMesh() );
+
+    // Convert to CHAM_ELEM_S
+    const std::string base = "G", kstop = "A", loc = "ELEM";
+    ASTERINTEGER iret = 0;
+    std::string cesmod = " ";
+
+    CALLO_CARCES( field->getName(), loc, cesmod, base, chs->getName(), kstop, &iret );
+
+    AS_ASSERT( iret == 0 );
+
+    chs->build();
+    return chs;
+}
