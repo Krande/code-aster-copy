@@ -31,7 +31,7 @@
 #include "aster_fort_utils.h"
 
 #include "DataFields/DataField.h"
-#include "DataFields/SimpleFieldOnNodes.h"
+#include "DataFields/FieldConverter.h"
 #include "MemoryManager/JeveuxAllowedTypes.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "Meshes/BaseMesh.h"
@@ -48,10 +48,6 @@
 #endif
 
 #include <typeinfo>
-
-// Forward declaration
-template < typename >
-class SimpleFieldOnNodes;
 
 /**
  * @struct AllowedFieldType
@@ -91,9 +87,6 @@ class FieldBuilder;
 template < class ValueType >
 class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
   private:
-    typedef SimpleFieldOnNodes< ValueType > SimpleFieldOnNodesValueType;
-    typedef std::shared_ptr< SimpleFieldOnNodesValueType > SimpleFieldOnNodesValueTypePtr;
-
     /** @brief Vecteur Jeveux '.REFE' */
     JeveuxVectorChar24 _reference;
     /** @brief Vecteur Jeveux '.VALE' */
@@ -384,20 +377,6 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
 
     ASTERINTEGER getNumberOfComponents() const { return getComponents().size(); }
 
-    /**
-     * @brief Renvoit un champ aux noeuds simple (carré de taille nb_no*nbcmp)
-     * @return SimpleFieldOnNodesValueTypePtr issu du FieldOnNodes
-     */
-    SimpleFieldOnNodesValueTypePtr toSimpleFieldOnNodes() const {
-        SimpleFieldOnNodesValueTypePtr toReturn =
-            std::make_shared< SimpleFieldOnNodesValueType >( getMesh() );
-        const std::string resultName = toReturn->getName();
-        const std::string inName = getName();
-        CALLO_CNOCNS_WRAP( inName, JeveuxMemoryTypesNames[Permanent], resultName );
-        toReturn->build();
-        return toReturn;
-    };
-
     bool exists() const { return _reference.exists() && _values.exists(); };
 
     /**
@@ -538,10 +517,10 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     FieldOnNodesPtr restrict( const VectorString &cmps = {},
                               const VectorString &groupsOfNodes = {} ) const {
 
-        auto simpField = this->toSimpleFieldOnNodes();
+        auto simpField = toSimpleFieldOnNodes( *this );
         auto simpFieldRest = simpField->restrict( cmps, groupsOfNodes );
 
-        return simpFieldRest->toFieldOnNodes();
+        return toFieldOnNodes( simpFieldRest );
     };
 
     /**

@@ -1,5 +1,5 @@
 /**
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -58,19 +58,25 @@ toFieldOnNodes( const std::shared_ptr< FieldOnCells< ValueType > > field ) {
 
 template < typename ValueType >
 std::shared_ptr< FieldOnNodes< ValueType > >
-toFieldOnNodes( const std::shared_ptr< SimpleFieldOnNodes< ValueType > > field ) {
+toFieldOnNodes( const SimpleFieldOnNodes< ValueType > &field ) {
     auto cham_no = std::make_shared< FieldOnNodes< ValueType > >();
 
     // Convert to CHAM_NO
     std::string prof = " ", prol0 = "NON", base = "G", kstop = "F";
     ASTERINTEGER iret = 0;
-    CALLO_CNSCNO_WRAP( field->getName(), prof, prol0, base, cham_no->getName(), kstop, &iret );
+    CALLO_CNSCNO_WRAP( field.getName(), prof, prol0, base, cham_no->getName(), kstop, &iret );
 
     AS_ASSERT( iret == 0 );
 
-    cham_no->build( field->getMesh() );
+    cham_no->build( field.getMesh() );
     return cham_no;
 };
+
+template < typename ValueType >
+std::shared_ptr< FieldOnNodes< ValueType > >
+toFieldOnNodes( const std::shared_ptr< SimpleFieldOnNodes< ValueType > > field ) {
+    return toFieldOnNodes( *field );
+}
 
 template < typename ValueType >
 std::shared_ptr< FieldOnNodes< ValueType > >
@@ -159,4 +165,50 @@ toSimpleFieldOnCells( const std::shared_ptr< ConstantFieldOnCells< ValueType > >
 
     chs->build();
     return chs;
+}
+
+template < typename ValueType >
+std::shared_ptr< SimpleFieldOnCells< ValueType > >
+toSimpleFieldOnCells( const FieldOnCells< ValueType > field ) {
+    auto toReturn = std::make_shared< SimpleFieldOnCells< ValueType > >( field.getMesh() );
+    const std::string resultName = toReturn->getName();
+    const std::string inName = field.getName();
+    const std::string copyNan( "OUI" );
+    CALLO_CELCES_WRAP( inName, JeveuxMemoryTypesNames[Permanent], resultName );
+    toReturn->build();
+    return toReturn;
+}
+
+template < typename ValueType >
+std::shared_ptr< SimpleFieldOnCells< ValueType > >
+toSimpleFieldOnCells( const std::shared_ptr< FieldOnCells< ValueType > > field ) {
+    return toSimpleFieldOnCells( *field );
+}
+
+template < typename ValueType >
+std::shared_ptr< FieldOnCells< ValueType > >
+toFieldOnCells( const SimpleFieldOnCells< ValueType > field, const FiniteElementDescriptorPtr fed,
+                const std::string option = std::string(),
+                const std::string nompar = std::string() ) {
+    auto cham_elem = std::make_shared< FieldOnCells< ValueType > >();
+
+    // Convert to CHAM_ELEM
+    const std::string prol0 = "NON", base = "G", kstop = "F";
+    ASTERINTEGER iret = 0, nncp = 0;
+    CALLO_CESCEL( field.getName(), fed->getName(), option, nompar, prol0, &nncp, base,
+                  cham_elem->getName(), kstop, &iret );
+
+    AS_ASSERT( iret == 0 );
+
+    cham_elem->build( {fed} );
+    cham_elem->updateValuePointers();
+    return cham_elem;
+}
+
+template < typename ValueType >
+std::shared_ptr< FieldOnCells< ValueType > >
+toFieldOnCells( const std::shared_ptr< SimpleFieldOnCells< ValueType > > field,
+                const FiniteElementDescriptorPtr fed, const std::string option = std::string(),
+                const std::string nompar = std::string() ) {
+    return toFieldOnCells( *field, fed, option, nompar );
 }

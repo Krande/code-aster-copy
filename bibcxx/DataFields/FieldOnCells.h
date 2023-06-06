@@ -40,9 +40,6 @@
 #include "Supervis/CommandSyntax.h"
 #include "Supervis/Exceptions.h"
 
-template < typename >
-class SimpleFieldOnCells;
-
 /**
  * @class FieldOnCells
  * @brief Template class for FieldOnCells
@@ -172,30 +169,16 @@ class FieldOnCells : public DataField {
         _dofDescription = nullptr;
     };
 
-    /**
-     * @brief
-     * @return
-     */
-    SimpleFieldOnCellsValueTypePtr toSimpleFieldOnCells() const {
-        auto toReturn = std::make_shared< SimpleFieldOnCellsValueType >( getMesh() );
-        const std::string resultName = toReturn->getName();
-        const std::string inName = getName();
-        const std::string copyNan( "OUI" );
-        CALLO_CELCES_WRAP( inName, JeveuxMemoryTypesNames[Permanent], resultName );
-        toReturn->build();
-        return toReturn;
-    };
+    // FieldOnCellsPtr restrict( const VectorString &cmps = {},
+    //                           const VectorString &groupsOfCells = {} ) const {
 
-    FieldOnCellsPtr restrict( const VectorString &cmps = {},
-                              const VectorString &groupsOfCells = {} ) const {
+    //     auto simpField = this->toSimpleFieldOnCells();
+    //     auto simpFieldRest = simpField->restrict( cmps, groupsOfCells );
 
-        auto simpField = this->toSimpleFieldOnCells();
-        auto simpFieldRest = simpField->restrict( cmps, groupsOfCells );
+    //     _reference->updateValuePointer();
 
-        _reference->updateValuePointer();
-
-        return simpFieldRest->toFieldOnCells( _dofDescription, strip( ( *_reference )[1] ) );
-    };
+    //     return simpFieldRest->toFieldOnCells( _dofDescription, strip( ( *_reference )[1] ) );
+    // };
 
     /**
      * @brief Check if fields are OK for +, +=, ...

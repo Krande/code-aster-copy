@@ -60,7 +60,14 @@ void exportFieldOnCellsToPython( py::module_ &mod ) {
             Returns:
                 FieldOnCellsReal
             )" )
-        .def( "toSimpleFieldOnCells", &FieldOnCellsReal::toSimpleFieldOnCells )
+        .def( "toSimpleFieldOnCells",
+              []( const FieldOnCellsReal &f ) { return toSimpleFieldOnCells( f ); },
+              R"(
+Convert to SimpleFieldOnNodes
+
+Returns:
+    SimpleFieldOnNodesReal: field converted
+        )" )
         .def( "toFieldOnNodes", []( const FieldOnCellsReal &f ) { return toFieldOnNodes( f ); },
               R"(
 Convert to FieldOnNodes
@@ -203,21 +210,21 @@ Returns:
                 float: dot product
             )",
               py::arg( "other" ) )
-        .def( "restrict", &FieldOnCellsReal::restrict,
-              R"(
-            Return a new field restricted to the list of components and groups of cells given
+        // .def( "restrict", &FieldOnCellsReal::restrict,
+        //       R"(
+        //     Return a new field restricted to the list of components and groups of cells given
 
-            Arguments:
-                cmps[list[str]]: filter on list of components
-                If empty, all components are used
-                groupsOfCells[list[str]]: filter on list of groups of cells (default=" ").
-                If empty, the full mesh is used
+        //     Arguments:
+        //         cmps[list[str]]: filter on list of components
+        //         If empty, all components are used
+        //         groupsOfCells[list[str]]: filter on list of groups of cells (default=" ").
+        //         If empty, the full mesh is used
 
-            Returns:
-                FieldOnCellsReal: field restricted.
-            )",
-              py::arg( "cmps" ) = VectorString(), py::arg( "groupsOfCells" ) = VectorString() );
-    ;
+        //     Returns:
+        //         FieldOnCellsReal: field restricted.
+        //     )",
+        //       py::arg( "cmps" ) = VectorString(), py::arg( "groupsOfCells" ) = VectorString() );
+        ;
 
     py::class_< FieldOnCellsComplex, FieldOnCellsComplexPtr, DataField >( mod,
                                                                           "FieldOnCellsComplex" )

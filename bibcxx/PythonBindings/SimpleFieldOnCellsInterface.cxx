@@ -133,18 +133,20 @@ Returns:
         .def( "getPhysicalQuantity", &SimpleFieldOnCellsReal::getPhysicalQuantity )
         .def( "getLocalization", &SimpleFieldOnCellsReal::getLocalization )
         .def( "updateValuePointers", &SimpleFieldOnCellsReal::updateValuePointers )
-        .def( "toFieldOnCells", &SimpleFieldOnCellsReal::toFieldOnCells,
+        .def( "toFieldOnCells",
+              []( const SimpleFieldOnCellsReal &f, const FiniteElementDescriptorPtr fed,
+                  const std::string option,
+                  const std::string nompar ) { return toFieldOnCells( f, fed, option, nompar ); },
               R"(
-            Converts to FieldOnCellsReal
+            Converts to FieldOnCells
 
             Arguments:
                 fed [FiniteElementDescriptor]: finite element descriptor
-                If empty, all components are used
-                groupsOfCells[list[str]]: filter on list of groups of cells (default=" ").
-                If empty, the full mesh is used
+                option [str] : name of option like TOUT_INI_ELGA (default: " ")
+                nompar [str] : name of parameter like DEPL_R (default: " ")
 
             Returns:
-                SimpleFieldOnCellsReal: field restricted.
+                FieldOnCellsReal: field converted.
             )",
               py::arg( "fed" ), py::arg( "option" ) = std::string(),
               py::arg( "nompar" ) = std::string() )

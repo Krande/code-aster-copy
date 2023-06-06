@@ -31,16 +31,11 @@
 #include "aster_fort_ds.h"
 
 #include "DataFields/DataField.h"
-#include "DataFields/FieldOnCells.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "MemoryManager/NumpyAccess.h"
 #include "Modeling/FiniteElementDescriptor.h"
 #include "Supervis/Exceptions.h"
 #include "Utilities/Tools.h"
-
-// Forward declaration
-template < typename >
-class FieldOnCells;
 
 /**
  * @class SimpleFieldOnCells
@@ -549,24 +544,6 @@ class SimpleFieldOnCells : public DataField {
 
         return true;
     };
-
-    std::shared_ptr< FieldOnCells< ValueType > >
-    toFieldOnCells( const FiniteElementDescriptorPtr fed, const std::string option = std::string(),
-                    const std::string nompar = std::string() ) const {
-        auto cham_elem = std::make_shared< FieldOnCells< ValueType > >();
-
-        // Convert to CHAM_ELEM
-        const std::string prol0 = "NON", base = "G", kstop = "F";
-        ASTERINTEGER iret = 0, nncp = 0;
-        CALLO_CESCEL( getName(), fed->getName(), option, nompar, prol0, &nncp, base,
-                      cham_elem->getName(), kstop, &iret );
-
-        AS_ASSERT( iret == 0 );
-
-        cham_elem->build( {fed} );
-        cham_elem->updateValuePointers();
-        return cham_elem;
-    }
 
     SimpleFieldOnCellsPtr restrict( const VectorString &cmps = {},
                                     const VectorString &groupsOfCells = {} ) const {

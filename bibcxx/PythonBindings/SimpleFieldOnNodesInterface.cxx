@@ -27,6 +27,7 @@
 
 #include "aster_pybind.h"
 
+#include "DataFields/FieldConverter.h"
 #include "PythonBindings/DataStructureInterface.h"
 
 void exportSimpleFieldOnNodesToPython( py::module_ &mod ) {
@@ -51,7 +52,14 @@ void exportSimpleFieldOnNodesToPython( py::module_ &mod ) {
               +[]( SimpleFieldOnNodesReal &v, const std::pair< ASTERINTEGER, std::string > &i ) {
                   return v.operator()( i.first, i.second );
               } )
-        .def( "toFieldOnNodes", &SimpleFieldOnNodesReal::toFieldOnNodes )
+        .def( "toFieldOnNodes",
+              []( const SimpleFieldOnNodesReal &f ) { return toFieldOnNodes( f ); },
+              R"(
+Convert to FieldOnNodes
+
+Returns:
+    FieldOnNodesReal: field converted
+        )" )
         .def( "restrict", &SimpleFieldOnNodesReal::restrict,
               R"(
             Return a new field restricted to the list of components and groups of nodes given

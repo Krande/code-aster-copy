@@ -31,16 +31,11 @@
 #include "aster_fort_ds.h"
 
 #include "DataFields/DataField.h"
-#include "DataFields/FieldOnNodes.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "MemoryManager/NumpyAccess.h"
 #include "Meshes/BaseMesh.h"
 #include "Supervis/Exceptions.h"
 #include "Utilities/Tools.h"
-
-// Forward declaration
-template < typename >
-class FieldOnNodes;
 
 /**
  * @class SimpleFieldOnNodes
@@ -366,22 +361,6 @@ class SimpleFieldOnNodes : public DataField {
         AS_ASSERT( _values->size() > 0 );
 
         return true;
-    }
-
-    std::shared_ptr< FieldOnNodes< ValueType > > toFieldOnNodes() const {
-        auto cham_no = std::make_shared< FieldOnNodes< ValueType > >();
-
-        this->_existsValue();
-
-        // Convert to CHAM_NO
-        std::string prof = " ", prol0 = "NON", base = "G", kstop = "F";
-        ASTERINTEGER iret = 0;
-        CALLO_CNSCNO_WRAP( getName(), prof, prol0, base, cham_no->getName(), kstop, &iret );
-
-        AS_ASSERT( iret == 0 );
-
-        cham_no->build( _mesh );
-        return cham_no;
     }
 
     SimpleFieldOnNodesPtr restrict( const VectorString &cmps = {},

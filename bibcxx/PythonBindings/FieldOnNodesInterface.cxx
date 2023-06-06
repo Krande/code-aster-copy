@@ -26,6 +26,7 @@
 
 #include "aster_pybind.h"
 
+#include "DataFields/FieldConverter.h"
 #include "PythonBindings/DataStructureInterface.h"
 
 void exportFieldOnNodesToPython( py::module_ &mod ) {
@@ -40,7 +41,14 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< FieldOnNodesReal, ModelPtr > ) )
         .def( py::init( &initFactoryPtr< FieldOnNodesReal, BaseDOFNumberingPtr > ) )
         .def( "duplicate", &FieldOnNodesReal::duplicate )
-        .def( "toSimpleFieldOnNodes", &FieldOnNodesReal::toSimpleFieldOnNodes )
+        .def( "toSimpleFieldOnNodes",
+              []( const FieldOnNodesReal &f ) { return toSimpleFieldOnNodes( f ); },
+              R"(
+Convert to SimpleFieldOnNodes
+
+Returns:
+    SimpleFieldOnNodesReal: field converted
+        )" )
         .def( "getPhysicalQuantity", &FieldOnNodesReal::getPhysicalQuantity )
         .def( "getMesh", &FieldOnNodesReal::getMesh )
         .def( "__getitem__",
@@ -214,7 +222,14 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
         .def( py::init< const FieldOnNodesComplex & >() )
         .def( py::init( &initFactoryPtr< FieldOnNodesComplex, ModelPtr > ) )
         .def( py::init( &initFactoryPtr< FieldOnNodesComplex, BaseDOFNumberingPtr > ) )
-        .def( "toSimpleFieldOnNodes", &FieldOnNodesComplex::toSimpleFieldOnNodes )
+        .def( "toSimpleFieldOnNodes",
+              []( const FieldOnNodesComplex &f ) { return toSimpleFieldOnNodes( f ); },
+              R"(
+Convert to SimpleFieldOnNodes
+
+Returns:
+    SimpleFieldOnNodesComplex: field converted
+        )" )
         .def( "getPhysicalQuantity", &FieldOnNodesComplex::getPhysicalQuantity )
         .def( "getMesh", &FieldOnNodesComplex::getMesh )
         .def( "__getitem__",
