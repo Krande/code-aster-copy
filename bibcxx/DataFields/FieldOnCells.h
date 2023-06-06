@@ -711,23 +711,6 @@ class FieldOnCells : public DataField {
 
     bool printMedFile( const std::string fileName, bool local = true ) const;
 
-    std::shared_ptr< FieldOnNodes< ValueType > > toFieldOnNodes() const {
-        auto chamno = std::make_shared< FieldOnNodes< ValueType > >();
-
-        std::string type = "NOEU", celmod = " ", base = "G";
-        std::string prol = "OUI", model = " ";
-
-        if ( getModel() ) {
-            model = getModel()->getName();
-        }
-
-        CALLO_CHPCHD( getName(), type, celmod, prol, base, chamno->getName(), model );
-
-        chamno->build( getMesh() );
-
-        return chamno;
-    }
-
     FieldOnCellsPtr changeLocalization( const std::string &loc ) const {
         if ( loc == getLocalization() ) {
             return std::make_shared< FieldOnCells< ValueType > >( *this );

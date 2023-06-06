@@ -30,17 +30,9 @@ complex numbers (:py:class:`FieldOnCellsComplex`).
 
 import numpy
 
-from libaster import (
-    FieldOnCellsReal,
-    FieldOnCellsLong,
-    FieldOnCellsChar8,
-    FieldOnCellsComplex,
-    toFieldOnNodes,
-    toSimpleFieldOnNodes,
-)
+from libaster import FieldOnCellsReal, FieldOnCellsLong, FieldOnCellsChar8, FieldOnCellsComplex
 from ..Objects.Serialization import InternalStateBuilder
 from ..Utilities import injector, deprecated
-from ..Commands import CREA_CHAMP
 
 
 class FieldOnCellsStateBuilder(InternalStateBuilder):
@@ -102,24 +94,6 @@ class ExtendedFieldOnCellsReal:
             cells = mesh.getCells()
         return self.toSimpleFieldOnCells().getValuesWithDescription(cells, component)
 
-    def toFieldOnNodes(self):
-        """Convert to FieldOnNodes
-
-        Returns:
-            FieldOnNodesReal : field after conversion
-        """
-
-        return toFieldOnNodes(self)
-
-    def toSimpleFieldOnNodes(self):
-        """Convert to SimpleFieldOnNodes
-
-        Returns:
-            SimpleFieldOnNodesReal : field after conversion
-        """
-
-        return toSimpleFieldOnNodes(self)
-
     @deprecated(case=4, help="Use 'getValuesWithDescription()' instead")
     def EXTR_COMP(self, comp, lgma=[], topo=0):
         """Deprecated: Use 'getValuesWithDescription()' instead.
@@ -161,12 +135,3 @@ class ExtendedFieldOnCellsChar8:
 class ExtendedFieldOnCellsComplex:
     cata_sdj = "SD.sd_champ.sd_cham_elem_class"
     internalStateBuilder = FieldOnCellsStateBuilder
-
-    def toFieldOnNodes(self):
-        """Convert to FieldOnNodes
-
-        Returns:
-            FieldOnNodesComplex : field after conversion
-        """
-
-        return toFieldOnNodes(self)

@@ -568,31 +568,6 @@ class SimpleFieldOnCells : public DataField {
         return cham_elem;
     }
 
-    // std::shared_ptr< SimpleFieldOnNodes< ValueType > > toSimpleFieldOnNodes() const {
-    //     auto chs = std::make_shared< SimpleFieldOnNodes< ValueType > >( getMesh() );
-
-    //     // Convert to CHAM_NO_S
-    //     const std::string base = "G", kstop = "F";
-    //     ASTERINTEGER iret = 0;
-    //     std::string celpg = " ";
-
-    //     if ( getLocalization() == "ELGA" ) {
-    //         // todo
-    //     }
-
-    //     CALLO_CESCNS( getName(), celpg, base, chs->getName(), kstop, &iret );
-
-    //     AS_ASSERT( iret == 0 );
-
-    //     chs->build();
-    //     return chs;
-    // }
-
-    // std::shared_ptr< FieldOnNodes< ValueType > > toFieldOnNodes() const {
-    //     auto ret0 = toSimpleFieldOnNodes();
-    //     return ret0->toFieldOnNodes();
-    // }
-
     SimpleFieldOnCellsPtr restrict( const VectorString &cmps = {},
                                     const VectorString &groupsOfCells = {} ) const {
 

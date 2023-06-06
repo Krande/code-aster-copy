@@ -33,21 +33,27 @@
 //////// Convert to FieldOnNodes ////////////////
 template < typename ValueType >
 std::shared_ptr< FieldOnNodes< ValueType > >
-toFieldOnNodes( const std::shared_ptr< FieldOnCells< ValueType > > field ) {
+toFieldOnNodes( const FieldOnCells< ValueType > &field ) {
     auto chamno = std::make_shared< FieldOnNodes< ValueType > >();
 
     std::string type = "NOEU", celmod = " ", base = "G";
     std::string prol = "OUI", model = " ";
 
-    if ( field->getModel() ) {
-        model = field->getModel()->getName();
+    if ( field.getModel() ) {
+        model = field.getModel()->getName();
     }
 
-    CALLO_CHPCHD( field->getName(), type, celmod, prol, base, chamno->getName(), model );
+    CALLO_CHPCHD( field.getName(), type, celmod, prol, base, chamno->getName(), model );
 
-    chamno->build( field->getMesh() );
+    chamno->build( field.getMesh() );
 
     return chamno;
+};
+
+template < typename ValueType >
+std::shared_ptr< FieldOnNodes< ValueType > >
+toFieldOnNodes( const std::shared_ptr< FieldOnCells< ValueType > > field ) {
+    return toFieldOnNodes( *field );
 };
 
 template < typename ValueType >
@@ -66,13 +72,25 @@ toFieldOnNodes( const std::shared_ptr< SimpleFieldOnNodes< ValueType > > field )
     return cham_no;
 };
 
+template < typename ValueType >
+std::shared_ptr< FieldOnNodes< ValueType > >
+toFieldOnNodes( const SimpleFieldOnCells< ValueType > &field ) {
+    return toFieldOnNodes( toSimpleFieldOnNodes( field ) );
+};
+
+template < typename ValueType >
+std::shared_ptr< FieldOnNodes< ValueType > >
+toFieldOnNodes( const std::shared_ptr< SimpleFieldOnCells< ValueType > > field ) {
+    return toFieldOnNodes( *field );
+};
+
 ////// Convert to SimpleFieldOnNodes ////////////
 template < typename ValueType >
 std::shared_ptr< SimpleFieldOnNodes< ValueType > >
-toSimpleFieldOnNodes( const std::shared_ptr< FieldOnNodes< ValueType > > field ) {
-    auto toReturn = std::make_shared< SimpleFieldOnNodes< ValueType > >( field->getMesh() );
+toSimpleFieldOnNodes( const FieldOnNodes< ValueType > &field ) {
+    auto toReturn = std::make_shared< SimpleFieldOnNodes< ValueType > >( field.getMesh() );
     const std::string resultName = toReturn->getName();
-    const std::string inName = field->getName();
+    const std::string inName = field.getName();
     CALLO_CNOCNS_WRAP( inName, JeveuxMemoryTypesNames[Permanent], resultName );
     toReturn->build();
     return toReturn;
@@ -80,31 +98,49 @@ toSimpleFieldOnNodes( const std::shared_ptr< FieldOnNodes< ValueType > > field )
 
 template < typename ValueType >
 std::shared_ptr< SimpleFieldOnNodes< ValueType > >
-toSimpleFieldOnNodes( const std::shared_ptr< FieldOnCells< ValueType > > field ) {
+toSimpleFieldOnNodes( const std::shared_ptr< FieldOnNodes< ValueType > > field ) {
+    return toSimpleFieldOnNodes( *field );
+};
+
+template < typename ValueType >
+std::shared_ptr< SimpleFieldOnNodes< ValueType > >
+toSimpleFieldOnNodes( const FieldOnCells< ValueType > &field ) {
     return toSimpleFieldOnNodes( toFieldOnNodes( field ) );
 };
 
 template < typename ValueType >
 std::shared_ptr< SimpleFieldOnNodes< ValueType > >
-toSimpleFieldOnNodes( const std::shared_ptr< SimpleFieldOnCells< ValueType > > field ) {
-    auto chs = std::make_shared< SimpleFieldOnNodes< ValueType > >( field->getMesh() );
+toSimpleFieldOnNodes( const std::shared_ptr< FieldOnCells< ValueType > > field ) {
+    return toSimpleFieldOnNodes( *field );
+};
+
+template < typename ValueType >
+std::shared_ptr< SimpleFieldOnNodes< ValueType > >
+toSimpleFieldOnNodes( const SimpleFieldOnCells< ValueType > &field ) {
+    auto chs = std::make_shared< SimpleFieldOnNodes< ValueType > >( field.getMesh() );
 
     // Convert to CHAM_NO_S
     const std::string base = "G", kstop = "F";
     ASTERINTEGER iret = 0;
     std::string celpg = " ";
 
-    if ( field->getLocalization() == "ELGA" ) {
+    if ( field.getLocalization() == "ELGA" ) {
         raiseAsterError( "Not implemented: conversion to ELGA" );
     }
 
-    CALLO_CESCNS( field->getName(), celpg, base, chs->getName(), kstop, &iret );
+    CALLO_CESCNS( field.getName(), celpg, base, chs->getName(), kstop, &iret );
 
     AS_ASSERT( iret == 0 );
 
     chs->build();
     return chs;
 }
+
+template < typename ValueType >
+std::shared_ptr< SimpleFieldOnNodes< ValueType > >
+toSimpleFieldOnNodes( const std::shared_ptr< SimpleFieldOnCells< ValueType > > field ) {
+    return toSimpleFieldOnNodes( *field );
+};
 
 ////// Convert to SimpleFieldOnCells ////////////
 template < typename ValueType >

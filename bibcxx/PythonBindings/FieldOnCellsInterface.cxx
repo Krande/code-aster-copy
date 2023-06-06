@@ -27,6 +27,7 @@
 
 #include "aster_pybind.h"
 
+#include "DataFields/FieldConverter.h"
 #include "DataFields/FieldOnCellsBuilder.h"
 #include "Discretization/ElementaryCharacteristics.h"
 #include "PythonBindings/DataStructureInterface.h"
@@ -60,6 +61,21 @@ void exportFieldOnCellsToPython( py::module_ &mod ) {
                 FieldOnCellsReal
             )" )
         .def( "toSimpleFieldOnCells", &FieldOnCellsReal::toSimpleFieldOnCells )
+        .def( "toFieldOnNodes", []( const FieldOnCellsReal &f ) { return toFieldOnNodes( f ); },
+              R"(
+Convert to FieldOnNodes
+
+Returns:
+    FieldOnNodesReal: field converted
+        )" )
+        .def( "toSimpleFieldOnNodes",
+              []( const FieldOnCellsReal &f ) { return toSimpleFieldOnNodes( f ); },
+              R"(
+Convert to SimpleFieldOnNodes
+
+Returns:
+    SimpleFieldOnNodesReal: field converted
+        )" )
         .def( "changeLocalization", &FieldOnCellsReal::changeLocalization )
         .def( "getDescription", &FieldOnCellsReal::getDescription, R"(
             Return the descriptor associated with the FieldOnCellsReal object
@@ -259,6 +275,13 @@ void exportFieldOnCellsToPython( py::module_ &mod ) {
         .def( py::self -= py::self )
         .def( py::self * float() )
         .def( float() * py::self )
+        .def( "toFieldOnNodes", []( const FieldOnCellsComplex &f ) { return toFieldOnNodes( f ); },
+              R"(
+Convert to FieldOnNodes
+
+Returns:
+    FieldOnCellsComplex: field converted
+        )" )
         .def( "getPhysicalQuantity", &FieldOnCellsComplex::getPhysicalQuantity, R"(
             Get physical quantity
 

@@ -27,6 +27,7 @@
 
 #include "aster_pybind.h"
 
+#include "DataFields/FieldConverter.h"
 #include "PythonBindings/DataStructureInterface.h"
 
 void exportSimpleFieldOnCellsToPython( py::module_ &mod ) {
@@ -147,8 +148,22 @@ Returns:
             )",
               py::arg( "fed" ), py::arg( "option" ) = std::string(),
               py::arg( "nompar" ) = std::string() )
-        // .def( "toFieldOnNodes", &SimpleFieldOnCellsReal::toFieldOnNodes )
-        // .def( "toSimpleFieldOnNodes", &SimpleFieldOnCellsReal::toSimpleFieldOnNodes )
+        .def( "toFieldOnNodes",
+              []( const SimpleFieldOnCellsReal &f ) { return toFieldOnNodes( f ); },
+              R"(
+Convert to FieldOnNodes
+
+Returns:
+    FieldOnNodesReal: field converted
+        )" )
+        .def( "toSimpleFieldOnNodes",
+              []( const SimpleFieldOnCellsReal &f ) { return toSimpleFieldOnNodes( f ); },
+              R"(
+Convert to SimpleFieldOnNodes
+
+Returns:
+    SimpleFieldOnNodesReal: field converted
+        )" )
         .def( "restrict", &SimpleFieldOnCellsReal::restrict,
               R"(
             Return a new field restricted to the list of components and groups of cells given
