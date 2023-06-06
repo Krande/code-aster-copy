@@ -30,19 +30,15 @@
 #include "aster_fort_superv.h"
 #include "aster_fort_utils.h"
 
-#include "Behaviours/BehaviourProperty.h"
 #include "DataFields/DataField.h"
 #include "DataFields/SimpleFieldOnCells.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "Modeling/FiniteElementDescriptor.h"
 #include "Modeling/Model.h"
+#include "ParallelUtilities/AsterMPI.h"
 #include "PythonBindings/LogicalUnitManager.h"
 #include "Supervis/CommandSyntax.h"
 #include "Supervis/Exceptions.h"
-
-/** @brief Forward declaration of ElementaryCharacteristics */
-class ElementaryCharacteristics;
-using ElementaryCharacteristicsPtr = std::shared_ptr< ElementaryCharacteristics >;
 
 template < typename >
 class SimpleFieldOnCells;
@@ -80,7 +76,8 @@ class FieldOnCells : public DataField {
           _descriptor( JeveuxVectorLong( getName() + ".CELD" ) ),
           _reference( JeveuxVectorChar24( getName() + ".CELK" ) ),
           _values( JeveuxVector< ValueType >( getName() + ".CELV" ) ),
-          _dofDescription( nullptr ) {};
+          _dofDescription( nullptr ),
+          _DCEL( nullptr ) {};
 
     /** @brief Constructor with automatic name */
     FieldOnCells() : FieldOnCells( ResultNaming::getNewResultName() ) {};
@@ -94,31 +91,6 @@ class FieldOnCells : public DataField {
     /** @brief Constructor with automatic name and model*/
     FieldOnCells( const ModelPtr model ) : FieldOnCells( model->getFiniteElementDescriptor() ) {};
 
-    /**
-     * @brief Constructor for empty FieldOnCells with dynamic components
-     * @param model model
-     * @param behaviour Description of behaviour (for size of dynamic components as VARI_ELGA)
-     * @param carael Description of elementary characteristics (for size of dynamic components as
-     * VARI_ELGA)
-     * @param typcham Type de champ à calculer
-     */
-    FieldOnCells( const FiniteElementDescriptorPtr FEDesc, const std::string &loc,
-                  const std::string &quantity, const BehaviourPropertyPtr behaviour = nullptr,
-                  const ElementaryCharacteristicsPtr carael = nullptr );
-
-    FieldOnCells( const FiniteElementDescriptorPtr FEDesc, const std::string &loc,
-                  const std::string &quantity, const ElementaryCharacteristicsPtr carael )
-        : FieldOnCells( FEDesc, loc, quantity, nullptr, carael ) {};
-
-    FieldOnCells( const ModelPtr model, const std::string &loc, const std::string &quantity,
-                  const BehaviourPropertyPtr behaviour = nullptr,
-                  const ElementaryCharacteristicsPtr carael = nullptr )
-        : FieldOnCells( model->getFiniteElementDescriptor(), loc, quantity, behaviour, carael ) {};
-
-    FieldOnCells( const ModelPtr model, const std::string &loc, const std::string &quantity,
-                  const ElementaryCharacteristicsPtr carael )
-        : FieldOnCells( model->getFiniteElementDescriptor(), loc, quantity, nullptr, carael ) {};
-
     /** @brief Copy constructor */
     FieldOnCells( const std::string &name, const FieldOnCells &toCopy ) : FieldOnCells( name ) {
         // JeveuxVector to be duplicated
@@ -130,6 +102,43 @@ class FieldOnCells : public DataField {
         setDescription( toCopy._dofDescription );
         updateValuePointers();
     }
+
+    /** @brief constructor */
+    FieldOnCells( const FiniteElementDescriptorPtr FEDesc, const std::string &loc,
+                  const std::string &quantity )
+        : FieldOnCells( FEDesc ) {
+        std::string option;
+        std::string nompar;
+
+        if ( loc == "ELGA" ) {
+            option = "TOU_INI_ELGA";
+        } else if ( loc == "ELNO" ) {
+            option = "TOU_INI_ELNO";
+        } else if ( loc == "ELEM" ) {
+            option = "TOU_INI_ELEM";
+        } else {
+            option = loc;
+        };
+
+        if ( quantity[0] != 'P' ) {
+            nompar = "P" + quantity;
+        } else {
+            nompar = quantity;
+        };
+
+        ASTERINTEGER iret = 0;
+
+        std::string dcel = " ";
+
+        CALLO_ALCHML( getDescription()->getName(), option, nompar,
+                      JeveuxMemoryTypesNames[Permanent], getName(), &iret, dcel );
+        AS_ASSERT( iret == 0 );
+
+        updateValuePointers();
+    }
+
+    FieldOnCells( const ModelPtr model, const std::string &loc, const std::string &quantity )
+        : FieldOnCells( model->getFiniteElementDescriptor(), loc, quantity ) {};
 
     /** @brief Move constructor */
     FieldOnCells( FieldOnCells &&other ) : DataField( std::move( other ) ) {
@@ -217,6 +226,17 @@ class FieldOnCells : public DataField {
 
         return nullptr;
     }
+
+    std::shared_ptr< SimpleFieldOnCells< ASTERINTEGER > > getExtentedInformations() const {
+        return _DCEL;
+    };
+
+    void
+    setExtentedInformations( const std::shared_ptr< SimpleFieldOnCells< ASTERINTEGER > > dcel ) {
+        if ( dcel ) {
+            _DCEL = dcel;
+        }
+    };
 
     /**
      * @brief Set the description of finite elements

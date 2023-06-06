@@ -21,6 +21,7 @@
 
 #include "Contact/ContactComputation.h"
 
+#include "DataFields/FieldOnCellsBuilder.h"
 #include "DataFields/FieldOnNodes.h"
 #include "Discretization/Calcul.h"
 #include "LinearAlgebra/ElementaryVector.h"
@@ -107,7 +108,7 @@ FieldOnCellsRealPtr ContactComputation::contactData( const ContactPairingPtr pai
     auto fed = pairing->getFiniteElementDescriptor();
 
     // Field for intersection points and other thing ...
-    auto data = std::make_shared< FieldOnCellsReal >( fed, "CHAR_MECA_CONT", "PCONFR" );
+    auto data = FieldOnCellsPtrBuilder< ASTERDOUBLE >( fed, "CHAR_MECA_CONT", "PCONFR" );
 
     ASTERINTEGER nbContPair = pairing->getNumberOfPairs();
     auto nbInter = concatenate( pairing->getNumberOfIntersectionPoints() );

@@ -27,6 +27,7 @@
 
 #include "aster_pybind.h"
 
+#include "DataFields/FieldOnCellsBuilder.h"
 #include "Discretization/ElementaryCharacteristics.h"
 #include "PythonBindings/DataStructureInterface.h"
 
@@ -36,13 +37,22 @@ void exportFieldOnCellsToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< FieldOnCellsReal, std::string > ) )
         .def( py::init( &initFactoryPtr< FieldOnCellsReal, ModelPtr > ) )
         .def( py::init( &initFactoryPtr< FieldOnCellsReal, ModelPtr, std::string, std::string > ) )
-        .def( py::init( &initFactoryPtr< FieldOnCellsReal, ModelPtr, std::string, std::string,
-                                         BehaviourPropertyPtr, ElementaryCharacteristicsPtr > ) )
-        .def( py::init( &initFactoryPtr< FieldOnCellsReal, ModelPtr, std::string, std::string,
-                                         BehaviourPropertyPtr > ) )
-        .def( py::init( &initFactoryPtr< FieldOnCellsReal, ModelPtr, std::string, std::string,
-                                         ElementaryCharacteristicsPtr > ) )
         .def( py::init( &initFactoryPtr< FieldOnCellsReal, const FieldOnCellsReal & > ) )
+        .def( py::init( []( const ModelPtr model, const std::string &loc,
+                            const std::string &quantity, const BehaviourPropertyPtr behaviour,
+                            const ElementaryCharacteristicsPtr carael ) {
+            return FieldOnCellsPtrBuilder< ASTERDOUBLE >( model, loc, quantity, behaviour, carael );
+        } ) )
+        .def( py::init( []( const ModelPtr model, const std::string &loc,
+                            const std::string &quantity, const BehaviourPropertyPtr behaviour ) {
+            return FieldOnCellsPtrBuilder< ASTERDOUBLE >( model, loc, quantity, behaviour,
+                                                          nullptr );
+        } ) )
+        .def( py::init( []( const ModelPtr model, const std::string &loc,
+                            const std::string &quantity,
+                            const ElementaryCharacteristicsPtr carael ) {
+            return FieldOnCellsPtrBuilder< ASTERDOUBLE >( model, loc, quantity, nullptr, carael );
+        } ) )
         .def( "duplicate", &FieldOnCellsReal::duplicate, R"(
             Return a duplicated FieldOnCellsReal as a copy
 

@@ -25,6 +25,7 @@
 #include "aster_fort_calcul.h"
 #include "aster_fort_superv.h"
 
+#include "DataFields/FieldOnCellsBuilder.h"
 #include "Discretization/Calcul.h"
 #include "Discretization/DiscreteComputation.h"
 #include "Loads/DirichletBC.h"
@@ -711,8 +712,8 @@ DiscreteComputation::getTangentStiffnessMatrix(
     calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
 
     // Provisoire: pour TANGENTE=VERIFICATION, nécessité de variables internes à chaque itération
-    FieldOnCellsRealPtr vari_iter = std::make_shared< FieldOnCellsReal >(
-        FEDesc, "ELGA", "VARI_R", currBehaviour, currElemChara );
+    auto vari_iter = FieldOnCellsPtrBuilder< ASTERDOUBLE >( FEDesc, "ELGA", "VARI_R", currBehaviour,
+                                                            currElemChara );
     calcul->addInputField( "PVARIMP", internVar );
 
     // Create output matrix
@@ -728,11 +729,11 @@ DiscreteComputation::getTangentStiffnessMatrix(
     elemVect->prepareCompute( option );
 
     // Create output fields
-    FieldOnCellsRealPtr stress_curr =
-        std::make_shared< FieldOnCellsReal >( FEDesc, "ELGA", "SIEF_R", currElemChara );
+    auto stress_curr =
+        FieldOnCellsPtrBuilder< ASTERDOUBLE >( FEDesc, "ELGA", "SIEF_R", currElemChara );
     FieldOnCellsLongPtr exitField = std::make_shared< FieldOnCellsLong >( FEDesc );
-    FieldOnCellsRealPtr vari_curr = std::make_shared< FieldOnCellsReal >(
-        FEDesc, "ELGA", "VARI_R", currBehaviour, currElemChara );
+    auto vari_curr = FieldOnCellsPtrBuilder< ASTERDOUBLE >( FEDesc, "ELGA", "VARI_R", currBehaviour,
+                                                            currElemChara );
 
     // Add output fields
     calcul->addOutputField( "PVARIPR", vari_curr );
@@ -803,8 +804,8 @@ DiscreteComputation::getPredictionTangentStiffnessMatrix(
     calcul->addInputField( "PVARIMR", internVar );
 
     // Provisoire: pour TANGENTE=VERIFICATION, nécessité de variables internes à chaque itération
-    FieldOnCellsRealPtr vari_iter = std::make_shared< FieldOnCellsReal >(
-        FEDesc, "ELGA", "VARI_R", currBehaviour, currElemChara );
+    auto vari_iter = FieldOnCellsPtrBuilder< ASTERDOUBLE >( FEDesc, "ELGA", "VARI_R", currBehaviour,
+                                                            currElemChara );
     calcul->addInputField( "PVARIMP", vari_iter );
 
     // Create output matrix
@@ -820,8 +821,8 @@ DiscreteComputation::getPredictionTangentStiffnessMatrix(
     elemVect->prepareCompute( option );
 
     // Create output fields
-    FieldOnCellsRealPtr stress_pred =
-        std::make_shared< FieldOnCellsReal >( currModel, "ELGA", "SIEF_R", currElemChara );
+    auto stress_pred =
+        FieldOnCellsPtrBuilder< ASTERDOUBLE >( currModel, "ELGA", "SIEF_R", currElemChara );
     FieldOnCellsLongPtr maskField = std::make_shared< FieldOnCellsLong >( FEDesc );
     FieldOnCellsLongPtr exitField = std::make_shared< FieldOnCellsLong >( FEDesc );
 
