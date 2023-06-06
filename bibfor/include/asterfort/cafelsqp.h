@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
      subroutine cafelsqp(cequi, effm, effn, ht, bw,&
                          enrobi, enrobs, wmaxi, wmaxs,&
-                         ferrcomp, ferrsyme, slsyme, uc, um,&
+                         ferrcomp, precs, ferrsyme, slsyme, uc, um,&
                          kt, facier, fbeton, eys, sigelsqp, phiinf, phisup,&
                          dnsinf, dnssup, sigmsi, sigmss, sigmci, sigmcs,&
                          alpha, pivot, etat,&
@@ -36,6 +36,7 @@ interface
         real(kind=8) :: wmaxi
         real(kind=8) :: wmaxs
         integer :: ferrcomp
+        integer :: precs
         integer :: ferrsyme
         real(kind=8) :: slsyme
         integer :: uc

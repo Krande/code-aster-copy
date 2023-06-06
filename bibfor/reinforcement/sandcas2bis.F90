@@ -27,7 +27,8 @@ subroutine sandcas2bis(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gamma
 !      SANDCAS2BIS
 !
 !      CALCUL DES ACIERS A L'ELU PAR LA METHODE SANDWICH
-!      CAS 2BIS - COMPRESSIVE REINF NEEDED in INF + REGULAR REINF NEEDED in SUP
+!      CAS 2 BIS - FERRAILLAGE [+] REQUIS EN SUP
+!                  FERRAILLAGE [-] REQUIS EN INF
 !
 !      I EFFRTS        (DIM 6) TORSEUR DES EFFORTS, MOMENTS, ...
 !                         EFFRTS(1) = NXX
@@ -166,7 +167,7 @@ subroutine sandcas2bis(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gamma
     character(20) :: p(13)
 
     do i = 1, 13
-        write (p(i), fmt='(A18,I2)') 'POINT_ITER_SANDCAS2BIS_', i
+        write (p(i), fmt='(A12,I2)') 'SANDCAS2BIS_', i
     end do
 
     pi = 3.14159265

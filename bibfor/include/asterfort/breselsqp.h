@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
      subroutine breselsqp(cequi, effmy, effmz, effn, ht, bw,&
                           enrobyi, enrobys, enrobzi, enrobzs,&
                           wmaxyi, wmaxys, wmaxzi, wmaxzs,&
-                          ferrcomp, ferrsyme, slsyme, uc, um,&
+                          ferrcomp, precs, ferrsyme, slsyme, uc, um,&
                           kt, eys, facier, fbeton, sigelsqp,&
                           phiyi, phiys, phizi, phizs,&
                           dnsyi, dnsys, dnszi, dnszs,&
@@ -45,6 +45,7 @@ interface
         real(kind=8) :: wmaxzi
         real(kind=8) :: wmaxzs
         integer :: ferrcomp
+        integer :: precs
         integer :: ferrsyme
         real(kind=8) :: slsyme
         integer :: uc

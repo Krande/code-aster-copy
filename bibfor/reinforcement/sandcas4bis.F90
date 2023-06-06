@@ -24,10 +24,11 @@ subroutine sandcas4bis(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gamma
 
 !______________________________________________________________________
 !
-!      SANDCAS1
+!      SANDCAS4BIS
 !
 !      CALCUL DES ACIERS A L'ELU PAR LA METHODE SANDWICH
-!      CAS 3 - REINF NEEDED FOR INF ONLY
+!      CAS 4 BIS - FERRAILLAGE [+] NON REQUIS EN SUP ET INF
+!                  FERRAILLAGE [-] REQUIS EN SUP ET/OU INF
 !
 !      I EFFRTS        (DIM 6) TORSEUR DES EFFORTS, MOMENTS, ...
 !                         EFFRTS(1) = NXX
@@ -168,7 +169,7 @@ subroutine sandcas4bis(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gamma
     character(20) :: p(13)
 
     do i = 1, 13
-        write (p(i), fmt='(A18,I2)') 'POINT_ITER_SANDCAS4BIS_', i
+        write (p(i), fmt='(A12,I2)') 'SANDCAS4BIS_', i
     end do
 
     pi = 3.14159265

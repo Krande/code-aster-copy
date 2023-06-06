@@ -18,7 +18,7 @@
 
 subroutine cafeluiter(typco, alphacc, effm, effn, ht, bw, &
                       enrobi, enrobs, facier, fbeton, gammas, gammac, &
-                      clacier, eys, typdiag, ferrsyme, slsyme, uc, &
+                      clacier, eys, typdiag, ferrcomp, precs, ferrsyme, slsyme, uc, um, &
                       condns, astend, ascomp, sstend, sscomp, ectend, eccomp, &
                       alpha, pivot, etat, ierr)
 
@@ -51,6 +51,11 @@ subroutine cafeluiter(typco, alphacc, effm, effn, ht, bw, &
 !      I TYPDIAG   TYPE DE DIAGRAMME UTILISÉ POUR L'ACIER
 !                     TYPDIAG = 1 ("B1" ==> PALIER INCLINÉ)
 !                     TYPDIAG = 2 ("B2" ==> PALIER HORIZONTAL)
+
+!      I PRECS     PRECISION SUPPLEMENTAIRE DANS LA RECHERCHE DE L'OPTIMUM
+!                  POUR LA METHODE DES 3 PIVOTS (Intervention du 03/2023)
+!                     PRECS = 0 (NON)
+!                     PRECS = 1 (OUI)
 !      I FERRSYME  FERRAILLAGE SYMETRIQUE?
 !                     FERRSYME = 0 (NON)
 !                     FERRSYME = 1 (OUI)
@@ -58,6 +63,9 @@ subroutine cafeluiter(typco, alphacc, effm, effn, ht, bw, &
 !      I UC        UNITE DES CONTRAINTES :
 !                     UC = 0 CONTRAINTES EN Pa
 !                     UC = 1 CONTRAINTES EN MPa
+!      I UM           UNITE DES DIMENSIONS :
+!                        UM = 0 DIMENSIONS EN m
+!                        UM = 1 DIMENSIONS EN mm
 !
 !      O ASTEND       DENSITE DE L'ACIER TENDU
 !      O ASCOMP       DENSITE DE L'ACIER COMPRIMÉ
@@ -97,9 +105,12 @@ subroutine cafeluiter(typco, alphacc, effm, effn, ht, bw, &
     integer :: clacier
     real(kind=8) :: eys
     integer :: typdiag
+    integer :: ferrcomp
+    integer :: precs
     integer :: ferrsyme
     real(kind=8) :: slsyme
     integer :: uc
+    integer :: um
     logical :: condns
     real(kind=8) :: astend
     real(kind=8) :: ascomp
@@ -115,19 +126,26 @@ subroutine cafeluiter(typco, alphacc, effm, effn, ht, bw, &
 !-----------------------------------------------------------------------
 !!!!VARIABLES DE CALCUL
 !-----------------------------------------------------------------------
-    real(kind=8) :: enrob, d, d0
-    real(kind=8) :: unite_pa
+    real(kind=8) :: enrob, d, d0, seuil_as
+    real(kind=8) :: unite_pa, unite_m
     real(kind=8) :: fyd, fcd, nC, ktys, xC, yC, xCt, D00, m1, m2
     real(kind=8) :: Esu, Euk, Ecu, Ec2, Ese
     real(kind=8) :: Xsup, Ncc, Mcc
     real(kind=8) :: piv_a, piv_b, piv_c, alphaAB
     real(kind=8) :: COEF1, COEF2, VAR_COEF1, VAR_COEF2
     real(kind=8) :: Calc, a11, a12, a21, a22, f1, f2, x1, y1, DELTA, Beta, yE
-    real(kind=8) :: AsTOT, escomp, estend
-    integer :: N_ET, N_PC, N_EC, k, kFIN, q, qsy, s, N_TOT, i, verif
-    real(kind=8) :: DE, X
+    real(kind=8) :: escomp, estend
+    integer :: N_ET, N_PC, N_EC, s, N_TOT, i, verif, indx_ch
+    real(kind=8) :: DE, X, astot
+    logical :: COND_AJOUT_AsCOMP, COND_AJOUT_AsTEND, COND_AJOUT_Proceed, COND_F
+    real(kind=8) :: AsCOMP_FOUND, AsTEND_FOUND, AsTOT_FOUND
+    real(kind=8) :: AsCOMP_F, AsTEND_F, AsTOT_F
+    integer :: INDICE_F, j, k
+    real(kind=8) :: aG, aD, alphaI, fG, fD, r1, r2
+    integer :: COUNT_F, COUNT_ELU, COUNT_ELU_SYME, COUNT_ELU_NOCOMP, COUNT_ELU_SYMENOCOMP
+    logical :: COND_COUNT, COND_COUNT_SYME, COND_COUNT_NOCOMP, COND_COUNT_SYMENOCOMP
 
-    character(20) :: p(56)
+    character(20) :: p(48)
 
     real(kind=8), pointer :: ectend_ET(:) => null(), eccomp_ET(:) => null()
     real(kind=8), pointer :: estend_ET(:) => null(), escomp_ET(:) => null()
@@ -157,15 +175,6 @@ subroutine cafeluiter(typco, alphacc, effm, effn, ht, bw, &
     real(kind=8), pointer :: sstend_TOT(:) => null(), sscomp_TOT(:) => null()
     integer, pointer :: pivot_TOT(:) => null(), etat_TOT(:) => null()
 
-    real(kind=8), pointer :: Pente_astend_ET(:) => null()
-    real(kind=8), pointer :: Pente_ascomp_ET(:) => null()
-    real(kind=8), pointer :: Pente_astend_PC(:) => null()
-    real(kind=8), pointer :: Pente_ascomp_PC(:) => null()
-    real(kind=8), pointer :: Pente_astend_EC(:) => null()
-    real(kind=8), pointer :: Pente_ascomp_EC(:) => null()
-    real(kind=8), pointer :: Pente_astend_TOT(:) => null()
-    real(kind=8), pointer :: Pente_ascomp_TOT(:) => null()
-
 !-----------------------------------------------------------------------
 !!!!LANCEMENT DU CALCUL
 !-----------------------------------------------------------------------
@@ -173,6 +182,35 @@ subroutine cafeluiter(typco, alphacc, effm, effn, ht, bw, &
 !ET = Entièrement Tendue
 !PC = Partiellement Comprimée
 !EC = Entièrement Comprimée
+
+    if (um .eq. 0) then
+        unite_m = 1.e3
+    elseif (um .eq. 1) then
+        unite_m = 1.
+    end if
+
+    seuil_as = 0.0
+
+    !!Intervention 05/2023 - Section non ferraillée auto-équilibrée
+    call verifelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
+                  gammas, gammac, clacier, eys, typdiag, uc, &
+                  0.0, 0.0, effm, effn, verif)
+
+    if (verif .eq. 0) then
+        !OK
+        etat = 1
+        pivot = 0
+        alpha = -1000
+        eccomp = -1
+        ectend = -1
+        estend = -1
+        escomp = -1
+        sscomp = -1
+        sstend = -1
+        ascomp = 0
+        astend = 0
+        goto 998
+    end if
 
     if (effm .ge. 0.) then
         enrob = enrobi
@@ -239,7 +277,7 @@ subroutine cafeluiter(typco, alphacc, effm, effn, ht, bw, &
     Ese = fyd/eys
     alphaAB = 1./(1+Esu/Ecu)
 
-    do i = 1, 56
+    do i = 1, 48
         write (p(i), fmt='(A18,I2)') 'POINT_ITER_CAFELU_', i
     end do
 
@@ -254,14 +292,12 @@ subroutine cafeluiter(typco, alphacc, effm, effn, ht, bw, &
     call wkvect(p(4), ' V V R ', N_ET, vr=escomp_ET)
     call wkvect(p(5), ' V V R ', N_ET, vr=astend_ET)
     call wkvect(p(6), ' V V R ', N_ET, vr=ascomp_ET)
-    call wkvect(p(7), ' V V R ', N_ET, vr=Pente_astend_ET)
-    call wkvect(p(8), ' V V R ', N_ET, vr=Pente_ascomp_ET)
-    call wkvect(p(9), ' V V R ', N_ET, vr=AsTOT_ET)
-    call wkvect(p(10), ' V V R ', N_ET, vr=sstend_ET)
-    call wkvect(p(11), ' V V R ', N_ET, vr=sscomp_ET)
-    call wkvect(p(12), ' V V R ', N_ET, vr=alpha_ET)
-    call wkvect(p(13), ' V V I ', N_ET, vi=pivot_ET)
-    call wkvect(p(14), ' V V I ', N_ET, vi=etat_ET)
+    call wkvect(p(7), ' V V R ', N_ET, vr=AsTOT_ET)
+    call wkvect(p(8), ' V V R ', N_ET, vr=sstend_ET)
+    call wkvect(p(9), ' V V R ', N_ET, vr=sscomp_ET)
+    call wkvect(p(10), ' V V R ', N_ET, vr=alpha_ET)
+    call wkvect(p(11), ' V V I ', N_ET, vi=pivot_ET)
+    call wkvect(p(12), ' V V I ', N_ET, vi=etat_ET)
 
     do k = 1, N_ET
 
@@ -315,18 +351,8 @@ subroutine cafeluiter(typco, alphacc, effm, effn, ht, bw, &
 
         sstend_ET(k) = sstend
         sscomp_ET(k) = sscomp
-
         astend_ET(k) = (abs(effm)-(0.5*ht-d0)*effn)/(Abs(sstend)*(d-d0))
         ascomp_ET(k) = -(effn+astend_ET(k)*Abs(sstend))/Abs(sscomp)
-
-        if (k .gt. 1) then
-            Pente_astend_ET(k) = (astend_ET(k)-astend_ET(k-1))/(alpha_ET(k)-alpha_ET(k-1))
-            Pente_ascomp_ET(k) = (ascomp_ET(k)-ascomp_ET(k-1))/(alpha_ET(k)-alpha_ET(k-1))
-        else
-            Pente_astend_ET(k) = 0
-            Pente_ascomp_ET(k) = 0
-        end if
-
         AsTOT_ET(k) = astend_ET(k)+ascomp_ET(k)
 
     end do
@@ -334,26 +360,33 @@ subroutine cafeluiter(typco, alphacc, effm, effn, ht, bw, &
 !Traitement en pivot A et B - Partiellement Comprimée (PC)
 !---------------------------------------------------------
 
-    N_PC = ceiling((ht/d)*1000)+1
+    if (precs .eq. 0) then
+        N_PC = ceiling((ht/d)*100)+1
+    else if (precs .eq. 1) then
+        N_PC = ceiling((ht/d)*1000)+1
+    end if
 
-    call wkvect(p(15), ' V V R ', N_PC, vr=ectend_PC)
-    call wkvect(p(16), ' V V R ', N_PC, vr=eccomp_PC)
-    call wkvect(p(17), ' V V R ', N_PC, vr=estend_PC)
-    call wkvect(p(18), ' V V R ', N_PC, vr=escomp_PC)
-    call wkvect(p(19), ' V V R ', N_PC, vr=astend_PC)
-    call wkvect(p(20), ' V V R ', N_PC, vr=ascomp_PC)
-    call wkvect(p(21), ' V V R ', N_PC, vr=Pente_astend_PC)
-    call wkvect(p(22), ' V V R ', N_PC, vr=Pente_ascomp_PC)
-    call wkvect(p(23), ' V V R ', N_PC, vr=AsTOT_PC)
-    call wkvect(p(24), ' V V R ', N_PC, vr=sstend_PC)
-    call wkvect(p(25), ' V V R ', N_PC, vr=sscomp_PC)
-    call wkvect(p(26), ' V V R ', N_PC, vr=alpha_PC)
-    call wkvect(p(27), ' V V I ', N_PC, vi=pivot_PC)
-    call wkvect(p(28), ' V V I ', N_PC, vi=etat_PC)
+    call wkvect(p(13), ' V V R ', N_PC, vr=ectend_PC)
+    call wkvect(p(14), ' V V R ', N_PC, vr=eccomp_PC)
+    call wkvect(p(15), ' V V R ', N_PC, vr=estend_PC)
+    call wkvect(p(16), ' V V R ', N_PC, vr=escomp_PC)
+    call wkvect(p(17), ' V V R ', N_PC, vr=astend_PC)
+    call wkvect(p(18), ' V V R ', N_PC, vr=ascomp_PC)
+    call wkvect(p(19), ' V V R ', N_PC, vr=AsTOT_PC)
+    call wkvect(p(20), ' V V R ', N_PC, vr=sstend_PC)
+    call wkvect(p(21), ' V V R ', N_PC, vr=sscomp_PC)
+    call wkvect(p(22), ' V V R ', N_PC, vr=alpha_PC)
+    call wkvect(p(23), ' V V I ', N_PC, vi=pivot_PC)
+    call wkvect(p(24), ' V V I ', N_PC, vi=etat_PC)
 
     do k = 1, N_PC
 
-        alpha_PC(k) = (k-1)*0.001
+        if (precs .eq. 0) then
+            alpha_PC(k) = (k-1)*0.01
+        else if (precs .eq. 1) then
+            alpha_PC(k) = (k-1)*0.001
+        end if
+
         alpha = alpha_PC(k)
 
         if (alpha .lt. alphaAB) then
@@ -441,7 +474,8 @@ subroutine cafeluiter(typco, alphacc, effm, effn, ht, bw, &
         f1 = effn-Ncc
         f2 = abs(effm)-Mcc
 
-        if (k .eq. 1001) then
+        if (((k .eq. 101) .and. (precs .eq. 0)) &
+            & .or. ((k .eq. 1001) .and. (precs .eq. 1))) then
             ascomp = (effn-Ncc)/sscomp
             astend = 0
             Calc = abs(effm)-Mcc-ascomp*sscomp*(0.5*ht-d0)
@@ -457,11 +491,6 @@ subroutine cafeluiter(typco, alphacc, effm, effn, ht, bw, &
         ascomp_PC(k) = ascomp
         astend_PC(k) = astend
 
-        if (k .gt. 1) then
-            Pente_astend_PC(k) = (astend_PC(k)-astend_PC(k-1))/(alpha_PC(k)-alpha_PC(k-1))
-            Pente_ascomp_PC(k) = (ascomp_PC(k)-ascomp_PC(k-1))/(alpha_PC(k)-alpha_PC(k-1))
-        end if
-
         AsTOT_PC(k) = ascomp+astend
 
     end do
@@ -471,20 +500,18 @@ subroutine cafeluiter(typco, alphacc, effm, effn, ht, bw, &
 
     N_EC = ceiling(Xsup*100)+1
 
-    call wkvect(p(29), ' V V R ', N_EC, vr=ectend_EC)
-    call wkvect(p(30), ' V V R ', N_EC, vr=eccomp_EC)
-    call wkvect(p(31), ' V V R ', N_EC, vr=estend_EC)
-    call wkvect(p(32), ' V V R ', N_EC, vr=escomp_EC)
-    call wkvect(p(33), ' V V R ', N_EC, vr=astend_EC)
-    call wkvect(p(34), ' V V R ', N_EC, vr=ascomp_EC)
-    call wkvect(p(35), ' V V R ', N_EC, vr=Pente_astend_EC)
-    call wkvect(p(36), ' V V R ', N_EC, vr=Pente_ascomp_EC)
-    call wkvect(p(37), ' V V R ', N_EC, vr=AsTOT_EC)
-    call wkvect(p(38), ' V V R ', N_EC, vr=sstend_EC)
-    call wkvect(p(39), ' V V R ', N_EC, vr=sscomp_EC)
-    call wkvect(p(40), ' V V R ', N_EC, vr=alpha_EC)
-    call wkvect(p(41), ' V V I ', N_EC, vi=pivot_EC)
-    call wkvect(p(42), ' V V I ', N_EC, vi=etat_EC)
+    call wkvect(p(25), ' V V R ', N_EC, vr=ectend_EC)
+    call wkvect(p(26), ' V V R ', N_EC, vr=eccomp_EC)
+    call wkvect(p(27), ' V V R ', N_EC, vr=estend_EC)
+    call wkvect(p(28), ' V V R ', N_EC, vr=escomp_EC)
+    call wkvect(p(29), ' V V R ', N_EC, vr=astend_EC)
+    call wkvect(p(30), ' V V R ', N_EC, vr=ascomp_EC)
+    call wkvect(p(31), ' V V R ', N_EC, vr=AsTOT_EC)
+    call wkvect(p(32), ' V V R ', N_EC, vr=sstend_EC)
+    call wkvect(p(33), ' V V R ', N_EC, vr=sscomp_EC)
+    call wkvect(p(34), ' V V R ', N_EC, vr=alpha_EC)
+    call wkvect(p(35), ' V V I ', N_EC, vi=pivot_EC)
+    call wkvect(p(36), ' V V I ', N_EC, vi=etat_EC)
 
     do k = 1, N_EC
 
@@ -558,11 +585,6 @@ subroutine cafeluiter(typco, alphacc, effm, effn, ht, bw, &
         ascomp_EC(k) = ascomp
         astend_EC(k) = astend
 
-        if (k .gt. 1) then
-            Pente_astend_EC(k) = (astend_EC(k)-astend_EC(k-1))/(alpha_EC(k)-alpha_EC(k-1))
-            Pente_ascomp_EC(k) = (ascomp_EC(k)-ascomp_EC(k-1))/(alpha_EC(k)-alpha_EC(k-1))
-        end if
-
         AsTOT_EC(k) = ascomp+astend
 
     end do
@@ -570,24 +592,21 @@ subroutine cafeluiter(typco, alphacc, effm, effn, ht, bw, &
 !-----------------------------------------------------------------------
 !Fin de Traitement des différents cas
 !-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
 
     N_TOT = N_ET+N_PC+N_EC
 
-    call wkvect(p(43), ' V V R ', N_TOT, vr=ectend_TOT)
-    call wkvect(p(44), ' V V R ', N_TOT, vr=eccomp_TOT)
-    call wkvect(p(45), ' V V R ', N_TOT, vr=estend_TOT)
-    call wkvect(p(46), ' V V R ', N_TOT, vr=escomp_TOT)
-    call wkvect(p(47), ' V V R ', N_TOT, vr=astend_TOT)
-    call wkvect(p(48), ' V V R ', N_TOT, vr=ascomp_TOT)
-    call wkvect(p(49), ' V V R ', N_TOT, vr=Pente_astend_TOT)
-    call wkvect(p(50), ' V V R ', N_TOT, vr=Pente_ascomp_TOT)
-    call wkvect(p(51), ' V V R ', N_TOT, vr=AsTOT_TOT)
-    call wkvect(p(52), ' V V R ', N_TOT, vr=sstend_TOT)
-    call wkvect(p(53), ' V V R ', N_TOT, vr=sscomp_TOT)
-    call wkvect(p(54), ' V V R ', N_TOT, vr=alpha_TOT)
-    call wkvect(p(55), ' V V I ', N_TOT, vi=pivot_TOT)
-    call wkvect(p(56), ' V V I ', N_TOT, vi=etat_TOT)
+    call wkvect(p(37), ' V V R ', N_TOT, vr=ectend_TOT)
+    call wkvect(p(38), ' V V R ', N_TOT, vr=eccomp_TOT)
+    call wkvect(p(39), ' V V R ', N_TOT, vr=estend_TOT)
+    call wkvect(p(40), ' V V R ', N_TOT, vr=escomp_TOT)
+    call wkvect(p(41), ' V V R ', N_TOT, vr=astend_TOT)
+    call wkvect(p(42), ' V V R ', N_TOT, vr=ascomp_TOT)
+    call wkvect(p(43), ' V V R ', N_TOT, vr=AsTOT_TOT)
+    call wkvect(p(44), ' V V R ', N_TOT, vr=sstend_TOT)
+    call wkvect(p(45), ' V V R ', N_TOT, vr=sscomp_TOT)
+    call wkvect(p(46), ' V V R ', N_TOT, vr=alpha_TOT)
+    call wkvect(p(47), ' V V I ', N_TOT, vi=pivot_TOT)
+    call wkvect(p(48), ' V V I ', N_TOT, vi=etat_TOT)
 
     do k = 1, N_ET
         ectend_TOT(k) = ectend_ET(k)
@@ -596,8 +615,6 @@ subroutine cafeluiter(typco, alphacc, effm, effn, ht, bw, &
         escomp_TOT(k) = escomp_ET(k)
         astend_TOT(k) = astend_ET(k)
         ascomp_TOT(k) = ascomp_ET(k)
-        Pente_astend_TOT(k) = Pente_astend_ET(k)
-        Pente_ascomp_TOT(k) = Pente_ascomp_ET(k)
         AsTOT_TOT(k) = AsTOT_ET(k)
         sstend_TOT(k) = sstend_ET(k)
         sscomp_TOT(k) = sscomp_ET(k)
@@ -613,8 +630,6 @@ subroutine cafeluiter(typco, alphacc, effm, effn, ht, bw, &
         escomp_TOT(N_ET+k) = escomp_PC(k)
         astend_TOT(N_ET+k) = astend_PC(k)
         ascomp_TOT(N_ET+k) = ascomp_PC(k)
-        Pente_astend_TOT(N_ET+k) = Pente_astend_PC(k)
-        Pente_ascomp_TOT(N_ET+k) = Pente_ascomp_PC(k)
         AsTOT_TOT(N_ET+k) = AsTOT_PC(k)
         sstend_TOT(N_ET+k) = sstend_PC(k)
         sscomp_TOT(N_ET+k) = sscomp_PC(k)
@@ -630,8 +645,6 @@ subroutine cafeluiter(typco, alphacc, effm, effn, ht, bw, &
         escomp_TOT(N_ET+N_PC+k) = escomp_EC(k)
         astend_TOT(N_ET+N_PC+k) = astend_EC(k)
         ascomp_TOT(N_ET+N_PC+k) = ascomp_EC(k)
-        Pente_astend_TOT(N_ET+N_PC+k) = Pente_astend_EC(k)
-        Pente_ascomp_TOT(N_ET+N_PC+k) = Pente_ascomp_EC(k)
         AsTOT_TOT(N_ET+N_PC+k) = AsTOT_EC(k)
         sstend_TOT(N_ET+N_PC+k) = sstend_EC(k)
         sscomp_TOT(N_ET+N_PC+k) = sscomp_EC(k)
@@ -640,242 +653,479 @@ subroutine cafeluiter(typco, alphacc, effm, effn, ht, bw, &
         etat_TOT(N_ET+N_PC+k) = etat_EC(k)
     end do
 
-   !!Recherche des racines éventuelles
+    !Looking for EVENTUAL Roots
+    i = 1
+    indx_ch = 0
 
-    k = 1
-    do while (k .le. (N_TOT-1))
-        if (((astend_TOT(k)*astend_TOT(k+1)) .le. 0) &
-              & .and. ((Pente_astend_TOT(k)*Pente_astend_TOT(k+1)) .gt. 0) &
-              & .and. (ascomp_TOT(k) .ge. 0) .and. (ascomp_TOT(k+1) .ge. 0)) then
+    do while (i .le. (N_TOT-1))
 
-            N_TOT = N_TOT+1
+        COND_AJOUT_AsCOMP = .false.
+        COND_AJOUT_AsTEND = .false.
+        COND_AJOUT_Proceed = .false.
 
-            do i = 43, 56
-                call juveca(p(i), N_TOT)
-            end do
+        aG = alpha_TOT(i)
+        aD = alpha_TOT(i+1)
+        fG = 0
+        fD = 0
 
-            call jeveuo(p(43), 'E', vr=ectend_TOT)
-            call jeveuo(p(44), 'E', vr=eccomp_TOT)
-            call jeveuo(p(45), 'E', vr=estend_TOT)
-            call jeveuo(p(46), 'E', vr=escomp_TOT)
-            call jeveuo(p(47), 'E', vr=astend_TOT)
-            call jeveuo(p(48), 'E', vr=ascomp_TOT)
-            call jeveuo(p(49), 'E', vr=Pente_astend_TOT)
-            call jeveuo(p(50), 'E', vr=Pente_ascomp_TOT)
-            call jeveuo(p(51), 'E', vr=AsTOT_TOT)
-            call jeveuo(p(52), 'E', vr=sstend_TOT)
-            call jeveuo(p(53), 'E', vr=sscomp_TOT)
-            call jeveuo(p(54), 'E', vr=alpha_TOT)
-            call jeveuo(p(55), 'E', vi=pivot_TOT)
-            call jeveuo(p(56), 'E', vi=etat_TOT)
+        if ((AsCOMP_TOT(i)*AsCOMP_TOT(i+1)) .lt. 0) then
+            COND_AJOUT_AsCOMP = .true.
+            fG = fG+AsCOMP_TOT(i)
+            fD = fD+AsCOMP_TOT(i+1)
+        end if
 
-            do s = 1, (N_TOT-k-1)
-                ectend_TOT(N_TOT-s+1) = ectend_TOT(N_TOT-s)
-                eccomp_TOT(N_TOT-s+1) = eccomp_TOT(N_TOT-s)
-                estend_TOT(N_TOT-s+1) = estend_TOT(N_TOT-s)
-                escomp_TOT(N_TOT-s+1) = escomp_TOT(N_TOT-s)
-                astend_TOT(N_TOT-s+1) = astend_TOT(N_TOT-s)
-                ascomp_TOT(N_TOT-s+1) = ascomp_TOT(N_TOT-s)
-                Pente_astend_TOT(N_TOT-s+1) = Pente_astend_TOT(N_TOT-s)
-                Pente_ascomp_TOT(N_TOT-s+1) = Pente_ascomp_TOT(N_TOT-s)
-                AsTOT_TOT(N_TOT-s+1) = AsTOT_TOT(N_TOT-s)
-                sstend_TOT(N_TOT-s+1) = sstend_TOT(N_TOT-s)
-                sscomp_TOT(N_TOT-s+1) = sscomp_TOT(N_TOT-s)
-                alpha_TOT(N_TOT-s+1) = alpha_TOT(N_TOT-s)
-                pivot_TOT(N_TOT-s+1) = pivot_TOT(N_TOT-s)
-                etat_TOT(N_TOT-s+1) = etat_TOT(N_TOT-s)
-            end do
+        if ((AsTEND_TOT(i)*AsTEND_TOT(i+1)) .lt. 0) then
+            COND_AJOUT_AsTEND = .true.
+            fG = fG+AsTEND_TOT(i)
+            fD = fD+AsTEND_TOT(i+1)
+        end if
 
-            ectend_TOT(k+1) = 0.5*(ectend_TOT(k)+ectend_TOT(k+2))
-            eccomp_TOT(k+1) = 0.5*(eccomp_TOT(k)+eccomp_TOT(k+2))
-            estend_TOT(k+1) = 0.5*(estend_TOT(k)+estend_TOT(k+2))
-            escomp_TOT(k+1) = 0.5*(escomp_TOT(k)+escomp_TOT(k+2))
-            astend_TOT(k+1) = 0
-            ascomp_TOT(k+1) = 0.5*(ascomp_TOT(k)+ascomp_TOT(k+2))
-            AsTOT_TOT(k+1) = ascomp_TOT(k+1)+astend_TOT(k+1)
-            sstend_TOT(k+1) = 0.5*(sstend_TOT(k)+sstend_TOT(k+2))
-            sscomp_TOT(k+1) = 0.5*(sscomp_TOT(k)+sscomp_TOT(k+2))
-            alpha_TOT(k+1) = 0.5*(alpha_TOT(k)+alpha_TOT(k+2))
-            pivot_TOT(k+1) = pivot_TOT(k)
-            etat_TOT(k+1) = etat_TOT(k)
-            Pente_astend_TOT(k+1) = (astend_TOT(k+1)-astend_TOT(k))/(alpha_TOT(k+1)-alpha_TOT(k))
-            Pente_ascomp_TOT(k+1) = (ascomp_TOT(k+1)-ascomp_TOT(k))/(alpha_TOT(k+1)-alpha_TOT(k))
+        alphaI = aG+(aD-aG)/(1+abs(fD/fG))
 
-            k = k+2
+        if ((COND_AJOUT_AsCOMP .eqv. (.true.)) &
+            & .or. (COND_AJOUT_AsTEND .eqv. (.true.))) then
 
-        elseif (((ascomp_TOT(k)*ascomp_TOT(k+1)) .le. 0) &
-                  & .and. ((Pente_ascomp_TOT(k)*Pente_ascomp_TOT(k+1)) .gt. 0) &
-                  & .and. (astend_TOT(k) .ge. 0) .and. (astend_TOT(k+1) .ge. 0)) then
+            X = alphaI*d
 
-            N_TOT = N_TOT+1
+            if (alphaI .le. 0) then
+                !ET
 
-            do i = 43, 56
-                call juveca(p(i), N_TOT)
-            end do
+                estend = -Esu
+                r1 = Esu/(X-d)
+                r2 = -r1*X
+                escomp = (r1*d0+r2)
+                ectend = r1*ht+r2
+                eccomp = r1*0+r2
+                pivot = 1
+                etat = 4
 
-            call jeveuo(p(43), 'E', vr=ectend_TOT)
-            call jeveuo(p(44), 'E', vr=eccomp_TOT)
-            call jeveuo(p(45), 'E', vr=estend_TOT)
-            call jeveuo(p(46), 'E', vr=escomp_TOT)
-            call jeveuo(p(47), 'E', vr=astend_TOT)
-            call jeveuo(p(48), 'E', vr=ascomp_TOT)
-            call jeveuo(p(49), 'E', vr=Pente_astend_TOT)
-            call jeveuo(p(50), 'E', vr=Pente_ascomp_TOT)
-            call jeveuo(p(51), 'E', vr=AsTOT_TOT)
-            call jeveuo(p(52), 'E', vr=sstend_TOT)
-            call jeveuo(p(53), 'E', vr=sscomp_TOT)
-            call jeveuo(p(54), 'E', vr=alpha_TOT)
-            call jeveuo(p(55), 'E', vi=pivot_TOT)
-            call jeveuo(p(56), 'E', vi=etat_TOT)
+                if (Abs(estend) .lt. Ese) then
+                    sstend = eys*(Abs(estend))
+                elseif (typdiag .eq. 1) then
+                    sstend = fyd+((ktys*fyd-fyd)/(Euk-Ese))*(Abs(estend)-Ese)
+                else
+                    sstend = fyd
+                end if
+                if (Abs(escomp) .lt. Ese) then
+                    sscomp = eys*(Abs(escomp))
+                elseif (typdiag .eq. 1) then
+                    sscomp = fyd+((ktys*fyd-fyd)/(Euk-Ese))*(Abs(escomp)-Ese)
+                else
+                    sscomp = fyd
+                end if
 
-            do s = 1, (N_TOT-k-1)
-                ectend_TOT(N_TOT-s+1) = ectend_TOT(N_TOT-s)
-                eccomp_TOT(N_TOT-s+1) = eccomp_TOT(N_TOT-s)
-                estend_TOT(N_TOT-s+1) = estend_TOT(N_TOT-s)
-                escomp_TOT(N_TOT-s+1) = escomp_TOT(N_TOT-s)
-                astend_TOT(N_TOT-s+1) = astend_TOT(N_TOT-s)
-                ascomp_TOT(N_TOT-s+1) = ascomp_TOT(N_TOT-s)
-                Pente_astend_TOT(N_TOT-s+1) = Pente_astend_TOT(N_TOT-s)
-                Pente_ascomp_TOT(N_TOT-s+1) = Pente_ascomp_TOT(N_TOT-s)
-                AsTOT_TOT(N_TOT-s+1) = AsTOT_TOT(N_TOT-s)
-                sstend_TOT(N_TOT-s+1) = sstend_TOT(N_TOT-s)
-                sscomp_TOT(N_TOT-s+1) = sscomp_TOT(N_TOT-s)
-                alpha_TOT(N_TOT-s+1) = alpha_TOT(N_TOT-s)
-                pivot_TOT(N_TOT-s+1) = pivot_TOT(N_TOT-s)
-                etat_TOT(N_TOT-s+1) = etat_TOT(N_TOT-s)
-            end do
+                if (estend .lt. 0) then
+                    sstend = -sstend
+                end if
+                if (escomp .lt. 0) then
+                    sscomp = -sscomp
+                end if
 
-            ectend_TOT(k+1) = 0.5*(ectend_TOT(k)+ectend_TOT(k+2))
-            eccomp_TOT(k+1) = 0.5*(eccomp_TOT(k)+eccomp_TOT(k+2))
-            estend_TOT(k+1) = 0.5*(estend_TOT(k)+estend_TOT(k+2))
-            escomp_TOT(k+1) = 0.5*(escomp_TOT(k)+escomp_TOT(k+2))
-            astend_TOT(k+1) = 0.5*(astend_TOT(k)+astend_TOT(k+2))
-            ascomp_TOT(k+1) = 0
-            AsTOT_TOT(k+1) = ascomp_TOT(k+1)+astend_TOT(k+1)
-            sstend_TOT(k+1) = 0.5*(sstend_TOT(k)+sstend_TOT(k+2))
-            sscomp_TOT(k+1) = 0.5*(sscomp_TOT(k)+sscomp_TOT(k+2))
-            alpha_TOT(k+1) = 0.5*(alpha_TOT(k)+alpha_TOT(k+2))
-            pivot_TOT(k+1) = pivot_TOT(k)
-            etat_TOT(k+1) = etat_TOT(k)
-            Pente_astend_TOT(k+1) = (astend_TOT(k+1)-astend_TOT(k))/(alpha_TOT(k+1)-alpha_TOT(k))
-            Pente_ascomp_TOT(k+1) = (ascomp_TOT(k+1)-ascomp_TOT(k))/(alpha_TOT(k+1)-alpha_TOT(k))
+                astend = (abs(effm)-(0.5*ht-d0)*effn)/(Abs(sstend)*(d-d0))
+                ascomp = -(effn+astend*Abs(sstend))/Abs(sscomp)
+                astot = astend+ascomp
 
-            k = k+2
+            elseif (alphaI .le. (ht/d)) then
+                !PC
+
+                etat = 5
+
+                if (alphaI .lt. alphaAB) then
+                    pivot = 1
+                    estend = -Esu
+                    eccomp = Esu*alphaI/(1-alphaI)
+                else
+                    pivot = 2
+                    eccomp = Ecu
+                    estend = -Ecu*(1-alphaI)/alphaI
+                end if
+                r2 = eccomp
+                r1 = (estend-r2)/d
+                escomp = (r1*d0+r2)
+                ectend = (r1*ht+r2)
+
+                if (Abs(estend) .lt. Ese) then
+                    sstend = eys*(Abs(estend))
+                elseif (typdiag .eq. 1) then
+                    sstend = fyd+((ktys*fyd-fyd)/(Euk-Ese))*(Abs(estend)-Ese)
+                else
+                    sstend = fyd
+                end if
+                if (Abs(escomp) .lt. Ese) then
+                    sscomp = eys*(Abs(escomp))
+                elseif (typdiag .eq. 1) then
+                    sscomp = fyd+((ktys*fyd-fyd)/(Euk-Ese))*(Abs(escomp)-Ese)
+                else
+                    sscomp = fyd
+                end if
+                if (estend .lt. 0) then
+                    sstend = -sstend
+                end if
+                if (escomp .lt. 0) then
+                    sscomp = -sscomp
+                end if
+
+                x1 = (estend-eccomp)/Ec2
+                y1 = eccomp/Ec2
+                DELTA = d/ht
+
+                if (eccomp .le. Ec2) then
+                    Beta = 0
+                else
+                    yE = ((Ec2-eccomp)/(estend-eccomp))*d
+                    Beta = yE/d
+                end if
+
+                COEF1 = (1-y1-alphaI*x1)
+                COEF2 = (1-y1-Beta*x1)
+                if (abs(COEF1) .gt. epsilon(COEF1)) then
+                    VAR_COEF1 = Abs(COEF1)/COEF1
+                else
+                    VAR_COEF1 = 1
+                end if
+                if (abs(COEF2) .gt. epsilon(COEF2)) then
+                    VAR_COEF2 = Abs(COEF2)/COEF2
+                else
+                    VAR_COEF2 = 1
+                end if
+
+                Ncc = (fcd*bw*d)*(alphaI+(1/((nC+1)*x1))*(VAR_COEF1*((Abs(COEF1))**(nC+1)) &
+                    & -VAR_COEF2*((Abs(COEF2))**(nC+1))))
+                Mcc = (bw*d*d*fcd)*(0.5*alphaI*(1/DELTA-alphaI) &
+                    & +(1/(2*DELTA))*(1/((nC+1)*x1))*(VAR_COEF1*((Abs(COEF1))**(nC+1)) &
+                    & -VAR_COEF2*((Abs(COEF2))**(nC+1))) &
+                    & -(1/((nC+1)*x1))*(alphaI*VAR_COEF1*((Abs(COEF1))**(nC+1)) &
+                    & -Beta*VAR_COEF2*((Abs(COEF2))**(nC+1))) &
+                    & -(1/((nC+1)*(nC+2)*x1*x1))*(VAR_COEF1*((Abs(COEF1))**(nC+2)) &
+                    & -VAR_COEF2*((Abs(COEF2))**(nC+2))))
+
+                a11 = sscomp
+                a12 = sstend
+                a21 = sscomp*(0.5*ht-d0)
+                a22 = -sstend*(d-0.5*ht)
+                f1 = effn-Ncc
+                f2 = abs(effm)-Mcc
+
+                if (abs(alphaI-1) .lt. epsilon(alphaI-1)) then
+                    ascomp = (effn-Ncc)/sscomp
+                    astend = 0
+                    Calc = abs(effm)-Mcc-ascomp*sscomp*(0.5*ht-d0)
+                    if (Abs(Calc/effm) .gt. 0.01) then
+                        ascomp = -1
+                        astend = -1
+                    end if
+                else
+                    ascomp = (f1*a22-a12*f2)/(a11*a22-a12*a21)
+                    astend = (a11*f2-a21*f1)/(a11*a22-a12*a21)
+                end if
+
+                astot = ascomp+astend
+
+            else
+                !EC
+
+                r1 = Ec2/(xC-X)
+                r2 = -r1*X
+                eccomp = r1*0+r2
+                escomp = (r1*d0+r2)
+                estend = (r1*d+r2)
+                ectend = r1*ht+r2
+                etat = 6
+                pivot = 3
+                DE = X*Ec2
+
+                Ncc = bw*ht*fcd*(1+m2*(X**(nC)))
+                Mcc = bw*ht*ht*fcd*m1*(X**(nC))
+                if (abs(eccomp) .gt. epsilon(eccomp)) then
+                    Calc = 1-ectend/eccomp
+                else
+                    Calc = 0
+                end if
+
+                if (Abs(estend) .lt. Ese) then
+                    sstend = eys*(Abs(estend))
+                elseif (typdiag .eq. 1) then
+                    sstend = fyd+((ktys*fyd-fyd)/(Euk-Ese))*(Abs(estend)-Ese)
+                else
+                    sstend = fyd
+                end if
+                if (Abs(escomp) .lt. Ese) then
+                    sscomp = eys*(Abs(escomp))
+                elseif (typdiag .eq. 1) then
+                    sscomp = fyd+((ktys*fyd-fyd)/(Euk-Ese))*(Abs(escomp)-Ese)
+                else
+                    sscomp = fyd
+                end if
+                if (estend .lt. 0) then
+                    sstend = -sstend
+                end if
+                if (escomp .lt. 0) then
+                    sscomp = -sscomp
+                end if
+
+                a11 = sscomp
+                a12 = sstend
+                a21 = sscomp*(0.5*ht-d0)
+                a22 = -sstend*(d-0.5*ht)
+                f1 = effn-Ncc
+                f2 = abs(effm)-Mcc
+
+                ascomp = (f1*a22-a12*f2)/(a11*a22-a12*a21)
+                astend = (a11*f2-a21*f1)/(a11*a22-a12*a21)
+                astot = ascomp+astend
+
+            end if
+
+            !Dinstinguishing between ROOT and ASYMPTOT
+            ! & Making sure that values are ACCEPTABLE
+
+            if (COND_AJOUT_AsCOMP .eqv. (.true.)) then
+                if (ascomp*AsCOMP_TOT(i) .gt. 0) then
+                    if (.not. (abs(ascomp) .lt. abs(AsCOMP_TOT(i)))) then
+                        goto 11
+                    end if
+                elseif (ascomp*AsCOMP_TOT(i+1) .gt. 0) then
+                    if (.not. (abs(ascomp) .lt. abs(AsCOMP_TOT(i+1)))) then
+                        goto 11
+                    end if
+                end if
+            elseif ((AsCOMP_TOT(i) .lt. 0) .or. (AsCOMP_TOT(i+1) .lt. 0)) then
+                goto 11
+            end if
+
+            if (COND_AJOUT_AsTEND .eqv. (.true.)) then
+                if (astend*AsTEND_TOT(i) .gt. 0) then
+                    if (.not. (abs(astend) .lt. abs(AsTEND_TOT(i)))) then
+                        goto 11
+                    end if
+                elseif (astend*AsTEND_TOT(i+1) .gt. 0) then
+                    if (.not. (abs(astend) .lt. abs(AsTEND_TOT(i+1)))) then
+                        goto 11
+                    end if
+                end if
+            elseif ((AsTEND_TOT(i) .lt. 0) .or. (AsTEND_TOT(i+1) .lt. 0)) then
+                goto 11
+            end if
+
+            COND_AJOUT_Proceed = .true.
+
+11          continue
+
+            if (COND_AJOUT_Proceed .eqv. (.true.)) then
+
+                indx_ch = indx_ch+1
+                N_TOT = N_TOT+1
+
+                do j = 37, 48
+                    call juveca(p(j), N_TOT)
+                end do
+
+                call jeveuo(p(37), 'E', vr=ectend_TOT)
+                call jeveuo(p(38), 'E', vr=eccomp_TOT)
+                call jeveuo(p(39), 'E', vr=estend_TOT)
+                call jeveuo(p(40), 'E', vr=escomp_TOT)
+                call jeveuo(p(41), 'E', vr=astend_TOT)
+                call jeveuo(p(42), 'E', vr=ascomp_TOT)
+                call jeveuo(p(43), 'E', vr=astot_TOT)
+                call jeveuo(p(44), 'E', vr=sstend_TOT)
+                call jeveuo(p(45), 'E', vr=sscomp_TOT)
+                call jeveuo(p(46), 'E', vr=alpha_TOT)
+                call jeveuo(p(47), 'E', vi=pivot_TOT)
+                call jeveuo(p(48), 'E', vi=etat_TOT)
+
+                do s = 1, (N_TOT-i-1)
+                    ectend_TOT(N_TOT-s+1) = ectend_TOT(N_TOT-s)
+                    eccomp_TOT(N_TOT-s+1) = eccomp_TOT(N_TOT-s)
+                    estend_TOT(N_TOT-s+1) = estend_TOT(N_TOT-s)
+                    escomp_TOT(N_TOT-s+1) = escomp_TOT(N_TOT-s)
+                    astend_TOT(N_TOT-s+1) = astend_TOT(N_TOT-s)
+                    ascomp_TOT(N_TOT-s+1) = ascomp_TOT(N_TOT-s)
+                    astot_TOT(N_TOT-s+1) = astot_TOT(N_TOT-s)
+                    sstend_TOT(N_TOT-s+1) = sstend_TOT(N_TOT-s)
+                    sscomp_TOT(N_TOT-s+1) = sscomp_TOT(N_TOT-s)
+                    alpha_TOT(N_TOT-s+1) = alpha_TOT(N_TOT-s)
+                    pivot_TOT(N_TOT-s+1) = pivot_TOT(N_TOT-s)
+                    etat_TOT(N_TOT-s+1) = etat_TOT(N_TOT-s)
+                end do
+
+                if (COND_AJOUT_AsCOMP .eqv. (.true.)) then
+                    ascomp = 0.0
+                end if
+                if (COND_AJOUT_AsTEND .eqv. (.true.)) then
+                    astend = 0.0
+                end if
+                astot = astend+ascomp
+
+                ectend_TOT(i+1) = ectend
+                eccomp_TOT(i+1) = eccomp
+                estend_TOT(i+1) = estend
+                escomp_TOT(i+1) = escomp
+                astend_TOT(i+1) = astend
+                ascomp_TOT(i+1) = ascomp
+                astot_TOT(i+1) = astot
+                sstend_TOT(i+1) = sstend
+                sscomp_TOT(i+1) = sscomp
+                alpha_TOT(i+1) = alphaI
+                pivot_TOT(i+1) = pivot
+                etat_TOT(i+1) = etat
+
+                i = i+2
+
+            else
+
+                i = i+1
+
+            end if
 
         else
 
-            k = k+1
+            i = i+1
 
         end if
 
     end do
 
-!! DETERMINATION DE LA SOLUTION DIMENSIONNANTE
+    COUNT_F = 0
+    COUNT_ELU = 0
+    COUNT_ELU_SYME = 0
+    COUNT_ELU_NOCOMP = 0
+    COUNT_ELU_SYMENOCOMP = 0
+    AsTOT_F = 0.0
 
-    q = 0
-    qsy = 0
-    kFIN = 1
+    do i = 1, N_TOT
 
-    do k = 1, N_TOT
-        if ((ascomp_TOT(k) .ge. 0) .and. (astend_TOT(k) .ge. 0)) then
-            q = q+1
-            if (ferrsyme .eq. 1) then
-                Calc = abs(ascomp_TOT(k)-astend_TOT(k))
-                if (Calc .le. slsyme) then
-                    qsy = qsy+1
-                    if (qsy .eq. 1) then
-                        AsTOT = AsTOT_TOT(k)
-                        kFIN = k
-                    else
-                        if (AsTOT_TOT(k) .lt. AsTOT) Then
-                            AsTOT = AsTOT_TOT(k)
-                            kFIN = k
-                        end if
-                    end if
-                end if
-            else
-                if (q .eq. 1) then
-                    AsTOT = AsTOT_TOT(k)
-                    kFIN = k
-                else
-                    if (AsTOT_TOT(k) .lt. AsTOT) Then
-                        AsTOT = AsTOT_TOT(k)
-                        kFIN = k
-                    end if
-                end if
+        COND_COUNT = .false.
+        COND_COUNT_SYME = .false.
+        COND_COUNT_NOCOMP = .false.
+        COND_COUNT_SYMENOCOMP = .false.
+
+        if ((ascomp_TOT(i) .ge. 0) .AND. (astend_TOT(i) .ge. 0)) then
+
+            COUNT_ELU = COUNT_ELU+1
+            COND_COUNT = .true.
+            !Checking NOCOMP
+            if (((sscomp_TOT(i) .le. 0) .or. &
+                & (ascomp_TOT(i) .lt. epsilon(ascomp_TOT(i)))) &
+                & .AND. ((sstend_TOT(i) .le. 0) .or. &
+                & (astend_TOT(i) .lt. epsilon(astend_TOT(i))))) then
+                COUNT_ELU_NOCOMP = COUNT_ELU_NOCOMP+1
+                COND_COUNT_NOCOMP = .true.
+            end if
+            !Checking SYME
+            Calc = abs(ascomp_TOT(i)-astend_TOT(i))
+            if (Calc .le. slsyme) then
+                COUNT_ELU_SYME = COUNT_ELU_SYME+1
+                COND_COUNT_SYME = .true.
+            end if
+            !Checking SYME NOCOMP
+            if ((COND_COUNT_NOCOMP .eqv. (.true.)) .and. &
+                & (COND_COUNT_SYME .eqv. (.true.))) then
+                COND_COUNT_SYMENOCOMP = .true.
+                COUNT_ELU_SYMENOCOMP = COUNT_ELU_SYMENOCOMP+1
             end if
         end if
+
+        if ((ferrsyme .eq. 0) .and. (ferrcomp .eq. 1)) then
+            COND_F = COND_COUNT
+            COUNT_F = COUNT_ELU
+        elseif ((ferrsyme .eq. 1) .and. (ferrcomp .eq. 1)) then
+            COND_F = COND_COUNT_SYME
+            COUNT_F = COUNT_ELU_SYME
+        elseif ((ferrsyme .eq. 0) .and. (ferrcomp .eq. 0)) then
+            COND_F = COND_COUNT_NOCOMP
+            COUNT_F = COUNT_ELU_NOCOMP
+        elseif ((ferrsyme .eq. 1) .and. (ferrcomp .eq. 0)) then
+            COND_F = COND_COUNT_SYMENOCOMP
+            COUNT_F = COUNT_ELU_SYMENOCOMP
+        end if
+
+        if (COND_F .eqv. (.true.)) then
+
+            AsCOMP_FOUND = ascomp_TOT(i)
+            AsTEND_FOUND = astend_TOT(i)
+            AsTOT_FOUND = astot_TOT(i)
+
+            if ((COUNT_F .eq. 1) .or. (AsTOT_FOUND .lt. AsTOT_F)) then
+
+                INDICE_F = i
+                AsCOMP_F = AsCOMP_FOUND
+                AsTEND_F = AsTEND_FOUND
+                AsTOT_F = AsTOT_FOUND
+
+            end if
+
+        end if
+
     end do
 
-    if (((q .gt. 0) .and. (ferrsyme .eq. 0)) &
-        & .or. ((qsy .gt. 0) .and. (ferrsyme .eq. 1))) then
+    if (COUNT_F .gt. 0) then
 
-        alpha = alpha_TOT(kFIN)
-        ascomp = ascomp_TOT(kFIN)
-        astend = astend_TOT(kFIN)
-        eccomp = eccomp_TOT(kFIN)
-        ectend = ectend_TOT(kFIN)
-        estend = estend_TOT(kFIN)
-        escomp = escomp_TOT(kFIN)
-        pivot = pivot_TOT(kFIN)
-        etat = etat_TOT(kFIN)
-        sstend = sstend_TOT(kFIN)
-        sscomp = sscomp_TOT(kFIN)
+        ectend = ectend_TOT(INDICE_F)
+        eccomp = eccomp_TOT(INDICE_F)
+        estend = estend_TOT(INDICE_F)
+        escomp = escomp_TOT(INDICE_F)
+        astend = astend_TOT(INDICE_F)
+        ascomp = ascomp_TOT(INDICE_F)
+        astot = astot_TOT(INDICE_F)
+        sstend = sstend_TOT(INDICE_F)
+        sscomp = sscomp_TOT(INDICE_F)
+        alpha = alpha_TOT(INDICE_F)
+        pivot = pivot_TOT(INDICE_F)
+        etat = etat_TOT(INDICE_F)
 
-    elseif ((ferrsyme .eq. 1) .and. ((q .gt. 0) .or. (condns .eqv. (.true.)))) then
+    elseif ((ferrcomp .eq. 0) .and. (COUNT_ELU .gt. 0)) then
 
         etat = 0
         pivot = 0
-        alpha = -1000
-        eccomp = 0
         ectend = -1
+        eccomp = -1
         estend = -1
         escomp = -1
-        sscomp = -1
-        sstend = -1
-        ascomp = -1
         astend = -1
+        ascomp = -1
+        astot = -1
+        sstend = -1
+        sscomp = -1
+        alpha = -1000
+        ierr = 1
+
+    elseif ((ferrsyme .eq. 1) .and. ((COUNT_ELU .gt. 0) .or. condns .eqv. (.true.))) then
+
+        etat = 0
+        pivot = 0
+        ectend = -1
+        eccomp = -1
+        estend = -1
+        escomp = -1
+        astend = -1
+        ascomp = -1
+        astot = -1
+        sstend = -1
+        sscomp = -1
+        alpha = -1000
         ierr = 2
 
     else
 
-    !! Vérification par le diagramme d'interaction avec dnsyi=dnsys=0.0
-        call verifelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
-                      gammas, gammac, clacier, eys, typdiag, uc, &
-                      0.0, 0.0, effm, effn, verif)
-
-        if (verif .eq. 0) then
-           !!OK
-            etat = 1
-            pivot = 0
-            alpha = -1000
-            eccomp = -1
-            ectend = -1
-            estend = -1
-            escomp = -1
-            sscomp = -1
-            sstend = -1
-            ascomp = 0
-            astend = 0
-        else
-            etat = 0
-            pivot = 0
-            alpha = -1000
-            eccomp = -1
-            ectend = -1
-            estend = -1
-            escomp = -1
-            sscomp = -1
-            sstend = -1
-            ascomp = -1
-            astend = -1
-            ierr = 1
-        end if
+        ascomp = 0
+        astend = 0
+        astot = 0
+        ectend = -1
+        eccomp = -1
+        estend = -1
+        escomp = -1
+        sstend = -1
+        sscomp = -1
+        alpha = -1000
+        etat = 1
+        pivot = 0
 
     end if
 
-    do i = 1, 56
+    do i = 1, 48
         call jedetr(p(i))
     end do
+
+998 continue
 
 end subroutine

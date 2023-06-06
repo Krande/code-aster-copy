@@ -48,12 +48,12 @@ subroutine w175af(modele, chfer1)
     integer :: n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15
     integer :: n16, n17, n18, n19, n20, n21, n22, n23, n24, n25, n26, n27, n28, n29, n30, n31, n32
     integer :: n33, n34, n35, n36, n37, n38, n39, n40, n41, n42, n43, n44, n45, n46, n47, n48, n49
-    integer :: n50, n51, n52, n53, n54, n55, n56, n57, n58, n59, n60, n61
+    integer :: n50, n51, n52, n53, n54, n55, n56, n57, n58, n59, n60, n61, n62, n63, n64
     integer ::   jmail, iocc, nbmail
     real(kind=8) :: valrcb, valrco, valrmt, valrcd, valruc, valrum
     character(len=8) :: k8b, typmcl(2), noma, typcb, clacier, uc, compress
     character(len=8) :: epucisa, ferrcomp, ferrsyme, typdiag, typstru, cond109, unitm, unitc
-    character(len=16) :: meth2D
+    character(len=16) :: meth2D, precs, flongi, ftrnsv
     character(len=16) :: motcls(2), typco, ferrmin
     character(len=24) :: mesmai
     character(len=8), pointer :: ncmp(:) => null()
@@ -82,7 +82,7 @@ subroutine w175af(modele, chfer1)
     call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
 
 !
-    ASSERT(ncmpmx .eq. 61)
+    ASSERT(ncmpmx .eq. 64)
     ncmp(1) = 'TYPCOMB'
     ncmp(2) = 'CODIF'
     ncmp(3) = 'METH2D'
@@ -144,6 +144,13 @@ subroutine w175af(modele, chfer1)
     ncmp(59) = 'PHIYS'
     ncmp(60) = 'PHIZI'
     ncmp(61) = 'PHIZS'
+    !!Intervention 03/2023 -
+    !  Pour réduction du temps de calcul
+    ncmp(62) = 'PRECS'
+    !!Intervention 05/2023 -
+    !  Prise en compte du ferraillage?
+    ncmp(63) = 'FLONGI'
+    ncmp(64) = 'FTRNSV'
 
 !
 !     2. MOTS CLES GLOBAUX :
@@ -201,6 +208,19 @@ subroutine w175af(modele, chfer1)
             call getvtx('AFFE', 'TYPE_STRUCTURE', iocc=iocc, scal=typstru, nbret=n8)
             if (typstru .eq. '2D') valv(8) = 0.d0
             if (typstru .eq. '1D') valv(8) = 1.d0
+
+               !!Intervention 03/2023 - Pour réduction du temps de calcul
+            call getvtx('AFFE', 'EXTRA_PREC', iocc=iocc, scal=precs, nbret=n62)
+            if (precs .eq. 'NON') valv(62) = 0.d0
+            if (precs .eq. 'OUI') valv(62) = 1.d0
+
+            call getvtx('AFFE', 'FERR_LONGI', iocc=iocc, scal=flongi, nbret=n63)
+            if (flongi .eq. 'OUI') valv(63) = 0.d0
+            if (flongi .eq. 'NON') valv(63) = 1.d0
+            call getvtx('AFFE', 'FERR_TRNSV', iocc=iocc, scal=ftrnsv, nbret=n64)
+            if (ftrnsv .eq. 'OUI') valv(64) = 0.d0
+            if (ftrnsv .eq. 'NON') valv(64) = 1.d0
+
             call getvtx('AFFE', 'FERR_SYME', iocc=iocc, scal=ferrsyme, nbret=n9)
             if (ferrsyme .eq. 'NON') valv(9) = 0.d0
             if (ferrsyme .eq. 'OUI') valv(9) = 1.d0
@@ -266,6 +286,19 @@ subroutine w175af(modele, chfer1)
             call getvtx('AFFE', 'TYPE_STRUCTURE', iocc=iocc, scal=typstru, nbret=n8)
             if (typstru .eq. '2D') valv(8) = 0.d0
             if (typstru .eq. '1D') valv(8) = 1.d0
+
+               !!Intervention 03/2023 - Pour réduction du temps de calcul
+            call getvtx('AFFE', 'EXTRA_PREC', iocc=iocc, scal=precs, nbret=n62)
+            if (precs .eq. 'NON') valv(62) = 0.d0
+            if (precs .eq. 'OUI') valv(62) = 1.d0
+
+            call getvtx('AFFE', 'FERR_LONGI', iocc=iocc, scal=flongi, nbret=n63)
+            if (flongi .eq. 'OUI') valv(63) = 0.d0
+            if (flongi .eq. 'NON') valv(63) = 1.d0
+            call getvtx('AFFE', 'FERR_TRNSV', iocc=iocc, scal=ftrnsv, nbret=n64)
+            if (ftrnsv .eq. 'OUI') valv(64) = 0.d0
+            if (ftrnsv .eq. 'NON') valv(64) = 1.d0
+
             call getvtx('AFFE', 'FERR_SYME', iocc=iocc, scal=ferrsyme, nbret=n9)
             if (ferrsyme .eq. 'NON') valv(9) = 0.d0
             if (ferrsyme .eq. 'OUI') valv(9) = 1.d0

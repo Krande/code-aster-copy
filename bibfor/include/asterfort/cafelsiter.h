@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,8 +20,8 @@
 !
 interface    
    subroutine cafelsiter(cequi, effm, effn, ht, bw,&
-                         enrobi, enrobs, scmaxi, scmaxs, ssmax,&
-                         ferrsyme, slsyme, uc, condns,&
+                         enrobi, enrobs, scmaxi, scmaxs, ssmax, ferrcomp,&
+                         precs, ferrsyme, slsyme, uc, um, condns,&
                          astend, ascomp, sstend, sscomp,&
                          sctend, sccomp,&
                          alpha, pivot, etat, ierr)  
@@ -35,9 +35,12 @@ interface
        real(kind=8) :: scmaxi
        real(kind=8) :: scmaxs
        real(kind=8) :: ssmax
+       integer :: ferrcomp
+       integer :: precs
        integer :: ferrsyme
        real(kind=8) :: slsyme
        integer :: uc
+       integer :: um
        logical :: condns
        real(kind=8) :: astend
        real(kind=8) :: ascomp

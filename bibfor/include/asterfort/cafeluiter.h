@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
        subroutine cafeluiter(typco, alphacc, effm, effn, ht, bw,&
                       enrobi, enrobs, facier, fbeton, gammas, gammac,&
-                      clacier, eys, typdiag, ferrsyme, slsyme, uc, &
+                      clacier, eys, typdiag, ferrcomp, precs, ferrsyme, slsyme, uc, um, &
                       condns, astend, ascomp, sstend, sscomp, ectend, eccomp,&
                       alpha, pivot, etat, ierr)
     integer :: typco
@@ -39,9 +39,12 @@ interface
     integer :: clacier
     real(kind=8) :: eys
     integer :: typdiag
+    integer :: ferrcomp
+    integer :: precs
     integer :: ferrsyme
     real(kind=8) :: slsyme
     integer :: uc
+    integer :: um
     logical :: condns
     real(kind=8) :: astend
     real(kind=8) :: ascomp

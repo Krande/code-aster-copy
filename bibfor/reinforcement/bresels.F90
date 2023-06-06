@@ -19,7 +19,7 @@
 subroutine bresels(cequi, effmy, effmz, effn, &
                    ht, bw, enrobyi, enrobys, enrobzi, enrobzs, &
                    scmaxyi, scmaxys, scmaxzi, scmaxzs, ssmax, &
-                   ferrcomp, ferrsyme, slsyme, uc, um, &
+                   ferrcomp, precs, ferrsyme, slsyme, uc, um, &
                    dnsyi, dnsys, dnszi, dnszs, &
                    sigmsyi, sigmsys, sigmcyi, sigmcys, &
                    sigmszi, sigmszs, sigmczi, sigmczs, &
@@ -51,6 +51,10 @@ subroutine bresels(cequi, effmy, effmz, effn, &
 !      I FERRCOMP  PRISE EN COMPTE DU FERRAILLAGE DE COMPRESSION
 !                     FERRCOMP = 1 (NON)
 !                     FERRCOMP = 2 (OUI)
+!      I PRECS     PRECISION SUPPLEMENTAIRE DANS LA RECHERCHE DE L'OPTIMUM
+!                   POUR LA METHODE DES 3 PIVOTS (Intervention du 03/2023)
+!                     PRECS = 0 (NON)
+!                     PRECS = 1 (OUI)
 !      I FERRSYME   FERRAILLAGE SYMETRIQUE?
 !                     FERRSYME = 0 (NON)
 !                     FERRSYME = 1 (OUI)
@@ -111,6 +115,7 @@ subroutine bresels(cequi, effmy, effmz, effn, &
     real(kind=8) :: scmaxzs
     real(kind=8) :: ssmax
     integer :: ferrcomp
+    integer :: precs
     integer :: ferrsyme
     real(kind=8) :: slsyme
     integer :: uc
@@ -180,7 +185,7 @@ subroutine bresels(cequi, effmy, effmz, effn, &
     if ((abs(effmy) .lt. epsilon(effmy)) .and. (abs(effmz) .lt. epsilon(effmz))) then
         call cafels(cequi, effmy, 0.5*effn, ht, bw, &
                     enrobzi, enrobzs, scmaxzs, scmaxzi, ssmax, &
-                    ferrcomp, ferrsyme, slsyme, uc, &
+                    ferrcomp, precs, ferrsyme, slsyme, uc, um, &
                     dnszi, dnszs, sigmszi, sigmszs, &
                     sigmczi, sigmczs, &
                     alphaz, pivotz, etatz, ierr)
@@ -189,7 +194,7 @@ subroutine bresels(cequi, effmy, effmz, effn, &
         end if
         call cafels(cequi, effmz, 0.5*effn, bw, ht, &
                     enrobyi, enrobys, scmaxys, scmaxyi, ssmax, &
-                    ferrcomp, ferrsyme, slsyme, uc, &
+                    ferrcomp, precs, ferrsyme, slsyme, uc, um, &
                     dnsyi, dnsys, sigmsyi, sigmsys, &
                     sigmcyi, sigmcys, &
                     alphay, pivoty, etaty, ierr)
@@ -204,7 +209,7 @@ subroutine bresels(cequi, effmy, effmz, effn, &
         if (abs(effmy) .gt. epsilon(effmy)) then
             call cafels(cequi, effmy, effn, ht, bw, &
                         enrobzi, enrobzs, scmaxzs, scmaxzi, ssmax, &
-                        ferrcomp, ferrsyme, slsyme, uc, &
+                        ferrcomp, precs, ferrsyme, slsyme, uc, um, &
                         dnszi, dnszs, sigmszi, sigmszs, &
                         sigmczi, sigmczs, &
                         alphaz, pivotz, etatz, ierr)
@@ -218,7 +223,7 @@ subroutine bresels(cequi, effmy, effmz, effn, &
         if (abs(effmz) .gt. epsilon(effmz)) then
             call cafels(cequi, effmz, effn, bw, ht, &
                         enrobyi, enrobys, scmaxys, scmaxyi, ssmax, &
-                        ferrcomp, ferrsyme, slsyme, uc, &
+                        ferrcomp, precs, ferrsyme, slsyme, uc, um, &
                         dnsyi, dnsys, sigmsyi, sigmsys, &
                         sigmcyi, sigmcys, &
                         alphay, pivoty, etaty, ierr)
@@ -428,12 +433,24 @@ subroutine bresels(cequi, effmy, effmz, effn, &
             if (BRES .gt. 1) then
                 if (Ass .lt. epsilon(Ass)) then
                     Ass = (1.e2)/(unite_m*unite_m)
+                    rhoyinf = 0.25
+                    rhoysup = 0.25
+                    rhozinf = 0.25
+                    rhozsup = 0.25
+                else
+                    if (ferrsyme .eq. 1) then
+                        rhoyinf = 0.5*(dnsyi+dnsys)/Ass
+                        rhoysup = 0.5*(dnsyi+dnsys)/Ass
+                        rhozinf = 0.5*(dnszi+dnszs)/Ass
+                        rhozsup = 0.5*(dnszi+dnszs)/Ass
+                    else
+                        rhoyinf = dnsyi/Ass
+                        rhoysup = dnsys/Ass
+                        rhozinf = dnszi/Ass
+                        rhozsup = dnszs/Ass
+                    end if
                 end if
                 Aiter = 0.1*Ass
-                rhoyinf = dnsyi/Ass
-                rhoysup = dnsys/Ass
-                rhozinf = dnszi/Ass
-                rhozsup = dnszs/Ass
                 dnsyi = dnsyi+rhoyinf*Aiter
                 dnsys = dnsys+rhoysup*Aiter
                 dnszi = dnszi+rhozinf*Aiter

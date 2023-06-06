@@ -27,7 +27,7 @@ subroutine sandcas1(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gammac, 
 !      SANDCAS1
 !
 !      CALCUL DES ACIERS A L'ELU PAR LA METHODE SANDWICH
-!      CAS 1 - REINF NEEDED FOR SUP AND INF
+!      CAS 1 - FERRAILLAGE [+] REQUIS EN SUP ET INF
 !
 !      I EFFRTS        (DIM 6) TORSEUR DES EFFORTS, MOMENTS, ...
 !                         EFFRTS(1) = NXX
@@ -216,7 +216,7 @@ subroutine sandcas1(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gammac, 
     fc = fcd1
 
     do i = 1, 15
-        write (p(i), fmt='(A18,I2)') 'POINT_ITER_SANDCAS1_', i
+        write (p(i), fmt='(A9,I2)') 'SANDCAS1_', i
     end do
 
 !-------------------------------------------------------------------------------------------------
@@ -244,6 +244,8 @@ subroutine sandcas1(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gammac, 
         call wkvect(p(11), ' V V R ', N_TOT, vr=nsX_SUP)
         call wkvect(p(12), ' V V R ', N_TOT, vr=nsY_SUP)
         call wkvect(p(13), ' V V R ', N_TOT, vr=ns_TOT)
+
+        call wkvect(p(14), ' V V R ', N_TOT, vr=RESIDU)
 
         do i = 1, N1
 
@@ -505,8 +507,8 @@ subroutine sandcas1(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gammac, 
             Calc3 = abs(abs(AngleSUP(i))-90)
             Calc4 = abs(abs(AngleINF(j))-90)
 
-            if ((Calc1 .ge. epsilon(Calc1)) .and. (Calc2 .ge. epsilon(Calc2)) .and. &
-                 & (Calc3 .ge. epsilon(Calc3)) .and. (Calc4 .ge. epsilon(Calc4))) then
+            if ((Calc1 .gt. epsilon(Calc1)) .and. (Calc2 .gt. epsilon(Calc2)) .and. &
+                 & (Calc3 .gt. epsilon(Calc3)) .and. (Calc4 .gt. epsilon(Calc4))) then
 
                 si = Sin(theta_inf)
                 ci = Cos(theta_inf)
@@ -519,7 +521,8 @@ subroutine sandcas1(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gammac, 
                 if (abs(a00) .gt. epsilon(a00)) then
 
                     DELTA = b00*b00-4*a00*c00
-                    if (abs(DELTA) .gt. epsilon(DELTA)) then
+
+                    if (DELTA .gt. epsilon(DELTA)) then
                         xA = (-b00+sqrt(DELTA))/(2*a00)
                         xB = (-b00-sqrt(DELTA))/(2*a00)
                         if ((xA .ge. 0) .and. (xA .le. (0.5*ht))) then
@@ -682,8 +685,6 @@ subroutine sandcas1(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gammac, 
         end do
         end do
 
-!First step ok"
-
 !DETERMINATION DES RACINES EVENTUELLEMENT DETECTABLES - ITERATION SUR LES COLONNES, SOIT N_INF
 
         call solver_sandcas1(N_INF, N_SUP, N_TOT, 1, .false., p, &
@@ -733,9 +734,8 @@ subroutine sandcas1(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gammac, 
         theta_sup = vect(20)
 
     end if
-!Distinction sur Nxy et Mxy
 
-    do i = 1, 15
+    do i = 1, 14
         call jedetr(p(i))
     end do
 

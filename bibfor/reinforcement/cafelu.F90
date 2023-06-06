@@ -18,7 +18,7 @@
 
 subroutine cafelu(typco, alphacc, effm, effn, ht, bw, &
                   enrobi, enrobs, facier, fbeton, gammas, gammac, &
-                  clacier, eys, typdiag, ferrcomp, ferrsyme, slsyme, uc, &
+                  clacier, eys, typdiag, ferrcomp, precs, ferrsyme, slsyme, uc, um, &
                   dnsinf, dnssup, sigmsi, sigmss, ecinf, ecsup, &
                   alpha, pivot, etat, ierr)
 !______________________________________________________________________
@@ -54,6 +54,10 @@ subroutine cafelu(typco, alphacc, effm, effn, ht, bw, &
 !      I FERRCOMP  PRISE EN COMPTE DU FERRAILLAGE DE COMPRESSION
 !                     FERRCOMP = 0 (NON)
 !                     FERRCOMP = 1 (OUI)
+!      I PRECS     PRECISION SUPPLEMENTAIRE DANS LA RECHERCHE DE L'OPTIMUM
+!                  POUR LA METHODE DES 3 PIVOTS (Intervention du 03/2023)
+!                     PRECS = 0 (NON)
+!                     PRECS = 1 (OUI)
 !      I FERRSYME  FERRAILLAGE SYMETRIQUE?
 !                     FERRSYME = 0 (NON)
 !                     FERRSYME = 1 (OUI)
@@ -61,6 +65,9 @@ subroutine cafelu(typco, alphacc, effm, effn, ht, bw, &
 !      I UC        UNITE DES CONTRAINTES :
 !                     UC = 0 CONTRAINTES EN Pa
 !                     UC = 1 CONTRAINTES EN MPa
+!      I UM        UNITE DES DIMENSIONS :
+!                     UM = 0 DIMENSIONS EN m
+!                     UM = 1 DIMENSIONS EN mm
 !
 !      O DNSINF    DENSITE DE L'ACIER INFERIEUR
 !      O DNSSUP    DENSITE DE L'ACIER SUPERIEUR
@@ -76,8 +83,9 @@ subroutine cafelu(typco, alphacc, effm, effn, ht, bw, &
 !______________________________________________________________________
 !
     implicit none
+
 #include "asterfort/cafeluiter.h"
-!
+
     integer :: typco
     real(kind=8) :: alphacc
     real(kind=8) :: effm
@@ -94,9 +102,11 @@ subroutine cafelu(typco, alphacc, effm, effn, ht, bw, &
     real(kind=8) :: eys
     integer :: typdiag
     integer :: ferrcomp
+    integer :: precs
     integer :: ferrsyme
     real(kind=8) :: slsyme
     integer :: uc
+    integer :: um
     real(kind=8) :: dnsinf
     real(kind=8) :: dnssup
     real(kind=8) :: sigmsi
@@ -113,7 +123,7 @@ subroutine cafelu(typco, alphacc, effm, effn, ht, bw, &
 !-----------------------------------------------------------------------
 
     real(kind=8) :: enrob, d, d0, fctm, fctd
-    real(kind=8) :: unite_pa
+    real(kind=8) :: unite_pa, unite_m
     real(kind=8) :: fyd, fcd, nC, ktys, xC, yC, xCt, D00, m1, m2
     real(kind=8) :: Mu, MccMAX, NccMAX, NccMIN, MuC, NuC
     real(kind=8) :: MuBC, MuBC_sup, MuBC_inf, MuAB, MuR, MuLIM
@@ -215,6 +225,12 @@ subroutine cafelu(typco, alphacc, effm, effn, ht, bw, &
 
     end if
 
+    if (um .eq. 0) then
+        unite_m = 1.e3
+    elseif (um .eq. 1) then
+        unite_m = 1.
+    end if
+
 !   Paramètres de calcul
     Xsup = piv_b/piv_c
     xC = (1-piv_c/piv_b)*ht
@@ -261,8 +277,7 @@ subroutine cafelu(typco, alphacc, effm, effn, ht, bw, &
     COND_ITER = .false.
     COND_NS = .false.
 
-!!!!Traitement des CAS TRIVIAUX (PIVOTS A et B sans armatures de compression)
-!!!--------------------------------------------------------------------------
+!!!Traitement des CAS TRIVIAUX (PIVOTS A et B sans armatures de compression)
 !!!--------------------------------------------------------------------------
 
     if ((abs(effm) .lt. epsilon(effm)) .and. (effn .ge. 0)) then
@@ -440,9 +455,13 @@ subroutine cafelu(typco, alphacc, effm, effn, ht, bw, &
         AsCOMP = 0
         AsTEND = (lambda*Eta*bw*fcd*alpha*d-effn)/Abs(SigmAsTEND)
 
-        if ((AsTEND .lt. 0) .or. (AsCOMP .lt. 0)) then
+        if (AsTEND .lt. 0) then
+            !if (abs(AsTEND) .le. ((1.e-4)*(1.e6/(unite_m**2)))) then
+            !AsTEND = 0
+            !else
             COND_ITER = .true.
             goto 998
+            !end if
         else
             COND_NS = .true.
         end if
@@ -463,15 +482,14 @@ subroutine cafelu(typco, alphacc, effm, effn, ht, bw, &
 
 998 Continue
 
+    !Pour les cas où COND_ITER = TRUE
     If (COND_ITER .eqv. (.true.)) Then
         call cafeluiter(typco, alphacc, effm, effn, ht, bw, &
                         enrobi, enrobs, facier, fbeton, gammas, gammac, &
-                        clacier, eys, typdiag, ferrsyme, slsyme, uc, &
+                        clacier, eys, typdiag, ferrcomp, precs, ferrsyme, slsyme, uc, um, &
                         COND_NS, AsTEND, AsCOMP, SigmAsTEND, SigmAsCOMP, EcTEND, Ec, &
                         alpha, pivot, etat, ierr)
-
     end if
-!!!Pour les cas où COND_ITER = TRUE
 
 !------------------------------------------------------------------
 !Distinction Ferr Sup et Inf ET Prise en compte COMPRESSION

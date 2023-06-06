@@ -21,7 +21,7 @@ subroutine glbelsqp(typco, cequi, effrts, ht, bw, &
                     facier, fbeton, sigelsqp, kt, eys, &
                     wmaxyi, wmaxys, wmaxzi, wmaxzs, &
                     phiyi, phiys, phizi, phizs, &
-                    ferrsyme, slsyme, ferrcomp, &
+                    precs, flongi, ftrnsv, ferrsyme, slsyme, ferrcomp, &
                     epucisa, ferrmin, rholmin, rhotmin, compress, uc, um, &
                     dnsits, ierr)
 !______________________________________________________________________
@@ -59,6 +59,10 @@ subroutine glbelsqp(typco, cequi, effrts, ht, bw, &
 !      I PHIYS     DIAMÈTRE APPROXIMATIF DES ARMATURES SUPÉRIEURES SUIVANT Y
 !      I PHIZI     DIAMÈTRE APPROXIMATIF DES ARMATURES INFÉRIEURES SUIVANT Z
 !      I PHIZS     DIAMÈTRE APPROXIMATIF DES ARMATURES SUPÉRIEURES SUIVANT Z
+!      I PRECS     PRECISION SUPPLEMENTAIRE DANS LA RECHERCHE DE L'OPTIMUM
+!                   POUR LA METHODE DES 3 PIVOTS (Intervention du 03/2023)
+!                     PRECS = 0 (NON)
+!                     PRECS = 1 (OUI)
 !      I FERRSYME  FERRAILLAGE SYMETRIQUE?
 !                     FERRSYME = 0 (NON)
 !                     FERRSYME = 1 (OUI)
@@ -110,6 +114,9 @@ subroutine glbelsqp(typco, cequi, effrts, ht, bw, &
     real(kind=8) :: phiys
     real(kind=8) :: phizi
     real(kind=8) :: phizs
+    integer :: precs
+    integer :: flongi
+    integer :: ftrnsv
     integer :: ferrsyme
     real(kind=8) :: slsyme
     integer :: ferrcomp
@@ -177,11 +184,32 @@ subroutine glbelsqp(typco, cequi, effrts, ht, bw, &
     effty = effrts(4)
     efftz = effrts(5)
     effmt = effrts(6)
+    ierr = 0
+
+    if (flongi .eq. 1) then
+        dnsyi = 0
+        dnsys = 0
+        dnszi = 0
+        dnszs = 0
+        alphay = -1
+        alphaz = -1
+        kvarfy = -1
+        kvarfz = -1
+        sigmsyi = facier
+        sigmsys = facier
+        sigmszi = facier
+        sigmszs = facier
+        sigmcyi = sigelsqp
+        sigmcys = sigelsqp
+        sigmczi = sigelsqp
+        sigmczs = sigelsqp
+        goto 20
+    end if
 
     call breselsqp(cequi, effmy, effmz, effn, ht, bw, &
                    enrobyi, enrobys, enrobzi, enrobzs, &
                    wmaxyi, wmaxys, wmaxzi, wmaxzs, &
-                   ferrcomp, ferrsyme, slsyme, uc, um, &
+                   ferrcomp, precs, ferrsyme, slsyme, uc, um, &
                    kt, eys, facier, fbeton, sigelsqp, &
                    phiyi, phiys, phizi, phizs, &
                    dnsyi, dnsys, dnszi, dnszs, &
@@ -216,6 +244,15 @@ subroutine glbelsqp(typco, cequi, effrts, ht, bw, &
     end if
 
     !Calcul du ferraillage transversal
+
+20  continue
+
+    if (ftrnsv .eq. 1) then
+        dnstra = 0
+        thetab = -1
+        goto 998
+    end if
+
     if (ierr .eq. 0) then
 
         !1e calcul avec MFY et VZ

@@ -228,6 +228,7 @@ RESUELU1 = CALC_FERRAILLAGE(
         _F(
             TOUT="OUI",
             TYPE_STRUCTURE="2D",
+            EXTRA_PREC="OUI",
             C_SUP=0.04,
             C_INF=0.04,
             FYK=500.0e6,
@@ -348,6 +349,7 @@ RESUELU2 = CALC_FERRAILLAGE(
         _F(
             TOUT="OUI",
             TYPE_STRUCTURE="2D",
+            EXTRA_PREC="OUI",
             FERR_COMP="OUI",
             C_SUP=0.04,
             C_INF=0.04,
@@ -468,6 +470,7 @@ RESUELU3 = CALC_FERRAILLAGE(
         _F(
             TOUT="OUI",
             TYPE_STRUCTURE="2D",
+            EXTRA_PREC="OUI",
             FERR_COMP="OUI",
             FERR_MIN="CODE",
             C_SUP=0.04,
@@ -643,6 +646,7 @@ RESUELU4 = CALC_FERRAILLAGE(
         _F(
             TOUT="OUI",
             TYPE_STRUCTURE="2D",
+            EXTRA_PREC="OUI",
             FERR_COMP="OUI",
             FERR_MIN="OUI",
             RHO_LONGI_MIN=0.0013,
@@ -820,6 +824,7 @@ RESUELU5 = CALC_FERRAILLAGE(
         _F(
             TOUT="OUI",
             TYPE_STRUCTURE="2D",
+            EXTRA_PREC="OUI",
             FERR_COMP="OUI",
             FERR_MIN="CODE",
             C_SUP=0.04,
@@ -1157,6 +1162,7 @@ RESUELU6 = CALC_FERRAILLAGE(
         _F(
             TOUT="OUI",
             TYPE_STRUCTURE="2D",
+            EXTRA_PREC="OUI",
             FERR_COMP="OUI",
             FERR_MIN="CODE",
             C_SUP=0.04,
@@ -1333,6 +1339,7 @@ RESUELU7 = CALC_FERRAILLAGE(
         _F(
             TOUT="OUI",
             TYPE_STRUCTURE="2D",
+            EXTRA_PREC="OUI",
             FERR_COMP="OUI",
             FERR_MIN="CODE",
             EPURE_CISA="OUI",
@@ -1689,6 +1696,7 @@ RESUELU8 = CALC_FERRAILLAGE(
         _F(
             TOUT="OUI",
             TYPE_STRUCTURE="2D",
+            EXTRA_PREC="OUI",
             FERR_COMP="OUI",
             FERR_SYME="OUI",
             SEUIL_SYME=1.0e-4,
@@ -2045,6 +2053,7 @@ RESUELU9 = CALC_FERRAILLAGE(
         _F(
             TOUT="OUI",
             TYPE_STRUCTURE="2D",
+            EXTRA_PREC="OUI",
             FERR_COMP="OUI",
             FERR_SYME="OUI",
             SEUIL_SYME=10.0e-4,
@@ -2401,6 +2410,7 @@ RESUELU10 = CALC_FERRAILLAGE(
         _F(
             TOUT="OUI",
             TYPE_STRUCTURE="2D",
+            EXTRA_PREC="OUI",
             C_SUP=0.04,
             C_INF=0.04,
             FE=500.0e6,
@@ -2754,6 +2764,7 @@ RESUELU11 = CALC_FERRAILLAGE(
         _F(
             TOUT="OUI",
             TYPE_STRUCTURE="2D",
+            EXTRA_PREC="OUI",
             FERR_COMP="OUI",
             C_SUP=0.04,
             C_INF=0.04,
@@ -3108,6 +3119,7 @@ RESUELU12 = CALC_FERRAILLAGE(
         _F(
             TOUT="OUI",
             TYPE_STRUCTURE="2D",
+            EXTRA_PREC="OUI",
             FERR_COMP="OUI",
             C_SUP=0.04,
             C_INF=0.04,

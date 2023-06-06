@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ interface
                   sigcyi, sigcys, sigczi, sigczs, sigs,&
                   wmaxyi, wmaxys, wmaxzi, wmaxzs,&
                   phiyi, phiys, phizi, phizs,&
-                  ferrsyme, slsyme, ferrcomp,&
+                  precs, flongi, ftrnsv, ferrsyme, slsyme, ferrcomp,&
                   epucisa, ferrmin, rholmin, rhotmin, compress, uc, um, &
                   rhoacier, areinf, ashear, astirr, rhocrit, datcrit, lcrit,&
                   dnsits, dnsvol, construc, ierr)
@@ -63,6 +63,9 @@ interface
     real(kind=8) :: phiys
     real(kind=8) :: phizi
     real(kind=8) :: phizs
+    integer :: precs
+    integer :: flongi
+    integer :: ftrnsv
     integer :: ferrsyme
     real(kind=8) :: slsyme
     integer :: ferrcomp

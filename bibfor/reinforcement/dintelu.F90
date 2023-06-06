@@ -604,7 +604,7 @@ subroutine dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
         if (k .eq. N_ET) then
             EcINF = -Esu
         else
-            EcINF = -0.1*(k-1)
+            EcINF = -(1.e-3)*(k-1)
         end if
 
         EsSUP = -Esu

@@ -19,7 +19,7 @@
 subroutine glbels(typco, cequi, effrts, ht, bw, &
                   enrobyi, enrobys, enrobzi, enrobzs, &
                   facier, fbeton, sigcyi, sigcys, sigczi, sigczs, sigs, &
-                  ferrsyme, slsyme, ferrcomp, &
+                  precs, flongi, ftrnsv, ferrsyme, slsyme, ferrcomp, &
                   epucisa, ferrmin, rholmin, rhotmin, compress, uc, um, &
                   dnsits, ierr)
 !______________________________________________________________________
@@ -49,6 +49,10 @@ subroutine glbels(typco, cequi, effrts, ht, bw, &
 !      I SGICZS    CONTRAINTE ULTIME DU BÉTON COMPRIME
 !                     EN FIBRE SUPERIEURE SUIVANT L'AXE Z À L'ELS
 !      I SGIS      CONTRAINTE ULTIME DE L'ACIER À L'ELS
+!      I PRECS     PRECISION SUPPLEMENTAIRE DANS LA RECHERCHE DE L'OPTIMUM
+!                   POUR LA METHODE DES 3 PIVOTS (Intervention du 03/2023)
+!                     PRECS = 0 (NON)
+!                     PRECS = 1 (OUI)
 !      I FERRSYME  FERRAILLAGE SYMETRIQUE?
 !                     FERRSYME = 0 (NON)
 !                     FERRSYME = 1 (OUI)
@@ -94,6 +98,9 @@ subroutine glbels(typco, cequi, effrts, ht, bw, &
     real(kind=8) :: sigczi
     real(kind=8) :: sigczs
     real(kind=8) :: sigs
+    integer :: precs
+    integer :: flongi
+    integer :: ftrnsv
     integer :: ferrsyme
     real(kind=8) :: slsyme
     integer :: ferrcomp
@@ -156,11 +163,30 @@ subroutine glbels(typco, cequi, effrts, ht, bw, &
     effty = effrts(4)
     efftz = effrts(5)
     effmt = effrts(6)
+    ierr = 0
+
+    if (flongi .eq. 1) then
+        dnsyi = 0
+        dnsys = 0
+        dnszi = 0
+        dnszs = 0
+        alphay = -1
+        alphaz = -1
+        sigmsyi = sigs
+        sigmsys = sigs
+        sigmszi = sigs
+        sigmszs = sigs
+        sigmcyi = sigcyi
+        sigmcys = sigcys
+        sigmczi = sigczi
+        sigmczs = sigczs
+        goto 20
+    end if
 
     call bresels(cequi, effmy, effmz, effn, &
                  ht, bw, enrobyi, enrobys, enrobzi, enrobzs, &
                  sigcyi, sigcys, sigczi, sigczs, sigs, &
-                 ferrcomp, ferrsyme, slsyme, uc, um, &
+                 ferrcomp, precs, ferrsyme, slsyme, uc, um, &
                  dnsyi, dnsys, dnszi, dnszs, &
                  sigmsyi, sigmsys, sigmcyi, sigmcys, &
                  sigmszi, sigmszs, sigmczi, sigmczs, &
@@ -187,6 +213,15 @@ subroutine glbels(typco, cequi, effrts, ht, bw, &
     end if
 
     !Calcul du ferraillage transversal
+
+20  continue
+
+    if (ftrnsv .eq. 1) then
+        dnstra = 0
+        thetab = -1
+        goto 998
+    end if
+
     if (ierr .eq. 0) then
 
         !1e calcul avec MFY et VZ

@@ -18,7 +18,7 @@
 
 subroutine sandwich(enrobi, enrobs, facier, fbeton, gammas, gammac, &
                     thiter, epiter, aphiter, cond109, &
-                    ferrcomp, ferrsyme, slsyme, &
+                    flongi, ftrnsv, ferrcomp, ferrsyme, slsyme, &
                     epucisa, ferrmin, rholmin, rhotmin, compress, uc, um, &
                     ht, effrts, dnsits, ierr)
 
@@ -110,6 +110,8 @@ subroutine sandwich(enrobi, enrobs, facier, fbeton, gammas, gammac, &
     real(kind=8) :: epiter
     real(kind=8) :: aphiter
     integer :: cond109
+    integer :: flongi
+    integer :: ftrnsv
     integer :: ferrcomp
     integer :: ferrsyme
     real(kind=8) :: slsyme
@@ -178,6 +180,7 @@ subroutine sandwich(enrobi, enrobs, facier, fbeton, gammas, gammac, &
     Dnsxy_NEW = 0
     Dnsy_NEW = 0
     PREMIERE_ITERATION = .true.
+    ierr = 0
 
     do while ((PREMIERE_ITERATION .eqv. (.true.)) .or. (Dnsx_NEW .gt. Dnsx) &
                & .or. (Dnsy_NEW .gt. Dnsy) .or. (Dnsxy_NEW .gt. Dnsxy))
@@ -185,6 +188,20 @@ subroutine sandwich(enrobi, enrobs, facier, fbeton, gammas, gammac, &
         Dnsx = Dnsx_NEW
         Dnsy = Dnsy_NEW
         Dnsxy = Dnsxy_NEW
+
+        if (flongi .eq. 1) then
+            dnsxi = 0
+            dnsxs = 0
+            dnsyi = 0
+            dnsys = 0
+            etsxi = 0
+            etsxs = 0
+            etsyi = 0
+            etsys = 0
+            t_inf = 0
+            t_sup = 0
+            goto 10
+        end if
 
         Nx_SUP = Nxx*((Z-ySUP)/Z)+Mxx/Z+0.5*Dnsx
         Nx_INF = Nxx*((Z-yINF)/Z)-Mxx/Z+0.5*Dnsx
@@ -320,6 +337,14 @@ subroutine sandwich(enrobi, enrobs, facier, fbeton, gammas, gammac, &
 
 !Ajout de l'impact du cisaillement HORS-PLAN
 !-------------------------------------------------------------------------------------------------
+
+10      continue
+
+        if (ftrnsv .eq. 1) then
+            dnsxt = 0
+            dnsyt = 0
+            goto 999
+        end if
 
         if (ierr .ne. 0) then
             dnsxt = -1.d0
@@ -506,6 +531,9 @@ subroutine sandwich(enrobi, enrobs, facier, fbeton, gammas, gammac, &
             Dnsxy_NEW = (Qx*Qy)/(VEd*Tan(ThetaB))
             dnsxt = AsT*Cos(betha)*Cos(betha)
             dnsyt = AsT*Sin(betha)*Sin(betha)
+            if (flongi .eq. 1) then
+                goto 999
+            end if
 
         end if
 

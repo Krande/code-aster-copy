@@ -19,7 +19,8 @@
 !
 !
 interface
-    subroutine clcplq(typcmb, typco, nb, ferrsyme, slsyme, ferrcomp, epucisa,&
+    subroutine clcplq(typcmb, typco, nb, precs, &
+                      flongi, ftrnsv, ferrsyme, slsyme, ferrcomp, epucisa,&
                       ferrmin, rholmin, rhotmin, compress, cequi,&
                       enrobi, enrobs, sigs, sigci, sigcs,&
                       alphacc, gammas, gammac, facier, eys, typdiag,&
@@ -29,6 +30,9 @@ interface
         integer :: typcmb
         integer :: typco
         integer :: nb
+        integer :: precs
+        integer :: flongi
+        integer :: ftrnsv
         integer :: ferrsyme
         real(kind=8) :: slsyme
         integer :: ferrcomp
@@ -50,8 +54,8 @@ interface
         real(kind=8) :: eys
         integer :: typdiag
         real(kind=8) :: fbeton
-        integer ::  clacier
-        integer ::  uc
+        integer :: clacier
+        integer :: uc
         integer :: um
         real(kind=8) :: wmaxi
         real(kind=8) :: wmaxs

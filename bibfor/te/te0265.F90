@@ -197,7 +197,7 @@ subroutine te0265(nomopt, nomte)
     real(kind=8) :: wmaxi, wmaxs, wmaxyi, wmaxys, wmaxzi, wmaxzs, sigelsqp, kt
     real(kind=8) :: phixi, phixs, phiyi, phiys, phizi, phizs
     integer :: clacier, compress, epucisa, ferrcomp, ferrmin, ferrsyme, typdiag
-    integer :: ierr, meth2D, cond109
+    integer :: ierr, meth2D, cond109, precs, flongi, ftrnsv
     character(len=24) :: valk(2)
     integer :: vali(2)
 
@@ -238,6 +238,8 @@ subroutine te0265(nomopt, nomte)
 !                 50       51       52       53        54      55
 !              'PHIXI','PHIXS','PHIYI','PHIYS','PHIZI','PHIZS'
 !                 56      57      58      59      60      61
+!              'PRECS','FLONGI','FTRNSV'
+!                 62      63      64
 !
 !
 !                                  PCAGEPO
@@ -326,6 +328,9 @@ subroutine te0265(nomopt, nomte)
     phiys = zr(jfer1-1+59)
     phizi = zr(jfer1-1+60)
     phizs = zr(jfer1-1+61)
+    precs = nint(zr(jfer1-1+62))
+    flongi = nint(zr(jfer1-1+63))
+    ftrnsv = nint(zr(jfer1-1+64))
 
     !Only option '1D'
     if (typstru .eq. 0.d0) then
@@ -389,7 +394,7 @@ subroutine te0265(nomopt, nomte)
                 sigcyi, sigcys, sigczi, sigczs, sigs, &
                 wmaxyi, wmaxys, wmaxzi, wmaxzs, &
                 phiyi, phiys, phizi, phizs, &
-                ferrsyme, slsyme, ferrcomp, &
+                precs, flongi, ftrnsv, ferrsyme, slsyme, ferrcomp, &
                 epucisa, ferrmin, rholmin, rhotmin, compress, uc, um, &
                 rhoacier, areinf, ashear, astirr, rhocrit, datcrit, lcrit, &
                 dnsits, dnsvol, construc, ierr)

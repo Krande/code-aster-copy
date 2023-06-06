@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
     subroutine glbels(typco, cequi, effrts, ht, bw,&
                   enrobyi, enrobys, enrobzi, enrobzs,&
                   facier, fbeton, sigcyi, sigcys, sigczi, sigczs, sigs,&
-                  ferrsyme, slsyme, ferrcomp,&
+                  precs, flongi, ftrnsv, ferrsyme, slsyme, ferrcomp,&
                   epucisa, ferrmin, rholmin, rhotmin, compress, uc, um, &
                   dnsits, ierr)
     integer :: typco
@@ -41,6 +41,9 @@ interface
     real(kind=8) :: sigczi
     real(kind=8) :: sigczs
     real(kind=8) :: sigs
+    integer :: precs
+    integer :: flongi
+    integer :: ftrnsv
     integer :: ferrsyme
     real(kind=8) :: slsyme
     integer :: ferrcomp

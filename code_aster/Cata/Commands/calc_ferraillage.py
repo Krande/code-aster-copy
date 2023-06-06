@@ -132,6 +132,27 @@ CALC_FERRAILLAGE = OPER(
             TYPE_STRUCTURE=SIMP(
                 statut="o", typ="TXM", into=("1D", "2D"), fr=tr("Type de Structure 1D ou 2D")
             ),
+            EXTRA_PREC=SIMP(
+                statut="f",
+                typ="TXM",
+                defaut="NON",
+                into=("OUI", "NON"),
+                fr=tr("Précision supplémentaire dans la recherche du ferraillage optimum?"),
+            ),
+            FERR_LONGI=SIMP(
+                statut="f",
+                typ="TXM",
+                defaut="OUI",
+                into=("OUI", "NON"),
+                fr=tr("Calcul du ferraillage longitudinal?"),
+            ),
+            FERR_TRNSV=SIMP(
+                statut="f",
+                typ="TXM",
+                defaut="OUI",
+                into=("OUI", "NON"),
+                fr=tr("Calcul du ferraillage transversal?"),
+            ),
             FERR_SYME=SIMP(
                 statut="f",
                 typ="TXM",
@@ -445,6 +466,29 @@ CALC_FERRAILLAGE = OPER(
             GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
             TYPE_STRUCTURE=SIMP(
                 statut="o", typ="TXM", into=("1D", "2D"), fr=tr("Type de Structure 1D ou 2D")
+            ),
+            EXTRA_PREC=SIMP(
+                statut="f",
+                typ="TXM",
+                defaut="NON",
+                into=("OUI", "NON"),
+                fr=tr(
+                    "3 PIVOTS Itératif : Précision supplémentaire dans la recherche de l'optimum de ferraillage?"
+                ),
+            ),
+            FERR_LONGI=SIMP(
+                statut="f",
+                typ="TXM",
+                defaut="OUI",
+                into=("OUI", "NON"),
+                fr=tr("Calcul du ferraillage longitudinal?"),
+            ),
+            FERR_TRNSV=SIMP(
+                statut="f",
+                typ="TXM",
+                defaut="OUI",
+                into=("OUI", "NON"),
+                fr=tr("Calcul du ferraillage transversal?"),
             ),
             FERR_SYME=SIMP(
                 statut="f",

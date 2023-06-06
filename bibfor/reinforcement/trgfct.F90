@@ -48,6 +48,7 @@ subroutine trgfct(nb, fcttab)
 !
 !       -PI/2
     angle = (-4d0*atan2(1.d0, 1.d0))/2.d0
+    !print *,"angle = ",angle*180.0/3.141592654
 !       2PI/N
     pas = -2.d0*angle/nb
 !
@@ -59,6 +60,7 @@ subroutine trgfct(nb, fcttab)
 !     5 = COS
     do 20 i = 2, nb
         angle = angle+pas
+        !print *,"angle = ",angle*180.0/3.141592654
         fcttab(i, 1) = cos(angle)*cos(angle)
         fcttab(i, 2) = sin(angle)*sin(angle)
         fcttab(i, 3) = -2.d0*sin(angle)*cos(angle)

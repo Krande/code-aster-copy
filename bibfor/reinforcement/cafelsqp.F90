@@ -18,7 +18,7 @@
 
 subroutine cafelsqp(cequi, effm, effn, ht, bw, &
                     enrobi, enrobs, wmaxi, wmaxs, &
-                    ferrcomp, ferrsyme, slsyme, uc, um, &
+                    ferrcomp, precs, ferrsyme, slsyme, uc, um, &
                     kt, facier, fbeton, eys, sigelsqp, phiinf, phisup, &
                     dnsinf, dnssup, sigmsi, sigmss, sigmci, sigmcs, &
                     alpha, pivot, etat, &
@@ -42,6 +42,10 @@ subroutine cafelsqp(cequi, effm, effn, ht, bw, &
 !   I FERRCOMP     PRISE EN COMPTE DU FERRAILLAGE DE COMPRESSION
 !                         FERRCOMP = 0 (NON)
 !                         FERRCOMP = 1 (OUI)
+!   I PRECS        PRECISION SUPPLEMENTAIRE DANS LA RECHERCHE DE L'OPTIMUM
+!                   POUR LA METHODE DES 3 PIVOTS (Intervention du 03/2023)
+!                     PRECS = 0 (NON)
+!                     PRECS = 1 (OUI)
 !   I FERRSYME     FERRAILLAGE SYMETRIQUE?
 !                         FERRSYME = 0 (NON)
 !                         FERRSYME = 1 (OUI)
@@ -89,6 +93,7 @@ subroutine cafelsqp(cequi, effm, effn, ht, bw, &
     real(kind=8) :: wmaxi
     real(kind=8) :: wmaxs
     integer :: ferrcomp
+    integer :: precs
     integer :: ferrsyme
     real(kind=8) :: slsyme
     integer :: uc
@@ -197,7 +202,7 @@ subroutine cafelsqp(cequi, effm, effn, ht, bw, &
     ssmax = kVAR_A*facier
     call cafels(cequi, effm, effn, ht, bw, &
                 enrobi, enrobs, scmaxs, scmaxi, ssmax, &
-                ferrcomp, ferrsyme, slsyme, uc, &
+                ferrcomp, precs, ferrsyme, slsyme, uc, um, &
                 dnsinf, dnssup, sigmsi, sigmss, &
                 sigmci, sigmcs, &
                 alpha, pivot, etat, ierr)
@@ -309,7 +314,7 @@ subroutine cafelsqp(cequi, effm, effn, ht, bw, &
         ssmax = kVAR_B*facier
         call cafels(cequi, effm, effn, ht, bw, &
                     enrobi, enrobs, scmaxs, scmaxi, ssmax, &
-                    ferrcomp, ferrsyme, slsyme, uc, &
+                    ferrcomp, precs, ferrsyme, slsyme, uc, um, &
                     dnsinf, dnssup, sigmsi, sigmss, &
                     sigmci, sigmcs, &
                     alpha, pivot, etat, ierr)
@@ -438,7 +443,7 @@ subroutine cafelsqp(cequi, effm, effn, ht, bw, &
         ssmax = kVAR_NEW*facier
         call cafels(cequi, effm, effn, ht, bw, &
                     enrobi, enrobs, scmaxs, scmaxi, ssmax, &
-                    ferrcomp, ferrsyme, slsyme, uc, &
+                    ferrcomp, precs, ferrsyme, slsyme, uc, um, &
                     dnsinf, dnssup, sigmsi, sigmss, &
                     sigmci, sigmcs, &
                     alpha, pivot, etat, ierr)
@@ -564,7 +569,7 @@ subroutine cafelsqp(cequi, effm, effn, ht, bw, &
             ssmax = kVAR_NEW*facier
             call cafels(cequi, effm, effn, ht, bw, &
                         enrobi, enrobs, scmaxs, scmaxi, ssmax, &
-                        ferrcomp, ferrsyme, slsyme, uc, &
+                        ferrcomp, precs, ferrsyme, slsyme, uc, um, &
                         dnsinf, dnssup, sigmsi, sigmss, &
                         sigmci, sigmcs, &
                         alpha, pivot, etat, ierr)

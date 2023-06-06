@@ -24,10 +24,10 @@ subroutine sandcas2(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gammac, 
 
 !______________________________________________________________________
 !
-!      SANDCAS1
+!      SANDCAS2
 !
 !      CALCUL DES ACIERS A L'ELU PAR LA METHODE SANDWICH
-!      CAS 2 - REINF NEEDED FOR SUP ONLY
+!      CAS 2 - FERRAILLAGE [+] REQUIS EN SUP
 !
 !      I EFFRTS        (DIM 6) TORSEUR DES EFFORTS, MOMENTS, ...
 !                         EFFRTS(1) = NXX
@@ -197,7 +197,7 @@ subroutine sandcas2(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gammac, 
     fc = fcd1
 
     do i = 1, 15
-        write (p(i), fmt='(A18,I2)') 'POINT_ITER_SANDCAS1_', i
+        write (p(i), fmt='(A9,I2)') 'SANDCAS2_', i
     end do
 
     call wkvect(p(1), ' V V R ', N_TOT, vr=nSX_INF)
@@ -401,7 +401,7 @@ subroutine sandcas2(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gammac, 
 
 99  continue
 
-    do i = 1, 15
+    do i = 1, 14
         call jedetr(p(i))
     end do
 

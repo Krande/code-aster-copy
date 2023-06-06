@@ -320,6 +320,9 @@ CFER1_R = LocatedComponents(
         "PHIYS",
         "PHIZI",
         "PHIZS",
+        "PRECS",
+        "FLONGI",
+        "FTRNSV",
     ),
 )
 

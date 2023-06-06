@@ -34,6 +34,7 @@ contains
 #include "asterfort/wkvect.h"
 #include "asterfort/juveca.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/jedetr.h"
 
 !Variables principales
         integer :: N_INF
@@ -59,13 +60,14 @@ contains
 
 !Variables intermediaires de calcul
         integer :: N1, N2, indx1, indx2, indx3, COUNT_SOL, i, j, k, iBIS, jBIS, N_Theta_ADD
-        integer :: COUNT_Q, INDICE, Q
+        integer :: COUNT_Q, INDICE, Q, kk
         logical :: COND_nSX_INF, COND_nSY_INF, COND_nSX_SUP, COND_nSY_SUP, COND_insert
         real(kind=8) :: Theta_INTER_nSX_INF, Theta_INTER_nSX_SUP
         real(kind=8) :: Theta_INTER_nSY_INF, Theta_INTER_nSY_SUP
         real(kind=8) :: angle1, angle2, angle3, suppl, suppl1, suppl2, suppl3, suppl4
         real(kind=8) :: Theta_INTER(4, 4), a12, a13, denum
         real(kind=8), pointer :: Theta_ADD(:) => null()
+        real(kind=8) :: debug1, debug2
 
 !Consideration de l'axe d'iteration pour recherche des racines eventuelles
         !ITER=1 ==> INF'
@@ -108,28 +110,50 @@ contains
                 end if
 
                 if ((nSX_SUP(indx1) .ne. (-1.d0)) .and. (nSX_INF(indx1) .ne. (-1.d0)) &
-                     &.and. (nSY_SUP(indx1) .ne. (-1.d0)) .and. (nSY_INF(indx1) .ne. (-1.d0)) &
+                     & .and. (nSY_SUP(indx1) .ne. (-1.d0)) .and. (nSY_INF(indx1) .ne. (-1.d0)) &
                      & .and. (nSX_SUP(indx2) .ne. (-1.d0)) .and. (nSX_INF(indx2) .ne. (-1.d0)) &
                      & .and. (nSY_SUP(indx2) .ne. (-1.d0)) .and. (nSY_INF(indx2) .ne. (-1.d0))) then
-                    if ((nSX_SUP(indx1)*nSX_SUP(indx2)) .lt. 0) then
+
+                    ! Exclude cases where we have zeros
+
+                    debug1 = nSX_SUP(indx1)
+                    debug2 = nSX_SUP(indx2)
+                    if (((debug1*debug2) .lt. 0) &
+                       & .and. (abs(debug1) .le. epsilon(debug1)) &
+                       & .and. (abs(debug2) .le. epsilon(debug2))) then
                         COND_nSX_SUP = .true.
                     end if
-                    if ((nSX_INF(indx1)*nSX_INF(indx2)) .lt. 0) then
+
+                    debug1 = nSX_INF(indx1)
+                    debug2 = nSX_INF(indx2)
+                    if (((debug1*debug2) .lt. 0) &
+                       & .and. (abs(debug1) .le. epsilon(debug1)) &
+                       & .and. (abs(debug2) .le. epsilon(debug2))) then
                         COND_nSX_INF = .true.
                     end if
-                    if ((nSY_SUP(indx1)*nSY_SUP(indx2)) .lt. 0) then
+
+                    debug1 = nSY_SUP(indx1)
+                    debug2 = nSY_SUP(indx2)
+                    if (((debug1*debug2) .lt. 0) &
+                       & .and. (abs(debug1) .le. epsilon(debug1)) &
+                       & .and. (abs(debug2) .le. epsilon(debug2))) then
                         COND_nSY_SUP = .true.
                     end if
-                    if ((nSY_INF(indx1)*nSY_INF(indx2)) .lt. 0) then
+
+                    debug1 = nSY_INF(indx1)
+                    debug2 = nSY_INF(indx2)
+                    if (((debug1*debug2) .lt. 0) &
+                       & .and. (abs(debug1) .le. epsilon(debug1)) &
+                       & .and. (abs(debug2) .le. epsilon(debug2))) then
                         COND_nSY_INF = .true.
                     end if
 
                     if ((COND_nSX_SUP .eqv. (.true.)) .or. (COND_nSX_INF .eqv. (.true.)) &
-                       & .or. (COND_nSY_SUP .eqv. (.true.)) .or. (COND_nSY_INF .eqv. (.true.))) then
+                      & .or. (COND_nSY_SUP .eqv. (.true.)) .or. (COND_nSY_INF .eqv. (.true.))) then
                         COND_insert = .true.
                     end if
 
-                    If (COND_insert .eqv. (.true.)) then
+                    if (COND_insert .eqv. (.true.)) then
 
                         COUNT_SOL = 0
                         if (COND_nSX_SUP .eqv. (.true.)) then
@@ -171,12 +195,14 @@ contains
                             do k = 0, (N2-j-(COUNT_SOL+1))
                                 AngleINF(N2-k) = AngleINF(N2-k-COUNT_SOL)
                             end do
+
                         elseif (ITER .eq. 2) then
                             call juveca(p(13), N2)
                             call jeveuo(p(13), 'E', vr=AngleSUP)
                             do k = 0, (N2-j-(COUNT_SOL+1))
                                 AngleSUP(N2-k) = AngleSUP(N2-k-COUNT_SOL)
                             end do
+
                         end if
 
                         do iBIS = 1, N1
@@ -239,7 +265,7 @@ contains
                             Theta_INTER_nSY_SUP = angle1+suppl
                         end if
                         if (COND_nSY_INF .eqv. (.true.)) then
-                            suppl = (angle2-angle1)/(1+Abs(nSY_INF(indx2))/Abs(nSX_INF(indx1)))
+                            suppl = (angle2-angle1)/(1+Abs(nSY_INF(indx2))/Abs(nSY_INF(indx1)))
                             Theta_INTER_nSY_INF = angle1+suppl
                         end if
 
@@ -247,10 +273,6 @@ contains
                         Theta_INTER(2, 1) = Theta_INTER_nSX_INF
                         Theta_INTER(3, 1) = Theta_INTER_nSY_SUP
                         Theta_INTER(4, 1) = Theta_INTER_nSY_INF
-                        !Theta_INTER_nSX_SUP = 1
-                        !Theta_INTER_nSX_INF = 2
-                        !Theta_INTER_nSY_SUP = 3
-                        !Theta_INTER_nSY_INF = 4
                         Theta_INTER(1, 2) = 1.d0
                         Theta_INTER(2, 2) = 2.d0
                         Theta_INTER(3, 2) = 3.d0
@@ -435,6 +457,7 @@ contains
                         end do
 
                         j = j+COUNT_SOL+1
+                        call jedetr(p(15))
 
                     else
 
@@ -574,9 +597,6 @@ contains
             end if
         end do
         end do
-
-        !print *,'COUNT_SOL = ',COUNT_SOL
-        !stop
 
         if (COUNT_SOL .gt. 0) then
             dnsxs = Abs(nSX_SUP(indx_INDICE))/fyd
@@ -766,7 +786,7 @@ contains
         pi = 3.14159265
 
         fc = fcd1
-        !AngleSUP CONDITION
+
         Calc1 = abs(AngleSUP)
         Calc2 = abs(abs(AngleSUP)-90)
         theta_sup = AngleSUP*pi/180.0
@@ -818,7 +838,6 @@ contains
 
             end if
 
-            !AngleSUP CONDITION
         else
             Calc = Mxy+Nxy*0.5*(ht-tINF)
             if (abs(Calc) .lt. epsilon(Calc)) then
@@ -828,7 +847,6 @@ contains
             end if
 
         end if
-        !AngleSUP CONDITION
 
         if (tSUP .ne. (-1.d0)) then
 
@@ -934,7 +952,6 @@ contains
             ncMIN_INF = -1.d0
 
         end if
-        !Pour le critère sur tSUP
 
     end subroutine solver_sandcas2
 

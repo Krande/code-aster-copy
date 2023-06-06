@@ -76,8 +76,8 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
     real(kind=8) :: d, d0, dneg, d0neg
     real(kind=8) :: unite_pa
     real(kind=8) :: X, scmax, scmaxneg
-    real(kind=8) :: alpha_12, alpha
-    real(kind=8) :: ScSUP, ScINF
+    real(kind=8) :: alpha_12, alpha_12neg, alpha
+    real(kind=8) :: ScSUP, ScINF, Delta
     real(kind=8) :: SsSUP, SsINF, Ncc, Mcc
     integer :: N_ET, N_PC, N_EC, N_PCAC, N_PCACN, k
     integer :: N_ECN
@@ -112,6 +112,7 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
     scmaxneg = scmaxi
 
     alpha_12 = 1.0/(1.0+(ssmax/cequi)/scmax)
+    alpha_12neg = 1.0/(1.0+(ssmax/cequi)/scmaxneg)
 
 !   Initialisation des entiers
 
@@ -125,7 +126,6 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
 
 !-----------------------------------------------------------------------
 !Traitement des différents cas (Pivots A / B / C)
-!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 
 !ET = Entièrement Tendue
@@ -147,7 +147,7 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
 
         SsINF = -ssmax
         ScSUP = -(ssmax/cequi)*(1-0.1*(k-1))
-        SsSUP = ((SsINF/cequi-ScSUP)*((ht-d0)/d)+ScSUP)*cequi
+        SsSUP = ((SsINF/cequi-ScSUP)*(d0/d)+ScSUP)*cequi
         ScINF = (SsINF/cequi-ScSUP)*(ht/d)+ScSUP
         N_P1(k) = dnsinf*SsINF+dnssup*SsSUP
         M_P1(k) = -dnsinf*SsINF*(d-0.5*ht)+dnssup*SsSUP*(0.5*ht-d0)
@@ -174,22 +174,15 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
             alpha = ht/d
         end if
         X = alpha*d
-        if (alpha .eq. 0) then
-            SsINF = -ssmax
-            ScSUP = 0
-            ScINF = -(ssmax/cequi)*(ht/d)
-            SsSUP = -ssmax*(ht-d0)/d
-        elseif ((alpha .gt. 0) .AND. (alpha .lt. alpha_12)) then
+        if (alpha .lt. alpha_12) then
             SsINF = -ssmax
             ScSUP = (X/(d-X))*(ssmax/cequi)
-            ScINF = ScSUP*(1-ht/X)
-            SsSUP = ScSUP*(1-(ht-d0)/X)*cequi
         else
             ScSUP = scmax
             SsINF = scmax*cequi*(1-d/X)
-            ScINF = scmax*(1-ht/X)
-            SsSUP = scmax*cequi*(1-(ht-d0)/X)
         end if
+        ScINF = ScSUP+(SsINF/cequi-ScSUP)*(ht/d)
+        SsSUP = (ScSUP+(SsINF/cequi-ScSUP)*(d0/d))*cequi
         Ncc = ScSUP*0.5*X*bw
         Mcc = ScSUP*((1./4.)*ht*X-(1./6.)*X*X)*bw
         N_P2(k) = dnsinf*SsINF+dnssup*SsSUP+Ncc
@@ -200,7 +193,7 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
 !Traitement en PIVOT C - Entièrement Comprimée (EC) + Moment Positif
 !-------------------------------------------------------------------
 
-    N_EC = CEILING(10*(scmax*unite_pa))+1
+    N_EC = CEILING(10*(scmaxneg*unite_pa))+1
 
     p05 = 'POINT_ITER_DINTELS_05'
     p06 = 'POINT_ITER_DINTELS_06'
@@ -210,9 +203,10 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
 
     do k = 1, N_EC
 
-        ScINF = scmax*(real(k-1)/real(N_EC-1))
+        ScINF = scmaxneg*(real(k-1)/real(N_EC-1))
         ScSUP = scmax
-        if (k .lt. N_EC) then
+        Delta = ScSUP-ScINF
+        if (abs(Delta) .gt. epsilon(Delta)) then
             X = (ScSUP/(ScSUP-ScINF))*ht
             alpha = X/d
         else
@@ -220,8 +214,8 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
         end if
         Ncc = 0.5*(ScSUP+ScINF)*ht*bw
         Mcc = (1./12.)*(ScSUP-ScINF)*ht*ht*bw
-        SsSUP = ((ScINF-ScSUP)*(ht-d0)/ht+ScSUP)*cequi
-        SsINF = ((ScINF-ScSUP)*d/ht+ScSUP)*cequi
+        SsSUP = (ScSUP+(ScINF-ScSUP)*(d0/ht))*cequi
+        SsINF = (ScSUP+(ScINF-ScSUP)*(d/ht))*cequi
         N_P3(k) = dnsinf*SsINF+dnssup*SsSUP+Ncc
         M_P3(k) = -dnsinf*SsINF*(d-0.5*ht)+dnssup*SsSUP*(0.5*ht-d0)+Mcc
 
@@ -230,7 +224,7 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
 !Traitement en PIVOT C - Entièrement Comprimée (EC) + Moment Negatif
 !-------------------------------------------------------------------
 
-    N_ECN = CEILING(10*(scmaxneg*unite_pa))+1
+    N_ECN = CEILING(10*(scmax*unite_pa))+1
 
     p07 = 'POINT_ITER_DINTELS_07'
     p08 = 'POINT_ITER_DINTELS_08'
@@ -240,9 +234,10 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
 
     do k = 1, N_ECN
 
-        ScSUP = scmaxneg*(1-real(k-1)/real(N_ECN-1))
+        ScSUP = scmax*(1-real(k-1)/real(N_ECN-1))
         ScINF = scmaxneg
-        if (k .ne. 1) then
+        Delta = ScSUP-ScINF
+        if (abs(Delta) .gt. epsilon(Delta)) then
             X = (ScSUP/(ScSUP-ScINF))*ht
             alpha = X/d
         else
@@ -250,8 +245,8 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
         end if
         Ncc = 0.5*(ScSUP+ScINF)*ht*bw
         Mcc = (1./12.)*(ScINF-ScSUP)*ht*ht*bw
-        SsSUP = ((ScINF-ScSUP)*(ht-d0)/ht+ScSUP)*cequi
-        SsINF = ((ScINF-ScSUP)*d/ht+ScSUP)*cequi
+        SsSUP = (ScINF+(ScSUP-ScINF)*(dneg/ht))*cequi
+        SsINF = (ScINF+(ScSUP-ScINF)*(d0neg/ht))*cequi
         N_P4(k) = dnsinf*SsINF+dnssup*SsSUP+Ncc
         M_P4(k) = -dnsinf*SsINF*(d-0.5*ht)+dnssup*SsSUP*(0.5*ht-d0)-Mcc
 
@@ -270,28 +265,21 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
 
     do k = 1, N_PCACN
 
-        if (k .gt. 1) then
-            alpha = 1-real(k-1)/real(N_PC-1)
+        if (k .lt. N_PCACN) then
+            alpha = ht/dneg-real(k-1)/real(N_PC-1)
         else
-            alpha = ht/dneg
+            alpha = 0
         end if
         X = alpha*dneg
-        if (alpha .eq. 0) then
-            SsSUP = -ssmax
-            ScINF = 0
-            ScSUP = -(ssmax/cequi)*(ht/dneg)
-            SsINF = -ssmax*(ht-d0neg)/dneg
-        elseif ((alpha .gt. 0) .AND. (alpha .lt. alpha_12)) then
+        if (alpha .lt. alpha_12neg) then
             SsSUP = -ssmax
             ScINF = (X/(dneg-X))*(ssmax/cequi)
-            ScSUP = ScINF*(1-ht/X)
-            SsINF = ScINF*(1-(ht-d0neg)/X)*cequi
         else
             ScINF = scmaxneg
             SsSUP = scmaxneg*cequi*(1-dneg/X)
-            ScSUP = scmaxneg*(1-ht/X)
-            SsINF = scmaxneg*cequi*(1-(ht-d0neg)/X)
         end if
+        ScSUP = ScINF+(SsSUP/cequi-ScINF)*(ht/dneg)
+        SsINF = (ScINF+(SsSUP/cequi-ScINF)*(d0neg/dneg))*cequi
         Ncc = ScINF*0.5*X*bw
         Mcc = ScINF*((1./4.)*ht*X-(1./6.)*X*X)*bw
         N_P5(k) = dnsinf*SsINF+dnssup*SsSUP+Ncc
@@ -312,8 +300,8 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
 
         SsSUP = -ssmax
         ScINF = -(ssmax/cequi)*0.1*(k-1)
-        SsINF = ((SsSUP/cequi-ScINF)*((ht-d0neg)/dneg)+ScINF)*cequi
-        ScINF = (SsSUP/cequi-ScINF)*(ht/dneg)+ScINF
+        SsINF = ((SsSUP/cequi-ScINF)*(d0neg/dneg)+ScINF)*cequi
+        ScSUP = (SsSUP/cequi-ScINF)*(ht/dneg)+ScINF
         N_P6(k) = dnsinf*SsINF+dnssup*SsSUP
         M_P6(k) = -dnsinf*SsINF*(d-0.5*ht)+dnssup*SsSUP*(0.5*ht-d0)
 
@@ -321,7 +309,6 @@ subroutine dintels(cequi, ht, bw, enrobi, enrobs, &
 
 !-----------------------------------------------------------------------
 !Fin de Traitement des différents cas
-!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 
     do k = 1, N_ET

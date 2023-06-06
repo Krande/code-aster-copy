@@ -19,7 +19,7 @@
 subroutine breselsqp(cequi, effmy, effmz, effn, ht, bw, &
                      enrobyi, enrobys, enrobzi, enrobzs, &
                      wmaxyi, wmaxys, wmaxzi, wmaxzs, &
-                     ferrcomp, ferrsyme, slsyme, uc, um, &
+                     ferrcomp, precs, ferrsyme, slsyme, uc, um, &
                      kt, eys, facier, fbeton, sigelsqp, &
                      phiyi, phiys, phizi, phizs, &
                      dnsyi, dnsys, dnszi, dnszs, &
@@ -53,6 +53,10 @@ subroutine breselsqp(cequi, effmy, effmz, effn, ht, bw, &
 !      I FERRCOMP  PRISE EN COMPTE DU FERRAILLAGE DE COMPRESSION
 !                     FERRCOMP = 1 (NON)
 !                     FERRCOMP = 2 (OUI)
+!      I PRECS     PRECISION SUPPLEMENTAIRE DANS LA RECHERCHE DE L'OPTIMUM
+!                   POUR LA METHODE DES 3 PIVOTS (Intervention du 03/2023)
+!                     PRECS = 0 (NON)
+!                     PRECS = 1 (OUI)
 !      I FERRSYME   FERRAILLAGE SYMETRIQUE?
 !                     FERRSYME = 0 (NON)
 !                     FERRSYME = 1 (OUI)
@@ -120,6 +124,7 @@ subroutine breselsqp(cequi, effmy, effmz, effn, ht, bw, &
     real(kind=8) :: wmaxzi
     real(kind=8) :: wmaxzs
     integer :: ferrcomp
+    integer :: precs
     integer :: ferrsyme
     real(kind=8) :: slsyme
     integer :: uc
@@ -205,7 +210,7 @@ subroutine breselsqp(cequi, effmy, effmz, effn, ht, bw, &
     if ((abs(effmy) .lt. epsilon(effmy)) .and. (abs(effmz) .lt. epsilon(effmz))) then
         call cafelsqp(cequi, effmy, 0.5*effn, ht, bw, &
                       enrobzi, enrobzs, wmaxzi, wmaxzs, &
-                      ferrcomp, ferrsyme, slsyme, uc, um, &
+                      ferrcomp, precs, ferrsyme, slsyme, uc, um, &
                       kt, facier, fbeton, eys, sigelsqp, phizi, phizs, &
                       dnszi, dnszs, sigmszi, sigmszs, sigmczi, sigmczs, &
                       alphaz, pivotz, etatz, &
@@ -215,7 +220,7 @@ subroutine breselsqp(cequi, effmy, effmz, effn, ht, bw, &
         end if
         call cafelsqp(cequi, effmz, 0.5*effn, bw, ht, &
                       enrobyi, enrobys, wmaxyi, wmaxys, &
-                      ferrcomp, ferrsyme, slsyme, uc, um, &
+                      ferrcomp, precs, ferrsyme, slsyme, uc, um, &
                       kt, facier, fbeton, eys, sigelsqp, phiyi, phiys, &
                       dnsyi, dnsys, sigmsyi, sigmsys, sigmcyi, sigmcys, &
                       alphay, pivoty, etaty, &
@@ -231,7 +236,7 @@ subroutine breselsqp(cequi, effmy, effmz, effn, ht, bw, &
         if (abs(effmy) .gt. epsilon(effmy)) then
             call cafelsqp(cequi, effmy, effn, ht, bw, &
                           enrobzi, enrobzs, wmaxzi, wmaxzs, &
-                          ferrcomp, ferrsyme, slsyme, uc, um, &
+                          ferrcomp, precs, ferrsyme, slsyme, uc, um, &
                           kt, facier, fbeton, eys, sigelsqp, phizi, phizs, &
                           dnszi, dnszs, sigmszi, sigmszs, sigmczi, sigmczs, &
                           alphaz, pivotz, etatz, &
@@ -246,7 +251,7 @@ subroutine breselsqp(cequi, effmy, effmz, effn, ht, bw, &
         if (abs(effmz) .gt. epsilon(effmz)) then
             call cafelsqp(cequi, effmz, effn, bw, ht, &
                           enrobyi, enrobys, wmaxyi, wmaxys, &
-                          ferrcomp, ferrsyme, slsyme, uc, um, &
+                          ferrcomp, precs, ferrsyme, slsyme, uc, um, &
                           kt, facier, fbeton, eys, sigelsqp, phiyi, phiys, &
                           dnsyi, dnsys, sigmsyi, sigmsys, sigmcyi, sigmcys, &
                           alphay, pivoty, etaty, &
@@ -462,12 +467,24 @@ subroutine breselsqp(cequi, effmy, effmz, effn, ht, bw, &
             if (BRES .gt. 1) then
                 if (Ass .lt. epsilon(Ass)) then
                     Ass = (1.e2)/(unite_m*unite_m)
+                    rhoyi = 0.25
+                    rhoys = 0.25
+                    rhozi = 0.25
+                    rhozs = 0.25
+                else
+                    if (ferrsyme .eq. 1) then
+                        rhoyi = 0.5*(dnsyi+dnsys)/Ass
+                        rhoys = 0.5*(dnsyi+dnsys)/Ass
+                        rhozi = 0.5*(dnszi+dnszs)/Ass
+                        rhozs = 0.5*(dnszi+dnszs)/Ass
+                    else
+                        rhoyi = dnsyi/Ass
+                        rhoys = dnsys/Ass
+                        rhozi = dnszi/Ass
+                        rhozs = dnszs/Ass
+                    end if
                 end if
                 Aiter = 0.10*Ass
-                rhoyi = dnsyi/Ass
-                rhoys = dnsys/Ass
-                rhozi = dnszi/Ass
-                rhozs = dnszs/Ass
                 dnsyi = dnsyi+rhoyi*Aiter
                 dnsys = dnsys+rhoys*Aiter
                 dnszi = dnszi+rhozi*Aiter

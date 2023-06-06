@@ -23,7 +23,7 @@ subroutine glbpou(typcmb, typco, cequi, effrts, ht, bw, &
                   sigcyi, sigcys, sigczi, sigczs, sigs, &
                   wmaxyi, wmaxys, wmaxzi, wmaxzs, &
                   phiyi, phiys, phizi, phizs, &
-                  ferrsyme, slsyme, ferrcomp, &
+                  precs, flongi, ftrnsv, ferrsyme, slsyme, ferrcomp, &
                   epucisa, ferrmin, rholmin, rhotmin, compress, uc, um, &
                   rhoacier, areinf, ashear, astirr, rhocrit, datcrit, lcrit, &
                   dnsits, dnsvol, construc, ierr)
@@ -86,6 +86,10 @@ subroutine glbpou(typcmb, typco, cequi, effrts, ht, bw, &
 !      I PHIYS     DIAMÈTRE APPROXIMATIF DES ARMATURES SUPÉRIEURES SUIVANT Y
 !      I PHIZI     DIAMÈTRE APPROXIMATIF DES ARMATURES INFÉRIEURES SUIVANT Z
 !      I PHIZS     DIAMÈTRE APPROXIMATIF DES ARMATURES SUPÉRIEURES SUIVANT Z
+!      I PRECS     PRECISION SUPPLEMENTAIRE DANS LA RECHERCHE DE L'OPTIMUM
+!                   POUR LA METHODE DES 3 PIVOTS (Intervention du 03/2023)
+!                     PRECS = 0 (NON)
+!                     PRECS = 1 (OUI)
 !      I FERRSYME  FERRAILLAGE SYMETRIQUE?
 !                     FERRSYME = 0 (NON)
 !                     FERRSYME = 1 (OUI)
@@ -158,6 +162,9 @@ subroutine glbpou(typcmb, typco, cequi, effrts, ht, bw, &
     real(kind=8) :: phiys
     real(kind=8) :: phizi
     real(kind=8) :: phizs
+    integer :: precs
+    integer :: flongi
+    integer :: ftrnsv
     integer :: ferrsyme
     real(kind=8) :: slsyme
     integer :: ferrcomp
@@ -188,7 +195,8 @@ subroutine glbpou(typcmb, typco, cequi, effrts, ht, bw, &
         call glbelu(typco, alphacc, effrts, ht, bw, &
                     enrobyi, enrobys, enrobzi, enrobzs, &
                     facier, fbeton, gammas, gammac, &
-                    clacier, eys, typdiag, ferrsyme, slsyme, ferrcomp, &
+                    clacier, eys, typdiag, precs, &
+                    flongi, ftrnsv, ferrsyme, slsyme, ferrcomp, &
                     epucisa, ferrmin, rholmin, rhotmin, compress, uc, um, &
                     dnsits, ierr)
 
@@ -197,7 +205,7 @@ subroutine glbpou(typcmb, typco, cequi, effrts, ht, bw, &
         call glbels(typco, cequi, effrts, ht, bw, &
                     enrobyi, enrobys, enrobzi, enrobzs, &
                     facier, fbeton, sigcyi, sigcys, sigczi, sigczs, sigs, &
-                    ferrsyme, slsyme, ferrcomp, &
+                    precs, flongi, ftrnsv, ferrsyme, slsyme, ferrcomp, &
                     epucisa, ferrmin, rholmin, rhotmin, compress, uc, um, &
                     dnsits, ierr)
 
@@ -208,7 +216,7 @@ subroutine glbpou(typcmb, typco, cequi, effrts, ht, bw, &
                       facier, fbeton, sigelsqp, kt, eys, &
                       wmaxyi, wmaxys, wmaxzi, wmaxzs, &
                       phiyi, phiys, phizi, phizs, &
-                      ferrsyme, slsyme, ferrcomp, &
+                      precs, flongi, ftrnsv, ferrsyme, slsyme, ferrcomp, &
                       epucisa, ferrmin, rholmin, rhotmin, compress, uc, um, &
                       dnsits, ierr)
     end if

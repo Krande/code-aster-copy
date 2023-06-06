@@ -18,7 +18,7 @@
 
 subroutine cafels(cequi, effm, effn, ht, bw, &
                   enrobi, enrobs, scmaxi, scmaxs, ssmax, &
-                  ferrcomp, ferrsyme, slsyme, uc, &
+                  ferrcomp, precs, ferrsyme, slsyme, uc, um, &
                   dnsinf, dnssup, sigmsi, sigmss, &
                   sigmci, sigmcs, &
                   alpha, pivot, etat, ierr)
@@ -43,13 +43,20 @@ subroutine cafels(cequi, effm, effn, ht, bw, &
 !      I FERRCOMP     PRISE EN COMPTE DU FERRAILLAGE DE COMPRESSION
 !                         FERRCOMP = 0 (NON)
 !                         FERRCOMP = 1 (OUI)
-!      I FERRSYME  FERRAILLAGE SYMETRIQUE?
-!                     FERRSYME = 0 (NON)
-!                     FERRSYME = 1 (OUI)
-!      I SLSYME    SECTION SEUIL DE TOLERANCE POUR UN FERRAILLAGE SYMETRIQUE
-!      I UC        UNITE DES CONTRAINTES :
-!                     UC = 0 CONTRAINTES EN Pa
-!                     UC = 1 CONTRAINTES EN MPa
+!      I PRECS        PRECISION SUPPLEMENTAIRE DANS LA RECHERCHE DE L'OPTIMUM
+!                     POUR LA METHODE DES 3 PIVOTS (Intervention du 03/2023)
+!                         PRECS = 0 (NON)
+!                         PRECS = 1 (OUI)
+!      I FERRSYME     FERRAILLAGE SYMETRIQUE?
+!                         FERRSYME = 0 (NON)
+!                         FERRSYME = 1 (OUI)
+!      I SLSYME       SECTION SEUIL DE TOLERANCE POUR UN FERRAILLAGE SYMETRIQUE
+!      I UC           UNITE DES CONTRAINTES :
+!                         UC = 0 CONTRAINTES EN Pa
+!                         UC = 1 CONTRAINTES EN MPa
+!      I UM           UNITE DES DIMENSIONS :
+!                         UM = 0 DIMENSIONS EN m
+!                         UM = 1 DIMENSIONS EN mm
 
 !      O DNSINF       DENSITE DE L'ACIER INFERIEUR
 !      O DNSSUP       DENSITE DE L'ACIER SUPERIEUR
@@ -65,8 +72,8 @@ subroutine cafels(cequi, effm, effn, ht, bw, &
 !
 
     implicit none
+
 #include "asterfort/cafelsiter.h"
-!
 !
 !-----------------------------------------------------------------------
 !!!!TERMES PRINCIPAUX D'ENTREE
@@ -82,9 +89,11 @@ subroutine cafels(cequi, effm, effn, ht, bw, &
     real(kind=8) :: scmaxs
     real(kind=8) :: ssmax
     integer :: ferrcomp
+    integer :: precs
     integer :: ferrsyme
     real(kind=8) :: slsyme
     integer :: uc
+    integer :: um
     real(kind=8) :: dnsinf
     real(kind=8) :: dnssup
     real(kind=8) :: sigmsi
@@ -101,7 +110,7 @@ subroutine cafels(cequi, effm, effn, ht, bw, &
 !-----------------------------------------------------------------------
     real(kind=8) :: d, d0, a00, b00, c00, Del, var
     real(kind=8) :: Mcalc, Ncalc, scmax, scmaxc
-    real(kind=8) :: unite_pa, mu, mu_12, alpha_12, mu_max, mu_lim
+    real(kind=8) :: unite_pa, mu, mu_12, alpha_12, mu_max, mu_lim, unite_m
     real(kind=8) :: AsTEND, AsCOMP, SsTEND, SsCOMP, ScTEND, ScCOMP
     real(kind=8) :: alpha_A, alpha_B, alpha_MED, RESIDU_A, RESIDU_B, RESIDU_MED, DIFF
     real(kind=8) :: X, Ncc, Mcc, Calc
@@ -142,6 +151,11 @@ subroutine cafels(cequi, effm, effn, ht, bw, &
         unite_pa = 1.e-6
     elseif (uc .eq. 1) then
         unite_pa = 1.
+    end if
+    if (um .eq. 0) then
+        unite_m = 1.e3
+    elseif (um .eq. 1) then
+        unite_m = 1.
     end if
 
     if (effm .ge. 0) then
@@ -248,9 +262,13 @@ subroutine cafels(cequi, effm, effn, ht, bw, &
             AsTEND = (0.5*ScCOMP*X*bw-Ncalc)/(-SsTEND)
             AsCOMP = 0
 
-            if ((AsTEND .lt. 0) .or. (AsCOMP .lt. 0)) then
+            if (AsTEND .lt. 0) then
+                !if (abs(AsTEND) .lt. ((1.e-4)*(1.e6/(unite_m**2)))) then
+                !AsTEND = 0
+                !else
                 COND_ITER = .true.
                 goto 998
+                !end if
             else
                 COND_NS = .true.
             end if
@@ -293,9 +311,13 @@ subroutine cafels(cequi, effm, effn, ht, bw, &
                 AsCOMP = 0
             end if
 
-            if ((AsTEND .lt. 0) .or. (AsCOMP .lt. 0)) then
+            if (AsTEND .lt. 0) then
+                !if (abs(AsTEND) .lt. ((1.e-4)*(1.e6/(unite_m**2)))) then
+                !AsTEND = 0
+                !else
                 COND_ITER = .true.
                 goto 998
+                !end if
             else
                 COND_NS = .true.
             end if
@@ -319,8 +341,8 @@ subroutine cafels(cequi, effm, effn, ht, bw, &
 
     if (COND_ITER .eqv. (.TRUE.)) then
         call cafelsiter(cequi, effm, effn, ht, bw, &
-                        enrobi, enrobs, scmaxi, scmaxs, ssmax, &
-                        ferrsyme, slsyme, uc, COND_NS, &
+                        enrobi, enrobs, scmaxi, scmaxs, ssmax, ferrcomp, &
+                        precs, ferrsyme, slsyme, uc, um, COND_NS, &
                         AsTEND, AsCOMP, SsTEND, SsCOMP, &
                         ScTEND, ScCOMP, &
                         alpha, pivot, etat, ierr)

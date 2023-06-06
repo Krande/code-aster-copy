@@ -165,7 +165,7 @@ subroutine te0146(option, nomte)
     real(kind=8) :: reinf, shear, stirrups, thiter, epiter, aphiter
     integer :: ierr, jepais, jefge, jfer1, jfer2, itab(7), nno
     integer :: typcmb, typco, ferrmin, typdiag, ferrsyme, epucisa, clacier, uc, um
-    integer :: ino, icmp, iret, k, meth2D, cond109
+    integer :: ino, icmp, iret, k, meth2D, cond109, precs, flongi, ftrnsv
     integer :: iadzi, iazk24, compress, ferrcomp, typstru, nb
 !
     call tecael(iadzi, iazk24, noms=0)
@@ -215,6 +215,8 @@ subroutine te0146(option, nomte)
 !                 50       51       52       53        54      55
 !              'PHIXI','PHIXS','PHIYI','PHIYS','PHIZI','PHIZS'
 !                 56      57      58      59      60      61
+!              'PRECS','FLONGI','FTRNSV'
+!                 62      63      64
 !
     typcmb = nint(zr(jfer1-1+1))
     typco = nint(zr(jfer1-1+2))
@@ -277,6 +279,9 @@ subroutine te0146(option, nomte)
     phiys = zr(jfer1-1+59)
     phizi = zr(jfer1-1+60)
     phizs = zr(jfer1-1+61)
+    precs = nint(zr(jfer1-1+62))
+    flongi = nint(zr(jfer1-1+63))
+    ftrnsv = nint(zr(jfer1-1+64))
 
     !Only option '2D'
     if (typstru .eq. 1.d0) then
@@ -310,7 +315,8 @@ subroutine te0146(option, nomte)
 
     if (meth2D .eq. 1.d0) then
         nb = ceiling(180/thiter)
-        call clcplq(typcmb, typco, nb, ferrsyme, slsyme, ferrcomp, epucisa, &
+        call clcplq(typcmb, typco, nb, precs, flongi, ftrnsv, &
+                    ferrsyme, slsyme, ferrcomp, epucisa, &
                     ferrmin, rholmin, rhotmin, compress, cequi, &
                     enrobi, enrobs, sigs, sigci, sigcs, &
                     alphacc, gammas, gammac, facier, eys, typdiag, &
@@ -324,7 +330,7 @@ subroutine te0146(option, nomte)
             end if
             call sandwich(enrobi, enrobs, facier, fbeton, gammas, gammac, &
                           thiter, epiter, aphiter, cond109, &
-                          ferrcomp, ferrsyme, slsyme, &
+                          flongi, ftrnsv, ferrcomp, ferrsyme, slsyme, &
                           epucisa, ferrmin, rholmin, rhotmin, compress, uc, um, &
                           ht, effrts, dnsits, ierr)
         end if
