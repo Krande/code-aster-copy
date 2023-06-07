@@ -95,7 +95,7 @@ subroutine nmbarc(ndim, imate, carcri, sat, biot, &
     real(kind=8) :: hhb(6, 6), ses(6, 6), hhbm(6, 6), gg(6, 6), sps(6, 6)
     real(kind=8) :: d1g(6, 6), id2(6, 6), devhyd(6, 6), devhym(6, 6)
     real(kind=8) :: d1ghhm(6, 6)
-    real(kind=8) :: un, deux, trois, six, unsde, tm, tp, tref
+    real(kind=8) :: un, deux, trois, six, unsde, tm, tp, tref, patm
     integer :: ndimsi, signf, signfi, iret
     integer :: k, l, iter, matr, iadzi, iazk24, umess
     integer :: icodre(16)
@@ -110,6 +110,7 @@ subroutine nmbarc(ndim, imate, carcri, sat, biot, &
     parameter(trois=3.d0)
     parameter(six=6.d0)
     parameter(unsde=0.5d0)
+    parameter(patm=1.d5)
     data kron/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
     data tol/1.d-10/zero/0.d0/
 ! DEB ------------------------------------------------------------------
@@ -266,7 +267,7 @@ subroutine nmbarc(ndim, imate, carcri, sat, biot, &
     end if
 !
 !
-    simoel = sigmmo*exp(xk0*depsmo)/((p1+pa)/(p1m+pa))**(xk0/xk0s)
+    simoel = sigmmo*exp(xk0*depsmo)/((p1+patm)/(p1m+patm))**(xk0/xk0s)
 !
     kcp1 = kc*p1
     kpmax = max(kcp1, zero)
@@ -335,7 +336,7 @@ subroutine nmbarc(ndim, imate, carcri, sat, biot, &
                 pc0p(2) = 1.d0
                 pc0p(1) = p1
 !
-                deppmo = 1/xks*log((pc0p(1)+pa)/(pc0m(1)+pa))
+                deppmo = 1/xks*log((pc0p(1)+patm)/(pc0m(1)+patm))
                 psp = kc*pc0p(1)
                 if ((-xk0*deppmo) .gt. epxmax) then
                     umess = iunifi('MESSAGE')
@@ -661,12 +662,12 @@ subroutine nmbarc(ndim, imate, carcri, sat, biot, &
 !     -- CALCUL DE LA DERIVEE DE PCRP PAR RAPPORT A P1
                     pcrpp = -log(2.d0*prescr/pa)*((lambda-kapa)/(lambb-kapa)**2)*lamp*pcrp(1)
 !     -- REACTUALISATION DU SEUIL HYDRIQUE
-                    pc0p(1) = (pc0m(1)+pa)*exp(xks*deppmo)-pa
+                    pc0p(1) = (pc0m(1)+patm)*exp(xks*deppmo)-patm
 !
                     psp = kc*pc0p(1)
 !
 !     -- REACTUALISATION DES CONTRAINTES NETTES DE BARCELONE
-                    sigpmo = sigmmo*exp(xk0*(depsmo-deppmo))/((p1+pa)/(p1m+pa))**(xk0/xk0s)
+                    sigpmo = sigmmo*exp(xk0*(depsmo-deppmo))/((p1+patm)/(p1m+patm))**(xk0/xk0s)
                     call r8inir(6, 0.d0, sigpdv, 1)
                     do k = 1, ndimsi
                         sigpdv(k) = sigel(k)/(1.d0+(6.d0*deuxmu/2.d0*alphab*deppmo)/(m*m*(2.d0*&
@@ -733,7 +734,7 @@ subroutine nmbarc(ndim, imate, carcri, sat, biot, &
 !     -- 9.2 CALCUL DE DSIDP1(6) ELASTIQUE:
 !     ---------------------------------------
             do k = 1, ndimsi
-                dsidp1(k) = (xk0/xk0s*simoel/(p1+pa)-sat*biot)*kron(k)
+                dsidp1(k) = (xk0/xk0s*simoel/(p1+patm)-sat*biot)*kron(k)
             end do
         end if
 !     -- 9.3 CALCUL DE DSIDEP(6,6) CRITERE MECANIQUE ATTEINT
@@ -796,11 +797,11 @@ subroutine nmbarc(ndim, imate, carcri, sat, biot, &
                   &bda-kapa)/(lambb-kapa)**2)*lamp &
                   )
             do k = 1, 3
-                dsidp1(k) = -ap(k)*tra/3.d0/h/xk0s/(p1+pa)+m*m*par/h*ap(k)+xk0*sigmmo/xk0s/(p1&
-                            &+pa)-biot*sat
+                dsidp1(k) = -ap(k)*tra/3.d0/h/xk0s/(p1+patm)+m*m*par/h*ap(k)+xk0*sigmmo/xk0s/(p1&
+                            &+patm)-biot*sat
             end do
             do k = 4, ndimsi
-                dsidp1(k) = -deuxmu*tra*sigmdv(k)*alphab/h/xk0s/(p1+pa) &
+                dsidp1(k) = -deuxmu*tra*sigmdv(k)*alphab/h/xk0s/(p1+patm) &
                             +3.d0*deuxmu*sigmdv(k)*alphab*m*m*par/h
             end do
         end if
@@ -818,7 +819,7 @@ subroutine nmbarc(ndim, imate, carcri, sat, biot, &
 !     -- 9.6 CALCUL DE DSIDP1(6) CRITERE HYDRIQUE ATTEINT-EN VITESSE:
 !     --------------------------------------------------------------
             do k = 1, ndimsi
-                dsidp1(k) = (xk0*sigmmo/(p1+pa)*(1.d0/xks+1.d0/xk0s)-sat*biot)*kron(k)
+                dsidp1(k) = (xk0*sigmmo/(p1+patm)*(1.d0/xks+1.d0/xk0s)-sat*biot)*kron(k)
             end do
         end if
 !
@@ -889,11 +890,11 @@ subroutine nmbarc(ndim, imate, carcri, sat, biot, &
                   )*lamp &
                   )
             do k = 1, 3
-                dsidp1(k) = -ap(k)*tra/3.d0/h/xk0s/(p1+pa)+m*m*par/h*ap(k)+xk0*sigpmo/xk0s/(p1&
-                            &+pa)-biot*sat
+                dsidp1(k) = -ap(k)*tra/3.d0/h/xk0s/(p1+patm)+m*m*par/h*ap(k)+xk0*sigpmo/xk0s/(p1&
+                            &+patm)-biot*sat
             end do
             do k = 4, ndimsi
-                dsidp1(k) = -deuxmu*tra*sigpdv(k)*alphab/h/xk0s/(p1+pa) &
+                dsidp1(k) = -deuxmu*tra*sigpdv(k)*alphab/h/xk0s/(p1+patm) &
                             +3.d0*deuxmu*sigpdv(k)*alphab*m*m*par/h
             end do
         end if
@@ -911,7 +912,7 @@ subroutine nmbarc(ndim, imate, carcri, sat, biot, &
 !     -- 9.3.16 CALCUL DE DSIDP1(6) CRITERE HYDRIQUE ATTEINT-EN VITESSE:
 !     --------------------------------------------------------------
             do k = 1, ndimsi
-                dsidp1(k) = (xk0*sigpmo/(p1+pa)*(1.d0/xks+1.d0/xk0s)-sat*biot)*kron(k)
+                dsidp1(k) = (xk0*sigpmo/(p1+patm)*(1.d0/xks+1.d0/xk0s)-sat*biot)*kron(k)
             end do
         end if
 !
@@ -1215,7 +1216,7 @@ subroutine nmbarc(ndim, imate, carcri, sat, biot, &
                 call r8inir(6, 0.d0, hh, 1)
                 do k = 1, ndimsi
                     hh(k) = 3.d0*xz/(hp+xa)*sigpdv(k)-xi*xz/3.d0/(hp+xa)*kron(k)+xdd/3.d0*kro&
-                            &n(k)+kron(k)/3.d0/xk0s/(p1+pa)
+                            &n(k)+kron(k)/3.d0/xk0s/(p1+patm)
                 end do
 !     9.8.3 TERMES NECESSAIRES A LA PARTIE HYDROSTATIQUE
                 xj = xu*xlam*kc/2.d0/(1.d0+xu*xlam)
@@ -1302,7 +1303,7 @@ subroutine nmbarc(ndim, imate, carcri, sat, biot, &
             call r8inir(6, 0.d0, sshh, 1)
             call promat(vvh, 6, ndimsi, ndimsi, kkh, &
                         6, ndimsi, 1, sshh)
-            bb = 1.d0/3.d0*(1.d0/xk0s/(p1+pa)+1.d0/xks/(p1+pa))
+            bb = 1.d0/3.d0*(1.d0/xk0s/(p1+patm)+1.d0/xks/(p1+patm))
             do k = 1, ndimsi
                 dsidp1(k) = sshh(k)*bb-biot*sat*kron(k)
             end do
