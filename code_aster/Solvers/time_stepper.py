@@ -486,7 +486,7 @@ class TimeStepper(SolverFeature, Observer):
             bool: *False* if something went wrong, *True* if the step is ok.
         """
         # compute increment
-        delta = phys_state.getIncrement()
+        delta = phys_state.getCurrentDelta()
         # check events & actions
         if not self._check_error_posteriori(delta):
             return False

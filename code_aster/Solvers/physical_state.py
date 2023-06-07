@@ -24,24 +24,124 @@ from .solver_features import SolverOptions as SOP
 
 
 class PhysicalState(BaseFeature):
-    """This object represents a Physical State of the model."""
+    """This object represents a Physical State of the model.
+
+    Actually, it stores a stack of physical states et works as an *adapter*
+    on the current state. Only the current state, the working one, has setters
+    and so is writable. All other states on the stack are read-only.
+    """
+
+    class State:
+        """Represents an elementary physical state (private)."""
+
+        _time = _time_step = None
+        _primal = _primal_step = _stress = _internVar = _externVar = None
+        __setattr__ = no_new_attributes(object.__setattr__)
+
+        @property
+        def time(self):
+            """float: Current time."""
+            return self._time
+
+        @property
+        def time_step(self):
+            """float: Time step."""
+            return self._time_step
+
+        @property
+        def primal(self):
+            """FieldOnNodesReal: Primal field."""
+            return self._primal
+
+        @property
+        def primal_step(self):
+            """FieldOnNodesReal: Primal increment."""
+            return self._primal_step
+
+        @property
+        def stress(self):
+            """FieldOnCellsReal: Stress field."""
+            return self._stress
+
+        @property
+        def internVar(self):
+            """FieldOnCellsReal: Internal state variables."""
+            return self._internVar
+
+        @property
+        def externVar(self):
+            """FieldOnCellsReal: External state variables."""
+            return self._externVar
+
+        def copy(self, other):
+            """Copy the content of an object into the current one.
+
+            Arguments:
+                other (PhysicalState.State): Object to be copied.
+
+            Return:
+                PhysicalState.State: Current object.
+            """
+            self._time = other.time
+            self._time_step = other.time_step
+            self._primal = other.primal and other.primal.duplicate()
+            self._primal_step = other.primal_step and other.primal_step.duplicate()
+            self._stress = other.stress and other.stress.duplicate()
+            self._internVar = other.internVar and other.internVar.duplicate()
+            self._externVar = other.externVar and other.externVar.duplicate()
+            return self
+
+        def debugPrint(self, label=""):
+            print(f"*** {label}Physical State at", self._time, flush=True)
+            values = self._primal.getValues()
+            print("* primal     ", sum(values) / len(values), flush=True)
+            if self._primal_step:
+                values = self._primal_step.getValues()
+                print("* primal_step", sum(values) / len(values), flush=True)
+            if self._stress:
+                values = self._stress.getValues()
+                print("* stress     ", sum(values) / len(values), flush=True)
+            if self._internVar:
+                values = self._internVar.getValues()
+                print("* internVar  ", sum(values) / len(values), flush=True)
 
     provide = SOP.PhysicalState
 
-    _time = _time_step = None
-    _primal = _primal_step = _internVar = _stress = None
-    _externVar = _externVar_next = None
-    _stash = None
+    _current = _stack = _size = _stash = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
-    def __init__(self):
+    def __init__(self, size=1):
+        assert size > 0, f"invalid value ({size}) for 'size'"
         super().__init__()
+        self._current = PhysicalState.State()
+        self._stack = []
+        self._size = size
         self._stash = None
+
+    def getState(self, index=0):
+        """Return a physical state by index (relative position).
+
+        Arguments:
+            index (int): 0 means the current one, -1 the previous one and so on.
+
+        Returns:
+            PhysicalState.State: physical state.
+        """
+        if index == 0:
+            return self.current
+        if index < -self._size or index > 0:
+            raise IndexError(f"invalid value ({index}) for 'index': {-self._size} <= index <= 0")
+        return self._stack[index]
+
+    @property
+    def current(self):
+        """PhysicalState.State: The current physical state, the working one."""
+        return self._current
 
     @property
     def time(self):
         """float: Current time."""
-        return self._time
+        return self.current.time
 
     @time.setter
     def time(self, value):
@@ -50,12 +150,12 @@ class PhysicalState(BaseFeature):
         Arguments:
             value (float): time step
         """
-        self._time = value
+        self.current._time = value
 
     @property
     def time_step(self):
         """float: Time step."""
-        return self._time_step
+        return self.current.time_step
 
     @time_step.setter
     def time_step(self, value):
@@ -64,12 +164,12 @@ class PhysicalState(BaseFeature):
         Arguments:
             value (float): time step
         """
-        self._time_step = value
+        self.current._time_step = value
 
     @property
     def primal(self):
         """FieldOnNodesReal: Primal field."""
-        return self._primal
+        return self.current.primal
 
     @primal.setter
     def primal(self, field):
@@ -79,12 +179,12 @@ class PhysicalState(BaseFeature):
            field (FieldOnNodesReal): primal
         """
         assert isinstance(field, FieldOnNodesReal), f"unexpected type: {field}"
-        self._primal = field
+        self.current._primal = field
 
     @property
     def primal_step(self):
         """FieldOnNodesReal: Primal increment."""
-        return self._primal_step
+        return self.current.primal_step
 
     @primal_step.setter
     def primal_step(self, field):
@@ -93,12 +193,13 @@ class PhysicalState(BaseFeature):
         Arguments:
             field (FieldOnNodesReal): Primal increment
         """
-        self._primal_step = field
+        assert field is None or isinstance(field, FieldOnNodesReal), f"unexpected type: {field}"
+        self.current._primal_step = field
 
     @property
     def stress(self):
         """FieldOnCellsReal: Stress field."""
-        return self._stress
+        return self.current.stress
 
     @stress.setter
     def stress(self, field):
@@ -108,12 +209,12 @@ class PhysicalState(BaseFeature):
             field (FieldOnCellsReal): Stress field
         """
         assert isinstance(field, FieldOnCellsReal), f"unexpected type: {field}"
-        self._stress = field
+        self.current._stress = field
 
     @property
     def internVar(self):
         """FieldOnCellsReal: Internal state variables."""
-        return self._internVar
+        return self.current.internVar
 
     @internVar.setter
     def internVar(self, field):
@@ -123,12 +224,12 @@ class PhysicalState(BaseFeature):
             field (FieldOnCellsReal): Internal state variables
         """
         assert isinstance(field, FieldOnCellsReal), f"unexpected type: {field}"
-        self._internVar = field
+        self.current._internVar = field
 
     @property
     def externVar(self):
         """FieldOnCellsReal: External state variables."""
-        return self._externVar
+        return self.current.externVar
 
     @externVar.setter
     def externVar(self, field):
@@ -137,74 +238,75 @@ class PhysicalState(BaseFeature):
         Arguments:
             field (FieldOnCellsReal): external state variables
         """
-        assert isinstance(field, FieldOnCellsReal), f"unexpected type: {field}"
-        self._externVar = field
-
-    @property
-    def externVar_next(self):
-        """FieldOnCellsReal: External state variables at end of step."""
-        return self._externVar_next
-
-    @externVar_next.setter
-    def externVar_next(self, field):
-        """Set external state variables at end of step
-
-        Arguments:
-            field (FieldOnCellsReal): external state variables at end of step
-        """
-        self._externVar_next = field
-
-    def copy(self, other):
-        """Copy the content of an object into the current one.
-
-        Arguments:
-            other (PhysicalState): Object to be copied.
-        """
-        self._time = other.time
-        self._time_step = other.time_step
-        self._primal = other.primal and other.primal.duplicate()
-        self._primal_step = other.primal_step and other.primal_step.duplicate()
-        self._stress = other.stress and other.stress.duplicate()
-        self._internVar = other.internVar and other.internVar.duplicate()
-        self._externVar = other.externVar and other.externVar.duplicate()
-        self._externVar_next = other.externVar_next and other.externVar_next.duplicate()
+        assert field is None or isinstance(field, FieldOnCellsReal), f"unexpected type: {field}"
+        self.current._externVar = field
 
     def stash(self):
         """Stores the object state to provide transactionality semantics."""
-        self._stash = PhysicalState()
-        self._stash.copy(self)
-
-    @profile
-    def getIncrement(self):
-        """Return the delta between the previous and the current state.
-
-        The previous state is expected to be found in the stash.
-
-        Returns:
-            dict: Delta between states as returned by py:method:`as_dict`.
-        """
-        quantity, _ = self._primal.getPhysicalQuantity().split("_")
-        return {
-            "SIEF_ELGA": self._stress - self._stash._stress,
-            "VARI_ELGA": self.internVar - self._stash._internVar,
-            quantity: self._primal + self._primal_step - self._stash._primal,
-        }
+        self._stash = PhysicalState.State().copy(self.current)
 
     def revert(self):
         """Revert the object to its previous state."""
         assert self._stash, "stash is empty!"
-        self.copy(self._stash)
+        self.current.copy(self._stash)
         self._stash = None
 
     @profile
     def commit(self):
-        """Commits the current changes."""
-        # do not use '+=' to create a new object (and not modified previous values)
-        self._primal = self._primal + self._primal_step
-        self._primal_step = None
-        self._time += self._time_step
-        self._time_step = 0.0
+        """Commits the current changes and add the state on the stack."""
+        # do not use '+=' to create a new object (and not modify previous values)
+        current = self.current
+        current._primal = current._primal
+        if current._primal_step:
+            current._primal += current._primal_step
+        current._primal_step = None
+        current._time += current._time_step
+        current._time_step = 0.0
         self._stash = None
+        if len(self._stack) >= self._size:
+            self._stack.pop(0)
+        self._stack.append(current)
+        self._current = PhysicalState.State().copy(current)
+
+    @profile
+    def getCurrentDelta(self):
+        """Return the delta for the current state between it has been stashed.
+
+        Returns:
+            dict: Delta between states as returned by py:method:`as_dict`.
+        """
+        return self._states_difference(self._stash, self.current)
+
+    @profile
+    def getDeltaBetweenStates(self, index1, index2):
+        """Return the delta between two states.
+
+        The states are extracted using `getState(index)`.
+        It returns the difference `getState(index2) - getState(index1)`.
+
+        Arguments:
+            index1 (int): Index of the first state.
+            index2 (int): Index of the second state.
+
+        Returns:
+            dict: Delta between states as returned by py:method:`as_dict`.
+        """
+        return self._states_difference(self.getState(index1), self.getState(index2))
+
+    @staticmethod
+    def _states_difference(one, two):
+        """Delta between states as returned by py:method:`as_dict`."""
+        quantity, _ = two.primal.getPhysicalQuantity().split("_")
+        delta_primal = two.primal - one.primal
+        if two.primal:
+            delta_primal += two.primal_step
+        if one.primal:
+            delta_primal -= one.primal_step
+        return {
+            "SIEF_ELGA": two.stress - one.stress,
+            "VARI_ELGA": two.internVar - one.internVar,
+            quantity: delta_primal,
+        }
 
     # FIXME setPrimalValue?
     @profile
@@ -293,14 +395,13 @@ class PhysicalState(BaseFeature):
         Arguments:
             phys_pb (PhysicalProblem): Physical problem
         """
-        self._time = 0.0
-        self._time_step = 0.0
-        self._primal = self.createPrimal(phys_pb, 0.0)
-        self._primal_step = None
-        self._stress = self.createStress(phys_pb, 0.0)
-        self._internVar = self.createInternalVariablesNext(phys_pb, 0.0)
-        self._externVar = None
-        self._externVar_next = None
+        self.time = 0.0
+        self.time_step = 0.0
+        self.primal = self.createPrimal(phys_pb, 0.0)
+        self.primal_step = None
+        self.stress = self.createStress(phys_pb, 0.0)
+        self.internVar = self.createInternalVariablesNext(phys_pb, 0.0)
+        self.externVar = None
 
     def as_dict(self):
         """Returns the fields as a dict.
@@ -308,19 +409,17 @@ class PhysicalState(BaseFeature):
         Returns:
             dict: Dict of fields.
         """
-        quantity, _ = self._primal.getPhysicalQuantity().split("_")
-        return {"SIEF_ELGA": self._stress, "VARI_ELGA": self.internVar, quantity: self._primal}
+        current = self.current
+        quantity, _ = current.primal.getPhysicalQuantity().split("_")
+        return {
+            "SIEF_ELGA": current.stress,
+            "VARI_ELGA": current.internVar,
+            quantity: current.primal,
+        }
 
     def debugPrint(self, label=""):
-        print(f"*** {label}Physical State at", self._time, flush=True)
-        values = self._primal.getValues()
-        print("* primal     ", sum(values) / len(values), flush=True)
-        if self._primal_step:
-            values = self._primal_step.getValues()
-            print("* primal_step", sum(values) / len(values), flush=True)
-        if self._stress:
-            values = self._stress.getValues()
-            print("* stress     ", sum(values) / len(values), flush=True)
-        if self._internVar:
-            values = self._internVar.getValues()
-            print("* internVar  ", sum(values) / len(values), flush=True)
+        print(
+            f"*** {label}Stack contains states for t =",
+            [state.time for state in self._stack],
+            flush=True,
+        )

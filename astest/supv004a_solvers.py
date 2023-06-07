@@ -529,43 +529,113 @@ class TestPhysicalState(unittest.TestCase):
         def __init__(self, value):
             self.value = value
 
+        def __add__(self, other):
+            add = self.duplicate()
+            add.value += other.value
+            return add
+
         def duplicate(self):
             return TestPhysicalState.FakeField(self.value)
 
+        def getValues(self):
+            return [self.value]
+
     def test01_stash(self):
-        phys = PhysicalState()
-        self.assertIsNone(phys._time)
-        self.assertIsNone(phys._primal)
+        phys = PhysicalState(size=2)
+        # []
+        self.assertEqual(len(phys._stack), 0)
+        self.assertIsNone(phys.time)
+        self.assertIsNone(phys.primal)
         self.assertIsNone(phys._stash)
 
         phys.stash()
-
+        # set values at t=0
         phys.time = 0.0
-        phys._primal = TestPhysicalState.FakeField(100.0)
+        phys.time_step = 0.0
+        # can not use the setters with FakeField object
+        phys.current._primal = TestPhysicalState.FakeField(99.0)
+        phys.current._primal_step = TestPhysicalState.FakeField(1.0)
         self.assertEqual(phys.time, 0.0)
-        self.assertEqual(phys.primal.value, 100.0)
+        self.assertEqual(phys.primal.value, 99.0)
+        self.assertEqual(phys.primal_step.value, 1.0)
         self.assertIsNotNone(phys._stash)
         self.assertIsNone(phys._stash._time)
-        self.assertIsNone(phys._stash._primal)
+        self.assertIsNone(phys._stash.primal)
+        # valid this state
+        phys.commit()
+        self.assertEqual(phys.primal.value, 100.0)
+        self.assertIsNone(phys.primal_step)
+        # [phys_t0]
+        self.assertEqual(len(phys._stack), 1)
 
         phys.stash()
-
         phys.time = 1.0
-        phys._primal = TestPhysicalState.FakeField(123.0)
+        phys.current._primal = TestPhysicalState.FakeField(123.0)
         self.assertEqual(phys.time, 1.0)
         self.assertEqual(phys.primal.value, 123.0)
         self.assertIsNotNone(phys._stash)
         self.assertEqual(phys._stash._time, 0.0)
-        self.assertEqual(phys._stash._primal.value, 100.0)
+        self.assertEqual(phys._stash.primal.value, 100.0)
 
         phys.revert()
         self.assertEqual(phys.time, 0.0)
         self.assertEqual(phys.primal.value, 100.0)
+        self.assertIsNone(phys._stash)
 
         phys.time = 1.0
-        phys.primal.value += 99.0
+        phys.current._primal_step = TestPhysicalState.FakeField(99.0)
         self.assertEqual(phys.time, 1.0)
+        # valid this state
+        phys.commit()
         self.assertEqual(phys.primal.value, 199.0)
+        # [phys_t0, phys_t1]
+        self.assertEqual(len(phys._stack), 2)
+
+    def test02_stack(self):
+        phys = PhysicalState(size=3)
+        # []
+        self.assertEqual(len(phys._stack), 0)
+        self.assertIsNone(phys.time)
+        self.assertIsNone(phys.primal)
+        self.assertIsNone(phys._stash)
+
+        # set values at t=0
+        phys.time = 0.0
+        phys.time_step = 0.0
+        # can not use the setters with FakeField object
+        phys.current._primal = TestPhysicalState.FakeField(99.0)
+        phys.current._primal_step = TestPhysicalState.FakeField(1.0)
+        phys.commit()
+        self.assertEqual(phys.primal.value, 100.0)
+        # [phys_t0]
+        self.assertEqual(len(phys._stack), 1)
+
+        phys.time = 1.0
+        phys.current._primal_step = TestPhysicalState.FakeField(33.0)
+        self.assertEqual(phys.time, 1.0)
+        phys.commit()
+        self.assertEqual(phys.primal.value, 133.0)
+        # [phys_t0, phys_t1]
+        self.assertEqual(len(phys._stack), 2)
+
+        phys.time = 2.0
+        phys.current._primal_step = TestPhysicalState.FakeField(67.0)
+        self.assertEqual(phys.time, 2.0)
+        phys.commit()
+        self.assertEqual(phys.primal.value, 200.0)
+        # [phys_t0, phys_t1, phys_t2]
+        self.assertEqual(len(phys._stack), 3)
+
+        phys.time = 3.0
+        phys.current._primal_step = TestPhysicalState.FakeField(22.0)
+        self.assertEqual(phys.time, 3.0)
+        phys.commit()
+        self.assertEqual(phys.primal.value, 222.0)
+        # [phys_t1, phys_t2, phys_t3]
+        self.assertEqual(len(phys._stack), 3)
+
+        # phys.debugPrint("\n")
+        # phys.current.debugPrint("current: ")
 
 
 class TestConvergenceManager(unittest.TestCase):

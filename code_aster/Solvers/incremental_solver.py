@@ -111,8 +111,8 @@ class IncrementalSolver(SolverFeature, EventSource):
             self.phys_state.internVar,
             self.phys_state.time,
             self.phys_state.time_step,
+            self.phys_state.getState(-1).externVar,
             self.phys_state.externVar,
-            self.phys_state.externVar_next,
         )
 
         residuals.resi_stress = r_stress
@@ -247,8 +247,8 @@ class IncrementalSolver(SolverFeature, EventSource):
                 self.phys_state.internVar,
                 self.phys_state.time,
                 self.phys_state.time_step,
+                self.phys_state.getState(-1).externVar,
                 self.phys_state.externVar,
-                self.phys_state.externVar_next,
             )
         elif matrix_type == "TANGENTE":
             _, codret, matr_elem_rigi = disc_comp.getTangentStiffnessMatrix(
@@ -258,8 +258,8 @@ class IncrementalSolver(SolverFeature, EventSource):
                 self.phys_state.internVar,
                 self.phys_state.time,
                 self.phys_state.time_step,
+                self.phys_state.getState(-1).externVar,
                 self.phys_state.externVar,
-                self.phys_state.externVar_next,
             )
         else:
             raise RuntimeError("Matrix not supported: %s" % (matrix_type))

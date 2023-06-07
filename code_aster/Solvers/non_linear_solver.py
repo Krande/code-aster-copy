@@ -159,22 +159,18 @@ class NonLinearSolver(SolverFeature):
             if init_time is not None:
                 self.stepper.setInitial(init_time)
 
+        self.setExternalStateVariables(init_time)
         phys_state.time = init_time
+        phys_state.commit()
 
     @profile
     def run(self):
         """Solve the problem."""
         self.initialize()
-
-        solv = self.get_feature(SOP.StepSolver)
-
         matr_update_step = self._get("NEWTON", "REAC_ITER", 1)
 
-        # Create field for external state variables
-        if self.phys_pb.getMaterialField().hasExternalStateVariable():
-            self.phys_state.externVar = self.phys_pb.getExternalStateVariables(self.phys_state.time)
-
         # Solve nonlinear problem
+        solv = self.get_feature(SOP.StepSolver)
         while not self.isFinished():
             timeEndStep = self.stepper.getCurrent()
             self.phys_state.time_step = timeEndStep - self.phys_state.time
@@ -184,9 +180,7 @@ class NonLinearSolver(SolverFeature):
                 args = dict(valr=timeEndStep, vali=self.stepper.splitting_level)
                 logger.info(MessageLog.GetText("I", "MECANONLINE6_5", **args))
 
-            if self.phys_pb.getMaterialField().hasExternalStateVariable():
-                self.phys_state.externVar_next = self.phys_pb.getExternalStateVariables(timeEndStep)
-
+            self.setExternalStateVariables(timeEndStep)
             solv.initialize()
             if (self.step_rank + 1) % matr_update_step:
                 solv.current_matrix = self.current_matrix
@@ -215,6 +209,15 @@ class NonLinearSolver(SolverFeature):
         """Call post hooks"""
         for hook in self.get_features(SOP.PostStepHook):
             hook(self.phys_state)
+
+    def setExternalStateVariables(self, current_time):
+        """Compute and set external variables in the physical state.
+
+        Arguments:
+            current_time (float): Current time value.
+        """
+        if self.phys_pb.getMaterialField().hasExternalStateVariable():
+            self.phys_state.externVar = self.phys_pb.getExternalStateVariables(current_time)
 
     def _get(self, keyword, parameter=None, default=None):
         """ "Return a keyword value"""
