@@ -260,8 +260,12 @@ def configure(self):
     if self.get_define("ASTER_HAVE_MPI"):
         self.env.ASRUN_MPI_VERSION = 1
 
-    self.load("mathematics", tooldir="waftools")
+    # bib* configure functions may add options required by prerequisites
+    self.recurse("bibfor")
+    self.recurse("bibcxx")
+    self.recurse("bibc")
 
+    self.load("mathematics", tooldir="waftools")
     self.load("med_cfg", tooldir="waftools")
     self.load("metis", tooldir="waftools")
     self.load("parmetis", tooldir="waftools")
@@ -270,11 +274,8 @@ def configure(self):
     self.load("petsc", tooldir="waftools")
     self.load("runtest", tooldir="waftools")
 
-    self.recurse("bibfor")
     self.recurse("code_aster")
     self.recurse("run_aster")
-    self.recurse("bibcxx")
-    self.recurse("bibc")
     self.recurse("extern")
     self.recurse("mfront")
     self.recurse("i18n")

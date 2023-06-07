@@ -58,15 +58,32 @@ def options(self):
         action="store_false",
         help="disable control of used memory with VmSize",
     )
+    group.add_option(
+        "--enable-ccache",
+        dest="ccache",
+        action="store_true",
+        default=os.environ.get("ENABLE_CCACHE") == "1",
+        help="Build using ccache if it is available, same as ENABLE_CCACHE=1",
+    )
+    group.add_option(
+        "--disable-ccache",
+        dest="ccache",
+        action="store_false",
+        help="Disable the use of ccache (this is the default)",
+    )
 
 
 def configure(self):
     opts = self.options
+    # Configure.find_program uses first self.environ, then os.environ
     if opts.parallel:
-        # Configure.find_program uses first self.environ, then os.environ
         self.environ.setdefault("CC", "mpicc")
         self.environ.setdefault("CXX", "mpicxx")
         self.environ.setdefault("FC", "mpif90")
+    else:
+        self.environ.setdefault("CC", "gcc")
+        self.environ.setdefault("CXX", "g++")
+        self.environ.setdefault("FC", "gfortran")
     self.load_compilers()
     self.check_compilers_version()
     self.check_fortran_verbose_flag()
@@ -88,6 +105,18 @@ def check_compilers_version(self):
 
 @Configure.conf
 def load_compilers(self):
+    if self.options.ccache:
+        try:
+            self.find_program("ccache")
+            env = self.environ
+            if "ccache" not in env["CC"]:
+                env["CC"] = "ccache " + env["CC"]
+            if "ccache" not in env["CXX"]:
+                env["CXX"] = "ccache " + env["CXX"]
+            # if "ccache" not in env["FC"]:
+            #     env["FC"] = "ccache " + env["FC"]
+        except Errors.ConfigurationError:
+            pass
     self.load("compiler_c")
     self.load("compiler_cxx")
     self.load("compiler_fc")
@@ -104,24 +133,23 @@ def load_compilers_mpi(self):
         uselib_store="MPI",
         mandatory=False,
     )
+    # raise ValueError(str(self.env.CC) + "  ///  " + str(self.env.CXX))
 
-    fc = self.env.FC[0]
-    cc = self.env.CC[0]
-    ifort = fc == "mpiifort"
-    icc = cc == "mpiicc"
+    ifort = "ifort" in self.env.FC_NAME.lower()
+    icc = "icc" in self.env.CC_NAME.lower()
 
     # We won't alter environment if Intel compiler is detected...
     if not icc:
-        msg = "Checking " + cc + " package (collect configuration flags)"
-        if not check(path=cc, msg=msg):
+        msg = "Checking C compiler package (collect configuration flags)"
+        if not check(path=self.env.CC, msg=msg):
             self.fatal("Unable to configure the parallel environment for C compiler")
         self.env["CCLINKFLAGS_MPI"] = self.env["LINKFLAGS_MPI"]
         del self.env["LINKFLAGS_MPI"]
 
     # We won't alter environment if Intel compiler is detected...
     if not ifort:
-        msg = "Checking " + fc + " package (collect configuration flags)"
-        if not check(path=fc, msg=msg):
+        msg = "Checking Fortran compiler package (collect configuration flags)"
+        if not check(path=self.env.FC, msg=msg):
             self.fatal("Unable to configure the parallel environment for FORTRAN compiler")
         self.env["FCLINKFLAGS_MPI"] = self.env["LINKFLAGS_MPI"]
         del self.env["LINKFLAGS_MPI"]

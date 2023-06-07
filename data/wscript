@@ -318,7 +318,7 @@ def env2dict(self, src):
     dico["LD_LIBRARY_PATH"] = sep.join(ld_path)
     dico["PYTHONPATH"] = sep.join(py_path)
     dico["SRC"] = src
-    dico["FC"] = env.FC[0]
+    dico["FC"] = " ".join(env.FC)
     flags = [" ".join(env[i]) for i in list(env.keys()) if i.startswith("FCFLAGS")]
     dico["FCFLAGS"] = " ".join(flags)
     dico["BUILD_ENV"] = ""
@@ -474,7 +474,7 @@ def check_config(self):
         self.check_mpiexec()
         self.check_mpi_get_rank()
     cfg.update(self._extract_keys("CFGJS_"))
-    cfg["FC"] = self.env["FC"][0]
+    cfg["FC"] = " ".join(self.env["FC"])
     cfg["FCFLAGS"] = self.env["FCFLAGS"]
     cfg["exectool"] = {
         "valgrind": "valgrind --tool=memcheck --leak-check=full --error-limit=no --track-origins=yes",
