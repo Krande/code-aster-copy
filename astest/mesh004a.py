@@ -76,8 +76,6 @@ matr_elem = dComputation.getElasticStiffnessMatrix()
 
 listLoads = study.getListOfLoads()
 
-monSolver = code_aster.MumpsSolver()
-
 numeDDL = code_aster.ParallelDOFNumbering()
 numeDDL.computeNumbering([matr_elem])
 numeDDL.debugPrint(rank + 30)

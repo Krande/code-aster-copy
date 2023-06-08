@@ -56,8 +56,6 @@ charMeca = AFFE_CHAR_MECA(
     MODELE=monModel, DOUBLE_LAGRANGE="NON", DDL_IMPO=_F(GROUP_NO=("COTE_H"), DZ=1.0)
 )
 
-monSolver = code_aster.MumpsSolver()
-
 resu = MECA_STATIQUE(
     MODELE=monModel, CHAM_MATER=affectMat, EXCIT=(_F(CHARGE=charCine), _F(CHARGE=charMeca))
 )

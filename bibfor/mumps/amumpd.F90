@@ -52,10 +52,9 @@ subroutine amumpd(action, kxmps, rsolu, vcine, nbsol, &
 !---------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
 !
-#include "asterf.h"
-#include "jeveux.h"
-#include "asterf_types.h"
 #include "asterc/matfpe.h"
+#include "asterf_types.h"
+#include "asterf.h"
 #include "asterfort/amumpi.h"
 #include "asterfort/amumpm.h"
 #include "asterfort/amumpp.h"
@@ -70,6 +69,7 @@ subroutine amumpd(action, kxmps, rsolu, vcine, nbsol, &
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
+#include "jeveux.h"
 #include "mumps/dmumps.h"
     character(len=*) :: action
     character(len=14) :: impr
@@ -95,10 +95,10 @@ subroutine amumpd(action, kxmps, rsolu, vcine, nbsol, &
     complex(kind=8) :: cbid(1)
     aster_logical :: lquali, ldist, lresol, lmd, lbid, lpreco, lbis, lpb13, ldet
     aster_logical :: lopfac, lmhpc, lbloc
-    integer, pointer :: slvi(:) => null()
     character(len=24), pointer :: refa(:) => null()
     character(len=24), pointer :: slvk(:) => null()
     real(kind=8), pointer :: slvr(:) => null()
+    integer, pointer :: slvi(:) => null()
     call jemarq()
 !
 !       ------------------------------------------------
@@ -108,7 +108,6 @@ subroutine amumpd(action, kxmps, rsolu, vcine, nbsol, &
 ! --  CAR CES EXCEPTIONS NE SONT PAS JUSTIFIEES
     call matfpe(-1)
     call infdbg('SOLVEUR', ifm, niv)
-
 !
 ! --- PARAMETRE POUR IMPRESSION FICHIER
     lresol = ((impr(1:3) .eq. 'NON') .or. (impr(1:9) .eq. 'OUI_SOLVE'))
@@ -143,7 +142,16 @@ subroutine amumpd(action, kxmps, rsolu, vcine, nbsol, &
 !
     lquali = .false.
 !
-! --- ANALYSE PAR BLOCS
+    lbloc = .false.
+    call jeexin(nosolv//'.SLVK', ibid)
+    if (ibid .ne. 0) then
+        call jeveuo(nosolv//'.SLVK', 'L', vk24=slvk)
+! ---   ANALYSE PAR BLOCS
+!       PAS ENCORE ETENDU AU MODE DISTRIBUE
+        lbloc = (((slvk(5) (1:3) .eq. 'FR+') .or. (slvk(5) (1:3) .eq. 'LR+') .or. &
+                  (slvk(5) (1:4) .eq. 'AUTO')) .and. (.not. lmhpc) .and. (.not. lmd))
+    end if
+!
     if (action(1:5) .ne. 'DETR_') then
         call jeveuo(nosolv//'.SLVK', 'E', vk24=slvk)
         call jeveuo(nosolv//'.SLVR', 'L', vr=slvr)
@@ -155,7 +163,7 @@ subroutine amumpd(action, kxmps, rsolu, vcine, nbsol, &
         posttrait = slvk(11)
         lquali = (epsmax .gt. 0.d0)
 !
-! --- POUR "ELIMINER" LE 2EME LAGRANGE:
+! --- POUR "ELIMINER" LE 2EME LAGRANGE :
 ! --- OPTION DEBRANCHEE SI CALCUL DE DETERMINANT
         klag2 = slvk(6) (1:5)
         lbis = klag2(1:5) .eq. 'LAGR2'
@@ -205,15 +213,13 @@ subroutine amumpd(action, kxmps, rsolu, vcine, nbsol, &
         call dmumps(dmpsk)
         rang = dmpsk%myid
         nbproc = dmpsk%nprocs
+!
 ! ---   POUR TESTER LES APPELS EFFECTIFS AUX THREADS
 !        call amumpu(99, type, kxmps, k12bid, ibid,lbid, kvers, ibid)
 !
 !       --------------------------------------------------------------
 !        CHOIX ICNTL VECTEUR DE PARAMETRES POUR MUMPS (ANALYSE+FACTO):
 !       --------------------------------------------------------------
-!       PAS ENCORE ETENDU AU MODE DISTRIBUE
-        lbloc = (((slvk(5) (1:3) .eq. 'FR+') .or. (slvk(5) (1:3) .eq. 'LR+') .or. &
-                  (slvk(5) (1:4) .eq. 'AUTO')) .and. (.not. lmhpc) .and. (.not. lmd))
         call amumpi(2, lquali, ldist, kxmps, type, lmhpc, lbloc)
 !
 !       -----------------------------------------------------
@@ -265,7 +271,6 @@ subroutine amumpd(action, kxmps, rsolu, vcine, nbsol, &
                     rctdeb, ldist)
         dmpsk%job = 1
         call dmumps(dmpsk)
-
         call amumpt(4, kmonit, temps, rang, nbproc, &
                     kxmps, lquali, type, ietdeb, ietrat, &
                     rctdeb, ldist)
@@ -494,7 +499,6 @@ subroutine amumpd(action, kxmps, rsolu, vcine, nbsol, &
         call amumpt(8, kmonit, temps, rang, nbproc, &
                     kxmps, lquali, type, ietdeb, ietrat, &
                     rctdeb, ldist)
-!
         dmpsk%job = 3
         if (lresol) call dmumps(dmpsk)
 
@@ -569,16 +573,9 @@ subroutine amumpd(action, kxmps, rsolu, vcine, nbsol, &
                     deallocate (dmpsk%jcn, stat=ibid)
                 end if
             end if
-!
-            call jeexin(nosolv//'.SLVK', ibid)
-            if (ibid .ne. 0) then
-                call jeveuo(nosolv//'.SLVK', 'E', vk24=slvk)
-                lbloc = ((slvk(5) (1:4) .eq. 'FR++') .or. (slvk(5) (1:4) .eq. 'LR++'))
-                if ((rang .eq. 0) .and. lbloc) then
-                    deallocate (dmpsk%blkptr, stat=ibid)
-                end if
+            if ((rang .eq. 0) .and. lbloc) then
+                deallocate (dmpsk%blkptr, stat=ibid)
             end if
-!
             etams(kxmps) = ' '
             nonus(kxmps) = ' '
             nomats(kxmps) = ' '

@@ -175,6 +175,9 @@ f3_lagr = hho.projectOnLagrangeSpace(f2_hho)
 diff = f_lagr - f3_lagr
 test.assertAlmostEqual(diff.norm("NORM_2"), 0.0, delta=1e-4)
 
+# this forces deletion of MUMPS objects
+del mySolver
+
 test.printSummary()
 
 FIN()

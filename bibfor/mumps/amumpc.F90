@@ -52,10 +52,9 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol, &
 !---------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
 !
-#include "asterf.h"
-#include "jeveux.h"
-#include "asterf_types.h"
 #include "asterc/matfpe.h"
+#include "asterf_types.h"
+#include "asterf.h"
 #include "asterfort/amumpi.h"
 #include "asterfort/amumpm.h"
 #include "asterfort/amumpp.h"
@@ -70,6 +69,7 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol, &
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
+#include "jeveux.h"
 #include "mumps/cmumps.h"
     character(len=*) :: action
     character(len=14) :: impr
@@ -94,10 +94,10 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol, &
     real(kind=8) :: epsmax, valr(2), rctdeb, rbid(1), temps(6), epsmat
     aster_logical :: lquali, ldist, lresol, lmd, lbid, lpreco, lbis, lpb13, ldet
     aster_logical :: lopfac, lmhpc, lbloc
+    character(len=24), pointer :: refa(:) => null()
+    character(len=24), pointer :: slvk(:) => null()
     real(kind=8), pointer :: slvr(:) => null()
     integer, pointer :: slvi(:) => null()
-    character(len=24), pointer :: slvk(:) => null()
-    character(len=24), pointer :: refa(:) => null()
     call jemarq()
 !
 !       ------------------------------------------------
@@ -124,40 +124,6 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol, &
     ASSERT((rouc .eq. 'C') .and. (prec .eq. 'S'))
     cmpsk => cmps(kxmps)
     iret = 0
-    call jeveuo(nosolv//'.SLVK', 'E', vk24=slvk)
-    call jeveuo(nosolv//'.SLVR', 'L', vr=slvr)
-    call jeveuo(nosolv//'.SLVI', 'E', vi=slvi)
-!
-! --- L'UTILISATEUR VEUT-IL UNE ESTIMATION DE LA QUALITE DE LA SOL ?
-! --- => LQUALI
-!
-    epsmax = slvr(2)
-    lquali = (epsmax .gt. 0.d0)
-    posttrait = slvk(11)
-!
-! --- POUR "ELIMINER" LE 2EME LAGRANGE :
-! --- OPTION DEBRANCHEE SI CALCUL DE DETERMINANT
-    klag2 = slvk(6) (1:5)
-    lbis = klag2(1:5) .eq. 'LAGR2'
-!
-! --- TRES PROBABLEMENT COMMANDE FACTORISER (POSTTRAITEMENTS
-! --- INITIALISE A 'XXXX'). ON NE DETRUIRA RIEN A L'ISSU DE LA
-! --- FACTO, AU CAS OU UN OP. RESOUDRE + RESI_RELA>0 SUIVRAIT
-    if (slvk(11) (1:4) .eq. 'XXXX') then
-        lopfac = .true.
-    else
-        lopfac = .false.
-    end if
-!
-! --- TYPE DE RESOLUTION
-    ktypr = slvk(3) (1:8)
-    if (ktypr(1:6) .eq. 'SYMDEF') then
-        call utmess('F', 'FACTOR_80')
-    end if
-!
-! --- PARAMETRE NPREC
-!
-    nprec = slvi(1)
 !
 ! --- MUMPS PARALLELE DISTRIBUE ?
     call jeveuo(nomat//'.REFA', 'L', vk24=refa)
@@ -168,27 +134,68 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol, &
 ! --- MATRICE ASTER DISTRIBUEE ?
     call dismoi('MATR_DISTRIBUEE', nomat, 'MATR_ASSE', repk=matd)
     lmd = matd .eq. 'OUI'
-
 !
 ! --- MATRICE ASTER HPC ?
     call dismoi('MATR_HPC', nomat, 'MATR_ASSE', repk=mathpc)
     lmhpc = mathpc .eq. 'OUI'
-
-! --- ANALYSE PAR BLOCS
-!     PAS ENCORE ETENDU AU MODE DISTRIBUE
-    lbloc = (((slvk(5) (1:3) .eq. 'FR+') .or. (slvk(5) (1:3) .eq. 'LR+') .or. &
-              (slvk(5) (1:4) .eq. 'AUTO')) .and. (.not. lmhpc) .and. (.not. lmd))
+!
+    lquali = .false.
+!
+    lbloc = .false.
+    call jeexin(nosolv//'.SLVK', ibid)
+    if (ibid .ne. 0) then
+        call jeveuo(nosolv//'.SLVK', 'L', vk24=slvk)
+! ---   ANALYSE PAR BLOCS
+!       PAS ENCORE ETENDU AU MODE DISTRIBUE
+        lbloc = (((slvk(5) (1:3) .eq. 'FR+') .or. (slvk(5) (1:3) .eq. 'LR+') .or. &
+                  (slvk(5) (1:4) .eq. 'AUTO')) .and. (.not. lmhpc) .and. (.not. lmd))
+    end if
+!
+    if (action(1:5) .ne. 'DETR_') then
+        call jeveuo(nosolv//'.SLVK', 'E', vk24=slvk)
+        call jeveuo(nosolv//'.SLVR', 'L', vr=slvr)
+        call jeveuo(nosolv//'.SLVI', 'E', vi=slvi)
+!
+! --- L'UTILISATEUR VEUT-IL UNE ESTIMATION DE LA QUALITE DE LA SOL ?
+! --- => LQUALI
+        epsmax = slvr(2)
+        posttrait = slvk(11)
+        lquali = (epsmax .gt. 0.d0)
+!
+! --- POUR "ELIMINER" LE 2EME LAGRANGE :
+! --- OPTION DEBRANCHEE SI CALCUL DE DETERMINANT
+        klag2 = slvk(6) (1:5)
+        lbis = klag2(1:5) .eq. 'LAGR2'
+!
+! --- TRES PROBABLEMENT COMMANDE FACTORISER (POSTTRAITEMENTS
+! --- INITIALISE A 'XXXX'). ON NE DETRUIRA RIEN A L'ISSU DE LA
+! --- FACTO, AU CAS OU UN OP. RESOUDRE + RESI_RELA>0 SUIVRAIT
+        if (slvk(11) (1:4) .eq. 'XXXX') then
+            lopfac = .true.
+        else
+            lopfac = .false.
+        end if
+!
+! --- TYPE DE RESOLUTION
+        ktypr = slvk(3) (1:8)
+        if (ktypr(1:6) .eq. 'SYMDEF') then
+            call utmess('F', 'FACTOR_80')
+        end if
+!
+! --- PARAMETRE NPREC
+        nprec = slvi(1)
 !
 ! --- MUMPS EST-IL UTILISE COMME PRECONDITIONNEUR ?
 ! --- SI OUI, ON DEBRANCHE LES ALARMES ET INFO (PAS LES UTMESS_F)
-    lpreco = slvk(8) (1:3) .eq. 'OUI'
+        lpreco = slvk(8) (1:3) .eq. 'OUI'
 !
 ! --- FILTRAGE DE LA MATRICE DONNEE A MUMPS (UNIQUEMENT NON LINEAIRE)
-    epsmat = slvr(1)
+        epsmat = slvr(1)
 !
 ! --- STRATEGIE MEMOIRE POUR MUMPS
-    usersm = slvk(9) (1:12)
-    nbfact = slvi(6)
+        usersm = slvk(9) (1:12)
+        nbfact = slvi(6)
+    end if
 !
 ! --- POUR MONITORING
     call amumpt(0, kmonit, temps, rang, nbproc, &
@@ -357,14 +364,12 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol, &
 ! ---  ICNTL(14): ON MODIFIE DES PARAMETRES POUR LA NOUVELLE TENTATIVE ET ON REVIENT A L'ANALYSE
                         cmpsk%icntl(14) = cmpsk%icntl(14)*to_mumps_int(pcentp(2))
                         slvi(2) = cmpsk%icntl(14)
-                        if (niv .ge. 2) then
+                        if ((niv .ge. 2) .and. (.not. lpreco)) then
                             vali(1) = cmpsk%icntl(14)/pcentp(2)
                             vali(2) = cmpsk%icntl(14)
                             vali(3) = ifact
                             vali(4) = ifactm
-                            if (.not. lpreco) then
-                                call utmess('I', 'FACTOR_58', ni=4, vali=vali)
-                            end if
+                            call utmess('I', 'FACTOR_58', ni=4, vali=vali)
                         end if
 ! --- DERNIERE CHANCE: ON RAJOUTE L'OOC
                         if (ifact .eq. (ifactm-1)) then
@@ -380,11 +385,9 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol, &
 ! --- CE N'EST UTILE QU' UNE FOIS D'OU LE CONTROLE DE LPB13
                 else if (((iaux .eq. -13) .or. (iaux .eq. -19)) .and. (.not. lpb13)) then
 ! ---  ICNTL(23): ON MODIFIE DES PARAMETRES POUR LA NOUVELLE TENTATIVE ET ON REVIENT A L'ANALYSE
-                    if (niv .ge. 2) then
+                    if ((niv .ge. 2) .and. (.not. lpreco)) then
                         vali(1) = cmpsk%icntl(23)
-                        if (.not. lpreco) then
-                            call utmess('I', 'FACTOR_85', si=vali(1))
-                        end if
+                        call utmess('I', 'FACTOR_85', si=vali(1))
                     end if
                     lpb13 = .true.
                     cmpsk%icntl(23) = 0
@@ -497,6 +500,7 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol, &
                     rctdeb, ldist)
         cmpsk%job = 3
         if (lresol) call cmumps(cmpsk)
+
         call amumpt(10, kmonit, temps, rang, nbproc, &
                     kxmps, lquali, type, ietdeb, ietrat, &
                     rctdeb, ldist)
@@ -553,7 +557,6 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol, &
 !     ------------------------------------------------
 !     ------------------------------------------------
 !
-!
 !       ------------------------------------------------
 !        MENAGE ASTER ET MUMPS:
 !       ------------------------------------------------
@@ -569,7 +572,7 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol, &
                     deallocate (cmpsk%jcn, stat=ibid)
                 end if
             end if
-            if ((rang .eq. 0) .and. (lbloc)) then
+            if ((rang .eq. 0) .and. lbloc) then
                 deallocate (cmpsk%blkptr, stat=ibid)
             end if
             etams(kxmps) = ' '

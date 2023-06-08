@@ -32,19 +32,19 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc, lbloc)
 !---------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
 !
-#include "asterf.h"
-#include "asterf_config.h"
-#include "asterf_types.h"
-#include "threading_interfaces.h"
-#include "jeveux.h"
 #include "asterc/asmpi_comm.h"
 #include "asterc/r4maem.h"
+#include "asterf_config.h"
+#include "asterf_types.h"
+#include "asterf.h"
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
+#include "jeveux.h"
+#include "threading_interfaces.h"
     integer :: kxmps, option
     aster_logical :: lquali, ldist, lmhpc, lbloc
     character(len=1) :: type
