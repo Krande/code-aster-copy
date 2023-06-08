@@ -23,6 +23,7 @@ subroutine pewext(resu)
 #include "asterfort/assert.h"
 #include "asterfort/cnocns.h"
 #include "asterfort/cnsdot.h"
+#include "asterfort/cnsreddepl.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/getvid.h"
@@ -118,11 +119,15 @@ subroutine pewext(resu)
 !          LA MEME NUMEROTATION, C'EST POURQUOI ON PASSE PAR DES
 !          CHAMPS SIMPLES :
         call cnocns(depla1, 'V', depls1)
+!       suppression des composantes non concernées
+        call cnsreddepl(depls1)
 !
 !       EXTRACTION DU CHAMP DE FORCE NODALE
         call rsexch('F', result, 'FORC_NODA', numord, force1, &
                     iret)
         call cnocns(force1, 'V', forcs1)
+!       suppression des composantes non concernées
+        call cnsreddepl(forcs1)
 !
 !       CALCUL DU PRODUIT SCALAIRE F.U
         call cnsdot(depls1, forcs1, f1u1, ier)
