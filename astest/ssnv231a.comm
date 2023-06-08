@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -94,6 +94,8 @@ LREEL=DEFI_LIST_REEL(DEBUT=0.,
 
 LINST=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LREEL),);
 
+trav_calc = [3.67640e05, 3.67657e05]
+
 #for i in range(0,len(model)):
 for i in range(0,2):
 
@@ -148,6 +150,16 @@ for i in range(0,2):
                        RESULTAT=RESU[i],
                        CRITERES=('SIEQ_ELGA','SIEQ_NOEU'),
                        CONTRAINTE=('SIEF_NOEU'),);
+        FORCE=("FORC_NODA"),
+    )
+
+    TRAVEXT = POST_ELEM(TRAV_EXT=_F(), RESULTAT=RESU[i])
+
+    TEST_TABLE(
+        TABLE=TRAVEXT,
+        NOM_PARA="TRAV_REEL",
+        FILTRE=_F(NOM_PARA="INST", VALE=1.0),
+        VALE_CALC=trav_calc[i],
 
 #Calcul de la solution analytique
     SIG=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
