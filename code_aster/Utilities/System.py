@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -174,8 +174,10 @@ class SYSTEM:
         if follow_output and verbose:
             print(os.linesep + _("Command output :"))
 
-        fout = tempfile.NamedTemporaryFile()
-        ferr = tempfile.NamedTemporaryFile()
+        fout = tempfile.NamedTemporaryFile(delete=False)
+        fout.close()
+        ferr = tempfile.NamedTemporaryFile(delete=False)
+        ferr.close()
         if bg:
             new_cmd = cmd + " &"
         elif follow_output:
@@ -189,9 +191,9 @@ class SYSTEM:
             self._print("modified cmd :", new_cmd)
         # execution
         iret = os.system(new_cmd)
-        fout.seek(0)
+        fout = open(fout.name, "rb")
         output = fout.read().decode()
-        ferr.seek(0)
+        ferr = open(ferr.name, "rb")
         error = ferr.read().decode()
         fout.close()
         ferr.close()
