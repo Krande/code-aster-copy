@@ -151,7 +151,7 @@ class ExecutionParameter(metaclass=Singleton):
         self._args["versMIN"] = version[1]
         self._args["versSUB"] = version[2]
         self._args["exploit"] = version_info.branch.startswith("v")
-        self._args["versionD0"] = "%d.%02d.%02d" % version
+        self._args["versionD0"] = "%2d.%02d.%02d" % version
         self._args["versLabel"] = get_version_desc()
 
         self._timer = None
