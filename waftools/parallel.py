@@ -113,8 +113,8 @@ def load_compilers(self):
                 env["CC"] = "ccache " + env["CC"]
             if "ccache" not in env["CXX"]:
                 env["CXX"] = "ccache " + env["CXX"]
-            # if "ccache" not in env["FC"]:
-            #     env["FC"] = "ccache " + env["FC"]
+            if "ccache" not in env["FC"]:
+                env["FC"] = "ccache " + env["FC"]
         except Errors.ConfigurationError:
             pass
     self.load("compiler_c")
