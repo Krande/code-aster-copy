@@ -27,7 +27,14 @@ legacy operators and pure Python instructions.
 import numpy
 
 from . import DataStructure as DS
-from .SyntaxUtils import debug_message2, force_list, old_complex, remove_none, value_is_sequence
+from .SyntaxUtils import (
+    convert_complex,
+    debug_message2,
+    force_list,
+    old_complex,
+    remove_none,
+    value_is_sequence,
+)
 
 
 class CheckerError(Exception):
@@ -442,11 +449,17 @@ class SyntaxCheckerVisitor:
                         ):
                             value = userOcc[key] = value[0]
                     else:
-                        if value is not None and not value_is_sequence(value):
-                            value = userOcc[key] = [value]
+                        if value is not None:
+                            if not value_is_sequence(value):
+                                value = userOcc[key] = [value]
+                            if kwd.definition.get("typ") == "C" and isinstance(value[0], str):
+                                value = [value]
                     self._stack.append(key)
                     kwd.accept(self, value)
                     self._stack.pop()
+                    # exception for complex
+                    if value is not None and kwd.definition.get("typ") == "C":
+                        userOcc[key] = convert_complex(value)
 
 
 def checkCommandSyntax(command, keywords, add_default=True, max_check=99999):

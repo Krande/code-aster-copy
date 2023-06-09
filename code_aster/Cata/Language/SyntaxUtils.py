@@ -206,6 +206,22 @@ def old_complex(value):
     return value
 
 
+def convert_complex(value):
+    """Force conversion from real to complex numbers.
+
+    Arguments:
+        value (float|complex|tuple): Real, complex, old-complex or list of
+            these types.
+
+    Returns:
+        complex|list[complex]: Complex of list of complex.
+    """
+    value = old_complex(value)
+    if isinstance(value, (int, float, complex)):
+        return complex(value)
+    return [old_complex(i) for i in value]
+
+
 def enable_0key(values):
     """Emulate the legacy MCFACT behavior: MCFACT[0] returns MCFACT itself
     to simulate a list of length 1.
