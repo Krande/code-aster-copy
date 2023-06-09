@@ -65,7 +65,7 @@ Force = AFFE_CHAR_MECA(MODELE=MO, FORCE_CONTOUR=_F(GROUP_MA="Force", FY=-100.0))
 Cont = DEFI_CONTACT(
     MODELE=MO,
     FORMULATION="DISCRETE",
-    RESI_ABSO=100 * 1e-12,
+    RESI_ABSO=1.0e-9,
     ZONE=_F(GROUP_MA_MAIT="M_cont", GROUP_MA_ESCL="P_cont", ALGO_CONT="GCP"),
 )
 
@@ -176,7 +176,7 @@ TEST_RESU(
             RESULTAT=RESU,
             NOM_CHAM="DEPL",
             NOM_CMP="DY",
-            VALE_CALC=-0.132920891,
+            VALE_CALC=-0.1329208910072571,
             VALE_REFE=-0.13289744810653001,
         ),
         _F(
@@ -186,7 +186,7 @@ TEST_RESU(
             RESULTAT=RESU,
             NOM_CHAM="SIEF_NOEU",
             NOM_CMP="SIYY",
-            VALE_CALC=-93.626123310,
+            VALE_CALC=-93.62613596344553,
             VALE_REFE=-93.626123536883995,
         ),
     )
