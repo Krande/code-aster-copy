@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -214,6 +214,8 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
                     exit
                 endif
             enddo
+            ncar = 1
+            nval = 1
         else
             call getvtx('BARRE', 'CARA', iocc=ioc, nbval=nbcar, vect=cara, nbret=ncar)
             call getvr8('BARRE', 'VALE', iocc=ioc, nbval=nbval, vect=vale, nbret=nval)
@@ -241,8 +243,7 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
                     do k = 1, nbtel
                         if (nutyel .eq. ntyele(k)) then
                             call affbar(tmpgen, tmpgef, fcx, nommai, isec,&
-                                        cara, vale, expbar, nbcar, kioc,&
-                                        ier)
+                                        cara, vale, expbar, ncar, kioc, ier)
                             cycle groupe
                         endif
                     enddo
