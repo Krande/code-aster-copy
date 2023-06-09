@@ -40,6 +40,7 @@ import argparse
 import os
 import os.path as osp
 import re
+import stat
 import sys
 import tempfile
 from math import ceil
@@ -48,6 +49,7 @@ from subprocess import run
 from .export import Export
 from .logger import logger
 from .utils import RUNASTER_ROOT
+from .config import CFG
 
 USAGE = """
     run_sbatch [sbatch-options] FILE.export
@@ -99,6 +101,9 @@ def parse_args(argv):
         usage=USAGE, epilog=EPILOG, formatter_class=argparse.RawDescriptionHelpFormatter
     )
     parser.add_argument(
+        "-n", "--dry-run", action="store_true", help="do not execute, just show the script content"
+    )
+    parser.add_argument(
         "file", metavar="FILE.export", help="Export file (.export) defining the calculation."
     )
 
@@ -145,13 +150,15 @@ def main(argv=None):
         nbnodes = int(mat.group(1))
 
     # initialized with default values
+    addmem = CFG.get("addmem", 0.0)
+    memory = export.get("memory_limit", 16384) + addmem
     params = dict(
         name=osp.splitext(osp.basename(args.file))[0],
         mpi_nbcpu=export.get("mpi_nbcpu", 1),
         mpi_nbnodes=nbnodes,
         time_limit=export.get("time_limit", 3600),
-        memory_limit=export.get("memory_limit", 16384),
-        memory_node=export.get("memory_limit", 16384),
+        memory_limit=memory,
+        memory_node=memory,
         opt_exclusive="",
         study=args.file,
         RUNASTER_ROOT=RUNASTER_ROOT,
@@ -160,11 +167,15 @@ def main(argv=None):
 
     logger.debug("Parameters: %s", params)
     content = TEMPLATE.format(**params)
-    with tempfile.NamedTemporaryFile(mode="w", delete=False) as fobj:
+    with tempfile.NamedTemporaryFile(prefix="batch", suffix=".sh", mode="w", delete=False) as fobj:
         fobj.write(content)
         script = fobj.name
 
     logger.info("+ submitted script:\n%s", content)
+    os.chmod(script, stat.S_IRWXU)
+    if args.dry_run:
+        logger.info("+ filename: %s", script)
+        return 0
     try:
         proc = _run(["sbatch"] + sbatch_args + [script])
     finally:
