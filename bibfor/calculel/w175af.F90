@@ -170,8 +170,8 @@ subroutine w175af(modele, chfer1)
 !
 !     2.3 CHOIX ALGO CALCUL 2D :
     call getvtx(' ', 'METHODE_2D', scal=meth2D, nbret=n3)
-    if (meth2D .eq. 'Capra-Maury') valrmt = 1.d0
-    if (meth2D .eq. 'Sandwich') valrmt = 2.d0
+    if (meth2D .eq. 'CAPRA-MAURY') valrmt = 1.d0
+    if (meth2D .eq. 'SANDWICH') valrmt = 2.d0
     valv(3) = valrmt
 !
 !     2.4 CHOIX CRITERES DE PRECISION :

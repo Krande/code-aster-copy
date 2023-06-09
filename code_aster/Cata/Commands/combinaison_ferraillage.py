@@ -53,8 +53,8 @@ COMBINAISON_FERRAILLAGE = MACRO(
     METHODE_2D=SIMP(
         statut="f",
         typ="TXM",
-        defaut="Capra-Maury",
-        into=("Capra-Maury", "Sandwich"),
+        defaut="CAPRA-MAURY",
+        into=("CAPRA-MAURY", "SANDWICH"),
         fr=tr("Choix de l'algorithme de calcul 2D"),
     ),
     PAS_THETA=SIMP(
