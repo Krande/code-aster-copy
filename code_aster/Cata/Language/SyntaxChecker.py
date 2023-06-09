@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,8 +29,15 @@ Warning: Default keywords must be added before checking the syntax.
 import numpy
 
 from . import DataStructure as DS
-from .SyntaxUtils import (debug_message2, force_list, mixedcopy, old_complex,
-                          remove_none, value_is_sequence)
+from .SyntaxUtils import (
+    convert_complex,
+    debug_message2,
+    force_list,
+    mixedcopy,
+    old_complex,
+    remove_none,
+    value_is_sequence,
+)
 
 
 class CheckerError(Exception):
@@ -431,11 +438,17 @@ class SyntaxCheckerVisitor:
                                 and not isinstance(value[0], dict)):
                             value = userOcc[key] = value[0]
                     else:
-                        if value is not None and not value_is_sequence(value):
-                            value = userOcc[key] = [value]
+                        if value is not None:
+                            if not value_is_sequence(value):
+                                value = userOcc[key] = [value]
+                            if kwd.definition.get("typ") == "C" and isinstance(value[0], str):
+                                value = [value]
                     self._stack.append(key)
                     kwd.accept(self, value)
                     self._stack.pop()
+                    # exception for complex
+                    if value is not None and kwd.definition.get("typ") == "C":
+                        userOcc[key] = convert_complex(value)
 
 
 def checkCommandSyntax(command, keywords, add_default=True, max_check=99999):

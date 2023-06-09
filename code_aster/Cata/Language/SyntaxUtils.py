@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -202,6 +202,22 @@ def old_complex(value):
             value = complex(value[1] * math.cos(value[2] * math.pi / 180.),
                             value[1] * math.sin(value[2] * math.pi / 180.))
     return value
+
+def convert_complex(value):
+    """Force conversion from real to complex numbers.
+
+    Arguments:
+        value (float|complex|tuple): Real, complex, old-complex or list of
+            these types.
+
+    Returns:
+        complex|list[complex]: Complex of list of complex.
+    """
+    value = old_complex(value)
+    if isinstance(value, (int, float, complex)):
+        return complex(value)
+    return [old_complex(i) for i in value]
+
 
 def enable_0key(values):
     """Emulate the legacy MCFACT behavior: MCFACT[0] returns MCFACT itself
