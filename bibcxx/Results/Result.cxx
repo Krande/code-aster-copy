@@ -69,6 +69,9 @@ void Result::_setFieldBase(
     if ( !field )
         raiseAsterError( "ValueError: field is empty" );
 
+    // Check mesh
+    setMesh( field->getMesh() );
+
     // Get index of this symbolic name
     auto indexSymbName = _symbolicNamesOfFields->getIndexFromString( strip( symbName ) );
 
