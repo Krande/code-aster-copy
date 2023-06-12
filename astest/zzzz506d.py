@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -220,5 +220,15 @@ for rank in range(nbIndexes):
         )
     )
 
+# test issue32923
+v0 = SOLUR.getField("DEPL", 0)
+vmodel = code_aster.FieldOnNodesReal(model)
+vmodel.setValues(1.0)
+
+vnew = vmodel.copyUsingDescription(v0.getDescription())
+
+test.assertSequenceEqual(v0.getComponents(), vnew.getComponents())
+test.assertEqual(v0.getDescription().getNumberOfDOFs(), vnew.size())
+test.assertAlmostEqual(vnew.norm("NORM_2"), vmodel.norm("NORM_2"), delta=1e-12)
 
 FIN()

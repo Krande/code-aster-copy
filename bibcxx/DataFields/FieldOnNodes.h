@@ -158,7 +158,6 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
             dofNume->computeNumbering( {fed}, localMode );
 
             _dofDescription = dofNume->getEquationNumbering();
-            dofName = dofNume->getName();
 #endif
         } else {
             auto dofNume = std::make_shared< DOFNumbering >();
@@ -166,12 +165,11 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
             dofNume->computeNumbering( {fed}, localMode );
 
             _dofDescription = dofNume->getEquationNumbering();
-            dofName = dofNume->getName();
         }
 
         const auto intType = AllowedFieldType< ValueType >::numTypeJeveux;
         CALLO_VTCREB_WRAP( getName(), JeveuxMemoryTypesNames[Permanent], JeveuxTypesNames[intType],
-                           dofName );
+                           _dofDescription->getName() );
 
         this->updateValuePointers();
     };
@@ -196,7 +194,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
 
         const auto intType = AllowedFieldType< ValueType >::numTypeJeveux;
         CALLO_VTCREB_WRAP( getName(), JeveuxMemoryTypesNames[Permanent], JeveuxTypesNames[intType],
-                           dofNume->getName() );
+                           _dofDescription->getName() );
 
         this->updateValuePointers();
     };
@@ -204,23 +202,26 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     /**
      * @brief Constructor with DOFNumbering
      */
-    FieldOnNodes( const BaseDOFNumberingPtr &dofNum ) : FieldOnNodes() {
+    FieldOnNodes( const BaseDOFNumberingPtr &dofNum )
+        : FieldOnNodes( dofNum->getEquationNumbering() ) {};
 
-        if ( !dofNum ) {
-            raiseAsterError( " DOFNumbering is null" );
+    FieldOnNodes( const EquationNumberingPtr &equaNume ) : FieldOnNodes() {
+
+        if ( !equaNume ) {
+            raiseAsterError( "EquatioNumbering is null" );
         }
 
-        _dofDescription = dofNum->getEquationNumbering();
+        _dofDescription = equaNume;
 
         const auto intType = AllowedFieldType< ValueType >::numTypeJeveux;
         CALLO_VTCREB_WRAP( getName(), JeveuxMemoryTypesNames[Permanent], JeveuxTypesNames[intType],
-                           dofNum->getName() );
+                           _dofDescription->getName() );
 
         _reference->updateValuePointer();
         const std::string name2 = strip( ( *_reference )[1].toString() );
         if ( strip( _dofDescription->getName() ) != name2 ) {
             _dofDescription = std::make_shared< EquationNumbering >( name2 );
-            _dofDescription->setMesh( dofNum->getMesh() );
+            _dofDescription->setMesh( equaNume->getMesh() );
         }
 
         this->updateValuePointers();
@@ -522,6 +523,24 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
 
         return toFieldOnNodes( simpFieldRest );
     };
+
+    /**
+     * @brief Wrap of copy constructor
+     * @return new field, copy of the calling field
+     */
+    FieldOnNodesPtr copyUsingDescription( const EquationNumberingPtr desc ) {
+        auto field = std::make_shared< FieldOnNodes< ValueType > >( desc );
+
+        const std::string kstop = " ";
+        ASTERINTEGER iret = -1;
+        CALLO_VTCOPY( getName(), field->getName(), kstop, &iret );
+
+        if ( iret > 0 ) {
+            raiseAsterError( "Failed to change EquationNumbering" );
+        }
+
+        return field;
+    }
 
     /**
      * @brief Set mesh

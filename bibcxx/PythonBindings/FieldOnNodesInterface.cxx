@@ -84,6 +84,19 @@ Returns:
                 FieldOnNodesReal: field restricted.
             )",
               py::arg( "cmps" ) = VectorString(), py::arg( "groupsOfNodes" ) = VectorString() )
+        .def( "copyUsingDescription", &FieldOnNodesReal::copyUsingDescription,
+              R"(
+            Return a new field using the description.
+            Be carefull, Lagrange DOFs are setted to zero. Moreover, components that are
+            not present in the field are also setted to zero in the output field.
+
+            Arguments:
+                desc [EquationNumbering]: description of equations
+
+            Returns:
+                FieldOnNodesReal: field using new description.
+            )",
+              py::arg( "desc" ) )
         .def( "updateValuePointers", &FieldOnNodesReal::updateValuePointers )
         .def( "getComponents", &FieldOnNodesReal::getComponents, R"(
             Get list of components

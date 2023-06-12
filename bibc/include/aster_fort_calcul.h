@@ -205,6 +205,10 @@ void DEFSSSSS( VRCREF, vrcref, const char *, STRING_SIZE, const char *, STRING_S
 void DEFSSSS( VTCREB_WRAP, vtcreb_wrap, const char *, STRING_SIZE, const char *, STRING_SIZE,
               const char *, STRING_SIZE, const char *, STRING_SIZE );
 
+#define CALLO_VTCOPY( a, b, c, d ) CALLOOOP( VTCOPY, vtcopy, a, b, c, d )
+void DEFSSSP( VTCOPY, vtcopy, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
+              STRING_SIZE, ASTERINTEGER * );
+
 #define CALLO_NMDOCC( a, b, c, d, e, f ) CALLOOPOOP( NMDOCC, nmdocc, a, b, c, d, e, f )
 void DEFSSPSSP( NMDOCC, nmdocc, const char *, STRING_SIZE, const char *, STRING_SIZE,
                 ASTERLOGICAL *, const char *, STRING_SIZE, const char *, STRING_SIZE,
