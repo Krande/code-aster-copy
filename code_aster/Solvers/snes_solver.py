@@ -143,8 +143,8 @@ class SNESSolver(SolverFeature):
         p_resi = p_jac.getVecRight()
         p_resi.set(0)
 
-        self._primal_plus = self.phys_state.primal_step.duplicate()
-        self._primal_incr = self.phys_state.primal_step.duplicate()
+        self._primal_plus = self.phys_state.primal_step.copy()
+        self._primal_incr = self.phys_state.primal_step.copy()
 
         snes.setFunction(self._evalFunction, p_resi)
 
@@ -164,7 +164,7 @@ class SNESSolver(SolverFeature):
         snes.setFromOptions()
 
         # solve the nonlinear problem
-        b, x = None, p_resi.duplicate()
+        b, x = None, p_resi.copy()
         x.set(0)  # zero initial guess
         snes.solve(b, x)
 

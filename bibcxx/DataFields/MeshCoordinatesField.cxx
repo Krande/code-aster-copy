@@ -51,7 +51,7 @@ MeshCoordinatesField &MeshCoordinatesField::operator+=( const FieldOnNodesReal &
 
     std::string base( "G" ), cumul( "CUMU" );
     ASTERDOUBLE alpha = 1.;
-    MeshCoordinatesField oldCoord = this->duplicate();
+    MeshCoordinatesField oldCoord = this->copy();
 
     CALLO_VTGPLD( cumul, &alpha, oldCoord.getName(), rhs.getName(), base, getName() );
 
@@ -64,7 +64,7 @@ MeshCoordinatesField &MeshCoordinatesField::operator-=( const FieldOnNodesReal &
 
     std::string base( "G" ), cumul( "CUMU" );
     ASTERDOUBLE alpha = -1.;
-    MeshCoordinatesField oldCoord = this->duplicate();
+    MeshCoordinatesField oldCoord = this->copy();
 
     CALLO_VTGPLD( cumul, &alpha, oldCoord.getName(), rhs.getName(), base, getName() );
 

@@ -792,7 +792,6 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
         return model
 
     def vessel_head_unload(self, RESU):
-
         CALC_CHAMP(
             reuse=RESU,
             RESULTAT=RESU,
@@ -1186,7 +1185,6 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
         logger.debug("<MAC3_CALCUL><LAME>: Mesh deformed inplace.")
 
     def asseChamp(self, depl1, depl2):
-
         cmps = "DX DY DZ".split()
         dtot = depl1.restrict(cmps) + depl2.restrict(cmps)
         dtot.setValues({"DX": 0.0})
@@ -1212,7 +1210,7 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
         depl_tot_ini = self.asseChamp(depl_deformed, depl_ini)
         depl_tot_fin = self.asseChamp(depl_deformed, depl_fin)
 
-        depl_reversed = depl_deformed.duplicate()
+        depl_reversed = depl_deformed.copy()
         depl_reversed *= -1
         self.deform_mesh_inplace(depl_reversed)
 
@@ -1391,7 +1389,6 @@ class Mac3CoeurEtatInitial(Mac3CoeurLame):
         logger.debug("<MAC3_CALCUL><ETAT_INIT>: Prepare Data")
 
     def _run(self, **kwargs):
-
         tinit = self.coeur.temps_simu["T0"]
         tfin = self.coeur.temps_simu["T5"]
 

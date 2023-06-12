@@ -69,7 +69,7 @@ class StepSolver(SolverFeature):
 
         if self._get("CONTACT", "ALGO_RESO_GEOM") == "POINT_FIXE":
             geom_diff = self.phys_state.primal_step - self.geom_step
-            self.geom_step = self.phys_state.primal_step.duplicate()
+            self.geom_step = self.phys_state.primal_step.copy()
         else:
             geom_diff = self.phys_state.createPrimal(self.phys_pb, 0.0)
 

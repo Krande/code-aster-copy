@@ -156,7 +156,7 @@ class FieldOnCells : public DataField {
     /**
      * @brief Wrap of copy constructor
      */
-    FieldOnCells duplicate() { return *this; }
+    FieldOnCells copy() { return *this; }
 
     /**
      * @brief

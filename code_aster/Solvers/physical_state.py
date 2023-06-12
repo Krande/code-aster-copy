@@ -84,11 +84,11 @@ class PhysicalState(BaseFeature):
             """
             self._time = other.time
             self._time_step = other.time_step
-            self._primal = other.primal and other.primal.duplicate()
-            self._primal_step = other.primal_step and other.primal_step.duplicate()
-            self._stress = other.stress and other.stress.duplicate()
-            self._internVar = other.internVar and other.internVar.duplicate()
-            self._externVar = other.externVar and other.externVar.duplicate()
+            self._primal = other.primal and other.primal.copy()
+            self._primal_step = other.primal_step and other.primal_step.copy()
+            self._stress = other.stress and other.stress.copy()
+            self._internVar = other.internVar and other.internVar.copy()
+            self._externVar = other.externVar and other.externVar.copy()
             return self
 
         def debugPrint(self, label=""):

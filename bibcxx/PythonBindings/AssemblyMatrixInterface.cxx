@@ -99,7 +99,7 @@ Arguments:
         )",
               py::arg( "local" ) = true )
         // -----------------------------------------------------------------------------------------
-        .def( "duplicate", &AssemblyMatrixDisplacementReal::duplicate )
+        .def( "copy", &AssemblyMatrixDisplacementReal::copy )
         // -----------------------------------------------------------------------------------------
         .def( "getUpperValues", &AssemblyMatrixDisplacementReal::getUpperValues )
         .def( "getLowerValues", &AssemblyMatrixDisplacementReal::getLowerValues )
@@ -161,7 +161,7 @@ Arguments:
         // -----------------------------------------------------------------------------------------
         .def( "defineSolver", &AssemblyMatrixDisplacementComplex::defineSolver )
         // -----------------------------------------------------------------------------------------
-        .def( "duplicate", &AssemblyMatrixDisplacementComplex::duplicate )
+        .def( "copy", &AssemblyMatrixDisplacementComplex::copy )
         // -----------------------------------------------------------------------------------------
         .def( "getUpperValues", &AssemblyMatrixDisplacementComplex::getUpperValues )
         .def( "getLowerValues", &AssemblyMatrixDisplacementComplex::getLowerValues )
@@ -237,7 +237,7 @@ Arguments:
         )",
               py::arg( "local" ) = true )
         // -----------------------------------------------------------------------------------------
-        .def( "duplicate", &AssemblyMatrixTemperatureReal::duplicate )
+        .def( "copy", &AssemblyMatrixTemperatureReal::copy )
         // -----------------------------------------------------------------------------------------
         .def( "getUpperValues", &AssemblyMatrixTemperatureReal::getUpperValues )
         .def( "getLowerValues", &AssemblyMatrixTemperatureReal::getLowerValues )
@@ -322,7 +322,7 @@ Arguments:
     jdx (list[int]): List of the column indices.
     values (list[float]): List of the values.
         )" )
-        .def( "duplicate", &AssemblyMatrixPressureReal::duplicate )
+        .def( "copy", &AssemblyMatrixPressureReal::copy )
         // -----------------------------------------------------------------------------------------
         .def( float() * py::self )
         .def( py::self *= float() )
@@ -363,7 +363,7 @@ Arguments:
         // -----------------------------------------------------------------------------------------
         .def( "defineSolver", &AssemblyMatrixPressureComplex::defineSolver )
         // -----------------------------------------------------------------------------------------
-        .def( "duplicate", &AssemblyMatrixPressureComplex::duplicate )
+        .def( "copy", &AssemblyMatrixPressureComplex::copy )
         // -----------------------------------------------------------------------------------------
         .def( "getUpperValues", &AssemblyMatrixPressureComplex::getUpperValues )
         .def( "getLowerValues", &AssemblyMatrixPressureComplex::getLowerValues )

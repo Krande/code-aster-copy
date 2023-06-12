@@ -57,11 +57,11 @@ RESU = CALC_CHAMP(reuse=RESU, RESULTAT=RESU, THERMIQUE=("FLUX_ELGA", "FLUX_ELNO"
 
 # Extraction des champs (TEMP, FLUX)
 
-TEMP0 = RESU.getField("TEMP", 1).duplicate()
+TEMP0 = RESU.getField("TEMP", 1).copy()
 
-FLUX0 = RESU.getField("FLUX_ELGA", 1).duplicate()
+FLUX0 = RESU.getField("FLUX_ELGA", 1).copy()
 
-FLUX1 = RESU.getField("FLUX_ELNO", 1).duplicate()
+FLUX1 = RESU.getField("FLUX_ELNO", 1).copy()
 
 
 # Formule

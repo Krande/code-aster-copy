@@ -141,7 +141,7 @@ def _setupInitialField(phys_pb, args):
 
             index = timelist.index(initial_state["INST"])
 
-        initial_field = resu_ther.getField("TEMP", index).duplicate()
+        initial_field = resu_ther.getField("TEMP", index).copy()
         logger.debug(
             "<THER_LINEAIRE><ETAT_INIT>: Initialized with field from '%s' at index '%s'"
             % (resu_ther.getName(), index)

@@ -40,7 +40,7 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< FieldOnNodesReal, const FieldOnNodesReal & > ) )
         .def( py::init( &initFactoryPtr< FieldOnNodesReal, ModelPtr > ) )
         .def( py::init( &initFactoryPtr< FieldOnNodesReal, BaseDOFNumberingPtr > ) )
-        .def( "duplicate", &FieldOnNodesReal::duplicate )
+        .def( "copy", &FieldOnNodesReal::copy )
         .def( "toSimpleFieldOnNodes",
               []( const FieldOnNodesReal &f ) { return toSimpleFieldOnNodes( f ); },
               R"(

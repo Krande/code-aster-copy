@@ -326,7 +326,7 @@ class AssemblyMatrix : public BaseAssemblyMatrix {
         throw std::runtime_error( "Not implemented" );
     };
 
-    AssemblyMatrix duplicate() { return *this; };
+    AssemblyMatrix copy() { return *this; };
 
     /**
      * @brief Methode permettant de definir si un solveur est attribué à la matrice

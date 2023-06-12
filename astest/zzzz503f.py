@@ -86,11 +86,11 @@ test.assertAlmostEqual(fieldOnElem3[0], -651.8212523776659)
 fieldOnElem3 = -fieldOnElem1
 test.assertAlmostEqual(fieldOnElem3[0], -fieldOnElem1[0])
 
-fieldOnElem3 = fieldOnElem1.duplicate()
+fieldOnElem3 = fieldOnElem1.copy()
 fieldOnElem3 += fieldOnElem1
 test.assertAlmostEqual(fieldOnElem3[0], 2 * fieldOnElem1[0])
 
-fieldOnElem3 = fieldOnElem2.duplicate()
+fieldOnElem3 = fieldOnElem2.copy()
 fieldOnElem3 -= fieldOnElem1
 
 # this force "fieldOnElem2._values->updateValuePointer()"

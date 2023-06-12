@@ -54,7 +54,7 @@ void exportFieldOnCellsToPython( py::module_ &mod ) {
                             const ElementaryCharacteristicsPtr carael ) {
             return FieldOnCellsPtrBuilder< ASTERDOUBLE >( model, loc, quantity, nullptr, carael );
         } ) )
-        .def( "duplicate", &FieldOnCellsReal::duplicate, R"(
+        .def( "copy", &FieldOnCellsReal::copy, R"(
             Return a duplicated FieldOnCellsReal as a copy
 
             Returns:
@@ -231,7 +231,7 @@ Returns:
         .def( py::init( &initFactoryPtr< FieldOnCellsComplex > ) )
         .def( py::init( &initFactoryPtr< FieldOnCellsComplex, std::string > ) )
         .def( py::init< const FieldOnCellsComplex & >() )
-        .def( "duplicate", &FieldOnCellsComplex::duplicate )
+        .def( "copy", &FieldOnCellsComplex::copy )
         .def( "setDescription", &FieldOnCellsComplex::setDescription )
         .def( "getDescription", &FieldOnCellsComplex::getDescription )
         .def( "getMesh", &FieldOnCellsComplex::getMesh, R"(
@@ -332,7 +332,7 @@ Returns:
         .def( py::init( &initFactoryPtr< FieldOnCellsLong > ) )
         .def( py::init( &initFactoryPtr< FieldOnCellsLong, std::string > ) )
         .def( py::init< const FieldOnCellsLong & >() )
-        .def( "duplicate", &FieldOnCellsLong::duplicate )
+        .def( "copy", &FieldOnCellsLong::copy )
         .def( "setDescription", &FieldOnCellsLong::setDescription )
         .def( "getDescription", &FieldOnCellsLong::getDescription )
         .def( "getMesh", &FieldOnCellsLong::getMesh, R"(

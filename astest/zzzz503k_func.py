@@ -52,9 +52,9 @@ class CoupledState:
     time = None
 
     def __init__(self, u, dx, d, time=0.0):
-        self.u = u.duplicate()
-        self.dx = dx.duplicate()
-        self.d = d.duplicate()
+        self.u = u.copy()
+        self.dx = dx.copy()
+        self.d = d.copy()
         self.time = time
 
     def projectOnLagrangeSpace(self, hho_meca, hho_dama):
@@ -64,11 +64,11 @@ class CoupledState:
 
     def duplicate(self):
         dup = CoupledState(self.u, self.dx, self.d, self.time)
-        dup.u_nodes = self.u_nodes.duplicate()
-        dup.dx_nodes = self.dx_nodes.duplicate()
-        dup.d_nodes = self.d_nodes.duplicate()
-        dup.vari_elga = self.vari_elga.duplicate()
-        dup.sief_elga = self.sief_elga.duplicate()
+        dup.u_nodes = self.u_nodes.copy()
+        dup.dx_nodes = self.dx_nodes.copy()
+        dup.d_nodes = self.d_nodes.copy()
+        dup.vari_elga = self.vari_elga.copy()
+        dup.sief_elga = self.sief_elga.copy()
 
         return dup
 
@@ -115,9 +115,9 @@ class MecaSolver:
         )
 
         return (
-            resuMeca.getField("DEPL", 1).duplicate(),
-            resuMeca.getField("SIEF_ELGA", 1).duplicate(),
-            resuMeca.getField("VARI_ELGA", 1).duplicate(),
+            resuMeca.getField("DEPL", 1).copy(),
+            resuMeca.getField("SIEF_ELGA", 1).copy(),
+            resuMeca.getField("VARI_ELGA", 1).copy(),
         )
 
 
@@ -237,9 +237,9 @@ class CoupledSolver:
             state_curr.time = stepper.getCurrent()
             print("Time : %f" % stepper.getCurrent())
             for it in range(100):
-                u_iter = state_curr.u.duplicate()
-                dx_iter = state_curr.dx.duplicate()
-                d_iter = state_curr.d.duplicate()
+                u_iter = state_curr.u.copy()
+                dx_iter = state_curr.dx.copy()
+                d_iter = state_curr.d.copy()
 
                 # solve mechanical problem
                 state_curr.u, state_curr.sief_elga, state_curr.vari_elga = meca_solver.solve(
@@ -262,6 +262,6 @@ class CoupledSolver:
             # finish step
             stepper.completed()
 
-            state_prev = state_curr.duplicate()
+            state_prev = state_curr.copy()
 
         return state_curr

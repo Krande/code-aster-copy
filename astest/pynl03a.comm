@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -100,7 +100,7 @@ T = CREA_CHAMP(
     NUME_DDL=NU,
     AFFE=_F(TOUT="OUI", NOM_CMP=("TEMP"), VALE=(temp_init,)),
 )
-DELTA_T = T.duplicate() * 0
+DELTA_T = T.copy() * 0
 
 for i_inst in range(1, len(l_inst)):
     inst = l_inst[i_inst]
@@ -308,7 +308,7 @@ for i_inst in range(1, len(l_inst)):
         FIN()
 
     # Somme en python T+ = DELTA_t + T-
-    T = DELTA_T.duplicate()
+    T = DELTA_T.copy()
 
     DELTA_T *= 0.0
 

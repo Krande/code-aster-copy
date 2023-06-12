@@ -35,7 +35,7 @@ coord = mesh.getCoordinates()
 test.assertEqual(coord.getType(), "CHAM_GEOM")
 # help(coord)
 
-coord1 = coord.duplicate()
+coord1 = coord.copy()
 test.assertEqual(coord.getValues(), coord1.getValues())
 # check readonly access
 print("coord[3] ", coord[3])

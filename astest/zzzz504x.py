@@ -77,7 +77,7 @@ test.assertEqual(matrAsse.getType(), "MATR_ASSE_DEPL_R")
 matrAsse *= 2.0
 matrAsse *= 0.5
 
-matrAsse2 = matrAsse.duplicate()
+matrAsse2 = matrAsse.copy()
 
 test.assertNotEqual(matrAsse.getName(), matrAsse2.getName())
 test.assertEqual(matrAsse.isEmpty(), matrAsse2.isEmpty())
@@ -106,7 +106,7 @@ test.assertAlmostEqual(matrAsse.getLagrangeScaling(), matrAsse4.getLagrangeScali
 petscMat4 = matrAsse4.toPetsc()
 test.assertAlmostEqual(ref_matr, petscMat4.norm(), delta=ref_matr * 1.0e-6)
 
-matrAsse5 = matrAsse.duplicate()
+matrAsse5 = matrAsse.copy()
 matrAsse5 += matrAsse
 matrAsse5 -= matrAsse
 test.assertNotEqual(matrAsse.getName(), matrAsse5.getName())

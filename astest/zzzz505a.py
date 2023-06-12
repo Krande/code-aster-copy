@@ -111,8 +111,8 @@ with test.assertRaises(code_aster.AsterError):
 with test.assertRaises(code_aster.AsterError):
     ferror = field.restrict(["YD"])
 
-f0 = field.duplicate()
-f = field.duplicate()
+f0 = field.copy()
+f = field.copy()
 f += f
 f.getValues()
 f2 = 2 * f0
@@ -147,8 +147,8 @@ test.assertAlmostEqual(fieldp.norm("NORM_2"), norm_2)
 test.assertAlmostEqual(fieldp.norm("NORM_INFINITY"), norm_inf)
 test.assertAlmostEqual(fieldp.dot(fieldp), norm_2 * norm_2)
 
-f0 = fieldp.duplicate()
-f = fieldp.duplicate()
+f0 = fieldp.copy()
+f = fieldp.copy()
 f += f
 f.getValuesWithDescription()
 f2 = 2 * f0
@@ -158,7 +158,7 @@ f3.getValuesWithDescription()
 test.assertAlmostEqual(f3.norm("NORM_2"), 0)
 
 # Test TEST_RESU with TEST_TYPE='MIN','MAX', 'SOMME', 'SOMME_ABS'
-ftest = fieldp.duplicate()
+ftest = fieldp.copy()
 mapDOF = ftest.getDescription().getDOFFromNodeAndComponent(False)
 
 values_test = {

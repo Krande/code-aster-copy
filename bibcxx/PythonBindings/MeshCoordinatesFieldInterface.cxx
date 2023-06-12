@@ -72,7 +72,7 @@ Return a list of values of the coordinates as (x1, y1, z1, x2, y2, z2...)
 Returns:
     list[float]: List of coordinates (size = 3 * number of nodes).
         )" )
-        .def( "duplicate", &MeshCoordinatesField::duplicate, R"(
+        .def( "copy", &MeshCoordinatesField::copy, R"(
 Return a copy of MeshCoordinatesField object
 
 Returns:

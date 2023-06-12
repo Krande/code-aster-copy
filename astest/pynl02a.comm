@@ -131,7 +131,6 @@ for i_inst in range(1, len(l_inst)):
 
     # creation du NUME_DDL
     if i_inst == 1:
-
         # matrice elementaire complete
         M_EL = CALC_MATR_ELEM(OPTION="RIGI_MECA", MODELE=MO, CHAM_MATER=CHMAT, CHARGE=CHARB)
 
@@ -143,7 +142,6 @@ for i_inst in range(1, len(l_inst)):
     # =========================================================
 
     if i_inst == 1:
-
         SIGMA = CREA_CHAMP(
             TYPE_CHAM="ELGA_SIEF_R",
             OPERATION="AFFE",
@@ -164,7 +162,6 @@ for i_inst in range(1, len(l_inst)):
         )
 
     else:
-
         # DEPLACEMENTS : U = U + DELTA_U
         U += DU
 
@@ -195,7 +192,6 @@ for i_inst in range(1, len(l_inst)):
 
     # pour le premier pas de temps, prediction elastique forcee
     if i_inst == 1:
-
         # matrice assemblee élastique
         ME_AS = ASSE_MATRICE(MATR_ELEM=M_EL, NUME_DDL=NU)
 
@@ -212,7 +208,7 @@ for i_inst in range(1, len(l_inst)):
 
     # construction du second membre
     if i_inst == 1:
-        F_AS = CHARB_AS.duplicate()
+        F_AS = CHARB_AS.copy()
     else:
         F_AS = CHARB_AS - CHARB_PR - FORIN_AS - BTLA_AS
 
@@ -225,10 +221,10 @@ for i_inst in range(1, len(l_inst)):
 
     # initialisation de U A PARTIR DU PROFIL DE DU
     if i_inst == 1:
-        U = DU.duplicate()
+        U = DU.copy()
 
     # creation du DELTA_U = (Ucourant - Uequilibre) = dU(pred)
-    DELTA_U = DU.duplicate()
+    DELTA_U = DU.copy()
 
     # =========================================================
     #               BOUCLE DE NEWTON
@@ -241,7 +237,6 @@ for i_inst in range(1, len(l_inst)):
     Conv = NP.zeros(NbIterNewtonMax + 1)
 
     for IterNewton in range(1, NbIterNewtonMax + 1):
-
         # =========================================================
         #           INTEGRATION DE LA LOI DE COMPT
         # =========================================================

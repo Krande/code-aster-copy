@@ -128,7 +128,7 @@ test = code_aster.TestCase()
 U = retour
 
 pU = U.toPetsc()
-V = U.duplicate()
+V = U.copy()
 
 V.setValues(0.0)
 test.assertEqual(V.norm("NORM_2"), 0)

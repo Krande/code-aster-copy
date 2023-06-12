@@ -231,7 +231,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @brief Wrap of copy constructor
      * @return new field, copy of the calling field
      */
-    FieldOnNodes duplicate() { return *this; }
+    FieldOnNodes copy() { return *this; }
 
     /**
      * @brief Surcharge de l'operateur []

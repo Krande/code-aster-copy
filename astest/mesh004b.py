@@ -164,7 +164,7 @@ pA_unscaled.view()
 # The Scling object
 S = MatrixScaler.MatrixScaler()
 logger.setLevel(2)
-newMat = matrAsse.duplicate()
+newMat = matrAsse.copy()
 # Compute scaling with DX and DY gathered (default behavior)
 S.computeScaling(matrAsse)
 S.scaleMatrix(newMat)
@@ -176,7 +176,7 @@ test.assertAlmostEqual(pA_unscaled.norm(nt), 43055.55555560758)
 test.assertAlmostEqual(pA_scaled.norm(nt), 1.0)
 
 
-newMat = matrAsse.duplicate()
+newMat = matrAsse.copy()
 # Compute scaling with DX and DY separately
 S.computeScaling(matrAsse, merge_dof=[])
 S.scaleMatrix(newMat)
@@ -187,13 +187,13 @@ nt = PETSc.NormType.NORM_INFINITY
 test.assertAlmostEqual(pA_unscaled.norm(nt), 43055.55555560758)
 test.assertAlmostEqual(pA_scaled.norm(nt), 1.0)
 
-rhs = vecass.duplicate()
+rhs = vecass.copy()
 init_norm = rhs.norm("NORM_INFINITY")
 S.scaleRHS(rhs)
 test.assertAlmostEqual(rhs.norm("NORM_INFINITY"), 286.21852876537895)
 
 
-sol = vecass.duplicate()
+sol = vecass.copy()
 S.unscaleSolution(rhs)
 test.assertAlmostEqual(rhs.norm("NORM_INFINITY"), init_norm)
 

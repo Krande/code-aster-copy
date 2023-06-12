@@ -2005,7 +2005,7 @@ class FieldOnCellsReal(DataField):
             float: dot product
         """
 
-    def duplicate(self):
+    def copy(self):
         """Return a duplicated FieldOnCellsReal as a copy
 
         Returns:
@@ -2216,7 +2216,7 @@ class FieldOnCellsComplex(DataField):
     def build(self, feds=[]):
         pass
 
-    def duplicate(self):
+    def copy(self):
         pass
 
     def getDescription(self):
@@ -2371,7 +2371,7 @@ class FieldOnCellsLong(DataField):
     def build(self, feds=[]):
         pass
 
-    def duplicate(self):
+    def copy(self):
         pass
 
     def getDescription(self):
@@ -2572,7 +2572,7 @@ class FieldOnNodesReal(DataField):
             float: dot product
         """
 
-    def duplicate(self):
+    def copy(self):
         pass
 
     def fromPetsc(self, vec, scaling=1.0):
@@ -5939,7 +5939,7 @@ class AssemblyMatrixDisplacementReal(BaseAssemblyMatrix):
     def defineSolver(self):
         pass
 
-    def duplicate(self):
+    def copy(self):
         pass
 
     def getLowerValues(self):
@@ -6062,7 +6062,7 @@ class AssemblyMatrixDisplacementComplex(BaseAssemblyMatrix):
     def defineSolver(self):
         pass
 
-    def duplicate(self):
+    def copy(self):
         pass
 
     def getLowerValues(self):
@@ -6165,7 +6165,7 @@ class AssemblyMatrixTemperatureReal(BaseAssemblyMatrix):
     def defineSolver(self):
         pass
 
-    def duplicate(self):
+    def copy(self):
         pass
 
     def getLowerValues(self):
@@ -6319,7 +6319,7 @@ class AssemblyMatrixPressureReal(BaseAssemblyMatrix):
     def clearElementaryMatrix(self):
         pass
 
-    def duplicate(self):
+    def copy(self):
         pass
 
     def getMaterialField(self):
@@ -6403,7 +6403,7 @@ class AssemblyMatrixPressureComplex(BaseAssemblyMatrix):
     def defineSolver(self):
         pass
 
-    def duplicate(self):
+    def copy(self):
         pass
 
     def getLowerValues(self):
@@ -12167,7 +12167,7 @@ class MeshCoordinatesField(DataStructure):
     def __sub__(self, arg0):
         pass
 
-    def duplicate(self):
+    def copy(self):
         """Return a copy of MeshCoordinatesField object
 
         Returns:

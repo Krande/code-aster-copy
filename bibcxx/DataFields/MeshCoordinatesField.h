@@ -213,10 +213,10 @@ class MeshCoordinatesField : public DataField {
     ASTERINTEGER size( void ) const { return _valuesList->size(); }
 
     /**
-     * @brief duplicate
+     * @brief copy
      * @return MeshCoordinatesField
      */
-    MeshCoordinatesField duplicate() { return *this; };
+    MeshCoordinatesField copy() { return *this; };
 
     /**
      * @brief Mise a jour des pointeurs Jeveux
