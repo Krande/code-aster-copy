@@ -50,6 +50,9 @@ compile:
       - install/*
     expire_in: 3 days
   rules:
+    - if: $CI_COMMIT_BRANCH !~ $reg_debugging
+      variables:
+        BUILD: mpi
     - if: $CI_COMMIT_BRANCH =~ $reg_debugging
       variables:
         BUILD: debug
