@@ -13,4 +13,6 @@ export PYTHONPATH="${PYPATH_MPI4PY}:${PYTHONPATH}"
 # debug build
 export BUILD=debug
 ./configure --prefix=./mini --without-repo --no-enable-all
-make install
+
+jobs=$(( $(nproc) / 2 ))
+make install -j ${jobs}

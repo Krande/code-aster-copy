@@ -124,6 +124,7 @@ verification_test:
       junit: results/run_testcases.xml
   rules:
     - if: $CI_COMMIT_BRANCH !~ $reg_debugging
+  resource_group: testing_verification
 
 known_failures_test:
   stage: test

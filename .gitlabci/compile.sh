@@ -5,4 +5,6 @@ export CONFIG_PARAMETERS_mpiexec="mpiexec -n {mpi_nbcpu} --allow-run-as-root --t
 
 # --with-data=data-src
 ./configure --prefix=./install --without-repo
-make install
+
+jobs=$(( $(nproc) / 2 ))
+make install -j ${jobs}
