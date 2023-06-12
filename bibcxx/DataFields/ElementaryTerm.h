@@ -80,6 +80,8 @@ class ElementaryTerm : public DataField {
         }
     };
 
+    const JeveuxCollection< ValueType > &getValues() const { return _resl; };
+
     FiniteElementDescriptorPtr getFiniteElementDescriptor() const { return _FEDesc; };
 
     bool exists() const { return _noli.exists() && _descriptor.exists() && _resl.exists(); };

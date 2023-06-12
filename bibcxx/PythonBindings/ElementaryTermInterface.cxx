@@ -54,6 +54,12 @@ void exportElementaryTermToPython( py::module_ &mod ) {
             Returns:
                 str: the local mode
         )" )
+        .def( "getValues", &ElementaryTermReal::getValues, R"(
+            Return the values of the field.
+
+            Returns:
+                list[list[float]]: values
+        )" )
         .def( "getPhysicalQuantity", &ElementaryTermReal::getPhysicalQuantity, R"(
             Return the physical quantity
 

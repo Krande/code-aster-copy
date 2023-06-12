@@ -1959,13 +1959,13 @@ class FieldOnCellsReal(DataField):
 
         4. __init__(self: libaster.FieldOnCellsReal, arg0: Model, arg1: str, arg2: str) -> None
 
-        5. __init__(self: libaster.FieldOnCellsReal, arg0: Model, arg1: str, arg2: str, arg3: BehaviourProperty, arg4: libaster.ElementaryCharacteristics) -> None
+        5. __init__(self: libaster.FieldOnCellsReal, arg0: libaster.FieldOnCellsReal) -> None
 
-        6. __init__(self: libaster.FieldOnCellsReal, arg0: Model, arg1: str, arg2: str, arg3: BehaviourProperty) -> None
+        6. __init__(self: libaster.FieldOnCellsReal, arg0: Model, arg1: str, arg2: str, arg3: BehaviourProperty, arg4: libaster.ElementaryCharacteristics) -> None
 
-        7. __init__(self: libaster.FieldOnCellsReal, arg0: Model, arg1: str, arg2: str, arg3: libaster.ElementaryCharacteristics) -> None
+        7. __init__(self: libaster.FieldOnCellsReal, arg0: Model, arg1: str, arg2: str, arg3: BehaviourProperty) -> None
 
-        8. __init__(self: libaster.FieldOnCellsReal, arg0: libaster.FieldOnCellsReal) -> None
+        8. __init__(self: libaster.FieldOnCellsReal, arg0: Model, arg1: str, arg2: str, arg3: libaster.ElementaryCharacteristics) -> None
         """
 
     def __isub__(self, arg0):
@@ -2098,19 +2098,6 @@ class FieldOnCellsReal(DataField):
             bool: *True* if succeeds, *False* otherwise.
         """
 
-    def restrict(self, cmps=[], groupsOfCells=[]):
-        """Return a new field restricted to the list of components and groups of cells given
-
-        Arguments:
-            cmps[list[str]]: filter on list of components
-            If empty, all components are used
-            groupsOfCells[list[str]]: filter on list of groups of cells (default=" ").
-            If empty, the full mesh is used
-
-        Returns:
-            FieldOnCellsReal: field restricted.
-        """
-
     def setDescription(self, arg0):
         pass
 
@@ -2142,8 +2129,26 @@ class FieldOnCellsReal(DataField):
             int: number of element in the field
         """
 
+    def toFieldOnNodes(self):
+        """Convert to FieldOnNodes
+
+        Returns:
+            FieldOnNodesReal: field converted
+        """
+
     def toSimpleFieldOnCells(self):
-        pass
+        """Convert to SimpleFieldOnNodes
+
+        Returns:
+            SimpleFieldOnNodesReal: field converted
+        """
+
+    def toSimpleFieldOnNodes(self):
+        """Convert to SimpleFieldOnNodes
+
+        Returns:
+            SimpleFieldOnNodesReal: field converted
+        """
 
     def transform(self, func):
         """Apply Function to each value of _ValuesList of the FieldOnCells object.
@@ -2291,6 +2296,13 @@ class FieldOnCellsComplex(DataField):
 
         Returns:
             int: number of element in the field
+        """
+
+    def toFieldOnNodes(self):
+        """Convert to FieldOnNodes
+
+        Returns:
+            FieldOnCellsComplex: field converted
         """
 
     def transform(self, func):
@@ -2718,7 +2730,11 @@ class FieldOnNodesReal(DataField):
         """
 
     def toSimpleFieldOnNodes(self):
-        pass
+        """Convert to SimpleFieldOnNodes
+
+        Returns:
+            SimpleFieldOnNodesReal: field converted
+        """
 
     def updateValuePointers(self):
         pass
@@ -2900,7 +2916,11 @@ class FieldOnNodesComplex(DataField):
         """
 
     def toSimpleFieldOnNodes(self):
-        pass
+        """Convert to SimpleFieldOnNodes
+
+        Returns:
+            SimpleFieldOnNodesComplex: field converted
+        """
 
     def updateValuePointers(self):
         pass
@@ -3229,16 +3249,29 @@ class SimpleFieldOnCellsReal(DataField):
         """
 
     def toFieldOnCells(self, fed, option="", nompar=""):
-        """Converts to FieldOnCellsReal
+        """Converts to FieldOnCells
 
         Arguments:
             fed [FiniteElementDescriptor]: finite element descriptor
-            If empty, all components are used
-            groupsOfCells[list[str]]: filter on list of groups of cells (default=" ").
-            If empty, the full mesh is used
+            option [str] : name of option like TOUT_INI_ELGA (default: " ")
+            nompar [str] : name of parameter like DEPL_R (default: " ")
 
         Returns:
-            SimpleFieldOnCellsReal: field restricted.
+            FieldOnCellsReal: field converted.
+        """
+
+    def toFieldOnNodes(self):
+        """Convert to FieldOnNodes
+
+        Returns:
+            FieldOnNodesReal: field converted
+        """
+
+    def toSimpleFieldOnNodes(self):
+        """Convert to SimpleFieldOnNodes
+
+        Returns:
+            SimpleFieldOnNodesReal: field converted
         """
 
     def updateValuePointers(self):
@@ -3328,7 +3361,11 @@ class SimpleFieldOnNodesReal(DataField):
         """
 
     def toFieldOnNodes(self):
-        pass
+        """Convert to FieldOnNodes
+
+        Returns:
+            FieldOnNodesReal: field converted
+        """
 
     def updateValuePointers(self):
         pass
@@ -6441,6 +6478,13 @@ class ElementaryTermReal(DataField):
 
         Returns:
             str: name of the physical quantity
+        """
+
+    def getValues(self):
+        """Return the values of the field.
+
+        Returns:
+            list[list[float]]: values
         """
 
 
