@@ -47,6 +47,8 @@ class SolverOptions(IntFlag):
     IncrementalSolver = auto()
     # linear solver
     LinearSolver = auto()
+    # line serach
+    LineSearch = auto()
     # contact object
     Contact = auto()
     # container of keywords

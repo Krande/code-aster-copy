@@ -59,7 +59,7 @@ class IncrementalSolver(SolverFeature, EventSource):
     """Solve an iteration."""
 
     provide = SOP.IncrementalSolver | SOP.EventSource
-    required_features = [SOP.PhysicalProblem, SOP.PhysicalState, SOP.LinearSolver]
+    required_features = [SOP.PhysicalProblem, SOP.PhysicalState, SOP.LinearSolver, SOP.LineSearch]
     optional_features = [SOP.Contact, SOP.ConvergenceManager]
 
     _data = None
@@ -330,18 +330,6 @@ class IncrementalSolver(SolverFeature, EventSource):
         return jacobian
 
     @profile
-    def lineSearch(self, field):
-        """Apply linear search.
-
-        Arguments:
-            field (FieldOnNodes): Displacement field.
-
-        Returns:
-            FieldOnNodes: Accelerated field by linear search.
-        """
-        return 1.0 * field
-
-    @profile
     @SolverFeature.check_once
     def solve(self, matrix_type, matrix=None):
         """Solve the iteration.
@@ -390,7 +378,9 @@ class IncrementalSolver(SolverFeature, EventSource):
             solution = linear_solver.solve(residuals.resi, diriBCs)
 
             # Use line search
-            primal_incr = self.lineSearch(solution)
+            lineSearch = self.get_feature(SOP.LineSearch)
+
+            primal_incr = lineSearch.solve(solution)
         else:
             primal_incr = self.phys_state.createPrimal(self.phys_pb, 0.0)
 

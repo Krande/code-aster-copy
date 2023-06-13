@@ -56,6 +56,8 @@ MECA_NON_LINE = MACRO(
     # -------------------------------------------------------------------
     ETAT_INIT=C_ETAT_INIT("STAT_NON_LINE", "f"),
     # -------------------------------------------------------------------
+    RECH_LINEAIRE=C_RECH_LINEAIRE(),
+    # -------------------------------------------------------------------
     INCREMENT=C_INCREMENT("MECANIQUE"),
     # -------------------------------------------------------------------
     METHODE=SIMP(statut="f", typ="TXM", defaut="NEWTON", into=("NEWTON", "SNES")),

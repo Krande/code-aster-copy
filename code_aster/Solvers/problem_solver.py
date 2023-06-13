@@ -24,6 +24,7 @@ from ..Utilities import DEBUG, INFO, WARNING, ExecutionParameter, Options, logge
 from .convergence_manager import ConvergenceManager
 from .geometric_solver import GeometricSolver
 from .incremental_solver import IncrementalSolver
+from .line_search import LineSearch
 from .physical_state import PhysicalState
 from .snes_solver import SNESSolver
 from .solver_features import SolverFeature
@@ -46,6 +47,7 @@ class ProblemSolver(SolverFeature):
         SOP.Keywords,
         SOP.TimeStepper,
         SOP.LinearSolver,
+        SOP.LineSearch,
         SOP.StepSolver,
         SOP.IncrementalSolver,
         SOP.ConvergenceCriteria,
@@ -154,6 +156,13 @@ class ProblemSolver(SolverFeature):
             self.use(LinearSolver.factory("STAT_NON_LINE", args["SOLVEUR"]))
         return self.get_feature(SOP.LinearSolver)
 
+    def _get_line_search(self):
+        logger.debug("+++ get LineSearch")
+        if not self.has_feature(SOP.LineSearch):
+            args = self.get_feature(SOP.Keywords)
+            self.use(LineSearch(args.get("RECH_LINEAIRE")))
+        return self.get_feature(SOP.LineSearch)
+
     def _get_contact_manager(self):
         logger.debug("+++ get ContactManager")
         return self.get_feature(SOP.Contact, optional=True)
@@ -252,6 +261,8 @@ class ProblemSolver(SolverFeature):
             return self._get_storage()
         if option & SOP.LinearSolver:
             return self._get_linear_solver()
+        if option & SOP.LineSearch:
+            return self._get_line_search()
         if option & SOP.Contact:
             return self._get_contact_manager()
         if option & (SOP.ConvergenceManager | SOP.ForIncr) == option:

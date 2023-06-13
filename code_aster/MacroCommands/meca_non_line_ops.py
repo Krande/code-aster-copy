@@ -96,15 +96,16 @@ def meca_non_line_ops(self, **args):
 
     # Add parameters
     param = dict(
+        ARCHIVAGE=args["ARCHIVAGE"],
         COMPORTEMENT=args["COMPORTEMENT"],
+        CONTACT=args["CONTACT"],
         CONVERGENCE=args["CONVERGENCE"],
-        NEWTON=args["NEWTON"],
         ETAT_INIT=args["ETAT_INIT"],
         INFO=args["INFO"],
-        CONTACT=args["CONTACT"],
         METHODE=args["METHODE"],
+        NEWTON=args["NEWTON"],
+        RECH_LINEAIRE=args["RECH_LINEAIRE"],
         SOLVEUR=args["SOLVEUR"],
-        ARCHIVAGE=args["ARCHIVAGE"],
     )
     solver.setKeywords(**param)
 
