@@ -51,7 +51,7 @@ class StorageManager(SolverFeature):
     excl_fields = set()
     crit = prec = None
     list_time = pas_arch = None
-    curr_index = init_index = 0
+    curr_index = init_index = stor_index = 0
     __setattr__ = no_new_attributes(object.__setattr__)
 
     def __init__(self, result, mcf=None, **kwargs):
@@ -93,6 +93,8 @@ class StorageManager(SolverFeature):
             self.list_time = SearchList(list_time, kwargs["PRECISION"], kwargs["CRITERE"])
             assert all(self.list_time.unique(t) for t in list_time)
 
+        self.setInitialIndex(0)
+
     def setInitialIndex(self, index):
         """Set initial index.
 
@@ -101,6 +103,7 @@ class StorageManager(SolverFeature):
         """
         self.curr_index = index
         self.init_index = index
+        self.stor_index = index
 
         if self.result.getNumberOfIndexes() > 0:
             self.result.clear(self.init_index)
@@ -119,6 +122,9 @@ class StorageManager(SolverFeature):
             return (self.curr_index - self.init_index) % self.pas_arch == 0
 
         if self.list_time is not None:
+            # always store first index
+            if self.curr_index == self.init_index:
+                return True
             if time in self.list_time:
                 index = self.list_time.index(time)
                 return True
@@ -127,8 +133,14 @@ class StorageManager(SolverFeature):
 
         return True
 
-    def completed(self):
-        """Register the current step as completed successfully."""
+    def completed(self, time):
+        """Register the current step as completed successfully.
+
+        Arguments:
+            time (float): time step.
+        """
+        if self.hasToBeStored(time):
+            self.stor_index += 1
         self.curr_index += 1
 
     def getResult(self):
@@ -144,7 +156,6 @@ class StorageManager(SolverFeature):
 
         Arguments:
             kwargs: named parameters
-
         """
 
         self.result.resize(self.result.getNumberOfIndexes() + 10)
@@ -172,7 +183,7 @@ class StorageManager(SolverFeature):
             param (dict, optional): Dict of parameters to be stored.
         """
         slot = StorageManager.Slot()
-        slot.index = self.curr_index
+        slot.index = self.stor_index
         slot.time = time
         slot.param = param
         slot.model = phys_pb.getModel()
@@ -197,8 +208,8 @@ class StorageManager(SolverFeature):
         """
 
         if field is not None and field_type not in self.excl_fields:
-            self.result.setField(field, field_type, self.curr_index)
-            UTMESS("I", "ARCHIVAGE_6", valk=field_type, valr=time, vali=self.curr_index)
+            self.result.setField(field, field_type, self.stor_index)
+            UTMESS("I", "ARCHIVAGE_6", valk=field_type, valr=time, vali=self.stor_index)
 
     @profile
     def store(self):
@@ -207,20 +218,20 @@ class StorageManager(SolverFeature):
         new_size = self.result.getNumberOfIndexes() + len(self.buffer)
         self.result.resize(new_size)
         for slot in self.buffer:
-            curr_index = slot.index
+            stor_index = slot.index
             if slot.time is not None:
-                self.result.setTime(slot.time, curr_index)
+                self.result.setTime(slot.time, stor_index)
             if slot.param is not None:
                 for param, value in slot.param.items():
-                    self.result.setParameterValue(param, value, curr_index)
+                    self.result.setParameterValue(param, value, stor_index)
             if slot.model:
-                self.result.setModel(slot.model, curr_index)
+                self.result.setModel(slot.model, stor_index)
             if slot.material_field:
-                self.result.setMaterialField(slot.material_field, curr_index)
+                self.result.setMaterialField(slot.material_field, stor_index)
             if slot.elem_char:
-                self.result.setElementaryCharacteristics(slot.elem_char, curr_index)
+                self.result.setElementaryCharacteristics(slot.elem_char, stor_index)
             if slot.load:
-                self.result.setListOfLoads(slot.load, curr_index)
+                self.result.setListOfLoads(slot.load, stor_index)
             if slot.fields:
                 for field_type, field in slot.fields.items():
                     self.storeField(field, field_type, slot.time)

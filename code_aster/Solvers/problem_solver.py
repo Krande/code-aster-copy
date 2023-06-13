@@ -142,7 +142,8 @@ class ProblemSolver(SolverFeature):
         logger.debug("+++ get StorageManager")
         store = self.get_feature(SOP.Storage, optional=True)
         if not store:
-            store = StorageManager(self._result)
+            args = self.get_feature(SOP.Keywords)
+            store = StorageManager(self._result, args.get("ARCHIVAGE"))
         self.use(store)
         return store
 

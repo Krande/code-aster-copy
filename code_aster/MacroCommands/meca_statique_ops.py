@@ -249,7 +249,7 @@ def meca_statique_ops(self, **args):
         storage_manager.storeState(phys_state.time, phys_pb, phys_state)
 
         timeStepper.completed()
-        storage_manager.completed()
+        storage_manager.completed(phys_state.time)
         isFirst = False
 
     # delete factorized matrix - free memory

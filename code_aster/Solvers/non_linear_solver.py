@@ -104,8 +104,9 @@ class NonLinearSolver(SolverFeature):
             time (float): current (pseudo)-time.
         """
         storage_manager = self.get_feature(SOP.Storage)
-        storage_manager.storeState(time, self.phys_pb, self.phys_state)
-        storage_manager.completed()
+        if storage_manager.hasToBeStored(time):
+            storage_manager.storeState(time, self.phys_pb, self.phys_state)
+        storage_manager.completed(time)
 
     @profile
     def initialize(self):

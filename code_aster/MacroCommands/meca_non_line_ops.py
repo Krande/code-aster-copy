@@ -104,6 +104,7 @@ def meca_non_line_ops(self, **args):
         CONTACT=args["CONTACT"],
         METHODE=args["METHODE"],
         SOLVEUR=args["SOLVEUR"],
+        ARCHIVAGE=args["ARCHIVAGE"],
     )
     solver.setKeywords(**param)
 
