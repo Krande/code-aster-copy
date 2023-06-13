@@ -97,7 +97,7 @@ subroutine op0175()
     do i = 1, nbordr
         nuordr = nume_ordre(i)
         call rsexch('F', resu19, 'EFGE_ELNO', nuordr, chefge, iret)
-        call rsexch(' ', resu19, 'FERRAILLAGE', nuordr, chfer2, iret)
+        call rsexch(' ', resu19, 'FERR_ELEM', nuordr, chfer2, iret)
         if (resu19 .eq. resuc1) then
             if (iret .eq. 0) then
                 call utmess('A', 'CALCULEL_88', si=nuordr, sk=resu19)
@@ -107,7 +107,7 @@ subroutine op0175()
         if (niv .gt. 1) then
             call imprsd('CHAMP', chfer2, 6, 'CHFER2=')
         end if
-        call rsnoch(resu19, 'FERRAILLAGE', nuordr)
+        call rsnoch(resu19, 'FERR_ELEM', nuordr)
     end do
 !
     call jedema()

@@ -161,7 +161,7 @@ subroutine rscrsd(baseZ, resultNameZ, resultTypeZ, nbStore)
                                     'ENDO_ELGA       ', 'ENDO_ELNO       ', 'ENDO_NOEU       ', &
                                     'INDL_ELGA       ', 'SISE_ELNO       ', &
                                     'COHE_ELEM       ', 'INDC_ELEM       ', 'SECO_ELEM       ', &
-                                    'VARC_ELGA       ', 'FERRAILLAGE     ', 'EPVC_NOEU       ', &
+                                    'VARC_ELGA       ', 'FERR_ELEM       ', 'EPVC_NOEU       ', &
                                     'EPFD_NOEU       ', 'EPFP_NOEU       ', 'PDIL_ELGA       ', &
                                     'MATE_ELGA       ', 'MATE_ELEM       ', &
                                     'HHO_DEPL        ', 'HHO_VITE        ', 'HHO_ACCE        ', &

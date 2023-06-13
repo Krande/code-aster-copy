@@ -445,11 +445,11 @@ class MEQ4GG4(Element):
             ),
             para_out=((OP.EPOT_ELEM.PENERDR, EENERR),),
         ),
-        OP.FERRAILLAGE(
+        OP.FERR_ELEM(
             te=146,
             para_in=(
                 (SP.PCACOQU, CCACOQU),
-                (OP.FERRAILLAGE.PEFFORR, EEFGENO),
+                (OP.FERR_ELEM.PEFFORR, EEFGENO),
                 (SP.PFERRA1, LC.CFER1_R),
             ),
             para_out=((SP.PFERRA2, LC.CFER2_R),),

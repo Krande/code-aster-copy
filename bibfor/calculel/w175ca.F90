@@ -39,7 +39,7 @@ subroutine w175ca(modele, carele, chfer1, chefge, chfer2)
     character(len=19) :: lchin(15), lchout(2), ligrel
 !
     call exlim3('AFFE', 'G', modele, ligrel)
-    option = 'FERRAILLAGE'
+    option = 'FERR_ELEM'
 !
     call mecara(carele, chcara)
 !

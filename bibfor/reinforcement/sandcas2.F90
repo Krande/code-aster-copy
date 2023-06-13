@@ -144,7 +144,7 @@ subroutine sandcas2(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gammac, 
 !Variables de calcul
     real(kind=8) :: fcd, fyd, ySUP, yINF, Z, fcd1, fc, pi, vect(20), my_epsi
     real(kind=8) :: Nxx, Nyy, Nxy, Mxx, Myy, Mxy
-    integer :: N_SUP, N_INF, N_TOT, i, j
+    integer :: N_SUP, N_INF, N_TOT, i
     real(kind=8) :: unite_pa, Calc1, Calc2
     character(20) :: p(15)
     real(kind=8), pointer :: nSX_SUP(:) => null(), nSX_INF(:) => null()

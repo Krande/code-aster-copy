@@ -59,13 +59,13 @@ contains
         real(kind=8), pointer :: AngleSUP(:)
 
 !Variables intermediaires de calcul
-        integer :: N1, N2, indx1, indx2, indx3, COUNT_SOL, i, j, k, iBIS, jBIS, N_Theta_ADD
-        integer :: COUNT_Q, INDICE, Q, kk
+        integer :: N1, N2, indx1, indx2, indx3, COUNT_SOL, i, j, k, iBIS, N_Theta_ADD
+        integer :: COUNT_Q, INDICE, Q
         logical :: COND_nSX_INF, COND_nSY_INF, COND_nSX_SUP, COND_nSY_SUP, COND_insert
         real(kind=8) :: Theta_INTER_nSX_INF, Theta_INTER_nSX_SUP
         real(kind=8) :: Theta_INTER_nSY_INF, Theta_INTER_nSY_SUP
         real(kind=8) :: angle1, angle2, angle3, suppl, suppl1, suppl2, suppl3, suppl4
-        real(kind=8) :: Theta_INTER(4, 4), a12, a13, denum
+        real(kind=8) :: Theta_INTER(4, 4), a12, a13
         real(kind=8), pointer :: Theta_ADD(:) => null()
         real(kind=8) :: debug1, debug2
 

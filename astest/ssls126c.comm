@@ -457,7 +457,7 @@ TEST_RESU(
     RESU=_F(
         RESULTAT=RESU,
         INST=1.0,
-        NOM_CHAM="FERRAILLAGE",
+        NOM_CHAM="FERR_ELEM",
         NOM_CMP="DNSXS",
         GROUP_MA="M124",
         POINT=1,

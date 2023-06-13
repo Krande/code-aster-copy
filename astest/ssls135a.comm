@@ -151,7 +151,7 @@ TEST_RESU(
             INST=0.0,
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=Solution,
-            NOM_CHAM="FERRAILLAGE",
+            NOM_CHAM="FERR_ELEM",
             NOM_CMP="DNSXI",
             TYPE_TEST="MAX",
             VALE_CALC=0.0014289251462984661,
@@ -163,7 +163,7 @@ TEST_RESU(
             INST=0.0,
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=Solution,
-            NOM_CHAM="FERRAILLAGE",
+            NOM_CHAM="FERR_ELEM",
             NOM_CMP="DNSXS",
             TYPE_TEST="MAX",
             VALE_CALC=0.0006622874216178201,
@@ -175,7 +175,7 @@ TEST_RESU(
             INST=0.0,
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=Solution,
-            NOM_CHAM="FERRAILLAGE",
+            NOM_CHAM="FERR_ELEM",
             NOM_CMP="DNSYI",
             TYPE_TEST="MAX",
             VALE_CALC=0.0013538565086095521,
@@ -187,7 +187,7 @@ TEST_RESU(
             INST=0.0,
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=Solution,
-            NOM_CHAM="FERRAILLAGE",
+            NOM_CHAM="FERR_ELEM",
             NOM_CMP="DNSYS",
             TYPE_TEST="MAX",
             VALE_CALC=0.0007730876657224069,
@@ -203,7 +203,7 @@ FERMAX = CREA_CHAMP(
     OPERATION="EXTR",
     TYPE_CHAM="ELEM_FER2_R",
     INFO=1,
-    NOM_CHAM="FERRAILLAGE",
+    NOM_CHAM="FERR_ELEM",
     RESULTAT=Solution,
     TYPE_MAXI="MAXI_ABS",
     TYPE_RESU="VALE",
@@ -261,7 +261,7 @@ MAX_FERR = FORMULE(
 
 ferUtil = CALC_CHAMP(
     GROUP_MA=("COTEY", "BASE"),
-    CHAM_UTIL=_F(FORMULE=(MAX_FERR,), NOM_CHAM="FERRAILLAGE", NUME_CHAM_RESU=1),
+    CHAM_UTIL=_F(FORMULE=(MAX_FERR,), NOM_CHAM="FERR_ELEM", NUME_CHAM_RESU=1),
     RESULTAT=Solution,
 )
 
@@ -269,11 +269,7 @@ ferUtil = CALC_CHAMP(
 # Same field using CREA_CHAMP/EXTR + AFFE + EVAL
 
 fer = CREA_CHAMP(
-    NOM_CHAM="FERRAILLAGE",
-    OPERATION="EXTR",
-    RESULTAT=Solution,
-    NUME_ORDRE=1,
-    TYPE_CHAM="ELEM_FER2_R",
+    NOM_CHAM="FERR_ELEM", OPERATION="EXTR", RESULTAT=Solution, NUME_ORDRE=1, TYPE_CHAM="ELEM_FER2_R"
 )
 
 # Dummy function to make sure that the field is defined everywhere and does not disturb the

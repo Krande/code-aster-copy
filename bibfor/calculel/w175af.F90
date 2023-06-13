@@ -50,8 +50,8 @@ subroutine w175af(modele, chfer1)
     integer :: n33, n34, n35, n36, n37, n38, n39, n40, n41, n42, n43, n44, n45, n46, n47, n48, n49
     integer :: n50, n51, n52, n53, n54, n55, n56, n57, n58, n59, n60, n61, n62, n63, n64
     integer ::   jmail, iocc, nbmail
-    real(kind=8) :: valrcb, valrco, valrmt, valrcd, valruc, valrum
-    character(len=8) :: k8b, typmcl(2), noma, typcb, clacier, uc, compress
+    real(kind=8) :: valrcb, valrco, valrmt, valrcd, valruc
+    character(len=8) :: k8b, typmcl(2), noma, typcb, clacier, compress
     character(len=8) :: epucisa, ferrcomp, ferrsyme, typdiag, typstru, cond109, unitm, unitc
     character(len=16) :: meth2D, precs, flongi, ftrnsv
     character(len=16) :: motcls(2), typco, ferrmin

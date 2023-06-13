@@ -556,7 +556,7 @@ for j in range(len(D_ref)):
                 RESU=_F(
                     RESULTAT=RESUELU1,
                     INST=j + 1.0,
-                    NOM_CHAM="FERRAILLAGE",
+                    NOM_CHAM="FERR_ELEM",
                     NOM_CMP=ncmp,
                     GROUP_MA="M1",
                     LEGENDE="ELU",
@@ -572,7 +572,7 @@ for j in range(len(D_ref)):
                 RESU=_F(
                     RESULTAT=RESUELU1,
                     INST=j + 1.0,
-                    NOM_CHAM="FERRAILLAGE",
+                    NOM_CHAM="FERR_ELEM",
                     NOM_CMP=ncmp,
                     GROUP_MA="M1",
                     LEGENDE="ELU",
@@ -913,7 +913,7 @@ for j in range(len(D_ref)):
                 RESU=_F(
                     RESULTAT=RESUELU2,
                     INST=j + 1.0,
-                    NOM_CHAM="FERRAILLAGE",
+                    NOM_CHAM="FERR_ELEM",
                     NOM_CMP=ncmp,
                     GROUP_MA="M1",
                     LEGENDE="ELU",
@@ -929,7 +929,7 @@ for j in range(len(D_ref)):
                 RESU=_F(
                     RESULTAT=RESUELU2,
                     INST=j + 1.0,
-                    NOM_CHAM="FERRAILLAGE",
+                    NOM_CHAM="FERR_ELEM",
                     NOM_CMP=ncmp,
                     GROUP_MA="M1",
                     LEGENDE="ELU",
@@ -1272,7 +1272,7 @@ for j in range(len(D_ref)):
                 RESU=_F(
                     RESULTAT=RESUELU3,
                     INST=j + 1.0,
-                    NOM_CHAM="FERRAILLAGE",
+                    NOM_CHAM="FERR_ELEM",
                     NOM_CMP=ncmp,
                     GROUP_MA="M1",
                     LEGENDE="ELU",
@@ -1288,7 +1288,7 @@ for j in range(len(D_ref)):
                 RESU=_F(
                     RESULTAT=RESUELU3,
                     INST=j + 1.0,
-                    NOM_CHAM="FERRAILLAGE",
+                    NOM_CHAM="FERR_ELEM",
                     NOM_CMP=ncmp,
                     GROUP_MA="M1",
                     LEGENDE="ELU",
@@ -1632,7 +1632,7 @@ for j in range(len(D_ref)):
                 RESU=_F(
                     RESULTAT=RESUELU4,
                     INST=j + 1.0,
-                    NOM_CHAM="FERRAILLAGE",
+                    NOM_CHAM="FERR_ELEM",
                     NOM_CMP=ncmp,
                     GROUP_MA="M1",
                     LEGENDE="ELU",
@@ -1648,7 +1648,7 @@ for j in range(len(D_ref)):
                 RESU=_F(
                     RESULTAT=RESUELU4,
                     INST=j + 1.0,
-                    NOM_CHAM="FERRAILLAGE",
+                    NOM_CHAM="FERR_ELEM",
                     NOM_CMP=ncmp,
                     GROUP_MA="M1",
                     LEGENDE="ELU",
@@ -1989,7 +1989,7 @@ for j in range(len(D_ref)):
                 RESU=_F(
                     RESULTAT=RESUELU5,
                     INST=j + 1.0,
-                    NOM_CHAM="FERRAILLAGE",
+                    NOM_CHAM="FERR_ELEM",
                     NOM_CMP=ncmp,
                     GROUP_MA="M1",
                     LEGENDE="ELU",
@@ -2005,7 +2005,7 @@ for j in range(len(D_ref)):
                 RESU=_F(
                     RESULTAT=RESUELU5,
                     INST=j + 1.0,
-                    NOM_CHAM="FERRAILLAGE",
+                    NOM_CHAM="FERR_ELEM",
                     NOM_CMP=ncmp,
                     GROUP_MA="M1",
                     LEGENDE="ELU",

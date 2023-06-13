@@ -112,7 +112,7 @@ subroutine cafelsiter(cequi, effm, effn, ht, bw, &
 !-----------------------------------------------------------------------
 !!!!VARIABLES DE CALCUL
 !-----------------------------------------------------------------------
-    real(kind=8) :: d, d0, NUM, DENUM, Diffa, seuil_as
+    real(kind=8) :: d, d0, NUM, DENUM, seuil_as
     real(kind=8) :: Mcalc, Ncalc, scmax, scmaxc, alpha_12, unite_pa, unite_m
     real(kind=8) :: AsTEND_F, AsCOMP_F, AsTOT_F, AsTEND_FOUND, AsCOMP_FOUND, AsTOT_FOUND
     real(kind=8) :: X, Ncc, Mcc, Dterm, Calc, yc
@@ -122,7 +122,7 @@ subroutine cafelsiter(cequi, effm, effn, ht, bw, &
     logical :: COND_COUNT_SYMENOCOMP
     integer :: COUNT_CARA, verif, indx_ch
     integer :: COUNT_CARA_SYME, COUNT_CARA_NOCOMP, COUNT_CARA_SYMENOCOMP
-    logical :: COND_F, PIV_C
+    logical :: COND_F
     integer :: COUNT_F
     integer :: N_ET, N_PC, N_PCAC, N_EC, N_TOT
 

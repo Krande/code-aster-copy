@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ chone = CREA_CHAMP(
 RESU = CREA_RESU(
     reuse=RESU,
     AFFE=_F(CHAM_GD=chone, NOM_CAS="CHARGE NUMERO 2"),
-    NOM_CHAM="FERRAILLAGE",
+    NOM_CHAM="FERR_ELEM",
     OPERATION="AFFE",
     RESULTAT=RESU,
     TYPE_RESU="MULT_ELAS",
@@ -42,7 +42,7 @@ RESU = CREA_RESU(
 TEST_RESU(
     RESU=_F(
         NOM_CAS="CHARGE NUMERO 2",
-        NOM_CHAM="FERRAILLAGE",
+        NOM_CHAM="FERR_ELEM",
         NOM_CMP="DNSXS",
         REFERENCE="ANALYTIQUE",
         RESULTAT=RESU,

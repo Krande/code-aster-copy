@@ -145,18 +145,15 @@ subroutine sandcas1(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gammac, 
 
 !Variables de calcul
     real(kind=8) :: fcd, fyd, ySUP, yINF, Z, fcd1, fc, pi, vect(20)
-    real(kind=8) :: Nxx, Nyy, Nxy, Mxx, Myy, Mxy, Theta_INTER(4, 3)
-    integer :: N_SUP, N_INF, N_TOT, i, j, indx, indx1, indx2, indx3, COUNT_SOL
-    integer :: k, Q, COUNT_Q, INDICE, iBIS, JBIS, N1, N2, l
-    integer :: INDICEi, INDICEj, indx_INDICE, iret
+    real(kind=8) :: Nxx, Nyy, Nxy, Mxx, Myy, Mxy
+    integer :: N_SUP, N_INF, N_TOT, i, j, indx
+    integer :: k, N1, N2, l
+    integer :: iret
     real(kind=8) :: nS_TOT_opt, Calc, CalcX, CalcY, det
     real(kind=8) :: unite_pa, a00, b00, c00, DELTA, xA, xB
     real(kind=8) :: nC_INF, mC_INF, nC_SUP, mC_SUP, Ds(4, 4), SOL(4)
     real(kind=8) :: Calc1, Calc2, Calc3, Calc4
-    logical :: COND_xA, COND_xB, COND_insert, cond_found
-    logical :: COND_nSX_SUP, COND_nSX_INF, COND_nSY_SUP, COND_nSY_INF
-    real(kind=8) :: Theta_INTER_nSX_SUP, Theta_INTER_nSX_INF
-    real(kind=8) :: Theta_INTER_nSY_SUP, Theta_INTER_nSY_INF
+    logical :: COND_xA, COND_xB
     character(20) :: p(15)
     real(kind=8), pointer :: nSX_SUP(:) => null(), nSX_INF(:) => null()
     real(kind=8), pointer :: nSY_SUP(:) => null(), nSY_INF(:) => null()

@@ -510,11 +510,11 @@ class TemplateElement(Element):
             ),
             para_out=((SP.PDEFONC, EDEFONC), (SP.PDEFONO, EDEFONO)),
         ),
-        OP.FERRAILLAGE(
+        OP.FERR_ELEM(
             te=146,
             para_in=(
                 (SP.PCACOQU, CCACOQU),
-                (OP.FERRAILLAGE.PEFFORR, EEFGENOR),
+                (OP.FERR_ELEM.PEFFORR, EEFGENOR),
                 (SP.PFERRA1, LC.CFER1_R),
             ),
             para_out=((SP.PFERRA2, LC.CFER2_R),),

@@ -101,7 +101,7 @@ def combinaison_ferraillage_ops(self, **args):
     # Maximum reinforcement field (elementwise, component by component)
     maxiferr = CREA_CHAMP(
         RESULTAT=resferr,
-        NOM_CHAM="FERRAILLAGE",
+        NOM_CHAM="FERR_ELEM",
         TYPE_CHAM="ELEM_FER2_R",
         OPERATION="EXTR",
         TYPE_MAXI="MAXI",
@@ -113,7 +113,7 @@ def combinaison_ferraillage_ops(self, **args):
     # component by component)
     instferr = CREA_CHAMP(
         RESULTAT=resferr,
-        NOM_CHAM="FERRAILLAGE",
+        NOM_CHAM="FERR_ELEM",
         TYPE_CHAM="ELEM_FER2_R",
         OPERATION="EXTR",
         TYPE_MAXI="MAXI",
@@ -126,7 +126,7 @@ def combinaison_ferraillage_ops(self, **args):
         RESULTAT=resu,
         OPERATION="AFFE",
         TYPE_RESU="MULT_ELAS",
-        NOM_CHAM="FERRAILLAGE",
+        NOM_CHAM="FERR_ELEM",
         AFFE=(_F(NOM_CAS="COMB_DIME_ACIER", CHAM_GD=maxiferr, MODELE=modele),),
     )
 
@@ -135,7 +135,7 @@ def combinaison_ferraillage_ops(self, **args):
         RESULTAT=resu,
         OPERATION="AFFE",
         TYPE_RESU="MULT_ELAS",
-        NOM_CHAM="FERRAILLAGE",
+        NOM_CHAM="FERR_ELEM",
         AFFE=(_F(NOM_CAS="COMB_DIME_ORDRE", CHAM_GD=instferr, MODELE=modele),),
     )
 
@@ -323,7 +323,7 @@ def evolElasFromMulti(ncas, comb, lst_inst_value, resu):
                 OPERATION="EXTR",
                 RESULTAT=resu,
                 TYPE_CHAM="ELEM_FER2_R",
-                NOM_CHAM="FERRAILLAGE",
+                NOM_CHAM="FERR_ELEM",
                 **dic_idx_combo,
             )
 
@@ -337,7 +337,7 @@ def evolElasFromMulti(ncas, comb, lst_inst_value, resu):
             idx_shift = idx_shift + 1
 
     resferr = CREA_RESU(
-        OPERATION="AFFE", TYPE_RESU="EVOL_ELAS", NOM_CHAM="FERRAILLAGE", AFFE=lst_AFFE_EFGE
+        OPERATION="AFFE", TYPE_RESU="EVOL_ELAS", NOM_CHAM="FERR_ELEM", AFFE=lst_AFFE_EFGE
     )
 
     return resferr

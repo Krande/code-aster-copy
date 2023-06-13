@@ -201,7 +201,7 @@ FERMAX = CREA_CHAMP(
     OPERATION="EXTR",
     TYPE_CHAM="ELEM_FER2_R",
     INFO=1,
-    NOM_CHAM="FERRAILLAGE",
+    NOM_CHAM="FERR_ELEM",
     RESULTAT=RESUMULT,
     TYPE_MAXI="MAXI_ABS",
     TYPE_RESU="VALE",
@@ -236,7 +236,7 @@ TEST_RESU(
         _F(
             RESULTAT=RESUMULT,
             NOM_CAS="COMB_DIME_ACIER",
-            NOM_CHAM="FERRAILLAGE",
+            NOM_CHAM="FERR_ELEM",
             CRITERE="RELATIF",
             NOM_CMP="DNSXS",
             GROUP_MA="M124",
@@ -249,7 +249,7 @@ TEST_RESU(
         _F(
             RESULTAT=RESUMULT,
             NOM_CAS="COMB_DIME_ORDRE",
-            NOM_CHAM="FERRAILLAGE",
+            NOM_CHAM="FERR_ELEM",
             CRITERE="RELATIF",
             NOM_CMP="DNSXS",
             GROUP_MA="M124",

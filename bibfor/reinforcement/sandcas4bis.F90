@@ -154,7 +154,7 @@ subroutine sandcas4bis(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gamma
     real(kind=8) :: pi, fcd, fyd, ySUP, yINF, alpha_INF, alpha_SUP, Z
     integer :: i, j, k, l, m, n, N1, N2, N3, N_IIbis, indx, count_F, indx_F, iret
     real(kind=8) :: Nxx, Nxy, Nyy, Mxx, Mxy, Myy, CalcX, CalcY
-    real(kind=8) :: unite_m, unite_pa, fcSUP, fcINF, nC_INF, nC_SUP, mC_INF, mC_SUP
+    real(kind=8) :: unite_m, fcSUP, fcINF, nC_INF, nC_SUP, mC_INF, mC_SUP
     real(kind=8) :: a11, a12, a21, a22, a00, b00, c00, Delta, X_alpha_inf, X_alpha_sup, t1, t2
     logical :: cond_t1, cond_t2
     real(kind=8) :: Ds(4, 4), SOL(4), det, cs, ci, ss, si

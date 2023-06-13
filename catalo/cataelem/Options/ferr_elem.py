@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ import cataelem.Commons.attributes as AT
 PEFFORR = InputParameter(phys=PHY.SIEF_R, comment=""" PEFFORR : EFFORTS GENERALISES (EFGE_ELNO) """)
 
 
-FERRAILLAGE = Option(
+FERR_ELEM = Option(
     para_in=(
         SP.PCACOQU,  # codeaster-civilengine%  Caracteristiques des coques
         PEFFORR,  # Etat de contrainte (ou d'effort interne)

@@ -423,7 +423,7 @@ for j in range(len(D_ref)):
                 RESU=_F(
                     RESULTAT=RESUELSQP1,
                     INST=j + 1.0,
-                    NOM_CHAM="FERRAILLAGE",
+                    NOM_CHAM="FERR_ELEM",
                     NOM_CMP=ncmp,
                     GROUP_MA="M1",
                     LEGENDE="ELS_QP",
@@ -439,7 +439,7 @@ for j in range(len(D_ref)):
                 RESU=_F(
                     RESULTAT=RESUELSQP1,
                     INST=j + 1.0,
-                    NOM_CHAM="FERRAILLAGE",
+                    NOM_CHAM="FERR_ELEM",
                     NOM_CMP=ncmp,
                     GROUP_MA="M1",
                     LEGENDE="ELS_QP",
@@ -710,7 +710,7 @@ for j in range(len(D_ref)):
                 RESU=_F(
                     RESULTAT=RESUELSQP2,
                     INST=j + 1.0,
-                    NOM_CHAM="FERRAILLAGE",
+                    NOM_CHAM="FERR_ELEM",
                     NOM_CMP=ncmp,
                     GROUP_MA="M1",
                     LEGENDE="ELS_QP",
@@ -726,7 +726,7 @@ for j in range(len(D_ref)):
                 RESU=_F(
                     RESULTAT=RESUELSQP2,
                     INST=j + 1.0,
-                    NOM_CHAM="FERRAILLAGE",
+                    NOM_CHAM="FERR_ELEM",
                     NOM_CMP=ncmp,
                     GROUP_MA="M1",
                     LEGENDE="ELS_QP",
@@ -999,7 +999,7 @@ for j in range(len(D_ref)):
                 RESU=_F(
                     RESULTAT=RESUELSQP3,
                     INST=j + 1.0,
-                    NOM_CHAM="FERRAILLAGE",
+                    NOM_CHAM="FERR_ELEM",
                     NOM_CMP=ncmp,
                     GROUP_MA="M1",
                     LEGENDE="ELS_QP",
@@ -1015,7 +1015,7 @@ for j in range(len(D_ref)):
                 RESU=_F(
                     RESULTAT=RESUELSQP3,
                     INST=j + 1.0,
-                    NOM_CHAM="FERRAILLAGE",
+                    NOM_CHAM="FERR_ELEM",
                     NOM_CMP=ncmp,
                     GROUP_MA="M1",
                     LEGENDE="ELS_QP",
@@ -1285,7 +1285,7 @@ for j in range(len(D_ref)):
                 RESU=_F(
                     RESULTAT=RESUELSQP4,
                     INST=j + 1.0,
-                    NOM_CHAM="FERRAILLAGE",
+                    NOM_CHAM="FERR_ELEM",
                     NOM_CMP=ncmp,
                     GROUP_MA="M1",
                     LEGENDE="ELS_QP",
@@ -1301,7 +1301,7 @@ for j in range(len(D_ref)):
                 RESU=_F(
                     RESULTAT=RESUELSQP4,
                     INST=j + 1.0,
-                    NOM_CHAM="FERRAILLAGE",
+                    NOM_CHAM="FERR_ELEM",
                     NOM_CMP=ncmp,
                     GROUP_MA="M1",
                     LEGENDE="ELS_QP",

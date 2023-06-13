@@ -435,10 +435,10 @@ class MECA_POU_D_E(Element):
             ),
             para_out=((OP.EPOT_ELEM.PENERDR, EENERR),),
         ),
-        OP.FERRAILLAGE(
+        OP.FERR_ELEM(
             te=265,
             para_in=(
-                (OP.FERRAILLAGE.PEFFORR, EEFGENOR),
+                (OP.FERR_ELEM.PEFFORR, EEFGENOR),
                 (SP.PFERRA1, LC.CFER1_R),
                 (SP.PCAGEPO, LC.CCAGRPO),
             ),

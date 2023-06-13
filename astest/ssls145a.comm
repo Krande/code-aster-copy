@@ -333,7 +333,7 @@ TEST_RESU(
         _F(
             RESULTAT=reslin,
             NOM_CAS="shearLd1",
-            NOM_CHAM="FERRAILLAGE",
+            NOM_CHAM="FERR_ELEM",
             CRITERE="RELATIF",
             NOM_CMP="DNSXI",
             GROUP_MA="EXTREMITE",
@@ -345,7 +345,7 @@ TEST_RESU(
         _F(
             RESULTAT=reslin,
             NOM_CAS="shearLd2",
-            NOM_CHAM="FERRAILLAGE",
+            NOM_CHAM="FERR_ELEM",
             CRITERE="RELATIF",
             NOM_CMP="DNSXI",
             GROUP_MA="EXTREMITE",
@@ -357,7 +357,7 @@ TEST_RESU(
         _F(
             RESULTAT=reslin,
             NOM_CAS="shearLd3",
-            NOM_CHAM="FERRAILLAGE",
+            NOM_CHAM="FERR_ELEM",
             CRITERE="RELATIF",
             NOM_CMP="DNSXI",
             GROUP_MA="EXTREMITE",
@@ -369,7 +369,7 @@ TEST_RESU(
         _F(
             RESULTAT=reslin,
             NOM_CAS="tractLd1",
-            NOM_CHAM="FERRAILLAGE",
+            NOM_CHAM="FERR_ELEM",
             CRITERE="RELATIF",
             NOM_CMP="DNSXI",
             GROUP_MA="EXTREMITE",
@@ -381,7 +381,7 @@ TEST_RESU(
         _F(
             RESULTAT=reslin,
             NOM_CAS="tractLd2",
-            NOM_CHAM="FERRAILLAGE",
+            NOM_CHAM="FERR_ELEM",
             CRITERE="RELATIF",
             NOM_CMP="DNSXI",
             GROUP_MA="EXTREMITE",
@@ -393,7 +393,7 @@ TEST_RESU(
         _F(
             RESULTAT=reslin,
             NOM_CAS="tractLd3",
-            NOM_CHAM="FERRAILLAGE",
+            NOM_CHAM="FERR_ELEM",
             CRITERE="RELATIF",
             NOM_CMP="DNSXI",
             GROUP_MA="EXTREMITE",
@@ -405,7 +405,7 @@ TEST_RESU(
         _F(
             RESULTAT=reslin,
             NOM_CAS="comprLd1",
-            NOM_CHAM="FERRAILLAGE",
+            NOM_CHAM="FERR_ELEM",
             CRITERE="RELATIF",
             NOM_CMP="DNSXI",
             GROUP_MA="EXTREMITE",
@@ -417,7 +417,7 @@ TEST_RESU(
         _F(
             RESULTAT=reslin,
             NOM_CAS="comprLd2",
-            NOM_CHAM="FERRAILLAGE",
+            NOM_CHAM="FERR_ELEM",
             CRITERE="RELATIF",
             NOM_CMP="DNSXI",
             GROUP_MA="EXTREMITE",
@@ -429,7 +429,7 @@ TEST_RESU(
         _F(
             RESULTAT=reslin,
             NOM_CAS="COMB_DIME_ACIER",
-            NOM_CHAM="FERRAILLAGE",
+            NOM_CHAM="FERR_ELEM",
             CRITERE="RELATIF",
             NOM_CMP="DNSXI",
             GROUP_MA="EXTREMITE",
@@ -441,7 +441,7 @@ TEST_RESU(
         _F(
             RESULTAT=reslin,
             NOM_CAS="COMB_DIME_ORDRE",
-            NOM_CHAM="FERRAILLAGE",
+            NOM_CHAM="FERR_ELEM",
             CRITERE="RELATIF",
             NOM_CMP="DNSXI",
             GROUP_MA="EXTREMITE",

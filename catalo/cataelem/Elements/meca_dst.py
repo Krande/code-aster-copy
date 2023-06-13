@@ -633,11 +633,11 @@ class MEDSQU4(Element):
         OP.EPVC_ELNO(
             te=4, para_in=((OP.EPVC_ELNO.PDEFOPG, EDFVCPG),), para_out=((SP.PDEFONO, EDFVCNO),)
         ),
-        OP.FERRAILLAGE(
+        OP.FERR_ELEM(
             te=146,
             para_in=(
                 (SP.PCACOQU, CCACOQU),
-                (OP.FERRAILLAGE.PEFFORR, EEFGENOR),
+                (OP.FERR_ELEM.PEFFORR, EEFGENOR),
                 (SP.PFERRA1, LC.CFER1_R),
             ),
             para_out=((SP.PFERRA2, LC.CFER2_R),),

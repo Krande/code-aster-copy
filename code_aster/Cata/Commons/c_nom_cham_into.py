@@ -395,7 +395,7 @@ class NOM_CHAM_INTO:  # COMMUN#
             "DIVU": ((), tr("Déformation volumique en THM")),
             "EPSA_ELNO": ((), tr("Déformations anélastique aux noeuds par élément")),
             "EPSA_NOEU": ((), tr("Déformations anélastique aux noeuds")),
-            "FERRAILLAGE": (("lin",), tr("Densité de ferraillage")),
+            "FERR_ELEM": (("lin",), tr("Densité de ferraillage")),
             "FSUR_2D": ((), tr("Chargement de force surfacique en 2D")),
             "FSUR_3D": ((), tr("Chargement de force surfacique en 3D")),
             "FVOL_2D": ((), tr("Chargement de force volumique en 2D")),

@@ -133,7 +133,7 @@ subroutine sandwich(enrobi, enrobs, facier, fbeton, gammas, gammac, &
     logical :: PREMIERE_ITERATION
     real(kind=8) :: Nxx, Nyy, Nxy, Mxx, Myy, Mxy, Qx, Qy
     real(kind=8) :: Nx_SUP, Nx_INF, Ny_SUP, Ny_INF, Nxy_SUP, Nxy_INF
-    real(kind=8) :: Dnxs, Dnys, Dnxys, cond_trac_inf, cond_trac_sup
+    real(kind=8) :: cond_trac_inf, cond_trac_sup
     integer :: CAS_SUP, CAS_INF, COUNT_ITER, j
     real(kind=8) :: dnsxi, dnsxs, dnsyi, dnsys, dnsxt, dnsyt
     integer :: etsxi, etsxs, etsyi, etsys
