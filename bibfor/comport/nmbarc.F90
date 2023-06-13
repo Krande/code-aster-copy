@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -523,14 +523,13 @@ real(kind=8) :: sipm, sipp
                     f1 = simoel*exp(-xk0*v0)
                     f2 = simoel*exp(-xk0*v0)-2.d0*pcrmp1*exp(xk*v0)
                     f3 = 2.d0*simoel*exp(-xk0*v0)-2.d0*pcrmp1*exp(xk* v0)+kpmax
-                    f = sieleq**2+m**2*(1.d0+6.d0*deuxmu*v0*alphab/ 2.d0/m/m/f3)**2 *(f1+kpmax)*f&
-                        &2
+                    f = sieleq**2+m**2*(1.d0+6.d0*deuxmu*v0*alphab/2.d0/m/m/f3)**2*(f1+kpmax)*f2
 !
                     f4 = (1.d0+6.d0*deuxmu*v0*alphab/2.d0/m/m/f3)
                     f5 = -2.d0*xk0*simoel**2*exp(-2.d0*xk0*v0)+ 2.d0*simoel*pcrmp1*exp((xk-xk0)*v&
                          &0)*(xk0-xk) -kpmax*(xk0*simoel*exp(-xk0*v0)+2.d0*xk*pcrmp1* exp(xk*v0))
-                    f6 = 2.d0*simoel*(1.d0+v0*xk0)*exp(-xk0*v0)+ 2.d0*pcrmp1*(-1.d0+v0*xk)*exp(xk&
-                         &*v0)+ kpmax
+                    f6 = 2.d0*simoel*(1.d0+v0*xk0)*exp(-xk0*v0)+2.d0*pcrmp1*(-1.d0+v0*xk)*exp(&
+                                                                                     &xk*v0)+kpmax
                     fp = m**2*f4**2*f5+6.d0*deuxmu*alphab*f4*(f1+ kpmax)*f2*(f6/f3/f3)
 !
 !
