@@ -62,7 +62,7 @@ resu = MECA_STATIQUE(
 
 resu.printMedFile("fort." + str(rank + 40) + ".med")
 
-MyFieldOnNodes = resu.getFieldOnNodesReal("DEPL", 1)
+MyFieldOnNodes = resu.getField("DEPL", 1)
 sfon = MyFieldOnNodes.toSimpleFieldOnNodes()
 sfon.build()
 

@@ -136,13 +136,13 @@ test.assertEqual(SOLUT.getNumberOfIndexes(), SOLUN.getNumberOfIndexes())
 # =========================================================
 
 for rank in range(nbIndexes):
-    DEPL_REF = SOLUT.getFieldOnNodesReal("DEPL", rank)
-    SIGMA_REF = SOLUT.getFieldOnCellsReal("SIEF_ELGA", rank)
-    VARI_REF = SOLUT.getFieldOnCellsReal("VARI_ELGA", rank)
+    DEPL_REF = SOLUT.getField("DEPL", rank)
+    SIGMA_REF = SOLUT.getField("SIEF_ELGA", rank)
+    VARI_REF = SOLUT.getField("VARI_ELGA", rank)
 
-    DEPL = SOLUR.getFieldOnNodesReal("DEPL", rank)
-    SIGMA = SOLUR.getFieldOnCellsReal("SIEF_ELGA", rank)
-    VARI = SOLUR.getFieldOnCellsReal("VARI_ELGA", rank)
+    DEPL = SOLUR.getField("DEPL", rank)
+    SIGMA = SOLUR.getField("SIEF_ELGA", rank)
+    VARI = SOLUR.getField("VARI_ELGA", rank)
 
     DIF_DEPL = DEPL_REF - DEPL
 

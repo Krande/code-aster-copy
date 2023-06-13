@@ -216,14 +216,13 @@ nbIndexes = SOLUN.getNumberOfIndexes()
 SOLUN.resize(nbIndexes + 1)
 SOLUN.setModel(SOLUN.getModel(nbIndexes - 1), nbIndexes)
 SOLUN.setMaterialField(SOLUN.getMaterialField(nbIndexes - 1), nbIndexes)
-SOLUN.setField(SOLUN.getFieldOnNodesReal("DEPL", nbIndexes - 1), "DEPL", nbIndexes)
+SOLUN.setField(SOLUN.getField("DEPL", nbIndexes - 1), "DEPL", nbIndexes)
 
 # CHECK THAT the fields are properly copied
 test.assertEqual(SOLUN.getModel(nbIndexes - 1), SOLUN.getModel(nbIndexes))
 test.assertEqual(SOLUN.getMaterialField(nbIndexes - 1), SOLUN.getMaterialField(nbIndexes - 1))
 test.assertEqual(
-    SOLUN.getFieldOnNodesReal("DEPL", nbIndexes - 1).getValues(),
-    SOLUN.getFieldOnNodesReal("DEPL", nbIndexes).getValues(),
+    SOLUN.getField("DEPL", nbIndexes - 1).getValues(), SOLUN.getField("DEPL", nbIndexes).getValues()
 )
 
 
@@ -231,7 +230,7 @@ test.assertEqual(
 #            TEST NORM METHODS
 # =========================================================
 
-sig = SOLUN.getFieldOnCellsReal("SIEF_ELGA", nbIndexes - 1)
+sig = SOLUN.getField("SIEF_ELGA", nbIndexes - 1)
 test.assertAlmostEqual(sig.norm("NORM_2"), 24162.483694014656, 8)
 test.assertAlmostEqual(sig.norm("NORM_1"), 640625.2493377978, 8)
 test.assertAlmostEqual(sig.norm("NORM_INFINITY"), 1317.268981963458, 8)

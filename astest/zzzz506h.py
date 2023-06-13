@@ -95,13 +95,13 @@ test.assertEqual(SOLUT.getNumberOfIndexes(), SOLU1.getNumberOfIndexes())
 
 for rank in range(nbIndexes):
     # ON EXTRAIT LES CHAMPS A TESTER au dernier instant
-    DEPL_REF = SOLUT.getFieldOnNodesReal("DEPL", rank)
-    SIGMA_REF = SOLUT.getFieldOnCellsReal("SIEF_ELGA", rank)
-    VARI_REF = SOLUT.getFieldOnCellsReal("VARI_ELGA", rank)
+    DEPL_REF = SOLUT.getField("DEPL", rank)
+    SIGMA_REF = SOLUT.getField("SIEF_ELGA", rank)
+    VARI_REF = SOLUT.getField("VARI_ELGA", rank)
 
-    DEPL = SOLU1.getFieldOnNodesReal("DEPL", rank)
-    SIGMA = SOLU1.getFieldOnCellsReal("SIEF_ELGA", rank)
-    VARI = SOLU1.getFieldOnCellsReal("VARI_ELGA", rank)
+    DEPL = SOLU1.getField("DEPL", rank)
+    SIGMA = SOLU1.getField("SIEF_ELGA", rank)
+    VARI = SOLU1.getField("VARI_ELGA", rank)
 
     DIF_DEPL = DEPL_REF - DEPL
 
@@ -180,7 +180,6 @@ for rank in range(nbIndexes):
     )
 
 if config["ASTER_HAVE_PETSC4PY"]:
-
     # NEW STAT_NON_LINE
     myOptions = "-pc_type lu -pc_factor_mat_solver_type mumps -ksp_type fgmres -snes_linesearch_type basic  -snes_max_it 10"
     SOLU2 = MECA_NON_LINE(
@@ -208,13 +207,13 @@ if config["ASTER_HAVE_PETSC4PY"]:
 
     for rank in range(nbIndexes):
         # ON EXTRAIT LES CHAMPS A TESTER au dernier instant
-        DEPL_REF = SOLUT.getFieldOnNodesReal("DEPL", rank)
-        SIGMA_REF = SOLUT.getFieldOnCellsReal("SIEF_ELGA", rank)
-        VARI_REF = SOLUT.getFieldOnCellsReal("VARI_ELGA", rank)
+        DEPL_REF = SOLUT.getField("DEPL", rank)
+        SIGMA_REF = SOLUT.getField("SIEF_ELGA", rank)
+        VARI_REF = SOLUT.getField("VARI_ELGA", rank)
 
-        DEPL = SOLU2.getFieldOnNodesReal("DEPL", rank)
-        SIGMA = SOLU2.getFieldOnCellsReal("SIEF_ELGA", rank)
-        VARI = SOLU2.getFieldOnCellsReal("VARI_ELGA", rank)
+        DEPL = SOLU2.getField("DEPL", rank)
+        SIGMA = SOLU2.getField("SIEF_ELGA", rank)
+        VARI = SOLU2.getField("VARI_ELGA", rank)
 
         DIF_DEPL = DEPL_REF - DEPL
 

@@ -179,26 +179,18 @@ TEMP_STAT = THER_LINEAIRE(
     EXCIT=(_F(CHARGE=CHAR1), _F(CHARGE=SYME_THER_11)),
 )
 
-norm_diff_depl_t0 = (
-    DEPL31_FONC.getFieldOnNodesReal("DEPL", 1) - DEPL31_TEMP0.getFieldOnNodesReal("DEPL", 1)
-).norm("NORM_2")
-norm_diff_depl_t1 = (
-    DEPL31_FONC.getFieldOnNodesReal("DEPL", 2) - DEPL31_TEMP1.getFieldOnNodesReal("DEPL", 1)
-).norm("NORM_2")
+norm_diff_depl_t0 = (DEPL31_FONC.getField("DEPL", 1) - DEPL31_TEMP0.getField("DEPL", 1)).norm(
+    "NORM_2"
+)
+norm_diff_depl_t1 = (DEPL31_FONC.getField("DEPL", 2) - DEPL31_TEMP1.getField("DEPL", 1)).norm(
+    "NORM_2"
+)
 
-norm_diff_temp_t0 = (
-    TEMP_FONC.getFieldOnNodesReal("TEMP", 0) - TEMP_TEMP0.getFieldOnNodesReal("TEMP", 1)
-).norm("NORM_2")
-norm_diff_temp_t1 = (
-    TEMP_FONC.getFieldOnNodesReal("TEMP", 1) - TEMP_TEMP1.getFieldOnNodesReal("TEMP", 1)
-).norm("NORM_2")
+norm_diff_temp_t0 = (TEMP_FONC.getField("TEMP", 0) - TEMP_TEMP0.getField("TEMP", 1)).norm("NORM_2")
+norm_diff_temp_t1 = (TEMP_FONC.getField("TEMP", 1) - TEMP_TEMP1.getField("TEMP", 1)).norm("NORM_2")
 
-norm_diff_stat_t0 = (
-    TEMP_STAT.getFieldOnNodesReal("TEMP", 1) - TEMP_TEMP0.getFieldOnNodesReal("TEMP", 1)
-).norm("NORM_2")
-norm_diff_stat_t1 = (
-    TEMP_STAT.getFieldOnNodesReal("TEMP", 2) - TEMP_TEMP1.getFieldOnNodesReal("TEMP", 1)
-).norm("NORM_2")
+norm_diff_stat_t0 = (TEMP_STAT.getField("TEMP", 1) - TEMP_TEMP0.getField("TEMP", 1)).norm("NORM_2")
+norm_diff_stat_t1 = (TEMP_STAT.getField("TEMP", 2) - TEMP_TEMP1.getField("TEMP", 1)).norm("NORM_2")
 
 # test issue32843
 test_field = DEPL31_FONC.getField("DEPL", 1)

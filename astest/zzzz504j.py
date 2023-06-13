@@ -69,7 +69,7 @@ resu = STAT_NON_LINE(
     SOLVEUR=_F(METHODE="PETSC", RESI_RELA=1.0e-5, PRE_COND="LDLT_SP"),
 )
 
-MyFieldOnNodes = resu.getFieldOnNodesReal("DEPL", 1)
+MyFieldOnNodes = resu.getField("DEPL", 1)
 sfon = MyFieldOnNodes.toSimpleFieldOnNodes()
 
 value = [1.0, 1.0, 0.0, 0.0]

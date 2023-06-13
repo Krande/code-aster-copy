@@ -181,13 +181,13 @@ U2 = MECA_NON_LINE(
 
 nbIndexes = U1.getNumberOfIndexes()
 
-DEPL_REF = U1.getFieldOnNodesReal("DEPL", nbIndexes - 1)
-SIGMA_REF = U1.getFieldOnCellsReal("SIEF_ELGA", nbIndexes - 1)
-VARI_REF = U1.getFieldOnCellsReal("VARI_ELGA", nbIndexes - 1)
+DEPL_REF = U1.getField("DEPL", nbIndexes - 1)
+SIGMA_REF = U1.getField("SIEF_ELGA", nbIndexes - 1)
+VARI_REF = U1.getField("VARI_ELGA", nbIndexes - 1)
 
-DEPL = U2.getFieldOnNodesReal("DEPL", nbIndexes - 1)
-SIGMA = U2.getFieldOnCellsReal("SIEF_ELGA", nbIndexes - 1)
-VARI = U2.getFieldOnCellsReal("VARI_ELGA", nbIndexes - 1)
+DEPL = U2.getField("DEPL", nbIndexes - 1)
+SIGMA = U2.getField("SIEF_ELGA", nbIndexes - 1)
+VARI = U2.getField("VARI_ELGA", nbIndexes - 1)
 
 DIF_DEPL = DEPL_REF - DEPL
 DIF_SIG = SIGMA_REF - SIGMA
@@ -288,13 +288,13 @@ range4 = [U3.getTime(i) for i in range(nbIndexes4)]
 test.assertEqual(nbIndexes3, nbIndexes4)
 test.assertEqual(range3, range4)
 
-DEPL_REF = U3.getFieldOnNodesReal("DEPL", nbIndexes3 - 1)
-SIGMA_REF = U3.getFieldOnCellsReal("SIEF_ELGA", nbIndexes3 - 1)
-VARI_REF = U3.getFieldOnCellsReal("VARI_ELGA", nbIndexes3 - 1)
+DEPL_REF = U3.getField("DEPL", nbIndexes3 - 1)
+SIGMA_REF = U3.getField("SIEF_ELGA", nbIndexes3 - 1)
+VARI_REF = U3.getField("VARI_ELGA", nbIndexes3 - 1)
 
-DEPL = U4.getFieldOnNodesReal("DEPL", nbIndexes3 - 1)
-SIGMA = U4.getFieldOnCellsReal("SIEF_ELGA", nbIndexes3 - 1)
-VARI = U4.getFieldOnCellsReal("VARI_ELGA", nbIndexes3 - 1)
+DEPL = U4.getField("DEPL", nbIndexes3 - 1)
+SIGMA = U4.getField("SIEF_ELGA", nbIndexes3 - 1)
+VARI = U4.getField("VARI_ELGA", nbIndexes3 - 1)
 
 DIF_DEPL = DEPL_REF - DEPL
 DIF_SIG = SIGMA_REF - SIGMA

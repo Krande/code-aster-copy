@@ -77,7 +77,7 @@ resu1.printMedFile("test" + str(rank) + ".med")
 # from shutil import copyfile
 # copyfile("test"+str(rank)+".med", "/home/siavelis/test"+str(rank)+".med")
 
-field1 = resu1.getFieldOnNodesReal("DEPL", 1)
+field1 = resu1.getField("DEPL", 1)
 sfon = field1.toSimpleFieldOnNodes()
 sfon.debugPrint(10 + rank)
 sfon.build()
@@ -103,7 +103,7 @@ resu2 = MECA_NON_LINE(
     INFO=1,
 )
 
-field2 = resu2.getFieldOnNodesReal("DEPL", 1)
+field2 = resu2.getField("DEPL", 1)
 
 test.assertAlmostEqual(field1.norm("NORM_2"), field2.norm("NORM_2"), 6)
 

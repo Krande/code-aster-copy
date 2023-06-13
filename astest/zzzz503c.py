@@ -85,11 +85,11 @@ test.assertFalse(resu.hasElementaryCharacteristics(1))
 
 resu = CALC_CHAMP(RESULTAT=resu, reuse=resu, CONTRAINTE=("SIEF_ELGA"))
 
-DEPL = resu.getFieldOnNodesReal("DEPL", 1)
+DEPL = resu.getField("DEPL", 1)
 sfon = DEPL.toSimpleFieldOnNodes()
 sfon.build()
 
-SIEF = resu.getFieldOnCellsReal("SIEF_ELGA", 1)
+SIEF = resu.getField("SIEF_ELGA", 1)
 
 
 val = [0.134228076192, 0.134176297047, 0.154099687654, 0.154189676715]
@@ -170,8 +170,8 @@ with shared_tmpdir("zzzz503c_") as tmpdir:
     DEFI_FICHIER(ACTION="LIBERER", UNITE=80)
 
 
-SIEF_std = resu_std.getFieldOnCellsReal("SIEF_ELGA", 1)
-DEPL_std = resu_std.getFieldOnNodesReal("DEPL", 1)
+SIEF_std = resu_std.getField("SIEF_ELGA", 1)
+DEPL_std = resu_std.getField("DEPL", 1)
 
 rela = abs(DEPL.norm("NORM_2") - DEPL_std.norm("NORM_2")) / DEPL_std.norm("NORM_2")
 test.assertAlmostEqual(rela, 0.0, delta=1e-12)

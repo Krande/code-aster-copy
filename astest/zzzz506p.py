@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -112,13 +112,13 @@ test.assertSequenceEqual(RES_NEW.getIndexes(), range(4))
 
 
 # ON EXTRAIT LES CHAMPS A TESTER au dernier instant
-DEPL_REF = RES.getFieldOnNodesReal("DEPL", nbIndexes - 1)
-SIGMA_REF = RES.getFieldOnCellsReal("SIEF_ELGA", nbIndexes - 1)
-VARI_REF = RES.getFieldOnCellsReal("VARI_ELGA", nbIndexes - 1)
+DEPL_REF = RES.getField("DEPL", nbIndexes - 1)
+SIGMA_REF = RES.getField("SIEF_ELGA", nbIndexes - 1)
+VARI_REF = RES.getField("VARI_ELGA", nbIndexes - 1)
 
-DEPL = RES_NEW.getFieldOnNodesReal("DEPL", nbIndexes - 1)
-SIGMA = RES_NEW.getFieldOnCellsReal("SIEF_ELGA", nbIndexes - 1)
-VARI = RES_NEW.getFieldOnCellsReal("VARI_ELGA", nbIndexes - 1)
+DEPL = RES_NEW.getField("DEPL", nbIndexes - 1)
+SIGMA = RES_NEW.getField("SIEF_ELGA", nbIndexes - 1)
+VARI = RES_NEW.getField("VARI_ELGA", nbIndexes - 1)
 
 DIF_DEPL = DEPL_REF - DEPL
 

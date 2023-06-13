@@ -96,7 +96,7 @@ resu = STAT_NON_LINE(
 # else:
 #     resu.printMedFile('/tmp/seq.resu.med')
 
-MyFieldOnNodes = resu.getFieldOnNodesReal("DEPL", 1)
+MyFieldOnNodes = resu.getField("DEPL", 1)
 sfon = MyFieldOnNodes.toSimpleFieldOnNodes()
 
 test.assertAlmostEqual(sfon[0, 0], 0.0)

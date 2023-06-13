@@ -155,8 +155,8 @@ evol = MECA_NON_LINE(
     INFO=1,
 )
 
-fieldRefe = evol.getFieldOnNodesReal("DEPL", 1)
-field = evol.getFieldOnNodesReal("DEPL", 1)
+fieldRefe = evol.getField("DEPL", 1)
+field = evol.getField("DEPL", 1)
 
 test.assertAlmostEqual(fieldRefe.norm("NORM_2"), field.norm("NORM_2"), 6)
 

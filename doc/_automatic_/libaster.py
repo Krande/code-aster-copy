@@ -1995,6 +1995,13 @@ class FieldOnCellsReal(DataField):
     def changeLocalization(self, arg0):
         pass
 
+    def copy(self):
+        """Return a duplicated FieldOnCellsReal as a copy
+
+        Returns:
+            FieldOnCellsReal
+        """
+
     def dot(self, other):
         """Return the dot product of two fields
 
@@ -2003,13 +2010,6 @@ class FieldOnCellsReal(DataField):
 
         Returns:
             float: dot product
-        """
-
-    def copy(self):
-        """Return a duplicated FieldOnCellsReal as a copy
-
-        Returns:
-            FieldOnCellsReal
         """
 
     def getComponents(self):
@@ -2562,6 +2562,21 @@ class FieldOnNodesReal(DataField):
     def build(self, mesh=None):
         pass
 
+    def copy(self):
+        pass
+
+    def copyUsingDescription(self, desc):
+        """Return a new field using the description.
+        Be carefull, Lagrange DOFs are setted to zero. Moreover, components that are
+        not present in the field are also setted to zero in the output field.
+
+        Arguments:
+            desc [EquationNumbering]: description of equations
+
+        Returns:
+            FieldOnNodesReal: field using new description.
+        """
+
     def dot(self, other):
         """Return the dot product of two fields
 
@@ -2571,9 +2586,6 @@ class FieldOnNodesReal(DataField):
         Returns:
             float: dot product
         """
-
-    def copy(self):
-        pass
 
     def fromPetsc(self, vec, scaling=1.0):
         """Import a PETSc vector into the field.
@@ -5936,10 +5948,10 @@ class AssemblyMatrixDisplacementReal(BaseAssemblyMatrix):
     def clearElementaryMatrix(self):
         pass
 
-    def defineSolver(self):
+    def copy(self):
         pass
 
-    def copy(self):
+    def defineSolver(self):
         pass
 
     def getLowerValues(self):
@@ -6059,10 +6071,10 @@ class AssemblyMatrixDisplacementComplex(BaseAssemblyMatrix):
     def clearElementaryMatrix(self):
         pass
 
-    def defineSolver(self):
+    def copy(self):
         pass
 
-    def copy(self):
+    def defineSolver(self):
         pass
 
     def getLowerValues(self):
@@ -6162,10 +6174,10 @@ class AssemblyMatrixTemperatureReal(BaseAssemblyMatrix):
     def clearElementaryMatrix(self):
         pass
 
-    def defineSolver(self):
+    def copy(self):
         pass
 
-    def copy(self):
+    def defineSolver(self):
         pass
 
     def getLowerValues(self):
@@ -6400,10 +6412,10 @@ class AssemblyMatrixPressureComplex(BaseAssemblyMatrix):
     def clearElementaryMatrix(self):
         pass
 
-    def defineSolver(self):
+    def copy(self):
         pass
 
-    def copy(self):
+    def defineSolver(self):
         pass
 
     def getLowerValues(self):
@@ -10722,28 +10734,6 @@ class Result(DataStructure):
             list[ElementaryCharacteristics]: list of ElementaryCharacteristics.
         """
 
-    def getConstantFieldOnCellsChar16(self, name, index):
-        """Get a ConstantFieldOnCellsChar16 from result.
-
-        Arguments:
-            name (str): symbolic name of the field in the result (ex: 'COMPORTEMENT', ...)
-            index (int): index to set the field
-
-        Returns:
-            ConstantFieldOnCellsChar16: field to get
-        """
-
-    def getConstantFieldOnCellsReal(self, name, index):
-        """Get a ConstantFieldOnCellsReal from result.
-
-        Arguments:
-            name (str): symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
-            index (int): index to set the field
-
-        Returns:
-            ConstantFieldOnCellsReal: field to get
-        """
-
     def getConstantFieldsOnCellsChar16Names(self):
         """Return the names of the contant char16 fields on cells as Python list.
 
@@ -10781,61 +10771,6 @@ class Result(DataStructure):
 
         Returns:
             list[EquationNumbering]: list of field's description
-        """
-
-    def getFieldOnCellsComplex(self, name, index):
-        """Get a FieldOnCellsComplex from result.
-
-        Arguments:
-            name (str): symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
-            index (int): index to set the field
-
-        Returns:
-            FieldOnCellsComplex: field to get
-        """
-
-    def getFieldOnCellsLong(self, name, index):
-        """Get a FieldOnCellsLong from result.
-
-        Arguments:
-            name (str): symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
-            index (int): index to set the field
-
-        Returns:
-            FieldOnCellsLong: field to get
-        """
-
-    def getFieldOnCellsReal(self, name, index):
-        """Get a FieldOnCellsReal from result.
-
-        Arguments:
-            name (str): symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
-            index (int): index to set the field
-
-        Returns:
-            FieldOnCellsReal: field to get
-        """
-
-    def getFieldOnNodesComplex(self, name, index):
-        """Get a FieldOnNodesComplex from result.
-
-        Arguments:
-            name (str): symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
-            index (int): index to set the field
-
-        Returns:
-            FieldOnNodesComplex: field to get
-        """
-
-    def getFieldOnNodesReal(self, name, index):
-        """Get a FieldOnNodesReal from result.
-
-        Arguments:
-            name (str): symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
-            index (int): index to set the field
-
-        Returns:
-            FieldOnNodesReal: field to get
         """
 
     def getFieldsNames(self, *args, **kwargs):

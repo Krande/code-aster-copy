@@ -108,13 +108,13 @@ test.assertEqual(RES.getNumberOfIndexes(), RES_NEW.getNumberOfIndexes())
 fmt = "# check diff: {0:3d} {1:<6s} {2:12.6e} {3:12.6e} {4:12.6e}"
 
 for rank in range(nbIndexes):
-    DEPL_REF = RES.getFieldOnNodesReal("DEPL", rank)
-    SIGMA_REF = RES.getFieldOnCellsReal("SIEF_ELGA", rank)
-    VARI_REF = RES.getFieldOnCellsReal("VARI_ELGA", rank)
+    DEPL_REF = RES.getField("DEPL", rank)
+    SIGMA_REF = RES.getField("SIEF_ELGA", rank)
+    VARI_REF = RES.getField("VARI_ELGA", rank)
 
-    DEPL = RES_NEW.getFieldOnNodesReal("DEPL", rank)
-    SIGMA = RES_NEW.getFieldOnCellsReal("SIEF_ELGA", rank)
-    VARI = RES_NEW.getFieldOnCellsReal("VARI_ELGA", rank)
+    DEPL = RES_NEW.getField("DEPL", rank)
+    SIGMA = RES_NEW.getField("SIEF_ELGA", rank)
+    VARI = RES_NEW.getField("VARI_ELGA", rank)
 
     DIF_DEPL = DEPL_REF - DEPL
 
@@ -226,7 +226,6 @@ for rank in range(nbIndexes):
 # =========================================================
 
 if config["ASTER_HAVE_PETSC4PY"]:
-
     myOptions = "-pc_type lu -pc_factor_mat_solver_type mumps -ksp_type fgmres -snes_linesearch_type basic  -snes_max_it 10"
     RES_NEW = MECA_NON_LINE(
         CHAM_MATER=AFFE,
@@ -256,13 +255,13 @@ if config["ASTER_HAVE_PETSC4PY"]:
     fmt = "# check diff: {0:3d} {1:<6s} {2:12.6e} {3:12.6e} {4:12.6e}"
 
     for rank in range(nbIndexes):
-        DEPL_REF = RES.getFieldOnNodesReal("DEPL", rank)
-        SIGMA_REF = RES.getFieldOnCellsReal("SIEF_ELGA", rank)
-        VARI_REF = RES.getFieldOnCellsReal("VARI_ELGA", rank)
+        DEPL_REF = RES.getField("DEPL", rank)
+        SIGMA_REF = RES.getField("SIEF_ELGA", rank)
+        VARI_REF = RES.getField("VARI_ELGA", rank)
 
-        DEPL = RES_NEW.getFieldOnNodesReal("DEPL", rank)
-        SIGMA = RES_NEW.getFieldOnCellsReal("SIEF_ELGA", rank)
-        VARI = RES_NEW.getFieldOnCellsReal("VARI_ELGA", rank)
+        DEPL = RES_NEW.getField("DEPL", rank)
+        SIGMA = RES_NEW.getField("SIEF_ELGA", rank)
+        VARI = RES_NEW.getField("VARI_ELGA", rank)
 
         DIF_DEPL = DEPL_REF - DEPL
 

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -97,13 +97,13 @@ test.assertEqual(SOLUT.getNumberOfIndexes(), SOLUN.getNumberOfIndexes())
 
 for rank in range(nbIndexes):
     # ON EXTRAIT LES CHAMPS A TESTER au dernier instant
-    DEPL_REF = SOLUT.getFieldOnNodesReal("DEPL", rank)
-    SIGMA_REF = SOLUT.getFieldOnCellsReal("SIEF_ELGA", rank)
-    VARI_REF = SOLUT.getFieldOnCellsReal("VARI_ELGA", rank)
+    DEPL_REF = SOLUT.getField("DEPL", rank)
+    SIGMA_REF = SOLUT.getField("SIEF_ELGA", rank)
+    VARI_REF = SOLUT.getField("VARI_ELGA", rank)
 
-    DEPL = SOLUN.getFieldOnNodesReal("DEPL", rank)
-    SIGMA = SOLUN.getFieldOnCellsReal("SIEF_ELGA", rank)
-    VARI = SOLUN.getFieldOnCellsReal("VARI_ELGA", rank)
+    DEPL = SOLUN.getField("DEPL", rank)
+    SIGMA = SOLUN.getField("SIEF_ELGA", rank)
+    VARI = SOLUN.getField("VARI_ELGA", rank)
 
     DIF_DEPL = DEPL_REF - DEPL
 

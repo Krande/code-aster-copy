@@ -23,7 +23,7 @@ code_aster.init("--test", "--continue")
 
 test = code_aster.TestCase()
 
-sief_elga = RESU.getFieldOnCellsReal("SIEF_ELGA", 8).toSimpleFieldOnCells()
+sief_elga = RESU.getField("SIEF_ELGA", 8).toSimpleFieldOnCells()
 values, mask = sief_elga.getValues()
 # test.assertAlmostEqual(values[3,0], 0.000550376598358751, places=6)
 test.assertEqual(mask[3, 0], True)
@@ -31,7 +31,7 @@ test.assertEqual(mask[0, 8], False)
 test.assertEqual(values.shape, mask.shape)
 test.assertEqual(values.shape, (35329, 9))
 
-acce_noeu = RESU.getFieldOnNodesReal("ACCE", 8).toSimpleFieldOnNodes()
+acce_noeu = RESU.getField("ACCE", 8).toSimpleFieldOnNodes()
 values, mask = acce_noeu.getValues()
 test.assertAlmostEqual(values[3, 0], 0.14853528594483775, places=6)
 test.assertEqual(mask[3, 0], True)

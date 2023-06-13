@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -73,6 +73,7 @@ RES = STAT_NON_LINE(
     CONVERGENCE=_F(RESI_GLOB_RELA=1e-8, ITER_GLOB_ELAS=25, ITER_GLOB_MAXI=10),
     NEWTON=_F(PREDICTION="ELASTIQUE", REAC_INCR=1, MATRICE="TANGENTE", REAC_ITER=3),
     SOLVEUR=_F(METHODE="MUMPS"),
+    ARCHIVAGE=_F(INST=(0.5, 1.0)),
 )
 
 RES_N = MECA_NON_LINE(
@@ -85,17 +86,21 @@ RES_N = MECA_NON_LINE(
     CONVERGENCE=_F(RESI_GLOB_RELA=1e-8, ITER_GLOB_ELAS=25, ITER_GLOB_MAXI=10),
     NEWTON=_F(PREDICTION="ELASTIQUE", REAC_INCR=1, MATRICE="TANGENTE", REAC_ITER=3),
     SOLVEUR=_F(METHODE="MUMPS"),
+    ARCHIVAGE=_F(INST=(0.5, 1.0)),
 )
 
 nbIndexes = RES.getNumberOfIndexes()
 
-DEPL_REF = RES.getFieldOnNodesReal("DEPL", nbIndexes - 1)
-SIGMA_REF = RES.getFieldOnCellsReal("SIEF_ELGA", nbIndexes - 1)
-VARI_REF = RES.getFieldOnCellsReal("VARI_ELGA", nbIndexes - 1)
+assert nbIndexes == 3
+assert RES_N.getNumberOfIndexes() == 3
 
-DEPL = RES_N.getFieldOnNodesReal("DEPL", nbIndexes - 1)
-SIGMA = RES_N.getFieldOnCellsReal("SIEF_ELGA", nbIndexes - 1)
-VARI = RES_N.getFieldOnCellsReal("VARI_ELGA", nbIndexes - 1)
+DEPL_REF = RES.getField("DEPL", nbIndexes - 1)
+SIGMA_REF = RES.getField("SIEF_ELGA", nbIndexes - 1)
+VARI_REF = RES.getField("VARI_ELGA", nbIndexes - 1)
+
+DEPL = RES_N.getField("DEPL", nbIndexes - 1)
+SIGMA = RES_N.getField("SIEF_ELGA", nbIndexes - 1)
+VARI = RES_N.getField("VARI_ELGA", nbIndexes - 1)
 
 DIF_DEPL = DEPL_REF - DEPL
 DIF_SIG = SIGMA_REF - SIGMA

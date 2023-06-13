@@ -391,8 +391,9 @@ Return the list of indexs used to store fields
 Returns:
     list[int]: List of indexs used to store fields.
         )" )
-        .def( "getFieldOnNodesReal", &Result::getFieldOnNodesReal, R"(
+        .def( "_getFieldOnNodesReal", &Result::getFieldOnNodesReal, R"(
 Get a FieldOnNodesReal from result.
+* For internal use only - prefer to use getField() *
 
 Arguments:
     name (str): symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
@@ -402,8 +403,9 @@ Returns:
     FieldOnNodesReal: field to get
         )",
               py::arg( "name" ), py::arg( "index" ) )
-        .def( "getFieldOnCellsReal", &Result::getFieldOnCellsReal, R"(
+        .def( "_getFieldOnCellsReal", &Result::getFieldOnCellsReal, R"(
 Get a FieldOnCellsReal from result.
+* For internal use only - prefer to use getField() *
 
 Arguments:
     name (str): symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
@@ -413,8 +415,9 @@ Returns:
     FieldOnCellsReal: field to get
         )",
               py::arg( "name" ), py::arg( "index" ) )
-        .def( "getFieldOnNodesComplex", &Result::getFieldOnNodesComplex, R"(
+        .def( "_getFieldOnNodesComplex", &Result::getFieldOnNodesComplex, R"(
 Get a FieldOnNodesComplex from result.
+* For internal use only - prefer to use getField() *
 
 Arguments:
     name (str): symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
@@ -424,8 +427,9 @@ Returns:
     FieldOnNodesComplex: field to get
         )",
               py::arg( "name" ), py::arg( "index" ) )
-        .def( "getFieldOnCellsComplex", &Result::getFieldOnCellsComplex, R"(
+        .def( "_getFieldOnCellsComplex", &Result::getFieldOnCellsComplex, R"(
 Get a FieldOnCellsComplex from result.
+* For internal use only - prefer to use getField() *
 
 Arguments:
     name (str): symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
@@ -435,8 +439,9 @@ Returns:
     FieldOnCellsComplex: field to get
         )",
               py::arg( "name" ), py::arg( "index" ) )
-        .def( "getFieldOnCellsLong", &Result::getFieldOnCellsLong, R"(
+        .def( "_getFieldOnCellsLong", &Result::getFieldOnCellsLong, R"(
 Get a FieldOnCellsLong from result.
+* For internal use only - prefer to use getField() *
 
 Arguments:
     name (str): symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
@@ -446,8 +451,9 @@ Returns:
     FieldOnCellsLong: field to get
         )",
               py::arg( "name" ), py::arg( "index" ) )
-        .def( "getConstantFieldOnCellsChar16", &Result::getConstantFieldOnCellsChar16, R"(
+        .def( "_getConstantFieldOnCellsChar16", &Result::getConstantFieldOnCellsChar16, R"(
 Get a ConstantFieldOnCellsChar16 from result.
+* For internal use only - prefer to use getField() *
 
 Arguments:
     name (str): symbolic name of the field in the result (ex: 'COMPORTEMENT', ...)
@@ -457,8 +463,9 @@ Returns:
     ConstantFieldOnCellsChar16: field to get
         )",
               py::arg( "name" ), py::arg( "index" ) )
-        .def( "getConstantFieldOnCellsReal", &Result::getConstantFieldOnCellsReal, R"(
+        .def( "_getConstantFieldOnCellsReal", &Result::getConstantFieldOnCellsReal, R"(
 Get a ConstantFieldOnCellsReal from result.
+* For internal use only - prefer to use getField() *
 
 Arguments:
     name (str): symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)

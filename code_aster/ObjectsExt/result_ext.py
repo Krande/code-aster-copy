@@ -148,7 +148,6 @@ class ResultStateBuilder(InternalStateBuilder):
 
 @injector(Result)
 class ExtendedResult:
-
     cata_sdj = "SD.sd_resultat.sd_resultat"
     internalStateBuilder = ResultStateBuilder
 
@@ -256,31 +255,31 @@ class ExtendedResult:
 
         names = self.getFieldsOnNodesRealNames()
         if name in names:
-            return self.getFieldOnNodesReal(name, storageIndex)
+            return self._getFieldOnNodesReal(name, storageIndex)
 
         names = self.getFieldsOnNodesComplexNames()
         if name in names:
-            return self.getFieldOnNodesComplex(name, storageIndex)
+            return self._getFieldOnNodesComplex(name, storageIndex)
 
         names = self.getFieldsOnCellsRealNames()
         if name in names:
-            return self.getFieldOnCellsReal(name, storageIndex)
+            return self._getFieldOnCellsReal(name, storageIndex)
 
         names = self.getFieldsOnCellsComplexNames()
         if name in names:
-            return self.getFieldOnCellsComplex(name, storageIndex)
+            return self._getFieldOnCellsComplex(name, storageIndex)
 
         names = self.getFieldsOnCellsLongNames()
         if name in names:
-            return self.getFieldOnCellsLong(name, storageIndex)
+            return self._getFieldOnCellsLong(name, storageIndex)
 
         names = self.getConstantFieldsOnCellsRealNames()
         if name in names:
-            return self.getConstantFieldOnCellsReal(name, storageIndex)
+            return self._getConstantFieldOnCellsReal(name, storageIndex)
 
         names = self.getConstantFieldsOnCellsChar16Names()
         if name in names:
-            return self.getConstantFieldOnCellsChar16(name, storageIndex)
+            return self._getConstantFieldOnCellsChar16(name, storageIndex)
 
         names = self.getGeneralizedVectorRealNames()
         if name in names:

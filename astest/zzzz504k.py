@@ -66,7 +66,7 @@ resu.debugPrint(10 + rank)
 
 resu.printMedFile("test" + str(rank) + ".med")
 
-MyFieldOnNodes = resu.getFieldOnNodesReal("DEPL", 1)
+MyFieldOnNodes = resu.getField("DEPL", 1)
 sfon = MyFieldOnNodes.toSimpleFieldOnNodes()
 sfon.debugPrint(10 + rank)
 sfon.build()

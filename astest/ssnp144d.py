@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,19 +21,19 @@ POURSUITE(CODE="OUI")
 
 UTOT1.printListOfFields()
 
-depl = UTOT1.getFieldOnNodesReal("DEPL", 1)
+depl = UTOT1.getField("DEPL", 1)
 
 # depl is real
 try:
-    depl_c = UTOT1.getFieldOnNodesComplex("DEPL", 1)
+    depl_c = UTOT1.getField("DEPL", 1)
 except IndexError:
     pass
 
-sief_elga = UTOT1.getFieldOnCellsReal("SIEF_ELGA", 1)
+sief_elga = UTOT1.getField("SIEF_ELGA", 1)
 
 # sief is real
 try:
-    sief_c = UTOT1.getFieldOnCellsComplex("SIEF_ELGA", 1)
+    sief_c = UTOT1.getField("SIEF_ELGA", 1)
 except IndexError:
     pass
 
@@ -51,9 +51,9 @@ try:
 except IndexError:
     pass
 
-cohe_elem = UTOT1.getFieldOnCellsReal("COHE_ELEM", 1)
+cohe_elem = UTOT1.getField("COHE_ELEM", 1)
 
-cont_noeu = UTOT1.getFieldOnNodesReal("CONT_NOEU", 1)
+cont_noeu = UTOT1.getField("CONT_NOEU", 1)
 cont_noeu = UTOT1.getField("CONT_NOEU", 1)
 
 try:

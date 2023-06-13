@@ -121,13 +121,13 @@ test.assertEqual(RES.getNumberOfIndexes(), RES_NEW.getNumberOfIndexes())
 
 for rank in range(nbIndexes):
     # ON EXTRAIT LES CHAMPS A TESTER au dernier instant
-    DEPL_REF = RES.getFieldOnNodesReal("DEPL", rank)
-    SIGMA_REF = RES.getFieldOnCellsReal("SIEF_ELGA", rank)
-    VARI_REF = RES.getFieldOnCellsReal("VARI_ELGA", rank)
+    DEPL_REF = RES.getField("DEPL", rank)
+    SIGMA_REF = RES.getField("SIEF_ELGA", rank)
+    VARI_REF = RES.getField("VARI_ELGA", rank)
 
-    DEPL = RES_NEW.getFieldOnNodesReal("DEPL", rank)
-    SIGMA = RES_NEW.getFieldOnCellsReal("SIEF_ELGA", rank)
-    VARI = RES_NEW.getFieldOnCellsReal("VARI_ELGA", rank)
+    DEPL = RES_NEW.getField("DEPL", rank)
+    SIGMA = RES_NEW.getField("SIEF_ELGA", rank)
+    VARI = RES_NEW.getField("VARI_ELGA", rank)
 
     DIF_DEPL = DEPL_REF - DEPL
 
