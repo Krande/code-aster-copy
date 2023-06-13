@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nume_ddl_chamElem(nume, ligrel, modeloc)
+subroutine nume_ddl_chamElem(nume, ligrel, modeloc, modelz)
     !
     implicit none
     !
@@ -28,6 +28,7 @@ subroutine nume_ddl_chamElem(nume, ligrel, modeloc)
     character(len=*), intent(in) :: nume
     character(len=*), intent(in) :: ligrel
     character(len=*), intent(in) :: modeloc
+    character(len=*), intent(in) :: modelz
     !
     ! ----------------------------------------------------------------------------------------------
     !
@@ -57,7 +58,7 @@ subroutine nume_ddl_chamElem(nume, ligrel, modeloc)
     ! ----- CALCUL DE LA NUMEROTATION PROPREMENT DITE :
     !
     call numero(nume_ddl, 'GG', modelocz=modeloc, &
-                nb_ligrel=nb_grel, list_ligrel=v_ligrel)
+                nb_ligrel=nb_grel, list_ligrel=v_ligrel, modelz=modelz)
     !
     !
 end subroutine

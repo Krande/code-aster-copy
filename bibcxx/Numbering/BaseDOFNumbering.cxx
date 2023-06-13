@@ -114,12 +114,25 @@ bool BaseDOFNumbering::computeNumbering( const std::vector< FiniteElementDescrip
     JeveuxVectorChar24 list_ligrel( "&&LIST_LIGREL" );
     list_ligrel->reserve( Feds.size() );
 
+    ModelPtr model;
     for ( auto &fed : Feds ) {
         this->addFiniteElementDescriptor( fed );
         list_ligrel->push_back( JeveuxChar24( fed->getName() ) );
+        ModelPtr model2 = fed->getModel();
+        if ( model2 ) {
+            if ( model && model2 != model ) {
+                AS_ABORT( "Models are incompatible" );
+            }
+            model = model2;
+        }
     }
 
-    CALLO_NUME_DDL_CHAMELEM( getName(), list_ligrel->getName(), localMode );
+    std::string model_name = "";
+    if ( model )
+        model_name = model->getName();
+    CALLO_NUME_DDL_CHAMELEM( getName(), list_ligrel->getName(), localMode, model_name );
+    if ( model )
+        setModel( model );
 
     this->build();
 
