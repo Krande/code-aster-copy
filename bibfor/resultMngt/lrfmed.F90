@@ -342,7 +342,7 @@ subroutine lrfmed(fileUnit, resultName, meshAst, storeLast, &
             end if
             call jeveuo(fieldNameAst//'.REFE', 'E', vk24=refe)
             refe(2) = nomprn(1:19)
-            print *, nomprn, pchn1
+            call detrsd('NUME_EQUA', pchn1)
         end if
         if (numeStore .eq. ednono) then
             numeStore = numeStep
