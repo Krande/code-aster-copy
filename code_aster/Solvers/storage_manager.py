@@ -93,7 +93,7 @@ class StorageManager(SolverFeature):
             self.list_time = SearchList(list_time, kwargs["PRECISION"], kwargs["CRITERE"])
             assert all(self.list_time.unique(t) for t in list_time)
 
-        self.setInitialIndex(0)
+        curr_index = init_index = stor_index = 0
 
     def setInitialIndex(self, index):
         """Set initial index.

@@ -62,7 +62,7 @@ class CoupledState:
         self.dx_nodes = hho_dama.projectOnLagrangeSpace(self.dx)
         self.d_nodes = hho_dama.projectOnLagrangeSpace(self.d)
 
-    def duplicate(self):
+    def copy(self):
         dup = CoupledState(self.u, self.dx, self.d, self.time)
         dup.u_nodes = self.u_nodes.copy()
         dup.dx_nodes = self.dx_nodes.copy()
