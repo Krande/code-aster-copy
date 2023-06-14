@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -147,7 +147,7 @@ RESU2 = STAT_NON_LINE(
         ),
     ),
     SOLVEUR=_F(METHODE="MUMPS", RENUM="METIS", STOP_SINGULIER="OUI", ELIM_LAGR="NON", NPREC=8),
-    ARCHIVAGE=_F(CRITERE="RELATIF", PRECISION=1.0e-06),
+    ARCHIVAGE=_F(PAS_ARCH=1),
     NEWTON=_F(REAC_INCR=1, MATRICE="TANGENTE", REAC_ITER_ELAS=0, REAC_ITER=1, MATR_RIGI_SYME="NON"),
     MESURE=_F(TABLE="NON"),
 )

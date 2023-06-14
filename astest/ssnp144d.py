@@ -39,15 +39,15 @@ except IndexError:
 
 # sief is real
 try:
-    sief_i = UTOT1.getFieldOnCellsLong("SIEF_ELGA", 1)
+    sief_i = UTOT1._getFieldOnCellsLong("SIEF_ELGA", 1)
 except IndexError:
     pass
 
-indc_elem = UTOT1.getFieldOnCellsLong("INDC_ELEM", 1)
+indc_elem = UTOT1._getFieldOnCellsLong("INDC_ELEM", 1)
 
 # not 150 fields
 try:
-    test = UTOT1.getFieldOnCellsLong("INDC_ELEM", 150)
+    test = UTOT1._getFieldOnCellsLong("INDC_ELEM", 150)
 except IndexError:
     pass
 
@@ -66,14 +66,14 @@ try:
 except KeyError:
     pass
 
-compor = UTOT1.getConstantFieldOnCellsChar16("COMPORTEMENT", 1)
+compor = UTOT1._getConstantFieldOnCellsChar16("COMPORTEMENT", 1)
 try:
-    test = UTOT1.getConstantFieldOnCellsChar16("COMPORTEMENT", 150)
+    test = UTOT1._getConstantFieldOnCellsChar16("COMPORTEMENT", 150)
 except IndexError:
     pass
 
 try:
-    test = UTOT1.getConstantFieldOnCellsReal("COMPORTEMENT", 1)
+    test = UTOT1._getConstantFieldOnCellsReal("COMPORTEMENT", 1)
 except IndexError:
     pass
 
