@@ -53,6 +53,8 @@ class SolverOptions(IntFlag):
     Contact = auto()
     # container of keywords
     Keywords = auto()
+    # compute residuals
+    ResidualComputation = auto()
 
     # flag added "for a step" object
     ForStep = auto()

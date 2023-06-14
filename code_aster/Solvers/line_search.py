@@ -48,77 +48,74 @@ class LineSearch(SolverFeature):
         """
 
         if self.param:
-            # to do
-            raise NotImplementedError()
+
+            def _f(rho, field=field, scaling=scaling):
+                self.phys_state.primal_step += rho * field
+                resi_state, _, _ = self.computeResidual(scaling)
+                self.phys_state.primal_step -= rho * field
+
+            return -resi_state.resi.dot(field)
+
+            def _proj(rho, rhomin, rhomax, rhoexm, rhoexp):
+                rhotmp = rho
+                if rhotmp < rhomin:
+                    rho = rhomin
+                if rhotmp > rhomax:
+                    rho = rhomax
+                if rhotmp < 0.0 and rhotmp >= rhoexm:
+                    rho = rhoexm
+                if rhotmp >= 0.0 and rhotmp <= rhoexp:
+                    rho = rhoexp
+
+            # retrieve args
+            itemax = self.param["ITER_LINE_MAXI"]
+            rhomin = self.param["RHO_MIN"]
+            rhomax = self.param["RHO_MAX"]
+            rtol = self.param["RESI_LINE_RELA"]
+            rhoexm = self.param["RHO_EXCL"]
+            rhoexp = self.param["RHO_EXCL"]
+
+            # Implementing Secant Method
+            rhom, rho = 0.0, 1.0
+            step = 1
+            fm = -residual.dot(field)  # minus residual is returned
+            itemax = 30
+            fopt = np.finfo("float64").max
+            tiny = np.finfo("float64").tiny
+            rhoopt = 1.0
+            fcvg = abs(rtol * fm)
+
+            while True:
+                try:
+                    f = _f(rho)
+                except Exception as e:
+                    # do we already have an rhoopt ?
+                    if step > 1:
+                        return rhoopt * field
+                    else:
+                        raise e
+                # keep best rho
+                if abs(f) < fopt:
+                    rhoopt = rho
+                    fopt = abs(f)
+                    # converged ?
+                    if abs(f) < fcvg:
+                        return rhoopt * field
+                rhotmp = rho
+                if abs(f - fm) > tiny:
+                    rho = (f * rhom - fm * rho) / (f - fm)
+                    _proj(rho, rhomin, rhomax, rhoexm, rhoexp)
+                elif f * (rho - rhom) * (f - fm) <= 0.0:
+                    rho = rhomax
+                else:
+                    rho = rhomin
+
+                print("Iteration-%d, rho2 = %0.6f and f(rho2) = %0.6f" % (step, rho, f))
+                rhom = rhotmp
+                fm = f
+                step = step + 1
+
+                if step > itemax:
+                    raise RuntimeError("No convergence in line search")
 
         return field
-
-        # def _f(rho, field=field, scaling=scaling):
-        #     self.phys_state.primal_step += rho * field
-        #     resi_state, _, _ = self.computeResidual(scaling)
-        #     self.phys_state.primal_step -= rho * field
-        #     return -resi_state.resi.dot(field)
-
-        # def _proj(rho, rhomin, rhomax, rhoexm, rhoexp):
-        #     rhotmp = rho
-        #     if rhotmp < rhomin:
-        #         rho = rhomin
-        #     if rhotmp > rhomax:
-        #         rho = rhomax
-        #     if rhotmp < 0.0 and rhotmp >= rhoexm:
-        #         rho = rhoexm
-        #     if rhotmp >= 0.0 and rhotmp <= rhoexp:
-        #         rho = rhoexp
-
-        # # import pdb;pdb.set_trace()
-        # if not self.param["RECH_LINEAIRE"]:
-        #     return field
-
-        # # retrieve args
-        # itemax = self._get("RECH_LINEAIRE", "ITER_LINE_MAXI")
-        # rhomin = self._get("RECH_LINEAIRE", "RHO_MIN")
-        # rhomax = self._get("RECH_LINEAIRE", "RHO_MAX")
-        # rtol = self._get("RECH_LINEAIRE", "RESI_LINE_RELA")
-        # rhoexm = self._get("RECH_LINEAIRE", "RHO_EXCL")
-        # rhoexp = self._get("RECH_LINEAIRE", "RHO_EXCL")
-        # # Implementing Secant Method
-        # rhom, rho = 0.0, 1.0
-        # step = 1
-        # fm = -residual.dot(field)  # minus residual is returned
-        # itemax = 30
-        # fopt = np.finfo("float64").max
-        # tiny = np.finfo("float64").tiny
-        # rhoopt = 1.0
-        # fcvg = abs(rtol * fm)
-        # while True:
-        #     try:
-        #         f = _f(rho)
-        #     except Exception as e:
-        #         # do we already have an rhoopt ?
-        #         if step > 1:
-        #             return rhoopt * field
-        #         else:
-        #             raise e
-        #     # keep best rho
-        #     if abs(f) < fopt:
-        #         rhoopt = rho
-        #         fopt = abs(f)
-        #         # converged ?
-        #         if abs(f) < fcvg:
-        #             return rhoopt * field
-        #     rhotmp = rho
-        #     if abs(f - fm) > tiny:
-        #         rho = (f * rhom - fm * rho) / (f - fm)
-        #         _proj(rho, rhomin, rhomax, rhoexm, rhoexp)
-        #     elif f * (rho - rhom) * (f - fm) <= 0.0:
-        #         rho = rhomax
-        #     else:
-        #         rho = rhomin
-
-        #     print("Iteration-%d, rho2 = %0.6f and f(rho2) = %0.6f" % (step, rho, f))
-        #     rhom = rhotmp
-        #     fm = f
-        #     step = step + 1
-
-        #     if step > itemax:
-        #         raise RuntimeError("No convergence in line search")

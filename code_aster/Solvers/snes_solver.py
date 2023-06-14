@@ -29,13 +29,18 @@ class SNESSolver(SolverFeature):
     """Solves a step, loops on iterations."""
 
     provide = SOP.ConvergenceCriteria
-    required_features = [SOP.PhysicalProblem, SOP.PhysicalState, SOP.IncrementalSolver]
+    required_features = [
+        SOP.PhysicalProblem,
+        SOP.PhysicalState,
+        SOP.IncrementalSolver,
+        SOP.ResidualComputation,
+    ]
     optional_features = [SOP.Contact, SOP.ConvergenceManager]
 
     matr_update_incr = prediction = None
     param = logManager = None
     current_incr = current_matrix = None
-    _incr_solver = _primal_plus = _primal_incr = None
+    _incr_solver = _primal_plus = _primal_incr = _resi_comp = None
     _scaling = _options = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
@@ -94,7 +99,7 @@ class SNESSolver(SolverFeature):
         self.phys_state.primal_step += self._primal_incr
         self._primal_plus = self.phys_state.primal + self.phys_state.primal_step
         # Build initial residual
-        residual, _, _ = self._incr_solver.computeResidual(self._scaling)
+        residual, _, _ = self._resi_comp.computeResidual(self._scaling)
         # Apply Lagrange scaling
         residual.resi.applyLagrangeScaling(1 / self._scaling)
         # Apply DirichletBC into the residual
@@ -125,6 +130,7 @@ class SNESSolver(SolverFeature):
         """
         self.current_matrix = current_matrix
         self._incr_solver = self.get_feature(SOP.IncrementalSolver)
+        self._resi_comp = self.get_feature(SOP.ResidualComputation)
         if self.contact_manager:
             self.contact_manager.pairing(self.phys_pb)
 
@@ -175,7 +181,7 @@ class SNESSolver(SolverFeature):
         x.set(0)  # zero initial guess
         snes.solve(b, x)
 
-        _, internVar, sigma = self._incr_solver.computeResidual()
+        _, internVar, sigma = self._resi_comp.computeResidual()
 
         self.phys_state.stress = sigma
         self.phys_state.internVar = internVar

@@ -26,6 +26,7 @@ from .geometric_solver import GeometricSolver
 from .incremental_solver import IncrementalSolver
 from .line_search import LineSearch
 from .physical_state import PhysicalState
+from .residual import ResidualComputation
 from .snes_solver import SNESSolver
 from .solver_features import SolverFeature
 from .solver_features import SolverOptions as SOP
@@ -52,6 +53,7 @@ class ProblemSolver(SolverFeature):
         SOP.IncrementalSolver,
         SOP.ConvergenceCriteria,
         SOP.ConvergenceManager,
+        SOP.ResidualComputation,
         SOP.ForStep,
         SOP.ForIncr,
     ]
@@ -197,6 +199,17 @@ class ProblemSolver(SolverFeature):
         self.use(incr_solver)
         return incr_solver
 
+    def _get_residual(self):
+        logger.debug("+++ get ResidualComputation")
+        resi = self.get_feature(SOP.ResidualComputation, optional=True)
+        if not resi:
+            resi = ResidualComputation()
+            resi.use(self.phys_pb)
+            resi.use(self.phys_state)
+
+        self.use(resi)
+        return resi
+
     def _get_step_conv(self):
         logger.debug("+++ get ConvergenceManager ForStep")
         step_crit = self.get_feature(SOP.ConvergenceManager | SOP.ForStep, optional=True)
@@ -273,6 +286,8 @@ class ProblemSolver(SolverFeature):
             return self._get_step_conv()
         if option & SOP.ConvergenceCriteria:
             return self._get_step_conv_solver()
+        if option & SOP.ResidualComputation:
+            return self._get_residual()
         if option & SOP.StepSolver:
             return self._get_step_solver()
         if required:
