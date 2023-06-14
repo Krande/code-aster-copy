@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -230,7 +230,7 @@ module cara_elem_parameter_module
                                     'MEMBTR7         ', 'MEMBQU9         ']
 !
 ! --------------------------------------------------------------------------------------------------
-    integer, parameter :: ACE_NB_MASSIF = 66
+    integer, parameter :: ACE_NB_MASSIF = 69
     character(len=16), parameter :: ACE_EL_MASSIF(ACE_NB_MASSIF) = [ &
                                     'MECA_HEXA8      ', 'MECA_PENTA6     ', &
                                     'MECA_PENTA18    ', 'MECA_TETRA4     ', &
@@ -246,7 +246,9 @@ module cara_elem_parameter_module
                                     'MEDPQU9         ', 'MECPTR3         ', &
                                     'MECPQU4         ', 'MECPTR6         ', &
                                     'MECPQU8         ', 'MECPQU9         ', &
-                                    'THER_HEXA8      ', 'THER_PENTA6     ', &
+                                    'THER_HEXA8      ', 'THER_HEXA8_D    ', &
+                                    'THER_PENTA6_D   ', 'THER_TETRA4_D   ', &
+                                    'THER_PENTA6     ', &
                                     'THER_TETRA4     ', 'THER_PYRAM5     ', &
                                     'THER_HEXA27     ', 'THER_HEXA20     ', &
                                     'THER_PENTA15    ', 'THER_TETRA10    ', &
