@@ -530,11 +530,11 @@ class TestPhysicalState(unittest.TestCase):
             self.value = value
 
         def __add__(self, other):
-            add = self.duplicate()
+            add = self.copy()
             add.value += other.value
             return add
 
-        def duplicate(self):
+        def copy(self):
             return TestPhysicalState.FakeField(self.value)
 
         def getValues(self):
