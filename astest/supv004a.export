@@ -10,6 +10,7 @@ P testlist submit verification sequential
 A args --hide-command --post=vale_calc
 
 F comm supv004a.comm D 1
+F nom supv004a_basics.py D 0
 F nom supv004a_miss.py D 0
 F nom supv004a_solvers.py D 0
 F nom supv004a_contrib_tensor.py D 0

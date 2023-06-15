@@ -19,50 +19,43 @@
 
 # person_in_charge: mathieu.courtois at edf.fr
 
-# Note: "--hide-command" is used in the '.export' file.
-import unittest
 import sys
+import unittest
+from glob import glob
+from pathlib import Path
 
-
+# Note: "--hide-command" is used in the '.export' file.
 import code_aster
 from code_aster.Utilities.logger import WARNING, logger
+from run_aster.export import Export
 
 code_aster.init("--test")
 test = code_aster.TestCase()
 
 logger.setLevel(WARNING)
 
-print("\n\n+++ testing supv004a_solvers...\n", flush=True)
-result = unittest.main(argv=["comm"], module="supv004a_solvers", exit=False, verbosity=2).result
-# to flush printings from unittest
-sys.stdout.flush()
-sys.stderr.flush()
 
-test.assertTrue(result.wasSuccessful())
+def _test_module(module):
+    print(f"\n\n+++ testing {module}...\n", flush=True)
+    result = unittest.main(argv=["comm"], module=module, exit=False, verbosity=2).result
+    # to flush printings from unittest
+    sys.stdout.flush()
+    sys.stderr.flush()
+    test.assertTrue(result.wasSuccessful())
 
-print("\n\n+++ testing supv004a_miss...\n", flush=True)
-result = unittest.main(argv=["comm"], module="supv004a_miss", exit=False, verbosity=2).result
-# to flush printings from unittest
-sys.stdout.flush()
-sys.stderr.flush()
 
-test.assertTrue(result.wasSuccessful())
+# build Export object
+lfexp = glob("*.export")
+assert len(lfexp) == 1, lfexp
+export = Export(lfexp[0])
 
-print("\n\n+++ testing supv004a_contrib_tensor...\n", flush=True)
+for input in export.datafiles:
+    if input.filetype != "nom":
+        continue
+    mod = Path(input.path).stem
+    _test_module(mod)
 
-result = unittest.main(
-    argv=["comm"], module="supv004a_contrib_tensor", exit=False, verbosity=2
-).result
-# to flush printings from unittest
-sys.stdout.flush()
-sys.stderr.flush()
-
-test.assertTrue(result.wasSuccessful())
 
 test.printSummary()
-
-# suite.addTests(ldr.discover(".", pattern="*.py"))
-# suite.addTests(ldr.discover("code_aster.MacroCommands.Miss", pattern="*.py"))
-# suite.addTests(ldr.discover("code_aster.MacroCommands.Contrib", pattern="*.py"))
 
 code_aster.close()
