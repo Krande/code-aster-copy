@@ -125,6 +125,8 @@ def check_keywords(kwargs):
         check_dis_jvp(kwargs["JONC_ENDO_PLAS"])
     if "THER_NL" in kwargs:
         add_enthalpy(kwargs["THER_NL"])
+    if "THER_NL_ORTH" in kwargs:
+        add_enthalpy(kwargs["THER_NL_ORTH"])
 
 
 def check_dis_ecro_trac(keywords):
@@ -371,7 +373,7 @@ def add_enthalpy(keywords):
     """
 
     # Create "Beta" from "Rho_CP" if not given
-    if keywords["BETA"] is None:
+    if keywords.get("BETA") is None:
         beta = Function()
         createEnthalpy(keywords["RHO_CP"], beta)
         keywords["BETA"] = beta

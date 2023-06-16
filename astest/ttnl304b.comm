@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -55,16 +55,16 @@ CONDUK = DEFI_FONCTION(
     PROL_GAUCHE="LINEAIRE",
 )
 
-ENTHAL = DEFI_FONCTION(
+CHALVOL = DEFI_FONCTION(
     NOM_PARA="TEMP",
-    NOM_RESU="CP",
-    VALE=(0.0, 0.0, 500.0, 4000.0e6),
-    PROL_DROITE="LINEAIRE",
-    PROL_GAUCHE="LINEAIRE",
+    NOM_RESU="RHOCP",
+    VALE=(0.0, 8.0e6, 500.0, 8.0e6),
+    PROL_DROITE="CONSTANT",
+    PROL_GAUCHE="CONSTANT",
 )
 
 MATERO = DEFI_MATERIAU(
-    THER_NL_ORTH=_F(LAMBDA_L=CONDUC, LAMBDA_T=CONDUK, LAMBDA_N=CONDUK, BETA=ENTHAL)
+    THER_NL_ORTH=_F(LAMBDA_L=CONDUC, LAMBDA_T=CONDUK, LAMBDA_N=CONDUK, RHO_CP=CHALVOL)
 )
 
 #
@@ -130,8 +130,8 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=TEMPO_10,
-            VALE_CALC=181.1338221296763,
-            VALE_REFE=181.1338221296763,
+            VALE_CALC=181.13390582720243,
+            VALE_REFE=181.13390582720243,
             REFERENCE="NON_DEFINI",
         ),
         _F(
@@ -139,8 +139,8 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=TEMPO_10,
-            VALE_CALC=156.636053979208,
-            VALE_REFE=156.636053979208,
+            VALE_CALC=156.63616859886153,
+            VALE_REFE=156.63616859886153,
             REFERENCE="NON_DEFINI",
         ),
         _F(
@@ -148,8 +148,8 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=TEMPO_10,
-            VALE_CALC=117.16659572286699,
-            VALE_REFE=117.16659572286699,
+            VALE_CALC=117.1664584502401,
+            VALE_REFE=117.1664584502401,
             REFERENCE="NON_DEFINI",
         ),
         _F(
@@ -157,8 +157,8 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=TEMPO_10,
-            VALE_CALC=102.50037475378093,
-            VALE_REFE=102.50037475378093,
+            VALE_CALC=102.50020746178329,
+            VALE_REFE=102.50020746178329,
             REFERENCE="NON_DEFINI",
         ),
         _F(
@@ -166,8 +166,8 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=TEMPO_10,
-            VALE_CALC=100.1392948358261,
-            VALE_REFE=100.1392948358261,
+            VALE_CALC=100.13926682078663,
+            VALE_REFE=100.13926682078663,
             REFERENCE="NON_DEFINI",
         ),
         _F(
@@ -175,8 +175,8 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=TEMPO_10,
-            VALE_CALC=99.99919751051463,
-            VALE_REFE=99.99919751051463,
+            VALE_CALC=99.9991966909595,
+            VALE_REFE=99.9991966909595,
             REFERENCE="NON_DEFINI",
         ),
         _F(
@@ -184,8 +184,8 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=TEMPO_13,
-            VALE_CALC=126.5282650920132,
-            VALE_REFE=126.5282650920132,
+            VALE_CALC=126.5279083207481,
+            VALE_REFE=126.5279083207481,
             REFERENCE="NON_DEFINI",
         ),
         _F(
@@ -193,8 +193,8 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=TEMPO_13,
-            VALE_CALC=141.93307557310536,
-            VALE_REFE=141.93307557310536,
+            VALE_CALC=141.9329519108161,
+            VALE_REFE=141.9329519108161,
             REFERENCE="NON_DEFINI",
         ),
         _F(
@@ -202,8 +202,8 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=TEMPO_13,
-            VALE_CALC=123.1280386338695,
-            VALE_REFE=123.1280386338695,
+            VALE_CALC=123.12802159795734,
+            VALE_REFE=123.12802159795734,
             REFERENCE="NON_DEFINI",
         ),
         _F(
@@ -211,8 +211,8 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=TEMPO_13,
-            VALE_CALC=105.34613710341486,
-            VALE_REFE=105.34613710341486,
+            VALE_CALC=105.3459954143371,
+            VALE_REFE=105.3459954143371,
             REFERENCE="NON_DEFINI",
         ),
         _F(
@@ -220,8 +220,8 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=TEMPO_13,
-            VALE_CALC=100.6492882051329,
-            VALE_REFE=100.6492882051329,
+            VALE_CALC=100.64923603908152,
+            VALE_REFE=100.64923603908152,
             REFERENCE="NON_DEFINI",
         ),
         _F(
@@ -229,8 +229,8 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=TEMPO_13,
-            VALE_CALC=100.03330600081435,
-            VALE_REFE=100.03330600081435,
+            VALE_CALC=100.03329926749144,
+            VALE_REFE=100.03329926749144,
             REFERENCE="NON_DEFINI",
         ),
     )
