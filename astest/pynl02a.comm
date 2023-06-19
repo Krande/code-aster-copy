@@ -21,6 +21,8 @@ DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), IMPR_MACRO="OUI")
 
 # MODELISATION A : COMPORTEMENT VMIS_ECMI_TRAC AVEC PLUSIEURS PAS DE TEMPS
 
+from code_aster import ConvergenceError, IntegrationError
+
 import numpy as NP
 
 # =========================================================
@@ -283,8 +285,7 @@ for i_inst in range(1, len(l_inst)):
         #   VERIFICTION DU CODE RETOUR DE L'INTEGRATION DE LA LC
         # =========================================================
         if max(result.CODE_RETOUR_INTE.getValuesWithDescription("IRET", [])[0]) > 0:
-            print("echec d integration de la loi de comportement")
-            FIN()
+            raise IntegrationError("echec d integration de la loi de comportement")
 
         # =========================================================
         #   MATRICE TANGENTE
@@ -339,8 +340,7 @@ for i_inst in range(1, len(l_inst)):
         print("     %d     |   %e   |   %e  |    %d " % (i, Residu[i], ResiduX[i], Conv[i]))
 
     if Conv[IterNewton - 1] != 1:
-        print("echec de la convergence des iteration de Newton")
-        FIN()
+        raise ConvergenceError("echec de la convergence des iterations de Newton")
 
 
 # =========================================================

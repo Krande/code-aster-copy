@@ -304,8 +304,7 @@ for i_inst in range(1, len(l_inst)):
         print("     %d     |   %e   |   %e  |    %d " % (i, Residu[i], ResiduX[i], Conv[i]))
 
     if Conv[IterNewton - 1] != 1:
-        print("echec de la convergence des iterations de Newton")
-        FIN()
+        raise ConvergenceError("echec de la convergence des iterations de Newton")
 
     # Somme en python T+ = DELTA_t + T-
     T = DELTA_T.copy()

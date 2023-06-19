@@ -129,7 +129,6 @@ if (
             _F(ABSCISSE=vx1, ORDONNEE=vy1, LEGENDE="RESU1", STYLE=2, COULEUR=1, FREQ_MARQUEUR=10)
         ),
     )
-    FIN()
 
 
 # 2eme calcul (uniquement avec le maillage BARR2)
@@ -286,9 +285,6 @@ TEST_RESU(
     )
 )
 
-FIN()
-
-
 # ===============================================================================================================
 # Post-traitement graphique pour visualiser l'erreur de projection (en mode ) :
 # -------------------------------------------------------------------------------------------
@@ -365,4 +361,4 @@ if 0:
         ),
     )
 
-    FIN()
+FIN()
