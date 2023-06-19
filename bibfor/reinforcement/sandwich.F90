@@ -18,9 +18,9 @@
 
 subroutine sandwich(enrobi, enrobs, facier, fbeton, gammas, gammac, &
                     thiter, epiter, aphiter, cond109, &
-                    flongi, ftrnsv, ferrcomp, ferrsyme, slsyme, &
+                    ferrcomp, ferrsyme, slsyme, &
                     epucisa, ferrmin, rholmin, rhotmin, compress, uc, um, &
-                    ht, effrts, dnsits, ierr)
+                    ht, effrts, dnsits, ierrl, ierrt)
 
 !______________________________________________________________________
 !
@@ -80,12 +80,8 @@ subroutine sandwich(enrobi, enrobs, facier, fbeton, gammas, gammac, &
 !      O DNSITS        (DIM 6) DENSITES
 !                            1..4 : SURFACES D'ACIER LONGITUDINAL
 !                            5..6 : TRANSVERSAL
-!      O IERR          CODE RETOUR (0 = OK)
-!                          =0 OK
-!                          =1 PAS D'EQUILIBRE
-!                          =2 FAUT ACTIVER FERR_COMP
-!                          =3 FAUT DESACTIVER FERR_SYME
-!                          =4 FERR_TRSV NON OK
+!      O IERRL     CODE RETOUR LONGI (0 = OK)
+!      O IERRT     CODE RETOUR TRNSV (0 = OK)
 !
 !______________________________________________________________________
 !
@@ -110,8 +106,6 @@ subroutine sandwich(enrobi, enrobs, facier, fbeton, gammas, gammac, &
     real(kind=8) :: epiter
     real(kind=8) :: aphiter
     integer :: cond109
-    integer :: flongi
-    integer :: ftrnsv
     integer :: ferrcomp
     integer :: ferrsyme
     real(kind=8) :: slsyme
@@ -125,7 +119,8 @@ subroutine sandwich(enrobi, enrobs, facier, fbeton, gammas, gammac, &
     real(kind=8) :: ht
     real(kind=8) :: effrts(8)
     real(kind=8) :: dnsits(6)
-    integer :: ierr
+    integer :: ierrl
+    integer :: ierrt
 
 !Variables de calcul
     real(kind=8) :: fcd, fyd, ySUP, yINF, Z, pi, zI, zS, denom, d, fctm
@@ -134,7 +129,7 @@ subroutine sandwich(enrobi, enrobs, facier, fbeton, gammas, gammac, &
     real(kind=8) :: Nxx, Nyy, Nxy, Mxx, Myy, Mxy, Qx, Qy
     real(kind=8) :: Nx_SUP, Nx_INF, Ny_SUP, Ny_INF, Nxy_SUP, Nxy_INF
     real(kind=8) :: cond_trac_inf, cond_trac_sup
-    integer :: CAS_SUP, CAS_INF, COUNT_ITER, j
+    integer :: CAS_SUP, CAS_INF, COUNT_ITER, j, ierr
     real(kind=8) :: dnsxi, dnsxs, dnsyi, dnsys, dnsxt, dnsyt
     integer :: etsxi, etsxs, etsyi, etsys
     real(kind=8) :: snsxi, snsxs, snsyi, snsys
@@ -162,6 +157,13 @@ subroutine sandwich(enrobi, enrobs, facier, fbeton, gammas, gammac, &
     Qx = effrts(7)
     Qy = effrts(8)
 
+    dnsits(1) = -1.d0
+    dnsits(2) = -1.d0
+    dnsits(3) = -1.d0
+    dnsits(4) = -1.d0
+    dnsits(5) = -1.d0
+    dnsits(6) = -1.d0
+
     if (uc .eq. 0) then
         unite_pa = 1.e-6
     elseif (uc .eq. 1) then
@@ -180,7 +182,8 @@ subroutine sandwich(enrobi, enrobs, facier, fbeton, gammas, gammac, &
     Dnsxy_NEW = 0
     Dnsy_NEW = 0
     PREMIERE_ITERATION = .true.
-    ierr = 0
+    ierrl = 0
+    ierrt = 0
 
     do while ((PREMIERE_ITERATION .eqv. (.true.)) .or. (Dnsx_NEW .gt. Dnsx) &
                & .or. (Dnsy_NEW .gt. Dnsy) .or. (Dnsxy_NEW .gt. Dnsxy))
@@ -188,20 +191,6 @@ subroutine sandwich(enrobi, enrobs, facier, fbeton, gammas, gammac, &
         Dnsx = Dnsx_NEW
         Dnsy = Dnsy_NEW
         Dnsxy = Dnsxy_NEW
-
-        if (flongi .eq. 1) then
-            dnsxi = 0
-            dnsxs = 0
-            dnsyi = 0
-            dnsys = 0
-            etsxi = 0
-            etsxs = 0
-            etsyi = 0
-            etsys = 0
-            t_inf = 0
-            t_sup = 0
-            goto 10
-        end if
 
         Nx_SUP = Nxx*((Z-ySUP)/Z)+Mxx/Z+0.5*Dnsx
         Nx_INF = Nxx*((Z-yINF)/Z)-Mxx/Z+0.5*Dnsx
@@ -338,18 +327,19 @@ subroutine sandwich(enrobi, enrobs, facier, fbeton, gammas, gammac, &
 !Ajout de l'impact du cisaillement HORS-PLAN
 !-------------------------------------------------------------------------------------------------
 
-10      continue
+        ierrl = ierr
 
-        if (ftrnsv .eq. 1) then
-            dnsxt = 0
-            dnsyt = 0
-            goto 999
-        end if
-
-        if (ierr .ne. 0) then
-            dnsxt = -1.d0
-            dnsyt = -1.d0
-            goto 999
+        if (ierrl .gt. 0) then
+            dnsxi = 0
+            dnsxs = 0
+            dnsyi = 0
+            dnsys = 0
+            etsxi = 0
+            etsxs = 0
+            etsyi = 0
+            etsys = 0
+            t_inf = 0
+            t_sup = 0
         end if
 
         cond_trac_sup = 0.d0
@@ -521,7 +511,7 @@ subroutine sandwich(enrobi, enrobs, facier, fbeton, gammas, gammac, &
 
             dnsxt = -1.d0
             dnsyt = -1.d0
-            ierr = 4
+            ierrt = 4
             goto 999
 
         else
@@ -531,7 +521,7 @@ subroutine sandwich(enrobi, enrobs, facier, fbeton, gammas, gammac, &
             Dnsxy_NEW = (Qx*Qy)/(VEd*Tan(ThetaB))
             dnsxt = AsT*Cos(betha)*Cos(betha)
             dnsyt = AsT*Sin(betha)*Sin(betha)
-            if (flongi .eq. 1) then
+            if (ierrl .gt. 0) then
                 goto 999
             end if
 
@@ -565,7 +555,7 @@ subroutine sandwich(enrobi, enrobs, facier, fbeton, gammas, gammac, &
         end if
 
         !ferraillage longitudinal
-        if ((ierr .eq. 0) .or. (ierr .eq. 4)) then
+        if (ierrl .eq. 0) then
             d = ht-enrobi
             if ((dnsxi+dnsyi) .lt. (rholmin*d)) then
                 dnsxi = 0.5*rholmin*d
@@ -578,7 +568,7 @@ subroutine sandwich(enrobi, enrobs, facier, fbeton, gammas, gammac, &
             end if
         end if
 
-        if (ierr .eq. 0) then
+        if (ierrt .eq. 0) then
             if ((dnsxt+dnsyt) .lt. (rhotmin*ht)) then
                 dnsxt = 0.5*rhotmin*ht
                 dnsyt = 0.5*rhotmin*ht
@@ -588,32 +578,43 @@ subroutine sandwich(enrobi, enrobs, facier, fbeton, gammas, gammac, &
 
 !  -- GESTION DES MESSAGES D'ERREURS ET LIEN AVEC TE0146 :
 !  -------------------------------------------------------
-    if (ierr .eq. 1) then
+    if (ierrl .eq. 1) then
 !      Equilibre Sandwich non possible
 !      Essayer de changer les critères de précision
-        ierr = 2001
-    elseif (ierr .eq. 2) then
+        ierrl = 2001
+    end if
+
+    if (ierrl .eq. 2) then
 !      Forte Compression !
 !      Alarme dans te0146 + on sort de la boucle + densité = -1 pour l'élément
-        ierr = 2002
-    elseif (ierr .eq. 3) then
+        ierrl = 2002
+    end if
+
+    if (ierrl .eq. 3) then
 !      Ferraillage symétrique non possible!
 !      Alarme dans te0146 + on sort de la boucle + densité = -1 pour l'élément
-        ierr = 2003
-    elseif (ierr .eq. 4) then
+        ierrl = 2003
+    end if
+
+    if (ierrt .eq. 4) then
 !      Béton trop cisaillé !
 !      Alarme dans te0146 + on sort de la boucle + dnstra = -1 pour l'élément
-        ierr = 2004
+        ierrt = 2004
     end if
 
 !   FER2_R =  DNSXI DNSXS DNSYI DNSYS DNSXT DNSYT DNSVOL CONSTRUC
 !               1     2     3     4     5     6      7       8
 
-    dnsits(1) = dnsxi
-    dnsits(2) = dnsyi
-    dnsits(3) = dnsxs
-    dnsits(4) = dnsys
-    dnsits(5) = dnsxt
-    dnsits(6) = dnsyt
+    if (ierrl .eq. 0) then
+        dnsits(1) = dnsxi
+        dnsits(2) = dnsyi
+        dnsits(3) = dnsxs
+        dnsits(4) = dnsys
+    end if
+
+    if (ierrt .eq. 0) then
+        dnsits(5) = dnsxt
+        dnsits(6) = dnsyt
+    end if
 
 end subroutine

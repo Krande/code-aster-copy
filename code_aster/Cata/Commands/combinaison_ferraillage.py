@@ -70,7 +70,7 @@ COMBINAISON_FERRAILLAGE = MACRO(
         typ="R",
         defaut=0.01,
         fr=(
-            "SANDWICH : Pas d'itération en pourcentage de l'épaisseur de la plaque, pour la recherche des épaisseurs optimales des couches SUP et INF"
+            "Pas d'itération en pourcentage de la hauteur de la section, pour la recherche de la configuration optimale"
         ),
     ),
     PAS_SIGM=SIMP(

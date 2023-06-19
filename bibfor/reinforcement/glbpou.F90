@@ -23,10 +23,10 @@ subroutine glbpou(typcmb, typco, cequi, effrts, ht, bw, &
                   sigcyi, sigcys, sigczi, sigczs, sigs, &
                   wmaxyi, wmaxys, wmaxzi, wmaxzs, &
                   phiyi, phiys, phizi, phizs, &
-                  precs, flongi, ftrnsv, ferrsyme, slsyme, ferrcomp, &
+                  precs, ferrsyme, slsyme, ferrcomp, &
                   epucisa, ferrmin, rholmin, rhotmin, compress, uc, um, &
                   rhoacier, areinf, ashear, astirr, rhocrit, datcrit, lcrit, &
-                  dnsits, dnsvol, construc, ierr)
+                  dnsits, dnsvol, construc, ierrl, ierrt)
 !______________________________________________________________________
 !
 !      GLBPOU
@@ -86,10 +86,7 @@ subroutine glbpou(typcmb, typco, cequi, effrts, ht, bw, &
 !      I PHIYS     DIAMÈTRE APPROXIMATIF DES ARMATURES SUPÉRIEURES SUIVANT Y
 !      I PHIZI     DIAMÈTRE APPROXIMATIF DES ARMATURES INFÉRIEURES SUIVANT Z
 !      I PHIZS     DIAMÈTRE APPROXIMATIF DES ARMATURES SUPÉRIEURES SUIVANT Z
-!      I PRECS     PRECISION SUPPLEMENTAIRE DANS LA RECHERCHE DE L'OPTIMUM
-!                   POUR LA METHODE DES 3 PIVOTS (Intervention du 03/2023)
-!                     PRECS = 0 (NON)
-!                     PRECS = 1 (OUI)
+!      I PRECS     PRECISION ITERATION
 !      I FERRSYME  FERRAILLAGE SYMETRIQUE?
 !                     FERRSYME = 0 (NON)
 !                     FERRSYME = 1 (OUI)
@@ -120,7 +117,8 @@ subroutine glbpou(typcmb, typco, cequi, effrts, ht, bw, &
 !                     DNSITS(6) = ATOT = AYI+AYS+AZI+AZS
 !      O DNSVOL    DENSITE VOLUMIQUE D'ARMATURE (Kg/M3)
 !      O CONSTRUC  INDICATEUR DE COMPLEXITE DE CONSTRUCTIBILITE (-)
-!      O IERR      CODE RETOUR (0 = OK)
+!      O IERRL         CODE RETOUR LONGI (0 = OK)
+!      O IERRT         CODE RETOUR TRNSV (0 = OK)
 !
 !______________________________________________________________________
 !
@@ -163,8 +161,6 @@ subroutine glbpou(typcmb, typco, cequi, effrts, ht, bw, &
     real(kind=8) :: phizi
     real(kind=8) :: phizs
     integer :: precs
-    integer :: flongi
-    integer :: ftrnsv
     integer :: ferrsyme
     real(kind=8) :: slsyme
     integer :: ferrcomp
@@ -185,7 +181,8 @@ subroutine glbpou(typcmb, typco, cequi, effrts, ht, bw, &
     real(kind=8) :: dnsits(6)
     real(kind=8) :: dnsvol
     real(kind=8) :: construc
-    integer :: ierr
+    integer :: ierrl
+    integer :: ierrt
 
 !! AUTRES VARIABLES
     real(kind=8) :: shear, reinf, stirrups, Calc
@@ -196,18 +193,18 @@ subroutine glbpou(typcmb, typco, cequi, effrts, ht, bw, &
                     enrobyi, enrobys, enrobzi, enrobzs, &
                     facier, fbeton, gammas, gammac, &
                     clacier, eys, typdiag, precs, &
-                    flongi, ftrnsv, ferrsyme, slsyme, ferrcomp, &
+                    ferrsyme, slsyme, ferrcomp, &
                     epucisa, ferrmin, rholmin, rhotmin, compress, uc, um, &
-                    dnsits, ierr)
+                    dnsits, ierrl, ierrt)
 
     elseif (typcmb .eq. 1) then
 
         call glbels(typco, cequi, effrts, ht, bw, &
                     enrobyi, enrobys, enrobzi, enrobzs, &
                     facier, fbeton, sigcyi, sigcys, sigczi, sigczs, sigs, &
-                    precs, flongi, ftrnsv, ferrsyme, slsyme, ferrcomp, &
+                    precs, ferrsyme, slsyme, ferrcomp, &
                     epucisa, ferrmin, rholmin, rhotmin, compress, uc, um, &
-                    dnsits, ierr)
+                    dnsits, ierrl, ierrt)
 
     elseif (typcmb .eq. 2) then
 
@@ -216,22 +213,16 @@ subroutine glbpou(typcmb, typco, cequi, effrts, ht, bw, &
                       facier, fbeton, sigelsqp, kt, eys, &
                       wmaxyi, wmaxys, wmaxzi, wmaxzs, &
                       phiyi, phiys, phizi, phizs, &
-                      precs, flongi, ftrnsv, ferrsyme, slsyme, ferrcomp, &
+                      precs, ferrsyme, slsyme, ferrcomp, &
                       epucisa, ferrmin, rholmin, rhotmin, compress, uc, um, &
-                      dnsits, ierr)
+                      dnsits, ierrl, ierrt)
     end if
 
 !   -- CALCUL DE LA DENSITE VOLUMIQUE D'ARMATURE :
 !   ----------------------------------------------
 !
-    if (rhoacier .gt. 0) then
+    if ((rhoacier .gt. 0) .and. (ierrl .eq. 0) .and. (ierrt .eq. 0)) then
         dnsvol = rhoacier*(dnsits(1)+dnsits(2)+dnsits(3)+dnsits(4)+dnsits(5)*max(ht, bw))/(ht*bw)
-        Calc = dnsits(5)+1.d0
-        if (abs(Calc) .lt. epsilon(Calc)) then
-!           Vrai uniquement pour le calcul du ferraillage transversal au BAEL
-!           (pour lequel les aciers d'effort tranchant ne sont pas calculés)
-            dnsvol = rhoacier*((dnsits(1)+dnsits(2)+dnsits(3)+dnsits(4)))/(ht*bw)
-        end if
     else
         dnsvol = -1.d0
     end if

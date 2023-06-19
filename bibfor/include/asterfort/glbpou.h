@@ -26,10 +26,10 @@ interface
                   sigcyi, sigcys, sigczi, sigczs, sigs,&
                   wmaxyi, wmaxys, wmaxzi, wmaxzs,&
                   phiyi, phiys, phizi, phizs,&
-                  precs, flongi, ftrnsv, ferrsyme, slsyme, ferrcomp,&
+                  precs, ferrsyme, slsyme, ferrcomp,&
                   epucisa, ferrmin, rholmin, rhotmin, compress, uc, um, &
                   rhoacier, areinf, ashear, astirr, rhocrit, datcrit, lcrit,&
-                  dnsits, dnsvol, construc, ierr)
+                  dnsits, dnsvol, construc, ierrl, ierrt)
     integer :: typcmb
     integer :: typco
     real(kind=8) :: cequi
@@ -64,8 +64,6 @@ interface
     real(kind=8) :: phizi
     real(kind=8) :: phizs
     integer :: precs
-    integer :: flongi
-    integer :: ftrnsv
     integer :: ferrsyme
     real(kind=8) :: slsyme
     integer :: ferrcomp
@@ -86,6 +84,7 @@ interface
     real(kind=8) :: dnsits(6)
     real(kind=8) :: dnsvol
     real(kind=8) :: construc
-    integer :: ierr
+    integer :: ierrl
+    integer :: ierrt
     end subroutine glbpou
 end interface

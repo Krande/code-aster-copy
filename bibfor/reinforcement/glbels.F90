@@ -19,9 +19,9 @@
 subroutine glbels(typco, cequi, effrts, ht, bw, &
                   enrobyi, enrobys, enrobzi, enrobzs, &
                   facier, fbeton, sigcyi, sigcys, sigczi, sigczs, sigs, &
-                  precs, flongi, ftrnsv, ferrsyme, slsyme, ferrcomp, &
+                  precs, ferrsyme, slsyme, ferrcomp, &
                   epucisa, ferrmin, rholmin, rhotmin, compress, uc, um, &
-                  dnsits, ierr)
+                  dnsits, ierrl, ierrt)
 !______________________________________________________________________
 !
 !      GLBELS
@@ -74,7 +74,8 @@ subroutine glbels(typco, cequi, effrts, ht, bw, &
 !                     DNSITS(4) = AZS
 !                     DNSITS(5) = AST
 !                     DNSITS(6) = ATOT = AYI+AYS+AZI+AZS
-!      O IERR      CODE RETOUR (0 = OK)
+!      O IERRL     CODE RETOUR LONGI (0 = OK)
+!      O IERRT     CODE RETOUR TRNSV (0 = OK)
 !
 !______________________________________________________________________
 !
@@ -99,8 +100,6 @@ subroutine glbels(typco, cequi, effrts, ht, bw, &
     real(kind=8) :: sigczs
     real(kind=8) :: sigs
     integer :: precs
-    integer :: flongi
-    integer :: ftrnsv
     integer :: ferrsyme
     real(kind=8) :: slsyme
     integer :: ferrcomp
@@ -112,7 +111,8 @@ subroutine glbels(typco, cequi, effrts, ht, bw, &
     integer :: uc
     integer :: um
     real(kind=8) :: dnsits(6)
-    integer :: ierr
+    integer :: ierrl
+    integer :: ierrt
 
 !   DEFINITION DES EFFORTS 1D
     real(kind=8) :: effn, effmy, effmz, effty, efftz, effmt
@@ -129,7 +129,7 @@ subroutine glbels(typco, cequi, effrts, ht, bw, &
     real(kind=8) :: Asl, thetab, ak, uk, unite_pa, unite_m
     real(kind=8) :: d, Smoy, fctm, Calc, ab1, ab2, ab3, ab4
     real(kind=8) :: effrts_fake(8)
-    integer :: i
+    integer :: i, ierr
 
     do i = 1, 8
         effrts_fake(i) = 0.0
@@ -163,25 +163,15 @@ subroutine glbels(typco, cequi, effrts, ht, bw, &
     effty = effrts(4)
     efftz = effrts(5)
     effmt = effrts(6)
-    ierr = 0
+    ierrl = 0
+    ierrt = 0
 
-    if (flongi .eq. 1) then
-        dnsyi = 0
-        dnsys = 0
-        dnszi = 0
-        dnszs = 0
-        alphay = -1
-        alphaz = -1
-        sigmsyi = sigs
-        sigmsys = sigs
-        sigmszi = sigs
-        sigmszs = sigs
-        sigmcyi = sigcyi
-        sigmcys = sigcys
-        sigmczi = sigczi
-        sigmczs = sigczs
-        goto 20
-    end if
+    dnsits(1) = -1.d0
+    dnsits(2) = -1.d0
+    dnsits(3) = -1.d0
+    dnsits(4) = -1.d0
+    dnsits(5) = -1.d0
+    dnsits(6) = -1.d0
 
     call bresels(cequi, effmy, effmz, effn, &
                  ht, bw, enrobyi, enrobys, enrobzi, enrobzs, &
@@ -196,199 +186,200 @@ subroutine glbels(typco, cequi, effrts, ht, bw, &
     if (ierr .eq. 1) then
 !               Facette en pivot B trop comprimée !
 !               Alarme dans te0265 + on sort de la boucle + densité = -1 pour l'élément
-        ierr = 1003
-        goto 998
+        ierrl = 1003
     end if
     if (ierr .eq. 2) then
 !               Ferraillage symétrique non possible
 !               Alarme dans te0265 + on sort de la boucle + densité = -1 pour l'élément
-        ierr = 10011
-        goto 998
+        ierrl = 10011
     end if
     if (ierr .eq. 4) then
 !               Resolution itérative par la methode de Bresler non possible pour FCD
 !               Alarme dans te0265 + on sort de la boucle + densité = -1 pour l'élément
-        ierr = 10012
-        goto 998
+        ierrl = 10012
     end if
 
     !Calcul du ferraillage transversal
 
-20  continue
-
-    if (ftrnsv .eq. 1) then
-        dnstra = 0
-        thetab = -1
-        goto 998
+    if (ierrl .gt. 0) then
+        dnsyi = 0
+        dnsys = 0
+        dnszi = 0
+        dnszs = 0
+        alphay = -1
+        alphaz = -1
+        sigmsyi = -sigs
+        sigmsys = -sigs
+        sigmszi = -sigs
+        sigmszs = -sigs
+        sigmcyi = sigcyi
+        sigmcys = sigcys
+        sigmczi = sigczi
+        sigmczs = sigczs
     end if
 
-    if (ierr .eq. 0) then
+    !1e calcul avec MFY et VZ
+    call cftels(typco, 1, effrts_fake, effmy, effn, efftz, effmt, &
+                dnszi, dnszs, &
+                sigmszi, sigmszs, sigmczi, sigmczs, alphaz, &
+                ht, bw, enrobzi, enrobzs, facier, fbeton, &
+                sigczi, sigczs, sigs, uc, um, &
+                compress, dnstraz, thetabz, akz, ukz, ierrz)
 
-        !1e calcul avec MFY et VZ
-        call cftels(typco, 1, effrts_fake, effmy, effn, efftz, effmt, &
-                    dnszi, dnszs, &
-                    sigmszi, sigmszs, sigmczi, sigmczs, alphaz, &
-                    ht, bw, enrobzi, enrobzs, facier, fbeton, &
-                    sigczi, sigczs, sigs, uc, um, &
-                    compress, dnstraz, thetabz, akz, ukz, ierrz)
 !               GESTION DES ALARMES EMISES POUR LE FERRAILLAGE TRANSVERSAL A L'ELS
-        if (ierry .eq. 1) then
+    if (ierrz .eq. 1) then
 !                   Béton trop cisaillé !
 !                   Alarme dans te0265 + on sort de la boucle + dnstra = -1 pour l'élément
-            ierr = 1004
-            goto 998
-        end if
+        ierrt = 1004
+    end if
 
-        !2e calcul avec MFZ et VY
-        call cftels(typco, 1, effrts_fake, effmz, effn, effty, effmt, &
-                    dnsyi, dnsys, &
-                    sigmsyi, sigmsys, sigmcyi, sigmcys, alphay, &
-                    bw, ht, enrobyi, enrobys, facier, fbeton, &
-                    sigcyi, sigcys, sigs, uc, um, &
-                    compress, dnstray, thetaby, aky, uky, ierry)
+    !2e calcul avec MFZ et VY
+    call cftels(typco, 1, effrts_fake, effmz, effn, effty, effmt, &
+                dnsyi, dnsys, &
+                sigmsyi, sigmsys, sigmcyi, sigmcys, alphay, &
+                bw, ht, enrobyi, enrobys, facier, fbeton, &
+                sigcyi, sigcys, sigs, uc, um, &
+                compress, dnstray, thetaby, aky, uky, ierry)
+
 !               GESTION DES ALARMES EMISES POUR LE FERRAILLAGE TRANSVERSAL A L'ELS
-        if (ierrz .eq. 1) then
+    if (ierry .eq. 1) then
 !                   Béton trop cisaillé !
 !                   Alarme dans te0265 + on sort de la boucle + dnstra = -1 pour l'élément
-            ierr = 1004
-            goto 998
-        end if
+        ierrt = 1004
+    end if
 
-        !Prise en compte de l'impact de l'effort tranchant sur le ferraillage longitudinal
-        !MFY et VZ
-        if ((ierrz .eq. 0) .and. (dnstraz .gt. 0) .and. (epucisa .eq. 1)) then
-            Asl = abs(efftz)/(tan(thetabz))
-            if (effmy .ge. 0) then
-                Calc = abs(sigmszi)
-                if (Calc .gt. epsilon(Calc)) then
-                    Asl = Asl/Calc
-                else
-                    Asl = Asl/sigs
-                end if
-                dnszi = dnszi+Asl
+    !Prise en compte de l'impact de l'effort tranchant sur le ferraillage longitudinal
+    !MFY et VZ
+    if ((ierrl .eq. 0) .and. (ierrz .eq. 0) .and. &
+        & (dnstraz .gt. 0) .and. (epucisa .eq. 1)) then
+        Asl = abs(efftz)/(tan(thetabz))
+        if (effmy .ge. 0) then
+            Calc = abs(sigmszi)
+            if (Calc .gt. epsilon(Calc)) then
+                Asl = Asl/Calc
             else
-                Calc = abs(sigmszs)
-                if (Calc .gt. epsilon(Calc)) then
-                    Asl = Asl/Calc
-                else
-                    Asl = Asl/sigs
-                end if
-                dnszs = dnszs+Asl
+                Asl = Asl/sigs
             end if
+            dnszi = dnszi+Asl
+        else
+            Calc = abs(sigmszs)
+            if (Calc .gt. epsilon(Calc)) then
+                Asl = Asl/Calc
+            else
+                Asl = Asl/sigs
+            end if
+            dnszs = dnszs+Asl
+        end if
+    end if
+
+    !MFZ et VY
+    if ((ierrl .eq. 0) .and. (ierry .eq. 0) .and. &
+        & (dnstray .gt. 0) .and. (epucisa .eq. 1)) then
+        Asl = abs(effty)/(tan(thetaby))
+        if (effmz .ge. 0) then
+            Calc = abs(sigmsyi)
+            if (Calc .gt. epsilon(Calc)) then
+                Asl = Asl/Calc
+            else
+                Asl = Asl/sigs
+            end if
+            dnsyi = dnsyi+Asl
+        else
+            Calc = abs(sigmsys)
+            if (Calc .gt. epsilon(Calc)) then
+                Asl = Asl/Calc
+            else
+                Asl = Asl/sigs
+            end if
+            dnsys = dnsys+Asl
+        end if
+    end if
+
+    !Choix final du ferraillage transversal
+    !Prise en compte de l'impact de la torsion sur le ferraillage longitudinal
+
+    if ((ierry .eq. 0) .and. (ierrz .eq. 0)) then
+
+        if (dnstray .ge. dnstraz) then
+            dnstra = dnstray
+            thetab = thetaby
+            ak = aky
+            uk = uky
+        else
+            dnstra = dnstraz
+            thetab = thetabz
+            ak = akz
+            uk = ukz
         end if
 
-        !MFZ et VY
-        if ((ierry .eq. 0) .and. (dnstray .gt. 0) .and. (epucisa .eq. 1)) then
-            Asl = abs(effty)/(tan(thetaby))
-            if (effmz .ge. 0) then
+        if ((epucisa .eq. 1) .and. (ierrl .eq. 0)) then
+            Asl = (abs(effmt)/(2*ak))*(1/(tan(thetab)))*uk
+            if ((abs(effmy) .gt. epsilon(effmy)) .and. (abs(effmz) .gt. epsilon(effmz))) then
                 Calc = abs(sigmsyi)
                 if (Calc .gt. epsilon(Calc)) then
-                    Asl = Asl/Calc
+                    dnsyi = dnsyi+Asl/(4.0*Calc)
                 else
-                    Asl = Asl/sigs
+                    dnsyi = dnsyi+Asl/(4.0*sigs)
                 end if
-                dnsyi = dnsyi+Asl
-            else
                 Calc = abs(sigmsys)
                 if (Calc .gt. epsilon(Calc)) then
-                    Asl = Asl/Calc
+                    dnsys = dnsys+Asl/(4.0*Calc)
                 else
-                    Asl = Asl/sigs
+                    dnsys = dnsys+Asl/(4.0*sigs)
                 end if
-                dnsys = dnsys+Asl
-            end if
-        end if
-
-        !Choix final du ferraillage transversal
-        !Prise en compte de l'impact de la torsion sur le ferraillage longitudinal
-
-        if ((ierry .eq. 0) .and. (ierrz .eq. 0)) then
-
-            if (dnstray .ge. dnstraz) then
-                dnstra = dnstray
-                thetab = thetaby
-                ak = aky
-                uk = uky
+                Calc = abs(sigmszi)
+                if (Calc .gt. epsilon(Calc)) then
+                    dnszi = dnszi+Asl/(4.0*Calc)
+                else
+                    dnszi = dnszi+Asl/(4.0*sigs)
+                end if
+                Calc = abs(sigmszs)
+                if (Calc .gt. epsilon(Calc)) then
+                    dnszs = dnszs+Asl/(4.0*Calc)
+                else
+                    dnszs = dnszs+Asl/(4.0*sigs)
+                end if
+            elseif (abs(effmy) .gt. epsilon(effmy)) then
+                Calc = abs(sigmszi)
+                if (Calc .gt. epsilon(Calc)) then
+                    dnszi = dnszi+Asl/(2.0*Calc)
+                else
+                    dnszi = dnszi+Asl/(2.0*sigs)
+                end if
+                Calc = abs(sigmszs)
+                if (Calc .gt. epsilon(Calc)) then
+                    dnszs = dnszs+Asl/(2.0*Calc)
+                else
+                    dnszs = dnszs+Asl/(2.0*sigs)
+                end if
+            elseif (abs(effmz) .gt. epsilon(effmz)) then
+                Calc = abs(sigmsyi)
+                if (Calc .gt. epsilon(Calc)) then
+                    dnsyi = dnsyi+Asl/(2.0*Calc)
+                else
+                    dnsyi = dnsyi+Asl/(2.0*sigs)
+                end if
+                Calc = abs(sigmsys)
+                if (Calc .gt. epsilon(Calc)) then
+                    dnsys = dnsys+Asl/(2.0*Calc)
+                else
+                    dnsys = dnsys+Asl/(2.0*sigs)
+                end if
             else
-                dnstra = dnstraz
-                thetab = thetabz
-                ak = akz
-                uk = ukz
+                Smoy = sigs
+                dnsyi = dnsyi+Asl/(4.0*Smoy)
+                dnsys = dnsys+Asl/(4.0*Smoy)
+                dnszi = dnszi+Asl/(4.0*Smoy)
+                dnszs = dnszs+Asl/(4.0*Smoy)
             end if
-
-            if (epucisa .eq. 1) then
-                Asl = (abs(effmt)/(2*ak))*(1/(tan(thetab)))*uk
-                if ((abs(effmy) .gt. epsilon(effmy)) .and. (abs(effmz) .gt. epsilon(effmz))) then
-                    Calc = abs(sigmsyi)
-                    if (Calc .gt. epsilon(Calc)) then
-                        dnsyi = dnsyi+Asl/(4.0*Calc)
-                    else
-                        dnsyi = dnsyi+Asl/(4.0*sigs)
-                    end if
-                    Calc = abs(sigmsys)
-                    if (Calc .gt. epsilon(Calc)) then
-                        dnsys = dnsys+Asl/(4.0*Calc)
-                    else
-                        dnsys = dnsys+Asl/(4.0*sigs)
-                    end if
-                    Calc = abs(sigmszi)
-                    if (Calc .gt. epsilon(Calc)) then
-                        dnszi = dnszi+Asl/(4.0*Calc)
-                    else
-                        dnszi = dnszi+Asl/(4.0*sigs)
-                    end if
-                    Calc = abs(sigmszs)
-                    if (Calc .gt. epsilon(Calc)) then
-                        dnszs = dnszs+Asl/(4.0*Calc)
-                    else
-                        dnszs = dnszs+Asl/(4.0*sigs)
-                    end if
-                elseif (abs(effmy) .gt. epsilon(effmy)) then
-                    Calc = abs(sigmszi)
-                    if (Calc .gt. epsilon(Calc)) then
-                        dnszi = dnszi+Asl/(2.0*Calc)
-                    else
-                        dnszi = dnszi+Asl/(2.0*sigs)
-                    end if
-                    Calc = abs(sigmszs)
-                    if (Calc .gt. epsilon(Calc)) then
-                        dnszs = dnszs+Asl/(2.0*Calc)
-                    else
-                        dnszs = dnszs+Asl/(2.0*sigs)
-                    end if
-                elseif (abs(effmz) .gt. epsilon(effmz)) then
-                    Calc = abs(sigmsyi)
-                    if (Calc .gt. epsilon(Calc)) then
-                        dnsyi = dnsyi+Asl/(2.0*Calc)
-                    else
-                        dnsyi = dnsyi+Asl/(2.0*sigs)
-                    end if
-                    Calc = abs(sigmsys)
-                    if (Calc .gt. epsilon(Calc)) then
-                        dnsys = dnsys+Asl/(2.0*Calc)
-                    else
-                        dnsys = dnsys+Asl/(2.0*sigs)
-                    end if
-                else
-                    Smoy = sigs
-                    dnsyi = dnsyi+Asl/(4.0*Smoy)
-                    dnsys = dnsys+Asl/(4.0*Smoy)
-                    dnszi = dnszi+Asl/(4.0*Smoy)
-                    dnszs = dnszs+Asl/(4.0*Smoy)
-                end if
-            end if
-
-        else
-
-            dnstra = -1
-            thetab = -1
-
         end if
+
+    else
+
+        dnstra = -1
+        thetab = -1
 
     end if
-    !Calcul du ferraillage transversal
-
-998 continue
 
 !  -- VERIFICATION DU FERRAILLAGE MINIMUM :
 !  ----------------------------------------
@@ -414,44 +405,36 @@ subroutine glbels(typco, cequi, effrts, ht, bw, &
             rhotmin = 0.08*(fbeton**(0.5))/facier
         end if
 
+        ierr = ierrl
+
         !ASYI
         d = bw-enrobyi
-        if ((dnsyi .lt. (rholmin*d*ht)) .and. (ierr .ne. 1001) &
-             & .and. (ierr .ne. 10011) .and. (ierr .ne. 10012) &
-             & .and. (ierr .ne. 1003) .and. (ierr .ne. 1005) &
-             & .and. (ierr .ne. 1006)) then
+        if ((dnsyi .lt. (rholmin*d*ht)) .and. (ierr .eq. 0)) then
             dnsyi = rholmin*d*ht
         end if
 
         !ASYS
         d = bw-enrobys
-        if ((dnsys .lt. (rholmin*d*ht)) .and. (ierr .ne. 1001) &
-             & .and. (ierr .ne. 10011) .and. (ierr .ne. 10012) &
-             & .and. (ierr .ne. 1003) .and. (ierr .ne. 1005) &
-             & .and. (ierr .ne. 1006)) then
+        if ((dnsys .lt. (rholmin*d*ht)) .and. (ierr .eq. 0)) then
             dnsys = rholmin*d*ht
         end if
 
         !ASZI
         d = ht-enrobzi
-        if ((dnszi .lt. (rholmin*d*bw)) .and. (ierr .ne. 1001) &
-             & .and. (ierr .ne. 10011) .and. (ierr .ne. 10012) &
-             & .and. (ierr .ne. 1003) .and. (ierr .ne. 1005) &
-             & .and. (ierr .ne. 1006)) then
+        if ((dnszi .lt. (rholmin*d*bw)) .and. (ierr .eq. 0)) then
             dnszi = rholmin*d*bw
         end if
 
-        !ASYS
+        !ASZS
         d = ht-enrobzs
-        if ((dnszs .lt. (rholmin*d*bw)) .and. (ierr .ne. 1001) &
-             & .and. (ierr .ne. 10011) .and. (ierr .ne. 10012) &
-             & .and. (ierr .ne. 1003) .and. (ierr .ne. 1005) &
-             & .and. (ierr .ne. 1006)) then
+        if ((dnszs .lt. (rholmin*d*bw)) .and. (ierr .eq. 0)) then
             dnszs = rholmin*d*bw
         end if
 
+        ierr = ierrt
+
         !AST
-        if ((dnstra .lt. (rhotmin*max(bw, ht))) .and. (ierry .eq. 0) .and. (ierrz .eq. 0)) then
+        if ((dnstra .lt. (rhotmin*max(bw, ht))) .and. (ierr .eq. 0)) then
             dnstra = rhotmin*max(bw, ht)
         end if
 
@@ -459,20 +442,15 @@ subroutine glbels(typco, cequi, effrts, ht, bw, &
 
 !   RESTITUTION FINALE DES SECTIONS DE FERRAILLAGE
 !  -----------------------------------------------
-    dnsits(1) = dnsyi
-    dnsits(2) = dnsys
-    dnsits(3) = dnszi
-    dnsits(4) = dnszs
-    dnsits(5) = dnstra
-    ab1 = dnsits(1)+1
-    ab2 = dnsits(2)+1
-    ab3 = dnsits(3)+1
-    ab4 = dnsits(4)+1
-    if ((abs(ab1) .gt. epsilon(ab1)) .and. (abs(ab2) .gt. epsilon(ab2)) &
-         & .and. (abs(ab3) .gt. epsilon(ab3)) .and. (abs(ab4) .gt. epsilon(ab4))) then
+    if (ierrl .eq. 0) then
+        dnsits(1) = dnsyi
+        dnsits(2) = dnsys
+        dnsits(3) = dnszi
+        dnsits(4) = dnszs
         dnsits(6) = dnsyi+dnsys+dnszi+dnszs
-    else
-        dnsits(6) = -1
+    end if
+    if (ierrt .eq. 0) then
+        dnsits(5) = dnstra
     end if
 
 end subroutine

@@ -82,7 +82,7 @@ subroutine w175af(modele, chfer1)
     call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
 
 !
-    ASSERT(ncmpmx .eq. 64)
+    ASSERT(ncmpmx .eq. 61)
     ncmp(1) = 'TYPCOMB'
     ncmp(2) = 'CODIF'
     ncmp(3) = 'METH2D'
@@ -144,13 +144,6 @@ subroutine w175af(modele, chfer1)
     ncmp(59) = 'PHIYS'
     ncmp(60) = 'PHIZI'
     ncmp(61) = 'PHIZS'
-    !!Intervention 03/2023 -
-    !  Pour réduction du temps de calcul
-    ncmp(62) = 'PRECS'
-    !!Intervention 05/2023 -
-    !  Prise en compte du ferraillage?
-    ncmp(63) = 'FLONGI'
-    ncmp(64) = 'FTRNSV'
 
 !
 !     2. MOTS CLES GLOBAUX :

@@ -151,7 +151,8 @@ subroutine te0146(option, nomte)
 !                   5 A 6 : ACIERS TRANSVERSAUX (EN M2/M2)
 !     DNSVOL     DENSITE VOLUMIQUE D'ARMATURE (Kg/M3)
 !     CONSTRUC   INDICATEUR DE COMPLEXITE DE CONSTRUCTIBILITE (-)
-!     IERR       CODE RETOUR (0 = OK)
+!     IERRL      CODE RETOUR LONGI (0 = OK)
+!     IERRT      CODE RETOUR TRNSV (0 = OK)
 !---------------------------------------------------------------------
 !
     real(kind=8) :: cequi, sigs, sigci, sigcs, sigcyi, sigcys, sigczi, sigczs
@@ -163,9 +164,9 @@ subroutine te0146(option, nomte)
     real(kind=8) :: wmaxi, wmaxs, wmaxyi, wmaxys, wmaxzi, wmaxzs, sigelsqp, kt
     real(kind=8) :: phixi, phixs, phiyi, phiys, phizi, phizs
     real(kind=8) :: reinf, shear, stirrups, thiter, epiter, aphiter
-    integer :: ierr, jepais, jefge, jfer1, jfer2, itab(7), nno
+    integer :: ierr, ierrl, ierrt, jepais, jefge, jfer1, jfer2, itab(7), nno
     integer :: typcmb, typco, ferrmin, typdiag, ferrsyme, epucisa, clacier, uc, um
-    integer :: ino, icmp, iret, k, meth2D, cond109, precs, flongi, ftrnsv
+    integer :: ino, icmp, iret, k, meth2D, cond109, precs
     integer :: iadzi, iazk24, compress, ferrcomp, typstru, nb
 !
     call tecael(iadzi, iazk24, noms=0)
@@ -215,8 +216,6 @@ subroutine te0146(option, nomte)
 !                 50       51       52       53        54      55
 !              'PHIXI','PHIXS','PHIYI','PHIYS','PHIZI','PHIZS'
 !                 56      57      58      59      60      61
-!              'PRECS','FLONGI','FTRNSV'
-!                 62      63      64
 !
     typcmb = nint(zr(jfer1-1+1))
     typco = nint(zr(jfer1-1+2))
@@ -279,9 +278,6 @@ subroutine te0146(option, nomte)
     phiys = zr(jfer1-1+59)
     phizi = zr(jfer1-1+60)
     phizs = zr(jfer1-1+61)
-    precs = nint(zr(jfer1-1+62))
-    flongi = nint(zr(jfer1-1+63))
-    ftrnsv = nint(zr(jfer1-1+64))
 
     !Only option '2D'
     if (typstru .eq. 1.d0) then
@@ -315,14 +311,15 @@ subroutine te0146(option, nomte)
 
     if (meth2D .eq. 1.d0) then
         nb = ceiling(180/thiter)
-        call clcplq(typcmb, typco, nb, precs, flongi, ftrnsv, &
+        precs = ceiling(1/epiter)
+        call clcplq(typcmb, typco, nb, precs, &
                     ferrsyme, slsyme, ferrcomp, epucisa, &
                     ferrmin, rholmin, rhotmin, compress, cequi, &
                     enrobi, enrobs, sigs, sigci, sigcs, &
                     alphacc, gammas, gammac, facier, eys, typdiag, &
                     fbeton, clacier, uc, um, &
                     wmaxi, wmaxs, sigelsqp, kt, phixi, phixs, phiyi, phiys, &
-                    ht, effrts, dnsits, ierr)
+                    ht, effrts, dnsits, ierrl, ierrt)
     elseif (meth2D .eq. 2.d0) then
         if (typcmb .eq. 0) then
             if (typco .eq. 1.d0) then
@@ -330,9 +327,9 @@ subroutine te0146(option, nomte)
             end if
             call sandwich(enrobi, enrobs, facier, fbeton, gammas, gammac, &
                           thiter, epiter, aphiter, cond109, &
-                          flongi, ftrnsv, ferrcomp, ferrsyme, slsyme, &
+                          ferrcomp, ferrsyme, slsyme, &
                           epucisa, ferrmin, rholmin, rhotmin, compress, uc, um, &
-                          ht, effrts, dnsits, ierr)
+                          ht, effrts, dnsits, ierrl, ierrt)
         end if
     end if
 !
@@ -368,126 +365,90 @@ subroutine te0146(option, nomte)
 
 !       -- GESTION DES ALARMES EMISES :
 !       -------------------------------
-!
-    if (ierr .eq. 1001) then
+
+    if (ierrl .eq. 1001) then
 !       ELU : section trop comprimée
-!       on fixe toutes les densités de ferraillage de l'élément à -1
         call utmess('A', 'CALCULEL_83')
-        do k = 1, 6
-            dnsits(k) = -1.d0
-        end do
         dnsvol = -1.d0
         construc = -1.d0
     end if
 
-    if (ierr .eq. 10011) then
+    if (ierrl .eq. 10011) then
 !       ELU : ferraillage symétrique non possible!
-!       on fixe toutes les densités de ferraillage de l'élément à -1
         call utmess('A', 'CALCULEL7_28')
-        do k = 1, 6
-            dnsits(k) = -1.d0
-        end do
         dnsvol = -1.d0
         construc = -1.d0
     end if
 !
-    if (ierr .eq. 1003) then
+    if (ierrl .eq. 1003) then
 !       ELS : section trop comprimée
-!       on fixe toutes les densités de ferraillage de l'élément à -1
         call utmess('A', 'CALCULEL_84')
-        do k = 1, 6
-            dnsits(k) = -1.d0
-        end do
         dnsvol = -1.d0
         construc = -1.d0
     end if
 
-    if (ierr .eq. 1005) then
+    if (ierrl .eq. 1005) then
 !       ELS_QP : section trop comprimée
-!       on fixe toutes les densités de ferraillage de l'élément à -1
         call utmess('A', 'CALCULEL_85')
-        do k = 1, 6
-            dnsits(k) = -1.d0
-        end do
         dnsvol = -1.d0
         construc = -1.d0
     end if
-!
-    if (ierr .eq. 1002) then
+
+    if (ierrt .eq. 1002) then
 !       ELU BETON TROP CISAILLE : densité transversale fixée à -1 pour l'élément
         call utmess('A', 'CALCULEL_81')
-        dnsits(5) = -1.d0
-        dnsits(6) = -1.d0
         dnsvol = -1.d0
         construc = -1.d0
     end if
 
-    if (ierr .eq. 1004) then
+    if (ierrt .eq. 1004) then
 !       ELS BETON TROP CISAILLE : densité transversale fixée à -1 pour l'élément
         call utmess('A', 'CALCULEL_86')
-        dnsits(5) = -1.d0
-        dnsits(6) = -1.d0
         dnsvol = -1.d0
         construc = -1.d0
     end if
 
-    if (ierr .eq. 1007) then
+    if (ierrt .eq. 1007) then
 !       ELS_QP BETON TROP CISAILLE : densité transversale fixée à -1 pour l'élément
         call utmess('A', 'CALCULEL_87')
-        dnsits(5) = -1.d0
-        dnsits(6) = -1.d0
         dnsvol = -1.d0
         construc = -1.d0
     end if
 
-    if (ierr .eq. 1006) then
+    if (ierrl .eq. 1006) then
 !       ELS QP SOLLICITATION TROP IMPORTANTE : Résolution itérative impossible à l'els qp !
         call utmess('A', 'CALCULEL_77')
-        do k = 1, 6
-            dnsits(k) = -1.d0
-        end do
         dnsvol = -1.d0
         construc = -1.d0
     end if
 
-    if (ierr .eq. 2001) then
+    if (ierrl .eq. 2001) then
 !       ELU-Sandwich : équilibre non possible
 !       on fixe toutes les densités de ferraillage de l'élément à -1
         call utmess('A', 'CALCULEL7_34')
-        do k = 1, 6
-            dnsits(k) = -1.d0
-        end do
         dnsvol = -1.d0
         construc = -1.d0
     end if
 
-    if (ierr .eq. 2002) then
+    if (ierrl .eq. 2002) then
 !       ELU-Sandwich : section trop comprimée
 !       on fixe toutes les densités de ferraillage de l'élément à -1
         call utmess('A', 'CALCULEL7_35')
-        do k = 1, 6
-            dnsits(k) = -1.d0
-        end do
         dnsvol = -1.d0
         construc = -1.d0
     end if
 
-    if (ierr .eq. 2003) then
+    if (ierrl .eq. 2003) then
 !       ELU-Sandwich : ferraillage symétrique non possible!
 !       on fixe toutes les densités de ferraillage de l'élément à -1
         call utmess('A', 'CALCULEL7_28')
-        do k = 1, 6
-            dnsits(k) = -1.d0
-        end do
         dnsvol = -1.d0
         construc = -1.d0
     end if
 
-    if (ierr .eq. 2004) then
+    if (ierrt .eq. 2004) then
 !       ELU-Sandwich BETON TROP CISAILLE : densité transversale fixée à -1 pour l'élément
         call utmess('A', 'CALCULEL7_36')
-        dnsits(5) = -1.d0
-        dnsits(6) = -1.d0
         dnsvol = -1.d0
         construc = -1.d0
     end if

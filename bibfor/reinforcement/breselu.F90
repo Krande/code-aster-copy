@@ -62,10 +62,7 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn, &
 !      I FERRCOMP  PRISE EN COMPTE DU FERRAILLAGE DE COMPRESSION
 !                     FERRCOMP = 1 (NON)
 !                     FERRCOMP = 2 (OUI)
-!      I PRECS     PRECISION SUPPLEMENTAIRE DANS LA RECHERCHE DE L'OPTIMUM
-!                   POUR LA METHODE DES 3 PIVOTS (Intervention du 03/2023)
-!                     PRECS = 0 (NON)
-!                     PRECS = 1 (OUI)
+!      I PRECS     PRECISION ITERATION
 !      I FERRSYME  FERRAILLAGE SYMETRIQUE?
 !                     FERRSYME = 0 (NON)
 !                     FERRSYME = 1 (OUI)

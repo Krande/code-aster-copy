@@ -23,9 +23,9 @@ interface
                   enrobyi, enrobys, enrobzi, enrobzs,&
                   facier, fbeton, gammas, gammac,&
                   clacier, eys, typdiag, precs, &
-                  flongi, ftrnsv, ferrsyme, slsyme, ferrcomp,&
+                  ferrsyme, slsyme, ferrcomp,&
                   epucisa, ferrmin, rholmin, rhotmin, compress, uc, um, &
-                  dnsits, ierr)
+                  dnsits, ierrl, ierrt)
     integer :: typco
     real(kind=8) :: alphacc
     real(kind=8) :: effrts(6)
@@ -43,8 +43,6 @@ interface
     real(kind=8) :: eys
     integer :: typdiag
     integer :: precs
-    integer :: flongi
-    integer :: ftrnsv
     integer :: ferrsyme
     real(kind=8) :: slsyme
     integer :: ferrcomp
@@ -56,6 +54,7 @@ interface
     integer :: uc
     integer :: um
     real(kind=8) :: dnsits(6)
-    integer :: ierr
+    integer :: ierrl
+    integer :: ierrt
     end subroutine glbelu
 end interface

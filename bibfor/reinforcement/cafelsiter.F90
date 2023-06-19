@@ -42,10 +42,7 @@ subroutine cafelsiter(cequi, effm, effn, ht, bw, &
 !      I FERRCOMP     PRISE EN COMPTE DU FERRAILLAGE DE COMPRESSION
 !                         FERRCOMP = 0 (NON)
 !                         FERRCOMP = 1 (OUI)
-!      I PRECS        PRECISION SUPPLEMENTAIRE DANS LA RECHERCHE DE L'OPTIMUM
-!                     POUR LA METHODE DES 3 PIVOTS (Intervention du 03/2023)
-!                        PRECS = 0 (NON)
-!                        PRECS = 1 (OUI)
+!      I PRECS        PRECISION ITERATION
 !      I FERRSYME     FERRAILLAGE SYMETRIQUE?
 !                        FERRSYME = 0 (NON)
 !                        FERRSYME = 1 (OUI)
@@ -209,12 +206,7 @@ subroutine cafelsiter(cequi, effm, effn, ht, bw, &
     Ncalc = effn
     N_ET = 11
 
-    if (precs .eq. 0) then
-        N_PC = 101
-    else if (precs .eq. 1) then
-        N_PC = 1001
-    end if
-
+    N_PC = precs+1
     N_PCAC = CEILING((N_PC-1)*(ht/d))+1
 
     !Determination Pivot C 'ELS'

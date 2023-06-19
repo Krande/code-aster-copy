@@ -52,10 +52,7 @@ subroutine cafeluiter(typco, alphacc, effm, effn, ht, bw, &
 !                     TYPDIAG = 1 ("B1" ==> PALIER INCLINÉ)
 !                     TYPDIAG = 2 ("B2" ==> PALIER HORIZONTAL)
 
-!      I PRECS     PRECISION SUPPLEMENTAIRE DANS LA RECHERCHE DE L'OPTIMUM
-!                  POUR LA METHODE DES 3 PIVOTS (Intervention du 03/2023)
-!                     PRECS = 0 (NON)
-!                     PRECS = 1 (OUI)
+!      I PRECS     PRECISION ITERATION
 !      I FERRSYME  FERRAILLAGE SYMETRIQUE?
 !                     FERRSYME = 0 (NON)
 !                     FERRSYME = 1 (OUI)
@@ -360,11 +357,7 @@ subroutine cafeluiter(typco, alphacc, effm, effn, ht, bw, &
 !Traitement en pivot A et B - Partiellement Comprimée (PC)
 !---------------------------------------------------------
 
-    if (precs .eq. 0) then
-        N_PC = ceiling((ht/d)*100)+1
-    else if (precs .eq. 1) then
-        N_PC = ceiling((ht/d)*1000)+1
-    end if
+    N_PC = ceiling((ht/d)*precs)+1
 
     call wkvect(p(13), ' V V R ', N_PC, vr=ectend_PC)
     call wkvect(p(14), ' V V R ', N_PC, vr=eccomp_PC)
@@ -381,12 +374,7 @@ subroutine cafeluiter(typco, alphacc, effm, effn, ht, bw, &
 
     do k = 1, N_PC
 
-        if (precs .eq. 0) then
-            alpha_PC(k) = (k-1)*0.01
-        else if (precs .eq. 1) then
-            alpha_PC(k) = (k-1)*0.001
-        end if
-
+        alpha_PC(k) = (k-1)*(1.0/real(precs))
         alpha = alpha_PC(k)
 
         if (alpha .lt. alphaAB) then
@@ -474,8 +462,7 @@ subroutine cafeluiter(typco, alphacc, effm, effn, ht, bw, &
         f1 = effn-Ncc
         f2 = abs(effm)-Mcc
 
-        if (((k .eq. 101) .and. (precs .eq. 0)) &
-            & .or. ((k .eq. 1001) .and. (precs .eq. 1))) then
+        if (k .eq. (precs+1)) then
             ascomp = (effn-Ncc)/sscomp
             astend = 0
             Calc = abs(effm)-Mcc-ascomp*sscomp*(0.5*ht-d0)

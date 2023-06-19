@@ -197,7 +197,7 @@ subroutine te0265(nomopt, nomte)
     real(kind=8) :: wmaxi, wmaxs, wmaxyi, wmaxys, wmaxzi, wmaxzs, sigelsqp, kt
     real(kind=8) :: phixi, phixs, phiyi, phiys, phizi, phizs
     integer :: clacier, compress, epucisa, ferrcomp, ferrmin, ferrsyme, typdiag
-    integer :: ierr, meth2D, cond109, precs, flongi, ftrnsv
+    integer :: ierrl, ierrt, meth2D, cond109, precs
     character(len=24) :: valk(2)
     integer :: vali(2)
 
@@ -238,9 +238,6 @@ subroutine te0265(nomopt, nomte)
 !                 50       51       52       53        54      55
 !              'PHIXI','PHIXS','PHIYI','PHIYS','PHIZI','PHIZS'
 !                 56      57      58      59      60      61
-!              'PRECS','FLONGI','FTRNSV'
-!                 62      63      64
-!
 !
 !                                  PCAGEPO
 !  'HY1', 'HZ1', 'EPY1', 'EPZ1', 'HY2','HZ2', 'EPY2', 'EPZ2', 'R1', 'EP1',
@@ -328,9 +325,6 @@ subroutine te0265(nomopt, nomte)
     phiys = zr(jfer1-1+59)
     phizi = zr(jfer1-1+60)
     phizs = zr(jfer1-1+61)
-    precs = nint(zr(jfer1-1+62))
-    flongi = nint(zr(jfer1-1+63))
-    ftrnsv = nint(zr(jfer1-1+64))
 
     !Only option '1D'
     if (typstru .eq. 0.d0) then
@@ -387,6 +381,7 @@ subroutine te0265(nomopt, nomte)
 
     !Calcul du ferraillage global de la poutre
 
+    precs = ceiling(1/epiter)
     call glbpou(typcmb, typco, cequi, effrts, ht, bw, &
                 enrobyi, enrobys, enrobzi, enrobzs, &
                 facier, fbeton, sigelsqp, kt, eys, &
@@ -394,99 +389,73 @@ subroutine te0265(nomopt, nomte)
                 sigcyi, sigcys, sigczi, sigczs, sigs, &
                 wmaxyi, wmaxys, wmaxzi, wmaxzs, &
                 phiyi, phiys, phizi, phizs, &
-                precs, flongi, ftrnsv, ferrsyme, slsyme, ferrcomp, &
+                precs, ferrsyme, slsyme, ferrcomp, &
                 epucisa, ferrmin, rholmin, rhotmin, compress, uc, um, &
                 rhoacier, areinf, ashear, astirr, rhocrit, datcrit, lcrit, &
-                dnsits, dnsvol, construc, ierr)
+                dnsits, dnsvol, construc, ierrl, ierrt)
 
 !       -- GESTION DES ALARMES EMISES :
 !       -------------------------------
 !
-    if (ierr .eq. 1001) then
+    if (ierrl .eq. 1001) then
 !       ELU : section trop comprimée
-!       on fixe toutes les densités de ferraillage de l'élément à -1
         call utmess('A', 'CALCULEL7_12')
-        do k = 1, 6
-            dnsits(k) = -1.d0
-        end do
         dnsvol = -1.d0
         construc = -1.d0
     end if
 
-    if (ierr .eq. 10011) then
+    if (ierrl .eq. 10011) then
 !       ELU : ferraillage symétrique non possible
-!       on fixe toutes les densités de ferraillage de l'élément à -1
         call utmess('A', 'CALCULEL7_28')
-        do k = 1, 6
-            dnsits(k) = -1.d0
-        end do
         dnsvol = -1.d0
         construc = -1.d0
     end if
 
-    if (ierr .eq. 10012) then
+    if (ierrl .eq. 10012) then
 !       Resolution iterative Bresler non possible FCD
-!       on fixe toutes les densités de ferraillage de l'élément à -1
         call utmess('A', 'CALCULEL7_29')
-        do k = 1, 6
-            dnsits(k) = -1.d0
-        end do
         dnsvol = -1.d0
         construc = -1.d0
     end if
 !
-    if (ierr .eq. 1003) then
+    if (ierrl .eq. 1003) then
 !       ELS : section trop comprimée
-!       on fixe toutes les densités de ferraillage de l'élément à -1
         call utmess('A', 'CALCULEL7_13')
-        do k = 1, 6
-            dnsits(k) = -1.d0
-        end do
         dnsvol = -1.d0
         construc = -1.d0
     end if
 
-    if (ierr .eq. 1005) then
+    if (ierrl .eq. 1005) then
 !       ELS_QP : section trop comprimée
-!       on fixe toutes les densités de ferraillage de l'élément à -1
         call utmess('A', 'CALCULEL7_14')
-        do k = 1, 6
-            dnsits(k) = -1.d0
-        end do
         dnsvol = -1.d0
         construc = -1.d0
     end if
 !
-    if (ierr .eq. 1002) then
+    if (ierrt .eq. 1002) then
 !       ELU BETON TROP CISAILLE : densité transversale fixée à -1 pour l'élément
         call utmess('A', 'CALCULEL7_15')
-        dnsits(5) = -1.d0
         dnsvol = -1.d0
         construc = -1.d0
     end if
 
-    if (ierr .eq. 1004) then
+    if (ierrt .eq. 1004) then
 !       ELS BETON TROP CISAILLE : densité transversale fixée à -1 pour l'élément
         call utmess('A', 'CALCULEL7_16')
-        dnsits(5) = -1.d0
         dnsvol = -1.d0
         construc = -1.d0
     end if
 
-    if (ierr .eq. 1007) then
+    if (ierrt .eq. 1007) then
 !       ELS_QP BETON TROP CISAILLE : densité transversale fixée à -1 pour l'élément
         call utmess('A', 'CALCULEL7_17')
-        dnsits(5) = -1.d0
         dnsvol = -1.d0
         construc = -1.d0
     end if
 
-    if (ierr .eq. 1006) then
+    if (ierrl .eq. 1006) then
 !       ELS QP SOLLICITATION TROP IMPORTANTE : Résolution itérative impossible à l'els qp !
         call utmess('A', 'CALCULEL_77')
-        do k = 1, 6
-            dnsits(k) = -1.d0
-        end do
         dnsvol = -1.d0
         construc = -1.d0
     end if

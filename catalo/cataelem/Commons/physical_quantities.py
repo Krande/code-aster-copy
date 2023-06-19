@@ -1574,9 +1574,6 @@ FER1_R = PhysicalQuantity(
         "PHIYS",
         "PHIZI",
         "PHIZS",
-        "PRECS",
-        "FLONGI",
-        "FTRNSV",
     ),
     comment=""" FER1_R et FER2_R : 2 grandeurs utilisees par CALC_FERRAILLAGE
 """,
