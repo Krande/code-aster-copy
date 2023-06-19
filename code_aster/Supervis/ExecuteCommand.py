@@ -199,8 +199,6 @@ class ExecuteCommand(object):
             timer.Start(str(self._counter), name=self.command_name)
         timer.Start(" . check syntax", num=1.1e6)
         self.compat_syntax_(keywords)
-        self._cata.addDefaultKeywords(keywords)
-        remove_none(keywords)
         try:
             self.check_syntax(keywords)
         finally:
@@ -443,6 +441,8 @@ class ExecuteCommand(object):
             keywords (dict): Keywords arguments of user's keywords, changed
                 in place.
         """
+        self._cata.addDefaultKeywords(keywords)
+        remove_none(keywords)
         try:
             logger.debug("checking syntax of %s...", self.name)
             max_check = ExecutionParameter().get_option("max_check")

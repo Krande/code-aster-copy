@@ -1,0 +1,61 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+import code_aster
+from code_aster.Commands import *
+from code_aster.Objects import PhysicalProblem
+
+POURSUITE(CODE="OUI")
+
+test = code_aster.TestCase()
+
+TAB_EXT = LIRE_TABLE(UNITE=30)
+
+MOD_EXT = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION=("3D",)))
+
+PAT_EQ = DEFI_MATERIAU(
+    TABLE=_F(
+        TABLE=TAB_EXT,
+        NOM_PARA="TEMP",
+        COMPOR=("ELAS_ORTH_FO", "THER_NL_ORTH"),
+        INTERPOL="LIN",
+        PROL_GAUCHE="EXCLU",
+        PROL_DROITE="EXCLU",
+    )
+)
+
+T_EXT = CREA_CHAMP(
+    TYPE_CHAM="NOEU_TEMP_R",
+    OPERATION="AFFE",
+    MAILLAGE=MA,
+    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE=280.0),
+)
+
+MAT_EXT = AFFE_MATERIAU(
+    MODELE=MOD_EXT,
+    AFFE=(_F(TOUT="OUI", MATER=(PAT_EQ,)),),
+    AFFE_VARC=_F(TOUT="OUI", NOM_VARC="TEMP", CHAM_GD=T_EXT, VALE_REF=20.0),
+)
+
+phys_pb = PhysicalProblem(MOD_EXT, MAT_EXT, None)
+const = phys_pb.getCodedMaterial().constant()
+test.assertFalse(const)
+test.printSummary()
+
+FIN()
