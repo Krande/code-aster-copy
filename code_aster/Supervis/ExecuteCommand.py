@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -190,8 +190,6 @@ class ExecuteCommand(object):
             timer.Start(str(self._counter), name=self.command_name)
         timer.Start(" . check syntax", num=1.1e6)
         self.compat_syntax_(keywords)
-        self._cata.addDefaultKeywords(keywords)
-        remove_none(keywords)
         try:
             self.check_syntax(keywords)
         except (CheckerError, AssertionError, KeyError, TypeError, ValueError) as exc:
@@ -442,6 +440,8 @@ class ExecuteCommand(object):
             keywords (dict): Keywords arguments of user's keywords, changed
                 in place.
         """
+        self._cata.addDefaultKeywords(keywords)
+        remove_none(keywords)
         logger.debug(f"checking syntax of {self.name}...")
         max_check = ExecutionParameter().get_option("max_check")
         checkCommandSyntax(self._cata, keywords, add_default=False, max_check=max_check)
