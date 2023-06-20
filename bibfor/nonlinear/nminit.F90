@@ -272,9 +272,7 @@ subroutine nminit(mesh, model, mater, mateco, cara_elem, &
     call nonlinDSConvergenceInit(ds_conv, listFuncActi, ds_contact, model)
 
 ! - Initializations for energy management
-    if (l_ener) then
-        call nonlinDSEnergyInit(ds_inout%result, ds_energy)
-    end if
+    call nonlinDSEnergyInit(ds_inout%result, ds_energy)
 
 ! - Initializations for input/output management
     call nonlinDSInOutInit('MECA', ds_inout)
