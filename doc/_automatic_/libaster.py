@@ -4552,7 +4552,7 @@ class ContactVariant:
 
     Empty
 
-    Rapide
+    Fast
 
     Robust
 
@@ -4616,7 +4616,7 @@ class ContactVariant:
 
     Empty = 0
 
-    Rapide = 1
+    Fast = 1
 
     Robust = 2
 

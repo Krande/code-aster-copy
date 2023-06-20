@@ -32,7 +32,7 @@
 
 enum class ContactAlgo { Lagrangian, Nitsche, Penalization };
 
-enum class ContactVariant { Empty, Rapide, Robust, Symetric };
+enum class ContactVariant { Empty, Fast, Robust, Symetric };
 
 enum class ContactType { Unilateral, Bilateral };
 

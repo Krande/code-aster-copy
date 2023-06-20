@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -113,7 +113,7 @@ test.assertFalse(DEFICO.hasFriction)
 test.assertTrue(DEFICO.hasSmoothing)
 
 algo_cont = [code_aster.ContactAlgo.Lagrangian, code_aster.ContactAlgo.Nitsche]
-vari_cont = [code_aster.ContactVariant.Empty, code_aster.ContactVariant.Rapide]
+vari_cont = [code_aster.ContactVariant.Empty, code_aster.ContactVariant.Fast]
 
 for i in range(DEFICO.getNumberOfContactZones()):
     zone = DEFICO.getContactZone(i)
@@ -202,7 +202,7 @@ zone1 = DEFICO2.getContactZone(1)
 contParam = zone.getContactParameter()
 test.assertEqual(contParam.getAlgorithm(), code_aster.ContactAlgo.Nitsche)
 test.assertEqual(contParam.getType(), code_aster.ContactType.Bilateral)
-test.assertEqual(contParam.getVariant(), code_aster.ContactVariant.Rapide)
+test.assertEqual(contParam.getVariant(), code_aster.ContactVariant.Fast)
 test.assertEqual(contParam.getCoefficient(), 312.0)
 
 DEFICO2.hasFriction = True

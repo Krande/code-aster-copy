@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -65,7 +65,7 @@ def defi_cont_ops(self, **keywords):
     }
     _type_cont = {"UNILATERAL": ContactType.Unilateral, "BILATERAL": ContactType.Bilateral}
     _vari_cont = {
-        "RAPIDE": ContactVariant.Rapide,
+        "RAPIDE": ContactVariant.Fast,
         "ROBUSTE": ContactVariant.Robust,
         "SYMETRIC": ContactVariant.Symetric,
     }
