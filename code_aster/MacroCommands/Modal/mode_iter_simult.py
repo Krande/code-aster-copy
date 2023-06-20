@@ -35,6 +35,7 @@ from ...Objects import (
     GeneralizedModeResult,
     ModeResultComplex,
     ModeResult,
+    AcousticModeResult,
 )
 
 
@@ -352,7 +353,7 @@ class ModalCalculationSimult(ExecuteCommand):
         elif isinstance(vale_rigi, AssemblyMatrixDisplacementComplex):
             self._result = ModeResultComplex()
         elif isinstance(vale_rigi, AssemblyMatrixPressureReal):
-            self._result = ModeResultComplex()
+            self._result = AcousticModeResult()
         elif isinstance(vale_rigi, GeneralizedAssemblyMatrixReal):
             self._result = GeneralizedModeResult()
         elif isinstance(vale_rigi, GeneralizedAssemblyMatrixComplex):
