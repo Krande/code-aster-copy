@@ -72,9 +72,9 @@ type(NL_DS_Energy), intent(inout) :: ds_energy
         elseif (col_name.eq.'INST      ') then
             table%l_cols_acti(i_col) = ASTER_TRUE
         else
-            if (ds_energy%l_comp) then
-                table%l_cols_acti(i_col) = ASTER_TRUE
-            endif
+!            if (ds_energy%l_comp) then
+            table%l_cols_acti(i_col) = ASTER_TRUE
+!            end if
         endif
     end do
 !

@@ -278,9 +278,7 @@ type(HHO_Field), intent(inout) :: hhoField
 !
 ! - Initializations for energy management
 !
-    if (l_ener) then
-        call nonlinDSEnergyInit(ds_inout%result, ds_energy)
-    endif
+    call nonlinDSEnergyInit(ds_inout%result, ds_energy)
 !
 ! - Initializations for input/output management
 !
