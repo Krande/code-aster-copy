@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,8 +27,7 @@ from ...Objects import (AssemblyMatrixDisplacementComplex, AssemblyMatrixDisplac
                                 AssemblyMatrixPressureReal, AssemblyMatrixTemperatureReal,
                                 BucklingModeResult, GeneralizedAssemblyMatrixComplex,
                                 GeneralizedAssemblyMatrixReal, GeneralizedModeResult,
-                                ModeResultComplex, ModeResult)
-
+                                ModeResultComplex, ModeResult, AcousticModeResult)
 
 def mode_iter_simult_prod(TYPE_RESU, **args ):
     if args.get('__all__'):
@@ -230,7 +229,7 @@ class ModalCalculationSimult(ExecuteCommand):
         elif isinstance(vale_rigi, AssemblyMatrixDisplacementComplex):
             self._result = ModeResultComplex()
         elif isinstance(vale_rigi, AssemblyMatrixPressureReal):
-            self._result = ModeResultComplex()
+            self._result = AcousticModeResult()
         elif isinstance(vale_rigi, GeneralizedAssemblyMatrixReal):
             self._result = GeneralizedModeResult()
         elif isinstance(vale_rigi, GeneralizedAssemblyMatrixComplex):
