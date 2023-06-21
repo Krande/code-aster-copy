@@ -602,7 +602,9 @@ class TimeStepper(SolverFeature, Observer):
             Returns:
                 bool: *True* if the event is raised, *False* otherwise.
             """
-            return isinstance(context.get("exception"), (ConvergenceError, IntegrationError))
+            return isinstance(
+                context.get("exception"), (ConvergenceError, IntegrationError, SolverError)
+            )
 
     class ErrorPosteriori(Event):
         """Event that may raise an error after the convergency."""

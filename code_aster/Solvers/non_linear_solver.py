@@ -19,7 +19,7 @@
 
 from ..Messages import MessageLog
 from ..Objects import NonLinearResult
-from ..Supervis import ConvergenceError, IntegrationError
+from ..Supervis import ConvergenceError, IntegrationError, SolverError
 from ..Utilities import DEBUG, logger, no_new_attributes, profile
 from .solver_features import SolverFeature
 from .solver_features import SolverOptions as SOP
@@ -191,8 +191,8 @@ class NonLinearSolver(SolverFeature):
             self.phys_state.stash()
             try:
                 solv.solve()
-            except (ConvergenceError, IntegrationError) as exc:
-                logger.warning(exc.message)
+            except (ConvergenceError, IntegrationError, SolverError) as exc:
+                logger.warning(exc.format("I"))
                 self.stepper.failed(exc)
             else:
                 if not self.stepper.check_event(self.phys_state):

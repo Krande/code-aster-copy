@@ -75,12 +75,14 @@ Returns:
 Factorize the matrix.
 
 Arguments:
-    matrix [BaseAssemblyMatrix] : matrix to factorize
+    matrix (BaseAssemblyMatrix) : matrix to factorize
+    raiseException (bool): if *True* an exception is raised in case of error,
+    otherwise it stops with an error (default: *False*).
 
 Returns:
-    bool: True if factorization is a success, else False
+    bool: *True* if factorization is a success, else *False*
         )",
-              py::arg( "matrix" ) )
+              py::arg( "matrix" ), py::arg( "raiseException" ) = false )
         .def( "getMatrix", &LinearSolver::getMatrix, R"(
 return the factorized matrix
 

@@ -7320,14 +7320,16 @@ class LinearSolver(DataStructure):
     def enableXfem(self):
         """Enable preconditionning for XFEM modeling."""
 
-    def factorize(self, matrix):
+    def factorize(self, matrix, raiseException=False):
         """Factorize the matrix.
 
         Arguments:
-            matrix [BaseAssemblyMatrix] : matrix to factorize
+            matrix (BaseAssemblyMatrix) : matrix to factorize
+            raiseException (bool): if *True* an exception is raised in case of error,
+            otherwise it stops with an error (default: *False*).
 
         Returns:
-            bool: True if factorization is a success, else False
+            bool: *True* if factorization is a success, else *False*
         """
 
     def getMatrix(self):

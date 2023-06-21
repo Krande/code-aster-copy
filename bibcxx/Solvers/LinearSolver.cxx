@@ -102,7 +102,7 @@ bool LinearSolver::deleteFactorizedMatrix() {
     return true;
 };
 
-bool LinearSolver::factorize( const BaseAssemblyMatrixPtr currentMatrix ) {
+bool LinearSolver::factorize( const BaseAssemblyMatrixPtr currentMatrix, bool raiseException ) {
 
     deleteFactorizedMatrix();
     _matrix = currentMatrix;
@@ -118,7 +118,11 @@ bool LinearSolver::factorize( const BaseAssemblyMatrixPtr currentMatrix ) {
 
     const std::string solverName( getName() + "           " );
     std::string base( "G" );
-    ASTERINTEGER cret = 0, npvneg = 0, istop = -9999;
+    ASTERINTEGER cret = 0, npvneg = 0;
+    ASTERINTEGER istop = -9999;
+    if ( raiseException ) {
+        istop = 2;
+    }
 
     _matrixPrec = _matrix->getEmptyMatrix( ResultNaming::getNewResultName() );
     const std::string matpre( _matrixPrec->getName() );
@@ -131,6 +135,9 @@ bool LinearSolver::factorize( const BaseAssemblyMatrixPtr currentMatrix ) {
     cmdSt.define( getKeywords() );
 
     CALLO_MATRIX_FACTOR( solverName, base, &cret, _matrixPrec->getName(), matass, &npvneg, &istop );
+    if ( raiseException && cret != 0 ) {
+        throw SolverErrorCpp( "FACTOR_13" );
+    }
 
     _matrix->setFactorized( true );
     _matrix->setSolverName( getSolverName() );

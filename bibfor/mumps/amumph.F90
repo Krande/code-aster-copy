@@ -300,7 +300,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu, &
             goto 2
         end if
     end do
-    call utmess('F', 'FACTOR_60')
+    call utmess('F', 'FACTOR_60', si=nmxins)
 2   continue
 !
 !

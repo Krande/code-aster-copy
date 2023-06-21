@@ -755,6 +755,8 @@ def __fake__():
     UTMESS("I", "FONCT0_27")
     UTMESS("I", "FONCT0_28")
     UTMESS("I", "FONCT0_29")
+    # en C++, LinearSolver
+    UTMESS("I", "FACTOR_13")
 
     # TODO : current problem in asterxx in jefini.F90
     UTMESS("I", "JEVEUX1_77")

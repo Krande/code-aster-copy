@@ -383,7 +383,7 @@ class IncrementalSolver(SolverFeature, EventSource):
             # Solve linear system
             linear_solver = self.get_feature(SOP.LinearSolver)
             if not stiffness.isFactorized():
-                linear_solver.factorize(stiffness)
+                linear_solver.factorize(stiffness, raiseException=True)
             solution = linear_solver.solve(residuals.resi, diriBCs)
 
             # Use line search

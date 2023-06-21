@@ -10,7 +10,7 @@ else
     cp ${HOME}/containers/$(basename ${URL_SIF}) ${SIF}
 fi
 
-CI_REPOSITORY_URL=https://gitlab.pleiade.edf.fr/codeaster/lab/experiment/src
+# CI_REPOSITORY_URL=https://gitlab.pleiade.edf.fr/codeaster/lab/experiment/src
 echo "+ downloading devtools..."
 root=$(dirname ${CI_REPOSITORY_URL})
 if grep -q experiment <<< "${CI_REPOSITORY_URL}"; then

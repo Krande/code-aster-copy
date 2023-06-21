@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -108,5 +108,6 @@ def get_idmess(exc):
 
 AsterError.__repr__ = format_exception
 AsterError.__str__ = format_exception
+AsterError.format = format
 AsterError.id_message = property(get_idmess)
 AsterError.message = property(format_exception)

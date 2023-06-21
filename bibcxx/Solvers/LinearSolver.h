@@ -128,7 +128,7 @@ class LinearSolver : public DataStructure {
      * @param currentMatrix Matrice assemblee
      * @return bool True if ok
      */
-    bool factorize( const BaseAssemblyMatrixPtr currentMatrix );
+    bool factorize( const BaseAssemblyMatrixPtr currentMatrix, bool raiseException = false );
 
     /**
      * @brief Factorisation d'une matrice

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -134,6 +134,11 @@ Risques et conseils :
 Problème lors de la factorisation de la matrice:
     La matrice est singulière et la factorisation n'a pu aller jusqu'au bout.
     On ne sait pas attribuer la singularité de la matrice à une ligne de la matrice.
+"""
+    ),
+    13: _(
+        """
+Problème lors de la factorisation de la matrice.
 """
     ),
     41: _(
@@ -292,10 +297,7 @@ Attention :
     60: _(
         """
 Solveur MUMPS :
-  Limite atteinte : le solveur MUMPS est utilisé par plus de 5 matrices simultanément.
-
-Conseils :
-  Contactez l'assistance.
+  Limite atteinte : le solveur MUMPS est utilisé par plus de %(i1)d matrices simultanément.
 """
     ),
     62: _(
