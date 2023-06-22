@@ -19,7 +19,7 @@
 subroutine approj(mesh, newgeo, sdcont_defi, node_mast_indx, l_pair_dire, &
                   pair_vect, iter_maxi, epsi_maxi, tole_proj_ext, poin_coor, &
                   elem_mast_mini, proj_stat_mini, ksi1_mini, ksi2_mini, tau1_mini, &
-                  tau2_mini, dist_mini, vect_pm_mini)
+                  tau2_mini, dist_mini, vect_pm_mini, err_appa)
 !
     implicit none
 !
@@ -59,6 +59,7 @@ subroutine approj(mesh, newgeo, sdcont_defi, node_mast_indx, l_pair_dire, &
     real(kind=8), intent(out) :: dist_mini
     integer, intent(out) :: proj_stat_mini
     integer, intent(out) :: elem_mast_mini
+    integer, intent(inout) :: err_appa
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -179,7 +180,8 @@ subroutine approj(mesh, newgeo, sdcont_defi, node_mast_indx, l_pair_dire, &
 ! ----- Management of error
 !
         if (niverr .eq. 1) then
-            call utmess('F', 'APPARIEMENT_13', sk=elem_mast_name, nr=3, valr=poin_coor)
+            err_appa = 1
+            call utmess('A', 'APPARIEMENT_13', sk=elem_mast_name, nr=3, valr=poin_coor)
         end if
 !
 ! ----- Compute distance

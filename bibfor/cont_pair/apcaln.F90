@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine apcaln(mesh, ds_contact)
+subroutine apcaln(mesh, ds_contact, err_appa)
 !
     use NonLin_Datastructure_type
 !
@@ -33,6 +33,7 @@ subroutine apcaln(mesh, ds_contact)
 !
     character(len=8), intent(in) :: mesh
     type(NL_DS_Contact), intent(in) :: ds_contact
+    integer, intent(inout) :: err_appa
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -72,7 +73,7 @@ subroutine apcaln(mesh, ds_contact)
 !
 ! - Compute tangents at each node for each element
 !
-    call aptgen(sdappa, mesh, ds_contact%sdcont_defi, newgeo)
+    call aptgen(sdappa, mesh, ds_contact%sdcont_defi, newgeo, err_appa)
 !
 ! - All-reduce for tangents field by element
 !

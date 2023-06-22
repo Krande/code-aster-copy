@@ -36,6 +36,7 @@ subroutine apstos(mesh, ds_contact)
 #include "asterfort/jelira.h"
 #include "asterfort/jerazo.h"
 #include "asterfort/apstoc.h"
+#include "asterfort/mmbouc.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
@@ -82,7 +83,7 @@ subroutine apstos(mesh, ds_contact)
     mpi_int :: i_proc, nb_proc, mpicou
     integer :: nb_elem_mpi, nbr_elem_mpi, idx_start, idx_end
     integer, pointer :: v_appa_slav_mpi(:) => null()
-    integer ::nb_el_slav_mpi
+    integer ::nb_el_slav_mpi, err_appa
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -175,8 +176,15 @@ subroutine apstos(mesh, ds_contact)
 !
 ! - Compute smooth normals at nodes
 !
+
     if (l_smooth) then
-        call aplcno(mesh, newgeo, ds_contact%sdcont_defi, sdappa)
+        err_appa = 0
+        call aplcno(mesh, newgeo, ds_contact%sdcont_defi, sdappa, err_appa)
+        if (err_appa .eq. 1) then
+            call mmbouc(ds_contact, 'Geom', 'Set_Error')
+        else
+            call mmbouc(ds_contact, 'Geom', 'Set_NoError')
+        end if
     end if
 !
 end subroutine

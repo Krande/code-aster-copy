@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine aptgen(sdappa, mesh, sdcont_defi, newgeo)
+subroutine aptgen(sdappa, mesh, sdcont_defi, newgeo, err_appa)
 !
     implicit none
 !
@@ -37,6 +37,7 @@ subroutine aptgen(sdappa, mesh, sdcont_defi, newgeo)
     character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: sdcont_defi
     character(len=19), intent(in) :: newgeo
+    integer, intent(inout) :: err_appa
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -98,7 +99,7 @@ subroutine aptgen(sdappa, mesh, sdcont_defi, newgeo)
         if (apcald) then
             call aptgem(sdappa, mesh, newgeo, sdcont_defi, model_ndim, &
                         i_zone, zone_type, epsi_maxi, jdecmm, &
-                        nb_elem_mast)
+                        nb_elem_mast, err_appa)
         end if
 !
 ! ----- Parameters on current zone - Slave
@@ -113,7 +114,7 @@ subroutine aptgen(sdappa, mesh, sdcont_defi, newgeo)
         if (apcald) then
             call aptgem(sdappa, mesh, newgeo, sdcont_defi, model_ndim, &
                         i_zone, zone_type, epsi_maxi, jdecme, &
-                        nb_elem_slav)
+                        nb_elem_slav, err_appa)
         end if
     end do
 !

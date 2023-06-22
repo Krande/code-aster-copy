@@ -19,10 +19,11 @@
 !
 !
 interface
-    subroutine aprema(sdappa, mesh, sdcont_defi, newgeo)
+    subroutine aprema(sdappa, mesh, sdcont_defi, newgeo, err_appa)
         character(len=19), intent(in) :: sdappa
         character(len=8), intent(in) :: mesh
         character(len=24), intent(in) :: sdcont_defi
         character(len=19), intent(in) :: newgeo
+        integer, intent(inout) :: err_appa
     end subroutine aprema
 end interface

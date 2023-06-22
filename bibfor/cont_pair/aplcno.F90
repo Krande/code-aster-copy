@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine aplcno(mesh, newgeo, sdcont_defi, sdappa)
+subroutine aplcno(mesh, newgeo, sdcont_defi, sdappa, err_appa)
 !
     implicit none
 !
@@ -35,6 +35,7 @@ subroutine aplcno(mesh, newgeo, sdcont_defi, sdappa)
     character(len=19), intent(in) :: newgeo
     character(len=24), intent(in) :: sdcont_defi
     character(len=19), intent(in) :: sdappa
+    integer, intent(inout) :: err_appa
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -100,14 +101,14 @@ subroutine aplcno(mesh, newgeo, sdcont_defi, sdappa)
         zone_type = 'MAIT'
         call aptgem(sdappa, mesh, newgeo, sdcont_defi, model_ndim, &
                     i_zone, zone_type, epsi_maxi, jdecmm, &
-                    nb_elem_mast)
+                    nb_elem_mast, err_appa)
 !
 ! ----- Compute tangents at each node for each slave element
 !
         zone_type = 'ESCL'
         call aptgem(sdappa, mesh, newgeo, sdcont_defi, model_ndim, &
                     i_zone, zone_type, epsi_maxi, jdecme, &
-                    nb_elem_slav)
+                    nb_elem_slav, err_appa)
         call sdmpic('SD_APPA_TGEL', sdappa)
 !
 ! ----- Compute tangents at each node by smoothing

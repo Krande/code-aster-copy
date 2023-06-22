@@ -18,7 +18,7 @@
 
 subroutine aptgem(sdappa, mesh, newgeo, sdcont_defi, model_ndim, &
                   i_zone, zone_type, epsi_maxi, jdecma, &
-                  nb_elem)
+                  nb_elem, err_appa)
 !
     implicit none
 !
@@ -53,6 +53,7 @@ subroutine aptgem(sdappa, mesh, newgeo, sdcont_defi, model_ndim, &
     integer, intent(in) :: i_zone
     integer, intent(in) :: jdecma
     integer, intent(in) :: nb_elem
+    integer, intent(inout) :: err_appa
     character(len=4), intent(in) :: zone_type
     real(kind=8), intent(in) :: epsi_maxi
 !
@@ -179,7 +180,7 @@ subroutine aptgem(sdappa, mesh, newgeo, sdcont_defi, model_ndim, &
                             zone_type, tau1, tau2)
             else
                 call mmctan(elem_nume, elem_type, elem_nbnode, elem_ndim, elem_coor, &
-                            node_coor, epsi_maxi, tau1, tau2)
+                            node_coor, epsi_maxi, tau1, tau2, err_appa)
                 if (l_beam) then
                     call apcpou(sdcont_defi, i_zone, elem_name, zone_type, &
                                 tau1, tau2)

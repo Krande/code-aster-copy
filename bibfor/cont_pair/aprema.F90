@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine aprema(sdappa, mesh, sdcont_defi, newgeo)
+subroutine aprema(sdappa, mesh, sdcont_defi, newgeo, err_appa)
 !
     implicit none
 !
@@ -41,6 +41,8 @@ subroutine aprema(sdappa, mesh, sdcont_defi, newgeo)
     character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: sdcont_defi
     character(len=19), intent(in) :: newgeo
+    integer, intent(inout) :: err_appa
+
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -159,7 +161,7 @@ subroutine aprema(sdappa, mesh, sdcont_defi, newgeo)
                 call approj(mesh, newgeo, sdcont_defi, node_mast_indx, l_pair_dire, &
                             pair_vect, iter_maxi, epsi_maxi, tole_proj_ext, poin_coor, &
                             elem_mast_mini, proj_stat_mini, ksi1_mini, ksi2_mini, tau1_mini, &
-                            tau2_mini, dist_mini, vect_pm_mini)
+                            tau2_mini, dist_mini, vect_pm_mini, err_appa)
 !
 ! ------------- Orthogonalization of local basis
 !

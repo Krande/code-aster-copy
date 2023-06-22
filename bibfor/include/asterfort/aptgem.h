@@ -21,7 +21,7 @@
 interface
     subroutine aptgem(sdappa , mesh     , newgeo   , sdcont_defi, model_ndim,&
                       i_zone , zone_type, epsi_maxi  , jdecma    ,&
-                      nb_elem)
+                      nb_elem, err_appa)
         character(len=19), intent(in) :: sdappa
         character(len=8), intent(in) :: mesh
         character(len=24), intent(in) :: sdcont_defi
@@ -32,5 +32,6 @@ interface
         integer, intent(in) :: nb_elem
         character(len=4), intent(in) :: zone_type
         real(kind=8), intent(in) :: epsi_maxi
+        integer, intent(inout) :: err_appa
     end subroutine aptgem
 end interface
