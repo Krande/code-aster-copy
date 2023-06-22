@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -209,8 +209,13 @@ subroutine ircam1(nofimd, nochmd, existc, ncmprf, numpt, &
 ! 3.1. ==> CREATION DU TABLEAUX DES COMPOSANTES
 !
     nbpt = 0
-    AS_ALLOCATE(vk16=cname, size=ncmprf)
-    AS_ALLOCATE(vk16=cunit, size=ncmprf)
+    if (lfichUniq) then
+        AS_ALLOCATE(vk16=cname, size=ncmpve)
+        AS_ALLOCATE(vk16=cunit, size=ncmpve)
+    else
+        AS_ALLOCATE(vk16=cname, size=ncmprf)
+        AS_ALLOCATE(vk16=cunit, size=ncmprf)
+    end if
     nomam2 = ' '
     iret = 0
     call as_mfdfin(idfimd, nochmd, nomam2, nbpt, cunit(1), &
