@@ -73,9 +73,15 @@ cata_msg = {
 
     13 : _("""
  <Erreur> Une valeur non-physique a été atteinte (porosité négative ou supérieure à un par exemple).
- """),
-
-    20 : _("""
+ """
+    ),
+    14: _(
+        """
+ <Erreur> Échec de l'appariement de contact lors de l'actualisation géométrique en Newton généralisé.
+ """
+    ),
+    20: _(
+        """
  <Évènement> Instabilité détectée.
  """),
 

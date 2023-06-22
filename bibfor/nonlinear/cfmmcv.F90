@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -80,7 +80,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: l_cont_disc, l_cont_cont, l_newt_cont
-    aster_logical :: loop_cont_conv, l_all_verif
+    aster_logical :: loop_cont_conv, loop_geom_error, l_all_verif
     character(len=8) :: model
     real(kind=8) :: r8bid, loop_cont_vale
     integer :: loop_cont_vali
@@ -121,6 +121,11 @@ implicit none
             call nmcrel(sderro, 'DIVE_CTCC', .false._1)
         else
             call nmcrel(sderro, 'DIVE_CTCC', .true._1)
+        end if
+
+        call mmbouc(ds_contact, 'Geom', 'Is_Error', loop_state_=loop_geom_error)
+        if (loop_geom_error) then
+            call nmcrel(sderro, 'ERRE_APPA', .true._1)
         endif
 
         if (.not. l_all_verif) then 

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -110,6 +110,8 @@ subroutine nmerim(sderro)
                 call utmess('I', 'MECANONLINE10_24')
             else if (meven.eq.'MECANONLINE10_36') then
                 call utmess('I', 'MECANONLINE10_36')
+            else if (meven .eq. 'MECANONLINE10_14') then
+                call utmess('I', 'MECANONLINE10_14')
             else
                 ASSERT(.false.)
             endif

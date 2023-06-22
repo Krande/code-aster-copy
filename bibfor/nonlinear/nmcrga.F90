@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ character(len=24) :: sderro
 !
 ! ----------------------------------------------------------------------
 !
-    integer, parameter :: zeven = 37
+    integer, parameter :: zeven = 38
 ! - Name of events
     character(len=16), parameter :: neven(zeven) = (/'ERRE_INTE','INTE_NPHY','DIVE_DEBO',&
                                                      'INTE_BORN','ERRE_NPHY',&
@@ -57,7 +57,7 @@ character(len=24) :: sderro
                                                      'DIVE_GEOM','DIVE_RELA','DIVE_MAXI',&
                                                      'DIVE_REFE','DIVE_COMP','DIVE_CTCC',&
                                                      'SOLV_ITMX','DIVE_HROM','DIVE_PENE',&
-                                                     'ERRE_COND'/)
+                                                     'ERRE_COND','ERRE_APPA'/)
 ! - Return code (name)
     character(len=8), parameter :: ncret(zeven) = (/'LDC','LDC','LDC',&
                                                     'LDC','XXX',&
@@ -72,7 +72,7 @@ character(len=24) :: sderro
                                                     'XXX','XXX','XXX',&
                                                     'XXX','XXX','XXX',&
                                                     'RES','XXX','XXX',&
-                                                    'HHO'/)
+                                                    'HHO','XXX'/)
 ! - Return code (value)
     integer, parameter :: vcret(zeven) = (/ 1 , 2, 3,&
                                             4 ,99,&
@@ -87,7 +87,7 @@ character(len=24) :: sderro
                                             99,99,99,&
                                             99,99,99,&
                                             1 ,99,99,&
-                                            1/)
+                                            1 ,99/)
 !
 ! --- TYPE ET NIVEAU DE DECLENCHEMENT POSSIBLES DE L'EVENEMENT
 ! TROIS TYPES
@@ -111,7 +111,7 @@ character(len=24) :: sderro
                                                      'CONV_NEWT','CONV_RESI','CONV_RESI',&
                                                      'CONV_RESI','CONV_RESI','CONV_NEWT',&
                                                      'ERRI_NEWT','CONV_FIXE','CONV_RESI',&
-                                                     'ERRI_NEWT'/)
+                                                     'ERRI_NEWT','ERRI_NEWT'/)
 !
 ! --- FONCTIONNALITE ACTIVE SI NECESSAIRE POUR CONVERGENCE
 !
@@ -128,7 +128,7 @@ character(len=24) :: sderro
                                                      '         ', '         ','         ',&
                                                      '         ', '         ','         ',&
                                                      'LDLT_SP  ', '         ','         ',&
-                                                     '         '/)
+                                                     '         ', '         '/)
 !
 ! --- CODE DU MESSAGE A AFFICHER
 !
@@ -146,7 +146,7 @@ character(len=24) :: sderro
             '                ','                ','                ',&
             '                ','                ','                ',&
             'MECANONLINE10_12','                ','                ',&
-            'MECANONLINE10_36'/)
+            'MECANONLINE10_36','MECANONLINE10_14'/)
 !
     integer :: ieven
     character(len=24) :: errecn, errecv, erreni, erreno, erraac, errfct, errmsg
