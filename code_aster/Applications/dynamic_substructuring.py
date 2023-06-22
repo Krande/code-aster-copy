@@ -591,7 +591,7 @@ class Structure(WithEmbeddedObjects):
         assert len(state) == 4, state
         (self.lSubS, self.lInterfaces, self.Kredred, self.Mredred) = state
 
-    def computeGlobalModes(self, nmodes=None, precision=None, shift=0):
+    def computeGlobalModes(self, nmodes=None, precision=None):
         # donne l'index des modes propres et des modes d'interface
         # de la i-ème sous structure
         lIndexOfInterfModes = []
@@ -635,12 +635,12 @@ class Structure(WithEmbeddedObjects):
         asMredred = import_array(Mredred.real, reference_matrix=asKredred)
 
         _modes = CALC_MODES(
-            OPTION="CENTRE",
-            CALC_FREQ=_F(NMAX_FREQ=nmodes, FREQ=shift),
+            CALC_FREQ=_F(NMAX_FREQ=nmodes),
             MATR_RIGI=asKredred,
             MATR_MASS=asMredred,
-            SOLVEUR=_F(METHODE="MUMPS", NPREC=11),
+            SOLVEUR=_F(METHODE="MUMPS", NPREC=8),
             VERI_MODE=_F(STOP_ERREUR="NON"),
+            SOLVEUR_MODAL=_F(METHODE="QZ"),
         )
 
         evredred = np.array(

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ MAILLA1 = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
 MAILLA1 = MODI_MAILLAGE(
     reuse=MAILLA1,
     MAILLAGE=MAILLA1,
-    ORIE_NORM_COQUE=_F(GROUP_MA=("IFS_2D",), GROUP_NO=("nNormDZ",), VECT_NORM=(-1.0, 0.0, 0.0)),
+    ORIE_NORM_COQUE=_F(GROUP_MA=("IFS_2D",), GROUP_NO=("nNormDZ",), VECT_NORM=(0.0, 0.0, 1.0)),
 )
 MAILLA1 = DEFI_GROUP(reuse=MAILLA1, MAILLAGE=MAILLA1, CREA_GROUP_NO=_F(TOUT_GROUP_MA="OUI"))
 
@@ -53,7 +53,7 @@ MAILLA2 = LIRE_MAILLAGE(FORMAT="MED", UNITE=21)
 MAILLA2 = MODI_MAILLAGE(
     reuse=MAILLA2,
     MAILLAGE=MAILLA2,
-    ORIE_NORM_COQUE=_F(GROUP_MA=("IFS_2D",), GROUP_NO=("nNormDZ",), VECT_NORM=(-1.0, 0.0, 0.0)),
+    ORIE_NORM_COQUE=_F(GROUP_MA=("IFS_2D",), GROUP_NO=("nNormDZ",), VECT_NORM=(0.0, 0.0, 1.0)),
 )
 MAILLA2 = DEFI_GROUP(reuse=MAILLA2, MAILLAGE=MAILLA2, CREA_GROUP_NO=_F(TOUT_GROUP_MA="OUI"))
 
@@ -223,17 +223,10 @@ with shared_tmpdir("foo") as tmpdir:
 print("**** Eigen Pulses ****")
 print(omega)
 
-ref = [
-    13.48270131 + 0.0j,
-    25.92723462 + 0.0j,
-    37.46030897 + 0.0j,
-    63.12339528 + 0.0j,
-    69.98275372 + 0.0j,
-    74.05160745 + 0.0j,
-]
+ref = [13.20488867, 28.29162118, 37.16467596, 55.20705775, 68.77735238, 69.5050201]
 
 for idx, val in enumerate(omega):
-    test.assertAlmostEqual(val, ref[idx], delta=1.0e-1)
+    test.assertAlmostEqual(val, ref[idx], delta=1.0e-2)
 
 
 # =======================================
@@ -245,7 +238,7 @@ MAILLAG = LIRE_MAILLAGE(FORMAT="MED", UNITE=22)
 MAILLAG = MODI_MAILLAGE(
     reuse=MAILLAG,
     MAILLAGE=MAILLAG,
-    ORIE_NORM_COQUE=_F(GROUP_MA=("IFS_2D",), GROUP_NO=("nNormDZ",), VECT_NORM=(-1.0, 0.0, 0.0)),
+    ORIE_NORM_COQUE=_F(GROUP_MA=("IFS_2D",), GROUP_NO=("nNormDZ",), VECT_NORM=(0.0, 0.0, 1.0)),
 )
 
 MODELEG = AFFE_MODELE(
@@ -356,57 +349,56 @@ mac_ref = np.array(
     [
         [
             1.00000000e00,
-            4.44733751e-14,
-            1.95423722e-11,
-            9.40605050e-15,
-            6.97229183e-15,
-            3.07548911e-15,
+            3.54309575e-08,
+            5.12860849e-12,
+            4.01344372e-13,
+            3.23938051e-13,
+            1.43626954e-10,
         ],
         [
-            6.75176408e-16,
+            2.88642381e-10,
             1.00000000e00,
-            1.10265687e-10,
-            1.38343460e-06,
-            5.81377829e-02,
-            2.61053554e-02,
+            5.69581392e-14,
+            1.92112238e-11,
+            1.30543173e-11,
+            1.88604716e-06,
         ],
         [
-            1.82839754e-11,
-            7.38673314e-11,
+            6.35831912e-13,
+            8.49466186e-14,
             1.00000000e00,
-            3.77463339e-13,
-            7.99321646e-11,
-            4.03787624e-11,
+            3.81864478e-13,
+            2.37297188e-13,
+            5.13751168e-12,
         ],
         [
-            2.86692757e-15,
-            2.53188666e-02,
-            1.74629568e-11,
+            7.98852579e-10,
+            2.81751970e-10,
+            2.42519833e-12,
             1.00000000e00,
-            4.44002698e-01,
-            3.09959410e-01,
+            1.12767681e-04,
+            1.67646811e-09,
         ],
         [
-            1.77981338e-15,
-            2.40220346e-02,
-            1.78601277e-11,
-            6.73899124e-01,
-            4.19716546e-01,
-            3.07817271e-01,
-        ],
-        [
-            1.93087050e-17,
-            4.71317959e-04,
-            4.12046048e-13,
-            1.09914369e-05,
+            6.17497592e-10,
+            8.41127142e-11,
+            1.38565927e-13,
+            1.16194022e-06,
             1.00000000e00,
+            3.70376913e-06,
+        ],
+        [
+            9.01008623e-12,
+            1.00335522e-06,
+            1.12993941e-16,
+            2.74407076e-11,
+            2.18654144e-08,
             1.00000000e00,
         ],
     ]
 )
-
 for (idx, jdx), val in np.ndenumerate(mac):
-    test.assertAlmostEqual(val, mac_ref[idx, jdx], delta=1.0e-1)
+    test.assertAlmostEqual(val, mac_ref[idx, jdx], delta=1.0e-2)
 
 # ------------------------------------------------------------------------------
 
@@ -420,17 +412,17 @@ mac = macPlot(
 
 mac_ref = np.array(
     [
-        [1.00000000e00, 4.23459308e-12, 6.61055425e-10],
-        [2.70226098e-14, 1.00000000e00, 1.80476633e-10],
-        [1.30254211e-09, 6.12794010e-10, 1.00000000e00],
-        [5.46067297e-16, 2.01558880e-03, 2.34592043e-12],
-        [4.00608940e-17, 1.97971401e-03, 2.38667054e-12],
-        [3.27863601e-16, 5.27977759e-03, 6.14099065e-12],
+        [1.00000000e00, 3.85456575e-08, 2.54611054e-12],
+        [3.16437206e-12, 1.00000000e00, 2.92547841e-14],
+        [2.56023829e-14, 2.48604950e-14, 1.00000000e00],
+        [3.95293465e-13, 1.27893010e-12, 1.22663066e-15],
+        [1.25537894e-13, 1.51684359e-12, 6.41989958e-15],
+        [1.42589321e-15, 1.39562192e-04, 1.11488999e-13],
     ]
 )
 
 for (idx, jdx), val in np.ndenumerate(mac):
-    test.assertAlmostEqual(val, mac_ref[idx, jdx], delta=1.0e-1)
+    test.assertAlmostEqual(val, mac_ref[idx, jdx], delta=1.0e-2)
 
 test.assertTrue(True)
 

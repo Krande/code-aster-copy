@@ -205,7 +205,7 @@ with shared_tmpdir("foo") as tmpdir:
 myStructure = Structure([subS1, subS2], [interface])
 
 nmodes = 6
-omega, resuSub = myStructure.computeGlobalModes(nmodes=nmodes, shift=25)
+omega, resuSub = myStructure.computeGlobalModes(nmodes=nmodes)
 
 with shared_tmpdir("foo") as tmpdir:
     for isub, resu in enumerate(resuSub):
@@ -214,7 +214,7 @@ with shared_tmpdir("foo") as tmpdir:
 print("**** Eigen Pulses ****")
 print(omega)
 
-ref = [0.0, 1.37970118e01, 2.89138920e01, 3.95359019e01, 5.85297432e01, 6.15141619e01]
+ref = [0.0, 1.33027295e01, 2.81128121e01, 3.71869793e01, 5.75255187e01, 5.94701531e01]
 for idx in range(0, nmodes):
     test.assertAlmostEqual(omega[idx], ref[idx], delta=1.0e-2)
 
