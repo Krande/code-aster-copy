@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
+from code_aster.Utilities import config
 
 # person_in_charge: simon.raude at edf.fr
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
@@ -62,7 +63,7 @@ DSATU = CALC_FONC_INTERP(
 #    MAILLAGE + MODELE
 # ***********************************************************************
 
-MAILLAGE = LIRE_MAILLAGE(FORMAT="MED")
+MAILLAGE = LIRE_MAILLAGE(FORMAT="MED", PARTITIONNEUR="PTSCOTCH")
 
 MODELE = AFFE_MODELE(
     MAILLAGE=MAILLAGE, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D_HHMS")
@@ -534,5 +535,73 @@ TEST_RESU(
         ),
     )
 )
+
+if config["ASTER_HAVE_PETSC4PY"]:
+
+    myOptions = "-pc_type lu -pc_factor_mat_solver_type mumps -ksp_type fgmres -snes_linesearch_type basic  -snes_max_it 10 -mat_mumps_icntl_14 200"
+    U2 = MECA_NON_LINE(
+        MODELE=MODELE,
+        CHAM_MATER=CHMAT,
+        SOLVEUR=_F(METHODE="PETSC", OPTION_PETSC=myOptions),
+        EXCIT=(
+            _F(CHARGE=DEP_SYM),
+            _F(CHARGE=PR_LATE, FONC_MULT=EVOL_HY1),
+            _F(CHARGE=PR_V, FONC_MULT=EVOL_HY1),
+            _F(CHARGE=P0, FONC_MULT=EVO_DEVS),
+        ),
+        COMPORTEMENT=_F(
+            RELATION="KIT_HHM",
+            ITER_INTE_MAXI=200,
+            RELATION_KIT=("BARCELONE", "LIQU_GAZ", "HYDR_UTIL"),
+        ),
+        ETAT_INIT=_F(EVOL_NOLI=U1, INST=6.0),
+        INCREMENT=_F(LIST_INST=TEMPS2, INST_INIT=6.0, INST_FIN=20.0),
+        NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+        CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6, ITER_GLOB_MAXI=50),
+        METHODE="SNES",
+    )
+
+    # -------------------------
+    #    TEST_RESU
+    # -------------------------
+
+    TEST_RESU(
+        RESU=(
+            _F(
+                INST=6.0,
+                REFERENCE="ANALYTIQUE",
+                RESULTAT=U2,
+                NOM_CHAM="DEPL",
+                GROUP_NO="NO8",
+                NOM_CMP="DZ",
+                VALE_CALC=-0.010621327,
+                VALE_REFE=-0.010619999999999999,
+                PRECISION=0.014999999999999999,
+            ),
+            _F(
+                INST=10.0,
+                REFERENCE="ANALYTIQUE",
+                RESULTAT=U2,
+                NOM_CHAM="DEPL",
+                GROUP_NO="NO8",
+                NOM_CMP="DZ",
+                VALE_CALC=-0.013550061,
+                VALE_REFE=-0.013549,
+                PRECISION=0.014999999999999999,
+            ),
+            _F(
+                INST=20.0,
+                REFERENCE="ANALYTIQUE",
+                RESULTAT=U2,
+                NOM_CHAM="DEPL",
+                GROUP_NO="NO8",
+                NOM_CMP="DZ",
+                VALE_CALC=-0.017800958,
+                VALE_REFE=-0.01779,
+                PRECISION=0.014999999999999999,
+            ),
+        )
+    )
+
 
 FIN()

@@ -22,6 +22,7 @@ from .solver_features import SolverOptions as SOP
 from ..Objects import AssemblyMatrixDisplacementReal, DiscreteComputation
 from ..Supervis import ConvergenceError
 from ..Utilities import PETSc, no_new_attributes, profile
+from ..Supervis import IntegrationError
 
 
 class SNESSolver(SolverFeature):
@@ -127,10 +128,16 @@ class SNESSolver(SolverFeature):
         if self.contact_manager:
             self.contact_manager.pairing(self.phys_pb)
 
+        # we assemble a first matrix, clone it in PETSc and keep a pointer on it
         _jac = AssemblyMatrixDisplacementReal(self.phys_pb)
-        _disc_comp = DiscreteComputation(self.phys_pb)
-        _matr_elem_rigi = _disc_comp.getLinearStiffnessMatrix(time=0.0, with_dual=True)
-        _jac.addElementaryMatrix(_matr_elem_rigi)
+        matrix_type = self._get("NEWTON", "PREDICTION")
+        codret, matr_elem_rigi, matr_elem_dual = self._incr_solver.computeInternalJacobian(
+            matrix_type
+        )
+        if codret > 0:
+            raise IntegrationError("MECANONLINE10_1")
+        _jac.addElementaryMatrix(matr_elem_rigi)
+        _jac.addElementaryMatrix(matr_elem_dual)
         _jac.assemble()
         self._scaling = _jac.getLagrangeScaling()
         self.current_matrix = _jac
