@@ -42,7 +42,7 @@ subroutine nmcrga(sderro)
 !
 ! ----------------------------------------------------------------------
 !
-    integer, parameter :: zeven = 36
+    integer, parameter :: zeven = 37
 ! - Name of events
     character(len=16), parameter :: neven(zeven) = (/'ERRE_INTE', 'INTE_NPHY', 'DIVE_DEBO', &
                                                      'INTE_BORN', 'ERRE_NPHY', &
@@ -56,7 +56,8 @@ subroutine nmcrga(sderro)
                                                      'ERRE_CTCF', 'ERRE_CTCC', 'DIVE_FROT', &
                                                      'DIVE_GEOM', 'DIVE_RELA', 'DIVE_MAXI', &
                                                      'DIVE_REFE', 'DIVE_COMP', 'DIVE_CTCC', &
-                                                     'SOLV_ITMX', 'DIVE_HROM', 'DIVE_PENE'/)
+                                                     'SOLV_ITMX', 'DIVE_HROM', 'DIVE_PENE', &
+                                                     'ERRE_APPA'/)
 ! - Return code (name)
     character(len=8), parameter :: ncret(zeven) = (/'LDC', 'LDC', 'LDC', &
                                                     'LDC', 'XXX', &
@@ -70,7 +71,8 @@ subroutine nmcrga(sderro)
                                                     'XXX', 'XXX', 'XXX', &
                                                     'XXX', 'XXX', 'XXX', &
                                                     'XXX', 'XXX', 'XXX', &
-                                                    'RES', 'XXX', 'XXX'/)
+                                                    'RES', 'XXX', 'XXX', &
+                                                    'XXX'/)
 ! - Return code (value)
     integer, parameter :: vcret(zeven) = (/1, 2, 3, &
                                            4, 99, &
@@ -84,7 +86,8 @@ subroutine nmcrga(sderro)
                                            99, 99, 99, &
                                            99, 99, 99, &
                                            99, 99, 99, &
-                                           1, 99, 99/)
+                                           1, 99, 99, &
+                                           99/)
 !
 ! --- TYPE ET NIVEAU DE DECLENCHEMENT POSSIBLES DE L'EVENEMENT
 ! TROIS TYPES
@@ -107,7 +110,8 @@ subroutine nmcrga(sderro)
                                                      'ERRI_FIXE', 'ERRI_FIXE', 'CONV_RESI', &
                                                      'CONV_NEWT', 'CONV_RESI', 'CONV_RESI', &
                                                      'CONV_RESI', 'CONV_RESI', 'CONV_NEWT', &
-                                                     'ERRI_NEWT', 'CONV_FIXE', 'CONV_RESI'/)
+                                                     'ERRI_NEWT', 'CONV_FIXE', 'CONV_RESI', &
+                                                     'ERRI_NEWT'/)
 !
 ! --- FONCTIONNALITE ACTIVE SI NECESSAIRE POUR CONVERGENCE
 !
@@ -123,7 +127,8 @@ subroutine nmcrga(sderro)
                                                      '         ', '         ', '         ', &
                                                      '         ', '         ', '         ', &
                                                      '         ', '         ', '         ', &
-                                                     'LDLT_SP  ', '         ', '         '/)
+                                                     'LDLT_SP  ', '         ', '         ', &
+                                                     '         '/)
 !
 ! --- CODE DU MESSAGE A AFFICHER
 !
@@ -140,7 +145,8 @@ subroutine nmcrga(sderro)
                                     'MECANONLINE10_10', 'MECANONLINE10_11', '                ', &
                                     '                ', '                ', '                ', &
                                     '                ', '                ', '                ', &
-                                    'MECANONLINE10_12', '                ', '                '/)
+                                    'MECANONLINE10_12', '                ', '                ', &
+                                    'MECANONLINE10_14'/)
 !
     integer :: ieven
     character(len=24) :: errecn, errecv, erreni, erreno, erraac, errfct, errmsg

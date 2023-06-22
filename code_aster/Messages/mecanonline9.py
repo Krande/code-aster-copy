@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -124,6 +124,16 @@ cata_msg = {
    Conseils :
    - Augmentez le nombre maximum d'itérations (NMAX_ITER).
    - Utilisez un préconditionneur plus précis ou changez d'algorithme.
+"""
+    ),
+    13: _(
+        """
+   Arrêt suite à l'échec de l'appariement de contact lors de l'actualisation géométrique.
+   La base globale est sauvegardée. Elle contient les pas archivés avant l'arrêt.
+
+   Conseils :
+      - Vérifiez vos conditions aux limites.
+      - Essayez de subdiviser le pas de temps.
 """
     ),
     50: _("""Arrêt par échec de l'action <%(k1)s>  pour le traitement de l'évènement <%(k2)s>. """),

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -85,6 +85,11 @@ cata_msg = {
     13: _(
         """
  <Erreur> Une valeur non-physique a été atteinte (porosité négative ou supérieure à un par exemple).
+ """
+    ),
+    14: _(
+        """
+ <Erreur> Échec de l'appariement de contact lors de l'actualisation géométrique en Newton généralisé.
  """
     ),
     20: _(

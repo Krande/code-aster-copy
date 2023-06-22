@@ -130,6 +130,8 @@ subroutine nmevim(ds_print, sddisc, sderro, loop_name)
                     call utmess('I', 'MECANONLINE10_11')
                 else if (meven .eq. 'MECANONLINE10_12') then
                     call utmess('I', 'MECANONLINE10_12')
+                else if (meven .eq. 'MECANONLINE10_14') then
+                    call utmess('I', 'MECANONLINE10_14')
                 else if (meven .eq. 'MECANONLINE10_20') then
                     call utmess('I', 'MECANONLINE10_20')
                 else if (meven .eq. 'MECANONLINE10_24') then

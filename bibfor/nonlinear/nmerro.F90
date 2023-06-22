@@ -54,7 +54,7 @@ subroutine nmerro(sderro, ds_measure, nume_inst)
     aster_logical :: echldc, echeq1, echeq2, echco1, echco2, echpil
     aster_logical :: mtcpui, mtcpup, itemax
     aster_logical :: echpfg, echpff, echpfc
-    aster_logical :: errres
+    aster_logical :: errres, err_appa
     real(kind=8) :: remain_time, iter_mean_time, step_mean_time
     character(len=16) :: valk(2)
     integer :: event_type, action_type
@@ -86,6 +86,8 @@ subroutine nmerro(sderro, ds_measure, nume_inst)
     call nmerge(sderro, 'ERRE_CTCF', echpff)
     call nmerge(sderro, 'ERRE_CTCC', echpfc)
     call nmerge(sderro, 'SOLV_ITMX', errres)
+    call nmerge(sderro, 'ERRE_APPA', err_appa)
+
 !
 ! --- LANCEE EXCEPTIONS
 !
@@ -121,6 +123,8 @@ subroutine nmerro(sderro, ds_measure, nume_inst)
         call utmess('Z', 'MECANONLINE9_11', num_except=ASTER_CONTACT_ERROR)
     else if (errres) then
         call utmess('Z', 'MECANONLINE9_12', num_except=ASTER_SOLVER_ERROR)
+    else if (err_appa) then
+        call utmess('Z', 'MECANONLINE9_13', num_except=ASTER_CONTACT_ERROR)
     else
         call nmecev(sderro, 'L', event_type, action_type)
         valk(1) = failActionKeyword(action_type)
