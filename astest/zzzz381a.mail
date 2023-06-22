@@ -16,7 +16,7 @@
  %
  SEG2    
  M10      N10      N20     
- M20      N20      N30     
+ M201G345      N20      N30     
  M11      N11      N21     
  M21      N21      N31     
  M12      N12      N22     
@@ -25,7 +25,7 @@
  %
  GROUP_MA
  POUTRE0                 
- M10      M20     
+ M10      M201G345     
  FINSF
  %
  GROUP_MA
@@ -50,7 +50,7 @@
  %
  GROUP_MA
  M20                     
- M20     
+ M201G345     
  FINSF
  %
  GROUP_MA

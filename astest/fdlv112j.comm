@@ -40,9 +40,7 @@ mail0 = DEFI_GROUP(
 mail1 = CREA_MAILLAGE(MAILLAGE=mail0, CREA_POI1=(_F(NOM_GROUP_MA="P_EAU", GROUP_MA="I_EAU"),))
 
 # doublement des mailles en fond de retenue pour imposer une absorption partielle des ondes
-mail = CREA_MAILLAGE(
-    MAILLAGE=mail1, CREA_MAILLE=_F(NOM="fonfeau2", GROUP_MA="fonfeau", PREF_MAILLE="N")
-)
+mail = CREA_MAILLAGE(MAILLAGE=mail1, CREA_MAILLE=_F(NOM="fonfeau2", GROUP_MA="fonfeau"))
 
 # parametre du sol et determination des parametre du modele d'interaction sol-structure
 Esol = 35000000000

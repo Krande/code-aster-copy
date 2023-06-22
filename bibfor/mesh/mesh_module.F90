@@ -650,11 +650,11 @@ contains
             end if
             cellName = prefCellName(1:lenPrefName)//knume
         elseif (lPrefCellName) then
-            lenPrefPrev = lxlgut(cellName)
+            lenPrefPrev = lxlgut(cellName)-1
             if (lenPrefName+lenPrefPrev .gt. 8) then
                 call utmess('F', 'MESH2_1')
             end if
-            cellName = prefCellName(1:lenPrefName)//cellName
+            cellName = prefCellName(1:lenPrefName)//cellName(2:8)
         else
             ASSERT(ASTER_FALSE)
         end if
@@ -739,11 +739,11 @@ contains
             end if
             nodeName = prefNodeName(1:lenPrefName)//knume
         elseif (lPrefNodeName) then
-            lenPrefPrev = lxlgut(nodeName)
+            lenPrefPrev = lxlgut(nodeName)-1
             if (lenPrefName+lenPrefPrev .gt. 8) then
                 call utmess('F', 'MESH2_1')
             end if
-            nodeName = prefNodeName(1:lenPrefPrev)//nodeName
+            nodeName = prefNodeName(1:lenPrefPrev)//nodeName(2:8)
         else
             ASSERT(ASTER_FALSE)
         end if

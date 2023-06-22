@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -78,7 +78,7 @@ exc = -epai / 2.0 + enro
 MA1 = DEFI_GROUP(
     reuse=MA1,
     MAILLAGE=MA1,
-    CREA_GROUP_MA=(_F(NOM="AM27", MAILLE="AM27"), _F(NOM="M27", MAILLE="M27")),
+    CREA_GROUP_MA=(_F(NOM="AM27", MAILLE="A27"), _F(NOM="M27", MAILLE="M27")),
 )
 
 CA1 = AFFE_CARA_ELEM(

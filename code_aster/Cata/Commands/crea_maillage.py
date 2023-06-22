@@ -84,7 +84,7 @@ CREA_MAILLAGE = OPER(
         NOM=SIMP(statut="o", typ="TXM"),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        PREF_MAILLE=SIMP(statut="f", typ="TXM", defaut="MS"),
+        PREF_MAILLE=SIMP(statut="f", typ="TXM", defaut="E"),
         PREF_NUME=SIMP(statut="f", typ="I"),
     ),
     RESTREINT=FACT(
@@ -102,7 +102,7 @@ CREA_MAILLAGE = OPER(
         NOM=SIMP(statut="o", typ="TXM"),
         GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
         EPAIS=SIMP(statut="o", typ="R"),
-        PREF_MAILLE=SIMP(statut="f", typ="TXM", defaut="MS"),
+        PREF_MAILLE=SIMP(statut="f", typ="TXM", defaut="V"),
         PREF_NOEUD=SIMP(statut="f", typ="TXM", defaut="NS"),
         PREF_NUME=SIMP(statut="f", typ="I", defaut=1),
         PLAN=SIMP(statut="o", typ="TXM", into=("SUP", "MOY", "INF")),
