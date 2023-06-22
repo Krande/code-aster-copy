@@ -128,7 +128,12 @@ subroutine te0360(option, nomte)
 ! --- ORIENTATION DE L'ELEMENT D'INTERFACE : REPERE LOCAL
 !     RECUPERATION DES ANGLES NAUTIQUES DEFINIS PAR AFFE_CARA_ELEM
 !
-    call jevech('PCAMASS', 'L', icamas)
+    call tecach('ONO', 'PCAMASS', 'L', iret, nval=1, itab=jtab)
+    if (iret .eq. 0) then
+        icamas = jtab(1)
+    else
+        call utmess('F', 'JOINT1_3')
+    end if
     if (zr(icamas) .eq. -1.d0) then
         call utmess('F', 'JOINT1_47')
     end if

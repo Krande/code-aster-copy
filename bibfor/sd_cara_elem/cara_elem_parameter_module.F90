@@ -230,7 +230,7 @@ module cara_elem_parameter_module
                                     'MEMBTR7         ', 'MEMBQU9         ']
 !
 ! --------------------------------------------------------------------------------------------------
-    integer, parameter :: ACE_NB_MASSIF = 58
+    integer, parameter :: ACE_NB_MASSIF = 66
     character(len=16), parameter :: ACE_EL_MASSIF(ACE_NB_MASSIF) = [ &
                                     'MECA_HEXA8      ', 'MECA_PENTA6     ', &
                                     'MECA_PENTA18    ', 'MECA_TETRA4     ', &
@@ -260,7 +260,11 @@ module cara_elem_parameter_module
                                     'MECA3DH27_HHO111', 'MECA3DT15_HHO111', &
                                     'MECA3DH27_HHO222', 'MECA3DT15_HHO222', &
                                     'MECA_DPQ9_HHO111', 'MECA_DPT7_HHO111', &
-                                    'MECA_DPQ9_HHO111', 'MECA_DPT7_HHO111']
+                                    'MECA_DPQ9_HHO111', 'MECA_DPT7_HHO111', &
+                                    'MEEI_HEXA20     ', 'MEEI_HEXS20     ', &
+                                    'MEEI_PENTA15    ', 'MEEI_PENTS15    ', &
+                                    'EIAXQU8         ', 'EIAXQS8         ', &
+                                    'EIPLQU8         ', 'EIPLQS8         ']
 !
 ! --------------------------------------------------------------------------------------------------
     integer, parameter :: ACE_NB_THHMM = 75
