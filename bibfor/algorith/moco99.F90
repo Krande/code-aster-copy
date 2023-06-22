@@ -16,14 +16,15 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine moco99(nomres, resul, nbmod, lrang, iorne, &
-                  seul)
+subroutine moco99(nomres, resul, nbmod, lrang, iorne, seul)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
+#include "asterfort/copy_field_with_numbering.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
@@ -68,20 +69,24 @@ subroutine moco99(nomres, resul, nbmod, lrang, iorne, &
     integer :: nbpabm
     parameter(nbpabm=10)
     integer :: ldpar(nbpabm), ldpa2(nbpabm)
-    integer :: nbcham, nbold(1), nbtrou, vali
+    integer :: nbcham, nbold(1), nbtrou, nnum, vali
     integer :: i, ii, jtyp, ier, iorol, ire, ibid, lpain(3), lpaou(3)
     integer :: llkge, llmge, llncp, llom2, lltmo, llval2, llvalo
 !
+    aster_logical :: has_numref
+!
     real(kind=8) :: genek, genem, omeg2, rbid, epsi
 !
-    character(len=8) :: k8bid, interf, typi, param(3)
+    character(len=4) :: docu
+    character(len=8) :: k8bid, interf, nom_gd_field, nom_gd_ref, typi, param(3)
+    character(len=14) :: nume_ddl_ref
     character(len=16) :: typres, bmpara(nbpabm), chmeca, typmo
-    character(len=19) :: chamol, chamne
-    character(len=24) :: type, typeba
+    character(len=19) :: chamol, chamne, mesh_numref, mesh_field
+    character(len=19) :: nume_equa_field, nume_equa_ref
+    character(len=24) :: type, typeba, valk(4)
 !
     complex(kind=8) :: cbid
     integer, pointer :: ordr(:) => null()
-!
 !-----------------------------------------------------------------------
 !
     data bmpara/'NUME_MODE', 'FREQ', 'NORME', 'NOEUD_CMP', 'TYPE_DEFO',&
@@ -97,6 +102,16 @@ subroutine moco99(nomres, resul, nbmod, lrang, iorne, &
 ! --- CAS DE L'ABSENCE D'UN MODE_MECA
 !
     if (resul .eq. '          ' .or. nbmod .eq. 0) goto 999
+!
+! --- RECUPERATION DE NUME_REF DEPUIS UTILISATEUR OU RESULTAT (A DEFAUT)
+!
+    call getvid('  ', 'NUME_REF', nbval=0, iocc=1, nbret=nnum)
+    has_numref = (nnum /= 0)
+    if (has_numref) then
+        call getvid('  ', 'NUME_REF', iocc=1, scal=nume_ddl_ref)
+        nume_equa_ref = nume_ddl_ref//'.NUME'
+        call dismoi('NOM_GD', nume_ddl_ref, 'NUME_DDL', repk=nom_gd_ref)
+    end if
 !
 !
 ! --- DETERMINATION DU NOMBRE DE MODES DANS LA STRUCTURE A POINTER
@@ -159,11 +174,45 @@ subroutine moco99(nomres, resul, nbmod, lrang, iorne, &
                 call rsexch(' ', nomres, chmeca, iorne, chamne, &
                             ier)
                 if (chamol .ne. chamne) then
-                    call copisd('CHAMP', 'G', chamol, chamne)
+                    ! copy field here with the right numbering
+                    if (has_numref) then
+                        !
+                        ! Verify that the mesh for input field and nume_ddl is the same
+                        ! as it is done in copmod.F90
+                        call dismoi('NOM_MAILLA', nume_ddl_ref, 'NUME_DDL', repk=mesh_numref)
+                        call dismoi('DOCU', chamol, 'CHAMP', repk=docu)
+                        call dismoi('NOM_GD', chamol, 'CHAMP', repk=nom_gd_field)
+                        !
+                        if (docu(1:4) == 'CHNO' .and. nom_gd_field(1:4) == nom_gd_ref(1:4)) then
+                            call dismoi('NOM_MAILLA', chamol, 'CHAM_NO', repk=mesh_field)
+                            call dismoi('NUME_EQUA', chamol, 'CHAM_NO', repk=nume_equa_field)
+                            if (mesh_numref .ne. mesh_field) then
+                                valk(1) = nume_equa_ref
+                                valk(2) = mesh_numref
+                                valk(3) = nume_equa_field
+                                valk(4) = mesh_field
+                                call utmess('F', 'ALGORITH12_62', nk=4, valk=valk)
+                            end if
+                            !
+                            ! Copy the physical dofs of chamno1 that exists in numref
+                            ! Lagrange dofs are not copied
+                            call copy_field_with_numbering(chamol, chamne, &
+                                                           mesh_numref, nume_equa_ref, 'G')
+                            !
+                        else
+                            !
+                            ! Dont know how to change numbering for fields other than on nodes
+                            ! or if is even possible
+                            call copisd('CHAMP', 'G', chamol, chamne)
+                        end if
+                    else
+                        call copisd('CHAMP', 'G', chamol, chamne)
+                    end if
                 end if
                 call rsnoch(nomres, chmeca, iorne)
             end if
         end do
+
 !
         if (typres .ne. 'MODE_MECA') goto 11
 !

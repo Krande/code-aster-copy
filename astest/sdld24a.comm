@@ -1,0 +1,187 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
+
+# --------------------------------------------------------------------
+# System of 2 independent mass - springs - dampings
+#     submitted to a prescribed acceleration.
+# The solution is computed in the local referential.
+# Each mass is alternatively blocked to compute the 2 modes
+#     the solution is checked against an analytical reference.
+# --------------------------------------------------------------------
+
+mesh = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=20)
+
+# Not used but necessary to the code
+mater = DEFI_MATERIAU(ELAS=_F(E=1.0, NU=0.3, RHO=1.0))
+
+
+# Definition of masses, springs and boundary conditions
+model = AFFE_MODELE(
+    AFFE=(
+        _F(GROUP_MA=("S1", "S2"), MODELISATION="DIS_T", PHENOMENE="MECANIQUE"),
+        _F(GROUP_MA=("P1", "P2", "P3"), MODELISATION="DIS_T", PHENOMENE="MECANIQUE"),
+    ),
+    MAILLAGE=mesh,
+)
+
+fieldmat = AFFE_MATERIAU(AFFE=_F(MATER=(mater,), TOUT="OUI"), MODELE=model)
+
+
+elemprop = AFFE_CARA_ELEM(
+    DISCRET=(
+        _F(CARA="M_T_D_N", GROUP_MA=("P1", "P2", "P3"), REPERE="GLOBAL", VALE=100.0),
+        _F(CARA="K_T_D_L", GROUP_MA=("S1", "S2"), REPERE="GLOBAL", VALE=(100.0, 0.0, 0.0)),
+    ),
+    MODELE=model,
+)
+
+COND_LIM = AFFE_CHAR_MECA(
+    DDL_IMPO=(
+        _F(DX=0.0, DY=0.0, DZ=0.0, GROUP_NO=("N1",)),
+        _F(DY=0.0, DZ=0.0, GROUP_NO=("N2", "N3")),
+    ),
+    MODELE=model,
+)
+
+# Boundary conditions for blocking mass 1 or mass 2
+BLOC_S1 = AFFE_CHAR_MECA(DDL_IMPO=_F(DX=0.0, GROUP_NO=("N2",)), MODELE=model)
+
+BLOC_S2 = AFFE_CHAR_MECA(DDL_IMPO=_F(DX=0.0, GROUP_NO=("N3",)), MODELE=model)
+
+# Computation of mass and stifness matrices, w/o and with each additional blocking
+ASSEMBLAGE(
+    CARA_ELEM=elemprop,
+    CHARGE=COND_LIM,
+    MATR_ASSE=(
+        _F(MATRICE=CO("RIGI_ref"), OPTION="RIGI_MECA"),
+        _F(MATRICE=CO("MASS_ref"), OPTION="MASS_MECA"),
+    ),
+    MODELE=model,
+    NUME_DDL=CO("NUME_ref"),
+)
+
+ASSEMBLAGE(
+    CARA_ELEM=elemprop,
+    CHARGE=(COND_LIM, BLOC_S2),
+    MATR_ASSE=(
+        _F(MATRICE=CO("RIGI_1"), OPTION="RIGI_MECA"),
+        _F(MATRICE=CO("MASS_1"), OPTION="MASS_MECA"),
+    ),
+    MODELE=model,
+    NUME_DDL=CO("NUME_1"),
+)
+
+ASSEMBLAGE(
+    CARA_ELEM=elemprop,
+    CHARGE=(COND_LIM, BLOC_S1),
+    MATR_ASSE=(
+        _F(MATRICE=CO("RIGI_2"), OPTION="RIGI_MECA"),
+        _F(MATRICE=CO("MASS_2"), OPTION="MASS_MECA"),
+    ),
+    MODELE=model,
+    NUME_DDL=CO("NUME_2"),
+)
+
+# Compute mode of first mass
+MODEMEC1 = CALC_MODES(
+    CALC_FREQ=_F(NMAX_FREQ=1),
+    MATR_MASS=MASS_1,
+    SOLVEUR=_F(METHODE="MULT_FRONT"),
+    MATR_RIGI=RIGI_1,
+    OPTION="PLUS_PETITE",
+)
+
+# Compute mode of second mass
+MODEMEC2 = CALC_MODES(
+    CALC_FREQ=_F(NMAX_FREQ=1),
+    MATR_MASS=MASS_2,
+    SOLVEUR=_F(METHODE="MULT_FRONT"),
+    MATR_RIGI=RIGI_2,
+    OPTION="PLUS_PETITE",
+)
+
+# Putting both modes on the same nume_ddl
+MODE_R = DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=(MODEMEC1, MODEMEC2)),), NUME_REF=NUME_ref)
+
+# Definition de la force d'entrainement à la base
+CPM = CALC_CHAR_SEISME(MATR_MASS=MASS_ref, MONO_APPUI="OUI", DIRECTION=(1.0, 0.0, 0.0))
+
+ACCELERO = FORMULE(VALE="sin(2*INST)", NOM_PARA="INST")
+
+# Corresponding loading for a computation on the physical basis
+ch_phy = AFFE_CHAR_MECA(MODELE=model, VECT_ASSE=CPM)
+
+# Time stepping
+L_INST1 = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=10, PAS=0.01))
+
+L_INST = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=L_INST1), ECHEC=_F())
+
+# Computation on the physical basis with modal damping
+DYNDRECT = DYNA_NON_LINE(
+    MODELE=model,
+    CARA_ELEM=elemprop,
+    CHAM_MATER=fieldmat,
+    EXCIT=(_F(CHARGE=ch_phy, FONC_MULT=ACCELERO), _F(CHARGE=COND_LIM)),
+    AMOR_MODAL=_F(MODE_MECA=MODE_R, AMOR_REDUIT=(0.05, 0.05)),
+    INCREMENT=_F(LIST_INST=L_INST),
+    SCHEMA_TEMPS=_F(SCHEMA="NEWMARK", FORMULATION="DEPLACEMENT"),
+    NEWTON=_F(REAC_ITER=1),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=30),
+)
+
+# Retrieving relative displacement curves of both points
+N2_DX = RECU_FONCTION(RESULTAT=DYNDRECT, NOM_CHAM="DEPL", NOM_CMP="DX", GROUP_NO="N2")
+
+N3_DX = RECU_FONCTION(RESULTAT=DYNDRECT, NOM_CHAM="DEPL", NOM_CMP="DX", GROUP_NO="N3")
+
+# Testing against analytical values
+TEST_FONCTION(
+    VALEUR=(
+        _F(
+            VALE_CALC=0.53866891351310,
+            VALE_REFE=0.5387357574036608,
+            VALE_PARA=10.0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-2,
+            FONCTION=N2_DX,
+        ),
+        _F(
+            VALE_CALC=0.53866891351310,
+            VALE_REFE=0.5387357574036608,
+            VALE_PARA=10.0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-2,
+            FONCTION=N3_DX,
+        ),
+    )
+)
+
+# Uncomment to print out the curves
+# IMPR_FONCTION(
+#    FORMAT="TABLEAU",
+#    COURBE=(
+#        _F(FONCTION=N2_DX),
+#        _F(FONCTION=N3_DX),
+#    ),
+#    UNITE=98,
+# )
+
+FIN()

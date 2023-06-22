@@ -24,6 +24,8 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm, &
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/codlet.h"
+#include "asterfort/copy_field_with_numbering.h"
+#include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
@@ -79,9 +81,9 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm, &
     character(len=8) :: modsta, modcor
     character(len=8) :: matass, mailla, monmot(2)
     character(len=14) :: numddl
-    character(len=19) :: veasge, fonct, facce
-    character(len=19) :: chamno, chamn2, nofk19, resu
-    character(len=24) :: deeq, typeba
+    character(len=19) :: veasge, fonct, facce, tmpcha
+    character(len=19) :: chamn2, chamno, nofk19, resu
+    character(len=24) :: deeq, typeba, mesh
     integer :: jpsdel, npsdel, iipsdl
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -90,9 +92,10 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm, &
     integer :: jvale, l1, lprol, m1, n1, n2, n3
     integer :: n4, n5, na, nbv, nf, nm
     real(kind=8), pointer :: modco(:) => null()
-    real(kind=8), pointer :: mod(:) => null()
     integer, pointer :: ordr(:) => null()
     real(kind=8), pointer :: disc(:) => null()
+    real(kind=8), pointer :: base(:) => null()
+    real(kind=8), pointer :: mod(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     ier = 0
@@ -101,18 +104,10 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm, &
                 ier=ier)
 !
 !
-    if (typbas(1:9) .eq. 'MODE_MECA' .and. typeba(1:1) .eq. ' ') then
-        call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=matass)
-        call dismoi('NOM_MAILLA', matass, 'MATR_ASSE', repk=mailla)
-        call dismoi('NOM_NUME_DDL', matass, 'MATR_ASSE', repk=numddl)
-        deeq = numddl//'.NUME.DEEQ'
-        call jeveuo(deeq, 'L', iddeeq)
-    else if (typeba(1:1) .ne. ' ') then
-        call dismoi('NUME_DDL', basemo, 'RESU_DYNA', repk=numddl)
-        call dismoi('NOM_MAILLA', numddl, 'NUME_DDL', repk=mailla)
-        deeq = numddl//'.NUME.DEEQ'
-        call jeveuo(deeq, 'L', iddeeq)
-    end if
+    call dismoi('NUME_DDL', basemo, 'RESU_DYNA', repk=numddl)
+    call dismoi('NOM_MAILLA', numddl, 'NUME_DDL', repk=mailla)
+    deeq = numddl//'.NUME.DEEQ'
+    call jeveuo(deeq, 'L', iddeeq)
     nommot = 'NON'
 !
     nexcit = nexci+nexcir*nbmode
@@ -254,16 +249,17 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm, &
                 fondep(i) = nomfon(i) (1:8)
                 fondep(i+nexcit) = nomfon(i+nexcit) (1:8)
 !
-                call rsexch('F', modcor, 'DEPL', i, chamno, &
-                            iret)
-                call jeveuo(chamno//'.VALE', 'L', vr=modco)
+                call rsexch('F', modcor, 'DEPL', i, chamno, iret)
+                tmpcha = '&&COPMOD.CHAMP'
+                call dismoi('NOM_MAILLA', numddl, 'NUME_DDL', repk=mesh)
+                call copy_field_with_numbering(chamno, tmpcha, mesh, numddl//'.NUME', 'V')
+                call jeveuo(tmpcha//'.VALE', 'L', vr=modco)
                 do ieq = 1, neq
                     zr(jpsdel+ieq-1+(i-1)*neq) = modco(ieq)
                 end do
                 do nm = 1, nbmode
                     coef = zr(iadvec(i)+nm-1)/riggen(nm)
-                    call rsexch('F', basemo, 'DEPL', nm, chamn2, &
-                                iret)
+                    call rsexch('F', basemo, 'DEPL', nm, chamn2, iret)
                     call jeveuo(chamn2//'.VALE', 'L', vr=mod)
                     do ieq = 1, neq
                         zr(jpsdel+ieq-1+(i-1)*neq) = zr( &
@@ -273,7 +269,9 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm, &
                     end do
                     call jelibe(chamn2//'.VALE')
                 end do
+
                 call jelibe(chamno//'.VALE')
+                call detrsd('CHAMP', tmpcha)
 !
 !           --- MISE A ZERO DES DDL DE LAGRANGE
                 call zerlag(neq, zi(iddeeq), vectr=zr(jpsdel+(i-1)*neq))

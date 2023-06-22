@@ -40,6 +40,9 @@ module Damping_module
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
+#include "asterfort/codent.h"
+#include "asterfort/copy_field_with_numbering.h"
+#include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
@@ -174,15 +177,17 @@ contains
         type(MODAL_DAMPING), intent(in) :: modalDamping
 ! - Local
         character(len=24) :: matrRigi, modeVect
-        character(len=24) :: jvListDamp, jvDataDamp
+        character(len=24) :: jvListDamp, jvDataDamp, maill2
         character(len=14) :: numeDof
+        character(len=19) :: numeEquaRef, tmpcha, tmpchaRef
         character(len=8) :: dampMode
-        integer :: nbMode, nbEqua
-        integer :: iret, lmat, jvDeeq, iMode
+        character(len=4) :: indik4
+        integer :: nbMode, nbEqua, nbEquaRef
+        integer :: i, ier, iv, iret, lmat, jvDeeq, iMode
         integer :: jvPara, jvDataDampBase
         real(kind=8), pointer :: dampVale(:) => null()
-        real(kind=8), pointer :: valeTemp(:) => null()
         real(kind=8), pointer :: modeVale(:) => null()
+        real(kind=8), pointer :: modeValeRef(:) => null()
         real(kind=8), pointer :: dataDampVale(:) => null()
 !   ------------------------------------------------------------------------------------------------
 !
@@ -193,15 +198,6 @@ contains
 
 ! - List of damping values
         call jeveuo(jvListDamp, 'L', vr=dampVale)
-
-! - Get parameters from modes
-        call mginfo(dampMode, numeDof_=numeDof, nbEqua_=nbEqua)
-        call jeveuo(numeDof(1:14)//'.NUME.DEEQ', 'L', jvDeeq)
-
-! - Get rigidity matrix
-        call dismoi('REF_RIGI_PREM', dampMode, 'RESU_DYNA', repk=matrRigi)
-        call mtdscr(matrRigi(1:8))
-        call jeveuo(matrRigi(1:19)//'.&INT', 'E', lmat)
 
 ! - Create modal values
         call wkvect(jvDataDamp(1:19)//'.VALM', 'V V R', 3*nbMode, vr=dataDampVale)
@@ -214,17 +210,56 @@ contains
         end do
 
 ! - Create base
-        call wkvect(jvDataDamp(1:19)//'.BASM', 'V V R', nbMode*nbEqua, jvDataDampBase)
-        AS_ALLOCATE(vr=valeTemp, size=nbEqua)
+        call rsexch('F', dampMode, 'DEPL', 1, modeVect, iret)
+        call dismoi('NB_EQUA', modeVect, 'CHAM_NO', repi=nbEquaRef)
+        call dismoi('NUME_EQUA', modeVect, 'CHAM_NO', repk=numeEquaRef)
+
+        call wkvect(jvDataDamp(1:19)//'.BASM', 'V V R', nbMode*nbEquaRef, jvDataDampBase)
         do iMode = 1, nbMode
+            ! - Get parameters from modes
+            call mginfo(dampMode, numeDof_=numeDof, nbEqua_=nbEqua, occ_=iMode)
+            call jeveuo(numeDof(1:14)//'.NUME.DEEQ', 'L', jvDeeq)
+
+            ! - Allocate temporary vectors
+            call wkvect('&&DMODAL.VALE', 'V V R', nbEqua, iv)
+            tmpcha = '&&DMODAL.TMPCHA'
+            tmpchaRef = '&&DMODAL.TMPCHAR'
+
+            ! - Get rigidity matrix
+            call codent(iMode, 'D0', indik4)
+            call dismoi('REF_RIGI_'//indik4, dampMode, 'RESU_DYNA', repk=matrRigi, &
+                        arret='C', ier=ier)
+            if (ier /= 0) call dismoi('REF_RIGI_PREM', dampMode, 'RESU_DYNA', repk=matrRigi)
+            call mtdscr(matrRigi(1:8))
+            call jeveuo(matrRigi(1:19)//'.&INT', 'L', lmat)
+
+            ! - Converting field into the nume_dof of the stiffness matrix
             call rsexch('F', dampMode, 'DEPL', iMode, modeVect, iret)
-            call jeveuo(modeVect(1:19)//'.VALE', 'L', vr=modeVale)
-            call dcopy(nbEqua, modeVale, 1, valeTemp, 1)
-            call zerlag(nbEqua, zi(jvDeeq), vectr=valeTemp)
-            call mrmult('ZERO', lmat, valeTemp, zr(jvDataDampBase+(iMode-1)*nbEqua), 1, ASTER_TRUE)
-            call zerlag(nbEqua, zi(jvDeeq), vectr=zr(jvDataDampBase+(iMode-1)*nbEqua))
+            call dismoi('NOM_MAILLA', numeDof, 'NUME_DDL', repk=maill2)
+            call copy_field_with_numbering(modeVect, tmpcha, maill2, numeDof(1:14)//'.NUME', 'V')
+
+            ! - Perform K \Phi product, with the nume_dof of K
+            call jeveuo(tmpcha(1:19)//'.VALE', 'E', vr=modeVale)
+            call zerlag(nbEqua, zi(jvDeeq), vectr=modeVale)
+            call mrmult('ZERO', lmat, modeVale, zr(iv), 1, ASTER_TRUE)
+            call zerlag(nbEqua, zi(jvDeeq), vectr=zr(iv))
+            do i = 1, nbEqua
+                modeVale(i) = zr(iv-1+i)
+            end do
+
+            ! - Convert the K \Phi product back into the reference nume_dof
+            call copy_field_with_numbering(tmpcha, tmpchaRef, maill2, numeEquaRef, 'V')
+            call jeveuo(tmpchaRef(1:19)//'.VALE', 'E', vr=modeValeRef)
+            do i = 1, nbEquaRef
+                zr(jvDataDampBase+(iMode-1)*nbEquaRef-1+i) = modeValeRef(i)
+            end do
+
+            ! - Cleaning
+            call jedetr('&&DMODAL.VALE')
+            call detrsd('CHAMP', tmpcha)
+            call detrsd('CHAMP', tmpchaRef)
         end do
-        AS_DEALLOCATE(vr=valeTemp)
+
 !
 !   ------------------------------------------------------------------------------------------------
     end subroutine

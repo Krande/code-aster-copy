@@ -58,7 +58,7 @@ subroutine ritz99(nomres)
     character(len=19) :: numref, nume1
     character(len=24) :: trang1, trang2, tempor, tempi, tempi2, rigi1, mass1, amor1
     character(len=24) :: valk(3), concep(3)
-    aster_logical :: seul
+    aster_logical :: seul, has_numref
     integer :: iocc_ritz, iam, iamog, iamor, nbocc_modeintf, ibi4, ibi5
     integer :: ibi6, ibid, nbocc_basemo, idgl, idiff, idor, ier
     integer :: ii, inord, ioci, jamo2, jamog
@@ -66,6 +66,7 @@ subroutine ritz99(nomres)
     integer :: nbamor, nbdef, nbg, nbgl, nbi, nbid, nbli, nbocc_ritz
     integer :: nbmod1, nbmod2, nbmoda, nbmodb, nbold(1), nbtot
     integer :: nbmm, nbbm, nbmi, iocc_modeintf, iocc_basemo
+    integer :: nnum
     real(kind=8) :: bid, ebid
 !
 ! --------------------------------------------------------------------------------------------------
@@ -86,9 +87,13 @@ subroutine ritz99(nomres)
 !
 ! - RECUPERATION NUMEROTATION DE REFERENCE
 !
-    call dismoi('NUME_DDL', nomres, 'RESU_DYNA', repk=numref, arret='C', ier=ier)
-    if (ier .ne. 0) then
-        call getvid('    ', 'NUME_REF', iocc=1, scal=numref)
+    ! Test wether NUME_REF has been filled by the user
+    call getvid('  ', 'NUME_REF', nbval=0, iocc=1, nbret=nnum)
+    has_numref = (nnum /= 0)
+    if (has_numref) then
+        call getvid('  ', 'NUME_REF', iocc=1, scal=numref)
+    else
+        call dismoi('NUME_DDL', nomres, 'RESU_DYNA', repk=numref, arret='F', ier=ier)
     end if
 !
 ! - DETERMINATION DU NOMBRE D'OCCURRENCE DE RITZ
@@ -133,19 +138,27 @@ subroutine ritz99(nomres)
 !
 ! - DEBUT DE LA BOUCLE DE TRAITEMENT DE "BASE_MODALE"
 !
+    ! "base_modale" refers to a mode_meca concept previously produced by DEFI_BASE_MODALE
+    !      so it may contain both dynamical and statical modes
+    ! If the first modes to put into the result are defined by a previous "base_modale"
     if (nbocc_basemo .ne. 0) then
         call getvis('RITZ', 'NMAX_MODE', iocc=iocc_modeintf, scal=nbmod2, nbret=ibi4)
         call rsorac(resu_modeintf, 'LONUTI', ibid, bid, k8b, &
                     cbid, ebid, 'ABSOLU', nbold, 1, &
                     nbid)
+        !
+        ! nbmodb: number of modes to be ADDED
         if (ibi4 .eq. 0) then
             nbmodb = nbold(1)
         else
             nbmodb = min(nbmod2, nbold(1))
         end if
+        !
+        ! nbmod1: number of modes in initial base_modale
+        ! nbdef: number of statical modes in initial base_modale
         call dismoi('NB_MODES_TOT', resu_basemo, 'RESULTAT', repi=nbmod1)
         call dismoi('NB_MODES_STA', resu_basemo, 'RESULTAT', repi=nbdef)
-! ----- DETERMINATION NOMBRE TOTAL
+! ----- TOTAL NUMBER OF MODES IN OUTPUT CONCEPT
         nbtot = nbmod1+nbmodb
         if (nbtot .le. 0) then
             call utmess('F', 'DEFIBASEMODALE1_50')
@@ -154,21 +167,26 @@ subroutine ritz99(nomres)
         if (nomres .ne. resu_basemo) then
             call rscrsd('G', nomres, 'MODE_MECA', nbtot)
         else
+            ! Nombre de numeros d'ordre dans la "base_modale" d'entrée
             call rsorac(resu_basemo, 'LONUTI', ibid, bid, k8b, &
                         cbid, ebid, 'ABSOLU', nbold, 1, &
                         nbid)
             if (nbtot .gt. nbold(1)) call rsagsd(nomres, nbtot)
-            call getvid('    ', 'NUME_REF', iocc=1, scal=numref, nbret=ibid)
-            if (ibid .eq. 0) then
+            if (.not. has_numref) then
                 call utmess('E', 'DEFIBASEMODALE1_9')
             end if
+            ! Retrieve NUME_EQUA from NUME_DDL
             numref(15:19) = '.NUME'
+            !
             intf = ' '
             call getvid('  ', 'INTERF_DYNA', iocc=1, nbval=0, nbret=ioci)
             if (ioci .lt. 0) then
                 call getvid('  ', 'INTERF_DYNA', iocc=1, scal=intf, nbret=ioci)
             end if
         end if
+        !
+        ! All present modes in initial "base_modale" are copied and set to the
+        !    right numbering using moco99
         if (nbmod1 .gt. 0) then
             call wkvect(trang1, 'V V I', nbmod1, lrang1)
             do ii = 1, nbmod1
@@ -179,6 +197,9 @@ subroutine ritz99(nomres)
                         .true._1)
             call jedetr(trang1)
         end if
+        !
+        ! All modes to be added are copied and set to the right numbering
+        !    using moco99
         if (nbmodb .gt. 0) then
             call wkvect(trang2, 'V V I', nbmodb, lrang2)
             do ii = 1, nbmodb
@@ -188,13 +209,19 @@ subroutine ritz99(nomres)
                         .false._1)
             call jedetr(trang2)
         end if
+        ! Number of dynamical modes in initial "base_modale"
         nbmoda = nbmod1-nbdef
+        ! = total number of dynamical modes
+        ! (only statical modes may be added)
+        ! Total number of statical modes
         nbmodb = nbmodb+nbdef
+        ! All work has been done
         goto 40
     end if
 !
 ! - DETERMINATION DU NOMBRE DE CONCEPT(S) MODE_MECA
 !
+    ! nbgl: number of mode_meca concepts
     call getvid('RITZ', 'MODE_MECA', iocc=iocc_basemo, nbval=0, nbret=nbgl)
     nbgl = -nbgl
     if (nbgl .eq. 1) then
@@ -223,6 +250,7 @@ subroutine ritz99(nomres)
         seul = .true.
     end if
 !
+    ! nbmoda: number of dynamical modes in output
     if (nbgl .eq. 1) then
         call getvis('RITZ', 'NMAX_MODE', iocc=iocc_basemo, scal=nbmod1, nbret=ibi5)
         nbmoda = nbmod1
@@ -259,6 +287,8 @@ subroutine ritz99(nomres)
         end do
     end if
 !
+    ! if there are statical modes
+    ! nbmodb: number of statical modes in output
     if (.not. seul) then
         call getvis('RITZ', 'NMAX_MODE', iocc=iocc_modeintf, scal=nbmod2, nbret=ibi6)
         call rsorac(resu_modeintf, 'LONUTI', ibid, bid, k8b, &
@@ -348,7 +378,7 @@ subroutine ritz99(nomres)
         call utmess('F', 'DEFIBASEMODALE1_50')
     end if
 !
-! --- COPIE DES MODES DYNAMIQUES
+! --- COPIE DES MODES DYNAMIQUES EN CORRIGEANT LA NUMEROTATION (MOCO99)
 !
     inord = 1
     if (nbmoda .gt. 0) then
@@ -362,7 +392,8 @@ subroutine ritz99(nomres)
             call dismoi('REF_AMOR_PREM', resu_basemo, 'RESU_DYNA', repk=amor1, arret='C', ier=ier)
         else if (nbgl .gt. 1) then
             do iocc_ritz = 1, nbgl
-               call moco99(nomres, zk8(idgl+iocc_ritz-1), zi(lnbm+iocc_ritz-1), zi(lrang1), inord, &
+                call moco99(nomres, zk8(idgl+iocc_ritz-1), &
+                            zi(lnbm+iocc_ritz-1), zi(lrang1), inord, &
                             ASTER_TRUE)
                 resu_basemo = zk8(idgl+iocc_ritz-1)
             end do
@@ -371,6 +402,8 @@ subroutine ritz99(nomres)
 !
         call jedetr(trang1)
     end if
+!
+! --- COPIE DES MODES STATIQUES EN CORRIGEANT LA NUMEROTATION (MOCO99)
 !
     if (.not. seul) then
         if (nbmodb .gt. 0) then

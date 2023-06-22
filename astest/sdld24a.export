@@ -1,0 +1,9 @@
+P time_limit 60
+P memory_limit 500
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist submit ci verification sequential
+
+F comm sdld24a.comm D 1
+F mmed sdld24a.mail D 20

@@ -16,16 +16,18 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mginfo(modeMecaZ, numeDof_, nbmode_, nbEqua_)
+subroutine mginfo(modeMecaZ, numeDof_, nbmode_, nbEqua_, occ_)
 !
     implicit none
 !
+#include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jelira.h"
 !
     character(len=*), intent(in) :: modeMecaZ
     integer, optional, intent(out) :: nbmode_, nbEqua_
     character(len=14), optional, intent(out) :: numeDof_
+    integer, optional, intent(in) :: occ_
 !
 !
 ! ----------------------------------------------------------------------
@@ -42,21 +44,36 @@ subroutine mginfo(modeMecaZ, numeDof_, nbmode_, nbEqua_)
 ! OUT NEQ    : NOMBRE D'EQUATIONS
 
     character(len=24) :: matrix
-    character(len=8) :: modeMeca
-    integer :: nbmode, nbEqua
+    character(len=4) :: indik4
+    character(len=8) :: indik8, modeMeca
+    integer :: nbmode, nbEqua, occ, ier, ier2
     character(len=14) :: numeDof
 !
 ! ----------------------------------------------------------------------
 !
+    occ = 1
+    if (present(occ_)) then
+        occ = occ_
+    end if
+    call codent(occ, 'D0', indik8)
+    call codent(occ, 'D0', indik4)
+
     modeMeca = modeMecaZ
     nbEqua = 0
     nbMode = 0
     numeDof = ' '
-    call dismoi('NUME_DDL', modeMeca, 'RESU_DYNA', repk=numeDof)
-    if (numeDof(1:1) .ne. ' ') then
+    call dismoi('NUME_CHAM_'//indik8, modeMeca, 'RESU_DYNA', repk=numeDof, &
+                arret='C', ier=ier)
+    if (ier /= 0) then
+        call dismoi('NUME_DDL', modeMeca, 'RESU_DYNA', repk=numeDof)
+        call dismoi('NB_EQUA', numeDof, 'NUME_DDL', repi=nbEqua)
+    else if (.not. present(occ_)) then
         call dismoi('NB_EQUA', numeDof, 'NUME_DDL', repi=nbEqua)
     else
-        call dismoi('REF_RIGI_PREM', modeMeca, 'RESU_DYNA', repk=matrix)
+        call dismoi('REF_RIGI_'//indik4, modeMeca, 'RESU_DYNA', repk=matrix, &
+                    arret='C', ier=ier2)
+        if (ier2 /= 0) call dismoi('REF_RIGI_PREM', modeMeca, &
+                                   'RESU_DYNA', repk=matrix)
         call dismoi('NOM_NUME_DDL', matrix, 'MATR_ASSE', repk=numeDof)
         call dismoi('NB_EQUA', matrix, 'MATR_ASSE', repi=nbEqua)
     end if

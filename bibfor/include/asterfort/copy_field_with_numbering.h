@@ -15,12 +15,19 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+
+!
 !
 interface
-    subroutine mginfo(modeMecaZ, numeDof_, nbmode_, nbEqua_, occ_)
-        character(len=*), intent(in) :: modeMecaZ
-        integer, optional, intent(out) :: nbmode_, nbEqua_
-        character(len=14), optional, intent(out) :: numeDof_
-        integer, optional, intent(in) :: occ_
-    end subroutine mginfo
+subroutine copy_field_with_numbering(fieldin, fieldout, mesh, nume_equa, base,&
+                                     typc, nequa)
+         implicit none
+         character(len=19), intent(in) :: fieldin
+         character(len=19), intent(in) :: fieldout
+         character(len=19), intent(in) :: mesh
+         character(len=19), intent(in) :: nume_equa
+         character(len=1), intent(in) :: base
+         character(len=1), optional, intent(in) :: typc
+         integer, optional, intent(in) :: nequa
+    end subroutine copy_field_with_numbering
 end interface
