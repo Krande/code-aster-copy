@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine mmctan(nommai, alias, nno, ndim, coorma,&
-                  coorno, itemax, epsmax, tau1, tau2)
+                  coorno, itemax, epsmax, tau1, tau2, err_appa)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
@@ -29,7 +29,7 @@ subroutine mmctan(nommai, alias, nno, ndim, coorma,&
 #include "asterfort/mmnewt.h"
 #include "asterfort/utmess.h"
     character(len=8) :: nommai, alias
-    integer :: itemax, ndim, nno
+    integer :: itemax, ndim, nno, err_appa
     real(kind=8) :: epsmax, coorno(3), coorma(27)
     real(kind=8) :: tau1(3), tau2(3)
 !
@@ -79,7 +79,9 @@ subroutine mmctan(nommai, alias, nno, ndim, coorma,&
 ! --- GESTION DES ERREURS LORS DU NEWTON LOCAL POUR LA PROJECTION
 !
     if (niverr .eq. 1) then
-        call utmess('F', 'APPARIEMENT_13', sk=nommai, nr=3, valr=coorno)
+        err_appa = 1
+        call utmess('A', 'APPARIEMENT_13', sk=nommai, nr=3, valr=coorno)
+  
     endif
 !
     call jedema()

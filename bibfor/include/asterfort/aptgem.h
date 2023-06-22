@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine aptgem(sdappa , mesh     , newgeo   , sdcont_defi, model_ndim,&
                       i_zone , zone_type, iter_maxi, epsi_maxi  , jdecma    ,&
-                      nb_elem)
+                      nb_elem, err_appa)
         character(len=19), intent(in) :: sdappa
         character(len=8), intent(in) :: mesh
         character(len=24), intent(in) :: sdcont_defi
@@ -33,5 +33,6 @@ interface
         character(len=4), intent(in) :: zone_type
         integer, intent(in) :: iter_maxi
         real(kind=8), intent(in) :: epsi_maxi
+        integer, intent(inout) :: err_appa
     end subroutine aptgem
 end interface

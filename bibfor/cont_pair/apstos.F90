@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,6 +38,7 @@ implicit none
 #include "asterfort/wkvect.h"
 #include "asterfort/jerazo.h"
 #include "asterfort/apstoc.h"
+#include "asterfort/mmbouc.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
@@ -84,7 +85,7 @@ implicit none
     mpi_int :: i_proc, nb_proc, mpicou
     integer :: nb_elem_mpi, nbr_elem_mpi, idx_start, idx_end
     integer, pointer :: v_appa_slav_mpi(:) => null()
-    integer ::nb_el_slav_mpi
+    integer ::nb_el_slav_mpi, err_appa
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -177,8 +178,15 @@ implicit none
 !
 ! - Compute smooth normals at nodes
 !
+
     if (l_smooth) then
-        call aplcno(mesh, newgeo, ds_contact%sdcont_defi, sdappa)
+        err_appa = 0
+        call aplcno(mesh, newgeo, ds_contact%sdcont_defi, sdappa, err_appa)
+        if (err_appa .eq. 1) then
+            call mmbouc(ds_contact, 'Geom', 'Set_Error')
+        else
+            call mmbouc(ds_contact, 'Geom', 'Set_NoError')
+        end if
     end if
 !
 end subroutine

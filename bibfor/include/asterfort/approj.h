@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ interface
     subroutine approj(mesh          , newgeo        , sdcont_defi , node_mast_indx, l_pair_dire,&
                       pair_vect     , iter_maxi     , epsi_maxi   , tole_proj_ext , poin_coor  ,&
                       elem_mast_mini, proj_stat_mini, ksi1_mini   , ksi2_mini     , tau1_mini  ,&
-                      tau2_mini     , dist_mini     , vect_pm_mini)
+                      tau2_mini     , dist_mini     , vect_pm_mini, err_appa)
         character(len=8), intent(in) :: mesh
         character(len=19), intent(in) :: newgeo
         character(len=24), intent(in) :: sdcont_defi
@@ -43,5 +43,6 @@ interface
         real(kind=8), intent(out) :: dist_mini
         integer, intent(out) :: proj_stat_mini
         integer, intent(out) :: elem_mast_mini
+        integer, intent(inout) :: err_appa
     end subroutine approj
 end interface

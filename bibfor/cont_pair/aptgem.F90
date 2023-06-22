@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine aptgem(sdappa , mesh     , newgeo   , sdcont_defi, model_ndim,&
                   i_zone , zone_type, iter_maxi, epsi_maxi  , jdecma    ,&
-                  nb_elem)
+                  nb_elem, err_appa)
 !
 implicit none
 !
@@ -53,6 +53,7 @@ implicit none
     integer, intent(in) :: i_zone
     integer, intent(in) :: jdecma
     integer, intent(in) :: nb_elem
+    integer, intent(inout) :: err_appa
     character(len=4), intent(in) :: zone_type
     integer, intent(in) :: iter_maxi
     real(kind=8), intent(in) :: epsi_maxi
@@ -183,7 +184,7 @@ implicit none
                             zone_type, tau1       , tau2)
             else
                 call mmctan(elem_name, elem_type, elem_nbnode, elem_ndim, elem_coor,&
-                            node_coor, iter_maxi, epsi_maxi  , tau1, tau2)
+                            node_coor, iter_maxi, epsi_maxi  , tau1, tau2, err_appa)
                 if (l_beam) then
                     call apcpou(sdcont_defi, i_zone, elem_name, zone_type,&
                                 tau1       , tau2)

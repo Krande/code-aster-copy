@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine aptgen(sdappa, mesh, sdcont_defi, newgeo)
+subroutine aptgen(sdappa, mesh, sdcont_defi, newgeo, err_appa)
 !
 implicit none
 !
@@ -37,6 +37,7 @@ implicit none
     character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: sdcont_defi
     character(len=19), intent(in) :: newgeo
+    integer, intent(inout) :: err_appa
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -98,7 +99,7 @@ implicit none
         if (apcald) then
             call aptgem(sdappa      , mesh     , newgeo   , sdcont_defi, model_ndim,&
                         i_zone      , zone_type, iter_maxi, epsi_maxi  , jdecmm    ,&
-                        nb_elem_mast)
+                        nb_elem_mast, err_appa)
         endif
 !
 ! ----- Parameters on current zone - Slave
@@ -113,7 +114,7 @@ implicit none
         if (apcald) then
             call aptgem(sdappa      , mesh     , newgeo   , sdcont_defi, model_ndim,&
                         i_zone      , zone_type, iter_maxi, epsi_maxi  , jdecme    ,&
-                        nb_elem_slav)
+                        nb_elem_slav, err_appa)
         endif
     end do
 !

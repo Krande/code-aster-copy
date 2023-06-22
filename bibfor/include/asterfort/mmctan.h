@@ -20,7 +20,7 @@
 !
 interface
     subroutine mmctan(nommai, alias, nno, ndim, coorma,&
-                      coorno, itemax, epsmax, tau1, tau2)
+                      coorno, itemax, epsmax, tau1, tau2, err_appa)
         character(len=8) :: nommai
         character(len=8) :: alias
         integer :: nno
@@ -31,5 +31,6 @@ interface
         real(kind=8) :: epsmax
         real(kind=8) :: tau1(3)
         real(kind=8) :: tau2(3)
+        integer, intent(inout) :: err_appa
     end subroutine mmctan
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine apforc(mesh, ds_contact)
+subroutine apforc(mesh, ds_contact, err_appa)
 !
 use NonLin_Datastructure_type
 !
@@ -31,6 +31,7 @@ implicit none
 !
     character(len=8), intent(in) :: mesh
     type(NL_DS_Contact), intent(in) :: ds_contact
+    integer, intent(inout) :: err_appa
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -69,7 +70,7 @@ implicit none
 !
 ! - Find nearest element from current contact point
 !
-    call aprema(sdappa, mesh, ds_contact%sdcont_defi, newgeo)
+    call aprema(sdappa, mesh, ds_contact%sdcont_defi, newgeo, err_appa)
 !
 ! - All-reduce pairing data structure
 !

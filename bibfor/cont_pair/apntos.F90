@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,15 +22,17 @@ use NonLin_Datastructure_type
 !
 implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/apcaln.h"
 #include "asterfort/apforc.h"
 #include "asterfort/apvepa.h"
 #include "asterfort/infdbg.h"
+#include "asterfort/mmbouc.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
-    type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_Contact), intent(inout) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -45,7 +47,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer :: ifm, niv, err_appa
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,14 +55,21 @@ implicit none
     if (niv .ge. 2) then
         write (ifm,*) '<Pairing> Node-to-segment pairing'
     endif
+    err_appa = 0
 !
 ! - Compute tangents
 !
-    call apcaln(mesh, ds_contact)
+    call apcaln(mesh, ds_contact, err_appa)
 !
 ! - Pairing by "brute" force
 !
-    call apforc(mesh, ds_contact)
+    call apforc(mesh, ds_contact, err_appa)
+
+    if (err_appa .eq. 1) then
+        call mmbouc(ds_contact, 'Geom', 'Set_Error')
+    else
+        call mmbouc(ds_contact, 'Geom', 'Set_NoError')
+    end if
 !
 ! - Check pairing
 !
