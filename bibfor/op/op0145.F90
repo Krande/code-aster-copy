@@ -152,7 +152,7 @@ subroutine op0145()
                 call getvid(nommcf, 'MODELE', iocc=1, scal=modele, nbret=ibid)
                 call dismoi('NOM_MAILLA', modele, 'MODELE', repk=maillage)
                 call reliem(modele, maillage, 'NO_NOEUD', nommcf, iocc, &
-                            2, motcle, typmcl, nomno, nbno)
+                            1, motcle, typmcl, nomno, nbno)
 
                 dim = nbno*(nbno+1)/2
                 if (dim .ne. mxval) then
@@ -282,7 +282,7 @@ subroutine op0145()
         call getvid(nommcf, 'MODELE', iocc=1, scal=modele, nbret=ibid)
         call dismoi('NOM_MAILLA', modele, 'MODELE', repk=maillage)
         call reliem(modele, maillage, 'NO_NOEUD', nommcf, iocc, &
-                    2, motcle, typmcl, nomno, nbno)
+                    1, motcle, typmcl, nomno, nbno)
         call jeveuo(nomno, 'L', jnomno)
 !
         if (nbno .ne. 1) then
