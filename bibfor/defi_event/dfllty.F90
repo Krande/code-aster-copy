@@ -188,12 +188,11 @@ subroutine dfllty(sdlist, list_method, dtmin)
             end if
         end if
 ! ----- PAS_MINI
-        call getvr8(keywfact, 'PAS_MINI', iocc=1, scal=step_mini, nbret=iret)
+        step_mini = 1.d-12
         if (modetp .eq. 'IMPLEX') then
             step_mini = step_init/1000
-        else
-            step_mini = 1.d-12
         end if
+        call getvr8(keywfact, 'PAS_MINI', iocc=1, scal=step_mini, nbret=iret)
         if (step_mini .gt. dtmin) then
             call utmess('F', 'DISCRETISATION_1')
         end if
