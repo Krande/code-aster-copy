@@ -1,6 +1,16 @@
 $MeshFormat
 2.1 0 8
 $EndMeshFormat
+$PhysicalNames
+7
+0 59 "P1"
+1 60 "FONDINI"
+2 61 "M_HAUT"
+2 62 "M_BAS"
+2 63 "SYM_X"
+2 64 "SYM_Z"
+3 65 "VOL"
+$EndPhysicalNames
 $Nodes
 4522
 1 25 0 0

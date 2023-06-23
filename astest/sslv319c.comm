@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -96,20 +96,6 @@ RESU = [None] * (nb_pas + 1)
 c_mult_pilo = 1.0
 #
 MAIT = LIRE_MAILLAGE(FORMAT="GMSH", UNITE=19)
-
-MAIT = DEFI_GROUP(
-    reuse=MAIT,
-    MAILLAGE=MAIT,
-    CREA_GROUP_MA=(
-        _F(NOM="A", GROUP_MA="GM421"),
-        _F(NOM="B", GROUP_MA="GM422"),
-        _F(NOM="C", GROUP_MA="GM423"),
-        _F(NOM="FACEINF", GROUP_MA="GM425"),
-        _F(NOM="FACESUP", GROUP_MA="GM426"),
-        _F(NOM="VOL", GROUP_MA="GM427"),
-        _F(NOM="FONDINI", GROUP_MA="GM428"),
-    ),
-)
 #
 MAIT = DEFI_GROUP(reuse=MAIT, MAILLAGE=MAIT, CREA_GROUP_NO=_F(GROUP_MA=("A", "B", "C")))
 #

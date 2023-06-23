@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 !
 subroutine gmlelt(igmsh, maxnod, nbtyma, nbmail, nbnoma, &
-                  nuconn, versio)
+                  nuconn, versio, nbgrou)
 ! aslint: disable=
     implicit none
 #include "asterf_types.h"
@@ -29,6 +29,8 @@ subroutine gmlelt(igmsh, maxnod, nbtyma, nbmail, nbnoma, &
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
@@ -36,6 +38,7 @@ subroutine gmlelt(igmsh, maxnod, nbtyma, nbmail, nbnoma, &
 !
     integer :: igmsh, maxnod, nbtyma, nbmail, nbnoma(nbtyma), nuconn(19, 32)
     integer :: versio
+    integer, intent(inout) :: nbgrou
 !
 !      GMLELT --   LECTURE DES NUMEROS DES ELEMENTS, DE LEUR TYPE,
 !                  DE LEUR NUMERO DE GROUPE, DU NOMBRE DE LEURS
@@ -52,6 +55,7 @@ subroutine gmlelt(igmsh, maxnod, nbtyma, nbmail, nbnoma, &
 !    NUCONN         IN    I         PASSAGE DE LA NUMEROTATION DES NDS
 !                                     D'UNE MAILLE : ASTER -> GMSH
 !    VERSIO         IN    I         VERSION DU FICHIER GMSH
+!    NBGROU         IN    I      NUMBER OF GROUPS
 !
 ! ......................................................................
 !
@@ -59,17 +63,19 @@ subroutine gmlelt(igmsh, maxnod, nbtyma, nbmail, nbnoma, &
 !
 !
     character(len=8) :: k8bid
-    aster_logical :: exisgr
     integer :: imes, nbmxte, nbtag, i, ij, k, icurgr
-    integer :: nbgrou, indgro, ima, ibid, ityp, ino, node, indmax
-    integer :: jnuma, jtypma, jgroma, jnbnma, jnoma, jnbmag, jnbtym
-    integer :: jindma, jtag, jgr
+    integer :: indgro, ima, ibid, ityp, ino, node
+    integer :: jnuma, jtypma, jnbnma, jnoma, jnbmag, jnbtym, jdime
+    integer :: jindma, jtag, jgr, total_length, nb_nonempty_groups
 !
     parameter(nbmxte=19)
     integer :: nbno(nbmxte)
+    integer :: dime(nbmxte)
     integer, pointer :: noeuds(:) => null()
     data nbno/2, 3, 4, 4, 8, 6, 5, 3, 6, 9, 10, 27,&
      &                      18, 14, 1, 8, 20, 15, 13/
+    data dime/1, 2, 2, 3, 3, 3, 3, 1, 2, 2, 3, 3,&
+     &                      3, 3, 0, 2, 3, 3, 3/
 !
 ! ----------------------------------------------------------------------
 !
@@ -97,34 +103,30 @@ subroutine gmlelt(igmsh, maxnod, nbtyma, nbmail, nbnoma, &
     call jedetr('&&PREGMS.NBMA.GROUP_MA')
     call jedetr('&&PREGMS.NBTYP.MAILLES')
     call jedetr('&&PREGMS.LISTE.GROUP_MA')
-    call jedetr('&&PREGMS.INDICE.GROUP_MA')
     call jedetr('&&PREGMS.TAGS')
 !
 ! ---   VECTEUR DES NUMEROS DES MAILLES
     call wkvect('&&PREGMS.NUMERO.MAILLES', 'V V I', nbmail, jnuma)
 ! ---   VECTEUR DU TYPE DES MAILLES
     call wkvect('&&PREGMS.TYPE.MAILLES', 'V V I', nbmail, jtypma)
-! ---   VECTEUR DU NUMERO DE GROUPE DES MAILLES
-    call wkvect('&&PREGMS.GROUPE.MAILLES', 'V V I', nbmail, jgroma)
 ! ---   VECTEUR DU NOMBRE DE CONNECTIVITES DES MAILLES
     call wkvect('&&PREGMS.NBNO.MAILLES', 'V V I', nbmail, jnbnma)
 ! ---   VECTEUR DES CONNECTIVITES DES MAILLES
     call wkvect('&&PREGMS.CONNEC.MAILLES', 'V V I', maxnod*nbmail, jnoma)
 ! ---   VECTEUR DU NOMBRE DE MAILLES POUR UN GROUPE DE MAILLES
-    call wkvect('&&PREGMS.NBMA.GROUP_MA', 'V V I', nbmail, jnbmag)
+    if (nbgrou > 0) then
+        call wkvect('&&PREGMS.NBMA.GROUP_MA', 'V V I', nbgrou, jnbmag)
+        call jeveuo('&&PREGMS.NUMERO.GROUP_MA', 'L', jindma)
+        if (versio == 2) call jeveuo('&&PREGMS.DIME.GROUP_MA', 'L', jdime)
+    end if
 ! ---   VECTEUR DU NOMBRE DE MAILLES PAR TYPE DE MAILLES
     call wkvect('&&PREGMS.NBTYP.MAILLES', 'V V I', nbtyma, jnbtym)
-! --- CREATION DU VECTEUR FAISANT CORRESPONDRE LES INDICES AUX
-! --- NUMEROS DES GROUPES DE MAILLES :
-    call wkvect('&&PREGMS.INDICE.GROUP_MA', 'V V I', nbmail, jindma)
 ! --- INDICATION DE DESTRUCTION DES NOEUDS
     call jeveuo('&&PREGMS.DETR.NOEUDS', 'E', vi=noeuds)
 ! --- TAGS POUR LE FORMAT VERSION 2 :
-! --- DIMENSIONNE A 2*NBMAIL CAR 2 TAGS PAS DEFAUT DANS GMSH
-    if (versio .eq. 2) then
-        call jecrec('&&PREGMS.TAGS', 'V V I', 'NU', 'DISPERSE', 'VARIABLE', &
-                    nbmail)
-    end if
+! --- COLLECTION DE NBMAIL VECTEURS (UN VECTEUR PAR MAILLE)
+    call jecrec('&&PREGMS.TAGS', 'V V I', 'NU', 'DISPERSE', 'VARIABLE', &
+                nbmail)
 !
 ! --- LECTURE DES ENREGISTREMENTS RELATIFS AUX MAILLES ET AFFECTATION
 ! --- DES VECTEURS DE TRAVAIL :
@@ -136,34 +138,38 @@ subroutine gmlelt(igmsh, maxnod, nbtyma, nbmail, nbnoma, &
 !     NBGROU : NBRE DE GROUPES TROUVES
 !     INDGRO : INDICE DU GROUPE
     icurgr = 0
-    nbgrou = 0
     indgro = 0
+    total_length = 0
+    nb_nonempty_groups = 0
     do ima = 1, nbmail
+        if (versio .eq. 1) then
+            nbtag = 1
+            !
+        else if (versio .eq. 2) then
+            read (igmsh, *) ibid, ibid, nbtag
+            backspace (igmsh)
+            !
+        else
+            ASSERT(.false.)
+        end if
+!
+        call jecroc(jexnum('&&PREGMS.TAGS', ima))
+        call jeecra(jexnum('&&PREGMS.TAGS', ima), 'LONMAX', nbtag)
+        call jeveuo(jexnum('&&PREGMS.TAGS', ima), 'E', jtag)
 !
         if (versio .eq. 1) then
 !
-            read (igmsh, *) zi(jnuma+ima-1), zi(jtypma+ima-1), zi(jgroma+ &
-                                       ima-1), ibid, zi(jnbnma+ima-1), (zi(jnoma+ij+k-1), k=1, zi( &
-                                                                                      jnbnma+ima-1))
+            read (igmsh, *) zi(jnuma+ima-1), zi(jtypma+ima-1), zi(jtag), &
+                ibid, zi(jnbnma+ima-1), (zi(jnoma+ij+k-1), k=1, &
+                                         zi(jnbnma+ima-1))
 !
         else if (versio .eq. 2) then
 !
-            read (igmsh, *) ibid, ibid, nbtag
-!
-            call jecroc(jexnum('&&PREGMS.TAGS', ima))
-            call jeecra(jexnum('&&PREGMS.TAGS', ima), 'LONMAX', nbtag)
-            call jeveuo(jexnum('&&PREGMS.TAGS', ima), 'E', jtag)
-!
-            backspace (igmsh)
-            read (igmsh, *) zi(jnuma+ima-1), zi(jtypma+ima-1), nbtag, (zi( &
-                                          jtag-1+k), k=1, nbtag), (zi(jnoma+ij+k-1), k=1, nbno(zi( &
-                                                                                     jtypma+ima-1)))
+            read (igmsh, *) zi(jnuma+ima-1), zi(jtypma+ima-1), nbtag, &
+                (zi(jtag-1+k), k=1, nbtag), &
+                (zi(jnoma+ij+k-1), k=1, nbno(zi(jtypma+ima-1)))
 !
             zi(jnbnma+ima-1) = nbno(zi(jtypma+ima-1))
-            zi(jgroma+ima-1) = zi(jtag-1+1)
-            if (nbtag .eq. 0) then
-                zi(jgroma+ima-1) = 0
-            end if
 !
         else
             ASSERT(.false.)
@@ -176,42 +182,38 @@ subroutine gmlelt(igmsh, maxnod, nbtyma, nbmail, nbnoma, &
             noeuds(node+1) = 1
         end do
 !
-        if (icurgr .ne. zi(jgroma+ima-1)) then
-            icurgr = zi(jgroma+ima-1)
-            exisgr = .false.
-            do i = 1, nbgrou
-                if (icurgr .eq. zi(jindma+i-1)) then
-                    exisgr = .true.
-                    indgro = i
-                    goto 30
+!       RECHERCHE DE L'INDICE DU GROUPE DE LA MAILLE
+!       SI LE GROUPE N'EST PAS DANS PHYSICAL GROUPS, IL EST IGNORE
+!       LA DIMENSION DES MAILLES DOIT CORRESPONDRE
+        do i = 1, nbgrou
+            do k = 1, nbtag
+                if (zi(jtag+k-1) .eq. zi(jindma+i-1) .and. &
+                    (versio .eq. 1 .or. dime(ityp) .eq. zi(jdime-1+i))) then
+                    if (zi(jnbmag+i-1) == 0) nb_nonempty_groups = nb_nonempty_groups+1
+                    zi(jnbmag+i-1) = zi(jnbmag+i-1)+1
+                    total_length = total_length+1
+                    ! Exit because a tag may be present twice in GMSH
+                    exit
                 end if
             end do
-30          continue
-            if (.not. exisgr) then
-                nbgrou = nbgrou+1
-                indgro = nbgrou
-                zi(jindma+indgro-1) = zi(jgroma+ima-1)
-            end if
-        end if
-        zi(jnbmag+indgro-1) = zi(jnbmag+indgro-1)+1
-!
+        end do
         ij = ij+zi(jnbnma+ima-1)
         zi(jnbtym+zi(jtypma+ima-1)-1) = zi(jnbtym+zi(jtypma+ima-1)-1)+1
+!
     end do
 !
     if (nbgrou .ne. 0) then
 !
-        indmax = nbgrou
-        call jeecra('&&PREGMS.INDICE.GROUP_MA', 'LONUTI', indmax)
-!
 ! --- CREATION DE LA COLLECTION DES GROUPES DE MAILLES :
 !     ------------------------------------------------
-        call jecrec('&&PREGMS.LISTE.GROUP_MA', 'V V I', 'NU', 'CONTIG', 'VARIABLE', &
-                    indmax)
-        call jeecra('&&PREGMS.LISTE.GROUP_MA', 'LONT', nbmail)
 !
-        do i = 1, indmax
-            call jeecra(jexnum('&&PREGMS.LISTE.GROUP_MA', i), 'LONMAX', zi(jnbmag+i-1))
+!       LES GROUPES SONT SUPPOSES DISJOINTS: LONGUEUR TOTALE MAX NBMAIL
+        call jecrec('&&PREGMS.LISTE.GROUP_MA', 'V V I', 'NU', 'CONTIG', 'VARIABLE', &
+                    nbgrou)
+        call jeecra('&&PREGMS.LISTE.GROUP_MA', 'LONT', total_length+nbgrou-nb_nonempty_groups)
+!
+        do i = 1, nbgrou
+            call jeecra(jexnum('&&PREGMS.LISTE.GROUP_MA', i), 'LONMAX', max(zi(jnbmag+i-1), 1))
             zi(jnbmag+i-1) = 0
         end do
 !
@@ -222,30 +224,27 @@ subroutine gmlelt(igmsh, maxnod, nbtyma, nbmail, nbnoma, &
 !     NBGROU : NBRE DE GROUPES TROUVES
 !     INDGRO : INDICE DU GROUPE
         icurgr = 0
-        nbgrou = 0
         indgro = 0
         do ima = 1, nbmail
-            if (icurgr .ne. zi(jgroma+ima-1)) then
-                icurgr = zi(jgroma+ima-1)
-                exisgr = .false.
-                do i = 1, nbgrou
-                    if (icurgr .eq. zi(jindma+i-1)) then
-                        exisgr = .true.
-                        indgro = i
-                        goto 70
+            !
+            call jelira(jexnum('&&PREGMS.TAGS', ima), 'LONMAX', nbtag)
+            call jeveuo(jexnum('&&PREGMS.TAGS', ima), 'L', jtag)
+            ityp = zi(jtypma+ima-1)
+            !
+            ! RECHERCHE DU GROUPE AUQUEL LA MAILLE APPARTIENT
+            do i = 1, nbgrou
+                call jeveuo(jexnum('&&PREGMS.LISTE.GROUP_MA', i), 'E', jgr)
+                do k = 1, nbtag
+                    if (zi(jtag+k-1) .eq. zi(jindma+i-1) .and. &
+                        (versio .eq. 1 .or. dime(ityp) .eq. zi(jdime-1+i))) then
+                        zi(jnbmag+i-1) = zi(jnbmag+i-1)+1
+                        zi(jgr+zi(jnbmag+i-1)-1) = zi(jnuma+ima-1)
+                        ! Exit because a tag may be present twice in GMSH
+                        exit
                     end if
                 end do
-70              continue
-                if (.not. exisgr) then
-                    nbgrou = nbgrou+1
-                    indgro = nbgrou
-                end if
-            end if
-            zi(jnbmag+indgro-1) = zi(jnbmag+indgro-1)+1
+            end do
 !
-            zi(jindma+indgro-1) = zi(jgroma+ima-1)
-            call jeveuo(jexnum('&&PREGMS.LISTE.GROUP_MA', indgro), 'E', jgr)
-            zi(jgr+zi(jnbmag+indgro-1)-1) = zi(jnuma+ima-1)
         end do
 !
     end if

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -38,21 +38,13 @@ MAILIN = LIRE_MAILLAGE(FORMAT="GMSH", UNITE=19)
 MAIL = CREA_MAILLAGE(MAILLAGE=MAILIN, LINE_QUAD=_F(TOUT="OUI"))
 MAIL = DEFI_GROUP(
     reuse=MAIL,
-    CREA_GROUP_MA=(
-        _F(GROUP_MA="GM41", NOM="gauchem"),
-        _F(GROUP_MA="GM42", NOM="droitem"),
-        _F(GROUP_MA="GM43", NOM="postm"),
-        _F(GROUP_MA="GM40", NOM="pointgm"),
-        _F(GROUP_MA="GM61", NOM="restm"),
-    ),
     CREA_GROUP_NO=(
         _F(GROUP_MA="gauchem", NOM="gauchen"),
         _F(GROUP_MA="droitem", NOM="droiten"),
         _F(GROUP_MA="pointgm", NOM="pointgn"),
-        _F(GROUP_MA="postm", NOM="postn"),
         _F(GROUP_MA="restm", NOM="restn"),
-        _F(GROUP_MA="GM70", NOM="sifg"),
-        _F(GROUP_MA="GM71", NOM="sifd"),
+        _F(GROUP_MA="sifg"),
+        _F(GROUP_MA="sifd"),
     ),
     MAILLAGE=MAIL,
 )

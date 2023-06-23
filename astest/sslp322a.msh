@@ -1,6 +1,14 @@
 $MeshFormat
 2 0 8
 $EndMeshFormat
+$PhysicalNames
+5
+2 1 "Surface"
+0 2 "P1"
+0 3 "P2"
+0 4 "P3"
+0 5 "P4"
+$EndPhysicalNames
 $Nodes
 3890
 1 0 0 0
@@ -3896,9 +3904,9 @@ $Nodes
 $EndNodes
 $Elements
 7554
-1 15 3 2 2 0 2
-2 15 3 3 3 0 3
-3 15 3 4 6 0 6
+1 15 3 2 5 0 2
+2 15 3 3 5 0 3
+3 15 3 4 5 0 6
 4 2 3 1 1 0 62 63 293
 5 2 3 1 1 0 286 59 60
 6 2 3 1 1 0 65 66 287

@@ -1,6 +1,10 @@
 $MeshFormat
 2 0 8
 $EndMeshFormat
+$PhysicalNames
+1
+2 1000 "Section"
+$EndPhysicalNames
 $Nodes
 77
 1 0.5 0.5 0

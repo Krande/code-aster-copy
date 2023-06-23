@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,20 +36,6 @@ b = 6.0
 
 # pas d etape de raffinement de maillage
 MA = LIRE_MAILLAGE(FORMAT="GMSH", UNITE=19)
-
-MA = DEFI_GROUP(
-    reuse=MA,
-    MAILLAGE=MA,
-    CREA_GROUP_MA=(
-        _F(NOM="P1", GROUP_MA="GM59"),
-        _F(NOM="FONDINI", GROUP_MA="GM60"),
-        _F(NOM="M_HAUT", GROUP_MA="GM61"),
-        _F(NOM="M_BAS", GROUP_MA="GM62"),
-        _F(NOM="SYM_X", GROUP_MA="GM63"),
-        _F(NOM="SYM_Z", GROUP_MA="GM64"),
-        _F(NOM="VOL", GROUP_MA="GM65"),
-    ),
-)
 
 MA = DEFI_GROUP(
     reuse=MA,

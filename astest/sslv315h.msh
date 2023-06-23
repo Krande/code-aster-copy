@@ -1,6 +1,18 @@
 $MeshFormat
 2.1 0 8
 $EndMeshFormat
+$PhysicalNames
+9
+0 57 "P4"
+0 63 "ORIG"
+1 58 "LIG1"
+1 62 "FONDINI"
+2 59 "SURFINF"
+2 60 "SURFSUP"
+2 64 "LEVINF"
+2 65 "LEVSUP"
+3 61 "VOL"
+$EndPhysicalNames
 $Nodes
 3717
 1 0 0 0

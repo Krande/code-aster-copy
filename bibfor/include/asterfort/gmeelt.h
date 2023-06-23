@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,12 +20,13 @@
 !
 interface
     subroutine gmeelt(imod, nbtyma, nomail, nbnoma, nuconn,&
-                      nbmail)
+                      nbmail, nbgrou)
         integer :: imod
         integer :: nbtyma
         character(len=8) :: nomail(*)
         integer :: nbnoma(19)
         integer :: nuconn(19, 32)
         integer :: nbmail
+        integer, intent(in) :: nbgrou
     end subroutine gmeelt
 end interface

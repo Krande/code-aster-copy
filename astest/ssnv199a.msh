@@ -1,6 +1,18 @@
 $MeshFormat
 2 0 8
 $EndMeshFormat
+$PhysicalNames
+9
+3 1015 "DCB_1"
+3 1016 "DCB_2"
+3 1020 "DCB_J"
+2 1012 "DCB_G"
+2 1013 "DCB_D"
+2 1014 "JOINT_H"
+2 1019 "JOINT_B"
+1 1018 "DCB_GB"
+0 954 "NO7"
+$EndPhysicalNames
 $Nodes
 455
 1 20 0.05 0

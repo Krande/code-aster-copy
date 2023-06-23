@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -46,31 +46,12 @@ MA = CREA_MAILLAGE(MAILLAGE=MA0, LINE_QUAD=_F(TOUT="OUI"))
 MA = DEFI_GROUP(
     reuse=MA,
     MAILLAGE=MA,
-    CREA_GROUP_MA=(
-        # VOLUME DCB GAUCHE
-        _F(NOM="DCB_1", GROUP_MA="GM1015"),
-        # VOLUME DCB DROITE
-        _F(NOM="DCB_2", GROUP_MA="GM1016"),
-        # VOLUME JOINT FISSURE POTENTIELLE
-        _F(NOM="JOINT_P", GROUP_MA="GM1020"),
-        # VOLUME JOINT FISSURE INITIALE
-        _F(NOM="JOINT_I", GROUP_MA="GM1056"),
-        # SURFACES
-        _F(NOM="DCB_G", GROUP_MA="GM1012"),
-        # FACE BAS DES JOINT DE LA FISSURE POTENTIELLE
-        _F(NOM="JOINT_BP", GROUP_MA="GM1019"),
-        # FACE BAS DES JOINT DE LA FISSURE INITIALE
-        _F(NOM="JOINT_BI", GROUP_MA="GM1057"),
-        _F(NOM="JOINT_H", GROUP_MA="GM1014"),
-        # LIGNE BAS DE LA FACE DCB GAUCHE BAS
-        _F(NOM="DCB_GB", GROUP_MA="GM1018"),
-    ),
     CREA_GROUP_NO=(
-        _F(NOM="JOINT_BP", GROUP_MA="GM1019"),
-        _F(NOM="JOINT_BI", GROUP_MA="GM1057"),
-        _F(NOM="JOINT_H", GROUP_MA="GM1014"),
-        _F(NOM="NO7", GROUP_MA="GM954"),
-        _F(NOM="DCB_GB", GROUP_MA="GM1018"),
+        _F(GROUP_MA="JOINT_BP"),
+        _F(GROUP_MA="JOINT_BI"),
+        _F(GROUP_MA="JOINT_H"),
+        _F(GROUP_MA="NO7"),
+        _F(GROUP_MA="DCB_GB"),
     ),
 )
 

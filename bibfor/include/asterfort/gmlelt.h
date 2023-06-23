@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 interface
     subroutine gmlelt(igmsh, maxnod, nbtyma, nbmail, nbnoma,&
-                      nuconn, versio)
+                      nuconn, versio, nbgrou)
         integer :: nbtyma
         integer :: igmsh
         integer :: maxnod
@@ -28,5 +28,6 @@ interface
         integer :: nbnoma(nbtyma)
         integer :: nuconn(19, 32)
         integer :: versio
+        integer, intent(in) :: nbgrou
     end subroutine gmlelt
 end interface

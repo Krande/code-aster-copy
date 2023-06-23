@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 !
 subroutine gmeelt(imod, nbtyma, nomail, nbnoma, nuconn, &
-                  nbmail)
+                  nbmail, nbgrou)
     implicit none
 #include "jeveux.h"
 #include "asterfort/codent.h"
@@ -32,6 +32,7 @@ subroutine gmeelt(imod, nbtyma, nomail, nbnoma, nuconn, &
 !
     integer :: imod, nbtyma, nbmail, nbnoma(19), nuconn(19, 32)
     character(len=8) :: nomail(*)
+    integer, intent(in) :: nbgrou
 !
 !      GMEELT --   ECRITURE DES MAILLES ET DES GROUP_MA VENANT
 !                  D'UN FICHIER .GMSH DANS LE FICHIER .MAIL
@@ -42,13 +43,14 @@ subroutine gmeelt(imod, nbtyma, nomail, nbnoma, nuconn, &
 !    NBMAIL         IN    I         NOMBRE TOTAL DE MAILLES
 !    NUCONN         IN    I         PASSAGE DE LA NUMEROTATION DES NDS
 !                                     D'UNE MAILLE : ASTER -> GMSH
+!    NBGROU         IN    I         NOMBRE DE GROUPES
 !
 !
 !
 !
     integer :: neu2(32), ier, i, ij, nte, ima, ityp, nbno, inum, nbnoas
-    integer :: idiv, ino, irest, k, l, maxmai, numgro, jgrmai, jgr, ima1
-    integer :: indmax, vali(2)
+    integer :: idiv, ino, irest, k, l, maxmai, jgrmai, jgr, ima1
+    integer :: vali(2)
     character(len=1) :: prfnoe, prfmai
     character(len=8) :: chgrou, chtab(32), chmail, k8bid
     character(len=12) :: chenti
@@ -59,6 +61,7 @@ subroutine gmeelt(imod, nbtyma, nomail, nbnoma, nuconn, &
     integer, pointer :: typma(:) => null()
     integer, pointer :: indma(:) => null()
     integer, pointer :: nbmag(:) => null()
+    character(len=8), pointer :: nomgr(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -83,9 +86,12 @@ subroutine gmeelt(imod, nbtyma, nomail, nbnoma, nuconn, &
     call jeveuo('&&PREGMS.TYPE.MAILLES', 'L', vi=typma)
     call jeveuo('&&PREGMS.NBNO.MAILLES', 'L', vi=nbnma)
     call jeveuo('&&PREGMS.CONNEC.MAILLES', 'L', vi=noma)
-    call jeveuo('&&PREGMS.NBMA.GROUP_MA', 'L', vi=nbmag)
     call jeveuo('&&PREGMS.NBTYP.MAILLES', 'L', vi=nbtym)
-    call jeveuo('&&PREGMS.INDICE.GROUP_MA', 'L', vi=indma)
+    if (nbgrou > 0) then
+        call jeveuo('&&PREGMS.NBMA.GROUP_MA', 'L', vi=nbmag)
+        call jeveuo('&&PREGMS.NUMERO.GROUP_MA', 'L', vi=indma)
+        call jeveuo('&&PREGMS.NOMS.GROUP_MA', 'L', vk8=nomgr)
+    end if
 !
 ! --- ECRITURE DES MAILLES :
 !     --------------------
@@ -159,10 +165,9 @@ subroutine gmeelt(imod, nbtyma, nomail, nbnoma, nuconn, &
 ! --- ECRITURE DES GROUP_MA :
 !     ---------------------
     ier = 0
-    call jelira('&&PREGMS.INDICE.GROUP_MA', 'LONUTI', indmax)
 !
     maxmai = 0
-    do i = 1, indmax
+    do i = 1, nbgrou
         maxmai = max(maxmai, nbmag(i))
     end do
 !
@@ -172,20 +177,10 @@ subroutine gmeelt(imod, nbtyma, nomail, nbnoma, nuconn, &
 !
         call wkvect('&&PREGMS.GRMA.MAILLES', 'V V K8', maxmai, jgrmai)
 !
-        chgrou(1:2) = 'GM'
-!
 ! --- BOUCLE SUR LES GROUPES DE MAILLES :
 !     ---------------------------------
-        do i = 1, indmax
-            numgro = indma(i)
-            if (numgro .ge. 1000000) then
-                ier = ier+1
-                vali(1) = numgro
-                vali(2) = 1000000
-                call utmess('E', 'PREPOST5_21', ni=2, vali=vali)
-                goto 60
-            end if
-            call codent(numgro, 'G', chgrou(3:8))
+        do i = 1, nbgrou
+            chgrou = nomgr(i)
             write (imod, '(A,4X,2A)') 'GROUP_MA', 'NOM=', chgrou
             call jeveuo(jexnum('&&PREGMS.LISTE.GROUP_MA', i), 'E', jgr)
             do k = 1, nbmag(i)
@@ -229,8 +224,6 @@ subroutine gmeelt(imod, nbtyma, nomail, nbnoma, nuconn, &
                 end do
             end if
 90          continue
-!
-60          continue
         end do
 !
     end if

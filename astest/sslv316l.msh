@@ -1,6 +1,13 @@
 $MeshFormat
 2.1 0 8
 $EndMeshFormat
+$PhysicalNames
+4
+3 254 "VOL"
+2 251 "SURFINF"
+2 252 "SURFSUP"
+1 253 "FONDINI"
+$EndPhysicalNames
 $Nodes
 10685
 1 0 8 0

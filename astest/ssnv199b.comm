@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -40,27 +40,7 @@ MA = LIRE_MAILLAGE(FORMAT="GMSH", UNITE=19)
 MA = DEFI_GROUP(
     reuse=MA,
     MAILLAGE=MA,
-    CREA_GROUP_MA=(
-        # VOLUME DCB GAUCHE
-        _F(NOM="DCB_1", GROUP_MA="GM1015"),
-        # VOLUME DCB DROITE
-        _F(NOM="DCB_2", GROUP_MA="GM1016"),
-        # VOLUME DCB JOINT
-        _F(NOM="DCB_J", GROUP_MA="GM1020"),
-        # SURFACES
-        _F(NOM="DCB_G", GROUP_MA="GM1012"),
-        _F(NOM="DCB_D", GROUP_MA="GM1013"),
-        _F(NOM="DCB2_B", GROUP_MA="GM1014"),
-        _F(NOM="JOINT_B", GROUP_MA="GM1019"),
-        _F(NOM="JOINT_H", GROUP_MA="GM1014"),
-        # LIGNE BAS DE LA FACE DCB GAUCHE BAS
-        _F(NOM="DCB_GB", GROUP_MA="GM1018"),
-    ),
-    CREA_GROUP_NO=(
-        _F(NOM="JOINT_B", GROUP_MA="GM1019"),
-        _F(NOM="NO7", GROUP_MA="GM954"),
-        _F(NOM="DCB_GB", GROUP_MA="GM1018"),
-    ),
+    CREA_GROUP_NO=(_F(GROUP_MA="JOINT_B"), _F(GROUP_MA="NO7"), _F(GROUP_MA="DCB_GB")),
 )
 
 

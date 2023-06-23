@@ -1,6 +1,16 @@
 $MeshFormat
 2.1 0 8
 $EndMeshFormat
+$PhysicalNames
+7
+0 421 "A"
+0 422 "B"
+0 423 "C"
+2 425 "FACEINF"
+2 426 "FACESUP"
+3 427 "VOL"
+1 428 "FONDINI"
+$EndPhysicalNames
 $Nodes
 6525
 1 -0.0001 0 0

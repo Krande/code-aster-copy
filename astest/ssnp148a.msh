@@ -1,6 +1,15 @@
 $MeshFormat
 2 0 8
 $EndMeshFormat
+$PhysicalNames
+6
+1 41 "gauchem"
+1 42 "droitem"
+1 40 "pointgm"
+2 61 "restm"
+0 70 "sifg"
+0 71 "sifd"
+$EndPhysicalNames
 $Nodes
 8515
 1 2.75 0 0

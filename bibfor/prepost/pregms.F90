@@ -20,6 +20,8 @@ subroutine pregms(igmsh, imod)
 ! aslint: disable=
     implicit none
 #include "jeveux.h"
+#include "asterf_types.h"
+#include "asterfort/codent.h"
 #include "asterfort/gmeelt.h"
 #include "asterfort/gmeneu.h"
 #include "asterfort/gmlelt.h"
@@ -29,6 +31,8 @@ subroutine pregms(igmsh, imod)
 #include "asterfort/jedetr.h"
 #include "asterfort/jjmmaa.h"
 #include "asterfort/utmess.h"
+#include "asterfort/wkvect.h"
+
     integer :: igmsh, imod
 !.======================================================================
 !
@@ -47,17 +51,24 @@ subroutine pregms(igmsh, imod)
 !
     character(len=4) :: ct(3)
     character(len=8) :: rquoi
-    character(len=12) :: aut, debfic, finnod, debelm, debno
-    character(len=14) :: aut1
+    character(len=12) :: aut, debfic, finnod, debelm
+    character(len=14) :: aut1, current_line
     integer :: i, imes, nbmail, nbnode, versio, maxnod, nbtyma
-    integer :: vali(1)
+    integer :: vali(1), nbgrou, gr_tag, ibid
+    aster_logical :: exigr
 !
     parameter(maxnod=32, nbtyma=19)
-    integer :: nbnoma(nbtyma), nuconn(nbtyma, maxnod)
-    character(len=8) :: nomail(nbtyma)
+    integer :: nbnoma(nbtyma), nuconn(nbtyma, maxnod), i_gr, ipos
+    integer :: gr_dim, igr, ima
+    character(len=8) :: nomail(nbtyma), gr_name, gr_name_raw, group_name
+!
+    integer, pointer :: list_nums_gr(:) => null()
+    integer, pointer :: list_dims_gr(:) => null()
+    integer, pointer :: list_indice_gr(:) => null()
+    character(len=8), pointer :: list_noms_gr(:) => null()
 !
 ! ----------------------------------------------------------------------
-!
+!8
 ! ---- INITIALISATIONS
 !      ---------------
     rquoi = '????????'
@@ -80,14 +91,95 @@ subroutine pregms(igmsh, imod)
 !
     if (debfic(1:4) .eq. '$NOD') then
         versio = 1
+        !
+        ! Read the one group to which each element belongs
+        read (igmsh, *) current_line
+        do while (current_line(1:4) /= '$ELM')
+            read (igmsh, *) current_line
+        end do
+        read (igmsh, '(I10)') nbmail
+        call wkvect('&&PREGMS.INDICE.GROUP_MA', 'V V I', nbmail, &
+                    vi=list_indice_gr)
+        do ima = 1, nbmail
+            read (igmsh, *) ibid, ibid, list_indice_gr(ima)
+        end do
+        !
+        ! Determine number of groups
+        nbgrou = 1
+        do ima = 2, nbmail
+            exigr = .false._1
+            do i = 1, ima-1
+                if (list_indice_gr(i) == list_indice_gr(ima)) then
+                    exigr = .true._1
+                    exit
+                end if
+            end do
+            if (.not. exigr) nbgrou = nbgrou+1
+        end do
+        !
+        ! Fill in ids and (automatic) names of groups
+        call wkvect('&&PREGMS.NUMERO.GROUP_MA', 'V V I', nbgrou, &
+                    vi=list_nums_gr)
+        call wkvect('&&PREGMS.NOMS.GROUP_MA', 'V V K8', nbgrou, &
+                    vk8=list_noms_gr)
+        list_nums_gr(1) = list_indice_gr(1)
+        group_name(1:2) = 'GM'
+        call codent(list_indice_gr(1), 'G', group_name(3:8))
+        list_noms_gr(1) = group_name
+        igr = 1
+        do ima = 2, nbmail
+            exigr = .false._1
+            do i = 1, ima-1
+                if (list_indice_gr(i) == list_indice_gr(ima)) then
+                    exigr = .true._1
+                    exit
+                end if
+            end do
+            if (.not. exigr) then
+                igr = igr+1
+                list_nums_gr(igr) = list_indice_gr(ima)
+                group_name(1:2) = 'GM'
+                call codent(list_indice_gr(ima), 'G', group_name(3:8))
+                list_noms_gr(igr) = group_name
+            end if
+        end do
+        !
+        ! Comme une ancienne cassette
+        rewind igmsh
+        read (igmsh, *) current_line
+
     else if (debfic(1:11) .eq. '$MeshFormat') then
+        ! Dont forget to initialize nbgrou in case there is none
+        nbgrou = 0
         versio = 2
-        read (igmsh, *)
-        read (igmsh, *)
-20      continue
-        read (igmsh, *) debno
-        if (debno(1:6) .ne. '$Nodes') then
-            goto 20
+        read (igmsh, *) current_line
+        do while (current_line(1:6) /= '$Nodes' .and. &
+                  current_line(1:14) /= '$PhysicalNames')
+            read (igmsh, *) current_line
+        end do
+        if (current_line(1:14) == '$PhysicalNames') then
+            read (igmsh, *) nbgrou
+            write (imes, *)
+            write (imes, *) 'LECTURE DES NOMS DES GROUPES'
+            !
+            call wkvect('&&PREGMS.NUMERO.GROUP_MA', 'V V I', nbgrou, &
+                        vi=list_nums_gr)
+            call wkvect('&&PREGMS.DIME.GROUP_MA', 'V V I', nbgrou, &
+                        vi=list_dims_gr)
+            call wkvect('&&PREGMS.NOMS.GROUP_MA', 'V V K8', nbgrou, &
+                        vk8=list_noms_gr)
+            do i_gr = 1, nbgrou
+                read (igmsh, *) gr_dim, gr_tag, gr_name_raw
+                ipos = index(gr_name_raw, '"', .true.)
+                if (ipos == 0) gr_name = gr_name_raw(1:8)
+                if (ipos /= 0) gr_name = gr_name_raw(1:ipos-1)
+                list_dims_gr(i_gr) = gr_dim
+                list_nums_gr(i_gr) = gr_tag
+                list_noms_gr(i_gr) = gr_name
+            end do
+            do while (current_line(1:6) /= '$Nodes')
+                read (igmsh, *) current_line
+            end do
         end if
     else
         call utmess('F', 'PREPOST6_38')
@@ -138,7 +230,7 @@ subroutine pregms(igmsh, imod)
 ! --- LECTURE DES MAILLES ET DES GROUP_MA :
 !     -----------------------------------
     call gmlelt(igmsh, maxnod, nbtyma, nbmail, nbnoma, &
-                nuconn, versio)
+                nuconn, versio, nbgrou)
 !
 ! --- ECRITURE DES NOEUDS ET DE LEURS COORDONNEES DANS LE FICHIER .MAIL:
 !     -----------------------------------------------------------------
@@ -147,7 +239,7 @@ subroutine pregms(igmsh, imod)
 ! --- ECRITURE DES MAILLES ET DES GROUP_MA DANS LE FICHIER .MAIL :
 !     ----------------------------------------------------------
     call gmeelt(imod, nbtyma, nomail, nbnoma, nuconn, &
-                nbmail)
+                nbmail, nbgrou)
 !
 ! --- MENAGE :
 !     ------
@@ -163,6 +255,11 @@ subroutine pregms(igmsh, imod)
     call jedetr('&&PREGMS.LISTE.GROUP_MA')
     call jedetr('&&PREGMS.INDICE.GROUP_MA')
     call jedetr('&&PREGMS.GRMA.MAILLES')
+    if (versio == 2) then
+        call jedetr('&&PREGMS.NOMS.GROUP_MA')
+        call jedetr('&&PREGMS.DIME.GROUP_MA')
+        call jedetr('&&PREGMS.NUMERO.GROUP_MA')
+    end if
 !
 !.============================ FIN DE LA ROUTINE ======================
 end subroutine

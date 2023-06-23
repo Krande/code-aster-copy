@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@ MO5 = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELI
 
 GF = DEFI_GEOM_FIBRE(
     SECTION=_F(
-        GROUP_FIBRE="SEC1", MAILLAGE_SECT=MASEC, GROUP_MA_SECT="GM1000", COOR_AXE_POUTRE=(0.0, 0.0)
+        GROUP_FIBRE="SEC1", MAILLAGE_SECT=MASEC, GROUP_MA_SECT="Section", COOR_AXE_POUTRE=(0.0, 0.0)
     )
 )
 

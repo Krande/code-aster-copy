@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -47,17 +47,6 @@ yinit = 1.5
 # ----------------------------------------------
 #                   MODELE
 # ----------------------------------------------
-MA_INI = DEFI_GROUP(
-    reuse=MA_INI,
-    MAILLAGE=MA_INI,
-    CREA_GROUP_NO=(
-        _F(NOM="P1", GROUP_NO="GM2"),
-        _F(NOM="P2", GROUP_NO="GM3"),
-        _F(NOM="P3", GROUP_NO="GM4"),
-    ),
-    CREA_GROUP_MA=(_F(NOM="Surface", GROUP_MA="GM1")),
-)
-
 IMPR_RESU(FORMAT="MED", UNITE=80, RESU=_F(MAILLAGE=MA_INI))
 
 MODEL = [None] * (NPAS + 1)

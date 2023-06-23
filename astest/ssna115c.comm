@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -39,36 +39,13 @@ MA = DEFI_GROUP(
 MA = DEFI_GROUP(
     reuse=MA,
     MAILLAGE=MA,
-    CREA_GROUP_MA=(
-        _F(NOM="HAUT", GROUP_MA="GM1"),
-        _F(NOM="BAS", GROUP_MA="GM3"),
-        _F(NOM="DROITE", GROUP_MA="GM4"),
-        _F(NOM="J_G", GROUP_MA="GM5"),
-        _F(NOM="J_D", GROUP_MA="GM2"),
-        _F(NOM="J_H", GROUP_MA="GM7"),
-        _F(NOM="J_B", GROUP_MA="GM6"),
-        _F(NOM="MATRICE", GROUP_MA="GM8"),
-        _F(NOM="JOINT", GROUP_MA="GM9"),
-    ),
     CREA_GROUP_NO=(
-        _F(NOM="HAUT", GROUP_MA="GM1"),
-        _F(NOM="J_H", GROUP_MA="GM7"),
-        _F(NOM="JOINT", GROUP_MA="GM9"),
-        _F(NOM="NO_JHD", GROUP_MA="GM10"),
-        _F(NOM="NO_JBD", GROUP_MA="GM11"),
-        _F(NOM="NO_JMD", GROUP_MA="GM12"),
-        _F(NOM="NO_JHG", GROUP_MA="GM13"),
-        _F(NOM="NO_JBG", GROUP_MA="GM14"),
-        _F(
-            NOM="GN_J_D",
-            GROUP_MA="GM2",
-            OPTION="NOEUD_ORDO",
-            GROUP_NO_ORIG="NO_JBD",
-            GROUP_NO_EXTR="NO_JHD",
-        ),
+        _F(GROUP_MA="HAUT"),
+        _F(GROUP_MA="J_H"),
+        _F(GROUP_MA="JOINT"),
         _F(
             NOM="GN_J_G",
-            GROUP_MA="GM5",
+            GROUP_MA="J_G",
             OPTION="NOEUD_ORDO",
             GROUP_NO_ORIG="NO_JBG",
             GROUP_NO_EXTR="NO_JHG",

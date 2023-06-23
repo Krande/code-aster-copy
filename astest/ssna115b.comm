@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -33,40 +33,11 @@ MA = LIRE_MAILLAGE(FORMAT="GMSH", UNITE=19)
 MA = DEFI_GROUP(
     reuse=MA,
     MAILLAGE=MA,
-    CREA_GROUP_MA=(
-        _F(NOM="HAUT", GROUP_MA="GM1"),
-        _F(NOM="BAS", GROUP_MA="GM3"),
-        _F(NOM="DROITE", GROUP_MA="GM4"),
-        _F(NOM="J_G", GROUP_MA="GM5"),
-        _F(NOM="J_D", GROUP_MA="GM2"),
-        _F(NOM="J_H", GROUP_MA="GM7"),
-        _F(NOM="J_B", GROUP_MA="GM6"),
-        _F(NOM="MATRICE", GROUP_MA="GM8"),
-        _F(NOM="JOINT", GROUP_MA="GM9"),
-    ),
     CREA_GROUP_NO=(
-        _F(GROUP_MA="GM1", NOM="HAUT"),
-        _F(GROUP_MA="GM7", NOM="J_H"),
-        _F(GROUP_MA="GM9", NOM="JOINT"),
-        _F(GROUP_MA="GM10", NOM="NO_JHD"),
-        _F(GROUP_MA="GM11", NOM="NO_JBD"),
-        _F(GROUP_MA="GM12", NOM="NO_JMD"),
-        _F(GROUP_MA="GM13", NOM="NO_JHG"),
-        _F(GROUP_MA="GM14", NOM="NO_JBG"),
-        _F(
-            OPTION="NOEUD_ORDO",
-            NOM="GN_J_D",
-            GROUP_MA="GM2",
-            GROUP_NO_ORIG="NO_JBD",
-            GROUP_NO_EXTR="NO_JHD",
-        ),
-        _F(
-            OPTION="NOEUD_ORDO",
-            NOM="GN_J_G",
-            GROUP_MA="GM5",
-            GROUP_NO_ORIG="NO_JBG",
-            GROUP_NO_EXTR="NO_JHG",
-        ),
+        _F(GROUP_MA="HAUT"),
+        _F(GROUP_MA="J_H"),
+        _F(GROUP_MA="JOINT"),
+        _F(NOM="GN_J_G", GROUP_MA="J_G"),
     ),
 )
 
