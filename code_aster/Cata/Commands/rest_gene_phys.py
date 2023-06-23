@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -43,8 +43,8 @@ REST_GENE_PHYS=OPER(nom="REST_GENE_PHYS",op=  75,sd_prod=rest_gene_phys_prod,
                 EXCLUS('INST','LIST_INST','TOUT_INST',
                        'TOUT_ORDRE','NUME_ORDRE','NUME_MODE',),
                 EXCLUS('FREQ','LIST_FREQ'),
-                EXCLUS('MULT_APPUI','CORR_STAT'),
-                EXCLUS('MULT_APPUI','NOEUD','GROUP_NO'),
+                PRESENT_ABSENT("MULT_APPUI", "NOEUD", "GROUP_NO", "MAILLE", "GROUP_MA"),
+                PRESENT_ABSENT("CORR_STAT", "NOEUD", "GROUP_NO", "MAILLE", "GROUP_MA"),
                 EXCLUS('CORR_STAT','NOEUD','GROUP_NO'),
                 EXCLUS('NOEUD','GROUP_NO'),
                 EXCLUS('MAILLE','GROUP_MA'),
