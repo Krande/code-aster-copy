@@ -614,13 +614,13 @@ class Coeur:
         DICCR = {}
         DICCR["GROUP_MA"] = "CREI"
         DICCR["NOM"] = "CREIC"
-        DICCR["PREF_MAILLE"] = "M"
+        DICCR["PREF_MAILLE"] = "MM"
         LISCR2 = []
         LISCR2.append(DICCR)
         DICCR = {}
         DICCR["GROUP_MA"] = "ELA"
         DICCR["NOM"] = "ELAP"
-        DICCR["PREF_MAILLE"] = "M"
+        DICCR["PREF_MAILLE"] = "MM"
         LISCR2.append(DICCR)
 
         _MA = CREA_MAILLAGE(MAILLAGE=_MA1, INFO=1, CREA_MAILLE=tuple(LISCR2))
