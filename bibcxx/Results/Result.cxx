@@ -655,16 +655,19 @@ void Result::setField( const FieldOnNodesComplexPtr field, const std::string &na
 void Result::setField( const FieldOnCellsRealPtr field, const std::string &name,
                        const ASTERINTEGER storageIndex ) {
     _setFieldBase( name, storageIndex, field, _dictOfMapOfFieldOnCellsReal );
+    _fieldBuilder.addFiniteElementDescriptor( field->getDescription() );
 };
 
 void Result::setField( const FieldOnCellsComplexPtr field, const std::string &name,
                        const ASTERINTEGER storageIndex ) {
     _setFieldBase( name, storageIndex, field, _dictOfMapOfFieldOnCellsComplex );
+    _fieldBuilder.addFiniteElementDescriptor( field->getDescription() );
 };
 
 void Result::setField( const FieldOnCellsLongPtr field, const std::string &name,
                        const ASTERINTEGER storageIndex ) {
     _setFieldBase( name, storageIndex, field, _dictOfMapOfFieldOnCellsLong );
+    _fieldBuilder.addFiniteElementDescriptor( field->getDescription() );
 };
 
 void Result::setField( const ConstantFieldOnCellsChar16Ptr field, const std::string &name,
