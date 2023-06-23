@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -211,7 +211,8 @@ def check_keywords(kwargs):
         kwargs['JONC_ENDO_PLAS'] = check_dis_jvp(kwargs['JONC_ENDO_PLAS'])
     if 'THER_NL' in kwargs:
         kwargs['THER_NL'] = add_enthalpy(kwargs['THER_NL'])
-
+    if "THER_NL_ORTH" in kwargs:
+        kwargs['THER_NL_ORTH'] = add_enthalpy(kwargs["THER_NL_ORTH"])
 
 def check_dis_ecro_trac(keywords):
     """Check for function for DIS_ECRO_TRAC
@@ -490,7 +491,7 @@ def add_enthalpy(keywords):
     """
 
     # Create "Beta" from "Rho_CP" if not given
-    if keywords["BETA"] is None:
+    if keywords.get("BETA") is None:
         beta = Function()
         createEnthalpy(keywords["RHO_CP"], beta)
 
