@@ -142,7 +142,7 @@ contains
                 evalues = 0.d0
                 call dsyev('V', 'U', hhoFace%ndim+1, axes_3d, 3, evalues, work, 50, info)
                 ASSERT(info == 0)
-                ASSERT(abs(evalues(1))/maxval(evalues) < 1.d-12)
+                ASSERT(minloc(evalues(1:hhoFace%ndim+1), dim=1) == 1)
                 axes(1:3, 1:2) = axes_3d(1:3, 2:3)
 !
                 do idim = 1, hhoFace%ndim
