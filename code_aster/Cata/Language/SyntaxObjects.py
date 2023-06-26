@@ -278,9 +278,6 @@ class PartOfSyntax(UIDMixing):
 
     """
     Generic object that describe a piece of syntax.
-
-    Attributes:
-        definition (dict): the syntax description
     """
 
     def __init__(self, curDict):
@@ -780,7 +777,6 @@ class Command(PartOfSyntax):
 
 
 class Operator(Command):
-
     pass
 
 
@@ -809,12 +805,10 @@ class Macro(Command):
 
 
 class Procedure(Command):
-
     pass
 
 
 class Formule(Macro):
-
     pass
 
 

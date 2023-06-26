@@ -169,8 +169,9 @@ PYBIND11_MODULE( libaster, mod ) {
     initAsterModules();
 
     // hide c++ signatures
-    // py::options options;
+    py::options options;
     // options.disable_function_signatures();
+    options.disable_enum_members_docstring();
 
     auto cleanup_callback = []() { jeveux_finalize(); };
     mod.add_object( "_cleanup", py::capsule( cleanup_callback ) );

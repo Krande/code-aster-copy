@@ -94,13 +94,12 @@ def raiseAsterError(idmess="VIDE_1"):
 
 
 class PythonBool:
-    """Members:
+    """Enumeration that represents an extended boolean.
 
-    NONE
-
-    TRUE
-
-    FALSE
+    Attributes:
+        FALSE (int): False is 0
+        NONE (int): None means undefined, is -1
+        TRUE (int): True is 1
     """
 
     # Method resolution order:
@@ -349,20 +348,7 @@ class PhysicalQuantityManager:
 
 
 class EntityType:
-    """Members:
-
-    GroupOfNodesType
-
-    GroupOfCellsType
-
-    AllMeshEntitiesType
-
-    CellType
-
-    NodeType
-
-    NoType
-    """
+    pass
 
     # Method resolution order:
     #     EntityType
@@ -4473,14 +4459,7 @@ class Contact(DataStructure):
 
 
 class ContactAlgo:
-    """Members:
-
-    Lagrangian
-
-    Nitsche
-
-    Penalization
-    """
+    pass
 
     # Method resolution order:
     #     ContactAlgo
@@ -4548,16 +4527,7 @@ class ContactAlgo:
 
 
 class ContactVariant:
-    """Members:
-
-    Empty
-
-    Fast
-
-    Robust
-
-    Symetric
-    """
+    pass
 
     # Method resolution order:
     #     ContactVariant
@@ -4627,12 +4597,7 @@ class ContactVariant:
 
 
 class ContactType:
-    """Members:
-
-    Unilateral
-
-    Bilateral
-    """
+    pass
 
     # Method resolution order:
     #     ContactType
@@ -4698,14 +4663,7 @@ class ContactType:
 
 
 class FrictionAlgo:
-    """Members:
-
-    Lagrangian
-
-    Nitsche
-
-    Penalization
-    """
+    pass
 
     # Method resolution order:
     #     FrictionAlgo
@@ -4773,16 +4731,7 @@ class FrictionAlgo:
 
 
 class FrictionType:
-    """Members:
-
-    Without
-
-    Tresca
-
-    Coulomb
-
-    Stick
-    """
+    pass
 
     # Method resolution order:
     #     FrictionType
@@ -4852,10 +4801,7 @@ class FrictionType:
 
 
 class PairingAlgo:
-    """Members:
-
-    Mortar
-    """
+    pass
 
     # Method resolution order:
     #     PairingAlgo
@@ -4919,14 +4865,7 @@ class PairingAlgo:
 
 
 class InitialState:
-    """Members:
-
-    Interpenetrated
-
-    Yes
-
-    No
-    """
+    pass
 
     # Method resolution order:
     #     InitialState
@@ -7577,16 +7516,7 @@ class RitzBasis(GenericModalBasis):
 
 
 class InterfaceType:
-    """Members:
-
-    MacNeal
-
-    CraigBampton
-
-    HarmonicCraigBampton
-
-    None
-    """
+    pass
 
     # Method resolution order:
     #     InterfaceType
@@ -7998,34 +7928,7 @@ class MechanicalLoadComplex(DataStructure):
 
 
 class Loads:
-    """Members:
-
-    NodalForce
-
-    ForceOnEdge
-
-    ForceOnFace
-
-    LineicForce
-
-    InternalForce
-
-    ForceOnBeam
-
-    ForceOnShell
-
-    PressureOnPipe
-
-    ImposedDoF
-
-    DistributedPressure
-
-    NormalSpeedOnFace
-
-    WavePressureOnFace
-
-    THMFlux
-    """
+    pass
 
     # Method resolution order:
     #     Loads
@@ -8713,70 +8616,7 @@ class DistributedHydraulicFluxReal(MechanicalLoadReal):
 
 
 class PhysicalQuantityComponent:
-    """Members:
-
-    Dx
-
-    Dy
-
-    Dz
-
-    Drx
-
-    Dry
-
-    Drz
-
-    Temp
-
-    MiddleTemp
-
-    Pres
-
-    Fx
-
-    Fy
-
-    Fz
-
-    Mx
-
-    My
-
-    Mz
-
-    N
-
-    Vy
-
-    Vz
-
-    Mt
-
-    Mfy
-
-    Mfz
-
-    F1
-
-    F2
-
-    F3
-
-    Mf1
-
-    Mf2
-
-    Impe
-
-    Vnor
-
-    Flun
-
-    FlunHydr1
-
-    FlunHydr2
-    """
+    pass
 
     # Method resolution order:
     #     PhysicalQuantityComponent
@@ -9957,14 +9797,7 @@ class GeneralizedModel(DataStructure):
 
 
 class ModelSplitingMethod:
-    """Members:
-
-    Centralized
-
-    SubDomain
-
-    GroupOfCells
-    """
+    pass
 
     # Method resolution order:
     #     ModelSplitingMethod
@@ -10032,12 +9865,7 @@ class ModelSplitingMethod:
 
 
 class GraphPartitioner:
-    """Members:
-
-    Scotch
-
-    Metis
-    """
+    pass
 
     # Method resolution order:
     #     GraphPartitioner
@@ -10281,14 +10109,7 @@ class Model(DataStructure):
 
 
 class Physics:
-    """Members:
-
-    Mechanics
-
-    Thermal
-
-    Acoustic
-    """
+    pass
 
     # Method resolution order:
     #     Physics
@@ -10356,26 +10177,7 @@ class Physics:
 
 
 class Modelings:
-    """Members:
-
-    Axisymmetrical
-
-    Tridimensional
-
-    TridimensionalAbsorbingBoundary
-
-    Planar
-
-    PlaneStrain
-
-    PlaneStress
-
-    DKT
-
-    DKTG
-
-    PlanarBar
-    """
+    pass
 
     # Method resolution order:
     #     Modelings
@@ -13277,7 +13079,7 @@ class ExternalVariableTraits:
 
 
 class externVarEnumInt:
-    """Members:"""
+    pass
 
     # Method resolution order:
     #     externVarEnumInt

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -37,14 +37,7 @@ import sys
 
 
 class Status:
-    """Object that represents the status of an execution.
-
-    Attributes:
-        state (StateOptions): State of the execution.
-        diag (str): State of the execution as string (diagnostic).
-        exicode (int): Exit code.
-        times (list[float]): List of 4 values: cpu, sys, tot, elapsed time.
-    """
+    """Object that represents the status of an execution."""
 
     def __init__(self, state=0, exitcode=-1):
         self._state = state
@@ -53,7 +46,7 @@ class Status:
 
     @property
     def state(self):
-        """StateOptions: Attribute that holds the 'state' property."""
+        """StateOptions: State of the execution."""
         return self._state
 
     @state.setter
@@ -62,12 +55,12 @@ class Status:
 
     @property
     def diag(self):
-        """str: Attribute that holds the 'diag' property."""
+        """str: State of the execution as string (diagnostic)."""
         return StateOptions.name(self._state)
 
     @property
     def exitcode(self):
-        """int: Attribute that holds the 'exitcode' property."""
+        """int: Exit code."""
         return self._exitcode
 
     @exitcode.setter
@@ -76,7 +69,7 @@ class Status:
 
     @property
     def times(self):
-        """list[float]: Attribute that holds the 'times' property."""
+        """list[float]: List of 4 values (cpu, sys, tot, elapsed time)."""
         return self._times
 
     @times.setter

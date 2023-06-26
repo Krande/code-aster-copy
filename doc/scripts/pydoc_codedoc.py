@@ -69,7 +69,7 @@ class CodeDoc(TextDoc):
         def makename(c, m=object.__module__):
             return classname(c, m)
 
-        # CodeDoc: declare class + hide inheriting from pybind11
+        # <CodeDoc: declare class + hide inheriting from pybind11
         title = "class " + self.bold(realname)
         if bases:
             parents = map(makename, bases)
@@ -77,6 +77,7 @@ class CodeDoc(TextDoc):
             if parents:
                 title = title + "(%s)" % ", ".join(parents)
         title += ":"
+        # CodeDoc>
 
         contents = []
         push = contents.append
@@ -90,21 +91,47 @@ class CodeDoc(TextDoc):
             if argspec and argspec != "()":
                 push(name + argspec + "\n")
 
-        # CodeDoc: as multilines string
+        # <CodeDoc: as multilines string
         doc = _format_doc(getdoc(object) or "")
+        # CodeDoc>
         if doc:
             push(doc + "\n")
 
         # List the mro, if non-trivial.
         mro = deque(inspect.getmro(object))
         if len(mro) > 2:
-            # CodeDoc: keep as comment
+            # <CodeDoc: kept as comment
             push("# Method resolution order:")
             for base in mro:
                 push("#     " + makename(base))
+            # CodeDoc>
             push("")
 
-        # CodeDoc: keep as comment
+        # List the built-in subclasses, if any:
+        subclasses = sorted(
+            (
+                str(cls.__name__)
+                for cls in type.__subclasses__(object)
+                if not cls.__name__.startswith("_") and cls.__module__ == "builtins"
+            ),
+            key=str.lower,
+        )
+        no_of_subclasses = len(subclasses)
+        MAX_SUBCLASSES_TO_DISPLAY = 4
+        if subclasses:
+            # <CodeDoc: kept as comment
+            push("# Built-in subclasses:")
+            for subclassname in subclasses[:MAX_SUBCLASSES_TO_DISPLAY]:
+                push("#     " + subclassname)
+            if no_of_subclasses > MAX_SUBCLASSES_TO_DISPLAY:
+                push(
+                    "#     ... and "
+                    + str(no_of_subclasses - MAX_SUBCLASSES_TO_DISPLAY)
+                    + " other subclasses"
+                )
+            # CodeDoc>
+            push("")
+
         # Cute little class to pump out a horizontal rule between sections.
         class HorizontalRule:
             def __init__(self):
@@ -112,58 +139,61 @@ class CodeDoc(TextDoc):
 
             def maybe(self):
                 if self.needone:
+                    # CodeDoc: keep as comment
                     push("#" + "-" * 70)
+                    # CodeDoc>
                 self.needone = 1
 
         hr = HorizontalRule()
 
         def spill(msg, attrs, predicate):
             ok, attrs = _split_list(attrs, predicate)
-            # CodeDoc: ignore inherited objects
+            # <CodeDoc: ignore inherited objects
             if ok and not _inherited_from(msg):
                 hr.maybe()
                 # CodeDoc: keep as comment
                 push("# " + msg)
+                # CodeDoc>
                 for name, kind, homecls, value in ok:
                     try:
                         value = getattr(object, name)
                     except Exception:
                         # Some descriptors may meet a failure in their __get__.
                         # (bug #1785)
-                        push(self._docdescriptor(name, value, mod))
+                        push(self.docdata(value, name, mod))
                     else:
                         push(self.document(value, name, mod, object))
             return attrs
 
         def spilldescriptors(msg, attrs, predicate):
             ok, attrs = _split_list(attrs, predicate)
-            # CodeDoc: ignore inherited objects
+            # <CodeDoc: ignore inherited objects
             if ok and not _inherited_from(msg):
                 hr.maybe()
                 push("# " + msg)
+                # CodeDoc>
                 for name, kind, homecls, value in ok:
-                    push(self._docdescriptor(name, value, mod))
+                    push(self.docdata(value, name, mod))
             return attrs
 
         def spilldata(msg, attrs, predicate):
             ok, attrs = _split_list(attrs, predicate)
             if ok:
                 hr.maybe()
-                # CodeDoc: keep as comment
+                # <CodeDoc: keep as comment
                 push("# " + msg)
+                # CodeDoc>
                 for name, kind, homecls, value in ok:
-                    if callable(value) or inspect.isdatadescriptor(value):
-                        doc = getdoc(value)
-                    else:
-                        doc = None
+                    doc = getdoc(value)
                     try:
                         obj = getattr(object, name)
                     except AttributeError:
                         obj = homecls.__dict__[name]
-                    # CodeDoc: do not export data, except pybind11 Enums
+                    # <CodeDoc: do not export data, except pybind11 Enums
                     if hasattr(obj, "name") and hasattr(obj, "value"):
                         if obj.name not in builtins.__dict__:
                             push(obj.name + " = " + str(obj.value) + "\n")
+                    # CodeDoc>
             return attrs
 
         attrs = [
@@ -179,7 +209,7 @@ class CodeDoc(TextDoc):
                 thisclass = attrs[0][2]
             attrs, inherited = _split_list(attrs, lambda t: t[2] is thisclass)
 
-            if thisclass is builtins.object:
+            if object is not builtins.object and thisclass is builtins.object:
                 attrs = inherited
                 continue
             elif thisclass is object:
@@ -194,19 +224,26 @@ class CodeDoc(TextDoc):
             attrs = spill("Class methods %s:\n" % tag, attrs, lambda t: t[1] == "class method")
             attrs = spill("Static methods %s:\n" % tag, attrs, lambda t: t[1] == "static method")
             attrs = spilldescriptors(
-                "Data descriptors %s:\n" % tag, attrs, lambda t: t[1] == "data descriptor"
+                "Readonly properties %s:\n" % tag,
+                attrs,
+                lambda t: t[1] == "readonly property",
+            )
+            attrs = spilldescriptors(
+                "Data descriptors %s:\n" % tag,
+                attrs,
+                lambda t: t[1] == "data descriptor",
             )
             attrs = spilldata(
                 "Data and other attributes %s:\n" % tag, attrs, lambda t: t[1] == "data"
             )
 
-            assert attrs == []
+            assert attrs == [], attrs
             attrs = inherited
 
         contents = "\n".join(contents)
         if not contents:
             return title + "\n"
-        # CodeDoc: only spaces
+        # <CodeDoc>: only spaces
         return title + "\n" + self.indent(contents.rstrip(), "    ") + "\n"
 
     def docroutine(self, object, name=None, mod=None, cl=None):
@@ -225,21 +262,29 @@ class CodeDoc(TextDoc):
                     note = " method of %s instance" % classname(object.__self__.__class__, mod)
                 else:
                     note = " unbound %s method" % classname(imclass, mod)
-        # CodeDoc: skipped
+        # <CodeDoc: skipped
         # exception for "method of builtins.PyCapsule" as created by pybind
         if note and "method of builtins.PyCapsule" not in note:
             return ""
         note = ""
+        # CodeDoc>
 
-        # CodeDoc: just keep the name
+        if inspect.iscoroutinefunction(object) or inspect.isasyncgenfunction(object):
+            asyncqualifier = "async "
+        else:
+            asyncqualifier = ""
+
+        # <CodeDoc: just keep the name
         if True or name == realname:
+            # CodeDoc>
             title = self.bold(realname)
         else:
             if cl and inspect.getattr_static(cl, realname, []) is object:
                 skipdocs = 1
             title = self.bold(name) + " = " + realname
-        # CodeDoc: declare routine
+        # <CodeDoc: declare routine
         title = "def " + title
+        # CodeDoc>
         argspec = None
 
         if inspect.isroutine(object):
@@ -258,7 +303,7 @@ class CodeDoc(TextDoc):
         if not argspec:
             argspec = "(...)"
 
-        # CodeDoc: search for argspec from pybind11 docstring
+        # <CodeDoc: search for argspec from pybind11 docstring
         if skipdocs:
             doc = ""
         else:
@@ -272,24 +317,27 @@ class CodeDoc(TextDoc):
         doc = self.indent(_format_doc(doc)).rstrip() + "\n"
 
         argspec += ":"
-        decl = title + argspec + note
+        # decl = asyncqualifier + title + argspec + note
+        decl = asyncqualifier + title + argspec + note
+        # CodeDoc>
         return decl + "\n" + doc
 
-    def _docdescriptor(self, name, value, mod):
+    def docdata(self, object, name=None, mod=None, cl=None):
+        """Produce text documentation for a data descriptor."""
         results = []
         push = results.append
 
         # CodeDoc: define properties
         # why docproperty is not called?
         if name:
-            if name in ("__weakref__",):
+            if name in ("__weakref__", "__dict__"):
                 return ""
-            assert isinstance(value, property), "unsupported: %s: %s" % (name, value)
+            assert isinstance(object, property), "unsupported: %s: %s" % (name, object)
             push("@property" + "\n")
             push("def " + self.bold(name) + "(self):")
             # push(self.bold(name))
             push("\n")
-        doc = _format_doc(getdoc(value) or "")
+        doc = _format_doc(getdoc(object) or "")
         if doc:
             push(self.indent(doc))
             push("\n")

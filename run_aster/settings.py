@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,12 +36,7 @@ DEPRECATED = "__DEPRECATED__"
 
 
 class AbstractParameter:
-    """An abstract parameter that must be subclassed to hold a typed value.
-
-    Attributes:
-        name (str): Parameter name.
-        value (misc): Value of the parameter.
-    """
+    """An abstract parameter that must be subclassed to hold a typed value."""
 
     def __init__(self, name):
         self._name = name
@@ -49,12 +44,12 @@ class AbstractParameter:
 
     @property
     def name(self):
-        """str: Attribute that holds the 'name' property."""
+        """str: Parameter name."""
         return self._name
 
     @property
     def value(self):
-        """misc: Attribute that holds the 'value' property."""
+        """misc: Value of the parameter."""
         return self._value
 
     def convert(self, value):
