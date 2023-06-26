@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,6 +25,11 @@ cata_msg = {
 Il faut que ces deux maillages soient les mêmes.
 Pour créer un champ de déplacement adapté au maillage, on peut utiliser la commande PROJ_CHAMP.
 """
+    ),
+    2: _(
+        """Opération DECOUPE_LAC : 
+pour au moins une maille surfacique déclarée dans GROUP_MA_ESCL, 
+on ne trouve pas de maille volumique dont cette maille serait une des faces."""
     ),
     3: _("""Pour l'opération DECOUPE_LAC. Groupe de mailles %(i1)d - Nombre de mailles %(i2)d."""),
     4: _(

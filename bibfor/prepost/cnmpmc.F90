@@ -28,6 +28,7 @@ subroutine cnmpmc(main, nbma, lima, mpmc)
 #include "asterfort/utlisi.h"
 #include "asterfort/jelira.h"
 #include "asterfort/assert.h"
+#include "asterfort/utmess.h"
 !
     integer :: nbma, lima(nbma), mpmc(nbma), inc1, inc2, aux, jlino
     integer :: jlmat, ntrou, nbnoma, dima, macou, nocou
@@ -79,7 +80,6 @@ subroutine cnmpmc(main, nbma, lima, mpmc)
         do inc2 = 2, nbnoma
             nocou = zi(jlino+inc2-1)
             call jelira(jexnum(conneo, nocou), 'LONMAX', nlico2)
-
             call jeveuo(jexnum(conneo, nocou), 'L', lico2)
             call utlisi('INTER', zi(jlico3), nlico1, zi(lico2), nlico2, &
                         zi(jlico4), nlico1, ntrou)
@@ -90,11 +90,11 @@ subroutine cnmpmc(main, nbma, lima, mpmc)
             nlico1 = ntrou
 !
         end do
-        if (ntrou .gt. 0) then
-            call utlisi('DIFFE', zi(jlico3), nlico1, lima, nbma, var, 1, ntrou)
+        if (ntrou .gt. 1) then
+            call utlisi('DIFFE', zi(jlico3), nlico1, [macou], 1, var, 1, ntrou)
             mpmc(inc1) = var(1)
         else
-            ASSERT(.false.)
+            call utmess('F', 'MESH1_2')
         end if
         call jedetr(lico3)
         call jedetr(lico4)
