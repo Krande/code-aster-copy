@@ -2151,13 +2151,13 @@ class FieldOnCellsReal(DataField):
         """
 
     def transform(self, func):
-        """Apply Function to each value of _ValuesList of the FieldOnCells object.
+        """Apply a function to each value of the object.
 
         Arguments:
-            func (Function): Callable Python object
+            func (*callable*): Callable Python object
 
         Returns:
-            FieldOnCellsReal: New FieldOnCells object with the trasformed values
+            FieldOnCellsReal: New FieldOnCells object with the transformed values
         """
 
 
@@ -2306,13 +2306,13 @@ class FieldOnCellsComplex(DataField):
         """
 
     def transform(self, func):
-        """Apply Function to each value of _ValuesList of the FieldOnCells object.
+        """Apply a function to each value of the object.
 
         Arguments:
-            func (Function): Callable Python object
+            func (*callable*): Callable Python object
 
         Returns:
-            bool: New FieldOnCells object with the trasformed values
+            FieldOnCellsComplex: New FieldOnCells object with the transformed values
         """
 
 

@@ -284,15 +284,15 @@ class FieldOnCells : public DataField {
     };
 
     /**
-     * @brief Transormer les valeurs de _values en appliquant
-     *         la fonction "func" à chaque valeur
-     * @return renvoie un nouveau objet de FieldOnCells
+     * @brief Transformer les valeurs de _values en appliquant
+     *        la fonction "func" à chaque valeur
+     * @return renvoie un nouvel objet de FieldOnCells
      *         avec les valeurs transformées
      */
-    template < class type = ValueType >
-    typename std::enable_if< std::is_same< type, ASTERDOUBLE >::value,
+    template < class T = ValueType >
+    typename std::enable_if< std::is_same< T, ASTERDOUBLE >::value,
                              FieldOnCells< ValueType > >::type
-    transform( py::object &func ) {
+    transform( py::object &func ) const {
         if ( !PyCallable_Check( func.ptr() ) )
             raiseAsterError( "Input parameter to the transform \
         method should be a callable Python object" );
@@ -316,10 +316,10 @@ class FieldOnCells : public DataField {
         return tmp;
     };
 
-    template < class type = ValueType >
-    typename std::enable_if< std::is_same< type, ASTERCOMPLEX >::value,
+    template < class T = ValueType >
+    typename std::enable_if< std::is_same< T, ASTERCOMPLEX >::value,
                              FieldOnCells< ValueType > >::type
-    transform( py::object &func ) {
+    transform( py::object &func ) const {
         if ( !PyCallable_Check( func.ptr() ) )
             raiseAsterError( "Input parameter to the transform \
         method should be a callable Python object" );
@@ -587,8 +587,8 @@ class FieldOnCells : public DataField {
      * @brief Comput norm
      * @param normType Type of norm ("NORM_1","NORM_2","NORM_INFINITY")
      */
-    template < class type = ValueType >
-    typename std::enable_if< std::is_same< type, ASTERDOUBLE >::value, ASTERDOUBLE >::type
+    template < class T = ValueType >
+    typename std::enable_if< std::is_same< T, ASTERDOUBLE >::value, ASTERDOUBLE >::type
     norm( const std::string normType ) const {
         ASTERDOUBLE norme = 0.0;
         ASTERINTEGER beg = 0, end = 0, nbgrp = 0;
@@ -675,8 +675,8 @@ class FieldOnCells : public DataField {
      * @brief Dot product
      * @param tmp object FieldOnCellsPtr
      */
-    template < class type = ValueType >
-    typename std::enable_if< std::is_same< type, ASTERDOUBLE >::value, ASTERDOUBLE >::type
+    template < class T = ValueType >
+    typename std::enable_if< std::is_same< T, ASTERDOUBLE >::value, ASTERDOUBLE >::type
     dot( const FieldOnCellsPtr &tmp ) const {
         tmp->updateValuePointers();
         _values->updateValuePointer();
