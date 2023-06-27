@@ -43,6 +43,10 @@
 class IncompleteMesh : public Mesh {
 
     VectorLong _range;
+    VectorLong _nodeFamily;
+    VectorLong _cellFamily;
+    std::vector< VectorString > _nodeFamGroups;
+    std::vector< VectorString > _cellFamGroups;
 
   public:
     /**
@@ -61,13 +65,27 @@ class IncompleteMesh : public Mesh {
      */
     IncompleteMesh( const std::string &name ) : Mesh( name, "MAILLAGE_I" ) {};
 
+    void addFamily( int id, VectorString groups );
+
     ASTERINTEGER getDimension() const;
+
+    VectorLong getCellFamily() const { return _cellFamily; };
+
+    std::vector< VectorString > getCellFamilyGroups() const { return _cellFamGroups; };
+
+    std::vector< VectorString > getNodeFamilyGroups() const { return _nodeFamGroups; };
+
+    VectorLong getNodeFamily() const { return _nodeFamily; };
 
     const VectorLong &getRange() const { return _range; };
 
     bool isIncomplete() const { return true; };
 
     bool isParallel() const { return false; };
+
+    void setCellFamily( const VectorLong &cf );
+
+    void setNodeFamily( const VectorLong &nf ) { _nodeFamily = nf; };
 
     void setRange( const VectorLong &range ) { _range = range; };
 };

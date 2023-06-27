@@ -1,6 +1,9 @@
+#ifndef MEDMESHINTERFACE_H_
+#define MEDMESHINTERFACE_H_
+
 /**
- * @file IncompleteMeshInterface.cxx
- * @brief Interface python de IncompleteMesh
+ * @file MedMeshInterface.h
+ * @brief Fichier entete de la classe MedMeshInterface
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
@@ -21,23 +24,12 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* person_in_charge: nicolas.sellenet at edf.fr */
-
-#include "PythonBindings/IncompleteMeshInterface.h"
+#include "astercxx.h"
 
 #include "aster_pybind.h"
 
-#ifdef ASTER_HAVE_MPI
+#include "IOManager/MedMesh.h"
 
-void exportIncompleteMeshToPython( py::module_ &mod ) {
+void exportMedMeshToPython( py::module_ &mod );
 
-    py::class_< IncompleteMesh, IncompleteMesh::IncompleteMeshPtr, Mesh >( mod, "IncompleteMesh" )
-        .def( py::init( &initFactoryPtr< IncompleteMesh > ) )
-        .def( py::init( &initFactoryPtr< IncompleteMesh, std::string > ) )
-        .def( "_addFamily", &IncompleteMesh::addFamily )
-        .def( "_setCellFamily", &IncompleteMesh::setCellFamily )
-        .def( "_setNodeFamily", &IncompleteMesh::setNodeFamily )
-        .def( "_setRange", &IncompleteMesh::setRange );
-};
-
-#endif /* ASTER_HAVE_MPI */
+#endif /* MEDMESHINTERFACE_H_ */

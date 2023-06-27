@@ -30,6 +30,22 @@
 #include "ParallelUtilities/AsterMPI.h"
 #include "ParallelUtilities/CommGraph.h"
 
+void buildFastConnectivity( const BaseMeshPtr &mesh, VectorOfVectorsLong &connex ) {
+    const auto &jvConnex = mesh->getConnectivity();
+    jvConnex->build();
+    const auto size = jvConnex->size();
+    connex = VectorOfVectorsLong( size );
+    for ( int i = 1; i <= size; ++i ) {
+        auto &connexI = connex[i - 1];
+        const auto &jvConnexI = *( ( *jvConnex )[i] );
+        const auto &curSize = jvConnexI.size();
+        connexI = VectorLong( curSize );
+        for ( int j = 0; j < curSize; ++j ) {
+            connexI[j] = jvConnexI[j];
+        }
+    }
+}
+
 void MeshConnectionGraph::buildFromIncompleteMesh( const IncompleteMeshPtr &mesh ) {
     const auto rank = getMPIRank();
     const auto nbProcs = getMPISize();
@@ -37,9 +53,9 @@ void MeshConnectionGraph::buildFromIncompleteMesh( const IncompleteMeshPtr &mesh
     _range = mesh->getRange();
     VectorLong allRanges;
     AsterMPI::all_gather( _range, allRanges );
-
     const auto &reverseConnect = mesh->buildReverseConnectivity();
-    const auto connect = mesh->getConnectivityExplorer();
+    VectorOfVectorsLong fastConnect;
+    buildFastConnectivity( mesh, fastConnect );
 
     int curProc = 0, minNodeId = allRanges[0];
     const auto connectEnd = reverseConnect.end();
@@ -54,7 +70,7 @@ void MeshConnectionGraph::buildFromIncompleteMesh( const IncompleteMeshPtr &mesh
         if ( curIter != connectEnd ) {
             const auto elemList = curIter->second;
             for ( const auto &elemId : elemList ) {
-                for ( const auto &nodeId2 : connect[elemId] ) {
+                for ( const auto &nodeId2 : fastConnect[elemId] ) {
                     if ( nodeId2 != nodeId ) {
                         if ( curProc == rank ) {
                             graph[nodeId - minNodeId - 1].insert( nodeId2 - 1 );
@@ -83,10 +99,12 @@ void MeshConnectionGraph::buildFromIncompleteMesh( const IncompleteMeshPtr &mesh
                 }
             }
             ++curProc;
-            minNodeId = allRanges[2 * curProc];
             if ( curProc < nbProcs ) {
-                const auto size = allRanges[2 * curProc + 1] - allRanges[2 * curProc];
-                foundConnections = std::vector< std::set< ASTERINTEGER > >( size );
+                minNodeId = allRanges[2 * curProc];
+                if ( curProc < nbProcs ) {
+                    const auto size = allRanges[2 * curProc + 1] - allRanges[2 * curProc];
+                    foundConnections = std::vector< std::set< ASTERINTEGER > >( size );
+                }
             }
         }
     }
@@ -99,7 +117,7 @@ void MeshConnectionGraph::buildFromIncompleteMesh( const IncompleteMeshPtr &mesh
         if ( proc == -1 )
             continue;
         VectorInt tmp( 1, -1 );
-        VectorLong connect;
+        VectorLong connect2;
         if ( rank > proc ) {
             tmp[0] = connections[proc].size();
             AsterMPI::send( tmp, proc, tag );
@@ -108,14 +126,14 @@ void MeshConnectionGraph::buildFromIncompleteMesh( const IncompleteMeshPtr &mesh
             }
             AsterMPI::receive( tmp, proc, tag );
             if ( tmp[0] != 0 ) {
-                connect = VectorLong( tmp[0] );
-                AsterMPI::receive( connect, proc, tag );
+                connect2 = VectorLong( tmp[0] );
+                AsterMPI::receive( connect2, proc, tag );
             }
         } else {
             AsterMPI::receive( tmp, proc, tag );
             if ( tmp[0] != 0 ) {
-                connect = VectorLong( tmp[0] );
-                AsterMPI::receive( connect, proc, tag );
+                connect2 = VectorLong( tmp[0] );
+                AsterMPI::receive( connect2, proc, tag );
             }
             tmp[0] = connections[proc].size();
             AsterMPI::send( tmp, proc, tag );
@@ -123,8 +141,8 @@ void MeshConnectionGraph::buildFromIncompleteMesh( const IncompleteMeshPtr &mesh
                 AsterMPI::send( connections[proc], proc, tag );
             }
         }
-        const auto vectEnd = connect.end();
-        auto curIter = connect.begin();
+        const auto vectEnd = connect2.end();
+        auto curIter = connect2.begin();
         while ( curIter != vectEnd ) {
             const auto nodeId = ( *curIter );
             ++curIter;

@@ -273,6 +273,51 @@ Documentation of all other types.
 
 
 ********************************************************************************
+:py:class:`~code_aster.Objects.MedFamily` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.MedFamily
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
+:py:class:`~code_aster.Objects.MedField` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.MedField
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
+:py:class:`~code_aster.Objects.MedFileReader` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.MedFileReader
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
+:py:class:`~code_aster.Objects.MedMesh` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.MedMesh
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
+:py:class:`~code_aster.Objects.MedVector` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.MedVector
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
 :py:class:`~code_aster.Objects.MeshBalancer` object
 ********************************************************************************
 

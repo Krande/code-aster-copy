@@ -1,6 +1,6 @@
 /**
- * @file IncompleteMeshInterface.cxx
- * @brief Interface python de IncompleteMesh
+ * @file MedProfile.h
+ * @brief Fichier entete de la classe MedProfile
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
@@ -23,21 +23,31 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include "PythonBindings/IncompleteMeshInterface.h"
+#include "MedUtilities.h"
 
-#include "aster_pybind.h"
+#include "Utilities/Tools.h"
 
-#ifdef ASTER_HAVE_MPI
+#include <cstring>
+#include <iostream>
 
-void exportIncompleteMeshToPython( py::module_ &mod ) {
+// aslint: disable=C3012
 
-    py::class_< IncompleteMesh, IncompleteMesh::IncompleteMeshPtr, Mesh >( mod, "IncompleteMesh" )
-        .def( py::init( &initFactoryPtr< IncompleteMesh > ) )
-        .def( py::init( &initFactoryPtr< IncompleteMesh, std::string > ) )
-        .def( "_addFamily", &IncompleteMesh::addFamily )
-        .def( "_setCellFamily", &IncompleteMesh::setCellFamily )
-        .def( "_setNodeFamily", &IncompleteMesh::setNodeFamily )
-        .def( "_setRange", &IncompleteMesh::setRange );
+std::vector< std::string > splitChar( char *toSplit, int nbElem, int size ) {
+    std::vector< std::string > toReturn;
+    for ( int i = 0; i < nbElem; ++i ) {
+        char *tmp = toSplit + i * size;
+        const auto str = std::string( tmp, std::min( strlen( tmp ), (size_t)size ) );
+        toReturn.push_back( strip( str ) );
+    }
+    return toReturn;
 };
 
-#endif /* ASTER_HAVE_MPI */
+std::pair< int, int > splitEntitySet( int nbElemT, int rank, int nbProcs ) {
+    int nbElemL = nbElemT / nbProcs;
+    int start = rank * nbElemL + 1;
+    if ( rank == nbProcs - 1 ) {
+        const auto end = nbProcs * nbElemL;
+        nbElemL = nbElemL - ( end - nbElemT );
+    }
+    return {nbElemL, start};
+};

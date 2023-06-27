@@ -1,6 +1,9 @@
+#ifndef MEDUTILITIES_H_
+#define MEDUTILITIES_H_
+
 /**
- * @file IncompleteMeshInterface.cxx
- * @brief Interface python de IncompleteMesh
+ * @file MedUtilities.h
+ * @brief Fichier entete de la classe MedUtilities
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
@@ -23,21 +26,17 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include "PythonBindings/IncompleteMeshInterface.h"
+#include "med.h"
 
-#include "aster_pybind.h"
+#include <string>
+#include <vector>
 
-#ifdef ASTER_HAVE_MPI
+// aslint: disable=C3012
 
-void exportIncompleteMeshToPython( py::module_ &mod ) {
+/** @brief split char* in nbElem std::string of size size */
+std::vector< std::string > splitChar( char *toSplit, int nbElem, int size );
 
-    py::class_< IncompleteMesh, IncompleteMesh::IncompleteMeshPtr, Mesh >( mod, "IncompleteMesh" )
-        .def( py::init( &initFactoryPtr< IncompleteMesh > ) )
-        .def( py::init( &initFactoryPtr< IncompleteMesh, std::string > ) )
-        .def( "_addFamily", &IncompleteMesh::addFamily )
-        .def( "_setCellFamily", &IncompleteMesh::setCellFamily )
-        .def( "_setNodeFamily", &IncompleteMesh::setNodeFamily )
-        .def( "_setRange", &IncompleteMesh::setRange );
-};
+/** @brief parallel split a set of element (used for med filters) */
+std::pair< int, int > splitEntitySet( int nbElemT, int rank, int nbProcs );
 
-#endif /* ASTER_HAVE_MPI */
+#endif /* MEDUTILITIES_H_ */

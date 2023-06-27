@@ -29,6 +29,7 @@
 
 #include "aster_mpi.h"
 
+#include "IOManager/MedVector.h"
 #include "MemoryManager/JeveuxCollection.h"
 #include "MemoryManager/JeveuxString.h"
 #include "MemoryManager/JeveuxVector.h"
@@ -63,6 +64,8 @@ int getSize( const std::vector< T > *in ) {
     return 1;
 };
 
+int getSize( const MedVector::ElementValue &in );
+
 template < typename T >
 int getTotalSize( const std::vector< T > &toCopy ) {
     return 0;
@@ -83,6 +86,8 @@ int getTotalSize( const JeveuxCollectionClass< T > &toCopy ) {
     return toCopy.totalSize();
 };
 
+int getTotalSize( const MedVector &toCopy );
+
 template < typename T >
 const T *getAddress( const std::vector< T > &toCopy ) {
     return &toCopy[0];
@@ -96,11 +101,6 @@ T *getAddress( std::vector< T > &toCopy ) {
 template < typename T >
 T *getAddress( const JeveuxVector< T > &toCopy ) {
     return toCopy->getDataPtr();
-};
-
-template < typename T >
-T *getAddress( const JeveuxCollection< T > &toCopy ) {
-    return &( *toCopy )[0][0];
 };
 
 template < typename T >
@@ -136,25 +136,6 @@ struct ValueType< JeveuxVector< T > > {
     typedef T value_type;
 };
 
-// template < typename T >
-// typename std::enable_if< std::is_integral< T >::value, T >::type
-// T& getOccurence( T& )
-
-template < typename T >
-const std::vector< T > *getOccurence( const std::vector< std::vector< T > > &in, const int &iPos ) {
-    return &in[iPos];
-};
-
-template < typename T >
-std::vector< T > *getOccurence( std::vector< std::vector< T > > &in, const int &iPos ) {
-    return &in[iPos];
-};
-
-template < typename T >
-JeveuxCollectionObject< T > getOccurence( const JeveuxCollection< T > &in, const int &iPos ) {
-    return ( *in )[iPos];
-};
-
 template < typename T >
 struct StartPosition;
 
@@ -166,6 +147,11 @@ struct StartPosition< std::vector< std::vector< T > > > {
 template < typename T >
 struct StartPosition< JeveuxCollectionClass< T > > {
     static constexpr int value = 1;
+};
+
+template <>
+struct StartPosition< MedVector > {
+    static constexpr int value = 0;
 };
 
 template < typename T >
@@ -183,6 +169,8 @@ void allocate( JeveuxCollectionClass< T > &in, const int &size1, const int &size
     in.allocateContiguousNumbered( size1, size2 );
 };
 
+void allocate( MedVector &in, const int &size1, const int &size2 );
+
 template < typename T >
 void update( const std::vector< T > &in ) {};
 
@@ -194,6 +182,8 @@ void update( JeveuxCollectionObject< T > in ) {
     in->updateValuePointer();
 };
 
+void update( MedVector::ElementValue in );
+
 template < typename T >
 void allocateOccurence( std::vector< std::vector< T > > &in, const int &pos, const int &size ) {
     in[pos] = std::vector< T >( size );
@@ -204,29 +194,24 @@ void allocateOccurence( JeveuxCollectionClass< T > &in, const int &pos, const in
     in.allocateObject( pos, size );
 };
 
-template < typename T >
-const T &getValue( const std::vector< T > &in, const int &pos ) {
-    return in[pos];
-};
+void allocateOccurence( MedVector &in, const int &pos, const int &size );
 
 template < typename T >
-const T getValue( const std::vector< T > *in, const int &pos ) {
-    return ( *in )[pos];
+struct ObjectTemplateType;
+
+template <>
+struct ObjectTemplateType< MedVector > {
+    typedef double value_type;
 };
 
-template < typename T >
-const T &getValue( const JeveuxCollectionObject< T > &in, const int &pos ) {
-    return ( *in )[pos];
+template <>
+struct ObjectTemplateType< JeveuxCollectionClass< ASTERINTEGER > > {
+    typedef ASTERINTEGER value_type;
 };
 
-template < typename T >
-void setValue( std::vector< T > *in, const int &pos, const T &val ) {
-    ( *in )[pos] = val;
-};
-
-template < typename T >
-void setValue( JeveuxCollectionObject< T > &in, const int &pos, const T &val ) {
-    ( *in )[pos] = val;
+template <>
+struct ObjectTemplateType< VectorOfVectorsLong > {
+    typedef ASTERINTEGER value_type;
 };
 
 #endif /* TEMPLATEVECTORTOOLS_H_ */

@@ -1,6 +1,6 @@
 /**
- * @file IncompleteMeshInterface.cxx
- * @brief Interface python de IncompleteMesh
+ * @file MedFamilyInterface.cxx
+ * @brief Interface python de MedFamily
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
@@ -23,21 +23,20 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include "PythonBindings/IncompleteMeshInterface.h"
+#include "PythonBindings/MedFamilyInterface.h"
 
 #include "aster_pybind.h"
 
-#ifdef ASTER_HAVE_MPI
+// Not DataStructures
+// aslint: disable=C3006
 
-void exportIncompleteMeshToPython( py::module_ &mod ) {
+void exportMedFamilyToPython( py::module_ &mod ) {
 
-    py::class_< IncompleteMesh, IncompleteMesh::IncompleteMeshPtr, Mesh >( mod, "IncompleteMesh" )
-        .def( py::init( &initFactoryPtr< IncompleteMesh > ) )
-        .def( py::init( &initFactoryPtr< IncompleteMesh, std::string > ) )
-        .def( "_addFamily", &IncompleteMesh::addFamily )
-        .def( "_setCellFamily", &IncompleteMesh::setCellFamily )
-        .def( "_setNodeFamily", &IncompleteMesh::setNodeFamily )
-        .def( "_setRange", &IncompleteMesh::setRange );
+    py::class_< MedFamily, MedFamily::MedFamilyPtr >( mod, "MedFamily" )
+        .def( "getGroups", &MedFamily::getGroups, R"(
+Get list of groups in family )" )
+        .def( "getName", &MedFamily::getName, R"(
+Get family name )" )
+        .def( "getId", &MedFamily::getId, R"(
+Get family med id )" );
 };
-
-#endif /* ASTER_HAVE_MPI */

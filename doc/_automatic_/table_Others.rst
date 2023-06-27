@@ -39,6 +39,11 @@
    * - :py:class:`~code_aster.Objects.Loads`
    * - :py:class:`~code_aster.Objects.LocalBeamForceReal`
    * - :py:class:`~code_aster.Objects.LocalShellForceReal`
+   * - :py:class:`~code_aster.Objects.MedFamily`
+   * - :py:class:`~code_aster.Objects.MedField`
+   * - :py:class:`~code_aster.Objects.MedFileReader`
+   * - :py:class:`~code_aster.Objects.MedMesh`
+   * - :py:class:`~code_aster.Objects.MedVector`
    * - :py:class:`~code_aster.Objects.MeshBalancer`
    * - :py:class:`~code_aster.Objects.MeshConnectionGraph`
    * - :py:class:`~code_aster.Objects.MeshEntity`

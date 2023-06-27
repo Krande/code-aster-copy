@@ -54,7 +54,19 @@ Build balancer on an IncompleteMesh or a Mesh
 Arguments:
     mesh: mesh to balance
 )",
-              py::arg( "mesh" ) );
+              py::arg( "mesh" ) )
+        .def( "getCellObjectBalancer", &MeshBalancer::getCellObjectBalancer, R"(
+Get on cells object balancer
+
+Returns:
+    balancer: object balancer
+)" )
+        .def( "getNodeObjectBalancer", &MeshBalancer::getNodeObjectBalancer, R"(
+Get on nodes object balancer
+
+Returns:
+    balancer: object balancer
+)" );
 };
 
 #endif /* ASTER_HAVE_MPI */

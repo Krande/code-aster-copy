@@ -1,6 +1,9 @@
+#ifndef MEDTYPES_H_
+#define MEDTYPES_H_
+
 /**
- * @file IncompleteMeshInterface.cxx
- * @brief Interface python de IncompleteMesh
+ * @file MedTypes.h
+ * @brief Fichier entete de la classe MedProfile
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
@@ -23,21 +26,11 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include "PythonBindings/IncompleteMeshInterface.h"
+#include "med.h"
 
-#include "aster_pybind.h"
+/** @brief med types used in code_aster */
+constexpr std::array< med_geometry_type, 20 > medTypes = {1,   102, 103, 104, 203, 206, 207,
+                                                          204, 208, 209, 304, 310, 306, 315,
+                                                          318, 305, 313, 308, 320, 327};
 
-#ifdef ASTER_HAVE_MPI
-
-void exportIncompleteMeshToPython( py::module_ &mod ) {
-
-    py::class_< IncompleteMesh, IncompleteMesh::IncompleteMeshPtr, Mesh >( mod, "IncompleteMesh" )
-        .def( py::init( &initFactoryPtr< IncompleteMesh > ) )
-        .def( py::init( &initFactoryPtr< IncompleteMesh, std::string > ) )
-        .def( "_addFamily", &IncompleteMesh::addFamily )
-        .def( "_setCellFamily", &IncompleteMesh::setCellFamily )
-        .def( "_setNodeFamily", &IncompleteMesh::setNodeFamily )
-        .def( "_setRange", &IncompleteMesh::setRange );
-};
-
-#endif /* ASTER_HAVE_MPI */
+#endif /* MEDTYPES_H_ */

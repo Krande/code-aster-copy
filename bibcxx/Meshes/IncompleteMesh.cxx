@@ -28,6 +28,25 @@
 
 #include "Meshes/IncompleteMesh.h"
 
+void IncompleteMesh::addFamily( int id, VectorString groups ) {
+    if ( id > 0 ) {
+        const auto size = _nodeFamGroups.size();
+        if ( ( id - 1 ) >= size ) {
+            for ( int i = size; i < id; ++i )
+                _nodeFamGroups.push_back( VectorString() );
+        }
+        _nodeFamGroups[id - 1] = groups;
+    } else if ( id < 0 ) {
+        auto id2 = -id;
+        const auto size = _cellFamGroups.size();
+        if ( ( id2 - 1 ) >= size ) {
+            for ( int i = size; i < id2; ++i )
+                _cellFamGroups.push_back( VectorString() );
+        }
+        _cellFamGroups[id2 - 1] = groups;
+    }
+};
+
 ASTERINTEGER IncompleteMesh::getDimension() const {
     if ( isEmpty() )
         return 0;
@@ -38,5 +57,7 @@ ASTERINTEGER IncompleteMesh::getDimension() const {
     const auto dimGeom = ( *_dimensionInformations )[5];
     return dimGeom;
 }
+
+void IncompleteMesh::setCellFamily( const VectorLong &cf ) { _cellFamily = cf; };
 
 #endif /* ASTER_HAVE_MPI */

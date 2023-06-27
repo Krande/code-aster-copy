@@ -31,6 +31,7 @@
 
 #include "aster_mpi.h"
 
+#include "IOManager/MedVector.h"
 #include "MemoryManager/JeveuxCollection.h"
 #include "MemoryManager/JeveuxString.h"
 #include "MemoryManager/JeveuxVector.h"
@@ -58,8 +59,10 @@ class ObjectBalancer {
     CommGraphPtr _graph;
     /** @brief Is objet ok to balance objects */
     bool _isOk;
-    /** @brief Is objet ok to balance objects */
+    /** @brief To know if send definition has ended */
     bool _sendDefined;
+    /** @brief Element renumbering */
+    VectorLong _renumbering;
 
     template < typename T, int nbCmp = 1 >
     void balanceSimpleVectorOverProcesses( const T *, int, T * ) const;
@@ -166,6 +169,13 @@ class ObjectBalancer {
         const ASTERINTEGER reverse( const ASTERINTEGER &valueIn ) const { return valueIn; };
     };
 
+    struct DummyMaskDouble {
+      public:
+        const double apply( const double &valueIn ) const { return valueIn; };
+
+        const double reverse( const double &valueIn ) const { return valueIn; };
+    };
+
   private:
     template < typename T, typename Mask = ObjectBalancer::DummyMask >
     void balanceObjectOverProcesses3( const T &, T &, const Mask &mask = Mask() ) const;
@@ -185,8 +195,9 @@ class ObjectBalancer {
      * @param toSend vector of index to send
      */
     void addElementarySend( const int &rank, const VectorInt &toSend ) {
-        if ( _sendDefined )
+        if ( _sendDefined ) {
             throw std::runtime_error( "Definition of elementary sends already finished" );
+        }
         if ( toSend.size() == 0 )
             return;
         _sendList[rank] = toSend;
@@ -217,6 +228,9 @@ class ObjectBalancer {
     /** @brief Prepare communications (send and receive comm sizes) */
     void prepareCommunications();
 
+    /** @brief Function yo know if ObjectBalancer is useable (after prepareCommunications) */
+    bool isUseable() const { return _isOk; };
+
     /** @brief Balance a object over processes by following elementary sends */
     template < typename T >
     T balanceVectorOverProcesses( const T & ) const;
@@ -237,6 +251,12 @@ class ObjectBalancer {
     void balanceObjectOverProcesses2( const std::vector< std::vector< T > > &,
                                       std::vector< std::vector< T > > &,
                                       const Mask &mask = Mask() ) const;
+
+    MedVectorPtr balanceMedVectorOverProcessesWithRenumbering( const MedVectorPtr & ) const;
+
+    VectorLong getRenumbering() const { return _renumbering; };
+
+    void setRenumbering( const VectorLong &renumbering ) { _renumbering = renumbering; };
 };
 
 using ObjectBalancerPtr = std::shared_ptr< ObjectBalancer >;
@@ -373,6 +393,7 @@ template < typename T, typename Mask >
 void ObjectBalancer::balanceObjectOverProcesses3( const T &in, T &out, const Mask &mask ) const {
     if ( !_isOk )
         throw std::runtime_error( "ObjectBalancer not prepared" );
+    typedef typename ObjectTemplateType< T >::value_type value_type;
     const auto rank = getMPIRank();
     const auto nbProcs = getMPISize();
     const auto sizeIn = in.size();
@@ -461,7 +482,7 @@ void ObjectBalancer::balanceObjectOverProcesses3( const T &in, T &out, const Mas
             const auto curSendSize = curSendList.size();
             if ( curSendSize > 0 ) {
                 AsterMPI::send( occSize[proc], proc, tag );
-                VectorInt tmp( sizeToSend[proc], 0. );
+                std::vector< value_type > tmp( sizeToSend[proc], 0. );
                 int cmpt2 = 0;
                 for ( int iPos = 0; iPos < curSendSize; ++iPos ) {
                     auto toCopy = in[curSendList[iPos] + start];
@@ -478,7 +499,7 @@ void ObjectBalancer::balanceObjectOverProcesses3( const T &in, T &out, const Mas
             if ( curRecvSize > 0 ) {
                 VectorInt tmp( curRecvSize, 0. );
                 AsterMPI::receive( tmp, proc, tag );
-                VectorInt tmp2( sizeToReceive[proc], 0. );
+                std::vector< value_type > tmp2( sizeToReceive[proc], 0. );
                 AsterMPI::receive( tmp2, proc, tag );
                 int cmpt2 = 0;
                 for ( int curPos = 0; curPos < curRecvSize; ++curPos ) {
@@ -497,7 +518,7 @@ void ObjectBalancer::balanceObjectOverProcesses3( const T &in, T &out, const Mas
             if ( curRecvSize > 0 ) {
                 VectorInt tmp( curRecvSize, 0. );
                 AsterMPI::receive( tmp, proc, tag );
-                VectorInt tmp2( sizeToReceive[proc], 0. );
+                std::vector< value_type > tmp2( sizeToReceive[proc], 0. );
                 AsterMPI::receive( tmp2, proc, tag );
                 int cmpt2 = 0;
                 for ( int curPos = 0; curPos < curRecvSize; ++curPos ) {
@@ -515,7 +536,7 @@ void ObjectBalancer::balanceObjectOverProcesses3( const T &in, T &out, const Mas
             const auto curSendSize = curSendList.size();
             if ( curSendSize > 0 ) {
                 AsterMPI::send( occSize[proc], proc, tag );
-                VectorInt tmp( sizeToSend[proc], 0. );
+                std::vector< value_type > tmp( sizeToSend[proc], 0. );
                 int cmpt2 = 0;
                 for ( int iPos = 0; iPos < curSendSize; ++iPos ) {
                     auto toCopy = in[curSendList[iPos] + start];

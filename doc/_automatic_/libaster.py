@@ -13580,6 +13580,16 @@ class ObjectBalancer:
             elemList: list of elements to send to the process
         """
 
+    def balanceMedVectorOverProcessesWithRenumbering(self, vector):
+        """Balance a med vector of reals over processes
+
+        Arguments:
+            vector: list of reals to balance
+
+        Returns:
+            MedVector[real]: balanced med vector
+        """
+
     def balanceVectorOverProcesses(self, *args, **kwargs):
         """Overloaded function.
 
@@ -13609,6 +13619,9 @@ class ObjectBalancer:
 
     def endElementarySendDefinition(self):
         """End the definition of sends"""
+
+    def getRenumbering(self):
+        """Get element renumbering (if necessary)"""
 
     def prepareCommunications(self):
         """Prepare the communications between processes"""
@@ -13654,6 +13667,20 @@ class MeshBalancer:
 
         Arguments:
             mesh: mesh to balance
+        """
+
+    def getCellObjectBalancer(self):
+        """Get on cells object balancer
+
+        Returns:
+            balancer: object balancer
+        """
+
+    def getNodeObjectBalancer(self):
+        """Get on nodes object balancer
+
+        Returns:
+            balancer: object balancer
         """
 
 
@@ -13760,3 +13787,422 @@ class MeshConnectionGraph:
         Arguments:
             mesh: IncompleteMesh.
         """
+
+
+# class MedFileReader in libaster
+
+
+class MedFileReader:
+    pass
+
+    # Method resolution order:
+    #     MedFileReader
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self):
+        pass
+
+    def close(self):
+        """Close med file"""
+
+    def getField(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. getField(self: libaster.MedFileReader, name: str) -> MedField
+
+
+        Get field from name
+
+        Arguments:
+            name (str): field name
+
+        Returns:
+            MedField: med field of name name
+
+
+        2. getField(self: libaster.MedFileReader, iterator: int) -> MedField
+
+
+        Get field from iterator
+
+        Arguments:
+            iterator (int): field iterator
+
+        Returns:
+            MedField: med field
+        """
+
+    def getFieldNames(self):
+        """Get all field names
+
+        Returns:
+            list: list of field names
+        """
+
+    def getFieldNumber(self):
+        """Get field number in field
+
+        Returns:
+            int: field number
+        """
+
+    def getMesh(self, iterator):
+        """Get mesh from iterator
+
+        Arguments:
+            iterator (int): iterator on mesh
+
+        Returns:
+            MedMesh: med mesh
+        """
+
+    def getMeshNumber(self):
+        """Get mesh number
+
+        Returns:
+            int: mesh number
+        """
+
+    def getProfileNumber(self):
+        """Get profile number
+
+        Returns:
+            int: profile number
+        """
+
+    def openParallel(self, path):
+        """Open med file in parallel
+
+        Arguments:
+            path (str): path to med file
+
+        Returns:
+            int: return code (0 if open is ok)
+        """
+
+
+# class MedField in libaster
+
+
+class MedField:
+    pass
+
+    # Method resolution order:
+    #     MedField
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self, *args, **kwargs):
+        """Initialize self.  See help(type(self)) for accurate signature."""
+
+    def getAllSupportEntitiesAtSequence(self, numdt, numit):
+        """Get list of all entity type and geometric type in calculation sequence
+
+        Arguments:
+            numdt (int): time step id
+            numit (int): iteration id
+
+        Returns:
+            list: list of pair of entity type and geometry type
+        """
+
+    def getComponentNumber(self):
+        """Get field component number"""
+
+    def getName(self):
+        """Get field name"""
+
+    def getProfileNumberAtSequenceOnEntity(self, arg0, arg1, arg2, arg3):
+        """Get profile number in calculation sequence for a given entity and geometric type"""
+
+    def getSequence(self, arg0):
+        """Get time step id and iteration id for a given sequence id
+
+        Returns:
+            list: time step id and iteration id
+        """
+
+    def getSequenceNumber(self):
+        """Get calculation sequence number"""
+
+    def getValuesAtSequenceOnCellTypesList(self, numdt, numit, geomtyp):
+        """Get cell field values at calculation sequence from geometric type list
+
+        Arguments:
+            numdt (int): time step id
+            numit (int): iteration id
+            geomtyp (list): list of geomtric types
+
+        Returns:
+            list: values on cells (same sort as list of geomtric types)
+        """
+
+    def getValuesAtSequenceOnEntityAndProfile(self, numdt, numit, entity, geometry, iterator):
+        """Get field values
+
+        Arguments:
+            numdt (int): time step id
+            numit (int): iteration id
+            entity (int): entity type
+            geometry (int): geometric type
+            iterator (int): iterator on profile
+
+        Returns:
+            list: values
+        """
+
+    def getValuesAtSequenceOnNodes(self, numdt, numit):
+        """Get node field values at calculation sequence
+
+        Arguments:
+            numdt (int): time step id
+            numit (int): iteration id
+
+        Returns:
+            list: values on nodes
+        """
+
+
+# class MedMesh in libaster
+
+
+class MedMesh:
+    pass
+
+    # Method resolution order:
+    #     MedMesh
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self, *args, **kwargs):
+        """Initialize self.  See help(type(self)) for accurate signature."""
+
+    def getCellFamilyAtSequence(self, numdt, numit, type_iterator):
+        """Get cell family in calculation sequence for given profile
+
+        Arguments:
+            numdt (int): time step id
+            numit (int): iteration id
+            profile_iterator (int): iterator on profile
+
+        Returns:
+            list: family id for cells
+        """
+
+    def getCellFamilyForGeometricTypeAtSequence(self, numdt, numit, geom_type):
+        """Get cell family for calculation sequence and geometric type
+
+        Arguments:
+            numdt (int): time step id
+            numit (int): iteration id
+            geom_type (int): geomtric type
+
+        Returns:
+            list: family id for cells
+        """
+
+    def getCellNumberAtSequence(self, numdt, numit, geomtype_iterator):
+        """Get cell number for calculation sequence and geometric type iterator
+
+        Arguments:
+            numdt (int): time step id
+            numit (int): iteration id
+            geomtype_iterator (int): iterator on geometric type
+
+        Returns:
+            int: cell number
+        """
+
+    def getCellTypeAtSequence(self, numdt, numit, geomtype_iterator):
+        """Get cell geometric type for calculation sequence and geomtype_iterator
+
+        Arguments:
+            numdt (int): time step id
+            numit (int): iteration id
+            geomtype_iterator (int): iterator on geometric type
+
+        Returns:
+            int: geometric type
+        """
+
+    def getCellTypeNumberAtSequence(self, numdt, numit):
+        """Get cell type number for calculation sequence
+
+        Arguments:
+            numdt (int): time step id
+            numit (int): iteration id
+
+        Returns:
+            int: cell type number
+        """
+
+    def getConnectivityAtSequence(self, numdt, numit, geomtype_iterator):
+        """Get cell connectivity for calculation sequence and geometric type iterator
+
+        Arguments:
+            numdt (int): time step id
+            numit (int): iteration id
+            geomtype_iterator (int): iterator on geometric type
+
+        Returns:
+            list: cell connectivity
+        """
+
+    def getConnectivityForGeometricTypeAtSequence(self, numdt, numit, geomtype):
+        """Get cell connectivity for calculation sequence and geometric type
+
+        Arguments:
+            numdt (int): time step id
+            numit (int): iteration id
+            geomtype (int): geometric type
+
+        Returns:
+            list: cell connectivity
+        """
+
+    def getDimension(self):
+        """Get mesh dimension"""
+
+    def getFamilies(self):
+        """Get family list
+
+        Returns:
+            list: MedFamily list
+        """
+
+    def getGeometricTypesAtSequence(self, numdt, numit):
+        """Get all cell geometric types
+
+        Arguments:
+            numdt (int): time step id
+            numit (int): iteration id
+
+        Returns:
+            list: cell geometric type list
+        """
+
+    def getName(self):
+        """Get mesh name"""
+
+    def getNodeFamilyAtSequence(self, numdt, numit):
+        """Get node families for calculation sequence
+
+        Arguments:
+            numdt (int): time step id
+            numit (int): iteration id
+
+        Returns:
+            list: node families
+        """
+
+    def getNodeNumberAtSequence(self, numdt, numit):
+        """Get node number for calculation sequence
+
+        Arguments:
+            numdt (int): time step id
+            numit (int): iteration id
+
+        Returns:
+            int: node number
+        """
+
+    def getNodeNumberForGeometricType(self, geotype):
+        """Get node number from a geometric type
+
+        Arguments:
+            geotype (int): geometric type
+
+        Returns:
+            int: node number
+        """
+
+    def getSequence(self, seq_iterator):
+        """Get calculation sequence
+
+        Arguments:
+            seq_iterator (int): iterator on sequence
+
+        Returns:
+            list: pair time step id/iterator id
+        """
+
+    def getSequenceNumber(self):
+        """Get calculation sequence number"""
+
+    def readCoordinates(self, numdt, numit):
+        """Get coordinates for calculation sequence
+
+        Arguments:
+            numdt (int): time step id
+            numit (int): iteration id
+
+        Returns:
+            list: coordinates list
+        """
+
+
+# class MedFamily in libaster
+
+
+class MedFamily:
+    pass
+
+    # Method resolution order:
+    #     MedFamily
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self, *args, **kwargs):
+        """Initialize self.  See help(type(self)) for accurate signature."""
+
+    def getGroups(self):
+        """Get list of groups in family"""
+
+    def getId(self):
+        """Get family med id"""
+
+    def getName(self):
+        """Get family name"""
+
+
+# class MedVector in libaster
+
+
+class MedVector:
+    pass
+
+    # Method resolution order:
+    #     MedVector
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self, *args, **kwargs):
+        """Initialize self.  See help(type(self)) for accurate signature."""
+
+    def getCumulatedSizesVector(self):
+        """Get cumulated sizes vector
+
+        Returns:
+            list: Cumulated sizes for each element
+        """
+
+    def getValues(self):
+        """Get vector values (WARNING values are owned by MedVector: no copy)
+
+        Returns:
+            numpy array: all field values
+        """
+
+    def size(self):
+        """Get vector size, ie: number of elements (cells or nodes)"""

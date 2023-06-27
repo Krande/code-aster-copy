@@ -111,6 +111,11 @@
 #include "PythonBindings/MatrixToPetscInterface.h"
 #include "PythonBindings/MechanicalLoadInterface.h"
 #include "PythonBindings/MedCouplingConversionInterface.h"
+#include "PythonBindings/MedFamilyInterface.h"
+#include "PythonBindings/MedFieldInterface.h"
+#include "PythonBindings/MedFileReaderInterface.h"
+#include "PythonBindings/MedMeshInterface.h"
+#include "PythonBindings/MedVectorInterface.h"
 #include "PythonBindings/MeshBalancerInterface.h"
 #include "PythonBindings/MeshConnectionGraphInterface.h"
 #include "PythonBindings/MeshCoordinatesFieldInterface.h"
@@ -319,4 +324,9 @@ PYBIND11_MODULE( libaster, mod ) {
     exportMeshConnectionGraphToPython( mod );
 #endif /* ASTER_HAVE_SCOTCH */
 #endif /* ASTER_HAVE_MPI */
+    exportMedFileReaderToPython( mod );
+    exportMedFieldToPython( mod );
+    exportMedMeshToPython( mod );
+    exportMedFamilyToPython( mod );
+    exportMedVectorToPython( mod );
 };

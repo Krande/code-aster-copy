@@ -1,6 +1,6 @@
 /**
- * @file IncompleteMeshInterface.cxx
- * @brief Interface python de IncompleteMesh
+ * @file MedProfle.cxx
+ * @brief Implementation de MedFilePointer
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
@@ -23,21 +23,33 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include "PythonBindings/IncompleteMeshInterface.h"
+#include "IOManager/MedFilePointer.h"
 
-#include "aster_pybind.h"
+#include "ParallelUtilities/AsterMPI.h"
 
-#ifdef ASTER_HAVE_MPI
-
-void exportIncompleteMeshToPython( py::module_ &mod ) {
-
-    py::class_< IncompleteMesh, IncompleteMesh::IncompleteMeshPtr, Mesh >( mod, "IncompleteMesh" )
-        .def( py::init( &initFactoryPtr< IncompleteMesh > ) )
-        .def( py::init( &initFactoryPtr< IncompleteMesh, std::string > ) )
-        .def( "_addFamily", &IncompleteMesh::addFamily )
-        .def( "_setCellFamily", &IncompleteMesh::setCellFamily )
-        .def( "_setNodeFamily", &IncompleteMesh::setNodeFamily )
-        .def( "_setRange", &IncompleteMesh::setRange );
+int MedFilePointer::close() {
+    MEDfileClose( _fileId );
+    _fileId = -1;
+    _isOpen = false;
+    return 0;
 };
 
+med_idt MedFilePointer::getFileId() const {
+    if ( !_isOpen )
+        throw std::runtime_error( "Med file not open" );
+    return _fileId;
+};
+
+int MedFilePointer::openParallel( const std::string &filename ) {
+#ifdef ASTER_HAVE_MPI
+    MPI_Info info = MPI_INFO_NULL;
+    MPI_Comm comm = aster_get_comm_world()->id;
+    _fileId = MEDparFileOpen( filename.c_str(), MED_ACC_RDEXT, comm, MPI_INFO_NULL );
+    _isOpen = true;
+    _parallelOpen = true;
+    return 0;
+#else
+    throw std::runtime_error( "Parallel opening not available in sequential" );
+    return 0;
 #endif /* ASTER_HAVE_MPI */
+};

@@ -27,7 +27,9 @@
 
 #ifdef ASTER_HAVE_MPI
 
+#include "Meshes/IncompleteMesh.h"
 #include "Meshes/Mesh.h"
+#include "ParallelUtilities/MeshConnectionGraph.h"
 
 void decrement( int &i ) { i--; };
 
@@ -56,7 +58,9 @@ void buildSortedVectorToSend( const VectorLong &localIds, const VectorLong &glob
 }
 
 ParallelMeshPtr MeshBalancer::applyBalancingStrategy( VectorInt &newLocalNodesList ) {
-    ObjectBalancer nodesBalancer, cellsBalancer;
+    _nodesBalancer = ObjectBalancerPtr( new ObjectBalancer() );
+    _cellsBalancer = ObjectBalancerPtr( new ObjectBalancer() );
+    ObjectBalancer &nodesBalancer = *_nodesBalancer, cellsBalancer = *_cellsBalancer;
     const auto rank = getMPIRank();
     const auto nbProcs = getMPISize();
 
@@ -83,7 +87,7 @@ ParallelMeshPtr MeshBalancer::applyBalancingStrategy( VectorInt &newLocalNodesLi
 
     VectorOfVectorsLong interfaces;
     VectorLong nOwners;
-    buildBalancersAndInterfaces( newList, nodesBalancer, cellsBalancer, interfaces, nOwners );
+    buildBalancersAndInterfaces( newList, interfaces, nOwners );
     newList = VectorInt();
 
     CommGraph graph;
@@ -98,8 +102,9 @@ ParallelMeshPtr MeshBalancer::applyBalancingStrategy( VectorInt &newLocalNodesLi
     // Build a global numbering (if there is not)
     VectorLong nodeGlobNum;
     if ( _mesh != nullptr ) {
-        nodeGlobNum.reserve( _mesh->getNumberOfNodes() );
-        for ( int i = 0; i < _mesh->getNumberOfNodes(); ++i ) {
+        const auto size = _mesh->getNumberOfNodes();
+        nodeGlobNum.reserve( size );
+        for ( int i = 0; i < size; ++i ) {
             // +1 is mandatory because connectivity starts at 1 in aster
             // cf. connex = _mesh->getConnectivity();
             nodeGlobNum.push_back( i + _range[0] + 1 );
@@ -109,7 +114,7 @@ ParallelMeshPtr MeshBalancer::applyBalancingStrategy( VectorInt &newLocalNodesLi
     // Build mask to apply to distribute connectivity
     // Before sending, conversion to global numbering
     // After received go back to "new" local numbering
-    auto dMask = ObjectBalancer::DistributedMaskOut( nodesBalancer, nodeGlobNum );
+    auto dMask = ObjectBalancer::DistributedMaskOut( *_nodesBalancer, nodeGlobNum );
     const auto &globNumVect = dMask.getBalancedMask();
 
     // interface completion with local id of opposite nodes
@@ -176,17 +181,26 @@ ParallelMeshPtr MeshBalancer::applyBalancingStrategy( VectorInt &newLocalNodesLi
         _mesh = MeshPtr( new Mesh() );
     const auto coords = _mesh->getCoordinates();
     auto coordsOut = outMesh->getCoordinates();
-    nodesBalancer.balanceObjectOverProcesses( coords, coordsOut );
+    _nodesBalancer->balanceObjectOverProcesses( coords, coordsOut );
     const auto cellsType = _mesh->getCellsType();
-    auto cellsTypeOut = outMesh->getCellsType();
-    cellsBalancer.balanceObjectOverProcesses( cellsType, cellsTypeOut );
+    JeveuxVectorLong cellsTypeTmp( "TMP" );
+    _cellsBalancer->balanceObjectOverProcesses( cellsType, cellsTypeTmp );
 
     const auto connex = _mesh->getConnectivity();
-    auto connexOut = outMesh->getConnectivity();
-    cellsBalancer.balanceObjectOverProcesses2( connex, connexOut, dMask );
+    JeveuxCollectionLong connexTmp( "TMP2" );
+    _cellsBalancer->balanceObjectOverProcesses2( connex, connexTmp, dMask );
+
+    JeveuxVectorLong cellsTypeOut = outMesh->getCellsType();
+    JeveuxCollectionLong connexOut = outMesh->getConnectivity();
+    sortCells( cellsTypeTmp, connexTmp, cellsTypeOut, connexOut );
+    _cellsBalancer->setRenumbering( _cellRenumbering );
 
     // Build cells and nodes groups
-    balanceGroups( outMesh, nodesBalancer, cellsBalancer );
+    if ( _mesh->isIncomplete() ) {
+        balanceFamilies( outMesh, _cellRenumbering );
+    } else {
+        balanceGroups( outMesh, _cellRenumbering );
+    }
     if ( _mesh->isIncomplete() ) {
         outMesh->buildInformations( _mesh->getDimension() );
     } else {
@@ -203,21 +217,49 @@ ParallelMeshPtr MeshBalancer::applyBalancingStrategy( VectorInt &newLocalNodesLi
     outMesh->updateGlobalGroupOfNodes();
     outMesh->updateGlobalGroupOfCells();
     outMesh->endDefinition();
+    _cellRenumbering = VectorLong();
     return outMesh;
 };
 
-void MeshBalancer::buildReverseConnectivity() {
-    if ( _mesh == nullptr )
-        return;
-    const auto connex = _mesh->getConnectivityExplorer();
-    int elemId = 0;
-    for ( const auto &element : connex ) {
-        for ( const auto &nodeId : element ) {
-            _reverseConnex[nodeId - 1].insert( elemId );
-        }
-        ++elemId;
+void MeshBalancer::sortCells( JeveuxVectorLong &typeIn, JeveuxCollectionLong &connexIn,
+                              JeveuxVectorLong &typeOut, JeveuxCollectionLong &connexOut ) {
+    // TODO: Recuperer 31 a partir du nombre de types de mailles
+    VectorLong nbCellByType( 31, 0 );
+    const auto size = typeIn->size();
+    VectorLong numCell( size, 0 );
+    VectorLong numCell2( size, 0 );
+    long count = 0;
+    for ( const auto &type : typeIn ) {
+        if ( type > 30 )
+            throw std::runtime_error( "Error" );
+        auto &num = nbCellByType[type + 1];
+        ++num;
+        numCell[count] = num;
+        ++count;
     }
-    _bReverseConnex = true;
+    for ( int i = 1; i < 30; ++i ) {
+        nbCellByType[i] = nbCellByType[i] + nbCellByType[i - 1];
+    }
+    _cellRenumbering = VectorLong( size, 0 );
+    typeOut->allocate( size );
+    connexOut->allocateContiguousNumbered( size, connexIn->totalSize() );
+    count = 0;
+    for ( const auto &type : typeIn ) {
+        long newId = numCell[count] + nbCellByType[type];
+        numCell2[newId - 1] = count;
+        _cellRenumbering[count] = newId;
+        ( *typeOut )[newId - 1] = ( *typeIn )[count];
+        ++count;
+    }
+    numCell = VectorLong();
+    count = 1;
+    for ( const auto &num : numCell2 ) {
+        const auto &curCellIn = ( *connexIn )[num + 1];
+        connexOut->allocateObject( count, curCellIn->size() );
+        auto &curCellOut = ( *connexOut )[count];
+        curCellOut->setValues( *curCellIn );
+        ++count;
+    }
 };
 
 void MeshBalancer::deleteReverseConnectivity() {
@@ -226,8 +268,56 @@ void MeshBalancer::deleteReverseConnectivity() {
     _bReverseConnex = false;
 };
 
+void MeshBalancer::_enrichBalancers( VectorInt &newLocalNodesList, int iProc, int rank,
+                                     VectorOfVectorsLong &procInterfaces,
+                                     VectorOfVectorsLong &fastConnex ) {
+    AsterMPI::bcast( newLocalNodesList, iProc );
+
+    std::set< int > toAdd;
+    auto returnPairToKeep =
+        findNodesAndElementsInNodesNeighborhood( newLocalNodesList, toAdd, fastConnex );
+    VectorInt toAddV, test2;
+    if ( returnPairToKeep.first.size() != 0 ) {
+        for ( const auto &val : toAdd ) {
+            toAddV.push_back( val );
+        }
+    }
+    AsterMPI::all_gather( toAddV, test2 );
+
+    std::set< int > filter;
+    // In test2 ids start at 0 in global numbering
+    for ( const auto &val : test2 )
+        filter.insert( val );
+    // In returnPairToSend.first ids start at 0 in local numbering
+    for ( const auto &val : returnPairToKeep.first )
+        filter.insert( val + _range[0] );
+    VectorInt filterV;
+    // So in filterV, ids start at 0 in global numbering
+    for ( const auto &val : filter )
+        filterV.push_back( val );
+    // And in addedNodes, ids start at 0 in local numbering
+    const auto addedNodes = findNodesToSend( filterV );
+    if ( filterV.size() != 0 ) {
+        for ( const auto &tmp : addedNodes ) {
+            procInterfaces[tmp].push_back( iProc );
+        }
+        if ( iProc == rank ) {
+            _nodesBalancer->setElementsToKeep( addedNodes );
+        } else {
+            if ( addedNodes.size() != 0 )
+                _nodesBalancer->addElementarySend( iProc, addedNodes );
+        }
+    }
+    if ( returnPairToKeep.second.size() != 0 ) {
+        if ( iProc == rank ) {
+            _cellsBalancer->setElementsToKeep( returnPairToKeep.second );
+        } else {
+            _cellsBalancer->addElementarySend( iProc, returnPairToKeep.second );
+        }
+    }
+};
+
 void MeshBalancer::buildBalancersAndInterfaces( VectorInt &newLocalNodesList,
-                                                ObjectBalancer &nodesB, ObjectBalancer &cellsB,
                                                 VectorOfVectorsLong &interfaces,
                                                 VectorLong &nOwners ) {
     const auto nbProcs = getMPISize();
@@ -237,6 +327,11 @@ void MeshBalancer::buildBalancersAndInterfaces( VectorInt &newLocalNodesList,
     if ( _mesh != nullptr ) {
         procInterfaces = VectorOfVectorsLong( _mesh->getNumberOfNodes() );
         nodeOwner = VectorLong( _mesh->getNumberOfNodes(), -1 );
+    }
+
+    VectorOfVectorsLong fastConnect;
+    if ( _mesh != nullptr ) {
+        buildFastConnectivity( _mesh, fastConnect );
     }
 
     // Build ObjectBalancer by finding every nodes and cells in direct
@@ -250,75 +345,9 @@ void MeshBalancer::buildBalancersAndInterfaces( VectorInt &newLocalNodesList,
         // To know what to keep and what to send, 2 phases are necessary
         // because IncompleteMesh shape
         if ( iProc == rank ) {
-            AsterMPI::bcast( newLocalNodesList, iProc );
-
-            std::set< int > toAdd;
-            auto returnPairToKeep =
-                findNodesAndElementsInNodesNeighborhood( newLocalNodesList, toAdd );
-            VectorInt toAddV, test2;
-            if ( returnPairToKeep.first.size() != 0 ) {
-                for ( const auto &val : toAdd ) {
-                    toAddV.push_back( val );
-                }
-            }
-            AsterMPI::all_gather( toAddV, test2 );
-
-            std::set< int > filter;
-            // In test2 ids start at 0 in global numbering
-            for ( const auto &val : test2 )
-                filter.insert( val );
-            // In returnPairToSend.first ids start at 0 in local numbering
-            for ( const auto &val : returnPairToKeep.first )
-                filter.insert( val + _range[0] );
-            VectorInt filterV;
-            // So in filterV, ids start at 0 in global numbering
-            for ( const auto &val : filter )
-                filterV.push_back( val );
-            // And in addedNodes, ids start at 0 in local numbering
-            const auto addedNodes = findNodesToSend( filterV );
-            if ( filterV.size() != 0 ) {
-                for ( const auto &tmp : addedNodes ) {
-                    procInterfaces[tmp].push_back( rank );
-                }
-                nodesB.setElementsToKeep( addedNodes );
-            }
-            if ( returnPairToKeep.second.size() != 0 )
-                cellsB.setElementsToKeep( returnPairToKeep.second );
+            _enrichBalancers( newLocalNodesList, iProc, rank, procInterfaces, fastConnect );
         } else {
-            AsterMPI::bcast( nodesLists, iProc );
-
-            std::set< int > toAdd;
-            auto returnPairToSend = findNodesAndElementsInNodesNeighborhood( nodesLists, toAdd );
-            VectorInt toAddV, test2;
-            if ( returnPairToSend.first.size() != 0 ) {
-                for ( const auto &val : toAdd ) {
-                    toAddV.push_back( val );
-                }
-            }
-            AsterMPI::all_gather( toAddV, test2 );
-
-            std::set< int > filter;
-            // In test2 ids start at 0 in global numbering
-            for ( const auto &val : test2 )
-                filter.insert( val );
-            // In returnPairToSend.first ids start at 0 in local numbering
-            for ( const auto &val : returnPairToSend.first )
-                filter.insert( val + _range[0] );
-            VectorInt filterV;
-            // So in filterV, ids start at 0 in global numbering
-            for ( const auto &val : filter )
-                filterV.push_back( val );
-            // And in addedNodes, ids start at 0 in local numbering
-            const auto addedNodes = findNodesToSend( filterV );
-            if ( filterV.size() != 0 ) {
-                for ( const auto &tmp : addedNodes ) {
-                    procInterfaces[tmp].push_back( iProc );
-                }
-                if ( addedNodes.size() != 0 )
-                    nodesB.addElementarySend( iProc, addedNodes );
-            }
-            if ( returnPairToSend.second.size() != 0 )
-                cellsB.addElementarySend( iProc, returnPairToSend.second );
+            _enrichBalancers( nodesLists, iProc, rank, procInterfaces, fastConnect );
         }
         if ( iProc == rank ) {
             for ( const auto &tmp : newLocalNodesList ) {
@@ -336,14 +365,14 @@ void MeshBalancer::buildBalancersAndInterfaces( VectorInt &newLocalNodesList,
     if ( _mesh != nullptr )
         _mesh->deleteReverseConnectivity();
 
-    nodesB.endElementarySendDefinition();
-    cellsB.endElementarySendDefinition();
+    _nodesBalancer->endElementarySendDefinition();
+    _cellsBalancer->endElementarySendDefinition();
     // Prepare ObjectBalancer (graph and sizes of what to send)
-    nodesB.prepareCommunications();
-    cellsB.prepareCommunications();
+    _nodesBalancer->prepareCommunications();
+    _cellsBalancer->prepareCommunications();
 
-    nodesB.balanceObjectOverProcesses2( procInterfaces, balanceProcInterfaces );
-    nodesB.balanceObjectOverProcesses( nodeOwner, nOwners );
+    _nodesBalancer->balanceObjectOverProcesses2( procInterfaces, balanceProcInterfaces );
+    _nodesBalancer->balanceObjectOverProcesses( nodeOwner, nOwners );
     int iNode = 0;
     interfaces = VectorOfVectorsLong( 2 * nbProcs );
     for ( const auto &vec1 : balanceProcInterfaces ) {
@@ -367,9 +396,8 @@ void MeshBalancer::buildBalancersAndInterfaces( VectorInt &newLocalNodesList,
     }
 };
 
-std::pair< VectorInt, VectorInt >
-MeshBalancer::findNodesAndElementsInNodesNeighborhood( const VectorInt &nodesListIn,
-                                                       std::set< int > &toAddSet ) {
+std::pair< VectorInt, VectorInt > MeshBalancer::findNodesAndElementsInNodesNeighborhood(
+    const VectorInt &nodesListIn, std::set< int > &toAddSet, VectorOfVectorsLong &fastConnex ) {
 
     std::pair< VectorInt, VectorInt > toReturn;
     auto &nodesList = toReturn.first;
@@ -379,7 +407,6 @@ MeshBalancer::findNodesAndElementsInNodesNeighborhood( const VectorInt &nodesLis
     // Build reverse connectivity to be able to build ObjectBalancer (what to send to which process)
     const auto &reverseConnex = _mesh->buildReverseConnectivity();
 
-    const auto connex = _mesh->getConnectivityExplorer();
     std::set< int > inSet;
     for ( const auto &nodeId : nodesListIn ) {
         inSet.insert( nodeId );
@@ -410,7 +437,7 @@ MeshBalancer::findNodesAndElementsInNodesNeighborhood( const VectorInt &nodesLis
                 continue;
             checkedElem[elemId] = true;
             // !!!! WARNING : in connex node ids start at 1 (aster convention) !!!!
-            for ( const auto &nodeId2 : connex[elemId] ) {
+            for ( const auto &nodeId2 : fastConnex[elemId] ) {
                 if ( nodeId2 >= _range[0] + 1 && nodeId2 < _range[1] + 1 ) {
                     const auto idBis = nodeId2 - 1 - _range[0];
                     if ( !checkedNodes[idBis] ) {
@@ -444,8 +471,7 @@ VectorInt MeshBalancer::findNodesToSend( const VectorInt &nodesListIn ) {
     return nodesList;
 };
 
-void MeshBalancer::balanceGroups( BaseMeshPtr outMesh, const ObjectBalancer &nBalancer,
-                                  const ObjectBalancer &cBalancer ) {
+void MeshBalancer::balanceGroups( BaseMeshPtr outMesh, const VectorLong &cellRenumbering ) {
     VectorString toSendCell, toSendNode, toSendCellAll, toSendNodeAll;
     if ( _mesh != nullptr ) {
         toSendCell = _mesh->getGroupsOfCells();
@@ -502,15 +528,16 @@ void MeshBalancer::balanceGroups( BaseMeshPtr outMesh, const ObjectBalancer &nBa
     }
     VectorLong bNodeGroups, bCellGroups;
     // "Balance" vector of group id for nodes and cells
-    nBalancer.balanceObjectOverProcesses( localNodeGroups, bNodeGroups );
-    cBalancer.balanceObjectOverProcesses( localCellGroups, bCellGroups );
+    _nodesBalancer->balanceObjectOverProcesses( localNodeGroups, bNodeGroups );
+    _cellsBalancer->balanceObjectOverProcesses( localCellGroups, bCellGroups );
 
     // Finally build groups vectors
     VectorOfVectorsLong cellsInGrp( cmptCells );
     int cellId = 1;
     for ( const auto &grpId : bCellGroups ) {
         if ( grpId != -1 ) {
-            cellsInGrp[grpId].push_back( cellId );
+            auto numCell = cellRenumbering[cellId - 1];
+            cellsInGrp[grpId].push_back( numCell );
         }
         ++cellId;
     }
@@ -522,7 +549,7 @@ void MeshBalancer::balanceGroups( BaseMeshPtr outMesh, const ObjectBalancer &nBa
             cellsGrpList.push_back( cellsInGrp[numGrp] );
         }
     }
-    // Add cells groups
+    // Add cell groups
     if ( cellsGrpNames.size() != 0 )
         outMesh->addGroupsOfCells( cellsGrpNames, cellsGrpList );
 
@@ -541,9 +568,105 @@ void MeshBalancer::balanceGroups( BaseMeshPtr outMesh, const ObjectBalancer &nBa
             nodesGrpList.push_back( nodesInGrp[numGrp] );
         }
     }
-    // Add nodes groups
+    // Add node groups
     if ( nodesGrpNames.size() != 0 )
         outMesh->addGroupsOfNodes( nodesGrpNames, nodesGrpList );
+};
+
+void MeshBalancer::balanceFamilies( BaseMeshPtr mesh, const VectorLong &renumber ) {
+    const auto &nodeFam = _mesh->getNodeFamily();
+    VectorLong nodeFamB;
+    _nodesBalancer->balanceObjectOverProcesses( nodeFam, nodeFamB );
+    const auto &cellFam = _mesh->getCellFamily();
+    VectorLong cellFamB;
+    _cellsBalancer->balanceObjectOverProcesses( cellFam, cellFamB );
+    VectorLong cellFamBR( cellFamB.size(), 0 );
+    for ( int i = 0; i < cellFamB.size(); ++i ) {
+        auto newId = renumber[i];
+        cellFamBR[newId - 1] = cellFamB[i];
+    }
+    const auto &nodeFamilyGroups = _mesh->getNodeFamilyGroups();
+    VectorOfVectorsLong idGroups( nodeFamilyGroups.size() );
+    std::map< std::string, int > mapGrpInt;
+    int count1 = 0, count2 = 0;
+    VectorString nodesGrpNames0;
+    for ( const auto &grps : nodeFamilyGroups ) {
+        for ( const auto grp : grps ) {
+            if ( mapGrpInt.count( grp ) == 0 ) {
+                idGroups[count1].push_back( count2 );
+                mapGrpInt[grp] = count2;
+                nodesGrpNames0.push_back( grp );
+                ++count2;
+            } else {
+                idGroups[count1].push_back( mapGrpInt[grp] );
+            }
+        }
+        ++count1;
+    }
+    VectorOfVectorsLong nodesGrpList0( nodesGrpNames0.size() );
+    count1 = 0;
+    for ( const auto &numFam : nodeFamB ) {
+        ++count1;
+        if ( numFam == 0 )
+            continue;
+        const auto vecIdGrps = idGroups[numFam - 1];
+        for ( const auto &idGrp : vecIdGrps ) {
+            nodesGrpList0[idGrp].push_back( count1 );
+        }
+    }
+    VectorString nodesGrpNames;
+    VectorOfVectorsLong nodesGrpList;
+    for ( int i = 0; i < nodesGrpNames0.size(); ++i ) {
+        if ( nodesGrpList0[i].size() != 0 ) {
+            nodesGrpNames.push_back( nodesGrpNames0[i] );
+            nodesGrpList.push_back( nodesGrpList0[i] );
+        }
+    }
+    // Add node groups
+    if ( nodesGrpNames.size() != 0 )
+        mesh->addGroupsOfNodes( nodesGrpNames, nodesGrpList );
+
+    const auto &cellFamilyGroups = _mesh->getCellFamilyGroups();
+    idGroups = VectorOfVectorsLong( cellFamilyGroups.size() );
+    mapGrpInt = std::map< std::string, int >();
+    count1 = 0;
+    count2 = 0;
+    VectorString cellsGrpNames0;
+    for ( const auto &grps : cellFamilyGroups ) {
+        for ( const auto grp : grps ) {
+            if ( mapGrpInt.count( grp ) == 0 ) {
+                idGroups[count1].push_back( count2 );
+                mapGrpInt[grp] = count2;
+                cellsGrpNames0.push_back( grp );
+                ++count2;
+            } else {
+                idGroups[count1].push_back( mapGrpInt[grp] );
+            }
+        }
+        ++count1;
+    }
+    VectorOfVectorsLong cellsGrpList0( cellsGrpNames0.size() );
+    count1 = 0;
+    for ( const auto &numFam : cellFamBR ) {
+        ++count1;
+        if ( numFam == 0 )
+            continue;
+        const auto vecIdGrps = idGroups[-numFam - 1];
+        for ( const auto &idGrp : vecIdGrps ) {
+            cellsGrpList0[idGrp].push_back( count1 );
+        }
+    }
+    VectorString cellsGrpNames;
+    VectorOfVectorsLong cellsGrpList;
+    for ( int i = 0; i < cellsGrpNames0.size(); ++i ) {
+        if ( cellsGrpList0[i].size() != 0 ) {
+            cellsGrpNames.push_back( cellsGrpNames0[i] );
+            cellsGrpList.push_back( cellsGrpList0[i] );
+        }
+    }
+    // Add cell groups
+    if ( cellsGrpNames.size() != 0 )
+        mesh->addGroupsOfCells( cellsGrpNames, cellsGrpList );
 };
 
 #endif /* ASTER_HAVE_MPI */

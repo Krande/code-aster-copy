@@ -23,6 +23,7 @@ from ..Messages import UTMESS
 from ..Utilities import MPI, Timer
 from ..Utilities import medcoupling as medc
 from ..Utilities import no_new_attributes
+from ..Objects import MedFileReader, MedMesh
 
 ASTER_TYPES = [1, 2, 4, 6, 7, 9, 11, 12, 14, 16, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27]
 
@@ -100,6 +101,57 @@ MED2ASTER_CONNECT = {
     ],
 }
 
+MYMED2ASTER_CONNECT = {
+    1: [0],
+    102: range(2),
+    203: range(3),
+    204: range(4),
+    304: [0, 2, 1, 3],
+    308: [0, 3, 2, 1, 4, 7, 6, 5],
+    305: [0, 3, 2, 1, 4],
+    306: [0, 2, 1, 3, 5, 4],
+    103: range(3),
+    206: range(6),
+    208: range(8),
+    310: [0, 2, 1, 3, 6, 5, 4, 7, 9, 8],
+    320: [0, 3, 2, 1, 4, 7, 6, 5, 11, 10, 9, 8, 16, 19, 18, 17, 15, 14, 13, 12],
+    313: [0, 3, 2, 1, 4, 8, 7, 6, 5, 9, 12, 11, 10],
+    315: [0, 2, 1, 3, 5, 4, 8, 7, 6, 12, 14, 13, 11, 10, 9],
+    104: range(4),
+    207: range(7),
+    209: range(9),
+    318: [0, 2, 1, 3, 5, 4, 8, 7, 6, 12, 14, 13, 11, 10, 9, 17, 16, 15],
+    327: [
+        0,
+        3,
+        2,
+        1,
+        4,
+        7,
+        6,
+        5,
+        11,
+        10,
+        9,
+        8,
+        16,
+        19,
+        18,
+        17,
+        15,
+        14,
+        13,
+        12,
+        20,
+        24,
+        23,
+        22,
+        21,
+        25,
+        26,
+    ],
+}
+
 
 # Fonction manquante dans medcoupling
 def ConvertToMEDFileGeoType(medcoupling_type):
@@ -138,8 +190,9 @@ class MEDCouplingMeshHelper:
     """
 
     _mesh = _mesh_name = _file_name = _dim = _timer = None
-    _coords = _groups_of_cells = _groups_of_nodes = _connectivity_aster = _types = None
+    _coords = _groups_of_cells = _groups_of_nodes = _connectivity_aster = _cell_types = None
     _domains = _djoints = _nodesOwner = _gNumbering = _range = None
+    _cell_family = _node_family = _families = None
     _medc2aster_connect = {}
 
     __setattr__ = no_new_attributes(object.__setattr__)
@@ -153,7 +206,7 @@ class MEDCouplingMeshHelper:
         self._groups_of_cells = {}
         self._groups_of_nodes = {}
         self._connectivity_aster = []
-        self._types = []
+        self._cell_types = []
         self._range = []
         # for the joints
         self._domains = []
@@ -161,6 +214,9 @@ class MEDCouplingMeshHelper:
         self._nodesOwner = []
         self._gNumbering = []
         self._timer = Timer(title="medcoupling conversion")
+        self._cell_family = []
+        self._node_family = []
+        self._families = {}
 
     def setMedCouplingMesh(self, medmesh):
         """Define the medcoupling mesh to be converted.
@@ -207,16 +263,21 @@ class MEDCouplingMeshHelper:
                 len(self._groups_of_cells),
                 len(self._groups_of_nodes),
             )
-            if self._range:
-                mesh._setRange(self._range)
-        groups = self.groupsOfCells
-        if groups:
-            with timer("groups of cells"):
-                mesh._addGroupsOfCells(*groups)
-        groups = self.groupsOfNodes
-        if groups:
-            with timer("groups of nodes"):
-                mesh._addGroupsOfNodes(*groups)
+        if mesh.isIncomplete():
+            mesh._setNodeFamily(self.nodeFamilies)
+            mesh._setCellFamily(self.cellFamilies)
+            fam = self.families
+            for famId in fam:
+                mesh._addFamily(famId, fam[famId])
+        else:
+            groups = self.groupsOfCells
+            if groups:
+                with timer("groups of cells"):
+                    mesh._addGroupsOfCells(*groups)
+            groups = self.groupsOfNodes
+            if groups:
+                with timer("groups of nodes"):
+                    mesh._addGroupsOfNodes(*groups)
         if mesh.isParallel():
             with timer("creating joints"):
                 mesh._create_joints(
@@ -225,6 +286,8 @@ class MEDCouplingMeshHelper:
         with timer("completion"):
             if not mesh.isIncomplete():
                 mesh._endDefinition()
+            else:
+                mesh._setRange(self._range)
         # cheat code for debugging and detailed time informations: 1989
         with timer("show details"):
             mesh.show(verbose & 3)
@@ -296,7 +359,7 @@ class MEDCouplingMeshHelper:
         self._groups_of_nodes = {}
 
         self._connectivity_aster = []
-        self._types = []
+        self._cell_types = []
         # groups = mesh.getGroupsNames()
         # NB: `mesh.getGroupsOnSpecifiedLev()` is necessary to avoid segfault
         #     without group of nodes/cells
@@ -340,7 +403,7 @@ class MEDCouplingMeshHelper:
                 # Sauvegarde de la connectivité aster au km
                 self._connectivity_aster.extend(connectivity_current_type)
                 # Sauvegarde du type med
-                self._types.extend([med_current_type] * mesh_current_type.getNumberOfCells())
+                self._cell_types.extend([med_current_type] * mesh_current_type.getNumberOfCells())
 
             # Groupes de cells au niveau
             with self._timer(". store groups of cells"):
@@ -381,120 +444,45 @@ class MEDCouplingMeshHelper:
 
         rank = MPI.ASTER_COMM_WORLD.Get_rank()
         size = MPI.ASTER_COMM_WORLD.Get_size()
-        ttps = medc.GetUMeshGlobalInfo(filename, meshName)[0]
-        nodeNb = medc.GetUMeshGlobalInfo(filename, meshName)[3]
+
+        fr = MedFileReader()
+        fr.openParallel(filename)
+        curMesh = fr.getMesh(0)
+        seq = curMesh.getSequence(0)
+        nodeNb = curMesh.getNodeNumberAtSequence(seq[0], seq[1])
         nbNodesProc = int(nodeNb / size)
         startNode = nbNodesProc * rank
         endNode = nbNodesProc * (rank + 1)
         if rank == size - 1:
             endNode = nodeNb
         self._range = [startNode, endNode]
-        coords = medc.MEDFileUMesh.LoadPartCoords(
-            filename, meshName, -1, -1, ["X", "Y", "Z"], startNode, endNode
-        )
 
         nbNodes = endNode - startNode
-        nodes_mc = coords[0].toNumPyArray()
+        nodes_mc = np.array(curMesh.readCoordinates(seq[0], seq[1]))
         nodes_mc.shape = (nbNodes, 3)
         self._coords = np.zeros(shape=(nbNodes, 3))
         self._coords[:, :3] = nodes_mc[:, :3]
-
-        params = []
-        cts = []
-        for tps in ttps:
-            for cellType, nbCellsType in tps:
-                slc = medc.DataArray.GetSlice(slice(0, nbCellsType, 1), rank, size)
-                params += [slc.start, slc.stop, slc.step]
-                cts.append(cellType)
-                pass
-        mrs = medc.MEDFileMeshReadSelector()
-        mrs.setNumberOfCoordsLoadSessions(10)
-        medFileUMesh = medc.MEDFileUMesh.LoadPartOf(filename, meshName, cts, params, -1, -1, mrs)
-
-        self._dim = medFileUMesh.getMeshDimension()
-
-        zeNodes = medFileUMesh.getPartDefAtLevel(1).toDAI()
-
-        non_empty_levels = medFileUMesh.getNonEmptyLevels()
-        level_shift = 0  # Variable pour la creation d'une numérotation globale
-
-        # Sortie groupes
-        # Groupes de cells
-        self._groups_of_cells = {}
-        self._groups_of_nodes = {}
-
+        self._dim = curMesh.getDimension()
+        cellTypes = curMesh.getGeometricTypesAtSequence(seq[0], seq[1])
+        cellTypes.sort()
         self._connectivity_aster = []
-        self._types = []
-
-        # Loop sur les niveaux
-        for level in sorted(non_empty_levels):
-            mesh_level = medFileUMesh[level]
-            groups = medFileUMesh.getGroupsOnSpecifiedLev(level)
-            for group in groups:
-                if len(group) > 24:
-                    UTMESS("A", "MED_7", valk=group)
-                    continue
-                group_cells = medFileUMesh.getGroupArr(level, group)
-                group_cells += 1
-                group_cells += level_shift
-                self._groups_of_cells.setdefault(group, [])
-                self._groups_of_cells[group].extend(group_cells.toNumPyArray())
-
-            # Loop sur toutes les types du niveau
-            types_at_level = mesh_level.getAllGeoTypesSorted()
-            for medcoupling_cell_type in types_at_level:
-                # Cells du meme type
-                cells_current_type = mesh_level.giveCellsWithType(medcoupling_cell_type)
-
-                # Maillage 1 Single Geo Type (connectivité simple)
-                mesh_current_type = medc.MEDCoupling1SGTUMesh(mesh_level[cells_current_type])
-
-                # Type MED
-                med_current_type = ConvertToMEDFileGeoType(medcoupling_cell_type)
-
-                # Nombre de noeuds du type
-                number_of_nodes_current_type = (
-                    medc.MEDCouplingUMesh.GetNumberOfNodesOfGeometricType(medcoupling_cell_type)
-                )
-
-                # Remise en forme en tableau
-                connectivity_current_type = (
-                    mesh_current_type.getNodalConnectivity()
-                    .toNumPyArray()
-                    .reshape(mesh_current_type.getNumberOfCells(), number_of_nodes_current_type)
-                )
-                for i in range(len(connectivity_current_type)):
-                    for j in range(len(connectivity_current_type[i])):
-                        connectivity_current_type[i][j] = zeNodes[
-                            int(connectivity_current_type[i][j])
-                        ]
-
-                if medcoupling_cell_type != medc.NORM_POINT1:
-                    connectivity_current_type = connectivity_current_type[
-                        :, MEDCouplingMeshHelper.getConnectivityMedToAster(medcoupling_cell_type)
-                    ]
-
-                # Shift de 1
-                connectivity_current_type += 1
-
-                # Sauvegarde de la connectivité aster au km
-                self._connectivity_aster.extend(connectivity_current_type)
-                self._types.extend([med_current_type] * mesh_current_type.getNumberOfCells())
-            level_shift += mesh_level.getNumberOfCells()
-
-        groups = medFileUMesh.getGroupsOnSpecifiedLev(1)
-        for group in groups:
-            if len(group) > 24:
-                UTMESS("A", "MED_7", valk=group)
-                continue
-            group_nodes = medFileUMesh.getGroupArr(1, group).deepCopy()
-            if not group_nodes:
-                continue
-            for i in range(len(group_nodes)):
-                group_nodes[i] = zeNodes[int(group_nodes[i])]
-            group_nodes += 1
-            self._groups_of_nodes.setdefault(group, [])
-            self._groups_of_nodes[group].extend(group_nodes.toNumPyArray())
+        self._cell_types = []
+        self._node_family = curMesh.getNodeFamilyAtSequence(seq[0], seq[1])
+        families = curMesh.getFamilies()
+        self._families = {}
+        for curFam in families:
+            self._families[curFam.getId()] = curFam.getGroups()
+        for i in cellTypes:
+            curConn = curMesh.getConnectivityForGeometricTypeAtSequence(seq[0], seq[1], i)
+            curConn = np.array(curConn)
+            nbNodesForGeoT = curMesh.getNodeNumberForGeometricType(i)
+            nbElem = int(len(curConn) / nbNodesForGeoT)
+            curConn.shape = (nbElem, nbNodesForGeoT)
+            curConn = curConn[:, MYMED2ASTER_CONNECT[i]]
+            self._connectivity_aster.extend(curConn)
+            self._cell_types.extend([i] * nbElem)
+            curFam = curMesh.getCellFamilyForGeometricTypeAtSequence(seq[0], seq[1], i)
+            self._cell_family.extend(curFam)
 
     def extract_joints(self):
         """Extract informations about joints between domains."""
@@ -592,14 +580,19 @@ class MEDCouplingMeshHelper:
         return [cell.tolist() for cell in self._connectivity_aster]
 
     @property
+    def families(self):
+        """list[int]: Dictionary of families ."""
+        return self._families
+
+    @property
     def medtypes(self):
         """list[int]: List of med type for each cell."""
-        return self._types
+        return self._cell_types
 
     @property
     def types(self):
         """list[int]: List of code_aster type for each cell."""
-        return [toAsterGeoType(i) for i in self._types]
+        return [toAsterGeoType(i) for i in self._cell_types]
 
     @property
     def groupsOfCells(self):
@@ -610,6 +603,16 @@ class MEDCouplingMeshHelper:
     def groupsOfNodes(self):
         """dict: Dict of nodes contained in each group of nodes."""
         return list(zip(*self._groups_of_nodes.items()))
+
+    @property
+    def cellFamilies(self):
+        """list[int]: List of family for each cells."""
+        return self._cell_family
+
+    @property
+    def nodeFamilies(self):
+        """list[int]: List of family for each nodes."""
+        return self._node_family
 
     @classmethod
     def getConnectivityMedToAster(cls, medcoupling_type):

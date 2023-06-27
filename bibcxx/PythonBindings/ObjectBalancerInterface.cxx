@@ -47,6 +47,9 @@ Arguments:
         .def( "endElementarySendDefinition", &ObjectBalancer::endElementarySendDefinition, R"(
 End the definition of sends
         )" )
+        .def( "getRenumbering", &ObjectBalancer::getRenumbering, R"(
+Get element renumbering (if necessary)
+        )" )
         .def( "prepareCommunications", &ObjectBalancer::prepareCommunications, R"(
 Prepare the communications between processes
         )" )
@@ -57,6 +60,17 @@ Arguments:
     elemList: list of elements to keep
         )",
               py::arg( "elemList" ) )
+        .def( "balanceMedVectorOverProcessesWithRenumbering",
+              &ObjectBalancer::balanceMedVectorOverProcessesWithRenumbering, R"(
+Balance a med vector of reals over processes
+
+Arguments:
+    vector: list of reals to balance
+
+Returns:
+    MedVector[real]: balanced med vector
+        )",
+              py::arg( "vector" ) )
         .def( "balanceVectorOverProcesses",
               &ObjectBalancer::balanceVectorOverProcesses< VectorReal >, R"(
 Balance a vector of reals over processes

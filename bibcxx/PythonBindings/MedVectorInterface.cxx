@@ -1,6 +1,6 @@
 /**
- * @file IncompleteMeshInterface.cxx
- * @brief Interface python de IncompleteMesh
+ * @file MedVectorInterface.cxx
+ * @brief Interface python de MedVector
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
@@ -23,21 +23,29 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include "PythonBindings/IncompleteMeshInterface.h"
+#include "PythonBindings/MedVectorInterface.h"
 
 #include "aster_pybind.h"
 
-#ifdef ASTER_HAVE_MPI
+// Not DataStructures
+// aslint: disable=C3006
 
-void exportIncompleteMeshToPython( py::module_ &mod ) {
+void exportMedVectorToPython( py::module_ &mod ) {
 
-    py::class_< IncompleteMesh, IncompleteMesh::IncompleteMeshPtr, Mesh >( mod, "IncompleteMesh" )
-        .def( py::init( &initFactoryPtr< IncompleteMesh > ) )
-        .def( py::init( &initFactoryPtr< IncompleteMesh, std::string > ) )
-        .def( "_addFamily", &IncompleteMesh::addFamily )
-        .def( "_setCellFamily", &IncompleteMesh::setCellFamily )
-        .def( "_setNodeFamily", &IncompleteMesh::setNodeFamily )
-        .def( "_setRange", &IncompleteMesh::setRange );
+    py::class_< MedVector, MedVectorPtr >( mod, "MedVector" )
+        .def( "getCumulatedSizesVector", &MedVector::getCumulatedSizesVector, R"(
+Get cumulated sizes vector
+
+Returns:
+    list: Cumulated sizes for each element
+            )" )
+        .def( "getValues", &MedVector::getValues, R"(
+Get vector values (WARNING values are owned by MedVector: no copy)
+
+Returns:
+    numpy array: all field values
+            )" )
+        .def( "size", &MedVector::size, R"(
+Get vector size, ie: number of elements (cells or nodes)
+)" );
 };
-
-#endif /* ASTER_HAVE_MPI */

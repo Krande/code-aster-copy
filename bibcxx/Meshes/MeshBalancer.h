@@ -49,24 +49,34 @@ class MeshBalancer {
     bool _bReverseConnex;
     /** @brief Range of node ids of _mesh (!!! no overlaping between processes) */
     std::array< ASTERINTEGER, 2 > _range = {-1, -1};
+    /** @brief nodes and cells object balancers */
+    ObjectBalancerPtr _nodesBalancer, _cellsBalancer;
+    /** @brief cells renumbering (in order to be sorte by type) */
+    VectorLong _cellRenumbering;
 
-    void buildBalancersAndInterfaces( VectorInt &newLocalNodesList, ObjectBalancer &nodesB,
-                                      ObjectBalancer &cellsB, VectorOfVectorsLong &interfaces,
+    void buildBalancersAndInterfaces( VectorInt &newLocalNodesList, VectorOfVectorsLong &interfaces,
                                       VectorLong &nOwners );
-
-    void buildReverseConnectivity();
 
     void deleteReverseConnectivity();
 
-    void balanceGroups( BaseMeshPtr, const ObjectBalancer &, const ObjectBalancer & );
+    void balanceFamilies( BaseMeshPtr, const VectorLong & );
+
+    void balanceGroups( BaseMeshPtr, const VectorLong & );
 
     /**
      * @brief Find nodes and elements in node neighborhood
      *        !!!! WARNING : return indexes are in C convention (starts at 0) !!!!
      */
-    std::pair< VectorInt, VectorInt > findNodesAndElementsInNodesNeighborhood( const VectorInt &,
-                                                                               std::set< int > & );
+    std::pair< VectorInt, VectorInt >
+    findNodesAndElementsInNodesNeighborhood( const VectorInt &, std::set< int > &,
+                                             VectorOfVectorsLong & );
     VectorInt findNodesToSend( const VectorInt &nodesListIn );
+
+    void sortCells( JeveuxVectorLong &typeIn, JeveuxCollectionLong &connexIn,
+                    JeveuxVectorLong &typeOut, JeveuxCollectionLong &connexOut );
+
+    void _enrichBalancers( VectorInt &newLocalNodesList, int iProc, int rank,
+                           VectorOfVectorsLong &procInterfaces, VectorOfVectorsLong & );
 
   public:
     /**
@@ -78,7 +88,11 @@ class MeshBalancer {
     /**
      * @brief Constructeur
      */
-    MeshBalancer() : _mesh( nullptr ), _bReverseConnex( false ) {};
+    MeshBalancer()
+        : _mesh( nullptr ),
+          _bReverseConnex( false ),
+          _nodesBalancer( new ObjectBalancer() ),
+          _cellsBalancer( new ObjectBalancer() ) {};
 
     /**
      * @brief Apply a balancing strategy and return ParallelMeshPtr
@@ -88,6 +102,10 @@ class MeshBalancer {
     ParallelMeshPtr applyBalancingStrategy( VectorInt &list );
 
     void buildFromBaseMesh( const BaseMeshPtr &mesh ) { _mesh = mesh; };
+
+    ObjectBalancerPtr getCellObjectBalancer() const { return _cellsBalancer; };
+
+    ObjectBalancerPtr getNodeObjectBalancer() const { return _nodesBalancer; };
 };
 
 /**

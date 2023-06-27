@@ -400,13 +400,16 @@ void add_automatic_names( NamesMapChar8 &map, int size, std::string prefix ) {
 const std::map< int, std::set< int > > &BaseMesh::buildReverseConnectivity() {
     if ( _bReverseConnex )
         return _reverseConnex;
-    const auto connex = getConnectivityExplorer();
-    int elemId = 0;
-    for ( const auto &element : connex ) {
-        for ( const auto &nodeId : element ) {
-            _reverseConnex[nodeId - 1].insert( elemId );
+    auto &meshConn = getConnectivity();
+    meshConn->build();
+    const auto size = meshConn->size();
+    for ( int elemId = 1; elemId <= size; ++elemId ) {
+        auto &curCell = *( ( *meshConn )[elemId] );
+        const auto nbNodes = curCell.size();
+        for ( int j = 0; j < nbNodes; ++j ) {
+            const auto &nodeId = curCell[j];
+            _reverseConnex[nodeId - 1].insert( elemId - 1 );
         }
-        ++elemId;
     }
     _bReverseConnex = true;
     return _reverseConnex;

@@ -63,6 +63,8 @@ class MeshConnectionGraph {
     const VectorLong &getVertices() const { return _vertices; };
 };
 
+void buildFastConnectivity( const BaseMeshPtr &, VectorOfVectorsLong & );
+
 using MeshConnectionGraphPtr = std::shared_ptr< MeshConnectionGraph >;
 
 #endif /* ASTER_HAVE_MPI */

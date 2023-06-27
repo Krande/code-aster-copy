@@ -118,6 +118,8 @@ class BaseMesh : public DataStructure, public ListOfTables {
      */
     typedef std::shared_ptr< BaseMesh > BaseMeshPtr;
 
+    virtual void addFamily( int id, VectorString groups ) {};
+
     /**
      * @brief Get the connectivity
      */
@@ -131,6 +133,14 @@ class BaseMesh : public DataStructure, public ListOfTables {
      * @brief Return the connectivity
      */
     const JeveuxCollectionLong getConnectivity() const { return _connectivity; }
+
+    virtual std::vector< VectorString > getCellFamilyGroups() const {
+        return std::vector< VectorString >();
+    };
+
+    virtual std::vector< VectorString > getNodeFamilyGroups() const {
+        return std::vector< VectorString >();
+    };
 
     const JeveuxCollectionLong getInverseConnectivity() const;
 
@@ -184,6 +194,10 @@ class BaseMesh : public DataStructure, public ListOfTables {
     std::string getCellName( const ASTERINTEGER &index ) const;
 
     ASTERINTEGER getCellType( const ASTERINTEGER &index ) const;
+
+    virtual VectorLong getCellFamily() const { return VectorLong(); };
+
+    virtual VectorLong getNodeFamily() const { return VectorLong(); };
 
     JeveuxVectorLong getCellsType() const;
 
