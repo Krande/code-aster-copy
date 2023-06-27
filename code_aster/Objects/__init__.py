@@ -43,6 +43,7 @@ from .datastructure_py import (
     AsInteger,
     PyDataStructure,
     ThermalResultDict,
+    ElasticResultDict,
     UnavailableObject,
 )
 from .Serialization import InternalStateBuilder

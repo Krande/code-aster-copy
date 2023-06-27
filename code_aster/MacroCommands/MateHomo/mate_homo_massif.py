@@ -17,12 +17,24 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from collections import OrderedDict
 import numpy as np
 
 from ...Cata.Syntax import _F
-from ...Commands import *
-from ...Messages import ASSERT, UTMESS
+from ...Commands import (
+    AFFE_CHAR_CINE,
+    AFFE_CHAR_MECA,
+    AFFE_CHAR_MECA_F,
+    AFFE_CHAR_THER,
+    FORMULE,
+    MECA_STATIQUE,
+    THER_LINEAIRE,
+    CALC_CHAMP,
+    POST_ELEM,
+    CALC_TABLE,
+    CREA_TABLE,
+)
+from ...Messages import ASSERT
+from ...Objects import ThermalResultDict, ElasticResultDict
 
 from . import mate_homo_utilities as utilities
 
@@ -157,12 +169,13 @@ def calc_corr_massif_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, ls
 
     CHAR3 = AFFE_CHAR_THER(MODELE=MODTH, PRE_GRAD_TEMP=_F(GROUP_MA=ls_group_ma, FLUX_Z=-1.0))
 
-    fields = OrderedDict()
+    elas_fields = ElasticResultDict()
+    ther_fields = ThermalResultDict()
 
     # Calcul des correcteurs MECANIQUES de DILATATION
     # ======================================================================
 
-    fields["CORR_DILA"] = MECA_STATIQUE(
+    elas_fields["CORR_DILA"] = MECA_STATIQUE(
         MODELE=MODME,
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
@@ -172,51 +185,63 @@ def calc_corr_massif_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, ls
     # Calcul des correcteurs MECANIQUES
     # ======================================================================
 
-    fields["CORR_MECA11"] = MECA_STATIQUE(
+    elas_fields["CORR_MECA11"] = MECA_STATIQUE(
         MODELE=MODME,
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
         EXCIT=(_F(CHARGE=CHAR11), _F(CHARGE=SYME_MECA_XX)),
     )
 
-    fields["CORR_MECA22"] = MECA_STATIQUE(
+    elas_fields["CORR_MECA22"] = MECA_STATIQUE(
         MODELE=MODME,
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
         EXCIT=(_F(CHARGE=CHAR22), _F(CHARGE=SYME_MECA_XX)),
     )
 
-    fields["CORR_MECA12"] = MECA_STATIQUE(
+    elas_fields["CORR_MECA12"] = MECA_STATIQUE(
         MODELE=MODME,
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
         EXCIT=(_F(CHARGE=CHAR12), _F(CHARGE=ANTI_MECA_12)),
     )
 
-    fields["CORR_MECA33"] = MECA_STATIQUE(
+    elas_fields["CORR_MECA33"] = MECA_STATIQUE(
         MODELE=MODME,
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
         EXCIT=(_F(CHARGE=CHAR33), _F(CHARGE=SYME_MECA_XX)),
     )
 
-    fields["CORR_MECA31"] = MECA_STATIQUE(
+    elas_fields["CORR_MECA31"] = MECA_STATIQUE(
         MODELE=MODME,
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
         EXCIT=(_F(CHARGE=CHAR31), _F(CHARGE=ANTI_MECA_31)),
     )
 
-    fields["CORR_MECA23"] = MECA_STATIQUE(
+    elas_fields["CORR_MECA23"] = MECA_STATIQUE(
         MODELE=MODME,
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
         EXCIT=(_F(CHARGE=CHAR23), _F(CHARGE=ANTI_MECA_23)),
     )
 
+    # Calcul des correcteurs MECANIQUES de pression interne
+    # ======================================================================
+
+    if "face_int" in MODME.getMesh().getGroupsOfCells():
+        CHAR_PINT = AFFE_CHAR_MECA(MODELE=MODME, PRES_REP=_F(GROUP_MA="face_int", PRES=1.0))
+        elas_fields["CORR_PINT"] = MECA_STATIQUE(
+            MODELE=MODME,
+            CHAM_MATER=CHMATME,
+            LIST_INST=L_INST,
+            EXCIT=(_F(CHARGE=CHAR_PINT), _F(CHARGE=SYME_MECA_XX)),
+        )
+
     # Calcul des correcteurs THERMIQUES
     # ======================================================================
-    fields["CORR_THER11"] = THER_LINEAIRE(
+    ther_fields["CORR_THER11"] = THER_LINEAIRE(
         MODELE=MODTH,
         CHAM_MATER=CHMATTH,
         TYPE_CALCUL="STAT",
@@ -224,7 +249,7 @@ def calc_corr_massif_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, ls
         EXCIT=(_F(CHARGE=CHAR1), _F(CHARGE=SYME_THER_11)),
     )
 
-    fields["CORR_THER22"] = THER_LINEAIRE(
+    ther_fields["CORR_THER22"] = THER_LINEAIRE(
         MODELE=MODTH,
         CHAM_MATER=CHMATTH,
         TYPE_CALCUL="STAT",
@@ -232,7 +257,7 @@ def calc_corr_massif_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, ls
         EXCIT=(_F(CHARGE=CHAR2), _F(CHARGE=SYME_THER_22)),
     )
 
-    fields["CORR_THER33"] = THER_LINEAIRE(
+    ther_fields["CORR_THER33"] = THER_LINEAIRE(
         MODELE=MODTH,
         CHAM_MATER=CHMATTH,
         TYPE_CALCUL="STAT",
@@ -240,7 +265,7 @@ def calc_corr_massif_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, ls
         EXCIT=(_F(CHARGE=CHAR3), _F(CHARGE=SYME_THER_33)),
     )
 
-    return fields
+    return elas_fields, ther_fields
 
 
 def calc_loimel_massif(DEPLMATE, ls_group_tout):
@@ -307,23 +332,18 @@ def calc_loimel_massif(DEPLMATE, ls_group_tout):
     return out
 
 
-def calc_tabpara_massif(
-    DEPLMATE,
-    volume_ver,
-    ls_group_ma,
-    varc_name,
-    ls_varc,
-    CORR_MECA11,
-    CORR_MECA22,
-    CORR_MECA33,
-    CORR_MECA12,
-    CORR_MECA31,
-    CORR_MECA23,
-    CORR_DILA,
-    CORR_THER11,
-    CORR_THER22,
-    CORR_THER33,
-):
+def calc_tabpara_massif(DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, **fields):
+
+    CORR_MECA11 = fields["CORR_MECA11"]
+    CORR_MECA22 = fields["CORR_MECA22"]
+    CORR_MECA33 = fields["CORR_MECA33"]
+    CORR_MECA12 = fields["CORR_MECA12"]
+    CORR_MECA31 = fields["CORR_MECA31"]
+    CORR_MECA23 = fields["CORR_MECA23"]
+    CORR_DILA = fields["CORR_DILA"]
+    CORR_THER11 = fields["CORR_THER11"]
+    CORR_THER22 = fields["CORR_THER22"]
+    CORR_THER33 = fields["CORR_THER33"]
 
     ranks_meca = CORR_MECA11.getAccessParameters()["NUME_ORDRE"]
     ranks_ther = CORR_THER11.getAccessParameters()["NUME_ORDRE"]
@@ -332,6 +352,7 @@ def calc_tabpara_massif(
 
     dictpara = utilities.create_empty_dictpara([varc_name] + PARAMASSIF)
     loimel = calc_loimel_massif(DEPLMATE, ls_group_ma)
+    tda = utilities.get_temp_def_alpha(DEPLMATE)
 
     # fmt: off
     for i, (rank_meca, rank_ther) in enumerate(zip(ranks_meca, ranks_ther)):
@@ -441,7 +462,7 @@ def calc_tabpara_massif(
         dictpara["RHO"].append(RHO)
         dictpara["RHO_CP"].append(RHO_CP)
         dictpara["ISOTRANS"].append(check_isotrop_trans)
-        dictpara["TEMP_DEF_ALPHA"].append(20.0)
+        dictpara["TEMP_DEF_ALPHA"].append(tda)
 
     # fmt: on
     dictpara[varc_name] = ls_varc

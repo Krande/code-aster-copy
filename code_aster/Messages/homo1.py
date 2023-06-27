@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -79,6 +79,11 @@ Le paramètre '%(k1)s' n'est pas défini pour tous les matériaux
     13: _(
         """
 Le paramètre '%(k1)s' n'est pas une fonction.
+"""
+    ),
+    14: _(
+        """
+Le paramètre '%(k1)s' n'est pas identique pour l'ensemble des matériaux affectés.
 """
     ),
 }

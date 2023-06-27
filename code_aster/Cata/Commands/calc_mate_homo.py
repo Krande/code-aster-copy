@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -48,27 +48,10 @@ CALC_MATE_HOMO = MACRO(
     TYPE_HOMO=SIMP(statut="o", typ="TXM", into=("MASSIF", "PLAQUE")),
     UNITE=SIMP(statut="f", typ=UnitType("med"), inout="out"),
     INFO=SIMP(statut="f", typ="I", defaut=1, into=(1, 2)),
-    b_corr_massif=BLOC(
-        condition="TYPE_HOMO == 'MASSIF'",
-        CORR_MECA11=SIMP(statut="f", typ=CO),
-        CORR_MECA22=SIMP(statut="f", typ=CO),
-        CORR_MECA33=SIMP(statut="f", typ=CO),
-        CORR_MECA12=SIMP(statut="f", typ=CO),
-        CORR_MECA31=SIMP(statut="f", typ=CO),
-        CORR_MECA23=SIMP(statut="f", typ=CO),
-        CORR_DILA=SIMP(statut="f", typ=CO),
-        CORR_THER11=SIMP(statut="f", typ=CO),
-        CORR_THER22=SIMP(statut="f", typ=CO),
-        CORR_THER33=SIMP(statut="f", typ=CO),
-    ),
+    CORR_MECA=SIMP(statut="f", typ=CO),
+    b_corr_massif=BLOC(condition="TYPE_HOMO == 'MASSIF'", CORR_THER=SIMP(statut="f", typ=CO)),
     b_corr_plaque=BLOC(
         condition="TYPE_HOMO == 'PLAQUE'",
         VECT_NORM=SIMP(statut="o", typ="TXM", into=("X", "Y", "Z")),
-        CORR_MECA11_MEMB=SIMP(statut="f", typ=CO),
-        CORR_MECA22_MEMB=SIMP(statut="f", typ=CO),
-        CORR_MECA12_MEMB=SIMP(statut="f", typ=CO),
-        CORR_MECA11_FLEX=SIMP(statut="f", typ=CO),
-        CORR_MECA22_FLEX=SIMP(statut="f", typ=CO),
-        CORR_MECA12_FLEX=SIMP(statut="f", typ=CO),
     ),
 )

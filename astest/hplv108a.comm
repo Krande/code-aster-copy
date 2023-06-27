@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -46,16 +46,8 @@ TAB_HOMO = CALC_MATE_HOMO(
     AFFE=_F(GROUP_MA="plaque", MATER=MATEUNI),
     VARC=_F(NOM_VARC="TEMP", VALE=(20,)),
     TYPE_HOMO="MASSIF",
-    CORR_MECA11=CO("CORR_MECA1"),
-    CORR_MECA22=CO("CORR_MECA22"),
-    CORR_MECA33=CO("CORR_MECA33"),
-    CORR_MECA12=CO("CORR_MECA12"),
-    CORR_MECA31=CO("CORR_MECA31"),
-    CORR_MECA23=CO("CORR_MECA23"),
-    CORR_DILA=CO("CORR_DILA"),
-    CORR_THER11=CO("CORR_THER11"),
-    CORR_THER22=CO("CORR_THER22"),
-    CORR_THER33=CO("CORR_THER33"),
+    CORR_MECA=CO("CORR_MECA"),
+    CORR_THER=CO("CORR_THER"),
     UNITE=80,
 )
 

@@ -126,3 +126,9 @@ class ThermalResultDict(DataStructureDict):
     """Set of thermal results."""
 
     object_type = "EVOL_THER"
+
+
+class ElasticResultDict(DataStructureDict):
+    """Set of elastic results."""
+
+    object_type = "EVOL_ELAS"

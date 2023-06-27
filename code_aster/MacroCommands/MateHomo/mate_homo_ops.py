@@ -56,16 +56,22 @@ def mate_homo_ops(self, **kwargs):
     )
 
     if type_homo in ("MASSIF",):
-        fields = calc_corr_massif_syme(
+        elas_fields, ther_fields = calc_corr_massif_syme(
             MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, (group_tout,)
         )
 
         A_hom, K_hom, tabpara = calc_tabpara_massif(
-            DEPLMATE, volume_ver, (group_tout,), varc_name, varc_values, **fields
+            DEPLMATE,
+            volume_ver,
+            (group_tout,),
+            varc_name,
+            varc_values,
+            **elas_fields,
+            **ther_fields
         )
 
     elif type_homo in ("PLAQUE",):
-        fields = calc_corr_plaque_syme(
+        elas_fields, ther_fields = calc_corr_plaque_syme(
             MODME, CHMATME, MODTH, CHMATTH, L_INST, (group_tout,), dir_plaque
         )
 
@@ -77,29 +83,37 @@ def mate_homo_ops(self, **kwargs):
             varc_values,
             dir_plaque,
             dirthick,
-            **fields
+            **elas_fields,
+            **ther_fields
         )
     else:
         ASSERT(False)
 
-    for fldname, fld in fields.items():
-        if kwargs.get(fldname) is not None:
-            self.register_result(fld, kwargs.get(fldname))
+    # Return correctors
+    if kwargs.get("CORR_MECA") is not None:
+        self.register_result(elas_fields, kwargs.get("CORR_MECA"))
 
+    if kwargs.get("CORR_THER") is not None:
+        self.register_result(ther_fields, kwargs.get("CORR_THER"))
+
+    # Save MED
     med_name = (
         lambda s: s.replace("MECA", "ME")
         .replace("THER", "TH")
-        .replace("DILA", "DI")
-        .replace("CORR_", "C")
-        .replace("MEMB", "M")
-        .replace("FLEX", "F")
+        .replace("DILA", "DIL")
+        .replace("CORR_", "")
+        .replace("MEMB", "ME")
+        .replace("FLEX", "FL")
+        .replace("PINT", "PINT")
     )
 
+    save_fields = dict(**elas_fields, **ther_fields)
     if unit is not None:
         IMPR_RESU(
             FORMAT="MED",
             RESU=[
-                _F(RESULTAT=fld, NOM_RESU_MED=med_name(fldname)) for fldname, fld in fields.items()
+                _F(RESULTAT=fld, NOM_RESU_MED=med_name(fldname))
+                for fldname, fld in save_fields.items()
             ],
             UNITE=unit,
         )

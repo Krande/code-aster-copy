@@ -20,7 +20,18 @@
 from collections import OrderedDict
 
 from ...Cata.Syntax import _F
-from ...Commands import *
+from ...Commands import (
+    DEFI_CONSTANTE,
+    DEFI_MATERIAU,
+    AFFE_MATERIAU,
+    AFFE_MODELE,
+    CREA_RESU,
+    CREA_CHAMP,
+    DEFI_LIST_REEL,
+    AFFE_CHAR_CINE,
+    MECA_STATIQUE,
+    POST_ELEM,
+)
 from ...Messages import ASSERT, UTMESS
 from ...Objects import Function
 
@@ -30,6 +41,25 @@ def create_empty_dictpara(ls_para):
     for para in ls_para:
         tabpara[para] = []
     return tabpara
+
+
+def get_temp_def_alpha(resu):
+    """
+    Get the TEMP_DEF_ALPHA parameter from a given SD.
+    Return default is 20.0
+    """
+
+    temp_def_alpha = 20.0
+    mate = resu.getMaterialField()
+    for m in mate.getVectorOfMaterial():
+        for name in m.getMaterialNames():
+            try:
+                temp_def_alpha = m.getValueReal(name, "TEMP_DEF_ALPHA")
+                break
+            except RuntimeError:
+                pass
+
+    return temp_def_alpha
 
 
 def parse_mater_groups(type_homo, ls_affe, varc_name, ls_group_tout):
@@ -50,6 +80,7 @@ def parse_mater_groups(type_homo, ls_affe, varc_name, ls_group_tout):
     affe_mod_calc = []
 
     f_zero = DEFI_CONSTANTE(VALE=0.0)
+    ls_temp_def_alpha = []
 
     for item in ls_affe:
 
@@ -84,7 +115,7 @@ def parse_mater_groups(type_homo, ls_affe, varc_name, ls_group_tout):
         }
 
         check_list = mandatory_elas if not need_ther else mandatory_elas + mandatory_ther
-
+        temp_def_alpha_current_mat = None
         for key, lspara in parse_list.items():
             missing_in_at_least_one = []
             for p in lspara:
@@ -93,9 +124,14 @@ def parse_mater_groups(type_homo, ls_affe, varc_name, ls_group_tout):
                     if p in missing_in_at_least_one:
                         UTMESS("F", "HOMO1_12", valk=p)
                     f_para[p] = func
+                    try:
+                        temp_def_alpha_current_mat = mater.getValueReal(key, "TEMP_DEF_ALPHA")
+                        ls_temp_def_alpha.append(temp_def_alpha_current_mat)
+                    except RuntimeError:
+                        pass
                 else:
                     try:
-                        v = mater.getValueReal(keyelas, p)
+                        v = mater.getValueReal(key, p)
                         UTMESS("F", "HOMO1_13", valk=p)
                     except RuntimeError:
                         pass
@@ -116,7 +152,8 @@ def parse_mater_groups(type_homo, ls_affe, varc_name, ls_group_tout):
                 f_para_temp[p].setInterpolation(pro[1])
                 f_para_temp[p].setExtrapolation(pro[4])
                 values = fp.getValues()
-                f_para_temp[p].setValues(values[: len(values) // 2], values[len(values) // 2 :])
+                x, y = values[: len(values) // 2], values[len(values) // 2 :]
+                f_para_temp[p].setValues(x, y)
             else:
                 f_para_temp[p] = fp
 
@@ -134,7 +171,9 @@ def parse_mater_groups(type_homo, ls_affe, varc_name, ls_group_tout):
         affe_mod_calc.append(new_item_calc)
 
         if "ALPHA" in f_para_temp:
+            ASSERT(temp_def_alpha_current_mat is not None)
             elas_fo_kw["ALPHA"] = f_para_temp["ALPHA"]
+            elas_fo_kw["TEMP_DEF_ALPHA"] = temp_def_alpha_current_mat
 
         if "RHO_CP" in f_para_temp:
             ther_fo_kw["RHO_CP"] = f_para_temp["RHO_CP"]
@@ -142,6 +181,9 @@ def parse_mater_groups(type_homo, ls_affe, varc_name, ls_group_tout):
         new_item_mate["MATER"] = DEFI_MATERIAU(ELAS_FO=_F(**elas_fo_kw), THER_FO=_F(**ther_fo_kw))
 
         affe_mod_mate.append(new_item_mate)
+
+    if len(set(ls_temp_def_alpha)) > 1:
+        UTMESS("F", "HOMO1_14", valk=("TEMP_DEF_ALPHA",))
 
     return affe_mod_mate, affe_mod_calc
 
@@ -180,11 +222,11 @@ def setup_calcul(type_homo, mesh, ls_group_tout, ls_affe, varc_name, varc_values
     ls_alpha_calc = prepare_alpha_loads(ls_affe_mod_mate, varc_values)
 
     MODTH = AFFE_MODELE(
-        MAILLAGE=mesh, AFFE=_F(GROUP_MA=ls_group_tout, MODELISATION="3D", PHENOMENE="THERMIQUE")
+        MAILLAGE=mesh, AFFE=_F(TOUT="OUI", MODELISATION="3D", PHENOMENE="THERMIQUE")
     )
 
     MODME = AFFE_MODELE(
-        MAILLAGE=mesh, AFFE=_F(GROUP_MA=ls_group_tout, MODELISATION="3D", PHENOMENE="MECANIQUE")
+        MAILLAGE=mesh, AFFE=_F(TOUT="OUI", MODELISATION="3D", PHENOMENE="MECANIQUE")
     )
 
     EVOLVARC = CREA_RESU(

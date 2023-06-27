@@ -17,12 +17,22 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from collections import OrderedDict
 import numpy as np
 
 from ...Cata.Syntax import _F
-from ...Commands import *
-from ...Messages import ASSERT, UTMESS
+from ...Commands import (
+    AFFE_CHAR_CINE,
+    AFFE_CHAR_MECA,
+    AFFE_CHAR_MECA_F,
+    FORMULE,
+    MECA_STATIQUE,
+    CALC_CHAMP,
+    POST_ELEM,
+    CALC_TABLE,
+    CREA_TABLE,
+)
+from ...Messages import ASSERT
+from ...Objects import ThermalResultDict, ElasticResultDict
 
 from . import mate_homo_utilities as utilities
 
@@ -99,53 +109,54 @@ def calc_corr_plaque_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, ls_group_ma, d
 
     CHAR12_ff = AFFE_CHAR_MECA_F(MODELE=MODME, PRE_EPSI=_F(GROUP_MA=ls_group_ma, EPXY=LOAD_ff))
 
-    fields = OrderedDict()
+    elas_fields = ElasticResultDict()
+    ther_fields = ThermalResultDict()
     # Calcul des correcteurs MECANIQUES
     # ======================================================================
 
-    fields["CORR_MECA11_MEMB"] = MECA_STATIQUE(
+    elas_fields["CORR_MECA11_MEMB"] = MECA_STATIQUE(
         MODELE=MODME,
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
         EXCIT=(_F(CHARGE=CHAR11_mm), _F(CHARGE=SYME_MECA_XX_mm)),
     )
 
-    fields["CORR_MECA22_MEMB"] = MECA_STATIQUE(
+    elas_fields["CORR_MECA22_MEMB"] = MECA_STATIQUE(
         MODELE=MODME,
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
         EXCIT=(_F(CHARGE=CHAR22_mm), _F(CHARGE=SYME_MECA_XX_mm)),
     )
 
-    fields["CORR_MECA12_MEMB"] = MECA_STATIQUE(
+    elas_fields["CORR_MECA12_MEMB"] = MECA_STATIQUE(
         MODELE=MODME,
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
         EXCIT=(_F(CHARGE=CHAR12_mm), _F(CHARGE=ANTI_MECA_12_mm)),
     )
 
-    fields["CORR_MECA11_FLEX"] = MECA_STATIQUE(
+    elas_fields["CORR_MECA11_FLEX"] = MECA_STATIQUE(
         MODELE=MODME,
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
         EXCIT=(_F(CHARGE=CHAR11_ff), _F(CHARGE=SYME_MECA_XX_ff)),
     )
 
-    fields["CORR_MECA22_FLEX"] = MECA_STATIQUE(
+    elas_fields["CORR_MECA22_FLEX"] = MECA_STATIQUE(
         MODELE=MODME,
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
         EXCIT=(_F(CHARGE=CHAR22_ff), _F(CHARGE=SYME_MECA_XX_ff)),
     )
 
-    fields["CORR_MECA12_FLEX"] = MECA_STATIQUE(
+    elas_fields["CORR_MECA12_FLEX"] = MECA_STATIQUE(
         MODELE=MODME,
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
         EXCIT=(_F(CHARGE=CHAR12_ff), _F(CHARGE=ANTI_MECA_12_ff)),
     )
 
-    return fields
+    return elas_fields, ther_fields
 
 
 def calc_loimel_plaque(DEPLMATE, ls_group_tout, dir_plaque):
@@ -227,20 +238,15 @@ def calc_loimel_plaque(DEPLMATE, ls_group_tout, dir_plaque):
 
 
 def calc_tabpara_plaque(
-    DEPLMATE,
-    volume_ver,
-    ls_group_ma,
-    varc_name,
-    ls_varc,
-    dir_plaque,
-    dirthick,
-    CORR_MECA11_MEMB,
-    CORR_MECA22_MEMB,
-    CORR_MECA12_MEMB,
-    CORR_MECA11_FLEX,
-    CORR_MECA22_FLEX,
-    CORR_MECA12_FLEX,
+    DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, dir_plaque, dirthick, **fields
 ):
+
+    CORR_MECA11_MEMB = fields["CORR_MECA11_MEMB"]
+    CORR_MECA22_MEMB = fields["CORR_MECA22_MEMB"]
+    CORR_MECA12_MEMB = fields["CORR_MECA12_MEMB"]
+    CORR_MECA11_FLEX = fields["CORR_MECA11_FLEX"]
+    CORR_MECA22_FLEX = fields["CORR_MECA22_FLEX"]
+    CORR_MECA12_FLEX = fields["CORR_MECA12_FLEX"]
 
     ranks_meca = CORR_MECA11_MEMB.getAccessParameters()["NUME_ORDRE"]
 
@@ -249,6 +255,7 @@ def calc_tabpara_plaque(
     dictpara = utilities.create_empty_dictpara([varc_name] + PARAPLAQUE)
     loimel = calc_loimel_plaque(DEPLMATE, ls_group_ma, dir_plaque)
     h = dirthick[dir_plaque]
+    tda = utilities.get_temp_def_alpha(DEPLMATE)
 
     # fmt: off
     for i, rank_meca in enumerate(ranks_meca):
@@ -305,7 +312,7 @@ def calc_tabpara_plaque(
         dictpara["ALPHA_L"].append(ALPHA_L)
         dictpara["ALPHA_T"].append(ALPHA_T)
         dictpara["RHO"].append(RHO)
-        dictpara["TEMP_DEF_ALPHA"].append(20.0)
+        dictpara["TEMP_DEF_ALPHA"].append(tda)
 
     # fmt: on
     dictpara[varc_name] = ls_varc

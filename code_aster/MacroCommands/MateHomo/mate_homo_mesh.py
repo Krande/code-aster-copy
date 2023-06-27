@@ -36,22 +36,22 @@ def prepare_mesh_syme(meshin, affe_groups, affe_all):
     ASSERT(len(affe_groups) > 0 or affe_all)
 
     mm = meshin.createMedCouplingMesh()
-    m0 = mm[0]
+    m0full = mm[0]
 
-    nb_zones = len(m0.partitionBySpreadZone())
+    nb_zones = len(m0full.partitionBySpreadZone())
     if not nb_zones == 1:
         UTMESS("F", "HOMO1_1", vali=nb_zones)
 
-    if not m0.getMeshDimension() == 3:
-        UTMESS("F", "HOMO1_2", vali=m0.getMeshDimension())
+    if not m0full.getMeshDimension() == 3:
+        UTMESS("F", "HOMO1_2", vali=m0full.getMeshDimension())
 
-    if not m0.getSpaceDimension() == 3:
-        UTMESS("F", "HOMO1_3", vali=m0.getSpaceDimension())
+    if not m0full.getSpaceDimension() == 3:
+        UTMESS("F", "HOMO1_3", vali=m0full.getSpaceDimension())
 
     body_groups = []
 
     if affe_all is True:
-        body_groups.append(mc.DataArrayInt.Range(0, m0.getNumberOfCells(), 1))
+        body_groups.append(mc.DataArrayInt.Range(0, m0full.getNumberOfCells(), 1))
 
     else:
         # Les groupes de GROUP_MA doivent exister et leur intersection est vide
@@ -68,23 +68,33 @@ def prepare_mesh_syme(meshin, affe_groups, affe_all):
         for grp in affe_groups:
             body_groups.append(mm.getGroupArr(0, grp))
 
-    group_tout = "BODY"
-    union = mc.DataArrayInt.BuildUnion(body_groups)
-    union.setName(group_tout)
-
+    bodycells = mc.DataArrayInt.BuildUnion(body_groups)
+    m0 = m0full[bodycells]
+    m0.zipCoords()
     skin = m0.computeSkin()
-    partialnodes = m0[union].computeFetchedNodeIds()
 
     newmesh = mc.MEDFileUMesh()
     newmesh.setName(mm.getName())
     newmesh[0] = m0
     newmesh[-1] = skin
 
-    # Conservation de tous les groupes de volume sauf BODY et ajout du groupe union
-    preserved_groups = [
-        mm.getGroupArr(0, grp) for grp in mm.getGroupsOnSpecifiedLev(0) if grp != group_tout
-    ]
-    newmesh.setGroupsAtLevel(0, preserved_groups + [union])
+    # Conservation de tous les groupes de volume sauf BODY et ajout du groupe bodycells
+    group_tout = "BODY"
+    preserved_groups = []
+    ls_grp_vol = [i for i in mm.getGroupsOnSpecifiedLev(0) if i != group_tout]
+    for gname in ls_grp_vol:
+        try:
+            grp = mm.getGroupArr(0, gname)
+            ni = bodycells.findIdForEach(grp)
+            ni.setName(grp.getName())
+            preserved_groups.append(ni)
+        except mc.InterpKernelException:
+            pass
+
+    fullvolume = mc.DataArrayInt.Range(0, len(bodycells), 1)
+    fullvolume.setName(group_tout)
+
+    newmesh.setGroupsAtLevel(0, preserved_groups + [fullvolume])
 
     # Recherche des faces à xmin,xmax,ymin,ymax,zmin,zmax et creation des groupes
     bounds = m0.getBoundingBox()
@@ -100,24 +110,30 @@ def prepare_mesh_syme(meshin, affe_groups, affe_all):
         dirthick[dirname.upper()] = vmax - vmin
 
         ndsmin = m0.getCoords()[:, idx].findIdsInRange(vmin - tol, vmin + tol)
-        partial_ndsmin = ndsmin.buildIntersection(partialnodes)
-        cellsmin = skin.getCellIdsLyingOnNodes(partial_ndsmin, True)
+        cellsmin = skin.getCellIdsLyingOnNodes(ndsmin, True)
         grpname = "face_%smin" % dirname
         if len(cellsmin) == 0:
             UTMESS("F", "HOMO1_7", valk=grpname)
         cellsmin.setName(grpname)
         face_groups.append(cellsmin)
-        face_nodes[grpname] = partial_ndsmin
+        face_nodes[grpname] = ndsmin
 
         ndsmax = m0.getCoords()[:, idx].findIdsInRange(vmax - tol, vmax + tol)
-        partial_ndsmax = ndsmax.buildIntersection(partialnodes)
-        cellsmax = skin.getCellIdsLyingOnNodes(partial_ndsmax, True)
+        cellsmax = skin.getCellIdsLyingOnNodes(ndsmax, True)
         grpname = "face_%smax" % dirname
         if len(cellsmax) == 0:
             UTMESS("F", "HOMO1_7", valk=grpname)
         cellsmax.setName(grpname)
         face_groups.append(cellsmax)
-        face_nodes[grpname] = partial_ndsmax
+        face_nodes[grpname] = ndsmax
+
+    skin_cells = mc.DataArrayInt.Range(0, skin.getNumberOfCells(), 1)
+    bbox_cells = mc.DataArrayInt.BuildUnion(face_groups)
+    internal_skin_cells = skin_cells.buildSubstraction(bbox_cells)
+    grpname = "face_int"
+    internal_skin_cells.setName(grpname)
+    if len(internal_skin_cells) > 0:
+        face_groups.append(internal_skin_cells)
 
     newmesh.setGroupsAtLevel(-1, face_groups)
 
