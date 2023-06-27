@@ -28,9 +28,6 @@
 
 // aslint: disable=C3010
 
-#ifdef ASTER_HAVE_MED
-#include "med.h"
-
 #include "IOManager/MedCalculationSequence.h"
 #include "IOManager/MedFamily.h"
 #include "IOManager/MedFilePointer.h"
@@ -40,6 +37,8 @@
 #include <string>
 #include <vector>
 
+#ifdef ASTER_HAVE_MED
+#include "med.h"
 /**
  * @class MedMesh
  * @brief Med mesh interface

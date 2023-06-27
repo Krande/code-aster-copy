@@ -26,9 +26,6 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#ifdef ASTER_HAVE_MED
-#include "med.h"
-
 #include "IOManager/MedFilePointer.h"
 #include "IOManager/MedProfile.h"
 
@@ -36,6 +33,8 @@
 #include <memory>
 #include <string>
 
+#ifdef ASTER_HAVE_MED
+#include "med.h"
 /**
  * @class MedFilter
  * @brief Med filter interface

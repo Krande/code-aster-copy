@@ -26,13 +26,13 @@
 // aslint: disable=C3010
 // aslint: disable=C3008
 
-#ifdef ASTER_HAVE_MED
 #include "IOManager/MedField.h"
 
 #include "IOManager/MedFilter.h"
 #include "IOManager/MedUtilities.h"
 #include "ParallelUtilities/AsterMPI.h"
 
+#ifdef ASTER_HAVE_MED
 std::vector< med_int > MedField::getAllSupportEntitiesAtSequence( int numdt, int numit ) const {
     std::vector< med_int > toReturn;
     char defaultprofilename[MED_NAME_SIZE + 1] = "";

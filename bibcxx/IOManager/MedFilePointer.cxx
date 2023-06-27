@@ -23,10 +23,11 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#ifdef ASTER_HAVE_MED
 #include "IOManager/MedFilePointer.h"
 
 #include "ParallelUtilities/AsterMPI.h"
+
+#ifdef ASTER_HAVE_MED
 
 int MedFilePointer::close() {
     MEDfileClose( _fileId );

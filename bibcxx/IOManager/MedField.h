@@ -26,9 +26,6 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#ifdef ASTER_HAVE_MED
-#include "med.h"
-
 #include "IOManager/MedCalculationSequence.h"
 #include "IOManager/MedFilePointer.h"
 #include "IOManager/MedMesh.h"
@@ -43,6 +40,8 @@
 #include <string>
 #include <vector>
 
+#ifdef ASTER_HAVE_MED
+#include "med.h"
 // aslint: disable=C3010
 // aslint: disable=C3012
 

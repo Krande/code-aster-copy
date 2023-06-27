@@ -29,8 +29,8 @@
 
 // Not DataStructures
 // aslint: disable=C3006
-#ifdef ASTER_HAVE_MED
 
+#ifdef ASTER_HAVE_MED
 void exportMedVectorToPython( py::module_ &mod ) {
 
     py::class_< MedVector, MedVectorPtr >( mod, "MedVector" )

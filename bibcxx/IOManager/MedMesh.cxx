@@ -25,7 +25,6 @@
 
 // aslint: disable=C3010
 
-#ifdef ASTER_HAVE_MED
 #include "IOManager/MedMesh.h"
 
 #include "IOManager/MedFilter.h"
@@ -33,6 +32,7 @@
 #include "IOManager/MedUtilities.h"
 #include "ParallelUtilities/AsterMPI.h"
 
+#ifdef ASTER_HAVE_MED
 MedMesh::MedMesh( const MedFilePointer &filePtr, const std::string &name, med_int dim )
     : _name( name ), _filePtr( filePtr ), _dim( dim ) {
     const auto famNumber = MEDnFamily( _filePtr.getFileId(), _name.c_str() );

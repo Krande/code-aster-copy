@@ -23,9 +23,9 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#ifdef ASTER_HAVE_MED
 #include "IOManager/MedFilter.h"
 
+#ifdef ASTER_HAVE_MED
 MedFilter::MedFilter( const MedFilePointer &filePtr, med_int nentity, med_int nvaluesperentity,
                       med_int nconstituentpervalue, med_int constituentselect,
                       med_switch_mode switchmode, med_storage_mode storagemode, med_size start,

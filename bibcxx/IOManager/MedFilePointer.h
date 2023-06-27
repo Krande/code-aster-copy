@@ -26,14 +26,15 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#ifdef ASTER_HAVE_MED
-#include "med.h"
+#include "astercxx.h"
 
 #include <iostream>
 #include <memory>
 #include <string>
 #include <vector>
 
+#ifdef ASTER_HAVE_MED
+#include "med.h"
 /**
  * @class MEdFilePointer
  * @brief Med file pointer interface

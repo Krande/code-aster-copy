@@ -25,12 +25,12 @@
 
 // aslint: disable=C3012
 
-#ifdef ASTER_HAVE_MED
 #include "IOManager/MedFileReader.h"
 
 #include "IOManager/MedUtilities.h"
 #include "Utilities/Tools.h"
 
+#ifdef ASTER_HAVE_MED
 MedFileReader::~MedFileReader() {
     if ( _filePtr.isOpen() )
         _filePtr.close();

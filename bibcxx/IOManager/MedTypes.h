@@ -26,6 +26,8 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
+#include "astercxx.h"
+
 #ifdef ASTER_HAVE_MED
 #include "med.h"
 

@@ -26,9 +26,7 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#ifdef ASTER_HAVE_MED
 #include "aster_pybind.h"
-#include "med.h"
 
 #include "MemoryManager/NumpyAccess.h"
 
@@ -37,6 +35,8 @@
 #include <string>
 #include <vector>
 
+#ifdef ASTER_HAVE_MED
+#include "med.h"
 // aslint: disable=C3010
 // aslint: disable=C3008
 
