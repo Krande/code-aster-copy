@@ -29,6 +29,7 @@
 
 // Not DataStructures
 // aslint: disable=C3006
+#ifdef ASTER_HAVE_MED
 
 void exportMedVectorToPython( py::module_ &mod ) {
 
@@ -49,3 +50,5 @@ Returns:
 Get vector size, ie: number of elements (cells or nodes)
 )" );
 };
+
+#endif

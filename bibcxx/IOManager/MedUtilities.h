@@ -26,8 +26,6 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include "med.h"
-
 #include <string>
 #include <vector>
 

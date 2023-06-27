@@ -26,6 +26,7 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
+#ifdef ASTER_HAVE_MED
 #include "med.h"
 
 #include "IOManager/MedCalculationSequence.h"
@@ -156,4 +157,5 @@ class MedField {
  */
 typedef std::shared_ptr< MedField > MedFieldPtr;
 
+#endif
 #endif /* MEDFIELD_H_ */

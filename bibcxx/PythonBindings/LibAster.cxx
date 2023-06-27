@@ -324,9 +324,11 @@ PYBIND11_MODULE( libaster, mod ) {
     exportMeshConnectionGraphToPython( mod );
 #endif /* ASTER_HAVE_SCOTCH */
 #endif /* ASTER_HAVE_MPI */
+#ifdef ASTER_HAVE_MED
     exportMedFileReaderToPython( mod );
     exportMedFieldToPython( mod );
     exportMedMeshToPython( mod );
     exportMedFamilyToPython( mod );
     exportMedVectorToPython( mod );
+#endif /* ASTER_HAVE_MED */
 };

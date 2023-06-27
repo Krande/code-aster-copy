@@ -29,6 +29,7 @@
 
 // Not DataStructures
 // aslint: disable=C3006
+#ifdef ASTER_HAVE_MED
 
 void exportMedFamilyToPython( py::module_ &mod ) {
 
@@ -40,3 +41,5 @@ Get family name )" )
         .def( "getId", &MedFamily::getId, R"(
 Get family med id )" );
 };
+
+#endif

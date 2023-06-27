@@ -29,6 +29,7 @@
 
 // Not DataStructures
 // aslint: disable=C3006
+#ifdef ASTER_HAVE_MED
 
 void exportMedFieldToPython( py::module_ &mod ) {
 
@@ -100,3 +101,5 @@ Returns:
               py::arg( "numdt" ), py::arg( "numit" ), py::arg( "entity" ), py::arg( "geometry" ),
               py::arg( "iterator" ) );
 };
+
+#endif

@@ -26,6 +26,7 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
+#ifdef ASTER_HAVE_MED
 #include "med.h"
 
 #include <iostream>
@@ -69,4 +70,5 @@ class MedFilePointer {
     int openParallel( const std::string &filename );
 };
 
+#endif
 #endif /* MEDFILEPOINTER_H_ */

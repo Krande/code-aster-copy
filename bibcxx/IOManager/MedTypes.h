@@ -26,6 +26,7 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
+#ifdef ASTER_HAVE_MED
 #include "med.h"
 
 /** @brief med types used in code_aster */
@@ -33,4 +34,5 @@ constexpr std::array< med_geometry_type, 20 > medTypes = {1,   102, 103, 104, 20
                                                           204, 208, 209, 304, 310, 306, 315,
                                                           318, 305, 313, 308, 320, 327};
 
+#endif
 #endif /* MEDTYPES_H_ */

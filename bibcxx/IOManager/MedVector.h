@@ -26,6 +26,7 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
+#ifdef ASTER_HAVE_MED
 #include "aster_pybind.h"
 #include "med.h"
 
@@ -192,4 +193,5 @@ class MedVector {
  */
 typedef std::shared_ptr< MedVector > MedVectorPtr;
 
+#endif
 #endif /* MEDVECTOR_H */

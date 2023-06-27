@@ -26,6 +26,7 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
+#ifdef ASTER_HAVE_MED
 #include "med.h"
 
 #include <iostream>
@@ -77,4 +78,5 @@ class MedCalculationSequence {
  */
 typedef std::shared_ptr< MedCalculationSequence > MedCalculationSequencePtr;
 
+#endif
 #endif /* MEDCALCULATIONSEQUENCE_H_ */

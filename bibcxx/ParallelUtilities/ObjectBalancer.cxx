@@ -89,6 +89,7 @@ void ObjectBalancer::balanceObjectOverProcesses( const MeshCoordinatesFieldPtr &
     coordsOut->buildDescriptor();
 };
 
+#ifdef ASTER_HAVE_MED
 MedVectorPtr
 ObjectBalancer::balanceMedVectorOverProcessesWithRenumbering( const MedVectorPtr &vecIn ) const {
     MedVectorPtr vecOut( new MedVector() );
@@ -118,5 +119,6 @@ ObjectBalancer::balanceMedVectorOverProcessesWithRenumbering( const MedVectorPtr
     }
     return vecOut2;
 };
+#endif
 
 #endif /* ASTER_HAVE_MPI */

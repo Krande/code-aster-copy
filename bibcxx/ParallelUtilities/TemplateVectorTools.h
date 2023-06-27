@@ -64,12 +64,14 @@ int getSize( const std::vector< T > *in ) {
     return 1;
 };
 
+#ifdef ASTER_HAVE_MED
 int getSize( const MedVector::ElementValue &in );
 
 template < typename T >
 int getTotalSize( const std::vector< T > &toCopy ) {
     return 0;
 };
+#endif
 
 template < typename T >
 int getTotalSize( const std::vector< std::vector< T > > &toCopy ) {
@@ -86,7 +88,9 @@ int getTotalSize( const JeveuxCollectionClass< T > &toCopy ) {
     return toCopy.totalSize();
 };
 
+#ifdef ASTER_HAVE_MED
 int getTotalSize( const MedVector &toCopy );
+#endif
 
 template < typename T >
 const T *getAddress( const std::vector< T > &toCopy ) {
@@ -149,10 +153,12 @@ struct StartPosition< JeveuxCollectionClass< T > > {
     static constexpr int value = 1;
 };
 
+#ifdef ASTER_HAVE_MED
 template <>
 struct StartPosition< MedVector > {
     static constexpr int value = 0;
 };
+#endif
 
 template < typename T >
 void allocate( std::vector< std::vector< T > > &in, const int &size1, const int &size2 ) {
@@ -169,7 +175,9 @@ void allocate( JeveuxCollectionClass< T > &in, const int &size1, const int &size
     in.allocateContiguousNumbered( size1, size2 );
 };
 
+#ifdef ASTER_HAVE_MED
 void allocate( MedVector &in, const int &size1, const int &size2 );
+#endif
 
 template < typename T >
 void update( const std::vector< T > &in ) {};
@@ -182,7 +190,9 @@ void update( JeveuxCollectionObject< T > in ) {
     in->updateValuePointer();
 };
 
+#ifdef ASTER_HAVE_MED
 void update( MedVector::ElementValue in );
+#endif
 
 template < typename T >
 void allocateOccurence( std::vector< std::vector< T > > &in, const int &pos, const int &size ) {
@@ -194,15 +204,19 @@ void allocateOccurence( JeveuxCollectionClass< T > &in, const int &pos, const in
     in.allocateObject( pos, size );
 };
 
+#ifdef ASTER_HAVE_MED
 void allocateOccurence( MedVector &in, const int &pos, const int &size );
+#endif
 
 template < typename T >
 struct ObjectTemplateType;
 
+#ifdef ASTER_HAVE_MED
 template <>
 struct ObjectTemplateType< MedVector > {
     typedef double value_type;
 };
+#endif
 
 template <>
 struct ObjectTemplateType< JeveuxCollectionClass< ASTERINTEGER > > {

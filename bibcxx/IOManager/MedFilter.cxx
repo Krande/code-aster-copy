@@ -23,6 +23,7 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
+#ifdef ASTER_HAVE_MED
 #include "IOManager/MedFilter.h"
 
 MedFilter::MedFilter( const MedFilePointer &filePtr, med_int nentity, med_int nvaluesperentity,
@@ -58,3 +59,5 @@ MedFilter::~MedFilter() {
     if ( _exists )
         MEDfilterDeAllocate( 1, _filter );
 };
+
+#endif

@@ -25,6 +25,7 @@
 
 // aslint: disable=C3012
 
+#ifdef ASTER_HAVE_MED
 #include "IOManager/MedFileReader.h"
 
 #include "IOManager/MedUtilities.h"
@@ -152,3 +153,4 @@ int MedFileReader::openParallel( const std::string &filename ) {
     }
     return 0;
 };
+#endif

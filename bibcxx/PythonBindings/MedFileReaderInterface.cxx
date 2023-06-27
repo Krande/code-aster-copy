@@ -29,6 +29,7 @@
 
 // Not DataStructures
 // aslint: disable=C3006
+#ifdef ASTER_HAVE_MED
 
 void exportMedFileReaderToPython( py::module_ &mod ) {
 
@@ -101,3 +102,5 @@ Returns:
             )",
               py::arg( "path" ) );
 };
+
+#endif

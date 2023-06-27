@@ -28,6 +28,7 @@
 
 // aslint: disable=C3012
 
+#ifdef ASTER_HAVE_MED
 #include "med.h"
 
 #include "IOManager/MedField.h"
@@ -109,4 +110,5 @@ class MedFileReader {
  */
 typedef std::shared_ptr< MedFileReader > MedFileReaderPtr;
 
+#endif
 #endif /* MEDFILEREADER_H_ */

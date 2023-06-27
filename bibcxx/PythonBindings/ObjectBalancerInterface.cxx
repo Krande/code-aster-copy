@@ -60,6 +60,7 @@ Arguments:
     elemList: list of elements to keep
         )",
               py::arg( "elemList" ) )
+#ifdef ASTER_HAVE_MED
         .def( "balanceMedVectorOverProcessesWithRenumbering",
               &ObjectBalancer::balanceMedVectorOverProcessesWithRenumbering, R"(
 Balance a med vector of reals over processes
@@ -71,6 +72,7 @@ Returns:
     MedVector[real]: balanced med vector
         )",
               py::arg( "vector" ) )
+#endif
         .def( "balanceVectorOverProcesses",
               &ObjectBalancer::balanceVectorOverProcesses< VectorReal >, R"(
 Balance a vector of reals over processes

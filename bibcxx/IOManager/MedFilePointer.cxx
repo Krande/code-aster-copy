@@ -23,6 +23,7 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
+#ifdef ASTER_HAVE_MED
 #include "IOManager/MedFilePointer.h"
 
 #include "ParallelUtilities/AsterMPI.h"
@@ -53,3 +54,4 @@ int MedFilePointer::openParallel( const std::string &filename ) {
     return 0;
 #endif /* ASTER_HAVE_MPI */
 };
+#endif

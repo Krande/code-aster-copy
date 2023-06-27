@@ -252,7 +252,9 @@ class ObjectBalancer {
                                       std::vector< std::vector< T > > &,
                                       const Mask &mask = Mask() ) const;
 
+#ifdef ASTER_HAVE_MED
     MedVectorPtr balanceMedVectorOverProcessesWithRenumbering( const MedVectorPtr & ) const;
+#endif
 
     VectorLong getRenumbering() const { return _renumbering; };
 

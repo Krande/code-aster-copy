@@ -26,6 +26,7 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
+#ifdef ASTER_HAVE_MED
 #include "med.h"
 
 #include "IOManager/MedFilePointer.h"
@@ -100,4 +101,5 @@ class MedFilter {
  */
 typedef std::shared_ptr< MedFilter > MedFilterPtr;
 
+#endif
 #endif /* MEDFILTER_H_ */

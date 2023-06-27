@@ -19,6 +19,7 @@
 
 #include "ParallelUtilities/TemplateVectorTools.h"
 
+#ifdef ASTER_HAVE_MED
 int getSize( const MedVector::ElementValue &in ) { return in.getComponentNumber(); };
 
 int getTotalSize( const MedVector &toCopy ) { return toCopy.totalSize(); };
@@ -33,3 +34,4 @@ void update( MedVector::ElementValue in ) {};
 void allocateOccurence( MedVector &in, const int &pos, const int &size ) {
     in.setElement( pos, size );
 };
+#endif

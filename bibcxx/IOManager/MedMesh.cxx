@@ -25,6 +25,7 @@
 
 // aslint: disable=C3010
 
+#ifdef ASTER_HAVE_MED
 #include "IOManager/MedMesh.h"
 
 #include "IOManager/MedFilter.h"
@@ -243,3 +244,5 @@ std::vector< double > MedMesh::readCoordinates( int numdt, int numit ) const {
     }
     return toReturn;
 }
+
+#endif

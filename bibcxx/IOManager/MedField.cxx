@@ -26,6 +26,7 @@
 // aslint: disable=C3010
 // aslint: disable=C3008
 
+#ifdef ASTER_HAVE_MED
 #include "IOManager/MedField.h"
 
 #include "IOManager/MedFilter.h"
@@ -348,3 +349,5 @@ std::vector< double > MedField::getValuesAtSequenceOnEntityAndProfile( int numdt
                              (unsigned char *)&toReturn[0] );
     return toReturn;
 };
+
+#endif

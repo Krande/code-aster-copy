@@ -28,6 +28,7 @@
 
 // aslint: disable=C3010
 
+#ifdef ASTER_HAVE_MED
 #include "med.h"
 
 #include "IOManager/MedCalculationSequence.h"
@@ -155,4 +156,5 @@ class MedMesh {
  */
 typedef std::shared_ptr< MedMesh > MedMeshPtr;
 
+#endif
 #endif /* MEDMESH_H_ */
