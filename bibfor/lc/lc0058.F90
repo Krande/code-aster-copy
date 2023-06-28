@@ -140,9 +140,6 @@ subroutine lc0058(BEHinteg, &
     dsidep_loc = 0.d0
     stran = 0.d0
     dstran = 0.d0
-    sigp = 0.d0
-    vip = 0.d0
-    dsidep = 0.d0
     props = 0.d0
 
     dbg = is_enabled(LOGLEVEL_MGIS, DEBUG)
@@ -308,11 +305,17 @@ subroutine lc0058(BEHinteg, &
         end if
     end if
 
-    if (lSigm) sigp(1:2*ndim) = sigp_loc(1:2*ndim)
+    if (lSigm) then
+        sigp = 0.d0
+        sigp(1:2*ndim) = sigp_loc(1:2*ndim)
+    end if
     if (lVari) then
-        vip(1:nvi) = 0
+        vip = 0.d0
         vip(1:nstatv) = vi_loc(1:nstatv)
     end if
-    if (lMatr) dsidep(1:2*ndim, 1:2*ndim) = dsidep_loc(1:2*ndim, 1:2*ndim)
+    if (lMatr) then
+        dsidep = 0.d0
+        dsidep(1:2*ndim, 1:2*ndim) = dsidep_loc(1:2*ndim, 1:2*ndim)
+    end if
 !
 end subroutine
