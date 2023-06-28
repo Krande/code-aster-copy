@@ -138,6 +138,12 @@ subroutine lc0058(BEHinteg, &
     sigp_loc = 0.d0
     vi_loc = 0.d0
     dsidep_loc = 0.d0
+    stran = 0.d0
+    dstran = 0.d0
+    sigp = 0.d0
+    vip = 0.d0
+    dsidep = 0.d0
+    props = 0.d0
 
     dbg = is_enabled(LOGLEVEL_MGIS, DEBUG)
 
