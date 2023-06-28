@@ -64,6 +64,7 @@ ARGS = "_MARK_DS_ARGS_"
 STATE = "_MARK_DS_STATE_"
 LIST = "_MARK_LIST_"
 DICT = "_MARK_DICT_"
+EMBEDDED = "_MARK_EMBEDDED_"
 
 
 # same values in op9999
@@ -442,6 +443,12 @@ class AsterPickler(pickle.Pickler):
                 self.save_one(state)
             else:
                 logger.debug("skip object %s", ds_id)
+        elif isinstance(obj, WithEmbeddedObjects):
+            logger.debug("saving user object, attrs: %s", obj.aster_embedded)
+            self.save_one(EMBEDDED)
+            self.save_one(len(obj.aster_embedded))
+            for attr in obj.aster_embedded:
+                self.save_one(getattr(obj, attr))
 
         self.dump(obj)
         self._depth -= 1
@@ -616,6 +623,12 @@ class AsterUnpickler(pickle.Unpickler):
             for _ in range(size):
                 self.load_one()
             logger.debug("dict: %s / %s", self._depth, obj)
+            obj = self.load_one()
+        if obj == EMBEDDED:
+            size = self.load_one()
+            for _ in range(size):
+                self.load_one()
+            logger.debug("embedded: %s / %s", self._depth, obj)
             obj = self.load_one()
         if obj == ARGS:
             nbobj = self.load_one()

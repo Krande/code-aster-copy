@@ -47,26 +47,26 @@ ther3 = CREA_CHAMP(
     AFFE=_F(NOM_CMP="TEMP", VALE=3.0, TOUT="OUI"),
 )
 
-result12 = CREA_RESU(
+ther_dict = code_aster.ThermalResultDict("ther_dict")
+test.assertEqual(len(ther_dict), 0, msg="check len()")
+test.assertEqual(ther_dict.getType(), "EVOL_THER_DICT", msg="check type")
+
+# mix direct (global)...
+r12 = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_THER",
     NOM_CHAM="TEMP",
     AFFE=(_F(CHAM_GD=ther1, INST=1.0), _F(CHAM_GD=ther2, INST=2.0)),
 )
+ther_dict["12"] = r12
 
-result13 = CREA_RESU(
+# ...and indirect references to DataStructures, see #32978
+ther_dict["13"] = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_THER",
     NOM_CHAM="TEMP",
     AFFE=(_F(CHAM_GD=ther1, INST=1.0), _F(CHAM_GD=ther3, INST=3.0)),
 )
-
-ther_dict = code_aster.ThermalResultDict("ther_dict")
-test.assertEqual(len(ther_dict), 0, msg="check len()")
-test.assertEqual(ther_dict.getType(), "EVOL_THER_DICT", msg="check type")
-
-ther_dict["12"] = result12
-ther_dict["13"] = result13
 
 test.assertEqual(len(ther_dict), 2, msg="check len()")
 test.assertIsNone(ther_dict.get("unknown"), msg="check invalid access")
@@ -75,14 +75,14 @@ with test.assertRaises(KeyError):
 with test.assertRaises(TypeError):
     ther_dict["invalid"] = ther1
 
-# ch1 = ther_dict["12"].getField("TEMP", 1)
-# ch3 = ther_dict["13"].getField("TEMP", 2)
-# test.assertAlmostEqual(max(ch1.getValues()), 1.0, msg="check ther1")
-# test.assertAlmostEqual(max(ch3.getValues()), 3.0, msg="check ther3")
+ch1 = ther_dict["12"].getField("TEMP", 1)
+ch3 = ther_dict["13"].getField("TEMP", 2)
+test.assertAlmostEqual(max(ch1.getValues()), 1.0, msg="check ther1")
+test.assertAlmostEqual(max(ch3.getValues()), 3.0, msg="check ther3")
 
 # test for usage of dict-like objects in commands
 dict_test = MACRO_TEST(
-    AFFE=(_F(NOM_CAS="ab", RESULTAT=result12), _F(NOM_CAS="ac", RESULTAT=result13))
+    AFFE=(_F(NOM_CAS="ab", RESULTAT=ther_dict["12"]), _F(NOM_CAS="ac", RESULTAT=ther_dict["13"]))
 )
 
 test.printSummary()

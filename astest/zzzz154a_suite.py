@@ -24,23 +24,22 @@ code_aster.init("--test", "--continue")
 test = code_aster.TestCase()
 
 # test for usage of dict-like objects
-print("DEBUG:", ther_dict)
 test.assertEqual(len(ther_dict), 2, msg="check len()")
 test.assertSequenceEqual(sorted(ther_dict.keys()), ["12", "13"], msg="check keys()")
-# ch1 = ther_dict["12"].getField("TEMP", 1)
+ch1 = ther_dict["12"].getField("TEMP", 1)
 # ch1.debugPrint()
-# ch3 = ther_dict["13"].getField("TEMP", 2)
+ch3 = ther_dict["13"].getField("TEMP", 2)
 # ch3.debugPrint()
 
-# test.assertAlmostEqual(max(ch1.getValues()), 1.0, msg="check ther1")
-# test.assertAlmostEqual(max(ch3.getValues()), 3.0, msg="check ther3")
+test.assertAlmostEqual(max(ch1.getValues()), 1.0, msg="check ther1")
+test.assertAlmostEqual(max(ch3.getValues()), 3.0, msg="check ther3")
 
 result_ab = EXTR_CONCEPT(DICT=dict_test, NOM="ab")
 result_ac = EXTR_CONCEPT(DICT=dict_test, NOM="ac")
-# cha = result_ab.getField("TEMP", 1)
-# chc = result_ac.getField("TEMP", 2)
-# test.assertAlmostEqual(max(cha.getValues()), 1.0, msg="check ther_a")
-# test.assertAlmostEqual(max(chc.getValues()), 3.0, msg="check ther_c")
+cha = result_ab.getField("TEMP", 1)
+chc = result_ac.getField("TEMP", 2)
+test.assertAlmostEqual(max(cha.getValues()), 1.0, msg="check ther_ab")
+test.assertAlmostEqual(max(chc.getValues()), 3.0, msg="check ther_ac")
 
 test.printSummary()
 
