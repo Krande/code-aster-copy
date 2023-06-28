@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -69,6 +69,7 @@ from ..Objects import (DataStructure, InternalStateBuilder, ResultNaming,
                        WithEmbeddedObjects)
 from ..Utilities import (DEBUG, MPI, ExecutionParameter, Options,
                          get_caller_context, logger, no_new_attributes)
+EMBEDDED = "_MARK_EMBEDDED_"
 
 ARGS = '_MARK_DS_ARGS_'
 STATE = '_MARK_DS_STATE_'
@@ -454,6 +455,12 @@ class AsterPickler(pickle.Pickler):
                 self.save_one(state)
             else:
                 logger.debug(f"skip object {ds_id}")
+        elif isinstance(obj, WithEmbeddedObjects):
+            logger.debug("saving user object, attrs: %s", obj.aster_embedded)
+            self.save_one(EMBEDDED)
+            self.save_one(len(obj.aster_embedded))
+            for attr in obj.aster_embedded:
+                self.save_one(getattr(obj, attr))
 
         self.dump(obj)
         self._depth -= 1
@@ -626,6 +633,12 @@ class AsterUnpickler(pickle.Unpickler):
             for _ in range(size):
                 self.load_one()
             logger.debug(f"dict: {self._depth} / {obj}")
+            obj = self.load_one()
+        if obj == EMBEDDED:
+            size = self.load_one()
+            for _ in range(size):
+                self.load_one()
+            logger.debug("embedded: %s / %s", self._depth, obj)
             obj = self.load_one()
         if obj == ARGS:
             nbobj = self.load_one()

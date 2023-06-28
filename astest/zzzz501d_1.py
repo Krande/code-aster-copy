@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,6 +28,10 @@ values = ["SIEF_ELGA", 31, -325.03920740223253]
 
 user_object = ComplexUserObject(MA, U2, values)
 print(repr(user_object))
+
+# ensure that content is properly saved even without global reference, see #32978
+del MA
+del U2
 
 test.assertEqual(user_object.values[0], "SIEF_ELGA")
 test.assertEqual(user_object.values[1], 31)
