@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -687,7 +687,7 @@ class PostRocheCommon:
                 # extraction
                 args = {}
                 for kwd in self.l_mc_inst:
-                    if charg.get(kwd):
+                    if charg.get(kwd) is not None:
                         args[kwd] = charg[kwd]
 
                 __FIELD[nbfield] = CREA_CHAMP(
@@ -1042,7 +1042,7 @@ class PostRocheCommon:
             if t == 0.0:
                 return 0
             else:
-                return A * sig ** 2 / t
+                return A * sig**2 / t
 
         fASigRef2RevLoc = FORMULE(NOM_PARA=("N", "A", "X1"), VALE="ff(N,A,X1)", ff=ff)
 

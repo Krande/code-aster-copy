@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), IMPR_MACRO="OUI")
 
 # maillage, modele, caraelem
 
@@ -210,6 +210,14 @@ poids_propre = MECA_STATIQUE(
 )
 poids_propre = CALC_CHAMP(reuse=poids_propre, RESULTAT=poids_propre, CONTRAINTE="EFGE_ELNO")
 
+poids_propre_champ = CREA_CHAMP(
+    TYPE_CHAM="ELNO_SIEF_R",
+    OPERATION="EXTR",
+    RESULTAT=poids_propre,
+    NOM_CHAM="EFGE_ELNO",
+    NUME_ORDRE=1,
+)
+
 deplacement_impose = MECA_STATIQUE(
     MODELE=modele,
     CHAM_MATER=ch_mater,
@@ -221,7 +229,7 @@ deplacement_impose = CALC_CHAMP(
     reuse=deplacement_impose, RESULTAT=deplacement_impose, CONTRAINTE="EFGE_ELNO"
 )
 
-# IMPR_RESU(UNITE=6, FORMAT='RESULTAT', RESU=_F(RESULTAT=deplacement_impose, NOM_CHAM='EFGE_ELNO'))
+IMPR_RESU(UNITE=6, FORMAT="RESULTAT", RESU=_F(RESULTAT=deplacement_impose, NOM_CHAM="EFGE_ELNO"))
 
 
 tabInteg = POST_ELEM(
@@ -276,9 +284,15 @@ chPostRocheTout = POST_ROCHE(
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_mater,
     RESU_MECA=(
-        _F(TYPE_CHAR="POIDS", RESULTAT=poids_propre, NUME_ORDRE=1),
-        _F(TYPE_CHAR="DILAT_THERM", RESULTAT=dilatation_thermique, NUME_ORDRE=1),
-        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, NUME_ORDRE=1),
+        _F(TYPE_CHAR="POIDS", CHAM_GD=poids_propre_champ),
+        _F(
+            TYPE_CHAR="DILAT_THERM",
+            RESULTAT=dilatation_thermique,
+            INST=1,
+            CRITERE="RELATIF",
+            PRECISION=1e-6,
+        ),
+        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, INST=0, CRITERE="ABSOLU"),
         _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique, DIRECTION="COMBI"),
     ),
     PRESSION=(_F(TOUT="OUI", VALE=1e6),),
@@ -637,7 +651,10 @@ chLuPostRocheTout_SD = POST_ROCHE(
     CHAM_MATER=ch_mater,
     RESU_MECA=(
         _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, NUME_ORDRE=1),
-        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique, DIRECTION="COMBI"),
+        # _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique, DIRECTION="COMBI"),
+        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique, DIRECTION="X"),
+        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique, DIRECTION="Y"),
+        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique, DIRECTION="Z"),
     ),
 )
 

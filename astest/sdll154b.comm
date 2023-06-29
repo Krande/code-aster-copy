@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -123,6 +123,14 @@ poids_propre = MECA_STATIQUE(
     INST=0.0,
 )
 poids_propre = CALC_CHAMP(reuse=poids_propre, RESULTAT=poids_propre, CONTRAINTE="EFGE_ELNO")
+
+poids_propre_champ = CREA_CHAMP(
+    TYPE_CHAM="ELNO_SIEF_R",
+    OPERATION="EXTR",
+    RESULTAT=poids_propre,
+    NOM_CHAM="EFGE_ELNO",
+    NUME_ORDRE=1,
+)
 
 deplacement_impose = MECA_STATIQUE(
     MODELE=modele,
@@ -253,9 +261,9 @@ resuPostRoche = POST_ROCHE(
             # NUME_ORDRE=(1,2),
             # TOUT_ORDRE='OUI',
         ),
-        _F(TYPE_CHAR="POIDS", RESULTAT=poids_propre, NUME_ORDRE=1),
+        _F(TYPE_CHAR="POIDS", CHAM_GD=poids_propre_champ),
         _F(TYPE_CHAR="DILAT_THERM", RESULTAT=dilatation_thermique, NUME_ORDRE=1),
-        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, NUME_ORDRE=1),
+        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, INST=0, CRITERE="ABSOLU"),
     ),
     PRESSION=(_F(GROUP_MA="TUYAU", VALE=1e6),),
 )
@@ -319,9 +327,9 @@ resuPostRoche_SPG = POST_ROCHE(
             TYPE_CHAR="SISM_INER_TRAN",
             RESULTAT=resu_dyna,
             RESU_CORR=resu_corr,
-            INST=(1, 2),
+            # INST=(1, 2),
             # NUME_ORDRE=(1,2),
-            # TOUT_ORDRE='OUI',
+            TOUT_ORDRE="OUI",
         ),
         _F(TYPE_CHAR="POIDS", RESULTAT=poids_propre, NUME_ORDRE=1),
     ),
