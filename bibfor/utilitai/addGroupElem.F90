@@ -20,6 +20,7 @@ subroutine addGroupElem(mesh, nb_add)
 !
     implicit none
 !
+#include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cpclma.h"
 #include "asterfort/jeexin.h"
@@ -53,9 +54,7 @@ subroutine addGroupElem(mesh, nb_add)
 !
     character(len=24) :: grpmai, gpptnm, grpmav
     character(len=24) :: group_name
-    integer :: iret, nb_group, nb_group_new, nb_enti, i_enti, i_group
-    integer, pointer :: v_list_old(:) => null()
-    integer, pointer :: v_list_new(:) => null()
+    integer :: iret, nb_group, nb_group_new, nb_enti, i_enti, i_group, jvg, jgg
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -82,13 +81,13 @@ subroutine addGroupElem(mesh, nb_add)
             do i_group = 1, nb_group
                 call jenuno(jexnum(grpmav, i_group), group_name)
                 call jecroc(jexnom(grpmai, group_name))
-                call jeveuo(jexnum(grpmav, i_group), 'L', vi=v_list_old)
+                call jeveuo(jexnum(grpmav, i_group), 'L', jvg)
                 call jelira(jexnum(grpmav, i_group), 'LONUTI', nb_enti)
                 call jeecra(jexnom(grpmai, group_name), 'LONMAX', max(nb_enti, 1))
                 call jeecra(jexnom(grpmai, group_name), 'LONUTI', nb_enti)
-                call jeveuo(jexnom(grpmai, group_name), 'E', vi=v_list_new)
+                call jeveuo(jexnom(grpmai, group_name), 'E', jgg)
                 do i_enti = 1, nb_enti
-                    v_list_new(i_enti) = v_list_old(i_enti)
+                    zi(jgg+i_enti-1) = zi(jvg+i_enti-1)
                 end do
             end do
         end if
