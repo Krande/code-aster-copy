@@ -34,8 +34,6 @@
 #include "ParallelUtilities/AsterMPI.h"
 #include "ParallelUtilities/ObjectBalancer.h"
 
-#include <array>
-
 /**
  * @class MeshBalancer
  * @brief Class describing a mesh which is balanceable across MPI processes

@@ -74,11 +74,9 @@ def fromTypeName(typename):
     """Convert a typename to a list of valid Python types (or an empty list)
     Example: 'I' returns [int, ...]"""
     if not hasattr(fromTypeName, "convTypes"):
-        convTypes = {"TXM": [str, str], "I": [int, numpy.int, numpy.int32, numpy.int64]}
-        convTypes["R"] = [float, numpy.float, numpy.float32, numpy.float64] + convTypes["I"]
-        convTypes["C"] = [complex, numpy.complex, numpy.complex64, numpy.complex128] + convTypes[
-            "R"
-        ]
+        convTypes = {"TXM": [str, str], "I": [int, numpy.int32, numpy.int64]}
+        convTypes["R"] = [float, numpy.float32, numpy.float64] + convTypes["I"]
+        convTypes["C"] = [complex, numpy.complex64, numpy.complex128] + convTypes["R"]
         # exceptions
         convTypes[DS.MeshEntity] = convTypes["TXM"]
         for deprec in ("Fichier", "", "Sauvegarde"):

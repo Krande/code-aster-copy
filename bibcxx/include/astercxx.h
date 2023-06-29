@@ -27,6 +27,7 @@
 #include "asterc_config.h"
 
 #include <algorithm>
+#include <array>
 #include <complex>
 #include <iostream>
 #include <list>

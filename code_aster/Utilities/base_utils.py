@@ -136,7 +136,7 @@ def is_int(obj, onvalue=False):
 
 def is_float(obj):
     """Tell if an object is a float number."""
-    return isinstance(obj, (float, Decimal, numpy.float))
+    return isinstance(obj, (float, Decimal, numpy.float32, numpy.float64))
 
 
 def is_float_or_int(obj):
