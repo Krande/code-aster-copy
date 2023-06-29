@@ -745,11 +745,12 @@ class LEM_Solver(object):
                 self.chptot = kw_varc["CHAM_GD"]
                 chptot = kw_varc["CHAM_GD"].toSimpleFieldOnNodes()
                 chptotval, mask = chptot.getValues()
+                self.chptotval = np.array(chptotval).astype(np.float64)
+
                 if kw_varc.get("TOUT") is None:
                     UTMESS("F", "CALCSTABPENTE_15")
                 # On considère seulement le premier PTOT s'il en existe plusieurs
                 break
-        self.chptotval = np.array(chptotval).astype(np.float64)
 
         x1_min = args["X1_MINI"]
         x1_max = args["X1_MAXI"]
@@ -1193,6 +1194,8 @@ class LEM_Solver(object):
             resi_max = 1e-6
             resi = 1.0
             FS = 1.0
+            nb_iter_max = 1e3
+            nb_iter = 1
             while resi > resi_max:
                 FS_new = np.sum(
                     (
@@ -1204,6 +1207,12 @@ class LEM_Solver(object):
 
                 resi = np.abs(FS_new - FS)
                 FS = FS_new
+
+                nb_iter += 1
+                if nb_iter > nb_iter_max:
+                    # Divergence iteration point fixe
+                    return None
+
             FS_resu = FS
 
         return FS_resu
@@ -1312,7 +1321,8 @@ class LEM_Solver(object):
             resi_lamb = np.abs(lamb_old - lamb)
 
             if nb_iter == max_iter:
-                UTMESS("F", "CALCSTABPENTE_17")
+                UTMESS("I", "CALCSTABPENTE_17")
+                return 1e4
 
         return FS
 
@@ -1682,6 +1692,11 @@ class Surf_Circ_Solver(LEM_Solver):
                             fs_stat[4] = self.calc_bishop(
                                 x_enter, x_sorti, R_FS + incr_R / 2**n_div
                             )
+
+                        # Eviter les surfaces illégales et enregistrer les surface testees
+                        for ind in [3, 4]:
+                            if fs_stat[ind] is None:
+                                fs_stat[ind] = np.inf
 
                         FS = np.min(fs_stat)
                         if FS < FS_loc_min:
