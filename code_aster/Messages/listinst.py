@@ -29,7 +29,8 @@ cata_msg = {
     2: _(
         """
   Sélection d'instants.
-  Vous n'avez pas donné de précision pour votre critère de sélection. On a pris la valeur %(r1)19.12e par défaut.
+  Vous n'avez pas donné de précision pour votre critère de sélection.
+  On a pris la valeur %(r1)19.12e par défaut.
 """
     ),
     3: _(

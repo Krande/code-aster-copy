@@ -29,17 +29,17 @@ def C_ARCHIVAGE():
         max=1,
         regles=(EXCLUS("PAS_ARCH", "LIST_INST", "INST"),),
         PAS_ARCH=SIMP(statut="f", typ="I"),
-        LIST_INST=SIMP(statut="f", typ=(listr8_sdaster)),
+        LIST_INST=SIMP(statut="f", typ=listr8_sdaster),
         INST=SIMP(statut="f", typ="R", validators=NoRepeat(), max="**"),
         b_crit=BLOC(
-            condition="""(exists("INST"))or(exists("LIST_INST"))""",
+            condition="""exists("INST") or exists("LIST_INST")""",
             CRITERE=SIMP(statut="f", typ="TXM", defaut="RELATIF", into=("RELATIF", "ABSOLU")),
             b_prec_rela=BLOC(
-                condition="""(equal_to("CRITERE", 'RELATIF'))""",
+                condition="""equal_to("CRITERE", 'RELATIF')""",
                 PRECISION=SIMP(statut="f", typ="R", defaut=1.0e-6),
             ),
             b_prec_abso=BLOC(
-                condition="""(equal_to("CRITERE", 'ABSOLU'))""", PRECISION=SIMP(statut="o", typ="R")
+                condition="""equal_to("CRITERE", 'ABSOLU')""", PRECISION=SIMP(statut="o", typ="R")
             ),
         ),
         CHAM_EXCLU=SIMP(statut="f", typ="TXM", validators=NoRepeat(), max="**"),

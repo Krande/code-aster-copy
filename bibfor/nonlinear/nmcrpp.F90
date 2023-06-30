@@ -21,14 +21,15 @@ subroutine nmcrpp(motfaz, iocc, prec, criter, tole)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-#include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/utmess.h"
+#include "jeveux.h"
     character(len=*) :: motfaz
     integer :: iocc
     character(len=8) :: criter
@@ -52,57 +53,59 @@ subroutine nmcrpp(motfaz, iocc, prec, criter, tole)
 ! OUT TOLE   : TOLERANCE
 !                +PREC POUR RELATIF
 !                -PREC POUR ABSOLU
-!
-!
-!
-!
-    integer :: n1, n2
+
+    integer :: n0, n1, n2
     character(len=16) :: motfac
     real(kind=8) :: predef
 !
 ! ----------------------------------------------------------------------
 !
     call jemarq()
-!
-! --- INITIALISATIONS
-!
+
     prec = 0.d0
     tole = 0.d0
     criter = 'RELATIF'
     motfac = motfaz
     predef = 1.d-6
-!
-! --- LECTURE
-!
-    call getvr8(motfac, 'PRECISION', iocc=iocc, scal=prec, nbret=n1)
-    call getvtx(motfac, 'CRITERE', iocc=iocc, scal=criter, nbret=n2)
-    if (criter .eq. 'ABSOLU') then
-        if (n1 .eq. 0) then
-            call utmess('F', 'LISTINST_1')
+
+!   CRITERE/PRECISION are only needed if INST or LIST_INST exist
+    call getvr8(motfac, 'INST', iocc=iocc, nbret=n0)
+    if (n0 .eq. 0) then
+        call getvid(motfac, 'LIST_INST', iocc=iocc, nbret=n0)
+    end if
+
+    if (n0 .ne. 0) then
+!       reading keywords
+        call getvr8(motfac, 'PRECISION', iocc=iocc, scal=prec, nbret=n1)
+        call getvtx(motfac, 'CRITERE', iocc=iocc, scal=criter, nbret=n2)
+        if (criter .eq. 'ABSOLU') then
+            if (n1 .eq. 0) then
+                call utmess('F', 'LISTINST_1')
+            end if
+        else if (criter .eq. 'RELATIF') then
+            if (n1 .eq. 0) then
+                prec = predef
+                call utmess('A', 'LISTINST_2', sr=predef)
+            end if
+        else
+            ASSERT(.false.)
         end if
-    else if (criter .eq. 'RELATIF') then
-        if (n1 .eq. 0) then
-            prec = predef
-            call utmess('A', 'LISTINST_2', sr=predef)
+
+        if (prec .le. r8prem()) then
+            call utmess('F', 'LISTINST_3')
         end if
-    else
-        ASSERT(.false.)
+
+!       setting 'tole'
+        if (criter .eq. 'RELATIF') then
+            tole = prec
+        else if (criter .eq. 'ABSOLU') then
+            tole = -prec
+        else
+            ASSERT(.false.)
+        end if
+
     end if
-!
-    if (prec .le. r8prem()) then
-        call utmess('F', 'LISTINST_3')
-    end if
-!
-! --- TOLERANCE
-!
-    if (criter .eq. 'RELATIF') then
-        tole = prec
-    else if (criter .eq. 'ABSOLU') then
-        tole = -prec
-    else
-        ASSERT(.false.)
-    end if
-!
+
     call jedema()
-!
+
 end subroutine
