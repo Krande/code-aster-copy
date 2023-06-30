@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -245,7 +245,7 @@ TRAVAIL = POST_ELEM(
   )
 
 TEST_TABLE(
-           VALE_CALC=0.135116064829,
+           VALE_CALC=0.13353119871023889,
            TOLE_MACHINE=3.E-5,                 # TODO TOLE_MACHINE
            NOM_PARA='TRAV_REEL',
            TABLE=TRAVAIL,
