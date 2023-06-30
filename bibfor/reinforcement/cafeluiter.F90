@@ -667,11 +667,10 @@ subroutine cafeluiter(typco, alphacc, effm, effn, ht, bw, &
             fD = fD+AsTEND_TOT(i+1)
         end if
 
-        alphaI = aG+(aD-aG)/(1+abs(fD/fG))
-
         if ((COND_AJOUT_AsCOMP .eqv. (.true.)) &
             & .or. (COND_AJOUT_AsTEND .eqv. (.true.))) then
 
+            alphaI = aG+(aD-aG)/(1+abs(fD/fG))
             X = alphaI*d
 
             if (alphaI .le. 0) then

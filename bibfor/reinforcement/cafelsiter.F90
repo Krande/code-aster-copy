@@ -448,12 +448,11 @@ subroutine cafelsiter(cequi, effm, effn, ht, bw, &
             fD = fD+AsTEND_TOT(i+1)
         end if
 
-        alphaI = aG+(aD-aG)/(1+abs(fD/fG))
-
         if ((COND_AJOUT_RESIDU .eqv. (.true.)) &
             & .or. (COND_AJOUT_AsCOMP .eqv. (.true.)) &
             & .or. (COND_AJOUT_AsTEND .eqv. (.true.))) then
 
+            alphaI = aG+(aD-aG)/(1+abs(fD/fG))
             X = alphaI*d
 
             if (alphaI .le. 0) then
@@ -677,7 +676,7 @@ subroutine cafelsiter(cequi, effm, effn, ht, bw, &
         end if
 
     end do
-
+    !print *,"ETAPE 10"
     !Searching for OPTIMUM Solution
     COUNT_F = 0
     COUNT_CARA = 0
