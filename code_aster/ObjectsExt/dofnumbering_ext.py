@@ -56,6 +56,8 @@ class ExtendedDOFNumbering:
         Arguments:
             component (str): the name of the component (aka degree of freedom)
         """
+        if component == "LAGR":
+            return self.getLagrangeDOFs(local)
         available_components = self.getComponents()
         if component not in available_components:
             raise ValueError(f"Component {component} is not in {available_components}")

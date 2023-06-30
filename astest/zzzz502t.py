@@ -78,6 +78,21 @@ AssemblyObj = ASSEMBLAGE(
     MATR_ASSE=(_F(MATRICE=CO("asterRigi"), OPTION="RIGI_MECA"),),
 )
 
+nume_ddl = AssemblyObj.asterNume
+lagr_components = [comp for comp in nume_ddl.getComponents() if comp.startswith("LAGR")]
+
+local_lagr_rows = set()
+for comp in lagr_components:
+    local_lagr_rows.update(nume_ddl.getRowsAssociatedToComponent(comp))
+
+global_lagr_rows = set()
+for comp in lagr_components:
+    global_lagr_rows.update(nume_ddl.getRowsAssociatedToComponent(comp, local=False))
+
+test.assertListEqual(sorted(local_lagr_rows), sorted(nume_ddl.getLagrangeDOFs(local=True)))
+test.assertListEqual(sorted(global_lagr_rows), sorted(nume_ddl.getLagrangeDOFs(local=False)))
+
+
 petscMat = AssemblyObj.asterRigi.toPetsc()
 print("Norm: ", petscMat.getSizes())
 ref = 1823496.3881588143

@@ -59,10 +59,13 @@ class ExtendedParallelDOFNumbering:
         Arguments:
             component (str): the name of the component (aka degree of freedom)
         """
+        if component == "LAGR":
+            return self.getLagrangeDOFs(local)
         available_components = self.getComponents()
         if component not in available_components:
             raise ValueError(f"Component {component} is not in {available_components}")
-        return self.__Components2Rows(local)[component]
+
+        return self.__Components2Rows(local).get(component, [])
 
     def getDictComponentsToRows(self, local=True):
         """Return the dictionary with the available components as keys and the rows as values."""
