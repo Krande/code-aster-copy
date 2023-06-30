@@ -4,10 +4,12 @@ env
 echo "+ downloading the runner image..."
 source env.d/version.sh
 URL_SIF=${MINIO_URL}/codeaster/sif/ci/codeaster-prerequisites-${VERSION}-debian-10.sif
-if [ -z "${DEBUG_CI}" ] || [ ! -d ${HOME}/containers/$(basename ${URL_SIF}) ]; then
-    wget --no-check-certificate -O ${SIF} ${URL_SIF}
-else
-    cp ${HOME}/containers/$(basename ${URL_SIF}) ${SIF}
+if [ ! -z ${SIF} ]; then
+    if [ -z "${DEBUG_CI}" ] || [ ! -d ${HOME}/containers/$(basename ${URL_SIF}) ]; then
+        wget --no-check-certificate -O ${SIF} ${URL_SIF}
+    else
+        cp ${HOME}/containers/$(basename ${URL_SIF}) ${SIF}
+    fi
 fi
 
 # CI_REPOSITORY_URL=https://gitlab.pleiade.edf.fr/codeaster/lab/experiment/src

@@ -519,7 +519,11 @@ def check_mpiexec(self):
     mpiexec = "mpiexec"
     mpicmd = [mpiexec]
     root_option = []
-    if getpass.getuser() == "root":
+    try:
+        user = getpass.getuser()
+    except KeyError:
+        user = "root"
+    if user == "root":
         if (
             self._call_cmd(
                 "Check for mpiexec flag '--allow-run-as-root'",

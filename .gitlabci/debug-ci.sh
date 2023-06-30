@@ -92,6 +92,7 @@ build/mpi*/*/*.h
 build/mpi*/*/*.py
 build/mpi*/*/code_aster/*.py
 build/mpi*/*/*/*.so
+build/mpi*/*/catalo/elem.1
 build/mpi*/*/*.mod
 install/*
 eof
@@ -142,8 +143,9 @@ pipeline() {
     local doc_html=0
     local check_source=0
     local minimal_test=0
+    local native=0
 
-    OPTS=$(getopt -o h --long help,all,prepare,compile,doc,check,test,clean -n $(basename $0) -- "$@")
+    OPTS=$(getopt -o h --long help,all,prepare,compile,doc,check,test,clean,native -n $(basename $0) -- "$@")
     if [ $? != 0 ] ; then
         _error "invalid arguments." >&2
     fi
@@ -158,6 +160,7 @@ pipeline() {
             --check ) check_source=1 ;;
             --test ) minimal_test=1 ;;
             --clean ) _cleanup; exit ;;
+            --native ) native=1 ;;
             -- ) shift; break ;;
             * ) break ;;
         esac
@@ -170,12 +173,20 @@ pipeline() {
         exit 1
     fi
     if [ ! -z ${SINGULARITY_NAME} ]; then
-        echo "--- $0 must not be run in a singularity container!"
-        exit 1
+        echo "+ running inside a singularity container, 'native' mode enabled"
+        native=1
+    fi
+    if [ -f /.dockerenv ]; then
+        echo "+ running inside a docker container, 'native' mode enabled"
+        native=1
     fi
     if [ $(git status --porcelain -uno | wc -l) != "0" ]; then
         echo "--- there are uncommitted changes!"
-        exit 1
+        # exit 1
+    fi
+    if [ ${native} -eq 1 ]; then
+        export SIF=""
+        SINGULARITY_CMD=()
     fi
 
     echo "+++ debugging pipeline: branch=${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}"
