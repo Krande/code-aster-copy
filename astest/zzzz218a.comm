@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,10 +29,20 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'))
 
 
 # Tested non regression values 
-NONREGR = (9.98114973621, 8.46099239237E-06, 8.21283844798E-06,\
-           6.61912102113E-06,-6.99999370406E-05,10.7893260664,\
-           25.9790113468,135.256043116,116.706888382,0.02456396, 0.001040661)
-
+NONREGR = (
+    566.2088115185584,
+    8.46099239237e-06,
+    8.21283844798e-06,
+    6.61912102113e-06,
+    -6.99999370406e-05,
+    10.7893260664,
+    25.9790113468,
+    135.256043116,
+    116.706888382,
+    0.02456396,
+    0.001040661,
+)
+ 
 pr_atmos = 1.E5
 pr_ext   = 10.E5
 temp_int = 140.0

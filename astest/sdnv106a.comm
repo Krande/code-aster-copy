@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -161,6 +161,7 @@ REPONSE=DYNA_NON_LINE( reuse=REPONSE,
                 MODE_VIBR = _F(NMAX_FREQ=3,MATR_RIGI='TANGENTE',LIST_INST=L_INSTM),
                 ARCHIVAGE = _F(LIST_INST=L_ARCH,),
                 RECH_LINEAIRE=_F(METHODE='MIXTE',),
+                ENERGIE=_F(CALCUL="OUI"),
              );
 #
 REPONSE=DYNA_NON_LINE( reuse=REPONSE,
@@ -182,8 +183,18 @@ REPONSE=DYNA_NON_LINE( reuse=REPONSE,
                                CHAR_CRIT=(-100.0,100.),),
                 MODE_VIBR = _F(OPTION='BANDE',FREQ=(0.1,0.5),MATR_RIGI='ELASTIQUE',LIST_INST=L_INSTM),
                 RECH_LINEAIRE=_F(METHODE='MIXTE',),
+                ENERGIE=_F(CALCUL="OUI"),
              );
 
+tableNrj = RECU_TABLE(CO=REPONSE, NOM_TABLE="PARA_CALC")
+IMPR_TABLE(UNITE=6, TABLE=tableNrj)
+
+TEST_TABLE(
+    VALE_CALC=0.0015375969535196903,
+    NOM_PARA="ENER_CIN",
+    FILTRE=_F(NOM_PARA="INST", VALE=2.0, PRECISION=1e-6),
+    TABLE=tableNrj,
+)
 
 # CALCUL AVEC SOLVEUR LINEAIRE LDLT
 
