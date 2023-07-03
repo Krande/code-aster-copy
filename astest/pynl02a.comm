@@ -284,7 +284,7 @@ for i_inst in range(1, len(l_inst)):
         # =========================================================
         #   VERIFICTION DU CODE RETOUR DE L'INTEGRATION DE LA LC
         # =========================================================
-        if max(result.CODE_RETOUR_INTE.getValuesWithDescription("IRET", [])[0]) > 0:
+        if result.CODE_RETOUR_INTE > 0:
             raise IntegrationError("echec d integration de la loi de comportement")
 
         # =========================================================

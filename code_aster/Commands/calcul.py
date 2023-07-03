@@ -89,16 +89,25 @@ def calcul_ops(self, **kwargs):
         for row in table:
             name = row["NOM_OBJET"]
             objects.append(name)
-            content[name] = EXTR_TABLE(
-                TABLE=container,
-                TYPE_RESU=row["TYPE_OBJET"],
-                NOM_PARA="NOM_SD",
-                FILTRE=_F(NOM_PARA="NOM_OBJET", VALE_K=name),
-            )
-            if hasattr(content[name], "setModel"):
-                content[name].setModel(kwargs["MODELE"])
-            if hasattr(content[name], "build"):
-                content[name].build()
+            if row["TYPE_OBJET"]:
+                content[name] = EXTR_TABLE(
+                    TABLE=container,
+                    TYPE_RESU=row["TYPE_OBJET"],
+                    NOM_PARA="NOM_SD",
+                    FILTRE=_F(NOM_PARA="NOM_OBJET", VALE_K=name),
+                )
+                if hasattr(content[name], "setModel"):
+                    content[name].setModel(kwargs["MODELE"])
+                if hasattr(content[name], "build"):
+                    content[name].build()
+            else:
+                assert name == "CODE_RETOUR_INTE", name
+                content[name] = EXTR_TABLE(
+                    TABLE=container,
+                    TYPE_RESU="ENTIER",
+                    NOM_PARA="VALE_I",
+                    FILTRE=_F(NOM_PARA="NOM_OBJET", VALE_K=name),
+                )
 
         result_type = namedtuple("Result", objects)
         result = result_type(**content)

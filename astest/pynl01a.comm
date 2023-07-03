@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -174,13 +174,14 @@ F_EL = EXTR_TABLE(
 )
 
 
-CODE = EXTR_TABLE(
-    TYPE_RESU="CHAM_ELEM",
+iret = EXTR_TABLE(
+    TYPE_RESU="ENTIER",
     TABLE=CONT,
-    NOM_PARA="NOM_SD",
+    NOM_PARA="VALE_I",
     FILTRE=_F(NOM_PARA="NOM_OBJET", VALE_K="CODE_RETOUR_INTE"),
 )
 
+test.assertEqual(iret, 0)
 
 FORC = EXTR_TABLE(
     TYPE_RESU="VECT_ELEM_DEPL_R",

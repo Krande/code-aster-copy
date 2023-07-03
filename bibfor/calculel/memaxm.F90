@@ -20,10 +20,9 @@ subroutine memaxm(typmx, champ, nocmp, nbcmp, lcmp, &
                   vr, nbmail, numail)
 ! aslint: disable=W1306
     implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterc/r8nnem.h"
+#include "asterf_types.h"
 #include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/assert.h"
 #include "asterfort/carces.h"
@@ -31,10 +30,12 @@ subroutine memaxm(typmx, champ, nocmp, nbcmp, lcmp, &
 #include "asterfort/cesexi.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "jeveux.h"
     character(len=*) :: typmx
     character(len=*) :: champ, nocmp, lcmp(*)
     integer :: nbcmp, nbmail, numail(*)
@@ -78,7 +79,7 @@ subroutine memaxm(typmx, champ, nocmp, nbcmp, lcmp, &
 !     ------------------------------------------------------------------
     integer :: iret
     integer :: longt
-    character(len=8) :: kmpic, typ1, nomgd, tsca, tych
+    character(len=8) :: kmpic, typ1, nomgd, tsca, tych, mesh
     integer :: jcesd, jcesl, jcesv, nel, iel, nbpt, nbsspt, ncmp
     integer :: ipt, isp, icmp, ncp, iicmp, iadr1
     integer :: iadr2, iel1
@@ -108,7 +109,7 @@ subroutine memaxm(typmx, champ, nocmp, nbcmp, lcmp, &
         ASSERT(.false.)
     end if
     call jelira(chams//'.CESV', 'TYPE', cval=typ1)
-    ASSERT(typ1 .eq. 'R')
+    ! ASSERT(typ1 .eq. 'R')
 !
 !
 !
@@ -118,6 +119,7 @@ subroutine memaxm(typmx, champ, nocmp, nbcmp, lcmp, &
     call jeveuo(chams//'.CESK', 'L', vk8=cesk)
     call jeveuo(chams//'.CESV', 'L', jcesv)
 !
+    mesh = cesk(1)
     nomgd = cesk(2)
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
     ASSERT(tsca .eq. 'R' .or. tsca .eq. 'I')
@@ -213,7 +215,11 @@ subroutine memaxm(typmx, champ, nocmp, nbcmp, lcmp, &
                             if (iadr2 .eq. 0) then
                                 vr(iicmp) = r8nnem()
                             else
-                                vr(iicmp) = zr(jcesv-1+iadr2)
+                                if (lreel) then
+                                    vr(iicmp) = zr(jcesv-1+iadr2)
+                                else
+                                    vr(iicmp) = zi(jcesv-1+iadr2)
+                                end if
                             end if
                         end do
                     end if
@@ -227,7 +233,7 @@ subroutine memaxm(typmx, champ, nocmp, nbcmp, lcmp, &
 !
 !     -- IL FAUT PARFOIS COMMUNIQUER LE RESULTAT ENTRE LES PROCS :
     call dismoi('MPI_COMPLET', champ, 'CHAMP', repk=kmpic)
-    if (kmpic .eq. 'NON') then
+    if (kmpic .eq. 'NON' .or. isParallelMesh(mesh)) then
         if (lmax) then
             call asmpi_comm_vect('MPI_MAX', 'R', nbval=longt, vr=vr)
         else

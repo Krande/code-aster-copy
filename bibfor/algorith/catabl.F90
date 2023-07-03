@@ -23,18 +23,19 @@ subroutine catabl(table_new, table_old, time, nume_store, nb_obje, &
     implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/memaxm.h"
 #include "asterfort/tbacce.h"
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
 #include "asterfort/utmess.h"
+#include "jeveux.h"
 !
     character(len=8), intent(in) :: table_new
     character(len=8), intent(in) :: table_old
@@ -62,13 +63,13 @@ subroutine catabl(table_new, table_old, time, nume_store, nb_obje, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbpara = 5
+    integer, parameter :: nbpara = 6
     character(len=19), parameter :: nompar(nbpara) = (/ &
                                     'NOM_OBJET ', 'TYPE_OBJET', &
                                     'NOM_SD    ', 'NUME_ORDRE', &
-                                    'INST      '/)
+                                    'INST      ', 'VALE_I    '/)
     character(len=19), parameter :: typpar(nbpara) = (/ &
-                                    'K16', 'K16', 'K24', 'I  ', 'R8 '/)
+                                    'K16', 'K16', 'K24', 'I  ', 'R8 ', 'I  '/)
     integer :: prepar(nbpara)
 !
     integer, parameter :: l_nb_obje = 9
@@ -79,17 +80,17 @@ subroutine catabl(table_new, table_old, time, nume_store, nb_obje, &
     character(len=16), parameter :: l_obje_type(l_nb_obje) = (/ &
                                     'MATR_ELEM_DEPL_R', 'CHAM_ELEM       ', 'CHAM_ELEM       ', &
                                     'VECT_ELEM_DEPL_R', 'VECT_ELEM_DEPL_R', 'VECT_ELEM_DEPL_R', &
-                                    'CHAM_ELEM       ', 'VECT_ELEM_DEPL_R', 'VECT_ELEM_DEPL_R'/)
+                                    'ENTIER          ', 'VECT_ELEM_DEPL_R', 'VECT_ELEM_DEPL_R'/)
 !
     character(len=19) :: nomtab
     aster_logical :: l_new_table, l_repl_object
     integer :: i_repl_object
     integer :: jnobj, jnosd, jnuor, jtobj, jrins, jlins
     integer :: nboldp, nblign, t_nume_store
-    integer :: ipara, ilign, i_l_obj, i_obj, ibid
+    integer :: ipara, ilign, i_l_obj, i_obj, ibid, iret, nbcol
     character(len=24) :: vk(3)
     character(len=16) :: k16bid, t_obje_name, obje_type
-    real(kind=8) :: r8bid
+    real(kind=8) :: r8bid, v_iret(1)
     complex(kind=8) :: c16bid
     character(len=24), pointer :: tblp(:) => null()
     integer, pointer :: tbnp(:) => null()
@@ -207,10 +208,20 @@ subroutine catabl(table_new, table_old, time, nume_store, nb_obje, &
             zr(jrins+i_repl_object-1) = time
         else
             ASSERT(i_repl_object .eq. 0)
+            nbcol = nbpara
             vk(1) = obje_name(i_obj)
             vk(2) = obje_type
             vk(3) = obje_sdname(i_obj)
-            call tbajli(nomtab, nbpara, nompar, [nume_store], [time], &
+            iret = 0
+            if (obje_name(i_obj) .eq. 'CODE_RETOUR_INTE') then
+                call memaxm('MAX', obje_sdname(i_obj), 'IRET', 1, ['IRET'], v_iret, 0, [0])
+                vk(2) = ' '
+                vk(3) = ' '
+                iret = nint(v_iret(1))
+            else
+                nbcol = nbpara-1
+            end if
+            call tbajli(nomtab, nbcol, nompar, [nume_store, iret], [time], &
                         [c16bid], vk, 0)
         end if
     end do
