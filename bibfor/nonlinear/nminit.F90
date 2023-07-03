@@ -305,7 +305,7 @@ subroutine nminit(mesh, model, mater, mateco, cara_elem, &
 
 ! - Read initial state
     call nmdoet(model, ds_constitutive%compor, listFuncActi, numedd, sdpilo, &
-                sddyna, ds_errorindic, solalg, lacc0, ds_inout)
+                sddyna, ds_errorindic, solalg, lacc0, ds_inout, ds_energy)
 
 ! - Create time discretization and storing datastructures
     call diinit(mesh, model, ds_inout, mater, mateco, cara_elem, &

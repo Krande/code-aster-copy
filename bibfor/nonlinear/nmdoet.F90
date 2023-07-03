@@ -18,7 +18,8 @@
 ! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine nmdoet(model, compor, list_func_acti, nume_ddl, sdpilo, &
-                  sddyna, ds_errorindic, hval_algo, l_acce_zero, ds_inout)
+                  sddyna, ds_errorindic, hval_algo, l_acce_zero, ds_inout, &
+                  ds_energy)
 !
     use NonLin_Datastructure_type
 !
@@ -45,6 +46,7 @@ subroutine nmdoet(model, compor, list_func_acti, nume_ddl, sdpilo, &
 #include "asterfort/utmess.h"
 #include "asterfort/vtcopy.h"
 #include "asterfort/infdbg.h"
+#include "asterfort/nonlinDSEnergyInitValues.h"
 !
     character(len=24), intent(in) :: model
     character(len=24), intent(in) :: compor
@@ -56,6 +58,7 @@ subroutine nmdoet(model, compor, list_func_acti, nume_ddl, sdpilo, &
     integer, intent(in) :: list_func_acti(*)
     aster_logical, intent(out) :: l_acce_zero
     type(NL_DS_InOut), intent(inout) :: ds_inout
+    type(NL_DS_Energy), intent(inout) :: ds_energy
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -187,12 +190,12 @@ subroutine nmdoet(model, compor, list_func_acti, nume_ddl, sdpilo, &
 !
     if (l_state_init) then
         call utmess('I', 'ETATINIT_10')
-        if (l_ener) then
-            call utmess('I', 'ETATINIT_5')
-        end if
         if (l_stin_evol) then
             call utmess('I', 'ETATINIT_11', sk=stin_evol, sr=init_time, si=init_nume)
         else
+            if (l_ener) then
+                call utmess('I', 'ETATINIT_5')
+            end if
             if (init_nume .eq. -1) then
                 call utmess('I', 'ETATINIT_20')
             else
@@ -262,6 +265,12 @@ subroutine nmdoet(model, compor, list_func_acti, nume_ddl, sdpilo, &
         call rsadpa(stin_evol, 'L', 1, 'ERRE_TPS_GLOB', init_nume, &
                     0, sjv=jv_para, istop=0)
         ds_errorindic%erre_thm_glob = zr(jv_para)
+    end if
+!
+! - lecture des données initiales sur l'énergie
+!
+    if (l_stin_evol .and. l_ener) then
+        call nonlinDSEnergyInitValues(ds_energy, stin_evol, ds_inout)
     end if
 !
 ! - CAS DE LA DYNAMIQUE: VITESSE ET ACCELERATION INITIALES

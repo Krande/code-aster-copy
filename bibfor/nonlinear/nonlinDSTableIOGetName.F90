@@ -67,5 +67,6 @@ subroutine nonlinDSTableIOGetName(tableio)
 ! - Set table parameters
 !
     tableio%tablName = tablName
+    print *, 'coucou tablName ', tablName
 !
 end subroutine
