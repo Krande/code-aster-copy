@@ -114,7 +114,7 @@ class BaseEquationNumbering : public DataStructure {
      * @brief Get Rows Associated to all Ghost Dof
      */
     VectorLong getGhostDOFs( const bool local = false ) const {
-        throw std::runtime_error( "Vector LocagetGhostDOFslToRank doesn't exist in sequential" );
+        throw std::runtime_error( "No ghost DOF in sequential" );
         return VectorLong();
     };
 
@@ -122,7 +122,7 @@ class BaseEquationNumbering : public DataStructure {
      * @brief Get Rows owned locally (aka not Ghost)
      */
     VectorLong getNoGhostDOFs() const {
-        throw std::runtime_error( "Vector LocagetGhostDOFslToRank doesn't exist in sequential" );
+        throw std::runtime_error( "No ghost DOF in sequential" );
         return VectorLong();
     };
 

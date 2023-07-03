@@ -886,10 +886,10 @@ def macPlot(
         raise KeyError("list2 is out of bound")
     nModes1 = len(list1) if list1 else nres1
     nModes2 = len(list2) if list2 else nres2
-    lMode1 = list1 if list1 else range(1, nModes1 + 1)
-    lMode2 = list2 if list2 else range(1, nModes2 + 1)
-    lMode11 = list1 if list1 else range(nModes1)
-    lMode22 = list2 if list2 else range(nModes2)
+    lMode1 = list1 or range(1, nModes1 + 1)
+    lMode2 = list2 or range(1, nModes2 + 1)
+    lMode11 = list1 or range(nModes1)
+    lMode22 = list2 or range(nModes2)
     lFreq1 = lres1[0].LIST_VARI_ACCES()["FREQ"]
     lFreq2 = lres2[0].LIST_VARI_ACCES()["FREQ"]
     rhof = fluid_material.RCVALE("FLUIDE", nomres=("RHO"), stop=2)[0][0] if fluid_material else 1.0
@@ -966,6 +966,9 @@ def macPlot(
             Mv1 = M.dot(v1_right) if massprod else v1_right
             for idx2, m2 in enumerate(lMode2):
                 v2_left, v2_right = getLeftAndRightModes(res2, idx2, m2, dof, lFreq2)
+                print(
+                    f"<INFO> massprod={massprod} M.shape={M.shape} v2_right.shape={v2_right.shape}"
+                )
                 Mv2 = M.dot(v2_right) if massprod else v2_right
                 print(
                     "{:.1f}%% achieved".format(
