@@ -2566,7 +2566,9 @@ contains
                 end if
 !
 ! --- Create joint .E
+                call jecroc(jexnum(send, domj_i))
                 call jeecra(jexnum(send, domj_i), 'LONMAX', 2*n_coor_recv)
+                call jeecra(jexnum(send, domj_i), 'LONUTI', 2*n_coor_recv)
                 call jeveuo(jexnum(send, domj_i), 'E', vi=v_nojoin)
 !
                 call wkvect("&&CREAMA.SNUME", 'V V I', 2*n_coor_recv, vi=v_snume)
@@ -2605,7 +2607,9 @@ contains
                                       v_rnume, count_recv, id, tag, mpicou)
 !
 ! --- Create joint .R
+                call jecroc(jexnum(recv, domj_i))
                 call jeecra(jexnum(recv, domj_i), 'LONMAX', 2*n_coor_send)
+                call jeecra(jexnum(recv, domj_i), 'LONUTI', 2*n_coor_send)
                 call jeveuo(jexnum(recv, domj_i), 'E', vi=v_nojoin)
 !
                 do i_node = 1, n_coor_send

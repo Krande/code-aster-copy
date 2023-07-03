@@ -211,7 +211,9 @@ subroutine crnlgc(numddl)
 
         nbddl = 0
         if (zi(jrecep1) > 0) then
+            call jecroc(jexnum(send, domj_i))
             call jeecra(jexnum(send, domj_i), 'LONMAX', zi(jrecep1))
+            call jeecra(jexnum(send, domj_i), 'LONUTI', zi(jrecep1))
             call jeveuo(jexnum(send, domj_i), 'E', jnujoi1)
 !
             do jaux = 1, nbnoee
@@ -250,7 +252,9 @@ subroutine crnlgc(numddl)
                               zi(jrecep2), n4r, numpr4, tag4, mpicou)
 
         if (nb_ddl_envoi > 0) then
+            call jecroc(jexnum(recv, domj_i))
             call jeecra(jexnum(recv, domj_i), 'LONMAX', nb_ddl_envoi)
+            call jeecra(jexnum(recv, domj_i), 'LONUTI', nb_ddl_envoi)
             call jeveuo(jexnum(recv, domj_i), 'E', jnujoi2)
 !
             curpos = 0
