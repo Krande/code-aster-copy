@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -39,8 +39,8 @@ MAILLAGE = CREA_MAILLAGE(
     MAILLAGE=MAILLAG0,
     CREA_POI1=(
         _F(NOM_GROUP_MA="GROUP_NO_MASSE", GROUP_NO="GROUP_NO_MASSE"),
-        _F(NOM_GROUP_MA="P2", GROUP_NO="P2"),
-        _F(NOM_GROUP_MA="P4", GROUP_NO="P4"),
+        _F(NOM_GROUP_MA="P2", NOEUD="P2"),
+        _F(NOM_GROUP_MA="P4", NOEUD="P4"),
     ),
 )
 #
@@ -72,11 +72,11 @@ MODELE = AFFE_MODELE(
 CARA = AFFE_CARA_ELEM(
     MODELE=MODELE,
     DISCRET=(
-        _F(SYME="OUI", CARA="K_T_D_L", GROUP_MA="E12", REPERE="GLOBAL", VALE=(1.0e3, 1.0, 1.0)),
+        _F(SYME="OUI", CARA="K_T_D_L", MAILLE="E12", REPERE="GLOBAL", VALE=(1.0e3, 1.0, 1.0)),
         _F(
             SYME="OUI",
             CARA="M_T_L",
-            GROUP_MA="E12",
+            MAILLE="E12",
             REPERE="GLOBAL",
             VALE=(
                 0.0,
@@ -102,11 +102,11 @@ CARA = AFFE_CARA_ELEM(
                 0.0,
             ),
         ),
-        _F(SYME="OUI", CARA="K_T_D_L", GROUP_MA="E23", REPERE="GLOBAL", VALE=(1.0e3, 1.0, 1.0)),
+        _F(SYME="OUI", CARA="K_T_D_L", MAILLE="E23", REPERE="GLOBAL", VALE=(1.0e3, 1.0, 1.0)),
         _F(
             SYME="OUI",
             CARA="M_T_L",
-            GROUP_MA="E23",
+            MAILLE="E23",
             REPERE="GLOBAL",
             VALE=(
                 0.0,
@@ -132,11 +132,11 @@ CARA = AFFE_CARA_ELEM(
                 0.0,
             ),
         ),
-        _F(SYME="OUI", CARA="K_T_D_L", GROUP_MA="E34", REPERE="GLOBAL", VALE=(2.0e3, 1.0, 1.0)),
+        _F(SYME="OUI", CARA="K_T_D_L", MAILLE="E34", REPERE="GLOBAL", VALE=(2.0e3, 1.0, 1.0)),
         _F(
             SYME="OUI",
             CARA="M_T_L",
-            GROUP_MA="E34",
+            MAILLE="E34",
             REPERE="GLOBAL",
             VALE=(
                 0.0,
@@ -162,11 +162,11 @@ CARA = AFFE_CARA_ELEM(
                 0.0,
             ),
         ),
-        _F(SYME="OUI", CARA="K_T_D_L", GROUP_MA="E45", REPERE="GLOBAL", VALE=(2.0e3, 1.0, 1.0)),
+        _F(SYME="OUI", CARA="K_T_D_L", MAILLE="E45", REPERE="GLOBAL", VALE=(2.0e3, 1.0, 1.0)),
         _F(
             SYME="OUI",
             CARA="M_T_L",
-            GROUP_MA="E45",
+            MAILLE="E45",
             REPERE="GLOBAL",
             VALE=(
                 0.0,
@@ -210,7 +210,7 @@ CHAMPMAT = AFFE_MATERIAU(MAILLAGE=MAILLAGE, AFFE=_F(TOUT="OUI", MATER=MAT))
 COND_LIM = AFFE_CHAR_MECA(
     MODELE=MODELE,
     DDL_IMPO=(
-        _F(GROUP_NO=("P1", "P3", "P5"), DX=0.0, DY=0.0, DZ=0.0),
+        _F(NOEUD=("P1", "P3", "P5"), DX=0.0, DY=0.0, DZ=0.0),
         _F(GROUP_NO="GROUP_NO_MASSE", DY=0.0, DZ=0.0),
     ),
 )
@@ -349,7 +349,149 @@ SPEC3 = DEFI_NAPPE(
 # REPONSE GLOBALE
 # COMME COMBINAISON QUADRATIQUE INTERGROUPE
 # --------------------------------
-
+# calcul 1
+#  QUAD(LINE(N01,N03)+N05)
+#
+RES_M2 = COMB_SISM_MODAL(
+    MODE_MECA=MODES,
+    AMOR_REDUIT=0.0,
+    MASS_INER=MAS,
+    CORR_FREQ="NON",
+    MULTI_APPUI="DECORRELE",
+    EXCIT=(
+        _F(GROUP_NO="GROUP_NO_PO5", AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPEC3, ECHELLE=1.0),
+        _F(GROUP_NO=("GROUP_NO_PO1"), AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPEC1),
+        _F(GROUP_NO=("GROUP_NO_PO3"), AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPEC2),
+    ),
+    DEPL_MULT_APPUI=(
+        _F(NOM_CAS=("1",), NUME_CAS=(1,), MODE_STAT=MODE_STA, GROUP_NO=("GROUP_NO_PO1",), DX=-0.04),
+        _F(NOM_CAS=("2",), NUME_CAS=(2,), MODE_STAT=MODE_STA, GROUP_NO=("GROUP_NO_PO3",), DX=-0.04),
+        _F(NOM_CAS=("3",), NUME_CAS=(3,), MODE_STAT=MODE_STA, GROUP_NO=("GROUP_NO_PO5",), DX=0.06),
+        _F(NOM_CAS=("4",), NUME_CAS=(4,), MODE_STAT=MODE_STA, GROUP_NO=("GROUP_NO_PO3",), DX=0.0),
+    ),
+    COMB_DEPL_APPUI=(
+        _F(LIST_CAS=(1, 2), TYPE_COMBI="ABS"),
+        _F(LIST_CAS=(3, 4), TYPE_COMBI="QUAD"),
+        #   _F(LIST_CAS=(3),TYPE_COMBI='QUAD',),
+    ),
+    COMB_MODE=_F(TYPE="SRSS"),
+    OPTION=("DEPL", "REAC_NODA"),
+    INFO=2,
+)
+# TEST RESU DEPL
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="GROUP_NO_PO1",
+            NUME_ORDRE=202,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RES_M2,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DX",
+            VALE_CALC=0.04,
+            VALE_REFE=4.0000000000e-02,
+        ),
+        _F(
+            GROUP_NO="GROUP_NO_PO2",
+            NUME_ORDRE=202,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RES_M2,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DX",
+            VALE_CALC=0.04,
+            VALE_REFE=4.0000000000e-02,
+        ),
+        _F(
+            GROUP_NO="GROUP_NO_PO3",
+            NUME_ORDRE=202,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RES_M2,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DX",
+            VALE_CALC=0.04,
+            VALE_REFE=4.0000000000e-02,
+        ),
+        _F(
+            GROUP_NO="GROUP_NO_PO4",
+            NUME_ORDRE=202,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RES_M2,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DX",
+            VALE_CALC=3.6055512754e-02,
+            VALE_REFE=0.036055513,
+        ),
+        _F(
+            GROUP_NO="GROUP_NO_PO5",
+            NUME_ORDRE=202,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RES_M2,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DX",
+            VALE_CALC=6.0000000000e-02,
+            VALE_REFE=0.06,
+        ),
+    )
+)
+# TEST RESU REAC_NODA
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="GROUP_NO_PO1",
+            NUME_ORDRE=202,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RES_M2,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=40.00000000000000e00,
+            VALE_REFE=40.00000000000000e00,
+            CRITERE="ABSOLU",
+        ),
+        _F(
+            GROUP_NO="GROUP_NO_PO2",
+            NUME_ORDRE=202,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RES_M2,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=1.5916157281026246e-14,
+            VALE_REFE=0.0,
+            CRITERE="ABSOLU",
+        ),
+        _F(
+            GROUP_NO="GROUP_NO_PO3",
+            NUME_ORDRE=202,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RES_M2,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=100e00,
+            VALE_REFE=100e00,
+        ),
+        _F(
+            GROUP_NO="GROUP_NO_PO4",
+            NUME_ORDRE=202,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RES_M2,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=2.876074777458033e-14,
+            VALE_REFE=0.0,
+            CRITERE="ABSOLU",
+        ),
+        _F(
+            GROUP_NO="GROUP_NO_PO5",
+            NUME_ORDRE=202,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RES_M2,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=7.21110255092798e01,
+            VALE_REFE=72.11102551,
+        ),
+    )
+)
+# calcul 2
 RES_LINE = COMB_SISM_MODAL(
     MODE_MECA=MODES,
     AMOR_REDUIT=0.0,
@@ -370,7 +512,7 @@ RES_LINE = COMB_SISM_MODAL(
     OPTION=("DEPL", "REAC_NODA"),
     INFO=2,
 )
-#
+# test resu depl
 TEST_RESU(
     RESU=(
         _F(
@@ -425,7 +567,65 @@ TEST_RESU(
         ),
     )
 )
-#
+# test resu reac
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="GROUP_NO_PO1",
+            NUME_ORDRE=200,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RES_LINE,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_REFE=0.000000000,
+            VALE_CALC=-1.0658141036401503e-14,
+            CRITERE="ABSOLU",
+        ),
+        _F(
+            GROUP_NO="GROUP_NO_PO2",
+            NUME_ORDRE=200,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RES_LINE,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=1.5916157281026246e-14,
+            VALE_REFE=0.0,
+            CRITERE="ABSOLU",
+        ),
+        _F(
+            GROUP_NO="GROUP_NO_PO3",
+            NUME_ORDRE=200,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RES_LINE,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=-100,
+            VALE_REFE=-100,
+        ),
+        _F(
+            GROUP_NO="GROUP_NO_PO4",
+            NUME_ORDRE=200,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RES_LINE,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=1.8189894035458562e-14,
+            VALE_REFE=0.0,
+            CRITERE="ABSOLU",
+        ),
+        _F(
+            GROUP_NO="GROUP_NO_PO5",
+            NUME_ORDRE=200,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RES_LINE,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=100.0,
+            VALE_REFE=100.0,
+        ),
+    )
+)
+# calcul 3
 RES_QUAD = COMB_SISM_MODAL(
     MODE_MECA=MODES,
     AMOR_REDUIT=0.0,
@@ -446,6 +646,7 @@ RES_QUAD = COMB_SISM_MODAL(
     OPTION=("DEPL", "REAC_NODA"),
     INFO=2,
 )
+# TEST RESU DEPL
 TEST_RESU(
     RESU=(
         _F(
@@ -500,85 +701,60 @@ TEST_RESU(
         ),
     )
 )
-#  QUAD(LINE(N01,N03)+N05)
-#
-RES_M2 = COMB_SISM_MODAL(
-    MODE_MECA=MODES,
-    AMOR_REDUIT=0.0,
-    MASS_INER=MAS,
-    CORR_FREQ="NON",
-    MULTI_APPUI="DECORRELE",
-    EXCIT=(
-        _F(GROUP_NO="GROUP_NO_PO5", AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPEC3, ECHELLE=1.0),
-        _F(GROUP_NO=("GROUP_NO_PO1"), AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPEC1),
-        _F(GROUP_NO=("GROUP_NO_PO3"), AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPEC2),
-    ),
-    DEPL_MULT_APPUI=(
-        _F(NOM_CAS=("1",), NUME_CAS=(1,), MODE_STAT=MODE_STA, GROUP_NO=("GROUP_NO_PO1",), DX=-0.04),
-        _F(NOM_CAS=("2",), NUME_CAS=(2,), MODE_STAT=MODE_STA, GROUP_NO=("GROUP_NO_PO3",), DX=-0.04),
-        _F(NOM_CAS=("3",), NUME_CAS=(3,), MODE_STAT=MODE_STA, GROUP_NO=("GROUP_NO_PO5",), DX=0.06),
-        _F(NOM_CAS=("4",), NUME_CAS=(4,), MODE_STAT=MODE_STA, GROUP_NO=("GROUP_NO_PO3",), DX=0.0),
-    ),
-    COMB_DEPL_APPUI=(
-        _F(LIST_CAS=(1, 2), TYPE_COMBI="LINE"),
-        _F(LIST_CAS=(3, 4), TYPE_COMBI="QUAD"),
-    ),
-    COMB_MODE=_F(TYPE="SRSS"),
-    OPTION=("DEPL", "REAC_NODA"),
-    INFO=2,
-)
-#
+# TEST RESU REAC_NODA
 TEST_RESU(
     RESU=(
         _F(
             GROUP_NO="GROUP_NO_PO1",
-            NUME_ORDRE=202,
+            NUME_ORDRE=200,
             REFERENCE="ANALYTIQUE",
-            RESULTAT=RES_M2,
-            NOM_CHAM="DEPL",
+            RESULTAT=RES_QUAD,
+            NOM_CHAM="REAC_NODA",
             NOM_CMP="DX",
-            VALE_CALC=0.04,
-            VALE_REFE=4.0000000000e-02,
+            VALE_CALC=2.82842712474619e01,
+            VALE_REFE=28.28427125,
         ),
         _F(
             GROUP_NO="GROUP_NO_PO2",
-            NUME_ORDRE=202,
+            NUME_ORDRE=200,
             REFERENCE="ANALYTIQUE",
-            RESULTAT=RES_M2,
-            NOM_CHAM="DEPL",
+            RESULTAT=RES_QUAD,
+            NOM_CHAM="REAC_NODA",
             NOM_CMP="DX",
-            VALE_CALC=0.04,
-            VALE_REFE=4.0000000000e-02,
+            VALE_CALC=1.1368683772161604e-14,
+            VALE_REFE=0.0,
+            CRITERE="ABSOLU",
         ),
         _F(
             GROUP_NO="GROUP_NO_PO3",
-            NUME_ORDRE=202,
+            NUME_ORDRE=200,
             REFERENCE="ANALYTIQUE",
-            RESULTAT=RES_M2,
-            NOM_CHAM="DEPL",
+            RESULTAT=RES_QUAD,
+            NOM_CHAM="REAC_NODA",
             NOM_CMP="DX",
-            VALE_CALC=0.04,
-            VALE_REFE=4.0000000000e-02,
+            VALE_CALC=8.71779788708135e01,
+            VALE_REFE=87.17797887,
         ),
         _F(
             GROUP_NO="GROUP_NO_PO4",
-            NUME_ORDRE=202,
+            NUME_ORDRE=200,
             REFERENCE="ANALYTIQUE",
-            RESULTAT=RES_M2,
-            NOM_CHAM="DEPL",
+            RESULTAT=RES_QUAD,
+            NOM_CHAM="REAC_NODA",
             NOM_CMP="DX",
-            VALE_CALC=3.6055512754e-02,
-            VALE_REFE=0.036055513,
+            VALE_CALC=2.876074777458033e-14,
+            VALE_REFE=0.0,
+            CRITERE="ABSOLU",
         ),
         _F(
             GROUP_NO="GROUP_NO_PO5",
-            NUME_ORDRE=202,
+            NUME_ORDRE=200,
             REFERENCE="ANALYTIQUE",
-            RESULTAT=RES_M2,
-            NOM_CHAM="DEPL",
+            RESULTAT=RES_QUAD,
+            NOM_CHAM="REAC_NODA",
             NOM_CMP="DX",
-            VALE_CALC=6.0000000000e-02,
-            VALE_REFE=0.06,
+            VALE_CALC=7.21110255092798e01,
+            VALE_REFE=72.11102551,
         ),
     )
 )
