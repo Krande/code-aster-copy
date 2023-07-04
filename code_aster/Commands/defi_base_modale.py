@@ -83,8 +83,7 @@ class ModalBasisDef(ExecuteCommand):
                     self._result.setMesh(mode_meca.getMesh())
                 for fED in mode_meca.getFiniteElementDescriptors():
                     self._result.addFiniteElementDescriptor(fED)
-                for fOND in mode_meca.getEquationNumberings():
-                    self._result.addEquationNumbering(fOND)
+                # EquationNumberings and DOFNumbering seem unused in this case
                 if self._result.getDOFNumbering() is None:
                     nume_ddl = mode_meca.getDOFNumbering()
                     self._result.setDOFNumbering(nume_ddl)
@@ -96,6 +95,15 @@ class ModalBasisDef(ExecuteCommand):
             self._result.setDOFNumbering(ortho[0]["MATRICE"].getDOFNumbering())
             self._result.setMesh(ortho[0]["BASE"].getMesh())
         self._result.build()
+
+    def add_dependencies(self, keywords):
+        """Register input *DataStructure* objects as dependencies.
+
+        Arguments:
+            keywords (dict): User's keywords.
+        """
+        super().add_dependencies(keywords)
+        self.remove_dependencies(keywords, "RITZ", "MODE_MECA")
 
 
 DEFI_BASE_MODALE = ModalBasisDef.run
