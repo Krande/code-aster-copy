@@ -63,12 +63,25 @@ module Metallurgy_type
         real(kind=8) :: wsr_k
     end type META_AusteniteParameters
 !
+    type META_TRCMartensiteLaw
+        real(kind=8) :: austeniteMin = 0.d0
+        real(kind=8) :: akm = 0.d0, bkm = 0.d0
+        real(kind=8) :: lowerSpeed = 0.d0
+    end type META_TRCMartensiteLaw
+!
+    type META_TRCAusteniteGrain
+        real(kind=8) :: dref = 0.d0
+        real(kind=8) :: a = 0.d0
+    end type META_TRCAusteniteGrain
+!
     type META_TRCParameters
-        integer :: jv_ftrc, jv_trc
-        integer :: iadexp, iadckm, iadtrc
-        integer :: nb_trc
-        integer :: nb_hist
+        integer :: jv_ftrc = 0, jv_trc = 0
+        integer :: iadexp = 0, iadtrc = 0
+        integer :: nbHist = 0
+        type(META_TRCMartensiteLaw) :: martensiteLaw
+        type(META_TRCAusteniteGrain) :: austeniteGrain
     end type META_TRCParameters
+
 !
     type META_SteelParameters
         real(kind=8) :: ar3

@@ -23,8 +23,10 @@ subroutine metaSteelTRCGetParameters(jv_mater, metaSteelPara)
     implicit none
 !
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcadma.h"
+#include "asterfort/utmess.h"
 !
     integer, intent(in) :: jv_mater
     type(META_SteelParameters), intent(out) :: metaSteelPara
@@ -42,11 +44,15 @@ subroutine metaSteelTRCGetParameters(jv_mater, metaSteelPara)
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    real(kind=8), parameter :: toleTemp = 10.
     integer :: jv_pftrc
     integer :: nbcb1, nbcb2, nblexp
-    integer :: icodre, nb_trc, nb_hist
+    integer :: icodre, nb_trc, nbHist, nbExp, iHist, iExp
     integer :: jftrc, jtrc
-    integer :: iadexp, iadckm, iadtrc
+    integer :: iadexp, iadckm, iadtrc, shift
+    real(kind=8) :: tempAR3FromMate, tempAR3FromTRC
+    real(kind=8) :: tempPrev, tempCurr
+    aster_logical :: lCooling
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,19 +61,53 @@ subroutine metaSteelTRCGetParameters(jv_mater, metaSteelPara)
     jtrc = zi(jv_pftrc+1)
     call rcadma(jv_mater, 'META_ACIER', 'TRC', iadtrc, icodre, 1)
     nbcb1 = nint(zr(iadtrc+1))
-    nbcb2 = nint(zr(iadtrc+1+2+nbcb1))
-    nb_hist = nint(zr(iadtrc+2))
-    nbcb2 = nint(zr(iadtrc+1+2+nbcb1*nb_hist))
-    nblexp = nint(zr(iadtrc+1+2+nbcb1*nb_hist+1))
-    nb_trc = nint(zr(iadtrc+1+2+nbcb1*nb_hist+2+nbcb2*nblexp+1))
-    iadexp = 5+nbcb1*nb_hist
-    iadckm = 7+nbcb1*nb_hist+nbcb2*nblexp
+    nbHist = nint(zr(iadtrc+2))
+    nbcb2 = nint(zr(iadtrc+1+2+nbcb1*nbHist))
+    nblexp = nint(zr(iadtrc+1+2+nbcb1*nbHist+1))
+    nb_trc = nint(zr(iadtrc+1+2+nbcb1*nbHist+2+nbcb2*nblexp+1))
+    ASSERT(nb_trc .eq. 1)
+    iadexp = 5+nbcb1*nbHist
+    iadckm = 7+nbcb1*nbHist+nbcb2*nblexp
     metaSteelPara%trc%jv_ftrc = jftrc
     metaSteelPara%trc%jv_trc = jtrc
     metaSteelPara%trc%iadexp = iadexp
-    metaSteelPara%trc%iadckm = iadckm
     metaSteelPara%trc%iadtrc = iadtrc
-    metaSteelPara%trc%nb_hist = nb_hist
-    metaSteelPara%trc%nb_trc = nb_trc
+    metaSteelPara%trc%nbHist = nbHist
+
+! - Parameters for martensite evolution
+    metaSteelPara%trc%martensiteLaw%austeniteMin = zr(iadtrc+iadckm-1+1)
+    metaSteelPara%trc%martensiteLaw%akm = zr(iadtrc+iadckm-1+2)
+    metaSteelPara%trc%martensiteLaw%bkm = zr(iadtrc+iadckm-1+3)
+    metaSteelPara%trc%martensiteLaw%lowerSpeed = zr(iadtrc+iadckm-1+4)
+
+! - Parameters for size of austenite grain
+    metaSteelPara%trc%austeniteGrain%dref = zr(iadtrc+iadckm-1+5)
+    metaSteelPara%trc%austeniteGrain%a = zr(iadtrc+iadckm-1+6)
+
+! - Check consistency of temperature
+    tempAR3FromMate = metaSteelPara%ar3
+    shift = 0
+    do iHist = 1, nbHist
+        nbExp = nint(zr(iadtrc+11+9*(iHist-1)))
+        lCooling = ASTER_FALSE
+        do iExp = 1, nbExp-1
+            tempPrev = zr(iadtrc+iadexp-1+4*(shift+iExp))
+            tempCurr = zr(iadtrc+iadexp-1+4*(shift+iExp+1))
+            if (iExp .ge. 2) then
+                if (tempCurr .le. tempPrev) then
+                    lCooling = ASTER_TRUE
+                    exit
+                end if
+            end if
+        end do
+        if (lCooling) then
+            iExp = 1
+            tempAR3FromTRC = zr(iadtrc+iadexp-1+4*(shift+iExp))
+            if (abs(tempAR3FromMate-tempAR3FromTRC) .gt. toleTemp) then
+                call utmess('A', "META1_50", sr=toleTemp)
+            end if
+        end if
+        shift = shift+nbExp
+    end do
 !
 end subroutine

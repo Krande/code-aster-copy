@@ -15,6 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+! aslint: disable=W0413
 !
 subroutine zacier(metaSteelPara, nb_phase, &
                   tpg0, tpg1, tpg2, &
@@ -66,7 +67,7 @@ subroutine zacier(metaSteelPara, nb_phase, &
     real(kind=8) :: zeq1, zeq2, zaust, z2, epsi, dt21_mod
     real(kind=8) :: un, coef_phase
     real(kind=8) :: zeq1i, zeq2i, ti1, ti2, taux
-    integer :: i, j, nbpas, nb_hist, nb_trc
+    integer :: i, j, nbpas, nbHist
     aster_logical :: l_cold
 !
 ! --------------------------------------------------------------------------------------------------
@@ -75,20 +76,16 @@ subroutine zacier(metaSteelPara, nb_phase, &
     epsi = 1.d-10
     un = 1.d0
     ASSERT(nb_phase .eq. 6)
-!
+
 ! - Get material parameters for steel
-!
-    nb_hist = metaSteelPara%trc%nb_hist
-    nb_trc = metaSteelPara%trc%nb_trc
-!
+    nbHist = metaSteelPara%trc%nbHist
+
 ! - Temperature
-!
     meta_curr(nb_phase+STEEL_TEMP) = tpg2
     meta_curr(nb_phase+TEMP_MARTENSITE) = meta_prev(nb_phase+TEMP_MARTENSITE)
     tpoint = (tpg1-tpg0)/dt10
-!
+
 ! - Proportion of austenite
-!
     zaust = un-(meta_prev(PFERRITE)+meta_prev(PPERLITE)+ &
                 meta_prev(PBAINITE)+meta_prev(PMARTENS))
 !
@@ -119,27 +116,23 @@ subroutine zacier(metaSteelPara, nb_phase, &
                 ti = tpg1+(tpg2-tpg1)*dble(i-1)/dble(nbpas)
                 meta_curr(nb_phase+STEEL_TEMP) = tpg1+(dble(i)*(tpg2-tpg1))/dble(nbpas)
                 tpi = (meta_curr(nb_phase+STEEL_TEMP)-ti)/dt21_mod
-                call smcarc(nb_hist, nb_phase, &
+                call smcarc(nbHist, nb_phase, &
                             zr(metaSteelPara%trc%jv_ftrc), &
                             zr(metaSteelPara%trc%jv_trc), &
                             zr(metaSteelPara%trc%iadtrc+3), &
                             zr(metaSteelPara%trc%iadtrc+metaSteelPara%trc%iadexp), &
                             metaSteelPara, &
-                            nb_trc, &
-                            zr(metaSteelPara%trc%iadtrc+metaSteelPara%trc%iadckm), &
                             ti, tpi, dt10, &
                             vari_dumm, meta_curr)
                 vari_dumm(:) = meta_curr(:)
             end do
         else
-            call smcarc(nb_hist, nb_phase, &
+            call smcarc(nbHist, nb_phase, &
                         zr(metaSteelPara%trc%jv_ftrc), &
                         zr(metaSteelPara%trc%jv_trc), &
                         zr(metaSteelPara%trc%iadtrc+3), &
                         zr(metaSteelPara%trc%iadtrc+metaSteelPara%trc%iadexp), &
                         metaSteelPara, &
-                        nb_trc, &
-                        zr(metaSteelPara%trc%iadtrc+metaSteelPara%trc%iadckm), &
                         tpg1, tpoint, dt10, &
                         meta_prev, meta_curr)
         end if
@@ -165,7 +158,8 @@ subroutine zacier(metaSteelPara, nb_phase, &
                     if (zaust .gt. zeq1i) then
                         z2 = (taux*tpoint/(metaSteelPara%ac3-metaSteelPara%ac1))
                         z2 = z2*exp(-dt21_mod/taux)
-                       z2 = ((-taux*tpoint/(metaSteelPara%ac3-metaSteelPara%ac1))+zeq2i+z2-zeq1i)* &
+                        z2 = ((-taux*tpoint/(metaSteelPara%ac3-metaSteelPara%ac1))+ &
+                              zeq2i+z2-zeq1i)* &
                              (un-zaust)/(un-zeq1i)
                         z2 = z2+zaust
                     else
@@ -180,8 +174,6 @@ subroutine zacier(metaSteelPara, nb_phase, &
                     coef_phase = (1.d0-(z2-zaust)/z2)
                 end if
                 call metaSteelGrainSize(metaSteelPara, &
-                                        nb_trc, &
-                                        zr(metaSteelPara%trc%iadtrc+metaSteelPara%trc%iadckm), &
                                         ti1, dt10, dt21, &
                                         z2, coef_phase, &
                                         dmoins, meta_curr(nb_phase+SIZE_GRAIN))
@@ -217,8 +209,6 @@ subroutine zacier(metaSteelPara, nb_phase, &
                 coef_phase = (1.d0-(z2-zaust)/z2)
             end if
             call metaSteelGrainSize(metaSteelPara, &
-                                    nb_trc, &
-                                    zr(metaSteelPara%trc%iadtrc+metaSteelPara%trc%iadckm), &
                                     tpg1, dt10, dt21, &
                                     z2, coef_phase, &
                                     meta_prev(nb_phase+SIZE_GRAIN), meta_curr(nb_phase+SIZE_GRAIN))

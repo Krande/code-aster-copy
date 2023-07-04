@@ -15,6 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+! aslint: disable=W0413
 !
 subroutine metaSteelTRCPolynom(coef_poly, tplm, temp, &
                                dtemp_trc)
@@ -33,6 +34,7 @@ subroutine metaSteelTRCPolynom(coef_poly, tplm, temp, &
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  coef_poly           : coefficient of P5 polynom for TRC curve
+! In  tplm                : slowest experimental cooling rate to 700°C
 ! In  temp                : temperature
 ! Out dtemp_trc           : derivative of temperature from TRC diagram
 !
