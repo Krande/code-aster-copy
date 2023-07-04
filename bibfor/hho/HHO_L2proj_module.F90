@@ -34,6 +34,7 @@ module HHO_L2proj_module
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 #include "blas/dposv.h"
+#include "blas/dcopy.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -382,7 +383,7 @@ contains
         character(len=8), intent(in)        :: func(*)
         real(kind=8), intent(in)            :: time
         real(kind=8), intent(out)           :: coeff_L2Proj(MSIZE_TDOFS_VEC)
-        aster_logical, intent(in), optional          :: all
+        aster_logical, intent(in), optional   :: all
 
 !
 ! --------------------------------------------------------------------------------------------------
@@ -402,6 +403,7 @@ contains
         type(HHO_Quadrature) :: hhoQuadFace, hhoQuadCell
         integer :: cbs, fbs, total_dofs, iFace, ind, nbpara, idim
         real(kind=8) :: FuncValuesCellQP(3, MAX_QP_CELL), FuncValuesFaceQP(3, MAX_QP_FACE)
+        real(kind=8) :: rhs_face(MSIZE_FACE_VEC), rhs_cell(MSIZE_CELL_VEC)
         aster_logical :: with_faces
 ! --------------------------------------------------------------------------------------------------
 !
@@ -434,8 +436,8 @@ contains
 !
         ind = 1
         do iFace = 1, hhoCell%nbfaces
-            hhoFace = hhoCell%faces(iFace)
             if (with_faces) then
+                hhoFace = hhoCell%faces(iFace)
 !
 ! ----- get quadrature
 !
@@ -452,8 +454,9 @@ contains
 ! -------------- Compute L2 projection
 !
                 call hhoL2ProjFaceVec(hhoFace, hhoQuadFace, FuncValuesFaceQP, &
-                                      hhoData%face_degree(), coeff_L2Proj(ind))
+                                      hhoData%face_degree(), rhs_face)
             end if
+            call dcopy(fbs, rhs_face, 1, coeff_L2Proj(ind), 1)
             ind = ind+fbs
         end do
 !
@@ -469,7 +472,9 @@ contains
         end do
 !
         call hhoL2ProjCellVec(hhoCell, hhoQuadCell, FuncValuesCellQP, hhoData%cell_degree(), &
-                              coeff_L2Proj(ind))
+                              rhs_cell)
+        call dcopy(cbs, rhs_cell, 1, coeff_L2Proj(ind), 1)
+
 !
     end subroutine
 !
@@ -501,6 +506,8 @@ contains
         integer :: cbs, fbs, total_dofs, iFace, ind, ino
         real(kind=8) :: FuncValuesCellQP(MAX_QP_CELL), FuncValuesFaceQP(MAX_QP_FACE)
         real(kind=8) :: FieldValuesNodes(27)
+        real(kind=8) :: rhs_face(MSIZE_FACE_SCAL), rhs_cell(MSIZE_CELL_SCAL)
+
 ! --------------------------------------------------------------------------------------------------
 !
         call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
@@ -529,7 +536,8 @@ contains
 ! -------------- Compute L2 projection
 !
             call hhoL2ProjFaceScal(hhoFace, hhoQuadFace, FuncValuesFaceQP, &
-                                   hhoData%face_degree(), coeff_L2Proj(ind))
+                                   hhoData%face_degree(), rhs_face)
+            call dcopy(fbs, rhs_face, 1, coeff_L2Proj(ind), 1)
             ind = ind+fbs
         end do
 !
@@ -542,7 +550,8 @@ contains
         call hhoFuncRScalEvalCellQp(hhoCell, hhoQuadCell, field, FuncValuesCellQP)
 !
         call hhoL2ProjCellScal(hhoCell, hhoQuadCell, FuncValuesCellQP, hhoData%cell_degree(), &
-                               coeff_L2Proj(ind))
+                               rhs_cell)
+        call dcopy(cbs, rhs_cell, 1, coeff_L2Proj(ind), 1)
 !
     end subroutine
 !

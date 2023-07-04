@@ -31,6 +31,7 @@ module HHO_rhs_module
 #include "asterfort/HHO_size_module.h"
 #include "blas/daxpy.h"
 #include "blas/dscal.h"
+#include "blas/dcopy.h"
 #include "jeveux.h"
 !
 ! --------------------------------------------------------------------------------------------------
@@ -126,7 +127,7 @@ contains
 !
         type(HHO_basis_face) :: hhoBasisFace
         integer :: size, idir, begin, i
-        real(kind=8) :: Values(MAX_QP_FACE)
+        real(kind=8) :: Values(MAX_QP_FACE), rhs_dir(MSIZE_FACE_SCAL)
 !
 ! -- init face basis
         call hhoBasisFace%initialize(hhoFace)
@@ -135,12 +136,14 @@ contains
         rhs = 0.d0
         Values = 0.d0
 !
+        begin = 1
         do idir = 1, hhoFace%ndim+1
-            begin = (idir-1)*size+1
             do i = 1, hhoQuad%nbQuadPoints
                 Values(i) = ValuesQP(idir, i)
             end do
-            call hhoMakeRhsFaceScal(hhoFace, hhoQuad, Values, degree, rhs(begin))
+            call hhoMakeRhsFaceScal(hhoFace, hhoQuad, Values, degree, rhs_dir)
+            call dcopy(size, rhs_dir, 1, rhs(begin), 1)
+            begin = begin+size
         end do
 !
     end subroutine
@@ -223,7 +226,7 @@ contains
 !
         type(HHO_basis_cell) :: hhoBasisCell
         integer :: size, idir, begin, i
-        real(kind=8) :: Values(MAX_QP_CELL)
+        real(kind=8) :: Values(MAX_QP_CELL), rhs_dir(MSIZE_CELL_SCAL)
 !
 ! -- init face basis
         call hhoBasisCell%initialize(hhoCell)
@@ -232,12 +235,14 @@ contains
         rhs = 0.d0
         Values = 0.d0
 !
+        begin = 1
         do idir = 1, hhoCell%ndim
-            begin = (idir-1)*size+1
             do i = 1, hhoQuad%nbQuadPoints
                 Values(i) = ValuesQP(idir, i)
             end do
-            call hhoMakeRhsCellScal(hhoCell, hhoQuad, Values, degree, rhs(begin))
+            call hhoMakeRhsCellScal(hhoCell, hhoQuad, Values, degree, rhs_dir)
+            call dcopy(size, rhs_dir, 1, rhs(begin), 1)
+            begin = begin+size
         end do
 !
     end subroutine

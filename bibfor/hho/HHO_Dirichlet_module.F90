@@ -790,6 +790,7 @@ contains
         type(HHO_Quadrature) :: hhoQuadFace, hhoQuadCell
         integer :: cbs, fbs, total_dofs, idim, iFace, nbpara, ind
         real(kind=8) :: FuncValuesQP(3, MAX_QP_FACE), FuncValuesCellQP(3, MAX_QP_CELL)
+        real(kind=8) :: rhs_face(MSIZE_FACE_VEC), rhs_cell(MSIZE_CELL_VEC)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -843,7 +844,8 @@ contains
 ! -------------- Compute L2 projection
 !
             call hhoL2ProjFaceVec(hhoFace, hhoQuadFace, FuncValuesQP, hhoData%face_degree(), &
-                                  rhs_cine(ind))
+                                  rhs_face)
+            call dcopy(fbs, rhs_face, 1, rhs_cine(ind), 1)
             ind = ind+fbs
         end do
 !
@@ -862,7 +864,8 @@ contains
         end do
 !
         call hhoL2ProjCellVec(hhoCell, hhoQuadCell, FuncValuesCellQP, hhoData%cell_degree(), &
-                              rhs_cine(ind))
+                              rhs_cell)
+        call dcopy(cbs, rhs_cell, 1, rhs_cine(ind), 1)
 !
     end subroutine
 !
