@@ -341,21 +341,29 @@ class ConvergenceManager(SolverFeature):
         """
         scaling = 0.0
         eliminatedDofs = self.phys_pb.getDirichletBCDOFs()
-        nb_dofs = len(eliminatedDofs)
 
         residuals.update()
 
-        for ieq in range(nb_dofs):
+        nume_equa = self.phys_pb.getDOFNumbering().getEquationNumbering()
+        cmp2dof = nume_equa.getDOFFromNodeAndComponent()
+
+        for [iNode, cmp], ieq in cmp2dof.items():
             f_int = 0.0
             f_ext = 0.0
+            f_cont = 0.0
             f_varc = 0.0
+
+            if cmp in ("LAGR_C", "LAGR_F1", "LAGR_F2"):
+                continue
+
             if eliminatedDofs[ieq] == 1:
                 f_int = -residuals.resi_int[ieq]
             else:
                 f_int = residuals.resi_dual[ieq]
+                f_cont = residuals.resi_cont[ieq]
                 f_ext = residuals.resi_ext[ieq]
 
-            value = abs(f_int - f_ext) + abs(f_varc)
+            value = abs(f_int + f_cont - f_ext) + abs(f_varc)
 
             if scaling < value:
                 scaling = value
