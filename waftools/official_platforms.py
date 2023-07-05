@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ def configure(self):
     opts = self.options
     if os.environ.get("OFFICIAL_PLATFORM"):
         # force to fail if a prerequisite is not found
-        opts.enable_all = True
+        os.environ["ENABLE_ALL"] = "1"
         # force to fail if a program is not found
         opts.with_prog_gmsh = True
         # opts.with_prog_salome: only required by few testcases

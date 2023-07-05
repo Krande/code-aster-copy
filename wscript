@@ -168,7 +168,7 @@ def options(self):
         "--enable-all",
         dest="enable_all",
         action="store_true",
-        default=os.environ.get("ENABLE_ALL") != "0",
+        default=None,
         help="activate all 'enable-*' options, means that all prerequisites are required"
         "(same as ENABLE_ALL=1 environment variable)",
     )
@@ -226,7 +226,13 @@ def configure(self):
     self.add_os_flags("CXXFLAGS_ASTER_DEBUG")
     self.add_os_flags("FCFLAGS_ASTER_DEBUG")
 
-    for comp in self.all_components():
+    all_prods = self.all_components()
+    if opts.enable_all is None:
+        enabled_comp = [getattr(opts, "enable_" + comp.lower(), None) for comp in all_prods]
+        # if a product is explicitly disabled, can not enable all!
+        enable_all = os.environ.get("ENABLE_ALL") != "0" and False not in enabled_comp
+        opts.enable_all = enable_all
+    for comp in all_prods:
         self.add_os_flags("LIBPATH_" + comp)
         self.add_os_flags("LIB_" + comp)
         self.add_os_flags("INCLUDES_" + comp)
