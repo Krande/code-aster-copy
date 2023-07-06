@@ -46,7 +46,7 @@ subroutine te0458(nomopt, nomte)
     type(HHO_Cell) :: hhoCell
     real(kind=8) :: rhs_cine(MSIZE_TDOFS_VEC)
     integer :: j_func, j_time, cbs, fbs, total_dofs
-    character(len=8) :: nomfunct(3, MAX_FACE+1)
+    character(len=8) :: nomfunct(3, 7)
 !
     ASSERT(nomopt .eq. 'HHO_CINE_F_MECA')
 !

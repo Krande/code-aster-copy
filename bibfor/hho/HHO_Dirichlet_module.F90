@@ -503,6 +503,8 @@ contains
                     lpain, nbout, lchout, lpaout, base, &
                     'OUI')
 !
+        call detrsd("CARTE", chtime)
+!
     end subroutine
 !
 !===================================================================================================
@@ -726,7 +728,7 @@ contains
 !
         type(HHO_Cell), intent(in)   :: hhoCell
         character(len=8), intent(in) :: v_func(*)
-        character(len=8), intent(out):: nomFunc(3, 6)
+        character(len=8), intent(out):: nomFunc(3, 7)
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - AFFE_CHAR_CINE_F
@@ -767,7 +769,7 @@ contains
 !
         type(HHO_Cell), intent(in)   :: hhoCell
         type(HHO_Data), intent(in)   :: hhoData
-        character(len=8), intent(in) :: nomFunc(3, 6)
+        character(len=8), intent(in) :: nomFunc(3, 7)
         real(kind=8), intent(in)     :: time
         real(kind=8), intent(out)    :: rhs_cine(MSIZE_TDOFS_VEC)
 !
@@ -830,6 +832,7 @@ contains
 !
 ! --- Loop on directions
 !
+            FuncValuesQp = 0.d0
             do idim = 1, hhoCell%ndim
                 if (nomFunc(idim, iFace) .ne. '&&FOZERO') then
 !
@@ -855,6 +858,7 @@ contains
 !
 ! -------------- Value of the function at the quadrature point
 !
+        FuncValuesCellQP = 0.d0
         do idim = 1, hhoCell%ndim
             if (nomFunc(idim, hhoCell%nbfaces+1) .ne. '&&FOZERO') then
                 call hhoFuncFScalEvalQp(hhoQuadCell, nomFunc(idim, hhoCell%nbfaces+1), nbpara, &
@@ -866,6 +870,8 @@ contains
         call hhoL2ProjCellVec(hhoCell, hhoQuadCell, FuncValuesCellQP, hhoData%cell_degree(), &
                               rhs_cell)
         call dcopy(cbs, rhs_cell, 1, rhs_cine(ind), 1)
+        ind = ind+cbs
+        ASSERT(ind-1 == total_dofs)
 !
     end subroutine
 !
