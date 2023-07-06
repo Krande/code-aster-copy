@@ -117,7 +117,6 @@ subroutine nmini0(eta, nume_inst, matass, &
 !
 ! - Create energy management datastructure
 !
-    print *, 'coucou nonlinDSEnergyCreate'
     call nonlinDSEnergyCreate(ds_energy)
 !
 ! - Create material management datastructure

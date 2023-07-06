@@ -62,7 +62,6 @@ subroutine nonlinDSTableIOCreate(tableio)
 !
     call exisd('TABLE', tablName, iret)
     if (iret .eq. 0) then
-        print *, 'coucou creation de la table'
         call tbcrsd(tablName, 'G')
         call tbajpa(tablName, tableio%nbPara, tableio%paraName, tableio%paraType)
     end if
