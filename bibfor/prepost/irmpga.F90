@@ -188,8 +188,10 @@ integer :: codret
                 nummai = caimpi(6,nrimpr)
                 typsec = ' '
                 ! CAS GRILLE, COQUE, TUYAU, PMF
-                okgr = (nummai.eq.0).and.(nbcouc.eq.1).and.(nbsect.eq.0).and.(nbsp.eq.1)
-                okcq = (nummai.eq.0).and.(nbcouc.ge.1).and.(nbsect.eq.0).and.(nbsp.eq.3*nbcouc)
+                okgr = (nummai .eq. 0) .and. (nbcouc .eq. 1) .and. (nbsect .eq. 0) &
+                       .and. (nbsp .eq. 1)
+                okcq = (nummai .eq. 0) .and. (nbcouc .ge. 1) .and. (nbsect .eq. 0) &
+                       .and. (nbsp .eq. 3*nbcouc)
                 oktu = (nummai.eq.0).and.(nbcouc.ge.1).and.(nbsect.ge.1)
                 okpf = (nummai.ne.0).and.(nbcouc.eq.0).and.(nbsect.eq.0)
                 !
@@ -221,14 +223,13 @@ integer :: codret
 !                       on reproduit la meme description dans chaque 'couche'.
 !                       c'est une solution temporaire, dans l'attente de l'evolution med
                     if (nbsp .gt. 1) then
-                        do jaux = 2 , nbsp
-                            kaux = ndim*nbpg*(jaux-1)
-                            do iaux = 1 , ndim*nbpg
-                                gscoo(kaux+iaux) = gscoo(iaux)
-                            enddo
-                            kaux = nbpg*(jaux-1)
-                            do iaux = 1 , nbpg
-                                wg(kaux+iaux) = wg(iaux)
+                        do iaux = nbpg, 1, -1
+                            do kaux = 1, nbsp
+                                do jaux = ndim, 1, -1
+                                    gscoo(ndim*(nbsp*(iaux-1)+kaux-1)+jaux) = &
+                                        gscoo(ndim*(iaux-1)+jaux)
+                                end do
+                                wg(nbsp*(iaux-1)+kaux) = wg(iaux)
                             enddo
                         enddo
                     endif
