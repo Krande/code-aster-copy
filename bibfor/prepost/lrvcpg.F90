@@ -175,12 +175,13 @@ subroutine lrvcpg(idfimd, nbpgm, nbpga, nomtm, typgeo,&
     do igau = 1, nbpgm2
         zi(jcorre+igau-1)=0
         do idim = 1, dime
-            ad=dime*(igau-1)+idim
+            ad = dime*nbsp*(igau-1)+idim
+            ada = dime*(igau-1)+idim
             if (nivinf .gt. 1) then
                 write(ifm,110) igau,idim,zr(jgscoo+ad-1),zr(jcopga+&
-                ad-1)
+                                                                 ada-1)
             endif
-            if (abs(zr(jgscoo+ad-1)-zr(jcopga+ad-1)) .gt. 1.d-3) then
+            if (abs(zr(jgscoo+ad-1)-zr(jcopga+ada-1)) .gt. 1.d-3) then
                 ncorre=ncorre+1
                 zi(jcorre+igau-1)=igau
                 exit
@@ -201,7 +202,7 @@ subroutine lrvcpg(idfimd, nbpgm, nbpga, nomtm, typgeo,&
             if (zi(jcorre+ipgm-1) .eq. 0) then
                 permu(ipgm)=ipgm
             else
-                ad=dime*(ipgm-1)
+                ad = dime*nbsp*(igau-1)
                 xpgm=zr(jgscoo+ad+1-1)
                 ypgm=0.d0
                 zpgm=0.d0
@@ -227,7 +228,7 @@ subroutine lrvcpg(idfimd, nbpgm, nbpga, nomtm, typgeo,&
                         do im = 1, nbpgm2
                             call utmess('A+', 'MED_4', si=im)
                             do idim = 1, dime
-                                valr(1)=zr(jgscoo+dime*(im-1)+idim-1)
+                                valr(1) = zr(jgscoo+dime*nbsp*(im-1)+idim-1)
                                 valr(2)=zr(jcopga+dime*(im-1)+idim-1)
                                 call utmess('A+', 'MED_5', sk=valk(idim), nr=2, valr=valr)
                             enddo
@@ -247,7 +248,7 @@ subroutine lrvcpg(idfimd, nbpgm, nbpga, nomtm, typgeo,&
         do im = 1, nbpgm2
             call utmess('A+', 'MED_4', si=im)
             do idim = 1, dime
-                valr(1)=zr(jgscoo+dime*(im-1)+idim-1)
+                valr(1) = zr(jgscoo+dime*nbsp*(im-1)+idim-1)
                 valr(2)=zr(jcopga+dime*(im-1)+idim-1)
                 call utmess('A+', 'MED_5', sk=valk(idim), nr=2, valr=valr)
             enddo
