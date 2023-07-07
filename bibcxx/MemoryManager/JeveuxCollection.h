@@ -198,9 +198,9 @@ public:
 
   auto end() const { return _listObjects.end(); };
 
-  const auto cbegin() const { return _listObjects.cbegin(); };
+  auto cbegin() const { return _listObjects.cbegin(); };
 
-  const auto cend() const { return _listObjects.cend(); };
+  auto cend() const { return _listObjects.cend(); };
 
   /**
    * @brief Allocation
@@ -497,11 +497,11 @@ public:
       AS_ABORT("Collection not built: " + _name);
     }
 
-    if (position < 1 || position > capacity()) {
+    if (_listObjects.count(position) == 0) {
       AS_ABORT("Position not in collection: " + std::to_string(position));
     }
 #endif
-    return _listObjects[position];
+    return _listObjects.at(position);
   };
 
   inline const JeveuxCollObjValType &operator[](const std::string &name) const {
@@ -518,7 +518,6 @@ public:
     if (curIter == _mapNumObject.end()) {
       AS_ABORT("Name not in collection: " + name);
     }
-
     return _listObjects[curIter->second];
   };
 
@@ -791,13 +790,13 @@ public:
     return _jeveuxCollectionPtr->exists();
   }
 
-  auto begin() { return _jeveuxCollectionPtr->begin(); };
+  auto begin() const { return _jeveuxCollectionPtr->begin(); };
 
-  auto end() { return _jeveuxCollectionPtr->end(); };
+  auto end() const { return _jeveuxCollectionPtr->end(); };
 
-  const auto cbegin() { return _jeveuxCollectionPtr->cbegin(); };
+  auto cbegin() const { return _jeveuxCollectionPtr->cbegin(); };
 
-  const auto cend() { return _jeveuxCollectionPtr->cend(); };
+  auto cend() const { return _jeveuxCollectionPtr->cend(); };
 };
 
 /** @typedef Definition d'une collection de type entier long */

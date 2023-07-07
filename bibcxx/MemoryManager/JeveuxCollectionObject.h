@@ -477,13 +477,13 @@ class JeveuxCollectionObject {
         return false;
     };
 
-    auto begin() { return _jeveuxCOPtr->begin(); };
+    auto begin() const { return _jeveuxCOPtr->begin(); };
 
-    auto end() { return _jeveuxCOPtr->end(); };
+    auto end() const { return _jeveuxCOPtr->end(); };
 
-    const auto cbegin() { return _jeveuxCOPtr->cbegin(); };
+    auto cbegin() const { return _jeveuxCOPtr->begin(); };
 
-    const auto cend() { return _jeveuxCOPtr->cend(); };
+    auto cend() const { return _jeveuxCOPtr->end(); };
 
     inline const ValueType &operator[]( const ASTERINTEGER &i ) const {
         return ( *_jeveuxCOPtr )[i];
