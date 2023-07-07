@@ -515,11 +515,11 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         _dofDescription = desc;
     };
 
-    FieldOnNodesPtr restrict( const VectorString &cmps = {},
-                              const VectorString &groupsOfNodes = {} ) const {
+    FieldOnNodesPtr restrict( const VectorString &cmps = {}, const VectorString &groupsOfNodes = {},
+                              const ASTERINTEGER same_rank = PythonBool::None ) const {
 
         auto simpField = toSimpleFieldOnNodes( *this );
-        auto simpFieldRest = simpField->restrict( cmps, groupsOfNodes );
+        auto simpFieldRest = simpField->restrict( cmps, groupsOfNodes, same_rank );
 
         return toFieldOnNodes( simpFieldRest );
     };

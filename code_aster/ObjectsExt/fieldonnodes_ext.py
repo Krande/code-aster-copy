@@ -39,8 +39,9 @@ from libaster import (
     FieldOnNodesReal,
 )
 
+from ..Objects import PythonBool
 from ..Objects.Serialization import InternalStateBuilder
-from ..Utilities import MPI, PETSc, config, injector, deprecated
+from ..Utilities import MPI, PETSc, config, injector, deprecated, force_list
 
 
 class FieldOnNodesStateBuilder(InternalStateBuilder):
@@ -75,6 +76,26 @@ class FieldOnNodesStateBuilder(InternalStateBuilder):
 class ExtendedFieldOnNodesReal:
     cata_sdj = "SD.sd_champ.sd_cham_no_class"
     internalStateBuilder = FieldOnNodesStateBuilder
+
+    def restrict(self, cmps=[], groupsOfNodes=[], same_rank=None):
+        """Return a new field restricted to the list of components and groups of nodes given
+
+        Arguments:
+            cmps[list[str]]: filter on list of components
+            If empty, all components are used
+            groupsOfNodes[list[str]]: filter on list of groups of nodes (default=" ").
+            If empty, the full mesh is used
+            same_rank : - None: keep all nodes (default: None)
+                        - True: keep the nodes which are owned by the current MPI-rank
+                        - False: keep the nodes which are not owned by the current MPI-rank
+
+        Returns:
+            FieldOnNodesReal: field restricted.
+        """
+
+        val = {None: PythonBool.NONE, True: PythonBool.TRUE, False: PythonBool.FALSE}
+
+        return self._restrict(force_list(cmps), force_list(groupsOfNodes), val[same_rank])
 
     def getValuesWithDescription(self, component="", groups=[]):
         """Return the values of a component of the field.
@@ -257,6 +278,26 @@ class ExtendedFieldOnNodesChar8:
 class ExtendedFieldOnNodesComplex:
     cata_sdj = "SD.sd_champ.sd_cham_no_class"
     internalStateBuilder = FieldOnNodesStateBuilder
+
+    def restrict(self, cmps=[], groupsOfNodes=[], same_rank=None):
+        """Return a new field restricted to the list of components and groups of nodes given
+
+        Arguments:
+            cmps[list[str]]: filter on list of components
+            If empty, all components are used
+            groupsOfNodes[list[str]]: filter on list of groups of nodes (default=" ").
+            If empty, the full mesh is used
+            same_rank : - None: keep all nodes (default: None)
+                        - True: keep the nodes which are owned by the current MPI-rank
+                        - False: keep the nodes which are not owned by the current MPI-rank
+
+        Returns:
+            FieldOnNodesComplex: field restricted.
+        """
+
+        val = {None: PythonBool.NONE, True: PythonBool.TRUE, False: PythonBool.FALSE}
+
+        return self._restrict(force_list(cmps), force_list(groupsOfNodes), val[same_rank])
 
     def getValuesWithDescription(self, component="", groups=[]):
         """Return the values of a component of the field.

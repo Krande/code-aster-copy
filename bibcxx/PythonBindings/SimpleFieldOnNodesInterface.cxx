@@ -62,7 +62,7 @@ Convert to FieldOnNodes
 Returns:
     FieldOnNodesReal: field converted
         )" )
-        .def( "restrict", &SimpleFieldOnNodesReal::restrict,
+        .def( "_restrict", &SimpleFieldOnNodesReal::restrict,
               R"(
             Return a new field restricted to the list of components and groups of nodes given
 
@@ -71,11 +71,15 @@ Returns:
                 If empty, all components are used
                 groupsOfNodes[list[str]]: filter on list of groups of nodes (default=" ").
                 If empty, the full mesh is used
+                same_rank : - None: keep all nodes (default: None)
+                            - True: keep the nodes which are owned by the current MPI-rank
+                            - False: keep the nodes which are not owned by the current MPI-rank
 
             Returns:
                 SimpleFieldOnNodesReal: field restricted.
             )",
-              py::arg( "cmps" ) = VectorString(), py::arg( "groupsOfNodes" ) = VectorString() )
+              py::arg( "cmps" ) = VectorString(), py::arg( "groupsOfNodes" ) = VectorString(),
+              py::arg( "same_rank" ) = PythonBool::None )
         .def( "toNumpy", &SimpleFieldOnNodesReal::toNumpy, R"(
 Returns two numpy arrays with shape ( number_of_components, space_dimension )
 The first array contains the field values while the second one is a mask

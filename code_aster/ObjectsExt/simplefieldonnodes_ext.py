@@ -19,7 +19,7 @@
 
 # person_in_charge: francesco.bettonte@edf.fr
 """
-:py:class:`SimpleFieldOnNodesReal` 
+:py:class:`SimpleFieldOnNodesReal`
 Simple Fields defined on nodes of elements
 ********************************************************************
 """
@@ -28,11 +28,32 @@ import aster
 import numpy as np
 from libaster import SimpleFieldOnNodesComplex, SimpleFieldOnNodesReal
 
-from ..Utilities import injector, medcoupling as medc
+from ..Objects import PythonBool
+from ..Utilities import injector, force_list, medcoupling as medc
 
 
 @injector(SimpleFieldOnNodesReal)
 class ExtendedSimpleFieldOnNodesReal:
+    def restrict(self, cmps=[], groupsOfNodes=[], same_rank=None):
+        """Return a new field restricted to the list of components and groups of nodes given
+
+        Arguments:
+            cmps[list[str]]: filter on list of components
+            If empty, all components are used
+            groupsOfNodes[list[str]]: filter on list of groups of nodes (default=" ").
+            If empty, the full mesh is used
+            same_rank : - None: keep all nodes (default: None)
+                        - True: keep the nodes which are owned by the current MPI-rank
+                        - False: keep the nodes which are not owned by the current MPI-rank
+
+        Returns:
+            SimpleFieldOnNodesReal: field restricted.
+        """
+
+        val = {None: PythonBool.NONE, True: PythonBool.TRUE, False: PythonBool.FALSE}
+
+        return self._restrict(force_list(cmps), force_list(groupsOfNodes), val[same_rank])
+
     def getValues(self, copy=False):
         """
         Returns two numpy arrays with shape ( number_of_cells_with_components, number_of_components )

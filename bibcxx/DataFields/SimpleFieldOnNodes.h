@@ -341,7 +341,8 @@ class SimpleFieldOnNodes : public DataField {
     }
 
     SimpleFieldOnNodesPtr restrict( const VectorString &cmps = {},
-                                    const VectorString &groupsOfNodes = {} ) const {
+                                    const VectorString &groupsOfNodes = {},
+                                    const ASTERINTEGER same_rank = PythonBool::None ) const {
 
         this->updateValuePointers();
 
@@ -366,7 +367,7 @@ class SimpleFieldOnNodes : public DataField {
         auto ret = std::make_shared< SimpleFieldOnNodes< ValueType > >(
             this->getMesh(), this->getPhysicalQuantity(), list_cmp );
 
-        VectorLong nodes = _mesh->getNodes( groupsOfNodes );
+        VectorLong nodes = _mesh->getNodes( groupsOfNodes, true, same_rank );
 
         if ( nodes.empty() ) {
             raiseAsterError( "Restriction on list of nodes is empty" );

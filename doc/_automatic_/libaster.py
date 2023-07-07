@@ -2988,19 +2988,6 @@ class FieldOnNodesReal(DataField):
     def printMedFile(self, fileName, local=True):
         pass
 
-    def restrict(self, cmps=[], groupsOfNodes=[]):
-        """Return a new field restricted to the list of components and groups of nodes given
-
-        Arguments:
-            cmps[list[str]]: filter on list of components
-            If empty, all components are used
-            groupsOfNodes[list[str]]: filter on list of groups of nodes (default=" ").
-            If empty, the full mesh is used
-
-        Returns:
-            FieldOnNodesReal: field restricted.
-        """
-
     def scale(self, vect):
         """Scale in-place the field by a diagonal matrix stored as an array
 
@@ -3192,19 +3179,6 @@ class FieldOnNodesComplex(DataField):
 
     def printMedFile(self, arg0, arg1):
         pass
-
-    def restrict(self, cmps=[], groupsOfNodes=[]):
-        """Return a new field restricted to the list of components and groups of nodes given
-
-        Arguments:
-            cmps[list[str]]: filter on list of components
-            If empty, all components are used
-            groupsOfNodes[list[str]]: filter on list of groups of nodes (default=" ").
-            If empty, the full mesh is used
-
-        Returns:
-            FieldOnNodesComplex: field restricted.
-        """
 
     def scale(self, vect):
         """Scale in-place the field by a diagonal matrix stored as an array
@@ -3655,19 +3629,6 @@ class SimpleFieldOnNodesReal(DataField):
 
     def getPhysicalQuantity(self):
         pass
-
-    def restrict(self, cmps=[], groupsOfNodes=[]):
-        """Return a new field restricted to the list of components and groups of nodes given
-
-        Arguments:
-            cmps[list[str]]: filter on list of components
-            If empty, all components are used
-            groupsOfNodes[list[str]]: filter on list of groups of nodes (default=" ").
-            If empty, the full mesh is used
-
-        Returns:
-            SimpleFieldOnNodesReal: field restricted.
-        """
 
     def toFieldOnNodes(self):
         """Convert to FieldOnNodes

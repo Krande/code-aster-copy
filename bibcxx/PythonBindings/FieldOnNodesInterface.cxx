@@ -70,7 +70,7 @@ Returns:
         .def( "build", &FieldOnNodesReal::build, py::arg( "mesh" ) = nullptr )
         .def( "getMesh", &FieldOnNodesReal::getMesh )
         .def( "getDescription", &FieldOnNodesReal::getDescription )
-        .def( "restrict", &FieldOnNodesReal::restrict,
+        .def( "_restrict", &FieldOnNodesReal::restrict,
               R"(
             Return a new field restricted to the list of components and groups of nodes given
 
@@ -79,11 +79,15 @@ Returns:
                 If empty, all components are used
                 groupsOfNodes[list[str]]: filter on list of groups of nodes (default=" ").
                 If empty, the full mesh is used
+                same_rank : - None: keep all nodes (default: None)
+                            - True: keep the nodes which are owned by the current MPI-rank
+                            - False: keep the nodes which are not owned by the current MPI-rank
 
             Returns:
                 FieldOnNodesReal: field restricted.
             )",
-              py::arg( "cmps" ) = VectorString(), py::arg( "groupsOfNodes" ) = VectorString() )
+              py::arg( "cmps" ) = VectorString(), py::arg( "groupsOfNodes" ) = VectorString(),
+              py::arg( "same_rank" ) = PythonBool::None )
         .def( "copyUsingDescription", &FieldOnNodesReal::copyUsingDescription,
               R"(
             Return a new field using the description.
@@ -255,7 +259,7 @@ Returns:
         .def( "build", &FieldOnNodesComplex::build, py::arg( "mesh" ) = nullptr )
         .def( "getMesh", &FieldOnNodesComplex::getMesh )
         .def( "getDescription", &FieldOnNodesComplex::getDescription )
-        .def( "restrict", &FieldOnNodesComplex::restrict,
+        .def( "_restrict", &FieldOnNodesComplex::restrict,
               R"(
             Return a new field restricted to the list of components and groups of nodes given
 
@@ -264,11 +268,15 @@ Returns:
                 If empty, all components are used
                 groupsOfNodes[list[str]]: filter on list of groups of nodes (default=" ").
                 If empty, the full mesh is used
+                same_rank : - None: keep all nodes (default: None)
+                            - True: keep the nodes which are owned by the current MPI-rank
+                            - False: keep the nodes which are not owned by the current MPI-rank
 
             Returns:
                 FieldOnNodesComplex: field restricted.
             )",
-              py::arg( "cmps" ) = VectorString(), py::arg( "groupsOfNodes" ) = VectorString() )
+              py::arg( "cmps" ) = VectorString(), py::arg( "groupsOfNodes" ) = VectorString(),
+              py::arg( "same_rank" ) = PythonBool::None )
         .def( "getValues", py::overload_cast<>( &FieldOnNodesComplex::getValues, py::const_ ),
               R"(
             Return a list of values as (x1, y1, z1, x2, y2, z2...)
