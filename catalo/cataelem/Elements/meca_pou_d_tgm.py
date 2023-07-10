@@ -522,6 +522,9 @@ class MECA_POU_D_TGM(Element):
             ),
             para_out=((SP.PEFFORC, EEFGENC), (OP.EFGE_ELNO.PEFFORR, EEFGENO)),
         ),
+        OP.EFEQ_ELNO(
+            te=83, para_in=((SP.PEFFONR, EEFGENO),), para_out=((SP.PEFFOENR, LC.EEFGENOQ),)
+        ),
         OP.EPOT_ELEM(
             te=151,
             para_in=(

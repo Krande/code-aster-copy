@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -63,22 +63,45 @@ LINST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=1.0, NOMBRE=1),))
 
 # valeurs de non regression
 r_non_reg = {
-    "POU_D_E": {"MX": [-1500.0], "MY": [-1625.0, 125.0, 1625.0], "MZ": [1625.0, 125.0, -1625.0]},
+    "POU_D_E": {
+        "MX": [-1500.0],
+        "MY": [-1625.0, 125.0, 1625.0],
+        "MZ": [1625.0, 125.0, -1625.0],
+        "MT": [1500, 0.0],
+        "MFY": [-125.0, 0],
+        "MFZ": [-125.0, 0],
+    },
     "POU_D_T": {
         "MX": [-1500.0],
         "MY": [-1624.9700071983, 124.97000719827, 1624.9700071983],
         "MZ": [1624.9700071983, 124.97000719827, -1624.9700071983],
+        "MT": [1500, 0.0],
+        "MFY": [-124.9700071982724, 0],
+        "MFZ": [-124.9700071982724, 0],
     },
     "POU_D_TG": {
         "MX": [-1500.0],
         "MY": [-1625.0227439021, 124.99637555017, 1625.0227439021],
         "MZ": [1625.0227439021, 124.99637555017, -1625.0227439021],
+        "MT": [1500, 0.0],
+        "MFY": [-124.9700071982724, 0],
+        "MFZ": [-124.9700071982724, 0],
     },
-    "POU_D_EM": {"MX": [-1500.0], "MY": [-1625.0, 125.0, 1625.0], "MZ": [1625.0, 125.0, -1625.0]},
+    "POU_D_EM": {
+        "MX": [-1500.0],
+        "MY": [-1625.0, 125.0, 1625.0],
+        "MZ": [1625.0, 125.0, -1625.0],
+        "MT": [1500, 0.0],
+        "MFY": [-125.0, 0],
+        "MFZ": [-125.0, 0],
+    },
     "POU_D_TGM": {
         "MX": [-1500.0],
         "MY": [-1624.9983125221, 124.99831252212, 1624.9983125221],
         "MZ": [1624.9983125221, 124.99831252212, -1624.9983125221],
+        "MT": [833.3333333333326, 833.3333333333326],
+        "MFY": [-41.66497919080665, 83.33333333333336],
+        "MFZ": [-41.66497919080665, 83.33333333333336],
     },
 }
 
@@ -339,11 +362,15 @@ for mode in ["POU_D_E", "POU_D_T", "POU_D_TG", "POU_D_EM", "POU_D_TGM"]:
         )
     #
     RES_MX = CALC_CHAMP(reuse=RES_MX, FORCE=("REAC_NODA"), RESULTAT=RES_MX)
-    RES_MT = CALC_CHAMP(reuse=RES_MT, FORCE=("REAC_NODA"), RESULTAT=RES_MT)
+    RES_MT = CALC_CHAMP(reuse=RES_MT, CONTRAINTE="EFGE_ELNO", FORCE=("REAC_NODA"), RESULTAT=RES_MT)
     RES_MY = CALC_CHAMP(reuse=RES_MY, FORCE=("REAC_NODA"), RESULTAT=RES_MY)
-    RES_MFY = CALC_CHAMP(reuse=RES_MFY, FORCE=("REAC_NODA"), RESULTAT=RES_MFY)
+    RES_MFY = CALC_CHAMP(
+        reuse=RES_MFY, CONTRAINTE="EFGE_ELNO", FORCE=("REAC_NODA"), RESULTAT=RES_MFY
+    )
     RES_MZ = CALC_CHAMP(reuse=RES_MZ, FORCE=("REAC_NODA"), RESULTAT=RES_MZ)
-    RES_MFZ = CALC_CHAMP(reuse=RES_MFZ, FORCE=("REAC_NODA"), RESULTAT=RES_MFZ)
+    RES_MFZ = CALC_CHAMP(
+        reuse=RES_MFZ, CONTRAINTE="EFGE_ELNO", FORCE=("REAC_NODA"), RESULTAT=RES_MFZ
+    )
     #
     RES_CMT = CALC_CHAMP(reuse=RES_CMT, FORCE=("REAC_NODA"), RESULTAT=RES_CMT)
     RES_CMFY = CALC_CHAMP(reuse=RES_CMFY, FORCE=("REAC_NODA"), RESULTAT=RES_CMFY)
@@ -666,6 +693,156 @@ for mode in ["POU_D_E", "POU_D_T", "POU_D_TG", "POU_D_EM", "POU_D_TGM"]:
         )
     )
     #
+
+    # Validation de POST_RCCM/OPTION='MOMENT_EQUIVALENT'
+
+    TAB_MEQ1 = POST_RCCM(
+        TYPE_RESU_MECA="B3600",
+        OPTION="MOMENT_EQUIVALENT",
+        ZONE_ANALYSE=_F(TOUT="OUI"),
+        RESU_MECA=_F(RESULTAT=RES_MT, NOM_CHAM="EFGE_ELNO", TOUT_ORDRE="OUI"),
+    )
+
+    TAB_MEQ2 = POST_RCCM(
+        TYPE_RESU_MECA="B3600",
+        OPTION="MOMENT_EQUIVALENT",
+        ZONE_ANALYSE=_F(TOUT="OUI"),
+        RESU_MECA=_F(RESULTAT=RES_MFY, NOM_CHAM="EFGE_ELNO", TOUT_ORDRE="OUI"),
+    )
+
+    TAB_MEQ3 = POST_RCCM(
+        TYPE_RESU_MECA="B3600",
+        OPTION="MOMENT_EQUIVALENT",
+        ZONE_ANALYSE=_F(TOUT="OUI"),
+        RESU_MECA=_F(RESULTAT=RES_MFZ, NOM_CHAM="EFGE_ELNO", TOUT_ORDRE="OUI"),
+    )
+
+    # IMPR_TABLE(TABLE=TAB_MEQ, UNITE=6)
+
+    crit = "ABSOLU"
+    if mode == "POU_D_TGM":
+        crit = "RELATIF"
+
+    TEST_RESU(
+        RESU=(
+            _F(
+                NUME_ORDRE=1,
+                RESULTAT=RES_MT,
+                NOM_CHAM="EFGE_ELNO",
+                GROUP_NO="N1",
+                GROUP_MA="POUTRE",
+                NOM_CMP="MT",
+                VALE_CALC=r_non_reg[mode]["MT"][0],
+            ),
+            _F(
+                NUME_ORDRE=1,
+                RESULTAT=RES_MFY,
+                NOM_CHAM="EFGE_ELNO",
+                GROUP_NO="N1",
+                GROUP_MA="POUTRE",
+                NOM_CMP="MFY",
+                VALE_CALC=r_non_reg[mode]["MFY"][0],
+            ),
+            _F(
+                NUME_ORDRE=1,
+                RESULTAT=RES_MFZ,
+                NOM_CHAM="EFGE_ELNO",
+                GROUP_NO="N1",
+                GROUP_MA="POUTRE",
+                NOM_CMP="MFZ",
+                VALE_CALC=r_non_reg[mode]["MFZ"][0],
+            ),
+        )
+    )
+
+    if mode == "POU_D_TGM":
+        # référence à zéro pour les autres modélisations
+        TEST_RESU(
+            RESU=(
+                _F(
+                    NUME_ORDRE=1,
+                    RESULTAT=RES_MT,
+                    NOM_CHAM="EFGE_ELNO",
+                    GROUP_NO="N2",
+                    GROUP_MA="POUTRE",
+                    NOM_CMP="MT",
+                    VALE_CALC=r_non_reg[mode]["MT"][1],
+                ),
+                _F(
+                    NUME_ORDRE=1,
+                    RESULTAT=RES_MFY,
+                    NOM_CHAM="EFGE_ELNO",
+                    GROUP_NO="N2",
+                    GROUP_MA="POUTRE",
+                    NOM_CMP="MFY",
+                    VALE_CALC=r_non_reg[mode]["MFY"][1],
+                ),
+                _F(
+                    NUME_ORDRE=1,
+                    RESULTAT=RES_MFZ,
+                    NOM_CHAM="EFGE_ELNO",
+                    GROUP_NO="N2",
+                    GROUP_MA="POUTRE",
+                    NOM_CMP="MFZ",
+                    VALE_CALC=r_non_reg[mode]["MFZ"][1],
+                ),
+            )
+        )
+
+    TEST_TABLE(
+        TABLE=TAB_MEQ1,
+        NOM_PARA="MT",
+        FILTRE=(_F(NOM_PARA="MAILLE", VALE_K="M1"), _F(NOM_PARA="NOEUD", VALE_K="N1")),
+        REFERENCE="AUTRE_ASTER",
+        VALE_REFE=r_non_reg[mode]["MT"][0],
+        VALE_CALC=r_non_reg[mode]["MT"][0],
+    )
+    TEST_TABLE(
+        TABLE=TAB_MEQ1,
+        NOM_PARA="MT",
+        FILTRE=(_F(NOM_PARA="MAILLE", VALE_K="M1"), _F(NOM_PARA="NOEUD", VALE_K="N2")),
+        REFERENCE="AUTRE_ASTER",
+        VALE_REFE=r_non_reg[mode]["MT"][1],
+        VALE_CALC=r_non_reg[mode]["MT"][1],
+        CRITERE=crit,
+    )
+
+    TEST_TABLE(
+        TABLE=TAB_MEQ2,
+        NOM_PARA="MFY",
+        FILTRE=(_F(NOM_PARA="MAILLE", VALE_K="M1"), _F(NOM_PARA="NOEUD", VALE_K="N1")),
+        REFERENCE="AUTRE_ASTER",
+        VALE_REFE=r_non_reg[mode]["MFY"][0],
+        VALE_CALC=r_non_reg[mode]["MFY"][0],
+    )
+    TEST_TABLE(
+        TABLE=TAB_MEQ2,
+        NOM_PARA="MFY",
+        FILTRE=(_F(NOM_PARA="MAILLE", VALE_K="M1"), _F(NOM_PARA="NOEUD", VALE_K="N2")),
+        REFERENCE="AUTRE_ASTER",
+        VALE_REFE=r_non_reg[mode]["MFY"][1],
+        VALE_CALC=r_non_reg[mode]["MFY"][1],
+        CRITERE=crit,
+    )
+
+    TEST_TABLE(
+        TABLE=TAB_MEQ3,
+        NOM_PARA="MFZ",
+        FILTRE=(_F(NOM_PARA="MAILLE", VALE_K="M1"), _F(NOM_PARA="NOEUD", VALE_K="N1")),
+        REFERENCE="AUTRE_ASTER",
+        VALE_REFE=r_non_reg[mode]["MFZ"][0],
+        VALE_CALC=r_non_reg[mode]["MFZ"][0],
+    )
+    TEST_TABLE(
+        TABLE=TAB_MEQ3,
+        NOM_PARA="MFZ",
+        FILTRE=(_F(NOM_PARA="MAILLE", VALE_K="M1"), _F(NOM_PARA="NOEUD", VALE_K="N2")),
+        REFERENCE="AUTRE_ASTER",
+        VALE_REFE=r_non_reg[mode]["MFZ"][1],
+        VALE_CALC=r_non_reg[mode]["MFZ"][1],
+        CRITERE=crit,
+    )
+
     DETRUIRE(
         INFO=1,
         CONCEPT=(
