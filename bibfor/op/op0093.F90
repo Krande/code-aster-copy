@@ -162,6 +162,9 @@ subroutine op0093()
             nbmodd = nbmodd+zi(lddld+i)
         end do
         call wkvect(mocb, 'V V R', neq*nbmodd, lmodd)
+        do i = 1, neq*nbmodd
+            zr(lmodd-1+i) = 0.d0
+        end do
         call modsta('DEPL', raidfa, matpre, solveu, ibid, &
                     nume, zi(lddld), [0.d0], neq, nbmodd, &
                     zr(lmodd))
@@ -175,6 +178,9 @@ subroutine op0093()
             nbmodf = nbmodf+zi(lddlf+i)
         end do
         call wkvect(moatta, 'V V R', neq*nbmodf, lmodf)
+        do i = 1, neq*nbmodf
+            zr(lmodf-1+i) = 0.d0
+        end do
         call modsta('FORC', raidfa, matpre, solveu, ibid, &
                     nume, zi(lddlf), [0.d0], neq, nbmodf, &
                     zr(lmodf))

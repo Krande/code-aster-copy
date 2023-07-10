@@ -25,11 +25,13 @@ subroutine modsta(motcle, matfac, matpre, solveu, lmatm, &
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
 #include "asterfort/mrmult.h"
 #include "asterfort/pteddl.h"
 #include "asterfort/resoud.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/zerlag.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
     integer :: lmatm, iddl(*), neq, nbmode
@@ -64,22 +66,34 @@ subroutine modsta(motcle, matfac, matpre, solveu, lmatm, &
 !  IN  : NBMODE : NOMBRE DE MODES STATIQUES
 !  OUT : ZRMOD  : TABLEAU DES MODES STATIQUES CALCULES
 !-----------------------------------------------------------------------
-!     ------------------------------------------------------------------
+!
+!   Right-hand side are passed by batches of ICMPL(27) to MUMPS
+!   Whose value is currently 8
+    integer, parameter :: icmpl27 = 8
+    real(kind=8) :: zrbuff(neq, icmpl27)
     real(kind=8) :: un
     character(len=8) :: nomcmp(3)
+    character(len=19) :: numeq
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ic, ie, ila1, ila2, im, imod, in
+    integer :: batch_size
+    integer :: ib, ic, ie, ila1, ila2, im, imod, in
     integer :: in2, ind, jddr
     integer :: iret
+    integer :: nbatch, n_last_batch
     integer, pointer :: position_ddl(:) => null()
+    integer, pointer :: deeq(:) => null()
+!
     cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
-    data nomcmp/'DX', 'DY', 'DZ'/
+    nomcmp = (/'DX', 'DY', 'DZ'/)
 !     ------------------------------------------------------------------
     call jemarq()
     un = 1.d0
     imod = 0
+!
+    numeq = nume(1:14)//'.NUME'
+    call jeveuo(numeq//'.DEEQ', 'L', vi=deeq)
 !
     if (motcle(1:4) .eq. 'ACCE') then
         AS_ALLOCATE(vi=position_ddl, size=3*neq)
@@ -133,11 +147,34 @@ subroutine modsta(motcle, matfac, matpre, solveu, lmatm, &
         end do
     end if
 !
-!     --- RESOLUTION ---
+!     --- RESOLUTION, BY BATCH OF ICMPL(27), SEE ISSUE32438 ---
     if (imod .gt. 0) then
-        call resoud(matfac, matpre, solveu, ' ', imod, &
-                    ' ', ' ', ' ', zrmod, [cbid], &
-                    ' ', .true._1, 0, iret)
+        n_last_batch = mod(imod, icmpl27)
+        if (n_last_batch == 0) then
+            nbatch = imod/icmpl27
+            n_last_batch = icmpl27
+        else
+            nbatch = imod/icmpl27+1
+        end if
+        do ib = 1, nbatch
+            if (ib == nbatch) batch_size = n_last_batch
+            if (ib /= nbatch) batch_size = icmpl27
+            do in = 1, batch_size
+                do ie = 1, neq
+                    zrbuff(ie, in) = zrmod(ie, icmpl27*(ib-1)+in)
+                end do
+            end do
+            call resoud(matfac, matpre, solveu, ' ', batch_size, &
+                        ' ', ' ', ' ', zrbuff, [cbid], &
+                        ' ', .true._1, 0, iret)
+            do in = 1, batch_size
+                ! Setting Lagrange dofs to 0
+                call zerlag(neq, deeq, vectr=zrbuff(1, in))
+                do ie = 1, neq
+                    zrmod(ie, icmpl27*(ib-1)+in) = zrbuff(ie, in)
+                end do
+            end do
+        end do
     end if
     call jedema()
 end subroutine
