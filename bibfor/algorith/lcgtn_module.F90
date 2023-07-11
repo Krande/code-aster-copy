@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -171,6 +171,7 @@ function Init(ndimsi, option, fami, kpg, ksp, imate, itemax, precvg) &
 
     ! Hardening material parameters
     call rcvalb(fami,kpg,ksp,'+',imate,' ','ECRO_NL',0,' ',[0.d0],nbec,nomec,valec,iok,2)
+    if (iok(1) .ne. 0) call utmess('F', 'COMPOR1_52')
     self%mat%r0 = valec(1)
     self%mat%rh = valec(2)
     self%mat%r1 = valec(3)

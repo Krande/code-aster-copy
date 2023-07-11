@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -52,14 +52,15 @@ CAREL=AFFE_CARA_ELEM(MODELE=MO,
                                     CARA='GENE_TUYAU',
                                     VALE=(0.0,0.0,1.0,),),);
 
-MATC2=DEFI_MATERIAU(ELAS=_F(E=200000000000.0,
-                            NU=0.3,),
-                    ECRO_LINE=_F(D_SIGM_EPSI=2000000000.0,
-                                 SY=150000000.0,),);
+sy = 150e6
+yng = 2e11
+et = 2e9
 
-CHMAT1=AFFE_MATERIAU(MAILLAGE=MA,
-                     AFFE=_F(TOUT='OUI',
-                             MATER=MATC2,),);
+MATC1 = DEFI_MATERIAU(ELAS=_F(E=yng, NU=0.3), ECRO_NL=_F(RH=1 / (1 / et - 1 / yng), R0=sy))
+
+CHMAT1 = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=MATC1))
+
+
 
 CHART=AFFE_CHAR_MECA(MODELE=MO,
                      DDL_IMPO=(_F(GROUP_NO='A',
@@ -88,7 +89,7 @@ REST=STAT_NON_LINE(MODELE=MO,
                    CARA_ELEM=CAREL,
                    EXCIT=_F(CHARGE=CHART,
                             FONC_MULT=FONCT,),
-                   COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',
+                   COMPORTEMENT=_F(RELATION='VMIS_ISOT_NL',
                                 RESI_INTE_RELA=1e-06,
                                 ITER_INTE_MAXI=50,),
                    INCREMENT=_F(LIST_INST=LINST,),
@@ -134,7 +135,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CHAM='EPSI_ELNO',
                    NOEUD='N1',
                    NOM_CMP='EPYY',
-                   VALE_CALC=-2.25E-4,
+                   VALE_CALC=-0.00022499483411477997,
                    MAILLE='M1',),
                 _F(NUME_ORDRE=1,
                    POINT=1,
@@ -142,7 +143,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=REST3,
                    NOM_CHAM='EPEQ_ELGA',
                    NOM_CMP='INVA_2',
-                   VALE_CALC=5.8949100000000004E-4,
+                   VALE_CALC=0.0005894889692549308,
                    MAILLE='M1',),
                 _F(NUME_ORDRE=1,
                    POINT=1,
@@ -150,7 +151,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=REST3,
                    NOM_CHAM='SIEQ_ELGA',
                    NOM_CMP='VMIS',
-                   VALE_CALC=1.5E8,
+                   VALE_CALC=149999712.28004807,
                    MAILLE='M1',),
                 _F(NUME_ORDRE=11,
                    GROUP_NO='B',
@@ -168,7 +169,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=REST2,
                    NOM_CHAM='VARI_ELNO',
                    NOM_CMP='V1',
-                   VALE_CALC= 7.42501769E-04,
+                   VALE_CALC= 0.0007424999964901293,
                    VALE_REFE=7.425E-4,
                    PRECISION=1.E-3,
                    MAILLE='M2',),
@@ -178,7 +179,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CHAM='VARI_ELNO',
                    NOEUD='N5',
                    NOM_CMP='V1',
-                   VALE_CALC=7.42499069E-04,
+                   VALE_CALC=0.00074249999649012,
                    VALE_REFE=7.425E-4,
                    PRECISION=1.E-3,
                    MAILLE='M2',),
@@ -229,14 +230,10 @@ TAB1=POST_RELEVE_T(ACTION=_F(INTITULE='POST',
 
 IMPR_TABLE(TABLE=TAB1)
 
-MATC1=DEFI_MATERIAU(ELAS=_F(E=200000000000.0,
-                            NU=0.3,),
-                    ECRO_LINE=_F(D_SIGM_EPSI=0.0,
-                                 SY=150000000.0,),);
+MATC2 = DEFI_MATERIAU(ELAS=_F(E=yng, NU=0.3), ECRO_NL=_F(RH=0, R0=sy))
 
-CHMAT2=AFFE_MATERIAU(MAILLAGE=MA,
-                     AFFE=_F(TOUT='OUI',
-                             MATER=MATC1,),);
+CHMAT2 = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=MATC2))
+
 
 CHARM=AFFE_CHAR_MECA(MODELE=MO,
                      DDL_IMPO=(_F(GROUP_NO='A',
@@ -267,7 +264,7 @@ RESM=STAT_NON_LINE(MODELE=MO,
                    CARA_ELEM=CAREL,
                    EXCIT=_F(CHARGE=CHARM,
                             FONC_MULT=FONCM,),
-                   COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',
+                   COMPORTEMENT=_F(RELATION='VMIS_ISOT_NL',
                                 RESI_INTE_RELA=1e-06,
                                 ITER_INTE_MAXI=100,),
                    INCREMENT=_F(LIST_INST=LINSR,),

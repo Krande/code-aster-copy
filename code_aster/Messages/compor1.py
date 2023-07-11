@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -249,7 +249,13 @@ En présence de grands déplacements et grandes rotations, il est préférable d
   La modélisation TUYAU n'est compatible qu'avec DEFORMATION='PETIT'.
 """),
 
-    53: _("""
+    52: _(
+        """
+        Le mot-clé facteur ECRO_NL (ou ECRO_NL_FO) doit être renseigné dans DEFI_MATERIAU.
+"""
+    ),
+    53: _(
+        """
  ECRO_LINE : la plasticité parfaite n'est pas autorisée !
              Par conséquent la pente d'écrouissage H doit être strictement positive.
              (H doit également être inférieure à E).
