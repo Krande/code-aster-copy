@@ -38,6 +38,7 @@ module vmis_isot_nl_module
 #include "asterc/r8nnem.h"
 #include "asterfort/assert.h"
 #include "asterfort/rcvalb.h"
+#include "asterfort/utmess.h"
 #include "asterc/r8pi.h"
 #include "asterc/r8prem.h"
 
@@ -137,6 +138,8 @@ contains
         ! Hardening material parameters (with default values)
         call rcvalb(fami, kpg, ksp, '+', imate, ' ', 'ECRO_NL', 0, ' ', [0.d0], nbec, nomec, &
                     valec, iok, 0)
+
+        if (iok(1) .ne. 0) call utmess('F', 'COMPOR1_52')
         self%mat%r0 = valec(1)
         self%mat%rh = merge(valec(2), 0.d0, iok(2) .eq. 0)
         self%mat%r1 = merge(valec(3), 0.d0, iok(3) .eq. 0)
@@ -272,7 +275,6 @@ contains
 
         ! Mode plateau de Luders ou non
         self%luders = kam .lt. self%mat%eps_luders
-
         do
             ! Si plateau Luders -> premier passage en plasticite parfaite
             if (self%luders) then

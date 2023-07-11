@@ -289,6 +289,11 @@ En présence de grands déplacements et grandes rotations, il est préférable d
   La modélisation TUYAU n'est compatible qu'avec DEFORMATION='PETIT'.
 """
     ),
+    52: _(
+        """
+        Le mot-clé facteur ISOT_NL (ou ISOT_NL_FO) doit être renseigné dans DEFI_MATERIAU.
+"""
+    ),
     53: _(
         """
  ECRO_LINE : la plasticité parfaite n'est pas autorisée !

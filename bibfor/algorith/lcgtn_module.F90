@@ -49,6 +49,7 @@ module lcgtn_module
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/rcvalb.h"
+#include "asterfort/utmess.h"
 
     ! Material characteristics (without viscosity)
     type MATERIAL
@@ -193,6 +194,7 @@ contains
         ! Hardening material parameters
         call rcvalb(fami, kpg, ksp, '+', imate, ' ', 'ECRO_NL', 0, ' ', [0.d0], &
                     nbec, nomec, valec, iokec, 0)
+        if (iokec(1) .ne. 0) call utmess('F', 'COMPOR1_52')
         self%mat%r0 = valec(1)
         self%mat%rh = merge(valec(2), 0.d0, iokec(2) .eq. 0)
         self%mat%r1 = merge(valec(3), 0.d0, iokec(3) .eq. 0)
@@ -202,7 +204,6 @@ contains
         self%mat%rk = merge(valec(7), 0.d0, iokec(7) .eq. 0)
         self%mat%p0 = merge(valec(8), 0.d0, iokec(8) .eq. 0)
         self%mat%gk = merge(valec(9), 1.d0, iokec(9) .eq. 0)
-        ASSERT(iokec(1) .eq. 0)
 
         ! Luders hardening is not implemented in the GTN model
         ASSERT(iokec(10) .ne. 0)
