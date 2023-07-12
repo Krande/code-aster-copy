@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -60,14 +60,30 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
         MATR_RIGI       =     SIMP(statut='o',typ=(matr_asse_depl_r),),
         MATR_AMOR       =     SIMP(statut='f',typ=(matr_asse_depl_r),),
         OBSERVATION     =     C_OBSERVATION('DYNAVIBRA'),
+        # Modal damping
+        AMOR_MODAL=FACT(
+            statut="f",
+            regles=(EXCLUS("AMOR_REDUIT", "LIST_AMOR")),
+            AMOR_REDUIT=SIMP(statut="f", typ="R", max="**"),
+            LIST_AMOR=SIMP(statut="f", typ=listr8_sdaster),
+            MODE_MECA=SIMP(statut="o", typ=mode_meca),
+            NB_MODE=SIMP(statut="f", typ="I"),
+            ),
         ),
 
         # Reduced (generalized) basis, transient calculation
         b_matr_tran_gene= BLOC(condition = """equal_to("TYPE_CALCUL", 'TRAN') and equal_to("BASE_CALCUL", 'GENE')""",
+        regles=(EXCLUS("AMOR_MODAL", "MATR_AMOR")),
         MATR_MASS       =     SIMP(statut='o',typ=(matr_asse_gene_r),),
         MATR_RIGI       =     SIMP(statut='o',typ=(matr_asse_gene_r),),
         MATR_AMOR       =     SIMP(statut='f',typ=(matr_asse_gene_r),),
-
+        # Modal damping
+        AMOR_MODAL=FACT(
+            statut="f",
+            regles=(EXCLUS("AMOR_REDUIT", "LIST_AMOR")),
+            AMOR_REDUIT=SIMP(statut="f", typ="R", max="**"),
+            LIST_AMOR=SIMP(statut="f", typ=listr8_sdaster),
+        ),
         VITESSE_VARIABLE= SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),),
 
         b_variable      = BLOC(condition="""equal_to("VITESSE_VARIABLE", 'OUI')""",
@@ -83,36 +99,35 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
 
         # Physical basis, harmonic (spectral) calculation
         b_matr_harm_phys= BLOC(condition="""equal_to("TYPE_CALCUL", 'HARM') and equal_to("BASE_CALCUL", 'PHYS')""",
+        regles=(EXCLUS("AMOR_MODAL", "MATR_AMOR")),
         MATR_MASS       =     SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_pres_c),),
         MATR_RIGI       =     SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_depl_c,matr_asse_pres_c),),
         MATR_AMOR       =     SIMP(statut='f',typ=(matr_asse_depl_r,matr_asse_pres_c),),
-        MATR_IMPE_PHI   =     SIMP(statut='f',typ=(matr_asse_depl_r),),),
+        MATR_IMPE_PHI   =     SIMP(statut='f',typ=(matr_asse_depl_r),),
+        # Modal damping
+        AMOR_MODAL=FACT(
+            statut="f",
+            regles=(EXCLUS("AMOR_REDUIT", "LIST_AMOR")),
+            AMOR_REDUIT=SIMP(statut="f", typ="R", max="**"),
+            LIST_AMOR=SIMP(statut="f", typ=listr8_sdaster),
+            ),
+        ),
 
         # Reduced basis, harmonic calculation
         b_matr_harm_gene= BLOC(condition="""equal_to("TYPE_CALCUL", 'HARM') and equal_to("BASE_CALCUL", 'GENE')""",
         MATR_MASS       =     SIMP(statut='o',typ=(matr_asse_gene_r),),
         MATR_RIGI       =     SIMP(statut='o',typ=(matr_asse_gene_r,matr_asse_gene_c),),
         MATR_AMOR       =     SIMP(statut='f',typ=(matr_asse_gene_r),),
-        MATR_IMPE_PHI   =     SIMP(statut='f',typ=(matr_asse_gene_r),),),
-
-        RESULTAT        =     SIMP(statut='f',typ=(dyna_harmo,harm_gene),),
-
+        MATR_IMPE_PHI   =     SIMP(statut='f',typ=(matr_asse_gene_r),),
         # Modal damping
-        b_mode      =     BLOC(condition = """equal_to("BASE_CALCUL", 'PHYS') and equal_to("TYPE_CALCUL", 'TRAN')""",
-           AMOR_MODAL      = FACT(statut='f',
-               AMOR_REDUIT =     SIMP(statut='f',typ='R',max='**'),
-               LIST_AMOR   =     SIMP(statut='f',typ=listr8_sdaster),
-               MODE_MECA   =         SIMP(statut='o',typ=mode_meca),
-               NB_MODE     =         SIMP(statut='f',typ='I'),
-           ), # end fkw_amor_modal
-        ), # end b_mode
-        b_not_mode      =     BLOC(condition = """not equal_to("BASE_CALCUL", 'PHYS') or not  equal_to("TYPE_CALCUL", 'TRAN')""",
-           AMOR_MODAL      = FACT(statut='f',
-               AMOR_REDUIT =     SIMP(statut='f',typ='R',max='**'),
-               LIST_AMOR   =     SIMP(statut='f',typ=listr8_sdaster),
-           ), # end fkw_amor_modal
-        ), # end b_not_mode
-
+        AMOR_MODAL=FACT(
+            statut="f",
+            regles=(EXCLUS("AMOR_REDUIT", "LIST_AMOR")),
+            AMOR_REDUIT=SIMP(statut="f", typ="R", max="**"),
+            LIST_AMOR=SIMP(statut="f", typ=listr8_sdaster),
+            ),
+        ),
+        RESULTAT        =     SIMP(statut='f',typ=(dyna_harmo,harm_gene),),
         # Harmonic calculation parameters
         b_param_harm    = BLOC(condition= """equal_to("TYPE_CALCUL", 'HARM')""",
                                regles   = (UN_PARMI('FREQ','LIST_FREQ'),
