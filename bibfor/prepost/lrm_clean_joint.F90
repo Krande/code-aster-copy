@@ -145,7 +145,7 @@ subroutine lrm_clean_joint(mesh, v_noex)
 !
 ! --- On crée le nouveau joint .E
 !
-        call jecroc(jexnum(send, domj_i))
+        call jecroc(jexnum(send, i_comm))
         call jeecra(jexnum(send, domj_i), 'LONMAX', 2*nb_corr)
         call jeecra(jexnum(send, domj_i), 'LONUTI', 2*nb_corr)
         call jeveuo(jexnum(send, domj_i), 'E', vi=v_name_join_e_new)
@@ -179,7 +179,7 @@ subroutine lrm_clean_joint(mesh, v_noex)
         end do
         ASSERT(nb_corr > 0)
 !
-        call jecroc(jexnum(recv, domj_i))
+        call jecroc(jexnum(recv, i_comm))
         call jeecra(jexnum(recv, domj_i), 'LONMAX', 2*nb_corr)
         call jeecra(jexnum(recv, domj_i), 'LONUTI', 2*nb_corr)
         call jeveuo(jexnum(recv, domj_i), 'E', vi=v_name_join_r_new)
