@@ -23,6 +23,7 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi, &
 !
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/celces.h"
@@ -67,7 +68,7 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi, &
     integer :: nbspmx
     integer :: iad1, iad2, iad3, isp, ima, icmp, ipt, jchsl, jchsd, iexi
     integer :: jpoid, jpoil, jpoic, jch2, jch1, iret1, iret2, jpdsm
-    real(kind=8) :: poids
+    real(kind=8) :: poids, rvid
     parameter(nbchin=6)
     character(len=8) :: lpain(nbchin), lpaout(1), noma
     character(len=19) :: chins, ligr19
@@ -80,6 +81,7 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi, &
 !-----------------------------------------------------------------
     call jemarq()
 
+    rvid = r8vide()
     ligr19 = ligrel
     call dismoi('NOM_MAILLA', ligr19, 'LIGREL', repk=noma)
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
@@ -237,9 +239,17 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi, &
                     else
                         ASSERT(iad3 .gt. 0)
                         if (tych .eq. 'ELNO') then
-                            outv(iad3) = chsv(iad1)*zr(jpdsm-1+(ima-1)*nbsp+isp)/nbpt
+                            if (chsv(iad1) .eq. rvid) then
+                                outv(iad3) = rvid
+                            else
+                                outv(iad3) = chsv(iad1)*zr(jpdsm-1+(ima-1)*nbsp+isp)/nbpt
+                            end if
                         else
-                            outv(iad3) = chsv(iad1)*poids
+                            if (chsv(iad1) .eq. rvid) then
+                                outv(iad3) = rvid
+                            else
+                                outv(iad3) = chsv(iad1)*poids
+                            end if
                         end if
                     end if
 40                  continue

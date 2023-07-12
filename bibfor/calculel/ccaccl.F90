@@ -147,8 +147,7 @@ subroutine ccaccl(option, modele, mater, carael, ligrel, &
         (option .eq. 'EPME_ELGA') .or. (option .eq. 'EPME_ELNO') .or. &
         (option .eq. 'EPSP_ELGA') .or. (option .eq. 'EPSP_ELNO') .or. &
         (option .eq. 'VARI_ELNO') .or. (option .eq. 'DEPL_ELGA') .or. &
-        (option .eq. 'TEMP_ELGA')) then
-!
+        (option .eq. 'TEMP_ELGA') .or. (option .eq. 'VARC_ELGA')) then!
 !       -- CONCERNANT LES VARIABLES INTERNES :
         if (option .eq. 'VARI_ELNO') then
             compo2 = compor
@@ -176,6 +175,8 @@ subroutine ccaccl(option, modele, mater, carael, ligrel, &
             parain = 'PCONTRR'
         else if (option .eq. 'SIGM_ELGA') then
             parain = 'PSIEFR'
+        else if (option .eq. 'VARC_ELGA') then
+            parain = 'PVARCPR'
         else
             parain = ' '
         end if

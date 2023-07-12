@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -229,7 +229,29 @@ TEST_RESU(
 # ------------------------------------------------------------------
 # 4) Validation de l'option 'VARC_ELGA' :
 # ----------------------------------------
-DEP2 = CALC_CHAMP(reuse=DEP2, RESULTAT=DEP2, VARI_INTERNE=("VARC_ELGA"))
+
+CALC_CHAMP(reuse=DEP1, RESULTAT=DEP1, VARI_INTERNE=("VARC_ELGA"))
+CALC_CHAMP(reuse=DEP2, RESULTAT=DEP2, VARI_INTERNE=("VARC_ELGA"))
+CALC_CHAMP(reuse=DEP3, RESULTAT=DEP3, VARI_INTERNE=("VARC_ELGA"))
+
+
+integ_temp = POST_ELEM(
+    MODELE=MO,
+    RESULTAT=DEP1,
+    INTEGRALE=_F(NOM_CHAM="VARC_ELGA", NOM_CMP="TEMP", TOUT="OUI", TYPE_MAILLE="2D"),
+)
+
+integ_hydr = POST_ELEM(
+    MODELE=MO,
+    RESULTAT=DEP2,
+    INTEGRALE=_F(NOM_CHAM="VARC_ELGA", NOM_CMP="HYDR", TOUT="OUI", TYPE_MAILLE="2D"),
+)
+
+integ_sech = POST_ELEM(
+    MODELE=MO,
+    RESULTAT=DEP3,
+    INTEGRALE=_F(NOM_CHAM="VARC_ELGA", NOM_CMP="SECH", TOUT="OUI", TYPE_MAILLE="2D"),
+)
 
 
 TEST_RESU(
@@ -243,6 +265,48 @@ TEST_RESU(
         CRITERE="RELATIF",
         GROUP_MA="M1",
     )
+)
+
+
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        POINT=3,
+        RESULTAT=DEP3,
+        NOM_CHAM="VARC_ELGA",
+        NOM_CMP="SECH",
+        VALE_CALC=-0.38908770817241001,
+        CRITERE="RELATIF",
+        GROUP_MA="M1",
+    )
+)
+
+
+TEST_TABLE(
+    VALE_CALC=0.8333333333334441,
+    NOM_PARA="INTE_TEMP",
+    TABLE=integ_temp,
+    FILTRE=_F(NOM_PARA="NUME_ORDRE", VALE_I=1),
+)
+
+TEST_TABLE(
+    CRITERE="RELATIF",
+    REFERENCE="AUTRE_ASTER",
+    VALE_REFE=0.8333333333334441,
+    VALE_CALC=0.8333333333334441,
+    NOM_PARA="INTE_HYDR",
+    TABLE=integ_hydr,
+    FILTRE=_F(NOM_PARA="NUME_ORDRE", VALE_I=1),
+)
+
+TEST_TABLE(
+    CRITERE="RELATIF",
+    REFERENCE="AUTRE_ASTER",
+    VALE_REFE=0.8333333333334441,
+    VALE_CALC=0.8333333333334441,
+    NOM_PARA="INTE_SECH",
+    TABLE=integ_sech,
+    FILTRE=_F(NOM_PARA="NUME_ORDRE", VALE_I=1),
 )
 
 # ------------------------------------------------------------------
