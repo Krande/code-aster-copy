@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,18 +17,16 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine smcarc(nb_hist      , nb_phase , ftrc     , trc,&
-                      coef         , fmod     ,&
-                      metaSteelPara, nbtrc    , ckm,&
-                      temp_curr    , temp_incr, time_incr,&
-                      vari_prev    , vari_curr)
+    subroutine smcarc(nb_hist, nb_phase, ftrc, trc, &
+                      coef, fmod, &
+                      metaSteelPara, &
+                      temp_curr, temp_incr, time_incr, &
+                      vari_prev, vari_curr)
         use Metallurgy_type
         integer, intent(in) :: nb_hist, nb_phase
         real(kind=8), intent(inout) :: ftrc((3*nb_hist), 3), trc((3*nb_hist), 5)
         real(kind=8), intent(in)  :: coef(*), fmod(*)
         type(META_SteelParameters), intent(in) :: metaSteelPara
-        integer, intent(in) :: nbtrc
-        real(kind=8), intent(in) :: ckm(6*nbtrc)
         real(kind=8), intent(in) :: temp_curr, temp_incr, time_incr
         real(kind=8), intent(in) :: vari_prev(:)
         real(kind=8), intent(out) :: vari_curr(:)

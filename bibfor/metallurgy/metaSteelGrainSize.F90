@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine metaSteelGrainSize(metaSteelPara, nb_trc    , ckm       ,&
+subroutine metaSteelGrainSize(metaSteelPara, &
                               temp         , time_incr1, time_incr2,&
                               zaustenite   , coef_phase,&
                               d_prev       , d_curr)
@@ -29,8 +29,6 @@ implicit none
 #include "asterfort/assert.h"
 !
 type(META_SteelParameters), intent(in) :: metaSteelPara
-integer, intent(in) :: nb_trc
-real(kind=8), intent(in) :: ckm(6*nb_trc)
 real(kind=8), intent(in) :: d_prev, temp, time_incr1, time_incr2
 real(kind=8), intent(in) :: zaustenite, coef_phase
 real(kind=8), intent(out) :: d_curr
@@ -45,7 +43,6 @@ real(kind=8), intent(out) :: d_curr
 !
 ! In  metaSteelPara       : parameters for metallurgy of steel
 ! In  nbtrc               : size of TEMP_TRC parameters
-! In  ckm                 : TEMP_TRC parameters
 ! In  temp                : temperature
 ! In  time_incr1          : increment of time
 ! In  time_incr2          : increment of time
@@ -77,7 +74,7 @@ real(kind=8), intent(out) :: d_curr
             d_curr = (b+delta**0.5d0)/(2.d0*a)
         endif
     else
-        d_curr = ckm(5)
+        d_curr = metaSteelPara%trc%austeniteGrain%dref
     endif
 !
 end subroutine

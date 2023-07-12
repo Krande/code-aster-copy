@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,14 +17,12 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine metaSteelGrainSize(metaSteelPara, nb_trc    , ckm       ,&
-                                  temp         , time_incr1, time_incr2,&
-                                  zaustenite   , coef_phase,&
-                                  d_prev       , d_curr)
+    subroutine metaSteelGrainSize(metaSteelPara, &
+                                  temp, time_incr1, time_incr2, &
+                                  zaustenite, coef_phase, &
+                                  d_prev, d_curr)
         use Metallurgy_type
         type(META_SteelParameters), intent(in) :: metaSteelPara
-        integer, intent(in) :: nb_trc
-        real(kind=8), intent(in) :: ckm(6*nb_trc)
         real(kind=8), intent(in) :: d_prev, temp, time_incr1, time_incr2
         real(kind=8), intent(in) :: zaustenite, coef_phase
         real(kind=8), intent(out) :: d_curr

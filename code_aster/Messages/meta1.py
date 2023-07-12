@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -40,4 +40,7 @@ cata_msg = {
     48 : _("""Erreur dans CALC_META: La somme des phases vaut %(r1)12.4E."""),
 
     49 : _("""La somme des phases froides donnée par l'utilisateur n'est pas égale à la somme des phases froides, on met la somme."""),
+
+    50: _(
+        """La différence entre la température de début de transformation des phases froides en austénite dans le diagramme TRC et celle donnée par DEFI_MATERIAU est supérieure de plus de %(r1)12.4E°C."""),        
 }
