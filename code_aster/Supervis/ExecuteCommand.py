@@ -63,6 +63,7 @@ import linecache
 import re
 import sys
 import traceback
+import time
 from collections import namedtuple
 from contextlib import contextmanager
 
@@ -83,6 +84,7 @@ from ..Utilities import (
     import_object,
     logger,
     no_new_attributes,
+    config,
 )
 from ..Utilities.outputs import command_text, decorate_name
 from .code_file import track_coverage
@@ -1016,6 +1018,8 @@ class ExceptHookManager:
         """
         traceback.print_exception(type, value, traceb, file=sys.stderr)
         sys.stderr.flush()
+        if config["ASTER_PLATFORM_MINGW"]:
+            time.sleep(1)
         try:
             assert sys.flags.interactive or "__IPYTHON__" in globals()
             print("An exception occurred! Return to interactive session.")
