@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -66,6 +66,7 @@ q = R0 + RH * ka + R1 * (1 - exp(-G1 * ka)) + R2 * (1 - exp(-G2 * ka)) + RK * (k
 # Reponse
 err = 1.5 * ka * nrr + (1 + NU) / E * q * srr - NU / E * q * (srr + stt + szz)
 ezz = 1.5 * ka * nzz + (1 + NU) / E * q * szz - NU / E * q * (srr + stt + szz)
+ett = 1.5 * ka * ntt + (1 + NU) / E * q * stt - NU / E * q * (srr + stt + szz)
 erz = 1.5 * ka * nrz + (1 + NU) / E * q * srz
 ur = Rext * err
 uz = ezz * L + 2 * erz * (Rext - Rint)
@@ -170,7 +171,7 @@ TEST_RESU(
             NOM_CMP="SIXX",
             GROUP_NO="SUP_EXT",
             VALE_REFE=q * srr,
-            VALE_CALC=138.42365490713328,
+            VALE_CALC=138.4236549071555,
             REFERENCE="ANALYTIQUE",
             PRECISION=1.0e-3,
         ),
@@ -181,7 +182,7 @@ TEST_RESU(
             NOM_CMP="DX",
             GROUP_NO="SUP_EXT",
             VALE_REFE=ur,
-            VALE_CALC=-1.285531826890592,
+            VALE_CALC=-1.2855318268905878,
             REFERENCE="ANALYTIQUE",
             PRECISION=1.0e-3,
         ),
@@ -192,7 +193,7 @@ TEST_RESU(
             NOM_CMP="DZ",
             GROUP_NO="SUP_EXT",
             VALE_REFE=uz,
-            VALE_CALC=4.438167776227657,
+            VALE_CALC=4.438167776227634,
             REFERENCE="ANALYTIQUE",
             PRECISION=1.0e-3,
         ),
@@ -203,9 +204,175 @@ TEST_RESU(
             NOM_CMP="V7",
             GROUP_NO="SUP_EXT",
             VALE_REFE=1.5 * ka * nrz,
-            VALE_CALC=0.03749551589160953,
+            VALE_CALC=0.03749551589160926,
             REFERENCE="ANALYTIQUE",
             PRECISION=1.0e-3,
+        ),
+    )
+)
+
+
+# --------------------------------------------------------------------------------------------------
+#  Test en présence d'un plateau de Luders -> déplacement contrôlé partout
+# --------------------------------------------------------------------------------------------------
+
+# Seuil du plateau de Luders
+LU = 0.02
+q_lu = R0 + RH * LU + R1 * (1 - exp(-G1 * LU)) + R2 * (1 - exp(-G2 * LU)) + RK * (LU + P0) ** GM
+
+
+# Première valeur de kappa : sur le plateau
+ka_0 = 0.01
+err_0 = 1.5 * ka_0 * nrr + (1 + NU) / E * q_lu * srr - NU / E * q_lu * (srr + stt + szz)
+ezz_0 = 1.5 * ka_0 * nzz + (1 + NU) / E * q_lu * szz - NU / E * q_lu * (srr + stt + szz)
+ett_0 = 1.5 * ka_0 * ntt + (1 + NU) / E * q_lu * stt - NU / E * q_lu * (srr + stt + szz)
+erz_0 = 1.5 * ka_0 * nrz + (1 + NU) / E * q_lu * srz
+
+
+# Evolution de la déformation et du déplacement correspondante
+err_f = DEFI_FONCTION(NOM_PARA="INST", VALE=(0, 0, 1, err_0, 2, err))
+ezz_f = DEFI_FONCTION(NOM_PARA="INST", VALE=(0, 0, 1, ezz_0, 2, ezz))
+ett_f = DEFI_FONCTION(NOM_PARA="INST", VALE=(0, 0, 1, ett_0, 2, ett))
+erz_f = DEFI_FONCTION(NOM_PARA="INST", VALE=(0, 0, 1, erz_0, 2, erz))
+
+R = FORMULE(NOM_PARA=("X", "Y"), VALE="(X**2 + Y**2)**0.5")
+ux_f = FORMULE(NOM_PARA=("INST", "X", "Y", "Z"), VALE="X*err_f(INST)", err_f=err_f)
+uy_f = FORMULE(NOM_PARA=("INST", "X", "Y", "Z"), VALE="Y*err_f(INST)", err_f=err_f)
+uz_f = FORMULE(
+    NOM_PARA=("INST", "X", "Y", "Z"),
+    VALE="Z*ezz_f(INST) + 2*erz_f(INST)*(R(X,Y)-Rint)",
+    ezz_f=ezz_f,
+    erz_f=erz_f,
+    R=R,
+    Rint=Rint,
+)
+
+
+depl_imp = AFFE_CHAR_CINE_F(MODELE=MO, MECA_IMPO=_F(GROUP_MA="VOLU", DX=ux_f, DY=uy_f, DZ=uz_f))
+
+
+acier_lu = DEFI_MATERIAU(
+    ELAS=_F(E=E, NU=NU),
+    ECRO_NL=_F(
+        R0=R0, RH=RH, GAMMA_1=G1, R1=R1, GAMMA_2=G2, R2=R2, RK=RK, P0=P0, GAMMA_M=GM, EPSP_LUDERS=LU
+    ),
+    NON_LOCAL=_F(C_GRAD_VARI=R0 * (L / 5.0) ** 2, PENA_LAGR=R0),
+)
+
+cm_lu = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=acier_lu))
+
+
+linst_lu = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=1, NOMBRE=1), _F(JUSQU_A=2, NOMBRE=1)))
+
+
+evol_lu = STAT_NON_LINE(
+    MODELE=MO,
+    CHAM_MATER=cm_lu,
+    EXCIT=_F(CHARGE=depl_imp),
+    COMPORTEMENT=_F(RELATION="VMIS_ISOT_NL"),
+    INCREMENT=_F(LIST_INST=linst_lu),
+    NEWTON=_F(REAC_ITER=1),
+)
+
+
+CALC_CHAMP(
+    reuse=evol_lu,
+    RESULTAT=evol_lu,
+    CONTRAINTE="SIEF_NOEU",
+    VARI_INTERNE="VARI_NOEU",
+    DEFORMATION="EPSI_NOEU",
+)
+
+
+TEST_RESU(
+    RESU=(
+        _F(
+            INST=1.0,
+            RESULTAT=evol_lu,
+            NOM_CHAM="SIEF_NOEU",
+            NOM_CMP="SIXX",
+            GROUP_NO="SUP_EXT",
+            VALE_REFE=q_lu * srr,
+            VALE_CALC=114.53103314050969,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=2.1e-2,
+        ),
+        _F(
+            INST=2.0,
+            RESULTAT=evol_lu,
+            NOM_CHAM="SIEF_NOEU",
+            NOM_CMP="SIXX",
+            GROUP_NO="SUP_EXT",
+            VALE_REFE=q * srr,
+            VALE_CALC=141.1693476651267,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=2.1e-2,
+        ),
+        _F(
+            INST=1.0,
+            RESULTAT=evol_lu,
+            NOM_CHAM="SIEF_NOEU",
+            NOM_CMP="SIYY",
+            GROUP_NO="SUP_EXT",
+            VALE_REFE=q_lu * stt,
+            VALE_CALC=114.53103314050925,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=2.1e-2,
+        ),
+        _F(
+            INST=2.0,
+            RESULTAT=evol_lu,
+            NOM_CHAM="SIEF_NOEU",
+            NOM_CMP="SIYY",
+            GROUP_NO="SUP_EXT",
+            VALE_REFE=q * stt,
+            VALE_CALC=141.16934766512657,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=2.1e-2,
+        ),
+        _F(
+            INST=1.0,
+            RESULTAT=evol_lu,
+            NOM_CHAM="SIEF_NOEU",
+            NOM_CMP="SIZZ",
+            GROUP_NO="SUP_EXT",
+            VALE_REFE=q_lu * szz,
+            VALE_CALC=456.33003447429246,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=2.1e-2,
+        ),
+        _F(
+            INST=2.0,
+            RESULTAT=evol_lu,
+            NOM_CHAM="SIEF_NOEU",
+            NOM_CMP="SIZZ",
+            GROUP_NO="SUP_EXT",
+            VALE_REFE=q * szz,
+            VALE_CALC=556.5315290852872,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=2.1e-2,
+        ),
+        _F(
+            INST=1.0,
+            RESULTAT=evol_lu,
+            NOM_CHAM="SIEF_NOEU",
+            NOM_CMP="SIXZ",
+            GROUP_NO="SUP_EXT",
+            VALE_REFE=q_lu * srz,
+            VALE_CALC=341.7490263503123,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=2.1e-2,
+        ),
+        _F(
+            INST=2.0,
+            RESULTAT=evol_lu,
+            NOM_CHAM="SIEF_NOEU",
+            NOM_CMP="SIXZ",
+            GROUP_NO="SUP_EXT",
+            VALE_REFE=q * srz,
+            VALE_CALC=415.3014462737108,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=2.1e-2,
         ),
     )
 )

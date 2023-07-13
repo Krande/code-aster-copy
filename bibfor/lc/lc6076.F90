@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1504,W0104,C1509
+! aslint: disable=W1504,C1505
 !
 subroutine lc6076(BEHinteg, &
                   fami, kpg, ksp, ndim, imate, &
@@ -25,7 +25,8 @@ subroutine lc6076(BEHinteg, &
                   dsidep, codret)
 
     use Behaviour_type
- use vmis_isot_nl_module, only: CONSTITUTIVE_LAW, Init, InitViscoPlasticity, Integrate, InitGradVari
+    use vmis_isot_nl_module, only: CONSTITUTIVE_LAW, Init, InitViscoPlasticity, Integrate, &
+                                   InitGradVari
     implicit none
 
 #include "asterf_types.h"
@@ -57,15 +58,16 @@ subroutine lc6076(BEHinteg, &
     character(len=8), intent(in) :: typmod(*)
     integer, intent(in) :: icomp
     integer, intent(in) :: ndsde
-    real(kind=8)                 :: dsidep(merge(nsig,6,nsig*neps.eq.ndsde), merge(neps,6,nsig*neps.eq.ndsde))
+    real(kind=8), intent(out):: dsidep(merge(nsig, 6, nsig*neps .eq. ndsde), &
+                                       merge(neps, 6, nsig*neps .eq. ndsde))
     integer, intent(out):: codret
 ! --------------------------------------------------------------------------------------------------
-!   RELATION VMIS_ISOT_NL + GRAD_VARI
+!   RELATION VMIS_ISOT_NL ET VISC_ISOT_NL + GRAD_VARI
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical         :: lMatr, lSigm, lVari
     integer               :: ndimsi
-    real(kind=8)          :: sig(2*ndim), vi(nvi), ka
+    real(kind=8)          :: sig(2*ndim), vi(nvi), vinl
     real(kind=8)          :: deps_sig(2*ndim, 2*ndim), deps_vi(2*ndim), dphi_sig(2*ndim), dphi_vi
     real(kind=8)          :: apg, lag, grad(ndim), eps_gene(neps), eps_meca(2*ndim)
     type(CONSTITUTIVE_LAW):: cl
@@ -104,13 +106,12 @@ subroutine lc6076(BEHinteg, &
         call InitViscoPlasticity(cl, fami, kpg, ksp, imate, instap-instam)
 
     call Integrate(cl, eps_meca, vim(1:nvi), sig, &
-                   vi, deps_sig, dphi_sig, deps_vi, dphi_vi)
+                   vi, deps_sig, vinl, dphi_sig, deps_vi, dphi_vi)
 
     codret = cl%exception
     if (codret .eq. 0) then
         if (lVari) vip(1:nvi) = vi
-        ka = merge(vi(1), vim(1), cl%vari)
-        call lcgrad(lSigm, lMatr, sig, apg, lag, grad, ka, &
+        call lcgrad(lSigm, lMatr, sig, apg, lag, grad, vinl, &
                     cl%mat%r, cl%mat%c, deps_sig, dphi_sig, deps_vi, dphi_vi, sigp, dsidep)
     end if
 !

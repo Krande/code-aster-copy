@@ -145,7 +145,7 @@ contains
 ! parm_theta    theta value for the porosity prediction (theta-predictor)
 ! deltat    time increment
 ! --------------------------------------------------------------------------------------------------
-        integer, parameter   :: nbel = 2, nbec = 9, nben = 16
+        integer, parameter   :: nbel = 2, nbec = 10, nben = 16
 ! --------------------------------------------------------------------------------------------------
         integer             :: iokel(nbel), iokec(nbec), ioken(nben)
         real(kind=8)        :: valel(nbel), valec(nbec), valen(nben)
@@ -153,7 +153,8 @@ contains
         character(len=16)   :: nomel(nbel), nomec(nbec), nomen(nben)
 ! --------------------------------------------------------------------------------------------------
         data nomel/'E', 'NU'/
-        data nomec/'R0', 'RH', 'R1', 'GAMMA_1', 'R2', 'GAMMA_2', 'RK', 'P0', 'GAMMA_M'/
+        data nomec/'R0', 'RH', 'R1', 'GAMMA_1', 'R2', 'GAMMA_2', 'RK', 'P0', 'GAMMA_M', &
+            'EPSP_LUDERS'/
         data nomen/'Q1', 'Q2', 'PORO_INIT', 'COAL_PORO', 'COAL_ACCE', 'PORO_RUPT', &
             'NUCL_GAUSS_PORO', 'NUCL_GAUSS_PLAS', 'NUCL_GAUSS_DEV', &
             'NUCL_CRAN_PORO', 'NUCL_CRAN_INIT', 'NUCL_CRAN_FIN', &
@@ -202,6 +203,9 @@ contains
         self%mat%p0 = merge(valec(8), 0.d0, iokec(8) .eq. 0)
         self%mat%gk = merge(valec(9), 1.d0, iokec(9) .eq. 0)
         ASSERT(iokec(1) .eq. 0)
+
+        ! Luders hardening is not implemented in the GTN model
+        ASSERT(iokec(10) .ne. 0)
 
         !  Damage parameters
         call rcvalb(fami, kpg, ksp, '+', imate, ' ', 'GTN', 0, ' ', [0.d0], &

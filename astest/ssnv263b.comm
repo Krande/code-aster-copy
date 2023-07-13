@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -66,6 +66,7 @@ q = R0 + RH * ka + R1 * (1 - exp(-G1 * ka)) + R2 * (1 - exp(-G2 * ka)) + RK * (k
 # Reponse
 err = 1.5 * ka * nrr + (1 + NU) / E * q * srr - NU / E * q * (srr + stt + szz)
 ezz = 1.5 * ka * nzz + (1 + NU) / E * q * szz - NU / E * q * (srr + stt + szz)
+ett = 1.5 * ka * ntt + (1 + NU) / E * q * stt - NU / E * q * (srr + stt + szz)
 erz = 1.5 * ka * nrz + (1 + NU) / E * q * srz
 ur = Rext * err
 uz = ezz * L + 2 * erz * (Rext - Rint)
@@ -150,7 +151,7 @@ TEST_RESU(
             NOM_CMP="SIXX",
             GROUP_NO="SUP_EXT",
             VALE_REFE=q * srr,
-            VALE_CALC=138.39401017253653,
+            VALE_CALC=138.3940101726406,
             REFERENCE="ANALYTIQUE",
             PRECISION=1.0e-3,
         ),
@@ -161,7 +162,7 @@ TEST_RESU(
             NOM_CMP="DX",
             GROUP_NO="SUP_EXT",
             VALE_REFE=ur,
-            VALE_CALC=-1.2854854972015834,
+            VALE_CALC=-1.2854854972011847,
             REFERENCE="ANALYTIQUE",
             PRECISION=1.0e-3,
         ),
@@ -172,7 +173,7 @@ TEST_RESU(
             NOM_CMP="DY",
             GROUP_NO="SUP_EXT",
             VALE_REFE=uz,
-            VALE_CALC=4.437982893432839,
+            VALE_CALC=4.437982893431353,
             REFERENCE="ANALYTIQUE",
             PRECISION=1.0e-3,
         ),
@@ -183,7 +184,148 @@ TEST_RESU(
             NOM_CMP="V6",
             GROUP_NO="SUP_EXT",
             VALE_REFE=1.5 * ka * nrz,
-            VALE_CALC=0.03749999561078288,
+            VALE_CALC=0.037499995610774065,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+        ),
+    )
+)
+
+
+# --------------------------------------------------------------------------------------------------
+#  Test en présence d'un plateau de Luders -> déplacement contrôlé partout
+# --------------------------------------------------------------------------------------------------
+
+# Seuil du plateau de Luders
+LU = 0.02
+q_lu = R0 + RH * LU + R1 * (1 - exp(-G1 * LU)) + R2 * (1 - exp(-G2 * LU)) + RK * (LU + P0) ** GM
+
+
+# Première valeur de kappa : sur le plateau
+ka_0 = 0.01
+err_0 = 1.5 * ka_0 * nrr + (1 + NU) / E * q_lu * srr - NU / E * q_lu * (srr + stt + szz)
+ezz_0 = 1.5 * ka_0 * nzz + (1 + NU) / E * q_lu * szz - NU / E * q_lu * (srr + stt + szz)
+ett_0 = 1.5 * ka_0 * ntt + (1 + NU) / E * q_lu * stt - NU / E * q_lu * (srr + stt + szz)
+erz_0 = 1.5 * ka_0 * nrz + (1 + NU) / E * q_lu * srz
+
+
+# Evolution de la déformation et du déplacement correspondante
+err_f = DEFI_FONCTION(NOM_PARA="INST", VALE=(0, 0, 1, err_0, 2, err))
+ezz_f = DEFI_FONCTION(NOM_PARA="INST", VALE=(0, 0, 1, ezz_0, 2, ezz))
+ett_f = DEFI_FONCTION(NOM_PARA="INST", VALE=(0, 0, 1, ett_0, 2, ett))
+erz_f = DEFI_FONCTION(NOM_PARA="INST", VALE=(0, 0, 1, erz_0, 2, erz))
+
+ur_f = FORMULE(NOM_PARA=("INST", "X", "Y"), VALE="X*err_f(INST)", err_f=err_f)
+uz_f = FORMULE(
+    NOM_PARA=("INST", "X", "Y"),
+    VALE="Y*ezz_f(INST) + 2*erz_f(INST)*(X-Rint)",
+    ezz_f=ezz_f,
+    erz_f=erz_f,
+    Rint=Rint,
+)
+
+
+depl_imp = AFFE_CHAR_MECA_F(MODELE=MO, DDL_IMPO=_F(GROUP_MA="VOLU", DX=ur_f, DY=uz_f))
+
+
+acier_lu = DEFI_MATERIAU(
+    ELAS=_F(E=E, NU=NU),
+    ECRO_NL=_F(
+        R0=R0, RH=RH, GAMMA_1=G1, R1=R1, GAMMA_2=G2, R2=R2, RK=RK, P0=P0, GAMMA_M=GM, EPSP_LUDERS=LU
+    ),
+    NON_LOCAL=_F(C_GRAD_VARI=R0 * (L / 5.0) ** 2, PENA_LAGR=R0),
+)
+
+cm_lu = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=acier_lu))
+
+
+linst_lu = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=1, NOMBRE=1), _F(JUSQU_A=2, NOMBRE=1)))
+
+
+evol_lu = STAT_NON_LINE(
+    MODELE=MO,
+    CHAM_MATER=cm_lu,
+    EXCIT=_F(CHARGE=depl_imp),
+    COMPORTEMENT=_F(RELATION="VMIS_ISOT_NL"),
+    INCREMENT=_F(LIST_INST=linst_lu),
+    NEWTON=_F(REAC_ITER=1),
+)
+
+
+CALC_CHAMP(
+    reuse=evol_lu,
+    RESULTAT=evol_lu,
+    CONTRAINTE="SIEF_NOEU",
+    VARI_INTERNE="VARI_NOEU",
+    DEFORMATION="EPSI_NOEU",
+)
+
+
+TEST_RESU(
+    RESU=(
+        _F(
+            INST=1.0,
+            RESULTAT=evol_lu,
+            NOM_CHAM="SIEF_NOEU",
+            NOM_CMP="SIXX",
+            GROUP_NO="SUP_EXT",
+            VALE_REFE=q_lu * srr,
+            VALE_CALC=113.88777553704917,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+        ),
+        _F(
+            INST=2.0,
+            RESULTAT=evol_lu,
+            NOM_CHAM="SIEF_NOEU",
+            NOM_CMP="SIXX",
+            GROUP_NO="SUP_EXT",
+            VALE_REFE=q * srr,
+            VALE_CALC=138.39399626039187,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+        ),
+        _F(
+            INST=1.0,
+            RESULTAT=evol_lu,
+            NOM_CHAM="SIEF_NOEU",
+            NOM_CMP="SIYY",
+            GROUP_NO="SUP_EXT",
+            VALE_REFE=q_lu * szz,
+            VALE_CALC=455.5511021481737,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+        ),
+        _F(
+            INST=2.0,
+            RESULTAT=evol_lu,
+            NOM_CHAM="SIEF_NOEU",
+            NOM_CMP="SIYY",
+            GROUP_NO="SUP_EXT",
+            VALE_REFE=q * szz,
+            VALE_CALC=553.5760677011701,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+        ),
+        _F(
+            INST=1.0,
+            RESULTAT=evol_lu,
+            NOM_CHAM="SIEF_NOEU",
+            NOM_CMP="SIXY",
+            GROUP_NO="SUP_EXT",
+            VALE_REFE=q_lu * srz,
+            VALE_CALC=341.66332661111255,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+        ),
+        _F(
+            INST=2.0,
+            RESULTAT=evol_lu,
+            NOM_CHAM="SIEF_NOEU",
+            NOM_CMP="SIXY",
+            GROUP_NO="SUP_EXT",
+            VALE_REFE=q * srz,
+            VALE_CALC=415.182071440763,
             REFERENCE="ANALYTIQUE",
             PRECISION=1.0e-3,
         ),
