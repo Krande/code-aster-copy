@@ -280,6 +280,24 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
               py::arg( "time" ), py::arg( "fourierMode" ) = 0,
               py::arg( "groupOfCells" ) = VectorString(), py::arg( "with_dual" ) = true )
 
+        .def( "getTangentConductivityMatrix", &DiscreteComputation::getTangentConductivityMatrix,
+              R"(
+            Return the elementary matrices for tangent conductivity.
+            Option MASS_THER_TANG.
+
+            Arguments:
+                temp (FieldOnNodes): thermal field at begin of current time
+                temp_step (FieldOnNodes): field of increment of temperature
+                externVarCurr (FieldOnCells): external state variables at end of current time
+                groupOfCells (list[str]): compute matrices on given groups of cells.
+                    If it empty, the full model is used
+                with_dual (bool): compute dual terms or not (default: True)
+            Returns:
+                ElementaryMatrix: elementary mass matrix
+            )",
+              py::arg( "temp" ), py::arg( "temp_step" ), py::arg( "varc_curr" ) = nullptr,
+              py::arg( "groupOfCells" ) = VectorString(), py::arg( "with_dual" ) = true )
+
         .def( "getExchangeThermalMatrix", &DiscreteComputation::getExchangeThermalMatrix,
               R"(
             Return the elementary matices for exhange thermal matrix.
@@ -350,7 +368,9 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             Option MASS_THER_TANG.
 
             Arguments:
-                time (float): current time to evaluate rho_cp
+                temp (FieldOnNodes): thermal field at begin of current time
+                temp_step (FieldOnNodes): field of increment of temperature
+                externVarCurr (FieldOnCells): external state variables at end of current time
                 groupOfCells (list[str]): compute matrices on given groups of cells.
                     If it empty, the full model is used
             Returns:

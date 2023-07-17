@@ -204,6 +204,14 @@ class DiscreteComputation {
                                  const bool &with_dual = true ) const;
 
     /**
+     * @brief Compute elementary matrices for thermal model (RIGI_THER_TANG)
+     */
+    ElementaryMatrixTemperatureRealPtr getTangentConductivityMatrix(
+        const FieldOnNodesRealPtr temp, const FieldOnNodesRealPtr temp_step,
+        const FieldOnCellsRealPtr &externVarCurr = nullptr,
+        const VectorString &groupOfCells = VectorString(), const bool &with_dual = true ) const;
+
+    /**
      * @brief Compute elementary matrices for acoustic model (RIGI_ACOU)
      */
     ElementaryMatrixPressureComplexPtr
