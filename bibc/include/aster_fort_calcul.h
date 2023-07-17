@@ -183,6 +183,12 @@ void DEFSSSSSSS( VEBTLA, vebtla, const char *, STRING_SIZE, const char *, STRING
                  STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
                  STRING_SIZE, const char *, STRING_SIZE );
 
+#define CALLO_VETHBT( a, b, c, d, e, f, g, h )                                                     \
+    CALLOOOOOOOO( VETHBT, vethbt, a, b, c, d, e, f, g, h )
+void DEFSSSSSSSS( VETHBT, vethbt, const char *, STRING_SIZE, const char *, STRING_SIZE,
+                  const char *, STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE,
+                  const char *, STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE );
+
 #define CALLO_VEBUME( a, b, c, d, e, f ) CALLOOOOPO( VEBUME, vebume, a, b, c, d, e, f )
 void DEFSSSSPS( VEBUME, vebume, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
                 STRING_SIZE, const char *, STRING_SIZE, const ASTERDOUBLE *, const char *,

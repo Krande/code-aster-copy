@@ -108,7 +108,6 @@ FieldOnNodesRealPtr DiscreteComputation::getDualForces( FieldOnNodesRealPtr lagr
 
     // Prepare loads
     auto listOfLoads = _phys_problem->getListOfLoads();
-    std::string listLoadsName = ljust( listOfLoads->getName(), 19 );
 
     // Get JEVEUX names of objects to call Fortran
     std::string modelName = ljust( _phys_problem->getModel()->getName(), 24 );
@@ -123,14 +122,15 @@ FieldOnNodesRealPtr DiscreteComputation::getDualForces( FieldOnNodesRealPtr lagr
     std::string lagrName = lagr_curr->getName();
 
     if ( _phys_problem->getModel()->isMechanical() ) {
+        std::string listLoadsName = ljust( listOfLoads->getName(), 19 );
         // Wrapper FORTRAN
         CALLO_VEBTLA( base, modelName, materName, caraName, lagrName, listLoadsName, vectElemName );
     } else if ( _phys_problem->getModel()->isThermal() ) {
         // Wrapper FORTRAN
-        auto lload_name = listOfLoads->getListVector()->getName();
-        auto lload_info = listOfLoads->getInformationVector()->getName();
-        // CALLO_VETHBT( modelName, lload_name, lload_info, caraName, materName, lagrName,
-        //               vectElemName, base );
+        auto lload_name = ljust( listOfLoads->getListVector()->getName(), 24 );
+        auto lload_info = ljust( listOfLoads->getInformationVector()->getName(), 24 );
+        CALLO_VETHBT( modelName, lload_name, lload_info, caraName, materName, lagrName,
+                      vectElemName, base );
     } else {
         AS_ABORT( "Should not be here" );
     }
