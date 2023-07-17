@@ -106,10 +106,6 @@ FieldOnNodesRealPtr DiscreteComputation::getDualForces( FieldOnNodesRealPtr lagr
         _phys_problem->getModel(), _phys_problem->getMaterialField(),
         _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
 
-    if ( _phys_problem->getModel()->isThermal() ) {
-        AS_ABORT( "Not implemented for thermic" );
-    };
-
     // Prepare loads
     auto listOfLoads = _phys_problem->getListOfLoads();
     std::string listLoadsName = ljust( listOfLoads->getName(), 19 );
@@ -126,8 +122,18 @@ FieldOnNodesRealPtr DiscreteComputation::getDualForces( FieldOnNodesRealPtr lagr
     std::string base( "G" );
     std::string lagrName = lagr_curr->getName();
 
-    // Wrapper FORTRAN
-    CALLO_VEBTLA( base, modelName, materName, caraName, lagrName, listLoadsName, vectElemName );
+    if ( _phys_problem->getModel()->isMechanical() ) {
+        // Wrapper FORTRAN
+        CALLO_VEBTLA( base, modelName, materName, caraName, lagrName, listLoadsName, vectElemName );
+    } else if ( _phys_problem->getModel()->isThermal() ) {
+        // Wrapper FORTRAN
+        auto lload_name = listOfLoads->getListVector()->getName();
+        auto lload_info = listOfLoads->getInformationVector()->getName();
+        // CALLO_VETHBT( modelName, lload_name, lload_info, caraName, materName, lagrName,
+        //               vectElemName, base );
+    } else {
+        AS_ABORT( "Should not be here" );
+    }
 
     // Construct vect_elem object
     auto FEDs = _phys_problem->getListOfLoads()->getFiniteElementDescriptors();

@@ -347,6 +347,24 @@ class DiscreteComputation {
                        const VectorString &groupOfCells = VectorString() ) const;
 
     /**
+     * @brief Compute internal forces, stress and internal state variables
+     * @return Tuple with 5 objects:
+     * field of internal forces (`B^T \sigma`)
+     */
+    FieldOnNodesRealPtr
+    getInternalThermalForces( const FieldOnNodesRealPtr temp, const FieldOnNodesRealPtr temp_step,
+                              const ASTERDOUBLE &time_prev, const ASTERDOUBLE &time_step,
+                              const FieldOnCellsRealPtr &externVarCurr = nullptr,
+                              const VectorString &groupOfCells = VectorString() ) const;
+
+    // MASS_THER_RESI
+    FieldOnNodesRealPtr
+    getNonLinearCapacityForces( const FieldOnNodesRealPtr temp, const FieldOnNodesRealPtr temp_step,
+                                const ASTERDOUBLE &time_prev, const ASTERDOUBLE &time_step,
+                                const FieldOnCellsRealPtr &externVarCurr = nullptr,
+                                const VectorString &groupOfCells = VectorString() ) const;
+
+    /**
      * @brief Compute tangent matrix (not assembled)
      * @return Tuple with 3 objects:
      * field of exitcode

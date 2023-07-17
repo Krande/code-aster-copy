@@ -511,7 +511,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                 stress (FieldOnCells): field of stress at begin of current time
                 internVar (FieldOnCells): field of internal state variables at begin of current time
                 time_prev (float): time at begin of the step
-                time_curr (float): delta time between begin and end of the step
+                time_step (float): delta time between begin and end of the step
                 externVarPrev (FieldOnCells): external state variables at begin of current time
                 externVarCurr (FieldOnCells): internal state variables at end of current time
                 groupOfCells (list[str]): compute matrices on given groups of cells.
@@ -526,6 +526,46 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
               py::arg( "displ" ), py::arg( "displ_step" ), py::arg( "stress" ),
               py::arg( "internVar" ), py::arg( "time_prev" ), py::arg( "time_step" ),
               py::arg( "externVarPrev" ) = nullptr, py::arg( "externVarCurr" ) = nullptr,
+              py::arg( "groupOfCells" ) = VectorString() )
+
+        .def( "getInternalThermalForces", &DiscreteComputation::getInternalThermalForces,
+              R"(
+            Compute internal thermal forces (integration of behaviour)
+            Option RAPH_THER.
+
+            Arguments:
+                temp (FieldOnNodes): thermal field at begin of current time
+                temp_step (FieldOnNodes): field of increment of temperature
+                time_prev (float): time at begin of the step
+                time_step (float): delta time between begin and end of the step
+                externVarCurr (FieldOnCells): external state variables at end of current time
+                groupOfCells (list[str]): compute matrices on given groups of cells.
+                    If it empty, the full model is used
+            Returns:
+                ElementaryMatrix: elementary mass matrix
+            )",
+              py::arg( "temp" ), py::arg( "temp_step" ), py::arg( "time_prev" ),
+              py::arg( "time_step" ), py::arg( "varc_curr" ) = nullptr,
+              py::arg( "groupOfCells" ) = VectorString() )
+
+        .def( "getNonLinearCapacityForces", &DiscreteComputation::getNonLinearCapacityForces,
+              R"(
+            Compute internal thermal forces (integration of behaviour)
+            Option MASS_THER_RESI.
+
+            Arguments:
+                temp (FieldOnNodes): thermal field at begin of current time
+                temp_step (FieldOnNodes): field of increment of temperature
+                time_prev (float): time at begin of the step
+                time_step (float): delta time between begin and end of the step
+                externVarCurr (FieldOnCells): external state variables at end of current time
+                groupOfCells (list[str]): compute matrices on given groups of cells.
+                    If it empty, the full model is used
+            Returns:
+                ElementaryMatrix: elementary mass matrix
+            )",
+              py::arg( "temp" ), py::arg( "temp_step" ), py::arg( "time_prev" ),
+              py::arg( "time_step" ), py::arg( "varc_curr" ) = nullptr,
               py::arg( "groupOfCells" ) = VectorString() )
 
         .def( "getTangentStiffnessMatrix", &DiscreteComputation::getTangentStiffnessMatrix,
