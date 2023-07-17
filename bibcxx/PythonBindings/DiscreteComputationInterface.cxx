@@ -345,6 +345,20 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             )",
               py::arg( "time" ), py::arg( "groupOfCells" ) = VectorString() )
 
+        .def( "getNonLinearCapacityMatrix", &DiscreteComputation::getNonLinearCapacityMatrix, R"(
+            Return the elementary matrices for nonlinear Capacity matrix in thermal computation.
+            Option MASS_THER_TANG.
+
+            Arguments:
+                time (float): current time to evaluate rho_cp
+                groupOfCells (list[str]): compute matrices on given groups of cells.
+                    If it empty, the full model is used
+            Returns:
+                ElementaryMatrix: elementary mass matrix
+            )",
+              py::arg( "temp" ), py::arg( "temp_step" ), py::arg( "varc_curr" ) = nullptr,
+              py::arg( "groupOfCells" ) = VectorString() )
+
         .def( "getMechanicalDampingMatrix", &DiscreteComputation::getMechanicalDampingMatrix, R"(
             Return the elementary matrices for damping matrix.
             Option AMOR_MECA.

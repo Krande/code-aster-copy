@@ -75,6 +75,7 @@ subroutine calcGetDataTher(list_load, model, mate, mateco, cara_elem, &
 !
 ! - Get comportment
 !
+    compor_ther = '&&NXDOCC.COMPOR'
     call nxdocc(model, compor_ther)
 !
 end subroutine

@@ -215,6 +215,10 @@ void DEFSSPSSP( NMDOCC, nmdocc, const char *, STRING_SIZE, const char *, STRING_
                 ASTERLOGICAL *, const char *, STRING_SIZE, const char *, STRING_SIZE,
                 ASTERLOGICAL * );
 
+#define CALLO_NXDOCC( a, b, c ) CALLOOO( NXDOCC, nxdocc, a, b, c )
+void DEFSSS( NXDOCC, nxdocc, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
+             STRING_SIZE );
+
 #define CALLO_NMDOCR( a, b, c ) CALLOOO( NMDOCR, nmdocr, a, b, c )
 void DEFSSS( NMDOCR, nmdocr, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
              STRING_SIZE );

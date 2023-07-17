@@ -232,6 +232,14 @@ class DiscreteComputation {
                              const VectorString &groupOfCells = VectorString() ) const;
 
     /**
+     * @brief Compute elementary matrices for mass matrix (MASS_THER_TANG)
+     */
+    ElementaryMatrixTemperatureRealPtr
+    getNonLinearCapacityMatrix( const FieldOnNodesRealPtr temp, const FieldOnNodesRealPtr temp_step,
+                                const FieldOnCellsRealPtr &externVarCurr = nullptr,
+                                const VectorString &groupOfCells = VectorString() ) const;
+
+    /**
      * @brief Compute elementary matrices for mass matrix (MASS_ACOU)
      */
     ElementaryMatrixPressureComplexPtr

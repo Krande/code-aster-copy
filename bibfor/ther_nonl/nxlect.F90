@@ -81,6 +81,7 @@ subroutine nxlect(result, model, &
 !
 ! - Create comportment <CARTE>
 !
+    compor = '&&NXDOCC.COMPOR'
     call nxdocc(model, compor)
 !
 ! - Read parameters for algorithm management

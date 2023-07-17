@@ -24,7 +24,6 @@ from .c_relation import C_RELATION
 
 
 def C_COMPORTEMENT(COMMAND=None):  # COMMUN#
-
     assert COMMAND in (
         "CALC_G",
         "POST_GP",
@@ -41,6 +40,7 @@ def C_COMPORTEMENT(COMMAND=None):  # COMMUN#
         "LIRE_RESU",
         "MACR_ECREVISSE",
         "TEST_COMPOR",
+        "THER_NON_LINE",
         None,
     )
 
@@ -333,6 +333,28 @@ def C_COMPORTEMENT(COMMAND=None):  # COMMUN#
                 defaut=10,
                 fr=tr("Nombre d'itérations maxi pour assurer la condition de contraintes planes"),
             ),
+        )
+    elif COMMAND == "THER_NON_LINE":
+        mcfact = FACT(
+            statut="d",
+            max="**",
+            RELATION=SIMP(
+                statut="f",
+                typ="TXM",
+                defaut="THER_NL",
+                into=(
+                    "THER_NL",
+                    "THER_HYDR",
+                    "SECH_GRANGER",
+                    "SECH_MENSI",
+                    "SECH_BAZANT",
+                    "SECH_NAPPE",
+                ),
+            ),
+            regles=(PRESENT_ABSENT("TOUT", "GROUP_MA", "MAILLE"),),
+            TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
+            GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+            MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         )
     else:
         opts = {}
@@ -644,3 +666,4 @@ def C_COMPORTEMENT(COMMAND=None):  # COMMUN#
 
 
 C_COMPORTEMENT_SNL = FACT(statut="o", COMPORTEMENT=C_COMPORTEMENT("STAT_NON_LINE"))
+C_COMPORTEMENT_TNL = FACT(statut="o", COMPORTEMENT=C_COMPORTEMENT("THER_NON_LINE"))

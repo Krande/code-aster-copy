@@ -89,7 +89,18 @@ void PhysicalProblem::computeBehaviourProperty( py::object &keywords,
         throw std::runtime_error( "Unexpected value for 'COMPORTEMENT'." );
 
     // Create syntax
-    CommandSyntax cmdSt( "code_aster.Cata.Commons.c_comportement.C_COMPORTEMENT_SNL" );
+    std::string cata;
+
+    if ( _model->isMechanical() ) {
+        cata = "code_aster.Cata.Commons.c_comportement.C_COMPORTEMENT_SNL";
+    } else if ( _model->isThermal() ) {
+        cata = "code_aster.Cata.Commons.c_comportement.C_COMPORTEMENT_TNL";
+
+    } else {
+        AS_ABORT( "Should not be here" );
+    }
+
+    CommandSyntax cmdSt( cata );
     py::dict kwfact( py::arg( "COMPORTEMENT" ) = keywords );
     cmdSt.define( kwfact );
 

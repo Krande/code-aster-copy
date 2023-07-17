@@ -24,11 +24,6 @@
 
 #include "aster_fort_calcul.h"
 
-#include <stdexcept>
-#include <string>
-
-#include <assert.h>
-
 /**
  * @class BehaviourProperty
  * @brief Class to define behaviour
@@ -70,24 +65,32 @@ bool BehaviourProperty::build() {
     std::string modelName = getModel()->getName();
     modelName.resize( 8, ' ' );
 
-    std::string materialFieldName = getMaterialField()->getName();
-    materialFieldName.resize( 8, ' ' );
-
     std::string comporName = _COMPOR->getName();
     comporName.resize( 19, ' ' );
 
     std::string base( "G" );
 
-    CALLO_NMDOCC( modelName, materialFieldName, (ASTERLOGICAL *)&_initialState, comporName, base,
-                  (ASTERLOGICAL *)&_verbosity );
+    if ( getModel()->isMechanical() ) {
 
-    CALLO_NMDOCR( getModel()->getName(), _CARCRI->getName(), base );
+        std::string materialFieldName = getMaterialField()->getName();
+        materialFieldName.resize( 8, ' ' );
 
-    CALLO_NMDOCM( getModel()->getName(), _MULCOM->getName(), base );
+        CALLO_NMDOCC( modelName, materialFieldName, (ASTERLOGICAL *)&_initialState, comporName,
+                      base, (ASTERLOGICAL *)&_verbosity );
+
+        CALLO_NMDOCR( getModel()->getName(), _CARCRI->getName(), base );
+
+        CALLO_NMDOCM( getModel()->getName(), _MULCOM->getName(), base );
+
+        _MULCOM->updateValuePointers();
+        _CARCRI->updateValuePointers();
+    } else if ( getModel()->isThermal() ) {
+        CALLO_NXDOCC( modelName, comporName, base );
+    } else {
+        AS_ABORT( "Not implemented" );
+    }
 
     _COMPOR->updateValuePointers();
-    _MULCOM->updateValuePointers();
-    _CARCRI->updateValuePointers();
 
     return true;
 };

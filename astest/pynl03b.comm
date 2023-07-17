@@ -95,6 +95,7 @@ phys_pb = code_aster.PhysicalProblem(MOTH, CHMAT)
 phys_pb.addLoad(CHTH)
 
 phys_pb.computeDOFNumbering()
+phys_pb.computeBehaviourProperty({"RELATION": "THER_NL", "TOUT": "OUI"})
 
 disc_comp = code_aster.DiscreteComputation(phys_pb)
 
@@ -137,6 +138,8 @@ for i_inst in range(1, len(l_inst)):
         TEMP=T,
         INFO=2,
     )
+
+    mass_ther = disc_comp.getNonLinearCapacityMatrix(T, DELTA_T)
 
     # Get CHAR_EVNL
     EVNL_EL = EXTR_TABLE(

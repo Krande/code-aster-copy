@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nxdocc(model, compor)
+subroutine nxdocc(model, compor, base_)
 !
     implicit none
 !
@@ -28,7 +28,8 @@ subroutine nxdocc(model, compor)
 #include "asterfort/jedetr.h"
 !
     character(len=8), intent(in) :: model
-    character(len=19), intent(out) :: compor
+    character(len=19), intent(in) :: compor
+    character(len=1), optional, intent(in) :: base_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -45,18 +46,23 @@ subroutine nxdocc(model, compor)
 !
     integer :: nbCmp
     character(len=8) :: mesh
+    character(len=1) :: base
     character(len=19), parameter :: list_vale = '&&LIST_VALE'
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    compor = '&&NXDOCC.COMPOR'
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
-
+!
+    base = "V"
+    if (present(base_)) then
+        base = base_
+    end if
+!
 ! - Read informations from command file
     call comp_ther_read(list_vale)
 
 ! - Create COMPOR <CARTE>
-    call comp_init(mesh, compor, 'V', nbCmp)
+    call comp_init(mesh, compor, base, nbCmp)
 
 ! - Save informations in COMPOR <CARTE>
     call comp_ther_save(mesh, compor, nbCmp, list_vale)

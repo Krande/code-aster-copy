@@ -165,6 +165,77 @@ DiscreteComputation::getLinearCapacityMatrix( const ASTERDOUBLE time,
     return elemMatr;
 };
 
+/**
+ * @brief Compute elementary matrices for mass matrix (MASS_THER_TANG)
+ */
+ElementaryMatrixTemperatureRealPtr DiscreteComputation::getNonLinearCapacityMatrix(
+    const FieldOnNodesRealPtr temp, const FieldOnNodesRealPtr temp_step,
+    const FieldOnCellsRealPtr &externVarCurr, const VectorString &groupOfCells ) const {
+    AS_ASSERT( _phys_problem->getModel()->isThermal() );
+    const std::string option( "MASS_THER_TANG" );
+
+    auto elemMatr = std::make_shared< ElementaryMatrixTemperatureReal >(
+        _phys_problem->getModel(), _phys_problem->getMaterialField(),
+        _phys_problem->getElementaryCharacteristics() );
+    elemMatr->prepareCompute( option );
+
+    // Get main parameters
+    auto currModel = _phys_problem->getModel();
+    auto currMater = _phys_problem->getMaterialField();
+    auto currCodedMater = _phys_problem->getCodedMaterial();
+    auto currElemChara = _phys_problem->getElementaryCharacteristics();
+    auto currBehav = _phys_problem->getBehaviourProperty();
+
+    // Prepare computing
+    auto calcul = std::make_unique< Calcul >( option );
+    if ( groupOfCells.empty() ) {
+        calcul->setModel( currModel );
+    } else {
+        calcul->setGroupsOfCells( currModel, groupOfCells );
+    }
+
+    // Add input fields
+    calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
+
+    if ( currMater ) {
+        calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
+
+        if ( currMater->hasExternalStateVariable() ) {
+            calcul->addInputField( "PVARCPR", externVarCurr );
+        }
+    }
+
+    if ( currBehav ) {
+        calcul->addInputField( "PCOMPOR", currBehav->getBehaviourField() );
+    }
+
+    if ( currElemChara ) {
+        calcul->addElementaryCharacteristicsField( currElemChara );
+    }
+
+    if ( currModel->existsXfem() ) {
+        XfemModelPtr currXfemModel = currModel->getXfemModel();
+        calcul->addXFEMField( currXfemModel );
+    }
+
+    // Current Thermal Field
+    auto temp_curr = std::make_shared< FieldOnNodesReal >( *temp + *temp_step );
+    calcul->addInputField( "PTEMPEI", temp_curr );
+
+    // Add output elementary terms
+    calcul->addOutputElementaryTerm( "PMATTTR", std::make_shared< ElementaryTermReal >() );
+
+    // Compute elementary matrices for mass
+    if ( currModel->existsFiniteElement() ) {
+        calcul->compute();
+        if ( calcul->hasOutputElementaryTerm( "PMATTTR" ) )
+            elemMatr->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATTTR" ) );
+    };
+
+    elemMatr->build();
+    return elemMatr;
+}
+
 void DiscreteComputation::baseDualLinearConductivityMatrix(
     CalculPtr &calcul, ElementaryMatrixTemperatureRealPtr &elemMatr ) const {
 

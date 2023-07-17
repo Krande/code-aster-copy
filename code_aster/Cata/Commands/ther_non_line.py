@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -55,27 +55,7 @@ THER_NON_LINE = OPER(
     MODELE=SIMP(statut="o", typ=(modele_sdaster)),
     CHAM_MATER=SIMP(statut="o", typ=(cham_mater)),
     CARA_ELEM=SIMP(statut="f", typ=(cara_elem)),
-    COMPORTEMENT=FACT(
-        statut="d",
-        max="**",
-        RELATION=SIMP(
-            statut="f",
-            typ="TXM",
-            defaut="THER_NL",
-            into=(
-                "THER_NL",
-                "THER_HYDR",
-                "SECH_GRANGER",
-                "SECH_MENSI",
-                "SECH_BAZANT",
-                "SECH_NAPPE",
-            ),
-        ),
-        regles=(PRESENT_ABSENT("TOUT", "GROUP_MA", "MAILLE"),),
-        TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
-        GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
-    ),
+    COMPORTEMENT=C_COMPORTEMENT("THER_NON_LINE"),
     EVOL_THER_SECH=SIMP(statut="f", typ=evol_ther),
     EXCIT=FACT(
         statut="o",
