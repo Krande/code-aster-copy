@@ -122,7 +122,6 @@ FieldOnNodesRealPtr DiscreteComputation::getTransientThermalForces(
     auto currMater = _phys_problem->getMaterialField();
     auto currCodedMater = _phys_problem->getCodedMaterial();
     auto currElemChara = _phys_problem->getElementaryCharacteristics();
-    auto listOfLoads = _phys_problem->getListOfLoads();
 
     auto calcul = std::make_unique< Calcul >( calcul_option );
     calcul->setModel( currModel );
@@ -156,6 +155,76 @@ FieldOnNodesRealPtr DiscreteComputation::getTransientThermalForces(
         calcul->compute();
         if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) )
             elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ) );
+    };
+    elemVect->build();
+    // Assemble
+    return elemVect->assemble( _phys_problem->getDOFNumbering() );
+}
+
+/** @brief Compute CHAR_THER_EVOLNI */
+FieldOnNodesRealPtr DiscreteComputation::getNonLinearTransientThermalForces(
+    const FieldOnNodesRealPtr temp, const FieldOnNodesRealPtr temp_step,
+    const ASTERDOUBLE time_prev, const ASTERDOUBLE time_step, const ASTERDOUBLE theta,
+    const FieldOnCellsRealPtr &externVarCurr ) const {
+
+    AS_ASSERT( _phys_problem->getModel()->isThermal() );
+
+    auto elemVect = std::make_shared< ElementaryVectorReal >(
+        _phys_problem->getModel(), _phys_problem->getMaterialField(),
+        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
+
+    // Setup
+    const std::string calcul_option( "CHAR_THER_EVOLNI" );
+    elemVect->prepareCompute( calcul_option );
+
+    // Main parameters
+    auto currModel = _phys_problem->getModel();
+    auto currMater = _phys_problem->getMaterialField();
+    auto currCodedMater = _phys_problem->getCodedMaterial();
+    auto currElemChara = _phys_problem->getElementaryCharacteristics();
+    auto currBehav = _phys_problem->getBehaviourProperty();
+
+    auto calcul = std::make_unique< Calcul >( calcul_option );
+    calcul->setModel( currModel );
+    calcul->clearInputs();
+    calcul->clearOutputs();
+
+    // Add input fields
+    calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
+    calcul->addTimeField( "PTEMPSR", time_prev + time_step, time_step, theta );
+    auto temp_curr = std::make_shared< FieldOnNodesReal >( *temp + *temp_step );
+    calcul->addInputField( "PTEMPER", temp );
+
+    if ( currMater ) {
+        calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
+
+        if ( currMater->hasExternalStateVariable() ) {
+            calcul->addInputField( "PVARCPR", externVarCurr );
+        }
+    }
+
+    if ( currBehav ) {
+        calcul->addInputField( "PCOMPOR", currBehav->getBehaviourField() );
+    }
+
+    if ( currElemChara ) {
+        calcul->addElementaryCharacteristicsField( currElemChara );
+    }
+    if ( currModel->existsXfem() ) {
+        XfemModelPtr currXfemModel = currModel->getXfemModel();
+        calcul->addXFEMField( currXfemModel );
+    }
+    // Add output elementary terms
+    calcul->addOutputElementaryTerm( "PVECTTI", std::make_shared< ElementaryTermReal >() );
+    calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >() );
+
+    if ( currModel->existsFiniteElement() ) {
+        calcul->compute();
+        if ( calcul->hasOutputElementaryTerm( "PVECTTI" ) )
+            elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTI" ) );
+        // Do not add linear part
+        // if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) )
+        //     elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ) );
     };
     elemVect->build();
     // Assemble
@@ -645,7 +714,7 @@ FieldOnNodesRealPtr DiscreteComputation::getInternalThermalForces(
     }
 
     // Add time field
-    calcul->addTimeField( "PTEMPSR", time_prev, time_step, 0.0 );
+    calcul->addTimeField( "PTEMPSR", time_prev + time_step, time_step, 0.0 );
 
     // Current Thermal Field
     auto temp_curr = std::make_shared< FieldOnNodesReal >( *temp + *temp_step );
@@ -721,7 +790,7 @@ FieldOnNodesRealPtr DiscreteComputation::getNonLinearCapacityForces(
     }
 
     // Add time field
-    calcul->addTimeField( "PTEMPSR", time_prev, time_step, 0.0 );
+    calcul->addTimeField( "PTEMPSR", time_prev + time_step, time_step, 0.0 );
 
     // Current Thermal Field
     auto temp_curr = std::make_shared< FieldOnNodesReal >( *temp + *temp_step );
