@@ -182,6 +182,27 @@ resu2 = resu.toSimpleFieldOnNodes()
 resu2.updateValuePointers()
 test.assertAlmostEqual(resu2[6, 0], 0.000757555469653289 / 10.0)
 
+# Test conversions
+fnodes0 = code_aster.SimpleFieldOnNodesReal(monMaillage, "DEPL_R", ["DX", "DY", "DZ"], True)
+nval, nma = fnodes0.toNumpy()
+nma[:, :] = True
+nval[:, 1] = 3.6
+full_nodes0 = fnodes0.toFieldOnNodes()
+test.assertAlmostEqual(
+    full_nodes0.norm("NORM_2"), 18.706148721743872, places=6, msg="Conversion SimpleFieldOnNodes"
+)
+
+fcells0 = code_aster.SimpleFieldOnCellsReal(
+    monMaillage, "ELEM", "DEPL_R", ["DX", "DY", "DZ"], 1, 1, True
+)
+cval, cma = fcells0.toNumpy()
+cma[:, :] = True
+cval[:, 1] = 2.5
+full_nodes1 = fcells0.toFieldOnNodes()
+test.assertAlmostEqual(
+    full_nodes1.norm("NORM_2"), 12.99038105676658, places=6, msg="Conversion SimpleFieldOnCells"
+)
+
 # To be sure that vcine is Permanent #30689
 libaster.deleteTemporaryObjects()
 vcine.updateValuePointers()

@@ -35,7 +35,9 @@ void exportSimpleFieldOnCellsToPython( py::module_ &mod ) {
         mod, "SimpleFieldOnCellsReal" )
         .def( py::init( &initFactoryPtr< SimpleFieldOnCellsReal > ) )
         .def( py::init( &initFactoryPtr< SimpleFieldOnCellsReal, std::string > ) )
-        .def( py::init( &initFactoryPtr< SimpleFieldOnCellsReal, std::string > ) )
+        .def( py::init(
+            &initFactoryPtr< SimpleFieldOnCellsReal, BaseMeshPtr, std::string, std::string,
+                             VectorString, ASTERINTEGER, ASTERINTEGER, bool > ) )
         .def( "__getitem__",
               +[]( const SimpleFieldOnCellsReal &v, const VectorLong &i ) {
                   return v.operator()( i[0], i[1], i[2], i[3] );
@@ -86,7 +88,7 @@ Args:
         )",
               py::arg( "ima" ), py::arg( "icmp" ), py::arg( "ipt" ), py::arg( "ispt" ),
               py::arg( "val" ) )
-        .def( "getValues", &SimpleFieldOnCellsReal::getValues,
+        .def( "toNumpy", &SimpleFieldOnCellsReal::toNumpy,
               R"(
 Returns two numpy arrays with shape ( number_of_cells_with_components, number_of_components )
 The first array contains the field values while the second one is a mask
@@ -94,14 +96,10 @@ which is `True` if the corresponding value exists, `False` otherwise.
 
 Where the mask is `False` the corresponding value is set to zero.
 
-Args:
-        copy (bool): If True copy the data, default: *False*
-
 Returns:
     ndarray (float): Field values.
     ndarray (bool): Mask for the field values.
-        )",
-              ( py::arg( "self" ), py::arg( "copy" ) = false ) )
+        )" )
         .def( "getValuesWithDescription", &SimpleFieldOnCellsReal::getValuesWithDescription,
               R"(
 Returns values and description corresponding to given cmp and given cells

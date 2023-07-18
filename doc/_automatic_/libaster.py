@@ -3384,7 +3384,7 @@ class SimpleFieldOnCellsReal(DataField):
 
         2. __init__(self: libaster.SimpleFieldOnCellsReal, arg0: str) -> None
 
-        3. __init__(self: libaster.SimpleFieldOnCellsReal, arg0: str) -> None
+        3. __init__(self: libaster.SimpleFieldOnCellsReal, arg0: libaster.BaseMesh, arg1: str, arg2: str, arg3: List[str], arg4: int, arg5: int, arg6: bool) -> None
         """
 
     def __setitem__(self, arg0, arg1):
@@ -3443,21 +3443,6 @@ class SimpleFieldOnCellsReal(DataField):
         Returns:
             float: Value of field at *ima*, of *icmp*, at *ipt*, at *ispt*;
                      NaN if the position is not allocated.
-        """
-
-    def getValues(self, copy=False):
-        """Returns two numpy arrays with shape ( number_of_cells_with_components, number_of_components )
-        The first array contains the field values while the second one is a mask
-        which is `True` if the corresponding value exists, `False` otherwise.
-
-        Where the mask is `False` the corresponding value is set to zero.
-
-        Args:
-                copy (bool): If True copy the data, default: *False*
-
-        Returns:
-            ndarray (float): Field values.
-            ndarray (bool): Mask for the field values.
         """
 
     def getValuesWithDescription(self, arg0, arg1):
@@ -3530,6 +3515,18 @@ class SimpleFieldOnCellsReal(DataField):
             FieldOnNodesReal: field converted
         """
 
+    def toNumpy(self):
+        """Returns two numpy arrays with shape ( number_of_cells_with_components, number_of_components )
+        The first array contains the field values while the second one is a mask
+        which is `True` if the corresponding value exists, `False` otherwise.
+
+        Where the mask is `False` the corresponding value is set to zero.
+
+        Returns:
+            ndarray (float): Field values.
+            ndarray (bool): Mask for the field values.
+        """
+
     def toSimpleFieldOnNodes(self):
         """Convert to SimpleFieldOnNodes
 
@@ -3570,6 +3567,8 @@ class SimpleFieldOnNodesReal(DataField):
         1. __init__(self: libaster.SimpleFieldOnNodesReal) -> None
 
         2. __init__(self: libaster.SimpleFieldOnNodesReal, arg0: str) -> None
+
+        3. __init__(self: libaster.SimpleFieldOnNodesReal, arg0: libaster.BaseMesh, arg1: str, arg2: List[str], arg3: bool) -> None
         """
 
     def __setitem__(self, *args, **kwargs):
@@ -3595,21 +3594,6 @@ class SimpleFieldOnNodesReal(DataField):
     def getPhysicalQuantity(self):
         pass
 
-    def getValues(self, copy=False):
-        """Returns two numpy arrays with shape ( number_of_components, space_dimension )
-        The first array contains the field values while the second one is a mask
-        which is `True` if the corresponding value exists, `False` otherwise.
-
-        Where the mask is `False` the corresponding value is set to zero.
-
-        Args:
-                copy (bool): If True copy the data, default: *False*
-
-        Returns:
-            ndarray (float): Field values.
-            ndarray (bool): Mask for the field values.
-        """
-
     def restrict(self, cmps=[], groupsOfNodes=[]):
         """Return a new field restricted to the list of components and groups of nodes given
 
@@ -3628,6 +3612,18 @@ class SimpleFieldOnNodesReal(DataField):
 
         Returns:
             FieldOnNodesReal: field converted
+        """
+
+    def toNumpy(self):
+        """Returns two numpy arrays with shape ( number_of_components, space_dimension )
+        The first array contains the field values while the second one is a mask
+        which is `True` if the corresponding value exists, `False` otherwise.
+
+        Where the mask is `False` the corresponding value is set to zero.
+
+        Returns:
+            ndarray (float): Field values.
+            ndarray (bool): Mask for the field values.
         """
 
     def updateValuePointers(self):
@@ -3658,6 +3654,8 @@ class SimpleFieldOnNodesComplex(DataField):
         1. __init__(self: libaster.SimpleFieldOnNodesComplex) -> None
 
         2. __init__(self: libaster.SimpleFieldOnNodesComplex, arg0: str) -> None
+
+        3. __init__(self: libaster.SimpleFieldOnNodesComplex, arg0: libaster.BaseMesh, arg1: str, arg2: List[str], arg3: bool) -> None
         """
 
     def __setitem__(self, arg0, arg1):
@@ -3678,15 +3676,12 @@ class SimpleFieldOnNodesComplex(DataField):
     def getPhysicalQuantity(self):
         pass
 
-    def getValues(self, copy=False):
+    def toNumpy(self):
         """Returns two numpy arrays with shape ( number_of_components, space_dimension )
         The first array contains the field values while the second one is a mask
         which is `True` if the corresponding value exists, `False` otherwise.
 
         Where the mask is `False` the corresponding value is set to zero.
-
-        Args:
-                copy (bool): If True copy the data, default: *False*
 
         Returns:
             ndarray (complex): Field values.

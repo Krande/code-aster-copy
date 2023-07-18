@@ -206,14 +206,17 @@ class SimpleFieldOnCells : public DataField {
                         const VectorString &comp, const ASTERINTEGER &nbPG,
                         const ASTERINTEGER &nbSP, bool zero = false )
         : SimpleFieldOnCells( mesh ) {
-        const ASTERINTEGER nbComp = comp.size();
+
         const std::string base = "G";
+        ASTERINTEGER nbComp = comp.size();
+        ASTERINTEGER _npg = nbPG;
+        ASTERINTEGER _nsp = nbSP;
+        ASTERLOGICAL _zero = zero;
 
         char *tabNames = vectorStringAsFStrArray( comp, 8 );
 
         CALL_CESCRE_WRAP( base.c_str(), getName().c_str(), loc.c_str(), _mesh->getName().c_str(),
-                          quantity.c_str(), &nbComp, tabNames, &nbPG, &nbSP, &nbComp,
-                          (ASTERLOGICAL *)&zero );
+                          quantity.c_str(), &nbComp, tabNames, &_npg, &_nsp, &nbComp, &_zero );
 
         FreeStr( tabNames );
 
@@ -424,7 +427,7 @@ class SimpleFieldOnCells : public DataField {
     /**
      * @brief Get values on cells holding components, with mask
      */
-    py::object getValues( bool copy = false ) {
+    py::object toNumpy() {
 
         PyObject *resu_tuple = PyTuple_New( 2 );
 
@@ -437,34 +440,10 @@ class SimpleFieldOnCells : public DataField {
         AS_ASSERT( values != NULL );
         AS_ASSERT( mask != NULL );
 
-        if ( copy ) {
-            PyObject *values_copy =
-                PyArray_NewLikeArray( (PyArrayObject *)values, NPY_ANYORDER, NULL, 0 );
-            PyArray_CopyInto( (PyArrayObject *)values_copy, (PyArrayObject *)values );
-            AS_ASSERT( values_copy != NULL );
-
-            PyObject *mask_copy =
-                PyArray_NewLikeArray( (PyArrayObject *)mask, NPY_ANYORDER, NULL, 0 );
-            PyArray_CopyInto( (PyArrayObject *)mask_copy, (PyArrayObject *)mask );
-            AS_ASSERT( mask_copy != NULL );
-
-            PyArray_ENABLEFLAGS( (PyArrayObject *)values_copy, NPY_ARRAY_OWNDATA );
-            PyArray_ENABLEFLAGS( (PyArrayObject *)mask_copy, NPY_ARRAY_OWNDATA );
-
-            Py_XDECREF( values );
-            Py_XDECREF( mask );
-
-            PyTuple_SetItem( resu_tuple, 0, values_copy );
-            PyTuple_SetItem( resu_tuple, 1, mask_copy );
-
-        } else {
-            PyArray_CLEARFLAGS( (PyArrayObject *)values, NPY_ARRAY_WRITEABLE );
-            PyArray_CLEARFLAGS( (PyArrayObject *)mask, NPY_ARRAY_WRITEABLE );
-            PyArray_CLEARFLAGS( (PyArrayObject *)values, NPY_ARRAY_OWNDATA );
-            PyArray_CLEARFLAGS( (PyArrayObject *)mask, NPY_ARRAY_OWNDATA );
-            PyTuple_SetItem( resu_tuple, 0, values );
-            PyTuple_SetItem( resu_tuple, 1, mask );
-        }
+        PyArray_CLEARFLAGS( (PyArrayObject *)values, NPY_ARRAY_OWNDATA );
+        PyArray_CLEARFLAGS( (PyArrayObject *)mask, NPY_ARRAY_OWNDATA );
+        PyTuple_SetItem( resu_tuple, 0, values );
+        PyTuple_SetItem( resu_tuple, 1, mask );
 
         py::object tuple = py::reinterpret_steal< py::object >( resu_tuple );
         tuple.inc_ref();
