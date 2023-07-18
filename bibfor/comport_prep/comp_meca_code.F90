@@ -61,12 +61,6 @@ subroutine comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp, &
 ! - Create composite behaviour
     nb_comp_elem = nb_comp_elem+1
     comp_elem(nb_comp_elem) = rela_comp
-    nb_comp_elem = nb_comp_elem+1
-    comp_elem(nb_comp_elem) = regu_visc
-    nb_comp_elem = nb_comp_elem+1
-    comp_elem(nb_comp_elem) = defo_comp
-    nb_comp_elem = nb_comp_elem+1
-    comp_elem(nb_comp_elem) = type_cpla
     if (rela_comp .eq. 'KIT_META') then
         do ikit = 1, 4
             nb_comp_elem = nb_comp_elem+1
@@ -78,6 +72,12 @@ subroutine comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp, &
             comp_elem(nb_comp_elem) = kit_comp(ikit)
         end do
     end if
+    nb_comp_elem = nb_comp_elem+1
+    comp_elem(nb_comp_elem) = regu_visc
+    nb_comp_elem = nb_comp_elem+1
+    comp_elem(nb_comp_elem) = defo_comp
+    nb_comp_elem = nb_comp_elem+1
+    comp_elem(nb_comp_elem) = type_cpla
     if (post_iter .ne. ' ') then
         nb_comp_elem = nb_comp_elem+1
         comp_elem(nb_comp_elem) = post_iter

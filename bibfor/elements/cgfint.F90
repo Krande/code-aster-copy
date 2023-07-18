@@ -96,7 +96,7 @@ subroutine cgfint(ndim, nno1, nno2, npg, wref, &
     character(len=16) :: relaSheath, relaCable
     integer :: numeSheath, nbviSheath, nbviCable
     aster_logical :: resi, rigi
-    integer :: nddl, g, cod(27), n, i, m, j, kk, codm(1)
+    integer :: nddl, g, cod(npg), n, i, m, j, kk, codm(1)
     integer :: nume
     real(kind=8) :: r, mu, epsm, deps, wg, l(3), de, ddedt, t1
     real(kind=8) :: epsmSheath(nepsSheath), depsSheath(nepsSheath)

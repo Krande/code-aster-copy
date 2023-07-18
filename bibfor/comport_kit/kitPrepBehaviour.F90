@@ -26,8 +26,8 @@ subroutine kitPrepBehaviour(compor, nvi_tot, compor_creep, compor_plas)
 !
     character(len=16), intent(in) :: compor(*)
     integer, intent(in) :: nvi_tot
-    character(len=16), intent(out) :: compor_creep(*)
-    character(len=16), intent(out) :: compor_plas(*)
+    character(len=16), intent(out) :: compor_creep(:)
+    character(len=16), intent(out) :: compor_plas(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,6 +49,9 @@ subroutine kitPrepBehaviour(compor, nvi_tot, compor_creep, compor_plas)
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    compor_creep = 'VIDE'
+    compor_plas = 'VIDE'
+
     read (compor(CREEP_NVAR), '(I16)') nvi_flua
     read (compor(PLAS_NVAR), '(I16)') nvi_plas
     read (compor(PLAS_NUME), '(I16)') nume_plas

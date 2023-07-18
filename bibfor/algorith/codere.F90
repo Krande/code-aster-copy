@@ -17,32 +17,41 @@
 ! --------------------------------------------------------------------
 !
 subroutine codere(cod, npg, codret)
+
     implicit none
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+
     integer :: npg, cod(npg), codret
-!     ------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !     SYNTHESE DES CODES RETOURS : EN ENTREE, ON A UN TABLEAU
 !     DE DIM. NPG CONTENANT LES CODES RETOURS DE TOUS LES PTS DE
 !     GAUSS. EN SORTIE, ON A UN SEUL CODE RETOUR RESUME
-!     ------------------------------------------------------------------
-!     IN  COD     : TABLEAU CONTENANT LES CODES RETOURS DE TOUS
-!                   LES PTS DE GAUSS
-!     IN  NPG     : NBRE DE PTS DE GAUSS DE L'ELELEMT TRAITE
-!     OUT CODRET  : CODE RETOUR RESUME
-!         CODRET=1 : ECHEC INTEGRATION LOI DE COMPORTEMENT
-!         CODRET=3 : C_PLAN DEBORST SIGZZ NON NUL
-!     ------------------------------------------------------------------
-    integer :: i
-!
-    codret = 0
+! --------------------------------------------------------------------------------------------------
+!     in  cod     : tableau contenant les codes retours de tous les pts de gauss
+!     in  npg     : nbre de pts de gauss de l'elelemt traite
+!     out codret  : code retour resume
+!         codret=0 : tout est ok
+!         codret=1 : echec integration loi de comportement
+!         codret=2 : resultats non valides physiquement
+!         codret=3 : c_plan deborst sigzz non nul
+! --------------------------------------------------------------------------------------------------
+    integer, parameter :: NBR_CODRET = 4
+    integer, parameter, dimension(0:NBR_CODRET):: codret_to_gravite = [0, 4, 2, 3, 1]
+    integer, parameter, dimension(0:NBR_CODRET):: gravite_to_codret = [0, 4, 2, 3, 1]
+    integer :: i, grave
+! --------------------------------------------------------------------------------------------------
+
+    ! Controle de l'etendue des codes retour
+    ASSERT(maxval(cod) .le. NBR_CODRET .and. minval(cod) .ge. 0)
+
+    ! Gravite maximale des codes retour : la gravite la plus elevee l'emporte sur les autres
+    grave = 0
     do i = 1, npg
-        if (cod(i) .eq. 1) then
-            codret = 1
-            goto 999
-        else if (cod(i) .ne. 0) then
-            codret = cod(i)
-        end if
+        grave = max(grave, codret_to_gravite(cod(i)))
     end do
-!
-!
-999 continue
+
+    ! Code emis le plus grave
+    codret = gravite_to_codret(grave)
+
 end subroutine

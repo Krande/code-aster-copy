@@ -144,7 +144,8 @@ subroutine nifilg(ndim, nnod, nnog, nnop, npg, iw, &
                                                       -1.d0, -1.d0, 2.d0, 0.d0, 0.d0, 0.d0, &
                                                       0.d0, 0.d0, 0.d0, 3.d0, 0.d0, 0.d0, &
                                                       0.d0, 0.d0, 0.d0, 0.d0, 3.d0, 0.d0, &
-                                                     0.d0, 0.d0, 0.d0, 0.d0, 0.d0, 3.d0/), (/6, 6/))
+                                                      0.d0, 0.d0, 0.d0, 0.d0, 0.d0, 3.d0/), &
+                                                    (/6, 6/))
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -157,6 +158,7 @@ subroutine nifilg(ndim, nnod, nnog, nnop, npg, iw, &
     end if
     dsidep = 0.d0
     codret = 0
+    cod = 0
     if (lVect) then
         vect(1:nddl) = 0.d0
     end if

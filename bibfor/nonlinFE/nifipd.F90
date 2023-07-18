@@ -132,6 +132,7 @@ subroutine nifipd(ndim, nno1, nno2, nno3, npg, &
     axi = typmod(1) .eq. 'AXIS'
     nddl = nno1*ndim+nno2+nno3
     rac2 = sqrt(2.d0)
+    cod = 0
 !
 ! - Initialisation of behaviour datastructure
 !

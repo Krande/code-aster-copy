@@ -222,6 +222,7 @@ subroutine te0431(option, nomte)
             call nmco1d(fami, kpg, 1, zi(imate), rela_comp, rela_cpla, &
                         option, epsm, deps, angmas, sigm, &
                         zr(ivarim+(kpg-1)*lgpg), sig, zr(ivarip+(kpg-1)*lgpg), rig, cod(kpg))
+            if (cod(kpg) .eq. 1) goto 900
 !
             if (lSigm) then
                 zr(icontp+kpg-1) = sig
@@ -269,6 +270,7 @@ subroutine te0431(option, nomte)
 ! - FIN DE LA BOUCLE SUR LES POINTS DE GAUSS
     end do
 !
+900 continue
     if (lSigm) then
         call codere(cod, npg, zi(jcret))
     end if

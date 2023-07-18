@@ -193,8 +193,18 @@ subroutine redece(BEHinteg, &
                         angmas, numlc, sigp, vip, &
                         ndsde, dsidep_sub, niv_dec, nvi, codret_sub)
 
-            codret = merge(codret_sub, 2, codret .ne. 2)
-            if (codret .eq. 1) exit
+            select case (codret_sub)
+            case (0)
+                continue
+            case (1)
+                codret = 1
+                exit
+            case (2)
+                codret = 2
+                if (pas .ne. npas) exit
+            case default
+                ASSERT(ASTER_FALSE)
+            end select
 
             ! Matrice tangente finale = moyenne des matrices tangentes a chaque pas (faute de mieux)
             if (lMatr) dsidep = dsidep+dsidep_sub/npas
@@ -210,4 +220,5 @@ subroutine redece(BEHinteg, &
     end do
 
 999 continue
+    ASSERT(codret .ge. 0 .and. codret .le. 2)
 end subroutine

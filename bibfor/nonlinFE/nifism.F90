@@ -146,6 +146,7 @@ subroutine nifism(ndim, nno1, nno2, nno3, npg, &
     rac2 = sqrt(2.d0)
     ndu = ndim
     if (axi) ndu = 3
+    cod = 0
 !
 ! - Initialisation of behaviour datastructure
 !

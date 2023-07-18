@@ -77,7 +77,7 @@ subroutine nmfi3d(nno, nddl, npg, lgpg, wref, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: code(9), ni, mj, kk, p, q, kpg, n
+    integer :: cod(9), ni, mj, kk, p, q, kpg, n
     real(kind=8) :: b(3, 60), sigmo(6), sigma(6)
     real(kind=8) :: sum(3), dsu(3), dsidep(6, 6), poids
     real(kind=8) :: angmas(3)
@@ -88,7 +88,7 @@ subroutine nmfi3d(nno, nddl, npg, lgpg, wref, &
 !
     sum = 0.d0
     dsu = 0.d0
-    codret = 0
+    cod = 0
 !
 ! - Initialisation of behaviour datastructure
 !
@@ -131,7 +131,6 @@ subroutine nmfi3d(nno, nddl, npg, lgpg, wref, &
             dsu(3) = ddot(nddl, b(3, 1), 3, ddepl, 1)
         end if
 ! ----- Compute behaviour
-        code(kpg) = 0
         sigmo = 0.d0
         do n = 1, 3
             sigmo(n) = sigm(n, kpg)
@@ -145,7 +144,9 @@ subroutine nmfi3d(nno, nddl, npg, lgpg, wref, &
                     mate, compor, carcri, tm, tp, &
                     3, sum, dsu, 6, sigmo, &
                     vim(1, kpg), option, angmas, &
-                    sigma, vip(1, kpg), 36, dsidep, codret)
+                    sigma, vip(1, kpg), 36, dsidep, cod(kpg))
+        if (cod(kpg) .eq. 1) goto 900
+
 ! ----- Stresses
         if (lSigm) then
             do n = 1, 3
@@ -189,6 +190,7 @@ subroutine nmfi3d(nno, nddl, npg, lgpg, wref, &
         end if
     end do
 !
-    call codere(code, npg, codret)
+900 continue
+    call codere(cod, npg, codret)
 !
 end subroutine

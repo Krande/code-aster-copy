@@ -70,11 +70,12 @@ subroutine lc8029(BEHinteg, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16) :: rela_flua, rela_plas
-    character(len=16) :: compor_ext(20)
+    character(len=16) :: compor_ext(COMPOR_SIZE)
     integer :: nume_flua, nvi_flua
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    compor_ext = 'VIDE'
     rela_flua = compor(CREEP_NAME)
     rela_plas = compor(PLAS_NAME)
     read (compor(CREEP_NVAR), '(I16)') nvi_flua

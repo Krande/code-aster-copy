@@ -70,7 +70,7 @@ subroutine nmfi2d(npg, lgpg, mate, option, geom, &
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: axi
-    integer :: code(9), i, j, q, s, kpg
+    integer :: cod(9), i, j, q, s, kpg
     integer :: ndim, nno, nnos, ipoids, ivf, idfde, jgano
 !     COORDONNEES POINT DE GAUSS + POIDS : X,Y,W => 1ER INDICE
     real(kind=8) :: coopg(3, npg)
@@ -82,7 +82,7 @@ subroutine nmfi2d(npg, lgpg, mate, option, geom, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    codret = 0
+    cod = 0
     axi = typmod(1) .eq. 'AXIS'
 !
 ! - Initialisation of behaviour datastructure
@@ -134,7 +134,6 @@ subroutine nmfi2d(npg, lgpg, mate, option, geom, &
             end do
         end if
 ! ----- Compute behaviour
-        code(kpg) = 0
         BEHinteg%elem%coor_elga(kpg, 1:2) = coopg(1:2, kpg)
         sigmPost = 0.d0
         call nmcomp(BEHinteg, &
@@ -142,7 +141,8 @@ subroutine nmfi2d(npg, lgpg, mate, option, geom, &
                     mate, compor, carcri, tm, tp, &
                     2, sum, dsu, 1, sigmo(1, kpg), &
                     vim(1, kpg), option, angmas, &
-                    sigmPost, vip(1, kpg), 36, dsidep, codret)
+                    sigmPost, vip(1, kpg), 36, dsidep, cod(kpg))
+        if (cod(kpg) .eq. 1) goto 900
 
         if (lSigm) then
             sigma(1, kpg) = sigmPost(1)
@@ -172,6 +172,7 @@ subroutine nmfi2d(npg, lgpg, mate, option, geom, &
         end if
     end do
 !
-    call codere(code, npg, codret)
+900 continue
+    call codere(cod, npg, codret)
 !
 end subroutine

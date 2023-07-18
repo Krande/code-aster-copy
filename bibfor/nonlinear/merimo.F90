@@ -278,18 +278,19 @@ subroutine merimo(base, &
     if (l_codret) then
         call nmiret(lchout(ich_codret), tabret)
         if (tabret(0)) then
-            if (tabret(4)) then
-                ldccvg = 4
+            if (tabret(1)) then
+                ldccvg = 1
             else if (tabret(3)) then
                 ldccvg = 3
             else if (tabret(2)) then
                 ldccvg = 2
+            else if (tabret(4)) then
+                ldccvg = 4
             else
                 ldccvg = 1
             end if
-            if (tabret(1)) then
-                ldccvg = 1
-            end if
+        else
+            ldccvg = 0
         end if
     end if
 !

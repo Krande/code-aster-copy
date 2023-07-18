@@ -29,6 +29,7 @@ subroutine lc8331(BEHinteg, &
     implicit none
 !
 #include "asterf_types.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/assert.h"
 #include "asterfort/nmcomp.h"
 #include "asterfort/kitPrepBehaviour.h"
@@ -69,7 +70,7 @@ subroutine lc8331(BEHinteg, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=16) :: compor_creep(20), compor_plas(20)
+    character(len=16) :: compor_creep(COMPOR_SIZE), compor_plas(COMPOR_SIZE)
 !
 ! --------------------------------------------------------------------------------------------------
 !

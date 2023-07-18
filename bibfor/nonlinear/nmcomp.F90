@@ -20,7 +20,7 @@
 subroutine nmcomp(BEHinteg, &
                   fami, kpg, ksp, ndim, typmod, &
                   imate, compor, carcri, instam, instap, &
-                  neps, epsm, deps, nsig, sigm, &
+                  neps, epsm_inp, deps_inp, nsig, sigm, &
                   vim, option, angmas, sigp, vip, &
                   ndsde, dsidep, codret, mult_comp_, l_epsi_varc_, &
                   materi_)
@@ -43,7 +43,7 @@ subroutine nmcomp(BEHinteg, &
     character(len=8)    :: typmod(*)
     character(len=16)   :: compor(*), option
     real(kind=8) :: instam, instap
-    real(kind=8) :: epsm(neps), deps(neps)
+    real(kind=8) :: epsm_inp(neps), deps_inp(neps)
     real(kind=8) :: dsidep(merge(nsig, 6, nsig*neps .eq. ndsde), &
                            merge(neps, 6, nsig*neps .eq. ndsde))
     real(kind=8) :: carcri(*), sigm(nsig), vim(*), sigp(nsig), vip(*), angmas(*)
@@ -54,69 +54,72 @@ subroutine nmcomp(BEHinteg, &
 !     INTEGRATION DES LOIS DE COMPORTEMENT NON LINEAIRE
 ! --------------------------------------------------------------------------------------------------
 !
-! In  BEHinteg       : parameters for integration of behaviour
-! IN  FAMI,KPG,KSP  : FAMILLE ET NUMERO DU (SOUS)POINT DE GAUSS
-!     NDIM    : DIMENSION DE L'ESPACE
-!               3 : 3D , 2 : D_PLAN ,AXIS OU  C_PLAN
-!     TYPMOD(2): MODELISATION ex: 1:3D, 2:INCO
-!     IMATE   : ADRESSE DU MATERIAU CODE
-!     COMPOR  : COMPORTEMENT :  (1) = TYPE DE RELATION COMPORTEMENT
-!                               (2) = NB VARIABLES INTERNES / PG
-!                               (3) = HYPOTHESE SUR LES DEFORMATIONS
-!                               (4) etc... (voir grandeur COMPOR)
-!     CRIT    : CRITERES DE CONVERGENCE LOCAUX (voir grandeur CARCRI)
-!     INSTAM  : INSTANT DU CALCUL PRECEDENT
-!     INSTAP  : INSTANT DU CALCUL
-!     NEPS    : NOMBRE DE CMP DE EPSM ET DEPS (SUIVANT MODELISATION)
-!     EPSM    : DEFORMATIONS A L'INSTANT DU CALCUL PRECEDENT
-!     DEPS    : INCREMENT DE DEFORMATION TOTALE :
-!                DEPS(T) = DEPS(MECANIQUE(T)) + DEPS(DILATATION(T))
-!     NSIG    : NOMBRE DE CMP DE SIGM ET SIGP (SUIVANT MODELISATION)
-!     SIGM    : CONTRAINTES A L'INSTANT DU CALCUL PRECEDENT
-!     VIM     : VARIABLES INTERNES A L'INSTANT DU CALCUL PRECEDENT
-!     OPTION  : OPTION DEMANDEE : RIGI_MECA_TANG , FULL_MECA , RAPH_MECA
-!     ANGMAS  : LES TROIS ANGLES DU MOT_CLEF MASSIF (AFFE_CARA_ELEM),
-!               + UN REEL QUI VAUT 0 SI NAUTIQUIES OU 2 SI EULER
-!               + LES 3 ANGLES D'EULER
+! in  behinteg       : parameters for integration of behaviour
+! in  fami,kpg,ksp  : famille et numero du (sous)point de gauss
+!     ndim    : dimension de l'espace
+!               3 : 3d , 2 : d_plan ,axis ou  c_plan
+!     typmod(2): modelisation ex: 1:3d, 2:inco
+!     imate   : adresse du materiau code
+!     compor  : comportement :  (1) = type de relation comportement
+!                               (2) = nb variables internes / pg
+!                               (3) = hypothese sur les deformations
+!                               (4) etc... (voir grandeur compor)
+!     crit    : criteres de convergence locaux (voir grandeur carcri)
+!     instam  : instant du calcul precedent
+!     instap  : instant du calcul
+!     neps    : nombre de cmp de epsm et deps (suivant modelisation)
+!     epsm    : deformations a l'instant du calcul precedent
+!     deps    : increment de deformation totale :
+!                deps(t) = deps(mecanique(t)) + deps(dilatation(t))
+!     nsig    : nombre de cmp de sigm et sigp (suivant modelisation)
+!     sigm    : contraintes a l'instant du calcul precedent
+!     vim     : variables internes a l'instant du calcul precedent
+!     option  : option demandee : rigi_meca_tang , full_meca , raph_meca
+!     angmas  : les trois angles du mot_clef massif (affe_cara_elem),
+!               + un reel qui vaut 0 si nautiquies ou 2 si euler
+!               + les 3 angles d'euler
 !
-! OUT SIGP    : CONTRAINTES A L'INSTANT ACTUEL
-! VAR VIP     : VARIABLES INTERNES
-!                IN  : ESTIMATION (ITERATION PRECEDENTE OU LAG. AUGM.)
-!                OUT : EN T+
-!     NDSDE   : DIMENSION DE DSIDEP
-!     DSIDEP  : OPERATEUR TANGENT DSIG/DEPS OU DSIG/DF
-!     CODRET  : CODE RETOUR LOI DE COMPORMENT :
-!               CODRET=0 : TOUT VA BIEN
-!               CODRET=1 : ECHEC DANS L'INTEGRATION DE LA LOI
-!               CODRET=3 : SIZZ NON NUL (CONTRAINTES PLANES DEBORST)
+! out sigp    : contraintes a l'instant actuel
+! var vip     : variables internes
+!                in  : estimation (iteration precedente ou lag. augm.)
+!                out : en t+
+!     ndsde   : dimension de dsidep
+!     dsidep  : operateur tangent dsig/deps ou dsig/df
+!     codret  : code retour loi de comporment, par gravite decroissante
+!                   1 : echec fatal dans l'integration de la loi (resultats non utilisables)
+!                   3 : contraintes planes deborst non convergees (interdit la convergence)
+!                   2 : criteres de qualite de la loi non respectes (decoupage si convergence)
+!                   4 : domaine de validite de la loi non respecte (emission d'une alarme)
+!                   0 : tout va bien
 !
-! PRECISIONS :
+! precisions :
 ! -----------
-!  LES TENSEURS ET MATRICES SONT RANGES DANS L'ORDRE :
-!         XX YY ZZ SQRT(2)*XY SQRT(2)*XZ SQRT(2)*YZ
+!  les tenseurs et matrices sont ranges dans l'ordre :
+!         xx yy zz sqrt(2)*xy sqrt(2)*xz sqrt(2)*yz
 !
-! -SI DEFORMATION = SIMO_MIEHE
-!   EPSM(3,3)    GRADIENT DE LA TRANSFORMATION EN T-
-!   DEPS(3,3)    GRADIENT DE LA TRANSFORMATION DE T- A T+
+! -si deformation = simo_miehe
+!   epsm(3,3)    gradient de la transformation en t-
+!   deps(3,3)    gradient de la transformation de t- a t+
 !
-!  OUTPUT SI RESI (RAPH_MECA, FULL_MECA_*)
-!   VIP      VARIABLES INTERNES EN T+
-!   SIGP(6)  CONTRAINTE DE KIRCHHOFF EN T+ RANGES DANS L'ORDRE
-!         XX YY ZZ SQRT(2)*XY SQRT(2)*XZ SQRT(2)*YZ
+!  output si resi (raph_meca, full_meca_*)
+!   vip      variables internes en t+
+!   sigp(6)  contrainte de kirchhoff en t+ ranges dans l'ordre
+!         xx yy zz sqrt(2)*xy sqrt(2)*xz sqrt(2)*yz
 !
-!  OUTPUT SI RIGI (RIGI_MECA_*, FULL_MECA_*)
-!   DSIDEP(6,3,3) MATRICE TANGENTE D(TAU)/D(FD) * (FD)T
-!                 (AVEC LES RACINES DE 2)
+!  output si rigi (rigi_meca_*, full_meca_*)
+!   dsidep(6,3,3) matrice tangente d(tau)/d(fd) * (fd)t
+!                 (avec les racines de 2)
 !
-! -SINON (DEFORMATION = PETIT OU PETIT_REAC OU GDEF_...)
-!   EPSM(6), DEPS(6)  SONT LES DEFORMATIONS (LINEARISEES OU GREEN OU ..)
+! -sinon (deformation = petit ou petit_reac ou gdef_...)
+!   epsm(6), deps(6)  sont les deformations (linearisees ou green ou ..)
 !
 ! --------------------------------------------------------------------------------------------------
     aster_logical :: conv_cp, l_epsi_varc, lMatr, lVari, lSigm, lMatrPred, lPred, invert
-    aster_logical :: l_defo_meca, l_czm, l_large
+    aster_logical :: l_defo_meca, l_czm, l_large, l_deborst
     integer :: icp, numlc, nvi_all, nvi, k, l, ndimsi
+    integer :: codret_vali, codret_ldc, codret_cp
     real(kind=8):: prec
-    real(kind=8):: epsm_meca(neps), deps_meca(neps)
+    real(kind=8):: epsm_meca(neps), deps_meca(neps), epsm(neps), deps(neps)
     real(kind=8) :: dsidep_cp(merge(nsig, 6, nsig*neps .eq. ndsde), &
                               merge(neps, 6, nsig*neps .eq. ndsde))
     real(kind=8), allocatable:: vip_cp(:), ka3_max, k3a_max, c_max
@@ -136,8 +139,14 @@ subroutine nmcomp(BEHinteg, &
     if (present(materi_)) materi = materi_
     if (present(l_epsi_varc_)) l_epsi_varc = l_epsi_varc_
 
+    ! Variables protegees (in)
+    epsm = epsm_inp
+    deps = deps_inp
+
     ! Initialisation
-    codret = 0
+    codret_ldc = 0
+    codret_cp = 0
+    codret_vali = 0
     read (compor(NUME), '(I16)') numlc
     read (compor(NVAR), '(I16)') nvi_all
     read (compor(DEFO_LDC), '(A16)') defo_ldc
@@ -150,6 +159,22 @@ subroutine nmcomp(BEHinteg, &
     l_defo_meca = defo_ldc .eq. 'MECANIQUE'
     l_czm = typmod(2) .eq. 'ELEMJOIN'
     l_large = defo_comp .eq. 'SIMO_MIEHE' .or. defo_comp .eq. 'GROT_GDEP'
+    l_deborst = compor(PLANESTRESS) (1:7) .eq. 'DEBORST'
+
+! --------------------------------------------------------------------------------------------------
+!   Modification des parametres en entree
+! --------------------------------------------------------------------------------------------------
+
+    ! En contraintes planes, EPZZ est stocke dans les variables internes
+    ! a noter que le mecanisme vip_k contient vip_(k-1) est utilise en cours d'iterations
+    if (l_deborst) then
+        epsm(3) = vim(nvi_all)
+        if (.not. lVari) then
+            deps(3) = 0.d0
+        else
+            deps(3) = vip(nvi_all)-vim(nvi_all)
+        end if
+    end if
 
     ! En phase de prediction / defo_meca, deps est tel que deps_meca = 0 (strucure additive defos)
     if (l_defo_meca .and. lPred) then
@@ -167,7 +192,7 @@ subroutine nmcomp(BEHinteg, &
 !   Integration standard du comportement
 ! --------------------------------------------------------------------------------------------------
 
-    if (compor(PLANESTRESS) (1:7) .ne. 'DEBORST') then
+    if (.not. l_deborst) then
 
         call redece(BEHinteg, &
                     fami, kpg, ksp, ndim, typmod, &
@@ -175,9 +200,9 @@ subroutine nmcomp(BEHinteg, &
                     carcri, instam, instap, neps, epsm, &
                     deps, nsig, sigm, nvi_all, vim, option, &
                     angmas, numlc, sigp, vip, &
-                    ndsde, dsidep, codret)
+                    ndsde, dsidep, codret_ldc)
 
-        if (codret .eq. 1) goto 999
+        if (codret_ldc .eq. 1) goto 900
 
 ! --------------------------------------------------------------------------------------------------
 !  Resolution des contraintes planes sizz=0 par une methode de Newton pour les lois non equipees
@@ -203,14 +228,6 @@ subroutine nmcomp(BEHinteg, &
         else
             typ_crit = 'RELATIF'
             prec = -prec
-        end if
-
-        ! Estimation de la deformation epzz en utilisant le mecanisme vip_k contient vip_(k-1)
-        epsm(3) = vim(nvi+1)
-        if (.not. lVari) then
-            deps(3) = 0.d0
-        else
-            deps(3) = vip(nvi+1)-vim(nvi+1)
         end if
 
         ! S'il faut calculer les contraintes, determination de epzz par methode de Newton
@@ -240,11 +257,11 @@ subroutine nmcomp(BEHinteg, &
                             carcri, instam, instap, neps, epsm, &
                             deps, nsig, sigm, nvi, vim, option_cp, &
                             angmas, numlc, sigp, vip_cp, &
-                            ndsde, dsidep_cp, codret)
+                            ndsde, dsidep_cp, codret_ldc)
 
-                if (codret .eq. 1) then
+                if (codret_ldc .eq. 1) then
                     deallocate (vip_cp)
-                    goto 999
+                    goto 900
                 end if
 
                 ! Test de convergence
@@ -278,16 +295,16 @@ subroutine nmcomp(BEHinteg, &
                     carcri, instam, instap, neps, epsm, &
                     deps, nsig, sigm, nvi, vim, option, &
                     angmas, numlc, sigp, vip, &
-                    ndsde, dsidep, codret)
+                    ndsde, dsidep, codret_ldc)
 
-        if (codret .eq. 1) goto 999
+        if (codret_ldc .eq. 1) goto 900
 
-        ! Test de convergence pour le code retour
+        ! Test de convergence des contraintes planes pour le code retour (0=OK, 1=NON CVG)
         if (lSigm) then
             if (typ_crit .eq. 'ABSOLU') then
-                codret = merge(0, 3, abs(sigp(3)) .le. prec)
+                codret_cp = merge(0, 1, abs(sigp(3)) .le. prec)
             else
-                codret = merge(0, 3, abs(sigp(3)) .le. prec*maxval(abs(sigp(1:2*ndim))))
+                codret_cp = merge(0, 1, abs(sigp(3)) .le. prec*maxval(abs(sigp(1:2*ndim))))
             end if
         end if
 
@@ -320,7 +337,7 @@ subroutine nmcomp(BEHinteg, &
 
         ! Actualisation de la deformation epzz dans les variables internes
         if (lVari) then
-            vip(nvi+1) = epsm(3)+deps(3)
+            vip(nvi_all) = epsm(3)+deps(3)
         end if
 
     end if
@@ -344,7 +361,35 @@ subroutine nmcomp(BEHinteg, &
 !   Examen du domaine de validité
     call lcvali(fami, kpg, ksp, imate, materi, &
                 compor, ndim, epsm, deps, instam, &
-                instap, codret)
+                instap, codret_vali)
 
-999 continue
+900 continue
+
+! Traitement du code retour par ordre de gravite
+
+    ! La loi de comportement a echoue (les resultats n'ont pas de signification)
+    if (codret_ldc .eq. 1) then
+        codret = 1
+
+        ! Les contraintes planes n'ont pas converge : le resultat n'est pas acceptable
+    else if (codret_cp .eq. 1) then
+        codret = 3
+
+        ! Certaines qualites (criteres) ne sont pas respectees
+    else if (codret_ldc .eq. 2) then
+        codret = 2
+
+        ! Le domaine de validite du comportement n'est pas respecte
+    else if (codret_vali .eq. 4) then
+        codret = 4
+
+        ! Tout est satisfaisant
+    else if (codret_ldc .eq. 0 .and. codret_cp .eq. 0 .and. codret_vali .eq. 0) then
+        codret = 0
+
+        ! Situation non prevue
+    else
+        ASSERT(ASTER_FALSE)
+    end if
+
 end subroutine

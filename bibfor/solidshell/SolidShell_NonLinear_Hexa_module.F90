@@ -220,8 +220,8 @@ contains
         real(kind=8), dimension(SSH_SIZE_TENS, SSH_SIZE_TENS) :: dsidep
 !   ------------------------------------------------------------------------------------------------
 !
+        cod = 0
         if (behaPara%lSigm) then
-            codret = 0
             sigp = 0.d0
         end if
         if (behaPara%lVect) then
@@ -465,8 +465,8 @@ contains
         real(kind=8), dimension(SSH_SIZE_TENS, SSH_SIZE_TENS) :: dtde, dsidep
 !   ------------------------------------------------------------------------------------------------
 !
+        cod = 0
         if (behaPara%lSigm) then
-            codret = 0
             sigp = 0.d0
         end if
         if (behaPara%lVect) then
@@ -506,7 +506,6 @@ contains
         Ueff = 0.d0
         matrTang = 0.d0
         do kpg = 1, nbIntePoint
-            cod(kpg) = 0
             zeta = zr(jvCoor-1+3*kpg)
             poids = zr(jvWeight-1+kpg)
             jacob = poids*cellGeom%detJac0

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ interface
     subroutine nmcomp(BEHinteg, &
                       fami,  kpg,    ksp,    ndim,       typmod,       &
                       imate, compor, carcri, instam,     instap,       &
-                      neps,  epsm,   deps,   nsig,       sigm,         &
+                      neps,  epsm_inp,   deps_inp,   nsig,       sigm,         &
                       vim,   option, angmas, sigp,       vip,          &
                       ndsde, dsidep, codret, mult_comp_, l_epsi_varc_, &
                       materi_ )
@@ -40,17 +40,17 @@ interface
         real(kind=8) :: instam
         real(kind=8) :: instap
         integer :: neps
-        real(kind=8) :: epsm(*)
-        real(kind=8) :: deps(*)
+        real(kind=8) :: epsm_inp(neps)
+        real(kind=8) :: deps_inp(neps)
         integer :: nsig
-        real(kind=8) :: sigm(*)
+        real(kind=8) :: sigm(nsig)
         real(kind=8) :: vim(*)
         character(len=16) :: option
         real(kind=8) :: angmas(*)
-        real(kind=8) :: sigp(*)
+        real(kind=8) :: sigp(nsig)
         real(kind=8) :: vip(*)
         integer :: ndsde
-        real(kind=8) :: dsidep(*)
+        real(kind=8) :: dsidep(merge(nsig,6,nsig*neps.eq.ndsde),merge(neps,6,nsig*neps.eq.ndsde))
         integer :: codret
         character(len=16), optional, intent(in) :: mult_comp_
         aster_logical, optional, intent(in)     :: l_epsi_varc_

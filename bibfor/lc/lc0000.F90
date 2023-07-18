@@ -1237,7 +1237,7 @@ subroutine lc0000(BEHinteg, &
 !
 ! - Viscous regularisation
 !
-    if (l_regu_visc) then
+    if (l_regu_visc .and. codret .ne. 1) then
         ndimsi = 2*ndim
         ASSERT(.not. l_large)
         ASSERT(typmod(2) .eq. ' ' .or. typmod(2) .eq. 'GRADVARI')
@@ -1251,4 +1251,5 @@ subroutine lc0000(BEHinteg, &
                     dsidep(1:ndimsi, 1:ndimsi))
     end if
 
+    ASSERT(codret .ge. 0 .and. codret .le. 2)
 end subroutine

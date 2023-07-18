@@ -256,7 +256,7 @@ contains
 !
 ! -------- Test the code of the LDC
 !
-            if (cod(ipg) .ne. 0) goto 999
+            if (cod(ipg) .eq. 1) goto 999
 !
 ! ------- Compute rhs
 !
@@ -921,7 +921,7 @@ contains
 !
 ! ----- Test the code of the LDC
 !
-        if (cod .ne. 0) goto 999
+        if (cod .eq. 1) goto 999
 !
         if (.not. L_CORR(option)) then
             PK2_curr = PK2_prev
