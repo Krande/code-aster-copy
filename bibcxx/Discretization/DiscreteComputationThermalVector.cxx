@@ -37,8 +37,7 @@
 
 /** @brief Compute AFFE_CHAR_THER TEMP_IMPO */
 bool DiscreteComputation::addTherImposedTerms( ElementaryVectorRealPtr elemVect,
-                                               const ASTERDOUBLE time, const ASTERDOUBLE time_step,
-                                               const ASTERDOUBLE theta ) const {
+                                               const ASTERDOUBLE time_curr ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
 
@@ -76,7 +75,7 @@ bool DiscreteComputation::addTherImposedTerms( ElementaryVectorRealPtr elemVect,
                 calcul->setFiniteElementDescriptor( load_FEDesc );
                 calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
                 calcul->addInputField( name, impo_field );
-                calcul->addTimeField( "PTEMPSR", time, time_step, theta );
+                calcul->addTimeField( "PTEMPSR", time_curr, 0.0, -1.0 );
                 calcul->addOutputElementaryTerm( "PVECTTR",
                                                  std::make_shared< ElementaryTermReal >() );
                 calcul->compute();
@@ -103,7 +102,7 @@ bool DiscreteComputation::addTherImposedTerms( ElementaryVectorRealPtr elemVect,
 
 /** @brief Compute CHAR_THER_EVOL */
 FieldOnNodesRealPtr DiscreteComputation::getTransientThermalForces(
-    const ASTERDOUBLE time, const ASTERDOUBLE time_step, const ASTERDOUBLE theta,
+    const ASTERDOUBLE time_curr, const ASTERDOUBLE time_step, const ASTERDOUBLE theta,
     const FieldOnNodesRealPtr _previousNodalField ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
@@ -130,14 +129,15 @@ FieldOnNodesRealPtr DiscreteComputation::getTransientThermalForces(
 
     // Add input fields
     calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
-    calcul->addTimeField( "PTEMPSR", time, time_step, theta );
+    calcul->addTimeField( "PTEMPSR", time_curr, time_step, theta );
     calcul->addInputField( "PTEMPER", _previousNodalField );
 
     if ( currMater ) {
         calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
 
         if ( currMater->hasExternalStateVariable() ) {
-            calcul->addInputField( "PVARCPR", _phys_problem->getExternalStateVariables( time ) );
+            calcul->addInputField( "PVARCPR",
+                                   _phys_problem->getExternalStateVariables( time_curr ) );
         }
     }
 
@@ -163,7 +163,7 @@ FieldOnNodesRealPtr DiscreteComputation::getTransientThermalForces(
 
 /** @brief Compute CHAR_THER_EVOLNI */
 FieldOnNodesRealPtr DiscreteComputation::getNonLinearTransientThermalForces(
-    const FieldOnNodesRealPtr temp, const FieldOnNodesRealPtr temp_step,
+    const FieldOnNodesRealPtr temp_prev, const FieldOnNodesRealPtr temp_step,
     const ASTERDOUBLE time_prev, const ASTERDOUBLE time_step, const ASTERDOUBLE theta,
     const FieldOnCellsRealPtr &externVarCurr ) const {
 
@@ -192,8 +192,8 @@ FieldOnNodesRealPtr DiscreteComputation::getNonLinearTransientThermalForces(
     // Add input fields
     calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
     calcul->addTimeField( "PTEMPSR", time_prev + time_step, time_step, theta );
-    auto temp_curr = std::make_shared< FieldOnNodesReal >( *temp + *temp_step );
-    calcul->addInputField( "PTEMPER", temp );
+    auto temp_curr = std::make_shared< FieldOnNodesReal >( *temp_prev + *temp_step );
+    calcul->addInputField( "PTEMPER", temp_prev );
 
     if ( currMater ) {
         calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
@@ -232,7 +232,7 @@ FieldOnNodesRealPtr DiscreteComputation::getNonLinearTransientThermalForces(
 }
 
 bool DiscreteComputation::addTherNeumannTerms(
-    ElementaryVectorRealPtr elemVect, const ASTERDOUBLE time, const ASTERDOUBLE time_step,
+    ElementaryVectorRealPtr elemVect, const ASTERDOUBLE time_curr, const ASTERDOUBLE time_step,
     const ASTERDOUBLE theta, const FieldOnNodesRealPtr _previousNodalField ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
@@ -258,13 +258,11 @@ bool DiscreteComputation::addTherNeumannTerms(
 
     FieldOnCellsRealPtr externVar = nullptr;
     if ( currMater && currMater->hasExternalStateVariable() ) {
-        externVar = _phys_problem->getExternalStateVariables( time );
+        externVar = _phys_problem->getExternalStateVariables( time_curr );
     }
 
     auto calcul = std::make_unique< Calcul >( calcul_option );
     calcul->setModel( currModel );
-    calcul->clearInputs();
-    calcul->clearOutputs();
 
     auto therLoadReal = listOfLoads->getThermalLoadsReal();
     for ( const auto &load : therLoadReal ) {
@@ -285,7 +283,7 @@ bool DiscreteComputation::addTherNeumannTerms(
                 std::make_shared< FieldOnCellsReal >( model_FEDesc );
             // On cherche le champ FLUN. Si il existe on calcule l'option CHAR_THER_FLUN_R
             // Si il n'existe pas on suppose l'existence des champs pour calculer CHAR_THER_TEXT_R
-            CALLO_RSINCH( evol_char_name, para_flun, access_var, &time,
+            CALLO_RSINCH( evol_char_name, para_flun, access_var, &time_curr,
                           evol_flow_xyz_field->getName(), extr_right, extr_left, &stop, base,
                           &iret );
 
@@ -296,22 +294,22 @@ bool DiscreteComputation::addTherNeumannTerms(
                 FieldOnCellsRealPtr evol_ext_temp_field =
                     std::make_shared< FieldOnCellsReal >( model_FEDesc );
 
-                CALLO_RSINCH( evol_char_name, para_coefh, access_var, &time,
+                CALLO_RSINCH( evol_char_name, para_coefh, access_var, &time_curr,
                               evol_exchange_field->getName(), extr_right, extr_left, &stop, base,
                               &iret );
 
                 if ( iret >= 2 ) {
                     AS_ABORT( "Cannot find COEF_H in EVOL_CHAR " + evol_char_name + " at time " +
-                              std::to_string( time ) );
+                              std::to_string( time_curr ) );
                 }
 
-                CALLO_RSINCH( evol_char_name, para_text, access_var, &time,
+                CALLO_RSINCH( evol_char_name, para_text, access_var, &time_curr,
                               evol_ext_temp_field->getName(), extr_right, extr_left, &stop, base,
                               &iret );
 
                 if ( iret >= 2 ) {
                     AS_ABORT( "Cannot find T_EXT in EVOL_CHAR " + evol_char_name + " at time " +
-                              std::to_string( time ) );
+                              std::to_string( time_curr ) );
                 }
                 AS_ASSERT( _previousNodalField->exists() );
 
@@ -320,7 +318,7 @@ bool DiscreteComputation::addTherNeumannTerms(
                 calcul->clearInputs();
                 calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
                 calcul->addInputField( "PTEMPER", _previousNodalField );
-                calcul->addTimeField( "PTEMPSR", time, time_step, theta );
+                calcul->addTimeField( "PTEMPSR", time_curr, time_step, theta );
                 calcul->addInputField( "PCOEFHR", evol_exchange_field );
                 calcul->addInputField( "PT_EXTR", evol_ext_temp_field );
                 calcul->clearOutputs();
@@ -337,7 +335,7 @@ bool DiscreteComputation::addTherNeumannTerms(
                 calcul->setFiniteElementDescriptor( model_FEDesc );
                 calcul->clearInputs();
                 calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
-                calcul->addTimeField( "PTEMPSR", time, time_step, theta );
+                calcul->addTimeField( "PTEMPSR", time_curr, time_step, theta );
                 calcul->addInputField( "PFLUXNR", evol_flow_xyz_field );
                 calcul->clearOutputs();
                 calcul->addOutputElementaryTerm( "PVECTTR",
@@ -363,7 +361,7 @@ bool DiscreteComputation::addTherNeumannTerms(
             if ( _previousNodalField ) {
                 calcul->addInputField( "PTEMPER", _previousNodalField );
             }
-            calcul->addTimeField( "PTEMPSR", time, time_step, theta );
+            calcul->addTimeField( "PTEMPSR", time_curr, time_step, theta );
             calcul->addInputField( "PCOEFHR", exchange_field );
             calcul->addInputField( "PT_EXTR", ext_temp_field );
             calcul->clearOutputs();
@@ -383,7 +381,7 @@ bool DiscreteComputation::addTherNeumannTerms(
             calcul->setFiniteElementDescriptor( model_FEDesc );
             calcul->clearInputs();
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
-            calcul->addTimeField( "PTEMPSR", time, time_step, theta );
+            calcul->addTimeField( "PTEMPSR", time_curr, time_step, theta );
             calcul->addInputField( "PFLUXNR", flow_xyz_field );
             calcul->clearOutputs();
             calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >() );
@@ -402,7 +400,7 @@ bool DiscreteComputation::addTherNeumannTerms(
             calcul->setFiniteElementDescriptor( model_FEDesc );
             calcul->clearInputs();
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
-            calcul->addTimeField( "PTEMPSR", time, time_step, theta );
+            calcul->addTimeField( "PTEMPSR", time_curr, time_step, theta );
             calcul->addInputField( "PFLUXVR", flow_nor_field );
             calcul->clearOutputs();
             calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >() );
@@ -421,7 +419,7 @@ bool DiscreteComputation::addTherNeumannTerms(
             calcul->setFiniteElementDescriptor( model_FEDesc );
             calcul->clearInputs();
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
-            calcul->addTimeField( "PTEMPSR", time, time_step, theta );
+            calcul->addTimeField( "PTEMPSR", time_curr, time_step, theta );
             if ( externVar ) {
                 calcul->addInputField( "PVARCPR", externVar );
             }
@@ -442,7 +440,7 @@ bool DiscreteComputation::addTherNeumannTerms(
             calcul->setFiniteElementDescriptor( model_FEDesc );
             calcul->clearInputs();
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
-            calcul->addTimeField( "PTEMPSR", time, time_step, theta );
+            calcul->addTimeField( "PTEMPSR", time_curr, time_step, theta );
             if ( externVar ) {
                 calcul->addInputField( "PVARCPR", externVar );
             }
@@ -473,7 +471,7 @@ bool DiscreteComputation::addTherNeumannTerms(
             if ( _previousNodalField ) {
                 calcul->addInputField( "PTEMPER", _previousNodalField );
             }
-            calcul->addTimeField( "PTEMPSR", time, time_step, theta );
+            calcul->addTimeField( "PTEMPSR", time_curr, time_step, theta );
             calcul->addInputField( "PHECHPR", wall_exchange_field );
             calcul->clearOutputs();
             calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >() );
@@ -526,7 +524,7 @@ bool DiscreteComputation::addTherNeumannTerms(
             if ( _previousNodalField ) {
                 calcul->addInputField( "PTEMPER", _previousNodalField );
             }
-            calcul->addTimeField( "PTEMPSR", time, time_step, theta );
+            calcul->addTimeField( "PTEMPSR", time_curr, time_step, theta );
             calcul->setFiniteElementDescriptor( model_FEDesc );
             calcul->addInputField( "PCOEFHF", exchange_field );
             calcul->addInputField( "PT_EXTF", ext_temp_field );
@@ -547,7 +545,7 @@ bool DiscreteComputation::addTherNeumannTerms(
             calcul->setFiniteElementDescriptor( model_FEDesc );
             calcul->clearInputs();
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
-            calcul->addTimeField( "PTEMPSR", time, time_step, theta );
+            calcul->addTimeField( "PTEMPSR", time_curr, time_step, theta );
             calcul->addInputField( "PFLUXNF", flow_xyz_field );
             calcul->clearOutputs();
             calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >() );
@@ -566,7 +564,7 @@ bool DiscreteComputation::addTherNeumannTerms(
             calcul->setFiniteElementDescriptor( model_FEDesc );
             calcul->clearInputs();
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
-            calcul->addTimeField( "PTEMPSR", time, time_step, theta );
+            calcul->addTimeField( "PTEMPSR", time_curr, time_step, theta );
             calcul->addInputField( "PFLUXVF", flow_nor_field );
             calcul->clearOutputs();
             calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >() );
@@ -583,7 +581,7 @@ bool DiscreteComputation::addTherNeumannTerms(
             calcul->setOption( "CHAR_THER_SOUR_F" );
             calcul->setFiniteElementDescriptor( model_FEDesc );
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
-            calcul->addTimeField( "PTEMPSR", time, time_step, theta );
+            calcul->addTimeField( "PTEMPSR", time_curr, time_step, theta );
             if ( externVar ) {
                 calcul->addInputField( "PVARCPR", externVar );
             }
@@ -614,7 +612,7 @@ bool DiscreteComputation::addTherNeumannTerms(
             if ( _previousNodalField ) {
                 calcul->addInputField( "PTEMPER", _previousNodalField );
             }
-            calcul->addTimeField( "PTEMPSR", time, time_step, theta );
+            calcul->addTimeField( "PTEMPSR", time_curr, time_step, theta );
             calcul->addInputField( "PHECHPF", wall_exchange_field );
             calcul->clearOutputs();
             calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >() );
@@ -633,7 +631,7 @@ bool DiscreteComputation::addTherNeumannTerms(
             calcul->setFiniteElementDescriptor( model_FEDesc );
             calcul->clearInputs();
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
-            calcul->addTimeField( "PTEMPSR", time, time_step, theta );
+            calcul->addTimeField( "PTEMPSR", time_curr, time_step, theta );
 
             if ( currMater ) {
                 calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
@@ -663,7 +661,7 @@ bool DiscreteComputation::addTherNeumannTerms(
  * @brief Compute elementary forces for internal forces (RAPH_THER)
  */
 FieldOnNodesRealPtr DiscreteComputation::getInternalThermalForces(
-    const FieldOnNodesRealPtr temp, const FieldOnNodesRealPtr temp_step,
+    const FieldOnNodesRealPtr temp_prev, const FieldOnNodesRealPtr temp_step,
     const ASTERDOUBLE &time_prev, const ASTERDOUBLE &time_step,
     const FieldOnCellsRealPtr &externVarCurr, const VectorString &groupOfCells ) const {
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
@@ -717,8 +715,8 @@ FieldOnNodesRealPtr DiscreteComputation::getInternalThermalForces(
     calcul->addTimeField( "PTEMPSR", time_prev + time_step, time_step, 0.0 );
 
     // Current Thermal Field
-    auto temp_curr = std::make_shared< FieldOnNodesReal >( *temp + *temp_step );
-    calcul->addInputField( "PTEMPER", temp );
+    auto temp_curr = std::make_shared< FieldOnNodesReal >( *temp_prev + *temp_step );
+    calcul->addInputField( "PTEMPER", temp_prev );
     calcul->addInputField( "PTEMPEI", temp_curr );
 
     // Add output elementary terms
@@ -739,7 +737,7 @@ FieldOnNodesRealPtr DiscreteComputation::getInternalThermalForces(
  * @brief Compute elementary forces for capacitiy forces (MASS_THER_RESI)
  */
 FieldOnNodesRealPtr DiscreteComputation::getNonLinearCapacityForces(
-    const FieldOnNodesRealPtr temp, const FieldOnNodesRealPtr temp_step,
+    const FieldOnNodesRealPtr temp_prev, const FieldOnNodesRealPtr temp_step,
     const ASTERDOUBLE &time_prev, const ASTERDOUBLE &time_step,
     const FieldOnCellsRealPtr &externVarCurr, const VectorString &groupOfCells ) const {
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
@@ -793,8 +791,8 @@ FieldOnNodesRealPtr DiscreteComputation::getNonLinearCapacityForces(
     calcul->addTimeField( "PTEMPSR", time_prev + time_step, time_step, 0.0 );
 
     // Current Thermal Field
-    auto temp_curr = std::make_shared< FieldOnNodesReal >( *temp + *temp_step );
-    calcul->addInputField( "PTEMPER", temp );
+    auto temp_curr = std::make_shared< FieldOnNodesReal >( *temp_prev + *temp_step );
+    calcul->addInputField( "PTEMPER", temp_prev );
     calcul->addInputField( "PTEMPEI", temp_curr );
 
     // Add output elementary terms

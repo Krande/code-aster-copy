@@ -39,7 +39,7 @@
 /** @brief Compute internal forces, stress and internal state variables */
 std::tuple< FieldOnCellsLongPtr, ASTERINTEGER, FieldOnCellsRealPtr, FieldOnCellsRealPtr,
             FieldOnNodesRealPtr >
-DiscreteComputation::getInternalForces( const FieldOnNodesRealPtr displ,
+DiscreteComputation::getInternalForces( const FieldOnNodesRealPtr displ_prev,
                                         const FieldOnNodesRealPtr displ_step,
                                         const FieldOnCellsRealPtr stress,
                                         const FieldOnCellsRealPtr internVar,
@@ -64,7 +64,7 @@ DiscreteComputation::getInternalForces( const FieldOnNodesRealPtr displ,
     FiniteElementDescriptorPtr FEDesc = calcul->getFiniteElementDescriptor();
 
     // Set current physical state
-    calcul->addInputField( "PDEPLMR", displ );
+    calcul->addInputField( "PDEPLMR", displ_prev );
     calcul->addInputField( "PDEPLPR", displ_step );
     calcul->addInputField( "PCONTMR", stress );
     calcul->addInputField( "PVARIMR", internVar );
@@ -122,7 +122,7 @@ DiscreteComputation::getInternalForces( const FieldOnNodesRealPtr displ,
 
 /** @brief Compute AFFE_CHAR_MECA DDL_IMPO */
 bool DiscreteComputation::addMecaImposedTerms( ElementaryVectorRealPtr elemVect,
-                                               const ASTERDOUBLE time ) const {
+                                               const ASTERDOUBLE time_curr ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
 
@@ -144,14 +144,15 @@ bool DiscreteComputation::addMecaImposedTerms( ElementaryVectorRealPtr elemVect,
     std::string modelName = ljust( currModel->getName(), 24 );
     std::string typres( "R" );
 
-    CALLO_VEDIME( modelName, nameLcha, nameInfc, &time, typres, vectElemName );
+    CALLO_VEDIME( modelName, nameLcha, nameInfc, &time_curr, typres, vectElemName );
 
     return true;
 }
 
 /** @brief Compute CHAR_MECA */
 bool DiscreteComputation::addMecaNeumannTerms( ElementaryVectorRealPtr elemVect,
-                                               const ASTERDOUBLE time, const ASTERDOUBLE time_delta,
+                                               const ASTERDOUBLE time_curr,
+                                               const ASTERDOUBLE time_delta,
                                                const ASTERDOUBLE time_theta ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
@@ -185,12 +186,12 @@ bool DiscreteComputation::addMecaNeumannTerms( ElementaryVectorRealPtr elemVect,
     std::string externVarName( " " );
     FieldOnCellsRealPtr externVar = nullptr;
     if ( currMater->hasExternalStateVariable() ) {
-        externVar = _phys_problem->getExternalStateVariables( time );
+        externVar = _phys_problem->getExternalStateVariables( time_curr );
         externVarName = externVar->getName();
     }
     externVarName.resize( 19, ' ' );
 
-    CALLO_VECHME_WRAP( stop, modelName, nameLcha, nameInfc, &time, &time_delta, &time_theta,
+    CALLO_VECHME_WRAP( stop, modelName, nameLcha, nameInfc, &time_curr, &time_delta, &time_theta,
                        currElemCharaName, materName, currCodedMaterName, vectElemName,
                        externVarName );
 
@@ -198,7 +199,7 @@ bool DiscreteComputation::addMecaNeumannTerms( ElementaryVectorRealPtr elemVect,
 }
 
 FieldOnNodesRealPtr DiscreteComputation::getContactForces(
-    const MeshCoordinatesFieldPtr geom, const FieldOnNodesRealPtr displ,
+    const MeshCoordinatesFieldPtr geom, const FieldOnNodesRealPtr displ_prev,
     const FieldOnNodesRealPtr displ_step, const ASTERDOUBLE &time_prev,
     const ASTERDOUBLE &time_step, const FieldOnCellsRealPtr data,
     const FieldOnNodesRealPtr coef_cont, const FieldOnNodesRealPtr coef_frot ) const {
@@ -214,7 +215,7 @@ FieldOnNodesRealPtr DiscreteComputation::getContactForces(
     // Set input field
     calcul->addInputField( "PGEOMER", _phys_problem->getMesh()->getCoordinates() );
     calcul->addInputField( "PGEOMCR", geom );
-    calcul->addInputField( "PDEPL_M", displ );
+    calcul->addInputField( "PDEPL_M", displ_prev );
     calcul->addInputField( "PDEPL_P", displ_step );
     calcul->addInputField( "PCONFR", data );
     calcul->addInputField( "PCCONTR", coef_cont );

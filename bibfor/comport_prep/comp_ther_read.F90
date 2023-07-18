@@ -28,6 +28,7 @@ subroutine comp_ther_read(list_vale)
 #include "asterc/lcdiscard.h"
 #include "asterfort/assert.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/jedetr.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
@@ -58,7 +59,9 @@ subroutine comp_ther_read(list_vale)
 !
 ! - List contruction
 !
+    call jedetr(list_vale(1:19)//'.VALI')
     call wkvect(list_vale(1:19)//'.VALI', 'V V I', nocc, j_lvali)
+    call jedetr(list_vale(1:19)//'.VALK')
     call wkvect(list_vale(1:19)//'.VALK', 'V V K24', nocc, j_lvalk)
 !
 ! - Read informations

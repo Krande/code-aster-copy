@@ -831,12 +831,12 @@ class DiscreteComputation:
     def __init__(self, arg0):
         pass
 
-    def getAcousticDirichletBC(self, time=0.0):
+    def getAcousticDirichletBC(self, time_curr=0.0):
         """Return the imposed acoustic vector used to remove imposed DDL
         *for internal use - prefer to use getDirichletBC*
 
         Arguments:
-              time (float): Current time (default 0.0)
+              time_curr (float): Current time (default 0.0)
 
         Returns:
               FieldOnNodesComplex: imposed accoustic vector
@@ -854,13 +854,13 @@ class DiscreteComputation:
         """
 
     def getContactForces(
-        self, geom, displ, displ_step, time_prev, time_step, data, coef_cont, coef_frot
+        self, geom, displ_prev, displ_step, time_prev, time_step, data, coef_cont, coef_frot
     ):
         """Compute contact and friction forces
 
         Arguments:
             geom (MeshCoordinatesField): coordinates of mesh used to compute normal
-            displ (FieldOnNodes): displacement field at begin of current time
+            displ_prev (FieldOnNodes): displacement field at begin of current time
             displ_step (FieldOnNodes): field of increment of displacement
             time_prev (float): time at begin of the step
             time_curr (float): delta time between begin and end of the step
@@ -873,13 +873,13 @@ class DiscreteComputation:
         """
 
     def getContactMatrix(
-        self, geom, displ, displ_step, time_prev, time_step, data, coef_cont, coef_frot
+        self, geom, displ_prev, displ_step, time_prev, time_step, data, coef_cont, coef_frot
     ):
         """Compute contact matrix
 
         Arguments:
             geom (MeshCoordinatesField): coordinates of mesh used to compute normal
-            displ (FieldOnNodes): displacement field at begin of current time
+            displ_prev (FieldOnNodes): displacement field at begin of current time
             displ_step (FieldOnNodes): field of increment of displacement
             time_prev (float): time at begin of the step
             time_curr (float): delta time between begin and end of the step
@@ -932,12 +932,15 @@ class DiscreteComputation:
             ElementaryMatrix: elementary matrices
         """
 
-    def getElasticStiffnessMatrix(self, time=0.0, fourierMode=-1, groupOfCells=[], with_dual=True):
+    def getElasticStiffnessMatrix(
+        self, time_curr=0.0, fourierMode=-1, groupOfCells=[], with_dual=True
+    ):
         """Return the elementary matrices for elastic Stiffness matrix.
         Option RIGI_MECA.
 
         Arguments:
-              time (float): Current time for external state variable evaluation (default: 0.0)
+              time_curr (float): Current time for external state variable
+                evaluation (default: 0.0)
               fourierMode (int): Fourier mode (default: -1)
               groupOfCells (list[str]): compute matrices on given groups of cells.
                   If it empty, the full model is used
@@ -946,20 +949,20 @@ class DiscreteComputation:
               ElementaryMatrix: elementary elastic Stiffness matrix
         """
 
-    def getExchangeThermalMatrix(self, time):
+    def getExchangeThermalMatrix(self, time_curr):
         """Return the elementary matices for exhange thermal matrix.
 
         Arguments:
-            time (float): Current time
+            time_curr (float): Current time
         Returns:
             ElementaryMatrix: elementary exchange thermal matrices
         """
 
-    def getExternalStateVariablesForces(self, time, externVar=None, mask=None):
+    def getExternalStateVariablesForces(self, time_curr, externVar=None, mask=None):
         """Compute load from external state variables
 
         Arguments:
-              time (float): Current time
+              time_curr (float): Current time
               externVar (FieldOnCellsRealPtr): mask to assemble
               mask (FieldOnCellsLongPtr): mask to assemble
 
@@ -967,24 +970,26 @@ class DiscreteComputation:
               FieldOnNodes: load from external state variables
         """
 
-    def getFluidStructureMassMatrix(self, time=0.0, groupOfCells=[]):
+    def getFluidStructureMassMatrix(self, time_curr=0.0, groupOfCells=[]):
         """Return the elementary matrices for fluid-structure mass matrix.
         Option MASS_FLUI_STRUC.
 
         Arguments:
-              time (float): Current time for external state variable evaluation (default: 0.0)
+              time_curr (float): Current time for external state variable
+                evaluation (default: 0.0)
               groupOfCells (list[str]): compute matrices on given groups of cells.
                   If it empty, the full model is used
         Returns:
               ElementaryMatrixReal: elementary fluid-structure mass matrix
         """
 
-    def getFluidStructureStiffnessMatrix(self, time=0.0, fourierMode=-1, groupOfCells=[]):
+    def getFluidStructureStiffnessMatrix(self, time_curr=0.0, fourierMode=-1, groupOfCells=[]):
         """Return the elementary matrices for fluid-structure stiffness matrix.
         Option RIGI_FLUI_STRUC.
 
         Arguments:
-              time (float): Current time for external state variable evaluation (default: 0.0)
+              time_curr (float): Current time for external state variable
+                evaluation (default: 0.0)
               fourierMode (int): Fourier mode (default: -1)
               groupOfCells (list[str]): compute matrices on given groups of cells.
                   If it empty, the full model is used
@@ -1030,13 +1035,14 @@ class DiscreteComputation:
             ElementaryMatrixReal: elementary gyroscopic rigidity matrix
         """
 
-    def getHystereticStiffnessMatrix(self, stiffnessMatrix, time=0.0, groupOfCells=[]):
+    def getHystereticStiffnessMatrix(self, stiffnessMatrix, time_curr=0.0, groupOfCells=[]):
         """Return the elementary matrices for viscoelastic Stiffness matrix.
         Option RIGI_MECA_HYST.
 
         Arguments:
             stiffnessMatrix : elementary stiffness matrix
-            time (float): Current time for external state variable evaluation (default: 0.0)
+            time_curr (float): Current time for external state variable
+                evaluation (default: 0.0)
             groupOfCells (list[str]): compute matrices on given groups of cells.
                 If it empty, the full model is used
         Returns:
@@ -1072,43 +1078,24 @@ class DiscreteComputation:
             ElementaryMatrixReal: impedance wave matrix
         """
 
-    def getImposedDualBC(self, *args, **kwargs):
-        """Overloaded function.
+    def getImposedDualBC(self, time_curr=0.0):
+        """Return the imposed nodal BC assembled vector
 
-        1. getImposedDualBC(self: libaster.DiscreteComputation, time: float, time_step: float, theta: float) -> FieldOnNodes<double>
+        Arguments:
+              time_curr (float): Current time (default: 0.0)
 
-
-              Return the imposed nodal BC assembled vector
-
-              Arguments:
-                    time (float): Current time
-                    time_step (float): Time increment
-                    theta (float): Theta parameter for integration
-
-              Returns:
-                    FieldOnNodes: imposed dual field
-
-
-        2. getImposedDualBC(self: libaster.DiscreteComputation, time: float) -> FieldOnNodes<double>
-
-
-              Return the imposed nodal BC assembled vector
-
-              Arguments:
-                    time (float): Current time
-
-              Returns:
-                    FieldOnNodes: imposed dual field
+        Returns:
+              FieldOnNodes: imposed dual field
         """
 
-    def getIncrementalDirichletBC(self, time, disp):
+    def getIncrementalDirichletBC(self, time_curr, disp):
         """Return the incremental imposed displacement vector used to remove imposed DDL
         for incremental resolution.
 
-        incr_disp = getDirichletBC(time) - disp, with 0.0 for DDL not imposed
+        incr_disp = getDirichletBC(time_curr) - disp, with 0.0 for DDL not imposed
 
         Arguments:
-              time (float): Current time
+              time_curr (float): Current time
               disp (FieldOnNodes): displacement field at current time
 
         Returns:
@@ -1117,7 +1104,7 @@ class DiscreteComputation:
 
     def getInternalForces(
         self,
-        displ,
+        displ_prev,
         displ_step,
         stress,
         internVar,
@@ -1130,12 +1117,12 @@ class DiscreteComputation:
         """Compute internal forces (integration of behaviour)
 
         Arguments:
-            displ (FieldOnNodes): displacement field at begin of current time
+            displ_prev (FieldOnNodes): displacement field at begin of current time
             displ_step (FieldOnNodes): field of increment of displacement
             stress (FieldOnCells): field of stress at begin of current time
             internVar (FieldOnCells): field of internal state variables at begin of current time
             time_prev (float): time at begin of the step
-            time_curr (float): delta time between begin and end of the step
+            time_step (float): delta time between begin and end of the step
             externVarPrev (FieldOnCells): external state variables at begin of current time
             externVarCurr (FieldOnCells): internal state variables at end of current time
             groupOfCells (list[str]): compute matrices on given groups of cells.
@@ -1148,24 +1135,44 @@ class DiscreteComputation:
             field of internal forces (FieldOnNodesReal),
         """
 
-    def getLinearCapacityMatrix(self, time, groupOfCells=[]):
-        """Return the elementary matrices for linear Capacity matrix in thermal computation.
-        Option MASS_THER.
+    def getInternalThermalForces(
+        self, temp_prev, temp_step, time_prev, time_step, varc_curr=None, groupOfCells=[]
+    ):
+        """Compute internal thermal forces (integration of behaviour)
+        Option RAPH_THER.
 
         Arguments:
-            time (float): current time to evaluate rho_cp
+            temp_prev (FieldOnNodes): thermal field at begin of current time
+            temp_step (FieldOnNodes): field of increment of temperature
+            time_prev (float): time at begin of the step
+            time_step (float): delta time between begin and end of the step
+            externVarCurr (FieldOnCells): external state variables at end of current time
             groupOfCells (list[str]): compute matrices on given groups of cells.
                 If it empty, the full model is used
         Returns:
             ElementaryMatrix: elementary mass matrix
         """
 
-    def getLinearConductivityMatrix(self, time, fourierMode=0, groupOfCells=[], with_dual=True):
+    def getLinearCapacityMatrix(self, time_curr, groupOfCells=[]):
+        """Return the elementary matrices for linear Capacity matrix in thermal computation.
+        Option MASS_THER.
+
+        Arguments:
+            time_curr (float): current time to evaluate rho_cp
+            groupOfCells (list[str]): compute matrices on given groups of cells.
+                If it empty, the full model is used
+        Returns:
+            ElementaryMatrix: elementary mass matrix
+        """
+
+    def getLinearConductivityMatrix(
+        self, time_curr, fourierMode=0, groupOfCells=[], with_dual=True
+    ):
         """Return the elementary matices for linear thermal matrix.
         Option RIGI_THER.
 
         Arguments:
-              time (float): Current time
+              time_curr (float): Current time
               fourierMode (int): Fourier mode (default: -1)
               groupOfCells (list[str]): compute matrices on given groups of cells.
                 If it empty, the full model is used
@@ -1190,7 +1197,7 @@ class DiscreteComputation:
         self,
         getMechanicalMassMatrix=None,
         stiffnessMatrix=None,
-        time=0.0,
+        time_curr=0.0,
         groupOfCells=[],
         flui_int=1,
         onde_flui=1,
@@ -1201,7 +1208,8 @@ class DiscreteComputation:
         Arguments:
             getMechanicalMassMatrix : elementary mass matrix
             stiffnessMatrix : elementary stiffness matrix
-            time (float): Current time for external state variable evaluation (default: 0.0)
+            time_curr (float): Current time for external state variable
+                evaluation (default: 0.0)
             groupOfCells (list[str]): compute matrices on given groups of cells.
                 If it empty, the full model is used
             flui_int (int): integer to activate damping impedance fluid matrix
@@ -1210,41 +1218,92 @@ class DiscreteComputation:
             ElementaryMatrixReal: elementary damping matrix
         """
 
-    def getMechanicalDirichletBC(self, time=0.0):
+    def getMechanicalDirichletBC(self, time_curr=0.0):
         """Return the imposed displacement vector used to remove imposed DDL
         *for internal use - prefer to use getDirichletBC*
 
         Arguments:
-              time (float): Current time (default 0.0)
+              time_curr (float): Current time (default 0.0)
 
         Returns:
               FieldOnNodesReal: imposed displacement vector
         """
 
-    def getMechanicalMassMatrix(self, diagonal, time=0.0, groupOfCells=[]):
+    def getMechanicalMassMatrix(self, diagonal, time_curr=0.0, groupOfCells=[]):
         """Return the elementary matrices for mechanical mass matrix
         Option MASS_MECA.
 
         Arguments:
             diagonal (bool) : True for diagonal mass matrix else False.
-            time (float): Current time for external state variable evaluation (default: 0.0)
+            time_curr (float): Current time for external state variable
+                evaluation (default: 0.0)
             groupOfCells (list[str]): compute matrices on given groups of cells.
                 If it empty, the full model is used
         Returns:
             ElementaryMatrix: elementary mass matrix
         """
 
-    def getNeumannForces(self, time=0.0, time_step=0.0, theta=1.0, previousPrimalField=None):
+    def getNeumannForces(self, time_curr=0.0, time_step=0.0, theta=1.0, previousPrimalField=None):
         """Return the Neumann forces vector
 
         Arguments:
-              time (float): Current time
+              time_curr (float): Current time
               time_step (float): Time increment
               theta (float): Theta parameter for time-integration
               previousPrimalField (fieldOnNodesReal): solution field at previous time
 
         Returns:
               FieldOnNodes: Neumann forces vector
+        """
+
+    def getNonLinearCapacityForces(
+        self, temp_prev, temp_step, time_prev, time_step, varc_curr=None, groupOfCells=[]
+    ):
+        """Compute internal thermal forces (integration of behaviour)
+        Option MASS_THER_RESI.
+
+        Arguments:
+            temp_prev (FieldOnNodes): thermal field at begin of current time
+            temp_step (FieldOnNodes): field of increment of temperature
+            time_prev (float): time at begin of the step
+            time_step (float): delta time between begin and end of the step
+            externVarCurr (FieldOnCells): external state variables at end of current time
+            groupOfCells (list[str]): compute matrices on given groups of cells.
+                If it empty, the full model is used
+        Returns:
+            ElementaryMatrix: elementary mass matrix
+        """
+
+    def getNonLinearCapacityMatrix(self, temp_prev, temp_step, varc_curr=None, groupOfCells=[]):
+        """Return the elementary matrices for nonlinear Capacity matrix in thermal computation.
+        Option MASS_THER_TANG.
+
+        Arguments:
+            temp_prev (FieldOnNodes): thermal field at begin of current time
+            temp_step (FieldOnNodes): field of increment of temperature
+            externVarCurr (FieldOnCells): external state variables at end of current time
+            groupOfCells (list[str]): compute matrices on given groups of cells.
+                If it empty, the full model is used
+        Returns:
+            ElementaryMatrix: elementary mass matrix
+        """
+
+    def getNonLinearTransientThermalForces(
+        self, temp_prev, temp_step, time_prev, time_step, theta, varc_curr=None
+    ):
+        """Compute nonlinear Transient Thermal Load
+        Option CHAR_THER_EVOLNI.
+
+        Arguments:
+            temp_prev (FieldOnNodes): thermal field at begin of current time
+            temp_step (FieldOnNodes): field of increment of temperature
+            time_prev (float): time at begin of the step
+            time_step (float): delta time between begin and end of the step
+            theta (float): Theta parameter for integration
+            externVarCurr (FieldOnCells): external state variables at end of current time
+
+        Returns:
+            FieldOnNodes: load
         """
 
     def getPhysicalProblem(self):
@@ -1256,7 +1315,7 @@ class DiscreteComputation:
 
     def getPredictionTangentStiffnessMatrix(
         self,
-        displ,
+        displ_prev,
         displ_step,
         stress,
         internVar,
@@ -1269,7 +1328,7 @@ class DiscreteComputation:
         """Compute jacobian matrix for Newton algorithm, Euler prediction
 
         Arguments:
-            displ (FieldOnNodes): displacement field at begin of current time
+            displ_prev (FieldOnNodes): displacement field at begin of current time
             displ_step (FieldOnNodes): field of increment of displacement
             stress (FieldOnCells): field of stress at begin of current time
             internVar (FieldOnCells): internal state variables at begin of current time
@@ -1296,9 +1355,26 @@ class DiscreteComputation:
             ElementaryMatrixReal: elementary rotational rigidity matrix
         """
 
+    def getTangentConductivityMatrix(
+        self, temp_prev, temp_step, varc_curr=None, groupOfCells=[], with_dual=True
+    ):
+        """Return the elementary matrices for tangent conductivity.
+        Option MASS_THER_TANG.
+
+        Arguments:
+            temp_prev (FieldOnNodes): thermal field at begin of current time
+            temp_step (FieldOnNodes): field of increment of temperature
+            externVarCurr (FieldOnCells): external state variables at end of current time
+            groupOfCells (list[str]): compute matrices on given groups of cells.
+                If it empty, the full model is used
+            with_dual (bool): compute dual terms or not (default: True)
+        Returns:
+            ElementaryMatrix: elementary mass matrix
+        """
+
     def getTangentStiffnessMatrix(
         self,
-        displ,
+        displ_prev,
         displ_step,
         stress,
         internVar,
@@ -1311,7 +1387,7 @@ class DiscreteComputation:
         """Compute jacobian matrix for Newton algorithm
 
         Arguments:
-            displ (FieldOnNodes): displacement field at begin of current time
+            displ_prev (FieldOnNodes): displacement field at begin of current time
             displ_step (FieldOnNodes): field of increment of displacement
             stress (FieldOnCells): field of stress at begin of current time
             internVar (FieldOnCells): internal state variables at begin of current time
@@ -1327,28 +1403,28 @@ class DiscreteComputation:
             elementary tangent matrix (ElementaryMatrixDisplacementReal)
         """
 
-    def getThermalDirichletBC(self, time=0.0):
+    def getThermalDirichletBC(self, time_curr=0.0):
         """Return the imposed thermal vector used to remove imposed DDL
         *for internal use - prefer to use getDirichletBC*
 
         Arguments:
-              time (float): Current time (default 0.0)
+              time_curr (float): Current time (default 0.0)
 
         Returns:
               FieldOnNodesReal: imposed thermal vector
         """
 
-    def getTransientThermalForces(self, time, time_step, theta, previousPrimalField=None):
+    def getTransientThermalForces(self, time_curr, time_step, theta, previousPrimalField=None):
         """Compute Transient Thermal Load
 
         Arguments:
-              time (float): Current time
+              time_curr (float): Current time
               time_step (float): Time increment
               theta (float): Theta parameter for integration
               previousPrimalField (fieldOnNodesReal): solution field at previous time
 
         Returns:
-              FieldOnNodes: load from external state variables
+              FieldOnNodes: load
         """
 
 
