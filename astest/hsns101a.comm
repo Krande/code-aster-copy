@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -325,6 +325,7 @@ U3 = STAT_NON_LINE(
     INCREMENT=_F(LIST_INST=LINST),
     CONVERGENCE=_F(ITER_GLOB_MAXI=50, ARRET="OUI"),
     NEWTON=_F(REAC_INCR=1, MATRICE="TANGENTE", REAC_ITER=2),
+    RECH_LINEAIRE=_F(RESI_LINE_RELA=0.01, ITER_LINE_MAXI=15),
 )
 
 CALC_CHAMP(reuse=U3, RESULTAT=U3, DEFORMATION=("EPSP_ELNO"))
@@ -404,6 +405,7 @@ U4 = STAT_NON_LINE(
     INCREMENT=_F(LIST_INST=LINST),
     CONVERGENCE=_F(ITER_GLOB_MAXI=50, ARRET="OUI"),
     NEWTON=_F(REAC_INCR=1, MATRICE="TANGENTE", REAC_ITER=1),
+    RECH_LINEAIRE=_F(RESI_LINE_RELA=0.01, ITER_LINE_MAXI=15),
 )
 
 CALC_CHAMP(reuse=U4, RESULTAT=U4, DEFORMATION=("EPSP_ELNO"))

@@ -73,7 +73,7 @@ subroutine lc8028(BEHinteg, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call kitPrepBehaviour(compor, compor_creep, compor_plas)
+    call kitPrepBehaviour(compor, nvi, compor_creep, compor_plas)
 !
 ! - Compute behaviour
 !

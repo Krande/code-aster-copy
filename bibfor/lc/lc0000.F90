@@ -20,9 +20,9 @@
 subroutine lc0000(BEHinteg, &
                   fami, kpg, ksp, ndim, typmod, &
                   l_epsi_varc, imate, materi, compor, mult_comp, &
-                  carcri, instam, instap, neps, epsm, &
-                  deps, nsig, sigm_all, vim, option, &
-                  angmas, cp, numlc, sigp, vip, &
+                  carcri, instam, instap, neps, epsm_tot, &
+                  deps_tot, nsig, sigm_all, vim, option, &
+                  angmas, numlc, sigp, vip, &
                   ndsde, dsidep, icomp, nvi_all, codret)
 !
     use calcul_module, only: calcul_status
@@ -164,7 +164,7 @@ subroutine lc0000(BEHinteg, &
     integer :: neps, nsig, ndsde
     real(kind=8) :: carcri(*), angmas(3)
     real(kind=8) :: instam, instap
-    real(kind=8) :: epsm(neps), deps(neps)
+    real(kind=8) :: epsm_tot(neps), deps_tot(neps)
     real(kind=8) :: sigm_all(nsig), sigp(nsig)
     real(kind=8) :: vim(nvi_all), vip(nvi_all)
     real(kind=8) :: dsidep(merge(nsig, 6, nsig*neps .eq. ndsde), &
@@ -174,7 +174,6 @@ subroutine lc0000(BEHinteg, &
     character(len=16), intent(in) :: mult_comp
     character(len=8) :: typmod(*)
     character(len=*) :: fami
-    aster_logical :: cp
     integer :: icomp
     integer :: numlc
     integer :: codret
@@ -210,7 +209,6 @@ subroutine lc0000(BEHinteg, &
 !     ANGMAS  : LES TROIS ANGLES DU MOT_CLEF MASSIF (AFFE_CARA_ELEM),
 !               + UN REEL QUI VAUT 0 SI NAUTIQUIES OU 2 SI EULER
 !               + LES 3 ANGLES D'EULER
-!     CP      : LOGIQUE = VRAI EN CONTRAINTES PLANES DEBORST
 !     NUMLC   : NUMERO DE LOI DE COMPORTEMENT ISSUE DU CATALOGUE DE LC
 !     ICOMP   : COMPTEUR DE REDECOUPAGE PRODUIT PAR REDECE
 !     NVI_ALL : NOMBRE DE VARIABLES INTERNES DU POINT D'INTEGRATION
@@ -224,7 +222,7 @@ subroutine lc0000(BEHinteg, &
 !     CODRET  : CODE RETOUR LOI DE COMPORMENT :
 !               CODRET=0 : TOUT VA BIEN
 !               CODRET=1 : ECHEC DANS L'INTEGRATION DE LA LOI
-!               CODRET=3 : SIZZ NON NUL (CONTRAINTES PLANES DEBORST)
+!               CODRET=2 : LOI OK MAIS UNE CONDITION INTERDIT LA CONVERGENCE GLOBALE
 !
 ! PRECISIONS :
 ! -----------
@@ -274,13 +272,16 @@ subroutine lc0000(BEHinteg, &
     aster_logical :: l_pred, l_czm, l_defo_meca, l_large, lVari, lSigm, lMatr
     aster_logical :: l_regu_visc, l_gdef_log, lImplex
     integer:: nvi, idx_regu_visc, ndimsi
-    real(kind=8):: sigm(nsig)
+    real(kind=8):: sigm(nsig), epsm(neps), deps(neps)
+! --------------------------------------------------------------------------------------------------
+    integer :: ndt, ndi
+    common/tdim/ndt, ndi
 !
 ! --------------------------------------------------------------------------------------------------
-!
-
     ASSERT(neps*nsig .eq. ndsde .or. (ndsde .eq. 36 .and. neps .le. 6 .and. nsig .le. 6))
 
+    ndt = 2*ndim
+    ndi = ndim
     read (compor(DEFO_LDC), '(A16)') defo_ldc
     read (compor(DEFO), '(A16)') defo_comp
     read (compor(REGUVISC), '(A16)') regu_visc
@@ -308,6 +309,9 @@ subroutine lc0000(BEHinteg, &
 !
 ! - Prepare input strains for the behaviour law
 !
+
+    epsm = epsm_tot
+    deps = deps_tot
     call behaviourPrepStrain(l_pred, l_czm, l_large, l_defo_meca, &
                              imate, fami, kpg, ksp, &
                              neps, BEHinteg%esva, epsm, deps)
@@ -356,10 +360,10 @@ subroutine lc0000(BEHinteg, &
         ASSERT(nsig .ge. 2*ndim)
         sigm(1:2*ndim) = sigm(1:2*ndim)-vim(idx_regu_visc:idx_regu_visc-1+2*ndim)*r2(1:2*ndim)
     end if
+
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!    write (6,*) 'LC0000: ', numlc, ndim, neps, nsig, ndsde, option, typmod(1:2), compor(1:4)
     select case (numlc)
 !
     case (1)
@@ -482,7 +486,7 @@ subroutine lc0000(BEHinteg, &
     case (25)
 !     KIT_DDI : NE PAS UTILISER COMME EXEMPLE
         call lc0025(fami, kpg, ksp, ndim, imate, &
-                    compor, carcri, instam, instap, cp, &
+                    compor, carcri, instam, instap, &
                     epsm, deps, sigm, vim, option, &
                     sigp, vip, typmod, icomp, &
                     nvi, numlc, dsidep, codret)
@@ -1245,29 +1249,6 @@ subroutine lc0000(BEHinteg, &
                     sigp(1:ndimsi), &
                     vip(idx_regu_visc:idx_regu_visc+nvi_regu_visc-1), &
                     dsidep(1:ndimsi, 1:ndimsi))
-    end if
-!
-! - Restore total strain
-!
-    call behaviourRestoreStrain(l_czm, l_large, l_defo_meca, &
-                                neps, BEHinteg%esva, epsm, deps)
-!
-! - Prediction: contribution of the thermal stress to the Taylor expansion if needed
-!
-    if (l_defo_meca .and. l_pred) then
-        if (.not. l_czm) then
-            ndimsi = 2*ndim
-            ! A remettre suite à la fiche issue32329
-            !ASSERT(.not. l_large)
-            ASSERT(typmod(2) .eq. ' ' .or. typmod(2) .eq. 'GRADVARI' .or. typmod(2) .eq. 'HHO')
-            ASSERT(nsig .ge. ndimsi)
-            ASSERT(size(dsidep, 1) .ge. ndimsi)
-            ASSERT(size(dsidep, 2) .ge. ndimsi)
-            ASSERT(lSigm .and. lMatr)
-
-            call behaviourPredictionStress(BEHinteg%esva, dsidep(1:ndimsi, 1:ndimsi), &
-                                           sigp(1:ndimsi))
-        end if
     end if
 
 end subroutine

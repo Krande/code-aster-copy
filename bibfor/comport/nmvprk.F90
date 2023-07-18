@@ -20,7 +20,7 @@
 subroutine nmvprk(BEHinteg, &
                   fami, kpg, ksp, ndim, typmod, &
                   imat, comp, crit, timed, timef, &
-                  neps, epsdt, depst, sigd, vind, &
+                  neps, epsdt, depst, sigd, nvi, vind, &
                   opt, angmas, sigf, vinf, dsde, &
                   iret, mult_comp_)
 !
@@ -126,7 +126,8 @@ subroutine nmvprk(BEHinteg, &
 !
     type(Behaviour_Integ), intent(in) :: BEHinteg
     character(len=*) :: fami
-    integer :: imat, ndim, ndt, ndi, nr, nvi, kpg, ksp, i, nbphas, itmax
+    integer, intent(in):: nvi
+    integer :: imat, ndim, ndt, ndi, nr, kpg, ksp, i, nbphas, itmax
     integer :: nmat, ioptio, idnr, nsg, nfs, nhsr, neps
     integer :: irr, decirr, nbsyst, decal, gdef
     character(len=16), optional, intent(in) :: mult_comp_

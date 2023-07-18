@@ -330,7 +330,7 @@ def C_COMPORTEMENT(COMMAND=None):  # COMMUN#
             ITER_CPLAN_MAXI=SIMP(
                 statut="f",
                 typ="I",
-                defaut=1,
+                defaut=10,
                 fr=tr("Nombre d'itérations maxi pour assurer la condition de contraintes planes"),
             ),
         )
@@ -576,7 +576,7 @@ def C_COMPORTEMENT(COMMAND=None):  # COMMUN#
             ITER_CPLAN_MAXI=SIMP(
                 statut="f",
                 typ="I",
-                defaut=1,
+                defaut=10,
                 fr=tr("Nombre d'itérations maxi pour assurer la condition de contraintes planes"),
             ),
             # Parametres d'integration

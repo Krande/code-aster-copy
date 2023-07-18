@@ -82,7 +82,7 @@ subroutine lc1137(BEHinteg, &
         call nmvprk(BEHinteg, &
                     fami, kpg, ksp, ndim, typmod, &
                     imate, compor, carcri, instam, instap, &
-                    neps, epsm, deps, sigm, vim, &
+                    neps, epsm, deps, sigm, nvi, vim, &
                     option, angmas, sigp, vip, dsidep, &
                     codret, mult_comp)
     elseif (compor(1) .eq. 'MONOCRISTAL') then
@@ -100,7 +100,7 @@ subroutine lc1137(BEHinteg, &
             call nmvprk(BEHinteg, &
                         fami, kpg, ksp, ndim, typmod, &
                         imate, compor, carcri, instam, instap, &
-                        neps, epsm, deps, sigm, vim, &
+                        neps, epsm, deps, sigm, nvi, vim, &
                         option, angmas, sigp, vip, dsidep, &
                         codret, mult_comp)
         else

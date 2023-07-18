@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -79,13 +79,6 @@ cata_msg = {
     33: _(
         """
  il n y a pas de mode statique calculé pour le couple (noeud, composante) ci dessus
-"""
-    ),
-    35: _(
-        """
- redécoupage excessif du pas de temps interne
- réduisez votre pas de temps ou augmenter ABS(ITER_INTE_PAS)
- redécoupage global.
 """
     ),
     41: _(

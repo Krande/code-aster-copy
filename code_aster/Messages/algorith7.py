@@ -20,11 +20,6 @@
 from ..Utilities import _
 
 cata_msg = {
-    10: _(
-        """
- COMP1D et SIMO_MIEHE incompatibles
-"""
-    ),
     63: _(
         """
  pas existence de solution pour le saut

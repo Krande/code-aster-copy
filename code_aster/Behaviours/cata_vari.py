@@ -170,10 +170,6 @@ DICT_NOM_VARI = {
         "Fondations discret : Translation selon Z plastique, critère de Glissement (SLiding)"
     ),
     "DAUTRE": _("Fondations discret : Paramètre autre (au besoin)"),
-    "DB1": _("c_plan ou 1d algo Deborst, variable interne 1"),
-    "DB2": _("c_plan ou 1d algo Deborst, variable interne 2"),
-    "DB3": _("c_plan ou 1d algo Deborst, variable interne 3"),
-    "DB4": _("c_plan ou 1d algo Deborst, variable interne 4"),
     "DCG0": _("RGI_BETON Endommagement max de compression de RGI"),
     "DCG1": _("FLUA_ENDO_PORO endommagements principaux de compression difffus RGI"),
     "DCG2": _("FLUA_ENDO_PORO endommagements principaux de compression difffus RGI"),
@@ -384,6 +380,7 @@ DICT_NOM_VARI = {
     "EPVXY": _("déformation viscoélastique composante XY"),
     "EPVXZ": _("déformation viscoélastique composante XZ"),
     "EPVYZ": _("déformation viscoélastique composante YZ"),
+    "EPZZ_CP": _("déformation EPZZ en C_PLAN"),
     "ERD11": _("déformation déviatorique réversible, composante 11"),
     "ERD12": _("déformation déviatorique réversible, composante 12"),
     "ERD22": _("déformation déviatorique réversible, composante 22"),

@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine lc0025(fami, kpg, ksp, ndim, imate, &
-                  compor, crit, instam, instap, cp, &
+                  compor, crit, instam, instap, &
                   epsm, deps, sigm, vim, option, &
                   sigp, vip, typmod, icomp, &
                   nvi, numlc, dsidep, codret)
@@ -64,7 +64,7 @@ subroutine lc0025(fami, kpg, ksp, ndim, imate, &
 !
 ! Declaration of character variables
     character(len=16) :: nomres(3)
-    aster_logical     :: cp, epflag
+    aster_logical     :: epflag
 !
 ! Declaration of constant variables
     data r0/0.0d0/

@@ -19,7 +19,7 @@
 subroutine nmveei(BEHinteg, &
                   fami, kpg, ksp, ndim, typmod, &
                   imate, compor, carcri, instam, instap, &
-                  epsm, deps, sigm, vim, option, &
+                  epsm, deps, sigm, nvi, vim, option, &
                   sigp, vip, dsidep, iret)
 !
     use Behaviour_type
@@ -42,6 +42,7 @@ subroutine nmveei(BEHinteg, &
 !
     type(Behaviour_Integ), intent(in) :: BEHinteg
     integer :: ndim, imate, iret, kpg, ksp
+    integer, intent(in):: nvi
     character(len=16) :: compor(*), option
     character(len=8) :: typmod(*)
     character(len=*) :: fami
@@ -128,7 +129,7 @@ subroutine nmveei(BEHinteg, &
     aster_logical :: cplan
 !
     integer :: itmax, i, ier, iter, iret2, iret3, iret4
-    integer :: ndt, nvi, nrv, ndi, k, l, isimp
+    integer :: ndt, nrv, ndi, k, l, isimp
 !
     real(kind=8) :: pgl(3, 3), angmas(3), toler, deltx, sumx, dt, se2
     real(kind=8) :: vind(ni), matm(nmat, 2), a(6, 6), b(6)

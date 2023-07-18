@@ -26,6 +26,7 @@ subroutine te0248(option, nomte)
 #include "jeveux.h"
 #include "asterc/r8nnem.h"
 #include "asterfort/angvx.h"
+#include "asterfort/assert.h"
 #include "asterfort/comp1d.h"
 #include "asterfort/jevech.h"
 #include "asterfort/matrot.h"
@@ -244,6 +245,10 @@ subroutine te0248(option, nomte)
     effnom = zr(icontm)
 !
 !   RELATION DE COMPORTEMENT
+    if (rela_comp .eq. 'SANS') then
+        goto 999
+    end if
+
     if ((rela_comp .eq. 'ELAS') .or. &
         (rela_comp .eq. 'VMIS_ISOT_LINE') .or. &
         (rela_comp .eq. 'VMIS_ISOT_TRAC') .or. &
@@ -327,51 +332,7 @@ subroutine te0248(option, nomte)
         end if
 !
     else
-!       Double DEBORST : risque d'impact sur les performances d'intégration de la loi
-        call r8inir(neq, 0.d0, fono, 1)
-        call r8inir(nbt, 0.d0, klv, 1)
-!
-
-        if ((rela_cpla .ne. 'DEBORST') .and. (rela_comp .ne. 'SANS')) then
-            call utmess('F', 'COMPOR4_32', sk=rela_comp)
-        else
-!
-            sigx = effnom/aire
-            epsx = (uml(4)-uml(1))/xlong0
-            depx = dlong/xlong0
-!
-            if (lVect) then
-                call tecach('OOO', 'PVARIMP', 'L', iret, nval=7, itab=jtab)
-                nbvari = max(jtab(6), 1)*jtab(7)
-                ivarmp = jtab(1)
-                call dcopy(nbvari, zr(ivarmp), 1, zr(ivarip), 1)
-            end if
-!
-            call comp1d(fami, 1, 1, option, sigx, &
-                        epsx, depx, angmas, zr(ivarim), zr(ivarip), &
-                        sigxp, etan, codret)
-!
-            if (lVect) then
-!               stockage de l'effort normal
-                zr(icontp) = sigxp*aire
-!               calcul des forces nodales
-                fono(1) = -sigxp*aire
-                fono(4) = sigxp*aire
-            end if
-!           calcul de la matrice tangente
-            klv(1) = etan
-            klv(7) = -etan
-            klv(10) = etan
-        end if
-!
-!       passage de klv et fono du repère local au repère global
-        if (lMatr) then
-            call utpslg(nno, nc, pgl, klv, matuu)
-        end if
-        if (lVect) then
-            call utpvlg(nno, nc, pgl, fono, vectu)
-        end if
-!
+        ASSERT(.false.)
     end if
 !
     if (nomte .eq. 'MECA_BARRE') then
@@ -412,4 +373,5 @@ subroutine te0248(option, nomte)
         zi(jcret) = codret
     end if
 !
+999 continue
 end subroutine

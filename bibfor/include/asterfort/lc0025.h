@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 !
 interface
     subroutine lc0025(fami, kpg, ksp, ndim, imate,&
-                      compor, crit, instam, instap, cp,&
+                      compor, crit, instam, instap, &
                       epsm, deps, sigm, vim, option,&
                       sigp, vip, typmod, icomp,&
                       nvi, numlc, dsidep, codret)
@@ -34,7 +34,6 @@ interface
         real(kind=8) :: crit(*)
         real(kind=8) :: instam
         real(kind=8) :: instap
-        aster_logical :: cp
         real(kind=8) :: epsm(6)
         real(kind=8) :: deps(6)
         real(kind=8) :: sigm(6)

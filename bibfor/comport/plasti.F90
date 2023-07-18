@@ -240,11 +240,6 @@ subroutine plasti(BEHinteg, &
         etatd = 'PLASTIC'
     end if
 !
-! --> REDECOUPAGE IMPOSE
-    if (icomp .eq. -1 .and. option .ne. 'RIGI_MECA_TANG') then
-        codret = 0
-        goto 999
-    end if
 !
     if (option(1:10) .eq. 'RIGI_MECA_' .and. gdef .eq. 1 .and. &
         rela_comp .eq. 'MONOCRISTAL') then

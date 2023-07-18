@@ -63,7 +63,6 @@ subroutine pmfcom(kpg, debsp, option, compor, crit, &
 #include "MultiFiber_type.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/compor_3d_fibre.h"
 #include "asterfort/pmf_mazars_unilater.h"
 #include "asterfort/pmf_pinto_menegotto.h"
 #include "asterfort/pmf_vmis.h"
@@ -263,41 +262,6 @@ subroutine pmfcom(kpg, debsp, option, compor, crit, &
         end do
 !
 ! --------------------------------------------------------------------------------------------------
-    else if (rela_comp .eq. 'BETON_GRANGER') then
-        ! Algo de type double 'DE BORST'
-        if (algo(1:7) .ne. 'DEBORST') then
-            valkm(1) = rela_comp
-            valkm(2) = 'DEFI_COMPOR/MULTIFIBRE'
-            valkm(3) = algo(1:7)
-            call utmess('F', 'COMPOR5_81', nk=3, valk=valkm)
-        end if
-        ! La LDC doit retourner :
-        !   - sigf(fib)   : la contrainte sur la fibre
-        !   - modf(fib)   : le module tangent de la fibre
-        !   - varip(fib)  : les variables internes de la LdC sur la fibre
-        !   - codrep    : code retour
-        if ((option(1:9) .eq. 'FULL_MECA') .or. (option(1:9) .eq. 'RAPH_MECA')) then
-            nbvari = nbvalc*nf
-            varimp(1:nbvari) = varip(1:nbvari)
-        end if
-        ! A faire en avant la boucle sur les fibres : elles ont toutes le même comportement
-        call jevech('PCOMPOR', 'L', icompo)
-!       Boucle sur chaque fibre
-        do fib = 1, nf
-            ivari = nbvalc*(fib-1)+1
-            sigx = contm(fib)
-            epsx = defm(fib)
-            depsx = ddefp(fib)
-            call compor_3d_fibre('RIGI', kpg, fib, option, sigx, &
-                                 instam, instap, crit, icdmat, materi, &
-                                 zk16(icompo), epsx, depsx, angmas, varim(ivari), &
-                                 varip(ivari), sigf(fib), modf(fib), codrep)
-            if (codrep .ne. 0) then
-                codret = codrep
-                ! code 3 : on continue et on le renvoie à la fin. Autre codes: sortie immédiate
-                if (codrep .ne. 3) goto 999
-            end if
-        end do
     else
         call utmess('F', 'ELEMENTS2_39', sk=rela_comp)
     end if

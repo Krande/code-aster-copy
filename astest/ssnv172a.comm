@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -587,7 +587,7 @@ RESUT2 = STAT_NON_LINE(
             DEFORMATION="PETIT",
             ITER_INTE_MAXI=200,
             RESI_INTE_RELA=1.0e-6,
-            ITER_INTE_PAS=10,
+            ITER_INTE_PAS=20,
             TOUT="OUI",
         ),
     ),
@@ -614,7 +614,7 @@ TEST_RESU(
             RESULTAT=RESUT2,
             NOM_CHAM="SIEF_ELGA",
             NOM_CMP="SIXX",
-            VALE_CALC=-95.9311,
+            VALE_CALC=-95.92711465675363,
             GROUP_MA="MA1",
         ),
         _F(
@@ -632,7 +632,7 @@ TEST_RESU(
             RESULTAT=RESUT2,
             NOM_CHAM="EPSP_ELGA",
             NOM_CMP="EPXX",
-            VALE_CALC=-1.3393175e-3,
+            VALE_CALC=-0.0013393449403804845,
             GROUP_MA="MA1",
         ),
     )

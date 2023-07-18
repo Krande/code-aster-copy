@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,45 +15,36 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+! aslint: disable=C1505
+
 #include "asterf_types.h"
 !
 interface
     subroutine redece(BEHinteg, &
-                      fami,        kpg,    ksp,    ndim,   typmod,    &
-                      l_epsi_varc, imate,  materi, compor, mult_comp, &
-                      carcri,      instam, instap, neps,   epsdt,     &
-                      depst,       nsig,   sigd,   vind,   option,    &
-                      angmas,      cp,     numlc,  sigf,   vinf,      &
-                      ndsde,       dsde,   codret)
+                  fami, kpg, ksp, ndim, typmod, &
+                  l_epsi_varc, imate, materi, compor, mult_comp, &
+                  carcri, instam, instap, neps, epsm, &
+                  deps, nsig, sigm, nvi, vim, option, &
+                  angmas, numlc, sigp, vip, &
+                  ndsde, dsidep, codret)
         use Behaviour_type
-        type(Behaviour_Integ) :: BEHinteg
-        aster_logical, intent(in) :: l_epsi_varc
-        integer :: ndsde
-        integer :: nsig
-        integer :: neps
-        character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        integer :: ndim
-        character(len=8) :: typmod(*)
-        integer :: imate
-        character(len=8),  intent(in) :: materi
-        character(len=16)             :: compor(*)
-        character(len=16), intent(in) :: mult_comp
-        real(kind=8) :: carcri(*)
-        real(kind=8) :: instam
-        real(kind=8) :: instap
-        real(kind=8) :: epsdt(neps)
-        real(kind=8) :: depst(neps)
-        real(kind=8) :: sigd(nsig)
-        real(kind=8) :: vind(*)
-        character(len=16) :: option
-        real(kind=8) :: angmas(*)
-        aster_logical :: cp
-        integer :: numlc
-        real(kind=8) :: sigf(nsig)
-        real(kind=8) :: vinf(*)
-        real(kind=8) :: dsde(ndsde)
-        integer :: codret
+    type(Behaviour_Integ) :: BEHinteg
+    character(len=*) :: fami
+    integer :: imate, ndim, kpg, ksp, numlc
+    integer :: neps, nsig, ndsde
+    aster_logical, intent(in) :: l_epsi_varc
+    integer, intent(in):: nvi
+    real(kind=8) :: carcri(*), angmas(*)
+    real(kind=8) :: instam, instap
+    real(kind=8) :: epsm(neps), deps(neps)
+    real(kind=8) :: sigm(nsig), sigp(nsig)
+    real(kind=8) :: vim(nvi), vip(nvi)
+    real(kind=8) :: dsidep(merge(nsig, 6, nsig*neps .eq. ndsde), &
+                              merge(neps, 6, nsig*neps .eq. ndsde))
+    character(len=8)  :: typmod(*)
+    character(len=16) :: compor(*), option
+    character(len=8), intent(in) :: materi
+    character(len=16), intent(in) :: mult_comp
+    integer,intent(out):: codret
     end subroutine redece
 end interface

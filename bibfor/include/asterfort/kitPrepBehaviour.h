@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,8 +19,9 @@
 !
 !
 interface
-    subroutine kitPrepBehaviour(compor, compor_creep, compor_plas)
+    subroutine kitPrepBehaviour(compor, nvi_tot, compor_creep, compor_plas)
         character(len=16), intent(in) :: compor(*)
+        integer, intent(in) :: nvi_tot
         character(len=16), intent(out) :: compor_creep(*)
         character(len=16), intent(out) :: compor_plas(*)
     end subroutine kitPrepBehaviour

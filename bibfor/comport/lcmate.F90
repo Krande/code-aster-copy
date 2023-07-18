@@ -81,7 +81,8 @@ subroutine lcmate(BEHinteg, &
 !                    UTILISEE SEULEMENT POUR LE MONOCRISTAL IMPLICITE
 !       ----------------------------------------------------------------
 
-    integer :: imat, nmat, ndt, ndi, nr, nvi, i, itmax, kpg, ksp, impexp
+    integer, intent(in):: nvi
+    integer :: imat, nmat, ndt, ndi, nr, i, itmax, kpg, ksp, impexp
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2), tempd, tempf, tref
     real(kind=8) :: vind(*), pgl(3, 3), angmas(3), toler, crit(*), sigd(6)
     character(len=16) :: rela_comp, comp(*), mult_comp
@@ -111,7 +112,6 @@ subroutine lcmate(BEHinteg, &
         mult_comp = mult_comp_
     end if
     rela_comp = comp(1)
-    read (comp(2), '(I16)') nvi
     if (rela_comp .eq. 'ROUSS_PR') then
         call rslmat(fami, kpg, ksp, mod, imat, &
                     nmat, materd, materf, matcst, ndt, &

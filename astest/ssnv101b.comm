@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -97,7 +97,7 @@ SOLNL = STAT_NON_LINE(
     CHAM_MATER=MAT,
     EXCIT=_F(CHARGE=TR_CS, FONC_MULT=COEF, TYPE_CHARGE="FIXE_CSTE"),
     COMPORTEMENT=_F(
-        RESI_CPLAN_RELA=1.0e-4,
+        RESI_CPLAN_MAXI=87.0e-4,
         ALGO_INTE="SECANTE",
         RELATION="VMIS_CIN2_CHAB",
         DEFORMATION="PETIT",
@@ -107,7 +107,7 @@ SOLNL = STAT_NON_LINE(
     ),
     INCREMENT=_F(LIST_INST=LINST),
     NEWTON=_F(MATRICE="TANGENTE", REAC_INCR=1, REAC_ITER=1),
-    CONVERGENCE=_F(ITER_GLOB_MAXI=50, RESI_GLOB_RELA=1.0e-6),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=10, RESI_REFE_RELA=1.0e-3, SIGM_REFE=87),
 )
 
 SOLNL = CALC_CHAMP(
@@ -128,7 +128,7 @@ TEST_RESU(
             NOM_CHAM="SIGM_ELNO",
             GROUP_NO="NO1",
             NOM_CMP="SIXX",
-            VALE_CALC=143.5,
+            VALE_CALC=143.50288115454015,
             VALE_REFE=143.5,
             REFERENCE="SOURCE_EXTERNE",
             GROUP_MA="MA1",
@@ -139,7 +139,7 @@ TEST_RESU(
             NOM_CHAM="EPSI_ELNO",
             GROUP_NO="NO1",
             NOM_CMP="EPXX",
-            VALE_CALC=0.096064870341893,
+            VALE_CALC=0.09606373412618963,
             VALE_REFE=0.09709,
             REFERENCE="SOURCE_EXTERNE",
             PRECISION=0.02,
@@ -151,7 +151,7 @@ TEST_RESU(
             NOM_CHAM="EPSI_ELNO",
             GROUP_NO="NO1",
             NOM_CMP="EPXY",
-            VALE_CALC=0.14389975382192,
+            VALE_CALC=0.14389769519442247,
             VALE_REFE=0.1454,
             REFERENCE="SOURCE_EXTERNE",
             PRECISION=0.02,
@@ -163,7 +163,7 @@ TEST_RESU(
             NOM_CHAM="VARI_ELNO",
             GROUP_NO="NO1",
             NOM_CMP="V1",
-            VALE_CALC=0.19015335583293,
+            VALE_CALC=0.19015063695779807,
             VALE_REFE=0.19220000000000001,
             REFERENCE="SOURCE_EXTERNE",
             PRECISION=0.011,

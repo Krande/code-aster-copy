@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ interface
     subroutine nmveei(BEHinteg,&
                       fami, kpg, ksp, ndim, typmod,&
                       imate, compor, carcri, instam, instap,&
-                      epsm, deps, sigm, vim, option,&
+                      epsm, deps, sigm, nvi, vim, option,&
                       sigp, vip, dsidep, iret)
         use Behaviour_type
         type(Behaviour_Integ), intent(in) :: BEHinteg
@@ -38,6 +38,7 @@ interface
         real(kind=8) :: deps(6)
         real(kind=8) :: sigm(6)
         real(kind=8) :: vim(*)
+        integer, intent(in):: nvi
         character(len=16) :: option
         real(kind=8) :: sigp(6)
         real(kind=8) :: vip(*)

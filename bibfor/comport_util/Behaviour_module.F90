@@ -31,7 +31,7 @@ module Behaviour_module
                getListUserESVA, getESVAPtot
     public  :: behaviourInit, behaviourInitPoint, &
                behaviourPrepESVAElem, prepCoorGauss, behaviourPrepESVAGauss, &
-               behaviourPrepStrain, behaviourRestoreStrain, behaviourPredictionStress, &
+               behaviourPrepStrain, behaviourPredictionStress, &
                behaviourPrepESVA, behaviourPrepESVAExte, &
                behaviourOption
 ! ==================================================================================================
@@ -792,61 +792,7 @@ contains
         end if
 !   ------------------------------------------------------------------------------------------------
     end subroutine
-! --------------------------------------------------------------------------------------------------
-!
-! behaviourRestoreStrain
-!
-! Restore strains
-!
-! In  l_large          : flag for large strain models
-! In  l_defo_meca      : flag for defo_ldc .eq. 'MECANIQUE'
-! In  l_czm            : flag for CZM models
-! In  neps             : number of components of strains
-! IO  BEHesva          : parameters for external state variables
-! IO  epsm             : In : total strains at beginning of current step time
-!                        Out : mechanical strains at beginning of current step time
-! IO  deps             : In : increment of total strains during current step time
-!                        Out : increment of mechanical strains during current step time
-!
-! --------------------------------------------------------------------------------------------------
-    subroutine behaviourRestoreStrain(l_czm, l_large, l_defo_meca, &
-                                      neps, BEHesva, epsm, deps)
-!   ------------------------------------------------------------------------------------------------
-! - Parameters
-        aster_logical, intent(in) :: l_czm, l_large, l_defo_meca
-        integer, intent(in) :: neps
-        type(Behaviour_ESVA), intent(in) :: BEHesva
-        real(kind=8), intent(inout) :: epsm(neps), deps(neps)
-! - Local
-        real(kind=8) :: epsmtot(9), depstot(9)
-!   ------------------------------------------------------------------------------------------------
-        if (ca_nbcvrc_ .ne. 0) then
-            if ((l_defo_meca) .and. (.not. l_large)) then
-                depstot(1:neps) = 0.d0
-                epsmtot(1:neps) = 0.d0
-                if ((neps .eq. 6) .or. (neps .eq. 4)) then
-                    call dcopy(neps, deps, 1, depstot, 1)
-                    call daxpy(neps, 1.d0, BEHesva%depsi_varc, 1, depstot, 1)
-                    call dcopy(neps, epsm, 1, epsmtot, 1)
-                    call daxpy(neps, 1.d0, BEHesva%epsi_varc, 1, epsmtot, 1)
-                else if ((neps .eq. 3) .and. l_czm) then
-! No thermic strains for cohesive elements
-                    call dcopy(neps, deps, 1, depstot, 1)
-                    call dcopy(neps, epsm, 1, epsmtot, 1)
-                else
-                    ASSERT(ASTER_FALSE)
-                end if
-! epsm and deps become total strains again
-                call dcopy(neps, epsmtot, 1, epsm, 1)
-                call dcopy(neps, depstot, 1, deps, 1)
-            end if
-            if (LDC_PREP_DEBUG .eq. 1) then
-                WRITE (6, *) '<DEBUG>  Restore total strains:', &
-                    neps, epsm(1:neps), deps(1:neps)
-            end if
-        end if
-!   ------------------------------------------------------------------------------------------------
-    end subroutine
+
 ! --------------------------------------------------------------------------------------------------
 !
 ! behaviourPredictionStress
@@ -862,14 +808,17 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         type(Behaviour_ESVA), intent(in) :: BEHesva
-        real(kind=8), intent(in)          :: dsidep(:, :)
+        real(kind=8), intent(in)         :: dsidep(:, :)
         real(kind=8), intent(inout)      :: sig(:)
 ! - Local
         integer :: ndimsi
 !   ------------------------------------------------------------------------------------------------
         if (ca_nbcvrc_ .ne. 0) then
             ndimsi = size(sig)
-            sig = sig-matmul(dsidep, BEHesva%depsi_varc(1:ndimsi))
+            ASSERT(ndimsi .le. 6)
+            ASSERT(size(dsidep, 1) .ge. ndimsi)
+            ASSERT(size(dsidep, 2) .ge. ndimsi)
+            sig = sig-matmul(dsidep(1:ndimsi, 1:ndimsi), BEHesva%depsi_varc(1:ndimsi))
 
             if (LDC_PREP_DEBUG .eq. 1) WRITE (6, *) '<DEBUG>  Prediction stress: ', sig
         end if
@@ -1402,45 +1351,30 @@ contains
         real(kind=8), intent(inout) :: epsm(neps), deps(neps)
 ! - Local
         real(kind=8) :: stran(12), dstran(12)
-        integer :: k
 !   ------------------------------------------------------------------------------------------------
+
         dstran(1:neps) = 0.d0
         stran(1:neps) = 0.d0
+
         if ((neps .eq. 6) .or. (neps .eq. 4)) then
-            if (l_pred) then
-                dstran(1:6) = 0.d0
-            else
-                call dcopy(neps, deps, 1, dstran, 1)
-                call daxpy(neps, -1.d0, BEHesva%depsi_varc, 1, dstran, 1)
-            end if
-            call dcopy(neps, epsm, 1, stran, 1)
-            call daxpy(neps, -1.d0, BEHesva%epsi_varc, 1, stran, 1)
+            dstran(1:neps) = deps(1:neps)-BEHesva%depsi_varc(1:neps)
+            stran(1:neps) = epsm(1:neps)-BEHesva%epsi_varc(1:neps)
         else if ((neps .eq. 3) .and. l_czm) then
 ! No thermic strains for cohesive elements
-            if (l_pred) then
-                dstran(1:3) = 0.d0
-            else
-                call dcopy(neps, deps, 1, dstran, 1)
-            end if
-            call dcopy(neps, epsm, 1, stran, 1)
+            dstran(1:neps) = deps(1:neps)
+            stran(1:neps) = epsm(1:neps)
         else if ((neps .eq. 12) .and. .not. BEHesva%l_anel) then
 ! For ENDO_HETEROGENE
-            if (l_pred) then
-                dstran(1:6) = 0.d0
-            else
-                call dcopy(neps, deps, 1, dstran, 1)
-                do k = 1, 3
-                    dstran(k) = dstran(k)-BEHesva%depsi_varc(k)
-                end do
-            end if
+            dstran(1:neps) = deps(1:neps)
+            dstran(1:3) = dstran(1:3)-BEHesva%depsi_varc(1:3)
         else
             ASSERT(ASTER_FALSE)
         end if
 !
 ! - epsm and deps become mechanical strains
 !
-        call dcopy(neps, stran, 1, epsm, 1)
-        call dcopy(neps, dstran, 1, deps, 1)
+        epsm(1:neps) = stran(1:neps)
+        deps(1:neps) = dstran(1:neps)
         if (LDC_PREP_DEBUG .eq. 1) then
             WRITE (6, *) '<DEBUG>  Prepare strains for integration: ', &
                 neps, epsm(1:neps), deps(1:neps)

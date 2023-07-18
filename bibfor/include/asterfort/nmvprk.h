@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ interface
     subroutine nmvprk(BEHinteg,&
                       fami, kpg, ksp, ndim, typmod,&
                       imat, comp, crit, timed, timef,&
-                      neps, epsdt, depst, sigd, vind,&
+                      neps, epsdt, depst, sigd, nvi, vind,&
                       opt, angmas, sigf, vinf, dsde,&
                       iret, mult_comp_)
         use Behaviour_type
@@ -39,6 +39,7 @@ interface
         real(kind=8) :: epsdt(neps)
         real(kind=8) :: depst(neps)
         real(kind=8) :: sigd(6)
+        integer, intent(in):: nvi
         real(kind=8) :: vind(*)
         character(len=16) :: opt
         real(kind=8) :: angmas(*)

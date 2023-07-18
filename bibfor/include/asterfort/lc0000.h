@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ interface
                       l_epsi_varc, imate,  materi,   compor,  mult_comp, &
                       carcri,      instam, instap,   neps,    epsm,      &
                       deps,        nsig,   sigm_all, vim,     option,    &
-                      angmas,      cp,     numlc,    sigp,    vip,       &
+                      angmas,      numlc,    sigp,    vip,       &
                       ndsde,       dsidep, icomp,    nvi_all, codret)
         use Behaviour_type
         type(Behaviour_Integ), intent(inout) :: BEHinteg
@@ -41,7 +41,6 @@ interface
         character(len=16), intent(in) :: mult_comp
         character(len=8) :: typmod(*)
         character(len=*) :: fami
-        aster_logical :: cp
         integer :: icomp
         integer :: numlc
         integer :: codret

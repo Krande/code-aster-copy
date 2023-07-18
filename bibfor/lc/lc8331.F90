@@ -73,7 +73,7 @@ subroutine lc8331(BEHinteg, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call kitPrepBehaviour(compor, compor_creep, compor_plas)
+    call kitPrepBehaviour(compor, nvi, compor_creep, compor_plas)
 !
     if ((option(1:9) .eq. 'RAPH_MECA') .or. (option(1:9) .eq. 'FULL_MECA')) then
         call nmcomp(BEHinteg, &

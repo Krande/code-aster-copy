@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,16 +25,16 @@ loi = LoiComportement(
     lc_type=("UTILITAIRE",),
     doc="""Algo pour résolution en contraintes planes.""",
     num_lc=0,
-    nb_vari=4,
-    nom_vari=("DB1", "DB2", "DB3", "DB4"),
+    nb_vari=1,
+    nom_vari=("EPZZ_CP",),
     mc_mater=None,
-    modelisation=("C_PLAN", "1D"),
-    deformation=("PETIT", "PETIT_REAC", "GROT_GDEP"),
+    modelisation=("C_PLAN",),
+    deformation=("PETIT", "GROT_GDEP"),
     algo_inte=None,
     type_matr_tang=None,
     proprietes=None,
-    syme_matr_tang=("Yes",),
+    syme_matr_tang=None,
     exte_vari=None,
-    deform_ldc=("OLD",),
-    regu_visc=("No",),
+    deform_ldc=None,
+    regu_visc=None,
 )

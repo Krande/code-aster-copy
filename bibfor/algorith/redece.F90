@@ -15,294 +15,199 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1306,W1504
+! aslint: disable=W1306,W1504,C1505
 !
 subroutine redece(BEHinteg, &
                   fami, kpg, ksp, ndim, typmod, &
                   l_epsi_varc, imate, materi, compor, mult_comp, &
-                  carcri, instam, instap, neps, epsdt, &
-                  depst, nsig, sigd, vind, option, &
-                  angmas, cp, numlc, sigf, vinf, &
-                  ndsde, dsde, codret)
-!
+                  carcri, instam, instap, neps, epsm, &
+                  deps, nsig, sigm, nvi, vim, option, &
+                  angmas, numlc, sigp, vip, &
+                  ndsde, dsidep, codret)
+
     use calcul_module, only: ca_iredec_, ca_td1_, ca_tf1_, ca_timed1_, ca_timef1_
     use Behaviour_type
-!
+    use Behaviour_module
+
     implicit none
-!
+
 #include "asterf_types.h"
 #include "asterfort/Behaviour_type.h"
+#include "asterfort/assert.h"
 #include "asterfort/lc0000.h"
 #include "asterfort/utmess.h"
-!
+
     type(Behaviour_Integ) :: BEHinteg
     character(len=*) :: fami
-!
-! --------------------------------------------------------------------------------------------------
-!
-!     INTEGRATION DES LOIS DE COMPORTEMENT NON LINEAIRE POUR LES
-!     ELEMENTS ISOPARAMETRIQUES EN PETITES OU GRANDES DEFORMATIONS
-!
-! --------------------------------------------------------------------------------------------------
-!
-! ROUTINE DE REDECOUPAGE LOCAL DU PAS dE TEMPS
-!
-! --------------------------------------------------------------------------------------------------
-!
-! In  BEHinteg       : parameters for integration of behaviour
-!       - SI CARCRI(5) = -N  EN CAS DE NON-CONVERGENCE LOCALE ON EFFECTU
-!                          UN REDECOUPAGE DU PAS DE TEMPS EN N PALIERS
-!                          L ORDRE D EXECUTION ETANT REMONTE EN ARGUMENT
-!                          DANS REDECE, APPELE PAR NMCOMPOR AVANT PLASTI
-!       - SI CARCRI(5) = -1,0,1  PAS DE REDECOUPAGE DU PAS DE TEMPS
-!       - SI CARCRI(5) = +N  ON EFFECTUE UN REDECOUPAGE DU PAS DE TEMPS
-!                          EN N PALIERS A CHAQUE APPEL DE REDECE
-!                          LE PREMIER APPEL DE PLASTI SERT A
-!                          L'INITIALISATION DE NVI
-!       SI APRES REDECOUPAGE ON ABOUTIT A UN CAS DE NON CONVERGENCE, ON
-!       REDECOUPE A NOUVEAU LE PAS DE TEMPS, EN 2*N PALIERS
-!
-!    ATTENTION  VIND    VARIABLES INTERNES A T MODIFIEES SI REDECOUPAGE
-!
-! ======================================================================
-!     ARGUMENTS
-! ======================================================================
-!
-! IN  FAMI,KPG,KSP  : FAMILLE ET NUMERO DU (SOUS)POINT DE GAUSS
-!     NDIM    : DIMENSION DE L'ESPACE
-!               3 : 3D , 2 : D_PLAN ,AXIS OU  C_PLAN
-!     TYPMOD(2): MODELISATION ex: 1:3D, 2:INCO
-!     IMATE   : ADRESSE DU MATERIAU CODE
-!     COMPOR  : COMPORTEMENT :  (1) = TYPE DE RELATION COMPORTEMENT
-!                               (2) = NB VARIABLES INTERNES / PG
-!                               (3) = HYPOTHESE SUR LES DEFORMATIONS
-!                               (4) etc... (voir grandeur COMPOR)
-!     MULT_COMP : MULTI-COMPORTEMENT (pour POLYCRISTAL)
-!     CARCRI  : CRITERES DE CONVERGENCE LOCAUX (voir grandeur CARCRI)
-!     INSTAM  : INSTANT DU CALCUL PRECEDENT
-!     INSTAP  : INSTANT DU CALCUL
-!     NEPS    : NOMBRE DE CMP DE EPSDT ET DEPST (SUIVANT MODELISATION)
-!     EPSDT   : DEFORMATIONS TOTALES A L'INSTANT DU CALCUL PRECEDENT
-!     DEPST   : INCREMENT DE DEFORMATION TOTALE :
-!                DEPST(T) = DEPST(MECANIQUE(T)) + DEPST(DILATATION(T))
-!     NSIG    : NOMBRE DE CMP DE SIGD ET SIGF (SUIVANT MODELISATION)
-!     SIGD    : CONTRAINTES AU DEBUT DU PAS DE TEMPS
-!     VIND    : VARIABLES INTERNES AU DEBUT DU PAS DE TEMPS
-!     OPTION  : OPTION DEMANDEE : RIGI_MECA_TANG , FULL_MECA , RAPH_MECA
-!     ANGMAS  : LES TROIS ANGLES DU MOT_CLEF MASSIF (AFFE_CARA_ELEM),
-!               + UN REEL QUI VAUT 0 SI NAUTIQUIES OU 2 SI EULER
-!               + LES 3 ANGLES D'EULER
-!     CP      : LOGIQUE = VRAI EN CONTRAINTES PLANES DEBORST
-!     NUMLC   : NUMERO DE LOI DE COMPORTEMENT ISSUE DU CATALOGUE DE LC
-!
-! OUT SIGF    : CONTRAINTES A LA FIN DU PAS DE TEMPS
-! VAR VINF    : VARIABLES INTERNES
-!                IN  : ESTIMATION (ITERATION PRECEDENTE OU LAG. AUGM.)
-!                OUT : A LA FIN DU PAS DE TEMPS T+
-!     NDSDE   : DIMENSION DE DSDE
-!     DSDE    : OPERATEUR TANGENT DSIG/DEPS OU DSIG/DF
-!     CODRET  : CODE RETOUR LOI DE COMPORMENT :
-!               CODRET=0 : TOUT VA BIEN
-!               CODRET=1 : ECHEC DANS L'INTEGRATION DE LA LOI
-!               CODRET=3 : SIZZ NON NUL (CONTRAINTES PLANES DEBORST)
-!
-! PRECISIONS :
-! -----------
-!  LES TENSEURS ET MATRICES SONT RANGES DANS L'ORDRE :
-!         XX YY ZZ SQRT(2)*XY SQRT(2)*XZ SQRT(2)*YZ
-!
-! -SI DEFORMATION = SIMO_MIEHE
-!   EPSDT(3,3)    GRADIENT DE LA TRANSFORMATION EN T-
-!   DEPST(3,3)    GRADIENT DE LA TRANSFORMATION DE T- A T+
-!
-!  OUTPUT SI RESI (RAPH_MECA, FULL_MECA_*)
-!   VINF      VARIABLES INTERNES EN T+
-!   SIGF(6)  CONTRAINTE DE KIRCHHOFF EN T+ RANGES DANS L'ORDRE
-!         XX YY ZZ SQRT(2)*XY SQRT(2)*XZ SQRT(2)*YZ
-!
-!  OUTPUT SI RIGI (RIGI_MECA_*, FULL_MECA_*)
-!   DSDE(6,3,3)   MATRICE TANGENTE D(TAU)/D(FD) * (FD)T
-!                 (AVEC LES RACINES DE 2)
-!
-! -SINON (DEFORMATION = PETIT OU PETIT_REAC OU GDEF_...)
-!   EPSDT(6), DEPST(6)  SONT LES DEFORMATIONS TOTALES
-!                      (LINEARISEES OU GREEN OU ..)
-!
-! --------------------------------------------------------------------------------------------------
-!
-    integer :: imate, ndim, ndt, ndi, nvi, kpg, ksp, numlc
+    integer :: imate, ndim, kpg, ksp, numlc
     integer :: neps, nsig, ndsde
     aster_logical, intent(in) :: l_epsi_varc
+    integer, intent(in):: nvi
     real(kind=8) :: carcri(*), angmas(*)
     real(kind=8) :: instam, instap
-    real(kind=8) :: epsdt(neps), depst(neps)
-    real(kind=8) :: sigd(nsig), sigf(nsig)
-    real(kind=8) :: vind(*), vinf(*)
-    real(kind=8) :: dsde(ndsde)
-!
+    real(kind=8) :: epsm(neps), deps(neps)
+    real(kind=8) :: sigm(nsig), sigp(nsig)
+    real(kind=8) :: vim(nvi), vip(nvi)
+    real(kind=8) :: dsidep(merge(nsig, 6, nsig*neps .eq. ndsde), &
+                           merge(neps, 6, nsig*neps .eq. ndsde))
     character(len=8)  :: typmod(*)
     character(len=16) :: compor(*), option
     character(len=8), intent(in) :: materi
     character(len=16), intent(in) :: mult_comp
-!
-    aster_logical :: cp
-!
+    integer, intent(out):: codret
+
 ! --------------------------------------------------------------------------------------------------
-!
-!       VARIABLES LOCALES POUR LE REDECOUPAGE DU PAS DE TEMPS
-!               TD      INSTANT T
-!               TF      INSTANT T+DT
-!               TEMD    TEMPERATURE A T
-!               TEMF    TEMPERATURE A T+DT
-!               EPS     DEFORMATION TOTALE A T
-!               DEPS    INCREMENT DE DEFORMATION TOTALE
-!               SD      CONTRAINTE A T
-!               VD      VARIABLES INTERNES A T    + INDICATEUR ETAT T
-!               DSDELO MATRICE DE COMPORTEMENT TANGENT A T+DT OU T
-!               NPAL            NOMBRE DE PALIER POUR LE REDECOUPAGE
-!               ICOMP           COMPORTEUR POUR LE REDECOUPAGE DU PAS DE
-!                                    TEMPS
-!               RETURN1 EN CAS DE NON CONVERGENCE LOCALE
-!
+! INTEGRATION DU COMPORTEMENT : PRISE EN CHARGE D'UN EVENTUEL REDECOUPAGE LOCAL DU PAS DE TEMPS
 ! --------------------------------------------------------------------------------------------------
+! in  fami,kpg,ksp  : famille et numero du (sous)point de gauss
+!     ndim    : dimension de l'espace
+!               3 : 3d , 2 : d_plan ,axis ou  c_plan
+!     typmod  : modelisation ex: 1:3d, 2:inco
+!     imate   : adresse du materiau code
+!     compor  : comportement :  (1) = type de relation comportement
+!                               (2) = nb variables internes / pg
+!                               (3) = hypothese sur les deformations
+!                               (4) etc... (voir grandeur compor)
+!     mult_comp : multi-comportement (pour polycristal)
+!     carcri  : criteres de convergence locaux (voir grandeur carcri)
+!     instam  : instant du calcul precedent
+!     instap  : instant du calcul
+!     neps    : nombre de cmp de epsdt et depst (suivant modelisation)
+!     epsm   : deformations totales a l'instant du calcul precedent
+!     deps   : increment de deformation totale :
+!                depst(t) = depst(mecanique(t)) + depst(dilatation(t))
+!     nsig    : nombre de cmp de sigd et sigf (suivant modelisation)
+!     sigm    : contraintes au debut du pas de temps
+!     vim    : variables internes au debut du pas de temps
+!     option  : option demandee : rigi_meca_tang , full_meca , raph_meca
+!     angmas  : les trois angles du mot_clef massif (affe_cara_elem),
+!               + un reel qui vaut 0 si nautiquies ou 2 si euler
+!               + les 3 angles d'euler
+!     numlc   : numero de loi de comportement issue du catalogue de lc
 !
-    integer :: icomp, npal, ipal, codret, k
-    real(kind=8) :: eps(neps), deps(neps), sd(nsig)
-    real(kind=8) :: dsdelo(ndsde)
-    real(kind=8) :: deltat, td, tf
-!       ----------------------------------------------------------------
-    common/tdim/ndt, ndi
-!
+! out sigp    : contraintes a la fin du pas de temps
+! var vip     : variables internes
+!                in  : estimation (iteration precedente ou lag. augm.)
+!                out : a la fin du pas de temps t+
+!     ndsde   : dimension de dsidep
+!     dsidep    : operateur tangent dsig/deps ou dsig/df
+!     codret  : code retour loi de comporment :
+!               codret=0 : tout va bien
+!               codret=1 : echec dans l'integration de la loi
+!               codret=2 : ok loi de comportement mais condition non respectee -> pas de cvg globale
 ! --------------------------------------------------------------------------------------------------
-!
-!       -- POUR LES VARIABLES DE COMMANDE :
+    aster_logical:: lMatrPred, lMatr, lSigm, lVari
+    integer, parameter:: SANS = 0, FORCE = 1, AUTO = 2, NBR_DECOUP_MAX = 4
+    integer:: decoup
+    integer :: niv_dec, niv_ini, npas, iip, codret_sub, pas
+    real(kind=8) :: epsm_sub(neps), deps_sub(neps), sigm_sub(nsig), vim_sub(nvi)
+    real(kind=8) :: deltat, tm, tp
+    real(kind=8) :: dsidep_sub(merge(nsig, 6, nsig*neps .eq. ndsde), &
+                               merge(neps, 6, nsig*neps .eq. ndsde))
+    character(len=16)::defo_comp
+! --------------------------------------------------------------------------------------------------
+
+    iip = nint(carcri(ITER_INTE_PAS))
+    lSigm = L_SIGM(option)
+    lMatr = L_MATR(option)
+    lVari = L_VARI(option)
+    lMatrPred = L_MATR_PRED(option)
+    read (compor(DEFO), '(A16)') defo_comp
+
+    ! Pour les variables de commande
     ca_iredec_ = 1
     ca_timed1_ = instam
     ca_timef1_ = instap
     ca_td1_ = instam
     ca_tf1_ = instap
-!
-!
-    ipal = nint(carcri(ITER_INTE_PAS))
-    codret = 0
-    dsdelo = 0.d0
-!
-! - No step cutting (elastic matrix or KIT_DDI behaviour)
-!
-    if (option(1:9) .eq. 'RIGI_MECA' .or. numlc .ge. 8000) then
-        ipal = 0
+
+    ! Strategie de redecoupage local
+    if (abs(iip) .le. 1 .or. lMatrPred) then
+        decoup = SANS
+    else if (iip .le. -2) then
+        decoup = AUTO
+    else if (iip .ge. 2) then
+        decoup = FORCE
     end if
-!
-! - Get number of internal variables
-!
-    read (compor(2), '(I16)') nvi
-!
-! IPAL = 0  1 OU -1 -> PAS DE REDECOUPAGE DU PAS DE TEMPS
-!
-    if (ipal .eq. 0 .or. ipal .eq. 1 .or. ipal .eq. -1) then
-        ipal = 0
-        npal = 0
-        icomp = 2
-!
-! IPAL < -1 -> REDECOUPAGE DU PAS DE TEMPS EN CAS DE NON CONVERGENCE
-!
-    else if (ipal .lt. -1) then
-        npal = -ipal
-        icomp = 0
-!
-! IPAL > 1 -> REDECOUPAGE IMPOSE DU PAS DE TEMPS
-!
-    else if (ipal .gt. 1) then
-        npal = ipal
-        icomp = -1
-    end if
-!
-    call lc0000(BEHinteg, &
-                fami, kpg, ksp, ndim, typmod, &
-                l_epsi_varc, imate, materi, compor, mult_comp, &
-                carcri, instam, instap, neps, epsdt, &
-                depst, nsig, sigd, vind, option, &
-                angmas, cp, numlc, sigf, vinf, &
-                ndsde, dsde, icomp, nvi, codret)
-!
-    if (codret .eq. 1) then
-        goto 100
-    else if (codret .eq. 2) then
-        goto 999
-    end if
-!
-! -->   IPAL > 0 --> REDECOUPAGE IMPOSE DU PAS DE TEMPS
-! -->   REDECOUPAGE IMPOSE ==>  RETURN DANS PLASTI APRES RECHERCHE
-!       DES CARACTERISTIQUES DU MATERIAU A (T) ET (T+DT)
-    if (ipal .le. 0) goto 999
-    if (icomp .eq. -1) icomp = 0
-!
-!   CAS DE NON CONVERGENCE LOCALE / REDECOUPAGE DU PAS DE TEMPS
-100 continue
-!
-    if (npal .eq. 0) then
-        goto 999
-    else
-        if (typmod(2) .eq. 'GRADVARI') then
-            call utmess('A', 'COMPOR2_10', sk=typmod(2))
-        end if
-    end if
-!
-    if (icomp .gt. 3) then
-        call utmess('A', 'ALGORITH10_35')
-        goto 999
-    end if
-!
-    if (icomp .ge. 1) npal = 2*npal
-    icomp = icomp+1
-!
-    do k = 1, npal
-        ! INITIALISATION DES VARIABLES POUR LE REDECOUPAGE DU PAS
-        if (k .eq. 1) then
-            td = instam
-            ca_td1_ = td
-            deltat = (instap-instam)/npal
-            tf = td+deltat
-            ca_tf1_ = tf
-            if ((option(1:9) .eq. 'RIGI_MECA') .or. (option(1:9) .eq. 'FULL_MECA')) then
-                dsde(1:ndsde) = 0.0
-            end if
-            eps(1:ndt) = epsdt(1:ndt)
-            deps(1:ndt) = depst(1:ndt)
-            deps(1:ndt) = (1.d0/npal)*deps(1:ndt)
-            sd(1:ndt) = sigd(1:ndt)
-            !
-            ! REACTUALISATION DES VARIABLES POUR L INCREMENT SUIVANT
-        else if (k .gt. 1) then
-            td = tf
-            ca_td1_ = td
-            tf = tf+deltat
-            ca_tf1_ = tf
-            eps(1:ndt) = eps(1:ndt)+deps(1:ndt)
-            sd(1:ndt) = sigf(1:ndt)
-            vind(1:nvi) = vinf(1:nvi)
-        end if
-        !
+
+! --------------------------------------------------------------------------------------------------
+!  Integration du comportement sans redecoupage
+! --------------------------------------------------------------------------------------------------
+
+    if (decoup .eq. SANS) then
+        niv_dec = 2
+        codret = 0
         call lc0000(BEHinteg, &
                     fami, kpg, ksp, ndim, typmod, &
                     l_epsi_varc, imate, materi, compor, mult_comp, &
-                    carcri, td, tf, neps, eps, &
-                    deps, nsig, sd, vind, option, &
-                    angmas, cp, numlc, sigf, vinf, &
-                    ndsde, dsdelo, icomp, nvi, codret)
-        !
-        if (codret .eq. 1) then
-            goto 100
-        else if (codret .eq. 2) then
-            goto 999
-        end if
-        !
-        if (option(1:9) .eq. 'RIGI_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
-            dsdelo = (1.d0/npal)*dsdelo
-            dsde = dsde+dsdelo
-        end if
-!
+                    carcri, instam, instap, neps, epsm, &
+                    deps, nsig, sigm, vim, option, &
+                    angmas, numlc, sigp, vip, &
+                    ndsde, dsidep, niv_dec, nvi, codret)
+        goto 999
+    end if
+
+! --------------------------------------------------------------------------------------------------
+!  Integration du comportement avec redecoupage
+! --------------------------------------------------------------------------------------------------
+
+    ! Tests de compatibilite
+    if (typmod(2) .eq. 'GRADVARI') call utmess('F', 'COMPOR2_10', sk=typmod(2))
+    if (numlc .ge. 8000 .and. numlc .lt. 9000) call utmess('F', 'COMPOR2_10', sk='KIT_DDI')
+    if (defo_comp .eq. 'SIMO_MIEHE') call utmess('F', 'COMPOR2_10', sk='SIMO_MIEHE')
+    ASSERT(lSigm)
+    ASSERT(lVari)
+
+    ! niveau de decoupe initial (si FORCE, on commence avec npas, si AUTO avec 1 seul pas)
+    niv_ini = merge(0, 1, decoup .eq. AUTO)
+
+    ! Boucle sur les niveaux de decoupage
+    do niv_dec = niv_ini, NBR_DECOUP_MAX
+        codret = 0
+        npas = max(1, abs(iip)*niv_dec)
+        deltat = (instap-instam)/npas
+        deps_sub = deps/npas
+
+        ! Initialisation des parametres d'entree
+        vim_sub = vim
+        sigm_sub = sigm
+
+        if (lMatr) dsidep = 0
+
+        ! Boucle sur les sous-pas
+        do pas = 1, npas
+
+            epsm_sub = epsm+(pas-1)*deps_sub
+            tm = instam+(pas-1)*deltat
+            tp = instam+pas*deltat
+            ca_td1_ = tm
+            ca_tf1_ = tp
+            codret_sub = 0
+            vip = vim_sub
+
+            call lc0000(BEHinteg, &
+                        fami, kpg, ksp, ndim, typmod, &
+                        l_epsi_varc, imate, materi, compor, mult_comp, &
+                        carcri, tm, tp, neps, epsm_sub, &
+                        deps_sub, nsig, sigm_sub, vim_sub, option, &
+                        angmas, numlc, sigp, vip, &
+                        ndsde, dsidep_sub, niv_dec, nvi, codret_sub)
+
+            codret = merge(codret_sub, 2, codret .ne. 2)
+            if (codret .eq. 1) exit
+
+            ! Matrice tangente finale = moyenne des matrices tangentes a chaque pas (faute de mieux)
+            if (lMatr) dsidep = dsidep+dsidep_sub/npas
+
+            ! Actualisation des parametres d'entree
+            sigm_sub = sigp
+            vim_sub = vip
+
+        end do
+        ! si codret=0, on a converge ; si codret=1 ou 2, on redecoupe
+        if (codret .eq. 0) goto 999
+
     end do
-!
+
 999 continue
 end subroutine

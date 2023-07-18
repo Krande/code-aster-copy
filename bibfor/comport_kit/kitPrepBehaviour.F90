@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine kitPrepBehaviour(compor, compor_creep, compor_plas)
+subroutine kitPrepBehaviour(compor, nvi_tot, compor_creep, compor_plas)
 !
     implicit none
 !
@@ -25,6 +25,7 @@ subroutine kitPrepBehaviour(compor, compor_creep, compor_plas)
 #include "asterfort/Behaviour_type.h"
 !
     character(len=16), intent(in) :: compor(*)
+    integer, intent(in) :: nvi_tot
     character(len=16), intent(out) :: compor_creep(*)
     character(len=16), intent(out) :: compor_plas(*)
 !
@@ -37,17 +38,17 @@ subroutine kitPrepBehaviour(compor, compor_creep, compor_plas)
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  compor          : behaviour
+! In  nvi_tot         : total number of internal variables
 ! Out compor_creep    : behaviour for creep
 ! Out compor_plas     : behaviour for plasticity
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nume_plas, nume_flua
-    integer :: nvi_tot, nvi_flua, nvi_plas
+    integer :: nvi_flua, nvi_plas
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    read (compor(NVAR), '(I16)') nvi_tot
     read (compor(CREEP_NVAR), '(I16)') nvi_flua
     read (compor(PLAS_NVAR), '(I16)') nvi_plas
     read (compor(PLAS_NUME), '(I16)') nume_plas

@@ -90,7 +90,7 @@ subroutine lc0032(BEHinteg, &
         call nmvprk(BEHinteg, &
                     fami, kpg, ksp, ndim, typmod, &
                     imate, compor, carcri, instam, instap, &
-                    neps, epsm, deps, sigm, vim, &
+                    neps, epsm, deps, sigm, nvi, vim, &
                     option, angmas, sigp, vip, dsidep, &
                     codret)
     end if

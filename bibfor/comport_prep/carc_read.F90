@@ -28,6 +28,7 @@ subroutine carc_read(behaviourPrepCrit, model_)
 #include "asterc/lcdiscard.h"
 #include "asterc/lcsymm.h"
 #include "asterc/lctest.h"
+#include "asterc/r8vide.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/comp_meca_l.h"
@@ -194,17 +195,20 @@ subroutine carc_read(behaviourPrepCrit, model_)
         end if
 
 ! ----- Get ITER_CPLAN_MAXI/RESI_CPLAN_MAXI/RESI_CPLAN_RELA (Deborst method)
-        resi_deborst_max = 1.d-6
         iter_deborst_max = 1
         call getvis(factorKeyword, 'ITER_CPLAN_MAXI', iocc=iFactorKeyword, &
                     scal=iter_deborst_max)
+
         call getvr8(factorKeyword, 'RESI_CPLAN_MAXI', iocc=iFactorKeyword, &
                     scal=resi_deborst_max, nbret=iret)
-        if (iret .ne. 0) then
-            resi_deborst_max = -resi_deborst_max
-        else
+        if (iret .eq. 0) then
             call getvr8(factorKeyword, 'RESI_CPLAN_RELA', iocc=iFactorKeyword, &
-                        scal=resi_deborst_max)
+                        scal=resi_deborst_max, nbret=iret)
+            if (iret .eq. 0) then
+                resi_deborst_max = r8vide()
+            else
+                resi_deborst_max = -resi_deborst_max
+            end if
         end if
 
 ! ----- Get TYPE_MATR_TANG/VALE_PERT_RELA

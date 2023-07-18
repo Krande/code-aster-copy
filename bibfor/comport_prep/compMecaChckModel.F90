@@ -27,6 +27,7 @@ subroutine compMecaChckModel(iComp, &
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/lctest.h"
+#include "asterfort/assert.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/comp_meca_l.h"
@@ -170,9 +171,8 @@ subroutine compMecaChckModel(iComp, &
 
                 else if (modelType .eq. '1D') then
                     call lctest(relaCompPY, 'MODELISATION', '1D', lctestIret)
-! ----------------- 1D is not allowed for this behaviour => activation of (double) Deborst algorithm
                     if (lctestIret .eq. 0) then
-                        lNeedDeborst = ASTER_TRUE
+                        call utmess('F', 'COMPOR4_32', sk=relaComp)
                     end if
 
                 else if (modelType .eq. '3D') then
