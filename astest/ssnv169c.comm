@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -151,7 +151,7 @@ TEST_RESU(
             RESULTAT=U,
             NOM_CHAM="SIEF_ELGA",
             NOM_CMP="SIYY",
-            VALE_CALC=1.7999998243411,
+            VALE_CALC=1.7999998548725884,
             VALE_REFE=1.8,
             PRECISION=1.0e-4,
             GROUP_MA="M1",
@@ -162,7 +162,7 @@ TEST_RESU(
             RESULTAT=U,
             NOM_CHAM="VARI_ELGA",
             NOM_CMP="V5",
-            VALE_CALC=3.1088075285867e-05,
+            VALE_CALC=3.108807571272457e-05,
             GROUP_MA="M1",
         ),
         _F(
@@ -171,7 +171,7 @@ TEST_RESU(
             RESULTAT=U,
             NOM_CHAM="VARI_ELGA",
             NOM_CMP="V22",
-            VALE_CALC=0.15469918350748,
+            VALE_CALC=0.15469939401582086,
             GROUP_MA="M1",
         ),
         _F(
@@ -180,7 +180,7 @@ TEST_RESU(
             RESULTAT=U,
             NOM_CHAM="EPFP_ELGA",
             NOM_CMP="EPYY",
-            VALE_CALC=5.5715361093451e-05,
+            VALE_CALC=5.571536206232323e-05,
             GROUP_MA="M1",
         ),
     )

@@ -330,7 +330,7 @@ TAB_REAC = POST_RELEVE_T(
 TEST_TABLE(
     REFERENCE="AUTRE_ASTER",
     PRECISION=0.6,
-    VALE_CALC=1641837.83995,
+    VALE_CALC=1641837.8399526777,
     VALE_REFE=1.07976e6,
     NOM_PARA="DX",
     TABLE=TAB_REAC,
@@ -340,7 +340,7 @@ TEST_TABLE(
 TEST_TABLE(
     REFERENCE="AUTRE_ASTER",
     PRECISION=0.14,
-    VALE_CALC=1503880.64521,
+    VALE_CALC=1502517.3979100634,
     VALE_REFE=1.32921e6,
     NOM_PARA="DX",
     TABLE=TAB_REAC,
@@ -355,7 +355,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             GROUP_NO="N283",
             NOM_CMP="DX",
-            VALE_CALC=0.000256501895302,
+            VALE_CALC=0.00025650189530157405,
         ),
         _F(
             INST=0.03,
@@ -363,7 +363,7 @@ TEST_RESU(
             NOM_CHAM="FORC_NODA",
             GROUP_NO="N332",
             NOM_CMP="DX",
-            VALE_CALC=118886.140412,
+            VALE_CALC=118886.14041179145,
         ),
         _F(
             INST=0.0495,
@@ -371,7 +371,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             GROUP_NO="N311",
             NOM_CMP="DX",
-            VALE_CALC=0.00044924081556,
+            VALE_CALC=0.0004471151908152733,
         ),
         _F(
             INST=0.0495,
@@ -379,7 +379,7 @@ TEST_RESU(
             NOM_CHAM="FORC_NODA",
             GROUP_NO="N332",
             NOM_CMP="DX",
-            VALE_CALC=138830.309323,
+            VALE_CALC=138884.19386138738,
         ),
     )
 )

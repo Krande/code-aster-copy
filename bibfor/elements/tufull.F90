@@ -327,8 +327,10 @@ subroutine tufull(option, nFourier, nbrddl, deplm, deplp, &
 !
 ! ======= CALCUL DES DEFORMATIONS ET INCREMENTS DE DEFORMATION
 !
+
                 call epsett('DEFORM', nbrddl, deplm, b, rbid, &
                             epsi, wgt, rbid)
+                eps2d = 0
                 eps2d(1) = epsi(1)
                 eps2d(2) = epsi(2)
                 eps2d(3) = 0.d0
@@ -336,6 +338,7 @@ subroutine tufull(option, nFourier, nbrddl, deplm, deplp, &
 !
                 call epsett('DEFORM', nbrddl, deplp, b, rbid, &
                             depsi, wgt, rbid)
+                deps2d = 0
                 deps2d(1) = depsi(1)
                 deps2d(2) = depsi(2)
                 deps2d(3) = 0.d0

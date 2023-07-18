@@ -154,7 +154,7 @@ TEST_RESU(
             RESULTAT=U,
             NOM_CHAM="SIEF_ELGA",
             NOM_CMP="SIZZ",
-            VALE_CALC=1.3887960177013,
+            VALE_CALC=1.3887960308902851,
             GROUP_MA="M1",
         ),
         _F(
@@ -163,7 +163,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             GROUP_NO="N5",
             NOM_CMP="DZ",
-            VALE_CALC=6.6346127231491e-05,
+            VALE_CALC=6.659055538608079e-05,
         ),
         _F(
             NUME_ORDRE=202,
@@ -171,7 +171,7 @@ TEST_RESU(
             RESULTAT=U,
             NOM_CHAM="VARI_ELGA",
             NOM_CMP="V22",
-            VALE_CALC=0.056072190098446,
+            VALE_CALC=0.060746430890174286,
             GROUP_MA="M1",
         ),
         _F(
@@ -180,7 +180,7 @@ TEST_RESU(
             RESULTAT=U,
             NOM_CHAM="VARI_ELGA",
             NOM_CMP="V7",
-            VALE_CALC=1.0144770559783e-05,
+            VALE_CALC=1.0145185599420664e-05,
             GROUP_MA="M1",
         ),
     )

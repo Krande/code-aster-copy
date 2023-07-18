@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -175,38 +175,148 @@ STAT = STAT_NON_LINE(
 )
 
 # TEST DE NON REGRESSION
-itps = 0
-icha = 1
-icmp = 2
-irefe = 3
-icrit = 4
-iprec = 5
-REFER = [
-    #   INST   NOM_CHAM      NOM_CMP  VALE
-    (20.0, "SIEF_ELGA", "SIYY", -220.34783644724),
-    (120.0, "SIEF_ELGA", "SIYY", -8.7333296992287e-04),
-    (160.0, "SIEF_ELGA", "SIYY", -222.22221889057),
-    (200.0, "SIEF_ELGA", "SIYY", -222.22221889099),
-    (90.0, "VARI_ELGA", "V1", 4.7645788247707e-03),
-    (100.0, "VARI_ELGA", "V1", 5.3890670256289e-03),
-    (110.0, "VARI_ELGA", "V2", 1308.932998218),
-    (200.0, "VARI_ELGA", "V2", 23158.424363876),
-    (200.0, "VARI_ELGA", "V4", 0.066666666666667),
-    (110.0, "VARI_ELGA", "V3", 9.2679899465394e-04),
-    (200.0, "VARI_ELGA", "V3", 0.066475273091627),
-]
 
-for ii in range(len(REFER)):
-    TEST_RESU(
-        RESU=_F(
-            RESULTAT=STAT,
-            INST=REFER[ii][itps],
-            GROUP_MA="M1",
-            POINT=1,
-            NOM_CHAM=REFER[ii][icha],
-            NOM_CMP=REFER[ii][icmp],
-            VALE_CALC=REFER[ii][irefe],
-        )
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=STAT,
+        INST=20.000000,
+        GROUP_MA="M1",
+        POINT=1,
+        NOM_CHAM="SIEF_ELGA",
+        NOM_CMP="SIYY",
+        VALE_CALC=-220.3478364472365,
     )
+)
+
+
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=STAT,
+        INST=120.000000,
+        GROUP_MA="M1",
+        POINT=1,
+        NOM_CHAM="SIEF_ELGA",
+        NOM_CMP="SIYY",
+        VALE_CALC=-0.0008731785670444566,
+    )
+)
+
+
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=STAT,
+        INST=160.000000,
+        GROUP_MA="M1",
+        POINT=1,
+        NOM_CHAM="SIEF_ELGA",
+        NOM_CMP="SIYY",
+        VALE_CALC=-222.22221889056823,
+    )
+)
+
+
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=STAT,
+        INST=200.000000,
+        GROUP_MA="M1",
+        POINT=1,
+        NOM_CHAM="SIEF_ELGA",
+        NOM_CMP="SIYY",
+        VALE_CALC=-222.22221889099404,
+    )
+)
+
+
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=STAT,
+        INST=90.000000,
+        GROUP_MA="M1",
+        POINT=1,
+        NOM_CHAM="VARI_ELGA",
+        NOM_CMP="V1",
+        VALE_CALC=0.004764578824770658,
+    )
+)
+
+
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=STAT,
+        INST=100.000000,
+        GROUP_MA="M1",
+        POINT=1,
+        NOM_CHAM="VARI_ELGA",
+        NOM_CMP="V1",
+        VALE_CALC=0.00538906702562891,
+    )
+)
+
+
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=STAT,
+        INST=110.000000,
+        GROUP_MA="M1",
+        POINT=1,
+        NOM_CHAM="VARI_ELGA",
+        NOM_CMP="V2",
+        VALE_CALC=1308.933565096609,
+    )
+)
+
+
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=STAT,
+        INST=200.000000,
+        GROUP_MA="M1",
+        POINT=1,
+        NOM_CHAM="VARI_ELGA",
+        NOM_CMP="V2",
+        VALE_CALC=23158.423267107268,
+    )
+)
+
+
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=STAT,
+        INST=200.000000,
+        GROUP_MA="M1",
+        POINT=1,
+        NOM_CHAM="VARI_ELGA",
+        NOM_CMP="V4",
+        VALE_CALC=0.06666666666666667,
+    )
+)
+
+
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=STAT,
+        INST=110.000000,
+        GROUP_MA="M1",
+        POINT=1,
+        NOM_CHAM="VARI_ELGA",
+        NOM_CMP="V3",
+        VALE_CALC=0.0009268006952898266,
+    )
+)
+
+
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=STAT,
+        INST=200.000000,
+        GROUP_MA="M1",
+        POINT=1,
+        NOM_CHAM="VARI_ELGA",
+        NOM_CMP="V3",
+        VALE_CALC=0.06647526980132183,
+    )
+)
+
 
 FIN()

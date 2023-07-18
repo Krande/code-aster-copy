@@ -158,7 +158,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             PRECISION=1.0e-2,
             VALE_REFE=1.3887960308902851,
-            VALE_CALC=1.3887960308902851,
+            VALE_CALC=1.3887980070222592,
             GROUP_MA="M1",
         ),
         _F(
@@ -170,7 +170,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             PRECISION=1.0e-2,
             VALE_REFE=-6.659055538608079e-03,
-            VALE_CALC=-6.6346127231491e-03,
+            VALE_CALC=-0.006660546775736527,
         ),
         _F(
             INST=tfin,
@@ -181,7 +181,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             PRECISION=1.0e-2,
             VALE_REFE=0.060746430890174286,
-            VALE_CALC=0.056072190098446,
+            VALE_CALC=0.06103203553560865,
             GROUP_MA="M1",
         ),
         _F(
@@ -193,7 +193,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             PRECISION=1.0e-2,
             VALE_REFE=1.0145185599420664e-05,
-            VALE_CALC=1.0144770559783e-05,
+            VALE_CALC=1.0145212164065586e-05,
             GROUP_MA="M1",
         ),
     )
