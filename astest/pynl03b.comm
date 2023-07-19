@@ -127,7 +127,7 @@ for i_inst in range(1, len(l_inst)):
     CHAR_AS = disc_comp.getImposedDualBC(inst)
 
     # Compute non linear quantities
-    mass_ther = disc_comp.getNonLinearCapacityMatrix(T, DELTA_T)
+    mass_ther = disc_comp.getTangentCapacityMatrix(T, DELTA_T)
 
     rigi_ther = disc_comp.getTangentConductivityMatrix(T, DELTA_T, with_dual=False)
     rigi_ther_dual = disc_comp.getDualLinearConductivityMatrix()

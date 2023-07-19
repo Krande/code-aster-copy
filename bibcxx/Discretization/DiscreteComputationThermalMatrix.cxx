@@ -247,7 +247,7 @@ DiscreteComputation::getLinearCapacityMatrix( const ASTERDOUBLE time_curr,
 /**
  * @brief Compute elementary matrices for mass matrix (MASS_THER_TANG)
  */
-ElementaryMatrixTemperatureRealPtr DiscreteComputation::getNonLinearCapacityMatrix(
+ElementaryMatrixTemperatureRealPtr DiscreteComputation::getTangentCapacityMatrix(
     const FieldOnNodesRealPtr temp_prev, const FieldOnNodesRealPtr temp_step,
     const FieldOnCellsRealPtr &externVarCurr, const VectorString &groupOfCells ) const {
     AS_ASSERT( _phys_problem->getModel()->isThermal() );

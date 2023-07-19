@@ -370,7 +370,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             )",
               py::arg( "time_curr" ), py::arg( "groupOfCells" ) = VectorString() )
 
-        .def( "getNonLinearCapacityMatrix", &DiscreteComputation::getNonLinearCapacityMatrix, R"(
+        .def( "getTangentCapacityMatrix", &DiscreteComputation::getTangentCapacityMatrix, R"(
             Return the elementary matrices for nonlinear Capacity matrix in thermal computation.
             Option MASS_THER_TANG.
 

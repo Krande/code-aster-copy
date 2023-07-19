@@ -1268,20 +1268,6 @@ class DiscreteComputation:
             ElementaryMatrix: elementary mass matrix
         """
 
-    def getNonLinearCapacityMatrix(self, temp_prev, temp_step, varc_curr=None, groupOfCells=[]):
-        """Return the elementary matrices for nonlinear Capacity matrix in thermal computation.
-        Option MASS_THER_TANG.
-
-        Arguments:
-            temp_prev (FieldOnNodes): thermal field at begin of current time
-            temp_step (FieldOnNodes): field of increment of temperature
-            externVarCurr (FieldOnCells): external state variables at end of current time
-            groupOfCells (list[str]): compute matrices on given groups of cells.
-                If it empty, the full model is used
-        Returns:
-            ElementaryMatrix: elementary mass matrix
-        """
-
     def getNonLinearTransientThermalForces(
         self, temp_prev, temp_step, time_prev, time_step, theta, varc_curr=None
     ):
@@ -1347,6 +1333,20 @@ class DiscreteComputation:
                 If it empty, the full model is used
         Returns:
             ElementaryMatrixReal: elementary rotational rigidity matrix
+        """
+
+    def getTangentCapacityMatrix(self, temp_prev, temp_step, varc_curr=None, groupOfCells=[]):
+        """Return the elementary matrices for nonlinear Capacity matrix in thermal computation.
+        Option MASS_THER_TANG.
+
+        Arguments:
+            temp_prev (FieldOnNodes): thermal field at begin of current time
+            temp_step (FieldOnNodes): field of increment of temperature
+            externVarCurr (FieldOnCells): external state variables at end of current time
+            groupOfCells (list[str]): compute matrices on given groups of cells.
+                If it empty, the full model is used
+        Returns:
+            ElementaryMatrix: elementary mass matrix
         """
 
     def getTangentConductivityMatrix(
