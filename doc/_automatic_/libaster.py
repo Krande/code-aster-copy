@@ -1135,17 +1135,12 @@ class DiscreteComputation:
             field of internal forces (FieldOnNodesReal),
         """
 
-    def getInternalThermalForces(
-        self, temp_prev, temp_step, time_prev, time_step, varc_curr=None, groupOfCells=[]
-    ):
+    def getInternalThermalForces(self, temp_step, varc_curr=None, groupOfCells=[]):
         """Compute internal thermal forces (integration of behaviour)
         Option RAPH_THER.
 
         Arguments:
-            temp_prev (FieldOnNodes): thermal field at begin of current time
             temp_step (FieldOnNodes): field of increment of temperature
-            time_prev (float): time at begin of the step
-            time_step (float): delta time between begin and end of the step
             externVarCurr (FieldOnCells): external state variables at end of current time
             groupOfCells (list[str]): compute matrices on given groups of cells.
                 If it empty, the full model is used
@@ -1257,7 +1252,7 @@ class DiscreteComputation:
         """
 
     def getNonLinearCapacityForces(
-        self, temp_prev, temp_step, time_prev, time_step, varc_curr=None, groupOfCells=[]
+        self, temp_prev, temp_step, time_step, varc_curr=None, groupOfCells=[]
     ):
         """Compute internal thermal forces (integration of behaviour)
         Option MASS_THER_RESI.
@@ -1265,7 +1260,6 @@ class DiscreteComputation:
         Arguments:
             temp_prev (FieldOnNodes): thermal field at begin of current time
             temp_step (FieldOnNodes): field of increment of temperature
-            time_prev (float): time at begin of the step
             time_step (float): delta time between begin and end of the step
             externVarCurr (FieldOnCells): external state variables at end of current time
             groupOfCells (list[str]): compute matrices on given groups of cells.

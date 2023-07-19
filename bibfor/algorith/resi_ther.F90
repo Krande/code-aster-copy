@@ -65,7 +65,7 @@ subroutine resi_ther(model, cara_elem, mate, time, compor, &
 ! In  mate             : name of material characteristics (field)
 ! In  time             : time (<CARTE>)
 ! In  temp_prev        : previous temperature
-! In  temp_iter        : temperature field at current Newton iteration
+! In  temp_iter        : incrementaltemperature field at current Newton iteration
 ! In  hydr_prev        : previous hydratation
 ! In  hydr_curr        : current hydratation
 ! In  dry_prev         : previous drying

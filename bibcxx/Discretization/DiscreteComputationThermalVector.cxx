@@ -660,9 +660,10 @@ bool DiscreteComputation::addTherNeumannTerms(
 /**
  * @brief Compute elementary forces for internal forces (RAPH_THER)
  */
-FieldOnNodesRealPtr DiscreteComputation::getInternalThermalForces(
-    const FieldOnNodesRealPtr temp_prev, const FieldOnNodesRealPtr temp_step,
-    const FieldOnCellsRealPtr &externVarCurr, const VectorString &groupOfCells ) const {
+FieldOnNodesRealPtr
+DiscreteComputation::getInternalThermalForces( const FieldOnNodesRealPtr temp_step,
+                                               const FieldOnCellsRealPtr &externVarCurr,
+                                               const VectorString &groupOfCells ) const {
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
     const std::string option( "RAPH_THER" );
 
@@ -710,9 +711,8 @@ FieldOnNodesRealPtr DiscreteComputation::getInternalThermalForces(
         calcul->addXFEMField( currXfemModel );
     }
 
-    // Current Thermal Field
-    auto temp_curr = std::make_shared< FieldOnNodesReal >( *temp_prev + *temp_step );
-    calcul->addInputField( "PTEMPEI", temp_curr );
+    // Add Thermal Field
+    calcul->addInputField( "PTEMPEI", temp_step );
 
     // TODO:
     // calcul->addInputField( "PTMPCHF", dry_curr );
@@ -736,8 +736,8 @@ FieldOnNodesRealPtr DiscreteComputation::getInternalThermalForces(
  */
 FieldOnNodesRealPtr DiscreteComputation::getNonLinearCapacityForces(
     const FieldOnNodesRealPtr temp_prev, const FieldOnNodesRealPtr temp_step,
-    const ASTERDOUBLE &time_prev, const ASTERDOUBLE &time_step,
-    const FieldOnCellsRealPtr &externVarCurr, const VectorString &groupOfCells ) const {
+    const ASTERDOUBLE &time_step, const FieldOnCellsRealPtr &externVarCurr,
+    const VectorString &groupOfCells ) const {
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
     const std::string option( "MASS_THER_RESI" );
 
@@ -786,12 +786,11 @@ FieldOnNodesRealPtr DiscreteComputation::getNonLinearCapacityForces(
     }
 
     // Add time field
-    calcul->addTimeField( "PTEMPSR", time_prev + time_step, time_step, 0.0 );
+    calcul->addTimeField( "PTEMPSR", 0.0, time_step, 0.0 );
 
     // Current Thermal Field
-    auto temp_curr = std::make_shared< FieldOnNodesReal >( *temp_prev + *temp_step );
     calcul->addInputField( "PTEMPER", temp_prev );
-    calcul->addInputField( "PTEMPEI", temp_curr );
+    calcul->addInputField( "PTEMPEI", temp_step );
 
     // Add output elementary terms
     calcul->addOutputElementaryTerm( "PRESIDU", std::make_shared< ElementaryTermReal >() );

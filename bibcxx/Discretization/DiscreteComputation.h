@@ -352,16 +352,14 @@ class DiscreteComputation {
      * field of internal forces (`B^T \sigma`)
      */
     FieldOnNodesRealPtr
-    getInternalThermalForces( const FieldOnNodesRealPtr temp_prev,
-                              const FieldOnNodesRealPtr temp_step,
+    getInternalThermalForces( const FieldOnNodesRealPtr temp_step,
                               const FieldOnCellsRealPtr &externVarCurr = nullptr,
                               const VectorString &groupOfCells = VectorString() ) const;
 
     // MASS_THER_RESI
     FieldOnNodesRealPtr
     getNonLinearCapacityForces( const FieldOnNodesRealPtr temp_prev,
-                                const FieldOnNodesRealPtr temp_step, const ASTERDOUBLE &time_prev,
-                                const ASTERDOUBLE &time_step,
+                                const FieldOnNodesRealPtr temp_step, const ASTERDOUBLE &time_step,
                                 const FieldOnCellsRealPtr &externVarCurr = nullptr,
                                 const VectorString &groupOfCells = VectorString() ) const;
 

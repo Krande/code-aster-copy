@@ -543,7 +543,6 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             Option RAPH_THER.
 
             Arguments:
-                temp_prev (FieldOnNodes): thermal field at begin of current time
                 temp_step (FieldOnNodes): field of increment of temperature
                 externVarCurr (FieldOnCells): external state variables at end of current time
                 groupOfCells (list[str]): compute matrices on given groups of cells.
@@ -551,7 +550,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             Returns:
                 ElementaryMatrix: elementary mass matrix
             )",
-              py::arg( "temp_prev" ), py::arg( "temp_step" ), py::arg( "varc_curr" ) = nullptr,
+              py::arg( "temp_step" ), py::arg( "varc_curr" ) = nullptr,
               py::arg( "groupOfCells" ) = VectorString() )
 
         .def( "getNonLinearCapacityForces", &DiscreteComputation::getNonLinearCapacityForces,
@@ -562,7 +561,6 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             Arguments:
                 temp_prev (FieldOnNodes): thermal field at begin of current time
                 temp_step (FieldOnNodes): field of increment of temperature
-                time_prev (float): time at begin of the step
                 time_step (float): delta time between begin and end of the step
                 externVarCurr (FieldOnCells): external state variables at end of current time
                 groupOfCells (list[str]): compute matrices on given groups of cells.
@@ -570,9 +568,8 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             Returns:
                 ElementaryMatrix: elementary mass matrix
             )",
-              py::arg( "temp_prev" ), py::arg( "temp_step" ), py::arg( "time_prev" ),
-              py::arg( "time_step" ), py::arg( "varc_curr" ) = nullptr,
-              py::arg( "groupOfCells" ) = VectorString() )
+              py::arg( "temp_prev" ), py::arg( "temp_step" ), py::arg( "time_step" ),
+              py::arg( "varc_curr" ) = nullptr, py::arg( "groupOfCells" ) = VectorString() )
 
         .def( "getTangentStiffnessMatrix", &DiscreteComputation::getTangentStiffnessMatrix,
               R"(
