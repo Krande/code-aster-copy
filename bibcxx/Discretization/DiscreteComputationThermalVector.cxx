@@ -662,7 +662,6 @@ bool DiscreteComputation::addTherNeumannTerms(
  */
 FieldOnNodesRealPtr DiscreteComputation::getInternalThermalForces(
     const FieldOnNodesRealPtr temp_prev, const FieldOnNodesRealPtr temp_step,
-    const ASTERDOUBLE &time_prev, const ASTERDOUBLE &time_step,
     const FieldOnCellsRealPtr &externVarCurr, const VectorString &groupOfCells ) const {
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
     const std::string option( "RAPH_THER" );
@@ -711,13 +710,12 @@ FieldOnNodesRealPtr DiscreteComputation::getInternalThermalForces(
         calcul->addXFEMField( currXfemModel );
     }
 
-    // Add time field
-    calcul->addTimeField( "PTEMPSR", time_prev + time_step, time_step, 0.0 );
-
     // Current Thermal Field
     auto temp_curr = std::make_shared< FieldOnNodesReal >( *temp_prev + *temp_step );
-    calcul->addInputField( "PTEMPER", temp_prev );
     calcul->addInputField( "PTEMPEI", temp_curr );
+
+    // TODO:
+    // calcul->addInputField( "PTMPCHF", dry_curr );
 
     // Add output elementary terms
     calcul->addOutputElementaryTerm( "PRESIDU", std::make_shared< ElementaryTermReal >() );

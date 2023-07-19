@@ -80,7 +80,7 @@ subroutine resi_ther(model, cara_elem, mate, time, compor, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbin = 11
+    integer, parameter :: nbin = 10
     integer, parameter :: nbout = 2
     character(len=8) :: lpain(nbin), lpaout(nbout), newnom
     character(len=19) :: lchin(nbin), lchout(nbout)
@@ -119,24 +119,16 @@ subroutine resi_ther(model, cara_elem, mate, time, compor, &
     lchin(1) = chgeom(1:19)
     lpain(2) = 'PMATERC'
     lchin(2) = mate(1:19)
-    lpain(3) = 'PTEMPSR'
-    lchin(3) = time(1:19)
-    lpain(4) = 'PTEMPEI'
-    lchin(4) = temp_iter(1:19)
-    lpain(5) = 'PHYDRPM'
-    lchin(5) = hydr_prev(1:19)
-    lpain(6) = 'PCOMPOR'
-    lchin(6) = compor(1:19)
-    lpain(7) = 'PTEMPER'
-    lchin(7) = temp_prev(1:19)
-    lpain(8) = 'PTMPCHI'
-    lchin(8) = dry_prev(1:19)
-    lpain(9) = 'PTMPCHF'
-    lchin(9) = dry_curr(1:19)
-    lpain(10) = 'PVARCPR'
-    lchin(10) = varc_curr(1:19)
-    lpain(11) = 'PCAMASS'
-    lchin(11) = chcara(12) (1:19)
+    lpain(3) = 'PTEMPEI'
+    lchin(3) = temp_iter(1:19)
+    lpain(4) = 'PCOMPOR'
+    lchin(4) = compor(1:19)
+    lpain(5) = 'PTMPCHF'
+    lchin(5) = dry_curr(1:19)
+    lpain(6) = 'PVARCPR'
+    lchin(6) = varc_curr(1:19)
+    lpain(7) = 'PCAMASS'
+    lchin(7) = chcara(12) (1:19)
 !
 ! - Rigidity
 !
@@ -151,7 +143,7 @@ subroutine resi_ther(model, cara_elem, mate, time, compor, &
 !
 ! - Number of fields
 !
-    call calcul(stop_calc, option1, ligrel_model, nbin, lchin, &
+    call calcul(stop_calc, option1, ligrel_model, 7, lchin, &
                 lpain, 1, lchout, lpaout, base, &
                 'OUI')
 !
@@ -167,7 +159,12 @@ subroutine resi_ther(model, cara_elem, mate, time, compor, &
 !
 ! - --- Mass
 !
-
+        lpain(8) = 'PHYDRPM'
+        lchin(8) = hydr_prev(1:19)
+        lpain(9) = 'PTEMPSR'
+        lchin(9) = time(1:19)
+        lpain(10) = 'PTEMPER'
+        lchin(10) = temp_prev(1:19)
 !
 ! - --- Output fields
 !

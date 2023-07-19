@@ -353,8 +353,7 @@ class DiscreteComputation {
      */
     FieldOnNodesRealPtr
     getInternalThermalForces( const FieldOnNodesRealPtr temp_prev,
-                              const FieldOnNodesRealPtr temp_step, const ASTERDOUBLE &time_prev,
-                              const ASTERDOUBLE &time_step,
+                              const FieldOnNodesRealPtr temp_step,
                               const FieldOnCellsRealPtr &externVarCurr = nullptr,
                               const VectorString &groupOfCells = VectorString() ) const;
 

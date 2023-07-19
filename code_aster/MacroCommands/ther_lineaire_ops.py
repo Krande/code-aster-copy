@@ -251,7 +251,7 @@ def _computeRhs(disr_comp, is_evol, time_value, time_delta, time_theta, previous
     logger.debug("<THER_LINEAIRE><RHS>: Start")
 
     # compute imposed temperature with Lagrange
-    rhs = disr_comp.getImposedDualBC(time_value, time_delta, time_theta)
+    rhs = disr_comp.getImposedDualBC(time_value)
     logger.debug("<THER_LINEAIRE><RHS>: Nodal BC")
     # compute neumann forces
     rhs += disr_comp.getNeumannForces(time_value, time_delta, time_theta, previousPrimalField)
