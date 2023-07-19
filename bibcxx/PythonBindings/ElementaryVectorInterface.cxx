@@ -46,6 +46,7 @@ void exportElementaryVectorToPython( py::module_ &mod ) {
         .def( "setListOfLoads", &BaseElementaryVector::setListOfLoads )
         .def( "setMaterialField", &BaseElementaryVector::setMaterialField )
         .def( "setModel", &BaseElementaryVector::setModel )
+        .def( "prepareCompute", &BaseElementaryVector::prepareCompute )
         .def( "setElementaryCharacteristics", &BaseElementaryVector::setElementaryCharacteristics )
         .def( "build", &BaseElementaryVector::build,
               py::arg( "FED" ) = std::vector< FiniteElementDescriptorPtr >() );
@@ -58,6 +59,27 @@ void exportElementaryVectorToPython( py::module_ &mod ) {
                                          ElementaryCharacteristicsPtr, ListOfLoadsPtr > ) )
         .def( "getVeass", &ElementaryVectorReal::getVeass )
         .def( "assemble", &ElementaryVectorReal::assemble )
+        .def( "addElementaryTerm",
+              py::overload_cast< const ElementaryTermRealPtr & >(
+                  &ElementaryVectorReal::addElementaryTerm ),
+              R"(
+            Add elementary term
+
+            Arguments:
+                term (ElementaryTermReal): elementary term
+            )",
+              py::arg( "term" ) )
+        .def( "addElementaryTerm",
+              py::overload_cast< const std::vector< ElementaryTermRealPtr > & >(
+                  &ElementaryVectorReal::addElementaryTerm ),
+              R"(
+            Add vector of elementary term
+
+            Arguments:
+                terms (list[ElementaryTermReal]): vector of elementary term
+            )",
+              py::arg( "terms" ) )
+        .def( "getElementaryTerms", &ElementaryVectorReal::getElementaryTerms )
         .def( "getFiniteElementDescriptor", &ElementaryVectorReal::getFiniteElementDescriptor );
 
     py::class_< ElementaryVectorComplex, ElementaryVectorComplexPtr, BaseElementaryVector >(
@@ -67,6 +89,7 @@ void exportElementaryVectorToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< ElementaryVectorComplex, ModelPtr, MaterialFieldPtr,
                                          ElementaryCharacteristicsPtr, ListOfLoadsPtr > ) )
         .def( "getVeass", &ElementaryVectorComplex::getVeass )
+        .def( "getElementaryTerms", &ElementaryVectorComplex::getElementaryTerms )
         .def( "assemble", &ElementaryVectorComplex::assemble );
 
     py::class_< ElementaryVectorDisplacementReal, ElementaryVectorDisplacementRealPtr,

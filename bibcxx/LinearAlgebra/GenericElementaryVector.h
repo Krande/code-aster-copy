@@ -231,6 +231,16 @@ class GenericElementaryVector : public BaseElementaryVector {
     /**
      * @brief Add elementary term
      */
+    void addElementaryTerm(
+        const std::vector< std::shared_ptr< ElementaryTerm< ValueType > > > &elemTerm ) {
+        for ( auto &term : elemTerm ) {
+            this->addElementaryTerm( term );
+        }
+    };
+
+    /**
+     * @brief Add elementary term
+     */
     void addElementaryTerm( const std::shared_ptr< ElementaryTerm< ValueType > > &elemTerm ) {
         _elemComp->addElementaryTerm( elemTerm->getName() );
         _elemTerm.push_back( elemTerm );
@@ -245,6 +255,11 @@ class GenericElementaryVector : public BaseElementaryVector {
         _elemComp->addElementaryTerm( elemTerm->getName() );
         _elemTerm.push_back( elemTerm );
     };
+
+    /**
+     * @brief Add elementary term
+     */
+    auto getElementaryTerms() const { return _elemTerm; }
 
     /**
      * @brief Assembly with dofNume

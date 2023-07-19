@@ -27,6 +27,8 @@ from libaster import (
     AssemblyMatrixDisplacementReal,
     AssemblyMatrixTemperatureReal,
     AssemblyMatrixPressureComplex,
+    FieldOnNodesReal,
+    FieldOnNodesComplex,
 )
 
 from ..Utilities import injector, profile
@@ -206,3 +208,72 @@ class ExtendedDiscreteComputation:
             raise RuntimeError("Unknown physic")
 
         return matr_elem
+
+    @profile
+    def getNeumannForces(
+        self, time_curr=0.0, time_step=0.0, theta=1, previousPrimalField=None, assembly=True
+    ):
+        """Return the Neumann forces field
+
+        Arguments:
+                time_curr (float): Current time
+                time_step (float): Time increment
+                theta (float): Theta parameter for time-integration
+                previousPrimalField (FieldOnNodesReal): solution field at previous time
+                assembly (bool): assemble if True
+
+        Returns:
+                ElementaryVector: elementary Neumann forces vector if assembly=False
+                FieldOnNodes: Neumann forces field if assembly=True
+        """
+
+        elem_vect = None
+        phys_pb = self.getPhysicalProblem()
+        model = phys_pb.getModel()
+
+        if model.isThermal():
+            elem_vect = self.getThermalNeumannForces(
+                time_curr, time_step, theta, previousPrimalField
+            )
+        elif model.isMechanical():
+            elem_vect = self.getMechanicalNeumannForces(time_curr, time_step, theta)
+        elif model.isAcoustic():
+            raise RuntimeError("Not implemented")
+        else:
+            raise RuntimeError("Not implemented")
+
+        if assembly:
+            return elem_vect.assembleWithLoadFunctions(phys_pb.getDOFNumbering(), time_curr)
+
+        return elem_vect
+
+    @profile
+    def getImposedDualBC(self, time_curr=0.0, assembly=True):
+        """Return imposed nodal BC field
+
+        Arguments:
+                time_curr (float): Current time
+                assembly (bool): assemble if True
+
+        Returns:
+                ElementaryVector: elementary imposed nodal BC vector if assembly=False
+                FieldOnNodes: imposed nodal BC field if assembly=True
+        """
+
+        elem_vect = None
+        phys_pb = self.getPhysicalProblem()
+        model = phys_pb.getModel()
+
+        if model.isThermal():
+            elem_vect = self.getThermalImposedDualBC(time_curr)
+        elif model.isMechanical():
+            elem_vect = self.getMechanicalImposedDualBC(time_curr)
+        elif model.isAcoustic():
+            raise RuntimeError("Not implemented")
+        else:
+            raise RuntimeError("Not implemented")
+
+        if assembly:
+            return elem_vect.assembleWithLoadFunctions(phys_pb.getDOFNumbering(), time_curr)
+
+        return elem_vect

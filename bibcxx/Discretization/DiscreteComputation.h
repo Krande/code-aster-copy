@@ -82,17 +82,6 @@ class DiscreteComputation {
     void baseExchangeThermalMatrix( CalculPtr &calcul, ElementaryMatrixTemperatureRealPtr &elemMatr,
                                     const ASTERDOUBLE &time_curr ) const;
 
-    bool addTherImposedTerms( ElementaryVectorRealPtr elemVect, const ASTERDOUBLE time_curr ) const;
-
-    bool addMecaImposedTerms( ElementaryVectorRealPtr elemVect, const ASTERDOUBLE time_curr ) const;
-
-    bool addTherNeumannTerms( ElementaryVectorRealPtr elemVect, const ASTERDOUBLE time_curr,
-                              const ASTERDOUBLE time_step, const ASTERDOUBLE theta,
-                              const FieldOnNodesRealPtr _previousNodalField = nullptr ) const;
-
-    bool addMecaNeumannTerms( ElementaryVectorRealPtr elemVect, const ASTERDOUBLE time_curr,
-                              const ASTERDOUBLE time_step, const ASTERDOUBLE theta ) const;
-
   public:
     /** @typedef DiscreteComputationPtr */
     typedef std::shared_ptr< DiscreteComputation > DiscreteComputationPtr;
@@ -121,7 +110,11 @@ class DiscreteComputation {
      * @param time_curr Time
      * @return Nodal field for imposed displacement
      */
-    FieldOnNodesRealPtr getImposedDualBC( const ASTERDOUBLE time_curr = 0.0 ) const;
+    ElementaryVectorDisplacementRealPtr
+    getMechanicalImposedDualBC( const ASTERDOUBLE time_curr = 0.0 ) const;
+
+    ElementaryVectorTemperatureRealPtr
+    getThermalImposedDualBC( const ASTERDOUBLE time_curr = 0.0 ) const;
 
     /**
      * @brief Compute Dirichlet reaction vector B^T * \lambda
@@ -142,10 +135,15 @@ class DiscreteComputation {
      * @param TimeParameters Parameters for time
      * @return Nodal field for Neumann loads
      */
-    FieldOnNodesRealPtr
-    getNeumannForces( const ASTERDOUBLE time_curr = 0.0, const ASTERDOUBLE time_step = 0.0,
-                      const ASTERDOUBLE theta = 1.0,
-                      const FieldOnNodesRealPtr _previousPrimalField = nullptr ) const;
+    ElementaryVectorDisplacementRealPtr
+    getMechanicalNeumannForces( const ASTERDOUBLE time_curr = 0.0,
+                                const ASTERDOUBLE time_step = 0.0,
+                                const ASTERDOUBLE theta = 1.0 ) const;
+
+    ElementaryVectorTemperatureRealPtr
+    getThermalNeumannForces( const ASTERDOUBLE time_curr = 0.0, const ASTERDOUBLE time_step = 0.0,
+                             const ASTERDOUBLE theta = 1.0,
+                             const FieldOnNodesRealPtr _previousPrimalField = nullptr ) const;
 
     /**
      * @brief Compute elementary matrices for mechanical stiffness (RIGI_MECA)

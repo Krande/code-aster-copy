@@ -35,207 +35,15 @@
 #include "Modeling/XfemModel.h"
 #include "Utilities/Tools.h"
 
-/** @brief Compute AFFE_CHAR_THER TEMP_IMPO */
-bool DiscreteComputation::addTherImposedTerms( ElementaryVectorRealPtr elemVect,
-                                               const ASTERDOUBLE time_curr ) const {
-
-    AS_ASSERT( _phys_problem->getModel()->isThermal() );
-
-    // Init
-    ASTERINTEGER iload = 1;
-    bool has_load = false;
-    std::string load_option = "";
-
-    // Setup
-    const std::string calcul_option( "CHAR_THER" );
-    elemVect->prepareCompute( calcul_option );
-
-    // Main parameters
-    auto currModel = _phys_problem->getModel();
-    auto listOfLoads = _phys_problem->getListOfLoads();
-
-    auto calcul = std::make_unique< Calcul >( calcul_option );
-    calcul->setModel( currModel );
-
-    auto impl = [&]( auto loads, bool real ) {
-        std::string name;
-        if ( real ) {
-            calcul->setOption( "THER_DDLI_R" );
-            name = "PDDLIMR";
-        } else {
-            calcul->setOption( "THER_DDLI_F" );
-            name = "PDDLIMF";
-        }
-        for ( const auto &load : loads ) {
-            auto load_FEDesc = load->getFiniteElementDescriptor();
-            auto impo_field = load->getImposedField();
-            if ( impo_field && impo_field->exists() && load_FEDesc ) {
-                calcul->clearInputs();
-                calcul->clearOutputs();
-                calcul->setFiniteElementDescriptor( load_FEDesc );
-                calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
-                calcul->addInputField( name, impo_field );
-                calcul->addTimeField( "PTEMPSR", time_curr, 0.0, -1.0 );
-                calcul->addOutputElementaryTerm( "PVECTTR",
-                                                 std::make_shared< ElementaryTermReal >() );
-                calcul->compute();
-                if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
-                    elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ),
-                                                 iload );
-                    has_load = true;
-                }
-            }
-            iload++;
-        }
-    };
-
-    impl( listOfLoads->getThermalLoadsReal(), true );
-    impl( listOfLoads->getThermalLoadsFunction(), false );
-
-#ifdef ASTER_HAVE_MPI
-    impl( listOfLoads->getParallelThermalLoadsReal(), true );
-    impl( listOfLoads->getParallelThermalLoadsFunction(), false );
-#endif
-
-    return has_load;
-}
-
-/** @brief Compute CHAR_THER_EVOL */
-FieldOnNodesRealPtr DiscreteComputation::getTransientThermalForces(
+ElementaryVectorTemperatureRealPtr DiscreteComputation::getThermalNeumannForces(
     const ASTERDOUBLE time_curr, const ASTERDOUBLE time_step, const ASTERDOUBLE theta,
-    const FieldOnNodesRealPtr _previousNodalField ) const {
+    const FieldOnNodesRealPtr _previousPrimalField ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
-    AS_ASSERT( _previousNodalField->exists() );
 
-    auto elemVect = std::make_shared< ElementaryVectorReal >(
+    auto elemVect = std::make_shared< ElementaryVectorTemperatureReal >(
         _phys_problem->getModel(), _phys_problem->getMaterialField(),
         _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
-
-    // Setup
-    const std::string calcul_option( "CHAR_THER_EVOL" );
-    elemVect->prepareCompute( calcul_option );
-
-    // Main parameters
-    auto currModel = _phys_problem->getModel();
-    auto currMater = _phys_problem->getMaterialField();
-    auto currCodedMater = _phys_problem->getCodedMaterial();
-    auto currElemChara = _phys_problem->getElementaryCharacteristics();
-
-    auto calcul = std::make_unique< Calcul >( calcul_option );
-    calcul->setModel( currModel );
-    calcul->clearInputs();
-    calcul->clearOutputs();
-
-    // Add input fields
-    calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
-    calcul->addTimeField( "PTEMPSR", time_curr, time_step, theta );
-    calcul->addInputField( "PTEMPER", _previousNodalField );
-
-    if ( currMater ) {
-        calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
-
-        if ( currMater->hasExternalStateVariable() ) {
-            calcul->addInputField( "PVARCPR",
-                                   _phys_problem->getExternalStateVariables( time_curr ) );
-        }
-    }
-
-    if ( currElemChara ) {
-        calcul->addElementaryCharacteristicsField( currElemChara );
-    }
-    if ( currModel->existsXfem() ) {
-        XfemModelPtr currXfemModel = currModel->getXfemModel();
-        calcul->addXFEMField( currXfemModel );
-    }
-    // Add output elementary terms
-    calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >() );
-
-    if ( currModel->existsFiniteElement() ) {
-        calcul->compute();
-        if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) )
-            elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ) );
-    };
-    elemVect->build();
-    // Assemble
-    return elemVect->assemble( _phys_problem->getDOFNumbering() );
-}
-
-/** @brief Compute CHAR_THER_EVOLNI */
-FieldOnNodesRealPtr DiscreteComputation::getNonLinearTransientThermalForces(
-    const FieldOnNodesRealPtr temp_prev, const FieldOnNodesRealPtr temp_step,
-    const ASTERDOUBLE time_prev, const ASTERDOUBLE time_step, const ASTERDOUBLE theta,
-    const FieldOnCellsRealPtr &externVarCurr ) const {
-
-    AS_ASSERT( _phys_problem->getModel()->isThermal() );
-
-    auto elemVect = std::make_shared< ElementaryVectorReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
-
-    // Setup
-    const std::string calcul_option( "CHAR_THER_EVOLNI" );
-    elemVect->prepareCompute( calcul_option );
-
-    // Main parameters
-    auto currModel = _phys_problem->getModel();
-    auto currMater = _phys_problem->getMaterialField();
-    auto currCodedMater = _phys_problem->getCodedMaterial();
-    auto currElemChara = _phys_problem->getElementaryCharacteristics();
-    auto currBehav = _phys_problem->getBehaviourProperty();
-
-    auto calcul = std::make_unique< Calcul >( calcul_option );
-    calcul->setModel( currModel );
-    calcul->clearInputs();
-    calcul->clearOutputs();
-
-    // Add input fields
-    calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
-    calcul->addTimeField( "PTEMPSR", time_prev + time_step, time_step, theta );
-    auto temp_curr = std::make_shared< FieldOnNodesReal >( *temp_prev + *temp_step );
-    calcul->addInputField( "PTEMPER", temp_prev );
-
-    if ( currMater ) {
-        calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
-
-        if ( currMater->hasExternalStateVariable() ) {
-            calcul->addInputField( "PVARCPR", externVarCurr );
-        }
-    }
-
-    if ( currBehav ) {
-        calcul->addInputField( "PCOMPOR", currBehav->getBehaviourField() );
-    }
-
-    if ( currElemChara ) {
-        calcul->addElementaryCharacteristicsField( currElemChara );
-    }
-    if ( currModel->existsXfem() ) {
-        XfemModelPtr currXfemModel = currModel->getXfemModel();
-        calcul->addXFEMField( currXfemModel );
-    }
-    // Add output elementary terms
-    calcul->addOutputElementaryTerm( "PVECTTI", std::make_shared< ElementaryTermReal >() );
-    calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >() );
-
-    if ( currModel->existsFiniteElement() ) {
-        calcul->compute();
-        if ( calcul->hasOutputElementaryTerm( "PVECTTI" ) )
-            elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTI" ) );
-        // Do not add linear part
-        // if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) )
-        //     elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ) );
-    };
-    elemVect->build();
-    // Assemble
-    return elemVect->assemble( _phys_problem->getDOFNumbering() );
-}
-
-bool DiscreteComputation::addTherNeumannTerms(
-    ElementaryVectorRealPtr elemVect, const ASTERDOUBLE time_curr, const ASTERDOUBLE time_step,
-    const ASTERDOUBLE theta, const FieldOnNodesRealPtr _previousNodalField ) const {
-
-    AS_ASSERT( _phys_problem->getModel()->isThermal() );
 
     // Init
     ASTERINTEGER iload = 1;
@@ -311,13 +119,13 @@ bool DiscreteComputation::addTherNeumannTerms(
                     AS_ABORT( "Cannot find T_EXT in EVOL_CHAR " + evol_char_name + " at time " +
                               std::to_string( time_curr ) );
                 }
-                AS_ASSERT( _previousNodalField->exists() );
+                AS_ASSERT( _previousPrimalField->exists() );
 
                 calcul->setOption( "CHAR_THER_TEXT_R" );
                 calcul->setFiniteElementDescriptor( model_FEDesc );
                 calcul->clearInputs();
                 calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
-                calcul->addInputField( "PTEMPER", _previousNodalField );
+                calcul->addInputField( "PTEMPER", _previousPrimalField );
                 calcul->addTimeField( "PTEMPSR", time_curr, time_step, theta );
                 calcul->addInputField( "PCOEFHR", evol_exchange_field );
                 calcul->addInputField( "PT_EXTR", evol_ext_temp_field );
@@ -358,8 +166,8 @@ bool DiscreteComputation::addTherNeumannTerms(
             calcul->setFiniteElementDescriptor( model_FEDesc );
             calcul->clearInputs();
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
-            if ( _previousNodalField ) {
-                calcul->addInputField( "PTEMPER", _previousNodalField );
+            if ( _previousPrimalField ) {
+                calcul->addInputField( "PTEMPER", _previousPrimalField );
             }
             calcul->addTimeField( "PTEMPSR", time_curr, time_step, theta );
             calcul->addInputField( "PCOEFHR", exchange_field );
@@ -468,8 +276,8 @@ bool DiscreteComputation::addTherNeumannTerms(
                 calcul->setFiniteElementDescriptor( load_FEDesc );
             }
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
-            if ( _previousNodalField ) {
-                calcul->addInputField( "PTEMPER", _previousNodalField );
+            if ( _previousPrimalField ) {
+                calcul->addInputField( "PTEMPER", _previousPrimalField );
             }
             calcul->addTimeField( "PTEMPSR", time_curr, time_step, theta );
             calcul->addInputField( "PHECHPR", wall_exchange_field );
@@ -521,8 +329,8 @@ bool DiscreteComputation::addTherNeumannTerms(
             calcul->setOption( "CHAR_THER_TEXT_F" );
             calcul->clearInputs();
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
-            if ( _previousNodalField ) {
-                calcul->addInputField( "PTEMPER", _previousNodalField );
+            if ( _previousPrimalField ) {
+                calcul->addInputField( "PTEMPER", _previousPrimalField );
             }
             calcul->addTimeField( "PTEMPSR", time_curr, time_step, theta );
             calcul->setFiniteElementDescriptor( model_FEDesc );
@@ -609,8 +417,8 @@ bool DiscreteComputation::addTherNeumannTerms(
                 calcul->setFiniteElementDescriptor( load_FEDesc );
             }
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
-            if ( _previousNodalField ) {
-                calcul->addInputField( "PTEMPER", _previousNodalField );
+            if ( _previousPrimalField ) {
+                calcul->addInputField( "PTEMPER", _previousPrimalField );
             }
             calcul->addTimeField( "PTEMPSR", time_curr, time_step, theta );
             calcul->addInputField( "PHECHPF", wall_exchange_field );
@@ -654,7 +462,215 @@ bool DiscreteComputation::addTherNeumannTerms(
         iload++;
     }
 
-    return has_load;
+    auto FEDs = _phys_problem->getListOfLoads()->getFiniteElementDescriptors();
+    FEDs.push_back( _phys_problem->getModel()->getFiniteElementDescriptor() );
+    elemVect->build( FEDs );
+
+    return elemVect;
+};
+
+/** @brief Compute AFFE_CHAR_THER TEMP_IMPO */
+ElementaryVectorTemperatureRealPtr
+DiscreteComputation::getThermalImposedDualBC( const ASTERDOUBLE time_curr ) const {
+
+    AS_ASSERT( _phys_problem->getModel()->isThermal() );
+
+    auto elemVect = std::make_shared< ElementaryVectorTemperatureReal >(
+        _phys_problem->getModel(), _phys_problem->getMaterialField(),
+        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
+
+    // Init
+    ASTERINTEGER iload = 1;
+    bool has_load = false;
+    std::string load_option = "";
+
+    // Setup
+    const std::string calcul_option( "CHAR_THER" );
+    elemVect->prepareCompute( calcul_option );
+
+    // Main parameters
+    auto currModel = _phys_problem->getModel();
+    auto listOfLoads = _phys_problem->getListOfLoads();
+
+    auto calcul = std::make_unique< Calcul >( calcul_option );
+    calcul->setModel( currModel );
+
+    auto impl = [&]( auto loads, bool real ) {
+        std::string name;
+        if ( real ) {
+            calcul->setOption( "THER_DDLI_R" );
+            name = "PDDLIMR";
+        } else {
+            calcul->setOption( "THER_DDLI_F" );
+            name = "PDDLIMF";
+        }
+        for ( const auto &load : loads ) {
+            auto load_FEDesc = load->getFiniteElementDescriptor();
+            auto impo_field = load->getImposedField();
+            if ( impo_field && impo_field->exists() && load_FEDesc ) {
+                calcul->clearInputs();
+                calcul->clearOutputs();
+                calcul->setFiniteElementDescriptor( load_FEDesc );
+                calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
+                calcul->addInputField( name, impo_field );
+                calcul->addTimeField( "PTEMPSR", time_curr, 0.0, -1.0 );
+                calcul->addOutputElementaryTerm( "PVECTTR",
+                                                 std::make_shared< ElementaryTermReal >() );
+                calcul->compute();
+                if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
+                    elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ),
+                                                 iload );
+                    has_load = true;
+                }
+            }
+            iload++;
+        }
+    };
+
+    impl( listOfLoads->getThermalLoadsReal(), true );
+    impl( listOfLoads->getThermalLoadsFunction(), false );
+
+#ifdef ASTER_HAVE_MPI
+    impl( listOfLoads->getParallelThermalLoadsReal(), true );
+    impl( listOfLoads->getParallelThermalLoadsFunction(), false );
+#endif
+
+    auto FEDs = _phys_problem->getListOfLoads()->getFiniteElementDescriptors();
+    FEDs.push_back( _phys_problem->getModel()->getFiniteElementDescriptor() );
+    elemVect->build( FEDs );
+
+    return elemVect;
+}
+
+/** @brief Compute CHAR_THER_EVOL */
+FieldOnNodesRealPtr DiscreteComputation::getTransientThermalForces(
+    const ASTERDOUBLE time_curr, const ASTERDOUBLE time_step, const ASTERDOUBLE theta,
+    const FieldOnNodesRealPtr _previousPrimalField ) const {
+
+    AS_ASSERT( _phys_problem->getModel()->isThermal() );
+    AS_ASSERT( _previousPrimalField->exists() );
+
+    auto elemVect = std::make_shared< ElementaryVectorReal >(
+        _phys_problem->getModel(), _phys_problem->getMaterialField(),
+        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
+
+    // Setup
+    const std::string calcul_option( "CHAR_THER_EVOL" );
+    elemVect->prepareCompute( calcul_option );
+
+    // Main parameters
+    auto currModel = _phys_problem->getModel();
+    auto currMater = _phys_problem->getMaterialField();
+    auto currCodedMater = _phys_problem->getCodedMaterial();
+    auto currElemChara = _phys_problem->getElementaryCharacteristics();
+
+    auto calcul = std::make_unique< Calcul >( calcul_option );
+    calcul->setModel( currModel );
+    calcul->clearInputs();
+    calcul->clearOutputs();
+
+    // Add input fields
+    calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
+    calcul->addTimeField( "PTEMPSR", time_curr, time_step, theta );
+    calcul->addInputField( "PTEMPER", _previousPrimalField );
+
+    if ( currMater ) {
+        calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
+
+        if ( currMater->hasExternalStateVariable() ) {
+            calcul->addInputField( "PVARCPR",
+                                   _phys_problem->getExternalStateVariables( time_curr ) );
+        }
+    }
+
+    if ( currElemChara ) {
+        calcul->addElementaryCharacteristicsField( currElemChara );
+    }
+    if ( currModel->existsXfem() ) {
+        XfemModelPtr currXfemModel = currModel->getXfemModel();
+        calcul->addXFEMField( currXfemModel );
+    }
+    // Add output elementary terms
+    calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >() );
+
+    if ( currModel->existsFiniteElement() ) {
+        calcul->compute();
+        if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) )
+            elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ) );
+    };
+    elemVect->build();
+    // Assemble
+    return elemVect->assemble( _phys_problem->getDOFNumbering() );
+}
+
+/** @brief Compute CHAR_THER_EVOLNI */
+FieldOnNodesRealPtr DiscreteComputation::getNonLinearTransientThermalForces(
+    const FieldOnNodesRealPtr temp_prev, const FieldOnNodesRealPtr temp_step,
+    const ASTERDOUBLE time_prev, const ASTERDOUBLE time_step, const ASTERDOUBLE theta,
+    const FieldOnCellsRealPtr &externVarCurr ) const {
+
+    AS_ASSERT( _phys_problem->getModel()->isThermal() );
+
+    auto elemVect = std::make_shared< ElementaryVectorReal >(
+        _phys_problem->getModel(), _phys_problem->getMaterialField(),
+        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
+
+    // Setup
+    const std::string calcul_option( "CHAR_THER_EVOLNI" );
+    elemVect->prepareCompute( calcul_option );
+
+    // Main parameters
+    auto currModel = _phys_problem->getModel();
+    auto currMater = _phys_problem->getMaterialField();
+    auto currCodedMater = _phys_problem->getCodedMaterial();
+    auto currElemChara = _phys_problem->getElementaryCharacteristics();
+    auto currBehav = _phys_problem->getBehaviourProperty();
+
+    auto calcul = std::make_unique< Calcul >( calcul_option );
+    calcul->setModel( currModel );
+    calcul->clearInputs();
+    calcul->clearOutputs();
+
+    // Add input fields
+    calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
+    calcul->addTimeField( "PTEMPSR", time_prev + time_step, time_step, theta );
+    auto temp_curr = std::make_shared< FieldOnNodesReal >( *temp_prev + *temp_step );
+    calcul->addInputField( "PTEMPER", temp_prev );
+
+    if ( currMater ) {
+        calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
+
+        if ( currMater->hasExternalStateVariable() ) {
+            calcul->addInputField( "PVARCPR", externVarCurr );
+        }
+    }
+
+    if ( currBehav ) {
+        calcul->addInputField( "PCOMPOR", currBehav->getBehaviourField() );
+    }
+
+    if ( currElemChara ) {
+        calcul->addElementaryCharacteristicsField( currElemChara );
+    }
+    if ( currModel->existsXfem() ) {
+        XfemModelPtr currXfemModel = currModel->getXfemModel();
+        calcul->addXFEMField( currXfemModel );
+    }
+    // Add output elementary terms
+    calcul->addOutputElementaryTerm( "PVECTTI", std::make_shared< ElementaryTermReal >() );
+    calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >() );
+
+    if ( currModel->existsFiniteElement() ) {
+        calcul->compute();
+        if ( calcul->hasOutputElementaryTerm( "PVECTTI" ) )
+            elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTI" ) );
+        // Do not add linear part
+        // if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) )
+        //     elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ) );
+    };
+    elemVect->build();
+    // Assemble
+    return elemVect->assemble( _phys_problem->getDOFNumbering() );
 }
 
 /**

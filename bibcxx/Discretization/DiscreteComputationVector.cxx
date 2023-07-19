@@ -36,68 +36,6 @@
 #include "Supervis/CommandSyntax.h"
 #include "Utilities/Tools.h"
 
-FieldOnNodesRealPtr DiscreteComputation::getImposedDualBC( const ASTERDOUBLE time_curr ) const {
-
-    bool has_load = false;
-
-    auto elemVect = std::make_shared< ElementaryVectorReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
-
-    if ( _phys_problem->getModel()->isThermal() ) {
-        has_load = this->addTherImposedTerms( elemVect, time_curr );
-    } else if ( _phys_problem->getModel()->isMechanical() ) {
-        has_load = this->addMecaImposedTerms( elemVect, time_curr );
-    } else {
-        AS_ASSERT( false );
-    };
-
-    if ( has_load ) {
-        auto FEDs = _phys_problem->getListOfLoads()->getFiniteElementDescriptors();
-        FEDs.push_back( _phys_problem->getModel()->getFiniteElementDescriptor() );
-        elemVect->build( FEDs );
-        return elemVect->assembleWithLoadFunctions( _phys_problem->getDOFNumbering(), time_curr );
-    } else {
-        FieldOnNodesRealPtr vectAsse =
-            std::make_shared< FieldOnNodesReal >( _phys_problem->getDOFNumbering() );
-        vectAsse->setValues( 0.0 );
-        return vectAsse;
-    }
-};
-
-FieldOnNodesRealPtr
-DiscreteComputation::getNeumannForces( const ASTERDOUBLE time_curr, const ASTERDOUBLE time_delta,
-                                       const ASTERDOUBLE time_theta,
-                                       const FieldOnNodesRealPtr _previousPrimalField ) const {
-
-    bool has_load = false;
-
-    auto elemVect = std::make_shared< ElementaryVectorReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
-
-    if ( _phys_problem->getModel()->isThermal() ) {
-        has_load = this->addTherNeumannTerms( elemVect, time_curr, time_delta, time_theta,
-                                              _previousPrimalField );
-    } else if ( _phys_problem->getModel()->isMechanical() ) {
-        has_load = this->addMecaNeumannTerms( elemVect, time_curr, time_delta, time_theta );
-    } else {
-        AS_ASSERT( false );
-    };
-    if ( has_load ) {
-        auto FEDs = _phys_problem->getListOfLoads()->getFiniteElementDescriptors();
-        FEDs.push_back( _phys_problem->getModel()->getFiniteElementDescriptor() );
-        elemVect->build( FEDs );
-        return elemVect->assembleWithLoadFunctions( _phys_problem->getDOFNumbering(), time_curr );
-    } else {
-        FieldOnNodesRealPtr vectAsse =
-            std::make_shared< FieldOnNodesReal >( _phys_problem->getDOFNumbering() );
-        vectAsse->setValues( 0.0 );
-        vectAsse->build();
-        return vectAsse;
-    }
-};
-
 FieldOnNodesRealPtr DiscreteComputation::getDualForces( FieldOnNodesRealPtr lagr_curr ) const {
 
     auto elemVect = std::make_shared< ElementaryVectorReal >(

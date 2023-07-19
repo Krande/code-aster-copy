@@ -36,6 +36,60 @@
 #include "Modeling/XfemModel.h"
 #include "Utilities/Tools.h"
 
+ElementaryVectorDisplacementRealPtr DiscreteComputation::getMechanicalNeumannForces(
+    const ASTERDOUBLE time_curr, const ASTERDOUBLE time_step, const ASTERDOUBLE time_theta ) const {
+
+    auto elemVect = std::make_shared< ElementaryVectorDisplacementReal >(
+        _phys_problem->getModel(), _phys_problem->getMaterialField(),
+        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
+
+    AS_ASSERT( _phys_problem->getModel()->isMechanical() );
+
+    // Main parameters
+    const std::string calcul_option( "CHAR_MECA" );
+    auto currModel = _phys_problem->getModel();
+    auto currMater = _phys_problem->getMaterialField();
+    auto currCodedMater = _phys_problem->getCodedMaterial();
+    auto currElemChara = _phys_problem->getElementaryCharacteristics();
+    auto listOfLoads = _phys_problem->getListOfLoads();
+    elemVect->prepareCompute( calcul_option );
+
+    // Get JEVEUX names of objects to call Fortran
+    JeveuxVectorChar24 listOfLoadsList = listOfLoads->getListVector();
+    JeveuxVectorLong listOfLoadsInfo = listOfLoads->getInformationVector();
+    std::string nameLcha = ljust( listOfLoadsList->getName(), 24 );
+    std::string nameInfc = ljust( listOfLoadsInfo->getName(), 24 );
+    std::string vectElemName = ljust( elemVect->getName(), 24 );
+    std::string modelName = ljust( currModel->getName(), 24 );
+    std::string materName = ljust( currMater->getName(), 24 );
+    std::string currCodedMaterName =
+        ljust( currCodedMater->getCodedMaterialField()->getName(), 24 );
+    std::string stop( "S" );
+    std::string currElemCharaName( " " );
+    if ( currElemChara )
+        currElemCharaName = currElemChara->getName();
+    currElemCharaName.resize( 24, ' ' );
+
+    // Get external state variables
+    std::string externVarName( " " );
+    FieldOnCellsRealPtr externVar = nullptr;
+    if ( currMater->hasExternalStateVariable() ) {
+        externVar = _phys_problem->getExternalStateVariables( time_curr );
+        externVarName = externVar->getName();
+    }
+    externVarName.resize( 19, ' ' );
+
+    CALLO_VECHME_WRAP( stop, modelName, nameLcha, nameInfc, &time_curr, &time_step, &time_theta,
+                       currElemCharaName, materName, currCodedMaterName, vectElemName,
+                       externVarName );
+
+    auto FEDs = _phys_problem->getListOfLoads()->getFiniteElementDescriptors();
+    FEDs.push_back( _phys_problem->getModel()->getFiniteElementDescriptor() );
+    elemVect->build( FEDs );
+
+    return elemVect;
+};
+
 /** @brief Compute internal forces, stress and internal state variables */
 std::tuple< FieldOnCellsLongPtr, ASTERINTEGER, FieldOnCellsRealPtr, FieldOnCellsRealPtr,
             FieldOnNodesRealPtr >
@@ -121,10 +175,14 @@ DiscreteComputation::getInternalForces( const FieldOnNodesRealPtr displ_prev,
 }
 
 /** @brief Compute AFFE_CHAR_MECA DDL_IMPO */
-bool DiscreteComputation::addMecaImposedTerms( ElementaryVectorRealPtr elemVect,
-                                               const ASTERDOUBLE time_curr ) const {
+ElementaryVectorDisplacementRealPtr
+DiscreteComputation::getMechanicalImposedDualBC( const ASTERDOUBLE time_curr ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
+
+    auto elemVect = std::make_shared< ElementaryVectorDisplacementReal >(
+        _phys_problem->getModel(), _phys_problem->getMaterialField(),
+        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
 
     // Main parameters
     const std::string calcul_option( "CHAR_MECA" );
@@ -146,56 +204,7 @@ bool DiscreteComputation::addMecaImposedTerms( ElementaryVectorRealPtr elemVect,
 
     CALLO_VEDIME( modelName, nameLcha, nameInfc, &time_curr, typres, vectElemName );
 
-    return true;
-}
-
-/** @brief Compute CHAR_MECA */
-bool DiscreteComputation::addMecaNeumannTerms( ElementaryVectorRealPtr elemVect,
-                                               const ASTERDOUBLE time_curr,
-                                               const ASTERDOUBLE time_delta,
-                                               const ASTERDOUBLE time_theta ) const {
-
-    AS_ASSERT( _phys_problem->getModel()->isMechanical() );
-
-    // Main parameters
-    const std::string calcul_option( "CHAR_MECA" );
-    auto currModel = _phys_problem->getModel();
-    auto currMater = _phys_problem->getMaterialField();
-    auto currCodedMater = _phys_problem->getCodedMaterial();
-    auto currElemChara = _phys_problem->getElementaryCharacteristics();
-    auto listOfLoads = _phys_problem->getListOfLoads();
-    elemVect->prepareCompute( calcul_option );
-
-    // Get JEVEUX names of objects to call Fortran
-    JeveuxVectorChar24 listOfLoadsList = listOfLoads->getListVector();
-    JeveuxVectorLong listOfLoadsInfo = listOfLoads->getInformationVector();
-    std::string nameLcha = ljust( listOfLoadsList->getName(), 24 );
-    std::string nameInfc = ljust( listOfLoadsInfo->getName(), 24 );
-    std::string vectElemName = ljust( elemVect->getName(), 24 );
-    std::string modelName = ljust( currModel->getName(), 24 );
-    std::string materName = ljust( currMater->getName(), 24 );
-    std::string currCodedMaterName =
-        ljust( currCodedMater->getCodedMaterialField()->getName(), 24 );
-    std::string stop( "S" );
-    std::string currElemCharaName( " " );
-    if ( currElemChara )
-        currElemCharaName = currElemChara->getName();
-    currElemCharaName.resize( 24, ' ' );
-
-    // Get external state variables
-    std::string externVarName( " " );
-    FieldOnCellsRealPtr externVar = nullptr;
-    if ( currMater->hasExternalStateVariable() ) {
-        externVar = _phys_problem->getExternalStateVariables( time_curr );
-        externVarName = externVar->getName();
-    }
-    externVarName.resize( 19, ' ' );
-
-    CALLO_VECHME_WRAP( stop, modelName, nameLcha, nameInfc, &time_curr, &time_delta, &time_theta,
-                       currElemCharaName, materName, currCodedMaterName, vectElemName,
-                       externVarName );
-
-    return true;
+    return elemVect;
 }
 
 FieldOnNodesRealPtr DiscreteComputation::getContactForces(

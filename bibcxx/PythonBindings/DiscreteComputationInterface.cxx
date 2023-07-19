@@ -30,15 +30,27 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
         mod, "DiscreteComputation" )
         .def( py::init( &initFactoryPtr< DiscreteComputation, PhysicalProblemPtr > ) )
         // fake initFactoryPtr: not a DataStructure
-        .def( "getImposedDualBC", &DiscreteComputation::getImposedDualBC,
+        .def( "getMechanicalImposedDualBC", &DiscreteComputation::getMechanicalImposedDualBC,
               R"(
-      Return the imposed nodal BC assembled vector
+      Return the mechanical imposed nodal BC elementary vector
 
       Arguments:
             time_curr (float): Current time (default: 0.0)
 
       Returns:
-            FieldOnNodes: imposed dual field
+            ElementaryVectorDisplacementReal: imposed dual vector
+        )",
+              py::arg( "time_curr" ) = 0.0 )
+
+        .def( "getThermalImposedDualBC", &DiscreteComputation::getThermalImposedDualBC,
+              R"(
+      Return the thermal imposed nodal BC elementary vector
+
+      Arguments:
+            time_curr (float): Current time (default: 0.0)
+
+      Returns:
+            ElementaryVectorThermalReal: imposed dual vector
         )",
               py::arg( "time_curr" ) = 0.0 )
 
@@ -66,9 +78,23 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
               )",
               py::arg( "disp_curr" ), py::arg( "scaling" ) = 1.0 )
 
-        .def( "getNeumannForces", &DiscreteComputation::getNeumannForces,
+        .def( "getMechanicalNeumannForces", &DiscreteComputation::getMechanicalNeumannForces,
               R"(
-      Return the Neumann forces vector
+      Return the elementary mechanical Neumann forces vector
+
+      Arguments:
+            time_curr (float): Current time
+            time_step (float): Time increment
+            theta (float): Theta parameter for time-integration
+
+      Returns:
+            ElementaryVectorDisplacementReal: elementary Neumann forces vector
+        )",
+              py::arg( "time_curr" ) = 0.0, py::arg( "time_step" ) = 0.0, py::arg( "theta" ) = 1.0 )
+
+        .def( "getThermalNeumannForces", &DiscreteComputation::getThermalNeumannForces,
+              R"(
+      Return the elementary thermal Neumann forces vector
 
       Arguments:
             time_curr (float): Current time
@@ -77,7 +103,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             previousPrimalField (fieldOnNodesReal): solution field at previous time
 
       Returns:
-            FieldOnNodes: Neumann forces vector
+            ElementaryVectorThermalReal: elementary Neumann forces vector
         )",
               py::arg( "time_curr" ) = 0.0, py::arg( "time_step" ) = 0.0, py::arg( "theta" ) = 1.0,
               py::arg( "previousPrimalField" ) = nullptr )
