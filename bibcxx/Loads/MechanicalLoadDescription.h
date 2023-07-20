@@ -172,32 +172,112 @@ class MechanicalLoadDescription : public DataStructure {
     ConstantFieldOnCellsRealPtr getMultiplicativeField() const { return _cmult; }
 
     bool hasLoadField( const std::string load_name ) const {
-        if ( load_name == "IMPED" ) {
+        if ( load_name == "EPSIN" ) {
+            return ( _epsin && _epsin->exists() );
+        } else if ( load_name == "F1D1D" ) {
+            return ( _f1d1d && _f1d1d->exists() );
+        } else if ( load_name == "F1D2D" ) {
+            return ( _f1d2d && _f1d2d->exists() );
+        } else if ( load_name == "F2D2D" ) {
+            return ( _f2d2d && _f2d2d->exists() );
+        } else if ( load_name == "F1D3D" ) {
+            return ( _f1d3d && _f1d3d->exists() );
+        } else if ( load_name == "F2D3D" ) {
+            return ( _f2d3d && _f2d3d->exists() );
+        } else if ( load_name == "F3D3D" ) {
+            return ( _f3d3d && _f3d3d->exists() );
+        } else if ( load_name == "FCO2D" ) {
+            return ( _fco2d && _fco2d->exists() );
+        } else if ( load_name == "FCO3D" ) {
+            return ( _fco3d && _fco3d->exists() );
+        } else if ( load_name == "FELEC" ) {
+            return ( _felec && _felec->exists() );
+        } else if ( load_name == "FL101" ) {
+            return ( _fl101 && _fl101->exists() );
+        } else if ( load_name == "FL102" ) {
+            return ( _fl102 && _fl102->exists() );
+        } else if ( load_name == "FORNO" ) {
+            return ( _forno && _forno->exists() );
+        } else if ( load_name == "IMPED" ) {
             return ( _imped && _imped->exists() );
+        } else if ( load_name == "PESAN" ) {
+            return ( _pesan && _pesan->exists() );
+        } else if ( load_name == "PRESS" ) {
+            return ( _press && _press->exists() );
         } else if ( load_name == "ROTAT" ) {
             return ( _rotat && _rotat->exists() );
-        } else if ( load_name == "ONDE" ) {
-            return ( _onde && _onde->exists() );
+        } else if ( load_name == "SIGIN" ) {
+            return ( _sigin && _sigin->exists() );
+        } else if ( load_name == "SIINT" ) {
+            return ( _siint && _siint->exists() );
+        } else if ( load_name == "VNOR" ) {
+            return ( _vnor && _vnor->exists() );
         } else if ( load_name == "VFACE" ) {
             return ( _vface && _vface->exists() );
+        } else if ( load_name == "ONDE" ) {
+            return ( _onde && _onde->exists() );
+        } else if ( load_name == "ONDPL" ) {
+            return ( _ondpl && _ondpl->exists() );
+        } else if ( load_name == "ONDPR" ) {
+            return ( _ondpr && _ondpr->exists() );
         } else {
-            AS_ASSERT( false );
+            AS_ABORT( "Unknown option " + load_name );
         }
 
         return false;
     }
 
-    ConstantFieldOnCellsTypePtr getConstantLoadField( const std::string name ) const {
-        if ( name == "IMPED" ) {
+    ConstantFieldOnCellsTypePtr getConstantLoadField( const std::string load_name ) const {
+        if ( load_name == "EPSIN" ) {
+            return _epsin;
+        } else if ( load_name == "F1D1D" ) {
+            return _f1d1d;
+        } else if ( load_name == "F1D2D" ) {
+            return _f1d2d;
+        } else if ( load_name == "F2D2D" ) {
+            return _f2d2d;
+        } else if ( load_name == "F1D3D" ) {
+            return _f1d3d;
+        } else if ( load_name == "F2D3D" ) {
+            return _f2d3d;
+        } else if ( load_name == "F3D3D" ) {
+            return _f3d3d;
+        } else if ( load_name == "FCO2D" ) {
+            return _fco2d;
+        } else if ( load_name == "FCO3D" ) {
+            return _fco3d;
+        } else if ( load_name == "FELEC" ) {
+            return _felec;
+        } else if ( load_name == "FL101" ) {
+            return _fl101;
+        } else if ( load_name == "FL102" ) {
+            return _fl102;
+        } else if ( load_name == "FORNO" ) {
+            return _forno;
+        } else if ( load_name == "IMPED" ) {
             return _imped;
-        } else if ( name == "ROTAT" ) {
+        } else if ( load_name == "PESAN" ) {
+            return _pesan;
+        } else if ( load_name == "PRESS" ) {
+            return _press;
+        } else if ( load_name == "ROTAT" ) {
             return _rotat;
-        } else if ( name == "ONDE" ) {
-            return _onde;
-        } else if ( name == "VFACE" ) {
+        } else if ( load_name == "SIGIN" ) {
+            return _sigin;
+        } else if ( load_name == "SIINT" ) {
+            return _siint;
+        } else if ( load_name == "VNOR" ) {
+            return _vnor;
+        } else if ( load_name == "VFACE" ) {
             return _vface;
+        } else if ( load_name == "ONDE" ) {
+            return _onde;
+        } else if ( load_name == "ONDPL" ) {
+            return _ondpl;
+        } else if ( load_name == "ONDPR" ) {
+            return _ondpr;
         } else {
-            AS_ASSERT( false );
+            AS_ABORT( "Unknown option " + load_name );
         }
 
         return nullptr;

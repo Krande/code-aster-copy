@@ -115,10 +115,10 @@ ElementaryVectorPressureComplexPtr DiscreteComputation::getAcousticImposedDualBC
     auto impl = [&]( auto loads, bool real ) {
         std::string name;
         if ( real ) {
-            calcul->setOption( "ACOU_DDLI_F" );
+            calcul->setOption( "ACOU_DDLI_C" );
             name = "PDDLIMC";
         } else {
-            calcul->setOption( "ACOU_DDLI_C" );
+            calcul->setOption( "ACOU_DDLI_F" );
             name = "PDDLIMF";
         }
         for ( const auto &load : loads ) {
