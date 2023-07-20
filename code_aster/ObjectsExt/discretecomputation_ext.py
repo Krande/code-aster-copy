@@ -243,7 +243,13 @@ class ExtendedDiscreteComputation:
             raise RuntimeError("Not implemented")
 
         if assembly:
-            return elem_vect.assembleWithLoadFunctions(phys_pb.getDOFNumbering(), time_curr)
+            if len(elem_vect.getElementaryTerms()) > 0:
+                return elem_vect.assembleWithLoadFunctions(phys_pb.getDOFNumbering(), time_curr)
+            else:
+                if model.isAcoustic():
+                    return FieldOnNodesComplex(phys_pb.getDOFNumbering())
+                else:
+                    return FieldOnNodesReal(phys_pb.getDOFNumbering())
 
         return elem_vect
 
@@ -274,6 +280,12 @@ class ExtendedDiscreteComputation:
             raise RuntimeError("Not implemented")
 
         if assembly:
-            return elem_vect.assembleWithLoadFunctions(phys_pb.getDOFNumbering(), time_curr)
+            if len(elem_vect.getElementaryTerms()) > 0:
+                return elem_vect.assembleWithLoadFunctions(phys_pb.getDOFNumbering(), time_curr)
+            else:
+                if model.isAcoustic():
+                    return FieldOnNodesComplex(phys_pb.getDOFNumbering())
+                else:
+                    return FieldOnNodesReal(phys_pb.getDOFNumbering())
 
         return elem_vect

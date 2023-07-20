@@ -133,6 +133,7 @@ void Calcul::addTimeField( const std::string &parameterName, const ASTERDOUBLE &
 
 /** @brief Create and add input fields for XFEM */
 void Calcul::addXFEMField( const XfemModelPtr xfemModel ) {
+    addInputField( "PAINTER", xfemModel->getField( "AINTER" ) );
     addInputField( "PPINTER", xfemModel->getField( "PINTER" ) );
     addInputField( "PPINTTO", xfemModel->getField( "PINTTO" ) );
     addInputField( "PCNSETO", xfemModel->getField( "CNSETO" ) );
@@ -145,6 +146,7 @@ void Calcul::addXFEMField( const XfemModelPtr xfemModel ) {
     addInputField( "PPMILTO", xfemModel->getField( "PMILT" ) );
     addInputField( "PFISNO", xfemModel->getField( "FISSNO" ) );
     addInputField( "PHEA_NO", xfemModel->getField( "HEAVNO" ) );
+    addInputField( "PHEA_SE", xfemModel->getField( "HEAVSE" ) );
     addInputField( "PHEA_FA", xfemModel->getField( "HEAVFA" ) );
     addInputField( "PCFACE", xfemModel->getField( "CFACE" ) );
     addInputField( "PLONGCO", xfemModel->getField( "LONGCO" ) );

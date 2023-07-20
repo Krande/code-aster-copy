@@ -62,12 +62,11 @@ class XfemModel {
     };
     class FacetTopology {
         const std::string _name;
-        FieldOnCellsRealPtr _intersection_pt, _intersection_edge;
         FieldOnCellsLongPtr _heaviside;
         const std::string getName() const { return _name; };
 
       public:
-        FieldOnCellsRealPtr intersection_pt2, base;
+        FieldOnCellsRealPtr intersection_edge, intersection_pt, intersection_pt2, base;
         FieldOnCellsLongPtr connectivity, length;
         FacetTopology( const std::string );
     };

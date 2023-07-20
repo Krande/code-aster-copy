@@ -37,8 +37,8 @@ XfemModel::SubElementTopology::SubElementTopology( const std::string name )
 
 XfemModel::FacetTopology::FacetTopology( const std::string name )
     : _name( name + ".TOPOFAC" ),
-      _intersection_pt( std::make_shared< FieldOnCellsReal >( getName() + ".PI" ) ),
-      _intersection_edge( std::make_shared< FieldOnCellsReal >( getName() + ".AI" ) ),
+      intersection_pt( std::make_shared< FieldOnCellsReal >( getName() + ".PI" ) ),
+      intersection_edge( std::make_shared< FieldOnCellsReal >( getName() + ".AI" ) ),
       connectivity( std::make_shared< FieldOnCellsLong >( getName() + ".CF" ) ),
       length( std::make_shared< FieldOnCellsLong >( getName() + ".LO" ) ),
       base( std::make_shared< FieldOnCellsReal >( getName() + ".BA" ) ),
@@ -82,7 +82,9 @@ XfemModel::XfemModel( const std::string name )
     _listfields.insert( {"STANO", _nodal_status} );
     _listfields.insert( {"FISSNO", _crack_nodes} );
     _listfields.insert( {"HEAVNO", _topono.hno} );
+    _listfields.insert( {"HEAVSE", _topono.hse} );
     _listfields.insert( {"HEAVFA", _topono.hfa} );
+    _listfields.insert( {"AINTER", _topofac.intersection_edge} );
     _listfields.insert( {"PINTER", _topofac.intersection_pt2} );
     _listfields.insert( {"CFACE", _topofac.connectivity} );
     _listfields.insert( {"LONGCO", _topofac.length} );
