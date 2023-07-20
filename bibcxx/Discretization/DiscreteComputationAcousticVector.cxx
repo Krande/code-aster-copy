@@ -84,9 +84,7 @@ ElementaryVectorPressureComplexPtr DiscreteComputation::getAcousticNeumannForces
         iload++;
     }
 
-    auto FEDs = _phys_problem->getListOfLoads()->getFiniteElementDescriptors();
-    FEDs.push_back( _phys_problem->getModel()->getFiniteElementDescriptor() );
-    elemVect->build( FEDs );
+    elemVect->build();
 
     return elemVect;
 };
@@ -147,9 +145,7 @@ ElementaryVectorPressureComplexPtr DiscreteComputation::getAcousticImposedDualBC
 
     impl( listOfLoads->getAcousticLoadsComplex(), true );
 
-    auto FEDs = _phys_problem->getListOfLoads()->getFiniteElementDescriptors();
-    FEDs.push_back( _phys_problem->getModel()->getFiniteElementDescriptor() );
-    elemVect->build( FEDs );
+    elemVect->build();
 
     return elemVect;
 };

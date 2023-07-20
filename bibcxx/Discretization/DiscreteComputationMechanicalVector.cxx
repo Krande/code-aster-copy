@@ -61,9 +61,12 @@ ElementaryVectorDisplacementRealPtr DiscreteComputation::getMechanicalNeumannFor
     std::string nameInfc = ljust( listOfLoadsInfo->getName(), 24 );
     std::string vectElemName = ljust( elemVect->getName(), 24 );
     std::string modelName = ljust( currModel->getName(), 24 );
-    std::string materName = ljust( currMater->getName(), 24 );
-    std::string currCodedMaterName =
-        ljust( currCodedMater->getCodedMaterialField()->getName(), 24 );
+    std::string materName( " " );
+    std::string currCodedMaterName( " " );
+    if ( currMater ) {
+        materName = ljust( currMater->getName(), 24 );
+        currCodedMaterName = ljust( currCodedMater->getCodedMaterialField()->getName(), 24 );
+    }
     std::string stop( "S" );
     std::string currElemCharaName( " " );
     if ( currElemChara )
@@ -73,7 +76,7 @@ ElementaryVectorDisplacementRealPtr DiscreteComputation::getMechanicalNeumannFor
     // Get external state variables
     std::string externVarName( " " );
     FieldOnCellsRealPtr externVar = nullptr;
-    if ( currMater->hasExternalStateVariable() ) {
+    if ( currMater && currMater->hasExternalStateVariable() ) {
         externVar = _phys_problem->getExternalStateVariables( time_curr );
         externVarName = externVar->getName();
     }
@@ -83,9 +86,11 @@ ElementaryVectorDisplacementRealPtr DiscreteComputation::getMechanicalNeumannFor
                        currElemCharaName, materName, currCodedMaterName, vectElemName,
                        externVarName );
 
-    auto FEDs = _phys_problem->getListOfLoads()->getFiniteElementDescriptors();
-    FEDs.push_back( _phys_problem->getModel()->getFiniteElementDescriptor() );
-    elemVect->build( FEDs );
+    if ( listOfLoads->getNumberOfLoads() > 0 ) {
+        auto FEDs = listOfLoads->getFiniteElementDescriptors();
+        FEDs.push_back( _phys_problem->getModel()->getFiniteElementDescriptor() );
+        elemVect->build( FEDs );
+    }
 
     return elemVect;
 };
