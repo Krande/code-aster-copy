@@ -41,7 +41,7 @@ subroutine irdepl(fileUnit, &
 #include "asterfort/jexnum.h"
 #include "asterfort/ircnc8.h"
 #include "asterfort/ircnrl.h"
-#include "asterfort/ircrrl.h"
+
 #include "asterfort/detrsd.h"
 #include "asterfort/resuSelectCmp.h"
 #include "asterfort/resuSelectNode.h"

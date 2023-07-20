@@ -20,37 +20,6 @@
 from ..Utilities import _
 
 cata_msg = {
-    63: _(
-        """
- pas existence de solution pour le saut
-"""
-    ),
-    64: _(
-        """
- existence d'un élément à discontinuité trop grand
- non unicité du saut
-"""
-    ),
-    65: _(
-        """
- non convergence du NEWTON pour le calcul du saut numéro 1
-"""
-    ),
-    66: _(
-        """
- non convergence du NEWTON pour le calcul du saut numéro 2
-"""
-    ),
-    67: _(
-        """
- non convergence du NEWTON pour le calcul du saut numéro 3
-"""
-    ),
-    68: _(
-        """
- erreur dans le calcul du saut
-"""
-    ),
     74: _(
         """
   valeur de D_SIGM_EPSI non trouvée

@@ -46,14 +46,6 @@ cata_msg = {
                 %(r7)f, %(r8)f, %(r9)f
 """
     ),
-    13: _(
-        """
- Norme nulle, matrice à diagonaliser :
-                %(r1)f, %(r2)f, %(r3)f
-                %(r4)f, %(r5)f, %(r6)f
-                %(r7)f, %(r8)f, %(r9)f
-"""
-    ),
     14: _(
         """
  Ne devrait pas être nul

@@ -379,11 +379,6 @@ Cet état initial ne sera pas pris en compte.
 Dans la définition du matériau RUPT_DUCT les coefficients de forme de la loi CZM_TRA_MIX doivent vérifier : COEF_EXTR <= COEF_PLAS
 """
     ),
-    71: _(
-        """
-Erreur dans le calcul du tenseur équivalent au sens de HILL.
-"""
-    ),
     72: _(
         """
  Le nombre de variables internes initiales est incorrect : %(i1)d ; il devrait valoir %(i2)d

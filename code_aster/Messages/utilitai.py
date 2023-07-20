@@ -48,16 +48,6 @@ cata_msg = {
    utiles au calcul du champ aux noeuds.
 """
     ),
-    5: _(
-        """
- vecteur axe de norme nulle
-"""
-    ),
-    6: _(
-        """
- axe non colinéaire à v1v2
-"""
-    ),
     7: _(
         """
  Problème norme de axe

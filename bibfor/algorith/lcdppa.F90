@@ -24,7 +24,7 @@ subroutine lcdppa(mod, nvi, option, materf, compor, &
 #include "asterfort/assert.h"
 #include "asterfort/betaps.h"
 #include "asterfort/dpmata.h"
-#include "asterfort/dppat2.h"
+
 #include "asterfort/dppatg.h"
 #include "asterfort/lcdevi.h"
 #include "asterfort/lcopil.h"

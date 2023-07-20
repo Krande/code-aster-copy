@@ -28,9 +28,7 @@ subroutine dilini(option, ivf, ivf2, idfde, &
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/dimp0.h"
-#include "asterfort/dimp1.h"
-#include "asterfort/dimsl.h"
+
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/utmess.h"
@@ -41,7 +39,6 @@ subroutine dilini(option, ivf, ivf2, idfde, &
     integer :: ivf, ivf2, idfde, idfde2, jgano, ndim, ipoids, npi
     integer :: ipoid2, dimdef, dimuel, dimcon, nnom, nnos, nddls, nddlm
     integer :: lgpg, iret, itab(7)
-    character(len=2) :: interp
     character(len=8) :: typmod(2)
     character(len=16) :: option
     type(dil_modelisation) :: ds_dil

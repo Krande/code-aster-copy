@@ -25,7 +25,7 @@ subroutine cgleco(resu, modele, mate, iord0, compor, &
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
 #include "asterfort/cgvein.h"
-#include "asterfort/cgvtem.h"
+
 #include "asterfort/comp_init.h"
 #include "asterfort/comp_info.h"
 #include "asterfort/comp_meca_elas.h"

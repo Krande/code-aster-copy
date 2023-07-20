@@ -473,14 +473,6 @@ d'intensité des contraintes K par CALC_K_G n'est plus valable.
 
 """
     ),
-    72: _(
-        """
-CALC_G :
-La variable de commande %(k1)s est présente dans le champ de matériau %(k2)s.
-L'opérateur CALC_G n'est normalement prévu que pour traiter un matériau fonction de
-la variable de commande TEMP.
-"""
-    ),
     73: _(
         """
 CALC_G :

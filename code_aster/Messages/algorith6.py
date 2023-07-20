@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -73,11 +73,6 @@ cata_msg = {
  -> Il est impossible d'utiliser PENTE = ACIER_PLAS si la limite élastique de l'acier SY n'est pas défini.
  -> Risque & Conseil : Ajouter le paramètre SY dans le DEFI_MATERIAU de l'acier
                        ou n'utilisez pas PENTE = ACIER_PLAS
-"""
-    ),
-    13: _(
-        """
- dimension du problème inconnue
 """
     ),
     16: _(

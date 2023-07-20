@@ -40,7 +40,7 @@ subroutine resuPrintIdeasNode(fileUnit, dsName, &
 #include "asterfort/jexnum.h"
 #include "asterfort/irdesc.h"
 #include "asterfort/irdesr.h"
-#include "asterfort/irdrsr.h"
+
 #include "asterfort/resuSelectCmp.h"
 #include "asterfort/resuSelectNode.h"
 #include "asterfort/utmess.h"
