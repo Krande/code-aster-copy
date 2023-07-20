@@ -493,7 +493,6 @@ DiscreteComputation::getThermalImposedDualBC( const ASTERDOUBLE time_curr ) cons
     auto listOfLoads = _phys_problem->getListOfLoads();
 
     auto calcul = std::make_unique< Calcul >( calcul_option );
-    calcul->setModel( currModel );
 
     auto impl = [&]( auto loads, bool real ) {
         std::string name;

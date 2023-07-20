@@ -89,6 +89,26 @@ void exportElementaryVectorToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< ElementaryVectorComplex, ModelPtr, MaterialFieldPtr,
                                          ElementaryCharacteristicsPtr, ListOfLoadsPtr > ) )
         .def( "getVeass", &ElementaryVectorComplex::getVeass )
+        .def( "addElementaryTerm",
+              py::overload_cast< const ElementaryTermComplexPtr & >(
+                  &ElementaryVectorComplex::addElementaryTerm ),
+              R"(
+            Add elementary term
+
+            Arguments:
+                term (ElementaryTermComplex): elementary term
+            )",
+              py::arg( "term" ) )
+        .def( "addElementaryTerm",
+              py::overload_cast< const std::vector< ElementaryTermComplexPtr > & >(
+                  &ElementaryVectorComplex::addElementaryTerm ),
+              R"(
+            Add vector of elementary term
+
+            Arguments:
+                terms (list[ElementaryTermComplex]): vector of elementary term
+            )",
+              py::arg( "terms" ) )
         .def( "getElementaryTerms", &ElementaryVectorComplex::getElementaryTerms )
         .def( "assemble", &ElementaryVectorComplex::assemble );
 

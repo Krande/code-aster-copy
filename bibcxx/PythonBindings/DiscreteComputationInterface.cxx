@@ -54,6 +54,14 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
         )",
               py::arg( "time_curr" ) = 0.0 )
 
+        .def( "getAcousticImposedDualBC", &DiscreteComputation::getAcousticImposedDualBC,
+              R"(
+      Return the acoustic imposed nodal BC elementary vector
+
+      Returns:
+            ElementaryVectorPressureComplex: imposed dual vector
+        )" )
+
         .def( "getDualForces", &DiscreteComputation::getDualForces,
               R"(
       Return the imposed displacement assembled vector
@@ -107,6 +115,14 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
         )",
               py::arg( "time_curr" ) = 0.0, py::arg( "time_step" ) = 0.0, py::arg( "theta" ) = 1.0,
               py::arg( "previousPrimalField" ) = nullptr )
+
+        .def( "getAcousticNeumannForces", &DiscreteComputation::getAcousticNeumannForces,
+              R"(
+      Return the elementary acoustic Neumann forces vector
+
+      Returns:
+            ElementaryVectorPressureComplex: elementary Neumann forces vector
+        )" )
 
         .def( "getExternalStateVariablesForces",
               &DiscreteComputation::getExternalStateVariablesForces, R"(

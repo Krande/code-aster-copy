@@ -84,8 +84,14 @@ class AcousticLoad : public DataStructure {
         return _acouLoadDesc->getMultiplicativeField();
     };
 
+    auto getImposedField() const { return _acouLoadDesc->getImposedField(); }
+
     bool hasLoadField( const std::string &load_name ) const {
         return _acouLoadDesc->hasLoadField( load_name );
+    };
+
+    auto getConstantLoadField( const std::string name ) const {
+        return _acouLoadDesc->getConstantLoadField( name );
     };
 
     /**

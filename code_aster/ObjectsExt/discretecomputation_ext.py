@@ -238,7 +238,7 @@ class ExtendedDiscreteComputation:
         elif model.isMechanical():
             elem_vect = self.getMechanicalNeumannForces(time_curr, time_step, theta)
         elif model.isAcoustic():
-            raise RuntimeError("Not implemented")
+            elem_vect = self.getAcousticNeumannForces()
         else:
             raise RuntimeError("Not implemented")
 
@@ -269,7 +269,7 @@ class ExtendedDiscreteComputation:
         elif model.isMechanical():
             elem_vect = self.getMechanicalImposedDualBC(time_curr)
         elif model.isAcoustic():
-            raise RuntimeError("Not implemented")
+            elem_vect = self.getAcousticImposedDualBC()
         else:
             raise RuntimeError("Not implemented")
 

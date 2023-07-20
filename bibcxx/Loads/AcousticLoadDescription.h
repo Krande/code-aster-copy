@@ -104,7 +104,7 @@ class AcousticLoadDescription : public DataStructure {
           _multiplier(
               std::make_shared< ConstantFieldOnCellsComplex >( getName() + ".CMULT", _FEDesc ) ),
           _speedValues(
-              std::make_shared< ConstantFieldOnCellsType >( getName() + ".VITFA", _FEDesc ) ) {};
+              std::make_shared< ConstantFieldOnCellsType >( getName() + ".VFACE", _FEDesc ) ) {};
 
     /**
      * @brief Get the finite element descriptor
@@ -113,10 +113,32 @@ class AcousticLoadDescription : public DataStructure {
 
     ConstantFieldOnCellsComplexPtr getMultiplicativeField() const { return _multiplier; };
 
+    ConstantFieldOnCellsTypePtr getImposedField() const { return _imposedValues; }
+
     /**
      * @brief Get the model
      */
     ModelPtr getModel() { return _model; };
+
+    bool hasLoadField( const std::string load_name ) const {
+        if ( load_name == "VFACE" ) {
+            return ( _speedValues && _speedValues->exists() );
+        } else {
+            AS_ASSERT( false );
+        }
+
+        return false;
+    };
+
+    ConstantFieldOnCellsTypePtr getConstantLoadField( const std::string name ) const {
+        if ( name == "VFACE" ) {
+            return _speedValues;
+        } else {
+            AS_ASSERT( false );
+        }
+
+        return nullptr;
+    };
 
     /**
      * @brief Get the model

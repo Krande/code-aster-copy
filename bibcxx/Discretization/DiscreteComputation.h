@@ -116,6 +116,8 @@ class DiscreteComputation {
     ElementaryVectorTemperatureRealPtr
     getThermalImposedDualBC( const ASTERDOUBLE time_curr = 0.0 ) const;
 
+    ElementaryVectorPressureComplexPtr getAcousticImposedDualBC() const;
+
     /**
      * @brief Compute Dirichlet reaction vector B^T * \lambda
      * @param time_curr time
@@ -144,6 +146,8 @@ class DiscreteComputation {
     getThermalNeumannForces( const ASTERDOUBLE time_curr = 0.0, const ASTERDOUBLE time_step = 0.0,
                              const ASTERDOUBLE theta = 1.0,
                              const FieldOnNodesRealPtr _previousPrimalField = nullptr ) const;
+
+    ElementaryVectorPressureComplexPtr getAcousticNeumannForces() const;
 
     /**
      * @brief Compute elementary matrices for mechanical stiffness (RIGI_MECA)
