@@ -23,6 +23,7 @@ from ..Objects import (
     ElementaryVectorDisplacementReal,
     ElementaryVectorTemperatureReal,
     ElementaryVectorPressureComplex,
+    FieldOnNodesReal,
 )
 
 from ..Utilities import force_list
@@ -63,6 +64,7 @@ def calc_vect_elem_ops(self, **args):
 
     disc_comp = DiscreteComputation(phys_pb)
 
+    fieldPrimal = None
     if myOption == "CHAR_MECA":
         vect_elem = ElementaryVectorDisplacementReal(
             phys_pb.getModel(),
@@ -77,6 +79,8 @@ def calc_vect_elem_ops(self, **args):
             phys_pb.getElementaryCharacteristics(),
             phys_pb.getListOfLoads(),
         )
+        fieldPrimal = FieldOnNodesReal(phys_pb.getModel())
+        fieldPrimal.setValues(0.0)
     elif myOption == "CHAR_ACOU":
         vect_elem = ElementaryVectorPressureComplex(
             phys_pb.getModel(),
@@ -89,7 +93,7 @@ def calc_vect_elem_ops(self, **args):
 
     vect_elem.prepareCompute(myOption)
 
-    neum_elem = disc_comp.getNeumannForces(time, assembly=False)
+    neum_elem = disc_comp.getNeumannForces(time, previousPrimalField=fieldPrimal, assembly=False)
     vect_elem.addElementaryTerm(neum_elem.getElementaryTerms())
 
     dual_elem = disc_comp.getImposedDualBC(time, assembly=False)
