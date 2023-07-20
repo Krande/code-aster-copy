@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ loi = LoiComportement(
     lc_type=None,
     doc="""Loi de plasticité de Gurson Tvergaard Needleman [R5.03.29]""",
     num_lc=75,
-    nb_vari=12,
+    nb_vari=25,
     nom_vari=(
         "EPSPEQ",
         "POROSITE",
@@ -38,7 +38,20 @@ loi = LoiComportement(
         "EPSPYZ",
         "EPCUM",
         "PORO_NUC",
-        "PORO_LOG",
+        "ENDO",
+        "VIT_ENDO",
+        "SIXX",
+        "SIYY",
+        "SIZZ",
+        "SIXY",
+        "SIXZ",
+        "SIYZ",
+        "ENDO_EX",
+        "SIEQ_ERX",
+        "SIEQ_ECR",
+        "SIEQ_VSC",
+        "SIEQ_NLC",
+        "ARRET",
     ),
     mc_mater=("ELAS", "ECRO_NL", "GTN", "NONLOCAL"),
     modelisation=("3D", "AXIS", "D_PLAN", "GRADVARI"),

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -118,7 +118,7 @@ RESU = STAT_NON_LINE(
     MODELE=MODE,
     CHAM_MATER=MATE,
     EXCIT=(_F(CHARGE=CL), _F(CHARGE=CHAR, FONC_MULT=FONC)),
-    COMPORTEMENT=_F(GROUP_MA="SPECIMEN", RELATION="GTN", DEFORMATION="GDEF_LOG"),
+    COMPORTEMENT=_F(GROUP_MA="SPECIMEN", RELATION="GTN", PARM_THETA=0.0, DEFORMATION="GDEF_LOG"),
     INCREMENT=_F(LIST_INST=INST_CAL, INST_FIN=inst_fin),
     CONVERGENCE=_F(ITER_GLOB_MAXI=20, RESI_GLOB_MAXI=1.0e-3),
     NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1, REAC_INCR=1),
@@ -136,7 +136,7 @@ TEST_RESU(
             NOM_CHAM="SIEF_ELGA",
             NOM_CMP="SIYY",
             TYPE_TEST="MAX",
-            VALE_CALC=674.7907227396099,
+            VALE_CALC=674.6682404936282,
             REFERENCE="SOURCE_EXTERNE",
             VALE_REFE=6.737403e02,
             PRECISION=0.01,
@@ -152,7 +152,7 @@ TEST_RESU(
             NOM_CHAM="SIEF_ELGA",
             NOM_CMP="SIYY",
             TYPE_TEST="MAX",
-            VALE_CALC=364.9170273503214,
+            VALE_CALC=364.5930992273716,
             REFERENCE="SOURCE_EXTERNE",
             VALE_REFE=3.632688e02,
             PRECISION=0.01,
@@ -169,7 +169,7 @@ TEST_RESU(
             NOM_CHAM="VARI_ELGA",
             NOM_CMP="V1",
             TYPE_TEST="MAX",
-            VALE_CALC=0.8073168706096503,
+            VALE_CALC=0.8073012335924028,
             REFERENCE="SOURCE_EXTERNE",
             VALE_REFE=8.131189e-01,
             PRECISION=0.01,
@@ -184,7 +184,7 @@ TEST_RESU(
             NOM_CHAM="VARI_ELGA",
             NOM_CMP="V1",
             TYPE_TEST="MAX",
-            VALE_CALC=0.9507624138889915,
+            VALE_CALC=0.950692218150796,
             REFERENCE="SOURCE_EXTERNE",
             VALE_REFE=9.573620e-01,
             PRECISION=0.01,
@@ -201,7 +201,7 @@ TEST_RESU(
             NOM_CHAM="VARI_ELGA",
             NOM_CMP="V2",
             TYPE_TEST="MAX",
-            VALE_CALC=0.07710790863696733,
+            VALE_CALC=0.07713372581803438,
             REFERENCE="SOURCE_EXTERNE",
             VALE_REFE=7.734343e-02,
             PRECISION=0.01,
@@ -216,7 +216,7 @@ TEST_RESU(
             NOM_CHAM="VARI_ELGA",
             NOM_CMP="V2",
             TYPE_TEST="MAX",
-            VALE_CALC=0.1502273566384063,
+            VALE_CALC=0.1503123545099454,
             REFERENCE="SOURCE_EXTERNE",
             VALE_REFE=1.506646e-01,
             PRECISION=0.01,

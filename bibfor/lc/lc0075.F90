@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1504,W0104,C1509
+! aslint: disable=W1504,W0104,W1306
 
 subroutine lc0075(BEHinteg, &
                   fami, kpg, ksp, ndim, imate, &
@@ -56,7 +56,7 @@ subroutine lc0075(BEHinteg, &
     character(len=8), intent(in) :: typmod(*)
     integer, intent(in) :: icomp
     integer, intent(in) :: ndsde
-    real(kind=8)                 :: dsidep(merge(nsig,6,nsig*neps.eq.ndsde), merge(neps,6,nsig*neps.eq.ndsde))
+    real(kind=8)::dsidep(merge(nsig, 6, nsig*neps .eq. ndsde), merge(neps, 6, nsig*neps .eq. ndsde))
     integer, intent(out):: codret
 ! --------------------------------------------------------------------------------------------------
 !   RELATIONS GTN ET VISC_GTN
@@ -83,7 +83,8 @@ subroutine lc0075(BEHinteg, &
     if (lVari) vip = 0
 
     cl = Init(ndimsi, option, fami, kpg, ksp, imate, &
-              nint(carcri(ITER_INTE_MAXI)), carcri(RESI_INTE_RELA))
+              nint(carcri(ITER_INTE_MAXI)), carcri(RESI_INTE_RELA), carcri(PARM_THETA), &
+              instap-instam)
 
     visc = compor(RELA_NAME) (1:4) .eq. 'VISC'
     call InitViscoPlasticity(cl, visc, fami, kpg, ksp, imate, instap-instam)

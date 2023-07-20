@@ -36,6 +36,9 @@ module visc_norton_module
     type VISCO
         aster_logical:: visc = ASTER_FALSE
         aster_logical:: active = ASTER_FALSE
+        real(kind=8) :: n = 0.5d0
+        real(kind=8) :: k = 0.d0
+        real(kind=8) :: dt = 0.d0
         real(kind=8) :: v0 = 0.d0
         real(kind=8) :: q = 2.d0
     end type VISCO
@@ -72,11 +75,21 @@ contains
 ! --------------------------------------------------------------------------------------------------
 
         self%visc = visc
+        self%dt = deltat
 
         if (visc) then
-       call rcvalb(fami, kpg, ksp, '+', imate, ' ', 'NORTON', 0, ' ', [0.d0], nb, nom, vale, iok, 2)
-            self%q = 1.d0/vale(1)
-            self%v0 = vale(2)/deltat**self%q
+            call rcvalb(fami, kpg, ksp, '+', imate, ' ', 'NORTON', 0, ' ', [0.d0], &
+                        nb, nom, vale, iok, 2)
+            self%n = vale(1)
+            self%k = vale(2)
+
+            ! Controls
+            ASSERT(self%k .gt. 0.d0)
+            ASSERT(self%n .gt. 1.d0)
+            ASSERT(deltat .gt. (self%k/r8gaem())**self%n)
+
+            self%q = 1.d0/self%n
+            self%v0 = self%k/deltat**self%q
         end if
 
         if (self%v0 .ne. 0.d0) then
