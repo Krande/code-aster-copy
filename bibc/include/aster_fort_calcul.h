@@ -264,6 +264,10 @@ void DEFSS( CHECKSUPERELEMENT, checksuperelement, const char *, STRING_SIZE, con
 #define CALLO_GETERRORCODE( a, b ) CALLOP( GETERRORCODE, geterrorcode, a, b )
 void DEFSP( GETERRORCODE, geterrorcode, const char *, STRING_SIZE, ASTERINTEGER * );
 
+#define CALLO_SS2MME( a, b, c ) CALLOOO( SS2MME, ss2mme, a, b, c )
+void DEFSSS( SS2MME, ss2mme, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
+             STRING_SIZE );
+
 #ifdef __cplusplus
 }
 #endif

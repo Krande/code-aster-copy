@@ -48,6 +48,7 @@ void exportElementaryVectorToPython( py::module_ &mod ) {
         .def( "setModel", &BaseElementaryVector::setModel )
         .def( "prepareCompute", &BaseElementaryVector::prepareCompute )
         .def( "setElementaryCharacteristics", &BaseElementaryVector::setElementaryCharacteristics )
+        .def( "addSubstructuring", &BaseElementaryVector::addSubstructuring )
         .def( "build", &BaseElementaryVector::build,
               py::arg( "FED" ) = std::vector< FiniteElementDescriptorPtr >() );
 

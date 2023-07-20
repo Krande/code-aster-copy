@@ -184,6 +184,8 @@ class BaseElementaryVector : public DataStructure {
         AS_ABORT( "Not implemented" );
         return false;
     };
+
+    void addSubstructuring( const std::map< std::string, VectorString > &list_load );
 };
 
 /**

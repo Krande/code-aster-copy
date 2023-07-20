@@ -92,3 +92,30 @@ FieldOnNodesRealPtr BaseElementaryVector::assembleWithMask( const BaseDOFNumberi
     field->updateValuePointers();
     return field;
 };
+
+void BaseElementaryVector::addSubstructuring(
+    const std::map< std::string, VectorString > &list_load ) {
+    if ( !list_load.empty() ) {
+        CommandSyntax cmdSt( "CALC_VECT_ELEM" );
+        ListSyntaxMapContainer listStruc;
+
+        for ( const auto &[key, value] : list_load ) {
+            SyntaxMapContainer dict2;
+            dict2.container["CAS_CHARGE"] = key;
+            if ( value.empty() ) {
+                dict2.container["TOUT"] = "OUI";
+
+            } else {
+                dict2.container["SUPER_MAILLE"] = value;
+            }
+            listStruc.push_back( dict2 );
+        }
+
+        SyntaxMapContainer dict;
+        dict.container["SOUS_STRUC"] = listStruc;
+        cmdSt.define( dict );
+
+        std::string base = "G";
+        CALLO_SS2MME( getModel()->getName(), getName(), base );
+    }
+};

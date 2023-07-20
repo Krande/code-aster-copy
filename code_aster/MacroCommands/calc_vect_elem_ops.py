@@ -38,8 +38,11 @@ def calc_vect_elem_ops(self, **args):
         ElementaryVector: elementary vector
     """
 
-    # Define problem
     loads = force_list(args.get("CHARGE"))
+    myOption = args["OPTION"]
+
+    fourier = args.get("MODE_FOURIER")
+    time = args.get("INST")
 
     model = args.get("MODELE")
     if model is None:
@@ -49,6 +52,8 @@ def calc_vect_elem_ops(self, **args):
 
     mater = args.get("CHAM_MATER")
     cara = args.get("CARA_ELEM")
+
+    # Define problem
     phys_pb = PhysicalProblem(model, mater, cara)
 
     for load in loads:
@@ -57,11 +62,6 @@ def calc_vect_elem_ops(self, **args):
     phys_pb.computeListOfLoads()
 
     disc_comp = DiscreteComputation(phys_pb)
-
-    myOption = args["OPTION"]
-
-    fourier = args.get("MODE_FOURIER")
-    time = args.get("INST")
 
     if myOption == "CHAR_MECA":
         vect_elem = ElementaryVectorDisplacementReal(
@@ -90,10 +90,19 @@ def calc_vect_elem_ops(self, **args):
     vect_elem.prepareCompute(myOption)
 
     neum_elem = disc_comp.getNeumannForces(time, assembly=False)
-    dual_elem = disc_comp.getImposedDualBC(time, assembly=False)
-
     vect_elem.addElementaryTerm(neum_elem.getElementaryTerms())
+
+    dual_elem = disc_comp.getImposedDualBC(time, assembly=False)
     vect_elem.addElementaryTerm(dual_elem.getElementaryTerms())
+
+    if "SOUS_STRUC" in args:
+        load_struc = {}
+        for struc in force_list(args["SOUS_STRUC"]):
+            super_cells = []
+            if "SUPER_MAILLE" in struc:
+                super_cells = force_list(struc["SUPER_MAILLE"])
+            load_struc[struc["CAS_CHARGE"]] = super_cells
+        vect_elem.addSubstructuring(load_struc)
 
     vect_elem.build()
 

@@ -42,6 +42,9 @@ class ElementaryCompute {
     /** @brief Objet Jeveux '.RELR' : list of name of elementary results */
     JeveuxVectorChar24 _relr;
 
+    /** @brief Objet Jeveux '.RELC' : for substructering*/
+    JeveuxCollectionLong _relc;
+
     /** @brief Option to compute */
     std::string _option;
 
@@ -51,6 +54,7 @@ class ElementaryCompute {
         std ::string baseName( elemName, 0, 19 );
         _rerr = JeveuxVectorChar24( baseName + ".RERR" );
         _relr = JeveuxVectorChar24( baseName + ".RELR" );
+        _relc = JeveuxCollectionLong( baseName + ".RELC" );
     };
 
     /** @brief Constructor by predefined name with calls to Fortran */
