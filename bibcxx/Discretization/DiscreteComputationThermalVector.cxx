@@ -47,8 +47,6 @@ ElementaryVectorTemperatureRealPtr DiscreteComputation::getThermalNeumannForces(
 
     // Init
     ASTERINTEGER iload = 1;
-    bool has_load = false;
-    std::string load_option = "";
 
     // Setup
     const std::string calcul_option( "CHAR_THER" );
@@ -136,7 +134,6 @@ ElementaryVectorTemperatureRealPtr DiscreteComputation::getThermalNeumannForces(
                 if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
                     elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ),
                                                  iload );
-                    has_load = true;
                 }
             } else {
                 calcul->setOption( "CHAR_THER_FLUN_R" );
@@ -152,7 +149,6 @@ ElementaryVectorTemperatureRealPtr DiscreteComputation::getThermalNeumannForces(
                 if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
                     elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ),
                                                  iload );
-                    has_load = true;
                 }
             }
         }
@@ -178,7 +174,6 @@ ElementaryVectorTemperatureRealPtr DiscreteComputation::getThermalNeumannForces(
             if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
                 elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ),
                                              iload );
-                has_load = true;
             }
         }
 
@@ -197,7 +192,6 @@ ElementaryVectorTemperatureRealPtr DiscreteComputation::getThermalNeumannForces(
             if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
                 elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ),
                                              iload );
-                has_load = true;
             }
         }
 
@@ -216,7 +210,6 @@ ElementaryVectorTemperatureRealPtr DiscreteComputation::getThermalNeumannForces(
             if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
                 elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ),
                                              iload );
-                has_load = true;
             }
         }
 
@@ -238,7 +231,6 @@ ElementaryVectorTemperatureRealPtr DiscreteComputation::getThermalNeumannForces(
             if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
                 elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ),
                                              iload );
-                has_load = true;
             }
         }
         // Termes SOURCE CALCULEE
@@ -259,7 +251,6 @@ ElementaryVectorTemperatureRealPtr DiscreteComputation::getThermalNeumannForces(
             if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
                 elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ),
                                              iload );
-                has_load = true;
             }
         }
 
@@ -287,7 +278,6 @@ ElementaryVectorTemperatureRealPtr DiscreteComputation::getThermalNeumannForces(
             if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
                 elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ),
                                              iload );
-                has_load = true;
             }
         }
 
@@ -311,7 +301,6 @@ ElementaryVectorTemperatureRealPtr DiscreteComputation::getThermalNeumannForces(
             if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
                 elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ),
                                              iload );
-                has_load = true;
             }
         }
 
@@ -342,7 +331,6 @@ ElementaryVectorTemperatureRealPtr DiscreteComputation::getThermalNeumannForces(
             if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
                 elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ),
                                              iload );
-                has_load = true;
             }
         }
 
@@ -361,7 +349,6 @@ ElementaryVectorTemperatureRealPtr DiscreteComputation::getThermalNeumannForces(
             if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
                 elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ),
                                              iload );
-                has_load = true;
             }
         }
 
@@ -380,7 +367,6 @@ ElementaryVectorTemperatureRealPtr DiscreteComputation::getThermalNeumannForces(
             if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
                 elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ),
                                              iload );
-                has_load = true;
             }
         }
 
@@ -400,7 +386,6 @@ ElementaryVectorTemperatureRealPtr DiscreteComputation::getThermalNeumannForces(
             if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
                 elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ),
                                              iload );
-                has_load = true;
             }
         }
 
@@ -428,7 +413,6 @@ ElementaryVectorTemperatureRealPtr DiscreteComputation::getThermalNeumannForces(
             if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
                 elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ),
                                              iload );
-                has_load = true;
             }
         }
 
@@ -455,16 +439,13 @@ ElementaryVectorTemperatureRealPtr DiscreteComputation::getThermalNeumannForces(
             if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
                 elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ),
                                              iload );
-                has_load = true;
             }
         }
 
         iload++;
     }
 
-    auto FEDs = _phys_problem->getListOfLoads()->getFiniteElementDescriptors();
-    FEDs.push_back( _phys_problem->getModel()->getFiniteElementDescriptor() );
-    elemVect->build( FEDs );
+    elemVect->build();
 
     return elemVect;
 };
@@ -481,8 +462,6 @@ DiscreteComputation::getThermalImposedDualBC( const ASTERDOUBLE time_curr ) cons
 
     // Init
     ASTERINTEGER iload = 1;
-    bool has_load = false;
-    std::string load_option = "";
 
     // Setup
     const std::string calcul_option( "CHAR_THER" );
@@ -519,7 +498,6 @@ DiscreteComputation::getThermalImposedDualBC( const ASTERDOUBLE time_curr ) cons
                 if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
                     elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ),
                                                  iload );
-                    has_load = true;
                 }
             }
             iload++;
@@ -534,9 +512,7 @@ DiscreteComputation::getThermalImposedDualBC( const ASTERDOUBLE time_curr ) cons
     impl( listOfLoads->getParallelThermalLoadsFunction(), false );
 #endif
 
-    auto FEDs = _phys_problem->getListOfLoads()->getFiniteElementDescriptors();
-    FEDs.push_back( _phys_problem->getModel()->getFiniteElementDescriptor() );
-    elemVect->build( FEDs );
+    elemVect->build();
 
     return elemVect;
 }

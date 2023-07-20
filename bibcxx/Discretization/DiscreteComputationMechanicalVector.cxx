@@ -184,25 +184,98 @@ DiscreteComputation::getMechanicalImposedDualBC( const ASTERDOUBLE time_curr ) c
         _phys_problem->getModel(), _phys_problem->getMaterialField(),
         _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
 
-    // Main parameters
+    // Init
+    ASTERINTEGER iload = 1;
+
+    // Setup
     const std::string calcul_option( "CHAR_MECA" );
-    auto currModel = _phys_problem->getModel();
-    auto currMater = _phys_problem->getMaterialField();
-    auto currCodedMater = _phys_problem->getCodedMaterial();
-    auto currElemChara = _phys_problem->getElementaryCharacteristics();
-    auto listOfLoads = _phys_problem->getListOfLoads();
     elemVect->prepareCompute( calcul_option );
 
-    // Get JEVEUX names of objects to call Fortran
-    JeveuxVectorChar24 listOfLoadsList = listOfLoads->getListVector();
-    JeveuxVectorLong listOfLoadsInfo = listOfLoads->getInformationVector();
-    std::string nameLcha = ljust( listOfLoadsList->getName(), 24 );
-    std::string nameInfc = ljust( listOfLoadsInfo->getName(), 24 );
-    std::string vectElemName = ljust( elemVect->getName(), 24 );
-    std::string modelName = ljust( currModel->getName(), 24 );
-    std::string typres( "R" );
+    // Main parameters
+    auto currModel = _phys_problem->getModel();
+    auto listOfLoads = _phys_problem->getListOfLoads();
 
-    CALLO_VEDIME( modelName, nameLcha, nameInfc, &time_curr, typres, vectElemName );
+    auto calcul = std::make_unique< Calcul >( calcul_option );
+
+    auto impl_disp = [&]( auto loads, bool real ) {
+        std::string name;
+        if ( real ) {
+            calcul->setOption( "MECA_DDLI_R" );
+            name = "PDDLIMR";
+        } else {
+            calcul->setOption( "MECA_DDLI_F" );
+            name = "PDDLIMF";
+        }
+        for ( const auto &load : loads ) {
+            auto load_FEDesc = load->getFiniteElementDescriptor();
+            auto impo_field = load->getImposedField();
+            if ( impo_field && impo_field->exists() && load_FEDesc ) {
+                calcul->clearInputs();
+                calcul->clearOutputs();
+                calcul->setFiniteElementDescriptor( load_FEDesc );
+                calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
+                calcul->addInputField( name, impo_field );
+                if ( !real ) {
+                    calcul->addTimeField( "PTEMPSR", time_curr );
+                }
+                calcul->addOutputElementaryTerm( "PVECTUR",
+                                                 std::make_shared< ElementaryTermReal >() );
+                calcul->compute();
+                if ( calcul->hasOutputElementaryTerm( "PVECTUR" ) ) {
+                    elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTUR" ),
+                                                 iload );
+                }
+            }
+            iload++;
+        }
+    };
+
+    impl_disp( listOfLoads->getMechanicalLoadsReal(), true );
+    impl_disp( listOfLoads->getMechanicalLoadsFunction(), false );
+
+#ifdef ASTER_HAVE_MPI
+    impl_disp( listOfLoads->getParallelMechanicalLoadsReal(), true );
+    impl_disp( listOfLoads->getParallelMechanicalLoadsFunction(), false );
+#endif
+
+    auto impl_vite = [&]( auto loads, bool real ) {
+        std::string name;
+        if ( real ) {
+            calcul->setOption( "CHAR_MECA_VFAC" );
+            name = "PVITEFR";
+        } else {
+            calcul->setOption( "CHAR_MECA_VFAC_F" );
+            name = "PVITEFF";
+        }
+
+        for ( const auto &load : loads ) {
+            if ( load->hasLoadField( "VFACE" ) ) {
+                calcul->clearInputs();
+                calcul->clearOutputs();
+                calcul->setFiniteElementDescriptor( currModel->getFiniteElementDescriptor() );
+                calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
+                auto currCodedMater = _phys_problem->getCodedMaterial();
+                calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
+                calcul->addInputField( name, load->getConstantLoadField( "VFACE" ) );
+                if ( !real ) {
+                    calcul->addTimeField( "PTEMPSR", time_curr );
+                }
+                calcul->addOutputElementaryTerm( "PVECTUR",
+                                                 std::make_shared< ElementaryTermReal >() );
+                calcul->compute();
+                if ( calcul->hasOutputElementaryTerm( "PVECTUR" ) ) {
+                    elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTUR" ),
+                                                 iload );
+                }
+            }
+            iload++;
+        }
+    };
+
+    impl_vite( listOfLoads->getMechanicalLoadsReal(), true );
+    impl_vite( listOfLoads->getMechanicalLoadsFunction(), false );
+
+    elemVect->build();
 
     return elemVect;
 }

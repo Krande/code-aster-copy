@@ -221,6 +221,8 @@ class ParallelMechanicalLoad : public DataStructure {
     using ParallelMechanicalLoadPtr = std::shared_ptr< ParallelMechanicalLoad >;
 
     ConstantFieldOnCellsRealPtr getMultiplicativeField() const { return _cmult; };
+
+    ConstantFieldOnCellsTypePtr getImposedField() const { return _cimpo; };
 };
 
 /**

@@ -109,6 +109,8 @@ class MechanicalLoad : public DataStructure, public ListOfTables {
         return getMechanicalLoadDescription()->getMultiplicativeField();
     }
 
+    auto getImposedField() const { return _mecaLoadDesc->getImposedField(); }
+
     /**
      * @brief Get the finite element descriptor
      */
@@ -132,8 +134,7 @@ class MechanicalLoad : public DataStructure, public ListOfTables {
         return _mecaLoadDesc->hasLoadField( load_name );
     }
 
-    std::shared_ptr< ConstantFieldOnCellsType >
-    getConstantLoadField( const std::string name ) const {
+    auto getConstantLoadField( const std::string name ) const {
         return _mecaLoadDesc->getConstantLoadField( name );
     }
 
