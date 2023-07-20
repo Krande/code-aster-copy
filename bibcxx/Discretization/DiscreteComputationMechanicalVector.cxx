@@ -75,8 +75,9 @@ ElementaryVectorDisplacementRealPtr DiscreteComputation::getMechanicalNeumannFor
 
     auto calcul = std::make_unique< Calcul >( calcul_option );
 
-    auto impl = [&]( auto load, const std::string &option, const std::string &name,
-                     const std::string &param, const FiniteElementDescriptorPtr FED,
+    auto impl = [&]( auto load, const ASTERINTEGER &load_i, const std::string &option,
+                     const std::string &name, const std::string &param,
+                     const FiniteElementDescriptorPtr FED,
                      std::vector< std::pair< std::string, DataFieldPtr > > field_in = {} ) {
         if ( load->hasLoadField( name ) ) {
             calcul->setOption( option );
@@ -107,7 +108,7 @@ ElementaryVectorDisplacementRealPtr DiscreteComputation::getMechanicalNeumannFor
             calcul->compute();
             if ( calcul->hasOutputElementaryTerm( "PVECTUR" ) ) {
                 elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTUR" ),
-                                             iload );
+                                             load_i );
             }
         }
     };
@@ -116,23 +117,23 @@ ElementaryVectorDisplacementRealPtr DiscreteComputation::getMechanicalNeumannFor
     for ( const auto &load : mecaLoadReal ) {
         auto load_FEDesc = load->getFiniteElementDescriptor();
 
-        impl( load, "CHAR_MECA_FORC_R", "FORNO", "PFORNOR", load_FEDesc );
-        impl( load, "CHAR_MECA_FR3D3D", "F3D3D", "PFR3D3D", model_FEDesc );
-        impl( load, "CHAR_MECA_FRCO2D", "FCO2D", "PFRCO2D", model_FEDesc );
-        impl( load, "CHAR_MECA_FRCO3D", "FCO3D", "PFRCO3D", model_FEDesc );
-        impl( load, "CHAR_MECA_FR2D3D", "F2D3D", "PFR2D3D", model_FEDesc );
-        impl( load, "CHAR_MECA_FR1D3D", "F1D3D", "PFR1D3D", model_FEDesc );
-        impl( load, "CHAR_MECA_FR2D2D", "F2D2D", "PFR2D2D", model_FEDesc );
-        impl( load, "CHAR_MECA_FR1D2D", "F1D2D", "PFR1D2D", model_FEDesc );
-        impl( load, "CHAR_MECA_FR1D1D", "F1D1D", "PFR1D1D", model_FEDesc );
-        impl( load, "CHAR_MECA_PESA_R", "PESAN", "PPESANR", model_FEDesc );
-        impl( load, "CHAR_MECA_ROTA_R", "ROTAT", "PROTATR", model_FEDesc,
+        impl( load, iload, "CHAR_MECA_FORC_R", "FORNO", "PFORNOR", load_FEDesc );
+        impl( load, iload, "CHAR_MECA_FR3D3D", "F3D3D", "PFR3D3D", model_FEDesc );
+        impl( load, iload, "CHAR_MECA_FRCO2D", "FCO2D", "PFRCO2D", model_FEDesc );
+        impl( load, iload, "CHAR_MECA_FRCO3D", "FCO3D", "PFRCO3D", model_FEDesc );
+        impl( load, iload, "CHAR_MECA_FR2D3D", "F2D3D", "PFR2D3D", model_FEDesc );
+        impl( load, iload, "CHAR_MECA_FR1D3D", "F1D3D", "PFR1D3D", model_FEDesc );
+        impl( load, iload, "CHAR_MECA_FR2D2D", "F2D2D", "PFR2D2D", model_FEDesc );
+        impl( load, iload, "CHAR_MECA_FR1D2D", "F1D2D", "PFR1D2D", model_FEDesc );
+        impl( load, iload, "CHAR_MECA_FR1D1D", "F1D1D", "PFR1D1D", model_FEDesc );
+        impl( load, iload, "CHAR_MECA_PESA_R", "PESAN", "PPESANR", model_FEDesc );
+        impl( load, iload, "CHAR_MECA_ROTA_R", "ROTAT", "PROTATR", model_FEDesc,
               {{"PCOMPOR", currBehav}} );
-        impl( load, "CHAR_MECA_EPSI_R", "EPSIN", "PEPSINR", model_FEDesc,
+        impl( load, iload, "CHAR_MECA_EPSI_R", "EPSIN", "PEPSINR", model_FEDesc,
               {{"PCOMPOR", currBehav}} );
-        impl( load, "CHAR_MECA_FRELEC", "FELEC", "PFRELEC", model_FEDesc );
-        impl( load, "CHAR_MECA_PRES_R", "PRESS", "PPRESSR", model_FEDesc );
-        impl( load, "CHAR_MECA_ONDE", "ONDE", "PONDECR", model_FEDesc );
+        impl( load, iload, "CHAR_MECA_FRELEC", "FELEC", "PFRELEC", model_FEDesc );
+        impl( load, iload, "CHAR_MECA_PRES_R", "PRESS", "PPRESSR", model_FEDesc );
+        impl( load, iload, "CHAR_MECA_ONDE", "ONDE", "PONDECR", model_FEDesc );
 
         iload++;
     }
@@ -141,19 +142,19 @@ ElementaryVectorDisplacementRealPtr DiscreteComputation::getMechanicalNeumannFor
     for ( const auto &load : mecaLoadFunc ) {
         auto load_FEDesc = load->getFiniteElementDescriptor();
 
-        impl( load, "CHAR_MECA_FORC_F", "FORNO", "PFORNOF", load_FEDesc );
-        impl( load, "CHAR_MECA_FF3D3D", "F3D3D", "PFF3D3D", model_FEDesc );
-        impl( load, "CHAR_MECA_FFCO2D", "FCO2D", "PFFCO2D", model_FEDesc );
-        impl( load, "CHAR_MECA_FFCO3D", "FCO3D", "PFFCO3D", model_FEDesc );
-        impl( load, "CHAR_MECA_FF2D3D", "F2D3D", "PFF2D3D", model_FEDesc );
-        impl( load, "CHAR_MECA_FF1D3D", "F1D3D", "PFF1D3D", model_FEDesc );
-        impl( load, "CHAR_MECA_FF2D2D", "F2D2D", "PFF2D2D", model_FEDesc );
-        impl( load, "CHAR_MECA_FF1D2D", "F1D2D", "PFF1D2D", model_FEDesc );
-        impl( load, "CHAR_MECA_FF1D1D", "F1D1D", "PFF1D1D", model_FEDesc );
-        impl( load, "CHAR_MECA_EPSI_F", "EPSIN", "PEPSINF", model_FEDesc,
+        impl( load, iload, "CHAR_MECA_FORC_F", "FORNO", "PFORNOF", load_FEDesc );
+        impl( load, iload, "CHAR_MECA_FF3D3D", "F3D3D", "PFF3D3D", model_FEDesc );
+        impl( load, iload, "CHAR_MECA_FFCO2D", "FCO2D", "PFFCO2D", model_FEDesc );
+        impl( load, iload, "CHAR_MECA_FFCO3D", "FCO3D", "PFFCO3D", model_FEDesc );
+        impl( load, iload, "CHAR_MECA_FF2D3D", "F2D3D", "PFF2D3D", model_FEDesc );
+        impl( load, iload, "CHAR_MECA_FF1D3D", "F1D3D", "PFF1D3D", model_FEDesc );
+        impl( load, iload, "CHAR_MECA_FF2D2D", "F2D2D", "PFF2D2D", model_FEDesc );
+        impl( load, iload, "CHAR_MECA_FF1D2D", "F1D2D", "PFF1D2D", model_FEDesc );
+        impl( load, iload, "CHAR_MECA_FF1D1D", "F1D1D", "PFF1D1D", model_FEDesc );
+        impl( load, iload, "CHAR_MECA_EPSI_F", "EPSIN", "PEPSINF", model_FEDesc,
               {{"PCOMPOR", currBehav}} );
-        impl( load, "CHAR_MECA_PRES_F", "PRESS", "PPRESSF", model_FEDesc );
-        impl( load, "ONDE_PLAN", "ONDPL", "PONDPLA", model_FEDesc,
+        impl( load, iload, "CHAR_MECA_PRES_F", "PRESS", "PPRESSF", model_FEDesc );
+        impl( load, iload, "ONDE_PLAN", "ONDPL", "PONDPLA", model_FEDesc,
               {{"PONDPLR", load->getConstantLoadField( "ONDPR" )}, {"PVARCPR", externVar}} );
 
         iload++;
