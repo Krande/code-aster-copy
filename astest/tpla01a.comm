@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -158,7 +158,7 @@ TEST_RESU(
             NOM_CHAM="FLUX_ELNO",
             GROUP_NO="N43",
             NOM_CMP="FLUY",
-            VALE_CALC=1.345716675,
+            VALE_CALC=1.3457206698565187,
             VALE_REFE=0.0,
             CRITERE="ABSOLU",
             PRECISION=16.0,

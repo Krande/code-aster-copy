@@ -191,13 +191,13 @@ def _createTimeStepper(stationary, args):
 
 
 @profile
-def _computeMatrix(disr_comp, matrix, is_evol, time_value, time_delta, time_theta):
+def _computeMatrix(disr_comp, matrix, is_evol, time_curr, time_delta, time_theta):
     """Compute and assemble the thermal matrix
 
     Arguments:
         disr_comp (DiscreteComputation): to compute discrete quantities
         matrix (AssemblyMatrixTemperatureReal): matrix to compute and assemble inplace
-        time_value (float): Current time
+        time_curr (float): Current time
         time_delta (float): Time increment
         time_theta (float): Theta parameter for time scheme
 
@@ -209,10 +209,10 @@ def _computeMatrix(disr_comp, matrix, is_evol, time_value, time_delta, time_thet
     phys_pb = disr_comp.getPhysicalProblem()
 
     logger.debug("<THER_LINEAIRE><MATRIX>: Linear Conductivity")
-    matr_elem_rigi = disr_comp.getLinearStiffnessMatrix(time_value, with_dual=False)
+    matr_elem_rigi = disr_comp.getLinearStiffnessMatrix(time_curr, with_dual=False)
     matrix.addElementaryMatrix(matr_elem_rigi, time_theta)
 
-    matr_elem_exch = disr_comp.getExchangeThermalMatrix(time_value)
+    matr_elem_exch = disr_comp.getExchangeThermalMatrix(time_curr)
     matrix.addElementaryMatrix(matr_elem_exch, time_theta)
 
     if phys_pb.getDOFNumbering().useLagrangeDOF():
@@ -223,7 +223,7 @@ def _computeMatrix(disr_comp, matrix, is_evol, time_value, time_delta, time_thet
     if is_evol:
         logger.debug("<THER_LINEAIRE><MATRIX>: Linear Capacity")
 
-        matr_elem_capa = disr_comp.getLinearCapacityMatrix(time_value)
+        matr_elem_capa = disr_comp.getLinearCapacityMatrix(time_curr)
         matrix.addElementaryMatrix(matr_elem_capa, 1.0 / time_delta)
 
     matrix.assemble(True)
@@ -234,12 +234,12 @@ def _computeMatrix(disr_comp, matrix, is_evol, time_value, time_delta, time_thet
 
 
 @profile
-def _computeRhs(disr_comp, is_evol, time_value, time_delta, time_theta, previousPrimalField):
+def _computeRhs(disr_comp, is_evol, time_curr, time_delta, time_theta, previousPrimalField):
     """Compute and assemble the right hand side
 
     Arguments:
         disr_comp (DiscreteComputation): to compute discrete quantities
-        time_value (float): Current time
+        time_curr (float): Current time
         time_delta (float): Time increment
         time_theta (float): Theta parameter for integration
         previousPrimalField (fieldOnNodesReal): solution field at previous time
@@ -251,17 +251,29 @@ def _computeRhs(disr_comp, is_evol, time_value, time_delta, time_theta, previous
     logger.debug("<THER_LINEAIRE><RHS>: Start")
 
     # compute imposed temperature with Lagrange
-    rhs = disr_comp.getImposedDualBC(time_value)
+    rhs = disr_comp.getImposedDualBC(time_curr)
     logger.debug("<THER_LINEAIRE><RHS>: Nodal BC")
-    # compute neumann forces
-    rhs += disr_comp.getNeumannForces(time_value, time_delta, time_theta, previousPrimalField)
-    logger.debug("<THER_LINEAIRE><RHS>: Neumann BC")
 
-    if is_evol:
-        rhs += disr_comp.getTransientThermalForces(
-            time_value, time_delta, time_theta, previousPrimalField
+    def rhs_theta(disr_comp, is_evol, time_curr, time_delta, time_theta, previousPrimalField):
+        rhs = disr_comp.getNeumannForces(
+            time_curr, time_delta, time_theta, previousPrimalField=previousPrimalField
         )
-        logger.debug("<THER_LINEAIRE><RHS>: Transient Load BC")
+        logger.debug("<THER_LINEAIRE><RHS>: Neumann BC")
+
+        if is_evol:
+            rhs += disr_comp.getTransientThermalForces(
+                time_curr, time_delta, time_theta, previousPrimalField
+            )
+            logger.debug("<THER_LINEAIRE><RHS>: Transient Load BC")
+
+        return rhs
+
+    # compute load at time_prev (theta=0)
+    rhs_prev = rhs_theta(disr_comp, is_evol, time_curr, time_delta, 0.0, previousPrimalField)
+    # compute load at time_curr (theta=1)
+    rhs_curr = rhs_theta(disr_comp, is_evol, time_curr, time_delta, 1.0, previousPrimalField)
+
+    rhs += time_theta * rhs_curr + (1.0 - time_theta) * rhs_prev
 
     logger.debug("<THER_LINEAIRE><RHS>: Finish")
     return rhs
@@ -407,7 +419,7 @@ def ther_lineaire_ops(self, **args):
         logger.debug("<THER_LINEAIRE>:     IS_CONST = %s" % is_const)
         logger.debug("<THER_LINEAIRE>:     HAS_EXT_STATE_VAR = %s" % hasExternalStateVariable)
         logger.debug("<THER_LINEAIRE>:     CURRENT TIME %s" % phys_state.time)
-        logger.debug("<THER_LINEAIRE>:     TIME_VALUE %s" % phys_state.time)
+        logger.debug("<THER_LINEAIRE>:     TIME_CURR %s" % phys_state.time)
         logger.debug("<THER_LINEAIRE>:     TIME_DELTA %s" % time_delta)
         logger.debug("<THER_LINEAIRE>:     TIME_THETA %s" % time_theta)
 

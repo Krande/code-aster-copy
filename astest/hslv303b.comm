@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -367,7 +367,7 @@ Val_Calc_t1_1C_SIYY = [
 Val_Calc_t1_1C_SIZZ = [
     -1575071.1578113157,
     -419419.5790981874,
-    -18016.92800189917,
+    -18016.90591193927,
     121058.50162323998,
     115260.18215115108,
     105249.57786881988,
@@ -877,7 +877,7 @@ Val_Calc_t1_50C_SIYY = [
 Val_Calc_t1_50C_SIZZ = [
     -78753557.89056578,
     -20970978.95490937,
-    -900846.4000949586,
+    -900845.2955969635,
     6052925.081162,
     5763009.107557555,
     5262478.8934409935,
