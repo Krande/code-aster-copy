@@ -23,7 +23,10 @@
 
 #include "Utilities/Tools.h"
 
+#include "aster_fort_utils.h"
 #include "aster_utils.h"
+
+#include "MemoryManager/JeveuxVector.h"
 
 std::string strip( const std::string &str, const std::string &whitespace ) {
     const std::size_t strBegin = str.find_first_not_of( whitespace );
@@ -66,6 +69,22 @@ std::string remove_brackets( const std::string &in_str ) {
     return outstr;
 }
 
+// wrapper arround dismoi;
+std::tuple< bool, ASTERINTEGER, std::string > dismoi( const std::string &question,
+                                                      const std::string &name,
+                                                      const std::string &type, const bool stop ) {
+
+    ASTERINTEGER repi = 0, ier = 0;
+    JeveuxChar32 repk( " " );
+    std::string arret( "C" );
+    if ( stop ) {
+        arret = "F";
+    }
+
+    CALLO_DISMOI( question, name, type, &repi, repk, arret, &ier );
+
+    return std::make_tuple( ier == 0, repi, strip( repk.toString() ) );
+};
 void vectorStringToFStrArray( char *tabFStr, const int flen, const VectorString &vector ) {
     int i = 0;
     for ( auto &value : vector ) {

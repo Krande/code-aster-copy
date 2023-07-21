@@ -146,6 +146,10 @@ class MechanicalLoad : public DataStructure, public ListOfTables {
         return _mecaLoadDesc->getConstantLoadField( name );
     }
 
+    auto getConstantLoadFieldChar8( const std::string name ) const {
+        return _mecaLoadDesc->getConstantLoadFieldChar8( name );
+    }
+
     /**
      * @brief Mise a jour des pointeurs Jeveux
      * @return true si la mise a jour s'est bien deroulee, false sinon

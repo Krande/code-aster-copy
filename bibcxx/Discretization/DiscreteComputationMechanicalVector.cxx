@@ -95,7 +95,10 @@ ElementaryVectorDisplacementRealPtr DiscreteComputation::getMechanicalNeumannFor
             if ( isXfem ) {
                 calcul->addXFEMField( currModel->getXfemModel() );
             }
-            calcul->addInputField( param, load->getConstantLoadField( name ) );
+
+            if ( !param.empty() ) {
+                calcul->addInputField( param, load->getConstantLoadField( name ) );
+            }
             calcul->addFourierModeField( modeFourier );
 
             for ( auto &[param_in, field] : field_in ) {
@@ -136,6 +139,34 @@ ElementaryVectorDisplacementRealPtr DiscreteComputation::getMechanicalNeumannFor
         impl( load, iload, "CHAR_MECA_PRES_R", "PRESS", "PPRESSR", model_FEDesc );
         impl( load, iload, "CHAR_MECA_ONDE", "ONDE", "PONDECR", model_FEDesc );
 
+        // PRE_SIGM
+        if ( load->hasLoadField( "SIINT" ) ) {
+            // TODO: Do not create a copy - circular inclusion
+            auto pre_sgm_name =
+                ( load->getConstantLoadFieldChar8( "SIINT" )->getValues( 0 ).getValues()[0] )
+                    .toString();
+
+            const std::string typeco( "CHAMP" );
+            auto [ok, repi, retour] = dismoi( "DOCU", pre_sgm_name, typeco, true );
+
+            if ( retour == "CHML" ) {
+                auto pre_sigm = std::make_shared< FieldOnCellsReal >();
+                std::string base = "G";
+                CALLO_COPISD( typeco, base, pre_sgm_name, pre_sigm->getName() );
+                impl( load, iload, "FORC_NODA", "SIINT", "", model_FEDesc,
+                      {{"PCONTMR", pre_sigm}} );
+            } else if ( retour == "CART" ) {
+                auto pre_sigm =
+                    std::make_shared< ConstantFieldOnCellsReal >( currModel->getMesh() );
+                std::string base = "G";
+                CALLO_COPISD( typeco, base, pre_sgm_name, pre_sigm->getName() );
+                impl( load, iload, "FORC_NODA", "SIINT", "", model_FEDesc,
+                      {{"PCONTMR", pre_sigm}} );
+            } else {
+                AS_ABORT( "Error: " + retour );
+            }
+        }
+
         // CHAR_MECA_EVOL
         if ( load->hasLoadResult() ) {
             std::string cara_elem = " ", mater = " ", mateco = " ";
@@ -157,6 +188,7 @@ ElementaryVectorDisplacementRealPtr DiscreteComputation::getMechanicalNeumannFor
                                &inst_theta, resu_elem->getName(), elemVect->getName() );
         }
 
+        // VECT_ASSE
         if ( load->hasLoadVectAsse() ) {
             // TODO: Do not create a copy - circular inclusion
             auto veass = std::make_shared< FieldOnNodesReal >();

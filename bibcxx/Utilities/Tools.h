@@ -43,6 +43,11 @@ std::string remove_brackets( const std::string &in_str );
 // Convert integer in string for name of object
 std::string to_string( const int varInt, const int stringSize );
 
+// wrapper arround dismoi;
+std::tuple< bool, ASTERINTEGER, std::string > dismoi( const std::string &question,
+                                                      const std::string &name,
+                                                      const std::string &type, const bool stop );
+
 /**
  * @brief irange Create a vector of integer from begin to end (included).
  *      for exemple {-1, 0, 1, 2, 3}

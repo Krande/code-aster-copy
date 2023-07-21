@@ -106,7 +106,7 @@ class MechanicalLoadDescription : public DataStructure {
     /** @brief Carte '.SIGIN' */
     ConstantFieldOnCellsTypePtr _sigin;
     /** @brief Carte '.SIINT' */
-    ConstantFieldOnCellsTypePtr _siint;
+    ConstantFieldOnCellsChar8Ptr _siint;
     /** @brief Carte '.VNOR' */
     ConstantFieldOnCellsTypePtr _vnor;
     /** @brief Carte '.VFACE' */
@@ -157,7 +157,7 @@ class MechanicalLoadDescription : public DataStructure {
           _press( std::make_shared< ConstantFieldOnCellsType >( getName() + ".PRESS", _FEDesc ) ),
           _rotat( std::make_shared< ConstantFieldOnCellsType >( getName() + ".ROTAT", _FEDesc ) ),
           _sigin( std::make_shared< ConstantFieldOnCellsType >( getName() + ".SIGIN", _FEDesc ) ),
-          _siint( std::make_shared< ConstantFieldOnCellsType >( getName() + ".SIINT", _FEDesc ) ),
+          _siint( std::make_shared< ConstantFieldOnCellsChar8 >( getName() + ".SIINT", _FEDesc ) ),
           _vnor( std::make_shared< ConstantFieldOnCellsType >( getName() + ".VNOR", _FEDesc ) ),
           _vface( std::make_shared< ConstantFieldOnCellsType >( getName() + ".VFACE", _FEDesc ) ),
           _onde( std::make_shared< ConstantFieldOnCellsType >( getName() + ".ONDE", _FEDesc ) ),
@@ -278,8 +278,6 @@ class MechanicalLoadDescription : public DataStructure {
             return _rotat;
         } else if ( load_name == "SIGIN" ) {
             return _sigin;
-        } else if ( load_name == "SIINT" ) {
-            return _siint;
         } else if ( load_name == "VNOR" ) {
             return _vnor;
         } else if ( load_name == "VFACE" ) {
@@ -290,6 +288,16 @@ class MechanicalLoadDescription : public DataStructure {
             return _ondpl;
         } else if ( load_name == "ONDPR" ) {
             return _ondpr;
+        } else {
+            AS_ABORT( "Unknown option " + load_name );
+        }
+
+        return nullptr;
+    }
+
+    ConstantFieldOnCellsChar8Ptr getConstantLoadFieldChar8( const std::string load_name ) const {
+        if ( load_name == "SIINT" ) {
+            return _siint;
         } else {
             AS_ABORT( "Unknown option " + load_name );
         }
