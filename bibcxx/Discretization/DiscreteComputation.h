@@ -139,8 +139,8 @@ class DiscreteComputation {
      */
     ElementaryVectorDisplacementRealPtr
     getMechanicalNeumannForces( const ASTERDOUBLE time_curr = 0.0,
-                                const ASTERDOUBLE time_step = 0.0,
-                                const ASTERDOUBLE theta = 1.0 ) const;
+                                const ASTERDOUBLE time_step = 0.0, const ASTERDOUBLE theta = 1.0,
+                                const ASTERINTEGER modeFourier = 0 ) const;
 
     ElementaryVectorTemperatureRealPtr
     getThermalNeumannForces( const ASTERDOUBLE time_curr = 0.0, const ASTERDOUBLE time_step = 0.0,

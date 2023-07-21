@@ -94,11 +94,12 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             time_curr (float): Current time
             time_step (float): Time increment
             theta (float): Theta parameter for time-integration
-
+            mode (int) : fourier mode
       Returns:
             ElementaryVectorDisplacementReal: elementary Neumann forces vector
         )",
-              py::arg( "time_curr" ) = 0.0, py::arg( "time_step" ) = 0.0, py::arg( "theta" ) = 1.0 )
+              py::arg( "time_curr" ) = 0.0, py::arg( "time_step" ) = 0.0, py::arg( "theta" ) = 1.0,
+              py::arg( "mode" ) = 0 )
 
         .def( "getThermalNeumannForces", &DiscreteComputation::getThermalNeumannForces,
               R"(

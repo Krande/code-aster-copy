@@ -115,6 +115,10 @@ class MechanicalLoad : public DataStructure, public ListOfTables {
 
     std::string getLoadResultName() const { return _mecaLoadDesc->getLoadResultName(); }
 
+    bool hasLoadVectAsse() const { return _mecaLoadDesc->hasLoadVectAsse(); }
+
+    std::string getLoadVectAsseName() const { return _mecaLoadDesc->getLoadVectAsseName(); }
+
     /**
      * @brief Get the finite element descriptor
      */

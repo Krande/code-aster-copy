@@ -43,6 +43,8 @@ def calc_vect_elem_ops(self, **args):
     myOption = args["OPTION"]
 
     fourier = args.get("MODE_FOURIER")
+    if not fourier:
+        fourier = 0
     time = args.get("INST")
 
     model = args.get("MODELE")
@@ -93,7 +95,9 @@ def calc_vect_elem_ops(self, **args):
 
     vect_elem.prepareCompute(myOption)
 
-    neum_elem = disc_comp.getNeumannForces(time, previousPrimalField=fieldPrimal, assembly=False)
+    neum_elem = disc_comp.getNeumannForces(
+        time, mode=fourier, previousPrimalField=fieldPrimal, assembly=False
+    )
     vect_elem.addElementaryTerm(neum_elem.getElementaryTerms())
 
     dual_elem = disc_comp.getImposedDualBC(time, assembly=False)

@@ -211,7 +211,15 @@ class GenericElementaryVector : public BaseElementaryVector {
         return true;
     };
 
-    FieldOnNodesPtr getVeass() { return _veass; }
+    FieldOnNodesPtr getVeass() { return _veass; };
+
+    void setVeass( const FieldOnNodesPtr veass, const ASTERINTEGER iload ) {
+        if ( veass && veass->exists() ) {
+            _veass = veass;
+            CALLO_CORICHWRITE( veass->getName(), &iload );
+            _elemComp->addElementaryTerm( veass->getName() );
+        }
+    };
 
     /**
      * @brief is MPI_COMPLET ?

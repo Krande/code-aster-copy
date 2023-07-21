@@ -37,7 +37,8 @@
 #include "Utilities/Tools.h"
 
 ElementaryVectorDisplacementRealPtr DiscreteComputation::getMechanicalNeumannForces(
-    const ASTERDOUBLE time_curr, const ASTERDOUBLE time_step, const ASTERDOUBLE theta ) const {
+    const ASTERDOUBLE time_curr, const ASTERDOUBLE time_step, const ASTERDOUBLE theta,
+    const ASTERINTEGER modeFourier ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
 
@@ -95,6 +96,7 @@ ElementaryVectorDisplacementRealPtr DiscreteComputation::getMechanicalNeumannFor
                 calcul->addXFEMField( currModel->getXfemModel() );
             }
             calcul->addInputField( param, load->getConstantLoadField( name ) );
+            calcul->addFourierModeField( modeFourier );
 
             for ( auto &[param_in, field] : field_in ) {
                 if ( field && field->exists() ) {
@@ -147,7 +149,7 @@ ElementaryVectorDisplacementRealPtr DiscreteComputation::getMechanicalNeumannFor
             ASTERDOUBLE inst_prev = time_curr - time_step, inst_curr = time_curr,
                         inst_theta = theta;
             auto resu_elem = std::make_shared< ElementaryTermReal >();
-            ASTERINTEGER nharm = 0;
+            ASTERINTEGER nharm = modeFourier;
             std::string base = "G";
 
             CALLO_ME2MME_EVOL( currModel->getName(), cara_elem, mater, mateco, &nharm, base, &iload,
@@ -155,6 +157,14 @@ ElementaryVectorDisplacementRealPtr DiscreteComputation::getMechanicalNeumannFor
                                &inst_theta, resu_elem->getName(), elemVect->getName() );
         }
 
+        if ( load->hasLoadVectAsse() ) {
+            // TODO: Do not create a copy - circular inclusion
+            auto veass = std::make_shared< FieldOnNodesReal >();
+            std::string type = "CHAMP_GD", base = "G";
+            CALLO_COPISD( type, base, load->getLoadVectAsseName(), veass->getName() );
+            veass->build( currModel->getMesh() );
+            elemVect->setVeass( veass, iload );
+        }
         iload++;
     }
 

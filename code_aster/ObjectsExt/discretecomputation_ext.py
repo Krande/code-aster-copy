@@ -211,7 +211,7 @@ class ExtendedDiscreteComputation:
 
     @profile
     def getNeumannForces(
-        self, time_curr=0.0, time_step=0.0, theta=1, previousPrimalField=None, assembly=True
+        self, time_curr=0.0, time_step=0.0, theta=1, mode=0, previousPrimalField=None, assembly=True
     ):
         """Return the Neumann forces field
 
@@ -219,6 +219,7 @@ class ExtendedDiscreteComputation:
                 time_curr (float): Current time
                 time_step (float): Time increment
                 theta (float): Theta parameter for time-integration
+                mode (int) : fourier mode
                 previousPrimalField (FieldOnNodesReal): solution field at previous time
                 assembly (bool): assemble if True
 
@@ -236,14 +237,14 @@ class ExtendedDiscreteComputation:
                 time_curr, time_step, theta, previousPrimalField
             )
         elif model.isMechanical():
-            elem_vect = self.getMechanicalNeumannForces(time_curr, time_step, theta)
+            elem_vect = self.getMechanicalNeumannForces(time_curr, time_step, theta, mode)
         elif model.isAcoustic():
             elem_vect = self.getAcousticNeumannForces()
         else:
             raise RuntimeError("Not implemented")
 
         if assembly:
-            if len(elem_vect.getElementaryTerms()) > 0:
+            if len(elem_vect.getElementaryTerms()) > 0 or elem_vect.getVeass():
                 return elem_vect.assembleWithLoadFunctions(phys_pb.getDOFNumbering(), time_curr)
             else:
                 if model.isAcoustic():

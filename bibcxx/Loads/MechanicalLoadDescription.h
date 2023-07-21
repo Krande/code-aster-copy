@@ -305,6 +305,13 @@ class MechanicalLoadDescription : public DataStructure {
         return ( *_evolChar )[0].toString();
     }
 
+    bool hasLoadVectAsse() const { return _nameOfAssemblyVector->exists(); };
+
+    std::string getLoadVectAsseName() const {
+        AS_ASSERT( this->hasLoadVectAsse() );
+        _nameOfAssemblyVector->updateValuePointer();
+        return ( *_nameOfAssemblyVector )[0].toString();
+    }
     /**
      * @brief Mise a jour des pointeurs Jeveux
      * @return true si la mise a jour s'est bien deroulee, false sinon
