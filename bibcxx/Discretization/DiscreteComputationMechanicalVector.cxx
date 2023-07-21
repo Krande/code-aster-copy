@@ -66,11 +66,6 @@ ElementaryVectorDisplacementRealPtr DiscreteComputation::getMechanicalNeumannFor
         externVar = _phys_problem->getExternalStateVariables( time_curr );
     }
 
-    ConstantFieldOnCellsRealPtr currBehav = nullptr;
-    if ( currMater ) {
-        currBehav = currMater->getBehaviourField();
-    }
-
     auto isXfem = currModel->existsXfem();
 
     auto calcul = std::make_unique< Calcul >( calcul_option );
@@ -88,6 +83,10 @@ ElementaryVectorDisplacementRealPtr DiscreteComputation::getMechanicalNeumannFor
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
             if ( currMater ) {
                 calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
+                calcul->addInputField( "PCOMPOR", currMater->getBehaviourField() );
+            }
+            if ( externVar ) {
+                calcul->addInputField( "PVARCPR", externVar );
             }
             if ( currElemChara ) {
                 calcul->addElementaryCharacteristicsField( currElemChara );
@@ -127,10 +126,8 @@ ElementaryVectorDisplacementRealPtr DiscreteComputation::getMechanicalNeumannFor
         impl( load, iload, "CHAR_MECA_FR1D2D", "F1D2D", "PFR1D2D", model_FEDesc );
         impl( load, iload, "CHAR_MECA_FR1D1D", "F1D1D", "PFR1D1D", model_FEDesc );
         impl( load, iload, "CHAR_MECA_PESA_R", "PESAN", "PPESANR", model_FEDesc );
-        impl( load, iload, "CHAR_MECA_ROTA_R", "ROTAT", "PROTATR", model_FEDesc,
-              {{"PCOMPOR", currBehav}} );
-        impl( load, iload, "CHAR_MECA_EPSI_R", "EPSIN", "PEPSINR", model_FEDesc,
-              {{"PCOMPOR", currBehav}} );
+        impl( load, iload, "CHAR_MECA_ROTA_R", "ROTAT", "PROTATR", model_FEDesc );
+        impl( load, iload, "CHAR_MECA_EPSI_R", "EPSIN", "PEPSINR", model_FEDesc );
         impl( load, iload, "CHAR_MECA_FRELEC", "FELEC", "PFRELEC", model_FEDesc );
         impl( load, iload, "CHAR_MECA_PRES_R", "PRESS", "PPRESSR", model_FEDesc );
         impl( load, iload, "CHAR_MECA_ONDE", "ONDE", "PONDECR", model_FEDesc );
@@ -151,11 +148,10 @@ ElementaryVectorDisplacementRealPtr DiscreteComputation::getMechanicalNeumannFor
         impl( load, iload, "CHAR_MECA_FF2D2D", "F2D2D", "PFF2D2D", model_FEDesc );
         impl( load, iload, "CHAR_MECA_FF1D2D", "F1D2D", "PFF1D2D", model_FEDesc );
         impl( load, iload, "CHAR_MECA_FF1D1D", "F1D1D", "PFF1D1D", model_FEDesc );
-        impl( load, iload, "CHAR_MECA_EPSI_F", "EPSIN", "PEPSINF", model_FEDesc,
-              {{"PCOMPOR", currBehav}} );
+        impl( load, iload, "CHAR_MECA_EPSI_F", "EPSIN", "PEPSINF", model_FEDesc );
         impl( load, iload, "CHAR_MECA_PRES_F", "PRESS", "PPRESSF", model_FEDesc );
         impl( load, iload, "ONDE_PLAN", "ONDPL", "PONDPLA", model_FEDesc,
-              {{"PONDPLR", load->getConstantLoadField( "ONDPR" )}, {"PVARCPR", externVar}} );
+              {{"PONDPLR", load->getConstantLoadField( "ONDPR" )}} );
 
         iload++;
     }
