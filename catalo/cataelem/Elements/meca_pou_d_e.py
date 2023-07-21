@@ -161,10 +161,6 @@ EEFGENO = LocatedComponents(
     phys=PHY.SIEF_R, type="ELNO", components=("N", "VY", "VZ", "MT", "MFY", "MFZ")
 )
 
-EEFGENOR = LocatedComponents(
-    phys=PHY.SIEF_R, type="ELNO", components=("N", "VY", "VZ", "MT", "MFY", "MFZ")
-)
-
 
 ESTRAUX = LocatedComponents(
     phys=PHY.STRX_R, type="ELGA", location="RIGI", components=("ALPHA", "BETA", "GAMMA")
@@ -438,7 +434,7 @@ class MECA_POU_D_E(Element):
         OP.FERR_ELEM(
             te=265,
             para_in=(
-                (OP.FERR_ELEM.PEFFORR, EEFGENOR),
+                (OP.FERR_ELEM.PEFFORR, EEFGENO),
                 (SP.PFERRA1, LC.CFER1_R),
                 (SP.PCAGEPO, LC.CCAGRPO),
             ),

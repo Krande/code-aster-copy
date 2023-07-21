@@ -201,19 +201,6 @@ subroutine w175af(modele, chfer1)
             call getvtx('AFFE', 'TYPE_STRUCTURE', iocc=iocc, scal=typstru, nbret=n8)
             if (typstru .eq. '2D') valv(8) = 0.d0
             if (typstru .eq. '1D') valv(8) = 1.d0
-
-               !!Intervention 03/2023 - Pour réduction du temps de calcul
-            call getvtx('AFFE', 'EXTRA_PREC', iocc=iocc, scal=precs, nbret=n62)
-            if (precs .eq. 'NON') valv(62) = 0.d0
-            if (precs .eq. 'OUI') valv(62) = 1.d0
-
-            call getvtx('AFFE', 'FERR_LONGI', iocc=iocc, scal=flongi, nbret=n63)
-            if (flongi .eq. 'OUI') valv(63) = 0.d0
-            if (flongi .eq. 'NON') valv(63) = 1.d0
-            call getvtx('AFFE', 'FERR_TRNSV', iocc=iocc, scal=ftrnsv, nbret=n64)
-            if (ftrnsv .eq. 'OUI') valv(64) = 0.d0
-            if (ftrnsv .eq. 'NON') valv(64) = 1.d0
-
             call getvtx('AFFE', 'FERR_SYME', iocc=iocc, scal=ferrsyme, nbret=n9)
             if (ferrsyme .eq. 'NON') valv(9) = 0.d0
             if (ferrsyme .eq. 'OUI') valv(9) = 1.d0
@@ -279,19 +266,6 @@ subroutine w175af(modele, chfer1)
             call getvtx('AFFE', 'TYPE_STRUCTURE', iocc=iocc, scal=typstru, nbret=n8)
             if (typstru .eq. '2D') valv(8) = 0.d0
             if (typstru .eq. '1D') valv(8) = 1.d0
-
-               !!Intervention 03/2023 - Pour réduction du temps de calcul
-            call getvtx('AFFE', 'EXTRA_PREC', iocc=iocc, scal=precs, nbret=n62)
-            if (precs .eq. 'NON') valv(62) = 0.d0
-            if (precs .eq. 'OUI') valv(62) = 1.d0
-
-            call getvtx('AFFE', 'FERR_LONGI', iocc=iocc, scal=flongi, nbret=n63)
-            if (flongi .eq. 'OUI') valv(63) = 0.d0
-            if (flongi .eq. 'NON') valv(63) = 1.d0
-            call getvtx('AFFE', 'FERR_TRNSV', iocc=iocc, scal=ftrnsv, nbret=n64)
-            if (ftrnsv .eq. 'OUI') valv(64) = 0.d0
-            if (ftrnsv .eq. 'NON') valv(64) = 1.d0
-
             call getvtx('AFFE', 'FERR_SYME', iocc=iocc, scal=ferrsyme, nbret=n9)
             if (ferrsyme .eq. 'NON') valv(9) = 0.d0
             if (ferrsyme .eq. 'OUI') valv(9) = 1.d0

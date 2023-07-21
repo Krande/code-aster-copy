@@ -489,6 +489,15 @@ class MECA_POU_D_T(Element):
             ),
             para_out=((OP.EPOT_ELEM.PENERDR, EENERR),),
         ),
+        OP.FERR_ELEM(
+            te=265,
+            para_in=(
+                (OP.FERR_ELEM.PEFFORR, EEFGENO),
+                (SP.PFERRA1, LC.CFER1_R),
+                (SP.PCAGEPO, LC.CCAGRPO),
+            ),
+            para_out=((SP.PFERRA2, LC.CFER3_R),),
+        ),
         OP.FORC_NODA(
             te=347,
             para_in=(
