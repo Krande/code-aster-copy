@@ -842,6 +842,20 @@ class DiscreteComputation:
               FieldOnNodesComplex: imposed accoustic vector
         """
 
+    def getAcousticImposedDualBC(self):
+        """Return the acoustic imposed nodal BC elementary vector
+
+        Returns:
+              ElementaryVectorPressureComplex: imposed dual vector
+        """
+
+    def getAcousticNeumannForces(self):
+        """Return the elementary acoustic Neumann forces vector
+
+        Returns:
+              ElementaryVectorPressureComplex: elementary Neumann forces vector
+        """
+
     def getCompressibilityMatrix(self, groupOfCells=[]):
         """Return the elementary matrices for compressibility acoustic matrix.
         Option MASS_ACOU.
@@ -1078,16 +1092,6 @@ class DiscreteComputation:
             ElementaryMatrixReal: impedance wave matrix
         """
 
-    def getImposedDualBC(self, time_curr=0.0):
-        """Return the imposed nodal BC assembled vector
-
-        Arguments:
-              time_curr (float): Current time (default: 0.0)
-
-        Returns:
-              FieldOnNodes: imposed dual field
-        """
-
     def getIncrementalDirichletBC(self, time_curr, disp):
         """Return the incremental imposed displacement vector used to remove imposed DDL
         for incremental resolution.
@@ -1224,6 +1228,16 @@ class DiscreteComputation:
               FieldOnNodesReal: imposed displacement vector
         """
 
+    def getMechanicalImposedDualBC(self, time_curr=0.0):
+        """Return the mechanical imposed nodal BC elementary vector
+
+        Arguments:
+              time_curr (float): Current time (default: 0.0)
+
+        Returns:
+              ElementaryVectorDisplacementReal: imposed dual vector
+        """
+
     def getMechanicalMassMatrix(self, diagonal, time_curr=0.0, groupOfCells=[]):
         """Return the elementary matrices for mechanical mass matrix
         Option MASS_MECA.
@@ -1238,17 +1252,16 @@ class DiscreteComputation:
             ElementaryMatrix: elementary mass matrix
         """
 
-    def getNeumannForces(self, time_curr=0.0, time_step=0.0, theta=1.0, previousPrimalField=None):
-        """Return the Neumann forces vector
+    def getMechanicalNeumannForces(self, time_curr=0.0, time_step=0.0, theta=1.0, mode=0):
+        """Return the elementary mechanical Neumann forces vector
 
         Arguments:
               time_curr (float): Current time
               time_step (float): Time increment
               theta (float): Theta parameter for time-integration
-              previousPrimalField (fieldOnNodesReal): solution field at previous time
-
+              mode (int) : fourier mode
         Returns:
-              FieldOnNodes: Neumann forces vector
+              ElementaryVectorDisplacementReal: elementary Neumann forces vector
         """
 
     def getNonLinearCapacityForces(
@@ -1406,6 +1419,31 @@ class DiscreteComputation:
 
         Returns:
               FieldOnNodesReal: imposed thermal vector
+        """
+
+    def getThermalImposedDualBC(self, time_curr=0.0):
+        """Return the thermal imposed nodal BC elementary vector
+
+        Arguments:
+              time_curr (float): Current time (default: 0.0)
+
+        Returns:
+              ElementaryVectorThermalReal: imposed dual vector
+        """
+
+    def getThermalNeumannForces(
+        self, time_curr=0.0, time_step=0.0, theta=1.0, previousPrimalField=None
+    ):
+        """Return the elementary thermal Neumann forces vector
+
+        Arguments:
+              time_curr (float): Current time
+              time_step (float): Time increment
+              theta (float): Theta parameter for time-integration
+              previousPrimalField (fieldOnNodesReal): solution field at previous time
+
+        Returns:
+              ElementaryVectorThermalReal: elementary Neumann forces vector
         """
 
     def getTransientThermalForces(self, time_curr, time_step, theta, previousPrimalField=None):
@@ -6816,6 +6854,9 @@ class BaseElementaryVector(DataStructure):
     def addLoad(self, arg0):
         pass
 
+    def addSubstructuring(self, arg0):
+        pass
+
     def assembleWithLoadFunctions(self, dofNume, time=0.0):
         pass
 
@@ -6823,6 +6864,9 @@ class BaseElementaryVector(DataStructure):
         pass
 
     def build(self, FED=[]):
+        pass
+
+    def prepareCompute(self, arg0):
         pass
 
     def setElementaryCharacteristics(self, arg0):
@@ -6866,7 +6910,31 @@ class ElementaryVectorReal(BaseElementaryVector):
         3. __init__(self: libaster.ElementaryVectorReal, arg0: Model, arg1: MaterialField, arg2: libaster.ElementaryCharacteristics, arg3: libaster.ListOfLoads) -> None
         """
 
+    def addElementaryTerm(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. addElementaryTerm(self: libaster.ElementaryVectorReal, term: libaster.ElementaryTermReal) -> None
+
+
+                    Add elementary term
+
+                    Arguments:
+                        term (ElementaryTermReal): elementary term
+
+
+        2. addElementaryTerm(self: libaster.ElementaryVectorReal, terms: List[libaster.ElementaryTermReal]) -> None
+
+
+                    Add vector of elementary term
+
+                    Arguments:
+                        terms (list[ElementaryTermReal]): vector of elementary term
+        """
+
     def assemble(self, arg0):
+        pass
+
+    def getElementaryTerms(self):
         pass
 
     def getFiniteElementDescriptor(self):
@@ -6901,7 +6969,31 @@ class ElementaryVectorComplex(BaseElementaryVector):
         3. __init__(self: libaster.ElementaryVectorComplex, arg0: Model, arg1: MaterialField, arg2: libaster.ElementaryCharacteristics, arg3: libaster.ListOfLoads) -> None
         """
 
+    def addElementaryTerm(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. addElementaryTerm(self: libaster.ElementaryVectorComplex, term: libaster.ElementaryTermComplex) -> None
+
+
+                    Add elementary term
+
+                    Arguments:
+                        term (ElementaryTermComplex): elementary term
+
+
+        2. addElementaryTerm(self: libaster.ElementaryVectorComplex, terms: List[libaster.ElementaryTermComplex]) -> None
+
+
+                    Add vector of elementary term
+
+                    Arguments:
+                        terms (list[ElementaryTermComplex]): vector of elementary term
+        """
+
     def assemble(self, arg0):
+        pass
+
+    def getElementaryTerms(self):
         pass
 
     def getVeass(self):

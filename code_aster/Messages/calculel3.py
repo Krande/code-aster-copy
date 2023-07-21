@@ -377,34 +377,9 @@ CREA_CHAMP ne sait pas créer de champ de type %(k1)s.
  CREA_CHAMP ne sait créer de champ de type %(k1)s pour aucun des éléments fournis.
 """
     ),
-    88: _(
-        """
- Les charges ne s'appuie pas sur le MODELE fourni.
-"""
-    ),
-    89: _(
-        """
- les charges ne s'appuient pas toutes sur le même modèle.
-"""
-    ),
     90: _(
         """
  le champ %(k1)s doit être une CARTE.
-"""
-    ),
-    91: _(
-        """
- une des charges n'est pas mécanique
-"""
-    ),
-    92: _(
-        """
- erreur: une des charges n'est pas thermique
-"""
-    ),
-    93: _(
-        """
- une des charges n'est pas acoustique
 """
     ),
     97: _(
