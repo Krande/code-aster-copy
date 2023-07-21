@@ -128,9 +128,32 @@ ElementaryVectorDisplacementRealPtr DiscreteComputation::getMechanicalNeumannFor
         impl( load, iload, "CHAR_MECA_PESA_R", "PESAN", "PPESANR", model_FEDesc );
         impl( load, iload, "CHAR_MECA_ROTA_R", "ROTAT", "PROTATR", model_FEDesc );
         impl( load, iload, "CHAR_MECA_EPSI_R", "EPSIN", "PEPSINR", model_FEDesc );
+        impl( load, iload, "CHAR_MECA_EFON_R", "EFOND", "PEFOND", model_FEDesc,
+              {{"PPREFFR", load->getConstantLoadField( "PREFF" )}} );
         impl( load, iload, "CHAR_MECA_FRELEC", "FELEC", "PFRELEC", model_FEDesc );
         impl( load, iload, "CHAR_MECA_PRES_R", "PRESS", "PPRESSR", model_FEDesc );
         impl( load, iload, "CHAR_MECA_ONDE", "ONDE", "PONDECR", model_FEDesc );
+
+        // CHAR_MECA_EVOL
+        if ( load->hasLoadResult() ) {
+            std::string cara_elem = " ", mater = " ", mateco = " ";
+            if ( currElemChara ) {
+                cara_elem = currElemChara->getName();
+            }
+            if ( currMater ) {
+                mater = currMater->getName();
+                mateco = currCodedMater->getCodedMaterialField()->getName();
+            }
+            ASTERDOUBLE inst_prev = time_curr - time_step, inst_curr = time_curr,
+                        inst_theta = theta;
+            auto resu_elem = std::make_shared< ElementaryTermReal >();
+            ASTERINTEGER nharm = 0;
+            std::string base = "G";
+
+            CALLO_ME2MME_EVOL( currModel->getName(), cara_elem, mater, mateco, &nharm, base, &iload,
+                               load->getName(), model_FEDesc->getName(), &inst_prev, &inst_curr,
+                               &inst_theta, resu_elem->getName(), elemVect->getName() );
+        }
 
         iload++;
     }
@@ -149,6 +172,8 @@ ElementaryVectorDisplacementRealPtr DiscreteComputation::getMechanicalNeumannFor
         impl( load, iload, "CHAR_MECA_FF1D2D", "F1D2D", "PFF1D2D", model_FEDesc );
         impl( load, iload, "CHAR_MECA_FF1D1D", "F1D1D", "PFF1D1D", model_FEDesc );
         impl( load, iload, "CHAR_MECA_EPSI_F", "EPSIN", "PEPSINF", model_FEDesc );
+        impl( load, iload, "CHAR_MECA_EFON_F", "EFOND", "PEFOND", model_FEDesc,
+              {{"PPREFFF", load->getConstantLoadField( "PREFF" )}} );
         impl( load, iload, "CHAR_MECA_PRES_F", "PRESS", "PPRESSF", model_FEDesc );
         impl( load, iload, "ONDE_PLAN", "ONDPL", "PONDPLA", model_FEDesc,
               {{"PONDPLR", load->getConstantLoadField( "ONDPR" )}} );

@@ -268,6 +268,14 @@ void DEFSP( GETERRORCODE, geterrorcode, const char *, STRING_SIZE, ASTERINTEGER 
 void DEFSSS( SS2MME, ss2mme, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
              STRING_SIZE );
 
+#define CALLO_ME2MME_EVOL( a, b, c, d, e, f, g, h, i, j, k, l, m, n )                              \
+    CALLOOOOPOPOOPPPOO( ME2MME_EVOL, me2mme_evol, a, b, c, d, e, f, g, h, i, j, k, l, m, n )
+void DEFSSSSPSPSSPPPSS( ME2MME_EVOL, me2mme_evol, const char *, STRING_SIZE, const char *,
+                        STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE,
+                        ASTERINTEGER *, const char *, STRING_SIZE, ASTERINTEGER *, const char *,
+                        STRING_SIZE, const char *, STRING_SIZE, ASTERDOUBLE *, ASTERDOUBLE *,
+                        ASTERDOUBLE *, const char *, STRING_SIZE, const char *, STRING_SIZE );
+
 #ifdef __cplusplus
 }
 #endif

@@ -67,6 +67,8 @@ class MechanicalLoadDescription : public DataStructure {
     ConstantFieldOnCellsTypePtr _dpgen;
     /** @brief Carte '.EPSIN' */
     ConstantFieldOnCellsTypePtr _epsin;
+    /** @brief Carte '.EFOND' */
+    ConstantFieldOnCellsTypePtr _efond;
     /** @brief Carte '.F1D1D' */
     ConstantFieldOnCellsTypePtr _f1d1d;
     /** @brief Carte '.F1D2D' */
@@ -95,6 +97,8 @@ class MechanicalLoadDescription : public DataStructure {
     ConstantFieldOnCellsTypePtr _imped;
     /** @brief Carte '.PESAN' */
     ConstantFieldOnCellsTypePtr _pesan;
+    /** @brief Carte '.PREFF' */
+    ConstantFieldOnCellsTypePtr _preff;
     /** @brief Carte '.PRESS' */
     ConstantFieldOnCellsTypePtr _press;
     /** @brief Carte '.ROTAT' */
@@ -133,6 +137,7 @@ class MechanicalLoadDescription : public DataStructure {
           _cimpo( std::make_shared< ConstantFieldOnCellsType >( getName() + ".CIMPO", _FEDesc ) ),
           _cmult( std::make_shared< ConstantFieldOnCellsReal >( getName() + ".CMULT", _FEDesc ) ),
           _dpgen( std::make_shared< ConstantFieldOnCellsType >( getName() + ".DPGEN", _FEDesc ) ),
+          _efond( std::make_shared< ConstantFieldOnCellsType >( getName() + ".EFOND", _FEDesc ) ),
           _epsin( std::make_shared< ConstantFieldOnCellsType >( getName() + ".EPSIN", _FEDesc ) ),
           _f1d1d( std::make_shared< ConstantFieldOnCellsType >( getName() + ".F1D1D", _FEDesc ) ),
           _f1d2d( std::make_shared< ConstantFieldOnCellsType >( getName() + ".F1D2D", _FEDesc ) ),
@@ -148,6 +153,7 @@ class MechanicalLoadDescription : public DataStructure {
           _forno( std::make_shared< ConstantFieldOnCellsType >( getName() + ".FORNO", _FEDesc ) ),
           _imped( std::make_shared< ConstantFieldOnCellsType >( getName() + ".IMPED", _FEDesc ) ),
           _pesan( std::make_shared< ConstantFieldOnCellsType >( getName() + ".PESAN", _FEDesc ) ),
+          _preff( std::make_shared< ConstantFieldOnCellsType >( getName() + ".PREFF", _FEDesc ) ),
           _press( std::make_shared< ConstantFieldOnCellsType >( getName() + ".PRESS", _FEDesc ) ),
           _rotat( std::make_shared< ConstantFieldOnCellsType >( getName() + ".ROTAT", _FEDesc ) ),
           _sigin( std::make_shared< ConstantFieldOnCellsType >( getName() + ".SIGIN", _FEDesc ) ),
@@ -174,6 +180,8 @@ class MechanicalLoadDescription : public DataStructure {
     bool hasLoadField( const std::string load_name ) const {
         if ( load_name == "EPSIN" ) {
             return ( _epsin && _epsin->exists() );
+        } else if ( load_name == "EFOND" ) {
+            return ( _efond && _efond->exists() );
         } else if ( load_name == "F1D1D" ) {
             return ( _f1d1d && _f1d1d->exists() );
         } else if ( load_name == "F1D2D" ) {
@@ -202,6 +210,8 @@ class MechanicalLoadDescription : public DataStructure {
             return ( _imped && _imped->exists() );
         } else if ( load_name == "PESAN" ) {
             return ( _pesan && _pesan->exists() );
+        } else if ( load_name == "PREFF" ) {
+            return ( _preff && _preff->exists() );
         } else if ( load_name == "PRESS" ) {
             return ( _press && _press->exists() );
         } else if ( load_name == "ROTAT" ) {
@@ -230,6 +240,8 @@ class MechanicalLoadDescription : public DataStructure {
     ConstantFieldOnCellsTypePtr getConstantLoadField( const std::string load_name ) const {
         if ( load_name == "EPSIN" ) {
             return _epsin;
+        } else if ( load_name == "EFOND" ) {
+            return _efond;
         } else if ( load_name == "F1D1D" ) {
             return _f1d1d;
         } else if ( load_name == "F1D2D" ) {
@@ -258,6 +270,8 @@ class MechanicalLoadDescription : public DataStructure {
             return _imped;
         } else if ( load_name == "PESAN" ) {
             return _pesan;
+        } else if ( load_name == "PREFF" ) {
+            return _preff;
         } else if ( load_name == "PRESS" ) {
             return _press;
         } else if ( load_name == "ROTAT" ) {
@@ -281,6 +295,14 @@ class MechanicalLoadDescription : public DataStructure {
         }
 
         return nullptr;
+    }
+
+    bool hasLoadResult() const { return _evolChar->exists(); }
+
+    std::string getLoadResultName() const {
+        AS_ASSERT( this->hasLoadResult() );
+        _evolChar->updateValuePointer();
+        return ( *_evolChar )[0].toString();
     }
 
     /**

@@ -111,6 +111,10 @@ class MechanicalLoad : public DataStructure, public ListOfTables {
 
     auto getImposedField() const { return _mecaLoadDesc->getImposedField(); }
 
+    bool hasLoadResult() const { return _mecaLoadDesc->hasLoadResult(); }
+
+    std::string getLoadResultName() const { return _mecaLoadDesc->getLoadResultName(); }
+
     /**
      * @brief Get the finite element descriptor
      */
