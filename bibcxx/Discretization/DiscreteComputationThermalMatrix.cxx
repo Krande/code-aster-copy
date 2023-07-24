@@ -37,7 +37,8 @@
 #include "Utilities/Tools.h"
 
 ElementaryMatrixTemperatureRealPtr DiscreteComputation::getLinearConductivityMatrix(
-    const ASTERDOUBLE time_curr, const ASTERINTEGER &modeFourier, const VectorString &groupOfCells,
+    const ASTERDOUBLE time_curr, const ASTERINTEGER &modeFourier,
+    const FieldOnCellsRealPtr varc_curr, const VectorString &groupOfCells,
     const bool &with_dual ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
@@ -68,8 +69,10 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::getLinearConductivityMat
         calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
 
         if ( currMater->hasExternalStateVariable() ) {
-            calcul->addInputField( "PVARCPR",
-                                   _phys_problem->getExternalStateVariables( time_curr ) );
+            if ( !varc_curr || !varc_curr->exists() ) {
+                raiseAsterError( "External state variables are needed but not given" );
+            }
+            calcul->addInputField( "PVARCPR", varc_curr );
         }
     }
 
@@ -109,7 +112,7 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::getLinearConductivityMat
  */
 ElementaryMatrixTemperatureRealPtr DiscreteComputation::getTangentConductivityMatrix(
     const FieldOnNodesRealPtr temp_prev, const FieldOnNodesRealPtr temp_step,
-    const FieldOnCellsRealPtr &externVarCurr, const VectorString &groupOfCells,
+    const FieldOnCellsRealPtr varc_curr, const VectorString &groupOfCells,
     const bool &with_dual ) const {
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
     const std::string option( "RIGI_THER_TANG" );
@@ -141,7 +144,10 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::getTangentConductivityMa
         calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
 
         if ( currMater->hasExternalStateVariable() ) {
-            calcul->addInputField( "PVARCPR", externVarCurr );
+            if ( !varc_curr || !varc_curr->exists() ) {
+                raiseAsterError( "External state variables are needed but not given" );
+            }
+            calcul->addInputField( "PVARCPR", varc_curr );
         }
     }
 
@@ -183,6 +189,7 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::getTangentConductivityMa
 
 ElementaryMatrixTemperatureRealPtr
 DiscreteComputation::getLinearCapacityMatrix( const ASTERDOUBLE time_curr,
+                                              const FieldOnCellsRealPtr varc_curr,
                                               const VectorString &groupOfCells ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
@@ -216,8 +223,10 @@ DiscreteComputation::getLinearCapacityMatrix( const ASTERDOUBLE time_curr,
         calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
 
         if ( currMater->hasExternalStateVariable() ) {
-            calcul->addInputField( "PVARCPR",
-                                   _phys_problem->getExternalStateVariables( time_curr ) );
+            if ( !varc_curr || !varc_curr->exists() ) {
+                raiseAsterError( "External state variables are needed but not given" );
+            }
+            calcul->addInputField( "PVARCPR", varc_curr );
         }
     }
 
@@ -249,7 +258,7 @@ DiscreteComputation::getLinearCapacityMatrix( const ASTERDOUBLE time_curr,
  */
 ElementaryMatrixTemperatureRealPtr DiscreteComputation::getTangentCapacityMatrix(
     const FieldOnNodesRealPtr temp_prev, const FieldOnNodesRealPtr temp_step,
-    const FieldOnCellsRealPtr &externVarCurr, const VectorString &groupOfCells ) const {
+    const FieldOnCellsRealPtr varc_curr, const VectorString &groupOfCells ) const {
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
     const std::string option( "MASS_THER_TANG" );
 
@@ -280,7 +289,10 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::getTangentCapacityMatrix
         calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
 
         if ( currMater->hasExternalStateVariable() ) {
-            calcul->addInputField( "PVARCPR", externVarCurr );
+            if ( !varc_curr || !varc_curr->exists() ) {
+                raiseAsterError( "External state variables are needed but not given" );
+            }
+            calcul->addInputField( "PVARCPR", varc_curr );
         }
     }
 

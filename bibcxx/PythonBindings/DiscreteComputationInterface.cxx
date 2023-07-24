@@ -95,11 +95,12 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             time_step (float): Time increment
             theta (float): Theta parameter for time-integration
             mode (int) : fourier mode
+            varc_curr (FieldOnCellsReal): external state variables at current time
       Returns:
             ElementaryVectorDisplacementReal: elementary Neumann forces vector
         )",
               py::arg( "time_curr" ) = 0.0, py::arg( "time_step" ) = 0.0, py::arg( "theta" ) = 1.0,
-              py::arg( "mode" ) = 0 )
+              py::arg( "mode" ) = 0, py::arg( "varc_curr" ) = nullptr )
 
         .def( "getThermalNeumannForces", &DiscreteComputation::getThermalNeumannForces,
               R"(
@@ -109,13 +110,14 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             time_curr (float): Current time
             time_step (float): Time increment
             theta (float): Theta parameter for time-integration
+            varc_curr (FieldOnCellsReal): external state variables at current time
             previousPrimalField (fieldOnNodesReal): solution field at previous time
 
       Returns:
             ElementaryVectorThermalReal: elementary Neumann forces vector
         )",
               py::arg( "time_curr" ) = 0.0, py::arg( "time_step" ) = 0.0, py::arg( "theta" ) = 1.0,
-              py::arg( "previousPrimalField" ) = nullptr )
+              py::arg( "varc_curr" ) = nullptr, py::arg( "previousPrimalField" ) = nullptr )
 
         .def( "getAcousticNeumannForces", &DiscreteComputation::getAcousticNeumannForces,
               R"(
@@ -147,13 +149,14 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                   time_curr (float): Current time
                   time_step (float): Time increment
                   theta (float): Theta parameter for integration
+                  varc_curr (FieldOnCellsReal): external state variables at current time
                   previousPrimalField (fieldOnNodesReal): solution field at previous time
 
             Returns:
                   FieldOnNodes: load
             )",
               py::arg( "time_curr" ), py::arg( "time_step" ), py::arg( "theta" ),
-              py::arg( "previousPrimalField" ) = nullptr )
+              py::arg( "varc_curr" ) = nullptr, py::arg( "previousPrimalField" ) = nullptr )
 
         .def( "getNonLinearTransientThermalForces",
               &DiscreteComputation::getNonLinearTransientThermalForces,
@@ -167,7 +170,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                 time_prev (float): time at begin of the step
                 time_step (float): delta time between begin and end of the step
                 theta (float): Theta parameter for integration
-                externVarCurr (FieldOnCells): external state variables at end of current time
+                varc_curr (FieldOnCellsReal): external state variables at current time
 
             Returns:
                 FieldOnNodes: load
@@ -238,6 +241,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                   time_curr (float): Current time for external state variable
                     evaluation (default: 0.0)
                   fourierMode (int): Fourier mode (default: -1)
+                  varc_curr (FieldOnCellsReal): external state variables at current time
                   groupOfCells (list[str]): compute matrices on given groups of cells.
                       If it empty, the full model is used
                   with_dual (bool): compute dual terms or not (default: True)
@@ -245,7 +249,8 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                   ElementaryMatrix: elementary elastic Stiffness matrix
             )",
               py::arg( "time_curr" ) = 0.0, py::arg( "fourierMode" ) = -1,
-              py::arg( "groupOfCells" ) = VectorString(), py::arg( "with_dual" ) = true )
+              py::arg( "varc_curr" ) = nullptr, py::arg( "groupOfCells" ) = VectorString(),
+              py::arg( "with_dual" ) = true )
 
         .def( "getFluidStructureStiffnessMatrix",
               &DiscreteComputation::getFluidStructureStiffnessMatrix,
@@ -254,15 +259,14 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             Option RIGI_FLUI_STRUC.
 
             Arguments:
-                  time_curr (float): Current time for external state variable
-                    evaluation (default: 0.0)
                   fourierMode (int): Fourier mode (default: -1)
+                  varc_curr (FieldOnCells): internal state variables at current time
                   groupOfCells (list[str]): compute matrices on given groups of cells.
                       If it empty, the full model is used
             Returns:
                   ElementaryMatrixReal: elementary fluid-structure Stiffness matrix
             )",
-              py::arg( "time_curr" ) = 0.0, py::arg( "fourierMode" ) = -1,
+              py::arg( "fourierMode" ) = -1, py::arg( "varc_curr" ) = nullptr,
               py::arg( "groupOfCells" ) = VectorString() )
 
         .def( "getFluidStructureMassMatrix", &DiscreteComputation::getFluidStructureMassMatrix,
@@ -271,14 +275,13 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             Option MASS_FLUI_STRUC.
 
             Arguments:
-                  time_curr (float): Current time for external state variable
-                    evaluation (default: 0.0)
+                  varc_curr (FieldOnCellsReal): external state variables at current time
                   groupOfCells (list[str]): compute matrices on given groups of cells.
                       If it empty, the full model is used
             Returns:
                   ElementaryMatrixReal: elementary fluid-structure mass matrix
             )",
-              py::arg( "time_curr" ) = 0.0, py::arg( "groupOfCells" ) = VectorString() )
+              py::arg( "varc_curr" ) = nullptr, py::arg( "groupOfCells" ) = VectorString() )
 
         .def( "getPhysicalProblem", &DiscreteComputation::getPhysicalProblem, R"(
             Get physical probelm
@@ -320,6 +323,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             Arguments:
                   time_curr (float): Current time
                   fourierMode (int): Fourier mode (default: -1)
+                  varc_curr (FieldOnCellsReal): external state variables at current time
                   groupOfCells (list[str]): compute matrices on given groups of cells.
                     If it empty, the full model is used
                   with_dual (bool): compute dual terms or not (default: True)
@@ -327,7 +331,8 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                   ElementaryMatrix: elementary linear thermal matrices
         )",
               py::arg( "time_curr" ), py::arg( "fourierMode" ) = 0,
-              py::arg( "groupOfCells" ) = VectorString(), py::arg( "with_dual" ) = true )
+              py::arg( "varc_curr" ) = nullptr, py::arg( "groupOfCells" ) = VectorString(),
+              py::arg( "with_dual" ) = true )
 
         .def( "getTangentConductivityMatrix", &DiscreteComputation::getTangentConductivityMatrix,
               R"(
@@ -337,7 +342,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             Arguments:
                 temp_prev (FieldOnNodes): thermal field at begin of current time
                 temp_step (FieldOnNodes): field of increment of temperature
-                externVarCurr (FieldOnCells): external state variables at end of current time
+                varc_curr (FieldOnCellsReal): external state variables at current time
                 groupOfCells (list[str]): compute matrices on given groups of cells.
                     If it empty, the full model is used
                 with_dual (bool): compute dual terms or not (default: True)
@@ -378,14 +383,13 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
 
             Arguments:
                 diagonal (bool) : True for diagonal mass matrix else False.
-                time_curr (float): Current time for external state variable
-                    evaluation (default: 0.0)
+                varc_curr (FieldOnCellsReal): external state variables at current time
                 groupOfCells (list[str]): compute matrices on given groups of cells.
                     If it empty, the full model is used
             Returns:
                 ElementaryMatrix: elementary mass matrix
             )",
-              py::arg( "diagonal" ), py::arg( "time_curr" ) = 0.0,
+              py::arg( "diagonal" ), py::arg( "varc_curr" ) = nullptr,
               py::arg( "groupOfCells" ) = VectorString() )
 
         .def( "getCompressibilityMatrix", &DiscreteComputation::getCompressibilityMatrix, R"(
@@ -406,12 +410,14 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
 
             Arguments:
                 time_curr (float): current time to evaluate rho_cp
+                varc_curr (FieldOnCellsReal): external state variables at current time
                 groupOfCells (list[str]): compute matrices on given groups of cells.
                     If it empty, the full model is used
             Returns:
                 ElementaryMatrix: elementary mass matrix
             )",
-              py::arg( "time_curr" ), py::arg( "groupOfCells" ) = VectorString() )
+              py::arg( "time_curr" ), py::arg( "varc_curr" ) = nullptr,
+              py::arg( "groupOfCells" ) = VectorString() )
 
         .def( "getTangentCapacityMatrix", &DiscreteComputation::getTangentCapacityMatrix, R"(
             Return the elementary matrices for nonlinear Capacity matrix in thermal computation.
@@ -420,7 +426,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             Arguments:
                 temp_prev (FieldOnNodes): thermal field at begin of current time
                 temp_step (FieldOnNodes): field of increment of temperature
-                externVarCurr (FieldOnCells): external state variables at end of current time
+                varc_curr (FieldOnCellsReal): external state variables at current time
                 groupOfCells (list[str]): compute matrices on given groups of cells.
                     If it empty, the full model is used
             Returns:
@@ -436,8 +442,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             Arguments:
                 getMechanicalMassMatrix : elementary mass matrix
                 stiffnessMatrix : elementary stiffness matrix
-                time_curr (float): Current time for external state variable
-                    evaluation (default: 0.0)
+                varc_curr (FieldOnCellsReal): external state variables at current time
                 groupOfCells (list[str]): compute matrices on given groups of cells.
                     If it empty, the full model is used
                 flui_int (int): integer to activate damping impedance fluid matrix
@@ -446,7 +451,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                 ElementaryMatrixReal: elementary damping matrix
             )",
               py::arg( "getMechanicalMassMatrix" ) = nullptr,
-              py::arg( "stiffnessMatrix" ) = nullptr, py::arg( "time_curr" ) = 0.0,
+              py::arg( "stiffnessMatrix" ) = nullptr, py::arg( "varc_curr" ) = nullptr,
               py::arg( "groupOfCells" ) = VectorString(), py::arg( "flui_int" ) = 1,
               py::arg( "onde_flui" ) = 1 )
 
@@ -488,14 +493,13 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
 
             Arguments:
                 stiffnessMatrix : elementary stiffness matrix
-                time_curr (float): Current time for external state variable
-                    evaluation (default: 0.0)
+                varc_curr (FieldOnCellsReal): external state variables at current time
                 groupOfCells (list[str]): compute matrices on given groups of cells.
                     If it empty, the full model is used
             Returns:
                 ElementaryMatrixComplex: elementary viscoelastic rigidity matrix
             )",
-              py::arg( "stiffnessMatrix" ), py::arg( "time_curr" ) = 0.0,
+              py::arg( "stiffnessMatrix" ), py::arg( "varc_curr" ) = nullptr,
               py::arg( "groupOfCells" ) = VectorString() )
 
         .def( "getGeometricStiffnessMatrix", &DiscreteComputation::getGeometricStiffnessMatrix, R"(
@@ -564,8 +568,8 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                 internVar (FieldOnCells): field of internal state variables at begin of current time
                 time_prev (float): time at begin of the step
                 time_step (float): delta time between begin and end of the step
-                externVarPrev (FieldOnCells): external state variables at begin of current time
-                externVarCurr (FieldOnCells): internal state variables at end of current time
+                varc_prev (FieldOnCells): external state variables at begin of current time
+                varc_curr (FieldOnCellsReal): external state variables at current time
                 groupOfCells (list[str]): compute matrices on given groups of cells.
 
             Returns:
@@ -577,7 +581,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
         )",
               py::arg( "displ_prev" ), py::arg( "displ_step" ), py::arg( "stress" ),
               py::arg( "internVar" ), py::arg( "time_prev" ), py::arg( "time_step" ),
-              py::arg( "externVarPrev" ) = nullptr, py::arg( "externVarCurr" ) = nullptr,
+              py::arg( "varc_prev" ) = nullptr, py::arg( "varc_curr" ) = nullptr,
               py::arg( "groupOfCells" ) = VectorString() )
 
         .def( "getInternalThermalForces", &DiscreteComputation::getInternalThermalForces,
@@ -587,7 +591,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
 
             Arguments:
                 temp_step (FieldOnNodes): field of increment of temperature
-                externVarCurr (FieldOnCells): external state variables at end of current time
+                varc_curr (FieldOnCellsReal): external state variables at current time
                 groupOfCells (list[str]): compute matrices on given groups of cells.
                     If it empty, the full model is used
             Returns:
@@ -605,7 +609,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                 temp_prev (FieldOnNodes): thermal field at begin of current time
                 temp_step (FieldOnNodes): field of increment of temperature
                 time_step (float): delta time between begin and end of the step
-                externVarCurr (FieldOnCells): external state variables at end of current time
+                varc_curr (FieldOnCellsReal): external state variables at current time
                 groupOfCells (list[str]): compute matrices on given groups of cells.
                     If it empty, the full model is used
             Returns:
@@ -625,8 +629,8 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                 internVar (FieldOnCells): internal state variables at begin of current time
                 time_prev (float): time at begin of the step
                 time_curr (float): delta time between begin and end of the step
-                externVarPrev (FieldOnCells): external state variables at begin of current time
-                externVarCurr (FieldOnCells): internal state variables at end of current time
+                varc_prev (FieldOnCellsReal): external state variables at begin of current time
+                varc_curr (FieldOnCellsReal): external state variables at current time
                 groupOfCells (list[str]): compute matrices on given groups of cells.
 
             Returns:
@@ -636,7 +640,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
         )",
               py::arg( "displ_prev" ), py::arg( "displ_step" ), py::arg( "stress" ),
               py::arg( "internVar" ), py::arg( "time_prev" ), py::arg( "time_step" ),
-              py::arg( "externVarPrev" ) = nullptr, py::arg( "externVarCurr" ) = nullptr,
+              py::arg( "varc_prev" ) = nullptr, py::arg( "varc_curr" ) = nullptr,
               py::arg( "groupOfCells" ) = VectorString() )
 
         .def( "getPredictionTangentStiffnessMatrix",
@@ -650,8 +654,8 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                 internVar (FieldOnCells): internal state variables at begin of current time
                 time_prev (float): time at begin of the step
                 time_curr (float): delta time between begin and end of the step
-                externVarPrev (FieldOnCells): external state variables at begin of current time
-                externVarCurr (FieldOnCells): internal state variables at end of current time
+                varc_prev (FieldOnCellsReal): external state variables at begin of current time
+                varc_curr (FieldOnCellsReal): external state variables at current time
                 groupOfCells (list[str]): compute matrices on given groups of cells.
 
             Returns:
@@ -661,7 +665,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
         )",
               py::arg( "displ_prev" ), py::arg( "displ_step" ), py::arg( "stress" ),
               py::arg( "internVar" ), py::arg( "time_prev" ), py::arg( "time_step" ),
-              py::arg( "externVarPrev" ) = nullptr, py::arg( "externVarCurr" ) = nullptr,
+              py::arg( "varc_prev" ) = nullptr, py::arg( "varc_curr" ) = nullptr,
               py::arg( "groupOfCells" ) = VectorString() )
 
         .def( "getContactForces", &DiscreteComputation::getContactForces, R"(

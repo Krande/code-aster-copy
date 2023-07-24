@@ -38,7 +38,7 @@
 
 ElementaryVectorDisplacementRealPtr DiscreteComputation::getMechanicalNeumannForces(
     const ASTERDOUBLE time_curr, const ASTERDOUBLE time_step, const ASTERDOUBLE theta,
-    const ASTERINTEGER modeFourier ) const {
+    const ASTERINTEGER modeFourier, const FieldOnCellsRealPtr varc_curr ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
 
@@ -62,9 +62,10 @@ ElementaryVectorDisplacementRealPtr DiscreteComputation::getMechanicalNeumannFor
     auto model_FEDesc = currModel->getFiniteElementDescriptor();
     AS_ASSERT( model_FEDesc );
 
-    FieldOnCellsRealPtr externVar = nullptr;
     if ( currMater && currMater->hasExternalStateVariable() ) {
-        externVar = _phys_problem->getExternalStateVariables( time_curr );
+        if ( !varc_curr || !varc_curr->exists() ) {
+            raiseAsterError( "External state variables are needed but not given" );
+        }
     }
 
     auto isXfem = currModel->existsXfem();
@@ -86,8 +87,8 @@ ElementaryVectorDisplacementRealPtr DiscreteComputation::getMechanicalNeumannFor
                 calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
                 calcul->addInputField( "PCOMPOR", currMater->getBehaviourField() );
             }
-            if ( externVar ) {
-                calcul->addInputField( "PVARCPR", externVar );
+            if ( varc_curr ) {
+                calcul->addInputField( "PVARCPR", varc_curr );
             }
             if ( currElemChara ) {
                 calcul->addElementaryCharacteristicsField( currElemChara );
@@ -236,8 +237,8 @@ DiscreteComputation::getInternalForces( const FieldOnNodesRealPtr displ_prev,
                                         const FieldOnCellsRealPtr stress,
                                         const FieldOnCellsRealPtr internVar,
                                         const ASTERDOUBLE &time_prev, const ASTERDOUBLE &time_step,
-                                        const FieldOnCellsRealPtr &externVarPrev,
-                                        const FieldOnCellsRealPtr &externVarCurr,
+                                        const FieldOnCellsRealPtr &varc_prev,
+                                        const FieldOnCellsRealPtr &varc_curr,
                                         const VectorString &groupOfCells ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
@@ -252,7 +253,7 @@ DiscreteComputation::getInternalForces( const FieldOnNodesRealPtr displ_prev,
 
     // Prepare computing:
     CalculPtr calcul = createCalculForNonLinear( option, time_prev, time_prev + time_step,
-                                                 externVarPrev, externVarCurr, groupOfCells );
+                                                 varc_prev, varc_curr, groupOfCells );
     FiniteElementDescriptorPtr FEDesc = calcul->getFiniteElementDescriptor();
 
     // Set current physical state

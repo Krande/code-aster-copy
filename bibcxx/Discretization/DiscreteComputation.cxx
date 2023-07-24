@@ -68,8 +68,8 @@ DiscreteComputation::createTimeField( const ASTERDOUBLE time_value, const ASTERD
 CalculPtr DiscreteComputation::createCalculForNonLinear( const std::string option,
                                                          const ASTERDOUBLE &time_prev,
                                                          const ASTERDOUBLE &time_curr,
-                                                         const FieldOnCellsRealPtr _externVarPrev,
-                                                         const FieldOnCellsRealPtr _externVarCurr,
+                                                         const FieldOnCellsRealPtr varc_prev,
+                                                         const FieldOnCellsRealPtr varc_curr,
                                                          const VectorString &groupOfCells ) const {
 
     // Get main parameters
@@ -102,15 +102,16 @@ CalculPtr DiscreteComputation::createCalculForNonLinear( const std::string optio
         calcul->addInputField( "PVARCRR", currExternVarRefe );
     }
     if ( currMater->hasExternalStateVariable() ) {
-        if ( !_externVarPrev ) {
-            AS_ABORT( "External state variables vector for beginning of time step is missing" )
+        if ( !varc_prev || !varc_prev->exists() ) {
+            raiseAsterError(
+                "External state variables vector for beginning of time step is missing" );
         }
-        if ( !_externVarCurr ) {
-            AS_ABORT( "External state variables vector for end of time step is missing" )
+        if ( !varc_curr || !varc_curr->exists() ) {
+            raiseAsterError( "External state variables vector for end of time step is missing" );
         }
         AS_ASSERT( currExternVarRefe );
-        calcul->addInputField( "PVARCMR", _externVarPrev );
-        calcul->addInputField( "PVARCPR", _externVarCurr );
+        calcul->addInputField( "PVARCMR", varc_prev );
+        calcul->addInputField( "PVARCPR", varc_curr );
     }
 
     // Add time fields

@@ -66,7 +66,13 @@ class ExtendedDiscreteComputation:
 
     @profile
     def getLinearStiffnessMatrix(
-        self, time=0.0, fourierMode=-1, groupOfCells=[], with_dual=True, assembly=False
+        self,
+        time=0.0,
+        fourierMode=-1,
+        varc_curr=None,
+        groupOfCells=[],
+        with_dual=True,
+        assembly=False,
     ):
         """Return the elementary matrices for stiffness matrix depending of the physic.
         Option RIGI_MECA or RIGI_THER or RIGI_ACOU.
@@ -75,6 +81,7 @@ class ExtendedDiscreteComputation:
               time (float): Current time for external state variable evaluation.
                 Only needed if material depends on time (default: 0.0)
               fourierMode (int): Fourier mode (default: -1)
+              varc_curr (FieldOnCellsReal): external state variables at current time (default: None)
               groupOfCells (list[str]): compute matrices on given groups of cells.
                   If it is empty, the full model is used
               with_dual (bool): compute dual terms or not (default: True)
@@ -87,7 +94,9 @@ class ExtendedDiscreteComputation:
         model = self.getPhysicalProblem().getModel()
 
         if model.isMechanical():
-            matr_elem = self.getElasticStiffnessMatrix(time, fourierMode, groupOfCells, with_dual)
+            matr_elem = self.getElasticStiffnessMatrix(
+                time, fourierMode, varc_curr, groupOfCells, with_dual
+            )
 
             if assembly:
                 matr_asse = AssemblyMatrixDisplacementReal(self.getPhysicalProblem())
@@ -96,7 +105,9 @@ class ExtendedDiscreteComputation:
                 return matr_asse
 
         elif model.isThermal():
-            matr_elem = self.getLinearConductivityMatrix(time, fourierMode, groupOfCells, with_dual)
+            matr_elem = self.getLinearConductivityMatrix(
+                time, fourierMode, varc_curr, groupOfCells, with_dual
+            )
 
             if assembly:
                 matr_asse = AssemblyMatrixTemperatureReal(self.getPhysicalProblem())
@@ -162,13 +173,14 @@ class ExtendedDiscreteComputation:
         return matr_elem
 
     @profile
-    def getMassMatrix(self, time=0.0, groupOfCells=[], assembly=False):
+    def getMassMatrix(self, time=0.0, varc_curr=None, groupOfCells=[], assembly=False):
         """Return the elementary matrices formass matrix depending of the physic.
         Option MASS_MECA or MASS_THER or MASS_ACOU.
 
         Arguments:
               time (float): Current time for external state variable evaluation.
                 Only needed if material depends on time (default: 0.0)
+              varc_curr (FieldOnCellsReal): external state variables at current time (default: None)
               groupOfCells (list[str]): compute matrices on given groups of cells.
                   If it is empty, the full model is used
               assembly (bool): assemble elementary matrix (default: False)
@@ -179,7 +191,7 @@ class ExtendedDiscreteComputation:
         model = self.getPhysicalProblem().getModel()
 
         if model.isMechanical():
-            matr_elem = self.getMechanicalMassMatrix(False, time, groupOfCells)
+            matr_elem = self.getMechanicalMassMatrix(False, varc_curr, groupOfCells)
 
             if assembly:
                 matr_asse = AssemblyMatrixDisplacementReal(self.getPhysicalProblem())
@@ -188,7 +200,7 @@ class ExtendedDiscreteComputation:
                 return matr_asse
 
         elif model.isThermal():
-            matr_elem = self.getLinearCapacityMatrix(time, groupOfCells)
+            matr_elem = self.getLinearCapacityMatrix(time, varc_curr, groupOfCells)
 
             if assembly:
                 matr_asse = AssemblyMatrixTemperatureReal(self.getPhysicalProblem())
@@ -211,7 +223,14 @@ class ExtendedDiscreteComputation:
 
     @profile
     def getNeumannForces(
-        self, time_curr=0.0, time_step=0.0, theta=1, mode=0, previousPrimalField=None, assembly=True
+        self,
+        time_curr=0.0,
+        time_step=0.0,
+        theta=1,
+        mode=0,
+        varc_curr=None,
+        previousPrimalField=None,
+        assembly=True,
     ):
         """Return the Neumann forces field
 
@@ -220,6 +239,7 @@ class ExtendedDiscreteComputation:
                 time_step (float): Time increment
                 theta (float): Theta parameter for time-integration
                 mode (int) : fourier mode
+                varc_curr (FieldOnCellsReal): external state variables at current time (default: None)
                 previousPrimalField (FieldOnNodesReal): solution field at previous time
                 assembly (bool): assemble if True
 
@@ -234,10 +254,12 @@ class ExtendedDiscreteComputation:
 
         if model.isThermal():
             elem_vect = self.getThermalNeumannForces(
-                time_curr, time_step, theta, previousPrimalField
+                time_curr, time_step, theta, varc_curr, previousPrimalField
             )
         elif model.isMechanical():
-            elem_vect = self.getMechanicalNeumannForces(time_curr, time_step, theta, mode)
+            elem_vect = self.getMechanicalNeumannForces(
+                time_curr, time_step, theta, mode, varc_curr
+            )
         elif model.isAcoustic():
             elem_vect = self.getAcousticNeumannForces()
         else:

@@ -59,10 +59,14 @@ def calc_matr_elem_ops(self, **args):
     else:
         group_ma = force_list(group_ma)
 
+    varc = None
+    if mater and mater.hasExternalStateVariable():
+        varc = phys_pb.getExternalStateVariables(time)
+
     matr_elem = None
     if myOption in ("RIGI_MECA", "RIGI_THER", "RIGI_ACOU"):
         if "CALC_ELEM_MODELE" not in args or args["CALC_ELEM_MODELE"] == "OUI":
-            matr_elem = disc_comp.getLinearStiffnessMatrix(time, fourier, group_ma)
+            matr_elem = disc_comp.getLinearStiffnessMatrix(time, fourier, varc, group_ma)
         else:
             matr_elem = disc_comp.getDualStiffnessMatrix()
 
@@ -85,10 +89,10 @@ def calc_matr_elem_ops(self, **args):
         matr_elem = disc_comp.getGyroscopicDampingMatrix(group_ma)
 
     elif myOption in ("MASS_MECA", "MASS_THER", "MASS_ACOU"):
-        matr_elem = disc_comp.getMassMatrix(time, group_ma)
+        matr_elem = disc_comp.getMassMatrix(varc, group_ma)
 
     elif myOption == "MASS_MECA_DIAG":
-        matr_elem = disc_comp.getMechanicalMassMatrix(True, time, group_ma)
+        matr_elem = disc_comp.getMechanicalMassMatrix(True, varc, group_ma)
 
     elif myOption == "AMOR_MECA":
         amorflui = args["AMOR_FLUI"]
@@ -104,12 +108,12 @@ def calc_matr_elem_ops(self, **args):
         getMechanicalMassMatrix = args.get("MASS_MECA")
         stiffnessMatrix = args.get("RIGI_MECA")
         matr_elem = disc_comp.getMechanicalDampingMatrix(
-            getMechanicalMassMatrix, stiffnessMatrix, time, group_ma, flui_int, onde_flui
+            getMechanicalMassMatrix, stiffnessMatrix, varc, group_ma, flui_int, onde_flui
         )
 
     elif myOption == "RIGI_MECA_HYST":
         stiffnessMatrix = args["RIGI_MECA"]
-        matr_elem = disc_comp.getHystereticStiffnessMatrix(stiffnessMatrix, time, group_ma)
+        matr_elem = disc_comp.getHystereticStiffnessMatrix(stiffnessMatrix, varc, group_ma)
 
     elif myOption == "AMOR_ACOU":
         v_nor = args["VNOR"]

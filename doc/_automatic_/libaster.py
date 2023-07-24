@@ -947,7 +947,7 @@ class DiscreteComputation:
         """
 
     def getElasticStiffnessMatrix(
-        self, time_curr=0.0, fourierMode=-1, groupOfCells=[], with_dual=True
+        self, time_curr=0.0, fourierMode=-1, varc_curr=None, groupOfCells=[], with_dual=True
     ):
         """Return the elementary matrices for elastic Stiffness matrix.
         Option RIGI_MECA.
@@ -956,6 +956,7 @@ class DiscreteComputation:
               time_curr (float): Current time for external state variable
                 evaluation (default: 0.0)
               fourierMode (int): Fourier mode (default: -1)
+              varc_curr (FieldOnCellsReal): external state variables at current time
               groupOfCells (list[str]): compute matrices on given groups of cells.
                   If it empty, the full model is used
               with_dual (bool): compute dual terms or not (default: True)
@@ -984,27 +985,25 @@ class DiscreteComputation:
               FieldOnNodes: load from external state variables
         """
 
-    def getFluidStructureMassMatrix(self, time_curr=0.0, groupOfCells=[]):
+    def getFluidStructureMassMatrix(self, varc_curr=None, groupOfCells=[]):
         """Return the elementary matrices for fluid-structure mass matrix.
         Option MASS_FLUI_STRUC.
 
         Arguments:
-              time_curr (float): Current time for external state variable
-                evaluation (default: 0.0)
+              varc_curr (FieldOnCellsReal): external state variables at current time
               groupOfCells (list[str]): compute matrices on given groups of cells.
                   If it empty, the full model is used
         Returns:
               ElementaryMatrixReal: elementary fluid-structure mass matrix
         """
 
-    def getFluidStructureStiffnessMatrix(self, time_curr=0.0, fourierMode=-1, groupOfCells=[]):
+    def getFluidStructureStiffnessMatrix(self, fourierMode=-1, varc_curr=None, groupOfCells=[]):
         """Return the elementary matrices for fluid-structure stiffness matrix.
         Option RIGI_FLUI_STRUC.
 
         Arguments:
-              time_curr (float): Current time for external state variable
-                evaluation (default: 0.0)
               fourierMode (int): Fourier mode (default: -1)
+              varc_curr (FieldOnCells): internal state variables at current time
               groupOfCells (list[str]): compute matrices on given groups of cells.
                   If it empty, the full model is used
         Returns:
@@ -1049,14 +1048,13 @@ class DiscreteComputation:
             ElementaryMatrixReal: elementary gyroscopic rigidity matrix
         """
 
-    def getHystereticStiffnessMatrix(self, stiffnessMatrix, time_curr=0.0, groupOfCells=[]):
+    def getHystereticStiffnessMatrix(self, stiffnessMatrix, varc_curr=None, groupOfCells=[]):
         """Return the elementary matrices for viscoelastic Stiffness matrix.
         Option RIGI_MECA_HYST.
 
         Arguments:
             stiffnessMatrix : elementary stiffness matrix
-            time_curr (float): Current time for external state variable
-                evaluation (default: 0.0)
+            varc_curr (FieldOnCellsReal): external state variables at current time
             groupOfCells (list[str]): compute matrices on given groups of cells.
                 If it empty, the full model is used
         Returns:
@@ -1114,8 +1112,8 @@ class DiscreteComputation:
         internVar,
         time_prev,
         time_step,
-        externVarPrev=None,
-        externVarCurr=None,
+        varc_prev=None,
+        varc_curr=None,
         groupOfCells=[],
     ):
         """Compute internal forces (integration of behaviour)
@@ -1127,8 +1125,8 @@ class DiscreteComputation:
             internVar (FieldOnCells): field of internal state variables at begin of current time
             time_prev (float): time at begin of the step
             time_step (float): delta time between begin and end of the step
-            externVarPrev (FieldOnCells): external state variables at begin of current time
-            externVarCurr (FieldOnCells): internal state variables at end of current time
+            varc_prev (FieldOnCells): external state variables at begin of current time
+            varc_curr (FieldOnCellsReal): external state variables at current time
             groupOfCells (list[str]): compute matrices on given groups of cells.
 
         Returns:
@@ -1145,19 +1143,20 @@ class DiscreteComputation:
 
         Arguments:
             temp_step (FieldOnNodes): field of increment of temperature
-            externVarCurr (FieldOnCells): external state variables at end of current time
+            varc_curr (FieldOnCellsReal): external state variables at current time
             groupOfCells (list[str]): compute matrices on given groups of cells.
                 If it empty, the full model is used
         Returns:
             ElementaryMatrix: elementary mass matrix
         """
 
-    def getLinearCapacityMatrix(self, time_curr, groupOfCells=[]):
+    def getLinearCapacityMatrix(self, time_curr, varc_curr=None, groupOfCells=[]):
         """Return the elementary matrices for linear Capacity matrix in thermal computation.
         Option MASS_THER.
 
         Arguments:
             time_curr (float): current time to evaluate rho_cp
+            varc_curr (FieldOnCellsReal): external state variables at current time
             groupOfCells (list[str]): compute matrices on given groups of cells.
                 If it empty, the full model is used
         Returns:
@@ -1165,7 +1164,7 @@ class DiscreteComputation:
         """
 
     def getLinearConductivityMatrix(
-        self, time_curr, fourierMode=0, groupOfCells=[], with_dual=True
+        self, time_curr, fourierMode=0, varc_curr=None, groupOfCells=[], with_dual=True
     ):
         """Return the elementary matices for linear thermal matrix.
         Option RIGI_THER.
@@ -1173,6 +1172,7 @@ class DiscreteComputation:
         Arguments:
               time_curr (float): Current time
               fourierMode (int): Fourier mode (default: -1)
+              varc_curr (FieldOnCellsReal): external state variables at current time
               groupOfCells (list[str]): compute matrices on given groups of cells.
                 If it empty, the full model is used
               with_dual (bool): compute dual terms or not (default: True)
@@ -1196,7 +1196,7 @@ class DiscreteComputation:
         self,
         getMechanicalMassMatrix=None,
         stiffnessMatrix=None,
-        time_curr=0.0,
+        varc_curr=None,
         groupOfCells=[],
         flui_int=1,
         onde_flui=1,
@@ -1207,8 +1207,7 @@ class DiscreteComputation:
         Arguments:
             getMechanicalMassMatrix : elementary mass matrix
             stiffnessMatrix : elementary stiffness matrix
-            time_curr (float): Current time for external state variable
-                evaluation (default: 0.0)
+            varc_curr (FieldOnCellsReal): external state variables at current time
             groupOfCells (list[str]): compute matrices on given groups of cells.
                 If it empty, the full model is used
             flui_int (int): integer to activate damping impedance fluid matrix
@@ -1238,21 +1237,22 @@ class DiscreteComputation:
               ElementaryVectorDisplacementReal: imposed dual vector
         """
 
-    def getMechanicalMassMatrix(self, diagonal, time_curr=0.0, groupOfCells=[]):
+    def getMechanicalMassMatrix(self, diagonal, varc_curr=None, groupOfCells=[]):
         """Return the elementary matrices for mechanical mass matrix
         Option MASS_MECA.
 
         Arguments:
             diagonal (bool) : True for diagonal mass matrix else False.
-            time_curr (float): Current time for external state variable
-                evaluation (default: 0.0)
+            varc_curr (FieldOnCellsReal): external state variables at current time
             groupOfCells (list[str]): compute matrices on given groups of cells.
                 If it empty, the full model is used
         Returns:
             ElementaryMatrix: elementary mass matrix
         """
 
-    def getMechanicalNeumannForces(self, time_curr=0.0, time_step=0.0, theta=1.0, mode=0):
+    def getMechanicalNeumannForces(
+        self, time_curr=0.0, time_step=0.0, theta=1.0, mode=0, varc_curr=None
+    ):
         """Return the elementary mechanical Neumann forces vector
 
         Arguments:
@@ -1260,6 +1260,7 @@ class DiscreteComputation:
               time_step (float): Time increment
               theta (float): Theta parameter for time-integration
               mode (int) : fourier mode
+              varc_curr (FieldOnCellsReal): external state variables at current time
         Returns:
               ElementaryVectorDisplacementReal: elementary Neumann forces vector
         """
@@ -1274,7 +1275,7 @@ class DiscreteComputation:
             temp_prev (FieldOnNodes): thermal field at begin of current time
             temp_step (FieldOnNodes): field of increment of temperature
             time_step (float): delta time between begin and end of the step
-            externVarCurr (FieldOnCells): external state variables at end of current time
+            varc_curr (FieldOnCellsReal): external state variables at current time
             groupOfCells (list[str]): compute matrices on given groups of cells.
                 If it empty, the full model is used
         Returns:
@@ -1293,7 +1294,7 @@ class DiscreteComputation:
             time_prev (float): time at begin of the step
             time_step (float): delta time between begin and end of the step
             theta (float): Theta parameter for integration
-            externVarCurr (FieldOnCells): external state variables at end of current time
+            varc_curr (FieldOnCellsReal): external state variables at current time
 
         Returns:
             FieldOnNodes: load
@@ -1314,8 +1315,8 @@ class DiscreteComputation:
         internVar,
         time_prev,
         time_step,
-        externVarPrev=None,
-        externVarCurr=None,
+        varc_prev=None,
+        varc_curr=None,
         groupOfCells=[],
     ):
         """Compute jacobian matrix for Newton algorithm, Euler prediction
@@ -1327,8 +1328,8 @@ class DiscreteComputation:
             internVar (FieldOnCells): internal state variables at begin of current time
             time_prev (float): time at begin of the step
             time_curr (float): delta time between begin and end of the step
-            externVarPrev (FieldOnCells): external state variables at begin of current time
-            externVarCurr (FieldOnCells): internal state variables at end of current time
+            varc_prev (FieldOnCellsReal): external state variables at begin of current time
+            varc_curr (FieldOnCellsReal): external state variables at current time
             groupOfCells (list[str]): compute matrices on given groups of cells.
 
         Returns:
@@ -1355,7 +1356,7 @@ class DiscreteComputation:
         Arguments:
             temp_prev (FieldOnNodes): thermal field at begin of current time
             temp_step (FieldOnNodes): field of increment of temperature
-            externVarCurr (FieldOnCells): external state variables at end of current time
+            varc_curr (FieldOnCellsReal): external state variables at current time
             groupOfCells (list[str]): compute matrices on given groups of cells.
                 If it empty, the full model is used
         Returns:
@@ -1371,7 +1372,7 @@ class DiscreteComputation:
         Arguments:
             temp_prev (FieldOnNodes): thermal field at begin of current time
             temp_step (FieldOnNodes): field of increment of temperature
-            externVarCurr (FieldOnCells): external state variables at end of current time
+            varc_curr (FieldOnCellsReal): external state variables at current time
             groupOfCells (list[str]): compute matrices on given groups of cells.
                 If it empty, the full model is used
             with_dual (bool): compute dual terms or not (default: True)
@@ -1387,8 +1388,8 @@ class DiscreteComputation:
         internVar,
         time_prev,
         time_step,
-        externVarPrev=None,
-        externVarCurr=None,
+        varc_prev=None,
+        varc_curr=None,
         groupOfCells=[],
     ):
         """Compute jacobian matrix for Newton algorithm
@@ -1400,8 +1401,8 @@ class DiscreteComputation:
             internVar (FieldOnCells): internal state variables at begin of current time
             time_prev (float): time at begin of the step
             time_curr (float): delta time between begin and end of the step
-            externVarPrev (FieldOnCells): external state variables at begin of current time
-            externVarCurr (FieldOnCells): internal state variables at end of current time
+            varc_prev (FieldOnCellsReal): external state variables at begin of current time
+            varc_curr (FieldOnCellsReal): external state variables at current time
             groupOfCells (list[str]): compute matrices on given groups of cells.
 
         Returns:
@@ -1432,7 +1433,7 @@ class DiscreteComputation:
         """
 
     def getThermalNeumannForces(
-        self, time_curr=0.0, time_step=0.0, theta=1.0, previousPrimalField=None
+        self, time_curr=0.0, time_step=0.0, theta=1.0, varc_curr=None, previousPrimalField=None
     ):
         """Return the elementary thermal Neumann forces vector
 
@@ -1440,19 +1441,23 @@ class DiscreteComputation:
               time_curr (float): Current time
               time_step (float): Time increment
               theta (float): Theta parameter for time-integration
+              varc_curr (FieldOnCellsReal): external state variables at current time
               previousPrimalField (fieldOnNodesReal): solution field at previous time
 
         Returns:
               ElementaryVectorThermalReal: elementary Neumann forces vector
         """
 
-    def getTransientThermalForces(self, time_curr, time_step, theta, previousPrimalField=None):
+    def getTransientThermalForces(
+        self, time_curr, time_step, theta, varc_curr=None, previousPrimalField=None
+    ):
         """Compute Transient Thermal Load
 
         Arguments:
               time_curr (float): Current time
               time_step (float): Time increment
               theta (float): Theta parameter for integration
+              varc_curr (FieldOnCellsReal): external state variables at current time
               previousPrimalField (fieldOnNodesReal): solution field at previous time
 
         Returns:
