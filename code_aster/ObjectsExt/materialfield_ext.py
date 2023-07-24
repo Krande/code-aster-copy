@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -49,6 +49,7 @@ class MaterialFieldStateBuilder(InternalStateBuilder):
             *InternalStateBuilder*: The internal state itself.
         """
         super().save(field)
+        self._st["mesh"] = field.getMesh()
         self._st["part"] = []
         for part in field.getVectorOfPartOfMaterialField():
             occ = {
@@ -57,6 +58,13 @@ class MaterialFieldStateBuilder(InternalStateBuilder):
                 "names": part.getMeshEntity().getNames(),
             }
             self._st["part"].append(occ)
+
+        # varc
+        self._st["varc"] = []
+        for value in field.getExtStateVariablesOnMeshEntities():
+            varc, meshEntity = value
+            # self._st["varc"].append(varc)
+
         return self
 
     def restore(self, field):
@@ -81,10 +89,12 @@ class MaterialFieldStateBuilder(InternalStateBuilder):
             else:
                 raise RuntimeError("Programming error")
 
+        for varc in self._st["varc"]:
+            field.addExternalStateVariable(varc)
+
 
 @injector(MaterialField)
 class ExtendedMaterialField:
-
     cata_sdj = "SD.sd_cham_mater.sd_cham_mater"
     internalStateBuilder = MaterialFieldStateBuilder
 

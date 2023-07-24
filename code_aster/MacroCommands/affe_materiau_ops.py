@@ -102,7 +102,6 @@ def _addExternalStateVariables(material, fkw, mesh):
     kwGrMa = fkw.get("GROUP_MA")
     nomVarc = fkw["NOM_VARC"]
     chamGd = fkw.get("CHAM_GD")
-    valeRef = fkw.get("VALE_REF")
     evol = fkw.get("EVOL")
     grp = None
 
