@@ -102,7 +102,7 @@ class DiscreteComputation {
     /** @brief Compute nodal field for external state variables RHS */
     FieldOnNodesRealPtr
     getExternalStateVariablesForces( const ASTERDOUBLE time_curr,
-                                     const FieldOnCellsRealPtr externVar = nullptr,
+                                     const FieldOnCellsRealPtr varc_curr,
                                      const FieldOnCellsLongPtr maskField = nullptr ) const;
 
     /**

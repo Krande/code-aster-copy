@@ -95,10 +95,11 @@ def _createTimeStepper(args):
 
 
 @profile
-def _computeMatrix(disr_comp, matrix, time):
+def _computeMatrix(phys_pb, disr_comp, matrix, time):
     """Compute and assemble the elastic matrix
 
     Arguments:
+        phys_pb (PhysicalProblem): physical problem
         disr_comp (DiscreteComputation): to compute discrete quantities
         matrix (AssemblyMatrixDisplacementReal): matrix to compute and assemble inplace
         time (float): current time
@@ -107,7 +108,13 @@ def _computeMatrix(disr_comp, matrix, time):
         AssemblyMatrixDisplacementReal: matrix computed and assembled
     """
 
-    matr_elem = disr_comp.getLinearStiffnessMatrix(time=time, with_dual=True)
+    # compute external state variables
+    mater = phys_pb.getMaterialField()
+    varc = None
+    if mater and mater.hasExternalStateVariable():
+        varc = phys_pb.getExternalStateVariables(time)
+
+    matr_elem = disr_comp.getLinearStiffnessMatrix(time=time, varc_curr=varc, with_dual=True)
     matrix.addElementaryMatrix(matr_elem)
 
     profile(matrix.assemble)(True)
@@ -128,14 +135,20 @@ def _computeRhs(phys_pb, disr_comp, time):
          FieldOnNodesReal: vector of load
     """
 
+    # compute external state variables
+    mater = phys_pb.getMaterialField()
+    varc = None
+    if mater and mater.hasExternalStateVariable():
+        varc = phys_pb.getExternalStateVariables(time)
+
     # compute imposed displacement with Lagrange
     rhs = disr_comp.getImposedDualBC(time)
 
     # compute neumann forces
-    rhs += disr_comp.getNeumannForces(time)
+    rhs += disr_comp.getNeumannForces(time, varc_curr=varc)
 
-    if phys_pb.getMaterialField().hasExternalStateVariableForLoad():
-        rhs += disr_comp.getExternalStateVariablesForces(time)
+    if mater.hasExternalStateVariableForLoad():
+        rhs += disr_comp.getExternalStateVariablesForces(time, varc)
 
     return rhs
 
@@ -235,7 +248,7 @@ def meca_statique_ops(self, **args):
 
         # compute matrix and factorize it
         if not isConst or isFirst:
-            matrix = _computeMatrix(disc_comp, matrix, phys_state.time)
+            matrix = _computeMatrix(phys_pb, disc_comp, matrix, phys_state.time)
             profile(linear_solver.factorize)(matrix)
 
         # compute rhs

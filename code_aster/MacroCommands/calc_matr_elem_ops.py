@@ -89,7 +89,7 @@ def calc_matr_elem_ops(self, **args):
         matr_elem = disc_comp.getGyroscopicDampingMatrix(group_ma)
 
     elif myOption in ("MASS_MECA", "MASS_THER", "MASS_ACOU"):
-        matr_elem = disc_comp.getMassMatrix(varc, group_ma)
+        matr_elem = disc_comp.getMassMatrix(time, varc, group_ma)
 
     elif myOption == "MASS_MECA_DIAG":
         matr_elem = disc_comp.getMechanicalMassMatrix(True, varc, group_ma)
@@ -124,7 +124,9 @@ def calc_matr_elem_ops(self, **args):
         matr_elem = disc_comp.getImpedanceMatrix(onde_flui)
 
     elif myOption == "RIGI_FLUI_STRU":
-        matr_elem = disc_comp.getFluidStructureStiffnessMatrix(time, groupOfCells=group_ma)
+        matr_elem = disc_comp.getFluidStructureStiffnessMatrix(
+            varc_curr=varc, groupOfCells=group_ma
+        )
 
         matr_rigi_dual = disc_comp.getDualStiffnessMatrix()
         matr_elem.addElementaryTerm(matr_rigi_dual.getElementaryTerms())

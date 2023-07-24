@@ -162,7 +162,7 @@ class IncrementalSolver(SolverFeature, EventSource):
 
         # Compute Neumann forces
         neumann_forces = disc_comp.getNeumannForces(
-            self.phys_state.time + self.phys_state.time_step
+            self.phys_state.time + self.phys_state.time_step, varc_curr=self.phys_state.externVar
         )
         residuals.resi_ext = neumann_forces
 

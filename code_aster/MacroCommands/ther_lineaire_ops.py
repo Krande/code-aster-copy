@@ -262,7 +262,7 @@ def _computeRhs(disr_comp, is_evol, time_curr, time_delta, time_theta, previousP
 
         if is_evol:
             rhs += disr_comp.getTransientThermalForces(
-                time_curr, time_delta, time_theta, previousPrimalField
+                time_curr, time_delta, time_theta, previousPrimalField=previousPrimalField
             )
             logger.debug("<THER_LINEAIRE><RHS>: Transient Load BC")
 

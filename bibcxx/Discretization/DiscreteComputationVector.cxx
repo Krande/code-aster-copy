@@ -209,7 +209,7 @@ DiscreteComputation::getIncrementalDirichletBC( const ASTERDOUBLE &time_curr,
 
 FieldOnNodesRealPtr
 DiscreteComputation::getExternalStateVariablesForces( const ASTERDOUBLE time_curr,
-                                                      const FieldOnCellsRealPtr externVar,
+                                                      const FieldOnCellsRealPtr varc_curr,
                                                       const FieldOnCellsLongPtr maskField ) const {
 
     // Get main parameters
@@ -224,6 +224,10 @@ DiscreteComputation::getExternalStateVariablesForces( const ASTERDOUBLE time_cur
     AS_ASSERT( currMater->hasExternalStateVariableForLoad() );
     if ( currMater->hasExternalStateVariableWithReference() ) {
         AS_ASSERT( currExternVarRefe );
+    }
+
+    if ( !varc_curr || !varc_curr->exists() ) {
+        raiseAsterError( "External state variables are needed but not given" );
     }
 
     // Main object
@@ -258,15 +262,9 @@ DiscreteComputation::getExternalStateVariablesForces( const ASTERDOUBLE time_cur
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
             calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
             calcul->addInputField( "PCOMPOR", currMater->getBehaviourField() );
+            calcul->addInputField( "PVARCPR", varc_curr );
             if ( currElemChara ) {
                 calcul->addElementaryCharacteristicsField( currElemChara );
-            }
-
-            if ( externVar ) {
-                calcul->addInputField( "PVARCPR", externVar );
-            } else {
-                calcul->addInputField( "PVARCPR",
-                                       _phys_problem->getExternalStateVariables( time_curr ) );
             }
 
             calcul->addTimeField( "PTEMPSR", time_curr );

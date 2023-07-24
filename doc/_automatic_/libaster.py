@@ -973,12 +973,12 @@ class DiscreteComputation:
             ElementaryMatrix: elementary exchange thermal matrices
         """
 
-    def getExternalStateVariablesForces(self, time_curr, externVar=None, mask=None):
+    def getExternalStateVariablesForces(self, time_curr, varc_curr, mask=None):
         """Compute load from external state variables
 
         Arguments:
               time_curr (float): Current time
-              externVar (FieldOnCellsRealPtr): mask to assemble
+              varc_curr (FieldOnCellsReal): external state variables at current time
               mask (FieldOnCellsLongPtr): mask to assemble
 
         Returns:
