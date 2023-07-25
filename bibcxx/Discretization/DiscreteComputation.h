@@ -149,6 +149,10 @@ class DiscreteComputation {
                              const FieldOnCellsRealPtr varc_curr = nullptr,
                              const FieldOnNodesRealPtr _previousPrimalField = nullptr ) const;
 
+    ElementaryVectorTemperatureRealPtr getThermalNonLinearNeumannForces(
+        const FieldOnNodesRealPtr temp_prev, const FieldOnNodesRealPtr temp_step,
+        const ASTERDOUBLE time_prev, const ASTERDOUBLE time_step, const ASTERDOUBLE theta ) const;
+
     ElementaryVectorPressureComplexPtr getAcousticNeumannForces() const;
 
     /**

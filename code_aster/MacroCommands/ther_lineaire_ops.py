@@ -208,8 +208,10 @@ def _computeMatrix(disr_comp, matrix, is_evol, time_curr, time_delta, time_theta
 
     phys_pb = disr_comp.getPhysicalProblem()
 
+    varc = phys_pb.getExternalStateVariables(time_curr)
+
     logger.debug("<THER_LINEAIRE><MATRIX>: Linear Conductivity")
-    matr_elem_rigi = disr_comp.getLinearStiffnessMatrix(time_curr, with_dual=False)
+    matr_elem_rigi = disr_comp.getLinearStiffnessMatrix(time_curr, varc_curr=varc, with_dual=False)
     matrix.addElementaryMatrix(matr_elem_rigi, time_theta)
 
     matr_elem_exch = disr_comp.getExchangeThermalMatrix(time_curr)
@@ -223,7 +225,7 @@ def _computeMatrix(disr_comp, matrix, is_evol, time_curr, time_delta, time_theta
     if is_evol:
         logger.debug("<THER_LINEAIRE><MATRIX>: Linear Capacity")
 
-        matr_elem_capa = disr_comp.getLinearCapacityMatrix(time_curr)
+        matr_elem_capa = disr_comp.getLinearCapacityMatrix(time_curr, varc)
         matrix.addElementaryMatrix(matr_elem_capa, 1.0 / time_delta)
 
     matrix.assemble(True)
@@ -255,14 +257,24 @@ def _computeRhs(disr_comp, is_evol, time_curr, time_delta, time_theta, previousP
     logger.debug("<THER_LINEAIRE><RHS>: Nodal BC")
 
     def rhs_theta(disr_comp, is_evol, time_curr, time_delta, time_theta, previousPrimalField):
+        varc = disr_comp.getPhysicalProblem().getExternalStateVariables(time_curr)
+
         rhs = disr_comp.getNeumannForces(
-            time_curr, time_delta, time_theta, previousPrimalField=previousPrimalField
+            time_curr,
+            time_delta,
+            time_theta,
+            varc_curr=varc,
+            previousPrimalField=previousPrimalField,
         )
         logger.debug("<THER_LINEAIRE><RHS>: Neumann BC")
 
         if is_evol:
             rhs += disr_comp.getTransientThermalForces(
-                time_curr, time_delta, time_theta, previousPrimalField=previousPrimalField
+                time_curr,
+                time_delta,
+                time_theta,
+                varc_curr=varc,
+                previousPrimalField=previousPrimalField,
             )
             logger.debug("<THER_LINEAIRE><RHS>: Transient Load BC")
 

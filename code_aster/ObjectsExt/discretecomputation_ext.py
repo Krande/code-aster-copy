@@ -277,6 +277,51 @@ class ExtendedDiscreteComputation:
         return elem_vect
 
     @profile
+    def getNonLinearNeumannForces(
+        self, primal_prev, primal_step, time_prev, time_step, theta, assembly=True
+    ):
+        """Return the nonlinear Neumann forces field
+
+        Arguments:
+                primal_prev : primal solution at the beginning of the time step
+                primal_step : incremental primal solution
+                time_prev (float): Previous time at the beginning of the time step
+                time_step (float): Time increment
+                theta (float): Theta parameter for time-integration
+                assembly (bool): assemble if True
+
+        Returns:
+                ElementaryVector: elementary Neumann forces vector if assembly=False
+                FieldOnNodes: Neumann forces field if assembly=True
+        """
+
+        elem_vect = None
+        phys_pb = self.getPhysicalProblem()
+        model = phys_pb.getModel()
+
+        if model.isThermal():
+            elem_vect = self.getThermalNonLinearNeumannForces(
+                primal_prev, primal_step, time_prev, time_step, theta
+            )
+        elif model.isMechanical():
+            raise RuntimeError("Not implemented")
+        elif model.isAcoustic():
+            raise RuntimeError("Not implemented")
+        else:
+            raise RuntimeError("Not implemented")
+
+        if assembly:
+            if len(elem_vect.getElementaryTerms()) > 0:
+                return elem_vect.assembleWithLoadFunctions(phys_pb.getDOFNumbering(), time_curr)
+            else:
+                if model.isAcoustic():
+                    return FieldOnNodesComplex(phys_pb.getDOFNumbering())
+                else:
+                    return FieldOnNodesReal(phys_pb.getDOFNumbering())
+
+        return elem_vect
+
+    @profile
     def getImposedDualBC(self, time_curr=0.0, assembly=True):
         """Return imposed nodal BC field
 
