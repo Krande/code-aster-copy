@@ -78,10 +78,6 @@ class DiscreteComputation {
     void baseDualAcousticMatrix( CalculPtr &calcul,
                                  ElementaryMatrixPressureComplexPtr &elemMatr ) const;
 
-    /** @brief Compute echange contributions to thermal matrix */
-    void baseExchangeThermalMatrix( CalculPtr &calcul, ElementaryMatrixTemperatureRealPtr &elemMatr,
-                                    const ASTERDOUBLE &time_curr ) const;
-
   public:
     /** @typedef DiscreteComputationPtr */
     typedef std::shared_ptr< DiscreteComputation > DiscreteComputationPtr;
@@ -322,7 +318,7 @@ class DiscreteComputation {
     ElementaryMatrixTemperatureRealPtr getDualLinearConductivityMatrix() const;
 
     ElementaryMatrixTemperatureRealPtr
-    getExchangeThermalMatrix( const ASTERDOUBLE &time_curr ) const;
+    getThermalExchangeMatrix( const ASTERDOUBLE &time_curr ) const;
 
     /**
      * @brief Get physical problem

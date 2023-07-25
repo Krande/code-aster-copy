@@ -351,7 +351,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
               py::arg( "temp_prev" ), py::arg( "temp_step" ), py::arg( "varc_curr" ) = nullptr,
               py::arg( "groupOfCells" ) = VectorString(), py::arg( "with_dual" ) = true )
 
-        .def( "getExchangeThermalMatrix", &DiscreteComputation::getExchangeThermalMatrix,
+        .def( "getThermalExchangeMatrix", &DiscreteComputation::getThermalExchangeMatrix,
               R"(
             Return the elementary matices for exhange thermal matrix.
 

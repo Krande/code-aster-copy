@@ -214,7 +214,7 @@ def _computeMatrix(disr_comp, matrix, is_evol, time_curr, time_delta, time_theta
     matr_elem_rigi = disr_comp.getLinearStiffnessMatrix(time_curr, varc_curr=varc, with_dual=False)
     matrix.addElementaryMatrix(matr_elem_rigi, time_theta)
 
-    matr_elem_exch = disr_comp.getExchangeThermalMatrix(time_curr)
+    matr_elem_exch = disr_comp.getThermalExchangeMatrix(time_curr)
     matrix.addElementaryMatrix(matr_elem_exch, time_theta)
 
     if phys_pb.getDOFNumbering().useLagrangeDOF():

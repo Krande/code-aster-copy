@@ -964,7 +964,7 @@ class DiscreteComputation:
               ElementaryMatrix: elementary elastic Stiffness matrix
         """
 
-    def getExchangeThermalMatrix(self, time_curr):
+    def getThermalExchangeMatrix(self, time_curr):
         """Return the elementary matices for exhange thermal matrix.
 
         Arguments:

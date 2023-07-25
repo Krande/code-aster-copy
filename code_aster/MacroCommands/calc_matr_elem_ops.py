@@ -67,6 +67,11 @@ def calc_matr_elem_ops(self, **args):
     if myOption in ("RIGI_MECA", "RIGI_THER", "RIGI_ACOU"):
         if "CALC_ELEM_MODELE" not in args or args["CALC_ELEM_MODELE"] == "OUI":
             matr_elem = disc_comp.getLinearStiffnessMatrix(time, fourier, varc, group_ma)
+
+            if model.isThermal():
+                matr_elem_exch = disc_comp.getThermalExchangeMatrix(time)
+                matr_elem.addElementaryTerm(matr_elem_exch.getElementaryTerms())
+                matr_elem.build()
         else:
             matr_elem = disc_comp.getDualStiffnessMatrix()
 

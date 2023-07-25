@@ -100,7 +100,6 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::getLinearConductivityMat
 
     if ( with_dual ) {
         DiscreteComputation::baseDualLinearConductivityMatrix( calcul, elemMatr );
-        DiscreteComputation::baseExchangeThermalMatrix( calcul, elemMatr, time_curr );
     }
 
     elemMatr->build();
@@ -180,7 +179,6 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::getTangentConductivityMa
 
     if ( with_dual ) {
         DiscreteComputation::baseDualLinearConductivityMatrix( calcul, elemMatr );
-        // DiscreteComputation::baseExchangeThermalMatrix( calcul, elemMatr, time_curr );
     }
 
     elemMatr->build();
@@ -385,7 +383,7 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::getDualLinearConductivit
 };
 
 ElementaryMatrixTemperatureRealPtr
-DiscreteComputation::getExchangeThermalMatrix( const ASTERDOUBLE &time_curr ) const {
+DiscreteComputation::getThermalExchangeMatrix( const ASTERDOUBLE &time_curr ) const {
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
 
     const std::string option( "RIGI_THER" );
@@ -399,16 +397,6 @@ DiscreteComputation::getExchangeThermalMatrix( const ASTERDOUBLE &time_curr ) co
     CalculPtr calcul = std::make_unique< Calcul >( option );
 
     // Compute elementary matrices
-    DiscreteComputation::baseExchangeThermalMatrix( calcul, elemMatr, time_curr );
-
-    elemMatr->build();
-    return elemMatr;
-};
-
-void DiscreteComputation::baseExchangeThermalMatrix( CalculPtr &calcul,
-                                                     ElementaryMatrixTemperatureRealPtr &elemMatr,
-                                                     const ASTERDOUBLE &time_curr ) const {
-
     // Prepare loads
     const auto &_listOfLoads = _phys_problem->getListOfLoads();
     auto isXfem = _phys_problem->getModel()->existsXfem();
@@ -542,5 +530,78 @@ void DiscreteComputation::baseExchangeThermalMatrix( CalculPtr &calcul,
         }
     }
 
-    return;
-}
+    elemMatr->build();
+    return elemMatr;
+};
+
+// ElementaryVectorTemperatureRealPtr DiscreteComputation::getThermalNonLinearNeumannForces(
+//     const FieldOnNodesRealPtr temp_prev, const FieldOnNodesRealPtr temp_step,
+//     const ASTERDOUBLE time_prev, const ASTERDOUBLE time_step, const ASTERDOUBLE theta ) const {
+
+//     AS_ASSERT( _phys_problem->getModel()->isThermal() );
+
+//     auto elemVect = std::make_shared< ElementaryVectorTemperatureReal >(
+//         _phys_problem->getModel(), _phys_problem->getMaterialField(),
+//         _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
+
+//     // Init
+//     ASTERINTEGER iload = 1;
+
+//     // Setup
+//     const std::string calcul_option( "CHAR_THER" );
+//     elemVect->prepareCompute( calcul_option );
+
+//     // Main parameters
+//     auto currModel = _phys_problem->getModel();
+//     auto listOfLoads = _phys_problem->getListOfLoads();
+//     auto model_FEDesc = currModel->getFiniteElementDescriptor();
+//     AS_ASSERT( model_FEDesc );
+
+//     auto calcul = std::make_unique< Calcul >( calcul_option );
+//     calcul->setModel( currModel );
+
+//     auto temp_curr = std::make_shared< FieldOnNodesReal >( *temp_prev + *temp_step );
+
+//     auto impl = [&]( auto load, const ASTERINTEGER &load_i, const std::string &option,
+//                      const std::string &name, const std::string &param,
+//                      const FiniteElementDescriptorPtr FED ) {
+//         if ( load->hasLoadField( name ) ) {
+//             calcul->setOption( option );
+//             calcul->setFiniteElementDescriptor( FED );
+
+//             calcul->clearInputs();
+//             calcul->addTimeField( "PTEMPSR", time_prev + time_step, time_step, theta );
+//             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
+//             calcul->addInputField( "PTEMPER", temp_curr );
+
+//             calcul->addInputField( param, load->getConstantLoadField( name ) );
+
+//             calcul->clearOutputs();
+//             calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >()
+//             ); calcul->compute(); if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
+//                 elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ),
+//                                              load_i );
+//             }
+//         }
+//     };
+
+//     auto therLoadReal = listOfLoads->getThermalLoadsReal();
+//     for ( const auto &load : therLoadReal ) {
+//         impl( load, iload, "CHAR_THER_FLUNL", "FLUNL", "PFLUXNL", model_FEDesc );
+//         impl( load, iload, "CHAR_THER_RAYO_R", "RAYO", "PRAYONR", model_FEDesc );
+//         impl( load, iload, "CHAR_THER_SOURNL", "SOUNL", "PSOURNL", model_FEDesc );
+
+//         iload++;
+//     }
+
+//     auto therLoadFunc = listOfLoads->getThermalLoadsFunction();
+//     for ( const auto &load : therLoadFunc ) {
+//         impl( load, iload, "CHAR_THER_RAYO_F", "RAYO", "PRAYONF", model_FEDesc );
+
+//         iload++;
+//     }
+
+//     elemVect->build();
+
+//     return elemVect;
+// };
