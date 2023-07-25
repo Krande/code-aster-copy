@@ -70,7 +70,6 @@ def calc_vect_elem_ops(self, **args):
     if mater and mater.hasExternalStateVariable():
         varc = phys_pb.getExternalStateVariables(time)
 
-    primal_prev = None
     if myOption == "CHAR_MECA":
         vect_elem = ElementaryVectorDisplacementReal(
             phys_pb.getModel(),
@@ -85,8 +84,6 @@ def calc_vect_elem_ops(self, **args):
             phys_pb.getElementaryCharacteristics(),
             phys_pb.getListOfLoads(),
         )
-        primal_prev = FieldOnNodesReal(phys_pb.getModel())
-        primal_prev.setValues(0.0)
     elif myOption == "CHAR_ACOU":
         vect_elem = ElementaryVectorPressureComplex(
             phys_pb.getModel(),
@@ -99,13 +96,17 @@ def calc_vect_elem_ops(self, **args):
 
     vect_elem.prepareCompute(myOption)
 
-    neum_elem = disc_comp.getNeumannForces(
-        time, mode=fourier, varc_curr=varc, previousPrimalField=primal_prev, assembly=False
-    )
+    neum_elem = disc_comp.getNeumannForces(time, mode=fourier, varc_curr=varc, assembly=False)
     vect_elem.addElementaryTerm(neum_elem.getElementaryTerms())
 
     dual_elem = disc_comp.getImposedDualBC(time, assembly=False)
     vect_elem.addElementaryTerm(dual_elem.getElementaryTerms())
+
+    if phys_pb.getModel().isThermal():
+        exch_elem = disc_comp.getThermalExchangeForces(
+            FieldOnNodesReal(phys_pb.getModel()), time, assembly=False
+        )
+        vect_elem.addElementaryTerm(exch_elem.getElementaryTerms())
 
     if "SOUS_STRUC" in args:
         load_struc = {}

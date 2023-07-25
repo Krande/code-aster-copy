@@ -142,8 +142,7 @@ class DiscreteComputation {
     ElementaryVectorTemperatureRealPtr
     getThermalNeumannForces( const ASTERDOUBLE time_curr = 0.0, const ASTERDOUBLE time_step = 0.0,
                              const ASTERDOUBLE theta = 1.0,
-                             const FieldOnCellsRealPtr varc_curr = nullptr,
-                             const FieldOnNodesRealPtr _previousPrimalField = nullptr ) const;
+                             const FieldOnCellsRealPtr varc_curr = nullptr ) const;
 
     ElementaryVectorTemperatureRealPtr getThermalNonLinearNeumannForces(
         const FieldOnNodesRealPtr temp_prev, const FieldOnNodesRealPtr temp_step,
@@ -325,6 +324,10 @@ class DiscreteComputation {
      * @return Physical problem
      */
     PhysicalProblemPtr getPhysicalProblem() const { return _phys_problem; };
+
+    ElementaryVectorTemperatureRealPtr
+    getThermalExchangeForces( const FieldOnNodesRealPtr temp_curr,
+                              const ASTERDOUBLE time_curr = 0.0 ) const;
 
     FieldOnNodesRealPtr
     getTransientThermalForces( const ASTERDOUBLE time_curr, const ASTERDOUBLE time_step,

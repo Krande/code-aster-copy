@@ -86,6 +86,19 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
               )",
               py::arg( "disp_curr" ), py::arg( "scaling" ) = 1.0 )
 
+        .def( "_getThermalExchangeForces", &DiscreteComputation::getThermalExchangeForces,
+              R"(
+      Return the elementary thermal Exchange forces vector
+
+      Arguments:
+            temp_curr (FieldOnNodesReal): thermal field at current time
+            time_curr (float): Current time
+
+      Returns:
+            ElementaryVectorThermalReal: elementary Exchange forces vector
+        )",
+              py::arg( "temp_curr" ), py::arg( "time_curr" ) = 0.0 )
+
         .def( "getMechanicalNeumannForces", &DiscreteComputation::getMechanicalNeumannForces,
               R"(
       Return the elementary mechanical Neumann forces vector
@@ -111,13 +124,12 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             time_step (float): Time increment
             theta (float): Theta parameter for time-integration
             varc_curr (FieldOnCellsReal): external state variables at current time
-            previousPrimalField (fieldOnNodesReal): solution field at previous time
 
       Returns:
             ElementaryVectorThermalReal: elementary Neumann forces vector
         )",
               py::arg( "time_curr" ) = 0.0, py::arg( "time_step" ) = 0.0, py::arg( "theta" ) = 1.0,
-              py::arg( "varc_curr" ) = nullptr, py::arg( "previousPrimalField" ) = nullptr )
+              py::arg( "varc_curr" ) = nullptr )
 
         .def( "getAcousticNeumannForces", &DiscreteComputation::getAcousticNeumannForces,
               R"(

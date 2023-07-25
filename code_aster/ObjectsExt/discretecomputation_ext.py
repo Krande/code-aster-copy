@@ -223,14 +223,7 @@ class ExtendedDiscreteComputation:
 
     @profile
     def getNeumannForces(
-        self,
-        time_curr=0.0,
-        time_step=0.0,
-        theta=1,
-        mode=0,
-        varc_curr=None,
-        previousPrimalField=None,
-        assembly=True,
+        self, time_curr=0.0, time_step=0.0, theta=1, mode=0, varc_curr=None, assembly=True
     ):
         """Return the Neumann forces field
 
@@ -240,7 +233,6 @@ class ExtendedDiscreteComputation:
                 theta (float): Theta parameter for time-integration
                 mode (int) : fourier mode
                 varc_curr (FieldOnCellsReal): external state variables at current time (default: None)
-                previousPrimalField (FieldOnNodesReal): solution field at previous time
                 assembly (bool): assemble if True
 
         Returns:
@@ -253,9 +245,7 @@ class ExtendedDiscreteComputation:
         model = phys_pb.getModel()
 
         if model.isThermal():
-            elem_vect = self.getThermalNeumannForces(
-                time_curr, time_step, theta, varc_curr, previousPrimalField
-            )
+            elem_vect = self.getThermalNeumannForces(time_curr, time_step, theta, varc_curr)
         elif model.isMechanical():
             elem_vect = self.getMechanicalNeumannForces(
                 time_curr, time_step, theta, mode, varc_curr
@@ -318,6 +308,36 @@ class ExtendedDiscreteComputation:
                     return FieldOnNodesComplex(phys_pb.getDOFNumbering())
                 else:
                     return FieldOnNodesReal(phys_pb.getDOFNumbering())
+
+        return elem_vect
+
+    @profile
+    def getThermalExchangeForces(self, temp_curr, time_curr, assembly=True):
+        """Return the thermal exchange forces field
+
+        Arguments:
+                temp_curr (FieldOnNodesReal): thermal field at current time
+                time_curr (float): Current time
+                assembly (bool): assemble if True
+
+        Returns:
+                ElementaryVector: elementary exchange forces vector if assembly=False
+                FieldOnNodes: exchange forces field if assembly=True
+        """
+
+        elem_vect = None
+        phys_pb = self.getPhysicalProblem()
+
+        if phys_pb.getModel().isThermal():
+            elem_vect = self._getThermalExchangeForces(temp_curr, time_curr)
+        else:
+            raise RuntimeError("For thermic only")
+
+        if assembly:
+            if len(elem_vect.getElementaryTerms()) > 0:
+                return elem_vect.assembleWithLoadFunctions(phys_pb.getDOFNumbering(), time_curr)
+            else:
+                return FieldOnNodesReal(phys_pb.getDOFNumbering())
 
         return elem_vect
 
