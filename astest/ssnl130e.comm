@@ -1,0 +1,146 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+# CAS_TEST__:SSNL130E
+#
+
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+
+
+ma = LIRE_MAILLAGE()
+
+
+MODI_MAILLAGE(reuse=ma, MAILLAGE=ma, ORIE_FISSURE=(_F(GROUP_MA="spring"),))
+
+
+mo = AFFE_MODELE(
+    MAILLAGE=ma,
+    AFFE=(
+        _F(GROUP_MA=("spring"), PHENOMENE="MECANIQUE", MODELISATION="3D_INTERFACE_S"),
+        _F(GROUP_MA=("plate"), PHENOMENE="MECANIQUE", MODELISATION="3D"),
+    ),
+)
+
+
+orie = AFFE_CARA_ELEM(MODELE=mo, MASSIF=(_F(GROUP_MA="spring", ANGL_REP=(0, -90, 0)),))
+
+
+mat = DEFI_MATERIAU(
+    CZM_ELAS=_F(
+        ADHE_NOR="ELAS",
+        ADHE_TAN="ELAS",
+        RIGI_NOR_TRAC=0,
+        RIGI_NOR_COMP=5.0e3,
+        RIGI_TAN=5.0e3,
+        PENA_LAGR_ABSO=1.0e4,
+    )
+)
+
+
+cm = AFFE_MATERIAU(MAILLAGE=ma, AFFE=_F(GROUP_MA="spring", MATER=mat))
+
+
+distr_pres = FORMULE(NOM_PARA="Y", VALE="-p*(Y-b)**2", b=2.0, p=5.0)
+
+
+rampe_pres = DEFI_FONCTION(NOM_PARA="INST", ABSCISSE=(0, 1, 2), ORDONNEE=(0, 1, 1))
+
+
+rampe_depl = DEFI_FONCTION(NOM_PARA="INST", ABSCISSE=(0, 1, 2), ORDONNEE=(0, 0, 1))
+
+
+pres = AFFE_CHAR_MECA_F(MODELE=mo, FORCE_FACE=_F(GROUP_MA="plate", FZ=distr_pres))
+
+
+encast = AFFE_CHAR_MECA(
+    MODELE=mo,
+    FACE_IMPO=_F(GROUP_MA="ground", DX=0, DY=0, DZ=5.0e-3),
+    LIAISON_SOLIDE=_F(GROUP_MA="plate"),
+)
+
+
+temps = DEFI_LIST_INST(DEFI_LIST=_F(VALE=(0, 1, 2)))
+
+
+evol = STAT_NON_LINE(
+    MODELE=mo,
+    CHAM_MATER=cm,
+    CARA_ELEM=orie,
+    EXCIT=(_F(CHARGE=pres, FONC_MULT=rampe_pres), _F(CHARGE=encast, FONC_MULT=rampe_depl)),
+    INCREMENT=_F(LIST_INST=temps),
+    COMPORTEMENT=(_F(GROUP_MA="spring", RELATION="CZM_ELAS_MIX"),),
+)
+
+
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="A",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=evol,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DZ",
+            VALE_CALC=-0.003555555555555553,
+            VALE_REFE=-3.5555555555e-3,
+            CRITERE="RELATIF",
+            PRECISION=1.9999999999999999e-07,
+        ),
+        _F(
+            GROUP_NO="B",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=evol,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DZ",
+            VALE_CALC=0.0011851851851851837,
+            VALE_REFE=1.185185185185185e-3,
+            CRITERE="RELATIF",
+            PRECISION=1.9999999999999999e-07,
+        ),
+        _F(
+            GROUP_NO="A",
+            INST=2.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=evol,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DZ",
+            VALE_CALC=0.0014444444444444444,
+            VALE_REFE=1.4444444444444444e-3,
+            CRITERE="RELATIF",
+            PRECISION=1.9999999999999999e-07,
+        ),
+        _F(
+            GROUP_NO="B",
+            INST=2.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=evol,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DZ",
+            VALE_CALC=0.006185185185185193,
+            VALE_REFE=6.185185185185e-3,
+            CRITERE="RELATIF",
+            PRECISION=1.9999999999999999e-07,
+        ),
+    )
+)
+
+
+FIN()

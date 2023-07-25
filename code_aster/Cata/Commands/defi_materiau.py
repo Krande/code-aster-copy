@@ -4582,8 +4582,11 @@ DEFI_MATERIAU = MACRO(
     ),
     CZM_ELAS=FACT(
         statut="f",
-        RIGI_NOR=SIMP(statut="f", typ="R", defaut=0.0),
-        RIGI_TAN=SIMP(statut="f", typ="R", defaut=0.0),
+        regles=(EXCLUS("RIGI_NOR", "RIGI_NOR_TRAC"), EXCLUS("RIGI_NOR", "RIGI_NOR_COMP")),
+        RIGI_NOR=SIMP(statut="f", typ="R"),
+        RIGI_NOR_TRAC=SIMP(statut="f", typ="R"),
+        RIGI_NOR_COMP=SIMP(statut="f", typ="R"),
+        RIGI_TAN=SIMP(statut="f", typ="R"),
         ADHE_NOR=SIMP(
             statut="f",
             typ="TXM",

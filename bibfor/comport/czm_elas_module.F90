@@ -30,7 +30,7 @@ module czm_elas_module
 
     ! Material characteristics
     type MATERIAL
-        real(kind=8) :: kn, kt
+        real(kind=8) :: kn_t, kn_c, kt
         aster_logical:: an, at, cn
     end type MATERIAL
 
@@ -67,13 +67,13 @@ contains
 ! t         cohesive forces (local co-ordinates)
 ! su        displacement jump (local co-ordinates)
 ! --------------------------------------------------------------------------------------------------
-        integer, parameter   :: nbel = 4, nblg = 1
+        integer, parameter   :: nbel = 6, nblg = 1
 ! --------------------------------------------------------------------------------------------------
         integer             :: iok(nbel+nblg)
         real(kind=8)        :: valel(nbel), vallg(nblg)
         character(len=16)   :: nomel(nbel), nomlg(nblg)
 ! --------------------------------------------------------------------------------------------------
-        data nomel/'RIGI_NOR', 'RIGI_TAN', 'ADHE_NOR', 'ADHE_TAN'/
+        data nomel/'RIGI_NOR', 'RIGI_TAN', 'ADHE_NOR', 'ADHE_TAN', 'RIGI_NOR_COMP', 'RIGI_NOR_TRAC'/
         data nomlg/'PENA_LAGR_ABSO'/
 ! --------------------------------------------------------------------------------------------------
 
@@ -84,10 +84,23 @@ contains
         ! Parametres generaux
         self%ndim = ndim
 
+        ! Augmentation coefficient
+        call rcvalb(fami, kpg, ksp, '+', imate, ' ', 'CZM_ELAS', 0, ' ', [0.d0], nblg, nomlg, &
+                    vallg, iok, 2)
+        self%r = vallg(1)
+        ASSERT(self%r .gt. 0)
+
         ! Material parameters
-call rcvalb(fami, kpg, ksp, '+', imate, ' ', 'CZM_ELAS', 0, ' ', [0.d0], nbel, nomel, valel, iok, 2)
-        self%mat%kn = valel(1)
-        self%mat%kt = valel(2)
+        call rcvalb(fami, kpg, ksp, '+', imate, ' ', 'CZM_ELAS', 0, ' ', [0.d0], nbel, nomel, &
+                    valel, iok, 0)
+
+        self%mat%kn_c = merge(0.d0, valel(1), iok(1) .ne. 0)
+        self%mat%kn_c = merge(self%mat%kn_c, valel(5), iok(5) .ne. 0)
+
+        self%mat%kn_t = merge(0.d0, valel(1), iok(1) .ne. 0)
+        self%mat%kn_t = merge(self%mat%kn_t, valel(6), iok(6) .ne. 0)
+
+        self%mat%kt = merge(0.d0, valel(2), iok(2) .ne. 0)
 
         select case (nint(valel(3)))
         case (0)
@@ -112,11 +125,6 @@ call rcvalb(fami, kpg, ksp, '+', imate, ' ', 'CZM_ELAS', 0, ' ', [0.d0], nbel, n
             ASSERT(ASTER_FALSE)
         end select
 
-        ! Augmentation coefficient
-call rcvalb(fami, kpg, ksp, '+', imate, ' ', 'CZM_ELAS', 0, ' ', [0.d0], nblg, nomlg, vallg, iok, 2)
-        self%r = vallg(1)
-        ASSERT(self%r .gt. 0)
-
         ! Constitutive input phi = tau + r*su
         allocate (self%phi(ndim))
         self%phi = t+self%r*su
@@ -139,6 +147,7 @@ call rcvalb(fami, kpg, ksp, '+', imate, ' ', 'CZM_ELAS', 0, ' ', [0.d0], nblg, n
 ! vi            internal variable (post-treatment only)
 ! --------------------------------------------------------------------------------------------------
         integer         :: i
+        real(kind=8)    :: rigi_norm
 ! --------------------------------------------------------------------------------------------------
 
         delta = 0
@@ -147,12 +156,13 @@ call rcvalb(fami, kpg, ksp, '+', imate, ' ', 'CZM_ELAS', 0, ' ', [0.d0], nblg, n
 
         ! Normal displacement
         if (.not. self%mat%an .and. .not. self%mat%cn) then
-            delta(1) = self%phi(1)/(self%mat%kn+self%r)
-            dphi_delta(1, 1) = 1/(self%mat%kn+self%r)
+            rigi_norm = merge(self%mat%kn_t, self%mat%kn_c, self%phi(1) .gt. 0)
+            delta(1) = self%phi(1)/(rigi_norm+self%r)
+            dphi_delta(1, 1) = 1/(rigi_norm+self%r)
 
         else if (.not. self%mat%an .and. self%mat%cn) then
-            delta(1) = max(0.d0, self%phi(1))/(self%mat%kn+self%r)
-            dphi_delta(1, 1) = merge(1.d0, 0.d0, self%phi(1) .ge. 0)/(self%mat%kn+self%r)
+            delta(1) = max(0.d0, self%phi(1))/(self%mat%kn_t+self%r)
+            dphi_delta(1, 1) = merge(1.d0, 0.d0, self%phi(1) .ge. 0)/(self%mat%kn_t+self%r)
 
         end if
 
