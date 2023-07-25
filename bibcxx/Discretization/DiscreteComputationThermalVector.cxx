@@ -65,12 +65,6 @@ ElementaryVectorTemperatureRealPtr DiscreteComputation::getThermalNeumannForces(
     auto calcul = std::make_unique< Calcul >( calcul_option );
     calcul->setModel( currModel );
 
-    if ( currMater && currMater->hasExternalStateVariable() ) {
-        if ( varc_curr && varc_curr->exists() ) {
-            calcul->addInputField( "PVARCPR", varc_curr );
-        }
-    }
-
     auto therLoadReal = listOfLoads->getThermalLoadsReal();
     for ( const auto &load : therLoadReal ) {
         auto load_FEDesc = load->getFiniteElementDescriptor();
@@ -223,6 +217,14 @@ ElementaryVectorTemperatureRealPtr DiscreteComputation::getThermalNeumannForces(
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
             calcul->addTimeField( "PTEMPSR", time_curr, time_step, theta );
             calcul->addInputField( "PSOURCR", source_field );
+
+            if ( currMater && currMater->hasExternalStateVariable() ) {
+                if ( !varc_curr || !varc_curr->exists() ) {
+                    raiseAsterError( "External state variables are needed but not given" );
+                }
+                calcul->addInputField( "PVARCPR", varc_curr );
+            }
+
             calcul->clearOutputs();
             calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >() );
             calcul->compute();
@@ -240,6 +242,14 @@ ElementaryVectorTemperatureRealPtr DiscreteComputation::getThermalNeumannForces(
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
             calcul->addTimeField( "PTEMPSR", time_curr, time_step, theta );
             calcul->addInputField( "PSOURCR", computed_source_field );
+
+            if ( currMater && currMater->hasExternalStateVariable() ) {
+                if ( !varc_curr || !varc_curr->exists() ) {
+                    raiseAsterError( "External state variables are needed but not given" );
+                }
+                calcul->addInputField( "PVARCPR", varc_curr );
+            }
+
             calcul->clearOutputs();
             calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >() );
             calcul->compute();
@@ -262,6 +272,9 @@ ElementaryVectorTemperatureRealPtr DiscreteComputation::getThermalNeumannForces(
                 calcul->setFiniteElementDescriptor( load_FEDesc );
             }
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
+            if ( _previousPrimalField && _previousPrimalField->exists() ) {
+                calcul->addInputField( "PTEMPER", _previousPrimalField );
+            }
             calcul->addTimeField( "PTEMPSR", time_curr, time_step, theta );
             calcul->addInputField( "PHECHPR", wall_exchange_field );
             calcul->clearOutputs();
@@ -282,6 +295,13 @@ ElementaryVectorTemperatureRealPtr DiscreteComputation::getThermalNeumannForces(
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
             if ( currMater ) {
                 calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
+
+                if ( currMater->hasExternalStateVariable() ) {
+                    if ( !varc_curr || !varc_curr->exists() ) {
+                        raiseAsterError( "External state variables are needed but not given" );
+                    }
+                    calcul->addInputField( "PVARCPR", varc_curr );
+                }
             }
             calcul->addInputField( "PGRAINR", pregrad_field );
             calcul->clearOutputs();
@@ -366,6 +386,14 @@ ElementaryVectorTemperatureRealPtr DiscreteComputation::getThermalNeumannForces(
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
             calcul->addTimeField( "PTEMPSR", time_curr, time_step, theta );
             calcul->addInputField( "PSOURCF", source_field );
+
+            if ( currMater && currMater->hasExternalStateVariable() ) {
+                if ( !varc_curr || !varc_curr->exists() ) {
+                    raiseAsterError( "External state variables are needed but not given" );
+                }
+                calcul->addInputField( "PVARCPR", varc_curr );
+            }
+
             calcul->clearOutputs();
             calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >() );
             calcul->compute();
@@ -413,6 +441,13 @@ ElementaryVectorTemperatureRealPtr DiscreteComputation::getThermalNeumannForces(
 
             if ( currMater ) {
                 calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
+
+                if ( currMater->hasExternalStateVariable() ) {
+                    if ( !varc_curr || !varc_curr->exists() ) {
+                        raiseAsterError( "External state variables are needed but not given" );
+                    }
+                    calcul->addInputField( "PVARCPR", varc_curr );
+                }
             }
             calcul->addInputField( "PGRAINF", pregrad_field );
             calcul->clearOutputs();
