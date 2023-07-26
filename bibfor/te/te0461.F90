@@ -66,11 +66,11 @@ subroutine te0461(option, nomte)
     type(HHO_Quadrature) :: hhoQuadFace
     type(HHO_basis_face) :: hhoBasisFace
     real(kind=8), dimension(MSIZE_FACE_SCAL) :: rhs, temp_F_curr
-    real(kind=8) :: CoefHQP_curr(MAX_QP_FACE), CoefHQP_prev(MAX_QP_FACE)
-    real(kind=8) :: ParaQP_curr(MAX_QP_FACE), ParaQP_prev(MAX_QP_FACE)
-    real(kind=8) :: ValQP_curr(MAX_QP_FACE), ValQP_prev(MAX_QP_FACE)
+    real(kind=8) :: CoefHQP_curr(MAX_QP_FACE)
+    real(kind=8) :: ParaQP_curr(MAX_QP_FACE)
+    real(kind=8) :: ValQP_curr(MAX_QP_FACE)
     real(kind=8) :: NeumValuesQP(MAX_QP_FACE)
-    real(kind=8) :: theta, time_curr, time_prev, temp_eval_curr
+    real(kind=8) :: time_prev, time_curr, theta, temp_eval_curr, time
     integer :: fbs, celldim, ipg, nbpara, npg
     integer :: j_time, j_coefh, j_para
 !
@@ -92,11 +92,8 @@ subroutine te0461(option, nomte)
 !
     celldim = hhoFace%ndim+1
     CoefHQP_curr = 0.d0
-    CoefHQP_prev = 0.d0
     ParaQP_curr = 0.d0
-    ParaQP_prev = 0.d0
     ValQP_curr = 0.d0
-    ValQP_prev = 0.d0
     nompar(:) = 'XXXXXXXX'
     valpar(:) = 0.d0
 !
@@ -105,6 +102,15 @@ subroutine te0461(option, nomte)
     time_prev = time_curr-zr(j_time+1)
     theta = zr(j_time+2)
 !
+!   TODO: give directly time
+    if (theta .eq. 1.d0) then
+        time = time_curr
+    elseif (theta .eq. 0.0) then
+        time = time_prev
+    else
+        ASSERT(ASTER_FALSE)
+    end if
+!
 ! ---- Which option ?
 !
     if (option .eq. 'CHAR_THER_TEXT_R') then
@@ -112,14 +118,12 @@ subroutine te0461(option, nomte)
 ! ----- Get real value COEF_H
 !
         call jevech('PCOEFHR', 'L', j_coefh)
-        CoefHQP_prev(1:hhoQuadFace%nbQuadPoints) = zr(j_coefh)
-        CoefHQP_curr = CoefHQP_prev
+        CoefHQP_curr = zr(j_coefh)
 !
 ! ----- Get real value Text
 !
         call jevech('PT_EXTR', 'L', j_para)
-        ParaQP_prev(1:hhoQuadFace%nbQuadPoints) = zr(j_para)
-        ParaQP_curr = ParaQP_prev
+        ParaQP_curr = zr(j_para)
 !
     elseif (option .eq. 'CHAR_THER_TEXT_F') then
         call jevech('PCOEFHF', 'L', j_coefh)
@@ -140,7 +144,7 @@ subroutine te0461(option, nomte)
 ! ---- Time +
 !
         nompar(nbpara) = 'INST'
-        valpar(nbpara) = time_curr
+        valpar(nbpara) = time
 !
 ! ----- Evaluate the analytical function at T+
 !
@@ -149,25 +153,12 @@ subroutine te0461(option, nomte)
         call hhoFuncFScalEvalQp(hhoQuadFace, zk8(j_para), nbpara, nompar, valpar, &
                                 & celldim, ParaQP_curr)
 !
-! ---- Time -
-!
-        nompar(nbpara) = 'INST'
-        valpar(nbpara) = time_prev
-!
-! ----- Evaluate the analytical function at T-
-!
-        call hhoFuncFScalEvalQp(hhoQuadFace, zk8(j_coefh), nbpara, nompar, valpar, &
-                                & celldim, CoefHQP_prev)
-        call hhoFuncFScalEvalQp(hhoQuadFace, zk8(j_para), nbpara, nompar, valpar, &
-                                & celldim, ParaQP_prev)
-!
     elseif (option .eq. 'CHAR_THER_FLUN_R') then
 !
 ! ----- Get real value FLUXN
 !
         call jevech('PFLUXNR', 'L', j_para)
-        ParaQP_prev(1:hhoQuadFace%nbQuadPoints) = zr(j_para)
-        ParaQP_curr = ParaQP_prev
+        ParaQP_curr = zr(j_para)
 !
     elseif (option .eq. 'CHAR_THER_FLUN_F') then
         call jevech('PFLUXNF', 'L', j_para)
@@ -187,22 +178,12 @@ subroutine te0461(option, nomte)
 ! ---- Time +
 !
         nompar(nbpara) = 'INST'
-        valpar(nbpara) = time_curr
+        valpar(nbpara) = time
 !
 ! ----- Evaluate the analytical function at T+
 !
         call hhoFuncFScalEvalQp(hhoQuadFace, zk8(j_para), nbpara, nompar, valpar, &
                                 & celldim, ParaQP_curr)
-!
-! ---- Time -
-!
-        nompar(nbpara) = 'INST'
-        valpar(nbpara) = time_prev
-!
-! ----- Evaluate the analytical function at T-
-!
-        call hhoFuncFScalEvalQp(hhoQuadFace, zk8(j_para), nbpara, nompar, valpar, &
-                                & celldim, ParaQP_prev)
 !
     else
 
@@ -210,7 +191,6 @@ subroutine te0461(option, nomte)
     end if
 !
     if (option(1:15) .eq. 'CHAR_THER_TEXT_') then
-        ValQP_curr = CoefHQP_curr*ParaQP_curr
 !
         call readVector('PTEMPER', fbs, temp_F_curr)
 !
@@ -218,19 +198,18 @@ subroutine te0461(option, nomte)
             temp_eval_curr = hhoEvalScalFace(hhoFace, hhoBasisFace, hhoData%face_degree(), &
                                              hhoQuadFace%points(1:3, ipg), temp_F_curr, fbs)
 
-            ValQP_prev(ipg) = CoefHQP_prev(ipg)*(ParaQP_prev(ipg)-temp_eval_curr)
+            ValQP_curr(ipg) = CoefHQP_curr(ipg)*(ParaQP_curr(ipg)-temp_eval_curr)
         end do
 !
     elseif (option(1:15) .eq. 'CHAR_THER_FLUN_') then
         ValQP_curr = ParaQP_curr
-        ValQP_prev = ParaQP_prev
     else
         ASSERT(ASTER_FALSE)
     end if
 !
 ! ---- compute surface load
 !
-    NeumValuesQP = theta*ValQP_curr+(1.d0-theta)*ValQP_prev
+    NeumValuesQP = ValQP_curr
     call hhoTherNeumForces(hhoFace, hhoData, hhoQuadFace, NeumValuesQP, rhs)
 !
 ! ---- save result
