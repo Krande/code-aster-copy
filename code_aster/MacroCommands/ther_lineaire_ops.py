@@ -116,7 +116,9 @@ def _setupInitialField(phys_pb, args):
             "<THER_LINEAIRE><ETAT_INIT>: Initialized with given field '%s'"
             % initial_state.get("CHAM_NO").getName()
         )
-        initial_field = initial_state.get("CHAM_NO")
+        initial_field = initial_state["CHAM_NO"].copyUsingDescription(
+            phys_pb.getDOFNumbering().getEquationNumbering()
+        )
     elif "VALE" in initial_state:
         logger.debug(
             "<THER_LINEAIRE><ETAT_INIT>: Initialized with constant field with value %s"
@@ -141,7 +143,9 @@ def _setupInitialField(phys_pb, args):
 
             index = timelist.index(initial_state["INST"])
 
-        initial_field = resu_ther.getField("TEMP", index).copy()
+        initial_field = resu_ther.getField("TEMP", index).copyUsingDescription(
+            phys_pb.getDOFNumbering().getEquationNumbering()
+        )
         logger.debug(
             "<THER_LINEAIRE><ETAT_INIT>: Initialized with field from '%s' at index '%s'"
             % (resu_ther.getName(), index)
