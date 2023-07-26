@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# supv002a needs 'DEVTOOLS_ROOT'
 jobs=$(( $(nproc) * 7 / 8 ))
 args=( "--clean" "--only-failed-results" "--timefactor=4.0" "--jobs=${jobs}" "$@" )
 

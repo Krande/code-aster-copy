@@ -3,7 +3,6 @@ variables:
   SIF: runner.sif
   BUILD: mpi
   GIT_SSL_NO_VERIFY: "true"
-  DEVTOOLS_ROOT: '$CI_PROJECT_DIR/devtools'
   reg_debugging: '/^debugci.*/'
 
 workflow:

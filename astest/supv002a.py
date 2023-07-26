@@ -35,7 +35,7 @@ from subprocess import PIPE, CalledProcessError, Popen, check_call
 
 import code_aster.Messages
 from code_aster.Messages import UTMESS, MessageLog
-from code_aster.Utilities import convert, is_int
+from code_aster.Utilities import ExecutionParameter, convert, is_int
 from code_aster.Utilities import localization as LO
 
 ENCODING = "utf-8"
@@ -52,6 +52,7 @@ RE_UNAUTH = [re.compile(r"([*#=\+\-!/\?<>&@]{4})", re.M)]
 
 try:
     import aster
+
     from code_aster.Cata.Syntax import _F
     from code_aster.Commands import CREA_TABLE, TEST_TABLE
 
@@ -320,12 +321,10 @@ def get_personal_dict():
     if _pws:
         return _pws
     cnt = ["personal_ws-1.1 fr 0 %s" % ENCODING]
-    default = osp.join(os.environ["HOME"], "dev", "codeaster", "devtools")
-    devtools = os.environ.get("DEVTOOLS_ROOT", default)
-    dictdir = osp.join(devtools, "share", "spell")
     cata = "fort.34"
     cnt.extend(build_cata_dict(cata))
 
+    dictdir = ExecutionParameter().get_option("rcdir")
     cawl = osp.join(dictdir, "code_aster_dict.aspell.per")
     if osp.exists(cawl):
         # ignore the first line

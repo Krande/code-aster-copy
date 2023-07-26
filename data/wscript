@@ -212,8 +212,15 @@ def build(self):
         "external_programs.yaml.tmpl",
         "config.yaml.tmpl",
         "profile.sh.tmpl",
+        "code_aster_dict.aspell.per",
     ]
-    tgt = ["CTestTestfile.cmake", f"external_programs.{ext}", f"config.{ext}", "profile.sh"]
+    tgt = [
+        "CTestTestfile.cmake",
+        f"external_programs.{ext}",
+        f"config.{ext}",
+        "profile.sh",
+        "code_aster_dict.aspell.per",
+    ]
     if self.env.legacy:
         src.append("config.txt.tmpl")
         tgt.append("config.txt")

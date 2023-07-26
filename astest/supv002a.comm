@@ -32,14 +32,8 @@ from supv002a import SUPV002
 # Que faire en cas d'erreur avec ce test ?
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-# Les dictionnaires des mots autorisés (en plus du dictionnaire français de aspell)
-# sont cherchés dans le dépôt 'devtools' qui doit donc être présent et à jour.
-# Le dépôt est cherché dans $DEVTOOLS_ROOT.
-# Par défaut, DEVTOOLS_ROOT vaut $HOME/dev/codeaster/devtools.
-# - $DEVTOOLS_ROOT/share/spell/code_aster_cata.aspell.per pour les
-# mots-clés du catalogue de commandes,
-# - $DEVTOOLS_ROOT/share/spell/code_aster_dict.aspell.per pour le
-# dictionnaire des termes spécifiques.
+# Le dictionnaire des mots autorisés (en plus du dictionnaire français de aspell)
+# est cherché dans le répertoire d'installation de la version dans `share/aster/`.
 #
 # Dans l'output de l'exécution, on trouvera des lignes d'impression lors de la vérification
 # de chaque catalogue de messages :

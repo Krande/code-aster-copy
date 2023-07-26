@@ -38,13 +38,11 @@ export MINIO_URL=https://minio.retd.edf.fr
 export SIF=runner.sif
 export BUILD=mpi
 export GIT_SSL_NO_VERIFY="true"
-export DEVTOOLS_ROOT="$CI_PROJECT_DIR/devtools"
 
 SINGULARITY_CMD=(
     "singularity"
     "exec"
     "--cleanenv"
-    "--env" "DEVTOOLS_ROOT=${DEVTOOLS_ROOT}"
     "--home=${HOME}"
     "--bind" "$(pwd)"
     "--pwd" "$(pwd)"
