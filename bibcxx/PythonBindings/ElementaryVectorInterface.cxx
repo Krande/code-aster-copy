@@ -59,6 +59,7 @@ void exportElementaryVectorToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< ElementaryVectorReal, ModelPtr, MaterialFieldPtr,
                                          ElementaryCharacteristicsPtr, ListOfLoadsPtr > ) )
         .def( "getVeass", &ElementaryVectorReal::getVeass )
+        .def( "setVeass", &ElementaryVectorReal::setVeass )
         .def( "assemble", &ElementaryVectorReal::assemble )
         .def( "addElementaryTerm",
               py::overload_cast< const ElementaryTermRealPtr & >(
@@ -90,6 +91,7 @@ void exportElementaryVectorToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< ElementaryVectorComplex, ModelPtr, MaterialFieldPtr,
                                          ElementaryCharacteristicsPtr, ListOfLoadsPtr > ) )
         .def( "getVeass", &ElementaryVectorComplex::getVeass )
+        .def( "setVeass", &ElementaryVectorComplex::setVeass )
         .def( "addElementaryTerm",
               py::overload_cast< const ElementaryTermComplexPtr & >(
                   &ElementaryVectorComplex::addElementaryTerm ),

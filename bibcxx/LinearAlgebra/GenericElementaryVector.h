@@ -58,7 +58,7 @@ class GenericElementaryVector : public BaseElementaryVector {
                                                                            typeid( ASTERDOUBLE )
                                                                        ? "_R"
                                                                        : "_C" ) )
-        : BaseElementaryVector( name, type ) {};
+        : BaseElementaryVector( name, type ), _veass( nullptr ) {};
 
     /** @brief Constructor with automatic name */
     GenericElementaryVector() : GenericElementaryVector( ResultNaming::getNewResultName() ) {};

@@ -102,6 +102,9 @@ def calc_vect_elem_ops(self, **args):
     volu_elem = disc_comp.getVolumetricForces(time, mode=fourier, varc_curr=varc, assembly=False)
     vect_elem.addElementaryTerm(volu_elem.getElementaryTerms())
 
+    if volu_elem.getVeass():
+        vect_elem.setVeass(volu_elem.getVeass(), 1)
+
     dual_elem = disc_comp.getImposedDualBC(time, assembly=False)
     vect_elem.addElementaryTerm(dual_elem.getElementaryTerms())
 
