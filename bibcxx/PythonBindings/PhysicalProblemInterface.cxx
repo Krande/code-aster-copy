@@ -72,6 +72,13 @@ Return the DOF numbering
 Returns:
     BaseDOFNumberingPtr: a pointer to the DOF numbering
         )" );
+    c1.def( "setDOFNumbering", &PhysicalProblem::setDOFNumbering, R"(
+Set the DOF numbering
+
+Arguments:
+    dofNum (BaseDOFNumberingPtr): a pointer to the DOF numbering
+        )",
+            py::arg( "dofNum" ) );
     c1.def( "getBehaviourProperty", &PhysicalProblem::getBehaviourProperty, R"(
 Return the behaviour properties
 

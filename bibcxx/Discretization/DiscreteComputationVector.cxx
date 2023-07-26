@@ -207,10 +207,9 @@ DiscreteComputation::getIncrementalDirichletBC( const ASTERDOUBLE &time_curr,
     return vectAsse;
 };
 
-FieldOnNodesRealPtr
-DiscreteComputation::getExternalStateVariablesForces( const ASTERDOUBLE time_curr,
-                                                      const FieldOnCellsRealPtr varc_curr,
-                                                      const FieldOnCellsLongPtr maskField ) const {
+FieldOnNodesRealPtr DiscreteComputation::getExternalStateVariablesForces(
+    const ASTERDOUBLE time_curr, const FieldOnCellsRealPtr varc_curr,
+    const ASTERINTEGER mode_fourier, const FieldOnCellsLongPtr maskField ) const {
 
     // Get main parameters
     auto currModel = _phys_problem->getModel();
@@ -262,6 +261,7 @@ DiscreteComputation::getExternalStateVariablesForces( const ASTERDOUBLE time_cur
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
             calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
             calcul->addInputField( "PCOMPOR", currMater->getBehaviourField() );
+            calcul->addFourierModeField( mode_fourier );
             calcul->addInputField( "PVARCPR", varc_curr );
             if ( currElemChara ) {
                 calcul->addElementaryCharacteristicsField( currElemChara );

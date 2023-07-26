@@ -110,6 +110,13 @@ class PhysicalProblem {
     /** @brief Get numbering of degrees of freedom */
     BaseDOFNumberingPtr getDOFNumbering() const { return _dofNume; };
 
+    /** @brief Get numbering of degrees of freedom */
+    void setDOFNumbering( const BaseDOFNumberingPtr dofNume ) {
+        if ( dofNume ) {
+            _dofNume = dofNume;
+        }
+    };
+
     /** @brief Create numbering of degrees of freedom */
     bool computeDOFNumbering();
 

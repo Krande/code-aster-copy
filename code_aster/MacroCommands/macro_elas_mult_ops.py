@@ -24,7 +24,6 @@ from ..Commands import (
     CALC_CHAMP,
     CALC_MATR_ELEM,
     CALC_VECT_ELEM,
-    CALCUL,
     CREA_RESU,
     DEFI_LIST_REEL,
     EXTR_TABLE,
@@ -33,6 +32,7 @@ from ..Commands import (
 from ..Commands import NUME_DDL as NUME_DDL_CMD
 from ..Commands import RESOUDRE
 from ..Messages import UTMESS
+from ..Objects import PhysicalProblem, DiscreteComputation
 
 
 def macro_elas_mult_ops(
@@ -216,45 +216,21 @@ def macro_elas_mult_ops(
 
             # chargement du aux variables de commandes
             if l_calc_varc:
-                motscles = {}
-                if CARA_ELEM:
-                    motscles["CARA_ELEM"] = CARA_ELEM
-                if ifour:
-                    motscles["MODE_FOURIER"] = m["MODE_FOURIER"]
+                __nomasv = ASSE_VECTEUR(VECT_ELEM=__nomvel, NUME_DDL=num)
 
-                __list1 = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=1))
+                __phys_pb = PhysicalProblem(MODELE, CHAM_MATER)
+                __phys_pb.setDOFNumbering(num)
+                __phys_pb.computeReferenceExternalStateVariables()
+                __varc = __phys_pb.getExternalStateVariables(1.0)
 
-                if CHAR_MECA_GLOBAL:
-                    excit = []
-                    for ch in CHAR_MECA_GLOBAL:
-                        excit.append({"CHARGE": ch})
-                    __cont1 = CALCUL(
-                        OPTION=("FORC_VARC_ELEM_P"),
-                        MODELE=MODELE,
-                        CHAM_MATER=CHAM_MATER,
-                        INCREMENT=_F(LIST_INST=__list1, NUME_ORDRE=1),
-                        EXCIT=excit,
-                        COMPORTEMENT=_F(RELATION="ELAS"),
-                        **motscles
-                    )
-                else:
-                    __cont1 = CALCUL(
-                        OPTION=("FORC_VARC_ELEM_P"),
-                        MODELE=MODELE,
-                        CHAM_MATER=CHAM_MATER,
-                        INCREMENT=_F(LIST_INST=__list1, NUME_ORDRE=1),
-                        COMPORTEMENT=_F(RELATION="ELAS"),
-                        **motscles
-                    )
+                nh = 0
+                if "MODE_FOURIER" in motscles:
+                    nh = motscles["MODE_FOURIER"]
 
-                __vvarcp = EXTR_TABLE(
-                    TYPE_RESU="VECT_ELEM_DEPL_R",
-                    TABLE=__cont1,
-                    NOM_PARA="NOM_SD",
-                    FILTRE=_F(NOM_PARA="NOM_OBJET", VALE_K="FORC_VARC_ELEM_P"),
+                __nomasv += DiscreteComputation(__phys_pb).getExternalStateVariablesForces(
+                    1.0, __varc, nh
                 )
 
-                __nomasv = ASSE_VECTEUR(VECT_ELEM=(__nomvel, __vvarcp), NUME_DDL=num)
             else:
                 __nomasv = ASSE_VECTEUR(VECT_ELEM=(__nomvel,), NUME_DDL=num)
         else:
