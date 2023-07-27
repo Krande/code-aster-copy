@@ -9,8 +9,9 @@ variables:
 workflow:
   rules:
     - if: $CI_MERGE_REQUEST_IID
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
     - if: $CI_COMMIT_BRANCH =~ $reg_debugging
+    # - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    #   seems redudant using fast-forward merges
 
 stages:
   - setup
@@ -29,6 +30,7 @@ prepare:
     paths:
       - ${SIF}
       - devtools/*
+      - data-src/*
     expire_in: 6 hours
 
 compile:
@@ -91,7 +93,6 @@ minimal_test:
   script:
     - singularity exec --bind $(pwd) --pwd $(pwd) ${SIF}
         .gitlabci/test.sh
-          -LE need_data
           -R "(asrun0|mumps02b|supv002|vocab0|zzzz503n)"
           --resutest=results_mini
   artifacts:
@@ -112,7 +113,6 @@ verification_test:
   script:
     - singularity exec --bind $(pwd) --pwd $(pwd) ${SIF}
         .gitlabci/test.sh
-          -LE need_data
           -L verification
           --exclude-testlist .gitlabci/known_failures-pleiade.list
           --resutest=results

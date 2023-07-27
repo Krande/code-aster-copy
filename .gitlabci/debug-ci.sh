@@ -74,6 +74,7 @@ do_prepare() {
     cat << eof > artifacts
 ${SIF}
 devtools/*
+data-src/*
 eof
     _store prepare
     _cleanup
@@ -126,7 +127,7 @@ do_minimal_test() {
     _extract prepare
     _extract compile
     "${SINGULARITY_CMD[@]}" \
-        .gitlabci/test.sh -R "(asrun0|mumps02b|supv002|vocab0|zzzz503n)" -LE need_data --resutest=results_mini
+        .gitlabci/test.sh -R "(asrun0|mumps02b|supv002|vocab0|zzzz503n)" --resutest=results_mini
 
     cat << eof > artifacts
 results_mini/run_testcases.xml
