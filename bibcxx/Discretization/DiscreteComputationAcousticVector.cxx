@@ -35,7 +35,8 @@
 #include "Modeling/XfemModel.h"
 #include "Utilities/Tools.h"
 
-ElementaryVectorPressureComplexPtr DiscreteComputation::getAcousticNeumannForces() const {
+std::variant< ElementaryVectorPressureComplexPtr, FieldOnNodesComplexPtr >
+DiscreteComputation::getAcousticNeumannForces( const bool assembly ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isAcoustic() );
 
@@ -86,11 +87,25 @@ ElementaryVectorPressureComplexPtr DiscreteComputation::getAcousticNeumannForces
 
     elemVect->build();
 
+    if ( assembly ) {
+        if ( elemVect->hasElementaryTerm() ) {
+            raiseAsterError( "Not implemented" );
+            return FieldOnNodesComplexPtr( nullptr );
+        } else {
+            auto vectAsse =
+                std::make_shared< FieldOnNodesComplex >( _phys_problem->getDOFNumbering() );
+            vectAsse->setValues( 0.0 );
+            vectAsse->build();
+            return vectAsse;
+        }
+    }
+
     return elemVect;
 };
 
 /** @brief Compute AFFE_CHAR_ACOU ACOU_IMPO */
-ElementaryVectorPressureComplexPtr DiscreteComputation::getAcousticImposedDualBC() const {
+std::variant< ElementaryVectorPressureComplexPtr, FieldOnNodesComplexPtr >
+DiscreteComputation::getAcousticImposedDualBC( const bool assembly ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isAcoustic() );
 
@@ -146,6 +161,19 @@ ElementaryVectorPressureComplexPtr DiscreteComputation::getAcousticImposedDualBC
     impl( listOfLoads->getAcousticLoadsComplex(), true );
 
     elemVect->build();
+
+    if ( assembly ) {
+        if ( elemVect->hasElementaryTerm() ) {
+            raiseAsterError( "Not implemented" );
+            return FieldOnNodesComplexPtr( nullptr );
+        } else {
+            auto vectAsse =
+                std::make_shared< FieldOnNodesComplex >( _phys_problem->getDOFNumbering() );
+            vectAsse->setValues( 0.0 );
+            vectAsse->build();
+            return vectAsse;
+        }
+    }
 
     return elemVect;
 };

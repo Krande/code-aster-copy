@@ -146,6 +146,8 @@ class GenericElementaryVector : public BaseElementaryVector {
         return nullptr;
     };
 
+    bool hasElementaryTerm() const { return _elemComp->hasElementaryTerm(); };
+
     /**
      * @brief Function to update ElementaryTerm
      */

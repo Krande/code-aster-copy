@@ -35,10 +35,11 @@
 #include "Modeling/XfemModel.h"
 #include "Utilities/Tools.h"
 
-ElementaryVectorTemperatureRealPtr
+std::variant< ElementaryVectorTemperatureRealPtr, FieldOnNodesRealPtr >
 DiscreteComputation::getThermalNeumannForces( const ASTERDOUBLE time_curr,
                                               const ASTERDOUBLE time_step, const ASTERDOUBLE theta,
-                                              const FieldOnCellsRealPtr varc_curr ) const {
+                                              const FieldOnCellsRealPtr varc_curr,
+                                              const bool assembly ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
 
@@ -68,45 +69,6 @@ DiscreteComputation::getThermalNeumannForces( const ASTERDOUBLE time_curr,
 
     auto therLoadReal = listOfLoads->getThermalLoadsReal();
     for ( const auto &load : therLoadReal ) {
-        auto load_FEDesc = load->getFiniteElementDescriptor();
-        if ( load->hasLoadResult() ) {
-            std::string evol_char_name = load->getLoadResultName();
-            std::string para_flun( "FLUN" );
-            std::string para_coefh( "COEF_H" );
-            std::string para_text( "T_EXT" );
-            std::string access_var( "INST" );
-            std::string base( "G" );
-            std::string extr_right( "EXCLU" );
-            std::string extr_left( "EXCLU" );
-            ASTERINTEGER iret = 100;
-            ASTERINTEGER stop = 0;
-
-            FieldOnCellsRealPtr evol_flow_xyz_field =
-                std::make_shared< FieldOnCellsReal >( model_FEDesc );
-            // On cherche le champ FLUN. Si il existe on calcule l'option CHAR_THER_FLUN_R
-            // Si il n'existe pas on suppose l'existence des champs pour calculer CHAR_THER_TEXT_R
-            CALLO_RSINCH( evol_char_name, para_flun, access_var, &time_curr,
-                          evol_flow_xyz_field->getName(), extr_right, extr_left, &stop, base,
-                          &iret );
-
-            if ( iret < 2 ) {
-                calcul->setOption( "CHAR_THER_FLUN_R" );
-                calcul->setFiniteElementDescriptor( model_FEDesc );
-                calcul->clearInputs();
-                calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
-                calcul->addTimeField( "PTEMPSR", time_curr, time_step, theta );
-                calcul->addInputField( "PFLUXNR", evol_flow_xyz_field );
-                calcul->clearOutputs();
-                calcul->addOutputElementaryTerm( "PVECTTR",
-                                                 std::make_shared< ElementaryTermReal >() );
-                calcul->compute();
-                if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
-                    elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ),
-                                                 iload );
-                }
-            }
-        }
-
         // Termes FLUX XYZ
         if ( load->hasLoadField( "FLURE" ) ) {
             auto flow_xyz_field = load->getConstantLoadField( "FLURE" );
@@ -226,8 +188,6 @@ DiscreteComputation::getThermalNeumannForces( const ASTERDOUBLE time_curr,
 
     auto therLoadFunc = listOfLoads->getThermalLoadsFunction();
     for ( const auto &load : therLoadFunc ) {
-        auto load_FEDesc = load->getFiniteElementDescriptor();
-
         // Termes FLUX XYZ
         if ( load->hasLoadField( "FLURE" ) ) {
             auto flow_xyz_field = load->getConstantLoadField( "FLURE" );
@@ -295,7 +255,7 @@ DiscreteComputation::getThermalNeumannForces( const ASTERDOUBLE time_curr,
             calcul->setFiniteElementDescriptor( model_FEDesc );
             calcul->clearInputs();
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
-            calcul->addTimeField( "PTEMPSR", time_curr, time_step, theta );
+            calcul->addTimeField( "PTEMPSR", time_curr, 0.0, 1.0 );
 
             if ( currMater ) {
                 calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
@@ -322,12 +282,28 @@ DiscreteComputation::getThermalNeumannForces( const ASTERDOUBLE time_curr,
 
     elemVect->build();
 
+    if ( assembly ) {
+        if ( elemVect->hasElementaryTerm() ) {
+            return elemVect->assembleWithLoadFunctions( _phys_problem->getDOFNumbering(),
+                                                        time_curr );
+        } else {
+            FieldOnNodesRealPtr vectAsse =
+                std::make_shared< FieldOnNodesReal >( _phys_problem->getDOFNumbering() );
+            vectAsse->setValues( 0.0 );
+            vectAsse->build();
+            return vectAsse;
+        }
+    }
+
     return elemVect;
 };
 
-ElementaryVectorTemperatureRealPtr DiscreteComputation::getThermalExchangeForces(
-    const FieldOnNodesRealPtr temp_curr, const ASTERDOUBLE time_curr, const ASTERDOUBLE time_step,
-    const ASTERDOUBLE time_theta ) const {
+std::variant< ElementaryVectorTemperatureRealPtr, FieldOnNodesRealPtr >
+DiscreteComputation::getThermalExchangeForces( const FieldOnNodesRealPtr temp_curr,
+                                               const ASTERDOUBLE time_curr,
+                                               const ASTERDOUBLE time_step,
+                                               const ASTERDOUBLE time_theta,
+                                               const bool assembly ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
 
@@ -358,69 +334,6 @@ ElementaryVectorTemperatureRealPtr DiscreteComputation::getThermalExchangeForces
     auto therLoadReal = listOfLoads->getThermalLoadsReal();
     for ( const auto &load : therLoadReal ) {
         auto load_FEDesc = load->getFiniteElementDescriptor();
-        if ( load->hasLoadResult() ) {
-            std::string evol_char_name = load->getLoadResultName();
-            std::string para_flun( "FLUN" );
-            std::string para_coefh( "COEF_H" );
-            std::string para_text( "T_EXT" );
-            std::string access_var( "INST" );
-            std::string base( "G" );
-            std::string extr_right( "EXCLU" );
-            std::string extr_left( "EXCLU" );
-            ASTERINTEGER iret = 100;
-            ASTERINTEGER stop = 0;
-
-            FieldOnCellsRealPtr evol_flow_xyz_field =
-                std::make_shared< FieldOnCellsReal >( model_FEDesc );
-            // On cherche le champ FLUN. Si il existe on calcule l'option CHAR_THER_FLUN_R
-            // Si il n'existe pas on suppose l'existence des champs pour calculer CHAR_THER_TEXT_R
-            CALLO_RSINCH( evol_char_name, para_flun, access_var, &time_curr,
-                          evol_flow_xyz_field->getName(), extr_right, extr_left, &stop, base,
-                          &iret );
-
-            if ( iret >= 2 ) {
-
-                FieldOnCellsRealPtr evol_exchange_field =
-                    std::make_shared< FieldOnCellsReal >( model_FEDesc );
-                FieldOnCellsRealPtr evol_ext_temp_field =
-                    std::make_shared< FieldOnCellsReal >( model_FEDesc );
-
-                CALLO_RSINCH( evol_char_name, para_coefh, access_var, &time_curr,
-                              evol_exchange_field->getName(), extr_right, extr_left, &stop, base,
-                              &iret );
-
-                if ( iret >= 2 ) {
-                    AS_ABORT( "Cannot find COEF_H in EVOL_CHAR " + evol_char_name + " at time " +
-                              std::to_string( time_curr ) );
-                }
-
-                CALLO_RSINCH( evol_char_name, para_text, access_var, &time_curr,
-                              evol_ext_temp_field->getName(), extr_right, extr_left, &stop, base,
-                              &iret );
-
-                if ( iret >= 2 ) {
-                    AS_ABORT( "Cannot find T_EXT in EVOL_CHAR " + evol_char_name + " at time " +
-                              std::to_string( time_curr ) );
-                }
-
-                calcul->setOption( "CHAR_THER_TEXT_R" );
-                calcul->setFiniteElementDescriptor( model_FEDesc );
-                calcul->clearInputs();
-                calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
-                calcul->addInputField( "PTEMPER", temp_curr );
-                calcul->addTimeField( "PTEMPSR", time_curr, time_step, time_theta );
-                calcul->addInputField( "PCOEFHR", evol_exchange_field );
-                calcul->addInputField( "PT_EXTR", evol_ext_temp_field );
-                calcul->clearOutputs();
-                calcul->addOutputElementaryTerm( "PVECTTR",
-                                                 std::make_shared< ElementaryTermReal >() );
-                calcul->compute();
-                if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
-                    elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ),
-                                                 iload );
-                }
-            }
-        }
 
         // Termes ECHANGE
         if ( load->hasLoadField( "COEFH" ) && load->hasLoadField( "T_EXT" ) ) {
@@ -526,12 +439,29 @@ ElementaryVectorTemperatureRealPtr DiscreteComputation::getThermalExchangeForces
 
     elemVect->build();
 
+    if ( assembly ) {
+        if ( elemVect->hasElementaryTerm() ) {
+            return elemVect->assembleWithLoadFunctions( _phys_problem->getDOFNumbering(),
+                                                        time_curr );
+        } else {
+            FieldOnNodesRealPtr vectAsse =
+                std::make_shared< FieldOnNodesReal >( _phys_problem->getDOFNumbering() );
+            vectAsse->setValues( 0.0 );
+            vectAsse->build();
+            return vectAsse;
+        }
+    }
+
     return elemVect;
 };
 
-ElementaryVectorTemperatureRealPtr DiscreteComputation::getThermalNonLinearNeumannForces(
-    const FieldOnNodesRealPtr temp_prev, const FieldOnNodesRealPtr temp_step,
-    const ASTERDOUBLE time_prev, const ASTERDOUBLE time_step, const ASTERDOUBLE theta ) const {
+std::variant< ElementaryVectorTemperatureRealPtr, FieldOnNodesRealPtr >
+DiscreteComputation::getThermalNonLinearNeumannForces( const FieldOnNodesRealPtr temp_prev,
+                                                       const FieldOnNodesRealPtr temp_step,
+                                                       const ASTERDOUBLE time_prev,
+                                                       const ASTERDOUBLE time_step,
+                                                       const ASTERDOUBLE theta,
+                                                       const bool assembly ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
 
@@ -599,12 +529,158 @@ ElementaryVectorTemperatureRealPtr DiscreteComputation::getThermalNonLinearNeuma
 
     elemVect->build();
 
+    if ( assembly ) {
+        if ( elemVect->hasElementaryTerm() ) {
+            return elemVect->assembleWithLoadFunctions( _phys_problem->getDOFNumbering(),
+                                                        time_prev + time_step );
+        } else {
+            FieldOnNodesRealPtr vectAsse =
+                std::make_shared< FieldOnNodesReal >( _phys_problem->getDOFNumbering() );
+            vectAsse->setValues( 0.0 );
+            vectAsse->build();
+            return vectAsse;
+        }
+    }
+
+    return elemVect;
+};
+
+std::variant< ElementaryVectorTemperatureRealPtr, FieldOnNodesRealPtr >
+DiscreteComputation::getTransientThermalLoadForces( const ASTERDOUBLE time_curr,
+                                                    const ASTERDOUBLE time_step,
+                                                    const ASTERDOUBLE theta,
+                                                    const FieldOnNodesRealPtr _previousPrimalField,
+                                                    const bool assembly ) const {
+
+    AS_ASSERT( _phys_problem->getModel()->isThermal() );
+
+    auto elemVect = std::make_shared< ElementaryVectorTemperatureReal >(
+        _phys_problem->getModel(), _phys_problem->getMaterialField(),
+        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
+
+    // Init
+    ASTERINTEGER iload = 1;
+
+    // Setup
+    const std::string calcul_option( "CHAR_THER" );
+    elemVect->prepareCompute( calcul_option );
+
+    // Main parameters
+    auto currModel = _phys_problem->getModel();
+    auto listOfLoads = _phys_problem->getListOfLoads();
+    auto model_FEDesc = currModel->getFiniteElementDescriptor();
+    AS_ASSERT( model_FEDesc );
+
+    auto calcul = std::make_unique< Calcul >( calcul_option );
+    calcul->setModel( currModel );
+
+    auto therLoadReal = listOfLoads->getThermalLoadsReal();
+    for ( const auto &load : therLoadReal ) {
+        if ( load->hasLoadResult() ) {
+            std::string evol_char_name = load->getLoadResultName();
+            std::string para_flun( "FLUN" );
+            std::string para_coefh( "COEF_H" );
+            std::string para_text( "T_EXT" );
+            std::string access_var( "INST" );
+            std::string base( "G" );
+            std::string extr_right( "EXCLU" );
+            std::string extr_left( "EXCLU" );
+            ASTERINTEGER iret = 100;
+            ASTERINTEGER stop = 0;
+
+            FieldOnCellsRealPtr evol_flow_xyz_field =
+                std::make_shared< FieldOnCellsReal >( model_FEDesc );
+            // On cherche le champ FLUN. Si il existe on calcule l'option CHAR_THER_FLUN_R
+            // Si il n'existe pas on suppose l'existence des champs pour calculer CHAR_THER_TEXT_R
+            CALLO_RSINCH( evol_char_name, para_flun, access_var, &time_curr,
+                          evol_flow_xyz_field->getName(), extr_right, extr_left, &stop, base,
+                          &iret );
+
+            if ( iret >= 2 ) {
+
+                FieldOnCellsRealPtr evol_exchange_field =
+                    std::make_shared< FieldOnCellsReal >( model_FEDesc );
+                FieldOnCellsRealPtr evol_ext_temp_field =
+                    std::make_shared< FieldOnCellsReal >( model_FEDesc );
+
+                CALLO_RSINCH( evol_char_name, para_coefh, access_var, &time_curr,
+                              evol_exchange_field->getName(), extr_right, extr_left, &stop, base,
+                              &iret );
+
+                if ( iret >= 2 ) {
+                    AS_ABORT( "Cannot find COEF_H in EVOL_CHAR " + evol_char_name + " at time " +
+                              std::to_string( time_curr ) );
+                }
+
+                CALLO_RSINCH( evol_char_name, para_text, access_var, &time_curr,
+                              evol_ext_temp_field->getName(), extr_right, extr_left, &stop, base,
+                              &iret );
+
+                if ( iret >= 2 ) {
+                    AS_ABORT( "Cannot find T_EXT in EVOL_CHAR " + evol_char_name + " at time " +
+                              std::to_string( time_curr ) );
+                }
+                AS_ASSERT( _previousPrimalField && _previousPrimalField->exists() );
+
+                calcul->setOption( "CHAR_THER_TEXT_R" );
+                calcul->setFiniteElementDescriptor( model_FEDesc );
+                calcul->clearInputs();
+                calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
+                calcul->addInputField( "PTEMPER", _previousPrimalField );
+                calcul->addTimeField( "PTEMPSR", time_curr, time_step, theta );
+                calcul->addInputField( "PCOEFHR", evol_exchange_field );
+                calcul->addInputField( "PT_EXTR", evol_ext_temp_field );
+                calcul->clearOutputs();
+                calcul->addOutputElementaryTerm( "PVECTTR",
+                                                 std::make_shared< ElementaryTermReal >() );
+                calcul->compute();
+                if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
+                    elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ),
+                                                 iload );
+                }
+            } else {
+                calcul->setOption( "CHAR_THER_FLUN_R" );
+                calcul->setFiniteElementDescriptor( model_FEDesc );
+                calcul->clearInputs();
+                calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
+                calcul->addTimeField( "PTEMPSR", time_curr, time_step, theta );
+                calcul->addInputField( "PFLUXNR", evol_flow_xyz_field );
+                calcul->clearOutputs();
+                calcul->addOutputElementaryTerm( "PVECTTR",
+                                                 std::make_shared< ElementaryTermReal >() );
+                calcul->compute();
+                if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
+                    elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ),
+                                                 iload );
+                }
+            }
+        }
+
+        iload++;
+    }
+
+    elemVect->build();
+
+    if ( assembly ) {
+        if ( elemVect->hasElementaryTerm() ) {
+            return elemVect->assembleWithLoadFunctions( _phys_problem->getDOFNumbering(),
+                                                        time_curr );
+        } else {
+            FieldOnNodesRealPtr vectAsse =
+                std::make_shared< FieldOnNodesReal >( _phys_problem->getDOFNumbering() );
+            vectAsse->setValues( 0.0 );
+            vectAsse->build();
+            return vectAsse;
+        }
+    }
+
     return elemVect;
 };
 
 /** @brief Compute AFFE_CHAR_THER TEMP_IMPO */
-ElementaryVectorTemperatureRealPtr
-DiscreteComputation::getThermalImposedDualBC( const ASTERDOUBLE time_curr ) const {
+std::variant< ElementaryVectorTemperatureRealPtr, FieldOnNodesRealPtr >
+DiscreteComputation::getThermalImposedDualBC( const ASTERDOUBLE time_curr,
+                                              const bool assembly ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
 
@@ -666,16 +742,29 @@ DiscreteComputation::getThermalImposedDualBC( const ASTERDOUBLE time_curr ) cons
 
     elemVect->build();
 
+    if ( assembly ) {
+        if ( elemVect->hasElementaryTerm() ) {
+            return elemVect->assembleWithLoadFunctions( _phys_problem->getDOFNumbering(),
+                                                        time_curr );
+        } else {
+            FieldOnNodesRealPtr vectAsse =
+                std::make_shared< FieldOnNodesReal >( _phys_problem->getDOFNumbering() );
+            vectAsse->setValues( 0.0 );
+            vectAsse->build();
+            return vectAsse;
+        }
+    }
+
     return elemVect;
 }
 
 /** @brief Compute CHAR_THER_EVOL */
 FieldOnNodesRealPtr DiscreteComputation::getTransientThermalForces(
     const ASTERDOUBLE time_curr, const ASTERDOUBLE time_step, const ASTERDOUBLE theta,
-    const FieldOnCellsRealPtr varc_curr, const FieldOnNodesRealPtr _previousPrimalField ) const {
+    const FieldOnNodesRealPtr previousPrimalField, const FieldOnCellsRealPtr varc_curr ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
-    AS_ASSERT( _previousPrimalField->exists() );
+    AS_ASSERT( previousPrimalField && previousPrimalField->exists() );
 
     auto elemVect = std::make_shared< ElementaryVectorReal >(
         _phys_problem->getModel(), _phys_problem->getMaterialField(),
@@ -699,7 +788,7 @@ FieldOnNodesRealPtr DiscreteComputation::getTransientThermalForces(
     // Add input fields
     calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
     calcul->addTimeField( "PTEMPSR", time_curr, time_step, theta );
-    calcul->addInputField( "PTEMPER", _previousPrimalField );
+    calcul->addInputField( "PTEMPER", previousPrimalField );
 
     if ( currMater ) {
         calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
@@ -727,6 +816,7 @@ FieldOnNodesRealPtr DiscreteComputation::getTransientThermalForces(
         if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) )
             elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ) );
     };
+
     elemVect->build();
     // Assemble
     return elemVect->assemble( _phys_problem->getDOFNumbering() );

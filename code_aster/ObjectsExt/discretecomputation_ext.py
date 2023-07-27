@@ -240,31 +240,18 @@ class ExtendedDiscreteComputation:
                 FieldOnNodes: Neumann forces field if assembly=True
         """
 
-        elem_vect = None
-        phys_pb = self.getPhysicalProblem()
-        model = phys_pb.getModel()
+        model = self.getPhysicalProblem().getModel()
 
         if model.isThermal():
-            elem_vect = self.getThermalNeumannForces(time_curr, time_step, theta, varc_curr)
+            return self.getThermalNeumannForces(time_curr, time_step, theta, varc_curr, assembly)
         elif model.isMechanical():
-            elem_vect = self.getMechanicalNeumannForces(
-                time_curr, time_step, theta, mode, varc_curr
+            return self.getMechanicalNeumannForces(
+                time_curr, time_step, theta, mode, varc_curr, assembly
             )
         elif model.isAcoustic():
-            elem_vect = self.getAcousticNeumannForces()
+            return self.getAcousticNeumannForces(assembly)
         else:
             raise RuntimeError("Not implemented")
-
-        if assembly:
-            if len(elem_vect.getElementaryTerms()) > 0 or elem_vect.getVeass():
-                return elem_vect.assembleWithLoadFunctions(phys_pb.getDOFNumbering(), time_curr)
-            else:
-                if model.isAcoustic():
-                    return FieldOnNodesComplex(phys_pb.getDOFNumbering())
-                else:
-                    return FieldOnNodesReal(phys_pb.getDOFNumbering())
-
-        return elem_vect
 
     @profile
     def getNonLinearNeumannForces(
@@ -285,13 +272,11 @@ class ExtendedDiscreteComputation:
                 FieldOnNodes: Neumann forces field if assembly=True
         """
 
-        elem_vect = None
-        phys_pb = self.getPhysicalProblem()
-        model = phys_pb.getModel()
+        model = self.getPhysicalProblem().getModel()
 
         if model.isThermal():
-            elem_vect = self.getThermalNonLinearNeumannForces(
-                primal_prev, primal_step, time_prev, time_step, theta
+            return self.getThermalNonLinearNeumannForces(
+                primal_prev, primal_step, time_prev, time_step, theta, assembly
             )
         elif model.isMechanical():
             raise RuntimeError("Not implemented")
@@ -299,49 +284,6 @@ class ExtendedDiscreteComputation:
             raise RuntimeError("Not implemented")
         else:
             raise RuntimeError("Not implemented")
-
-        if assembly:
-            if len(elem_vect.getElementaryTerms()) > 0:
-                return elem_vect.assembleWithLoadFunctions(phys_pb.getDOFNumbering(), time_curr)
-            else:
-                if model.isAcoustic():
-                    return FieldOnNodesComplex(phys_pb.getDOFNumbering())
-                else:
-                    return FieldOnNodesReal(phys_pb.getDOFNumbering())
-
-        return elem_vect
-
-    @profile
-    def getThermalExchangeForces(self, temp_curr, time_curr, time_step, theta, assembly=True):
-        """Return the thermal exchange forces field
-
-        Arguments:
-                temp_curr (FieldOnNodesReal): thermal field at current time
-                time_curr (float): Current time
-                time_step (float): Time increment
-                theta (float): Theta parameter for time-integration
-                assembly (bool): assemble if True
-
-        Returns:
-                ElementaryVector: elementary exchange forces vector if assembly=False
-                FieldOnNodes: exchange forces field if assembly=True
-        """
-
-        elem_vect = None
-        phys_pb = self.getPhysicalProblem()
-
-        if phys_pb.getModel().isThermal():
-            elem_vect = self._getThermalExchangeForces(temp_curr, time_curr, time_step, theta)
-        else:
-            raise RuntimeError("For thermic only")
-
-        if assembly:
-            if len(elem_vect.getElementaryTerms()) > 0:
-                return elem_vect.assembleWithLoadFunctions(phys_pb.getDOFNumbering(), time_curr)
-            else:
-                return FieldOnNodesReal(phys_pb.getDOFNumbering())
-
-        return elem_vect
 
     @profile
     def getImposedDualBC(self, time_curr=0.0, assembly=True):
@@ -356,26 +298,13 @@ class ExtendedDiscreteComputation:
                 FieldOnNodes: imposed nodal BC field if assembly=True
         """
 
-        elem_vect = None
-        phys_pb = self.getPhysicalProblem()
-        model = phys_pb.getModel()
+        model = self.getPhysicalProblem().getModel()
 
         if model.isThermal():
-            elem_vect = self.getThermalImposedDualBC(time_curr)
+            return self.getThermalImposedDualBC(time_curr, assembly)
         elif model.isMechanical():
-            elem_vect = self.getMechanicalImposedDualBC(time_curr)
+            return self.getMechanicalImposedDualBC(time_curr, assembly)
         elif model.isAcoustic():
-            elem_vect = self.getAcousticImposedDualBC()
+            return self.getAcousticImposedDualBC(assembly)
         else:
             raise RuntimeError("Not implemented")
-
-        if assembly:
-            if len(elem_vect.getElementaryTerms()) > 0:
-                return elem_vect.assembleWithLoadFunctions(phys_pb.getDOFNumbering(), time_curr)
-            else:
-                if model.isAcoustic():
-                    return FieldOnNodesComplex(phys_pb.getDOFNumbering())
-                else:
-                    return FieldOnNodesReal(phys_pb.getDOFNumbering())
-
-        return elem_vect

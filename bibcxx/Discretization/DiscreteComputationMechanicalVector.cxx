@@ -36,9 +36,13 @@
 #include "Modeling/XfemModel.h"
 #include "Utilities/Tools.h"
 
-ElementaryVectorDisplacementRealPtr DiscreteComputation::getMechanicalNeumannForces(
-    const ASTERDOUBLE time_curr, const ASTERDOUBLE time_step, const ASTERDOUBLE theta,
-    const ASTERINTEGER modeFourier, const FieldOnCellsRealPtr varc_curr ) const {
+std::variant< ElementaryVectorDisplacementRealPtr, FieldOnNodesRealPtr >
+DiscreteComputation::getMechanicalNeumannForces( const ASTERDOUBLE time_curr,
+                                                 const ASTERDOUBLE time_step,
+                                                 const ASTERDOUBLE theta,
+                                                 const ASTERINTEGER modeFourier,
+                                                 const FieldOnCellsRealPtr varc_curr,
+                                                 const bool assembly ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
 
@@ -226,6 +230,19 @@ ElementaryVectorDisplacementRealPtr DiscreteComputation::getMechanicalNeumannFor
 
     elemVect->build();
 
+    if ( assembly ) {
+        if ( elemVect->hasElementaryTerm() ) {
+            return elemVect->assembleWithLoadFunctions( _phys_problem->getDOFNumbering(),
+                                                        time_curr );
+        } else {
+            FieldOnNodesRealPtr vectAsse =
+                std::make_shared< FieldOnNodesReal >( _phys_problem->getDOFNumbering() );
+            vectAsse->setValues( 0.0 );
+            vectAsse->build();
+            return vectAsse;
+        }
+    }
+
     return elemVect;
 };
 
@@ -314,8 +331,9 @@ DiscreteComputation::getInternalForces( const FieldOnNodesRealPtr displ_prev,
 }
 
 /** @brief Compute AFFE_CHAR_MECA DDL_IMPO */
-ElementaryVectorDisplacementRealPtr
-DiscreteComputation::getMechanicalImposedDualBC( const ASTERDOUBLE time_curr ) const {
+std::variant< ElementaryVectorDisplacementRealPtr, FieldOnNodesRealPtr >
+DiscreteComputation::getMechanicalImposedDualBC( const ASTERDOUBLE time_curr,
+                                                 const bool assembly ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
 
@@ -415,6 +433,19 @@ DiscreteComputation::getMechanicalImposedDualBC( const ASTERDOUBLE time_curr ) c
     impl_vite( listOfLoads->getMechanicalLoadsFunction(), false );
 
     elemVect->build();
+
+    if ( assembly ) {
+        if ( elemVect->hasElementaryTerm() ) {
+            return elemVect->assembleWithLoadFunctions( _phys_problem->getDOFNumbering(),
+                                                        time_curr );
+        } else {
+            FieldOnNodesRealPtr vectAsse =
+                std::make_shared< FieldOnNodesReal >( _phys_problem->getDOFNumbering() );
+            vectAsse->setValues( 0.0 );
+            vectAsse->build();
+            return vectAsse;
+        }
+    }
 
     return elemVect;
 }

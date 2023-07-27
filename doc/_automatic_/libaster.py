@@ -842,15 +842,21 @@ class DiscreteComputation:
               FieldOnNodesComplex: imposed accoustic vector
         """
 
-    def getAcousticImposedDualBC(self):
+    def getAcousticImposedDualBC(self, assembly=True):
         """Return the acoustic imposed nodal BC elementary vector
+
+        Arguments:
+              assembly (bool) : if True return assembled vector (default: True)
 
         Returns:
               ElementaryVectorPressureComplex: imposed dual vector
         """
 
-    def getAcousticNeumannForces(self):
+    def getAcousticNeumannForces(self, assembly=True):
         """Return the elementary acoustic Neumann forces vector
+
+        Arguments:
+              assembly (bool) : if True return assembled vector (default: True)
 
         Returns:
               ElementaryVectorPressureComplex: elementary Neumann forces vector
@@ -962,15 +968,6 @@ class DiscreteComputation:
               with_dual (bool): compute dual terms or not (default: True)
         Returns:
               ElementaryMatrix: elementary elastic Stiffness matrix
-        """
-
-    def getThermalExchangeMatrix(self, time_curr):
-        """Return the elementary matices for exhange thermal matrix.
-
-        Arguments:
-            time_curr (float): Current time
-        Returns:
-            ElementaryMatrix: elementary exchange thermal matrices
         """
 
     def getExternalStateVariablesForces(self, time_curr, varc_curr, mask=None):
@@ -1227,11 +1224,12 @@ class DiscreteComputation:
               FieldOnNodesReal: imposed displacement vector
         """
 
-    def getMechanicalImposedDualBC(self, time_curr=0.0):
+    def getMechanicalImposedDualBC(self, time_curr=0.0, assembly=True):
         """Return the mechanical imposed nodal BC elementary vector
 
         Arguments:
               time_curr (float): Current time (default: 0.0)
+              assembly (bool) : if True return assembled vector (default: True)
 
         Returns:
               ElementaryVectorDisplacementReal: imposed dual vector
@@ -1251,7 +1249,7 @@ class DiscreteComputation:
         """
 
     def getMechanicalNeumannForces(
-        self, time_curr=0.0, time_step=0.0, theta=1.0, mode=0, varc_curr=None
+        self, time_curr=0.0, time_step=0.0, theta=1.0, mode=0, varc_curr=None, assembly=True
     ):
         """Return the elementary mechanical Neumann forces vector
 
@@ -1261,6 +1259,8 @@ class DiscreteComputation:
               theta (float): Theta parameter for time-integration
               mode (int) : fourier mode
               varc_curr (FieldOnCellsReal): external state variables at current time
+              assembly (bool) : if True return assembled vector (default: True)
+
         Returns:
               ElementaryVectorDisplacementReal: elementary Neumann forces vector
         """
@@ -1422,27 +1422,45 @@ class DiscreteComputation:
               FieldOnNodesReal: imposed thermal vector
         """
 
-    def getThermalImposedDualBC(self, time_curr=0.0):
+    def getThermalExchangeForces(self, temp_curr, time_curr=0.0, assembly=True):
+        """Return the elementary thermal Exchange forces vector
+
+        Arguments:
+              temp_curr (FieldOnNodesReal): thermal field at current time
+              time_curr (float): Current time
+              assembly (bool) : if True return assembled vector (default: True)
+
+        Returns:
+              ElementaryVectorThermalReal: elementary Exchange forces vector
+        """
+
+    def getThermalExchangeMatrix(self, time_curr):
+        """Return the elementary matices for exhange thermal matrix.
+
+        Arguments:
+            time_curr (float): Current time
+        Returns:
+            ElementaryMatrix: elementary exchange thermal matrices
+        """
+
+    def getThermalImposedDualBC(self, time_curr=0.0, assembly=True):
         """Return the thermal imposed nodal BC elementary vector
 
         Arguments:
               time_curr (float): Current time (default: 0.0)
+              assembly (bool) : if True return assembled vector (default: True)
 
         Returns:
               ElementaryVectorThermalReal: imposed dual vector
         """
 
-    def getThermalNeumannForces(
-        self, time_curr=0.0, time_step=0.0, theta=1.0, varc_curr=None, previousPrimalField=None
-    ):
+    def getThermalNeumannForces(self, time_curr=0.0, varc_curr=None, assembly=True):
         """Return the elementary thermal Neumann forces vector
 
         Arguments:
               time_curr (float): Current time
-              time_step (float): Time increment
-              theta (float): Theta parameter for time-integration
               varc_curr (FieldOnCellsReal): external state variables at current time
-              previousPrimalField (fieldOnNodesReal): solution field at previous time
+              assembly (bool) : if True return assembled vector (default: True)
 
         Returns:
               ElementaryVectorThermalReal: elementary Neumann forces vector

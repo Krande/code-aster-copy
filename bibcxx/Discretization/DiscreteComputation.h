@@ -106,13 +106,15 @@ class DiscreteComputation {
      * @param time_curr Time
      * @return Nodal field for imposed displacement
      */
-    ElementaryVectorDisplacementRealPtr
-    getMechanicalImposedDualBC( const ASTERDOUBLE time_curr = 0.0 ) const;
+    std::variant< ElementaryVectorDisplacementRealPtr, FieldOnNodesRealPtr >
+    getMechanicalImposedDualBC( const ASTERDOUBLE time_curr = 0.0,
+                                const bool assembly = true ) const;
 
-    ElementaryVectorTemperatureRealPtr
-    getThermalImposedDualBC( const ASTERDOUBLE time_curr = 0.0 ) const;
+    std::variant< ElementaryVectorTemperatureRealPtr, FieldOnNodesRealPtr >
+    getThermalImposedDualBC( const ASTERDOUBLE time_curr = 0.0, const bool assembly = true ) const;
 
-    ElementaryVectorPressureComplexPtr getAcousticImposedDualBC() const;
+    std::variant< ElementaryVectorPressureComplexPtr, FieldOnNodesComplexPtr >
+    getAcousticImposedDualBC( const bool assembly = true ) const;
 
     /**
      * @brief Compute Dirichlet reaction vector B^T * \lambda
@@ -133,22 +135,27 @@ class DiscreteComputation {
      * @param TimeParameters Parameters for time
      * @return Nodal field for Neumann loads
      */
-    ElementaryVectorDisplacementRealPtr
+    std::variant< ElementaryVectorDisplacementRealPtr, FieldOnNodesRealPtr >
     getMechanicalNeumannForces( const ASTERDOUBLE time_curr = 0.0,
                                 const ASTERDOUBLE time_step = 0.0, const ASTERDOUBLE theta = 1.0,
                                 const ASTERINTEGER modeFourier = 0,
-                                const FieldOnCellsRealPtr varc_curr = nullptr ) const;
+                                const FieldOnCellsRealPtr varc_curr = nullptr,
+                                const bool assembly = true ) const;
 
-    ElementaryVectorTemperatureRealPtr
+    std::variant< ElementaryVectorTemperatureRealPtr, FieldOnNodesRealPtr >
     getThermalNeumannForces( const ASTERDOUBLE time_curr = 0.0, const ASTERDOUBLE time_step = 0.0,
                              const ASTERDOUBLE theta = 1.0,
-                             const FieldOnCellsRealPtr varc_curr = nullptr ) const;
+                             const FieldOnCellsRealPtr varc_curr = nullptr,
+                             const bool assembly = true ) const;
 
-    ElementaryVectorTemperatureRealPtr getThermalNonLinearNeumannForces(
-        const FieldOnNodesRealPtr temp_prev, const FieldOnNodesRealPtr temp_step,
-        const ASTERDOUBLE time_prev, const ASTERDOUBLE time_step, const ASTERDOUBLE theta ) const;
+    std::variant< ElementaryVectorTemperatureRealPtr, FieldOnNodesRealPtr >
+    getThermalNonLinearNeumannForces( const FieldOnNodesRealPtr temp_prev,
+                                      const FieldOnNodesRealPtr temp_step,
+                                      const ASTERDOUBLE time_prev, const ASTERDOUBLE time_step,
+                                      const ASTERDOUBLE theta, const bool assembly = true ) const;
 
-    ElementaryVectorPressureComplexPtr getAcousticNeumannForces() const;
+    std::variant< ElementaryVectorPressureComplexPtr, FieldOnNodesComplexPtr >
+    getAcousticNeumannForces( const bool assembly = true ) const;
 
     /**
      * @brief Compute elementary matrices for mechanical stiffness (RIGI_MECA)
@@ -325,16 +332,23 @@ class DiscreteComputation {
      */
     PhysicalProblemPtr getPhysicalProblem() const { return _phys_problem; };
 
-    ElementaryVectorTemperatureRealPtr
+    std::variant< ElementaryVectorTemperatureRealPtr, FieldOnNodesRealPtr >
     getThermalExchangeForces( const FieldOnNodesRealPtr temp_curr,
                               const ASTERDOUBLE time_curr = 0.0, const ASTERDOUBLE time_step = 0.0,
-                              const ASTERDOUBLE time_theta = .0 ) const;
+                              const ASTERDOUBLE time_theta = 1.0,
+                              const bool assembly = true ) const;
 
     FieldOnNodesRealPtr
     getTransientThermalForces( const ASTERDOUBLE time_curr, const ASTERDOUBLE time_step,
                                const ASTERDOUBLE theta,
-                               const FieldOnCellsRealPtr varc_curr = nullptr,
-                               const FieldOnNodesRealPtr _previousPrimalField = nullptr ) const;
+                               const FieldOnNodesRealPtr previousPrimalField,
+                               const FieldOnCellsRealPtr varc_curr = nullptr ) const;
+
+    std::variant< ElementaryVectorTemperatureRealPtr, FieldOnNodesRealPtr >
+    getTransientThermalLoadForces( const ASTERDOUBLE time_curr, const ASTERDOUBLE time_step,
+                                   const ASTERDOUBLE theta,
+                                   const FieldOnNodesRealPtr _previousPrimalField = nullptr,
+                                   const bool assembly = true ) const;
 
     FieldOnNodesRealPtr getNonLinearTransientThermalForces(
         const FieldOnNodesRealPtr temp_prev, const FieldOnNodesRealPtr temp_step,

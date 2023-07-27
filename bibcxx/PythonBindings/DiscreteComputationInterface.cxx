@@ -36,11 +36,12 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
 
       Arguments:
             time_curr (float): Current time (default: 0.0)
+            assembly (bool) : if True return assembled vector (default: True)
 
       Returns:
             ElementaryVectorDisplacementReal: imposed dual vector
         )",
-              py::arg( "time_curr" ) = 0.0 )
+              py::arg( "time_curr" ) = 0.0, py::arg( "assembly" ) = true )
 
         .def( "getThermalImposedDualBC", &DiscreteComputation::getThermalImposedDualBC,
               R"(
@@ -48,19 +49,24 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
 
       Arguments:
             time_curr (float): Current time (default: 0.0)
+            assembly (bool) : if True return assembled vector (default: True)
 
       Returns:
             ElementaryVectorThermalReal: imposed dual vector
         )",
-              py::arg( "time_curr" ) = 0.0 )
+              py::arg( "time_curr" ) = 0.0, py::arg( "assembly" ) = true )
 
         .def( "getAcousticImposedDualBC", &DiscreteComputation::getAcousticImposedDualBC,
               R"(
       Return the acoustic imposed nodal BC elementary vector
 
+      Arguments:
+            assembly (bool) : if True return assembled vector (default: True)
+
       Returns:
             ElementaryVectorPressureComplex: imposed dual vector
-        )" )
+        )",
+              py::arg( "assembly" ) = true )
 
         .def( "getDualForces", &DiscreteComputation::getDualForces,
               R"(
@@ -86,7 +92,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
               )",
               py::arg( "disp_curr" ), py::arg( "scaling" ) = 1.0 )
 
-        .def( "_getThermalExchangeForces", &DiscreteComputation::getThermalExchangeForces,
+        .def( "getThermalExchangeForces", &DiscreteComputation::getThermalExchangeForces,
               R"(
       Return the elementary thermal Exchange forces vector
 
@@ -95,12 +101,13 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             time_curr (float): Current time
             time_step (float): Time increment
             theta (float): Theta parameter for time-integration
+            assembly (bool) : if True return assembled vector (default: True)
 
       Returns:
             ElementaryVectorThermalReal: elementary Exchange forces vector
         )",
               py::arg( "temp_curr" ), py::arg( "time_curr" ) = 0.0, py::arg( "time_step" ) = 0.0,
-              py::arg( "theta" ) = 1.0 )
+              py::arg( "theta" ) = 1.0, py::arg( "assembly" ) = true )
 
         .def( "getMechanicalNeumannForces", &DiscreteComputation::getMechanicalNeumannForces,
               R"(
@@ -112,11 +119,14 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             theta (float): Theta parameter for time-integration
             mode (int) : fourier mode
             varc_curr (FieldOnCellsReal): external state variables at current time
+            assembly (bool) : if True return assembled vector (default: True)
+
       Returns:
             ElementaryVectorDisplacementReal: elementary Neumann forces vector
         )",
               py::arg( "time_curr" ) = 0.0, py::arg( "time_step" ) = 0.0, py::arg( "theta" ) = 1.0,
-              py::arg( "mode" ) = 0, py::arg( "varc_curr" ) = nullptr )
+              py::arg( "mode" ) = 0, py::arg( "varc_curr" ) = nullptr,
+              py::arg( "assembly" ) = true )
 
         .def( "getThermalNeumannForces", &DiscreteComputation::getThermalNeumannForces,
               R"(
@@ -127,20 +137,25 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             time_step (float): Time increment
             theta (float): Theta parameter for time-integration
             varc_curr (FieldOnCellsReal): external state variables at current time
+            assembly (bool) : if True return assembled vector (default: True)
 
       Returns:
             ElementaryVectorThermalReal: elementary Neumann forces vector
         )",
               py::arg( "time_curr" ) = 0.0, py::arg( "time_step" ) = 0.0, py::arg( "theta" ) = 1.0,
-              py::arg( "varc_curr" ) = nullptr )
+              py::arg( "varc_curr" ) = nullptr, py::arg( "assembly" ) = true )
 
         .def( "getAcousticNeumannForces", &DiscreteComputation::getAcousticNeumannForces,
               R"(
       Return the elementary acoustic Neumann forces vector
 
+      Arguments:
+            assembly (bool) : if True return assembled vector (default: True)
+
       Returns:
             ElementaryVectorPressureComplex: elementary Neumann forces vector
-        )" )
+        )",
+              py::arg( "assembly" ) = true )
 
         .def( "getExternalStateVariablesForces",
               &DiscreteComputation::getExternalStateVariablesForces, R"(
@@ -171,6 +186,41 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             )",
               py::arg( "time_curr" ), py::arg( "time_step" ), py::arg( "theta" ),
               py::arg( "varc_curr" ) = nullptr, py::arg( "previousPrimalField" ) = nullptr )
+
+        .def( "getTransientThermalForces", &DiscreteComputation::getTransientThermalForces, R"(
+            Compute Transient Thermal forces due to time scheme
+            Option CHAR_THER_EVOL
+
+            Arguments:
+                  time_curr (float): Current time
+                  time_step (float): Time increment
+                  theta (float): Theta parameter for integration
+                  previousPrimalField (fieldOnNodesReal): solution field at previous time
+                  varc_curr (FieldOnCellsReal): external state variables at current time
+
+            Returns:
+                  FieldOnNodes: load
+            )",
+              py::arg( "time_curr" ), py::arg( "time_step" ), py::arg( "theta" ),
+              py::arg( "previousPrimalField" ), py::arg( "varc_curr" ) = nullptr )
+
+        .def( "getTransientThermalLoadForces", &DiscreteComputation::getTransientThermalLoadForces,
+              R"(
+            Compute Transient Thermal Load.
+            Option CHAR_THER.
+
+            Arguments:
+                  time_curr (float): Current time
+                  time_step (float): Time increment
+                  theta (float): Theta parameter for integration
+                  previousPrimalField (FieldOnNodesReal): solution field at previous time
+                  assembly (bool) : if True return assembled vector (default: True)
+
+            Returns:
+                  FieldOnNodes: load
+            )",
+              py::arg( "time_curr" ), py::arg( "time_step" ), py::arg( "theta" ),
+              py::arg( "previousPrimalField" ) = nullptr, py::arg( "assembly" ) = true )
 
         .def( "getNonLinearTransientThermalForces",
               &DiscreteComputation::getNonLinearTransientThermalForces,
