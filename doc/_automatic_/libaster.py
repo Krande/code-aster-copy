@@ -980,12 +980,13 @@ class DiscreteComputation:
               ElementaryMatrix: elementary elastic Stiffness matrix
         """
 
-    def getExternalStateVariablesForces(self, time_curr, varc_curr, mask=None):
+    def getExternalStateVariablesForces(self, time_curr, varc_curr, mode=0, mask=None):
         """Compute load from external state variables
 
         Arguments:
               time_curr (float): Current time
               varc_curr (FieldOnCellsReal): external state variables at current time
+              mode (int): fourier mode
               mask (FieldOnCellsLongPtr): mask to assemble
 
         Returns:
@@ -1449,12 +1450,16 @@ class DiscreteComputation:
               FieldOnNodesReal: imposed thermal vector
         """
 
-    def getThermalExchangeForces(self, temp_curr, time_curr=0.0, assembly=True):
+    def getThermalExchangeForces(
+        self, temp_curr, time_curr=0.0, time_step=0.0, theta=1.0, assembly=True
+    ):
         """Return the elementary thermal Exchange forces vector
 
         Arguments:
               temp_curr (FieldOnNodesReal): thermal field at current time
               time_curr (float): Current time
+              time_step (float): Time increment
+              theta (float): Theta parameter for time-integration
               assembly (bool) : if True return assembled vector (default: True)
 
         Returns:
@@ -1481,11 +1486,13 @@ class DiscreteComputation:
               ElementaryVectorThermalReal: imposed dual vector
         """
 
-    def getThermalNeumannForces(self, time_curr=0.0, assembly=True):
+    def getThermalNeumannForces(self, time_curr=0.0, time_step=0.0, theta=1.0, assembly=True):
         """Return the elementary thermal Neumann forces vector
 
         Arguments:
               time_curr (float): Current time
+              time_step (float): Time increment
+              theta (float): Theta parameter for time-integration
               assembly (bool) : if True return assembled vector (default: True)
 
         Returns:
@@ -1540,11 +1547,15 @@ class DiscreteComputation:
             ElementaryMatrix: elementary matrix
         """
 
-    def getThermalVolumetricForces(self, time_curr=0.0, varc_curr=None, assembly=True):
+    def getThermalVolumetricForces(
+        self, time_curr=0.0, time_step=0.0, theta=1.0, varc_curr=None, assembly=True
+    ):
         """Return the elementary thermal Volumetric forces vector
 
         Arguments:
               time_curr (float): Current time
+              time_step (float): Time increment
+              theta (float): Theta parameter for time-integration
               varc_curr (FieldOnCellsReal): external state variables at current time
               assembly (bool) : if True return assembled vector (default: True)
 
@@ -1552,17 +1563,54 @@ class DiscreteComputation:
               ElementaryVectorThermalReal: elementary Volumetric forces vector
         """
 
-    def getTransientThermalForces(
-        self, time_curr, time_step, theta, varc_curr=None, previousPrimalField=None
+    def getTransientThermalForces(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. getTransientThermalForces(self: libaster.DiscreteComputation, time_curr: float, time_step: float, theta: float, varc_curr: FieldOnNodes<double> = None, previousPrimalField: FieldOnCells<double> = None) -> FieldOnNodes<double>
+
+
+                    Compute Transient Thermal Load
+
+                    Arguments:
+                          time_curr (float): Current time
+                          time_step (float): Time increment
+                          theta (float): Theta parameter for integration
+                          varc_curr (FieldOnCellsReal): external state variables at current time
+                          previousPrimalField (fieldOnNodesReal): solution field at previous time
+
+                    Returns:
+                          FieldOnNodes: load
+
+
+        2. getTransientThermalForces(self: libaster.DiscreteComputation, time_curr: float, time_step: float, theta: float, previousPrimalField: FieldOnNodes<double>, varc_curr: FieldOnCells<double> = None) -> FieldOnNodes<double>
+
+
+                    Compute Transient Thermal forces due to time scheme
+                    Option CHAR_THER_EVOL
+
+                    Arguments:
+                          time_curr (float): Current time
+                          time_step (float): Time increment
+                          theta (float): Theta parameter for integration
+                          previousPrimalField (fieldOnNodesReal): solution field at previous time
+                          varc_curr (FieldOnCellsReal): external state variables at current time
+
+                    Returns:
+                          FieldOnNodes: load
+        """
+
+    def getTransientThermalLoadForces(
+        self, time_curr, time_step, theta, previousPrimalField=None, assembly=True
     ):
-        """Compute Transient Thermal Load
+        """Compute Transient Thermal Load.
+        Option CHAR_THER.
 
         Arguments:
               time_curr (float): Current time
               time_step (float): Time increment
               theta (float): Theta parameter for integration
-              varc_curr (FieldOnCellsReal): external state variables at current time
-              previousPrimalField (fieldOnNodesReal): solution field at previous time
+              previousPrimalField (FieldOnNodesReal): solution field at previous time
+              assembly (bool) : if True return assembled vector (default: True)
 
         Returns:
               FieldOnNodes: load
@@ -7052,6 +7100,9 @@ class ElementaryVectorReal(BaseElementaryVector):
     def getVeass(self):
         pass
 
+    def setVeass(self, arg0, arg1):
+        pass
+
 
 # class ElementaryVectorComplex in libaster
 
@@ -7106,6 +7157,9 @@ class ElementaryVectorComplex(BaseElementaryVector):
         pass
 
     def getVeass(self):
+        pass
+
+    def setVeass(self, arg0, arg1):
         pass
 
 
@@ -11677,6 +11731,13 @@ class PhysicalProblem:
 
         Returns:
             FieldOnCellsRealPtr : field of reference values
+        """
+
+    def setDOFNumbering(self, dofNum):
+        """Set the DOF numbering
+
+        Arguments:
+            dofNum (BaseDOFNumberingPtr): a pointer to the DOF numbering
         """
 
     def zeroDirichletBCDOFs(self, arg0):
