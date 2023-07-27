@@ -264,7 +264,7 @@ def _computeRhs(disr_comp, is_evol, time_curr, time_delta, time_theta, previousP
         time = {0: time_curr - time_delta, 1: time_curr}
         temp = {0: temp_prev, 1: FieldOnNodesReal(disr_comp.getPhysicalProblem().getDOFNumbering())}
 
-        varc = disr_comp.getPhysicalProblem().getExternalStateVariables(time_curr)
+        varc = disr_comp.getPhysicalProblem().getExternalStateVariables(time[time_theta])
 
         rhs = disr_comp.getThermalNeumannForces(time_curr, time_delta, time_theta)
 
