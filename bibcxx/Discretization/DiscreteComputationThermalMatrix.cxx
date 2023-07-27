@@ -534,74 +534,104 @@ DiscreteComputation::getThermalExchangeMatrix( const ASTERDOUBLE &time_curr ) co
     return elemMatr;
 };
 
-// ElementaryVectorTemperatureRealPtr DiscreteComputation::getThermalNonLinearNeumannForces(
-//     const FieldOnNodesRealPtr temp_prev, const FieldOnNodesRealPtr temp_step,
-//     const ASTERDOUBLE time_prev, const ASTERDOUBLE time_step, const ASTERDOUBLE theta ) const {
+ElementaryMatrixTemperatureRealPtr
+DiscreteComputation::getThermalTangentNonLinearNeumannMatrix( const FieldOnNodesRealPtr temp_curr,
+                                                              const ASTERDOUBLE time_curr ) const {
 
-//     AS_ASSERT( _phys_problem->getModel()->isThermal() );
+    AS_ASSERT( _phys_problem->getModel()->isThermal() );
 
-//     auto elemVect = std::make_shared< ElementaryVectorTemperatureReal >(
-//         _phys_problem->getModel(), _phys_problem->getMaterialField(),
-//         _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
+    auto elemMatr = std::make_shared< ElementaryMatrixTemperatureReal >(
+        _phys_problem->getModel(), _phys_problem->getMaterialField(),
+        _phys_problem->getElementaryCharacteristics() );
 
-//     // Init
-//     ASTERINTEGER iload = 1;
+    // Setup
+    const std::string calcul_option( "MTAN_THER" );
+    elemMatr->prepareCompute( calcul_option );
 
-//     // Setup
-//     const std::string calcul_option( "CHAR_THER" );
-//     elemVect->prepareCompute( calcul_option );
+    // Main parameters
+    auto currModel = _phys_problem->getModel();
+    auto listOfLoads = _phys_problem->getListOfLoads();
+    auto model_FEDesc = currModel->getFiniteElementDescriptor();
+    AS_ASSERT( model_FEDesc );
 
-//     // Main parameters
-//     auto currModel = _phys_problem->getModel();
-//     auto listOfLoads = _phys_problem->getListOfLoads();
-//     auto model_FEDesc = currModel->getFiniteElementDescriptor();
-//     AS_ASSERT( model_FEDesc );
+    auto calcul = std::make_unique< Calcul >( calcul_option );
 
-//     auto calcul = std::make_unique< Calcul >( calcul_option );
-//     calcul->setModel( currModel );
+    auto impl = [&]( auto load, const std::string &option, const std::string &name,
+                     const std::string &param, const FiniteElementDescriptorPtr FED ) {
+        if ( load->hasLoadField( name ) ) {
+            calcul->setOption( option );
+            calcul->setFiniteElementDescriptor( FED );
 
-//     auto temp_curr = std::make_shared< FieldOnNodesReal >( *temp_prev + *temp_step );
+            calcul->clearInputs();
+            calcul->addTimeField( "PTEMPSR", time_curr, 0.0, 0.0 );
+            calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
+            calcul->addInputField( "PTEMPER", temp_curr );
 
-//     auto impl = [&]( auto load, const ASTERINTEGER &load_i, const std::string &option,
-//                      const std::string &name, const std::string &param,
-//                      const FiniteElementDescriptorPtr FED ) {
-//         if ( load->hasLoadField( name ) ) {
-//             calcul->setOption( option );
-//             calcul->setFiniteElementDescriptor( FED );
+            calcul->addInputField( param, load->getConstantLoadField( name ) );
 
-//             calcul->clearInputs();
-//             calcul->addTimeField( "PTEMPSR", time_prev + time_step, time_step, theta );
-//             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
-//             calcul->addInputField( "PTEMPER", temp_curr );
+            calcul->clearOutputs();
+            calcul->addOutputElementaryTerm( "PMATTTR", std::make_shared< ElementaryTermReal >() );
+            calcul->compute();
+            if ( calcul->hasOutputElementaryTerm( "PMATTTR" ) ) {
+                elemMatr->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATTTR" ) );
+            }
+        }
+    };
 
-//             calcul->addInputField( param, load->getConstantLoadField( name ) );
+    auto therLoadReal = listOfLoads->getThermalLoadsReal();
+    for ( const auto &load : therLoadReal ) {
+        impl( load, "MTAN_THER_FLUXNL", "FLUNL", "PFLUXNL", model_FEDesc );
+        impl( load, "MTAN_THER_RAYO_R", "RAYO", "PRAYONR", model_FEDesc );
+    }
 
-//             calcul->clearOutputs();
-//             calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >()
-//             ); calcul->compute(); if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
-//                 elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ),
-//                                              load_i );
-//             }
-//         }
-//     };
+    auto therLoadFunc = listOfLoads->getThermalLoadsFunction();
+    for ( const auto &load : therLoadFunc ) {
+        impl( load, "MTAN_THER_RAYO_F", "RAYO", "PRAYONF", model_FEDesc );
+    }
 
-//     auto therLoadReal = listOfLoads->getThermalLoadsReal();
-//     for ( const auto &load : therLoadReal ) {
-//         impl( load, iload, "CHAR_THER_FLUNL", "FLUNL", "PFLUXNL", model_FEDesc );
-//         impl( load, iload, "CHAR_THER_RAYO_R", "RAYO", "PRAYONR", model_FEDesc );
-//         impl( load, iload, "CHAR_THER_SOURNL", "SOUNL", "PSOURNL", model_FEDesc );
+    elemMatr->build();
 
-//         iload++;
-//     }
+    return elemMatr;
+};
 
-//     auto therLoadFunc = listOfLoads->getThermalLoadsFunction();
-//     for ( const auto &load : therLoadFunc ) {
-//         impl( load, iload, "CHAR_THER_RAYO_F", "RAYO", "PRAYONF", model_FEDesc );
+ElementaryMatrixTemperatureRealPtr DiscreteComputation::getThermalTangentNonLinearVolumetricMatrix(
+    const FieldOnNodesRealPtr temp_curr, const ASTERDOUBLE time_curr ) const {
 
-//         iload++;
-//     }
+    AS_ASSERT( _phys_problem->getModel()->isThermal() );
+    const std::string option( "MTAN_THER_SOURNL" );
 
-//     elemVect->build();
+    auto elemMatr = std::make_shared< ElementaryMatrixTemperatureReal >(
+        _phys_problem->getModel(), _phys_problem->getMaterialField(),
+        _phys_problem->getElementaryCharacteristics() );
+    elemMatr->prepareCompute( option );
 
-//     return elemVect;
-// };
+    // Get main parameters
+    auto currModel = _phys_problem->getModel();
+    auto listOfLoads = _phys_problem->getListOfLoads();
+
+    // Prepare computing
+    CalculPtr calcul = std::make_shared< Calcul >( option );
+    calcul->setModel( currModel );
+
+    auto therLoadReal = listOfLoads->getThermalLoadsReal();
+    for ( const auto &load : therLoadReal ) {
+        if ( load->hasLoadField( "SOUNL" ) ) {
+            calcul->clearInputs();
+            calcul->addTimeField( "PTEMPSR", time_curr, 0.0, 0.0 );
+            calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
+            calcul->addInputField( "PTEMPEI", temp_curr );
+
+            calcul->addInputField( "PSOURNL", load->getConstantLoadField( "SOUNL" ) );
+
+            calcul->clearOutputs();
+            calcul->addOutputElementaryTerm( "PMATTTR", std::make_shared< ElementaryTermReal >() );
+            calcul->compute();
+            if ( calcul->hasOutputElementaryTerm( "PMATTTR" ) ) {
+                elemMatr->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATTTR" ) );
+            }
+        }
+    }
+
+    elemMatr->build();
+    return elemMatr;
+};

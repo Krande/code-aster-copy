@@ -222,6 +222,38 @@ class ExtendedDiscreteComputation:
         return matr_elem
 
     @profile
+    def getVolumetricForces(
+        self, time_curr=0.0, time_step=0.0, theta=1, mode=0, varc_curr=None, assembly=True
+    ):
+        """Return the volumetric forces field
+
+        Arguments:
+                time_curr (float): Current time
+                time_step (float): Time increment
+                theta (float): Theta parameter for time-integration
+                mode (int) : fourier mode
+                varc_curr (FieldOnCellsReal): external state variables at current time (default: None)
+                assembly (bool): assemble if True
+
+        Returns:
+                ElementaryVector: elementary volumetric forces vector if assembly=False
+                FieldOnNodes: volumetric forces field if assembly=True
+        """
+
+        model = self.getPhysicalProblem().getModel()
+
+        if model.isThermal():
+            return self.getThermalVolumetricForces(time_curr, time_step, theta, varc_curr, assembly)
+        elif model.isMechanical():
+            return self.getMechanicalVolumetricForces(
+                time_curr, time_step, theta, mode, varc_curr, assembly
+            )
+        elif model.isAcoustic():
+            return self.getAcousticVolumetricForces(assembly)
+        else:
+            raise RuntimeError("Not implemented")
+
+    @profile
     def getNeumannForces(
         self, time_curr=0.0, time_step=0.0, theta=1, mode=0, varc_curr=None, assembly=True
     ):
@@ -243,7 +275,7 @@ class ExtendedDiscreteComputation:
         model = self.getPhysicalProblem().getModel()
 
         if model.isThermal():
-            return self.getThermalNeumannForces(time_curr, time_step, theta, varc_curr, assembly)
+            return self.getThermalNeumannForces(time_curr, time_step, theta, assembly)
         elif model.isMechanical():
             return self.getMechanicalNeumannForces(
                 time_curr, time_step, theta, mode, varc_curr, assembly

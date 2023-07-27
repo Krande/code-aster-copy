@@ -99,6 +99,9 @@ def calc_vect_elem_ops(self, **args):
     neum_elem = disc_comp.getNeumannForces(time, mode=fourier, varc_curr=varc, assembly=False)
     vect_elem.addElementaryTerm(neum_elem.getElementaryTerms())
 
+    volu_elem = disc_comp.getVolumetricForces(time, mode=fourier, varc_curr=varc, assembly=False)
+    vect_elem.addElementaryTerm(volu_elem.getElementaryTerms())
+
     dual_elem = disc_comp.getImposedDualBC(time, assembly=False)
     vect_elem.addElementaryTerm(dual_elem.getElementaryTerms())
 

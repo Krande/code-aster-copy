@@ -89,7 +89,7 @@ matM.assemble()
 form = FORMULE(VALE="X-X+Y-Y+100", NOM_PARA=["X", "Y"])
 f_hho = hho.projectOnHHOSpace(form)
 rhs2 = H * matM * f_hho
-rhs = disc_comp.getNeumannForces()
+rhs = disc_comp.getVolumetricForces()
 
 # test.assertAlmostEqual(rhs.norm("NORM_2"), rhs2.norm("NORM_2"), delta=1e-6)
 

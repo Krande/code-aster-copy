@@ -124,7 +124,7 @@ for order in ("LINEAIRE", "QUADRATIQUE"):
         rigidity = disc_comp.getLinearStiffnessMatrix(assembly=True)
 
         # compute external load: (f, vT)_T
-        rhs = disc_comp.getNeumannForces()
+        rhs = disc_comp.getVolumetricForces()
 
         # compute Dirichlet BC to apply
         diriBCs = disc_comp.getDirichletBC()

@@ -147,6 +147,9 @@ def _computeRhs(phys_pb, disr_comp, time):
     # compute neumann forces
     rhs += disr_comp.getNeumannForces(time, varc_curr=varc)
 
+    # compute volumetric forces
+    rhs += disr_comp.getVolumetricForces(time, varc_curr=varc)
+
     if mater.hasExternalStateVariableForLoad():
         rhs += disr_comp.getExternalStateVariablesForces(time, varc)
 

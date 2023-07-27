@@ -257,12 +257,16 @@ def _computeRhs(disr_comp, is_evol, time_curr, time_delta, time_theta, previousP
     logger.debug("<THER_LINEAIRE><RHS>: Nodal BC")
 
     def rhs_theta(disr_comp, time_curr, time_delta, time_theta, temp_prev):
-
+        time = {0: time_curr - time_delta, 1: time_curr}
         temp = {0: temp_prev, 1: FieldOnNodesReal(disr_comp.getPhysicalProblem().getDOFNumbering())}
 
         varc = disr_comp.getPhysicalProblem().getExternalStateVariables(time_curr)
 
-        rhs = disr_comp.getNeumannForces(time_curr, time_delta, time_theta, varc_curr=varc)
+        rhs = disr_comp.getThermalNeumannForces(time_curr, time_delta, time_theta)
+
+        rhs += disr_comp.getThermalVolumetricForces(
+            time_curr, time_delta, time_theta, varc_curr=varc
+        )
 
         rhs += disr_comp.getThermalExchangeForces(
             temp[time_theta], time_curr, time_delta, time_theta

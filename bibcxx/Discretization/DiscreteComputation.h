@@ -144,18 +144,40 @@ class DiscreteComputation {
 
     std::variant< ElementaryVectorTemperatureRealPtr, FieldOnNodesRealPtr >
     getThermalNeumannForces( const ASTERDOUBLE time_curr = 0.0, const ASTERDOUBLE time_step = 0.0,
-                             const ASTERDOUBLE theta = 1.0,
-                             const FieldOnCellsRealPtr varc_curr = nullptr,
-                             const bool assembly = true ) const;
+                             const ASTERDOUBLE theta = 1.0, const bool assembly = true ) const;
 
     std::variant< ElementaryVectorTemperatureRealPtr, FieldOnNodesRealPtr >
-    getThermalNonLinearNeumannForces( const FieldOnNodesRealPtr temp_prev,
-                                      const FieldOnNodesRealPtr temp_step,
-                                      const ASTERDOUBLE time_prev, const ASTERDOUBLE time_step,
-                                      const ASTERDOUBLE theta, const bool assembly = true ) const;
+    getThermalNonLinearNeumannForces( const FieldOnNodesRealPtr temp_curr,
+                                      const ASTERDOUBLE time_curr,
+                                      const bool assembly = true ) const;
 
     std::variant< ElementaryVectorPressureComplexPtr, FieldOnNodesComplexPtr >
     getAcousticNeumannForces( const bool assembly = true ) const;
+
+    /**
+     * @brief Compute volumetric loads
+     * @param TimeParameters Parameters for time
+     */
+    std::variant< ElementaryVectorDisplacementRealPtr, FieldOnNodesRealPtr >
+    getMechanicalVolumetricForces( const ASTERDOUBLE time_curr = 0.0,
+                                   const ASTERDOUBLE time_step = 0.0, const ASTERDOUBLE theta = 1.0,
+                                   const ASTERINTEGER modeFourier = 0,
+                                   const FieldOnCellsRealPtr varc_curr = nullptr,
+                                   const bool assembly = true ) const;
+
+    std::variant< ElementaryVectorTemperatureRealPtr, FieldOnNodesRealPtr >
+    getThermalVolumetricForces( const ASTERDOUBLE time_curr = 0.0,
+                                const ASTERDOUBLE time_step = 0.0, const ASTERDOUBLE theta = 1.0,
+                                const FieldOnCellsRealPtr varc_curr = nullptr,
+                                const bool assembly = true ) const;
+
+    std::variant< ElementaryVectorPressureComplexPtr, FieldOnNodesComplexPtr >
+    getAcousticVolumetricForces( const bool assembly = true ) const;
+
+    std::variant< ElementaryVectorTemperatureRealPtr, FieldOnNodesRealPtr >
+    getThermalNonLinearVolumetricForces( const FieldOnNodesRealPtr temp_curr,
+                                         const ASTERDOUBLE time_curr,
+                                         const bool assembly = true ) const;
 
     /**
      * @brief Compute elementary matrices for mechanical stiffness (RIGI_MECA)
@@ -389,6 +411,14 @@ class DiscreteComputation {
                                 const FieldOnNodesRealPtr temp_step, const ASTERDOUBLE &time_step,
                                 const FieldOnCellsRealPtr varc_curr = nullptr,
                                 const VectorString &groupOfCells = VectorString() ) const;
+
+    ElementaryMatrixTemperatureRealPtr
+    getThermalTangentNonLinearVolumetricMatrix( const FieldOnNodesRealPtr temp_curr,
+                                                const ASTERDOUBLE time_curr ) const;
+
+    ElementaryMatrixTemperatureRealPtr
+    getThermalTangentNonLinearNeumannMatrix( const FieldOnNodesRealPtr temp_curr,
+                                             const ASTERDOUBLE time_curr ) const;
 
     /**
      * @brief Compute tangent matrix (not assembled)

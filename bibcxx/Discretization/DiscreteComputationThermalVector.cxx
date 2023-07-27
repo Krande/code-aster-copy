@@ -38,7 +38,6 @@
 std::variant< ElementaryVectorTemperatureRealPtr, FieldOnNodesRealPtr >
 DiscreteComputation::getThermalNeumannForces( const ASTERDOUBLE time_curr,
                                               const ASTERDOUBLE time_step, const ASTERDOUBLE theta,
-                                              const FieldOnCellsRealPtr varc_curr,
                                               const bool assembly ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
@@ -104,6 +103,104 @@ DiscreteComputation::getThermalNeumannForces( const ASTERDOUBLE time_curr,
                                              iload );
             }
         }
+
+        iload++;
+    }
+
+    auto therLoadFunc = listOfLoads->getThermalLoadsFunction();
+    for ( const auto &load : therLoadFunc ) {
+        // Termes FLUX XYZ
+        if ( load->hasLoadField( "FLURE" ) ) {
+            auto flow_xyz_field = load->getConstantLoadField( "FLURE" );
+            calcul->setOption( "CHAR_THER_FLUN_F" );
+            calcul->setFiniteElementDescriptor( model_FEDesc );
+            calcul->clearInputs();
+            calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
+            calcul->addTimeField( "PTEMPSR", time_curr, time_step, theta );
+            calcul->addInputField( "PFLUXNF", flow_xyz_field );
+            calcul->clearOutputs();
+            calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >() );
+            calcul->compute();
+            if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
+                elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ),
+                                             iload );
+            }
+        }
+
+        // Termes FLUX NORM
+        if ( load->hasLoadField( "FLUR2" ) ) {
+            auto flow_nor_field = load->getConstantLoadField( "FLUR2" );
+            calcul->setOption( "CHAR_THER_FLUX_F" );
+            calcul->setFiniteElementDescriptor( model_FEDesc );
+            calcul->clearInputs();
+            calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
+            calcul->addTimeField( "PTEMPSR", time_curr, time_step, theta );
+            calcul->addInputField( "PFLUXVF", flow_nor_field );
+            calcul->clearOutputs();
+            calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >() );
+            calcul->compute();
+            if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
+                elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ),
+                                             iload );
+            }
+        }
+
+        iload++;
+    }
+
+    elemVect->build();
+
+    if ( assembly ) {
+        if ( elemVect->hasElementaryTerm() ) {
+            return elemVect->assembleWithLoadFunctions( _phys_problem->getDOFNumbering(),
+                                                        time_curr );
+        } else {
+            FieldOnNodesRealPtr vectAsse =
+                std::make_shared< FieldOnNodesReal >( _phys_problem->getDOFNumbering() );
+            vectAsse->setValues( 0.0 );
+            vectAsse->build();
+            return vectAsse;
+        }
+    }
+
+    return elemVect;
+};
+
+std::variant< ElementaryVectorTemperatureRealPtr, FieldOnNodesRealPtr >
+DiscreteComputation::getThermalVolumetricForces( const ASTERDOUBLE time_curr,
+                                                 const ASTERDOUBLE time_step,
+                                                 const ASTERDOUBLE theta,
+                                                 const FieldOnCellsRealPtr varc_curr,
+                                                 const bool assembly ) const {
+
+    AS_ASSERT( _phys_problem->getModel()->isThermal() );
+
+    auto elemVect = std::make_shared< ElementaryVectorTemperatureReal >(
+        _phys_problem->getModel(), _phys_problem->getMaterialField(),
+        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
+
+    // Init
+    ASTERINTEGER iload = 1;
+
+    // Setup
+    const std::string calcul_option( "CHAR_THER" );
+    elemVect->prepareCompute( calcul_option );
+
+    // Main parameters
+    auto currModel = _phys_problem->getModel();
+    auto currMater = _phys_problem->getMaterialField();
+    auto currCodedMater = _phys_problem->getCodedMaterial();
+    auto currElemChara = _phys_problem->getElementaryCharacteristics();
+    auto listOfLoads = _phys_problem->getListOfLoads();
+    auto model_FEDesc = currModel->getFiniteElementDescriptor();
+    AS_ASSERT( model_FEDesc );
+    auto isXfem = currModel->existsXfem();
+
+    auto calcul = std::make_unique< Calcul >( calcul_option );
+    calcul->setModel( currModel );
+
+    auto therLoadReal = listOfLoads->getThermalLoadsReal();
+    for ( const auto &load : therLoadReal ) {
 
         // Termes SOURCE
         if ( load->hasLoadField( "SOURE" ) ) {
@@ -188,41 +285,7 @@ DiscreteComputation::getThermalNeumannForces( const ASTERDOUBLE time_curr,
 
     auto therLoadFunc = listOfLoads->getThermalLoadsFunction();
     for ( const auto &load : therLoadFunc ) {
-        // Termes FLUX XYZ
-        if ( load->hasLoadField( "FLURE" ) ) {
-            auto flow_xyz_field = load->getConstantLoadField( "FLURE" );
-            calcul->setOption( "CHAR_THER_FLUN_F" );
-            calcul->setFiniteElementDescriptor( model_FEDesc );
-            calcul->clearInputs();
-            calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
-            calcul->addTimeField( "PTEMPSR", time_curr, time_step, theta );
-            calcul->addInputField( "PFLUXNF", flow_xyz_field );
-            calcul->clearOutputs();
-            calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >() );
-            calcul->compute();
-            if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
-                elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ),
-                                             iload );
-            }
-        }
-
-        // Termes FLUX NORM
-        if ( load->hasLoadField( "FLUR2" ) ) {
-            auto flow_nor_field = load->getConstantLoadField( "FLUR2" );
-            calcul->setOption( "CHAR_THER_FLUX_F" );
-            calcul->setFiniteElementDescriptor( model_FEDesc );
-            calcul->clearInputs();
-            calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
-            calcul->addTimeField( "PTEMPSR", time_curr, time_step, theta );
-            calcul->addInputField( "PFLUXVF", flow_nor_field );
-            calcul->clearOutputs();
-            calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >() );
-            calcul->compute();
-            if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
-                elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ),
-                                             iload );
-            }
-        }
+        auto load_FEDesc = load->getFiniteElementDescriptor();
 
         if ( load->hasLoadField( "SOURE" ) ) {
             auto source_field = load->getConstantLoadField( "SOURE" );
@@ -255,7 +318,7 @@ DiscreteComputation::getThermalNeumannForces( const ASTERDOUBLE time_curr,
             calcul->setFiniteElementDescriptor( model_FEDesc );
             calcul->clearInputs();
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
-            calcul->addTimeField( "PTEMPSR", time_curr, 0.0, 1.0 );
+            calcul->addTimeField( "PTEMPSR", time_curr, time_step, theta );
 
             if ( currMater ) {
                 calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
@@ -456,11 +519,8 @@ DiscreteComputation::getThermalExchangeForces( const FieldOnNodesRealPtr temp_cu
 };
 
 std::variant< ElementaryVectorTemperatureRealPtr, FieldOnNodesRealPtr >
-DiscreteComputation::getThermalNonLinearNeumannForces( const FieldOnNodesRealPtr temp_prev,
-                                                       const FieldOnNodesRealPtr temp_step,
-                                                       const ASTERDOUBLE time_prev,
-                                                       const ASTERDOUBLE time_step,
-                                                       const ASTERDOUBLE theta,
+DiscreteComputation::getThermalNonLinearNeumannForces( const FieldOnNodesRealPtr temp_curr,
+                                                       const ASTERDOUBLE time_curr,
                                                        const bool assembly ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
@@ -485,8 +545,6 @@ DiscreteComputation::getThermalNonLinearNeumannForces( const FieldOnNodesRealPtr
     auto calcul = std::make_unique< Calcul >( calcul_option );
     calcul->setModel( currModel );
 
-    auto temp_curr = std::make_shared< FieldOnNodesReal >( *temp_prev + *temp_step );
-
     auto impl = [&]( auto load, const ASTERINTEGER &load_i, const std::string &option,
                      const std::string &name, const std::string &param,
                      const FiniteElementDescriptorPtr FED ) {
@@ -495,7 +553,7 @@ DiscreteComputation::getThermalNonLinearNeumannForces( const FieldOnNodesRealPtr
             calcul->setFiniteElementDescriptor( FED );
 
             calcul->clearInputs();
-            calcul->addTimeField( "PTEMPSR", time_prev + time_step, time_step, theta );
+            calcul->addTimeField( "PTEMPSR", time_curr, 0.0, 0.0 );
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
             calcul->addInputField( "PTEMPER", temp_curr );
 
@@ -515,7 +573,6 @@ DiscreteComputation::getThermalNonLinearNeumannForces( const FieldOnNodesRealPtr
     for ( const auto &load : therLoadReal ) {
         impl( load, iload, "CHAR_THER_FLUNL", "FLUNL", "PFLUXNL", model_FEDesc );
         impl( load, iload, "CHAR_THER_RAYO_R", "RAYO", "PRAYONR", model_FEDesc );
-        impl( load, iload, "CHAR_THER_SOURNL", "SOUNL", "PSOURNL", model_FEDesc );
 
         iload++;
     }
@@ -532,7 +589,83 @@ DiscreteComputation::getThermalNonLinearNeumannForces( const FieldOnNodesRealPtr
     if ( assembly ) {
         if ( elemVect->hasElementaryTerm() ) {
             return elemVect->assembleWithLoadFunctions( _phys_problem->getDOFNumbering(),
-                                                        time_prev + time_step );
+                                                        time_curr );
+        } else {
+            FieldOnNodesRealPtr vectAsse =
+                std::make_shared< FieldOnNodesReal >( _phys_problem->getDOFNumbering() );
+            vectAsse->setValues( 0.0 );
+            vectAsse->build();
+            return vectAsse;
+        }
+    }
+
+    return elemVect;
+};
+
+std::variant< ElementaryVectorTemperatureRealPtr, FieldOnNodesRealPtr >
+DiscreteComputation::getThermalNonLinearVolumetricForces( const FieldOnNodesRealPtr temp_curr,
+                                                          const ASTERDOUBLE time_curr,
+                                                          const bool assembly ) const {
+
+    AS_ASSERT( _phys_problem->getModel()->isThermal() );
+
+    auto elemVect = std::make_shared< ElementaryVectorTemperatureReal >(
+        _phys_problem->getModel(), _phys_problem->getMaterialField(),
+        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
+
+    // Init
+    ASTERINTEGER iload = 1;
+
+    // Setup
+    const std::string calcul_option( "CHAR_THER" );
+    elemVect->prepareCompute( calcul_option );
+
+    // Main parameters
+    auto currModel = _phys_problem->getModel();
+    auto listOfLoads = _phys_problem->getListOfLoads();
+    auto model_FEDesc = currModel->getFiniteElementDescriptor();
+    AS_ASSERT( model_FEDesc );
+
+    auto calcul = std::make_unique< Calcul >( calcul_option );
+    calcul->setModel( currModel );
+
+    auto impl = [&]( auto load, const ASTERINTEGER &load_i, const std::string &option,
+                     const std::string &name, const std::string &param,
+                     const FiniteElementDescriptorPtr FED ) {
+        if ( load->hasLoadField( name ) ) {
+            calcul->setOption( option );
+            calcul->setFiniteElementDescriptor( FED );
+
+            calcul->clearInputs();
+            calcul->addTimeField( "PTEMPSR", time_curr, 0.0, 0.0 );
+            calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
+            calcul->addInputField( "PTEMPER", temp_curr );
+
+            calcul->addInputField( param, load->getConstantLoadField( name ) );
+
+            calcul->clearOutputs();
+            calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >() );
+            calcul->compute();
+            if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
+                elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ),
+                                             load_i );
+            }
+        }
+    };
+
+    auto therLoadReal = listOfLoads->getThermalLoadsReal();
+    for ( const auto &load : therLoadReal ) {
+        impl( load, iload, "CHAR_THER_SOURNL", "SOUNL", "PSOURNL", model_FEDesc );
+
+        iload++;
+    }
+
+    elemVect->build();
+
+    if ( assembly ) {
+        if ( elemVect->hasElementaryTerm() ) {
+            return elemVect->assembleWithLoadFunctions( _phys_problem->getDOFNumbering(),
+                                                        time_curr );
         } else {
             FieldOnNodesRealPtr vectAsse =
                 std::make_shared< FieldOnNodesReal >( _phys_problem->getDOFNumbering() );

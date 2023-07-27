@@ -862,6 +862,16 @@ class DiscreteComputation:
               ElementaryVectorPressureComplex: elementary Neumann forces vector
         """
 
+    def getAcousticVolumetricForces(self, assembly=True):
+        """Return the elementary acoustic volumetric forces vector
+
+        Arguments:
+              assembly (bool) : if True return assembled vector (default: True)
+
+        Returns:
+              ElementaryVectorPressureComplex: elementary volumetric forces vector
+        """
+
     def getCompressibilityMatrix(self, groupOfCells=[]):
         """Return the elementary matrices for compressibility acoustic matrix.
         Option MASS_ACOU.
@@ -1265,6 +1275,23 @@ class DiscreteComputation:
               ElementaryVectorDisplacementReal: elementary Neumann forces vector
         """
 
+    def getMechanicalVolumetricForces(
+        self, time_curr=0.0, time_step=0.0, theta=1.0, mode=0, varc_curr=None, assembly=True
+    ):
+        """Return the elementary mechanical Volumetric forces vector
+
+        Arguments:
+              time_curr (float): Current time
+              time_step (float): Time increment
+              theta (float): Theta parameter for time-integration
+              mode (int) : fourier mode
+              varc_curr (FieldOnCellsReal): external state variables at current time
+              assembly (bool) : if True return assembled vector (default: True)
+
+        Returns:
+              ElementaryVectorDisplacementReal: elementary Volumetric forces vector
+        """
+
     def getNonLinearCapacityForces(
         self, temp_prev, temp_step, time_step, varc_curr=None, groupOfCells=[]
     ):
@@ -1454,8 +1481,67 @@ class DiscreteComputation:
               ElementaryVectorThermalReal: imposed dual vector
         """
 
-    def getThermalNeumannForces(self, time_curr=0.0, varc_curr=None, assembly=True):
+    def getThermalNeumannForces(self, time_curr=0.0, assembly=True):
         """Return the elementary thermal Neumann forces vector
+
+        Arguments:
+              time_curr (float): Current time
+              assembly (bool) : if True return assembled vector (default: True)
+
+        Returns:
+              ElementaryVectorThermalReal: elementary Neumann forces vector
+        """
+
+    def getThermalNonLinearNeumannForces(self, temp_curr, time_curr, assembly=True):
+        """Return the elementary field for nonlinear neuamnn forces.
+        Option CHAR_THER_FLUTNL, CHAR_THER_RAYO_F, CHAR_THER_RAYO_R.
+
+        Arguments:
+            temp_curr (FieldOnNodesReal): thermal field at end of current time
+            time_curr (float): Current time
+            assembly (bool): assemble or not the field
+        Returns:
+            ElementaryVector: elementary field
+        """
+
+    def getThermalNonLinearVolumetricForces(self, temp_curr, time_curr, assembly=True):
+        """Return the elementary field for nonlinear volumetric forces.
+        Option CHAR_THER_SOURNL.
+
+        Arguments:
+            temp_curr (FieldOnNodesReal): thermal field at end of current time
+            time_curr (float): Current time
+            assembly (bool): assemble or not the field
+        Returns:
+            ElementaryVector: elementary field
+        """
+
+    def getThermalTangentNonLinearNeumannMatrix(self, temp_curr, time_curr):
+        """Return the elementary matrices for tangent nonlinear neumann forces.
+        Option MTAN_THER_FLUXNL, MTAN_THER_RAYO_R, MTAN_THER_RAYO_F.
+
+        Arguments:
+            temp_curr (FieldOnNodesReal): thermal field at end of current time
+            time_curr (float): Current time
+
+        Returns:
+            ElementaryMatrix: elementary matrix
+        """
+
+    def getThermalTangentNonLinearVolumetricMatrix(self, temp_curr, time_curr):
+        """Return the elementary matrices for tangent nonlinear volumetric forces.
+        Option MTAN_THER_SOURNL.
+
+        Arguments:
+            temp_curr (FieldOnNodesReal): thermal field at end of current time
+            time_curr (float): Current time
+
+        Returns:
+            ElementaryMatrix: elementary matrix
+        """
+
+    def getThermalVolumetricForces(self, time_curr=0.0, varc_curr=None, assembly=True):
+        """Return the elementary thermal Volumetric forces vector
 
         Arguments:
               time_curr (float): Current time
@@ -1463,7 +1549,7 @@ class DiscreteComputation:
               assembly (bool) : if True return assembled vector (default: True)
 
         Returns:
-              ElementaryVectorThermalReal: elementary Neumann forces vector
+              ElementaryVectorThermalReal: elementary Volumetric forces vector
         """
 
     def getTransientThermalForces(

@@ -124,24 +124,149 @@ DiscreteComputation::getMechanicalNeumannForces( const ASTERDOUBLE time_curr,
 
     auto mecaLoadReal = listOfLoads->getMechanicalLoadsReal();
     for ( const auto &load : mecaLoadReal ) {
-        auto load_FEDesc = load->getFiniteElementDescriptor();
 
-        impl( load, iload, "CHAR_MECA_FORC_R", "FORNO", "PFORNOR", load_FEDesc );
-        impl( load, iload, "CHAR_MECA_FR3D3D", "F3D3D", "PFR3D3D", model_FEDesc );
         impl( load, iload, "CHAR_MECA_FRCO2D", "FCO2D", "PFRCO2D", model_FEDesc );
         impl( load, iload, "CHAR_MECA_FRCO3D", "FCO3D", "PFRCO3D", model_FEDesc );
         impl( load, iload, "CHAR_MECA_FR2D3D", "F2D3D", "PFR2D3D", model_FEDesc );
         impl( load, iload, "CHAR_MECA_FR1D3D", "F1D3D", "PFR1D3D", model_FEDesc );
-        impl( load, iload, "CHAR_MECA_FR2D2D", "F2D2D", "PFR2D2D", model_FEDesc );
         impl( load, iload, "CHAR_MECA_FR1D2D", "F1D2D", "PFR1D2D", model_FEDesc );
+        impl( load, iload, "CHAR_MECA_PRES_R", "PRESS", "PPRESSR", model_FEDesc );
+        impl( load, iload, "CHAR_MECA_EFON_R", "EFOND", "PEFOND", model_FEDesc,
+              {{"PPREFFR", load->getConstantLoadField( "PREFF" )}} );
+        iload++;
+    }
+
+    auto mecaLoadFunc = listOfLoads->getMechanicalLoadsFunction();
+    for ( const auto &load : mecaLoadFunc ) {
+
+        impl( load, iload, "CHAR_MECA_FFCO2D", "FCO2D", "PFFCO2D", model_FEDesc );
+        impl( load, iload, "CHAR_MECA_FFCO3D", "FCO3D", "PFFCO3D", model_FEDesc );
+        impl( load, iload, "CHAR_MECA_FF2D3D", "F2D3D", "PFF2D3D", model_FEDesc );
+        impl( load, iload, "CHAR_MECA_FF1D3D", "F1D3D", "PFF1D3D", model_FEDesc );
+        impl( load, iload, "CHAR_MECA_FF1D2D", "F1D2D", "PFF1D2D", model_FEDesc );
+        impl( load, iload, "CHAR_MECA_PRES_F", "PRESS", "PPRESSF", model_FEDesc );
+        impl( load, iload, "CHAR_MECA_EFON_F", "EFOND", "PEFOND", model_FEDesc,
+              {{"PPREFFF", load->getConstantLoadField( "PREFF" )}} );
+
+        iload++;
+    }
+
+    elemVect->build();
+
+    if ( assembly ) {
+        if ( elemVect->hasElementaryTerm() ) {
+            return elemVect->assembleWithLoadFunctions( _phys_problem->getDOFNumbering(),
+                                                        time_curr );
+        } else {
+            FieldOnNodesRealPtr vectAsse =
+                std::make_shared< FieldOnNodesReal >( _phys_problem->getDOFNumbering() );
+            vectAsse->setValues( 0.0 );
+            vectAsse->build();
+            return vectAsse;
+        }
+    }
+
+    return elemVect;
+};
+
+std::variant< ElementaryVectorDisplacementRealPtr, FieldOnNodesRealPtr >
+DiscreteComputation::getMechanicalVolumetricForces( const ASTERDOUBLE time_curr,
+                                                    const ASTERDOUBLE time_step,
+                                                    const ASTERDOUBLE theta,
+                                                    const ASTERINTEGER modeFourier,
+                                                    const FieldOnCellsRealPtr varc_curr,
+                                                    const bool assembly ) const {
+
+    AS_ASSERT( _phys_problem->getModel()->isMechanical() );
+
+    auto elemVect = std::make_shared< ElementaryVectorDisplacementReal >(
+        _phys_problem->getModel(), _phys_problem->getMaterialField(),
+        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
+
+    // Init
+    ASTERINTEGER iload = 1;
+
+    // Setup
+    const std::string calcul_option( "CHAR_MECA" );
+    elemVect->prepareCompute( calcul_option );
+
+    // Main parameters
+    auto currModel = _phys_problem->getModel();
+    auto currMater = _phys_problem->getMaterialField();
+    auto currCodedMater = _phys_problem->getCodedMaterial();
+    auto currElemChara = _phys_problem->getElementaryCharacteristics();
+    auto listOfLoads = _phys_problem->getListOfLoads();
+    auto model_FEDesc = currModel->getFiniteElementDescriptor();
+    AS_ASSERT( model_FEDesc );
+
+    if ( currMater && currMater->hasExternalStateVariable() ) {
+        if ( !varc_curr || !varc_curr->exists() ) {
+            raiseAsterError( "External state variables are needed but not given" );
+        }
+    }
+
+    auto isXfem = currModel->existsXfem();
+
+    auto calcul = std::make_unique< Calcul >( calcul_option );
+
+    auto impl = [&]( auto load, const ASTERINTEGER &load_i, const std::string &option,
+                     const std::string &name, const std::string &param,
+                     const FiniteElementDescriptorPtr FED,
+                     std::vector< std::pair< std::string, DataFieldPtr > > field_in = {} ) {
+        if ( load->hasLoadField( name ) ) {
+            calcul->setOption( option );
+            calcul->setFiniteElementDescriptor( FED );
+
+            calcul->clearInputs();
+            calcul->addTimeField( "PTEMPSR", time_curr, time_step, theta );
+            calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
+            if ( currMater ) {
+                calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
+                calcul->addInputField( "PCOMPOR", currMater->getBehaviourField() );
+            }
+            if ( varc_curr ) {
+                calcul->addInputField( "PVARCPR", varc_curr );
+            }
+            if ( currElemChara ) {
+                calcul->addElementaryCharacteristicsField( currElemChara );
+            }
+            if ( isXfem ) {
+                calcul->addXFEMField( currModel->getXfemModel() );
+            }
+
+            if ( !param.empty() ) {
+                calcul->addInputField( param, load->getConstantLoadField( name ) );
+            }
+            calcul->addFourierModeField( modeFourier );
+
+            for ( auto &[param_in, field] : field_in ) {
+                if ( field && field->exists() ) {
+                    calcul->addInputField( param_in, field );
+                }
+            }
+
+            calcul->clearOutputs();
+            calcul->addOutputElementaryTerm( "PVECTUR", std::make_shared< ElementaryTermReal >() );
+            calcul->compute();
+            if ( calcul->hasOutputElementaryTerm( "PVECTUR" ) ) {
+                elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTUR" ),
+                                             load_i );
+            }
+        }
+    };
+
+    auto mecaLoadReal = listOfLoads->getMechanicalLoadsReal();
+    for ( const auto &load : mecaLoadReal ) {
+        auto load_FEDesc = load->getFiniteElementDescriptor();
+
+        impl( load, iload, "CHAR_MECA_FORC_R", "FORNO", "PFORNOR", load_FEDesc );
+        impl( load, iload, "CHAR_MECA_FR3D3D", "F3D3D", "PFR3D3D", model_FEDesc );
+        impl( load, iload, "CHAR_MECA_FR2D2D", "F2D2D", "PFR2D2D", model_FEDesc );
         impl( load, iload, "CHAR_MECA_FR1D1D", "F1D1D", "PFR1D1D", model_FEDesc );
         impl( load, iload, "CHAR_MECA_PESA_R", "PESAN", "PPESANR", model_FEDesc );
         impl( load, iload, "CHAR_MECA_ROTA_R", "ROTAT", "PROTATR", model_FEDesc );
         impl( load, iload, "CHAR_MECA_EPSI_R", "EPSIN", "PEPSINR", model_FEDesc );
-        impl( load, iload, "CHAR_MECA_EFON_R", "EFOND", "PEFOND", model_FEDesc,
-              {{"PPREFFR", load->getConstantLoadField( "PREFF" )}} );
         impl( load, iload, "CHAR_MECA_FRELEC", "FELEC", "PFRELEC", model_FEDesc );
-        impl( load, iload, "CHAR_MECA_PRES_R", "PRESS", "PPRESSR", model_FEDesc );
         impl( load, iload, "CHAR_MECA_ONDE", "ONDE", "PONDECR", model_FEDesc );
 
         // PRE_SIGM
@@ -211,17 +336,9 @@ DiscreteComputation::getMechanicalNeumannForces( const ASTERDOUBLE time_curr,
 
         impl( load, iload, "CHAR_MECA_FORC_F", "FORNO", "PFORNOF", load_FEDesc );
         impl( load, iload, "CHAR_MECA_FF3D3D", "F3D3D", "PFF3D3D", model_FEDesc );
-        impl( load, iload, "CHAR_MECA_FFCO2D", "FCO2D", "PFFCO2D", model_FEDesc );
-        impl( load, iload, "CHAR_MECA_FFCO3D", "FCO3D", "PFFCO3D", model_FEDesc );
-        impl( load, iload, "CHAR_MECA_FF2D3D", "F2D3D", "PFF2D3D", model_FEDesc );
-        impl( load, iload, "CHAR_MECA_FF1D3D", "F1D3D", "PFF1D3D", model_FEDesc );
         impl( load, iload, "CHAR_MECA_FF2D2D", "F2D2D", "PFF2D2D", model_FEDesc );
-        impl( load, iload, "CHAR_MECA_FF1D2D", "F1D2D", "PFF1D2D", model_FEDesc );
         impl( load, iload, "CHAR_MECA_FF1D1D", "F1D1D", "PFF1D1D", model_FEDesc );
         impl( load, iload, "CHAR_MECA_EPSI_F", "EPSIN", "PEPSINF", model_FEDesc );
-        impl( load, iload, "CHAR_MECA_EFON_F", "EFOND", "PEFOND", model_FEDesc,
-              {{"PPREFFF", load->getConstantLoadField( "PREFF" )}} );
-        impl( load, iload, "CHAR_MECA_PRES_F", "PRESS", "PPRESSF", model_FEDesc );
         impl( load, iload, "ONDE_PLAN", "ONDPL", "PONDPLA", model_FEDesc,
               {{"PONDPLR", load->getConstantLoadField( "ONDPR" )}} );
 

@@ -103,6 +103,40 @@ DiscreteComputation::getAcousticNeumannForces( const bool assembly ) const {
     return elemVect;
 };
 
+std::variant< ElementaryVectorPressureComplexPtr, FieldOnNodesComplexPtr >
+DiscreteComputation::getAcousticVolumetricForces( const bool assembly ) const {
+
+    AS_ASSERT( _phys_problem->getModel()->isAcoustic() );
+
+    auto elemVect = std::make_shared< ElementaryVectorPressureComplex >(
+        _phys_problem->getModel(), _phys_problem->getMaterialField(),
+        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
+
+    // Init
+    ASTERINTEGER iload = 1;
+
+    // Setup
+    const std::string calcul_option( "CHAR_ACOU" );
+    elemVect->prepareCompute( calcul_option );
+
+    elemVect->build();
+
+    if ( assembly ) {
+        if ( elemVect->hasElementaryTerm() ) {
+            raiseAsterError( "Not implemented" );
+            return FieldOnNodesComplexPtr( nullptr );
+        } else {
+            auto vectAsse =
+                std::make_shared< FieldOnNodesComplex >( _phys_problem->getDOFNumbering() );
+            vectAsse->setValues( 0.0 );
+            vectAsse->build();
+            return vectAsse;
+        }
+    }
+
+    return elemVect;
+};
+
 /** @brief Compute AFFE_CHAR_ACOU ACOU_IMPO */
 std::variant< ElementaryVectorPressureComplexPtr, FieldOnNodesComplexPtr >
 DiscreteComputation::getAcousticImposedDualBC( const bool assembly ) const {
