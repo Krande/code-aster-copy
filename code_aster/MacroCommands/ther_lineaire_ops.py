@@ -256,38 +256,38 @@ def _computeRhs(disr_comp, is_evol, time_curr, time_delta, time_theta, previousP
     rhs = disr_comp.getImposedDualBC(time_curr)
     logger.debug("<THER_LINEAIRE><RHS>: Nodal BC")
 
-    def rhs_theta(disr_comp, is_evol, time_curr, time_delta, time_theta, previousPrimalField):
-        time = {0: time_curr - time_delta, 1: time_curr}
-
+    def rhs_theta(disr_comp, time_curr, time_delta, time_theta):
         varc = disr_comp.getPhysicalProblem().getExternalStateVariables(time_curr)
 
         rhs = disr_comp.getNeumannForces(time_curr, time_delta, time_theta, varc_curr=varc)
 
-        temp = {
-            0: previousPrimalField,
-            1: FieldOnNodesReal(disr_comp.getPhysicalProblem().getDOFNumbering()),
-        }
-        rhs += disr_comp.getThermalExchangeForces(temp[time_theta], time[time_theta])
         logger.debug("<THER_LINEAIRE><RHS>: Neumann BC")
-
-        if is_evol:
-            rhs += disr_comp.getTransientThermalForces(
-                time_curr,
-                time_delta,
-                time_theta,
-                varc_curr=varc,
-                previousPrimalField=previousPrimalField,
-            )
-            logger.debug("<THER_LINEAIRE><RHS>: Transient Load BC")
 
         return rhs
 
     # compute load at time_prev (theta=0)
-    rhs_prev = rhs_theta(disr_comp, is_evol, time_curr, time_delta, 0, previousPrimalField)
+    rhs_prev = rhs_theta(disr_comp, time_curr, time_delta, 0)
     # compute load at time_curr (theta=1)
-    rhs_curr = rhs_theta(disr_comp, is_evol, time_curr, time_delta, 1, previousPrimalField)
+    rhs_curr = rhs_theta(disr_comp, time_curr, time_delta, 1)
 
     rhs += time_theta * rhs_curr + (1.0 - time_theta) * rhs_prev
+
+    rhs += disr_comp.getThermalExchangeForces(
+        previousPrimalField, time_curr, time_delta, time_theta
+    )
+
+    if is_evol:
+        varc = disr_comp.getPhysicalProblem().getExternalStateVariables(time_curr)
+
+        rhs += disr_comp.getTransientThermalForces(
+            time_curr,
+            time_delta,
+            time_theta,
+            varc_curr=varc,
+            previousPrimalField=previousPrimalField,
+        )
+
+        logger.debug("<THER_LINEAIRE><RHS>: Transient Load BC")
 
     logger.debug("<THER_LINEAIRE><RHS>: Finish")
     return rhs

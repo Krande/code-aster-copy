@@ -327,7 +327,8 @@ class DiscreteComputation {
 
     ElementaryVectorTemperatureRealPtr
     getThermalExchangeForces( const FieldOnNodesRealPtr temp_curr,
-                              const ASTERDOUBLE time_curr = 0.0 ) const;
+                              const ASTERDOUBLE time_curr = 0.0, const ASTERDOUBLE time_step = 0.0,
+                              const ASTERDOUBLE time_theta = .0 ) const;
 
     FieldOnNodesRealPtr
     getTransientThermalForces( const ASTERDOUBLE time_curr, const ASTERDOUBLE time_step,

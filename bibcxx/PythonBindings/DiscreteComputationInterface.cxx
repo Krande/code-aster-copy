@@ -93,11 +93,14 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
       Arguments:
             temp_curr (FieldOnNodesReal): thermal field at current time
             time_curr (float): Current time
+            time_step (float): Time increment
+            theta (float): Theta parameter for time-integration
 
       Returns:
             ElementaryVectorThermalReal: elementary Exchange forces vector
         )",
-              py::arg( "temp_curr" ), py::arg( "time_curr" ) = 0.0 )
+              py::arg( "temp_curr" ), py::arg( "time_curr" ) = 0.0, py::arg( "time_step" ) = 0.0,
+              py::arg( "theta" ) = 1.0 )
 
         .def( "getMechanicalNeumannForces", &DiscreteComputation::getMechanicalNeumannForces,
               R"(

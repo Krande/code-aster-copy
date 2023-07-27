@@ -104,7 +104,7 @@ def calc_vect_elem_ops(self, **args):
 
     if phys_pb.getModel().isThermal():
         exch_elem = disc_comp.getThermalExchangeForces(
-            FieldOnNodesReal(phys_pb.getModel()), time, assembly=False
+            FieldOnNodesReal(phys_pb.getModel()), time, 0.0, 1.0, assembly=False
         )
         vect_elem.addElementaryTerm(exch_elem.getElementaryTerms())
 

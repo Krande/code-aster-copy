@@ -312,12 +312,14 @@ class ExtendedDiscreteComputation:
         return elem_vect
 
     @profile
-    def getThermalExchangeForces(self, temp_curr, time_curr, assembly=True):
+    def getThermalExchangeForces(self, temp_curr, time_curr, time_step, theta, assembly=True):
         """Return the thermal exchange forces field
 
         Arguments:
                 temp_curr (FieldOnNodesReal): thermal field at current time
                 time_curr (float): Current time
+                time_step (float): Time increment
+                theta (float): Theta parameter for time-integration
                 assembly (bool): assemble if True
 
         Returns:
@@ -329,7 +331,7 @@ class ExtendedDiscreteComputation:
         phys_pb = self.getPhysicalProblem()
 
         if phys_pb.getModel().isThermal():
-            elem_vect = self._getThermalExchangeForces(temp_curr, time_curr)
+            elem_vect = self._getThermalExchangeForces(temp_curr, time_curr, time_step, theta)
         else:
             raise RuntimeError("For thermic only")
 
