@@ -23,12 +23,13 @@ usage()
 
 export CI_PROJECT_DIR=$(pwd)
 export CI_SERVER_URL=https://gitlab.pleiade.edf.fr
-export CI_REPOSITORY_URL=$(pwd)
+export CI_PROJECT_URL=$(pwd)
 export CI_MERGE_REQUEST_SOURCE_BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
 
 export DEBUG_CI=1
 export ARTF=/tmp
 [ -d /local00/tmp ] && export ARTF=/local00/tmp
+export ORIG_HOME=${HOME}
 export HOME=${ARTF}/home
 mkdir -p ${HOME}
 
@@ -183,7 +184,7 @@ pipeline() {
     fi
     if [ $(git status --porcelain -uno | wc -l) != "0" ]; then
         echo "--- there are uncommitted changes!"
-        # exit 1
+        exit 1
     fi
     if [ ${native} -eq 1 ]; then
         export SIF=""
