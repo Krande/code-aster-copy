@@ -71,8 +71,7 @@ module HHO_quadrature_module
 !
     public   :: HHO_Quadrature
     private  :: hho_edge_rules, hho_hexa_rules, hho_tri_rules, hho_tetra_rules, &
-                hho_transfo_hexa, hho_transfo_quad, &
-                hho_transfo_prism, hho_transfo_pyram, &
+                hho_transfo_3d, hho_transfo_quad, &
                 hho_prism_rules, hho_pyram_rules, &
                 hho_quad_rules, hhoGetQuadCell, hhoGetQuadFace, hhoQuadPrint, &
                 hhoinitCellFamiQ, hhoinitFaceFamiQ, check_order, hhoSelectOrder
@@ -106,6 +105,66 @@ contains
         if (order < 0) then
             call utmess('F', 'HHO1_3', si=order)
         end if
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hho_transfo_3d(coorno, nbnodes, typema, coorref, coorac, jacob)
+!
+        implicit none
+!
+        integer, intent(in)                             :: nbnodes
+        real(kind=8), dimension(3, nbnodes), intent(in) :: coorno
+        character(len=8), intent(in)                    :: typema
+        real(kind=8), dimension(3), intent(in)          :: coorref
+        real(kind=8), dimension(3), intent(out)         :: coorac
+        real(kind=8), intent(out)                       :: jacob
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO
+!
+!   From reference element to current element
+!   In coorno       : coordinates of the nodes
+!   In coorref      : coordinates in the reference conf
+!   Out coorac      : coordinates in the current conf
+!   Out jacob       : determiant of the jacobienne of the transformation
+!
+! --------------------------------------------------------------------------------------------------
+!
+        real(kind=8), dimension(8) :: basis
+        real(kind=8), dimension(3, 8) :: dbasis
+        real(kind=8), dimension(3, 3) :: jaco
+        integer :: i
+!
+! ----- shape function
+!
+        call hhoGeomBasis(typema, coorref, basis)
+!
+! ----- derivative of shape function
+!
+        call hhoGeomDerivBasis(typema, coorref, dbasis)
+!
+        coorac = 0.d0
+!
+        do i = 1, nbnodes
+            coorac(1:3) = coorac(1:3)+coorno(1:3, i)*basis(i)
+        end do
+!
+! ---  Compute the jacobienne
+        jaco = 0.d0
+        do i = 1, nbnodes
+            jaco(1:3, 1) = jaco(1:3, 1)+coorno(1, i)*dbasis(1:3, i)
+            jaco(1:3, 2) = jaco(1:3, 2)+coorno(2, i)*dbasis(1:3, i)
+            jaco(1:3, 3) = jaco(1:3, 3)+coorno(3, i)*dbasis(1:3, i)
+        end do
+!
+        jacob = 0.d0
+        jacob = jaco(1, 1)*jaco(2, 2)*jaco(3, 3)+jaco(1, 3)*jaco(2, 1)*jaco(3, 2) &
+                +jaco(3, 1)*jaco(1, 2)*jaco(2, 3)-jaco(3, 1)*jaco(2, 2)*jaco(1, 3) &
+                -jaco(3, 3)*jaco(2, 1)*jaco(1, 2)-jaco(1, 1)*jaco(2, 3)*jaco(3, 2)
 !
     end subroutine
 !
@@ -299,66 +358,6 @@ contains
 !
     end subroutine
 !
-!
-!===================================================================================================
-!
-!===================================================================================================
-!
-    subroutine hho_transfo_hexa(coorno, coorref, coorac, jacob)
-!
-        implicit none
-!
-        real(kind=8), dimension(3, 8), intent(in)        :: coorno
-        real(kind=8), dimension(3), intent(in)          :: coorref
-        real(kind=8), dimension(3), intent(out)         :: coorac
-        real(kind=8), intent(out)                       :: jacob
-!
-! --------------------------------------------------------------------------------------------------
-!   HHO
-!
-!   From reference element to current element
-!   In coorno       : coordinates of the nodes
-!   In coorref      : coordinates in the reference conf
-!   Out coorac      : coordinates in the current conf
-!   Out jacob       : determiant of the jacobienne of the transformation
-!
-! --------------------------------------------------------------------------------------------------
-!
-        real(kind=8), dimension(8) :: basis
-        real(kind=8), dimension(3, 8) :: dbasis
-        real(kind=8), dimension(3, 3) :: jaco
-        character(len=8), parameter :: typema = 'HEXA8'
-        integer :: i
-!
-! ----- shape function
-!
-        call hhoGeomBasis(typema, coorref, basis)
-!
-! ----- derivative of shape function
-!
-        call hhoGeomDerivBasis(typema, coorref, dbasis)
-!
-        coorac = 0.d0
-!
-        do i = 1, 8
-            coorac(1:3) = coorac(1:3)+coorno(1:3, i)*basis(i)
-        end do
-!
-! ---  Compute the jacobienne
-        jaco = 0.d0
-        do i = 1, 8
-            jaco(1:3, 1) = jaco(1:3, 1)+coorno(1, i)*dbasis(1:3, i)
-            jaco(1:3, 2) = jaco(1:3, 2)+coorno(2, i)*dbasis(1:3, i)
-            jaco(1:3, 3) = jaco(1:3, 3)+coorno(3, i)*dbasis(1:3, i)
-        end do
-!
-        jacob = 0.d0
-        jacob = jaco(1, 1)*jaco(2, 2)*jaco(3, 3)+jaco(1, 3)*jaco(2, 1)*jaco(3, 2) &
-                +jaco(3, 1)*jaco(1, 2)*jaco(2, 3)-jaco(3, 1)*jaco(2, 2)*jaco(1, 3) &
-                -jaco(3, 3)*jaco(2, 1)*jaco(1, 2)-jaco(1, 1)*jaco(2, 3)*jaco(3, 2)
-!
-    end subroutine
-!
 !===================================================================================================
 !
 !===================================================================================================
@@ -405,7 +404,7 @@ contains
             x = coorpg(dimp*(ipg-1)+1)
             y = coorpg(dimp*(ipg-1)+2)
             z = coorpg(dimp*(ipg-1)+3)
-            call hho_transfo_hexa(coorno, (/x, y, z/), coorac, jaco)
+            call hho_transfo_3d(coorno, 8, "HEXA8   ", (/x, y, z/), coorac, jaco)
             this%points_param(1:3, ipg) = (/x, y, z/)
             this%points(1:3, ipg) = coorac(1:3)
             this%weights(ipg) = abs(jaco)*poidpg(ipg)
@@ -531,66 +530,6 @@ contains
 !
     end subroutine
 !
-!
-!===================================================================================================
-!
-!===================================================================================================
-!
-    subroutine hho_transfo_pyram(coorno, coorref, coorac, jacob)
-!
-        implicit none
-!
-        real(kind=8), dimension(3, 5), intent(in)        :: coorno
-        real(kind=8), dimension(3), intent(in)          :: coorref
-        real(kind=8), dimension(3), intent(out)         :: coorac
-        real(kind=8), intent(out)                       :: jacob
-!
-! --------------------------------------------------------------------------------------------------
-!   HHO
-!
-!   From reference element to current element
-!   In coorno       : coordinates of the nodes
-!   In coorref      : coordinates in the reference conf
-!   Out coorac      : coordinates in the current conf
-!   Out jacob       : determiant of the jacobienne of the transformation
-!
-! --------------------------------------------------------------------------------------------------
-!
-        real(kind=8), dimension(8) :: basis
-        real(kind=8), dimension(3, 8) :: dbasis
-        real(kind=8), dimension(3, 3) :: jaco
-        character(len=8), parameter :: typema = 'PYRAM5'
-        integer :: i
-!
-! ----- shape function
-!
-        call hhoGeomBasis(typema, coorref, basis)
-!
-! ----- derivative of shape function
-!
-        call hhoGeomDerivBasis(typema, coorref, dbasis)
-!
-        coorac = 0.d0
-!
-        do i = 1, 5
-            coorac(1:3) = coorac(1:3)+coorno(1:3, i)*basis(i)
-        end do
-!
-! ---  Compute the jacobienne
-        jaco = 0.d0
-        do i = 1, 5
-            jaco(1:3, 1) = jaco(1:3, 1)+coorno(1, i)*dbasis(1:3, i)
-            jaco(1:3, 2) = jaco(1:3, 2)+coorno(2, i)*dbasis(1:3, i)
-            jaco(1:3, 3) = jaco(1:3, 3)+coorno(3, i)*dbasis(1:3, i)
-        end do
-!
-        jacob = 0.d0
-        jacob = jaco(1, 1)*jaco(2, 2)*jaco(3, 3)+jaco(1, 3)*jaco(2, 1)*jaco(3, 2) &
-                +jaco(3, 1)*jaco(1, 2)*jaco(2, 3)-jaco(3, 1)*jaco(2, 2)*jaco(1, 3) &
-                -jaco(3, 3)*jaco(2, 1)*jaco(1, 2)-jaco(1, 1)*jaco(2, 3)*jaco(3, 2)
-!
-    end subroutine
-!
 !===================================================================================================
 !
 !===================================================================================================
@@ -637,71 +576,11 @@ contains
             x = coorpg(dimp*(ipg-1)+1)
             y = coorpg(dimp*(ipg-1)+2)
             z = coorpg(dimp*(ipg-1)+3)
-            call hho_transfo_pyram(coorno, (/x, y, z/), coorac, jaco)
+            call hho_transfo_3d(coorno, 5, "PYRAM5  ", (/x, y, z/), coorac, jaco)
             this%points_param(1:3, ipg) = (/x, y, z/)
             this%points(1:3, ipg) = coorac(1:3)
             this%weights(ipg) = abs(jaco)*poidpg(ipg)
         end do
-!
-    end subroutine
-!
-!
-!===================================================================================================
-!
-!===================================================================================================
-!
-    subroutine hho_transfo_prism(coorno, coorref, coorac, jacob)
-!
-        implicit none
-!
-        real(kind=8), dimension(3, 6), intent(in)        :: coorno
-        real(kind=8), dimension(3), intent(in)          :: coorref
-        real(kind=8), dimension(3), intent(out)         :: coorac
-        real(kind=8), intent(out)                       :: jacob
-!
-! --------------------------------------------------------------------------------------------------
-!   HHO
-!
-!   From reference element to current element
-!   In coorno       : coordinates of the nodes
-!   In coorref      : coordinates in the reference conf
-!   Out coorac      : coordinates in the current conf
-!   Out jacob       : determiant of the jacobienne of the transformation
-!
-! --------------------------------------------------------------------------------------------------
-!
-        real(kind=8), dimension(8) :: basis
-        real(kind=8), dimension(3, 8) :: dbasis
-        real(kind=8), dimension(3, 3) :: jaco
-        character(len=8), parameter :: typema = 'PENTA6'
-        integer :: i
-!
-! ----- shape function
-!
-        call hhoGeomBasis(typema, coorref, basis)
-!
-! ----- derivative of shape function
-!
-        call hhoGeomDerivBasis(typema, coorref, dbasis)
-!
-        coorac = 0.d0
-!
-        do i = 1, 6
-            coorac(1:3) = coorac(1:3)+coorno(1:3, i)*basis(i)
-        end do
-!
-! ---  Compute the jacobienne
-        jaco = 0.d0
-        do i = 1, 6
-            jaco(1:3, 1) = jaco(1:3, 1)+coorno(1, i)*dbasis(1:3, i)
-            jaco(1:3, 2) = jaco(1:3, 2)+coorno(2, i)*dbasis(1:3, i)
-            jaco(1:3, 3) = jaco(1:3, 3)+coorno(3, i)*dbasis(1:3, i)
-        end do
-!
-        jacob = 0.d0
-        jacob = jaco(1, 1)*jaco(2, 2)*jaco(3, 3)+jaco(1, 3)*jaco(2, 1)*jaco(3, 2) &
-                +jaco(3, 1)*jaco(1, 2)*jaco(2, 3)-jaco(3, 1)*jaco(2, 2)*jaco(1, 3) &
-                -jaco(3, 3)*jaco(2, 1)*jaco(1, 2)-jaco(1, 1)*jaco(2, 3)*jaco(3, 2)
 !
     end subroutine
 !
@@ -751,7 +630,7 @@ contains
             x = coorpg(dimp*(ipg-1)+1)
             y = coorpg(dimp*(ipg-1)+2)
             z = coorpg(dimp*(ipg-1)+3)
-            call hho_transfo_prism(coorno, (/x, y, z/), coorac, jaco)
+            call hho_transfo_3d(coorno, 6, "PENTA6  ", (/x, y, z/), coorac, jaco)
             this%points_param(1:3, ipg) = (/x, y, z/)
             this%points(1:3, ipg) = coorac(1:3)
             this%weights(ipg) = abs(jaco)*poidpg(ipg)
