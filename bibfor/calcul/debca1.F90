@@ -19,17 +19,17 @@
 subroutine debca1(nin)
 
     use calcul_module, only: ca_caindz_, ca_calvoi_, ca_iadsgd_, &
-                             ca_iainel_, ca_ialiel_, ca_iamaco_, ca_iamloc_, &
-                           ca_iamsco_, ca_ianoop_, ca_ianote_, ca_iaobtr_, ca_iaopds_, ca_iaopmo_, &
-                             ca_iaopno_, ca_iaoppa_, ca_iaoptt_, &
-                           ca_icaeli_, ca_icaelk_, ca_illiel_, ca_ilmaco_, ca_ilmloc_, ca_ilmsco_, &
-                             ca_ilopmo_, ca_ilopno_, ca_ininel_, &
-                           ca_jelvoi_, ca_jnbelr_, ca_jnoelr_, ca_jnolfp_, ca_jpnlfp_, ca_jptvoi_, &
-                             ca_jrepe_, ca_lgco_, ca_nblfpg_, &
-                             ca_nbobj_, ca_nbobmx_, ca_nbobtr_, ca_nbsav_, ca_nparin_, ca_npario_, &
-                             ca_td1_, ca_tf1_, ca_timed1_, ca_timef1_, &
-                             ca_ldist_, ca_ldgrel_, ca_rang_, ca_nbproc_, ca_numsd_, ca_nbelmx_, &
-                             ca_option_, ca_ligrel_, ca_lparal_, ca_paral_, ca_nbgr_
+                             ca_iainel_, ca_ialiel_, ca_iamaco_, ca_iamloc_, ca_ianulg_, &
+                             ca_iamsco_, ca_ianoop_, ca_ianote_, ca_iaobtr_, ca_iaopds_, &
+                             ca_iaopmo_, ca_iaopno_, ca_iaoppa_, ca_iaoptt_, &
+                             ca_icaeli_, ca_icaelk_, ca_illiel_, ca_ilmaco_, ca_ilmloc_, &
+                             ca_ilmsco_, ca_ilopmo_, ca_ilopno_, ca_ininel_, &
+                             ca_jelvoi_, ca_jnbelr_, ca_jnoelr_, ca_jnolfp_, ca_jpnlfp_, &
+                             ca_jptvoi_, ca_jrepe_, ca_lgco_, ca_nblfpg_, &
+                             ca_nbobj_, ca_nbobmx_, ca_nbobtr_, ca_nbsav_, ca_nparin_, &
+                             ca_npario_, ca_td1_, ca_tf1_, ca_timed1_, ca_timef1_, &
+                             ca_ldist_, ca_ldgrel_, ca_rang_, ca_nbproc_, ca_numsd_, &
+                             ca_nbelmx_, ca_option_, ca_ligrel_, ca_lparal_, ca_paral_, ca_nbgr_
 
     implicit none
 ! person_in_charge: jacques.pellet at edf.fr
@@ -51,6 +51,7 @@ subroutine debca1(nin)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/asmpi_info.h"
+#include "asterfort/isParallelMesh.h"
 
     integer :: nin
 !----------------------------------------------------------------------
@@ -127,6 +128,11 @@ subroutine debca1(nin)
     if (iret .gt. 0) then
         call jeveuo(ma//'.CONNEX', 'L', ca_iamaco_)
         call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', ca_ilmaco_)
+    end if
+    if (isParallelMesh(ma)) then
+        call jeveuo(ma//'.NULOGL', 'L', ca_ianulg_)
+    else
+        ca_ianulg_ = -1
     end if
     call jeexin(ca_ligrel_//'.NEMA', iret)
     if (iret .gt. 0) then

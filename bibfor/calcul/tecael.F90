@@ -18,7 +18,9 @@
 !
 subroutine tecael(iadzi, iazk24, noms)
 !
-    use calcul_module, only : ca_ialiel_, ca_iamaco_, ca_iamsco_, ca_icaeli_, ca_icaelk_, ca_iel_, ca_igr_, ca_illiel_, ca_ilmaco_, ca_ilmsco_, ca_nomte_, ca_nomtm_, ca_option_
+    use calcul_module, only: ca_ialiel_, ca_iamaco_, ca_iamsco_, ca_icaeli_, ca_icaelk_, &
+                             ca_iel_, ca_igr_, ca_illiel_, ca_ilmaco_, ca_ilmsco_, &
+                             ca_nomte_, ca_nomtm_, ca_option_
 !
     implicit none
 !
@@ -107,7 +109,7 @@ subroutine tecael(iadzi, iazk24, noms)
     zk24(ca_icaelk_-1+3+nno+3) = ca_nomtm_
 !
 !
-!   -- recuperation des numeros globaux des noeuds :
+!   -- recuperation des numeros locaux des noeuds :
 !   -------------------------------------------------
     do ino = 1, nno
         if (ima .gt. 0) then

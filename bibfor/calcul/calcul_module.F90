@@ -78,12 +78,14 @@ module calcul_module
 
 !======================================================================
     integer :: ca_iamaco_, ca_ilmaco_, ca_iamsco_, ca_ilmsco_, ca_ialiel_, ca_illiel_
+    integer :: ca_ianulg_
 !     ca_iamaco_  : adresse de la connectivite du maillage
 !     ca_ilmaco_  : adresse du pointeur de longueur de ca_iamaco_
 !     ca_iamsco_  : adresse de la connectivite des mailles suppl. d'1 ligrel
 !     ca_ilmsco_  : adresse du pointeur de longueur de ca_iamsco_
 !     ca_ialiel_  : adresse de l'objet '.liel' du ligrel.
 !     ca_illiel_  : adresse du pointeur de longueur de '.liel'.
+!     ca_ianulg_  : adresse du pointeur numerotation noeud local->global
 
 !======================================================================
     integer, parameter :: ca_iachid_ = 12
