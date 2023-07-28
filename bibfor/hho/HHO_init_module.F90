@@ -40,7 +40,7 @@ module HHO_init_module
 #include "asterfort/lteatt.h"
 #include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
-#include "asterfort/tecael.h"
+#include "asterfort/tenonulg.h"
 #include "asterfort/utmess.h"
 #include "asterfort/rcvala.h"
 #include "blas/dsyr.h"
@@ -90,7 +90,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         aster_logical, parameter :: l_debug = ASTER_FALSE
-        integer :: jv_geom, iadzi, iazk24
+        integer :: jv_geom
         integer :: inode, idim, iret
 ! --------------------------------------------------------------------------------------------------
 !
@@ -153,14 +153,9 @@ contains
             end do
         end do
 !
-! --- Get global id
+! --- Get global nodes id
 !
-        call tecael(iadzi, iazk24, 0)
-        ASSERT(zi(iadzi-1+2) == nbnodes)
-!
-        do inode = 1, nbnodes
-            numnodes(inode) = zi(iadzi-1+2+inode)
-        end do
+        call tenonulg(numnodes)
 !
         if (l_debug) then
             write (6, *) "hhoGeomData debug"
@@ -204,7 +199,7 @@ contains
 !
         aster_logical, parameter :: l_debug = ASTER_FALSE
         integer :: jv_geom
-        integer :: inode, idim, iret, iadzi, iazk24
+        integer :: inode, idim, iret
 !
 ! --- Init
         nodes_coor = 0.d0
@@ -245,14 +240,9 @@ contains
             end do
         end do
 !
-! --- Get global id
+! --- Get global nodes id
 !
-        call tecael(iadzi, iazk24, 0)
-        ASSERT(zi(iadzi-1+2) >= nbnodes)
-!
-        do inode = 1, nbnodes
-            numnodes(inode) = zi(iadzi-1+2+inode)
-        end do
+        call tenonulg(numnodes)
 !
         if (l_debug) then
             write (6, *) "hhoGeomFace debug"
