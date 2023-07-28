@@ -181,7 +181,7 @@ subroutine approj(mesh, newgeo, sdcont_defi, node_mast_indx, l_pair_dire, &
 !
         if (niverr .eq. 1) then
             err_appa = 1
-            call utmess('A', 'APPARIEMENT_13', sk=elem_mast_name, nr=3, valr=poin_coor)
+            call utmess('I', 'APPARIEMENT_13', sk=elem_mast_name, nr=3, valr=poin_coor)
         end if
 !
 ! ----- Compute distance
