@@ -167,3 +167,7 @@ class THER_2D_HHO1_F(Element):
             ),
         ),
     )
+
+
+class THER_AX_HHO1_F(THER_2D_HHO1_F):
+    """Please document this element"""

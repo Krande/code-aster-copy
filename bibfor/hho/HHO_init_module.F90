@@ -652,6 +652,7 @@ contains
         integer :: numnodes(27), nbnodes, elem_dim
         character(len=8) :: typma
         real(kind=8) :: coor(3, 27)
+        aster_logical :: laxis
 !
         coor = 0.d0
 !
@@ -666,10 +667,11 @@ contains
 ! --- Get quadrature (optional)
 !
         if (present(hhoQuad)) then
+            laxis = lteatt("TYPMOD", "AXIS")
             if (present(npg)) then
-                call hhoQuad%initCell(hhoCell, npg)
+                call hhoQuad%initCell(hhoCell, npg, laxis)
             else
-                call hhoQuad%GetQuadCell(hhoCell, 2*hhoData%cell_degree())
+                call hhoQuad%GetQuadCell(hhoCell, 2*hhoData%cell_degree(), laxis)
             end if
         end if
 !
@@ -706,6 +708,7 @@ contains
         integer :: nbnodes, elem_dim, numnodes(9)
         real(kind=8) :: nodes_coor(3, 9)
         character(len=8) :: typma
+        aster_logical :: laxis
 !
 ! --- Get HHO informations
 !
@@ -720,10 +723,11 @@ contains
 ! --- Get quadrature (optional)
 !
         if (present(hhoQuadFace)) then
+            laxis = lteatt("TYPMOD", "AXIS")
             if (present(npg)) then
-                call hhoQuadFace%initFace(hhoFace, npg)
+                call hhoQuadFace%initFace(hhoFace, npg, laxis)
             else
-                call hhoQuadFace%GetQuadFace(hhoFace, 2*hhoData%face_degree())
+                call hhoQuadFace%GetQuadFace(hhoFace, 2*hhoData%face_degree(), laxis)
             end if
         end if
 !

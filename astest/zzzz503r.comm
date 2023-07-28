@@ -1,0 +1,292 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+#
+# MAILLES : QUAD9 , TRIA6  (ET SEG3)
+#
+
+import code_aster
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
+
+#
+# LECTURE DU MAILLAGE --------------------------------------------------
+#
+
+
+MAIL0 = code_aster.Mesh.buildSquare(refine=4)
+
+MAIL1 = CREA_MAILLAGE(MAILLAGE=MAIL0, MODI_MAILLE=_F(OPTION="QUAD_TRIA3", TOUT="OUI"))
+
+
+MAIL = CREA_MAILLAGE(MAILLAGE=MAIL1, MODI_HHO=_F(TOUT="OUI"))
+
+
+#
+# DEFINITION DES CHARGEMENTS ET DU MATERIAU ----------------------------
+#
+
+# ----- MATERIAU
+
+
+MATER = DEFI_MATERIAU(THER=_F(LAMBDA=48.822, RHO_CP=4816800.0))
+
+#
+# AFFECTATIONS: MATERIAU, MODELE, CHARGEMENT ---------------------------
+#
+
+
+CHMAT = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=MATER))
+
+MOTH = AFFE_MODELE(
+    MAILLAGE=MAIL,
+    AFFE=_F(TOUT="OUI", MODELISATION="AXIS_HHO", FORMULATION="QUADRATIQUE", PHENOMENE="THERMIQUE"),
+)
+
+CHTH = AFFE_CHAR_THER(MODELE=MOTH, SOURCE=_F(GROUP_MA="SURFACE", SOUR=100000))
+
+CHD = AFFE_CHAR_CINE(MODELE=MOTH, THER_IMPO=(_F(GROUP_MA="LEFT", TEMP=20)))
+
+
+#
+# DEFINITION DE LA STRATEGIE DE CALCUL ---------------------------------
+#
+
+
+LTMPS = DEFI_LIST_REEL(
+    DEBUT=0.0,
+    INTERVALLE=(
+        _F(JUSQU_A=100.0, NOMBRE=8),
+        _F(JUSQU_A=300.0, NOMBRE=8),
+        _F(JUSQU_A=700.0, NOMBRE=8),
+        _F(JUSQU_A=1400.0, NOMBRE=7),
+        _F(JUSQU_A=2400.0, NOMBRE=5),
+    ),
+)
+
+#
+# RESOLUTION -----------------------------------------------------------
+#
+
+TEMPE = THER_LINEAIRE(
+    MODELE=MOTH,
+    ETAT_INIT=_F(VALE=20.0e0),
+    INCREMENT=_F(LIST_INST=LTMPS),
+    CHAM_MATER=CHMAT,
+    EXCIT=(_F(CHARGE=CHTH), _F(CHARGE=CHD)),
+)
+
+#
+# ANALYSE DES RESULTATS ------------------------------------------------
+#
+
+TM_0400 = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="NOEU_TEMP_R", NOM_CHAM="HHO_TEMP", RESULTAT=TEMPE, INST=400.0
+)
+
+TM_0600 = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="NOEU_TEMP_R", NOM_CHAM="HHO_TEMP", RESULTAT=TEMPE, INST=600.0
+)
+
+TM_0800 = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="NOEU_TEMP_R", NOM_CHAM="HHO_TEMP", RESULTAT=TEMPE, INST=800.0
+)
+
+TM_1000 = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="NOEU_TEMP_R", NOM_CHAM="HHO_TEMP", RESULTAT=TEMPE, INST=1000.0
+)
+
+TM_1200 = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="NOEU_TEMP_R", NOM_CHAM="HHO_TEMP", RESULTAT=TEMPE, INST=1200.0
+)
+
+TM_1400 = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="NOEU_TEMP_R", NOM_CHAM="HHO_TEMP", RESULTAT=TEMPE, INST=1400.0
+)
+
+TM_1600 = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="NOEU_TEMP_R", NOM_CHAM="HHO_TEMP", RESULTAT=TEMPE, INST=1600.0
+)
+
+TM_1800 = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="NOEU_TEMP_R", NOM_CHAM="HHO_TEMP", RESULTAT=TEMPE, INST=1800.0
+)
+
+TM_2000 = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="NOEU_TEMP_R", NOM_CHAM="HHO_TEMP", RESULTAT=TEMPE, INST=2000.0
+)
+
+TM_2200 = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="NOEU_TEMP_R", NOM_CHAM="HHO_TEMP", RESULTAT=TEMPE, INST=2200.0
+)
+
+TM_2400 = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="NOEU_TEMP_R", NOM_CHAM="HHO_TEMP", RESULTAT=TEMPE, INST=2400.0
+)
+
+# Comparaison avec EF AXIS
+TEST_RESU(
+    CHAM_NO=(
+        _F(
+            GROUP_NO="N2",
+            REFERENCE="AUTRE_ASTER",
+            NOM_CMP="TEMP",
+            PRECISION=0.050000000000000003,
+            CHAM_GD=TM_0400,
+            VALE_CALC=28.304268393800562,
+            VALE_REFE=28.3042683939545,
+        ),
+        _F(
+            GROUP_NO="N2",
+            REFERENCE="AUTRE_ASTER",
+            NOM_CMP="TEMP",
+            PRECISION=0.050000000000000003,
+            CHAM_GD=TM_0600,
+            VALE_CALC=32.45640259093176,
+            VALE_REFE=32.45640259093176,
+        ),
+        _F(
+            GROUP_NO="N2",
+            REFERENCE="AUTRE_ASTER",
+            NOM_CMP="TEMP",
+            PRECISION=0.050000000000000003,
+            CHAM_GD=TM_0800,
+            VALE_CALC=36.60853678790899,
+            VALE_REFE=36.60853678790899,
+        ),
+        _F(
+            GROUP_NO="N2",
+            REFERENCE="AUTRE_ASTER",
+            NOM_CMP="TEMP",
+            PRECISION=0.050000000000000003,
+            CHAM_GD=TM_1800,
+            VALE_CALC=57.36920761113957,
+            VALE_REFE=57.36920761113957,
+        ),
+        _F(
+            GROUP_NO="N2",
+            REFERENCE="AUTRE_ASTER",
+            NOM_CMP="TEMP",
+            PRECISION=0.050000000000000003,
+            CHAM_GD=TM_2200,
+            VALE_CALC=65.67347370878687,
+            VALE_REFE=65.67347370878687,
+        ),
+        _F(
+            GROUP_NO="N2",
+            REFERENCE="AUTRE_ASTER",
+            NOM_CMP="TEMP",
+            PRECISION=0.050000000000000003,
+            CHAM_GD=TM_2400,
+            VALE_CALC=69.82560332681098,
+            VALE_REFE=69.82560332681098,
+        ),
+        _F(
+            GROUP_NO="N2",
+            REFERENCE="AUTRE_ASTER",
+            NOM_CMP="TEMP",
+            PRECISION=0.050000000000000003,
+            CHAM_GD=TM_0400,
+            VALE_CALC=28.3042683939545,
+            VALE_REFE=28.3042683939545,
+        ),
+        _F(
+            GROUP_NO="N3",
+            REFERENCE="AUTRE_ASTER",
+            NOM_CMP="TEMP",
+            PRECISION=0.06,
+            CHAM_GD=TM_0400,
+            VALE_CALC=21.06728821606149,
+            VALE_REFE=20.0,
+        ),
+        _F(
+            GROUP_NO="N4",
+            REFERENCE="AUTRE_ASTER",
+            NOM_CMP="TEMP",
+            PRECISION=0.050000000000000003,
+            CHAM_GD=TM_0400,
+            VALE_CALC=28.304268393954512,
+            VALE_REFE=28.304268393954512,
+        ),
+        _F(
+            GROUP_NO="N2",
+            REFERENCE="AUTRE_ASTER",
+            NOM_CMP="TEMP",
+            PRECISION=0.050000000000000003,
+            CHAM_GD=TM_0600,
+            VALE_CALC=32.45640259093176,
+            VALE_REFE=32.45640259093176,
+        ),
+        _F(
+            GROUP_NO="N2",
+            REFERENCE="AUTRE_ASTER",
+            NOM_CMP="TEMP",
+            PRECISION=0.050000000000000003,
+            CHAM_GD=TM_1000,
+            VALE_CALC=40.760670984884406,
+            VALE_REFE=40.760670984884406,
+        ),
+        _F(
+            GROUP_NO="N2",
+            REFERENCE="AUTRE_ASTER",
+            NOM_CMP="TEMP",
+            PRECISION=0.050000000000000003,
+            CHAM_GD=TM_1400,
+            VALE_CALC=49.064939377455296,
+            VALE_REFE=49.064939377455296,
+        ),
+        _F(
+            GROUP_NO="N4",
+            REFERENCE="AUTRE_ASTER",
+            NOM_CMP="TEMP",
+            PRECISION=0.050000000000000003,
+            CHAM_GD=TM_1400,
+            VALE_CALC=49.0649393774553,
+            VALE_REFE=49.0649393774553,
+        ),
+        _F(
+            GROUP_NO="N2",
+            REFERENCE="AUTRE_ASTER",
+            NOM_CMP="TEMP",
+            PRECISION=0.050000000000000003,
+            CHAM_GD=TM_2200,
+            VALE_CALC=65.67347370878687,
+            VALE_REFE=65.67347370878687,
+        ),
+        _F(
+            GROUP_NO="N2",
+            REFERENCE="AUTRE_ASTER",
+            NOM_CMP="TEMP",
+            PRECISION=0.050000000000000003,
+            CHAM_GD=TM_2400,
+            VALE_CALC=69.82560332681098,
+            VALE_REFE=69.82560332681098,
+        ),
+        _F(
+            GROUP_NO="N4",
+            REFERENCE="AUTRE_ASTER",
+            NOM_CMP="TEMP",
+            PRECISION=0.050000000000000003,
+            CHAM_GD=TM_2400,
+            VALE_CALC=69.825603326811,
+            VALE_REFE=69.825603326811,
+        ),
+    )
+)
+FIN()

@@ -6747,6 +6747,44 @@ phen.add(
     ),
 )
 
+phen.add(
+    "AXIS_HHO#1",
+    Modelisation(
+        dim=(2, 2),
+        code="PA4",
+        attrs=(
+            (AT.FORMULATION, "HHO_LINE"),
+            (AT.TYPMOD2, "HHO"),
+            (AT.TYPMOD, "AXIS"),
+            (AT.HHO, "OUI"),
+        ),
+        elements=(
+            (MT.QUAD9, EL.THERAXQ9_HHO111),
+            (MT.TRIA7, EL.THERAXT7_HHO111),
+            (MT.SEG3, EL.THER_AX_HHO1_F),
+        ),
+    ),
+)
+
+
+phen.add(
+    "AXIS_HHO#2",
+    Modelisation(
+        dim=(2, 2),
+        code="PA3",
+        attrs=(
+            (AT.FORMULATION, "HHO_QUAD"),
+            (AT.TYPMOD2, "HHO"),
+            (AT.TYPMOD, "AXIS"),
+            (AT.HHO, "OUI"),
+        ),
+        elements=(
+            (MT.QUAD9, EL.THERAXQ9_HHO222),
+            (MT.TRIA7, EL.THERAXT7_HHO222),
+            (MT.SEG3, EL.THER_AX_HHO2_F),
+        ),
+    ),
+)
 
 ############################################################
 # Pour le phenomene : ACOUSTIQUE :

@@ -34,6 +34,7 @@ subroutine te0454(nomopt, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/writeMatrix.h"
+#include "asterfort/teattr.h"
 #include "jeveux.h"
 !
 ! --------------------------------------------------------------------------------------------------
@@ -50,19 +51,18 @@ subroutine te0454(nomopt, nomte)
     type(HHO_Quadrature) :: hhoQuadCellRigi
     integer :: cbs, fbs, total_dofs, npg
     character(len=8), parameter :: fami = 'RIGI'
-    character(len=8) :: typmod(2)
     type(HHO_Data) :: hhoData
     type(HHO_Cell) :: hhoCell
     real(kind=8), dimension(MSIZE_CELL_VEC, MSIZE_TDOFS_SCAL) :: gradfull
     real(kind=8), dimension(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL) :: lhs, stab
 !
-! --- Get HHO informations
-!
-    call hhoInfoInitCell(hhoCell, hhoData)
-!
 ! --- Get element parameters
 !
     call elrefe_info(fami=fami, npg=npg)
+!
+! --- Get HHO informations
+!
+    call hhoInfoInitCell(hhoCell, hhoData, npg, hhoQuadCellRigi)
 !
 ! --- Number of dofs
     call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
@@ -73,22 +73,6 @@ subroutine te0454(nomopt, nomte)
     if (nomopt /= "RIGI_THER") then
         ASSERT(ASTER_FALSE)
     end if
-!
-! --- Initialize quadrature for the rigidity
-!
-    call hhoQuadCellRigi%initCell(hhoCell, npg)
-!
-! --- Type of finite element
-!
-    select case (hhoCell%ndim)
-    case (3)
-        typmod(1) = '3D'
-    case (2)
-        typmod(1) = 'PLAN'
-    case default
-        ASSERT(ASTER_FALSE)
-    end select
-    typmod(2) = 'HHO'
 !
 ! --- Compute Operators
 !

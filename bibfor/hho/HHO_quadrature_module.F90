@@ -642,12 +642,13 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoGetQuadCell(this, hhoCell, order)
+    subroutine hhoGetQuadCell(this, hhoCell, order, axis)
 !
         implicit none
 !
         type(HHO_cell), intent(in)            :: hhoCell
         integer, intent(in)                   :: order
+        aster_logical, intent(in), optional   :: axis
         class(HHO_quadrature), intent(out)    :: this
 !
 ! --------------------------------------------------------------------------------------------------
@@ -656,9 +657,12 @@ contains
 !   Get the quadrature rules for the current cell
 !   In hhoCell      : a HHO cell
 !   In order        : quadrature order
+!   In axis     : axisymetric ? multpiply by r the weith if True
 !   Out this        : hho quadrature
 !
 ! --------------------------------------------------------------------------------------------------
+!
+        integer :: ipg
 !
         this%order = order
 !
@@ -678,18 +682,27 @@ contains
             ASSERT(ASTER_FALSE)
         end if
 !
+        if (present(axis)) then
+            if (axis) then
+                do ipg = 1, this%nbQuadPoints
+                    this%weights(ipg) = this%weights(ipg)*this%points(1, ipg)
+                end do
+            end if
+        end if
+!
     end subroutine
 !
 !===================================================================================================
 !
 !===================================================================================================
 !
-    subroutine hhoGetQuadFace(this, hhoFace, order)
+    subroutine hhoGetQuadFace(this, hhoFace, order, axis)
 !
         implicit none
 !
         type(HHO_face), intent(in)          :: hhoFace
         integer, intent(in)                 :: order
+        aster_logical, intent(in), optional :: axis
         class(HHO_quadrature), intent(out)  :: this
 !
 ! --------------------------------------------------------------------------------------------------
@@ -698,9 +711,12 @@ contains
 !   Get the quadrature rules for the current face
 !   In hhoFace      : a HHO face
 !   In order        : quadrature order
+!   In axis     : axisymetric ? multpiply by r the weith if True
 !   Out this     : hho quadrature
 !
 ! --------------------------------------------------------------------------------------------------
+!
+        integer :: ipg
 !
         this%order = order
 !
@@ -712,6 +728,14 @@ contains
             call this%hho_edge_rules(hhoFace%coorno(1:3, 1:2), hhoFace%measure, hhoFace%barycenter)
         else
             ASSERT(ASTER_FALSE)
+        end if
+!
+        if (present(axis)) then
+            if (axis) then
+                do ipg = 1, this%nbQuadPoints
+                    this%weights(ipg) = this%weights(ipg)*this%points(1, ipg)
+                end do
+            end if
         end if
 !
     end subroutine
@@ -853,12 +877,13 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoinitCellFamiQ(this, hhoCell, npg)
+    subroutine hhoinitCellFamiQ(this, hhoCell, npg, axis)
 !
         implicit none
 !
         type(HHO_cell), intent(in)          :: hhoCell
         integer, intent(in)                 :: npg
+        aster_logical, intent(in), optional :: axis
         class(HHO_quadrature), intent(out)  :: this
 !
 ! --------------------------------------------------------------------------------------------------
@@ -867,17 +892,32 @@ contains
 !   Get the quadrature rules from a familly definied in the catalogue of code_aster
 !   In hhoCell  : hhoCell
 !   In npg      : number of quadrature points
+!   In axis     : axisymetric ? multpiply by r the weith if True
 !   Out this    : hho quadrature
 !
 ! --------------------------------------------------------------------------------------------------
-        integer :: order
+        integer :: order, ipg
+        aster_logical :: laxis
 !
         ASSERT(npg .le. MAX_QP)
         this%nbQuadPoints = npg
 !
+        laxis = ASTER_FALSE
+        if (present(axis)) then
+            laxis = axis
+        end if
+!
         call hhoSelectOrder(hhoCell%typema, npg, order)
 !
-        call hhoGetQuadCell(this, hhoCell, order)
+        call hhoGetQuadCell(this, hhoCell, order, laxis)
+!
+        if (present(axis)) then
+            if (axis) then
+                do ipg = 1, this%nbQuadPoints
+                    this%weights(ipg) = this%weights(ipg)*this%points(1, ipg)
+                end do
+            end if
+        end if
 !
     end subroutine
 !
@@ -885,12 +925,13 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoinitFaceFamiQ(this, hhoFace, npg)
+    subroutine hhoinitFaceFamiQ(this, hhoFace, npg, axis)
 !
         implicit none
 !
         type(HHO_Face), intent(in)          :: hhoFace
         integer, intent(in)                 :: npg
+        aster_logical, intent(in), optional :: axis
         class(HHO_quadrature), intent(out)  :: this
 !
 ! --------------------------------------------------------------------------------------------------
@@ -899,18 +940,25 @@ contains
 !   Get the quadrature rules from a familly definied in the catalogue of code_aster
 !   In hhoFace  : hhoFace
 !   In npg      : number of quadrature points
+!   In axis     : axisymetric ? multpiply by r the weith if True
 !   Out this    : hho quadrature
 !
 ! --------------------------------------------------------------------------------------------------
 !
         integer :: order
+        aster_logical :: laxis
 !
         ASSERT(npg .le. MAX_QP)
         this%nbQuadPoints = npg
 !
+        laxis = ASTER_FALSE
+        if (present(axis)) then
+            laxis = axis
+        end if
+!
         call hhoSelectOrder(hhoFace%typema, npg, order)
 !
-        call hhoGetQuadFace(this, hhoFace, order)
+        call hhoGetQuadFace(this, hhoFace, order, laxis)
 !
     end subroutine
 !

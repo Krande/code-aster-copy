@@ -58,6 +58,7 @@ subroutine te0449(nomopt, nomte)
     type(HHO_Data) :: hhoData
     type(HHO_Cell) :: hhoCell
     integer :: cbs, fbs, total_dofs, npg
+    aster_logical :: laxis
     character(len=8), parameter :: fami = 'MASS'
     real(kind=8), dimension(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL) :: lhs
 !
@@ -81,7 +82,8 @@ subroutine te0449(nomopt, nomte)
 !
 ! --- Initialize quadrature for the mass
 !
-    call hhoQuadCellMass%initCell(hhoCell, npg)
+    laxis = lteatt("TYPMOD", "AXIS")
+    call hhoQuadCellMass%initCell(hhoCell, npg, laxis)
 !
     if (lteatt('LUMPE', 'OUI')) then
         ASSERT(ASTER_FALSE)

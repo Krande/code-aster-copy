@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -348,7 +348,7 @@ def imprime_ojb(cel, file, dbgdir):
             rangav = rangcmp
             iec = int(rangcmp / 30)
             puiss = (rangcmp % 30) + 1
-            liec[iec] = liec[iec] | 2 ** puiss
+            liec[iec] = liec[iec] | 2**puiss
         return liec
 
     #   --- debut instructions imprime_ojb pour les elements :
@@ -567,7 +567,7 @@ def imprime_ojb(cel, file, dbgdir):
             if typept == "ELGA":
                 MODELOC.ecri_co(nom=nomolo2, indice=4 + nec * nbpt3 + 1, valeur=ifpg)
             if dbgele:
-                cel.msg(repr(nomolo, typept, nogd, igd, diff, nbpt, nbpt2, nbpt3, nec))
+                cel.msg(repr([nomolo, typept, nogd, igd, diff, nbpt, nbpt2, nbpt3, nec]))
 
             if not diff:
                 point = moloc.components
@@ -577,7 +577,7 @@ def imprime_ojb(cel, file, dbgdir):
                 nbscal = len(point) * nbpt
                 MODELOC.ecri_co(nom=nomolo2, indice=3, valeur=nbscal)
                 if dbgele:
-                    cel.msg(repr(nomolo, nbscal, 4 + kk + 1, liec))
+                    cel.msg(repr([nomolo, nbscal, 4 + kk + 1, liec]))
             else:
                 nbscal = 0
                 for xx in moloc.components:
@@ -591,7 +591,7 @@ def imprime_ojb(cel, file, dbgdir):
                         if en2 == en:
                             liste = liste2
                     if dbgele:
-                        cel.msg(repr(note, nomolo, point, lcmp_gd, liec, liste))
+                        cel.msg(repr([note, nomolo, point, lcmp_gd, liec, liste]))
                     if not liste:
                         # la verif. ci-dessous est trop sevère. Voir fiche REX
                         # 18068.
@@ -633,7 +633,7 @@ def imprime_ojb(cel, file, dbgdir):
             MODELOC.ecri_co(nom=nomolo2, indice=3, valeur=nbscal)
             MODELOC.ecri_co(nom=nomolo2, indice=4, valeur=NOMMOLOC.jenonu(note2 + molo1))
             if dbgele:
-                cel.msg(repr(nomolo, nogd, igd, nbscal, NOMMOLOC.jenonu(note2 + molo1)))
+                cel.msg(repr([nomolo, nogd, igd, nbscal, NOMMOLOC.jenonu(note2 + molo1)]))
 
         # modes locaux "matrices" :
         for moloc in modlocs:
@@ -670,12 +670,14 @@ def imprime_ojb(cel, file, dbgdir):
             if dbgele:
                 cel.msg(
                     repr(
-                        nomolo,
-                        nogd,
-                        igd,
-                        nbscal,
-                        NOMMOLOC.jenonu(note2 + molo1),
-                        NOMMOLOC.jenonu(note2 + molo2),
+                        [
+                            nomolo,
+                            nogd,
+                            igd,
+                            nbscal,
+                            NOMMOLOC.jenonu(note2 + molo1),
+                            NOMMOLOC.jenonu(note2 + molo2),
+                        ]
                     )
                 )
 
@@ -714,7 +716,7 @@ def imprime_ojb(cel, file, dbgdir):
             OPTMOD.ecri_co(nom=str(ioptte), indice=2, valeur=nbin)
             OPTMOD.ecri_co(nom=str(ioptte), indice=3, valeur=nbou)
             if dbgele:
-                cel.msg(repr(noop, nuop, nute, numte, nbin, nbou))
+                cel.msg(repr([noop, nuop, nute, numte, nbin, nbou]))
 
             if numte > 0:
                 for kk in range(nbin):
@@ -727,13 +729,15 @@ def imprime_ojb(cel, file, dbgdir):
                     if dbgele:
                         cel.msg(
                             repr(
-                                noop,
-                                "in",
-                                param,
-                                mode,
-                                kk + 1,
-                                3 + kk + 1,
-                                NOMMOLOC.jenonu(note2 + mode),
+                                [
+                                    noop,
+                                    "in",
+                                    param,
+                                    mode,
+                                    kk + 1,
+                                    3 + kk + 1,
+                                    NOMMOLOC.jenonu(note2 + mode),
+                                ]
                             )
                         )
 
@@ -749,13 +753,15 @@ def imprime_ojb(cel, file, dbgdir):
                     if dbgele:
                         cel.msg(
                             repr(
-                                noop,
-                                "out",
-                                param,
-                                mode,
-                                nbin + kk + 1,
-                                3 + nbin + kk + 1,
-                                NOMMOLOC.jenonu(note2 + mode),
+                                [
+                                    noop,
+                                    "out",
+                                    param,
+                                    mode,
+                                    nbin + kk + 1,
+                                    3 + nbin + kk + 1,
+                                    NOMMOLOC.jenonu(note2 + mode),
+                                ]
                             )
                         )
 
@@ -827,7 +833,7 @@ def imprime_ojb(cel, file, dbgdir):
             MODELI.cree_oc(nom=mod, long=(nbtm + 2))
             MODELI.ecri_co(nom=mod, indice=nbtm + 1, valeur=int(d1))
             MODELI.ecri_co(nom=mod, indice=nbtm + 2, valeur=int(d2))
-            for (tyma, tyel) in laffe:
+            for tyma, tyel in laffe:
                 MODELI.ecri_co(
                     nom=mod, indice=NOMTM.jenonu(nom=tyma.name), valeur=NOMTE.jenonu(nom=tyel.name)
                 )
@@ -1115,7 +1121,6 @@ def impr_CMP(nomfic, cel):
             nbou = len(opt.para_out)
 
             if numte > 0:
-
                 for kk in range(nbin):
                     param = opt.para_in[kk][0].name
                     mode = opt.para_in[kk][1].name
@@ -1161,7 +1166,6 @@ def impr_param_options(nomfic, cel):
             nbou = len(opt.para_out)
 
             if numte > 0:
-
                 for kk in range(nbin):
                     param = opt.para_in[kk][0].name
                     mode = opt.para_in[kk][1].name
@@ -1208,9 +1212,9 @@ def PbOptions(cel):
     for cata in cel.op:
         noop, lchin, lchou, comlibr, cond_calcul = cata.cata_op
         declare[noop] = []
-        for (param, nogd, localis, comlibr) in lchin:
+        for param, nogd, localis, comlibr in lchin:
             declare[noop].append(param)
-        for (param, nogd, localis, comlibr) in lchou:
+        for param, nogd, localis, comlibr in lchou:
             declare[noop].append(param)
 
     # les parametres declares et non utilises sont a supprimer :
@@ -1302,7 +1306,7 @@ def verif_phenmode(cel):
         for mod in list(lmod.keys()):
             modeli = lmod[mod]
             laffe = modeli.elements
-            for (tyma, tyel) in laffe:
+            for tyma, tyel in laffe:
                 dic2[tyel.name] = 1
 
     s1 = set(dic1.keys())
