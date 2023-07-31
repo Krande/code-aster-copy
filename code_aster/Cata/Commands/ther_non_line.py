@@ -37,6 +37,19 @@ def compat_syntax(keywords):
             del keywords["ETAT_INIT"]["STATIONNAIRE"]
             keywords["ETAT_INIT"]["STAT"] = "OUI"
 
+    # fix that INCREMENT is mandatory for transitory
+    if "TYPE_CALCUL" not in keywords:
+        if "ETAT_INIT" not in keywords or "STAT" in keywords["ETAT_INIT"]:
+            if "INCREMENT" not in keywords:
+                keywords["TYPE_CALCUL"] = "STAT"
+                if "ETAT_INIT" in keywords:
+                    del keywords["ETAT_INIT"]
+
+    # report default keywords
+    if "TYPE_CALCUL" not in keywords or keywords["TYPE_CALCUL"] == "TRAN":
+        if "ETAT_INIT" not in keywords:
+            keywords["ETAT_INIT"] = {"STAT": "OUI"}
+
 
 THER_NON_LINE = OPER(
     nom="THER_NON_LINE",
@@ -62,6 +75,7 @@ THER_NON_LINE = OPER(
         max="**",
         CHARGE=SIMP(statut="o", typ=(char_ther, char_cine_ther)),
         FONC_MULT=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
+        TYPE_CHARGE=SIMP(statut="f", typ="TXM", defaut="FIXE_CSTE", into=("FIXE_CSTE",)),
     ),
     # -------------------------------------------------------------------
     AFFICHAGE=C_AFFICHAGE(),
@@ -98,32 +112,45 @@ THER_NON_LINE = OPER(
         ),
     ),
     # -------------------------------------------------------------------
-    INCREMENT=C_INCREMENT("THERMIQUE", False),
+    TYPE_CALCUL=SIMP(statut="f", typ="TXM", into=("STAT", "TRAN"), defaut="TRAN"),
     # -------------------------------------------------------------------
-    ETAT_INIT=FACT(
-        statut="f",
-        regles=(EXCLUS("EVOL_THER", "CHAM_NO", "VALE"),),
-        STAT=SIMP(statut="f", typ="TXM", into=("OUI",)),
-        EVOL_THER=SIMP(statut="f", typ=evol_ther),
-        CHAM_NO=SIMP(statut="f", typ=cham_no_sdaster),
-        VALE=SIMP(statut="f", typ="R"),
-        b_evol=BLOC(
-            condition="""exists("EVOL_THER")""",
-            NUME_ORDRE=SIMP(statut="f", typ="I"),
-            INST=SIMP(statut="f", typ="R"),
-            b_inst=BLOC(
-                condition="""exists("INST")""",
-                CRITERE=SIMP(statut="f", typ="TXM", defaut="RELATIF", into=("RELATIF", "ABSOLU")),
-                b_prec_rela=BLOC(
-                    condition="""(equal_to("CRITERE", 'RELATIF'))""",
-                    PRECISION=SIMP(statut="f", typ="R", defaut=1.0e-6),
-                ),
-                b_prec_abso=BLOC(
-                    condition="""(equal_to("CRITERE", 'ABSOLU'))""",
-                    PRECISION=SIMP(statut="o", typ="R"),
+    b_trans=BLOC(
+        condition="""(equal_to("TYPE_CALCUL", 'TRAN'))""",
+        PARM_THETA=SIMP(statut="f", typ="R", defaut=0.57, val_min=0.0, val_max=1.0),
+        # -------------------------------------------------------------------
+        INCREMENT=C_INCREMENT("THERMIQUE", True),
+        # -------------------------------------------------------------------
+        ETAT_INIT=FACT(
+            statut="o",
+            regles=(EXCLUS("EVOL_THER", "CHAM_NO", "VALE", "STAT"),),
+            STAT=SIMP(statut="f", typ="TXM", into=("OUI",)),
+            EVOL_THER=SIMP(statut="f", typ=evol_ther),
+            CHAM_NO=SIMP(statut="f", typ=cham_no_sdaster),
+            VALE=SIMP(statut="f", typ="R"),
+            b_evol=BLOC(
+                condition="""exists("EVOL_THER")""",
+                NUME_ORDRE=SIMP(statut="f", typ="I"),
+                INST=SIMP(statut="f", typ="R"),
+                b_inst=BLOC(
+                    condition="""exists("INST")""",
+                    CRITERE=SIMP(
+                        statut="f", typ="TXM", defaut="RELATIF", into=("RELATIF", "ABSOLU")
+                    ),
+                    b_prec_rela=BLOC(
+                        condition="""(equal_to("CRITERE", 'RELATIF'))""",
+                        PRECISION=SIMP(statut="f", typ="R", defaut=1.0e-6),
+                    ),
+                    b_prec_abso=BLOC(
+                        condition="""(equal_to("CRITERE", 'ABSOLU'))""",
+                        PRECISION=SIMP(statut="o", typ="R"),
+                    ),
                 ),
             ),
         ),
+    ),
+    # -------------------------------------------------------------------
+    b_stat=BLOC(
+        condition="""(equal_to("TYPE_CALCUL", 'STAT'))""", INCREMENT=C_INCREMENT("THERMIQUE", False)
     ),
     CONVERGENCE=FACT(
         statut="d",
@@ -134,8 +161,6 @@ THER_NON_LINE = OPER(
     # -------------------------------------------------------------------
     #        Catalogue commun SOLVEUR
     SOLVEUR=C_SOLVEUR("THER_NON_LINE"),
-    # -------------------------------------------------------------------
-    PARM_THETA=SIMP(statut="f", typ="R", defaut=0.57, val_min=0.0, val_max=1.0),
     # -------------------------------------------------------------------
     ARCHIVAGE=C_ARCHIVAGE(),
     # -------------------------------------------------------------------

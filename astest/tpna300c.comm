@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -69,9 +69,7 @@ CHARGE = AFFE_CHAR_THER(
 # RESOLUTION ------------------------------------------------------
 #
 
-TEMPE = THER_NON_LINE(
-    MODELE=MOTH, ETAT_INIT=_F(STAT="OUI"), CHAM_MATER=CHMAT, EXCIT=_F(CHARGE=CHARGE)
-)
+TEMPE = THER_NON_LINE(MODELE=MOTH, TYPE_CALCUL="STAT", CHAM_MATER=CHMAT, EXCIT=_F(CHARGE=CHARGE))
 
 T_RES = CREA_CHAMP(
     OPERATION="EXTR", TYPE_CHAM="NOEU_TEMP_R", NOM_CHAM="TEMP", RESULTAT=TEMPE, INST=0.0

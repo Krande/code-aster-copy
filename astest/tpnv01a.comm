@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -308,15 +308,11 @@ CHARGE = AFFE_CHAR_THER_F(
 # RESOLUTION ------------------------------------------------------
 #
 
-TEMPEB = THER_NON_LINE(
-    MODELE=MOTH, ETAT_INIT=_F(STAT="OUI"), CHAM_MATER=CHMATB, EXCIT=_F(CHARGE=CHARGE)
-)
+TEMPEB = THER_NON_LINE(MODELE=MOTH, TYPE_CALCUL="STAT", CHAM_MATER=CHMATB, EXCIT=_F(CHARGE=CHARGE))
 
 #
 
-TEMPER = THER_NON_LINE(
-    MODELE=MOTH, ETAT_INIT=_F(STAT="OUI"), CHAM_MATER=CHMATR, EXCIT=_F(CHARGE=CHARGE)
-)
+TEMPER = THER_NON_LINE(MODELE=MOTH, TYPE_CALCUL="STAT", CHAM_MATER=CHMATR, EXCIT=_F(CHARGE=CHARGE))
 
 #
 # ANALYSE DES RESULTATS -------------------------------------------
@@ -844,13 +840,13 @@ CHMATR2 = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=MATERR2))
 #
 
 TEMPEB2 = THER_NON_LINE(
-    MODELE=MOTH, ETAT_INIT=_F(STAT="OUI"), CHAM_MATER=CHMATB2, EXCIT=_F(CHARGE=CHARGE)
+    MODELE=MOTH, TYPE_CALCUL="STAT", CHAM_MATER=CHMATB2, EXCIT=_F(CHARGE=CHARGE)
 )
 
 #
 
 TEMPER2 = THER_NON_LINE(
-    MODELE=MOTH, ETAT_INIT=_F(STAT="OUI"), CHAM_MATER=CHMATR2, EXCIT=_F(CHARGE=CHARGE)
+    MODELE=MOTH, TYPE_CALCUL="STAT", CHAM_MATER=CHMATR2, EXCIT=_F(CHARGE=CHARGE)
 )
 
 #

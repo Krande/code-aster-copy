@@ -40,6 +40,9 @@ subroutine ntdomt(theta)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call getvr8(' ', 'PARM_THETA', scal=theta)
+    integer :: iret
+
+    call getvr8(' ', 'PARM_THETA', scal=theta, nbret=iret)
+    if (iret == 0) theta = 1.0
 !
 end subroutine
