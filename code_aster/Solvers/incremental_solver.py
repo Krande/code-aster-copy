@@ -216,12 +216,13 @@ class IncrementalSolver(SolverFeature, EventSource):
             linear_solver = self.get_feature(SOP.LinearSolver)
             if not stiffness.isFactorized():
                 linear_solver.factorize(stiffness, raiseException=True)
-            solution = linear_solver.solve(residuals.resi, diriBCs)
+            primal_incr = linear_solver.solve(residuals.resi, diriBCs)
 
             # Use line search
             lineSearch = self.get_feature(SOP.LineSearch)
 
-            primal_incr = lineSearch.solve(solution)
+            if lineSearch.activated():
+                primal_incr, internVar, stress = lineSearch.solve(primal_incr, scaling)
         else:
             primal_incr = self.phys_state.createPrimal(self.phys_pb, 0.0)
 

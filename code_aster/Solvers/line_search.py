@@ -17,15 +17,20 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+from ..Supervis import ConvergenceError
 from ..Utilities import no_new_attributes, profile
 from .solver_features import SolverFeature
 from .solver_features import SolverOptions as SOP
+
+import numpy as np
 
 
 class LineSearch(SolverFeature):
     """Line search methods"""
 
     provide = SOP.LineSearch
+    required_features = [SOP.ResidualComputation, SOP.PhysicalState]
+
     param = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
@@ -35,26 +40,39 @@ class LineSearch(SolverFeature):
         self.param = keywords
         print("PAR: ", self.param)
 
+    def activated(self):
+        """Return True if LineSearch is activated
+
+        Returns:
+            bool: True if LineSearch is activated.
+        """
+
+        return self.param is not None
+
     @profile
     @SolverFeature.check_once
-    def solve(self, field):
+    def solve(self, solution, scaling=1.0):
         """Apply linear search.
 
         Arguments:
-            field (FieldOnNodes): Displacement field.
+            solution (FieldOnNodes): Displacement solution.
 
         Returns:
-            FieldOnNodes: Accelerated field by linear search.
+            FieldOnNodes: Accelerated solution by linear search.
         """
 
-        if self.param:
+        if self.activated():
+            method = self.param["METHODE"]
+            if method not in ("CORDE"):
+                raise NotImplementedError(method)
 
-            def _f(rho, field=field, scaling=scaling):
-                self.phys_state.primal_step += rho * field
-                resi_state, _, _ = self.computeResidual(scaling)
-                self.phys_state.primal_step -= rho * field
-
-            return -resi_state.resi.dot(field)
+            def _f(rho, solution=solution, scaling=scaling):
+                self.phys_state.primal_step += rho * solution
+                # compute residual
+                resiComp = self.get_feature(SOP.ResidualComputation)
+                resi_state, varState, stressState = resiComp.computeResidual(scaling)
+                self.phys_state.primal_step -= rho * solution
+                return resi_state.resi.dot(solution), varState, stressState
 
             def _proj(rho, rhomin, rhomax, rhoexm, rhoexp):
                 rhotmp = rho
@@ -67,6 +85,8 @@ class LineSearch(SolverFeature):
                 if rhotmp >= 0.0 and rhotmp <= rhoexp:
                     rho = rhoexp
 
+                return rho
+
             # retrieve args
             itemax = self.param["ITER_LINE_MAXI"]
             rhomin = self.param["RHO_MIN"]
@@ -77,45 +97,44 @@ class LineSearch(SolverFeature):
 
             # Implementing Secant Method
             rhom, rho = 0.0, 1.0
-            step = 1
-            fm = -residual.dot(field)  # minus residual is returned
-            itemax = 30
+            rhoopt = rho
+            fm, _, _ = _f(rhom, solution)  # minus residual is returned
             fopt = np.finfo("float64").max
             tiny = np.finfo("float64").tiny
-            rhoopt = 1.0
             fcvg = abs(rtol * fm)
 
-            while True:
+            for iter in range(itemax):
                 try:
-                    f = _f(rho)
+                    f, varState, stressState = _f(rho)
                 except Exception as e:
                     # do we already have an rhoopt ?
-                    if step > 1:
-                        return rhoopt * field
+                    if iter > 0:
+                        return rhoopt * solution, varState, stressState
                     else:
                         raise e
+
                 # keep best rho
                 if abs(f) < fopt:
                     rhoopt = rho
                     fopt = abs(f)
+
                     # converged ?
                     if abs(f) < fcvg:
-                        return rhoopt * field
+                        return rhoopt * solution, varState, stressState
+
                 rhotmp = rho
                 if abs(f - fm) > tiny:
                     rho = (f * rhom - fm * rho) / (f - fm)
-                    _proj(rho, rhomin, rhomax, rhoexm, rhoexp)
+                    rho = _proj(rho, rhomin, rhomax, rhoexm, rhoexp)
                 elif f * (rho - rhom) * (f - fm) <= 0.0:
                     rho = rhomax
                 else:
                     rho = rhomin
 
-                print("Iteration-%d, rho2 = %0.6f and f(rho2) = %0.6f" % (step, rho, f))
+                print("Iteration-%d, rho2 = %0.6f and f(rho2) = %0.6f" % (iter, rho, f))
                 rhom = rhotmp
                 fm = f
-                step = step + 1
 
-                if step > itemax:
-                    raise RuntimeError("No convergence in line search")
+            raise ConvergenceError()
 
-        return field
+        return solution, None, None

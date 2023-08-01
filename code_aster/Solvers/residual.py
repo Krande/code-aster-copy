@@ -1,0 +1,208 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+from ..Objects import DiscreteComputation
+from ..Supervis import IntegrationError
+from ..Utilities import no_new_attributes, profile
+from .solver_features import SolverFeature
+from .solver_features import SolverOptions as SOP
+
+
+class Residuals:
+    """Container to store intermediate field.
+
+    Attributes:
+        resi (FieldOnNodesReal): Global residual.
+        resi_int (FieldOnNodesReal):  Internal residual.
+        resi_ext (FieldOnNodesReal): External residual.
+        resi_dual (FieldOnNodesReal): Dirichlet reactions.
+        resi_stress (FieldOnNodesReal): Internal forces.
+        resi_cont (FieldOnNodesReal): Contact residual.
+    """
+
+    resi = resi_int = resi_ext = resi_dual = resi_stress = resi_cont = None
+    __setattr__ = no_new_attributes(object.__setattr__)
+
+    def update(self):
+        if self.resi:
+            self.resi.updateValuePointers()
+        if self.resi_int:
+            self.resi_int.updateValuePointers()
+        if self.resi_ext:
+            self.resi_ext.updateValuePointers()
+        if self.resi_dual:
+            self.resi_dual.updateValuePointers()
+        if self.resi_stress:
+            self.resi_stress.updateValuePointers()
+        if self.resi_cont:
+            self.resi_cont.updateValuePointers()
+
+    def reset(self):
+        self.resi = None
+        self.resi_int = None
+        self.resi_ext = None
+        self.resi_dual = None
+        self.resi_stress = None
+        self.resi_cont = None
+
+
+class ResidualComputation(SolverFeature):
+    """Compute residuals"""
+
+    provide = SOP.ResidualComputation
+    required_features = [SOP.PhysicalProblem, SOP.PhysicalState]
+    optional_features = [SOP.Contact]
+
+    __setattr__ = no_new_attributes(object.__setattr__)
+
+    @profile
+    @SolverFeature.check_once
+    def computeInternalResidual(self, scaling=1.0):
+        """Compute internal residual R_int(u, Lagr).
+
+            R_int(u, Lagr) = [B^t.Sig(u) + B^t.Lagr, B^t.primal-primal_impo]
+
+        Arguments:
+            scaling (float): Scaling factor for Lagrange multipliers (default: 1.0)
+
+        Returns:
+            FieldOnCellsReal: internal state variables (VARI_ELGA)
+            FieldOnCellsReal: Cauchy stress tensor (SIEF_ELGA)
+        """
+
+        # Main object for discrete computation
+        disc_comp = DiscreteComputation(self.phys_pb)
+
+        # Compute internal forces (B^t.stress)
+        _, codret, internVar, stress, r_stress = disc_comp.getInternalForces(
+            self.phys_state.primal,
+            self.phys_state.primal_step,
+            self.phys_state.stress,
+            self.phys_state.internVar,
+            self.phys_state.time,
+            self.phys_state.time_step,
+            self.phys_state.getState(-1).externVar,
+            self.phys_state.externVar,
+        )
+
+        resi = Residuals()
+
+        resi.resi_stress = r_stress
+        r_int = r_stress
+
+        if codret > 0:
+            raise IntegrationError("MECANONLINE10_1")
+
+        if self.phys_pb.getDOFNumbering().useLagrangeDOF():
+            primal_curr = self.phys_state.primal + self.phys_state.primal_step
+
+            # Compute kinematic forces (B^t.Lagr_curr)
+            dualizedBC_forces = disc_comp.getDualForces(primal_curr)
+            resi.resi_dual = dualizedBC_forces
+
+            # Compute dualized BC (B^t.primal_curr - primal_impo)
+            # Compute dualized BC (B^t.primal_curr)
+            dualizedBC_disp = disc_comp.getDualDisplacement(primal_curr, scaling)
+
+            # Imposed dualized BC (primal_impo)
+            time_curr = self.phys_state.time + self.phys_state.time_step
+            dualizedBC_impo = disc_comp.getImposedDualBC(time_curr)
+
+            r_int += dualizedBC_forces + dualizedBC_disp - dualizedBC_impo
+        else:
+            resi.resi_dual = self.phys_state.createPrimal(self.phys_pb, 0.0)
+
+        resi.resi_int = r_int
+
+        return resi, internVar, stress
+
+    @profile
+    @SolverFeature.check_once
+    def computeExternalResidual(self):
+        """Compute external residual R_ext(u, Lagr)
+
+        R_ext(u, Lagr) = [(f(u),v), 0]
+
+        """
+
+        # Main object for discrete computation
+        disc_comp = DiscreteComputation(self.phys_pb)
+
+        # Compute Neumann forces
+        neumann_forces = disc_comp.getNeumannForces(
+            self.phys_state.time + self.phys_state.time_step, varc_curr=self.phys_state.externVar
+        )
+
+        volum_forces = disc_comp.getVolumetricForces(
+            self.phys_state.time + self.phys_state.time_step, varc_curr=self.phys_state.externVar
+        )
+
+        resi_ext = neumann_forces + volum_forces
+
+        return resi_ext
+
+    @profile
+    @SolverFeature.check_once
+    def computeContactResidual(self):
+        """Compute contact residual R_cont(u, Lagr)"""
+        contact_manager = self.get_feature(SOP.Contact, optional=True)
+
+        if contact_manager:
+            disc_comp = DiscreteComputation(self.phys_pb)
+
+            # Compute contact forces
+            contact_forces = disc_comp.getContactForces(
+                contact_manager.getPairingCoordinates(),
+                self.phys_state.primal,
+                self.phys_state.primal_step,
+                self.phys_state.time,
+                self.phys_state.time_step,
+                contact_manager.data(),
+                contact_manager.coef_cont,
+                contact_manager.coef_frot,
+            )
+        else:
+            contact_forces = self.phys_state.createPrimal(self.phys_pb, 0.0)
+
+        return contact_forces
+
+    @profile
+    @SolverFeature.check_once
+    def computeResidual(self, scaling=1.0):
+        """Compute R(u, Lagr) = - (Rint(u, Lagr) + Rcont(u, Lagr) - Rext(u, Lagr)).
+
+        This is not the true residual but the opposite.
+
+        Arguments:
+            scaling (float): Scaling factor for Lagrange multipliers (default: 1.0).
+
+        Returns:
+            tuple(Residuals, FieldOnCellsReal, FieldOnCellsReal):
+            Tuple with residuals, internal state variables (VARI_ELGA),
+            Cauchy stress tensor (SIEF_ELGA).
+        """
+
+        resi, internVar, stress = self.computeInternalResidual(scaling)
+        resi.resi_ext = self.computeExternalResidual()
+        resi.resi_cont = self.computeContactResidual()
+
+        # Compute residual
+        resi.resi = -(resi.resi_int + resi.resi_cont - resi.resi_ext)
+
+        return resi, internVar, stress

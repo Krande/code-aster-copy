@@ -162,7 +162,11 @@ class ProblemSolver(SolverFeature):
         logger.debug("+++ get LineSearch")
         if not self.has_feature(SOP.LineSearch):
             args = self.get_feature(SOP.Keywords)
-            self.use(LineSearch(args.get("RECH_LINEAIRE")))
+            line = LineSearch(args.get("RECH_LINEAIRE"))
+            line.use(self._get(SOP.ResidualComputation, True))
+            line.use(self._get(SOP.PhysicalState, True))
+            self.use(line)
+
         return self.get_feature(SOP.LineSearch)
 
     def _get_contact_manager(self):
