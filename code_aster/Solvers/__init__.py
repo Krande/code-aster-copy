@@ -23,7 +23,6 @@ Useful objects used for various problem solvers.
 
 from .contact_manager import ContactManager
 from .convergence_manager import ConvergenceManager
-from .geometric_solver import GeometricSolver
 from .incremental_solver import IncrementalSolver
 from .non_linear_solver import NonLinearSolver
 from .physical_state import PhysicalState

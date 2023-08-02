@@ -38,6 +38,8 @@ from ..Utilities import print_stats
 def _contact_check(CONTACT):
     """Add controls to prohibit unconverted features in contact"""
     if CONTACT:
+        assert CONTACT[0]["ALGO_RESO_GEOM"] == "NEWTON"
+
         defi = CONTACT[0]["DEFINITION"]
 
         for zone in defi.getContactZones():

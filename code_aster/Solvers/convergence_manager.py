@@ -421,7 +421,7 @@ class ConvergenceManager(SolverFeature):
             return False
         for name, para in self._residuals:
             if not para.isConverged():
-                logger.debug("parameter %s is not converged", name)
+                logger.info("parameter %s is not converged", name)
                 return False
         return True
 

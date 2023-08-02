@@ -37,12 +37,10 @@ class StepSolver(SolverFeature):
         SOP.ConvergenceCriteria,
     ]
 
-    current_incr = param = None
-    geom = geom_step = current_matrix = None
+    matr_update_incr = None
+    param = None
+    current_incr = current_matrix = None
     __setattr__ = no_new_attributes(object.__setattr__)
-
-    def __init__(self):
-        super().__init__()
 
     def setParameters(self, param):
         """Set parameters from user keywords.
@@ -51,35 +49,59 @@ class StepSolver(SolverFeature):
             param (dict) : user keywords.
         """
         self.param = param
+        assert self._get("NEWTON", "PREDICTION") in (
+            "ELASTIQUE",
+            "TANGENTE",
+        ), f"unsupported value: "
+
+        self.matr_update_incr = self._get("NEWTON", "REAC_ITER", 1)
 
     def initialize(self):
         """Initialization."""
         self.check_features()
         self.current_incr = -1
+        self.current_matrix = None
         self.phys_state.primal_step = self.phys_state.createPrimal(self.phys_pb, 0.0)
-        self.geom_step = self.phys_state.createPrimal(self.phys_pb, 0.0)
 
-    def update(self, convManager):
+        convManager = self.get_feature(SOP.ConvergenceManager)
+        convManager.initialize()
+
+    @property
+    def contact_manager(self):
+        """ContactManager: contact object."""
+        return self.get_feature(SOP.Contact, optional=True)
+
+    def update(self, primal_incr, internVar, sigma, convManager):
         """Update the physical state.
 
         Arguments:
-            convManager (ConvergenceManager): Object that manages the
-                convergency criteria.
+           primal_incr (FieldOnNodes): Displacement increment.
+           internVar (FieldOnCells): Internal state variables.
+           sigma (FieldOnCells): Stress field.
+           convManager (ConvergenceManager): Object that manages the
+               convergency criteria.
         """
 
-        if self._get("CONTACT", "ALGO_RESO_GEOM") == "POINT_FIXE":
-            geom_diff = self.phys_state.primal_step - self.geom_step
-            self.geom_step = self.phys_state.primal_step.copy()
+        self.phys_state.primal_step += primal_incr
+
+        if convManager.isConverged():
+            self.phys_state.internVar = internVar
+            self.phys_state.stress = sigma
+
+    def _setMatrixType(self):
+        """Set matrix type.
+
+        Returns:
+            str: Type of matrix to be computed.
+        """
+        if self.current_incr == 0:
+            matrix_type = "PRED_" + self._get("NEWTON", "PREDICTION")
         else:
-            geom_diff = self.phys_state.createPrimal(self.phys_pb, 0.0)
-
-        convManager.evalGeometricResidual(geom_diff)
-
-        self.geom = (
-            self.phys_pb.getMesh().getCoordinates()
-            + self.phys_state.primal
-            + self.phys_state.primal_step
-        )
+            matrix_type = self._get("NEWTON", "MATRICE", "TANGENTE")
+            if self.current_incr % self.matr_update_incr == 0 or self.contact_manager:
+                # make unavailable the current tangent matrix
+                self.current_matrix = None
+        return matrix_type
 
     def createLoggingManager(self):
         """Return a logging manager
@@ -97,41 +119,50 @@ class StepSolver(SolverFeature):
         return logManager
 
     @profile
-    def solve(self):
+    def solve(self, current_matrix):
         """Solve a step.
 
         Raises:
             *ConvergenceError* exception in case of error.
         """
-        convManager = self.get_feature(SOP.ConvergenceManager)
-        iter_geom = convManager.setdefault("ITER_GEOM")
-        iter_geom.value = -1
+
         logManager = self.createLoggingManager()
-        # logManager.printIntro(self.phys_state.time + self.phys_state.time_step, 1)
         logManager.printConvTableEntries()
 
-        self.geom = self.phys_pb.getMesh().getCoordinates() + self.phys_state.primal
+        convManager = self.get_feature(SOP.ConvergenceManager)
+        iter_glob = convManager.setdefault("ITER_GLOB_MAXI")
+
+        self.current_matrix = current_matrix
 
         criteria = self.get_feature(SOP.ConvergenceCriteria)
 
         while not convManager.isFinished():
             self.current_incr += 1
-            iter_geom.value = self.current_incr
+            iter_glob.value = self.current_incr
 
-            if criteria.has_feature(SOP.Contact):
-                criteria.get_feature(SOP.Contact).setPairingCoordinates(self.geom)
-            criteria.setLoggingManager(logManager)
-            criteria.initialize()
+            # Select type of matrix
+            matrix_type = self._setMatrixType()
+
+            if self.contact_manager:
+                self.contact_manager.pairing(self.phys_pb)
 
             # Solve current iteration
-            self.current_matrix = criteria.solve(self.current_matrix)
+            primal_incr, internVar, sigma, self.current_matrix = criteria.solve(
+                matrix_type, self.current_matrix
+            )
 
-            # Update physical state
-            self.update(convManager)
+            # Update
+            self.update(primal_incr, internVar, sigma, convManager)
 
-            if self._get("CONTACT", "ALGO_RESO_GEOM") == "POINT_FIXE":
+            if self.current_incr > 0:
                 logManager.printConvTableRow(
-                    [self.current_incr, " ", " ", convManager.get("RESI_GEOM"), "POINT_FIXE"]
+                    [
+                        self.current_incr - 1,
+                        convManager.get("RESI_GLOB_RELA"),
+                        convManager.get("RESI_GLOB_MAXI"),
+                        convManager.get("RESI_GEOM"),
+                        matrix_type,
+                    ]
                 )
 
         if not convManager.isConverged():
@@ -140,6 +171,9 @@ class StepSolver(SolverFeature):
         deleteTemporaryObjects()
 
         logManager.printConvTableEnd()
+
+        if self.current_incr % self.matr_update_incr == 0 or self.contact_manager:
+            self.current_matrix = None
 
     def _get(self, keyword, parameter=None, default=None):
         """ "Return a keyword value"""

@@ -56,10 +56,6 @@ class SolverOptions(IntFlag):
     # compute residuals
     ResidualComputation = auto()
 
-    # flag added "for a step" object
-    ForStep = auto()
-    # flag added "for an increment" object
-    ForIncr = auto()
     # flag for notification support
     EventSource = auto()
 

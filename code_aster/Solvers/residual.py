@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ..Objects import DiscreteComputation
+from ..Objects import AssemblyMatrixDisplacementReal, DiscreteComputation
 from ..Supervis import IntegrationError
 from ..Utilities import no_new_attributes, profile
 from .solver_features import SolverFeature
@@ -206,3 +206,111 @@ class ResidualComputation(SolverFeature):
         resi.resi = -(resi.resi_int + resi.resi_cont - resi.resi_ext)
 
         return resi, internVar, stress
+
+    @profile
+    @SolverFeature.check_once
+    def computeInternalJacobian(self, matrix_type):
+        """Compute K(u) = d(Rint(u)) / du
+
+        Arguments:
+            matrix_type (str): type of matrix used.
+
+        Returns:
+            int : error code flag
+            ElementaryMatrixDisplacementReal: rigidity matrix.
+            ElementaryMatrixDisplacementReal: dual matrix.
+        """
+        # Main object for discrete computation
+        disc_comp = DiscreteComputation(self.phys_pb)
+
+        # Compute rigidity matrix
+        if matrix_type in ("PRED_ELASTIQUE", "ELASTIQUE"):
+            time_curr = self.phys_state.time + self.phys_state.time_step
+            matr_elem_rigi = disc_comp.getLinearStiffnessMatrix(time=time_curr, with_dual=False)
+            codret = 0
+        elif matrix_type == "PRED_TANGENTE":
+            _, codret, matr_elem_rigi = disc_comp.getPredictionTangentStiffnessMatrix(
+                self.phys_state.primal,
+                self.phys_state.primal_step,
+                self.phys_state.stress,
+                self.phys_state.internVar,
+                self.phys_state.time,
+                self.phys_state.time_step,
+                self.phys_state.getState(-1).externVar,
+                self.phys_state.externVar,
+            )
+        elif matrix_type == "TANGENTE":
+            _, codret, matr_elem_rigi = disc_comp.getTangentStiffnessMatrix(
+                self.phys_state.primal,
+                self.phys_state.primal_step,
+                self.phys_state.stress,
+                self.phys_state.internVar,
+                self.phys_state.time,
+                self.phys_state.time_step,
+                self.phys_state.getState(-1).externVar,
+                self.phys_state.externVar,
+            )
+        else:
+            raise RuntimeError("Matrix not supported: %s" % (matrix_type))
+
+        # Compute dual matrix
+        matr_elem_dual = disc_comp.getDualStiffnessMatrix()
+
+        return codret, matr_elem_rigi, matr_elem_dual
+
+    @profile
+    @SolverFeature.check_once
+    def computeContactJacobian(self):
+        """Compute K(u) = d(Rcont(u) ) / du
+
+        Returns:
+           ElementaryMatrixDisplacementReal: Contact matrix.
+        """
+        contact_manager = self.get_feature(SOP.Contact, optional=True)
+        if contact_manager:
+            # Main object for discrete computation
+            disc_comp = DiscreteComputation(self.phys_pb)
+
+            matr_elem_cont = disc_comp.getContactMatrix(
+                contact_manager.getPairingCoordinates(),
+                self.phys_state.primal,
+                self.phys_state.primal_step,
+                self.phys_state.time,
+                self.phys_state.time_step,
+                contact_manager.data(),
+                contact_manager.coef_cont,
+                contact_manager.coef_frot,
+            )
+
+            return matr_elem_cont
+
+        return None
+
+    @profile
+    @SolverFeature.check_once
+    def computeJacobian(self, matrix_type):
+        """Compute K(u) = d(Rint(u) - Rext(u)) / du
+
+        Arguments:
+            matrix_type (str): type of matrix used.
+
+        Returns:
+            AssemblyMatrixDisplacementReal: Jacobian matrix.
+        """
+        # Compute elementary matrix
+        codret, matr_elem_rigi, matr_elem_dual = self.computeInternalJacobian(matrix_type)
+        if codret > 0:
+            raise IntegrationError("MECANONLINE10_1")
+
+        matr_elem_cont = self.computeContactJacobian()
+
+        # Assemble matrix
+        jacobian = AssemblyMatrixDisplacementReal(self.phys_pb)
+
+        jacobian.addElementaryMatrix(matr_elem_rigi)
+        jacobian.addElementaryMatrix(matr_elem_dual)
+        jacobian.addElementaryMatrix(matr_elem_cont)
+
+        jacobian.assemble()
+
+        return jacobian

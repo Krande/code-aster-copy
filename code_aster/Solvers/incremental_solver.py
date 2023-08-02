@@ -17,8 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ..Objects import AssemblyMatrixDisplacementReal, DiscreteComputation
-from ..Supervis import IntegrationError
+from ..Objects import DiscreteComputation
 from ..Utilities import no_new_attributes, profile
 from .base_features import EventSource
 from .solver_features import SolverFeature
@@ -28,7 +27,7 @@ from .solver_features import SolverOptions as SOP
 class IncrementalSolver(SolverFeature, EventSource):
     """Solve an iteration."""
 
-    provide = SOP.IncrementalSolver | SOP.EventSource
+    provide = SOP.IncrementalSolver | SOP.EventSource | SOP.ConvergenceCriteria
     required_features = [
         SOP.PhysicalProblem,
         SOP.PhysicalState,
@@ -63,114 +62,6 @@ class IncrementalSolver(SolverFeature, EventSource):
 
     @profile
     @SolverFeature.check_once
-    def computeInternalJacobian(self, matrix_type):
-        """Compute K(u) = d(Rint(u)) / du
-
-        Arguments:
-            matrix_type (str): type of matrix used.
-
-        Returns:
-            int : error code flag
-            ElementaryMatrixDisplacementReal: rigidity matrix.
-            ElementaryMatrixDisplacementReal: dual matrix.
-        """
-        # Main object for discrete computation
-        disc_comp = DiscreteComputation(self.phys_pb)
-
-        # Compute rigidity matrix
-        if matrix_type in ("PRED_ELASTIQUE", "ELASTIQUE"):
-            time_curr = self.phys_state.time + self.phys_state.time_step
-            matr_elem_rigi = disc_comp.getLinearStiffnessMatrix(time=time_curr, with_dual=False)
-            codret = 0
-        elif matrix_type == "PRED_TANGENTE":
-            _, codret, matr_elem_rigi = disc_comp.getPredictionTangentStiffnessMatrix(
-                self.phys_state.primal,
-                self.phys_state.primal_step,
-                self.phys_state.stress,
-                self.phys_state.internVar,
-                self.phys_state.time,
-                self.phys_state.time_step,
-                self.phys_state.getState(-1).externVar,
-                self.phys_state.externVar,
-            )
-        elif matrix_type == "TANGENTE":
-            _, codret, matr_elem_rigi = disc_comp.getTangentStiffnessMatrix(
-                self.phys_state.primal,
-                self.phys_state.primal_step,
-                self.phys_state.stress,
-                self.phys_state.internVar,
-                self.phys_state.time,
-                self.phys_state.time_step,
-                self.phys_state.getState(-1).externVar,
-                self.phys_state.externVar,
-            )
-        else:
-            raise RuntimeError("Matrix not supported: %s" % (matrix_type))
-
-        # Compute dual matrix
-        matr_elem_dual = disc_comp.getDualStiffnessMatrix()
-
-        return codret, matr_elem_rigi, matr_elem_dual
-
-    @profile
-    @SolverFeature.check_once
-    def computeContactJacobian(self):
-        """Compute K(u) = d(Rcont(u) ) / du
-
-        Returns:
-           ElementaryMatrixDisplacementReal: Contact matrix.
-        """
-        contact_manager = self.get_feature(SOP.Contact, optional=True)
-        if contact_manager:
-            # Main object for discrete computation
-            disc_comp = DiscreteComputation(self.phys_pb)
-
-            matr_elem_cont = disc_comp.getContactMatrix(
-                contact_manager.getPairingCoordinates(),
-                self.phys_state.primal,
-                self.phys_state.primal_step,
-                self.phys_state.time,
-                self.phys_state.time_step,
-                contact_manager.data(),
-                contact_manager.coef_cont,
-                contact_manager.coef_frot,
-            )
-
-            return matr_elem_cont
-
-        return None
-
-    @profile
-    @SolverFeature.check_once
-    def computeJacobian(self, matrix_type):
-        """Compute K(u) = d(Rint(u) - Rext(u)) / du
-
-        Arguments:
-            matrix_type (str): type of matrix used.
-
-        Returns:
-            AssemblyMatrixDisplacementReal: Jacobian matrix.
-        """
-        # Compute elementary matrix
-        codret, matr_elem_rigi, matr_elem_dual = self.computeInternalJacobian(matrix_type)
-        if codret > 0:
-            raise IntegrationError("MECANONLINE10_1")
-
-        matr_elem_cont = self.computeContactJacobian()
-
-        # Assemble matrix
-        jacobian = AssemblyMatrixDisplacementReal(self.phys_pb)
-
-        jacobian.addElementaryMatrix(matr_elem_rigi)
-        jacobian.addElementaryMatrix(matr_elem_dual)
-        jacobian.addElementaryMatrix(matr_elem_cont)
-
-        jacobian.assemble()
-
-        return jacobian
-
-    @profile
-    @SolverFeature.check_once
     def solve(self, matrix_type, matrix=None):
         """Solve the iteration.
 
@@ -186,8 +77,16 @@ class IncrementalSolver(SolverFeature, EventSource):
             Jacobian matrix used (if computed).
         """
         # we need the matrix to have scaling factor for Lagrange
+
+        contact_manager = self.get_feature(SOP.Contact, optional=True)
+        if contact_manager:
+            contact_manager.update(self.phys_state)
+            contact_manager.pairing(self.phys_pb)
+
+        resiComp = self.get_feature(SOP.ResidualComputation)
+
         if not matrix:
-            stiffness = self.computeJacobian(matrix_type)
+            stiffness = resiComp.computeJacobian(matrix_type)
         else:
             stiffness = matrix
 
@@ -195,13 +94,11 @@ class IncrementalSolver(SolverFeature, EventSource):
         scaling = stiffness.getLagrangeScaling()
 
         # compute residual
-        resiComp = self.get_feature(SOP.ResidualComputation)
         residuals, internVar, stress = resiComp.computeResidual(scaling)
 
         # evaluate convergence
         convManager = self.get_feature(SOP.ConvergenceManager)
         convManager.evalNormResidual(residuals)
-        self.notifyObservers(convManager, matrix_type)
 
         if not convManager.isConverged():
             # Time at end of current step
@@ -225,5 +122,9 @@ class IncrementalSolver(SolverFeature, EventSource):
                 primal_incr, internVar, stress = lineSearch.solve(primal_incr, scaling)
         else:
             primal_incr = self.phys_state.createPrimal(self.phys_pb, 0.0)
+
+        # evaluate geometric - convergence
+        convManager.evalGeometricResidual(primal_incr)
+        self.notifyObservers(convManager, matrix_type)
 
         return primal_incr, internVar, stress, stiffness

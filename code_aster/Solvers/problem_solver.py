@@ -22,7 +22,6 @@ from libaster import deleteTemporaryObjects, resetFortranLoggingLevel, setFortra
 from ..Objects import LinearSolver
 from ..Utilities import DEBUG, INFO, WARNING, ExecutionParameter, Options, logger, no_new_attributes
 from .convergence_manager import ConvergenceManager
-from .geometric_solver import GeometricSolver
 from .incremental_solver import IncrementalSolver
 from .line_search import LineSearch
 from .physical_state import PhysicalState
@@ -48,16 +47,12 @@ class ProblemSolver(SolverFeature):
         SOP.Keywords,
         SOP.TimeStepper,
         SOP.LinearSolver,
-        SOP.LineSearch,
         SOP.StepSolver,
-        SOP.IncrementalSolver,
         SOP.ConvergenceCriteria,
         SOP.ConvergenceManager,
         SOP.ResidualComputation,
-        SOP.ForStep,
-        SOP.ForIncr,
     ]
-    optional_features = [SOP.Contact, SOP.PostStepHook]
+    optional_features = [SOP.Contact, SOP.PostStepHook, SOP.LineSearch, SOP.IncrementalSolver]
 
     _main = _result = None
     _phys_state = None
@@ -173,9 +168,9 @@ class ProblemSolver(SolverFeature):
         logger.debug("+++ get ContactManager")
         return self.get_feature(SOP.Contact, optional=True)
 
-    def _get_incr_conv(self):
-        logger.debug("+++ get ConvergenceManager ForIncr")
-        converg = self.get_feature(SOP.ConvergenceManager | SOP.ForIncr, optional=True)
+    def _get_conv_manager(self):
+        logger.debug("+++ get ConvergenceManager")
+        converg = self.get_feature(SOP.ConvergenceManager, optional=True)
         if not converg:
             args = self.get_feature(SOP.Keywords)
             converg = ConvergenceManager()
@@ -184,13 +179,12 @@ class ProblemSolver(SolverFeature):
                 if value is not None:
                     converg.setdefault(crit, value)
             if args.get("CONTACT"):
-                if args["CONTACT"].get("ALGO_RESO_GEOM") == "NEWTON":
-                    converg.setdefault("RESI_GEOM", args["CONTACT"].get("RESI_GEOM"))
+                converg.setdefault("RESI_GEOM", args["CONTACT"].get("RESI_GEOM"))
             if not converg.hasResidual():
                 converg.setdefault("RESI_GLOB_RELA", 1.0e-6)
         for feat, required in converg.undefined():
-            converg.use(self._get(feat | SOP.ForIncr, required))
-        self.use(converg, SOP.ForIncr)
+            converg.use(self._get(feat, required))
+        self.use(converg)
         return converg
 
     def _get_incremental_solver(self):
@@ -199,7 +193,7 @@ class ProblemSolver(SolverFeature):
         if not incr_solver:
             incr_solver = IncrementalSolver()
         for feat, required in incr_solver.undefined():
-            incr_solver.use(self._get(feat | SOP.ForIncr, required))
+            incr_solver.use(self._get(feat, required))
         self.use(incr_solver)
         return incr_solver
 
@@ -208,36 +202,10 @@ class ProblemSolver(SolverFeature):
         resi = self.get_feature(SOP.ResidualComputation, optional=True)
         if not resi:
             resi = ResidualComputation()
-            resi.use(self.phys_pb)
-            resi.use(self.phys_state)
-
+        for feat, required in resi.undefined():
+            resi.use(self._get(feat, required))
         self.use(resi)
         return resi
-
-    def _get_step_conv(self):
-        logger.debug("+++ get ConvergenceManager ForStep")
-        step_crit = self.get_feature(SOP.ConvergenceManager | SOP.ForStep, optional=True)
-        if not step_crit:
-            args = self.get_feature(SOP.Keywords)
-            step_crit = ConvergenceManager()
-            nbIterMini = 0
-            nbIterMaxi = 1
-            if args.get("CONTACT"):
-                contact = args["CONTACT"]
-                value = 1.0e150
-                value = contact.get("RESI_GEOM", value)
-                step_crit.setdefault("RESI_GEOM", value)
-                if contact.get("REAC_GEOM") == "AUTOMATIQUE":
-                    nbIterMini = 0
-                    nbIterMaxi = contact["ITER_GEOM_MAXI"]
-                elif contact.get("REAC_GEOM") == "CONTROLE":
-                    nbIterMaxi = contact["NB_ITER_GEOM"]
-                    nbIterMini = nbIterMaxi - 1
-            step_crit.setdefault("ITER_GEOM", nbIterMaxi).minValue = nbIterMini
-        for feat, required in step_crit.undefined():
-            step_crit.use(self._get(feat, required))
-        self.use(step_crit, SOP.ForStep)
-        return step_crit
 
     def _get_step_conv_solver(self):
         logger.debug("+++ get ConvergenceCriteria")
@@ -245,14 +213,11 @@ class ProblemSolver(SolverFeature):
         args = self.get_feature(SOP.Keywords)
         if not step_conv_solv:
             if args.get("METHODE", "NEWTON") == "NEWTON":
-                step_conv_solv = GeometricSolver()
+                step_conv_solv = self._get(SOP.IncrementalSolver, True)
             else:
                 step_conv_solv = SNESSolver()
-        # FIXME replace by 'use(*, Keywords)'
-        if not step_conv_solv.param:
-            step_conv_solv.setParameters(args)
         for feat, required in step_conv_solv.undefined():
-            step_conv_solv.use(self._get(feat | SOP.ForIncr, required))
+            step_conv_solv.use(self._get(feat, required))
         self.use(step_conv_solv)
         return step_conv_solv
 
@@ -265,7 +230,7 @@ class ProblemSolver(SolverFeature):
         if not step_solver.param:
             step_solver.setParameters(self.get_feature(SOP.Keywords))
         for feat, required in step_solver.undefined():
-            step_solver.use(self._get(feat | SOP.ForStep, required))
+            step_solver.use(self._get(feat, required))
         self.use(step_solver)
         return step_solver
 
@@ -282,12 +247,10 @@ class ProblemSolver(SolverFeature):
             return self._get_line_search()
         if option & SOP.Contact:
             return self._get_contact_manager()
-        if option & (SOP.ConvergenceManager | SOP.ForIncr) == option:
-            return self._get_incr_conv()
+        if option & SOP.ConvergenceManager:
+            return self._get_conv_manager()
         if option & SOP.IncrementalSolver:
             return self._get_incremental_solver()
-        if option & (SOP.ConvergenceManager | SOP.ForStep) == option:
-            return self._get_step_conv()
         if option & SOP.ConvergenceCriteria:
             return self._get_step_conv_solver()
         if option & SOP.ResidualComputation:

@@ -190,7 +190,7 @@ class NonLinearSolver(SolverFeature):
                 self.phys_state.debugPrint("<t-> ")
             self.phys_state.stash()
             try:
-                solv.solve()
+                solv.solve(self.current_matrix)
             except (ConvergenceError, IntegrationError, SolverError) as exc:
                 logger.warning(exc.format("I"))
                 self.stepper.failed(exc)
