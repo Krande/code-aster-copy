@@ -38,7 +38,6 @@ class LineSearch(SolverFeature):
         super().__init__()
 
         self.param = keywords
-        print("PAR: ", self.param)
 
     def activated(self):
         """Return True if LineSearch is activated
@@ -63,8 +62,6 @@ class LineSearch(SolverFeature):
 
         if self.activated():
             method = self.param["METHODE"]
-            if method not in ("CORDE"):
-                raise NotImplementedError(method)
 
             def _f(rho, solution=solution, scaling=scaling):
                 self.phys_state.primal_step += rho * solution
@@ -74,36 +71,35 @@ class LineSearch(SolverFeature):
                 self.phys_state.primal_step -= rho * solution
                 return resi_state.resi.dot(solution), varState, stressState
 
-            def _proj(rho, rhomin, rhomax, rhoexm, rhoexp):
+            def _proj(rho, param=self.param):
                 rhotmp = rho
-                if rhotmp < rhomin:
-                    rho = rhomin
-                if rhotmp > rhomax:
-                    rho = rhomax
-                if rhotmp < 0.0 and rhotmp >= rhoexm:
-                    rho = rhoexm
-                if rhotmp >= 0.0 and rhotmp <= rhoexp:
-                    rho = rhoexp
+                if rhotmp < param["RHO_MIN"]:
+                    rho = param["RHO_MIN"]
+                if rhotmp > param["RHO_MAX"]:
+                    rho = param["RHO_MAX"]
+                if rhotmp < 0.0 and rhotmp >= -param["RHO_EXCL"]:
+                    rho = -param["RHO_EXCL"]
+                if rhotmp >= 0.0 and rhotmp <= param["RHO_EXCL"]:
+                    rho = param["RHO_EXCL"]
 
                 return rho
 
             # retrieve args
-            itemax = self.param["ITER_LINE_MAXI"]
-            rhomin = self.param["RHO_MIN"]
-            rhomax = self.param["RHO_MAX"]
-            rtol = self.param["RESI_LINE_RELA"]
-            rhoexm = self.param["RHO_EXCL"]
-            rhoexp = self.param["RHO_EXCL"]
-
-            # Implementing Secant Method
-            rhom, rho = 0.0, 1.0
-            rhoopt = rho
-            fm, _, _ = _f(rhom, solution)  # minus residual is returned
+            f0, _, _ = _f(0.0, solution)
             fopt = np.finfo("float64").max
             tiny = np.finfo("float64").tiny
-            fcvg = abs(rtol * fm)
+            fcvg = abs(self.param["RESI_LINE_RELA"] * f0)
 
-            for iter in range(itemax):
+            if method == "CORDE":
+                rhom, rho = 0.0, 1.0
+                rhoopt = rho
+                fm = f0
+            elif method == "MIXTE":
+                raise NotImplementedError()
+            else:
+                raise RuntimeError()
+
+            for iter in range(self.param["ITER_LINE_MAXI"]):
                 try:
                     f, varState, stressState = _f(rho)
                 except Exception as e:
@@ -120,18 +116,21 @@ class LineSearch(SolverFeature):
 
                     # converged ?
                     if abs(f) < fcvg:
+                        print(
+                            "Linesearch: iter = %d, rho = %0.6f and f(rho) = %0.6f" % (iter, rho, f)
+                        )
                         return rhoopt * solution, varState, stressState
 
                 rhotmp = rho
                 if abs(f - fm) > tiny:
                     rho = (f * rhom - fm * rho) / (f - fm)
-                    rho = _proj(rho, rhomin, rhomax, rhoexm, rhoexp)
+                    rho = _proj(rho)
                 elif f * (rho - rhom) * (f - fm) <= 0.0:
-                    rho = rhomax
+                    rho = self.param["RHO_MAX"]
                 else:
-                    rho = rhomin
+                    rho = self.param["RHO_MAX"]
 
-                print("Iteration-%d, rho2 = %0.6f and f(rho2) = %0.6f" % (iter, rho, f))
+                # print("Iteration-%d, rho2 = %0.6f and f(rho2) = %0.6f" % (iter, rho, f))
                 rhom = rhotmp
                 fm = f
 
