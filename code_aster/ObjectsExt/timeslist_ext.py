@@ -61,7 +61,7 @@ class TimesListStateBuilder(InternalStateBuilder):
         state.
 
         Arguments:
-            obj (*DataStructure*): The *DataStructure* object to be pickled.
+            obj (*DataStructure*): The *DataStructure* object to be restored.
         """
         super().restore(obj)
         obj.stepper = TimeStepper(

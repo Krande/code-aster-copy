@@ -42,7 +42,7 @@ class ParallelMeshStateBuilder(InternalStateBuilder):
         state.
 
         Arguments:
-            mesh (*DataStructure*): The *DataStructure* object to be pickled.
+            mesh (*DataStructure*): The *DataStructure* object to be restored.
         """
         super().restore(mesh)
         mesh.build()

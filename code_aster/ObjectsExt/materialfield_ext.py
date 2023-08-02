@@ -23,7 +23,6 @@
 ************************************************************************
 """
 
-import aster
 from libaster import EntityType, MaterialField
 
 from ..Utilities import injector
@@ -72,7 +71,7 @@ class MaterialFieldStateBuilder(InternalStateBuilder):
         state.
 
         Arguments:
-            field (*DataStructure*): The *DataStructure* object to be pickled.
+            field (*DataStructure*): The *DataStructure* object to be restored.
         """
         super().restore(field)
         for occ in self._st["part"]:

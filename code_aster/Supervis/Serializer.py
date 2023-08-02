@@ -473,7 +473,7 @@ def unique_id(obj):
     pickle.
 
     Returns:
-        str: Identifier containing " mark, class name, object name".
+        str: Identifier containing "mark, class name, object name".
     """
     class_ = type(obj).__name__
     pers_id = ("DataStructure", class_, obj.getName().strip())
@@ -670,7 +670,7 @@ class AsterUnpickler(pickle.Unpickler):
         """
         buffer = self._stack.buffer(key_id)
         buffer.classname = class_id
-        return buffer
+        return buffer.instance
 
     def persistent_load(self, pers_id):
         """Action called when a persistent id is reloaded.
@@ -686,8 +686,7 @@ class AsterUnpickler(pickle.Unpickler):
         type_tag, class_id, key_id = decoded_id
         if type_tag == "DataStructure":
             return self.recover_ds(class_id, key_id)
-        else:
-            raise pickle.UnpicklingError("unsupported persistent object")
+        raise pickle.UnpicklingError("unsupported persistent object")
 
 
 def _filteringContext(context):

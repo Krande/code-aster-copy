@@ -56,7 +56,7 @@ class FieldOnCellsStateBuilder(InternalStateBuilder):
         state.
 
         Arguments:
-            field (*DataStructure*): The *DataStructure* object to be pickled.
+            field (*DataStructure*): The *DataStructure* object to be restored.
         """
         super().restore(field)
         if self._st["fed"]:

@@ -63,7 +63,7 @@ class FormulaStateBuilder(InternalStateBuilder):
         state.
 
         Arguments:
-            form (*DataStructure*): The *DataStructure* object to be pickled.
+            form (*DataStructure*): The *DataStructure* object to be restored.
         """
         super().restore(form)
         form.setExpression(self._st["expr"])
@@ -80,7 +80,6 @@ class FormulaStateBuilder(InternalStateBuilder):
 
 @injector(Formula)
 class ExtendedFormula:
-
     cata_sdj = "SD.sd_fonction.sd_formule"
     internalStateBuilder = FormulaStateBuilder
 

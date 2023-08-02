@@ -50,7 +50,7 @@ class MGISBehaviourStateBuilder(InternalStateBuilder):
         state.
 
         Arguments:
-            behav (*DataStructure*): The *DataStructure* object to be pickled.
+            behav (*DataStructure*): The *DataStructure* object to be restored.
         """
         super().restore(behav)
         libpath, bname = self._st["internal"]
@@ -60,6 +60,5 @@ class MGISBehaviourStateBuilder(InternalStateBuilder):
 
 @injector(MGISBehaviour)
 class ExtendedMGISBehaviour:
-
     cata_sdj = "SD.sd_compor_mgis.sd_compor_mgis"
     internalStateBuilder = MGISBehaviourStateBuilder

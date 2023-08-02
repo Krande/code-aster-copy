@@ -22,7 +22,6 @@
 ********************************************************************
 """
 
-import aster
 from libaster import EquationNumbering
 from ..Objects.Serialization import InternalStateBuilder
 from ..Utilities import injector
@@ -50,7 +49,7 @@ class EquationNumberingStateBuilder(InternalStateBuilder):
         state.
 
         Arguments:
-            nume (*DataStructure*): The *DataStructure* object to be pickled.
+            nume (*DataStructure*): The *DataStructure* object to be restored.
         """
         super().restore(nume)
         if self._st["model"]:

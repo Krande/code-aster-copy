@@ -53,7 +53,7 @@ class GeneralizedAssemblyMatrixStateBuilder(InternalStateBuilder):
         state.
 
         Arguments:
-            matrix (*GeneralizedAssemblyMatrix*): The *DataStructure* object to be pickled.
+            matrix (*GeneralizedAssemblyMatrix*): The *DataStructure* object to be restored.
         """
         super().restore(matrix)
         matrix.setGeneralizedDOFNumbering(self._st["numbering"])

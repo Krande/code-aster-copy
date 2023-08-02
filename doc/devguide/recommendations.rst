@@ -238,8 +238,8 @@ returns ``MAILLAGE_P``, so one defines:
         pass
 
 
-Commons errors
-==============
+Common errors
+=============
 
 - The compilation works but ``waf_debug install`` ends with
   ``stderr: Segmentation fault`` during the compilation of elements catalogs.
@@ -257,6 +257,20 @@ Commons errors
       >>> from code_aster.Commands import MAJ_CATA
       >>> MAJ_CATA(ELEMENT={})
       >>> exit()
+
+  An undefined symbol in an underlying library, for example ``libaster.so``,
+  may also cause ``stderr: Segmentation fault``.
+  Try to import the libraries one by one.
+
+- The compilation works but the first execution fails with
+  ``ImportError: generic_type: type "PythonBool" is already registered!``.
+
+  **Solution**: You just adds a pybind11 binding for a new class?
+  You probably forgot the ``shared::ptr`` ancestor (``xxPtr``).
+
+  .. code-block:: c++
+
+    py::class_< Picklable, PicklablePtr >( mod, "Picklable" )
 
 
 INCLUDE removal

@@ -35,9 +35,8 @@ from libaster import (
     assemblyMatrixToPetsc,
 )
 
-from ..SD.sd_stoc_morse import sd_stoc_morse
-from ..Utilities import injector, deprecated, PETSc
 from ..Objects.Serialization import InternalStateBuilder
+from ..Utilities import PETSc, deprecated, injector
 
 
 class AssemblyMatrixStateBuilder(InternalStateBuilder):
@@ -61,7 +60,7 @@ class AssemblyMatrixStateBuilder(InternalStateBuilder):
         state.
 
         Arguments:
-            matrix (*AssemblyMatrix*): The *DataStructure* object to be pickled.
+            matrix (*AssemblyMatrix*): The *DataStructure* object to be restored.
         """
         super().restore(matrix)
         matrix.setDOFNumbering(self._st["numbering"])

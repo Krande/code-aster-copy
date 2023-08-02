@@ -31,8 +31,6 @@ complex numbers (:py:class:`FieldOnNodesComplex`).
 import functools
 import operator
 
-import aster
-import numpy
 from libaster import (
     DOFNumbering,
     FieldOnNodesChar8,
@@ -66,7 +64,7 @@ class FieldOnNodesStateBuilder(InternalStateBuilder):
         state.
 
         Arguments:
-            field (*DataStructure*): The *DataStructure* object to be pickled.
+            field (*DataStructure*): The *DataStructure* object to be restored.
         """
         super().restore(field)
         if self._st["dofd"]:

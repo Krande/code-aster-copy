@@ -122,7 +122,7 @@ class ResultStateBuilder(InternalStateBuilder):
         state.
 
         Arguments:
-            result (*DataStructure*): The *DataStructure* object to be pickled.
+            result (*DataStructure*): The *DataStructure* object to be restored.
         """
         super().restore(result)
         result.setMesh(self._st["mesh"])
