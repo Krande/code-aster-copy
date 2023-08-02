@@ -34,7 +34,7 @@ class StepSolver(SolverFeature):
         SOP.PhysicalProblem,
         SOP.PhysicalState,
         SOP.ConvergenceManager,
-        SOP.ConvergenceCriteria,
+        SOP.IncrementalSolver,
     ]
 
     matr_update_incr = None
@@ -137,7 +137,7 @@ class StepSolver(SolverFeature):
         convManager = self.get_feature(SOP.ConvergenceManager)
         iter_glob = convManager.setdefault("ITER_GLOB_MAXI")
 
-        criteria = self.get_feature(SOP.ConvergenceCriteria)
+        incr_solv = self.get_feature(SOP.IncrementalSolver)
 
         while not convManager.isFinished():
             self.current_incr += 1
@@ -150,7 +150,7 @@ class StepSolver(SolverFeature):
                 self.contact_manager.pairing(self.phys_pb)
 
             # Solve current iteration
-            primal_incr, internVar, sigma, self.current_matrix = criteria.solve(
+            primal_incr, internVar, sigma, self.current_matrix = incr_solv.solve(
                 matrix_type, self.current_matrix
             )
 

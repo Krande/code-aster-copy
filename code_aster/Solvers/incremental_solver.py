@@ -27,7 +27,7 @@ from .solver_features import SolverOptions as SOP
 class IncrementalSolver(SolverFeature, EventSource):
     """Solve an iteration."""
 
-    provide = SOP.IncrementalSolver | SOP.EventSource | SOP.ConvergenceCriteria
+    provide = SOP.IncrementalSolver | SOP.EventSource
     required_features = [
         SOP.PhysicalProblem,
         SOP.PhysicalState,

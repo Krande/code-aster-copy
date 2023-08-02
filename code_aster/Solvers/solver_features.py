@@ -40,6 +40,8 @@ class SolverOptions(IntFlag):
     TimeStepper = auto()
     # solves a step
     StepSolver = auto()
+    # solves a step with SNES
+    SnesSolver = auto()
     # criteria that must be checked for a step
     ConvergenceCriteria = auto()
     ConvergenceManager = auto()

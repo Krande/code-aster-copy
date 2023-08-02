@@ -17,28 +17,28 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+from ..Objects import AssemblyMatrixDisplacementReal, DiscreteComputation
+from ..Supervis import ConvergenceError, IntegrationError
+from ..Utilities import PETSc, no_new_attributes, profile
+from .logging_manager import LoggingManager
 from .solver_features import SolverFeature
 from .solver_features import SolverOptions as SOP
-from ..Objects import AssemblyMatrixDisplacementReal, DiscreteComputation
-from ..Supervis import ConvergenceError
-from ..Utilities import PETSc, no_new_attributes, profile
-from ..Supervis import IntegrationError
 
 
 class SNESSolver(SolverFeature):
     """Solves a step, loops on iterations."""
 
-    provide = SOP.ConvergenceCriteria
+    provide = SOP.SnesSolver
     required_features = [
         SOP.PhysicalProblem,
         SOP.PhysicalState,
         SOP.ResidualComputation,
         SOP.LinearSolver,
     ]
-    optional_features = [SOP.Contact, SOP.ConvergenceManager]
 
-    logManager = _setMatrixType = None
-    current_matrix = None
+    param = logManager = None
+    matr_update_incr = None
+    current_incr = current_matrix = None
     _primal_plus = _primal_incr = _resi_comp = None
     _scaling = _options = None
     __setattr__ = no_new_attributes(object.__setattr__)
@@ -46,23 +46,56 @@ class SNESSolver(SolverFeature):
     def __init__(self):
         super().__init__()
 
+    def setParameters(self, param):
+        """Set parameters from user keywords.
+
+        Arguments:
+            param (dict) : user keywords.
+        """
+        self.param = param
+        assert self._get("NEWTON", "PREDICTION") in (
+            "ELASTIQUE",
+            "TANGENTE",
+        ), f"unsupported value: "
+
+        self.matr_update_incr = self._get("NEWTON", "REAC_ITER", 1)
+
     def initialize(self):
         """Initialize the object for the next step."""
         self.check_features()
+        self.current_incr = 0
         self.current_matrix = None
+        self.phys_state.primal_step = self.phys_state.createPrimal(self.phys_pb, 0.0)
 
-    @property
-    def contact_manager(self):
-        """ContactManager: contact object."""
-        return self.get_feature(SOP.Contact, optional=True)
+        self.logManager = self._createLoggingManager()
 
-    def setLoggingManager(self, logManager):
-        """Assign the logging manager.
+    def _createLoggingManager(self):
+        """Return a logging manager
 
-        Arguments:
-            logManager (LoggingManager): Logging manager.
+        Returns:
+            LoggingManager: object for logging
         """
-        self.logManager = logManager
+        logManager = LoggingManager()
+        logManager.addConvTableColumn("NEWTON")
+        logManager.addConvTableColumn("RESIDU RELATIF RESI_GLOB_RELA")
+        logManager.addConvTableColumn("RESIDU ABSOLU RESI_GLOB_MAXI")
+        logManager.addConvTableColumn("RESIDU GEOMETRIQUE RESI_GEOM")
+        logManager.addConvTableColumn("OPTION ASSEMBLAGE")
+
+        return logManager
+
+    def _setMatrixType(self):
+        """Set matrix type.
+
+        Returns:
+            str: Type of matrix to be computed.
+        """
+        if self.current_incr == 0:
+            matrix_type = "PRED_" + self._get("NEWTON", "PREDICTION")
+        else:
+            matrix_type = self._get("NEWTON", "MATRICE", "TANGENTE")
+
+        return matrix_type
 
     def _evalFunction(self, snes, X, F):
         # Get the solution increment from PETSc
@@ -84,21 +117,20 @@ class SNESSolver(SolverFeature):
         residual.resi.toPetsc().copy(F)
 
     def _evalJacobian(self, snes, X, J, P):
-        if not self.current_matrix:
-            _matrix = self._incr_solver.computeJacobian(self._setMatrixType)
+        if self.current_incr % self.matr_update_incr == 0:
+            _matrix = self._resi_comp.computeJacobian(self._setMatrixType())
             self.current_matrix = _matrix
             self._scaling = _matrix.getLagrangeScaling()
             _matrix.toPetsc().copy(P)
-
+        self.current_incr += 1
         if J != P:
             J.assemble()  # matrix-free operator
         return PETSc.Mat.Structure.SAME_NONZERO_PATTERN
 
     @profile
-    def solve(self, matrix_type, matrix=None):
-        """Solve a step.
+    def solve(self, matrix=None):
+        """Solve a step with SNES.
 
-            matrix_type (str): type of matrix used.
             matrix (AssemblyMatrixDisplacementReal, optional): Stiffness matrix
                 to be reused.
 
@@ -106,15 +138,12 @@ class SNESSolver(SolverFeature):
             *ConvergenceError* exception in case of error.
         """
         self.current_matrix = matrix
-        self._setMatrixType = matrix_type
         self._resi_comp = self.get_feature(SOP.ResidualComputation)
-        if self.contact_manager:
-            self.contact_manager.pairing(self.phys_pb)
 
         # we assemble a first matrix, clone it in PETSc and keep a pointer on it
         _jac = AssemblyMatrixDisplacementReal(self.phys_pb)
         codret, matr_elem_rigi, matr_elem_dual = self._resi_comp.computeInternalJacobian(
-            matrix_type
+            self._get("NEWTON", "PREDICTION")
         )
         if codret > 0:
             raise IntegrationError("MECANONLINE10_1")
@@ -140,7 +169,7 @@ class SNESSolver(SolverFeature):
         snes.setJacobian(self._evalJacobian, p_jac)
 
         def _monitor(snes, its, fgnorm):
-            self.logManager.printConvTableRow([its, " - ", fgnorm, " - ", self._setMatrixType])
+            self.logManager.printConvTableRow([its, " - ", fgnorm, " - ", self._setMatrixType()])
 
         snes.setMonitor(_monitor)
 
@@ -162,8 +191,17 @@ class SNESSolver(SolverFeature):
         self.phys_state.stress = sigma
         self.phys_state.internVar = internVar
 
-        print(snes.getConvergedReason())
         if snes.getConvergedReason() < 0:
             raise ConvergenceError("MECANONLINE9_7")
 
-        return self._primal_incr, internVar, sigma, self.current_matrix
+        return self.current_matrix
+
+    def _get(self, keyword, parameter=None, default=None):
+        """ "Return a keyword value"""
+        args = self.param
+        if parameter is not None:
+            if args.get(keyword) is None:
+                return default
+            return _F(args[keyword])[0].get(parameter, default)
+
+        return args.get(keyword, default)

@@ -59,6 +59,7 @@ class NonLinearSolver(SolverFeature):
         SOP.PhysicalState,
         SOP.Storage,
         SOP.StepSolver,
+        SOP.SnesSolver,
         SOP.TimeStepper,
         SOP.Keywords,
     ]
@@ -169,9 +170,13 @@ class NonLinearSolver(SolverFeature):
         """Solve the problem."""
         self.initialize()
         matr_update_step = self._get("NEWTON", "REAC_ITER", 1)
+        create_solver = {
+            "SNES": self.get_feature(SOP.SnesSolver),
+            "NEWTON": self.get_feature(SOP.StepSolver),
+        }
 
         # Solve nonlinear problem
-        solv = self.get_feature(SOP.StepSolver)
+        solv = create_solver[self._get("METHODE")]
         while not self.isFinished():
             timeEndStep = self.stepper.getCurrent()
             self.phys_state.time_step = timeEndStep - self.phys_state.time
