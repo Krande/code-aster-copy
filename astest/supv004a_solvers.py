@@ -648,14 +648,18 @@ class TestConvergenceManager(unittest.TestCase):
             ConvergenceManager.Parameter.factory("PARA", 0.0)
 
         self.assertFalse(resi.isSet())
-        self.assertTrue(resi.isConverged())
-        self.assertTrue(resi.isFinished())
+        self.assertFalse(resi.isConverged())
+        self.assertFalse(resi.isFinished())
         resi.value = 1.123e-4
         self.assertTrue(resi.isSet())
         self.assertFalse(resi.isConverged())
         self.assertFalse(resi.isFinished())
         resi.reset()
         self.assertFalse(resi.isSet())
+        resi.value = 1.123e-7
+        self.assertTrue(resi.isSet())
+        self.assertTrue(resi.isConverged())
+        self.assertTrue(resi.isFinished())
 
         self.assertFalse(iter.isSet())
         self.assertTrue(iter.isConverged())
@@ -721,7 +725,7 @@ class TestConvergenceManager(unittest.TestCase):
 
         conv.initialize()  # RESI_GEOM will be ignored if not defined
         resi_rela.value = 1.0e-8
-        self.assertTrue(conv.isConverged())
+        self.assertFalse(conv.isConverged())
 
         conv.initialize("RESI_GEOM")  # RESI_GEOM will be initialized to -1.0
         resi_rela.value = 1.0e-8
@@ -731,6 +735,11 @@ class TestConvergenceManager(unittest.TestCase):
         resi_rela.value = 1.0e-8
         resi_geom.value = 1.0e-8
         self.assertTrue(conv.isConverged())
+
+        conv.initialize("RESI_GEOM")
+        resi_rela.value = 1.0e-8
+        resi_geom.value = ConvergenceManager.undef
+        self.assertFalse(conv.isConverged())
 
 
 if __name__ == "__main__":

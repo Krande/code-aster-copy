@@ -176,8 +176,11 @@ class ConvergenceManager(SolverFeature):
             Returns:
                 bool: *True* if the value is converged, *False* otherwise.
             """
-            if not self.hasRef() or not self.isSet():
+
+            if not self.hasRef():
                 return True
+            if not self.isSet():
+                return not self.hasRef()
             checkMin = not self.minSet() or self._minValue <= self._value
             return checkMin and self._value <= self._refe
 

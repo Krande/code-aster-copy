@@ -66,6 +66,9 @@ class StepSolver(SolverFeature):
         convManager = self.get_feature(SOP.ConvergenceManager)
         convManager.initialize()
 
+        iter_glob = convManager.setdefault("ITER_GLOB_MAXI")
+        iter_glob.minValue = 1
+
     @property
     def contact_manager(self):
         """ContactManager: contact object."""
@@ -129,10 +132,10 @@ class StepSolver(SolverFeature):
         logManager = self.createLoggingManager()
         logManager.printConvTableEntries()
 
+        self.current_matrix = current_matrix
+
         convManager = self.get_feature(SOP.ConvergenceManager)
         iter_glob = convManager.setdefault("ITER_GLOB_MAXI")
-
-        self.current_matrix = current_matrix
 
         criteria = self.get_feature(SOP.ConvergenceCriteria)
 

@@ -178,10 +178,10 @@ class ProblemSolver(SolverFeature):
                 value = args["CONVERGENCE"].get(crit)
                 if value is not None:
                     converg.setdefault(crit, value)
-            if args.get("CONTACT"):
-                converg.setdefault("RESI_GEOM", args["CONTACT"].get("RESI_GEOM"))
             if not converg.hasResidual():
                 converg.setdefault("RESI_GLOB_RELA", 1.0e-6)
+            if args.get("CONTACT"):
+                converg.setdefault("RESI_GEOM", args["CONTACT"].get("RESI_GEOM"))
         for feat, required in converg.undefined():
             converg.use(self._get(feat, required))
         self.use(converg)

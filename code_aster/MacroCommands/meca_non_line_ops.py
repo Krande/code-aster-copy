@@ -76,6 +76,32 @@ def _keywords_check(keywords):
         raise RuntimeError("unsupported value in METHODE")
 
 
+def _add_default(keywords):
+    """Add default values for some keywords
+
+    Replace inplace.
+    """
+
+    def at_least_one(keywords, factor, keys, default, value):
+        hasVal = False
+
+        for val in list(keys):
+            if val in keywords[factor]:
+                hasVal = True
+                break
+
+        if not hasVal:
+            keywords[factor][default] = value
+
+    at_least_one(
+        keywords,
+        "CONVERGENCE",
+        ("RESI_GLOB_RELA", "RESI_GLOB_MAXI", "RESI_REFE_RELA"),
+        default="RESI_GLOB_RELA",
+        value=1e-6,
+    )
+
+
 def meca_non_line_ops(self, **args):
     """Execute the command.
 
@@ -85,6 +111,7 @@ def meca_non_line_ops(self, **args):
     UTMESS("A", "QUALITY1_2")
 
     args = _F(args)
+    _add_default(args)
 
     # Add controls to prohibit unconverted features
     _contact_check(args["CONTACT"])
