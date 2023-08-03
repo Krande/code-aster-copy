@@ -25,7 +25,6 @@ from .convergence_manager import ConvergenceManager
 from .incremental_solver import IncrementalSolver
 from .line_search import LineSearch
 from .physical_state import PhysicalState
-from .residual import ResidualComputation
 from .snes_solver import SNESSolver
 from .solver_features import SolverFeature
 from .solver_features import SolverOptions as SOP
@@ -50,7 +49,6 @@ class ProblemSolver(SolverFeature):
         SOP.StepSolver,
         SOP.SnesSolver,
         SOP.ConvergenceManager,
-        SOP.ResidualComputation,
     ]
     optional_features = [
         SOP.Contact,
@@ -165,10 +163,9 @@ class ProblemSolver(SolverFeature):
         if not self.has_feature(SOP.LineSearch):
             args = self.get_feature(SOP.Keywords)
             line = LineSearch(args.get("RECH_LINEAIRE"))
-            line.use(self._get(SOP.ResidualComputation, True))
-            line.use(self._get(SOP.PhysicalState, True))
-            self.use(line)
-
+        for feat, required in line.undefined():
+            line.use(self._get(feat, required))
+        self.use(line)
         return self.get_feature(SOP.LineSearch)
 
     def _get_contact_manager(self):
@@ -203,16 +200,6 @@ class ProblemSolver(SolverFeature):
             incr_solver.use(self._get(feat, required))
         self.use(incr_solver)
         return incr_solver
-
-    def _get_residual(self):
-        logger.debug("+++ get ResidualComputation")
-        resi = self.get_feature(SOP.ResidualComputation, optional=True)
-        if not resi:
-            resi = ResidualComputation()
-        for feat, required in resi.undefined():
-            resi.use(self._get(feat, required))
-        self.use(resi)
-        return resi
 
     def _get_step_conv_solver(self):
         logger.debug("+++ get ConvergenceCriteria")
@@ -270,8 +257,6 @@ class ProblemSolver(SolverFeature):
             return self._get_incremental_solver()
         if option & SOP.ConvergenceCriteria:
             return self._get_step_conv_solver()
-        if option & SOP.ResidualComputation:
-            return self._get_residual()
         if option & SOP.StepSolver:
             return self._get_step_solver()
         if option & SOP.SnesSolver:

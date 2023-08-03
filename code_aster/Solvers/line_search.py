@@ -17,6 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+from ..Objects import DiscreteComputation
 from ..Supervis import ConvergenceError
 from ..Utilities import no_new_attributes, profile
 from .solver_features import SolverFeature
@@ -29,7 +30,8 @@ class LineSearch(SolverFeature):
     """Line search methods"""
 
     provide = SOP.LineSearch
-    required_features = [SOP.ResidualComputation, SOP.PhysicalState]
+    required_features = [SOP.PhysicalProblem, SOP.PhysicalState]
+    optional_features = [SOP.Contact]
 
     param = None
     __setattr__ = no_new_attributes(object.__setattr__)
@@ -66,8 +68,11 @@ class LineSearch(SolverFeature):
             def _f(rho, solution=solution, scaling=scaling):
                 self.phys_state.primal_step += rho * solution
                 # compute residual
-                resiComp = self.get_feature(SOP.ResidualComputation)
-                resi_state, varState, stressState = resiComp.computeResidual(scaling)
+                disc_comp = DiscreteComputation(self.phys_pb)
+                contact_manager = self.get_feature(SOP.Contact, optional=True)
+                resi_state, varState, stressState = disc_comp.getResidual(
+                    self.phys_state, contact_manager, scaling
+                )
                 self.phys_state.primal_step -= rho * solution
                 return resi_state.resi.dot(solution), varState, stressState
 

@@ -28,13 +28,7 @@ class IncrementalSolver(SolverFeature, EventSource):
     """Solve an iteration."""
 
     provide = SOP.IncrementalSolver | SOP.EventSource
-    required_features = [
-        SOP.PhysicalProblem,
-        SOP.PhysicalState,
-        SOP.LinearSolver,
-        SOP.LineSearch,
-        SOP.ResidualComputation,
-    ]
+    required_features = [SOP.PhysicalProblem, SOP.PhysicalState, SOP.LinearSolver, SOP.LineSearch]
     optional_features = [SOP.Contact, SOP.ConvergenceManager]
 
     _data = None
@@ -83,10 +77,10 @@ class IncrementalSolver(SolverFeature, EventSource):
             contact_manager.update(self.phys_state)
             contact_manager.pairing(self.phys_pb)
 
-        resiComp = self.get_feature(SOP.ResidualComputation)
+        disc_comp = DiscreteComputation(self.phys_pb)
 
         if not matrix:
-            stiffness = resiComp.computeJacobian(matrix_type)
+            stiffness = disc_comp.getTangentMatrix(self.phys_state, matrix_type, contact_manager)
         else:
             stiffness = matrix
 
@@ -94,7 +88,9 @@ class IncrementalSolver(SolverFeature, EventSource):
         scaling = stiffness.getLagrangeScaling()
 
         # compute residual
-        residuals, internVar, stress = resiComp.computeResidual(scaling)
+        residuals, internVar, stress = disc_comp.getResidual(
+            self.phys_state, contact_manager, scaling
+        )
 
         # evaluate convergence
         convManager = self.get_feature(SOP.ConvergenceManager)
@@ -105,7 +101,6 @@ class IncrementalSolver(SolverFeature, EventSource):
             time_curr = self.phys_state.time + self.phys_state.time_step
 
             # Compute Dirichlet BC:
-            disc_comp = DiscreteComputation(self.phys_pb)
             primal_curr = self.phys_state.primal + self.phys_state.primal_step
             diriBCs = disc_comp.getIncrementalDirichletBC(time_curr, primal_curr)
 

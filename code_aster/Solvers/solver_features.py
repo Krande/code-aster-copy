@@ -55,8 +55,6 @@ class SolverOptions(IntFlag):
     Contact = auto()
     # container of keywords
     Keywords = auto()
-    # compute residuals
-    ResidualComputation = auto()
 
     # flag for notification support
     EventSource = auto()

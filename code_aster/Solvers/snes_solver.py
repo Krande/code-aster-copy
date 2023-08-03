@@ -17,8 +17,8 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ..Objects import AssemblyMatrixDisplacementReal, DiscreteComputation
-from ..Supervis import ConvergenceError, IntegrationError
+from ..Objects import DiscreteComputation
+from ..Supervis import ConvergenceError
 from ..Utilities import PETSc, no_new_attributes, profile
 from .logging_manager import LoggingManager
 from .solver_features import SolverFeature
@@ -29,12 +29,7 @@ class SNESSolver(SolverFeature):
     """Solves a step, loops on iterations."""
 
     provide = SOP.SnesSolver
-    required_features = [
-        SOP.PhysicalProblem,
-        SOP.PhysicalState,
-        SOP.ResidualComputation,
-        SOP.LinearSolver,
-    ]
+    required_features = [SOP.PhysicalProblem, SOP.PhysicalState, SOP.LinearSolver]
 
     param = logManager = None
     matr_update_incr = None
@@ -105,11 +100,11 @@ class SNESSolver(SolverFeature):
         self.phys_state.primal_step += self._primal_incr
         self._primal_plus = self.phys_state.primal + self.phys_state.primal_step
         # Build initial residual
-        residual, _, _ = self._resi_comp.computeResidual(self._scaling)
+        disc_comp = DiscreteComputation(self.phys_pb)
+        residual, _, _ = disc_comp.getResidual(self.phys_state, scaling=self._scaling)
         # Apply Lagrange scaling
         residual.resi.applyLagrangeScaling(1 / self._scaling)
         # Apply DirichletBC into the residual
-        disc_comp = DiscreteComputation(self.phys_pb)
         time_curr = self.phys_state.time + self.phys_state.time_step
         diriBCs = disc_comp.getIncrementalDirichletBC(time_curr, self._primal_plus)
         self.current_matrix.applyDirichletBC(diriBCs, residual.resi)
@@ -118,7 +113,8 @@ class SNESSolver(SolverFeature):
 
     def _evalJacobian(self, snes, X, J, P):
         if self.current_incr % self.matr_update_incr == 0:
-            _matrix = self._resi_comp.computeJacobian(self._setMatrixType())
+            disc_comp = DiscreteComputation(self.phys_pb)
+            _matrix = disc_comp.getTangentMatrix(self.phys_state, self._setMatrixType())
             self.current_matrix = _matrix
             self._scaling = _matrix.getLagrangeScaling()
             _matrix.toPetsc().copy(P)
@@ -138,21 +134,14 @@ class SNESSolver(SolverFeature):
             *ConvergenceError* exception in case of error.
         """
         self.current_matrix = matrix
-        self._resi_comp = self.get_feature(SOP.ResidualComputation)
+        disc_comp = DiscreteComputation(self.phys_pb)
 
         # we assemble a first matrix, clone it in PETSc and keep a pointer on it
-        _jac = AssemblyMatrixDisplacementReal(self.phys_pb)
-        codret, matr_elem_rigi, matr_elem_dual = self._resi_comp.computeInternalJacobian(
-            self._get("NEWTON", "PREDICTION")
+        self.current_matrix = disc_comp.getInternalTangentMatrix(
+            self.phys_state, self._get("NEWTON", "PREDICTION"), True
         )
-        if codret > 0:
-            raise IntegrationError("MECANONLINE10_1")
-        _jac.addElementaryMatrix(matr_elem_rigi)
-        _jac.addElementaryMatrix(matr_elem_dual)
-        _jac.assemble()
-        self._scaling = _jac.getLagrangeScaling()
-        self.current_matrix = _jac
-        p_jac = _jac.toPetsc()
+        self._scaling = self.current_matrix.getLagrangeScaling()
+        p_jac = self.current_matrix.toPetsc()
 
         snes = PETSc.SNES().create()
 
@@ -186,7 +175,7 @@ class SNESSolver(SolverFeature):
         x.set(0)  # zero initial guess
         snes.solve(b, x)
 
-        _, internVar, sigma = self._resi_comp.computeResidual()
+        _, internVar, sigma = disc_comp.getResidual(self.phys_state)
 
         self.phys_state.stress = sigma
         self.phys_state.internVar = internVar
