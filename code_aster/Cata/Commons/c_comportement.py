@@ -145,12 +145,10 @@ def C_COMPORTEMENT(command):
                 ),
             ),
             regles=(
-                PRESENT_ABSENT("TOUT", "GROUP_MA", "MAILLE"),
-                AU_MOINS_UN("TOUT", "GROUP_MA", "MAILLE", TOUT="OUI"),
+                UN_PARMI("TOUT", "GROUP_MA", TOUT="OUI"),
             ),
             TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
             GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-            MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         )
     else:
         opts = {}
