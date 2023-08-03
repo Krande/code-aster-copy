@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -27,7 +27,7 @@ class NonLinearThermalAnalysis(ExecuteCommand):
     """Command that creates the :class:`~code_aster.Objects.ThermalResult` by assigning
     finite elements on a :class:`~code_aster.Objects.ThermalResult`."""
 
-    command_name = "THER_NON_LINE"
+    command_name = "THER_NON_LINE2"
 
     def create_result(self, keywords):
         """Initialize the result.
@@ -68,4 +68,4 @@ class NonLinearThermalAnalysis(ExecuteCommand):
         self.remove_dependencies(keywords, "ETAT_INIT", ("EVOL_THER, 'CHAM_NO"))
 
 
-THER_NON_LINE = NonLinearThermalAnalysis.run
+THER_NON_LINE2 = NonLinearThermalAnalysis.run
