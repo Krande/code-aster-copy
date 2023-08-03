@@ -168,7 +168,7 @@ class NonLinearSolver(SolverFeature):
     def run(self):
         """Solve the problem."""
         self.initialize()
-        matr_update_step = self._get("NEWTON", "REAC_ITER", 1)
+        matr_update_step = self._get("NEWTON", "REAC_INCR", 1)
 
         # Solve nonlinear problem
         solv = self.get_feature(SOP.StepSolver)
