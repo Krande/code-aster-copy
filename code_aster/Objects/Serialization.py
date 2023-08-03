@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -52,6 +52,7 @@ class InternalStateBuilder:
             *InternalStateBuilder*: The internal state itself.
         """
         assert hasattr(obj, "getType"), f"not a DataStructure: {obj}"
+        self._st["userName"] = obj.userName
         self._st["deps"] = obj.getDependencies()
         logger.debug("saving dependencies of %s: %s", obj, self._st["deps"])
         return self
@@ -64,6 +65,7 @@ class InternalStateBuilder:
             obj (*DataStructure*): The *DataStructure* object to be pickled.
         """
         logger.debug("restoring dependencies for %s: %s", obj, self._st["deps"])
+        obj.userName = self._st["userName"]
         for ref in self._st["deps"]:
             obj.addDependency(ref)
 

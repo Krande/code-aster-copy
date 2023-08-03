@@ -36,20 +36,21 @@ To be properly pickled, the classes defined by the user must be inherit
 from :class:`~code_aster.Objects.user_extensions.WithEmbeddedObjects`.
 """
 
+import copyreg
 import gc
 import os.path as osp
 import pickle
 import re
 import traceback
 import types
+from functools import partial
 from hashlib import sha256
 from io import IOBase
 
 import libaster
 import numpy
 
-from .. import Objects
-from ..Objects import DataStructure, InternalStateBuilder, ResultNaming, WithEmbeddedObjects
+from ..Objects import DataStructure, ResultNaming
 from ..Utilities import (
     DEBUG,
     MPI,
@@ -157,10 +158,11 @@ class Serializer(object):
         """
         assert self._ctxt is not None, "context is required"
         ctxt = _filteringContext(self._ctxt)
+        do_check = ExecutionParameter().option & Options.TestMode
+        pyb_instance = DataStructure.mro()[1]
         saved = []
         with open(self._pick_filename, "wb") as pick:
             pickler = AsterPickler(pick)
-            # ordered list of objects names
             logger.info("Saving objects...")
             objList = []
             for name, obj in ctxt.items():
@@ -168,19 +170,23 @@ class Serializer(object):
                     continue
                 try:
                     logger.info("%-24s %s", name, type(obj))
-                    pickler.save_one(obj)
+                    pickler.dump({name: obj})
                     objList.append(name)
                 except Exception:
-                    logger.warning("object can not be pickled: %s", name)
+                    logger.warning("object can not be pickled: %s %s", name, type(obj))
                     logger.debug(traceback.format_exc())
+                    if do_check and pyb_instance in type(obj).mro():
+                        raise
                     continue
                 if isinstance(obj, DataStructure):
                     saved.append(name)
 
         logger.debug("Objects saved: %s", objList)
+        # TODO Remove info file?
         with open(self._info_filename, "wb") as pick:
             # add management objects on the stack
             pickle.dump(objList, pick)
+            # store state of the objects counter
             pickle.dump(ResultNaming.getCurrentName(), pick)
         return saved
 
@@ -214,17 +220,19 @@ class Serializer(object):
         pool = objList[:]
         logger.debug("Objects pool: %s", pool)
         with open(self._pick_filename, "rb") as pick:
-            unpickler = AsterUnpickler(pick)
+            unpickler = pickle.Unpickler(pick)
             # load all the objects
-            objects = []
             names = []
             try:
                 while True:
                     name = pool.pop(0) if pool else None
                     logger.debug("loading: %s...", name)
                     try:
-                        obj = unpickler.load_one()
-                        logger.debug("object restored: %s %s...", name, type(obj))
+                        record = unpickler.load()
+                        key, obj = list(record.items())[0]
+                        logger.debug("object restored: %s %s...", key, type(obj))
+                        assert key == name, f"expecting {name}, got {key}"
+                        self._ctxt.update(record)
                     except Exception as exc:
                         if isinstance(exc, EOFError):
                             raise
@@ -233,64 +241,14 @@ class Serializer(object):
                         if should_fail:
                             raise
                         continue
+                    logger.info("%-24s %s", name, type(obj))
                     names.append(name)
-                    objects.append(obj)
             except EOFError:
                 pass
 
         not_read = set(objList).difference(names)
         if not_read:
             logger.warning("These objects have not been reloaded: %s", tuple(not_read))
-        logger.info("Restored objects:")
-        for name, obj in zip(names, objects):
-            logger.debug("restoring %s...", name)
-            try:
-                obj = _restore(name, obj)
-            except Exception:
-                if should_fail:
-                    raise
-                logger.warning(traceback.format_exc())
-                logger.error("can not restore object: %s <%s>", name, obj)
-                continue
-            self._ctxt[name] = obj
-            if not name:
-                logger.warning("restoring %s with name 'None'!", type(obj))
-                continue
-            if isinstance(obj, DataStructure):
-                obj.userName = name
-            logger.info("%-24s %s", name, type(obj))
-            assert not isinstance(obj, AsterUnpickler.BufferObject)
-
-
-def _restore(name, obj):
-    """Build instance from BufferObject.
-
-    Arguments:
-        name (str): Object name, only for debugging.
-        obj (*misc*): Object in which *DataStructure* objects will be instanciated.
-
-    Returns:
-        *misc*: Same object with *DataStructure* objects.
-    """
-    if isinstance(obj, list):
-        return [_restore(name, i) for i in obj]
-    if isinstance(obj, tuple):
-        return tuple(_restore(name, list(obj)))
-    if isinstance(obj, dict):
-        return obj.__class__([(i, _restore(name, obj[i])) for i in obj])
-    if isinstance(obj, InternalStateBuilder):
-        obj._st = _restore(f"{name}._st", obj._st)
-        return obj
-    if isinstance(obj, AsterUnpickler.BufferObject):
-        return obj.instance
-    if isinstance(obj, WithEmbeddedObjects):
-        logger.info("restoring user object %s, attrs: %s", name, obj.aster_embedded)
-        for attr in obj.aster_embedded:
-            logger.debug("attr: %s, was: %s", attr, getattr(obj, attr))
-            setattr(obj, attr, _restore(name, getattr(obj, attr)))
-            logger.debug("new: %s", getattr(obj, attr))
-        return obj
-    return obj
 
 
 def saveObjects(level=1, delete=True, options=0):
@@ -368,325 +326,61 @@ def contains_datastructure(sequence):
     return False
 
 
-class AsterPickler(pickle.Pickler):
+class PicklingHelper:
+    """Adapt pickling of DataStructure objects.
 
+    The objects are identified with their names and are taken from a *cache*
+    if an object with the same name already exists.
+
+    See *Dispatch Tables* from the :py:mod:`pickle` documentation.
+    """
+
+    memods = {}
+
+    @classmethod
+    def reducer(cls, obj):
+        logger.debug("+ reducing %s '%s'...", type(obj).__name__, obj.getName())
+        initargs = obj.__getinitargs__()
+        state = obj.__getstate__()
+        logger.debug("- saving %s %s", initargs, state._st)
+        return partial(cls.builder, obj.__class__, obj.getName()), initargs, state
+
+    @classmethod
+    def builder(cls, class_, objName, *args):
+        if not cls.memods.get(objName):
+            logger.debug("+ constructing %s '%s' with initargs: %s", class_.__name__, objName, args)
+            cls.memods[objName] = class_(*args)
+        else:
+            logger.debug("+ returning %s '%s' from cache", class_.__name__, objName)
+        return cls.memods[objName]
+
+
+def subtypes(cls):
+    """Return subclasses of 'cls'."""
+    types = [cls]
+    if not cls:
+        return types
+    for subclass in cls.__subclasses__():
+        types.extend(subtypes(subclass))
+    return types
+
+
+class AsterPickler(pickle.Pickler):
     """Adapt pickling of DataStructure objects.
 
     In the Python namespace, DataStructures are wrappers on *shared_ptr* through
     *pybind11* instances. So there are several *pointers* for the same instance.
     Standard pickling creates new objects for each *pointers* and during
     unpickling this creates new *pybind11* instance for each Python wrapper.
-    To avoid that, the pickling step only saves arguments (returned by
-    :py:meth:`__getinitargs__`), a state (created by :py:meth:`__getstate__`
-    as an instance of
-    :py:class:`~code_aster.Objects.Serialization.InternalStateBuilder`)
-    and an identifier of the DataStructure (its Jeveux name).
+    To avoid that, the creation of DataStructure is delegated to the
+    :py:class:`.PicklingHelper` object.
 
-    See :py:class:`.AsterUnpickler` for unpickling phase.
-
-    See *Pickling and unpickling external objects* from the :py:mod:`pickle`
-    documentation.
+    See *Dispatch Tables* from the :py:mod:`pickle` documentation.
     """
 
-    def __init__(self, *args, **kwargs):
-        pickle.Pickler.__init__(self, *args, **kwargs)
-        self._memods = set()
-        self._depth = 0
-
-    def save_one(self, obj):
-        """Save one object.
-
-        Arguments:
-            obj (*misc*): Object to save.
-        """
-        self._depth += 1
-        logger.debug("save_one: %s / %s", self._depth, obj)
-        if isinstance(obj, (list, tuple)):
-            if obj and contains_datastructure(obj):
-                self.save_one(LIST)
-                self.save_one(len(obj))
-                for item in obj:
-                    self.save_one(item)
-        elif isinstance(obj, dict):
-            if obj and contains_datastructure(obj.values()):
-                self.save_one(DICT)
-                self.save_one(len(obj))
-                for item in obj.values():
-                    self.save_one(item)
-        elif isinstance(obj, InternalStateBuilder):
-            self.save_one(STATE)
-            flat = obj.flat()
-            self.save_one(len(flat))
-            for item in flat:
-                self.save_one(item)
-        elif isinstance(obj, DataStructure):
-            ds_id = unique_id(obj)
-            if ds_id not in self._memods:
-                self._memods.add(ds_id)
-                name = obj.getName()
-                # save initial arguments
-                if hasattr(obj, "__getinitargs__"):
-                    init_args = obj.__getinitargs__()
-                    assert isinstance(init_args, tuple), (name, init_args)
-                else:
-                    init_args = ()
-                self.save_one(ARGS)
-                self.save_one(len(init_args))
-                logger.debug("saved initargs: len %d: %s", len(init_args), init_args)
-                self.save_one(name)
-                for item in init_args:
-                    self.save_one(item)
-                # save state
-                state = obj.__getstate__()
-                assert isinstance(state, InternalStateBuilder), state
-                logger.debug("saved state: %s", state)
-                self.save_one(state)
-            else:
-                logger.debug("skip object %s", ds_id)
-        elif isinstance(obj, WithEmbeddedObjects):
-            logger.debug("saving user object, attrs: %s", obj.aster_embedded)
-            self.save_one(EMBEDDED)
-            self.save_one(len(obj.aster_embedded))
-            for attr in obj.aster_embedded:
-                self.save_one(getattr(obj, attr))
-
-        self.dump(obj)
-        self._depth -= 1
-
-    def persistent_id(self, obj):
-        """Compute a persistent id for DataStructure.
-
-        Returns:
-            str: Identifier containing " mark, class name, object name".
-        """
-        if isinstance(obj, DataStructure):
-            pers_id = unique_id(obj)
-            logger.debug("persistent id: %s", pers_id)
-            return pers_id
-
-        # other objects, pickled as usual
-        return None
-
-
-def unique_id(obj):
-    """Compute a unique id for DataStructure, used as *persistent_id* for
-    pickle.
-
-    Returns:
-        str: Identifier containing "mark, class name, object name".
-    """
-    class_ = type(obj).__name__
-    pers_id = ("DataStructure", class_, obj.getName().strip())
-    return str(pers_id)
-
-
-class AsterUnpickler(pickle.Unpickler):
-
-    """Adapt unpickling of DataStructure objects.
-
-    See :py:class:`.AsterPickler` for pickling phase.
-
-    During unpickling, only :py:class:`.BufferObject` are created from the
-    persistent identifiers that are reloaded.
-    Only after this step, all *BufferObjects* are reloaded.
-    The instances are created on demand. The parent instances are
-    also automatically and recursively created when needed.
-
-    See *Pickling and unpickling external objects* from the :py:mod:`pickle`
-    documentation.
-    """
-
-    class BufferObject(object):
-
-        """This class defines a temporary object that is created instead of
-        an instance of DataStructure.
-
-        Attributes:
-            _name (str): *Jeveux* name of the object.
-            _args (tuple[misc]): Initial arguments to pass to the constructor.
-            _state (tuple[misc]): Arguments pass to the ``__setstate__`` method
-                if it exists.
-            _class (str): Class name of the *DataStructure* (in Objects module).
-            _inst (*DataStructure*): Cached object.
-        """
-
-        def __init__(self, name):
-            self._name = name
-            self._args = None
-            self._state = None
-            self._class = None
-            self._inst = None
-
-        def __repr__(self):
-            return "Buffer:{0._name!r}<{0._class}>".format(self)
-
-        @property
-        def args(self):
-            """Arguments to pass to the DataStructure's ``__init__``."""
-            assert self._args is not None, self._name
-            return self._args
-
-        @args.setter
-        def args(self, args_):
-            """Register the initial arguments."""
-            self._args = args_
-
-        @property
-        def state(self):
-            """Arguments to pass to the DataStructure's ``__setstate__``."""
-            assert self._state is not None, self._name
-            return self._state
-
-        @state.setter
-        def state(self, state_):
-            """Register the object state to restore."""
-            self._state = state_
-
-        @property
-        def classname(self):
-            """Class name of the DataStructure to create."""
-            assert self._class is not None, self._name
-            return self._class
-
-        @classname.setter
-        def classname(self, classname_):
-            """Register the name of the class to create."""
-            self._class = classname_
-
-        @property
-        def instance(self):
-            """Return the instance, build it if it does not yet exist.
-
-            If DataStructure objects are present in values returned by
-            :py:meth:`__getinitargs__` they must bedirectly present in the
-            returned tuple (not in sub-objects).
-
-            Returns:
-                misc: DataStructure object.
-            """
-            if self._inst is None:
-                logger.debug("building %r of type %s", self._name, self._class)
-                # DataStructure must be in args (not in sub-objects)
-                args = [i.instance if isinstance(i, type(self)) else i for i in self.args]
-                logger.debug("initargs: %s", args)
-                self._inst = getattr(Objects, self.classname)(*args)
-                logger.debug("new object: %s", self._inst)
-                logger.debug("setting state: %s", self.state)
-                _restore(f"{self._name} .state", self.state)
-                getattr(self._inst, "__setstate__")(self.state)
-                if hasattr(self._inst, "updateInternalState"):
-                    self._inst.updateInternalState()
-            return self._inst
-
-    class BufferStack(object):
-
-        """Helper object to store *BufferObject* objects."""
-
-        def __init__(self):
-            self._store = {}
-
-        def __iter__(self):
-            for name in self._store:
-                yield name
-
-        def buffer(self, name):
-            name = name.strip()
-            if name not in self._store:
-                self._store[name] = AsterUnpickler.BufferObject(name)
-            return self._store[name]
-
-    def __init__(self, fileobj):
-        pickle.Unpickler.__init__(self, fileobj)
-        self._stack = AsterUnpickler.BufferStack()
-        self._depth = 0
-
-    def load_one(self):
-        """Load one object.
-
-        Returns:
-            *misc*: Loaded object.
-        """
-        obj = self.load()
-        self._depth += 1
-        logger.debug("load_one: %s / %s", self._depth, obj)
-        if not isinstance(obj, str):
-            self._depth -= 1
-            return obj
-        if obj == LIST:
-            size = self.load_one()
-            for _ in range(size):
-                self.load_one()
-            logger.debug("list: %s / %s", self._depth, obj)
-            obj = self.load_one()
-        if obj == DICT:
-            size = self.load_one()
-            for _ in range(size):
-                self.load_one()
-            logger.debug("dict: %s / %s", self._depth, obj)
-            obj = self.load_one()
-        if obj == EMBEDDED:
-            size = self.load_one()
-            for _ in range(size):
-                self.load_one()
-            logger.debug("embedded: %s / %s", self._depth, obj)
-            obj = self.load_one()
-        if obj == ARGS:
-            nbobj = self.load_one()
-            name = self.load_one()
-            init_args = []
-            for _ in range(nbobj):
-                init_args.append(self.load_one())
-            buffer = self._stack.buffer(name)
-            buffer.args = init_args
-            logger.debug("loaded initargs: %s", init_args)
-            # expecting the STATE mark
-            mark = self.load_one()
-            assert mark == STATE, mark
-            nbobj = self.load_one()
-            for _ in range(nbobj):
-                self.load_one()
-            try:
-                buffer.state = self.load_one()
-            except:
-                logger.info(traceback.format_exc())
-                logger.info("internal state can not be loaded")
-                buffer.state = None
-                raise pickle.PicklingError("internal state can not be loaded")
-            # 'load' will call 'persistent_load'
-            obj = self.load_one()
-            logger.debug("loaded DataStructure %r", obj)
-        self._depth -= 1
-        return obj
-
-    def recover_ds(self, class_id, key_id):
-        """Create a new *BufferObject*.
-
-        Arguments:
-            class_id (str): Name of the DataStructure type.
-            key_id (str): Name of the *Jeveux* object.
-
-        Returns:
-            *BufferObject*
-        """
-        buffer = self._stack.buffer(key_id)
-        buffer.classname = class_id
-        return buffer.instance
-
-    def persistent_load(self, pers_id):
-        """Action called when a persistent id is reloaded.
-
-        Arguments:
-            str: Identifier of the DataStructure.
-
-        Returns:
-            *BufferObject*: New object to store DataStructure informations.
-        """
-        decoded_id = eval(pers_id)
-        logger.debug("persistent id loaded: %s", decoded_id)
-        type_tag, class_id, key_id = decoded_id
-        if type_tag == "DataStructure":
-            return self.recover_ds(class_id, key_id)
-        raise pickle.UnpicklingError("unsupported persistent object")
+    dispatch_table = copyreg.dispatch_table.copy()
+    for subcl in subtypes(DataStructure):
+        dispatch_table[subcl] = PicklingHelper.reducer
 
 
 def _filteringContext(context):
@@ -705,7 +399,7 @@ def _filteringContext(context):
     ignored = ("code_aster", "DETRUIRE", "FIN", "VARIABLE")
     re_system = re.compile("^__.*__$")
     ctxt = {}
-    for name, obj in list(context.items()):
+    for name, obj in context.items():
         if not name or name in ignored or re_system.search(name):
             continue
         if getattr(numpy, name, None) is obj:  # see issue29282
@@ -722,7 +416,6 @@ def _filteringContext(context):
             types.BuiltinFunctionType,
         ):
             continue
-        # aster-legacy try 'dumps' before keeping the object
         ctxt[name] = obj
     return ctxt
 
