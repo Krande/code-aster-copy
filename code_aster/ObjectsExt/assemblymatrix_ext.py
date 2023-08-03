@@ -36,7 +36,7 @@ from libaster import (
 )
 
 from ..SD.sd_stoc_morse import sd_stoc_morse
-from ..Utilities import injector, deprecated
+from ..Utilities import injector, deprecated, PETSc
 from ..Objects.Serialization import InternalStateBuilder
 
 
@@ -246,6 +246,24 @@ class BaseAssemblyMatrix:
             return self.getValuesWithDescription(epsilon)
 
         return self.toNumpy()
+
+    def norm(self, norm_type):
+        """Compute various norm as
+
+        Arguments:
+            norm_type (str) : type between 'NORM_1', 'NORM_FROBENIUS', 'NORM_INFINITY'
+
+        Returns:
+            float: norm of the matrix
+        """
+
+        conv = {
+            "NORM_1": PETSc.NormType.NORM_1,
+            "NORM_FROBENIUS": PETSc.NormType.NORM_FROBENIUS,
+            "NORM_INFINITY": PETSc.NormType.NORM_INFINITY,
+        }
+
+        return self.toPetsc().norm(conv[norm_type])
 
 
 class BaseAssemblyMatrixReal(BaseAssemblyMatrix):
