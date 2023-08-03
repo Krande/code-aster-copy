@@ -31,7 +31,7 @@ class ContactManager(SolverFeature):
     defi = pair = comp = None
     coef_cont = coef_frot = None
     phys_pb = None
-    first_pairing = None
+    nb_pairing = 0
     __setattr__ = no_new_attributes(object.__setattr__)
 
     def __init__(self, definition, phys_pb):
@@ -42,7 +42,7 @@ class ContactManager(SolverFeature):
             phys_pb (PhysicalProblem): physical problem
         """
         super().__init__()
-        self.first_pairing = True
+        self.nb_pairing = 0
         self.defi = definition
         self.phys_pb = phys_pb
         if self.defi is not None:
@@ -68,6 +68,8 @@ class ContactManager(SolverFeature):
             model = phys_pb.getModel()
             loads = phys_pb.getListOfLoads()
             phys_pb.getDOFNumbering().computeRenumbering(model, loads)
+
+            self.nb_pairing += 1
 
     @profile
     def getPairingCoordinates(self):
@@ -117,7 +119,7 @@ class ContactManager(SolverFeature):
 
         if self.enable:
             return self.comp.contactData(
-                self.pair, self.phys_pb.getMaterialField(), self.first_pairing
+                self.pair, self.phys_pb.getMaterialField(), self.nb_pairing <= 1
             )
 
         return None
@@ -143,6 +145,5 @@ class ContactManager(SolverFeature):
         """
 
         if self.enable:
-            self.first_pairing = False
             primal_curr = phys_state.primal + phys_state.primal_step
             self.pair.updateCoordinates(primal_curr)

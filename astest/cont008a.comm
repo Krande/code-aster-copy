@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -89,12 +89,10 @@ RESU = MECA_NON_LINE(
     CHAM_MATER=MA,
     EXCIT=(_F(CHARGE=CH_LIM), _F(CHARGE=FORCE, FONC_MULT=FONC)),
     CONTACT=_F(DEFINITION=CONT, ALGO_RESO_GEOM="NEWTON"),
-    COMPORTEMENT=_F(RELATION="ELAS", DEFORMATION="PETIT"),
     INCREMENT=_F(LIST_INST=L_INST),
-    CONVERGENCE=_F(ITER_GLOB_MAXI=50),
-    SOLVEUR=_F(),
-    NEWTON=_F(REAC_ITER=1),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=50, RESI_GLOB_RELA=3e-3),
 )
+
 """
 RESU=STAT_NON_LINE(MODELE=MO,
                      CHAM_MATER=MA,
