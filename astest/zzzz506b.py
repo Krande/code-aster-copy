@@ -20,7 +20,7 @@
 import code_aster
 from code_aster import LinearSolver, NonLinearResult, PhysicalProblem
 from code_aster.Commands import *
-from code_aster.Solvers import GeometricSolver, NonLinearSolver, ProblemSolver, TimeStepper
+from code_aster.Solvers import NonLinearSolver, ProblemSolver, TimeStepper
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), INFO=1)
 
@@ -63,27 +63,6 @@ SOLUT = STAT_NON_LINE(
 )
 
 
-class CustomConvergenceCriteria(GeometricSolver):
-    """Example of custom object: just add a print.
-
-    Whatever type of inherited from BaseFeature object can be used (not necessarly
-    GeometricSolver inherited).
-    It must provide the GeometricSolver feature and must have the expected interface.
-    """
-
-    def solve(self, current_matrix):
-        """Evaluate the convergence criteria"""
-        try:
-            result = super().solve(current_matrix)
-        except code_aster.ConvergenceError as exc:
-            print(f"+++ CustomConvergenceCriteria raises ConvergenceError: {exc}")
-            raise
-        else:
-            nbiter = self.current_incr - 1
-            print(f"+++ CustomConvergenceCriteria succeeds after {nbiter} iterations")
-        return result
-
-
 snl = ProblemSolver(NonLinearSolver(), NonLinearResult())
 snl.use(PhysicalProblem(model, mater))
 snl.use(LinearSolver.factory(METHODE="MUMPS", RENUM="METIS", NPREC=8))
@@ -96,7 +75,6 @@ snl.setKeywords(
     COMPORTEMENT={"RELATION": "VMIS_ISOT_LINE"},
     INFO=1,
 )
-snl.use(CustomConvergenceCriteria())
 snl.use(TimeStepper([0.5, 1.0]))
 snl.run()
 

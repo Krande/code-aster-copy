@@ -122,7 +122,7 @@ class StepSolver(SolverFeature):
         return logManager
 
     @profile
-    def solve(self, current_matrix):
+    def solve(self):
         """Solve a step.
 
         Raises:
@@ -131,8 +131,6 @@ class StepSolver(SolverFeature):
 
         logManager = self.createLoggingManager()
         logManager.printConvTableEntries()
-
-        self.current_matrix = current_matrix
 
         convManager = self.get_feature(SOP.ConvergenceManager)
         iter_glob = convManager.setdefault("ITER_GLOB_MAXI")

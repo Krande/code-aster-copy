@@ -59,7 +59,6 @@ class NonLinearSolver(SolverFeature):
         SOP.PhysicalState,
         SOP.Storage,
         SOP.StepSolver,
-        SOP.SnesSolver,
         SOP.TimeStepper,
         SOP.Keywords,
     ]
@@ -170,13 +169,9 @@ class NonLinearSolver(SolverFeature):
         """Solve the problem."""
         self.initialize()
         matr_update_step = self._get("NEWTON", "REAC_ITER", 1)
-        create_solver = {
-            "SNES": self.get_feature(SOP.SnesSolver),
-            "NEWTON": self.get_feature(SOP.StepSolver),
-        }
 
         # Solve nonlinear problem
-        solv = create_solver[self._get("METHODE")]
+        solv = self.get_feature(SOP.StepSolver)
         while not self.isFinished():
             timeEndStep = self.stepper.getCurrent()
             self.phys_state.time_step = timeEndStep - self.phys_state.time
@@ -195,7 +190,7 @@ class NonLinearSolver(SolverFeature):
                 self.phys_state.debugPrint("<t-> ")
             self.phys_state.stash()
             try:
-                solv.solve(self.current_matrix)
+                solv.solve()
             except (ConvergenceError, IntegrationError, SolverError) as exc:
                 logger.warning(exc.format("I"))
                 self.stepper.failed(exc)

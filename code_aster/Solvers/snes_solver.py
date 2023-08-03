@@ -28,7 +28,7 @@ from .solver_features import SolverOptions as SOP
 class SNESSolver(SolverFeature):
     """Solves a step, loops on iterations."""
 
-    provide = SOP.SnesSolver
+    provide = SOP.StepSolver
     required_features = [SOP.PhysicalProblem, SOP.PhysicalState, SOP.LinearSolver]
 
     param = logManager = None
@@ -124,16 +124,12 @@ class SNESSolver(SolverFeature):
         return PETSc.Mat.Structure.SAME_NONZERO_PATTERN
 
     @profile
-    def solve(self, matrix=None):
+    def solve(self):
         """Solve a step with SNES.
-
-            matrix (AssemblyMatrixDisplacementReal, optional): Stiffness matrix
-                to be reused.
 
         Raises:
             *ConvergenceError* exception in case of error.
         """
-        self.current_matrix = matrix
         disc_comp = DiscreteComputation(self.phys_pb)
 
         # we assemble a first matrix, clone it in PETSc and keep a pointer on it

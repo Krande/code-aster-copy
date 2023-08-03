@@ -41,21 +41,20 @@ class ProblemSolver(SolverFeature):
     """
 
     required_features = [
-        SOP.PhysicalProblem,
-        SOP.Storage,
         SOP.Keywords,
-        SOP.TimeStepper,
         SOP.LinearSolver,
+        SOP.PhysicalProblem,
         SOP.StepSolver,
-        SOP.SnesSolver,
-        SOP.ConvergenceManager,
+        SOP.Storage,
+        SOP.TimeStepper,
     ]
     optional_features = [
         SOP.Contact,
-        SOP.PostStepHook,
-        SOP.LineSearch,
-        SOP.IncrementalSolver,
         SOP.ConvergenceCriteria,
+        SOP.ConvergenceManager,
+        SOP.IncrementalSolver,
+        SOP.LineSearch,
+        SOP.PostStepHook,
     ]
 
     _main = _result = None
@@ -100,7 +99,6 @@ class ProblemSolver(SolverFeature):
         self._main.use(self.get_feature(SOP.TimeStepper))
         self._main.use(self._get_storage())
         self._main.use(self._get_step_solver())
-        self._main.use(self._get_snes_solver())
         self._main.use(self.get_features(SOP.PostStepHook), provide=SOP.PostStepHook)
         self.check_features()
 
@@ -214,7 +212,15 @@ class ProblemSolver(SolverFeature):
         logger.debug("+++ get StepSolver")
         step_solver = self.get_feature(SOP.StepSolver, optional=True)
         if not step_solver:
-            step_solver = StepSolver()
+            args = self.get_feature(SOP.Keywords)
+            method = args.get("METHODE", "NEWTON")
+            if method == "NEWTON":
+                step_solver = StepSolver()
+            elif method == "SNES":
+                step_solver = SNESSolver()
+            else:
+                raise RuntimeError("Method not supported: %s" % (method))
+
         # FIXME replace by 'use(*, Keywords)'
         if not step_solver.param:
             step_solver.setParameters(self.get_feature(SOP.Keywords))
@@ -222,19 +228,6 @@ class ProblemSolver(SolverFeature):
             step_solver.use(self._get(feat, required))
         self.use(step_solver)
         return step_solver
-
-    def _get_snes_solver(self):
-        logger.debug("+++ get SnesSolver")
-        snes_solver = self.get_feature(SOP.SnesSolver, optional=True)
-        if not snes_solver:
-            snes_solver = SNESSolver()
-        # FIXME replace by 'use(*, Keywords)'
-        if not snes_solver.param:
-            snes_solver.setParameters(self.get_feature(SOP.Keywords))
-        for feat, required in snes_solver.undefined():
-            snes_solver.use(self._get(feat, required))
-        self.use(snes_solver)
-        return snes_solver
 
     def _get(self, option, required):
         if option & SOP.PhysicalProblem:
@@ -257,7 +250,5 @@ class ProblemSolver(SolverFeature):
             return self._get_step_conv_solver()
         if option & SOP.StepSolver:
             return self._get_step_solver()
-        if option & SOP.SnesSolver:
-            return self._get_snes_solver()
         if required:
             raise NotImplementedError(f"unsupported feature id: {option}")
