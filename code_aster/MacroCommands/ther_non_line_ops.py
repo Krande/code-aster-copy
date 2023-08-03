@@ -30,11 +30,25 @@ from ..Objects import (
     PhysicalProblem,
 )
 from ..Solvers import NonLinearSolver, ProblemSolver, TimeStepper
-from ..Utilities import print_stats
+from ..Utilities import print_stats, force_list
 
 
 def use_fortran(keywords):
     return True
+    excluded_keys = ("EVOL_THER_SECH", "OBSERVATION", "AFFICHAGE")
+
+    for key in excluded_keys:
+        if key in keywords:
+            return True
+
+    if keywords["METHODE"] in ("MODELE_REDUIT", "NEWTON_KRYLOV"):
+        return True
+
+    for comp in force_list(keywords["COMPORTEMENT"]):
+        if comp["RELATION"] != "THER_NL":
+            return True
+
+    return False
 
 
 def ther_non_line_ops(self, **args):
@@ -50,7 +64,11 @@ def ther_non_line_ops(self, **args):
         return THER_NON_LINE2(**args)
 
     # python Version
-    solver = ProblemSolver(NonLinearSolver(), ThermalResult())
+    if "RESULTAT" in args:
+        result = args["RESULTAT"]
+    else:
+        result = ThermalResult()
+    solver = ProblemSolver(NonLinearSolver(), result)
 
     phys_pb = PhysicalProblem(args["MODELE"], args["CHAM_MATER"], args["CARA_ELEM"])
     solver.use(phys_pb)

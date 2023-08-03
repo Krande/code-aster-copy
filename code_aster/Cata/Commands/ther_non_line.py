@@ -50,6 +50,14 @@ def compat_syntax(keywords):
         if "ETAT_INIT" not in keywords:
             keywords["ETAT_INIT"] = {"STAT": "OUI"}
 
+    if "NEWTON" in keywords:
+        if "RECH_LINEAIRE" not in keywords:
+            keywords["RECH_LINEAIRE"] = {}
+        keys = ("RESI_LINE_RELA", "ITER_LINE_MAXI")
+        for key in keys:
+            if key in keywords["NEWTON"]:
+                keywords["RECH_LINEAIRE"][key] = keywords["NEWTON"][key]
+                del keywords["NEWTON"][key]
 
 THER_NON_LINE = MACRO(
     nom="THER_NON_LINE",
@@ -88,15 +96,19 @@ THER_NON_LINE = MACRO(
         NEWTON=FACT(
             statut="d",
             REAC_ITER=SIMP(statut="f", typ="I", defaut=0, val_min=0),
-            RESI_LINE_RELA=SIMP(statut="f", typ="R", defaut=1.0e-3),
-            ITER_LINE_MAXI=SIMP(statut="f", typ="I", defaut=0),
+            REAC_INCR=SIMP(statut="f", typ="I", defaut=1, val_min=0),
+            PREDICTION=SIMP(statut="f", typ="TXM", defaut="TANGENTE", into=("TANGENTE",)),
+            MATRICE=SIMP(statut="f", typ="TXM", defaut="TANGENTE", into=("TANGENTE",)),
         ),
+        # -------------------------------------------------------------------
+        RECH_LINEAIRE=C_RECH_LINEAIRE("THER_NON_LINE"),
     ),
     b_meth_rom=BLOC(
         condition="""equal_to("METHODE", 'MODELE_REDUIT')""",
         MODELE_REDUIT=FACT(
             statut="d",
             REAC_ITER=SIMP(statut="f", typ="I", defaut=0, val_min=0),
+            REAC_INCR=SIMP(statut="f", typ="I", defaut=1, val_min=0),
             BASE_PRIMAL=SIMP(statut="o", typ=mode_empi, max=1),
             DOMAINE_REDUIT=SIMP(statut="f", typ="TXM", defaut="NON", into=("OUI", "NON")),
             b_hr_cond=BLOC(

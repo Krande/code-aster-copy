@@ -50,6 +50,14 @@ def compat_syntax(keywords):
         if "ETAT_INIT" not in keywords:
             keywords["ETAT_INIT"] = {"STAT": "OUI"}
 
+    if "NEWTON" in keywords:
+        keywords["NEWTON"]["RESI_LINE_RELA"] = keywords["RECH_LINEAIRE"]["RESI_LINE_RELA"]
+        keywords["NEWTON"]["ITER_LINE_MAXI"] = keywords["RECH_LINEAIRE"]["ITER_LINE_MAXI"]
+        del keywords["RECH_LINEAIRE"]
+        del keywords["NEWTON"]["PREDICTION"]
+        del keywords["NEWTON"]["MATRICE"]
+        del keywords["NEWTON"]["REAC_INCR"]
+
 
 THER_NON_LINE2 = OPER(
     nom="THER_NON_LINE2",
