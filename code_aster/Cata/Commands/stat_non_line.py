@@ -33,10 +33,10 @@ def compat_syntax(keywords):
                 if val in keywords[factor]:
                     hasVal = True
                     break
-        else:
-            keywords[factor] = {}
 
         if not hasVal:
+            if factor not in keywords:
+                keywords[factor] = {}
             keywords[factor][default] = value
 
     def only_one(keywords, factor, keys, default, value):
@@ -47,15 +47,15 @@ def compat_syntax(keywords):
                 if val in keywords[factor]:
                     hasVal = True
                     break
-        else:
-            keywords[factor] = {}
 
         if not hasVal:
+            if factor not in keywords:
+                keywords[factor] = {}
             keywords[factor][default] = value
 
-    def absent(keywords, factor, value):
+    def absent(keywords, factor, default, value):
         if factor not in keywords:
-            keywords[factor] = value
+            keywords[factor] = {default: value}
 
     # add default arguments
     at_least_one(
@@ -66,7 +66,7 @@ def compat_syntax(keywords):
         value=1e-6,
     )
     only_one(keywords, "ARCHIVAGE", ("PAS_ARCH", "LIST_INST", "INST"), default="PAS_ARCH", value=1)
-    absent(keywords, "COMPORTEMENT", {"RELATION": "ELAS", "DEFORMATION": "PETIT"})
+    absent(keywords, "COMPORTEMENT", default="RELATION", value="ELAS")
 
 
 STAT_NON_LINE = OPER(

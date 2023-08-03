@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -86,6 +86,7 @@ CHMAT = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(GROUP_MA=("SURF",), MATER=MAT))
 
 # solution analytique
 
+
 # fonction utilitaitres pour le passage spherique -> cartesien
 def thet(X, Y):
     return atan2(Y, X)
@@ -103,6 +104,7 @@ def sin(X, Y):
 PR = (-PINT * RI**3 / (RE**3 - RI**3) * (1.0 - RE**3 / RF**3)) * -1
 
 PRES = FORMULE(VALE="PR", PR=PR, NOM_PARA=["X", "Y"])
+
 
 # elasticite deplacement
 # indices 1:ux,2:uy
@@ -127,6 +129,7 @@ UX = FORMULE(VALE="UREF(X,Y,0)", UREF=UREF, NOM_PARA=["X", "Y"])
 UY = FORMULE(VALE="UREF(X,Y,1)", UREF=UREF, NOM_PARA=["X", "Y"])
 U = PINT * RI**3 / (RE**3 - RI**3) * (RF / (2 * mu + 3 * lam) + RE**3 / (4 * mu * RF**2))
 ZERO = FORMULE(VALE="0.", NOM_PARA=["X", "Y"])
+
 
 # elasticite energie
 def EPSREF(X, Y, IND):
@@ -158,6 +161,7 @@ EXX = FORMULE(VALE="EPSREF(X,Y,0)", EPSREF=EPSREF, NOM_PARA=["X", "Y"])
 EYY = FORMULE(VALE="EPSREF(X,Y,1)", EPSREF=EPSREF, NOM_PARA=["X", "Y"])
 EXY = FORMULE(VALE="EPSREF(X,Y,2)", EPSREF=EPSREF, NOM_PARA=["X", "Y"])
 EZZ = FORMULE(VALE="EPSREF(X,Y,3)", EPSREF=EPSREF, NOM_PARA=["X", "Y"])
+
 
 # plasticite contraintes
 def SIGREF(X, Y, IND):
@@ -212,7 +216,7 @@ UTOT1 = STAT_NON_LINE(
     COMPORTEMENT=_F(RELATION="ELAS", GROUP_MA="SURF"),
     NEWTON=_F(REAC_ITER=1, REAC_INCR=1),
     INCREMENT=_F(LIST_INST=INSTS),
-    CONVERGENCE=(_F(ITER_GLOB_MAXI=5, RESI_GLOB_RELA=1e-6),),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=5, RESI_GLOB_RELA=1e-6),
     SOLVEUR=_F(METHODE="MUMPS"),
     INFO=1,
 )
