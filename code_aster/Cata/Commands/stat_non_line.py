@@ -20,42 +20,52 @@
 from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
+from ...Utilities import force_list
+
+
+def at_least_one(keywords, factor, keys, default, value):
+    if factor in keywords:
+        items = force_list(keywords[factor])
+        for item in items:
+            hasVal = False
+
+            for val in list(keys):
+                if val in item:
+                    hasVal = True
+                    break
+
+            if not hasVal:
+                item[default] = value
+    else:
+        keywords[factor] = {}
+        keywords[factor][default] = value
+
+
+def only_one(keywords, factor, keys, default, value):
+    if factor in keywords:
+        items = force_list(keywords[factor])
+        for item in items:
+            hasVal = False
+
+            for val in list(keys):
+                if val in item:
+                    hasVal = True
+                    break
+
+            if not hasVal:
+                item[default] = value
+    else:
+        keywords[factor] = {}
+        keywords[factor][default] = value
+
+
+def absent(keywords, factor, default, value):
+    if factor not in keywords:
+        keywords[factor] = {default: value}
 
 
 def compat_syntax(keywords):
     """Update keywords for compatibility"""
-
-    def at_least_one(keywords, factor, keys, default, value):
-        hasVal = False
-
-        if factor in keywords:
-            for val in list(keys):
-                if val in keywords[factor]:
-                    hasVal = True
-                    break
-
-        if not hasVal:
-            if factor not in keywords:
-                keywords[factor] = {}
-            keywords[factor][default] = value
-
-    def only_one(keywords, factor, keys, default, value):
-        hasVal = False
-
-        if factor in keywords:
-            for val in list(keys):
-                if val in keywords[factor]:
-                    hasVal = True
-                    break
-
-        if not hasVal:
-            if factor not in keywords:
-                keywords[factor] = {}
-            keywords[factor][default] = value
-
-    def absent(keywords, factor, default, value):
-        if factor not in keywords:
-            keywords[factor] = {default: value}
 
     # add default arguments
     at_least_one(
@@ -66,7 +76,7 @@ def compat_syntax(keywords):
         value=1e-6,
     )
     only_one(keywords, "ARCHIVAGE", ("PAS_ARCH", "LIST_INST", "INST"), default="PAS_ARCH", value=1)
-    absent(keywords, "COMPORTEMENT", default="RELATION", value="ELAS")
+    only_one(keywords, "COMPORTEMENT", ("TOUT", "GROUP_MA"), default="TOUT", value="OUI")
 
 
 STAT_NON_LINE = OPER(
