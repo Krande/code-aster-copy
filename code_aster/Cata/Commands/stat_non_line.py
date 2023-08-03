@@ -21,10 +21,59 @@ from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
+
+def compat_syntax(keywords):
+    """Update keywords for compatibility"""
+
+    def at_least_one(keywords, factor, keys, default, value):
+        hasVal = False
+
+        if factor in keywords:
+            for val in list(keys):
+                if val in keywords[factor]:
+                    hasVal = True
+                    break
+        else:
+            keywords[factor] = {}
+
+        if not hasVal:
+            keywords[factor][default] = value
+
+    def only_one(keywords, factor, keys, default, value):
+        hasVal = False
+
+        if factor in keywords:
+            for val in list(keys):
+                if val in keywords[factor]:
+                    hasVal = True
+                    break
+        else:
+            keywords[factor] = {}
+
+        if not hasVal:
+            keywords[factor][default] = value
+
+    def absent(keywords, factor, value):
+        if factor not in keywords:
+            keywords[factor] = value
+
+    # add default arguments
+    at_least_one(
+        keywords,
+        "CONVERGENCE",
+        ("RESI_GLOB_RELA", "RESI_GLOB_MAXI", "RESI_REFE_RELA"),
+        default="RESI_GLOB_RELA",
+        value=1e-6,
+    )
+    only_one(keywords, "ARCHIVAGE", ("PAS_ARCH", "LIST_INST", "INST"), default="PAS_ARCH", value=1)
+    absent(keywords, "COMPORTEMENT", {"RELATION": "ELAS", "DEFORMATION": "PETIT"})
+
+
 STAT_NON_LINE = OPER(
     nom="STAT_NON_LINE",
     op=70,
     sd_prod=evol_noli,
+    compat_syntax=compat_syntax,
     fr=tr(
         "Calcul de l'évolution mécanique ou thermo-hydro-mécanique couplée, en quasi-statique,"
         " d'une structure en non linéaire"
