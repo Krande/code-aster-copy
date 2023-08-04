@@ -157,6 +157,24 @@ Returns:
     Returns:
         field(FieldOnNodes): the modified field
         )" );
+    c1.def( "isMechanical", &PhysicalProblem::isMechanical, R"(
+            To know if the problem is mechanical or not
+
+            Returns:
+                bool: True - if the model is mechanical
+            )" );
+    c1.def( "isThermal", &PhysicalProblem::isThermal, R"(
+            To know if the problem is thermal or not
+
+            Returns:
+                bool: True - if the model is thermal
+            )" );
+    c1.def( "isAcoustic", &PhysicalProblem::isAcoustic, R"(
+            To know if the probleme is acoustic or not
+
+            Returns:
+                bool: True - if the model is acoustic
+            )" );
     // -----------------------------------------------------------------------------------------
     addDirichletBCToInterface( c1 );
     addMechanicalLoadToInterface( c1 );

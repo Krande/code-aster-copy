@@ -143,6 +143,27 @@ class PhysicalProblem {
     VectorLong getDirichletBCDOFs( void ) const;
 
     void zeroDirichletBCDOFs( FieldOnNodesReal & ) const;
+
+    /**
+     * @brief To known if the the model is mechanical or not
+     *
+     * @return true The phenomen is  mechanical
+     */
+    bool isMechanical( void ) const;
+
+    /**
+     * @brief To known if the the model is thermal or not
+     *
+     * @return true The phenomen is therman
+     */
+    bool isThermal( void ) const;
+
+    /**
+     * @brief To known if the the model is acoustic or not
+     *
+     * @return true The phenomen is acoustic
+     */
+    bool isAcoustic( void ) const;
 };
 
 using PhysicalProblemPtr = std::shared_ptr< PhysicalProblem >;

@@ -399,9 +399,10 @@ class PhysicalState(BaseFeature):
         self.time_step = 0.0
         self.primal = self.createPrimal(phys_pb, 0.0)
         self.primal_step = None
-        self.stress = self.createStress(phys_pb, 0.0)
-        self.internVar = self.createInternalVariablesNext(phys_pb, 0.0)
-        self.externVar = None
+        if phys_pb.isMechanical():
+            self.stress = self.createStress(phys_pb, 0.0)
+            self.internVar = self.createInternalVariablesNext(phys_pb, 0.0)
+            self.externVar = None
 
     def as_dict(self):
         """Returns the fields as a dict.

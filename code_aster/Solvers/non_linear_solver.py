@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 
 from ..Messages import MessageLog
-from ..Objects import NonLinearResult
+from ..Objects import NonLinearResult, ThermalResult
 from ..Supervis import ConvergenceError, IntegrationError, SolverError
 from ..Utilities import DEBUG, logger, no_new_attributes, profile
 from .solver_features import SolverFeature
@@ -150,12 +150,25 @@ class NonLinearSolver(SolverFeature):
                 phys_state.primal = resu.getField("DEPL", para="INST", value=extract_time)
                 phys_state.stress = resu.getField("SIEF_ELGA", para="INST", value=extract_time)
                 phys_state.internVar = resu.getField("VARI_ELGA", para="INST", value=extract_time)
+            if "EVOL_THER" in init_state:
+                resu = init_state.get("EVOL_THER")
+                assert isinstance(resu, ThermalResult), resu
+                extract_time = init_state.get("INST")
+                if extract_time is None:
+                    extract_time = resu.getLastTime()
+                if init_time is None:
+                    init_time = extract_time
+                phys_state.primal = resu.getField("TEMP", para="INST", value=extract_time)
+            if "CHAM_NO" in init_state:
+                phys_state.primal = init_state.get("CHAM_NO")
             if "DEPL" in init_state:
                 phys_state.primal = init_state.get("DEPL")
             if "SIGM" in init_state:
                 phys_state.stress = init_state.get("SIGM")
             if "VARI" in init_state:
                 phys_state.internVar = init_state.get("VARI")
+            if "VALE" in init_state:
+                phys_state.primal.setValues(init_state.get("VALE"))
 
             if init_time is not None:
                 self.stepper.setInitial(init_time)

@@ -207,3 +207,9 @@ void PhysicalProblem::zeroDirichletBCDOFs( FieldOnNodesReal &field ) const {
         }
     }
 };
+
+bool PhysicalProblem::isMechanical( void ) const { return this->getModel()->isMechanical(); };
+
+bool PhysicalProblem::isThermal( void ) const { return this->getModel()->isThermal(); };
+
+bool PhysicalProblem::isAcoustic( void ) const { return this->getModel()->isAcoustic(); };

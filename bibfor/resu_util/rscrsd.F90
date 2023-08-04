@@ -65,7 +65,7 @@ subroutine rscrsd(baseZ, resultNameZ, resultTypeZ, nbStore)
 !     ------------------------------------------------------------------
 !                      For thermic
 !     ------------------------------------------------------------------
-    integer, parameter :: nbFieldTher = 19
+    integer, parameter :: nbFieldTher = 20
     character(len=16), parameter :: fieldTher(nbFieldTher) = (/ &
                                     'TEMP            ', &
                                     'FLUX_ELGA       ', 'FLUX_ELNO       ', 'FLUX_NOEU       ', &
@@ -74,7 +74,7 @@ subroutine rscrsd(baseZ, resultNameZ, resultTypeZ, nbStore)
                                     'HYDR_ELNO       ', 'HYDR_NOEU       ', &
                                     'SOUR_ELGA       ', 'COMPORTHER      ', 'COMPORMETA      ', &
                                     'ERTH_ELEM       ', 'ERTH_ELNO       ', 'ERTH_NOEU       ', &
-                                    'TEMP_ELGA       ', 'HHO_TEMP        '/)
+                                    'TEMP_ELGA       ', 'HHO_TEMP        ', 'COMPORTEMENT    '/)
 
 !     ------------------------------------------------------------------
 !                      For external state variables
