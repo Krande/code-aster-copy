@@ -179,8 +179,11 @@ class NonLinearSolver(SolverFeature):
         if init_state and "STAT" in init_state:
             solv = self.get_feature(SOP.StepSolver)
             solv.initialize()
+            args = dict(valr=phys_state.time, vali=self.stepper.splitting_level)
+            logger.info(MessageLog.GetText("I", "MECANONLINE6_5", **args))
             solv.solve()
-            self.stepper.completed()
+            if self.stepper.size() == 1 and self.stepper.getCurrent() == self.stepper.getPrevious():
+                self.stepper.completed()
 
         phys_state.commit()
 
