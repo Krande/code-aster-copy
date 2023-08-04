@@ -571,7 +571,6 @@ DiscreteComputation::getThermalNonLinearNeumannForces( const FieldOnNodesRealPtr
 
     auto therLoadReal = listOfLoads->getThermalLoadsReal();
     for ( const auto &load : therLoadReal ) {
-        impl( load, iload, "CHAR_THER_FLUNL", "FLUNL", "PFLUXNL", model_FEDesc );
         impl( load, iload, "CHAR_THER_RAYO_R", "RAYO", "PRAYONR", model_FEDesc );
 
         iload++;
@@ -579,6 +578,7 @@ DiscreteComputation::getThermalNonLinearNeumannForces( const FieldOnNodesRealPtr
 
     auto therLoadFunc = listOfLoads->getThermalLoadsFunction();
     for ( const auto &load : therLoadFunc ) {
+        impl( load, iload, "CHAR_THER_FLUNL", "FLUNL", "PFLUXNL", model_FEDesc );
         impl( load, iload, "CHAR_THER_RAYO_F", "RAYO", "PRAYONF", model_FEDesc );
 
         iload++;

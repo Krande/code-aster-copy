@@ -581,12 +581,12 @@ DiscreteComputation::getThermalTangentNonLinearNeumannMatrix( const FieldOnNodes
 
     auto therLoadReal = listOfLoads->getThermalLoadsReal();
     for ( const auto &load : therLoadReal ) {
-        impl( load, "MTAN_THER_FLUXNL", "FLUNL", "PFLUXNL", model_FEDesc, -1.0 );
         impl( load, "MTAN_THER_RAYO_R", "RAYO", "PRAYONR", model_FEDesc, 1.0 );
     }
 
     auto therLoadFunc = listOfLoads->getThermalLoadsFunction();
     for ( const auto &load : therLoadFunc ) {
+        impl( load, "MTAN_THER_FLUXNL", "FLUNL", "PFLUXNL", model_FEDesc, -1.0 );
         impl( load, "MTAN_THER_RAYO_F", "RAYO", "PRAYONF", model_FEDesc, 1.0 );
     }
 

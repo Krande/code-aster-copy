@@ -679,7 +679,7 @@ class ExtendedDiscreteComputation:
             jacobian.addElementaryMatrix(matr_elem_cont)
             if matr_elem_ext:
                 for matr_elem in matr_elem_ext:
-                    jacobian.addElementaryMatrix(matr_elem)
+                    jacobian.addElementaryMatrix(matr_elem, -1.0)
 
             jacobian.assemble()
 
