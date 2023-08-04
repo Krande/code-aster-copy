@@ -34,12 +34,14 @@ from ..Utilities import print_stats, force_list
 
 
 def use_fortran(keywords):
-    return True
-    excluded_keys = ("EVOL_THER_SECH", "OBSERVATION", "AFFICHAGE")
+    excluded_keys = ("EVOL_THER_SECH", "OBSERVATION")
 
     for key in excluded_keys:
         if key in keywords:
             return True
+
+    if keywords["TYPE_CALCUL"] == "TRAN":
+        return True
 
     if keywords["METHODE"] in ("MODELE_REDUIT", "NEWTON_KRYLOV"):
         return True
@@ -47,6 +49,15 @@ def use_fortran(keywords):
     for comp in force_list(keywords["COMPORTEMENT"]):
         if comp["RELATION"] != "THER_NL":
             return True
+
+    affi = keywords["AFFICHAGE"]
+    if (
+        "UNITE" in affi
+        or "PAS" in affi
+        or affi["INFO_RESIDU"] == "OUI"
+        or affi["INFO_TEMP"] == "OUI"
+    ):
+        return True
 
     return False
 
@@ -71,6 +82,32 @@ def ther_non_line_ops(self, **args):
     solver = ProblemSolver(NonLinearSolver(), result)
 
     phys_pb = PhysicalProblem(args["MODELE"], args["CHAM_MATER"], args["CARA_ELEM"])
+    # Add loads
+    if args["EXCIT"]:
+        for load in args["EXCIT"]:
+            if isinstance(
+                load["CHARGE"],
+                (
+                    ThermalLoadFunction,
+                    ThermalLoadReal,
+                    ParallelThermalLoadFunction,
+                    ParallelThermalLoadReal,
+                    ThermalDirichletBC,
+                ),
+            ):
+                if "FONC_MULT" in load:
+                    if isinstance(load["CHARGE"], ThermalDirichletBC):
+                        phys_pb.addDirichletBC(load["CHARGE"], load["FONC_MULT"])
+                    else:
+                        phys_pb.addLoad(load["CHARGE"], load["FONC_MULT"])
+                else:
+                    if isinstance(load["CHARGE"], ThermalDirichletBC):
+                        phys_pb.addDirichletBC(load["CHARGE"])
+                    else:
+                        phys_pb.addLoad(load["CHARGE"])
+            else:
+                raise RuntimeError("Unknown load")
+
     solver.use(phys_pb)
 
     # Add parameters
@@ -85,23 +122,6 @@ def ther_non_line_ops(self, **args):
         SOLVEUR=args["SOLVEUR"],
     )
     solver.setKeywords(**param)
-
-    # Add loads
-    if args["EXCIT"]:
-        for load in args["EXCIT"]:
-            if isinstance(
-                load["CHARGE"],
-                (
-                    ThermalLoadFunction,
-                    ThermalLoadReal,
-                    ParallelThermalLoadFunction,
-                    ParallelThermalLoadReal,
-                    ThermalDirichletBC,
-                ),
-            ):
-                phys_pb.addLoadFromDict(load)
-            else:
-                raise RuntimeError("Unknown load")
 
     # Add stepper
     timeStepper = TimeStepper.from_keywords(**args["INCREMENT"][0])
