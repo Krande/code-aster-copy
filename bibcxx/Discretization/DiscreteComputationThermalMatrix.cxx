@@ -566,7 +566,7 @@ DiscreteComputation::getThermalTangentNonLinearNeumannMatrix( const FieldOnNodes
             calcul->clearInputs();
             calcul->addTimeField( "PTEMPSR", time_curr, 0.0, theta );
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
-            calcul->addInputField( "PTEMPER", temp_curr );
+            calcul->addInputField( "PTEMPEI", temp_curr );
 
             calcul->addInputField( param, load->getConstantLoadField( name ) );
 

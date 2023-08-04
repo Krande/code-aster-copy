@@ -1182,3 +1182,75 @@ FieldOnNodesRealPtr DiscreteComputation::getNonLinearCapacityForces(
     elemVect->build();
     return elemVect->assemble( _phys_problem->getDOFNumbering() );
 }
+
+FieldOnNodesRealPtr DiscreteComputation::getDualTemperature( FieldOnNodesRealPtr temp_curr,
+                                                             ASTERDOUBLE scaling ) const {
+
+    auto elemVect = std::make_shared< ElementaryVectorReal >(
+        _phys_problem->getModel(), _phys_problem->getMaterialField(),
+        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
+
+    elemVect->prepareCompute( "THER_BU_R" );
+
+    if ( !_phys_problem->isThermal() ) {
+        AS_ABORT( "Not implemented" );
+    };
+
+    // Prepare loads
+    const auto listOfLoads = _phys_problem->getListOfLoads();
+
+    auto calcul = std::make_unique< Calcul >( "THER_BU_R" );
+
+    // ConstantField for scaling
+    auto cf_scaling = std::make_shared< ConstantFieldOnCellsReal >( _phys_problem->getMesh() );
+    cf_scaling->allocate( "NEUT_R" );
+    ConstantFieldOnZone a( _phys_problem->getMesh() );
+    ConstantFieldValues< ASTERDOUBLE > b( {"X1"}, {scaling} );
+    cf_scaling->setValueOnZone( a, b );
+
+    auto impl = [&]( auto loads ) {
+        for ( const auto &load : loads ) {
+            auto FEDesc = load->getFiniteElementDescriptor();
+            auto field = load->getMultiplicativeField();
+            if ( field && field->exists() && FEDesc ) {
+                calcul->clearInputs();
+                calcul->clearOutputs();
+                calcul->setFiniteElementDescriptor( FEDesc );
+                calcul->addInputField( "PDDLMUR", field );
+                calcul->addInputField( "PDDLIMR", temp_curr );
+                calcul->addInputField( "PALPHAR", cf_scaling );
+                calcul->addOutputElementaryTerm( "PVECTTR",
+                                                 std::make_shared< ElementaryTermReal >() );
+                calcul->compute();
+                if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
+                    elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ) );
+                }
+            }
+        }
+    };
+
+    impl( listOfLoads->getThermalLoadsReal() );
+    impl( listOfLoads->getThermalLoadsFunction() );
+
+#ifdef ASTER_HAVE_MPI
+    impl( listOfLoads->getParallelThermalLoadsReal() );
+    impl( listOfLoads->getParallelThermalLoadsFunction() );
+#endif
+
+    // Assemble
+    elemVect->build();
+
+    FieldOnNodesRealPtr buth;
+    if ( elemVect->hasElementaryTerm() ) {
+        buth = elemVect->assemble( _phys_problem->getDOFNumbering() );
+    } else {
+        buth = std::make_shared< FieldOnNodesReal >( _phys_problem->getDOFNumbering() );
+        buth->setValues( 0.0 );
+        buth->build();
+    }
+
+    if ( _phys_problem->getMesh()->isParallel() )
+        CALLO_AP_ASSEMBLY_VECTOR( buth->getName() );
+
+    return buth;
+};

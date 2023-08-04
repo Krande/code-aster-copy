@@ -53,13 +53,13 @@ class ExtendedDiscreteComputation:
               FieldOnNodes: imposed BC vector
         """
 
-        model = self.getPhysicalProblem().getModel()
+        phys_pb = self.getPhysicalProblem()
 
-        if model.isMechanical():
+        if phys_pb.isMechanical():
             return self.getMechanicalDirichletBC(time)
-        elif model.isThermal():
+        elif phys_pb.isThermal():
             return self.getThermalDirichletBC(time)
-        elif model.isAcoustic():
+        elif phys_pb.isAcoustic():
             return self.getAcousticDirichletBC(time)
         else:
             raise RuntimeError("Unknown physics")
@@ -91,9 +91,9 @@ class ExtendedDiscreteComputation:
                 on 'assembly' keyword
         """
 
-        model = self.getPhysicalProblem().getModel()
+        phys_pb = self.getPhysicalProblem()
 
-        if model.isMechanical():
+        if phys_pb.isMechanical():
             matr_elem = self.getElasticStiffnessMatrix(
                 time, fourierMode, varc_curr, groupOfCells, with_dual
             )
@@ -104,7 +104,7 @@ class ExtendedDiscreteComputation:
                 matr_asse.assemble()
                 return matr_asse
 
-        elif model.isThermal():
+        elif phys_pb.isThermal():
             matr_elem = self.getLinearConductivityMatrix(
                 time, fourierMode, varc_curr, groupOfCells, with_dual
             )
@@ -115,7 +115,7 @@ class ExtendedDiscreteComputation:
                 matr_asse.assemble()
                 return matr_asse
 
-        elif model.isAcoustic():
+        elif phys_pb.isAcoustic():
             matr_elem = self.getLinearMobilityMatrix(groupOfCells, with_dual)
 
             if assembly:
@@ -138,9 +138,9 @@ class ExtendedDiscreteComputation:
               ElementaryMatrix: elementary dual stiffness matrix
         """
 
-        model = self.getPhysicalProblem().getModel()
+        phys_pb = self.getPhysicalProblem()
 
-        if model.isMechanical():
+        if phys_pb.isMechanical():
             matr_elem = self.getDualElasticStiffnessMatrix()
 
             if assembly:
@@ -149,7 +149,7 @@ class ExtendedDiscreteComputation:
                 matr_asse.assemble()
                 return matr_asse
 
-        elif model.isThermal():
+        elif phys_pb.isThermal():
             matr_elem = self.getDualLinearConductivityMatrix()
 
             if assembly:
@@ -158,7 +158,7 @@ class ExtendedDiscreteComputation:
                 matr_asse.assemble()
                 return matr_asse
 
-        elif model.isAcoustic():
+        elif phys_pb.isAcoustic():
             matr_elem = self.getDualLinearMobilityMatrix()
 
             if assembly:
@@ -188,9 +188,9 @@ class ExtendedDiscreteComputation:
               ElementaryMatrix: elementary mass matrix
         """
 
-        model = self.getPhysicalProblem().getModel()
+        phys_pb = self.getPhysicalProblem()
 
-        if model.isMechanical():
+        if phys_pb.isMechanical():
             matr_elem = self.getMechanicalMassMatrix(False, varc_curr, groupOfCells)
 
             if assembly:
@@ -199,7 +199,7 @@ class ExtendedDiscreteComputation:
                 matr_asse.assemble()
                 return matr_asse
 
-        elif model.isThermal():
+        elif phys_pb.isThermal():
             matr_elem = self.getLinearCapacityMatrix(time, varc_curr, groupOfCells)
 
             if assembly:
@@ -208,7 +208,7 @@ class ExtendedDiscreteComputation:
                 matr_asse.assemble()
                 return matr_asse
 
-        elif model.isAcoustic():
+        elif phys_pb.isAcoustic():
             matr_elem = self.getCompressibilityMatrix(groupOfCells)
 
             if assembly:
@@ -240,15 +240,15 @@ class ExtendedDiscreteComputation:
                 FieldOnNodes: volumetric forces field if assembly=True
         """
 
-        model = self.getPhysicalProblem().getModel()
+        phys_pb = self.getPhysicalProblem()
 
-        if model.isThermal():
+        if phys_pb.isThermal():
             return self.getThermalVolumetricForces(time_curr, time_step, theta, varc_curr, assembly)
-        elif model.isMechanical():
+        elif phys_pb.isMechanical():
             return self.getMechanicalVolumetricForces(
                 time_curr, time_step, theta, mode, varc_curr, assembly
             )
-        elif model.isAcoustic():
+        elif phys_pb.isAcoustic():
             return self.getAcousticVolumetricForces(assembly)
         else:
             raise RuntimeError("Not implemented")
@@ -272,22 +272,22 @@ class ExtendedDiscreteComputation:
                 FieldOnNodes: Neumann forces field if assembly=True
         """
 
-        model = self.getPhysicalProblem().getModel()
+        phys_pb = self.getPhysicalProblem()
 
-        if model.isThermal():
+        if phys_pb.isThermal():
             return self.getThermalNeumannForces(time_curr, time_step, theta, assembly)
-        elif model.isMechanical():
+        elif phys_pb.isMechanical():
             return self.getMechanicalNeumannForces(
                 time_curr, time_step, theta, mode, varc_curr, assembly
             )
-        elif model.isAcoustic():
+        elif phys_pb.isAcoustic():
             return self.getAcousticNeumannForces(assembly)
         else:
             raise RuntimeError("Not implemented")
 
     @profile
     def getNonLinearNeumannForces(
-        self, primal_prev, primal_step, time_prev, time_step, theta, assembly=True
+        self, primal_prev, primal_step, time_prev, time_step, assembly=True
     ):
         """Return the nonlinear Neumann forces field
 
@@ -296,7 +296,6 @@ class ExtendedDiscreteComputation:
                 primal_step : incremental primal solution
                 time_prev (float): Previous time at the beginning of the time step
                 time_step (float): Time increment
-                theta (float): Theta parameter for time-integration
                 assembly (bool): assemble if True
 
         Returns:
@@ -304,15 +303,15 @@ class ExtendedDiscreteComputation:
                 FieldOnNodes: Neumann forces field if assembly=True
         """
 
-        model = self.getPhysicalProblem().getModel()
+        phys_pb = self.getPhysicalProblem()
 
-        if model.isThermal():
+        if phys_pb.isThermal():
             return self.getThermalNonLinearNeumannForces(
-                primal_prev, primal_step, time_prev, time_step, theta, assembly
+                primal_prev + primal_step, time_prev + time_step, assembly
             )
-        elif model.isMechanical():
+        elif phys_pb.isMechanical():
             raise RuntimeError("Not implemented")
-        elif model.isAcoustic():
+        elif phys_pb.isAcoustic():
             raise RuntimeError("Not implemented")
         else:
             raise RuntimeError("Not implemented")
@@ -330,13 +329,13 @@ class ExtendedDiscreteComputation:
                 FieldOnNodes: imposed nodal BC field if assembly=True
         """
 
-        model = self.getPhysicalProblem().getModel()
+        phys_pb = self.getPhysicalProblem()
 
-        if model.isThermal():
+        if phys_pb.isThermal():
             return self.getThermalImposedDualBC(time_curr, assembly)
-        elif model.isMechanical():
+        elif phys_pb.isMechanical():
             return self.getMechanicalImposedDualBC(time_curr, assembly)
-        elif model.isAcoustic():
+        elif phys_pb.isAcoustic():
             return self.getAcousticImposedDualBC(assembly)
         else:
             raise RuntimeError("Not implemented")
@@ -357,17 +356,25 @@ class ExtendedDiscreteComputation:
             FieldOnCellsReal: Cauchy stress tensor (SIEF_ELGA)
         """
 
+        phys_pb = self.getPhysicalProblem()
+
         # Compute internal forces (B^t.stress)
-        _, codret, internVar, stress, r_stress = self.getInternalForces(
-            phys_state.primal,
-            phys_state.primal_step,
-            phys_state.stress,
-            phys_state.internVar,
-            phys_state.time,
-            phys_state.time_step,
-            phys_state.getState(-1).externVar,
-            phys_state.externVar,
-        )
+        if phys_pb.isMechanical():
+            _, codret, internVar, stress, r_stress = self.getInternalForces(
+                phys_state.primal,
+                phys_state.primal_step,
+                phys_state.stress,
+                phys_state.internVar,
+                phys_state.time,
+                phys_state.time_step,
+                phys_state.getState(-1).externVar,
+                phys_state.externVar,
+            )
+        else:
+            r_stress = self.getInternalThermalForces(phys_state.primal_step, phys_state.externVar)
+            codret = 0
+            internVar = None
+            stress = None
 
         resi = Residuals()
 
@@ -387,7 +394,7 @@ class ExtendedDiscreteComputation:
 
             # Compute dualized BC (B^t.primal_curr - primal_impo)
             # Compute dualized BC (B^t.primal_curr)
-            dualizedBC_disp = self.getDualDisplacement(primal_curr, scaling)
+            dualizedBC_disp = self.getDualPrimal(primal_curr, scaling)
 
             # Imposed dualized BC (primal_impo)
             time_curr = phys_state.time + phys_state.time_step
@@ -424,6 +431,18 @@ class ExtendedDiscreteComputation:
         )
 
         resi_ext = neumann_forces + volum_forces
+
+        if self.getPhysicalProblem().isThermal():
+            resi_ext += self.getNonLinearNeumannForces(
+                phys_state.primal, phys_state.primal_step, phys_state.time, phys_state.time_step
+            )
+
+            resi_ext += self.getThermalExchangeForces(
+                phys_state.createPrimal(self.getPhysicalProblem(), 0.0),
+                phys_state.time + phys_state.time_step,
+                phys_state.time_step,
+                1.0,
+            )
 
         return resi_ext
 
@@ -498,6 +517,7 @@ class ExtendedDiscreteComputation:
             ElementaryMatrixDisplacementReal: dual matrix.
         """
         # Main object for discrete computation
+        phys_pb = self.getPhysicalProblem()
 
         # Compute rigidity matrix
         if matrix_type in ("PRED_ELASTIQUE", "ELASTIQUE"):
@@ -505,27 +525,39 @@ class ExtendedDiscreteComputation:
             matr_elem_rigi = self.getLinearStiffnessMatrix(time=time_curr, with_dual=False)
             codret = 0
         elif matrix_type == "PRED_TANGENTE":
-            _, codret, matr_elem_rigi = self.getPredictionTangentStiffnessMatrix(
-                phys_state.primal,
-                phys_state.primal_step,
-                phys_state.stress,
-                phys_state.internVar,
-                phys_state.time,
-                phys_state.time_step,
-                phys_state.getState(-1).externVar,
-                phys_state.externVar,
-            )
+            if phys_pb.isMechanical():
+                _, codret, matr_elem_rigi = self.getPredictionTangentStiffnessMatrix(
+                    phys_state.primal,
+                    phys_state.primal_step,
+                    phys_state.stress,
+                    phys_state.internVar,
+                    phys_state.time,
+                    phys_state.time_step,
+                    phys_state.getState(-1).externVar,
+                    phys_state.externVar,
+                )
+            else:
+                matr_elem_rigi = self.getTangentConductivityMatrix(
+                    phys_state.primal, phys_state.primal_step, phys_state.externVar, with_dual=False
+                )
+                codret = 0
         elif matrix_type == "TANGENTE":
-            _, codret, matr_elem_rigi = self.getTangentStiffnessMatrix(
-                phys_state.primal,
-                phys_state.primal_step,
-                phys_state.stress,
-                phys_state.internVar,
-                phys_state.time,
-                phys_state.time_step,
-                phys_state.getState(-1).externVar,
-                phys_state.externVar,
-            )
+            if phys_pb.isMechanical():
+                _, codret, matr_elem_rigi = self.getTangentStiffnessMatrix(
+                    phys_state.primal,
+                    phys_state.primal_step,
+                    phys_state.stress,
+                    phys_state.internVar,
+                    phys_state.time,
+                    phys_state.time_step,
+                    phys_state.getState(-1).externVar,
+                    phys_state.externVar,
+                )
+            else:
+                matr_elem_rigi = self.getTangentConductivityMatrix(
+                    phys_state.primal, phys_state.primal_step, phys_state.externVar, with_dual=False
+                )
+                codret = 0
         else:
             raise RuntimeError("Matrix not supported: %s" % (matrix_type))
 
@@ -575,6 +607,39 @@ class ExtendedDiscreteComputation:
         return None
 
     @profile
+    def getExternalTangentMatrix(self, phys_state):
+        """Compute external tangent matrix for nonlinear problem.
+            K(u) = d(Rext(u)) / du
+
+        Arguments:
+            phys_state (PhysicalState) : physical state
+
+        Returns:
+            ElementaryMatrixDisplacementReal: external tangent matrix.
+        """
+
+        phys_pb = self.getPhysicalProblem()
+
+        # Compute elementary matrix
+        matr_elem_ext = None
+
+        if phys_pb.isThermal():
+            primal_curr = phys_state.primal + phys_state.primal_step
+            time_curr = phys_state.time + phys_state.time_step
+
+            matr_elem_ext = []
+            matr_elem_ext.append(self.getThermalExchangeMatrix(time_curr))
+
+            matr_elem_ext.append(
+                self.getThermalTangentNonLinearNeumannMatrix(primal_curr, time_curr)
+            )
+            matr_elem_ext.append(
+                self.getThermalTangentNonLinearVolumetricMatrix(primal_curr, time_curr)
+            )
+
+        return matr_elem_ext
+
+    @profile
     def getTangentMatrix(
         self, phys_state, matrix_type="TANGENTE", contact_manager=None, assemble=True
     ):
@@ -591,6 +656,8 @@ class ExtendedDiscreteComputation:
             AssemblyMatrixDisplacementReal: Tangent matrix.
         """
 
+        phys_pb = self.getPhysicalProblem()
+
         # Compute elementary matrix
         codret, matr_elem_rigi, matr_elem_dual = self.getInternalTangentMatrix(
             phys_state, matrix_type, False
@@ -599,13 +666,20 @@ class ExtendedDiscreteComputation:
             raise IntegrationError("MECANONLINE10_1")
 
         matr_elem_cont = self.getContactTangentMatrix(phys_state, contact_manager)
+        matr_elem_ext = self.getExternalTangentMatrix(phys_state)
 
         if assemble:
             # Assemble matrix
-            jacobian = AssemblyMatrixDisplacementReal(self.getPhysicalProblem())
+            if phys_pb.isMechanical():
+                jacobian = AssemblyMatrixDisplacementReal(phys_pb)
+            else:
+                jacobian = AssemblyMatrixTemperatureReal(phys_pb)
             jacobian.addElementaryMatrix(matr_elem_rigi)
             jacobian.addElementaryMatrix(matr_elem_dual)
             jacobian.addElementaryMatrix(matr_elem_cont)
+            if matr_elem_ext:
+                for matr_elem in matr_elem_ext:
+                    jacobian.addElementaryMatrix(matr_elem)
 
             jacobian.assemble()
 

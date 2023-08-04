@@ -80,43 +80,16 @@ FieldOnNodesRealPtr DiscreteComputation::getDualForces( FieldOnNodesRealPtr lagr
     return elemVect->assemble( _phys_problem->getDOFNumbering() );
 };
 
-FieldOnNodesRealPtr DiscreteComputation::getDualDisplacement( FieldOnNodesRealPtr disp_curr,
-                                                              ASTERDOUBLE scaling ) const {
+FieldOnNodesRealPtr DiscreteComputation::getDualPrimal( FieldOnNodesRealPtr primal_curr,
+                                                        ASTERDOUBLE scaling ) const {
+    if ( _phys_problem->isMechanical() ) {
+        return this->getDualDisplacement( primal_curr, scaling );
+    } else if ( _phys_problem->isThermal() ) {
+        return this->getDualTemperature( primal_curr, scaling );
+    } else {
 
-    auto elemVect = std::make_shared< ElementaryVectorReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
-
-    if ( _phys_problem->getModel()->isThermal() ) {
-        AS_ABORT( "Not implemented for thermic" );
-    };
-
-    // Prepare loads
-    auto listOfLoads = _phys_problem->getListOfLoads();
-    std::string listLoadsName = ljust( listOfLoads->getName(), 19 );
-
-    // Get JEVEUX names of objects to call Fortran
-    std::string modelName = ljust( _phys_problem->getModel()->getName(), 24 );
-    std::string dispName = ljust( disp_curr->getName(), 24 );
-    std::string vectElemName = ljust( elemVect->getName(), 24 );
-    const std::string base( "G" );
-    const ASTERDOUBLE const_scaling = scaling;
-
-    // Wrapper FORTRAN
-    CALLO_VEBUME( modelName, dispName, listLoadsName, vectElemName, &const_scaling, base );
-
-    // Construct vect_elem object
-    auto FEDs = _phys_problem->getListOfLoads()->getFiniteElementDescriptors();
-    FEDs.push_back( _phys_problem->getModel()->getFiniteElementDescriptor() );
-    elemVect->build( FEDs );
-
-    // Assemble
-    FieldOnNodesRealPtr bume = elemVect->assemble( _phys_problem->getDOFNumbering() );
-
-    if ( _phys_problem->getMesh()->isParallel() )
-        CALLO_AP_ASSEMBLY_VECTOR( bume->getName() );
-
-    return bume;
+        AS_ABORT( "Not implemented" );
+    }
 };
 
 template < typename T >

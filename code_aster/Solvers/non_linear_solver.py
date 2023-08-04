@@ -175,6 +175,13 @@ class NonLinearSolver(SolverFeature):
 
         self.setExternalStateVariables(init_time)
         phys_state.time = init_time
+
+        if init_state and "STAT" in init_state:
+            solv = self.get_feature(SOP.StepSolver)
+            solv.initialize()
+            solv.solve()
+            self.stepper.completed()
+
         phys_state.commit()
 
     @profile

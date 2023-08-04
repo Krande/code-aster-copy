@@ -39,7 +39,7 @@ class StepSolver(SolverFeature):
 
     matr_update_incr = None
     param = None
-    current_incr = current_matrix = None
+    current_matrix = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
     def setParameters(self, param):
@@ -59,7 +59,6 @@ class StepSolver(SolverFeature):
     def initialize(self):
         """Initialization."""
         self.check_features()
-        self.current_incr = -1
         self.current_matrix = None
         self.phys_state.primal_step = self.phys_state.createPrimal(self.phys_pb, 0.0)
 
@@ -91,19 +90,33 @@ class StepSolver(SolverFeature):
             self.phys_state.internVar = internVar
             self.phys_state.stress = sigma
 
-    def _setMatrixType(self):
+    def _resetMatrix(self, current_incr):
+        """Reset matrix if needed
+
+        Arguments:
+        current_incr (int): index of the current increment
+
+        """
+        if (
+            self.matr_update_incr > 0 and current_incr % self.matr_update_incr == 0
+        ) or self.contact_manager:
+            # make unavailable the current tangent matrix
+            self.current_matrix = None
+
+    def _setMatrixType(self, current_incr):
         """Set matrix type.
+
+        Arguments:
+            current_incr (int): index of the current increment
 
         Returns:
             str: Type of matrix to be computed.
         """
-        if self.current_incr == 0:
+        if current_incr == 0:
             matrix_type = "PRED_" + self._get("NEWTON", "PREDICTION")
         else:
             matrix_type = self._get("NEWTON", "MATRICE", "TANGENTE")
-            if self.current_incr % self.matr_update_incr == 0 or self.contact_manager:
-                # make unavailable the current tangent matrix
-                self.current_matrix = None
+            self._resetMatrix(current_incr)
         return matrix_type
 
     def createLoggingManager(self):
@@ -136,13 +149,14 @@ class StepSolver(SolverFeature):
         iter_glob = convManager.setdefault("ITER_GLOB_MAXI")
 
         incr_solv = self.get_feature(SOP.IncrementalSolver)
+        current_incr = -1
 
         while not convManager.isFinished():
-            self.current_incr += 1
-            iter_glob.value = self.current_incr
+            current_incr += 1
+            iter_glob.value = current_incr
 
             # Select type of matrix
-            matrix_type = self._setMatrixType()
+            matrix_type = self._setMatrixType(current_incr)
 
             if self.contact_manager:
                 self.contact_manager.pairing(self.phys_pb)
@@ -155,10 +169,10 @@ class StepSolver(SolverFeature):
             # Update
             self.update(primal_incr, internVar, sigma, convManager)
 
-            if self.current_incr > 0:
+            if current_incr > 0:
                 logManager.printConvTableRow(
                     [
-                        self.current_incr - 1,
+                        current_incr - 1,
                         convManager.get("RESI_GLOB_RELA"),
                         convManager.get("RESI_GLOB_MAXI"),
                         convManager.get("RESI_GEOM"),
@@ -167,14 +181,13 @@ class StepSolver(SolverFeature):
                 )
 
         if not convManager.isConverged():
-            raise ConvergenceError("MECANONLINE9_9")
+            raise ConvergenceError("MECANONLINE9_7")
 
         deleteTemporaryObjects()
 
         logManager.printConvTableEnd()
 
-        if self.current_incr % self.matr_update_incr == 0 or self.contact_manager:
-            self.current_matrix = None
+        self._resetMatrix(current_incr)
 
     def _get(self, keyword, parameter=None, default=None):
         """ "Return a keyword value"""

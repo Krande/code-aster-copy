@@ -208,7 +208,8 @@ class PhysicalState(BaseFeature):
         Arguments:
             field (FieldOnCellsReal): Stress field
         """
-        assert isinstance(field, FieldOnCellsReal), f"unexpected type: {field}"
+        if field:
+            assert isinstance(field, FieldOnCellsReal), f"unexpected type: {field}"
         self.current._stress = field
 
     @property
@@ -223,7 +224,8 @@ class PhysicalState(BaseFeature):
         Arguments:
             field (FieldOnCellsReal): Internal state variables
         """
-        assert isinstance(field, FieldOnCellsReal), f"unexpected type: {field}"
+        if field:
+            assert isinstance(field, FieldOnCellsReal), f"unexpected type: {field}"
         self.current._internVar = field
 
     @property
@@ -302,11 +304,14 @@ class PhysicalState(BaseFeature):
             delta_primal += two.primal_step
         if one.primal:
             delta_primal -= one.primal_step
-        return {
-            "SIEF_ELGA": two.stress - one.stress,
-            "VARI_ELGA": two.internVar - one.internVar,
-            quantity: delta_primal,
-        }
+
+        ret = {"SIEF_ELGA": None, "VARI_ELGA": None, quantity: delta_primal}
+        if one.stress and two.stress:
+            ret["SIEF_ELGA"] = two.stress - one.stress
+        if one.internVar and two.internVar:
+            ret["VARI_ELGA"] = two.internVar - one.internVar
+
+        return ret
 
     # FIXME setPrimalValue?
     @profile

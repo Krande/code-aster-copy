@@ -80,8 +80,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             FieldOnNodes: dual reaction vector (B^T*lambda)
         )",
               py::arg( "disp_curr" ) )
-
-        .def( "getDualDisplacement", &DiscreteComputation::getDualDisplacement,
+        .def( "getDualPrimal", &DiscreteComputation::getDualPrimal,
               R"(
       Return the Dirichlet load vector
 
@@ -91,8 +90,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
       Returns:
             FieldOnNodes: Dirichlet load vector
               )",
-              py::arg( "disp_curr" ), py::arg( "scaling" ) = 1.0 )
-
+              py::arg( "primal_curr" ), py::arg( "scaling" ) = 1.0 )
         .def( "getThermalExchangeForces", &DiscreteComputation::getThermalExchangeForces,
               R"(
       Return the elementary thermal Exchange forces vector

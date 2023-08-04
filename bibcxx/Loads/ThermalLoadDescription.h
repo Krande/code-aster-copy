@@ -69,6 +69,10 @@ class ThermalLoadDescription : public DataStructure {
     ConstantFieldOnCellsTypePtr _grain;
     /** @brief Carte '.HECHP' */
     ConstantFieldOnCellsTypePtr _hechp;
+    /** @brief Carte '.RAYO' */
+    ConstantFieldOnCellsTypePtr _rayo;
+    /** @brief Carte '.SOUNL' */
+    ConstantFieldOnCellsTypePtr _sounl;
     /** @brief Carte '.SOURE' */
     ConstantFieldOnCellsTypePtr _soure;
     /** @brief Champ '.SOURC' */
@@ -96,6 +100,8 @@ class ThermalLoadDescription : public DataStructure {
           _flur2( std::make_shared< ConstantFieldOnCellsType >( getName() + ".FLUR2", _FEDesc ) ),
           _grain( std::make_shared< ConstantFieldOnCellsType >( getName() + ".GRAIN", _FEDesc ) ),
           _hechp( std::make_shared< ConstantFieldOnCellsType >( getName() + ".HECHP", _FEDesc ) ),
+          _rayo( std::make_shared< ConstantFieldOnCellsType >( getName() + ".RAYO", _FEDesc ) ),
+          _sounl( std::make_shared< ConstantFieldOnCellsType >( getName() + ".SOUNL", _FEDesc ) ),
           _soure( std::make_shared< ConstantFieldOnCellsType >( getName() + ".SOURE", _FEDesc ) ),
           _sourc( std::make_shared< FieldOnCellsReal >( getName() + ".SOURC" ) ),
           _tExt( std::make_shared< ConstantFieldOnCellsType >( getName() + ".T_EXT", _FEDesc ) ) {};
@@ -122,10 +128,16 @@ class ThermalLoadDescription : public DataStructure {
             return ( _soure && _soure->exists() );
         else if ( name == "SOURC" )
             return ( _sourc && _sourc->exists() );
+        else if ( name == "SOUNL" )
+            return _sounl && _sounl->exists();
         else if ( name == "HECHP" )
             return ( _hechp && _hechp->exists() );
         else if ( name == "GRAIN" )
             return ( _grain && _grain->exists() );
+        else if ( name == "FLUNL" )
+            return _flunl && _flunl->exists();
+        else if ( name == "RAYO" )
+            return _rayo && _rayo->exists();
         else
             throw std::runtime_error( "Invalid load name : " + name );
     }
@@ -142,10 +154,16 @@ class ThermalLoadDescription : public DataStructure {
             return _flur2;
         else if ( name == "SOURE" )
             return _soure;
+        else if ( name == "SOUNL" )
+            return _sounl;
         else if ( name == "HECHP" )
             return _hechp;
         else if ( name == "GRAIN" )
             return _grain;
+        else if ( name == "FLUNL" )
+            return _flunl;
+        else if ( name == "RAYO" )
+            return _rayo;
         else
             throw std::runtime_error( "Invalid load name : " + name );
     }

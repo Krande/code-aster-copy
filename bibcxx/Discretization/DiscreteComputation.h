@@ -135,6 +135,19 @@ class DiscreteComputation {
                                              ASTERDOUBLE scaling = 1.0 ) const;
 
     /**
+     * @brief Compute Dirichlet imposed dualized displacement B * U
+     * @return Nodal field for dualized displacement
+     */
+    FieldOnNodesRealPtr getDualTemperature( FieldOnNodesRealPtr temp_curr,
+                                            ASTERDOUBLE scaling = 1.0 ) const;
+
+    /**
+     * @brief Compute Dirichlet imposed dualized primal B * U
+     * @return Nodal field for dualized displacement
+     */
+    FieldOnNodesRealPtr getDualPrimal( FieldOnNodesRealPtr disp_curr,
+                                       ASTERDOUBLE scaling = 1.0 ) const;
+    /**
      * @brief Compute Neumann loads
      * @param TimeParameters Parameters for time
      * @return Nodal field for Neumann loads
