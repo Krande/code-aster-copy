@@ -58,6 +58,13 @@ def compat_syntax(keywords):
         del keywords["NEWTON"]["MATRICE"]
         del keywords["NEWTON"]["REAC_INCR"]
 
+    if "MODELE_REDUIT" in keywords:
+        del keywords["MODELE_REDUIT"]["REAC_INCR"]
+
+    if "TYPE_CALCUL" in keywords and keywords["TYPE_CALCUL"] == "STAT":
+        if "ETAT_INIT" in keywords:
+            del keywords["ETAT_INIT"]
+
 
 THER_NON_LINE2 = OPER(
     nom="THER_NON_LINE2",

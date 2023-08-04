@@ -130,8 +130,6 @@ THER_NON_LINE = MACRO(
         condition="""(equal_to("TYPE_CALCUL", 'TRAN'))""",
         PARM_THETA=SIMP(statut="f", typ="R", defaut=0.57, val_min=0.0, val_max=1.0),
         # -------------------------------------------------------------------
-        INCREMENT=C_INCREMENT("THERMIQUE", True),
-        # -------------------------------------------------------------------
         ETAT_INIT=FACT(
             statut="o",
             regles=(UN_PARMI("EVOL_THER", "CHAM_NO", "VALE", "STAT"),),
@@ -162,8 +160,12 @@ THER_NON_LINE = MACRO(
     ),
     # -------------------------------------------------------------------
     b_stat=BLOC(
-        condition="""(equal_to("TYPE_CALCUL", 'STAT'))""", INCREMENT=C_INCREMENT("THERMIQUE", False)
+        condition="""(equal_to("TYPE_CALCUL", 'STAT'))""",
+        ETAT_INIT=FACT(statut="d", STAT=SIMP(statut="f", typ="TXM", into=("OUI",), defaut="OUI")),
     ),
+    # -------------------------------------------------------------------
+    INCREMENT=C_INCREMENT("THERMIQUE"),
+    # -------------------------------------------------------------------
     CONVERGENCE=FACT(
         statut="d",
         RESI_GLOB_MAXI=SIMP(statut="f", typ="R"),
