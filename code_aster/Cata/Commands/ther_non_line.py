@@ -69,6 +69,7 @@ THER_NON_LINE = MACRO(
         "Résoudre un problème thermique non linéaire (conditions limites ou comportement matériau)"
         " stationnaire ou transitoire"
     ),
+    regles=ENSEMBLE("reuse", "RESULTAT"),
     reuse=SIMP(statut="c", typ=CO),
     RESULTAT=SIMP(
         statut="f", typ=evol_ther, fr=tr("Objet qui sera enrichi des nouveaux instants calculés")
@@ -166,14 +167,8 @@ THER_NON_LINE = MACRO(
     # -------------------------------------------------------------------
     INCREMENT=C_INCREMENT("THERMIQUE"),
     # -------------------------------------------------------------------
-    CONVERGENCE=FACT(
-        statut="d",
-        RESI_GLOB_MAXI=SIMP(statut="f", typ="R"),
-        RESI_GLOB_RELA=SIMP(statut="f", typ="R"),
-        ITER_GLOB_MAXI=SIMP(statut="f", typ="I", defaut=10),
-    ),
+    CONVERGENCE=C_CONVERGENCE("THER_NON_LINE"),
     # -------------------------------------------------------------------
-    #        Catalogue commun SOLVEUR
     SOLVEUR=C_SOLVEUR("THER_NON_LINE"),
     # -------------------------------------------------------------------
     ARCHIVAGE=C_ARCHIVAGE(),
