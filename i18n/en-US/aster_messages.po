@@ -19374,6 +19374,11 @@ msgid ""
 "  Vous demandez le calcul de la matrice correspondant à l'option IMPE_MECA.\n"
 "  Mais on ne peut rien calculer, faute de données.\n"
 "\n"
+msgstr ""
+"\n"
+"User error: \n"
+" You ask for the calculation of the matrix corresponding to the IMPE_MECA option.\n"
+" But we can't calculate anything, due to lack of data. \n"
 
 #: /home/I26352/dev/integration-default/src/bibpyt/Messages/calculel2.py:378
 msgid ""
