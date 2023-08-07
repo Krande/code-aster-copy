@@ -915,7 +915,7 @@ contains
         elseif (typma2 == 'P21' .or. typma2 == 'PENTA21') then
             hhoDiriOffset = 16
         elseif (typma2 == 'P19' .or. typma2 == 'PYRAM19') then
-            hhoDiriOffset = 15
+            hhoDiriOffset = 14
         elseif (typma2 == 'QU9' .or. typma2 == 'QUAD9') then
             hhoDiriOffset = 5
         elseif (typma2 == 'TR7' .or. typma2 == 'TRIA7') then
