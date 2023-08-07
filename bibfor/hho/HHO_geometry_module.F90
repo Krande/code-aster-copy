@@ -475,10 +475,10 @@ contains
             call elrfvf('TE4', pt, basis)
         case ('PYRAM5')
             call elrfvf('PY5', pt, basis)
-        case ('PENTA6')
-            call elrfvf('PE6', pt, basis)
         case ('HEXA8')
             call elrfvf('HE8', pt, basis)
+        case ('PENTA6')
+            call elrfvf('PE6', pt, basis)
         case default
             ASSERT(ASTER_FALSE)
         end select
@@ -522,6 +522,8 @@ contains
             call elrfdf('PY5', pt, dbasis)
         case ('HEXA8')
             call elrfdf('HE8', pt, dbasis)
+        case ('PENTA6')
+            call elrfdf('PE6', pt, dbasis)
         case default
             ASSERT(ASTER_FALSE)
         end select

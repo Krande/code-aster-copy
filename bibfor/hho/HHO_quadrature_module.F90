@@ -552,8 +552,8 @@ contains
 !
         real(kind=8) :: jaco, x, y, z
         real(kind=8), dimension(3) :: coorac
-        integer, parameter :: max_order = 5
-        integer, parameter :: max_pg = 27
+        integer, parameter :: max_order = 6
+        integer, parameter :: max_pg = 23
         character(len=8), dimension(0:max_order) :: rules
         integer :: dimp, nbpg, ipg
         real(kind=8) :: coorpg(max_pg*3), poidpg(max_pg)
@@ -561,7 +561,7 @@ contains
 ! ----- check order of integration
         call check_order(this%order, max_order)
 !
-        rules = (/'FPG1 ', 'FPG5 ', 'FPG5 ', 'FPG6 ', 'FPG27', 'FPG27'/)
+        rules = (/'FPG1 ', 'FPG5 ', 'FPG5 ', 'FPG6 ', 'FPG10', 'FPG23', 'FPG23'/)
 !
 !------ get quadrature points
         coorpg = 0.d0
@@ -606,8 +606,8 @@ contains
 !
         real(kind=8) :: jaco
         real(kind=8), dimension(3) :: coorac
-        integer, parameter :: max_order = 5
-        integer, parameter :: max_pg = 21
+        integer, parameter :: max_order = 6
+        integer, parameter :: max_pg = 29
         character(len=8), dimension(0:max_order) :: rules
         integer :: dimp, nbpg, ipg
         real(kind=8) :: coorpg(max_pg*3), poidpg(max_pg), x, y, z
@@ -615,7 +615,7 @@ contains
 ! ----- check order of integration
         call check_order(this%order, max_order)
 !
-        rules = (/'FPG1 ', 'FPG6 ', 'FPG6 ', 'FPG8 ', 'FPG21', 'FPG21'/)
+        rules = (/'FPG1 ', 'FPG6B', 'FPG6B', 'FPG8 ', 'FPG21', 'FPG21', 'FPG29'/)
 !
 !------ get quadrature points
         coorpg = 0.d0
@@ -787,6 +787,8 @@ contains
                 order = 3
             case (21)
                 order = 5
+            case (29)
+                order = 6
             case default
                 ASSERT(ASTER_FALSE)
             end select
@@ -798,8 +800,10 @@ contains
                 order = 2
             case (6)
                 order = 3
-            case (27)
-                order = 5
+            case (10)
+                order = 4
+            case (23)
+                order = 6
             case default
                 ASSERT(ASTER_FALSE)
             end select

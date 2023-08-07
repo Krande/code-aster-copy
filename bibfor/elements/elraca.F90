@@ -154,8 +154,8 @@ subroutine elraca(elrefz, &
         fapg(9) = 'FPG4NOS'
 
     case ('PE6')
-        nbfpg = 8
-        nbpg(1:nbfpg) = [nno, nnos, 1, 6, 6, 8, 21, 12]
+        nbfpg = 9
+        nbpg(1:nbfpg) = [nno, nnos, 1, 6, 6, 8, 21, 12, 29]
         fapg(1) = 'NOEU'
         fapg(2) = 'NOEU_S'
         fapg(3) = 'FPG1'
@@ -164,6 +164,7 @@ subroutine elraca(elrefz, &
         fapg(6) = 'FPG8'
         fapg(7) = 'FPG21'
         fapg(8) = 'FPG6NOS'
+        fapg(9) = 'FPG29'
 
     case ('PE7')
         nbfpg = 5
@@ -175,41 +176,47 @@ subroutine elraca(elrefz, &
         fapg(5) = 'LOB7'
 
     case ('P15')
-        nbfpg = 7
-        nbpg(1:nbfpg) = [nno, nnos, 1, 6, 8, 21, 12]
+        nbfpg = 9
+        nbpg(1:nbfpg) = [nno, nnos, 1, 6, 6, 8, 21, 12, 29]
         fapg(1) = 'NOEU'
         fapg(2) = 'NOEU_S'
         fapg(3) = 'FPG1'
         fapg(4) = 'FPG6'
-        fapg(5) = 'FPG8'
-        fapg(6) = 'FPG21'
-        fapg(7) = 'FPG6NOS'
+        fapg(5) = 'FPG6B'
+        fapg(6) = 'FPG8'
+        fapg(7) = 'FPG21'
+        fapg(8) = 'FPG6NOS'
+        fapg(9) = 'FPG29'
 
     case ('P18')
-        nbfpg = 7
-        nbpg(1:nbfpg) = [nno, nnos, 1, 6, 8, 21, 12]
+        nbfpg = 9
+        nbpg(1:nbfpg) = [nno, nnos, 1, 6, 6, 8, 21, 12, 29]
         fapg(1) = 'NOEU'
         fapg(2) = 'NOEU_S'
         fapg(3) = 'FPG1'
         fapg(4) = 'FPG6'
-        fapg(5) = 'FPG8'
-        fapg(6) = 'FPG21'
-        fapg(7) = 'FPG6NOS'
+        fapg(5) = 'FPG6B'
+        fapg(6) = 'FPG8'
+        fapg(7) = 'FPG21'
+        fapg(8) = 'FPG6NOS'
+        fapg(9) = 'FPG29'
 
     case ('P21')
-        nbfpg = 7
-        nbpg(1:nbfpg) = [nno, nnos, 1, 6, 8, 21, 12]
+        nbfpg = 9
+        nbpg(1:nbfpg) = [nno, nnos, 1, 6, 6, 8, 21, 12, 29]
         fapg(1) = 'NOEU'
         fapg(2) = 'NOEU_S'
         fapg(3) = 'FPG1'
         fapg(4) = 'FPG6'
-        fapg(5) = 'FPG8'
-        fapg(6) = 'FPG21'
-        fapg(7) = 'FPG6NOS'
+        fapg(5) = 'FPG6B'
+        fapg(6) = 'FPG8'
+        fapg(7) = 'FPG21'
+        fapg(8) = 'FPG6NOS'
+        fapg(9) = 'FPG29'
 
     case ('PY5')
-        nbfpg = 7
-        nbpg(1:nbfpg) = [nno, nnos, 1, 5, 6, 10, 10]
+        nbfpg = 8
+        nbpg(1:nbfpg) = [nno, nnos, 1, 5, 6, 10, 10, 23]
         fapg(1) = 'NOEU'
         fapg(2) = 'NOEU_S'
         fapg(3) = 'FPG1'
@@ -217,10 +224,11 @@ subroutine elraca(elrefz, &
         fapg(5) = 'FPG6'
         fapg(6) = 'FPG10'
         fapg(7) = 'FPG5NOS'
+        fapg(8) = 'FPG23'
 
     case ('P13')
-        nbfpg = 7
-        nbpg(1:nbfpg) = [nno, nnos, 1, 5, 6, 10, 10]
+        nbfpg = 8
+        nbpg(1:nbfpg) = [nno, nnos, 1, 5, 6, 10, 10, 23]
         fapg(1) = 'NOEU'
         fapg(2) = 'NOEU_S'
         fapg(3) = 'FPG1'
@@ -228,16 +236,19 @@ subroutine elraca(elrefz, &
         fapg(5) = 'FPG6'
         fapg(6) = 'FPG10'
         fapg(7) = 'FPG5NOS'
+        fapg(8) = 'FPG23'
 
     case ('P19')
-        nbfpg = 6
-        nbpg(1:nbfpg) = [nno, nnos, 1, 5, 6, 10]
+        nbfpg = 8
+        nbpg(1:nbfpg) = [nno, nnos, 1, 5, 6, 10, 10, 23]
         fapg(1) = 'NOEU'
         fapg(2) = 'NOEU_S'
         fapg(3) = 'FPG1'
         fapg(4) = 'FPG5'
         fapg(5) = 'FPG6'
-        fapg(6) = 'FPG5NOS'
+        fapg(6) = 'FPG10'
+        fapg(7) = 'FPG5NOS'
+        fapg(8) = 'FPG23'
 
     case ('TR3')
         nbfpg = 13

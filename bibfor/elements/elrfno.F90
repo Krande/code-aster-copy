@@ -39,7 +39,7 @@ subroutine elrfno(elrefz, nno, nnos, ndim, nodeCoor, cellVolu)
 ! In  elrefa           : name of geometric support
 ! Out ndim             : topological dimension (0/1/2/3)
 ! Out nno              : number of nodes
-! Out nnos             : number of middle nodes
+! Out nnos             : number of geometric vertex nodes
 ! Out nodeCoor         : coordinates of node of geometric support in parametric space
 ! Out cellVolu         : volume of geometric support in parametric space
 !
@@ -261,7 +261,7 @@ subroutine elrfno(elrefz, nno, nnos, ndim, nodeCoor, cellVolu)
 
     case ('P19')
         nno_ = 19
-        nnos_ = 6
+        nnos_ = 5
         ndim_ = 3
         if (present(nodeCoor)) then
             nodeCoor(1, 1:5) = [+1.d0, 0.d0, -1.d0, 0.d0, 0.d0]

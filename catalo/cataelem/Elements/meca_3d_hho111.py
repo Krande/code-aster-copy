@@ -652,3 +652,39 @@ class MECA3DT15_HHO111(MECA3DH27_HHO111):
             mater=("RIGI", "FPG1", "MTGA", "MASS"),
         ),
     )
+
+
+class MECA3DP21_HHO111(MECA3DH27_HHO111):
+    """Please document this element"""
+
+    meshType = MT.PENTA21
+    nodes = (
+        SetOfNodes("EN1", (16, 17, 18, 19, 20)),
+        SetOfNodes("EN2", (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)),
+        SetOfNodes("EN3", (21,)),
+    )
+    elrefe = (
+        ElrefeLoc(
+            MT.P21,
+            gauss=("RIGI=FPG6B", "FPG1=FPG1", "MTGA=FPG6B", "MASS=FPG6B"),
+            mater=("RIGI", "FPG1", "MTGA", "MASS"),
+        ),
+    )
+
+
+class MECA3DP19_HHO111(MECA3DH27_HHO111):
+    """Please document this element"""
+
+    meshType = MT.PYRAM19
+    nodes = (
+        SetOfNodes("EN1", (14, 15, 16, 17, 18)),
+        SetOfNodes("EN2", (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13)),
+        SetOfNodes("EN3", (19,)),
+    )
+    elrefe = (
+        ElrefeLoc(
+            MT.P19,
+            gauss=("RIGI=FPG5", "FPG1=FPG1", "MTGA=FPG5", "MASS=FPG5"),
+            mater=("RIGI", "FPG1", "MTGA", "MASS"),
+        ),
+    )

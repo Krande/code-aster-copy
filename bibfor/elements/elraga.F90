@@ -280,44 +280,55 @@ subroutine elraga(elrefz, fapz, ndim, nbpg, coopg, poipg)
     else if (elrefa .eq. 'PE6' .or. elrefa .eq. 'P15' .or. elrefa .eq. 'P18' .or. &
              elrefa .eq. 'P21') then
         if (fapg .eq. 'FPG6') then
+! --------- FORMULE A 4 * 2 POINTS (CF TOUZOT PAGE 297) -> ORDRE 2
+! --------- FORMULE DE GAUSS - 2 POINTS DE GAUSS  EN X (ORDRE 3)
             npx = 2
-            npyz = 3
-            a(1) = -rac_1div3
+            a(1) = rac_1div3
             a(2) = -a(1)
+            h(1) = un
+            h(2) = un
+
+! --------- FORMULE DE HAMMER - 3 POINTS DE HAMMER EN Y Z (ORDRE 2 EN Y Z)
+            npyz = 3
             aty(1) = undemi
             aty(2) = zero
             aty(3) = undemi
             atz(1) = undemi
             atz(2) = undemi
             atz(3) = zero
-            h(1) = un
-            h(2) = un
+
             ht(1) = un/6.d0
             ht(2) = ht(1)
             ht(3) = ht(1)
 
         else if (fapg .eq. 'FPG6B') then
+! --------- FORMULE A 4 * 2 POINTS (CF TOUZOT PAGE 297) -> ORDRE 2
+! --------- FORMULE DE GAUSS - 2 POINTS DE GAUSS  EN X (ORDRE 3)
             npx = 2
-            npyz = 3
-            a(1) = -rac_1div3
+            a(1) = rac_1div3
             a(2) = -a(1)
+
+            h(1) = un
+            h(2) = un
+
+! --------- FORMULE DE HAMMER - 3 POINTS DE HAMMER EN Y Z (ORDRE 2 EN Y Z)
+            npyz = 3
             aty(1) = un/6.d0
             aty(2) = deux/3.d0
             aty(3) = un/6.d0
             atz(1) = un/6.d0
             atz(2) = un/6.d0
             atz(3) = deux/3.d0
-            h(1) = un
-            h(2) = un
+
             ht(1) = un/6.d0
             ht(2) = ht(1)
             ht(3) = ht(1)
 
         else if (fapg .eq. 'FPG8') then
-! --------- FORMULE A 4 * 2 POINTS (CF TOUZOT PAGE 297)
+! --------- FORMULE A 4 * 2 POINTS (CF TOUZOT PAGE 297) -> ORDRE 3
 ! --------- FORMULE DE GAUSS - 2 POINTS DE GAUSS  EN X (ORDRE 3)
             npx = 2
-            a(1) = -rac_1div3
+            a(1) = rac_1div3
             a(2) = -a(1)
             h(1) = un
             h(2) = un
@@ -372,6 +383,133 @@ subroutine elraga(elrefz, fapz, ndim, nbpg, coopg, poipg)
             ht(6) = ht(5)
             ht(7) = ht(5)
 
+        else if (fapg .eq. 'FPG29') then
+            ! ORDRE 6
+            ! x = zeta
+            ! y = (xi + 1) / 2
+            ! z = (eta + 1) / 2
+            ! h = weight / 4
+
+            hpg(1) = 0.027191062410231d0
+            hpg(2) = 0.027191062410231d0
+            hpg(3) = 0.027191062410231d0
+            hpg(4) = 0.040636041641220d0
+            hpg(5) = 0.040636041641220d0
+            hpg(6) = 0.040636041641220d0
+            hpg(7) = 0.040636041641220d0
+            hpg(8) = 0.040636041641220d0
+            hpg(9) = 0.040636041641220d0
+            hpg(10) = 0.050275140937507d0
+            hpg(11) = 0.011774414962347d0
+            hpg(12) = 0.011774414962347d0
+            hpg(13) = 0.011774414962347d0
+            hpg(14) = 0.041951149272741d0
+            hpg(15) = 0.041951149272741d0
+            hpg(16) = 0.041951149272741d0
+            hpg(17) = 0.041951149272741d0
+            hpg(18) = 0.041951149272741d0
+            hpg(19) = 0.041951149272741d0
+            hpg(20) = 0.050275140937507d0
+            hpg(21) = 0.011774414962347d0
+            hpg(22) = 0.011774414962347d0
+            hpg(23) = 0.011774414962347d0
+            hpg(24) = 0.041951149272741d0
+            hpg(25) = 0.041951149272741d0
+            hpg(26) = 0.041951149272741d0
+            hpg(27) = 0.041951149272741d0
+            hpg(28) = 0.041951149272741d0
+            hpg(29) = 0.041951149272741d0
+
+            xpg(1) = 0.000000000000000d0
+            xpg(2) = 0.000000000000000d0
+            xpg(3) = 0.000000000000000d0
+            xpg(4) = 0.000000000000000d0
+            xpg(5) = 0.000000000000000d0
+            xpg(6) = 0.000000000000000d0
+            xpg(7) = 0.000000000000000d0
+            xpg(8) = 0.000000000000000d0
+            xpg(9) = 0.000000000000000d0
+            xpg(10) = 0.936241512371697d0
+            xpg(11) = 0.948681147283254d0
+            xpg(12) = 0.948681147283254d0
+            xpg(13) = 0.948681147283254d0
+            xpg(14) = 0.600638052820557d0
+            xpg(15) = 0.600638052820557d0
+            xpg(16) = 0.600638052820557d0
+            xpg(17) = 0.600638052820557d0
+            xpg(18) = 0.600638052820557d0
+            xpg(19) = 0.600638052820557d0
+            xpg(20) = -0.936241512371697d0
+            xpg(21) = -0.948681147283254d0
+            xpg(22) = -0.948681147283254d0
+            xpg(23) = -0.948681147283254d0
+            xpg(24) = -0.600638052820557d0
+            xpg(25) = -0.600638052820557d0
+            xpg(26) = -0.600638052820557d0
+            xpg(27) = -0.600638052820557d0
+            xpg(28) = -0.600638052820557d0
+            xpg(29) = -0.600638052820557d0
+
+            ypg(1) = 0.895512822481133d0
+            ypg(2) = 0.052243588759434d0
+            ypg(3) = 0.052243588759434d0
+            ypg(4) = 0.198304865473555d0
+            ypg(5) = 0.198304865473555d0
+            ypg(6) = 0.270635256143164d0
+            ypg(7) = 0.531059878383280d0
+            ypg(8) = 0.531059878383280d0
+            ypg(9) = 0.270635256143164d0
+            ypg(10) = 0.333333333333333d0
+            ypg(11) = 0.841699897299232d0
+            ypg(12) = 0.079150051350384d0
+            ypg(13) = 0.079150051350384d0
+            ypg(14) = 0.054831294873304d0
+            ypg(15) = 0.054831294873304d0
+            ypg(16) = 0.308513201856883d0
+            ypg(17) = 0.636655503269814d0
+            ypg(18) = 0.636655503269814d0
+            ypg(19) = 0.308513201856883d0
+            ypg(20) = 0.333333333333333d0
+            ypg(21) = 0.841699897299232d0
+            ypg(22) = 0.079150051350384d0
+            ypg(23) = 0.079150051350384d0
+            ypg(24) = 0.054831294873304d0
+            ypg(25) = 0.054831294873304d0
+            ypg(26) = 0.308513201856883d0
+            ypg(27) = 0.636655503269814d0
+            ypg(28) = 0.636655503269814d0
+            ypg(29) = 0.308513201856883d0
+
+            zpg(1) = 0.052243588759434d0
+            zpg(2) = 0.895512822481133d0
+            zpg(3) = 0.052243588759434d0
+            zpg(4) = 0.270635256143164d0
+            zpg(5) = 0.531059878383280d0
+            zpg(6) = 0.531059878383280d0
+            zpg(7) = 0.270635256143164d0
+            zpg(8) = 0.198304865473555d0
+            zpg(9) = 0.198304865473555d0
+            zpg(10) = 0.333333333333333d0
+            zpg(11) = 0.079150051350384d0
+            zpg(12) = 0.841699897299232d0
+            zpg(13) = 0.079150051350384d0
+            zpg(14) = 0.308513201856883d0
+            zpg(15) = 0.636655503269814d0
+            zpg(16) = 0.636655503269814d0
+            zpg(17) = 0.308513201856883d0
+            zpg(18) = 0.054831294873304d0
+            zpg(19) = 0.054831294873304d0
+            zpg(20) = 0.333333333333333d0
+            zpg(21) = 0.079150051350384d0
+            zpg(22) = 0.841699897299232d0
+            zpg(23) = 0.079150051350384d0
+            zpg(24) = 0.308513201856883d0
+            zpg(25) = 0.636655503269814d0
+            zpg(26) = 0.636655503269814d0
+            zpg(27) = 0.308513201856883d0
+            zpg(28) = 0.054831294873304d0
+            zpg(29) = 0.054831294873304d0
+
         else if (fapg .eq. 'FPG6NOS') then
 ! --------- POUR LES POINTS DE GAUSS
             npx = 2
@@ -400,16 +538,19 @@ subroutine elraga(elrefz, fapz, ndim, nbpg, coopg, poipg)
             ASSERT(ASTER_FALSE)
 
         end if
-        npi = 0
-        do ix = 1, npx
-            do iy = 1, npyz
-                npi = npi+1
-                xpg(npi) = a(ix)
-                ypg(npi) = aty(iy)
-                zpg(npi) = atz(iy)
-                hpg(npi) = h(ix)*ht(iy)
+
+        if (fapg .ne. 'FPG29') then
+            npi = 0
+            do ix = 1, npx
+                do iy = 1, npyz
+                    npi = npi+1
+                    xpg(npi) = a(ix)
+                    ypg(npi) = aty(iy)
+                    zpg(npi) = atz(iy)
+                    hpg(npi) = h(ix)*ht(iy)
+                end do
             end do
-        end do
+        end if
 
     else if (elrefa .eq. 'PE7') then
         if (fapg .eq. 'LOB5') then
@@ -827,10 +968,12 @@ subroutine elraga(elrefz, fapz, ndim, nbpg, coopg, poipg)
             zpg(3) = 0.3223841495782137d0
             hpg(3) = 0.07088305859288367d0
 
-            xpg(4) = -0.3252907781991163d0
-            ypg(4) = 0.3252907781991163d0
-            zpg(4) = 0.3223841495782137d0
-            hpg(4) = 0.07088305859288367d0
+        else if (fapg .eq. 'FPG23') then
+            ! ORDRE 6
+            ! x = (xi - eta) / 2
+            ! y = (xi + eta) / 2
+            ! z = (zeta + 1) / 2
+            ! h = weight / 4
 
             xpg(5) = 0.3252907781991163d0
             ypg(5) = 0.3252907781991163d0

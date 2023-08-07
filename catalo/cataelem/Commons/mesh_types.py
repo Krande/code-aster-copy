@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 
 from cataelem.Tools.base_objects import MeshType, Elrefe, objects_from_context
 
-#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #      ATTENTION   ATTENTION   ATTENTION   ATTENTION   ATTENTION       %
 #                                                                      %
 #   IL NE FAUT PAS MODIFIER LE NOMBRE OU L'ORDRE DES TYPE_MAILLE       %
@@ -27,7 +27,7 @@ from cataelem.Tools.base_objects import MeshType, Elrefe, objects_from_context
 #   OP0150, LRMMMA, LRMMFA, LRMMDI, LRMHDF, LRCAME, IRMHDF, IRCMPR,    %
 #   IRCMPE, IRCAME                                                     %
 #                                                                      %
-#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 # ------------------------------------------------------------
@@ -294,9 +294,11 @@ PE6.addLocation("NOEU", 6)
 PE6.addLocation("NOEU_S", 6)
 PE6.addLocation("FPG1", 1)
 PE6.addLocation("FPG6", 6)
+PE6.addLocation("FPG6B", 6)
 PE6.addLocation("FPG6NOS", 12)
 PE6.addLocation("FPG8", 8)
 PE6.addLocation("FPG21", 21)
+PE6.addLocation("FPG29", 29)
 PE6.addLocation("XFEM72", 72)
 PE6.addLocation("XFEM240", 240)
 PE6.addLocation("XFEM480", 480)
@@ -313,9 +315,11 @@ P15.addLocation("NOEU", 15)
 P15.addLocation("NOEU_S", 6)
 P15.addLocation("FPG1", 1)
 P15.addLocation("FPG6", 6)
+P15.addLocation("FPG6B", 6)
 P15.addLocation("FPG6NOS", 12)
 P15.addLocation("FPG8", 8)
 P15.addLocation("FPG21", 21)
+P15.addLocation("FPG29", 29)
 P15.addLocation("XFEM240", 240)
 P15.addLocation("XFEM720", 720)
 P15.addLocation("XFEM1440", 1440)
@@ -330,9 +334,11 @@ P18.addLocation("NOEU", 18)
 P18.addLocation("NOEU_S", 6)
 P18.addLocation("FPG1", 1)
 P18.addLocation("FPG6", 6)
+P18.addLocation("FPG6B", 6)
 P18.addLocation("FPG6NOS", 12)
 P18.addLocation("FPG8", 8)
 P18.addLocation("FPG21", 21)
+P18.addLocation("FPG29", 29)
 PENTA18.addElrefe(P18)
 
 # ------------------------------------------------------------
@@ -345,6 +351,7 @@ PY5.addLocation("FPG1", 1)
 PY5.addLocation("FPG5", 5)
 PY5.addLocation("FPG6", 6)
 PY5.addLocation("FPG10", 10)
+PY5.addLocation("FPG23", 23)
 PY5.addLocation("XFEM180", 180)
 PY5.addLocation("XFEM360", 360)
 PY5.addLocation("XFEM540", 540)
@@ -362,6 +369,7 @@ P13.addLocation("FPG1", 1)
 P13.addLocation("FPG5", 5)
 P13.addLocation("FPG6", 6)
 P13.addLocation("FPG10", 10)
+P13.addLocation("FPG23", 23)
 P13.addLocation("XFEM180", 180)
 P13.addLocation("XFEM540", 540)
 P13.addLocation("XFEM1080", 1080)
@@ -447,9 +455,11 @@ P21.addLocation("NOEU", 18)
 P21.addLocation("NOEU_S", 6)
 P21.addLocation("FPG1", 1)
 P21.addLocation("FPG6", 6)
+P21.addLocation("FPG6B", 6)
 P21.addLocation("FPG6NOS", 12)
 P21.addLocation("FPG8", 8)
 P21.addLocation("FPG21", 21)
+P21.addLocation("FPG29", 29)
 PENTA21.addElrefe(P21)
 
 # ------------------------------------------------------------
@@ -462,6 +472,7 @@ P19.addLocation("FPG1", 1)
 P19.addLocation("FPG5", 5)
 P19.addLocation("FPG6", 6)
 P19.addLocation("FPG10", 10)
+P19.addLocation("FPG23", 23)
 P19.addLocation("XFEM180", 180)
 P19.addLocation("XFEM540", 540)
 P19.addLocation("XFEM1080", 1080)

@@ -40,7 +40,7 @@ subroutine elrfvf(elrefz, x, ff, nno_)
 ! In  elrefa           : name of geometric support
 ! In  x                : coordinates in parametric space to evaluate shape function
 ! Out ff               : value of shape functions
-! Out nno              : number of nodes of geoemtric support
+! Out nno              : number of nodes of geometric support
 !
 ! --------------------------------------------------------------------------------------------------
 !
