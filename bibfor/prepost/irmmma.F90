@@ -83,6 +83,7 @@ subroutine irmmma(fid, nomamd, nbCell, connex, point, &
 !       NUANOM : TABLEAU DE CORRESPONDANCE DES NOEUDS MED/ASTER.
 !                NUANOM(ITYP,J): NUMERO DANS ASTER DU J IEME NOEUD DE LA
 !                MAILLE DE TYPE ITYP DANS MED.
+!       NOSDFU : NOM STRUCTURE DONNÉE ?
 !
 !     SORTIE:
 !       NMATYP : NOMBRE DE MAILLES PAR TYPE
@@ -148,30 +149,35 @@ subroutine irmmma(fid, nomamd, nbCell, connex, point, &
     end if
 !
 !     ON TRAITE LE TETRA15 -> TETRA10, ON OUBLIE LES 5 DERNIERS NOEUDS
-!     ON L'IMPRIME COMME UN TETRA4
-!     PYRAM19 -> PYRAM13 et PENTA21 -> PENTA18
+!     ON L'IMPRIME COMME UN TETRA10
+!     PYRAM19 -> PYRAM13, PENTA21 -> PENTA18, HEXA9 -> HEXA8 et PENTA7 -> PENTA6
     lnocen = ASTER_FALSE
     if (nbCellType(MT_TETRA15) .ne. 0) then
         nbCellType(MT_TETRA10) = nbCellType(MT_TETRA10)+nbCellType(MT_TETRA15)
         nbCellType(MT_TETRA15) = 0
         lnocen = ASTER_TRUE
-    elseif (nbCellType(MT_PYRAM19) .ne. 0) then
+    end if
+    if (nbCellType(MT_PYRAM19) .ne. 0) then
         nbCellType(MT_PYRAM13) = nbCellType(MT_PYRAM13)+nbCellType(MT_PYRAM19)
         nbCellType(MT_PYRAM19) = 0
         lnocen = ASTER_TRUE
-    elseif (nbCellType(MT_PENTA21) .ne. 0) then
+    end if
+    if (nbCellType(MT_PENTA21) .ne. 0) then
         nbCellType(MT_PENTA18) = nbCellType(MT_PENTA18)+nbCellType(MT_PENTA21)
         nbCellType(MT_PENTA21) = 0
         lnocen = ASTER_TRUE
-    elseif (nbCellType(MT_HEXA9) .ne. 0) then
+    end if
+    if (nbCellType(MT_HEXA9) .ne. 0) then
         nbCellType(MT_HEXA8) = nbCellType(MT_HEXA8)+nbCellType(MT_HEXA9)
         nbCellType(MT_HEXA9) = 0
         lnocen = ASTER_TRUE
-    elseif (nbCellType(MT_PENTA7) .ne. 0) then
+    end if
+    if (nbCellType(MT_PENTA7) .ne. 0) then
         nbCellType(MT_PENTA6) = nbCellType(MT_PENTA6)+nbCellType(MT_PENTA7)
         nbCellType(MT_PENTA7) = 0
         lnocen = ASTER_TRUE
     end if
+!     LES NOEUDS N'ONT PAS ÉTE RETIRÉS DU MAILLAGE, ILS SONT IMPRIMÉS AVEC IRMMNO
     if (lnocen) then
         call utmess('I', 'PREPOST_86')
     end if
@@ -201,6 +207,7 @@ subroutine irmmma(fid, nomamd, nbCell, connex, point, &
                         nbCellType(iCellType), jnumma(iCellType))
             call wkvect('&&'//nompro//'.CNX.'//nomtyp(iCellType), 'V V I', &
                         nnotyp(iCellType)*nbCellType(iCellType), jcnxma(iCellType))
+            ! nnotyp(iCellType) ASSOCIE MOINS DE NOEUDS AUX ELEMENTS NON SUPPORTES PAR MED
         end if
     end do
 !

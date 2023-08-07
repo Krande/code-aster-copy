@@ -107,6 +107,8 @@ subroutine ircame(ifi, nochmd, chanom, typech, modele, &
 !       NBENEC : NOMBRE D'ENTITES A ECRIRE (O, SI TOUTES)
 !       LIENEC : LISTE DES ENTITES A ECRIRE SI EXTRAIT
 !       SDCARM : CARA_ELEM (UTILE POUR LES SOUS-POINTS)
+!       CARAEL : NOM MODELE CARA ELEM
+!       LFICHUNIQ : LOGICAL FICHIER UNIQUE
 ! In  field_type       : type of field (symbolic name in result datastructure)
 !     SORTIES:
 !       CODRET : CODE DE RETOUR (0 : PAS DE PB, NON NUL SI PB)

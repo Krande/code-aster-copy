@@ -81,6 +81,8 @@ subroutine irmhdf(ifi, ndim, nbnoeu, coordo, nbmail, &
 !       NOMMAI : VECTEUR NOMS DES MAILLES
 !       NOMNOE : VECTEUR NOMS DES NOEUDS
 !       INFMED : NIVEAU DES INFORMATIONS A IMPRIMER
+!       LFICHUNIQ: ASTER LOGICAL, FICHIER UNIQUE
+!       NOSDFU   : NOM STRUCTURE DONNEE
 !
 ! --------------------------------------------------------------------------------------------------
 !

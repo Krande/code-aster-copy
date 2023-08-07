@@ -256,12 +256,32 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato, &
         !
         laux = adsd+4*ima+1
         nbpg = zi(laux)
+        ! Les types de mailles ont été modifiés avant pour les cas particuliers
+        ! NE TIENT PAS COMPTE DES CAS PARTICULIER DE IRCMPR (PENTA21, HEXA9, ..)
         nbsp = zi(laux+1)
         if (typech(1:4) .eq. 'ELNO') then
             ! For HEXA9 (COQUE_SOLIDE element)
             if (nbpg .eq. 9) then
                 if (typmai(ima) .eq. MT_HEXA8) then
                     nbpg = 8
+                end if
+            end if
+            ! For PENTA21
+            if (nbpg .eq. 21) then
+                if (typmai(ima) .eq. MT_PENTA18) then
+                    nbpg = 18
+                end if
+            end if
+            ! For PYRAM19
+            if (nbpg .eq. 19) then
+                if (typmai(ima) .eq. MT_PYRAM13) then
+                    nbpg = 13
+                end if
+            end if
+            ! For TETRA15
+            if (nbpg .eq. 15) then
+                if (typmai(ima) .eq. MT_TETRA10) then
+                    nbpg = 10
                 end if
             end if
         end if

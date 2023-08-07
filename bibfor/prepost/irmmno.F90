@@ -30,6 +30,7 @@ subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo, &
 !       NBNOEU : NOMBRE DE NOEUDS DU MAILLAGE
 !       COORDO : VECTEUR DES COORDONNEES DES NOEUDS
 !       NOMNOE : VECTEUR NOMS DES NOEUDS
+!       NOSDFU : NOM STRUCTURE DONNEE
 !-----------------------------------------------------------------------
 !
     implicit none

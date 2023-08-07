@@ -61,6 +61,7 @@ subroutine irmfac(keywfIocc, fileFormat, fileUnit, fileVersion, modelIn, &
 ! In  fileUnit         : index of file (logical unit)
 ! In  fileVersion      : version of file (for IDEaS and GMSH)
 ! In  modelIn          : name of model
+! In  lfichUniq        : aster logical, is unique file
 !
 ! --------------------------------------------------------------------------------------------------
 !

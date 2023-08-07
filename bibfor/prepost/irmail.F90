@@ -16,21 +16,24 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine irmail(form, ifi, versio, noma, lmod, nomo, infmai, formar, &
-                  lfichUniq, nosdfu)
+subroutine irmail(form, ifi, versio, noma, lmod, &
+                  nomo, infmai, formar, lfichUniq, nosdfu)
 !
     implicit none
 !
 !     BUT: ECRITURE DU MAILLAGE AU FORMAT RESULTAT, IDEAS, ENSIGHT, MED,
 !     ENTREE:
-!        FORM  : FORMAT DES IMPRESSIONS: IDEAS, ENSIGHT, ...
-!        IFI   : UNITE LOGIQUE D'IMPRESSION
-!        VERSIO: VERSION IDEAS 4 OU 5 PAR DEFAUT 5
-!        NOMA  : NOM UTILISATEUR DU MAILLAGE A ECRIRE
-!        LMOD  : LOGIQUE INDIQUANT SI IMPRESSION MODELE OU MAILLAGE
+!        FORM     : FORMAT DES IMPRESSIONS: IDEAS, ENSIGHT, ...
+!        IFI      : UNITE LOGIQUE D'IMPRESSION
+!        VERSIO   : VERSION IDEAS 4 OU 5 PAR DEFAUT 5
+!        NOMA     : NOM UTILISATEUR DU MAILLAGE A ECRIRE
+!        LMOD     : LOGIQUE INDIQUANT SI IMPRESSION MODELE OU MAILLAGE
 !                 .TRUE. MODELE
-!        NOMO  : NOM UTILISATEUR DU MODELE ' ' SI SEULEMENT MAILLAGE
-!        INFMAI: POUR LE FORMAT MED, NIVEAU DES INFORMATIONS A IMPRIMER
+!        NOMO     : NOM UTILISATEUR DU MODELE ' ' SI SEULEMENT MAILLAGE
+!        INFMAI   : POUR LE FORMAT MED, NIVEAU DES INFORMATIONS A IMPRIMER
+!        FORMAR   : FORMAT REEL OU COMPLEXE
+!        LFICHUNIQ: ASTER LOGICAL, FICHIER UNIQUE
+!        NOSDFU   : NOM STRUCTURE DONNEE
 !     ------------------------------------------------------------------
 #include "asterf_types.h"
 #include "jeveux.h"
