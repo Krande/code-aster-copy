@@ -151,7 +151,7 @@ subroutine dismma(questi, nomobz, repi, repkz, ierd)
             repk = 'NON'
         end if
 !
-        if (questi .eq. 'Z_QUASI_ZERO') then
+        if (repk == 'NON' .and. questi == 'Z_QUASI_ZERO') then
 !       ------------------------------------
             call tbliva(table, 0, ' ', [ibid], [0.d0], &
                         [c16b], k1bid, 'ABSO', [0.d0], 'X_MIN', &
@@ -169,7 +169,7 @@ subroutine dismma(questi, nomobz, repi, repkz, ierd)
                         [c16b], k1bid, 'ABSO', [0.d0], 'Y_MAX', &
                         k1bid, ibid, ymax, c16b, k1bid, &
                         ier)
-            if (max(abs(zmax), abs(zmin))/max(xmax-xmin, ymax-ymin) .lt. 1.e-8) then
+            if (max(abs(zmax), abs(zmin)) .lt. max(xmax-xmin, ymax-ymin)*1.e-8) then
                 repk = 'OUI'
             else
                 repk = 'NON'
@@ -205,14 +205,14 @@ subroutine dismma(questi, nomobz, repi, repkz, ierd)
         end do
 !
 !
-    else if ((questi .eq. 'EXI_TRIA3') .or. (questi .eq. 'EXI_TRIA6' &
-                                    ) .or. (questi .eq. 'EXI_QUAD4') .or. (questi .eq. 'EXI_QUAD8' &
-                                     ) .or. (questi .eq. 'EXI_QUAD9') .or. (questi .eq. 'EXI_SEG2' &
-                                     ) .or. (questi .eq. 'EXI_SEG3') .or. (questi .eq. 'EXI_HEXA8' &
-                                 ) .or. (questi .eq. 'EXI_HEXA20') .or. (questi .eq. 'EXI_HEXA27') &
+    else if ((questi .eq. 'EXI_TRIA3') .or. (questi .eq. 'EXI_TRIA6') &
+             .or. (questi .eq. 'EXI_QUAD4') .or. &
+             (questi .eq. 'EXI_QUAD8') .or. (questi .eq. 'EXI_QUAD9') &
+             .or. (questi .eq. 'EXI_SEG2') .or. (questi .eq. 'EXI_SEG3') .or. &
+             (questi .eq. 'EXI_HEXA8') .or. (questi .eq. 'EXI_HEXA20') &
+             .or. (questi .eq. 'EXI_HEXA27') &
              .or. (questi .eq. 'EXI_PENTA6') .or. (questi .eq. 'EXI_PENTA15') &
-             .or. (questi .eq. 'EXI_TETRA4') .or. (questi .eq. 'EXI_TETRA10') &
-             .or. (questi .eq. 'EXI_PYRAM5') .or. (questi .eq. 'EXI_PYRAM13') &
+             .or. (questi .eq. 'EXI_TETRA4') .or. (questi .eq. 'EXI_PYRAM13') &
              .or. (questi .eq. 'EXI_POI1')) then
 !     ----------------------------------------
         typma = 'XXXX'
