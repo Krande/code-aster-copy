@@ -825,7 +825,7 @@ contains
         elseif (cell_type == MT_PYRAM5 .or. cell_type == MT_PYRAM13 .or. &
                 cell_type == MT_PYRAM19) then
             nb_face = 5
-            face_loc(1:4, 1) = [1, 2, 3, 4]
+            face_loc(1:4, 1) = [1, 4, 3, 2]
             face_loc(1:3, 2) = [1, 2, 5]
             face_loc(1:3, 3) = [2, 3, 5]
             face_loc(1:3, 4) = [3, 4, 5]
@@ -836,7 +836,7 @@ contains
             elseif (cell_type == MT_PYRAM13 .or. cell_type == MT_PYRAM19) then
                 face_type(1) = MT_QUAD8
                 face_type(2:5) = MT_TRIA6
-                face_loc(5:8, 1) = [6, 7, 8, 9]
+                face_loc(5:8, 1) = [9, 8, 7, 6]
                 face_loc(4:6, 2) = [6, 11, 10]
                 face_loc(4:6, 3) = [7, 12, 11]
                 face_loc(4:6, 4) = [8, 13, 12]

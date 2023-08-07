@@ -425,7 +425,7 @@ contains
 !
 ! ----- !!!! Attention l'ordre des faces doit etre le meme que celui du catalogue
 ! ----- Face 1 -> N14
-            nodes_faces(1:4, 1) = (/1, 2, 3, 4/)
+            nodes_faces(1:4, 1) = (/1, 4, 3, 2/)
             nbnodes_faces(1) = 4
             type_faces(1) = 'QUAD4'
 ! ----- Face 2 -> N15
@@ -462,7 +462,7 @@ contains
             type_faces(2) = 'QUAD4'
 ! ----- Face 3 -> N18
             nodes_faces(1:4, 3) = (/1, 4, 6, 3/)
-            nbnodes_faces(3) = 3
+            nbnodes_faces(3) = 4
             type_faces(3) = 'QUAD4'
 ! ----- Face 4 -> N19
             nodes_faces(1:3, 4) = (/1, 3, 2/)
