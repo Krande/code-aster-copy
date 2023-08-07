@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,11 +18,11 @@
 !
 module HHO_geometry_module
 !
-use HHO_type
+   use HHO_type
 !
-implicit none
+   implicit none
 !
-private
+   private
 #include "asterc/r8prem.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -48,13 +48,13 @@ contains
 !
 !===================================================================================================
 !
-    function barycenter(nodes, nbnodes) result(bar)
+   function barycenter(nodes, nbnodes) result(bar)
 !
-    implicit none
+      implicit none
 !
-        integer, intent(in)                             :: nbnodes
-        real(kind=8), dimension(3,nbnodes), intent(in)  :: nodes
-        real(kind=8), dimension(3)                      :: bar
+      integer, intent(in)                             :: nbnodes
+      real(kind=8), dimension(3, nbnodes), intent(in)  :: nodes
+      real(kind=8), dimension(3)                      :: bar
 !
 ! --------------------------------------------------------------------------------------------------
 !  In nodes        :: list of nodes
@@ -63,30 +63,30 @@ contains
 !  Out bar         :: barycenter of nodes
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: inode
+      integer :: inode
 ! --------------------------------------------------------------------------------------------------
 !
-        bar = 0.d0
+      bar = 0.d0
 !
-        do inode = 1, nbnodes
-            bar(1:3) = bar(1:3) + nodes(1:3, inode)
-        end do
+      do inode = 1, nbnodes
+         bar(1:3) = bar(1:3) + nodes(1:3, inode)
+      end do
 !
-        bar(1:3) = bar(1:3) / real(nbnodes, kind=8)
+      bar(1:3) = bar(1:3)/real(nbnodes, kind=8)
 !
-    end function
-!
-!===================================================================================================
+   end function
 !
 !===================================================================================================
 !
-    function prod_vec(v0, v1) result(v2)
+!===================================================================================================
 !
-    implicit none
+   function prod_vec(v0, v1) result(v2)
 !
-        real(kind=8), dimension(3), intent(in)  :: v0
-        real(kind=8), dimension(3), intent(in)  :: v1
-        real(kind=8), dimension(3)              :: v2
+      implicit none
+!
+      real(kind=8), dimension(3), intent(in)  :: v0
+      real(kind=8), dimension(3), intent(in)  :: v1
+      real(kind=8), dimension(3)              :: v2
 !
 ! --------------------------------------------------------------------------------------------------
 !  In v0        :: vector 0
@@ -94,25 +94,25 @@ contains
 !  Out v2       :: vector 2 = v0 x v1
 ! --------------------------------------------------------------------------------------------------
 !
-        v2 = 0.d0
+      v2 = 0.d0
 !
-        v2(1) = v0(2) * v1(3) - v0(3) * v1(2)
-        v2(2) = -(v0(1) * v1(3) - v0(3) * v1(1))
-        v2(3) = v0(1) * v1(2) - v0(2) * v1(1)
+      v2(1) = v0(2)*v1(3) - v0(3)*v1(2)
+      v2(2) = -(v0(1)*v1(3) - v0(3)*v1(1))
+      v2(3) = v0(1)*v1(2) - v0(2)*v1(1)
 !
-    end function
-!
-!===================================================================================================
+   end function
 !
 !===================================================================================================
 !
-    function well_oriented(v0, normal)
+!===================================================================================================
 !
-    implicit none
+   function well_oriented(v0, normal)
 !
-        real(kind=8), dimension(3), intent(in)  :: v0
-        real(kind=8), dimension(3), intent(in)  :: normal
-        aster_logical                           :: well_oriented
+      implicit none
+!
+      real(kind=8), dimension(3), intent(in)  :: v0
+      real(kind=8), dimension(3), intent(in)  :: normal
+      aster_logical                           :: well_oriented
 !
 ! --------------------------------------------------------------------------------------------------
 !  In v0        :: vector 0
@@ -120,27 +120,27 @@ contains
 !  Out logical  :: is well oriented
 ! --------------------------------------------------------------------------------------------------
 !
-        if(dot_product(v0,normal) .le. r8prem()) then
-            well_oriented = ASTER_FALSE
-        else
-            well_oriented = ASTER_TRUE
-        end if
+      if (dot_product(v0, normal) .le. r8prem()) then
+         well_oriented = ASTER_FALSE
+      else
+         well_oriented = ASTER_TRUE
+      end if
 !
-    end function
-!
-!===================================================================================================
+   end function
 !
 !===================================================================================================
 !
-    function hhoNormalFace2d(coorno, nbnodes, barycenter_face, barycenter_cell) result(normal)
+!===================================================================================================
 !
-    implicit none
+   function hhoNormalFace2d(coorno, nbnodes, barycenter_face, barycenter_cell) result(normal)
 !
-        real(kind=8), dimension(3,4), intent(in)            :: coorno
-        integer, intent(in)                                 :: nbnodes
-        real(kind=8), dimension(3), optional, intent(in)    :: barycenter_face
-        real(kind=8), dimension(3), optional, intent(in)    :: barycenter_cell
-        real(kind=8), dimension(3)                          :: normal
+      implicit none
+!
+      real(kind=8), dimension(3, 4), intent(in)            :: coorno
+      integer, intent(in)                                 :: nbnodes
+      real(kind=8), dimension(3), optional, intent(in)    :: barycenter_face
+      real(kind=8), dimension(3), optional, intent(in)    :: barycenter_cell
+      real(kind=8), dimension(3)                          :: normal
 !
 ! --------------------------------------------------------------------------------------------------
 !  In coorno             :: coordinates of the nodes
@@ -150,25 +150,25 @@ contains
 !  Out normal            :: outward normal
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8), dimension(3) :: v0, v1, vbar
+      real(kind=8), dimension(3) :: v0, v1, vbar
 !  -------------------------------------------------------------------------------------------------
-        normal = 0.d0
+      normal = 0.d0
 !
-        v0(1:3) = coorno(1:3,2) - coorno(1:3,1)
-        v1(1:3) = coorno(1:3,nbnodes) - coorno(1:3,1)
+      v0(1:3) = coorno(1:3, 2) - coorno(1:3, 1)
+      v1(1:3) = coorno(1:3, nbnodes) - coorno(1:3, 1)
 !
-        normal = prod_vec(v0, v1)
-        normal = normal / norm2(normal)
+      normal = prod_vec(v0, v1)
+      normal = normal/norm2(normal)
 !
 ! ---- Test normal
-        if(present(barycenter_cell)) then
-            vbar(1:3) = barycenter_face(1:3) - barycenter_cell(1:3)
-            if(.not.well_oriented(vbar, normal)) then
-                normal = -normal
-            end if
-        end if
+      if (present(barycenter_cell)) then
+         vbar(1:3) = barycenter_face(1:3) - barycenter_cell(1:3)
+         if (.not. well_oriented(vbar, normal)) then
+            normal = -normal
+         end if
+      end if
 !
-    end function
+   end function
 !
 !===================================================================================================
 !
@@ -176,12 +176,12 @@ contains
 !
    function hhoNormalFace1d(coorno, barycenter_face, barycenter_cell) result(normal)
 !
-    implicit none
+      implicit none
 !
-        real(kind=8), dimension(3,4), intent(in)            :: coorno
-        real(kind=8), dimension(3), optional, intent(in)    :: barycenter_face
-        real(kind=8), dimension(3), optional, intent(in)    :: barycenter_cell
-        real(kind=8), dimension(3)                          :: normal
+      real(kind=8), dimension(3, 4), intent(in)            :: coorno
+      real(kind=8), dimension(3), optional, intent(in)    :: barycenter_face
+      real(kind=8), dimension(3), optional, intent(in)    :: barycenter_cell
+      real(kind=8), dimension(3)                          :: normal
 !
 ! --------------------------------------------------------------------------------------------------
 !  In coorno             :: coordinates of the node
@@ -190,35 +190,35 @@ contains
 !  Out normal            :: outward normal
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8), dimension(3) :: tangente, vbar
+      real(kind=8), dimension(3) :: tangente, vbar
 ! --------------------------------------------------------------------------------------------------
 ! -- Normal to the face
-        tangente = coorno(1:3,2) - coorno(1:3,1)
+      tangente = coorno(1:3, 2) - coorno(1:3, 1)
 !
-        normal = (/-tangente(2), tangente(1), 0.d0/)
-        normal = -normal / norm2(normal)
+      normal = (/-tangente(2), tangente(1), 0.d0/)
+      normal = -normal/norm2(normal)
 !
 ! ---- Test normal
-        if(present(barycenter_cell)) then
-            vbar(1:3) = barycenter_face(1:3) - barycenter_cell(1:3)
-            if(.not.well_oriented(vbar, normal)) then
-                normal = -normal
-            end if
-        end if
+      if (present(barycenter_cell)) then
+         vbar(1:3) = barycenter_face(1:3) - barycenter_cell(1:3)
+         if (.not. well_oriented(vbar, normal)) then
+            normal = -normal
+         end if
+      end if
 !
-    end function
-!
-!===================================================================================================
+   end function
 !
 !===================================================================================================
 !
-    function hhoNormalFace(hhoFace, barycenter_cell) result(normal)
+!===================================================================================================
 !
-    implicit none
+   function hhoNormalFace(hhoFace, barycenter_cell) result(normal)
 !
-        type(HHO_Face), intent(in)                :: hhoFace
-        real(kind=8), dimension(3), intent(in)    :: barycenter_cell
-        real(kind=8), dimension(3)                :: normal
+      implicit none
+!
+      type(HHO_Face), intent(in)                :: hhoFace
+      real(kind=8), dimension(3), intent(in)    :: barycenter_cell
+      real(kind=8), dimension(3)                :: normal
 !
 ! --------------------------------------------------------------------------------------------------
 !  In HHO_Face           :: face HHO
@@ -228,31 +228,31 @@ contains
 ! --------------------------------------------------------------------------------------------------
 
 ! --------------------------------------------------------------------------------------------------
-        normal = 0.d0
+      normal = 0.d0
 !
-        if(hhoFace%typema(1:5) == 'QUAD4') then
-            normal = hhoNormalFace2d(hhoFace%coorno, 4, hhoFace%barycenter, barycenter_cell)
-        elseif(hhoFace%typema(1:5) == 'TRIA3') then
-            normal = hhoNormalFace2d(hhoFace%coorno, 3, hhoFace%barycenter, barycenter_cell)
-        elseif(hhoFace%typema(1:4) == 'SEG2') then
-            normal = hhoNormalFace1d(hhoFace%coorno, hhoFace%barycenter, barycenter_cell)
-        else
-            ASSERT(ASTER_FALSE)
-        end if
+      if (hhoFace%typema(1:5) == 'QUAD4') then
+         normal = hhoNormalFace2d(hhoFace%coorno, 4, hhoFace%barycenter, barycenter_cell)
+      elseif (hhoFace%typema(1:5) == 'TRIA3') then
+         normal = hhoNormalFace2d(hhoFace%coorno, 3, hhoFace%barycenter, barycenter_cell)
+      elseif (hhoFace%typema(1:4) == 'SEG2') then
+         normal = hhoNormalFace1d(hhoFace%coorno, hhoFace%barycenter, barycenter_cell)
+      else
+         ASSERT(ASTER_FALSE)
+      end if
 !
-    end function
-!
-!===================================================================================================
+   end function
 !
 !===================================================================================================
 !
-    function hhoNormalFace2(typma, nodes_coor) result(normal)
+!===================================================================================================
 !
-    implicit none
+   function hhoNormalFace2(typma, nodes_coor) result(normal)
 !
-        character(len=8), intent(in)                    :: typma
-        real(kind=8), dimension(3,4), intent(in)        :: nodes_coor
-        real(kind=8), dimension(3)                      :: normal
+      implicit none
+!
+      character(len=8), intent(in)                    :: typma
+      real(kind=8), dimension(3, 4), intent(in)        :: nodes_coor
+      real(kind=8), dimension(3)                      :: normal
 !
 ! --------------------------------------------------------------------------------------------------
 !  In typma              :: type of face
@@ -262,30 +262,30 @@ contains
 ! --------------------------------------------------------------------------------------------------
 
 ! --------------------------------------------------------------------------------------------------
-        normal = 0.d0
+      normal = 0.d0
 !
-        if(typma(1:5) == 'QUAD4') then
-            normal = hhoNormalFace2d(nodes_coor, 4)
-        elseif(typma(1:5) == 'TRIA3') then
-            normal = hhoNormalFace2d(nodes_coor, 3)
-        elseif(typma(1:4) == 'SEG2') then
-            normal = hhoNormalFace1d(nodes_coor)
-        else
-            ASSERT(ASTER_FALSE)
-        end if
+      if (typma(1:5) == 'QUAD4') then
+         normal = hhoNormalFace2d(nodes_coor, 4)
+      elseif (typma(1:5) == 'TRIA3') then
+         normal = hhoNormalFace2d(nodes_coor, 3)
+      elseif (typma(1:4) == 'SEG2') then
+         normal = hhoNormalFace1d(nodes_coor)
+      else
+         ASSERT(ASTER_FALSE)
+      end if
 !
-    end function
-!
-!===================================================================================================
+   end function
 !
 !===================================================================================================
 !
-    function hhoLocalBasisFace(hhoFace) result(axes)
+!===================================================================================================
 !
-    implicit none
+   function hhoLocalBasisFace(hhoFace) result(axes)
 !
-        type(HHO_Face), intent(in) :: hhoFace
-        real(kind=8), dimension(3,2) :: axes
+      implicit none
+!
+      type(HHO_Face), intent(in) :: hhoFace
+      real(kind=8), dimension(3, 2) :: axes
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - geometry
@@ -295,43 +295,43 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8), dimension(3) :: v0, v1
+      real(kind=8), dimension(3) :: v0, v1
 !
-        axes = 0.d0
+      axes = 0.d0
 !
-        if(hhoFace%ndim == 2) then
-            v0 = hhoFace%coorno(1:3,2) - hhoFace%coorno(1:3,1)
-            v1 = hhoFace%coorno(1:3,hhoFace%nbnodes) - hhoFace%coorno(1:3,1)
+      if (hhoFace%ndim == 2) then
+         v0 = hhoFace%coorno(1:3, 2) - hhoFace%coorno(1:3, 1)
+         v1 = hhoFace%coorno(1:3, hhoFace%nbnodes) - hhoFace%coorno(1:3, 1)
 !
-            v1 = v1 - (dot_product(v0,v1) * v0) / (dot_product(v0, v0))
+         v1 = v1 - (dot_product(v0, v1)*v0)/(dot_product(v0, v0))
 !
-            axes(1:3,1) = v0 / norm2(v0)
-            axes(1:3,2) = v1 / norm2(v1)
+         axes(1:3, 1) = v0/norm2(v0)
+         axes(1:3, 2) = v1/norm2(v1)
 !
-        elseif(hhoFace%ndim == 1) then
-            v0 = hhoFace%coorno(1:3,2) - hhoFace%coorno(1:3,1)
+      elseif (hhoFace%ndim == 1) then
+         v0 = hhoFace%coorno(1:3, 2) - hhoFace%coorno(1:3, 1)
 !
-            axes(1:3,1) = v0 / norm2(v0)
+         axes(1:3, 1) = v0/norm2(v0)
 !
-        else
-            ASSERT(ASTER_FALSE)
-        end if
+      else
+         ASSERT(ASTER_FALSE)
+      end if
 !
-    end function
-!
-!===================================================================================================
+   end function
 !
 !===================================================================================================
 !
-    function hhoFaceInitCoor(coorno, numnodes, nbnodes, ndimF) result(nodes_face)
+!===================================================================================================
 !
-    implicit none
+   function hhoFaceInitCoor(coorno, numnodes, nbnodes, ndimF) result(nodes_face)
 !
-        integer, intent(in)                         :: ndimF
-        real(kind=8), dimension(3,4), intent(in)    :: coorno
-        integer, dimension(4), intent(in)           :: numnodes
-        integer, intent(in)                         :: nbnodes
-        real(kind=8), dimension(3,4)                :: nodes_face
+      implicit none
+!
+      integer, intent(in)                         :: ndimF
+      real(kind=8), dimension(3, 4), intent(in)    :: coorno
+      integer, dimension(4), intent(in)           :: numnodes
+      integer, intent(in)                         :: nbnodes
+      real(kind=8), dimension(3, 4)                :: nodes_face
 !
 ! --------------------------------------------------------------------------------------------------
 !   We have to reorder the nodes of the face to use the same basis functions for a face
@@ -339,114 +339,114 @@ contains
 !  In HHO_Face           :: face HHO
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: ino, minnum, numsorted(4)
+      integer :: ino, minnum, numsorted(4)
 !
-        numsorted(:) = 0
+      numsorted(:) = 0
 !
-        if (ndimF == 1) then
-            ASSERT(nbnodes == 2)
+      if (ndimF == 1) then
+         ASSERT(nbnodes == 2)
 !
-            if (numnodes(1) < numnodes(2)) then
-                numsorted(1:2) = (/1, 2 /)
-            else if (numnodes(2) < numnodes(1)) then
-                numsorted(1:2) = (/2, 1 /)
-            else
-                ASSERT(ASTER_FALSE)
-            end if
-        else if (ndimF == 2) then
-            minnum = minloc(numnodes(1:nbnodes), 1)
-!
-            if (nbnodes == 3) then
-                if (minnum == 1) then
-                    if (numnodes(2) < numnodes(3)) then
-                        numsorted(1:3) = (/1, 2, 3 /)
-                    else if (numnodes(3) < numnodes(2)) then
-                        numsorted(1:3) = (/1, 3, 2 /)
-                    else
-                        ASSERT(ASTER_FALSE)
-                    end if
-                elseif (minnum == 2) then
-                    if (numnodes(1) < numnodes(3)) then
-                        numsorted(1:3) = (/2, 1, 3 /)
-                    else if (numnodes(3) < numnodes(1)) then
-                        numsorted(1:3) = (/2, 3, 1 /)
-                    else
-                        ASSERT(ASTER_FALSE)
-                    end if
-                elseif (minnum == 3) then
-                    if (numnodes(1) < numnodes(2)) then
-                        numsorted(1:3) = (/3, 1, 2 /)
-                    else if (numnodes(2) < numnodes(1)) then
-                        numsorted(1:3) = (/3, 2, 1 /)
-                    else
-                        ASSERT(ASTER_FALSE)
-                    end if
-                else
-                    ASSERT(ASTER_FALSE)
-                end if
-            else if (nbnodes == 4) then
-                if (minnum == 1) then
-                    if (numnodes(2) < numnodes(4)) then
-                        numsorted(1:4) = (/1, 2, 3, 4 /)
-                    else if (numnodes(4) < numnodes(2)) then
-                        numsorted(1:4) = (/1, 4, 3, 2 /)
-                    else
-                        ASSERT(ASTER_FALSE)
-                    end if
-                elseif (minnum == 2) then
-                    if (numnodes(1) < numnodes(3)) then
-                        numsorted(1:4) = (/2, 1, 4, 3 /)
-                    else if (numnodes(3) < numnodes(1)) then
-                        numsorted(1:4) = (/2, 3, 4, 1 /)
-                    else
-                        ASSERT(ASTER_FALSE)
-                    end if
-                elseif (minnum == 3) then
-                    if (numnodes(2) < numnodes(4)) then
-                        numsorted(1:4) = (/3, 2, 1, 4 /)
-                    else if (numnodes(4) < numnodes(2)) then
-                        numsorted(1:4) = (/3, 4, 1, 2 /)
-                    else
-                        ASSERT(ASTER_FALSE)
-                    end if
-                elseif (minnum == 4) then
-                    if (numnodes(1) < numnodes(3)) then
-                        numsorted(1:4) = (/4, 1, 2, 3 /)
-                    else if (numnodes(3) < numnodes(1)) then
-                        numsorted(1:4) = (/4, 3, 2, 1 /)
-                    else
-                        ASSERT(ASTER_FALSE)
-                    end if
-                else
-                    ASSERT(ASTER_FALSE)
-                end if
-            else
-                ASSERT(ASTER_FALSE)
-            end if
-!
-        else
+         if (numnodes(1) < numnodes(2)) then
+            numsorted(1:2) = (/1, 2/)
+         else if (numnodes(2) < numnodes(1)) then
+            numsorted(1:2) = (/2, 1/)
+         else
             ASSERT(ASTER_FALSE)
-        end if
+         end if
+      else if (ndimF == 2) then
+         minnum = minloc(numnodes(1:nbnodes), 1)
+!
+         if (nbnodes == 3) then
+            if (minnum == 1) then
+               if (numnodes(2) < numnodes(3)) then
+                  numsorted(1:3) = (/1, 2, 3/)
+               else if (numnodes(3) < numnodes(2)) then
+                  numsorted(1:3) = (/1, 3, 2/)
+               else
+                  ASSERT(ASTER_FALSE)
+               end if
+            elseif (minnum == 2) then
+               if (numnodes(1) < numnodes(3)) then
+                  numsorted(1:3) = (/2, 1, 3/)
+               else if (numnodes(3) < numnodes(1)) then
+                  numsorted(1:3) = (/2, 3, 1/)
+               else
+                  ASSERT(ASTER_FALSE)
+               end if
+            elseif (minnum == 3) then
+               if (numnodes(1) < numnodes(2)) then
+                  numsorted(1:3) = (/3, 1, 2/)
+               else if (numnodes(2) < numnodes(1)) then
+                  numsorted(1:3) = (/3, 2, 1/)
+               else
+                  ASSERT(ASTER_FALSE)
+               end if
+            else
+               ASSERT(ASTER_FALSE)
+            end if
+         else if (nbnodes == 4) then
+            if (minnum == 1) then
+               if (numnodes(2) < numnodes(4)) then
+                  numsorted(1:4) = (/1, 2, 3, 4/)
+               else if (numnodes(4) < numnodes(2)) then
+                  numsorted(1:4) = (/1, 4, 3, 2/)
+               else
+                  ASSERT(ASTER_FALSE)
+               end if
+            elseif (minnum == 2) then
+               if (numnodes(1) < numnodes(3)) then
+                  numsorted(1:4) = (/2, 1, 4, 3/)
+               else if (numnodes(3) < numnodes(1)) then
+                  numsorted(1:4) = (/2, 3, 4, 1/)
+               else
+                  ASSERT(ASTER_FALSE)
+               end if
+            elseif (minnum == 3) then
+               if (numnodes(2) < numnodes(4)) then
+                  numsorted(1:4) = (/3, 2, 1, 4/)
+               else if (numnodes(4) < numnodes(2)) then
+                  numsorted(1:4) = (/3, 4, 1, 2/)
+               else
+                  ASSERT(ASTER_FALSE)
+               end if
+            elseif (minnum == 4) then
+               if (numnodes(1) < numnodes(3)) then
+                  numsorted(1:4) = (/4, 1, 2, 3/)
+               else if (numnodes(3) < numnodes(1)) then
+                  numsorted(1:4) = (/4, 3, 2, 1/)
+               else
+                  ASSERT(ASTER_FALSE)
+               end if
+            else
+               ASSERT(ASTER_FALSE)
+            end if
+         else
+            ASSERT(ASTER_FALSE)
+         end if
+!
+      else
+         ASSERT(ASTER_FALSE)
+      end if
 !
 ! --- Copy the coordinates
-        nodes_face = 0.d0
-        do ino = 1, nbnodes
-            nodes_face(1:3,ino) = coorno(1:3,numsorted(ino))
-        end do
+      nodes_face = 0.d0
+      do ino = 1, nbnodes
+         nodes_face(1:3, ino) = coorno(1:3, numsorted(ino))
+      end do
 !
-    end function
-!
-!===================================================================================================
+   end function
 !
 !===================================================================================================
 !
-    subroutine hhoGeomBasis(typema, pt, basis)
+!===================================================================================================
 !
-    implicit none
+   subroutine hhoGeomBasis(typema, pt, basis)
 !
-        character(len=8), intent(in)  :: typema
-        real(kind=8), intent(in)      :: pt(3)
-        real(kind=8), intent(out)     :: basis(8)
+      implicit none
+!
+      character(len=8), intent(in)  :: typema
+      real(kind=8), intent(in)      :: pt(3)
+      real(kind=8), intent(out)     :: basis(8)
 !
 ! ---------------------------------------------------------------------------------
 !  HHO - geometrie
@@ -457,40 +457,40 @@ contains
 ! In basis  : evaluation of the basis at the point pt
 ! ---------------------------------------------------------------------------------
 !
-        basis = 0.d0
+      basis = 0.d0
 !
-        select case (typema)
-            case ('SE2')
-                call elrfvf('SE2', pt, basis)
-            case ('TRIA3')
-                call elrfvf('TR3', pt, basis)
-            case ('QUAD4')
-                call elrfvf('QU4', pt, basis)
-            case ('TETRA4')
-                call elrfvf('TE4', pt, basis)
-            case ('PYRAM5')
-                call elrfvf('PY5', pt, basis)
-            case ('PENTA6')
-                call elrfvf('PE6', pt, basis)
-            case ('HEXA8')
-                call elrfvf('HE8', pt, basis)
-            case default
-                ASSERT(ASTER_FALSE)
-        end select
+      select case (typema)
+      case ('SE2')
+         call elrfvf('SE2', pt, basis)
+      case ('TRIA3')
+         call elrfvf('TR3', pt, basis)
+      case ('QUAD4')
+         call elrfvf('QU4', pt, basis)
+      case ('TETRA4')
+         call elrfvf('TE4', pt, basis)
+      case ('PYRAM5')
+         call elrfvf('PY5', pt, basis)
+      case ('PENTA6')
+         call elrfvf('PE6', pt, basis)
+      case ('HEXA8')
+         call elrfvf('HE8', pt, basis)
+      case default
+         ASSERT(ASTER_FALSE)
+      end select
 !
-    end subroutine
-!
-!===================================================================================================
+   end subroutine
 !
 !===================================================================================================
 !
-    subroutine hhoGeomDerivBasis(typema, pt, dbasis)
+!===================================================================================================
 !
-    implicit none
+   subroutine hhoGeomDerivBasis(typema, pt, dbasis)
 !
-        character(len=8), intent(in)  :: typema
-        real(kind=8), intent(in)      :: pt(3)
-        real(kind=8), intent(out)     :: dbasis(3,8)
+      implicit none
+!
+      character(len=8), intent(in)  :: typema
+      real(kind=8), intent(in)      :: pt(3)
+      real(kind=8), intent(out)     :: dbasis(3, 8)
 !
 ! ---------------------------------------------------------------------------------
 !  HHO - geometrie
@@ -502,25 +502,25 @@ contains
 ! ---------------------------------------------------------------------------------
 !
 !
-        dbasis = 0.d0
+      dbasis = 0.d0
 !
-        select case (typema)
-            case ('SE2')
-                call elrfdf('SE2', pt, dbasis)
-            case ('TRIA3')
-                call elrfdf('TR3', pt, dbasis)
-            case ('QUAD4')
-                call elrfdf('QU4', pt, dbasis)
-            case ('TETRA4')
-                call elrfdf('TE4', pt, dbasis)
-            case ('PYRAM5')
-                call elrfdf('PY5', pt, dbasis)
-            case ('HEXA8')
-                call elrfdf('HE8', pt, dbasis)
-            case default
-                ASSERT(ASTER_FALSE)
-        end select
+      select case (typema)
+      case ('SE2')
+         call elrfdf('SE2', pt, dbasis)
+      case ('TRIA3')
+         call elrfdf('TR3', pt, dbasis)
+      case ('QUAD4')
+         call elrfdf('QU4', pt, dbasis)
+      case ('TETRA4')
+         call elrfdf('TE4', pt, dbasis)
+      case ('PYRAM5')
+         call elrfdf('PY5', pt, dbasis)
+      case ('HEXA8')
+         call elrfdf('HE8', pt, dbasis)
+      case default
+         ASSERT(ASTER_FALSE)
+      end select
 !
-    end subroutine
+   end subroutine
 !
 end module
