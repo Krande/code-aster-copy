@@ -28,6 +28,7 @@ subroutine calvci(nomci, nume_ddlz, nbchci, lchci, vpara, &
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
+#include "asterfort/celces.h"
 #include "asterfort/cnocns.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
@@ -97,6 +98,7 @@ subroutine calvci(nomci, nume_ddlz, nbchci, lchci, vpara, &
     character(len=16) :: nomp(4)
     character(len=19) :: vcine, charci, cnoimp, cnsimp, nume_equa
     character(len=24) :: vvale, valk(4)
+    character(len=24), parameter :: cesVale = '&&HHOMECA_VALS'
     integer, pointer :: afci(:) => null()
     integer, pointer :: cnsd(:) => null()
     character(len=8), pointer :: afck(:) => null()
@@ -106,6 +108,8 @@ subroutine calvci(nomci, nume_ddlz, nbchci, lchci, vpara, &
     real(kind=8), pointer :: vale(:) => null()
     integer, pointer :: deeq(:) => null()
     character(len=8), pointer :: typegd(:) => null()
+    integer :: jv_cesd, jv_cesl, jv_cesv
+
 !----------------------------------------------------------------------
 !                DEBUT DES INSTRUCTIONS
 !----------------------------------------------------------------------
@@ -162,6 +166,20 @@ subroutine calvci(nomci, nume_ddlz, nbchci, lchci, vpara, &
     call jenonu(jexnom(nume_equa//'.LILI', '&MAILLA'), i_ligr_mesh)
     call jeveuo(jexnum(nume_equa//'.PRNO', i_ligr_mesh), 'L', jprno)
     call jeveuo(mesh//'.COORDO    .VALE', 'L', vr=vale)
+!
+    if (l_hho) then
+!
+! ----- Convert to CHAM_ELEM_S
+!
+        call celces(hhoField_%fieldCineVale, 'V', cesVale)
+        !call imprsd("CHAMP_GD", cesVale, 6, "TEST")
+!
+! ----- Access to CHAM_ELEM_S
+!
+        call jeveuo(cesVale(1:19)//'.CESD', 'L', jv_cesd)
+        call jeveuo(cesVale(1:19)//'.CESL', 'E', jv_cesl)
+        call jeveuo(cesVale(1:19)//'.CESV', 'E', jv_cesv)
+    end if
 !
 ! - Loop on kinematic loads
 !
@@ -247,7 +265,8 @@ subroutine calvci(nomci, nume_ddlz, nbchci, lchci, vpara, &
 !           -----------------
                 else if (fonc) then
                     if (l_hho) then
-                        call hhoDiriFuncApply(hhoField_, i_affe_cine, res)
+                        call hhoDiriFuncApply(hhoField_, i_affe_cine, jv_cesd, jv_cesl, jv_cesv, &
+                                              res)
                         zr(ivvale-1+i_eq) = res
                     else
                         nomf = zk8(jafcv-1+i_affe_cine)
@@ -296,6 +315,7 @@ subroutine calvci(nomci, nume_ddlz, nbchci, lchci, vpara, &
 !
 999 continue
 !
+    call detrsd("CHAMP_GD", cesVale)
     call detrsd('CHAMP', cnsimp)
     call jedema()
 end subroutine

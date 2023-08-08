@@ -38,7 +38,6 @@ module HHO_Dirichlet_module
 #include "asterfort/assert.h"
 #include "asterfort/binomial.h"
 #include "asterfort/calcul.h"
-#include "asterfort/celces.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/cncinv.h"
 #include "asterfort/codent.h"
@@ -329,6 +328,7 @@ contains
                                 nume_cmp = hhoField%v_info_cine(3*(i_affe_cine-1)+3)
                                 call jenuno(jexnum('&CATA.TM.NOMTM', type_nume), type_name)
                                 offset = hhoDiriOffset(type_name)
+                                ASSERT(node_nume_loc >= offset)
                                 isCellNode = hhoDiriNodeType(type_name, node_nume_loc)
                                 nb_cmp_hho_dir = nb_cmp_hho_dir_f
                                 if (isCellNode) then
@@ -365,12 +365,12 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoDiriFuncApply(hhoField, i_affe_cine, res)
+    subroutine hhoDiriFuncApply(hhoField, i_affe_cine, jv_cesd, jv_cesl, jv_cesv, res)
 !
         implicit none
 !
         type(HHO_Field), intent(in)   :: hhoField
-        integer, intent(in) :: i_affe_cine
+        integer, intent(in) :: i_affe_cine, jv_cesd, jv_cesl, jv_cesv
         real(kind=8), intent(out) :: res
 !
 !
@@ -385,15 +385,12 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        character(len=24), parameter :: cesVale = '&&HHOMECA_VALS'
-        character(len=24) :: celVale
         integer :: elem_nume, node_nume_loc, nume_cmp
-        integer :: jv_cesd, jv_cesl, jv_cesv, iad
+        integer :: iad
 !
 ! --------------------------------------------------------------------------------------------------
 !
         res = 0.d0
-        celVale = hhoField%fieldCineVale
 !
 ! ----- Get information about kinematic load
 !
@@ -401,24 +398,11 @@ contains
         node_nume_loc = hhoField%v_info_cine(3*(i_affe_cine-1)+2)
         nume_cmp = hhoField%v_info_cine(3*(i_affe_cine-1)+3)
 !
-! ----- Convert to CHAM_ELEM_S
-!
-        call celces(celVale, 'V', cesVale)
-        !call imprsd("CHAMP_GD", cesVale, 6, "TEST")
-!
-! ----- Access to CHAM_ELEM_S
-!
-        call jeveuo(cesVale(1:19)//'.CESD', 'L', jv_cesd)
-        call jeveuo(cesVale(1:19)//'.CESL', 'E', jv_cesl)
-        call jeveuo(cesVale(1:19)//'.CESV', 'E', jv_cesv)
-!
 ! ----- Get value
 !
         call cesexi('C', jv_cesd, jv_cesl, elem_nume, node_nume_loc, 1, nume_cmp, iad)
         ASSERT(iad > 0)
         res = zr(jv_cesv-1+iad)
-
-        call detrsd("CHAMP_GD", cesVale)
 !
     end subroutine
 !
