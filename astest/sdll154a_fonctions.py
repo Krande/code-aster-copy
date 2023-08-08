@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -161,9 +161,11 @@ class PostRocheAnalytic(object):
             """equation de contrainte vrai"""
             if x < 0:
                 x = 0.0
-            return (x / self._E + self._epsi_p(x) - sigma_ref / self._E) + r * (
-                x - sigma_ref
-            ) / self._E
+            return (
+                (x / self._E + self._epsi_p(x) - (sigma_ref + self._sigpres) / self._E)
+                - self._epsi_p(self._sigpres)
+                + r * (x - sigma_ref - self._sigpres) / self._E
+            )
 
         # resolution sigma_deplacement
         sigma_deplacement = []
@@ -211,7 +213,7 @@ class PostRocheAnalytic(object):
             if sigma_vrai < self._sigpres or sigma_vrai == 0:
                 g = 1.0
             else:
-                g = (sigma_vrai - self._sigpres) / (sigma_ref - self._sigpres)
+                g = (sigma_vrai - self._sigpres) / sigma_ref
             self._g.append(g)
         self._g = np.array(self._g)
 
@@ -221,7 +223,7 @@ class PostRocheAnalytic(object):
             if sigma_vrai < self._sigpres or sigma_vrai == 0:
                 g = 1.0
             else:
-                g = (sigma_vrai - self._sigpres) / (sigma_ref - self._sigpres)
+                g = (sigma_vrai - self._sigpres) / sigma_ref
             self._gopt.append(g)
         self._gopt = np.array(self._gopt)
 
@@ -231,7 +233,7 @@ class PostRocheAnalytic(object):
             if sigma_vrai < self._sigpres or sigma_vrai == 0:
                 g = 1.0
             else:
-                g = (sigma_vrai - self._sigpres) / (sigma_ref - self._sigpres)
+                g = (sigma_vrai - self._sigpres) / sigma_ref
             self._g_s.append(g)
         self._g_s = np.array(self._g_s)
 
@@ -241,7 +243,7 @@ class PostRocheAnalytic(object):
             if sigma_vrai < self._sigpres or sigma_vrai == 0:
                 g = 1.0
             else:
-                g = (sigma_vrai - self._sigpres) / (sigma_ref - self._sigpres)
+                g = (sigma_vrai - self._sigpres) / sigma_ref
             self._g_sopt.append(g)
         self._g_sopt = np.array(self._g_sopt)
 

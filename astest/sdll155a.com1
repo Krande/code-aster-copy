@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -574,7 +574,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout,
             NOM_CMP="X11",
-            VALE_CALC=0.2735047697835322,
+            VALE_CALC=0.527256850057,
             VALE_REFE=post_roche_analytic._g[0],
         ),
         _F(
@@ -583,7 +583,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout,
             NOM_CMP="X11",
-            VALE_CALC=0.2735047697835322,
+            VALE_CALC=0.527256850057,
             VALE_REFE=post_roche_analytic._g[1],
         ),
         _F(
@@ -592,7 +592,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout,
             NOM_CMP="X11",
-            VALE_CALC=0.38205865226349656,
+            VALE_CALC=0.498199774322,
             VALE_REFE=post_roche_analytic._g[2],
         ),
         _F(
@@ -601,7 +601,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout,
             NOM_CMP="X11",
-            VALE_CALC=0.38205865226349656,
+            VALE_CALC=0.498199774322,
             VALE_REFE=post_roche_analytic._g[3],
         ),
         # X12 = coefficient d'abattement gs
@@ -611,7 +611,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout,
             NOM_CMP="X12",
-            VALE_CALC=0.485044924681401,
+            VALE_CALC=0.559838216248,
             VALE_REFE=post_roche_analytic._g_s[0],
         ),
         _F(
@@ -620,7 +620,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout,
             NOM_CMP="X12",
-            VALE_CALC=0.4612642178331156,
+            VALE_CALC=0.599263994941,
             VALE_REFE=post_roche_analytic._g_s[1],
         ),
         _F(
@@ -629,7 +629,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout,
             NOM_CMP="X12",
-            VALE_CALC=0.4860576730226439,
+            VALE_CALC=0.557192310736,
             VALE_REFE=post_roche_analytic._g_s[2],
         ),
         _F(
@@ -638,7 +638,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout,
             NOM_CMP="X12",
-            VALE_CALC=0.4147997967744233,
+            VALE_CALC=0.636755943418,
             VALE_REFE=post_roche_analytic._g_s[3],
         ),
         # X13 = coefficient d'abattement optimisé gOpt
@@ -648,7 +648,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout,
             NOM_CMP="X13",
-            VALE_CALC=0.2735047697835322,
+            VALE_CALC=0.527256850057,
             VALE_REFE=post_roche_analytic._gopt[0],
         ),
         _F(
@@ -657,7 +657,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout,
             NOM_CMP="X13",
-            VALE_CALC=0.2735047697835322,
+            VALE_CALC=0.527256850057,
             VALE_REFE=post_roche_analytic._gopt[1],
         ),
         _F(
@@ -666,7 +666,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout,
             NOM_CMP="X13",
-            VALE_CALC=0.5529967735427134,
+            VALE_CALC=0.641411329827,
             VALE_REFE=post_roche_analytic._gopt[2],
         ),
         _F(
@@ -675,7 +675,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout,
             NOM_CMP="X13",
-            VALE_CALC=0.5529967735427134,
+            VALE_CALC=0.641411329827,
             VALE_REFE=post_roche_analytic._gopt[3],
         ),
         # X14 = coefficient d'abattement optimisé gsOpt
@@ -685,7 +685,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout,
             NOM_CMP="X14",
-            VALE_CALC=0.7494252264469446,
+            VALE_CALC=0.787673387204,
             VALE_REFE=post_roche_analytic._g_sopt[0],
         ),
         _F(
@@ -694,7 +694,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout,
             NOM_CMP="X14",
-            VALE_CALC=0.5899840690597171,
+            VALE_CALC=0.697875987701,
             VALE_REFE=post_roche_analytic._g_sopt[1],
         ),
         _F(
@@ -703,7 +703,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout,
             NOM_CMP="X14",
-            VALE_CALC=0.7597887219860787,
+            VALE_CALC=0.794770561789,
             VALE_REFE=post_roche_analytic._g_sopt[2],
         ),
         _F(
@@ -712,7 +712,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout,
             NOM_CMP="X14",
-            VALE_CALC=0.4147997967744233,
+            VALE_CALC=0.636755943418,
             VALE_REFE=post_roche_analytic._g_sopt[3],
         ),
         # X15 = contrainte équivalente
@@ -722,7 +722,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout,
             NOM_CMP="X15",
-            VALE_CALC=36465320.0074951,
+            VALE_CALC=37990051.3659,
             VALE_REFE=post_roche_analytic._sigma_eq[0],
         ),
         _F(
@@ -731,7 +731,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout,
             NOM_CMP="X15",
-            VALE_CALC=9744041.65786238,
+            VALE_CALC=11043062.4802,
             VALE_REFE=post_roche_analytic._sigma_eq[1],
         ),
         _F(
@@ -740,7 +740,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout,
             NOM_CMP="X15",
-            VALE_CALC=30324643.16766542,
+            VALE_CALC=32549581.5198,
             VALE_REFE=post_roche_analytic._sigma_eq[2],
         ),
         _F(
@@ -749,7 +749,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout,
             NOM_CMP="X15",
-            VALE_CALC=8333725.813033046,
+            VALE_CALC=10271329.4072,
             VALE_REFE=post_roche_analytic._sigma_eq[3],
         ),
         # X16 = contrainte équivalente optimisée
@@ -759,7 +759,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout,
             NOM_CMP="X16",
-            VALE_CALC=41784754.62458767,
+            VALE_CALC=42673923.4393,
             VALE_REFE=post_roche_analytic._sigma_eq_opt[0],
         ),
         _F(
@@ -768,7 +768,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout,
             NOM_CMP="X16",
-            VALE_CALC=10685225.418505866,
+            VALE_CALC=11770718.7886,
             VALE_REFE=post_roche_analytic._sigma_eq_opt[1],
         ),
         _F(
@@ -777,7 +777,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout,
             NOM_CMP="X16",
-            VALE_CALC=37739366.98865617,
+            VALE_CALC=39093198.591,
             VALE_REFE=post_roche_analytic._sigma_eq_opt[2],
         ),
         _F(
@@ -786,7 +786,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout,
             NOM_CMP="X16",
-            VALE_CALC=11216578.469198322,
+            VALE_CALC=12769054.8743,
             VALE_REFE=post_roche_analytic._sigma_eq_opt[3],
         ),
         # X17 = indicateur sigmaV <sigmaP
@@ -2081,7 +2081,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_DP,
             NOM_CMP="X11",
-            VALE_CALC=0.2735047697835322,
+            VALE_CALC=0.527256850057,
             VALE_REFE=post_roche_analytic_DP._g[0],
         ),
         _F(
@@ -2090,7 +2090,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_DP,
             NOM_CMP="X11",
-            VALE_CALC=0.2735047697835322,
+            VALE_CALC=0.527256850057,
             VALE_REFE=post_roche_analytic_DP._g[1],
         ),
         _F(
@@ -2099,7 +2099,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_DP,
             NOM_CMP="X11",
-            VALE_CALC=0.38205865226349656,
+            VALE_CALC=0.498199774322,
             VALE_REFE=post_roche_analytic_DP._g[2],
         ),
         _F(
@@ -2108,7 +2108,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_DP,
             NOM_CMP="X11",
-            VALE_CALC=0.38205865226349656,
+            VALE_CALC=0.498199774322,
             VALE_REFE=post_roche_analytic_DP._g[3],
         ),
         # X12 = coefficient d'abattement gs
@@ -2155,7 +2155,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_DP,
             NOM_CMP="X13",
-            VALE_CALC=0.2735047697835322,
+            VALE_CALC=0.527256850057,
             VALE_REFE=post_roche_analytic_DP._gopt[0],
         ),
         _F(
@@ -2164,7 +2164,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_DP,
             NOM_CMP="X13",
-            VALE_CALC=0.2735047697835322,
+            VALE_CALC=0.527256850057,
             VALE_REFE=post_roche_analytic_DP._gopt[1],
         ),
         _F(
@@ -2173,7 +2173,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_DP,
             NOM_CMP="X13",
-            VALE_CALC=0.5529967735427134,
+            VALE_CALC=0.641411329827,
             VALE_REFE=post_roche_analytic_DP._gopt[2],
         ),
         _F(
@@ -2182,7 +2182,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_DP,
             NOM_CMP="X13",
-            VALE_CALC=0.5529967735427134,
+            VALE_CALC=0.641411329827,
             VALE_REFE=post_roche_analytic_DP._gopt[3],
         ),
         # X14 = coefficient d'abattement optimisé gsOpt
@@ -2229,7 +2229,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_DP,
             NOM_CMP="X15",
-            VALE_CALC=1521741.800915262,
+            VALE_CALC=2933582.43509,
             VALE_REFE=post_roche_analytic_DP._sigma_eq[0],
         ),
         _F(
@@ -2238,7 +2238,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_DP,
             NOM_CMP="X15",
-            VALE_CALC=1521741.800915262,
+            VALE_CALC=2933582.43509,
             VALE_REFE=post_roche_analytic_DP._sigma_eq[1],
         ),
         _F(
@@ -2247,7 +2247,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_DP,
             NOM_CMP="X15",
-            VALE_CALC=7174305.769097394,
+            VALE_CALC=9355206.31166,
             VALE_REFE=post_roche_analytic_DP._sigma_eq[2],
         ),
         _F(
@@ -2256,7 +2256,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_DP,
             NOM_CMP="X15",
-            VALE_CALC=7174305.769097394,
+            VALE_CALC=9355206.31166,
             VALE_REFE=post_roche_analytic_DP._sigma_eq[3],
         ),
         # X16 = contrainte équivalente optimisée
@@ -2266,7 +2266,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_DP,
             NOM_CMP="X16",
-            VALE_CALC=1521741.800915262,
+            VALE_CALC=2933582.43509,
             VALE_REFE=post_roche_analytic_DP._sigma_eq_opt[0],
         ),
         _F(
@@ -2275,7 +2275,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_DP,
             NOM_CMP="X16",
-            VALE_CALC=1521741.800915262,
+            VALE_CALC=2933582.43509,
             VALE_REFE=post_roche_analytic_DP._sigma_eq_opt[1],
         ),
         _F(
@@ -2284,7 +2284,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_DP,
             NOM_CMP="X16",
-            VALE_CALC=10384185.567360314,
+            VALE_CALC=12044436.0484,
             VALE_REFE=post_roche_analytic_DP._sigma_eq_opt[2],
         ),
         _F(
@@ -2293,7 +2293,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_DP,
             NOM_CMP="X16",
-            VALE_CALC=10384185.567360314,
+            VALE_CALC=12044436.0484,
             VALE_REFE=post_roche_analytic_DP._sigma_eq_opt[3],
         ),
         # X17 = indicateur sigmaV <sigmaP
@@ -2834,7 +2834,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_DPG,
             NOM_CMP="X11",
-            VALE_CALC=0.2735047697835322,
+            VALE_CALC=0.527256850057,
             VALE_REFE=post_roche_analytic_DPG._g[0],
         ),
         _F(
@@ -2843,7 +2843,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_DPG,
             NOM_CMP="X11",
-            VALE_CALC=0.2735047697835322,
+            VALE_CALC=0.527256850057,
             VALE_REFE=post_roche_analytic_DPG._g[1],
         ),
         _F(
@@ -2852,7 +2852,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_DPG,
             NOM_CMP="X11",
-            VALE_CALC=0.38205865226349656,
+            VALE_CALC=0.498199774322,
             VALE_REFE=post_roche_analytic_DPG._g[2],
         ),
         _F(
@@ -2861,7 +2861,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_DPG,
             NOM_CMP="X11",
-            VALE_CALC=0.38205865226349656,
+            VALE_CALC=0.498199774322,
             VALE_REFE=post_roche_analytic_DPG._g[3],
         ),
         # X12 = coefficient d'abattement gs
@@ -2908,7 +2908,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_DPG,
             NOM_CMP="X13",
-            VALE_CALC=0.2735047697835322,
+            VALE_CALC=0.527256850057,
             VALE_REFE=post_roche_analytic_DPG._gopt[0],
         ),
         _F(
@@ -2917,7 +2917,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_DPG,
             NOM_CMP="X13",
-            VALE_CALC=0.2735047697835322,
+            VALE_CALC=0.527256850057,
             VALE_REFE=post_roche_analytic_DPG._gopt[1],
         ),
         _F(
@@ -2926,7 +2926,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_DPG,
             NOM_CMP="X13",
-            VALE_CALC=0.5529967735427134,
+            VALE_CALC=0.641411329827,
             VALE_REFE=post_roche_analytic_DPG._gopt[2],
         ),
         _F(
@@ -2935,7 +2935,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_DPG,
             NOM_CMP="X13",
-            VALE_CALC=0.5529967735427134,
+            VALE_CALC=0.641411329827,
             VALE_REFE=post_roche_analytic_DPG._gopt[3],
         ),
         # X14 = coefficient d'abattement optimisé gsOpt
@@ -2982,7 +2982,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_DPG,
             NOM_CMP="X15",
-            VALE_CALC=28532948.91973821,
+            VALE_CALC=28642963.9153,
             VALE_REFE=post_roche_analytic_DPG._sigma_eq[0],
         ),
         _F(
@@ -2991,7 +2991,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_DPG,
             NOM_CMP="X15",
-            VALE_CALC=5554819.134989022,
+            VALE_CALC=6094770.16935,
             VALE_REFE=post_roche_analytic_DPG._sigma_eq[1],
         ),
         _F(
@@ -3000,7 +3000,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_DPG,
             NOM_CMP="X15",
-            VALE_CALC=19405223.973172482,
+            VALE_CALC=20312851.5801,
             VALE_REFE=post_roche_analytic_DPG._sigma_eq[2],
         ),
         _F(
@@ -3009,7 +3009,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_DPG,
             NOM_CMP="X15",
-            VALE_CALC=7174305.769097394,
+            VALE_CALC=9355206.31166,
             VALE_REFE=post_roche_analytic_DPG._sigma_eq[3],
         ),
         # X16 = contrainte équivalente optimisée
@@ -3019,7 +3019,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_DPG,
             NOM_CMP="X16",
-            VALE_CALC=28532948.91973821,
+            VALE_CALC=28642963.9153,
             VALE_REFE=post_roche_analytic_DPG._sigma_eq_opt[0],
         ),
         _F(
@@ -3028,7 +3028,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_DPG,
             NOM_CMP="X16",
-            VALE_CALC=5554819.134989022,
+            VALE_CALC=6094770.16935,
             VALE_REFE=post_roche_analytic_DPG._sigma_eq_opt[1],
         ),
         _F(
@@ -3037,7 +3037,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_DPG,
             NOM_CMP="X16",
-            VALE_CALC=20806810.521506127,
+            VALE_CALC=21683184.5886,
             VALE_REFE=post_roche_analytic_DPG._sigma_eq_opt[2],
         ),
         _F(
@@ -3046,7 +3046,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_DPG,
             NOM_CMP="X16",
-            VALE_CALC=10384185.567360314,
+            VALE_CALC=12044436.0484,
             VALE_REFE=post_roche_analytic_DPG._sigma_eq_opt[3],
         ),
         # X17 = indicateur sigmaV <sigmaP
@@ -4373,7 +4373,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_SP,
             NOM_CMP="X12",
-            VALE_CALC=0.485044924681401,
+            VALE_CALC=0.559838216248,
             VALE_REFE=post_roche_analytic_SP._g_s[0],
         ),
         _F(
@@ -4382,7 +4382,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_SP,
             NOM_CMP="X12",
-            VALE_CALC=0.4612642178331156,
+            VALE_CALC=0.599263994941,
             VALE_REFE=post_roche_analytic_SP._g_s[1],
         ),
         _F(
@@ -4391,7 +4391,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_SP,
             NOM_CMP="X12",
-            VALE_CALC=0.4860576730226439,
+            VALE_CALC=0.557192310736,
             VALE_REFE=post_roche_analytic_SP._g_s[2],
         ),
         _F(
@@ -4400,7 +4400,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_SP,
             NOM_CMP="X12",
-            VALE_CALC=0.4147997967744233,
+            VALE_CALC=0.636755943418,
             VALE_REFE=post_roche_analytic_SP._g_s[3],
         ),
         # X13 = coefficient d'abattement optimisé gOpt
@@ -4447,7 +4447,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_SP,
             NOM_CMP="X14",
-            VALE_CALC=0.7494252264469446,
+            VALE_CALC=0.787673387204,
             VALE_REFE=post_roche_analytic_SP._g_sopt[0],
         ),
         _F(
@@ -4456,7 +4456,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_SP,
             NOM_CMP="X14",
-            VALE_CALC=0.5899840690597171,
+            VALE_CALC=0.697875987701,
             VALE_REFE=post_roche_analytic_SP._g_sopt[1],
         ),
         _F(
@@ -4465,7 +4465,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_SP,
             NOM_CMP="X14",
-            VALE_CALC=0.7597887219860787,
+            VALE_CALC=0.794770561789,
             VALE_REFE=post_roche_analytic_SP._g_sopt[2],
         ),
         _F(
@@ -4474,7 +4474,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_SP,
             NOM_CMP="X14",
-            VALE_CALC=0.4147997967744233,
+            VALE_CALC=0.636755943418,
             VALE_REFE=post_roche_analytic_SP._g_sopt[3],
         ),
         # X15 = contrainte équivalente
@@ -4484,7 +4484,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_SP,
             NOM_CMP="X15",
-            VALE_CALC=13599718.512484351,
+            VALE_CALC=15636840.0103,
             VALE_REFE=post_roche_analytic_SP._sigma_eq[0],
         ),
         _F(
@@ -4493,7 +4493,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_SP,
             NOM_CMP="X15",
-            VALE_CALC=6406618.058524685,
+            VALE_CALC=7617285.28272,
             VALE_REFE=post_roche_analytic_SP._sigma_eq[1],
         ),
         _F(
@@ -4502,7 +4502,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_SP,
             NOM_CMP="X15",
-            VALE_CALC=18375502.957002606,
+            VALE_CALC=20483520.433,
             VALE_REFE=post_roche_analytic_SP._sigma_eq[2],
         ),
         _F(
@@ -4521,7 +4521,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_SP,
             NOM_CMP="X16",
-            VALE_CALC=20800803.48003917,
+            VALE_CALC=21842631.4922,
             VALE_REFE=post_roche_analytic_SP._sigma_eq_opt[0],
         ),
         _F(
@@ -4530,7 +4530,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_SP,
             NOM_CMP="X16",
-            VALE_CALC=7535859.53871629,
+            VALE_CALC=8482635.27578,
             VALE_REFE=post_roche_analytic_SP._sigma_eq_opt[1],
         ),
         _F(
@@ -4539,7 +4539,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_SP,
             NOM_CMP="X16",
-            VALE_CALC=26487721.672337763,
+            VALE_CALC=27524494.8598,
             VALE_REFE=post_roche_analytic_SP._sigma_eq_opt[2],
         ),
         _F(
@@ -5126,7 +5126,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_SPG,
             NOM_CMP="X12",
-            VALE_CALC=0.485044924681401,
+            VALE_CALC=0.559838216248,
             VALE_REFE=post_roche_analytic_SPG._g_s[0],
         ),
         _F(
@@ -5135,7 +5135,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_SPG,
             NOM_CMP="X12",
-            VALE_CALC=0.4612642178331156,
+            VALE_CALC=0.599263994941,
             VALE_REFE=post_roche_analytic_SPG._g_s[1],
         ),
         _F(
@@ -5144,7 +5144,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_SPG,
             NOM_CMP="X12",
-            VALE_CALC=0.4860576730226439,
+            VALE_CALC=0.557192310736,
             VALE_REFE=post_roche_analytic_SPG._g_s[2],
         ),
         _F(
@@ -5153,7 +5153,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_SPG,
             NOM_CMP="X12",
-            VALE_CALC=0.4147997967744233,
+            VALE_CALC=0.636755943418,
             VALE_REFE=post_roche_analytic_SPG._g_s[3],
         ),
         # X13 = coefficient d'abattement optimisé gOpt
@@ -5200,7 +5200,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_SPG,
             NOM_CMP="X14",
-            VALE_CALC=0.7494252264469446,
+            VALE_CALC=0.787673387204,
             VALE_REFE=post_roche_analytic_SPG._g_sopt[0],
         ),
         _F(
@@ -5209,7 +5209,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_SPG,
             NOM_CMP="X14",
-            VALE_CALC=0.5899840690597171,
+            VALE_CALC=0.697875987701,
             VALE_REFE=post_roche_analytic_SPG._g_sopt[1],
         ),
         _F(
@@ -5218,7 +5218,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_SPG,
             NOM_CMP="X14",
-            VALE_CALC=0.7597887219860787,
+            VALE_CALC=0.794770561789,
             VALE_REFE=post_roche_analytic_SPG._g_sopt[2],
         ),
         _F(
@@ -5227,7 +5227,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_SPG,
             NOM_CMP="X14",
-            VALE_CALC=0.4147997967744233,
+            VALE_CALC=0.636755943418,
             VALE_REFE=post_roche_analytic_SPG._g_sopt[3],
         ),
         # X15 = contrainte équivalente
@@ -5237,7 +5237,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_SPG,
             NOM_CMP="X15",
-            VALE_CALC=36433554.11074206,
+            VALE_CALC=37876616.756,
             VALE_REFE=post_roche_analytic_SPG._sigma_eq[0],
         ),
         _F(
@@ -5246,7 +5246,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_SPG,
             NOM_CMP="X15",
-            VALE_CALC=9624481.789764298,
+            VALE_CALC=10646282.1228,
             VALE_REFE=post_roche_analytic_SPG._sigma_eq[1],
         ),
         _F(
@@ -5255,7 +5255,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_SPG,
             NOM_CMP="X15",
-            VALE_CALC=29463762.827882875,
+            VALE_CALC=31176198.8058,
             VALE_REFE=post_roche_analytic_SPG._sigma_eq[2],
         ),
         _F(
@@ -5274,7 +5274,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_SPG,
             NOM_CMP="X16",
-            VALE_CALC=41757035.58597459,
+            VALE_CALC=42572970.7185,
             VALE_REFE=post_roche_analytic_SPG._sigma_eq_opt[0],
         ),
         _F(
@@ -5283,7 +5283,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_SPG,
             NOM_CMP="X16",
-            VALE_CALC=10576310.516225921,
+            VALE_CALC=11399294.4912,
             VALE_REFE=post_roche_analytic_SPG._sigma_eq_opt[1],
         ),
         _F(
@@ -5292,7 +5292,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout_SPG,
             NOM_CMP="X16",
-            VALE_CALC=36282619.95511207,
+            VALE_CALC=37191527.7496,
             VALE_REFE=post_roche_analytic_SPG._sigma_eq_opt[2],
         ),
         _F(

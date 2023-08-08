@@ -1110,7 +1110,7 @@ class PostRocheCommon:
         # pour RCCM_RC = NON
         else:
 
-            def fsolve(sigRef, e, k, n, r, nbIterMax, seuil):
+            def fsolve(sigRef, sigP, e, k, n, r, nbIterMax, seuil):
 
                 """
                 resolution de _funcToSolve par algo de Newton
@@ -1123,7 +1123,13 @@ class PostRocheCommon:
                     return k * pow(sig / e, 1 / n)
 
                 def funcToSolve(sigV):
-                    return r * (sigV - sigRef) / e + sigV / e + epsip(sigV, e, k, n) - sigRef / e
+                    return (
+                        r * (sigV - sigP - sigRef) / e
+                        + sigV / e
+                        + epsip(sigV, e, k, n)
+                        - (sigP + sigRef) / e
+                        - epsip(sigP, e, k, n)
+                    )
 
                 # param
                 dSig = sigRef / 1000
@@ -1161,11 +1167,11 @@ class PostRocheCommon:
             # calcul à partir de l'effet de ressort
 
             # SigRef = N
-            # EspiMpRef = X1 : plus utilisé
+            # SigPression = X1
             # Ressort = X2
             fSigVraie = FORMULE(
-                NOM_PARA=("N", "X2", "E", "K_FACT", "N_EXPO"),
-                VALE="fsolve(N,E,K_FACT,N_EXPO,X2,nbIterMax,seuil)",
+                NOM_PARA=("N", "X1", "X2", "E", "K_FACT", "N_EXPO"),
+                VALE="fsolve(N,X1,E,K_FACT,N_EXPO,X2,nbIterMax,seuil)",
                 fsolve=fsolve,
                 nbIterMax=self.nbIterMax,
                 seuil=self.seuilSigRef,
@@ -1174,12 +1180,12 @@ class PostRocheCommon:
             # calcul à partir de l'effet de ressort max
 
             # SigRef = N
-            # EspiMpRef = X1 : plus utilisé
+            # SigPression = X1
             # RessortMax = X3
 
             fSigVraieMax = FORMULE(
-                NOM_PARA=("N", "X3", "E", "K_FACT", "N_EXPO"),
-                VALE="fsolve(N,E,K_FACT,N_EXPO,X3,nbIterMax,seuil)",
+                NOM_PARA=("N", "X1", "X3", "E", "K_FACT", "N_EXPO"),
+                VALE="fsolve(N,X1,E,K_FACT,N_EXPO,X3,nbIterMax,seuil)",
                 fsolve=fsolve,
                 nbIterMax=self.nbIterMax,
                 seuil=self.seuilSigRef,
@@ -1325,7 +1331,7 @@ class PostRocheCommon:
                 if sigV <= sigP:
                     return 1.0
                 else:
-                    return (sigV - sigP) / (sigRef - sigP)
+                    return (sigV - sigP) / sigRef
 
             fCoefAbat = FORMULE(
                 NOM_PARA=("N", "X1", "X2"), VALE="coefAbat(N, X1, X2)", coefAbat=coefAbat
@@ -1921,7 +1927,7 @@ class PostRocheCalc:
             self.chSigVraie = chSigVraie
         else:
             # assemblage de champs
-            # X1 = epsiMpRef => plus utilisé
+            # X1 = Sigma Pression
             # X2 = effet de ressort
             # X3 = effet de ressort max
 
@@ -1931,10 +1937,7 @@ class PostRocheCalc:
                 TYPE_CHAM="ELNO_NEUT_R",
                 PROL_ZERO="OUI",
                 ASSE=(
-                    # _F(CHAM_GD = self.chEpsiMp,
-                    # TOUT = 'OUI',
-                    # NOM_CMP = ('X1',),
-                    # ),
+                    _F(CHAM_GD=self.param.chSigPres, TOUT="OUI", NOM_CMP=("X1",)),
                     _F(CHAM_GD=self.chRessort, TOUT="OUI", NOM_CMP=("X1",), NOM_CMP_RESU=("X2",)),
                     _F(CHAM_GD=self.chRessMax, TOUT="OUI", NOM_CMP=("X1",), NOM_CMP_RESU=("X3",)),
                 ),

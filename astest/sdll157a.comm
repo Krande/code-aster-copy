@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -462,18 +462,18 @@ TEST_RESU(
         # X11 = coefficient d'abattement g
         _F(TYPE_TEST="MAX", CHAM_GD=chPostRocheTout, NOM_CMP="X11", VALE_CALC=0.999999999946613),
         # X12 = coefficient d'abattement gs
-        _F(TYPE_TEST="MAX", CHAM_GD=chPostRocheTout, NOM_CMP="X12", VALE_CALC=0.3773154195723137),
+        _F(TYPE_TEST="MAX", CHAM_GD=chPostRocheTout, NOM_CMP="X12", VALE_CALC=0.375348764432),
         # X13 = coefficient d'abattement optimisé gOpt
         _F(TYPE_TEST="MAX", CHAM_GD=chPostRocheTout, NOM_CMP="X13", VALE_CALC=0.9999999999915946),
         # X14 = coefficient d'abattement optimisé gsOpt
-        _F(TYPE_TEST="MAX", CHAM_GD=chPostRocheTout, NOM_CMP="X14", VALE_CALC=0.9793074422828185),
+        _F(TYPE_TEST="MAX", CHAM_GD=chPostRocheTout, NOM_CMP="X14", VALE_CALC=0.975242883249),
         # X15 = contrainte équivalente
         _F(
             TYPE_TEST="MAX",
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout,
             NOM_CMP="X15",
-            VALE_CALC=254801676.45164022,
+            VALE_CALC=254569819.065,
             PRECISION=0.07,
             VALE_REFE=240.2e6,
         ),
@@ -483,7 +483,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout,
             NOM_CMP="X16",
-            VALE_CALC=260572952.9425547,
+            VALE_CALC=260312323.0,
             PRECISION=0.09,
             VALE_REFE=240.2e6,
         ),
@@ -556,23 +556,23 @@ TEST_RESU(
         # X11 = coefficient d'abattement g
         _F(TYPE_TEST="MAX", CHAM_GD=chPostRoche3M, NOM_CMP="X11", VALE_CALC=1.0),
         # X12 = coefficient d'abattement gs
-        _F(TYPE_TEST="MAX", CHAM_GD=chPostRoche3M, NOM_CMP="X12", VALE_CALC=0.37831956537738487),
+        _F(TYPE_TEST="MAX", CHAM_GD=chPostRoche3M, NOM_CMP="X12", VALE_CALC=0.376840072296),
         # X13 = coefficient d'abattement optimisé gOpt
         _F(TYPE_TEST="MAX", CHAM_GD=chPostRoche3M, NOM_CMP="X13", VALE_CALC=1.0),
         # X14 = coefficient d'abattement optimisé gsOpt
-        _F(TYPE_TEST="MAX", CHAM_GD=chPostRoche3M, NOM_CMP="X14", VALE_CALC=0.9794700699603303),
+        _F(TYPE_TEST="MAX", CHAM_GD=chPostRoche3M, NOM_CMP="X14", VALE_CALC=0.976487058138),
         # X15 = contrainte équivalente
         _F(
             TYPE_TEST="MAX",
             REFERENCE="SOURCE_EXTERNE",
             CHAM_GD=chPostRoche3M,
             NOM_CMP="X15",
-            VALE_CALC=274256943.4178766,
+            VALE_CALC=274094237.392,
             PRECISION=0.26,
             VALE_REFE=366.2e6,
         ),
         # X16 = contrainte équivalente optimisée
-        _F(TYPE_TEST="MAX", CHAM_GD=chPostRoche3M, NOM_CMP="X16", VALE_CALC=274256943.4178766),
+        _F(TYPE_TEST="MAX", CHAM_GD=chPostRoche3M, NOM_CMP="X16", VALE_CALC=274094237.392),
     )
 )
 

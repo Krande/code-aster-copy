@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -153,13 +153,15 @@ class PostRocheAnalytic(object):
             """equation de contrainte vrai"""
             if x < 0:
                 x = 0.0
-            return (x / self._E + self._epsi_p(x) - sigma_ref / self._E) + r * (
-                x - sigma_ref
-            ) / self._E
+            return (
+                (x / self._E + self._epsi_p(x) - (sigma_ref + sigma_pres) / self._E)
+                - self._epsi_p(sigma_pres)
+                + r * (x - sigma_ref - sigma_pres) / self._E
+            )
 
         # resolution sigma_deplacement
         sigma_deplacement = []
-        for sigma_ref, r in zip(self._sigma_deplacement_ref, self._r_m):
+        for sigma_ref, r, sigma_pres in zip(self._sigma_deplacement_ref, self._r_m, self._sigpres):
             if sigma_ref == 0.0:
                 root = 0.0
             else:
@@ -169,7 +171,9 @@ class PostRocheAnalytic(object):
 
         # pour g +opt
         sigma_deplacement_opt = []
-        for sigma_ref, r in zip(self._sigma_deplacement_ref, self._r_mmax):
+        for sigma_ref, r, sigma_pres in zip(
+            self._sigma_deplacement_ref, self._r_mmax, self._sigpres
+        ):
             if sigma_ref == 0.0:
                 root = 0.0
             else:
@@ -179,7 +183,7 @@ class PostRocheAnalytic(object):
 
         # resolution sigma_sismique
         sigma_sismique = []
-        for sigma_ref, r in zip(self._sigma_sismique_ref, self._r_s):
+        for sigma_ref, r, sigma_pres in zip(self._sigma_sismique_ref, self._r_s, self._sigpres):
             if sigma_ref == 0.0:
                 root = 0.0
             else:
@@ -189,7 +193,7 @@ class PostRocheAnalytic(object):
 
         # pour gsopt
         sigma_sismique_opt = []
-        for sigma_ref, r in zip(self._sigma_sismique_ref, self._r_smax):
+        for sigma_ref, r, sigma_pres in zip(self._sigma_sismique_ref, self._r_smax, self._sigpres):
             if sigma_ref == 0.0:
                 root = 0.0
             else:
@@ -205,7 +209,7 @@ class PostRocheAnalytic(object):
             if sigma_vrai < sigma_pres or sigma_vrai == 0:
                 g = 1.0
             else:
-                g = (sigma_vrai - sigma_pres) / (sigma_ref - sigma_pres)
+                g = (sigma_vrai - sigma_pres) / sigma_ref
             self._g.append(g)
         self._g = np.array(self._g)
 
@@ -217,7 +221,7 @@ class PostRocheAnalytic(object):
             if sigma_vrai < sigma_pres or sigma_vrai == 0:
                 g = 1.0
             else:
-                g = (sigma_vrai - sigma_pres) / (sigma_ref - sigma_pres)
+                g = (sigma_vrai - sigma_pres) / sigma_ref
             self._gopt.append(g)
         self._gopt = np.array(self._gopt)
 
@@ -229,7 +233,7 @@ class PostRocheAnalytic(object):
             if sigma_vrai < sigma_pres or sigma_vrai == 0:
                 g = 1.0
             else:
-                g = (sigma_vrai - sigma_pres) / (sigma_ref - sigma_pres)
+                g = (sigma_vrai - sigma_pres) / sigma_ref
             self._g_s.append(g)
         self._g_s = np.array(self._g_s)
 
@@ -241,7 +245,7 @@ class PostRocheAnalytic(object):
             if sigma_vrai < sigma_pres or sigma_vrai == 0:
                 g = 1.0
             else:
-                g = (sigma_vrai - sigma_pres) / (sigma_ref - sigma_pres)
+                g = (sigma_vrai - sigma_pres) / sigma_ref
             self._g_sopt.append(g)
         self._g_sopt = np.array(self._g_sopt)
 

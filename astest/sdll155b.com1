@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -627,7 +627,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X11",
-            VALE_CALC=0.2735047697835322,
+            VALE_CALC=0.527256850057,
             VALE_REFE=post_roche_analytic._g[0],
         ),
         _F(
@@ -638,7 +638,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X11",
-            VALE_CALC=0.2735047697835322,
+            VALE_CALC=0.527256850057,
             VALE_REFE=post_roche_analytic._g[1],
         ),
         _F(
@@ -649,7 +649,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X11",
-            VALE_CALC=0.38205865226349656,
+            VALE_CALC=0.498199774322,
             VALE_REFE=post_roche_analytic._g[2],
         ),
         _F(
@@ -660,7 +660,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X11",
-            VALE_CALC=0.38205865226349656,
+            VALE_CALC=0.498199774322,
             VALE_REFE=post_roche_analytic._g[3],
         ),
         # X12 = coefficient d'abattement gs
@@ -672,7 +672,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X12",
-            VALE_CALC=0.4950936945187096,
+            VALE_CALC=0.568114907008,
             VALE_REFE=post_roche_analytic._g_s[0],
         ),
         _F(
@@ -683,7 +683,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X12",
-            VALE_CALC=0.47823612284845224,
+            VALE_CALC=0.598951602818,
             VALE_REFE=post_roche_analytic._g_s[1],
         ),
         _F(
@@ -694,7 +694,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X12",
-            VALE_CALC=0.49704620756186624,
+            VALE_CALC=0.562786278433,
             VALE_REFE=post_roche_analytic._g_s[2],
         ),
         _F(
@@ -705,7 +705,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X12",
-            VALE_CALC=0.42604373789223887,
+            VALE_CALC=0.644222738192,
             VALE_REFE=post_roche_analytic._g_s[3],
         ),
         # X13 = coefficient d'abattement optimisé gOpt
@@ -717,7 +717,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X13",
-            VALE_CALC=0.2735047697835322,
+            VALE_CALC=0.527256850057,
             VALE_REFE=post_roche_analytic._gopt[0],
         ),
         _F(
@@ -728,7 +728,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X13",
-            VALE_CALC=0.2735047697835322,
+            VALE_CALC=0.527256850057,
             VALE_REFE=post_roche_analytic._gopt[1],
         ),
         _F(
@@ -739,7 +739,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X13",
-            VALE_CALC=0.5529967735427134,
+            VALE_CALC=0.641411329827,
             VALE_REFE=post_roche_analytic._gopt[2],
         ),
         _F(
@@ -750,7 +750,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X13",
-            VALE_CALC=0.5529967735427134,
+            VALE_CALC=0.641411329827,
             VALE_REFE=post_roche_analytic._gopt[3],
         ),
         # X14 = coefficient d'abattement optimisé gsOpt
@@ -762,7 +762,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X14",
-            VALE_CALC=0.7571675919961978,
+            VALE_CALC=0.793998495213,
             VALE_REFE=post_roche_analytic._g_sopt[0],
         ),
         _F(
@@ -773,7 +773,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X14",
-            VALE_CALC=0.6340530866308459,
+            VALE_CALC=0.721398018675,
             VALE_REFE=post_roche_analytic._g_sopt[1],
         ),
         _F(
@@ -784,7 +784,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X14",
-            VALE_CALC=0.7779045548424397,
+            VALE_CALC=0.808414886538,
             VALE_REFE=post_roche_analytic._g_sopt[2],
         ),
         _F(
@@ -795,7 +795,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X14",
-            VALE_CALC=0.42604373789223887,
+            VALE_CALC=0.644222738192,
             VALE_REFE=post_roche_analytic._g_sopt[3],
         ),
         # X15 = contrainte équivalente
@@ -807,7 +807,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X15",
-            VALE_CALC=36655751.636337556,
+            VALE_CALC=38152599.1256,
             VALE_REFE=post_roche_analytic._sigma_eq[0],
         ),
         _F(
@@ -818,7 +818,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X15",
-            VALE_CALC=9865863.397814421,
+            VALE_CALC=11040789.0887,
             VALE_REFE=post_roche_analytic._sigma_eq[1],
         ),
         _F(
@@ -829,7 +829,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X15",
-            VALE_CALC=30578494.52417207,
+            VALE_CALC=32680550.9885,
             VALE_REFE=post_roche_analytic._sigma_eq[2],
         ),
         _F(
@@ -840,7 +840,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X15",
-            VALE_CALC=8333725.813033046,
+            VALE_CALC=10271329.4072,
             VALE_REFE=post_roche_analytic._sigma_eq[3],
         ),
         # X16 = contrainte équivalente optimisée
@@ -852,7 +852,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X16",
-            VALE_CALC=41949002.94717057,
+            VALE_CALC=42809481.5502,
             VALE_REFE=post_roche_analytic._sigma_eq_opt[0],
         ),
         _F(
@@ -863,7 +863,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X16",
-            VALE_CALC=11015636.356948003,
+            VALE_CALC=11947015.0295,
             VALE_REFE=post_roche_analytic._sigma_eq_opt[1],
         ),
         _F(
@@ -874,7 +874,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X16",
-            VALE_CALC=38191294.33888147,
+            VALE_CALC=39432327.5694,
             VALE_REFE=post_roche_analytic._sigma_eq_opt[2],
         ),
         _F(
@@ -885,7 +885,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X16",
-            VALE_CALC=11216578.469198322,
+            VALE_CALC=12769054.8743,
             VALE_REFE=post_roche_analytic._sigma_eq_opt[3],
         ),
         # X17 = indicateur sigmaV <sigmaP
@@ -1187,7 +1187,7 @@ TEST_RESU(
             INST=0,
             NOM_CHAM="UT02_ELNO",
             NOM_CMP="X11",
-            VALE_CALC=0.2735047697835322,
+            VALE_CALC=0.527256850057,
             VALE_REFE=post_roche_analytic._g[0],
         ),
         # X12 = coefficient d'abattement gs
@@ -1199,7 +1199,7 @@ TEST_RESU(
             INST=0,
             NOM_CHAM="UT02_ELNO",
             NOM_CMP="X12",
-            VALE_CALC=0.4950936945187096,
+            VALE_CALC=0.568114907008,
             VALE_REFE=post_roche_analytic._g_s[0],
         ),
         # X13 = coefficient d'abattement optimisé gOpt
@@ -1211,7 +1211,7 @@ TEST_RESU(
             INST=0,
             NOM_CHAM="UT02_ELNO",
             NOM_CMP="X13",
-            VALE_CALC=0.2735047697835322,
+            VALE_CALC=0.527256850057,
             VALE_REFE=post_roche_analytic._gopt[0],
         ),
         # X14 = coefficient d'abattement optimisé gsOpt
@@ -1223,7 +1223,7 @@ TEST_RESU(
             INST=0,
             NOM_CHAM="UT02_ELNO",
             NOM_CMP="X14",
-            VALE_CALC=0.7571675919961978,
+            VALE_CALC=0.793998495213,
             VALE_REFE=post_roche_analytic._g_sopt[0],
         ),
         # X15 = contrainte équivalente
@@ -1235,7 +1235,7 @@ TEST_RESU(
             INST=0,
             NOM_CHAM="UT02_ELNO",
             NOM_CMP="X15",
-            VALE_CALC=36655751.636337556,
+            VALE_CALC=38152599.1256,
             VALE_REFE=post_roche_analytic._sigma_eq[0],
         ),
         # X16 = contrainte équivalente optimisée
@@ -1247,7 +1247,7 @@ TEST_RESU(
             INST=0,
             NOM_CHAM="UT02_ELNO",
             NOM_CMP="X16",
-            VALE_CALC=41949002.94717057,
+            VALE_CALC=42809481.5502,
             VALE_REFE=post_roche_analytic._sigma_eq_opt[0],
         ),
     )
@@ -2894,7 +2894,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X12",
-            VALE_CALC=0.4950936945187096,
+            VALE_CALC=0.568114907008,
             VALE_REFE=post_roche_analytic_SP._g_s[0],
         ),
         _F(
@@ -2905,7 +2905,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X12",
-            VALE_CALC=0.47823612284845224,
+            VALE_CALC=0.598951602818,
             VALE_REFE=post_roche_analytic_SP._g_s[1],
         ),
         _F(
@@ -2916,7 +2916,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X12",
-            VALE_CALC=0.49704620756186624,
+            VALE_CALC=0.562786278433,
             VALE_REFE=post_roche_analytic_SP._g_s[2],
         ),
         _F(
@@ -2927,7 +2927,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X12",
-            VALE_CALC=0.42604373789223887,
+            VALE_CALC=0.644222738192,
             VALE_REFE=post_roche_analytic_SP._g_s[3],
         ),
         # X13 = coefficient d'abattement optimisé gOpt
@@ -2984,7 +2984,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X14",
-            VALE_CALC=0.7571675919961978,
+            VALE_CALC=0.793998495213,
             VALE_REFE=post_roche_analytic_SP._g_sopt[0],
         ),
         _F(
@@ -2995,7 +2995,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X14",
-            VALE_CALC=0.6340530866308459,
+            VALE_CALC=0.721398018675,
             VALE_REFE=post_roche_analytic_SP._g_sopt[1],
         ),
         _F(
@@ -3006,7 +3006,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X14",
-            VALE_CALC=0.7779045548424397,
+            VALE_CALC=0.808414886538,
             VALE_REFE=post_roche_analytic_SP._g_sopt[2],
         ),
         _F(
@@ -3017,7 +3017,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X14",
-            VALE_CALC=0.42604373789223887,
+            VALE_CALC=0.644222738192,
             VALE_REFE=post_roche_analytic_SP._g_sopt[3],
         ),
         # X15 = contrainte équivalente
@@ -3029,7 +3029,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X15",
-            VALE_CALC=13873409.017767062,
+            VALE_CALC=15862273.9901,
             VALE_REFE=post_roche_analytic_SP._sigma_eq[0],
         ),
         _F(
@@ -3040,7 +3040,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X15",
-            VALE_CALC=6555485.740227473,
+            VALE_CALC=7614544.20434,
             VALE_REFE=post_roche_analytic_SP._sigma_eq[1],
         ),
         _F(
@@ -3051,7 +3051,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X15",
-            VALE_CALC=18701132.197700854,
+            VALE_CALC=20649297.3165,
             VALE_REFE=post_roche_analytic_SP._sigma_eq[2],
         ),
         _F(
@@ -3074,7 +3074,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X16",
-            VALE_CALC=21011694.487466928,
+            VALE_CALC=22014919.4541,
             VALE_REFE=post_roche_analytic_SP._sigma_eq_opt[0],
         ),
         _F(
@@ -3085,7 +3085,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X16",
-            VALE_CALC=7922552.328952814,
+            VALE_CALC=8689069.11347,
             VALE_REFE=post_roche_analytic_SP._sigma_eq_opt[1],
         ),
         _F(
@@ -3096,7 +3096,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X16",
-            VALE_CALC=27024627.93227579,
+            VALE_CALC=27928880.572,
             VALE_REFE=post_roche_analytic_SP._sigma_eq_opt[2],
         ),
         _F(
@@ -3426,7 +3426,7 @@ TEST_RESU(
             INST=0,
             NOM_CHAM="UT02_ELNO",
             NOM_CMP="X12",
-            VALE_CALC=0.4950936945187096,
+            VALE_CALC=0.568114907008,
             VALE_REFE=post_roche_analytic_SP._g_s[0],
         ),
         # X13 = coefficient d'abattement optimisé gOpt
@@ -3450,7 +3450,7 @@ TEST_RESU(
             INST=0,
             NOM_CHAM="UT02_ELNO",
             NOM_CMP="X14",
-            VALE_CALC=0.7571675919961978,
+            VALE_CALC=0.793998495213,
             VALE_REFE=post_roche_analytic_SP._g_sopt[0],
         ),
         # X15 = contrainte équivalente
@@ -3462,7 +3462,7 @@ TEST_RESU(
             INST=0,
             NOM_CHAM="UT02_ELNO",
             NOM_CMP="X15",
-            VALE_CALC=13873409.017767062,
+            VALE_CALC=15862273.9901,
             VALE_REFE=post_roche_analytic_SP._sigma_eq[0],
         ),
         # X16 = contrainte équivalente optimisée
@@ -3474,7 +3474,7 @@ TEST_RESU(
             INST=0,
             NOM_CHAM="UT02_ELNO",
             NOM_CMP="X16",
-            VALE_CALC=21011694.487466928,
+            VALE_CALC=22014919.4541,
             VALE_REFE=post_roche_analytic_SP._sigma_eq_opt[0],
         ),
     )
@@ -4010,7 +4010,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X12",
-            VALE_CALC=0.4950936945187096,
+            VALE_CALC=0.568114907008,
             VALE_REFE=post_roche_analytic_SPG._g_s[0],
         ),
         _F(
@@ -4021,7 +4021,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X12",
-            VALE_CALC=0.47823612284845224,
+            VALE_CALC=0.598951602818,
             VALE_REFE=post_roche_analytic_SPG._g_s[1],
         ),
         _F(
@@ -4032,7 +4032,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X12",
-            VALE_CALC=0.49704620756186624,
+            VALE_CALC=0.562786278433,
             VALE_REFE=post_roche_analytic_SPG._g_s[2],
         ),
         _F(
@@ -4043,7 +4043,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X12",
-            VALE_CALC=0.42604373789223887,
+            VALE_CALC=0.644222738192,
             VALE_REFE=post_roche_analytic_SPG._g_s[3],
         ),
         # X13 = coefficient d'abattement optimisé gOpt
@@ -4100,7 +4100,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X14",
-            VALE_CALC=0.7571675919961978,
+            VALE_CALC=0.793998495213,
             VALE_REFE=post_roche_analytic_SPG._g_sopt[0],
         ),
         _F(
@@ -4111,7 +4111,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X14",
-            VALE_CALC=0.6340530866308459,
+            VALE_CALC=0.721398018675,
             VALE_REFE=post_roche_analytic_SPG._g_sopt[1],
         ),
         _F(
@@ -4122,7 +4122,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X14",
-            VALE_CALC=0.7779045548424397,
+            VALE_CALC=0.808414886538,
             VALE_REFE=post_roche_analytic_SPG._g_sopt[2],
         ),
         _F(
@@ -4133,7 +4133,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X14",
-            VALE_CALC=0.42604373789223887,
+            VALE_CALC=0.644222738192,
             VALE_REFE=post_roche_analytic_SPG._g_sopt[3],
         ),
         # X15 = contrainte équivalente
@@ -4145,7 +4145,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X15",
-            VALE_CALC=36624150.91051546,
+            VALE_CALC=38039649.2378,
             VALE_REFE=post_roche_analytic_SPG._sigma_eq[0],
         ),
         _F(
@@ -4156,7 +4156,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X15",
-            VALE_CALC=9747797.826980282,
+            VALE_CALC=10643923.985,
             VALE_REFE=post_roche_analytic_SPG._sigma_eq[1],
         ),
         _F(
@@ -4167,7 +4167,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X15",
-            VALE_CALC=29724967.015899565,
+            VALE_CALC=31312913.1155,
             VALE_REFE=post_roche_analytic_SPG._sigma_eq[2],
         ),
         _F(
@@ -4190,7 +4190,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X16",
-            VALE_CALC=41921392.51209426,
+            VALE_CALC=42708849.2551,
             VALE_REFE=post_roche_analytic_SPG._sigma_eq_opt[0],
         ),
         _F(
@@ -4201,7 +4201,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X16",
-            VALE_CALC=10910020.450936921,
+            VALE_CALC=11581246.1424,
             VALE_REFE=post_roche_analytic_SPG._sigma_eq_opt[1],
         ),
         _F(
@@ -4212,7 +4212,7 @@ TEST_RESU(
             INST=1,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X16",
-            VALE_CALC=36752464.58921777,
+            VALE_CALC=37547836.3932,
             VALE_REFE=post_roche_analytic_SPG._sigma_eq_opt[2],
         ),
         _F(
@@ -4542,7 +4542,7 @@ TEST_RESU(
             INST=0,
             NOM_CHAM="UT02_ELNO",
             NOM_CMP="X12",
-            VALE_CALC=0.4950936945187096,
+            VALE_CALC=0.568114907008,
             VALE_REFE=post_roche_analytic_SPG._g_s[0],
         ),
         # X13 = coefficient d'abattement optimisé gOpt
@@ -4566,7 +4566,7 @@ TEST_RESU(
             INST=0,
             NOM_CHAM="UT02_ELNO",
             NOM_CMP="X14",
-            VALE_CALC=0.7571675919961978,
+            VALE_CALC=0.793998495213,
             VALE_REFE=post_roche_analytic_SPG._g_sopt[0],
         ),
         # X15 = contrainte équivalente
@@ -4578,7 +4578,7 @@ TEST_RESU(
             INST=0,
             NOM_CHAM="UT02_ELNO",
             NOM_CMP="X15",
-            VALE_CALC=36624150.91051546,
+            VALE_CALC=38039649.2378,
             VALE_REFE=post_roche_analytic_SPG._sigma_eq[0],
         ),
         # X16 = contrainte équivalente optimisée
@@ -4590,7 +4590,7 @@ TEST_RESU(
             INST=0,
             NOM_CHAM="UT02_ELNO",
             NOM_CMP="X16",
-            VALE_CALC=41921392.51209426,
+            VALE_CALC=42708849.2551,
             VALE_REFE=post_roche_analytic_SPG._sigma_eq_opt[0],
         ),
     )
