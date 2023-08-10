@@ -32,6 +32,7 @@ subroutine calvci(nomci, nume_ddlz, nbchci, lchci, vpara, &
 #include "asterfort/cnocns.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -86,7 +87,7 @@ subroutine calvci(nomci, nume_ddlz, nbchci, lchci, vpara, &
 !----------------------------------------------------------------------
     integer :: iddes, nec, ivvale, jprno, ichcin
     integer :: jafcv, nb_affe_cine, i_affe_cine, i_node, i_cmp, i_eq, ier
-    integer :: neq, numgd, jdlci, i_nueq
+    integer :: neq, numgd, jdlci, i_nueq, ierr
     integer :: jcn1l, i_cmp_gran, i_cmp_gran1, jnocmp
     integer :: nbcmp1, i_ligr_mesh, vali(1)
     character(len=1) :: typval
@@ -171,14 +172,17 @@ subroutine calvci(nomci, nume_ddlz, nbchci, lchci, vpara, &
 !
 ! ----- Convert to CHAM_ELEM_S
 !
-        call celces(hhoField_%fieldCineVale, 'V', cesVale)
-        !call imprsd("CHAMP_GD", cesVale, 6, "TEST")
+        call exisd('CHAM_ELEM', hhoField_%fieldCineVale, ierr)
+        if (ierr == 1) then
+            call celces(hhoField_%fieldCineVale, 'V', cesVale)
+            !call imprsd("CHAMP_GD", cesVale, 6, "TEST")
 !
 ! ----- Access to CHAM_ELEM_S
 !
-        call jeveuo(cesVale(1:19)//'.CESD', 'L', jv_cesd)
-        call jeveuo(cesVale(1:19)//'.CESL', 'E', jv_cesl)
-        call jeveuo(cesVale(1:19)//'.CESV', 'E', jv_cesv)
+            call jeveuo(cesVale(1:19)//'.CESD', 'L', jv_cesd)
+            call jeveuo(cesVale(1:19)//'.CESL', 'E', jv_cesl)
+            call jeveuo(cesVale(1:19)//'.CESV', 'E', jv_cesv)
+        end if
     end if
 !
 ! - Loop on kinematic loads
