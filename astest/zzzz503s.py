@@ -26,22 +26,52 @@ test = code_aster.TestCase()
 
 ###################################################################################
 #
-#   Analytical solution
-#   u = (X, Y)
-#   eps = Id
-#   sig = (2*mu + d *lamda) * Id
-#   f = (0, 0)
+#   Patch test with analytical solution
+#   Solution is a polynomial of order k
+#   So method of order k should have a null error
 #
+#   The script to compute solution is given in zzzz503s.datg
 #
 ####################################################################################
 
-for unite in (20, 21, 22):
-    mesh0 = LIRE_MAILLAGE(FORMAT="MED", PARTITIONNEUR="PTSCOTCH", UNITE=unite)
+E = 200000.0
+Nu = 0.3
+
+lamb = E * Nu / (1 + Nu) / (1 - 2 * Nu)
+mu = E / 2 / (1 + Nu)
+
+uX = {
+    "LINEAIRE": FORMULE(VALE="X+1", NOM_PARA=("X", "Y", "Z")),
+    "QUADRATIQUE": FORMULE(VALE="Z*(X+1)", NOM_PARA=("X", "Y", "Z")),
+}
+uY = {
+    "LINEAIRE": FORMULE(VALE="Y+3", NOM_PARA=("X", "Y", "Z")),
+    "QUADRATIQUE": FORMULE(VALE="X*(Y+3)", NOM_PARA=("X", "Y", "Z")),
+}
+uZ = {
+    "LINEAIRE": FORMULE(VALE="Z-2", NOM_PARA=("X", "Y", "Z")),
+    "QUADRATIQUE": FORMULE(VALE="Y*(Z-2)", NOM_PARA=("X", "Y", "Z")),
+}
+
+zero = FORMULE(VALE="0", NOM_PARA=("X", "Y", "Z"))
+f0 = -(lamb + mu)
+fc = FORMULE(VALE="f0", NOM_PARA=("X", "Y", "Z"), f0=f0)
+
+fX = {"LINEAIRE": zero, "QUADRATIQUE": fc}
+fY = {"LINEAIRE": zero, "QUADRATIQUE": fc}
+fZ = {"LINEAIRE": zero, "QUADRATIQUE": fc}
+
+for unite in (20, 21, 22, 23, 24):
+    mesh0 = LIRE_MAILLAGE(FORMAT="MED", UNITE=unite)
 
     mesh = CREA_MAILLAGE(MAILLAGE=mesh0, MODI_HHO=_F(TOUT="OUI"))
 
+    mesh = DEFI_GROUP(
+        reuse=mesh, MAILLAGE=mesh, CREA_GROUP_MA=_F(NOM="3D", TOUT="OUI", TYPE_MAILLE="3D")
+    )
+
     # define material
-    coeff = DEFI_MATERIAU(ELAS=_F(E=200000.0, NU=0.3))
+    coeff = DEFI_MATERIAU(ELAS=_F(E=E, NU=Nu, RHO=1.0), HHO=_F(COEF_STAB=2 * mu))
 
     mater = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", MATER=coeff))
 
@@ -51,11 +81,25 @@ for unite in (20, 21, 22):
             AFFE=_F(TOUT="OUI", MODELISATION="3D_HHO", FORMULATION=form, PHENOMENE="MECANIQUE"),
         )
 
-        uX = FORMULE(VALE="X+1", NOM_PARA=("X", "Y", "Z"))
-        uY = FORMULE(VALE="Y+3", NOM_PARA=("X", "Y", "Z"))
-        uZ = FORMULE(VALE="Z-2", NOM_PARA=("X", "Y", "Z"))
+        bc = AFFE_CHAR_CINE_F(
+            MODELE=model, MECA_IMPO=_F(GROUP_MA="FACES", DX=uX[form], DY=uY[form], DZ=uZ[form])
+        )
 
-        bc = AFFE_CHAR_CINE_F(MODELE=model, MECA_IMPO=_F(GROUP_MA="FACES", DX=uX, DY=uY, DZ=uZ))
+        load = AFFE_CHAR_MECA_F(
+            MODELE=model, FORCE_INTERNE=_F(GROUP_MA="3D", FX=fX[form], FY=fY[form], FZ=fZ[form])
+        )
+
+        # solve linear system
+        LREEL = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1, NOMBRE=1))
+
+        resu = STAT_NON_LINE(
+            MODELE=model,
+            CHAM_MATER=mater,
+            INCREMENT=_F(LIST_INST=LREEL),
+            EXCIT=(_F(CHARGE=bc), _F(CHARGE=load)),
+        )
+
+        u_sol = resu.getField("DEPL", para="INST", value=1.0)
 
         # define discrete object
         phys_pb = code_aster.PhysicalProblem(model, mater)
@@ -65,23 +109,20 @@ for unite in (20, 21, 22):
         hho = code_aster.HHO(phys_pb)
 
         # project function
-        u_hho = hho.projectOnHHOSpace([uX, uY, uZ])
-
-        # solve linear system
-        LREEL = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1, NOMBRE=1))
-
-        resu = STAT_NON_LINE(
-            MODELE=model, CHAM_MATER=mater, INCREMENT=_F(LIST_INST=LREEL), EXCIT=(_F(CHARGE=bc),)
-        )
-
-        u_sol = resu.getField("DEPL", para="INST", value=1.0)
+        u_hho = hho.projectOnHHOSpace([uX[form], uY[form], uZ[form]])
 
         u_diff = u_hho - u_sol
 
-        test.assertAlmostEqual(u_diff.norm("NORM_2"), 0.0, delta=1e-8)
+        test.assertAlmostEqual(u_diff.norm("NORM_2") / u_hho.norm("NORM_2"), 0.0, delta=1e-7)
 
-# print("f=", f_hho.getValues())
-# print("u=", u_hho.getValues())
-# print("diif=", (u_hho - u_sol).getValues())
+        dc = code_aster.DiscreteComputation(phys_pb)
+        mass = dc.getMassMatrix(assembly=True)
+        l2_diff = (mass * u_diff).dot(u_diff)
+        l2_ref = (mass * u_hho).dot(u_hho)
+        test.assertAlmostEqual(l2_diff / l2_ref, 0.0, delta=1e-10)
+
+        # print("u=", u_hho.getValues())
+        # print("uh=", u_sol.getValues())
+        # print("diif=", u_diff.getValues())
 
 FIN()
