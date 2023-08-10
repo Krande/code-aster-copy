@@ -470,7 +470,7 @@ contains
         if (this%ndim > 1) then
             write (6, *) "    a2: ", this%axes(1:3, 2)
             if (this%ndim > 2) then
-                write (6, *) "    a: ", this%axes(1:3, 3)
+                write (6, *) "    a3: ", this%axes(1:3, 3)
             end if
         end if
         write (6, *) "Length box: ", this%length_box(1:this%ndim)

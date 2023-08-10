@@ -552,8 +552,8 @@ contains
 !
         real(kind=8) :: jaco, x, y, z
         real(kind=8), dimension(3) :: coorac
-        integer, parameter :: max_order = 6
-        integer, parameter :: max_pg = 23
+        integer, parameter :: max_order = 7
+        integer, parameter :: max_pg = 31
         character(len=8), dimension(0:max_order) :: rules
         integer :: dimp, nbpg, ipg
         real(kind=8) :: coorpg(max_pg*3), poidpg(max_pg)
@@ -561,7 +561,7 @@ contains
 ! ----- check order of integration
         call check_order(this%order, max_order)
 !
-        rules = (/'FPG1 ', 'FPG5 ', 'FPG5 ', 'FPG6 ', 'FPG10', 'FPG23', 'FPG23'/)
+        rules = (/'FPG1B', 'FPG1B', 'FPG5 ', 'FPG6 ', 'FPG10', 'FPG15', 'FPG24', 'FPG31'/)
 !
 !------ get quadrature points
         coorpg = 0.d0
@@ -795,15 +795,19 @@ contains
         elseif (typema == 'PYRAM5') then
             select case (npg)
             case (1)
-                order = 0
+                order = 1
             case (5)
                 order = 2
             case (6)
                 order = 3
             case (10)
                 order = 4
-            case (23)
+            case (15)
+                order = 5
+            case (24)
                 order = 6
+            case (31)
+                order = 7
             case default
                 ASSERT(ASTER_FALSE)
             end select

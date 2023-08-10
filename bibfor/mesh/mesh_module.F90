@@ -539,12 +539,18 @@ contains
         else if (cellTypeName .eq. 'PENTA18') then
             cellTopo = 'VOLU'
             cellOrder = 2
+        else if (cellTypeName .eq. 'PENTA21') then
+            cellTopo = 'VOLU'
+            cellOrder = 2
         else if (cellTypeName .eq. 'PYRAM5') then
             cellTopo = 'VOLU'
             cellOrder = 1
         else if (cellTypeName .eq. 'PYRAM13') then
             cellTopo = 'VOLU'
             cellOrder = 2
+        else if (cellTypeName .eq. 'PYRAM19') then
+            cellTopo = 'VOLU'
+            cellOrder = 1
         else if (cellTypeName .eq. 'HEXA8') then
             cellTopo = 'VOLU'
             cellOrder = 1
