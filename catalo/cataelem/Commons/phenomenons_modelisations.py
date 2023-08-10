@@ -6685,6 +6685,8 @@ phen.add(
         elements=(
             (MT.HEXA27, EL.THER3DH27_HHO222),
             (MT.TETRA15, EL.THER3DT15_HHO222),
+            (MT.PYRAM19, EL.THER3DP19_HHO222),
+            (MT.PENTA21, EL.THER3DP21_HHO222),
             (MT.QUAD9, EL.THER3DQU9_HHO2_F),
             (MT.TRIA7, EL.THER3DTR7_HHO2_F),
         ),
@@ -6706,6 +6708,8 @@ phen.add(
         elements=(
             (MT.HEXA27, EL.THER3DH27_HHO111),
             (MT.TETRA15, EL.THER3DT15_HHO111),
+            (MT.PYRAM19, EL.THER3DP19_HHO111),
+            (MT.PENTA21, EL.THER3DP21_HHO111),
             (MT.QUAD9, EL.THER3DQU9_HHO1_F),
             (MT.TRIA7, EL.THER3DTR7_HHO1_F),
         ),

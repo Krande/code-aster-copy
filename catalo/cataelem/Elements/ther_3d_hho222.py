@@ -263,3 +263,39 @@ class THER3DT15_HHO222(THER3DH27_HHO222):
             mater=("RIGI", "FPG1", "MTGA", "MASS"),
         ),
     )
+
+
+class THER3DP21_HHO222(THER3DH27_HHO222):
+    """Maille pentaèdre / prisme à 21 noeuds pour HHO en quadratique"""
+
+    meshType = MT.PENTA21
+    nodes = (
+        SetOfNodes("EN1", (16, 17, 18, 19, 20)),
+        SetOfNodes("EN2", (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)),
+        SetOfNodes("EN3", (21,)),
+    )
+    elrefe = (
+        ElrefeLoc(
+            MT.P21,
+            gauss=("RIGI=FPG21", "FPG1=FPG1", "MTGA=FPG21", "MASS=FPG21"),
+            mater=("RIGI", "FPG1", "MTGA", "MASS"),
+        ),
+    )
+
+
+class THER3DP19_HHO222(THER3DH27_HHO222):
+    """Maille pyramide à 19 noeuds pour HHO en quadratique"""
+
+    meshType = MT.PYRAM19
+    nodes = (
+        SetOfNodes("EN1", (14, 15, 16, 17, 18)),
+        SetOfNodes("EN2", (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13)),
+        SetOfNodes("EN3", (19,)),
+    )
+    elrefe = (
+        ElrefeLoc(
+            MT.P19,
+            gauss=("RIGI=FPG10", "FPG1=FPG1", "MTGA=FPG10", "MASS=FPG10"),
+            mater=("RIGI", "FPG1", "MTGA", "MASS"),
+        ),
+    )
