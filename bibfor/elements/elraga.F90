@@ -769,38 +769,41 @@ subroutine elraga(elrefz, fapz, ndim, nbpg, coopg, poipg)
             hpg(5) = p1
 
         else if (fapg .eq. 'FPG6') then
-! --------- ORDRE 3
-            p1 = 0.1024890634400000d0
-            p2 = 0.1100000000000000d0
-            p3 = 0.1467104129066667d0
-            a1 = 0.5702963741068025d0
-            h1 = un/6.d0
-            h2 = 0.8063183038464675d-1
-            h3 = 0.6098484849057127d0
-            xpg(1) = a1
-            xpg(2) = zero
-            xpg(3) = -a1
-            xpg(4) = zero
-            xpg(5) = zero
-            xpg(6) = zero
-            ypg(1) = zero
-            ypg(2) = a1
-            ypg(3) = zero
-            ypg(4) = -a1
-            ypg(5) = zero
-            ypg(6) = zero
-            zpg(1) = h1
-            zpg(2) = h1
-            zpg(3) = h1
-            zpg(4) = h1
-            zpg(5) = h2
-            zpg(6) = h3
-            hpg(1) = p1
-            hpg(2) = p1
-            hpg(3) = p1
-            hpg(4) = p1
-            hpg(5) = p2
-            hpg(6) = p3
+!    Order 3 (REX 33086)
+!    Freddie Witherden, Peter Vincent,
+!    On the identification of symmetric quadrature rules for finite element methods,
+!    Computers and Mathematics with Applications,
+!    Volume 69, pages 1232-1241, 2015.
+
+            xpg(1) = 0.d0
+            ypg(1) = 0.d0
+            zpg(1) = 0.5714285703860683d0
+            hpg(1) = 0.1681372559485071d0
+
+            xpg(2) = 0.d0
+            ypg(2) = 0.d0
+            zpg(2) = 5.67585d-09
+            hpg(2) = 0.07500000404404333d0
+
+            xpg(3) = -0.5610836110587396d0
+            ypg(3) = 0.d0
+            zpg(3) = 0.1666666666666667d0
+            hpg(3) = 0.1058823516685291d0
+
+            xpg(4) = 0.d0
+            ypg(4) = -0.5610836110587396d0
+            zpg(4) = 0.1666666666666667d0
+            hpg(4) = 0.1058823516685291d0
+
+            xpg(5) = 0.d0
+            ypg(5) = 0.5610836110587396d0
+            zpg(5) = 0.1666666666666667d0
+            hpg(5) = 0.1058823516685291d0
+
+            xpg(6) = 0.5610836110587396d0
+            ypg(6) = 0.d0
+            zpg(6) = 0.1666666666666667d0
+            hpg(6) = 0.1058823516685291d0
 
         else if (fapg .eq. 'FPG10') then
             ! Kubatko2013 voir fiche REX 20813
