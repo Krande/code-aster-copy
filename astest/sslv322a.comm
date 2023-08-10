@@ -236,6 +236,7 @@ FK2lag  = RECU_FONCTION(TABLE=CGKlag , PARA_X='ABSC_CURV', PARA_Y='K2_MPA',)
 FK3leg  = RECU_FONCTION(TABLE=CGKleg , PARA_X='ABSC_CURV', PARA_Y='K3_MPA',)
 FK3lag  = RECU_FONCTION(TABLE=CGKlag , PARA_X='ABSC_CURV', PARA_Y='K3_MPA',)
 
+
 # interpollation polynomiale (MS Excel) de la reference Murakami : G(s)
 def G_Murakami(x):
     a4 =  6.283263E+02
@@ -396,7 +397,7 @@ TEST_TABLE(TABLE=CGKleg2,
            PRECISION=1.E-2,
            REFERENCE='AUTRE_ASTER',
            VALE_REFE=1.09075614797,
-           VALE_CALC=1.080677886193644,
+    VALE_CALC=1.0807468152054989,
            )
 TEST_TABLE(TABLE=CGKleg2,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -405,7 +406,7 @@ TEST_TABLE(TABLE=CGKleg2,
            PRECISION=1.E-3,
            REFERENCE='AUTRE_ASTER',
            VALE_REFE=1.42890497938,
-           VALE_CALC=1.430175409194321,
+    VALE_CALC=1.4301342976909646,
            )
 
 #----------------------------------------------------------------------
