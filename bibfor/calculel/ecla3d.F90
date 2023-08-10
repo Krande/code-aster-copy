@@ -2443,15 +2443,15 @@ subroutine ecla3d(nomte, elrefa, fapg, npg, npoini, &
 !     -- EXCEPTION 4
     if (lpyram .and. fapg .eq. 'FPG10') then
         nbsel = 8
-        corsel(1) = 3
-        corsel(2) = 1
-        corsel(3) = 2
-        corsel(4) = 4
+        corsel(1) = 10
+        corsel(2) = 9
+        corsel(3) = 7
+        corsel(4) = 8
 !
-        corsel(5) = 10
-        corsel(6) = 10
-        corsel(7) = 10
-        corsel(8) = 10
+        corsel(5) = 1
+        corsel(6) = 1
+        corsel(7) = 1
+        corsel(8) = 1
     end if
 !
     call jedema()

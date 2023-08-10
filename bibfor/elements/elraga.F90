@@ -55,8 +55,8 @@ subroutine elraga(elrefz, fapz, ndim, nbpg, coopg, poipg)
     real(kind=8) :: aty(7), ht(7), atz(7)
     real(kind=8) :: lobWeight(7), lobCoor(7)
     real(kind=8) :: a1, a2, b1, b2, c1, c2, d1, e1
-    real(kind=8) :: h1, h2, h3, h4, h5
-    real(kind=8) :: p1, p2, p3, p4, p5, p6
+    real(kind=8) :: h1, h2, h3, h5
+    real(kind=8) :: p1, p2, p3, p4, p5
     real(kind=8) :: xno(3*MT_NNOMAX), vol
     real(kind=8), parameter :: zero = 0.d0, undemi = 0.5d0
     real(kind=8), parameter :: un = 1.d0, deux = 2.d0
@@ -806,64 +806,61 @@ subroutine elraga(elrefz, fapz, ndim, nbpg, coopg, poipg)
             hpg(6) = 0.1058823516685291d0
 
         else if (fapg .eq. 'FPG10') then
-            ! Kubatko2013 voir fiche REX 20813
-            ! x = (xi - eta) / 2
-            ! y = (xi + eta) / 2
-            ! z = (zeta + 1) / 2
-            ! h = weight / 4
+! Order 4 (REX 20813)
+!    Freddie Witherden, Peter Vincent,
+!    On the identification of symmetric quadrature rules for finite element methods,
+!    Computers and Mathematics with Applications,
+!    Volume 69, pages 1232-1241, 2015.
 
-            p1 = 0.6579669971265040d0
-            p2 = 0.6505815563925440d0/deux
-            p3 = -0.921503432203399d0/deux+undemi
-            p4 = -0.355231700855205d0/deux+undemi
-            p5 = -0.749726093801093d0/deux+undemi
-            p6 = 0.3544655777683170d0/deux+undemi
+            xpg(1) = 0.d0
+            ypg(1) = 0.d0
+            zpg(1) = 0.6772327888861374d0
+            hpg(1) = 0.07582792211376127d0
 
-            h1 = 0.169384241783417d0/4.d0
-            h2 = 0.283532234381299d0/4.d0
-            h3 = 0.551689073546826d0/4.d0
-            h4 = 0.303311688460986d0/4.d0
+            xpg(2) = 0.d0
+            ypg(2) = 0.d0
+            zpg(2) = 0.1251369531087465d0
+            hpg(2) = 0.1379222683930349d0
 
-            xpg(1) = zero
-            xpg(2) = -p1
-            xpg(3) = p1
-            xpg(4) = zero
-            xpg(5) = p2
-            xpg(6) = -p2
-            xpg(7) = -p2
-            xpg(8) = p2
-            xpg(9) = zero
-            xpg(10) = zero
-            ypg(1) = p1
-            ypg(2) = zero
-            ypg(3) = zero
-            ypg(4) = -p1
-            ypg(5) = p2
-            ypg(6) = -p2
-            ypg(7) = p2
-            ypg(8) = -p2
-            ypg(9) = zero
-            ypg(10) = zero
-            zpg(1) = p3
-            zpg(2) = p3
-            zpg(3) = p3
-            zpg(4) = p3
-            zpg(5) = p4
-            zpg(6) = p4
-            zpg(7) = p4
-            zpg(8) = p4
-            zpg(9) = p5
-            zpg(10) = p6
-            hpg(1) = h1
-            hpg(2) = h1
-            hpg(3) = h1
-            hpg(4) = h1
-            hpg(5) = h2
-            hpg(6) = h2
-            hpg(7) = h2
-            hpg(8) = h2
-            hpg(9) = h3
-            hpg(10) = h4
+            xpg(3) = -0.3252907781991163d0
+            ypg(3) = -0.3252907781991163d0
+            zpg(3) = 0.3223841495782137d0
+            hpg(3) = 0.07088305859288367d0
+
+            xpg(4) = -0.3252907781991163d0
+            ypg(4) = 0.3252907781991163d0
+            zpg(4) = 0.3223841495782137d0
+            hpg(4) = 0.07088305859288367d0
+
+            xpg(5) = 0.3252907781991163d0
+            ypg(5) = 0.3252907781991163d0
+            zpg(5) = 0.3223841495782137d0
+            hpg(5) = 0.07088305859288367d0
+
+            xpg(6) = 0.3252907781991163d0
+            ypg(6) = -0.3252907781991163d0
+            zpg(6) = 0.3223841495782137d0
+            hpg(6) = 0.07088305859288367d0
+
+            xpg(7) = -0.65796699712169d0
+            ypg(7) = 0.d0
+            zpg(7) = 0.0392482838988154d0
+            hpg(7) = 0.04234606044708394d0
+
+            xpg(8) = 0.d0
+            ypg(8) = -0.65796699712169d0
+            zpg(8) = 0.0392482838988154d0
+            hpg(8) = 0.04234606044708394d0
+
+            xpg(9) = 0.d0
+            ypg(9) = 0.65796699712169d0
+            zpg(9) = 0.0392482838988154d0
+            hpg(9) = 0.04234606044708394d0
+
+            xpg(10) = 0.65796699712169d0
+            ypg(10) = 0.d0
+            zpg(10) = 0.0392482838988154d0
+            hpg(10) = 0.04234606044708394d0
 
         else if (fapg .eq. 'FPG5NOS') then
 ! --------- POUR LES POINTS DE GAUSS
