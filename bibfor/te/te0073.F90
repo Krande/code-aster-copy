@@ -239,7 +239,7 @@ subroutine te0073(option, nomte)
                     do i = 1, nno
                         li = ivf+(kp-1)*nno+i-1
                         vectt(c(ise, i)) = vectt(c(ise, i)) &
-                                           +poids*zr(li)*(sigm1*eps1*((tpg+tz0)**4-(tpf1+tz0)**4))
+                                           +poids*zr(li)*sigm1*eps1*((tpf1+tz0)**4-(tpg+tz0)**4)
                     end do
                 else
                     do i = 1, nno

@@ -557,14 +557,13 @@ DiscreteComputation::getThermalTangentNonLinearNeumannMatrix( const FieldOnNodes
     auto calcul = std::make_unique< Calcul >( calcul_option );
 
     auto impl = [&]( auto load, const std::string &option, const std::string &name,
-                     const std::string &param, const FiniteElementDescriptorPtr FED,
-                     const ASTERINTEGER theta ) {
+                     const std::string &param, const FiniteElementDescriptorPtr FED ) {
         if ( load->hasLoadField( name ) ) {
             calcul->setOption( option );
             calcul->setFiniteElementDescriptor( FED );
 
             calcul->clearInputs();
-            calcul->addTimeField( "PTEMPSR", time_curr, 0.0, theta );
+            calcul->addTimeField( "PTEMPSR", time_curr, 0.0, -1.0 );
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
             calcul->addInputField( "PTEMPEI", temp_curr );
 
@@ -581,13 +580,13 @@ DiscreteComputation::getThermalTangentNonLinearNeumannMatrix( const FieldOnNodes
 
     auto therLoadReal = listOfLoads->getThermalLoadsReal();
     for ( const auto &load : therLoadReal ) {
-        impl( load, "MTAN_THER_RAYO_R", "RAYO", "PRAYONR", model_FEDesc, 1.0 );
+        impl( load, "MTAN_THER_RAYO_R", "RAYO", "PRAYONR", model_FEDesc );
     }
 
     auto therLoadFunc = listOfLoads->getThermalLoadsFunction();
     for ( const auto &load : therLoadFunc ) {
-        impl( load, "MTAN_THER_FLUXNL", "FLUNL", "PFLUXNL", model_FEDesc, -1.0 );
-        impl( load, "MTAN_THER_RAYO_F", "RAYO", "PRAYONF", model_FEDesc, 1.0 );
+        impl( load, "MTAN_THER_FLUXNL", "FLUNL", "PFLUXNL", model_FEDesc );
+        impl( load, "MTAN_THER_RAYO_F", "RAYO", "PRAYONF", model_FEDesc );
     }
 
     elemMatr->build();

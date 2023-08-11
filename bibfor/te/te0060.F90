@@ -246,8 +246,8 @@ subroutine te0060(option, nomte)
 !
             if (theta < -0.5) then
                 do i = 1, nno
-                    zr(ivectt+i-1) = zr(ivectt+i-1)+jac*zr(ipoids+ipg-1)*zr(ivf+ldec+i-1)*( &
-                                     sigm1*eps1*((tem+tz0)**4-(tpf1+tz0)**4))
+                    zr(ivectt+i-1) = zr(ivectt+i-1)+jac*zr(ipoids+ipg-1)*zr(ivf+ldec+i-1)* &
+                                     sigm1*eps1*((tpf1+tz0)**4-(tem+tz0)**4)
                 end do
             else
                 do i = 1, nno

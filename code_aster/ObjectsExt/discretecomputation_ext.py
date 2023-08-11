@@ -629,15 +629,20 @@ class ExtendedDiscreteComputation:
             primal_curr = phys_state.primal + phys_state.primal_step
             time_curr = phys_state.time + phys_state.time_step
 
-            matr_elem_ext = []
-            matr_elem_ext.append(self.getThermalExchangeMatrix(time_curr))
+            matr_elem_ext = self.getThermalExchangeMatrix(time_curr)
+            matr_elem_ext *= -1.0
 
-            matr_elem_ext.append(
-                self.getThermalTangentNonLinearNeumannMatrix(primal_curr, time_curr)
+            matr_elem_ext.addElementaryTerm(
+                self.getThermalTangentNonLinearNeumannMatrix(
+                    primal_curr, time_curr
+                ).getElementaryTerms()
             )
-            matr_elem_ext.append(
-                self.getThermalTangentNonLinearVolumetricMatrix(primal_curr, time_curr)
+            matr_elem_ext.addElementaryTerm(
+                self.getThermalTangentNonLinearVolumetricMatrix(
+                    primal_curr, time_curr
+                ).getElementaryTerms()
             )
+            matr_elem_ext.build()
 
         return matr_elem_ext
 
@@ -679,9 +684,7 @@ class ExtendedDiscreteComputation:
             jacobian.addElementaryMatrix(matr_elem_rigi)
             jacobian.addElementaryMatrix(matr_elem_dual)
             jacobian.addElementaryMatrix(matr_elem_cont)
-            if matr_elem_ext:
-                for matr_elem in matr_elem_ext:
-                    jacobian.addElementaryMatrix(matr_elem, -1.0)
+            jacobian.addElementaryMatrix(matr_elem_ext, -1.0)
 
             jacobian.assemble()
 
