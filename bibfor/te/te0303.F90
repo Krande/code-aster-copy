@@ -103,11 +103,19 @@ subroutine te0303(option, nomte)
             ldec = (ipg-1)*nno
             tem = tem+(zr(itemp+nno+i-1)-zr(itemp+i-1))*zr(ivf+ldec+i-1)
         end do
-        do i = 1, nno
-            zr(ivectt+i-1) = zr(ivectt+i-1)+jac*h*zr(ipoids+ipg-1)*zr(ivf+ldec+i-1)*(1&
-                             &.0d0-theta)*tem
-            zr(ivectt+nno+i-1) = zr(ivectt+nno+i-1)-jac*h*zr(ipoids+ipg-1)*zr(ivf+ldec+i-&
-                                 &1)*(1.0d0-theta)*tem
-        end do
+        if (theta < -0.5) then
+            do i = 1, nno
+                zr(ivectt+i-1) = zr(ivectt+i-1)+jac*h*zr(ipoids+ipg-1)*zr(ivf+ldec+i-1)*tem
+                zr(ivectt+nno+i-1) = zr(ivectt+nno+i-1)-jac*h*zr(ipoids+ipg-1)*zr(ivf+ldec+i-&
+                                     &1)*tem
+            end do
+        else
+            do i = 1, nno
+                zr(ivectt+i-1) = zr(ivectt+i-1)+jac*h*zr(ipoids+ipg-1)*zr(ivf+ldec+i-1)*(1&
+                                &.0d0-theta)*tem
+                zr(ivectt+nno+i-1) = zr(ivectt+nno+i-1)-jac*h*zr(ipoids+ipg-1)*zr(ivf+ldec+i-&
+                                    &1)*(1.0d0-theta)*tem
+            end do
+        end if
     end do
 end subroutine

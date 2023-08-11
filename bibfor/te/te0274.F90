@@ -133,10 +133,17 @@ subroutine te0274(option, nomte)
 !
             call foderi(coef, tpg, alpha, rbid)
 !
-            do i = 1, nno
-                li = ivf+(kp-1)*nno+i-1
-                vectt(c(ise, i)) = vectt(c(ise, i))+poids*(1.d0-theta)*alpha*zr(li)
-            end do
+            if (theta < -0.5d0) then
+                do i = 1, nno
+                    li = ivf+(kp-1)*nno+i-1
+                    vectt(c(ise, i)) = vectt(c(ise, i))+poids*alpha*zr(li)
+                end do
+            else
+                do i = 1, nno
+                    li = ivf+(kp-1)*nno+i-1
+                    vectt(c(ise, i)) = vectt(c(ise, i))+poids*(1.d0-theta)*alpha*zr(li)
+                end do
+            end if
 ! FIN BOUCLE SUR LES PTS DE GAUSS
         end do
 ! FIN BOUCLE SUR LES SOUS-ELEMENTS

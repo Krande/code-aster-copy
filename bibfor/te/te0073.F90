@@ -178,13 +178,20 @@ subroutine te0073(option, nomte)
                 else
                     texn = 0.d0
                 end if
-                do i = 1, nno
-                    li = ivf+(kp-1)*nno+i-1
-                    vectt(c(ise, i)) = vectt( &
-                                      c(ise, i))+poids*zr(li)*(theta*coenp1*texnp1+(1.0d0-thet&
-                                      &a)*coen*(texn-tpg) &
-                                      )
-                end do
+                if (theta < -0.5) then
+                    do i = 1, nno
+                        li = ivf+(kp-1)*nno+i-1
+                        vectt(c(ise, i)) = vectt(c(ise, i))+poids*zr(li)*coenp1*(texnp1-tpg)
+                    end do
+                else
+                    do i = 1, nno
+                        li = ivf+(kp-1)*nno+i-1
+                        vectt(c(ise, i)) = vectt( &
+                                        c(ise, i))+poids*zr(li)*(theta*coenp1*texnp1+(1.0d0-thet&
+                                        &a)*coen*(texn-tpg) &
+                                        )
+                    end do
+                end if
 !====
 ! 2.2 OPTION CHAR_THER_RAYO_F/R
 !====
@@ -227,13 +234,22 @@ subroutine te0073(option, nomte)
                 else
                     tpfn = 0.d0
                 end if
-                do i = 1, nno
-                    li = ivf+(kp-1)*nno+i-1
-                    vectt(c(ise, i)) = vectt( &
-                                      c(ise, i))+poids*zr(li)*(theta*sigm1*eps1*(tpf1+tz0)**4+&
-                                      & (1.0d0-theta)*sigmn*epsn*((tpfn+tz0)**4-(tpg+tz0)**4) &
-                                      )
-                end do
+
+                if (theta < -0.5) then
+                    do i = 1, nno
+                        li = ivf+(kp-1)*nno+i-1
+                        vectt(c(ise, i)) = vectt(c(ise, i)) &
+                                           +poids*zr(li)*(sigm1*eps1*((tpg+tz0)**4-(tpf1+tz0)**4))
+                    end do
+                else
+                    do i = 1, nno
+                        li = ivf+(kp-1)*nno+i-1
+                        vectt(c(ise, i)) = vectt( &
+                                        c(ise, i))+poids*zr(li)*(theta*sigm1*eps1*(tpf1+tz0)**4+&
+                                        & (1.0d0-theta)*sigmn*epsn*((tpfn+tz0)**4-(tpg+tz0)**4) &
+                                        )
+                    end do
+                end if
 !
 ! FIN DU IF LTEXT
             end if

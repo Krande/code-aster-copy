@@ -160,8 +160,7 @@ class DiscreteComputation {
                                 const bool assembly = true ) const;
 
     std::variant< ElementaryVectorTemperatureRealPtr, FieldOnNodesRealPtr >
-    getThermalNeumannForces( const ASTERDOUBLE time_curr = 0.0, const ASTERDOUBLE time_step = 0.0,
-                             const ASTERDOUBLE theta = 1.0, const bool assembly = true ) const;
+    getThermalNeumannForces( const ASTERDOUBLE time_curr = 0.0, const bool assembly = true ) const;
 
     std::variant< ElementaryVectorTemperatureRealPtr, FieldOnNodesRealPtr >
     getThermalNonLinearNeumannForces( const FieldOnNodesRealPtr temp_curr,
@@ -184,7 +183,6 @@ class DiscreteComputation {
 
     std::variant< ElementaryVectorTemperatureRealPtr, FieldOnNodesRealPtr >
     getThermalVolumetricForces( const ASTERDOUBLE time_curr = 0.0,
-                                const ASTERDOUBLE time_step = 0.0, const ASTERDOUBLE theta = 1.0,
                                 const FieldOnCellsRealPtr varc_curr = nullptr,
                                 const bool assembly = true ) const;
 
@@ -373,9 +371,7 @@ class DiscreteComputation {
 
     std::variant< ElementaryVectorTemperatureRealPtr, FieldOnNodesRealPtr >
     getThermalExchangeForces( const FieldOnNodesRealPtr temp_curr,
-                              const ASTERDOUBLE time_curr = 0.0, const ASTERDOUBLE time_step = 0.0,
-                              const ASTERDOUBLE time_theta = 1.0,
-                              const bool assembly = true ) const;
+                              const ASTERDOUBLE time_curr = 0.0, const bool assembly = true ) const;
 
     FieldOnNodesRealPtr
     getTransientThermalForces( const ASTERDOUBLE time_curr, const ASTERDOUBLE time_step,

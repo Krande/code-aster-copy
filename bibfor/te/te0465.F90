@@ -66,9 +66,8 @@ subroutine te0465(option, nomte)
     type(HHO_basis_cell) :: hhoBasisCell
     real(kind=8), dimension(MSIZE_CELL_SCAL) :: rhs_T
     real(kind=8), dimension(MSIZE_TDOFS_SCAL) :: rhs
-    real(kind=8) :: ValQP_curr(MAX_QP_CELL), ValQP_prev(MAX_QP_CELL)
     real(kind=8) :: NeumValuesQP(MAX_QP_CELL)
-    real(kind=8) :: theta, time_curr, time_prev
+    real(kind=8) :: theta, time_curr
     integer :: fbs, nbpara, npg, faces_dofs, cbs, total_dofs
     integer :: j_time, j_sour
 !
@@ -89,15 +88,14 @@ subroutine te0465(option, nomte)
 !
     ASSERT(hhoQuadCell%nbQuadPoints <= MAX_QP_CELL)
 !
-    ValQP_curr = 0.d0
-    ValQP_prev = 0.d0
+    NeumValuesQP = 0.d0
     nompar(:) = 'XXXXXXXX'
     valpar(:) = 0.d0
 !
     call jevech('PTEMPSR', 'L', j_time)
     time_curr = zr(j_time)
-    time_prev = time_curr-zr(j_time+1)
     theta = zr(j_time+2)
+    ASSERT(theta < -0.5)
 !
 ! ---- Which option ?
 !
@@ -106,8 +104,7 @@ subroutine te0465(option, nomte)
 ! ----- Get real value COEF_H
 !
         call jevech('PSOURCR', 'L', j_sour)
-        ValQP_prev(1:npg) = zr(j_sour-1+1:j_sour-1+npg)
-        ValQP_curr = ValQP_prev
+        NeumValuesQP(1:npg) = zr(j_sour-1+1:j_sour-1+npg)
 !
     elseif (option .eq. 'CHAR_THER_SOUR_F') then
         call jevech('PSOURCF', 'L', j_sour)
@@ -132,25 +129,14 @@ subroutine te0465(option, nomte)
 ! ----- Evaluate the analytical function at T+
 !
         call hhoFuncFScalEvalQp(hhoQuadCell, zk8(j_sour), nbpara, nompar, valpar, &
-                                hhoCell%ndim, ValQP_curr)
-!
-! ---- Time -
-!
-        nompar(nbpara) = 'INST'
-        valpar(nbpara) = time_prev
-!
-! ----- Evaluate the analytical function at T-
-!
-        call hhoFuncFScalEvalQp(hhoQuadCell, zk8(j_sour), nbpara, nompar, valpar, &
-                                hhoCell%ndim, ValQP_prev)
+                                hhoCell%ndim, NeumValuesQP)
 !
     else
         ASSERT(ASTER_FALSE)
     end if
 !
 ! ---- compute surface load
-!
-    NeumValuesQP = theta*ValQP_curr+(1.d0-theta)*ValQP_prev
+!$
     call hhoMakeRhsCellScal(hhoCell, hhoQuadCell, NeumValuesQP, hhoData%cell_degree(), rhs_T)
 !
 ! ---- save result

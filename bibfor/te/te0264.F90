@@ -78,7 +78,11 @@ subroutine te0264(option, nomte)
         valpar(3) = zr(itemps)-zr(itemps+1)
         call fointe('FM', zk8(isour), 3, nompar, valpar, &
                     soun, icode)
-        sour = theta*sounp1+(1.0d0-theta)*soun
+        if (theta < -0.5) then
+            sour = sounp1
+        else
+            sour = theta*sounp1+(1.0d0-theta)*soun
+        end if
         do i = 1, nno
             zr(ivectt+i-1) = zr(ivectt+i-1)+poids*zr(ivf+k+i-1)*sour
         end do

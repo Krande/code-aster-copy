@@ -68,9 +68,8 @@ subroutine te0461(option, nomte)
     real(kind=8), dimension(MSIZE_FACE_SCAL) :: rhs, temp_F_curr
     real(kind=8) :: CoefHQP_curr(MAX_QP_FACE)
     real(kind=8) :: ParaQP_curr(MAX_QP_FACE)
-    real(kind=8) :: ValQP_curr(MAX_QP_FACE)
     real(kind=8) :: NeumValuesQP(MAX_QP_FACE)
-    real(kind=8) :: time_prev, time_curr, theta, temp_eval_curr, time
+    real(kind=8) :: time_curr, theta, temp_eval_curr
     integer :: fbs, celldim, ipg, nbpara, npg
     integer :: j_time, j_coefh, j_para
 !
@@ -93,23 +92,15 @@ subroutine te0461(option, nomte)
     celldim = hhoFace%ndim+1
     CoefHQP_curr = 0.d0
     ParaQP_curr = 0.d0
-    ValQP_curr = 0.d0
+    NeumValuesQP = 0.d0
     nompar(:) = 'XXXXXXXX'
     valpar(:) = 0.d0
 !
     call jevech('PTEMPSR', 'L', j_time)
     time_curr = zr(j_time)
-    time_prev = time_curr-zr(j_time+1)
     theta = zr(j_time+2)
+    ASSERT(theta < -0.5)
 !
-!   TODO: give directly time
-    if (theta .eq. 1.d0) then
-        time = time_curr
-    elseif (theta .eq. 0.0) then
-        time = time_prev
-    else
-        ASSERT(ASTER_FALSE)
-    end if
 !
 ! ---- Which option ?
 !
@@ -144,7 +135,7 @@ subroutine te0461(option, nomte)
 ! ---- Time +
 !
         nompar(nbpara) = 'INST'
-        valpar(nbpara) = time
+        valpar(nbpara) = time_curr
 !
 ! ----- Evaluate the analytical function at T+
 !
@@ -178,7 +169,7 @@ subroutine te0461(option, nomte)
 ! ---- Time +
 !
         nompar(nbpara) = 'INST'
-        valpar(nbpara) = time
+        valpar(nbpara) = time_curr
 !
 ! ----- Evaluate the analytical function at T+
 !
@@ -198,18 +189,17 @@ subroutine te0461(option, nomte)
             temp_eval_curr = hhoEvalScalFace(hhoFace, hhoBasisFace, hhoData%face_degree(), &
                                              hhoQuadFace%points(1:3, ipg), temp_F_curr, fbs)
 
-            ValQP_curr(ipg) = CoefHQP_curr(ipg)*(ParaQP_curr(ipg)-temp_eval_curr)
+            NeumValuesQP(ipg) = CoefHQP_curr(ipg)*(ParaQP_curr(ipg)-temp_eval_curr)
         end do
 !
     elseif (option(1:15) .eq. 'CHAR_THER_FLUN_') then
-        ValQP_curr = ParaQP_curr
+        NeumValuesQP = ParaQP_curr
     else
         ASSERT(ASTER_FALSE)
     end if
 !
 ! ---- compute surface load
 !
-    NeumValuesQP = ValQP_curr
     call hhoTherNeumForces(hhoFace, hhoData, hhoQuadFace, NeumValuesQP, rhs)
 !
 ! ---- save result

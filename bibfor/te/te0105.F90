@@ -93,9 +93,15 @@ subroutine te0105(option, nomte)
                         fmon, ier)
             call fointe('FM', zk8(iflux+1), 4, nompar, valpar, &
                         fpln, ier)
-            pc(1) = zero
-            pc(2) = theta*(fmonp1)+(un-theta)*(fmon)
-            pc(3) = theta*(fplnp1)+(un-theta)*(fpln)
+            if (theta < -0.5) then
+                pc(1) = zero
+                pc(2) = fmonp1
+                pc(3) = fplnp1
+            else
+                pc(1) = zero
+                pc(2) = theta*(fmonp1)+(un-theta)*(fmon)
+                pc(3) = theta*(fplnp1)+(un-theta)*(fpln)
+            end if
             do gi = 1, nno
                 do pi = 1, 3
                     i = 3*(gi-1)+pi-1+ivectt
@@ -136,9 +142,15 @@ subroutine te0105(option, nomte)
                         fmon, ier)
             call fointe('FM', zk8(iflux+1), 3, nompar, valpar, &
                         fpln, ier)
-            pc(1) = zero
-            pc(2) = theta*(fmonp1)+(un-theta)*(fmon)
-            pc(3) = theta*(fplnp1)+(un-theta)*(fpln)
+            if (theta < -0.5) then
+                pc(1) = zero
+                pc(2) = fmonp1
+                pc(3) = fplnp1
+            else
+                pc(1) = zero
+                pc(2) = theta*(fmonp1)+(un-theta)*(fmon)
+                pc(3) = theta*(fplnp1)+(un-theta)*(fpln)
+            end if
             do gi = 1, nno
                 do pi = 1, 3
                     i = 3*(gi-1)+pi-1+ivectt
@@ -191,7 +203,11 @@ subroutine te0105(option, nomte)
 !
 !      IMPORTANT: FLUXP1 OU FLUX = FLUX * EPAISSEUR
 !
-            coef = (theta*fluxp1+(un-theta)*flux)/2.d0
+            if (theta < -0.5) then
+                coef = fluxp1
+            else
+                coef = (theta*fluxp1+(un-theta)*flux)/2.d0
+            end if
 !
             poid = zr(ipoids-1+kp)
 !

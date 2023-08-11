@@ -113,7 +113,11 @@ subroutine te0075(option, nomte)
             else
                 flun = 0.0d0
             end if
-            flux = theta*flunp1+(1.0d0-theta)*flun
+            if (theta < -0.5) then
+                flux = flunp1
+            else
+                flux = theta*flunp1+(1.0d0-theta)*flun
+            end if
             do i = 1, nno
                 li = ivf+(kp-1)*nno+i-1
                 vectt(c(ise, i)) = vectt(c(ise, i))+poids*zr(li)*flux

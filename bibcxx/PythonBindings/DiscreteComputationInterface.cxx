@@ -98,15 +98,12 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
       Arguments:
             temp_curr (FieldOnNodesReal): thermal field at current time
             time_curr (float): Current time
-            time_step (float): Time increment
-            theta (float): Theta parameter for time-integration
             assembly (bool) : if True return assembled vector (default: True)
 
       Returns:
             ElementaryVectorThermalReal: elementary Exchange forces vector
         )",
-              py::arg( "temp_curr" ), py::arg( "time_curr" ) = 0.0, py::arg( "time_step" ) = 0.0,
-              py::arg( "theta" ) = 1.0, py::arg( "assembly" ) = true )
+              py::arg( "temp_curr" ), py::arg( "time_curr" ) = 0.0, py::arg( "assembly" ) = true )
 
         .def( "getMechanicalNeumannForces", &DiscreteComputation::getMechanicalNeumannForces,
               R"(
@@ -132,16 +129,13 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
       Return the elementary thermal Neumann forces vector
 
       Arguments:
-            time_curr (float): Current time
-            time_step (float): Time increment
-            theta (float): Theta parameter for time-integration
+            time_curr (float): Current time (default: 0.0)
             assembly (bool) : if True return assembled vector (default: True)
 
       Returns:
             ElementaryVectorThermalReal: elementary Neumann forces vector
         )",
-              py::arg( "time_curr" ) = 0.0, py::arg( "time_step" ) = 0.0, py::arg( "theta" ) = 1.0,
-              py::arg( "assembly" ) = true )
+              py::arg( "time_curr" ) = 0.0, py::arg( "assembly" ) = true )
 
         .def( "getAcousticNeumannForces", &DiscreteComputation::getAcousticNeumannForces,
               R"(
@@ -180,16 +174,14 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
 
       Arguments:
             time_curr (float): Current time
-            time_step (float): Time increment
-            theta (float): Theta parameter for time-integration
             varc_curr (FieldOnCellsReal): external state variables at current time
             assembly (bool) : if True return assembled vector (default: True)
 
       Returns:
             ElementaryVectorThermalReal: elementary Volumetric forces vector
         )",
-              py::arg( "time_curr" ) = 0.0, py::arg( "time_step" ) = 0.0, py::arg( "theta" ) = 1.0,
-              py::arg( "varc_curr" ) = nullptr, py::arg( "assembly" ) = true )
+              py::arg( "time_curr" ) = 0.0, py::arg( "varc_curr" ) = nullptr,
+              py::arg( "assembly" ) = true )
 
         .def( "getAcousticVolumetricForces", &DiscreteComputation::getAcousticVolumetricForces,
               R"(

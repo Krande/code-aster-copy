@@ -243,7 +243,7 @@ class ExtendedDiscreteComputation:
         phys_pb = self.getPhysicalProblem()
 
         if phys_pb.isThermal():
-            return self.getThermalVolumetricForces(time_curr, time_step, theta, varc_curr, assembly)
+            return self.getThermalVolumetricForces(time_curr, varc_curr, assembly)
         elif phys_pb.isMechanical():
             return self.getMechanicalVolumetricForces(
                 time_curr, time_step, theta, mode, varc_curr, assembly
@@ -275,7 +275,7 @@ class ExtendedDiscreteComputation:
         phys_pb = self.getPhysicalProblem()
 
         if phys_pb.isThermal():
-            return self.getThermalNeumannForces(time_curr, time_step, theta, assembly)
+            return self.getThermalNeumannForces(time_curr, assembly)
         elif phys_pb.isMechanical():
             return self.getMechanicalNeumannForces(
                 time_curr, time_step, theta, mode, varc_curr, assembly
@@ -421,28 +421,29 @@ class ExtendedDiscreteComputation:
             FieldOnNodesReal: external residual field
         """
 
-        # Compute Neumann forces
-        neumann_forces = self.getNeumannForces(
-            phys_state.time + phys_state.time_step, varc_curr=phys_state.externVar
-        )
-
-        volum_forces = self.getVolumetricForces(
-            phys_state.time + phys_state.time_step, varc_curr=phys_state.externVar
-        )
-
-        resi_ext = neumann_forces + volum_forces
-
         if self.getPhysicalProblem().isThermal():
+            time_curr = phys_state.time + phys_state.time_step
+            temp_curr = phys_state.primal + phys_state.primal_step
+
+            resi_ext = self.getNeumannForces(time_curr, varc_curr=phys_state.externVar)
+
+            resi_ext += self.getVolumetricForces(time_curr, varc_curr=phys_state.externVar)
+
             resi_ext += self.getNonLinearNeumannForces(
                 phys_state.primal, phys_state.primal_step, phys_state.time, phys_state.time_step
             )
 
-            resi_ext += self.getThermalExchangeForces(
-                phys_state.createPrimal(self.getPhysicalProblem(), 0.0),
-                phys_state.time + phys_state.time_step,
-                phys_state.time_step,
-                1.0,
+            resi_ext += self.getThermalExchangeForces(temp_curr, time_curr)
+        elif self.getPhysicalProblem().isMechanical():
+            resi_ext = self.getNeumannForces(
+                phys_state.time, phys_state.time_step, varc_curr=phys_state.externVar
             )
+
+            resi_ext += self.getVolumetricForces(
+                phys_state.time, phys_state.time_step, varc_curr=phys_state.externVar
+            )
+        else:
+            raise RuntimeError()
 
         return resi_ext
 

@@ -105,7 +105,11 @@ subroutine te0056(option, nomte)
         else
             soun = 0.d0
         end if
-        sourc = theta*sounp1+(1.0d0-theta)*soun
+        if (theta < -0.5) then
+            sourc = sounp1
+        else
+            sourc = theta*sounp1+(1.0d0-theta)*soun
+        end if
 !
         do i = 1, nno
             zr(ivectt+i-1) = zr(ivectt+i-1)+poids*sourc*zr(ivf+l+i-1)

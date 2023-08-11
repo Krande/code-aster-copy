@@ -108,7 +108,11 @@ subroutine te0080(option, nomte)
             else
                 soun = 0.d0
             end if
-            sour = theta*sounp1+(1.0d0-theta)*soun
+            if (theta < -0.5) then
+                sour = sounp1
+            else
+                sour = theta*sounp1+(1.0d0-theta)*soun
+            end if
             do i = 1, nno
                 k = (kp-1)*nno
                 vectt(c(ise, i)) = vectt(c(ise, i))+poids*zr(ivf+k+i-1)*sour

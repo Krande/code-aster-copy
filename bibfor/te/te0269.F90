@@ -63,9 +63,15 @@ subroutine te0269(option, nomte)
             tpg = tpg+zr(itemp+i-1)*zr(ivf+k+i-1)
         end do
         poids = poids*r
-        do i = 1, nno
-            zr(ivectt+i-1) = zr(ivectt+i-1)+poids*zr(ivf+k+i-1)*zr(icoefh)*(zr(itex)-(1.0d0-&
-                             &theta)*tpg)
-        end do
+        if (theta < -0.5) then
+            do i = 1, nno
+                zr(ivectt+i-1) = zr(ivectt+i-1)+poids*zr(ivf+k+i-1)*zr(icoefh)*(zr(itex)-tpg)
+            end do
+        else
+            do i = 1, nno
+                zr(ivectt+i-1) = zr(ivectt+i-1)+poids*zr(ivf+k+i-1)*zr(icoefh)*(zr(itex)-(1.0d0-&
+                                &theta)*tpg)
+            end do
+        end if
     end do
 end subroutine

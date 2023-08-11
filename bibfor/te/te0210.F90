@@ -104,10 +104,18 @@ subroutine te0210(option, nomte)
         call fointe('FM', zk8(ihechp), 3, nompar, valpar, &
                     hechp, icode)
 !
-        do i = 1, nno
-            li = ivf+(kp-1)*nno+i-1
-            zr(ivectt+i-1) = zr(ivectt+i-1)+poids*zr(li)*hechp*(1.0d0-theta)*tpg
-            zr(ivectt+i-1+nno) = zr(ivectt+i-1+nno)-poids*zr(li)*hechp*(1.0d0-theta)*tpg
-        end do
+        if (theta < -0.5) then
+            do i = 1, nno
+                li = ivf+(kp-1)*nno+i-1
+                zr(ivectt+i-1) = zr(ivectt+i-1)+poids*zr(li)*hechp*tpg
+                zr(ivectt+i-1+nno) = zr(ivectt+i-1+nno)-poids*zr(li)*hechp*tpg
+            end do
+        else
+            do i = 1, nno
+                li = ivf+(kp-1)*nno+i-1
+                zr(ivectt+i-1) = zr(ivectt+i-1)+poids*zr(li)*hechp*(1.0d0-theta)*tpg
+                zr(ivectt+i-1+nno) = zr(ivectt+i-1+nno)-poids*zr(li)*hechp*(1.0d0-theta)*tpg
+            end do
+        end if
     end do
 end subroutine

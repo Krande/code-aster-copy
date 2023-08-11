@@ -104,8 +104,15 @@ subroutine te0107(option, nomte)
                         coefp1, ier)
             call fointe('FM', zk8(itex+2), 4, nompar, valpar, &
                         textp1, ier)
-            fmo = theta*coefm2*textm2+(un-theta)*coefm1*textm1
-            fpl = theta*coefp2*textp2+(un-theta)*coefp1*textp1
+
+            if (theta < -0.5) then
+                fmo = coefm2*textm2
+                fpl = coefp2*textp2
+            else
+                fmo = theta*coefm2*textm2+(un-theta)*coefm1*textm1
+                fpl = theta*coefp2*textp2+(un-theta)*coefp1*textp1
+            end if
+
             pc(1) = zero
             pc(2) = fmo
             pc(3) = fpl
@@ -158,8 +165,15 @@ subroutine te0107(option, nomte)
                         coefp1, ier)
             call fointe('FM', zk8(itex+2), 3, nompar, valpar, &
                         textp1, ier)
-            fmo = theta*coefm2*textm2+(un-theta)*coefm1*textm1
-            fpl = theta*coefp2*textp2+(un-theta)*coefp1*textp1
+
+            if (theta < -0.5) then
+                fmo = coefm2*textm2
+                fpl = coefp2*textp2
+            else
+                fmo = theta*coefm2*textm2+(un-theta)*coefm1*textm1
+                fpl = theta*coefp2*textp2+(un-theta)*coefp1*textp1
+            end if
+
             pc(1) = zero
             pc(2) = fmo
             pc(3) = fpl
@@ -237,10 +251,17 @@ subroutine te0107(option, nomte)
 !
 !      IMPORTANT: COENP1 OU COEN = CONV * EPAISSEUR
 !
-            do i = 1, 3*nno
-                zr(ivectt-1+i) = zr(ivectt-1+i)+long*matnp(i)*(theta*coenp1*texnp1+(un-theta&
-                                 &)*coen*texn)/2.d0
-            end do
+            if (theta < -0.5) then
+                do i = 1, 3*nno
+                    zr(ivectt-1+i) = zr(ivectt-1+i)+long*matnp(i)*coenp1*texnp1/2.d0
+                end do
+            else
+                do i = 1, 3*nno
+                    zr(ivectt-1+i) = zr(ivectt-1+i)+long*matnp(i)*(theta*coenp1*texnp1+(un-theta&
+                                     &)*coen*texn)/2.d0
+                end do
+            end if
+
         end do
 !
     end if

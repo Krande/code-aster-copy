@@ -76,7 +76,11 @@ subroutine te0272(option, nomte)
         valpar(3) = zr(itemps)-zr(itemps+1)
         call fointe('FM', zk8(iflu), 3, nompar, valpar, &
                     flun, icode)
-        flux = theta*flunp1+(1.0d0-theta)*flun
+        if (theta < -0.5) then
+            flux = flunp1
+        else
+            flux = theta*flunp1+(1.0d0-theta)*flun
+        end if
         do i = 1, nno
             zr(ivectt+i-1) = zr(ivectt+i-1)+poids*zr(ivf+k+i-1)*flux
         end do

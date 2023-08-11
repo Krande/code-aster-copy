@@ -117,7 +117,12 @@ subroutine te0354(option, nomte)
 !        CALCUL DE LA SOURCE
             call fointe('FM', zk8(isour), 1, ['TEMP'], [tg], &
                         sour, iret)
-            coef = w*sour*coefop
+
+            if (theta < -0.5) then
+                coef = w*sour
+            else
+                coef = w*sour*coefop
+            end if
 !
 !        CONTRIBUTION AU RESIDU
             call daxpy(nno, coef, zr(ivf+os), 1, zr(ivect), &

@@ -122,10 +122,16 @@ subroutine te0273(option, nomte)
 ! OBTENTION DES PARAMETRES MATERIAU
         call foderi(coef, tpg, alpha, rbid)
 !
-        do i = 1, nno
-            zr(ivectt+i-1) = zr(ivectt+i-1)+zr(ipoids+kp-1)*jac*(1.d0-theta)*alpha*zr(ivf+ldec&
-                             &+i-1)
-        end do
+        if (theta < -0.5) then
+            do i = 1, nno
+                zr(ivectt+i-1) = zr(ivectt+i-1)+zr(ipoids+kp-1)*jac*alpha*zr(ivf+ldec+i-1)
+            end do
+        else
+            do i = 1, nno
+                zr(ivectt+i-1) = zr(ivectt+i-1)+zr(ipoids+kp-1)*jac*(1.d0-theta)*alpha*zr(ivf+ldec&
+                                &+i-1)
+            end do
+        end if
 !
 ! FIN BOUCLE SUR LES PT DE GAUSS
     end do

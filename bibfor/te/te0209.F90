@@ -78,10 +78,19 @@ subroutine te0209(option, nomte)
             poids2 = poids2*r2
         end if
         poids = (poids1+poids2)/2
-        do i = 1, nno
-            li = ivf+(kp-1)*nno+i-1
-            zr(ivectt+i-1) = zr(ivectt+i-1)+poids*zr(li)*coefh*(1.0d0-theta)*tpg
-            zr(ivectt+i-1+nno) = zr(ivectt+i-1+nno)-poids*zr(li)*coefh*(1.0d0-theta)*tpg
-        end do
+
+        if (theta < -0.5) then
+            do i = 1, nno
+                li = ivf+(kp-1)*nno+i-1
+                zr(ivectt+i-1) = zr(ivectt+i-1)+poids*zr(li)*coefh*tpg
+                zr(ivectt+i-1+nno) = zr(ivectt+i-1+nno)-poids*zr(li)*coefh*tpg
+            end do
+        else
+            do i = 1, nno
+                li = ivf+(kp-1)*nno+i-1
+                zr(ivectt+i-1) = zr(ivectt+i-1)+poids*zr(li)*coefh*(1.0d0-theta)*tpg
+                zr(ivectt+i-1+nno) = zr(ivectt+i-1+nno)-poids*zr(li)*coefh*(1.0d0-theta)*tpg
+            end do
+        end if
     end do
 end subroutine

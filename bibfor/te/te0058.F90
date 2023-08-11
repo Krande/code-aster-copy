@@ -107,7 +107,12 @@ subroutine te0058(option, nomte)
         else
             flun = 0.0d0
         end if
-        flux = theta*flunp1+(1.0d0-theta)*flun
+
+        if (theta < -0.5) then
+            flux = flunp1
+        else
+            flux = theta*flunp1+(1.0d0-theta)*flun
+        end if
 !
         nx = 0.0d0
         ny = 0.0d0

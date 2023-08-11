@@ -250,8 +250,13 @@ subroutine xvechp(ndim, elrefp, nnop, igeom, itemp, &
                         end do
                         r8tmp = -2.d0*r8tmp
 !
-                        zr(ivectt-1+ipos) = zr(ivectt-1+ipos)+(1.0d0-theta)*hechp*jac*ffenr(i&
+                        if (theta < -0.5) then
+                            zr(ivectt-1+ipos) = zr(ivectt-1+ipos)+hechp*jac*ffenr(i&
                                             &np, kddl)*r8tmp
+                        else
+                            zr(ivectt-1+ipos) = zr(ivectt-1+ipos)+(1.0d0-theta)*hechp*jac*ffenr(i&
+                                            &np, kddl)*r8tmp
+                        end if
 !
                     end do
                 end do

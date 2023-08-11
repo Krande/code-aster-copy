@@ -94,9 +94,15 @@ subroutine te0270(option, nomte)
         call fointe('FM', zk8(itex), 3, nompar, valpar, &
                     texn, icode)
 !
-        do i = 1, nno
-            zr(ivectt+i-1) = zr(ivectt+i-1)+poids*zr(ivf+k+i-1)*(theta*coenp1*texnp1+(1.0d0-&
-                             &theta)*coen*(texn-tpg))
-        end do
+        if (theta < -0.5) then
+            do i = 1, nno
+                zr(ivectt+i-1) = zr(ivectt+i-1)+poids*zr(ivf+k+i-1)*coenp1*(texnp1-tpg)
+            end do
+        else
+            do i = 1, nno
+                zr(ivectt+i-1) = zr(ivectt+i-1)+poids*zr(ivf+k+i-1)*(theta*coenp1*texnp1+(1.0d0-&
+                                &theta)*coen*(texn-tpg))
+            end do
+        end if
     end do
 end subroutine

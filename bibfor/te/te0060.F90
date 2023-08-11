@@ -195,10 +195,17 @@ subroutine te0060(option, nomte)
                 echn = 0.d0
             end if
 !
-            do i = 1, nno
-                zr(ivectt+i-1) = zr(ivectt+i-1)+jac*zr(ipoids+ipg-1)*zr(ivf+ldec+i-1)*( &
-                                 &theta*echnp1*texnp1+(1.0d0-theta)*echn*(texn-tem))
-            end do
+            if (theta < -0.5) then
+                do i = 1, nno
+                    zr(ivectt+i-1) = zr(ivectt+i-1)+jac*zr(ipoids+ipg-1)*zr(ivf+ldec+i-1)*( &
+                                     echnp1*(texnp1-tem))
+                end do
+            else
+                do i = 1, nno
+                    zr(ivectt+i-1) = zr(ivectt+i-1)+jac*zr(ipoids+ipg-1)*zr(ivf+ldec+i-1)*( &
+                                    &theta*echnp1*texnp1+(1.0d0-theta)*echn*(texn-tem))
+                end do
+            end if
 !
 !====
 ! 2.2 OPTION CHAR_THER_RAYO_F/R
@@ -237,11 +244,18 @@ subroutine te0060(option, nomte)
                 tpfn = 0.d0
             end if
 !
-            do i = 1, nno
-                zr(ivectt+i-1) = zr(ivectt+i-1)+jac*zr(ipoids+ipg-1)*zr(ivf+ldec+i-1)*( &
-                                 &theta*sigm1*eps1*(tpf1+tz0)**4+(1.0d0-theta)*sigmn*epsn*((t&
-                                 &pfn+tz0)**4-(tem+tz0)**4))
-            end do
+            if (theta < -0.5) then
+                do i = 1, nno
+                    zr(ivectt+i-1) = zr(ivectt+i-1)+jac*zr(ipoids+ipg-1)*zr(ivf+ldec+i-1)*( &
+                                     sigm1*eps1*((tem+tz0)**4-(tpf1+tz0)**4))
+                end do
+            else
+                do i = 1, nno
+                    zr(ivectt+i-1) = zr(ivectt+i-1)+jac*zr(ipoids+ipg-1)*zr(ivf+ldec+i-1)*( &
+                                    &theta*sigm1*eps1*(tpf1+tz0)**4+(1.0d0-theta)*sigmn*epsn*((t&
+                                    &pfn+tz0)**4-(tem+tz0)**4))
+                end do
+            end if
 ! FIN DU IF LTEXT
         end if
 ! FIN BOUCLE SUR LES PTS DE GAUSS

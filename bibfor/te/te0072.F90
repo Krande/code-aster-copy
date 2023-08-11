@@ -105,21 +105,36 @@ subroutine te0072(option, nomte)
             end do
             if (laxi) poids = poids*r
             if (option(11:14) .eq. 'TEXT') then
-                do i = 1, nno
-                    li = ivf+(kp-1)*nno+i-1
-                    vectt(c(ise, i)) = vectt( &
-                                      c(ise, i))+poids*zr(li)*zr(icoefh)*(zr(itex)-(1.0d0-the&
-                                      &ta)*tpg &
-                                      )
-                end do
+                if (theta < -0.5) then
+                    do i = 1, nno
+                        li = ivf+(kp-1)*nno+i-1
+                        vectt(c(ise, i)) = vectt(c(ise, i))+poids*zr(li)*zr(icoefh)*(zr(itex)-tpg)
+                    end do
+                else
+                    do i = 1, nno
+                        li = ivf+(kp-1)*nno+i-1
+                        vectt(c(ise, i)) = vectt( &
+                                        c(ise, i))+poids*zr(li)*zr(icoefh)*(zr(itex)-(1.0d0-the&
+                                        &ta)*tpg &
+                                        )
+                    end do
+                end if
             else if (option(11:14) .eq. 'RAYO') then
-                do i = 1, nno
-                    li = ivf+(kp-1)*nno+i-1
-                    vectt(c(ise, i)) = vectt( &
-                                      c(ise, i))+poids*zr(li)*sigma*epsil*((tpinf+tz0)**4-(1.&
-                                      &0d0-theta)*(tpg+tz0)**4 &
-                                      )
-                end do
+                if (theta < -0.5) then
+                    do i = 1, nno
+                        li = ivf+(kp-1)*nno+i-1
+                        vectt(c(ise, i)) = vectt(c(ise, i)) &
+                                           +poids*zr(li)*sigma*epsil*((tpg+tz0)**4-(tpinf+tz0)**4)
+                    end do
+                else
+                    do i = 1, nno
+                        li = ivf+(kp-1)*nno+i-1
+                        vectt(c(ise, i)) = vectt( &
+                                        c(ise, i))+poids*zr(li)*sigma*epsil*((tpinf+tz0)**4-(1.&
+                                        &0d0-theta)*(tpg+tz0)**4 &
+                                        )
+                    end do
+                end if
             end if
         end do
     end do
