@@ -30,14 +30,7 @@ from ..Utilities import injector
 
 @injector(PhysicalProblem)
 class ExtendedPhysicalProblem:
-
     provide = SOP.PhysicalProblem
-
-    def __getinitargs__(self):
-        """Returns the argument required to reinitialize a MaterialField
-        object during unpickling.
-        """
-        return self.getModel(), self.getMaterialField(), self.getElementaryCharacteristics()
 
     def addLoadFromDict(self, dictLoad):
         """Add a load from a dict - to remove quickly

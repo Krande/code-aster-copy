@@ -23,6 +23,48 @@
 
 #include "Materials/ExternalStateVariables.h"
 
+EvolutionParameter::EvolutionParameter( const TransientResultPtr &result,
+                                        const std::string fieldName )
+    : _transientResult( result ),
+      _fieldName( fieldName ),
+      _leftExtension( "EXCLU" ),
+      _rightExtension( "EXCLU" ),
+      _timeFunction( nullptr ),
+      _timeFormula( nullptr ) {};
+
+// EvolutionParameter::EvolutionParameter( const py::tuple &tup )
+//     : EvolutionParameter( tup[0].cast< TransientResultPtr >(), tup[1].cast< std::string >() ) {
+//     if ( tup.size() != 6 ) {
+//         throw std::runtime_error( "Invalid state!" );
+//     }
+//     _leftExtension = tup[2].cast< std::string >();
+//     _rightExtension = tup[3].cast< std::string >();
+//     // if ( tup[4] )
+//     _timeFunction = tup[4].cast< FunctionPtr >();
+//     // if ( tup[5] )
+//     _timeFormula = tup[5].cast< FormulaPtr >();
+// };
+
+// py::tuple EvolutionParameter::_getState() const {
+//     return py::make_tuple( _transientResult, _fieldName, _leftExtension, _rightExtension,
+//                            _timeFunction, _timeFormula );
+// }
+
+ExternalStateVariable::ExternalStateVariable( const py::tuple &tup )
+    : ExternalStateVariable( tup[0].cast< externVarEnumInt >(), tup[1].cast< BaseMeshPtr >() ) {
+    if ( tup.size() != 6 ) {
+        throw std::runtime_error( "Invalid state!" );
+    }
+    _localization = tup[2].cast< MeshEntityPtr >();
+    _refValue = tup[3].cast< ASTERDOUBLE >();
+    _field = tup[4].cast< DataFieldPtr >();
+    _evolParameter = tup[5].cast< EvolutionParameterPtr >();
+}
+
+py::tuple ExternalStateVariable::_getState() const {
+    return py::make_tuple( _type, _mesh, _localization, _refValue, _field, _evolParameter );
+}
+
 void ExternalStateVariable::setReferenceValue( const ASTERDOUBLE &value ) {
     AS_ASSERT( ExternalVariableTraits::externVarHasRefeValue( _type ) );
     _refValue = value;

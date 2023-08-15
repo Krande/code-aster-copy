@@ -51,25 +51,23 @@ class EvolutionParameter {
     FormulaPtr _timeFormula;
 
   public:
-    EvolutionParameter( const TransientResultPtr &result, const std::string fieldName )
-        : _transientResult( result ),
-          _fieldName( fieldName ),
-          _leftExtension( "EXCLU" ),
-          _rightExtension( "EXCLU" ),
-          _timeFunction( nullptr ),
-          _timeFormula( nullptr ) {};
+    EvolutionParameter( const TransientResultPtr &result, const std::string fieldName );
 
-    std::string getFieldName() { return _fieldName; };
+    /** @brief restricted constructor (Set) and method (Get) to support pickling */
+    // EvolutionParameter( const py::tuple &tup );
+    // py::tuple _getState() const;
 
-    std::string getLeftExtension() { return _leftExtension; };
+    std::string getFieldName() const { return _fieldName; };
 
-    std::string getRightExtension() { return _rightExtension; };
+    std::string getLeftExtension() const { return _leftExtension; };
 
-    TransientResultPtr getTransientResult() { return _transientResult; };
+    std::string getRightExtension() const { return _rightExtension; };
 
-    FormulaPtr getTimeFormula() { return _timeFormula; };
+    TransientResultPtr getTransientResult() const { return _transientResult; };
 
-    FunctionPtr getTimeFunction() { return _timeFunction; };
+    FormulaPtr getTimeFormula() const { return _timeFormula; };
+
+    FunctionPtr getTimeFunction() const { return _timeFunction; };
 
     void setLeftExtension( const std::string typeExtension );
 
@@ -297,6 +295,10 @@ class ExternalStateVariable {
 
     /** @brief Destructor */
     ~ExternalStateVariable() {};
+
+    /** @brief restricted constructor (Set) and method (Get) to support pickling */
+    ExternalStateVariable( const py::tuple &tup );
+    py::tuple _getState() const;
 
     /** @brief Function to know if a reference value exists */
     bool isSetRefe() const { return ExternalVariableTraits::externVarHasRefeValue( _type ); };

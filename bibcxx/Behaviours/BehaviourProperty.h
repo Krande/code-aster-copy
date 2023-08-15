@@ -74,7 +74,13 @@ class BehaviourProperty : public DataStructure {
     typedef std::shared_ptr< BehaviourProperty > BehaviourPropertyPtr;
 
     /** @brief Constructor */
+    BehaviourProperty( const std::string name );
+
+    /** @brief Constructor */
     BehaviourProperty();
+
+    /** @brief Constructor */
+    BehaviourProperty( const std::string name, ModelPtr model, MaterialFieldPtr materialField );
 
     /** @brief Constructor */
     BehaviourProperty( ModelPtr model, MaterialFieldPtr materialField );

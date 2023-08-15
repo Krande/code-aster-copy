@@ -64,6 +64,23 @@ PhysicalProblem::PhysicalProblem( const BaseDOFNumberingPtr dofNume )
       _dofNume( dofNume ),
       _listOfLoads( std::make_shared< ListOfLoads >( _model ) ) {};
 
+py::tuple PhysicalProblem::_getState() const {
+    return py::make_tuple( _model, _materialField, _elemChara, _dofNume, _behavProp, _externVarRefe,
+                           _listOfLoads );
+}
+
+PhysicalProblem::PhysicalProblem( const py::tuple &tup )
+    : PhysicalProblem( tup[0].cast< ModelPtr >(), tup[1].cast< MaterialFieldPtr >(),
+                       tup[2].cast< ElementaryCharacteristicsPtr >() ) {
+    if ( tup.size() != 7 ) {
+        throw std::runtime_error( "Invalid state!" );
+    }
+    _dofNume = tup[3].cast< BaseDOFNumberingPtr >();
+    _behavProp = tup[4].cast< BehaviourPropertyPtr >();
+    _externVarRefe = tup[5].cast< FieldOnCellsRealPtr >();
+    _listOfLoads = tup[6].cast< ListOfLoadsPtr >();
+}
+
 CodedMaterialPtr PhysicalProblem::getCodedMaterial() const {
 
     if ( _materialField ) {

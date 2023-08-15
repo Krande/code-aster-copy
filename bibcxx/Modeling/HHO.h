@@ -62,6 +62,10 @@ class HHO {
      */
     HHO( const PhysicalProblemPtr &currPhysProblem ) : _phys_problem( currPhysProblem ) {};
 
+    /** @brief restricted constructor (Set) and method (Get) to support pickling */
+    HHO( const py::tuple &tup ) : HHO( tup[0].cast< PhysicalProblemPtr >() ) {};
+    py::tuple _getState() const { return py::make_tuple( _phys_problem ); };
+
     /**
      * @brief Project HHO field to H^1-field
      */

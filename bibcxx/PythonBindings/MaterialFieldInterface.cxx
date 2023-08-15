@@ -31,6 +31,7 @@ void exportMaterialFieldToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< PartOfMaterialField > ) )
         .def( py::init(
             &initFactoryPtr< PartOfMaterialField, std::vector< MaterialPtr >, MeshEntityPtr > ) )
+        .def( define_pickling< PartOfMaterialField >() )
         .def( "getVectorOfMaterial", &PartOfMaterialField::getVectorOfMaterial )
         .def( "getMeshEntity", &PartOfMaterialField::getMeshEntity );
 

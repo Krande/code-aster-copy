@@ -39,8 +39,8 @@ void BehaviourProperty::createObjects() {
 };
 
 /** @brief Constructor */
-BehaviourProperty::BehaviourProperty()
-    : DataStructure( ResultNaming::getNewResultName(), 8, "COMPOR" ),
+BehaviourProperty::BehaviourProperty( const std::string name )
+    : DataStructure( name, 8, "COMPOR" ),
       _initialState( false ),
       _verbosity( false ),
       _model( nullptr ),
@@ -51,12 +51,20 @@ BehaviourProperty::BehaviourProperty()
       _COMPOR( nullptr ) {};
 
 /** @brief Constructor */
-BehaviourProperty::BehaviourProperty( ModelPtr model, MaterialFieldPtr materialField )
-    : BehaviourProperty() {
+BehaviourProperty::BehaviourProperty() : BehaviourProperty( ResultNaming::getNewResultName() ) {};
+
+/** @brief Constructor */
+BehaviourProperty::BehaviourProperty( const std::string name, ModelPtr model,
+                                      MaterialFieldPtr materialField )
+    : BehaviourProperty( name ) {
     _model = model;
     _mesh = model->getMesh();
     _materialField = materialField;
 };
+
+/** @brief Constructor */
+BehaviourProperty::BehaviourProperty( ModelPtr model, MaterialFieldPtr materialField )
+    : BehaviourProperty( ResultNaming::getNewResultName(), model, materialField ) {};
 
 /** @brief Build objects (maps) */
 bool BehaviourProperty::build() {

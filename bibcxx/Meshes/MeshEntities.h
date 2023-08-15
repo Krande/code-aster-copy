@@ -26,6 +26,8 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
+#include "aster_pybind.h"
+
 #include "MemoryManager/JeveuxCollection.h"
 
 enum EntityType {
@@ -72,6 +74,11 @@ class VirtualMeshEntity {
      */
     VirtualMeshEntity( const VectorString &names, EntityType type )
         : _names( names ), _type( type ) {};
+
+    /** @brief restricted constructor (Set) and method (Get) to support pickling */
+    VirtualMeshEntity( const py::tuple &tup )
+        : VirtualMeshEntity( tup[0].cast< VectorString >(), tup[1].cast< EntityType >() ) {};
+    py::tuple _getState() const { return py::make_tuple( _names, _type ); };
 
     /**
      * @brief Obtenir le nom de l'entite

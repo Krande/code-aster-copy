@@ -36,6 +36,9 @@ void exportPhysicalProblemToPython( py::module_ &mod ) {
     c1.def( py::init( &initFactoryPtr< PhysicalProblem, ModelPtr, MaterialFieldPtr > ) );
     c1.def( py::init( &initFactoryPtr< PhysicalProblem, ModelPtr, MaterialFieldPtr,
                                        ElementaryCharacteristicsPtr > ) );
+
+    c1.def( define_pickling< PhysicalProblem >() );
+
     c1.def( "getModel", &PhysicalProblem::getModel, R"(
 Return the model
 

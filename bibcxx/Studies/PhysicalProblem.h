@@ -80,6 +80,10 @@ class PhysicalProblem {
     /** @brief Destructor */
     ~PhysicalProblem() {};
 
+    /** @brief restricted constructor (Set) and method (Get) to support pickling */
+    PhysicalProblem( const py::tuple &tup );
+    py::tuple _getState() const;
+
     /** @brief Add a load (mechanical or dirichlet) with function, formula */
     template < typename... Args >
     void addLoad( const Args &... a ) {

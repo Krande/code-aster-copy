@@ -27,6 +27,8 @@ void exportHHOToPython( py::module_ &mod ) {
     py::class_< HHO, HHO::HHOPtr >( mod, "HHO" )
         .def( py::init( &initFactoryPtr< HHO, PhysicalProblemPtr > ) )
         // fake initFactoryPtr: not a DataStructure
+        .def( define_pickling< HHO >() )
+
         .def( "evaluateAtQuadraturePoints", &HHO::evaluateAtQuadraturePoints,
               R"(
       Evaluate HHO-field at quadrature points

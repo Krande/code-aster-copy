@@ -67,8 +67,8 @@ bool CodedMaterial::allocate( bool force ) {
     CALLO_RCMFMC( materName, mate, (ASTERLOGICAL *)&thm, (ASTERLOGICAL *)&ther, getName(),
                   strJeveuxBase );
 
-    auto vecOfMater = _mater->getVectorOfMaterial();
-    for ( auto curIter : vecOfMater ) {
+    auto vectOfMater = _mater->getVectorOfMaterial();
+    for ( auto curIter : vectOfMater ) {
         // Fill codivectors (can be optimized)
         std::string nameWithoutBlanks = getName() + ".0";
         std::string base( " " );

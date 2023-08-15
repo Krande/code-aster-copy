@@ -44,17 +44,23 @@
  */
 class PartOfMaterialField {
   private:
-    listOfMaterials _vecOfMater;
+    listOfMaterials _vectOfMater;
     MeshEntityPtr _meshEntity;
 
   public:
     PartOfMaterialField() : _meshEntity( nullptr ) {};
 
-    PartOfMaterialField( const listOfMaterials &vecOfMater, const MeshEntityPtr &entity )
-        : _vecOfMater( vecOfMater ), _meshEntity( entity ) {};
+    PartOfMaterialField( const listOfMaterials &vectOfMater, const MeshEntityPtr &entity )
+        : _vectOfMater( vectOfMater ), _meshEntity( entity ) {};
+
+    /** @brief restricted constructor (Set) and method (Get) to support pickling */
+    PartOfMaterialField( const py::tuple &tup )
+        : PartOfMaterialField( tup[0].cast< listOfMaterials >(),
+                               tup[1].cast< MeshEntityPtr >() ) {};
+    py::tuple _getState() const { return py::make_tuple( _vectOfMater, _meshEntity ); };
 
     /** @brief Get the VectorOfMaterial of PartOfMaterialField */
-    listOfMaterials getVectorOfMaterial() const { return _vecOfMater; };
+    listOfMaterials getVectorOfMaterial() const { return _vectOfMater; };
 
     /** @brief Get the MeshEntity of PartOfMaterialField */
     MeshEntityPtr getMeshEntity() const { return _meshEntity; };

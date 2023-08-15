@@ -30,6 +30,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
         mod, "DiscreteComputation" )
         .def( py::init( &initFactoryPtr< DiscreteComputation, PhysicalProblemPtr > ) )
         // fake initFactoryPtr: not a DataStructure
+        .def( define_pickling< DiscreteComputation >() )
         .def( "getMechanicalImposedDualBC", &DiscreteComputation::getMechanicalImposedDualBC,
               R"(
       Return the mechanical imposed nodal BC elementary vector

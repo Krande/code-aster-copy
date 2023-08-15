@@ -40,6 +40,7 @@ void exportMeshEntitiesToPython( py::module_ &mod ) {
     py::class_< VirtualMeshEntity, MeshEntityPtr >( mod, "MeshEntity" )
         .def( py::init( &initFactoryPtr< VirtualMeshEntity, std::string, EntityType > ) )
         // fake initFactoryPtr: created by subclass
+        .def( define_pickling< VirtualMeshEntity >() )
         .def( "getType", &VirtualMeshEntity::getType )
         .def( "getNames", &VirtualMeshEntity::getNames );
 

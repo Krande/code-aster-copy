@@ -62,7 +62,7 @@ class MaterialFieldStateBuilder(InternalStateBuilder):
         self._st["varc"] = []
         for value in field.getExtStateVariablesOnMeshEntities():
             varc, meshEntity = value
-            # self._st["varc"].append(varc)
+            self._st["varc"].append(varc)
 
         return self
 

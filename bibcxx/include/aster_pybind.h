@@ -31,20 +31,23 @@
 
 namespace py = pybind11;
 
-/**
- * @brief Factory for '__init__' constructor without 'DSTypePtr'.
- */
+/** @brief Factory for '__init__' constructor without 'DSTypePtr' */
 template < typename DSType, typename... Args >
 static std::shared_ptr< DSType > initFactoryPtr( Args... args ) {
     return std::make_shared< DSType >( args... );
 };
 
+/** @brief Defines pickling functions */
+template < typename DSType >
+static auto define_pickling() {
+    return py::pickle( []( const DSType &obj ) { return obj._getState(); },
+                       []( const py::tuple &tup ) { return std::make_shared< DSType >( tup ); } );
+};
+
 namespace pybind11 {
 namespace detail {
 
-/**
- * @brief Converter for JeveuxVector.
- */
+/** @brief Converter for JeveuxVector */
 template < typename T >
 struct type_caster< JeveuxVector< T > > {
   public:
@@ -64,9 +67,7 @@ struct type_caster< JeveuxVector< T > > {
     }
 };
 
-/**
- * @brief Converter for JeveuxCollection.
- */
+/** @brief Converter for JeveuxCollection */
 template < typename T >
 struct type_caster< JeveuxCollection< T > > {
   public:

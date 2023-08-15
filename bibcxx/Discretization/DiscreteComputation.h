@@ -95,6 +95,11 @@ class DiscreteComputation {
     /** @brief Destructor */
     ~DiscreteComputation() {};
 
+    /** @brief restricted constructor (Set) and method (Get) to support pickling */
+    DiscreteComputation( const py::tuple &tup )
+        : DiscreteComputation( tup[0].cast< PhysicalProblemPtr >() ) {};
+    py::tuple _getState() const { return py::make_tuple( _phys_problem ); };
+
     /** @brief Compute nodal field for external state variables RHS */
     FieldOnNodesRealPtr getExternalStateVariablesForces(
         const ASTERDOUBLE time_curr, const FieldOnCellsRealPtr varc_curr,

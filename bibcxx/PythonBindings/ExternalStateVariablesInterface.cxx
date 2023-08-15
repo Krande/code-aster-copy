@@ -41,6 +41,30 @@ void exportExternalStateVariablesToPython( py::module_ &mod ) {
 
             )",
               py::arg( "result" ), py::arg( "fieldName" ) )
+        // .def( define_pickling< EvolutionParameter >() )
+        // FIXME moved from ExternalStateVariable.h because of forward incomplete declaration
+        // of TransientResult...
+        .def( py::pickle(
+            []( const EvolutionParameter &obj ) {
+                return py::make_tuple( obj.getTransientResult(), obj.getFieldName(),
+                                       obj.getLeftExtension(), obj.getRightExtension(),
+                                       obj.getTimeFunction(), obj.getTimeFormula() );
+            },
+            []( const py::tuple &tup ) {
+                if ( tup.size() != 6 ) {
+                    throw std::runtime_error( "Invalid state!" );
+                }
+                auto obj = EvolutionParameter( tup[0].cast< TransientResultPtr >(),
+                                               tup[1].cast< std::string >() );
+                obj.setLeftExtension( tup[2].cast< std::string >() );
+                obj.setRightExtension( tup[3].cast< std::string >() );
+                if ( tup[4].cast< FunctionPtr >() )
+                    obj.setTimeFunction( tup[4].cast< FunctionPtr >() );
+                if ( tup[5].cast< FormulaPtr >() )
+                    obj.setTimeFunction( tup[5].cast< FormulaPtr >() );
+                return obj;
+            } ) )
+
         .def( "setTimeFunction",
               py::overload_cast< const FormulaPtr & >( &EvolutionParameter::setTimeFunction ), R"(
             Set function to shift results
@@ -85,6 +109,8 @@ void exportExternalStateVariablesToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< ExternalStateVariable, externVarEnumInt, BaseMeshPtr > ) )
         .def( py::init(
             &initFactoryPtr< ExternalStateVariable, externVarEnumInt, BaseMeshPtr, std::string > ) )
+        .def( define_pickling< ExternalStateVariable >() )
+
         .def( "setField", &ExternalStateVariable::setField, R"(
             Define constant value in time for external state variable
 

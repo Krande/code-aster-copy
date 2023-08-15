@@ -30,7 +30,10 @@ void exportBehaviourPropertyToPython( py::module_ &mod ) {
     py::class_< BehaviourProperty, BehaviourProperty::BehaviourPropertyPtr, DataStructure >(
         mod, "BehaviourProperty" )
         .def( py::init( &initFactoryPtr< BehaviourProperty > ) )
+        .def( py::init( &initFactoryPtr< BehaviourProperty, std::string > ) )
         .def( py::init( &initFactoryPtr< BehaviourProperty, ModelPtr, MaterialFieldPtr > ) )
+        .def( py::init(
+            &initFactoryPtr< BehaviourProperty, std::string, ModelPtr, MaterialFieldPtr > ) )
         .def( "getModel", &BehaviourProperty::getModel, R"(
 Return a pointer to the model.
 
