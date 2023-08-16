@@ -49,10 +49,10 @@ resuSolu = CREA_CHAMP(
     ),
 )
 
-# Construct right-hand side from loads - to fix later
-# charWaveElem = CALC_VECT_ELEM(OPTION="CHAR_MECA", CHAM_MATER=CHAMATC, CHARGE=ONDE, INST=timeTest)
+# Construct right-hand side from loads
+charWaveElem = CALC_VECT_ELEM(OPTION="CHAR_MECA", CHAM_MATER=CHAMATC, CHARGE=ONDE, INST=timeTest)
 
-# charWaveAsse = ASSE_VECTEUR(VECT_ELEM=charWaveElem, NUME_DDL=NUMEDDLC)
+charWaveAsse = ASSE_VECTEUR(VECT_ELEM=charWaveElem, NUME_DDL=NUMEDDLC)
 
 # Make difference
 resuVect = CREA_CHAMP(
