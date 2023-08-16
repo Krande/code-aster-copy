@@ -103,7 +103,7 @@ Pickling support
 See :py:mod:`code_aster.Supervis.Serializer` module for the serialization
 management.
 
-- Delegated to Python objects.
+- DataStructures usually delegate the serialization to their Python objects.
 
 - Constructors arguments defined by :py:meth:`__getinitargs__` implemented in
   :py:mod:`code_aster.Objects.DataStructure` for most of the classes.
@@ -116,7 +116,11 @@ management.
 
 - To restore the internal state of the object, subclasses should defined their
   own :py:meth:`__getstate__` and :py:meth:`__setstate__` methods.
+  This is done through a subclass of
+  :py:class:`~code_aster.Objects.Serialization.InternalStateBuilder`.
 
-  Example: :py:class:`~code_aster.Objects.Model` does not take its support
-  :py:class:`~code_aster.Objects.Mesh` as argument in its constructor. So it is
-  saved by :py:meth:`__getstate__` and restored by :py:meth:`__setstate__`.
+  Example: :py:class:`~code_aster.Objects.AssemblyMatrix` does not take its
+  :py:class:`~code_aster.Objects.DOFNumbering` as argument in its constructor.
+  So it is stored by the ``save()`` method of its
+  :py:class:`~code_aster.Objects.Serialization.InternalStateBuilder` and
+  restored by the ``restore()`` method.

@@ -47,4 +47,3 @@ from .datastructure_py import (
     UnavailableObject,
 )
 from .Serialization import InternalStateBuilder
-from .user_extensions import WithEmbeddedObjects

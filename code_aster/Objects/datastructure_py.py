@@ -17,8 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from .user_extensions import WithEmbeddedObjects
-
 
 class UnavailableObject:
     """This object is only available in parallel."""
@@ -72,14 +70,13 @@ class AsFloat(PyDataStructure):
         return "REEL"
 
 
-class DataStructureDict(PyDataStructure, WithEmbeddedObjects):
+class DataStructureDict(PyDataStructure):
     """Dict-like object that stores datastructures associated to a key.
 
     This is the implementation of derivatives of ``ds_dict`` objects used in the syntax.
     """
 
     object_type = None
-    aster_embedded = ["_store"]
 
     def __init__(self, name="unnamed"):
         super().__init__(name)

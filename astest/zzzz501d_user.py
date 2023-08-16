@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,10 +17,8 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from code_aster import WithEmbeddedObjects
 
-
-class SimpleUserObject(WithEmbeddedObjects):
+class SimpleUserObject:
     """'Hello World!' of embedding code_aster objects."""
 
     aster_embedded = ["attrname"]
@@ -36,15 +34,8 @@ class SimpleUserObject(WithEmbeddedObjects):
         self.attrname = state[0]
 
 
-class ComplexUserObject(WithEmbeddedObjects):
-    """Example for user class that embeds code_aster objetcs in its attributes.
-
-    See `WithEmbeddedObjects` doc string for details.
-    The `aster_embedded` attributes provides the list of attributes that contain
-    code_aster objects.
-    """
-
-    aster_embedded = ["asattr", "aslist", "astuple", "asdict", "nested", "subobj"]
+class ComplexUserObject:
+    """Example for user class that embeds code_aster objects in its attributes."""
 
     def __init__(self, mesh, resu, values):
         self.asattr = mesh

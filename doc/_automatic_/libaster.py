@@ -431,7 +431,13 @@ class MeshEntity:
 
     # Methods defined here:
 
+    def __getstate__(self):
+        pass
+
     def __init__(self, arg0, arg1):
+        pass
+
+    def __setstate__(self, arg0):
         pass
 
     def getNames(self):
@@ -828,7 +834,13 @@ class DiscreteComputation:
 
     # Methods defined here:
 
+    def __getstate__(self):
+        pass
+
     def __init__(self, arg0):
+        pass
+
+    def __setstate__(self, arg0):
         pass
 
     def getAcousticDirichletBC(self, time_curr=0.0):
@@ -9524,6 +9536,9 @@ class PartOfMaterialField:
 
     # Methods defined here:
 
+    def __getstate__(self):
+        pass
+
     def __init__(self, *args, **kwargs):
         """Overloaded function.
 
@@ -9531,6 +9546,9 @@ class PartOfMaterialField:
 
         2. __init__(self: libaster.PartOfMaterialField, arg0: List[libaster.Material], arg1: libaster.MeshEntity) -> None
         """
+
+    def __setstate__(self, arg0):
+        pass
 
     def getMeshEntity(self):
         pass
@@ -11509,6 +11527,9 @@ class PhysicalProblem:
 
     # Methods defined here:
 
+    def __getstate__(self):
+        pass
+
     def __init__(self, *args, **kwargs):
         """Overloaded function.
 
@@ -11518,6 +11539,9 @@ class PhysicalProblem:
 
         3. __init__(self: libaster.PhysicalProblem, arg0: libaster.Model, arg1: libaster.MaterialField, arg2: libaster.ElementaryCharacteristics) -> None
         """
+
+    def __setstate__(self, arg0):
+        pass
 
     def addDirichletBC(self, *args, **kwargs):
         """Overloaded function.
@@ -13255,6 +13279,9 @@ class EvolutionParameter:
 
     # Methods defined here:
 
+    def __getstate__(self):
+        pass
+
     def __init__(self, result, fieldName):
         """Constructor of object
 
@@ -13262,6 +13289,9 @@ class EvolutionParameter:
             result (TransientResult): transient result to define external state variable
             fieldName (str): field in transient result to define external state variable
         """
+
+    def __setstate__(self, arg0):
+        pass
 
     def getFieldName(self):
         pass
@@ -13330,6 +13360,9 @@ class ExternalStateVariable:
 
     # Methods defined here:
 
+    def __getstate__(self):
+        pass
+
     def __init__(self, *args, **kwargs):
         """Overloaded function.
 
@@ -13341,6 +13374,9 @@ class ExternalStateVariable:
 
         4. __init__(self: libaster.ExternalStateVariable, arg0: externVarEnumInt, arg1: libaster.BaseMesh, arg2: str) -> None
         """
+
+    def __setstate__(self, arg0):
+        pass
 
     def getEvolutionParameter(self):
         pass
@@ -13567,7 +13603,11 @@ class BehaviourProperty(DataStructure):
 
         1. __init__(self: libaster.BehaviourProperty) -> None
 
-        2. __init__(self: libaster.BehaviourProperty, arg0: libaster.Model, arg1: libaster.MaterialField) -> None
+        2. __init__(self: libaster.BehaviourProperty, arg0: str) -> None
+
+        3. __init__(self: libaster.BehaviourProperty, arg0: libaster.Model, arg1: libaster.MaterialField) -> None
+
+        4. __init__(self: libaster.BehaviourProperty, arg0: str, arg1: libaster.Model, arg2: libaster.MaterialField) -> None
         """
 
     def getBehaviourField(self):
@@ -13685,7 +13725,13 @@ class HHO:
 
     # Methods defined here:
 
+    def __getstate__(self):
+        pass
+
     def __init__(self, arg0):
+        pass
+
+    def __setstate__(self, arg0):
         pass
 
     def evaluateAtQuadraturePoints(self, hho_field):

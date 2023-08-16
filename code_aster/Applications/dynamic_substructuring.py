@@ -18,13 +18,10 @@
 # --------------------------------------------------------------------
 
 import numpy as np
-import numpy.random
 import scipy.sparse
-import scipy.sparse.linalg as spla
 import os
 import inspect
 from ..Objects import FieldOnNodesReal
-from ..Objects.user_extensions import WithEmbeddedObjects
 from ..MacroCommands.macr_lign_coupe_ops import crea_mail_lig_coup
 from ..MacroCommands.Fracture.post_endo_fiss_utils import crea_sd_mail
 
@@ -160,7 +157,7 @@ def import_array(np_array, reference_matrix=None):
     return aster_object
 
 
-class Interface(WithEmbeddedObjects):
+class Interface:
     """Interface object for dynamic substructring.
 
     The interface is a 2D surface, modeled by a group of cells.
@@ -172,9 +169,6 @@ class Interface(WithEmbeddedObjects):
     - the name of the group of cells modeling the interface
     => Each substructure must have a group of cells with the same name (the name of the interface)
     """
-
-    # Mandatory class attribute in order to manage aster serialization process
-    aster_embedded = ["sub1", "sub2"]
 
     def __init__(self, sub1, sub2, interfaceName: str):
         self.sub1 = sub1
@@ -357,28 +351,13 @@ class Interface(WithEmbeddedObjects):
         )
 
 
-class SubStructure(WithEmbeddedObjects):
+class SubStructure:
     """SubStructure object for dynamic substructring.
 
     The subStructure is fully defined by :
     - its stiffness and mass matrices
     - its modes, computed with blocked interfaces
     """
-
-    # Mandatory class attribute in order to manage aster serialization process
-    aster_embedded = [
-        "mass",
-        "mesh",
-        "modes",
-        "nodes",
-        "coords",
-        "dofNumbering",
-        "stiffness",
-        "lINodes",
-        "lIDispl",
-        "iModes",
-        "lIName",
-    ]
 
     def __init__(self, stiffness, mass, modes):
         self.mass = mass
@@ -567,14 +546,11 @@ class SubStructure(WithEmbeddedObjects):
         return Resu
 
 
-class Structure(WithEmbeddedObjects):
+class Structure:
     """Structure object for dynamic substructring.
 
     The subStructure is fully defined by the list of substructures and interfaces
     """
-
-    # Mandatory class attribute in order to manage aster serialization process
-    aster_embedded = ["lSubS", "lInterfaces", "Kredred", "Mredred"]
 
     def __init__(self, lSubS: list, lInterfaces: list):
         self.lSubS = lSubS

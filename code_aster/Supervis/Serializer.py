@@ -31,9 +31,6 @@ Objects are reloaded by the function :func:`loadObjects` called just after the
 Jeveux database has been reloaded by :func:`~code_aster.Commands.debut.init`
 if the ``--continue`` argument is passed.
 The command :func:`~code_aster.Commands.debut.POURSUITE` does also the same.
-
-To be properly pickled, the classes defined by the user must be inherit
-from :class:`~code_aster.Objects.user_extensions.WithEmbeddedObjects`.
 """
 
 import copyreg
@@ -182,7 +179,6 @@ class Serializer(object):
                     saved.append(name)
 
         logger.debug("Objects saved: %s", objList)
-        # TODO Remove info file?
         with open(self._info_filename, "wb") as pick:
             # add management objects on the stack
             pickle.dump(objList, pick)

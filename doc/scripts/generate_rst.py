@@ -127,7 +127,7 @@ def _build_text():
         # if obj is not OBJ.Material:
         #     continue
         if not isinstance(obj, type) or issubclass(
-            obj, (OBJ.UnavailableObject, OBJ.InternalStateBuilder, OBJ.WithEmbeddedObjects)
+            obj, (OBJ.UnavailableObject, OBJ.InternalStateBuilder)
         ):
             continue
         found = False
