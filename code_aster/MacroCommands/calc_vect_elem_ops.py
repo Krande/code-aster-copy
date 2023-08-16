@@ -115,7 +115,7 @@ def calc_vect_elem_ops(self, **args):
         vect_elem.addElementaryTerm(exch_elem.getElementaryTerms())
 
         evol_elem = disc_comp.getTransientThermalLoadForces(
-            time, 0.0, 1.0, FieldOnNodesReal(phys_pb.getModel()), assembly=False
+            time, FieldOnNodesReal(phys_pb.getModel()), assembly=False
         )
         vect_elem.addElementaryTerm(evol_elem.getElementaryTerms())
 
