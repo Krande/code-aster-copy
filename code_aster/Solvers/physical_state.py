@@ -467,6 +467,6 @@ class PhysicalState(BaseFeature):
     def debugPrint(self, label=""):
         print(
             f"*** {label}Stack contains states for t =",
-            [state.time for state in self._stack],
+            [state.time_curr for state in self._stack],
             flush=True,
         )
