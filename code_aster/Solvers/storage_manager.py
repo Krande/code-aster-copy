@@ -193,7 +193,11 @@ class StorageManager(SolverFeature):
         slot.fields = phys_state.as_dict()
         behav = phys_pb.getBehaviourProperty()
         if behav is not None:
-            slot.fields["COMPORTEMENT"] = behav.getBehaviourField()
+            if phys_pb.isThermal():
+                compor = "COMPORTHER"
+            else:
+                compor = "COMPORTEMENT"
+            slot.fields[compor] = behav.getBehaviourField()
         self.buffer.append(slot)
 
         self.store()
