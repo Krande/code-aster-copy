@@ -361,11 +361,11 @@ class ExtendedDiscreteComputation:
         # Compute internal forces (B^t.stress)
         if phys_pb.isMechanical():
             _, codret, internVar, stress, r_stress = self.getInternalForces(
-                phys_state.primal,
+                phys_state.primal_prev,
                 phys_state.primal_step,
                 phys_state.stress,
                 phys_state.internVar,
-                phys_state.time,
+                phys_state.time_prev,
                 phys_state.time_step,
                 phys_state.getState(-1).externVar,
                 phys_state.externVar,
@@ -386,19 +386,16 @@ class ExtendedDiscreteComputation:
 
         phys_pb = self.getPhysicalProblem()
         if phys_pb.getDOFNumbering().useLagrangeDOF():
-            primal_curr = phys_state.primal + phys_state.primal_step
-
             # Compute kinematic forces (B^t.Lagr_curr)
-            dualizedBC_forces = self.getDualForces(primal_curr)
+            dualizedBC_forces = self.getDualForces(phys_state.primal_curr)
             resi.resi_dual = dualizedBC_forces
 
             # Compute dualized BC (B^t.primal_curr - primal_impo)
             # Compute dualized BC (B^t.primal_curr)
-            dualizedBC_disp = self.getDualPrimal(primal_curr, scaling)
+            dualizedBC_disp = self.getDualPrimal(phys_state.primal_curr, scaling)
 
             # Imposed dualized BC (primal_impo)
-            time_curr = phys_state.time + phys_state.time_step
-            dualizedBC_impo = self.getImposedDualBC(time_curr)
+            dualizedBC_impo = self.getImposedDualBC(phys_state.time_curr)
 
             r_int += dualizedBC_forces + dualizedBC_disp - dualizedBC_impo
         else:
@@ -423,25 +420,25 @@ class ExtendedDiscreteComputation:
 
         resi_ext = None
         if self.getPhysicalProblem().isThermal():
-            time_curr = phys_state.time + phys_state.time_step
-            temp_curr = phys_state.primal + phys_state.primal_step
-
-            resi_ext = self.getNeumannForces(time_curr, varc_curr=phys_state.externVar)
-
-            resi_ext += self.getVolumetricForces(time_curr, varc_curr=phys_state.externVar)
-
-            resi_ext += self.getNonLinearNeumannForces(
-                phys_state.primal, phys_state.primal_step, phys_state.time, phys_state.time_step
-            )
-
-            resi_ext += self.getThermalExchangeForces(temp_curr, time_curr)
-        elif self.getPhysicalProblem().isMechanical():
-            resi_ext = self.getNeumannForces(
-                phys_state.time + phys_state.time_step, varc_curr=phys_state.externVar
-            )
+            resi_ext = self.getNeumannForces(phys_state.time_curr, varc_curr=phys_state.externVar)
 
             resi_ext += self.getVolumetricForces(
-                phys_state.time + phys_state.time_step, varc_curr=phys_state.externVar
+                phys_state.time_curr, varc_curr=phys_state.externVar
+            )
+
+            resi_ext += self.getNonLinearNeumannForces(
+                phys_state.primal_prev,
+                phys_state.primal_step,
+                phys_state.time_prev,
+                phys_state.time_step,
+            )
+
+            resi_ext += self.getThermalExchangeForces(phys_state.primal_curr, phys_state.time_curr)
+        elif self.getPhysicalProblem().isMechanical():
+            resi_ext = self.getNeumannForces(phys_state.time_curr, varc_curr=phys_state.externVar)
+
+            resi_ext += self.getVolumetricForces(
+                phys_state.time_curr, varc_curr=phys_state.externVar
             )
         else:
             raise RuntimeError()
@@ -465,9 +462,9 @@ class ExtendedDiscreteComputation:
             # Compute contact forces
             contact_forces = self.getContactForces(
                 contact_manager.getPairingCoordinates(),
-                phys_state.primal,
+                phys_state.primal_prev,
                 phys_state.primal_step,
-                phys_state.time,
+                phys_state.time_prev,
                 phys_state.time_step,
                 contact_manager.data(),
                 contact_manager.coef_cont,
@@ -523,41 +520,48 @@ class ExtendedDiscreteComputation:
 
         # Compute rigidity matrix
         if matrix_type in ("PRED_ELASTIQUE", "ELASTIQUE"):
-            time_curr = phys_state.time + phys_state.time_step
-            matr_elem_rigi = self.getLinearStiffnessMatrix(time=time_curr, with_dual=False)
+            matr_elem_rigi = self.getLinearStiffnessMatrix(
+                time=phys_state.time_curr, with_dual=False
+            )
             codret = 0
         elif matrix_type == "PRED_TANGENTE":
             if phys_pb.isMechanical():
                 _, codret, matr_elem_rigi = self.getPredictionTangentStiffnessMatrix(
-                    phys_state.primal,
+                    phys_state.primal_prev,
                     phys_state.primal_step,
                     phys_state.stress,
                     phys_state.internVar,
-                    phys_state.time,
+                    phys_state.time_prev,
                     phys_state.time_step,
                     phys_state.getState(-1).externVar,
                     phys_state.externVar,
                 )
             else:
                 matr_elem_rigi = self.getTangentConductivityMatrix(
-                    phys_state.primal, phys_state.primal_step, phys_state.externVar, with_dual=False
+                    phys_state.primal_prev,
+                    phys_state.primal_step,
+                    phys_state.externVar,
+                    with_dual=False,
                 )
                 codret = 0
         elif matrix_type == "TANGENTE":
             if phys_pb.isMechanical():
                 _, codret, matr_elem_rigi = self.getTangentStiffnessMatrix(
-                    phys_state.primal,
+                    phys_state.primal_prev,
                     phys_state.primal_step,
                     phys_state.stress,
                     phys_state.internVar,
-                    phys_state.time,
+                    phys_state.time_prev,
                     phys_state.time_step,
                     phys_state.getState(-1).externVar,
                     phys_state.externVar,
                 )
             else:
                 matr_elem_rigi = self.getTangentConductivityMatrix(
-                    phys_state.primal, phys_state.primal_step, phys_state.externVar, with_dual=False
+                    phys_state.primal_prev,
+                    phys_state.primal_step,
+                    phys_state.externVar,
+                    with_dual=False,
                 )
                 codret = 0
         else:
@@ -595,9 +599,9 @@ class ExtendedDiscreteComputation:
         if contact_manager:
             matr_elem_cont = self.getContactMatrix(
                 contact_manager.getPairingCoordinates(),
-                phys_state.primal,
+                phys_state.primal_prev,
                 phys_state.primal_step,
-                phys_state.time,
+                phys_state.time_prev,
                 phys_state.time_step,
                 contact_manager.data(),
                 contact_manager.coef_cont,
@@ -626,20 +630,17 @@ class ExtendedDiscreteComputation:
         matr_elem_ext = None
 
         if phys_pb.isThermal():
-            primal_curr = phys_state.primal + phys_state.primal_step
-            time_curr = phys_state.time + phys_state.time_step
-
-            matr_elem_ext = self.getThermalExchangeMatrix(time_curr)
+            matr_elem_ext = self.getThermalExchangeMatrix(phys_state.time_curr)
             matr_elem_ext *= -1.0
 
             matr_elem_ext.addElementaryTerm(
                 self.getThermalTangentNonLinearNeumannMatrix(
-                    primal_curr, time_curr
+                    phys_state.primal_curr, phys_state.time_curr
                 ).getElementaryTerms()
             )
             matr_elem_ext.addElementaryTerm(
                 self.getThermalTangentNonLinearVolumetricMatrix(
-                    primal_curr, time_curr
+                    phys_state.primal_curr, phys_state.time_curr
                 ).getElementaryTerms()
             )
             matr_elem_ext.build()

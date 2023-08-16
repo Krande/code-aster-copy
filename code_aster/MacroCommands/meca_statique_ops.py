@@ -247,25 +247,25 @@ def meca_statique_ops(self, **args):
     # Run computation
     logger.debug("<MECA_STATIQUE>: Run computation")
     while not timeStepper.isFinished():
-        phys_state.time = timeStepper.getCurrent()
+        phys_state.time_curr = timeStepper.getCurrent()
 
         # compute matrix and factorize it
         if not isConst or isFirst:
-            matrix = _computeMatrix(phys_pb, disc_comp, matrix, phys_state.time)
+            matrix = _computeMatrix(phys_pb, disc_comp, matrix, phys_state.time_curr)
             profile(linear_solver.factorize)(matrix)
 
         # compute rhs
-        rhs = _computeRhs(phys_pb, disc_comp, phys_state.time)
+        rhs = _computeRhs(phys_pb, disc_comp, phys_state.time_curr)
 
         # solve linear system
-        diriBCs = profile(disc_comp.getDirichletBC)(phys_state.time)
-        phys_state.primal = profile(linear_solver.solve)(rhs, diriBCs)
+        diriBCs = profile(disc_comp.getDirichletBC)(phys_state.time_curr)
+        phys_state.primal_curr = profile(linear_solver.solve)(rhs, diriBCs)
 
         # store field
-        storage_manager.storeState(phys_state.time, phys_pb, phys_state)
+        storage_manager.storeState(phys_state.time_curr, phys_pb, phys_state)
 
         timeStepper.completed()
-        storage_manager.completed(phys_state.time)
+        storage_manager.completed(phys_state.time_curr)
         isFirst = False
 
     # delete factorized matrix - free memory

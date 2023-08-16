@@ -34,14 +34,19 @@ class PhysicalState(BaseFeature):
     class State:
         """Represents an elementary physical state (private)."""
 
-        _time = _time_step = None
-        _primal = _primal_step = _stress = _internVar = _externVar = None
+        _time_prev = _time_curr = _time_step = None
+        _primal_prev = _primal_curr = _primal_step = _stress = _internVar = _externVar = None
         __setattr__ = no_new_attributes(object.__setattr__)
 
         @property
-        def time(self):
+        def time_prev(self):
+            """float: Previous time."""
+            return self._time_prev
+
+        @property
+        def time_curr(self):
             """float: Current time."""
-            return self._time
+            return self._time_curr
 
         @property
         def time_step(self):
@@ -49,9 +54,14 @@ class PhysicalState(BaseFeature):
             return self._time_step
 
         @property
-        def primal(self):
-            """FieldOnNodesReal: Primal field."""
-            return self._primal
+        def primal_prev(self):
+            """FieldOnNodesReal: Primal field at previous time."""
+            return self._primal_prev
+
+        @property
+        def primal_curr(self):
+            """FieldOnNodesReal: Primal field at current time."""
+            return self._primal_curr
 
         @property
         def primal_step(self):
@@ -82,9 +92,11 @@ class PhysicalState(BaseFeature):
             Return:
                 PhysicalState.State: Current object.
             """
-            self._time = other.time
+            self._time_curr = other.time_curr
+            self._time_prev = other.time_prev
             self._time_step = other.time_step
-            self._primal = other.primal and other.primal.copy()
+            self._primal_prev = other.primal_prev and other.primal_prev.copy()
+            self._primal_curr = other.primal_curr and other.primal_curr.copy()
             self._primal_step = other.primal_step and other.primal_step.copy()
             self._stress = other.stress and other.stress.copy()
             self._internVar = other.internVar and other.internVar.copy()
@@ -93,8 +105,10 @@ class PhysicalState(BaseFeature):
 
         def debugPrint(self, label=""):
             print(f"*** {label}Physical State at", self._time, flush=True)
-            values = self._primal.getValues()
-            print("* primal     ", sum(values) / len(values), flush=True)
+            values = self._primal_prevv.getValues()
+            print("* primal_prev ", sum(values) / len(values), flush=True)
+            values = self._primal_curr.getValues()
+            print("* primal_curr ", sum(values) / len(values), flush=True)
             if self._primal_step:
                 values = self._primal_step.getValues()
                 print("* primal_step", sum(values) / len(values), flush=True)
@@ -139,18 +153,32 @@ class PhysicalState(BaseFeature):
         return self._current
 
     @property
-    def time(self):
-        """float: Current time."""
-        return self.current.time
+    def time_prev(self):
+        """float: Previous time."""
+        return self.current.time_prev
 
-    @time.setter
-    def time(self, value):
-        """Set time step.
+    @time_prev.setter
+    def time_prev(self, value):
+        """Set previous time.
 
         Arguments:
-            value (float): time step
+            value (float): previous time
         """
-        self.current._time = value
+        self.current._time_prev = value
+
+    @property
+    def time_curr(self):
+        """float: Current time."""
+        return self.current.time_curr
+
+    @time_curr.setter
+    def time_curr(self, value):
+        """Set current time.
+
+        Arguments:
+            value (float): current time
+        """
+        self.current._time_curr = value
 
     @property
     def time_step(self):
@@ -167,19 +195,34 @@ class PhysicalState(BaseFeature):
         self.current._time_step = value
 
     @property
-    def primal(self):
-        """FieldOnNodesReal: Primal field."""
-        return self.current.primal
+    def primal_prev(self):
+        """FieldOnNodesReal: Primal field at previous time."""
+        return self.current.primal_prev
 
-    @primal.setter
-    def primal(self, field):
-        """Set primal field.
+    @primal_prev.setter
+    def primal_prev(self, field):
+        """Set previous primal field.
 
         Arguments:
            field (FieldOnNodesReal): primal
         """
         assert isinstance(field, FieldOnNodesReal), f"unexpected type: {field}"
-        self.current._primal = field
+        self.current._primal_prev = field
+
+    @property
+    def primal_curr(self):
+        """FieldOnNodesReal: Primal field at current time."""
+        return self.current.primal_curr
+
+    @primal_curr.setter
+    def primal_curr(self, field):
+        """Set current primal field.
+
+        Arguments:
+           field (FieldOnNodesReal): primal
+        """
+        assert isinstance(field, FieldOnNodesReal), f"unexpected type: {field}"
+        self.current._primal_curr = field
 
     @property
     def primal_step(self):
@@ -258,11 +301,11 @@ class PhysicalState(BaseFeature):
         """Commits the current changes and add the state on the stack."""
         # do not use '+=' to create a new object (and not modify previous values)
         current = self.current
-        current._primal = current._primal
-        if current._primal_step:
-            current._primal += current._primal_step
+        current._primal_prev = current._primal_curr
+        current._primal_curr = current._primal_curr
         current._primal_step = None
-        current._time += current._time_step
+        current._time_prev = current._time_curr
+        current._time_curr = current._time_curr
         current._time_step = 0.0
         self._stash = None
         if len(self._stack) >= self._size:
@@ -298,12 +341,8 @@ class PhysicalState(BaseFeature):
     @staticmethod
     def _states_difference(one, two):
         """Delta between states as returned by py:method:`as_dict`."""
-        quantity, _ = two.primal.getPhysicalQuantity().split("_")
-        delta_primal = two.primal - one.primal
-        if two.primal:
-            delta_primal += two.primal_step
-        if one.primal:
-            delta_primal -= one.primal_step
+        quantity, _ = two.primal_curr.getPhysicalQuantity().split("_")
+        delta_primal = two.primal_curr - one.primal_curr
 
         ret = {"SIEF_ELGA": None, "VARI_ELGA": None, quantity: delta_primal}
         if one.stress and two.stress:
@@ -400,10 +439,12 @@ class PhysicalState(BaseFeature):
         Arguments:
             phys_pb (PhysicalProblem): Physical problem
         """
-        self.time = 0.0
+        self.time_prev = 0.0
+        self.time_curr = 0.0
         self.time_step = 0.0
-        self.primal = self.createPrimal(phys_pb, 0.0)
-        self.primal_step = None
+        self.primal_prev = self.createPrimal(phys_pb, 0.0)
+        self.primal_curr = self.createPrimal(phys_pb, 0.0)
+        self.primal_step = self.createPrimal(phys_pb, 0.0)
         if phys_pb.isMechanical():
             self.stress = self.createStress(phys_pb, 0.0)
             self.internVar = self.createInternalVariablesNext(phys_pb, 0.0)
@@ -416,11 +457,11 @@ class PhysicalState(BaseFeature):
             dict: Dict of fields.
         """
         current = self.current
-        quantity, _ = current.primal.getPhysicalQuantity().split("_")
+        quantity, _ = current.primal_curr.getPhysicalQuantity().split("_")
         return {
             "SIEF_ELGA": current.stress,
             "VARI_ELGA": current.internVar,
-            quantity: current.primal,
+            quantity: current.primal_curr,
         }
 
     def debugPrint(self, label=""):

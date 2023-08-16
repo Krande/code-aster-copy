@@ -394,41 +394,46 @@ def ther_lineaire_ops(self, **args):
     # Run computation
     logger.debug("<THER_LINEAIRE>: Start computation")
 
-    phys_state.primal = initial_field
+    phys_state.primal_curr = initial_field
     time_delta_prev = timeStepper.null_increment
 
     # Compute initial state
     if is_evol:
-        phys_state.time = timeStepper.getInitial()
+        phys_state.time_curr = timeStepper.getInitial()
         time_theta = 1.0
         time_delta = timeStepper.null_increment
         if is_stat_init:
             matrix = _computeMatrix(
-                disc_comp, matrix, False, phys_state.time, time_delta, time_theta
+                disc_comp, matrix, False, phys_state.time_curr, time_delta, time_theta
             )
             profile(linear_solver.factorize)(matrix)
 
             rhs = _computeRhs(
-                disc_comp, False, phys_state.time, time_delta, time_theta, phys_state.primal
+                disc_comp,
+                False,
+                phys_state.time_curr,
+                time_delta,
+                time_theta,
+                phys_state.primal_curr,
             )
 
             # solve linear system
-            diriBCs = profile(disc_comp.getDirichletBC)(phys_state.time)
-            phys_state.primal = profile(linear_solver.solve)(rhs, diriBCs)
+            diriBCs = profile(disc_comp.getDirichletBC)(phys_state.time_curr)
+            phys_state.primal_curr = profile(linear_solver.solve)(rhs, diriBCs)
 
         if save_initial_state:
             storage_manager.storeState(
-                phys_state.time, phys_pb, phys_state, param={"PARM_THETA": time_theta}
+                phys_state.time_curr, phys_pb, phys_state, param={"PARM_THETA": time_theta}
             )
             if model.existsHHO():
-                hho_field = hho.projectOnLagrangeSpace(phys_state.primal)
-                storage_manager.storeField(hho_field, "HHO_TEMP", phys_state.time)
+                hho_field = hho.projectOnLagrangeSpace(phys_state.primal_curr)
+                storage_manager.storeField(hho_field, "HHO_TEMP", phys_state.time_curr)
 
-            storage_manager.completed(phys_state.time)
+            storage_manager.completed(phys_state.time_curr)
 
     # Loop on time step
     while not timeStepper.isFinished():
-        phys_state.time = timeStepper.getCurrent()
+        phys_state.time_curr = timeStepper.getCurrent()
 
         if is_evol:
             time_theta = args.get("PARM_THETA")
@@ -440,8 +445,8 @@ def ther_lineaire_ops(self, **args):
         logger.debug("<THER_LINEAIRE>:     IS_EVOL %s" % is_evol)
         logger.debug("<THER_LINEAIRE>:     IS_CONST = %s" % is_const)
         logger.debug("<THER_LINEAIRE>:     HAS_EXT_STATE_VAR = %s" % hasExternalStateVariable)
-        logger.debug("<THER_LINEAIRE>:     CURRENT TIME %s" % phys_state.time)
-        logger.debug("<THER_LINEAIRE>:     TIME_CURR %s" % phys_state.time)
+        logger.debug("<THER_LINEAIRE>:     CURRENT TIME %s" % phys_state.time_curr)
+        logger.debug("<THER_LINEAIRE>:     TIME_CURR %s" % phys_state.time_curr)
         logger.debug("<THER_LINEAIRE>:     TIME_DELTA %s" % time_delta)
         logger.debug("<THER_LINEAIRE>:     TIME_THETA %s" % time_theta)
 
@@ -453,27 +458,27 @@ def ther_lineaire_ops(self, **args):
             or (is_const and hasExternalStateVariable)
         ):
             matrix = _computeMatrix(
-                disc_comp, matrix, is_evol, phys_state.time, time_delta, time_theta
+                disc_comp, matrix, is_evol, phys_state.time_curr, time_delta, time_theta
             )
             profile(linear_solver.factorize)(matrix)
 
         rhs = _computeRhs(
-            disc_comp, is_evol, phys_state.time, time_delta, time_theta, phys_state.primal
+            disc_comp, is_evol, phys_state.time_curr, time_delta, time_theta, phys_state.primal_curr
         )
 
         # solve linear system
-        diriBCs = profile(disc_comp.getDirichletBC)(phys_state.time)
-        phys_state.primal = profile(linear_solver.solve)(rhs, diriBCs)
+        diriBCs = profile(disc_comp.getDirichletBC)(phys_state.time_curr)
+        phys_state.primal_curr = profile(linear_solver.solve)(rhs, diriBCs)
 
-        if storage_manager.hasToBeStored(phys_state.time):
+        if storage_manager.hasToBeStored(phys_state.time_curr):
             storage_manager.storeState(
-                phys_state.time, phys_pb, phys_state, param={"PARM_THETA": time_theta}
+                phys_state.time_curr, phys_pb, phys_state, param={"PARM_THETA": time_theta}
             )
             if model.existsHHO():
-                hho_field = hho.projectOnLagrangeSpace(phys_state.primal)
-                storage_manager.storeField(hho_field, "HHO_TEMP", phys_state.time)
+                hho_field = hho.projectOnLagrangeSpace(phys_state.primal_curr)
+                storage_manager.storeField(hho_field, "HHO_TEMP", phys_state.time_curr)
 
-            storage_manager.completed(phys_state.time)
+            storage_manager.completed(phys_state.time_curr)
 
         timeStepper.completed()
         time_delta_prev = time_delta

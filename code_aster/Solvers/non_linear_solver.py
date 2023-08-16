@@ -122,7 +122,7 @@ class NonLinearSolver(SolverFeature):
             phys_pb.computeReferenceExternalStateVariables()
         self.setInitialState()
         self.step_rank = 0
-        self._storeRank(self.phys_state.time)
+        self._storeRank(self.phys_state.time_curr)
         # register observers
         for source in self.get_childs(SOP.IncrementalSolver | SOP.EventSource):
             source.add_observer(self.stepper)
@@ -147,7 +147,7 @@ class NonLinearSolver(SolverFeature):
                     extract_time = resu.getLastTime()
                 if init_time is None:
                     init_time = extract_time
-                phys_state.primal = resu.getField("DEPL", para="INST", value=extract_time)
+                phys_state.primal_curr = resu.getField("DEPL", para="INST", value=extract_time)
                 phys_state.stress = resu.getField("SIEF_ELGA", para="INST", value=extract_time)
                 phys_state.internVar = resu.getField("VARI_ELGA", para="INST", value=extract_time)
             if "EVOL_THER" in init_state:
@@ -158,28 +158,28 @@ class NonLinearSolver(SolverFeature):
                     extract_time = resu.getLastTime()
                 if init_time is None:
                     init_time = extract_time
-                phys_state.primal = resu.getField("TEMP", para="INST", value=extract_time)
+                phys_state.primal_curr = resu.getField("TEMP", para="INST", value=extract_time)
             if "CHAM_NO" in init_state:
-                phys_state.primal = init_state.get("CHAM_NO")
+                phys_state.primal_curr = init_state.get("CHAM_NO")
             if "DEPL" in init_state:
-                phys_state.primal = init_state.get("DEPL")
+                phys_state.primal_curr = init_state.get("DEPL")
             if "SIGM" in init_state:
                 phys_state.stress = init_state.get("SIGM")
             if "VARI" in init_state:
                 phys_state.internVar = init_state.get("VARI")
             if "VALE" in init_state:
-                phys_state.primal.setValues(init_state.get("VALE"))
+                phys_state.primal_curr.setValues(init_state.get("VALE"))
 
             if init_time is not None:
                 self.stepper.setInitial(init_time)
 
         self.setExternalStateVariables(init_time)
-        phys_state.time = init_time
+        phys_state.time_curr = init_time
 
         if init_state and "STAT" in init_state:
             solv = self.get_feature(SOP.StepSolver)
             solv.initialize()
-            args = dict(valr=phys_state.time, vali=self.stepper.splitting_level)
+            args = dict(valr=phys_state.time_curr, vali=self.stepper.splitting_level)
             logger.info(MessageLog.GetText("I", "MECANONLINE6_5", **args))
             solv.solve()
             if self.stepper.size() == 1 and self.stepper.getCurrent() == self.stepper.getPrevious():
@@ -196,15 +196,17 @@ class NonLinearSolver(SolverFeature):
         # Solve nonlinear problem
         solv = self.get_feature(SOP.StepSolver)
         while not self.isFinished():
-            timeEndStep = self.stepper.getCurrent()
-            self.phys_state.time_step = timeEndStep - self.phys_state.time
+            self.phys_state.time_curr = self.stepper.getCurrent()
+            self.phys_state.time_step = self.phys_state.time_curr - self.phys_state.time_prev
             if self.stepper.splitting_level <= 0:
-                logger.info(MessageLog.GetText("I", "MECANONLINE6_7", valr=timeEndStep))
+                logger.info(
+                    MessageLog.GetText("I", "MECANONLINE6_7", valr=self.phys_state.time_curr)
+                )
             else:
-                args = dict(valr=timeEndStep, vali=self.stepper.splitting_level)
+                args = dict(valr=self.phys_state.time_curr, vali=self.stepper.splitting_level)
                 logger.info(MessageLog.GetText("I", "MECANONLINE6_5", **args))
 
-            self.setExternalStateVariables(timeEndStep)
+            self.setExternalStateVariables(self.phys_state.time_curr)
             solv.initialize()
             if (self.step_rank + 1) % matr_update_step:
                 solv.current_matrix = self.current_matrix
@@ -223,7 +225,7 @@ class NonLinearSolver(SolverFeature):
                     self.phys_state.revert()
                     continue
                 self.phys_state.commit()
-                self._storeRank(timeEndStep)
+                self._storeRank(self.phys_state.time_curr)
                 self.stepper.completed()
                 self.current_matrix = solv.current_matrix
                 self.post_hooks()

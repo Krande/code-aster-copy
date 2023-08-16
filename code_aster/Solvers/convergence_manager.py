@@ -315,10 +315,10 @@ class ConvergenceManager(SolverFeature):
 
         # maybe not really efficient
         if loads.hasDirichletBC():
-            time_curr = self.phys_state.time + self.phys_state.time_step
-            primal_curr = self.phys_state.primal + self.phys_state.primal_step
             disc_comp = DiscreteComputation(self.phys_pb)
-            diriBCs = disc_comp.getIncrementalDirichletBC(time_curr, primal_curr)
+            diriBCs = disc_comp.getIncrementalDirichletBC(
+                self.phys_state.time_curr, self.phys_state.primal_curr
+            )
             eliminatedDofs = self.phys_pb.getDirichletBCDOFs()
             nbElimination = len(eliminatedDofs)
             assert residual.size() == nbElimination

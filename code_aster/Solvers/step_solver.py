@@ -61,6 +61,7 @@ class StepSolver(SolverFeature):
         self.check_features()
         self.current_matrix = None
         self.phys_state.primal_step = self.phys_state.createPrimal(self.phys_pb, 0.0)
+        self.phys_state.primal_curr = self.phys_state.primal_prev.copy()
 
         convManager = self.get_feature(SOP.ConvergenceManager)
         convManager.initialize()
@@ -85,6 +86,7 @@ class StepSolver(SolverFeature):
         """
 
         self.phys_state.primal_step += primal_incr
+        self.phys_state.primal_curr += primal_incr
 
         if convManager.isConverged():
             self.phys_state.internVar = internVar

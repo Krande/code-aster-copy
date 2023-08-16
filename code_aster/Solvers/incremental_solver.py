@@ -97,12 +97,10 @@ class IncrementalSolver(SolverFeature, EventSource):
         convManager.evalNormResidual(residuals)
 
         if not convManager.isConverged():
-            # Time at end of current step
-            time_curr = self.phys_state.time + self.phys_state.time_step
-
-            # Compute Dirichlet BC:
-            primal_curr = self.phys_state.primal + self.phys_state.primal_step
-            diriBCs = disc_comp.getIncrementalDirichletBC(time_curr, primal_curr)
+            # Compute Dirichlet BC:=
+            diriBCs = disc_comp.getIncrementalDirichletBC(
+                self.phys_state.time_curr, self.phys_state.primal_curr
+            )
 
             # Solve linear system
             linear_solver = self.get_feature(SOP.LinearSolver)

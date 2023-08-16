@@ -145,5 +145,4 @@ class ContactManager(SolverFeature):
         """
 
         if self.enable:
-            primal_curr = phys_state.primal + phys_state.primal_step
-            self.pair.updateCoordinates(primal_curr)
+            self.pair.updateCoordinates(phys_state.primal_curr)
