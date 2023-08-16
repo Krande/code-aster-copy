@@ -380,9 +380,8 @@ class DiscreteComputation {
                                const FieldOnCellsRealPtr varc_curr = nullptr ) const;
 
     std::variant< ElementaryVectorTemperatureRealPtr, FieldOnNodesRealPtr >
-    getTransientThermalLoadForces( const ASTERDOUBLE time_curr, const ASTERDOUBLE time_step,
-                                   const ASTERDOUBLE theta,
-                                   const FieldOnNodesRealPtr _previousPrimalField = nullptr,
+    getTransientThermalLoadForces( const ASTERDOUBLE time_curr,
+                                   const FieldOnNodesRealPtr temp_prev = nullptr,
                                    const bool assembly = true ) const;
 
     FieldOnNodesRealPtr getNonLinearTransientThermalForces(

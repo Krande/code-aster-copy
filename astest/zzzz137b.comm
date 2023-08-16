@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,8 +28,21 @@ MATE = DEFI_MATERIAU(THER=_F(LAMBDA=1.0, RHO_CP=2.0))
 
 CHMAT = AFFE_MATERIAU(MAILLAGE=MESH, MODELE=MODEL, AFFE=_F(TOUT="OUI", MATER=MATE))
 
+COEF_H = DEFI_FONCTION(
+    NOM_PARA="INST",
+    VALE=(0.0, 0.0, 0.5, 1.0, 1.0, 1.0),
+    PROL_DROITE="CONSTANT",
+    PROL_GAUCHE="CONSTANT",
+)
 
-CHTH = AFFE_CHAR_THER(MODELE=MODEL, ECHANGE=_F(GROUP_MA="AB", COEF_H=1.0, TEMP_EXT=50.0))
+TEMP_EXT = DEFI_FONCTION(
+    NOM_PARA="INST",
+    VALE=(0.0, 0.0, 0.5, 50.0, 1.0, 50.0),
+    PROL_DROITE="CONSTANT",
+    PROL_GAUCHE="CONSTANT",
+)
+
+CHTH = AFFE_CHAR_THER_F(MODELE=MODEL, ECHANGE=_F(GROUP_MA="AB", COEF_H=COEF_H, TEMP_EXT=TEMP_EXT))
 
 LTMPS = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=1.0, NOMBRE=2)))
 
@@ -52,7 +65,7 @@ TEST_RESU(
         NOM_CHAM="TEMP",
         GROUP_NO="N15",
         NOM_CMP="TEMP",
-        VALE_CALC=22.4232294839,
+        VALE_CALC=23.051177398871296,
     )
 )
 
@@ -173,8 +186,8 @@ TEST_RESU(
         NOM_CHAM="TEMP",
         GROUP_NO="N15",
         NOM_CMP="TEMP",
-        VALE_CALC=22.4232294839,
-        VALE_REFE=22.4232294839,
+        VALE_CALC=23.051177398871296,
+        VALE_REFE=23.051177398871296,
         PRECISION=1.0e-6,
     )
 )
@@ -285,8 +298,8 @@ TEST_RESU(
         NOM_CHAM="TEMP",
         GROUP_NO="N15",
         NOM_CMP="TEMP",
-        VALE_CALC=22.4232294839,
-        VALE_REFE=22.4232294839,
+        VALE_CALC=23.051177398871296,
+        VALE_REFE=23.051177398871296,
         PRECISION=1.0e-6,
     )
 )

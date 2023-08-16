@@ -675,9 +675,7 @@ DiscreteComputation::getThermalNonLinearVolumetricForces( const FieldOnNodesReal
 
 std::variant< ElementaryVectorTemperatureRealPtr, FieldOnNodesRealPtr >
 DiscreteComputation::getTransientThermalLoadForces( const ASTERDOUBLE time_curr,
-                                                    const ASTERDOUBLE time_step,
-                                                    const ASTERDOUBLE theta,
-                                                    const FieldOnNodesRealPtr _previousPrimalField,
+                                                    const FieldOnNodesRealPtr temp_prev,
                                                     const bool assembly ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
@@ -748,14 +746,14 @@ DiscreteComputation::getTransientThermalLoadForces( const ASTERDOUBLE time_curr,
                     AS_ABORT( "Cannot find T_EXT in EVOL_CHAR " + evol_char_name + " at time " +
                               std::to_string( time_curr ) );
                 }
-                AS_ASSERT( _previousPrimalField && _previousPrimalField->exists() );
+                AS_ASSERT( temp_prev && temp_prev->exists() );
 
                 calcul->setOption( "CHAR_THER_TEXT_R" );
                 calcul->setFiniteElementDescriptor( model_FEDesc );
                 calcul->clearInputs();
                 calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
-                calcul->addInputField( "PTEMPER", _previousPrimalField );
-                calcul->addTimeField( "PTEMPSR", time_curr, time_step, theta );
+                calcul->addInputField( "PTEMPER", temp_prev );
+                calcul->addTimeField( "PTEMPSR", time_curr, 0.0, -1.0 );
                 calcul->addInputField( "PCOEFHR", evol_exchange_field );
                 calcul->addInputField( "PT_EXTR", evol_ext_temp_field );
                 calcul->clearOutputs();
@@ -771,7 +769,7 @@ DiscreteComputation::getTransientThermalLoadForces( const ASTERDOUBLE time_curr,
                 calcul->setFiniteElementDescriptor( model_FEDesc );
                 calcul->clearInputs();
                 calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
-                calcul->addTimeField( "PTEMPSR", time_curr, time_step, theta );
+                calcul->addTimeField( "PTEMPSR", time_curr, 0.0, -1.0 );
                 calcul->addInputField( "PFLUXNR", evol_flow_xyz_field );
                 calcul->clearOutputs();
                 calcul->addOutputElementaryTerm( "PVECTTR",

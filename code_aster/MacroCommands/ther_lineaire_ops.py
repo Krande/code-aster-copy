@@ -269,6 +269,8 @@ def _computeRhs(disr_comp, is_evol, time_curr, time_delta, time_theta, previousP
 
         rhs += disr_comp.getThermalExchangeForces(temp, time)
 
+        rhs += disr_comp.getTransientThermalLoadForces(time, temp)
+
         logger.debug("<THER_LINEAIRE><RHS>: Neumann BC")
 
         return rhs
@@ -289,10 +291,6 @@ def _computeRhs(disr_comp, is_evol, time_curr, time_delta, time_theta, previousP
 
         rhs += disr_comp.getTransientThermalForces(
             time_curr, time_delta, time_theta, previousPrimalField, varc_curr=varc
-        )
-
-        rhs += disr_comp.getTransientThermalLoadForces(
-            time_curr, time_delta, time_theta, previousPrimalField
         )
 
         logger.debug("<THER_LINEAIRE><RHS>: Transient Load BC")

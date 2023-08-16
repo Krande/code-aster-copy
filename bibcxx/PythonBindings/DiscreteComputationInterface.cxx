@@ -245,21 +245,19 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
 
         .def( "getTransientThermalLoadForces", &DiscreteComputation::getTransientThermalLoadForces,
               R"(
-            Compute Transient Thermal Load.
+            Compute Transient Thermal Load given by EVOL_CHAR.
             Option CHAR_THER.
 
             Arguments:
                   time_curr (float): Current time
-                  time_step (float): Time increment
-                  theta (float): Theta parameter for integration
-                  previousPrimalField (FieldOnNodesReal): solution field at previous time
+                  temp_prev (FieldOnNodesReal): solution field at previous time
                   assembly (bool) : if True return assembled vector (default: True)
 
             Returns:
                   FieldOnNodes: load
             )",
-              py::arg( "time_curr" ), py::arg( "time_step" ), py::arg( "theta" ),
-              py::arg( "previousPrimalField" ) = nullptr, py::arg( "assembly" ) = true )
+              py::arg( "time_curr" ), py::arg( "temp_prev" ) = nullptr,
+              py::arg( "assembly" ) = true )
 
         .def( "getNonLinearTransientThermalForces",
               &DiscreteComputation::getNonLinearTransientThermalForces,

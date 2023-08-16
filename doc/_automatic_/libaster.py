@@ -933,16 +933,6 @@ class DiscreteComputation:
             ElementaryMatrixDisplacementReal: contact and friction elementary matrix
         """
 
-    def getDualDisplacement(self, disp_curr, scaling=1.0):
-        """Return the Dirichlet load vector
-
-        Arguments:
-              disp_curr (FieldOnNodes): current displacement vector
-
-        Returns:
-              FieldOnNodes: Dirichlet load vector
-        """
-
     def getDualElasticStiffnessMatrix(self):
         """Return elementary matrices for dual mechanical BC
 
@@ -972,6 +962,16 @@ class DiscreteComputation:
 
         Returns:
             ElementaryMatrix: elementary matrices
+        """
+
+    def getDualPrimal(self, primal_curr, scaling=1.0):
+        """Return the Dirichlet load vector
+
+        Arguments:
+              disp_curr (FieldOnNodes): current displacement vector
+
+        Returns:
+              FieldOnNodes: Dirichlet load vector
         """
 
     def getElasticStiffnessMatrix(
@@ -1462,16 +1462,12 @@ class DiscreteComputation:
               FieldOnNodesReal: imposed thermal vector
         """
 
-    def getThermalExchangeForces(
-        self, temp_curr, time_curr=0.0, time_step=0.0, theta=1.0, assembly=True
-    ):
+    def getThermalExchangeForces(self, temp_curr, time_curr=0.0, assembly=True):
         """Return the elementary thermal Exchange forces vector
 
         Arguments:
               temp_curr (FieldOnNodesReal): thermal field at current time
               time_curr (float): Current time
-              time_step (float): Time increment
-              theta (float): Theta parameter for time-integration
               assembly (bool) : if True return assembled vector (default: True)
 
         Returns:
@@ -1498,13 +1494,11 @@ class DiscreteComputation:
               ElementaryVectorThermalReal: imposed dual vector
         """
 
-    def getThermalNeumannForces(self, time_curr=0.0, time_step=0.0, theta=1.0, assembly=True):
+    def getThermalNeumannForces(self, time_curr=0.0, assembly=True):
         """Return the elementary thermal Neumann forces vector
 
         Arguments:
-              time_curr (float): Current time
-              time_step (float): Time increment
-              theta (float): Theta parameter for time-integration
+              time_curr (float): Current time (default: 0.0)
               assembly (bool) : if True return assembled vector (default: True)
 
         Returns:
@@ -1559,15 +1553,11 @@ class DiscreteComputation:
             ElementaryMatrix: elementary matrix
         """
 
-    def getThermalVolumetricForces(
-        self, time_curr=0.0, time_step=0.0, theta=1.0, varc_curr=None, assembly=True
-    ):
+    def getThermalVolumetricForces(self, time_curr=0.0, varc_curr=None, assembly=True):
         """Return the elementary thermal Volumetric forces vector
 
         Arguments:
               time_curr (float): Current time
-              time_step (float): Time increment
-              theta (float): Theta parameter for time-integration
               varc_curr (FieldOnCellsReal): external state variables at current time
               assembly (bool) : if True return assembled vector (default: True)
 
@@ -1611,17 +1601,13 @@ class DiscreteComputation:
                           FieldOnNodes: load
         """
 
-    def getTransientThermalLoadForces(
-        self, time_curr, time_step, theta, previousPrimalField=None, assembly=True
-    ):
-        """Compute Transient Thermal Load.
+    def getTransientThermalLoadForces(self, time_curr, temp_prev=None, assembly=True):
+        """Compute Transient Thermal Load given by EVOL_CHAR.
         Option CHAR_THER.
 
         Arguments:
               time_curr (float): Current time
-              time_step (float): Time increment
-              theta (float): Theta parameter for integration
-              previousPrimalField (FieldOnNodesReal): solution field at previous time
+              temp_prev (FieldOnNodesReal): solution field at previous time
               assembly (bool) : if True return assembled vector (default: True)
 
         Returns:
@@ -11840,6 +11826,27 @@ class PhysicalProblem:
 
         Returns:
             FieldOnCellsRealPtr : field of reference values
+        """
+
+    def isAcoustic(self):
+        """To know if the probleme is acoustic or not
+
+        Returns:
+            bool: True - if the model is acoustic
+        """
+
+    def isMechanical(self):
+        """To know if the problem is mechanical or not
+
+        Returns:
+            bool: True - if the model is mechanical
+        """
+
+    def isThermal(self):
+        """To know if the problem is thermal or not
+
+        Returns:
+            bool: True - if the model is thermal
         """
 
     def setDOFNumbering(self, dofNum):
