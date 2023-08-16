@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -401,35 +401,35 @@ TEST_RESU(
             TYPE_TEST="SOMM_ABS",
             RESULTAT=THL10,
             NOM_CHAM="FLUX_ELGA",
-            VALE_CALC=1076.9837473389,  # 1120.0857980967,
+            VALE_CALC=1067.995049435672,  # 1120.0857980967,
         ),
         _F(
             NUME_ORDRE=1,
             TYPE_TEST="SOMM_ABS",
             RESULTAT=THL10,
             NOM_CHAM="FLUX_ELNO",
-            VALE_CALC=1203.7871683573,  # 1245.0042888379,
+            VALE_CALC=1193.653876057618,  # 1245.0042888379,
         ),
         _F(
             NUME_ORDRE=2,
             TYPE_TEST="MAX",
             RESULTAT=THL10,
             NOM_CHAM="TEMP",
-            VALE_CALC=9.571653183399,  # 723.07235189486,
+            VALE_CALC=9.587609682784116,  # 723.07235189486,
         ),
         _F(
             NUME_ORDRE=2,
             TYPE_TEST="SOMM_ABS",
             RESULTAT=THL10,
             NOM_CHAM="FLUX_ELGA",
-            VALE_CALC=1042.349098550,  # 1106.8678578828999,
+            VALE_CALC=1049.8509664353758,  # 1106.8678578828999,
         ),
         _F(
             NUME_ORDRE=2,
             TYPE_TEST="SOMM_ABS",
             RESULTAT=THL10,
             NOM_CHAM="FLUX_ELNO",
-            VALE_CALC=1170.6770493572,  # 1233.0444127143001,
+            VALE_CALC=1178.9957569849523,  # 1233.0444127143001,
         ),
     )
 )
