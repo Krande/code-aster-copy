@@ -28,6 +28,8 @@
 
 #include "astercxx.h"
 
+#include "aster_pybind.h"
+
 /**
  * @class CrackShape
  * @brief Class to store the nature of the crack shape
@@ -61,6 +63,10 @@ class CrackShape {
      * @brief Constructeur
      */
     CrackShape();
+
+    /** @brief restricted constructor (Set) and method (Get) to support pickling */
+    CrackShape( const py::tuple &tup );
+    py::tuple _getState() const;
 
     /**
      * @brief Define the Crack Shape as Ellise

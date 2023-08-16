@@ -26,7 +26,7 @@
 #include "astercxx.h"
 
 #include "Contact/ContactEnum.h"
-#include "Contact/ContactParameters.h"
+#include "Contact/ContactParameter.h"
 #include "DataStructures/DataStructure.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "Modeling/Model.h"

@@ -172,7 +172,11 @@ class Serializer(object):
                 except Exception:
                     logger.warning("object can not be pickled: %s %s", name, type(obj))
                     logger.debug(traceback.format_exc())
-                    if do_check and pyb_instance in type(obj).mro():
+                    if (
+                        do_check
+                        and not hasattr(obj, "__pickling_disabled__")
+                        and pyb_instance in type(obj).mro()
+                    ):
                         raise
                     continue
                 if isinstance(obj, DataStructure):

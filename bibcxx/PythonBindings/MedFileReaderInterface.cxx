@@ -35,6 +35,8 @@ void exportMedFileReaderToPython( py::module_ &mod ) {
 
     py::class_< MedFileReader, MedFileReader::MedFileReaderPtr >( mod, "MedFileReader" )
         .def( py::init( &initFactoryPtr< MedFileReader > ) )
+        .def( "__pickling_disabled__", disable_pickling< MedFileReader >() )
+
         .def( "close", &MedFileReader::close, R"(Close med file)" )
         .def( "getField",
               py::overload_cast< const std::string & >( &MedFileReader::getField, py::const_ ), R"(

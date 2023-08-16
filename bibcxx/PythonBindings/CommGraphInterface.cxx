@@ -36,6 +36,8 @@ void exportCommGraphToPython( py::module_ &mod ) {
 
     py::class_< CommGraph, CommGraphPtr >( mod, "CommGraph" )
         .def( py::init( &initFactoryPtr< CommGraph > ) )
+        .def( "__pickling_disabled__", disable_pickling< CommGraph >() )
+
         .def( "addCommunication", &CommGraph::addCommunication, R"(
 Add a communication with a process
 

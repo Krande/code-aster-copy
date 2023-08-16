@@ -26,6 +26,8 @@
 
 #include "astercxx.h"
 
+#include "aster_pybind.h"
+
 #include "Functions/Function.h"
 #include "Utilities/CapyConvertibleValue.h"
 
@@ -472,6 +474,13 @@ class PhysicalQuantity {
      * @brief Destructor
      */
     ~PhysicalQuantity() {};
+
+    /** @brief restricted constructor (Set) and method (Get) to support pickling */
+    PhysicalQuantity( const py::tuple &tup ) : PhysicalQuantity() {
+        _compAndVal = tup[0].cast< MapOfCompAndVal >();
+        _values = tup[1].cast< std::vector< ValueType > >();
+    };
+    py::tuple _getState() const { return py::make_tuple( _compAndVal, _values ); };
 
     /**
      * @function hasComponent

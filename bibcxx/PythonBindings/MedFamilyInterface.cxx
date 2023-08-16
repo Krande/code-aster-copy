@@ -34,6 +34,8 @@
 void exportMedFamilyToPython( py::module_ &mod ) {
 
     py::class_< MedFamily, MedFamily::MedFamilyPtr >( mod, "MedFamily" )
+        .def( "__pickling_disabled__", disable_pickling< MedFamily >() )
+
         .def( "getGroups", &MedFamily::getGroups, R"(
 Get list of groups in family )" )
         .def( "getName", &MedFamily::getName, R"(

@@ -32,7 +32,6 @@
 void exportDataStructureToPython( py::module_ &mod ) {
 
     py::class_< DataStructure, DataStructurePtr >( mod, "DataStructure" )
-        // .enable_pickling()
         // fake initFactoryPtr: created by subclasses
         // fake initFactoryPtr: created by subclasses
         .def_property( "ptr_sdj", &DataStructure::getSDJ, &DataStructure::setSDJ )

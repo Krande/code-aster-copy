@@ -66,55 +66,65 @@ void exportPhysicalQuantityToPython( py::module_ &mod ) {
 
     py::class_< ForceReal, ForceReal::PhysicalQuantityPtr >( mod, "ForceReal" )
         .def( py::init( &initFactoryPtr< ForceReal > ) )
+        .def( define_pickling< ForceReal >() )
         .def( "debugPrint", &ForceReal::debugPrint )
         .def( "setValue", &ForceReal::setValue );
 
     py::class_< StructuralForceReal, StructuralForceReal::PhysicalQuantityPtr >(
         mod, "StructuralForceReal" )
         .def( py::init( &initFactoryPtr< StructuralForceReal > ) )
+        .def( define_pickling< StructuralForceReal >() )
         .def( "debugPrint", &StructuralForceReal::debugPrint )
         .def( "setValue", &StructuralForceReal::setValue );
 
     py::class_< LocalBeamForceReal, LocalBeamForceReal::PhysicalQuantityPtr >(
         mod, "LocalBeamForceReal" )
         .def( py::init( &initFactoryPtr< LocalBeamForceReal > ) )
+        .def( define_pickling< LocalBeamForceReal >() )
         .def( "debugPrint", &LocalBeamForceReal::debugPrint )
         .def( "setValue", &LocalBeamForceReal::setValue );
 
     py::class_< LocalShellForceReal, LocalShellForceReal::PhysicalQuantityPtr >(
         mod, "LocalShellForceReal" )
         .def( py::init( &initFactoryPtr< LocalShellForceReal > ) )
+        .def( define_pickling< LocalShellForceReal >() )
         .def( "debugPrint", &LocalShellForceReal::debugPrint )
         .def( "setValue", &LocalShellForceReal::setValue );
 
     py::class_< DisplacementReal, DisplacementReal::PhysicalQuantityPtr >( mod, "DisplacementReal" )
         .def( py::init( &initFactoryPtr< DisplacementReal > ) )
+        .def( define_pickling< DisplacementReal >() )
         .def( "debugPrint", &DisplacementReal::debugPrint )
         .def( "setValue", &DisplacementReal::setValue );
 
     py::class_< PressureReal, PressureReal::PhysicalQuantityPtr >( mod, "PressureReal" )
         .def( py::init( &initFactoryPtr< PressureReal > ) )
+        .def( define_pickling< PressureReal >() )
         .def( "debugPrint", &PressureReal::debugPrint )
         .def( "setValue", &PressureReal::setValue );
 
     py::class_< ImpedanceReal, ImpedanceReal::PhysicalQuantityPtr >( mod, "ImpedanceReal" )
         .def( py::init( &initFactoryPtr< ImpedanceReal > ) )
+        .def( define_pickling< ImpedanceReal >() )
         .def( "debugPrint", &ImpedanceReal::debugPrint )
         .def( "setValue", &ImpedanceReal::setValue );
 
     py::class_< NormalSpeedReal, NormalSpeedReal::PhysicalQuantityPtr >( mod, "NormalSpeedReal" )
         .def( py::init( &initFactoryPtr< NormalSpeedReal > ) )
+        .def( define_pickling< NormalSpeedReal >() )
         .def( "debugPrint", &NormalSpeedReal::debugPrint )
         .def( "setValue", &NormalSpeedReal::setValue );
 
     py::class_< HeatFluxReal, HeatFluxReal::PhysicalQuantityPtr >( mod, "HeatFluxReal" )
         .def( py::init( &initFactoryPtr< HeatFluxReal > ) )
+        .def( define_pickling< HeatFluxReal >() )
         .def( "debugPrint", &HeatFluxReal::debugPrint )
         .def( "setValue", &HeatFluxReal::setValue );
 
     py::class_< HydraulicFluxReal, HydraulicFluxReal::PhysicalQuantityPtr >( mod,
                                                                              "HydraulicFluxReal" )
         .def( py::init( &initFactoryPtr< HydraulicFluxReal > ) )
+        .def( define_pickling< HydraulicFluxReal >() )
         .def( "debugPrint", &HydraulicFluxReal::debugPrint )
         .def( "setValue", &HydraulicFluxReal::setValue );
 };

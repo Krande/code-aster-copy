@@ -24,6 +24,28 @@
 
 CrackShape::CrackShape() { _shape = Shape::NoShape; };
 
+py::tuple CrackShape::_getState() const {
+    return py::make_tuple( _semiMajorAxis, _semiMinorAxis, _center, _vectX, _vectY, _crackSide,
+                           _filletRadius, _halfLength, _endPoint, _normal, _tangent,
+                           _startingPoint );
+}
+
+CrackShape::CrackShape( const py::tuple &tup ) : CrackShape() {
+    _shape = tup[0].cast< Shape >();
+    _semiMajorAxis = tup[1].cast< ASTERDOUBLE >();
+    _semiMinorAxis = tup[2].cast< ASTERDOUBLE >();
+    _center = tup[3].cast< VectorReal >();
+    _vectX = tup[4].cast< VectorReal >();
+    _vectY = tup[5].cast< VectorReal >();
+    _crackSide = tup[6].cast< std::string >();
+    _filletRadius = tup[7].cast< ASTERDOUBLE >();
+    _halfLength = tup[8].cast< ASTERDOUBLE >();
+    _endPoint = tup[9].cast< VectorReal >();
+    _normal = tup[10].cast< VectorReal >();
+    _tangent = tup[11].cast< VectorReal >();
+    _startingPoint = tup[12].cast< VectorReal >();
+}
+
 void CrackShape::setEllipseCrackShape( ASTERDOUBLE semiMajorAxis, ASTERDOUBLE semiMinorAxis,
                                        VectorReal center, VectorReal vectX, VectorReal vectY,
                                        std::string crackSide ) {

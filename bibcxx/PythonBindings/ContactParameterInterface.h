@@ -2,8 +2,8 @@
 #define CONTACTPARAMINTERFACE_H_
 
 /**
- * @file ContactParametersInterface.h
- * @brief Fichier entete de la classe ContactParametersInterface
+ * @file ContactParameterInterface.h
+ * @brief Fichier entete de la classe ContactParameterInterface
  * @section LICENCE
  *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
  *
@@ -27,8 +27,8 @@
 
 #include "aster_pybind.h"
 
-#include "Contact/ContactParameters.h"
+#include "Contact/ContactParameter.h"
 
-void exportContactParametersToPython( py::module_ &mod );
+void exportContactParameterToPython( py::module_ &mod );
 
 #endif /* CONTACTPARAMINTERFACE_H_ */

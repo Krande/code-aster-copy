@@ -33,6 +33,8 @@ void exportPtScotchPartitionerToPython( py::module_ &mod ) {
 #ifdef ASTER_HAVE_PTSCOTCH
     py::class_< PtScotchPartitioner, PtScotchPartitionerPtr >( mod, "PtScotchPartitioner" )
         .def( py::init( &initFactoryPtr< PtScotchPartitioner > ) )
+        .def( "__pickling_disabled__", disable_pickling< PtScotchPartitioner >() )
+
         .def( "buildGraph",
               py::overload_cast< const VectorLong &, const VectorLong & >(
                   &PtScotchPartitioner::buildGraph ),

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import numpy as NP
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 
@@ -125,9 +124,9 @@ L_INST2 = DEFI_LIST_REEL(VALE=(list_py))
 #
 # DESCRIPTION DES ACCELEROGRAMMES:
 # ---------------------------------
-ACCE1 = FORMULE(NOM_PARA="INST", VALE="NP.cos(30.*2*3.1416*INST + 0.)", NP=NP)
-ACCE2 = FORMULE(NOM_PARA="INST", VALE="NP.cos(45.*2*NP.pi*INST + NP.pi/3.)", NP=NP)
-ACCE3 = FORMULE(NOM_PARA="INST", VALE="20.*NP.cos(15.*2*NP.pi*INST + NP.pi/4.)", NP=NP)
+ACCE1 = FORMULE(NOM_PARA="INST", VALE="cos(30.*2*3.1416*INST + 0.)")
+ACCE2 = FORMULE(NOM_PARA="INST", VALE="cos(45.*2*pi*INST + pi/3.)")
+ACCE3 = FORMULE(NOM_PARA="INST", VALE="20.*cos(15.*2*pi*INST + pi/4.)")
 # AU NIVEAU DU RADIER
 ACCERX = CALC_FONC_INTERP(
     FONCTION=ACCE1,
@@ -182,9 +181,9 @@ ACCEPZ = CALC_FONC_INTERP(
 #
 # INTEGRATION DES ACCELEROGRAMMES:
 # ---------------------------------
-VITE1 = FORMULE(NOM_PARA="INST", VALE="-30.*2*NP.pi*NP.sin(30.*2*NP.pi*INST + 0.)", NP=NP)
-VITE2 = FORMULE(NOM_PARA="INST", VALE="-45.*2*NP.pi*NP.sin(45.*2*NP.pi*INST + NP.pi/3.)", NP=NP)
-VITE3 = FORMULE(NOM_PARA="INST", VALE="-300.*2*NP.pi*NP.sin(15.*2*NP.pi*INST + NP.pi/4.)", NP=NP)
+VITE1 = FORMULE(NOM_PARA="INST", VALE="-30.*2*pi*sin(30.*2*pi*INST + 0.)")
+VITE2 = FORMULE(NOM_PARA="INST", VALE="-45.*2*pi*sin(45.*2*pi*INST + pi/3.)")
+VITE3 = FORMULE(NOM_PARA="INST", VALE="-300.*2*pi*sin(15.*2*pi*INST + pi/4.)")
 # AU NIVEAU DU RADIER
 VITERX = CALC_FONC_INTERP(
     FONCTION=VITE1,
@@ -236,11 +235,9 @@ VITEPZ = CALC_FONC_INTERP(
     NOM_RESU="VITE",
 )
 
-DEPL1 = FORMULE(NOM_PARA="INST", VALE="(30.*2*NP.pi)**2*NP.cos(30.*2*NP.pi*INST + 0.)", NP=NP)
-DEPL2 = FORMULE(NOM_PARA="INST", VALE="(45.*2*NP.pi)**2*NP.cos(45.*2*NP.pi*INST + NP.pi/3.)", NP=NP)
-DEPL3 = FORMULE(
-    NOM_PARA="INST", VALE="(20.*15.*2*NP.pi)**2*NP.cos(15.*2*NP.pi*INST + NP.pi/4.)", NP=NP
-)
+DEPL1 = FORMULE(NOM_PARA="INST", VALE="(30.*2*pi)**2*cos(30.*2*pi*INST + 0.)")
+DEPL2 = FORMULE(NOM_PARA="INST", VALE="(45.*2*pi)**2*cos(45.*2*pi*INST + pi/3.)")
+DEPL3 = FORMULE(NOM_PARA="INST", VALE="(20.*15.*2*pi)**2*cos(15.*2*pi*INST + pi/4.)")
 # AU NIVEAU DU RADIER
 DEPLRX = CALC_FONC_INTERP(
     FONCTION=DEPL1,

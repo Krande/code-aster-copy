@@ -36,6 +36,8 @@ void exportMeshBalancerToPython( py::module_ &mod ) {
 
     py::class_< MeshBalancer, MeshBalancerPtr >( mod, "MeshBalancer" )
         .def( py::init( &initFactoryPtr< MeshBalancer > ) )
+        .def( "__pickling_disabled__", disable_pickling< MeshBalancer >() )
+
         .def( "applyBalancingStrategy", &MeshBalancer::applyBalancingStrategy, R"(
 Apply balancing strategy to given mesh. User must give nodes that local process
 will own (without ghost nodes).

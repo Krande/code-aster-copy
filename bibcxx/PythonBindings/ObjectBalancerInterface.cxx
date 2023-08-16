@@ -36,6 +36,8 @@ void exportObjectBalancerToPython( py::module_ &mod ) {
 
     py::class_< ObjectBalancer, ObjectBalancerPtr >( mod, "ObjectBalancer" )
         .def( py::init( &initFactoryPtr< ObjectBalancer > ) )
+        .def( "__pickling_disabled__", disable_pickling< ObjectBalancer >() )
+
         .def( "addElementarySend", &ObjectBalancer::addElementarySend, R"(
 Add an elementary send (part of a vector to send to given process)
 

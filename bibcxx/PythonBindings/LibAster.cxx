@@ -49,7 +49,7 @@
 #include "PythonBindings/ContactInterface.h"
 #include "PythonBindings/ContactNewInterface.h"
 #include "PythonBindings/ContactPairingInterface.h"
-#include "PythonBindings/ContactParametersInterface.h"
+#include "PythonBindings/ContactParameterInterface.h"
 #include "PythonBindings/ContactZoneInterface.h"
 #include "PythonBindings/CppToFortranGlossaryInterface.h"
 #include "PythonBindings/CrackInterface.h"
@@ -223,7 +223,7 @@ PYBIND11_MODULE( libaster, mod ) {
     exportFunction2DToPython( mod );
     exportContactToPython( mod );
     exportContactEnumToPython( mod );
-    exportContactParametersToPython( mod );
+    exportContactParameterToPython( mod );
     exportContactNewToPython( mod );
     exportContactZoneToPython( mod );
     exportContactPairingToPython( mod );

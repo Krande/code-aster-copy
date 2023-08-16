@@ -30,6 +30,8 @@ void exportCrackShapeToPython( py::module_ &mod ) {
     py::class_< CrackShape, CrackShape::CrackShapePtr >( mod, "CrackShape" )
         .def( py::init( &initFactoryPtr< CrackShape > ) )
         // fake initFactoryPtr: not a DataStructure
+        .def( define_pickling< CrackShape >() )
+
         .def( "setEllipseCrackShape", &CrackShape::setEllipseCrackShape )
         .def( "setSquareCrackShape", &CrackShape::setSquareCrackShape )
         .def( "setCylinderCrackShape", &CrackShape::setCylinderCrackShape )

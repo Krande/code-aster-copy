@@ -36,6 +36,8 @@ void exportMeshConnectionGraphToPython( py::module_ &mod ) {
 
     py::class_< MeshConnectionGraph, MeshConnectionGraphPtr >( mod, "MeshConnectionGraph" )
         .def( py::init( &initFactoryPtr< MeshConnectionGraph > ) )
+        .def( "__pickling_disabled__", disable_pickling< MeshConnectionGraph >() )
+
         .def( "buildFromIncompleteMesh", &MeshConnectionGraph::buildFromIncompleteMesh, R"(
 Create the graph corresponding to given IncompleteMesh to be used by PtScotchPartitioner
 

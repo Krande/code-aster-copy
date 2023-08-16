@@ -34,6 +34,8 @@
 void exportMedFieldToPython( py::module_ &mod ) {
 
     py::class_< MedField, MedField::MedFieldPtr >( mod, "MedField" )
+        .def( "__pickling_disabled__", disable_pickling< MedField >() )
+
         .def( "getComponentNumber", &MedField::getComponentNumber, R"(
 Get field component number )" )
         .def( "getName", &MedField::getName, R"(

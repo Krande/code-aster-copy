@@ -34,6 +34,8 @@
 void exportMedMeshToPython( py::module_ &mod ) {
 
     py::class_< MedMesh, MedMesh::MedMeshPtr >( mod, "MedMesh" )
+        .def( "__pickling_disabled__", disable_pickling< MedMesh >() )
+
         .def( "getCellFamilyAtSequence", &MedMesh::getCellFamilyAtSequence, R"(
 Get cell family in calculation sequence for given profile
 

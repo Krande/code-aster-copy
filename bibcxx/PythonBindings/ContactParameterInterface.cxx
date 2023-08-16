@@ -1,6 +1,6 @@
 /**
- * @file ContactParametersInterface.cxx
- * @brief Interface python de ContactParameters
+ * @file ContactParameterInterface.cxx
+ * @brief Interface python de ContactParameter
  * @section LICENCE
  *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
  *
@@ -20,16 +20,17 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "PythonBindings/ContactParametersInterface.h"
+#include "PythonBindings/ContactParameterInterface.h"
 
 #include "aster_pybind.h"
 
 // aslint: disable=C3006
 
-void exportContactParametersToPython( py::module_ &mod ) {
+void exportContactParameterToPython( py::module_ &mod ) {
 
     py::class_< ContactParameter, ContactParameter::ContactParameterPtr >( mod, "ContactParameter" )
         .def( py::init( &initFactoryPtr< ContactParameter > ) )
+        .def( define_pickling< ContactParameter >() )
         .def( "getAlgorithm", &ContactParameter::getAlgorithm, R"(
 Return the contact algorithm used. It is a value of an enum
 
@@ -86,6 +87,7 @@ Arguments:
     py::class_< FrictionParameter, FrictionParameter::FrictionParameterPtr >( mod,
                                                                               "FrictionParameter" )
         .def( py::init( &initFactoryPtr< FrictionParameter > ) )
+        .def( define_pickling< FrictionParameter >() )
         .def( "getAlgorithm", &FrictionParameter::getAlgorithm, R"(
 Return the Friction algorithm used. It is a value of an enum
 
@@ -158,6 +160,7 @@ bool: enable or disable the use of friction.
 
     py::class_< PairingParameter, PairingParameter::PairingParameterPtr >( mod, "PairingParameter" )
         .def( py::init( &initFactoryPtr< PairingParameter > ) )
+        .def( define_pickling< PairingParameter >() )
         .def( "getAlgorithm", &PairingParameter::getAlgorithm, R"(
 Return the Pairing algorithm used. It is a value of an enum
 

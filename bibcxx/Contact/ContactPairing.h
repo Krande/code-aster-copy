@@ -22,7 +22,7 @@
 #pragma once
 
 #include "Contact/ContactNew.h"
-#include "Contact/ContactParameters.h"
+#include "Contact/ContactParameter.h"
 #include "Contact/ContactZone.h"
 #include "DataFields/FieldOnNodes.h"
 #include "DataStructures/DataStructure.h"

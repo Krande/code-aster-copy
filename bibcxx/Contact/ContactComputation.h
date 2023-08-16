@@ -41,6 +41,11 @@ class ContactComputation {
   public:
     ContactComputation( const ContactNewPtr contact ) : _contact( contact ) {};
 
+    /** @brief restricted constructor (Set) and method (Get) to support pickling */
+    ContactComputation( const py::tuple &tup )
+        : ContactComputation( tup[0].cast< ContactNewPtr >() ) {};
+    py::tuple _getState() const { return py::make_tuple( _contact ); };
+
     /**
      * @brief Compute geometric gap
      */
