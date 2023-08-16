@@ -421,6 +421,7 @@ class ExtendedDiscreteComputation:
             FieldOnNodesReal: external residual field
         """
 
+        resi_ext = None
         if self.getPhysicalProblem().isThermal():
             time_curr = phys_state.time + phys_state.time_step
             temp_curr = phys_state.primal + phys_state.primal_step
@@ -436,11 +437,11 @@ class ExtendedDiscreteComputation:
             resi_ext += self.getThermalExchangeForces(temp_curr, time_curr)
         elif self.getPhysicalProblem().isMechanical():
             resi_ext = self.getNeumannForces(
-                phys_state.time, phys_state.time_step, varc_curr=phys_state.externVar
+                phys_state.time + phys_state.time_step, varc_curr=phys_state.externVar
             )
 
             resi_ext += self.getVolumetricForces(
-                phys_state.time, phys_state.time_step, varc_curr=phys_state.externVar
+                phys_state.time + phys_state.time_step, varc_curr=phys_state.externVar
             )
         else:
             raise RuntimeError()
