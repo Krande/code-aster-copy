@@ -34,7 +34,7 @@ class SNESSolver(SolverFeature):
     param = logManager = None
     matr_update_incr = None
     current_incr = current_matrix = None
-    _primal_plus = _primal_incr = _resi_comp = None
+    _primal_incr = _resi_comp = None
     _scaling = _options = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
@@ -98,15 +98,16 @@ class SNESSolver(SolverFeature):
         # Increment the solution
         self._primal_incr.applyLagrangeScaling(1 / self._scaling)
         self.phys_state.primal_step += self._primal_incr
-        self._primal_plus = self.phys_state.primal + self.phys_state.primal_step
+        self.phys_state.primal_curr += self._primal_incr
         # Build initial residual
         disc_comp = DiscreteComputation(self.phys_pb)
         residual, _, _ = disc_comp.getResidual(self.phys_state, scaling=self._scaling)
         # Apply Lagrange scaling
         residual.resi.applyLagrangeScaling(1 / self._scaling)
         # Apply DirichletBC into the residual
-        time_curr = self.phys_state.time + self.phys_state.time_step
-        diriBCs = disc_comp.getIncrementalDirichletBC(time_curr, self._primal_plus)
+        diriBCs = disc_comp.getIncrementalDirichletBC(
+            self.phys_state.time_curr, self.phys_state.primal_curr
+        )
         self.current_matrix.applyDirichletBC(diriBCs, residual.resi)
         # Copy to PETSc
         residual.resi.toPetsc().copy(F)
@@ -146,11 +147,9 @@ class SNESSolver(SolverFeature):
         p_resi = p_jac.getVecRight()
         p_resi.set(0)
 
-        self._primal_plus = self.phys_state.primal_step.copy()
         self._primal_incr = self.phys_state.primal_step.copy()
 
         snes.setFunction(self._evalFunction, p_resi)
-
         snes.setJacobian(self._evalJacobian, p_jac)
 
         def _monitor(snes, its, fgnorm):

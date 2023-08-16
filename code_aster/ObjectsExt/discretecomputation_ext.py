@@ -378,7 +378,7 @@ class ExtendedDiscreteComputation:
 
         resi = Residuals()
 
-        resi.resi_stress = r_stress
+        resi.resi_stress = r_stress.copy()
         r_int = r_stress
 
         if codret > 0:

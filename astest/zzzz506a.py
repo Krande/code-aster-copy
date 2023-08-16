@@ -81,10 +81,7 @@ class CustomStepSolver(StepSolver):
             print(f"+++ CustomStepSolver raises ConvergenceError: {exc}")
             raise
         else:
-            print(
-                "+++ CustomStepSolver ends successfully, time:",
-                self.phys_state.time + self.phys_state.time_step,
-            )
+            print("+++ CustomStepSolver ends successfully, time:", self.phys_state.time_curr)
 
 
 def post_hook(phys_state):
@@ -93,7 +90,7 @@ def post_hook(phys_state):
     Arguments:
         phys_state (PhysicalState): Current physical state.
     """
-    print(f"calling hook at time = {phys_state.time}...", flush=True)
+    print(f"calling hook at time = {phys_state.time_curr}...", flush=True)
 
 
 class PostHook:
