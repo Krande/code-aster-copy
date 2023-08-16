@@ -59,6 +59,10 @@ def use_fortran(keywords):
     ):
         return True
 
+    for load in keywords["EXCIT"]:
+        if load["CHARGE"].hasLoadResult():
+            return True
+
     return False
 
 
