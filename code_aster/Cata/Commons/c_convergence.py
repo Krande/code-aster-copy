@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,10 +21,12 @@ from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
 
-def C_CONVERGENCE(COMMAND=None):
-    if COMMAND == "SIMU_POINT_MAT":
+def C_CONVERGENCE(command):
+    assert command in ("MECA_NON_LINE", "SIMU_POINT_MAT")
+    if command == "SIMU_POINT_MAT":
         mcfact = FACT(
             statut="d",
+            regles=(AU_MOINS_UN("RESI_GLOB_MAXI", "RESI_GLOB_RELA", RESI_GLOB_RELA=1.0e-6),),
             RESI_GLOB_MAXI=SIMP(statut="f", typ="R"),
             RESI_GLOB_RELA=SIMP(statut="f", typ="R"),
             ITER_GLOB_MAXI=SIMP(statut="f", typ="I", defaut=10),
@@ -35,6 +37,9 @@ def C_CONVERGENCE(COMMAND=None):
             regles=(
                 PRESENT_ABSENT(
                     "RESI_REFE_RELA", "RESI_GLOB_MAXI", "RESI_GLOB_RELA", "RESI_COMP_RELA"
+                ),
+                AU_MOINS_UN(
+                    "RESI_REFE_RELA", "RESI_GLOB_MAXI", "RESI_GLOB_RELA", RESI_GLOB_RELA=1.0e-6
                 ),
             ),
             b_refe_rela=BLOC(

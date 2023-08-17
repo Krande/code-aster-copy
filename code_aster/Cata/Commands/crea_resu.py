@@ -232,7 +232,7 @@ CREA_RESU = OPER(
     ),  # fin bloc b_evol_ther
     b_evol_noli=BLOC(
         condition="""equal_to("OPERATION", 'AFFE') and equal_to("TYPE_RESU", 'EVOL_NOLI')""",
-        COMPORTEMENT=C_COMPORTEMENT(),
+        COMPORTEMENT=C_COMPORTEMENT("MECA_NON_LINE"),
         VERI_VARI=SIMP(statut="f", typ="TXM", defaut="OUI", into=("OUI", "NON")),
         EXCIT=FACT(
             statut="f",

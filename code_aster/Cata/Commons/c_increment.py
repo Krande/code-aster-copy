@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,20 +23,20 @@ from ..Language.DataStructure import list_inst, listr8_sdaster
 from ..Language.Syntax import EXCLUS, FACT, SIMP
 
 
-def C_INCREMENT(TYPE_CMD, mandatory=True):  # COMMUN#
+def C_INCREMENT(phys, mandatory=True):  # COMMUN#
     #
-    assert TYPE_CMD in ("THERMIQUE", "MECANIQUE")
+    assert phys in ("THERMIQUE", "MECANIQUE")
     kwargs = {}
     statut_liste_inst = " "
 
     # La liste d'instants est facultative en thermique et obligatoire en mecanique
 
-    if TYPE_CMD in ("THERMIQUE"):
+    if phys in ("THERMIQUE"):
         if mandatory:
             statut_liste_inst = "o"
         else:
             statut_liste_inst = "f"
-    elif TYPE_CMD in ("MECANIQUE"):
+    elif phys in ("MECANIQUE"):
         statut_liste_inst = "o"
 
     kwargs["LIST_INST"] = SIMP(statut=statut_liste_inst, typ=(listr8_sdaster, list_inst))

@@ -109,7 +109,7 @@ void PhysicalProblem::computeBehaviourProperty( py::object &keywords,
     std::string cata;
 
     if ( _model->isMechanical() ) {
-        cata = "code_aster.Cata.Commons.c_comportement.C_COMPORTEMENT_SNL";
+        cata = "code_aster.Cata.Commons.c_comportement.C_COMPORTEMENT_MNL";
     } else if ( _model->isThermal() ) {
         cata = "code_aster.Cata.Commons.c_comportement.C_COMPORTEMENT_TNL";
 

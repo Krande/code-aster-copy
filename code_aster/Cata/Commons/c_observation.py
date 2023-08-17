@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,15 +23,11 @@ from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
 
-def C_OBSERVATION(PHYSIQUE):
-
-    assert PHYSIQUE in ("MECANIQUE", "THERMIQUE", "DYNAVIBRA")
-    _meca = False
-    _ther = False
-    _dyna = False
-    _meca = PHYSIQUE == "MECANIQUE"
-    _ther = PHYSIQUE == "THERMIQUE"
-    _dyna = PHYSIQUE == "DYNAVIBRA"
+def C_OBSERVATION(phys):
+    assert phys in ("MECANIQUE", "THERMIQUE", "DYNAVIBRA")
+    _meca = phys == "MECANIQUE"
+    _ther = phys == "THERMIQUE"
+    _dyna = phys == "DYNAVIBRA"
 
     # Select nodal fields
     _BlocNode = {}

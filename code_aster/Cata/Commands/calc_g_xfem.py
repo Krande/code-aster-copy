@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -91,7 +91,7 @@ CALC_G_XFEM = OPER(
     ),
     COMPORTEMENT=FACT(
         statut="f",
-        RELATION=SIMP(statut="o", typ="TXM", into=C_RELATION("CALC_G")),
+        RELATION=SIMP(statut="o", typ="TXM", into=C_RELATION("CALC_G_XFEM")),
         DEFORMATION=SIMP(statut="f", typ="TXM", defaut="PETIT", into=("PETIT", "PETIT_REAC")),
         regles=(PRESENT_ABSENT("TOUT", "GROUP_MA", "MAILLE"),),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),

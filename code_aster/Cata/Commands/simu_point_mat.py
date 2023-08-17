@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ SIMU_POINT_MAT = MACRO(
     fr=tr(
         "Calcul de l'évolution mécanique, en quasi-statique, " "d'un point matériel en non linéaire"
     ),
-    COMPORTEMENT=C_COMPORTEMENT(),
+    COMPORTEMENT=C_COMPORTEMENT("SIMU_POINT_MAT"),
     MATER=SIMP(statut="o", typ=mater_sdaster, max=30),
     # --MASSIF : orientation du materiau (monocristal, orthotropie)
     MASSIF=FACT(

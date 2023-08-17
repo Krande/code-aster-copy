@@ -649,7 +649,7 @@ DYNA_LINE = MACRO(
         ),  # end b_ifs_tran
         b_comportement=BLOC(
             condition="""not exists("ISS") and not exists("IFS")""",
-            COMPORTEMENT=C_COMPORTEMENT_DYNA(),
+            COMPORTEMENT=C_COMPORTEMENT_DYNA("DYNA_LINE"),
         ),
     ),  # end b_tran_gene
 )

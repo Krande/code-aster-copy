@@ -5214,7 +5214,13 @@ class ContactParameter:
 
     # Methods defined here:
 
+    def __getstate__(self):
+        pass
+
     def __init__(self):
+        pass
+
+    def __setstate__(self, arg0):
         pass
 
     def getAlgorithm(self):
@@ -5287,7 +5293,13 @@ class FrictionParameter:
 
     # Methods defined here:
 
+    def __getstate__(self):
+        pass
+
     def __init__(self):
+        pass
+
+    def __setstate__(self, arg0):
         pass
 
     def getAlgorithm(self):
@@ -5381,7 +5393,13 @@ class PairingParameter:
 
     # Methods defined here:
 
+    def __getstate__(self):
+        pass
+
     def __init__(self):
+        pass
+
+    def __setstate__(self, arg0):
         pass
 
     def getAlgorithm(self):
@@ -5929,7 +5947,13 @@ class ContactComputation:
 
     # Methods defined here:
 
+    def __getstate__(self):
+        pass
+
     def __init__(self, arg0):
+        pass
+
+    def __setstate__(self, arg0):
         pass
 
     def contactCoefficient(self):
@@ -9081,7 +9105,13 @@ class ForceReal:
 
     # Methods defined here:
 
+    def __getstate__(self):
+        pass
+
     def __init__(self):
+        pass
+
+    def __setstate__(self, arg0):
         pass
 
     def debugPrint(self):
@@ -9104,7 +9134,13 @@ class StructuralForceReal:
 
     # Methods defined here:
 
+    def __getstate__(self):
+        pass
+
     def __init__(self):
+        pass
+
+    def __setstate__(self, arg0):
         pass
 
     def debugPrint(self):
@@ -9127,7 +9163,13 @@ class LocalBeamForceReal:
 
     # Methods defined here:
 
+    def __getstate__(self):
+        pass
+
     def __init__(self):
+        pass
+
+    def __setstate__(self, arg0):
         pass
 
     def debugPrint(self):
@@ -9150,7 +9192,13 @@ class LocalShellForceReal:
 
     # Methods defined here:
 
+    def __getstate__(self):
+        pass
+
     def __init__(self):
+        pass
+
+    def __setstate__(self, arg0):
         pass
 
     def debugPrint(self):
@@ -9173,7 +9221,13 @@ class DisplacementReal:
 
     # Methods defined here:
 
+    def __getstate__(self):
+        pass
+
     def __init__(self):
+        pass
+
+    def __setstate__(self, arg0):
         pass
 
     def debugPrint(self):
@@ -9196,7 +9250,13 @@ class PressureReal:
 
     # Methods defined here:
 
+    def __getstate__(self):
+        pass
+
     def __init__(self):
+        pass
+
+    def __setstate__(self, arg0):
         pass
 
     def debugPrint(self):
@@ -9219,7 +9279,13 @@ class ImpedanceReal:
 
     # Methods defined here:
 
+    def __getstate__(self):
+        pass
+
     def __init__(self):
+        pass
+
+    def __setstate__(self, arg0):
         pass
 
     def debugPrint(self):
@@ -9242,7 +9308,13 @@ class NormalSpeedReal:
 
     # Methods defined here:
 
+    def __getstate__(self):
+        pass
+
     def __init__(self):
+        pass
+
+    def __setstate__(self, arg0):
         pass
 
     def debugPrint(self):
@@ -9265,7 +9337,13 @@ class HeatFluxReal:
 
     # Methods defined here:
 
+    def __getstate__(self):
+        pass
+
     def __init__(self):
+        pass
+
+    def __setstate__(self, arg0):
         pass
 
     def debugPrint(self):
@@ -9288,7 +9366,13 @@ class HydraulicFluxReal:
 
     # Methods defined here:
 
+    def __getstate__(self):
+        pass
+
     def __init__(self):
+        pass
+
+    def __setstate__(self, arg0):
         pass
 
     def debugPrint(self):
@@ -9974,7 +10058,13 @@ class CrackShape:
 
     # Methods defined here:
 
+    def __getstate__(self):
+        pass
+
     def __init__(self):
+        pass
+
+    def __setstate__(self, arg0):
         pass
 
     def getCenter(self):
@@ -13911,6 +14001,9 @@ class CommGraph:
     def __init__(self):
         pass
 
+    def __pickling_disabled__(self):
+        pass
+
     def addCommunication(self, rank):
         """Add a communication with a process
 
@@ -13943,6 +14036,9 @@ class ObjectBalancer:
     # Methods defined here:
 
     def __init__(self):
+        pass
+
+    def __pickling_disabled__(self):
         pass
 
     def addElementarySend(self, rank, elemList):
@@ -14023,6 +14119,9 @@ class MeshBalancer:
     def __init__(self):
         pass
 
+    def __pickling_disabled__(self):
+        pass
+
     def applyBalancingStrategy(self, vector):
         """Apply balancing strategy to given mesh. User must give nodes that local process
         will own (without ghost nodes).
@@ -14098,6 +14197,9 @@ class PtScotchPartitioner:
     def __init__(self):
         pass
 
+    def __pickling_disabled__(self):
+        pass
+
     def buildGraph(self, *args, **kwargs):
         """Overloaded function.
 
@@ -14154,6 +14256,9 @@ class MeshConnectionGraph:
     def __init__(self):
         pass
 
+    def __pickling_disabled__(self):
+        pass
+
     def buildFromIncompleteMesh(self, mesh):
         """Create the graph corresponding to given IncompleteMesh to be used by PtScotchPartitioner
 
@@ -14176,6 +14281,9 @@ class MedFileReader:
     # Methods defined here:
 
     def __init__(self):
+        pass
+
+    def __pickling_disabled__(self):
         pass
 
     def close(self):
@@ -14273,6 +14381,9 @@ class MedField:
     def __init__(self, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
+    def __pickling_disabled__(self):
+        pass
+
     def getAllSupportEntitiesAtSequence(self, numdt, numit):
         """Get list of all entity type and geometric type in calculation sequence
 
@@ -14356,6 +14467,9 @@ class MedMesh:
 
     def __init__(self, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
+
+    def __pickling_disabled__(self):
+        pass
 
     def getCellFamilyAtSequence(self, numdt, numit, type_iterator):
         """Get cell family in calculation sequence for given profile
@@ -14537,6 +14651,9 @@ class MedFamily:
     def __init__(self, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
+    def __pickling_disabled__(self):
+        pass
+
     def getGroups(self):
         """Get list of groups in family"""
 
@@ -14562,6 +14679,9 @@ class MedVector:
 
     def __init__(self, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
+
+    def __pickling_disabled__(self):
+        pass
 
     def getCumulatedSizesVector(self):
         """Get cumulated sizes vector

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -131,8 +131,8 @@ PRE_SEISME_NONL = MACRO(
         statut="f",
         min=1,
         max=1,
-        COMPORTEMENT=C_COMPORTEMENT("STAT_NON_LINE"),
-        CONVERGENCE=C_CONVERGENCE(),
+        COMPORTEMENT=C_COMPORTEMENT("MECA_NON_LINE"),
+        CONVERGENCE=C_CONVERGENCE("MECA_NON_LINE"),
         RESULTAT=SIMP(statut="o", typ=evol_noli),
         EXCIT=FACT(
             statut="o",

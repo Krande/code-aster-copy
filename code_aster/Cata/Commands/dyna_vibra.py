@@ -524,7 +524,7 @@ DYNA_VIBRA = OPER(
             COEF_MULT=SIMP(statut="f", typ="R", defaut=1.0),
         ),
         #       C.2   Non-linear excitations
-        COMPORTEMENT=C_COMPORTEMENT_DYNA(),
+        COMPORTEMENT=C_COMPORTEMENT_DYNA("DYNA_VIBRA"),
         BASE_ELAS_FLUI=SIMP(statut="f", typ=melasflu_sdaster, max=1),
         NUME_VITE_FLUI=SIMP(statut="f", typ="I", max=1),
         VERI_CHOC=FACT(

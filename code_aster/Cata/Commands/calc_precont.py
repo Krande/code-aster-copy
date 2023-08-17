@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -38,10 +38,10 @@ CALC_PRECONT = MACRO(
     CABLE_BP_INACTIF=SIMP(statut="f", typ=cabl_precont, validators=NoRepeat(), max="**"),
     INCREMENT=C_INCREMENT("MECANIQUE"),
     RECH_LINEAIRE=C_RECH_LINEAIRE(),
-    CONVERGENCE=C_CONVERGENCE(),
+    CONVERGENCE=C_CONVERGENCE("MECA_NON_LINE"),
     ARCHIVAGE=C_ARCHIVAGE(),
     # -------------------------------------------------------------------
-    ETAT_INIT=C_ETAT_INIT("STAT_NON_LINE", "f"),
+    ETAT_INIT=C_ETAT_INIT("MECA_NON_LINE", "f"),
     # -------------------------------------------------------------------
     METHODE=SIMP(statut="f", typ="TXM", defaut="NEWTON", into=("NEWTON", "IMPLEX")),
     b_meth_newton=BLOC(condition="""equal_to("METHODE", 'NEWTON')""", NEWTON=C_NEWTON()),
@@ -60,5 +60,5 @@ CALC_PRECONT = MACRO(
         CHARGE=SIMP(statut="o", typ=char_meca),
         TYPE_CHARGE=SIMP(statut="f", typ="TXM", defaut="FIXE_CSTE", into=("FIXE_CSTE", "DIDI")),
     ),
-    COMPORTEMENT=C_COMPORTEMENT("CALC_PRECONT"),
+    COMPORTEMENT=C_COMPORTEMENT("MECA_NON_LINE"),
 )

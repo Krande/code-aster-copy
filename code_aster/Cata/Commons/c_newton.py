@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,8 +23,11 @@ from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
 
-def C_NEWTON(Command=None):
-    if Command == "MECA_NON_LINE":
+def C_NEWTON(command="STAT_NON_LINE"):
+    # TODO remove 'command' as soon as all features are supported
+    assert command in ("MECA_NON_LINE", "STAT_NON_LINE")
+
+    if command == "MECA_NON_LINE":
         mfact = FACT(
             statut="d",
             PREDICTION=SIMP(

@@ -67,8 +67,8 @@ CALC_STAB_PENTE = MACRO(
             ),
         ),
         INCREMENT=C_INCREMENT("MECANIQUE"),
-        CONVERGENCE=C_CONVERGENCE("STAT_NON_LINE"),
-        COMPORTEMENT=C_COMPORTEMENT("STAT_NON_LINE"),
+        CONVERGENCE=C_CONVERGENCE("MECA_NON_LINE"),
+        COMPORTEMENT=C_COMPORTEMENT("MECA_NON_LINE"),
         # Configuration de la recherche du FS
         FS=FACT(
             statut="f",

@@ -23,31 +23,20 @@ from ..Language.Syntax import *
 from .c_relation import C_RELATION
 
 
-def C_COMPORTEMENT(COMMAND=None):  # COMMUN#
-    assert COMMAND in (
-        "CALC_G",
-        "POST_GP",
+def C_COMPORTEMENT(command):
+    assert command in (
         "CALC_ESSAI_GEOMECA",
-        "CALC_POINT_MAT",
         "SIMU_POINT_MAT",
-        "DYNA_NON_LINE",
-        "STAT_NON_LINE",
         "CALCUL",
-        "CALC_FORC_NONL",
-        "CALC_IFS_DNL",
-        "CALC_PRECONT",
-        "CREA_RESU",
-        "LIRE_RESU",
-        "MACR_ECREVISSE",
-        "TEST_COMPOR",
+        "DYNA_NON_LINE",
+        "MECA_NON_LINE",
         "THER_NON_LINE",
-        None,
     )
 
-    stcom = "f"
-    if COMMAND == "CALC_ESSAI_GEOMECA":
+    stcom = "d"
+    if command == "CALC_ESSAI_GEOMECA":
         mcfact = FACT(
-            statut="o",
+            statut=stcom,
             min=1,
             max="**",  # COMMUN#
             RELATION=SIMP(
@@ -138,205 +127,9 @@ def C_COMPORTEMENT(COMMAND=None):  # COMMUN#
                 RESI_RADI_RELA=SIMP(statut="f", typ="R"),
             ),
         )
-    elif COMMAND == "CREA_RESU" or COMMAND == "LIRE_RESU" or COMMAND == "CALC_FORC_NONL":
+    elif command == "THER_NON_LINE":
         mcfact = FACT(
-            statut="f",
-            min=1,
-            max="**",
-            regles=(PRESENT_ABSENT("TOUT", "GROUP_MA", "MAILLE"),),
-            TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
-            GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-            MAILLE=SIMP(statut="f", typ=ma, validators=NoRepeat(), max="**"),
-            RELATION=SIMP(statut="f", typ="TXM", defaut="ELAS", into=C_RELATION(COMMAND)),
-            b_monox=BLOC(
-                condition="""equal_to("RELATION", 'MONOCRISTAL') """,
-                fr=tr("SD issue de DEFI_COMPOR"),
-                COMPOR=SIMP(statut="o", typ=compor_sdaster, max=1),
-            ),
-            b_polyx=BLOC(
-                condition="""equal_to("RELATION", 'POLYCRISTAL') """,
-                fr=tr("SD issue de DEFI_COMPOR"),
-                COMPOR=SIMP(statut="o", typ=compor_sdaster, max=1),
-            ),
-            b_umat=BLOC(
-                condition="""equal_to("RELATION", 'UMAT') """,
-                fr=tr("Comportement utilisateur de type UMAT"),
-                NB_VARI=SIMP(statut="o", typ="I", max=1, fr=tr("Nombre de variables internes")),
-                LIBRAIRIE=SIMP(
-                    statut="o",
-                    typ="TXM",
-                    validators=LongStr(1, 128),
-                    fr=tr("Chemin vers la bibliothèque dynamique pour UMAT"),
-                ),
-                NOM_ROUTINE=SIMP(
-                    statut="o", typ="TXM", fr=tr("Nom de la routine UMAT dans la bibliothèque")
-                ),
-            ),
-            b_mfront=BLOC(
-                condition="""equal_to("RELATION", 'MFRONT') """,
-                fr=tr("Comportement utilisateur de type MFRONT"),
-                COMPOR_MFRONT=SIMP(
-                    statut="o", typ=compor_mgis, fr=tr("Comportement MFRONT à utiliser")
-                ),
-                VERI_BORNE=SIMP(
-                    statut="f",
-                    typ="TXM",
-                    defaut="ARRET",
-                    into=("ARRET", "SANS", "MESSAGE"),
-                    fr=tr("Vérification des bornes physiques de la loi"),
-                ),
-                ALGO_CPLAN=SIMP(
-                    statut="f", typ="TXM", defaut="DEBORST", into=("DEBORST", "ANALYTIQUE")
-                ),
-                SYME_MATR_TANG=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="OUI"),
-            ),
-            b_mfront_hidden=BLOC(
-                condition="""not equal_to('RELATION', 'MFRONT')""",
-                COMPOR_MFRONT=SIMP(
-                    statut="c", typ=compor_mgis, fr=tr("objet ajouté automatiquement")
-                ),
-            ),
-            b_kit_ddi=BLOC(
-                condition="""equal_to("RELATION", 'KIT_DDI') """,
-                fr=tr("relations de couplage fluage-plasticite"),
-                RELATION_KIT=SIMP(
-                    statut="o",
-                    typ="TXM",
-                    min=2,
-                    max=2,
-                    validators=NoRepeat(),
-                    into=(
-                        "VMIS_CINE_LINE",
-                        "VMIS_ISOT_TRAC",
-                        "VMIS_ISOT_LINE",
-                        "VMIS_ISOT_PUIS",
-                        "GLRC_DM",
-                        "BETON_GRANGER",
-                        "BETON_GRANGER_V",
-                        "BETON_UMLV",
-                        "ROUSS_PR",
-                        "BETON_DOUBLE_DP",
-                        "ENDO_ISOT_BETON",
-                        "MAZARS",
-                    ),
-                ),
-            ),
-            b_kit_cg=BLOC(
-                condition="""equal_to("RELATION", 'KIT_CG') """,
-                fr=tr("relations pour elements cables gaines"),
-                RELATION_KIT=SIMP(
-                    statut="o",
-                    typ="TXM",
-                    min=2,
-                    max=2,
-                    validators=NoRepeat(),
-                    into=(
-                        "CABLE_GAINE_FROT",
-                        "VMIS_ISOT_LINE",
-                        "VMIS_ISOT_TRAC",
-                        "VMIS_CINE_LINE",
-                        "PINTO_MENEGOTTO",
-                        "ELAS",
-                        "SANS",
-                    ),
-                ),
-            ),
-            b_kit_thm=BLOC(
-                condition="""is_in("RELATION", ['KIT_HHM','KIT_HH', 'KIT_H','KIT_HM','KIT_THHM','KIT_THH','KIT_THM','KIT_THV','KIT_THH2M','KIT_HH2M','KIT_HH2','KIT_THH2'])""",
-                fr=tr("lois de comportements thermo-hydro-mecaniques"),
-                RELATION_KIT=SIMP(
-                    statut="o",
-                    typ="TXM",
-                    max=9,
-                    validators=NoRepeat(),
-                    into=C_RELATION(COMMAND)
-                    + (
-                        "GAZ",
-                        "LIQU_SATU",
-                        "LIQU_GAZ_ATM",
-                        "LIQU_VAPE_GAZ",
-                        "LIQU_AD_GAZ_VAPE",
-                        "LIQU_AD_GAZ",
-                        "LIQU_VAPE",
-                        "LIQU_GAZ",
-                        "HYDR_UTIL",
-                        "HYDR_TABBAL",
-                        "HYDR_VGM",
-                        "HYDR_VGC",
-                        "HYDR_ENDO",
-                    ),
-                ),
-                b_mfr_thm=BLOC(
-                    condition="""'MFRONT' in value("RELATION_KIT")""",
-                    fr=tr("Comportement utilisateur meca THM de type MFRONT"),
-                    COMPOR_MFRONT=SIMP(
-                        statut="o", typ=compor_mgis, fr=tr("Comportement MFRONT à utiliser")
-                    ),
-                    VERI_BORNE=SIMP(
-                        statut="f",
-                        typ="TXM",
-                        defaut="ARRET",
-                        into=("ARRET", "SANS", "MESSAGE"),
-                        fr=tr("Vérification des bornes physiques de la loi de comportement MFRONT"),
-                    ),
-                    ALGO_CPLAN=SIMP(
-                        statut="f", typ="TXM", defaut="DEBORST", into=("DEBORST", "ANALYTIQUE")
-                    ),
-                    SYME_MATR_TANG=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="OUI"),
-                ),
-                b_mfr_thm_hidden=BLOC(
-                    condition="""'MFRONT' not in value("RELATION_KIT")""",
-                    COMPOR_MFRONT=SIMP(
-                        statut="c", typ=compor_mgis, fr=tr("objet ajouté automatiquement")
-                    ),
-                ),
-            ),
-            b_kit_meta=BLOC(
-                condition="""value("RELATION").startswith('META_') and not value("RELATION").startswith('META_LEMA_ANI')""",
-                fr=tr("nombre de phases metallurgiques"),
-                RELATION_KIT=SIMP(
-                    statut="o", typ="TXM", max=1, validators=NoRepeat(), into=("ACIER", "ZIRC")
-                ),
-            ),
-            DEFORMATION=SIMP(
-                statut="f",
-                typ="TXM",
-                defaut="PETIT",
-                into=(
-                    "PETIT",
-                    "PETIT_REAC",
-                    "GROT_GDEP",
-                    "SIMO_MIEHE",
-                    "GDEF_LOG",
-                    "GREEN_LAGRANGE",
-                ),
-            ),
-            RESI_CPLAN_MAXI=SIMP(
-                statut="f",
-                typ="R",
-                fr=tr("Critère d'arret absolu pour assurer la condition de contraintes planes"),
-            ),
-            b_resi_cplan=BLOC(
-                condition=""" not exists("RESI_CPLAN_MAXI") """,
-                RESI_CPLAN_RELA=SIMP(
-                    statut="f",
-                    typ="R",
-                    defaut=1.0e-6,
-                    fr=tr(
-                        "Critère d'arret relatif pour assurer la condition de contraintes planes"
-                    ),
-                ),
-            ),
-            ITER_CPLAN_MAXI=SIMP(
-                statut="f",
-                typ="I",
-                defaut=10,
-                fr=tr("Nombre d'itérations maxi pour assurer la condition de contraintes planes"),
-            ),
-        )
-    elif COMMAND == "THER_NON_LINE":
-        mcfact = FACT(
-            statut="d",
+            statut=stcom,
             max="**",
             RELATION=SIMP(
                 statut="f",
@@ -351,36 +144,37 @@ def C_COMPORTEMENT(COMMAND=None):  # COMMUN#
                     "SECH_NAPPE",
                 ),
             ),
-            regles=(PRESENT_ABSENT("TOUT", "GROUP_MA", "MAILLE"),),
+            regles=(
+                PRESENT_ABSENT("TOUT", "GROUP_MA", "MAILLE"),
+                AU_MOINS_UN("TOUT", "GROUP_MA", "MAILLE", TOUT="OUI"),
+            ),
             TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
             GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
             MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         )
     else:
         opts = {}
-        if COMMAND in ("STAT_NON_LINE", "DYNA_NON_LINE"):
+        if command in ("MECA_NON_LINE", "DYNA_NON_LINE"):
             opts["b_crirupt"] = BLOC(
                 condition="""is_in("RELATION", ('VMIS_ISOT_LINE','VMIS_ISOT_TRAC','VISCOCHAB','VISC_ISOT_LINE','VISC_ISOT_TRAC',))""",
                 fr=tr("Critere de rupture selon une contrainte critique"),
                 POST_ITER=SIMP(statut="f", typ="TXM", into=("CRIT_RUPT",)),
             )
-        if COMMAND == "STAT_NON_LINE":
+        if command == "MECA_NON_LINE":
             opts["b_anneal"] = BLOC(
                 condition="""is_in("RELATION", ('VMIS_ISOT_LINE','VMIS_CINE_LINE','VMIS_ECMI_LINE','VMIS_ISOT_TRAC','VMIS_CIN1_CHAB','VMIS_CIN2_CHAB'))""",
                 fr=tr("Restauration d'écrouissage"),
                 POST_INCR=SIMP(statut="f", typ="TXM", into=("REST_ECRO",)),
             )
-        if COMMAND == "CALC_PRECONT":
-            stcom = "o"
 
         mcfact = FACT(
             statut=stcom,
             min=1,
             max="**",
-            regles=(PRESENT_ABSENT("TOUT", "GROUP_MA"),),
+            regles=(UN_PARMI("TOUT", "GROUP_MA", TOUT="OUI"),),
             TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
             GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-            RELATION=SIMP(statut="f", typ="TXM", defaut="ELAS", into=C_RELATION(COMMAND)),
+            RELATION=SIMP(statut="f", typ="TXM", defaut="ELAS", into=C_RELATION("MECA_NON_LINE")),
             REGU_VISC=SIMP(statut="f", typ="TXM", into=("NON", "OUI"), defaut="NON"),
             b_monox=BLOC(
                 condition="""equal_to("RELATION", 'MONOCRISTAL') """,
@@ -665,5 +459,6 @@ def C_COMPORTEMENT(COMMAND=None):  # COMMUN#
     return mcfact
 
 
-C_COMPORTEMENT_SNL = FACT(statut="o", COMPORTEMENT=C_COMPORTEMENT("STAT_NON_LINE"))
+# to be used by a CommandSyntax from C++
+C_COMPORTEMENT_MNL = FACT(statut="o", COMPORTEMENT=C_COMPORTEMENT("MECA_NON_LINE"))
 C_COMPORTEMENT_TNL = FACT(statut="o", COMPORTEMENT=C_COMPORTEMENT("THER_NON_LINE"))

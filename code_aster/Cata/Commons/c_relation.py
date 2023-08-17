@@ -18,11 +18,11 @@
 # --------------------------------------------------------------------
 
 
-def C_RELATION(COMMAND):
-
-    if COMMAND in ("CALC_G",):
+def C_RELATION(command):
+    assert command in ("CALC_G_XFEM", "DEFI_COMPOR", "MECA_NON_LINE")
+    if command == "CALC_G_XFEM":
         return ("ELAS", "ELAS_VMIS_LINE", "ELAS_VMIS_TRAC", "ELAS_VMIS_PUIS")  # COMMUN#
-    elif COMMAND == "DEFI_COMPOR":
+    elif command == "DEFI_COMPOR":
         return (
             # uniquement ce qui a du sens (cf doc) et qui fait l'objet d'un test
             "ELAS",

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -424,7 +424,7 @@ MACR_ECREVISSE = MACRO(
         ),
     ),
     CONTACT=SIMP(statut="o", typ=char_contact),
-    COMPORTEMENT=C_COMPORTEMENT(),
+    COMPORTEMENT=C_COMPORTEMENT("MECA_NON_LINE"),
     NEWTON=FACT(
         statut="d",
         REAC_INCR=SIMP(statut="f", typ="I", defaut=1),

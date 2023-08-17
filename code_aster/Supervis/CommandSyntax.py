@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -350,7 +350,7 @@ class CommandSyntax(object):
             return []
         value = self._getDefinition(factName, occurrence)[simpName]
         value = force_list(value)
-        # logger.debug("getValue: %", value)
+        # logger.debug("getValue: %s %s %s", factName, simpName, value)
         return value
 
     def getltx(self, factName, simpName, occurrence, maxval, lenmax):

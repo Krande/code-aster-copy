@@ -20,70 +20,11 @@
 from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
-from ...Utilities import force_list
-
-
-def at_least_one(keywords, factor, keys, default, value):
-    if factor in keywords:
-        items = force_list(keywords[factor])
-        for item in items:
-            hasVal = False
-
-            for val in list(keys):
-                if val in item:
-                    hasVal = True
-                    break
-
-            if not hasVal:
-                item[default] = value
-    else:
-        keywords[factor] = {}
-        keywords[factor][default] = value
-
-
-def only_one(keywords, factor, keys, default, value):
-    if factor in keywords:
-        items = force_list(keywords[factor])
-        for item in items:
-            hasVal = False
-
-            for val in list(keys):
-                if val in item:
-                    hasVal = True
-                    break
-
-            if not hasVal:
-                item[default] = value
-    else:
-        keywords[factor] = {}
-        keywords[factor][default] = value
-
-
-def absent(keywords, factor, default, value):
-    if factor not in keywords:
-        keywords[factor] = {default: value}
-
-
-def compat_syntax(keywords):
-    """Update keywords for compatibility"""
-
-    # add default arguments
-    at_least_one(
-        keywords,
-        "CONVERGENCE",
-        ("RESI_GLOB_RELA", "RESI_GLOB_MAXI", "RESI_REFE_RELA"),
-        default="RESI_GLOB_RELA",
-        value=1e-6,
-    )
-    only_one(keywords, "ARCHIVAGE", ("PAS_ARCH", "LIST_INST", "INST"), default="PAS_ARCH", value=1)
-    only_one(keywords, "COMPORTEMENT", ("TOUT", "GROUP_MA"), default="TOUT", value="OUI")
-
 
 STAT_NON_LINE = OPER(
     nom="STAT_NON_LINE",
     op=70,
     sd_prod=evol_noli,
-    compat_syntax=compat_syntax,
     fr=tr(
         "Calcul de l'évolution mécanique ou thermo-hydro-mécanique couplée, en quasi-statique,"
         " d'une structure en non linéaire"
@@ -122,9 +63,9 @@ STAT_NON_LINE = OPER(
     # -------------------------------------------------------------------
     SCHEMA_THM=C_SCHEMA_THM(),
     # -------------------------------------------------------------------
-    COMPORTEMENT=C_COMPORTEMENT("STAT_NON_LINE"),
+    COMPORTEMENT=C_COMPORTEMENT("MECA_NON_LINE"),
     # -------------------------------------------------------------------
-    ETAT_INIT=C_ETAT_INIT("STAT_NON_LINE", "f"),
+    ETAT_INIT=C_ETAT_INIT("MECA_NON_LINE", "f"),
     # -------------------------------------------------------------------
     INCREMENT=C_INCREMENT("MECANIQUE"),
     # -------------------------------------------------------------------
@@ -171,7 +112,7 @@ STAT_NON_LINE = OPER(
     # -------------------------------------------------------------------
     PILOTAGE=C_PILOTAGE(),
     # -------------------------------------------------------------------
-    CONVERGENCE=C_CONVERGENCE(),
+    CONVERGENCE=C_CONVERGENCE("MECA_NON_LINE"),
     # -------------------------------------------------------------------
     SOLVEUR=C_SOLVEUR("STAT_NON_LINE"),
     # -------------------------------------------------------------------

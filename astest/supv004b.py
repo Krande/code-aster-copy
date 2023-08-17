@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -123,8 +123,8 @@ test.assertTrue(syntax.getexm("EXCIT", "D_FONC_DT"))
 syntax.free()
 
 # case using a part of syntax
-syntax = CommandSyntax("code_aster.Cata.Commons.c_comportement.C_COMPORTEMENT_SNL")
-test.assertEqual(syntax.getName(), "C_COMPORTEMENT_SNL")
+syntax = CommandSyntax("code_aster.Cata.Commons.c_comportement.C_COMPORTEMENT_MNL")
+test.assertEqual(syntax.getName(), "C_COMPORTEMENT_MNL")
 
 test.assertTrue(syntax.getexm("COMPORTEMENT", "TOUT"))
 test.assertTrue(syntax.getexm("COMPORTEMENT", "POST_INCR"))

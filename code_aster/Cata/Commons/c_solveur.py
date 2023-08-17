@@ -23,16 +23,13 @@ from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
 
-def C_SOLVEUR(COMMAND, BASE=None):  # COMMUN#
-
+def C_SOLVEUR(command, base=None):  # COMMUN#
     # --------------------------------------------------------------------
     #
     # VERIFICATIONS
     #
     # --------------------------------------------------------------------
-    if BASE is not None:
-        assert COMMAND == "DYNA_LINE_HARM"
-        assert BASE in ("GENE", "PHYS")
+    assert not base or (command == "DYNA_LINE_HARM" and base in ("GENE", "PHYS"))
 
     # --------------------------------------------------------------------
     #
@@ -48,20 +45,20 @@ def C_SOLVEUR(COMMAND, BASE=None):  # COMMUN#
     _type = None
 
     #  Classification ('SD'/'LIN'/'NL')
-    if COMMAND in (
-        "CREA_ELEM_SSD",
+    if command in (
         "CALC_CORR_SSD",
+        "CALC_ERC_DYN",
+        "CREA_ELEM_SSD",
         "DEFI_BASE_MODALE",
         "DYNA_LINE_HARM",
         "DYNA_TRAN_MODAL",
         "INFO_MODE",
-        "MODE_ITER_SIMULT",
-        "MODE_ITER_INV",
         "MODE_ITER_INV_SM",
-        "CALC_ERC_DYN",
+        "MODE_ITER_INV",
+        "MODE_ITER_SIMULT",
     ):
         _type = "SD"
-    elif COMMAND in (
+    elif command in (
         "CALC_ERREUR",
         "CALC_FORC_AJOU",
         "CALC_MATR_AJOU",
@@ -72,16 +69,14 @@ def C_SOLVEUR(COMMAND, BASE=None):  # COMMUN#
         "THER_NON_LINE_MO",
     ):
         _type = "LIN"
-    elif COMMAND in (
-        "CALC_IFS_DNL",
+    elif command in (
         "CALC_PRECONT",
         "DYNA_LINE_TRAN",
         "DYNA_NON_LINE",
-        "MACRO_BASCULE_SCHEMA",
-        "STAT_NON_LINE",
-        "STAT_NON_LINE_SNES",
-        "THER_NON_LINE",
         "MODE_NON_LINE",
+        "STAT_NON_LINE_SNES",
+        "STAT_NON_LINE",
+        "THER_NON_LINE",
     ):
         _type = "NL"
     else:
@@ -92,7 +87,7 @@ def C_SOLVEUR(COMMAND, BASE=None):  # COMMUN#
     _dist = False
 
     #  MATR_DISTRIBUEE ne fonctionnent que dans MECA_STATIQUE et MECA_NON_LINE
-    if COMMAND in (
+    if command in (
         "CALC_IFS_DNL",
         "CALC_PRECONT",
         "DYNA_NON_LINE",
@@ -111,13 +106,13 @@ def C_SOLVEUR(COMMAND, BASE=None):  # COMMUN#
 
     # Avec des matrices generalisees, MULT_FRONT n'est pas permis, LDLT est
     # donc par defaut
-    if BASE == "GENE":
+    if base == "GENE":
         _gene = True
         _ldlt = True
 
     # LDLT est le solveur par defaut dans DYNA_TRAN_MODAL (systemes lineaires
     # petits)
-    if COMMAND == "DYNA_TRAN_MODAL":
+    if command == "DYNA_TRAN_MODAL":
         _ldlt = True
 
     # --------------------------------------------------------------------
@@ -127,12 +122,12 @@ def C_SOLVEUR(COMMAND, BASE=None):  # COMMUN#
     _cmodal = False
 
     #  Avec les solveurs modaux STOP_SINGULIER n'existe pas
-    if COMMAND in ("INFO_MODE", "MODE_ITER_INV", "MODE_ITER_SIMULT", "MODE_ITER_INV_SM"):
+    if command in ("INFO_MODE", "MODE_ITER_INV", "MODE_ITER_SIMULT", "MODE_ITER_INV_SM"):
         _cmodal = True
         _singu = False
 
         #     Dans INFO_MODE on ne fait que factoriser
-        if COMMAND == "INFO_MODE":
+        if command == "INFO_MODE":
             _resol = False
 
     # --------------------------------------------------------------------
@@ -140,7 +135,7 @@ def C_SOLVEUR(COMMAND, BASE=None):  # COMMUN#
     _singu_non = False
 
     #  Dans DEFI_BASE_MODALE, NON est le defaut de STOP_SINGULIER
-    if COMMAND == "DEFI_BASE_MODALE":
+    if command == "DEFI_BASE_MODALE":
         _singu_non = True
 
     # --------------------------------------------------------------------
@@ -193,16 +188,16 @@ def C_SOLVEUR(COMMAND, BASE=None):  # COMMUN#
         _into = ("MULT_FRONT", "LDLT", "MUMPS", "GCPC", "PETSC")
 
     # CAS PARTICULIERS
-    if COMMAND in ["MODE_NON_LINE"]:
+    if command in ["MODE_NON_LINE"]:
         _defaut = "MUMPS"
         _into = ("MUMPS",)
-    if COMMAND in ["CALC_ERC_DYN"]:
+    if command in ["CALC_ERC_DYN"]:
         _defaut = "MUMPS"
         _into = ("MUMPS", "LDLT")
-    if COMMAND in ["MODE_ITER_INV_SM"]:
+    if command in ["MODE_ITER_INV_SM"]:
         _defaut = "MULT_FRONT"
         _into = ("MULT_FRONT", "LDLT")
-    if COMMAND in ["STAT_NON_LINE_SNES"]:
+    if command in ["STAT_NON_LINE_SNES"]:
         _defaut = "PETSC"
         _into = ("PETSC",)
     _MotCleSimples["METHODE"] = SIMP(statut="f", typ="TXM", defaut=_defaut, into=_into)

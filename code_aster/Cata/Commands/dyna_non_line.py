@@ -20,13 +20,11 @@
 from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
-from .stat_non_line import compat_syntax
 
 DYNA_NON_LINE = OPER(
     nom="DYNA_NON_LINE",
     op=70,
     sd_prod=evol_noli,
-    compat_syntax=compat_syntax,
     reentrant="f:RESULTAT",
     fr=tr(
         "Calcul de l'évolution dynamique d'une structure dont le matériau ou la géométrie ont un comportement non linéaire"
@@ -144,7 +142,7 @@ DYNA_NON_LINE = OPER(
     # -------------------------------------------------------------------
     RECH_LINEAIRE=C_RECH_LINEAIRE(),
     # -------------------------------------------------------------------
-    CONVERGENCE=C_CONVERGENCE(),
+    CONVERGENCE=C_CONVERGENCE("MECA_NON_LINE"),
     # -------------------------------------------------------------------
     SOLVEUR=C_SOLVEUR("DYNA_NON_LINE"),
     # -------------------------------------------------------------------

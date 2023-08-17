@@ -20,14 +20,14 @@
 # person_in_charge: mickael.abbas at edf.fr
 
 from ..Language.DataStructure import listr8_sdaster
-from ..Language.Syntax import BLOC, EXCLUS, FACT, SIMP, NoRepeat
+from ..Language.Syntax import BLOC, FACT, SIMP, UN_PARMI, NoRepeat
 
 
 def C_ARCHIVAGE():
     return FACT(
         statut="d",
         max=1,
-        regles=(EXCLUS("PAS_ARCH", "LIST_INST", "INST"),),
+        regles=(UN_PARMI("PAS_ARCH", "LIST_INST", "INST", PAS_ARCH=1),),
         PAS_ARCH=SIMP(statut="f", typ="I"),
         LIST_INST=SIMP(statut="f", typ=listr8_sdaster),
         INST=SIMP(statut="f", typ="R", validators=NoRepeat(), max="**"),

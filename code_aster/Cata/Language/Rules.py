@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -39,11 +39,15 @@ def work_on_copy(func):
 
 
 class Rule:
-    """Abstract class for rules."""
+    """Abstract class for rules.
 
-    def __init__(self, *curTuple):
+    Arguments:
+        *args: list of keywords.
+    """
+
+    def __init__(self, *args):
         """Initialization"""
-        self.ruleArgs = curTuple
+        self.ruleArgs = args
 
     def __repr__(self):
         """Simple representation"""
@@ -58,30 +62,58 @@ class Rule:
         """Filter that tells if the first keyword exists"""
         return self.ruleArgs[0] in dictSyntax
 
-    def _not_none(self, dictSyntax):
-        """Filter that returns existing values"""
-        return [i in dictSyntax for i in self.ruleArgs]
+    def _nbValues(self, dictSyntax):
+        """Returns the number of defined (not None) values"""
+        return sum([i in dictSyntax for i in self.ruleArgs if dictSyntax.get(i) is not None])
 
 
-class AtLeastOne(Rule):
-    """Check that at least one keyword from a list is defined."""
+class RuleWithDefaults(Rule):
+    """Abstract class for rules with default values.
 
-    @work_on_copy
+    Arguments:
+        *args: list of keywords.
+        **kwargs: default values.
+    """
+
+    def __init__(self, *args, **kwargs):
+        """Initialization"""
+        self.ruleArgs = args
+        unknown = [key for key in kwargs if key not in args]
+        if unknown:
+            raise ValueError("Default values must be in arguments, not exist: {}".format(unknown))
+        self.ruleKwargs = kwargs
+
+
+class AtLeastOne(RuleWithDefaults):
+    """Check that at least one keyword from a list is defined.
+
+    If no keyword from the list exist, default values may be inserted if provided in ``kwargs``.
+    """
+
     def check(self, dictSyntax):
         """Check the rule"""
         super().check(dictSyntax)
-        if sum(self._not_none(dictSyntax)) < 1:
-            raise ValueError("At least one argument of {} must be defined".format(self.ruleArgs))
+        if self._nbValues(dictSyntax) < 1:
+            if self.ruleKwargs:
+                dictSyntax.update(self.ruleKwargs)
+            else:
+                raise ValueError(
+                    "At least one argument of {} must be defined".format(self.ruleArgs)
+                )
 
 
-class ExactlyOne(Rule):
-    """Check that exactly one keyword from a list is defined."""
+class ExactlyOne(RuleWithDefaults):
+    """Check that exactly one keyword from a list is defined.
 
-    @work_on_copy
+    If no keyword from the list exist, a default value may be inserted if provided in ``kwargs``.
+    """
+
     def check(self, dictSyntax):
         """Check the rule"""
         super().check(dictSyntax)
-        if sum(self._not_none(dictSyntax)) != 1:
+        if self._nbValues(dictSyntax) == 0 and self.ruleKwargs:
+            dictSyntax.update(self.ruleKwargs)
+        if self._nbValues(dictSyntax) != 1:
             raise ValueError("Exactly one argument of {} is required".format(self.ruleArgs))
 
 
@@ -92,7 +124,7 @@ class AtMostOne(Rule):
     def check(self, dictSyntax):
         """Check the rule"""
         super().check(dictSyntax)
-        if sum(self._not_none(dictSyntax)) > 1:
+        if self._nbValues(dictSyntax) > 1:
             raise ValueError("At most one argument of {} can be defined".format(self.ruleArgs))
 
 
@@ -104,7 +136,7 @@ class IfFirstAllPresent(Rule):
     def check(self, dictSyntax):
         """Check the rule"""
         super().check(dictSyntax)
-        if self._firstExists(dictSyntax) and sum(self._not_none(dictSyntax)) != len(self.ruleArgs):
+        if self._firstExists(dictSyntax) and self._nbValues(dictSyntax) != len(self.ruleArgs):
             raise ValueError("{} must be all defined".format(self.ruleArgs[1:]))
 
 
@@ -116,7 +148,7 @@ class OnlyFirstPresent(Rule):
     def check(self, dictSyntax):
         """Check the rule"""
         super().check(dictSyntax)
-        if self._firstExists(dictSyntax) and sum(self._not_none(dictSyntax)[1:]) != 0:
+        if self._firstExists(dictSyntax) and self._nbValues(dictSyntax) != 1:
             raise ValueError("{} must be all undefined".format(self.ruleArgs[1:]))
 
 
@@ -128,7 +160,7 @@ class AllTogether(Rule):
     def check(self, dictSyntax):
         """Check the rule"""
         super().check(dictSyntax)
-        if sum(self._not_none(dictSyntax)) not in (0, len(self.ruleArgs)):
+        if self._nbValues(dictSyntax) not in (0, len(self.ruleArgs)):
             raise ValueError("{} must be all defined or all undefined".format(self.ruleArgs))
 
 

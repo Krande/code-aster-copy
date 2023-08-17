@@ -20,13 +20,11 @@
 from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
-from .stat_non_line import compat_syntax
 
 MECA_NON_LINE = MACRO(
     nom="MECA_NON_LINE",
     op=OPS("code_aster.MacroCommands.meca_non_line_ops.meca_non_line_ops"),
     sd_prod=evol_noli,
-    compat_syntax=compat_syntax,
     fr=tr(
         "Calcul de l'évolution mécanique ou thermo-hydro-mécanique couplée, en quasi-statique,"
         " d'une structure en non linéaire"
@@ -54,9 +52,9 @@ MECA_NON_LINE = MACRO(
     # -------------------------------------------------------------------
     CONTACT=C_CONTACT(),
     # -------------------------------------------------------------------
-    COMPORTEMENT=C_COMPORTEMENT("STAT_NON_LINE"),
+    COMPORTEMENT=C_COMPORTEMENT("MECA_NON_LINE"),
     # -------------------------------------------------------------------
-    ETAT_INIT=C_ETAT_INIT("STAT_NON_LINE", "f"),
+    ETAT_INIT=C_ETAT_INIT("MECA_NON_LINE", "f"),
     # -------------------------------------------------------------------
     RECH_LINEAIRE=C_RECH_LINEAIRE(),
     # -------------------------------------------------------------------
@@ -68,7 +66,7 @@ MECA_NON_LINE = MACRO(
         NEWTON=C_NEWTON("MECA_NON_LINE"),
     ),
     # -------------------------------------------------------------------
-    CONVERGENCE=C_CONVERGENCE(),
+    CONVERGENCE=C_CONVERGENCE("MECA_NON_LINE"),
     # -------------------------------------------------------------------
     ARCHIVAGE=C_ARCHIVAGE(),
     # -------------------------------------------------------------------

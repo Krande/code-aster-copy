@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -164,7 +164,7 @@ MACRO_BASCULE_SCHEMA_CATA = MACRO(
     # -------------------------------------------------------------------
     RECH_LINEAIRE=C_RECH_LINEAIRE(),
     # -------------------------------------------------------------------
-    CONVERGENCE=C_CONVERGENCE(),
+    CONVERGENCE=C_CONVERGENCE("MECA_NON_LINE"),
     # -------------------------------------------------------------------
     SOLVEUR=C_SOLVEUR("DYNA_NON_LINE"),
     # -------------------------------------------------------------------
@@ -540,8 +540,8 @@ MACRO_BASCULE_SCHEMA_CATA = MACRO(
         ),
     ),
     #
-    COMPORTEMENT_IMPL=C_COMPORTEMENT(),
-    COMPORTEMENT_EXPL=C_COMPORTEMENT(),
+    COMPORTEMENT_IMPL=C_COMPORTEMENT("DYNA_NON_LINE"),
+    COMPORTEMENT_EXPL=C_COMPORTEMENT("DYNA_NON_LINE"),
     regles=(
         AU_MOINS_UN("COMPORTEMENT_IMPL", "COMPORTEMENT_EXPL"),
         PRESENT_PRESENT("COMPORTEMENT_IMPL", "COMPORTEMENT_EXPL"),

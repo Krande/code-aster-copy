@@ -23,11 +23,11 @@ from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
 
-def C_ETAT_INIT(COMMAND, statut):
+def C_ETAT_INIT(command, statut):
     """Definition of the keywords common to several commands to describe
     the initial state.
     """
-    assert COMMAND in ("DYNA_NON_LINE", "STAT_NON_LINE"), "unsupported command: {0}".format(COMMAND)
+    assert command in ("DYNA_NON_LINE", "MECA_NON_LINE")
 
     kwargs = {}
 
@@ -36,10 +36,10 @@ def C_ETAT_INIT(COMMAND, statut):
     kwargs["VARI"] = SIMP(statut="f", typ=cham_elem)
     kwargs["STRX"] = SIMP(statut="f", typ=cham_elem)
 
-    if COMMAND == "STAT_NON_LINE":
+    if command == "MECA_NON_LINE":
         kwargs["COHE"] = SIMP(statut="f", typ=cham_elem)
 
-    if COMMAND == "DYNA_NON_LINE":
+    if command == "DYNA_NON_LINE":
         kwargs["VITE"] = SIMP(statut="f", typ=cham_no_sdaster)
         kwargs["ACCE"] = SIMP(statut="f", typ=cham_no_sdaster)
 
@@ -50,7 +50,7 @@ def C_ETAT_INIT(COMMAND, statut):
     kwargs["INST_ETAT_INIT"] = SIMP(statut="f", typ="R")
     kwargs["CRITERE"] = SIMP(statut="f", typ="TXM", defaut="RELATIF", into=("RELATIF", "ABSOLU"))
 
-    if COMMAND == "DYNA_NON_LINE":
+    if command == "DYNA_NON_LINE":
         mcfact = FACT(
             statut=statut,
             max=1,

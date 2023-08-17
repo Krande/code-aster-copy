@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,10 +31,10 @@ CALC_POINT_MAT_CATA = OPER(
     reentrant="f",
     fr=tr("Intégrer une loi de comportement"),
     MATER=SIMP(statut="o", typ=mater_sdaster, max=30),
-    COMPORTEMENT=C_COMPORTEMENT("CALC_POINT_MAT"),
+    COMPORTEMENT=C_COMPORTEMENT("SIMU_POINT_MAT"),
     INCREMENT=C_INCREMENT("MECANIQUE"),
     NEWTON=C_NEWTON(),
-    CONVERGENCE=C_CONVERGENCE(),
+    CONVERGENCE=C_CONVERGENCE("SIMU_POINT_MAT"),
     # --MASSIF : orientation du materiau (monocristal, orthotropie)
     MASSIF=FACT(
         statut="f",
