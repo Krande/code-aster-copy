@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -105,9 +105,9 @@ subroutine ircmva(numcmp, indcmp, ncmpve, ncmprf, nvalec, &
             fieldScalar = 2
         else if (cplxFormat .eq. 'IMAG') then
             fieldScalar = 3
-        else if (cplxFormat .eq. 'PHASE') then
-            fieldScalar = 4
         else if (cplxFormat .eq. 'MODULE') then
+            fieldScalar = 4
+        else if (cplxFormat .eq. 'PHASE') then
             fieldScalar = 5
         else
             call utmess('F', 'RESULT3_69')
@@ -177,8 +177,8 @@ subroutine ircmva(numcmp, indcmp, ncmpve, ncmprf, nvalec, &
                     else if (fieldScalar .eq. 4) then
                         val(poscmp, 1, 1, jaux) = abs(zc(adsvxx+kaux))
                     else if (fieldScalar .eq. 5) then
-                        val(poscmp, 1, 1, jaux) = atan2(dble(zc(adsvxx+kaux)), &
-                                                        dimag(zc(adsvxx+kaux))) &
+                        val(poscmp, 1, 1, jaux) = atan2(dimag(zc(adsvxx+kaux)), &
+                                                        dble(zc(adsvxx+kaux))) &
                                                   *180.d0/r8pi()
                     end if
                 else
@@ -256,7 +256,7 @@ subroutine ircmva(numcmp, indcmp, ncmpve, ncmprf, nvalec, &
                                     abs(zc(adsv-1+kaux))
                             else if (fieldScalar .eq. 5) then
                                 val(poscmp, nrsp, nuanom(tymast, nrpg), jaux) = &
-                                    atan2(dble(zc(adsv-1+kaux)), dimag(zc(adsv-1+kaux))) &
+                                    atan2(dimag(zc(adsv-1+kaux)), dble(zc(adsv-1+kaux))) &
                                     *180.d0/r8pi()
                             end if
                         end if
@@ -280,7 +280,7 @@ subroutine ircmva(numcmp, indcmp, ncmpve, ncmprf, nvalec, &
                                     val(poscmp, nrsp, nrpg, jaux) = abs(zc(adsv-1+kaux))
                                 else if (fieldScalar .eq. 5) then
                                     val(poscmp, nrsp, nrpg, jaux) = &
-                                        atan2(dble(zc(adsv-1+kaux)), dimag(zc(adsv-1+kaux))) &
+                                        atan2(dimag(zc(adsv-1+kaux)), dble(zc(adsv-1+kaux))) &
                                         *180.d0/r8pi()
                                 end if
                             end if
