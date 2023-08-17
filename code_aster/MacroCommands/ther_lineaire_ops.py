@@ -392,6 +392,7 @@ def ther_lineaire_ops(self, **args):
     # Run computation
     logger.debug("<THER_LINEAIRE>: Start computation")
 
+    phys_state.zeroInitialState(phys_pb)
     phys_state.primal_curr = initial_field
     time_delta_prev = timeStepper.null_increment
 
@@ -419,6 +420,7 @@ def ther_lineaire_ops(self, **args):
             diriBCs = profile(disc_comp.getDirichletBC)(phys_state.time_curr)
             phys_state.primal_curr = profile(linear_solver.solve)(rhs, diriBCs)
 
+        phys_state.commit()
         if save_initial_state:
             storage_manager.storeState(
                 phys_state.time_curr, phys_pb, phys_state, param={"PARM_THETA": time_theta}
@@ -467,6 +469,8 @@ def ther_lineaire_ops(self, **args):
         # solve linear system
         diriBCs = profile(disc_comp.getDirichletBC)(phys_state.time_curr)
         phys_state.primal_curr = profile(linear_solver.solve)(rhs, diriBCs)
+
+        phys_state.commit()
 
         if storage_manager.hasToBeStored(phys_state.time_curr):
             storage_manager.storeState(

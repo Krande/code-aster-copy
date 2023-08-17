@@ -246,6 +246,7 @@ def meca_statique_ops(self, **args):
 
     # Run computation
     logger.debug("<MECA_STATIQUE>: Run computation")
+    phys_state.zeroInitialState(phys_pb)
     while not timeStepper.isFinished():
         phys_state.time_curr = timeStepper.getCurrent()
 
@@ -260,6 +261,7 @@ def meca_statique_ops(self, **args):
         # solve linear system
         diriBCs = profile(disc_comp.getDirichletBC)(phys_state.time_curr)
         phys_state.primal_curr = profile(linear_solver.solve)(rhs, diriBCs)
+        phys_state.commit()
 
         # store field
         storage_manager.storeState(phys_state.time_curr, phys_pb, phys_state)

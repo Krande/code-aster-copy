@@ -98,7 +98,6 @@ class SNESSolver(SolverFeature):
         # Increment the solution
         self._primal_incr.applyLagrangeScaling(1 / self._scaling)
         self.phys_state.primal_step += self._primal_incr
-        self.phys_state.primal_curr += self._primal_incr
         # Build initial residual
         disc_comp = DiscreteComputation(self.phys_pb)
         residual, _, _ = disc_comp.getResidual(self.phys_state, scaling=self._scaling)
