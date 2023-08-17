@@ -59,6 +59,11 @@ def compat_syntax(keywords):
                 keywords["RECH_LINEAIRE"][key] = keywords["NEWTON"][key]
                 del keywords["NEWTON"][key]
 
+    if "PARM_THETA" in keywords:
+        keywords["SCHEMA_TEMPS"] = {"SCHEMA": "HHT", "THETA": keywords["PARM_THETA"]}
+        del keywords["PARM_THETA"]
+
+
 THER_NON_LINE = MACRO(
     nom="THER_NON_LINE",
     op=OPS("code_aster.MacroCommands.ther_non_line_ops.ther_non_line_ops"),
@@ -129,7 +134,6 @@ THER_NON_LINE = MACRO(
     # -------------------------------------------------------------------
     b_trans=BLOC(
         condition="""(equal_to("TYPE_CALCUL", 'TRAN'))""",
-        PARM_THETA=SIMP(statut="f", typ="R", defaut=0.57, val_min=0.0, val_max=1.0),
         # -------------------------------------------------------------------
         ETAT_INIT=FACT(
             statut="o",
@@ -156,6 +160,15 @@ THER_NON_LINE = MACRO(
                         PRECISION=SIMP(statut="o", typ="R"),
                     ),
                 ),
+            ),
+        ),
+        SCHEMA_TEMPS=FACT(
+            max=1,
+            statut="d",
+            SCHEMA=SIMP(statut="f", min=1, max=1, typ="TXM", into=("HHT",), defaut="HHT"),
+            b_hht=BLOC(
+                condition="""equal_to("SCHEMA", 'HHT')""",
+                THETA=SIMP(statut="f", typ="R", defaut=0.57, val_min=0.0, val_max=1.0),
             ),
         ),
     ),

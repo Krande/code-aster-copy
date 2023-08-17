@@ -50,6 +50,10 @@ def compat_syntax(keywords):
         if "ETAT_INIT" not in keywords:
             keywords["ETAT_INIT"] = {"STAT": "OUI"}
 
+        if "SCHEMA_TEMPS" in keywords and "THETA" in keywords["SCHEMA_TEMPS"]:
+            keywords["PARM_THETA"] = keywords["SCHEMA_TEMPS"]["THETA"]
+            del keywords["SCHEMA_TEMPS"]
+
     if "NEWTON" in keywords:
         keywords["NEWTON"]["RESI_LINE_RELA"] = keywords["RECH_LINEAIRE"]["RESI_LINE_RELA"]
         keywords["NEWTON"]["ITER_LINE_MAXI"] = keywords["RECH_LINEAIRE"]["ITER_LINE_MAXI"]

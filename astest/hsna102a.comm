@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -86,7 +86,7 @@ RESUSECH = (
         EXCIT=_F(CHARGE=CHARSE),
         CHAM_MATER=CHMAT,
         SOLVEUR=_F(METHODE="MULT_FRONT"),
-        PARM_THETA=0.57,
+        SCHEMA_TEMPS=_F(SCHEMA="HHT", THETA=0.57),
         ETAT_INIT=_F(VALE=128.8),
         INCREMENT=_F(LIST_INST=LISTSECH),
         COMPORTEMENT=_F(RELATION="SECH_MENSI", TOUT="OUI"),
