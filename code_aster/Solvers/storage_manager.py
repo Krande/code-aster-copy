@@ -66,6 +66,8 @@ class StorageManager(SolverFeature):
         """
         super().__init__()
         self.result = result
+        if self.result.getNumberOfIndexes() == 0:
+            self.result.resize(10)
         self.buffer = []
 
         if mcf:
@@ -93,7 +95,7 @@ class StorageManager(SolverFeature):
             self.list_time = SearchList(list_time, kwargs["PRECISION"], kwargs["CRITERE"])
             assert all(self.list_time.unique(t) for t in list_time)
 
-        curr_index = init_index = stor_index = 0
+        self.curr_index = self.init_index = self.stor_index = 0
 
     def setInitialIndex(self, index):
         """Set initial index.

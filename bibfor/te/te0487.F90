@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,8 +17,142 @@
 ! --------------------------------------------------------------------
 
 subroutine te0487(nomopt, nomte)
+!
+    use HHO_type
+    use HHO_basis_module
+    use HHO_utils_module
+    use HHO_size_module
+    use HHO_quadrature_module
+    use HHO_eval_module
+    use HHO_ther_module
+    use HHO_init_module, only: hhoInfoInitCell
+!
     implicit none
-#include "asterfort/utmess.h"
+!
+#include "asterf_types.h"
+#include "asterfort/Behaviour_type.h"
+#include "asterfort/HHO_size_module.h"
+#include "asterfort/assert.h"
+#include "asterfort/elrefe_info.h"
+#include "asterfort/jevech.h"
+#include "asterfort/readVector.h"
+#include "asterfort/writeVector.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/teattr.h"
+#include "blas/dgemv.h"
+#include "jeveux.h"
+!
+! --------------------------------------------------------------------------------------------------
+!  HHO
+!  Thermics - FLUX_ELGA
+!
+! In  option           : name of option to compute
+! In  nomte            : type of finite element
+! --------------------------------------------------------------------------------------------------
     character(len=16) :: nomte, nomopt
-    call utmess('F', 'FERMETUR_8')
+!
+! --- Local variables
+!
+    type(HHO_Data) :: hhoData
+    type(HHO_Cell) :: hhoCell
+    type(HHO_basis_cell) :: hhoBasisCell
+    type(HHO_Quadrature) :: hhoQuadCellRigi
+    integer :: cbs, fbs, total_dofs, npg, deca, gbs
+    integer :: ipg, icodre(3), jtemps, jmate
+    character(len=8), parameter :: fami = 'RIGI'
+    character(len=8) :: poum
+    character(len=32) :: phenom
+    real(kind=8), dimension(MSIZE_CELL_VEC, MSIZE_TDOFS_SCAL) :: gradrec
+    real(kind=8), dimension(3*MAX_QP_CELL) :: flux
+    real(kind=8) :: module_tang(3, 3), G_curr(3), sig_curr(3)
+    real(kind=8) :: coorpg(3), weight, time_curr, temp_eval_curr
+    real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
+    real(kind=8), dimension(MSIZE_TDOFS_SCAL) :: temp_curr
+    real(kind=8), dimension(MSIZE_CELL_VEC) :: G_curr_coeff
+!
+! --- Get element parameters
+!
+    call elrefe_info(fami=fami, npg=npg)
+!
+! --- Get HHO informations
+!
+    call hhoInfoInitCell(hhoCell, hhoData, npg, hhoQuadCellRigi)
+!
+! --- Number of dofs
+    call hhoTherNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs)
+    ASSERT(cbs <= MSIZE_CELL_SCAL)
+    ASSERT(fbs <= MSIZE_FACE_SCAL)
+    ASSERT(total_dofs <= MSIZE_TDOFS_SCAL)
+!
+    if (nomopt /= "FLUX_ELGA") then
+        ASSERT(ASTER_FALSE)
+    end if
+!
+! --- Compute Operators
+!
+    call hhoCalcOpTher(hhoCell, hhoData, gradrec)
+!
+! --- Get input fields
+!
+    call jevech('PMATERC', 'L', jmate)
+!
+    call rccoma(zi(jmate), 'THER', 1, phenom, icodre(1))
+!
+    call jevech('PTEMPSR', 'L', jtemps)
+    time_curr = zr(jtemps)
+!
+! -- initialization
+!
+    flux = 0.d0
+!
+    G_curr_coeff = 0.d0
+!
+    call hhoBasisCell%initialize(hhoCell)
+!
+! --- compute temp in T+
+!
+    temp_curr = 0.d0
+    call readVector('PTEMPER', total_dofs, temp_curr)
+    call hhoRenumTherVecInv(hhoCell, hhoData, temp_curr)
+    poum = "+"
+!
+! ----- compute G_curr = gradrec * temp_curr
+!
+    call dgemv('N', gbs, total_dofs, 1.d0, gradrec, MSIZE_CELL_VEC, temp_curr, 1, &
+               0.d0, G_curr_coeff, 1)
+!
+! ----- Loop on quadrature point
+!
+    deca = 1
+    do ipg = 1, hhoQuadCellRigi%nbQuadPoints
+        coorpg(1:3) = hhoQuadCellRigi%points(1:3, ipg)
+        weight = hhoQuadCellRigi%weights(ipg)
+!
+! --------- Eval basis function at the quadrature point
+!
+        call hhoBasisCell%BSEval(hhoCell, coorpg(1:3), 0, hhoData%grad_degree(), BSCEval)
+!
+! --------- Eval gradient at T+
+!
+        G_curr = hhoEvalVecCell(hhoCell, hhoBasisCell, hhoData%grad_degree(), &
+                                coorpg(1:3), G_curr_coeff, gbs)
+!
+! --------- Eval temperature at T+
+!
+        temp_eval_curr = hhoEvalScalCell(hhoCell, hhoBasisCell, hhoData%cell_degree(), &
+                                         coorpg(1:3), temp_curr, cbs)
+!
+! ------- Compute behavior
+!
+        call hhoComputeBehaviourTher(phenom, fami, poum, ipg, hhoCell%ndim, time_curr, jmate, &
+                                     temp_eval_curr, G_curr, sig_curr, module_tang)
+!
+        flux(deca:deca+hhoCell%ndim) = -sig_curr(1:hhoCell%ndim)
+        deca = deca+hhoCell%ndim
+    end do
+!
+! --- Save fluxes
+!
+    call writeVector('PFLUXPG', hhoCell%ndim*npg, flux)
+!
 end subroutine

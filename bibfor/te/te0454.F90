@@ -70,7 +70,7 @@ subroutine te0454(nomopt, nomte)
     ASSERT(fbs <= MSIZE_FACE_SCAL)
     ASSERT(total_dofs <= MSIZE_TDOFS_SCAL)
 !
-    if (nomopt /= "RIGI_THER") then
+    if (nomopt /= "RIGI_THER" .and. nomopt /= "RIGI_THER_TANG") then
         ASSERT(ASTER_FALSE)
     end if
 !
@@ -80,7 +80,7 @@ subroutine te0454(nomopt, nomte)
 !
 ! --- Compute local contribution
 !
-    call hhoLocalRigiTher(hhoCell, hhoData, hhoQuadCellRigi, gradfull, stab, &
+    call hhoLocalRigiTher(hhoCell, hhoData, hhoQuadCellRigi, nomopt, gradfull, stab, &
                           fami, lhs=lhs)
 !
 ! --- Save lhs

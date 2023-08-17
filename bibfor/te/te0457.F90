@@ -29,14 +29,17 @@ subroutine te0457(option, nomte)
 !
     implicit none
 !
-#include "jeveux.h"
+#include "asterc/r8t0.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/jevech.h"
+#include "asterfort/foderi.h"
 #include "asterfort/HHO_size_module.h"
+#include "asterfort/jevech.h"
+#include "asterfort/readVector.h"
 #include "asterfort/writeMatrix.h"
 #include "blas/dcopy.h"
 #include "blas/dsyr.h"
+#include "jeveux.h"
 !
     character(len=16), intent(in) :: option, nomte
 !
@@ -49,6 +52,9 @@ subroutine te0457(option, nomte)
 !
 !          OPTIONS : 'RIGI_THER_COEH_R'
 !                    'RIGI_THER_COEH_F'
+!                    'MTAN_THER_FLUNL'
+!                    'MTAN_THER_RAYO_R'
+!                    'MTAN_THER_RAYO_F'
 !
 !  ENTREES  ---> OPTION : OPTION DE CALCUL
 !           ---> NOMTE  : NOM DU TYPE ELEMENT
@@ -62,11 +68,12 @@ subroutine te0457(option, nomte)
     type(HHO_Face) :: hhoFace
     type(HHO_Quadrature) :: hhoQuadFace
     type(HHO_basis_face) :: hhoBasisFace
-    real(kind=8), dimension(MSIZE_FACE_SCAL) :: basisScalEval
+    real(kind=8), dimension(MSIZE_FACE_SCAL) :: basisScalEval, temp_F_curr
     real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_FACE_SCAL) :: lhs
-    real(kind=8) :: CoefHQP(MAX_QP_FACE), coeff, time
+    real(kind=8) :: CoeffQP_curr(MAX_QP_FACE), coeff, d_alpha, temp_eval_curr
+    real(kind=8) :: sigma(MAX_QP_FACE), epsil(MAX_QP_FACE), rbid, tz0, time_curr
     integer :: fbs, celldim, ipg, nbpara, npg
-    integer :: j_time, j_coefh
+    integer :: j_time, j_coefh, j_para
 !
 !
 ! -- Get number of Gauss points
@@ -76,16 +83,17 @@ subroutine te0457(option, nomte)
 ! -- Retrieve HHO informations
 !
     call hhoInfoInitFace(hhoFace, hhoData, npg, hhoQuadFace)
+    call hhoBasisFace%initialize(hhoFace)
 !
     ASSERT(hhoQuadFace%nbQuadPoints <= MAX_QP_FACE)
 !
     celldim = hhoFace%ndim+1
-    CoefHQP = 0.d0
+    CoeffQP_curr = 0.d0
     nompar(:) = 'XXXXXXXX'
     valpar(:) = 0.d0
 !
     call jevech('PTEMPSR', 'L', j_time)
-    time = zr(j_time)
+    time_curr = zr(j_time)
 !
 ! ---- Which option ?
 !
@@ -94,7 +102,7 @@ subroutine te0457(option, nomte)
 ! ----- Get real value COEF_H
 !
         call jevech('PCOEFHR', 'L', j_coefh)
-        CoefHQP(1:hhoQuadFace%nbQuadPoints) = zr(j_coefh)
+        CoeffQP_curr(1:hhoQuadFace%nbQuadPoints) = zr(j_coefh)
 !
     elseif (option .eq. 'RIGI_THER_COEH_F') then
 !
@@ -113,16 +121,80 @@ subroutine te0457(option, nomte)
 ! ---- Time
 !
         nompar(nbpara) = 'INST'
-        valpar(nbpara) = time
+        valpar(nbpara) = time_curr
 !
 ! ----- Evaluate the analytical function COEF_H
 !
         call jevech('PCOEFHF', 'L', j_coefh)
         call hhoFuncFScalEvalQp(hhoQuadFace, zk8(j_coefh), nbpara, nompar, valpar, &
-                                & celldim, CoefHQP)
+                                celldim, CoeffQP_curr)
 !
-    else
+    elseif (option .eq. 'MTAN_THER_RAYO_R') then
+!
+! ----- Get real value (sigma, epsil, temp_inf)
+!
+        call jevech('PRAYONR', 'L', j_para)
+        sigma = zr(j_para)
+        epsil = zr(j_para+1)
+        tz0 = r8t0()
+!
+        call readVector('PTEMPEI', fbs, temp_F_curr)
+!
+        do ipg = 1, hhoQuadFace%nbQuadPoints
+            temp_eval_curr = hhoEvalScalFace(hhoFace, hhoBasisFace, hhoData%face_degree(), &
+                                             hhoQuadFace%points(1:3, ipg), temp_F_curr, fbs)
 
+            CoeffQP_curr(ipg) = 4.d0*sigma(ipg)*epsil(ipg)*(temp_eval_curr+tz0)**3
+        end do
+    elseif (option .eq. 'MTAN_THER_RAYO_F') then
+        call jevech('PRAYONF', 'L', j_para)
+!
+! ---- Get Function Parameters (sigma, epsil, temp_inf)
+!
+        if (celldim == 3) then
+            nbpara = 4
+            nompar(1:3) = (/'X', 'Y', 'Z'/)
+        else if (celldim == 2) then
+            nbpara = 3
+            nompar(1:2) = (/'X', 'Y'/)
+        else
+            ASSERT(ASTER_FALSE)
+        end if
+!
+! ---- Time +
+!
+        nompar(nbpara) = 'INST'
+        valpar(nbpara) = time_curr
+!
+! ----- Evaluate the analytical function at T+
+!
+        call hhoFuncFScalEvalQp(hhoQuadFace, zk8(j_para), nbpara, nompar, valpar, &
+                                celldim, sigma)
+        call hhoFuncFScalEvalQp(hhoQuadFace, zk8(j_para+1), nbpara, nompar, valpar, &
+                                celldim, epsil)
+!
+        tz0 = r8t0()
+        call readVector('PTEMPEI', fbs, temp_F_curr)
+
+        do ipg = 1, hhoQuadFace%nbQuadPoints
+            temp_eval_curr = hhoEvalScalFace(hhoFace, hhoBasisFace, hhoData%face_degree(), &
+                                             hhoQuadFace%points(1:3, ipg), temp_F_curr, fbs)
+
+            CoeffQP_curr(ipg) = 4.d0*sigma(ipg)*epsil(ipg)*(temp_eval_curr+tz0)**3
+        end do
+!
+    elseif (option .eq. 'MTAN_THER_FLUXNL') then
+        call jevech('PFLUXNL', 'L', j_para)
+!
+        call readVector('PTEMPEI', fbs, temp_F_curr)
+!
+        do ipg = 1, hhoQuadFace%nbQuadPoints
+            temp_eval_curr = hhoEvalScalFace(hhoFace, hhoBasisFace, hhoData%face_degree(), &
+                                             hhoQuadFace%points(1:3, ipg), temp_F_curr, fbs)
+            call foderi(zk8(j_para), temp_eval_curr, rbid, d_alpha)
+            CoeffQP_curr(ipg) = -d_alpha
+        end do
+    else
         ASSERT(ASTER_FALSE)
     end if
 !
@@ -142,7 +214,7 @@ subroutine te0457(option, nomte)
         call hhoBasisFace%BSEval(hhoFace, hhoQuadFace%points(1:3, ipg), 0, &
                                  hhoData%face_degree(), basisScalEval)
 ! --------  Eval massMat
-        coeff = CoefHQP(ipg)*hhoQuadFace%weights(ipg)
+        coeff = CoeffQP_curr(ipg)*hhoQuadFace%weights(ipg)
         call dsyr('U', fbs, coeff, basisScalEval, 1, lhs, MSIZE_FACE_SCAL)
     end do
 !

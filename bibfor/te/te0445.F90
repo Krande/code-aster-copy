@@ -91,14 +91,14 @@ subroutine te0445(nomopt, nomte)
 !
 ! --- Compute local rigidity contribution
 !
-    call hhoLocalRigiTher(hhoCell, hhoData, hhoQuadCellRigi, gradfull, stab, &
+    call hhoLocalRigiTher(hhoCell, hhoData, hhoQuadCellRigi, nomopt, gradfull, stab, &
                           fami_rigi, rhs=rhs_rigi)
 !
 ! --- Compute local mass contribution
 !
     call hhoLocalMassTher(hhoCell, hhoData, hhoQuadCellMass, fami_mass, rhs=rhs_mass)
 !
-! --- Compute rhs = 1/dt * rhs_mass + (1-theta) * rhs_rigi
+! --- Compute rhs = 1/dt * rhs_mass - (1-theta) * rhs_rigi
 !
     call jevech('PTEMPSR', 'L', itemps)
     dtime = zr(itemps+1)
@@ -106,7 +106,7 @@ subroutine te0445(nomopt, nomte)
 !
     rhs = 0.d0
     call daxpy(cbs, 1.d0/dtime, rhs_mass, 1, rhs, 1)
-    call daxpy(total_dofs, (1.d0-theta), rhs_rigi, 1, rhs, 1)
+    call daxpy(total_dofs, -(1.d0-theta), rhs_rigi, 1, rhs, 1)
 !
 ! --- Save rhs
 !

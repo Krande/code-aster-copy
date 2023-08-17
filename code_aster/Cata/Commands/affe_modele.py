@@ -305,12 +305,16 @@ AFFE_MODELE = OPER(
                     "AXIS_HHO",
                 ),
             ),
-        ),
-        b_formu_hho=BLOC(
-            condition="""equal_to('MODELISATION', ('3D_HHO', 'PLAN_HHO', 'AXIS_HHO'))""",
-            fr=tr("HHO formulation"),
-            FORMULATION=SIMP(
-                statut="f", typ="TXM", max=1, into=("LINEAIRE", "QUADRATIQUE"), defaut="LINEAIRE"
+            b_formu_hho=BLOC(
+                condition="""equal_to('MODELISATION', ('3D_HHO', 'PLAN_HHO', 'AXIS_HHO'))""",
+                fr=tr("HHO formulation"),
+                FORMULATION=SIMP(
+                    statut="f",
+                    typ="TXM",
+                    max=1,
+                    into=("LINEAIRE", "QUADRATIQUE"),
+                    defaut="LINEAIRE",
+                ),
             ),
         ),
         b_acoustique=BLOC(

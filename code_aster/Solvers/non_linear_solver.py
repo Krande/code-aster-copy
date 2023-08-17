@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 
 from ..Messages import MessageLog
-from ..Objects import NonLinearResult, ThermalResult
+from ..Objects import HHO, NonLinearResult, ThermalResult
 from ..Supervis import ConvergenceError, IntegrationError, SolverError
 from ..Utilities import DEBUG, logger, no_new_attributes, profile
 from .solver_features import SolverFeature
@@ -182,6 +182,7 @@ class NonLinearSolver(SolverFeature):
             args = dict(valr=phys_state.time_curr, vali=self.stepper.splitting_level)
             logger.info(MessageLog.GetText("I", "MECANONLINE6_5", **args))
             solv.solve()
+            self.post_hooks()
             if self.stepper.size() == 1 and self.stepper.getCurrent() == self.stepper.getPrevious():
                 self.stepper.completed()
 
@@ -225,16 +226,25 @@ class NonLinearSolver(SolverFeature):
                     self.phys_state.revert()
                     continue
                 self.phys_state.commit()
+                self.post_hooks()
                 self._storeRank(self.phys_state.time_curr)
                 self.stepper.completed()
                 self.current_matrix = solv.current_matrix
-                self.post_hooks()
                 self.step_rank += 1
 
     def post_hooks(self):
         """Call post hooks"""
         for hook in self.get_features(SOP.PostStepHook):
             hook(self.phys_state)
+
+        # Store field for HHO
+        if self.phys_pb.getModel().existsHHO():
+            hho_field = HHO(self.phys_pb).projectOnLagrangeSpace(self.phys_state.primal_curr)
+            storage_manager = self.get_feature(SOP.Storage)
+            field_name = "HHO_DEPL"
+            if self.phys_pb.isThermal():
+                field_name = "HHO_TEMP"
+            storage_manager.storeField(hho_field, field_name, self.phys_state.time_curr)
 
     def setExternalStateVariables(self, current_time):
         """Compute and set external variables in the physical state.

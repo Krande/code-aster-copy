@@ -61,9 +61,9 @@ module HHO_Ther_module
 !
     public :: hhoLocalRigiTher, hhoCalcStabCoeffTher, hhoLocalMassTher
     public :: hhoCalcOpTher, hhoComputeRhsRigiTher, hhoComputeLhsRigiTher
-    public :: hhoComputeLhsMassTher, hhoComputeRhsMassTher
+    public :: hhoComputeLhsMassTher, hhoComputeRhsMassTher, hhoComputeBehaviourTher
     private :: hhoComputeAgphi
-    private :: hhoComputeBehaviourTher, LambdaMax, hhoComputeRhoCpTher
+    private :: LambdaMax, hhoComputeRhoCpTher
 !
 contains
 !
@@ -71,7 +71,7 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoLocalRigiTher(hhoCell, hhoData, hhoQuadCellRigi, gradrec, stab, &
+    subroutine hhoLocalRigiTher(hhoCell, hhoData, hhoQuadCellRigi, option, gradrec, stab, &
                                 fami, lhs, rhs)
 !
         implicit none
@@ -79,6 +79,7 @@ contains
         type(HHO_Cell), intent(in)      :: hhoCell
         type(HHO_Data), intent(inout)   :: hhoData
         type(HHO_Quadrature), intent(in):: hhoQuadCellRigi
+        character(len=16), intent(in)   :: option
         real(kind=8), intent(in)        :: gradrec(MSIZE_CELL_VEC, MSIZE_TDOFS_SCAL)
         real(kind=8), intent(in)        :: stab(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL)
         character(len=8), intent(in)    :: fami
@@ -114,12 +115,17 @@ contains
         real(kind=8) :: AT(MSIZE_CELL_VEC, MSIZE_CELL_VEC)
         real(kind=8) :: TMP(MSIZE_CELL_VEC, MSIZE_TDOFS_VEC)
         real(kind=8) :: module_tang(3, 3), G_curr(3), sig_curr(3)
-        real(kind=8) :: coorpg(3), weight, time_curr
+        real(kind=8) :: coorpg(3), weight, time_curr, temp_eval_curr
         character(len=8) :: poum
-        aster_logical :: l_rhs, l_lhs
+        aster_logical :: l_rhs, l_lhs, l_nl
 !
         l_lhs = present(lhs)
         l_rhs = present(rhs)
+!
+        l_nl = ASTER_FALSE
+        if (option == "RIGI_THER_TANG" .or. option == "RAPH_THER") then
+            l_nl = ASTER_TRUE
+        end if
 !
 ! --- Get input fields
 !
@@ -127,8 +133,11 @@ contains
 !
         call rccoma(zi(jmate), 'THER', 1, phenom, icodre(1))
 !
-        call jevech('PTEMPSR', 'L', jtemps)
-        time_curr = zr(jtemps)
+        time_curr = 0.d0
+        if (.not. l_nl) then
+            call jevech('PTEMPSR', 'L', jtemps)
+            time_curr = zr(jtemps)
+        end if
 !
 ! --- number of dofs
 !
@@ -149,7 +158,10 @@ contains
 ! --- compute temp in T+
 !
         temp_curr = 0.d0
-        if (l_rhs) then
+        if (l_nl) then
+            call readVector('PTEMPEI', total_dofs, temp_curr)
+            call hhoRenumTherVecInv(hhoCell, hhoData, temp_curr)
+        elseif (l_rhs) then
             call readVector('PTEMPER', total_dofs, temp_curr)
             call hhoRenumTherVecInv(hhoCell, hhoData, temp_curr)
         end if
@@ -175,10 +187,15 @@ contains
             G_curr = hhoEvalVecCell(hhoCell, hhoBasisCell, hhoData%grad_degree(), &
                                     coorpg(1:3), G_curr_coeff, gbs)
 !
+! --------- Eval temperature at T+
+!
+            temp_eval_curr = hhoEvalScalCell(hhoCell, hhoBasisCell, hhoData%cell_degree(), &
+                                             coorpg(1:3), temp_curr, cbs)
+!
 ! ------- Compute behavior
 !
             call hhoComputeBehaviourTher(phenom, fami, poum, ipg, hhoCell%ndim, time_curr, jmate, &
-                                         G_curr, sig_curr, module_tang)
+                                         temp_eval_curr, G_curr, sig_curr, module_tang)
 !
 ! ------- Compute rhs
 !
@@ -595,13 +612,13 @@ contains
 !
 !===================================================================================================
 !
-    function LambdaMax(fami, imate, npg, ndim, time) result(coeff)
+    function LambdaMax(fami, imate, npg, ndim, time, temp_eval) result(coeff)
 !
         implicit none
 !
         character(len=8), intent(in)  :: fami
         integer, intent(in)           :: imate, npg, ndim
-        real(kind=8), intent(in)      :: time
+        real(kind=8), intent(in)      :: time, temp_eval
         real(kind=8) :: coeff
 !
 ! --------------------------------------------------------------------------------------------------
@@ -627,6 +644,13 @@ contains
                 nomres(1) = 'LAMBDA'
                 call rcvalb(fami, ipg, spt, '+', zi(imate), &
                             ' ', phenom, 1, 'INST', [time], &
+                            1, nomres, valres, icodre, 1)
+                lambda = valres(1)
+                coeff = coeff+lambda
+            elseif (phenom .eq. 'THER_NL') then
+                nomres(1) = 'LAMBDA'
+                call rcvalb(fami, ipg, spt, '+', zi(imate), &
+                            ' ', phenom, 1, 'TEMP', [temp_eval], &
                             1, nomres, valres, icodre, 1)
                 lambda = valres(1)
                 coeff = coeff+lambda
@@ -677,7 +701,8 @@ contains
 !
         if (hhoData%adapt()) then
             call jevech('PMATERC', 'L', imate)
-            call hhoData%setCoeffStab(10.d0*LambdaMax(fami, imate, nbQuadPoints, ndim, time))
+            call hhoData%setCoeffStab(10.d0*LambdaMax(fami, imate, nbQuadPoints, ndim, &
+                                                      time, 20.0))
         end if
 !
     end subroutine
@@ -686,15 +711,15 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoComputeBehaviourTher(phenom, fami, poum, kpg, ndim, time, imate, g_curr, &
-                                       sig_curr, module_tang)
+    subroutine hhoComputeBehaviourTher(phenom, fami, poum, kpg, ndim, time, imate, &
+                                       temp_eval, g_curr, sig_curr, module_tang)
 !
         implicit none
 !
         character(len=32), intent(in) :: phenom
         character(len=8), intent(in) :: fami, poum
         integer, intent(in) :: imate, ndim, kpg
-        real(kind=8), intent(in) :: time, g_curr(3)
+        real(kind=8), intent(in) :: time, g_curr(3), temp_eval
         real(kind=8), intent(out) :: sig_curr(3), module_tang(3, 3)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -725,6 +750,13 @@ contains
                         1, nomres, valres, icodre, 1)
             lambda = valres(1)
             aniso = ASTER_FALSE
+        elseif (phenom .eq. 'THER_NL') then
+            nomres(1) = 'LAMBDA'
+            call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                        ' ', phenom, 1, 'TEMP', [temp_eval], &
+                        1, nomres, valres, icodre, 1)
+            lambda = valres(1)
+            aniso = ASTER_FALSE
         else if (phenom .eq. 'THER_ORTH') then
             nomres(1) = 'LAMBDA_L'
             nomres(2) = 'LAMBDA_T'
@@ -749,7 +781,7 @@ contains
                 module_tang(idim, idim) = lambda
             end do
 !
-            sig_curr = -lambda*g_curr
+            sig_curr = lambda*g_curr
         end if
     end subroutine
 !===================================================================================================

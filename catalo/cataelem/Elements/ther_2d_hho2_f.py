@@ -109,6 +109,16 @@ class THER_2D_HHO2_F(Element):
             para_in=((SP.PFLUXNR, CFLUXNR), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
+        OP.CHAR_THER_FLUNL(
+            te=461,
+            para_in=(
+                (SP.PFLUXNL, CFLUXNF),
+                (SP.PGEOMER, NGEOMER),
+                (SP.PTEMPER, DDL_THER),
+                (SP.PTEMPSR, CTEMPSR),
+            ),
+            para_out=((SP.PVECTTR, MVECTTR),),
+        ),
         OP.CHAR_THER_TEXT_F(
             te=461,
             para_in=(
@@ -131,6 +141,26 @@ class THER_2D_HHO2_F(Element):
             ),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
+        OP.CHAR_THER_RAYO_F(
+            te=461,
+            para_in=(
+                (SP.PGEOMER, NGEOMER),
+                (SP.PRAYONF, LC.CRAYONF),
+                (SP.PTEMPER, DDL_THER),
+                (SP.PTEMPSR, CTEMPSR),
+            ),
+            para_out=((SP.PVECTTR, MVECTTR),),
+        ),
+        OP.CHAR_THER_RAYO_R(
+            te=461,
+            para_in=(
+                (SP.PGEOMER, NGEOMER),
+                (SP.PRAYONR, LC.CRAYONR),
+                (SP.PTEMPER, DDL_THER),
+                (SP.PTEMPSR, CTEMPSR),
+            ),
+            para_out=((SP.PVECTTR, MVECTTR),),
+        ),
         OP.RIGI_THER_COEH_F(
             te=457,
             para_in=((SP.PCOEFHF, CCOEFHF), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
@@ -140,6 +170,36 @@ class THER_2D_HHO2_F(Element):
             te=457,
             para_in=((SP.PCOEFHR, CCOEFHR), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
             para_out=((OP.RIGI_THER_COEH_R.PMATTTR, MMATTTR),),
+        ),
+        OP.MTAN_THER_FLUXNL(
+            te=457,
+            para_in=(
+                (SP.PFLUXNL, CFLUXNF),
+                (SP.PGEOMER, NGEOMER),
+                (SP.PTEMPEI, DDL_THER),
+                (SP.PTEMPSR, CTEMPSR),
+            ),
+            para_out=((OP.MTAN_THER_FLUXNL.PMATTTR, MMATTTR),),
+        ),
+        OP.MTAN_THER_RAYO_F(
+            te=457,
+            para_in=(
+                (SP.PGEOMER, NGEOMER),
+                (SP.PRAYONF, LC.CRAYONF),
+                (SP.PTEMPEI, DDL_THER),
+                (SP.PTEMPSR, CTEMPSR),
+            ),
+            para_out=((OP.MTAN_THER_RAYO_F.PMATTTR, MMATTTR),),
+        ),
+        OP.MTAN_THER_RAYO_R(
+            te=457,
+            para_in=(
+                (SP.PGEOMER, NGEOMER),
+                (SP.PRAYONR, LC.CRAYONR),
+                (SP.PTEMPEI, DDL_THER),
+                (SP.PTEMPSR, CTEMPSR),
+            ),
+            para_out=((OP.MTAN_THER_RAYO_R.PMATTTR, MMATTTR),),
         ),
         OP.TOU_INI_ELGA(
             te=99,

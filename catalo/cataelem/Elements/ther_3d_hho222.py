@@ -153,6 +153,21 @@ class THER3DH27_HHO222(Element):
         OP.COOR_ELGA(
             te=488, para_in=((SP.PGEOMER, NGEOMER),), para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R),)
         ),
+        OP.FLUX_ELGA(
+            te=487,
+            para_in=(
+                (SP.PCAMASS, LC.CCAMA3D),
+                (SP.PGEOMER, NGEOMER),
+                (SP.PMATERC, LC.CMATERC),
+                (SP.PTEMPER, DDL_THER),
+                (SP.PTEMPSR, CTEMPSR),
+                (OP.FLUX_ELGA.PVARCPR, LC.ZVARCPG),
+            ),
+            para_out=((OP.FLUX_ELGA.PFLUXPG, EFLUXPG),),
+        ),
+        OP.FLUX_ELNO(
+            te=4, para_in=((OP.FLUX_ELNO.PFLUXPG, EFLUXPG),), para_out=((SP.PFLUXNO, EFLUXNO),)
+        ),
         OP.HHO_PROJ_THER(
             te=473,
             para_in=(
@@ -192,6 +207,18 @@ class THER3DH27_HHO222(Element):
             para_in=((OP.NSPG_NBVA.PCOMPOR, LC.CCOMPO2),),
             para_out=((SP.PDCEL_I, LC.EDCEL_I),),
         ),
+        OP.RAPH_THER(
+            te=477,
+            para_in=(
+                (OP.RAPH_THER.PCOMPOR, CCOMPOR),
+                (SP.PGEOMER, NGEOMER),
+                (SP.PCAMASS, LC.CCAMA3D),
+                (SP.PMATERC, LC.CMATERC),
+                (SP.PTEMPEI, DDL_THER),
+                (OP.RAPH_THER.PVARCPR, LC.ZVARCPG),
+            ),
+            para_out=((SP.PRESIDU, MVECTTR),),
+        ),
         OP.RIGI_THER(
             te=454,
             para_in=(
@@ -202,6 +229,18 @@ class THER3DH27_HHO222(Element):
                 (OP.RIGI_THER.PVARCPR, LC.ZVARCPG),
             ),
             para_out=((OP.RIGI_THER.PMATTTR, MMATTTR),),
+        ),
+        OP.RIGI_THER_TANG(
+            te=454,
+            para_in=(
+                (OP.RIGI_THER_TANG.PCOMPOR, CCOMPOR),
+                (SP.PGEOMER, NGEOMER),
+                (SP.PCAMASS, LC.CCAMA3D),
+                (SP.PMATERC, LC.CMATERC),
+                (SP.PTEMPEI, DDL_THER),
+                (OP.RIGI_THER_TANG.PVARCPR, LC.ZVARCPG),
+            ),
+            para_out=((OP.RIGI_THER_TANG.PMATTTR, MMATTTR),),
         ),
         OP.TEMP_ELGA(
             te=456,
