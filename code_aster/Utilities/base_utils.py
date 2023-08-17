@@ -29,7 +29,7 @@ This modules gives some basic utilities.
 import inspect
 import sys
 from array import array
-from collections import UserDict
+from collections import UserDict, defaultdict
 from decimal import Decimal
 from functools import wraps
 
@@ -235,3 +235,17 @@ class ReadOnlyDict(UserDict):
         if key in self:
             raise AttributeError("ReadOnlyDict: values can not be changed!")
         super().__setitem__(key, value)
+
+
+# aster_pkginfo/aster_config will only be available after installation
+try:
+    from .aster_pkginfo import version_info
+except ImportError:
+    version_info = ()
+try:
+    from .aster_config import config as _cfg
+
+    config = ReadOnlyDict(**_cfg)
+    del _cfg
+except ImportError:
+    config = defaultdict(lambda: None)

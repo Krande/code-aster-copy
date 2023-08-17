@@ -25,14 +25,13 @@ This module gives common utilities.
 No external import of other :py:mod:`code_aster` packages.
 """
 
-from collections import defaultdict
-
 from .as_timer import Timer
 from .base_utils import (
     ReadOnlyDict,
     Singleton,
     accept_array,
     array_to_list,
+    config,
     force_list,
     force_tuple,
     get_caller_context,
@@ -46,6 +45,7 @@ from .base_utils import (
     is_str,
     no_new_attributes,
     value_is_sequence,
+    version_info,
 )
 from .compatibility import (
     compat_listr8,
@@ -85,16 +85,3 @@ from .strfunc import (
 from .Tester import TestCase
 from .transpose import transpose
 from .version import get_version, get_version_desc
-
-# aster_pkginfo/aster_config will only be available after installation
-try:
-    from .aster_pkginfo import version_info
-except ImportError:
-    version_info = ()
-try:
-    from .aster_config import config as _cfg
-
-    config = ReadOnlyDict(**_cfg)
-    del _cfg
-except ImportError:
-    config = defaultdict(lambda: None)

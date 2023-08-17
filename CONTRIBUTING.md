@@ -28,10 +28,14 @@ Apply your modifications in your branch. Then, you need to push this branch on
 your online repository.
 
 ```shell
-git push -f origin your_branch_name
+git push origin your_branch_name
 ```
 
-or without `-f`, if the branch already exists online, and you just want to update it.
+or, if the branch already exists online, and you want to update it:
+
+```shell
+git push -f origin your_branch_name
+```
 
 Once your branch is online, on the GitLab interface, go to the branches webpage,
 select the branch you want to push as a merge request, and push the button !

@@ -55,6 +55,8 @@ Here is the diagram of the package organization:
 # discourage import *
 __all__ = []
 
+import os
+
 try:
     # import libaster to call initAsterModules
     import aster
@@ -81,6 +83,8 @@ try:
     )
     from .Utilities import TestCase, MPI
 
-
 except ImportError:
-    pass
+    # AsterStudy only uses code_aster/Cata without the extensions modules (.so).
+    # So, the exception is only raised during the building process.
+    if os.environ.get("WAFLOCK"):
+        raise

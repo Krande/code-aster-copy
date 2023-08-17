@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,17 +26,8 @@ Need only mpi4py package.
 """
 
 import warnings
-from collections import defaultdict
 
-from .base_utils import ReadOnlyDict, force_list
-
-try:
-    from .aster_config import config as _cfg
-
-    config = ReadOnlyDict(**_cfg)
-    del _cfg
-except ImportError:
-    config = defaultdict(lambda: None)
+from .base_utils import force_list, config
 
 
 def haveMPI():
