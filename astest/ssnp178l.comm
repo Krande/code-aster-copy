@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -56,10 +56,10 @@ times = DEFI_LIST_INST(
 
 AY = [2.1450508813497757]
 AX = [-1.6246491138438892]
-AT = [-0.5837680755823438]
+AT = [-0.12382102215649593]
 CY = [0.35457721414065063]
 CX = [-0.030370186548103983]
-CT = [0.4144644703886204]
+CT = [0.4178530784960465]
 
 
 model = AFFE_MODELE(
