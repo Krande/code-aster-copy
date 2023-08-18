@@ -212,7 +212,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=0.06,
             CHAM_GD=TM_0400,
-            VALE_CALC=21.06728821606149,
+            VALE_CALC=21.06704533616174,
             VALE_REFE=20.0,
         ),
         _F(
