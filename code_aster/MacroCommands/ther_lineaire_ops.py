@@ -436,7 +436,7 @@ def ther_lineaire_ops(self, **args):
         phys_state.time_curr = timeStepper.getCurrent()
 
         if is_evol:
-            time_theta = args.get("PARM_THETA")
+            time_theta = args["SCHEMA_TEMPS"]["THETA"]
             time_delta = timeStepper.getIncrement()
         else:
             time_theta = 1.0

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -49,6 +49,10 @@ def compat_syntax(keywords):
     if "TYPE_CALCUL" not in keywords or keywords["TYPE_CALCUL"] == "TRAN":
         if "ETAT_INIT" not in keywords:
             keywords["ETAT_INIT"] = {"STAT": "OUI"}
+
+    if "PARM_THETA" in keywords:
+        keywords["SCHEMA_TEMPS"] = {"SCHEMA": "HHT", "THETA": keywords["PARM_THETA"]}
+        del keywords["PARM_THETA"]
 
 
 THER_LINEAIRE = MACRO(
@@ -111,7 +115,15 @@ THER_LINEAIRE = MACRO(
             ),
         ),
         # ---------------------------------------------------------------
-        PARM_THETA=SIMP(statut="f", typ="R", defaut=0.57, val_min=0.0, val_max=1.0),
+        SCHEMA_TEMPS=FACT(
+            max=1,
+            statut="d",
+            SCHEMA=SIMP(statut="f", min=1, max=1, typ="TXM", into=("HHT",), defaut="HHT"),
+            b_hht=BLOC(
+                condition="""equal_to("SCHEMA", 'HHT')""",
+                THETA=SIMP(statut="f", typ="R", defaut=0.57, val_min=0.0, val_max=1.0),
+            ),
+        ),
         # ---------------------------------------------------------------
         INCREMENT=C_INCREMENT("THERMIQUE", True),
     ),
