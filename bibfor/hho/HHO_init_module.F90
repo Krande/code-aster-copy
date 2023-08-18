@@ -302,7 +302,7 @@ contains
         hhoFace%coorno = hhoFaceInitCoor(nodes_coor, numnodes, nbnodes, ndim, numsorted)
         hhoFace%barycenter = barycenter(hhoFace%coorno, hhoFace%nbnodes)
         if (present(barycenter_cell)) then
-            hhoFace%normal = hhoNormalFace(hhoFace, barycenter_cell)
+            hhoFace%normal = hhoNormalFace3(hhoFace, barycenter_cell)
         else
             hhoFace%normal = hhoNormalFace2(typma, nodes_coor)
         end if

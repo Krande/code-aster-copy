@@ -98,7 +98,7 @@ module HHO_type
         real(kind=8)                :: diameter = 0.d0
 ! ----- Surface ou longueur de la face
         real(kind=8)                :: measure = 0.d0
-! ----- Normale sortante
+! ----- Normale sortante au barycentre
         real(kind=8), dimension(3)  :: normal = 0.d0
 ! ----- Utilisation du repere inertiel local
         aster_logical               :: use_inertia = ASTER_TRUE

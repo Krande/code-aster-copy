@@ -19,12 +19,14 @@
 module HHO_geometry_module
 !
     use HHO_type
+    use HHO_utils_module, only: CellNameL2S
 !
     implicit none
 !
     private
 #include "asterc/r8prem.h"
 #include "asterf_types.h"
+#include "asterfort/apnorm.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrfvf.h"
 #include "asterfort/elrfdf.h"
@@ -39,7 +41,7 @@ module HHO_geometry_module
 ! --------------------------------------------------------------------------------------------------
 !
     public  :: barycenter, hhoNormalFace, hhoFaceInitCoor, hhoGeomBasis, hhoGeomDerivBasis
-    public  :: hhoLocalBasisFace, hhoNormalFace2
+    public  :: hhoLocalBasisFace, hhoNormalFace2, hhoNormalFace3, hhoNormalFaceQP
     private :: hhoNormalFace2d, well_oriented, hhoNormalFace1d, prod_vec
 !
 contains
@@ -132,6 +134,43 @@ contains
 !
 !===================================================================================================
 !
+    function hhoNormalFaceQP(hhoFace, qp_param) result(normal)
+!
+        implicit none
+!
+        type(HHO_Face), intent(in)                :: hhoFace
+        real(kind=8), dimension(2), intent(in)    :: qp_param
+        real(kind=8), dimension(3)                :: normal
+!
+! --------------------------------------------------------------------------------------------------
+!  In coorno             :: coordinates of the nodes
+!  In nbnodes            :: number of nodes
+!  In barycenter_face    :: barycenter of the face
+!  In barycenter_cell    :: barycenter of the cell
+!  Out normal            :: outward normal
+! --------------------------------------------------------------------------------------------------
+!
+        character(len=8) :: ts
+        real(kind=8) :: coor(3, 9)
+!  -------------------------------------------------------------------------------------------------
+        normal = 0.d0
+        call CellNameL2S(hhoFace%typema, ts)
+        coor(1:3, 1:4) = hhoFace%coorno
+!
+        call apnorm(hhoFace%nbnodes, ts, hhoFace%ndim+1, coor, qp_param(1), qp_param(2), normal)
+!
+        if (norm2(hhoFace%normal) > 0.5d0) then
+            if (.not. well_oriented(hhoFace%normal, normal)) then
+                normal = -normal
+            end if
+        end if
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
     function hhoNormalFace2d(coorno, nbnodes, barycenter_face, barycenter_cell) result(normal)
 !
         implicit none
@@ -212,7 +251,41 @@ contains
 !
 !===================================================================================================
 !
-    function hhoNormalFace(hhoFace, barycenter_cell) result(normal)
+    function hhoNormalFace(hhoFace, qp_param) result(normal)
+!
+        implicit none
+!
+        type(HHO_Face), intent(in)                :: hhoFace
+        real(kind=8), dimension(2), intent(in)    :: qp_param
+        real(kind=8), dimension(3)                :: normal
+!
+! --------------------------------------------------------------------------------------------------
+!  In HHO_Face           :: face HHO
+!  In qp_param           :: coordiantes of nodes
+!  In normal cell        :: normal to the cell (use for 2D cell)
+!  Out normal            :: outward normal of the face
+! --------------------------------------------------------------------------------------------------
+
+! --------------------------------------------------------------------------------------------------
+        normal = 0.d0
+!
+        if (hhoFace%typema(1:5) == 'QUAD4') then
+            normal = hhoNormalFaceQP(hhoFace, qp_param)
+        elseif (hhoFace%typema(1:5) == 'TRIA3') then
+            normal = hhoFace%normal
+        elseif (hhoFace%typema(1:4) == 'SEG2') then
+            normal = hhoFace%normal
+        else
+            ASSERT(ASTER_FALSE)
+        end if
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function hhoNormalFace3(hhoFace, barycenter_cell) result(normal)
 !
         implicit none
 !

@@ -25,6 +25,7 @@ subroutine te0459(option, nomte)
     use HHO_init_module, only: hhoInfoInitFace
     use HHO_eval_module
     use HHO_utils_module
+    use HHO_geometry_module
 !
     implicit none
 !
@@ -65,6 +66,7 @@ subroutine te0459(option, nomte)
     type(HHO_Face) :: hhoFace
     type(HHO_Quadrature) :: hhoQuadFace
     real(kind=8) :: rhs_forces(MSIZE_FACE_VEC), NeumValuesQP(3, MAX_QP_FACE), PresQP(MAX_QP_FACE)
+    real(kind=8) :: normal(3)
     integer :: fbs, celldim, ipg, nbpara, idim
     integer :: j_time, j_pres, j_forc
 !
@@ -92,7 +94,8 @@ subroutine te0459(option, nomte)
 ! ---- Compute the load at the quadrature points T = -p*normal
 !
         do ipg = 1, hhoQuadFace%nbQuadPoints
-            NeumValuesQP(1:3, ipg) = -PresQP(ipg)*hhoFace%normal(1:3)
+            normal = hhoNormalFaceQP(hhoFace, hhoQuadFace%points_param(1:2, ipg))
+            NeumValuesQP(1:3, ipg) = -PresQP(ipg)*normal
         end do
 !
     elseif (option .eq. 'CHAR_MECA_PRES_F') then
@@ -123,7 +126,8 @@ subroutine te0459(option, nomte)
 !
 ! ---- Compute the load at the quadrature points T = -p*normal
         do ipg = 1, hhoQuadFace%nbQuadPoints
-            NeumValuesQP(1:3, ipg) = -PresQP(ipg)*hhoFace%normal(1:3)
+            normal = hhoNormalFaceQP(hhoFace, hhoQuadFace%points_param(1:2, ipg))
+            NeumValuesQP(1:3, ipg) = -PresQP(ipg)*normal
         end do
 !
     elseif (option .eq. 'CHAR_MECA_FF2D3D' .or. option .eq. 'CHAR_MECA_FF1D2D') then
