@@ -541,7 +541,7 @@ contains
         case ('SE2')
             call elrfvf('SE2', pt, basis)
         case ('TRIA3')
-            call elrfvf('TR6', pt, basis)
+            call elrfvf('TR3', pt, basis)
         case ('QUAD4')
             call elrfvf('QU4', pt, basis)
         case ('TETRA4')

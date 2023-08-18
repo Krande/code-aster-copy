@@ -434,22 +434,17 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8), dimension(3) ::  gamma, beta, alpha
+        real(kind=8), dimension(3) ::  coorac
         integer, parameter :: max_order = 8
         integer, parameter :: max_pg = 16
         character(len=8), dimension(0:max_order) ::rules
-        integer :: dimp, nbpg, ipg
-        real(kind=8) :: coorpg(max_pg*2), poidpg(max_pg), x, y, deuxmeas
+        integer :: dimp, nbpg, ipg, ino
+        real(kind=8) :: coorpg(max_pg*2), poidpg(max_pg), x, y, basis(8)
 !
 ! ----- check order of integration
         call check_order(this%order, max_order)
 !
         rules = (/'FPG1 ', 'FPG1 ', 'FPG3 ', 'FPG4 ', 'FPG6 ', 'FPG7 ', 'FPG12', 'FPG13', 'FPG16'/)
-!
-        alpha = coorno(1:3, 1)
-        gamma = coorno(1:3, 2)-coorno(1:3, 1)
-        beta = coorno(1:3, 3)-coorno(1:3, 1)
-        deuxmeas = 2.d0*measure
 !
 !------ get quadrature points
         coorpg = 0.d0
@@ -463,9 +458,14 @@ contains
         do ipg = 1, nbpg
             x = coorpg(dimp*(ipg-1)+1)
             y = coorpg(dimp*(ipg-1)+2)
+            coorac = 0.d0
+            call hhoGeomBasis("TRIA3   ", (/x, y, 0.d0/), basis)
+            do ino = 1, 3
+                coorac(1:3) = coorac(1:3)+coorno(1:3, ino)*basis(ino)
+            end do
             this%points_param(1:2, ipg) = (/x, y/)
-            this%points(1:3, ipg) = alpha+beta*x+gamma*y
-            this%weights(ipg) = deuxmeas*poidpg(ipg)
+            this%points(1:3, ipg) = coorac
+            this%weights(ipg) = 2.d0*measure*poidpg(ipg)
         end do
 !
     end subroutine
@@ -492,23 +492,17 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8), dimension(3) ::  gamma, beta, alpha, kappa
+        real(kind=8), dimension(3) ::  coorac
         integer, parameter :: max_order = 6
         integer, parameter :: max_pg = 23
         character(len=8), dimension(0:max_order) :: rules
         integer :: dimp, nbpg, ipg
-        real(kind=8) :: coorpg(max_pg*3), poidpg(max_pg), x, y, z, sixmeas
+        real(kind=8) :: coorpg(max_pg*3), poidpg(max_pg), x, y, z, jaco
 !
 ! ----- check order of integration
         call check_order(this%order, max_order)
 !
         rules = (/'FPG1 ', 'FPG1 ', 'FPG4 ', 'FPG5 ', 'FPG11', 'FPG15', 'FPG23'/)
-!
-        alpha = coorno(1:3, 3)
-        gamma = coorno(1:3, 1)-coorno(1:3, 3)
-        beta = coorno(1:3, 4)-coorno(1:3, 3)
-        kappa = coorno(1:3, 2)-coorno(1:3, 3)
-        sixmeas = 6.d0*measure
 !
 !------ get quadrature points
         coorpg = 0.d0
@@ -523,9 +517,10 @@ contains
             x = coorpg(dimp*(ipg-1)+1)
             y = coorpg(dimp*(ipg-1)+2)
             z = coorpg(dimp*(ipg-1)+3)
+            call hho_transfo_3d(coorno, 4, "TETRA4  ", (/x, y, z/), coorac, jaco)
             this%points_param(1:3, ipg) = (/x, y, z/)
-            this%points(1:3, ipg) = alpha+beta*x+gamma*y+kappa*z
-            this%weights(ipg) = sixmeas*poidpg(ipg)
+            this%points(1:3, ipg) = coorac
+            this%weights(ipg) = jaco*poidpg(ipg)
         end do
 !
     end subroutine

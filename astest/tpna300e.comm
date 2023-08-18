@@ -88,8 +88,6 @@ T_RES = CREA_CHAMP(
     OPERATION="EXTR", TYPE_CHAM="NOEU_TEMP_R", NOM_CHAM="HHO_TEMP", RESULTAT=TEMPE, INST=0.0
 )
 
-TEMPE.printMedFile("/home/C00976/tmp/tempe.med")
-
 #
 # ANALYSE DES RESULTATS -------------------------------------------
 #
