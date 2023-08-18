@@ -550,7 +550,7 @@ contains
             cellOrder = 2
         else if (cellTypeName .eq. 'PYRAM19') then
             cellTopo = 'VOLU'
-            cellOrder = 1
+            cellOrder = 2
         else if (cellTypeName .eq. 'HEXA8') then
             cellTopo = 'VOLU'
             cellOrder = 1
