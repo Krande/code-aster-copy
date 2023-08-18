@@ -36,10 +36,7 @@ mtest.readGibiFile("zzzz364a.mgib")
 coord = monMaillage.getCoordinates()
 
 # check readonly access
-print("coord[3] ", coord[3])
-test.assertEqual(coord[3], 1.0)
-
-coord[3] = 5.0
+test.assertSequenceEqual(coord[3], [0.0, 1.0, 0.0])
 
 # Definition du modele Aster
 monModel = code_aster.Model(monMaillage)
@@ -53,7 +50,7 @@ with test.assertRaises(NameError):
 
 # delete/overwrite monModel, coord object still exists
 monModel = 1
-test.assertEqual(coord[3], 5.0)
+test.assertEqual(coord[3], [0.0, 1.0, 0.0])
 
 test.printSummary()
 

@@ -140,9 +140,9 @@ def Calcul_mesure_3D(maya, nbcop, l_copo_tot, nd_fiss, normale):
             coords = [
                 np.array(
                     [
-                        coordinates[3 * (node - 1)],
-                        coordinates[3 * (node - 1) + 1],
-                        coordinates[3 * (node - 1) + 2],
+                        coordinates.getNode(node - 1).x(),
+                        coordinates.getNode(node - 1).y(),
+                        coordinates.getNode(node - 1).z(),
                     ]
                 )
                 for node in nodes[:4]
@@ -285,7 +285,6 @@ def calc_gp_ops(self, **args):
     #
 
     if ndim == 2:
-
         #
         # 1.1/ CAS OU L UTILISATEUR A DEFINI DES GROUPES DE MAILLE COPEAU
         #      IL SUFFIT ALORS DE CALCULER L ENERGIE DANS CES GROUPES ET D EN DEDUIRE LE GP
@@ -350,7 +349,6 @@ def calc_gp_ops(self, **args):
             # construction du champ copeau pour visualisation par utilisateur s'il le
             # souhaite
             if TRANCHE_2D["CHAMP_VISU"] != 0:
-
                 __seuil = [None for i in range(nbcop)]
                 for cop in range(nbcop):
                     __seuil[cop] = FORMULE(
@@ -417,7 +415,6 @@ def calc_gp_ops(self, **args):
             tabgp = []
 
             for i, inst in enumerate(l_inst_final):
-
                 __energa = CREA_CHAMP(
                     OPERATION="EXTR",
                     TYPE_CHAM="ELGA_ENER_R",
@@ -470,7 +467,6 @@ def calc_gp_ops(self, **args):
     #                      2/ CAS 3D
     #
     elif ndim == 3:
-
         #    liste des copeaux
         l_copo_tot = []
         for tmpocc in TRANCHE_3D:

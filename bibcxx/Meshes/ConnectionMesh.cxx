@@ -358,12 +358,12 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
     /* Build the coordinates and numbering of the mesh nodes to send */
     coordinatesToSend.reserve( 3 * nodesToSend.size() );
     numNodesToSend.reserve( 3 * nodesToSend.size() );
-    for ( const auto &node : nodesToSend ) {
-        const auto nodeId = node;
-        coordinatesToSend.push_back( ( *meshCoordinates )[nodeId * 3] );
-        coordinatesToSend.push_back( ( *meshCoordinates )[nodeId * 3 + 1] );
-        coordinatesToSend.push_back( ( *meshCoordinates )[nodeId * 3 + 2] );
-        numNodesToSend.push_back( node );
+    for ( const auto &nodeId : nodesToSend ) {
+        auto node = meshCoordinates->getNode( nodeId );
+        coordinatesToSend.push_back( node->x() );
+        coordinatesToSend.push_back( node->y() );
+        coordinatesToSend.push_back( node->z() );
+        numNodesToSend.push_back( nodeId );
         numNodesToSend.push_back( globalNodeIds[nodeId] );
         numNodesToSend.push_back( rank );
     }

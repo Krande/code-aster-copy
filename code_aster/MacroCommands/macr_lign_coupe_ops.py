@@ -44,7 +44,6 @@ from ..Messages import UTMESS, MasquerAlarme, RetablirAlarme
 
 
 def crea_grp_matiere(self, groupe, newgrp, iocc, m, __remodr, NOM_CHAM, LIGN_COUPE, __macou):
-
     motscles = {}
     if m["NOM_CMP"] is not None:
         motscles["NOM_CMP"] = m["NOM_CMP"]
@@ -105,7 +104,6 @@ def crea_grp_matiere(self, groupe, newgrp, iocc, m, __remodr, NOM_CHAM, LIGN_COU
     nbpoin = m["NB_POINTS"]
     reste = nbpoin - len(l_matiere)
     if len(l_horsmat) > 0:
-
         nderh = l_horsmat.index(l_horsmat[len(l_horsmat) - 1])
         coord = __macou.getCoordinates()
         indent = os.linesep + " " * 12
@@ -114,32 +112,31 @@ def crea_grp_matiere(self, groupe, newgrp, iocc, m, __remodr, NOM_CHAM, LIGN_COU
         for j in l_matiere[: nderm + 1]:
             node = node_by_name[j]
             text_coordo = "(%f, %f, %f)" % (
-                coord[3 * node],
-                coord[3 * node + 1],
-                coord[3 * node + 2],
+                coord.getNode(node).x(),
+                coord.getNode(node).y(),
+                coord.getNode(node).z(),
             )
             l_surlig.append(text_coordo)
         for j in l_horsmat[: nderh + 1]:
             node = node_by_name[j]
             text_coordo = "(%f, %f, %f)" % (
-                coord[3 * node],
-                coord[3 * node + 1],
-                coord[3 * node + 2],
+                coord.getNode(node).x(),
+                coord.getNode(node).y(),
+                coord.getNode(node).z(),
             )
             l_horslig.append(text_coordo)
         UTMESS("A", "POST0_8", valk=[indent.join(l_surlig), indent.join(l_horslig)])
 
     elif reste > 0:
-
         coord = __macou.getCoordinates()
         indent = os.linesep + " " * 12
         l_surlig = []
         for j in l_matiere[: nderm + 1]:
             node = node_by_name[j]
             text_coordo = "(%f, %f, %f)" % (
-                coord[3 * node],
-                coord[3 * node + 1],
-                coord[3 * node + 2],
+                coord.getNode(node).x(),
+                coord.getNode(node).y(),
+                coord.getNode(node).z(),
             )
             l_surlig.append(text_coordo)
         UTMESS("A", "POST0_24", vali=[iocc, reste], valk=[indent.join(l_surlig)])
@@ -152,7 +149,6 @@ def crea_grp_matiere(self, groupe, newgrp, iocc, m, __remodr, NOM_CHAM, LIGN_COU
 
 
 def crea_resu_local(self, dime, NOM_CHAM, m, resin, mail, nomgrma):
-
     epsi = 0.00000001
 
     if NOM_CHAM == "DEPL":
@@ -182,7 +178,6 @@ def crea_resu_local(self, dime, NOM_CHAM, m, resin, mail, nomgrma):
         assert 0
 
     if m["TYPE"] == "SEGMENT" and m["REPERE"] != "CYLINDRIQUE":
-
         if m["REPERE"] == "LOCAL":
             # --- determination des angles nautiques
             cx1 = m["COOR_EXTR"][0] - m["COOR_ORIG"][0]
@@ -291,7 +286,6 @@ def crea_resu_local(self, dime, NOM_CHAM, m, resin, mail, nomgrma):
             UTMESS("F", "POST0_5", valk=[m["TYPE"], m["REPERE"]])
 
     if m["TYPE"][:5] == "GROUP" or m["TYPE"] == "SEGMENT":
-
         if m["TYPE"][:5] == "GROUP" and m["REPERE"] == "LOCAL":
             # determination du repère local (v1,v2,v3)
             # ---------------------------------------
@@ -312,14 +306,14 @@ def crea_resu_local(self, dime, NOM_CHAM, m, resin, mail, nomgrma):
                 vectu2 = []
                 n1 = connex[cell][0]
                 n2 = connex[cell][1]
-                ux = coord[3 * (n2 - 1)] - coord[3 * (n1 - 1)]
-                uy = coord[3 * (n2 - 1) + 1] - coord[3 * (n1 - 1) + 1]
+                ux = coord.getNode(n2 - 1).x() - coord.getNode(n1 - 1).x()
+                uy = coord.getNode(n2 - 1).y() - coord.getNode(n1 - 1).y()
                 vectu1.append(ux)
                 vectu1.append(uy)
                 vectu2.append(ux)
                 vectu2.append(uy)
                 if dime == 3:
-                    uz = coord[3 * (n2 - 1) + 2] - coord[3 * (n1 - 1) + 2]
+                    uz = coord.getNode(n2 - 1).z() - coord.getNode(n2 - 1).z()
                     vectu1.append(uz)
                     vectu2.append(uz)
                 dictu[n1].append(vectu1)
@@ -448,7 +442,6 @@ def crea_resu_local(self, dime, NOM_CHAM, m, resin, mail, nomgrma):
 
 
 def crea_noeu_lig_coup(dimension, pt1, pt2, anglj, dnor):
-
     a = pt1[0] - pt2[0]
     b = pt1[1] - pt2[1]
     eps = 0.00000001
@@ -488,8 +481,8 @@ def dist_min_deux_points(mail):
     l_coor1 = []
     l_coor2 = []
     for i in range(nno - 1):
-        l_coor1 = coordinates[3 * (i) : 3 * (i) + 3]
-        l_coor2 = coordinates[3 * (i + 1) : 3 * (i + 1) + 3]
+        l_coor1 = coordinates[i]
+        l_coor2 = coordinates[i + 1]
         d = sqrt(
             (l_coor1[0] - l_coor2[0]) ** 2
             + (l_coor1[1] - l_coor2[1]) ** 2
@@ -507,7 +500,6 @@ def dist_min_deux_points(mail):
 
 
 def crea_mail_lig_coup(dimension, lignes, groups, arcs):
-
     # construction du maillage au format Aster des segments de lignes de coupe
 
     resu = []
@@ -672,7 +664,7 @@ def get_coor(LIGN_COUPE, position, coord, mesh):
         if len(nodes) != 1:
             UTMESS("F", "POST0_27", valk=group, vali=len(nodes))
         node = nodes[0]
-        coor = [coord[3 * node], coord[3 * node + 1], coord[3 * node + 2]]
+        coor = [coord.getNode(node).x(), coord.getNode(node).y(), coord.getNode(node).z()]
     elif "COOR_" + position in LIGN_COUPE:
         coor = LIGN_COUPE["COOR_" + position]
     else:
@@ -841,7 +833,9 @@ def macr_lign_coupe_ops(
                 UTMESS("F", "POST0_13", valk=[group, mesh.getName()])
             l_coor_group = [group]
             for node in mesh.getNodes(group):
-                l_coor_group.append([coord[3 * node], coord[3 * node + 1], coord[3 * node + 2]])
+                l_coor_group.append(
+                    [coord.getNode(node).x(), coord.getNode(node).y(), coord.getNode(node).z()]
+                )
             groups.append(l_coor_group)
 
         elif m["TYPE"] == "GROUP_MA":
@@ -877,7 +871,9 @@ def macr_lign_coupe_ops(
 
             l_coor_group = [group]
             for node in __mailla.getNodes(group):
-                l_coor_group.append([coord[3 * node], coord[3 * node + 1], coord[3 * node + 2]])
+                l_coor_group.append(
+                    [coord.getNode(node).x(), coord.getNode(node).y(), coord.getNode(node).z()]
+                )
             groups.append(l_coor_group)
 
     if arcs != [] and (lignes != [] or groups != []):
@@ -971,12 +967,10 @@ def macr_lign_coupe_ops(
         "fourier_elas",
         "dyna_trans",
     ):
-
         if NOM_CHAM in ("DEPL", "SIEF_ELNO", "SIGM_NOEU", "SIGM_ELNO", "FLUX_ELNO", "FLUX_NOEU"):
             icham = 1
         iocc = 0
         for m in LIGN_COUPE:
-
             iocc = iocc + 1
             motscles = {}
             motscles["OPERATION"] = m["OPERATION"]
@@ -1024,9 +1018,7 @@ def macr_lign_coupe_ops(
             # Expression des contraintes aux noeuds ou des déplacements dans le
             # repere local
             if m["REPERE"] != "GLOBAL":
-
                 if icham == 1:
-
                     if m["REPERE"] == "POLAIRE":
                         mcACTION.append(
                             _F(
@@ -1067,7 +1059,6 @@ def macr_lign_coupe_ops(
             # Expression des contraintes aux noeuds ou des déplacements dans le
             # repere global
             else:
-
                 mcACTION.append(
                     _F(
                         INTITULE=intitl,

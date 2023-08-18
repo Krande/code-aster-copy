@@ -32,6 +32,38 @@
 
 void exportMeshCoordinatesFieldToPython( py::module_ &mod ) {
 
+    py::class_< Node, NodePtr >( mod, "Node" )
+        // fake initFactoryPtr: no default constructor, only for restart
+        // .def( py::init( &initFactoryPtr < ASTERINTEGER, std::array< ASTERDOUBLE, 3 > ) )
+        .def( "__getitem__",
+              +[]( const Node &v, const ASTERINTEGER &i ) { return v.operator[]( i ); } )
+        .def( "__setitem__", +[]( Node &v, const ASTERINTEGER &i,
+                                  ASTERDOUBLE f ) { return v.operator[]( i ) = f; } )
+        .def( "getValues", &Node::getValues, R"(
+Return coordinates as (x,y,z.)
+
+Returns:
+    list[float]: (x,y,z).
+        )" )
+        .def( "x", &Node::x, R"(
+Return coordinate x.
+
+Returns:
+    float: x.
+        )" )
+        .def( "y", &Node::y, R"(
+Return coordinate y.
+
+Returns:
+    float: y.
+        )" )
+        .def( "z", &Node::z, R"(
+Return coordinate z.
+
+Returns:
+    float: z.
+        )" );
+
     py::class_< MeshCoordinatesField, MeshCoordinatesFieldPtr, DataStructure >(
         mod, "MeshCoordinatesField" )
         // fake initFactoryPtr: no default constructor, only for restart
@@ -49,23 +81,18 @@ void exportMeshCoordinatesFieldToPython( py::module_ &mod ) {
         .def( "__add__",
               +[]( const FieldOnNodesReal &a, MeshCoordinatesField &b ) { return a + b; } )
         .def( "__getitem__",
-              +[]( const MeshCoordinatesField &v, int i ) { return v.operator[]( i ); }, R"(
-Return the coordinate at index *idx* in the vector.
-
-The value is the same as *getValues()[idx]* without creating the entire vector.
-
-Returns:
-    float: Values of the *idx*-th coordinate.
-        )",
-              py::arg( "idx" ) )
-        .def( "__setitem__",
-              +[]( MeshCoordinatesField &v, ASTERINTEGER i, double d ) {
-                  return v.operator[]( i ) = d;
+              +[]( const MeshCoordinatesField &v, ASTERINTEGER node_id ) {
+                  return v.operator[]( node_id );
               },
               R"(
-Set the coordinate value at index *idx* in the vector.
+Return the coordinates (x,y,z) at of Node node_id in the vector.
+
+The value is the same as *getValues()[3*node_id:3*node_id+2]* without creating the entire vector.
+
+Returns:
+    tuple[float]: coordinates (x,y,z).
         )",
-              py::arg( "idx" ), py::arg( "value" ) )
+              py::arg( "node_id" ) )
         .def( "getValues", &MeshCoordinatesField::getValues, R"(
 Return a list of values of the coordinates as (x1, y1, z1, x2, y2, z2...)
 
@@ -86,5 +113,22 @@ Returns:
         )" )
         .def( "updateValuePointers", &MeshCoordinatesField::updateValuePointers, R"(
 Update values of internal pointer.
-        )" );
+        )" )
+        .def( "getNode", &MeshCoordinatesField::getNode, R"(
+Return a node
+
+Arguments:
+    node_id [int] : node id
+
+Returns:
+    Node: Node object.
+        )",
+              py::arg( "node_id" ) )
+        .def( "setNode", &MeshCoordinatesField::setNode, R"(
+Set a node
+
+Arguments:
+    node [Node] : node to set.
+        )",
+              py::arg( "node" ) );
 };

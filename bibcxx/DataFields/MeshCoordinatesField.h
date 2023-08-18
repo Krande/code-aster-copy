@@ -30,6 +30,7 @@
 
 #include "DataFields/DataField.h"
 #include "MemoryManager/JeveuxVector.h"
+#include "Meshes/Node.h"
 
 template < typename >
 class FieldOnNodes;
@@ -198,14 +199,22 @@ class MeshCoordinatesField : public DataField {
      * @param i Indice dans le tableau Jeveux
      * @return la valeur du tableau Jeveux a la position i
      */
-    ASTERDOUBLE operator[]( const ASTERINTEGER &i ) const { return _valuesList->operator[]( i ); };
+    std::array< ASTERDOUBLE, 3 > operator[]( const ASTERINTEGER &node_id ) const {
+        return {_valuesList->operator[]( 3 * node_id + 0 ),
+                _valuesList->operator[]( 3 * node_id + 1 ),
+                _valuesList->operator[]( 3 * node_id + 2 )};
+    };
 
     /**
      * @brief Surcharge de l'operateur []
      * @param i Indice dans le tableau Jeveux
      * @return la valeur du tableau Jeveux a la position i
      */
-    ASTERDOUBLE &operator[]( ASTERINTEGER i ) { return _valuesList->operator[]( i ); };
+    // std::array< ASTERDOUBLE, 3 > &operator[]( ASTERINTEGER i ) {
+    //     return std::array< ASTERDOUBLE, 3 >( { _valuesList->operator[]( 3 * node_id + 0 ),
+    //                                            _valuesList->operator[]( 3 * node_id + 1 ),
+    //                                            _valuesList->operator[]( 3 * node_id + 2 ) } );
+    // };
 
     /**
      * @brief Size of the FieldOnNodes
@@ -217,6 +226,17 @@ class MeshCoordinatesField : public DataField {
      * @return MeshCoordinatesField
      */
     MeshCoordinatesField copy() { return *this; };
+
+    NodePtr getNode( const ASTERINTEGER &node_id ) const {
+        return std::make_shared< Node >( node_id, ( *this )[node_id] );
+    };
+
+    void setNode( const NodePtr &node ) {
+        auto node_id = node->getId();
+        for ( ASTERINTEGER i = 0; i < 3; i++ ) {
+            ( *_valuesList )[3 * node_id + i] = ( *node )[i];
+        }
+    }
 
     /**
      * @brief Mise a jour des pointeurs Jeveux

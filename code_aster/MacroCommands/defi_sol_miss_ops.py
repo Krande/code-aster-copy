@@ -29,7 +29,6 @@ from ..Messages import UTMESS
 
 # Creation de la liste des coordonnees en Z d'un groupe de noeuds ou mailles :
 def recu_coor_z(mesh, group, typ_group, tole_r):
-
     connect = mesh.getConnectivity()
     coord = mesh.getCoordinates()
 
@@ -43,9 +42,9 @@ def recu_coor_z(mesh, group, typ_group, tole_r):
             for cell in cells:
                 nodes = connect[cell]
                 n = nodes[0]
-                uzmin = uzmax = round(coord[3 * (n - 1) + 2], tole_r)
+                uzmin = uzmax = round(coord.getNode(n - 1).z(), tole_r)
                 for n in nodes[1:]:
-                    uz = round(coord[3 * (n - 1) + 2], tole_r)
+                    uz = round(coord.getNode(n - 1).z(), tole_r)
                     uzmin = min(uzmin, uz)
                     uzmax = max(uzmax, uz)
                 if uzmin not in coor_z:
@@ -58,7 +57,7 @@ def recu_coor_z(mesh, group, typ_group, tole_r):
         else:
             nodes = mesh.getNodes(group)
             for n in nodes:
-                uz = round(coord[3 * n + 2], tole_r)
+                uz = round(coord.getNode(n - 1).z(), tole_r)
                 if uz not in coor_z:
                     coor_z.append(uz)
     else:

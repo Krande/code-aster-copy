@@ -175,26 +175,6 @@ class Cell : public VirtualMeshEntity {
     Cell( const VectorString &names ) : VirtualMeshEntity( names, CellType ) {};
 };
 
-/**
- * @class Node
- * @brief Cette classe permet de definir des noeuds du maillage
- * @author Nicolas Sellenet
- */
-class Node : public VirtualMeshEntity {
-  public:
-    /**
-     * @brief Constructeur
-     * @param name nom de l'entite
-     */
-    Node( std::string name ) : VirtualMeshEntity( name, NodeType ) {};
-
-    /**
-     * @brief Constructor
-     * @param names names in entity
-     */
-    Node( const VectorString &names ) : VirtualMeshEntity( names, NodeType ) {};
-};
-
 typedef std::shared_ptr< VirtualMeshEntity > MeshEntityPtr;
 typedef std::vector< MeshEntityPtr > VectorOfMeshEntityPtr;
 

@@ -50,6 +50,7 @@
    * - :py:class:`~code_aster.Objects.AllMeshEntities`
    * - :py:class:`~code_aster.Objects.ModelSplitingMethod`
    * - :py:class:`~code_aster.Objects.Modelings`
+   * - :py:class:`~code_aster.Objects.Node`
    * - :py:class:`~code_aster.Objects.NormalSpeedReal`
    * - :py:class:`~code_aster.Objects.ObjectBalancer`
    * - :py:class:`~code_aster.Objects.PairingAlgo`

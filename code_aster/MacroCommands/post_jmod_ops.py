@@ -706,9 +706,11 @@ def calc_vari_area_no_bord(self, MAIL, NB_COUCHES, lNode1, lNode2, NODESBOUGE, l
     coords = MAIL.getCoordinates()
 
     for iNode in NODESBOUGE:
-        coords[iNode * 3] = coords[iNode * 3] + lVect[0]
-        coords[iNode * 3 + 1] = coords[iNode * 3 + 1] + lVect[1]
-        coords[iNode * 3 + 2] = coords[iNode * 3 + 2] + lVect[2]
+        node = coords.getNode(iNode)
+        node[0] += lVect[0]
+        node[1] += lVect[1]
+        node[2] += lVect[2]
+        coords.setNode(node)
 
     if is_symmetric:
         crea_group_no_from_no(self, MAIL, "NOAREAX", lNode1[1 : len(lNode1) - 1])
@@ -741,9 +743,11 @@ def calc_vari_area_no_bord(self, MAIL, NB_COUCHES, lNode1, lNode2, NODESBOUGE, l
     del_group_ma(self, MAIL, "MAAREA")
 
     for iNode in NODESBOUGE:
-        coords[iNode * 3] = coords[iNode * 3] - lVect[0]
-        coords[iNode * 3 + 1] = coords[iNode * 3 + 1] - lVect[1]
-        coords[iNode * 3 + 2] = coords[iNode * 3 + 2] - lVect[2]
+        node = coords.getNode(iNode)
+        node[0] -= lVect[0]
+        node[1] -= lVect[1]
+        node[2] -= lVect[2]
+        coords.setNode(node)
 
     XAIRE = areaFin - areaIni
 
@@ -799,9 +803,11 @@ def calc_vari_area_no_midd(
     coords = MAIL.getCoordinates()
 
     for iNode in NODESBOUGE:
-        coords[iNode * 3] = coords[iNode * 3] + lVect[0]
-        coords[iNode * 3 + 1] = coords[iNode * 3 + 1] + lVect[1]
-        coords[iNode * 3 + 2] = coords[iNode * 3 + 2] + lVect[2]
+        node = coords.getNode(iNode)
+        node[0] += lVect[0]
+        node[1] += lVect[1]
+        node[2] += lVect[2]
+        coords.setNode(node)
 
     if is_symmetric:
         crea_group_no_from_no(self, MAIL, "NOAREA", lNode[1 : len(lNode) - 1])
@@ -829,9 +835,11 @@ def calc_vari_area_no_midd(
         del_group_ma(self, MAIL, "MAAREAINF")
 
     for iNode in NODESBOUGE:
-        coords[iNode * 3] = coords[iNode * 3] - lVect[0]
-        coords[iNode * 3 + 1] = coords[iNode * 3 + 1] - lVect[1]
-        coords[iNode * 3 + 2] = coords[iNode * 3 + 2] - lVect[2]
+        node = coords.getNode(iNode)
+        node[0] -= lVect[0]
+        node[1] -= lVect[1]
+        node[2] -= lVect[2]
+        coords.setNode(node)
 
     XAIRE = areaFin - areaIni
 
@@ -909,9 +917,11 @@ def calc_vari_area_no_glob(
 
     for iKey in NODESBOUGE.keys():
         for iNode in NODESBOUGE[iKey]:
-            coords[iNode * 3] = coords[iNode * 3] + lVect[iKey][0]
-            coords[iNode * 3 + 1] = coords[iNode * 3 + 1] + lVect[iKey][1]
-            coords[iNode * 3 + 2] = coords[iNode * 3 + 2] + lVect[iKey][2]
+            node = coords.getNode(iNode)
+            node[0] += lVect[iKey][0]
+            node[1] += lVect[iKey][1]
+            node[2] += lVect[iKey][2]
+            coords.setNode(node)
 
     crea_group_no_from_no(self, MAIL, "NOAREA", Nodes)
     crea_group_ma_appui_group_no_2d(self, MAIL, "MAAREATEM", "NOAREA")
@@ -934,9 +944,11 @@ def calc_vari_area_no_glob(
 
     for iKey in NODESBOUGE.keys():
         for iNode in NODESBOUGE[iKey]:
-            coords[iNode * 3] = coords[iNode * 3] - lVect[iKey][0]
-            coords[iNode * 3 + 1] = coords[iNode * 3 + 1] - lVect[iKey][1]
-            coords[iNode * 3 + 2] = coords[iNode * 3 + 2] - lVect[iKey][2]
+            node = coords.getNode(iNode)
+            node[0] -= lVect[iKey][0]
+            node[1] -= lVect[iKey][1]
+            node[2] -= lVect[iKey][2]
+            coords.setNode(node)
 
     XAIRE = areaFin - areaIni
 

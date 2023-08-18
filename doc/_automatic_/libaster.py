@@ -12294,6 +12294,57 @@ class ElasticResult(Result):
         """
 
 
+# class Node in libaster
+
+
+class Node:
+    pass
+
+    # Method resolution order:
+    #     Node
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __getitem__(self, arg0):
+        pass
+
+    def __init__(self, *args, **kwargs):
+        """Initialize self.  See help(type(self)) for accurate signature."""
+
+    def __setitem__(self, arg0, arg1):
+        pass
+
+    def getValues(self):
+        """Return coordinates as (x,y,z.)
+
+        Returns:
+            list[float]: (x,y,z).
+        """
+
+    def x(self):
+        """Return coordinate x.
+
+        Returns:
+            float: x.
+        """
+
+    def y(self):
+        """Return coordinate y.
+
+        Returns:
+            float: y.
+        """
+
+    def z(self):
+        """Return coordinate z.
+
+        Returns:
+            float: z.
+        """
+
+
 # class MeshCoordinatesField in libaster
 
 
@@ -12318,13 +12369,13 @@ class MeshCoordinatesField(DataStructure):
         3. __add__(self: libaster.FieldOnNodesReal, arg0: libaster.MeshCoordinatesField) -> libaster.MeshCoordinatesField
         """
 
-    def __getitem__(self, idx):
-        """Return the coordinate at index *idx* in the vector.
+    def __getitem__(self, node_id):
+        """Return the coordinates (x,y,z) at of Node node_id in the vector.
 
-        The value is the same as *getValues()[idx]* without creating the entire vector.
+        The value is the same as *getValues()[3*node_id:3*node_id+2]* without creating the entire vector.
 
         Returns:
-            float: Values of the *idx*-th coordinate.
+            tuple[float]: coordinates (x,y,z).
         """
 
     def __iadd__(self, arg0):
@@ -12348,9 +12399,6 @@ class MeshCoordinatesField(DataStructure):
     def __rmul__(self, arg0):
         pass
 
-    def __setitem__(self, idx, value):
-        """Set the coordinate value at index *idx* in the vector."""
-
     def __sub__(self, arg0):
         pass
 
@@ -12361,11 +12409,28 @@ class MeshCoordinatesField(DataStructure):
             MeshCoordinatesField : MeshCoordinatesField object
         """
 
+    def getNode(self, node_id):
+        """Return a node
+
+        Arguments:
+            node_id [int] : node id
+
+        Returns:
+            Node: Node object.
+        """
+
     def getValues(self):
         """Return a list of values of the coordinates as (x1, y1, z1, x2, y2, z2...)
 
         Returns:
             list[float]: List of coordinates (size = 3 * number of nodes).
+        """
+
+    def setNode(self, node):
+        """Set a node
+
+        Arguments:
+            node [Node] : node to set.
         """
 
     def size(self):

@@ -80,7 +80,7 @@ test.assertFalse(mesh.hasGroupOfCells("Droit", False))
 
 # test coordiantes
 coord = mesh.getCoordinates()
-test.assertEqual(coord[3], 0.0)
+test.assertSequenceEqual(coord[3], [0.0, 1.0, 0.0])
 values = coord.getValues()
 test.assertEqual(len(values), 27 * 3)
 
@@ -285,7 +285,7 @@ test.assertSequenceEqual(
     sorted(mail.getGroupsOfCells()), ["BAS", "DROITE", "GAUCHE", "HAUT", "PENT2"]
 )
 coord = mail.getCoordinates()
-test.assertEqual(coord[3], 1.0)
+test.assertSequenceEqual(coord[3], [1.0, 0.0, 0.0])
 values = coord.getValues()
 test.assertEqual(len(values), 22 * 3)
 
@@ -304,7 +304,7 @@ test.assertEqual(gmsh.getNumberOfCells(), 207)
 test.assertSequenceEqual(gmsh.getGroupsOfNodes(), ["GM5"])
 test.assertSequenceEqual(sorted(gmsh.getGroupsOfCells()), ["GM1", "GM3", "GM4", "GM5", "GM6"])
 coord = gmsh.getCoordinates()
-test.assertEqual(coord[3], 1.0)
+test.assertSequenceEqual(coord[3], [0.0, 1.0, 0.0])
 values = coord.getValues()
 test.assertEqual(len(values), 132 * 3)
 
@@ -319,7 +319,7 @@ test.assertEqual(gibi.getNumberOfCells(), 84)
 test.assertSequenceEqual(sorted(gibi.getGroupsOfNodes()), ["A", "B", "C"])
 test.assertSequenceEqual(sorted(gibi.getGroupsOfCells()), ["AB", "BASE1", "CUBE1"])
 coord = gibi.getCoordinates()
-test.assertEqual(coord[3], 10.0)
+test.assertSequenceEqual(coord[3], [5.0, 0.0, 0.0])
 values = coord.getValues()
 test.assertEqual(len(values), 125 * 3)
 

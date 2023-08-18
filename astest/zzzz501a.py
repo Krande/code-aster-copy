@@ -39,9 +39,9 @@ coord1 = coord.copy()
 test.assertEqual(coord.getValues(), coord1.getValues())
 # check readonly access
 print("coord[3] ", coord[3])
-test.assertEqual(coord[3], 1.0)
-
-coord[3] = 5.0
+test.assertSequenceEqual(coord[3], [0.06666666666666667, 0.0, 0.0])
+node = coord.getNode(3)
+test.assertSequenceEqual(coord[3], [node.x(), node.y(), node.z()])
 
 # Definition du modele Aster
 model = code_aster.Model(mesh)
