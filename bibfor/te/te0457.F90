@@ -85,6 +85,10 @@ subroutine te0457(option, nomte)
     call hhoInfoInitFace(hhoFace, hhoData, npg, hhoQuadFace)
     call hhoBasisFace%initialize(hhoFace)
 !
+! ---- number of dofs
+!
+    call hhoTherFaceDofs(hhoFace, hhoData, fbs)
+!
     ASSERT(hhoQuadFace%nbQuadPoints <= MAX_QP_FACE)
 !
     celldim = hhoFace%ndim+1
@@ -197,10 +201,6 @@ subroutine te0457(option, nomte)
     else
         ASSERT(ASTER_FALSE)
     end if
-!
-! ---- number of dofs
-!
-    call hhoTherFaceDofs(hhoFace, hhoData, fbs)
 !
 ! ---- Compute mass matrix
 !
