@@ -22,7 +22,6 @@
 from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
-from .stat_non_line import at_least_one, only_one, absent
 
 
 def compat_syntax(keywords):
@@ -50,17 +49,6 @@ def compat_syntax(keywords):
     if "TYPE_CALCUL" not in keywords or keywords["TYPE_CALCUL"] == "TRAN":
         if "ETAT_INIT" not in keywords:
             keywords["ETAT_INIT"] = {"STAT": "OUI"}
-
-    # add default arguments
-    at_least_one(
-        keywords,
-        "CONVERGENCE",
-        ("RESI_GLOB_RELA", "RESI_GLOB_MAXI"),
-        default="RESI_GLOB_RELA",
-        value=1e-6,
-    )
-    only_one(keywords, "ARCHIVAGE", ("PAS_ARCH", "LIST_INST", "INST"), default="PAS_ARCH", value=1)
-    only_one(keywords, "COMPORTEMENT", ("TOUT", "GROUP_MA"), default="TOUT", value="OUI")
 
 
 THER_NON_LINE = MACRO(
