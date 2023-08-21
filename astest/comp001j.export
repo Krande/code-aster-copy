@@ -3,3 +3,5 @@ P memory_limit 256
 P testlist ci verification sequential
 F comm comp001j.comm D 1
 P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
