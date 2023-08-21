@@ -56,7 +56,7 @@ subroutine rscopi(base, sd1, sd2)
 !-----------------------------------------------------------------------
 !
     integer :: i, j, nbcham, nbordr, iret, nbac, nbpara, nbpa, jpa, ipara
-    integer :: iatava
+    integer :: iatava, nbmax
     aster_logical :: dejfai
     character(len=1) :: bas2
     character(len=4) :: type, typacc
@@ -75,6 +75,7 @@ subroutine rscopi(base, sd1, sd2)
     sdr2 = sd2
     call jelira(sdr1//'.DESC', 'NOMMAX', nbcham)
     call jelira(sdr1//'.ORDR', 'LONUTI', nbordr)
+    call jelira(sdr1//'.ORDR', 'LONMAX', nbmax)
     call jeveuo(sdr1//'.ORDR', 'L', vi=ordr)
 !
 !     --- LE .DESC, .NOVA, .TAVA, .ORDR ---
@@ -91,7 +92,7 @@ subroutine rscopi(base, sd1, sd2)
 !
     call jecrec(sdr2//'.TACH', 'G V K24', 'NU', 'CONTIG', 'CONSTANT', &
                 nbcham)
-    call jeecra(sdr2//'.TACH', 'LONMAX', nbordr)
+    call jeecra(sdr2//'.TACH', 'LONMAX', nbmax)
 !
 !     --- ON DUPLIQUE LES CHAMPS ---
 !
@@ -137,6 +138,7 @@ subroutine rscopi(base, sd1, sd2)
 30      continue
     end do
     call jedetr(nompar)
+
 !
     call jedema()
 end subroutine
