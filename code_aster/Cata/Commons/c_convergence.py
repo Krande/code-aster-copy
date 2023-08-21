@@ -22,8 +22,8 @@ from ..Language.Syntax import *
 
 
 def C_CONVERGENCE(command):
-    assert command in ("MECA_NON_LINE", "SIMU_POINT_MAT")
-    if command == "SIMU_POINT_MAT":
+    assert command in ("MECA_NON_LINE", "SIMU_POINT_MAT", "THER_NON_LINE")
+    if command in ("SIMU_POINT_MAT", "THER_NON_LINE"):
         mcfact = FACT(
             statut="d",
             regles=(AU_MOINS_UN("RESI_GLOB_MAXI", "RESI_GLOB_RELA", RESI_GLOB_RELA=1.0e-6),),
