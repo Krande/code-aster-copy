@@ -283,7 +283,7 @@ subroutine elraga(elrefz, fapz, ndim, nbpg, coopg, poipg)
 ! --------- FORMULE A 4 * 2 POINTS (CF TOUZOT PAGE 297) -> ORDRE 2
 ! --------- FORMULE DE GAUSS - 2 POINTS DE GAUSS  EN X (ORDRE 3)
             npx = 2
-            a(1) = rac_1div3
+            a(1) = -rac_1div3
             a(2) = -a(1)
             h(1) = un
             h(2) = un
@@ -305,7 +305,7 @@ subroutine elraga(elrefz, fapz, ndim, nbpg, coopg, poipg)
 ! --------- FORMULE A 4 * 2 POINTS (CF TOUZOT PAGE 297) -> ORDRE 2
 ! --------- FORMULE DE GAUSS - 2 POINTS DE GAUSS  EN X (ORDRE 3)
             npx = 2
-            a(1) = rac_1div3
+            a(1) = -rac_1div3
             a(2) = -a(1)
 
             h(1) = un
@@ -328,7 +328,7 @@ subroutine elraga(elrefz, fapz, ndim, nbpg, coopg, poipg)
 ! --------- FORMULE A 4 * 2 POINTS (CF TOUZOT PAGE 297) -> ORDRE 3
 ! --------- FORMULE DE GAUSS - 2 POINTS DE GAUSS  EN X (ORDRE 3)
             npx = 2
-            a(1) = rac_1div3
+            a(1) = -rac_1div3
             a(2) = -a(1)
             h(1) = un
             h(2) = un
