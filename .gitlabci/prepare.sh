@@ -22,7 +22,7 @@ echo "+ downloading devtools..."
 DEVTOOLS_URL=${root}/devtools
 grep -q https: <<< "${DEVTOOLS_URL}" && DEVTOOLS_URL=${DEVTOOLS_URL}.git
 git clone ${DEVTOOLS_URL} devtools
-(cd devtools ; git checkout use-git)
+(cd devtools ; git checkout main)
 
 echo "+ downloading data..."
 DATA_URL=${root}/data

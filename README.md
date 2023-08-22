@@ -6,8 +6,6 @@
 > Home page: <https://www.code-aster.org/>
 >
 > Forge: <https://gitlab.com/codeaster/>
->
-> code_aster repositories are moving to Git, the work is still in progress...
 
 **code_aster** source files are dispatched into 3 repositories.
 
@@ -23,7 +21,7 @@ Other independent repositories exist:
 
 ## Content of the [src][1] repository
 
-This repository contains to source files of code_aster and its build scripts.
+This repository contains the source files of code_aster and its build scripts.
 
 Usually the repositories are cloned under `$HOME/dev/codeaster`.
 
