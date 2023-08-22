@@ -51,6 +51,11 @@ class Node {
     Node( const ASTERINTEGER &id, const std::array< ASTERDOUBLE, 3 > &coor )
         : _id( id ), _coor( coor ) {};
 
+    /** @brief restricted constructor (Set) and method (Get) to support pickling */
+    Node( const py::tuple &tup )
+        : Node( tup[0].cast< ASTERINTEGER >(), tup[1].cast< std::array< ASTERDOUBLE, 3 > >() ) {};
+    py::tuple _getState() const { return py::make_tuple( _id, _coor ); };
+
     /**
      * @brief Get _valuesList
      */

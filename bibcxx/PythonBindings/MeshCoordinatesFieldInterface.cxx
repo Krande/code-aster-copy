@@ -32,38 +32,6 @@
 
 void exportMeshCoordinatesFieldToPython( py::module_ &mod ) {
 
-    py::class_< Node, NodePtr >( mod, "Node" )
-        // fake initFactoryPtr: no default constructor, only for restart
-        // .def( py::init( &initFactoryPtr < ASTERINTEGER, std::array< ASTERDOUBLE, 3 > ) )
-        .def( "__getitem__",
-              +[]( const Node &v, const ASTERINTEGER &i ) { return v.operator[]( i ); } )
-        .def( "__setitem__", +[]( Node &v, const ASTERINTEGER &i,
-                                  ASTERDOUBLE f ) { return v.operator[]( i ) = f; } )
-        .def( "getValues", &Node::getValues, R"(
-Return coordinates as (x,y,z.)
-
-Returns:
-    list[float]: (x,y,z).
-        )" )
-        .def( "x", &Node::x, R"(
-Return coordinate x.
-
-Returns:
-    float: x.
-        )" )
-        .def( "y", &Node::y, R"(
-Return coordinate y.
-
-Returns:
-    float: y.
-        )" )
-        .def( "z", &Node::z, R"(
-Return coordinate z.
-
-Returns:
-    float: z.
-        )" );
-
     py::class_< MeshCoordinatesField, MeshCoordinatesFieldPtr, DataStructure >(
         mod, "MeshCoordinatesField" )
         // fake initFactoryPtr: no default constructor, only for restart

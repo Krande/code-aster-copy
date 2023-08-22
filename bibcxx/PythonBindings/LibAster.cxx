@@ -126,6 +126,7 @@
 #include "PythonBindings/ModeResultInterface.h"
 #include "PythonBindings/ModelInterface.h"
 #include "PythonBindings/MultipleElasticResultInterface.h"
+#include "PythonBindings/NodeInterface.h"
 #include "PythonBindings/NonLinearResultInterface.h"
 #include "PythonBindings/ObjectBalancerInterface.h"
 #include "PythonBindings/ParallelDOFNumberingInterface.h"
@@ -191,6 +192,7 @@ PYBIND11_MODULE( libaster, mod ) {
     exportDataStructureToPython( mod );
     exportDebugToPython( mod );
     exportPhysicalQuantityManagerToPython( mod );
+    exportNodeToPython( mod );
     exportMeshEntitiesToPython( mod );
     exportBaseMeshToPython( mod );
     exportMeshToPython( mod );

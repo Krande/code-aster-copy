@@ -344,6 +344,70 @@ class PhysicalQuantityManager:
         pass
 
 
+# class Node in libaster
+
+
+class Node:
+    pass
+
+    # Method resolution order:
+    #     Node
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __getitem__(self, arg0):
+        pass
+
+    def __getstate__(self):
+        pass
+
+    def __init__(self, *args, **kwargs):
+        """Initialize self.  See help(type(self)) for accurate signature."""
+
+    def __setitem__(self, arg0, arg1):
+        pass
+
+    def __setstate__(self, arg0):
+        pass
+
+    def getId(self):
+        """Return the Id of the node.
+
+        Returns:
+            int: local id of the node.
+        """
+
+    def getValues(self):
+        """Return coordinates as (x,y,z.)
+
+        Returns:
+            list[float]: (x,y,z).
+        """
+
+    def x(self):
+        """Return coordinate x.
+
+        Returns:
+            float: x.
+        """
+
+    def y(self):
+        """Return coordinate y.
+
+        Returns:
+            float: y.
+        """
+
+    def z(self):
+        """Return coordinate z.
+
+        Returns:
+            float: z.
+        """
+
+
 # class EntityType in libaster
 
 
@@ -12291,57 +12355,6 @@ class ElasticResult(Result):
         1. __init__(self: libaster.ElasticResult) -> None
 
         2. __init__(self: libaster.ElasticResult, arg0: str) -> None
-        """
-
-
-# class Node in libaster
-
-
-class Node:
-    pass
-
-    # Method resolution order:
-    #     Node
-    #     pybind11_builtins.pybind11_object
-    #     builtins.object
-
-    # Methods defined here:
-
-    def __getitem__(self, arg0):
-        pass
-
-    def __init__(self, *args, **kwargs):
-        """Initialize self.  See help(type(self)) for accurate signature."""
-
-    def __setitem__(self, arg0, arg1):
-        pass
-
-    def getValues(self):
-        """Return coordinates as (x,y,z.)
-
-        Returns:
-            list[float]: (x,y,z).
-        """
-
-    def x(self):
-        """Return coordinate x.
-
-        Returns:
-            float: x.
-        """
-
-    def y(self):
-        """Return coordinate y.
-
-        Returns:
-            float: y.
-        """
-
-    def z(self):
-        """Return coordinate z.
-
-        Returns:
-            float: z.
         """
 
 
