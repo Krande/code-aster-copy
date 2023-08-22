@@ -171,7 +171,7 @@ def detect_math_lib(self):
 
     # blas
     blaslibs, lapacklibs = self.get_mathlib_from_numpy()
-    self.check_math_libs("blas", list(BLAS) + blaslibs, embed)
+    self.check_math_libs(list(BLAS) + blaslibs, embed)
     # lapack
     opt_lapack = False
     if "openblas" in self.env.get_flat(varlib):
@@ -182,14 +182,14 @@ def detect_math_lib(self):
         except:
             pass
     if not opt_lapack:
-        self.check_math_libs("lapack", list(LAPACK) + lapacklibs, embed)
+        self.check_math_libs(list(LAPACK) + lapacklibs, embed)
         self.check_math_libs_call_blas_lapack()
 
     def _scalapack():
         """Check scalapack"""
         libs = list(SCALAPACK)
         libs = libs + ["".join(n) for n in product(libs, ["mpi", "-mpi", "openmpi", "-openmpi"])]
-        return self.check_math_libs("scalapack", libs, embed)
+        return self.check_math_libs(libs, embed)
 
     def _blacs():
         """Check blacs"""
@@ -205,11 +205,11 @@ def detect_math_lib(self):
                 [l.replace("blacs", "blacs" + n) for l, n in product([i], ["Cinit", "F77init", ""])]
             )
         libs = ins + libs
-        return self.check_math_libs("blacs", libs, embed)
+        return self.check_math_libs(libs, embed)
 
     def _optional():
         """Check optional dependencies"""
-        self.check_math_libs("optional", OPTIONAL_DEPS, embed, optional=True)
+        self.check_math_libs(OPTIONAL_DEPS, embed, optional=True)
 
     # parallel
     if self.get_define("ASTER_HAVE_MPI") and opts.enable_mumps:
@@ -245,23 +245,23 @@ def detect_math_lib(self):
 
 
 @Configure.conf
-def check_math_libs(self, name, libs, embed, optional=False):
-    """Check for library 'name', stop on first found"""
+def check_math_libs(self, libs, embed, optional=False):
+    """Check for the first library available from 'libs'."""
     check_maths = partial(self.check_cc, uselib_store="MATH", use="MATH MPI", mandatory=False)
     if embed:
         check_lib = lambda lib: check_maths(stlib=lib)
     else:
         check_lib = lambda lib: check_maths(lib=lib)
-    self.start_msg("Checking library %s" % name)
     found = None
     for lib in libs:
+        self.start_msg("Checking for library %s" % lib)
         if check_lib(lib=lib):
-            self.end_msg("yes (%s)" % lib)
+            self.end_msg("yes")
             found = lib
             break
     else:
         if not optional:
-            self.fatal("Missing the %s library" % name)
+            self.fatal("None of these libraries were found: %s" % libs)
         self.end_msg("not found", "YELLOW")
     return found
 

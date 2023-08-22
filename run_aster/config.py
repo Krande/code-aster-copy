@@ -133,7 +133,7 @@ Example of ``$HOME/.config/aster/config.yaml``:
 
 
 This ``valgrind`` command line is actually defined by default in the configuration
-file of the installed version and it is callable with ``run_aster --valgrind ...`.
+file of the installed version and it is callable with ``run_aster --valgrind ...``.
 Another one is also defined by default to wrap *gdb* execution:
 ``run_aster --gdb ...``.
 """

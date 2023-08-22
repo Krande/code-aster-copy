@@ -118,6 +118,7 @@ html_last_updated_fmt = "%b %d, %Y"
 
 # If true, links to the reST sources are added to the pages.
 html_show_sourcelink = False
+html_copy_source = False
 
 # If true, "Created using Sphinx" is shown in the HTML footer. Default is True.
 # html_show_sphinx = True
@@ -135,7 +136,6 @@ html_show_sourcelink = False
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = "code_asterdoc"
-
 
 # -- Options for LaTeX output ---------------------------------------------
 
@@ -227,6 +227,7 @@ napoleon_include_private_with_doc = True
 
 # Show todo blocks
 todo_include_todos = True
+
 
 # adapt css
 def setup(app):

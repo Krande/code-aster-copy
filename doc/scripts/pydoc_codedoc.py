@@ -375,6 +375,7 @@ def pybind_args(name, doc, remove_sign=True):
             return "(self)", doc
         argstr = mat.group(1)
         # remove template arguments
+        argstr = _remove_enumlike(argstr)
         argstr = _remove_enclosed(argstr, "<")
         # split args
         decls = re.sub(", +(?P<var>\**\w+):", "_||_\g<var>:", argstr).split("_||_")
@@ -393,6 +394,15 @@ def pybind_args(name, doc, remove_sign=True):
         if remove_sign:
             doc = expr.sub("", doc).lstrip()
     return "(" + argstr + ")", doc
+
+
+def _remove_enumlike(string):
+    """Remove enum-like declarations
+
+    '<PythonBool.NONE: -1>' replaced by '-1'
+    """
+    expr = re.compile(r"<([^:<>]*?): *(?P<value>[^:<>]+)>")
+    return expr.sub("\g<value>", string)
 
 
 def _remove_enclosed(string, mark):

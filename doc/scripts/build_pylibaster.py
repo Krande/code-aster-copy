@@ -5,6 +5,7 @@ Generate fake libaster.
 import os.path as osp
 import sys
 from subprocess import PIPE, CalledProcessError, run
+from pathlib import Path
 
 sys.path.insert(0, osp.dirname(__file__))
 
@@ -35,9 +36,12 @@ def build_pylibaster(filename):
             print("not exported:", name, obj)
 
     lines = [i.rstrip() for i in "\n".join(blocks).splitlines()]
-    with open(filename, "w") as flib:
+
+    path = Path(filename)
+    path.parent.mkdir(exist_ok=True)
+    with path.open("w") as flib:
         flib.write("\n".join(lines))
-    print("output written:", filename)
+    print("output written to:", filename)
     try:
         cmd = ["black", filename]
         run(cmd, check=True, stderr=PIPE)

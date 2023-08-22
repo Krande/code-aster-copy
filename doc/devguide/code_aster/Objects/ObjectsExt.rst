@@ -20,6 +20,7 @@ Pure Python extensions for :py:class:`~code_aster.Objects.DataStructure`
 .. autoclass:: code_aster.ObjectsExt.listoffloats_ext.ListOfFloats
    :show-inheritance:
    :members:
+   :noindex:
 
 
 .. automodule:: code_aster.Objects

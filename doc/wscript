@@ -189,11 +189,13 @@ def build_html(self):
 
 def run_pylibaster(task):
     script = task.inputs[0].abspath()
+    dest = task.outputs[0].get_src()
+    dest.parent.mkdir()
     tgt = task.outputs[0].abspath()
 
     exec_pyaster(task.generator.bld, script, args=[tgt], cwd=task.cwd)
 
-    result = task.outputs[0].get_src().abspath()
+    result = dest.abspath()
     Logs.info("creating {0}...".format(result))
     shutil.copyfile(tgt, result)
     return 0

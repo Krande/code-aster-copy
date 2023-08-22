@@ -28,7 +28,7 @@ When a new command is added there are different levels of complexity:
   Only the commands that return no result can work with this method.
   Other commands will raise a *NotImplementedError* exception at runtime.
   Macro-commands do not need a specific executor. Their catalog and ``ops()``
-  function is sufficient.
+  function are sufficient.
 
   .. note:: All Commands that are not explicitly imported by
     :mod:`code_aster.Commands.__init__` are automatically created using this
@@ -944,7 +944,7 @@ def command_result(counter, command_name, result):
     Arguments:
         counter (int): Number of the command.
         command_name (str): Command name.
-        result (DataStructure|str|list[str]): Result object or name(s) of the
+        result (~.code_aster.Objects.DataStructure|str|list[str]): Result object or name(s) of the
             result(s) of the command.
 
     Returns:
