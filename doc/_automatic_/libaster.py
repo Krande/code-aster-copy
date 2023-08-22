@@ -12414,6 +12414,13 @@ class MeshCoordinatesField(DataStructure):
             int : number of values of MeshCoordinatesField object
         """
 
+    def toNumpy(self):
+        """Return a numpy array view (no-copy) of values of the coordinates with shape (number of nodes, 3).
+
+        Returns:
+            np.ndarray: Array view of coordinates with shape=(number of nodes, 3).
+        """
+
     def updateValuePointers(self):
         """Update values of internal pointer."""
 

@@ -30,6 +30,13 @@ test = code_aster.TestCase()
 monMaillage = code_aster.Mesh()
 monMaillage.readMedFile("zzzz503a.mmed")
 
+coords = monMaillage.getCoordinates()
+npcoords = coords.toNumpy()
+c0val = coords[0][0]
+npcoords[0][0] = 1.2345
+test.assertAlmostEqual(coords[0][0], 1.2345, msg="coords.toNumpy")
+npcoords[0][0] = c0val
+
 monModel = code_aster.Model(monMaillage)
 monModel.addModelingOnMesh(code_aster.Physics.Mechanics, code_aster.Modelings.Tridimensional)
 monModel.build()

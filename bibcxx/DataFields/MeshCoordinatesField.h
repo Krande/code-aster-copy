@@ -30,6 +30,7 @@
 
 #include "DataFields/DataField.h"
 #include "MemoryManager/JeveuxVector.h"
+#include "MemoryManager/NumpyAccess.h"
 #include "Meshes/Node.h"
 
 template < typename >
@@ -193,6 +194,20 @@ class MeshCoordinatesField : public DataField {
      * @brief Get _valuesList
      */
     const JeveuxVectorReal getValues() const { return _valuesList; };
+
+    /**
+     * @brief Get _valuesList as NumPy array
+     */
+    py::object toNumpy() {
+        npy_intp dims[2] = {_valuesList->size() / 3, 3};
+        PyObject *values = PyArray_SimpleNewFromData( 2, dims, npy_type< JeveuxVectorReal >::value,
+                                                      _valuesList->getDataPtr() );
+        AS_ASSERT( values != NULL );
+        PyArray_CLEARFLAGS( (PyArrayObject *)values, NPY_ARRAY_OWNDATA );
+
+        py::object ret = py::reinterpret_steal< py::object >( values );
+        return ret;
+    }
 
     /**
      * @brief Surcharge de l'operateur []
