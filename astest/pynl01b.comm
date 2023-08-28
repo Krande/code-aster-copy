@@ -124,6 +124,8 @@ M_EL_tab = CALCUL(
 
 M_EL = M_EL_tab.MATR_TANG_ELEM
 
+M_EL.getElementaryTerms()[0].getValues()
+
 M_EL.setModel(MO)
 
 CHAR_EL = CALC_VECT_ELEM(OPTION="CHAR_MECA", CHARGE=CHARGE)
