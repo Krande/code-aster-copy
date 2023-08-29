@@ -43,7 +43,7 @@ subroutine profchno_crsd(nume_equaz, base, nb_equa, meshz, nb_ligrz, &
     integer, optional, intent(in) :: nb_ecz
     integer, optional, intent(in) :: nb_ligrz
     integer, optional, intent(in) :: prno_lengthz
-    logical, optional, intent(in) :: l_coll_const
+    aster_logical, optional, intent(in) :: l_coll_const
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -142,7 +142,11 @@ subroutine profchno_crsd(nume_equaz, base, nb_equa, meshz, nb_ligrz, &
 ! - Create object PRNO (collection)
 !
     if (present(l_coll_const)) then
-        call jecrec(nume_equa//'.PRNO', base//' V I', 'NU', 'CONTIG', 'CONSTANT', nb_ligr)
+        if (l_coll_const) then
+            call jecrec(nume_equa//'.PRNO', base//' V I', 'NU', 'CONTIG', 'CONSTANT', nb_ligr)
+        else
+            call jecrec(nume_equa//'.PRNO', base//' V I', 'NU', 'CONTIG', 'VARIABLE', nb_ligr)
+        end if
     else
         call jecrec(nume_equa//'.PRNO', base//' V I', 'NU', 'CONTIG', 'VARIABLE', nb_ligr)
     end if

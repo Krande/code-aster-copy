@@ -15,7 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
+#include "asterf_types.h"
 !
 !
 interface
@@ -29,6 +30,6 @@ interface
         integer, optional, intent(in) :: nb_ecz
         integer, optional, intent(in) :: nb_ligrz
         integer, optional, intent(in) :: prno_lengthz
-        logical, optional, intent(in) :: l_coll_const
+        aster_logical, optional, intent(in) :: l_coll_const
     end subroutine profchno_crsd
 end interface

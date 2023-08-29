@@ -35,11 +35,38 @@ nb_cells = [7, 7]
 nodes_rank_lin = [[0, 0, 1, 0, 1, 0], [1, 1, 1, 0, 1, 0]]
 cells_rank = [[0, 0, 0, 0, 0, 0, 0], [1, 1, 0, 1, 0, 1, 0]]
 nodes_nume = [[2, 3, 4, 5, 6, 7], [0, 1, 4, 5, 6, 7]]
+nodes_coord = [
+    [1.5, -0.5, 0.0, 1.5, 0.5, 0.0, -0.5, -0.5, 0.0, 0.5, -0.5, 0.0, -0.5, 0.5, 0.0, 0.5, 0.5, 0.0],
+    [
+        -1.5,
+        -0.5,
+        0.0,
+        -1.5,
+        0.5,
+        0.0,
+        -0.5,
+        -0.5,
+        0.0,
+        0.5,
+        -0.5,
+        0.0,
+        -0.5,
+        0.5,
+        0.0,
+        0.5,
+        0.5,
+        0.0,
+    ],
+]
 test.assertEqual(nb_nodes_lin[rank], mesh.getNumberOfNodes())
 test.assertEqual(nb_cells[rank], mesh.getNumberOfCells())
 test.assertSequenceEqual(nodes_rank_lin[rank], mesh.getNodesRank())
 test.assertSequenceEqual(cells_rank[rank], mesh.getCellsRank())
 test.assertSequenceEqual(nodes_nume[rank], mesh.getNodes(localNumbering=False))
+test.assertEqual(nodes_coord[rank], mesh.getCoordinates().getValues())
+test.assertEqual(nodes_coord[rank], mesh.getCoordinates().toFieldOnNodes(mesh).getValues())
+coordf = CREA_CHAMP(OPERATION="EXTR", TYPE_CHAM="NOEU_GEOM_R", NOM_CHAM="GEOMETRIE", MAILLAGE=mesh)
+test.assertEqual(nodes_coord[rank], coordf.getValues())
 
 mesh_quad = CREA_MAILLAGE(MAILLAGE=mesh, LINE_QUAD=_F(TOUT="OUI"))
 nb_nodes_quad = [13, 13]

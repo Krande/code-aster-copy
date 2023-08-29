@@ -79,6 +79,20 @@ Return a copy of MeshCoordinatesField object
 Returns:
     MeshCoordinatesField : MeshCoordinatesField object
         )" )
+        .def( "toFieldOnNodes",
+              []( const MeshCoordinatesField &field, const BaseMeshPtr mesh ) {
+                  return toFieldOnNodes( field, mesh );
+              },
+              R"(
+Convert to FieldOnNodes
+
+Arguments:
+    mesh[Mesh]: the mesh where the coordinates come from
+
+Returns:
+    FieldOnNodesReal: the corresponding field
+        )",
+              py::arg( "mesh" ) )
         .def( "size", &MeshCoordinatesField::size, R"(
 Return the size of the field
 

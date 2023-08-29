@@ -12414,6 +12414,16 @@ class MeshCoordinatesField(DataStructure):
             int : number of values of MeshCoordinatesField object
         """
 
+    def toFieldOnNodes(self, mesh):
+        """Convert to FieldOnNodes
+
+        Arguments:
+            mesh[Mesh]: the mesh where the coordinates come from
+
+        Returns:
+            FieldOnNodesReal: the corresponding field
+        """
+
     def toNumpy(self):
         """Return a numpy array view (no-copy) of values of the coordinates with shape (number of nodes, 3).
 

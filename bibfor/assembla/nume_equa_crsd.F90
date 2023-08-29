@@ -40,7 +40,7 @@ subroutine nume_equa_crsd(nume_equaz, base, nb_equa, meshz, gran_namez, l_coll_c
     integer, intent(in) :: nb_equa
     character(len=*), intent(in) :: meshz
     character(len=*), intent(in) :: gran_namez
-    logical, optional, intent(in) :: l_coll_constz
+    aster_logical, optional, intent(in) :: l_coll_constz
 !
 ! --------------------------------------------------------------------------------------------------
 !

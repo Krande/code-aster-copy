@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine cnscno(cnsz, nume_equaz, prol0, basez, cnoz, &
-                  kstop, iret, nbz, vchamz)
+                  kstop, iret, nbz, vchamz, lprofconst)
 ! person_in_charge: jacques.pellet at edf.fr
 !
 ! aslint: disable=
@@ -57,6 +57,7 @@ subroutine cnscno(cnsz, nume_equaz, prol0, basez, cnoz, &
     character(len=1) :: kstop
     integer, optional :: nbz
     character(len=24), optional :: vchamz
+    aster_logical, optional :: lprofconst
 ! ------------------------------------------------------------------
 ! BUT : TRANSFORMER UN CHAM_NO_S (CNSZ) EN CHAM_NO (CNOZ)
 ! ------------------------------------------------------------------
@@ -103,6 +104,7 @@ subroutine cnscno(cnsz, nume_equaz, prol0, basez, cnoz, &
     character(len=1) :: base
     character(len=8) :: ma, nomgd, nomno, nomcmp
     aster_logical :: l_crea_nume_equa, l_chck_nume_equa, ldist, l_pmesh
+    aster_logical :: lprof_const
     character(len=3) :: tsca
     character(len=19) :: cns, cno, nume_equa, messag, prnoav, nume_equa_tmp
     integer, pointer :: deeq(:) => null()
@@ -131,6 +133,11 @@ subroutine cnscno(cnsz, nume_equaz, prol0, basez, cnoz, &
         vcham = ' '
     end if
 !
+!   le profchno est constant par défaut
+    lprof_const = ASTER_TRUE
+    if (present(lprofconst)) then
+        lprof_const = lprofconst
+    end if
 !
     base = basez
     ASSERT((base .eq. 'G') .or. (base .eq. 'V'))
@@ -275,7 +282,7 @@ subroutine cnscno(cnsz, nume_equaz, prol0, basez, cnoz, &
 !
 !       2.2 ALLOCATION DES OBJETS :
         call nume_equa_crsd(nume_equa, base, nb_equa, meshz=ma, &
-                            gran_namez=nomgd, l_coll_constz=.true.)
+                            gran_namez=nomgd, l_coll_constz=lprof_const)
         call jecroc(jexnum(nume_equa//'.PRNO', 1))
 !
 !       2.3 REMPLISSAGE DE .PRNO :

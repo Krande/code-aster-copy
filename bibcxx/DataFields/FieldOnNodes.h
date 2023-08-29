@@ -675,9 +675,15 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
             _reference->updateValuePointer();
             const std::string name2 = strip( ( *_reference )[1].toString() );
             if ( !name2.empty() ) {
-                _dofDescription = std::make_shared< EquationNumbering >( name2 );
                 if ( mesh ) {
+                    if ( mesh->isParallel() ) {
+                        _dofDescription = std::make_shared< ParallelEquationNumbering >( name2 );
+                    } else {
+                        _dofDescription = std::make_shared< EquationNumbering >( name2 );
+                    }
                     this->setMesh( mesh );
+                } else {
+                    _dofDescription = std::make_shared< EquationNumbering >( name2 );
                 }
             } else {
                 AS_ABORT( "NUME_EQUA is empty" );

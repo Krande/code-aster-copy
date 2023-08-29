@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 
 import code_aster
-from code_aster.Commands import RECU_TABLE
+from code_aster.Commands import RECU_TABLE, CREA_CHAMP
 import numpy as np
 
 code_aster.init("--test")
@@ -78,12 +78,105 @@ test.assertFalse(mesh.hasGroupOfCells("Droit"))
 test.assertFalse(mesh.hasGroupOfCells("Droit", True))
 test.assertFalse(mesh.hasGroupOfCells("Droit", False))
 
-# test coordiantes
+# test coordinates
 coord = mesh.getCoordinates()
 test.assertSequenceEqual(coord[3], [0.0, 1.0, 0.0])
 values = coord.getValues()
-test.assertEqual(len(values), 27 * 3)
+ref_values = [
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    1.0,
+    0.0,
+    1.0,
+    0.0,
+    1.0,
+    0.0,
+    1.0,
+    1.0,
+    0.0,
+    0.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.5,
+    0.0,
+    0.5,
+    1.0,
+    0.0,
+    1.0,
+    0.5,
+    0.0,
+    0.5,
+    0.0,
+    1.0,
+    0.0,
+    0.5,
+    1.0,
+    0.5,
+    1.0,
+    1.0,
+    1.0,
+    0.5,
+    1.0,
+    0.5,
+    0.0,
+    0.5,
+    0.0,
+    0.0,
+    0.5,
+    0.0,
+    1.0,
+    0.5,
+    1.0,
+    0.0,
+    0.5,
+    1.0,
+    1.0,
+    0.0,
+    0.5,
+    0.5,
+    1.0,
+    0.5,
+    0.5,
+    0.5,
+    0.0,
+    0.5,
+    0.5,
+    1.0,
+    0.5,
+    0.5,
+    0.5,
+    0.0,
+    0.5,
+    0.5,
+    1.0,
+    0.5,
+    0.5,
+    0.5,
+]
+test.assertEqual(values, ref_values)
 
+# turn MeshCoordinatesField in FieldOnNodes
+coordf0 = CREA_CHAMP(OPERATION="EXTR", TYPE_CHAM="NOEU_GEOM_R", NOM_CHAM="GEOMETRIE", MAILLAGE=mesh)
+test.assertEqual(coordf0.getValues(), ref_values)
+
+# turn MeshCoordinatesField in FieldOnNodes
+coordf1 = coord.toFieldOnNodes(mesh)
+test.assertEqual(coordf1.getValues(), ref_values)
+
+
+# test connectivity
 connect = mesh.getConnectivity()
 cellsHaut = mesh.getCells("Haut")
 test.assertSequenceEqual(cellsHaut, [44, 45, 46, 47])

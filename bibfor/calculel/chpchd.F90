@@ -33,6 +33,8 @@ subroutine chpchd(chin, type, celmod, prol0, base, &
 #include "asterfort/cgocns.h"
 #include "asterfort/cnsces.h"
 #include "asterfort/cnscno.h"
+#include "asterfort/crnggn.h"
+#include "asterfort/crnggc.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedetr.h"
@@ -243,7 +245,11 @@ subroutine chpchd(chin, type, celmod, prol0, base, &
 !
         call cgocns(chin, 'V', cns1, celmod)
         if (cas(7:10) == "NOEU") then
-            call cnscno(cns1, ' ', 'NON', base, chou, 'F', ibid)
+            call cnscno(cns1, ' ', 'NON', base, chou, 'F', ibid, lprofconst=ASTER_FALSE)
+            ! create numbering
+            call crnggn(chou)
+            ! communicate numbering
+            call crnggc(chou)
         elseif (cas(7:10) == "ELNO") then
             call cnsces(cns1, 'ELNO', cesmod, ' ', 'V', ces1)
 !

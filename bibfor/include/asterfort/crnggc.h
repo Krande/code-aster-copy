@@ -16,16 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-#include "asterf_types.h"
-!
-!
 interface
-    subroutine nume_equa_crsd(nume_equaz, base, nb_equa, meshz, gran_namez, l_coll_constz)
-        character(len=*), intent(in) :: nume_equaz
-        character(len=1), intent(in) :: base
-        integer, intent(in) :: nb_equa
-        character(len=*), intent(in) :: meshz
-        character(len=*),  intent(in) :: gran_namez
-        aster_logical, optional, intent(in) :: l_coll_constz
-    end subroutine nume_equa_crsd
+    subroutine crnggc(chamnz)
+        character(len=*) :: chamnz
+    end subroutine crnggc
 end interface

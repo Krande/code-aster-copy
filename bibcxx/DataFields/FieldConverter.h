@@ -26,6 +26,7 @@
 #include "DataFields/ConstantFieldOnCells.h"
 #include "DataFields/FieldOnCells.h"
 #include "DataFields/FieldOnNodes.h"
+#include "DataFields/MeshCoordinatesField.h"
 #include "DataFields/SimpleFieldOnCells.h"
 #include "DataFields/SimpleFieldOnNodes.h"
 #include "Supervis/Exceptions.h"
@@ -212,3 +213,7 @@ toFieldOnCells( const std::shared_ptr< SimpleFieldOnCells< ValueType > > field,
                 const std::string nompar = std::string() ) {
     return toFieldOnCells( *field, fed, option, nompar );
 }
+
+using FieldOnNodesReal = FieldOnNodes< ASTERDOUBLE >;
+
+FieldOnNodesReal toFieldOnNodes( const MeshCoordinatesField &field, const BaseMeshPtr mesh );

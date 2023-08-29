@@ -15,12 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
+#include "asterf_types.h"
 !
 !
 interface
     subroutine cnscno(cnsz, numeqz, prol0, basez, cnoz,&
-                      kstop, iret, nbz, vchamz)
+                      kstop, iret, nbz, vchamz, lprofconst)
         character(len=*) :: cnsz
         character(len=*) :: numeqz
         character(len=*) :: prol0
@@ -30,5 +31,6 @@ interface
         integer :: iret
         integer,           optional :: nbz
         character(len=24), optional :: vchamz
+        aster_logical, optional :: lprofconst
     end subroutine cnscno
 end interface
