@@ -25,13 +25,14 @@ if config.get("ASTER_HAVE_MED"):
     from ...Objects import PtScotchPartitioner
 
 
-def splitMeshAndFieldsFromMedFile(filename, cellBalancer=False, nodeBalancer=False):
+def splitMeshAndFieldsFromMedFile(filename, cellBalancer=False, nodeBalancer=False, outMesh=None):
     """Split a MED mesh and MED fields from a filename
 
     Arguments:
         filename (str): filename of MED file.
         cellBalancer (bool): True if cell balancer must be return.
         nodeBalancer (bool): True if node balancer must be return.
+        outMesh (ParallelMesh): split mesh.
 
     Returns:
         tuple: first element: split mesh, second element: dict with split fields,
