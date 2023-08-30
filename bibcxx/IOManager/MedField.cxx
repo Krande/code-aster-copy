@@ -57,6 +57,19 @@ std::vector< med_int > MedField::getAllSupportEntitiesAtSequence( int numdt, int
             toReturn.push_back( geotype );
         }
     }
+    const med_entity_type entitypeNC = MED_NODE_ELEMENT;
+    for ( int i = 0; i < medTypes.size(); ++i ) {
+        char defaultprofilename2[MED_NAME_SIZE + 1] = "";
+        char defaultlocalizationname2[MED_NAME_SIZE + 1] = "";
+        const med_geometry_type geotype = medTypes[i];
+        auto nbVal = MEDfieldnProfile( _filePtr.getFileId(), _name.c_str(), numdt, numit,
+                                       entitypeNC, geotype, defaultprofilename2,
+                                       defaultlocalizationname2 );
+        if ( nbVal != 0 ) {
+            toReturn.push_back( entitypeNC );
+            toReturn.push_back( geotype );
+        }
+    }
     return toReturn;
 }
 
@@ -75,6 +88,7 @@ MedVectorPtr MedField::getValuesAtSequenceOnCellTypesList(
         throw std::runtime_error( "Sequential read not yet implemented" );
     }
     const med_entity_type entitype = MED_CELL;
+    const med_entity_type entitypes[2] = { MED_CELL, MED_NODE_ELEMENT } ;
     const int csit = _numdtNumitToSeq.at( numdt ).at( numit );
     med_int numdt2, numit2, meshnumdt, meshnumit;
     med_float dt;
@@ -95,6 +109,7 @@ MedVectorPtr MedField::getValuesAtSequenceOnCellTypesList(
     }
     MedVectorPtr medV( new MedVector( cumulatedElem ) );
     medV->setComponentNumber( _nbCmp );
+    medV->setComponentName( _componentName );
 
     cumulatedElem = 0;
     std::vector< std::vector< med_int > > profs;
@@ -105,62 +120,77 @@ MedVectorPtr MedField::getValuesAtSequenceOnCellTypesList(
     std::vector< int > cumPos;
     std::vector< MedProfilePtr > profsPtr;
     std::vector< int > nbElems2, starts2;
-    for ( int i = 0; i < medTypes.size(); ++i ) {
-        char profilename[MED_NAME_SIZE + 1] = "";
-        char localizationname[MED_NAME_SIZE + 1] = "";
-        const med_geometry_type geotype = medTypes[i];
-        auto nbProf = MEDfieldnProfile( _filePtr.getFileId(), _name.c_str(), numdt, numit, entitype,
-                                        geotype, profilename, localizationname );
+    int verif = 0, medType = -1;
+    for( int entIndex = 0; entIndex < 2; ++entIndex ) {
+        const med_entity_type entitype = entitypes[ entIndex ];
+        bool foundSomething = false;
+        cumulatedElem = 0;
+        for ( int i = 0; i < medTypes.size(); ++i ) {
+            char profilename[MED_NAME_SIZE + 1] = "";
+            char localizationname[MED_NAME_SIZE + 1] = "";
+            const med_geometry_type geotype = medTypes[i];
+            auto nbProf = MEDfieldnProfile( _filePtr.getFileId(), _name.c_str(), numdt, numit,
+                                            entitype, geotype, profilename, localizationname );
 
-        const auto nbCells = nbElems[i];
+            const auto nbCells = nbElems[i];
 
-        if ( nbCells != 0 ) {
-            med_int profilesize = 0, nintegrationpoint = 0;
-            for ( int profileit = 1; profileit <= nbProf; ++profileit ) {
-                const auto nbVal = MEDfieldnValueWithProfileByName(
-                    _filePtr.getFileId(), _name.c_str(), numdt, numit, entitype, geotype,
-                    profilename, MED_GLOBAL_STMODE, &profilesize, localizationname,
-                    &nintegrationpoint );
-                std::string profName( profilename );
-                geoTypes.push_back( geotype );
-                compNb.push_back( _nbCmp );
-                compNb.push_back( nintegrationpoint );
-                totSizes.push_back( nbVal );
-                cumPos.push_back( cumulatedElem );
-                nbElems2.push_back( nbCells );
-                starts2.push_back( starts[i] );
-                if ( profName == "" ) {
-                    if ( nbProf != 1 )
-                        throw std::runtime_error( "Unexpected value" );
-                    medV->setElements( cumulatedElem, nbCells, _nbCmp * nintegrationpoint );
-                    profs.emplace_back( 0 );
-                    indirection.push_back( {nbElems[i], starts[i]} );
-                    profsPtr.push_back( MedProfilePtr( nullptr ) );
-                } else {
-                    const auto profSize = MEDprofileSizeByName( _filePtr.getFileId(), profilename );
-                    const auto &pair = splitEntitySet( profSize, rank, nbProcs );
-                    auto &profilearray = profs.emplace_back( profSize );
-                    MEDprofileRd( _filePtr.getFileId(), profilename, &profilearray[0] );
-                    int deb = -1, taille = 0;
-                    const auto start = starts[i];
-                    const auto end = nbElems[i] + start;
-                    for ( int j = 0; j < profSize; ++j ) {
-                        const int curElem = profilearray[j];
-                        if ( curElem >= start && curElem < end ) {
-                            if ( deb == -1 )
-                                deb = j + 1;
-                            medV->setElement( curElem - start + cumulatedElem,
-                                              _nbCmp * nintegrationpoint );
-                            ++taille;
+            if ( nbCells != 0 ) {
+                med_int profilesize = 0, nintegrationpoint = 0;
+                for ( int profileit = 1; profileit <= nbProf; ++profileit ) {
+                    const auto nbVal = MEDfieldnValueWithProfileByName(
+                        _filePtr.getFileId(), _name.c_str(), numdt, numit, entitype, geotype,
+                        profilename, MED_GLOBAL_STMODE, &profilesize, localizationname,
+                        &nintegrationpoint );
+                    foundSomething = true;
+                    std::string profName( profilename );
+                    geoTypes.push_back( geotype );
+                    compNb.push_back( _nbCmp );
+                    compNb.push_back( nintegrationpoint );
+                    totSizes.push_back( nbVal );
+                    cumPos.push_back( cumulatedElem );
+                    nbElems2.push_back( nbCells );
+                    starts2.push_back( starts[i] );
+                    if ( profName == "" ) {
+                        if ( nbProf != 1 )
+                            throw std::runtime_error( "Unexpected value" );
+                        medV->setElements( cumulatedElem, nbCells, _nbCmp * nintegrationpoint );
+                        profs.emplace_back( 0 );
+                        indirection.push_back( {nbElems[i], starts[i]} );
+                        profsPtr.push_back( MedProfilePtr( nullptr ) );
+                    } else {
+                        const auto profSize = MEDprofileSizeByName( _filePtr.getFileId(),
+                                                                    profilename );
+                        const auto &pair = splitEntitySet( profSize, rank, nbProcs );
+                        auto &profilearray = profs.emplace_back( profSize );
+                        MEDprofileRd( _filePtr.getFileId(), profilename, &profilearray[0] );
+                        int deb = -1, taille = 0;
+                        const auto start = starts[i];
+                        const auto end = nbElems[i] + start;
+                        for ( int j = 0; j < profSize; ++j ) {
+                            const int curElem = profilearray[j];
+                            if ( curElem >= start && curElem < end ) {
+                                if ( deb == -1 )
+                                    deb = j + 1;
+                                medV->setElement( curElem - start + cumulatedElem,
+                                                _nbCmp * nintegrationpoint );
+                                ++taille;
+                            }
                         }
+                        indirection.push_back( {taille, deb} );
+                        profsPtr.push_back( _profiles[_mapProfileNameRank.at( profName )] );
                     }
-                    indirection.push_back( {taille, deb} );
-                    profsPtr.push_back( _profiles[_mapProfileNameRank.at( profName )] );
                 }
             }
+            cumulatedElem += nbCells;
         }
-        cumulatedElem += nbCells;
+        if( foundSomething ) {
+            medType = entIndex;
+            ++verif;
+        }
     }
+    // There must only be MED_CELL or MED_NODE_ELEMENT but not the two
+    // A field is ELGA or ELNO but not the two.
+    if( verif != 1 ) throw std::runtime_error( "Error while reading med field on cells " + _name );
     medV->endDefinition();
     for ( int i = 0; i < profs.size(); ++i ) {
         const auto &nbNoT = totSizes[i];
@@ -184,7 +214,7 @@ MedVectorPtr MedField::getValuesAtSequenceOnCellTypesList(
             valVec = VectorReal( cmpPg * nbNoL, 0. );
             value = &valVec[0];
         }
-        MEDfieldValueAdvancedRd( _filePtr.getFileId(), _name.c_str(), numdt, numit, entitype,
+        MEDfieldValueAdvancedRd( _filePtr.getFileId(), _name.c_str(), numdt, numit, entitypes[ medType ],
                                  geotype, medFilter.getPointer(), (unsigned char *)value );
         if ( profPtr != nullptr ) {
             const auto &curProf = profs[i];
@@ -223,6 +253,7 @@ MedVectorPtr MedField::getValuesAtSequenceOnNodes( int numdt, int numit ) const 
     const auto &end = pair.first + start;
     MedVectorPtr medV( new MedVector( pair.first ) );
     medV->setComponentNumber( _nbCmp );
+    medV->setComponentName( _componentName );
     medV->setSize( pair.first );
 
     std::vector< std::vector< med_int > > profs;

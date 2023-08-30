@@ -74,9 +74,11 @@ class MedVector {
     /** @brief element number */
     int _size = 0;
     /** @brief component number */
-    int _cmpNb = 1;
+    int _cmpNb = 0;
     /** @brief iterator on current element */
     ElementValue _curVal;
+    /** @brief component name */
+    std::vector< std::string > _cmpName;
 
   public:
     /**
@@ -84,7 +86,7 @@ class MedVector {
      */
     MedVector( int nbElement )
         : _cumSize( std::vector< int >( nbElement + 1, 0 ) ),
-          _cmps( std::vector< int >( nbElement, 1 ) ),
+          _cmps( std::vector< int >( nbElement, 0 ) ),
           _size( nbElement ),
           _curVal( ElementValue( _vector ) ) {};
 
@@ -99,8 +101,14 @@ class MedVector {
         _vector = std::vector< double >( _cumSize[_size] );
     };
 
+    /** @brief get component name */
+    const std::vector< std::string >& getComponentName() const { return _cmpName; };
+
     /** @brief get component number */
     int getComponentNumber() const { return _cmpNb; };
+
+    /** @brief get component on element vector */
+    std::vector< int > getComponentVector() const { return _cmps; };
 
     /** @brief get cumulated sizes vector */
     std::vector< int > getCumulatedSizesVector() const { return _cumSize; };
@@ -127,6 +135,13 @@ class MedVector {
         return tuple;
     };
 
+    /** @brief set component name */
+    void setComponentName( const std::vector< std::string >& cmpName ) {
+        if ( cmpName.size() != _cmpNb )
+            throw std::runtime_error( "Bad component number" );
+        _cmpName = cmpName;
+    };
+
     /** @brief set component number */
     void setComponentNumber( int nbCmp ) { _cmpNb = nbCmp; };
 
@@ -134,8 +149,8 @@ class MedVector {
     void setElement( int index, int nbCmp ) {
         if ( _size == 0 )
             throw std::runtime_error( "Number of elements must be set before set elements" );
-        if ( nbCmp < 1 )
-            throw std::runtime_error( "Component numbers must be grower than 0" );
+        // if ( nbCmp < 1 )
+        //     throw std::runtime_error( "Component numbers must be grower than 0" );
         if ( index < 0 || index > _size )
             throw std::runtime_error( "Out of bound" );
         _cmps[index] = nbCmp;

@@ -118,6 +118,9 @@ class MedField {
     /** @brief Get vector of all entity type and geometry type in calculation sequence */
     std::vector< med_int > getAllSupportEntitiesAtSequence( int numdt, int numit ) const;
 
+    /** @brief Get component name */
+    std::vector< std::string > getComponentName() const { return _componentName; };
+
     /** @brief Get component number */
     int getComponentNumber() const { return _nbCmp; };
 

@@ -1,7 +1,7 @@
 # coding=utf-8
 # --------------------------------------------------------------------
 # Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
-# This file is part of code_aster.
+# This file is part of 
 #
 # code_aster is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,10 +14,13 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# along with   If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
 from . import MedFileReader, IncompleteMesh, MeshBalancer, MeshConnectionGraph, PtScotchPartitioner
+from ...Objects import FieldCharacteristics, SimpleFieldOnNodesReal, Result
+from ...Objects import SimpleFieldOnCellsReal
+from ...ObjectsExt.medctoaster import MYMED2ASTER_CONNECT, MED_TYPES, ASTER_TYPES
 
 
 def splitMeshAndFieldsFromMedFile(filename, cellBalancer=False, nodeBalancer=False, outMesh=None):
@@ -91,3 +94,116 @@ def splitMeshAndFieldsFromMedFile(filename, cellBalancer=False, nodeBalancer=Fal
     if nodeBalancer:
         toReturn += (nBalancer,)
     return toReturn
+
+def splitMedFileToResults(filename, fieldToRead, resultType, model = None):
+    """Split a MED mesh and MED fields from a filename and return Result
+
+    Arguments:
+        filename (str): filename of MED file.
+        fieldToRead (dict): dict that matches med field name and aster name (in Result)
+        resultType (class): A Result class to instanciate (child of Result)
+        model (Model): Model (in case of ELGA field reading)
+
+    Returns:
+        Result: results container (type: resultType) with mesh and all readen fields
+    """
+    if not issubclass(resultType, Result):
+        raise TypeError("resultType must be a child class of Result")
+    result = resultType()
+
+    # Split mesh and fields
+    (mesh, fields) = splitMeshAndFieldsFromMedFile(filename)
+
+    if model is not None:
+        mesh = model.getMesh()
+
+    toMedGeoType = dict(zip(ASTER_TYPES, MED_TYPES))
+
+    first = True
+    # Loop over field dict given by user
+    for medFieldName in fieldToRead:
+        # Get aster name of med field
+        asterFieldName = fieldToRead[medFieldName]
+
+        # Get characteristics (localization, quantity name) of field from aster name
+        fieldChar = FieldCharacteristics(asterFieldName)
+        loc = fieldChar.getLocalization()
+        qt = fieldChar.getQuantity()
+        opt = fieldChar.getOption()
+        param = fieldChar.getParameter()
+
+        # Get split field
+        curMedFieldDict = fields[medFieldName]
+        # Resize output result
+        if first:
+            result.resize(len(curMedFieldDict))
+            first = False
+        # Loop over field "time" index
+        for index in curMedFieldDict:
+            curField = curMedFieldDict[index]
+            fieldValues = curField.getValues()
+            compName = curField.getComponentName()
+            fieldToAdd = None
+            # FieldOnNodes case
+            if loc == "NOEU":
+                sFON = SimpleFieldOnNodesReal(mesh, qt, compName, True)
+                nodeNb = mesh.getNumberOfNodes()
+                cmpNb = len(compName)
+                i = 0
+                # Copy values in field
+                for iNode in range(nodeNb):
+                    for iCmp in range(cmpNb):
+                        sFON[iNode, iCmp] = fieldValues[i]
+                        i += 1
+
+                # Convert SimpleFieldOnNodes to FieldOnNodes
+                fieldToAdd = sFON.toFieldOnNodes()
+            # FieldOnCells case
+            elif loc in ("ELGA", "ELNO", "ELEM"):
+                if model is None:
+                    raise NameError("Model is mandatory when ELGA field is asked")
+                cumSizes = curField.getCumulatedSizesVector()
+                cmpNb = len(compName)
+                fieldCmps = curField.getComponentVector()
+                maxNbGPNb = -1
+                for iCell, curCmpNum in enumerate(fieldCmps):
+                    gPNb = curCmpNum/cmpNb
+                    if int(gPNb) == gPNb:
+                        gPNb = int(gPNb)
+                    else:
+                        raise NameError("Inconsistent Gauss point number")
+                    maxNbGPNb = max(gPNb, maxNbGPNb)
+                sFOC = SimpleFieldOnCellsReal(mesh, loc, qt,
+                                              compName, maxNbGPNb, 1, True)
+                # Copy values in field
+                if loc == "ELNO":
+                    assert len(fieldCmps) == mesh.getNumberOfCells()
+                    for iCell, curCmpNum in enumerate(fieldCmps):
+                        gPNb = int(curCmpNum/cmpNb)
+                        j = 0
+                        posInNew = cumSizes[iCell]
+                        cellType = mesh.getCellType(iCell)
+                        medType = toMedGeoType[cellType]
+                        for iPt in range(gPNb):
+                            newPos = MYMED2ASTER_CONNECT[medType][iPt]
+                            for iCmp in range(cmpNb):
+                                sFOC[iCell, iCmp, newPos, 0] = fieldValues[posInNew + j]
+                                j += 1
+                else:
+                    for iCell, curCmpNum in enumerate(fieldCmps):
+                        gPNb = int(curCmpNum/cmpNb)
+                        j = 0
+                        posInNew = cumSizes[iCell]
+                        for iPt in range(gPNb):
+                            for iCmp in range(cmpNb):
+                                sFOC[iCell, iCmp, iPt, 0] = fieldValues[posInNew + j]
+                                j += 1
+                fED = model.getFiniteElementDescriptor()
+                # Convert SimpleFieldOnells to FieldOnCells
+                fieldToAdd = sFOC.toFieldOnCells(fED, opt, param)
+            else:
+                raise NameError("Not yet implemented")
+            # Add field to Result
+            result.setField(fieldToAdd, asterFieldName, index)
+
+    return result

@@ -36,6 +36,12 @@ void exportMedVectorToPython( py::module_ &mod ) {
     py::class_< MedVector, MedVectorPtr >( mod, "MedVector" )
         .def( "__pickling_disabled__", disable_pickling< MedVector >() )
 
+        .def( "getComponentName", &MedVector::getComponentName, R"(
+Get component name
+            )" )
+        .def( "getComponentVector", &MedVector::getComponentVector, R"(
+Get component on element vector
+            )" )
         .def( "getCumulatedSizesVector", &MedVector::getCumulatedSizesVector, R"(
 Get cumulated sizes vector
 

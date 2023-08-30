@@ -92,12 +92,15 @@ MedVectorPtr
 ObjectBalancer::balanceMedVectorOverProcessesWithRenumbering( const MedVectorPtr &vecIn ) const {
     MedVectorPtr vecOut( new MedVector() );
     balanceObjectOverProcesses3( *vecIn, *vecOut, DummyMaskDouble() );
+    vecOut->setComponentNumber( vecIn->getComponentNumber() );
+    vecOut->setComponentName( vecIn->getComponentName() );
     if ( _renumbering.size() == 0 ) {
         return vecOut;
     }
     const auto size = vecOut->size();
     MedVectorPtr vecOut2( new MedVector() );
     vecOut2->setComponentNumber( vecOut->getComponentNumber() );
+    vecOut2->setComponentName( vecOut->getComponentName() );
     vecOut2->setSize( size );
     if ( _renumbering.size() != size )
         throw std::runtime_error( "Sizes not matching" );

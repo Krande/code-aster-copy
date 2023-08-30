@@ -188,13 +188,13 @@ toSimpleFieldOnCells( const std::shared_ptr< FieldOnCells< ValueType > > field )
 
 template < typename ValueType >
 std::shared_ptr< FieldOnCells< ValueType > >
-toFieldOnCells( const SimpleFieldOnCells< ValueType > field, const FiniteElementDescriptorPtr fed,
+toFieldOnCells( const SimpleFieldOnCells< ValueType >& field, const FiniteElementDescriptorPtr fed,
                 const std::string option = std::string(),
                 const std::string nompar = std::string() ) {
     auto cham_elem = std::make_shared< FieldOnCells< ValueType > >();
 
     // Convert to CHAM_ELEM
-    const std::string prol0 = "NON", base = "G", kstop = "F";
+    const std::string prol0 = "OUI", base = "G", kstop = "F";
     ASTERINTEGER iret = 0, nncp = 0;
     CALLO_CESCEL( field.getName(), fed->getName(), option, nompar, prol0, &nncp, base,
                   cham_elem->getName(), kstop, &iret );
