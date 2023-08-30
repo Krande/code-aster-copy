@@ -56,24 +56,23 @@ bool IncompleteMesh::debugCheckFromBaseMesh( BaseMeshPtr &compMesh ) const {
     const auto nbNodes = coords.size() / 3;
     const auto firstId = _nodeRange[0];
     for ( int i = 0; i < nbNodes; ++i ) {
-        if ( coords[i * 3] != compCoords[( firstId + i ) * 3] ) {
+        const auto curNode = coords[i * 3];
+        const auto compCurNode = compCoords[( firstId + i ) * 3];
+        if ( curNode[0] != compCurNode[0] ) {
 #ifdef ASTER_DEBUG_CXX
-            std::cout << "Diff X " << coords[i * 3] << " " << compCoords[firstId + i * 3]
-                      << std::endl;
+            std::cout << "Diff X " << curNode[0] << " " << compCurNode[0] << std::endl;
 #endif
             toReturn = false;
         }
-        if ( coords[i * 3 + 1] != compCoords[( firstId + i ) * 3 + 1] ) {
+        if ( curNode[1] != compCurNode[1] ) {
 #ifdef ASTER_DEBUG_CXX
-            std::cout << "Diff Y " << coords[i * 3 + 1] << " " << compCoords[firstId + i * 3 + 1]
-                      << std::endl;
+            std::cout << "Diff Y " << curNode[1] << " " << compCurNode[1] << std::endl;
 #endif
             toReturn = false;
         }
-        if ( coords[i * 3 + 2] != compCoords[( firstId + i ) * 3 + 2] ) {
+        if ( curNode[2] != compCurNode[2] ) {
 #ifdef ASTER_DEBUG_CXX
-            std::cout << "Diff Z " << coords[i * 3 + 2] << " " << compCoords[firstId + i * 3 + 2]
-                      << std::endl;
+            std::cout << "Diff Z " << curNode[2] << " " << compCurNode[2] << std::endl;
 #endif
             toReturn = false;
         }

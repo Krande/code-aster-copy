@@ -31,8 +31,10 @@
 #include "Meshes/Mesh.h"
 #include "ParallelUtilities/MeshConnectionGraph.h"
 
-template< typename ValType >
-void decrement( ValType &i ) { i--; };
+template < typename ValType >
+void decrement( ValType &i ) {
+    i--;
+};
 
 struct LocalIdGlobalId {
     int localId = -1;
