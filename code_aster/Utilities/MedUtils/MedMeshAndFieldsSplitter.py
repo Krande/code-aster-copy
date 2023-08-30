@@ -17,11 +17,27 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ...Objects import MedFileReader, IncompleteMesh, MeshBalancer, MeshConnectionGraph
-from ...Objects import PtScotchPartitioner
+from .. import config
+
+# aslint: disable=C4008
+if config.get("ASTER_HAVE_MED"):
+    from ...Objects import MedFileReader, IncompleteMesh, MeshBalancer, MeshConnectionGraph
+    from ...Objects import PtScotchPartitioner
 
 
-def splitMeshAndFieldsFromMedFile(filename, cellBalancer=False, nodeBalancer=False, outMesh=None):
+def splitMeshAndFieldsFromMedFile(filename, cellBalancer=False, nodeBalancer=False):
+    """Split a MED mesh and MED fields from a filename
+
+    Arguments:
+        filename (str): filename of MED file.
+        cellBalancer (bool): True if cell balancer must be return.
+        nodeBalancer (bool): True if node balancer must be return.
+
+    Returns:
+        tuple: first element: split mesh, second element: dict with split fields,
+               third element: cell balancer (if asked),
+               fourth element: node balancer (if asked).
+    """
     fr = MedFileReader()
     fr.openParallel(filename)
     mesh = IncompleteMesh()
