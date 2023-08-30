@@ -58,26 +58,6 @@ compile:
       variables:
         BUILD: debug
 
-doc_html:
-  stage: build
-  needs: ["prepare", "compile"]
-  script:
-    - singularity exec --bind $(pwd) --pwd $(pwd) ${SIF} .gitlabci/doc_html.sh
-  artifacts:
-    paths:
-      - install/share/doc/html/*
-    expire_in: 3 days
-  rules:
-    - if: $CI_COMMIT_BRANCH !~ $reg_debugging
-
-minimal_build:
-  stage: build
-  needs: ["prepare", "compile"]
-  script:
-    - singularity exec --bind $(pwd) --pwd $(pwd) ${SIF} .gitlabci/compile_minimal.sh
-  rules:
-    - if: $CI_COMMIT_BRANCH !~ $reg_debugging
-
 check_source:
   stage: test
   needs: ["prepare", "compile"]

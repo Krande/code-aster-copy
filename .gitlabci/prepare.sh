@@ -31,6 +31,6 @@ git clone ${DATA_URL} data-src
 (
     cd data-src
     branch=${CI_COMMIT_BRANCH}
-    git rev-parse --verify ${branch} > /dev/null 2>&1 || branch=main
+    git rev-parse --verify ${branch} > /dev/null 2>&1 || branch=v15
     git checkout ${branch}
 )

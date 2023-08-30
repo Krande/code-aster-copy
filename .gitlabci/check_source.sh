@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-refrev=main
+refrev=v15
 
 echo "+ fetching '${refrev}' branch..."
 git branch -D ${refrev} || true
