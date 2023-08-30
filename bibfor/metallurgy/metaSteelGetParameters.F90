@@ -28,7 +28,7 @@ subroutine metaSteelGetParameters(jv_mater, metaSteelPara)
 #include "asterfort/utmess.h"
 !
     integer, intent(in) :: jv_mater
-    type(META_SteelParameters), intent(out) :: metaSteelPara
+    type(META_SteelParameters), intent(inout) :: metaSteelPara
 !
 ! --------------------------------------------------------------------------------------------------
 !

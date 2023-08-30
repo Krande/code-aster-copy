@@ -1215,7 +1215,7 @@ class DiscreteComputation:
 
         Returns:
             tuple (tuple): return code error (FieldOnCells),
-            error code flag (integer),
+            error code flag (int),
             internal state variables VARI_ELGA (FieldOnCells),
             Cauchy stress SIEF_ELGA (FieldOnCells),
             field of internal forces (FieldOnNodesReal),
@@ -1230,8 +1230,12 @@ class DiscreteComputation:
             varc_curr (FieldOnCellsReal): external state variables at current time
             groupOfCells (list[str]): compute matrices on given groups of cells.
                 If it empty, the full model is used
+
         Returns:
-            ElementaryMatrix: elementary mass matrix
+            tuple (tuple):
+            error code flag (int),
+            fluxes FLUX_ELGA (FieldOnCellsReal),
+            internal forces (FieldOnNodesReal),
         """
 
     def getLinearCapacityMatrix(self, time_curr, varc_curr=None, groupOfCells=[]):
@@ -13798,6 +13802,16 @@ class BehaviourProperty(DataStructure):
             ConstantFieldOnCellsChar16Ptr: multiple behaviour.
         """
 
+    def hasBehaviour(self, behaviour):
+        """Return True if the given behaviour name is present.
+
+        Arguments:
+            behaviour (str): behaviour name
+
+        Returns:
+            bool: True if present else False.
+        """
+
 
 # class CodedMaterial in libaster
 
@@ -13863,6 +13877,20 @@ class PostProcessing:
 
     def __init__(self, arg0):
         pass
+
+    def computeHydration(self, temp_prev, temp_curr, time_prev, time_curr, hydr_prev):
+        """Compute hydration at quadrature points (HYDR_ELGA)
+
+        Arguments:
+            temp_prev (FieldOnNodesReal): temperature field at begin of current time step
+            temp_curr (FieldOnNodesReal): temperature field at end of current time step
+            time_prev (float): time at begin of the step
+            time_curr (float): time at end of the step
+            hydr_prev (FieldOnCellReals): hydration field at begin of current time step
+
+        Returns:
+            FieldOnCellReals: hydration field at end of current time step
+        """
 
 
 # class HHO in libaster
@@ -14185,7 +14213,7 @@ class MeshBalancer:
     def __pickling_disabled__(self):
         pass
 
-    def applyBalancingStrategy(self, vector):
+    def applyBalancingStrategy(self, vector, outMesh=None):
         """Apply balancing strategy to given mesh. User must give nodes that local process
         will own (without ghost nodes).
         This function returns a ParallelMesh with joints, ghosts and so on.
@@ -14242,6 +14270,9 @@ class IncompleteMesh(Mesh):
 
         2. __init__(self: libaster.IncompleteMesh, arg0: str) -> None
         """
+
+    def debugCheckFromBaseMesh(self, arg0):
+        pass
 
 
 # class PtScotchPartitioner in libaster
@@ -14328,6 +14359,9 @@ class MeshConnectionGraph:
         Arguments:
             mesh: IncompleteMesh.
         """
+
+    def debugCheck(self):
+        """Check graph"""
 
 
 # class MedFileReader in libaster
@@ -14565,6 +14599,18 @@ class MedMesh:
             numdt (int): time step id
             numit (int): iteration id
             geomtype_iterator (int): iterator on geometric type
+
+        Returns:
+            int: cell number
+        """
+
+    def getCellNumberForGeometricTypeAtSequence(self, numdt, numit, geomtype):
+        """Get cell number for calculation sequence and geometric type
+
+        Arguments:
+            numdt (int): time step id
+            numit (int): iteration id
+            geomtype (int): geometric type
 
         Returns:
             int: cell number
