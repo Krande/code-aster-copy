@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# just call 'make configure'
+
+set_prefix() {
+    local this=$(readlink -n -f "$1")
+    prefix=$(dirname "${this}")
+}
+
+set_prefix "${0}"
+
+usage()
+{
+    echo "usage: ${0} [-h/--help] [arguments]"
+    echo
+    echo "  This script mocks the autotools './configure --prefix=...' command."
+    echo
+    echo "  It simply calls 'waf configure' using the optimized or debug configuration."
+    echo "  See BUILD variable value shown by 'make help' for the default configuration."
+    echo
+    echo "arguments:"
+    echo "  -h/--help       show this help message"
+    echo "  --prefix        installation prefix"
+    echo "  and other options accepted by 'waf configure'."
+    echo
+    exit 1
+}
+
+configure_main()
+{
+    if [ $# != 0 ] && ([ "$1" = "-h" ] || [ "${1}" = "--help" ]); then
+        usage
+    fi
+
+    cd ${prefix}
+    OPTS="${@}" make configure
+}
+
+configure_main "${@}"
+exit $?
