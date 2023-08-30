@@ -179,7 +179,7 @@ class ExtendedParallelMesh:
             for i in range(int(len(fJ) / 2)):
                 nId = fJ[2 * i]
                 gFJ.append(l2G[nId - 1])
-                curCoordsFJ.append(coords[3 * (nId - 1)])
+                curCoordsFJ.append(coords[(nId - 1)])
 
             sJ = self.getReceiveJoint(numJoint)
             gSJ = []
@@ -188,7 +188,7 @@ class ExtendedParallelMesh:
                 nId = sJ[2 * i]
                 dictOutN.pop(nId)
                 gSJ.append(l2G[nId - 1])
-                curCoordsSJ.append(coords[3 * (nId - 1)])
+                curCoordsSJ.append(coords[(nId - 1)])
 
             if proc < rank:
                 comm.send(gFJ, dest=proc, tag=tag)

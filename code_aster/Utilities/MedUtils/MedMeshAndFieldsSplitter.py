@@ -17,12 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from .. import config
-
-# aslint: disable=C4008
-if config.get("ASTER_HAVE_MED"):
-    from ...Objects import MedFileReader, IncompleteMesh, MeshBalancer, MeshConnectionGraph
-    from ...Objects import PtScotchPartitioner
+from . import MedFileReader, IncompleteMesh, MeshBalancer, MeshConnectionGraph, PtScotchPartitioner
 
 
 def splitMeshAndFieldsFromMedFile(filename, cellBalancer=False, nodeBalancer=False, outMesh=None):

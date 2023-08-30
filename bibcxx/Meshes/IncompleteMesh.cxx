@@ -56,8 +56,8 @@ bool IncompleteMesh::debugCheckFromBaseMesh( BaseMeshPtr &compMesh ) const {
     const auto nbNodes = coords.size() / 3;
     const auto firstId = _nodeRange[0];
     for ( int i = 0; i < nbNodes; ++i ) {
-        const auto curNode = coords[i * 3];
-        const auto compCurNode = compCoords[( firstId + i ) * 3];
+        const auto curNode = coords[i];
+        const auto compCurNode = compCoords[firstId + i];
         if ( curNode[0] != compCurNode[0] ) {
 #ifdef ASTER_DEBUG_CXX
             std::cout << "Diff X " << curNode[0] << " " << compCurNode[0] << std::endl;

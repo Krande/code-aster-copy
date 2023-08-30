@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,3 +24,12 @@ This module gives common utilities.
 
 No external import of other :py:mod:`code_aster` packages.
 """
+
+from ..base_utils import config
+
+# aslint: disable=C4008
+if config.get("ASTER_HAVE_MED"):
+    from ...Objects import MedFileReader, IncompleteMesh, MeshBalancer, MeshConnectionGraph
+    from ...Objects import PtScotchPartitioner
+else:
+    MedFileReader = IncompleteMesh = MeshBalancer = MeshConnectionGraph = PtScotchPartitioner = None

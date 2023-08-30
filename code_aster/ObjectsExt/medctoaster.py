@@ -23,10 +23,7 @@ from ..Messages import UTMESS
 from ..Utilities import MPI, Timer, config
 from ..Utilities import medcoupling as medc
 from ..Utilities import no_new_attributes
-
-# aslint: disable=C4008
-if config.get("ASTER_HAVE_MED"):
-    from ..Objects import MedFileReader
+from ..Utilities.MedUtils import MedFileReader
 
 ASTER_TYPES = [1, 2, 4, 6, 7, 9, 11, 12, 14, 16, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27]
 

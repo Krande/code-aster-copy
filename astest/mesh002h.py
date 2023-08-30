@@ -35,7 +35,7 @@ nbproc = MPI.ASTER_COMM_WORLD.Get_size()
 
 if nbproc == 2:
     nbNodes = [1683, 1730]
-    nbCells = [1148, 1174]
+    nbCells = [1148, 1173]
 elif nbproc == 3:
     nbNodes = [1289, 1339, 1490]
     nbCells = [863, 835, 929]
