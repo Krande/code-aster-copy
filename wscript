@@ -255,6 +255,8 @@ def configure(self):
     # compute default prefix
     if self.env.PREFIX in ("", "/"):
         self.env.PREFIX = osp.abspath(default_prefix)
+    if "PREFIX_ROOT" in os.environ:
+        self.env.PREFIX = osp.join(os.environ["PREFIX_ROOT"], install_suffix)
     self.msg("Setting prefix to", self.env.PREFIX)
 
     self.load("ext_aster", tooldir="waftools")

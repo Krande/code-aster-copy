@@ -14,15 +14,17 @@ if [ $# -ne 1 ]; then
     exit 1
 fi
 export="${1}"
-base=$(basename "${export%%.*}")
+base=$(basename "${export}")
+base="${base%%.*}"
+MESS_EXT=${MESS_EXT:-"mess"}
 
 export RUNASTER_ROOT="${prefix}"
-rm -f "${base}.{mess,code}"
-"${prefix}/bin/run_aster" --ctest "${export}" > "${base}.mess" 2>&1
+rm -f "${base}.{${MESS_EXT},code}"
+"${prefix}/bin/run_aster" --ctest "${export}" > "${base}.${MESS_EXT}" 2>&1
 iret=${?}
 
 if [ ${iret} -eq 0 ] && [ ! -z "${ASTER_ONLY_FAILED_RESULTS}" ]; then
-    rm -f "${base}".{mess,code}
+    rm -f "${base}".{${MESS_EXT},code}
 fi
 
 exit ${iret}
