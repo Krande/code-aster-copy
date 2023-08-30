@@ -44,7 +44,8 @@ Create the graph corresponding to given IncompleteMesh to be used by PtScotchPar
 Arguments:
     mesh: IncompleteMesh.
         )",
-              py::arg( "mesh" ) );
+              py::arg( "mesh" ) )
+        .def( "debugCheck", &MeshConnectionGraph::debugCheck, R"(Check graph)" );
 };
 
 #endif /* ASTER_HAVE_MPI */

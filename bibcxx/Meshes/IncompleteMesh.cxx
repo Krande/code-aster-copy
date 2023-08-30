@@ -47,6 +47,75 @@ void IncompleteMesh::addFamily( int id, VectorString groups ) {
     }
 };
 
+bool IncompleteMesh::debugCheckFromBaseMesh( BaseMeshPtr &compMesh ) const {
+    bool toReturn = true;
+    const auto &compCoords = *( compMesh->getCoordinates() );
+    compCoords.updateValuePointers();
+    const auto &coords = *_coordinates;
+    coords.updateValuePointers();
+    const auto nbNodes = coords.size() / 3;
+    const auto firstId = _nodeRange[0];
+    for ( int i = 0; i < nbNodes; ++i ) {
+        if ( coords[i * 3] != compCoords[( firstId + i ) * 3] ) {
+#ifdef ASTER_DEBUG_CXX
+            std::cout << "Diff X " << coords[i * 3] << " " << compCoords[firstId + i * 3]
+                      << std::endl;
+#endif
+            toReturn = false;
+        }
+        if ( coords[i * 3 + 1] != compCoords[( firstId + i ) * 3 + 1] ) {
+#ifdef ASTER_DEBUG_CXX
+            std::cout << "Diff Y " << coords[i * 3 + 1] << " " << compCoords[firstId + i * 3 + 1]
+                      << std::endl;
+#endif
+            toReturn = false;
+        }
+        if ( coords[i * 3 + 2] != compCoords[( firstId + i ) * 3 + 2] ) {
+#ifdef ASTER_DEBUG_CXX
+            std::cout << "Diff Z " << coords[i * 3 + 2] << " " << compCoords[firstId + i * 3 + 2]
+                      << std::endl;
+#endif
+            toReturn = false;
+        }
+    }
+
+    auto &compConnex = *( compMesh->getConnectivity() );
+    compConnex.build();
+    auto &connex = *( getConnectivity() );
+    connex.build();
+    int cumElem = 0;
+    for ( const auto &range : _cellRange ) {
+        const auto &size = range[1] - range[0];
+        for ( int localElemId = 0; localElemId < size; ++localElemId ) {
+            auto &curConnex = connex[localElemId + cumElem + 1];
+            curConnex->updateValuePointer();
+            auto &curCheckConnex = compConnex[range[0] + localElemId + 1];
+            curCheckConnex->updateValuePointer();
+            const auto nbNode1 = curConnex->size();
+            const auto nbNode2 = curCheckConnex->size();
+            if ( nbNode1 != nbNode2 ) {
+                toReturn = false;
+                break;
+            }
+            for ( int j = 0; j < nbNode1; ++j ) {
+                if ( ( *curConnex )[j] != ( *curCheckConnex )[j] ) {
+                    toReturn = false;
+                    break;
+                }
+            }
+            if ( !toReturn )
+                break;
+        }
+        cumElem += size;
+        if ( !toReturn )
+            break;
+    }
+#ifdef ASTER_DEBUG_CXX
+    std::cout << "Differences between connectivities" << std::endl;
+#endif
+    return toReturn;
+};
+
 ASTERINTEGER IncompleteMesh::getDimension() const {
     if ( isEmpty() )
         return 0;

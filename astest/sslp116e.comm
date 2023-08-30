@@ -18,8 +18,22 @@
 # --------------------------------------------------------------------
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
+from code_aster import MPI
+import code_aster
+
+rank = MPI.ASTER_COMM_WORLD.Get_rank()
+nbproc = MPI.ASTER_COMM_WORLD.Get_size()
+
 # Prepare mesh
 meshHE8 = LIRE_MAILLAGE(FORMAT="MED", PARTITIONNEUR="PTSCOTCH")
+
+if not meshHE8.checkConsistency("fort.20"):
+    print("ERROR in consistency check")
+import os
+
+test = code_aster.TestCase()
+
+test.assertTrue(meshHE8.checkJoints())
 
 mesh = CREA_MAILLAGE(MAILLAGE=meshHE8, INFO=1, MODI_HHO=_F(TOUT="OUI", PREF_NOEUD="AN"))
 

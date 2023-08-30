@@ -97,6 +97,12 @@ extern int aster_mpi_allgather( void *, int, MPI_Datatype, void *, int, MPI_Data
                                 aster_comm_t * );
 extern int aster_mpi_allgatherv( void *, int, MPI_Datatype, void *, int *, int *, MPI_Datatype,
                                  aster_comm_t * );
+extern int aster_mpi_send( void *, int, MPI_Datatype, int, int, aster_comm_t * );
+extern int aster_mpi_recv( void *, int, MPI_Datatype, int, int, aster_comm_t * );
+
+extern int aster_mpi_sendrecv( void *, int, MPI_Datatype, int, int, void *, int, MPI_Datatype, int,
+                               int, aster_comm_t * );
+
 extern void DEFSP( ASMPI_COMM, asmpi_comm, char *, STRING_SIZE, MPI_Fint * );
 extern void DEFPPPSP( ASMPI_SPLIT_COMM, asmpi_split_comm, MPI_Fint *, MPI_Fint *, MPI_Fint *,
                       char *, STRING_SIZE, MPI_Fint * );

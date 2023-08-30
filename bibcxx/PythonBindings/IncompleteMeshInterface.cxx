@@ -35,9 +35,11 @@ void exportIncompleteMeshToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< IncompleteMesh > ) )
         .def( py::init( &initFactoryPtr< IncompleteMesh, std::string > ) )
         .def( "_addFamily", &IncompleteMesh::addFamily )
+        .def( "debugCheckFromBaseMesh", &IncompleteMesh::debugCheckFromBaseMesh )
         .def( "_setCellFamily", &IncompleteMesh::setCellFamily )
+        .def( "_setCellRange", &IncompleteMesh::setCellRange )
         .def( "_setNodeFamily", &IncompleteMesh::setNodeFamily )
-        .def( "_setRange", &IncompleteMesh::setRange );
+        .def( "_setNodeRange", &IncompleteMesh::setNodeRange );
 };
 
 #endif /* ASTER_HAVE_MPI */

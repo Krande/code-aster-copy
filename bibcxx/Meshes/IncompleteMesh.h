@@ -42,7 +42,8 @@
  */
 class IncompleteMesh : public Mesh {
 
-    VectorLong _range;
+    VectorLong _nodeRange;
+    VectorOfVectorsLong _cellRange;
     VectorLong _nodeFamily;
     VectorLong _cellFamily;
     std::vector< VectorString > _nodeFamGroups;
@@ -67,17 +68,21 @@ class IncompleteMesh : public Mesh {
 
     void addFamily( int id, VectorString groups );
 
+    bool debugCheckFromBaseMesh( BaseMeshPtr & ) const;
+
     ASTERINTEGER getDimension() const;
 
     VectorLong getCellFamily() const { return _cellFamily; };
 
     std::vector< VectorString > getCellFamilyGroups() const { return _cellFamGroups; };
 
+    const VectorOfVectorsLong &getCellRange() const { return _cellRange; };
+
     std::vector< VectorString > getNodeFamilyGroups() const { return _nodeFamGroups; };
 
     VectorLong getNodeFamily() const { return _nodeFamily; };
 
-    const VectorLong &getRange() const { return _range; };
+    const VectorLong &getNodeRange() const { return _nodeRange; };
 
     bool isIncomplete() const { return true; };
 
@@ -85,9 +90,11 @@ class IncompleteMesh : public Mesh {
 
     void setCellFamily( const VectorLong &cf );
 
+    void setCellRange( const VectorOfVectorsLong &range ) { _cellRange = range; };
+
     void setNodeFamily( const VectorLong &nf ) { _nodeFamily = nf; };
 
-    void setRange( const VectorLong &range ) { _range = range; };
+    void setNodeRange( const VectorLong &range ) { _nodeRange = range; };
 };
 
 /**

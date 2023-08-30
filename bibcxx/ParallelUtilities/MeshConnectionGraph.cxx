@@ -49,8 +49,9 @@ void buildFastConnectivity( const BaseMeshPtr &mesh, VectorOfVectorsLong &connex
 void MeshConnectionGraph::buildFromIncompleteMesh( const IncompleteMeshPtr &mesh ) {
     const auto rank = getMPIRank();
     const auto nbProcs = getMPISize();
+    _nbNodes = mesh->getNumberOfNodes();
 
-    _range = mesh->getRange();
+    _range = mesh->getNodeRange();
     VectorLong allRanges;
     AsterMPI::all_gather( _range, allRanges );
     const auto &reverseConnect = mesh->buildReverseConnectivity();
@@ -111,9 +112,7 @@ void MeshConnectionGraph::buildFromIncompleteMesh( const IncompleteMeshPtr &mesh
     foundConnections = std::vector< std::set< ASTERINTEGER > >();
 
     commGraph.synchronizeOverProcesses();
-    int tag = 0;
-    for ( const auto proc : commGraph ) {
-        ++tag;
+    for ( const auto [tag, proc] : commGraph ) {
         if ( proc == -1 )
             continue;
         VectorInt tmp( 1, -1 );
@@ -158,8 +157,9 @@ void MeshConnectionGraph::buildFromIncompleteMesh( const IncompleteMeshPtr &mesh
 
     int posInEdges = 0;
     const int nbVert = graph.size();
+    _vertices = VectorLong( nbVert + 1, 0 );
     for ( int pos = 0; pos < nbVert; ++pos ) {
-        _vertices.push_back( posInEdges );
+        _vertices[pos] = posInEdges;
         auto &curSet = graph[pos];
         const int nodeNb = curSet.size();
         for ( const auto &nodeId : curSet ) {
@@ -168,7 +168,127 @@ void MeshConnectionGraph::buildFromIncompleteMesh( const IncompleteMeshPtr &mesh
         }
         curSet = std::set< ASTERINTEGER >();
     }
-    _vertices.push_back( posInEdges );
-}
+    _vertices[nbVert] = posInEdges;
+};
+
+bool MeshConnectionGraph::debugCheck() const {
+    bool toReturn = true;
+    const auto rank = getMPIRank();
+    const auto nbProcs = getMPISize();
+
+    std::map< int, std::set< int > > graphMap;
+    std::vector< std::map< int, std::set< int > > > graphMapS( nbProcs,
+                                                               std::map< int, std::set< int > >() );
+
+    const auto size = _vertices.size();
+    const auto startIndex = _range[0];
+    const auto endIndex = _range[1];
+    VectorInt toSend( 1, _nbNodes ), toReceive;
+    AsterMPI::all_gather( toSend, toReceive );
+    const auto nbNodes0 = toReceive[0];
+    int nbNodesTot = 0;
+    for ( const auto &curNbNodes : toReceive )
+        nbNodesTot += curNbNodes;
+    if ( size - 1 != _nbNodes )
+        throw std::runtime_error( "Inconsistency between number of nodes"
+                                  " and graph number of vertices" );
+
+    toSend = VectorInt( 1, _vertices[size - 1] );
+    toReceive = VectorInt();
+    AsterMPI::all_gather( toSend, toReceive );
+
+    for ( int i = 0; i < size - 1; ++i ) {
+        const auto globalNodeId = startIndex + i;
+        const auto startVertId = _vertices[i];
+        const auto endVertId = _vertices[i + 1];
+        const auto edgeNb = endVertId - startVertId;
+
+        if ( graphMap.find( globalNodeId ) == graphMap.end() ) {
+            graphMap[globalNodeId] = std::set< int >();
+        }
+        auto &nodeConnex = graphMap[globalNodeId];
+
+        for ( int j = 0; j < edgeNb; ++j ) {
+            const auto curNodeId = _edges[startVertId + j];
+            const int procId = std::min( curNodeId / nbNodes0, (long int)nbProcs - 1 );
+            nodeConnex.insert( curNodeId );
+            if ( curNodeId >= startIndex && curNodeId < endIndex ) {
+                if ( procId != rank ) {
+                    if ( rank == nbProcs - 1 && procId == nbProcs ) {
+                        continue;
+                    } else {
+                        throw std::runtime_error( "Programming error: inner vertex" );
+                    }
+                }
+            } else {
+                if ( procId == rank )
+                    throw std::runtime_error( "Programming error: outer vertex" );
+                auto &curGraph = graphMapS[procId];
+                if ( curGraph.find( globalNodeId ) == curGraph.end() ) {
+                    curGraph[globalNodeId] = std::set< int >();
+                }
+                auto &nodeConnexS = curGraph[globalNodeId];
+                nodeConnexS.insert( curNodeId );
+            }
+        }
+    }
+
+    for ( int proc = 0; proc < nbProcs; ++proc ) {
+        VectorInt toSend, toReceive;
+        if ( proc != rank ) {
+            const auto &curGraph = graphMapS[proc];
+            for ( const auto &elt : curGraph ) {
+                toSend.push_back( elt.first );
+                const auto &curSet = elt.second;
+                toSend.push_back( curSet.size() );
+                for ( const auto &nodeId : curSet ) {
+                    toSend.push_back( nodeId );
+                }
+            }
+        }
+        AsterMPI::all_gather( toSend, toReceive );
+        if ( proc == rank ) {
+            const auto curSize = toReceive.size();
+            int i = 0;
+            for ( ; i < curSize; ) {
+                const auto nodeId = toReceive[i];
+                ++i;
+                const auto curSize = toReceive[i];
+                ++i;
+                auto &nodeSet = graphMap[nodeId];
+                for ( int j = 0; j < curSize; ++j ) {
+                    nodeSet.insert( toReceive[i] );
+                    ++i;
+                }
+            }
+            if ( i != curSize )
+                throw std::runtime_error( "Programming error: inconsistent loop" );
+        }
+    }
+
+    int edgeNb = 0;
+    for ( const auto &curElem : graphMap ) {
+        const auto nodeId1 = curElem.first;
+        const auto &nodeSet = curElem.second;
+        for ( const auto &nodeId2 : nodeSet ) {
+            if ( graphMap[nodeId2].count( nodeId1 ) == 0 ) {
+#ifdef ASTER_DEBUG_CXX
+                std::cout << "No connection between " << nodeId2 << " and " << nodeId1 << std::endl;
+#endif
+                toReturn = false;
+                break;
+            }
+            if ( nodeId1 >= startIndex && nodeId1 < endIndex ) {
+                ++edgeNb;
+            }
+        }
+        if ( !toReturn )
+            break;
+    }
+    if ( _vertices[size - 1] != edgeNb ) {
+        throw std::runtime_error( "Error in edge counting" );
+    }
+    return toReturn;
+};
 
 #endif /* ASTER_HAVE_MPI */

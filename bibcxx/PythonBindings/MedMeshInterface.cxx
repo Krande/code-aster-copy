@@ -98,6 +98,19 @@ Returns:
     int: cell number
             )",
               py::arg( "numdt" ), py::arg( "numit" ), py::arg( "geomtype_iterator" ) )
+        .def( "getCellNumberForGeometricTypeAtSequence",
+              &MedMesh::getCellNumberForGeometricTypeAtSequence, R"(
+Get cell number for calculation sequence and geometric type
+
+Arguments:
+    numdt (int): time step id
+    numit (int): iteration id
+    geomtype (int): geometric type
+
+Returns:
+    int: cell number
+            )",
+              py::arg( "numdt" ), py::arg( "numit" ), py::arg( "geomtype" ) )
         .def( "getCellTypeAtSequence", &MedMesh::getCellTypeAtSequence, R"(
 Get cell geometric type for calculation sequence and geomtype_iterator
 

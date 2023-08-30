@@ -24,13 +24,15 @@
 """
 
 import os.path as osp
+import numpy as np
 
 from ..Commands import CREA_MAILLAGE
 from ..Messages import UTMESS
 from ..Objects import ConnectionMesh, Mesh, ParallelMesh, PythonBool, ResultNaming, IncompleteMesh
+from ..Objects import CommGraph
 from ..Objects.Serialization import InternalStateBuilder
 from ..Utilities import MPI, ExecutionParameter, Options, injector, shared_tmpdir, force_list
-from ..Utilities.MedUtils.MEDPartitioner import MEDPartitioner
+from ..Utilities.MedUtils.MedMeshAndFieldsSplitter import splitMeshAndFieldsFromMedFile
 from . import mesh_builder
 
 
@@ -73,11 +75,7 @@ class ExtendedParallelMesh:
             verbose (int): Verbosity between 0 (a few details) to 2 (more verbosy).
         """
         if not partitioned:
-            splitted = MEDPartitioner(filename)
-            splitted.partitionMesh(verbose - 1 & 2)
-            data = splitted.getPartition()
-            umesh = data.getMeshes()[0]
-            mesh_builder.buildFromMedCouplingMesh(self, umesh, verbose)
+            self, field = splitMeshAndFieldsFromMedFile(filename, outMesh=self)
         else:
             mesh_builder.buildFromMedFile(self, filename, meshname, verbose)
 
@@ -145,6 +143,83 @@ class ExtendedParallelMesh:
                 print(f"FAILED {filename} Number of cells differs:", nb_cells_std, nb_cells_gl)
 
         return MPI.ASTER_COMM_WORLD.bcast(test, root=0)
+
+    def checkJoints(self):
+        comm = MPI.COMM_WORLD
+        rank = MPI.ASTER_COMM_WORLD.Get_rank()
+        l2G = self.getLocalToGlobalMapping()
+        graph = CommGraph()
+
+        dictProc = {}
+        cmpt = 1
+        for proc in self.getOppositeDomains():
+            graph.addCommunication(proc)
+            dictProc[proc] = cmpt
+            cmpt += 1
+        graph.synchronizeOverProcesses()
+
+        outN = self.getOuterNodes()
+        dictOutN = {}
+        for nId in outN:
+            dictOutN[nId + 1] = 1
+
+        coords = self.getCoordinates()
+
+        matchings = graph.getMatchings()
+        toReturn = True
+        for procT in matchings:
+            proc = procT[1]
+            tag = procT[0]
+            if proc == -1:
+                continue
+            numJoint = dictProc[proc]
+            fJ = self.getSendJoint(numJoint)
+            gFJ = []
+            curCoordsFJ = []
+            for i in range(int(len(fJ) / 2)):
+                nId = fJ[2 * i]
+                gFJ.append(l2G[nId - 1])
+                curCoordsFJ.append(coords[3 * (nId - 1)])
+
+            sJ = self.getReceiveJoint(numJoint)
+            gSJ = []
+            curCoordsSJ = []
+            for i in range(int(len(sJ) / 2)):
+                nId = sJ[2 * i]
+                dictOutN.pop(nId)
+                gSJ.append(l2G[nId - 1])
+                curCoordsSJ.append(coords[3 * (nId - 1)])
+
+            if proc < rank:
+                comm.send(gFJ, dest=proc, tag=tag)
+                data1 = comm.recv(source=proc, tag=tag)
+                if data1 != gFJ:
+                    print("Rank", rank, "Opposite domain", proc, "Joint number", numJoint, "NOOK")
+                    toReturn = False
+                comm.send(curCoordsFJ, dest=proc, tag=tag)
+                data2 = comm.recv(source=proc, tag=tag)
+                tab1 = np.array(curCoordsFJ)
+                tab2 = np.array(data2)
+                if np.allclose(tab1, tab2, atol=1e-12) is not True:
+                    toReturn = False
+                    print("Node joint coordinates are not matching")
+            else:
+                data1 = comm.recv(source=proc, tag=tag)
+                comm.send(gSJ, dest=proc, tag=tag)
+                if data1 != gSJ:
+                    print("Rank", rank, "Opposite domain", proc, "Joint number", numJoint, "NOOK")
+                    toReturn = False
+                comm.send(curCoordsSJ, dest=proc, tag=tag)
+                data2 = comm.recv(source=proc, tag=tag)
+                tab1 = np.array(curCoordsSJ)
+                tab2 = np.array(data2)
+                if np.allclose(tab1, tab2, atol=1e-12) is not True:
+                    toReturn = False
+                    print("Node joint coordinates are not matching")
+        if len(dictOutN) != 0:
+            print("Some outer nodes are not in a joint")
+            toReturn = False
+        return toReturn
 
     def refine(self, ntimes=1, info=1):
         """Refine the mesh uniformly. Each edge is split in two.

@@ -142,6 +142,12 @@ public:
   static void receive(const std::vector<T> &out_values, int source, int tag,
                       aster_comm_t *_commCurrent = aster_get_current_comm());
 
+  template <typename T>
+  static void
+  send_receive(const std::vector<T> &in_values, std::vector<T> &out_values,
+               int peer, int tag,
+               aster_comm_t *_commCurrent = aster_get_current_comm());
+
   /// Get Current Comm
   aster_comm_t *getCurrentCommunicator() { return aster_get_current_comm(); }
 
@@ -465,19 +471,33 @@ void AsterMPI::bcast(std::vector<T> &value, int root,
 template <typename T>
 void AsterMPI::send(const std::vector<T> &in_values, int dest, int tag,
                     aster_comm_t *_commCurrent) {
-  void *curPtr = (void *)(&(in_values[0]));
-  const auto count = in_values.size();
-  MPI_Send((void *)curPtr, count, mpi_type<T>(), dest, tag, _commCurrent->id);
+  aster_mpi_send(const_cast<T *>(&in_values[0]), in_values.size(),
+                 mpi_type<T>(), dest, tag, _commCurrent);
 }
 
 template <typename T>
 void AsterMPI::receive(const std::vector<T> &out_values, int source, int tag,
                        aster_comm_t *_commCurrent) {
-  void *curPtr = (void *)(&(out_values[0]));
-  const auto count = out_values.size();
-  MPI_Recv((void *)curPtr, count, mpi_type<T>(), source, tag, _commCurrent->id,
-           MPI_STATUS_IGNORE);
+  aster_mpi_recv(const_cast<T *>(&out_values[0]), out_values.size(),
+                 mpi_type<T>(), source, tag, _commCurrent);
 }
+
+template <typename T>
+void AsterMPI::send_receive(const std::vector<T> &in_values,
+                            std::vector<T> &out_values, int peer, int tag,
+                            aster_comm_t *_commCurrent) {
+
+  int size_in = in_values.size(), size_out = 0;
+  aster_mpi_sendrecv(const_cast<int *>(&size_in), 1, mpi_type<int>(), peer, tag,
+                     static_cast<int *>(&size_out), 1, mpi_type<int>(), peer,
+                     tag, _commCurrent);
+
+  out_values.resize(size_out);
+
+  aster_mpi_sendrecv(const_cast<T *>(in_values.data()), in_values.size(),
+                     mpi_type<T>(), peer, tag, out_values.data(), size_out,
+                     mpi_type<T>(), peer, tag, _commCurrent);
+};
 
 #endif /* ASTER_HAVE_MPI */
 

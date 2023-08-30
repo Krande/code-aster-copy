@@ -79,8 +79,9 @@ void PtScotchPartitioner::buildPartition( const VectorLong &partition, VectorLon
     }
     ObjectBalancer balancer;
     for ( int curProc = 0; curProc < nbProcs; ++curProc ) {
-        if ( curProc != rank && sendLists[curProc].size() != 0 )
+        if ( curProc != rank && sendLists[curProc].size() != 0 ) {
             balancer.addElementarySend( curProc, sendLists[curProc] );
+        }
     }
     balancer.endElementarySendDefinition();
     balancer.prepareCommunications();

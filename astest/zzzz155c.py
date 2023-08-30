@@ -58,7 +58,7 @@ for count, i in enumerate(loc2Glob):
     # 3 components: DX, DY, DZ
     for j in range(3):
         test.assertAlmostEqual(
-            abs(valuesDepl[3 * count + j] - valuesDeplRef[(i - 1) * 3 + j]), 0, delta=1e-6
+            abs(valuesDepl[3 * count + j] - valuesDeplRef[i * 3 + j]), 0, delta=1e-6
         )
 
 # Read mesh from file to read cell number

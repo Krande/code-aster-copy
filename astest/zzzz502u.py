@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,6 +20,9 @@
 import os
 import code_aster
 from code_aster.Commands import *
+from code_aster import MPI
+
+rank = MPI.ASTER_COMM_WORLD.Get_rank()
 
 current_dir = os.getcwd()
 
@@ -93,8 +96,11 @@ resu = STAT_NON_LINE(
 
 depl = resu.getField("DEPL", 1)
 
-mpi_value = depl.norm("NORM_1")
-seq_value = 2602970095.6222315
-test.assertTrue(abs(seq_value - mpi_value) / abs(seq_value) < 1e-6)
+if rank == 0:
+    test.assertTrue(abs(depl[0] - 6.56591e-01) < 1e-6)
+    test.assertTrue(abs(depl[15] - 1e0) < 1e-10)
+else:
+    test.assertTrue(abs(depl[0] - 1e0) < 1e-10)
+    test.assertTrue(abs(depl[15] - 6.56591e-01) < 1e-6)
 
 FIN()

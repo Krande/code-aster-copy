@@ -45,8 +45,17 @@ std::vector< std::string > splitChar( char *toSplit, int nbElem, int size ) {
 std::pair< int, int > splitEntitySet( int nbElemT, int rank, int nbProcs ) {
     int nbElemL = nbElemT / nbProcs;
     int start = rank * nbElemL + 1;
+    const auto end = nbProcs * nbElemL;
+#ifdef ASTER_DEBUG_CXX
+    int lastNbElemL = nbElemL - ( end - nbElemT );
+    int verif = nbElemL * ( nbProcs - 1 ) + lastNbElemL;
+    if ( verif != nbElemT ) {
+        const auto str1 = std::to_string( verif );
+        const auto str2 = std::to_string( nbElemT );
+        throw std::runtime_error( "Error in splitting " + str1 + " " + str2 );
+    }
+#endif
     if ( rank == nbProcs - 1 ) {
-        const auto end = nbProcs * nbElemL;
         nbElemL = nbElemL - ( end - nbElemT );
     }
     return {nbElemL, start};

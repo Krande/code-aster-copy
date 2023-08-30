@@ -194,7 +194,7 @@ class MEDCouplingMeshHelper:
 
     _mesh = _mesh_name = _file_name = _dim = _timer = None
     _coords = _groups_of_cells = _groups_of_nodes = _connectivity_aster = _cell_types = None
-    _domains = _djoints = _nodesOwner = _gNumbering = _range = None
+    _domains = _djoints = _nodesOwner = _gNodesNumbering = _node_range = _cell_range = None
     _cell_family = _node_family = _families = None
     _medc2aster_connect = {}
 
@@ -210,12 +210,13 @@ class MEDCouplingMeshHelper:
         self._groups_of_nodes = {}
         self._connectivity_aster = []
         self._cell_types = []
-        self._range = []
+        self._node_range = []
+        self._cell_range = []
         # for the joints
         self._domains = []
         self._djoints = {}
         self._nodesOwner = []
-        self._gNumbering = []
+        self._gNodesNumbering = []
         self._timer = Timer(title="medcoupling conversion")
         self._cell_family = []
         self._node_family = []
@@ -284,13 +285,14 @@ class MEDCouplingMeshHelper:
         if mesh.isParallel():
             with timer("creating joints"):
                 mesh._create_joints(
-                    self.domains, self.globalNumbering, self.nodesOwner, self.getAllJoints()
+                    self.domains, self.globalNodeNumbering, self.nodesOwner, self.getAllJoints()
                 )
         with timer("completion"):
             if not mesh.isIncomplete():
                 mesh._endDefinition()
             else:
-                mesh._setRange(self._range)
+                mesh._setNodeRange(self._node_range)
+                mesh._setCellRange(self._cell_range)
         # cheat code for debugging and detailed time informations: 1989
         with timer("show details"):
             mesh.show(verbose & 3)
@@ -446,6 +448,14 @@ class MEDCouplingMeshHelper:
             raise NotImplementedError("MED is required for this feature!")
         filename = self._file_name
 
+        def splitElem(nodeNb, size, rank):
+            nbNodesProc = int(nodeNb / size)
+            startNode = nbNodesProc * rank
+            endNode = nbNodesProc * (rank + 1)
+            if rank == size - 1:
+                endNode = nodeNb
+            return [startNode, endNode]
+
         rank = MPI.ASTER_COMM_WORLD.Get_rank()
         size = MPI.ASTER_COMM_WORLD.Get_size()
 
@@ -454,19 +464,14 @@ class MEDCouplingMeshHelper:
         curMesh = fr.getMesh(0)
         seq = curMesh.getSequence(0)
         nodeNb = curMesh.getNodeNumberAtSequence(seq[0], seq[1])
-        nbNodesProc = int(nodeNb / size)
-        startNode = nbNodesProc * rank
-        endNode = nbNodesProc * (rank + 1)
-        if rank == size - 1:
-            endNode = nodeNb
-        self._range = [startNode, endNode]
+        self._node_range = splitElem(nodeNb, size, rank)
 
-        nbNodes = endNode - startNode
+        nbNodes = self._node_range[1] - self._node_range[0]
         nodes_mc = np.array(curMesh.readCoordinates(seq[0], seq[1]))
-        nodes_mc.shape = (nbNodes, 3)
-        self._coords = np.zeros(shape=(nbNodes, 3))
-        self._coords[:, :3] = nodes_mc[:, :3]
         self._dim = curMesh.getDimension()
+        nodes_mc.shape = (nbNodes, self._dim)
+        self._coords = np.zeros(shape=(nbNodes, 3))
+        self._coords[:, : self._dim] = nodes_mc[:, : self._dim]
         cellTypes = curMesh.getGeometricTypesAtSequence(seq[0], seq[1])
         cellTypes.sort()
         self._connectivity_aster = []
@@ -476,7 +481,11 @@ class MEDCouplingMeshHelper:
         self._families = {}
         for curFam in families:
             self._families[curFam.getId()] = curFam.getGroups()
+        totCellNb = 0
         for i in cellTypes:
+            cellNb = curMesh.getCellNumberForGeometricTypeAtSequence(seq[0], seq[1], i)
+            localSplit = splitElem(cellNb, size, rank)
+            self._cell_range.append([localSplit[0] + totCellNb, localSplit[1] + totCellNb])
             curConn = curMesh.getConnectivityForGeometricTypeAtSequence(seq[0], seq[1], i)
             curConn = np.array(curConn)
             nbNodesForGeoT = curMesh.getNodeNumberForGeometricType(i)
@@ -487,6 +496,7 @@ class MEDCouplingMeshHelper:
             self._cell_types.extend([i] * nbElem)
             curFam = curMesh.getCellFamilyForGeometricTypeAtSequence(seq[0], seq[1], i)
             self._cell_family.extend(curFam)
+            totCellNb += cellNb
 
     def extract_joints(self):
         """Extract informations about joints between domains."""
@@ -517,9 +527,9 @@ class MEDCouplingMeshHelper:
                     self._nodesOwner[values[:, 0] - 1] = -1
 
         self._domains = sorted(domains)
-        globNumb = self._mesh.getGlobalNumFieldAtLevel(1)
-        if globNumb:
-            self._gNumbering = globNumb.toNumPyArray().tolist()
+        globNumbNodes = self._mesh.getGlobalNumFieldAtLevel(1)
+        if globNumbNodes:
+            self._gNodesNumbering = globNumbNodes.toNumPyArray().tolist()
 
     def getAllJoints(self):
         """Return the definition of all the joints.
@@ -544,9 +554,9 @@ class MEDCouplingMeshHelper:
         return self._domains
 
     @property
-    def globalNumbering(self):
+    def globalNodeNumbering(self):
         """list[int]: List of the global number of each node."""
-        return self._gNumbering
+        return self._gNodesNumbering
 
     @property
     def nodesOwner(self):

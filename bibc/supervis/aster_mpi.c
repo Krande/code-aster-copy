@@ -355,6 +355,47 @@ int aster_mpi_allgatherv( void *sendbuf, int sendcnt, MPI_Datatype sendtype, voi
     return 0;
 }
 
+int aster_mpi_send( void *sendbuf, int sendcnt, MPI_Datatype sendtype, int dest, int tag,
+                    aster_comm_t *node ) {
+/*! Gathers together values from a group of processes */
+#ifdef ASTER_HAVE_MPI
+    DEBUG_MPI( "MPI_Send: send %d values to %s...\n", sendcnt, " " );
+    double start = MPI_Wtime();
+    AS_MPICHECK( MPI_Send( sendbuf, sendcnt, sendtype, dest, tag, node->id ) );
+    double end = MPI_Wtime();
+    DEBUG_MPI( "MPI_Send: ... in %f sec %s\n", ( end - start ), " " );
+#endif
+    return 0;
+}
+
+int aster_mpi_recv( void *recvbuf, int recvcnt, MPI_Datatype recvtype, int source, int tag,
+                    aster_comm_t *node ) {
+/*! Gathers together values from a group of processes */
+#ifdef ASTER_HAVE_MPI
+    DEBUG_MPI( "MPI_Recv: receive %d values from %s...\n", recvcnt, " " );
+    double start = MPI_Wtime();
+    AS_MPICHECK( MPI_Recv( recvbuf, recvcnt, recvtype, source, tag, node->id, MPI_STATUS_IGNORE ) );
+    double end = MPI_Wtime();
+    DEBUG_MPI( "MPI_Recv: ... in %f sec %s\n", ( end - start ), " " );
+#endif
+    return 0;
+}
+
+int aster_mpi_sendrecv( void *sendbuf, int sendcnt, MPI_Datatype sendtype, int recv, int sendtag,
+                        void *recvbuf, int recvcnt, MPI_Datatype recvtype, int source, int recvtag,
+                        aster_comm_t *node ) {
+/*! Gathers together values from a group of processes */
+#ifdef ASTER_HAVE_MPI
+    DEBUG_MPI( "MPI_SendRecv: receive %d values from %s...\n", recvcnt, " " );
+    double start = MPI_Wtime();
+    AS_MPICHECK( MPI_Sendrecv( sendbuf, sendcnt, sendtype, recv, sendtag, recvbuf, recvcnt,
+                               recvtype, source, recvtag, node->id, MPI_STATUS_IGNORE ) );
+    double end = MPI_Wtime();
+    DEBUG_MPI( "MPI_SendRecv: ... in %f sec %s\n", ( end - start ), " " );
+#endif
+    return 0;
+}
+
 /* Access functions */
 aster_comm_t *_search_id( aster_comm_t *node, MPI_Comm *id ) {
     /*! Search for 'id' in 'node' and its childs

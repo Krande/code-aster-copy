@@ -20,7 +20,6 @@
 import os
 import code_aster
 from code_aster.Commands import *
-from code_aster.Utilities.MedUtils.MEDPartitioner import MEDPartitioner
 from code_aster import MPI
 
 
@@ -40,9 +39,8 @@ else:
 
 # Split the mesh
 
-ms = MEDPartitioner("ssnv187a.mmed")
-
-ms.partitionMesh(True)
+ms = code_aster.ParallelMesh()
+ms.readMedFile("ssnv187a.mmed")
 
 # Where to save the mesh in a single folder
 path = os.getcwd()
@@ -56,19 +54,14 @@ except OSError:
     print("Creation of the directory %s failed" % meshFolder)
 
 # write the mesh in meshFolder
-ms.writeMesh(meshFolder)
+ms.printMedFile(meshFolder + "/" + str(rank) + ".med")
 
 # 3 different way to read a Parallel Mesh
 
 # 1) File by File after partioning (need a preliminary partioning )
 pMesh1 = code_aster.ParallelMesh()
-pMesh1.readMedFile(ms.writedFilename(), partitioned=True)
+pMesh1.readMedFile(meshFolder + "/" + str(rank) + ".med", partitioned=True)
 pMesh1.checkConsistency("ssnv187a.mmed")
-
-# 2) From a folder (need a preliminary partioning )
-pMesh2 = code_aster.ParallelMesh()
-pMesh2.readMedFile(meshFolder + "/ssnv187a_new_%d.med" % rank, partitioned=True)
-pMesh2.checkConsistency("ssnv187a.mmed")
 
 # 3) Directely from a file (without preliminary partioning )
 pMesh3 = code_aster.ParallelMesh()
@@ -82,19 +75,16 @@ model = AFFE_MODELE(MAILLAGE=pMesh4, AFFE=_F(MODELISATION="3D", PHENOMENE="MECAN
 
 
 nbNodes = [79, 78]
-nbCells = [161, 161]
+nbCells = [155, 157]
 
 test.assertEqual(pMesh1.getNumberOfNodes(), nbNodes[rank])
 test.assertEqual(pMesh1.getNumberOfCells(), nbCells[rank])
 
-test.assertEqual(pMesh1.getNumberOfNodes(), pMesh2.getNumberOfNodes())
 test.assertEqual(pMesh1.getNumberOfNodes(), pMesh3.getNumberOfNodes())
 test.assertEqual(pMesh1.getNumberOfNodes(), pMesh4.getNumberOfNodes())
-test.assertEqual(pMesh1.getNumberOfCells(), pMesh2.getNumberOfCells())
 test.assertEqual(pMesh1.getNumberOfCells(), pMesh3.getNumberOfCells())
 test.assertEqual(pMesh1.getNumberOfCells(), pMesh4.getNumberOfCells())
 test.assertEqual(pMesh1.getDimension(), 2)
-test.assertEqual(pMesh2.getDimension(), 2)
 test.assertEqual(pMesh3.getDimension(), 2)
 test.assertEqual(pMesh4.getDimension(), 2)
 

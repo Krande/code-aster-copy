@@ -76,13 +76,13 @@ void CommGraph::synchronizeOverProcesses() {
         ++nMatch;
     }
     --nMatch;
-    _matchings = VectorInt( nMatch, -1 );
+    _matchings = VectorPairInt( nMatch, std::make_pair( -1, -1 ) );
     for ( int iProc = 0; iProc < nbProcs; ++iProc ) {
         auto num = mask[rank * nbProcs + iProc];
         if ( num > nMatch )
             throw std::runtime_error( "Error in graph building" );
         if ( num != 0 ) {
-            _matchings[num - 1] = iProc;
+            _matchings[num - 1] = std::make_pair( num, iProc );
 #ifdef ASTER_DEBUG_CXX
             std::cout << "In matching " << num << " #" << rank << " will communicate with #"
                       << iProc << std::endl;

@@ -21,7 +21,7 @@ from ...Objects import MedFileReader, IncompleteMesh, MeshBalancer, MeshConnecti
 from ...Objects import PtScotchPartitioner
 
 
-def splitMeshAndFieldsFromMedFile(filename, cellBalancer=False, nodeBalancer=False):
+def splitMeshAndFieldsFromMedFile(filename, cellBalancer=False, nodeBalancer=False, outMesh=None):
     fr = MedFileReader()
     fr.openParallel(filename)
     mesh = IncompleteMesh()
@@ -30,11 +30,13 @@ def splitMeshAndFieldsFromMedFile(filename, cellBalancer=False, nodeBalancer=Fal
     bMesh.buildFromBaseMesh(mesh)
     meshGraph = MeshConnectionGraph()
     meshGraph.buildFromIncompleteMesh(mesh)
+
     part2 = PtScotchPartitioner()
     part2.buildGraph(meshGraph)
     scotchPart = part2.partitionGraph()
 
-    outMesh = bMesh.applyBalancingStrategy(scotchPart)
+    outMesh = bMesh.applyBalancingStrategy(scotchPart, outMesh)
+
     medCellTypes = outMesh.getMedCellsTypes()
     oldType = -999
     sortedTypes = []
@@ -44,7 +46,7 @@ def splitMeshAndFieldsFromMedFile(filename, cellBalancer=False, nodeBalancer=Fal
             sortedTypes.append(type)
             oldType = type
             if checkDict.get(type) is not None:
-                raise NameError("Cells are not sorted by type")
+                raise RuntimeError("Cells are not sorted by type")
             checkDict[type] = 1
 
     nBalancer = bMesh.getNodeObjectBalancer()

@@ -169,7 +169,7 @@ values_test = {
 }
 ftest.updateValuePointers()
 # for 'MAX' - DX
-ftest[mapDOF[0, "DX"]] = 4.0
+ftest[mapDOF[1, "DX"]] = 4.0
 # for 'MIN' - DX
 ftest[mapDOF[15, "DX"]] = -7.0
 

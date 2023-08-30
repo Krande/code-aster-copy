@@ -49,7 +49,7 @@ Arguments:
 Returns:
     mesh: ParallelMesh
         )",
-              py::arg( "vector" ) )
+              py::arg( "vector" ), py::arg( "outMesh" ) = nullptr )
         .def( "buildFromBaseMesh", &MeshBalancer::buildFromBaseMesh, R"(
 Build balancer on an IncompleteMesh or a Mesh
 

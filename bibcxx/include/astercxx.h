@@ -60,6 +60,7 @@ using PairLong = std::pair< ASTERINTEGER, ASTERINTEGER >;
 using PairReal = std::pair< ASTERDOUBLE, ASTERDOUBLE >;
 using PairString = std::pair< std::string, std::string >;
 
+using VectorPairInt = std::vector< PairInt >;
 using VectorPairLong = std::vector< PairLong >;
 using VectorPairReal = std::vector< PairReal >;
 using VectorPairString = std::vector< PairString >;

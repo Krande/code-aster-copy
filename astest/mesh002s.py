@@ -42,7 +42,6 @@ else:
 # list of meshes with error
 failure = [
     # for mesh002s
-    "forma02b.mmed",
     "sdll06a.mmed",
     # for mesh002t
     "ssls134a.med",
@@ -106,6 +105,7 @@ for mesh_file in meshes:
     mesh.readMedFile(mesh_name)
 
     if not pmesh.checkConsistency(mesh_name):
+        print("ERROR in consistency check:", mesh_name)
         conversion_error.append(mesh_name)
 
     test.assertTrue(pmesh.getNumberOfNodes() > 0)
@@ -117,8 +117,8 @@ for mesh_file in meshes:
 
 
 list_nb_mesh = {2: 521, 3: 486, 4: 485}
-list_nb_mesh_conv = {2: 519, 3: 481, 4: 484}
-list_nb_conv_error = {2: 22, 3: 9, 4: 13}
+list_nb_mesh_conv = {2: 520, 3: 481, 4: 484}
+list_nb_conv_error = {2: 1, 3: 0, 4: 0}
 
 print("Number of mesh: %s" % (nb_mesh), flush=True)
 print("Number of mesh converted: %s" % (nb_mesh_converted), flush=True)

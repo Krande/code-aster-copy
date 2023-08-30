@@ -86,7 +86,7 @@ test.assertSequenceEqual(
 )
 test.assertSequenceEqual(
     sorted(cMesh3.getNodesLocalNumbering()),
-    [1, 2, 6, 8, 9, 12, 17, 41, 41, 47, 47, 48, 52, 53, 54, 126, 137, 139],
+    [2, 6, 12, 17, 35, 41, 46, 47, 48, 49, 52, 53, 54, 56, 57, 89, 95, 96],
 )
 
 

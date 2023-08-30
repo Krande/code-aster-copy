@@ -43,6 +43,8 @@ class MeshConnectionGraph {
     VectorLong _vertices, _edges;
     /** @brief Range of node ids on local process */
     VectorLong _range;
+    /** @brief Total number of nodes */
+    ASTERINTEGER _nbNodes;
 
   public:
     MeshConnectionGraph() {};
@@ -52,6 +54,9 @@ class MeshConnectionGraph {
      * @param mesh IncompleteMeshPtr
      */
     void buildFromIncompleteMesh( const IncompleteMeshPtr &mesh );
+
+    /** @brief check if graph is NOT a directed graph */
+    bool debugCheck() const;
 
     /** @brief get edges (PtSctoch format) */
     const VectorLong &getEdges() const { return _edges; };

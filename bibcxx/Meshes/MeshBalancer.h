@@ -97,7 +97,7 @@ class MeshBalancer {
      * @param list vector of nodes to get on local process
      * @return ParalleMesh
      */
-    ParallelMeshPtr applyBalancingStrategy( VectorInt &list );
+    ParallelMeshPtr applyBalancingStrategy( VectorInt &list, ParallelMeshPtr outMesh = nullptr );
 
     void buildFromBaseMesh( const BaseMeshPtr &mesh ) { _mesh = mesh; };
 

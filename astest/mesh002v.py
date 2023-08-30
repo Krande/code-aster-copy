@@ -22,8 +22,6 @@ from collections import Counter
 
 import code_aster
 from code_aster.Commands import *
-from code_aster.Utilities import logger, shared_tmpdir
-from code_aster.Utilities.MedUtils.MEDPartitioner import MEDPartitioner
 
 MPI = code_aster.MPI
 
@@ -33,23 +31,9 @@ test = code_aster.TestCase()
 
 rank = code_aster.MPI.ASTER_COMM_WORLD.Get_rank()
 
-with shared_tmpdir("mesh002v_") as tmpdir:
-    logger.info("\n--- Common temporary directory for the testcase: %s", tmpdir)
 
-    logger.info("splitting the mesh...")
-    ms = MEDPartitioner("sdlx400b.mmed")
-    ms.partitionMesh(verbose=True)
-
-    # write the mesh in tmpdir
-    logger.info("writing mesh...")
-    ms.writeMesh(tmpdir)
-
-    # add PO1 (need to load sequential mesh)
-    logger.info("adding POI1 elements...")
-    ms.addPO1(verbose=True)
-
-    pMesh2 = code_aster.ParallelMesh()
-    pMesh2.readMedFile(os.path.join(tmpdir, f"sdlx400b_new_{rank}.med"), partitioned=True)
+pMesh2 = code_aster.ParallelMesh()
+pMesh2.readMedFile("sdlx400b.mmed")
 
 
 # STD Mesh for comparaison
@@ -57,8 +41,8 @@ mesh = code_aster.Mesh()
 mesh.readMedFile("sdlx400b.mmed")
 
 
-nbNodes = [682, 672]
-nbCells = [93, 160]
+nbNodes = [672, 682]
+nbCells = [160, 93]
 
 test.assertEqual(pMesh2.getNumberOfNodes(), nbNodes[rank])
 test.assertEqual(pMesh2.getNumberOfCells(), nbCells[rank])

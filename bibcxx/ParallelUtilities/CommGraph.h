@@ -44,7 +44,7 @@ class CommGraph {
     /** @brief Vector of communication for the current process */
     VectorInt _commGraph;
     /** @brief Matchings find in graph */
-    VectorInt _matchings;
+    VectorPairInt _matchings;
 
   public:
     /** @brief Add an edge in comm graph */
@@ -56,7 +56,7 @@ class CommGraph {
     }
 
     /** @brief Get matchings */
-    const VectorInt &getMatchings() const { return _matchings; };
+    const VectorPairInt &getMatchings() const { return _matchings; };
 
     /** @brief Synchronize graph over processes and build matchings */
     void synchronizeOverProcesses();
@@ -64,9 +64,9 @@ class CommGraph {
     struct iterator {
         using iterator_category = std::forward_iterator_tag;
         using difference_type = std::ptrdiff_t;
-        using value_type = int;
-        using pointer = int *;
-        using reference = int &;
+        using value_type = PairInt;
+        using pointer = PairInt *;
+        using reference = PairInt &;
 
         iterator( pointer ptr ) : m_ptr( ptr ) {}
 
@@ -100,9 +100,9 @@ class CommGraph {
     struct const_iterator {
         using iterator_category = std::forward_iterator_tag;
         using difference_type = std::ptrdiff_t;
-        using value_type = int;
-        using pointer = int *;
-        using reference = int &;
+        using value_type = PairInt;
+        using pointer = PairInt *;
+        using reference = PairInt &;
 
         const_iterator( pointer ptr ) : m_ptr( ptr ) {}
 
@@ -112,7 +112,7 @@ class CommGraph {
 
         const_iterator &operator++() {
             m_ptr++;
-            while ( *m_ptr == -1 )
+            while ( m_ptr->first == -1 )
                 m_ptr++;
             return *this;
         }

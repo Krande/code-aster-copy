@@ -1,5 +1,5 @@
 /**
- * @file CommGraph.cxx
+ * @file ObjectBalancer.cxx
  * @brief Implementation of an object balancer
  * @author Nicolas Sellenet
  * @section LICENCE
@@ -34,10 +34,8 @@ void ObjectBalancer::prepareCommunications() {
     }
     _graph->synchronizeOverProcesses();
     const auto rank = getMPIRank();
-    int tag = 0;
     // Communicate what to send and what to receive
-    for ( const auto proc : *_graph ) {
-        ++tag;
+    for ( const auto [tag, proc] : *_graph ) {
         if ( proc == -1 )
             continue;
         VectorInt tmp( 1, -1 );

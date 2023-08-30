@@ -31,7 +31,8 @@
 #include "Meshes/Mesh.h"
 #include "ParallelUtilities/MeshConnectionGraph.h"
 
-void decrement( int &i ) { i--; };
+template< typename ValType >
+void decrement( ValType &i ) { i--; };
 
 struct LocalIdGlobalId {
     int localId = -1;
@@ -57,12 +58,17 @@ void buildSortedVectorToSend( const VectorLong &localIds, const VectorLong &glob
     }
 }
 
-ParallelMeshPtr MeshBalancer::applyBalancingStrategy( VectorInt &newLocalNodesList ) {
-    _nodesBalancer = ObjectBalancerPtr( new ObjectBalancer() );
-    _cellsBalancer = ObjectBalancerPtr( new ObjectBalancer() );
+ParallelMeshPtr MeshBalancer::applyBalancingStrategy( VectorInt &newLocalNodesList,
+                                                      ParallelMeshPtr outMesh ) {
+    _nodesBalancer = std::make_shared< ObjectBalancer >();
+    _cellsBalancer = std::make_shared< ObjectBalancer >();
     ObjectBalancer &nodesBalancer = *_nodesBalancer, cellsBalancer = *_cellsBalancer;
     const auto rank = getMPIRank();
     const auto nbProcs = getMPISize();
+
+    if ( !outMesh ) {
+        outMesh = std::make_shared< ParallelMesh >();
+    }
 
     if ( _mesh != nullptr ) {
         if ( _mesh->isParallel() )
@@ -83,7 +89,7 @@ ParallelMeshPtr MeshBalancer::applyBalancingStrategy( VectorInt &newLocalNodesLi
     }
 
     VectorInt newList = newLocalNodesList;
-    std::for_each( newList.begin(), newList.end(), &decrement );
+    std::for_each( newList.begin(), newList.end(), &decrement< int > );
 
     VectorOfVectorsLong interfaces;
     VectorLong nOwners;
@@ -96,8 +102,6 @@ ParallelMeshPtr MeshBalancer::applyBalancingStrategy( VectorInt &newLocalNodesLi
             graph.addCommunication( iProc );
     }
     graph.synchronizeOverProcesses();
-
-    ParallelMeshPtr outMesh( new ParallelMesh() );
 
     // Build a global numbering (if there is not)
     VectorLong nodeGlobNum;
@@ -120,32 +124,18 @@ ParallelMeshPtr MeshBalancer::applyBalancingStrategy( VectorInt &newLocalNodesLi
     // interface completion with local id of opposite nodes
     VectorLong domains;
     VectorOfVectorsLong graphInterfaces;
-    int tag = 0, cmpt = 0;
-    for ( const auto &iProc : graph ) {
+    int cmpt = 0;
+    for ( const auto &[tag, iProc] : graph ) {
         if ( iProc != -1 ) {
-            VectorLong idToSend( interfaces[2 * iProc].size(), 0. );
-            VectorLong idToRecv( interfaces[2 * iProc + 1].size(), 0. );
-            if ( rank > iProc ) {
-                VectorLong vec1, vec2;
-                buildSortedVectorToSend( interfaces[2 * iProc], globNumVect, vec1 );
-                AsterMPI::send( vec1, iProc, tag );
-                AsterMPI::receive( idToRecv, iProc, tag );
-                ++tag;
-                buildSortedVectorToSend( interfaces[2 * iProc + 1], globNumVect, vec2 );
-                AsterMPI::send( vec2, iProc, tag );
-                AsterMPI::receive( idToSend, iProc, tag );
-                ++tag;
-            } else if ( rank < iProc ) {
-                VectorLong vec1, vec2;
-                buildSortedVectorToSend( interfaces[2 * iProc], globNumVect, vec1 );
-                AsterMPI::receive( idToRecv, iProc, tag );
-                AsterMPI::send( vec1, iProc, tag );
-                ++tag;
-                buildSortedVectorToSend( interfaces[2 * iProc + 1], globNumVect, vec2 );
-                AsterMPI::receive( idToSend, iProc, tag );
-                AsterMPI::send( vec2, iProc, tag );
-                ++tag;
-            }
+            VectorLong idToSend, idToRecv;
+            VectorLong vec1, vec2;
+
+            buildSortedVectorToSend( interfaces[2 * iProc], globNumVect, vec1 );
+            AsterMPI::send_receive( vec1, idToRecv, iProc, tag );
+
+            buildSortedVectorToSend( interfaces[2 * iProc + 1], globNumVect, vec2 );
+            AsterMPI::send_receive( vec2, idToSend, iProc, tag );
+
             domains.push_back( iProc );
             graphInterfaces.push_back( VectorLong( 2 * interfaces[2 * iProc].size() ) );
             graphInterfaces.push_back( VectorLong( 2 * interfaces[2 * iProc + 1].size() ) );
@@ -173,12 +163,13 @@ ParallelMeshPtr MeshBalancer::applyBalancingStrategy( VectorInt &newLocalNodesLi
             cmpt += 2;
         }
     }
+
     // free memory
     interfaces = VectorOfVectorsLong();
 
     // Build new mesh (nodes, cells types and connectivity)
     if ( _mesh == nullptr )
-        _mesh = MeshPtr( new Mesh() );
+        _mesh = std::make_shared< Mesh >();
     const auto coords = _mesh->getCoordinates();
     auto coordsOut = outMesh->getCoordinates();
     _nodesBalancer->balanceObjectOverProcesses( coords, coordsOut );
@@ -211,9 +202,12 @@ ParallelMeshPtr MeshBalancer::applyBalancingStrategy( VectorInt &newLocalNodesLi
         outMesh->buildInformations( dimension[0] );
     }
 
+    auto globNumVect2 = globNumVect;
+    std::for_each( globNumVect2.begin(), globNumVect2.end(), &decrement< long int > );
+
     // Build "dummy" name vectors (for cells and nodes)
     outMesh->buildNamesVectors();
-    outMesh->create_joints( domains, dMask.getBalancedMask(), nOwners, graphInterfaces );
+    outMesh->create_joints( domains, globNumVect2, nOwners, graphInterfaces );
     outMesh->updateGlobalGroupOfNodes();
     outMesh->updateGlobalGroupOfCells();
     outMesh->endDefinition();
@@ -277,10 +271,8 @@ void MeshBalancer::_enrichBalancers( VectorInt &newLocalNodesList, int iProc, in
     auto returnPairToKeep =
         findNodesAndElementsInNodesNeighborhood( newLocalNodesList, toAdd, fastConnex );
     VectorInt toAddV, test2;
-    if ( returnPairToKeep.first.size() != 0 ) {
-        for ( const auto &val : toAdd ) {
-            toAddV.push_back( val );
-        }
+    for ( const auto &val : toAdd ) {
+        toAddV.push_back( val );
     }
     AsterMPI::all_gather( toAddV, test2 );
 

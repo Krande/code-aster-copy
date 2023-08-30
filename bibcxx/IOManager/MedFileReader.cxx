@@ -87,7 +87,7 @@ int MedFileReader::openParallel( const std::string &filename ) {
             std::cout << "Mesh type must be unstructured. Mesh name: " << meshname << std::endl;
             continue;
         }
-        auto ref = _meshes.emplace_back( new MedMesh( _filePtr, meshname, meshdim ) );
+        auto ref = _meshes.emplace_back( new MedMesh( _filePtr, meshname, spacedim ) );
 
         for ( int j = 1; j <= nstep; ++j ) {
             med_int numdt, numit;

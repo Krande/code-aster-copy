@@ -108,7 +108,9 @@ class ObjectBalancer {
         const ASTERINTEGER &reverse( const ASTERINTEGER &valueIn ) const {
 #ifdef ASTER_DEBUG_CXX
             if ( _mapMaskOut.find( valueIn ) == _mapMaskOut.end() ) {
-                std::cout << "Num glob " << valueIn << " sans correspondance" << std::endl;
+                std::cout << "Num glob " << valueIn << " sans correspondance" << std::endl
+                          << std::flush;
+                throw std::runtime_error( "Error in DistributedMask " );
             }
 #endif
             return _mapMaskOut.find( valueIn )->second;
@@ -153,7 +155,9 @@ class ObjectBalancer {
         const ASTERINTEGER &reverse( const ASTERINTEGER &valueIn ) const {
 #ifdef ASTER_DEBUG_CXX
             if ( _mapMaskOut.find( valueIn ) == _mapMaskOut.end() ) {
-                std::cout << "Num glob " << valueIn << " sans correspondance" << std::endl;
+                std::cout << "Num glob " << valueIn << " sans correspondance" << std::endl
+                          << std::flush;
+                throw std::runtime_error( "Error in DistributedMaskOut " );
             }
 #endif
             return _mapMaskOut.find( valueIn )->second;
@@ -185,7 +189,7 @@ class ObjectBalancer {
         : _sendList( std::vector< VectorInt >( getMPISize() ) ),
           _recvSize( VectorInt( getMPISize(), 0 ) ),
           _sizeDelta( 0 ),
-          _graph( new CommGraph() ),
+          _graph( std::make_shared< CommGraph >() ),
           _isOk( false ),
           _sendDefined( false ) {};
 
@@ -269,6 +273,7 @@ void ObjectBalancer::balanceSimpleVectorOverProcesses( const T *in, int sizeIn, 
     const auto nbProcs = getMPISize();
     VectorBool toKeep( sizeIn, true );
     const auto sizeToKeep = _toKeep.size();
+    const auto toKeepEnd = _toKeep.end();
     // Find elements to keep
     for ( int iProc = 0; iProc < nbProcs; ++iProc ) {
         const auto curSendList = _sendList[iProc];
@@ -281,7 +286,7 @@ void ObjectBalancer::balanceSimpleVectorOverProcesses( const T *in, int sizeIn, 
                 if ( sizeToKeep == 0 ) {
                     toKeep[vecPos] = false;
                 } else {
-                    if ( _toKeep.find( curSendList[iPos] ) == _toKeep.end() )
+                    if ( _toKeep.find( curSendList[iPos] ) == toKeepEnd )
                         toKeep[vecPos] = false;
                 }
             }
@@ -299,11 +304,9 @@ void ObjectBalancer::balanceSimpleVectorOverProcesses( const T *in, int sizeIn, 
         }
     }
 
-    int tag = 0;
     // Loop over graph to communicate elements to send and receive
     // And then copy received values in output vector
-    for ( const auto proc : *_graph ) {
-        ++tag;
+    for ( const auto [tag, proc] : *_graph ) {
         if ( proc == -1 )
             continue;
         if ( rank > proc ) {
@@ -410,10 +413,8 @@ void ObjectBalancer::balanceObjectOverProcesses3( const T &in, T &out, const Mas
     VectorInt sizeToReceive( nbProcs, 0 );
     VectorInt sizeToSend( nbProcs, 0 );
     int toRemoveCum = 0, toReceiveCum = 0;
-    int tag = 0;
     constexpr int start = StartPosition< T >::value;
-    for ( const auto proc : *_graph ) {
-        ++tag;
+    for ( const auto [tag, proc] : *_graph ) {
         if ( proc == -1 )
             continue;
         const auto curSendList = _sendList[proc];
@@ -474,9 +475,7 @@ void ObjectBalancer::balanceObjectOverProcesses3( const T &in, T &out, const Mas
         }
     }
 
-    tag = 0;
-    for ( const auto proc : *_graph ) {
-        ++tag;
+    for ( const auto [tag, proc] : *_graph ) {
         if ( proc == -1 )
             continue;
         if ( rank > proc ) {

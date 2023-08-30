@@ -38,7 +38,7 @@ if nbproc == 2:
     nbCells = [1142, 1173]
 elif nbproc == 3:
     nbNodes = [204, 239, 211]
-    nbCells = [847, 902, 825]
+    nbCells = [846, 896, 825]
 elif nbproc == 4:
     nbNodes = [163, 189, 179, 172]
     nbCells = [625, 702, 672, 675]

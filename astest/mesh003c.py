@@ -82,7 +82,7 @@ test.assertSequenceEqual(
     cMesh3.getNodesGlobalNumbering(), [3, 4, 16, 23, 27, 28, 44, 51, 77, 103, 135]
 )
 test.assertSequenceEqual(
-    sorted(cMesh3.getNodesLocalNumbering()), [1, 4, 10, 10, 11, 16, 24, 25, 33, 55, 66]
+    sorted(cMesh3.getNodesLocalNumbering()), [4, 5, 10, 11, 25, 33, 49, 55, 58, 64, 72]
 )
 
 # Test ConnectionMesh - a part mesh
@@ -128,7 +128,7 @@ print("cMesh8", flush=True)
 cMesh8 = ConnectionMesh(pMesh, [], ["OUEST", "NORD"])
 test.assertEqual(cMesh8.getDimension(), 3)
 test.assertEqual(cMesh8.getNumberOfNodes(), 116)
-test.assertEqual(cMesh8.getNumberOfCells(), 462)
+test.assertEqual(cMesh8.getNumberOfCells(), 461)
 test.assertSequenceEqual(sorted(cMesh8.getGroupsOfCells()), ["NORD", "OUEST"])
 
 
@@ -137,7 +137,7 @@ print("cMesh9", flush=True)
 cMesh9 = ConnectionMesh(pMesh, [], ["OUEST", "NORD", "S1"])
 test.assertEqual(cMesh9.getDimension(), 3)
 test.assertEqual(cMesh9.getNumberOfNodes(), 129)
-test.assertEqual(cMesh9.getNumberOfCells(), 499)
+test.assertEqual(cMesh9.getNumberOfCells(), 498)
 test.assertSequenceEqual(sorted(cMesh9.getGroupsOfCells()), ["NORD", "OUEST", "S1"])
 
 
@@ -181,7 +181,7 @@ cMesh13 = ConnectionMesh(pMesh, ["N0", "N1", "N2", "N3"], ["ALL_SEG", "BAS", "HA
 test.assertEqual(cMesh13.getParallelMesh().getName(), pMesh.getName())
 test.assertEqual(cMesh13.getDimension(), 3)
 test.assertEqual(cMesh13.getNumberOfNodes(), 174)
-test.assertEqual(cMesh13.getNumberOfCells(), 708)
+test.assertEqual(cMesh13.getNumberOfCells(), 707)
 test.assertSequenceEqual(sorted(cMesh13.getGroupsOfNodes()), ["N0", "N1", "N2"])
 test.assertSequenceEqual(sorted(cMesh13.getGroupsOfCells()), ["ALL_SEG", "BAS", "HAUT", "SUD"])
 
