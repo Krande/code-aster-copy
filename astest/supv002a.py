@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,36 +35,40 @@ from subprocess import PIPE, CalledProcessError, Popen, check_call
 
 import code_aster.Messages
 from code_aster.Messages import UTMESS, MessageLog
-from code_aster.Utilities import convert, is_int
+from code_aster.Utilities import ExecutionParameter, convert, is_int
 from code_aster.Utilities import localization as LO
 
 ENCODING = "utf-8"
 VALUES = MessageLog.default_args.copy()
-VALUES['ktout'] = 'xxxxxx'
+VALUES["ktout"] = "xxxxxx"
 
-REI = re.compile(r'%\(i[0-9]+\)[\.0-9\-\+ ]*([a-zA-Z])', re.M)
-RER = re.compile(r'%\(r[0-9]+\)[\.0-9\-\+ ]*([a-zA-Z])', re.M)
-REK = re.compile(r'%\(k[0-9]+\)[\.0-9\-\+]*([a-zA-Z])', re.M)
-RE1 = re.compile(r'%\((.[^0-9].*?)\)[\.0-9\-\+ ]*[a-zA-Z]', re.M)
-RE2 = re.compile(r'%\(([^irk].*?)\)[\.0-9\-\+ ]*[a-zA-Z]', re.M)
+REI = re.compile(r"%\(i[0-9]+\)[\.0-9\-\+ ]*([a-zA-Z])", re.M)
+RER = re.compile(r"%\(r[0-9]+\)[\.0-9\-\+ ]*([a-zA-Z])", re.M)
+REK = re.compile(r"%\(k[0-9]+\)[\.0-9\-\+]*([a-zA-Z])", re.M)
+RE1 = re.compile(r"%\((.[^0-9].*?)\)[\.0-9\-\+ ]*[a-zA-Z]", re.M)
+RE2 = re.compile(r"%\(([^irk].*?)\)[\.0-9\-\+ ]*[a-zA-Z]", re.M)
 
-RE_UNAUTH = [
-    re.compile(r'([*#=\+\-!/\?<>&@]{4})', re.M),
-]
+RE_UNAUTH = [re.compile(r"([*#=\+\-!/\?<>&@]{4})", re.M)]
 
 try:
     import aster
+
     from code_aster.Cata.Syntax import _F
     from code_aster.Commands import CREA_TABLE, TEST_TABLE
-    loginfo = partial(aster.affiche, 'MESSAGE')
+
+    loginfo = partial(aster.affiche, "MESSAGE")
 except ImportError:
+
     def loginfo(msg):
         print(msg)
+
+
 logdbg = None
 
 
 class Checker(object):
     """A simple checker object."""
+
     def __init__(self, aspell):
         self.err = []
         self.wrn = []
@@ -164,11 +168,10 @@ class AspellCall(object):
 
     def __init__(self, personal_dict, lang, encoding):
         """Open the pipe"""
-        cmd = ['aspell', 'pipe',
-               '--encoding=%s' % encoding,'--lang=%s' % lang]
+        cmd = ["aspell", "pipe", "--encoding=%s" % encoding, "--lang=%s" % lang]
         if personal_dict and osp.exists(personal_dict):
-            cmd.append('--personal=%s' % personal_dict)
-        logdbg and logdbg('command: ' + ' '.join(cmd))
+            cmd.append("--personal=%s" % personal_dict)
+        logdbg and logdbg("command: " + " ".join(cmd))
         self.lang = lang
         self.pipe = Popen(cmd, stdin=PIPE, stdout=PIPE, universal_newlines=True)
         self.inp = self.pipe.stdin
@@ -177,10 +180,11 @@ class AspellCall(object):
         self.rdr = MPR.Process(target=read_file, args=(self.out, self.queue))
         self.rdr.start()
         init = self.queue.get()
-        assert 'aspell' in init.lower(), ('aspell probably failed to start: \n'
-                                          '%s' % init)
+        assert "aspell" in init.lower(), (
+            "aspell probably failed to start: \n" "%s" % init
+        )
         # all characters except alphabetic ones are separators
-        self._rxspl = re.compile(r'[ _0123456789\W]+', re.M | re.I | re.UNICODE)
+        self._rxspl = re.compile(r"[ _0123456789\W]+", re.M | re.I | re.UNICODE)
 
     def __del__(self):
         """Close the pipe"""
@@ -199,15 +203,15 @@ class AspellCall(object):
             string = str(string, ENCODING)
         uwords = self._rxspl.split(string.strip())
         uwords = [i for i in uwords if i and not i[0].isdigit()]
-        string = ' '.join([i for i in uwords if len(i) > 1])
+        string = " ".join([i for i in uwords if len(i) > 1])
         return string.strip()
 
     def send(self, string):
         """Send 'string' and return the response of aspell"""
         string = self._clean(string)
-        logdbg and logdbg('check: %r' % string)
+        logdbg and logdbg("check: %r" % string)
         words = string.split()
-        logdbg and logdbg('words: %r' % words)
+        logdbg and logdbg("words: %r" % words)
         resp = []
         if not words:
             return words, resp
@@ -216,58 +220,73 @@ class AspellCall(object):
         while True:
             try:
                 resp.append(self.queue.get_nowait())
-                #logdbg and logdbg('returns: %r' % resp[-1])
+                # logdbg and logdbg('returns: %r' % resp[-1])
             except queue.Empty:
-                if len(resp) == 0 or resp[-1] != '':
+                if len(resp) == 0 or resp[-1] != "":
                     continue
                 break
         if len(resp) != len(words) + 1:
-            loginfo("warning: expected answer of aspell:\n words=%r\n resp=%r"
-                    % (words, resp))
-        #logdbg and logdbg('resp: %r' % zip(words, resp))
+            loginfo(
+                "warning: expected answer of aspell:\n words=%r\n resp=%r"
+                % (words, resp)
+            )
+        # logdbg and logdbg('resp: %r' % zip(words, resp))
         return words, resp
 
     def check(self, string):
         """Return the unknown words"""
         words, resp = self.send(string)
-        unknown = [w for w, r in zip(words, resp) if r.strip() != '*']
+        unknown = [w for w, r in zip(words, resp) if r.strip() != "*"]
         return unknown
 
 
 def get_cata_msg(catamess):
     """Import a messages file"""
     import importlib
+
     cata_msg = {}
     try:
         d = {}
         mod = __import__("code_aster.Messages.%s" % catamess, d, d, [catamess])
         importlib.reload(mod)
-        cata_msg = getattr(mod, 'cata_msg', {})
+        cata_msg = getattr(mod, "cata_msg", {})
     except UnicodeDecodeError:
-        UTMESS('F', 'CATAMESS_1',
-               valk=("Encodage invalide pour le fichier de messages : '%s'" % catamess,
-                     traceback.format_exc()))
+        UTMESS(
+            "F",
+            "CATAMESS_1",
+            valk=(
+                "Encodage invalide pour le fichier de messages : '%s'" % catamess,
+                traceback.format_exc(),
+            ),
+        )
     except Exception:
-        UTMESS('F', 'CATAMESS_1',
-               valk=("Nom du fichier de messages : '%s'" % catamess,
-                     traceback.format_exc()))
+        UTMESS(
+            "F",
+            "CATAMESS_1",
+            valk=(
+                "Nom du fichier de messages : '%s'" % catamess,
+                traceback.format_exc(),
+            ),
+        )
     return cata_msg
 
 
 def check_format(checker, catamess, idmess, msg, typ):
     """Check the format used for the given type 'typ'."""
     dre = {
-        'integer' : (REI, ['d', 'i']),
-        'real'    : (RER, ['f', 'g', 'e', 'F', 'G', 'E']),
-        'string'  : (REK, ['s', ]),
-        'other1'   : (RE1, ['ktout', ]),
-        'other2'   : (RE2, []),
+        "integer": (REI, ["d", "i"]),
+        "real": (RER, ["f", "g", "e", "F", "G", "E"]),
+        "string": (REK, ["s"]),
+        "other1": (RE1, ["ktout"]),
+        "other2": (RE2, []),
     }
     expr, l_auth = dre[typ]
     arg = expr.findall(msg)
     unauth = set(arg).difference(l_auth)
     if len(unauth) > 0:
-        checker.error("%s : invalid format for type '%s' : %s" % (idmess, typ, tuple(unauth)))
+        checker.error(
+            "%s : invalid format for type '%s' : %s" % (idmess, typ, tuple(unauth))
+        )
 
 
 def check_msg(checker, catamess, msg, key, lang):
@@ -276,9 +295,9 @@ def check_msg(checker, catamess, msg, key, lang):
     # check type : a string expected
     if type(msg) is not str:
         checker.error(lang, "%s has a wrong type" % idmess)
-    if msg.strip() == '' and catamess != "vide":
+    if msg.strip() == "" and catamess != "vide":
         checker.error("%s is empty : use VIDE_1 for that!" % idmess)
-    assert is_int(key), 'unexpected key : %s' % key
+    assert is_int(key), "unexpected key : %s" % key
     # check unauthorized formatting
     for re_unauth in RE_UNAUTH:
         mat = re_unauth.search(msg)
@@ -290,13 +309,14 @@ def check_msg(checker, catamess, msg, key, lang):
         txt = msg % VALUES
     except Exception as exc:
         trace = repr(exc)
-        checker.error("%s can not be formatted :\nmessage: %r\n%s"
-                      % (idmess, msg, trace))
+        checker.error(
+            "%s can not be formatted :\nmessage: %r\n%s" % (idmess, msg, trace)
+        )
     # check arguments
-    for typ in ('integer', 'real', 'string', 'other1', 'other2'):
+    for typ in ("integer", "real", "string", "other1", "other2"):
         check_format(checker, catamess, idmess, msg, typ)
-    if txt and lang == 'fr':
-        logdbg and logdbg('idmess: %s' % idmess)
+    if txt and lang == "fr":
+        logdbg and logdbg("idmess: %s" % idmess)
         unknown = checker.aspell.check(txt)
         if unknown:
             idmess = "%s_%s" % (catamess, key)
@@ -305,95 +325,125 @@ def check_msg(checker, catamess, msg, key, lang):
 
 
 _pws = None
+
+
 def get_personal_dict():
     """Build the dictionnary for Code_Aster : keywords + personal dict."""
     global _pws
     if _pws:
         return _pws
-    cnt = ['personal_ws-1.1 fr 0 %s' % ENCODING, ]
-    dictdir = osp.join(os.environ['HOME'], 'dev', 'codeaster', 'devtools',
-                       'share', 'spell')
-    cata = osp.join(dictdir, 'code_aster_cata.aspell.per')
-    if osp.exists(cata):
-        # ignore the first line
-        with open(cata, 'r') as fper:
-            cnt.extend(fper.read().splitlines()[1:])
-    else:
-        raise IOError("no such file: {0}\nAn updated devtools repository is "
-                      "required!".format(cata))
+    cnt = ["personal_ws-1.1 fr 0 %s" % ENCODING]
     cata = "fort.34"
-    with open(cata, "r") as fper:
-        lines = fper.read().splitlines() #[1:]
-        words = [i for i in set(re.split("[ _\n]", "\n".join(lines)))
-                 if not re.search("[0-9]", i)]
-    cnt.extend(sorted(words))
+    cnt.extend(build_cata_dict(cata))
 
-    cawl = osp.join(dictdir, 'code_aster_dict.aspell.per')
+    dictdir = ExecutionParameter().get_option("rcdir")
+    cawl = osp.join(dictdir, "code_aster_dict.aspell.per")
     if osp.exists(cawl):
         # ignore the first line
-        with open(cawl, 'r') as fper:
+        with open(cawl, "r") as fper:
             cnt.extend(fper.read().splitlines()[1:])
     else:
-        raise IOError("no such file: {0}\nAn updated devtools repository is "
-                      "required!".format(cawl))
+        raise IOError(
+            "no such file: {0}\nAn updated devtools repository is "
+            "required!".format(cawl)
+        )
     fd, _pws = tempfile.mkstemp(dir=os.getcwd())
-    with open(fd, 'w') as fobj:
+    with open(fd, "w") as fobj:
         fobj.write(os.linesep.join([line for line in cnt if line.strip()]))
     return _pws
+
+
+def build_cata_dict(filename):
+    """Build the content of the dictionnary of the code_aster keywords.
+
+    Arguments:
+        repo (str): Path to 'src' repository.
+        branches (list[str]): List of branches to be used.
+        tip (bool): If *True*, uses the tip of each branch. *False* by default.
+
+    Returns:
+        str: Text of the catalog.
+    """
+    rkw = re.compile("([A-Z]+[A-Z_]+)", re.M | re.I)
+    reg_ign = re.compile("(#.*$)", re.MULTILINE)
+    allkw = set()
+    with open(filename, "r") as fobj:
+        txt = fobj.read()
+    txt = reg_ign.sub("", txt)
+    allkw.update(rkw.findall(txt))
+    skw = set()
+    for kw in allkw:
+        skw.update(kw.split("_"))
+    lkw = [kw for kw in skw if len(kw) > 1]
+    lkw.sort()
+    lkw.append("")
+    return lkw
 
 
 def check_catamess(checker, lang, l_cata):
     """Check all the messages files"""
     checker.set_current_lang(lang)
-    checker.set_current_mod('-')
-    loginfo("<i18n> lang=%s, domain=%s, localedir=%s" % (LO.current_lang, LO.domain, LO.localedir))
+    checker.set_current_mod("-")
+    loginfo(
+        "<i18n> lang=%s, domain=%s, localedir=%s"
+        % (LO.current_lang, LO.domain, LO.localedir)
+    )
     tr = LO.translation(lang)
-    if lang != 'fr' and not isinstance(tr, gettext.GNUTranslations):
+    if lang != "fr" and not isinstance(tr, gettext.GNUTranslations):
         checker.warning("no translation object for language '%s'" % lang)
         return
     pwl = get_personal_dict()
-    if not pwl and lang == 'fr':
+    if not pwl and lang == "fr":
         checker.error("Code_Aster personal dict not found: %s" % pwl)
     for catamess in l_cata:
         checker.set_current_mod(catamess)
         loginfo("<%s> checking %s..." % (lang, catamess))
-        if catamess == 'dvp':
+        if catamess == "dvp":
             continue
         cata_msg = get_cata_msg(catamess)
         for key, msg in list(cata_msg.items()):
             if type(msg) == dict:
-                msg  = msg['message']
+                msg = msg["message"]
             check_msg(checker, catamess, msg, key, lang)
 
 
 def timekeeper(pid, delay):
     """Kill 'pid' if it times out"""
     time.sleep(delay)
-    UTMESS('E', 'CATAMESS_1',
-           valk=("""
+    UTMESS(
+        "E",
+        "CATAMESS_1",
+        valk=(
+            """
 The process %d timed out after %d seconds.
 
 It probably blocks reading the response of aspell on its stdout...
 Try run with INFO=2 to have all the details.
-""" % (pid, delay), """Interruption : kill the main process!"""))
+"""
+            % (pid, delay),
+            """Interruption : kill the main process!""",
+        ),
+    )
     os.kill(pid, signal.SIGTERM)
 
 
 def supv002_ops(self, ERREUR, **kwargs):
     """Fake macro-command to check messages"""
     global logdbg
-    if kwargs.get('INFO') == 2:
+    if kwargs.get("INFO") == 2:
         logdbg = loginfo
     # existing errors
     previous_errors = set(ERREUR)
-    os.environ['LANG'] = 'fr_FR.utf8'
+    os.environ["LANG"] = "fr_FR.utf8"
     # remove all LC_xxxx variables
-    keys = [k for k in list(os.environ.keys()) if k.startswith('LC_')]
+    keys = [k for k in list(os.environ.keys()) if k.startswith("LC_")]
     for k in keys:
         del os.environ[k]
     msgdir = osp.dirname(code_aster.Messages.__file__)
-    LCATA = [osp.basename(osp.splitext(cata)[0]) for cata in glob(osp.join(msgdir, '*.py'))]
-    #LCATA = [osp.basename(osp.splitext(cata)[0]) for cata in glob(osp.join(msgdir, 'mecanonline9.py'))]
+    LCATA = [
+        osp.basename(osp.splitext(cata)[0]) for cata in glob(osp.join(msgdir, "*.py"))
+    ]
+    # LCATA = [osp.basename(osp.splitext(cata)[0]) for cata in glob(osp.join(msgdir, 'mecanonline9.py'))]
 
     # check for installation problem: http://bugs.python.org/issue3770
     do_check = True
@@ -401,18 +451,18 @@ def supv002_ops(self, ERREUR, **kwargs):
         MPR.Queue()
         do_check = AspellCall.check_aspell()
     except ImportError as exc:
-        if 'sem_open implementation' in str(exc):
+        if "sem_open implementation" in str(exc):
             do_check = False
             print("\n  <A> Problem detected ! supv002a can not run on this machine\n\n")
     if do_check:
         try:
-            aspell = AspellCall(get_personal_dict(), 'fr', ENCODING)
+            aspell = AspellCall(get_personal_dict(), "fr", ENCODING)
             checker = Checker(aspell)
             checker.set_ignored(ERREUR)
             # check default/native messages
-            check_catamess(checker, 'fr', LCATA)
+            check_catamess(checker, "fr", LCATA)
             # check translated messages in english
-            check_catamess(checker, 'en', LCATA)
+            check_catamess(checker, "en", LCATA)
             # close aspell
             aspell.close()
         except OSError as exc:
@@ -431,66 +481,85 @@ def supv002_ops(self, ERREUR, **kwargs):
     else:
         nberr = nbnew = 0
         nbwrn = len(previous_errors)
-        warns = ''
+        warns = ""
         errors = []
         torm = []
 
-    if kwargs.get('unittest'):
+    if kwargs.get("unittest"):
         print(warns)
         print(errors)
         return 1
 
     if nberr > 0:
-        UTMESS('A', 'CATAMESS_1', valk=("%6d erreurs" % nberr, errors))
-    if kwargs.get('INFO') == 2:
+        UTMESS("A", "CATAMESS_1", valk=("%6d erreurs" % nberr, errors))
+    if kwargs.get("INFO") == 2:
         warns = checker.get_all_warnings()
     if warns:
-        UTMESS('A', 'CATAMESS_1',
-               valk=("Liste des alarmes et des erreurs par message", warns))
+        UTMESS(
+            "A",
+            "CATAMESS_1",
+            valk=("Liste des alarmes et des erreurs par message", warns),
+        )
     if nbnew > 0:
-        UTMESS('A', 'CATAMESS_1',
-               valk=("Liste des nouvelles erreurs introduites à corriger :",
-                     str(new)))
+        UTMESS(
+            "A",
+            "CATAMESS_1",
+            valk=("Liste des nouvelles erreurs introduites à corriger :", str(new)),
+        )
     if torm:
-        UTMESS('A', 'CATAMESS_1',
-               valk=("Liste des erreurs qui n'apparaissent plus "
-                     "(à supprimer du mot-clé ERREUR) :", str(torm)))
+        UTMESS(
+            "A",
+            "CATAMESS_1",
+            valk=(
+                "Liste des erreurs qui n'apparaissent plus "
+                "(à supprimer du mot-clé ERREUR) :",
+                str(torm),
+            ),
+        )
 
-    __tab = CREA_TABLE(LISTE=_F(PARA='NBERR', LISTE_I=nberr))
+    __tab = CREA_TABLE(LISTE=_F(PARA="NBERR", LISTE_I=nberr))
 
-    TEST_TABLE(REFERENCE='ANALYTIQUE',
-               VALE_CALC_I=0,
-               VALE_REFE_I=0,
-               NOM_PARA='NBERR',
-               TABLE=__tab,)
+    TEST_TABLE(
+        REFERENCE="ANALYTIQUE",
+        VALE_CALC_I=0,
+        VALE_REFE_I=0,
+        NOM_PARA="NBERR",
+        TABLE=__tab,
+    )
 
-    __tnew = CREA_TABLE(LISTE=_F(PARA='NBNEW_ERR', LISTE_I=nbnew))
+    __tnew = CREA_TABLE(LISTE=_F(PARA="NBNEW_ERR", LISTE_I=nbnew))
 
-    TEST_TABLE(REFERENCE='ANALYTIQUE',
-               VALE_CALC_I=0,
-               VALE_REFE_I=0,
-               NOM_PARA='NBNEW_ERR',
-               TABLE=__tnew,)
+    TEST_TABLE(
+        REFERENCE="ANALYTIQUE",
+        VALE_CALC_I=0,
+        VALE_REFE_I=0,
+        NOM_PARA="NBNEW_ERR",
+        TABLE=__tnew,
+    )
 
-    __tabw = CREA_TABLE(LISTE=_F(PARA='NBWARN', LISTE_I=nbwrn))
+    __tabw = CREA_TABLE(LISTE=_F(PARA="NBWARN", LISTE_I=nbwrn))
 
-    TEST_TABLE(CRITERE='ABSOLU',
-               REFERENCE='ANALYTIQUE',
-               VALE_CALC_I=len(previous_errors),
-               VALE_REFE_I=0,
-               PRECISION=len(previous_errors),
-               NOM_PARA='NBWARN',
-               TABLE=__tabw,
-               )
+    TEST_TABLE(
+        CRITERE="ABSOLU",
+        REFERENCE="ANALYTIQUE",
+        VALE_CALC_I=len(previous_errors),
+        VALE_REFE_I=0,
+        PRECISION=len(previous_errors),
+        NOM_PARA="NBWARN",
+        TABLE=__tabw,
+    )
     return
 
 
-if __name__ != '__main__':
+if __name__ != "__main__":
     from code_aster.Cata.Syntax import MACRO, SIMP
     from code_aster.Supervis.ExecuteCommand import UserMacro
-    supv_cata = MACRO(nom='SUPV002', op=supv002_ops,
-                      ERREUR = SIMP(statut='o',typ='TXM', max='**',),
-                      INFO = SIMP(statut='f',typ='I', defaut=1, into=(1, 2),),
+
+    supv_cata = MACRO(
+        nom="SUPV002",
+        op=supv002_ops,
+        ERREUR=SIMP(statut="o", typ="TXM", max="**"),
+        INFO=SIMP(statut="f", typ="I", defaut=1, into=(1, 2)),
     )
     SUPV002 = UserMacro("SUPV002", supv_cata, supv002_ops)
 else:
@@ -498,9 +567,9 @@ else:
     # PYTHONPATH=$PYTHONPATH:/home/courtois/dev/codeaster/install/std/lib/python3.6/site-packages
     # ASTER_ROOT=/opt/aster
     # python -i astest/supv002a.33
-    #logdbg = loginfo
-    #aspell = AspellCall(get_personal_dict(), 'fr', 'utf-8')
-    #unk = aspell.check("On ne peut pas vérifier les fotes d'orthografe.")
-    #assert len(unk) == 2, unk
-    #del aspell
+    # logdbg = loginfo
+    # aspell = AspellCall(get_personal_dict(), 'fr', 'utf-8')
+    # unk = aspell.check("On ne peut pas vérifier les fotes d'orthografe.")
+    # assert len(unk) == 2, unk
+    # del aspell
     supv002_ops(None, [], unittest=True)

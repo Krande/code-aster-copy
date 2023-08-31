@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,9 +29,6 @@ Note:
   must be passed using `env` (ex. BUILD_MED)
 """
 
-top = '.'
-out = 'build'
-
 import os
 import os.path as osp
 import sys
@@ -41,6 +38,11 @@ from itertools import chain
 from waflib import Build, Configure, Logs, Utils
 from waflib.Tools.c_config import DEFKEYS
 from waflib.Tools.fc import fc
+
+top = "."
+out = "build"
+install_suffix = os.environ.get("WAF_DEFAULT_VARIANT") or os.environ.get("WAF_SUFFIX", "mpi")
+default_prefix = "../install/%s" % install_suffix
 
 if sys.version_info < (3, 6):
     Logs.error("Python 3.6 or newer is required.")
@@ -82,15 +84,14 @@ def options(self):
     self.load('use_config')
     self.load('gnu_dirs')
 
-    # change default value for '--prefix'
-    default_prefix = '../install/std'
     # see waflib/Tools/gnu_dirs.py for the group name
     group = self.get_option_group('Installation prefix')
     descr = group.get_description() or ""
     # replace path in description
     new_descr = descr.replace('/usr/local', default_prefix)
-    new_descr += ". Using 'waf_variant', 'std' will be automatically replaced "\
-                 "by 'variant'."
+    new_descr += (
+        ". Using 'waf_variant', '%s' will be automatically replaced by 'variant'." % install_suffix
+    )
     group.set_description(new_descr)
     # reset --prefix option
     option = group.get_option('--prefix')
@@ -184,11 +185,11 @@ def configure(self):
         self.env["CONFIG_PARAMETERS"][name] = os.environ[key]
 
     # compute default prefix
-    if self.env.PREFIX in ('', '/'):
-        suffix = os.environ.get('WAF_SUFFIX', 'std')
-        default_prefix = '../install/%s' % suffix
+    if self.env.PREFIX in ("", "/"):
         self.env.PREFIX = osp.abspath(default_prefix)
-    self.msg('Setting prefix to', self.env.PREFIX)
+    if "PREFIX_ROOT" in os.environ:
+        self.env.PREFIX = osp.join(os.environ["PREFIX_ROOT"], install_suffix)
+    self.msg("Setting prefix to", self.env.PREFIX)
 
     self.load('ext_aster', tooldir='waftools')
     self.load('use_config')

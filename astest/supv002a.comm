@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,11 @@
 #       from your package manager.
 #       Example: apt-get install aspell-fr
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET', ))
+DEBUT(
+    CODE=_F(
+        NIV_PUB_WEB="INTERNET",
+    )
+)
 
 from supv002a import SUPV002
 
@@ -83,29 +87,38 @@ from supv002a import SUPV002
 # uniquement le développeur.
 previous_errors = [
     # Marqueur d'exécution pour asrun
-    'JEFINI',
+    "JEFINI",
     # LE fameux LIGREL !
-    'LIGREL',
+    "LIGREL",
     # Solveur PETSc
-    'breakdown',
+    "breakdown",
     # Nom des fichiers de sortie d'Aster
-    'error', 'export',
+    "error",
+    "export",
     # Pour paramètre mem_aster
-    'mem',
+    "mem",
     # Pour Edyos
-    'SSP',
+    "SSP",
     # Pour PHYSICAL GMSH
-    'PHYSICAL',
+    "PHYSICAL",
     # Pour LD_LIBRARY_PATH
-    'LIBRARY','PATH',
+    "LIBRARY",
+    "PATH",
     # Pour Code_Saturne (coupleur IFS)
-    'USASTE',
-    ]
+    "USASTE",
+    "SD",
+    "DNL",
+    "DSIGM",
+    "HDF",
+    "LD",
+    "NS",
+]
 
 # TEST_TABLE are included in the "macro-command"
-SUPV002(ERREUR=previous_errors,
-        # print all unknown words returns by aspell
-        INFO=1,
-        )
+SUPV002(
+    ERREUR=previous_errors,
+    # print all unknown words returns by aspell
+    INFO=1,
+)
 
 FIN()
