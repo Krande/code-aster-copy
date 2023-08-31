@@ -39,12 +39,8 @@ PYTHONPATH=$(remove_path "${PYTHONPATH}" python2.7)
 PYTHONPATH=@ASTERLIBDIR@:${PYTHONPATH}:.
 export PYTHONPATH
 
-# sometimes one should not change PYTHONHOME under SALOME environment...
-PYTHONHOME=@PYTHONHOME@
-export PYTHONHOME
-
-# as PYTHONHOME is changed, path to 'python' must preceed all others if a
-# subprocess calls it
+# Better to set PATH rather PYTHONHOME - more stable
+# PYTHONHOME will be deduced from python executable location
 PATH=@PYTHON_DIRNAME@:${PATH}
 export PATH
 
