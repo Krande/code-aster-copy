@@ -26,12 +26,13 @@ module FE_quadrature_module
     private
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/HHO_size_module.h"
 #include "asterfort/elraga.h"
-#include "asterfort/elrfvf.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/elrfdf.h"
-#include "asterfort/utmess.h"
-#include "blas/dnrm2.h"
+#include "asterfort/elrfno.h"
+#include "asterfort/elrfvf.h"
+#include "asterfort/fe_module.h"
+#include "asterfort/lteatt.h"
 #include "jeveux.h"
 !
 ! --------------------------------------------------------------------------------------------------
@@ -45,13 +46,13 @@ module FE_quadrature_module
     type FE_Quadrature
         integer                             :: order = 0
         integer                             :: nbQuadPoints = 0
-        real(kind=8), dimension(3, MAX_QP)   :: points = 0.d0
+        real(kind=8), dimension(3, MAX_QP)  :: points_param = 0.d0
+        real(kind=8), dimension(MAX_QP)     :: weights_param = 0.d0
+        real(kind=8), dimension(3, MAX_QP)  :: points = 0.d0
         real(kind=8), dimension(MAX_QP)     :: weights = 0.d0
 ! ----- member functions
     contains
         procedure, private, pass :: FE_rules
-        procedure, public, pass :: GetQuadCell => FEGetQuadCell
-        procedure, public, pass :: GetQuadFace => FEGetQuadFace
         procedure, public, pass :: print => FEQuadPrint
         procedure, public, pass :: initCell => FEinitCellFamiQ
         procedure, public, pass :: initFace => FEinitFaceFamiQ
@@ -63,7 +64,7 @@ module FE_quadrature_module
 !
     public   :: FE_Quadrature
     private  :: FE_transfo, FE_rules, FE_order_rule, &
-                FEGetQuadCell, FEGetQuadFace, FEQuadPrint, &
+                FEQuadPrint, &
                 FEinitCellFamiQ, FEinitFaceFamiQ, check_order, FESelectOrder
 
 !
@@ -184,10 +185,11 @@ contains
         real(kind=8), dimension(27) :: basis
         real(kind=8), dimension(3, 27) :: dbasis
         real(kind=8), dimension(3, 3) :: jaco
-        integer :: i
+        integer :: i, ndim
 !
 ! ----- shape function
 !
+        call elrfno(typema, ndim=ndim)
         call elrfvf(typema, coorref, basis)
 !
 ! ----- derivative of shape function
@@ -208,10 +210,17 @@ contains
             jaco(1:3, 3) = jaco(1:3, 3)+coorno(3, i)*dbasis(1:3, i)
         end do
 !
-        jacob = 0.d0
-        jacob = jaco(1, 1)*jaco(2, 2)*jaco(3, 3)+jaco(1, 3)*jaco(2, 1)*jaco(3, 2) &
-                +jaco(3, 1)*jaco(1, 2)*jaco(2, 3)-jaco(3, 1)*jaco(2, 2)*jaco(1, 3) &
-                -jaco(3, 3)*jaco(2, 1)*jaco(1, 2)-jaco(1, 1)*jaco(2, 3)*jaco(3, 2)
+        if (ndim == 3) then
+            jacob = jaco(1, 1)*jaco(2, 2)*jaco(3, 3)+jaco(1, 3)*jaco(2, 1)*jaco(3, 2) &
+                    +jaco(3, 1)*jaco(1, 2)*jaco(2, 3)-jaco(3, 1)*jaco(2, 2)*jaco(1, 3) &
+                    -jaco(3, 3)*jaco(2, 1)*jaco(1, 2)-jaco(1, 1)*jaco(2, 3)*jaco(3, 2)
+        elseif (ndim == 2) then
+            jacob = jaco(1, 1)*jaco(2, 2)-jaco(2, 1)*jaco(1, 2)
+        elseif (ndim == 1) then
+            jacob = jaco(1, 1)
+        else
+            ASSERT(ASTER_FALSE)
+        end if
 !
     end subroutine
 !
@@ -242,11 +251,10 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer, parameter :: max_pg = 64
         character(len=8) :: rule
         integer :: dimp, nbpg, ipg
-        real(kind=8), dimension(max_pg) :: poidpg
-        real(kind=8), dimension(3*max_pg) :: coorpg
+        real(kind=8), dimension(MAX_QP) :: poidpg
+        real(kind=8), dimension(3*MAX_QP) :: coorpg
         real(kind=8) :: x, y, z, coorac(3), jaco
 !
 !------ get quadrature points
@@ -268,68 +276,12 @@ contains
                 z = 0.d0
             end if
             call FE_transfo(coorno, nbnodes, typema, (/x, y, z/), coorac, jaco)
-            this%points(1:3, ipg) = (/x, y, z/)
+            this%points_param(1:3, ipg) = (/x, y, z/)
+            this%weights_param(ipg) = poidpg(ipg)
+!
+            this%points(1:3, ipg) = coorac
             this%weights(ipg) = abs(jaco)*poidpg(ipg)
         end do
-!
-    end subroutine
-!
-!===================================================================================================
-!
-!===================================================================================================
-!
-    subroutine FEGetQuadCell(this, FECell, order)
-!
-        implicit none
-!
-        type(FE_Cell), intent(in)            :: FECell
-        integer, intent(in)                   :: order
-        class(FE_quadrature), intent(out)    :: this
-!
-! --------------------------------------------------------------------------------------------------
-!   FE
-!
-!   Get the quadrature rules for the current cell
-!   In FECell      : a FE cell
-!   In order        : quadrature order
-!   In axis     : axisymetric ? multpiply by r the weith if True
-!   Out this        : FE quadrature
-!
-! --------------------------------------------------------------------------------------------------
-!
-!
-        this%order = order
-!
-        call this%FE_rules(FECell%coorno(1:3, 1:FECell%nbnodes), FECell%nbnodes, FECell%typemas)
-!
-    end subroutine
-!
-!===================================================================================================
-!
-!===================================================================================================
-!
-    subroutine FEGetQuadFace(this, FEFace, order)
-!
-        implicit none
-!
-        type(FE_face), intent(in)          :: FEFace
-        integer, intent(in)                 :: order
-        class(FE_quadrature), intent(out)  :: this
-!
-! --------------------------------------------------------------------------------------------------
-!   FE
-!
-!   Get the quadrature rules for the current face
-!   In FEFace      : a FE face
-!   In order        : quadrature order
-!   In axis     : axisymetric ? multpiply by r the weith if True
-!   Out this     : FE quadrature
-!
-! --------------------------------------------------------------------------------------------------
-!
-        this%order = order
-!
-        call this%FE_rules(FEFace%coorno(1:3, 1:FEFace%nbnodes), FEFace%nbnodes, FEFace%typemas)
 !
     end subroutine
 !
@@ -478,12 +430,13 @@ contains
 !
 !===================================================================================================
 !
-    subroutine FEinitCellFamiQ(this, FECell, npg)
+    subroutine FEinitCellFamiQ(this, FECell, order, fami)
 !
         implicit none
 !
         type(FE_cell), intent(in)          :: FECell
-        integer, intent(in)                 :: npg
+        integer, intent(in), optional      :: order
+        character(len=*), intent(in), optional :: fami
         class(FE_quadrature), intent(out)  :: this
 !
 ! --------------------------------------------------------------------------------------------------
@@ -496,14 +449,25 @@ contains
 !   Out this    : FE quadrature
 !
 ! --------------------------------------------------------------------------------------------------
-        integer :: order
+        integer :: npg, ipg
 !
-        ASSERT(npg .le. MAX_QP)
-        this%nbQuadPoints = npg
+        if (present(fami)) then
+            call elrefe_info(fami=fami, npg=npg)
 !
-        call FESelectOrder(FECell%typema, npg, order)
+            ASSERT(npg .le. MAX_QP)
+            call FESelectOrder(FECell%typema, npg, this%order)
+        else
+            ASSERT(present(order))
+            this%order = order
+        end if
 !
-        call FEGetQuadCell(this, FECell, order)
+        call this%FE_rules(FECell%coorno(1:3, 1:FECell%nbnodes), FECell%nbnodes, FECell%typemas)
+!
+        if (lteatt('AXIS', 'OUI')) then
+            do ipg = 1, this%nbQuadPoints
+                this%weights(ipg) = this%weights(ipg)*this%points(1, ipg)
+            end do
+        end if
 !
     end subroutine
 !
@@ -511,12 +475,13 @@ contains
 !
 !===================================================================================================
 !
-    subroutine FEinitFaceFamiQ(this, FEFace, npg)
+    subroutine FEinitFaceFamiQ(this, FEFace, order, fami)
 !
         implicit none
 !
         type(FE_Face), intent(in)          :: FEFace
-        integer, intent(in)                 :: npg
+        integer, intent(in), optional      :: order
+        character(len=*), intent(in), optional :: fami
         class(FE_quadrature), intent(out)  :: this
 !
 ! --------------------------------------------------------------------------------------------------
@@ -530,14 +495,25 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: order
+        integer :: npg, ipg
 !
-        ASSERT(npg .le. MAX_QP)
-        this%nbQuadPoints = npg
+        if (present(fami)) then
+            call elrefe_info(fami=fami, npg=npg)
 !
-        call FESelectOrder(FEFace%typema, npg, order)
+            ASSERT(npg .le. MAX_QP)
+            call FESelectOrder(FEFace%typema, npg, this%order)
+        else
+            ASSERT(present(order))
+            this%order = order
+        end if
 !
-        call FEGetQuadFace(this, FEFace, order)
+        call this%FE_rules(FEFace%coorno(1:3, 1:FEFace%nbnodes), FEFace%nbnodes, FEFace%typemas)
+!
+        if (lteatt('AXIS', 'OUI')) then
+            do ipg = 1, this%nbQuadPoints
+                this%weights(ipg) = this%weights(ipg)*this%points(1, ipg)
+            end do
+        end if
 !
     end subroutine
 !

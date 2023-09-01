@@ -17,16 +17,17 @@
 ! --------------------------------------------------------------------
 
 subroutine te0080(option, nomte)
+    use FE_topo_module
+    use FE_quadrature_module
+    use FE_basis_module
+    use FE_rhs_module
+!
     implicit none
-#include "jeveux.h"
-#include "asterfort/connec.h"
-#include "asterfort/dfdm2d.h"
-#include "asterfort/elref1.h"
-#include "asterfort/elrefe_info.h"
+#include "asterfort/fe_module.h"
 #include "asterfort/fointe_varc.h"
 #include "asterfort/jevech.h"
-#include "asterfort/lteatt.h"
-#include "asterfort/teattr.h"
+#include "asterfort/writeVector.h"
+#include "jeveux.h"
 !
     character(len=16) :: option, nomte
 ! ......................................................................
@@ -38,90 +39,69 @@ subroutine te0080(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
 !
-    integer :: ndim, nno, nnos, kp, npg, i, k, itemps, ivectt, isour
-    integer :: ipoids, ivf, idfde, igeom, j, icode
-    integer :: nnop2, c(6, 9), ise, nse, nbres, jgano, ibid
-    parameter(nbres=3)
-    character(len=8) :: nompar(nbres), elrefe, alias8
-    real(kind=8) :: valpar(nbres), poids, r, z, sour
-    real(kind=8) :: coorse(18), vectt(9), theta, soun, sounp1
+    type(FE_Cell) :: FECell, subFECell(4)
+    type(FE_Quadrature) :: FEQuadCell
+    type(FE_basis) :: FEBasis
 !
+    integer ::  kp, i, itemps, isour, icode
+    integer :: nbDof, connec(4, 27), ise, nbres, nbSubCell
+    parameter(nbres=4)
+    character(len=8) :: nompar(nbres)
+    real(kind=8) :: valpar(nbres), sour, valQP(MAX_QP)
+    real(kind=8) :: theta, soun, sounp1, rhs(MAX_BS), rhs_sub(MAX_BS)
 !
-    call elref1(elrefe)
+    call FECell%init()
+    call FEBasis%initCell(FECell)
+    nbDof = FEBasis%size
 !
-    if (lteatt('LUMPE', 'OUI')) then
-        call teattr('S', 'ALIAS8', alias8, ibid)
-        if (alias8(6:8) .eq. 'QU9') elrefe = 'QU4'
-        if (alias8(6:8) .eq. 'TR6') elrefe = 'TR3'
-    end if
-!
-    call elrefe_info(elrefe=elrefe, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
-                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
-!
-    call jevech('PGEOMER', 'L', igeom)
     call jevech('PTEMPSR', 'L', itemps)
     call jevech('PSOURCF', 'L', isour)
-    call jevech('PVECTTR', 'E', ivectt)
+!
     theta = zr(itemps+2)
-    nompar(1) = 'X'
-    nompar(2) = 'Y'
-    nompar(3) = 'INST'
+    nompar(1:3) = ['X', 'Y', 'Z']
+    nompar(4) = 'INST'
 !
-    call connec(nomte, nse, nnop2, c)
-!
-    do i = 1, nnop2
-        vectt(i) = 0.d0
-    end do
+    rhs = 0.d0
+    valQP = 0.d0
 !
 ! BOUCLE SUR LES SOUS-ELEMENTS
 !
-    do ise = 1, nse
-        do i = 1, nno
-            do j = 1, 2
-                coorse(2*(i-1)+j) = zr(igeom-1+2*(c(ise, i)-1)+j)
-            end do
-        end do
-        do kp = 1, npg
-            k = (kp-1)*nno
-            call dfdm2d(nno, kp, ipoids, idfde, coorse, &
-                        poids)
-            r = 0.d0
-            z = 0.d0
-            do i = 1, nno
-                r = r+coorse(2*(i-1)+1)*zr(ivf+k+i-1)
-                z = z+coorse(2*(i-1)+2)*zr(ivf+k+i-1)
-            end do
-            if (lteatt('AXIS', 'OUI')) poids = poids*r
-            valpar(1) = r
-            valpar(2) = z
-            valpar(3) = zr(itemps)
-!           EC : je voulais mettre fami = RIGI et kpg = kp
-!                mais il n'y a que FPG1 dans MATER pour cet élément
+    call FECell%splitLumped(nbSubCell, subFECell, connec)
+    do ise = 1, nbSubCell
+        call FEQuadCell%initCell(subFECell(ise), fami="RIGI")
+        call FEBasis%initCell(subFECell(ise))
+
+        do kp = 1, FEQuadCell%nbQuadPoints
+            valpar(1:3) = FEQuadCell%points(1:3, kp)
+            valpar(4) = zr(itemps)
             call fointe_varc('FM', 'FPG1', 1, 1, '+', &
-                             zk8(isour), 3, nompar, valpar, &
+                             zk8(isour), 4, nompar, valpar, &
                              sounp1, icode)
             if (theta .ne. 1.0d0) then
                 valpar(3) = zr(itemps)-zr(itemps+1)
                 call fointe_varc('FM', 'FPG1', 1, 1, '+', &
-                                 zk8(isour), 3, nompar, valpar, &
+                                 zk8(isour), 4, nompar, valpar, &
                                  soun, icode)
             else
                 soun = 0.d0
             end if
+!
             if (theta < -0.5) then
                 sour = sounp1
             else
                 sour = theta*sounp1+(1.0d0-theta)*soun
             end if
-            do i = 1, nno
-                k = (kp-1)*nno
-                vectt(c(ise, i)) = vectt(c(ise, i))+poids*zr(ivf+k+i-1)*sour
-            end do
+
+            valQP(kp) = sour
+        end do
+
+        call FeMakeRhsScal(FEQuadCell, FEBasis, valQP, rhs_sub )
+
+        do i = 1, FEBasis%size
+            rhs(connec(ise, i)) = rhs(connec(ise, i))+rhs_sub(i)
         end do
     end do
 !
-    do i = 1, nnop2
-        zr(ivectt-1+i) = vectt(i)
-    end do
+    call writeVector("PVECTTR", nbDof, rhs)
 !
 end subroutine

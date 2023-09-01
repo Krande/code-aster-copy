@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,10 +19,11 @@
 !
 !
 interface
-    subroutine connec(nomte, nse, nnop2, c)
+    subroutine connec(nomte, nse, nnop2, c, typema_)
         character(len=16) :: nomte
         integer :: nse
         integer :: nnop2
         integer :: c(6, 9)
+        character(len=8), optional :: typema_
     end subroutine connec
 end interface

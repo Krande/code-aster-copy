@@ -15,14 +15,21 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine te0056(option, nomte)
-!.......................................................................
-    implicit none
-#include "asterfort/utmess.h"
 !
-    character(len=16) :: option, nomte
+! FE Size module : Parameters <-> integer definitions
+! -------------------------------------------------------------------------
 !
-    call utmess('F', 'FERMETUR_8')
+! - Static size - FE methods - General
 !
-end subroutine
+! --- maximum number of basis function
+#define MAX_BS 27
+!
+! --- EF Lagrange
+#define EF_LAGRANGE 0
+!
+! --- maximum number of quadrature points
+#define MAX_QP 64
+! --- maximum number of quadrature points on a face QUAD = 16
+#define MAX_QP_FACE 16
+! --- maximum number of quadrature points on a cell HEXA = 64
+#define MAX_QP_CELL 64

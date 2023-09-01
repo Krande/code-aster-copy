@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine connec(nomte, nse, nnop2, c)
+subroutine connec(nomte, nse, nnop2, c, typema_)
     implicit none
 !
 #include "jeveux.h"
@@ -24,6 +24,7 @@ subroutine connec(nomte, nse, nnop2, c)
 #include "asterfort/teattr.h"
 #include "asterfort/tecael.h"
     character(len=16) :: nomte
+    character(len=8), optional :: typema_
     integer :: nsemax, nnomax
 !-----------------------------------------------------------------------
     integer :: ibid
@@ -44,7 +45,7 @@ subroutine connec(nomte, nse, nnop2, c)
 !
 !
     integer :: nno, i, j, iadzi, iazk24
-    character(len=8) :: alias8
+    character(len=8) :: alias8, typema
 !
     call tecael(iadzi, iazk24, noms=0)
     nno = zi(iadzi-1+2)
@@ -62,6 +63,7 @@ subroutine connec(nomte, nse, nnop2, c)
 ! CONNECTIVITE DES SOUS ELEMENTS (ELEMENTS ISO_P2)
 !
     call teattr('S', 'ALIAS8', alias8, ibid)
+    typema = alias8(6:8)
 !
     if (lteatt('LUMPE', 'OUI') .and. (alias8(6:8) .eq. 'SE3')) then
         nnop2 = 3
@@ -70,9 +72,11 @@ subroutine connec(nomte, nse, nnop2, c)
         c(1, 2) = 3
         c(2, 1) = c(1, 2)
         c(2, 2) = 2
+        typema = "SE2"
 !
     else if (lteatt('LUMPE', 'OUI') .and. (alias8(6:8) .eq. 'TR6')) &
         then
+        typema = "TR3"
         nnop2 = 6
         nse = 4
         c(1, 1) = 1
@@ -89,6 +93,7 @@ subroutine connec(nomte, nse, nnop2, c)
         c(4, 3) = c(1, 3)
     else if (lteatt('LUMPE', 'OUI') .and. (alias8(6:8) .eq. 'QU9')) &
         then
+        typema = "QU4"
         nnop2 = 9
         nse = 4
         c(1, 1) = 1
@@ -108,5 +113,7 @@ subroutine connec(nomte, nse, nnop2, c)
         c(4, 3) = c(3, 4)
         c(4, 4) = 4
     end if
+
+    if (present(typema_)) typema_ = typema
 !
 end subroutine

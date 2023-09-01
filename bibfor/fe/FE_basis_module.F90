@@ -28,6 +28,8 @@ module FE_basis_module
 #include "asterfort/assert.h"
 #include "asterfort/elrfvf.h"
 #include "asterfort/elrfdf.h"
+#include "asterfort/elrfno.h"
+#include "asterfort/fe_module.h"
 #include "blas/ddot.h"
 ! --------------------------------------------------------------------------------------------------
 !
@@ -37,25 +39,23 @@ module FE_basis_module
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    type FE_basis_cell
+    type FE_basis
+!
+        character(len=8) :: typema = " "
+        integer :: typeEF = EF_LAGRANGE
+        integer :: size
 
 ! ----- member function
     contains
+        procedure, pass :: initCell => init_cell
+        procedure, pass :: initFace => init_face
         procedure, pass :: func => feBSCEval
         procedure, pass :: grad => feBSCGradEv
     end type
 !
-    type FE_basis_face
-
-! ----- member function
-    contains
-        procedure, pass :: func => feBSFEval
-    end type
-!
 ! --------------------------------------------------------------------------------------------------
-! --------------------------------------------------------------------------------------------------
-    public  :: FE_basis_cell, FE_basis_face
-    private :: feBSCEval, feBSCGradEv, feBSFEval
+    public  :: FE_basis
+    private :: feBSCEval, feBSCGradEv, init_cell, init_face
 !
 contains
 !
@@ -63,29 +63,27 @@ contains
 !
 !===================================================================================================
 !
-    subroutine feBSFEval(this, FEFace, point, basisScalEval)
+    subroutine init_cell(this, FECell)
 !
         implicit none
 !
-        type(fe_face), intent(in)                              :: feface
-        class(fe_basis_face), intent(inout)                    :: this
-        real(kind=8), dimension(3), intent(in)                  :: point
-        real(kind=8), dimension(9), intent(out)   :: basisScalEval
+        class(fe_basis), intent(inout) :: this
+        type(FE_Cell), intent(in)      :: FECEll
 !
 ! --------------------------------------------------------------------------------------------------
 !   fe - basis functions
 !
-!   evaluate fe basis scalar for a cell
-!   In feCell              : the current fe cell
-!   In this                 : fe_basis_scalar_cell
-!   In point                : point where evaluate
-!   In min_order            : minimum order
-!   In max_order            : maximum order
-!   Out basisScalEval       : evaluation of the scalar basis
-!
+!   Initialization
 ! --------------------------------------------------------------------------------------------------
 !
-        call elrfvf(feface%typemas, point, basisScalEval)
+        this%typema = FECEll%typemas
+        this%typeEF = EF_LAGRANGE
+!
+        if (this%typeEF == EF_LAGRANGE) then
+            call elrfno(this%typema, this%size)
+        else
+            ASSERT(ASTER_FALSE)
+        end if
 !
     end subroutine
 !
@@ -93,62 +91,91 @@ contains
 !
 !===================================================================================================
 !
-    subroutine feBSCEval(this, feCell, point, basisScalEval)
+    subroutine init_face(this, FEFace)
 !
         implicit none
 !
-        type(fe_Cell), intent(in)                              :: feCell
-        class(fe_basis_cell), intent(inout)                    :: this
-        real(kind=8), dimension(3), intent(in)                  :: point
-        real(kind=8), dimension(27), intent(out)   :: basisScalEval
+        class(fe_basis), intent(inout) :: this
+        type(FE_Face), intent(in)      :: FEFace
 !
 ! --------------------------------------------------------------------------------------------------
 !   fe - basis functions
 !
-!   evaluate fe basis scalar for a cell
-!   In feCell              : the current fe cell
+!   Initialization
+! --------------------------------------------------------------------------------------------------
+!
+        this%typema = FEFace%typemas
+        this%typeEF = EF_LAGRANGE
+!
+        if (this%typeEF == EF_LAGRANGE) then
+            call elrfno(this%typema, this%size)
+        else
+            ASSERT(ASTER_FALSE)
+        end if
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function feBSCEval(this, point) result(basisScalEval)
+!
+        implicit none
+!
+        class(fe_basis), intent(in)             :: this
+        real(kind=8), dimension(3), intent(in)  :: point
+        real(kind=8), dimension(MAX_BS)         :: basisScalEval
+!
+! --------------------------------------------------------------------------------------------------
+!   fe - basis functions
+!
+!   evaluate fe basis scalar
 !   In this                 : fe_basis_scalar_cell
 !   In point                : point where evaluate
-!   In min_order            : minimum order
-!   In max_order            : maximum order
 !   Out basisScalEval       : evaluation of the scalar basis
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        call elrfvf(feCell%typemas, point, basisScalEval)
+        basisScalEval = 0.d0
+        if (this%typeEF == EF_LAGRANGE) then
+            call elrfvf(this%typema, point, basisScalEval)
+        else
+            ASSERT(ASTER_FALSE)
+        end if
 !
-    end subroutine
+    end function
 !
 !
 !===================================================================================================
 !
 !===================================================================================================
 !
-    subroutine feBSCGradEv(this, feCell, point, BSGradEval)
+    function feBSCGradEv(this, point) result(BSGradEval)
 !
         implicit none
 !
-        type(fe_Cell), intent(in)                              :: feCell
-        class(fe_basis_cell), intent(inout)                    :: this
-        real(kind=8), dimension(3), intent(in)                  :: point
-        real(kind=8), dimension(3, 27), intent(out):: BSGradEval
+        class(fe_basis), intent(in)             :: this
+        real(kind=8), dimension(3), intent(in)  :: point
+        real(kind=8), dimension(3, MAX_BS)      :: BSGradEval
 !
 ! --------------------------------------------------------------------------------------------------
 !   fe - basis functions
 !
-!   evaluate fe basis scalar for a 3D cell
-!   In feCell              : the current fe cell
+!   evaluate fe basis scalar
 !   In this                 : fe_basis_scalar_cell
 !   In point                : point where evaluate
-!   In min_order            : minimum order
-!   In max_order            : maximum order
 !   Out BSGradEval   : evaluation of the gradient of the scalar basis
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        call elrfdf(feCell%typemas, point, BSGradEval)
-
+        BSGradEval = 0.d0
+        if (this%typeEF == EF_LAGRANGE) then
+            call elrfdf(this%typema, point, BSGradEval)
+        else
+            ASSERT(ASTER_FALSE)
+        end if
 !
-    end subroutine
+    end function
 !
 end module
