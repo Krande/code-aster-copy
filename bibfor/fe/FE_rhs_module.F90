@@ -25,7 +25,7 @@ module FE_rhs_module
 !
     private
 #include "asterf_types.h"
-#include "asterfort/fe_module.h"
+#include "FE_module.h"
 #include "blas/daxpy.h"
 #include "blas/dscal.h"
 #include "blas/dcopy.h"

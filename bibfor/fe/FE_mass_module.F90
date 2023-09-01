@@ -20,13 +20,13 @@ module FE_mass_module
 !
     use FE_basis_module
     use FE_quadrature_module
-    use HHO_utils_module, only : hhoCopySymPartMat
+    use HHO_utils_module, only: hhoCopySymPartMat
 !
     implicit none
 !
     private
 #include "asterf_types.h"
-#include "asterfort/fe_module.h"
+#include "FE_module.h"
 #include "blas/daxpy.h"
 #include "blas/dscal.h"
 #include "blas/dsyr.h"
@@ -82,7 +82,7 @@ contains
             BSEval = FEBasis%func(FEQuad%points_param(1:3, ipg))
 !
 ! ---- mass = mass + weight * BSEval^T * BSEVAL
-            if(present(ValuesQP)) then
+            if (present(ValuesQP)) then
                 coeff = FEQuad%weights(ipg)*ValuesQP(ipg)
 
             else

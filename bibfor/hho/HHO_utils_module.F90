@@ -210,6 +210,8 @@ contains
             long = "SEG2"
         case ("SE3")
             long = "SEG3"
+        case ("SE4")
+            long = "SEG4"
         case ("TR3")
             long = "TRIA3"
         case ("TR6")
@@ -234,6 +236,20 @@ contains
             long = "TETRA10"
         case ("T15")
             long = "TETRA15"
+        case ("PE6")
+            long = "PENTA6"
+        case ("P15")
+            long = "PENTA15"
+        case ("P18")
+            long = "PENTA18"
+        case ("P21")
+            long = "PENTA21"
+        case ("PY5")
+            long = "PYRAM5"
+        case ("P13")
+            long = "PYRAM13"
+        case ("P19")
+            long = "PYRAM19"
         case default
             ASSERT(ASTER_FALSE)
         end select

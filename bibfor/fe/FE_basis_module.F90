@@ -29,7 +29,7 @@ module FE_basis_module
 #include "asterfort/elrfvf.h"
 #include "asterfort/elrfdf.h"
 #include "asterfort/elrfno.h"
-#include "asterfort/fe_module.h"
+#include "FE_module.h"
 #include "blas/ddot.h"
 ! --------------------------------------------------------------------------------------------------
 !

@@ -23,7 +23,7 @@ subroutine te0080(option, nomte)
     use FE_rhs_module
 !
     implicit none
-#include "asterfort/fe_module.h"
+#include "FE_module.h"
 #include "asterfort/fointe_varc.h"
 #include "asterfort/jevech.h"
 #include "asterfort/writeVector.h"
@@ -68,7 +68,7 @@ subroutine te0080(option, nomte)
 !
     call FECell%splitLumped(nbSubCell, subFECell, connec)
     do ise = 1, nbSubCell
-        call FEQuadCell%initCell(subFECell(ise), fami="RIGI")
+        call FEQuadCell%initCell(subFECell(ise), "RIGI")
         call FEBasis%initCell(subFECell(ise))
 
         do kp = 1, FEQuadCell%nbQuadPoints
@@ -95,7 +95,7 @@ subroutine te0080(option, nomte)
             valQP(kp) = sour
         end do
 
-        call FeMakeRhsScal(FEQuadCell, FEBasis, valQP, rhs_sub )
+        call FeMakeRhsScal(FEQuadCell, FEBasis, valQP, rhs_sub)
 
         do i = 1, FEBasis%size
             rhs(connec(ise, i)) = rhs(connec(ise, i))+rhs_sub(i)

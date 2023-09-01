@@ -24,20 +24,22 @@ subroutine te0246(option, nomte)
     use FE_mass_module
 !
     implicit none
+#include "asterfort/addMatLumped.h"
 #include "asterfort/assert.h"
-#include "asterfort/fe_module.h"
 #include "asterfort/jevech.h"
 #include "asterfort/ntfcma.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcfode.h"
+#include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
 #include "asterfort/writeMatrix.h"
+#include "FE_module.h"
 #include "jeveux.h"
 !
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES MATRICES ELEMENTAIRES
-!                          OPTION : 'MASS_THER_TANG'
+!                          OPTION : 'MASS_THER' ET 'MASS_THER_TANG'
 !
 !    - ARGUMENTS:
 !        DONNEES:      OPTION       -->  OPTION DE CALCUL
@@ -52,7 +54,7 @@ subroutine te0246(option, nomte)
     character(len=16) :: phenom
     real(kind=8) :: valQP(MAX_QP), tpgi, r8bid, funcEF(MAX_BS)
     real(kind=8) :: mass(MAX_BS, MAX_BS), mass_sub(MAX_BS, MAX_BS)
-    integer :: kp, i, j, imate, icomp, itempi, idi, idj
+    integer :: kp, i, imate, icomp, itempi
     integer :: ifon(6)
     integer :: connec(4, 27), ise, nbSubCell, nbDof
     aster_logical :: aniso
@@ -63,15 +65,15 @@ subroutine te0246(option, nomte)
     call FEBasis%initCell(FECell)
     nbDof = FEBasis%size
 !
-    call jevech('PMATERC', 'L', imate)
     call jevech('PCOMPOR', 'L', icomp)
-!
     if (zk16(icomp) (1:5) .eq. 'THER_') then
         call jevech('PTEMPEI', 'L', itempi)
+        call jevech('PMATERC', 'L', imate)
+!
         call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
-        aniso = .false.
+        aniso = ASTER_FALSE
         if (phenom(1:12) .eq. 'THER_NL_ORTH') then
-            aniso = .true.
+            aniso = ASTER_TRUE
         end if
         call ntfcma(zk16(icomp), zi(imate), aniso, ifon)
     end if
@@ -80,9 +82,9 @@ subroutine te0246(option, nomte)
 !
     call FECell%splitLumped(nbSubCell, subFECell, connec)
     do ise = 1, nbSubCell
-        call FEQuadCell%initCell(subFECell(ise), fami="MASS")
+        call FEQuadCell%initCell(subFECell(ise), "MASS")
         call FEBasis%initCell(subFECell(ise))
-
+!
         valQP = 0.0
         do kp = 1, FEQuadCell%nbQuadPoints
             if (zk16(icomp) (1:5) .eq. 'THER_') then
@@ -98,16 +100,10 @@ subroutine te0246(option, nomte)
                 ASSERT(ASTER_FALSE)
             end if
         end do
-
+!
         call FEMassMatScal(FEQuadCell, FEBasis, mass_sub, valQP)
-
-        do j = 1, nbDof
-            idj = connec(ise, j)
-            do i = 1, FEBasis%size
-                idi = connec(ise, i)
-                mass(idi, idj) = mass(idi, idj)+mass_sub(i, j)
-            end do
-        end do
+!
+        call addMatLumped(mass, mass_sub, ise, FEBasis%size, connec)
     end do
 !
     call writeMatrix("PMATTTR", nbDof, nbDof, ASTER_TRUE, mass)
