@@ -62,10 +62,9 @@ subroutine te0296(option, nomte)
     real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), poids, hydrgm(27)
     real(kind=8) :: rbid, chal(1), hydrgp(27), err
     integer :: igeom, imate
-    integer :: nno, kp, i, itemps, ifon(6), l, ndim
-    integer :: ihydr, ihydrp, itempr
-    integer :: jgano2
-    integer :: icomp, itempi, iveres, nnos
+    integer :: nno, kp, i, itemps, ifon(6), l
+    integer :: ihydr, ihydrp, itempr, jgano2
+    integer :: icomp, itempi, iveres
     integer :: npg2, ipoid2, ivf2, idfde2
     aster_logical :: aniso
 ! ----------------------------------------------------------------------
@@ -77,13 +76,8 @@ subroutine te0296(option, nomte)
 ! 1.1 PREALABLES: RECUPERATION ADRESSES FONCTIONS DE FORMES...
 !====
     call uttgel(nomte, typgeo)
-    if ((lteatt('LUMPE', 'OUI')) .and. (typgeo .ne. 'PY')) then
-        call elrefe_info(fami='NOEU', ndim=ndim, nno=nno, nnos=nnos, npg=npg2, &
-                         jpoids=ipoid2, jvf=ivf2, jdfde=idfde2, jgano=jgano2)
-    else
-        call elrefe_info(fami='MASS', ndim=ndim, nno=nno, nnos=nnos, npg=npg2, &
-                         jpoids=ipoid2, jvf=ivf2, jdfde=idfde2, jgano=jgano2)
-    end if
+    call elrefe_info(fami='MASS', nno=nno, npg=npg2, &
+                     jpoids=ipoid2, jvf=ivf2, jdfde=idfde2, jgano=jgano2)
 !
 !====
 ! 1.2 PREALABLES LIES AUX RECHERCHES DE DONNEES GENERALES

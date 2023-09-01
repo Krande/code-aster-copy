@@ -58,7 +58,7 @@ subroutine te0252(option, nomte)
     real(kind=8) :: coorse(18), vectt(9), err
     real(kind=8) :: chal(1), tpgm
     character(len=8) :: elrefe, alias8
-    integer :: ndim, nno, nnos, kp, i, j, k, itemps, ifon(6)
+    integer :: nno, kp, i, j, k, itemps, ifon(6)
     integer :: igeom, imate
     integer :: icomp, itempi, iveres, ipoid2, npg2
     integer :: c(6, 9), ise, nse, nnop2, ivf2, idfde2
@@ -83,12 +83,9 @@ subroutine te0252(option, nomte)
         call teattr('S', 'ALIAS8', alias8, ibid)
         if (alias8(6:8) .eq. 'QU9') elrefe = 'QU4'
         if (alias8(6:8) .eq. 'TR6') elrefe = 'TR3'
-        call elrefe_info(elrefe=elrefe, fami='NOEU', ndim=ndim, nno=nno, nnos=nnos, &
-                         npg=npg2, jpoids=ipoid2, jvf=ivf2, jdfde=idfde2, jgano=jgano2)
-    else
-        call elrefe_info(elrefe=elrefe, fami='MASS', ndim=ndim, nno=nno, nnos=nnos, &
-                         npg=npg2, jpoids=ipoid2, jvf=ivf2, jdfde=idfde2, jgano=jgano2)
     end if
+    call elrefe_info(elrefe=elrefe, fami='MASS', nno=nno, &
+                     npg=npg2, jpoids=ipoid2, jvf=ivf2, jdfde=idfde2, jgano=jgano2)
 !
 !====
 ! 1.2 PREALABLES LIES AUX RECHERCHES DE DONNEES GENERALES
@@ -185,7 +182,7 @@ subroutine te0252(option, nomte)
                 if (zk16(icomp) (1:9) .eq. 'THER_HYDR') then
                     tpgm = 0.d0
                     do i = 1, nno
-                        tpgm = tpgm+zr(itempr+i-1)*zr(ivf2+k+i-1)
+                        tpgm = tpgm+zr(itempr-1+c(ise, i))*zr(ivf2+k+i-1)
                     end do
                     call runge6(ifon(3), deltat, tpg, tpgm, hydrgm(kp), &
                                 hydrgp(kp), err)
