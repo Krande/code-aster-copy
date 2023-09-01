@@ -151,25 +151,28 @@ def ther_non_line_ops(self, **args):
         def __call__(self, nl_solver):
             """Hook to compute HYDR_ELGA"""
 
-            post = PostProcessing(nl_solver.phys_pb)
+            compor = phys_pb.getBehaviourProperty()
 
-            phys_state = nl_solver.phys_state
+            if compor.hasBehaviour("THER_HYDR"):
+                post = PostProcessing(nl_solver.phys_pb)
 
-            if phys_state._size == 1:
-                hydr_curr = phys_state.createFieldOnCells(nl_solver.phys_pb, "ELGA", "HYDR_R")
-            else:
-                hydr_curr = post.computeHydration(
-                    phys_state.primal_prev,
-                    phys_state.primal_curr,
-                    phys_state.time_prev,
-                    phys_state.time_curr,
-                    phys_state.getState(-1).auxiliary["HYDR_ELGA"],
-                )
+                phys_state = nl_solver.phys_state
 
-            phys_state.getState()._aux["HYDR_ELGA"] = hydr_curr
+                if phys_state._size == 1:
+                    hydr_curr = phys_state.createFieldOnCells(nl_solver.phys_pb, "ELGA", "HYDR_R")
+                else:
+                    hydr_curr = post.computeHydration(
+                        phys_state.primal_prev,
+                        phys_state.primal_curr,
+                        phys_state.time_prev,
+                        phys_state.time_curr,
+                        phys_state.getState(-1).auxiliary["HYDR_ELGA"],
+                    )
 
-            storage_manager = nl_solver.get_feature(SOP.Storage)
-            storage_manager.storeField(hydr_curr, "HYDR_ELGA", phys_state.time_curr)
+                phys_state.getState()._aux["HYDR_ELGA"] = hydr_curr
+
+                storage_manager = nl_solver.get_feature(SOP.Storage)
+                storage_manager.storeField(hydr_curr, "HYDR_ELGA", phys_state.time_curr)
 
     class PostHookHHO:
         """User object to be used as a PostStepHook."""

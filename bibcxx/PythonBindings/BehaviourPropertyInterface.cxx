@@ -63,5 +63,15 @@ Return a pointer to the field for multiple behaviour like cristals.
 
 Returns:
     ConstantFieldOnCellsChar16Ptr: multiple behaviour.
-        )" );
+        )" )
+        .def( "hasBehaviour", &BehaviourProperty::hasBehaviour, R"(
+Return True if the given behaviour name is present.
+
+Arguments:
+    behaviour (str): behaviour name
+
+Returns:
+    bool: True if present else False.
+        )",
+              py::arg( "behaviour" ) );
 };

@@ -108,6 +108,8 @@ class BehaviourProperty : public DataStructure {
 
     /** @brief Set behavior ConstantField '.CARCRI' */
     ConstantFieldOnCellsRealPtr getConvergenceCriteria() const { return _CARCRI; };
+
+    bool hasBehaviour( const std::string &behaviour ) const;
 };
 
 /** @typedef Smart-pointer to behaviour class */

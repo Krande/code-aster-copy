@@ -102,3 +102,18 @@ bool BehaviourProperty::build() {
 
     return true;
 };
+
+bool BehaviourProperty::hasBehaviour( const std::string &behaviour ) const {
+
+    if ( _COMPOR && _COMPOR->exists() ) {
+        auto values = _COMPOR->getValues();
+        for ( auto &zone : values ) {
+            auto val = zone.getValues();
+            AS_ASSERT( val.size() == 1 );
+            if ( val[0].toString() == behaviour ) {
+                return true;
+            }
+        }
+    }
+    return false;
+};

@@ -183,7 +183,7 @@ for i_inst in range(1, len(l_inst)):
         # Compute non linear quantities
 
         # Residual
-        resi_ther = disc_comp.getInternalThermalForces(DELTA_T)
+        code, flux, resi_ther = disc_comp.getInternalThermalForces(DELTA_T)
         resi_mass = disc_comp.getNonLinearCapacityForces(T, DELTA_T, d_inst)
 
         RESI_AS = theta * resi_ther + (1.0 / d_inst) * resi_mass
