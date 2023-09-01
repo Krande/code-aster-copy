@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,41 +20,9 @@
 from ..Utilities import _
 
 cata_msg = {
-    1: _(
-        """
- Erreur dans ENV_CINE_YACS :
- il faut donner RESULTAT ou ETAT_INIT, pas les deux en même temps
-"""
-    ),
     2: _(
         """
  Erreur dans ENV_CINE_YACS : problème avec VIS_A_VIS
-"""
-    ),
-    3: _(
-        """
- Erreur dans ENV_CINE_YACS : problème avec ETAT_INIT :
- il faut donner DEPL, VITE et ACCE
-"""
-    ),
-    4: _(
-        """
- Erreur dans ENV_CINE_YACS : incohérence entre maillage et champs
-"""
-    ),
-    5: _(
-        """
- Erreur dans MODI_CHAR_YACS : problème avec VIS_A_VIS
-"""
-    ),
-    6: _(
-        """
- Erreur dans MODI_CHAR_YACS : incohérence entre maillage et champs
-"""
-    ),
-    7: _(
-        """
- Erreur dans MODI_CHAR_YACS : erreur lecture
 """
     ),
     8: _(

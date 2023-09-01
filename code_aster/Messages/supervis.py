@@ -68,7 +68,7 @@ Conseils :
     ),
     10: _(
         """
-    Si le mot-clé TOUT est donné sous MASSIF, il ne peut y avoir qu'une seule occurrence du mot-clé facteur MASSIF. 
+    Si le mot-clé TOUT est donné sous MASSIF, il ne peut y avoir qu'une seule occurrence du mot-clé facteur MASSIF.
 """
     ),
     12: _(
@@ -154,11 +154,6 @@ S'il s'agit d'exécuter des instructions Python, il serait préférable d'utilis
     31: _(
         """
  Valeur invalide pour le mot clé RESERVE_CPU
-"""
-    ),
-    32: _(
-        """
- La procédure "%(k1)s" ne peut être appelée en cours d'exécution des commandes
 """
     ),
     38: _(
