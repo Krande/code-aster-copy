@@ -56,22 +56,16 @@ subroutine te0287(option, nomte)
     real(kind=8) :: rhocp, tpgi
     real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), poids, r8bid
     integer :: igeom, imate
-    integer :: jgano, nno, kp, i, j, ij, l, imattt, ifon(6)
-    integer :: icomp, itempi, nnos, ndim
-    integer :: npg2, ipoid2, ivf2, idfde2
+    integer :: nno, kp, i, j, ij, l, imattt, ifon(6)
+    integer :: icomp, itempi
+    integer :: npg, ipoid, ivf, idfde
     aster_logical :: aniso
 !
 !====
 ! 1.1 PREALABLES: RECUPERATION ADRESSES FONCTIONS DE FORMES...
 !====
     call uttgel(nomte, typgeo)
-    if ((lteatt('LUMPE', 'OUI')) .and. (typgeo .ne. 'PY')) then
-        call elrefe_info(fami='NOEU', ndim=ndim, nno=nno, nnos=nnos, npg=npg2, &
-                         jpoids=ipoid2, jvf=ivf2, jdfde=idfde2, jgano=jgano)
-    else
-        call elrefe_info(fami='MASS', ndim=ndim, nno=nno, nnos=nnos, npg=npg2, &
-                         jpoids=ipoid2, jvf=ivf2, jdfde=idfde2, jgano=jgano)
-    end if
+    call elrefe_info(fami='MASS', nno=nno, npg=npg, jpoids=ipoid, jvf=ivf, jdfde=idfde)
 !
 !====
 ! 1.2 PREALABLES LIES AUX RECHERCHES DE DONNEES GENERALES
@@ -95,9 +89,9 @@ subroutine te0287(option, nomte)
 !
 ! ---   CALCUL DU DEUXIEME TERME
 !
-        do kp = 1, npg2
+        do kp = 1, npg
             l = (kp-1)*nno
-            call dfdm3d(nno, kp, ipoid2, idfde2, zr(igeom), &
+            call dfdm3d(nno, kp, ipoid, idfde, zr(igeom), &
                         poids, dfdx, dfdy, dfdz)
 !
 ! ---       EVALUATION DE LA CAPACITE CALORIFIQUE
@@ -105,7 +99,7 @@ subroutine te0287(option, nomte)
 !
             tpgi = 0.d0
             do i = 1, nno
-                tpgi = tpgi+zr(itempi+i-1)*zr(ivf2+l+i-1)
+                tpgi = tpgi+zr(itempi+i-1)*zr(ivf+l+i-1)
             end do
             call rcfode(ifon(1), tpgi, r8bid, rhocp)
 !
@@ -114,7 +108,7 @@ subroutine te0287(option, nomte)
             do i = 1, nno
                 do j = 1, i
                     ij = (i-1)*i/2+j
-                    zr(imattt+ij-1) = zr(imattt+ij-1)+poids*rhocp*zr(ivf2+l+i-1)*zr(ivf2+l+j&
+                    zr(imattt+ij-1) = zr(imattt+ij-1)+poids*rhocp*zr(ivf+l+i-1)*zr(ivf+l+j&
                                       &-1)
                 end do
             end do
@@ -124,15 +118,15 @@ subroutine te0287(option, nomte)
 !====
 ! --- SECHAGE
 !====
-        do kp = 1, npg2
+        do kp = 1, npg
             l = (kp-1)*nno
-            call dfdm3d(nno, kp, ipoid2, idfde2, zr(igeom), &
+            call dfdm3d(nno, kp, ipoid, idfde, zr(igeom), &
                         poids, dfdx, dfdy, dfdz)
             do i = 1, nno
 !
                 do j = 1, i
                     ij = (i-1)*i/2+j
-                    zr(imattt+ij-1) = zr(imattt+ij-1)+poids*(zr(ivf2+l+i-1)*zr(ivf2+l+j-1))
+                    zr(imattt+ij-1) = zr(imattt+ij-1)+poids*(zr(ivf+l+i-1)*zr(ivf+l+j-1))
                 end do
             end do
         end do

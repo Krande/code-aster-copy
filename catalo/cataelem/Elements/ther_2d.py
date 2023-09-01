@@ -109,7 +109,6 @@ class THPLQU4(Element):
         ElrefeLoc(
             MT.QU4, gauss=("RIGI=FPG4", "MASS=FPG4", "FPG1=FPG1", "NOEU=NOEU"), mater=("FPG1",)
         ),
-        ElrefeLoc(MT.SE2, gauss=("RIGI=FPG2",)),
     )
     calculs = (
         #       Les elements axisymetriques ne devraient jamais etre utilises pour CARA_XXXX
@@ -482,7 +481,6 @@ class THPLQU8(THPLQU4):
         ElrefeLoc(
             MT.QU8, gauss=("RIGI=FPG9", "MASS=FPG9", "FPG1=FPG1", "NOEU=NOEU"), mater=("FPG1",)
         ),
-        ElrefeLoc(MT.SE3, gauss=("RIGI=FPG4",)),
     )
 
 
@@ -495,7 +493,6 @@ class THPLQU9(THPLQU4):
         ElrefeLoc(
             MT.QU9, gauss=("RIGI=FPG9", "MASS=FPG9", "FPG1=FPG1", "NOEU=NOEU"), mater=("FPG1",)
         ),
-        ElrefeLoc(MT.SE3, gauss=("RIGI=FPG4",)),
     )
 
 
@@ -508,7 +505,6 @@ class THPLTR3(THPLQU4):
         ElrefeLoc(
             MT.TR3, gauss=("RIGI=FPG3", "MASS=FPG3", "FPG1=FPG1", "NOEU=NOEU"), mater=("FPG1",)
         ),
-        ElrefeLoc(MT.SE2, gauss=("RIGI=FPG2",)),
     )
 
 
@@ -521,7 +517,6 @@ class THPLTR6(THPLQU4):
         ElrefeLoc(
             MT.TR6, gauss=("RIGI=FPG6", "MASS=FPG6", "FPG1=FPG1", "NOEU=NOEU"), mater=("FPG1",)
         ),
-        ElrefeLoc(MT.SE3, gauss=("RIGI=FPG4",)),
     )
 
 
@@ -534,7 +529,6 @@ class THAXQU4(THPLQU4):
         ElrefeLoc(
             MT.QU4, gauss=("RIGI=FPG4", "MASS=FPG4", "FPG1=FPG1", "NOEU=NOEU"), mater=("FPG1",)
         ),
-        ElrefeLoc(MT.SE2, gauss=("RIGI=FPG2",)),
     )
 
     calculs = (OP.CARA_CISA(te=-1), OP.CARA_GAUCHI(te=-1), OP.CARA_TORSION(te=-1))
@@ -549,7 +543,6 @@ class THAXQU8(THPLQU4):
         ElrefeLoc(
             MT.QU8, gauss=("RIGI=FPG9", "MASS=FPG9", "FPG1=FPG1", "NOEU=NOEU"), mater=("FPG1",)
         ),
-        ElrefeLoc(MT.SE3, gauss=("RIGI=FPG4",)),
     )
 
     calculs = (OP.CARA_CISA(te=-1), OP.CARA_GAUCHI(te=-1), OP.CARA_TORSION(te=-1))
@@ -564,7 +557,6 @@ class THAXQU9(THPLQU4):
         ElrefeLoc(
             MT.QU9, gauss=("RIGI=FPG9", "MASS=FPG9", "FPG1=FPG1", "NOEU=NOEU"), mater=("FPG1",)
         ),
-        ElrefeLoc(MT.SE3, gauss=("RIGI=FPG4",)),
     )
 
     calculs = (OP.CARA_CISA(te=-1), OP.CARA_GAUCHI(te=-1), OP.CARA_TORSION(te=-1))
@@ -579,7 +571,6 @@ class THAXTR3(THPLQU4):
         ElrefeLoc(
             MT.TR3, gauss=("RIGI=FPG3", "MASS=FPG3", "FPG1=FPG1", "NOEU=NOEU"), mater=("FPG1",)
         ),
-        ElrefeLoc(MT.SE2, gauss=("RIGI=FPG2",)),
     )
 
     calculs = (OP.CARA_CISA(te=-1), OP.CARA_GAUCHI(te=-1), OP.CARA_TORSION(te=-1))
@@ -594,7 +585,6 @@ class THAXTR6(THPLQU4):
         ElrefeLoc(
             MT.TR6, gauss=("RIGI=FPG6", "MASS=FPG6", "FPG1=FPG1", "NOEU=NOEU"), mater=("FPG1",)
         ),
-        ElrefeLoc(MT.SE3, gauss=("RIGI=FPG4",)),
     )
 
     calculs = (OP.CARA_CISA(te=-1), OP.CARA_GAUCHI(te=-1), OP.CARA_TORSION(te=-1))
@@ -607,9 +597,8 @@ class THAXQL4(THPLQU4):
     meshType = MT.QUAD4
     elrefe = (
         ElrefeLoc(
-            MT.QU4, gauss=("RIGI=FPG4", "MASS=FPG4", "FPG1=FPG1", "NOEU=NOEU"), mater=("FPG1",)
+            MT.QU4, gauss=("RIGI=FPG4", "MASS=NOEU_S", "FPG1=FPG1", "NOEU=NOEU"), mater=("FPG1",)
         ),
-        ElrefeLoc(MT.SE2, gauss=("RIGI=FPG2",)),
     )
 
     calculs = (OP.CARA_CISA(te=-1), OP.CARA_GAUCHI(te=-1), OP.CARA_TORSION(te=-1))
@@ -622,10 +611,9 @@ class THAXQL9(THPLQU4):
     meshType = MT.QUAD9
     elrefe = (
         ElrefeLoc(
-            MT.QU9, gauss=("RIGI=FPG9", "MASS=FPG9", "FPG1=FPG1", "NOEU=NOEU"), mater=("FPG1",)
+            MT.QU9, gauss=("RIGI=FPG9", "MASS=NOEU_S", "FPG1=FPG1", "NOEU=NOEU"), mater=("FPG1",)
         ),
-        ElrefeLoc(MT.QU4, gauss=("RIGI=FPG4", "MASS=FPG4", "NOEU=NOEU")),
-        ElrefeLoc(MT.SE2, gauss=("RIGI=FPG2",)),
+        ElrefeLoc(MT.QU4, gauss=("RIGI=FPG4", "MASS=NOEU_S", "NOEU=NOEU")),
     )
 
     calculs = (
@@ -650,9 +638,8 @@ class THAXTL3(THPLQU4):
     meshType = MT.TRIA3
     elrefe = (
         ElrefeLoc(
-            MT.TR3, gauss=("RIGI=FPG3", "MASS=FPG3", "FPG1=FPG1", "NOEU=NOEU"), mater=("FPG1",)
+            MT.TR3, gauss=("RIGI=FPG3", "MASS=NOEU_S", "FPG1=FPG1", "NOEU=NOEU"), mater=("FPG1",)
         ),
-        ElrefeLoc(MT.SE2, gauss=("RIGI=FPG2",)),
     )
 
     calculs = (OP.CARA_CISA(te=-1), OP.CARA_GAUCHI(te=-1), OP.CARA_TORSION(te=-1))
@@ -665,10 +652,9 @@ class THAXTL6(THPLQU4):
     meshType = MT.TRIA6
     elrefe = (
         ElrefeLoc(
-            MT.TR6, gauss=("RIGI=FPG3", "MASS=FPG3", "FPG1=FPG1", "NOEU=NOEU"), mater=("FPG1",)
+            MT.TR6, gauss=("RIGI=FPG3", "MASS=NOEU_S", "FPG1=FPG1", "NOEU=NOEU"), mater=("FPG1",)
         ),
-        ElrefeLoc(MT.TR3, gauss=("RIGI=FPG3", "MASS=FPG3", "NOEU=NOEU")),
-        ElrefeLoc(MT.SE3, gauss=("RIGI=FPG4",)),
+        ElrefeLoc(MT.TR3, gauss=("RIGI=FPG3", "MASS=NOEU_S", "NOEU=NOEU")),
     )
 
     calculs = (
@@ -696,9 +682,8 @@ class THPLQL4(THPLQU4):
     meshType = MT.QUAD4
     elrefe = (
         ElrefeLoc(
-            MT.QU4, gauss=("RIGI=FPG4", "MASS=FPG4", "FPG1=FPG1", "NOEU=NOEU"), mater=("FPG1",)
+            MT.QU4, gauss=("RIGI=FPG4", "MASS=NOEU_S", "FPG1=FPG1", "NOEU=NOEU"), mater=("FPG1",)
         ),
-        ElrefeLoc(MT.SE2, gauss=("RIGI=FPG2",)),
     )
 
     calculs = (OP.CARA_CISA(te=-1), OP.CARA_GAUCHI(te=-1), OP.CARA_TORSION(te=-1))
@@ -711,10 +696,9 @@ class THPLQL9(THPLQU4):
     meshType = MT.QUAD9
     elrefe = (
         ElrefeLoc(
-            MT.QU9, gauss=("RIGI=FPG9", "MASS=FPG9", "FPG1=FPG1", "NOEU=NOEU"), mater=("FPG1",)
+            MT.QU9, gauss=("RIGI=FPG9", "MASS=NOEU_S", "FPG1=FPG1", "NOEU=NOEU"), mater=("FPG1",)
         ),
-        ElrefeLoc(MT.QU4, gauss=("RIGI=FPG4", "MASS=FPG4", "NOEU=NOEU")),
-        ElrefeLoc(MT.SE2, gauss=("RIGI=FPG2",)),
+        ElrefeLoc(MT.QU4, gauss=("RIGI=FPG4", "MASS=NOEU_S", "NOEU=NOEU")),
     )
 
     calculs = (
@@ -742,9 +726,8 @@ class THPLTL3(THPLQU4):
     meshType = MT.TRIA3
     elrefe = (
         ElrefeLoc(
-            MT.TR3, gauss=("RIGI=FPG3", "MASS=FPG3", "FPG1=FPG1", "NOEU=NOEU"), mater=("FPG1",)
+            MT.TR3, gauss=("RIGI=FPG3", "MASS=NOEU_S", "FPG1=FPG1", "NOEU=NOEU"), mater=("FPG1",)
         ),
-        ElrefeLoc(MT.SE2, gauss=("RIGI=FPG2",)),
     )
 
     calculs = (OP.CARA_CISA(te=-1), OP.CARA_GAUCHI(te=-1), OP.CARA_TORSION(te=-1))
@@ -757,10 +740,9 @@ class THPLTL6(THPLQU4):
     meshType = MT.TRIA6
     elrefe = (
         ElrefeLoc(
-            MT.TR6, gauss=("RIGI=FPG3", "MASS=FPG3", "FPG1=FPG1", "NOEU=NOEU"), mater=("FPG1",)
+            MT.TR6, gauss=("RIGI=FPG3", "MASS=NOEU_S", "FPG1=FPG1", "NOEU=NOEU"), mater=("FPG1",)
         ),
-        ElrefeLoc(MT.TR3, gauss=("RIGI=FPG3", "MASS=FPG3", "NOEU=NOEU")),
-        ElrefeLoc(MT.SE3, gauss=("RIGI=FPG4",)),
+        ElrefeLoc(MT.TR3, gauss=("RIGI=FPG3", "MASS=NOEU_S", "NOEU=NOEU")),
     )
 
     calculs = (

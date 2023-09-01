@@ -57,8 +57,8 @@ subroutine te0061(option, nomte)
     real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), tem, poids, dire(3), orig(3)
     real(kind=8) :: lambda, fluglo(3), fluloc(3), p(3, 3), angl(3), zero, deltat
     real(kind=8) :: cp, alpha, beta, dtemdx, dtemdy, dtemdz
-    integer :: jgano, ipoids, ivf, idfde, igeom, imate, nno, kp, npg1, i, itemp
-    integer :: itps, n1, n2, ndim, ivectt, icamas, l, nuno, nnos, npg2, ipoid2
+    integer :: ipoids, ivf, idfde, igeom, imate, nno, kp, npg1, i, itemp
+    integer :: itps, n1, n2, ivectt, icamas, l, nuno, npg2, ipoid2
     integer :: ivf2, idfde2
     aster_logical :: aniso, global
 !
@@ -68,16 +68,11 @@ subroutine te0061(option, nomte)
     zero = 0.0d0
 !
     call uttgel(nomte, typgeo)
-    if ((lteatt('LUMPE', 'OUI')) .and. (typgeo .ne. 'PY')) then
-        call elrefe_info(fami='NOEU', ndim=ndim, nno=nno, nnos=nnos, npg=npg2, &
-                         jpoids=ipoid2, jvf=ivf2, jdfde=idfde2, jgano=jgano)
-    else
-        call elrefe_info(fami='MASS', ndim=ndim, nno=nno, nnos=nnos, npg=npg2, &
-                         jpoids=ipoid2, jvf=ivf2, jdfde=idfde2, jgano=jgano)
-    end if
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1, &
-                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
+    call elrefe_info(fami='MASS', npg=npg2, &
+                     jpoids=ipoid2, jvf=ivf2, jdfde=idfde2)
+    call elrefe_info(fami='RIGI', nno=nno, npg=npg1, &
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde)
 !
 !====
 ! 1.2 PREALABLES LIES AUX RECHERCHES DE DONNEES GENERALES

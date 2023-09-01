@@ -46,9 +46,9 @@ subroutine te0077(option, nomte)
     character(len=8) :: elrefe, alias8
     real(kind=8) :: dfdx(9), dfdy(9), poids, r, cp(1)
     real(kind=8) :: mt(9, 9), coorse(18)
-    integer :: ndim, nno, nnos, kp, npg, i, j, k, ij, itemps, imattt
-    integer :: c(6, 9), ise, nse, nnop2, npg2, ipoid2, ivf2, idfde2
-    integer :: ipoids, ivf, idfde, igeom, imate, jgano, ibid
+    integer :: nno, kp, npg, i, j, k, ij, itemps, imattt
+    integer :: c(6, 9), ise, nse, nnop2
+    integer :: ipoids, ivf, idfde, igeom, imate, ibid
 !
 !-----------------------------------------------------------------------
     call elref1(elrefe)
@@ -59,10 +59,8 @@ subroutine te0077(option, nomte)
         if (alias8(6:8) .eq. 'TR6') elrefe = 'TR3'
     end if
 !
-    call elrefe_info(elrefe=elrefe, fami='NOEU', ndim=ndim, nno=nno, nnos=nnos, &
-                     npg=npg2, jpoids=ipoid2, jvf=ivf2, jdfde=idfde2, jgano=jgano)
-    call elrefe_info(elrefe=elrefe, fami='MASS', ndim=ndim, nno=nno, nnos=nnos, &
-                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
+    call elrefe_info(elrefe=elrefe, fami='MASS', nno=nno, &
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde)
 !
 !
     call jevech('PGEOMER', 'L', igeom)
@@ -127,14 +125,14 @@ subroutine te0077(option, nomte)
                 end do
             end do
 !
-            do kp = 1, npg2
+            do kp = 1, npg
                 k = (kp-1)*nno
-                call dfdm2d(nno, kp, ipoid2, idfde2, coorse, &
+                call dfdm2d(nno, kp, ipoids, idfde, coorse, &
                             poids, dfdx, dfdy)
                 if (lteatt('AXIS', 'OUI')) then
                     r = 0.d0
                     do i = 1, nno
-                        r = r+coorse(2*(i-1)+1)*zr(ivf2+k+i-1)
+                        r = r+coorse(2*(i-1)+1)*zr(ivf+k+i-1)
                     end do
 !
                     poids = poids*r
@@ -147,8 +145,8 @@ subroutine te0077(option, nomte)
                     do j = 1, nno
                         mt(c(ise, i), c(ise, j)) = mt( &
                                                 c(ise, i), &
-                                                c(ise, j))+poids*cp(1)*zr(ivf2+k+i-1&
-                                                &)*zr(ivf2+k+j-1 &
+                                                c(ise, j))+poids*cp(1)*zr(ivf+k+i-1&
+                                                &)*zr(ivf+k+j-1 &
                                                 )
                     end do
                 end do

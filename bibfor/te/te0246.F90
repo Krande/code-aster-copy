@@ -53,10 +53,10 @@ subroutine te0246(option, nomte)
     real(kind=8) :: r8bid, rhocp
     real(kind=8) :: dfdx(9), dfdy(9), poids, r, tpgi
     real(kind=8) :: mt(9, 9), coorse(18)
-    integer :: ndim, nno, nnos, kp, i, j, ij, k, ifon(6)
+    integer ::  nno, kp, i, j, ij, k, ifon(6)
     integer :: igeom, imate
-    integer :: icomp, itempi, imattt, jgano, ipoid2, npg2
-    integer :: c(6, 9), ise, nse, nnop2, ivf2, idfde2
+    integer :: icomp, itempi, imattt, ipoid, npg
+    integer :: c(6, 9), ise, nse, nnop2, ivf, idfde
     integer :: ibid
     aster_logical :: aniso
 !
@@ -69,12 +69,9 @@ subroutine te0246(option, nomte)
         call teattr('S', 'ALIAS8', alias8, ibid)
         if (alias8(6:8) .eq. 'QU9') elrefe = 'QU4'
         if (alias8(6:8) .eq. 'TR6') elrefe = 'TR3'
-        call elrefe_info(elrefe=elrefe, fami='NOEU', ndim=ndim, nno=nno, nnos=nnos, &
-                         npg=npg2, jpoids=ipoid2, jvf=ivf2, jdfde=idfde2, jgano=jgano)
-    else
-        call elrefe_info(elrefe=elrefe, fami='MASS', ndim=ndim, nno=nno, nnos=nnos, &
-                         npg=npg2, jpoids=ipoid2, jvf=ivf2, jdfde=idfde2, jgano=jgano)
     end if
+    call elrefe_info(elrefe=elrefe, fami='MASS', nno=nno, &
+                     npg=npg, jpoids=ipoid, jvf=ivf, jdfde=idfde)
 !
 !====
 ! 1.2 PREALABLES LIES AUX RECHERCHES DE DONNEES GENERALES
@@ -130,15 +127,15 @@ subroutine te0246(option, nomte)
                 end do
             end do
 !
-            do kp = 1, npg2
+            do kp = 1, npg
                 k = (kp-1)*nno
-                call dfdm2d(nno, kp, ipoid2, idfde2, coorse, &
+                call dfdm2d(nno, kp, ipoid, idfde, coorse, &
                             poids, dfdx, dfdy)
                 r = 0.d0
                 tpgi = 0.d0
                 do i = 1, nno
-                    r = r+coorse(2*(i-1)+1)*zr(ivf2+k+i-1)
-                    tpgi = tpgi+zr(itempi-1+c(ise, i))*zr(ivf2+k+i-1)
+                    r = r+coorse(2*(i-1)+1)*zr(ivf+k+i-1)
+                    tpgi = tpgi+zr(itempi-1+c(ise, i))*zr(ivf+k+i-1)
                 end do
                 if (lteatt('AXIS', 'OUI')) poids = poids*r
                 call rcfode(ifon(1), tpgi, r8bid, rhocp)
@@ -147,7 +144,7 @@ subroutine te0246(option, nomte)
                     do j = 1, nno
                         mt(c(ise, i), c(ise, j)) = mt(c(ise, i), c(ise, j))+&
                                                 & poids*rhocp*&
-                                                & zr(ivf2+k+i-1)*zr(ivf2+k+j-1)
+                                                & zr(ivf+k+i-1)*zr(ivf+k+j-1)
                     end do
                 end do
             end do
@@ -164,13 +161,13 @@ subroutine te0246(option, nomte)
                 end do
             end do
 !
-            do kp = 1, npg2
+            do kp = 1, npg
                 k = (kp-1)*nno
-                call dfdm2d(nno, kp, ipoid2, idfde2, coorse, &
+                call dfdm2d(nno, kp, ipoid, idfde, coorse, &
                             poids, dfdx, dfdy)
                 r = 0.d0
                 do i = 1, nno
-                    r = r+coorse(2*(i-1)+1)*zr(ivf2+k+i-1)
+                    r = r+coorse(2*(i-1)+1)*zr(ivf+k+i-1)
                 end do
                 if (lteatt('AXIS', 'OUI')) poids = poids*r
 !
@@ -178,7 +175,7 @@ subroutine te0246(option, nomte)
 !
                     do j = 1, nno
                         mt(c(ise, i), c(ise, j)) = mt(c(ise, i), c(ise, j))+poids*&
-                                                &(zr(ivf2+k+i-1)*zr(ivf2+k+j-1))
+                                                &(zr(ivf+k+i-1)*zr(ivf+k+j-1))
                     end do
                 end do
             end do

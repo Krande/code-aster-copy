@@ -45,16 +45,11 @@ subroutine te0054(option, nomte)
     real(kind=8) :: valpar, poids
     real(kind=8) :: cp(1)
     integer :: ipoids, ivf, idfde, igeom, imate, ll, ndim
-    integer :: jgano, nno, kp, npg2, ij, i, j, imattt, itemps
-    integer :: nnos, kpg, spt
+    integer :: nno, kp, npg, ij, i, j, imattt, itemps
+    integer :: kpg, spt
 !
-    if (lteatt('LUMPE', 'OUI')) then
-        call elrefe_info(fami='NOEU', ndim=ndim, nno=nno, nnos=nnos, &
-                         npg=npg2, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
-    else
-        call elrefe_info(fami='MASS', ndim=ndim, nno=nno, nnos=nnos, &
-                         npg=npg2, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
-    end if
+    call elrefe_info(fami='MASS', ndim=ndim, nno=nno, &
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
@@ -77,7 +72,7 @@ subroutine te0054(option, nomte)
 !
 !    BOUCLE SUR LES POINTS DE GAUSS
 !
-    do kp = 1, npg2
+    do kp = 1, npg
 !
         ll = (kp-1)*nno
         call dfdm3d(nno, kp, ipoids, idfde, zr(igeom), &

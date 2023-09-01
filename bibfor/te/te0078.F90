@@ -53,7 +53,7 @@ subroutine te0078(option, nomte)
     real(kind=8) :: orig(2), lambor(2), lambda, fluglo(2), fluloc(2), p(2, 2)
     real(kind=8) :: point(2), coorse(18), vectt(9), deltat, alpha, dtpgdx
     real(kind=8) :: dtpgdy, xnorm, xu, yu
-    integer :: ndim, nno, nnos, kp, npg, i, j, k, itemps, ivectt, jgano, nnop2
+    integer :: nno, kp, npg, i, j, k, itemps, ivectt, nnop2
     integer :: c(6, 9), ise, nse, nuno, ipoids, ivf, idfde, igeom, imate, itemp
     integer :: icamas, npg2, ipoid2, ivf2, idfde2, ibid
     aster_logical :: aniso, global
@@ -68,15 +68,12 @@ subroutine te0078(option, nomte)
         call teattr('S', 'ALIAS8', alias8, ibid)
         if (alias8(6:8) .eq. 'QU9') elrefe = 'QU4'
         if (alias8(6:8) .eq. 'TR6') elrefe = 'TR3'
-        call elrefe_info(elrefe=elrefe, fami='NOEU', ndim=ndim, nno=nno, nnos=nnos, &
-                         npg=npg2, jpoids=ipoid2, jvf=ivf2, jdfde=idfde2, jgano=jgano)
-    else
-        call elrefe_info(elrefe=elrefe, fami='MASS', ndim=ndim, nno=nno, nnos=nnos, &
-                         npg=npg2, jpoids=ipoid2, jvf=ivf2, jdfde=idfde2, jgano=jgano)
     end if
 !
-    call elrefe_info(elrefe=elrefe, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
-                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
+    call elrefe_info(elrefe=elrefe, fami='MASS', nno=nno, &
+                     npg=npg2, jpoids=ipoid2, jvf=ivf2, jdfde=idfde2)
+    call elrefe_info(elrefe=elrefe, fami='RIGI', &
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde)
 !
 !====
 ! 1.2 PREALABLES LIES AUX RECHERCHES DE DONNEES GENERALES

@@ -65,8 +65,8 @@ subroutine te0281(option, nomte)
     real(kind=8) :: point(3), angl(3), fluloc(3), fluglo(3)
     real(kind=8) :: aalpha, abeta
     integer :: ipoids, ivf, idfde, igeom, imate, itemp, icamas
-    integer :: nno, kp, nnos
-    integer :: npg, i, l, ifon(6), ndim, icomp, ivectt, ivecti
+    integer :: nno, kp
+    integer :: npg, i, l, ifon(6), icomp, ivectt, ivecti
     integer :: itemps
     integer :: isechi, ihydr
     integer :: npg2, ipoid2, ivf2, idfde2, nuno, n1, n2
@@ -77,11 +77,8 @@ subroutine te0281(option, nomte)
 ! 1.1 PREALABLES: RECUPERATION ADRESSES FONCTIONS DE FORMES...
 !====
     call uttgel(nomte, typgeo)
-    if ((lteatt('LUMPE', 'OUI')) .and. (typgeo .ne. 'PY')) then
-        call elrefe_info(fami='NOEU', npg=npg2, jpoids=ipoid2, jvf=ivf2, jdfde=idfde2)
-    else
-        call elrefe_info(fami='MASS', npg=npg2, jpoids=ipoid2, jvf=ivf2, jdfde=idfde2)
-    end if
+!
+    call elrefe_info(fami='MASS', npg=npg2, jpoids=ipoid2, jvf=ivf2, jdfde=idfde2)
     call elrefe_info(fami='RIGI', nno=nno, npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde)
 !
 !====
