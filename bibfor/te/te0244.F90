@@ -62,7 +62,7 @@ subroutine te0244(option, nomte)
     real(kind=8) :: alpha, xnorm, xu, yu, r8bid
     integer :: ndim, nno, nnos, kp, npg, i, j, k, itemps, jgano, ipoids, ivf
     integer :: idfde, igeom, imate, icomp, ifon(6), itemp, ivectt, ivecti
-    integer :: c(6, 9), ise, nse, nnop2, npg2, ipoid2, ivf2, idfde2, isechf
+    integer :: c(6, 9), ise, nse, nnop2, npg2, ipoid2, ivf2, idfde2
     integer :: isechi, ibid, ihydr
     aster_logical :: laxi, lhyd
     aster_logical :: aniso, global
@@ -113,12 +113,10 @@ subroutine te0244(option, nomte)
     if (zk16(icomp) (1:5) .eq. 'SECH_') then
         if (zk16(icomp) (1:12) .eq. 'SECH_GRANGER' .or. zk16(icomp) (1:10) .eq. 'SECH_NAPPE') then
             call jevech('PTMPCHI', 'L', isechi)
-            call jevech('PTMPCHF', 'L', isechf)
         else
 !          POUR LES AUTRES LOIS, PAS DE CHAMP DE TEMPERATURE
 !          ISECHI ET ISECHF SONT FICTIFS
             isechi = itemp
-            isechf = itemp
         end if
 !
 !====
@@ -377,8 +375,7 @@ subroutine te0244(option, nomte)
 !
             do kp = 1, npg2
                 k = (kp-1)*nno
-                call dfdm2d(nno, kp, ipoid2, idfde2, coorse, &
-                            poids, dfdx, dfdy)
+                call dfdm2d(nno, kp, ipoid2, idfde2, coorse, poids)
                 r = 0.d0
                 tpg = 0.d0
                 do i = 1, nno

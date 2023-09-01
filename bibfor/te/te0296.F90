@@ -64,7 +64,7 @@ subroutine te0296(option, nomte)
     integer :: igeom, imate
     integer :: nno, kp, i, itemps, ifon(6), l, ndim
     integer :: ihydr, ihydrp, itempr
-    integer :: isechf, jgano2
+    integer :: jgano2
     integer :: icomp, itempi, iveres, nnos
     integer :: npg2, ipoid2, ivf2, idfde2
     aster_logical :: aniso
@@ -172,14 +172,6 @@ subroutine te0296(option, nomte)
 !====
 ! --- SECHAGE
 !====
-        if (zk16(icomp) (1:12) .eq. 'SECH_GRANGER' .or. zk16(icomp) (1:10) .eq. &
-            'SECH_NAPPE') then
-            call jevech('PTMPCHF', 'L', isechf)
-        else
-!          POUR LES AUTRES LOIS, PAS DE CHAMP DE TEMPERATURE
-!          ISECHI ET ISECHF SONT FICTIFS
-            isechf = itempi
-        end if
 !
 ! ---   CALCUL DU DEUXIEME TERME
 !

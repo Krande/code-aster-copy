@@ -159,12 +159,22 @@ subroutine resi_ther(model, cara_elem, mate, time, compor, &
 !
 ! - --- Mass
 !
-        lpain(8) = 'PHYDRPM'
-        lchin(8) = hydr_prev(1:19)
-        lpain(9) = 'PTEMPSR'
-        lchin(9) = time(1:19)
-        lpain(10) = 'PTEMPER'
-        lchin(10) = temp_prev(1:19)
+        lpain(1) = 'PGEOMER'
+        lchin(1) = chgeom(1:19)
+        lpain(2) = 'PMATERC'
+        lchin(2) = mate(1:19)
+        lpain(3) = 'PTEMPEI'
+        lchin(3) = temp_iter(1:19)
+        lpain(4) = 'PCOMPOR'
+        lchin(4) = compor(1:19)
+        lpain(5) = 'PVARCPR'
+        lchin(5) = varc_curr(1:19)
+        lpain(6) = 'PHYDRPM'
+        lchin(6) = hydr_prev(1:19)
+        lpain(7) = 'PTEMPSR'
+        lchin(7) = time(1:19)
+        lpain(8) = 'PTEMPER'
+        lchin(8) = temp_prev(1:19)
 !
 ! - --- Output fields
 !
@@ -181,7 +191,7 @@ subroutine resi_ther(model, cara_elem, mate, time, compor, &
 !
 ! - --- Number of fields
 !
-        call calcul(stop_calc, option2, ligrel_model, nbin, lchin, &
+        call calcul(stop_calc, option2, ligrel_model, 8, lchin, &
                     lpain, nbout, lchout, lpaout, base, &
                     'OUI')
 !

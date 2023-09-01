@@ -114,15 +114,13 @@ subroutine ther_mtan(model, cara_elem, mate, para, varc_curr, &
     lchin(3) = temp_iter(1:19)
     lpain(4) = 'PCOMPOR'
     lchin(4) = compor(1:19)
-    lpain(5) = 'PTMPCHI'
-    lchin(5) = dry_prev(1:19)
-    lpain(6) = 'PTMPCHF'
-    lchin(6) = dry_curr(1:19)
-    lpain(7) = 'PVARCPR'
-    lchin(7) = varc_curr(1:19)
-    lpain(8) = 'PCAMASS'
-    lchin(8) = chcara(12) (1:19)
-    nbin = 8
+    lpain(5) = 'PTMPCHF'
+    lchin(5) = dry_curr(1:19)
+    lpain(6) = 'PVARCPR'
+    lchin(6) = varc_curr(1:19)
+    lpain(7) = 'PCAMASS'
+    lchin(7) = chcara(12) (1:19)
+    nbin = 7
 !
 ! - Rigidity term
 !

@@ -74,7 +74,7 @@ subroutine vetnth_nonl(model, cara_elem, mate, mateco, time, compor, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbin = 11, nbout = 2
+    integer, parameter :: nbin = 10, nbout = 2
     character(len=8) :: lpain(nbin), lpaout(nbout)
     character(len=19) :: lchin(nbin), lchout(nbout)
     integer :: iret
@@ -156,10 +156,8 @@ subroutine vetnth_nonl(model, cara_elem, mate, mateco, time, compor, &
     lchin(8) = compor(1:19)
     lpain(9) = 'PTMPCHI'
     lchin(9) = dry_prev(1:19)
-    lpain(10) = 'PTMPCHF'
-    lchin(10) = dry_curr(1:19)
-    lpain(11) = 'PCAMASS'
-    lchin(11) = chcara(12) (1:19)
+    lpain(10) = 'PCAMASS'
+    lchin(10) = chcara(12) (1:19)
 !
 ! - Generate new RESU_ELEM name
 !

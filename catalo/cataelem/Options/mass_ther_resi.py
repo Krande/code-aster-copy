@@ -36,17 +36,7 @@ PVARCPR = InputParameter(phys=PHY.VARI_R, comment="""  PVARCPR : VARIABLES DE CO
 
 
 MASS_THER_RESI = Option(
-    para_in=(
-        PCOMPOR,
-        SP.PGEOMER,
-        PHYDRPM,
-        SP.PMATERC,
-        SP.PTEMPEI,
-        SP.PTEMPER,
-        SP.PTEMPSR,
-        SP.PTMPCHF,
-        PVARCPR,
-    ),
+    para_in=(PCOMPOR, SP.PGEOMER, PHYDRPM, SP.PMATERC, SP.PTEMPEI, SP.PTEMPER, SP.PTEMPSR, PVARCPR),
     para_out=(SP.PHYDRPP, SP.PRESIDU),
     condition=(CondCalcul("+", ((AT.PHENO, "TH"), (AT.BORD, "0"))),),
 )

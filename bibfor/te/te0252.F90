@@ -62,7 +62,7 @@ subroutine te0252(option, nomte)
     integer :: igeom, imate
     integer :: icomp, itempi, iveres, ipoid2, npg2
     integer :: c(6, 9), ise, nse, nnop2, ivf2, idfde2
-    integer :: isechf, ibid, jgano2
+    integer :: ibid, jgano2
     integer :: ihydr, ihydrp, itempr
     aster_logical :: aniso
 ! ----------------------------------------------------------------------
@@ -105,19 +105,7 @@ subroutine te0252(option, nomte)
 !====
 ! 1.3 PREALABLES LIES AU SECHAGE
 !====
-    if ((zk16(icomp) (1:5) .eq. 'SECH_')) then
-        if (zk16(icomp) (1:12) .eq. 'SECH_GRANGER' .or. zk16(icomp) (1:10) .eq. 'SECH_NAPPE') then
-            call jevech('PTMPCHF', 'L', isechf)
-        else
-!          POUR LES AUTRES LOIS, PAS DE CHAMP DE TEMPERATURE
-!          ISECHF EST FICTIFS
-            isechf = itempi
-        end if
-!
-!====
-! 1.4 PREALABLES LIES A L ANISOTROPIE EN THERMIQUE ET RECUPERATION PARAMETRES MATERIAU
-!====
-    else if (zk16(icomp) (1:5) .eq. 'THER_') then
+    if (zk16(icomp) (1:5) .eq. 'THER_') then
         call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
         aniso = .false.
         if (phenom(1:12) .eq. 'THER_NL_ORTH') then

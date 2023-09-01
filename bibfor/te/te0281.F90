@@ -68,7 +68,7 @@ subroutine te0281(option, nomte)
     integer :: nno, kp, nnos
     integer :: npg, i, l, ifon(6), ndim, icomp, ivectt, ivecti
     integer :: itemps
-    integer :: isechi, isechf, ihydr
+    integer :: isechi, ihydr
     integer :: npg2, ipoid2, ivf2, idfde2, nuno, n1, n2
     aster_logical :: lhyd
     aster_logical :: aniso, global
@@ -271,12 +271,10 @@ subroutine te0281(option, nomte)
         if (zk16(icomp) (1:12) .eq. 'SECH_GRANGER' .or. zk16(icomp) (1:10) .eq. &
             'SECH_NAPPE') then
             call jevech('PTMPCHI', 'L', isechi)
-            call jevech('PTMPCHF', 'L', isechf)
         else
 !          POUR LES AUTRES LOIS, PAS DE CHAMP DE TEMPERATURE
-!          ISECHI ET ISECHF SONT FICTIFS
+!          ISECHI SONT FICTIFS
             isechi = itemp
-            isechf = itemp
         end if
         do kp = 1, npg
             l = nno*(kp-1)
@@ -304,21 +302,11 @@ subroutine te0281(option, nomte)
         end do
         do kp = 1, npg2
             l = nno*(kp-1)
-            call dfdm3d(nno, kp, ipoid2, idfde2, zr(igeom), &
-                        poids, dfdx, dfdy, dfdz)
+            call dfdm3d(nno, kp, ipoid2, idfde2, zr(igeom), poids)
             tpg = 0.d0
-            dtpgdx = 0.d0
-            dtpgdy = 0.d0
-            dtpgdz = 0.d0
-            tpsec = 0.d0
             do i = 1, nno
                 tpg = tpg+zr(itemp+i-1)*zr(ivf2+l+i-1)
-                tpsec = tpsec+zr(isechi+i-1)*zr(ivf2+l+i-1)
-                dtpgdx = dtpgdx+zr(itemp+i-1)*dfdx(i)
-                dtpgdy = dtpgdy+zr(itemp+i-1)*dfdy(i)
-                dtpgdz = dtpgdz+zr(itemp+i-1)*dfdz(i)
             end do
-            call rcdiff(zi(imate), zk16(icomp), tpsec, tpg, diff)
             do i = 1, nno
                 zr(ivectt+i-1) = zr(ivectt+i-1)+poids*(tpg/deltat*zr(ivf2+l+i-1))
                 zr(ivecti+i-1) = zr(ivectt+i-1)
