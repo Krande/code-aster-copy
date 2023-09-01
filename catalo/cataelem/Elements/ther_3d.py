@@ -317,7 +317,7 @@ class THER_HEXA20(Element):
             para_out=((OP.RIGI_THER_TANG.PMATTTR, MMATTTR),),
         ),
         OP.MASS_THER_TANG(
-            te=287,
+            te=246,
             para_in=(
                 (OP.MASS_THER_TANG.PCOMPOR, CCOMPOR),
                 (SP.PGEOMER, NGEOMER),
