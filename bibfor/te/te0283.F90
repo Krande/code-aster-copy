@@ -63,6 +63,7 @@ subroutine te0283(option, nomte)
     real(kind=8) :: tpsec, diff, lambor(3), orig(3), dire(3)
     real(kind=8) :: point(3), angl(3), fluloc(3), fluglo(3)
     real(kind=8) :: aalpha, abeta
+    real(kind=8), pointer :: flux(:) => null()
     integer :: ipoids, ivf, idfde, igeom, imate, icamas
     integer :: jgano, nno, kp, npg1, i, ifon(6), l, ndim
     integer :: isechf
@@ -87,6 +88,7 @@ subroutine te0283(option, nomte)
     call jevech('PTEMPEI', 'L', itempi)
     call jevech('PCOMPOR', 'L', icomp)
     call jevech('PRESIDU', 'E', iveres)
+    call jevech('PFLUXPR', 'E', vr=flux)
 !
     if (zk16(icomp) (1:5) .eq. 'THER_') then
 !====
@@ -175,11 +177,13 @@ subroutine te0283(option, nomte)
                 n2 = 3
                 call utpvlg(n1, n2, p, fluloc, fluglo)
             end if
+            flux(3*(kp-1)+1:3*(kp-1)+3) = -fluglo
 !
             do i = 1, nno
                 zr(iveres+i-1) = zr(iveres+i-1)+poids*(dfdx(i)*fluglo(1)+dfdy(i)*fluglo&
                                  &(2)+dfdz(i)*fluglo(3))
             end do
+
         end do
 !
     else if (zk16(icomp) (1:5) .eq. 'SECH_') then

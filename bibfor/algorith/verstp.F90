@@ -150,7 +150,7 @@ subroutine verstp(model, lload_name, lload_info, cara_elem, mate, &
 ! - Residuals from non-linear laws
 !
     call resi_ther(model, cara_elem, mate, time, compor_ther, &
-                   temp_prev, temp_iter, hydr_prev, hydr_curr, dry_prev, &
+                   temp_prev, temp_iter, hydr_prev, hydr_curr, &
                    dry_curr, varc_curr, resu_elem, vect_elem, base, &
                    l_stat, para)
 !

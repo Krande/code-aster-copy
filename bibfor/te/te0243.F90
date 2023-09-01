@@ -58,6 +58,7 @@ subroutine te0243(option, nomte)
     real(kind=8) :: coorse(18), vectt(9)
     real(kind=8) :: fluloc(2), fluglo(2), lambor(2), orig(2), p(2, 2), point(2)
     real(kind=8) :: alpha, xnorm, xu, yu
+    real(kind=8), pointer :: flux(:) => null()
     character(len=8) :: elrefe, alias8
     integer :: ndim, nno, nnos, kp, npg, i, j, k, ifon(6)
     integer :: ipoids, ivf, idfde, igeom, imate
@@ -96,6 +97,7 @@ subroutine te0243(option, nomte)
     call jevech('PTEMPEI', 'L', itempi)
     call jevech('PCOMPOR', 'L', icomp)
     call jevech('PRESIDU', 'E', iveres)
+    call jevech('PFLUXPR', 'E', vr=flux)
 !
 !====
 ! 1.3 PREALABLES LIES AU SECHAGE
@@ -232,6 +234,7 @@ subroutine te0243(option, nomte)
                     fluglo(1) = p(1, 1)*fluloc(1)+p(1, 2)*fluloc(2)
                     fluglo(2) = p(2, 1)*fluloc(1)+p(2, 2)*fluloc(2)
                 end if
+                flux(2*(kp-1)+1:2*(kp-1)+2) = -fluglo
 !
                 do i = 1, nno
                     vectt(c(ise, i)) = vectt(c(ise, i))+&
@@ -239,6 +242,7 @@ subroutine te0243(option, nomte)
                                       & (fluglo(1)*dfdx(i)+fluglo(2)*dfdy(i))
                 end do
             end do
+
 !
         else if (zk16(icomp) (1:5) .eq. 'SECH_') then
 !

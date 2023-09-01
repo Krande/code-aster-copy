@@ -18,7 +18,7 @@
 !
 interface
     subroutine resi_ther(model    , cara_elem, mate     , time     , compor    ,&
-                         temp_prev, temp_iter, hydr_prev, hydr_curr, dry_prev  ,&
+                         temp_prev, temp_iter, hydr_prev, hydr_curr, &
                          dry_curr , varc_curr, resu_elem, vect_elem, base,&
                          l_stat, para)
         character(len=24), intent(in) :: model
@@ -27,12 +27,11 @@ interface
         character(len=24), intent(in) :: mate
         character(len=24), intent(in) :: temp_prev
         character(len=24), intent(in) :: temp_iter
-        character(len=24), intent(in) :: hydr_prev   
+        character(len=24), intent(in) :: hydr_prev
         character(len=24), intent(in) :: hydr_curr
-        character(len=24), intent(in) :: dry_prev   
         character(len=24), intent(in) :: dry_curr
         character(len=24), intent(in) :: compor
-        character(len=19), intent(in) :: varc_curr    
+        character(len=19), intent(in) :: varc_curr
         character(len=19), intent(inout) :: resu_elem
         character(len=24), intent(in) :: vect_elem
         character(len=1), intent(in) :: base

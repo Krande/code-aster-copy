@@ -31,9 +31,11 @@ PCOMPOR = InputParameter(phys=PHY.COMPOR)
 
 PVARCPR = InputParameter(phys=PHY.VARI_R, comment="""  PVARCPR : VARIABLES DE COMMANDE  """)
 
+PFLUXPR = OutputParameter(phys=PHY.FLUX_R, type="ELGA")
+
 
 RAPH_THER = Option(
     para_in=(PCOMPOR, SP.PGEOMER, SP.PCAMASS, SP.PMATERC, SP.PTEMPEI, SP.PTMPCHF, PVARCPR),
-    para_out=(SP.PRESIDU,),
+    para_out=(SP.PRESIDU, PFLUXPR),
     condition=(CondCalcul("+", ((AT.PHENO, "TH"), (AT.BORD, "0"))),),
 )

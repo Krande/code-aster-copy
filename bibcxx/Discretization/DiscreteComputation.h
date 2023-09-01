@@ -412,7 +412,7 @@ class DiscreteComputation {
      * @return Tuple with 5 objects:
      * field of internal forces (`B^T \sigma`)
      */
-    FieldOnNodesRealPtr
+    std::tuple< ASTERINTEGER, FieldOnCellsRealPtr, FieldOnNodesRealPtr >
     getInternalThermalForces( const FieldOnNodesRealPtr temp_step,
                               const FieldOnCellsRealPtr varc_curr = nullptr,
                               const VectorString &groupOfCells = VectorString() ) const;

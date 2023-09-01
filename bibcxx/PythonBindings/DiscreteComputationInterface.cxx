@@ -735,7 +735,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
 
             Returns:
                 tuple (tuple): return code error (FieldOnCells),
-                error code flag (integer),
+                error code flag (int),
                 internal state variables VARI_ELGA (FieldOnCells),
                 Cauchy stress SIEF_ELGA (FieldOnCells),
                 field of internal forces (FieldOnNodesReal),
@@ -755,8 +755,12 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                 varc_curr (FieldOnCellsReal): external state variables at current time
                 groupOfCells (list[str]): compute matrices on given groups of cells.
                     If it empty, the full model is used
+
             Returns:
-                ElementaryMatrix: elementary mass matrix
+                tuple (tuple):
+                error code flag (int),
+                fluxes FLUX_ELGA (FieldOnCellsReal),
+                internal forces (FieldOnNodesReal),
             )",
               py::arg( "temp_step" ), py::arg( "varc_curr" ) = nullptr,
               py::arg( "groupOfCells" ) = VectorString() )

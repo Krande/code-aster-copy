@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 !
 subroutine resi_ther(model, cara_elem, mate, time, compor, &
-                     temp_prev, temp_iter, hydr_prev, hydr_curr, dry_prev, &
+                     temp_prev, temp_iter, hydr_prev, hydr_curr, &
                      dry_curr, varc_curr, resu_elem, vect_elem, base, &
                      l_stat, para)
 !
@@ -41,7 +41,6 @@ subroutine resi_ther(model, cara_elem, mate, time, compor, &
     character(len=24), intent(in) :: temp_iter
     character(len=24), intent(in) :: hydr_prev
     character(len=24), intent(in) :: hydr_curr
-    character(len=24), intent(in) :: dry_prev
     character(len=24), intent(in) :: dry_curr
     character(len=24), intent(in) :: compor
     character(len=19), intent(in) :: varc_curr
@@ -68,7 +67,6 @@ subroutine resi_ther(model, cara_elem, mate, time, compor, &
 ! In  temp_iter        : incrementaltemperature field at current Newton iteration
 ! In  hydr_prev        : previous hydratation
 ! In  hydr_curr        : current hydratation
-! In  dry_prev         : previous drying
 ! In  dry_curr         : current drying
 ! In  compor           : name of comportment definition (field)
 ! In  varc_curr        : command variable for current time
@@ -138,13 +136,15 @@ subroutine resi_ther(model, cara_elem, mate, time, compor, &
 !
     lpaout(1) = 'PRESIDU'
     lchout(1) = resu_elem(1:19)
+    lpaout(2) = 'PFLUXPR'
+    lchout(2) = "&&RESI_THER.FLUXPR"
 !
     call corich('E', lchout(1), ichin_=-1)
 !
 ! - Number of fields
 !
     call calcul(stop_calc, option1, ligrel_model, 7, lchin, &
-                lpain, 1, lchout, lpaout, base, &
+                lpain, 2, lchout, lpaout, base, &
                 'OUI')
 !
 ! - Multiply values by theta

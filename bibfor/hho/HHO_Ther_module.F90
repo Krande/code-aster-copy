@@ -108,7 +108,7 @@ contains
         type(HHO_basis_cell) :: hhoBasisCell
         character(len=32) :: phenom
         integer:: cbs, fbs, total_dofs, j, faces_dofs, gbs
-        integer :: jmate, ipg, icodre(3), jtemps
+        integer :: jmate, ipg, icodre(3), jtemps, ndim
         real(kind=8), dimension(MSIZE_CELL_VEC) :: bT, G_curr_coeff
         real(kind=8), dimension(MSIZE_TDOFS_SCAL) :: temp_curr
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
@@ -116,8 +116,9 @@ contains
         real(kind=8) :: TMP(MSIZE_CELL_VEC, MSIZE_TDOFS_VEC)
         real(kind=8) :: module_tang(3, 3), G_curr(3), sig_curr(3)
         real(kind=8) :: coorpg(3), weight, time_curr, temp_eval_curr
+        real(kind=8), pointer :: flux(:) => null()
         character(len=8) :: poum
-        aster_logical :: l_rhs, l_lhs, l_nl
+        aster_logical :: l_rhs, l_lhs, l_nl, l_flux
 !
         l_lhs = present(lhs)
         l_rhs = present(rhs)
@@ -125,6 +126,11 @@ contains
         l_nl = ASTER_FALSE
         if (option == "RIGI_THER_TANG" .or. option == "RAPH_THER") then
             l_nl = ASTER_TRUE
+        end if
+        l_flux = ASTER_FALSE
+        if (option == "RAPH_THER") then
+            l_flux = ASTER_TRUE
+            call jevech("PFLUXPR", "E", vr=flux)
         end if
 !
 ! --- Get input fields
@@ -166,6 +172,7 @@ contains
             call hhoRenumTherVecInv(hhoCell, hhoData, temp_curr)
         end if
         poum = "+"
+        ndim = hhoCell%ndim
 !
 ! ----- compute G_curr = gradrec * temp_curr
 !
@@ -194,7 +201,7 @@ contains
 !
 ! ------- Compute behavior
 !
-            call hhoComputeBehaviourTher(phenom, fami, poum, ipg, hhoCell%ndim, time_curr, jmate, &
+            call hhoComputeBehaviourTher(phenom, fami, poum, ipg, ndim, time_curr, jmate, &
                                          temp_eval_curr, G_curr, sig_curr, module_tang)
 !
 ! ------- Compute rhs
@@ -204,6 +211,12 @@ contains
 ! ------- Compute lhs
 !
             if (l_lhs) call hhoComputeLhsRigiTher(hhoCell, module_tang, weight, BSCEval, gbs, AT)
+!
+! ------- Save fluxes
+!
+            if (l_flux) then
+                flux(ndim*(ipg-1)+1:ndim*(ipg-1)+ndim) = -sig_curr(1:ndim)
+            end if
 !
         end do
 !

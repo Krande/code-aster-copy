@@ -399,7 +399,13 @@ class PhysicalState(BaseFeature):
         Returns:
             FieldOnCells: Stress field with a given value (SIEF_ELGA)
         """
-        return self.createFieldOnCells(phys_pb, "ELGA", "SIEF_R", value)
+
+        if phys_pb.isMechanical():
+            type_field = "SIEF_R"
+        else:
+            type_field = "FLUX_R"
+
+        return self.createFieldOnCells(phys_pb, "ELGA", type_field, value)
 
     @profile
     def createInternalVariablesNext(self, phys_pb, value):
@@ -439,10 +445,11 @@ class PhysicalState(BaseFeature):
         self.time_step = 0.0
         self.primal_prev = self.createPrimal(phys_pb, 0.0)
         self.primal_step = self.createPrimal(phys_pb, 0.0)
-        if phys_pb.isMechanical() and phys_pb.getBehaviourProperty():
+        if phys_pb.getBehaviourProperty():
             self.stress = self.createStress(phys_pb, 0.0)
-            self.internVar = self.createInternalVariablesNext(phys_pb, 0.0)
-            self.externVar = None
+            if phys_pb.isMechanical():
+                self.internVar = self.createInternalVariablesNext(phys_pb, 0.0)
+                self.externVar = None
 
     def as_dict(self):
         """Returns the fields as a dict.
@@ -451,11 +458,23 @@ class PhysicalState(BaseFeature):
             dict: Dict of fields.
         """
         current = self.current
-        quantity, _ = current.primal_prev.getPhysicalQuantity().split("_")
+
+        def getStoringName(field, default=" "):
+            if field:
+                quantity, _ = field.getPhysicalQuantity().split("_")
+                if isinstance(field, (FieldOnNodesReal)):
+                    loc = "NOEU"
+                else:
+                    loc = field.getLocalization()
+
+                return quantity + "_" + loc
+
+            return default
+
         return {
-            "SIEF_ELGA": current.stress,
-            "VARI_ELGA": current.internVar,
-            quantity: current.primal_prev,
+            getStoringName(current.stress): current.stress,
+            getStoringName(current.internVar, "VARI_ELGA"): current.internVar,
+            getStoringName(current.primal_prev).split("_")[0]: current.primal_prev,
         }
 
     def debugPrint(self, label=""):

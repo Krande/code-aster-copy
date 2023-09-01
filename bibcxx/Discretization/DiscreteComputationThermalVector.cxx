@@ -25,6 +25,7 @@
 #include "aster_fort_calcul.h"
 #include "aster_fort_superv.h"
 
+#include "DataFields/FieldOnCellsBuilder.h"
 #include "Discretization/Calcul.h"
 #include "Discretization/DiscreteComputation.h"
 #include "Loads/DirichletBC.h"
@@ -1024,7 +1025,7 @@ FieldOnNodesRealPtr DiscreteComputation::getNonLinearTransientThermalForces(
 /**
  * @brief Compute elementary forces for internal forces (RAPH_THER)
  */
-FieldOnNodesRealPtr
+std::tuple< ASTERINTEGER, FieldOnCellsRealPtr, FieldOnNodesRealPtr >
 DiscreteComputation::getInternalThermalForces( const FieldOnNodesRealPtr temp_step,
                                                const FieldOnCellsRealPtr varc_curr,
                                                const VectorString &groupOfCells ) const {
@@ -1050,6 +1051,7 @@ DiscreteComputation::getInternalThermalForces( const FieldOnNodesRealPtr temp_st
     } else {
         calcul->setGroupsOfCells( currModel, groupOfCells );
     }
+    auto FEDesc = calcul->getFiniteElementDescriptor();
 
     // Add input fields
     calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
@@ -1084,6 +1086,10 @@ DiscreteComputation::getInternalThermalForces( const FieldOnNodesRealPtr temp_st
     // TODO:
     // calcul->addInputField( "PTMPCHF", dry_curr );
 
+    // Create output fields
+    auto flux_curr = FieldOnCellsPtrBuilder< ASTERDOUBLE >( FEDesc, "ELGA", "FLUX_R" );
+    calcul->addOutputField( "PFLUXPR", flux_curr );
+
     // Add output elementary terms
     calcul->addOutputElementaryTerm( "PRESIDU", std::make_shared< ElementaryTermReal >() );
 
@@ -1095,7 +1101,9 @@ DiscreteComputation::getInternalThermalForces( const FieldOnNodesRealPtr temp_st
     };
 
     elemVect->build();
-    return elemVect->assemble( _phys_problem->getDOFNumbering() );
+    auto internalForces = elemVect->assemble( _phys_problem->getDOFNumbering() );
+
+    return std::make_tuple( 0, flux_curr, internalForces );
 }
 
 /**

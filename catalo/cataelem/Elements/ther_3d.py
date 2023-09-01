@@ -351,7 +351,7 @@ class THER_HEXA20(Element):
                 (SP.PTMPCHF, DDL_THER),
                 (OP.RAPH_THER.PVARCPR, LC.ZVARCPG),
             ),
-            para_out=((SP.PRESIDU, MVECTTR),),
+            para_out=((SP.PRESIDU, MVECTTR), (OP.RAPH_THER.PFLUXPR, EFLUXPG)),
         ),
         OP.MASS_THER_RESI(
             te=296,

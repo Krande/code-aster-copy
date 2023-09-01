@@ -371,10 +371,10 @@ class ExtendedDiscreteComputation:
                 phys_state.externVar,
             )
         else:
-            r_stress = self.getInternalThermalForces(phys_state.primal_step, phys_state.externVar)
-            codret = 0
+            codret, stress, r_stress = self.getInternalThermalForces(
+                phys_state.primal_step, phys_state.externVar
+            )
             internVar = None
-            stress = None
 
         resi = Residuals()
 

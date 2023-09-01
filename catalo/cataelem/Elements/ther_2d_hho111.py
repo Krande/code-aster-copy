@@ -220,7 +220,7 @@ class THER2DQ9_HHO111(Element):
                 (SP.PTEMPEI, DDL_THER),
                 (OP.RAPH_THER.PVARCPR, LC.ZVARCPG),
             ),
-            para_out=((SP.PRESIDU, MVECTTR),),
+            para_out=((SP.PRESIDU, MVECTTR), (OP.RAPH_THER.PFLUXPR, EFLUXPG)),
         ),
         OP.RIGI_THER(
             te=454,
