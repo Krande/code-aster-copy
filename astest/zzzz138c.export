@@ -1,0 +1,17 @@
+P time_limit 60
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist verification sequential
+
+
+F comm zzzz134c.comm  D  1
+F libr zzzz134b.mmed D  20
+F libr zzzz134c/1.csv D  10
+F libr zzzz134c/2.csv D  11
+F libr zzzz134c/3.csv D  12
+F libr zzzz134c/4.csv D  13
+F libr zzzz134c/5.csv D  14
+F libr zzzz134c/6.csv D  16
+F libr zzzz134c/7.csv D  17

@@ -18,7 +18,7 @@
 
 subroutine mmnewd(type_elem, nb_node, nb_dim, elem_coor, pt_coor, &
                   iter_maxi, tole_maxi, proj_dire, ksi1, ksi2, &
-                  tang_1, tang_2, error, dist_, ksi1_init, ksi2_init)
+                  tang_1, tang_2, error, beta, dist_, ksi1_init, ksi2_init)
 !
     implicit none
 !
@@ -40,6 +40,7 @@ subroutine mmnewd(type_elem, nb_node, nb_dim, elem_coor, pt_coor, &
     real(kind=8), intent(in) :: proj_dire(3)
     real(kind=8), intent(out) :: ksi1
     real(kind=8), intent(out) :: ksi2
+    real(kind=8), intent(out) :: beta
     real(kind=8), intent(out) :: tang_1(3)
     real(kind=8), intent(out) :: tang_2(3)
     integer(kind=8), intent(out) :: error
@@ -66,6 +67,7 @@ subroutine mmnewd(type_elem, nb_node, nb_dim, elem_coor, pt_coor, &
 ! Out ksi2      : second parametric coordinate of projection of point on element
 ! Out tang_1    : first tangent of local basis for the projection of point on element
 ! Out tang_2    : second tangent of local basis for the projection of point on element
+! Out beta      : scalar value that multiply proj_dire to obtain the projected position
 ! Out error     : error code
 !                  0  OK
 !                  1  NON-OK
@@ -82,7 +84,7 @@ subroutine mmnewd(type_elem, nb_node, nb_dim, elem_coor, pt_coor, &
     real(kind=8) :: matrix(3, 3)
     real(kind=8) :: residu(3)
     real(kind=8) :: dksi1, dksi2, dbeta
-    real(kind=8) :: det, test, refe, beta
+    real(kind=8) :: det, test, refe
     real(kind=8) :: tole_rela, tole_abso, tole_newt
     real(kind=8) :: dist, dist_mini, ksi1_mini, ksi2_mini, beta_mini
 !

@@ -1,0 +1,88 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+#
+# Notes:
+#  - Les commentaires sont precedes du signe #
+#  - Une meme commande peut se suivre sur plusieurs lignes
+# Commande obligatoire pour commencer
+# -----------------------------------
+
+from code_aster.MacroCommands.crea_coupe_ops import TableCoupes
+
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
+
+# Lecture du maillage
+# ------------------
+# Lecture du maillage dans le fichier de maillage et creation du concept mail
+mail = LIRE_MAILLAGE(FORMAT="MED", NOM_MED="MeshCoude_Quad", UNITE=20)
+table = LIRE_TABLE(FORMAT="TABLEAU", SEPARATEUR=",", UNITE=10)
+coupes = CREA_COUPE(
+    COUPE=table, MAILLAGE=mail, NOM_AUTO="OUI", PREFIX="section", PAS_NUME=100, PREM_NUME=1000
+)
+
+keyw = TableCoupes.ALL_KEYWORDS[:6]
+result = [
+    [0.00000e00, 1.80000e00, 1.80000e-01, 0.00000e00, 1.80000e00, 2.00000e-01],
+    [0.00000e00, 2.79000e00, 1.80000e-01, 0.00000e00, 2.90000e00, 2.00000e-01],
+    [1.75712e-01, 2.01476e00, 3.90471e-02, 1.95236e-01, 2.03862e00, 4.33857e-02],
+]
+for ipath in range(3):
+    num = 1000 + ipath * 100
+    for key, res in zip(keyw, result[ipath]):
+        TEST_TABLE(
+            REFERENCE="AUTRE_ASTER",
+            VALE_REFE=1.0e-12 + res,
+            VALE_CALC=1.0e-12 + res,
+            NOM_PARA=key,
+            TABLE=coupes,
+            FILTRE=_F(NOM_PARA="NOM", VALE_K="section_%d" % num),
+            PRECISION=0.001,
+            TOLE_MACHINE=1e-05,
+            CRITERE="ABSOLU",
+        )
+
+mail = LIRE_MAILLAGE(FORMAT="MED", NOM_MED="MeshCoude_Lin", UNITE=20)
+table = LIRE_TABLE(FORMAT="TABLEAU", SEPARATEUR=",", UNITE=10)
+coupes = CREA_COUPE(
+    COUPE=table, MAILLAGE=mail, NOM_AUTO="OUI", PREFIX="section", PAS_NUME=100, PREM_NUME=1000
+)
+IMPR_TABLE(TABLE=coupes, UNITE=8)
+keyw = TableCoupes.ALL_KEYWORDS[:6]
+result = [
+    [0.00000e00, 1.80000e00, 1.80000e-01, 0.00000e00, 1.80000e00, 2.00000e-01],
+    [0.00000e00, 2.79000e00, 1.80000e-01, 0.00000e00, 2.90000e00, 2.00000e-01],
+    [1.73880e-01, 2.01252e00, 3.86400e-02, 1.93200e-01, 2.03613e00, 4.29333e-02],
+]
+for ipath in range(3):
+    num = 1000 + ipath * 100
+    for key, res in zip(keyw, result[ipath]):
+        TEST_TABLE(
+            REFERENCE="AUTRE_ASTER",
+            VALE_REFE=1.0e-12 + res,
+            VALE_CALC=1.0e-12 + res,
+            NOM_PARA=key,
+            TABLE=coupes,
+            FILTRE=_F(NOM_PARA="NOM", VALE_K="section_%d" % num),
+            PRECISION=0.001,
+            TOLE_MACHINE=1e-05,
+            CRITERE="ABSOLU",
+        )
+
+
+FIN()

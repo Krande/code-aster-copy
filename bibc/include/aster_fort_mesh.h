@@ -143,6 +143,16 @@ extern void DEFSSSPPP( QUADPOINCOORWRAP, quadpoincoorwrap, const char *, STRING_
 extern void DEFSSPP( MINMAXEDGESWRAP, minmaxedgeswrap, const char *, STRING_SIZE, const char *,
                      STRING_SIZE, ASTERDOUBLE *, ASTERDOUBLE * );
 
+#define CALL_MMNEWD( a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q )                           \
+    CALLSPPPPPPPPPPPPPPPP( MMNEWD, mmnewd, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q )
+#define CALLO_MMNEWD( a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q )                          \
+    CALLOPPPPPPPPPPPPPPPP( MMNEWD, mmnewd, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q )
+extern void DEFSPPPPPPPPPPPPPPPP( MMNEWD, mmnewd, const char *, STRING_SIZE, const ASTERINTEGER *,
+                                  const ASTERINTEGER *, const ASTERDOUBLE *, const ASTERDOUBLE *,
+                                  const ASTERINTEGER *, const ASTERDOUBLE *, const ASTERDOUBLE *,
+                                  ASTERDOUBLE *, ASTERDOUBLE *, ASTERDOUBLE *, ASTERDOUBLE *,
+                                  ASTERINTEGER *, ASTERDOUBLE *, ASTERDOUBLE *, ASTERDOUBLE *,
+                                  ASTERDOUBLE * );
 #ifdef __cplusplus
 }
 #endif

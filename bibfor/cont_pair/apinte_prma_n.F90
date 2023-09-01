@@ -61,7 +61,7 @@ subroutine apinte_prma_n(proj_tole, elem_dime, &
     aster_logical, parameter :: debug = ASTER_FALSE
     integer(kind=8) :: i_node, i_dime, elem_mast_line_nbnode
     real(kind=8) :: nosl_coor(3), ksi1_line, ksi2_line
-    real(kind=8) :: ksi1, ksi2, tau1(3), tau2(3), para_coor(2, 9)
+    real(kind=8) :: ksi1, ksi2, beta, tau1(3), tau2(3), para_coor(2, 9)
     real(kind=8) :: norm_slav(3)
     character(len=8) :: elem_mast_line_code
 
@@ -119,7 +119,7 @@ subroutine apinte_prma_n(proj_tole, elem_dime, &
                     elem_mast_coor, nosl_coor, 75, &
                     proj_tole, norm_slav, &
                     ksi1, ksi2, &
-                    tau1, tau2, iret)
+                    tau1, tau2, iret, beta)
         if (iret == 1) then
 !
 ! ----- Try with linearization
@@ -131,12 +131,12 @@ subroutine apinte_prma_n(proj_tole, elem_dime, &
                         elem_mast_coor, nosl_coor, 75, &
                         proj_tole, norm_slav, &
                         ksi1_line, ksi2_line, &
-                        tau1, tau2, iret)
-            call mmnewd(elem_mast_code, elem_mast_nbnode, elem_dime, &
+                        tau1, tau2, iret, beta)
+            call mmnewd(elem_mast_line_code, elem_mast_line_nbnode, elem_dime, &
                         elem_mast_coor, nosl_coor, 75, &
                         proj_tole, norm_slav, &
                         ksi1, ksi2, &
-                        tau1, tau2, iret, &
+                        tau1, tau2, iret, beta, &
                         ksi1_init=ksi1_line, ksi2_init=ksi2_line)
 !
             if (iret == 1) then
