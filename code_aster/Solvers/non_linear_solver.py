@@ -235,16 +235,7 @@ class NonLinearSolver(SolverFeature):
     def post_hooks(self):
         """Call post hooks"""
         for hook in self.get_features(SOP.PostStepHook):
-            hook(self.phys_state)
-
-        # Store field for HHO
-        if self.phys_pb.getModel().existsHHO():
-            hho_field = HHO(self.phys_pb).projectOnLagrangeSpace(self.phys_state.primal_curr)
-            storage_manager = self.get_feature(SOP.Storage)
-            field_name = "HHO_DEPL"
-            if self.phys_pb.isThermal():
-                field_name = "HHO_TEMP"
-            storage_manager.storeField(hho_field, field_name, self.phys_state.time_curr)
+            hook(self)
 
     def setExternalStateVariables(self, current_time):
         """Compute and set external variables in the physical state.

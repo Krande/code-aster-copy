@@ -27,5 +27,20 @@ void exportPostProcessingToPython( py::module_ &mod ) {
     py::class_< PostProcessing, PostProcessing::PostProcessingPtr >( mod, "PostProcessing" )
         .def( py::init( &initFactoryPtr< PostProcessing, PhysicalProblemPtr > ) )
         // fake initFactoryPtr: not a DataStructure
-        ;
+        .def( "computeHydration", &PostProcessing::computeHydration,
+              R"(
+            Compute hydration at quadrature points (HYDR_ELGA)
+
+            Arguments:
+                temp_prev (FieldOnNodesReal): temperature field at begin of current time step
+                temp_curr (FieldOnNodesReal): temperature field at end of current time step
+                time_prev (float): time at begin of the step
+                time_curr (float): time at end of the step
+                hydr_prev (FieldOnCellReals): hydration field at begin of current time step
+
+            Returns:
+                FieldOnCellReals: hydration field at end of current time step
+        )",
+              py::arg( "temp_prev" ), py::arg( "temp_curr" ), py::arg( "time_prev" ),
+              py::arg( "time_curr" ), py::arg( "hydr_prev" ) );
 };

@@ -23,6 +23,7 @@ from ..Helpers import adapt_for_mgis_behaviour
 from ..Messages import UTMESS
 from ..Objects import (
     FrictionType,
+    HHO,
     MechanicalDirichletBC,
     MechanicalLoadFunction,
     MechanicalLoadReal,
@@ -32,6 +33,7 @@ from ..Objects import (
     PhysicalProblem,
 )
 from ..Solvers import ContactManager, NonLinearSolver, ProblemSolver, TimeStepper
+from ..Solvers import SolverOptions as SOP
 from ..Utilities import print_stats
 
 
@@ -141,6 +143,24 @@ def meca_non_line_ops(self, **args):
     # Add stepper
     timeStepper = TimeStepper.from_keywords(**args["INCREMENT"][0])
     solver.use(timeStepper)
+
+    # Add Hook
+    class PostHookHHO:
+        """User object to be used as a PostStepHook."""
+
+        provide = SOP.PostStepHook
+
+        def __call__(self, nl_solver):
+            """Hook to compute HHO_DEPL"""
+
+            if nl_solver.phys_pb.getModel().existsHHO():
+                hho_field = HHO(nl_solver.phys_pb).projectOnLagrangeSpace(
+                    nl_solver.phys_state.primal_curr
+                )
+                storage_manager = nl_solver.get_feature(SOP.Storage)
+                storage_manager.storeField(hho_field, "HHO_DEPL", nl_solver.phys_state.time_curr)
+
+    solver.use(PostHookHHO())
 
     # Run computation
     solver.run()

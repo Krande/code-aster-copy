@@ -192,6 +192,11 @@ subroutine carcha(fieldType, fieldQuantity, fieldSupport, option, param)
     else if (fieldType .eq. 'VARI_NOEU') then
         fieldQuantity = 'VAR2_R'
         fieldSupport = 'NOEU'
+    else if (fieldType .eq. 'HYDR_ELGA') then
+        fieldQuantity = 'HYDR_R'
+        fieldSupport = 'ELGA'
+        option = 'HYDR_ELGA'
+        param = 'PHYDRMR'
     else if (fieldType .eq. 'HYDR_ELNO') then
         fieldQuantity = 'HYDR_R'
         fieldSupport = 'ELNO'

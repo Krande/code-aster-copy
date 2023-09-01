@@ -25,11 +25,8 @@
 
 #include "astercxx.h"
 
-#include "Behaviours/BehaviourProperty.h"
-#include "Discretization/Calcul.h"
-#include "LinearAlgebra/ElementaryMatrix.h"
-#include "LinearAlgebra/ElementaryVector.h"
-#include "Numbering/DOFNumbering.h"
+#include "DataFields/FieldOnCells.h"
+#include "DataFields/FieldOnNodes.h"
 #include "Studies/PhysicalProblem.h"
 
 /**
@@ -57,6 +54,11 @@ class PostProcessing {
 
     /** @brief Destructor */
     ~PostProcessing() {};
+
+    FieldOnCellsRealPtr computeHydration( const FieldOnNodesRealPtr temp_prev,
+                                          const FieldOnNodesRealPtr temp_curr,
+                                          const ASTERDOUBLE time_prev, const ASTERDOUBLE time_curr,
+                                          const FieldOnCellsRealPtr hydr_prev ) const;
 };
 
 using PostProcessingPtr = std::shared_ptr< PostProcessing >;

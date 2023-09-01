@@ -21,6 +21,7 @@
 from ..Cata.Syntax import _F
 from ..Commands import THER_NON_LINE2
 from ..Objects import (
+    HHO,
     ThermalDirichletBC,
     ThermalLoadFunction,
     ThermalLoadReal,
@@ -28,8 +29,10 @@ from ..Objects import (
     ParallelThermalLoadFunction,
     ParallelThermalLoadReal,
     PhysicalProblem,
+    PostProcessing,
 )
 from ..Solvers import NonLinearSolver, ProblemSolver, TimeStepper
+from ..Solvers import SolverOptions as SOP
 from ..Utilities import print_stats, force_list
 
 
@@ -139,6 +142,52 @@ def ther_non_line_ops(self, **args):
     # Add stepper
     timeStepper = TimeStepper.from_keywords(**args["INCREMENT"][0])
     solver.use(timeStepper)
+
+    class PostHookHydr:
+        """User object to be used as a PostStepHook."""
+
+        provide = SOP.PostStepHook
+
+        def __call__(self, nl_solver):
+            """Hook to compute HYDR_ELGA"""
+
+            post = PostProcessing(nl_solver.phys_pb)
+
+            phys_state = nl_solver.phys_state
+
+            if phys_state._size == 1:
+                hydr_curr = phys_state.createFieldOnCells(nl_solver.phys_pb, "ELGA", "HYDR_R")
+            else:
+                hydr_curr = post.computeHydration(
+                    phys_state.primal_prev,
+                    phys_state.primal_curr,
+                    phys_state.time_prev,
+                    phys_state.time_curr,
+                    phys_state.getState(-1).auxiliary["HYDR_ELGA"],
+                )
+
+            phys_state.getState()._aux["HYDR_ELGA"] = hydr_curr
+
+            storage_manager = nl_solver.get_feature(SOP.Storage)
+            storage_manager.storeField(hydr_curr, "HYDR_ELGA", phys_state.time_curr)
+
+    class PostHookHHO:
+        """User object to be used as a PostStepHook."""
+
+        provide = SOP.PostStepHook
+
+        def __call__(self, nl_solver):
+            """Hook to compute HHO_TEMP"""
+
+            if nl_solver.phys_pb.getModel().existsHHO():
+                hho_field = HHO(nl_solver.phys_pb).projectOnLagrangeSpace(
+                    nl_solver.phys_state.primal_curr
+                )
+                storage_manager = nl_solver.get_feature(SOP.Storage)
+                storage_manager.storeField(hho_field, "HHO_TEMP", nl_solver.phys_state.time_curr)
+
+    solver.use(PostHookHydr())
+    solver.use(PostHookHHO())
 
     # Run computation
     solver.run()

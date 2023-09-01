@@ -84,13 +84,13 @@ class CustomStepSolver(StepSolver):
             print("+++ CustomStepSolver ends successfully, time:", self.phys_state.time_curr)
 
 
-def post_hook(phys_state):
+def post_hook(nl_solver):
     """Example of hook function.
 
     Arguments:
         phys_state (PhysicalState): Current physical state.
     """
-    print(f"calling hook at time = {phys_state.time_curr}...", flush=True)
+    print(f"calling hook at time = {nl_solver.phys_state.time_curr}...", flush=True)
 
 
 class PostHook:
@@ -98,9 +98,9 @@ class PostHook:
 
     provide = SOP.PostStepHook
 
-    def __call__(self, phys_state):
+    def __call__(self, nl_solver):
         """Example of hook."""
-        phys_state.debugPrint()
+        nl_solver.phys_state.debugPrint()
 
 
 snl = ProblemSolver(NonLinearSolver(), NonLinearResult())

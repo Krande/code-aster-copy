@@ -36,6 +36,7 @@ class PhysicalState(BaseFeature):
 
         _time_prev = _time_step = None
         _primal_prev = _primal_step = _stress = _internVar = _externVar = None
+        _aux = None
         __setattr__ = no_new_attributes(object.__setattr__)
 
         @property
@@ -83,6 +84,13 @@ class PhysicalState(BaseFeature):
             """FieldOnCellsReal: External state variables."""
             return self._externVar
 
+        def auxiliary(self, field):
+            """Return an auxiliary field"""
+            if self._aux and field in self._aux:
+                return self._aux[field]
+
+            return None
+
         def copy(self, other):
             """Copy the content of an object into the current one.
 
@@ -99,6 +107,10 @@ class PhysicalState(BaseFeature):
             self._stress = other.stress and other.stress.copy()
             self._internVar = other.internVar and other.internVar.copy()
             self._externVar = other.externVar and other.externVar.copy()
+            if other._aux:
+                self._aux = {}
+                for key, field in other._aux.items():
+                    self._aux[key] = field.copy()
             return self
 
         def debugPrint(self, label=""):
@@ -282,6 +294,11 @@ class PhysicalState(BaseFeature):
         assert field is None or isinstance(field, FieldOnCellsReal), f"unexpected type: {field}"
         self.current._externVar = field
 
+    @property
+    def auxiliary(self):
+        """FieldOnCellsReal: auxiliary field."""
+        return self.current._aux
+
     def stash(self):
         """Stores the object state to provide transactionality semantics."""
         self._stash = PhysicalState.State().copy(self.current)
@@ -350,7 +367,7 @@ class PhysicalState(BaseFeature):
 
     # FIXME setPrimalValue?
     @profile
-    def createPrimal(self, phys_pb, value):
+    def createPrimal(self, phys_pb, value=0.0):
         """Create primal field with a given value
 
         Arguments:
@@ -365,7 +382,7 @@ class PhysicalState(BaseFeature):
         return field
 
     @profile
-    def createFieldOnCells(self, phys_pb, localization, quantity, value):
+    def createFieldOnCells(self, phys_pb, localization, quantity, value=0.0):
         """Create a field with a given value
 
         Arguments:
@@ -450,6 +467,7 @@ class PhysicalState(BaseFeature):
             if phys_pb.isMechanical():
                 self.internVar = self.createInternalVariablesNext(phys_pb, 0.0)
                 self.externVar = None
+        self._current._aux = {}
 
     def as_dict(self):
         """Returns the fields as a dict.

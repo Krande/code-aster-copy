@@ -266,7 +266,6 @@ subroutine te0243(option, nomte)
                 if (lteatt('AXIS', 'OUI')) poids = poids*r
 !
                 do i = 1, nno
-                    k = (kp-1)*nno
                     vectt(c(ise, i)) = vectt(c(ise, i))+&
                                       & poids*diff*&
                                       & (dfdx(i)*dtpgdx+dfdy(i)*dtpgdy)
