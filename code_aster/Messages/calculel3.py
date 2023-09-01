@@ -116,13 +116,6 @@ Conseil :
    non pas sous la forme 'TEMP'.
 """
     ),
-    19: _(
-        """
-La variable de commande %(k1)s est présente dans le champ de matériau fourni à CALC_VECT_ELEM.
-Attention : les chargements induits par les variables de commande ne sont pas calculés par
-CALC_VECT_ELEM. Pour en tenir compte, il faut utiliser l'opérateur CALCUL.
-"""
-    ),
     22: _(
         """
   L'option %(k1)s est inexistante.

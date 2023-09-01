@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -66,15 +66,6 @@ matériau fonction (ELAS_FO). Ce mot-clé ne peut être renseigné qu'avec un ma
 L'entité %(k1)s renseignée au mot-clé %(k2)s n'est pas dans le maillage.
 -> Risque et Conseil :
 Veuillez vérifier les données fournies au mot-clé %(k2)s.
-"""
-    ),
-    8: _(
-        """
-Problème dans la création de la base locale au fond de fissure.
-Il est impossible de déterminer le sens de la direction de propagation (vecteur tangent aux lèvres).
-Dans le cas symétrique (SYME='OUI') il faut :
-- soit donner les lèvres de la fissure (LEVRE_SUP),
-- soit indiquer le vecteur tangent au point origine du fond de fissure (DTAN_ORIG).
 """
     ),
     9: _(
@@ -236,26 +227,6 @@ L'hypothèse de lèvres collées n'est pas valide.
 Cela peut être dû au fait :
  - que seule la lèvre supérieure est modélisée. Dans ce cas, il faut mettre SYME='OUI'.
  - que les lèvres sont initialement décollées. Dans ce cas, il faut mettre CONFIG_INIT='DECOLLEE'.
-"""
-    ),
-    35: _(
-        """
-Attention, le vecteur tangent au premier noeud du fond de fissure (DTAN_ORIG) est dans le sens
-opposé à celui calculé automatiquement (%(r1)f %(r2)f %(r3)f).
-Cela est probablement une erreur, qui peut conduire à des résultats faux.
--> Risque et Conseil :
-  - vérifiez DTAN_ORIG,
-  - ou bien ne le renseignez pas.
-"""
-    ),
-    36: _(
-        """
-Attention, le vecteur tangent au dernier noeud du fond de fissure (DTAN_EXTR) est dans le sens
-opposé à celui calculé automatiquement (%(r1)f %(r2)f %(r3)f).
-Cela est probablement une erreur, qui peut conduire à des résultats faux.
--> Risque et Conseil :
-  - vérifiez DTAN_EXTR,
-  - ou bien ne le renseignez pas.
 """
     ),
     37: _(
