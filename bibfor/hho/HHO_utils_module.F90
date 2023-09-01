@@ -46,7 +46,7 @@ module HHO_utils_module
     public :: hhoCopySymPartMat, hhoPrintMat, hhoNorm2Mat, hhoProdSmatVec
     public :: hhoPrintTensor4, hhoPrintTensor4Mangle, hhoRenumMecaVec, hhoRenumMecaMat
     public :: hhoGetTypeFromModel, MatScal2Vec, hhoRenumMecaVecInv, MatCellScal2Vec
-    public :: SigVec2Mat, hhoGetMatrElem, CellNameL2S
+    public :: SigVec2Mat, hhoGetMatrElem, CellNameL2S, CellNameS2L
     public :: hhoRenumTherVec, hhoRenumTherMat, hhoRenumTherVecInv
 !    private  ::
 !
@@ -179,6 +179,61 @@ contains
             short = "TR3"
         case ("SEG2")
             short = "SE2"
+        case default
+            ASSERT(ASTER_FALSE)
+        end select
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine CellNameS2L(short, long)
+!
+        implicit none
+!
+        character(len=8), intent(out)                :: long
+        character(len=8), intent(in)                :: short
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Copy the other part of a symetric matrix
+!   In uplo     : 'L' the lower part is given or 'U' for the upper part
+!   In size     : size of the matrix
+!   Inout mat   : matrix to copy
+! --------------------------------------------------------------------------------------------------
+!
+!
+        select case (short)
+        case ("SE2")
+            long = "SEG2"
+        case ("SE3")
+            long = "SEG3"
+        case ("TR3")
+            long = "TRIA3"
+        case ("TR6")
+            long = "TRIA6"
+        case ("TR7")
+            long = "TRIA7"
+        case ("QU4")
+            long = "QUAD4"
+        case ("QU8")
+            long = "QUAD8"
+        case ("QU9")
+            long = "QUAD9"
+        case ("HE8")
+            long = "HEXA8"
+        case ("H20")
+            long = "HEXA20"
+        case ("H27")
+            long = "HEXA27"
+        case ("TE4")
+            long = "TETRA4"
+        case ("T10")
+            long = "TETRA10"
+        case ("T15")
+            long = "TETRA15"
         case default
             ASSERT(ASTER_FALSE)
         end select

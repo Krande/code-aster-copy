@@ -17,6 +17,10 @@
 ! --------------------------------------------------------------------
 
 subroutine te0056(option, nomte)
+!
+    use FE_topo_module
+    use FE_quadrature_module
+    use FE_basis_module
 !.......................................................................
     implicit none
 #include "jeveux.h"
@@ -37,19 +41,27 @@ subroutine te0056(option, nomte)
 !          ---> NOMTE  : NOM DU TYPE ELEMENT
 !.......................................................................
 !
+    type(FE_Cell) :: FECell
+    type(FE_Quadrature) :: FEQuadCell
+    type(FE_basis_cell) :: FEBasis
+
     character(len=8) :: nompar(4)
-    real(kind=8) :: poids, sourc, theta
-    real(kind=8) :: valpar(4), xx, yy, zz
+    real(kind=8) :: sourc, theta
+    real(kind=8) :: valpar(4), funcEF(27)
     integer :: ipoids, ivf, idfde, igeom
     integer :: jgano, nno, kp, npg1, i, ivectt, isour, itemps
 !
 !
 !-----------------------------------------------------------------------
-    integer :: ier, l, ndim, nnos
+    integer :: ier, ndim, nnos
     real(kind=8) :: soun, sounp1
 !-----------------------------------------------------------------------
+    call FECell%init()
+
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
                      npg=npg1, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
+
+    call FEQuadCell%initCell(FECell, npg1)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PSOURCF', 'L', isour)
@@ -68,24 +80,11 @@ subroutine te0056(option, nomte)
 !
 !    BOUCLE SUR LES POINTS DE GAUSS
 !
-    do kp = 1, npg1
-        l = (kp-1)*nno
-        call dfdm3d(nno, kp, ipoids, idfde, zr(igeom), &
-                    poids)
+    do kp = 1, FEQuadCell%nbQuadPoints
 !
 !    CALCUL DE SOURC
 !
-        xx = 0.d0
-        yy = 0.d0
-        zz = 0.d0
-        do i = 1, nno
-            xx = xx+zr(igeom+3*i-3)*zr(ivf+l+i-1)
-            yy = yy+zr(igeom+3*i-2)*zr(ivf+l+i-1)
-            zz = zz+zr(igeom+3*i-1)*zr(ivf+l+i-1)
-        end do
-        valpar(1) = xx
-        valpar(2) = yy
-        valpar(3) = zz
+        valpar(1:3) = FECell%evalCoor(FEQuadCell%points(1:3, kp))
         valpar(4) = zr(itemps)
 
 !       EC : je voulais mettre fami = RIGI et kpg = kp
@@ -111,8 +110,10 @@ subroutine te0056(option, nomte)
             sourc = theta*sounp1+(1.0d0-theta)*soun
         end if
 !
+        call FEBasis%func(FECell, FEQuadCell%points(1:3, kp), funcEF)
+!
         do i = 1, nno
-            zr(ivectt+i-1) = zr(ivectt+i-1)+poids*sourc*zr(ivf+l+i-1)
+            zr(ivectt+i-1) = zr(ivectt+i-1)+FEQuadCell%weights(kp)*sourc*funcEF(i)
         end do
 !
     end do
