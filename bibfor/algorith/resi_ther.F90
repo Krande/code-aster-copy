@@ -157,6 +157,27 @@ subroutine resi_ther(model, cara_elem, mate, time, compor, &
 
     if (.not. l_stat) then
 !
+! --- Compute hydratation
+!
+        lpain(1) = 'PMATERC'
+        lchin(1) = mate(1:19)
+        lpain(2) = 'PCOMPOR'
+        lchin(2) = compor(1:19)
+        lpain(3) = 'PTEMPSR'
+        lchin(3) = time(1:19)
+        lpain(4) = 'PTEMPMR'
+        lchin(4) = temp_prev(1:19)
+        lpain(5) = 'PTEMPPR'
+        lchin(5) = temp_iter(1:19)
+        lpain(6) = 'PHYDRMR'
+        lchin(6) = hydr_prev(1:19)
+
+        lpaout(1) = 'PHYDRPR'
+        lchout(1) = hydr_curr(1:19)
+
+        call calcul(stop_calc, "HYDR_ELGA", ligrel_model, 6, lchin, &
+                    lpain, 1, lchout, lpaout, base, 'OUI')
+!
 ! - --- Mass
 !
         lpain(1) = 'PGEOMER'
@@ -169,12 +190,10 @@ subroutine resi_ther(model, cara_elem, mate, time, compor, &
         lchin(4) = compor(1:19)
         lpain(5) = 'PVARCPR'
         lchin(5) = varc_curr(1:19)
-        lpain(6) = 'PHYDRPM'
-        lchin(6) = hydr_prev(1:19)
+        lpain(6) = 'PHYDRPR'
+        lchin(6) = hydr_curr(1:19)
         lpain(7) = 'PTEMPSR'
         lchin(7) = time(1:19)
-        lpain(8) = 'PTEMPER'
-        lchin(8) = temp_prev(1:19)
 !
 ! - --- Output fields
 !
@@ -184,15 +203,13 @@ subroutine resi_ther(model, cara_elem, mate, time, compor, &
 
         lpaout(1) = 'PRESIDU'
         lchout(1) = resu_elem(1:19)
-        lpaout(2) = 'PHYDRPP'
-        lchout(2) = hydr_curr(1:19)
 !
         call corich('E', lchout(1), ichin_=-1)
 !
 ! - --- Number of fields
 !
-        call calcul(stop_calc, option2, ligrel_model, 8, lchin, &
-                    lpain, nbout, lchout, lpaout, base, &
+        call calcul(stop_calc, option2, ligrel_model, 7, lchin, &
+                    lpain, 1, lchout, lpaout, base, &
                     'OUI')
 !
 ! - --- Multiply values by 1/dt

@@ -56,15 +56,13 @@ subroutine te0296(option, nomte)
     integer :: nbres
     parameter(nbres=3)
     integer :: icodre(nbres)
-    character(len=2) :: typgeo
     character(len=32) :: phenom
-    real(kind=8) :: beta, deltat, tpg, tpgm
+    real(kind=8) :: beta, deltat, tpg
     real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), poids
-    real(kind=8) :: rbid, chal(1), err
-    real(kind=8), pointer :: hydrgm(:) => null(), hydrgp(:) => null()
+    real(kind=8) :: rbid, chal(1)
+    real(kind=8), pointer :: hydrgp(:) => null()
     integer :: igeom, imate
     integer :: nno, kp, i, itemps, ifon(6), l
-    integer ::  itempr
     integer :: icomp, itempi, iveres
     integer :: npg2, ipoid2, ivf2, idfde2
     aster_logical :: aniso
@@ -76,7 +74,6 @@ subroutine te0296(option, nomte)
 !====
 ! 1.1 PREALABLES: RECUPERATION ADRESSES FONCTIONS DE FORMES...
 !====
-    call uttgel(nomte, typgeo)
     call elrefe_info(fami='MASS', nno=nno, npg=npg2, &
                      jpoids=ipoid2, jvf=ivf2, jdfde=idfde2)
 !
@@ -106,9 +103,7 @@ subroutine te0296(option, nomte)
 !   INITIALISATION THER_HYDR
 !----
         if (zk16(icomp) (1:9) .eq. 'THER_HYDR') then
-            call jevech('PHYDRPM', 'L', vr=hydrgm)
-            call jevech('PHYDRPP', 'E', vr=hydrgp)
-            call jevech('PTEMPER', 'L', itempr)
+            call jevech('PHYDRPR', 'L', vr=hydrgp)
             call rcvalb('FPG1', 1, 1, '+', zi(imate), &
                         ' ', 'THER_HYDR', 0, ' ', [0.d0], &
                         1, 'CHALHYDR', chal, icodre(1), 1)
@@ -124,18 +119,6 @@ subroutine te0296(option, nomte)
             do i = 1, nno
                 tpg = tpg+zr(itempi+i-1)*zr(ivf2+l+i-1)
             end do
-!
-! ---       RESOLUTION DE L EQUATION D HYDRATATION
-!
-            if (zk16(icomp) (1:9) .eq. 'THER_HYDR') then
-                tpgm = 0.d0
-                hydrgp(kp) = 0.d0
-                do i = 1, nno
-                    tpgm = tpgm+zr(itempr+i-1)*zr(ivf2+l+i-1)
-                end do
-                call runge6(ifon(3), deltat, tpg, tpgm, hydrgm(kp), &
-                            hydrgp(kp), err)
-            end if
 !
             call rcfode(ifon(1), tpg, beta, rbid)
             if (zk16(icomp) (1:9) .eq. 'THER_HYDR') then

@@ -26,17 +26,21 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-PHYDRPR = InputParameter(phys=PHY.HYDR_R)
-
-
 PCOMPOR = InputParameter(phys=PHY.COMPOR)
 
+PTEMPMR = InputParameter(phys=PHY.TEMP_R)
+PTEMPPR = InputParameter(phys=PHY.TEMP_R)
 
-PVARCPR = InputParameter(phys=PHY.VARI_R, comment="""  PVARCPR : VARIABLES DE COMMANDE  """)
+PHYDRMR = InputParameter(phys=PHY.HYDR_R)
+
+PHYDRPR = OutputParameter(
+    phys=PHY.HYDR_R, type="ELGA", comment="""  PHYDRPG : HYDR AUX POINTS DE GAUSS """
+)
 
 
-MASS_THER_RESI = Option(
-    para_in=(PCOMPOR, SP.PGEOMER, PHYDRPR, SP.PMATERC, SP.PTEMPEI, SP.PTEMPSR, PVARCPR),
-    para_out=(SP.PRESIDU,),
+HYDR_ELGA = Option(
+    para_in=(PTEMPMR, PTEMPPR, PHYDRMR, SP.PTEMPSR, PCOMPOR, SP.PMATERC),
+    para_out=(PHYDRPR,),
     condition=(CondCalcul("+", ((AT.PHENO, "TH"), (AT.BORD, "0"))),),
+    comment="""  HYDR_ELGA : CALCUL DU HYDR AUX NOEUDS PAR ELEMENT """,
 )

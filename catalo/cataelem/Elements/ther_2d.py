@@ -271,6 +271,18 @@ class THPLQU4(Element):
         OP.FLUX_ELNO(
             te=4, para_in=((OP.FLUX_ELNO.PFLUXPG, EFLUXPG),), para_out=((SP.PFLUXNO, EFLUXNO),)
         ),
+        OP.HYDR_ELGA(
+            te=385,
+            para_in=(
+                (OP.HYDR_ELGA.PHYDRMR, EHYDRPG),
+                (OP.HYDR_ELGA.PCOMPOR, CCOMPOR),
+                (SP.PMATERC, LC.CMATERC),
+                (OP.HYDR_ELGA.PTEMPMR, DDL_THER),
+                (OP.HYDR_ELGA.PTEMPPR, DDL_THER),
+                (SP.PTEMPSR, CTEMPSR),
+            ),
+            para_out=((OP.HYDR_ELGA.PHYDRPR, EHYDRPG),),
+        ),
         OP.HYDR_ELNO(
             te=4, para_in=((OP.HYDR_ELNO.PHYDRPG, EHYDRPG),), para_out=((SP.PHYDRNO, LC.EHYDRNO),)
         ),
@@ -382,14 +394,13 @@ class THPLQU4(Element):
             para_in=(
                 (OP.MASS_THER_RESI.PCOMPOR, CCOMPOR),
                 (SP.PGEOMER, NGEOMER),
-                (OP.MASS_THER_RESI.PHYDRPM, EHYDRPG),
+                (OP.MASS_THER_RESI.PHYDRPR, EHYDRPG),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPEI, DDL_THER),
-                (SP.PTEMPER, DDL_THER),
                 (SP.PTEMPSR, CTEMPSR),
                 (OP.MASS_THER_RESI.PVARCPR, LC.ZVARCPG),
             ),
-            para_out=((SP.PHYDRPP, EHYDRPG), (SP.PRESIDU, MVECTTR)),
+            para_out=((SP.PRESIDU, MVECTTR),),
         ),
         OP.RESI_THER_SOURNL(
             te=354,

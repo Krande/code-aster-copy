@@ -54,16 +54,15 @@ subroutine te0252(option, nomte)
     character(len=32) :: phenom
     real(kind=8) :: beta, deltat, tpg
     real(kind=8) :: dfdx(9), dfdy(9), poids, r, r8bid
-    real(kind=8) :: coorse(18), vectt(9), err
-    real(kind=8) :: chal(1), tpgm
+    real(kind=8) :: coorse(18), vectt(9)
+    real(kind=8) :: chal(1)
     character(len=8) :: elrefe, alias8
     integer :: nno, kp, i, j, k, itemps, ifon(6)
     integer :: igeom, imate
     integer :: icomp, itempi, iveres, ipoid2, npg2
     integer :: c(6, 9), ise, nse, nnop2, ivf2, idfde2
     integer :: ibid
-    integer :: itempr
-    real(kind=8), pointer :: hydrgm(:) => null(), hydrgp(:) => null()
+    real(kind=8), pointer :: hydrgp(:) => null()
     aster_logical :: aniso
 ! ----------------------------------------------------------------------
 ! PARAMETER ASSOCIE AU MATERIAU CODE
@@ -116,9 +115,7 @@ subroutine te0252(option, nomte)
 ! 1.5 PREALABLES LIES A L'HYDRATATION
 !====
     if (zk16(icomp) (1:9) .eq. 'THER_HYDR') then
-        call jevech('PHYDRPM', 'L', vr=hydrgm)
-        call jevech('PHYDRPP', 'E', vr=hydrgp)
-        call jevech('PTEMPER', 'L', itempr)
+        call jevech('PHYDRPR', 'L', vr=hydrgp)
         call rcvalb('FPG1', 1, 1, '+', zi(imate), &
                     ' ', 'THER_HYDR', 0, ' ', [r8bid], &
                     1, 'CHALHYDR', chal, icodre(1), 1)
@@ -169,17 +166,6 @@ subroutine te0252(option, nomte)
                     r = r+coorse(2*(i-1)+1)*zr(ivf2+k+i-1)
                     tpg = tpg+zr(itempi-1+c(ise, i))*zr(ivf2+k+i-1)
                 end do
-!
-! ---  RESOLUTION DE L EQUATION D HYDRATATION
-!
-                if (zk16(icomp) (1:9) .eq. 'THER_HYDR') then
-                    tpgm = 0.d0
-                    do i = 1, nno
-                        tpgm = tpgm+zr(itempr-1+c(ise, i))*zr(ivf2+k+i-1)
-                    end do
-                    call runge6(ifon(3), deltat, tpg, tpgm, hydrgm(kp), &
-                                hydrgp(kp), err)
-                end if
 !
                 call rcfode(ifon(1), tpg, beta, r8bid)
                 if (lteatt('AXIS', 'OUI')) poids = poids*r
