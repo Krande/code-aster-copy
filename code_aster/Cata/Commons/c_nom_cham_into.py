@@ -56,6 +56,10 @@ class NOM_CHAM_INTO:  # COMMUN#
                 ("lin", "nonlin", "dyna"),
                 tr("Contraintes et efforts aux noeuds par élément"),
             ),
+            "SIMY_ELGA": (
+                ("lin", "nonlin", "dyna"),
+                tr("Contraintes moyennées aux points de Gauss"),
+            ),
             "SIEF_NOEU": (("lin", "nonlin", "dyna"), tr("Contraintes et efforts aux noeuds")),
             "SIGM_ELGA": (("lin", "nonlin", "dyna"), tr("Contraintes aux points de Gauss")),
             "SIGM_ELNO": (("lin", "nonlin", "dyna"), tr("Contraintes aux noeuds par élément")),

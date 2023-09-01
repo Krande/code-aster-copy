@@ -1219,6 +1219,11 @@ class MEDPQS4(Element):
                 (SP.PVECTR4, MVECZZR),
             ),
         ),
+        OP.SIMY_ELGA(
+            te=6,
+            para_in=((OP.SIMY_ELGA.PCONTRR, ECONTPG), (SP.PGEOMER, NGEOMER)),
+            para_out=((OP.SIMY_ELGA.PSIEFNOR, ECONTPG),),
+        ),
         OP.SIEF_ELGA(
             te=22,
             para_in=(
@@ -2435,6 +2440,11 @@ class MEDPQS8(Element):
                 (SP.PVECTR3, MVECZZR),
                 (SP.PVECTR4, MVECZZR),
             ),
+        ),
+        OP.SIMY_ELGA(
+            te=6,
+            para_in=((OP.SIMY_ELGA.PCONTRR, ECONTPG), (SP.PGEOMER, NGEOMER)),
+            para_out=((OP.SIMY_ELGA.PSIEFNOR, ECONTPG),),
         ),
         OP.SIEF_ELGA(
             te=22,

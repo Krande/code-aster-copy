@@ -1246,6 +1246,11 @@ class MECA_HEXS8(Element):
             para_in=((OP.SIEF_ELNO.PCONTRR, ECONTPG), (OP.SIEF_ELNO.PVARCPR, LC.ZVARCPG)),
             para_out=((SP.PSIEFNOC, ECONTNC), (OP.SIEF_ELNO.PSIEFNOR, ECONTNO)),
         ),
+        OP.SIMY_ELGA(
+            te=6,
+            para_in=((OP.SIMY_ELGA.PCONTRR, ECONTPG), (SP.PGEOMER, NGEOMER)),
+            para_out=((OP.SIMY_ELGA.PSIEFNOR, ECONTPG),),
+        ),
         OP.SIEQ_ELGA(
             te=335,
             para_in=((OP.SIEQ_ELGA.PCONTRR, ESIGMPG),),

@@ -1,0 +1,9 @@
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P time_limit 60
+P memory_limit 512.0
+P testlist verification parallel
+F comm zzzz510a.py D 1
+F mmed zzzz510a.mmed D 20
+F nom zzzz510a_macro.py D 0

@@ -249,6 +249,11 @@ ECONTNO = LocatedComponents(
 )
 
 
+ECONTEL = LocatedComponents(
+    phys=PHY.SIEF_R, type="ELEM", components=("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ")
+)
+
+
 ECONTPG = LocatedComponents(
     phys=PHY.SIEF_R,
     type="ELGA",
@@ -1529,6 +1534,11 @@ class MECA_HEXA20(Element):
                 (SP.PVECTR5, MVECZZR),
                 (SP.PVECTR6, MVECZZR),
             ),
+        ),
+        OP.SIMY_ELGA(
+            te=6,
+            para_in=((OP.SIMY_ELGA.PCONTRR, ECONTPG), (SP.PGEOMER, NGEOMER)),
+            para_out=((OP.SIMY_ELGA.PSIEFNOR, ECONTPG),),
         ),
         OP.SIEF_ELGA(
             te=22,
