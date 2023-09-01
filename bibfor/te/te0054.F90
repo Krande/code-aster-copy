@@ -19,74 +19,10 @@
 subroutine te0054(option, nomte)
 !.......................................................................
     implicit none
-!
-!     BUT: CALCUL DES MATRICES DE MASSE ELEMENTAIRE EN THERMIQUE
-!          ELEMENTS ISOPARAMETRIQUES 3D
-!
-!          OPTION : 'MASS_THER'
-!
-!     ENTREES  ---> OPTION : OPTION DE CALCUL
-!              ---> NOMTE  : NOM DU TYPE ELEMENT
-!.......................................................................
-!
-!
-#include "jeveux.h"
-#include "asterfort/dfdm3d.h"
-#include "asterfort/elrefe_info.h"
-#include "asterfort/jevech.h"
-#include "asterfort/lteatt.h"
-#include "asterfort/rccoma.h"
-#include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
 !
-    integer :: icodre(1)
-    character(len=8) :: fami, poum
-    character(len=16) :: nomte, option, phenom
-    real(kind=8) :: valpar, poids
-    real(kind=8) :: cp(1)
-    integer :: ipoids, ivf, idfde, igeom, imate, ll, ndim
-    integer :: nno, kp, npg, ij, i, j, imattt, itemps
-    integer :: kpg, spt
+    character(len=16) :: option, nomte
 !
-    call elrefe_info(fami='MASS', ndim=ndim, nno=nno, &
-                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde)
-!
-    call jevech('PGEOMER', 'L', igeom)
-    call jevech('PMATERC', 'L', imate)
-    call jevech('PTEMPSR', 'L', itemps)
-    call jevech('PMATTTR', 'E', imattt)
-!
-    call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
-    if (icodre(1) .ne. 0) then
-        call utmess('A', 'ELEMENTS2_63')
-    end if
-    fami = 'FPG1'
-    kpg = 1
-    spt = 1
-    poum = '+'
-!
-    valpar = zr(itemps)
-    call rcvalb(fami, kpg, spt, poum, zi(imate), &
-                ' ', phenom, 1, 'INST', [valpar], &
-                1, 'RHO_CP', cp, icodre(1), 1)
-!
-!    BOUCLE SUR LES POINTS DE GAUSS
-!
-    do kp = 1, npg
-!
-        ll = (kp-1)*nno
-        call dfdm3d(nno, kp, ipoids, idfde, zr(igeom), &
-                    poids)
-!
-        do i = 1, nno
-!
-            do j = 1, i
-                ij = (i-1)*i/2+j
-                zr(imattt+ij-1) = zr(imattt+ij-1)+cp(1)*poids*zr(ivf+ll+i-1)*zr(ivf+ll+j-1)
-!
-            end do
-        end do
-!
-    end do
+    call utmess('F', 'FERMETUR_8')
 !
 end subroutine

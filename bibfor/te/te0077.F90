@@ -17,18 +17,20 @@
 ! --------------------------------------------------------------------
 !
 subroutine te0077(option, nomte)
+!
+    use FE_topo_module
+    use FE_quadrature_module
+    use FE_basis_module
+    use FE_mass_module
+!
     implicit none
-#include "jeveux.h"
-#include "asterfort/connec.h"
-#include "asterfort/dfdm2d.h"
-#include "asterfort/elref1.h"
-#include "asterfort/elrefe_info.h"
+#include "asterfort/fe_module.h"
 #include "asterfort/jevech.h"
-#include "asterfort/lteatt.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/teattr.h"
 #include "asterfort/utmess.h"
+#include "asterfort/writeMatrix.h"
+#include "jeveux.h"
 !
     character(len=16) :: option, nomte
 ! ......................................................................
@@ -40,33 +42,25 @@ subroutine te0077(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
 !
+    type(FE_Cell) :: FECell, subFECell(4)
+    type(FE_Quadrature) :: FEQuadCell
+    type(FE_basis) :: FEBasis
 !
     integer :: icodre(1)
     character(len=16) :: phenom
-    character(len=8) :: elrefe, alias8
-    real(kind=8) :: dfdx(9), dfdy(9), poids, r, cp(1)
-    real(kind=8) :: mt(9, 9), coorse(18)
-    integer :: nno, kp, npg, i, j, k, ij, itemps, imattt
-    integer :: c(6, 9), ise, nse, nnop2
-    integer :: ipoids, ivf, idfde, igeom, imate, ibid
+    real(kind=8) :: valQP(MAX_QP), cp(1)
+    real(kind=8) :: mass(MAX_BS, MAX_BS), mass_sub(MAX_BS, MAX_BS)
+    integer :: kp, i, j, itemps, idi, idj
+    integer :: connec(4, 27), ise, nbSubCell, nbDof,imate
 !
 !-----------------------------------------------------------------------
-    call elref1(elrefe)
 !
-    if (lteatt('LUMPE', 'OUI')) then
-        call teattr('S', 'ALIAS8', alias8, ibid)
-        if (alias8(6:8) .eq. 'QU9') elrefe = 'QU4'
-        if (alias8(6:8) .eq. 'TR6') elrefe = 'TR3'
-    end if
+    call FECell%init()
+    call FEBasis%initCell(FECell)
+    nbDof = FEBasis%size
 !
-    call elrefe_info(elrefe=elrefe, fami='MASS', nno=nno, &
-                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde)
-!
-!
-    call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
     call jevech('PTEMPSR', 'L', itemps)
-    call jevech('PMATTTR', 'E', imattt)
 !
     call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
     if (phenom .eq. 'THER') then
@@ -81,86 +75,25 @@ subroutine te0077(option, nomte)
         call utmess('F', 'ELEMENTS2_63')
     end if
 !
+    valQP = cp(1)
+    mass = 0.d0
 !
-    if (.not. lteatt('LUMPE', 'OUI')) then
-!
-        do kp = 1, npg
-            k = (kp-1)*nno
-            call dfdm2d(nno, kp, ipoids, idfde, zr(igeom), &
-                        poids, dfdx, dfdy)
-            if (lteatt('AXIS', 'OUI')) then
-                r = 0.d0
-                do i = 1, nno
-                    r = r+zr(igeom+2*(i-1))*zr(ivf+k+i-1)
-                end do
-                poids = poids*r
-            end if
-            ij = imattt-1
-            do i = 1, nno
-!
-                do j = 1, i
-                    ij = ij+1
-                    zr(ij) = zr(ij)+poids*cp(1)*zr(ivf+k+i-1)*zr(ivf+k+j-1)
-                end do
+    call FECell%splitLumped(nbSubCell, subFECell, connec)
+    do ise = 1, nbSubCell
+        call FEQuadCell%initCell(subFECell(ise), fami="MASS")
+        call FEBasis%initCell(subFECell(ise))
+
+        call FEMassMatScal(FEQuadCell, FEBasis, mass_sub, valQP )
+
+        do j=1, nbDof
+            idj = connec(ise, j)
+            do i = 1, FEBasis%size
+                idi = connec(ise, i)
+                mass(idi, idj) = mass(idi, idj)+mass_sub(i, j)
             end do
         end do
+    end do
 !
-    else
+    call writeMatrix("PMATTTR", nbDof, nbDof, ASTER_TRUE, mass)
 !
-        call connec(nomte, nse, nnop2, c)
-!
-        do i = 1, nnop2
-            do j = 1, nnop2
-                mt(i, j) = 0.d0
-            end do
-        end do
-!
-! BOUCLE SUR LES SOUS-ELEMENTS
-!
-        do ise = 1, nse
-!
-            do i = 1, nno
-                do j = 1, 2
-                    coorse(2*(i-1)+j) = zr(igeom-1+2*(c(ise, i)-1)+j)
-                end do
-            end do
-!
-            do kp = 1, npg
-                k = (kp-1)*nno
-                call dfdm2d(nno, kp, ipoids, idfde, coorse, &
-                            poids, dfdx, dfdy)
-                if (lteatt('AXIS', 'OUI')) then
-                    r = 0.d0
-                    do i = 1, nno
-                        r = r+coorse(2*(i-1)+1)*zr(ivf+k+i-1)
-                    end do
-!
-                    poids = poids*r
-                    if (r .eq. 0.d0) then
-                        call utmess('F', 'ELEMENTS3_10')
-                    end if
-                end if
-!
-                do i = 1, nno
-                    do j = 1, nno
-                        mt(c(ise, i), c(ise, j)) = mt( &
-                                                c(ise, i), &
-                                                c(ise, j))+poids*cp(1)*zr(ivf+k+i-1&
-                                                &)*zr(ivf+k+j-1 &
-                                                )
-                    end do
-                end do
-            end do
-!
-        end do
-!
-        ij = imattt-1
-        do i = 1, nnop2
-            do j = 1, i
-                ij = ij+1
-                zr(ij) = mt(i, j)
-            end do
-        end do
-!
-    end if
 end subroutine
