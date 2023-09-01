@@ -64,7 +64,7 @@ subroutine te0281(option, nomte)
     real(kind=8) :: p(3, 3), lambor(3), orig(3), dire(3), r8bid
     real(kind=8) :: point(3), angl(3), fluloc(3), fluglo(3)
     real(kind=8) :: aalpha, abeta
-    integer :: jgano, ipoids, ivf, idfde, igeom, imate, itemp, icamas
+    integer :: ipoids, ivf, idfde, igeom, imate, itemp, icamas
     integer :: nno, kp, nnos
     integer :: npg, i, l, ifon(6), ndim, icomp, ivectt, ivecti
     integer :: itemps
@@ -78,14 +78,11 @@ subroutine te0281(option, nomte)
 !====
     call uttgel(nomte, typgeo)
     if ((lteatt('LUMPE', 'OUI')) .and. (typgeo .ne. 'PY')) then
-        call elrefe_info(fami='NOEU', ndim=ndim, nno=nno, nnos=nnos, npg=npg2, &
-                         jpoids=ipoid2, jvf=ivf2, jdfde=idfde2, jgano=jgano)
+        call elrefe_info(fami='NOEU', npg=npg2, jpoids=ipoid2, jvf=ivf2, jdfde=idfde2)
     else
-        call elrefe_info(fami='MASS', ndim=ndim, nno=nno, nnos=nnos, npg=npg2, &
-                         jpoids=ipoid2, jvf=ivf2, jdfde=idfde2, jgano=jgano)
+        call elrefe_info(fami='MASS', npg=npg2, jpoids=ipoid2, jvf=ivf2, jdfde=idfde2)
     end if
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
-                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
+    call elrefe_info(fami='RIGI', nno=nno, npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde)
 !
 !====
 ! 1.2 PREALABLES LIES AUX RECHERCHES DE DONNEES GENERALES
@@ -111,7 +108,7 @@ subroutine te0281(option, nomte)
             l = nno*(kp-1)
             hydrpg(kp) = 0.d0
             do i = 1, nno
-                hydrpg(kp) = hydrpg(kp)+zr(ihydr)*zr(ivf2+l+i-1)
+                hydrpg(kp) = hydrpg(kp)+zr(ihydr-1+i)*zr(ivf2+l+i-1)
             end do
         end do
 !

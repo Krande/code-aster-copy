@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -233,8 +233,8 @@ TTDIAG = POST_RELEVE_T(
 
 TEST_TABLE(
     REFERENCE="ANALYTIQUE",
-    PRECISION=0.02,
-    VALE_CALC=48.362209713,
+    PRECISION=0.01,
+    VALE_CALC=49.24195530240251,
     VALE_REFE=48.8675,
     NOM_PARA="TEMP",
     TYPE_TEST="MAX",
@@ -243,19 +243,13 @@ TEST_TABLE(
 
 TEST_TABLE(
     REFERENCE="ANALYTIQUE",
-    PRECISION=0.025000000000000001,
-    VALE_CALC=47.902082180,
+    PRECISION=0.01,
+    VALE_CALC=48.4570806704966940,
     VALE_REFE=48.8675,
     NOM_PARA="TEMP",
     TYPE_TEST="MAX",
     TABLE=TTDIAG,
 )
-
-# Tests de non-regression (version 10.1)
-
-TEST_TABLE(VALE_CALC=48.362209713499539, NOM_PARA="TEMP", TYPE_TEST="MAX", TABLE=TT)
-
-TEST_TABLE(VALE_CALC=47.902082179632913, NOM_PARA="TEMP", TYPE_TEST="MAX", TABLE=TTDIAG)
 
 TM1 = CREA_CHAMP(
     TYPE_CHAM="NOEU_TEMP_R", OPERATION="EXTR", RESULTAT=THINI, NOM_CHAM="TEMP", INST=0.0
@@ -307,7 +301,7 @@ TEST_RESU(
             GROUP_NO="X205",
             PRECISION=1.0e-2,
             CHAM_GD=T5j,
-            VALE_CALC=48.362209713,
+            VALE_CALC=49.12534823636076,
             VALE_REFE=48.709099999999999,
         ),
         _F(
@@ -316,7 +310,7 @@ TEST_RESU(
             GROUP_NO="X205",
             PRECISION=0.02,
             CHAM_GD=T5JD,
-            VALE_CALC=47.822310644,
+            VALE_CALC=48.22706275382107,
             VALE_REFE=48.709099999999999,
         ),
         _F(
@@ -325,7 +319,7 @@ TEST_RESU(
             GROUP_NO="X205",
             PRECISION=1.0e-2,
             CHAM_GD=T1m,
-            VALE_CALC=27.652608579,
+            VALE_CALC=27.720234320008178,
             VALE_REFE=27.711600000000001,
         ),
         _F(
@@ -334,24 +328,12 @@ TEST_RESU(
             GROUP_NO="X205",
             PRECISION=1.0e-2,
             CHAM_GD=T1MD,
-            VALE_CALC=27.652446423,
+            VALE_CALC=27.69991790605661,
             VALE_REFE=27.711600000000001,
         ),
     )
 )
 
-# Tests non-regression (version 10.1)
-
-TEST_RESU(
-    CHAM_NO=(
-        _F(NOM_CMP="TEMP", GROUP_NO="X205", CHAM_GD=TM1, VALE_CALC=27.347548952638579),
-        _F(NOM_CMP="TEMP", GROUP_NO="X205", CHAM_GD=TM1D, VALE_CALC=27.347548952638569),
-        _F(NOM_CMP="TEMP", GROUP_NO="X205", CHAM_GD=T5j, VALE_CALC=48.362209713499539),
-        _F(NOM_CMP="TEMP", GROUP_NO="X205", CHAM_GD=T5JD, VALE_CALC=47.822310644478399),
-        _F(NOM_CMP="TEMP", GROUP_NO="X205", CHAM_GD=T1m, VALE_CALC=27.652608579475011),
-        _F(NOM_CMP="TEMP", GROUP_NO="X205", CHAM_GD=T1MD, VALE_CALC=27.652446423184578),
-    )
-)
 
 RESUTHER = CALC_CHAMP(reuse=RESUTHER, RESULTAT=RESUTHER, THERMIQUE="HYDR_NOEU")
 
@@ -379,9 +361,9 @@ TEST_RESU(
             REFERENCE="ANALYTIQUE",
             NOM_CMP="HYDR",
             GROUP_NO="X205",
-            PRECISION=0.029999999999999999,
+            PRECISION=0.02,
             CHAM_GD=H49h,
-            VALE_CALC=0.491674478,
+            VALE_CALC=0.48440425301028506,
             VALE_REFE=0.4778,
         ),
         _F(
@@ -390,7 +372,7 @@ TEST_RESU(
             GROUP_NO="X205",
             PRECISION=0.02,
             CHAM_GD=H49D,
-            VALE_CALC=0.485218678,
+            VALE_CALC=0.47182752148939455,
             VALE_REFE=0.4778,
         ),
         _F(
@@ -399,7 +381,7 @@ TEST_RESU(
             GROUP_NO="X205",
             PRECISION=1.0e-2,
             CHAM_GD=H730D,
-            VALE_CALC=0.957998485,
+            VALE_CALC=0.9558073910252686,
             VALE_REFE=0.95579999999999998,
         ),
         _F(
@@ -408,22 +390,12 @@ TEST_RESU(
             GROUP_NO="X205",
             PRECISION=1.0e-2,
             CHAM_GD=H730h,
-            VALE_CALC=0.957014160,
+            VALE_CALC=0.9570853027041062,
             VALE_REFE=0.95579999999999998,
         ),
     )
 )
 
-# Tests non-regression (version 10.1)
-
-TEST_RESU(
-    CHAM_NO=(
-        _F(NOM_CMP="HYDR", GROUP_NO="X205", CHAM_GD=H49h, VALE_CALC=0.49167447825994842),
-        _F(NOM_CMP="HYDR", GROUP_NO="X205", CHAM_GD=H49D, VALE_CALC=0.48521867759309878),
-        _F(NOM_CMP="HYDR", GROUP_NO="X205", CHAM_GD=H730D, VALE_CALC=0.95799848507143337),
-        _F(NOM_CMP="HYDR", GROUP_NO="X205", CHAM_GD=H730h, VALE_CALC=0.95701415957441183),
-    )
-)
 
 # Tests de MACR_LIGN_COUPE
 

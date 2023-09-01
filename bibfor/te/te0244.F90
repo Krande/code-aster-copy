@@ -60,7 +60,7 @@ subroutine te0244(option, nomte)
     real(kind=8) :: vecti(9), diff, tpsec, chal(1), hydrpg(9)
     real(kind=8) :: fluloc(2), fluglo(2), lambor(2), orig(2), p(2, 2), point(2)
     real(kind=8) :: alpha, xnorm, xu, yu, r8bid
-    integer :: ndim, nno, nnos, kp, npg, i, j, k, itemps, jgano, ipoids, ivf
+    integer :: ndim, nno, nnos, kp, npg, i, j, k, itemps, ipoids, ivf
     integer :: idfde, igeom, imate, icomp, ifon(6), itemp, ivectt, ivecti
     integer :: c(6, 9), ise, nse, nnop2, npg2, ipoid2, ivf2, idfde2
     integer :: isechi, ibid, ihydr
@@ -76,15 +76,15 @@ subroutine te0244(option, nomte)
         call teattr('S', 'ALIAS8', alias8, ibid)
         if (alias8(6:8) .eq. 'QU9') elrefe = 'QU4'
         if (alias8(6:8) .eq. 'TR6') elrefe = 'TR3'
-        call elrefe_info(elrefe=elrefe, fami='NOEU', ndim=ndim, nno=nno, nnos=nnos, &
-                         npg=npg2, jpoids=ipoid2, jvf=ivf2, jdfde=idfde2, jgano=jgano)
+        call elrefe_info(elrefe=elrefe, fami='NOEU', &
+                         npg=npg2, jpoids=ipoid2, jvf=ivf2, jdfde=idfde2)
     else
-        call elrefe_info(elrefe=elrefe, fami='MASS', ndim=ndim, nno=nno, nnos=nnos, &
-                         npg=npg2, jpoids=ipoid2, jvf=ivf2, jdfde=idfde2, jgano=jgano)
+        call elrefe_info(elrefe=elrefe, fami='MASS', &
+                         npg=npg2, jpoids=ipoid2, jvf=ivf2, jdfde=idfde2)
     end if
 !
-    call elrefe_info(elrefe=elrefe, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
-                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
+    call elrefe_info(elrefe=elrefe, fami='RIGI', nno=nno, &
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde)
 !
     if (lteatt('AXIS', 'OUI')) then
         laxi = .true.
@@ -159,7 +159,7 @@ subroutine te0244(option, nomte)
             k = nno*(kp-1)
             hydrpg(kp) = 0.d0
             do i = 1, nno
-                hydrpg(kp) = hydrpg(kp)+zr(ihydr)*zr(ivf2+k+i-1)
+                hydrpg(kp) = hydrpg(kp)+zr(ihydr-1+i)*zr(ivf2+k+i-1)
             end do
         end do
     else

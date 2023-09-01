@@ -129,7 +129,7 @@ subroutine te0252(option, nomte)
             k = nno*(kp-1)
             hydrgm(kp) = 0.d0
             do i = 1, nno
-                hydrgm(kp) = hydrgm(kp)+zr(ihydr)*zr(ivf2+k+i-1)
+                hydrgm(kp) = hydrgm(kp)+zr(ihydr-1+i)*zr(ivf2+k+i-1)
             end do
         end do
     end if
