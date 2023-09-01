@@ -154,6 +154,13 @@ subroutine te0004(option, nomte)
         call tecach('OOO', 'PFLUXNO', 'E', iret, nval=7, &
                     itab=itabou)
 !
+    else if (option .eq. 'HYDR_ELNO') then
+        fami = 'MASS'
+        call tecach('OOO', 'PHYDRPG', 'L', iret, nval=7, &
+                    itab=itabin)
+        call tecach('OOO', 'PHYDRNO', 'E', iret, nval=7, &
+                    itab=itabou)
+!
     else if (option .eq. 'SIGM_ELNO') then
         fami = 'RIGI'
         call tecach('OOO', 'PCONTRR', 'L', iret, nval=7, &

@@ -54,7 +54,6 @@ subroutine te0252(option, nomte)
     character(len=32) :: phenom
     real(kind=8) :: beta, deltat, tpg
     real(kind=8) :: dfdx(9), dfdy(9), poids, r, r8bid
-    real(kind=8) :: hydrgm(9), hydrgp(9)
     real(kind=8) :: coorse(18), vectt(9), err
     real(kind=8) :: chal(1), tpgm
     character(len=8) :: elrefe, alias8
@@ -62,8 +61,9 @@ subroutine te0252(option, nomte)
     integer :: igeom, imate
     integer :: icomp, itempi, iveres, ipoid2, npg2
     integer :: c(6, 9), ise, nse, nnop2, ivf2, idfde2
-    integer :: ibid, jgano2
-    integer :: ihydr, ihydrp, itempr
+    integer :: ibid
+    integer :: itempr
+    real(kind=8), pointer :: hydrgm(:) => null(), hydrgp(:) => null()
     aster_logical :: aniso
 ! ----------------------------------------------------------------------
 ! PARAMETER ASSOCIE AU MATERIAU CODE
@@ -85,7 +85,7 @@ subroutine te0252(option, nomte)
         if (alias8(6:8) .eq. 'TR6') elrefe = 'TR3'
     end if
     call elrefe_info(elrefe=elrefe, fami='MASS', nno=nno, &
-                     npg=npg2, jpoids=ipoid2, jvf=ivf2, jdfde=idfde2, jgano=jgano2)
+                     npg=npg2, jpoids=ipoid2, jvf=ivf2, jdfde=idfde2)
 !
 !====
 ! 1.2 PREALABLES LIES AUX RECHERCHES DE DONNEES GENERALES
@@ -116,19 +116,12 @@ subroutine te0252(option, nomte)
 ! 1.5 PREALABLES LIES A L'HYDRATATION
 !====
     if (zk16(icomp) (1:9) .eq. 'THER_HYDR') then
-        call jevech('PHYDRPM', 'L', ihydr)
-        call jevech('PHYDRPP', 'E', ihydrp)
+        call jevech('PHYDRPM', 'L', vr=hydrgm)
+        call jevech('PHYDRPP', 'E', vr=hydrgp)
         call jevech('PTEMPER', 'L', itempr)
         call rcvalb('FPG1', 1, 1, '+', zi(imate), &
                     ' ', 'THER_HYDR', 0, ' ', [r8bid], &
                     1, 'CHALHYDR', chal, icodre(1), 1)
-        do kp = 1, npg2
-            k = nno*(kp-1)
-            hydrgm(kp) = 0.d0
-            do i = 1, nno
-                hydrgm(kp) = hydrgm(kp)+zr(ihydr-1+i)*zr(ivf2+k+i-1)
-            end do
-        end do
     end if
 !====
 ! 1.6 PREALABLES LIES AUX ELEMENTS LUMPES
@@ -238,6 +231,5 @@ subroutine te0252(option, nomte)
     do i = 1, nnop2
         zr(iveres-1+i) = vectt(i)
     end do
-    if (zk16(icomp) (1:9) .eq. 'THER_HYDR') call ppgan2(jgano2, 1, 1, hydrgp, zr(ihydrp))
 ! FIN ------------------------------------------------------------------
 end subroutine

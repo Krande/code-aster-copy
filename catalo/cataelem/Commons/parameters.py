@@ -1622,7 +1622,14 @@ PGTHETA = OutputParameter(phys=PHY.G, type="ELEM", comment="""""")
 
 PHYDMAT = OutputParameter(phys=PHY.HYDR_R, type="ELGA", comment="""""")
 
-PHYDRPP = OutputParameter(phys=PHY.HYDR_R, type="ELNO", comment="""""")
+PHYDRPP = OutputParameter(phys=PHY.HYDR_R, type="ELGA", comment="""""")
+
+PHYDRNO = OutputParameter(
+    phys=PHY.HYDR_R,
+    type="ELNO",
+    comment="""  PHYDRNO : HYDRATATION AUX NOEUDS PAR ELEMENT
+""",
+)
 
 PINCOCA = OutputParameter(phys=PHY.NEUT_I, type="ELEM", comment="""""")
 

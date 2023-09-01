@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -59,6 +59,8 @@ PDEPL_R = OutputParameter(phys=PHY.DEPL_R, type="ELGA")
 
 PFLUX_R = OutputParameter(phys=PHY.FLUX_R, type="ELGA")
 
+PHYDR_R = OutputParameter(phys=PHY.HYDR_R, type="ELGA")
+
 
 TOU_INI_ELGA = Option(
     para_in=(),
@@ -76,6 +78,7 @@ TOU_INI_ELGA = Option(
         PPRES_R,
         PSIEF_R,
         PSOUR_R,
+        PHYDR_R,
         SP.PTEMP_R,
         SP.PVALO_R,
         PVARI_R,

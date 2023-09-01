@@ -20,8 +20,8 @@ subroutine ntcrch(model, nume_dof, vhydr_, hydr_init_)
 !
     implicit none
 !
-#include "asterfort/carces.h"
-#include "asterfort/cescel.h"
+#include "asterfort/assert.h"
+#include "asterfort/alchml.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
@@ -51,7 +51,7 @@ subroutine ntcrch(model, nume_dof, vhydr_, hydr_init_)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=19) :: hydric, hydris, ligrmo
-    integer :: ibid, nncp, iret
+    integer :: iret
     character(len=24) :: vtemp
 !
 ! --------------------------------------------------------------------------------------------------
@@ -64,12 +64,8 @@ subroutine ntcrch(model, nume_dof, vhydr_, hydr_init_)
     hydris = '&&NTCRCH.HYDR_S'
     if (present(vhydr_)) then
         hydr_init_ = '&&NTCRCH.HYDR0'
-        call mecact('V', hydric, 'MODELE', ligrmo, 'HYDR_R', &
-                    ncmp=1, nomcmp='HYDR', sr=0.d0)
-        call carces(hydric, 'ELNO', ' ', 'V', hydris, &
-                    'A', iret)
-        call cescel(hydris, ligrmo, 'MASS_THER_RESI', 'PHYDRPP', 'NON', &
-                    nncp, 'V', hydr_init_, 'F', ibid)
+        call alchml(ligrmo, "TOU_INI_ELGA", "PHYDR_R", "V", hydr_init_, iret, " ")
+        ASSERT(iret == 0)
         call copisd('CHAMP_GD', 'V', hydr_init_, vhydr_)
     end if
 !

@@ -50,7 +50,7 @@ subroutine CreateInOutDS_T(ds_inout, l_temp_nonl)
     integer :: i_field
 ! - Name of field (type) in results datastructure (add one -> don't forget to modify rscrsd.F90)
     character(len=16), parameter :: field_type(nb_field_defi) = &
-                                    (/'TEMP            ', 'HYDR_ELNO       ', 'COMPORTHER      '/)
+                                    (/'TEMP            ', 'HYDR_ELGA       ', 'COMPORTHER      '/)
 ! - Type of GRANDEUR for field
     character(len=8), parameter :: gran_name(nb_field_defi) = &
                                    (/'TEMP_R  ', 'HYDR_R  ', 'COMPOR  '/)
@@ -59,7 +59,7 @@ subroutine CreateInOutDS_T(ds_inout, l_temp_nonl)
                                    (/'CHAM_NO ', '        ', '        '/)
 ! - Spatial discretization of field
     character(len=4), parameter :: disc_type(nb_field_defi) = &
-                                   (/'NOEU', 'ELNO', 'ELGA'/)
+                                   (/'NOEU', 'ELGA', 'ELGA'/)
 ! - TRUE if field can been read for initial state (ETAT_INIT)
     aster_logical, parameter :: l_read_init(nb_field_defi) = &
         (/.true._1, .true._1, .false._1/)

@@ -60,15 +60,16 @@ subroutine te0281(option, nomte)
     character(len=32) :: phenom
     real(kind=8) :: beta, dbeta, lambda, theta, deltat, tpg
     real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), poids, dtpgdx, dtpgdy, dtpgdz
-    real(kind=8) :: tpgbuf, tpsec, diff, chal(1), hydrpg(27)
+    real(kind=8) :: tpgbuf, tpsec, diff, chal(1)
     real(kind=8) :: p(3, 3), lambor(3), orig(3), dire(3), r8bid
     real(kind=8) :: point(3), angl(3), fluloc(3), fluglo(3)
     real(kind=8) :: aalpha, abeta
+    real(kind=8), pointer :: hydrpg(:) => null()
     integer :: ipoids, ivf, idfde, igeom, imate, itemp, icamas
     integer :: nno, kp
     integer :: npg, i, l, ifon(6), icomp, ivectt, ivecti
     integer :: itemps
-    integer :: isechi, ihydr
+    integer :: isechi
     integer :: npg2, ipoid2, ivf2, idfde2, nuno, n1, n2
     aster_logical :: lhyd
     aster_logical :: aniso, global
@@ -100,14 +101,7 @@ subroutine te0281(option, nomte)
 !====
     if (zk16(icomp) (1:9) .eq. 'THER_HYDR') then
         lhyd = .true.
-        call jevech('PHYDRPM', 'L', ihydr)
-        do kp = 1, npg2
-            l = nno*(kp-1)
-            hydrpg(kp) = 0.d0
-            do i = 1, nno
-                hydrpg(kp) = hydrpg(kp)+zr(ihydr-1+i)*zr(ivf2+l+i-1)
-            end do
-        end do
+        call jevech('PHYDRPM', 'L', vr=hydrpg)
 !
         call rcvalb('FPG1', 1, 1, '+', zi(imate), &
                     ' ', 'THER_HYDR', 0, ' ', [0.d0], &

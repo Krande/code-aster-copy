@@ -103,7 +103,7 @@ subroutine ntetcr(nume_dof, ds_inout, &
         call SetIOField(ds_inout, 'COMPORTHER', l_acti_=.true._1)
     end if
     if (l_hydr) then
-        call SetIOField(ds_inout, 'HYDR_ELNO', l_acti_=.true._1)
+        call SetIOField(ds_inout, 'HYDR_ELGA', l_acti_=.true._1)
     end if
 !
 ! - Add fields

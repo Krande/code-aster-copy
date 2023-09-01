@@ -57,13 +57,14 @@ subroutine te0244(option, nomte)
     character(len=32) :: phenom
     real(kind=8) :: beta, dbeta, lambda, dfdx(9), dfdy(9), poids, r, tpg
     real(kind=8) :: theta, deltat, dtpgdx, dtpgdy, coorse(18), vectt(9)
-    real(kind=8) :: vecti(9), diff, tpsec, chal(1), hydrpg(9)
+    real(kind=8) :: vecti(9), diff, tpsec, chal(1)
     real(kind=8) :: fluloc(2), fluglo(2), lambor(2), orig(2), p(2, 2), point(2)
     real(kind=8) :: alpha, xnorm, xu, yu, r8bid
+    real(kind=8), pointer :: hydrpg(:) => null()
     integer :: nno, kp, npg, i, j, k, itemps, ipoids, ivf
     integer :: idfde, igeom, imate, icomp, ifon(6), itemp, ivectt, ivecti
     integer :: c(6, 9), ise, nse, nnop2, npg2, ipoid2, ivf2, idfde2
-    integer :: isechi, ibid, ihydr
+    integer :: isechi, ibid
     aster_logical :: laxi, lhyd
     aster_logical :: aniso, global
 !
@@ -148,17 +149,17 @@ subroutine te0244(option, nomte)
 !====
     if (zk16(icomp) (1:9) .eq. 'THER_HYDR') then
         lhyd = .true.
-        call jevech('PHYDRPM', 'L', ihydr)
+        call jevech('PHYDRPM', 'L', vr=hydrpg)
         call rcvalb('FPG1', 1, 1, '+', zi(imate), &
                     ' ', 'THER_HYDR', 0, ' ', [0.d0], &
                     1, 'CHALHYDR', chal, icodre(1), 1)
-        do kp = 1, npg2
-            k = nno*(kp-1)
-            hydrpg(kp) = 0.d0
-            do i = 1, nno
-                hydrpg(kp) = hydrpg(kp)+zr(ihydr-1+i)*zr(ivf2+k+i-1)
-            end do
-        end do
+        ! do kp = 1, npg2
+        !     k = nno*(kp-1)
+        !     hydrpg(kp) = 0.d0
+        !     do i = 1, nno
+        !         hydrpg(kp) = hydrpg(kp)+zr(ihydr-1+i)*zr(ivf2+k+i-1)
+        !     end do
+        ! end do
     else
         lhyd = .false.
     end if

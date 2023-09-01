@@ -119,7 +119,7 @@ subroutine nmetcc(field_type, algo_name, init_name, &
     else if (field_type .eq. 'TEMP') then
         algo_name = 'XXXXXXXXXXXXXXXX'
         init_name = temp_init
-    else if (field_type .eq. 'HYDR_ELNO') then
+    else if (field_type .eq. 'HYDR_ELGA') then
         algo_name = hydr
         init_name = hydr_init
     else if (field_type .eq. 'COMPORTHER') then

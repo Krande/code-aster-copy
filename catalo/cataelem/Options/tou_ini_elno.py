@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -53,7 +53,7 @@ PVARI_R = OutputParameter(phys=PHY.VARI_R, type="ELNO")
 PSOUR_R = OutputParameter(phys=PHY.SOUR_R, type="ELNO")
 
 
-PHYDRPM = OutputParameter(phys=PHY.HYDR_R, type="ELNO")
+PHYDR_R = OutputParameter(phys=PHY.HYDR_R, type="ELNO")
 
 
 PFLUX_R = OutputParameter(phys=PHY.FLUX_R, type="ELNO")
@@ -66,7 +66,7 @@ TOU_INI_ELNO = Option(
         PEPSI_R,
         PFLUX_R,
         PGEOM_R,
-        PHYDRPM,
+        PHYDR_R,
         PINST_R,
         PNEUT_F,
         PNEUT_R,

@@ -59,11 +59,12 @@ subroutine te0296(option, nomte)
     character(len=2) :: typgeo
     character(len=32) :: phenom
     real(kind=8) :: beta, deltat, tpg, tpgm
-    real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), poids, hydrgm(27)
-    real(kind=8) :: rbid, chal(1), hydrgp(27), err
+    real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), poids
+    real(kind=8) :: rbid, chal(1), err
+    real(kind=8), pointer :: hydrgm(:) => null(), hydrgp(:) => null()
     integer :: igeom, imate
     integer :: nno, kp, i, itemps, ifon(6), l
-    integer :: ihydr, ihydrp, itempr, jgano2
+    integer ::  itempr
     integer :: icomp, itempi, iveres
     integer :: npg2, ipoid2, ivf2, idfde2
     aster_logical :: aniso
@@ -77,7 +78,7 @@ subroutine te0296(option, nomte)
 !====
     call uttgel(nomte, typgeo)
     call elrefe_info(fami='MASS', nno=nno, npg=npg2, &
-                     jpoids=ipoid2, jvf=ivf2, jdfde=idfde2, jgano=jgano2)
+                     jpoids=ipoid2, jvf=ivf2, jdfde=idfde2)
 !
 !====
 ! 1.2 PREALABLES LIES AUX RECHERCHES DE DONNEES GENERALES
@@ -105,19 +106,12 @@ subroutine te0296(option, nomte)
 !   INITIALISATION THER_HYDR
 !----
         if (zk16(icomp) (1:9) .eq. 'THER_HYDR') then
-            call jevech('PHYDRPM', 'L', ihydr)
-            call jevech('PHYDRPP', 'E', ihydrp)
+            call jevech('PHYDRPM', 'L', vr=hydrgm)
+            call jevech('PHYDRPP', 'E', vr=hydrgp)
             call jevech('PTEMPER', 'L', itempr)
             call rcvalb('FPG1', 1, 1, '+', zi(imate), &
                         ' ', 'THER_HYDR', 0, ' ', [0.d0], &
                         1, 'CHALHYDR', chal, icodre(1), 1)
-            do kp = 1, npg2
-                l = nno*(kp-1)
-                hydrgm(kp) = 0.d0
-                do i = 1, nno
-                    hydrgm(kp) = hydrgm(kp)+zr(ihydr-1+i)*zr(ivf2+l+i-1)
-                end do
-            end do
         end if
 !
 ! ---   CALCUL DU DEUXIEME TERME
@@ -183,7 +177,6 @@ subroutine te0296(option, nomte)
         end do
     end if
 !
-    if (zk16(icomp) (1:9) .eq. 'THER_HYDR') call ppgan2(jgano2, 1, 1, hydrgp, zr(ihydrp))
 !
 ! FIN ------------------------------------------------------------------
 end subroutine

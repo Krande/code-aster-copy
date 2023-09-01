@@ -269,7 +269,7 @@ class THER3DH27_HHO222(Element):
             para_out=(
                 (OP.TOU_INI_ELNO.PFLUX_R, EFLUXNO),
                 (OP.TOU_INI_ELNO.PGEOM_R, NGEOMER),
-                (OP.TOU_INI_ELNO.PHYDRPM, LC.EHYDRNO),
+                (OP.TOU_INI_ELNO.PHYDR_R, LC.EHYDRNO),
                 (OP.TOU_INI_ELNO.PINST_R, LC.ENINST_R),
                 (OP.TOU_INI_ELNO.PNEUT_F, LC.ENNEUT_F),
                 (OP.TOU_INI_ELNO.PNEUT_R, LC.ENNEUT_R),

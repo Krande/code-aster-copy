@@ -55,6 +55,8 @@ EFLUXPG = LocatedComponents(
 
 EFLUXNO = LocatedComponents(phys=PHY.FLUX_R, type="ELNO", components=("FLUX", "FLUY", "FLUZ"))
 
+EHYDRPG = LocatedComponents(phys=PHY.HYDR_R, type="ELGA", location="MASS", components=("HYDR",))
+
 
 NGEOMER = LocatedComponents(phys=PHY.GEOM_R, type="ELNO", components=("X", "Y", "Z"))
 
@@ -125,7 +127,7 @@ class THER_HEXA20(Element):
                 (OP.CHAR_THER_EVOLNI.PCOMPOR, CCOMPOR),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PCAMASS, LC.CCAMA3D),
-                (OP.CHAR_THER_EVOLNI.PHYDRPM, LC.EHYDRNO),
+                (OP.CHAR_THER_EVOLNI.PHYDRPM, EHYDRPG),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPER, DDL_THER),
                 (SP.PTEMPSR, CTEMPSR),
@@ -250,6 +252,9 @@ class THER_HEXA20(Element):
         OP.FLUX_ELNO(
             te=4, para_in=((OP.FLUX_ELNO.PFLUXPG, EFLUXPG),), para_out=((SP.PFLUXNO, EFLUXNO),)
         ),
+        OP.HYDR_ELNO(
+            te=4, para_in=((OP.HYDR_ELNO.PHYDRPG, EHYDRPG),), para_out=((SP.PHYDRNO, LC.EHYDRNO),)
+        ),
         OP.INIT_MAIL_VOIS(te=99, para_out=((OP.INIT_MAIL_VOIS.PVOISIN, LC.EVOISIN),)),
         OP.INIT_VARC(te=99, para_out=((OP.INIT_VARC.PVARCPR, LC.ZVARCPG),)),
         OP.MASS_THER(
@@ -358,14 +363,14 @@ class THER_HEXA20(Element):
             para_in=(
                 (OP.MASS_THER_RESI.PCOMPOR, CCOMPOR),
                 (SP.PGEOMER, NGEOMER),
-                (OP.MASS_THER_RESI.PHYDRPM, LC.EHYDRNO),
+                (OP.MASS_THER_RESI.PHYDRPM, EHYDRPG),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPEI, DDL_THER),
                 (SP.PTEMPER, DDL_THER),
                 (SP.PTEMPSR, CTEMPSR),
                 (OP.MASS_THER_RESI.PVARCPR, LC.ZVARCPG),
             ),
-            para_out=((SP.PHYDRPP, LC.EHYDRNO), (SP.PRESIDU, MVECTTR)),
+            para_out=((SP.PHYDRPP, EHYDRPG), (SP.PRESIDU, MVECTTR)),
         ),
         OP.RESI_THER_SOURNL(
             te=354,
@@ -434,6 +439,7 @@ class THER_HEXA20(Element):
                 (OP.TOU_INI_ELGA.PNEUT_R, LC.EGNEUT1R),
                 (OP.TOU_INI_ELGA.PSOUR_R, ESOURCR),
                 (OP.TOU_INI_ELGA.PVARI_R, LC.ZVARIPG),
+                (OP.TOU_INI_ELGA.PHYDR_R, EHYDRPG),
                 (SP.PTEMP_R, LC.ETEMPPG),
             ),
         ),
@@ -442,7 +448,7 @@ class THER_HEXA20(Element):
             para_out=(
                 (OP.TOU_INI_ELNO.PFLUX_R, EFLUXNO),
                 (OP.TOU_INI_ELNO.PGEOM_R, NGEOMER),
-                (OP.TOU_INI_ELNO.PHYDRPM, LC.EHYDRNO),
+                (OP.TOU_INI_ELNO.PHYDR_R, LC.EHYDRNO),
                 (OP.TOU_INI_ELNO.PINST_R, LC.ENINST_R),
                 (OP.TOU_INI_ELNO.PNEUT_F, LC.ENNEUT_F),
                 (OP.TOU_INI_ELNO.PNEUT_R, LC.ENNEUT_R),
