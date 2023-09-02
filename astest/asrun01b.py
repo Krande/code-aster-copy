@@ -51,7 +51,7 @@ from run_aster.settings import (
 from run_aster.status import StateOptions as SO
 from run_aster.status import Status, get_status
 from run_aster.timer import Timer
-from run_aster.utils import ROOT, copy
+from run_aster.utils import RUNASTER_ROOT, copy
 
 # run silently
 logger.setLevel(ERROR + 1)
@@ -78,7 +78,8 @@ class TestConfig(unittest.TestCase):
             self.assertTrue(CFG.storage.has_param("require_mpiexec"))
             self.assertTrue(CFG.storage.has_param("mpi_get_rank"))
             size += 3
-        self.assertEqual(len(CFG.storage), size)
+        # may contain user parameters
+        self.assertGreaterEqual(len(CFG.storage), size)
 
     def test_filter(self):
         cfg = Config("nofile")
@@ -108,7 +109,7 @@ class TestConfig(unittest.TestCase):
                 "version": [
                     {
                         "name": "VERS1",
-                        "path": ROOT,
+                        "path": RUNASTER_ROOT,
                         "config": {"mpiexec": "mpiexec_for_VERS1"},
                     },
                     {
@@ -127,9 +128,7 @@ class TestConfig(unittest.TestCase):
         # add a value to avoid automatic loading of 'config.json' and user file
         cfg._storage.set("mpiexec", "empty")
         # add user file with server
-        user_cfg = {
-            "server": [{"name": "*", "config": {"exectool": {"mywrapper": "echo -n"}}}]
-        }
+        user_cfg = {"server": [{"name": "*", "config": {"exectool": {"mywrapper": "echo -n"}}}]}
         cfg.import_dict(user_cfg, with_sections=True)
         self.assertIsInstance(cfg.get("exectool"), dict)
         self.assertEqual(cfg.get("exectool")["mywrapper"], "echo -n")
@@ -272,7 +271,7 @@ class TestExportParameter(unittest.TestCase):
         para = ExportParameter.factory(PARAMS_TYPE, "xxxx")
         self.assertIsNone(para)
         # deprecated as None: ignored
-        para = ExportParameter.factory(PARAMS_TYPE, "service")
+        para = ExportParameter.factory(PARAMS_TYPE, "serveur")
         self.assertIsNone(para)
 
 
@@ -383,13 +382,11 @@ class TestExport(unittest.TestCase):
         self.assertTrue(file1.is_tests_data)
         self.assertEqual(file0.path, "filename.py")
         self.assertEqual(
-            file1.path, osp.join(ROOT, "share", "aster", "tests_data", "filename.py")
+            file1.path, osp.join(RUNASTER_ROOT, "share", "aster", "tests_data", "filename.py")
         )
         self.assertEqual(
             repr(export),
-            "\n".join(
-                ["F nom filename.py D 0", "F tests_data {} D 0".format(file1.path), ""]
-            ),
+            "\n".join(["F nom filename.py D 0", "F tests_data {} D 0".format(file1.path), ""]),
         )
 
     def test_args(self):
@@ -498,9 +495,7 @@ class TestExport(unittest.TestCase):
             self.assertEqual(obj.get("step"), i)
             self.assertEqual(len(obj.commfiles), 1)
             comm.append(obj.commfiles[0])
-        self.assertSequenceEqual(
-            [i.path for i in comm], ["filename.comm", "filename.com1"]
-        )
+        self.assertSequenceEqual([i.path for i in comm], ["filename.comm", "filename.com1"])
 
 
 class TestCommandFiles(unittest.TestCase):

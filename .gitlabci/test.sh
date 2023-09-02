@@ -1,7 +1,7 @@
 #!/bin/bash
 
 jobs=$(( $(nproc) * 7 / 8 ))
-args=( "--clean" "--only-failed-results" "--timefactor=4.0" "--jobs=${jobs}" "$@" )
+args=( "--clean" "--timefactor=4.0" "--jobs=${jobs}" "$@" )
 
 printf "\nrunning testcases #1... - $(date)\n"
 ./install/bin/run_ctest "${args[@]}"

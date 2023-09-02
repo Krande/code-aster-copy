@@ -63,7 +63,7 @@ Example (from ``sslv139a`` testcase):
 
     P time_limit 60
     P memory_limit 512
-    P testlist asterxx ci verification sequential
+    P testlist submit ci verification sequential
     F comm sslv139a.comm D 1
     F datg sslv139a.datg D 16
     F mmed sslv139a.mmed D 20
@@ -80,10 +80,17 @@ import re
 
 from .config import CFG
 from .logger import logger
-from .settings import (DEPRECATED, AbstractParameter, ParameterBool,
-                       ParameterFloat, ParameterInt, ParameterListStr,
-                       ParameterStr, Store)
-from .utils import ROOT
+from .settings import (
+    DEPRECATED,
+    AbstractParameter,
+    ParameterBool,
+    ParameterFloat,
+    ParameterInt,
+    ParameterListStr,
+    ParameterStr,
+    Store,
+)
+from .utils import RUNASTER_ROOT
 
 PARAMS_TYPE = {
     "actions": "list[str]",
@@ -101,18 +108,50 @@ PARAMS_TYPE = {
     "testlist": "list[str]",
     # command line arguments
     "args": "list[str]",
+    # for backwaard compatibility
+    "service": "str",
 }
 
 # deprecated for simple execution
-PARAMS_TYPE.update({}.fromkeys(
-    ["MASTER_memory_limit", "MASTER_time_limit", "aster_root", "consbtc",
-     "cpresok", "debug", "diag_pickled", "timefactor", "mclient", "mem_aster",
-     "memjob", "mode", "mpi_nbnoeud", "nbmaxnook", "noeud", "nomjob", "parent",
-     "platform", "protocol_copyfrom", "protocol_copyto", "protocol_exec",
-     "proxy_dir", "rep_trav", "origine", "server", "serveur", "service",
-     "soumbtc", "studyid", "tpsjob", "username", "uclient",
-     "version"],
-    DEPRECATED))
+PARAMS_TYPE.update(
+    {}.fromkeys(
+        [
+            "MASTER_memory_limit",
+            "MASTER_time_limit",
+            "aster_root",
+            "consbtc",
+            "cpresok",
+            "debug",
+            "diag_pickled",
+            "timefactor",
+            "mclient",
+            "mem_aster",
+            "memjob",
+            "mode",
+            "mpi_nbnoeud",
+            "nbmaxnook",
+            "noeud",
+            "nomjob",
+            "parent",
+            "platform",
+            "protocol_copyfrom",
+            "protocol_copyto",
+            "protocol_exec",
+            "proxy_dir",
+            "rep_trav",
+            "origine",
+            "server",
+            "serveur",
+            "soumbtc",
+            "studyid",
+            "tpsjob",
+            "username",
+            "uclient",
+            "version",
+        ],
+        DEPRECATED,
+    )
+)
 
 
 class ExportParameter(AbstractParameter):
@@ -182,8 +221,9 @@ class File:
         compr (bool, optional):*True* if it is compressed.
     """
 
-    def __init__(self, path, filetype='libr', unit=0, isdir=False,
-                 data=False, resu=False, compr=False):
+    def __init__(
+        self, path, filetype="libr", unit=0, isdir=False, data=False, resu=False, compr=False
+    ):
         self._dir = isdir
         self.path = path
         self._typ = filetype
@@ -245,18 +285,18 @@ class File:
     def _astext(self):
         fields = []
         if self._dir:
-            fields.append('R')
+            fields.append("R")
         else:
-            fields.append('F')
+            fields.append("F")
         fields.append(self._typ)
         fields.append(self._path)
         drc = ""
         if self.data:
-            drc += 'D'
+            drc += "D"
         if self.resu:
-            drc += 'R'
+            drc += "R"
         if self.compr:
-            drc += 'C'
+            drc += "C"
         fields.append(drc)
         fields.append(str(self.unit))
         return fields
@@ -275,8 +315,7 @@ class File:
             line (str): Line as formatted by `File.as_argument`
         """
         typ, filetype, path, drc, unit = line.split("::")
-        return cls(path, filetype, unit, typ == "R",
-                   "D" in drc, "R" in drc, "C" in drc)
+        return cls(path, filetype, unit, typ == "R", "D" in drc, "R" in drc, "C" in drc)
 
     def __repr__(self):
         """Simple representation"""
@@ -419,14 +458,14 @@ class Export(Store):
                 drc = spl.pop()
                 path = " ".join(spl)
                 if ":" in path:
-                    logger.warning(f"remote path not supported: {path}")
+                    logger.warning("remote path not supported: %s", path)
                     path = path.split(":")[-1]
-                entry = File(path, filetype, unit, isdir,
-                             "D" in drc, "R" in drc, "C" in drc)
+                entry = File(path, filetype, unit, isdir, "D" in drc, "R" in drc, "C" in drc)
                 self.add_file(entry)
                 if unit == "15" and filetype != "code":
-                    logger.error(f"Invalid entry: unit 15 is reserved for "
-                                 f"the 'code' file.\nLine: {entry!r}")
+                    logger.error(
+                        "Invalid entry: unit 15 is reserved for the 'code' file.\nLine: %r", entry
+                    )
         if check:
             self.check()
 
@@ -450,11 +489,12 @@ class Export(Store):
             base = self._root
             # TODO to be removed as soon as run_testcases can be replaced!
             # if fileobj.is_tests_data:
-            if (fileobj.is_tests_data or
-                    (fileobj.filetype == "nom" and
-                     not osp.exists(osp.join(base, fileobj.path))
-                     and self._test)):
-                base = osp.join(ROOT, "share", "aster", "tests_data")
+            if fileobj.is_tests_data or (
+                fileobj.filetype == "nom"
+                and not osp.exists(osp.join(base, fileobj.path))
+                and self._test
+            ):
+                base = osp.join(RUNASTER_ROOT, "share", "aster", "tests_data")
             fileobj.path = osp.join(base, fileobj.path)
 
     def check(self):
@@ -477,7 +517,7 @@ class Export(Store):
                 value = self.get("memory_limit")
             if value:
                 if not self._checked:
-                    value += CFG.get("addmem", 0.)
+                    value += CFG.get("addmem", 0.0)
                 self.set_argument(["--memory", value])
         # time_limit in s (required), --tpmax in s (required)
         if "--tpmax" not in args:
@@ -490,7 +530,7 @@ class Export(Store):
                     self.set("time_limit", value)
         # ncpus/numthreads
         if "--numthreads" not in args:
-            value = self.get("ncpus") # TODO or get limit from config
+            value = self.get("ncpus")  # TODO or get limit from config
             if value:
                 self.set_argument(["--numthreads", value])
         self._checked = True
@@ -562,7 +602,7 @@ class Export(Store):
         if key not in args:
             return
         idx = args.index(key)
-        del args[idx:idx + 1 + add]
+        del args[idx : idx + 1 + add]
 
     def set_time_limit(self, value):
         """Define the time limit value.

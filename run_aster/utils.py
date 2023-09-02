@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,13 +29,10 @@ system command execution, templates...
 import gzip
 import os
 import os.path as osp
-import re
 import shutil
 import stat
-import string
-import sys
-import time
 from glob import glob
+
 try:
     from os import waitstatus_to_exitcode
 except ImportError:
@@ -44,8 +41,9 @@ except ImportError:
 from .logger import logger
 
 # installation root is defined by launcher script or relatively to this file
-ROOT = os.environ.get("RUNASTER_ROOT",
-    osp.dirname(osp.dirname(osp.dirname(osp.dirname(osp.abspath(__file__))))))
+RUNASTER_ROOT = os.environ.get(
+    "RUNASTER_ROOT", osp.dirname(osp.dirname(osp.dirname(osp.dirname(osp.abspath(__file__)))))
+)
 
 
 def copy(src, dst, verbose=False):
@@ -65,7 +63,7 @@ def copy(src, dst, verbose=False):
         verbose (bool): Verbosity.
     """
     if verbose:
-        logger.info(f"copying '{src}' to '{dst}'...")
+        logger.info("copying %r to %r...", src, dst)
     pardst = osp.dirname(osp.abspath(dst))
     if not osp.exists(pardst):
         os.makedirs(pardst)
@@ -77,9 +75,7 @@ def copy(src, dst, verbose=False):
         else:
             for fname in os.listdir(src):
                 if osp.isdir(osp.join(src, fname)):
-                    copy(osp.join(src, fname),
-                         osp.join(dst, osp.basename(fname)),
-                         verbose=verbose)
+                    copy(osp.join(src, fname), osp.join(dst, osp.basename(fname)), verbose=verbose)
                 else:
                     copy(osp.join(src, fname), dst, verbose=verbose)
 
@@ -96,13 +92,13 @@ def compress(path, verbose=False):
         files = [path]
     else:
         dest = path
-        files = glob(osp.join(path, '*'))
+        files = glob(osp.join(path, "*"))
     for fname in files:
         if verbose:
             tail = fname if len(fname) < 60 else "[...]" + fname[-60:]
-            logger.info(f"compressing '{tail}'...")
-        with open(fname, 'rb') as f_in:
-            with gzip.open(fname + ".gz", 'wb', compresslevel=6) as f_out:
+            logger.info("compressing %r...", tail)
+        with open(fname, "rb") as f_in:
+            with gzip.open(fname + ".gz", "wb", compresslevel=6) as f_out:
                 shutil.copyfileobj(f_in, f_out)
         os.remove(fname)
     return dest
@@ -120,13 +116,13 @@ def uncompress(path, verbose=False):
         files = [path]
     else:
         dest = path
-        files = glob(osp.join(path, '*.gz'))
+        files = glob(osp.join(path, "*.gz"))
     for fname in files:
         if verbose:
             tail = fname if len(fname) < 60 else "[...]" + fname[-60:]
-            logger.info(f"decompressing '{tail}'...")
-        with gzip.open(fname, 'rb') as f_in:
-            with open(fname.rstrip(".gz"), 'wb') as f_out:
+            logger.info("decompressing %r...", tail)
+        with gzip.open(fname, "rb") as f_in:
+            with open(fname.rstrip(".gz"), "wb") as f_out:
                 shutil.copyfileobj(f_in, f_out)
         os.remove(fname)
     return dest
@@ -158,7 +154,7 @@ def run_command(cmd, exitcode_file=None):
     iret = waitstatus_to_exitcode(iret)
     if exitcode_file and osp.isfile(exitcode_file):
         with open(exitcode_file) as fexit:
-            iret = int(fexit.read())
+            iret = int(fexit.read() or 1)
         os.remove(exitcode_file)
     return iret
 
@@ -181,6 +177,7 @@ def _waitstatus_to_exitcode(status):
     else:
         returncode = 15
     return returncode
+
 
 if not hasattr(os, "waitstatus_to_exitcode"):
     waitstatus_to_exitcode = _waitstatus_to_exitcode

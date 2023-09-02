@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,12 +36,7 @@ DEPRECATED = "__DEPRECATED__"
 
 
 class AbstractParameter:
-    """An abstract parameter that must be subclassed to hold a typed value.
-
-    Attributes:
-        name (str): Parameter name.
-        value (misc): Value of the parameter.
-    """
+    """An abstract parameter that must be subclassed to hold a typed value."""
 
     def __init__(self, name):
         self._name = name
@@ -49,12 +44,12 @@ class AbstractParameter:
 
     @property
     def name(self):
-        """str: Attribute that holds the 'name' property."""
+        """str: Parameter name."""
         return self._name
 
     @property
     def value(self):
-        """misc: Attribute that holds the 'value' property."""
+        """misc: Value of the parameter."""
         return self._value
 
     def convert(self, value):
@@ -62,7 +57,7 @@ class AbstractParameter:
         try:
             return self._convert(value)
         except (TypeError, ValueError) as exc:
-            logger.error(f"Parameter '{self.name}': {exc}", exception=exc)
+            logger.error("Parameter %r: %s", self.name, exc, exception=exc)
 
     def _convert(self, value):
         raise NotImplementedError("must be subclassed!")
@@ -86,7 +81,7 @@ class AbstractParameter:
         """
         typ = store_typed_params.get(name)
         if typ is None:
-            logger.warning(f"unknown parameter: '{name}'")
+            logger.warning("unknown parameter: %r", name)
             return None
         if typ == DEPRECATED:
             return None
@@ -152,7 +147,7 @@ class ParameterFloat(AbstractParameter):
         if isinstance(value, (list, tuple)):
             value = " ".join([str(i) for i in value])
         if value == "":
-            value = 0.
+            value = 0.0
         return float(value)
 
 
@@ -177,8 +172,18 @@ class ParameterDictStr(AbstractParameter):
         for key, string in value.items():
             if not isinstance(key, str):
                 raise TypeError(f"str expected, not {string}")
-            string = ParameterStr._convert(string)
+            value[key] = ParameterStr._convert(string)
         return value
+
+    def set(self, value):
+        """Convert and update the dict.
+
+        Arguments:
+            value (dict): New value.
+        """
+        if self._value is None:
+            self._value = {}
+        self._value.update(self.convert(value))
 
 
 class Store:

@@ -93,6 +93,7 @@ verification_test:
     - singularity exec --bind $(pwd) --pwd $(pwd) ${SIF}
         .gitlabci/test.sh
           -L verification
+          --only-failed-results
           --exclude-testlist .gitlabci/known_failures-pleiade.list
           --resutest=results
   artifacts:
