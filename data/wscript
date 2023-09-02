@@ -447,6 +447,7 @@ def check_config(self):
     cfg["python"] = "python3"
     cfg["python_interactive"] = cfg["python"]
     cfg["parallel"] = int(self.get_define("ASTER_HAVE_MPI") or 0)
+    cfg["require_mpiexec"] = 0
     cfg["only-proc0"] = 0
     self.env["base_mpiexec"] = ["mpiexec"]
     if cfg["parallel"]:
@@ -466,12 +467,15 @@ def check_config(self):
         "mpiexec",
         "mpi_get_rank",
         "only-proc0",
+        "require_mpiexec",
         "exectool",
     ):
-        if cfg.get(param):
+        verbose = param != "require_mpiexec" and cfg.get(param) is not None
+        if verbose:
             self.start_msg(f". use '{param}'")
-            cfg[param] = from_env.get(param, cfg[param])
-            self.end_msg(str(cfg[param]))
+        cfg[param] = from_env.get(param, cfg.get(param))
+        if verbose:
+            self.end_msg(str(cfg.get(param)))
     # for config.txt
     self.env["addmem"] = cfg["addmem"]
     self.env["CONFIG_PARAMETERS"] = cfg

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -155,7 +155,7 @@ def exec_pyaster(self, pyfile, args, **kwargs):
     # this position allows CATALO_CMD to define an environment variable
     # or a prefix to wrap the executable
     cmdprefix = Utils.to_list(env['CATALO_CMD'])
-    if self.env.BUILD_MPI and not cmdprefix:
+    if self.env.BUILD_MPI and not cmdprefix and env["CONFIG_PARAMETERS"]["require_mpiexec"]:
         cmdprefix = env["base_mpiexec"] + ["-n", "1"]
     cmds = ' '.join(cmdenv + cmdprefix + cmdexe)
     Logs.debug('os environ: %r' % environ)

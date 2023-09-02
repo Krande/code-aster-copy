@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -179,19 +179,42 @@ def check_vmsize(self):
                            'test_mpi_init_' + str(os.getpid()))
             self.check_cc(fragment=fragment_failure_vmsize,
                           mandatory=True, use="MPI", target=prg)
-            try:
-                cmd = self.env["base_mpiexec"] + ["-n", "1", prg]
-                size = self.cmd_and_log(cmd)
-            finally:
-                os.remove(prg)
+            cmd = self.env["base_mpiexec"] + ["-n", "1", prg]
+            size = self.cmd_and_log(cmd)
         except Errors.WafError:
             self.end_msg("failed (memory consumption can not be estimated "
                          "during the calculation)", 'YELLOW')
         else:
             self.end_msg("ok (%s)" % size)
             is_ok = True
+            self.check_require_mpiexec(prg)
     if is_ok:
         self.define('ASTER_ENABLE_PROC_STATUS', 1)
+
+
+@Configure.conf
+def check_require_mpiexec(self, program):
+    """Check if mpiexec is required to run a program with one process."""
+    cfg = self.env["CONFIG_PARAMETERS"]
+    previous = cfg["require_mpiexec"]
+    cmt = ""
+    self.start_msg("Checking if mpiexec is required")
+    try:
+        # run simple program without mpiexec
+        self.cmd_and_log(program)
+        required = 0
+    except Errors.WafError:
+        self.end_msg("mpiexec is required")
+        required = 1
+    else:
+        if previous:
+            cmt = ", but enabled by configuration parameters"
+        self.end_msg("mpiexec is not required" + cmt)
+    finally:
+        os.remove(program)
+    cfg["require_mpiexec"] = required or previous
+    self.start_msg(". use 'require_mpiexec'")
+    self.end_msg(str(cfg["require_mpiexec"]))
 
 
 fragment_failure_vmsize = r"""

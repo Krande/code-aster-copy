@@ -75,8 +75,9 @@ class TestConfig(unittest.TestCase):
         size = 11
         if CFG.get("parallel"):
             self.assertTrue(CFG.storage.has_param("mpiexec"))
+            self.assertTrue(CFG.storage.has_param("require_mpiexec"))
             self.assertTrue(CFG.storage.has_param("mpi_get_rank"))
-            size += 2
+            size += 3
         self.assertEqual(len(CFG.storage), size)
 
     def test_filter(self):

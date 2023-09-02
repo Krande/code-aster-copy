@@ -39,7 +39,7 @@ or:
 
     mpiexec -n 4 bin/run_aster path/to/file.export
 
-Using the first syntax, ``bin/run_aster`` re-runs with ``mpiexec`` itself using
+Using the first syntax, ``bin/run_aster`` re-runs itself with ``mpiexec`` using
 the second syntax (``mpiexec`` syntax is provided by the configuration, see
 :py:mod:`~run_aster.config`).
 
@@ -265,6 +265,12 @@ def main(argv=None):
             "Let run_aster split the export file or change the export file."
         )
     need_mpiexec = procid < 0 and args.auto_mpiexec
+    if (
+        need_mpiexec
+        and export.get("mpi_nbcpu", 1) == 1
+        and not CFG.get("require_mpiexec", False)
+    ):
+        need_mpiexec = False
     logger.debug(
         "parallel: {0}, procid: {1}".format(CFG.get("parallel", False), procid)
     )
