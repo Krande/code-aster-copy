@@ -40,7 +40,6 @@ from ..Commands import (
 
 
 def calc_stab_pente_ops(self, **args):
-
     if args["METHODE_STAB"] == "SRM":
         TABFS = calc_srm(self, args)
     else:
@@ -709,11 +708,10 @@ def outline_slice_nc(X, Y, para_geom, N, sigma):
     return 1.0 / np.sqrt(2 * np.pi) / sigma * np.exp(-(d_min**2) / 2 / sigma**2)
 
 
-class LEM_Solver(object):
+class LEM_Solver:
     """Solver object containing the LEM-related methods."""
 
     def __init__(self, parent, args):
-
         self.parent = parent
 
         self.surf_circ = False
@@ -971,7 +969,6 @@ class LEM_Solver(object):
         nom_grno_del = []
 
         for ntran in range(self.nb_tran):
-
             if self.surf_circ:
                 # Surface circulaire - Méthode Fellenius et Bishop
                 nom_grma_del += [nom_tran[ntran], nom_tran[ntran] + "_verti"]
@@ -993,7 +990,6 @@ class LEM_Solver(object):
                         MAILLAGE=mesh,
                     )
                 else:
-
                     mesh = DEFI_GROUP(
                         reuse=mesh,
                         CREA_GROUP_MA=(
@@ -1136,7 +1132,6 @@ class LEM_Solver(object):
         # Calcul des alpha et propriété materiaux (maillage originel)
         # ============================================================
         for ntran in range(self.nb_tran):
-
             centre_base[ntran, 0] = (ntran + 1 / 2) * width_tran + np.min([x_enter, x_sorti])
             centre_base[ntran, 1] = y_centre - np.sqrt(
                 Rayon**2 - (centre_base[ntran, 0] - x_centre) ** 2
@@ -1575,7 +1570,6 @@ class Surf_Circ_Solver(LEM_Solver):
     """Solver object containing the methods for circular failure surface searching and FS calculation."""
 
     def __init__(self, parent, args):
-
         super(Surf_Circ_Solver, self).__init__(parent, args)
         self.x_bande_1 = np.linspace(self.x_lim_1[0], self.x_lim_1[1], num=args["NB_POINT_1"])
         self.x_bande_2 = np.linspace(self.x_lim_2[0], self.x_lim_2[1], num=args["NB_POINT_2"])
@@ -1758,7 +1752,6 @@ class Surf_Non_Circ_Solver(LEM_Solver):
     """Solver object containing the methods for non-circular failure surface searching and FS calculation."""
 
     def __init__(self, parent, args):
-
         super(Surf_Non_Circ_Solver, self).__init__(parent, args)
         self.kw_efwa = args["ALGO_EFWA"]
 
@@ -1809,7 +1802,7 @@ class Surf_Non_Circ_Solver(LEM_Solver):
         return TABFS
 
 
-class Efwa_Optimizer(object):
+class Efwa_Optimizer:
     """Optimizer object containing the methods related to the EFWA algorithm."""
 
     def __init__(self, lem_solver):
@@ -1994,7 +1987,6 @@ class Efwa_Optimizer(object):
         ampli = np.zeros(self.N)
 
         while nb_iter <= self.iter_maxi and nb_stab < self.nb_stab_maxi:
-
             fs_max = np.max(fit)
             denom_etin = np.sum(fs_max - fit) + epsi
             denom_ampli = np.sum(fit - FS_opti) + epsi
@@ -2023,7 +2015,6 @@ class Efwa_Optimizer(object):
             fit_etinc = np.zeros(np.sum(nb_etinc))
             for ifw in range(self.N):
                 for ie in range(nb_etinc[ifw]):
-
                     ind = np.sum(nb_etinc[:ifw]) + ie
                     etinc[ind, :] = fireworks[ifw, :].copy()
 
@@ -2038,7 +2029,6 @@ class Efwa_Optimizer(object):
             # Générer les étincelles gaussiennes et évaluer FS
             fit_gauss = np.zeros(self.MG)
             for igauss in range(self.MG):
-
                 id_luck = int(np.random.rand() * self.N) - 1
                 etinc_gauss[igauss, :] = fireworks[id_luck, :].copy()
 

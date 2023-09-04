@@ -489,7 +489,7 @@ def check_variant_vars(self):
 # same idea than waflib.Tools.c_config.write_config_header
 # but defines are not removed from `env`
 # XXX see write_config_header(remove=True/False) + format Fortran ?
-class ConfigHelper(object):
+class ConfigHelper:
     def __init__(self, language):
         self._lang = language
 

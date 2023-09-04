@@ -1,4 +1,4 @@
-class AsterStudySessionFake(object):
+class AsterStudySessionFake:
     def use_cata(self):
         return True
 

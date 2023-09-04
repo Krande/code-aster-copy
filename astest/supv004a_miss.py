@@ -42,7 +42,7 @@ class TestMissCmde(unittest.TestCase):
                 """assign a value"""
                 self[key] = value
 
-        class Struct(object):
+        class Struct:
 
             """fake structure"""
 

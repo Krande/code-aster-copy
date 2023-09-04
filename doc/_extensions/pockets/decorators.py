@@ -5,7 +5,7 @@
 """A pocket full of useful decorators!"""
 
 
-__all__ = ['classproperty']
+__all__ = ["classproperty"]
 
 
 def classproperty(cls):
@@ -22,7 +22,7 @@ def classproperty(cls):
         to write to the property will erase the @classproperty, and the
         behavior of the underlying method will be lost.
 
-    >>> class MyClass(object):
+    >>> class MyClass:
     ...     @classproperty
     ...     def myproperty(cls):
     ...         return '{0}.myproperty'.format(cls.__name__)
@@ -30,16 +30,18 @@ def classproperty(cls):
     'MyClass.myproperty'
 
     """
+
     class _classproperty(property):
         def __get__(self, cls, owner):
             return self.fget.__get__(None, owner)()
 
         def getter(self, fget):
-            raise AttributeError('@classproperty.getter is not supported')
+            raise AttributeError("@classproperty.getter is not supported")
 
         def setter(self, fset):
-            raise AttributeError('@classproperty.setter is not supported')
+            raise AttributeError("@classproperty.setter is not supported")
 
         def deleter(self, fdel):
-            raise AttributeError('@classproperty.deleter is not supported')
+            raise AttributeError("@classproperty.deleter is not supported")
+
     return _classproperty(classmethod(cls))
