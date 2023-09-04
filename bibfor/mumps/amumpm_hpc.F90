@@ -408,7 +408,7 @@ subroutine amumpm_hpc(kxmps, kmonit, impr, ifmump, &
         allocate (smpsk%jcn_loc(nz2))
         allocate (smpsk%a_loc(nz2))
     else if (type == 'C') then
-        cmpsk%n = to_mumps_int(neql)
+        cmpsk%n = to_mumps_int(neqg)
         cmpsk%nnz_loc = nz2
         allocate (cmpsk%irn_loc(nz2))
         allocate (cmpsk%jcn_loc(nz2))
@@ -420,7 +420,7 @@ subroutine amumpm_hpc(kxmps, kmonit, impr, ifmump, &
         allocate (dmpsk%jcn_loc(nz2))
         allocate (dmpsk%a_loc(nz2))
     else if (type == 'Z') then
-        zmpsk%n = to_mumps_int(neql)
+        zmpsk%n = to_mumps_int(neqg)
         zmpsk%nnz_loc = nz2
         allocate (zmpsk%irn_loc(nz2))
         allocate (zmpsk%jcn_loc(nz2))
@@ -615,7 +615,7 @@ subroutine amumpm_hpc(kxmps, kmonit, impr, ifmump, &
                                 else
                                     ASSERT(ASTER_FALSE)
                                 end if
-                                !                           Writings to get the stiffness matrix wrt nodes and dof numbers
+!                               Writings to get the stiffness matrix wrt nodes and dof numbers
                                 if (ldebug .and. raux2 /= 0.d0) then
                                     owner(iterm) = rang
                                     numno1 = deeg(2*(iligl-1)+1)
@@ -650,7 +650,7 @@ subroutine amumpm_hpc(kxmps, kmonit, impr, ifmump, &
                         else
                             ASSERT(ASTER_FALSE)
                         end if
-                        !                   Writings to get the stiffness matrix wrt nodes and dof numbers
+!                       Writings to get the stiffness matrix wrt nodes and dof numbers
                         if (ldebug .and. raux2 /= 0.d0) then
                             owner(iterm) = rang
                             numno1 = deeg(2*(iligl-1)+1)
@@ -691,7 +691,7 @@ subroutine amumpm_hpc(kxmps, kmonit, impr, ifmump, &
                             ASSERT(ASTER_FALSE)
                         end if
 
-                        !                   Writings to get the stiffness matrix wrt nodes and dof numbers
+!                       Writings to get the stiffness matrix wrt nodes and dof numbers
                         if (ldebug .and. raux /= 0.d0) then
                             owner(iterm) = rang
                             numno1 = deeg(2*(iligl-1)+1)

@@ -45,8 +45,8 @@ subroutine chreco(chou)
     integer :: iret, jvale, nbval, jvalin, i, jrefn
     character(len=3) :: tsca
     character(len=4) :: tych
-    character(len=8) :: chou, chin, nomgd, partie
-    character(len=19) :: nume_equa, nume_equa_new
+    character(len=8) :: chou, nomgd, partie
+    character(len=19) :: chin, nume_equa, nume_equa_new
     character(len=24) :: vale, valin, noojb
     real(kind=8) :: x, y, c1
 !----------------------------------------------------------------------
@@ -74,7 +74,7 @@ subroutine chreco(chou)
     call copisd("NUME_EQUA", 'G', nume_equa, nume_equa_new)
     call jeveuo(nume_equa_new//".REFN", "E", jrefn)
     zk24(jrefn-1+2) = nomgd(1:5)//"R"
-    call jeveuo(chou//"           .REFE", "E", jrefn)
+    call jeveuo(chou(1:8)//"           .REFE", "E", jrefn)
     zk24(jrefn-1+2) = nume_equa_new
 
 !    modifications de chou:
@@ -89,6 +89,7 @@ subroutine chreco(chou)
     call jedetr(vale)
     call jecreo(vale, 'G V R')
     call jeecra(vale, 'LONMAX', nbval)
+    call jeecra(vale, 'LONUTI', nbval)
     call jeveuo(vale, 'E', jvale)
 
     valin = vale

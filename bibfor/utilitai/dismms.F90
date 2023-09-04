@@ -22,6 +22,7 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
+#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismme.h"
 #include "asterfort/dismnu.h"
@@ -172,6 +173,12 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
 
     else if (questi .eq. 'EXIS_CINE') then
         call jeexin(nomob//'.CCID', ier)
+        ! cas MATR_HPC
+        nommai = refa(1) (1:8)
+        call gettco(nommai, typeco)
+        if (typeco .eq. 'MAILLAGE_P') then
+            call asmpi_comm_vect('MPI_SUM', 'I', 1, 0, sci=ier)
+        end if
         if (ier .eq. 0) then
             repk = 'NON'
         else

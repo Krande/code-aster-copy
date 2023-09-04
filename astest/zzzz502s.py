@@ -133,7 +133,7 @@ DYNA = DYNA_VIBRA(
 DEPL = DYNA.getField("DEPL", 2)
 DEPL.setMesh(MA)
 
-# sequantial comparaison
+# sequential comparaison
 seq_value = 15.652508028144187
 mpi_value = DEPL.norm("NORM_1")
 test.assertTrue(abs(seq_value - mpi_value) / abs(seq_value) < 1e-6)
@@ -182,7 +182,7 @@ DYNA = DYNA_VIBRA(
 DEPL = DYNA.getField("DEPL", 2)
 DEPL.setMesh(MA)
 
-# sequantial comparaison
+# sequential comparaison
 seq_value = 15.652508028144187
 mpi_value = DEPL.norm("NORM_1")
 test.assertTrue(abs(seq_value - mpi_value) / abs(seq_value) < 1e-6)
