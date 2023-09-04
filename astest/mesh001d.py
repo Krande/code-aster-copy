@@ -49,20 +49,17 @@ aster_connect = mesh.getMedConnectivity()
 connect_seg2_aster = [tuple(i) for i in aster_connect if len(i) == 2]
 connect_seg2_mc = mcmesh[-2].convertNodalConnectivityToStaticGeoTypeMesh()
 connect_seg2_mc.rearrange(2)
-connect_seg2_mc += 1
 
 test.assertEqual(connect_seg2_mc.getValuesAsTuple(), connect_seg2_aster)
 
 connect_quad4_aster = [tuple(i) for i in aster_connect if len(i) == 4]
 connect_quad4_mc = mcmesh[-1].convertNodalConnectivityToStaticGeoTypeMesh()
 connect_quad4_mc.rearrange(4)
-connect_quad4_mc += 1
 test.assertEqual(connect_quad4_mc.getValuesAsTuple(), connect_quad4_aster)
 
 connect_hexa8_aster = [tuple(i) for i in aster_connect if len(i) == 8]
 connect_hexa8_mc = mcmesh[0].convertNodalConnectivityToStaticGeoTypeMesh()
 connect_hexa8_mc.rearrange(8)
-connect_hexa8_mc += 1
 test.assertEqual(connect_hexa8_mc.getValuesAsTuple(), connect_hexa8_aster)
 
 

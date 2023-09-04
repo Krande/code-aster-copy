@@ -132,7 +132,7 @@ Returns:
     bool : *True* if mesh contains at least one cell of given type, else *False*
         )",
               py::arg( "type" ) )
-        .def( "getMedConnectivity", &BaseMesh::getMedConnectivity, R"(
+        .def( "getMedConnectivity", &BaseMesh::getMedConnectivityZeroBased, R"(
 Return the connectivity of the mesh as Python lists following the Med numbering.
 
 Returns:

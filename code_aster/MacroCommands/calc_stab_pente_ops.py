@@ -816,8 +816,8 @@ class LEM_Solver:
             x = 0.0
             y = 0.0
             for nnode in connex[ncell]:
-                x += self.coord[nnode - 1, 0]
-                y += self.coord[nnode - 1, 1]
+                x += self.coord[nnode, 0]
+                y += self.coord[nnode, 1]
 
             center[ncell, :] = np.array([x, y]) / len(connex[ncell])
 
@@ -924,11 +924,11 @@ class LEM_Solver:
                 inv_dist_tot = 0.0
                 p = 2
                 for nnode in l_nodes:
-                    dist = np.linalg.norm(centre_base[ntran, :] - self.coord[nnode - 1, :2])
+                    dist = np.linalg.norm(centre_base[ntran, :] - self.coord[nnode, :2])
                     if dist < 1e-10:
-                        ptot[ntran] = self.chptotval[nnode - 1, 0]
+                        ptot[ntran] = self.chptotval[nnode, 0]
                         break
-                    ptot[ntran] += (1.0 / dist) ** p * self.chptotval[nnode - 1, 0]
+                    ptot[ntran] += (1.0 / dist) ** p * self.chptotval[nnode, 0]
                     inv_dist_tot += (1.0 / dist) ** p
 
                 if inv_dist_tot > 0:

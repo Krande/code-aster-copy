@@ -226,7 +226,7 @@ test.assertTrue((medtypes[49:] == 308).all())
 # check cell #47 (index 46)
 quad47 = connect[47 - 1]
 test.assertSequenceEqual(quad47, [9, 0, 17, 25])
-test.assertSequenceEqual(medconn[47 - 1], [10, 1, 18, 26])
+test.assertSequenceEqual(medconn[47 - 1], [9, 0, 17, 25])
 test.assertEqual("M47", mesh.getCellName(47 - 1))
 test.assertEqual("N10", mesh.getNodeName(10 - 1))
 
@@ -237,11 +237,11 @@ for i in quad47:
     test.assertEqual(npcoord[i][2], 1.0)
 
 # same connectivities for SEG2, QUAD4
-test.assertSequenceEqual(connect[12], [n-1 for n in medconn[12]])
-test.assertSequenceEqual(connect[36], [n-1 for n in medconn[36]])
+test.assertSequenceEqual(connect[12], [n for n in medconn[12]])
+test.assertSequenceEqual(connect[36], [n for n in medconn[36]])
 # different connectivities for HEXA8
 conn_ast = [0, 8, 20, 9, 17, 22, 26, 25]
-conn_med = [1, 10, 21, 9, 18, 26, 27, 23]
+conn_med = [0, 9, 20, 8, 17, 25, 26, 22]
 test.assertSequenceEqual(connect[49 - 1], conn_ast)
 test.assertSequenceEqual(medconn[49 - 1], conn_med)
 
@@ -269,7 +269,35 @@ test.assertTrue(mail.isQuadratic())
 
 m1, m2, m3 = mail.getConnectivity()
 # reference connectivities from '.mail' file
-ast27 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26]
+ast27 = [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+]
 ast20 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
 ast08 = [0, 1, 2, 3, 4, 5, 6, 7]
 test.assertSequenceEqual(m1, ast27)
@@ -279,36 +307,36 @@ test.assertSequenceEqual(m3, ast08)
 m1, m2, m3 = mail.getMedConnectivity()
 # reference connectivities from IMPR_RESU/MED + mdump
 med27 = [
-    1,
-    4,
+    0,
     3,
     2,
-    5,
-    8,
+    1,
+    4,
     7,
     6,
-    12,
+    5,
     11,
     10,
     9,
-    20,
+    8,
     19,
     18,
     17,
-    13,
     16,
+    12,
     15,
     14,
-    21,
-    25,
+    13,
+    20,
     24,
     23,
     22,
+    21,
+    25,
     26,
-    27,
 ]
-med20 = [1, 4, 3, 2, 5, 8, 7, 6, 12, 11, 10, 9, 20, 19, 18, 17, 13, 16, 15, 14]
-med08 = [1, 4, 3, 2, 5, 8, 7, 6]
+med20 = [0, 3, 2, 1, 4, 7, 6, 5, 11, 10, 9, 8, 19, 18, 17, 16, 12, 15, 14, 13]
+med08 = [0, 3, 2, 1, 4, 7, 6, 5]
 test.assertSequenceEqual(m1, med27)
 test.assertSequenceEqual(m2, med20)
 test.assertSequenceEqual(m3, med08)

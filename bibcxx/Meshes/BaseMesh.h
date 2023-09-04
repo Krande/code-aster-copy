@@ -155,6 +155,11 @@ class BaseMesh : public DataStructure, public ListOfTables {
     const JeveuxCollectionLong getMedConnectivity() const;
 
     /**
+     * @brief Return the connectivity with MED numberings, node zero based
+     */
+    const py::list getMedConnectivityZeroBased() const;
+
+    /**
      * @brief Return the MED type for each cell
      */
     const JeveuxVectorLong getMedCellsTypes() const;
