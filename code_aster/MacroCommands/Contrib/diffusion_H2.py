@@ -193,7 +193,7 @@ def char_grad_impo_ops(
     cells = mesh.getCells(GRMAVOL)
 
     for cell in cells:
-        lnoeu = NP.array(connex[cell]) - 1
+        lnoeu = NP.array(connex[cell])
         nbno = len(lnoeu)
 
         # calcul de la moyenne par maille de fx

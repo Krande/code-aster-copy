@@ -134,6 +134,11 @@ class BaseMesh : public DataStructure, public ListOfTables {
      */
     const JeveuxCollectionLong getConnectivity() const { return _connectivity; }
 
+    /**
+     * @brief Return the connectivity, node zero based
+     */
+    const py::list getConnectivityZeroBased() const;
+
     virtual std::vector< VectorString > getCellFamilyGroups() const {
         return std::vector< VectorString >();
     };

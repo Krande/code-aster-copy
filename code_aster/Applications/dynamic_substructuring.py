@@ -214,7 +214,7 @@ class Interface:
             lINodes = []
             for cell in lCells:
                 lINodes += connect[cell]
-            interfaceNodes1 = list(np.unique(np.array(lINodes) - 1))
+            interfaceNodes1 = list(np.unique(np.array(lINodes)))
         else:
             interfaceNodes1 = list(np.array(self.sub1.mesh.getNodes(self.name)))
         if not self.sub2.mesh.hasGroupOfNodes(self.name):
@@ -223,7 +223,7 @@ class Interface:
             lINodes = []
             for cell in lCells:
                 lINodes += connect[cell]
-            interfaceNodes2 = list(np.unique(np.array(lINodes) - 1))
+            interfaceNodes2 = list(np.unique(np.array(lINodes)))
         else:
             interfaceNodes2 = list(np.array(self.sub2.mesh.getNodes(self.name)))
         interfaceNodes = np.array(interfaceNodes1 + interfaceNodes2)

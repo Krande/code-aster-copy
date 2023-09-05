@@ -42,9 +42,9 @@ def recu_coor_z(mesh, group, typ_group, tole_r):
             for cell in cells:
                 nodes = connect[cell]
                 n = nodes[0]
-                uzmin = uzmax = round(coord.getNode(n - 1).z(), tole_r)
+                uzmin = uzmax = round(coord.getNode(n).z(), tole_r)
                 for n in nodes[1:]:
-                    uz = round(coord.getNode(n - 1).z(), tole_r)
+                    uz = round(coord.getNode(n).z(), tole_r)
                     uzmin = min(uzmin, uz)
                     uzmax = max(uzmax, uz)
                 if uzmin not in coor_z:
@@ -57,7 +57,7 @@ def recu_coor_z(mesh, group, typ_group, tole_r):
         else:
             nodes = mesh.getNodes(group)
             for n in nodes:
-                uz = round(coord.getNode(n - 1).z(), tole_r)
+                uz = round(coord.getNode(n).z(), tole_r)
                 if uz not in coor_z:
                     coor_z.append(uz)
     else:

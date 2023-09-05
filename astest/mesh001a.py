@@ -225,7 +225,7 @@ test.assertTrue((medtypes[49:] == 308).all())
 
 # check cell #47 (index 46)
 quad47 = connect[47 - 1]
-test.assertSequenceEqual(quad47, [10, 1, 18, 26])
+test.assertSequenceEqual(quad47, [9, 0, 17, 25])
 test.assertSequenceEqual(medconn[47 - 1], [10, 1, 18, 26])
 test.assertEqual("M47", mesh.getCellName(47 - 1))
 test.assertEqual("N10", mesh.getNodeName(10 - 1))
@@ -234,13 +234,13 @@ test.assertEqual("N10", mesh.getNodeName(10 - 1))
 npcoord = np.array(values).reshape((-1, 3))
 # z(cell #47) == 1.
 for i in quad47:
-    test.assertEqual(npcoord[i - 1][2], 1.0)
+    test.assertEqual(npcoord[i][2], 1.0)
 
 # same connectivities for SEG2, QUAD4
-test.assertSequenceEqual(connect[12], medconn[12])
-test.assertSequenceEqual(connect[36], medconn[36])
+test.assertSequenceEqual(connect[12], [n-1 for n in medconn[12]])
+test.assertSequenceEqual(connect[36], [n-1 for n in medconn[36]])
 # different connectivities for HEXA8
-conn_ast = [1, 9, 21, 10, 18, 23, 27, 26]
+conn_ast = [0, 8, 20, 9, 17, 22, 26, 25]
 conn_med = [1, 10, 21, 9, 18, 26, 27, 23]
 test.assertSequenceEqual(connect[49 - 1], conn_ast)
 test.assertSequenceEqual(medconn[49 - 1], conn_med)
@@ -269,37 +269,9 @@ test.assertTrue(mail.isQuadratic())
 
 m1, m2, m3 = mail.getConnectivity()
 # reference connectivities from '.mail' file
-ast27 = [
-    1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    7,
-    8,
-    9,
-    10,
-    11,
-    12,
-    13,
-    14,
-    15,
-    16,
-    17,
-    18,
-    19,
-    20,
-    21,
-    22,
-    23,
-    24,
-    25,
-    26,
-    27,
-]
-ast20 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
-ast08 = [1, 2, 3, 4, 5, 6, 7, 8]
+ast27 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26]
+ast20 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+ast08 = [0, 1, 2, 3, 4, 5, 6, 7]
 test.assertSequenceEqual(m1, ast27)
 test.assertSequenceEqual(m2, ast20)
 test.assertSequenceEqual(m3, ast08)

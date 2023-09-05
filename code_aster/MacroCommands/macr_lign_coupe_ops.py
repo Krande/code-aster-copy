@@ -306,14 +306,14 @@ def crea_resu_local(self, dime, NOM_CHAM, m, resin, mail, nomgrma):
                 vectu2 = []
                 n1 = connex[cell][0]
                 n2 = connex[cell][1]
-                ux = coord.getNode(n2 - 1).x() - coord.getNode(n1 - 1).x()
-                uy = coord.getNode(n2 - 1).y() - coord.getNode(n1 - 1).y()
+                ux = coord.getNode(n2).x() - coord.getNode(n1).x()
+                uy = coord.getNode(n2).y() - coord.getNode(n1).y()
                 vectu1.append(ux)
                 vectu1.append(uy)
                 vectu2.append(ux)
                 vectu2.append(uy)
                 if dime == 3:
-                    uz = coord.getNode(n2 - 1).z() - coord.getNode(n2 - 1).z()
+                    uz = coord.getNode(n2).z() - coord.getNode(n2).z()
                     vectu1.append(uz)
                     vectu2.append(uz)
                 dictu[n1].append(vectu1)
@@ -408,7 +408,7 @@ def crea_resu_local(self, dime, NOM_CHAM, m, resin, mail, nomgrma):
                 if dime == 3:
                     ANGL_NAUT.append(beta)
                     ANGL_NAUT.append(gamma)
-                motscles["AFFE"].append(_F(ANGL_NAUT=ANGL_NAUT, NOEUD=mail.getNodeName(i - 1)))
+                motscles["AFFE"].append(_F(ANGL_NAUT=ANGL_NAUT, NOEUD=mail.getNodeName(i)))
                 __resu[j] = MODI_REPERE(RESULTAT=__resu[j - 1], REPERE="UTILISATEUR", **motscles)
             __remodr = __resu[j]
 

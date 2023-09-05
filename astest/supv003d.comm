@@ -35,7 +35,7 @@ assert (max(coord) == 0.1, coord)
 
 conn = MA.getConnectivity()
 assert MA.getNumberOfCells() == 1
-assert (conn[0] == (1, 2), conn)
+assert (conn[0] == (0, 1), conn)
 
 nommai = MA.getGroupsOfCells()
 assert (nommai == ("ELN1",), nommai)

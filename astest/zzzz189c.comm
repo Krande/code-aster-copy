@@ -94,9 +94,9 @@ def LIST_CARA_CIRCONF(GROUP_MA, AXE, MAILLAGE, **args):
         if len(lnoeu) == 3:
             # ATTENTION : dans Python, les tableaux commencent a 0
             # mais dans la connectivite, les noeuds commencent a 1!
-            n1 = lnoeu[0] - 1
-            n2 = lnoeu[1] - 1
-            n3 = lnoeu[2] - 1
+            n1 = lnoeu[0]
+            n2 = lnoeu[1]
+            n3 = lnoeu[2]
             n1n2[0] = X[n2] - X[n1]
             n1n2[1] = Y[n2] - Y[n1]
             n1n2[2] = Z[n2] - Z[n1]

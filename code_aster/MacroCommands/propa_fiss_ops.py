@@ -1283,7 +1283,7 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
 
                 # Coordonnees du point propage
                 cells = MAIL_FISS1.getCells("%s_%i" % (MFOND, it - 1))
-                node = connex[cells[0]][0] - 1
+                node = connex[cells[0]][0]
                 Xf, Yf = coords[node].getValues()
 
                 VPVNi = fiss0.sdj.BASEFOND.get()

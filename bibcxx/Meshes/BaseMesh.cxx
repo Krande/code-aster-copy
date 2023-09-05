@@ -215,6 +215,22 @@ const JeveuxCollectionLong BaseMesh::getInverseConnectivity() const {
     return result;
 };
 
+const py::list BaseMesh::getConnectivityZeroBased() const {
+    py::list pylist;
+    if ( !_connectivity->build() || _connectivity->size() < 0 ) {
+        return pylist;
+    }
+    for ( const auto &pair : _connectivity ) {
+        const auto &obj = pair.second;
+        obj->updateValuePointer();
+        py::list items;
+        for ( const auto &val : obj )
+            items.append( val - 1 );
+        pylist.append( items );
+    }
+    return pylist;
+}
+
 std::string BaseMesh::getNodeName( const ASTERINTEGER &index ) const {
     return strip( _nameOfNodes->getStringFromIndex( index + 1 ) );
 };

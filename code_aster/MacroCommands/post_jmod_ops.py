@@ -1425,7 +1425,7 @@ def grad_elno(self, MAIL, MODE, MATE, listElemTMAIL, __EPSI_ELGA, __FIELD_CAL, i
 
     dicAllElems = {}
     for i, cell in enumerate(connect):
-        dicAllElems[MAIL.getCellName(i)] = [MAIL.getNodeName(j - 1) for j in cell]
+        dicAllElems[MAIL.getCellName(i)] = [MAIL.getNodeName(j) for j in cell]
 
     dicElemNode = {}
     for iElem in dicAllElems.keys():

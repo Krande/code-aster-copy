@@ -126,23 +126,21 @@ def Calcul_mesure_3D(maya, nbcop, l_copo_tot, nd_fiss, normale):
     DEFI_GROUP(reuse=maya, MAILLAGE=maya, CREA_GROUP_NO=crea_group_no)
     DEFI_GROUP(reuse=maya, MAILLAGE=maya, CREA_GROUP_MA=crea_group_ma)
 
-    groupma = maya.sdj.GROUPEMA.get()
-
     # calcul de la surface pour chacun des coppeaux
     for C_k, Copeau_k in enumerate(l_copo_tot):
         # Recuperation des coordonnees des noeuds appartenant au copeau courant
-        cells = groupma[("Mai_Plan_%s" % C_k).ljust(24)]
+        cells = maya.getCells("Mai_Plan_%s" % C_k)
         for cell in cells:
-            nodes = connectivity[cell - 1]
+            nodes = connectivity[cell]
             if len(nodes) not in (4, 8):
                 UTMESS("F", "RUPTURE1_22")
             # Calcul de la surface de la maille 2D du copeau courant appartenant au plan de symetrie
             coords = [
                 np.array(
                     [
-                        coordinates.getNode(node - 1).x(),
-                        coordinates.getNode(node - 1).y(),
-                        coordinates.getNode(node - 1).z(),
+                        coordinates.getNode(node).x(),
+                        coordinates.getNode(node).y(),
+                        coordinates.getNode(node).z(),
                     ]
                 )
                 for node in nodes[:4]

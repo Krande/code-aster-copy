@@ -76,7 +76,7 @@ Return the dimension of the mesh.
 Returns:
     int: 2 or 3
         )" )
-        .def( "getConnectivity", &BaseMesh::getConnectivity, R"(
+        .def( "getConnectivity", &BaseMesh::getConnectivityZeroBased, R"(
 Return the connectivity of the mesh as Python lists.
 
 Returns:

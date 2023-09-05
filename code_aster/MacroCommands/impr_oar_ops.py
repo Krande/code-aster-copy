@@ -791,13 +791,13 @@ class tuyauterie(OAR_element):
         for cell, nodes in enumerate(self.maillage.getConnectivity()):
             NbNoeuds = 0
             for node in nodes:
-                node_name = self.maillage.getNodeName(node - 1)
+                node_name = self.maillage.getNodeName(node)
                 if node_name in self.dictNoeudValTorseur.keys():
                     NbNoeuds += 1
             if NbNoeuds == 2:
                 nodeMT.append("oar:MAILLE-REF", self.maillage.getCellName(cell))
                 for node in nodes:
-                    node_name = self.maillage.getNodeName(node - 1)
+                    node_name = self.maillage.getNodeName(node)
                     nodeTorseur = nodeMT.append("oar:TORSEUR")
                     for val, cle in zip(
                         self.dictNoeudValTorseur[node_name], torseur_XML
