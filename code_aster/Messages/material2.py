@@ -51,14 +51,6 @@ Vérification de la positivité de la matrice d'élasticité. Il faut renseigner
 On ne regarde donc que le cas des contraintes planes.
 """
     ),
-    11: _(
-        """
- Erreur d'utilisation lors de l'affectation des variables de commande (AFFE_MATERIAU/AFFE_VARC):
-   Pour la variable de commande %(k1)s,
-   Vous avez oublié d'utiliser l'un des 2 mots clés CHAM_GD ou EVOL.
-   L'absence de ces deux mots clés n'est permise que pour NOM_VARC='TEMP'.
-"""
-    ),
     12: _(
         """
 Les caractéristiques élastiques de MFront sont différentes de celles du mot-clef ELAS.

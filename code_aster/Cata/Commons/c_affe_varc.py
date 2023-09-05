@@ -26,7 +26,7 @@ def C_AFFE_VARC():
     return FACT(
         statut="f",
         max="**",
-        regles=(EXCLUS("GROUP_MA", "TOUT"), EXCLUS("EVOL", "CHAM_GD")),
+        regles=(EXCLUS("GROUP_MA", "TOUT"), UN_PARMI("EVOL", "CHAM_GD")),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         NOM_VARC=SIMP(

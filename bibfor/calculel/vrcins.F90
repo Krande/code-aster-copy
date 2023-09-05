@@ -125,11 +125,9 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc, &
     call vrcin1(modele, chmat, carele, inst, codret, &
                 nompar)
 !
-!   1.1 si il n'y a pas vraiment de variables de commande
-!       (par exemple il existe temp/vale_ref mais pas de temp
     call jeexin(chmat//'.LISTE_SD', iret)
-    if (iret .eq. 0) goto 999
-!
+    ASSERT(iret .ne. 0)
+
 !
 !   2. allocation du champ_elem_s resultat (chvars)
 !      calcul de chmat.cesvi

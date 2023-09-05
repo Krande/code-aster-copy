@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -49,7 +49,10 @@ CHAMAIL = CREA_CHAMP(OPERATION="EXTR", TYPE_CHAM="NOEU_GEOM_R", NOM_CHAM="GEOMET
 CM = AFFE_MATERIAU(
     MAILLAGE=M,
     AFFE=(_F(TOUT="OUI", MATER=BETON1),),
-    AFFE_VARC=(_F(NOM_VARC="TEMP", VALE_REF=20.0), _F(NOM_VARC="GEOM", CHAM_GD=CHAMAIL)),
+    AFFE_VARC=(
+        # _F(NOM_VARC="TEMP", VALE_REF=20.0),
+        _F(NOM_VARC="GEOM", CHAM_GD=CHAMAIL)
+    ),
 )
 
 TEMP1 = DEFI_FONCTION(

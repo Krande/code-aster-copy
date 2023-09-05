@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -198,6 +198,14 @@ MAT_6 = DEFI_MATERIAU(
     RCCM=_F(SM=1.33600000e8, N_KE=0.20000000000000001, M_KE=3.0),
 )
 
+CH_TREF = CREA_CHAMP(
+    TYPE_CHAM="NOEU_TEMP_R",
+    OPERATION="AFFE",
+    MAILLAGE=MAILL,
+    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE=20.0),
+)
+
+
 CHMAT1 = AFFE_MATERIAU(
     MAILLAGE=MAILL,
     AFFE=(
@@ -205,7 +213,7 @@ CHMAT1 = AFFE_MATERIAU(
         _F(GROUP_MA="L49", MATER=MAT2),
         _F(GROUP_MA=("L1", "C3"), MATER=MAT_3),
     ),
-    AFFE_VARC=_F(TOUT="OUI", NOM_VARC="TEMP", VALE_REF=20.0),
+    AFFE_VARC=_F(TOUT="OUI", NOM_VARC="TEMP", VALE_REF=20.0, CHAM_GD=CH_TREF),
 )
 
 # DEFINITION DE LA TUYAUTERIE
@@ -1076,7 +1084,7 @@ SISM_SPE = COMB_SISM_MODAL(
     MODE_MECA=MODE_MEC,
     MODE_CORR=MODE_STA,
     AMOR_REDUIT=0.02,
-    MASS_INER=TABL_MAS,
+    # MASS_INER=TABL_MAS,
     CORR_FREQ="NON",
     MONO_APPUI="OUI",
     EXCIT=_F(

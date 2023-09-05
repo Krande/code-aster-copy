@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine afvarc_obje_affe(jv_base, chmate, mesh, model, varc_cata, varc_affe)
+subroutine afvarc_obje_affe(chmate, mesh, model, varc_cata, varc_affe)
 !
     use Material_Datastructure_type
 !
@@ -30,18 +30,12 @@ subroutine afvarc_obje_affe(jv_base, chmate, mesh, model, varc_cata, varc_affe)
 #include "asterfort/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/gcncon.h"
-#include "asterfort/mecact.h"
 #include "asterfort/reliem.h"
 #include "asterfort/nocart.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/xvarc_temp.h"
 !
-!
-    character(len=1), intent(in) :: jv_base
-    character(len=8), intent(in) :: chmate
-    character(len=8), intent(in) :: mesh
-    character(len=8), intent(in) :: model
+    character(len=8), intent(in) :: chmate, mesh, model
     type(Mat_DS_VarcListCata), intent(in) :: varc_cata
     type(Mat_DS_VarcListAffe), intent(in) :: varc_affe
 !
@@ -53,7 +47,6 @@ subroutine afvarc_obje_affe(jv_base, chmate, mesh, model, varc_cata, varc_affe)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  jv_base          : JEVEUX base where to create objects
 ! In  chmate           : name of material field (CHAM_MATER)
 ! In  mesh             : name of mesh
 ! In  model            : name of model
@@ -70,9 +63,9 @@ subroutine afvarc_obje_affe(jv_base, chmate, mesh, model, varc_cata, varc_affe)
     integer :: indx_cata, jv_list_elem
     character(len=8) :: varc_name, phys_para
     character(len=24) :: cvnom, cvvar, cvgd, cvcmp
-    character(len=19) :: cart1, cart2, cart_empty
-    real(kind=8) :: vale_refe, empty_vale(10)
-    character(len=8) :: empty_name(10), answer
+    character(len=19) :: cart1, cart2
+    real(kind=8) :: vale_refe
+    character(len=8) :: answer
     integer :: nbtou, nbgm1, nbm1
     real(kind=8), pointer :: v_cart_valv1(:) => null()
     character(len=16), pointer :: v_cart_valv2(:) => null()
@@ -80,7 +73,7 @@ subroutine afvarc_obje_affe(jv_base, chmate, mesh, model, varc_cata, varc_affe)
     character(len=8), pointer :: v_cvvar(:) => null()
     character(len=8), pointer :: v_cvgd(:) => null()
     character(len=8), pointer :: v_cvcmp(:) => null()
-    character(len=8) :: type_affe, knumer, type_phys_para
+    character(len=8) :: type_affe, type_phys_para
     character(len=8) :: evol, evol_func
     character(len=16) :: evol_prol_l, evol_prol_r, vale_phys_para
     aster_logical, pointer :: v_active(:) => null()
@@ -168,21 +161,8 @@ subroutine afvarc_obje_affe(jv_base, chmate, mesh, model, varc_cata, varc_affe)
             v_cart_valv2(5) = evol_prol_l
             v_cart_valv2(6) = evol_prol_r
             v_cart_valv2(7) = evol_func
-        else if (type_affe .eq. 'VIDE') then
-            call gcncon('_', knumer)
-            cart_empty = knumer
-            ASSERT(nb_cmp .le. 10)
-            empty_vale(1:nb_cmp) = r8nnem()
-            empty_name(1:nb_cmp) = &
-                varc_cata%list_cata_varc(indx_cata)%list_cmp(1:nb_cmp)%phys_para_cmp
-            call mecact(jv_base, cart_empty, 'MAILLA', mesh, type_phys_para, &
-                        ncmp=nb_cmp, lnomcmp=empty_name, vr=empty_vale)
-            v_cart_valv2(2) = 'CHAMP'
-            v_cart_valv2(3) = cart_empty(1:16)
-            v_cart_valv2(4) = 'VIDE'
-            v_cart_valv2(5) = ' '
-            v_cart_valv2(6) = ' '
-            v_cart_valv2(7) = ' '
+        else
+            ASSERT(ASTER_FALSE)
         end if
 ! ----- Set values in CARTE
         call getvtx('AFFE_VARC', 'TOUT', iocc=i_affe_varc, scal=answer, nbret=nbtou)

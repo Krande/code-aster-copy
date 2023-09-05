@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,6 @@ MAT2 = DEFI_MATERIAU(ELAS=_F(E=5.0e7, NU=0.3, RHO=30.0, ALPHA=0.0))
 
 CHMAT1 = AFFE_MATERIAU(
     MAILLAGE=MA1,
-    AFFE_VARC=_F(TOUT="OUI", NOM_VARC="TEMP", VALE_REF=0),
     AFFE=(_F(GROUP_MA=("MCABLE",), MATER=MAT1), _F(GROUP_MA=("MCABPOUL",), MATER=MAT2)),
 )
 
