@@ -299,7 +299,7 @@ subroutine te0243(option, nomte)
                 if (zk16(icomp)(1:9) .eq. 'THER_HYDR') then
                     tpgm = 0.d0
                     do i = 1, nno
-                        tpgm = tpgm + zr(itempr+i-1)*zr(ivf2+k+i-1)
+                        tpgm = tpgm + zr(itempr-1+c(ise, i))*zr(ivf2+k+i-1)
                     end do
                     call runge6(ifon(3), deltat, tpg, tpgm, hydrgm(kp),&
                                 hydrgp(kp), err)
