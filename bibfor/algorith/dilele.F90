@@ -43,12 +43,12 @@ subroutine dilele(option, typmod, ds_dil, ndim, nnos, &
 
 !
     aster_logical :: lVect, lMatr, lSigm
-    type(dil_modelisation)         :: ds_dil
+    type(dil_modelisation)          :: ds_dil
     character(len=8), intent(in)    :: typmod(*)
     character(len=16), intent(in)   :: option, compor(*)
     integer, intent(in)             :: ndim, nnos, nnom, npg, nddl, lgpg, dimdef
     integer, intent(in)             :: mate, iw, idff, idffb
-    real(kind=8)                   :: crit(*), instam, instap
+    real(kind=8)                    :: crit(*), instam, instap
     real(kind=8), intent(in)        :: geomi(ndim, nnos+nnom)
     real(kind=8), intent(in)        :: vff(nnos+nnom, npg), vffb(nnos, npg)
     real(kind=8), intent(in)        :: ddlm(nddl), ddld(nddl)
@@ -113,7 +113,6 @@ subroutine dilele(option, typmod, ds_dil, ndim, nnos, &
     integer       :: xu(ndim, nnos+nnom), xg(1, nnos), xp(1, nnos)
     integer       :: cod(npg)
     integer       :: nnu, nng, nnp, ndu, ndg, ndp, neu, neg, nep
-    integer       :: regula(6), ndsde
     real(kind=8)  :: rpena, angmas(3)
     real(kind=8)  :: dum(ndim, nnos+nnom), dup(ndim, nnos+nnom)
     real(kind=8)  :: dgm(1, nnos), dpm(1, nnos)
@@ -127,7 +126,6 @@ subroutine dilele(option, typmod, ds_dil, ndim, nnos, &
     real(kind=8)  :: siefup(2*ndim+1), siefgp(1+ndim), siefpp(1)
     real(kind=8)  :: epl1gm(6), epl1gp(6)
     real(kind=8)  :: sigm1g(6), sigp1g(6)
-    real(kind=8)  :: eplcm(ndim), silcm(ndim)
     real(kind=8)  :: eplcp(ndim), silcp(ndim), deps(2*ndim)
     real(kind=8)  :: dsde1g(6, 6), dsde2g(ndim, ndim)
     real(kind=8)  :: kefuu(2*ndim+1, 2*ndim+1), kefug(2*ndim+1, 1+ndim), kefup(2*ndim+1, 1)
@@ -247,9 +245,9 @@ subroutine dilele(option, typmod, ds_dil, ndim, nnos, &
         call nmcomp(BEHinteg, &
                     'RIGI', g, 1, ndim, typmod, &
                     mate, compor, crit, instam, instap, &
-                    2*ndim, epl1gm, epl1gp-epl1gm, 2*ndim, sigm1g, &
+                    6, epl1gm, epl1gp-epl1gm, 6, sigm1g, &
                     vim(1+lgpg*(g-1):lgpg*g), option, angmas, &
-                    sigp1g, vip(1+lgpg*(g-1):lgpg*g), 2*ndim*2*ndim, dsde1g, cod(g))
+                    sigp1g, vip(1+lgpg*(g-1):lgpg*g), 36, dsde1g, cod(g))
 
         ! -------------------------------------------------------!
         !   LOI DE COMPORTEMENT SECOND GRADIENT DE DILATATION    !
