@@ -74,13 +74,22 @@ CPRESBF = LocatedComponents(phys=PHY.PRES_F, type="ELEM", components=("PINF", "P
 # For 'EFFE_FOND'
 CEFOND = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X1",))
 
-# For theta field (fracture mechanic-3D)
-CTHET2D = LocatedComponents(phys=PHY.G, type="ELEM", components=("GTHETA", "FIC[2]", "K[2]"))
+# Output field for theta (fracture mechanic-XFEM-2D)
+CKGTX2D = LocatedComponents(phys=PHY.RUPT_R, type="ELEM", components=("GTHETA", "FIC[2]", "K[2]"))
 
-# For theta field (fracture mechanic-3D)
-CTHET3D = LocatedComponents(
-    phys=PHY.G, type="ELEM", components=("GTHETA", "FIC[3]", "K[3]", "BETA")
+# Output field for theta (fracture mechanic-XFEM-3D)
+CKGTX3D = LocatedComponents(
+    phys=PHY.RUPT_R, type="ELEM", components=("GTHETA", "FIC[3]", "K[3]", "BETA")
 )
+
+# Output field for G-theta and K (fracture mechanic)
+CKGTHET = LocatedComponents(phys=PHY.RUPT_R, type="ELEM", components=("GTHETA", "FIC[3]", "K[3]"))
+
+# Output field for G-theta (fracture mechanic)
+CGTHETA = LocatedComponents(phys=PHY.RUPT_R, type="ELEM", components=("GTHETA",))
+
+# Field for abscisses of Lagrange polynom (fracture mechanic)
+CABSLAG = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X[3]",))
 
 # For structural elements: radius
 CRADIUS = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X1",))
@@ -488,8 +497,6 @@ E36NEUI = LocatedComponents(phys=PHY.N1280I, type="ELEM", components=("X[36]",))
 
 E3NEUTI = LocatedComponents(phys=PHY.N120_I, type="ELEM", components=("X[3]",))
 
-E3NEUTR = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X[3]",))
-
 E40NEUTR = LocatedComponents(phys=PHY.N1360R, type="ELEM", components=("X[40]",))
 
 E4NEUTR = LocatedComponents(phys=PHY.N792_R, type="ELEM", components=("X[4]",))
@@ -600,7 +607,6 @@ ETHETA = LocatedComponents(
     components=("MODULE", "DIR_X", "DIR_Y", "DIR_Z", "ABSC_CUR", "LONG"),
 )
 
-EGTHETA = LocatedComponents(phys=PHY.G, type="ELEM", components=("GTHETA",))
 
 EHECHPR = LocatedComponents(phys=PHY.COEH_R, type="ELEM", components=("H",))
 

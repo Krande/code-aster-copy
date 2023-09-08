@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,16 +29,11 @@ import cataelem.Commons.attributes as AT
 # ----------------------------------------------------------------------------------------------
 # Located components
 # ----------------------------------------------------------------------------------------------
-
 DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY", "DZ"))
 
 MMATUNS = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 
 MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
-
-NEWTHETA = LocatedComponents(phys=PHY.G, type="ELEM", components=("GTHETA", "FIC[3]", "K[3]"))
-
-E3NEUTR = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X[3]",))
 # ---------------------------------------------------------------------------------------------------
 class MECA_FACE3(Element):
     """Skin element for 3D isoparametric elements - On TR3"""
@@ -65,7 +60,7 @@ class MECA_FACE3(Element):
                 (OP.CALC_G_XFEM.PVARCPR, LC.ZVARCPG),
                 (SP.PVITESS, DDL_MECA),
             ),
-            para_out=((SP.PGTHETA, LC.EGTHETA),),
+            para_out=((SP.PGTHETA, LC.CGTHETA),),
         ),
         OP.CALC_G_XFEM_F(
             te=280,
@@ -81,7 +76,7 @@ class MECA_FACE3(Element):
                 (OP.CALC_G_XFEM_F.PVARCPR, LC.ZVARCPG),
                 (SP.PVITESS, DDL_MECA),
             ),
-            para_out=((SP.PGTHETA, LC.EGTHETA),),
+            para_out=((SP.PGTHETA, LC.CGTHETA),),
         ),
         OP.CALC_G(
             te=147,
@@ -96,9 +91,9 @@ class MECA_FACE3(Element):
                 (OP.CALC_G.PVARCPR, LC.ZVARCPG),
                 (SP.PVITESS, DDL_MECA),
                 (SP.PMATERC, LC.CMATERC),
-                (OP.CALC_G.PLAG, LC.E3NEUTR),
+                (OP.CALC_G.PLAG, LC.CABSLAG),
             ),
-            para_out=((SP.PGTHETA, NEWTHETA),),
+            para_out=((SP.PGTHETA, LC.CKGTHET),),
         ),
         OP.CALC_G_F(
             te=147,
@@ -117,7 +112,7 @@ class MECA_FACE3(Element):
                 (SP.PVITESS, DDL_MECA),
                 (OP.CALC_G_F.PLAG, LC.E3NEUT_R),
             ),
-            para_out=((SP.PGTHETA, NEWTHETA),),
+            para_out=((SP.PGTHETA, LC.CKGTHET),),
         ),
         OP.CALC_K_G(
             te=147,
@@ -144,7 +139,7 @@ class MECA_FACE3(Element):
                 (OP.CALC_K_G.PDEG, LC.E1NEUTI),
                 (OP.CALC_K_G.PLAG, LC.E3NEUT_R),
             ),
-            para_out=((SP.PGTHETA, NEWTHETA),),
+            para_out=((SP.PGTHETA, LC.CKGTHET),),
         ),
         OP.CALC_K_G_F(
             te=147,
@@ -172,7 +167,7 @@ class MECA_FACE3(Element):
                 (OP.CALC_K_G_F.PDEG, LC.E1NEUTI),
                 (OP.CALC_K_G_F.PLAG, LC.E3NEUT_R),
             ),
-            para_out=((SP.PGTHETA, NEWTHETA),),
+            para_out=((SP.PGTHETA, LC.CKGTHET),),
         ),
         OP.CALC_K_G_XFEM(
             te=311,
@@ -197,7 +192,7 @@ class MECA_FACE3(Element):
                 (OP.CALC_K_G_XFEM.PVARCPR, LC.ZVARCPG),
                 (SP.PVARCRR, LC.ZVARCPG),
             ),
-            para_out=((SP.PGTHETA, LC.CTHET3D),),
+            para_out=((SP.PGTHETA, LC.CKGTX3D),),
         ),
         OP.CALC_K_G_XFEM_F(
             te=311,
@@ -223,7 +218,7 @@ class MECA_FACE3(Element):
                 (OP.CALC_K_G_XFEM_F.PVARCPR, LC.ZVARCPG),
                 (SP.PVARCRR, LC.ZVARCPG),
             ),
-            para_out=((SP.PGTHETA, LC.CTHET3D),),
+            para_out=((SP.PGTHETA, LC.CKGTX3D),),
         ),
         OP.CARA_SECT_POU3R(
             te=337,

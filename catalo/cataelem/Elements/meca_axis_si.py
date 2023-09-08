@@ -302,7 +302,7 @@ class MEAXQS8(Element):
                 (OP.CALC_G_XFEM.PVARIPR, LC.ZVARINO),
                 (SP.PVITESS, DDL_MECA),
             ),
-            para_out=((SP.PGTHETA, LC.EGTHETA),),
+            para_out=((SP.PGTHETA, LC.CGTHETA),),
         ),
         OP.CALC_G_XFEM_F(
             te=96,
@@ -327,7 +327,7 @@ class MEAXQS8(Element):
                 (OP.CALC_G_XFEM_F.PVARIPR, LC.ZVARINO),
                 (SP.PVITESS, DDL_MECA),
             ),
-            para_out=((SP.PGTHETA, LC.EGTHETA),),
+            para_out=((SP.PGTHETA, LC.CGTHETA),),
         ),
         OP.CALC_NOEU_BORD(
             te=290, para_in=((SP.PGEOMER, NGEOMER),), para_out=((SP.PVECTUR, MVECTUR),)

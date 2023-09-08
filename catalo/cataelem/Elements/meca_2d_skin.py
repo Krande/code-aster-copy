@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,6 @@ ENEU1_R = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X[30]",))
 
 ELNEUT_F = LocatedComponents(phys=PHY.NEUT_F, type="ELEM", components=("X[30]",))
 
-NEWTHETA = LocatedComponents(phys=PHY.G, type="ELEM", components=("GTHETA", "FIC[3]", "K[3]"))
 # ---------------------------------------------------------------------------------------------------
 class MEPLSE2(Element):
     """Skin element for 2D isoparametric elements - On SE2"""
@@ -65,7 +64,7 @@ class MEPLSE2(Element):
                 (OP.CALC_G_XFEM.PVARCPR, LC.ZVARCPG),
                 (SP.PVITESS, DDL_MECA),
             ),
-            para_out=((SP.PGTHETA, LC.EGTHETA),),
+            para_out=((SP.PGTHETA, LC.CGTHETA),),
         ),
         OP.CALC_G_XFEM_F(
             te=282,
@@ -80,7 +79,7 @@ class MEPLSE2(Element):
                 (OP.CALC_G_XFEM_F.PVARCPR, LC.ZVARCPG),
                 (SP.PVITESS, DDL_MECA),
             ),
-            para_out=((SP.PGTHETA, LC.EGTHETA),),
+            para_out=((SP.PGTHETA, LC.CGTHETA),),
         ),
         OP.CALC_G(
             te=147,
@@ -95,7 +94,7 @@ class MEPLSE2(Element):
                 (OP.CALC_G.PVARCPR, LC.ZVARCPG),
                 (SP.PVITESS, DDL_MECA),
             ),
-            para_out=((SP.PGTHETA, NEWTHETA),),
+            para_out=((SP.PGTHETA, LC.CKGTHET),),
         ),
         OP.CALC_G_F(
             te=147,
@@ -111,7 +110,7 @@ class MEPLSE2(Element):
                 (OP.CALC_G_F.PVARCPR, LC.ZVARCPG),
                 (SP.PVITESS, DDL_MECA),
             ),
-            para_out=((SP.PGTHETA, NEWTHETA),),
+            para_out=((SP.PGTHETA, LC.CKGTHET),),
         ),
         OP.CALC_K_G(
             te=147,
@@ -129,7 +128,7 @@ class MEPLSE2(Element):
                 (OP.CALC_K_G.PVARCPR, LC.ZVARCPG),
                 (SP.PVARCRR, LC.ZVARCPG),
             ),
-            para_out=((SP.PGTHETA, NEWTHETA),),
+            para_out=((SP.PGTHETA, LC.CKGTHET),),
         ),
         OP.CALC_K_G_F(
             te=147,
@@ -148,7 +147,7 @@ class MEPLSE2(Element):
                 (OP.CALC_K_G_F.PVARCPR, LC.ZVARCPG),
                 (SP.PVARCRR, LC.ZVARCPG),
             ),
-            para_out=((SP.PGTHETA, NEWTHETA),),
+            para_out=((SP.PGTHETA, LC.CKGTHET),),
         ),
         OP.CALC_K_G_XFEM(
             te=300,
@@ -164,7 +163,7 @@ class MEPLSE2(Element):
                 (OP.CALC_K_G_XFEM.PVARCPR, LC.ZVARCPG),
                 (SP.PVARCRR, LC.ZVARCPG),
             ),
-            para_out=((SP.PGTHETA, LC.CTHET2D),),
+            para_out=((SP.PGTHETA, LC.CKGTX2D),),
         ),
         OP.CALC_K_G_XFEM_F(
             te=300,
@@ -181,7 +180,7 @@ class MEPLSE2(Element):
                 (OP.CALC_K_G_XFEM_F.PVARCPR, LC.ZVARCPG),
                 (SP.PVARCRR, LC.ZVARCPG),
             ),
-            para_out=((SP.PGTHETA, LC.CTHET2D),),
+            para_out=((SP.PGTHETA, LC.CKGTX2D),),
         ),
         OP.CARA_SECT_POUT3(
             te=564, para_in=((SP.PGEOMER, LC.EGEOM2D),), para_out=((SP.PCASECT, LC.CSECT2D),)

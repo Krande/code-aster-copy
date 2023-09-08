@@ -61,9 +61,6 @@ CFORCER = LocatedComponents(phys=PHY.FORC_R, type="ELEM", components=("FX", "FY"
 NFORCER = LocatedComponents(phys=PHY.FORC_R, type="ELNO", components=("FX", "FY"))
 
 
-EKTHETA = LocatedComponents(phys=PHY.G, type="ELEM", components=("GTHETA", "FIC[2]", "K[2]"))
-
-
 NGEOMER = LocatedComponents(phys=PHY.GEOM_R, type="ELNO", components=("X", "Y"))
 
 

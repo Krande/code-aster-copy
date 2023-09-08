@@ -73,8 +73,6 @@ EDEFONO = LocatedComponents(
     phys=PHY.EPSI_R, type="ELNO", components=("EPXX", "EPYY", "EPZZ", "EPXY", "EPXZ", "EPYZ")
 )
 
-E3NEUTR = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X[3]",))
-
 CEPSINO = LocatedComponents(
     phys=PHY.EPSI_R, type="ELEM", components=("EPXX", "EPYY", "EPZZ", "EPXY", "EPXZ", "EPYZ")
 )
@@ -126,12 +124,6 @@ EFORCER = LocatedComponents(
     phys=PHY.FORC_R, type="ELGA", location="RIGI", components=("FX", "FY", "FZ")
 )
 
-
-EKTHETA = LocatedComponents(
-    phys=PHY.G, type="ELEM", components=("GTHETA", "FIC[3]", "K[3]", "BETA")
-)
-
-
 NGEOMER = LocatedComponents(phys=PHY.GEOM_R, type="ELNO", components=("X", "Y", "Z"))
 
 
@@ -146,8 +138,6 @@ EGGEOP_R = LocatedComponents(
 
 
 CTEMPSR = LocatedComponents(phys=PHY.INST_R, type="ELEM", components=("INST",))
-
-E3NEUTR = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X[3]",))
 
 EGNEUT_F = LocatedComponents(phys=PHY.NEUT_F, type="ELGA", location="RIGI", components=("X[30]",))
 
@@ -236,14 +226,9 @@ ECOEQPG = LocatedComponents(
     ),
 )
 
-
 ESOURCR = LocatedComponents(phys=PHY.SOUR_R, type="ELGA", location="RIGI", components=("SOUR",))
 
-NEWTHETA = LocatedComponents(phys=PHY.G, type="ELEM", components=("GTHETA", "FIC[3]", "K[3]"))
-
-
 ZVARIPG = LocatedComponents(phys=PHY.VARI_R, type="ELGA", location="RIGI", components=("VARI",))
-
 
 MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
@@ -296,9 +281,9 @@ class MINC_HEXA20(Element):
                 (SP.PVARCRR, LC.ZVARCPG),
                 (SP.PVITESS, NDEPLAR),
                 (OP.CALC_G.PDEG, LC.E1NEUTI),
-                (OP.CALC_G.PLAG, LC.E3NEUTR),
+                (OP.CALC_G.PLAG, LC.CABSLAG),
             ),
-            para_out=((SP.PGTHETA, NEWTHETA),),
+            para_out=((SP.PGTHETA, LC.CKGTHET),),
         ),
         OP.CALC_G_F(
             te=222,
@@ -321,9 +306,9 @@ class MINC_HEXA20(Element):
                 (SP.PVARCRR, LC.ZVARCPG),
                 (SP.PVITESS, NDEPLAR),
                 (OP.CALC_G_F.PDEG, LC.E1NEUTI),
-                (OP.CALC_G_F.PLAG, LC.E3NEUTR),
+                (OP.CALC_G_F.PLAG, LC.CABSLAG),
             ),
-            para_out=((SP.PGTHETA, NEWTHETA),),
+            para_out=((SP.PGTHETA, LC.CKGTHET),),
         ),
         OP.CALC_K_G(
             te=222,
@@ -344,9 +329,9 @@ class MINC_HEXA20(Element):
                 (OP.CALC_K_G.PVARCPR, LC.ZVARCPG),
                 (SP.PVARCRR, LC.ZVARCPG),
                 (OP.CALC_K_G.PDEG, LC.E1NEUTI),
-                (OP.CALC_K_G.PLAG, LC.E3NEUTR),
+                (OP.CALC_K_G.PLAG, LC.CABSLAG),
             ),
-            para_out=((SP.PGTHETA, NEWTHETA),),
+            para_out=((SP.PGTHETA, LC.CKGTHET),),
         ),
         OP.CALC_K_G_F(
             te=222,
@@ -368,9 +353,9 @@ class MINC_HEXA20(Element):
                 (OP.CALC_K_G_F.PVARCPR, LC.ZVARCPG),
                 (SP.PVARCRR, LC.ZVARCPG),
                 (OP.CALC_K_G_F.PDEG, LC.E1NEUTI),
-                (OP.CALC_K_G_F.PLAG, LC.E3NEUTR),
+                (OP.CALC_K_G_F.PLAG, LC.CABSLAG),
             ),
-            para_out=((SP.PGTHETA, NEWTHETA),),
+            para_out=((SP.PGTHETA, LC.CKGTHET),),
         ),
         OP.CALC_G_XFEM(
             te=27,
@@ -395,7 +380,7 @@ class MINC_HEXA20(Element):
                 (OP.CALC_G_XFEM.PVARIPR, LC.ZVARINO),
                 (SP.PVITESS, NDEPLAR),
             ),
-            para_out=((SP.PGTHETA, LC.EGTHETA),),
+            para_out=((SP.PGTHETA, LC.CGTHETA),),
         ),
         OP.CALC_G_XFEM_F(
             te=27,
@@ -421,7 +406,7 @@ class MINC_HEXA20(Element):
                 (OP.CALC_G_XFEM_F.PVARIPR, LC.ZVARINO),
                 (SP.PVITESS, NDEPLAR),
             ),
-            para_out=((SP.PGTHETA, LC.EGTHETA),),
+            para_out=((SP.PGTHETA, LC.CGTHETA),),
         ),
         OP.CALC_K_G_XFEM(
             te=295,
@@ -445,7 +430,7 @@ class MINC_HEXA20(Element):
                 (OP.CALC_K_G_XFEM.PVARCPR, LC.ZVARCPG),
                 (SP.PVARCRR, LC.ZVARCPG),
             ),
-            para_out=((SP.PGTHETA, EKTHETA),),
+            para_out=((SP.PGTHETA, LC.CKGTX3D),),
         ),
         OP.CALC_K_G_XFEM_F(
             te=295,
@@ -470,7 +455,7 @@ class MINC_HEXA20(Element):
                 (OP.CALC_K_G_XFEM_F.PVARCPR, LC.ZVARCPG),
                 (SP.PVARCRR, LC.ZVARCPG),
             ),
-            para_out=((SP.PGTHETA, EKTHETA),),
+            para_out=((SP.PGTHETA, LC.CKGTX3D),),
         ),
         OP.CHAR_LIMITE(
             te=483,

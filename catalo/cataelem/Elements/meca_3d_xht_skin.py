@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -47,11 +47,6 @@ CFORCEF = LocatedComponents(phys=PHY.FORC_F, type="ELEM", components=("FX", "FY"
 
 
 NFORCER = LocatedComponents(phys=PHY.FORC_R, type="ELNO", components=("FX", "FY", "FZ"))
-
-
-EKTHETA = LocatedComponents(
-    phys=PHY.G, type="ELEM", components=("GTHETA", "FIC[3]", "K[3]", "BETA")
-)
 
 
 EGGEOP_R = LocatedComponents(
@@ -113,13 +108,13 @@ class MECA_XHT_FACE3(Element):
                 (OP.CALC_G_XFEM.PSTANO, STANO_I),
                 (OP.CALC_G_XFEM.PPMILTO, E33NEUTR),
             ),
-            para_out=((SP.PGTHETA, LC.EGTHETA),),
+            para_out=((SP.PGTHETA, LC.CGTHETA),),
         ),
         #       -- te0580 : ne resout que les cas triviaux : 0.
         OP.CALC_G_XFEM_F(
             te=580,
             para_in=((SP.PFF2D3D, CFORCEF), (SP.PPRESSF, CPRESSF), (SP.PTHETAR, NTHETAR)),
-            para_out=((SP.PGTHETA, LC.EGTHETA),),
+            para_out=((SP.PGTHETA, LC.CGTHETA),),
         ),
         OP.CALC_K_G_XFEM(
             te=48,
@@ -141,12 +136,12 @@ class MECA_XHT_FACE3(Element):
                 (OP.CALC_K_G_XFEM.PSTANO, STANO_I),
                 (OP.CALC_K_G_XFEM.PPMILTO, E33NEUTR),
             ),
-            para_out=((SP.PGTHETA, EKTHETA),),
+            para_out=((SP.PGTHETA, LC.CKGTX3D),),
         ),
         OP.CALC_K_G_XFEM_F(
             te=580,
             para_in=((SP.PFF2D3D, CFORCEF), (SP.PPRESSF, CPRESSF), (SP.PTHETAR, NTHETAR)),
-            para_out=((SP.PGTHETA, EKTHETA),),
+            para_out=((SP.PGTHETA, LC.CKGTX3D),),
         ),
         OP.CHAR_MECA_FF2D3D(
             te=36,

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -74,7 +74,6 @@ CPRESSF = LocatedComponents(phys=PHY.PRES_F, type="ELEM", components=("PRES", "C
 
 NTHETAR = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY"))
 
-EKTHETA = LocatedComponents(phys=PHY.G, type="ELEM", components=("GTHETA", "FIC[2]", "K[2]"))
 
 # ------------------------------------------------------------
 class MEAXSE2_XHT(Element):
@@ -87,22 +86,22 @@ class MEAXSE2_XHT(Element):
         OP.CALC_G_XFEM(
             te=580,
             para_in=((SP.PFR1D2D, NFORCER), (SP.PPRESSR, EPRESNO), (SP.PTHETAR, NTHETAR)),
-            para_out=((SP.PGTHETA, LC.EGTHETA),),
+            para_out=((SP.PGTHETA, LC.CGTHETA),),
         ),
         OP.CALC_G_XFEM_F(
             te=580,
             para_in=((SP.PFF1D2D, CFORCEF), (SP.PPRESSF, CPRESSF), (SP.PTHETAR, NTHETAR)),
-            para_out=((SP.PGTHETA, LC.EGTHETA),),
+            para_out=((SP.PGTHETA, LC.CGTHETA),),
         ),
         OP.CALC_K_G_XFEM(
             te=580,
             para_in=((SP.PFR1D2D, NFORCER), (SP.PPRESSR, EPRESNO), (SP.PTHETAR, NTHETAR)),
-            para_out=((SP.PGTHETA, EKTHETA),),
+            para_out=((SP.PGTHETA, LC.CKGTX2D),),
         ),
         OP.CALC_K_G_XFEM_F(
             te=580,
             para_in=((SP.PFF1D2D, CFORCEF), (SP.PPRESSF, CPRESSF), (SP.PTHETAR, NTHETAR)),
-            para_out=((SP.PGTHETA, EKTHETA),),
+            para_out=((SP.PGTHETA, LC.CKGTX2D),),
         ),
         OP.CHAR_MECA_FF1D2D(
             te=36,

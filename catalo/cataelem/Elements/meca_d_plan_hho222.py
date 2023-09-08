@@ -144,9 +144,6 @@ EFORCER = LocatedComponents(phys=PHY.FORC_R, type="ELGA", location="RIGI", compo
 
 NREACR = LocatedComponents(phys=PHY.REAC_R, type="ELNO", components=("DX", "DY"))
 
-EKTHETA = LocatedComponents(phys=PHY.G, type="ELEM", components=("GTHETA", "FIC[2]", "K[2]"))
-
-
 NGEOMER = LocatedComponents(phys=PHY.GEOM_R, type="ELNO", components=("X", "Y"))
 
 EGGEOM_R = LocatedComponents(phys=PHY.GEOM_R, type="ELGA", location="RIGI", components=("X", "Y"))

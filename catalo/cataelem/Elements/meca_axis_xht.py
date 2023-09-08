@@ -79,9 +79,6 @@ EFORCER = LocatedComponents(phys=PHY.FORC_R, type="ELGA", location="XFEM", compo
 NFORCER = LocatedComponents(phys=PHY.FORC_R, type="ELNO", components=("FX", "FY"))
 
 
-EKTHETA = LocatedComponents(phys=PHY.G, type="ELEM", components=("GTHETA", "FIC[2]", "K[2]"))
-
-
 EGGEOP_R = LocatedComponents(
     phys=PHY.GEOM_R, type="ELGA", location="XFEM", components=("X", "Y", "W")
 )
@@ -213,7 +210,7 @@ class MEAXTR3_XHT(Element):
                 (SP.PVARCRR, LC.ZVARCPG),
                 (OP.CALC_G_XFEM.PSTANO, STANO_I),
             ),
-            para_out=((SP.PGTHETA, LC.EGTHETA),),
+            para_out=((SP.PGTHETA, LC.CGTHETA),),
         ),
         OP.CALC_G_XFEM_F(
             te=288,
@@ -248,7 +245,7 @@ class MEAXTR3_XHT(Element):
                 (SP.PVARCRR, LC.ZVARCPG),
                 (OP.CALC_G_XFEM_F.PSTANO, STANO_I),
             ),
-            para_out=((SP.PGTHETA, LC.EGTHETA),),
+            para_out=((SP.PGTHETA, LC.CGTHETA),),
         ),
         OP.CALC_K_G_XFEM(
             te=297,
@@ -282,7 +279,7 @@ class MEAXTR3_XHT(Element):
                 (SP.PVARCRR, LC.ZVARCPG),
                 (OP.CALC_K_G_XFEM.PSTANO, STANO_I),
             ),
-            para_out=((SP.PGTHETA, EKTHETA),),
+            para_out=((SP.PGTHETA, LC.CKGTX2D),),
         ),
         OP.CALC_K_G_XFEM_F(
             te=297,
@@ -317,7 +314,7 @@ class MEAXTR3_XHT(Element):
                 (OP.CALC_K_G_XFEM_F.PVARCPR, LC.ZVARCPG),
                 (SP.PVARCRR, LC.ZVARCPG),
             ),
-            para_out=((SP.PGTHETA, EKTHETA),),
+            para_out=((SP.PGTHETA, LC.CKGTX2D),),
         ),
         OP.CHAR_MECA_FF2D2D(
             te=440,

@@ -61,9 +61,6 @@ CFORCEF = LocatedComponents(phys=PHY.FORC_F, type="ELEM", components=("FX", "FY"
 EFORCER = LocatedComponents(phys=PHY.FORC_R, type="ELGA", location="XFEM", components=("FX", "FY"))
 
 
-EKTHETA = LocatedComponents(phys=PHY.G, type="ELEM", components=("GTHETA", "FIC[2]", "K[2]"))
-
-
 EGGEOP_R = LocatedComponents(
     phys=PHY.GEOM_R, type="ELGA", location="XFEM", components=("X", "Y", "W")
 )

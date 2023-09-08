@@ -1886,7 +1886,7 @@ ETHM_F = PhysicalQuantity(
 
 """,
 )
-G = PhysicalQuantity(
+RUPT_R = PhysicalQuantity(
     type="R",
     components=("GTHETA", "FIC[3]", "K[3]", "BETA"),
     comment="""  G Type:R Taux de restitution de l'energie et coefficient d'intensite

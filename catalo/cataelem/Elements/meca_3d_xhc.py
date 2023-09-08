@@ -129,11 +129,6 @@ CFORCEF = LocatedComponents(phys=PHY.FORC_F, type="ELEM", components=("FX", "FY"
 NFORCER = LocatedComponents(phys=PHY.FORC_R, type="ELNO", components=("FX", "FY", "FZ"))
 
 
-EKTHETA = LocatedComponents(
-    phys=PHY.G, type="ELEM", components=("GTHETA", "FIC[3]", "K[3]", "BETA")
-)
-
-
 EGGEOM_R = LocatedComponents(
     phys=PHY.GEOM_R, type="ELGA", location="XFEM", components=("X", "Y", "Z")
 )
@@ -265,7 +260,7 @@ class TemplateElement(Element):
                 (OP.CALC_G_XFEM.PVARCPR, LC.ZVARCPG),
                 (SP.PVARCRR, LC.ZVARCPG),
             ),
-            para_out=((SP.PGTHETA, LC.EGTHETA),),
+            para_out=((SP.PGTHETA, LC.CGTHETA),),
         ),
         OP.CALC_G_XFEM_F(
             te=288,
@@ -298,7 +293,7 @@ class TemplateElement(Element):
                 (OP.CALC_G_XFEM_F.PVARCPR, LC.ZVARCPG),
                 (SP.PVARCRR, LC.ZVARCPG),
             ),
-            para_out=((SP.PGTHETA, LC.EGTHETA),),
+            para_out=((SP.PGTHETA, LC.CGTHETA),),
         ),
         OP.CALC_K_G_XFEM(
             te=297,
@@ -332,7 +327,7 @@ class TemplateElement(Element):
                 (OP.CALC_K_G_XFEM.PVARCPR, LC.ZVARCPG),
                 (SP.PVARCRR, LC.ZVARCPG),
             ),
-            para_out=((SP.PGTHETA, EKTHETA),),
+            para_out=((SP.PGTHETA, LC.CKGTX3D),),
         ),
         OP.CALC_K_G_COHE(
             te=297,
@@ -350,7 +345,7 @@ class TemplateElement(Element):
                 (OP.CALC_K_G_COHE.PPINTER, LC.E120NEUT),
                 (SP.PTHETAR, DDL_MECC),
             ),
-            para_out=((SP.PGTHETA, EKTHETA),),
+            para_out=((SP.PGTHETA, LC.CKGTX3D),),
         ),
         OP.CALC_K_G_XFEM_F(
             te=297,
@@ -385,7 +380,7 @@ class TemplateElement(Element):
                 (OP.CALC_K_G_XFEM_F.PVARCPR, LC.ZVARCPG),
                 (SP.PVARCRR, LC.ZVARCPG),
             ),
-            para_out=((SP.PGTHETA, EKTHETA),),
+            para_out=((SP.PGTHETA, LC.CKGTX3D),),
         ),
         OP.CHAR_MECA_CONT(
             te=534,
@@ -393,7 +388,7 @@ class TemplateElement(Element):
                 (OP.CHAR_MECA_CONT.PAINTER, LC.E200NEUT),
                 (OP.CHAR_MECA_CONT.PBASECO, LC.E360NEUT),
                 (OP.CHAR_MECA_CONT.PCFACE, LC.E90NEUTI),
-                (SP.PCOHES, LC.E3NEUTR),
+                (SP.PCOHES, LC.CABSLAG),
                 (SP.PDEPL_M, DDL_MECA),
                 (SP.PDEPL_P, DDL_MECA),
                 (SP.PDONCO, CONTX_R),
@@ -623,7 +618,7 @@ class TemplateElement(Element):
                 (OP.PILO_PRED_ELAS.PBASECO, LC.E360NEUT),
                 (SP.PCDTAU, LC.CCDTAU),
                 (OP.PILO_PRED_ELAS.PCFACE, LC.E90NEUTI),
-                (SP.PCOHES, LC.E3NEUTR),
+                (SP.PCOHES, LC.CABSLAG),
                 (SP.PDDEPLR, DDL_MECA),
                 (SP.PDEPL0R, DDL_MECA),
                 (SP.PDEPL1R, DDL_MECA),
@@ -728,7 +723,7 @@ class TemplateElement(Element):
                 (OP.RIGI_CONT.PAINTER, LC.E200NEUT),
                 (OP.RIGI_CONT.PBASECO, LC.E360NEUT),
                 (OP.RIGI_CONT.PCFACE, LC.E90NEUTI),
-                (SP.PCOHES, LC.E3NEUTR),
+                (SP.PCOHES, LC.CABSLAG),
                 (SP.PDEPL_M, DDL_MECA),
                 (SP.PDEPL_P, DDL_MECA),
                 (SP.PDONCO, CONTX_R),
@@ -744,7 +739,7 @@ class TemplateElement(Element):
                 (OP.RIGI_CONT.PSTANO, STANO_I),
             ),
             para_out=(
-                (OP.RIGI_CONT.PCOHESO, LC.E3NEUTR),
+                (OP.RIGI_CONT.PCOHESO, LC.CABSLAG),
                 (SP.PMATUNS, MMATUNS),
                 (SP.PMATUUR, MMATUUR),
             ),
@@ -890,7 +885,7 @@ class TemplateElement(Element):
                 (OP.XCVBCA.PAINTER, LC.E200NEUT),
                 (OP.XCVBCA.PBASECO, LC.E360NEUT),
                 (OP.XCVBCA.PCFACE, LC.E90NEUTI),
-                (SP.PCOHES, LC.E3NEUTR),
+                (SP.PCOHES, LC.CABSLAG),
                 (SP.PDEPL_P, DDL_MECA),
                 (SP.PDONCO, CONTX_R),
                 (SP.PGEOMER, NGEOMER),
@@ -904,7 +899,7 @@ class TemplateElement(Element):
                 (OP.XCVBCA.PPINTER, LC.E120NEUT),
             ),
             para_out=(
-                (OP.XCVBCA.PCOHESO, LC.E3NEUTR),
+                (OP.XCVBCA.PCOHESO, LC.CABSLAG),
                 (SP.PINCOCA, LC.E1NEUTI),
                 (SP.PINDCOO, LC.E1NEUTI),
                 (SP.PINDMEM, LC.E1NEUTI),

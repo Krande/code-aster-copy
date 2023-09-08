@@ -64,9 +64,6 @@ CFORCEF = LocatedComponents(phys=PHY.FORC_F, type="ELEM", components=("FX", "FY"
 EFORCER = LocatedComponents(phys=PHY.FORC_R, type="ELGA", location="XFEM", components=("FX", "FY"))
 
 
-EKTHETA = LocatedComponents(phys=PHY.G, type="ELEM", components=("GTHETA", "FIC[2]", "K[2]"))
-
-
 EGGEOP_R = LocatedComponents(
     phys=PHY.GEOM_R, type="ELGA", location="XFEM", components=("X", "Y", "W")
 )
@@ -183,7 +180,7 @@ class MEAXTR3_XHC(Element):
                 (OP.CHAR_MECA_CONT.PAINTER, LC.E35NEUTR),
                 (OP.CHAR_MECA_CONT.PBASECO, LC.E28NEUTR),
                 (OP.CHAR_MECA_CONT.PCFACE, LC.E9NEUTI),
-                (SP.PCOHES, LC.E3NEUTR),
+                (SP.PCOHES, LC.CABSLAG),
                 (SP.PDEPL_M, DDL_MECA),
                 (SP.PDEPL_P, DDL_MECA),
                 (SP.PDONCO, CONTX_R),
@@ -368,7 +365,7 @@ class MEAXTR3_XHC(Element):
                 (OP.PILO_PRED_ELAS.PBASECO, LC.E28NEUTR),
                 (SP.PCDTAU, LC.CCDTAU),
                 (OP.PILO_PRED_ELAS.PCFACE, LC.E9NEUTI),
-                (SP.PCOHES, LC.E3NEUTR),
+                (SP.PCOHES, LC.CABSLAG),
                 (SP.PDDEPLR, DDL_MECA),
                 (SP.PDEPL0R, DDL_MECA),
                 (SP.PDEPL1R, DDL_MECA),
@@ -449,7 +446,7 @@ class MEAXTR3_XHC(Element):
                 (OP.RIGI_CONT.PAINTER, LC.E35NEUTR),
                 (OP.RIGI_CONT.PBASECO, LC.E28NEUTR),
                 (OP.RIGI_CONT.PCFACE, LC.E9NEUTI),
-                (SP.PCOHES, LC.E3NEUTR),
+                (SP.PCOHES, LC.CABSLAG),
                 (SP.PDEPL_M, DDL_MECA),
                 (SP.PDEPL_P, DDL_MECA),
                 (SP.PDONCO, CONTX_R),
@@ -465,7 +462,7 @@ class MEAXTR3_XHC(Element):
                 (OP.RIGI_CONT.PSTANO, STANO_I),
             ),
             para_out=(
-                (OP.RIGI_CONT.PCOHESO, LC.E3NEUTR),
+                (OP.RIGI_CONT.PCOHESO, LC.CABSLAG),
                 (SP.PMATUNS, MMATUNS),
                 (SP.PMATUUR, MMATUUR),
             ),
@@ -584,7 +581,7 @@ class MEAXTR3_XHC(Element):
                 (OP.XCVBCA.PAINTER, LC.E35NEUTR),
                 (OP.XCVBCA.PBASECO, LC.E28NEUTR),
                 (OP.XCVBCA.PCFACE, LC.E9NEUTI),
-                (SP.PCOHES, LC.E3NEUTR),
+                (SP.PCOHES, LC.CABSLAG),
                 (SP.PDEPL_P, DDL_MECA),
                 (SP.PDONCO, CONTX_R),
                 (SP.PGEOMER, NGEOMER),
@@ -598,7 +595,7 @@ class MEAXTR3_XHC(Element):
                 (OP.XCVBCA.PPINTER, LC.E14NEUTR),
             ),
             para_out=(
-                (OP.XCVBCA.PCOHESO, LC.E3NEUTR),
+                (OP.XCVBCA.PCOHESO, LC.CABSLAG),
                 (SP.PINCOCA, LC.I1NEUT_I),
                 (SP.PINDCOO, LC.I1NEUT_I),
                 (SP.PINDMEM, LC.I1NEUT_I),

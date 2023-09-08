@@ -1618,7 +1618,7 @@ PGAMIMA = OutputParameter(phys=PHY.SPMX_R, type="ELGA", comment="""""")
 
 PGESCLA = OutputParameter(phys=PHY.N816_R, type="ELEM", comment="""""")
 
-PGTHETA = OutputParameter(phys=PHY.G, type="ELEM", comment="""""")
+PGTHETA = OutputParameter(phys=PHY.RUPT_R, type="ELEM", comment="""""")
 
 PHYDMAT = OutputParameter(phys=PHY.HYDR_R, type="ELGA", comment="""""")
 

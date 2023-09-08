@@ -143,9 +143,6 @@ NFORCER = LocatedComponents(phys=PHY.FORC_R, type="ELNO", components=("FX", "FY"
 EFORCER = LocatedComponents(phys=PHY.FORC_R, type="ELGA", location="RIGI", components=("FX", "FY"))
 
 
-EKTHETA = LocatedComponents(phys=PHY.G, type="ELEM", components=("GTHETA", "FIC[2]", "K[2]"))
-
-
 NGEOMER = LocatedComponents(phys=PHY.GEOM_R, type="ELNO", components=("X", "Y"))
 
 
@@ -331,7 +328,7 @@ class MECPQS4(Element):
                 (SP.PVARCRR, LC.ZVARCPG),
                 (OP.CALC_G_XFEM.PVARIPR, LC.ZVARINO),
             ),
-            para_out=((SP.PGTHETA, LC.EGTHETA),),
+            para_out=((SP.PGTHETA, LC.CGTHETA),),
         ),
         OP.CALC_G_XFEM_F(
             te=96,
@@ -354,7 +351,7 @@ class MECPQS4(Element):
                 (SP.PVARCRR, LC.ZVARCPG),
                 (OP.CALC_G_XFEM_F.PVARIPR, LC.ZVARINO),
             ),
-            para_out=((SP.PGTHETA, LC.EGTHETA),),
+            para_out=((SP.PGTHETA, LC.CGTHETA),),
         ),
         OP.CALC_K_G_XFEM(
             te=299,
@@ -373,7 +370,7 @@ class MECPQS4(Element):
                 (OP.CALC_K_G_XFEM.PVARCPR, LC.ZVARCPG),
                 (SP.PVARCRR, LC.ZVARCPG),
             ),
-            para_out=((SP.PGTHETA, EKTHETA),),
+            para_out=((SP.PGTHETA, LC.CKGTX2D),),
         ),
         OP.CALC_K_G_XFEM_F(
             te=299,
@@ -393,7 +390,7 @@ class MECPQS4(Element):
                 (OP.CALC_K_G_XFEM_F.PVARCPR, LC.ZVARCPG),
                 (SP.PVARCRR, LC.ZVARCPG),
             ),
-            para_out=((SP.PGTHETA, EKTHETA),),
+            para_out=((SP.PGTHETA, LC.CKGTX2D),),
         ),
         OP.CALC_NOEU_BORD(
             te=290, para_in=((SP.PGEOMER, NGEOMER),), para_out=((SP.PVECTUR, MVECTUR),)
@@ -1338,7 +1335,7 @@ class MECPQS8(Element):
                 (OP.CALC_G_XFEM.PVARIPR, LC.ZVARINO),
                 (SP.PVITESS, DDL_MECA),
             ),
-            para_out=((SP.PGTHETA, LC.EGTHETA),),
+            para_out=((SP.PGTHETA, LC.CGTHETA),),
         ),
         OP.CALC_G_XFEM_F(
             te=96,
@@ -1363,7 +1360,7 @@ class MECPQS8(Element):
                 (OP.CALC_G_XFEM_F.PVARIPR, LC.ZVARINO),
                 (SP.PVITESS, DDL_MECA),
             ),
-            para_out=((SP.PGTHETA, LC.EGTHETA),),
+            para_out=((SP.PGTHETA, LC.CGTHETA),),
         ),
         OP.CALC_K_G_XFEM(
             te=299,
@@ -1382,7 +1379,7 @@ class MECPQS8(Element):
                 (OP.CALC_K_G_XFEM.PVARCPR, LC.ZVARCPG),
                 (SP.PVARCRR, LC.ZVARCPG),
             ),
-            para_out=((SP.PGTHETA, EKTHETA),),
+            para_out=((SP.PGTHETA, LC.CKGTX2D),),
         ),
         OP.CALC_K_G_XFEM_F(
             te=299,
@@ -1402,7 +1399,7 @@ class MECPQS8(Element):
                 (OP.CALC_K_G_XFEM_F.PVARCPR, LC.ZVARCPG),
                 (SP.PVARCRR, LC.ZVARCPG),
             ),
-            para_out=((SP.PGTHETA, EKTHETA),),
+            para_out=((SP.PGTHETA, LC.CKGTX2D),),
         ),
         OP.CALC_NOEU_BORD(
             te=290, para_in=((SP.PGEOMER, NGEOMER),), para_out=((SP.PVECTUR, MVECTUR),)
