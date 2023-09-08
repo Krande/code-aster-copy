@@ -30,6 +30,7 @@ from ..Commands import (
     COPIER,
     CREA_RESU,
     IMPR_RESU,
+    IMPR_TABLE,
 )
 
 # ===========================================================================
@@ -298,6 +299,50 @@ class PostRocheCommon:
         self.chCoude = chCoude
         self.lGrmaCoude = list(set(lGrmaCoude))
 
+        # vérification que l'on ne définit pas des coudes qui ne sont pas dans la zone analysée
+
+        if self.lGrmaCoude != [] and "TOUT" not in self.dicAllZones:
+            zone_ana = CREA_CHAMP(
+                OPERATION="AFFE",
+                TYPE_CHAM="ELNO_NEUT_R",
+                MODELE=self.model,
+                PROL_ZERO="OUI",
+                AFFE=(_F(GROUP_MA=self.dicAllZones["GROUP_MA"], NOM_CMP="X1", VALE=1.0),),
+            )
+
+            coudes = CREA_CHAMP(
+                OPERATION="AFFE",
+                TYPE_CHAM="ELNO_NEUT_R",
+                MODELE=self.model,
+                PROL_ZERO="OUI",
+                AFFE=(_F(GROUP_MA=self.lGrmaCoude, NOM_CMP="X1", VALE=-1.0),),
+            )
+
+            vericoude = CREA_CHAMP(
+                OPERATION="ASSE",
+                TYPE_CHAM="ELNO_NEUT_R",
+                MODELE=self.model,
+                PROL_ZERO="OUI",
+                ASSE=(
+                    _F(CHAM_GD=zone_ana, TOUT="OUI", NOM_CMP=("X1",)),
+                    _F(CHAM_GD=coudes, TOUT="OUI", NOM_CMP=("X1",), CUMUL="OUI"),
+                ),
+            )
+            tabvericoude = POST_ELEM(
+                MINMAX=_F(
+                    MODELE=self.model, CHAM_GD=vericoude, NOM_CMP=("X1",), GROUP_MA=self.lGrmaCoude
+                )
+            )
+
+            nrow = tabvericoude.get_nrow()
+            minX1 = tabvericoude["MIN_X1", nrow]
+            if minX1 < 0:
+                for i in range(nrow - 1):
+                    minX1 = tabvericoude["MIN_X1", i + 1]
+                    if minX1 < 0:
+                        UTMESS("A", "POSTROCHE_21", valk=tabvericoude["GROUP_MA", i + 1])
+                UTMESS("F", "POSTROCHE_20")
+
     def buildPression(self):
         """
         Construction d'un champ de pression ELNO_NEUT_R
@@ -359,15 +404,28 @@ class PostRocheCommon:
                 )
             )
 
-            minRP02_MIN = tabpara["MIN_RP02_MIN", 1]
-            minRP02_MOY = tabpara["MIN_RP02_MOY", 1]
-            minRM_MIN = tabpara["MIN_RM_MIN", 1]
+            nrow = tabpara.get_nrow()
+            minRP02_MIN = tabpara["MIN_RP02_MIN", nrow]
+            minRP02_MOY = tabpara["MIN_RP02_MOY", nrow]
+            minRM_MIN = tabpara["MIN_RM_MIN", nrow]
 
             if minRP02_MIN < 0:
+                for i in range(nrow - 1):
+                    minRP02_MIN = tabpara["MIN_RP02_MIN", i + 1]
+                    if minRP02_MIN < 0:
+                        UTMESS("A", "POSTROCHE_23", valk=["RP02_MIN", tabpara["GROUP_MA", i + 1]])
                 UTMESS("F", "POSTROCHE_18", valk="RP02_MIN")
             if minRP02_MOY < 0:
+                for i in range(nrow - 1):
+                    minRP02_MOY = tabpara["MIN_RP02_MOY", i + 1]
+                    if minRP02_MOY < 0:
+                        UTMESS("A", "POSTROCHE_23", valk=["RP02_MOY", tabpara["GROUP_MA", i + 1]])
                 UTMESS("F", "POSTROCHE_18", valk="RP02_MOY")
             if minRM_MIN < 0:
+                for i in range(nrow - 1):
+                    minRM_MIN = tabpara["MIN_RM_MIN", i + 1]
+                    if minRM_MIN < 0:
+                        UTMESS("A", "POSTROCHE_23", valk=["RM_MIN", tabpara["GROUP_MA", i + 1]])
                 UTMESS("F", "POSTROCHE_18", valk="RM_MIN")
 
         # pour les coudes, verification de la présence de RP02_MIN
@@ -382,9 +440,15 @@ class PostRocheCommon:
                 )
             )
 
-            minRP02_MIN = tabRp02min["MIN_RP02_MIN", 1]
-
+            nrow = tabRp02min.get_nrow()
+            minRP02_MIN = tabRp02min["MIN_RP02_MIN", nrow]
             if minRP02_MIN < 0:
+                for i in range(nrow - 1):
+                    minRP02_MIN = tabRp02min["MIN_RP02_MIN", i + 1]
+                    if minRP02_MIN < 0:
+                        UTMESS(
+                            "A", "POSTROCHE_22", valk=["RP02_MIN", tabRp02min["GROUP_MA", i + 1]]
+                        )
                 UTMESS("F", "POSTROCHE_17", valk="RP02_MIN")
 
     def calcGeomParams(self):
@@ -1820,8 +1884,9 @@ class PostRocheCalc:
                 dicAffe["GROUP_MA"] = zone.get("GROUP_MA")
 
             tabInteg = POST_ELEM(MODELE=self.param.model, CHAM_GD=chCalcPrelim, INTEGRALE=integ)
-            deno = tabInteg["INTE_N", 1]
-            nume = tabInteg["INTE_VY", 1]
+            nrow = tabInteg.get_nrow()
+            deno = tabInteg["INTE_N", nrow]
+            nume = tabInteg["INTE_VY", nrow]
 
             # 1/T = nume/deno => T = deno/nume
             if nume == 0:
@@ -1895,7 +1960,8 @@ class PostRocheCalc:
                 dicAffe["GROUP_MA"] = zone.get("GROUP_MA")
 
             tabRessMax = POST_ELEM(MINMAX=mcfmax)
-            valRessMax = tabRessMax["MAX_X1", 1]
+            nrow = tabRessMax.get_nrow()
+            valRessMax = tabRessMax["MAX_X1", nrow]
 
             dicAffe["VALE"] = valRessMax
             affe.append(dicAffe)
@@ -2014,12 +2080,13 @@ class PostRocheCalc:
             )
         )
 
-        maxX1 = tabVeriSigV["MAX_X1", 1]
-        maxX2 = tabVeriSigV["MAX_X2", 1]
-        maxX3 = tabVeriSigV["MAX_X3", 1]
-        maxX4 = tabVeriSigV["MAX_X4", 1]
-        maxX5 = tabVeriSigV["MAX_X5", 1]
-        maxX6 = tabVeriSigV["MAX_X6", 1]
+        nrow = tabVeriSigV.get_nrow()
+        maxX1 = tabVeriSigV["MAX_X1", nrow]
+        maxX2 = tabVeriSigV["MAX_X2", nrow]
+        maxX3 = tabVeriSigV["MAX_X3", nrow]
+        maxX4 = tabVeriSigV["MAX_X4", nrow]
+        maxX5 = tabVeriSigV["MAX_X5", nrow]
+        maxX6 = tabVeriSigV["MAX_X6", nrow]
 
         if maxX1 > 0:
             if self.numeOrdre != -1:

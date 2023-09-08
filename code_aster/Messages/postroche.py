@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -111,6 +111,26 @@ Ce paramètre est absent sur au moins une maille.
     ),
     19: _(
         """Le paramètre %(k1)s a une valeur négative : %(r1)f. Cela est interdit.
+"""
+    ),
+    20: _(
+        """Au moins une maille déclarée dans le mot-clé COUDE ne fait pas partie des
+mailles déclarées dans le mot-clé ZONE_ANALYSE.
+"""
+    ),
+    21: _(
+        """Au moins une maille du groupe %(k1)s déclaré dans une occurrence du mot-clé COUDE 
+ne fait pas partie des mailles déclarées dans le mot-clé ZONE_ANALYSE.
+"""
+    ),
+    22: _(
+        """Le paramètre %(k1)s du matériau POST_ROCHE est absent sur au moins une maille
+du groupe %(k2)s déclaré dans une occurrence du mot-clé COUDE.
+"""
+    ),
+    23: _(
+        """Le paramètre %(k1)s du matériau POST_ROCHE est absent sur au moins
+une maille du groupe %(k2)s déclaré dans une occurrence du mot-clé ZONE_ANALYSE.
 """
     ),
 }

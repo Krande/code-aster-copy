@@ -331,7 +331,9 @@ IMPR_RESU(
 
 chPostRocheRCCMRX = POST_ROCHE(
     RCCM_RX="OUI",
-    ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
+    # ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
+    # ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
+    ZONE_ANALYSE=(_F(GROUP_MA=("M1", "M2"), GROUP_NO_ORIG="A"),),
     MODELE=modele,
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_mater,
@@ -344,10 +346,10 @@ chPostRocheRCCMRX = POST_ROCHE(
     PRESSION=(_F(TOUT="OUI", VALE=1e6),),
 )
 
-
 chPostRocheGrMa = POST_ROCHE(
     RCCM_RX="NON",
-    ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
+    # ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
+    ZONE_ANALYSE=(_F(GROUP_MA=("M2", "M1"), GROUP_NO_ORIG="A"),),
     MODELE=modele,
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_mater,
