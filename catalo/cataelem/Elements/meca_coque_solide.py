@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,9 +35,6 @@ DDL_MECA = LocatedComponents(
     diff=True,
     components=(("EN1", ("DX", "DY", "DZ")), ("EN2", ("PINCH",))),
 )
-
-# For REFE_FORC_NODA
-EREFCO = LocatedComponents(phys=PHY.PREC, type="ELEM", components=("SIGM",))
 
 # For EPVC_ELGA
 EDFVCPG = LocatedComponents(
@@ -263,7 +260,7 @@ class MESSHELL_SB9(Element):
         ),
         OP.REFE_FORC_NODA(
             te=125,
-            para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PREFCO, EREFCO)),
+            para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PREFCO, LC.CRESSIG)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.RIGI_GEOM(

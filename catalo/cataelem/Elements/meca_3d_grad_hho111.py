@@ -236,9 +236,6 @@ ECOPILO = LocatedComponents(
 )
 
 
-EREFCO = LocatedComponents(phys=PHY.PREC, type="ELEM", components=("SIGM",))
-
-
 ESIGMPC = LocatedComponents(
     phys=PHY.SIEF_C,
     type="ELGA",

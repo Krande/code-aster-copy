@@ -2558,11 +2558,9 @@ PRAC_R = PhysicalQuantity(
 """,
 )
 
-
-PREC = PhysicalQuantity(
+PREC_R = PhysicalQuantity(
     type="R",
     components=(
-        "PREC",
         "SIGM",
         "EPSI",
         "FHYDR[2]",
@@ -2572,26 +2570,22 @@ PREC = PhysicalQuantity(
         "MOMENT",
         "DEPL",
         "LAG_GV",
-        "DAMG",
         "PI",
     ),
-    comment="""  PREC Type:R precision
-       PREC : valeur de la precision
-       SIGM :
-       EPSI :
-       FHYDR1 :
-       FHYDR2 :
-       FTHERM :
-       VARI :
-       EFFORT :
-       MOMENT :
-       DEPL :
+    comment="""Reference values for SIGM_REFE_RELA
+       SIGM : for stress
+       EPSI : for strain
+       FHYDR1 : for pressure 1 (THM)
+       FHYDR2 : for pressure 2 (THM)
+       FTHERM : for temperature (THM)
+       VARI : for internal state variable
+       EFFORT : for force
+       MOMENT : for moment
+       DEPL : displacement
        LAG_GV :
-       DAMG
        PI     :
 """,
 )
-
 
 PRES_C = PhysicalQuantity(
     type="C",
@@ -2609,7 +2603,6 @@ PRES_C = PhysicalQuantity(
 """,
 )
 
-
 PRES_F = PhysicalQuantity(
     type="K8",
     components=("PRES", "CISA", "PINF", "PSUP"),
@@ -2622,7 +2615,6 @@ PRES_F = PhysicalQuantity(
        PSUP: pression supérieure pour pincement solid-shell
 """,
 )
-
 
 PRES_R = PhysicalQuantity(
     type="R",
@@ -2641,7 +2633,6 @@ PRES_R = PhysicalQuantity(
        limites
 """,
 )
-
 
 PRME_R = PhysicalQuantity(
     type="R",

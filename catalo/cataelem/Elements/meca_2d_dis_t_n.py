@@ -67,9 +67,6 @@ EGNEUT_F = LocatedComponents(phys=PHY.NEUT_F, type="ELGA", location="RIGI", comp
 EGNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type="ELGA", location="RIGI", components=("X[30]",))
 
 
-EREFCO = LocatedComponents(phys=PHY.PREC, type="ELEM", components=("EFFORT",))
-
-
 EEFGEGC = LocatedComponents(phys=PHY.SIEF_C, type="ELGA", location="RIGI", components=("N", "VY"))
 
 
@@ -358,7 +355,7 @@ class MECA_2D_DIS_T_N(Element):
         ),
         OP.REFE_FORC_NODA(
             te=39,
-            para_in=((SP.PCINFDI, LC.CCINFDI), (SP.PREFCO, EREFCO)),
+            para_in=((SP.PCINFDI, LC.CCINFDI), (SP.PREFCO, LC.CRESEFF)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.RIGI_MECA(

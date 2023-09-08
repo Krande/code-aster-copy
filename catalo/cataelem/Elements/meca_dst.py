@@ -189,9 +189,6 @@ EMNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type="ELGA", location="MATER", com
 ECASECT = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X[16]",))
 
 
-EREFCO = LocatedComponents(phys=PHY.PREC, type="ELEM", components=("EFFORT", "MOMENT"))
-
-
 CPRESSF = LocatedComponents(phys=PHY.PRES_F, type="ELEM", components=("PRES",))
 
 

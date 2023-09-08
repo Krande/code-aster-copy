@@ -146,7 +146,7 @@ EMNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X[30]",)
 EGNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type="ELGA", location="RIGI", components=("X[30]",))
 
 
-EREFCO = LocatedComponents(phys=PHY.PREC, type="ELEM", components=("SIGM", "EPSI"))
+EREFCO = LocatedComponents(phys=PHY.PREC_R, type="ELEM", components=("SIGM", "EPSI"))
 
 
 ESIGMPC = LocatedComponents(

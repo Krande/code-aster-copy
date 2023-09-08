@@ -155,9 +155,6 @@ EGNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type="ELGA", location="RIGI", comp
 EMNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type="ELGA", location="MATER", components=("X1",))
 
 
-EREFCO = LocatedComponents(phys=PHY.PREC, type="ELEM", components=("EFFORT", "MOMENT"))
-
-
 EEFGENC = LocatedComponents(
     phys=PHY.SIEF_C, type="ELNO", components=("N", "VY", "VZ", "MT", "MFY", "MFZ")
 )
@@ -784,7 +781,7 @@ class MECA_POU_D_EM(Element):
             ),
         ),
         OP.REFE_FORC_NODA(
-            te=517, para_in=((SP.PREFCO, EREFCO),), para_out=((SP.PVECTUR, MVECTUR),)
+            te=517, para_in=((SP.PREFCO, LC.CRESEFM),), para_out=((SP.PVECTUR, MVECTUR),)
         ),
         OP.REPERE_LOCAL(
             te=135,

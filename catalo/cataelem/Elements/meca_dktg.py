@@ -149,9 +149,6 @@ ECASECT = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X[16]",))
 EGNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type="ELGA", location="RIGI", components=("X[30]",))
 
 
-EREFCO = LocatedComponents(phys=PHY.PREC, type="ELEM", components=("EFFORT", "MOMENT"))
-
-
 EPRESNF = LocatedComponents(phys=PHY.PRES_F, type="ELEM", components=("PRES",))
 
 
@@ -658,7 +655,7 @@ class MEDKQG4(Element):
         ),
         OP.REFE_FORC_NODA(
             te=446,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PREFCO, EREFCO)),
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PREFCO, LC.CRESEFM)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.REPERE_LOCAL(

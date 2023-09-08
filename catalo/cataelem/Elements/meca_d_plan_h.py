@@ -64,9 +64,6 @@ E1NEUTK = LocatedComponents(phys=PHY.NEUT_K24, type="ELEM", components=("Z1",))
 EGNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type="ELGA", location="RIGI", components=("X[30]",))
 
 
-EREFCO = LocatedComponents(phys=PHY.PREC, type="ELEM", components=("SIGM", "FHYDR[2]", "FTHERM"))
-
-
 ECONTNC = LocatedComponents(phys=PHY.SIEF_C, type="ELNO", components=("M11", "FH11X", "FH11Y"))
 
 
@@ -187,7 +184,7 @@ class H_DPQ8S(Element):
         ),
         OP.REFE_FORC_NODA(
             te=600,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC), (SP.PREFCO, EREFCO)),
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC), (SP.PREFCO, LC.CRESTHM)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.RIGI_MECA_TANG(

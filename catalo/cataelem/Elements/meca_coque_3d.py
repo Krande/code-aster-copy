@@ -154,9 +154,6 @@ EGNEUT_F = LocatedComponents(phys=PHY.NEUT_F, type="ELGA", location="MASS", comp
 EGNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type="ELGA", location="MASS", components=("X[30]",))
 
 
-EREFCO = LocatedComponents(phys=PHY.PREC, type="ELEM", components=("SIGM",))
-
-
 CPRESSF = LocatedComponents(phys=PHY.PRES_F, type="ELEM", components=("PRES",))
 
 
@@ -686,7 +683,7 @@ class TemplateElement(Element):
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
                 (OP.REFE_FORC_NODA.PNBSP_I, ENBSP_I),
-                (SP.PREFCO, EREFCO),
+                (SP.PREFCO, LC.CRESSIG),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),

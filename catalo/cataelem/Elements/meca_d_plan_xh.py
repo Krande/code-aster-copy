@@ -122,7 +122,7 @@ EGNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type="ELGA", location="XFEM", comp
 EMNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X[30]",))
 
 
-EREFCO = LocatedComponents(phys=PHY.PREC, type="ELEM", components=("SIGM", "DEPL"))
+EREFCO = LocatedComponents(phys=PHY.PREC_R, type="ELEM", components=("SIGM", "DEPL"))
 
 
 CPRESSF = LocatedComponents(phys=PHY.PRES_F, type="ELEM", components=("PRES", "CISA"))

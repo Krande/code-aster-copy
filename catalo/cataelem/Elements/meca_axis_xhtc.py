@@ -99,9 +99,6 @@ EGNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type="ELGA", location="XFEM", comp
 EMNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X[30]",))
 
 
-EREFCO = LocatedComponents(phys=PHY.PREC, type="ELEM", components=("SIGM",))
-
-
 EPRESNO = LocatedComponents(phys=PHY.PRES_R, type="ELNO", components=("PRES", "CISA"))
 
 
@@ -371,7 +368,7 @@ class MEAXTR3_XHTC(Element):
         ),
         OP.REFE_FORC_NODA(
             te=542,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PREFCO, EREFCO)),
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PREFCO, LC.CRESSIG)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.RIGI_CONT(

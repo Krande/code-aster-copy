@@ -80,7 +80,7 @@ ENBSP_I = LocatedComponents(phys=PHY.NBSP_I, type="ELEM", components=("COQ_NCOU"
 
 EMNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type="ELGA", location="MATER", components=("X1",))
 
-EREFCO = LocatedComponents(phys=PHY.PREC, type="ELEM", components=("EPSI",))
+EREFCO = LocatedComponents(phys=PHY.PREC_R, type="ELEM", components=("EPSI",))
 
 ECONTPC = LocatedComponents(phys=PHY.SIEF_C, type="ELGA", location="RIGI", components=("SIXX",))
 

@@ -117,7 +117,7 @@ subroutine nmrefe(model, compor, mate, cara_elem, nume_dof, &
 !
 ! - Field for reference values
 !
-    call mecact('V', chrefe, 'MODELE', ligrmo, 'PREC', &
+    call mecact('V', chrefe, 'MODELE', ligrmo, 'PREC_R', &
                 ncmp=nb_refe, lnomcmp=list_cmp, vr=list_vale)
 !
 ! - Geometry field

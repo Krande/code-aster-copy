@@ -23,7 +23,6 @@ import cataelem.Commons.physical_quantities as PHY
 # ----------------------------------------------------------------------------------------------
 # Located components - ELEM - Field on element (constant)
 # ----------------------------------------------------------------------------------------------
-
 # Generic components for geometric / 2D
 CGEOM2D = LocatedComponents(phys=PHY.GEOM_R, type="ELEM", components=("X", "Y"))
 
@@ -126,6 +125,18 @@ CCAMA3D = LocatedComponents(
 
 # Field for material orientation in 2D (ANGLE_MASSIF)
 CCAMA2D = LocatedComponents(phys=PHY.CAMA_R, type="ELEM", components=("C", "ALPHA"))
+
+# Field for RESI_REFE_RELA/EFFORT
+CRESEFF = LocatedComponents(phys=PHY.PREC_R, type="ELEM", components=("EFFORT",))
+
+# Field for RESI_REFE_RELA/EFFORT+MOMENT
+CRESEFM = LocatedComponents(phys=PHY.PREC_R, type="ELEM", components=("EFFORT", "MOMENT"))
+
+# Field for RESI_REFE_RELA/THM
+CRESTHM = LocatedComponents(phys=PHY.PREC_R, type="ELEM", components=("SIGM", "FHYDR[2]", "FTHERM"))
+
+# Field for RESI_REFE_RELA/STRESS
+CRESSIG = LocatedComponents(phys=PHY.PREC_R, type="ELEM", components=("SIGM"))
 
 CBORNPI = LocatedComponents(phys=PHY.PILO_R, type="ELEM", components=("A0", "A1"))
 

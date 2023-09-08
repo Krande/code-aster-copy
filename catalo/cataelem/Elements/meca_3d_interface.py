@@ -73,7 +73,7 @@ ECOPILO = LocatedComponents(
 )
 
 
-EREFCO = LocatedComponents(phys=PHY.PREC, type="ELEM", components=("SIGM", "DEPL"))
+EREFCO = LocatedComponents(phys=PHY.PREC_R, type="ELEM", components=("SIGM", "DEPL"))
 
 
 ECONTPG = LocatedComponents(

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -48,9 +48,6 @@ EGNEUT_F = LocatedComponents(phys=PHY.NEUT_F, type="ELGA", location="RIGI", comp
 
 
 EGNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type="ELGA", location="RIGI", components=("X[30]",))
-
-
-EREFCO = LocatedComponents(phys=PHY.PREC, type="ELEM", components=("EFFORT",))
 
 
 EEFGEGC = LocatedComponents(phys=PHY.SIEF_C, type="ELGA", location="RIGI", components=("N",))
@@ -186,7 +183,7 @@ class MEPOULI(Element):
             ),
         ),
         OP.REFE_FORC_NODA(
-            te=169, para_in=((SP.PREFCO, EREFCO),), para_out=((SP.PVECTUR, MVECTUR),)
+            te=169, para_in=((SP.PREFCO, LC.CRESEFF),), para_out=((SP.PVECTUR, MVECTUR),)
         ),
         OP.RIGI_MECA_HYST(
             te=50,

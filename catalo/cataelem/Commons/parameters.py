@@ -989,7 +989,7 @@ PRAYONF = InputParameter(phys=PHY.RAYO_F, comment="""""")
 PRAYONR = InputParameter(phys=PHY.RAYO_R, comment="""""")
 
 PREFCO = InputParameter(
-    phys=PHY.PREC,
+    phys=PHY.PREC_R,
     comment="""  PREFCO :  REFERENCE DE CONTRAINTE
 """,
 )
