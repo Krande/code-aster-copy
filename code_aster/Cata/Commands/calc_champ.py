@@ -71,7 +71,7 @@ CALC_CHAMP=OPER(nom="CALC_CHAMP",op=52,sd_prod=calc_champ_prod,
                              fr=tr("le calcul ne sera effectue que sur ces mailles")),
 
      # Bloc lineaire
-     b_lineaire  = BLOC(condition = """is_type("RESULTAT") in (evol_elas,mode_meca,comb_fourier,mult_elas,fourier_elas,mode_flamb)""",
+     b_lineaire  = BLOC(condition = """is_type("RESULTAT") in (evol_elas,mode_meca,mode_meca_c,comb_fourier,mult_elas,fourier_elas,mode_flamb)""",
          regles=(AU_MOINS_UN ('CONTRAINTE', 'DEFORMATION', 'ENERGIE', 'CRITERES', 'VARI_INTERNE', 'PROPRIETES', 'FORCE','CHAM_UTIL'),),
          CONTRAINTE   = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
                              fr=tr("Options pour le calcul de contraintes et efforts generalises"),

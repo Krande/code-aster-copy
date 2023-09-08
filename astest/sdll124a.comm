@@ -191,16 +191,30 @@ l_mod=CALC_MODE_ROTATION(MATR_RIGI =RIGIDITE,
 
 IMPR_TABLE(TABLE=l_mod);
 
-lmod=[None]*nbV
-for ii in range(0,nbV):
-   lmod[ii]=EXTR_TABLE(TYPE_RESU='MODE_MECA',
-                       TABLE=l_mod,
-                       NOM_PARA='NOM_SD',
-                       FILTRE=_F(NOM_PARA='NUME_VITE',VALE_I=ii),);
-   IMPR_RESU(FORMAT='RESULTAT',
-             RESU=_F(RESULTAT=lmod[ii],
-                     NOM_PARA=('NUME_MODE','FREQ','OMEGA2'),
-                     FORM_TABL='OUI'),)
+mode_meca = [l_mod.getModeResult("MODE_MECA_{0}".format(i)) for i in range(nbV)]
+l_ener = []
+for mod in mode_meca:
+    ener = CALC_CHAMP(
+        RESULTAT=mod,
+        ENERGIE=("EPOT_ELEM", "ECIN_ELEM"),
+        MODELE=modele,
+    )
+    l_ener.append(ener)
+
+lmod = [None] * nbV
+for ii in range(0, nbV):
+    lmod[ii] = EXTR_TABLE(
+        TYPE_RESU="MODE_MECA",
+        TABLE=l_mod,
+        NOM_PARA="NOM_SD",
+        FILTRE=_F(NOM_PARA="NUME_VITE", VALE_I=ii),
+    )
+    IMPR_RESU(
+        FORMAT="RESULTAT",
+        RESU=_F(
+            RESULTAT=lmod[ii], NOM_PARA=("NUME_MODE", "FREQ", "OMEGA2"), FORM_TABL="OUI"
+        ),
+    )
 
 #VITESSE DE ROTATION OMEGA=0
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
@@ -338,4 +352,32 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-FIN();
+
+# TEST DE NON-REGRESSION DES ENERGIES POTENTIELLES
+# VITESSE DE ROTATION OMEGA=0
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=1,
+            NOM_CHAM="EPOT_ELEM",
+            TYPE_TEST="MAX",
+            RESULTAT=l_ener[0],
+            VALE_CALC=361026.26034130284,
+        ),
+    ),
+)
+
+# VITESSE DE ROTATION OMEGA=30000
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=1,
+            NOM_CHAM="EPOT_ELEM",
+            TYPE_TEST="MAX",
+            RESULTAT=l_ener[3],
+            VALE_CALC=563034.4538757554,
+        ),
+    )
+)
+
+FIN()
