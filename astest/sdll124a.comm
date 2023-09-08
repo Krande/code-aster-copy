@@ -64,7 +64,18 @@ cara = AFFE_CARA_ELEM(
             # REPERE='LOCAL',
             # VALE=(1.458013e+01,1.232021e-01,6.463858e-02,6.463858e-02,0,0,0,0,0,0,),
             # test de la prise en compte du repère global
-            VALE=(1.458013e01, 6.463858e-02, 6.463858e-02, 1.232021e-01, 0, 0, 0, 0, 0, 0),
+            VALE=(
+                1.458013e01,
+                6.463858e-02,
+                6.463858e-02,
+                1.232021e-01,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+            ),
         ),
         _F(CARA="K_TR_D_N", GROUP_MA="DISQ1", REPERE="LOCAL", VALE=(0, 0, 0, 0, 0, 0)),
         _F(CARA="A_TR_D_N", GROUP_MA="DISQ1", REPERE="LOCAL", VALE=(0, 0, 0, 0, 0, 0)),
@@ -72,7 +83,18 @@ cara = AFFE_CARA_ELEM(
             CARA="M_TR_D_N",
             GROUP_MA="DISQ2",
             REPERE="LOCAL",
-            VALE=(4.594579e01, 9.763481e-01, 4.977461e-01, 4.977461e-01, 0, 0, 0, 0, 0, 0),
+            VALE=(
+                4.594579e01,
+                9.763481e-01,
+                4.977461e-01,
+                4.977461e-01,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+            ),
         ),
         _F(CARA="K_TR_D_N", GROUP_MA="DISQ2", REPERE="LOCAL", VALE=(0, 0, 0, 0, 0, 0)),
         _F(CARA="A_TR_D_N", GROUP_MA="DISQ2", REPERE="LOCAL", VALE=(0, 0, 0, 0, 0, 0)),
@@ -129,19 +151,29 @@ cara = AFFE_CARA_ELEM(
         _F(CARA="K_TR_D_N", GROUP_MA="DISQ3", REPERE="LOCAL", VALE=(0, 0, 0, 0, 0, 0)),
         _F(CARA="A_TR_D_N", GROUP_MA="DISQ3", REPERE="LOCAL", VALE=(0, 0, 0, 0, 0, 0)),
         _F(
-            GROUP_MA="PALIER1", CARA="K_TR_D_N", VALE=(7.000000e07, 5.000000e07, 0.0, 0.0, 0.0, 0.0)
+            GROUP_MA="PALIER1",
+            CARA="K_TR_D_N",
+            VALE=(7.000000e07, 5.000000e07, 0.0, 0.0, 0.0, 0.0),
         ),
         _F(
-            GROUP_MA="PALIER1", CARA="A_TR_D_N", VALE=(7.000000e02, 5.000000e02, 0.0, 0.0, 0.0, 0.0)
+            GROUP_MA="PALIER1",
+            CARA="A_TR_D_N",
+            VALE=(7.000000e02, 5.000000e02, 0.0, 0.0, 0.0, 0.0),
         ),
         _F(
-            GROUP_MA="PALIER2", CARA="K_TR_D_N", VALE=(7.000000e07, 5.000000e07, 0.0, 0.0, 0.0, 0.0)
+            GROUP_MA="PALIER2",
+            CARA="K_TR_D_N",
+            VALE=(7.000000e07, 5.000000e07, 0.0, 0.0, 0.0, 0.0),
         ),
         _F(
-            GROUP_MA="PALIER2", CARA="A_TR_D_N", VALE=(7.000000e02, 5.000000e02, 0.0, 0.0, 0.0, 0.0)
+            GROUP_MA="PALIER2",
+            CARA="A_TR_D_N",
+            VALE=(7.000000e02, 5.000000e02, 0.0, 0.0, 0.0, 0.0),
         ),
     ),
-    ORIENTATION=_F(GROUP_MA=("DISQ1", "DISQ2", "DISQ3"), CARA="ANGL_NAUT", VALE=(0.0, -90.0, 0.0)),
+    ORIENTATION=_F(
+        GROUP_MA=("DISQ1", "DISQ2", "DISQ3"), CARA="ANGL_NAUT", VALE=(0.0, -90.0, 0.0)
+    ),
 )
 
 # ------------------
@@ -167,7 +199,9 @@ ASSEMBLAGE(
     ),
 )
 
-GYELEM = CALC_MATR_ELEM(OPTION="MECA_GYRO", MODELE=modele, CHAM_MATER=chmat, CARA_ELEM=cara)
+GYELEM = CALC_MATR_ELEM(
+    OPTION="MECA_GYRO", MODELE=modele, CHAM_MATER=chmat, CARA_ELEM=cara
+)
 
 GYASS = ASSE_MATRICE(MATR_ELEM=GYELEM, NUME_DDL=NUMEDDL)
 
@@ -200,6 +234,16 @@ l_mod = CALC_MODE_ROTATION(
 
 IMPR_TABLE(TABLE=l_mod)
 
+mode_meca = [l_mod.getModeResult("MODE_MECA_{0}".format(i)) for i in range(nbV)]
+l_ener = []
+for mod in mode_meca:
+    ener = CALC_CHAMP(
+        RESULTAT=mod,
+        ENERGIE=("EPOT_ELEM", "ECIN_ELEM"),
+        MODELE=modele,
+    )
+    l_ener.append(ener)
+
 lmod = [None] * nbV
 for ii in range(0, nbV):
     lmod[ii] = EXTR_TABLE(
@@ -210,7 +254,9 @@ for ii in range(0, nbV):
     )
     IMPR_RESU(
         FORMAT="RESULTAT",
-        RESU=_F(RESULTAT=lmod[ii], NOM_PARA=("NUME_MODE", "FREQ", "OMEGA2"), FORM_TABL="OUI"),
+        RESU=_F(
+            RESULTAT=lmod[ii], NOM_PARA=("NUME_MODE", "FREQ", "OMEGA2"), FORM_TABL="OUI"
+        ),
     )
 
 # VITESSE DE ROTATION OMEGA=0
@@ -381,6 +427,34 @@ TEST_RESU(
             VALE_REFE=2.7612000000000001e-3,
             CRITERE="RELATIF",
             PRECISION=0.02,
+        ),
+    )
+)
+
+
+# TEST DE NON-REGRESSION DES ENERGIES POTENTIELLES
+# VITESSE DE ROTATION OMEGA=0
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=1,
+            NOM_CHAM="EPOT_ELEM",
+            TYPE_TEST="MAX",
+            RESULTAT=l_ener[0],
+            VALE_CALC=361026.26034130284,
+        ),
+    ),
+)
+
+# VITESSE DE ROTATION OMEGA=30000
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=1,
+            NOM_CHAM="EPOT_ELEM",
+            TYPE_TEST="MAX",
+            RESULTAT=l_ener[3],
+            VALE_CALC=563034.4538757554,
         ),
     )
 )

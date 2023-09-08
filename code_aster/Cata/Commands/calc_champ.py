@@ -31,7 +31,8 @@ def calc_champ_prod(RESULTAT, **args):
     if AsType(RESULTAT) is not None:
         return AsType(RESULTAT)
     raise AsException(
-        "type de concept resultat non prevu : RESULTAT=%s (type %s)" % (RESULTAT, type(RESULTAT))
+        "type de concept resultat non prevu : RESULTAT=%s (type %s)"
+        % (RESULTAT, type(RESULTAT))
     )
 
 
@@ -40,12 +41,16 @@ CALC_CHAMP = OPER(
     op=52,
     sd_prod=calc_champ_prod,
     reentrant="f:RESULTAT",
-    fr=tr("Completer ou creer un resultat en calculant des champs par elements ou aux noeuds"),
+    fr=tr(
+        "Completer ou creer un resultat en calculant des champs par elements ou aux noeuds"
+    ),
     reuse=SIMP(statut="c", typ=CO),
     MODELE=SIMP(statut="f", typ=modele_sdaster),
     CHAM_MATER=SIMP(statut="f", typ=cham_mater),
     CARA_ELEM=SIMP(statut="f", typ=cara_elem),
-    RESULTAT=SIMP(statut="o", typ=resultat_sdaster, fr=tr("Resultat d'une commande globale")),
+    RESULTAT=SIMP(
+        statut="o", typ=resultat_sdaster, fr=tr("Resultat d'une commande globale")
+    ),
     regles=(
         EXCLUS(
             "TOUT_ORDRE",
@@ -76,7 +81,8 @@ CALC_CHAMP = OPER(
         PRECISION=SIMP(statut="f", typ="R", defaut=1.0e-6),
     ),
     b_prec_abso=BLOC(
-        condition="""(equal_to("CRITERE", 'ABSOLU'))""", PRECISION=SIMP(statut="o", typ="R")
+        condition="""(equal_to("CRITERE", 'ABSOLU'))""",
+        PRECISION=SIMP(statut="o", typ="R"),
     ),
     LIST_ORDRE=SIMP(statut="f", typ=listis_sdaster),
     TOUT=SIMP(
@@ -94,7 +100,7 @@ CALC_CHAMP = OPER(
     ),
     # Bloc lineaire
     b_lineaire=BLOC(
-        condition="""is_type("RESULTAT") in (evol_elas,mode_meca,comb_fourier,mult_elas,fourier_elas,mode_flamb)""",
+        condition="""is_type("RESULTAT") in (evol_elas,mode_meca,mode_meca_c,comb_fourier,mult_elas,fourier_elas,mode_flamb)""",
         regles=(
             AU_MOINS_UN(
                 "CONTRAINTE",
@@ -166,20 +172,29 @@ CALC_CHAMP = OPER(
         EXCIT=FACT(
             statut="f",
             max="**",
-            fr=tr("Charges contenant les temperatures, les efforts repartis pour les poutres..."),
+            fr=tr(
+                "Charges contenant les temperatures, les efforts repartis pour les poutres..."
+            ),
             regles=(EXCLUS("FONC_MULT", "COEF_MULT"),),
             CHARGE=SIMP(statut="o", typ=(char_meca, char_cine_meca)),
             FONC_MULT=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
             COEF_MULT=SIMP(statut="f", typ="R"),
-            TYPE_CHARGE=SIMP(statut="f", typ="TXM", defaut="FIXE_CSTE", into=("FIXE_CSTE",)),
+            TYPE_CHARGE=SIMP(
+                statut="f", typ="TXM", defaut="FIXE_CSTE", into=("FIXE_CSTE",)
+            ),
         ),
         CHAM_UTIL=FACT(
             statut="f",
             max="**",
             regles=(UN_PARMI("FORMULE", "CRITERE", "NORME"),),
-            NOM_CHAM=SIMP(statut="o", typ="TXM", fr=tr("Nom du champ utilisé en donnée")),
+            NOM_CHAM=SIMP(
+                statut="o", typ="TXM", fr=tr("Nom du champ utilisé en donnée")
+            ),
             FORMULE=SIMP(
-                statut="f", typ=formule, max="**", fr=tr("Formule permet d'obtenir le critère")
+                statut="f",
+                typ=formule,
+                max="**",
+                fr=tr("Formule permet d'obtenir le critère"),
             ),
             CRITERE=SIMP(
                 statut="f",
@@ -287,7 +302,9 @@ CALC_CHAMP = OPER(
         EXCIT=FACT(
             statut="f",
             max="**",
-            fr=tr("Charges contenant les temperatures, les efforts repartis pour les poutres..."),
+            fr=tr(
+                "Charges contenant les temperatures, les efforts repartis pour les poutres..."
+            ),
             regles=(EXCLUS("FONC_MULT", "COEF_MULT"),),
             CHARGE=SIMP(statut="o", typ=(char_meca, char_cine_meca)),
             # pour les chgt harmo
@@ -297,15 +314,22 @@ CALC_CHAMP = OPER(
             COEF_MULT_C=SIMP(statut="f", typ="C"),
             FONC_MULT=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
             COEF_MULT=SIMP(statut="f", typ="R"),
-            TYPE_CHARGE=SIMP(statut="f", typ="TXM", defaut="FIXE_CSTE", into=("FIXE_CSTE",)),
+            TYPE_CHARGE=SIMP(
+                statut="f", typ="TXM", defaut="FIXE_CSTE", into=("FIXE_CSTE",)
+            ),
         ),
         CHAM_UTIL=FACT(
             statut="f",
             max="**",
             regles=(UN_PARMI("FORMULE", "CRITERE", "NORME"),),
-            NOM_CHAM=SIMP(statut="o", typ="TXM", fr=tr("Nom du champ utilisé en donnée")),
+            NOM_CHAM=SIMP(
+                statut="o", typ="TXM", fr=tr("Nom du champ utilisé en donnée")
+            ),
             FORMULE=SIMP(
-                statut="f", typ=formule, max="**", fr=tr("Formule permet d'obtenir le critère")
+                statut="f",
+                typ=formule,
+                max="**",
+                fr=tr("Formule permet d'obtenir le critère"),
             ),
             CRITERE=SIMP(
                 statut="f",
@@ -422,7 +446,9 @@ CALC_CHAMP = OPER(
         EXCIT=FACT(
             statut="f",
             max="**",
-            fr=tr("Charges contenant les temperatures, les efforts repartis pour les poutres..."),
+            fr=tr(
+                "Charges contenant les temperatures, les efforts repartis pour les poutres..."
+            ),
             regles=(EXCLUS("FONC_MULT", "COEF_MULT"),),
             CHARGE=SIMP(statut="o", typ=(char_meca, char_cine_meca)),
             FONC_MULT=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
@@ -438,9 +464,14 @@ CALC_CHAMP = OPER(
             statut="f",
             max="**",
             regles=(UN_PARMI("FORMULE", "CRITERE", "NORME"),),
-            NOM_CHAM=SIMP(statut="o", typ="TXM", fr=tr("Nom du champ utilisé en donnée")),
+            NOM_CHAM=SIMP(
+                statut="o", typ="TXM", fr=tr("Nom du champ utilisé en donnée")
+            ),
             FORMULE=SIMP(
-                statut="f", typ=formule, max="**", fr=tr("Formule permet d'obtenir le critère")
+                statut="f",
+                typ=formule,
+                max="**",
+                fr=tr("Formule permet d'obtenir le critère"),
             ),
             CRITERE=SIMP(
                 statut="f",
@@ -480,20 +511,29 @@ CALC_CHAMP = OPER(
         EXCIT=FACT(
             statut="f",
             max="**",
-            fr=tr("Charges contenant les temperatures, les efforts repartis pour les poutres..."),
+            fr=tr(
+                "Charges contenant les temperatures, les efforts repartis pour les poutres..."
+            ),
             regles=(EXCLUS("FONC_MULT", "COEF_MULT"),),
             CHARGE=SIMP(statut="o", typ=(char_ther, char_cine_ther)),
             FONC_MULT=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
             COEF_MULT=SIMP(statut="f", typ="R"),
-            TYPE_CHARGE=SIMP(statut="f", typ="TXM", defaut="FIXE_CSTE", into=("FIXE_CSTE",)),
+            TYPE_CHARGE=SIMP(
+                statut="f", typ="TXM", defaut="FIXE_CSTE", into=("FIXE_CSTE",)
+            ),
         ),
         CHAM_UTIL=FACT(
             statut="f",
             max="**",
             regles=(UN_PARMI("FORMULE", "CRITERE", "NORME"),),
-            NOM_CHAM=SIMP(statut="o", typ="TXM", fr=tr("Nom du champ utilisé en donnée")),
+            NOM_CHAM=SIMP(
+                statut="o", typ="TXM", fr=tr("Nom du champ utilisé en donnée")
+            ),
             FORMULE=SIMP(
-                statut="f", typ=formule, max="**", fr=tr("Formule permet d'obtenir le critère")
+                statut="f",
+                typ=formule,
+                max="**",
+                fr=tr("Formule permet d'obtenir le critère"),
             ),
             CRITERE=SIMP(
                 statut="f",
@@ -533,7 +573,9 @@ CALC_CHAMP = OPER(
         EXCIT=FACT(
             statut="f",
             max="**",
-            fr=tr("Charges contenant les temperatures, les efforts repartis pour les poutres..."),
+            fr=tr(
+                "Charges contenant les temperatures, les efforts repartis pour les poutres..."
+            ),
             regles=(EXCLUS("FONC_MULT", "COEF_MULT"),),
             CHARGE=SIMP(statut="o", typ=(char_meca, char_cine_meca)),
             # pour les chgt harmo
@@ -543,15 +585,22 @@ CALC_CHAMP = OPER(
             COEF_MULT_C=SIMP(statut="f", typ="C"),
             FONC_MULT=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
             COEF_MULT=SIMP(statut="f", typ="R"),
-            TYPE_CHARGE=SIMP(statut="f", typ="TXM", defaut="FIXE_CSTE", into=("FIXE_CSTE",)),
+            TYPE_CHARGE=SIMP(
+                statut="f", typ="TXM", defaut="FIXE_CSTE", into=("FIXE_CSTE",)
+            ),
         ),
         CHAM_UTIL=FACT(
             statut="f",
             max="**",
             regles=(UN_PARMI("FORMULE", "CRITERE", "NORME"),),
-            NOM_CHAM=SIMP(statut="o", typ="TXM", fr=tr("Nom du champ utilisé en donnée")),
+            NOM_CHAM=SIMP(
+                statut="o", typ="TXM", fr=tr("Nom du champ utilisé en donnée")
+            ),
             FORMULE=SIMP(
-                statut="f", typ=formule, max="**", fr=tr("Formule permet d'obtenir le critère")
+                statut="f",
+                typ=formule,
+                max="**",
+                fr=tr("Formule permet d'obtenir le critère"),
             ),
             CRITERE=SIMP(
                 statut="f",
