@@ -69,9 +69,6 @@ CFOR2DR = LocatedComponents(phys=PHY.FORC_R, type="ELEM", components=("FX", "FY"
 # For distributed forces (Real-3D)
 CFOR3DR = LocatedComponents(phys=PHY.FORC_R, type="ELEM", components=("FX", "FY", "FZ"))
 
-# For neutral components (3D)
-CNEUTI3 = LocatedComponents(phys=PHY.NEUT_I, type="ELEM", components=("X[30]",))
-
 CNEUTR1 = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X1",))
 
 # For pressure (Function-2D)
@@ -171,6 +168,7 @@ CENEISO = LocatedComponents(phys=PHY.ENER_R, type="ELEM", components=("TOTALE",)
 # For TOU_INI_ELEM
 CNTINIF = LocatedComponents(phys=PHY.NEUT_F, type="ELEM", components=("X[30]",))
 CNTINIR = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X[30]",))
+CNTINII = LocatedComponents(phys=PHY.NEUT_I, type="ELEM", components=("X[30]",))
 
 # Field for coefficients of norm
 CNORMCF = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X[30]",))
@@ -730,6 +728,11 @@ ESIG3DR = LocatedComponents(
     phys=PHY.SIEF_R, type="ELNO", components=("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ")
 )
 
+# For stresses (Complex-3D)
+ESIG3DC = LocatedComponents(
+    phys=PHY.SIEF_C, type="ELNO", components=("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ")
+)
+
 # For stresses (Real-2D)
 ESIG2DR = LocatedComponents(
     phys=PHY.SIEF_R, type="ELNO", components=("SIXX", "SIYY", "SIZZ", "SIXY")
@@ -778,6 +781,11 @@ ECOEQNO = LocatedComponents(
 # For strains (Real-3D)
 EEPS3DR = LocatedComponents(
     phys=PHY.EPSI_R, type="ELNO", components=("EPXX", "EPYY", "EPZZ", "EPXY", "EPXZ", "EPYZ")
+)
+
+# For strains (Complex-3D)
+EEPS3DC = LocatedComponents(
+    phys=PHY.EPSI_C, type="ELNO", components=("EPXX", "EPYY", "EPZZ", "EPXY", "EPXZ", "EPYZ")
 )
 
 # For strains (Real-2D)
@@ -1006,6 +1014,14 @@ EGIG3DR = LocatedComponents(
     components=("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"),
 )
 
+# For stresses (Complex-3D)
+EGIG3DC = LocatedComponents(
+    phys=PHY.SIEF_C,
+    type="ELGA",
+    location="RIGI",
+    components=("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"),
+)
+
 # For stresses (Real-2D)
 EGIG2DR = LocatedComponents(
     phys=PHY.SIEF_R, type="ELGA", location="RIGI", components=("SIXX", "SIYY", "SIZZ", "SIXY")
@@ -1016,7 +1032,7 @@ EGIG2DC = LocatedComponents(
     phys=PHY.SIEF_C, type="ELGA", location="RIGI", components=("SIXX", "SIYY", "SIZZ", "SIXY")
 )
 
-# For equivalent stresses (Real-2D/3D)
+# For equivalent stresses (Real)
 ECOEQPG = LocatedComponents(
     phys=PHY.SIEF_R,
     type="ELGA",
@@ -1049,6 +1065,14 @@ ZVARCPG = LocatedComponents(phys=PHY.VARI_R, type="ELGA", location="MATER", comp
 # For strains (Real-3D)
 EGPS3DR = LocatedComponents(
     phys=PHY.EPSI_R,
+    type="ELGA",
+    location="RIGI",
+    components=("EPXX", "EPYY", "EPZZ", "EPXY", "EPXZ", "EPYZ"),
+)
+
+# For strains (Complex-3D)
+EGPS3DC = LocatedComponents(
+    phys=PHY.EPSI_C,
     type="ELGA",
     location="RIGI",
     components=("EPXX", "EPYY", "EPZZ", "EPXY", "EPXZ", "EPYZ"),
@@ -1134,6 +1158,11 @@ EENEISO = LocatedComponents(phys=PHY.ENER_R, type="ELGA", location="RIGI", compo
 
 # For nodal forces (Real-2D)
 EFOR2DR = LocatedComponents(phys=PHY.FORC_R, type="ELGA", location="RIGI", components=("FX", "FY"))
+
+# For nodal forces (Real-3D)
+EFOR3DR = LocatedComponents(
+    phys=PHY.FORC_R, type="ELGA", location="RIGI", components=("FX", "FY", "FZ")
+)
 
 # For body source in thermic
 ESOURCR = LocatedComponents(phys=PHY.SOUR_R, type="ELGA", location="RIGI", components=("SOUR",))
