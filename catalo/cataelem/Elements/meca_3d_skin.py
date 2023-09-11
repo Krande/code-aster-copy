@@ -405,7 +405,7 @@ class MECA_FACE3(Element):
             para_out=(
                 (SP.PFORC_R, LC.CFOR3DR),
                 (OP.TOU_INI_ELEM.PPRES_R, LC.CPRE3DR),
-                (SP.PDEPLEL, LC.ELDEP3D),
+                (SP.PDEPLEL, LC.CDEPL3D),
             ),
         ),
         OP.TOU_INI_ELGA(

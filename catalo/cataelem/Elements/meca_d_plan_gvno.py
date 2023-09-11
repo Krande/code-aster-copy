@@ -154,12 +154,6 @@ ECONTNO = LocatedComponents(
     phys=PHY.SIEF_R, type="ELNO", components=("SIXX", "SIYY", "SIZZ", "SIXY", "DISS")
 )
 
-
-EGVALO_R = LocatedComponents(
-    phys=PHY.VALO_R, type="ELGA", location="RIGI", components=("VALEUR", "GRAD_X", "GRAD_Y")
-)
-
-
 ZVARIPG = LocatedComponents(phys=PHY.VARI_R, type="ELGA", location="RIGI", components=("VARI",))
 
 
@@ -548,7 +542,7 @@ class MNDPTR6(Element):
                 (OP.TOU_INI_ELGA.PNEUT_F, EGNEUT_F),
                 (OP.TOU_INI_ELGA.PNEUT_R, EGNEUT_R),
                 (OP.TOU_INI_ELGA.PSIEF_R, ECONTPG),
-                (SP.PVALO_R, EGVALO_R),
+                (SP.PVALO_R, LC.EGTINIV),
                 (OP.TOU_INI_ELGA.PVARI_R, ZVARIPG),
             ),
         ),
