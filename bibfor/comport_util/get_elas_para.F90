@@ -24,7 +24,7 @@ subroutine get_elas_para(fami, j_mater, poum, ipg, ispg, &
                          e1_, e2_, e3_, &
                          nu12_, nu13_, nu23_, &
                          g1_, g2_, g3_, &
-                         BEHinteg, xyzgau_, &
+                         BEHinteg, &
                          ei_, nui_, gi_, &
                          e1i_, e2i_, e3i_, &
                          nu12i_, nu13i_, nu23i_, &
@@ -48,7 +48,6 @@ subroutine get_elas_para(fami, j_mater, poum, ipg, ispg, &
     character(len=16), intent(in) :: elas_keyword
     real(kind=8), optional, intent(in) :: time
     real(kind=8), optional, intent(in) :: temp
-    real(kind=8), optional, intent(in) :: xyzgau_(3)
     real(kind=8), optional, intent(out) :: e_, nu_, g_
     real(kind=8), optional, intent(out) :: ei_, nui_, gi_
     real(kind=8), optional, intent(out) :: e1_, e2_, e3_
@@ -148,17 +147,6 @@ subroutine get_elas_para(fami, j_mater, poum, ipg, ispg, &
         nb_para = nb_para+1
         para_name(nb_para) = 'TEMP'
         para_vale(nb_para) = temp
-    end if
-    if (present(xyzgau_)) then
-        nb_para = nb_para+1
-        para_name(nb_para) = 'X'
-        para_vale(nb_para) = xyzgau_(1)
-        nb_para = nb_para+1
-        para_name(nb_para) = 'Y'
-        para_vale(nb_para) = xyzgau_(2)
-        nb_para = nb_para+1
-        para_name(nb_para) = 'Z'
-        para_vale(nb_para) = xyzgau_(3)
     end if
     if (present(BEHinteg)) then
         if (.not. BEHinteg%l_varext_geom .and. (fami .ne. "XFEM")) then

@@ -48,19 +48,16 @@ subroutine te0121(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbPara = 3
-    character(len=8), parameter :: paraName(nbPara) = (/'X', 'Y', 'Z'/)
-    real(kind=8) :: paraVale(nbPara)
     integer, parameter :: nbResu = 2
     character(len=16), parameter :: resuName(nbResu) = (/'AMOR_ALPHA', &
                                                          'AMOR_BETA '/)
     real(kind=8) :: resuVale(nbResu)
     integer :: icodre(nbResu)
-    integer :: iret, nbddl, geomDime, nbParaEff
-    integer :: i, j, iGeomDime, kns, ks
-    integer :: jvMate, jvMateCod, jvGeom
+    integer :: iret, nbddl
+    integer :: i, j, kns, ks
+    integer :: jvMate, jvMateCod
     integer :: nbNode, iNode
-    real(kind=8) :: alpha, beta, vxyz
+    real(kind=8) :: alpha, beta
     integer :: matrRigiSize, matrResuSize, matrMassSize
     aster_logical :: lAbso
     aster_logical :: lRigiSyme, lMatrRigi, lMatrMass, lMatrResuSyme
@@ -125,22 +122,6 @@ subroutine te0121(option, nomte)
         matrRigiSize = itab(2)
     end if
 
-! - Access to geometry
-    call tecach('ONO', 'PGEOMER', 'L', iret, tecachNbVal, itab=itab)
-    jvGeom = itab(1)
-    geomDime = itab(2)/nbNode
-    ASSERT(geomDime .eq. 2 .or. geomDime .eq. 3)
-
-! - Get (average) coordinates of cell
-    nbParaEff = geomDime
-    do iGeomDime = 1, geomDime
-        vxyz = 0.d0
-        do iNode = 1, nbNode
-            vxyz = vxyz+zr(jvGeom+geomDime*(iNode-1)+iGeomDime-1)
-        end do
-        paraVale(iGeomDime) = vxyz/nbNode
-    end do
-
 ! - Get material parameters
     call jevech('PMATERC', 'L', jvMate)
     jvMateCod = zi(jvMate)
@@ -156,7 +137,7 @@ subroutine te0121(option, nomte)
     call pmfmats(jvMateCod, materPMF)
     resuVale = 0.d0
     call rcvalb('RIGI', 1, 1, '+', jvMateCod, materPMF, elasKeyword, &
-                nbParaEff, paraName, paraVale, &
+                0, ' ', [0.d0], &
                 nbResu, resuName, resuVale, &
                 icodre, 0, nan='NON')
     alpha = resuVale(1)

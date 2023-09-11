@@ -523,7 +523,7 @@ contains
 !
         do ipg = 1, hhoQuad%nbQuadPoints
             call get_elas_para(fami, imate, '+', ipg, 1, elas_id, elas_keyword, &
-                               e_=e, time=time, xyzgau_=hhoQuad%points(1:3, ipg))
+                               e_=e, time=time)
             coeff = coeff+e
         end do
 !
