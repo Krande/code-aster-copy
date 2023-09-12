@@ -333,6 +333,6 @@ PYBIND11_MODULE( libaster, mod ) {
     exportMedMeshToPython( mod );
     exportMedFamilyToPython( mod );
     exportMedVectorToPython( mod );
-    exportFieldCharacteristicsToPython( mod );
 #endif /* ASTER_HAVE_MED */
+    exportFieldCharacteristicsToPython( mod );
 };

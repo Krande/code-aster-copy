@@ -62,9 +62,9 @@ std::vector< med_int > MedField::getAllSupportEntitiesAtSequence( int numdt, int
         char defaultprofilename2[MED_NAME_SIZE + 1] = "";
         char defaultlocalizationname2[MED_NAME_SIZE + 1] = "";
         const med_geometry_type geotype = medTypes[i];
-        auto nbVal = MEDfieldnProfile( _filePtr.getFileId(), _name.c_str(), numdt, numit,
-                                       entitypeNC, geotype, defaultprofilename2,
-                                       defaultlocalizationname2 );
+        auto nbVal =
+            MEDfieldnProfile( _filePtr.getFileId(), _name.c_str(), numdt, numit, entitypeNC,
+                              geotype, defaultprofilename2, defaultlocalizationname2 );
         if ( nbVal != 0 ) {
             toReturn.push_back( entitypeNC );
             toReturn.push_back( geotype );
@@ -88,7 +88,7 @@ MedVectorPtr MedField::getValuesAtSequenceOnCellTypesList(
         throw std::runtime_error( "Sequential read not yet implemented" );
     }
     const med_entity_type entitype = MED_CELL;
-    const med_entity_type entitypes[2] = { MED_CELL, MED_NODE_ELEMENT } ;
+    const med_entity_type entitypes[2] = {MED_CELL, MED_NODE_ELEMENT};
     const int csit = _numdtNumitToSeq.at( numdt ).at( numit );
     med_int numdt2, numit2, meshnumdt, meshnumit;
     med_float dt;
@@ -121,8 +121,8 @@ MedVectorPtr MedField::getValuesAtSequenceOnCellTypesList(
     std::vector< MedProfilePtr > profsPtr;
     std::vector< int > nbElems2, starts2;
     int verif = 0, medType = -1;
-    for( int entIndex = 0; entIndex < 2; ++entIndex ) {
-        const med_entity_type entitype = entitypes[ entIndex ];
+    for ( int entIndex = 0; entIndex < 2; ++entIndex ) {
+        const med_entity_type entitype = entitypes[entIndex];
         bool foundSomething = false;
         cumulatedElem = 0;
         for ( int i = 0; i < medTypes.size(); ++i ) {
@@ -158,8 +158,8 @@ MedVectorPtr MedField::getValuesAtSequenceOnCellTypesList(
                         indirection.push_back( {nbElems[i], starts[i]} );
                         profsPtr.push_back( MedProfilePtr( nullptr ) );
                     } else {
-                        const auto profSize = MEDprofileSizeByName( _filePtr.getFileId(),
-                                                                    profilename );
+                        const auto profSize =
+                            MEDprofileSizeByName( _filePtr.getFileId(), profilename );
                         const auto &pair = splitEntitySet( profSize, rank, nbProcs );
                         auto &profilearray = profs.emplace_back( profSize );
                         MEDprofileRd( _filePtr.getFileId(), profilename, &profilearray[0] );
@@ -172,7 +172,7 @@ MedVectorPtr MedField::getValuesAtSequenceOnCellTypesList(
                                 if ( deb == -1 )
                                     deb = j + 1;
                                 medV->setElement( curElem - start + cumulatedElem,
-                                                _nbCmp * nintegrationpoint );
+                                                  _nbCmp * nintegrationpoint );
                                 ++taille;
                             }
                         }
@@ -183,14 +183,15 @@ MedVectorPtr MedField::getValuesAtSequenceOnCellTypesList(
             }
             cumulatedElem += nbCells;
         }
-        if( foundSomething ) {
+        if ( foundSomething ) {
             medType = entIndex;
             ++verif;
         }
     }
     // There must only be MED_CELL or MED_NODE_ELEMENT but not the two
     // A field is ELGA or ELNO but not the two.
-    if( verif != 1 ) throw std::runtime_error( "Error while reading med field on cells " + _name );
+    if ( verif != 1 )
+        throw std::runtime_error( "Error while reading med field on cells " + _name );
     medV->endDefinition();
     for ( int i = 0; i < profs.size(); ++i ) {
         const auto &nbNoT = totSizes[i];
@@ -214,8 +215,9 @@ MedVectorPtr MedField::getValuesAtSequenceOnCellTypesList(
             valVec = VectorReal( cmpPg * nbNoL, 0. );
             value = &valVec[0];
         }
-        MEDfieldValueAdvancedRd( _filePtr.getFileId(), _name.c_str(), numdt, numit, entitypes[ medType ],
-                                 geotype, medFilter.getPointer(), (unsigned char *)value );
+        MEDfieldValueAdvancedRd( _filePtr.getFileId(), _name.c_str(), numdt, numit,
+                                 entitypes[medType], geotype, medFilter.getPointer(),
+                                 (unsigned char *)value );
         if ( profPtr != nullptr ) {
             const auto &curProf = profs[i];
             const auto &size = curProf.size();

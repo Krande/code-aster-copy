@@ -39,6 +39,7 @@
 #include "med.h"
 // aslint: disable=C3010
 // aslint: disable=C3008
+// aslint: disable=C3012
 
 /**
  * @class MedVector
@@ -102,7 +103,7 @@ class MedVector {
     };
 
     /** @brief get component name */
-    const std::vector< std::string >& getComponentName() const { return _cmpName; };
+    const std::vector< std::string > &getComponentName() const { return _cmpName; };
 
     /** @brief get component number */
     int getComponentNumber() const { return _cmpNb; };
@@ -136,7 +137,7 @@ class MedVector {
     };
 
     /** @brief set component name */
-    void setComponentName( const std::vector< std::string >& cmpName ) {
+    void setComponentName( const std::vector< std::string > &cmpName ) {
         if ( cmpName.size() != _cmpNb )
             throw std::runtime_error( "Bad component number" );
         _cmpName = cmpName;

@@ -52,8 +52,8 @@ extern void DEFSSSPSSP( DISMOI, dismoi, const char *, STRING_SIZE, const char *,
 
 #define CALLO_CARCHA( a, b, c, d, e ) CALLOOOOO( CARCHA, carcha, a, b, c, d, e )
 extern void DEFSSSSS( CARCHA, carcha, const char *, STRING_SIZE, const char *, STRING_SIZE,
-                      const char *, STRING_SIZE, const char *, STRING_SIZE,
-                      const char *, STRING_SIZE );
+                      const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
+                      STRING_SIZE );
 
 #define CALL_FCLOSE( a ) CALLP( FCLOSE, fclose, a )
 extern void DEFP( FCLOSE, fclose, ASTERINTEGER * );

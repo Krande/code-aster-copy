@@ -154,20 +154,20 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base, &
         end if
 !
         call jeexin(matel//'.RELR', iret)
-        if(l_parallel_mesh) then
+        if (l_parallel_mesh) then
             iret2 = iret
             call asmpi_comm_vect("MPI_SUM", "I", sci=iret2)
-        endif
+        end if
         if (iret .gt. 0) then
             call jelira(matel//'.RELR', 'LONUTI', nbresu)
             if (nbresu .gt. 0) call jeveuo(matel//'.RELR', 'L', idlres)
             idimli = idimli+nbresu
         else
-            if(iret2 .eq. 0) then
+            if (iret2 .eq. 0) then
                 if (exiss1(1:3) .eq. 'NON') then
                     call utmess('F', 'ASSEMBLA_19')
                 end if
-            endif
+            end if
         end if
     end do
 !

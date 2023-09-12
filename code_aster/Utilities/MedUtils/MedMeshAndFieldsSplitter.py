@@ -1,7 +1,24 @@
 # coding=utf-8
 # --------------------------------------------------------------------
 # Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
-# This file is part of 
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+# --------------------------------------------------------------------
+# This file is part of
 #
 # code_aster is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,9 +35,9 @@
 # --------------------------------------------------------------------
 
 from . import MedFileReader, IncompleteMesh, MeshBalancer, MeshConnectionGraph, PtScotchPartitioner
-from ...Objects import FieldCharacteristics, SimpleFieldOnNodesReal, Result
-from ...Objects import SimpleFieldOnCellsReal
-from ...ObjectsExt.medctoaster import MYMED2ASTER_CONNECT, MED_TYPES, ASTER_TYPES
+from . import FieldCharacteristics, SimpleFieldOnNodesReal, Result
+from . import SimpleFieldOnCellsReal
+from . import MYMED2ASTER_CONNECT, MED_TYPES, ASTER_TYPES
 
 
 def splitMeshAndFieldsFromMedFile(filename, cellBalancer=False, nodeBalancer=False, outMesh=None):
@@ -95,7 +112,8 @@ def splitMeshAndFieldsFromMedFile(filename, cellBalancer=False, nodeBalancer=Fal
         toReturn += (nBalancer,)
     return toReturn
 
-def splitMedFileToResults(filename, fieldToRead, resultType, model = None):
+
+def splitMedFileToResults(filename, fieldToRead, resultType, model=None):
     """Split a MED mesh and MED fields from a filename and return Result
 
     Arguments:
@@ -167,19 +185,18 @@ def splitMedFileToResults(filename, fieldToRead, resultType, model = None):
                 fieldCmps = curField.getComponentVector()
                 maxNbGPNb = -1
                 for iCell, curCmpNum in enumerate(fieldCmps):
-                    gPNb = curCmpNum/cmpNb
+                    gPNb = curCmpNum / cmpNb
                     if int(gPNb) == gPNb:
                         gPNb = int(gPNb)
                     else:
                         raise NameError("Inconsistent Gauss point number")
                     maxNbGPNb = max(gPNb, maxNbGPNb)
-                sFOC = SimpleFieldOnCellsReal(mesh, loc, qt,
-                                              compName, maxNbGPNb, 1, True)
+                sFOC = SimpleFieldOnCellsReal(mesh, loc, qt, compName, maxNbGPNb, 1, True)
                 # Copy values in field
                 if loc == "ELNO":
                     assert len(fieldCmps) == mesh.getNumberOfCells()
                     for iCell, curCmpNum in enumerate(fieldCmps):
-                        gPNb = int(curCmpNum/cmpNb)
+                        gPNb = int(curCmpNum / cmpNb)
                         j = 0
                         posInNew = cumSizes[iCell]
                         cellType = mesh.getCellType(iCell)
@@ -191,7 +208,7 @@ def splitMedFileToResults(filename, fieldToRead, resultType, model = None):
                                 j += 1
                 else:
                     for iCell, curCmpNum in enumerate(fieldCmps):
-                        gPNb = int(curCmpNum/cmpNb)
+                        gPNb = int(curCmpNum / cmpNb)
                         j = 0
                         posInNew = cumSizes[iCell]
                         for iPt in range(gPNb):

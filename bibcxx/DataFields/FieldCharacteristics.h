@@ -36,11 +36,11 @@
  */
 class FieldCharacteristics {
   private:
-      std::string _fieldQuantity;
-      std::string _fieldSupport;
-      std::string _option;
-      std::string _parameter;
-      std::string _name;
+    std::string _fieldQuantity;
+    std::string _fieldSupport;
+    std::string _option;
+    std::string _parameter;
+    std::string _name;
 
   public:
     /**
@@ -53,27 +53,17 @@ class FieldCharacteristics {
      * @brief Constructor
      * @param fieldName field name
      */
-    FieldCharacteristics( const std::string& fieldName );
+    FieldCharacteristics( const std::string &fieldName );
 
-    const std::string& getQuantity() const {
-        return _fieldQuantity;
-    };
+    const std::string &getQuantity() const { return _fieldQuantity; };
 
-    const std::string& getLocalization() const {
-        return _fieldSupport;
-    };
+    const std::string &getLocalization() const { return _fieldSupport; };
 
-    const std::string& getName() const {
-        return _name;
-    };
+    const std::string &getName() const { return _name; };
 
-    const std::string& getOption() const {
-        return _option;
-    };
+    const std::string &getOption() const { return _option; };
 
-    const std::string& getParameter() const {
-        return _parameter;
-    };
+    const std::string &getParameter() const { return _parameter; };
 };
 
 #endif /* FIELDCHARACTERISTICS_H_ */

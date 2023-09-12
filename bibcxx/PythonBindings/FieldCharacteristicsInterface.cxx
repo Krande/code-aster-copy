@@ -29,8 +29,8 @@
 
 void exportFieldCharacteristicsToPython( py::module_ &mod ) {
 
-    py::class_< FieldCharacteristics, FieldCharacteristics::FieldCharacteristicsPtr >( mod,
-                                                                        "FieldCharacteristics" )
+    py::class_< FieldCharacteristics, FieldCharacteristics::FieldCharacteristicsPtr >(
+        mod, "FieldCharacteristics" )
         .def( "__pickling_disabled__", disable_pickling< FieldCharacteristics >() )
         // fake initFactoryPtr: created by subclasses
         .def( py::init( &initFactoryPtr< FieldCharacteristics, std::string > ) )

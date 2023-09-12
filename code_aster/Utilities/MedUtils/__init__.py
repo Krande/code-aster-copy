@@ -31,5 +31,10 @@ from ..base_utils import config
 if config.get("ASTER_HAVE_MED"):
     from ...Objects import MedFileReader, IncompleteMesh, MeshBalancer, MeshConnectionGraph
     from ...Objects import PtScotchPartitioner
+    from ...Objects import FieldCharacteristics, SimpleFieldOnNodesReal, Result
+    from ...Objects import SimpleFieldOnCellsReal
+    from .medtoasterconnectivity import MYMED2ASTER_CONNECT, MED_TYPES, ASTER_TYPES
 else:
     MedFileReader = IncompleteMesh = MeshBalancer = MeshConnectionGraph = PtScotchPartitioner = None
+    FieldCharacteristics = SimpleFieldOnNodesReal = Result = SimpleFieldOnCellsReal = None
+    MYMED2ASTER_CONNECT = MED_TYPES = ASTER_TYPES = None

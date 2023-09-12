@@ -22,9 +22,10 @@
  */
 
 #include "DataFields/FieldCharacteristics.h"
+
 #include "aster_fort_utils.h"
 
-FieldCharacteristics::FieldCharacteristics( const std::string& fieldName ): _name( fieldName ) {
+FieldCharacteristics::FieldCharacteristics( const std::string &fieldName ) : _name( fieldName ) {
     std::string fName( fieldName );
     fName.resize( 16, ' ' );
 
@@ -35,6 +36,6 @@ FieldCharacteristics::FieldCharacteristics( const std::string& fieldName ): _nam
     CALLO_CARCHA( fName, _fieldQuantity, _fieldSupport, _option, _parameter );
     _fieldQuantity = strip( _fieldQuantity );
     _fieldSupport = strip( _fieldSupport );
-    _option = strip(_option  );
+    _option = strip( _option );
     _parameter = strip( _parameter );
 };
