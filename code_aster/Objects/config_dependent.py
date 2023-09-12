@@ -47,6 +47,14 @@ except ImportError:
 
 
 try:
+    from libaster import CommGraph
+except ImportError:
+
+    class CommGraph(UnavailableObject):
+        pass
+
+
+try:
     from libaster import IncompleteMesh
 except ImportError:
 

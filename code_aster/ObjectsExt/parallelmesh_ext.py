@@ -24,14 +24,22 @@
 """
 
 import os.path as osp
+
 import numpy as np
 
 from ..Commands import CREA_MAILLAGE
 from ..Messages import UTMESS
-from ..Objects import ConnectionMesh, Mesh, ParallelMesh, PythonBool, ResultNaming, IncompleteMesh
-from ..Objects import CommGraph
+from ..Objects import (
+    CommGraph,
+    ConnectionMesh,
+    IncompleteMesh,
+    Mesh,
+    ParallelMesh,
+    PythonBool,
+    ResultNaming,
+)
 from ..Objects.Serialization import InternalStateBuilder
-from ..Utilities import MPI, ExecutionParameter, Options, injector, shared_tmpdir, force_list
+from ..Utilities import MPI, ExecutionParameter, Options, force_list, injector, shared_tmpdir
 from ..Utilities.MedUtils.MedMeshAndFieldsSplitter import splitMeshAndFieldsFromMedFile
 from . import mesh_builder
 

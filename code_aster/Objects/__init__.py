@@ -26,6 +26,7 @@ This module provides pybind11 DataStructures and low level objects.
 from libaster import *
 
 from .config_dependent import (
+    CommGraph,
     ConnectionMesh,
     IncompleteMesh,
     MGISBehaviour,
