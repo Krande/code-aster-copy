@@ -429,7 +429,7 @@ subroutine crnggc(chamnz)
     call jedema()
 #else
     character(len=14) :: kbid
-    kbid = numeqz
+    kbid = chamnz
 #endif
 !
 end subroutine

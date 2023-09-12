@@ -236,7 +236,7 @@ subroutine crnggn(chamnz)
     call jedema()
 #else
     character(len=14) :: k14
-    k14 = numddl
+    k14 = chamnz
 #endif
 !
 end subroutine

@@ -677,7 +677,9 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
             if ( !name2.empty() ) {
                 if ( mesh ) {
                     if ( mesh->isParallel() ) {
+#ifdef ASTER_HAVE_MPI
                         _dofDescription = std::make_shared< ParallelEquationNumbering >( name2 );
+#endif
                     } else {
                         _dofDescription = std::make_shared< EquationNumbering >( name2 );
                     }
