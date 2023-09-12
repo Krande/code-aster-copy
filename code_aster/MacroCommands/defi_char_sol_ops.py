@@ -19,6 +19,7 @@
 
 
 import aster
+from ..Messages import UTMESS
 from ..Cata.Syntax import _F
 from ..Commands import (
     AFFE_CHAR_MECA,
@@ -392,6 +393,10 @@ def defi_char_sol_ops(self, TITRE=None, INFO=None, **args):
                         )
     else:
         if lforcn == "OUI":
+
+            if args["NOM_CHAM_INIT"] not in args["RESU_INIT"].getFieldsNames():
+                UTMESS("F", "CALCULEL5_86", valk=args["NOM_CHAM_INIT"])
+
             if args["DDL_EXCLUS"] is not None:
                 __resuon = CREA_RESU(
                     OPERATION="CONV_RESU",

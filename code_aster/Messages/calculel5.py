@@ -159,13 +159,13 @@ Contactez le support technique.
     ),
     47: _(
         """
- PROJ_CHAMP, occurrence %(i1)d de VIS_A_VIS : 
- 
+ PROJ_CHAMP, occurrence %(i1)d de VIS_A_VIS :
+
  Le noeud %(k1)s est jugé distant de la maille sur laquelle il devrait être
- projeté. Comme la projection de ce noeud a déjà été faite lors d'une occurrence 
+ projeté. Comme la projection de ce noeud a déjà été faite lors d'une occurrence
  précédente, on ne tient pas compte de cette projection distante.
- 
- Conseil : il est cependant recommandé de vérifier l'affectation des groupes dans VIS_A_VIS. 
+
+ Conseil : il est cependant recommandé de vérifier l'affectation des groupes dans VIS_A_VIS.
 """
     ),
     48: _(
@@ -370,6 +370,12 @@ améliorer très significativement les performances de PROJ_CHAMP.
  Problème liste de mailles carte : %(k1)s  numéro entité : %(i1)d
   position dans liste : %(i2)d
   numéro de maille  : %(i3)d
+"""
+    ),
+    86: _(
+        """
+ Le champ %(k1)s  n'appartient pas au résultat qu'on essaie d'imposer comme
+  condition limite. Rajouter ce champ au préalable à travers un CALC_CHAMP.
 """
     ),
 }
