@@ -83,6 +83,18 @@ check_source:
   needs: ["prepare", "compile"]
   script:
     - singularity exec --bind $(pwd) --pwd $(pwd) ${SIF} .gitlabci/check_source.sh
+  artifacts:
+    paths:
+      - list_issues.txt
+    expire_in: 3 days
+  rules:
+    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH && $CI_COMMIT_BRANCH !~ $reg_debugging
+
+check_issues:
+  stage: test
+  needs: ["prepare", "check_source"]
+  script:
+    - singularity exec --bind $(pwd) --pwd $(pwd) ${SIF} .gitlabci/check_issues.sh
   rules:
     - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH && $CI_COMMIT_BRANCH !~ $reg_debugging
 
@@ -108,7 +120,7 @@ minimal_test:
 
 verification_test:
   stage: test
-  needs: ["prepare", "compile", "minimal_test"]
+  needs: ["prepare", "compile", "minimal_build", "minimal_test", "check_source", "doc_html"]
   script:
     - singularity exec --bind $(pwd) --pwd $(pwd) ${SIF}
         .gitlabci/test.sh
