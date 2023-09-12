@@ -14492,6 +14492,9 @@ class MedField:
             list: list of pair of entity type and geometry type
         """
 
+    def getComponentName(self):
+        """Get field component name"""
+
     def getComponentNumber(self):
         """Get field component number"""
 
@@ -14792,6 +14795,12 @@ class MedVector:
     def __pickling_disabled__(self):
         pass
 
+    def getComponentName(self):
+        """Get component name"""
+
+    def getComponentVector(self):
+        """Get component on element vector"""
+
     def getCumulatedSizesVector(self):
         """Get cumulated sizes vector
 
@@ -14808,3 +14817,38 @@ class MedVector:
 
     def size(self):
         """Get vector size, ie: number of elements (cells or nodes)"""
+
+
+# class FieldCharacteristics in libaster
+
+
+class FieldCharacteristics:
+    pass
+
+    # Method resolution order:
+    #     FieldCharacteristics
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self, arg0):
+        pass
+
+    def __pickling_disabled__(self):
+        pass
+
+    def getLocalization(self):
+        pass
+
+    def getName(self):
+        pass
+
+    def getOption(self):
+        pass
+
+    def getParameter(self):
+        pass
+
+    def getQuantity(self):
+        pass

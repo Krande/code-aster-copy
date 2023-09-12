@@ -24,6 +24,7 @@
    * - :py:class:`~code_aster.Objects.EvolutionParameter`
    * - :py:class:`~code_aster.Objects.ExternalStateVariable`
    * - :py:class:`~code_aster.Objects.ExternalVariableTraits`
+   * - :py:class:`~code_aster.Objects.FieldCharacteristics`
    * - :py:class:`~code_aster.Objects.ForceReal`
    * - :py:class:`~code_aster.Objects.FrictionAlgo`
    * - :py:class:`~code_aster.Objects.FrictionParameter`

@@ -138,6 +138,15 @@ Documentation of all other types.
 
 
 ********************************************************************************
+:py:class:`~code_aster.Objects.FieldCharacteristics` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.FieldCharacteristics
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
 :py:class:`~code_aster.Objects.ForceReal` object
 ********************************************************************************
 
