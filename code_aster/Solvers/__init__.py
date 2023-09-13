@@ -21,6 +21,7 @@
 Useful objects used for various problem solvers.
 """
 
+from .annealing import Annealing
 from .contact_manager import ContactManager
 from .convergence_manager import ConvergenceManager
 from .incremental_solver import IncrementalSolver

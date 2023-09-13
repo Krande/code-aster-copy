@@ -24,6 +24,11 @@
 
 #include "aster_fort_calcul.h"
 
+#include <stdexcept>
+#include <string>
+
+#include <assert.h>
+
 /**
  * @class BehaviourProperty
  * @brief Class to define behaviour
@@ -31,7 +36,7 @@
 
 /** @brief Create objects (maps) */
 void BehaviourProperty::createObjects() {
-    _COMPOR = std::make_shared< ConstantFieldOnCellsChar16 >( getName() + ".COMPOR    ", _mesh );
+    _COMPOR = std::make_shared< ConstantFieldOnCellsChar16 >( getName() + ".COMPOR", _mesh );
 
     _MULCOM = std::make_shared< ConstantFieldOnCellsChar16 >( getName() + ".MULCOM", _mesh );
 
@@ -48,7 +53,8 @@ BehaviourProperty::BehaviourProperty( const std::string name )
       _mesh( nullptr ),
       _CARCRI( nullptr ),
       _MULCOM( nullptr ),
-      _COMPOR( nullptr ) {};
+      _COMPOR( nullptr ),
+      _annealing( false ) {};
 
 /** @brief Constructor */
 BehaviourProperty::BehaviourProperty() : BehaviourProperty( ResultNaming::getNewResultName() ) {};
@@ -92,6 +98,7 @@ bool BehaviourProperty::build() {
 
         _MULCOM->updateValuePointers();
         _CARCRI->updateValuePointers();
+        detectFunctionnalities();
     } else if ( getModel()->isThermal() ) {
         CALLO_NXDOCC( modelName, comporName, base );
     } else {
@@ -116,4 +123,20 @@ bool BehaviourProperty::hasBehaviour( const std::string &behaviour ) const {
         }
     }
     return false;
+};
+
+void BehaviourProperty::detectFunctionnalities() {
+    // Detect annealing
+    const std::string question( "POST_INCR" );
+    const std::string typeco( "CARTE_CARCRI" );
+    ASTERINTEGER repi = 0, ier = 0;
+    JeveuxChar32 repk( " " );
+    const std::string arret( "F" );
+    CALLO_DISMOI( question, this->getConvergenceCriteria()->getName(), typeco, &repi, repk, arret,
+                  &ier );
+    _annealing = false;
+    auto retour = strip( repk.toString() );
+    if ( retour == "OUI" ) {
+        _annealing = true;
+    }
 };

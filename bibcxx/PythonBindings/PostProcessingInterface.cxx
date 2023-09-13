@@ -42,5 +42,20 @@ void exportPostProcessingToPython( py::module_ &mod ) {
                 FieldOnCellReals: hydration field at end of current time step
         )",
               py::arg( "temp_prev" ), py::arg( "temp_curr" ), py::arg( "time_prev" ),
-              py::arg( "time_curr" ), py::arg( "hydr_prev" ) );
+              py::arg( "time_curr" ), py::arg( "hydr_prev" ) )
+        .def( "computeAnnealing", &PostProcessing::computeAnnealing,
+              R"(
+            Modification of internal state variables for annealing
+
+            Arguments:
+                internVar (FieldOnNodesReal): internal state variables before annealing
+                time_curr (float): time at end of the step
+                externVarPrev (FieldOnCellsReal): external state variables at previous time
+                externVarCurr (FieldOnCellsReal): external state variables at current time
+
+            Returns:
+                FieldOnCellReals: internal state variables after annealing
+        )",
+              py::arg( "internVar" ), py::arg( "time_curr" ), py::arg( "externVarPrev" ),
+              py::arg( "externVarCurr" ) );
 };

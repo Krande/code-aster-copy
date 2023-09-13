@@ -60,3 +60,60 @@ FieldOnCellsRealPtr PostProcessing::computeHydration( const FieldOnNodesRealPtr 
 
     return hydr_curr;
 };
+
+/** @brief Compute annealing */
+FieldOnCellsRealPtr
+PostProcessing::computeAnnealing( const FieldOnCellsRealPtr internVar, const ASTERDOUBLE &time_curr,
+                                  const FieldOnCellsRealPtr &externVarPrev,
+                                  const FieldOnCellsRealPtr &externVarCurr ) const {
+
+    AS_ASSERT( _phys_problem->getModel()->isMechanical() );
+
+    // Get main parameters
+    auto currModel = _phys_problem->getModel();
+    auto currMater = _phys_problem->getMaterialField();
+    auto currCodedMater = _phys_problem->getCodedMaterial();
+    auto currBehaviour = _phys_problem->getBehaviourProperty();
+    auto currElemChara = _phys_problem->getElementaryCharacteristics();
+
+    // Select option to compute
+    std::string option = "REST_ECRO";
+
+    // Prepare computing: the main object
+    CalculPtr calcul = std::make_unique< Calcul >( option );
+    calcul->setModel( currModel );
+
+    // Add input fields
+    calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
+    calcul->addBehaviourField( currBehaviour );
+    if ( currMater->hasExternalStateVariable() ) {
+        if ( !externVarPrev ) {
+            AS_ABORT( "External state variables vector for beginning of time step is missing" )
+        }
+        if ( !externVarCurr ) {
+            AS_ABORT( "External state variables vector for end of time step is missing" )
+        }
+        calcul->addInputField( "PVARCMR", externVarPrev );
+        calcul->addInputField( "PVARCPR", externVarCurr );
+    }
+    calcul->addTimeField( "PTEMPSR", time_curr );
+
+    // Set current physical state
+    calcul->addInputField( "PVARIMR", internVar );
+
+    // Get Finite Element Descriptor
+    FiniteElementDescriptorPtr FEDesc = calcul->getFiniteElementDescriptor();
+
+    // Create output field
+    auto vari_curr = FieldOnCellsPtrBuilder< ASTERDOUBLE >( FEDesc, "ELGA", "VARI_R", currBehaviour,
+                                                            currElemChara );
+    // Add output field
+    calcul->addOutputField( "PVARIPR", vari_curr );
+
+    // Compute
+    if ( currModel->existsFiniteElement() ) {
+        calcul->compute();
+    };
+
+    return vari_curr;
+};

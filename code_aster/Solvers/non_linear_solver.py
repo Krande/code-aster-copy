@@ -21,6 +21,7 @@ from ..Messages import MessageLog
 from ..Objects import HHO, NonLinearResult, ThermalResult
 from ..Supervis import ConvergenceError, IntegrationError, SolverError
 from ..Utilities import DEBUG, logger, no_new_attributes, profile
+from .annealing import Annealing
 from .solver_features import SolverFeature
 from .solver_features import SolverOptions as SOP
 
@@ -120,6 +121,9 @@ class NonLinearSolver(SolverFeature):
         phys_pb.computeDOFNumbering()
         if phys_pb.getMaterialField().hasExternalStateVariableForLoad():
             phys_pb.computeReferenceExternalStateVariables()
+        # Add some hooks
+        if phys_pb.getBehaviourProperty().hasAnnealing():
+            self.use(Annealing())
         self.setInitialState()
         self.step_rank = 0
         self._storeRank(self.phys_state.time_curr)
@@ -226,10 +230,10 @@ class NonLinearSolver(SolverFeature):
                     self.phys_state.revert()
                     continue
                 self.phys_state.commit()
-                self.post_hooks()
-                self._storeRank(self.phys_state.time_curr)
                 self.stepper.completed()
                 self.current_matrix = solv.current_matrix
+                self.post_hooks()
+                self._storeRank(self.phys_state.time_curr)
                 self.step_rank += 1
 
     def post_hooks(self):

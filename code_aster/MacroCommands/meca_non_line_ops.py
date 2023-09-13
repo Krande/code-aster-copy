@@ -22,8 +22,8 @@ from ..Cata.Syntax import _F
 from ..Helpers import adapt_for_mgis_behaviour
 from ..Messages import UTMESS
 from ..Objects import (
-    FrictionType,
     HHO,
+    FrictionType,
     MechanicalDirichletBC,
     MechanicalLoadFunction,
     MechanicalLoadReal,
@@ -32,8 +32,9 @@ from ..Objects import (
     ParallelMechanicalLoadReal,
     PhysicalProblem,
 )
-from ..Solvers import ContactManager, NonLinearSolver, ProblemSolver, TimeStepper
+from ..Solvers import ContactManager, NonLinearSolver, ProblemSolver
 from ..Solvers import SolverOptions as SOP
+from ..Solvers import TimeStepper
 from ..Utilities import print_stats
 
 
@@ -93,8 +94,10 @@ def meca_non_line_ops(self, **args):
     _keywords_check(args)
     adapt_for_mgis_behaviour(self, args)
 
+    # Create the problem solver
     solver = ProblemSolver(NonLinearSolver(), NonLinearResult())
 
+    # Create the physical problem (and use it in problem solver)
     phys_pb = PhysicalProblem(args["MODELE"], args["CHAM_MATER"], args["CARA_ELEM"])
     solver.use(phys_pb)
 

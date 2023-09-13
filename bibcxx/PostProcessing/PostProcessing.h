@@ -40,7 +40,7 @@ class PostProcessing {
 
   public:
     /** @typedef PostProcessingPtr */
-    typedef std::shared_ptr< PostProcessing > PostProcessingPtr;
+    using PostProcessingPtr = std::shared_ptr< PostProcessing >;
 
     /** @brief Default constructor disabled */
     PostProcessing( void ) = delete;
@@ -55,10 +55,23 @@ class PostProcessing {
     /** @brief Destructor */
     ~PostProcessing() {};
 
+    /**
+     * @brief Compute hydration
+     * @return field for hydration
+     */
     FieldOnCellsRealPtr computeHydration( const FieldOnNodesRealPtr temp_prev,
                                           const FieldOnNodesRealPtr temp_curr,
                                           const ASTERDOUBLE time_prev, const ASTERDOUBLE time_curr,
                                           const FieldOnCellsRealPtr hydr_prev ) const;
+
+    /**
+     * @brief Compute annealing
+     * @return Internal state variables (VARI_ELGA)
+     */
+    FieldOnCellsRealPtr
+    computeAnnealing( const FieldOnCellsRealPtr internVar, const ASTERDOUBLE &time_curr,
+                      const FieldOnCellsRealPtr &externVarPrev = nullptr,
+                      const FieldOnCellsRealPtr &externVarCurr = nullptr ) const;
 };
 
 using PostProcessingPtr = std::shared_ptr< PostProcessing >;

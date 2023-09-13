@@ -71,7 +71,13 @@ Arguments:
     behaviour (str): behaviour name
 
 Returns:
-    bool: True if present else False.
+    bool: *True* if present, *False* otherwise.
         )",
-              py::arg( "behaviour" ) );
+              py::arg( "behaviour" ) )
+        .def( "hasAnnealing", &BehaviourProperty::hasAnnealing, R"(
+Returns a flag if annealing post-processing is enabled
+
+Returns:
+    bool: *True* if annealing is enabled, *False* otherwise.
+        )" );
 };

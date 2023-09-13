@@ -33,8 +33,6 @@
 #include "Materials/MaterialField.h"
 #include "Modeling/Model.h"
 
-#include <string>
-
 /**
  * @class BehaviourProperty
  * @brief Class to define behaviour
@@ -65,9 +63,15 @@ class BehaviourProperty : public DataStructure {
     /** @brief Map '.CARCRI' for parameters to integrate behaviours */
     ConstantFieldOnCellsRealPtr _CARCRI;
 
+    /** Flag for annealing */
+    bool _annealing;
+
   private:
     /** @brief Create objects (maps) */
     void createObjects();
+
+    /** @brief Detect functionnalities */
+    void detectFunctionnalities();
 
   public:
     /** @typedef Smart-pointer to behaviour class */
@@ -109,10 +113,14 @@ class BehaviourProperty : public DataStructure {
     /** @brief Set behavior ConstantField '.CARCRI' */
     ConstantFieldOnCellsRealPtr getConvergenceCriteria() const { return _CARCRI; };
 
+    /** @brief Detect non-linear behaviour */
     bool hasBehaviour( const std::string &behaviour ) const;
+
+    /** @brief Detect annealing as post-treatment */
+    bool hasAnnealing() const { return _annealing; };
 };
 
 /** @typedef Smart-pointer to behaviour class */
-typedef std::shared_ptr< BehaviourProperty > BehaviourPropertyPtr;
+using BehaviourPropertyPtr = std::shared_ptr< BehaviourProperty >;
 
 #endif
