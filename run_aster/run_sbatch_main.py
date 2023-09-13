@@ -85,9 +85,9 @@ TEMPLATE = """#!/bin/bash
 #SBATCH {opt_exclusive}
 
 # redirect output in the current directory
-#SBATCH --output={name}-%j.txt
+#SBATCH --output={output}
 
-{RUNASTER_ROOT}/bin/run_aster {study}
+{RUNASTER_ROOT}/bin/run_aster {run_aster_options} {study}
 """
 
 
@@ -102,6 +102,10 @@ def parse_args(argv):
     )
     parser.add_argument(
         "-n", "--dry-run", action="store_true", help="do not execute, just show the script content"
+    )
+    parser.add_argument("--ctest", action="store_true", help="pass the --ctest option to run_aster")
+    parser.add_argument(
+        "--output", action="store", help="output file (default: <export filename>-%j.txt)"
     )
     parser.add_argument(
         "file", metavar="FILE.export", help="Export file (.export) defining the calculation."
@@ -152,6 +156,7 @@ def main(argv=None):
     # initialized with default values
     addmem = CFG.get("addmem", 0.0)
     memory = export.get("memory_limit", 16384) + addmem
+    opts = "--ctest" if args.ctest else ""
     params = dict(
         name=osp.splitext(osp.basename(args.file))[0],
         mpi_nbcpu=export.get("mpi_nbcpu", 1),
@@ -161,8 +166,10 @@ def main(argv=None):
         memory_node=memory,
         opt_exclusive="",
         study=args.file,
+        run_aster_options=opts,
         RUNASTER_ROOT=RUNASTER_ROOT,
     )
+    params["output"] = args.output or params["name"] + "-%j.txt"
     check_parameters(params)
 
     logger.debug("Parameters: %s", params)

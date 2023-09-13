@@ -9,6 +9,12 @@ set_prefix() {
 
 set_prefix "${0}"
 
+use_sbatch=0
+cmd=()
+if [ $# -ge 1 ] && [ "$1" = "--sbatch" ]; then
+    use_sbatch=1
+    shift
+fi
 if [ $# -ne 1 ]; then
     echo "usage: ${0} study.export"
     exit 1
@@ -20,8 +26,22 @@ MESS_EXT=${MESS_EXT:-"mess"}
 
 export RUNASTER_ROOT="${prefix}"
 rm -f "${base}.{${MESS_EXT},code}"
-"${prefix}/bin/run_aster" --ctest "${export}" > "${base}.${MESS_EXT}" 2>&1
-iret=${?}
+cmd=( "${prefix}/bin/run_aster" )
+if [ ${use_sbatch} -eq 1 ]; then
+    if [ -f "${prefix}/bin/run_sbatch" ]; then
+        cmd=( "${prefix}/bin/run_sbatch" "--wait" "--output" "${base}.${MESS_EXT}" )
+    else
+        echo "no such file: ${prefix}/bin/run_sbatch, use 'run_aster'"
+    fi
+fi
+cmd+=( "--ctest" "${export}" )
+if [ ${use_sbatch} -eq 1 ]; then
+    "${cmd[@]}"
+    iret=${?}
+else
+    "${cmd[@]}" > "${base}.${MESS_EXT}" 2>&1
+    iret=${?}
+fi
 
 if [ ${iret} -eq 0 ] && [ ! -z "${ASTER_ONLY_FAILED_RESULTS}" ]; then
     rm -f "${base}".{${MESS_EXT},code}

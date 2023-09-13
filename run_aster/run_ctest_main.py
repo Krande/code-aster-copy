@@ -183,6 +183,9 @@ def parse_args(argv):
         default=False,
         help="keep only the results of tests in failure",
     )
+    parser.add_argument(
+        "--sbatch", action="store_true", default=False, help="call run_sbatch instead of run_aster"
+    )
     group = parser.add_argument_group("ctest options")
     group.add_argument(
         "--rerun-failed", action="store_true", help="run only the tests that failed previously"
@@ -262,9 +265,10 @@ def main(argv=None):
 
     testlist = osp.abspath(args.testlist) if args.testlist else ""
     excl = osp.abspath(args.exclude_testlist) if args.exclude_testlist else ""
+    opts = "--sbatch" if args.sbatch else ""
     if not args.rerun_failed:
         # create CTestTestfile.cmake
-        create_ctest_file(testlist, excl, osp.join(resutest, "CTestTestfile.cmake"))
+        create_ctest_file(testlist, excl, osp.join(resutest, "CTestTestfile.cmake"), opts)
     parallel = CFG.get("parallel", 0)
     labels = set()
     if not parallel:
@@ -290,13 +294,14 @@ def main(argv=None):
     return proc.returncode
 
 
-def create_ctest_file(testlist, exclude, filename):
+def create_ctest_file(testlist, exclude, filename, options):
     """Create the CTestTestfile.cmake file.
 
     Arguments:
         testlist (str): file containing a list of testcases.
         exclude (str): file containing a list of testcases to be excluded.
         filename (str): Destination for the 'ctest' file.
+        options (str): Additional command line options.
     """
     datadir = osp.normpath(osp.join(RUNASTER_ROOT, "share", "aster"))
     bindir = osp.normpath(osp.join(RUNASTER_ROOT, "bin"))
@@ -318,14 +323,14 @@ def create_ctest_file(testlist, exclude, filename):
         lexport = list(set(lexport).difference(excl))
 
     tag = CFG.get("version_tag", "")
-    text = [f"set(COMPONENT_NAME ASTER_{tag})", _build_def(bindir, datadir, lexport)]
+    text = [f"set(COMPONENT_NAME ASTER_{tag})", _build_def(bindir, datadir, lexport, options)]
     with open(filename, "w") as fobj:
         fobj.write("\n".join(text))
 
 
 CTEST_DEF = """
 set(TEST_NAME ${{COMPONENT_NAME}}_{testname})
-add_test(${{TEST_NAME}} {ASTERDATADIR}/run_aster_for_ctest {ASTERDATADIR}/tests/{testname}.export)
+add_test(${{TEST_NAME}} {ASTERDATADIR}/run_aster_for_ctest {options} {ASTERDATADIR}/tests/{testname}.export)
 set_tests_properties(${{TEST_NAME}} PROPERTIES
                      LABELS "${{COMPONENT_NAME}} {labels}"
                      PROCESSORS {processors}
@@ -345,7 +350,7 @@ zzzz401a
 """
 
 
-def _build_def(bindir, datadir, lexport):
+def _build_def(bindir, datadir, lexport, options):
     re_list = re.compile("P +testlist +(.*)$", re.M)
     re_nod = re.compile("P +mpi_nbnoeud +([0-9]+)", re.M)
     re_mpi = re.compile("P +mpi_nbcpu +([0-9]+)", re.M)
@@ -382,12 +387,15 @@ def _build_def(bindir, datadir, lexport):
         lab.append(f"nodes={nod:02d}")
         if testname in TEST_FILES_INTEGR:
             lab.append("SMECA_INTEGR")
+        if "sbatch" in options:
+            tim *= 10
         text.append(
             CTEST_DEF.format(
                 testname=testname,
                 labels=" ".join(sorted(lab)),
                 processors=mpi * thr,
                 timeout=int(tim * 1.1 * float(os.environ["FACMTPS"])),
+                options=options,
                 ASTERDATADIR=datadir,
             )
         )
