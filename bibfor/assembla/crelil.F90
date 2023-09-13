@@ -23,7 +23,6 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base, &
     implicit none
 !
 #include "jeveux.h"
-#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/isParallelMesh.h"
@@ -115,7 +114,7 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base, &
 !----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: iad, icomp, idimli, idlres
-    integer :: ili, imat, iresu, iret, iret1, iret2, n1
+    integer :: ili, imat, iresu, iret, iret1, n1
     integer :: nbgr, nbmo, nbresu, nbsup, ncmp
     character(len=24), pointer :: rerr(:) => null()
     aster_logical :: l_parallel_mesh
@@ -134,6 +133,7 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base, &
 !     -- VERIFICATION DES MATR_ELEM :
 !     -------------------------------
     l_parallel_mesh = isParallelMesh(mailla)
+    write (6, *) "nbmat", nbmat
     do imat = 1, nbmat
         matel = zk24(ilimat+imat-1) (1:19)
         call jeexin(matel//'.RERR', iret1)
@@ -153,17 +153,14 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base, &
             exiss1 = 'NON'
         end if
 !
+!       testing the presence of .RELR is not mandatory in parallel
         call jeexin(matel//'.RELR', iret)
-        if (l_parallel_mesh) then
-            iret2 = iret
-            call asmpi_comm_vect("MPI_SUM", "I", sci=iret2)
-        end if
         if (iret .gt. 0) then
             call jelira(matel//'.RELR', 'LONUTI', nbresu)
             if (nbresu .gt. 0) call jeveuo(matel//'.RELR', 'L', idlres)
             idimli = idimli+nbresu
         else
-            if (iret2 .eq. 0) then
+            if (.not. l_parallel_mesh) then
                 if (exiss1(1:3) .eq. 'NON') then
                     call utmess('F', 'ASSEMBLA_19')
                 end if
