@@ -183,8 +183,12 @@ def parse_args(argv):
         default=False,
         help="keep only the results of tests in failure",
     )
+    run_sbatch = osp.join(RUNASTER_ROOT, "bin", "run_sbatch")
     parser.add_argument(
-        "--sbatch", action="store_true", default=False, help="call run_sbatch instead of run_aster"
+        "--sbatch",
+        action="store_true",
+        default=False,
+        help=f"call run_sbatch instead of run_aster (see '{run_sbatch} --help' for specific options)",
     )
     group = parser.add_argument_group("ctest options")
     group.add_argument(
@@ -387,13 +391,15 @@ def _build_def(bindir, datadir, lexport, options):
         lab.append(f"nodes={nod:02d}")
         if testname in TEST_FILES_INTEGR:
             lab.append("SMECA_INTEGR")
+        procs = mpi * thr
         if "sbatch" in options:
             tim *= 10
+            procs = 1
         text.append(
             CTEST_DEF.format(
                 testname=testname,
                 labels=" ".join(sorted(lab)),
-                processors=mpi * thr,
+                processors=procs,
                 timeout=int(tim * 1.1 * float(os.environ["FACMTPS"])),
                 options=options,
                 ASTERDATADIR=datadir,

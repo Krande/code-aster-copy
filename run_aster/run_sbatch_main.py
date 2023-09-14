@@ -64,6 +64,10 @@ Use 'sbatch --help' for details and example below.
 
 EPILOG = """Example:
     sbatch --wckey=p11yb:aster --partition=bm FILE.export
+or:
+    export SBATCH_WCKEY=p11yb:aster
+    export SBATCH_PARTITION=bm
+    sbatch FILE.export
 """
 
 TEMPLATE = """#!/bin/bash
@@ -105,7 +109,7 @@ def parse_args(argv):
     )
     parser.add_argument("--ctest", action="store_true", help="pass the --ctest option to run_aster")
     parser.add_argument(
-        "--output", action="store", help="output file (default: <export filename>-%j.txt)"
+        "--output", action="store", help="output file (default: <export filename>-%%j.txt)"
     )
     parser.add_argument(
         "file", metavar="FILE.export", help="Export file (.export) defining the calculation."
