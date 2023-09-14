@@ -521,7 +521,7 @@ class ExtendedDiscreteComputation:
         # Compute rigidity matrix
         if matrix_type in ("PRED_ELASTIQUE", "ELASTIQUE"):
             matr_elem_rigi = self.getLinearStiffnessMatrix(
-                time=phys_state.time_curr, with_dual=False
+                time=phys_state.time_curr, varc_curr=phys_state.externVar, with_dual=False
             )
             codret = 0
         elif matrix_type == "PRED_TANGENTE":
