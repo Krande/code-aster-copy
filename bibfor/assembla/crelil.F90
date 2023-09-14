@@ -133,7 +133,6 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base, &
 !     -- VERIFICATION DES MATR_ELEM :
 !     -------------------------------
     l_parallel_mesh = isParallelMesh(mailla)
-    write (6, *) "nbmat", nbmat
     do imat = 1, nbmat
         matel = zk24(ilimat+imat-1) (1:19)
         call jeexin(matel//'.RERR', iret1)
