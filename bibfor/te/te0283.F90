@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) 2019 Christophe Durand - www.code-aster.org
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -151,7 +151,7 @@ subroutine te0283(option, nomte)
                 l = nno*(kp-1)
                 hydrgm(kp)=0.d0
                 do i = 1, nno
-                    hydrgm(kp)=hydrgm(kp)+zr(ihydr)*zr(ivf2+l+i-1)
+                    hydrgm(kp)=hydrgm(kp)+zr(ihydr-1+i)*zr(ivf2+l+i-1)
                 end do
             end do
         endif
