@@ -73,11 +73,11 @@ subroutine regeec(nomres, resgen, nomsst)
 !
     integer :: i, iad, ibid, ieq, ier, iord, j, jbid, k, llchab, i_ligr_ss
     integer :: llchol, llors, llprs, vali(2), nbbas, nbddg, nbmod(1), nbsst
-    integer :: neq, nno, numo, nusst, nutars, iadpar(6)
+    integer :: neq, nno, numo, nusst, nutars, iadpar(8)
     integer :: elim, neqet, neqred, lmapro, lsilia, lsst, lmoet, i1, k1
-    real(kind=8) :: freq, genek, genem, omeg2, rbid
+    real(kind=8) :: freq, genek, genem, omeg2, rbid, genec, amor
     character(len=8) :: kbid, basmod, mailla, lint, model_gene
-    character(len=16) :: depl, nompar(6), typres, quamod
+    character(len=16) :: depl, nompar(8), typres, quamod
     character(len=19) :: raid, numddl, chamne, nume_equa_gene
     character(len=14) :: nume_gene
     character(len=24) :: crefe(2), chamol, chamba
@@ -91,8 +91,8 @@ subroutine regeec(nomres, resgen, nomsst)
 !
 !-----------------------------------------------------------------------
     data depl/'DEPL            '/
-    data nompar/'FREQ', 'RIGI_GENE', 'MASS_GENE', 'OMEGA2', 'NUME_MODE',&
-     &              'TYPE_MODE'/
+    data nompar/'FREQ', 'RIGI_GENE', 'MASS_GENE', 'AMOR_GENE', 'OMEGA2',&
+     &            'NUME_MODE', 'AMOR_REDUIT', 'TYPE_MODE'/
 !-----------------------------------------------------------------------
 !
     call jemarq()
@@ -268,13 +268,15 @@ subroutine regeec(nomres, resgen, nomsst)
         call vtcrea(chamne, crefe, 'G', 'R', neq)
         call jeveuo(chamne//'.VALE', 'E', vr=vale)
 !
-        call rsadpa(resgen, 'L', 5, nompar, iord, &
+        call rsadpa(resgen, 'L', 7, nompar, iord, &
                     0, tjv=iadpar, styp=kbid)
         freq = zr(iadpar(1))
         genek = zr(iadpar(2))
         genem = zr(iadpar(3))
-        omeg2 = zr(iadpar(4))
-        numo = zi(iadpar(5))
+        genec = zr(iadpar(4))
+        omeg2 = zr(iadpar(5))
+        numo = zi(iadpar(6))
+        amor = zr(iadpar(7))
 !
 ! ----- BOUCLE SUR LES MODES PROPRES DE LA BASE
         if (elim .ne. 0) then
@@ -298,14 +300,16 @@ subroutine regeec(nomres, resgen, nomsst)
             call jelibe(chamba)
         end do
         call rsnoch(nomres, depl, i)
-        call rsadpa(nomres, 'E', 6, nompar, i, &
+        call rsadpa(nomres, 'E', 8, nompar, i, &
                     0, tjv=iadpar, styp=kbid)
         zr(iadpar(1)) = freq
         zr(iadpar(2)) = genek
         zr(iadpar(3)) = genem
-        zr(iadpar(4)) = omeg2
-        zi(iadpar(5)) = numo
-        zk16(iadpar(6)) = 'MODE_DYN'
+        zr(iadpar(4)) = geneC
+        zr(iadpar(5)) = omeg2
+        zi(iadpar(6)) = numo
+        zr(iadpar(7)) = amor
+        zk16(iadpar(8)) = 'MODE_DYN'
 !
         call jelibe(chamol)
     end do
