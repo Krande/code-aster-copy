@@ -467,7 +467,7 @@ def check_config(self):
     cfg = {}
     cfgext = self.env["CFG_EXT"]
     self.start_msg(f"Set parameters for 'config.{cfgext}'")
-    tmpdir = os.environ["TEMP"] if self.env.ASTER_PLATFORM_MINGW else "/tmp"
+    tmpdir = None if self.env.ASTER_PLATFORM_MINGW else "/tmp"
     if os.environ.get("ASTER_TMPDIR"):
         tmpdir = os.environ["ASTER_TMPDIR"]
     cfg["tmpdir"] = tmpdir
