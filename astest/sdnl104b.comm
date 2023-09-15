@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -294,7 +294,7 @@ TRAN_GE1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                        NORM_OBST = (1.,  0., 0.,),
                                        JEU = 1.E-4,
                                        RIGI_NOR = 1.E+8),
-                                 ARCHIVAGE=_F(INST=ARCHLIST, PAS_ARCH=10000000)
+                                 ARCHIVAGE=_F(INST=ARCHLIST,)
                              )
 #
 TRAN_GE2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
@@ -314,7 +314,7 @@ TRAN_GE2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                        NORM_OBST = (1., 0., 0.,),
                                        JEU = 1.E-4,
                                        RIGI_NOR = 1.E+8),
-                                 ARCHIVAGE=_F(INST=ARCHLIST, PAS_ARCH=10000000)
+                                 ARCHIVAGE=_F(INST=ARCHLIST,)
                              )
 
 #
@@ -338,7 +338,7 @@ TRAN_GE3=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                        NORM_OBST = (1., 0., 0.,),
                                        JEU = 1.E-4,
                                        RIGI_NOR = 1.E+8),
-                            ARCHIVAGE=_F( PAS_ARCH=10000000, INST=ARCHLIST),
+                            ARCHIVAGE=_F(INST=ARCHLIST),
                              )
 
 
