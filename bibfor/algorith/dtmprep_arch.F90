@@ -85,7 +85,7 @@ subroutine dtmprep_arch(sd_dtm_)
             end if
         end if
         call getvis('ARCHIVAGE', 'PAS_ARCH', iocc=1, scal=iparch, nbret=iret1)
-        if (iret1 .eq. 0) iparch = 1
+        if (iret1 .eq. 0) iparch = ismaem()-1
         if (iparch .lt. 0) iparch = ismaem()
     end if
 !
