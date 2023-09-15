@@ -30,36 +30,35 @@ module Metallurgy_type
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!
+
 ! - Type: parameters for behaviour
-!
     type META_Parameters
 ! ----- Keyword RELATION (steel, zirc, etc.)
         character(len=16) :: metaType = ' '
 ! ----- Keyword LOI_META
         character(len=16) :: metaLaw = ' '
 ! ----- Total number of internal state variables
-        integer           :: nbVari = 0
+        integer :: nbVari = 0
 ! ----- Number of phases
-        integer           :: nbPhase = 0
+        integer :: nbPhase = 0
 ! ----- Index of behaviour
-        integer           :: numeComp = 0
+        integer :: numeComp = 0
     end type META_Parameters
-!
-! - Type: for preparation of comportment
-!
+
+! - Metallurgy - Preparation - Map for parameters of behaviours (COMPOR_META)
     type META_PrepPara
 ! ----- Number of factor keywords
         integer :: nb_comp = 0
 ! ----- List of parameters
         type(META_Parameters), pointer :: para(:) => null()
     end type META_PrepPara
-!
+
+! - Parameters for austenite phase
     type META_AusteniteParameters
-        real(kind=8) :: lambda0
-        real(kind=8) :: qsr_k
-        real(kind=8) :: d10
-        real(kind=8) :: wsr_k
+        real(kind=8) :: lambda0 = 0.d0
+        real(kind=8) :: qsr_k = 0.d0
+        real(kind=8) :: d10 = 0.d0
+        real(kind=8) :: wsr_k = 0.d0
     end type META_AusteniteParameters
 !
     type META_TRCMartensiteLaw
@@ -80,19 +79,20 @@ module Metallurgy_type
         type(META_TRCMartensiteLaw) :: martensiteLaw
         type(META_TRCAusteniteGrain) :: austeniteGrain
     end type META_TRCParameters
-
 !
     type META_SteelParameters
         real(kind=8) :: ar3 = 0.d0
         real(kind=8) :: alpha = 0.d0
         real(kind=8) :: ms0 = 0.d0
+! Quasi-static temperature at which austenite transformation begins on heating.
         real(kind=8) :: ac1 = 0.d0
+        ! Quasi-static temperature at end of austenite transformation
         real(kind=8) :: ac3 = 0.d0
         real(kind=8) :: taux_1 = 0.d0
         real(kind=8) :: taux_3 = 0.d0
         aster_logical :: l_grain_size = ASTER_FALSE
         type(META_AusteniteParameters) :: austenite
-        type(META_TRCParameters)       :: trc
+        type(META_TRCParameters) :: trc
     end type META_SteelParameters
 !
     type META_ZircParameters
@@ -111,8 +111,8 @@ module Metallurgy_type
     end type META_ZircParameters
 !
     type META_MaterialParameters
-        type(META_SteelParameters)      :: steel
-        type(META_ZircParameters)       :: zirc
+        type(META_SteelParameters) :: steel
+        type(META_ZircParameters) :: zirc
     end type META_MaterialParameters
 !
 end module

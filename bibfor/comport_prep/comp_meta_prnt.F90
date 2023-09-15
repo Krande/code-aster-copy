@@ -44,8 +44,8 @@ subroutine comp_meta_prnt(comporMetaInfo)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iVari, mapZoneNume
-    integer :: nbVari, mapNbZone, nb_elem_zone, nt_vari
+    integer :: mapZoneNume, mapNbZone, nbElemZone
+    integer :: iVari, nbVari, ntVari, nbPhase
     character(len=16) :: metaLaw, metaType
     integer, pointer :: comporInfoInfo(:) => null()
     integer, pointer :: comporInfoZone(:) => null()
@@ -58,8 +58,8 @@ subroutine comp_meta_prnt(comporMetaInfo)
 
 ! - Access to informations
     call jeveuo(comporMetaInfo(1:19)//'.INFO', 'L', vi=comporInfoInfo)
-    nt_vari = comporInfoInfo(4)
-    if (nt_vari .eq. 0) then
+    ntVari = comporInfoInfo(4)
+    if (ntVari .eq. 0) then
         goto 99
     end if
     call utmess('I', 'METALLURGY1_1')
@@ -68,21 +68,23 @@ subroutine comp_meta_prnt(comporMetaInfo)
     call jeveuo(comporMetaInfo(1:19)//'.ZONE', 'L', vi=comporInfoZone)
 
     do mapZoneNume = 1, mapNbZone
-        nb_elem_zone = comporInfoZone(mapZoneNume)
-        if (nb_elem_zone .ne. 0) then
+        nbElemZone = comporInfoZone(mapZoneNume)
+        if (nbElemZone .ne. 0) then
 ! --------- Acces to list of name of internal variables
             call jeveuo(jexnum(comporMetaInfo(1:19)//'.VARI', mapZoneNume), &
                         'L', vk16=comporInfoVari)
             call jelira(jexnum(comporMetaInfo(1:19)//'.VARI', mapZoneNume), 'LONMAX', nbVari)
 
 ! --------- Get names of relation
-            metaType = comporInfoRela(2*(mapZoneNume-1)+1)
-            metaLaw = comporInfoRela(2*(mapZoneNume-1)+2)
+            metaType = comporInfoRela(3*(mapZoneNume-1)+1)
+            metaLaw = comporInfoRela(3*(mapZoneNume-1)+2)
+            read (comporInfoRela(3*(mapZoneNume-1)+3), '(I16)') nbPhase
 
 ! --------- Print name of internal variables
-            call utmess('I', 'METALLURGY1_4', si=nb_elem_zone)
+            call utmess('I', 'METALLURGY1_4', si=nbElemZone)
             call utmess('I', 'METALLURGY1_5', sk=metaType)
             call utmess('I', 'METALLURGY1_6', sk=metaLaw)
+            call utmess('I', 'METALLURGY1_8', si=nbPhase)
             call utmess('I', 'METALLURGY1_9', si=nbVari)
             do iVari = 1, nbVari
                 call utmess('I', 'COMPOR4_20', sk=comporInfoVari(iVari), si=iVari)

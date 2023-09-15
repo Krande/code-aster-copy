@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine comp_meta_read(ds_comporMeta)
+    subroutine comp_meta_read(metaPrepPara)
         use Metallurgy_type
-        type(META_PrepPara), intent(inout) :: ds_comporMeta
+        type(META_PrepPara), intent(inout) :: metaPrepPara
     end subroutine comp_meta_read
 end interface

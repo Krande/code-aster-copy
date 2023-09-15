@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nzcomp(jv_mater, metaPara, nume_comp, nb_phase, &
+subroutine nzcomp(jvMaterCode, metaPara, &
+                  numeComp, nbPhase, nbVari, &
                   dt10, dt21, inst2, &
                   tno0, tno1, tno2, &
-                  meta_prev, meta_curr)
+                  metaPrev, metaCurr)
 !
     use Metallurgy_type
 !
@@ -32,13 +33,13 @@ subroutine nzcomp(jv_mater, metaPara, nume_comp, nb_phase, &
 #include "asterfort/zedgar.h"
 #include "asterfort/Metallurgy_type.h"
 !
-    integer, intent(in) :: jv_mater
+    integer, intent(in) :: jvMaterCode
     type(META_MaterialParameters), intent(in) :: metaPara
-    integer, intent(in) :: nume_comp, nb_phase
+    integer, intent(in) :: numeComp, nbPhase, nbVari
     real(kind=8), intent(in) :: dt10, dt21, inst2
     real(kind=8), intent(in) :: tno0, tno1, tno2
-    real(kind=8), intent(in) :: meta_prev(*)
-    real(kind=8), intent(out) :: meta_curr(*)
+    real(kind=8), intent(in) :: metaPrev(nbVari)
+    real(kind=8), intent(out) :: metaCurr(nbVari)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,33 +49,34 @@ subroutine nzcomp(jv_mater, metaPara, nume_comp, nb_phase, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  jv_mater            : coded material address
+! In  jvMaterCode         : coded material address
 ! In  metaPara            : material parameters for metallurgy
-! In  nume_comp           : index of behaviour law for metallurgy
-! In  nb_phase            : number of phases
+! In  numeComp            : index of behaviour law for metallurgy
+! In  nbPhase             : number of phases
+! In  nbVari              : number of internal state variables
 ! In  tno0                : temperature at time N-1
 ! In  tno1                : temperature at time N
 ! In  tno2                : temperature at time N+1
 ! In  dt10                : increment of time [N-1, N]
 ! In  dt21                : increment of time [N, N+1]
 ! In  inst2               : value of time N+1
-! In  meta_prev           : value of internal state variable at previous time step
-! Out meta_curr           : value of internal state variable at current time step
+! In  metaPrev            : value of internal state variable at previous time step
+! Out metaCurr            : value of internal state variable at current time step
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    select case (nume_comp)
+    select case (numeComp)
 !
-    case (2)
-        call zacier(metaPara%steel, nb_phase, &
-                    tno0, tno1, tno2, &
-                    dt10, dt21, &
-                    meta_prev, meta_curr)
     case (1)
-        call zedgar(jv_mater, nb_phase, &
+        call zedgar(jvMaterCode, nbPhase, &
                     tno1, tno2, &
                     inst2, dt21, &
-                    meta_prev, meta_curr)
+                    metaPrev, metaCurr)
+    case (2)
+        call zacier(metaPara%steel, nbPhase, nbVari, &
+                    tno0, tno1, tno2, &
+                    dt10, dt21, &
+                    metaPrev, metaCurr)
     case default
         ASSERT(ASTER_FALSE)
     end select

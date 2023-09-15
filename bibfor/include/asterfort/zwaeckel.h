@@ -17,18 +17,16 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine nzcomp(jvMaterCode, metaPara, &
-                      numeComp, nbPhase, nbVari, &
-                      dt10, dt21, inst2, &
-                      tno0, tno1, tno2, &
-                      metaPrev, metaCurr)
+    subroutine zwaeckel(metaSteelPara, nbPhase, nbVari, &
+                        tpg0, tpg1, tpg2, &
+                        dt10, dt21, &
+                        metaPrev, metaCurr)
         use Metallurgy_type
-        integer, intent(in) :: jvMaterCode
-        type(META_MaterialParameters), intent(in) :: metaPara
-        integer, intent(in) :: numeComp, nbPhase, nbVari
-        real(kind=8), intent(in) :: dt10, dt21, inst2
-        real(kind=8), intent(in) :: tno0, tno1, tno2
-        real(kind=8), intent(in) :: metaPrev(*)
-        real(kind=8), intent(out) :: metaCurr(*)
-    end subroutine nzcomp
+        type(META_SteelParameters), intent(in) :: metaSteelPara
+        integer, intent(in) :: nbPhase, nbVari
+        real(kind=8), intent(in) :: tpg0, tpg1, tpg2
+        real(kind=8), intent(in) :: dt10, dt21
+        real(kind=8), intent(in) :: metaPrev(nbVari)
+        real(kind=8), intent(out) :: metaCurr(nbVari)
+    end subroutine zwaeckel
 end interface

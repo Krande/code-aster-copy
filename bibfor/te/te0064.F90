@@ -46,40 +46,40 @@ subroutine te0064(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=16) :: phase_type
+    character(len=16) :: metaType
     real(kind=8) :: dt10, dt21, inst2
     real(kind=8) :: tno1, tno0, tno2
-    integer :: nno, i_node, itempe, itempa, jvTime
-    integer :: imate, nb_vari, nume_comp, nb_phase
+    integer :: nbNode, iNode, itempe, itempa, jvTime
+    integer :: jvMater, nbVari, numeComp, nbPhase
     integer :: itempi
-    integer :: jv_phase_in, jv_phase_out, icompo
-    integer :: jv_mater
+    integer :: jvPhaseIn, jvPhaseOut
+    integer :: jvMaterCode
+    integer :: jvComporMeta
     type(META_MaterialParameters) :: metaPara
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI', nno=nno)
+    call elrefe_info(fami='RIGI', nno=nbNode)
 
 ! - Input/Output fields
-    call jevech('PMATERC', 'L', imate)
-    jv_mater = zi(imate)
+    call jevech('PMATERC', 'L', jvMater)
+    jvMaterCode = zi(jvMater)
     call jevech('PTEMPAR', 'L', itempa)
     call jevech('PTEMPER', 'L', itempe)
     call jevech('PTEMPIR', 'L', itempi)
     call jevech('PTIMMTR', 'L', jvTime)
-    call jevech('PPHASIN', 'L', jv_phase_in)
-    call jevech('PCOMPOR', 'L', icompo)
-    call jevech('PPHASNOU', 'E', jv_phase_out)
+    call jevech('PPHASIN', 'L', jvPhaseIn)
+    call jevech('PCOMPOR', 'L', jvComporMeta)
+    call jevech('PPHASNOU', 'E', jvPhaseOut)
 
-! - Metallurgical parameters
-    call jevech('PCOMPOR', 'L', icompo)
-    phase_type = zk16(icompo-1+1)
-    read (zk16(icompo-1+4), '(I16)') nume_comp
-    read (zk16(icompo-1+5), '(I16)') nb_phase
-    read (zk16(icompo-1+2), '(I16)') nb_vari
+! - Parameters from map
+    metaType = zk16(jvComporMeta-1+ZMETATYPE)
+    read (zk16(jvComporMeta-1+ZNUMECOMP), '(I16)') numeComp
+    read (zk16(jvComporMeta-1+ZNBPHASE), '(I16)') nbPhase
+    read (zk16(jvComporMeta-1+ZNBVARI), '(I16)') nbVari
 
 ! - Preparation
-    call nzcomp_prep(jv_mater, phase_type, metaPara)
+    call nzcomp_prep(jvMaterCode, metaType, metaPara)
 
 ! - Time parameters: 0 - 1 - 2
     dt10 = zr(jvTime+1)
@@ -87,18 +87,19 @@ subroutine te0064(option, nomte)
     inst2 = zr(jvTime)+dt21
 
 ! - Loop on nodes
-    do i_node = 1, nno
+    do iNode = 1, nbNode
 ! ----- Temperatures: 0 - 1 - 2
-        tno1 = zr(itempe+i_node-1)
-        tno0 = zr(itempa+i_node-1)
-        tno2 = zr(itempi+i_node-1)
+        tno1 = zr(itempe+iNode-1)
+        tno0 = zr(itempa+iNode-1)
+        tno2 = zr(itempi+iNode-1)
 
 ! ----- General switch
-        call nzcomp(jv_mater, metaPara, nume_comp, nb_phase, &
+        call nzcomp(jvMaterCode, metaPara, &
+                    numeComp, nbPhase, nbVari, &
                     dt10, dt21, inst2, &
                     tno0, tno1, tno2, &
-                    zr(jv_phase_in+nb_vari*(i_node-1)), &
-                    zr(jv_phase_out+nb_vari*(i_node-1)))
+                    zr(jvPhaseIn+nbVari*(iNode-1)), &
+                    zr(jvPhaseOut+nbVari*(iNode-1)))
     end do
 !
 end subroutine

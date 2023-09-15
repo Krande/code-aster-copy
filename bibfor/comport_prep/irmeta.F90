@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -94,16 +94,16 @@ subroutine irmeta(ifi, field_med, meta_elno, field_loca, model, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_zone, i_elem, i_pt, i_vari, i_vari_redu, i_spt
+    integer :: mapZoneNume, i_elem, i_pt, i_vari, i_vari_redu, i_spt
     integer :: nb_vari, nb_pt, nb_spt, nb_vari_zone
-    integer :: nb_vari_redu, nb_zone, nb_elem, nb_vari_maxi, nb_elem_mesh, nb_elem_zone
-    integer :: nt_vari, codret_dummy
+    integer :: nb_vari_redu, mapNbZone, nb_elem, nbVariMaxi, nbCellMesh, nbCellInZone
+    integer :: ntVari, codret_dummy
     integer :: posit, iret, affe_type, affe_indx, nume_elem, nbCmpDyna
     integer :: jv_elno_cesd, jv_elno_cesl, jv_elnr_cesd, jv_elnr_cesl, jv_elno, jv_elnr
     character(len=7) :: saux07
     character(len=8) :: saux08
     character(len=8), parameter :: base_name = '&&IRMETA'
-    character(len=19) :: compor, ligrel
+    character(len=19) :: comporMeta, ligrel
     character(len=19), parameter :: meta_elno_s = '&&IRMETA.VARIELGA_S'
     character(len=19), parameter :: meta_elnr = '&&IRMETA.VARIELGR'
     character(len=19), parameter :: meta_elnr_s = '&&IRMETA.VARIELGR_S'
@@ -121,9 +121,9 @@ subroutine irmeta(ifi, field_med, meta_elno, field_loca, model, &
     integer, pointer :: v_compor_desc(:) => null()
     integer, pointer :: v_compor_lima(:) => null()
     integer, pointer :: v_compor_lima_lc(:) => null()
-    character(len=19), parameter :: compor_info = '&&IRMETA.INFO'
-    integer, pointer :: v_info(:) => null()
-    integer, pointer :: v_zone(:) => null()
+    character(len=19), parameter :: comporInfo = '&&IRMETA.INFO'
+    integer, pointer :: comporInfoInfo(:) => null()
+    integer, pointer :: comporInfoZone(:) => null()
     character(len=16) :: field_type
 !
 ! --------------------------------------------------------------------------------------------------
@@ -134,41 +134,35 @@ subroutine irmeta(ifi, field_med, meta_elno, field_loca, model, &
     ASSERT(field_loca .eq. 'ELNO')
     codret = 0
     ligrel = model//'.MODELE'
-!
+
 ! - Get name of <CARTE> COMPORMETA
-!
-    call rsexch(' ', result, 'COMPORMETA', nume_store, compor, iret)
+    call rsexch(' ', result, 'COMPORMETA', nume_store, comporMeta, iret)
     if (iret .ne. 0) then
         codret = 400
         goto 99
     end if
-!
+
 ! - Prepare informations about internal variables
-!
-    call comp_meta_pvar(model, compor, compor_info)
-!
+    call comp_meta_pvar(model, comporMeta, comporInfo)
+
 ! - Access to informations
-!
-    call jeveuo(compor_info(1:19)//'.INFO', 'L', vi=v_info)
-    call jeveuo(compor_info(1:19)//'.ZONE', 'L', vi=v_zone)
-    nb_elem_mesh = v_info(1)
-    nb_zone = v_info(2)
-    nb_vari_maxi = v_info(3)
-    nt_vari = v_info(4)
-!
+    call jeveuo(comporInfo(1:19)//'.INFO', 'L', vi=comporInfoInfo)
+    call jeveuo(comporInfo(1:19)//'.ZONE', 'L', vi=comporInfoZone)
+    nbCellMesh = comporInfoInfo(1)
+    mapNbZone = comporInfoInfo(2)
+    nbVariMaxi = comporInfoInfo(3)
+    ntVari = comporInfoInfo(4)
+
 ! - Create list of internal variables and link to zone in <CARTE> COMPOR
-!
-    call comp_meca_uvar(compor_info, base_name, vari_redu, nb_vari_redu, codret)
+    call comp_meca_uvar(comporInfo, base_name, vari_redu, nb_vari_redu, codret)
     call jeveuo(vari_redu, 'L', vk16=v_vari_redu)
-!
+
 ! - Access to <CARTE> COMPOR
-!
-    call jeveuo(compor//'.DESC', 'L', vi=v_compor_desc)
-    call jeveuo(jexnum(compor//'.LIMA', 1), 'L', vi=v_compor_lima)
-    call jeveuo(jexatr(compor//'.LIMA', 'LONCUM'), 'L', vi=v_compor_lima_lc)
-!
+    call jeveuo(comporMeta//'.DESC', 'L', vi=v_compor_desc)
+    call jeveuo(jexnum(comporMeta//'.LIMA', 1), 'L', vi=v_compor_lima)
+    call jeveuo(jexatr(comporMeta//'.LIMA', 'LONCUM'), 'L', vi=v_compor_lima_lc)
+
 ! - Transform META_ELNO in META_ELNO_S
-!
     call celces(meta_elno, 'V', meta_elno_s)
     call jeveuo(meta_elno_s//'.CESD', 'L', jv_elno_cesd)
     call jeveuo(meta_elno_s//'.CESL', 'L', jv_elno_cesl)
@@ -195,30 +189,27 @@ subroutine irmeta(ifi, field_med, meta_elno, field_loca, model, &
 !
 ! - Fill META_ELNR_S on reduced list of internal variables
 !
-    do i_zone = 1, nb_zone
-        nb_elem_zone = v_zone(i_zone)
-        if (nb_elem_zone .ne. 0) then
-!
+    do mapZoneNume = 1, mapNbZone
+        nbCellInZone = comporInfoZone(mapZoneNume)
+        if (nbCellInZone .ne. 0) then
 ! --------- Get object to link zone to internal variables
-!
-            call codent(i_zone, 'G', saux08)
+            call codent(mapZoneNume, 'G', saux08)
             vari_link = base_name//saux08
             call jeveuo(vari_link, 'L', vi=v_vari_link)
-!
+
 ! --------- Access to current zone in CARTE
-!
-            affe_type = v_compor_desc(1+3+(i_zone-1)*2)
-            affe_indx = v_compor_desc(1+4+(i_zone-1)*2)
+            affe_type = v_compor_desc(1+3+(mapZoneNume-1)*2)
+            affe_indx = v_compor_desc(1+4+(mapZoneNume-1)*2)
             if (affe_type .eq. 3) then
                 nb_elem = v_compor_lima_lc(1+affe_indx)-v_compor_lima_lc(affe_indx)
                 posit = v_compor_lima_lc(affe_indx)
             elseif (affe_type .eq. 1) then
-                nb_elem = nb_elem_mesh
+                nb_elem = nbCellMesh
                 posit = 0
             else
                 ASSERT(.false.)
             end if
-            call jelira(jexnum(compor_info(1:19)//'.VARI', i_zone), 'LONMAX', nb_vari_zone)
+            call jelira(jexnum(comporInfo(1:19)//'.VARI', mapZoneNume), 'LONMAX', nb_vari_zone)
 !
 ! --------- Loop on elements in zone of CARTE
 !
@@ -270,22 +261,22 @@ subroutine irmeta(ifi, field_med, meta_elno, field_loca, model, &
                 cara_elem, field_type, nbCmpDyna, lfichUniq, codret)
 !
 99  continue
-!
+
 ! - Cleaning
-!
     call detrsd('CHAM_ELEM_S', meta_elno_s)
     call detrsd('CHAM_ELEM_S', meta_elnr_s)
     call detrsd('CHAM_ELEM_S', meta_elnr)
-    call jedetr(compor_info(1:19)//'.ZONE')
-    call jedetr(compor_info(1:19)//'.INFO')
-    call jedetr(compor_info(1:19)//'.ELEM')
-    call jedetr(compor_info(1:19)//'.RELA')
-    call jedetc('V', compor_info(1:19)//'.VARI', 1)
+    call jedetr(comporInfo(1:19)//'.ZONE')
+    call jedetr(comporInfo(1:19)//'.INFO')
+    call jedetr(comporInfo(1:19)//'.ELEM')
+    call jedetr(comporInfo(1:19)//'.RELA')
+    call jedetc('V', comporInfo(1:19)//'.VARI', 1)
+    call jedetc('V', comporInfo(1:19)//'.PHAS', 1)
     call jedetr(vari_redu)
     call jedetr(label_vxx)
     call jedetr(label_med)
-    do i_zone = 1, nb_zone
-        call codent(i_zone, 'G', saux08)
+    do mapZoneNume = 1, mapNbZone
+        call codent(mapZoneNume, 'G', saux08)
         vari_link = base_name//saux08
         call jedetr(vari_link)
     end do

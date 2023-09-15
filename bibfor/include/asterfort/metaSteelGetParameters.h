@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,9 +17,9 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine metaSteelGetParameters(jv_mater, metaSteelPara)
+    subroutine metaSteelGetParameters(jvMaterCode, metaSteelPara)
         use Metallurgy_type
-        integer, intent(in) :: jv_mater
+        integer, intent(in) :: jvMaterCode
         type(META_SteelParameters), intent(inout) :: metaSteelPara
     end subroutine metaSteelGetParameters
 end interface
