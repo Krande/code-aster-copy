@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -230,11 +230,7 @@ IMPR_RESU(UNITE=6, FORMAT='RESULTAT',
                             'X7','X8','X9','X10','X11','X12',
                             'X13','X14','X15','X16','X17','X18','X19','X20')))
 
-chPostRocheGrMa = POST_ROCHE(ZONE_ANALYSE=(_F(
-                                     GROUP_MA='TUYAU',
-                                     GROUP_NO_ORIG = 'A',
-                                    ),
-                                  ),
+chPostRocheGrMa = POST_ROCHE(ZONE_ANALYSE=(_F(GROUP_MA=("M2", "M1"), GROUP_NO_ORIG="A"),),
                     MODELE = modele,
                     CARA_ELEM=cara_elem,
                     CHAM_MATER=ch_mater,

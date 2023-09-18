@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -272,6 +272,50 @@ class PostRocheCommon():
                                  AFFE= affe)
         self.chCoude  = chCoude
         self.lGrmaCoude = list(set(lGrmaCoude))
+        
+        # vérification que l'on ne définit pas des coudes qui ne sont pas dans la zone analysée
+
+        if self.lGrmaCoude != [] and "TOUT" not in self.dicAllZones:
+            zone_ana = CREA_CHAMP(
+                OPERATION="AFFE",
+                TYPE_CHAM="ELNO_NEUT_R",
+                MODELE=self.model,
+                PROL_ZERO="OUI",
+                AFFE=(_F(GROUP_MA=self.dicAllZones["GROUP_MA"], NOM_CMP="X1", VALE=1.0),),
+            )
+
+            coudes = CREA_CHAMP(
+                OPERATION="AFFE",
+                TYPE_CHAM="ELNO_NEUT_R",
+                MODELE=self.model,
+                PROL_ZERO="OUI",
+                AFFE=(_F(GROUP_MA=self.lGrmaCoude, NOM_CMP="X1", VALE=-1.0),),
+            )
+
+            vericoude = CREA_CHAMP(
+                OPERATION="ASSE",
+                TYPE_CHAM="ELNO_NEUT_R",
+                MODELE=self.model,
+                PROL_ZERO="OUI",
+                ASSE=(
+                    _F(CHAM_GD=zone_ana, TOUT="OUI", NOM_CMP=("X1",)),
+                    _F(CHAM_GD=coudes, TOUT="OUI", NOM_CMP=("X1",), CUMUL="OUI"),
+                ),
+            )
+            tabvericoude = POST_ELEM(
+                MINMAX=_F(
+                    MODELE=self.model, CHAM_GD=vericoude, NOM_CMP=("X1",), GROUP_MA=self.lGrmaCoude
+                )
+            )
+
+            nrow = tabvericoude.get_nrow()
+            minX1 = tabvericoude["MIN_X1", nrow]
+            if minX1 < 0:
+                for i in range(nrow - 1):
+                    minX1 = tabvericoude["MIN_X1", i + 1]
+                    if minX1 < 0:
+                        UTMESS("A", "POSTROCHE_21", valk=tabvericoude["GROUP_MA", i + 1])
+                UTMESS("F", "POSTROCHE_20")
 
     def buildPression(self):
         """
@@ -1404,8 +1448,9 @@ class PostRocheCalc():
             tabInteg=POST_ELEM(MODELE=self.param.model,
                                         CHAM_GD=chCalcPrelim,
                                         INTEGRALE=integ);
-            deno = tabInteg['INTE_N',1]
-            nume = tabInteg['INTE_VY',1]
+            nrow = tabInteg.get_nrow()
+            deno = tabInteg["INTE_N", nrow]
+            nume = tabInteg["INTE_VY", nrow]
 
             # 1/T = nume/deno => T = deno/nume
             if nume == 0:
@@ -1481,7 +1526,8 @@ class PostRocheCalc():
                 dicAffe['GROUP_MA'] = zone.get('GROUP_MA')
 
             tabRessMax=POST_ELEM(MINMAX=mcfmax)
-            valRessMax = tabRessMax['MAX_X1',1]
+            nrow = tabRessMax.get_nrow()
+            valRessMax = tabRessMax["MAX_X1", nrow]
 
             dicAffe['VALE'] = valRessMax
             affe.append(dicAffe)
@@ -1586,12 +1632,13 @@ class PostRocheCalc():
                                           **self.param.dicAllZones
                                          ));
 
-        maxX1 = tabVeriSigV['MAX_X1',1]
-        maxX2 = tabVeriSigV['MAX_X2',1]
-        maxX3 = tabVeriSigV['MAX_X3',1]
-        maxX4 = tabVeriSigV['MAX_X4',1]
-        maxX5 = tabVeriSigV['MAX_X5',1]
-        maxX6 = tabVeriSigV['MAX_X6',1]
+        nrow = tabVeriSigV.get_nrow()
+        maxX1 = tabVeriSigV["MAX_X1", nrow]
+        maxX2 = tabVeriSigV["MAX_X2", nrow]
+        maxX3 = tabVeriSigV["MAX_X3", nrow]
+        maxX4 = tabVeriSigV["MAX_X4", nrow]
+        maxX5 = tabVeriSigV["MAX_X5", nrow]
+        maxX6 = tabVeriSigV["MAX_X6", nrow]
 
         if maxX1>0:
             if self.numeOrdre!= -1:
