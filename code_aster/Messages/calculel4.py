@@ -158,6 +158,11 @@ Risques et conseils :
    Ce champ n'a sans doute pas été produit par PROJ_CHAMP / METHODE='SOUS_POINT'
 """
     ),
+    27: _(
+        """
+EXTR_TABLE ne peut être que des champs réels.
+"""
+    ),
     43: _(
         """
  le NOM_PARA n'existe pas

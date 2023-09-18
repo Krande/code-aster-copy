@@ -20,22 +20,23 @@ subroutine op0173()
 !
     implicit none
 !
-#include "jeveux.h"
-#include "asterfort/copisd.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
+#include "asterc/putvir.h"
+#include "asterc/putvrr.h"
+#include "asterfort/copisd.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterc/putvir.h"
-#include "asterc/putvrr.h"
 #include "asterfort/sdmpic.h"
 #include "asterfort/tbcopi.h"
 #include "asterfort/tbimfi.h"
 #include "asterfort/tbliva.h"
 #include "asterfort/titre.h"
 #include "asterfort/utmess.h"
+#include "jeveux.h"
 !
 ! ----------------------------------------------------------------------
 !
@@ -48,6 +49,7 @@ subroutine op0173()
     real(kind=8) :: r8b, valr
     complex(kind=8) :: cbid, valc
     character(len=8) :: k8b, nomres, ctype, table
+    character(len=8) :: nomgd, tsca
     character(len=16) :: nomcmd, concep, typesd
     character(len=19) :: newtab, newta1
     character(len=24) :: para
@@ -119,6 +121,11 @@ subroutine op0173()
             'CHAM_NO_SDASTER' .or. typesd .eq. 'CARTE_SDASTER' .or. typesd &
             .eq. 'CHAM_ELEM') then
 !          ----------------------------------------
+        call dismoi('NOM_GD', valk, 'CHAMP', repk=nomgd)
+        call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
+        if (tsca .ne. 'R') then
+            call utmess('F', 'CALCULEL4_27')
+        end if
         call copisd('CHAMP_GD', 'G', valk, nomres)
 !
     else if (typesd .eq. 'MODE_MECA') then
