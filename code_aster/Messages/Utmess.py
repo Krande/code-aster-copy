@@ -305,7 +305,7 @@ Exception : %s
                 valr,
                 valk,
                 fmt_msg,
-                "".join(traceback.format_tb(sys.exc_info()[2])),
+                "".join(traceback.format_exc()),
                 msg,
                 contacter_assistance,
             )
@@ -536,6 +536,8 @@ Exception : %s
         Si silent==1, on n'émet pas de message, on ne s'arrete pas.
         """
         iret = 0
+        if sys.is_finalizing():
+            return iret
         if self.erreur_E:
             iret = 4
             self.erreur_E = False

@@ -367,7 +367,7 @@ def main(argv=None):
             except (OSError, KeyError):
                 expdir = create_temporary_dir(dir="/tmp")
             statfile = osp.join(expdir, "__status__")
-            basn = osp.basename(osp.splitext(args.file)[0])
+            basn = osp.basename(osp.splitext(args.file or "unnamed")[0])
             expected = export.get("expected_diag", [])
             for exp_i in split_export(export):
                 fexp = osp.join(expdir, basn + "." + str(exp_i.get("step")))
