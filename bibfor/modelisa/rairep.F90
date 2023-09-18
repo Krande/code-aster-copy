@@ -65,7 +65,7 @@ subroutine rairep(noma, ioc, km, rigi, nbgr, &
     integer :: i, ii
     integer :: ij, im, in, inoe, iret
     integer :: ldgm, ldgn, ldnm, ltyp, nb, nbma, ncg
-    integer :: nfg, ngn, nm, nn, nno, noemax, ntopo
+    integer :: nfg, ngn, nm, nn, noemax, ntopo
     integer :: numa
     real(kind=8) :: coef, dist, hc, r1, r2, r3
     real(kind=8) :: r4, r5, r6, rig3, rig4, rig45, rig46
@@ -97,7 +97,6 @@ subroutine rairep(noma, ioc, km, rigi, nbgr, &
 !
 !   Récupération du centre
     call getvr8('RIGI_PARASOL', 'COOR_CENTRE', iocc=ioc, nbval=0, nbret=ncg)
-    call getvem(noma, 'NOEUD', 'RIGI_PARASOL', 'NOEUD_CENTRE', ioc, 0, k8b, nno)
     call getvem(noma, 'GROUP_NO', 'RIGI_PARASOL', 'GROUP_NO_CENTRE', ioc, 0, k8b, ngn)
     xg = 0.0
     yg = 0.0
@@ -107,12 +106,6 @@ subroutine rairep(noma, ioc, km, rigi, nbgr, &
         xg = c(1)
         yg = c(2)
         zg = c(3)
-    else if (nno .ne. 0) then
-        call getvem(noma, 'NOEUD', 'RIGI_PARASOL', 'NOEUD_CENTRE', ioc, 1, nomnoe, nno)
-        call jenonu(jexnom(manono, nomnoe), inoe)
-        xg = vale(1+3*(inoe-1)+1-1)
-        yg = vale(1+3*(inoe-1)+2-1)
-        zg = vale(1+3*(inoe-1)+3-1)
     else if (ngn .ne. 0) then
         call getvem(noma, 'GROUP_NO', 'RIGI_PARASOL', 'GROUP_NO_CENTRE', ioc, 1, nomgr, ngn)
         call jeveuo(jexnom(magrno, nomgr), 'L', ldgn)

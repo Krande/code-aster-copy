@@ -41,8 +41,18 @@ JE-01-JUIL-2021 07:54:14
  FINSF
  %
  GROUP_MA
- M1                      
- M2       M3      
+ TOUT                    
+ M1       M2       M3      
+ FINSF
+ %
+ GROUP_MA
+ P1                    
+ P1      
+ FINSF
+ %
+ GROUP_MA
+ P2                    
+ P2      
  FINSF
  %
  FIN

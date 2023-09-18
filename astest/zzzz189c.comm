@@ -85,6 +85,7 @@ def LIST_CARA_CIRCONF(GROUP_MA, AXE, MAILLAGE, **args):
     vrep = NP.ones(3)
 
     LISTE_CARA = []
+    l_crea_groupma = []
     # On boucle sur les mailles du groupe de mailles GROUP_MA
 
     for ima in groupma:
@@ -125,10 +126,15 @@ def LIST_CARA_CIRCONF(GROUP_MA, AXE, MAILLAGE, **args):
             mon_dico = {}
             for cle in list(args["GRILLE"].keys()):
                 mon_dico[cle] = args["GRILLE"][cle]
-            mon_dico["MAILLE"] = nom_maille
+            mon_dico["GROUP_MA"] = nom_maille
             mon_dico["ANGL_REP_1"] = (alpha, beta)
 
             LISTE_CARA.append(mon_dico)
+
+            mon_dico_gr = {"MAILLE": nom_maille, "NOM": nom_maille}
+            l_crea_groupma.append(mon_dico_gr)
+
+    DEFI_GROUP(MAILLAGE=MAILLAGE, CREA_GROUP_MA=l_crea_groupma)
 
     return LISTE_CARA
 

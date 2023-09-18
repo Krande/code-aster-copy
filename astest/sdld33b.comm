@@ -72,11 +72,11 @@ MODELE = AFFE_MODELE(
 CARA = AFFE_CARA_ELEM(
     MODELE=MODELE,
     DISCRET=(
-        _F(SYME="OUI", CARA="K_T_D_L", MAILLE="E12", REPERE="GLOBAL", VALE=(1.0e3, 1.0, 1.0)),
+        _F(SYME="OUI", CARA="K_T_D_L", GROUP_MA="E12", REPERE="GLOBAL", VALE=(1.0e3, 1.0, 1.0)),
         _F(
             SYME="OUI",
             CARA="M_T_L",
-            MAILLE="E12",
+            GROUP_MA="E12",
             REPERE="GLOBAL",
             VALE=(
                 0.0,
@@ -102,11 +102,11 @@ CARA = AFFE_CARA_ELEM(
                 0.0,
             ),
         ),
-        _F(SYME="OUI", CARA="K_T_D_L", MAILLE="E23", REPERE="GLOBAL", VALE=(1.0e3, 1.0, 1.0)),
+        _F(SYME="OUI", CARA="K_T_D_L", GROUP_MA="E23", REPERE="GLOBAL", VALE=(1.0e3, 1.0, 1.0)),
         _F(
             SYME="OUI",
             CARA="M_T_L",
-            MAILLE="E23",
+            GROUP_MA="E23",
             REPERE="GLOBAL",
             VALE=(
                 0.0,
@@ -132,11 +132,11 @@ CARA = AFFE_CARA_ELEM(
                 0.0,
             ),
         ),
-        _F(SYME="OUI", CARA="K_T_D_L", MAILLE="E34", REPERE="GLOBAL", VALE=(2.0e3, 1.0, 1.0)),
+        _F(SYME="OUI", CARA="K_T_D_L", GROUP_MA="E34", REPERE="GLOBAL", VALE=(2.0e3, 1.0, 1.0)),
         _F(
             SYME="OUI",
             CARA="M_T_L",
-            MAILLE="E34",
+            GROUP_MA="E34",
             REPERE="GLOBAL",
             VALE=(
                 0.0,
@@ -162,11 +162,11 @@ CARA = AFFE_CARA_ELEM(
                 0.0,
             ),
         ),
-        _F(SYME="OUI", CARA="K_T_D_L", MAILLE="E45", REPERE="GLOBAL", VALE=(2.0e3, 1.0, 1.0)),
+        _F(SYME="OUI", CARA="K_T_D_L", GROUP_MA="E45", REPERE="GLOBAL", VALE=(2.0e3, 1.0, 1.0)),
         _F(
             SYME="OUI",
             CARA="M_T_L",
-            MAILLE="E45",
+            GROUP_MA="E45",
             REPERE="GLOBAL",
             VALE=(
                 0.0,
