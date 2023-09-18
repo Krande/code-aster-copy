@@ -2,7 +2,7 @@
 # --------------------------------------------------------------------
 # Copyright (c) 2013 Atlassian Corporation Pty Ltd
 # Copyright HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -47,15 +47,16 @@ import xml.dom.minidom
 __version__ = "1.0.3"
 
 
-class JunitXml(object):
+class JunitXml:
 
-    """ A class which is designed to create a junit test xml file.
-        Note: currently this class is designed to return the junit xml file
-        in a string format (through the dump method).
+    """A class which is designed to create a junit test xml file.
+    Note: currently this class is designed to return the junit xml file
+    in a string format (through the dump method).
     """
 
-    def __init__(self, testsuit_name, test_cases, total_tests=None,
-                 total_failures=None, total_time=None):
+    def __init__(
+        self, testsuit_name, test_cases, total_tests=None, total_failures=None, total_time=None
+    ):
         self.testsuit_name = testsuit_name
         self.test_cases = test_cases
         self.failing_test_cases = self._get_failing_test_cases()
@@ -66,29 +67,30 @@ class JunitXml(object):
             self.total_tests = len(self.test_cases)
         if total_failures is None:
             self.total_failures = len(self.failing_test_cases)
-        self.root = ET.Element("testsuite",
-                               {"name": str(self.testsuit_name),
-                                "failures": str(self.total_failures),
-                                "tests": str(self.total_tests)
-                               })
+        self.root = ET.Element(
+            "testsuite",
+            {
+                "name": str(self.testsuit_name),
+                "failures": str(self.total_failures),
+                "tests": str(self.total_tests),
+            },
+        )
         self.build_junit_xml()
         if self.total_time:
             self.root.set("time", "{:.2f}".format(self.total_time))
 
     def _get_failing_test_cases(self):
-        return set([case for case in self.test_cases if
-                    case.is_failure()])
+        return set([case for case in self.test_cases if case.is_failure()])
 
     def build_junit_xml(self):
-        """ create the xml tree from the given testsuite name and
-            testcase
+        """create the xml tree from the given testsuite name and
+        testcase
         """
-        total = 0.
+        total = 0.0
         for case in self.test_cases:
-            test_case_element = ET.SubElement(self.root,
-                                              "testcase",
-                                              {"name": str(case.name),
-                                               "time": str(case.time)})
+            test_case_element = ET.SubElement(
+                self.root, "testcase", {"name": str(case.name), "time": str(case.time)}
+            )
             if case.test_type:
                 elt = ET.Element(case.test_type)
                 elt.text = case.contents
@@ -99,7 +101,7 @@ class JunitXml(object):
         self.total_time = self.total_time or total
 
     def dump(self, pretty=True):
-        """ returns a string representation of the junit xml tree. """
+        """returns a string representation of the junit xml tree."""
         out = ET.tostring(self.root, encoding="utf-8")
         if pretty:
             try:
@@ -110,11 +112,11 @@ class JunitXml(object):
         return out
 
 
-class TestCase(object):
+class TestCase:
 
-    """ A junit test case representation class.
-            The JunitXml accepts a set of these and uses them to create
-        the junit test xml tree
+    """A junit test case representation class.
+        The JunitXml accepts a set of these and uses them to create
+    the junit test xml tree
     """
 
     def __init__(self, name, contents, message=None, test_type="", time=0):
@@ -127,5 +129,5 @@ class TestCase(object):
         self.time = time
 
     def is_failure(self):
-        """ returns True if this test case is a 'failure' type """
+        """returns True if this test case is a 'failure' type"""
         return self.test_type == "failure"

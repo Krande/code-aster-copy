@@ -31,6 +31,7 @@ Build some data files (dest: share/aster)
 - 'run_aster': script that executes code_aster.
 - 'run_aster_for_ctest': script that executes code_aster used by 'run_ctest'.
 - 'run_ctest': script that executes a list of testcases using 'ctest'.
+- 'run_sbatch': script that executes code_aster through sbatch.
 """
 
 import getpass
@@ -246,10 +247,11 @@ def build(self):
         self.symlink_as("${PREFIX}/share/aster/image", self.env.singularityimage)
 
     # without substitution
+    scripts = ["run_aster", "run_ctest"]
+    if self.env.PROG_sbatch:
+        scripts.append("run_sbatch")
     self.install_files(
-        self.env.BINDIR,
-        [self.path.get_src().find_node(src) for src in ("run_aster", "run_ctest")],
-        chmod=Utils.O755,
+        self.env.BINDIR, [self.path.get_src().find_node(src) for src in scripts], chmod=Utils.O755
     )
     self.install_files(
         self.env.ASTERDATADIR,
@@ -308,7 +310,7 @@ def env2dict(self, src):
     dico["LD_LIBRARY_PATH"] = sep.join(ld_path)
     dico["PYTHONPATH"] = sep.join(py_path)
     dico["SRC"] = src
-    dico["FC"] = env.FC[0]
+    dico["FC"] = " ".join(env.FC)
     flags = [" ".join(env[i]) for i in list(env.keys()) if i.startswith("FCFLAGS")]
     dico["FCFLAGS"] = " ".join(flags)
     dico["BUILD_ENV"] = ""
@@ -462,7 +464,7 @@ def check_config(self):
         self.check_mpiexec()
         self.check_mpi_get_rank()
     cfg.update(self._extract_keys("CFGJS_"))
-    cfg["FC"] = self.env["FC"][0]
+    cfg["FC"] = " ".join(self.env["FC"])
     cfg["FCFLAGS"] = self.env["FCFLAGS"]
     cfg["exectool"] = {}
     self.end_msg("done")
@@ -504,7 +506,11 @@ def check_mpiexec(self):
     mpiexec = "mpiexec"
     mpicmd = [mpiexec]
     root_option = []
-    if getpass.getuser() == "root":
+    try:
+        user = getpass.getuser()
+    except KeyError:
+        user = "root"
+    if user == "root":
         if (
             self._call_cmd(
                 "Check for mpiexec flag '--allow-run-as-root'",
@@ -623,6 +629,8 @@ def check_external_programs(self):
     _check_prog(self, "gracebat", ["gracebat"], mandatory=self.options.with_prog_gracebat)
 
     _check_prog(self, "mdump", ["mdump"], mandatory=self.options.with_prog_mdump)
+
+    _check_prog(self, "sbatch", ["sbatch"], mandatory=False)
 
     dict_ext = self._extract_keys("PROG_")
     self.env["EXTERNAL_PROGRAMS"] = dict_ext

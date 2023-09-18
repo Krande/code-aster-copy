@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# Use 'run_sbatch --help' for detailed description of the options.
+
+set_prefix() {
+    local this=$(readlink -n -f "$1")
+    prefix=$(dirname $(dirname "${this}"))
+}
+
+set_prefix "${0}"
+
+export RUNASTER_ROOT="${prefix}"
+source "${prefix}/share/aster/profile.sh"
+python3 -m run_aster.run_sbatch_main "${@}"
+exit ${?}
