@@ -456,6 +456,8 @@ subroutine detrsd(typesd, nomsd)
         call jedetr(k19//'.DOMJ')
         call jedetr(k19//'.SEND')
         call jedetr(k19//'.RECV')
+        call jedetr(k19//'.PGID')
+        call jedetr(k19//'.GCOM')
         !
 !     ------------------------------------------------------------------
 !

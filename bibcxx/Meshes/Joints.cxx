@@ -27,16 +27,62 @@
 
 #ifdef ASTER_HAVE_MPI
 
+#include "aster_mpi.h"
+
+#include "ParallelUtilities/AsterMPI.h"
+
+#include <algorithm>
+
 Joints::Joints() : Joints( DataStructureNaming::getNewName() ) {};
 
 Joints::Joints( const std::string name )
     : DataStructure( name, 19, "DOMJOINTS" ),
       _domj( JeveuxVectorLong( getName() + ".DOMJ" ) ),
       _send( JeveuxCollectionLong( getName() + ".SEND" ) ),
-      _recv( JeveuxCollectionLong( getName() + ".RECV" ) ) {};
+      _recv( JeveuxCollectionLong( getName() + ".RECV" ) ),
+      _procGroupIds( JeveuxVectorShort( getName() + ".PGID" ) ),
+      _groupComm( JeveuxVectorLong( getName() + ".GCOM" ) ) {
+    buildGroup();
+};
+
+void Joints::buildGroup() {
+    _procGroupIds->deallocate();
+    _groupComm->deallocate();
+    const auto aster_comm = aster_get_comm_world();
+    const MPI_Comm comm = aster_comm->id;
+    int rank, size;
+    aster_get_mpi_info( aster_comm, &rank, &size );
+    VectorInt toGather, vecOut, idsInParent, groupProcIds;
+    if ( _domj->exists() )
+        toGather.push_back( rank );
+    else
+        toGather.push_back( -1 );
+    AsterMPI::all_gather( toGather, vecOut );
+    int cmpt = 0;
+    for ( auto id : vecOut ) {
+        if ( id != -1 ) {
+            idsInParent.push_back( cmpt );
+            groupProcIds.push_back( id );
+            ++cmpt;
+        } else {
+            idsInParent.push_back( -1 );
+        }
+    }
+    *_procGroupIds = idsInParent;
+
+    if ( _procGroupIds->exists() ) {
+        _jointsMPIGroup = MPIGroupPtr( new MPIGroup() );
+        _jointsMPIGroup->buildFromProcsVector( comm, groupProcIds );
+        _groupComm->allocate( 1 );
+        const auto tmp = MPI_Comm_c2f( _jointsMPIGroup->getCommunicator() );
+        ( *_groupComm )[0] = tmp;
+    }
+};
 
 void Joints::setOppositeDomains( const VectorLong &oppositeDomains ) {
-    ( *_domj ) = oppositeDomains;
+    if ( oppositeDomains.size() != 0 )
+        ( *_domj ) = oppositeDomains;
+    buildGroup();
 };
 
 const JeveuxVectorLong &Joints::getOppositeDomains() const {

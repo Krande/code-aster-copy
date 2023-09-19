@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine build_tree_comm(domdist, nbdom, comm, tag)
+subroutine build_tree_comm(domdist, nbdom, pgid, mpicou, comm, tag)
 !
     use sort_module
 !
@@ -34,6 +34,8 @@ subroutine build_tree_comm(domdist, nbdom, comm, tag)
 #include "jeveux.h"
 !
     integer, intent(in) :: domdist(*), nbdom
+    integer(kind=4), intent(in) :: pgid(*)
+    mpi_int :: mpicou
     integer, intent(out) :: comm(*), tag(*)
 !
 !---------------------------------------------------------------------------------------------------
@@ -45,10 +47,11 @@ subroutine build_tree_comm(domdist, nbdom, comm, tag)
 #ifdef ASTER_HAVE_MPI
 !
     integer :: rank, nbproc, nbdist_tot, i_proc, max_nbdom, nb_comm, nbdom_inf, domtmp(50)
-    integer :: dom1, dom2, i_dom, ind, nb_comm_loc, j_dom
-    mpi_int :: mrank, msize, mpicou, count_send, count_recv
+    integer :: dom1, dom2, i_dom, ind, nb_comm_loc, j_dom, valtmp
+    mpi_int :: mrank, msize, count_send, count_recv, mpicow, mpicom
     aster_logical :: find
     integer, pointer :: v_nbdist(:) => null()
+    integer, pointer :: v_pgidinv(:) => null()
     integer, pointer :: v_deca(:) => null()
     integer, pointer :: v_dist(:) => null()
     integer, pointer :: v_send(:) => null()
@@ -59,10 +62,28 @@ subroutine build_tree_comm(domdist, nbdom, comm, tag)
 !
     call jemarq()
 !
-    call asmpi_comm('GET', mpicou)
+    call asmpi_comm('GET', mpicow)
     call asmpi_info(rank=mrank, size=msize)
     rank = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
+! --- On créé l'inverse de pgid
+!     Rappel : pgid donne le numéro de proc local à partir du global
+    AS_ALLOCATE(vi=v_pgidinv, size=nbproc)
+    if (nbdom .ne. 0) then
+        do i_dom = 1, nbproc
+            valtmp = pgid(i_dom)
+            if (valtmp .ne. -1) then
+                v_pgidinv(valtmp+1) = i_dom-1
+            end if
+        end do
+        call asmpi_comm('SET', mpicou)
+        call asmpi_info(rank=mrank, size=msize)
+        rank = to_aster_int(mrank)
+        nbproc = to_aster_int(msize)
+        mpicom = mpicou
+    else
+        goto 999
+    end if
 !
     ASSERT(nbdom < 100)
     comm(1:nbdom) = -1
@@ -73,9 +94,10 @@ subroutine build_tree_comm(domdist, nbdom, comm, tag)
     domtmp = -1
     do i_dom = 1, nbdom
         ASSERT(domdist(i_dom) >= 0)
-        if (domdist(i_dom) > rank) then
+        valtmp = pgid(domdist(i_dom)+1)
+        if (valtmp > rank) then
             nbdom_inf = nbdom_inf+1
-            domtmp(nbdom_inf) = domdist(i_dom)
+            domtmp(nbdom_inf) = valtmp
         end if
     end do
     call sort_i8(domtmp, nbdom_inf)
@@ -83,7 +105,7 @@ subroutine build_tree_comm(domdist, nbdom, comm, tag)
     AS_ALLOCATE(vi=v_nbdist, size=nbproc)
     count_send = to_mpi_int(1)
     count_recv = count_send
-    call asmpi_allgather_i([nbdom_inf], count_send, v_nbdist, count_recv, mpicou)
+    call asmpi_allgather_i([nbdom_inf], count_send, v_nbdist, count_recv, mpicom)
     max_nbdom = maxval(v_nbdist)
     AS_ALLOCATE(vi=v_deca, size=nbproc)
 !
@@ -101,7 +123,7 @@ subroutine build_tree_comm(domdist, nbdom, comm, tag)
     v_send(1:nbdom_inf) = domtmp(1:nbdom_inf)
     count_send = to_mpi_int(max_nbdom)
     count_recv = count_send
-    call asmpi_allgather_i(v_send, count_send, v_recv, count_recv, mpicou)
+    call asmpi_allgather_i(v_send, count_send, v_recv, count_recv, mpicom)
     AS_ALLOCATE(vi=v_dist, size=nbdist_tot)
 !
     do i_proc = 1, nbproc
@@ -152,7 +174,9 @@ subroutine build_tree_comm(domdist, nbdom, comm, tag)
     do i_dom = 1, nbdom
         dom1 = comm(i_dom)
         do j_dom = 1, nbdom
-            if (dom1 == domdist(j_dom)) then
+            ! valtmp = v_pgidinv(domdist(j_dom))
+            valtmp = pgid(domdist(j_dom)+1)
+            if (dom1 == valtmp) then
                 comm(i_dom) = j_dom
                 exit
             end if
@@ -165,8 +189,10 @@ subroutine build_tree_comm(domdist, nbdom, comm, tag)
     AS_DEALLOCATE(vi=v_recv)
     AS_DEALLOCATE(vi=v_dist)
 999 continue
+    AS_DEALLOCATE(vi=v_pgidinv)
     AS_DEALLOCATE(vi=v_deca)
     AS_DEALLOCATE(vi=v_nbdist)
+    call asmpi_comm('SET', mpicow)
     call jedema()
 #else
     if (nbdom > 0) then

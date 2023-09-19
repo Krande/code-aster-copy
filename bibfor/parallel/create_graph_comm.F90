@@ -47,11 +47,14 @@ subroutine create_graph_comm(object, type, nb_comm, comm, tag)
 !
     character(len=8) :: k8bid
     character(len=19) :: k19
-    character(len=24) :: k24
+    character(len=24) :: k24, pgid, gcom
     integer :: iret
     integer, pointer :: v_domdis(:) => null()
+    integer(kind=4), pointer :: v_pgid(:) => null()
+    integer, pointer :: v_gcom(:) => null()
     integer, pointer :: v_comm(:) => null()
     integer, pointer :: v_tag(:) => null()
+    mpi_int :: mpicou
 !
     call jemarq()
 !
@@ -60,12 +63,18 @@ subroutine create_graph_comm(object, type, nb_comm, comm, tag)
 ! --- Result depends on type
     if (type == 'MAILLAGE_P') then
         k24 = object(1:8)//'.JOIN      .DOMJ'
+        pgid = object(1:8)//'.JOIN      .PGID'
+        gcom = object(1:8)//'.JOIN      .GCOM'
     elseif (type == "NUME_EQUA") then
         call dismoi("JOINTS", object, "NUME_EQUA", repk=k19, arret="F")
         k24 = k19//".DOMJ"
+        pgid = k19//".PGID"
+        gcom = k19//".GCOM"
     elseif (type == "LIGREL") then
         call dismoi("JOINTS", object, "LIGREL", repk=k19, arret="F")
         k24 = k19//".DOMJ"
+        pgid = k19//".PGID"
+        gcom = k19//".GCOM"
     else
         ASSERT(ASTER_FALSE)
     end if
@@ -74,6 +83,11 @@ subroutine create_graph_comm(object, type, nb_comm, comm, tag)
     if (iret > 0) then
         call jelira(k24, 'LONUTI', nb_comm, k8bid)
         call jeveuo(k24, 'L', vi=v_domdis)
+        call jeveuo(pgid, 'L', vi4=v_pgid)
+        call jeveuo(gcom, 'L', vi=v_gcom)
+        mpicou = v_gcom(1)
+    else
+        mpicou = -1
     end if
 !
 ! --- Allocation
@@ -81,7 +95,7 @@ subroutine create_graph_comm(object, type, nb_comm, comm, tag)
     call wkvect(tag, 'V V I', max(1, nb_comm), vi=v_tag)
 !
 ! --- Create graph
-    call build_tree_comm(v_domdis, nb_comm, v_comm, v_tag)
+    call build_tree_comm(v_domdis, nb_comm, v_pgid, mpicou, v_comm, v_tag)
 !
     call jedema()
 !

@@ -21,7 +21,6 @@
 subroutine addPhantomNodesFromCells(mesh, indic_nodes)
 !
     implicit none
-#include "asterc/asmpi_comm.h"
 #include "asterc/asmpi_sendrecv_i4.h"
 #include "asterf_debug.h"
 #include "asterf_types.h"
@@ -51,7 +50,7 @@ subroutine addPhantomNodesFromCells(mesh, indic_nodes)
 ! ---------------------------------------------------------------------------------------------
 !
     character(len=8) :: k8bid
-    character(len=24) :: domj, recv, send
+    character(len=24) :: domj, recv, send, gcom, pgid
     character(len=19) :: tag_name, comm_name, joints
     character(len=32) :: nojoie, nojoir
     integer :: rang, nbproc, nb_comm, domdis, iret, domj_i
@@ -62,12 +61,13 @@ subroutine addPhantomNodesFromCells(mesh, indic_nodes)
     integer, pointer :: v_joine(:) => null()
     integer, pointer :: v_joinr(:) => null()
     integer, pointer :: v_dom(:) => null()
+    integer, pointer :: v_gco(:) => null()
+    integer(kind=4), pointer :: v_pid(:) => null()
     integer(kind=4), pointer :: v_send(:) => null()
     integer(kind=4), pointer :: v_recv(:) => null()
 !
     call jemarq()
 !
-    call asmpi_comm('GET', mpicou)
     call asmpi_info(rank=mrank, size=msize)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
@@ -78,6 +78,8 @@ subroutine addPhantomNodesFromCells(mesh, indic_nodes)
     domj = joints//".DOMJ"
     send = joints//".SEND"
     recv = joints//".RECV"
+    gcom = joints//".GCOM"
+    pgid = joints//".PGID"
     call jeexin(domj, iret)
     if (iret > 0) then
         comm_name = '&&ADDNODES.COMM'
@@ -86,10 +88,13 @@ subroutine addPhantomNodesFromCells(mesh, indic_nodes)
         call jeveuo(comm_name, 'L', vi=v_comm)
         call jeveuo(tag_name, 'L', vi=v_tag)
         call jeveuo(domj, 'L', vi=v_dom)
+        call jeveuo(gcom, 'L', vi=v_gco)
+        call jeveuo(pgid, 'L', vi4=v_pid)
+        mpicou = v_gco(1)
 !
         do i_comm = 1, nb_comm
             domj_i = v_comm(i_comm)
-            domdis = v_dom(domj_i)
+            domdis = v_pid(v_dom(domj_i)+1)
 ! --- Get JOINT
             nojoie = jexnum(send, domj_i)
             nojoir = jexnum(recv, domj_i)

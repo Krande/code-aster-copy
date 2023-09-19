@@ -32,6 +32,7 @@
 #include "DataStructures/DataStructure.h"
 #include "MemoryManager/JeveuxCollection.h"
 #include "MemoryManager/JeveuxVector.h"
+#include "ParallelUtilities/MPIGroup.h"
 
 /**
  * @class Joints
@@ -46,6 +47,14 @@ class Joints : public DataStructure {
     JeveuxCollectionLong _send;
     /** @brief two-side index of nodes to receive */
     JeveuxCollectionLong _recv;
+    /** @brief vector of procs involved in MPI group (id given in parent group) */
+    JeveuxVectorShort _procGroupIds;
+    /** @brief MPI group communicator */
+    JeveuxVectorLong _groupComm;
+    /** @brief MPI group for joints */
+    MPIGroupPtr _jointsMPIGroup;
+
+    void buildGroup();
 
   public:
     /**

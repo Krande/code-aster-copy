@@ -19,7 +19,6 @@
 subroutine crnggc(chamnz)
     implicit none
 #include "asterc/asmpi_allgather_i.h"
-#include "asterc/asmpi_comm.h"
 #include "asterc/asmpi_recv_i.h"
 #include "asterc/asmpi_send_i.h"
 #include "asterc/asmpi_sendrecv_i.h"
@@ -67,7 +66,7 @@ subroutine crnggc(chamnz)
     integer :: idprn1, idprn2, ili, neql
     integer :: nec, numpro, jjoine, jjoinr, nbnoee, jaux, numno1, numno2, iec
     integer :: ncmpmx, iad, jcpnec, jencod, jenvoi1, lgenve1, lgenvr1, poscom
-    integer :: nbddll, jnequ, nddl, jenco2, jcpne2
+    integer :: nbddll, jnequ, nddl, jenco2, jcpne2, numpr2
     integer :: nbnoer, jrecep1, curpos, ijoin
     integer :: jmlogl, nuno, nb_ddl_envoi, nbddl, domj_i
     integer :: nddlg, jenvoi2, jrecep2, numnoe, gd
@@ -83,10 +82,12 @@ subroutine crnggc(chamnz)
     integer, pointer :: v_comm(:) => null()
     integer, pointer :: v_tag(:) => null()
     integer, pointer :: v_dom(:) => null()
+    integer, pointer :: v_gco(:) => null()
+    integer(kind=4), pointer :: v_pgid(:) => null()
 !
     character(len=8) :: mesh, k8bid, nomgdr
     character(len=19) :: nomlig, comm_name, tag_name, nume_equa, joints, meshj, chamno
-    character(len=24) :: nonulg, domj, recv, send, name
+    character(len=24) :: nonulg, domj, recv, send, name, gcom, pgid
     character(len=32) :: nojoie, nojoir
 !
 !----------------------------------------------------------------------
@@ -108,7 +109,6 @@ subroutine crnggc(chamnz)
 !
     chamno = chamnz
 !
-    call asmpi_comm('GET', mpicou)
     call asmpi_info(rank=mrank, size=mnbproc)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(mnbproc)
@@ -137,17 +137,24 @@ subroutine crnggc(chamnz)
     domj = joints//'.DOMJ'
     send = joints//'.SEND'
     recv = joints//'.RECV'
+    gcom = joints//'.GCOM'
+    pgid = joints//'.PGID'
     comm_name = '&CRNUGG.COMM'
     tag_name = '&CRNUGG.TAG'
     call create_graph_comm(mesh, 'MAILLAGE_P', nb_comm, comm_name, tag_name)
-    call jeveuo(comm_name, 'L', vi=v_comm)
-    call jeveuo(tag_name, 'L', vi=v_tag)
 !
     if (nb_comm > 0) then
         call jedupo(meshj//'.DOMJ', 'G', domj, ASTER_FALSE)
+        call jedupo(meshj//'.GCOM', 'G', gcom, ASTER_FALSE)
+        call jedupo(meshj//'.PGID', 'G', pgid, ASTER_FALSE)
         call jecrec(send, 'G V I', 'NU', 'DISPERSE', 'VARIABLE', nb_comm)
         call jecrec(recv, 'G V I', 'NU', 'DISPERSE', 'VARIABLE', nb_comm)
         call jeveuo(meshj//'.DOMJ', 'L', vi=v_dom)
+        call jeveuo(comm_name, 'L', vi=v_comm)
+        call jeveuo(tag_name, 'L', vi=v_tag)
+        call jeveuo(gcom, 'L', vi=v_gco)
+        call jeveuo(pgid, 'L', vi4=v_pgid)
+        mpicou = v_gco(1)
     end if
 
 !     !!!! IL PEUT ETRE INTERESSANT DE STOCKER CES INFOS
@@ -176,6 +183,7 @@ subroutine crnggc(chamnz)
     do iaux = 1, nb_comm
         domj_i = v_comm(iaux)
         numpro = v_dom(domj_i)
+        numpr2 = v_pgid(numpro+1)
         nojoie = jexnum(meshj//'.SEND', domj_i)
         nojoir = jexnum(meshj//'.RECV', domj_i)
         call jelira(nojoie, 'LONMAX', nbnoee, k8bid)
@@ -186,7 +194,7 @@ subroutine crnggc(chamnz)
 !
 !       DES DEUX COTES LES NOEUDS NE SONT PAS DANS LE MEME ORDRE ?
         tag4 = to_mpi_int(v_tag(iaux))
-        numpr4 = to_mpi_int(numpro)
+        numpr4 = to_mpi_int(numpr2)
         lgenve1 = nbnoee*(1+nec)+1
         lgenvr1 = nbnoer*(1+nec)+1
         call wkvect('&&CRNUGG.NOEUD_NEC_E1', 'V V I', lgenvr1, jenvoi1)
@@ -297,11 +305,15 @@ subroutine crnggc(chamnz)
             domj = joints//'.DOMJ'
             send = joints//'.SEND'
             recv = joints//'.RECV'
+            gcom = joints//'.GCOM'
             call jeveuo(domj, 'L', vi=v_dom)
+            call jeveuo(gcom, 'L', vi=v_gco)
+            mpicou = v_gco(1)
             do ijoin = 1, nb_comm
                 domj_i = v_comm(ijoin)
                 numpro = v_dom(domj_i)
-                numpr4 = to_mpi_int(numpro)
+                numpr2 = v_pgid(numpro+1)
+                numpr4 = to_mpi_int(numpr2)
                 tag4 = to_mpi_int(v_tag(ijoin))
                 nojoie = jexnum(send, domj_i)
                 nojoir = jexnum(recv, domj_i)

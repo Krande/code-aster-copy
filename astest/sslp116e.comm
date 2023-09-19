@@ -35,6 +35,7 @@ test = code_aster.TestCase()
 test.assertTrue(meshHE8.checkJoints())
 
 mesh = CREA_MAILLAGE(MAILLAGE=meshHE8, INFO=1, MODI_HHO=_F(TOUT="OUI", PREF_NOEUD="AN"))
+mesh.debugPrint()
 
 geomFieldNode = CREA_CHAMP(
     MAILLAGE=mesh, OPERATION="EXTR", TYPE_CHAM="NOEU_GEOM_R", NOM_CHAM="GEOMETRIE"

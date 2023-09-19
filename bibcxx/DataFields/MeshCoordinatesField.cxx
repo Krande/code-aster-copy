@@ -32,19 +32,17 @@ void MeshCoordinatesField::assign( const JeveuxVectorReal &values ) {
 }
 
 void MeshCoordinatesField::buildDescriptor() {
-    JeveuxVectorLong descr( 3 );
+    _descriptor->allocate( 3 );
     JeveuxChar32 objName( " " );
     const std::string quantities( "&CATA.GD.NOMGD" );
     const std::string geom( "GEOM_R" );
     CALLO_JEXNOM( objName, quantities, geom );
     ASTERINTEGER idxgeo = -1;
     CALLO_JENONU( objName, &idxgeo );
-    ( *descr )[0] = idxgeo;
-    ( *descr )[1] = -3; // X,Y,Z components
-    ( *descr )[2] = 14; // means 0b1110 for XYZ (and not W)
-    descr->setInformationParameter( "CHGO" );
-
-    *_descriptor = *descr;
+    ( *_descriptor )[0] = idxgeo;
+    ( *_descriptor )[1] = -3; // X,Y,Z components
+    ( *_descriptor )[2] = 14; // means 0b1110 for XYZ (and not W)
+    _descriptor->setInformationParameter( "CHGO" );
 }
 
 MeshCoordinatesField &MeshCoordinatesField::operator+=( const FieldOnNodesReal &rhs ) {

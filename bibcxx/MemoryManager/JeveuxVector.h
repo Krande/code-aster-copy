@@ -769,23 +769,14 @@ class JeveuxVector {
         ( *_jeveuxVectorPtr ) = vect;
     };
 
-    JeveuxVector( const std::vector< ValueType > &vect )
-        : JeveuxVector( ResultNaming::getNewResultName(), vect ) {};
-
     JeveuxVector( std::string nom, const ASTERINTEGER &size ) : JeveuxVector( nom ) {
         _jeveuxVectorPtr->allocate( size );
     };
-
-    JeveuxVector( const ASTERINTEGER &size )
-        : JeveuxVector( ResultNaming::getNewResultName(), size ) {};
 
     JeveuxVector( std::string nom, const ASTERINTEGER &size, const ValueType &val )
         : JeveuxVector( nom ) {
         _jeveuxVectorPtr->allocate( size, val );
     };
-
-    JeveuxVector( const ASTERINTEGER &size, const ValueType &val )
-        : JeveuxVector( ResultNaming::getNewResultName(), size, val ) {};
 
     ~JeveuxVector() {};
 

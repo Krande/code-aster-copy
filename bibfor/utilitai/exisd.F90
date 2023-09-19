@@ -224,7 +224,9 @@ subroutine exisd(typesd, nomsd, iret)
         call jeexin(ch(1:19)//'.DOMJ', i1)
         call jeexin(ch(1:19)//'.SEND', i2)
         call jeexin(ch(1:19)//'.RECV', i3)
-        if (i1*i2*i3 .ne. 0) iret = 1
+        call jeexin(ch(1:19)//'.GCOM', i4)
+        call jeexin(ch(1:19)//'.PGID', i5)
+        if (i1*i2*i3*i4*i5 .ne. 0) iret = 1
 !
     else
         call utmess('F', 'UTILITAI_47', sk=typ2sd)

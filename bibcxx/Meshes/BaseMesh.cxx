@@ -298,7 +298,7 @@ void BaseMesh::initDefinition( const int &dim, const VectorReal &coord,
     AS_ASSERT( !_connectivity.exists() );
     _connectivity->allocateContiguousNumbered( connectivity );
 
-    const JeveuxVectorReal values( coord );
+    const JeveuxVectorReal values( "&&TMP", coord );
     _coordinates->assign( values );
 
     add_automatic_names( _nameOfNodes, nbNodes, "N" );

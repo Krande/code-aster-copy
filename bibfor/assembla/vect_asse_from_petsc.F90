@@ -62,7 +62,7 @@ subroutine vect_asse_from_petsc(vasse, nume_equa, vecpet, scaling)
     integer :: rang, nbproc, numpro, jjointr, jjointe
     integer :: lgenvo, lgrecep, jvaleue, jvaleur, iaux, jaux, jnulg
     integer :: jprddl, jnequ, nloc, nlili, ili, iret, ijoin
-    integer :: numglo, nuno1, nucmp1, numloc
+    integer :: numglo, nuno1, nucmp1, numloc, numpr2
     integer :: iret1, iret2, jjoine, nbnoee, idprn1, idprn2, nec
     integer :: jjoinr, jnujoi1, jnujoi2, nbnoer, nddll, neq
     integer :: numnoe, nb_comm, gd, ieq, domj_i
@@ -72,6 +72,8 @@ subroutine vect_asse_from_petsc(vasse, nume_equa, vecpet, scaling)
     integer, pointer :: v_comm(:) => null()
     integer, pointer :: v_tag(:) => null()
     integer, pointer :: v_dom(:) => null()
+    integer, pointer :: v_gco(:) => null()
+    integer(kind=4), pointer :: v_pgid(:) => null()
     real(kind=8), pointer :: vale(:) => null()
     integer, pointer :: deeq(:) => null()
 !
@@ -80,7 +82,7 @@ subroutine vect_asse_from_petsc(vasse, nume_equa, vecpet, scaling)
 !
     character(len=8) :: k8bid, noma
     character(len=19) :: nomlig, comm_name, tag_name, joints
-    character(len=24) :: domj, recv, send
+    character(len=24) :: domj, recv, send, gcom, pgid
     character(len=32) :: nojoine, nojoinr
 !
     PetscOffset :: xidx
@@ -163,6 +165,8 @@ subroutine vect_asse_from_petsc(vasse, nume_equa, vecpet, scaling)
         domj = joints//".DOMJ"
         send = joints//".SEND"
         recv = joints//".RECV"
+        gcom = joints//".GCOM"
+        pgid = joints//".PGID"
         call create_graph_comm(nume_equa, "NUME_EQUA", nb_comm, comm_name, tag_name)
         call jeveuo(comm_name, 'L', vi=v_comm)
         call jeveuo(tag_name, 'L', vi=v_tag)
@@ -188,11 +192,15 @@ subroutine vect_asse_from_petsc(vasse, nume_equa, vecpet, scaling)
 !
         if (nb_comm > 0) then
             call jeveuo(domj, 'L', vi=v_dom)
+            call jeveuo(gcom, 'L', vi=v_gco)
+            call jeveuo(pgid, 'L', vi4=v_pgid)
+            mpicou = v_gco(1)
         end if
 !
         do iaux = 1, nb_comm
             domj_i = v_comm(iaux)
             numpro = v_dom(domj_i)
+            numpr2 = v_pgid(numpro+1)
             nojoinr = jexnum(recv, domj_i)
             nojoine = jexnum(send, domj_i)
             call jeexin(nojoine, iret1)
@@ -223,7 +231,7 @@ subroutine vect_asse_from_petsc(vasse, nume_equa, vecpet, scaling)
                 n4e = to_mpi_int(lgenvo)
                 n4r = to_mpi_int(lgrecep)
                 tag4 = to_mpi_int(v_tag(iaux))
-                numpr4 = to_mpi_int(numpro)
+                numpr4 = to_mpi_int(numpr2)
                 call asmpi_sendrecv_r(zr(jvaleue), n4e, numpr4, tag4, &
                                       zr(jvaleur), n4r, numpr4, tag4, mpicou)
 

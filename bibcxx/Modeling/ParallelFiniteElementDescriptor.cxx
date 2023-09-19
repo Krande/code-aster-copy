@@ -230,8 +230,11 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor(
                 _listOfGroupsOfElements->push_back( vec );
             }
         }
-    } else
+    } else {
         _listOfGroupsOfElements->allocateContiguousNumbered( 1, 1 );
+        VectorLong joints;
+        _joints->setOppositeDomains( joints );
+    }
 
     // Remplissage du .NBNO avec le nouveau nombre de noeuds tardifs
     _numberOfDelayedNumberedConstraintNodes->allocate( 1 );

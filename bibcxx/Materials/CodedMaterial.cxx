@@ -78,7 +78,7 @@ bool CodedMaterial::allocate( bool force ) {
         JeveuxChar24 nothing( " " );
         CALLO_JELSTC( base, nameWithoutBlanks, &pos, &nbval2, nothing, &retour );
         if ( retour != 0 ) {
-            JeveuxVectorChar24 test( -retour );
+            JeveuxVectorChar24 test( "&&TMP", -retour );
             ASTERINTEGER nbval2 = -retour;
             CALLO_JELSTC( base, nameWithoutBlanks, &pos, &nbval2, ( *test )[0], &retour );
             for ( int i = 0; i < retour; ++i ) {

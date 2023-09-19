@@ -64,8 +64,8 @@ subroutine lrm_clean_joint(mesh, v_noex)
     character(len=4) :: chdomdis
     character(len=8) :: k8bid
     character(len=19) :: comm_name, tag_name, joints
-    character(len=24) :: name_join_e_old, send, name_join_r_old, recv
-    integer :: rang, domdis, nbproc, i_comm, nb_comm, domj_i
+    character(len=24) :: name_join_e_old, send, name_join_r_old, recv, gcom, pgid
+    integer :: rang, domdis, nbproc, i_comm, nb_comm, domj_i, domdi2
     integer :: nb_corr, ino, numno, deca
     integer :: nb_node_e, nb_node_r
     mpi_int :: mpicou, count_send, count_recv, tag, id, mrank, msize
@@ -74,6 +74,8 @@ subroutine lrm_clean_joint(mesh, v_noex)
     integer, pointer :: v_nojoe(:) => null()
     integer, pointer :: v_nojor(:) => null()
     integer, pointer :: v_domj(:) => null()
+    integer, pointer :: v_gcom(:) => null()
+    integer(kind=4), pointer :: v_pgid(:) => null()
     integer, pointer :: v_name_join_e_old(:) => null()
     integer, pointer :: v_name_join_e_new(:) => null()
     integer, pointer :: v_name_join_r_old(:) => null()
@@ -95,22 +97,28 @@ subroutine lrm_clean_joint(mesh, v_noex)
     comm_name = '&&LRMCLEAN.COMM'
     tag_name = '&&LRMCLEAN.TAG'
     call create_graph_comm(mesh, "MAILLAGE_P", nb_comm, comm_name, tag_name)
-    call jeveuo(comm_name, 'L', vi=v_comm)
-    call jeveuo(tag_name, 'L', vi=v_tag)
 
 !   -- creation de la collection dipersee .JOIN  :
     joints = mesh//".JOIN"
     send = joints//".SEND"
     recv = joints//".RECV"
+    gcom = joints//".GCOM"
+    pgid = joints//".PGID"
     if (nb_comm > 0) then
         call jecrec(send, 'G V I', 'NU', 'DISPERSE', 'VARIABLE', nb_comm)
         call jecrec(recv, 'G V I', 'NU', 'DISPERSE', 'VARIABLE', nb_comm)
         call jeveuo(joints//".DOMJ", 'L', vi=v_domj)
+        call jeveuo(gcom, 'L', vi=v_gcom)
+        call jeveuo(pgid, 'L', vi4=v_pgid)
+        call jeveuo(comm_name, 'L', vi=v_comm)
+        call jeveuo(tag_name, 'L', vi=v_tag)
+        mpicou = v_gcom(1)
     end if
 
     do i_comm = 1, nb_comm
         domj_i = v_comm(i_comm)
         domdis = v_domj(domj_i)
+        domdi2 = v_pgid(domdis+1)
         call codlet(domdis, 'G', chdomdis)
 !
 ! --- Il faut préparer les noeuds à envoyer et à recevoir
@@ -163,7 +171,7 @@ subroutine lrm_clean_joint(mesh, v_noex)
 ! --- Envoie des informations pour le joint
 !
         tag = to_mpi_int(v_tag(i_comm))
-        id = to_mpi_int(domdis)
+        id = to_mpi_int(domdi2)
         count_send = to_mpi_int(nb_node_e)
         count_recv = to_mpi_int(nb_node_r)
         call asmpi_sendrecv_i(v_nojoe, count_send, id, tag, &

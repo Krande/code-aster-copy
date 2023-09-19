@@ -240,6 +240,8 @@ subroutine copisd(typesd, base, sd1, sd2)
         call jedup1(k191//'.DOMJ', bas2, k192//'.DOMJ')
         call jedup1(k191//'.SEND', bas2, k192//'.SEND')
         call jedup1(k191//'.RECV', bas2, k192//'.RECV')
+        call jedup1(k191//'.GCOM', bas2, k192//'.GCOM')
+        call jedup1(k191//'.PGID', bas2, k192//'.PGID')
 !
 ! ----------------------------------------------------------------------
     else if (typesd .eq. 'STOCKAGE') then

@@ -75,7 +75,7 @@ subroutine crnustd(numddl)
     integer :: lgenve1, lgenvr1, jencod, jenco2, lgenve2, lgenvr2
     integer :: jaux, nb_ddl_envoi, jrecep1, jenvoi1, jenvoi2, jrecep2
     integer :: nbddl, ncmpmx, iad, jcpnec, jcpne2, ico2, icmp, curpos
-    integer :: nbno_lili_lc, nbno_lili_gl, nb_comm, domj_i
+    integer :: nbno_lili_lc, nbno_lili_gl, nb_comm, domj_i, numpr2
     mpi_int :: mrank, msize, mpicou, nbno4
     mpi_int :: tag4, numpr4, n4e, n4r
     integer, pointer :: v_noext(:) => null()
@@ -94,6 +94,8 @@ subroutine crnustd(numddl)
     integer, pointer :: v_comm(:) => null()
     integer, pointer :: v_tag(:) => null()
     integer, pointer :: v_dom(:) => null()
+    integer, pointer :: v_gco(:) => null()
+    integer(kind=4), pointer :: v_pgid(:) => null()
 !
     character(len=8) :: k8bid, mesh, nomgdr
     character(len=19) :: nomlig, tag_name, comm_name, nume_equa, meshj, joints
@@ -125,6 +127,10 @@ subroutine crnustd(numddl)
     call jeveuo(nume_equa//'.REFN', 'L', jrefn)
     mesh = zk24(jrefn)
     nomgdr = zk24(jrefn+1)
+    meshj = mesh//".JOIN"
+    call jeveuo(meshj//'.GCOM', 'L', vi=v_gco)
+    call jeveuo(meshj//'.PGID', 'L', vi4=v_pgid)
+    mpicou = v_gco(1)
 !
     call jeveuo(mesh//'.DIME', 'L', dime)
     call jeveuo(mesh//'.NULOGL', 'L', vi=v_nulg)
@@ -241,7 +247,6 @@ subroutine crnustd(numddl)
     call create_graph_comm(mesh, "MAILLAGE_P", nb_comm, comm_name, tag_name)
     call jeveuo(comm_name, 'L', vi=v_comm)
     call jeveuo(tag_name, 'L', vi=v_tag)
-    meshj = mesh//".JOIN"
     call jeveuo(meshj//'.DOMJ', 'L', vi=v_dom)
 !
 ! -- On renumerote les noeuds physiques non-proprio
@@ -251,6 +256,7 @@ subroutine crnustd(numddl)
 !       RECHERCHE DU JOINT
         domj_i = v_comm(i_join)
         numpro = v_dom(domj_i)
+        numpr2 = v_pgid(numpro+1)
         if (numpro .ne. -1) then
             nojoie = jexnum(meshj//".SEND", domj_i)
             nojoir = jexnum(meshj//".RECV", domj_i)
@@ -262,7 +268,7 @@ subroutine crnustd(numddl)
 !
 !       DES DEUX COTES LES NOEUDS NE SONT PAS DANS LE MEME ORDRE ?
             tag4 = to_mpi_int(v_tag(i_join))
-            numpr4 = to_mpi_int(numpro)
+            numpr4 = to_mpi_int(numpr2)
             lgenve1 = nbnoee*(1+nec)+1
             lgenvr1 = nbnoer*(1+nec)+1
             call wkvect('&&CRNSTD.NOEUD_NEC_E1', 'V V I', lgenvr1, jenvoi1)
@@ -412,11 +418,15 @@ subroutine crnustd(numddl)
             call jeveuo(tag_name, 'L', vi=v_tag)
             call dismoi("JOINTS", nomlig, "LIGREL", repk=joints, arret="F")
             call jeveuo(joints//".DOMJ", 'L', vi=v_dom)
+            call jeveuo(joints//".PGID", 'L', vi4=v_pgid)
+            call jeveuo(joints//".GCOM", 'L', vi=v_gco)
+            mpicou = v_gco(1)
             do i_join = 1, nb_comm
                 domj_i = v_comm(i_join)
                 numpro = v_dom(domj_i)
+                numpr2 = v_pgid(numpro+1)
                 if (numpro .ne. -1) then
-                    numpr4 = to_mpi_int(numpro)
+                    numpr4 = to_mpi_int(numpr2)
                     tag4 = to_mpi_int(v_tag(i_join))
                     nojoie = jexnum(joints//".SEND", domj_i)
                     nojoir = jexnum(joints//".RECV", domj_i)

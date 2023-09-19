@@ -2381,7 +2381,7 @@ contains
         class(Mmesh), intent(in) :: this
         character(len=8), intent(in) :: mesh_out
 ! ------------------------------------------------------------------
-        character(len=24) :: send, recv, domj
+        character(len=24) :: send, recv, domj, gcom, pgin
         character(len=19) :: joints
         integer, pointer :: v_rnode(:) => null()
         integer, pointer :: v_noex(:) => null()
@@ -2392,6 +2392,8 @@ contains
         integer, pointer :: v_ckeep(:) => null()
         integer, pointer :: v_nulogl(:) => null()
         integer, pointer :: v_proc(:) => null()
+        integer(kind=4), pointer :: v_pgid(:) => null()
+        integer, pointer :: v_gcom(:) => null()
         integer, pointer :: v_comm(:) => null()
         integer, pointer :: v_tag(:) => null()
         aster_logical, pointer :: v_keep(:) => null()
@@ -2416,6 +2418,8 @@ contains
             domj = joints//".DOMJ"
             send = joints//".SEND"
             recv = joints//".RECV"
+            gcom = joints//".GCOM"
+            pgin = joints//".PGID"
 
             call jemarq()
             call asmpi_comm('GET', mpicou)
@@ -2445,19 +2449,26 @@ contains
                 call wkvect(domj, 'G V I', nb_recv, vi=v_proc)
                 call jecrec(send, 'G V I', 'NU', 'DISPERSE', 'VARIABLE', nb_recv)
                 call jecrec(recv, 'G V I', 'NU', 'DISPERSE', 'VARIABLE', nb_recv)
+                call jedetr(pgin)
+                call wkvect(pgin, 'G V S', nbproc, vi4=v_pgid)
+                call jeveuo(gcom, 'E', vi=v_gcom)
+                v_gcom(1) = mpicou
             end if
             nb_recv = 0
             do i_proc = 0, nbproc-1
                 if (v_rnode(i_proc+1) > 0) then
                     nb_recv = nb_recv+1
                     v_proc(nb_recv) = i_proc
+                    v_pgid(i_proc+1) = i_proc
+                else
+                    v_pgid(i_proc+1) = -1
                 end if
             end do
             call sort_i8(v_proc, nb_recv)
 !
             call wkvect('&&CREAMA.COMM', 'V V I', nbproc, vi=v_comm)
             call wkvect('&&CREAMA.TAG', 'V V I', nbproc, vi=v_tag)
-            call build_tree_comm(v_proc, nb_recv, v_comm, v_tag)
+            call build_tree_comm(v_proc, nb_recv, v_pgid, mpicou, v_comm, v_tag)
 ! --- Pour accélérer la recherche, on garde les cells avec un noeud non-proprio
             call wkvect('&&CREAMA.CKEEP', 'V V I', this%nb_total_cells, vi=v_ckeep)
             nb_cells_keep = 0
