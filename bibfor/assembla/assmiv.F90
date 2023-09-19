@@ -138,6 +138,8 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef, &
     rang = 0
     nbproc = 1
     nume_ddl = nu
+    call dismoi('NOM_MODELE', nu, 'NUME_DDL', repk=mo)
+    call dismoi('NOM_MAILLA', mo, 'MODELE', repk=ma)
 !
     call parti0(nbvec, tlivec, partit)
     if (partit .ne. ' ') then

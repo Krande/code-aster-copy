@@ -55,6 +55,7 @@ function typmat(nbmat, tlimat)
 !
 !     --  PAR DEFAUT LE TYPE DE MATRICE EST SYMETRIQUE
     itymat = 0
+    l_pmesh = ASTER_FALSE
 !
     do i = 1, nbmat
         matel = tlimat(i)

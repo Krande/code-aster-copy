@@ -120,6 +120,8 @@ subroutine assvss(base, vec, vecel, nu, vecpro, &
 ! --- NOMS DES PRINCIPAUX OBJETS JEVEUX LIES A VECAS
     kmaila = '&MAILLA                 '
     kvelil = vecas//'.LILI'
+    call dismoi('NOM_MODELE', nu, 'NUME_DDL', repk=mo)
+    call dismoi('NOM_MAILLA', mo, 'MODELE', repk=ma)
 !
 !
 ! --- CALCUL D UN LILI POUR VECAS
