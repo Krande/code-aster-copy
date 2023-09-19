@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -234,7 +234,10 @@ tabsol = DEFI_SOL_EQUI(
     MAILLAGE=mailcol,
     GROUP_MA_COL="SURF_",
     GROUP_MA_SUBSTR="BAS_",
-    GROUP_MA_LIGNE="LIST",
+    GROUP_MA_GAUCHE="GA8_ext",
+    GROUP_MA_DROITE="DR8_ext",
+    GROUP_MA_ARRETE_1="DR8",
+    GROUP_MA_ARRETE_2="DR8_top",
     MATERIAU=(
         _F(
             GAMMA=(0.000001, 0.000003, 0.00001, 0.00003, 0.0001, 0.0003, 0.001, 0.003, 0.01),
@@ -600,7 +603,7 @@ TEST_TABLE(
     NOM_PARA="G/Gmax",
     FILTRE=_F(NOM_PARA="M", VALE_K="COUCH1C_", CRITERE="RELATIF"),
     REFERENCE="AUTRE_ASTER",
-    VALE_CALC=0.86008171,
+    VALE_CALC=0.86008592,
     VALE_REFE=(0.860086,),
     PRECISION=0.001,
     CRITERE="RELATIF",
@@ -613,7 +616,7 @@ TEST_TABLE(
     NOM_PARA="G/Gmax",
     FILTRE=_F(NOM_PARA="M", VALE_K="COUCH4F_ ", CRITERE="RELATIF"),
     REFERENCE="AUTRE_ASTER",
-    VALE_CALC=0.76462858,
+    VALE_CALC=0.76462894,
     VALE_REFE=(7.64629e-01,),
     PRECISION=0.001,
     CRITERE="RELATIF",
@@ -641,7 +644,7 @@ TEST_TABLE(
     NOM_PARA="AHfin",
     FILTRE=_F(NOM_PARA="M", VALE_K="COUCH4F_ ", CRITERE="RELATIF"),
     REFERENCE="AUTRE_ASTER",
-    VALE_CALC=0.058955101,
+    VALE_CALC=0.058955075,
     VALE_REFE=(5.89551e-02,),
     PRECISION=0.001,
     CRITERE="RELATIF",
@@ -656,7 +659,7 @@ TEST_TABLE(
     NOM_PARA="gamma_ma",
     FILTRE=_F(NOM_PARA="M", VALE_K="COUCH1C_", CRITERE="RELATIF"),
     REFERENCE="AUTRE_ASTER",
-    VALE_CALC=0.00013530313,
+    VALE_CALC=0.00013529829,
     VALE_REFE=(1.35298e-04,),
     PRECISION=0.001,
     CRITERE="RELATIF",
@@ -669,7 +672,7 @@ TEST_TABLE(
     NOM_PARA="gamma_ma",
     FILTRE=_F(NOM_PARA="M", VALE_K="COUCH4F_ ", CRITERE="RELATIF"),
     REFERENCE="AUTRE_ASTER",
-    VALE_CALC=0.00014627175,
+    VALE_CALC=0.00014626646,
     VALE_REFE=(1.46266e-04,),
     PRECISION=0.001,
     CRITERE="RELATIF",

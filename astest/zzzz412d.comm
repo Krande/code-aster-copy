@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -237,7 +237,10 @@ tabsol2 = DEFI_SOL_EQUI(
     MAILLAGE=mailcol,
     GROUP_MA_COL="SURF_",
     GROUP_MA_SUBSTR="BAS_",
-    GROUP_MA_LIGNE="LIST",
+    GROUP_MA_GAUCHE="GA8_ext",
+    GROUP_MA_DROITE="DR8_ext",
+    GROUP_MA_ARRETE_1="DR8",
+    GROUP_MA_ARRETE_2="DR8_top",
     MATERIAU=(
         _F(
             GAMMA=(0.000001, 0.000003, 0.00001, 0.00003, 0.0001, 0.0003, 0.001, 0.003, 0.01),
@@ -603,7 +606,7 @@ TEST_TABLE(
     NOM_PARA="G/Gmax",
     FILTRE=_F(NOM_PARA="M", VALE_K="COUCH4F_", CRITERE="RELATIF"),
     REFERENCE="AUTRE_ASTER",
-    VALE_CALC=0.76797669,
+    VALE_CALC=0.76797743,
     VALE_REFE=(7.646289e-01,),
     PRECISION=0.02,
     CRITERE="RELATIF",
@@ -616,7 +619,7 @@ TEST_TABLE(
     NOM_PARA="G/Gmax",
     FILTRE=_F(NOM_PARA="M", VALE_K="COUCH5G_", CRITERE="RELATIF"),
     REFERENCE="AUTRE_ASTER",
-    VALE_CALC=0.77162029,
+    VALE_CALC=0.77161905,
     VALE_REFE=(7.69538e-01,),
     PRECISION=0.02,
     CRITERE="RELATIF",
@@ -630,7 +633,7 @@ TEST_TABLE(
     NOM_PARA="AHfin",
     FILTRE=_F(NOM_PARA="M", VALE_K="COUCH4F_", CRITERE="RELATIF"),
     REFERENCE="AUTRE_ASTER",
-    VALE_CALC=0.058715951,
+    VALE_CALC=0.058715898,
     VALE_REFE=(5.895508e-02,),
     PRECISION=0.02,
     CRITERE="RELATIF",
@@ -642,7 +645,7 @@ TEST_TABLE(
     NOM_PARA="AHfin",
     FILTRE=_F(NOM_PARA="M", VALE_K="COUCH5G_", CRITERE="RELATIF"),
     REFERENCE="AUTRE_ASTER",
-    VALE_CALC=0.058455693,
+    VALE_CALC=0.058455782,
     VALE_REFE=(5.86044e-02,),
     PRECISION=0.02,
     CRITERE="RELATIF",
@@ -657,7 +660,7 @@ TEST_TABLE(
     NOM_PARA="gamma_ma",
     FILTRE=_F(NOM_PARA="M", VALE_K="COUCH4F_", CRITERE="RELATIF"),
     REFERENCE="AUTRE_ASTER",
-    VALE_CALC=0.00015591379,
+    VALE_CALC=0.0001559141,
     VALE_REFE=(1.462670e-04,),
     PRECISION=0.10,
     CRITERE="RELATIF",
@@ -670,7 +673,7 @@ TEST_TABLE(
     NOM_PARA="gamma_ma",
     FILTRE=_F(NOM_PARA="M", VALE_K="COUCH5G_", CRITERE="RELATIF"),
     REFERENCE="AUTRE_ASTER",
-    VALE_CALC=0.00013978406,
+    VALE_CALC=0.00013978117,
     VALE_REFE=(1.36578e-04,),
     PRECISION=0.05,
     CRITERE="RELATIF",

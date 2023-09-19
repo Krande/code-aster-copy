@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,10 @@ DEFI_SOL_EQUI = MACRO(
     sd_prod=table_sdaster,
     fr=tr("Définition des données de sol pour Miss"),
     reentrant="n",
-    regles=(ENSEMBLE("TABLE_MATER_ELAS", "TABLE_GEQUI_GMAX", "TABLE_AMOR_EQUI"),),
+    regles=(
+        ENSEMBLE("TABLE_MATER_ELAS", "TABLE_GEQUI_GMAX", "TABLE_AMOR_EQUI"),
+        ENSEMBLE("GROUP_MA_DROITE", "GROUP_MA_GAUCHE"),
+    ),
     LIEU_SIGNAL=SIMP(
         statut="f",
         typ="TXM",
@@ -40,10 +43,14 @@ DEFI_SOL_EQUI = MACRO(
         condition="""equal_to("CHARGEMENT", 'ONDE_PLANE')""",
         regles=(
             UN_PARMI("FONC_SIGNAL", "UNITE_TRAN_INIT", "FONC_SIGNAL_X"),
-            ENSEMBLE("FONC_SIGNAL_X", "FONC_SIGNAL_Y", "FONC_SIGNAL_Z", "GROUP_MA_LIGNE"),
-            EXCLUS("FONC_SIGNAL_X", "GROUP_MA_DROITE"),
+            ENSEMBLE(
+                "FONC_SIGNAL_X",
+                "FONC_SIGNAL_Y",
+                "FONC_SIGNAL_Z",
+                "GROUP_MA_ARRETE_1",
+                "GROUP_MA_ARRETE_2",
+            ),
             EXCLUS("FONC_SIGNAL_X", "LIAISON"),
-            ENSEMBLE("GROUP_MA_DROITE", "GROUP_MA_GAUCHE"),
         ),
         FONC_SIGNAL=SIMP(
             statut="f", typ=(fonction_sdaster), fr=tr("Signal impose d'accelero horizontal")
@@ -76,9 +83,8 @@ DEFI_SOL_EQUI = MACRO(
             defaut="DX",
             fr=tr("sollicitation horizontale"),
         ),
-        GROUP_MA_DROITE=SIMP(statut="f", typ=grma),
-        GROUP_MA_GAUCHE=SIMP(statut="f", typ=grma),
-        GROUP_MA_LIGNE=SIMP(statut="f", typ=grma),
+        GROUP_MA_ARRETE_1=SIMP(statut="f", typ=grma),
+        GROUP_MA_ARRETE_2=SIMP(statut="f", typ=grma),
         b_MAIL3D=BLOC(
             condition="""exists("FONC_SIGNAL_X")""", MAILLAGE=SIMP(statut="o", typ=maillage_sdaster)
         ),
@@ -87,7 +93,7 @@ DEFI_SOL_EQUI = MACRO(
             MAILLAGE=SIMP(statut="f", typ=maillage_sdaster),
         ),
         b_BYRNE=BLOC(
-            condition="""not exists("GROUP_MA_LIGNE")""",
+            condition="""not exists("GROUP_MA_ARRETE_1")""",
             CORRECTION=SIMP(
                 statut="f",
                 typ="TXM",
@@ -110,9 +116,13 @@ DEFI_SOL_EQUI = MACRO(
         condition="""equal_to("CHARGEMENT", 'MONO_APPUI')""",
         regles=(
             UN_PARMI("FONC_SIGNAL", "DSP", "FONC_SIGNAL_X"),
-            ENSEMBLE("FONC_SIGNAL_X", "FONC_SIGNAL_Y", "FONC_SIGNAL_Z", "GROUP_MA_LIGNE"),
-            EXCLUS("FONC_SIGNAL_X", "GROUP_MA_DROITE"),
-            ENSEMBLE("GROUP_MA_DROITE", "GROUP_MA_GAUCHE"),
+            ENSEMBLE(
+                "FONC_SIGNAL_X",
+                "FONC_SIGNAL_Y",
+                "FONC_SIGNAL_Z",
+                "GROUP_MA_ARRETE_1",
+                "GROUP_MA_ARRETE_2",
+            ),
         ),
         FONC_SIGNAL=SIMP(
             statut="f", typ=(fonction_sdaster), fr=tr("Signal impose d'accelero horizontal")
@@ -153,9 +163,8 @@ DEFI_SOL_EQUI = MACRO(
             fr=tr("sollicitation horizontale"),
         ),
         TOUT_CHAM=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="NON"),
-        GROUP_MA_DROITE=SIMP(statut="f", typ=grma),
-        GROUP_MA_GAUCHE=SIMP(statut="f", typ=grma),
-        GROUP_MA_LIGNE=SIMP(statut="f", typ=grma),
+        GROUP_MA_ARRETE_1=SIMP(statut="f", typ=grma),
+        GROUP_MA_ARRETE_2=SIMP(statut="f", typ=grma),
         b_MAIL3D=BLOC(
             condition="""exists("FONC_SIGNAL_X")""", MAILLAGE=SIMP(statut="o", typ=maillage_sdaster)
         ),
@@ -164,7 +173,7 @@ DEFI_SOL_EQUI = MACRO(
             MAILLAGE=SIMP(statut="f", typ=maillage_sdaster),
         ),
         b_BYRNE=BLOC(
-            condition="""not exists("GROUP_MA_LIGNE")""",
+            condition="""not exists("GROUP_MA_ARRETE_1")""",
             CORRECTION=SIMP(
                 statut="f",
                 typ="TXM",
@@ -195,6 +204,8 @@ DEFI_SOL_EQUI = MACRO(
     ),
     LIST_FREQ=SIMP(statut="f", typ=listr8_sdaster, fr=tr("liste de frequences de calcul")),
     MAILLAGE=SIMP(statut="f", typ=maillage_sdaster),
+    GROUP_MA_DROITE=SIMP(statut="o", typ=grma),
+    GROUP_MA_GAUCHE=SIMP(statut="o", typ=grma),
     GROUP_MA_SUBSTR=SIMP(statut="o", typ=grma),
     GROUP_MA_COL=SIMP(statut="o", typ=grma),
     COEF_VARI_MATE=SIMP(statut="f", typ="R", defaut=1.0, fr=tr("facteur de variation des modules")),

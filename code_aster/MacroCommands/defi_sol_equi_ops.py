@@ -108,7 +108,6 @@ def fByrne(inst, GAMMA, E, NU, Y, RHO, N1):
     # Boucle pour extraire et stocker les max de la liste des points positifs
     for indice, valeur in enumerate(GAMMA):
         if valeur > 0:
-
             Liste_pos.append(valeur)
             Liste_ind_pos.append(indice)
         else:
@@ -124,7 +123,6 @@ def fByrne(inst, GAMMA, E, NU, Y, RHO, N1):
     # Boucle pour extraire et stocker les max de la liste des points negatifs
     for indice, valeur in enumerate(GAMMA):
         if valeur < 0:
-
             Liste_neg.append(valeur)
             Liste_ind_neg.append(indice)
         else:
@@ -289,14 +287,13 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
 
     # Groupes de mailles et maillage
     mail0 = None
+    grma_droit = args["GROUP_MA_DROITE"]
+    grma_gauch = args["GROUP_MA_GAUCHE"]
     if "MAILLAGE" in args:
         mail0 = args["MAILLAGE"]
-    if dime == "2D":
-        grma_droit = args["GROUP_MA_DROITE"]
-        grma_gauch = args["GROUP_MA_GAUCHE"]
-
-    if dime == "3D":
-        grma_tot = args["GROUP_MA_LIGNE"]
+        if dime == "3D":
+            grma_ligne1 = args["GROUP_MA_ARRETE_1"]
+            grma_ligne2 = args["GROUP_MA_ARRETE_2"]
 
     grma_subst = args["GROUP_MA_SUBSTR"]
     grma_colon = args["GROUP_MA_COL"]
@@ -510,7 +507,6 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
     __SAX = [None] * num_dime
     ### Option DSP
     if "DSP" in args:
-
         if "LIST_FREQ_SPEC_OSCI" in args:
             __SAX[0] = CALC_FONCTION(
                 SPEC_OSCI=_F(
@@ -550,7 +546,6 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
             __VITEX[0] = CALC_FONCTION(COMB=(_F(FONCTION=__VHX, COEF=1.0),))
 
     else:
-
         # sinon
 
         # for a in range (1,nbacc+1):
@@ -898,6 +893,12 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
 
     # Lecture du maillage
     if mail0 is not None:
+        __mailla = DEFI_GROUP(MAILLAGE=mail0, CREA_GROUP_NO=_F(GROUP_MA=(grma_droit,)))
+
+        __mailla = DEFI_GROUP(
+            reuse=__mailla, MAILLAGE=__mailla, CREA_GROUP_NO=_F(GROUP_MA=(grma_gauch,))
+        )
+
         if dime == "2D":
             __mailla = CREA_MAILLAGE(
                 MAILLAGE=mail0,
@@ -908,20 +909,21 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
             )
 
             __mailla = DEFI_GROUP(
-                reuse=__mailla, MAILLAGE=__mailla, CREA_GROUP_NO=_F(GROUP_MA=(grma_droit,))
-            )
-
-            __mailla = DEFI_GROUP(
-                reuse=__mailla, MAILLAGE=__mailla, CREA_GROUP_NO=_F(GROUP_MA=(grma_gauch,))
-            )
-
-            __mailla = DEFI_GROUP(
                 reuse=__mailla, MAILLAGE=__mailla, CREA_GROUP_NO=_F(GROUP_MA=("PLATE",))
             )
         elif dime == "3D":
             __mailla = CREA_MAILLAGE(
-                MAILLAGE=mail0, CREA_POI1=(_F(NOM_GROUP_MA="PCOL", GROUP_MA=grma_colon),)
+                MAILLAGE=__mailla, CREA_POI1=(_F(NOM_GROUP_MA="PCOL", GROUP_MA=grma_colon),)
             )
+
+            __mailla = DEFI_GROUP(
+                reuse=__mailla, MAILLAGE=__mailla, CREA_GROUP_NO=_F(GROUP_MA=(grma_ligne1,))
+            )
+
+            __mailla = DEFI_GROUP(
+                reuse=__mailla, MAILLAGE=__mailla, CREA_GROUP_NO=_F(GROUP_MA=(grma_ligne2,))
+            )
+
     else:
         if dime == "2D":
             # maillage automatique uniquement en 2D
@@ -1253,22 +1255,73 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                 AFFE=(
                     _F(GROUP_MA=grma_colon, PHENOMENE="MECANIQUE", MODELISATION="3D"),
                     _F(GROUP_MA=grma_subst, PHENOMENE="MECANIQUE", MODELISATION="3D_ABSO"),
-                    _F(GROUP_MA=grma_tot, PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
                 ),
             )
 
-            __CARELE = AFFE_CARA_ELEM(
-                MODELE=__MODELE,
-                DISCRET=(
-                    _F(
-                        GROUP_MA=grma_tot,
-                        CARA="K_T_D_L",
-                        REPERE="GLOBAL",
-                        VALE=(5.0e13, 5.0e13, 5.0e13),
+            # Conditions de periodicite: relation d'egalite entre les deplacements
+            # des noeuds des deux faces du modèle et des deux bords appartenant à
+            # la même face
+            __CON_LIM = (
+                AFFE_CHAR_MECA(
+                    MODELE=__MODELE,
+                    LIAISON_GROUP=(
+                        _F(
+                            GROUP_NO_1=grma_gauch,
+                            GROUP_NO_2=grma_droit,
+                            DDL_1=("DX",),
+                            DDL_2=("DX",),
+                            COEF_MULT_1=1.0,
+                            COEF_MULT_2=-1.0,
+                            COEF_IMPO=0.0,
+                        ),
+                        _F(
+                            GROUP_NO_1=grma_gauch,
+                            GROUP_NO_2=grma_droit,
+                            DDL_1=("DY",),
+                            DDL_2=("DY",),
+                            COEF_MULT_1=1.0,
+                            COEF_MULT_2=-1.0,
+                            COEF_IMPO=0.0,
+                        ),
+                        _F(
+                            GROUP_NO_1=grma_gauch,
+                            GROUP_NO_2=grma_droit,
+                            DDL_1=("DZ",),
+                            DDL_2=("DZ",),
+                            COEF_MULT_1=1.0,
+                            COEF_MULT_2=-1.0,
+                            COEF_IMPO=0.0,
+                        ),
+                        _F(
+                            GROUP_NO_1=grma_ligne1,
+                            GROUP_NO_2=grma_ligne2,
+                            DDL_1=("DX",),
+                            DDL_2=("DX",),
+                            COEF_MULT_1=1.0,
+                            COEF_MULT_2=-1.0,
+                            COEF_IMPO=0.0,
+                        ),
+                        _F(
+                            GROUP_NO_1=grma_ligne1,
+                            GROUP_NO_2=grma_ligne2,
+                            DDL_1=("DY",),
+                            DDL_2=("DY",),
+                            COEF_MULT_1=1.0,
+                            COEF_MULT_2=-1.0,
+                            COEF_IMPO=0.0,
+                        ),
+                        _F(
+                            GROUP_NO_1=grma_ligne1,
+                            GROUP_NO_2=grma_ligne2,
+                            DDL_1=("DZ",),
+                            DDL_2=("DZ",),
+                            COEF_MULT_1=1.0,
+                            COEF_MULT_2=-1.0,
+                            COEF_IMPO=0.0,
+                        ),
                     ),
                 ),
             )
-
     else:
         # uniquement en 2D
         __mailla = MODI_MAILLAGE(
@@ -1352,7 +1405,6 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
         aster.affiche("MESSAGE", text)
 
         if iter == 0:
-
             __SOLH = [None] * (NCOU + 2)
 
             for j in range(1, NCOU + 1):
@@ -1422,7 +1474,6 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                 )
 
         else:
-
             __SOLH = [None] * (NCOU + 2)
 
             for j in range(1, NCOU + 1):
@@ -1543,7 +1594,6 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
         affmat = []
 
         for j in range(1, NCOU + 2):
-
             affmat.append(_F(GROUP_MA=__TMAT["M", j], MATER=tSOLH[j]))
             if args.get("MAILLAGE") is None:
                 affmat.append(_F(GROUP_MA="L" + __TMAT["M", j], MATER=tSOLH[j]))
@@ -1555,66 +1605,34 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
         __CHAMPMAH = AFFE_MATERIAU(MAILLAGE=__mailla, AFFE=affmat)
         if lliaison == "OUI":
             # MATRICE DE RIGIDITE ELEMENTAIRE
-            if dime == "2D":
+            __RIGI_ELH = CALC_MATR_ELEM(
+                OPTION="RIGI_MECA", MODELE=__MODELE, CHAM_MATER=__CHAMPMAH, CHARGE=__CON_LIM
+            )
+            # Amor meca hyst pour colonne
 
-                __RIGI_ELH = CALC_MATR_ELEM(
-                    OPTION="RIGI_MECA", MODELE=__MODELE, CHAM_MATER=__CHAMPMAH, CHARGE=__CON_LIM
-                )
-                # Amor meca hyst pour colonne
+            __RIGH_ELH = CALC_MATR_ELEM(
+                OPTION="RIGI_MECA_HYST",
+                MODELE=__MODELE,
+                CHAM_MATER=__CHAMPMAH,
+                RIGI_MECA=__RIGI_ELH,
+                CHARGE=__CON_LIM,
+            )
+            # MATRICE DE MASSE ELEMENTAIRE
 
-                __RIGH_ELH = CALC_MATR_ELEM(
-                    OPTION="RIGI_MECA_HYST",
-                    MODELE=__MODELE,
-                    CHAM_MATER=__CHAMPMAH,
-                    RIGI_MECA=__RIGI_ELH,
-                    CHARGE=__CON_LIM,
-                )
-                # MATRICE DE MASSE ELEMENTAIRE
+            __MASS_ELH = CALC_MATR_ELEM(
+                OPTION="MASS_MECA", MODELE=__MODELE, CHAM_MATER=__CHAMPMAH, CHARGE=__CON_LIM
+            )
+            # MATRICE D AMORTISSEMENT ELEMENTAIRE (pour prise en compte
+            # amortissement frontiere absorbante)
 
-                __MASS_ELH = CALC_MATR_ELEM(
-                    OPTION="MASS_MECA", MODELE=__MODELE, CHAM_MATER=__CHAMPMAH, CHARGE=__CON_LIM
-                )
-                # MATRICE D AMORTISSEMENT ELEMENTAIRE (pour prise en compte
-                # amortissement frontiere absorbante)
-
-                __AMOR_ELH = CALC_MATR_ELEM(
-                    OPTION="AMOR_MECA",
-                    MODELE=__MODELE,
-                    CHAM_MATER=__CHAMPMAH,
-                    RIGI_MECA=__RIGI_ELH,
-                    MASS_MECA=__MASS_ELH,
-                    CHARGE=__CON_LIM,
-                )
-            if dime == "3D":
-                __RIGI_ELH = CALC_MATR_ELEM(
-                    OPTION="RIGI_MECA", MODELE=__MODELE, CHAM_MATER=__CHAMPMAH, CARA_ELEM=__CARELE
-                )
-                # Amor meca hyst pour colonne
-
-                __RIGH_ELH = CALC_MATR_ELEM(
-                    OPTION="RIGI_MECA_HYST",
-                    MODELE=__MODELE,
-                    CHAM_MATER=__CHAMPMAH,
-                    RIGI_MECA=__RIGI_ELH,
-                    CARA_ELEM=__CARELE,
-                )
-                # MATRICE DE MASSE ELEMENTAIRE
-
-                __MASS_ELH = CALC_MATR_ELEM(
-                    OPTION="MASS_MECA", MODELE=__MODELE, CHAM_MATER=__CHAMPMAH, CARA_ELEM=__CARELE
-                )
-                # MATRICE D AMORTISSEMENT ELEMENTAIRE (pour prise en compte
-                # amortissement frontiere absorbante)
-
-                __AMOR_ELH = CALC_MATR_ELEM(
-                    OPTION="AMOR_MECA",
-                    MODELE=__MODELE,
-                    CHAM_MATER=__CHAMPMAH,
-                    RIGI_MECA=__RIGI_ELH,
-                    MASS_MECA=__MASS_ELH,
-                    CARA_ELEM=__CARELE,
-                )
-
+            __AMOR_ELH = CALC_MATR_ELEM(
+                OPTION="AMOR_MECA",
+                MODELE=__MODELE,
+                CHAM_MATER=__CHAMPMAH,
+                RIGI_MECA=__RIGI_ELH,
+                MASS_MECA=__MASS_ELH,
+                CHARGE=__CON_LIM,
+            )
         else:
             if lmassp == "OUI":
                 # MATRICE DE RIGIDITE ELEMENTAIRE
@@ -1912,7 +1930,6 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
             # On excite la base de la colonne avec un bruit blanc
 
         if args["CHARGEMENT"] == "ONDE_PLANE":
-
             if ltranin == "OUI":
                 __CHA_ON = CREA_RESU(
                     OPERATION="CONV_CHAR",
@@ -2109,7 +2126,6 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
             )
 
             if ldevi == "OUI":
-
                 __FHuXrCL[0] = RECU_FONCTION(
                     RESULTAT=__DYNHARM,
                     NOM_CHAM="FORC_NODA",
@@ -2432,7 +2448,6 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                     )
             # Calcul des accelerogrammes et spectres de sol au RA pour DSP#
             else:
-
                 __AHX_RAf = CALC_FONCTION(EXTRACTION=_F(FONCTION=__AHX_RA[n], PARTIE="MODULE"))
                 __PAX_RA = CALC_FONCTION(
                     PUISSANCE=_F(FONCTION=__AHX_RAf, EXPOSANT=2),
@@ -2642,9 +2657,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
 
             # MODIF POR DSP: calcul des DSP puis SRO
             if "DSP" in args:
-
                 if "LIST_FREQ_SPEC_OSCI" in args:
-
                     __SAX_CL[n] = CALC_FONCTION(
                         SPEC_OSCI=_F(
                             FONCTION=__PAX_CL,
@@ -2693,7 +2706,6 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                         )
                     )
             else:
-
                 if "LIST_FREQ_SPEC_OSCI" in args:
                     __SAX_CL[n] = CALC_FONCTION(
                         SPEC_OSCI=_F(
@@ -2722,9 +2734,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
             # On prend: DSP ldevi = NON # RIEN A FAIRE ICI
 
             if ldevi == "OUI":
-
                 if args["INTEGRATION"] == "FREQUENCE":
-
                     __VX_CL[n] = CALC_FONCTION(
                         INTEGRE_FREQ=_F(
                             FONCTION=__AX_CL[n], FREQ_FILTRE=fc0, FREQ_COUP=fcoup, NIVEAU=1
@@ -2773,7 +2783,6 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                         PROL_GAUCHE="CONSTANT",
                     )
                 else:
-
                     __VX_CL[n] = CALC_FONCTION(
                         INTEGRE=_F(FONCTION=__AX_CL[n]),
                         PROL_DROITE="CONSTANT",
@@ -2861,7 +2870,6 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
         # POUR DSP LE MAX SE CALCULE PAR LE FACTEUR DE PIC
 
         if "DSP" in args:
-
             __DSP_CL = DEFI_INTE_SPEC(
                 DIMENSION=1, PAR_FONCTION=_F(NUME_ORDRE_I=1, NUME_ORDRE_J=1, FONCTION=__PAX_CL)
             )
@@ -3006,7 +3014,6 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                         )
 
                 if ldevi == "OUI":
-
                     if args["INTEGRATION"] == "FREQUENCE":
                         __vix[k] = CALC_FONCTION(
                             INTEGRE_FREQ=_F(
@@ -3157,7 +3164,6 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
 
                 # Calcul des max
                 if "DSP" in args:
-
                     __axaf = CALC_FONCTION(EXTRACTION=_F(FONCTION=__axa[k], PARTIE="MODULE"))
 
                     __paxa[k] = CALC_FONCTION(
@@ -3261,7 +3267,6 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                     maccx[n] = max(__accxa.Ordo())
 
                     if ldevi == "OUI":
-
                         if args["INTEGRATION"] == "FREQUENCE":
                             __vix[n] = CALC_FONCTION(
                                 INTEGRE_FREQ=_F(
@@ -3560,7 +3565,6 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
         diff.append(0)
         # --------------------------------CALCUL G ------------------------------
         for k in range(1, NCOU + 1):
-
             ind.append(__TMAT["GDgam", k])
             if Byrne:
                 if (
@@ -3610,7 +3614,6 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                 etat = "fin"
 
             else:
-
                 __TEnew = CREA_TABLE(FONCTION=_F(FONCTION=__Enew))
                 __TAHnew = CREA_TABLE(FONCTION=_F(FONCTION=__AHnew))
 
@@ -3639,7 +3642,6 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
             etat = "fin"
 
         if etat == "fin":
-
             __tabred = CREA_TABLE(FONCTION=_F(FONCTION=__rGold))
             __tabgam = CREA_TABLE(FONCTION=_F(FONCTION=__pgamax))
 
@@ -3795,9 +3797,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                         )
 
             if veriftmp == "NON":
-
                 for n in range(num_dime):
-
                     IMPR_FONCTION(
                         UNITE=6,
                         FORMAT="TABLEAU",
@@ -4955,15 +4955,34 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                     COURBE=(ifspecZ),
                 )
 
+                IMPR_FONCTION(
+                    UNITE=utabspec,
+                    FORMAT="TABLEAU",
+                    TITRE="Fonctions de Transfert entre CL et RA et Module des FFT direction X",
+                    COURBE=(_F(FONCTION=__FDT_RACL[0]), _F(FONCTION=__mFDTRACL[0])),
+                )
+
+                IMPR_FONCTION(
+                    UNITE=utabspec,
+                    FORMAT="TABLEAU",
+                    TITRE="Fonctions de Transfert entre CL et RA et Module des FFT direction Y",
+                    COURBE=(_F(FONCTION=__FDT_RACL[1]), _F(FONCTION=__mFDTRACL[1])),
+                )
+
+                IMPR_FONCTION(
+                    UNITE=utabspec,
+                    FORMAT="TABLEAU",
+                    TITRE="Fonctions de Transfert entre CL et RA et Module des FFT direction Z",
+                    COURBE=(_F(FONCTION=__FDT_RACL[2]), _F(FONCTION=__mFDTRACL[2])),
+                )
+
             # Destruction de tous les concepts pour permettre une utilisation
             # en INCLUDE dans boucle
             # pour DSP veriftmp = 'NON'
             if veriftmp == "OUI":
-
                 __SOLR = [None] * (NCOU + 2)
 
                 for j in range(1, NCOU + 1):
-
                     __SOLR[j] = DEFI_MATERIAU(
                         ELAS=_F(
                             E=__TMAT["Efin", j],
@@ -4997,7 +5016,6 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                 affmatR = []
 
                 for j in range(1, NCOU + 2):
-
                     affmatR.append(_F(GROUP_MA=__TMAT["M", j], MATER=tSOLR[j]))
 
                 affmatR.append(_F(GROUP_MA=grma_subst, MATER=__SOLRSUBS))
