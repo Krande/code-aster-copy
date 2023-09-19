@@ -399,6 +399,13 @@ class BaseDOFNumbering : public DataStructure {
     std::vector< FiniteElementDescriptorPtr > getFiniteElementDescriptors() { return _FEDVector; };
 
     /**
+     * @brief Assign FiniteElementDescriptors
+     */
+    void setFiniteElementDescriptors( std::vector< FiniteElementDescriptorPtr > &descr ) {
+        _FEDVector = descr;
+    };
+
+    /**
      * @brief Get mesh
      * @return Internal mesh
      */

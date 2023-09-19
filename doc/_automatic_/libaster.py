@@ -1928,7 +1928,11 @@ class BaseDOFNumbering(DataStructure):
         """
 
     def getFiniteElementDescriptors(self):
-        pass
+        """Returns the objects defining the finite elements.
+
+        Returns:
+            list[FiniteElementDescriptor]: List of finite elements descriptions.
+        """
 
     def getMesh(self):
         """Return the mesh
@@ -1955,6 +1959,13 @@ class BaseDOFNumbering(DataStructure):
 
         Returns:
             bool: *True* if used, *False* otherwise.
+        """
+
+    def setFiniteElementDescriptors(self, descr):
+        """Returns the object defining the finite elements.
+
+        Arguments:
+            descr (list[FiniteElementDescriptor]): List of finite elements descriptions.
         """
 
     def setModel(self, arg0):

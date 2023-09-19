@@ -129,8 +129,7 @@ class FieldCreator(ExecuteCommand):
                             if model is not None:
                                 self._result.setDescription(model.getFiniteElementDescriptor())
                             fed = dofNum.getFiniteElementDescriptors()
-                            if fed:
-                                self._result.setDescription(fed[0])
+                            self._result.setDescription(fed[0])
 
                     if resultat.getModel() is not None:
                         model = resultat.getModel()

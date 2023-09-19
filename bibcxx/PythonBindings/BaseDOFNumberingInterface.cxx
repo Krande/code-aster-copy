@@ -40,7 +40,19 @@ void exportBaseDOFNumberingToPython( py::module_ &mod ) {
     c1.def( "computeNumbering", f1 );
     c1.def( "computeNumbering", f2 );
     c1.def( "computeRenumbering", &BaseDOFNumbering::computeRenumbering );
-    c1.def( "getFiniteElementDescriptors", &BaseDOFNumbering::getFiniteElementDescriptors );
+    c1.def( "getFiniteElementDescriptors", &BaseDOFNumbering::getFiniteElementDescriptors, R"(
+Returns the objects defining the finite elements.
+
+Returns:
+    list[FiniteElementDescriptor]: List of finite elements descriptions.
+    )" );
+    c1.def( "setFiniteElementDescriptors", &BaseDOFNumbering::setFiniteElementDescriptors, R"(
+Returns the object defining the finite elements.
+
+Arguments:
+    descr (list[FiniteElementDescriptor]): List of finite elements descriptions.
+    )",
+            py::arg( "descr" ) );
     c1.def( "getEquationNumbering", &BaseDOFNumbering::getEquationNumbering, R"(
 Returns the global equation numbering object;
 
