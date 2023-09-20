@@ -24,7 +24,4 @@ Contributing
 
 - Check that the documentation can be built without warnings/errors.
 
-- The ``submit`` command from ``devtools`` checks that the fastest testcases
-  pass without error (``submit`` testlist).
-  The continous integration procedure checks more testcases
-  (``verification`` testlist).
+- Read the :file:`CONTRIBUTING.md` file from the repository.

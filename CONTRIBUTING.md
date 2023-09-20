@@ -1,4 +1,7 @@
-# To contribute to the project, you need to do it through pull/merge request
+# To contribute to the project, you need to do it through a merge request
+
+Before making your first contributions, please sign and sent the contribution
+agreement available from [this page][1].
 
 First you need to fork the repository into your own account. You can do that
 simply by clicking the **fork** button on the GitLab interface.
@@ -42,3 +45,5 @@ select the branch you want to push as a merge request, and push the button !
 
 ***Be careful to check the 'close after merge' check box, and to push to the
 codeaster/src repository***.
+
+[1]: https://gitlab.com/codeaster-opensource-documentation/opensource-installation-development/-/blob/main/devel/merge_request.md
