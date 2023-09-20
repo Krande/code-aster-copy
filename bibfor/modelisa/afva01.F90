@@ -16,8 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine afva01(typsd, nomsd, nomsym, lautr)
+subroutine afva01(affeType, dsName, fieldType, lautr)
+!
     implicit none
+!
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/as_deallocate.h"
@@ -29,9 +31,11 @@ subroutine afva01(typsd, nomsd, nomsym, lautr)
 #include "asterfort/rsexch.h"
 #include "asterfort/rsorac.h"
 #include "asterfort/wkvect.h"
-    character(len=16) :: typsd, nomsd, nomsym
-    aster_logical :: lautr
-! person_in_charge: jacques.pellet at edf.fr
+!
+    character(len=8), intent(in) :: affeType, dsName
+    character(len=16), intent(in) :: fieldType
+    aster_logical, intent(out) :: lautr
+!
 ! ----------------------------------------------------------------------
 ! BUT : DIRE SI DANS LA SD NOMSD DE TYPE TYPSD=CHAMP/EVOL+NOMSYM
 !       ON TROUVE DES COMPOSANTES AUTRES QUE 'TEMP' ET 'LAGR'
@@ -48,9 +52,9 @@ subroutine afva01(typsd, nomsd, nomsym, lautr)
 !
     call jemarq()
 !
-    if (typsd .eq. 'CHAMP') then
+    if (affeType .eq. 'CHAMP') then
 !     -----------------------------
-        ch19 = nomsd
+        ch19 = dsName
 !
 ! ----- Create objects for global components (catalog) <=> local components (field)
 !
@@ -64,9 +68,9 @@ subroutine afva01(typsd, nomsd, nomsym, lautr)
         goto 8
 !
 !
-    else if (typsd .eq. 'EVOL') then
+    else if (affeType .eq. 'EVOL') then
 !     -----------------------------
-        res19 = nomsd
+        res19 = dsName
         call rsorac(res19, 'LONUTI', 0, r8b, kbid, &
                     c16b, r8b, kbid, nbordr, 1, &
                     ibid)
@@ -76,7 +80,7 @@ subroutine afva01(typsd, nomsd, nomsym, lautr)
                     ibid)
 !
         do j = 1, nbordr(1)
-            call rsexch('F', res19, nomsym, zi(jordr-1+j), ch19, &
+            call rsexch('F', res19, fieldType, zi(jordr-1+j), ch19, &
                         iret)
             if (iret .eq. 0) then
 !
@@ -99,7 +103,7 @@ subroutine afva01(typsd, nomsd, nomsym, lautr)
 !
 !
     else
-        write (6, *) typsd, nomsd, nomsym
+        write (6, *) affeType, dsName, fieldType
         ASSERT(.false.)
     end if
 !

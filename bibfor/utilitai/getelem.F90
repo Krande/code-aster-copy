@@ -17,12 +17,13 @@
 ! --------------------------------------------------------------------
 !
 subroutine getelem(mesh, keywordfact, iocc, stop_void, list_elem, &
-                   nb_elem, suffix, model, l_keep_propz, l_allz)
+                   nb_elem, suffix, model, l_keep_propz, l_allz, onAllCells_)
 !
     implicit none
 !
 #include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/isParallelMesh.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -42,6 +43,7 @@ subroutine getelem(mesh, keywordfact, iocc, stop_void, list_elem, &
     character(len=*), intent(in), optional :: suffix
     aster_logical, optional, intent(in) :: l_keep_propz
     aster_logical, optional, intent(in) :: l_allz
+    aster_logical, optional, intent(out) :: onAllCells_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -89,9 +91,9 @@ subroutine getelem(mesh, keywordfact, iocc, stop_void, list_elem, &
     integer, pointer :: p_list_excl(:) => null()
     integer, pointer :: p_list_elem(:) => null()
     character(len=24) :: keyword
-    character(len=8) :: model_name, suffix_name
-    aster_logical :: l_keep_prop, l_all
-    integer :: nb_mocl, nb_elem_gl
+    character(len=8) :: model_name, suffix_name, answer
+    aster_logical :: l_keep_prop, l_all, onAllCells
+    integer :: nb_mocl, nb_elem_gl, nocc
     integer :: nb_lect, nb_excl, nb_elim
     integer :: nume_lect, nume_excl
     integer :: i_lect, i_excl, i_elem
@@ -124,6 +126,7 @@ subroutine getelem(mesh, keywordfact, iocc, stop_void, list_elem, &
     else
         l_all = ASTER_FALSE
     end if
+    onAllCells = ASTER_FALSE
 !
 ! - Read elements
 !
@@ -143,6 +146,8 @@ subroutine getelem(mesh, keywordfact, iocc, stop_void, list_elem, &
         call reliem(model_name, mesh, 'NU_MAILLE', keywordfact, iocc, &
                     nb_mocl, moclm, typmcl, list_lect, nb_lect, l_keep_prop, l_all)
     end if
+    call getvtx(keywordfact, 'TOUT', iocc=iocc, scal=answer, nbret=nocc)
+    onAllCells = (answer .eq. "OUI")
 !
 ! - Read elements excludes
 !
@@ -208,6 +213,10 @@ subroutine getelem(mesh, keywordfact, iocc, stop_void, list_elem, &
 !
     if (stop_void .ne. ' ' .and. nb_elem_gl .eq. 0) then
         call utmess(stop_void, 'UTILITY_3', sk=keywordfact)
+    end if
+!
+    if (present(onAllCells_)) then
+        onAllCells_ = onAllCells
     end if
 !
     call jedetr(list_lect)

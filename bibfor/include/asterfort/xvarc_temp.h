@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,19 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine xvarc_temp(novarc, evouch, evol, prolga, proldr, finst,& 
-                          nboccv, carte)
-        character(len=8), intent(in) :: novarc
-        character(len=8), intent(in) :: evouch
-        character(len=8), intent(in) :: evol
-        character(len=16), intent(in) :: prolga
-        character(len=16), intent(in) :: proldr
-        character(len=8), intent(in) :: finst
-        integer, intent(in) :: nboccv
-        character(len=19), intent(in) :: carte
+    subroutine xvarc_temp(affeType, dsName, funcExtrLeft, funcExtrRight, funcResult, &
+                          nbAffe, exteVariMap2)
+        character(len=8), intent(in) :: affeType, dsName, funcResult
+        integer, intent(in) :: nbAffe
+        character(len=16), intent(in) :: funcExtrLeft, funcExtrRight
+        character(len=19), intent(in) :: exteVariMap2
     end subroutine xvarc_temp
 end interface

@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xvarc_temp(novarc, evouch, evol, prolga, proldr, finst, &
-                      nboccv, carte)
+subroutine xvarc_temp(affeType, dsName, funcExtrLeft, funcExtrRight, funcResult, &
+                      nbAffe, exteVariMap2)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -38,41 +38,41 @@ subroutine xvarc_temp(novarc, evouch, evol, prolga, proldr, finst, &
 #include "asterfort/rsexch.h"
 #include "asterfort/utmess.h"
 #include "asterfort/xtmafi.h"
-    character(len=8), intent(in) :: novarc, evouch, evol, finst
-    integer, intent(in) :: nboccv
-    character(len=16), intent(in) :: prolga, proldr
-    character(len=19), intent(in) :: carte
-! person_in_charge: sam.cuvilliez at edf.fr
+!
+    character(len=8), intent(in) :: affeType, dsName, funcResult
+    integer, intent(in) :: nbAffe
+    character(len=16), intent(in) :: funcExtrLeft, funcExtrRight
+    character(len=19), intent(in) :: exteVariMap2
+!
 ! ----------------------------------------------------------------------
 !
 !     AFFE_MATERIAU / AFFE_VARC
 !
 !     -> cas particulier du chainage thermo-mecanique avec X-FEM
 !
-!     but : modifier dans la carte chmat//'.TEMP    .2' le nom
+!     but : modifier dans la exteVariMap2 chmat//'.TEMP    .2' le nom
 !           symbolique associe a la variable de commande TEMP.
 !           'TEMP' doit etre remplace par 'TEMP_ELGA'.
 !           Cette modification affecte les mailles qui portent
 !           des elements enrichis dans le modele.
 !
-!     in novarc : nom de la varc de l'occurence courante de AFFE_VARC
-!     in evouch : 'EVOL' / 'CHAMP' / 'VIDE'
-!     in evol   : nom de la sd resultat eventuellement renseignee
+!     in affeType : 'EVOL' / 'CHAMP' / 'VIDE'
+!     in dsName   : nom de la sd resultat eventuellement renseignee
 !                 sous le MCS EVOL
-!     in prolga : valeur du MCS PROL_GAUCHE
-!     in proldr : valeur du MCS PROL_DROITE
-!     in finst  : nom de la sd fonction eventuellement renseignee
+!     in funcExtrLeft : valeur du MCS PROL_GAUCHE
+!     in funcExtrRight : valeur du MCS PROL_DROITE
+!     in funcResult  : nom de la sd fonction eventuellement renseignee
 !                 sous le MCS FONC_INST
-!     in nboccv : nombre d'occurence du MCF AFFE_VARC
-!     in carte  : carte chmat//'.TEMP    .2'
+!     in nbAffe : nombre d'occurence du MCF AFFE_VARC
+!     in exteVariMap2  : exteVariMap2 chmat//'.TEMP    .2'
 !
-!     "out"     : ecrire dans carte si les conditions sont reunies
+!     "out"     : ecrire dans exteVariMap2 si les conditions sont reunies
 !
 ! ----------------------------------------------------------------------
     integer :: iret, nfiss, nbmx, jmax, ndim
     integer :: ibid, nbord, iord, icode_ini
     character(len=8) :: modein, modevo, noma
-    character(len=19) :: chamel, resu19
+    character(len=19) :: chamel, resultName
     character(len=24) :: mesmai, lismai, ligrch
     integer, pointer :: vordr(:) => null()
     integer, pointer :: vcode(:) => null()
@@ -89,20 +89,18 @@ subroutine xvarc_temp(novarc, evouch, evol, prolga, proldr, finst, &
 ! --- verifications prealables
 ! ----------------------------------------------------------------------
 !
-!   on sort s'il ne s'agit pas la variable de commande TEMP
-    if (novarc .ne. 'TEMP') goto 999
 !
 !   on sort si le MCS EVOL n'est pas renseigne
-    if (evouch .ne. 'EVOL') goto 999
+    if (affeType .ne. 'EVOL') goto 999
 !
-!   on sort si evol ne contient pas le champ de nom symbolique TEMP_ELGA
-    resu19 = evol
-    call jeveuo(resu19//'.ORDR', 'L', vi=vordr)
-    call jelira(resu19//'.ORDR', 'LONUTI', nbord)
+!   on sort si dsName ne contient pas le champ de nom symbolique TEMP_ELGA
+    resultName = dsName
+    call jeveuo(resultName//'.ORDR', 'L', vi=vordr)
+    call jelira(resultName//'.ORDR', 'LONUTI', nbord)
     ASSERT(nbord .ge. 1)
     AS_ALLOCATE(vi=vcode, size=nbord)
     do iord = 1, nbord
-        call rsexch(' ', evol, 'TEMP_ELGA', vordr(iord), chamel, vcode(iord))
+        call rsexch(' ', dsName, 'TEMP_ELGA', vordr(iord), chamel, vcode(iord))
     end do
 !   verif de coherence (pb par ex. si on a fait une mauvaise utilisation de CREA_RESU)
     icode_ini = vcode(1)
@@ -118,13 +116,13 @@ subroutine xvarc_temp(novarc, evouch, evol, prolga, proldr, finst, &
 ! --- Il faut faire des verifications supplementaires
 ! ----------------------------------------------------------------------
 !
-!   evol doit faire reference a une et une seule sd_modele "modevo"
+!   dsName doit faire reference a une et une seule sd_modele "modevo"
 !   (pb par ex. si on a fait une mauvaise utilisation de CREA_RESU)
 !   -> on recupere modevo via le ligrel de definition des cham_elem
 !      TEMP_ELGA, ligrel qui doit lui aussi etre unique
     AS_ALLOCATE(vk24=vligr, size=nbord)
     do iord = 1, nbord
-        call rsexch(' ', evol, 'TEMP_ELGA', vordr(iord), chamel, ibid)
+        call rsexch(' ', dsName, 'TEMP_ELGA', vordr(iord), chamel, ibid)
         call jeveuo(chamel//'.CELK', 'L', vk24=vcelk)
         ligrch = vcelk(1)
         call exisd('LIGREL', ligrch, iret)
@@ -145,7 +143,7 @@ subroutine xvarc_temp(novarc, evouch, evol, prolga, proldr, finst, &
     ASSERT(iret .eq. 1)
 !
 !   dans ce cas on ne peut avoir qu'une seule occurence de AFFE_VARC
-    if (nboccv .ne. 1) call utmess('F', 'XFEM_96')
+    if (nbAffe .ne. 1) call utmess('F', 'XFEM_96')
 !
 !   dans ce cas le MCS MODELE devient obligatoire
     call getvid(' ', 'MODELE', scal=modein, nbret=iret)
@@ -177,21 +175,21 @@ subroutine xvarc_temp(novarc, evouch, evol, prolga, proldr, finst, &
     call jeveuo(lismai, 'L', jadr=jmax)
 !
 ! ----------------------------------------------------------------------
-! --- modification dans la carte du nom symbolique du champ de
+! --- modification dans la exteVariMap2 du nom symbolique du champ de
 ! --- temperature pour ces mailles : 'TEMP' -> 'TEMP_ELGA'
 ! ----------------------------------------------------------------------
 !
-    call jeveuo(carte//'.VALV', 'E', vk16=vale)
+    call jeveuo(exteVariMap2//'.VALV', 'E', vk16=vale)
 !
     vale(1) = 'TEMP'
     vale(2) = 'EVOL'
-    vale(3) = evol
+    vale(3) = dsName
     vale(4) = 'TEMP_ELGA'
-    vale(5) = prolga
-    vale(6) = proldr
-    vale(7) = finst
+    vale(5) = funcExtrLeft
+    vale(6) = funcExtrRight
+    vale(7) = funcResult
 !
-    call nocart(carte, 3, 7, mode='NUM', nma=nbmx, limanu=zi(jmax))
+    call nocart(exteVariMap2, 3, 7, mode='NUM', nma=nbmx, limanu=zi(jmax))
 !
     call jedetr(mesmai)
     call jedetr(lismai)

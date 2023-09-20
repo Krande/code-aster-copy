@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+!
 
-!
-!
-interface
-    subroutine afvarc_read_cata(varc_cata)
-        use Material_Datastructure_type
-        type(Mat_DS_VarcListCata), intent(out) :: varc_cata
-    end subroutine afvarc_read_cata
-end interface
+! Flag for debug to read
+#define EXTEVARI_DBG_READ 0
+
+! Maximum number of external state variables available
+#define EXTEVARI_NB_MAXI 13
+
+! Maximum number of components in external state variable
+#define EXTEVARI_NBCMP_MAXI 9
+
+! Size of map 2
+#define EXTEVARI_MAP2_SIZE 7

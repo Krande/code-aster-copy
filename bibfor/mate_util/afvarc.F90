@@ -16,21 +16,20 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine afvarc(chmate, mesh, model)
+subroutine afvarc(mateField, mesh, model)
 !
-    use Material_Datastructure_type
+    use ExternalStateVariable_type
+    use ExternalStateVariable_module, only: creaCata, freeCata
+    use ExternalStateVariableRead_module, only: readDataFromUser, freeDataFromUser
+    use ExternalStateVariable_module, only: shrinkMaps
+    use ExternalStateVariable_module, only: creaJvObjects, creaMaps, fillJvObjects, fillMaps
+    use ExternalStateVariable_module, only: debugMaps
 !
     implicit none
 !
-#include "asterfort/afvarc_free.h"
-#include "asterfort/afvarc_obje_affe.h"
-#include "asterfort/afvarc_obje_crea.h"
-#include "asterfort/afvarc_read.h"
-#include "asterfort/afvarc_shrink.h"
+#include "asterfort/ExternalStateVariable_type.h"
 !
-    character(len=8), intent(in) :: chmate
-    character(len=8), intent(in) :: mesh
-    character(len=8), intent(in) :: model
+    character(len=8), intent(in) :: mateField, mesh, model
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -40,33 +39,50 @@ subroutine afvarc(chmate, mesh, model)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  chmate           : name of material field (CHAM_MATER)
+! In  mateField        : name of material field (CHAM_MATER)
 ! In  mesh             : name of mesh
 ! In  model            : name of model
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    type(Mat_DS_VarcListCata) :: varc_cata
-    type(Mat_DS_VarcListAffe) :: varc_affe
-    integer :: nb_affe_varc
+    character(len=1), parameter :: jvBase = "G"
+    type(EXTE_VARI_CATA), pointer :: exteVariCata(:) => null()
+    type(EXTE_VARI_AFFE) :: exteVariAffe
 !
 ! --------------------------------------------------------------------------------------------------
-!
-! - Read data
-!
-    call afvarc_read(varc_cata, varc_affe)
-    nb_affe_varc = varc_affe%nb_affe_varc
-!
-    if (nb_affe_varc .ne. 0) then
-!       Create objects
-        call afvarc_obje_crea('G', chmate, mesh, varc_cata, varc_affe)
-!       Affect values in objects
-        call afvarc_obje_affe(chmate, mesh, model, varc_cata, varc_affe)
-!       Shrink number of components to save memory
-        call afvarc_shrink(chmate, varc_affe)
+
+! - Create catalog of all external state variables
+    call creaCata(exteVariCata)
+
+! - Get external state variables affected from command file
+    call readDataFromUser(exteVariCata, exteVariAffe)
+
+! - Create
+    if (exteVariAffe%nbAffe .ne. 0) then
+! ----- Create main objects
+        call creaJvObjects(jvBase, mateField, exteVariAffe)
+
+! ----- Create maps
+        call creaMaps(jvBase, mesh, mateField, exteVariCata, exteVariAffe)
+
+! ----- Affect values in main objects
+        call fillJvObjects(mateField, exteVariCata, exteVariAffe)
+
+! ----- Affect values in maps
+        call fillMaps(mateField, mesh, model, &
+                      exteVariCata, exteVariAffe)
+
+! ----- Shrink number of components to save memory
+        call shrinkMaps(mateField, exteVariAffe)
+
+! ----- Debug if required
+        if (EXTEVARI_DBG_READ .eq. 1) then
+            call debugMaps(mateField)
+        end if
     end if
 
-!   Free objects allocated in 'afvarc_read'
-    call afvarc_free(varc_cata, varc_affe)
+! - Free objects
+    call freeCata(exteVariCata)
+    call freeDataFromUser(exteVariAffe)
 !
 end subroutine
