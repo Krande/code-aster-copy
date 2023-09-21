@@ -195,6 +195,12 @@ Material::Material( const Material &toCopy, const VectorString propIgnored )
 
 bool Material::build() {
     int nbMat = size();
+    if ( nbMat > 0 ) {
+        auto first = _names->front().rstrip();
+        if ( first == "ELAS_COQMU" || first == "THER_COQMU" ) {
+            nbMat = 1;
+        }
+    }
     for ( int i = 0; i < nbMat; i++ ) {
         auto prop = std::make_shared< MaterialProperties >( _cptName( i + 1 ) );
         _prop.push_back( prop );
@@ -362,6 +368,7 @@ std::string Material::_cptName( int idx ) {
 }
 
 MaterialPropertiesPtr Material::matByName( std::string matName ) {
+    // private: do not use it with *_COQMU
     int idx = -1, i = 0;
     for ( auto &elt : *_names ) {
         if ( elt.rstrip() == matName ) {
