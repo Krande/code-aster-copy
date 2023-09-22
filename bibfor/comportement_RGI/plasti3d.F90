@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -127,6 +127,9 @@ subroutine plasti3d(xmat, inputR, inputVR6, inputMat33, inputI, &
         CNAD, NRJP, TTRD, TFID, TTDD, TDID, EXMD/
     data vectind1/EXND, CNAB, CNAK, SSAD, TTKF, NRJF, ALAT, KGEL, SFLD, EPC, &
         RC, EKDC, HRGI, HPEV, XFLU, DFMX, YKSY/
+! ----------------------------------------------------------------------
+    pw = 0.d0
+    bw = 0.d0
 ! ----------------------------------------------------------------------
 
     call getValVect(inputR, biotw, poro, vw, xnsat, pglim, teta, dt1, &
