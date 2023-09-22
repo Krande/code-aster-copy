@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -429,7 +429,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
               ELIM_MULT       =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
          ),
 
-           LIAISON_PROJ     =FACT(statut='f',max=1,
+           LIAISON_PROJ     =FACT(statut='f',max="**",
              fr="Définit des relations linéaires issues de PROJ_CHAMP entre les DDLs d'un même modèle",
              MATR_PROJECTION =SIMP(statut='o',typ=corresp_2_mailla),
              DDL             =SIMP(statut='o',typ='TXM',validators=NoRepeat(),into=('DX','DY','DZ','DRX','DRY','DRZ'),min=1,max=6),
