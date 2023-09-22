@@ -619,7 +619,7 @@ AFFE_CHAR_MECA = OPER(
     ),
     LIAISON_PROJ=FACT(
         statut="f",
-        max=1,
+        max="**",
         fr="Définit des relations linéaires issues de PROJ_CHAMP entre les DDLs d'un même modèle",
         MATR_PROJECTION=SIMP(statut="o", typ=corresp_2_mailla),
         DDL=SIMP(
