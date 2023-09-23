@@ -101,7 +101,17 @@ On ignore le CARA_ELEM du type d'élément %(k1)s pour le champ %(k2)s
     Conseil : Supprimer le mot-clé CARA_ELEM sous le mot clé facteur RESU.
     """
     ),
+    14: _(
+        """
+On essaie d'imprimer le champ %(k1)s au format MED mais pour l'élément de type %(k2)s ce champ contient des sous-points.
+On a besoin du CARA_ELEM pour imprimer des champs à sous-points pour les éléments de structure de type COQUE, GRILLE, TUYAU ou PMF
 
+    Conseils : 
+        - Préciser le mot-clé CARA_ELEM sous le mot clé facteur RESU.
+        - Sans mot-clé CARA_ELEM le résultat n'est exploitable que pour la commande LIRE_RESU
+          et il ne faut surtout pas chercher à le visualiser.
+    """
+    ),
     20: _(
         """
 Impression au format MED d'éléments à sous-points.

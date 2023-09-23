@@ -140,7 +140,7 @@ Solution = CALC_FERRAILLAGE(
     ),
 )
 
-IMPR_RESU(FORMAT="MED", UNITE=80, RESU=(_F(RESULTAT=Solution),))
+IMPR_RESU(FORMAT="MED", UNITE=80, RESU=(_F(RESULTAT=Solution, CARA_ELEM=AFFECARA),))
 # --------------------------------------------------------------------------------------------
 # Tests de validation (source externe) :
 # ----------------------------------------

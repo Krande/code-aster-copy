@@ -19,7 +19,7 @@
 !
 subroutine irmpga(nofimd, chanom, nochmd, typech, nomtyp, &
                   nbimpr, caimpi, caimpk, modnum, nuanom, &
-                  sdcarm, lfichUniq, codret)
+                  sdcarm, lfichUniq, field_type, codret)
 !
     implicit none
 !
@@ -27,12 +27,12 @@ subroutine irmpga(nofimd, chanom, nochmd, typech, nomtyp, &
 #include "asterf_types.h"
 #include "MeshTypes_type.h"
 #include "asterc/utflsh.h"
-#include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/irmase.h"
 #include "asterfort/irmpg1.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/teattr.h"
 #include "asterfort/uteref.h"
 #include "asterfort/utmess.h"
 !
@@ -41,12 +41,15 @@ subroutine irmpga(nofimd, chanom, nochmd, typech, nomtyp, &
     integer :: modnum(MT_NTYMAX), nuanom(MT_NTYMAX, *)
     character(len=8) :: nomtyp(*)
     character(len=8) :: typech, sdcarm
+    character(len=16) :: tuyau, coque, grille, typmod2
     character(len=19) :: chanom
     character(len=80) :: caimpk(3, nbimpr)
     character(len=*) :: nofimd
     character(len=64) :: nochmd
     aster_logical :: lfichUniq
+    character(len=16) :: field_type
     integer :: codret
+    
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -93,7 +96,7 @@ subroutine irmpga(nofimd, chanom, nochmd, typech, nomtyp, &
     integer :: nbrepg, nbnoso, nbnoto, ndim
     integer :: ntypef, tygeom, tymast
     integer :: nbpg, nbsp
-    integer :: nrimpr
+    integer :: nrimpr, iret
     integer, parameter :: lgmax = 1000
     real(kind=8) :: refcoo(3*lgmax), gscoo(3*lgmax), wg(lgmax)
     real(kind=8) :: raux1(3*lgmax), raux2(3*lgmax), raux3(lgmax)
@@ -101,6 +104,7 @@ subroutine irmpga(nofimd, chanom, nochmd, typech, nomtyp, &
     character(len=4)  :: chnbco, chnbse
     character(len=10) :: nonuma
     character(len=16) :: nomtef, nomfpg, typsec
+    character(len=16) :: valk(2)
     character(len=64) :: nolopg, nomasu
     real(kind=8) :: start, end
 !
@@ -161,6 +165,18 @@ subroutine irmpga(nofimd, chanom, nochmd, typech, nomtyp, &
 !               CODRET = 1 : LE CHAMP N'EST PAS DEFINI SUR CE TYPE D'ELEMENT
                 ntypef = caimpi(1, nrimpr)
                 call jenuno(jexnum('&CATA.TE.NOMTE', ntypef), nomtef)
+                call teattr('C', 'TUYAU', tuyau, iret, typel=nomtef)
+                call teattr('C', 'COQUE', coque, iret, typel=nomtef)
+                call teattr('C', 'GRILLE', grille, iret, typel=nomtef)
+                call teattr('C', 'TYPMOD2', typmod2, iret, typel=nomtef)
+                if (tuyau .eq. 'OUI' .or. coque .eq. 'OUI' .or. grille .eq. 'OUI' &
+                    .or. typmod2 .eq. 'PMF') then
+                    if (nbsp .gt. 1 .and. sdcarm .eq. ' ') then
+                        valk(1) = field_type
+                        valk(2) = nomtef
+                        call utmess('A', 'MED2_14', nk=2, valk=valk)
+                    endif
+                endif
 !
                 call uteref(chanom, typech, ntypef, nomtef, lfichUniq, &
                             nomfpg, nbnoso, nbnoto, nbrepg, ndim, &

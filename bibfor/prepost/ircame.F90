@@ -376,8 +376,8 @@ subroutine ircame(ifi, nochmd, chanom, typech, modele, &
     end if
 !
     if (nbimpr .gt. 0) then
-        call jeveuo(ncaimi, 'L', adcaii)
-        call jeveuo(ncaimk, 'L', adcaik)
+        call jeveuo(ncaimi, 'E', adcaii)
+        call jeveuo(ncaimk, 'E', adcaik)
 !       3.4. ==> CARACTERISATION DES SUPPORTS QUAND CE NE SONT PAS DES NOEUDS
         if (typech(1:4) .eq. 'ELGA' .or. typech(1:4) .eq. 'ELEM') then
             if (sdcarm .ne. ' ' .and. typech(1:4) .eq. 'ELGA') then
@@ -389,7 +389,7 @@ subroutine ircame(ifi, nochmd, chanom, typech, modele, &
             end if
             call irmpga(nofimd, chanom, nochmd, typech, nomtyp, &
                         nbimpr, zi(adcaii), zk80(adcaik), modnum, nuanom, &
-                        sdcarm, lfichUniq, codret)
+                        sdcarm, lfichUniq, field_type, codret)
         end if
 !
 !       Reperage du champ : existe-t-il deja ?

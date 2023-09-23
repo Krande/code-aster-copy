@@ -20,7 +20,7 @@
 interface
     subroutine irmpga(nofimd, chanom, nochmd, typech, nomtyp,&
                       nbimpr, caimpi, caimpk, modnum, nuanom,&
-                      sdcarm, lfichUniq, codret)
+                      sdcarm, lfichUniq, field_type, codret)
         integer :: nbimpr
         character(len=*) :: nofimd
         character(len=19) :: chanom
@@ -32,6 +32,7 @@ interface
         integer :: nuanom(MT_NTYMAX, *)
         character(len=8) :: sdcarm
         character(len=64) :: nochmd
+        character(len=16) :: field_type
         aster_logical :: lfichUniq
         integer :: codret
     end subroutine irmpga

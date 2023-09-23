@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -843,8 +843,8 @@ U2 = CALC_CHAMP(
     reuse=U2, RESULTAT=U2, INST=(1, 2, 3, 4, 5, 6, 7, 8, 9), GROUP_MA=("P1",), FORCE="FORC_NODA"
 )
 
-IMPR_RESU(FORMAT="MED", RESU=_F(RESULTAT=U, IMPR_NOM_VARI="NON"))
-IMPR_RESU(FORMAT="MED", RESU=_F(RESULTAT=U2, IMPR_NOM_VARI="NON"))
+IMPR_RESU(FORMAT="MED", RESU=_F(RESULTAT=U, IMPR_NOM_VARI="NON", CARA_ELEM=CAREL))
+IMPR_RESU(FORMAT="MED", RESU=_F(RESULTAT=U2, IMPR_NOM_VARI="NON", CARA_ELEM=CAREL2))
 
 TABLF = CREA_TABLE(RESU=_F(RESULTAT=U, NOM_CHAM="FORC_NODA", TOUT_CMP="OUI", GROUP_MA="P"))
 

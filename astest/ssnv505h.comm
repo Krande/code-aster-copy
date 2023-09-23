@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -293,7 +293,7 @@ T_DEP_ES = POST_RELEVE_T(
 # IMPR_TABLE(TABLE=T_REA_ES,)
 # IMPR_TABLE(TABLE=T_DEP_ES,)
 
-IMPR_RESU(FORMAT="MED", RESU=_F(RESULTAT=UESCL))
+IMPR_RESU(FORMAT="MED", RESU=_F(RESULTAT=UESCL, CARA_ELEM=CHAMPCAR))
 
 TEST_TABLE(
     VALE_CALC=311.885469166, NOM_PARA="DY", TABLE=T_REA_ES, FILTRE=_F(NOM_PARA="INST", VALE=0.2)
