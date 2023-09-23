@@ -40,7 +40,9 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato, &
 #include "asterfort/ircmpf.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
+#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
 #include "asterfort/juveca.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/utmess.h"
@@ -117,7 +119,8 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato, &
     integer :: adcaii, adcaik, nbgrf, nbmaect, nbimprl(1), jindir
     integer :: nbgrf2, nbtcou2, nbqcou2, nbsec2, nbfib2, ima2, nbimprt
     integer :: igrfi, imafib, rang, nbproc, jma, jnbma, ityp, nbmal, iaux
-    character(len=16) :: nomfpg
+    character(len=16) :: nomfpg, nomtef
+    character(len=16) :: valk(2)
     character(len=64) :: noprof
     aster_logical :: exicar, grfidt, elga_sp, okgrcq, oktuy
     character(len=16), pointer :: fpg_name(:) => null()
@@ -288,25 +291,24 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato, &
 
         nomfpg = 'a fac'
         elga_sp = .false.
+        imafib = 0
         if (typech(1:4) .eq. 'ELGA') then
             nomfpg = nofpgma(ima)
-            if (exicar) then
-                elga_sp = .true.
+            if ((nbsp .ge. 1) .and. exicar) then
+                call ircael(jcesd, jcesl, jcesv, jcesc, ima, &
+                            nbqcou, nbtcou, nbsec, nbfib, nbgrf, nugrfi)
+                if (nbsp .gt. 1 .or. nbqcou .eq. 1 .or. nbfib .eq. 1) then
+                    elga_sp = .true.
+                    if (nbfib .ne. 0) imafib = ima
+                endif
             end if
-        end if
-        imafib = 0
-        !
-        if ((nbsp .ge. 1) .and. elga_sp) then
-            call ircael(jcesd, jcesl, jcesv, jcesc, ima, &
-                        nbqcou, nbtcou, nbsec, nbfib, nbgrf, nugrfi)
-            if (nbfib .ne. 0) imafib = ima
         end if
         !
         ! RECHERCHE D'UNE IMPRESSION SEMBLABLE
         do jaux = 1, nbimpr
             if (typech(1:4) .eq. 'ELGA') then
                 ! Pour les ELGA, tri sur les familles de points de gauss
-                if (.not. exicar) then
+                if (.not. elga_sp) then
                     ! si on n'a pas de cara_elem, le cas est simple
                     ! on compare le nom de la famille de pg et nbsp
                     if (fpg_name(jaux) .eq. nomfpg .and. &
@@ -352,6 +354,13 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato, &
                                 !   Grilles nbqcou=nbsp=1
                                 nrimpr = jaux
                                 goto 423
+                            else
+                                ! autre cas 
+                                ! on compare le nom de la famille de pg et nbsp
+                               if (zi(adcaii+10*(jaux-1)+2) .eq. nbsp) then
+                                   nrimpr = jaux
+                                   goto 423
+                               end if
                             end if
                         end if
                     end if
@@ -412,6 +421,12 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato, &
                 end if
             end if
         else
+            if (exicar .and. nbsp .eq. 1 .and. typech(1:4) .eq. 'ELGA') then
+                call jenuno(jexnum('&CATA.TE.NOMTE', nrefma), nomtef)
+                valk(1) = nomtef
+                valk(2) = field_type
+                call utmess('A', 'MED2_13', nk=2, valk=valk)
+            endif
             zi(jaux+3) = 0
             zi(jaux+4) = 0
         end if
@@ -539,6 +554,7 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato, &
     ! ADRESSES DANS LE TABLEAU PROFAS
     !   ADRAUX(IAUX) = ADRESSE DE LA FIN DE LA ZONE DE L'IMPRESSION PRECEDENTE, IAUX-1
     adraux(1) = 0
+    ASSERT(nbimpr .le. MT_NTYMAX)
     do i_fpg = 2, nbimpr
         adraux(i_fpg) = adraux(i_fpg-1)+zi(adcaii+10*(i_fpg-2)+6)
     end do

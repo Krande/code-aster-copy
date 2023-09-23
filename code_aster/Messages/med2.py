@@ -94,6 +94,14 @@ structure pour être imprimé sur ce format.
 Il ne faut pas imprimer ce champ ou faire deux IMPR_RESU différents.
 """
     ),
+    13: _(
+        """
+On ignore le CARA_ELEM du type d'élément %(k1)s pour le champ %(k2)s
+
+    Conseil : Supprimer le mot-clé CARA_ELEM sous le mot clé facteur RESU.
+    """
+    ),
+
     20: _(
         """
 Impression au format MED d'éléments à sous-points.
