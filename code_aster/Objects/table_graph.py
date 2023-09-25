@@ -25,10 +25,10 @@ __all__ = ["Graph", "AjoutParaCourbe"]
 
 import os
 import os.path
+import shutil
 import re
 import sys
 import time
-from pathlib import Path
 
 import aster_core
 import numpy as np
@@ -1387,7 +1387,7 @@ def IniGrace(fich):
     y1 = None
     if os.path.exists(fich) and os.stat(fich).st_size != 0:
         assert not is_binary(fich), "Can not append text to a binary file"
-        Path(fich).rename(fich + ".prev")
+        shutil.copy(fich, fich + ".prev")
         fpre = open(fich + ".prev", "r")
         fnew = open(fich, "w")
         for line in fpre:
