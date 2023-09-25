@@ -36,6 +36,7 @@ object.
 import json
 import os
 import os.path as osp
+import shutil
 import platform
 import re
 import sys
@@ -622,4 +623,7 @@ def get_program_path(program):
         get_program_path._cache = prog_cfg
 
     programs = get_program_path._cache
-    return programs.get(program, program)
+    value = programs.get(program, shutil.which(program))
+    if not value or not osp.isfile(value):
+        value = program
+    return value
