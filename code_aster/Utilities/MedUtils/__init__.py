@@ -28,7 +28,7 @@ No external import of other :py:mod:`code_aster` packages.
 from ..base_utils import config
 
 # aslint: disable=C4008
-if config.get("ASTER_HAVE_MED"):
+if config.get("ASTER_HAVE_MPI") and config.get("ASTER_HAVE_MED"):
     from ...Objects import MedFileReader, IncompleteMesh, MeshBalancer, MeshConnectionGraph
     from ...Objects import PtScotchPartitioner
     from ...Objects import FieldCharacteristics, SimpleFieldOnNodesReal, Result
