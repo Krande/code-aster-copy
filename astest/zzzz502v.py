@@ -42,12 +42,11 @@ MA.readMedFile("zzzz502s.mmed")
 
 # MA=MA.refine(1)
 
-# TODO When issue33111 is fixed, set the absorbing boundary condition
 MO = AFFE_MODELE(
     MAILLAGE=MA,
     AFFE=(
         _F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"),
-        # _F(GROUP_MA=("COTE_H"), PHENOMENE="MECANIQUE", MODELISATION="3D_ABSO"),
+        _F(GROUP_MA=("COTE_H"), PHENOMENE="MECANIQUE", MODELISATION="3D_ABSO"),
     ),
 )
 
@@ -78,7 +77,7 @@ ONDE = AFFE_CHAR_MECA_F(
     ),
 )
 BLOQ = AFFE_CHAR_CINE(MODELE=MO, MECA_IMPO=_F(GROUP_MA=("COTE_B",), DX=0, DY=0, DZ=0))
-ONDE = AFFE_CHAR_MECA_F(MODELE=MO, PRES_REP=_F(GROUP_MA=("COTE_H",), PRES=sinus), VERI_NORM="NON")
+# ONDE = AFFE_CHAR_MECA_F(MODELE=MO, PRES_REP=_F(GROUP_MA=("COTE_H",), PRES=sinus), VERI_NORM="NON")
 
 KEL = CALC_MATR_ELEM(OPTION="RIGI_MECA", MODELE=MO, CHAM_MATER=CHMAT)
 MEL = CALC_MATR_ELEM(OPTION="MASS_MECA", MODELE=MO, CHAM_MATER=CHMAT)
@@ -100,6 +99,7 @@ FASS = ASSE_VECTEUR(VECT_ELEM=FELEM, NUME_DDL=NUMEDDL)
 
 study.zeroDirichletBCDOFs(FASS)
 
+freq = 1.0
 REFE = DYNA_VIBRA(
     TYPE_CALCUL="HARM",
     BASE_CALCUL="PHYS",
@@ -107,13 +107,13 @@ REFE = DYNA_VIBRA(
     MATR_MASS=MASS,
     MATR_RIGI=STIFFNESS,
     MATR_AMOR=DAMPING,
-    FREQ=1.0,
+    FREQ=freq,
     EXCIT=(_F(VECT_ASSE=FASS, COEF_MULT=1.0), _F(CHARGE=BLOQ, COEF_MULT=1.0)),
     INFO=1,
 )
 ref = REFE.getField("DEPL", 1)
 # sequential comparaison
-seq_value = 0.023770140396800223
+seq_value = 27.702679151680293
 mpi_value = ref.norm("NORM_1")
 test.assertAlmostEqual(mpi_value, seq_value)
 
@@ -129,7 +129,7 @@ pRef_i = ref_i.toPetsc()
 
 # ----------------------------------------
 
-om = 2 * np.pi * 1
+om = 2 * np.pi * freq
 
 mat_r = (STIFFNESS - om * om * MASS).toPetsc()
 mat_r.setBlockSize(3)
@@ -190,8 +190,8 @@ xr = x.getSubVector(rIS)
 xi = -x.getSubVector(iIS)
 print(f"Error = {(xr-pRef_r).norm() / pRef_r.norm()*100:.2E} %")
 print(f"Error = {(xi-pRef_i).norm() / pRef_i.norm()*100:.2E} %")
-test.assertAlmostEqual(xr.norm(), pRef_r.norm())
-test.assertAlmostEqual(xi.norm(), pRef_i.norm())
+test.assertAlmostEqual(xr.norm(), pRef_r.norm(), places=6)
+test.assertAlmostEqual(xi.norm(), pRef_i.norm(), places=6)
 
 
 # ------------------------------------------------------------------------------------
@@ -230,8 +230,8 @@ xr = x.getSubVector(rIS)
 xi = -x.getSubVector(iIS)
 print(f"Error = {(xr-pRef_r).norm() / pRef_r.norm()*100:.2E} %")
 print(f"Error = {(xi-pRef_i).norm() / pRef_i.norm()*100:.2E} %")
-test.assertAlmostEqual(xr.norm(), pRef_r.norm())
-test.assertAlmostEqual(xi.norm(), pRef_i.norm())
+test.assertAlmostEqual(xr.norm(), pRef_r.norm(), places=5)
+test.assertAlmostEqual(xi.norm(), pRef_i.norm(), places=5)
 
 
 # ------------------------------------------------------------------------------------
@@ -287,8 +287,8 @@ xr = x.getSubVector(rIS)
 xi = -x.getSubVector(iIS)
 print(f"Error = {(xr-pRef_r).norm() / pRef_r.norm()*100:.2E} %")
 print(f"Error = {(xi-pRef_i).norm() / pRef_i.norm()*100:.2E} %")
-test.assertAlmostEqual(xr.norm(), pRef_r.norm())
-test.assertAlmostEqual(xi.norm(), pRef_i.norm())
+test.assertAlmostEqual(xr.norm(), pRef_r.norm(), places=6)
+test.assertAlmostEqual(xi.norm(), pRef_i.norm(), places=6)
 
 
 FIN()

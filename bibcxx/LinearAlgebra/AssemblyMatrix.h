@@ -423,7 +423,7 @@ AssemblyMatrix< ValueType, PhysicalQuantity >::AssemblyMatrix( const std::string
 template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
 AssemblyMatrix< ValueType, PhysicalQuantity >::AssemblyMatrix( const PhysicalProblemPtr phys_prob )
     : AssemblyMatrix() {
-    _dofNum = phys_prob->getDOFNumbering();
+    setDOFNumbering( phys_prob->getDOFNumbering() );
     _listOfLoads = phys_prob->getListOfLoads();
 };
 

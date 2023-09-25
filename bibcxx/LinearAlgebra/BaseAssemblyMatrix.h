@@ -266,7 +266,10 @@ class BaseAssemblyMatrix : public DataStructure {
      * @brief Methode permettant de definir la numerotation
      * @param currentNum objet DOFNumbering
      */
-    void setDOFNumbering( const BaseDOFNumberingPtr currentNum ) { _dofNum = currentNum; };
+    void setDOFNumbering( const BaseDOFNumberingPtr currentNum ) {
+        _dofNum = currentNum;
+        _isEmpty = false;
+    };
 
     /** @brief update _dofNum using DOFNumbering name created in Fortran */
     void updateDOFNumbering();
