@@ -138,7 +138,7 @@ subroutine jedebu(nbfi, mxzon, idb)
 
 ! --------------------------------- ------------------------------------
     integer :: mxlici, iret
-    real(kind=8) :: rval(3)
+    real(kind=8) :: rval(3), added
     character(len=8) :: k8tab(3)
     parameter(mxlici=67)
     character(len=mxlici) :: clicit
@@ -218,6 +218,7 @@ subroutine jedebu(nbfi, mxzon, idb)
     if (mxzon .eq. 0) then
         vmxdyn = 1024
     end if
+!   memoire totale demandee par l'utilisateur
     vmet = vmxdyn
 !
     call utptme('MEM_MUMP', 0.d0, iret)
@@ -229,13 +230,12 @@ subroutine jedebu(nbfi, mxzon, idb)
         call utmess('I', 'JEVEUX1_75')
     end if
 !
-    if (rval(3) .gt. 0) then
+    added = rval(2)
+    if (added .gt. 0) then
 !
-        call utptme('RLQ_MEM ', rval(3), iret)
-        if (rval(1)-rval(3) .le. 0) then
-            call utmess('F', 'JEVEUX1_71', nr=3, valr=rval)
-        end if
-        call jermxd((rval(1)-rval(3))*1024*1024, iret)
+        call utptme('RLQ_MEM ', added, iret)
+!       memoire totale prise en compte par jeveux: demandee + vmpeak initial
+        vmet = (rval(1)+added)*1024*1024/lois
     end if
 !
     liszon = 1

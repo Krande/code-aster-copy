@@ -32,8 +32,8 @@ subroutine utptme(nomarg, valarg, iret)
 !
     real(kind=8) :: mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio
     common/r8dyje/mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio(2)
-    real(kind=8) :: vmumps, vpetsc, rlqmem, vminit, vmjdc
-    common/msolve/vmumps, vpetsc, rlqmem, vminit, vmjdc
+    real(kind=8) :: vmumps, vpetsc, rlqmem, vminit
+    common/msolve/vmumps, vpetsc, rlqmem, vminit
 ! ----------------------------------------------------------------------
     iret = 0
     if (nomarg .eq. 'MEM_TOTA') then

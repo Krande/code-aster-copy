@@ -516,8 +516,6 @@ class Export(Store):
             elif self.has_param("memory_limit"):
                 value = self.get("memory_limit")
             if value:
-                if not self._checked:
-                    value += CFG.get("addmem", 0.0)
                 self.set_argument(["--memory", value])
         # time_limit in s (required), --tpmax in s (required)
         if "--tpmax" not in args:

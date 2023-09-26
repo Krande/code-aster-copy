@@ -382,13 +382,12 @@ class TestExport(unittest.TestCase):
         )
 
     def test_args(self):
-        # memory is taken from memjeveux (that is removed) + addmem
+        # memory is taken from memjeveux (that is removed)
         text = "\n".join(["A args --continue --memjeveux=512", "A max_base 1000", "A abort"])
-        addmem = CFG.get("addmem", 0.0)
         export = Export(from_string=text)
-        memory = export.get_argument_value("memory", float)  # with addmem
+        memory = export.get_argument_value("memory", float)
         refval = 512.0 * (8 if "64" in platform.architecture()[0] else 4)
-        self.assertEqual(memory, refval + addmem)
+        self.assertEqual(memory, refval)
         self.assertSequenceEqual(
             export.args, ["--continue", "--max_base", "1000", "--abort", "--memory", str(memory)]
         )
@@ -401,24 +400,18 @@ class TestExport(unittest.TestCase):
         self.assertEqual(
             repr(export),
             "\n".join(
-                [
-                    "A args --continue --max_base 1000 --abort --memory {0:.1f}".format(
-                        refval + addmem
-                    ),
-                    "",
-                ]
+                ["A args --continue --max_base 1000 --abort --memory {0:.1f}".format(refval), ""]
             ),
         )
 
     def test_memory(self):
         text = "P memory_limit 4096.0"
-        addmem = CFG.get("addmem", 0.0)
         export = Export(from_string=text)
         self.assertGreaterEqual(export.get("memory_limit"), 4096.0)
         self.assertGreaterEqual(export.get_argument_value("memory", float), 4096.0)
         self.assertEqual(
             repr(export),
-            "\n".join(["P memory_limit 4096.0", "A args --memory {}".format(4096.0 + addmem), ""]),
+            "\n".join(["P memory_limit 4096.0", "A args --memory {}".format(4096.0), ""]),
         )
         # read memory limit, write export, read => not added twice?
 

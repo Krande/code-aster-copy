@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -60,7 +60,7 @@ mot-clé facteur '%(k2)s'.
         "message": _(
             """
 
-                -- CODE_ASTER -- VERSION : %(k1)s --
+-- CODE_ASTER -- VERSION : %(k1)s --
 """
         ),
         "flags": "CENTER",
@@ -68,7 +68,7 @@ mot-clé facteur '%(k2)s'.
     23: {
         "message": _(
             """Version %(k1)s modifiée le %(k2)s
-               révision %(k3)s - branche '%(k4)s'"""
+révision %(k3)s - branche '%(k4)s'"""
         ),
         "flags": "CENTER",
     },
@@ -76,12 +76,12 @@ mot-clé facteur '%(k2)s'.
         "message": _(
             """Copyright EDF R&D %(k1)s - %(k2)s
 
-                Exécution du : %(k3)s
-                Nom de la machine : %(k4)s
-                Architecture : %(k5)s
-                Type de processeur : %(k6)s
-                Système d'exploitation : %(k7)s
-                Langue des messages : %(k8)s
+Exécution du : %(k3)s
+Nom de la machine : %(k4)s
+Architecture : %(k5)s
+Type de processeur : %(k6)s
+Système d'exploitation : %(k7)s
+Langue des messages : %(k8)s
 """
         ),
         "flags": "CENTER",
@@ -89,7 +89,7 @@ mot-clé facteur '%(k2)s'.
     9: {
         "message": _(
             """Version de Python : %(k1)s
-                          Version de NumPy : %(k2)s"""
+Version de NumPy : %(k2)s"""
         ),
         "flags": "CENTER",
     },
@@ -97,8 +97,8 @@ mot-clé facteur '%(k2)s'.
     11: {
         "message": _(
             """Parallélisme MPI : actif
-                Rang du processeur courant : %(i1)d
-                Nombre de processeurs utilisés : %(i2)d"""
+Rang du processeur courant : %(i1)d
+Nombre de processeurs MPI utilisés : %(i2)d"""
         ),
         "flags": "CENTER",
     },
@@ -106,7 +106,7 @@ mot-clé facteur '%(k2)s'.
     13: {
         "message": _(
             """Parallélisme OpenMP : actif
-                Nombre de processus utilisés : %(i1)d"""
+Nombre de processus OpenMP utilisés : %(i1)d"""
         ),
         "flags": "CENTER",
     },
@@ -126,9 +126,9 @@ mot-clé facteur '%(k2)s'.
     21: {"message": _("""Librairie SCOTCH : non disponible"""), "flags": "CENTER"},
     22: {
         "message": _(
-            """Mémoire limite pour l'exécution : %(r2).2f Mo
-                          consommée par l'initialisation : %(r3).2f Mo
-                         reste pour l'allocation dynamique : %(r1).2f Mo"""
+            """Mémoire limite pour l'allocation dynamique : %(r1).2f Mo
+ajouté à l'initialisation du processus : %(r3).2f Mo
+Limite cible du processus : %(r2).2f Mo"""
         ),
         "flags": "CENTER",
     },
@@ -146,8 +146,8 @@ mot-clé facteur '%(k2)s'.
     28: {"message": _("""Librairie MFront : non disponible"""), "flags": "CENTER"},
     29: {
         "message": _(
-            """Mémoire limite pour l'exécution : %(r2).2f Mo
-                         reste pour l'allocation dynamique : %(r1).2f Mo"""
+            """Mémoire limite pour l'allocation dynamique : %(r1).2f Mo
+Limite cible du processus : %(r2).2f Mo"""
         ),
         "flags": "CENTER",
     },

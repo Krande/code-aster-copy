@@ -474,42 +474,36 @@ Contactez le support technique.
     ),
     70: _(
         """
- Le nom de répertoire associé à la base Volatile est trop long %(k1)s,
- il comporte %(i1)d caractères, il ne doit pas dépasser 119.
+Le nom de répertoire associé à la base Volatile est trop long %(k1)s,
+il comporte %(i1)d caractères, il ne doit pas dépasser 119.
 Ce message est un message d'erreur développeur.
 Contactez le support technique.
 """
     ),
-    71: _(
-        """
- La mémoire totale de %(r1).2f Mo allouée à l'étude est insuffisante, il est nécessaire
- de disposer d'au moins %(r3).2f Mo uniquement pour démarrer l'exécution.
-"""
-    ),
     72: _(
         """
- Il n'est pas possible de modifier la valeur limite totale de l'allocation dynamique JEVEUX.
- La valeur fournie en argument vaut %(r2).2f.
- Actuellement %(r1).2f Mo sont nécessaires au gestionnaire de mémoire.
+Il n'est pas possible de modifier la valeur limite totale de l'allocation dynamique JEVEUX.
+La valeur fournie en argument vaut %(r2).2f.
+Actuellement, %(r1).2f Mo sont nécessaires au gestionnaire de mémoire.
 """
     ),
     73: _(
         """
-  La mémoire consommée actuellement hors JEVEUX est de %(r1).2f Mo.
-  La limite de l'allocation dynamique JEVEUX est fixée à %(r2).2f Mo.
-  Cette valeur limite a été réactualisée entre les appels aux différentes commandes
+La mémoire consommée actuellement hors JEVEUX est de %(r1).2f Mo.
+La limite de l'allocation dynamique JEVEUX est fixée à %(r2).2f Mo.
+Cette valeur limite a été réactualisée entre les appels aux différentes commandes.
 """
     ),
     74: _(
         """
-  La mémoire consommée actuellement hors JEVEUX est de %(r1).2f Mo.
-  La limite de l'allocation dynamique JEVEUX est fixée à %(r2).2f Mo.
-  Cette valeur limite a été réactualisée lors de la mise en oeuvre d'un processus de libération
+La mémoire consommée actuellement hors JEVEUX est de %(r1).2f Mo.
+La limite de l'allocation dynamique JEVEUX est fixée à %(r2).2f Mo.
+Cette valeur limite a été réactualisée lors de la mise en oeuvre d'un processus de libération.
 """
     ),
     75: _(
         """
- La plate-forme utilisée ne permet pas d'avoir accès aux valeurs VmPeak/VmSize.
+La plate-forme utilisée ne permet pas d'avoir accès aux valeurs VmPeak/VmSize.
 """
     ),
     77: _(
