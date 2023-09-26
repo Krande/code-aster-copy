@@ -61,24 +61,6 @@ cata_msg = {
         de AFFE.
     """
     ),
-    7: _(
-        """
-        Le type de coupure %(k1)s ne fait pas partie des types autorisés 
-        "EXTRACTION" ou "RESULTANTE" 
-    """
-    ),
-    8: _(
-        """
-        Le type la table de l'occurrence %(i1)d est différent du type de la table de 
-        de l'occurrence 1.
-    """
-    ),
-    9: _(
-        """
-        Le nombre de noeuds de la coupure %(k1)s dans la table de l'occurrence %(i1)d est différent de celui de la table de 
-        de l'occurrence 1.
-    """
-    ),
     10: _(
         """
         Le maillage ne contient pas le GROUP_MA :  %(k1)s  

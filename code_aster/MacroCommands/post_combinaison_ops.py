@@ -404,10 +404,13 @@ def post_combinaison_ops(self, TABLE_COEF_FIN=None, **args):
         # Initialisation of filtered tables
         tables_by_name = {affe_i.get("NOM_CAS"): affe_i.get("TABLE") for affe_i in affe}
         # Apply filters on each table
-        filter_action = tuple(
-            _F(OPERATION="FILTRE", **filter_.cree_dict_toutes_valeurs())
-            for filter_ in args.get("FILTRE")
-        )
+        if args.get("FILTRE") is not None:
+            filter_action = tuple(
+                _F(OPERATION="FILTRE", **filter_.cree_dict_toutes_valeurs())
+                for filter_ in args.get("FILTRE")
+            )
+        else:
+            filter_action = None
         filtered_tables = [
             CALC_TABLE(TABLE=tables_by_name[table_name], ACTION=filter_action)
             if filter_action is not None
@@ -435,38 +438,18 @@ def post_combinaison_ops(self, TABLE_COEF_FIN=None, **args):
                 UTMESS("F", "PCOMB_3", vali=i + 1)
         # Transform tables from aster format to a tablePy format
         tables_extracted = [table.EXTR_TABLE() for table in filtered_tables]
-        # Check if only RESULTANTE or EXTRACTION are available as types
-        for i, table in enumerate(tables_extracted):
-            table_types = tuple(set(table.values()["TYPE"]))
-            if len(table_types) != 1 or table_types[0] not in ("RESULTANTE", "EXTRACTION"):
-                UTMESS("F", "PCOMB_7", valk=table_types)
-            elif i == 0:
-                table_types_ref = table_types
-            elif table_types != table_types_ref:
-                UTMESS("F", "PCOMB_8", vali=i + 1)
-        # Get the type of the tables
-        table_type = table_types_ref[0]
+
         # Get the unique list of the names of the 'coupure'
         coupure_names = np.fromiter(
-            OrderedDict.fromkeys(tables_extracted[0].values()["INTITULE"]).keys(), dtype="<U24"
+            OrderedDict.fromkeys(tables_extracted[0].values()["NOM"]).keys(), dtype="<U24"
         )
         # Check if each table has the same coupure
         for i, table in enumerate(tables_extracted):
             for coupure_name in coupure_names:
-                if coupure_name not in table.values()["INTITULE"]:
+                if coupure_name not in table.values()["NOM"]:
                     UTMESS("F", "PCOMB_6", valk=coupure_name, vali=i + 1)
 
-        # Count the number of nodes for each coupure
-        if table_type == "EXTRACTION":
-            nb_nodes = np.zeros(coupure_names.shape, dtype=int)
-            for i, coupure_name in enumerate(coupure_names):
-                nb_nodes[i] = count_nb_nodes(tables_extracted[0], coupure_name)
-                # Check if the number of nodes is the same for all the tables for each coupure
-                for j, table in enumerate(islice(tables_extracted, 1, None), start=1):
-                    if count_nb_nodes(table, coupure_name) != nb_nodes[i]:
-                        UTMESS("F", "PCOMB_9", valk=coupure_name, vali=j + 1)
-        else:
-            nb_nodes = np.ones(len(coupure_names), dtype=int)
+        nb_nodes = np.ones(len(coupure_names), dtype=int)
         # Extract ranks and orders for each table
         if "NUME_ORDRE" in column_names:
             ranks = [np.array(table.values()["NUME_ORDRE"]) for table in tables_extracted]
@@ -475,7 +458,16 @@ def post_combinaison_ops(self, TABLE_COEF_FIN=None, **args):
             ranks = [np.ones(len(table), dtype=int) for table in tables_extracted]
             orders = np.ones(len(tables_extracted), dtype=int)
         # Create one datas table with all entry tables
-        excluded_columns = ["NUME_ORDRE", "INST", "ABSC_CURV", "COOR_X", "COOR_Y", "COOR_Z"]
+        excluded_columns = [
+            "NUME_ORDRE",
+            "NOM_CAS",
+            "NOM",
+            "INST",
+            "ABSC_CURV",
+            "COOR_X",
+            "COOR_Y",
+            "COOR_Z",
+        ]
         column_names = [cl_name for cl_name in column_names if cl_name not in excluded_columns]
         raw_tables = [
             aster_table_to_array(table, without_columns=excluded_columns)
@@ -510,44 +502,24 @@ def post_combinaison_ops(self, TABLE_COEF_FIN=None, **args):
         # |------------------------------------|
         nb_nodes_cumsum = nb_nodes.cumsum()
         nb_nodes_cumsum = np.insert(nb_nodes_cumsum, 0, 0)
-        # Add 'NOM_CAS' to column_names
-        column_names.insert(3, "NOM_CAS")
+        # column_names.extend(['NOM', 'NOM_CAS'])
         columns_k = []
         columns_r = []
+
+        # Components columns
+        for j, column_name in enumerate(column_names):
+            sorted_indices = np.tile(
+                np.repeat(np.arange(nb_nodes.shape[0]), nb_nodes), combination_results.shape[0]
+            ).argsort(kind="mergesort")
+            column_values = combination_results[:, j, :].flatten()[sorted_indices]
+            columns_r.append(_F(LISTE_R=column_values, PARA=column_name))
+
+        # Add 'NOM_CAS' to column_names
         # INTITULE (coupure names)
         nb_rows_by_coupure = nb_nodes * combination_results.shape[0]
         columns_k.append(
-            _F(LISTE_K=np.repeat(coupure_names, nb_rows_by_coupure), PARA="INTITULE", TYPE_K="K24")
+            _F(LISTE_K=np.repeat(coupure_names, nb_rows_by_coupure), PARA="NOM", TYPE_K="K24")
         )
-        nb_rows = nb_rows_by_coupure.sum()
-        # TYPE
-        columns_k.append(_F(LISTE_K=np.full(nb_rows, table_type), PARA="TYPE", TYPE_K="K24"))
-        # NOM_CHAM
-        columns_k.append(
-            _F(
-                LISTE_K=np.full(nb_rows, tables_extracted[0].values()["NOM_CHAM"][0]),
-                PARA="NOM_CHAM",
-                TYPE_K="K24",
-            )
-        )
-        # COORDINATES
-        if table_type == "EXTRACTION":
-            table_order = tables_extracted[0].NUME_ORDRE == 1
-            for coordinate in ("ABSC_CURV", "COOR_X", "COOR_Y", "COOR_Z"):
-                columns_r.append(
-                    _F(
-                        LISTE_R=np.concatenate(
-                            [
-                                np.tile(
-                                    getattr(table_order.INTITULE == coupure_name, coordinate),
-                                    expanded_coefficients_table.shape[0],
-                                )
-                                for coupure_name in coupure_names
-                            ]
-                        ),
-                        PARA=coordinate,
-                    )
-                )
         # NOM_CAS
         tiled_expanded_combination_names = np.tile(
             expanded_combination_names, (len(coupure_names), 1)
@@ -560,14 +532,6 @@ def post_combinaison_ops(self, TABLE_COEF_FIN=None, **args):
             )
         ]
         columns_k.append(_F(LISTE_K=repeated_combination_names, PARA="NOM_CAS", TYPE_K="K24"))
-        # Components columns
-        for j, column_name in enumerate(islice(column_names, 4, None)):
-            sorted_indices = np.tile(
-                np.repeat(np.arange(nb_nodes.shape[0]), nb_nodes), combination_results.shape[0]
-            ).argsort(kind="mergesort")
-            column_values = combination_results[:, j, :].flatten()[sorted_indices]
-            columns_r.append(_F(LISTE_R=column_values, PARA=column_name))
-
         output_result = CREA_TABLE(LISTE=columns_k + columns_r)
 
     # Generate coefficients table as an aster table
@@ -580,5 +544,6 @@ def post_combinaison_ops(self, TABLE_COEF_FIN=None, **args):
             )
         )
     )
+
     self.register_result(table_coef_resu, table_resu_name)
     return output_result

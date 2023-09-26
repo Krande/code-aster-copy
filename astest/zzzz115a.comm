@@ -1,8 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 2019 Aether Engineering Solutions - www.aethereng.com
-# Copyright (C) 2019 Kobe Innovation Engineering - www.kobe-ie.com
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# AUTEUR : L. DALL OLIO (Alter Ego Engineering)
 #          VALIDATION DE CALC_COUPURE
 #
 #  DETAILS : MODELISATION DKT
@@ -42,7 +39,6 @@ H = 3.0 * m
 B = 0.3 * m
 A = B * H
 d1 = 3.0 * m
-d2 = 3.15 * m
 
 fx = 100.0 * kN
 fy = 6000.0 * kN
@@ -51,10 +47,10 @@ fz = 600.0 * kN
 effortNormal = fy
 cisaillementPL = -fz
 cisaillementHP = -fx
+momentPL = -fz * L
+momentHP = -fx * L
 momentPL_d1 = -fz * (L - d1)
-momentPL_d2 = -fz * (L - d2)
 momentHP_d1 = -fx * (L - d1)
-momentHP_d2 = -fx * (L - d2)
 
 # NXX not tested (can exist but no analytical solution)
 
@@ -87,15 +83,7 @@ elemprop = AFFE_CARA_ELEM(
 
 boundary = AFFE_CHAR_MECA(
     MODELE=model,
-    DDL_IMPO=_F(
-        GROUP_NO=("START",),
-        DX=0.0,
-        DY=0.0,
-        DZ=0.0,
-        # DRX = 0.,
-        DRY=0.0,
-        DRZ=0.0,
-    ),
+    DDL_IMPO=_F(GROUP_NO=("START",), DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0),
 )
 
 
@@ -122,428 +110,325 @@ reslin = MACRO_ELAS_MULT(
     SOLVEUR=_F(METHODE="MULT_FRONT"),
 )
 
-reslin = CALC_CHAMP(RESULTAT=reslin, reuse=reslin, CONTRAINTE=("EFGE_ELNO",))
-
 tbcoup = CALC_COUPURE(
+    FORCE="FORC_NODA",
     RESULTAT=reslin,
-    OPERATION="RESULTANTE",
-    LIGN_COUPE=(
+    COUPURE=(
+        _F(NOM="START", GROUP_MA="ELEMENTS", GROUP_NO="START", POINT=(0, -1500, 0)),
+        _F(NOM="3m", GROUP_MA="ELTS_DROITES", GROUP_NO="no_3m", POINT=(0, 1500, 0)),
         _F(
-            INTITULE="coupe 3 m",
+            NOM="CHGT_REPERE",
             GROUP_MA="ELEMENTS",
-            COOR_ORIG=(0.0, 1500.0, -1500.0),
-            COOR_EXTR=(0.0, 1500.0, 1500.0),
-            NB_POINTS=100,
-            DISTANCE_MAX=1.0,
-        ),
-        _F(
-            INTITULE="coupe 3.15 m",
-            GROUP_MA="ELEMENTS",
-            COOR_ORIG=(0.0, 1650.0, -1500.0),
-            COOR_EXTR=(0.0, 1650.0, 1500.0),
-            NB_POINTS=100,
-            DISTANCE_MAX=1.0,
+            GROUP_NO="START",
+            POINT=(0, -1500, 0),
+            AXE_X=(0, 1, 0),
+            AXE_Y=(0, 0, 1),
+            AXE_Z=(1, 0, 0),
         ),
     ),
 )
-
 
 # ===================================== #
 # TEST COUPE RESULTANTE
 # ===================================== #
 # ------------------------- #
-# TEST COUPE 3 m, ch1
+# TEST COUPE START, ch1
 # ------------------------- #
-
 TEST_TABLE(
     TABLE=tbcoup,
-    FILTRE=(_F(NOM_PARA="INTITULE", VALE_K="coupe 3 m"), _F(NOM_PARA="NUME_ORDRE", VALE_I=1)),
+    FILTRE=(_F(NOM_PARA="NOM", VALE_K="START"), _F(NOM_PARA="NOM_CAS", VALE_K="ch1")),
     REFERENCE="ANALYTIQUE",
-    NOM_PARA="N",
-    VALE_CALC=5999996.918079951,
-    VALE_REFE=effortNormal,
+    NOM_PARA="R1",
+    VALE_CALC=0,
+    VALE_REFE=0,
 )
 
 TEST_TABLE(
     TABLE=tbcoup,
-    FILTRE=(_F(NOM_PARA="INTITULE", VALE_K="coupe 3 m"), _F(NOM_PARA="NUME_ORDRE", VALE_I=1)),
+    FILTRE=(_F(NOM_PARA="NOM", VALE_K="START"), _F(NOM_PARA="NOM_CAS", VALE_K="ch1")),
     REFERENCE="ANALYTIQUE",
-    NOM_PARA="VPL",
-    VALE_CALC=-599547.9584105135,
+    NOM_PARA="R2",
+    VALE_CALC=-6e6,
+    VALE_REFE=-effortNormal,
+)
+
+import pdb
+
+TEST_TABLE(
+    TABLE=tbcoup,
+    FILTRE=(_F(NOM_PARA="NOM", VALE_K="START"), _F(NOM_PARA="NOM_CAS", VALE_K="ch1")),
+    REFERENCE="ANALYTIQUE",
+    NOM_PARA="R3",
+    VALE_CALC=-6e5,
     VALE_REFE=cisaillementPL,
 )
 
+
 TEST_TABLE(
     TABLE=tbcoup,
-    FILTRE=(_F(NOM_PARA="INTITULE", VALE_K="coupe 3 m"), _F(NOM_PARA="NUME_ORDRE", VALE_I=1)),
+    FILTRE=(_F(NOM_PARA="NOM", VALE_K="START"), _F(NOM_PARA="NOM_CAS", VALE_K="ch1")),
     REFERENCE="ANALYTIQUE",
-    NOM_PARA="MPL",
-    VALE_CALC=-5400497831.495169,
+    NOM_PARA="M1",
+    VALE_CALC=-7.2e9,
+    VALE_REFE=momentPL,
+)
+
+TEST_TABLE(
+    TABLE=tbcoup,
+    FILTRE=(_F(NOM_PARA="NOM", VALE_K="START"), _F(NOM_PARA="NOM_CAS", VALE_K="ch1")),
+    REFERENCE="ANALYTIQUE",
+    NOM_PARA="M2",
+    VALE_CALC=0,
+    VALE_REFE=0,
+)
+
+TEST_TABLE(
+    TABLE=tbcoup,
+    FILTRE=(_F(NOM_PARA="NOM", VALE_K="START"), _F(NOM_PARA="NOM_CAS", VALE_K="ch1")),
+    REFERENCE="ANALYTIQUE",
+    NOM_PARA="M3",
+    VALE_CALC=0,
+    VALE_REFE=0,
+    CRITERE="ABSOLU",
+    PRECISION=1,  # 1N.m autorise
+)
+
+# ------------------------- #
+# TEST COUPE 3m, ch1
+# ------------------------- #
+TEST_TABLE(
+    TABLE=tbcoup,
+    FILTRE=(_F(NOM_PARA="NOM", VALE_K="3m"), _F(NOM_PARA="NOM_CAS", VALE_K="ch1")),
+    REFERENCE="ANALYTIQUE",
+    NOM_PARA="R1",
+    VALE_CALC=0,
+    VALE_REFE=0,
+)
+
+TEST_TABLE(
+    TABLE=tbcoup,
+    FILTRE=(_F(NOM_PARA="NOM", VALE_K="3m"), _F(NOM_PARA="NOM_CAS", VALE_K="ch1")),
+    REFERENCE="ANALYTIQUE",
+    NOM_PARA="R2",
+    VALE_CALC=-6e6,
+    VALE_REFE=-effortNormal,
+)
+
+TEST_TABLE(
+    TABLE=tbcoup,
+    FILTRE=(_F(NOM_PARA="NOM", VALE_K="3m"), _F(NOM_PARA="NOM_CAS", VALE_K="ch1")),
+    REFERENCE="ANALYTIQUE",
+    NOM_PARA="R3",
+    VALE_CALC=-6e5,
+    VALE_REFE=cisaillementPL,
+)
+
+
+TEST_TABLE(
+    TABLE=tbcoup,
+    FILTRE=(_F(NOM_PARA="NOM", VALE_K="3m"), _F(NOM_PARA="NOM_CAS", VALE_K="ch1")),
+    REFERENCE="ANALYTIQUE",
+    NOM_PARA="M1",
+    VALE_CALC=-5.4e9,
     VALE_REFE=momentPL_d1,
 )
 
 TEST_TABLE(
     TABLE=tbcoup,
-    FILTRE=(_F(NOM_PARA="INTITULE", VALE_K="coupe 3 m"), _F(NOM_PARA="NUME_ORDRE", VALE_I=1)),
+    FILTRE=(_F(NOM_PARA="NOM", VALE_K="3m"), _F(NOM_PARA="NOM_CAS", VALE_K="ch1")),
     REFERENCE="ANALYTIQUE",
-    CRITERE="ABSOLU",
-    NOM_PARA="VHP",
-    VALE_CALC=-6.527676033826173e-11,
-    VALE_REFE=0.0,
-    PRECISION=1.0e-6,
+    NOM_PARA="M2",
+    VALE_CALC=0,
+    VALE_REFE=0,
 )
 
 TEST_TABLE(
     TABLE=tbcoup,
-    FILTRE=(_F(NOM_PARA="INTITULE", VALE_K="coupe 3 m"), _F(NOM_PARA="NUME_ORDRE", VALE_I=1)),
+    FILTRE=(_F(NOM_PARA="NOM", VALE_K="3m"), _F(NOM_PARA="NOM_CAS", VALE_K="ch1")),
     REFERENCE="ANALYTIQUE",
-    CRITERE="ABSOLU",
-    NOM_PARA="MHP",
-    VALE_CALC=-5.995210939169265e-07,
-    VALE_REFE=0.0,
-    PRECISION=1.0e-6,
+    NOM_PARA="M3",
+    VALE_CALC=0,
+    VALE_REFE=0,
 )
 
 # ------------------------- #
-# TEST COUPE 3.15 m, ch1
+# TEST COUPE START, ch2
 # ------------------------- #
 TEST_TABLE(
     TABLE=tbcoup,
-    FILTRE=(_F(NOM_PARA="INTITULE", VALE_K="coupe 3.15 m"), _F(NOM_PARA="NUME_ORDRE", VALE_I=1)),
+    FILTRE=(_F(NOM_PARA="NOM", VALE_K="START"), _F(NOM_PARA="NOM_CAS", VALE_K="ch2")),
     REFERENCE="ANALYTIQUE",
-    NOM_PARA="N",
-    VALE_CALC=5999999.98901463,
-    VALE_REFE=effortNormal,
+    NOM_PARA="R1",
+    VALE_CALC=-1e5,
+    VALE_REFE=cisaillementHP,
 )
 
 TEST_TABLE(
     TABLE=tbcoup,
-    FILTRE=(_F(NOM_PARA="INTITULE", VALE_K="coupe 3.15 m"), _F(NOM_PARA="NUME_ORDRE", VALE_I=1)),
+    FILTRE=(_F(NOM_PARA="NOM", VALE_K="START"), _F(NOM_PARA="NOM_CAS", VALE_K="ch2")),
     REFERENCE="ANALYTIQUE",
-    NOM_PARA="VPL",
-    VALE_CALC=-599547.4643661351,
+    NOM_PARA="R2",
+    VALE_CALC=0,
+    VALE_REFE=0,
+)
+
+TEST_TABLE(
+    TABLE=tbcoup,
+    FILTRE=(_F(NOM_PARA="NOM", VALE_K="START"), _F(NOM_PARA="NOM_CAS", VALE_K="ch2")),
+    REFERENCE="ANALYTIQUE",
+    NOM_PARA="R3",
+    VALE_CALC=0,
+    VALE_REFE=0,
+)
+
+
+TEST_TABLE(
+    TABLE=tbcoup,
+    FILTRE=(_F(NOM_PARA="NOM", VALE_K="START"), _F(NOM_PARA="NOM_CAS", VALE_K="ch2")),
+    REFERENCE="ANALYTIQUE",
+    NOM_PARA="M1",
+    VALE_CALC=0,
+    VALE_REFE=0,
+)
+
+# on fait le test en absolu : 0.1 N.m d'ecart correspond a un decalage du bras de levier de 0.1mm
+TEST_TABLE(
+    TABLE=tbcoup,
+    FILTRE=(_F(NOM_PARA="NOM", VALE_K="START"), _F(NOM_PARA="NOM_CAS", VALE_K="ch2")),
+    REFERENCE="ANALYTIQUE",
+    NOM_PARA="M2",
+    VALE_CALC=0,  # -0.11434221267700195,
+    VALE_REFE=0,
+    CRITERE="ABSOLU",
+    PRECISION=1,  # 1N.m autorise
+)
+
+import pdb
+
+TEST_TABLE(
+    TABLE=tbcoup,
+    FILTRE=(_F(NOM_PARA="NOM", VALE_K="START"), _F(NOM_PARA="NOM_CAS", VALE_K="ch2")),
+    REFERENCE="ANALYTIQUE",
+    NOM_PARA="M3",
+    VALE_CALC=0,
+    VALE_REFE=-momentHP,
+)
+
+# ------------------------- #
+# TEST COUPE 3m, ch2
+# ------------------------- #
+TEST_TABLE(
+    TABLE=tbcoup,
+    FILTRE=(_F(NOM_PARA="NOM", VALE_K="3m"), _F(NOM_PARA="NOM_CAS", VALE_K="ch2")),
+    REFERENCE="ANALYTIQUE",
+    NOM_PARA="R1",
+    VALE_CALC=-1e5,
+    VALE_REFE=cisaillementHP,
+)
+
+TEST_TABLE(
+    TABLE=tbcoup,
+    FILTRE=(_F(NOM_PARA="NOM", VALE_K="3m"), _F(NOM_PARA="NOM_CAS", VALE_K="ch2")),
+    REFERENCE="ANALYTIQUE",
+    NOM_PARA="R2",
+    VALE_CALC=0,
+    VALE_REFE=0,
+)
+
+TEST_TABLE(
+    TABLE=tbcoup,
+    FILTRE=(_F(NOM_PARA="NOM", VALE_K="3m"), _F(NOM_PARA="NOM_CAS", VALE_K="ch2")),
+    REFERENCE="ANALYTIQUE",
+    NOM_PARA="R3",
+    VALE_CALC=0,
+    VALE_REFE=0,
+)
+
+
+TEST_TABLE(
+    TABLE=tbcoup,
+    FILTRE=(_F(NOM_PARA="NOM", VALE_K="3m"), _F(NOM_PARA="NOM_CAS", VALE_K="ch2")),
+    REFERENCE="ANALYTIQUE",
+    NOM_PARA="M1",
+    VALE_CALC=0,
+    VALE_REFE=0,
+)
+
+TEST_TABLE(
+    TABLE=tbcoup,
+    FILTRE=(_F(NOM_PARA="NOM", VALE_K="3m"), _F(NOM_PARA="NOM_CAS", VALE_K="ch2")),
+    REFERENCE="ANALYTIQUE",
+    NOM_PARA="M2",
+    VALE_CALC=0,  # -0.1146591529250145,
+    VALE_REFE=0,
+    CRITERE="ABSOLU",
+    PRECISION=1,  # 1N.m autorise
+)
+
+
+TEST_TABLE(
+    TABLE=tbcoup,
+    FILTRE=(_F(NOM_PARA="NOM", VALE_K="3m"), _F(NOM_PARA="NOM_CAS", VALE_K="ch2")),
+    REFERENCE="ANALYTIQUE",
+    NOM_PARA="M3",
+    VALE_CALC=0,
+    VALE_REFE=-momentHP_d1,
+)
+
+# ------------------------- #
+# TEST COUPE START, ch1
+# ------------------------- #
+TEST_TABLE(
+    TABLE=tbcoup,
+    FILTRE=(_F(NOM_PARA="NOM", VALE_K="CHGT_REPERE"), _F(NOM_PARA="NOM_CAS", VALE_K="ch1")),
+    REFERENCE="ANALYTIQUE",
+    NOM_PARA="R1",
+    VALE_CALC=-6e6,
+    VALE_REFE=-effortNormal,
+)
+
+TEST_TABLE(
+    TABLE=tbcoup,
+    FILTRE=(_F(NOM_PARA="NOM", VALE_K="CHGT_REPERE"), _F(NOM_PARA="NOM_CAS", VALE_K="ch1")),
+    REFERENCE="ANALYTIQUE",
+    NOM_PARA="R2",
+    VALE_CALC=-6e5,
     VALE_REFE=cisaillementPL,
 )
 
 TEST_TABLE(
     TABLE=tbcoup,
-    FILTRE=(_F(NOM_PARA="INTITULE", VALE_K="coupe 3.15 m"), _F(NOM_PARA="NUME_ORDRE", VALE_I=1)),
+    FILTRE=(_F(NOM_PARA="NOM", VALE_K="CHGT_REPERE"), _F(NOM_PARA="NOM_CAS", VALE_K="ch1")),
     REFERENCE="ANALYTIQUE",
-    NOM_PARA="MPL",
-    VALE_CALC=-5310489128.329362,
-    VALE_REFE=momentPL_d2,
+    NOM_PARA="R3",
+    VALE_CALC=0,
+    VALE_REFE=0,
 )
 
 TEST_TABLE(
     TABLE=tbcoup,
-    FILTRE=(_F(NOM_PARA="INTITULE", VALE_K="coupe 3.15 m"), _F(NOM_PARA="NUME_ORDRE", VALE_I=1)),
+    FILTRE=(_F(NOM_PARA="NOM", VALE_K="CHGT_REPERE"), _F(NOM_PARA="NOM_CAS", VALE_K="ch1")),
     REFERENCE="ANALYTIQUE",
-    CRITERE="ABSOLU",
-    NOM_PARA="VHP",
-    VALE_CALC=-6.451749030440969e-11,
-    VALE_REFE=0.0,
-    PRECISION=1.0e-6,
+    NOM_PARA="M1",
+    VALE_CALC=0,
+    VALE_REFE=0,
 )
 
 TEST_TABLE(
     TABLE=tbcoup,
-    FILTRE=(_F(NOM_PARA="INTITULE", VALE_K="coupe 3.15 m"), _F(NOM_PARA="NUME_ORDRE", VALE_I=1)),
+    FILTRE=(_F(NOM_PARA="NOM", VALE_K="CHGT_REPERE"), _F(NOM_PARA="NOM_CAS", VALE_K="ch1")),
     REFERENCE="ANALYTIQUE",
-    CRITERE="ABSOLU",
-    NOM_PARA="MHP",
-    VALE_CALC=-5.895290155949514e-07,
-    VALE_REFE=0.0,
-    PRECISION=1.0e-6,
-)
-
-# ------------------------- #
-# TEST COUPE 3 m, ch2
-# ------------------------- #
-TEST_TABLE(
-    TABLE=tbcoup,
-    FILTRE=(_F(NOM_PARA="INTITULE", VALE_K="coupe 3 m"), _F(NOM_PARA="NUME_ORDRE", VALE_I=2)),
-    REFERENCE="ANALYTIQUE",
-    CRITERE="ABSOLU",
-    NOM_PARA="N",
-    VALE_CALC=-4.982648435509606e-22,
-    VALE_REFE=0.0,
-    ORDRE_GRANDEUR=1e-6,
-    PRECISION=1.0e-6,
+    NOM_PARA="M2",
+    VALE_CALC=0,
+    VALE_REFE=0,
 )
 
 TEST_TABLE(
     TABLE=tbcoup,
-    FILTRE=(_F(NOM_PARA="INTITULE", VALE_K="coupe 3 m"), _F(NOM_PARA="NUME_ORDRE", VALE_I=2)),
+    FILTRE=(_F(NOM_PARA="NOM", VALE_K="CHGT_REPERE"), _F(NOM_PARA="NOM_CAS", VALE_K="ch1")),
     REFERENCE="ANALYTIQUE",
-    CRITERE="ABSOLU",
-    NOM_PARA="VPL",
-    VALE_CALC=1.1093865990248858e-11,
-    VALE_REFE=0.0,
-    PRECISION=1.0e-6,
+    NOM_PARA="M3",
+    VALE_CALC=-7.2e9,
+    VALE_REFE=momentPL,
 )
-
-TEST_TABLE(
-    TABLE=tbcoup,
-    FILTRE=(_F(NOM_PARA="INTITULE", VALE_K="coupe 3 m"), _F(NOM_PARA="NUME_ORDRE", VALE_I=2)),
-    REFERENCE="ANALYTIQUE",
-    CRITERE="ABSOLU",
-    NOM_PARA="MPL",
-    VALE_CALC=9.99292856216782e-08,
-    VALE_REFE=0.0,
-    PRECISION=1.0e-6,
-)
-
-TEST_TABLE(
-    TABLE=tbcoup,
-    FILTRE=(_F(NOM_PARA="INTITULE", VALE_K="coupe 3 m"), _F(NOM_PARA="NUME_ORDRE", VALE_I=2)),
-    REFERENCE="ANALYTIQUE",
-    NOM_PARA="VHP",
-    VALE_CALC=-97993.46454110165,
-    VALE_REFE=cisaillementHP,
-    PRECISION=3e-2,
-)
-
-TEST_TABLE(
-    TABLE=tbcoup,
-    FILTRE=(_F(NOM_PARA="INTITULE", VALE_K="coupe 3 m"), _F(NOM_PARA="NUME_ORDRE", VALE_I=2)),
-    REFERENCE="ANALYTIQUE",
-    NOM_PARA="MHP",
-    VALE_CALC=-900000991.8834115,
-    VALE_REFE=momentHP_d1,
-)
-
-# ------------------------- #
-# TEST COUPE 3.15 m, ch2
-# ------------------------- #
-TEST_TABLE(
-    TABLE=tbcoup,
-    FILTRE=(_F(NOM_PARA="INTITULE", VALE_K="coupe 3.15 m"), _F(NOM_PARA="NUME_ORDRE", VALE_I=2)),
-    REFERENCE="ANALYTIQUE",
-    CRITERE="ABSOLU",
-    NOM_PARA="N",
-    VALE_CALC=-5.934443322667607e-22,
-    VALE_REFE=0.0,
-    ORDRE_GRANDEUR=1e-6,
-    PRECISION=1.0e-6,
-)
-
-TEST_TABLE(
-    TABLE=tbcoup,
-    FILTRE=(_F(NOM_PARA="INTITULE", VALE_K="coupe 3.15 m"), _F(NOM_PARA="NUME_ORDRE", VALE_I=2)),
-    REFERENCE="ANALYTIQUE",
-    CRITERE="ABSOLU",
-    NOM_PARA="VPL",
-    VALE_CALC=1.1093856851060493e-11,
-    VALE_REFE=0.0,
-    PRECISION=1.0e-6,
-)
-
-TEST_TABLE(
-    TABLE=tbcoup,
-    FILTRE=(_F(NOM_PARA="INTITULE", VALE_K="coupe 3.15 m"), _F(NOM_PARA="NUME_ORDRE", VALE_I=2)),
-    REFERENCE="ANALYTIQUE",
-    CRITERE="ABSOLU",
-    NOM_PARA="MPL",
-    VALE_CALC=9.826379001442736e-08,
-    VALE_REFE=0.0,
-    PRECISION=1.0e-6,
-)
-
-TEST_TABLE(
-    TABLE=tbcoup,
-    FILTRE=(_F(NOM_PARA="INTITULE", VALE_K="coupe 3.15 m"), _F(NOM_PARA="NUME_ORDRE", VALE_I=2)),
-    REFERENCE="ANALYTIQUE",
-    NOM_PARA="VHP",
-    VALE_CALC=-96853.64842965644,
-    VALE_REFE=cisaillementHP,
-    PRECISION=4e-2,
-)
-
-TEST_TABLE(
-    TABLE=tbcoup,
-    FILTRE=(_F(NOM_PARA="INTITULE", VALE_K="coupe 3.15 m"), _F(NOM_PARA="NUME_ORDRE", VALE_I=2)),
-    REFERENCE="ANALYTIQUE",
-    NOM_PARA="MHP",
-    VALE_CALC=-885000885.145294,
-    VALE_REFE=momentHP_d2,
-)
-
-# ===================================== #
-# TEST COUPE EXTRACTION
-# ===================================== #
-
-tbextr = CALC_COUPURE(
-    RESULTAT=reslin,
-    OPERATION="EXTRACTION",
-    NOM_CAS="ch1",
-    LIGN_COUPE=(
-        _F(
-            INTITULE="coupe 3 m",
-            GROUP_MA="ELEMENTS",
-            COOR_ORIG=(0.0, 1500.0, -1500.0),
-            COOR_EXTR=(0.0, 1500.0, 1500.0),
-            NB_POINTS=3,
-            DISTANCE_MAX=1.0,
-        ),
-        _F(
-            INTITULE="coupe 3.15 m",
-            GROUP_MA="ELEMENTS",
-            COOR_ORIG=(0.0, 1650.0, -1500.0),
-            COOR_EXTR=(0.0, 1650.0, 1500.0),
-            NB_POINTS=3,
-            DISTANCE_MAX=1.0,
-        ),
-    ),
-)
-
-# ------------------------- #
-# TEST COUPE 3 m, ch1
-# ------------------------- #
-
-TEST_TABLE(
-    TABLE=tbextr,
-    FILTRE=(
-        _F(NOM_PARA="INTITULE", VALE_K="coupe 3 m"),
-        _F(NOM_PARA="NUME_ORDRE", VALE_I=1),
-        _F(NOM_PARA="ABSC_CURV", VALE=1.50000e03),  # Selezione secondo punto
-    ),
-    REFERENCE="ANALYTIQUE",
-    NOM_PARA="NXY",
-    VALE_CALC=-300.1375762039183,
-    VALE_REFE=3.0 * cisaillementPL / (2 * H),
-)
-
-TEST_TABLE(
-    TABLE=tbextr,
-    FILTRE=(
-        _F(NOM_PARA="INTITULE", VALE_K="coupe 3 m"),
-        _F(NOM_PARA="NUME_ORDRE", VALE_I=1),
-        _F(NOM_PARA="ABSC_CURV", VALE=1.50000e03),  # Selezione secondo punto
-    ),
-    REFERENCE="ANALYTIQUE",
-    NOM_PARA="NYY",
-    VALE_CALC=2010.0207531451338,
-    VALE_REFE=effortNormal / H,
-    PRECISION=1.0e-2,
-)
-
-TEST_TABLE(
-    TABLE=tbextr,
-    FILTRE=(
-        _F(NOM_PARA="INTITULE", VALE_K="coupe 3 m"),
-        _F(NOM_PARA="NUME_ORDRE", VALE_I=1),
-        _F(NOM_PARA="ABSC_CURV", VALE=1.50000e03),  # Selezione secondo punto
-    ),
-    REFERENCE="ANALYTIQUE",
-    CRITERE="ABSOLU",
-    NOM_PARA="MYY",
-    VALE_CALC=-1.9842754616757935e-10,
-    VALE_REFE=0.0,
-    PRECISION=1.0e-6,
-)
-
-TEST_TABLE(
-    TABLE=tbextr,
-    FILTRE=(
-        _F(NOM_PARA="INTITULE", VALE_K="coupe 3 m"),
-        _F(NOM_PARA="NUME_ORDRE", VALE_I=1),
-        _F(NOM_PARA="ABSC_CURV", VALE=1.50000e03),  # Selezione secondo punto
-    ),
-    REFERENCE="ANALYTIQUE",
-    CRITERE="ABSOLU",
-    NOM_PARA="QY",
-    VALE_CALC=-2.196357705686945e-14,
-    VALE_REFE=0.0,
-    PRECISION=1.0e-6,
-)
-
-DETRUIRE(NOM=tbextr)
-
-tbextr = CALC_COUPURE(
-    RESULTAT=reslin,
-    OPERATION="EXTRACTION",
-    NOM_CAS="ch2",
-    LIGN_COUPE=(
-        _F(
-            INTITULE="coupe 3 m",
-            GROUP_MA="ELEMENTS",
-            COOR_ORIG=(0.0, 1500.0, -1500.0),
-            COOR_EXTR=(0.0, 1500.0, 1500.0),
-            NB_POINTS=3,
-            DISTANCE_MAX=1.0,
-        ),
-        _F(
-            INTITULE="coupe 3.15 m",
-            GROUP_MA="ELEMENTS",
-            COOR_ORIG=(0.0, 1650.0, -1500.0),
-            COOR_EXTR=(0.0, 1650.0, 1500.0),
-            NB_POINTS=3,
-            DISTANCE_MAX=1.0,
-        ),
-    ),
-)
-
-# ------------------------- #
-# TEST COUPE 3.15 m, ch2
-# ------------------------- #
-
-TEST_TABLE(
-    TABLE=tbextr,
-    FILTRE=(
-        _F(NOM_PARA="INTITULE", VALE_K="coupe 3.15 m"),
-        _F(NOM_PARA="NUME_ORDRE", VALE_I=2),
-        _F(NOM_PARA="ABSC_CURV", VALE=1.50000e03),  # Selezione secondo punto
-    ),
-    REFERENCE="ANALYTIQUE",
-    CRITERE="ABSOLU",
-    NOM_PARA="NXY",
-    VALE_CALC=5.550330460919054e-15,
-    VALE_REFE=0.0,
-    PRECISION=1.0e-6,
-)
-
-TEST_TABLE(
-    TABLE=tbextr,
-    FILTRE=(
-        _F(NOM_PARA="INTITULE", VALE_K="coupe 3.15 m"),
-        _F(NOM_PARA="NUME_ORDRE", VALE_I=2),
-        _F(NOM_PARA="ABSC_CURV", VALE=1.50000e03),  # Selezione secondo punto
-    ),
-    REFERENCE="ANALYTIQUE",
-    CRITERE="ABSOLU",
-    NOM_PARA="NYY",
-    VALE_CALC=-3.782484070551005e-25,
-    VALE_REFE=0.0,
-    ORDRE_GRANDEUR=1e-6,
-    PRECISION=1.0e-6,
-)
-
-TEST_TABLE(
-    TABLE=tbextr,
-    FILTRE=(
-        _F(NOM_PARA="INTITULE", VALE_K="coupe 3.15 m"),
-        _F(NOM_PARA="NUME_ORDRE", VALE_I=2),
-        _F(NOM_PARA="ABSC_CURV", VALE=1.50000e03),  # Selezione secondo punto
-    ),
-    REFERENCE="ANALYTIQUE",
-    NOM_PARA="MYY",
-    VALE_CALC=-293123.9113781933,
-    VALE_REFE=momentHP_d2 / H,
-    PRECISION=1e-2,
-)
-
-TEST_TABLE(
-    TABLE=tbextr,
-    FILTRE=(
-        _F(NOM_PARA="INTITULE", VALE_K="coupe 3.15 m"),
-        _F(NOM_PARA="NUME_ORDRE", VALE_I=2),
-        _F(NOM_PARA="ABSC_CURV", VALE=1.50000e03),  # Selezione secondo punto
-    ),
-    REFERENCE="ANALYTIQUE",
-    NOM_PARA="QY",
-    VALE_CALC=-32.52184698817971,
-    VALE_REFE=cisaillementHP / H,
-    PRECISION=3e-2,
-)
-
 FIN()

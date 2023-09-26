@@ -114,99 +114,15 @@ reslin2 = CALC_CHAMP(RESULTAT=reslin2, reuse=reslin2, CONTRAINTE=("EFGE_ELNO"))
 # ====================================================== #
 
 tbcoup1 = CALC_COUPURE(
+    FORCE="FORC_NODA",
     RESULTAT=reslin,
-    OPERATION="RESULTANTE",
-    LIGN_COUPE=(
-        _F(
-            INTITULE="coupe 3 m",
-            GROUP_MA="ELEMENTS",
-            COOR_ORIG=(0.0, 1500.0, -1500.0),
-            COOR_EXTR=(0.0, 1500.0, 1500.0),
-            NB_POINTS=100,
-            DISTANCE_MAX=1.0,
-        ),
-        _F(
-            INTITULE="coupe 3.15 m",
-            GROUP_MA="ELEMENTS",
-            COOR_ORIG=(0.0, 1650.0, -1500.0),
-            COOR_EXTR=(0.0, 1650.0, 1500.0),
-            NB_POINTS=3,
-            DISTANCE_MAX=1.0,
-        ),
-    ),
+    COUPURE=(_F(NOM="START", GROUP_MA="ELEMENTS", GROUP_NO="START", POINT=(0, -1500, 0)),),
 )
 
 tbcoup2 = CALC_COUPURE(
+    FORCE="FORC_NODA",
     RESULTAT=reslin2,
-    OPERATION="RESULTANTE",
-    LIGN_COUPE=(
-        _F(
-            INTITULE="coupe 3 m",
-            GROUP_MA="ELEMENTS",
-            COOR_ORIG=(0.0, 1500.0, -1500.0),
-            COOR_EXTR=(0.0, 1500.0, 1500.0),
-            NB_POINTS=100,
-            DISTANCE_MAX=1.0,
-        ),
-        _F(
-            INTITULE="coupe 3.15 m",
-            GROUP_MA="ELEMENTS",
-            COOR_ORIG=(0.0, 1650.0, -1500.0),
-            COOR_EXTR=(0.0, 1650.0, 1500.0),
-            NB_POINTS=3,
-            DISTANCE_MAX=1.0,
-        ),
-    ),
-)
-
-# ====================================================== #
-# CALCUL DE COUPURES -- EXTRACTION
-# ====================================================== #
-
-tbextr1 = CALC_COUPURE(
-    RESULTAT=reslin,
-    OPERATION="EXTRACTION",
-    LIGN_COUPE=(
-        _F(
-            INTITULE="coupe 3 m",
-            GROUP_MA="ELEMENTS",
-            COOR_ORIG=(0.0, 1500.0, -1500.0),
-            COOR_EXTR=(0.0, 1500.0, 1500.0),
-            NB_POINTS=5,
-            DISTANCE_MAX=1.0,
-        ),
-        _F(
-            INTITULE="coupe 3.15 m",
-            GROUP_MA="ELEMENTS",
-            COOR_ORIG=(0.0, 1650.0, -1500.0),
-            COOR_EXTR=(0.0, 1650.0, 1500.0),
-            NB_POINTS=3,
-            DISTANCE_MAX=1.0,
-        ),
-    ),
-)
-
-tbextr2 = CALC_COUPURE(
-    RESULTAT=reslin2,
-    OPERATION="EXTRACTION",
-    LIGN_COUPE=(
-        _F(
-            INTITULE="coupe 3 m",
-            GROUP_MA="ELEMENTS",
-            COOR_ORIG=(0.0, 1500.0, -1500.0),
-            COOR_EXTR=(0.0, 1500.0, 1500.0),
-            NB_POINTS=5,
-            DISTANCE_MAX=1.0,
-        ),
-        _F(
-            INTITULE="coupe 3.15 m",
-            GROUP_MA="ELEMENTS",
-            COOR_ORIG=(0.0, 1650.0, -1500.0),
-            COOR_EXTR=(0.0, 1650.0, 1500.0),
-            NB_POINTS=3,
-            DISTANCE_MAX=1.0,
-        ),
-    ),
+    COUPURE=(_F(NOM="START", GROUP_MA="ELEMENTS", GROUP_NO="START", POINT=(0, -1500, 0)),),
 )
 
 # ====================================================== #
@@ -324,30 +240,30 @@ reslinok2 = POST_COMBINAISON(
     TABLE_COEF=t_coef_1,
     TABLE_COEF_RESU=CO("MA_TABLE2"),
     TYPE_COMB="TABLE",
-    FILTRE=(_F(NOM_PARA="INTITULE", VALE_K=("coupe 3 m", "coupe 3.15 m")),),
+    FILTRE=(_F(NOM_PARA="NOM", VALE_K=("START")),),
     AFFE=(_F(NOM_CAS="Q", TABLE=tbcoup1), _F(NOM_CAS="G", TABLE=tbcoup2)),
 )
+
 
 n_ordre_g = 1
 nb_nodes = [5, 3]
 for n_comb in range(3):
-    for i, nom_coupure in enumerate(("coupe 3 m", "coupe 3.15 m")):
+    for i, nom_coupure in enumerate(["START"]):
         for n_ordre_q in range(1, 4):
             coef_q = getattr(table_coef, "Q")[n_comb]
             coef_g = getattr(table_coef, "G")[n_comb]
-            for composante in reslinok2.EXTR_TABLE().para[4:]:
+            for composante in reslinok2.EXTR_TABLE().para[2:]:
                 tab_q = tbcoup1.EXTR_TABLE()
                 tab_g = tbcoup2.EXTR_TABLE()
                 # restriction sur le nom de coupure
-                tab_q_coup = tab_q.INTITULE == nom_coupure
-                tab_g_coup = tab_g.INTITULE == nom_coupure
+                tab_q_coup = tab_q.NOM == nom_coupure
+                tab_g_coup = tab_g.NOM == nom_coupure
                 # restriction sur l'ordre
                 tab_q_order = tab_q_coup.NUME_ORDRE == n_ordre_q
                 tab_g_order = tab_g_coup.NUME_ORDRE == 1
                 # restriction sur la composante
                 column_q = getattr(tab_q_order, composante)
                 column_g = getattr(tab_g_order, composante)
-
                 # valeur de reference
                 value_q = column_q[0]
                 value_g = column_g[0]
@@ -362,7 +278,7 @@ for n_comb in range(3):
                     TABLE=reslinok2,
                     NOM_PARA=composante,
                     FILTRE=(
-                        _F(NOM_PARA="INTITULE", VALE_K=nom_coupure),
+                        _F(NOM_PARA="NOM", VALE_K=nom_coupure),
                         _F(NOM_PARA="NOM_CAS", VALE_K=nom_cas),
                     ),
                     REFERENCE="ANALYTIQUE",
@@ -370,66 +286,5 @@ for n_comb in range(3):
                     VALE_CALC=value_ref_result,
                     VALE_REFE=value_ref_result,
                 )
-
-# ===================================== #
-# TEST COUPE EXTRACTION
-# ===================================== #
-
-reslinok3 = POST_COMBINAISON(
-    TABLE_COEF=t_coef_1,
-    TABLE_COEF_RESU=CO("MA_TABLE3"),
-    TYPE_COMB="TABLE",
-    FILTRE=(_F(NOM_PARA="INTITULE", VALE_K=("coupe 3 m", "coupe 3.15 m")),),
-    AFFE=(_F(NOM_CAS="Q", TABLE=tbextr1), _F(NOM_CAS="G", TABLE=tbextr2)),
-)
-
-# Test composantes
-n_ordre_g = 1
-nb_nodes = [5, 3]
-for n_comb in range(3):
-    for i, nom_coupure in enumerate(("coupe 3 m", "coupe 3.15 m")):
-        for n_ordre_q in range(1, 4):
-            coef_q = getattr(table_coef, "Q")[n_comb]
-            coef_g = getattr(table_coef, "G")[n_comb]
-
-            for composante in reslinok3.EXTR_TABLE().para[8:]:
-                tab_q = tbextr1.EXTR_TABLE()
-                tab_g = tbextr2.EXTR_TABLE()
-                # restriction sur le nom de coupure
-                tab_q_coup = tab_q.INTITULE == nom_coupure
-                tab_g_coup = tab_g.INTITULE == nom_coupure
-                # restriction sur l'ordre
-                tab_q_order = tab_q_coup.NUME_ORDRE == n_ordre_q
-                tab_g_order = tab_g_coup.NUME_ORDRE == 1
-                # restriction sur la composante
-                column_q = getattr(tab_q_order, composante)
-                column_g = getattr(tab_g_order, composante)
-
-                for n_noeu in range(nb_nodes[i]):
-                    # valeur de reference
-                    value_q = column_q[n_noeu]
-                    value_g = column_g[n_noeu]
-                    value_ref_result = value_q * coef_q + value_g * coef_g
-                    if n_comb == 1:
-                        nom_cas = "C" + str(n_comb + 1)
-                    else:
-                        nom_cas = "C" + str(n_comb + 1) + "." + str(n_ordre_q)
-                    # abcisse_noeud
-                    abscisse_noeud = getattr(tab_q_order, "ABSC_CURV")[n_noeu]
-
-                    # test
-                    TEST_TABLE(
-                        TABLE=reslinok3,
-                        NOM_PARA=composante,
-                        FILTRE=(
-                            _F(NOM_PARA="INTITULE", VALE_K=nom_coupure),
-                            _F(NOM_PARA="NOM_CAS", VALE_K=nom_cas),
-                            _F(NOM_PARA="ABSC_CURV", VALE=abscisse_noeud),
-                        ),
-                        REFERENCE="ANALYTIQUE",
-                        PRECISION=0.001,
-                        VALE_CALC=value_ref_result,
-                        VALE_REFE=value_ref_result,
-                    )
 
 FIN()
