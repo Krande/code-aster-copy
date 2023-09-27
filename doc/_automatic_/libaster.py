@@ -13813,6 +13813,13 @@ class BehaviourProperty(DataStructure):
             ConstantFieldOnCellsChar16Ptr: multiple behaviour.
         """
 
+    def hasAnnealing(self):
+        """Returns a flag if annealing post-processing is enabled
+
+        Returns:
+            bool: *True* if annealing is enabled, *False* otherwise.
+        """
+
     def hasBehaviour(self, behaviour):
         """Return True if the given behaviour name is present.
 
@@ -13820,7 +13827,7 @@ class BehaviourProperty(DataStructure):
             behaviour (str): behaviour name
 
         Returns:
-            bool: True if present else False.
+            bool: *True* if present, *False* otherwise.
         """
 
 
@@ -13888,6 +13895,19 @@ class PostProcessing:
 
     def __init__(self, arg0):
         pass
+
+    def computeAnnealing(self, internVar, time_curr, externVarPrev, externVarCurr):
+        """Modification of internal state variables for annealing
+
+        Arguments:
+            internVar (FieldOnNodesReal): internal state variables before annealing
+            time_curr (float): time at end of the step
+            externVarPrev (FieldOnCellsReal): external state variables at previous time
+            externVarCurr (FieldOnCellsReal): external state variables at current time
+
+        Returns:
+            FieldOnCellReals: internal state variables after annealing
+        """
 
     def computeHydration(self, temp_prev, temp_curr, time_prev, time_curr, hydr_prev):
         """Compute hydration at quadrature points (HYDR_ELGA)
