@@ -497,44 +497,10 @@ CALC_G : On ne peut pas calculer les dérivées des fonctions singulières car o
 CALC_G : Le champ fourni par CHAM_THETA_IN n'est pas correct. Les composants DIR_Z, ABSC_CURV et LONG doivent être nuls en 2D.
 """
     ),
-    80: _(
+    88: _(
         """
-RESULTAT et fichier MED d'entrée doivent avoir la même liste d'instant
-"""
-    ),
-    81: _(
-        """
-Un seul maillage est autorisé en entrée
-"""
-    ),
-    82: _(
-        """
-La modélisation doit être mécanique
-"""
-    ),
-    83: _(
-        """
-On ne sait pas traiter le cas déformation='SIMO_MIEHE'
-"""
-    ),
-    84: _(
-        """
-VARI_ELGA_NOMME non trouvé 1 fois exactement
-"""
-    ),
-    85: _(
-        """
-SIEF_ELGA non trouvé 1 fois exactement
-"""
-    ),
-    86: _(
-        """
-VARI_ELGA_NOMME non trouvé 1 fois exactement
-"""
-    ),
-    87: _(
-        """
-Un seul GROUP_MA est autorisé
+Le groupe de mailles %(k1)s donné dans POST_BEREMIN n'est pas un groupe utilisé
+dans AFFE_MATERIAU pour affecter les propriétés de WEIBULL.
 """
     ),
 }

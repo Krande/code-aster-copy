@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -123,14 +123,12 @@ U = STAT_NON_LINE(
 
 
 # POST_BEREMIN AVEC OPTION SIGM_ELGA, PETIT DEF, SANS CORRECTION DE PLASTICITE
-
 BERE = POST_BEREMIN(
     RESULTAT=U, COEF_MULT=1, DEFORMATION="PETIT", GROUP_MA="s_tout", FILTRE_SIGM="SIGM_ELGA"
 )
 
 
 # POST_BEREMIN AVEC OPTION SIGM_ELMOY, PETIT DEF, SANS CORRECTION DE PLASTICITE
-
 BERE2 = POST_BEREMIN(
     RESULTAT=U, COEF_MULT=1, DEFORMATION="PETIT", GROUP_MA="s_tout", FILTRE_SIGM="SIGM_ELMOY"
 )
@@ -144,9 +142,9 @@ TEST_TABLE(
     VALE_CALC=4459.172269,
     PRECISION=0.01,
     REFERENCE="AUTRE_ASTER",
-    NOM_PARA="sigma_weibull",
+    NOM_PARA="SIGMA_WEIBULL",
     TABLE=BERE,
-    FILTRE=(_F(NOM_PARA="nume_ordre", VALE_I=4), _F(NOM_PARA="lieu", VALE_K="s_tout")),
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=4), _F(NOM_PARA="GROUP_MA", VALE_K="s_tout")),
 )
 
 
@@ -156,9 +154,9 @@ TEST_TABLE(
     VALE_CALC=4459.172269,
     PRECISION=0.01,
     REFERENCE="AUTRE_ASTER",
-    NOM_PARA="sigma_weibull",
+    NOM_PARA="SIGMA_WEIBULL",
     TABLE=BERE2,
-    FILTRE=(_F(NOM_PARA="nume_ordre", VALE_I=4), _F(NOM_PARA="lieu", VALE_K="s_tout")),
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=4), _F(NOM_PARA="GROUP_MA", VALE_K="s_tout")),
 )
 
 
