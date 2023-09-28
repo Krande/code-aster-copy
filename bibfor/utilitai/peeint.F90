@@ -33,6 +33,7 @@ subroutine peeint(tableOut, model, nbocc)
 #include "asterfort/exlim1.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -88,11 +89,12 @@ subroutine peeint(tableOut, model, nbocc)
     character(len=24) :: listCellFilter
     character(len=24) :: numeStoreJv, timeStoreJv, compor
     character(len=19) :: field, fieldFromUser
-    character(len=19), parameter :: ligrel = '&&PEEINT.LIGREL'
+    character(len=19) :: ligrel
     character(len=19), parameter :: cespoi = '&&PEEINT.CESPOI'
     character(len=19) :: fieldInput
     character(len=24) :: fieldName, groupName
-    aster_logical :: convToNeut, lFromField, lFromResult, lVariName, lCmpOk
+    aster_logical :: convToNeut, lFromField, lFromResult, lVariName, lCmpOk, l_pmesh, l_empty
+    aster_logical :: l_newlig
     integer :: filterTypeNume
     character(len=8) :: filterTypeName
     character(len=8), pointer :: cmpNameNode(:) => null(), cmpNameNeut(:) => null()
@@ -115,6 +117,7 @@ subroutine peeint(tableOut, model, nbocc)
 !
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
     call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nbCellMesh)
+    l_pmesh = isParallelMesh(mesh)
 !
 ! - Origin of fields
 !
@@ -148,6 +151,12 @@ subroutine peeint(tableOut, model, nbocc)
 
 ! ----- Get list of cells fro user to create reduced domain
         call getelem(mesh, keywFact, iocc, 'F', listCellUser, nbCellUser, l_keep_propz=ASTER_TRUE)
+        call jeexin(listCellUser, iret)
+        l_empty = ASTER_FALSE
+        if (iret .eq. 0) then
+            ASSERT(l_pmesh)
+            l_empty = ASTER_TRUE
+        end if
 
 ! ----- Sort with topological dimension of cells
         call getvtx(keywFact, 'TYPE_MAILLE', iocc=iocc, scal=filterTypeName, nbret=iret)
@@ -165,18 +174,28 @@ subroutine peeint(tableOut, model, nbocc)
                 ASSERT(ASTER_FALSE)
             end if
             listCellFilter = '&&PEEINT.MAILLES_FILTRE'
-            call utflmd(mesh, listCellUser, nbCellUser, filterTypeNume, ' ', &
-                        nbCellFilter, listCellFilter)
+            nbCellFilter = 0
+            if (.not. l_empty) then
+                call utflmd(mesh, listCellUser, nbCellUser, filterTypeNume, ' ', &
+                            nbCellFilter, listCellFilter)
+            end if
             if (nbCellFilter .eq. 0) then
-                call utmess('F', 'PREPOST2_8')
+                if (.not. l_pmesh) call utmess('F', 'PREPOST2_8')
             else
                 call utmess('I', 'PREPOST2_7', si=(nbCellUser-nbCellFilter))
             end if
         end if
 
 ! ----- Create LIGREL
-        call jeveuo(listCellFilter, 'L', vi=cellFilter)
-        call exlim1(cellFilter, nbCellFilter, model, 'V', ligrel)
+        l_newlig = ASTER_FALSE
+        if (.not. l_empty) then
+            ligrel = '&&PEEINT.LIGREL'
+            call jeveuo(listCellFilter, 'L', vi=cellFilter)
+            call exlim1(cellFilter, nbCellFilter, model, 'V', ligrel)
+            l_newlig = ASTER_TRUE
+        else
+            call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrel)
+        end if
 
 ! ----- Get name of components
         call getvtx(keywFact, 'NOM_CMP', iocc=iocc, nbval=0, nbret=nbCmp)
@@ -184,6 +203,7 @@ subroutine peeint(tableOut, model, nbocc)
         lVariName = ASTER_FALSE
 
         if (nbCmp .eq. 0) then
+            ASSERT(.not. l_pmesh)
 ! --------- Get list for internal state variables
             lVariName = ASTER_TRUE
             call getvtx(keywFact, 'NOM_VARI', iocc=iocc, nbval=0, nbret=nbVari)
@@ -234,7 +254,11 @@ subroutine peeint(tableOut, model, nbocc)
 
 ! ----- No structural elements !
 !       Except POU_D_T, components N, VY, VZ, MFT, MFY, MFZ
-        call dismlg('EXI_RDM', ligrel, ibid, lStructElem, iret)
+        if (.not. l_empty) then
+            call dismlg('EXI_RDM', ligrel, ibid, lStructElem, iret)
+        else
+            lStructElem = "NON"
+        end if
         if (lStructElem .eq. 'OUI') then
             call jenonu(jexnom('&CATA.TE.NOMTE', 'MECA_POU_D_T'), pdtElemType)
             call jeveuo(model//'.MAILLE', 'L', vi=listElemType)
@@ -294,17 +318,19 @@ subroutine peeint(tableOut, model, nbocc)
                                                 nbCmpField, cmpNameNode, cmpNameNeut)
             end if
 !
-            call dismoi('TYPE_CHAMP', field, 'CHAMP', repk=fieldSupp, arret='C', ier=iret)
-            ASSERT(fieldSupp(1:2) .eq. 'EL')
+            if (.not. l_empty) then
+                call dismoi('TYPE_CHAMP', field, 'CHAMP', repk=fieldSupp, arret='C', ier=iret)
+                ASSERT(fieldSupp(1:2) .eq. 'EL')
+            end if
 !
-            if (convToNeut) then
+            if (convToNeut .and. .not. l_empty) then
                 do iCmp = 1, nbCmp
                     cmpNume = indik8(cmpNameNode, cmpNameInit(iCmp), 1, nbCmpField)
                     cmpName(iCmp) = cmpNameNeut(cmpNume)
                 end do
-                AS_DEALLOCATE(vk8=cmpNameNode)
-                AS_DEALLOCATE(vk8=cmpNameNeut)
             end if
+            AS_DEALLOCATE(vk8=cmpNameNode)
+            AS_DEALLOCATE(vk8=cmpNameNeut)
 !
 ! --------- CALCUL ET STOCKAGE DES MOYENNES : MOT-CLE 'TOUT'
             call getvtx(keywFact, 'TOUT', iocc=iocc, nbval=0, nbret=iret)
@@ -333,16 +359,19 @@ subroutine peeint(tableOut, model, nbocc)
                 do iGroup = 1, nbGroup
                     groupName = groupCell(iGroup)
                     call jeexin(jexnom(mesh//'.GROUPEMA', groupName), iret)
-                    if (iret .eq. 0) then
+                    if (iret .eq. 0 .and. .not. l_empty) then
                         call utmess('A', 'UTILITAI3_46', sk=groupName)
                         cycle
                     end if
-                    call jelira(jexnom(mesh//'.GROUPEMA', groupName), 'LONUTI', nbCellCompute)
-                    if (nbCellCompute .eq. 0) then
-                        call utmess('A', 'UTILITAI3_47', sk=groupName)
-                        cycle
+                    nbCellCompute = 0
+                    if (.not. l_empty) then
+                        call jelira(jexnom(mesh//'.GROUPEMA', groupName), 'LONUTI', nbCellCompute)
+                        if (nbCellCompute .eq. 0) then
+                            call utmess('A', 'UTILITAI3_47', sk=groupName)
+                            cycle
+                        end if
+                        call jeveuo(jexnom(mesh//'.GROUPEMA', groupName), 'L', vi=cellCompute)
                     end if
-                    call jeveuo(jexnom(mesh//'.GROUPEMA', groupName), 'L', vi=cellCompute)
                     call peecal(fieldSupp, tableOut, fieldName, &
                                 locaNameGroup, groupName, &
                                 cellCompute, nbCellCompute, &
@@ -369,6 +398,7 @@ subroutine peeint(tableOut, model, nbocc)
 ! --------- CALCUL ET STOCKAGE DES MOYENNES : MOT-CLE 'MAILLE'
             call getvtx(keywFact, 'MAILLE', iocc=iocc, nbval=0, nbret=nbret)
             if (nbret .ne. 0) then
+                ASSERT(.not. l_pmesh)
                 nbCell = -nbret
                 nbCellCompute = nbCell
                 AS_ALLOCATE(vk8=cellNames, size=nbCellCompute)
@@ -388,7 +418,7 @@ subroutine peeint(tableOut, model, nbocc)
 !
         call jedetr(listCellUser)
         call jedetr(listCellFilter)
-        call detrsd('LIGREL', ligrel)
+        if (l_newlig) call detrsd('LIGREL', ligrel)
         call detrsd('CHAM_ELEM_S', cespoi)
         call jedetr(cespoi//'.PDSM')
         AS_DEALLOCATE(vk16=variName)

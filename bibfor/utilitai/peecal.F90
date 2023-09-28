@@ -25,6 +25,7 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie, list_ma, nbma, &
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/chpond.h"
@@ -87,7 +88,7 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie, list_ma, nbma, &
     integer :: nucmp, jcmpgd, ncmpm, iad, jintr, jintk
     integer :: ipt, nbsp, nbpt, icmp, ima, nbpara, nume_ma
     integer :: ico, ind1, ind2, ifm, niv, ier, type_cell, nbnott(3)
-    real(kind=8) :: vol, val, inst, volpt
+    real(kind=8) :: vol, val, inst, volpt, rang, nbproc
     complex(kind=8) :: cbid
     character(len=8) :: noma, k8b, nomgd, nomva, type_inte
     character(len=4) :: dejain
@@ -101,6 +102,8 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie, list_ma, nbma, &
     integer, pointer :: repe(:) => null()
     integer, pointer :: v_model_elem(:) => null()
     integer, pointer :: v_type_cell(:) => null()
+    integer, pointer :: v_maex(:) => null()
+    mpi_int :: mrank, mnbproc
 ! -------------------------------------------------------------------------
     call jemarq()
     cbid = (0.d0, 0.d0)
@@ -111,6 +114,12 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie, list_ma, nbma, &
 !
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
     l_pmesh = isParallelMesh(noma)
+    if (l_pmesh) then
+        call jeveuo(noma//'.MAEX', 'L', vi=v_maex)
+        call asmpi_info(rank=mrank, size=mnbproc)
+        rang = to_aster_int(mrank)
+        nbproc = to_aster_int(mnbproc)
+    end if
 
     call jeveuo(ligrel//'.REPE', 'L', vi=repe)
 !
@@ -200,6 +209,7 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie, list_ma, nbma, &
         ico = 0
         do ima = 1, nbma
             nume_ma = list_ma(ima)
+            if (l_pmesh .and. v_maex(nume_ma) .ne. rang) cycle
             if (repe(2*(nume_ma-1)+1) .eq. 0) cycle
             nbpt = zi(jcesd-1+5+4*(nume_ma-1)+1)
             nbsp = zi(jcesd-1+5+4*(nume_ma-1)+2)
@@ -250,7 +260,7 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie, list_ma, nbma, &
             end do
 
         end do
-        if (ico .eq. 0) then
+        if (ico .eq. 0 .and. nbma .ne. 0) then
             valk(3) = nomcmp(icmp)
             call utmess('F', 'UTILITAI7_12', nk=3, valk=valk)
         end if
