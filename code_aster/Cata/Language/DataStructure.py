@@ -81,7 +81,7 @@ class DataStructure:
         else:
             copied = self.__class__()
             memodict[id(self)] = copied
-            for (k, v) in list(self.__dict__.items()):
+            for k, v in list(self.__dict__.items()):
                 copied.__dict__[k] = deepcopy(v, memodict)
         return copied
 
@@ -228,7 +228,6 @@ class UnitAster(UnitBaseType):
 
 
 def UnitType(filter=None):
-
     """*Factory* of the type of *UNITE* keywords.
 
     Arguments:
@@ -701,9 +700,9 @@ class ds_dict(ASSD):
     pass
 
 
-class evol_ther_dict(ds_dict):
+class evol_elas_dict(ds_dict):
     pass
 
 
-class evol_elas_dict(ds_dict):
+class evol_ther_dict(ds_dict):
     pass

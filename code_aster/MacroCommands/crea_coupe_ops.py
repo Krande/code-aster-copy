@@ -82,7 +82,22 @@ class TableCoupes(Table):
         "GROUP_MA_EXTR",
         "NB_POINTS",
     ]
-    ATTEMPTED_TYPES = ["R", "R", "R", "R", "R", "R", "R", "R", "R", "K24", "K24", "K24", "K24", "I"]
+    ATTEMPTED_TYPES = [
+        ["R", "I"],
+        ["R", "I"],
+        ["R", "I"],
+        ["R", "I"],
+        ["R", "I"],
+        ["R", "I"],
+        ["R", "I"],
+        ["R", "I"],
+        ["R", "I"],
+        ["K24", "I"],
+        ["K24", "I"],
+        ["K24", "I"],
+        ["K24", "I"],
+        ["I"],
+    ]
     DIMENSION = 3
     FIRST_POINT_ID = 0
     SECOND_POINT_ID = 3
@@ -119,30 +134,25 @@ class TableCoupes(Table):
         """Check if the input table has the right column names"""
         for i, key in enumerate(self.para):
             if key.lower() != TableCoupes.ALL_KEYWORDS[i].lower():
-                UTMESS(
-                    "F",
-                    "COUPE_1",
-                    vali=(i + 1),
-                    valk=[TableCoupes.ALL_KEYWORDS[i], key, ", ".join(TableCoupes.ALL_KEYWORDS)],
-                )
+                valk = [TableCoupes.ALL_KEYWORDS[i], key, ", ".join(TableCoupes.ALL_KEYWORDS)]
+                UTMESS("F", "COUPE_1", vali=(i + 1), valk=valk)
 
     def check_types(self):
         """Check if each column of the input table has the right type of data"""
         dico_types = {"R": "décimal", "I": "entier", "K24": "chaîne de caractères"}
         for i, typ in enumerate(self.type):
-            if typ != TableCoupes.ATTEMPTED_TYPES[i]:
-                UTMESS(
-                    "F",
-                    "COUPE_5",
-                    vali=(i + 1),
-                    valk=[dico_types[TableCoupes.ATTEMPTED_TYPES[i]], dico_types[typ]],
-                )
+            if typ not in TableCoupes.ATTEMPTED_TYPES[i]:
+                valk = [
+                    " ou ".join([dico_types[j] for j in TableCoupes.ATTEMPTED_TYPES[i]]),
+                    dico_types[typ],
+                ]
+                UTMESS("F", "COUPE_5", vali=(i + 1), valk=valk)
 
     def check_path_name(self, msg=""):
         """Check if a name is used several times in the table"""
         already_set_name = []
         for line in self.rows:
-            name = line[TableCoupes.ALL_KEYWORDS[TableCoupes.NAMES_ID]]
+            name = str(line[TableCoupes.ALL_KEYWORDS[TableCoupes.NAMES_ID]])
             if name in already_set_name:
                 if msg == "REVO":
                     UTMESS("A", "COUPE_12", valk=name)
@@ -159,7 +169,7 @@ class TableCoupes(Table):
         For the i-th path SECTION_ID=first_num+i*progression
         """
         nb_coupes = len(self.rows)
-        key_name = TableCoupes.ALL_KEYWORDS[TableCoupes.NAMES_ID]
+        key_name = str(TableCoupes.ALL_KEYWORDS[TableCoupes.NAMES_ID])
         if auto_name == "OUI":
             max_num = int(first_num) + (nb_coupes - 1) * int(progression)
             nb_zeros = len(str(max_num))
@@ -216,10 +226,10 @@ class TableCoupes(Table):
         }
         #######################
         for j, line in enumerate(self.rows):
-            surf_in = line[TableCoupes.ALL_KEYWORDS[TableCoupes.MAIL_IN_ID]]
-            surf_out = line[TableCoupes.ALL_KEYWORDS[TableCoupes.MAIL_OUT_ID]]
+            surf_in = str(line[TableCoupes.ALL_KEYWORDS[TableCoupes.MAIL_IN_ID]])
+            surf_out = str(line[TableCoupes.ALL_KEYWORDS[TableCoupes.MAIL_OUT_ID]])
             direction = self.get_direction(j)
-            path_name = line[TableCoupes.ALL_KEYWORDS[TableCoupes.NAMES_ID]]
+            path_name = str(line[TableCoupes.ALL_KEYWORDS[TableCoupes.NAMES_ID]])
             for i in range(2):
                 found_projection = False
                 beta_old = sys.float_info.max
@@ -311,9 +321,9 @@ class TableCoupes(Table):
         """
         lgrma = [gr[0] for gr in mesh.LIST_GROUP_MA()]
         for path in self.rows:
-            surf_in = path[TableCoupes.ALL_KEYWORDS[TableCoupes.MAIL_IN_ID]]
-            surf_out = path[TableCoupes.ALL_KEYWORDS[TableCoupes.MAIL_OUT_ID]]
-            path_name = path[TableCoupes.ALL_KEYWORDS[TableCoupes.NAMES_ID]]
+            surf_in = str(path[TableCoupes.ALL_KEYWORDS[TableCoupes.MAIL_IN_ID]])
+            surf_out = str(path[TableCoupes.ALL_KEYWORDS[TableCoupes.MAIL_OUT_ID]])
+            path_name = str(path[TableCoupes.ALL_KEYWORDS[TableCoupes.NAMES_ID]])
             if surf_in not in lgrma:
                 UTMESS("F", "COUPE_2", valk=["d'entrée", surf_in, path_name])
             if surf_out not in lgrma:
@@ -347,9 +357,9 @@ class TableCoupes(Table):
             TableCoupes.THIRD_POINT_ID,
         ]
         points_keys = [self.para[point_id : point_id + 3] for point_id in points_ids]
-        name_key = TableCoupes.ALL_KEYWORDS[TableCoupes.NAMES_ID]
-        gr_in_key = TableCoupes.ALL_KEYWORDS[TableCoupes.MAIL_IN_ID]
-        gr_out_key = TableCoupes.ALL_KEYWORDS[TableCoupes.MAIL_OUT_ID]
+        name_key = str(TableCoupes.ALL_KEYWORDS[TableCoupes.NAMES_ID])
+        gr_in_key = str(TableCoupes.ALL_KEYWORDS[TableCoupes.MAIL_IN_ID])
+        gr_out_key = str(TableCoupes.ALL_KEYWORDS[TableCoupes.MAIL_OUT_ID])
         coupes_dico = {i: [] for i in range(len(self.rows))}
 
         for revol in revol_list:
@@ -409,15 +419,15 @@ class TableCoupes(Table):
         if name_filter is None and group_filter is None:
             return None, None
         if name_filter:
-            return name_filter, self.para[TableCoupes.NAMES_ID]
+            return name_filter, str(self.para[TableCoupes.NAMES_ID])
         else:
-            return group_filter, self.para[TableCoupes.GROUPS_ID]
+            return group_filter, str(self.para[TableCoupes.GROUPS_ID])
 
     def check_parameters_revol(self, revol_list, mesh):
         group_mail_list = mesh.getGroupsOfCells()
         missing_name, missing_group = None, None
-        name_list = [line[self.para[TableCoupes.NAMES_ID]] for line in self.rows]
-        group_list = [line[self.para[TableCoupes.GROUPS_ID]] for line in self.rows]
+        name_list = [str(line[self.para[TableCoupes.NAMES_ID]]) for line in self.rows]
+        group_list = [str(line[self.para[TableCoupes.GROUPS_ID]]) for line in self.rows]
         for revol in revol_list:
             if revol["ANGLE_MAX"] is not None and revol["ANGLE_MAX"] == 0:
                 UTMESS("F", "COUPE_13", valk="ANGLE_MAX")
