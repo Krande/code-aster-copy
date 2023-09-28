@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -838,6 +838,7 @@ contains
         character(len=8), intent(in) :: nomFunc(3,6)
         real(kind=8), intent(in)     :: time
         real(kind=8), intent(out)    :: rhs_cine(MSIZE_FDOFS_VEC)
+        real(kind=8) :: rhs_face(MSIZE_FACE_VEC)
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - AFFE_CHAR_CINE_F
@@ -911,7 +912,8 @@ contains
 ! -------------- Compute L2 projection
 !
             call hhoL2ProjFaceVec(hhoFace, hhoQuadFace, FuncValuesQP, hhoData%face_degree(), &
-                                 rhs_cine(ind))
+                                 rhs_face)
+            call dcopy(fbs, rhs_face, 1, rhs_cine(ind), 1)
             ind = ind + fbs
         end do
 !
