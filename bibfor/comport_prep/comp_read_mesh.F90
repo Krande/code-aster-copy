@@ -23,6 +23,7 @@ subroutine comp_read_mesh(mesh, keywordfact, iocc, &
 !
 #include "asterf_types.h"
 #include "asterfort/getvtx.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/assert.h"
 #include "asterfort/reliem.h"
 !
@@ -55,6 +56,7 @@ subroutine comp_read_mesh(mesh, keywordfact, iocc, &
     character(len=8), parameter :: keyw_type(2) = (/'GROUP_MA', 'MAILLE  '/)
     character(len=16), parameter :: keyw_name(2) = (/'GROUP_MA', 'MAILLE  '/)
     integer :: nt
+    aster_logical :: l_parallel_mesh
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -63,6 +65,7 @@ subroutine comp_read_mesh(mesh, keywordfact, iocc, &
 !
 ! - Get list of elements
 !
+    l_parallel_mesh = isParallelMesh(mesh)
     call getvtx(keywordfact, 'TOUT', iocc=iocc, nbret=nt)
     if (nt .ne. 0) then
         l_affe_all = .true.
@@ -70,7 +73,7 @@ subroutine comp_read_mesh(mesh, keywordfact, iocc, &
         l_affe_all = .false.
         call reliem(' ', mesh, 'NU_MAILLE', keywordfact, iocc, &
                     2, keyw_name, keyw_type, list_elem_affe, nb_elem_affe)
-        if (nb_elem_affe .eq. 0) then
+        if (nb_elem_affe .eq. 0 .and. .not. l_parallel_mesh) then
             l_affe_all = .true.
         end if
     end if

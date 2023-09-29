@@ -1,0 +1,234 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+# person_in_charge: nicolas.tardieu at edf.fr
+import code_aster
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+
+test = code_aster.TestCase()
+
+frottement = 0.6
+raideurN = 1e10
+raideurT = 1e10
+
+MecaMail = LIRE_MAILLAGE(PARTITIONNEUR="PTSCOTCH")
+
+
+# Orientations des faces
+MecaMail = MODI_MAILLAGE(
+    reuse=MecaMail,
+    MAILLAGE=MecaMail,
+    ORIE_PEAU=(
+        _F(GROUP_MA_PEAU="VisAppuiTete"),
+        _F(GROUP_MA_PEAU="CloisonAppuiTeteVis"),
+        _F(GROUP_MA_PEAU="VisBas"),
+        _F(GROUP_MA_PEAU="VisBordRenfort"),
+        _F(GROUP_MA_PEAU="DoubleElements_double"),
+    ),
+)
+
+MecaMode = AFFE_MODELE(
+    MAILLAGE=MecaMail,
+    AFFE=(
+        _F(
+            MODELISATION="3D",
+            PHENOMENE="MECANIQUE",
+            GROUP_MA=(
+                "vis",
+                "cloison",
+                "renfort",
+                "VisAppuiTete",
+                "CloisonAppuiTeteVis",
+                "VisBas",
+                "DoubleElements_double",
+                "CloisonSymetrieX",
+                "CloisonSymetrieZ",
+                "RenfortSymetrieX",
+                "RenfortBloquage",
+                "VisBordRenfort",
+                "ContactVis",
+            ),
+        ),
+        _F(MODELISATION="DIS_T", PHENOMENE="MECANIQUE", GROUP_MA=("DiscretsContact")),
+    ),
+)
+
+Cael = AFFE_CARA_ELEM(
+    MODELE=MecaMode,
+    DISCRET=_F(GROUP_MA="DiscretsContact", CARA="K_T_D_L", VALE=(raideurN, raideurT, raideurT)),
+    ORIENTATION=_F(GROUP_MA="DiscretsContact", CARA="VECT_X_Y", VALE=(0, 1, 0, -1, 0, 0)),
+)
+
+TempRef = 20.0
+Ther0 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_TEMP_R",
+    OPERATION="AFFE",
+    MAILLAGE=MecaMail,
+    AFFE=_F(GROUP_MA=("vis", "renfort", "cloison"), NOM_CMP="TEMP", VALE=TempRef),
+)
+# Champ de temperature uniforme = 60
+Ther1 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_TEMP_R",
+    OPERATION="AFFE",
+    MAILLAGE=MecaMail,
+    AFFE=(
+        _F(GROUP_MA=("vis", "renfort"), NOM_CMP="TEMP", VALE=TempRef),
+        _F(GROUP_MA=("cloison",), NOM_CMP="TEMP", VALE=40),
+    ),
+)
+# Champ de temperature uniforme = 200
+Ther2 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_TEMP_R",
+    OPERATION="AFFE",
+    MAILLAGE=MecaMail,
+    AFFE=(
+        _F(GROUP_MA=("vis", "renfort"), NOM_CMP="TEMP", VALE=TempRef),
+        _F(GROUP_MA=("cloison",), NOM_CMP="TEMP", VALE=200),
+    ),
+)
+
+TEMPER = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_THER",
+    NOM_CHAM="TEMP",
+    AFFE=(
+        _F(CHAM_GD=Ther0, INST=0),
+        _F(CHAM_GD=Ther0, INST=1),
+        _F(CHAM_GD=Ther1, INST=2),
+        _F(CHAM_GD=Ther2, INST=3),
+    ),
+)
+
+Blocages = AFFE_CHAR_MECA(
+    MODELE=MecaMode,
+    DDL_IMPO=(
+        _F(DX=0.0, DY=0.0, DZ=0, GROUP_MA="RenfortBloquage"),
+        _F(DX=0, GROUP_MA=("RenfortSymetrieX", "CloisonSymetrieX")),
+        _F(DZ=0, GROUP_MA=("CloisonSymetrieZ")),
+    ),
+    LIAISON_MAIL=(
+        _F(GROUP_MA_ESCL="DoubleElements_double", GROUP_MA_MAIT="renfort", TYPE_RACCORD="MASSIF"),
+        _F(GROUP_MA_ESCL="VisAppuiTete", GROUP_MA_MAIT="cloison", TYPE_RACCORD="MASSIF"),
+        _F(GROUP_MA_ESCL="ContactVis", GROUP_MA_MAIT="renfort", TYPE_RACCORD="MASSIF"),
+        _F(GROUP_NO_ESCL="CloisonsContactRenfort2", GROUP_MA_MAIT="renfort", TYPE_RACCORD="MASSIF"),
+    ),
+)
+
+ZERO = DEFI_CONSTANTE(NOM_RESU="TOUTRESU", VALE=0.0)
+
+FSER = DEFI_FONCTION(
+    INFO=1,
+    INTERPOL="LIN",
+    NOM_PARA="INST",
+    NOM_RESU="TOUTRESU",
+    PROL_DROITE="CONSTANT",
+    PROL_GAUCHE="CONSTANT",
+    VALE=(0.0, 0.0, 1, 6.0e-05),
+    VERIF="CROISSANT",
+)
+
+Serrages = AFFE_CHAR_MECA_F(
+    MODELE=MecaMode,
+    LIAISON_GROUP=(
+        _F(
+            COEF_IMPO=ZERO,
+            COEF_MULT_1=-1.0,
+            COEF_MULT_2=1.0,
+            DDL_1="DX",
+            DDL_2="DX",
+            GROUP_MA_1="DoubleElements_double",
+            GROUP_MA_2="VisBas",
+        ),
+        _F(
+            COEF_IMPO=FSER,
+            COEF_MULT_1=-1.0,
+            COEF_MULT_2=1.0,
+            DDL_1="DY",
+            DDL_2="DY",
+            GROUP_MA_1="DoubleElements_double",
+            GROUP_MA_2="VisBas",
+        ),
+        _F(
+            COEF_IMPO=ZERO,
+            COEF_MULT_1=-1.0,
+            COEF_MULT_2=1.0,
+            DDL_1="DZ",
+            DDL_2="DZ",
+            GROUP_MA_1="DoubleElements_double",
+            GROUP_MA_2="VisBas",
+        ),
+    ),
+)
+
+ACIER = DEFI_MATERIAU(ELAS=_F(E=2e11, NU=0.3, ALPHA=1.6e-5))
+
+MCHOC = DEFI_MATERIAU(DIS_CONTACT=_F(RIGI_NOR=raideurN, RIGI_TAN=raideurT, COULOMB=frottement))
+
+CHMAT = AFFE_MATERIAU(
+    MAILLAGE=MecaMail,
+    AFFE_VARC=(_F(TOUT="OUI", EVOL=TEMPER, NOM_VARC="TEMP", VALE_REF=TempRef),),
+    AFFE=(
+        _F(GROUP_MA=("vis", "renfort", "cloison"), MATER=ACIER),
+        _F(GROUP_MA=("DiscretsContact"), MATER=MCHOC),
+    ),
+)
+
+ltemps = DEFI_LIST_REEL(
+    DEBUT=0,
+    INTERVALLE=(_F(JUSQU_A=1, NOMBRE=1), _F(JUSQU_A=2, NOMBRE=10), _F(JUSQU_A=3, NOMBRE=10)),
+)
+
+linst = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=ltemps), ECHEC=_F(SUBD_PAS=10))
+ltempsarch = DEFI_LIST_REEL(
+    DEBUT=0,
+    INTERVALLE=(_F(JUSQU_A=1, NOMBRE=1), _F(JUSQU_A=2, NOMBRE=10), _F(JUSQU_A=3, NOMBRE=10)),
+)
+linstarch = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=ltempsarch))
+
+myOptions = """ -ksp_monitor """
+
+CALCULG = STAT_NON_LINE(
+    MODELE=MecaMode,
+    CARA_ELEM=Cael,
+    CHAM_MATER=CHMAT,
+    EXCIT=(_F(CHARGE=Blocages), _F(CHARGE=Serrages)),
+    COMPORTEMENT=(
+        _F(TOUT="OUI", RELATION="ELAS"),
+        _F(RELATION="DIS_CHOC", GROUP_MA="DiscretsContact"),
+    ),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=20),
+    INCREMENT=_F(LIST_INST=linst, INST_FIN=1.1),
+    ARCHIVAGE=_F(LIST_INST=ltempsarch),
+    NEWTON=_F(),
+    RECH_LINEAIRE=_F(METHODE="MIXTE", ITER_LINE_MAXI=10, RESI_LINE_RELA=0.1, RHO_MIN=0.02),
+    SOLVEUR=_F(METHODE="PETSC", PRE_COND="LDLT_DP", OPTION_PETSC=myOptions),
+    INFO=1,
+)
+
+u = CALCULG.getField("DEPL", 2)
+
+ref_seq = 271.535498114251
+test.assertAlmostEqual(u.norm("NORM_INFINITY"), ref_seq)
+
+# DEFI_FICHIER(UNITE=87, FICHIER="/tmp/calc.resu.med", TYPE="BINARY")
+# IMPR_RESU(FICHIER_UNIQUE="OUI", FORMAT="MED", UNITE=87, RESU=_F(RESULTAT=CALCULG))
+# DEFI_FICHIER(ACTION="LIBERER", UNITE=87)
+
+FIN()

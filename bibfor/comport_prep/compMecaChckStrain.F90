@@ -31,6 +31,8 @@ subroutine compMecaChckStrain(iComp, &
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/cesexi.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
@@ -77,18 +79,22 @@ subroutine compMecaChckStrain(iComp, &
 !
     character(len=16) :: elemTypeName, modelType, modelType2
     integer :: elemTypeNume, cellNume
-    character(len=8) :: grille
+    character(len=8) :: grille, mesh
     integer :: jvCesd, jvCesl, jvCesv, jvVale
     integer :: modelTypeIret, lctestIret, iCell, modelTypeIret2
     integer :: nbCellMesh, nbCell
     integer, pointer :: cellAffectedByModel(:) => null()
     integer, pointer :: listCellAffe(:) => null()
     aster_logical :: l_coq3d, l_dkt, l_dktg, lShell, l_hho, lPipe, lSolidShell, lBeam, lDisc
-    aster_logical :: lGrotGdep, lPetitReac
+    aster_logical :: lGrotGdep, lPetitReac, l_parallel_mesh
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
+
+    call dismoi('NOM_MAILLA', model(1:8), 'MODELE', repk=mesh)
+    l_parallel_mesh = isParallelMesh(mesh)
+    if (nbCellAffe == 0 .and. l_parallel_mesh) goto 999
 
 ! - Access to model
     call jeveuo(model//'.MAILLE', 'L', vi=cellAffectedByModel)
@@ -257,6 +263,7 @@ subroutine compMecaChckStrain(iComp, &
         call utmess('A', 'COMPOR1_47')
     end if
 !
+999 continue
     call jedema()
 !
 end subroutine

@@ -23,10 +23,12 @@ function exicp(model, l_affe_all, list_elem_affe, nb_elem_affe)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/teattr.h"
 !
@@ -59,6 +61,7 @@ function exicp(model, l_affe_all, list_elem_affe, nb_elem_affe)
     character(len=8) :: mesh, dmo, dma
     character(len=16) :: notype, typmod
     integer, pointer :: maille(:) => null()
+    aster_logical ::  l_parallel_mesh
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -70,6 +73,7 @@ function exicp(model, l_affe_all, list_elem_affe, nb_elem_affe)
 !
     call jeveuo(model//'.MAILLE', 'L', vi=maille)
     call dismoi('NOM_MAILLA', model(1:8), 'MODELE', repk=mesh)
+    l_parallel_mesh = isParallelMesh(mesh)
     call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nb_elem_mesh)
 !
 ! - Mesh affectation
@@ -77,6 +81,8 @@ function exicp(model, l_affe_all, list_elem_affe, nb_elem_affe)
     if (l_affe_all) then
         nb_elem = nb_elem_mesh
     else
+        call jeexin(list_elem_affe, iret)
+        if (iret == 0 .and. l_parallel_mesh) goto 999
         call jeveuo(list_elem_affe, 'L', j_elem_affe)
         nb_elem = nb_elem_affe
     end if

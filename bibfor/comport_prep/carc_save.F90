@@ -28,6 +28,7 @@ subroutine carc_save(mesh, carcri, ds_compor_para)
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/assert.h"
 #include "asterfort/comp_read_mesh.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nocart.h"
@@ -54,7 +55,7 @@ subroutine carc_save(mesh, carcri, ds_compor_para)
     character(len=16), parameter :: factorKeyword = 'COMPORTEMENT'
     integer, parameter :: nbCmp = CARCRI_SIZE
     character(len=24), parameter :: list_elem_affe = '&&CARCSAVE.LIST'
-    aster_logical :: l_affe_all
+    aster_logical :: l_affe_all, l_parallel_mesh
     integer :: nb_elem_affe
     integer, pointer :: v_elem_affe(:) => null()
     integer :: iFactorKeyword, nbFactorKeyword
@@ -64,6 +65,7 @@ subroutine carc_save(mesh, carcri, ds_compor_para)
 ! --------------------------------------------------------------------------------------------------
 !
     nbFactorKeyword = ds_compor_para%nb_comp
+    l_parallel_mesh = isParallelMesh(mesh)
 
 ! - Access to MAP
     call jeveuo(carcri//'.VALV', 'E', vr=carcriValv)
@@ -87,9 +89,11 @@ subroutine carc_save(mesh, carcri, ds_compor_para)
         if (l_affe_all) then
             call nocart(carcri, 1, nbCmp)
         else
-            call jeveuo(list_elem_affe, 'L', vi=v_elem_affe)
-            call nocart(carcri, 3, nbCmp, mode='NUM', nma=nb_elem_affe, &
-                        limanu=v_elem_affe)
+            if (nb_elem_affe > 0 .or. .not. l_parallel_mesh) then
+                call jeveuo(list_elem_affe, 'L', vi=v_elem_affe)
+                call nocart(carcri, 3, nbCmp, mode='NUM', nma=nb_elem_affe, &
+                            limanu=v_elem_affe)
+            end if
             call jedetr(list_elem_affe)
         end if
     end do

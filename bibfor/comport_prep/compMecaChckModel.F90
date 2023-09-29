@@ -32,6 +32,7 @@ subroutine compMecaChckModel(iComp, &
 #include "asterfort/dismoi.h"
 #include "asterfort/comp_meca_l.h"
 #include "asterfort/dismte.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
@@ -75,6 +76,7 @@ subroutine compMecaChckModel(iComp, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16) :: elemTypeName, modelType, incoType, isNuFunc, typmod2Type
+    character(len=8) :: mesh
     integer :: elemTypeNume, cellNume, nbCmpAffected
     integer :: jvCesd, jvCesl, jvVale
     integer :: modelTypeIret, lctestIret, iCell, incoTypeIret
@@ -82,7 +84,7 @@ subroutine compMecaChckModel(iComp, &
     character(len=16), pointer :: cesv(:) => null()
     integer, pointer :: cellAffectedByModel(:) => null()
     integer, pointer :: listCellAffe(:) => null()
-    aster_logical :: lAtOneCellAffect, lAllCellAreBound, lPlStressFuncNu, l_kit_thm
+    aster_logical :: lAtOneCellAffect, lAllCellAreBound, lPlStressFuncNu, l_kit_thm, l_parallel_mesh
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -97,6 +99,12 @@ subroutine compMecaChckModel(iComp, &
     lIncoUpo = ASTER_FALSE
     lPlStressFuncNu = ASTER_FALSE
     call comp_meca_l(relaComp, 'KIT_THM', l_kit_thm)
+
+    call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
+    l_parallel_mesh = isParallelMesh(mesh)
+
+    if (nbCellAffe == 0 .and. l_parallel_mesh) goto 999
+
 !
 ! - Access to model
 !
@@ -205,6 +213,9 @@ subroutine compMecaChckModel(iComp, &
 ! - All elements are boundary elements
 !
     lAllCellAreBound = nbCmpAffected .eq. 0
+
+999 continue
+
 !
 ! - Comm for MPI
 !
@@ -216,7 +227,7 @@ subroutine compMecaChckModel(iComp, &
 !
 ! - Error when nothing is affected by the behavior
 !
-    if (.not. lAtOneCellAffect) then
+    if (.not. lAtOneCellAffect .and. .not. l_parallel_mesh) then
         if (lAllCellAreBound) then
             call utmess('F', 'COMPOR1_60', si=iComp)
         else

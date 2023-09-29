@@ -28,6 +28,7 @@ subroutine comp_meca_save(model, mesh, chmate, compor, behaviourPrepPara)
 #include "asterfort/assert.h"
 #include "asterfort/comp_meca_l.h"
 #include "asterfort/comp_read_mesh.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
@@ -68,13 +69,14 @@ subroutine comp_meca_save(model, mesh, chmate, compor, behaviourPrepPara)
     integer :: iFactorKeyword, nbFactorKeyword
     character(len=16) :: rela_comp
     character(len=16), pointer :: comporValv(:) => null()
-    aster_logical :: l_cristal, l_pmf, l_is_pmf
+    aster_logical :: l_cristal, l_pmf, l_is_pmf, l_parallel_mesh
     integer :: elem_nume
 !
 ! --------------------------------------------------------------------------------------------------
 !
     nbFactorKeyword = behaviourPrepPara%nb_comp
     l_is_pmf = ASTER_FALSE
+    l_parallel_mesh = isParallelMesh(mesh)
 
 ! - Access to MODEL
     call jeveuo(model//'.MAILLE', 'L', vi=modelCell)
@@ -123,9 +125,11 @@ subroutine comp_meca_save(model, mesh, chmate, compor, behaviourPrepPara)
         if (l_affe_all) then
             call nocart(compor, 1, nbCmp)
         else
-            call jeveuo(list_elem_affe, 'L', vi=v_elem_affe)
-            call nocart(compor, 3, nbCmp, mode='NUM', nma=nb_elem_affe, &
-                        limanu=v_elem_affe)
+            if (nb_elem_affe > 0 .or. .not. l_parallel_mesh) then
+                call jeveuo(list_elem_affe, 'L', vi=v_elem_affe)
+                call nocart(compor, 3, nbCmp, mode='NUM', nma=nb_elem_affe, &
+                            limanu=v_elem_affe)
+            end if
             call jedetr(list_elem_affe)
         end if
     end do

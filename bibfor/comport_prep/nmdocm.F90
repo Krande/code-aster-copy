@@ -32,6 +32,7 @@ subroutine nmdocm(model, mult_comp, base)
 #include "asterc/getfac.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/getvid.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jenonu.h"
@@ -61,7 +62,7 @@ subroutine nmdocm(model, mult_comp, base)
     aster_logical :: l_affe_all
     integer :: nb_elem_affe
     integer, pointer :: v_elem_affe(:) => null()
-    aster_logical :: l_cristal
+    aster_logical :: l_cristal, l_parallel_mesh
     integer :: nb_cmp, nb_cmp_max, icmp, i_comp, nbocc_compor
     character(len=8) :: mesh
     character(len=16) :: rela_comp, comp_cris, keywordfact
@@ -79,6 +80,7 @@ subroutine nmdocm(model, mult_comp, base)
     keywordfact = 'COMPORTEMENT'
     list_elem_affe = '&&COMPMECASAVE.LIST'
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
+    l_parallel_mesh = isParallelMesh(mesh)
     call getfac(keywordfact, nbocc_compor)
 !
 ! - Read catalog
@@ -145,9 +147,11 @@ subroutine nmdocm(model, mult_comp, base)
         if (l_affe_all) then
             call nocart(mult_comp, 1, nb_cmp)
         else
-            call jeveuo(list_elem_affe, 'L', vi=v_elem_affe)
-            call nocart(mult_comp, 3, nb_cmp, mode='NUM', nma=nb_elem_affe, &
-                        limanu=v_elem_affe)
+            if (nb_elem_affe > 0 .or. .not. l_parallel_mesh) then
+                call jeveuo(list_elem_affe, 'L', vi=v_elem_affe)
+                call nocart(mult_comp, 3, nb_cmp, mode='NUM', nma=nb_elem_affe, &
+                            limanu=v_elem_affe)
+            end if
             call jedetr(list_elem_affe)
         end if
     end do
