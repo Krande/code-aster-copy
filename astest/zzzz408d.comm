@@ -1,0 +1,115 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+
+# Validation de LISS_SPECTRE/OPTION='VERIFICATION'
+
+# validation de la construction des nappes et du regroupement des nappes
+# selon plancher et direction
+
+TAB1 = LIRE_TABLE(UNITE=40, FORMAT="ASTER", NUME_TABLE=1)
+TAB2 = LIRE_TABLE(UNITE=40, FORMAT="ASTER", NUME_TABLE=2)
+
+# 2 tables, 2 planchers, 4 directions, 2 amortissements,
+# valeurs de fréquence différentes entre les deux tables
+
+LISS_SPECTRE(
+    SPECTRE=(_F(TABLE=TAB1), _F(TABLE=TAB2)),
+    OPTION="VERIFICATION",
+    NB_FREQ_LISS=3,
+    BORNE_X=(0.1, 100),
+    BORNE_Y=(0.01, 100),
+    ECHELLE_X="LOG",
+    ECHELLE_Y="LOG",
+    LEGENDE_X="Frequence (Hz)",
+    LEGENDE_Y="Pseudo-acceleration (g)",
+)
+
+
+lefic = "./REPE_OUT/CHATEAU_P_1_H.txt"
+nb_vale = 11
+vale_calc = 80.04407447999999
+TEST_FICHIER(FICHIER=lefic, NB_VALE=nb_vale, VALE_CALC=vale_calc)
+
+lefic = "./REPE_OUT/CHATEAU_P_1_X.txt"
+vale_calc = 36.661195034
+TEST_FICHIER(FICHIER=lefic, NB_VALE=nb_vale, VALE_CALC=vale_calc)
+
+lefic = "./REPE_OUT/CHATEAU_P_1_Y.txt"
+vale_calc = 80.04407447999999
+TEST_FICHIER(FICHIER=lefic, NB_VALE=nb_vale, VALE_CALC=vale_calc)
+
+lefic = "./REPE_OUT/CHATEAU_P_1_Z.txt"
+vale_calc = 80.14927489999998
+TEST_FICHIER(FICHIER=lefic, NB_VALE=nb_vale, VALE_CALC=vale_calc)
+nb_vale = 32
+lefic = "./REPE_OUT/CHATEAU_P_1_H_verif.txt"
+vale_calc = 114.08502872999999
+TEST_FICHIER(FICHIER=lefic, NB_VALE=nb_vale, VALE_CALC=vale_calc)
+
+lefic = "./REPE_OUT/CHATEAU_P_1_X_verif.txt"
+vale_calc = 57.801608706
+TEST_FICHIER(FICHIER=lefic, NB_VALE=nb_vale, VALE_CALC=vale_calc)
+
+lefic = "./REPE_OUT/CHATEAU_P_1_Y_verif.txt"
+vale_calc = 114.08502872999999
+TEST_FICHIER(FICHIER=lefic, NB_VALE=nb_vale, VALE_CALC=vale_calc)
+
+lefic = "./REPE_OUT/CHATEAU_P_1_Z_verif.txt"
+vale_calc = 114.25850313999997
+TEST_FICHIER(FICHIER=lefic, NB_VALE=nb_vale, VALE_CALC=vale_calc)
+
+
+lefic = "./REPE_OUT/CHATEAU2_P_2_H.txt"
+nb_vale = 11
+vale_calc = 80.04407447999999
+TEST_FICHIER(FICHIER=lefic, NB_VALE=nb_vale, VALE_CALC=vale_calc)
+
+lefic = "./REPE_OUT/CHATEAU2_P_2_X.txt"
+vale_calc = 36.661195034
+TEST_FICHIER(FICHIER=lefic, NB_VALE=nb_vale, VALE_CALC=vale_calc)
+
+lefic = "./REPE_OUT/CHATEAU2_P_2_Y.txt"
+vale_calc = 80.04407447999999
+TEST_FICHIER(FICHIER=lefic, NB_VALE=nb_vale, VALE_CALC=vale_calc)
+
+lefic = "./REPE_OUT/CHATEAU2_P_2_Z.txt"
+vale_calc = 80.14927489999998
+TEST_FICHIER(FICHIER=lefic, NB_VALE=nb_vale, VALE_CALC=vale_calc)
+
+
+lefic = "./REPE_OUT/CHATEAU2_P_2_H_verif.txt"
+nb_vale = 32
+vale_calc = 114.08502872999999
+TEST_FICHIER(FICHIER=lefic, NB_VALE=nb_vale, VALE_CALC=vale_calc)
+
+lefic = "./REPE_OUT/CHATEAU2_P_2_X_verif.txt"
+vale_calc = 57.801608706
+TEST_FICHIER(FICHIER=lefic, NB_VALE=nb_vale, VALE_CALC=vale_calc)
+
+lefic = "./REPE_OUT/CHATEAU2_P_2_Y_verif.txt"
+vale_calc = 114.08502872999999
+TEST_FICHIER(FICHIER=lefic, NB_VALE=nb_vale, VALE_CALC=vale_calc)
+
+lefic = "./REPE_OUT/CHATEAU2_P_2_Z_verif.txt"
+vale_calc = 114.25850313999997
+TEST_FICHIER(FICHIER=lefic, NB_VALE=nb_vale, VALE_CALC=vale_calc)
+
+FIN()
