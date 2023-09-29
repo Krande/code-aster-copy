@@ -115,7 +115,7 @@ subroutine nmcomp(BEHinteg, &
 !
 ! --------------------------------------------------------------------------------------------------
     aster_logical :: conv_cp, l_epsi_varc, lMatr, lVari, lSigm, lMatrPred, lPred, invert
-    aster_logical :: l_defo_meca, l_czm, l_large, l_deborst
+    aster_logical :: l_defo_meca, l_czm, l_large, l_deborst, l_grad_vari
     integer :: icp, numlc, nvi_all, nvi, k, l, ndimsi
     integer :: codret_vali, codret_ldc, codret_cp
     real(kind=8):: prec
@@ -158,6 +158,7 @@ subroutine nmcomp(BEHinteg, &
     lPred = L_PRED(option)
     l_defo_meca = defo_ldc .eq. 'MECANIQUE'
     l_czm = typmod(2) .eq. 'ELEMJOIN'
+    l_grad_vari = typmod(2) .eq. 'GRADVARI'
     l_large = defo_comp .eq. 'SIMO_MIEHE' .or. defo_comp .eq. 'GROT_GDEP'
     l_deborst = compor(PLANESTRESS) (1:7) .eq. 'DEBORST'
 
@@ -183,8 +184,8 @@ subroutine nmcomp(BEHinteg, &
 
         epsm_meca = epsm
         deps_meca = 0
-        call behaviourPrepStrain(lPred, l_czm, l_large, l_defo_meca, imate, fami, kpg, ksp, &
-                                 neps, BEHinteg%esva, epsm_meca, deps_meca)
+        call behaviourPrepStrain(lPred, l_czm, l_large, l_defo_meca, l_grad_vari, imate, fami, &
+                                 kpg, ksp, neps, BEHinteg%esva, epsm_meca, deps_meca)
         deps = -deps_meca
     end if
 
@@ -354,7 +355,7 @@ subroutine nmcomp(BEHinteg, &
             ASSERT(size(dsidep, 2) .ge. ndimsi)
             ASSERT(lSigm .and. lMatr)
 
-            call behaviourPredictionStress(BEHinteg%esva, dsidep, sigp)
+            call behaviourPredictionStress(BEHinteg%esva, dsidep, sigp(1:ndimsi))
         end if
     end if
 

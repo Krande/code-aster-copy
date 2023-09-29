@@ -231,7 +231,7 @@ subroutine lc0000(BEHinteg, &
     integer, parameter                 :: nvi_regu_visc = 8
     integer, parameter                 :: nvi_gdef_log = 6
     character(len=16) :: defo_ldc, defo_comp, regu_visc
-    aster_logical :: l_pred, l_czm, l_defo_meca, l_large, lVari, lSigm, lMatr
+    aster_logical :: l_pred, l_czm, l_defo_meca, l_large, lVari, lSigm, lMatr, l_grad_vari
     aster_logical :: l_regu_visc, l_gdef_log, lImplex
     integer:: nvi, idx_regu_visc, ndimsi
     real(kind=8):: sigm(nsig), epsm(neps), deps(neps)
@@ -249,6 +249,7 @@ subroutine lc0000(BEHinteg, &
     read (compor(REGUVISC), '(A16)') regu_visc
     l_pred = L_PRED(option)
     l_czm = typmod(2) .eq. 'ELEMJOIN'
+    l_grad_vari = typmod(2) .eq. 'GRADVARI'
     l_large = defo_comp .eq. 'SIMO_MIEHE' .or. defo_comp .eq. 'GROT_GDEP'
     l_gdef_log = defo_comp .eq. 'GDEF_LOG'
     l_defo_meca = defo_ldc .eq. 'MECANIQUE'
@@ -275,7 +276,7 @@ subroutine lc0000(BEHinteg, &
     epsm = epsm_tot
     deps = deps_tot
     call behaviourPrepStrain(l_pred, l_czm, l_large, l_defo_meca, &
-                             imate, fami, kpg, ksp, &
+                             l_grad_vari, imate, fami, kpg, ksp, &
                              neps, BEHinteg%esva, epsm, deps)
 !
 ! - Prepare external state variables for external solvers (UMAT/MFRONT)

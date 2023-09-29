@@ -1,0 +1,211 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+import code_aster.LinearAlgebra
+from code_aster import MPI
+from code_aster.Utilities import shared_tmpdir, petscInitialize
+import os.path as osp
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+
+rank = MPI.ASTER_COMM_WORLD.Get_rank()
+nbproc = MPI.ASTER_COMM_WORLD.Get_size()
+lParallel = nbproc > 1
+
+petscInitialize("-ksp_monitor_true_residual -log_view")
+
+if lParallel:
+    MA0 = code_aster.ParallelMesh.buildCube(refine=2)
+else:
+    MA0 = code_aster.Mesh.buildCube(refine=2)
+
+MA = CREA_MAILLAGE(MAILLAGE=MA0, LINE_QUAD=_F(TOUT="OUI"))
+
+MA = MODI_MAILLAGE(reuse=MA, MAILLAGE=MA, ECHELLE=1000.0)
+
+MO = AFFE_MODELE(
+    MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D_GRAD_INCO")
+)
+
+COU_T20 = DEFI_FONCTION(
+    NOM_PARA="EPSI", PROL_DROITE="LINEAIRE", VALE=(0.010, 1000.0, 1.010, 3500.0)
+)
+
+COU_T120 = DEFI_FONCTION(
+    NOM_PARA="EPSI", PROL_DROITE="LINEAIRE", VALE=(0.005, 1000.0, 1.005, 3000.0)
+)
+
+COU_TRAC = DEFI_NAPPE(
+    NOM_PARA="TEMP",
+    PARA=(20.0, 120.0),
+    FONCTION=(COU_T20, COU_T120),
+    PROL_GAUCHE="CONSTANT",
+    PROL_DROITE="CONSTANT",
+)
+
+R0F = DEFI_FONCTION(
+    NOM_PARA="TEMP",
+    VALE=(20.0, 1000.0, 120.0, 1000.0),
+    PROL_DROITE="CONSTANT",
+    PROL_GAUCHE="CONSTANT",
+)
+
+RHF = DEFI_FONCTION(
+    NOM_PARA="TEMP",
+    VALE=(20.0, 2.5e3, 120.0, 2.0e3),
+    PROL_DROITE="CONSTANT",
+    PROL_GAUCHE="CONSTANT",
+)
+
+ACIER_T = DEFI_MATERIAU(
+    ELAS=_F(E=200000.0, NU=0.3, ALPHA=1.0e-4),
+    TRACTION=_F(SIGM=COU_TRAC),
+    ECRO_NL_FO=_F(R0=R0F, RH=RHF),
+    ECRO_LINE_FO=_F(SY=R0F, D_SIGM_EPSI=RHF),
+    NON_LOCAL=_F(C_GRAD_VARI=0, PENA_LAGR=1.0e4, PENA_LAGR_INCO=2.0e4),
+)
+
+L_INST = DEFI_LIST_REEL(
+    DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=1.00, NOMBRE=1), _F(JUSQU_A=2.00, NOMBRE=20))
+)
+timestep = DEFI_LIST_INST(
+    DEFI_LIST=_F(LIST_INST=L_INST),
+    ECHEC=_F(
+        ACTION="DECOUPE",
+        EVENEMENT="ERREUR",
+        SUBD_METHODE="MANUEL",
+        SUBD_NIVEAU=6,
+        SUBD_PAS=4,
+        SUBD_PAS_MINI=0.0,
+    ),
+)
+
+F_CHAR = DEFI_FONCTION(
+    NOM_PARA="INST", PROL_DROITE="CONSTANT", VALE=(0.0, 0.0, 1.0, 0.0, 2.0, 293.3)
+)
+
+F_TEMP = DEFI_FONCTION(
+    NOM_PARA="INST",
+    NOM_RESU="TEMP",
+    PROL_DROITE="CONSTANT",
+    VALE=(0.0, 20.0, 1.0, 120.0, 2.0, 120.0),
+)
+
+CHP_TEMP = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="NOEU_TEMP_F",
+    MAILLAGE=MA,
+    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE_F=F_TEMP),
+)
+
+TEMP = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_THER",
+    NOM_CHAM="TEMP",
+    AFFE=_F(LIST_INST=L_INST, CHAM_GD=CHP_TEMP),
+)
+
+CHP_MATT = AFFE_MATERIAU(
+    MAILLAGE=MA,
+    AFFE=_F(TOUT="OUI", MATER=ACIER_T),
+    AFFE_VARC=_F(TOUT="OUI", EVOL=TEMP, NOM_VARC="TEMP", NOM_CHAM="TEMP", VALE_REF=20.0),
+)
+
+
+CHR_LIAI = AFFE_CHAR_MECA(
+    MODELE=MO,
+    DDL_IMPO=(
+        _F(GROUP_MA="BOTTOM", DZ=0.0),
+        _F(GROUP_MA="LEFT", DY=0.0),
+        _F(GROUP_MA="BACK", DX=0.0),
+    ),
+)
+
+CHR_TRAC = AFFE_CHAR_MECA(MODELE=MO, DDL_IMPO=_F(GROUP_MA="FRONT", DX=1.0))
+
+VT = STAT_NON_LINE(
+    MODELE=MO,
+    CHAM_MATER=CHP_MATT,
+    EXCIT=(_F(CHARGE=CHR_LIAI),),
+    COMPORTEMENT=_F(RELATION="VMIS_ISOT_NL", DEFORMATION="GDEF_LOG"),
+    INCREMENT=_F(LIST_INST=timestep, NUME_INST_FIN=1),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    CONVERGENCE=_F(RESI_GLOB_MAXI=1.0e-1, ITER_GLOB_MAXI=50),
+)
+
+VT = STAT_NON_LINE(
+    reuse=VT,
+    ETAT_INIT=_F(EVOL_NOLI=VT, NUME_ORDRE=1),
+    MODELE=MO,
+    CHAM_MATER=CHP_MATT,
+    EXCIT=(_F(CHARGE=CHR_LIAI), _F(CHARGE=CHR_TRAC, FONC_MULT=F_CHAR, TYPE_CHARGE="DIDI")),
+    COMPORTEMENT=_F(RELATION="VMIS_ISOT_NL", DEFORMATION="GDEF_LOG"),
+    INCREMENT=_F(LIST_INST=timestep),
+    NEWTON=_F(MATRICE="TANGENTE", PREDICTION="EXTRAPOLE", REAC_ITER=1),
+    SOLVEUR=_F(METHODE="MUMPS"),
+    INFO=1,
+)
+
+s = VT.getField("SIEF_ELGA", VT.getAccessParameters()["NUME_ORDRE"][-1])
+
+with shared_tmpdir("foo") as tmpdir:
+    VT.printMedFile(osp.join(tmpdir, f"hsnv121f_{rank}.resu.med"))
+
+test = code_aster.TestCase()
+
+test.assertAlmostEqual(s.norm("NORM_2"), 32728.611, delta=1.0e-1)
+
+TEST_RESU(
+    RESU=(
+        _F(
+            INST=2.0,
+            RESULTAT=VT,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N6",
+            NOM_CMP="DX",
+            VALE_CALC=303.3501670837881,
+            VALE_REFE=303.0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            INST=2.0,
+            RESULTAT=VT,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N6",
+            NOM_CMP="DY",
+            VALE_CALC=-109.50169022212167,
+            VALE_REFE=-110.0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=2.0e-2,
+        ),
+        _F(
+            INST=2.0,
+            RESULTAT=VT,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N6",
+            NOM_CMP="DZ",
+            VALE_CALC=-109.50169025066496,
+            VALE_REFE=-110.0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-2,
+        ),
+    )
+)
+
+FIN()

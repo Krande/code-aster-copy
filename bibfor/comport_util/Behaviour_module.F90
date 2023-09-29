@@ -764,11 +764,11 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
     subroutine behaviourPrepStrain(l_pred, l_czm, l_large, l_defo_meca, &
-                                   imate, fami, kpg, ksp, &
+                                   l_grad_vari, imate, fami, kpg, ksp, &
                                    neps, BEHesva, epsm, deps)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-        aster_logical, intent(in) :: l_pred, l_czm, l_large, l_defo_meca
+        aster_logical, intent(in) :: l_pred, l_czm, l_large, l_defo_meca, l_grad_vari
         integer, intent(in) :: imate
         character(len=*), intent(in) :: fami
         integer, intent(in) :: kpg, ksp
@@ -782,7 +782,7 @@ contains
 ! --------- Compute "thermic" strains for some external state variables
                 call computeStrainESVA(fami, kpg, ksp, imate, neps, BEHesva)
 ! --------- Subtract to get mechanical strain epsm and deps become mechanical strains
-                call computeStrainMeca(l_pred, l_czm, neps, BEHesva, epsm, deps)
+                call computeStrainMeca(l_pred, l_czm, l_grad_vari, neps, BEHesva, epsm, deps)
             end if
         end if
         if (LDC_PREP_DEBUG .eq. 1) then
@@ -1342,15 +1342,17 @@ contains
 !                        Out : increment of mechanical strains during current step time
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine computeStrainMeca(l_pred, l_czm, neps, BEHesva, epsm, deps)
+    subroutine computeStrainMeca(l_pred, l_czm, l_grad_vari, neps, BEHesva, epsm, deps)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-        aster_logical, intent(in) :: l_pred, l_czm
+        aster_logical, intent(in) :: l_pred, l_czm, l_grad_vari
         integer, intent(in) :: neps
         type(Behaviour_ESVA), intent(in) :: BEHesva
         real(kind=8), intent(inout) :: epsm(neps), deps(neps)
 ! - Local
         real(kind=8) :: stran(12), dstran(12)
+        integer :: nepu
+
 !   ------------------------------------------------------------------------------------------------
 
         dstran(1:neps) = 0.d0
@@ -1367,14 +1369,30 @@ contains
 ! For ENDO_HETEROGENE
             dstran(1:neps) = deps(1:neps)
             dstran(1:3) = dstran(1:3)-BEHesva%depsi_varc(1:3)
+        else if (l_grad_vari) then
+! For GRAD_VARI et GRAD_INCO
+            ASSERT(neps .eq. 11 .or. neps .eq. 8)
+            if (neps .eq. 11) then
+                nepu = 6
+            else if (neps .eq. 8) then
+                nepu = 4
+            end if
+            dstran(1:nepu) = deps(1:nepu)-BEHesva%depsi_varc(1:nepu)
+            stran(1:nepu) = epsm(1:nepu)-BEHesva%epsi_varc(1:nepu)
         else
             ASSERT(ASTER_FALSE)
         end if
 !
 ! - epsm and deps become mechanical strains
 !
-        epsm(1:neps) = stran(1:neps)
-        deps(1:neps) = dstran(1:neps)
+        if (l_grad_vari) then
+            epsm(1:nepu) = stran(1:nepu)
+            deps(1:nepu) = dstran(1:nepu)
+        else
+            epsm(1:neps) = stran(1:neps)
+            deps(1:neps) = dstran(1:neps)
+        end if
+
         if (LDC_PREP_DEBUG .eq. 1) then
             WRITE (6, *) '<DEBUG>  Prepare strains for integration: ', &
                 neps, epsm(1:neps), deps(1:neps)
