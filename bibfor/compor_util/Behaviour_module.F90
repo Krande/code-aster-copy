@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -755,11 +755,11 @@ end subroutine
 !
 ! --------------------------------------------------------------------------------------------------
 subroutine behaviourPrepStrain(l_pred, l_czm  , l_large, l_defo_meca,&
-                               imate , fami   , kpg    , ksp        ,&
+                               l_grad_vari, imate , fami   , kpg    , ksp,&
                                neps  , BEHesva, epsm   , deps)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    aster_logical, intent(in) :: l_pred, l_czm, l_large, l_defo_meca
+    aster_logical, intent(in) :: l_pred, l_czm, l_large, l_defo_meca, l_grad_vari
     integer, intent(in) :: imate
     character(len=*), intent(in) :: fami
     integer, intent(in) :: kpg, ksp
@@ -773,7 +773,7 @@ subroutine behaviourPrepStrain(l_pred, l_czm  , l_large, l_defo_meca,&
 ! --------- Compute "thermic" strains for some external state variables
             call computeStrainESVA(fami, kpg, ksp, imate, neps, BEHesva)
 ! --------- Subtract to get mechanical strain epsm and deps become mechanical strains
-            call computeStrainMeca(l_pred, l_czm, neps, BEHesva, epsm, deps)
+            call computeStrainMeca(l_pred, l_czm, l_grad_vari, neps, BEHesva, epsm, deps)
         endif
     endif
     if (LDC_PREP_DEBUG .eq. 1) then
@@ -801,15 +801,16 @@ end subroutine
 !
 ! --------------------------------------------------------------------------------------------------
 subroutine behaviourRestoreStrain(l_czm, l_large, l_defo_meca,&
-                                  neps , BEHesva, epsm   , deps)
+                                  l_grad_vari, neps , BEHesva, epsm   , deps)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    aster_logical, intent(in) :: l_czm, l_large, l_defo_meca
+    aster_logical, intent(in) :: l_czm, l_large, l_defo_meca, l_grad_vari
     integer, intent(in) :: neps
     type(Behaviour_ESVA), intent(in) :: BEHesva
     real(kind=8), intent(inout) :: epsm(neps), deps(neps)
 ! - Local
     real(kind=8) :: epsmtot(9), depstot(9)
+    integer :: nepu
 !   ------------------------------------------------------------------------------------------------
     if (ca_nbcvrc_ .ne. 0) then
         if ((l_defo_meca) .and. (.not. l_large)) then
@@ -824,12 +825,27 @@ subroutine behaviourRestoreStrain(l_czm, l_large, l_defo_meca,&
 ! No thermic strains for cohesive elements
                 call dcopy(neps, deps, 1, depstot, 1)
                 call dcopy(neps, epsm, 1, epsmtot, 1)
+            else if (l_grad_vari) then
+! For GRAD_VARI et GRAD_INCO
+                ASSERT(neps .eq. 11 .or. neps .eq. 8)
+                if (neps .eq. 11) then
+                    nepu = 6
+                else if (neps .eq. 8) then
+                    nepu = 4
+                end if
+                depstot(1:nepu) = deps(1:nepu)-BEHesva%depsi_varc(1:nepu)
+                epsmtot(1:nepu) = epsm(1:nepu)-BEHesva%epsi_varc(1:nepu)
             else
                 ASSERT(ASTER_FALSE)
             endif
 ! epsm and deps become total strains again
-            call dcopy(neps, epsmtot, 1, epsm, 1)
-            call dcopy(neps, depstot, 1, deps, 1)
+            if (l_grad_vari) then
+                call dcopy(nepu, epsmtot, 1, epsm, 1)
+                call dcopy(nepu, depstot, 1, deps, 1)
+            else
+                call dcopy(neps, epsmtot, 1, epsm, 1)
+                call dcopy(neps, depstot, 1, deps, 1)
+            endif
         endif
         if (LDC_PREP_DEBUG .eq. 1) then
             WRITE(6,*) '<DEBUG>  Restore total strains:',&
@@ -1355,16 +1371,17 @@ end subroutine
 !                        Out : increment of mechanical strains during current step time
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine computeStrainMeca(l_pred, l_czm, neps, BEHesva, epsm, deps)
+subroutine computeStrainMeca(l_pred, l_czm, l_grad_vari, neps, BEHesva, epsm, deps)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    aster_logical, intent(in) :: l_pred, l_czm
+    aster_logical, intent(in) :: l_pred, l_czm, l_grad_vari
     integer, intent(in) :: neps
     type(Behaviour_ESVA), intent(in) :: BEHesva
     real(kind=8), intent(inout) :: epsm(neps), deps(neps)
 ! - Local
     real(kind=8) :: stran(12), dstran(12)
     integer :: k
+    integer :: nepu
 !   ------------------------------------------------------------------------------------------------
     dstran(1:neps) = 0.d0
     stran(1:neps)  = 0.d0
@@ -1395,14 +1412,29 @@ subroutine computeStrainMeca(l_pred, l_czm, neps, BEHesva, epsm, deps)
                 dstran(k) = dstran(k) - BEHesva%depsi_varc(k)
             end do
         endif
+    else if (l_grad_vari) then
+! For GRAD_VARI et GRAD_INCO
+            ASSERT(neps .eq. 11 .or. neps .eq. 8)
+            if (neps .eq. 11) then
+                nepu = 6
+            else if (neps .eq. 8) then
+                nepu = 4
+            end if
+            dstran(1:nepu) = deps(1:nepu)-BEHesva%depsi_varc(1:nepu)
+            stran(1:nepu) = epsm(1:nepu)-BEHesva%epsi_varc(1:nepu)
     else
         ASSERT(ASTER_FALSE)
     endif
 !
 ! - epsm and deps become mechanical strains
 !
-    call dcopy(neps, stran, 1, epsm, 1)
-    call dcopy(neps, dstran, 1, deps, 1)
+    if (l_grad_vari) then
+        epsm(1:nepu) = stran(1:nepu)
+        deps(1:nepu) = dstran(1:nepu)
+    else
+        epsm(1:neps) = stran(1:neps)
+        deps(1:neps) = dstran(1:neps)
+    end if
     if (LDC_PREP_DEBUG .eq. 1) then
         WRITE(6,*) '<DEBUG>  Prepare strains for integration: ',&
                      neps,epsm(1:neps),deps(1:neps)

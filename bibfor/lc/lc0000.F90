@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -272,7 +272,7 @@ integer :: codret
     integer, parameter                 :: nvi_regu_visc = 8
     integer, parameter                 :: nvi_gdef_log  = 6
     character(len=16) :: defo_ldc, defo_comp, regu_visc
-    aster_logical :: l_pred, l_czm, l_defo_meca, l_large
+    aster_logical :: l_pred, l_czm, l_defo_meca, l_large, l_grad_vari
     aster_logical :: l_regu_visc, l_gdef_log
     integer:: nvi, idx_regu_visc, ndimsi
     real(kind=8):: sigm(nsig)
@@ -286,6 +286,7 @@ integer :: codret
     read (compor(REGUVISC),'(A16)') regu_visc
     l_pred      = option(1:9) .eq. 'RIGI_MECA'
     l_czm       = typmod(2) .eq. 'ELEMJOIN'
+    l_grad_vari = typmod(2) .eq. 'GRADVARI'
     l_large     = defo_comp .eq. 'SIMO_MIEHE' .or. defo_comp .eq. 'GROT_GDEP'
     l_gdef_log  = defo_comp .eq. 'GDEF_LOG'
     l_defo_meca = defo_ldc .eq. 'MECANIQUE'
@@ -300,7 +301,7 @@ integer :: codret
 ! - Prepare input strains for the behaviour law
 !
     call behaviourPrepStrain(l_pred, l_czm        , l_large, l_defo_meca,&
-                             imate , fami         , kpg    , ksp        ,&
+                             l_grad_vari, imate , fami         , kpg    , ksp,&
                              neps  , BEHinteg%esva, epsm   , deps)
 !
 ! - Prepare external state variables for external solvers (UMAT/MFRONT)
@@ -1253,6 +1254,6 @@ integer :: codret
 ! - Restore total strain
 !
     call behaviourRestoreStrain(l_czm, l_large      , l_defo_meca,&
-                                neps , BEHinteg%esva, epsm       , deps)
+                                l_grad_vari, neps , BEHinteg%esva, epsm       , deps)
 !
 end subroutine
