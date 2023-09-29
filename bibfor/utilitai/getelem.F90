@@ -110,6 +110,8 @@ subroutine getelem(mesh, keywordfact, iocc, stop_void, list_elem, &
     nb_excl = 0
     model_name = ' '
     suffix_name = ' '
+    answer = ' '
+
     if (present(model)) then
         model_name = model
     end if
