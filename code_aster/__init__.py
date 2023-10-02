@@ -67,7 +67,6 @@ try:
     # libaster must be imported after embedded submodules
     import libaster
 
-    from .Algorithms import ConstitutiveLaw, IntegrationAlgorithm, StrainType, TangentMatrixType
     from .Commands.debut import init
     from .Commands.fin import FIN as close
     from .Objects import *
