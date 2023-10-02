@@ -22,15 +22,15 @@ subroutine utmess_core(typ, idmess, nk, valk, ni, &
 !
     use message_module, only: Message, init_message, free_message
     use superv_module, only: superv_after
+    use parameters_module, only: ST_OK
     implicit none
-#include "asterf_types.h"
 #include "asterc/getres.h"
 #include "asterc/isjvup.h"
 #include "asterc/uexcep.h"
 #include "asterc/utprin.h"
+#include "asterf_types.h"
 #include "asterfort/asmpi_warn.h"
 #include "asterfort/assert.h"
-#include "asterfort/ib1mai.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetc.h"
 #include "asterfort/jefini.h"
@@ -38,6 +38,7 @@ subroutine utmess_core(typ, idmess, nk, valk, ni, &
 #include "asterfort/jevema.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/onerrf.h"
+#include "asterfort/ststat.h"
 #include "asterfort/trabck.h"
     character(len=*), intent(in) :: typ
     character(len=*), intent(in) :: idmess
@@ -230,7 +231,7 @@ subroutine utmess_core(typ, idmess, nk, valk, ni, &
             if (.not. lerrm) then
 !               raise the exception with the first msg id & reinit id
                 isFirst = ASTER_TRUE
-                call ib1mai()
+                call ststat(ST_OK)
                 call superv_after(exception=.true.)
                 call uexcep(numex, excMsg%id, excMsg%nk, excMsg%valk, excMsg%ni, &
                             excMsg%vali, excMsg%nr, excMsg%valr)
