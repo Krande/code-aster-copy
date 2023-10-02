@@ -3752,17 +3752,32 @@ class Table(DataStructure):
         2. __init__(self: libaster.Table, arg0: str) -> None
         """
 
-    def getColumnType(self, arg0):
-        pass
+    def getColumnType(self, param):
+        """Return the type of values in a column.
+
+        Arguments:
+            param (str): Parameter name.
+
+        Returns:
+            str: "I" for integers, "R" for reals, "C" for complex, "Knn" for strings.
+        """
 
     def getNumberOfLines(self):
-        pass
+        """Returns the number of lines of the table.
+
+        Returns:
+            int: Number of lines.
+        """
 
     def getParameters(self):
-        pass
+        """Return the parameters names.
+
+        Returns:
+            list[str]: Names of the parameters.
+        """
 
     def getValues(self, arg0):
-        pass
+        """For internal use only. See *get_column()*."""
 
 
 # class TableOfFunctions in libaster
@@ -3789,13 +3804,24 @@ class TableOfFunctions(Table):
         """
 
     def addFunction(self, arg0):
-        pass
+        """Add a function into the table."""
 
-    def getFunction(self, arg0):
-        pass
+    def getFunction(self, pos):
+        """Returns the function stored at a given position.
+
+        Arguments:
+            pos [int]: Index of the function to return (0-based).
+
+        Returns:
+            *Function*: Function stored.
+        """
 
     def getNumberOfFunctions(self):
-        pass
+        """Returns the number of functions stored in the table.
+
+        Returns:
+            int: Number of functions.
+        """
 
 
 # class TableContainer in libaster

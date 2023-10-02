@@ -34,15 +34,52 @@ void exportTableToPython( py::module_ &mod ) {
     py::class_< Table, Table::TablePtr, DataStructure >( mod, "Table" )
         .def( py::init( &initFactoryPtr< Table > ) )
         .def( py::init( &initFactoryPtr< Table, std::string > ) )
-        .def( "getNumberOfLines", &Table::getNumberOfLines )
-        .def( "getParameters", &Table::getParameters )
-        .def( "getColumnType", &Table::getColumnType )
-        .def( "getValues", &Table::getValues );
+        .def( "getNumberOfLines", &Table::getNumberOfLines, R"(
+Returns the number of lines of the table.
+
+Returns:
+    int: Number of lines.
+        )" )
+        .def( "getParameters", &Table::getParameters, R"(
+Return the parameters names.
+
+Returns:
+    list[str]: Names of the parameters.
+        )" )
+        .def( "getColumnType", &Table::getColumnType, R"(
+Return the type of values in a column.
+
+Arguments:
+    param (str): Parameter name.
+
+Returns:
+    str: "I" for integers, "R" for reals, "C" for complex, "Knn" for strings.
+        )",
+              py::arg( "param" ) )
+        .def( "getValues", &Table::getValues, R"(
+For internal use only. See *get_column()*.
+        )" );
     py::class_< TableOfFunctions, TableOfFunctions::TableOfFunctionsPtr, Table >(
         mod, "TableOfFunctions" )
         .def( py::init( &initFactoryPtr< TableOfFunctions > ) )
         .def( py::init( &initFactoryPtr< TableOfFunctions, std::string > ) )
-        .def( "addFunction", &TableOfFunctions::addFunction )
-        .def( "getFunction", &TableOfFunctions::getFunction )
-        .def( "getNumberOfFunctions", &TableOfFunctions::getNumberOfFunctions );
+        .def( "addFunction", &TableOfFunctions::addFunction, R"(
+Add a function into the table.
+        )" )
+        .def( "getFunction", &TableOfFunctions::getFunction, R"(
+Returns the function stored at a given position.
+
+Arguments:
+    pos [int]: Index of the function to return (0-based).
+
+Returns:
+    *Function*: Function stored.
+        )",
+              py::arg( "pos" ) )
+        .def( "getNumberOfFunctions", &TableOfFunctions::getNumberOfFunctions, R"(
+Returns the number of functions stored in the table.
+
+Returns:
+    int: Number of functions.
+        )" );
 };
