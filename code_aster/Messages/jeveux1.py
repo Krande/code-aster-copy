@@ -490,14 +490,14 @@ Actuellement, %(r1).2f Mo sont nécessaires au gestionnaire de mémoire.
     73: _(
         """
 La mémoire consommée actuellement hors JEVEUX est de %(r1).2f Mo.
-La limite de l'allocation dynamique JEVEUX est fixée à %(r2).2f Mo.
+La mémoire limite pour l'allocation dynamique est fixée à %(r2).2f Mo (%(r3)+.2f Mo).
 Cette valeur limite a été réactualisée entre les appels aux différentes commandes.
 """
     ),
     74: _(
         """
 La mémoire consommée actuellement hors JEVEUX est de %(r1).2f Mo.
-La limite de l'allocation dynamique JEVEUX est fixée à %(r2).2f Mo.
+La mémoire limite pour l'allocation dynamique est fixée à %(r2).2f Mo (%(r3)+.2f Mo).
 Cette valeur limite a été réactualisée lors de la mise en oeuvre d'un processus de libération.
 """
     ),

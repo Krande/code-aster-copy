@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine jjldyn(imode, lmin, ltot)
-! person_in_charge: j-pierre.lefebvre at edf.fr
+    use logging_module, only: DEBUG, LOGLEVEL_MEM, is_enabled
     implicit none
 #include "asterf_types.h"
 #include "jeveux_private.h"
@@ -99,7 +99,7 @@ subroutine jjldyn(imode, lmin, ltot)
 !    CHARACTER*32   NOM32
     integer :: iaddi(2), lgs, nbioav(2)
     integer :: rang, nbproc, iret, iret2
-    real(kind=8) :: valp(5), vx(2), v0
+    real(kind=8) :: valp(5), vx(3), v0
     real(kind=4) :: graine
     mpi_int :: mrank, msize
 !
@@ -281,6 +281,11 @@ subroutine jjldyn(imode, lmin, ltot)
 !   AU RELIQUAT UNIQUEMENT SI LMIN DIFFERENT DE  -2
 !
         call utgtme(5, nomk, valp, iret)
+        if (is_enabled(LOGLEVEL_MEM, DEBUG)) then
+            do i = 1, 5
+                write (6, *) "DEBUG: ", nomk(i), valp(i)
+            end do
+        end if
         v0 = valp(5)
 !   Si VmSize == 0, on ne fait rien
         if (valp(3) .gt. 0 .and. valp(3)-(valp(1)+valp(2)) .gt. 0) then
@@ -300,7 +305,8 @@ subroutine jjldyn(imode, lmin, ltot)
                     if (abs(valp(5)-v0) .gt. v0*0.1d0) then
                         vx(1) = valp(2)
                         vx(2) = valp(5)
-                        call utmess('I', 'JEVEUX1_74', nr=2, valr=vx)
+                        vx(3) = valp(5)-v0
+                        call utmess('I', 'JEVEUX1_74', nr=3, valr=vx)
                     end if
                 end if
             end if

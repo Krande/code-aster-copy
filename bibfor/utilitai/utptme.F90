@@ -30,43 +30,38 @@ subroutine utptme(nomarg, valarg, iret)
 !                =0 la valeur a été affectée
 !               !=0 la valeur est invalide
 !
+    integer :: lbis, lois, lols, lor8, loc8
+    common/ienvje/lbis, lois, lols, lor8, loc8
     real(kind=8) :: mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio
     common/r8dyje/mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio(2)
     real(kind=8) :: vmumps, vpetsc, rlqmem, vminit
     common/msolve/vmumps, vpetsc, rlqmem, vminit
 ! ----------------------------------------------------------------------
     iret = 0
-    if (nomarg .eq. 'MEM_TOTA') then
-!
+    if (nomarg .eq. 'LIMIT_JV') then
+! ----- Limite memoire jeveux (modifiee par jermxd)
+        vmxdyn = valarg*1024*1024/lois
+
+    else if (nomarg .eq. 'MEM_TOTA') then
 ! --------- Limite memoire allouee lors de l'execution
-!
-        vmet = valarg*(1024*1024)
-!
-!
+        vmet = valarg*1024*1024/lois
+
     else if (nomarg .eq. 'RLQ_MEM') then
-!
 ! -------- Reliquat memoire (consommation hors jeveux et solveur)
-!
         rlqmem = valarg*(1024*1024)
-!
+
     else if (nomarg .eq. 'MEM_MUMP') then
-!
 ! --------- Consommation memoire du solveur mumps
-!
         vmumps = valarg*(1024*1024)
-!
+
     else if (nomarg .eq. 'MEM_PETS') then
-!
 ! --------- Consommation memoire du solveur petsc
-!
         vpetsc = valarg*(1024*1024)
-!
+
     else if (nomarg .eq. 'MEM_INIT') then
-!
 ! --------- Consommation memoire du jdc
-!
         vminit = valarg*(1024*1024)
-!
+
     else
         iret = 1
     end if

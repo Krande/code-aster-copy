@@ -16,24 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ibmain()
-    use logging_module, only: initialize
-    implicit none
-
-#include "asterc/inisig.h"
-#include "asterfort/ib0mai.h"
-#include "asterfort/lxinit.h"
-
-!   Initialization of loggers
-    call initialize()
-
-!   Initialization of the internal parser
-    call lxinit()
-
-!   Initialization of signal interruption
-    call inisig()
-
-!   Initialization of jeveux
-    call ib0mai()
-
-end subroutine
+interface
+    subroutine adjust_memlimit(show)
+        aster_logical, intent(in) :: show
+    end subroutine adjust_memlimit
+end interface

@@ -55,7 +55,7 @@ contains
     subroutine superv_before()
         mpi_int :: world, current
         integer :: maxThreads, iret
-        real(kind=8) :: rval(6), v0
+        real(kind=8) :: rval(6), vx(3), v0
         character(len=8) :: k8tab(6)
 
 !   Check MPI communicators: must be equal between operators
@@ -92,7 +92,10 @@ contains
                     k8tab(2) = 'LIMIT_JV'
                     call utgtme(2, k8tab, rval, iret)
                     if (abs(rval(2)-v0) .gt. v0*0.1d0) then
-                        call utmess('I', 'JEVEUX1_73', nr=2, valr=rval)
+                        vx(1) = rval(1)
+                        vx(2) = rval(3)
+                        vx(3) = rval(2)-v0
+                        call utmess('I', 'JEVEUX1_73', nr=3, valr=vx)
                     end if
                 end if
             end if

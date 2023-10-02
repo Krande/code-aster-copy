@@ -23,6 +23,8 @@ subroutine debut()
 #include "asterc/getres.h"
 #include "asterc/jdcget.h"
 #include "asterc/prhead.h"
+#include "asterf_types.h"
+#include "asterfort/adjust_memlimit.h"
 #include "asterfort/dbg_base.h"
 #include "asterfort/foint0.h"
 #include "asterfort/fozero.h"
@@ -84,5 +86,7 @@ subroutine debut()
         ! message et debug_jeveux forcé dans ibdbgs
         call dbg_base()
     end if
+!
+    call adjust_memlimit(ASTER_TRUE)
 !
 end subroutine

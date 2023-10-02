@@ -57,86 +57,59 @@ subroutine utgtme(nbarg, nomarg, valarg, iret)
     ASSERT(ival .eq. 0)
 !
     do k = 1, nbarg
-!
         nom = nomarg(k)
         if (nom .eq. 'VMPEAK') then
-!
 ! ----- Pic memoire totale
-!
             valarg(k) = dble(iv(2))/1024
-!
+
         else if (nom .eq. 'VMSIZE') then
-!
 ! ----- Memoire instantannee
-!
             valarg(k) = dble(iv(1))/1024
-!
+
         else if (nom .eq. 'LIMIT_JV') then
-!
 ! ----- Limite memoire jeveux (modifiee par jermxd)
-!
             valarg(k) = vmxdyn*lois/(1024*1024)
-!
+
         else if (nom .eq. 'COUR_JV ') then
-!
 ! ----- Consommation memoire jeveux courante (cumul des allocations)
-!
             valarg(k) = mcdyn*lois/(1024*1024)
-!
+
         else if (nom .eq. 'CMAX_JV ') then
-!
 ! ----- Consommation maximum memoire jeveux (max des cumuls)
-!
             valarg(k) = mxdyn/(1024*1024)
-!
+
         else if (nom .eq. 'CMXU_JV ') then
-!
 ! ----- Consommation maximum memoire jeveux
 !       objets jeveux utilises
-!
             valarg(k) = (smxuse*lois)/(1024*1024)
-!
+
         else if (nom .eq. 'CUSE_JV ') then
-!
 ! ----- Consommation memoire courante jeveux
 !       objets jeveux utilises
-!
             valarg(k) = (svuse*lois)/(1024*1024)
-!
+
         else if (nom .eq. 'MEM_TOTA') then
-!
 ! ----- Limite memoire allouee lors de l'execution
-!
             valarg(k) = vmet*lois/(1024*1024)
-!
+
         else if (nom .eq. 'MEM_MUMP') then
-!
 ! ----- Consommation memoire du solveur mumps
-!
             valarg(k) = vmumps/(1024*1024)
-!
+
         else if (nom .eq. 'MEM_PETS') then
-!
 ! ----- Consommation memoire du solveur petsc
-!
             valarg(k) = vpetsc/(1024*1024)
-!
+
         else if (nom .eq. 'MEM_INIT') then
-!
 ! ----- Consommation memoire de l'initialisation
-!
             valarg(k) = vminit/(1024*1024)
-!
+
         else if (nom .eq. 'RLQ_MEM') then
-!
 ! ------ Estimation du reliquat memoire
-!
             valarg(k) = rlqmem/(1024*1024)
-!
+
         else
             iret = iret-1
         end if
-!
     end do
-!
 end subroutine

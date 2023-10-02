@@ -26,11 +26,13 @@ module logging_module
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 
-    integer, parameter :: LOGLEVEL_SIZE = 2
+    integer, parameter :: LOGLEVEL_SIZE = 3
     ! generic logger
     integer, parameter :: LOGLEVEL = 1
+    ! for memory (jeveux) traces
+    integer, parameter :: LOGLEVEL_MEM = 2
     ! for MGIS usages
-    integer, parameter :: LOGLEVEL_MGIS = 2
+    integer, parameter :: LOGLEVEL_MGIS = 3
 
     ! levels (same value as in the *logging* Python module + verbose)
     integer, parameter :: DEBUG = 10, VERBOSE = 15, INFO = 20
@@ -50,6 +52,7 @@ contains
         level_ = UNSET
         envvar_ = [ &
                   "ASTER_LOGLEVEL          ", &
+                  "ASTER_LOGLEVEL_MEM      ", &
                   "ASTER_LOGLEVEL_MGIS     " &
                   ]
         call setLevel(LOGLEVEL, INFO)

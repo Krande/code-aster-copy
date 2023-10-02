@@ -17,8 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine jedebu(nbfi, mxzon, idb)
-! person_in_charge: j-pierre.lefebvre at edf.fr
-! aslint: disable=
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -36,8 +34,8 @@ subroutine jedebu(nbfi, mxzon, idb)
 #include "asterc/lor8em.h"
 #include "asterc/mofiem.h"
 #include "asterc/r8nnem.h"
+#include "asterfort/adjust_memlimit.h"
 #include "asterfort/assert.h"
-#include "asterfort/jermxd.h"
 #include "asterfort/jxdate.h"
 #include "asterfort/utgtme.h"
 #include "asterfort/utmess.h"
@@ -138,8 +136,6 @@ subroutine jedebu(nbfi, mxzon, idb)
 
 ! --------------------------------- ------------------------------------
     integer :: mxlici, iret
-    real(kind=8) :: rval(3), added
-    character(len=8) :: k8tab(3)
     parameter(mxlici=67)
     character(len=mxlici) :: clicit
     data clicit/' ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.$&_abcdefghijklmnopqrstuvwxyz'/
@@ -222,22 +218,9 @@ subroutine jedebu(nbfi, mxzon, idb)
     vmet = vmxdyn
 !
     call utptme('MEM_MUMP', 0.d0, iret)
-    k8tab(1) = 'LIMIT_JV'
-    k8tab(2) = 'VMPEAK'
-    k8tab(3) = 'VMSIZE'
-    call utgtme(3, k8tab, rval, iret)
-    if (rval(2) .le. 0 .or. rval(3) .le. 0) then
-        call utmess('I', 'JEVEUX1_75')
-    end if
-!
-    added = rval(2)
-    if (added .gt. 0) then
-!
-        call utptme('RLQ_MEM ', added, iret)
-!       memoire totale prise en compte par jeveux: demandee + vmpeak initial
-        vmet = (rval(1)+added)*1024*1024/lois
-    end if
-!
+!   ajustement pour démarrer, un second sera fait dans debut après lecture des catalogues
+    call adjust_memlimit(ASTER_FALSE)
+
     liszon = 1
     jiszon = 1
     lk1zon = liszon*lois

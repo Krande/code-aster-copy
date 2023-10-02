@@ -33,14 +33,11 @@ subroutine ib0mai()
 #include "asterfort/jeinif.h"
 #include "asterfort/utgtme.h"
 #include "asterfort/utmess.h"
-    integer, parameter :: n = 5
-    integer :: lfic(n), mfic
-    common/fenvje/lfic, mfic
 !
     character(len=8) :: nomf, k8tab(3)
     integer :: unmega, idebug, iret, lois
     integer :: mxdyn
-    real(kind=8) :: valr(3), moctet, memory, sizf
+    real(kind=8) :: valr(3), moctet, memory
 !
     call ib1mai()
 !
@@ -73,20 +70,8 @@ subroutine ib0mai()
     call jeinif('DEBUT', 'DETRUIT', nomf, 'V', 250, &
                 100, 1)
     call superv_before()
-! --- IMPRESSION DE L'ENTETE
+! --- Impression de l'entete, sans les infos mémoire (sera fait par debut/adjust_memlimit)
     call entete()
-    k8tab(1) = 'LIMIT_JV'
-    k8tab(2) = 'MEM_TOTA'
-    k8tab(3) = 'MEM_INIT'
-    call utgtme(3, k8tab, valr, iret)
-    if (valr(3) .gt. 0) then
-        call utmess('I', 'SUPERVIS2_22', nr=3, valr=valr)
-    else
-        call utmess('I', 'SUPERVIS2_29', nr=2, valr=valr)
-    end if
-!
-    sizf = mfic/(1024*1024.0d0)
-    call utmess('I', 'SUPERVIS2_24', sr=sizf)
 !
     if (idebug .eq. 1) then
         call utmess('I', 'SUPERVIS_12')
