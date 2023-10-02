@@ -147,4 +147,10 @@ help : makefile
 		sed -e 's/%BUILD%/$(BUILD)/g' -e 's/%DEFAULT%/$(DEFAULT)/g'
 
 %:
+	@( \
+		if [ ! -f ../src/astest/"$@".export ] && [ ! -f ../validation/astest/"$@".export ]; then \
+			echo "not a testcase: $@"; \
+			exit 1; \
+		fi; \
+	)
 	$(MAKE) --no-print-directory test n="$@"
