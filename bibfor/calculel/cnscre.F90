@@ -31,6 +31,7 @@ subroutine cnscre(maz, nomgdz, ncmp, licmp, basez, &
 #include "asterfort/jeundf.h"
 #include "asterfort/verigd.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/isParallelMesh.h"
     character(len=*) :: maz, nomgdz, cnsz, basez
     integer :: ncmp
     character(len=*) :: licmp(ncmp)
@@ -55,7 +56,7 @@ subroutine cnscre(maz, nomgdz, ncmp, licmp, basez, &
     character(len=19) :: cns
     integer :: nbno, jcnsk, jcnsd
     integer :: jcnsc, k, jcnsl, jcnsv, iret
-    aster_logical :: undf0
+    aster_logical :: undf0, l_pmesh, l_empty
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -71,6 +72,7 @@ subroutine cnscre(maz, nomgdz, ncmp, licmp, basez, &
 !
     call dismoi('NB_NO_MAILLA', ma, 'MAILLAGE', repi=nbno)
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
+    l_pmesh = isParallelMesh(ma)
 !
 !
 !     -- SI CNS EXISTE DEJA, ON LE DETRUIT :
@@ -79,7 +81,6 @@ subroutine cnscre(maz, nomgdz, ncmp, licmp, basez, &
 !------------------------------------------------------------------
 !     1- QUELQUES VERIFS :
 !     ------------------------
-    ASSERT(ncmp .ne. 0)
     call verigd(nomgd, licmp, ncmp, iret)
     ASSERT(iret .le. 0)
 !
@@ -100,10 +101,17 @@ subroutine cnscre(maz, nomgdz, ncmp, licmp, basez, &
 !------------------------------------------------------------------
 !     4- CREATION DE CNS.CNSC:
 !     ------------------------
+    l_empty = .false.
+    if (ncmp .eq. 0 .and. l_pmesh) then
+        l_empty = .true.
+        ncmp = 1
+    end if
     call wkvect(cns//'.CNSC', base//' V K8', ncmp, jcnsc)
-    do k = 1, ncmp
-        zk8(jcnsc-1+k) = licmp(k)
-    end do
+    if (.not. l_empty) then
+        do k = 1, ncmp
+            zk8(jcnsc-1+k) = licmp(k)
+        end do
+    end if
 !
 !------------------------------------------------------------------
 !     5- CREATION DE CNS.CNSL:

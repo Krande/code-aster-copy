@@ -187,22 +187,26 @@ subroutine cescre(basez, cesz, typcez, maz, nomgdz, &
         end do
     end if
 !
-    do icmp = 1, ncmp2
-        if (nomgd(1:5) .ne. 'VARI_') then
-            jcmp = indik8(zk8(jcmpgd), zk8(jlicmp-1+icmp), 1, ncmpmx)
-        else
-            if (zk8(jlicmp-1+icmp) (1:1) .ne. 'V') then
-                jcmp = 0
+    if (ncmp2 .eq. 1 .and. zk8(jlicmp) .eq. ' ') then
+        continue
+    else
+        do icmp = 1, ncmp2
+            if (nomgd(1:5) .ne. 'VARI_') then
+                jcmp = indik8(zk8(jcmpgd), zk8(jlicmp-1+icmp), 1, ncmpmx)
             else
-                jcmp = 1
+                if (zk8(jlicmp-1+icmp) (1:1) .ne. 'V') then
+                    jcmp = 0
+                else
+                    jcmp = 1
+                end if
             end if
-        end if
-        if (jcmp .eq. 0) then
-            valk(1) = zk8(jlicmp-1+icmp)
-            valk(2) = nomgd
-            call utmess('F', 'CALCULEL_52', nk=2, valk=valk)
-        end if
-    end do
+            if (jcmp .eq. 0) then
+                valk(1) = zk8(jlicmp-1+icmp)
+                valk(2) = nomgd
+                call utmess('F', 'CALCULEL_52', nk=2, valk=valk)
+            end if
+        end do
+    end if
 !
 !
 !------------------------------------------------------------------
@@ -227,6 +231,7 @@ subroutine cescre(basez, cesz, typcez, maz, nomgdz, &
     call wkvect(ces//'.CESD', base//' V I', 5+4*nbma, jcesd)
     zi(jcesd-1+1) = nbma
     zi(jcesd-1+2) = ncmp2
+    if (ncmp2 .eq. 1 .and. zk8(jlicmp) .eq. ' ') zi(jcesd-1+2) = 0
     zi(jcesd-1+3) = 0
     zi(jcesd-1+4) = 0
     zi(jcesd-1+5) = 0

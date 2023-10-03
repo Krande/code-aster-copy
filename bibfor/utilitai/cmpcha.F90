@@ -27,6 +27,7 @@ subroutine cmpcha(fieldz, cmp_name, cata_to_field, field_to_cata, nb_cmpz, &
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -71,7 +72,7 @@ subroutine cmpcha(fieldz, cmp_name, cata_to_field, field_to_cata, nb_cmpz, &
     integer :: igr, imolo, jmolo, idx_gd, nb_pt, i_pt, k, iadg, i_cmp
     integer :: jdesc, long, jprno, nb_node, i_node, ncmpp
     integer :: ngrmx, nbedit, igd, ient, debgd, dg(100), ior, kpt, kcmp
-    aster_logical :: diff
+    aster_logical :: diff, l_pmesh
     character(len=8) :: gran_name, mesh
     character(len=16) :: typsd
     character(len=19) :: field, nume_equa
@@ -96,6 +97,7 @@ subroutine cmpcha(fieldz, cmp_name, cata_to_field, field_to_cata, nb_cmpz, &
     else
         ASSERT(.false.)
     end if
+    l_pmesh = .false.
 !
     call dismoi('NB_EC', gran_name, 'GRANDEUR', repi=nb_ec)
     call dismoi('NB_CMP_MAX', gran_name, 'GRANDEUR', repi=nb_cmp_mx)
@@ -116,6 +118,7 @@ subroutine cmpcha(fieldz, cmp_name, cata_to_field, field_to_cata, nb_cmpz, &
 !     ----------------------------------------------------------------
     if (typsd .eq. 'NOEU') then
         call dismoi('NOM_MAILLA', field, 'CHAM_NO', repk=mesh)
+        l_pmesh = isParallelMesh(mesh)
         call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi=nb_node)
 !
 !        -- 1.1.2 CAS DES CHAM_NO A NUME_EQUA:
@@ -148,6 +151,8 @@ subroutine cmpcha(fieldz, cmp_name, cata_to_field, field_to_cata, nb_cmpz, &
 !     -- 1.2 CAS DES CHAM_ELEM
 !     ----------------------------------------------------------------
     else if (typsd(1:2) .eq. 'EL') then
+        call dismoi('NOM_MAILLA', field, 'CHAMP', repk=mesh)
+        l_pmesh = isParallelMesh(mesh)
         call jeveuo(field//'.CELD', 'L', jceld)
         nb_grel = zi(jceld-1+2)
 !
@@ -174,6 +179,8 @@ subroutine cmpcha(fieldz, cmp_name, cata_to_field, field_to_cata, nb_cmpz, &
 !     -- 1.3 CAS DES CARTES
 !     ----------------------------------------------------------------
     else if (typsd .eq. 'CART') then
+        call dismoi('NOM_MAILLA', field, 'CARTE', repk=mesh)
+        l_pmesh = isParallelMesh(mesh)
         call jeveuo(field//'.DESC', 'L', jdesc)
         ngrmx = zi(jdesc-1+2)
         nbedit = zi(jdesc-1+3)
@@ -201,12 +208,16 @@ subroutine cmpcha(fieldz, cmp_name, cata_to_field, field_to_cata, nb_cmpz, &
             cata_to_field(i_cmp) = nb_cmp
         end if
     end do
-    ASSERT(nb_cmp .ne. 0)
+    if (.not. l_pmesh) then
+        ASSERT(nb_cmp .ne. 0)
+    end if
 !
 ! - Create field_to_cata and cmp_name objects
 !
-    AS_ALLOCATE(vi=field_to_cata, size=nb_cmp)
-    AS_ALLOCATE(vk8=cmp_name, size=nb_cmp)
+    if (nb_cmp .ne. 0) then
+        AS_ALLOCATE(vi=field_to_cata, size=nb_cmp)
+        AS_ALLOCATE(vk8=cmp_name, size=nb_cmp)
+    end if
     kcmp = 0
     do i_cmp = 1, nb_cmp_mx
         if (cata_to_field(i_cmp) .gt. 0) then

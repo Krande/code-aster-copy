@@ -207,7 +207,7 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz, &
 !     -----------------------------------------------------------------
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jcmpgd)
     if (nomgd .ne. 'VARI_R') then
-        call wkvect('&&CESCEL.NUCM1', 'V V I', ncmp1, jnucm1)
+        if (ncmp1 .ne. 0) call wkvect('&&CESCEL.NUCM1', 'V V I', ncmp1, jnucm1)
         call wkvect('&&CESCEL.NUCM2', 'V V I', ncmpmx, jnucm2)
 !
         do icmp1 = 1, ncmp1

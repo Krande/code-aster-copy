@@ -59,6 +59,7 @@ subroutine verigd(nomgdz, lcmp, ncmp, iret)
     call jemarq()
     iret = 0
     nomgd = nomgdz
+    if (ncmp .eq. 1 .and. lcmp(1) .eq. ' ') goto 30
 !
 !
 !     1. NOMGD EST BIEN LE NOM D'UNE GRANDEUR :

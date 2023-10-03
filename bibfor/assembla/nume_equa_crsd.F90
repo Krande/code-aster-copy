@@ -58,6 +58,7 @@ subroutine nume_equa_crsd(nume_equaz, base, nb_equa, meshz, gran_namez, l_coll_c
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    integer :: nb_equa2
     character(len=19) :: nume_equa
     integer, pointer :: nequ(:) => null()
     character(len=24), pointer :: refn(:) => null()
@@ -94,7 +95,12 @@ subroutine nume_equa_crsd(nume_equaz, base, nb_equa, meshz, gran_namez, l_coll_c
 !
 ! - Create object DELG
 !
-    call wkvect(nume_equa//'.DELG', base//' V I', nb_equa, vi=delg)
-    delg(1:nb_equa) = 0
+    nb_equa2 = nb_equa
+    if (l_pmesh .and. nb_equa .eq. 0) then
+        nb_equa2 = 1
+    end if
+    call wkvect(nume_equa//'.DELG', base//' V I', nb_equa2, vi=delg)
+    call jeecra(nume_equa//'.DELG', 'LONUTI', 0)
+    delg(1:nb_equa2) = 0
 !
 end subroutine

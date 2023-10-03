@@ -200,7 +200,9 @@ subroutine cnscno(cnsz, nume_equaz, prol0, basez, cnoz, &
 !     1- REMPLISSAGE DE .TMP_NUCMP ET .TMP_NUCM1 :
 !     --------------------------------------------
     AS_ALLOCATE(vi=tmp_nucmp, size=ncmpmx)
-    AS_ALLOCATE(vi=tmp_nucm1, size=ncmp1)
+    if (ncmp1 .ne. 0) then
+        AS_ALLOCATE(vi=tmp_nucm1, size=ncmp1)
+    end if
 !
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jcmpgd)
     do icmp1 = 1, ncmp1
