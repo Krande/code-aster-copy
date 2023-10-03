@@ -60,7 +60,6 @@ from .macr_lign_coupe_ops import crea_mail_lig_coup
 def cherche_trajet(
     self, NOM_CMP, NOM_CHAM, dRECHERCHE, __ENDO, __mail, typeChampTrajet, infoPlan, inst
 ):
-
     # --------------------------------------------------
     # IMPORT OF ASTER COMMANDS
     #
@@ -158,7 +157,7 @@ def cherche_trajet(
     motclefs2 = {}
     motclefs2["MAILLAGE_1"] = __mail
     motclefs2["MAILLAGE_2"] = __MAI
-    nbPrec = NP.finfo(NP.float).precision
+    nbPrec = NP.finfo(NP.float64).precision
     distMax = 10.0 ** (-nbPrec + 2)
 
     __YBARPR = PROJ_CHAMP(
@@ -517,7 +516,6 @@ def calcul_ouverture(
     dime,
     strong_flag,
 ):
-
     # --------------------------------------------------
     # IMPORT DES COMMANDES ASTER
     #
@@ -568,7 +566,7 @@ def calcul_ouverture(
     typeChamp = "NOEU_DEPL_R"
     motclefs["MODI_CHAM"] = [_F(NOM_CHAM="DEPL", TYPE_CHAM="VECT_2D")]
 
-    nbPrec = NP.finfo(NP.float).precision
+    nbPrec = NP.finfo(NP.float64).precision
     distMax = 10.0 ** (-nbPrec + 2)
 
     if strong_flag == True:
@@ -639,7 +637,6 @@ def calcul_ouverture(
             except1 = "True"
 
         else:
-
             __OUVECH = CREA_CHAMP(
                 TYPE_CHAM=typeChamp, OPERATION="EXTR", NOM_CHAM=champ, RESULTAT=__OUVEPR, INST=inst
             )
@@ -674,7 +671,6 @@ def calcul_ouverture(
                     lstOuvFiss.append("-")
                     except2 = "True"
             else:
-
                 __ENDOCH = CREA_CHAMP(
                     TYPE_CHAM=typechampEndo,
                     OPERATION="EXTR",
@@ -718,7 +714,6 @@ def calcul_ouverture(
 def post_endo_fiss_ops(
     self, TABLE, NOM_CMP, NOM_CHAM, RECHERCHE, OUVERTURE=None, CHAM_GD=None, **args
 ):
-
     # --------------------------------------------------
     # DEVELOPER OPTIONS
     #
@@ -828,7 +823,7 @@ def post_endo_fiss_ops(
     zmin = __TABG["Z_MIN", 1]
     zmax = __TABG["Z_MAX", 1]
 
-    nbPrec = NP.finfo(NP.float).precision
+    nbPrec = NP.finfo(NP.float64).precision
     delta_x = NP.round(xmax - xmin, nbPrec)
     delta_y = NP.round(ymax - ymin, nbPrec)
     delta_z = NP.round(zmax - zmin, nbPrec)
@@ -890,7 +885,6 @@ def post_endo_fiss_ops(
     lstNomFiss = []
 
     for idxRech in range(len(l_dRECHERCHE)):
-
         dRECHERCHE = l_dRECHERCHE[idxRech]
 
         (CoxCrete, CoyCrete, CozCrete, EndoCrete, Connex) = cherche_trajet(

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ from numpy import linalg as LA
 def store(lst, array):
     """Store value of `array` in a list of float."""
     lst.extend(array.real.ravel())
-    if array.dtype == NP.complex:
+    if array.dtype.kind == "c":
         lst.extend(array.imag.ravel())
 
 

@@ -31,7 +31,6 @@ from .mac3coeur_commons import (
 
 
 class ThycResult:
-
     _Z = "Z(m)"
     _Ep = "ep(m)"
     _K = "K"
@@ -167,7 +166,6 @@ class ThycResult:
         self._grids_position_meters = None
 
     def _reset_structures(self):
-
         self._thyc_mesh = OrderedDict()
         self._thyc_data = OrderedDict()
         self._thyc_data["AXIAL"] = OrderedDict()
@@ -175,14 +173,13 @@ class ThycResult:
         self._thyc_data["M1DEV"] = {"X": OrderedDict(), "Y": OrderedDict()}
 
     def _read_mesh_data(self, thyclines):
-
         mandatory_kws = [self._K, self._Ep, self._Z]
         for line in thyclines:
             spline = line.split()
             for key_mesh in mandatory_kws:
                 if key_mesh.lower() in line.lower() and len(self._thyc_mesh) < 3:
                     idx = get_first_digit(spline)
-                    typ = np.int if key_mesh == "K" else np.float
+                    typ = int if key_mesh == "K" else np.float64
                     self._thyc_mesh[key_mesh] = np.array(spline[idx:], dtype=typ)
 
         # Check mesh data
@@ -227,7 +224,6 @@ class ThycResult:
         self._thyc_mesh[self._Z] -= z0mac3
 
     def _read_thyc_data(self, thyclines):
-
         for line in thyclines:
             spline = line.split()
 
