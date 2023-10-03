@@ -116,6 +116,20 @@ Returns:
         )",
               py::arg( "local" ) = false )
         // ----------------------------------------------------------------------
+        .def( "getDictOfLagrangeDOFs", &DOFNumbering::getDictOfLagrangeDOFs,
+              py::return_value_policy::copy,
+              R"(
+Returns the Rows Associated to the first and second Lagrange Multipliers Dof
+
+Arguments:
+    local (bool, optional): not used (default: false).
+
+Returns:
+    [dict]: {1 : indexes of the first Lagrange multipliers dof, 
+             2 : indexes of the second Lagrange multipliers dof }
+        )",
+              py::arg( "local" ) = false )
+        // ----------------------------------------------------------------------
         .def( "getComponents", &DOFNumbering::getComponents, R"(
 Returns all the component names assigned in the numbering.
 
@@ -158,6 +172,33 @@ Returns:
     str: component names.
         )",
               py::arg( "node" ), py::arg( "local" ) = false )
+        // ---------------------------------------------------------------------
+        .def( "getNodeAndComponentFromDOF",
+              py::overload_cast< const bool >( &DOFNumbering::getNodeAndComponentFromDOF,
+                                               py::const_ ),
+              R"(
+Return the list of node id and name of component for each dofs
+
+Arguments:
+    local (bool, optional): not used (default: false).
+Returns:
+    list[tuple[int, str]] : node id and name of component for each dofs
+            )",
+              py::arg( "local" ) = false )
+        // ---------------------------------------------------------------------
+        .def( "getNodeAndComponentFromDOF",
+              py::overload_cast< const ASTERINTEGER, const bool >(
+                  &DOFNumbering::getNodeAndComponentFromDOF, py::const_ ),
+              R"(
+Return the node id and name of component for given DOF
+
+Arguments:
+    dof (int): DOF index
+    local (bool, optional): not used (default: false).
+Returns:
+    tuple[int, str] : node id and name of component
+            )",
+              py::arg( "dof" ), py::arg( "local" ) = false )
         // ----------------------------------------------------------------------
         .def( "getNumberOfDOFs", &DOFNumbering::getNumberOfDOFs,
               R"(

@@ -142,13 +142,42 @@ VectorLong ParallelEquationNumbering::getLagrangeDOFs( const bool local ) const 
     return lagrangeRows;
 };
 
+std::map< ASTERINTEGER, VectorLong >
+ParallelEquationNumbering::getDictOfLagrangeDOFs( const bool local ) const {
+    std::map< ASTERINTEGER, VectorLong > ret;
+    ret[1] = VectorLong();
+    ret[2] = VectorLong();
+    VectorLong &lag1 = ret[1], &lag2 = ret[2];
+    auto lagrInfo = this->getLagrangianInformations();
+    lagrInfo->updateValuePointer();
+    ASTERINTEGER size = lagrInfo->size();
+    ASTERINTEGER physicalIndicator;
+    auto loc2glo = getLocalToGlobalMapping();
+    loc2glo->updateValuePointer();
+
+    for ( int i = 0; i < size; i++ ) {
+        physicalIndicator = ( *lagrInfo )[i];
+        if ( physicalIndicator == -1 )
+            if ( local )
+                lag1.push_back( i );
+            else
+                lag1.push_back( ( *loc2glo )[i] );
+        if ( physicalIndicator == -2 )
+            if ( local )
+                lag2.push_back( i );
+            else
+                lag2.push_back( ( *loc2glo )[i] );
+    }
+    return ret;
+};
+
 std::string ParallelEquationNumbering::getComponentFromDOF( const ASTERINTEGER dof,
                                                             const bool local ) const {
     auto localrow = dof;
     if ( !local )
         localrow = globalToLocalDOF( dof );
 
-    auto [nodeId, cmpName] = this->getNodeAndComponentFromDOF( localrow );
+    auto [nodeId, cmpName] = EquationNumbering::getNodeAndComponentFromDOF( localrow );
     return cmpName;
 };
 
@@ -261,7 +290,7 @@ SetLong ParallelEquationNumbering::getComponentsId() const {
 };
 
 /**
- * @brief Maps between name of components and the nimber
+ * @brief Maps between the names of components and their Ids
  */
 std::map< std::string, ASTERINTEGER > ParallelEquationNumbering::getComponentsNameToId() const {
 
@@ -270,6 +299,35 @@ std::map< std::string, ASTERINTEGER > ParallelEquationNumbering::getComponentsNa
     AsterMPI::all_gather( cmp_std, cmp_glb );
 
     return cmp_glb;
+};
+
+std::vector< std::pair< ASTERINTEGER, std::string > >
+ParallelEquationNumbering::getNodeAndComponentFromDOF( const bool local ) const {
+    auto ret = EquationNumbering::getNodeAndComponentFromDOF();
+
+    AS_ASSERT( _mesh->isParallel() );
+    if ( !local ) {
+        auto mapLG = _mesh->getLocalToGlobalMapping();
+        mapLG->updateValuePointer();
+        ASTERINTEGER nb_eq = ret.size();
+        for ( ASTERINTEGER i_eq = 0; i_eq < nb_eq; i_eq++ ) {
+            auto node_id = ret[i_eq].first;
+            ret[i_eq].first = ( *mapLG )[node_id];
+        }
+    }
+    return ret;
+};
+
+std::pair< ASTERINTEGER, std::string >
+ParallelEquationNumbering::getNodeAndComponentFromDOF( const ASTERINTEGER dof,
+                                                       const bool local ) const {
+    auto localrow = dof;
+    if ( !local )
+        localrow = globalToLocalDOF( dof );
+
+    auto ret = EquationNumbering::getNodeAndComponentFromDOF( localrow );
+
+    return ret;
 };
 
 bool ParallelEquationNumbering::build() {

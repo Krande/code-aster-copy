@@ -262,6 +262,10 @@ class EquationNumbering : public BaseEquationNumbering {
      */
     std::vector< std::pair< ASTERINTEGER, std::string > >
     getNodeAndComponentFromDOF( const bool local = true ) const;
+
+    /**
+     * @brief Returns a pair with node index and component name for given DOF
+     */
     std::pair< ASTERINTEGER, std::string >
     getNodeAndComponentFromDOF( const ASTERINTEGER dof, const bool local = true ) const;
 
@@ -326,6 +330,12 @@ class EquationNumbering : public BaseEquationNumbering {
      * @brief Get Rows Associated to Lagrange Multipliers Dof
      */
     VectorLong getLagrangeDOFs( const bool local = false ) const;
+
+    /**
+     * @brief Get Rows Associated to first and second Lagrange Multipliers Dof
+     */
+
+    std::map< ASTERINTEGER, VectorLong > getDictOfLagrangeDOFs( const bool local = false ) const;
 
     /**
      * @brief Get (Nodes And Components) and dofs corresponding to component name and list of node

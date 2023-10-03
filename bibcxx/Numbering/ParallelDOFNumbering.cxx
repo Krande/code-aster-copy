@@ -64,6 +64,11 @@ VectorLong ParallelDOFNumbering::getLagrangeDOFs( const bool local ) const {
     return _globalNumbering->getLagrangeDOFs( local );
 };
 
+std::map< ASTERINTEGER, VectorLong >
+ParallelDOFNumbering::getDictOfLagrangeDOFs( const bool local ) const {
+    return _globalNumbering->getDictOfLagrangeDOFs( local );
+};
+
 std::string ParallelDOFNumbering::getComponentFromDOF( const ASTERINTEGER dof,
                                                        const bool local ) const {
     return _globalNumbering->getComponentFromDOF( dof, local );
@@ -98,6 +103,16 @@ const JeveuxVectorLong ParallelDOFNumbering::getLocalToGlobalMapping() const {
 const ASTERINTEGER ParallelDOFNumbering::localToGlobalDOF( const ASTERINTEGER loc ) {
     return _globalNumbering->localToGlobalDOF( loc );
 }
+
+std::vector< std::pair< ASTERINTEGER, std::string > >
+ParallelDOFNumbering::getNodeAndComponentFromDOF( const bool local ) const {
+    return _globalNumbering->getNodeAndComponentFromDOF( local );
+};
+
+std::pair< ASTERINTEGER, std::string >
+ParallelDOFNumbering::getNodeAndComponentFromDOF( const ASTERINTEGER dof, const bool local ) const {
+    return _globalNumbering->getNodeAndComponentFromDOF( dof, local );
+};
 
 const ASTERINTEGER ParallelDOFNumbering::globalToLocalDOF( const ASTERINTEGER glob ) const {
     return _globalNumbering->globalToLocalDOF( glob );

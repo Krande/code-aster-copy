@@ -388,6 +388,15 @@ class BaseDOFNumbering : public DataStructure {
     }
 
     /**
+     * @brief Get Rows Associated to first and second Lagrange Multipliers Dof
+     */
+
+    virtual std::map< ASTERINTEGER, VectorLong >
+    getDictOfLagrangeDOFs( const bool local = false ) const {
+        AS_ABORT( "Not allowed" );
+    }
+
+    /**
      * @brief Get Assigned Components
      */
     virtual VectorString getComponents() const { AS_ABORT( "Not allowed" ); }

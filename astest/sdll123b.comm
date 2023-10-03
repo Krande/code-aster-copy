@@ -41,9 +41,12 @@ from math import pi, sqrt
 from code_aster.Commands import *
 import aster
 import aster_core
+import code_aster
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 aster_core.matfpe(-1)
+
+test = code_aster.TestCase()
 
 nddl = 19 * 6 - 4 - 4
 
@@ -151,9 +154,12 @@ masF = MATM.toNumpy()
 # --                                                 --#
 # -----------------------------------------------------#
 
-ind_lag1 = NUMEDDL.getLagrangeDOFs()
-# remove double lagranges
-ind_lag1 = [ind_lag1[i] for i in (0, 1, 2, 3, 8, 9, 10, 11)]
+for dof, (node, comp) in enumerate(NUMEDDL.getNodeAndComponentFromDOF()):
+    test.assertEqual(node, NUMEDDL.getNodeFromDOF(dof))
+    test.assertEqual(comp, NUMEDDL.getComponentFromDOF(dof))
+
+# retrieve only first Lagrange multiplier
+ind_lag1 = NUMEDDL.getDictOfLagrangeDOFs()[1]
 ind_nolag = NUMEDDL.getPhysicalDOFs()
 
 nlag1 = len(ind_lag1)

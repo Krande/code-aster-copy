@@ -100,7 +100,7 @@ test.assertEqual(sum(vec.getValues()), numeDDL.getNumberOfDOFs(local=True) - sum
 retour = matrAsse.getDOFNumbering()
 test.assertEqual(retour.isParallel(), True)
 
-# tests in local numbering
+# tests on numbering of DOFs
 physicalRows = numeDDL.getPhysicalDOFs(local=True)
 test.assertListEqual(physicalRows, list(range(3 * len(pMesh.getNodes(localNumbering=True)))))
 multipliersRows = numeDDL.getLagrangeDOFs(local=True)
@@ -114,7 +114,14 @@ test.assertTrue(numeDDL.isPhysicalDOF(0, local=True))
 test.assertEqual(numeDDL.getNumberOfDOFs(local=True), 3 * len(pMesh.getNodes(localNumbering=True)))
 test.assertEqual(numeDDL.getNumberOfDOFs(local=False), 3993)
 test.assertEqual(numeDDL.getPhysicalQuantity(), "DEPL_R")
-
+nnodes = pMesh.getNumberOfNodes()
+test.assertEqual(
+    numeDDL.getNodeAndComponentFromDOF(local=True)[::3], [(i, "DX") for i in range(nnodes)]
+)
+l2G = pMesh.getLocalToGlobalMapping()
+test.assertEqual(
+    numeDDL.getNodeAndComponentFromDOF(local=False)[::3], [(l2G[i], "DX") for i in range(nnodes)]
+)
 test.printSummary()
 
 code_aster.close()

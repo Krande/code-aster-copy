@@ -58,7 +58,7 @@ Returns the node index associated to a dof index.
 
 Arguments:
     dof (int): Index of the dof.
-    local (bool, optional): not used (default: false).
+    local (bool, optional): local or global numbering of DOFs (default: false).
 
 Returns:
     int: index of the dof.
@@ -74,7 +74,7 @@ If the dof is associated to a Lagrange multiplier DOF for a Dirichlet boundary
 
 Arguments:
     dof (int): Index of the dof.
-    local (bool, optional): not used (default: false).
+    local (bool, optional): local or global numbering of DOFs (default: false).
 
 Returns:
     int: index of the dof.
@@ -86,7 +86,7 @@ Returns:
 Returns the indexes of the physical dof.
 
 Arguments:
-    local (bool, optional): not used (default: false).
+    local (bool, optional): local or global numbering of DOFs (default: false).
 
 Returns:
     int: indexes of the physical dof.
@@ -98,10 +98,23 @@ Returns:
 Returns the indexes of the Lagrange multipliers dof.
 
 Arguments:
-    local (bool, optional): not used (default: false).
+    local (bool, optional): local or global numbering of DOFs (default: false).
 
 Returns:
     int: indexes of the Lagrange multipliers dof.
+        )",
+              py::arg( "local" ) = false )
+        // ---------------------------------------------------------------------
+        .def( "getDictOfLagrangeDOFs", &ParallelDOFNumbering::getDictOfLagrangeDOFs,
+              R"(
+Returns the Rows Associated to the first and second Lagrange Multipliers Dof
+
+Arguments:
+    local (bool, optional): local or global numbering of DOFs (default: false).
+
+Returns:
+    [dict]: {1 : indexes of the first Lagrange multipliers dof, 
+             2 : indexes of the second Lagrange multipliers dof }
         )",
               py::arg( "local" ) = false )
         // ---------------------------------------------------------------------
@@ -111,6 +124,33 @@ Returns all the component names assigned in the numbering.
 Returns:
     str: component names.
         )" )
+        // ---------------------------------------------------------------------
+        .def( "getNodeAndComponentFromDOF",
+              py::overload_cast< const bool >( &ParallelDOFNumbering::getNodeAndComponentFromDOF,
+                                               py::const_ ),
+              R"(
+Return the list of node id and name of component for each dofs
+
+Arguments:
+    local (bool) = True: if True use local node index else use global index in HPC
+Returns:
+    list[tuple[int, str]] : node id and name of component for each dofs
+            )",
+              py::arg( "local" ) = true )
+        // ---------------------------------------------------------------------
+        .def( "getNodeAndComponentFromDOF",
+              py::overload_cast< const ASTERINTEGER, const bool >(
+                  &ParallelDOFNumbering::getNodeAndComponentFromDOF, py::const_ ),
+              R"(
+Return the node id and name of component for given DOF
+
+Arguments:
+    dof (int): DOF index
+    local (bool) = True: if True use local node index else use global index in HPC
+Returns:
+    tuple[int, str] : node id and name of component
+            )",
+              py::arg( "dof" ), py::arg( "local" ) = true )
         // ---------------------------------------------------------------------
         .def( "getComponentFromDOF", &ParallelDOFNumbering::getComponentFromDOF,
               R"(
@@ -141,7 +181,7 @@ Returns the components name associated to a node index.
 
 Arguments:
     node (int): Index of the node.
-    local (bool): local or parallel request
+    local (bool, optional): local or global numbering of nodes (default: false).
 
 Returns:
     str: component names.

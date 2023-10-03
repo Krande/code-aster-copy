@@ -246,17 +246,16 @@ EquationNumbering::getNodeAndComponentFromDOF( const bool local ) const {
     auto nodesAndComponentsIdFromDOF = this->getNodeAndComponentIdFromDOF( local );
 
     const ASTERINTEGER nb_eq = this->getNumberOfDOFs( true );
-    if ( _componentsNumber2Name.empty() )
-        const_cast< EquationNumbering * >( this )->_buildAllComponentsId2Name();
+    const std::map< ASTERINTEGER, std::string > compNumber2Name = this->getComponentsIdToName();
 
     std::vector< std::pair< ASTERINTEGER, std::string > > ret;
     ret.reserve( nodesAndComponentsIdFromDOF.size() );
 
     for ( auto &[nodeId, cmpId] : nodesAndComponentsIdFromDOF ) {
-        ret.push_back( std::make_pair( nodeId, _componentsNumber2Name.find( cmpId )->second ) );
+        ret.push_back( std::make_pair( nodeId, compNumber2Name.find( cmpId )->second ) );
 
 #ifdef ASTER_DEBUG_CXX
-        if ( _componentsNumber2Name.find( cmpId ) == _componentsNumber2Name.end() ) {
+        if ( compNumber2Name.find( cmpId ) == compNumber2Name.end() ) {
             std::cout << "Composante " << cmpId << " sans correspondance" << std::endl;
             raiseAsterError( "Erreur dans EquationNumbering" );
         }
@@ -269,16 +268,15 @@ EquationNumbering::getNodeAndComponentFromDOF( const bool local ) const {
 std::pair< ASTERINTEGER, std::string >
 EquationNumbering::getNodeAndComponentFromDOF( const ASTERINTEGER dof, const bool local ) const {
     auto [nodeId, cmpId] = this->getNodeAndComponentIdFromDOF( dof, local );
-    if ( _componentsNumber2Name.empty() )
-        const_cast< EquationNumbering * >( this )->_buildAllComponentsId2Name();
+    const std::map< ASTERINTEGER, std::string > compNumber2Name = this->getComponentsIdToName();
 
 #ifdef ASTER_DEBUG_CXX
-    if ( _componentsNumber2Name.find( cmpId ) == _componentsNumber2Name.end() ) {
+    if ( compNumber2Name.find( cmpId ) == compNumber2Name.end() ) {
         std::cout << "Composante " << cmpId << " sans correspondance" << std::endl;
         raiseAsterError( "Erreur dans EquationNumbering" );
     }
 #endif
-    return std::make_pair( nodeId, _componentsNumber2Name.find( cmpId )->second );
+    return std::make_pair( nodeId, compNumber2Name.find( cmpId )->second );
 };
 
 std::map< PairLong, ASTERINTEGER >
@@ -394,6 +392,26 @@ VectorLong EquationNumbering::getLagrangeDOFs( const bool local ) const {
             lagrangeRows.push_back( i );
     }
     return lagrangeRows;
+};
+
+std::map< ASTERINTEGER, VectorLong >
+EquationNumbering::getDictOfLagrangeDOFs( const bool local ) const {
+    std::map< ASTERINTEGER, VectorLong > ret;
+    ret[1] = VectorLong();
+    ret[2] = VectorLong();
+    VectorLong &lag1 = ret[1], &lag2 = ret[2];
+    auto lagrInfo = this->getLagrangianInformations();
+    lagrInfo->updateValuePointer();
+    ASTERINTEGER size = lagrInfo->size();
+    ASTERINTEGER physicalIndicator;
+    for ( int i = 0; i < size; i++ ) {
+        physicalIndicator = ( *lagrInfo )[i];
+        if ( physicalIndicator == -1 )
+            lag1.push_back( i );
+        if ( physicalIndicator == -2 )
+            lag2.push_back( i );
+    }
+    return ret;
 };
 
 std::string EquationNumbering::getComponentFromDOF( const ASTERINTEGER dof,

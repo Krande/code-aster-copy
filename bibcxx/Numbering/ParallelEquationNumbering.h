@@ -94,6 +94,18 @@ class ParallelEquationNumbering : public EquationNumbering {
     /**
      * @brief Returns a vector with node index and component name for each DOFs
      */
+    std::vector< std::pair< ASTERINTEGER, std::string > >
+    getNodeAndComponentFromDOF( const bool local = true ) const;
+
+    /**
+     * @brief Returns a pair with node index and component name for given DOF
+     */
+    std::pair< ASTERINTEGER, std::string >
+    getNodeAndComponentFromDOF( const ASTERINTEGER dof, const bool local = true ) const;
+
+    /**
+     * @brief Returns a pair with node index and component Id for given DOF
+     */
 
     PairLong getNodeAndComponentIdFromDOF( const ASTERINTEGER dof, const bool local = true ) const;
     /**
@@ -135,6 +147,12 @@ class ParallelEquationNumbering : public EquationNumbering {
      * @brief Get Rows Associated to Lagrange Multipliers Dof
      */
     VectorLong getLagrangeDOFs( const bool local = false ) const;
+
+    /**
+     * @brief Get Rows Associated to first and second Lagrange Multipliers Dof
+     */
+
+    std::map< ASTERINTEGER, VectorLong > getDictOfLagrangeDOFs( const bool local = false ) const;
 
     /**
      * @brief Get Assigned Components

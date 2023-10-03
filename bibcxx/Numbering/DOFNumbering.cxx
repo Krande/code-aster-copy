@@ -56,6 +56,10 @@ VectorLong DOFNumbering::getLagrangeDOFs( const bool local ) const {
     return getEquationNumbering()->getLagrangeDOFs( local );
 };
 
+std::map< ASTERINTEGER, VectorLong > DOFNumbering::getDictOfLagrangeDOFs( const bool local ) const {
+    return getEquationNumbering()->getDictOfLagrangeDOFs( local );
+}
+
 std::string DOFNumbering::getComponentFromDOF( const ASTERINTEGER dof, const bool local ) const {
     return getEquationNumbering()->getComponentFromDOF( dof, local );
 };
@@ -69,6 +73,16 @@ ASTERINTEGER DOFNumbering::getDOFFromNodeAndComponent( const ASTERINTEGER &node,
                                                        const bool local ) const {
     return getEquationNumbering()->getDOFFromNodeAndComponent( node, comp, local );
 }
+
+std::vector< std::pair< ASTERINTEGER, std::string > >
+DOFNumbering::getNodeAndComponentFromDOF( const bool local ) const {
+    return _globalNumbering->getNodeAndComponentFromDOF( local );
+};
+
+std::pair< ASTERINTEGER, std::string >
+DOFNumbering::getNodeAndComponentFromDOF( const ASTERINTEGER dof, const bool local ) const {
+    return _globalNumbering->getNodeAndComponentFromDOF( dof, local );
+};
 
 bool DOFNumbering::isPhysicalDOF( const ASTERINTEGER dof, const bool local ) const {
     return getEquationNumbering()->isPhysicalDOF( dof, local );

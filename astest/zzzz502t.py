@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 
 import code_aster
-import code_aster.LinearAlgebra
+from code_aster import MPI
 from code_aster.Commands import *
 from code_aster.Utilities import ExecutionParameter, Options
 from code_aster.Utilities import petscInitialize
@@ -26,7 +26,9 @@ from code_aster.Utilities import petscInitialize
 test = code_aster.TestCase()
 
 code_aster.init("--test")
+
 petscInitialize()
+rank = MPI.ASTER_COMM_WORLD.Get_rank()
 
 # modeling = "D_PLAN_INCO_UPG"
 modeling = "D_PLAN_INCO_UP"
@@ -91,7 +93,16 @@ for comp in lagr_components:
 
 test.assertListEqual(sorted(local_lagr_rows), sorted(nume_ddl.getLagrangeDOFs(local=True)))
 test.assertListEqual(sorted(global_lagr_rows), sorted(nume_ddl.getLagrangeDOFs(local=False)))
-
+dicLag = nume_ddl.getDictOfLagrangeDOFs(local=True)
+ref1 = {0: [3], 1: [5, 6]}
+ref2 = {0: [7], 1: [10, 11]}
+test.assertListEqual(dicLag[1], ref1[rank])
+test.assertListEqual(dicLag[2], ref2[rank])
+dicLag = nume_ddl.getDictOfLagrangeDOFs(local=False)
+ref1 = {0: [22], 1: [46, 22]}
+ref2 = {0: [23], 1: [47, 23]}
+test.assertListEqual(dicLag[1], ref1[rank])
+test.assertListEqual(dicLag[2], ref2[rank])
 
 petscMat = AssemblyObj.asterRigi.toPetsc()
 print("Norm: ", petscMat.getSizes())
