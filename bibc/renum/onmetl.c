@@ -107,7 +107,8 @@ ASTERINTEGER *niv;
         printf( "**********************************************************************\n" );
         printf( "%s", METISTITLE );
         printf( "Graph Information ---------------------------------------------------\n" );
-        printf( "#Vertices: %d, #Edges: %d\n\n", graph->nvtxs, graph->nedges / 2 );
+        printf( "#Vertices: %ld, #Edges: %ld\n\n", (long)graph->nvtxs,
+                (long)( graph->nedges / 2 ) );
         printf( "Node-Based Ordering... ----------------------------------------------\n" );
     }
     /* Allocation des vecteurs de permutation construits via l'appel a METIS_NodeND*/
@@ -150,10 +151,10 @@ ASTERINTEGER *niv;
     /* Pour afficher le resultat de METIS dans le .mess*/
     if ( debug1 == 1 ) {
         printf( "\nDebut impression METIS_NodeND\n" );
-        printf( "%d %d\n", sizeof( graph->nvtxs ), sizeof( graph->ncon ) );
-        printf( "%d %d\n", graph->nvtxs, graph->ncon );
+        printf( "%ld %ld\n", (long)sizeof( graph->nvtxs ), (long)sizeof( graph->ncon ) );
+        printf( "%ld %ld\n", (long)graph->nvtxs, (long)graph->ncon );
         for ( i = 0; i < graph->nvtxs; i++ ) {
-            printf( "%d %d\n", perm[i], iperm[i] );
+            printf( "%ld %ld\n", (long)perm[i], (long)iperm[i] );
         }
         printf( "\nfin impression METIS_NodeND\n" );
     }
@@ -192,12 +193,12 @@ ASTERINTEGER *niv;
     /* Pour afficher les resultats de ComputeFillInL dans le .mess*/
     if ( debug1 == 1 ) {
         printf( "\nDebut impression ComputeFillInL\n" );
-        printf( "%d %d\n", *nbnd, *nbsn );
+        printf( "%ld %ld\n", (long)*nbnd, (long)*nbsn );
         for ( kkk = 0; kkk < lll; kkk++ ) {
-            printf( "%d %d %d\n", invpnd[kkk], permnd[kkk], parent[kkk] );
+            printf( "%ld %ld %ld\n", (long)invpnd[kkk], (long)permnd[kkk], (long)parent[kkk] );
         }
         for ( kkk = 0; kkk < *nbsn + 1; kkk++ ) {
-            printf( "%d\n", supnd[kkk] );
+            printf( "%ld\n", (long)supnd[kkk] );
         }
         printf( "\nFin impression ComputeFillInL\n" );
     }
@@ -244,12 +245,12 @@ int ReadGraphL( graph_t *graph, int *nbnd, int *nadj, int *xadjd, int *adjnci, i
     /* Pour tester et sortir le graphe dans le .mess*/
     if ( *debug1 == 1 ) {
         printf( "\nDebut impression graphe\n" );
-        printf( "%d %d\n", sizeof( graph->nvtxs ), sizeof( graph->nedges ) );
-        printf( "%d %d\n", graph->nvtxs, graph->nedges );
+        printf( "%ld %ld\n", (long)sizeof( graph->nvtxs ), (long)sizeof( graph->nedges ) );
+        printf( "%ld %ld\n", (long)graph->nvtxs, (long)graph->nedges );
         for ( k = 0; k < graph->nvtxs; k++ ) {
             printf( "vertex %d ", k );
             for ( l = xadj[k]; l < xadj[k + 1]; l++ ) {
-                printf( "%d ", adjncy[l] );
+                printf( "%ld ", (long)adjncy[l] );
             }
             printf( "\n" );
         }
@@ -599,10 +600,10 @@ int smbfctl( int neqns, idx_t *xadj, idx_t *adjncy, idx_t *perm, idx_t *invp, id
     lnode = neqns;
 
     marker[neqns] = snode;
-    /* C.Rose ajout de la ligne precedante : correction de bug 11/03/02 */
+    /* C.Rose ajout de la ligne precedente : correction de bug 11/03/02 */
     /* printf("  nbsn : %d \n",snode);
     for(i=1;i<=neqns;i++) printf("  smarker %8d %8d\n ",i,marker[i]);
-   for(i=1;i<=snode+1;i++) printf("  snode %8d %8d\n ",i,supnd[i]);
+    for(i=1;i<=snode+1;i++) printf("  snode %8d %8d\n ",i,supnd[i]);
     */
     /* fin de cr*/
     minsn = neqns;

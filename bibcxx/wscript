@@ -65,7 +65,18 @@ def build(self):
         name="asterbibcxx",
         source=get_srcs("**/*.cxx", excl="MFront/*.cxx"),
         target="bibcxx",
-        use=["BIBCXX", "PYBIND11", "PETSC", "MGIS", "MED", "HDF5", "PYEXT", "NUMPY", "CXX", "SCOTCH"],
+        use=[
+            "BIBCXX",
+            "PYBIND11",
+            "PETSC",
+            "MGIS",
+            "MED",
+            "HDF5",
+            "PYEXT",
+            "NUMPY",
+            "CXX",
+            "SCOTCH",
+        ],
         env=env.derive(),
         install_path=env.ASTERLIBDIR,
     )
@@ -76,6 +87,8 @@ def build(self):
 def check_bibcxx_depends(self):
     """check dependencies of bibcxx"""
     self.check_cxx(uselib_store="CXX", lib="stdc++")
+    # if int(self.env.CC_VERSION[0] or 0) < 9:
+    #     self.check_cxx(uselib_store="CXX", lib="stdc++fs")
 
 
 @Configure.conf
