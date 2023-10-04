@@ -132,6 +132,19 @@ def options(self):
         action="store_true",
         help="enable options for coverage (actually only for debug build)",
     )
+    group.add_option(
+        "--enable-asan",
+        dest="enable_asan",
+        action="store_true",
+        default=False,
+        help="enable address sanitizer in debug mode",
+    )
+    group.add_option(
+        "--disable-asan",
+        dest="enable_asan",
+        action="store_false",
+        help="disable address sanitizer in debug mode",
+    )
 
     group = self.add_option_group("code_aster options")
 

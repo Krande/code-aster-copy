@@ -177,6 +177,9 @@ def check_optimization_cflags(self):
     if self.options.enable_coverage:
         flags.append("--coverage")
         self.env.append_unique("LINKFLAGS", "--coverage")
+    if self.options.enable_asan:
+        flags.extend(["-fsanitize=address", "-fno-omit-frame-pointer"])
+        self.env.append_unique("LINKFLAGS", ["-fsanitize=address", "-fno-omit-frame-pointer"])
     self.env.append_unique("CFLAGS", flags)
     self.end_msg(flags)
 

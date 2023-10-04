@@ -59,9 +59,14 @@ the elements catalog, the output ends with something like:
     ...
     <command line to reproduce the error>
 
+First, you can restart in verbose mode (and with one process to have a synced output):
 
-Try to reproduce the error in a new terminal (adjust build and installation
-directories if needed):
+.. code-block:: sh
+
+    ./waf_debug install -v -j 1
+
+If it is not sufficient, try to reproduce the error in a new terminal (adjust build
+and installation directories if needed):
 
 .. code-block:: shell
 

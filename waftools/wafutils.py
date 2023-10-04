@@ -28,7 +28,7 @@ def exec_pyaster(self, pyfile, args, **kwargs):
     # this position allows CATALO_CMD to define an environment variable
     # or a prefix to wrap the executable
     cmdprefix = Utils.to_list(env["CATALO_CMD"])
-    if self.env.BUILD_MPI and not cmdprefix and env["CONFIG_PARAMETERS"]["require_mpiexec"]:
+    if env.BUILD_MPI and not cmdprefix and env["CONFIG_PARAMETERS"]["require_mpiexec"]:
         cmdprefix = env["base_mpiexec"] + ["-n", "1"]
     cmds = " ".join(cmdprefix + cmdexe)
     Logs.debug("os environ: %r" % environ)
@@ -36,19 +36,30 @@ def exec_pyaster(self, pyfile, args, **kwargs):
         del kwargs["for_catalo"]
         # do not confuse with installed elementsdir
         environ["ASTER_ELEMENTSDIR"] = ""
-    kwargs["output"] = Context.BOTH
     try:
-        stdout, stderr = self.cmd_and_log(cmds, env=environ, shell=True, quiet=0, **kwargs)
+        if Logs.verbose:
+            kwargs["env"] = environ
+            kwargs["shell"] = True
+            self.log_command(cmds, kwargs)
+            ret, stdout, stderr = Utils.run_process(cmds, kwargs)
+            if ret:
+                error = Errors.WafError("Command %r returned %r" % (cmds, ret))
+                error.returncode = ret
+                error.stderr = stderr
+                error.stdout = stdout
+                raise error
+        else:
+            kwargs["output"] = Context.BOTH
+            stdout, stderr = self.cmd_and_log(cmds, env=environ, shell=True, quiet=0, **kwargs)
         with open(logbase + ".out", "w") as flog:
-            flog.write(stdout)
+            flog.write(stdout or "")
         with open(logbase + ".err", "w") as flog:
-            flog.write(stderr)
+            flog.write(stderr or "")
     except Errors.WafError as err:
         Logs.warn("stdout: %s" % err.stdout)
         Logs.warn("stderr: %s" % err.stderr)
         Logs.info("To run manually, use:")
-        Logs.info('export LD_LIBRARY_PATH="%s"' % environ["LD_LIBRARY_PATH"])
-        Logs.info('export PYTHONPATH="%s"' % environ["PYTHONPATH"])
+        Logs.info('. "%s/profile.sh"' % env["ASTERDATADIR"])
         Logs.info(" ".join(cmdprefix + cmdexe))
         raise
 

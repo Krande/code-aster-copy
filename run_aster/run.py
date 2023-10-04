@@ -29,9 +29,10 @@ import os
 import os.path as osp
 import tempfile
 from glob import glob
+from pathlib import Path
 from subprocess import PIPE, run
 
-from .command_files import add_import_commands, stop_at_end, file_changed
+from .command_files import add_import_commands, file_changed, stop_at_end
 from .config import CFG
 from .logger import WARNING, logger
 from .status import StateOptions, Status, get_status
@@ -313,7 +314,8 @@ class RunAster:
         """
         cmd = self._get_cmdline_exec(commfile, idx)
         if self._interact:
-            pass
+            if not Path(self._output).exists():
+                Path(self._output).touch()
         elif self._tee:
             orig = " ".join(cmd)
             cmd = [
@@ -497,11 +499,12 @@ def change_comm_file(comm, interact=False, wrkdir=None, show=False):
     return filename
 
 
-def copy_datafiles(files):
+def copy_datafiles(files, verbose=True):
     """Copy data files into the working directory.
 
     Arguments:
         files (list[File]): List of File objects.
+        verbose (bool): Verbosity.
     """
     for obj in files:
         dest = None
@@ -528,7 +531,7 @@ def copy_datafiles(files):
                 dest = "REPE_IN"
 
         if dest is not None:
-            copy(obj.path, dest, verbose=True)
+            copy(obj.path, dest, verbose=verbose)
             if obj.compr:
                 dest = uncompress(dest)
             # move the bases in main directory
