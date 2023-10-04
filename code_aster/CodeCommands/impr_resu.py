@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -23,6 +23,7 @@ from ..Cata.Syntax import _F
 from ..Messages import UTMESS
 from ..Supervis import ExecuteCommand
 from ..Utilities import ExecutionParameter, Options, force_list
+from ..Objects.datastructure_py import DataStructureDict
 
 
 class ImprResu(ExecuteCommand):
@@ -80,6 +81,37 @@ class ImprResu(ExecuteCommand):
         # For Mesh is always "OUI"
         if "FICHIER_UNIQUE" in keywords and not ExecutionParameter().option & Options.HPCMode:
             keywords["FICHIER_UNIQUE"] = "OUI"
+
+    def change_syntax(self, keywords):
+        """Hook to change keywords of IMPR_RESU before checking syntax to take
+            into account child classes of DataStructureDict
+
+        Arguments:
+            keywords (dict): Keywords arguments of user's keywords, changed
+                in place.
+        """
+        resu_to_print = []
+        results = keywords["RESU"]
+        if isinstance(results, tuple):
+            for resu in results:
+                resu_to_print = change_syntax_dsdict(resu_to_print, resu)
+        else:
+            resu_to_print = change_syntax_dsdict(resu_to_print, results)
+
+        keywords["RESU"] = tuple(resu_to_print)
+
+
+def change_syntax_dsdict(list_resu, resu):
+    if not isinstance(resu, dict):
+        resu = resu[0]
+    result = resu["RESULTAT"]
+    if issubclass(type(result), DataStructureDict):
+        for key in result.keys():
+            list_resu.append({"RESULTAT": result[key], "NOM_RESU_MED": key})
+    else:
+        list_resu.append(resu)
+
+    return list_resu
 
 
 IMPR_RESU = ImprResu.run

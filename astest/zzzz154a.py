@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -88,6 +88,10 @@ test.assertAlmostEqual(max(ch3.getValues()), 3.0, msg="check ther3")
 dict_test = MACRO_TEST(
     AFFE=(_F(NOM_CAS="ab", RESULTAT=ther_dict["12"]), _F(NOM_CAS="ac", RESULTAT=ther_dict["13"]))
 )
+
+# test printing of dict-like objects
+
+IMPR_RESU(RESU=_F(RESULTAT=ther_dict), UNITE=80)
 
 test.printSummary()
 

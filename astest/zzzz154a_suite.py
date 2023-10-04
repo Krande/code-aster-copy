@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,6 +30,20 @@ ch1 = ther_dict["12"].getField("TEMP", 1)
 # ch1.debugPrint()
 ch3 = ther_dict["13"].getField("TEMP", 2)
 # ch3.debugPrint()
+
+
+NOM_CAS = ["12", "13"]
+for cas in NOM_CAS:
+    resu_cas = LIRE_RESU(
+        TYPE_RESU="EVOL_THER",
+        FORMAT="MED",
+        MAILLAGE=mesh,
+        TOUT_ORDRE="OUI",
+        FORMAT_MED=_F(NOM_CHAM="TEMP", NOM_RESU=cas),
+        UNITE=80,
+    )
+    test.assertEqual(resu_cas.getNumberOfIndexes(), 2)
+
 
 test.assertAlmostEqual(max(ch1.getValues()), 1.0, msg="check ther1")
 test.assertAlmostEqual(max(ch3.getValues()), 3.0, msg="check ther3")
