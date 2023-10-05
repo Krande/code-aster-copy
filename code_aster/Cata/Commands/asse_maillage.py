@@ -25,6 +25,8 @@ from ..Language.Syntax import *
 
 
 def asse_maillage_prod(self, **args):
+    if args.get("__all__"):
+        return (super_mesh, maillage_sdaster)
     if args["OPERATION"] == "SOUS_STR":
         return super_mesh
     else:
