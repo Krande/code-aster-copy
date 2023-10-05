@@ -481,8 +481,8 @@ class Mac3CoeurCalcul:
 
         thyc = read_thyc(self.coeur, self.model, self.mcf["UNITE_THYC"])
 
-        coef_mult_thv = self.mcf["COEF_MULT_THV"] or 1.0
-        coef_mult_tht = self.mcf["COEF_MULT_THT"] or 1.0
+        coef_mult_thv = self.mcf.get("COEF_MULT_THV", 1.0)
+        coef_mult_tht = self.mcf.get("COEF_MULT_THT", 1.0)
 
         fmult_ax = self.coeur.definition_temp_hydro_axiale(coef_mult_thv)
         fmult_tr = self.coeur.definition_effort_transverse(coef_mult_tht)

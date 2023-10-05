@@ -29,12 +29,15 @@ from .mac3coeur_commons import (
     MAC3_ROUND,
 )
 
+THYC_EPSILON = 1.0e-6
+
 
 class ThycResult:
     _Z = "Z(m)"
     _Ep = "ep(m)"
     _K = "K"
     _method_tr = "M2TEN"
+    _nozzles_transversal_load = True
 
     @property
     def method_tr(self):
@@ -44,6 +47,15 @@ class ThycResult:
     def method_tr(self, v):
         assert v in ("M1DEV", "M2TEN")
         self._method_tr = v
+
+    @property
+    def apply_nozzle_transversal_load(self):
+        return self._nozzles_transversal_load
+
+    @apply_nozzle_transversal_load.setter
+    def apply_nozzle_transversal_load(self, v):
+        assert isinstance(v, bool)
+        self._nozzles_transversal_load = v
 
     @property
     def grids_position(self):
@@ -62,6 +74,30 @@ class ThycResult:
         return [
             find_nearest_idx(i, self.cells_center, self.cells_size) for i in self.grids_position
         ]
+
+    @property
+    def nozzles_position(self):
+        if self._nozzles_position_meters is None:
+            msg = "nozzles_position not set"
+            raise IOError(msg)
+        return self._nozzles_position_meters
+
+    @nozzles_position.setter
+    def nozzles_position(self, v):
+        assert len(v) in (2,)
+        assert v[0] < v[1]
+        self._nozzles_position_meters = v
+
+    @property
+    def nozzles_index(self):
+
+        idx_einf = np.where(
+            self.cells_center + 0.5 * self.cells_size < self.nozzles_position[0] + THYC_EPSILON
+        )
+        idx_esup = np.where(
+            self.cells_center - 0.5 * self.cells_size > self.nozzles_position[1] - THYC_EPSILON
+        )
+        return list(np.concatenate((idx_einf[0], idx_esup[0])))
 
     @property
     def cells_number(self):
@@ -135,6 +171,13 @@ class ThycResult:
         """
         return self._thyc_data["AXIAL"][i, j][0]
 
+    def _get_transversal_force(self, direction, i, j):
+        values = self._thyc_data[self.method_tr][direction][i, j]
+        if not self.apply_nozzle_transversal_load:
+            values = values.copy()
+            values[self.nozzles_index] = 0.0
+        return values
+
     def transversal_force_x(self, i, j):
         """
         Transversal force along the X(THYC) axis
@@ -146,7 +189,8 @@ class ThycResult:
         Returns:
             (array): The transversal force along the X axis for the assembly (i,j).
         """
-        return self._thyc_data[self.method_tr]["X"][i, j]
+
+        return self._get_transversal_force("X", i, j)
 
     def transversal_force_y(self, i, j):
         """
@@ -159,7 +203,8 @@ class ThycResult:
         Returns:
             (array): The transversal force along the Y axis for the assembly (i,j).
         """
-        return self._thyc_data[self.method_tr]["Y"][i, j]
+
+        return self._get_transversal_force("Y", i, j)
 
     def __init__(self):
         self._reset_structures()
@@ -303,11 +348,9 @@ class ThycResult:
 
         assert direction in ("X", "Y")
 
-        force = self._thyc_data[self.method_tr][direction][i, j]
+        force = self._get_transversal_force(direction, i, j)
         epaisseur = self.cells_size_from_center
         cote = self.cells_center
-
-        eps = 1.0e-6
 
         x_axis = []
         y_axis = []
@@ -321,10 +364,10 @@ class ThycResult:
         som_feq = som_f / (som_l + 0.25 * epaisseur[stop_eb])
 
         # Point1
-        x1 = cote[start_eb] - 0.5 * epaisseur[start_eb] - eps
+        x1 = cote[start_eb] - 0.5 * epaisseur[start_eb] - THYC_EPSILON
         y1 = som_feq
         # Point2
-        x2 = cote[stop_eb] - 0.5 * epaisseur[stop_eb] + eps
+        x2 = cote[stop_eb] - 0.5 * epaisseur[stop_eb] + THYC_EPSILON
         y2 = som_feq
         # Point3
         x3 = cote[stop_eb]
@@ -344,10 +387,10 @@ class ThycResult:
             som_feq = som_f / (som_l + 0.25 * (epaisseur[start_me] + epaisseur[stop_me]))
 
             # Point1
-            x1 = cote[start_me] + 0.5 * epaisseur[start_me] - eps
+            x1 = cote[start_me] + 0.5 * epaisseur[start_me] - THYC_EPSILON
             y1 = som_feq
             # Point2
-            x2 = cote[stop_me] - 0.5 * epaisseur[stop_me] + eps
+            x2 = cote[stop_me] - 0.5 * epaisseur[stop_me] + THYC_EPSILON
             y2 = som_feq
             # Point3
             x3 = cote[stop_me]
@@ -365,9 +408,9 @@ class ThycResult:
         som_f = sum(coeff * force[start_eh + 1 : stop_eh + 1])
         som_feq = som_f / (som_l + 0.25 * epaisseur[start_eh])
 
-        x1 = cote[start_eh] + 0.5 * epaisseur[start_eh] - eps
+        x1 = cote[start_eh] + 0.5 * epaisseur[start_eh] - THYC_EPSILON
         y1 = som_feq
-        x2 = cote[stop_eh] + 0.5 * epaisseur[stop_eh] + eps
+        x2 = cote[stop_eh] + 0.5 * epaisseur[stop_eh] + THYC_EPSILON
         y2 = som_feq
 
         x_axis.extend([x1, x2])

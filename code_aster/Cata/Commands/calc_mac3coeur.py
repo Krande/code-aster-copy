@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -56,22 +56,17 @@ CALC_MAC3COEUR = MACRO(
         condition="""is_in("TYPE_COEUR", ("LIGNE900","LIGNE1300","LIGNEN4"))""",
         NB_ASSEMBLAGE=SIMP(statut="o", typ="I", max=1),
     ),
-    # TYPE DE COEUR A CONSIDERER
-    TABLE_N=SIMP(statut="o", typ=table_sdaster),  # TABLE INITIALE DES DAMAC A L INSTANT N
-    MAILLAGE_N=SIMP(statut="f", typ=maillage_sdaster),  # MAILLAGE EN ATTENDANT MIEUX ???
+    TABLE_N=SIMP(statut="o", typ=table_sdaster),
+    MAILLAGE_N=SIMP(statut="f", typ=maillage_sdaster),
     RESU_DEF=SIMP(statut="f", typ=CO),
     FLUENCE_CYCLE=SIMP(statut="f", typ="R", max=1, defaut=0.0),
-    TYPE_DEFORMATION=SIMP(
-        statut="f", typ="TXM", defaut="RIGI_GEOM", into=("PETIT", "RIGI_GEOM", "GROT_GDEP")
-    ),
+    TYPE_DEFORMATION=SIMP(statut="f", typ="TXM", defaut="RIGI_GEOM", into=("RIGI_GEOM",)),
     ETAT_INITIAL=FACT(
         statut="f",
         max=1,
         fr=tr("Estimation d'un etat initial a partir d un DAMAC"),
-        UNITE_THYC=SIMP(
-            statut="f", typ=UnitType(), max=1, inout="in"
-        ),  # Unite Logique du fichier THYC
-        NIVE_FLUENCE=SIMP(statut="o", typ="R", max=1),  # FLUENCE MAXIMALE DANS LE COEUR
+        UNITE_THYC=SIMP(statut="f", typ=UnitType(), max=1, inout="in"),
+        NIVE_FLUENCE=SIMP(statut="o", typ="R", max=1),
         TYPE_MAINTIEN=SIMP(statut="f", typ="TXM", into=("DEPL_PSC",), defaut="DEPL_PSC"),
         MAINTIEN_GRILLE=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="NON"),
         ARCHIMEDE=SIMP(statut="f", typ="TXM", into=("OUI",), defaut="OUI"),
@@ -80,9 +75,7 @@ CALC_MAC3COEUR = MACRO(
         statut="f",
         max=1,
         fr=tr("Estimation des lames d'eau entre AC"),
-        UNITE_THYC=SIMP(
-            statut="o", typ=UnitType(), max=1, inout="in"
-        ),  # Unite Logique du fichier THYC
+        UNITE_THYC=SIMP(statut="o", typ=UnitType(), max=1, inout="in"),
         COEF_MULT_THV=SIMP(statut="f", typ="R", max=1, defaut=1.0),
         COEF_MULT_THT=SIMP(statut="f", typ="R", max=1, defaut=1.0),
     ),
@@ -94,10 +87,8 @@ CALC_MAC3COEUR = MACRO(
             max=1,
             fr=tr("Estimation des deformations des AC"),
             RESU_INIT=SIMP(statut="f", typ=resultat_sdaster),
-            NIVE_FLUENCE=SIMP(statut="o", typ="R", max=1),  # FLUENCE MAXIMALE DANS LE COEUR
-            UNITE_THYC=SIMP(
-                statut="o", typ=UnitType(), max=1, inout="in"
-            ),  # Unite Logique du fichier THYC
+            NIVE_FLUENCE=SIMP(statut="o", typ="R", max=1),
+            UNITE_THYC=SIMP(statut="o", typ=UnitType(), max=1, inout="in"),
             MAINTIEN_GRILLE=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="NON"),
             TYPE_MAINTIEN=SIMP(statut="o", typ="TXM", into=("FORCE", "DEPL_PSC")),
             b_maintien_mono_force=BLOC(
@@ -117,10 +108,8 @@ CALC_MAC3COEUR = MACRO(
             fr=tr("Estimation des deformations des AC"),
             RESU_INIT=SIMP(statut="f", typ=resultat_sdaster),
             TEMP_IMPO=SIMP(statut="f", typ="R", max=1),
-            NIVE_FLUENCE=SIMP(statut="o", typ="R", max=1),  # FLUENCE MAXIMALE DANS LE COEUR
-            UNITE_THYC=SIMP(
-                statut="o", typ=UnitType(), max=1, inout="in"
-            ),  # Unite Logique du fichier THYC
+            NIVE_FLUENCE=SIMP(statut="o", typ="R", max=1),
+            UNITE_THYC=SIMP(statut="o", typ=UnitType(), max=1, inout="in"),
             MAINTIEN_GRILLE=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="NON"),
             TYPE_MAINTIEN=SIMP(statut="f", typ="TXM", into=("DEPL_PSC",), defaut="DEPL_PSC"),
             ARCHIMEDE=SIMP(statut="f", typ="TXM", into=("OUI",), defaut="OUI"),

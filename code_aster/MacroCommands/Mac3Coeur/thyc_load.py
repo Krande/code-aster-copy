@@ -62,6 +62,8 @@ def lire_resu_thyc(coeur, MODELE, nom_fic):
     thyc_load = ThycLoadManager()
     thyc_resu = ThycResult()
     thyc_resu.grids_position = coeur.altitude
+    thyc_resu.nozzles_position = (coeur.XINFT, coeur.XSUPT)
+    thyc_resu.apply_nozzle_transversal_load = True
     thyc_resu.read_thyc_file(nom_fic)
     assert coeur.NBAC == thyc_resu.fa_number
     if not all(abs(thyc_resu.cells_size - thyc_resu.cells_size_from_center) < 1.0e-4):
@@ -78,6 +80,7 @@ def lire_resu_thyc(coeur, MODELE, nom_fic):
     if n1 != n2:
         UTMESS("F", "COEUR0_7", vali=(n1, n2))
     logger.debug("<THYC_LOAD>: Grids index %s" % thyc_resu.grids_index)
+    logger.debug("<THYC_LOAD>: Nozzles index %s" % thyc_resu.nozzles_index)
 
     # Recuperation des efforts transverses sur les grilles
     nodal_tr = []
