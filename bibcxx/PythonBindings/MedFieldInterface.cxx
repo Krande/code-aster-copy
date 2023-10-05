@@ -62,6 +62,12 @@ Get time step id and iteration id for a given sequence id
 Returns:
     list: time step id and iteration id
             )" )
+        .def( "getTime", &MedField::getTime, R"(
+Get time for a given sequence id
+
+Returns:
+    float: time 
+            )" )
         .def( "getSequenceNumber", &MedField::getSequenceNumber, R"(
 Get calculation sequence number )" )
         .def( "getValuesAtSequenceOnCellTypesList", &MedField::getValuesAtSequenceOnCellTypesList,

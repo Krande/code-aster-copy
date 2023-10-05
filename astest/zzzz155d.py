@@ -458,6 +458,7 @@ import numpy as np
 
 tab1 = np.array(siefSplit.getValues())
 tab2 = np.array(siefSplitRef.getValues())
+
 # La comparaison se fait à 10^-4 près car les valeurs de sief_elga sont de l'ordre de 10^10
 if np.allclose(tab1, tab2, atol=1e-4) is not True:
     test.assertTrue(False)
@@ -470,5 +471,7 @@ if np.allclose(tab1, tab2, atol=1e-4) is not True:
     test.assertTrue(False)
 else:
     test.assertTrue(True)
+
+test.assertAlmostEqual(myResu.getTime(1), MEC.getTime(1))
 
 FIN()

@@ -91,9 +91,12 @@ def splitMeshAndFieldsFromMedFile(filename, cellBalancer=False, nodeBalancer=Fal
         curField = fr.getField(i)
         nbSeq = curField.getSequenceNumber()
         fieldDict[curField.getName()] = {}
+        fieldDict[curField.getName()]["id2time"] = []
         for j in range(nbSeq):
             curSeq = curField.getSequence(j)
             assert curSeq[0] == curSeq[1]
+            curTime = curField.getTime(j)
+            fieldDict[curField.getName()]["id2time"].append((curSeq[0], curTime))
             supportEnt = curField.getAllSupportEntitiesAtSequence(curSeq[0], curSeq[1])
             if supportEnt[0] == 3:
                 valuesVec = curField.getValuesAtSequenceOnNodes(curSeq[0], curSeq[1])
@@ -157,7 +160,7 @@ def splitMedFileToResults(filename, fieldToRead, resultType, model=None):
             result.resize(len(curMedFieldDict))
             first = False
         # Loop over field "time" index
-        for index in curMedFieldDict:
+        for index, curTime in curMedFieldDict["id2time"]:
             curField = curMedFieldDict[index]
             fieldValues = curField.getValues()
             compName = curField.getComponentName()
@@ -222,5 +225,6 @@ def splitMedFileToResults(filename, fieldToRead, resultType, model=None):
                 raise NameError("Not yet implemented")
             # Add field to Result
             result.setField(fieldToAdd, asterFieldName, index)
+            result.setTime(curTime, index)
 
     return result

@@ -137,6 +137,9 @@ class MedField {
         return {curSeq.first, curSeq.second};
     };
 
+    /** @brief Get time from id */
+    med_float getTime( int index ) const { return _sequences[index].getDt(); };
+
     /** @brief Get sequence number */
     int getSequenceNumber() const { return _sequences.size(); };
 
