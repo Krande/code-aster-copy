@@ -5,5 +5,5 @@ P mpi_nbcpu 2
 P mpi_nbnoeud 1
 P testlist verification parallel
 
-F comm ssnv116a.comm D 1
-F mmed ssnv116a.med D 20
+F comm ssnv106a.comm D 1
+F mmed ssnv106a.med D 20
