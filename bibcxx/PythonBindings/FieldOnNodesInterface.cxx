@@ -88,6 +88,20 @@ Returns:
             )",
               py::arg( "cmps" ) = VectorString(), py::arg( "groupsOfNodes" ) = VectorString(),
               py::arg( "same_rank" ) = PythonBool::None )
+        .def( "getRealPart", []( const FieldOnNodesReal &f ) { return getRealPart( f ); },
+              R"(
+Extract the real part of the real field (the field is duplicated)
+
+Returns:
+    FieldOnNodesReal: real part 
+        )" )
+        .def( "getImaginaryPart", []( const FieldOnNodesReal &f ) { return getImaginaryPart( f ); },
+              R"(
+Extract the imaginary part of the real field (a 0-filled field is produced)
+
+Returns:
+    FieldOnNodesReal: imaginary part
+        )" )
         .def( "copyUsingDescription", &FieldOnNodesReal::copyUsingDescription,
               R"(
             Return a new field using the description.
@@ -118,13 +132,13 @@ Returns:
             Return the euclidean norm of the field
 
             Arguments:
-                normType (str): "NORM_1", "NORM_2", "NORM_INFINITY"
+                normType (str): "NORM_1", "NORM_2", "NORM_INFINITY" (default: "NORM_INFINITY")
                 list_cmp (list[str]) : list of components used to compute norm (default: all)
 
             Returns:
                 float: euclidean norm
             )",
-              py::arg( "normType" ), py::arg( "list_cmp" ) = VectorString() )
+              py::arg( "normType" ) = "NORM_INFINITY", py::arg( "list_cmp" ) = VectorString() )
         .def( "dot", &FieldOnNodesReal::dot, R"(
             Return the dot product of two fields
 
@@ -247,6 +261,21 @@ Convert to SimpleFieldOnNodes
 Returns:
     SimpleFieldOnNodesComplex: field converted
         )" )
+        .def( "getRealPart", []( const FieldOnNodesComplex &f ) { return getRealPart( f ); },
+              R"(
+Extract the real part of the complex field
+
+Returns:
+    FieldOnNodesReal: real part 
+        )" )
+        .def( "getImaginaryPart",
+              []( const FieldOnNodesComplex &f ) { return getImaginaryPart( f ); },
+              R"(
+Extract the imaginary part of the complex field
+
+Returns:
+    FieldOnNodesReal: imaginary part
+        )" )
         .def( "getPhysicalQuantity", &FieldOnNodesComplex::getPhysicalQuantity )
         .def( "getMesh", &FieldOnNodesComplex::getMesh )
         .def( "__getitem__",
@@ -345,13 +374,13 @@ Returns:
             Return the euclidean norm of the field
 
             Arguments:
-                normType (str): "NORM_1", "NORM_2", "NORM_INFINITY"
+                normType (str): "NORM_1", "NORM_2", "NORM_INFINITY" (default: "NORM_INFINITY")
                 list_cmp (list[str]) : list of components used to compute norm (default: all)
 
             Returns:
                 float: euclidean norm
             )",
-              py::arg( "normType" ), py::arg( "list_cmp" ) = VectorString() )
+              py::arg( "normType" ) = "NORM_INFINITY", py::arg( "list_cmp" ) = VectorString() )
         .def( "setValues",
               py::overload_cast< const ASTERCOMPLEX & >( &FieldOnNodesComplex::setValues ), R"(
             Set values of the field

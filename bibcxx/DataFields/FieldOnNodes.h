@@ -205,6 +205,18 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     FieldOnNodes( const BaseDOFNumberingPtr &dofNum )
         : FieldOnNodes( dofNum->getEquationNumbering() ) {};
 
+    /**
+     * @brief Constructor with all attributes
+     */
+    FieldOnNodes( const EquationNumberingPtr &eqNum, const JeveuxVectorChar24 &reference,
+                  const JeveuxVector< ValueType > &values )
+        : FieldOnNodes( eqNum ) {
+        *( _reference ) = *( reference );
+        *( _values ) = *( values );
+
+        this->updateValuePointers();
+    };
+
     FieldOnNodes( const EquationNumberingPtr &equaNume ) : FieldOnNodes() {
 
         if ( !equaNume ) {
@@ -465,11 +477,35 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     };
 
     /**
-     * @brief Get values of the field
+     * @brief Get the values of the field
      *
      */
     const JeveuxVector< ValueType > &getValues() const { return _values; }
 
+    /**
+     * @brief Get the title of the field
+     *
+     */
+    const JeveuxVectorChar80 &getTitle() const { return _title; }
+
+    /**
+     * @brief Get the reference of the field
+     *
+     */
+    const JeveuxVectorChar24 &getReference() const { return _reference; }
+
+    /**
+     * @brief Get the equation numbering of the field
+     *
+     */
+    const EquationNumberingPtr &getEquationNumbering() const { return _dofDescription; }
+
+    /**
+     * @brief Get the values of the field for some components and groups
+     * @param cmps the components to extract
+     * @param groupsOfNodes the nodes to extract
+     *
+     */
     std::vector< ValueType > getValues( const VectorString &cmps,
                                         const VectorString &groupsOfNodes = {} ) const {
         std::vector< ValueType > val;
@@ -485,6 +521,11 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         return val;
     }
 
+    /**
+     * @brief Get the values of the field for some dofs
+     * @param cmps the dofs to extract
+     *
+     */
     std::vector< ValueType > getValues( const VectorLong &dofs ) const {
         std::vector< ValueType > result;
         result.reserve( dofs.size() );
@@ -702,7 +743,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @brief Mise a jour des pointeurs Jeveux
      * @return renvoie true si la mise a jour s'est bien deroulee, false sinon
      */
-    void updateValuePointers() {
+    void updateValuePointers() const {
         _reference->updateValuePointer();
         _values->updateValuePointer();
     };

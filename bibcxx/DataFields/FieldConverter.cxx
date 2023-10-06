@@ -30,3 +30,41 @@ FieldOnNodesReal toFieldOnNodes( const MeshCoordinatesField &field, const BaseMe
 
     return chamno;
 }
+
+FieldOnNodesReal getRealPart( const FieldOnNodesComplex &field ) {
+
+    auto newValues = JeveuxVectorReal( "&&TMP", field.size() );
+
+    field.updateValuePointers();
+    std::transform( field.getValues()->begin(), field.getValues()->end(), newValues.begin(),
+                    []( ASTERCOMPLEX db ) { return db.real(); } );
+
+    FieldOnNodesReal newField =
+        FieldOnNodesReal( field.getEquationNumbering(), field.getReference(), newValues );
+
+    return newField;
+};
+
+FieldOnNodesReal getImaginaryPart( const FieldOnNodesComplex &field ) {
+
+    auto newValues = JeveuxVectorReal( "&&TMP", field.size() );
+
+    field.updateValuePointers();
+    std::transform( field.getValues()->begin(), field.getValues()->end(), newValues.begin(),
+                    []( ASTERCOMPLEX db ) { return db.imag(); } );
+
+    FieldOnNodesReal newField =
+        FieldOnNodesReal( field.getEquationNumbering(), field.getReference(), newValues );
+
+    return newField;
+};
+
+FieldOnNodesReal getRealPart( const FieldOnNodesReal &field ) { return field; };
+
+FieldOnNodesReal getImaginaryPart( const FieldOnNodesReal &field ) {
+
+    FieldOnNodesReal newField = FieldOnNodesReal( field );
+    newField.setValues( 0. );
+
+    return newField;
+};

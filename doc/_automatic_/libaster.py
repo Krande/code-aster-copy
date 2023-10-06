@@ -2048,6 +2048,17 @@ class DOFNumbering(BaseDOFNumbering):
             int: index of the dof.
         """
 
+    def getDictOfLagrangeDOFs(self, local=False):
+        """Returns the Rows Associated to the first and second Lagrange Multipliers Dof
+
+        Arguments:
+            local (bool, optional): not used (default: false).
+
+        Returns:
+            [dict]: {1 : indexes of the first Lagrange multipliers dof,
+                     2 : indexes of the second Lagrange multipliers dof }
+        """
+
     def getLagrangeDOFs(self, local=False):
         """Returns the indexes of the Lagrange multipliers dof.
 
@@ -2056,6 +2067,32 @@ class DOFNumbering(BaseDOFNumbering):
 
         Returns:
             [int]: indexes of the Lagrange multipliers dof.
+        """
+
+    def getNodeAndComponentFromDOF(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. getNodeAndComponentFromDOF(self: libaster.DOFNumbering, local: bool = False) -> List[Tuple[int, str]]
+
+
+        Return the list of node id and name of component for each dofs
+
+        Arguments:
+            local (bool, optional): not used (default: false).
+        Returns:
+            list[tuple[int, str]] : node id and name of component for each dofs
+
+
+        2. getNodeAndComponentFromDOF(self: libaster.DOFNumbering, dof: int, local: bool = False) -> Tuple[int, str]
+
+
+        Return the node id and name of component for given DOF
+
+        Arguments:
+            dof (int): DOF index
+            local (bool, optional): not used (default: false).
+        Returns:
+            tuple[int, str] : node id and name of component
         """
 
     def getNodeFromDOF(self, dof, local=False):
@@ -2933,6 +2970,13 @@ class FieldOnNodesReal(DataField):
     def getDescription(self):
         pass
 
+    def getImaginaryPart(self):
+        """Extract the imaginary part of the real field (a 0-filled field is produced)
+
+        Returns:
+            FieldOnNodesReal: imaginary part
+        """
+
     def getMesh(self, *args, **kwargs):
         """Overloaded function.
 
@@ -2950,6 +2994,13 @@ class FieldOnNodesReal(DataField):
 
     def getPhysicalQuantity(self):
         pass
+
+    def getRealPart(self):
+        """Extract the real part of the real field (the field is duplicated)
+
+        Returns:
+            FieldOnNodesReal: real part
+        """
 
     def getValues(self, *args, **kwargs):
         """Overloaded function.
@@ -2989,11 +3040,11 @@ class FieldOnNodesReal(DataField):
                         list[double]: List of values.
         """
 
-    def norm(self, normType, list_cmp=[]):
+    def norm(self, normType="NORM_INFINITY", list_cmp=[]):
         """Return the euclidean norm of the field
 
         Arguments:
-            normType (str): "NORM_1", "NORM_2", "NORM_INFINITY"
+            normType (str): "NORM_1", "NORM_2", "NORM_INFINITY" (default: "NORM_INFINITY")
             list_cmp (list[str]) : list of components used to compute norm (default: all)
 
         Returns:
@@ -3125,6 +3176,13 @@ class FieldOnNodesComplex(DataField):
     def getDescription(self):
         pass
 
+    def getImaginaryPart(self):
+        """Extract the imaginary part of the complex field
+
+        Returns:
+            FieldOnNodesReal: imaginary part
+        """
+
     def getMesh(self, *args, **kwargs):
         """Overloaded function.
 
@@ -3142,6 +3200,13 @@ class FieldOnNodesComplex(DataField):
 
     def getPhysicalQuantity(self):
         pass
+
+    def getRealPart(self):
+        """Extract the real part of the complex field
+
+        Returns:
+            FieldOnNodesReal: real part
+        """
 
     def getValues(self, *args, **kwargs):
         """Overloaded function.
@@ -3181,11 +3246,11 @@ class FieldOnNodesComplex(DataField):
                         list[complex]: List of values.
         """
 
-    def norm(self, normType, list_cmp=[]):
+    def norm(self, normType="NORM_INFINITY", list_cmp=[]):
         """Return the euclidean norm of the field
 
         Arguments:
-            normType (str): "NORM_1", "NORM_2", "NORM_INFINITY"
+            normType (str): "NORM_1", "NORM_2", "NORM_INFINITY" (default: "NORM_INFINITY")
             list_cmp (list[str]) : list of components used to compute norm (default: all)
 
         Returns:
@@ -12977,7 +13042,7 @@ class ParallelDOFNumbering(BaseDOFNumbering):
 
         Arguments:
             node (int): Index of the node.
-            local (bool): local or parallel request
+            local (bool, optional): local or global numbering of nodes (default: false).
 
         Returns:
             str: component names.
@@ -12988,6 +13053,17 @@ class ParallelDOFNumbering(BaseDOFNumbering):
 
         Returns:
             str: component names.
+        """
+
+    def getDictOfLagrangeDOFs(self, local=False):
+        """Returns the Rows Associated to the first and second Lagrange Multipliers Dof
+
+        Arguments:
+            local (bool, optional): local or global numbering of DOFs (default: false).
+
+        Returns:
+            [dict]: {1 : indexes of the first Lagrange multipliers dof,
+                     2 : indexes of the second Lagrange multipliers dof }
         """
 
     def getGhostDOFs(self, local=True):
@@ -13004,7 +13080,7 @@ class ParallelDOFNumbering(BaseDOFNumbering):
         """Returns the indexes of the Lagrange multipliers dof.
 
         Arguments:
-            local (bool, optional): not used (default: false).
+            local (bool, optional): local or global numbering of DOFs (default: false).
 
         Returns:
             int: indexes of the Lagrange multipliers dof.
@@ -13024,12 +13100,38 @@ class ParallelDOFNumbering(BaseDOFNumbering):
             int: indexes of the DOFs owned locally.
         """
 
+    def getNodeAndComponentFromDOF(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. getNodeAndComponentFromDOF(self: libaster.ParallelDOFNumbering, local: bool = True) -> List[Tuple[int, str]]
+
+
+        Return the list of node id and name of component for each dofs
+
+        Arguments:
+            local (bool) = True: if True use local node index else use global index in HPC
+        Returns:
+            list[tuple[int, str]] : node id and name of component for each dofs
+
+
+        2. getNodeAndComponentFromDOF(self: libaster.ParallelDOFNumbering, dof: int, local: bool = True) -> Tuple[int, str]
+
+
+        Return the node id and name of component for given DOF
+
+        Arguments:
+            dof (int): DOF index
+            local (bool) = True: if True use local node index else use global index in HPC
+        Returns:
+            tuple[int, str] : node id and name of component
+        """
+
     def getNodeFromDOF(self, dof, local=False):
         """Returns the node index associated to a dof index.
 
         Arguments:
             dof (int): Index of the dof.
-            local (bool, optional): not used (default: false).
+            local (bool, optional): local or global numbering of DOFs (default: false).
 
         Returns:
             int: index of the dof.
@@ -13049,7 +13151,7 @@ class ParallelDOFNumbering(BaseDOFNumbering):
         """Returns the indexes of the physical dof.
 
         Arguments:
-            local (bool, optional): not used (default: false).
+            local (bool, optional): local or global numbering of DOFs (default: false).
 
         Returns:
             int: indexes of the physical dof.
@@ -13073,7 +13175,7 @@ class ParallelDOFNumbering(BaseDOFNumbering):
 
         Arguments:
             dof (int): Index of the dof.
-            local (bool, optional): not used (default: false).
+            local (bool, optional): local or global numbering of DOFs (default: false).
 
         Returns:
             int: index of the dof.
@@ -14570,6 +14672,13 @@ class MedField:
 
     def getSequenceNumber(self):
         """Get calculation sequence number"""
+
+    def getTime(self, arg0):
+        """Get time for a given sequence id
+
+        Returns:
+            float: time
+        """
 
     def getValuesAtSequenceOnCellTypesList(self, numdt, numit, geomtyp):
         """Get cell field values at calculation sequence from geometric type list

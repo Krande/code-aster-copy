@@ -127,6 +127,21 @@ ref_i = CREA_CHAMP(OPERATION="C2R", TYPE_CHAM="NOEU_DEPL_R", CHAM_GD=ref, PARTIE
 pRef_r = ref_r.toPetsc()
 pRef_i = ref_i.toPetsc()
 
+ref_rr = ref.getRealPart()
+norm_r = (ref_rr - ref_r).norm()
+test.assertAlmostEqual(norm_r, 0)
+
+ref_ii = ref.getImaginaryPart()
+norm_i = (ref_ii - ref_i).norm()
+test.assertAlmostEqual(norm_i, 0)
+
+ref_rr = ref_r.getRealPart()
+norm_r = (ref_rr - ref_r).norm()
+test.assertAlmostEqual(norm_r, 0)
+
+ref_ii = ref_r.getImaginaryPart()
+norm_i = ref_ii.norm()
+test.assertAlmostEqual(norm_i, 0)
 # ----------------------------------------
 
 om = 2 * np.pi * freq

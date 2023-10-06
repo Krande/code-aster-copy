@@ -215,5 +215,11 @@ toFieldOnCells( const std::shared_ptr< SimpleFieldOnCells< ValueType > > field,
 }
 
 using FieldOnNodesReal = FieldOnNodes< ASTERDOUBLE >;
+using FieldOnNodesComplex = FieldOnNodes< ASTERCOMPLEX >;
 
 FieldOnNodesReal toFieldOnNodes( const MeshCoordinatesField &field, const BaseMeshPtr mesh );
+
+FieldOnNodesReal getRealPart( const FieldOnNodesComplex &field );
+FieldOnNodesReal getImaginaryPart( const FieldOnNodesComplex &field );
+FieldOnNodesReal getRealPart( const FieldOnNodesReal &field );
+FieldOnNodesReal getImaginaryPart( const FieldOnNodesReal &field );
