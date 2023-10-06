@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -296,6 +296,19 @@ CALC_FONCTION = MACRO(
             val_min=0,
             defaut=10,
             fr=tr("nombre d'iterations pour fitter le spectre"),
+        ),
+        FREQ_FILTRE_ZPA=SIMP(
+            statut="f",
+            typ="R",
+            defaut=0.0,
+            val_min=0.0,
+            fr=tr("frequence du filtre Butterworth passe-bas"),
+        ),
+        NB_FREQ_LISS=SIMP(
+            statut="f",
+            typ="I",
+            defaut=0,
+            fr=tr("Nb de points pour le lissage par fenêtre de Hamming"),
         ),
         FREQ_PAS=SIMP(statut="f", typ="R"),
         regles=(UN_PARMI("FREQ_PAS", "LIST_FREQ"),),

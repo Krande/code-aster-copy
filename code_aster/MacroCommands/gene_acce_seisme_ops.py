@@ -371,6 +371,9 @@ class GeneratorSpectrum(Generator):
         """prepare data for Spectrum class"""
         if self.FREQ_CORNER is None:
             self.FREQ_CORNER = 0.0
+
+        self.SRO_args.update({"FREQ_FILTRE_ZPA": self.FREQ_FILTRE_ZPA})
+
         if "NB_ITER" in self.method_params:
             dico_err = {
                 "ERRE_ZPA": list(self.method_params.get("ERRE_ZPA")),
@@ -425,13 +428,14 @@ class GeneratorSpectrum(Generator):
     def build_DSP(self):
         """build DSP for Spectrum class"""
         #  CALCUL DE LA DSP SPECTRUM-COMPATIBLE
+
         f_dsp, f_spec_ref = SRO2DSP(
             self.sampler.FREQ_COUP, self.sampler.DUREE_PHASE_FORTE, **self.SRO_args
         )
         if self.FREQ_CORNER > 0.0:
             f_dsp = dsp_filtre_CP(f_dsp, self.FREQ_CORNER)
-        if self.FREQ_FILTRE_ZPA > 0.0:
-            f_dsp = butterfilter(self.FREQ_FILTRE_ZPA, f_dsp)
+        #        if self.FREQ_FILTRE_ZPA > 0.0:
+        #            f_dsp = butterfilter(self.FREQ_FILTRE_ZPA, f_dsp)
 
         fonc_dsp = f_dsp.evalfonc(self.sampler.liste_w2)
         self.DSP_args.update({"FONC_DSP": fonc_dsp, "TYPE_DSP": "SC", "FC": 0.05})

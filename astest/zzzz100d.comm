@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -563,8 +563,11 @@ TEST_FONCTION(
 
 
 ##--------------------------------------------------------
-# ------------------ TEST DSP ----------------------------
+# ------------------ TEST OPTION DSP ----------------------------
+##--------------------------------------------------------
+
 FCOUP = 60.0
+FZPA = 50.0
 TSM = 10.0
 FMAX = 60.0
 
@@ -610,6 +613,7 @@ NGA_DSP = CALC_FONCTION(
     INTERPOL="LIN",
 )
 
+
 EUR_DSP = CALC_FONCTION(
     DSP=_F(
         FONCTION=SRO_EUR,
@@ -619,6 +623,36 @@ EUR_DSP = CALC_FONCTION(
         DUREE=TSM,
         NORME=9.81,
         FRACT=0.5,
+    ),
+    INTERPOL="LIN",
+)
+
+
+NGA_DSPZ = CALC_FONCTION(
+    DSP=_F(
+        FONCTION=SRO_NGA,
+        LIST_FREQ=L_FREQ,
+        FREQ_COUP=FCOUP,
+        FREQ_FILTRE_ZPA=FZPA,
+        AMOR_REDUIT=amortn,
+        DUREE=TSM,
+        NORME=9.81,
+        #        FRACT=0.5,
+    ),
+    INTERPOL="LIN",
+)
+
+NGA_DSPL = CALC_FONCTION(
+    DSP=_F(
+        FONCTION=SRO_NGA,
+        LIST_FREQ=L_FREQ,
+        FREQ_COUP=FCOUP,
+        FREQ_FILTRE_ZPA=FCOUP,
+        NB_FREQ_LISS=40,
+        AMOR_REDUIT=amortn,
+        DUREE=TSM,
+        NORME=9.81,
+        #        FRACT=0.5,
     ),
     INTERPOL="LIN",
 )
@@ -651,26 +685,53 @@ SROE = CALC_FONCTION(
 )
 
 
+SRONZ = CALC_FONCTION(
+    SPEC_OSCI=_F(
+        FONCTION=NGA_DSPZ,
+        DUREE=TSM,
+        NATURE_FONC="DSP",
+        NATURE="ACCE",
+        METHODE="RICE",
+        AMOR_REDUIT=amortn,
+        NORME=9.81,
+        LIST_FREQ=L_FREQ,
+    )
+)
+
+SRONL = CALC_FONCTION(
+    SPEC_OSCI=_F(
+        FONCTION=NGA_DSPL,
+        DUREE=TSM,
+        NATURE_FONC="DSP",
+        NATURE="ACCE",
+        METHODE="RICE",
+        AMOR_REDUIT=amortn,
+        NORME=9.81,
+        LIST_FREQ=L_FREQ,
+    )
+)
+
+
 F_DSP = CALC_FONCTION(COMB_C=(_F(FONCTION=EUR_DSP, COEF_C=1.0 + 0.0j),))
+NDSPZ = CALC_FONCTION(COMB_C=(_F(FONCTION=NGA_DSPZ, COEF_C=1.0 + 0.0j),))
+NDSPL = CALC_FONCTION(COMB_C=(_F(FONCTION=NGA_DSPL, COEF_C=1.0 + 0.0j),))
+NDSP0 = CALC_FONCTION(COMB_C=(_F(FONCTION=NGA_DSP, COEF_C=1.0 + 0.0j),))
 
-##
-# IMPR_FONCTION(UNITE=29,
-#              FORMAT='XMGRACE',
-#              COURBE=_F(FONCTION=NGA_DSP,),)
-##
-#
-# IMPR_FONCTION(UNITE=30,
-#              FORMAT='XMGRACE',ECHELLE_X ='LOG', ECHELLE_Y ='LOG',
-#              COURBE=(_F(FONCTION=SRO_EUR,MARQUEUR =0,LEGENDE = 'SRO EUR '),_F(FONCTION=SRO_NGA,MARQUEUR =0,LEGENDE = 'SRO NGA '),
-#                       _F(FONCTION=SRON,MARQUEUR =0,LEGENDE = 'DSP2SRO NGA'), _F(FONCTION=SROE,MARQUEUR =0,LEGENDE = 'DSP2SRO EUR'),
-#                              ),            )
-
-#
 DEF_SPEC = DEFI_INTE_SPEC(
     DIMENSION=1, PAR_FONCTION=_F(NUME_ORDRE_I=1, NUME_ORDRE_J=1, FONCTION=F_DSP)
 )
 
+SPECZ = DEFI_INTE_SPEC(DIMENSION=1, PAR_FONCTION=_F(NUME_ORDRE_I=1, NUME_ORDRE_J=1, FONCTION=NDSPZ))
+
+SPEC0 = DEFI_INTE_SPEC(DIMENSION=1, PAR_FONCTION=_F(NUME_ORDRE_I=1, NUME_ORDRE_J=1, FONCTION=NDSP0))
+
+SPECL = DEFI_INTE_SPEC(DIMENSION=1, PAR_FONCTION=_F(NUME_ORDRE_I=1, NUME_ORDRE_J=1, FONCTION=NDSPL))
+
 POST_DSP = POST_DYNA_ALEA(INTERSPECTRE=_F(INTE_SPEC=DEF_SPEC, OPTION="TOUT"), INFO=2)
+
+POST_ZPA = POST_DYNA_ALEA(INTERSPECTRE=_F(INTE_SPEC=SPECZ, OPTION="TOUT"), INFO=2)
+POST_LIS = POST_DYNA_ALEA(INTERSPECTRE=_F(INTE_SPEC=SPECL, OPTION="TOUT"), INFO=2)
+POST_NGA = POST_DYNA_ALEA(INTERSPECTRE=_F(INTE_SPEC=SPEC0, OPTION="TOUT"), INFO=2)
 
 TRAJ = GENE_FONC_ALEA(INTE_SPEC=DEF_SPEC, FREQ_INIT=0.0, FREQ_FIN=FCOUP, NB_POIN=2**12, INFO=2)
 
@@ -689,6 +750,7 @@ m1 = 34.19
 m2 = 2841.8
 frapp = 10.61
 
+# --- PSD standard deviation
 TEST_TABLE(
     CRITERE="RELATIF",
     REFERENCE="SOURCE_EXTERNE",
@@ -702,11 +764,39 @@ TEST_TABLE(
 
 TEST_TABLE(
     CRITERE="RELATIF",
+    VALE_CALC=0.45147333104092335,
+    NOM_PARA="ECART",
+    TABLE=POST_ZPA,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE_I", VALE_I=1), _F(NOM_PARA="NUME_ORDRE_J", VALE_I=1)),
+)
+
+TEST_TABLE(
+    CRITERE="RELATIF",
+    VALE_CALC=0.4478692017852143,
+    NOM_PARA="ECART",
+    TABLE=POST_LIS,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE_I", VALE_I=1), _F(NOM_PARA="NUME_ORDRE_J", VALE_I=1)),
+)
+
+TEST_TABLE(
+    CRITERE="RELATIF",
+    VALE_CALC=0.4514733395947059,
+    NOM_PARA="ECART",
+    TABLE=POST_NGA,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE_I", VALE_I=1), _F(NOM_PARA="NUME_ORDRE_J", VALE_I=1)),
+)
+
+
+# --- other PSD parameters
+
+TEST_TABLE(
+    CRITERE="RELATIF",
     VALE_CALC=9.8571964660693,
     NOM_PARA="FREQ_APPAR",
     TABLE=POST_DSP,
     FILTRE=(_F(NOM_PARA="NUME_ORDRE_I", VALE_I=1), _F(NOM_PARA="NUME_ORDRE_J", VALE_I=1)),
 )
+
 
 TEST_TABLE(
     CRITERE="RELATIF",
@@ -750,6 +840,7 @@ TEST_TABLE(
     TABLE=RMS,
 )
 
+# --- response spectra
 
 TEST_FONCTION(
     VALEUR=(
@@ -776,6 +867,23 @@ TEST_FONCTION(
             NOM_PARA=("AMOR", "FREQ"),
             VALE_PARA=(0.05, 2.0),
             FONCTION=SRON,
+            REFERENCE="AUTRE_ASTER",
+        ),
+        _F(
+            VALE_CALC=0.16118688365766,
+            VALE_REFE=0.1618,
+            NOM_PARA=("AMOR", "FREQ"),
+            VALE_PARA=(0.05, 40.0),
+            FONCTION=SRONZ,
+            REFERENCE="AUTRE_ASTER",
+            PRECISION=0.01,
+        ),
+        _F(
+            VALE_CALC=0.31829858772243,
+            VALE_REFE=0.3183,
+            NOM_PARA=("AMOR", "FREQ"),
+            VALE_PARA=(0.05, 10.0),
+            FONCTION=SRONL,
             REFERENCE="AUTRE_ASTER",
         ),
     )

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -173,7 +173,7 @@ def acce_filtre_CP(vale_acce, dt, fcorner, amoc=1.0):
     ws = ws0[:N2]
     im = csqrt(-1)
     acce_in = NP.fft.fft(NP.array(vale_acce))
-    hw2 = ws ** 2 * 1.0 / ((wcp ** 2 - ws ** 2) + 2.0 * amoc * im * wcp * ws)
+    hw2 = ws**2 * 1.0 / ((wcp**2 - ws**2) + 2.0 * amoc * im * wcp * ws)
     liste_pairs = list(zip(-hw2, acce_in[:N2]))
     Yw = [a * b for a, b in liste_pairs]
     if is_even(N):  # nombre pair
@@ -222,8 +222,8 @@ def dsp_filtre_CP(f_in, fcorner, amoc=1.0):
     wcp = fcorner * 2.0 * pi
     vale_freq = f_in.vale_x
     vale_dsp = f_in.vale_y
-    HW = 1.0 / ((wcp ** 2 - vale_freq ** 2) ** 2 + 4.0 * (amoc ** 2) * (wcp ** 2) * vale_freq ** 2)
-    dsp_out = vale_freq ** 4 * vale_dsp * HW
+    HW = 1.0 / ((wcp**2 - vale_freq**2) ** 2 + 4.0 * (amoc**2) * (wcp**2) * vale_freq**2)
+    dsp_out = vale_freq**4 * vale_dsp * HW
     f_out = t_fonction(vale_freq, dsp_out, para=f_in.para)
     return f_out
 
@@ -281,19 +281,19 @@ def calc_phase_delay(t, Xt, phase_data):
 def calc_dsp_KT(self, freq_fond, amo, So=1.0):
     w0 = freq_fond * 2.0 * pi
     # KT model
-    x11 = NP.array([4.0 * (amo ** 2) * (w0 ** 2) * FREQ ** 2 for FREQ in self.sampler.liste_w2])
-    xnum = x11 + w0 ** 4
-    denom = NP.array([(w0 ** 2 - FREQ ** 2) ** 2 for FREQ in self.sampler.liste_w2])
+    x11 = NP.array([4.0 * (amo**2) * (w0**2) * FREQ**2 for FREQ in self.sampler.liste_w2])
+    xnum = x11 + w0**4
+    denom = NP.array([(w0**2 - FREQ**2) ** 2 for FREQ in self.sampler.liste_w2])
     denom = denom + x11
     valkt = xnum / denom
     # CP filter
     amocp = 1.0
     valcp = NP.array(
         [
-            FREQ ** 4
+            FREQ**4
             / (
-                4.0 * (amocp ** 2) * (2.0 * pi * self.FREQ_CORNER ** 2) * FREQ ** 2
-                + (2.0 * pi * self.FREQ_CORNER ** 2 - FREQ ** 2) ** 2
+                4.0 * (amocp**2) * (2.0 * pi * self.FREQ_CORNER**2) * FREQ**2
+                + (2.0 * pi * self.FREQ_CORNER**2 - FREQ**2) ** 2
             )
             for FREQ in self.sampler.liste_w2
         ]
@@ -309,11 +309,11 @@ def calc_dsp_KT(self, freq_fond, amo, So=1.0):
 def calc_dsp_FR(lfreq, freq_fond, amor, R0, R1, FREQ_CORNER, So=1.0):
     # KT model parameters
     w0 = freq_fond * 2.0 * pi
-    q0 = w0 ** 2
+    q0 = w0**2
     q1 = 2.0 * amor * w0
     valkt = NP.array(
         [
-            (R0 ** 2 + R1 ** 2 * FREQ ** 2) / ((w0 ** 2 - FREQ ** 2) ** 2 + q1 ** 2 * FREQ ** 2)
+            (R0**2 + R1**2 * FREQ**2) / ((w0**2 - FREQ**2) ** 2 + q1**2 * FREQ**2)
             for FREQ in lfreq
         ]
     )
@@ -324,8 +324,8 @@ def calc_dsp_FR(lfreq, freq_fond, amor, R0, R1, FREQ_CORNER, So=1.0):
         amocp = 1.0
         valcp = NP.array(
             [
-                FREQ ** 4
-                / (4.0 * (amocp ** 2) * (wcp ** 2) * FREQ ** 2 + (wcp ** 2 - FREQ ** 2) ** 2)
+                FREQ**4
+                / (4.0 * (amocp**2) * (wcp**2) * FREQ**2 + (wcp**2 - FREQ**2) ** 2)
                 for FREQ in lfreq
             ]
         )
@@ -372,7 +372,7 @@ def f_phase_forte(ta, acce, p1, p2):
 
 
 def f_ENER_qt(ta, acce, n1, n2):
-    acce2 = acce ** 2
+    acce2 = acce**2
     ener = NP.trapz(acce2, ta)  # energie totale
     P1 = NP.trapz(acce2[0:n1], ta[0:n1]) / ener
     P2 = NP.trapz(acce2[0:n2], ta[0:n2]) / ener
@@ -460,10 +460,10 @@ def Rice2(w2, DSP):
     #   MOMENTS
     m0 = NP.trapz(DSP, w2) * 2.0
     m1 = NP.trapz(DSP * abs(w2), w2) * 2.0
-    m2 = NP.trapz(DSP * w2 ** 2, w2) * 2.0
+    m2 = NP.trapz(DSP * w2**2, w2) * 2.0
     #   FREQ_CENTRALE, BANDWIDTH
     vop = 1 / (2.0 * pi) * sqrt(m2 / m0)
-    delta = sqrt(1.0 - m1 ** 2 / (m0 * m2))
+    delta = sqrt(1.0 - m1**2 / (m0 * m2))
     return m0, m1, m2, vop, delta
 
 
@@ -486,7 +486,7 @@ def peak(p, TSM, vop, amort):
     else:
         xis = amort / (1.0 - exp(-2.0 * amort * omega0 * TSM))
         delta = sqrt(4.0 * xis / pi)
-        sexp = -(delta ** 1.2) * sqrt(pi * log(deuxn))
+        sexp = -(delta**1.2) * sqrt(pi * log(deuxn))
         nup2 = 2.0 * log(deuxn * (1.0 - exp(sexp)))
         nup2 = max(1.0, nup2)
         return sqrt(nup2)
@@ -503,14 +503,14 @@ def peakm(p, TSM, w2, DSP):
     # ---------------------------------------------
     m0 = NP.trapz(DSP, w2) * 2.0
     m1 = NP.trapz(DSP * abs(w2), w2) * 2.0
-    m2 = NP.trapz(DSP * w2 ** 2, w2) * 2.0
+    m2 = NP.trapz(DSP * w2**2, w2) * 2.0
     vop = 1.0 / (2.0 * pi) * sqrt(m2 / m0)  # FREQ_CENTRALE
-    delta = sqrt(1.0 - m1 ** 2.0 / (m0 * m2))  # BANDWIDTH
+    delta = sqrt(1.0 - m1**2.0 / (m0 * m2))  # BANDWIDTH
     deuxn = 2.0 * vop * TSM / (-log(p))
     if deuxn < 1.0:
         return 1.0, m0
     else:
-        sexp = -(delta ** 1.2) * sqrt(pi * log(deuxn))
+        sexp = -(delta**1.2) * sqrt(pi * log(deuxn))
         nup2 = 2.0 * log(deuxn * (1.0 - exp(sexp)))
         nup2 = max(1.0, nup2)
         return sqrt(nup2), m0
@@ -533,17 +533,17 @@ def DSP2SRO(f_in, xig, TSM, liste_freq, ideb=2):
     vale_dsp_in = f_in.vale_y
     vale_sro = []
     vale_freq = f_in.vale_x
-    vale_freq2 = vale_freq ** 2
+    vale_freq2 = vale_freq**2
     for f_0 in liste_freq:
         if f_0 == 0.0:
             vale_sro.append(0.0)
         else:
             w_0 = f_0 * 2.0 * pi
             vale_dsp_rep = vale_dsp_in / (
-                (w_0 ** 2 - vale_freq2) ** 2 + 4.0 * xig ** 2 * w_0 ** 2 * vale_freq2
+                (w_0**2 - vale_freq2) ** 2 + 4.0 * xig**2 * w_0**2 * vale_freq2
             )
             npeakm, m0i = peakm(0.5, TSM, vale_freq, vale_dsp_rep)
-            vale_sro.append(w_0 ** ideb * npeakm * sqrt(m0i))
+            vale_sro.append(w_0**ideb * npeakm * sqrt(m0i))
     f_out = t_fonction(liste_freq, vale_sro, para=para_dsp)
     return f_out
 
@@ -554,7 +554,7 @@ def DSP2SRO(f_in, xig, TSM, liste_freq, ideb=2):
 # iteration par formule de Rice pour mieux fitter le spectre cible
 
 
-def iter_SRO(f_dsp, f_sro, amort, TS, Niter=10):
+def iter_SRO(f_dsp, f_sro, amort, TS, Niter=10, nbliss=0):
     # ---------------------------------------------
     # IN  : f_in: DSP [rad/s], sro : spectre cible [Hz],
     #       amort: amortissement sro, TS: duree phase forte, meme disretisation
@@ -566,7 +566,6 @@ def iter_SRO(f_dsp, f_sro, amort, TS, Niter=10):
     freq_sro = f_sro.vale_x
     vale_sro_ref = f_sro.vale_y
     nbvale = len(freq_dsp)
-    # Niter = 10
     ii = 0
     while ii < Niter:
         ii = ii + 1
@@ -576,11 +575,34 @@ def iter_SRO(f_dsp, f_sro, amort, TS, Niter=10):
         nz = NP.nonzero(valesro)
         factm = NP.ones(nbvale)
         factm[nz] = vale_sro_ref[nz] / valesro[nz]
-        vale_dspi = vale_dsp * factm ** 2
-        vale_dsp = vale_dspi
+        vale_dspi = vale_dsp * factm**2
+
+        if nbliss > 0:
+            vale_dsp = smoothing(vale_dspi, nbliss)
+        else:
+            vale_dsp = vale_dspi
+
         f_dsp = t_fonction(freq_dsp, vale_dsp, para=para_dsp)
     f_out = f_dsp
     return f_out
+
+
+def smoothing(yin, Mm):
+
+    print("smoothing")
+
+    ysmoothed = NP.copy(yin)
+
+    m = NP.arange(-Mm, Mm + 1, 1)
+
+    filt = 0.54 - 0.46 * NP.cos(pi * (m + Mm) / Mm)
+    fact = 1.0 / 1.08 / Mm
+
+    for ii in range(Mm, len(yin) - Mm):
+        nvale_m = m + ii
+        ysmoothed[ii] = fact * NP.sum(yin[nvale_m[0] : nvale_m[-1] + 1] * filt)
+
+    return ysmoothed
 
 
 # iteration par simulation temporelle pour fitter le spectre cible sur une
@@ -669,7 +691,7 @@ def itersim_SRO(self, FONC_DSP, NB_TIRAGE=1, **SRO_args):
     err_ZPA = coef_ZPA * err_zpa
     err_MAX = coef_MAX * err_max
     err_RMS = coef_RMS * err_rms
-    errmult.append(sqrt(1.0 / 3.0 * (err_ZPA ** 2 + err_MAX ** 2 + err_RMS ** 2)))
+    errmult.append(sqrt(1.0 / 3.0 * (err_ZPA**2 + err_MAX**2 + err_RMS**2)))
     if self.INFO == 2:
         UTMESS("I", "SEISME_43", valr=(err_zpa, err_max, err_rms, errmult[-1]))
 
@@ -679,7 +701,7 @@ def itersim_SRO(self, FONC_DSP, NB_TIRAGE=1, **SRO_args):
         nz = NP.nonzero(valesro)
         factm = NP.ones(nbfreq2)
         factm[nz] = vale_sro_ref[nz] / valesro[nz]
-        vale_dspi = vale_dsp * factm ** 2
+        vale_dspi = vale_dsp * factm**2
         vale_dsp = vale_dspi
         f_dsp = t_fonction(freq_dsp, vale_dsp, para=para_dsp)
         f_dsp = dsp_filtre_CP(f_dsp, FC)
@@ -723,7 +745,7 @@ def itersim_SRO(self, FONC_DSP, NB_TIRAGE=1, **SRO_args):
         err_ZPA = coef_ZPA * err_zpa
         err_MAX = coef_MAX * err_max
         err_RMS = coef_RMS * err_rms
-        errmult.append(sqrt(1.0 / 3.0 * (err_ZPA ** 2 + err_MAX ** 2 + err_RMS ** 2)))
+        errmult.append(sqrt(1.0 / 3.0 * (err_ZPA**2 + err_MAX**2 + err_RMS**2)))
         if self.INFO == 2:
             UTMESS("I", "SEISME_42", vali=(kk + 1, NB_ITER), valr=errmult[-1])
     # OPTIMUM
@@ -758,7 +780,7 @@ def erre_spectre(Freq, valesro, vale_sro_ref):
     errzpa = errlin[-1]
     errmax = max(abs(errlin))
     errmin = min(errlin)
-    errms = sqrt(1.0 / len(Freq) * NP.sum(errlin ** 2))
+    errms = sqrt(1.0 / len(Freq) * NP.sum(errlin**2))
     freqerr = [Freq[NP.argmax(abs(errlin))], Freq[NP.argmin((errlin))]]
     return errzpa, errmax, errmin, errms, freqerr
 
@@ -775,6 +797,8 @@ def SRO2DSP(
     PAS=None,
     LIST_FREQ=None,
     NITER=10,
+    FREQ_FILTRE_ZPA=0,
+    NB_FREQ_LISS=0,
     **args
 ):
     # ---------------------------------------------
@@ -783,7 +807,7 @@ def SRO2DSP(
     # ---------------------------------------------
     wmax = FREQ_COUP * 2.0 * pi
     f_in = FONC_SPEC
-    fmin = max(FMIN, 0.05)
+    fmin = max(FMIN, 0.01)
     wmin = fmin * 2.0 * pi
     #      wmin=1.001
     freq0 = 0.0
@@ -819,9 +843,9 @@ def SRO2DSP(
             valsro = float(f_in.evalfonc([fi]).vale_y * NORME)
             lsro.append(valsro)
             nupi = peak(0.5, DUREE_PHASE_FORTE, fi, AMORT)
-            nup2 = nupi ** 2
+            nup2 = nupi**2
             v1 = 1.0 / (freqi * (pi / (2.0 * AMORT) - 2.0))
-            v2 = (valsro ** 2) / nup2
+            v2 = (valsro**2) / nup2
             v3 = 2.0 * NP.trapz(NP.array(DSP), NP.array(lw))
             v4 = v1 * (v2 - v3)
             valg = max(v4, 0.0)
@@ -830,15 +854,18 @@ def SRO2DSP(
         lf.append(freqi / 2.0 / pi)
 
     para = dict(f_in.para)
-    print("para", para)
     para.update({"INTERPOL": ["LIN", "LIN"]})
-    print("para ap", para)
     f_out = t_fonction(lw, DSP, para=para)
     f_iter_sro_ref = t_fonction(lf, lsro, para=para)
+
+    if FREQ_FILTRE_ZPA > 1.0:
+        # filtrage passe_bas
+        f_out = butterfilter(FREQ_FILTRE_ZPA, f_out)
+
     if NITER > 0:
         # iteration sans simulation: formule de rice
         # PSA for frequency list lw (rad/s), physical units (not g)!!
-        f_dsp = iter_SRO(f_out, f_iter_sro_ref, AMORT, DUREE_PHASE_FORTE, NITER)
+        f_dsp = iter_SRO(f_out, f_iter_sro_ref, AMORT, DUREE_PHASE_FORTE, NITER, NB_FREQ_LISS)
     else:
         f_dsp = f_out
     return f_dsp, f_iter_sro_ref
@@ -890,7 +917,7 @@ def ACCE2SRO(f_in, xig, l_freq, ideb=2):
     acce_in = NP.fft.fft(NP.array(vale_acce))
     for fi in l_freq:
         w_0 = fi * 2.0 * pi
-        hw2 = 1.0 / ((w_0 ** 2 - ws ** 2) + 2.0 * xig * im * w_0 * ws)
+        hw2 = 1.0 / ((w_0**2 - ws**2) + 2.0 * xig * im * w_0 * ws)
         liste_pairs = list(zip(hw2, acce_in[:N2]))
         Yw = [a * b for a, b in liste_pairs]
         if is_even(N):  # nombre pair
@@ -901,7 +928,7 @@ def ACCE2SRO(f_in, xig, l_freq, ideb=2):
             Yw.append(Yw[N2 - ni - 1].conjugate())
             ni = ni + 1
         acce_out = NP.fft.ifft(Yw).real
-        vale_sro.append(w_0 ** ideb * max(abs(acce_out)))
+        vale_sro.append(w_0**ideb * max(abs(acce_out)))
     f_out = t_fonction(l_freq, vale_sro, para=para_sro)
     return f_out
 

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -210,7 +210,7 @@ TEST_TABLE(
 # Verification de l'utilisation du filtre basse-bas FREQ_FILTRE_ZPA
 # dans les fonctions fournies à GENE_ACCE_SEISME
 
-zpa_cut = 20.0  # Fréquence de coupure pour le filtre Butterworth
+zpa_cut = 30.0  # Fréquence de coupure pour le filtre Butterworth
 graine = 7461  # Graine
 t_pas = 0.005  # Fréquence d'échantillonage du signal
 t_DPF = 4.55  # Durée de phase forte 5-95% de l'intensité d'Arias
@@ -218,7 +218,7 @@ t_init = 1.5  # Instant du début de la durée de phase forte
 t_fin = 20.0  # Instant de fin
 n_point = int(t_fin / t_pas) + 1
 fmin = 0.1  # Fréquence minimale pour vérification du spectre cible
-fmax = 34.0  # Fréquence maximale pour vérification du spectre cible
+fmax = 50.0  # Fréquence maximale pour vérification du spectre cible
 fpas = 0.01  # Pas fréquentiel pour vérification du spectre cible
 amor = 0.05  # Amortissement de l'accélérogramme cible
 nb_iter = 50  # Nombre d'itération
@@ -250,7 +250,7 @@ L_FREQ = DEFI_LIST_REEL(
 )
 
 L_FREQ2 = DEFI_LIST_REEL(
-    DEBUT=fmin, INTERVALLE=(_F(JUSQU_A=10.0, PAS=5.0), _F(JUSQU_A=50.0, PAS=1.0))
+    DEBUT=fmin, INTERVALLE=(_F(JUSQU_A=10.0, PAS=5.0), _F(JUSQU_A=50.0, PAS=10.0))
 )
 
 # ----------------------------------------------------------------------------------
@@ -286,7 +286,8 @@ ACCE1 = GENE_ACCE_SEISME(
 # ACC = [None]*n_tir
 l_SRO = []
 l_SRO1 = []
-l_SRO2 = []
+l_SRO02 = []
+
 
 for i in range(n_tir):
     ACC = RECU_FONCTION(
@@ -297,7 +298,7 @@ for i in range(n_tir):
         SPEC_OSCI=_F(FONCTION=ACC, LIST_FREQ=L_FREQ2, NORME=9.81, AMOR_REDUIT=(amor,))
     )
 
-    SRO2 = CALC_FONCTION(
+    SRO02 = CALC_FONCTION(
         SPEC_OSCI=_F(FONCTION=ACC, LIST_FREQ=L_FREQ2, NORME=9.81, AMOR_REDUIT=(0.02,))
     )
 
@@ -306,7 +307,7 @@ for i in range(n_tir):
     )
 
     l_SRO.append(SRO)
-    l_SRO2.append(SRO2)
+    l_SRO02.append(SRO02)
     l_SRO1.append(SRO1)
 
 
@@ -314,22 +315,23 @@ SRO_MEAN = CALC_FONCTION(MOYENNE=_F(FONCTION=l_SRO))
 
 SRO_MEAN1 = CALC_FONCTION(MOYENNE=_F(FONCTION=l_SRO1))
 
-SRO_MEAN2 = CALC_FONCTION(MOYENNE=_F(FONCTION=l_SRO2))
+
+SRO_MEAN02 = CALC_FONCTION(MOYENNE=_F(FONCTION=l_SRO02))
 
 
 TEST_FONCTION(
     VALEUR=(
         _F(
-            VALE_CALC=0.34067309739490,
+            VALE_CALC=0.34258997067649,
             VALE_REFE=ZPA,
             NOM_PARA=("AMOR", "FREQ"),
-            VALE_PARA=(0.05, 35.0),
+            VALE_PARA=(0.05, 50.0),
             REFERENCE="ANALYTIQUE",
             PRECISION=0.1,
             FONCTION=SRO_MEAN,
         ),
         _F(
-            VALE_CALC=0.65668917213612,
+            VALE_CALC=0.65678447034360,
             VALE_REFE=0.655,
             NOM_PARA=("AMOR", "FREQ"),
             VALE_PARA=(0.05, 10.0),
@@ -338,22 +340,22 @@ TEST_FONCTION(
             FONCTION=SRO_MEAN,
         ),
         _F(
-            VALE_CALC=0.33953497220673,
+            VALE_CALC=0.33944919874100,
             VALE_REFE=ZPA,
             NOM_PARA=("AMOR", "FREQ"),
-            VALE_PARA=(0.1, 35.0),
+            VALE_PARA=(0.1, 50.0),
             REFERENCE="ANALYTIQUE",
             PRECISION=0.1,
             FONCTION=SRO_MEAN1,
         ),
         _F(
-            VALE_CALC=0.34265202957992,
+            VALE_CALC=0.34533942710017,
             VALE_REFE=ZPA,
             NOM_PARA=("AMOR", "FREQ"),
-            VALE_PARA=(0.02, 35.0),
+            VALE_PARA=(0.02, 50.0),
             REFERENCE="ANALYTIQUE",
             PRECISION=0.1,
-            FONCTION=SRO_MEAN2,
+            FONCTION=SRO_MEAN02,
         ),
     )
 )

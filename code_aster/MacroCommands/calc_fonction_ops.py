@@ -908,6 +908,8 @@ class CalcFonction_DSP(CalcFonctionOper):
             "FMIN": f_min,
             "FONC_SPEC": f_in,
             "NITER": kw["NB_ITER"],
+            "FREQ_FILTRE_ZPA": kw["FREQ_FILTRE_ZPA"],
+            "NB_FREQ_LISS": kw["NB_FREQ_LISS"],
         }
         if kw["FREQ_PAS"] is not None:
             SRO_args["PAS"] = kw["FREQ_PAS"]
