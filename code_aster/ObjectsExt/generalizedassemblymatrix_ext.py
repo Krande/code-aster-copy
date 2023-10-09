@@ -75,7 +75,9 @@ class BaseGeneralizedAssemblyMatrix:
 
         # On teste si la matrix existe
         if not self.exists():
-            raise AsException("L'objet matrix {0!r} n'existe pas".format(self.getName()))
+            raise AsException(
+                "L'objet matrix {0!r} n'existe pas".format(self.getName())
+            )
 
         if isinstance(self, (GeneralizedAssemblyMatrixReal,)):
             dtype = float
@@ -106,13 +108,37 @@ class BaseGeneralizedAssemblyMatrix:
         # Si le stockage est diagonal
         elif self.isDiagonal():
             diag = NP.array(self.getUpperValues())
-            assert dim == len(diag), "Dimension incorrecte : %d != %d" % (dim, len(diag))
+            assert dim == len(diag), "Dimension incorrecte : %d != %d" % (
+                dim,
+                len(diag),
+            )
             for i in range(dim):
                 valeur[i, i] = diag[i]
 
-        # Sinon on arrete tout
+        # Si le stockage est de type Morse
         else:
-            raise KeyError
+            nu = self.getGeneralizedDOFNumbering()
+
+            smos = nu.getMorseStorage()
+            smhc = smos.getDiagonalPositions()
+            smdi = smos.getRows()
+            dim = len(smdi)
+            nnz = len(smhc)
+
+            triang_sup = NP.array(self.getUpperValues())
+            if self.isSymmetric():
+                triang_inf = triang_sup
+            else:
+                triang_inf = NP.array(self.getLowerValues())
+
+            valeur = NP.zeros([dim, dim], dtype=dtype)
+            jcol = 0
+            for kterm in range(nnz):
+                ilig = smhc[kterm] - 1
+                if smdi[jcol] < kterm + 1:
+                    jcol += 1
+                valeur[jcol, ilig] = triang_inf[kterm]
+                valeur[ilig, jcol] = triang_sup[kterm]
 
         return valeur
 
@@ -126,7 +152,9 @@ class BaseGeneralizedAssemblyMatrix:
 
         # On teste si le DESC de la matrix existe
         if not self.exists():
-            raise AsException("L'objet matrix {0!r} n'existe pas".format(self.getName()))
+            raise AsException(
+                "L'objet matrix {0!r} n'existe pas".format(self.getName())
+            )
 
         NP.asarray(matrix)
 

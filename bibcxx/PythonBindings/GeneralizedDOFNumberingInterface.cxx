@@ -41,5 +41,6 @@ void exportGeneralizedDOFNumberingToPython( py::module_ &mod ) {
         .def( "setModalBasis", py::overload_cast< const ModeResultPtr & >(
                                    &GeneralizedDOFNumbering::setModalBasis ) )
         .def( "setModalBasis", py::overload_cast< const GeneralizedModeResultPtr & >(
-                                   &GeneralizedDOFNumbering::setModalBasis ) );
+                                   &GeneralizedDOFNumbering::setModalBasis ) )
+        .def( "getMorseStorage", &GeneralizedDOFNumbering::getMorseStorage );
 };

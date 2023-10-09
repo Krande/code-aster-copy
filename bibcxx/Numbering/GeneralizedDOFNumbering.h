@@ -147,6 +147,11 @@ class GeneralizedDOFNumbering : public DataStructure {
         }
         return false;
     };
+
+    /**
+     * @brief Get Morse storage
+     */
+    MorseStoragePtr getMorseStorage() const { return _smos; };
 };
 
 /**
