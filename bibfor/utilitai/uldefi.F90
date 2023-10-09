@@ -97,7 +97,7 @@ subroutine uldefi(unit, ficnom, ddnom, typf, acces, &
             call utmess('F', 'UTILITAI5_5', sk=k1acc)
         end if
         if (k1aut .ne. 'O' .and. k1aut .ne. 'N') then
-            call utmess('F', 'UTILITAI5_6', sk=k1aut)
+            call utmess('F', 'UTILITAI5_4', sk=k1aut)
         end if
         if (k1typ .eq. 'A') then
 !

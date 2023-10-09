@@ -57,7 +57,7 @@ subroutine ulopen(unit, fichie, name, acces, autor)
     character(len=1) :: k1acce, k1aut
     integer :: i, ierr, ier1, ier2, ifile
     aster_logical :: v11
-    character(len=80) :: valk(3)
+    character(len=255) :: valk(3)
 !     CONSERVER LA COHERENCE AVEC IBIMPR
     integer :: mximpr
     parameter(mximpr=3)
@@ -107,26 +107,26 @@ subroutine ulopen(unit, fichie, name, acces, autor)
                                 end if
                                 valk(1) = k4b
                                 valk(2) = ddname(i)
-                                valk(3) = namefi(i) (1:80)
+                                valk(3) = namefi(i)
                                 call utmess('E', 'UTILITAI5_11', nk=3, valk=valk)
                                 call utmess('F', 'UTILITAI5_12', sk=name16)
                             else
                                 valk(1) = k4b
                                 valk(2) = accefi(i)
-                                valk(3) = namefi(i) (1:80)
+                                valk(3) = namefi(i)
                                 call utmess('E', 'UTILITAI5_13', nk=3, valk=valk)
                                 call utmess('F', 'UTILITAI5_14')
                             end if
                         end if
                     else
                         valk(1) = k4b
-                        valk(2) = namefi(i) (1:80)
+                        valk(2) = namefi(i)
                         call utmess('E', 'UTILITAI5_15', nk=2, valk=valk)
                         call utmess('F', 'UTILITAI5_16')
                     end if
                 else
                     valk(1) = k4b
-                    valk(2) = namefi(i) (1:80)
+                    valk(2) = namefi(i)
                     valk(3) = ddname(i)
                     call utmess('F', 'UTILITAI5_17', nk=3, valk=valk)
                 end if
@@ -143,7 +143,7 @@ subroutine ulopen(unit, fichie, name, acces, autor)
         if (k1acce .eq. 'O') then
             inquire (file=namell, exist=v11, iostat=ier1)
             if (.not. v11) then
-                valk(1) = namell(1:80)
+                valk(1) = namell
                 valk(2) = k8b
                 call utmess('F', 'UTILITAI5_1', nk=2, valk=valk)
             end if
@@ -154,7 +154,7 @@ subroutine ulopen(unit, fichie, name, acces, autor)
                 open (unit=unit, file=namell, iostat=ier2)
                 if (ier2 .ne. 0) then
                     valk(1) = k4b
-                    valk(2) = namell(1:80)
+                    valk(2) = namell
                     call utmess('F', 'UTILITAI5_18', nk=2, valk=valk)
                 end if
                 call ulposi(unit, k1acce, ierr)

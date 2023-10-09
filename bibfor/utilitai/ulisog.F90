@@ -49,7 +49,7 @@ subroutine ulisog(unit, fname, etat)
 !
     if (unit .lt. 0) then
         write (k8bid, '(I4)')-unit
-        call utmess('F', 'UTILITAI5_9', sk=k8bid)
+        call utmess('F', 'UTILITAI5_4', sk=k8bid)
     end if
     fname = ' '
     etat = 'F'

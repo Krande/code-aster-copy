@@ -116,7 +116,9 @@ class Action:
 class LogicalUnitFile:
     """This class defines a file associated to a fortran logical unit"""
 
-    _free_number = list(range(19, 100))
+    _umin = 19
+    _umax = 100
+    _free_number = list(range(_umin, _umax))
     # keep in memory: {unit_number: LogicalUnitFile objects}
     _used_unit = {}
 
@@ -159,8 +161,8 @@ class LogicalUnitFile:
         unit = cls._get_free_number()
         return cls(unit, filename, Action.Open, typ, access)
 
-    @staticmethod
-    def register(unit, filename, action, typ=FileType.Ascii, access=FileAccess.New):
+    @classmethod
+    def register(cls, unit, filename, action, typ=FileType.Ascii, access=FileAccess.New):
         """Register a logical unit to the fortran manager.
 
         Arguments:
@@ -237,8 +239,16 @@ class LogicalUnitFile:
     @classmethod
     def _register(cls, fileobj):
         """Register a logical unit."""
-        logger.debug("LogicalUnit: register unit %d, name %r", fileobj._unit, fileobj._filename)
-        cls._used_unit[fileobj._unit] = fileobj
+        unit = fileobj._unit
+        logger.debug("LogicalUnit: register unit %d, name %r", unit, fileobj._filename)
+        cls._used_unit[unit] = fileobj
+        try:
+            cls._free_number.remove(unit)
+        except ValueError:
+            pass
+        # if action == Action.Close and cls._umin <= unit < cls._umax:
+        #     cls._free_number.append(unit)
+        logger.debug("LogicalUnit: free %s", sorted(cls._free_number))
 
     @classmethod
     def release_from_number(cls, unit, to_register=True):
@@ -257,7 +267,7 @@ class LogicalUnitFile:
         if to_register:
             cls.register(unit, fileobj.filename, Action.Close)
         if unit in cls._used_unit:
-            if unit not in RESERVED_UNIT and 0 < unit < 100:
+            if unit not in RESERVED_UNIT and cls._umin <= unit < cls._umax:
                 cls._free_number.append(unit)
             del cls._used_unit[unit]
 
