@@ -25,7 +25,10 @@
 # MODELISATION DKT:  ROTATION DE LA PLAQUE / MODELISATION A
 #                    COTE AB SUR LA DROITE 3Y=4X
 # ======================================================================
+import code_aster
+import numpy as np
 
+test = code_aster.TestCase()
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
@@ -33,11 +36,15 @@ MA = LIRE_MAILLAGE(FORMAT="MED")
 
 MA = DEFI_GROUP(reuse=MA, MAILLAGE=MA, CREA_GROUP_MA=_F(NOM="TOUT", TOUT="OUI"))
 
-MO = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="DKT"))
+MO = AFFE_MODELE(
+    MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="DKT")
+)
 
 CARELEM = AFFE_CARA_ELEM(MODELE=MO, COQUE=_F(GROUP_MA="TOUT", EPAIS=0.01))
 
-MAT = DEFI_MATERIAU(ELAS=_F(E=2.1e11, NU=0.3, RHO=7800.0, AMOR_ALPHA=0.1, AMOR_BETA=0.1))
+MAT = DEFI_MATERIAU(
+    ELAS=_F(E=2.1e11, NU=0.3, RHO=7800.0, AMOR_ALPHA=0.1, AMOR_BETA=0.1)
+)
 
 CHMAT = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=MAT))
 
@@ -47,7 +54,8 @@ CHMAT = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=MAT))
 # ---- CAS1: PLAQUE ENCASTREE SUR UN COTE
 
 CHCAS1 = AFFE_CHAR_MECA(
-    MODELE=MO, DDL_IMPO=_F(GROUP_NO="GRNM11", DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0)
+    MODELE=MO,
+    DDL_IMPO=_F(GROUP_NO="GRNM11", DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0),
 )
 
 # ---- CAS2: PLAQUE LIBRE-LIBRE   ==>   PAS DE CHCAS2
@@ -74,9 +82,13 @@ MATASSM1 = ASSE_MATRICE(MATR_ELEM=MELM1, NUME_DDL=NUM1)
 
 # ------ CAS2
 
-MELR2 = CALC_MATR_ELEM(MODELE=MO, CARA_ELEM=CARELEM, CHAM_MATER=CHMAT, OPTION="RIGI_MECA")
+MELR2 = CALC_MATR_ELEM(
+    MODELE=MO, CARA_ELEM=CARELEM, CHAM_MATER=CHMAT, OPTION="RIGI_MECA"
+)
 
-MELM2 = CALC_MATR_ELEM(MODELE=MO, CARA_ELEM=CARELEM, CHAM_MATER=CHMAT, OPTION="MASS_MECA")
+MELM2 = CALC_MATR_ELEM(
+    MODELE=MO, CARA_ELEM=CARELEM, CHAM_MATER=CHMAT, OPTION="MASS_MECA"
+)
 
 NUM2 = NUME_DDL(MATR_RIGI=MELR2)
 
@@ -90,14 +102,20 @@ MATASSM2 = ASSE_MATRICE(MATR_ELEM=MELM2, NUME_DDL=NUM2)
 # --------- CAS1
 
 MODE1 = CALC_MODES(
-    MATR_RIGI=MATASSR1, OPTION="BANDE", CALC_FREQ=_F(FREQ=(8.0, 140.0)), MATR_MASS=MATASSM1
+    MATR_RIGI=MATASSR1,
+    OPTION="BANDE",
+    CALC_FREQ=_F(FREQ=(8.0, 140.0)),
+    MATR_MASS=MATASSM1,
 )
 
 
 # --------- CAS2
 
 MODE2 = CALC_MODES(
-    MATR_RIGI=MATASSR2, OPTION="BANDE", CALC_FREQ=_F(FREQ=(32.0, 90.0)), MATR_MASS=MATASSM2
+    MATR_RIGI=MATASSR2,
+    OPTION="BANDE",
+    CALC_FREQ=_F(FREQ=(32.0, 90.0)),
+    MATR_MASS=MATASSM2,
 )
 
 
@@ -224,6 +242,70 @@ TEST_RESU(
     )
 )
 
+# Test IMPR_RESU without PARTIE
+idofs = np.array(NUM1.getPhysicalDOFs())
+deplr_refe = np.array(MODE1.getField("DEPL", 1).getValues())[idofs]
+
+IMPR_RESU(
+    FORMAT="MED",
+    UNITE=11,
+    RESU=_F(
+        RESULTAT=MODE1,
+        NOM_CHAM="DEPL",
+        NOM_CHAM_MED="DEPL",
+    ),
+)
+
+resu = LIRE_RESU(
+    UNITE=11,
+    MODELE=MO,
+    FORMAT="MED",
+    FORMAT_MED=_F(NOM_CHAM="DEPL", NOM_CHAM_MED="DEPL"),
+    TYPE_RESU="MODE_MECA",
+    TOUT_ORDRE="OUI",
+)
+
+valr = np.array(resu.getField("DEPL", 1).getValues())
+
+print("Testing IMPR_RESU - Real results:")
+test.assertAlmostEqual(np.linalg.norm(valr - deplr_refe), 0.0)
+
+
+# Test IMPR_RESU with PARTIE
+dict_unites = {"REEL": 12, "IMAG": 13, "MODULE": 14, "PHASE": 15}
+valr_refe = {
+    "REEL": deplr_refe,
+    "IMAG": np.zeros(deplr_refe.shape),
+    "MODULE": np.abs(deplr_refe),
+    "PHASE": np.angle(deplr_refe, deg=True),
+}
+for partie, unite in dict_unites.items():
+    IMPR_RESU(
+        FORMAT="MED",
+        UNITE=unite,
+        RESU=_F(
+            RESULTAT=MODE1,
+            PARTIE=partie,
+            NOM_CHAM="DEPL",
+            NOM_CHAM_MED="DEPL_{0}".format(partie),
+        ),
+    )
+
+    resu = LIRE_RESU(
+        UNITE=unite,
+        MODELE=MO,
+        FORMAT="MED",
+        FORMAT_MED=_F(NOM_CHAM="DEPL", NOM_CHAM_MED="DEPL_{0}".format(partie)),
+        TYPE_RESU="MODE_MECA",
+        TOUT_ORDRE="OUI",
+    )
+
+    valr = np.array(resu.getField("DEPL", 1).getValues())
+
+    print("Testing IMPR_RESU/{0} - Real results:".format(partie))
+    test.assertAlmostEqual(np.linalg.norm(valr - valr_refe[partie]), 0.0)
+
+
 # =====================================================================
 #                   C A L C U L    H A R M O N I Q U E
 # =====================================================================
@@ -296,19 +378,48 @@ DYNHARM = CALC_CHAMP(
 
 
 DHPOS = POST_CHAMP(
-    RESULTAT=DYNHARM, EXTR_COQUE=_F(NOM_CHAM="SIGM_ELNO", NUME_COUCHE=1, NIVE_COUCHE="MOY")
+    RESULTAT=DYNHARM,
+    EXTR_COQUE=_F(NOM_CHAM="SIGM_ELNO", NUME_COUCHE=1, NIVE_COUCHE="MOY"),
 )
 DYNHARM = CALC_CHAMP(reuse=DYNHARM, RESULTAT=DYNHARM, CONTRAINTE="EFGE_NOEU")
 
 
-# Test PARTIE
-IMPR_RESU(FORMAT="RESULTAT", UNITE=12, RESU=_F(RESULTAT=DYNHARM, PARTIE="REEL"))
+# Test IMPR_RESU with PARTIE
+idofs = np.array(NUM3.getPhysicalDOFs())
+deplc_refe = np.array(DYNHARM.getField("DEPL", 1).getValues())[idofs]
+dict_unites = {"REEL": 32, "IMAG": 33, "MODULE": 34, "PHASE": 35}
+valc_refe = {
+    "REEL": np.real(deplc_refe),
+    "IMAG": np.imag(deplc_refe),
+    "MODULE": np.abs(deplc_refe),
+    "PHASE": np.angle(deplc_refe, deg=True),
+}
+for partie, unite in dict_unites.items():
+    IMPR_RESU(
+        FORMAT="MED",
+        UNITE=unite,
+        RESU=_F(
+            RESULTAT=DYNHARM,
+            PARTIE=partie,
+            NOM_CHAM="DEPL",
+            NOM_CHAM_MED="DEPL_{0}".format(partie),
+        ),
+    )
 
-IMPR_RESU(FORMAT="RESULTAT", UNITE=13, RESU=_F(RESULTAT=DYNHARM, PARTIE="IMAG"))
+    resu = LIRE_RESU(
+        UNITE=unite,
+        MODELE=MO,
+        FORMAT="MED",
+        FORMAT_MED=_F(NOM_CHAM="DEPL", NOM_CHAM_MED="DEPL_{0}".format(partie)),
+        TYPE_RESU="MODE_MECA",
+        TOUT_ORDRE="OUI",
+    )
 
-IMPR_RESU(FORMAT="RESULTAT", UNITE=14, RESU=_F(RESULTAT=DYNHARM, PARTIE="MODULE"))
+    valc = np.array(resu.getField("DEPL", 1).getValues())
 
-IMPR_RESU(FORMAT="RESULTAT", UNITE=17, RESU=_F(RESULTAT=DYNHARM, PARTIE="PHASE"))
+    print("Testing IMPR_RESU/{0} - Complex results:".format(partie))
+    test.assertAlmostEqual(np.linalg.norm(valc - valc_refe[partie]), 0.0)
+
 
 # FOr ELNO fields
 IMPR_RESU(FORMAT="RESULTAT", UNITE=16, RESU=_F(RESULTAT=DHPOS, PARTIE="REEL"))
