@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,49 +22,37 @@ from ..Utilities import _
 cata_msg = {
 
     1 : _("""
- Le fichier de nom %(k1)s associé à l'unité logique %(k2)s n'existe pas.
+Le fichier de nom '%(k1)s' associé à l'unité logique %(k2)s n'existe pas.
 """),
 
     3 : _("""
- sélection de ddl : choix < %(k1)s > inconnu
+Sélection de ddl : choix '%(k1)s' inconnu
 """),
 
     4 : _("""
- argument d'appel invalide :   %(k1)s
+Argument d'appel invalide : '%(k1)s'
 Ce message est un message d'erreur développeur.
 Contactez le support technique.
 """),
 
     5 : _("""
- argument d'appel invalide :  ACCES =  %(k1)s
-"""),
-
-    6 : _("""
-Argument d'appel invalide :   %(k1)s
-Ce message est un message d'erreur développeur.
-Contactez le support technique.
+Argument d'appel invalide :  ACCES = '%(k1)s'
 """),
 
     7 : _("""
- redéfinition de l'unité logique  %(k1)s  non autorisée
+Redéfinition de l'unité logique %(k1)s non autorisée
 """),
 
     8 : _("""
- nombre maximum d'unités logiques ouvertes atteint  %(k1)s
-"""),
-
-    9 : _("""
- argument d'appel invalide :  %(k1)s
-Ce message est un message d'erreur développeur.
-Contactez le support technique.
+Nombre maximum d'unités logiques ouvertes atteint %(k1)s
 """),
 
     10 : _("""
- aucun numéro d'unité logique disponible
+Aucun numéro d'unité logique disponible
 """),
 
     11 : _("""
- unité logique  %(k1)s  associée au nom  %(k2)s  et au fichier  %(k3)s
+L'unité logique %(k1)s associée au nom  %(k2)s  et au fichier  %(k3)s
 """),
 
     12 : _("""
@@ -72,7 +60,7 @@ Contactez le support technique.
 """),
 
     13 : _("""
- unité logique  %(k1)s  déjà utilisée en accès  %(k2)s  par le fichier  %(k3)s
+L'unité logique %(k1)s déjà utilisée en accès  %(k2)s  par le fichier '%(k3)s'
 """),
 
     14 : _("""
@@ -80,25 +68,25 @@ Contactez le support technique.
 """),
 
     15 : _("""
- unité logique  %(k1)s  déjà utilisée en mode binaire par le fichier  %(k2)s
+L'unité logique %(k1)s déjà utilisée en mode binaire par le fichier '%(k2)s'
 """),
 
     16 : _("""
- vous devez d'abord fermer le fichier associe
+ vous devez d'abord fermer le fichier associé
 """),
 
     17 : _("""
- unité logique  %(k1)s  déjà utilisée par le fichier  %(k2)s  associée au nom  %(k3)s
+L'unité logique %(k1)s déjà utilisée par le fichier '%(k2)s', associée au nom '%(k3)s'
 """),
 
     18 : _("""
- unité logique  %(k1)s , problème lors de l'ouverture du fichier %(k2)s
+Pour l'unité logique %(k1)s, problème lors de l'ouverture du fichier '%(k2)s'.
 Ce message est un message d'erreur développeur.
 Contactez le support technique.
 """),
 
     19 : _("""
- unité logique  %(k1)s , problème lors du positionnement
+Pour l'unité logique %(k1)s, problème lors du positionnement
 """),
 
     20 : _("""
@@ -110,11 +98,11 @@ Contactez le support technique.
 """),
 
     22 : _("""
- unité logique  %(k1)s , problème lors du close de la réservation.
+Pour l'unité logique %(k1)s, problème lors de la fermeture de la réservation.
 """),
 
     23 : _("""
- La redéfinition de l'unité logique  %(k1)s n'est pas autorisée.
+ La redéfinition de l'unité logique %(k1)s n'est pas autorisée.
 """),
 
     24 : _("""

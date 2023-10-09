@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ function ulisop(unit, name)
 !
     if (unit .lt. 0) then
         write(k8bid,'(I4)') unit
-        call utmess('F', 'UTILITAI5_9', sk=k8bid)
+        call utmess('F', 'UTILITAI5_4', sk=k8bid)
     endif
     name = '?'
     ival = 0
