@@ -98,25 +98,27 @@ subroutine ircmva(numcmp, indcmp, ncmpve, ncmprf, nvalec, &
     call dismoi('TYPE_SCA', gd, 'GRANDEUR', repk=typcha)
     call jeveuo(indcmp, 'L', jindcm)
 !
-    if (typcha .eq. 'R') then
-        fieldScalar = 1
-    else if (typcha .eq. 'C') then
-        if (cplxFormat .eq. 'REEL') then
-            fieldScalar = 2
-        else if (cplxFormat .eq. 'IMAG') then
-            fieldScalar = 3
-        else if (cplxFormat .eq. 'MODULE') then
-            fieldScalar = 4
-        else if (cplxFormat .eq. 'PHASE') then
-            fieldScalar = 5
-        else
+    if (cplxFormat .eq. 'REEL') then
+        fieldScalar = 2 
+    else if (cplxFormat .eq. 'IMAG') then 
+        fieldScalar = 3
+    else if (cplxFormat .eq. 'MODULE') then 
+        fieldScalar = 4
+    else if (cplxFormat .eq. 'PHASE') then 
+        fieldScalar = 5
+    else 
+        if (typcha .eq. 'R') then
+            fieldScalar = 1 
+        else if (typcha .eq. 'C') then 
             call utmess('F', 'RESULT3_69')
-        end if
-    else
+        end if 
+    end if 
+
+    if ((typcha .ne. 'R') .and. (typcha .ne. 'C')) then
         valk(1) = gd
         valk(2) = 'IRCMVA'
         call utmess('F', 'DVP_3', nk=2, valk=valk)
-    end if
+    end if  
 !
 ! 1.1. ==> RECUPERATION DU NIVEAU D'IMPRESSION
 !
@@ -171,15 +173,32 @@ subroutine ircmva(numcmp, indcmp, ncmpve, ncmprf, nvalec, &
                     if (fieldScalar .eq. 1) then
                         val(poscmp, 1, 1, jaux) = zr(adsvxx+kaux)
                     else if (fieldScalar .eq. 2) then
-                        val(poscmp, 1, 1, jaux) = dble(zc(adsvxx+kaux))
+                        if (typcha .eq. 'R') then
+                            val(poscmp, 1, 1, jaux) = zr(adsvxx+kaux)
+                        else if (typcha .eq. 'C') then 
+                            val(poscmp, 1, 1, jaux) = dble(zc(adsvxx+kaux))
+                        end if 
                     else if (fieldScalar .eq. 3) then
-                        val(poscmp, 1, 1, jaux) = dimag(zc(adsvxx+kaux))
+                        if (typcha .eq. 'R') then
+                            val(poscmp, 1, 1, jaux) = 0.d0
+                        else if (typcha .eq. 'C') then  
+                            val(poscmp, 1, 1, jaux) = dimag(zc(adsvxx+kaux))
+                        end if 
                     else if (fieldScalar .eq. 4) then
-                        val(poscmp, 1, 1, jaux) = abs(zc(adsvxx+kaux))
+                        if (typcha .eq. 'R') then
+                            val(poscmp, 1, 1, jaux) = abs(zr(adsvxx+kaux))
+                        else if (typcha .eq. 'C') then  
+                            val(poscmp, 1, 1, jaux) = abs(zc(adsvxx+kaux))
+                        end if 
                     else if (fieldScalar .eq. 5) then
-                        val(poscmp, 1, 1, jaux) = atan2(dimag(zc(adsvxx+kaux)), &
-                                                        dble(zc(adsvxx+kaux))) &
-                                                  *180.d0/r8pi()
+                        if (typcha .eq. 'R') then
+                            val(poscmp, 1, 1, jaux) = atan2(0.d0, zr(adsvxx+kaux)) & 
+                                                    *180.d0/r8pi()
+                        else if (typcha .eq. 'C') then  
+                            val(poscmp, 1, 1, jaux) = atan2(dimag(zc(adsvxx+kaux)), &
+                                                            dble(zc(adsvxx+kaux))) &
+                                                    *180.d0/r8pi()
+                        end if 
                     end if
                 else
                     lprolz = .true.
@@ -246,18 +265,38 @@ subroutine ircmva(numcmp, indcmp, ncmpve, ncmprf, nvalec, &
                                 val(poscmp, nrsp, nuanom(tymast, nrpg), jaux) = &
                                     zr(adsv-1+kaux)
                             else if (fieldScalar .eq. 2) then
-                                val(poscmp, nrsp, nuanom(tymast, nrpg), jaux) = &
-                                    dble(zc(adsv-1+kaux))
+                                if (typcha .eq. 'R') then 
+                                    val(poscmp, nrsp, nuanom(tymast, nrpg), jaux) = &
+                                        zr(adsv-1+kaux)
+                                else if (typcha .eq. 'C') then 
+                                    val(poscmp, nrsp, nuanom(tymast, nrpg), jaux) = &
+                                        dble(zc(adsv-1+kaux))
+                                end if 
                             else if (fieldScalar .eq. 3) then
-                                val(poscmp, nrsp, nuanom(tymast, nrpg), jaux) = &
-                                    dimag(zc(adsv-1+kaux))
+                                if (typcha .eq. 'R') then 
+                                    val(poscmp, nrsp, nuanom(tymast, nrpg), jaux) = &
+                                        0.d0
+                                else if (typcha .eq. 'C') then
+                                    val(poscmp, nrsp, nuanom(tymast, nrpg), jaux) = &
+                                        dimag(zc(adsv-1+kaux))
+                                end if 
                             else if (fieldScalar .eq. 4) then
-                                val(poscmp, nrsp, nuanom(tymast, nrpg), jaux) = &
-                                    abs(zc(adsv-1+kaux))
+                                if (typcha .eq. 'R') then 
+                                    val(poscmp, nrsp, nuanom(tymast, nrpg), jaux) = &
+                                        abs(zr(adsv-1+kaux))
+                                else if (typcha .eq. 'C') then 
+                                    val(poscmp, nrsp, nuanom(tymast, nrpg), jaux) = &
+                                        abs(zc(adsv-1+kaux))
+                                end if 
                             else if (fieldScalar .eq. 5) then
-                                val(poscmp, nrsp, nuanom(tymast, nrpg), jaux) = &
-                                    atan2(dimag(zc(adsv-1+kaux)), dble(zc(adsv-1+kaux))) &
-                                    *180.d0/r8pi()
+                                if (typcha .eq. 'R') then 
+                                    val(poscmp, nrsp, nuanom(tymast, nrpg), jaux) = &
+                                        atan2(0.d0, zr(adsv-1+kaux))*180.d0/r8pi()
+                                else if (typcha .eq. 'C') then 
+                                    val(poscmp, nrsp, nuanom(tymast, nrpg), jaux) = &
+                                        atan2(dimag(zc(adsv-1+kaux)), dble(zc(adsv-1+kaux))) &
+                                        *180.d0/r8pi()
+                                end if 
                             end if
                         end if
                     end do
@@ -273,15 +312,32 @@ subroutine ircmva(numcmp, indcmp, ncmpve, ncmprf, nvalec, &
                                 if (fieldScalar .eq. 1) then
                                     val(poscmp, nrsp, nrpg, jaux) = zr(adsv-1+kaux)
                                 else if (fieldScalar .eq. 2) then
-                                    val(poscmp, nrsp, nrpg, jaux) = dble(zc(adsv-1+kaux))
+                                    if (typcha .eq. 'R') then 
+                                        val(poscmp, nrsp, nrpg, jaux) = zr(adsv-1+kaux)
+                                    else if (typcha .eq. 'C') then 
+                                        val(poscmp, nrsp, nrpg, jaux) = dble(zc(adsv-1+kaux))
+                                    end if 
                                 else if (fieldScalar .eq. 3) then
-                                    val(poscmp, nrsp, nrpg, jaux) = dimag(zc(adsv-1+kaux))
+                                    if (typcha .eq. 'R') then 
+                                        val(poscmp, nrsp, nrpg, jaux) = 0.d0
+                                    else if (typcha .eq. 'C') then 
+                                        val(poscmp, nrsp, nrpg, jaux) = dimag(zc(adsv-1+kaux))
+                                    end if 
                                 else if (fieldScalar .eq. 4) then
-                                    val(poscmp, nrsp, nrpg, jaux) = abs(zc(adsv-1+kaux))
+                                    if (typcha .eq. 'R') then 
+                                        val(poscmp, nrsp, nrpg, jaux) = abs(zr(adsv-1+kaux))
+                                    else if (typcha .eq. 'C') then 
+                                        val(poscmp, nrsp, nrpg, jaux) = abs(zc(adsv-1+kaux))
+                                    end if 
                                 else if (fieldScalar .eq. 5) then
-                                    val(poscmp, nrsp, nrpg, jaux) = &
-                                        atan2(dimag(zc(adsv-1+kaux)), dble(zc(adsv-1+kaux))) &
-                                        *180.d0/r8pi()
+                                    if (typcha .eq. 'R') then 
+                                        val(poscmp, nrsp, nrpg, jaux) = &
+                                            atan2(0.d0, zr(adsv-1+kaux))*180.d0/r8pi()
+                                    else if (typcha .eq. 'C') then 
+                                        val(poscmp, nrsp, nrpg, jaux) = &
+                                            atan2(dimag(zc(adsv-1+kaux)), dble(zc(adsv-1+kaux))) &
+                                            *180.d0/r8pi()
+                                    end if 
                                 end if
                             end if
                         end do
