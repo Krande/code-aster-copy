@@ -75,9 +75,7 @@ class BaseGeneralizedAssemblyMatrix:
 
         # On teste si la matrix existe
         if not self.exists():
-            raise AsException(
-                "L'objet matrix {0!r} n'existe pas".format(self.getName())
-            )
+            raise AsException("L'objet matrix {0!r} n'existe pas".format(self.getName()))
 
         if isinstance(self, (GeneralizedAssemblyMatrixReal,)):
             dtype = float
@@ -108,10 +106,7 @@ class BaseGeneralizedAssemblyMatrix:
         # Si le stockage est diagonal
         elif self.isDiagonal():
             diag = NP.array(self.getUpperValues())
-            assert dim == len(diag), "Dimension incorrecte : %d != %d" % (
-                dim,
-                len(diag),
-            )
+            assert dim == len(diag), "Dimension incorrecte : %d != %d" % (dim, len(diag))
             for i in range(dim):
                 valeur[i, i] = diag[i]
 
@@ -152,9 +147,7 @@ class BaseGeneralizedAssemblyMatrix:
 
         # On teste si le DESC de la matrix existe
         if not self.exists():
-            raise AsException(
-                "L'objet matrix {0!r} n'existe pas".format(self.getName())
-            )
+            raise AsException("L'objet matrix {0!r} n'existe pas".format(self.getName()))
 
         NP.asarray(matrix)
 
