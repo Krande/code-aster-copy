@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -379,7 +379,7 @@ CHCIF=AFFE_CHAR_CINE_F(       MODELE=MO,THER_IMPO=(
 #   COMMANDES GLOBALES DE THERMIQUE
 # ----------------------------------------------------------------------
 
-THL10=THER_LINEAIRE(        MODELE=MO,
+THL10=THER_LINEAIRE(        MODELE=MO, PARM_THETA=1,
                           CHAM_MATER=CHMAT,EXCIT=(
                                _F( CHARGE = CHTH1,
                                       FONC_MULT = FOF),
@@ -407,7 +407,7 @@ THL10=CALC_META(reuse=THL10,
 
 #     -  THERMIQUE NON LINEAIRE
 #        ----------------------
-THNL1=THER_NON_LINE(        MODELE=MO,
+THNL1=THER_NON_LINE(        MODELE=MO, PARM_THETA=1,
                           CHAM_MATER=CHMATNL,EXCIT=(
                                _F(  CHARGE = CHTH1,
                                        FONC_MULT = FOE),
@@ -451,49 +451,49 @@ TEST_RESU(RESU=(
                    TYPE_TEST='SOMM_ABS',
                    RESULTAT=THL10,
                    NOM_CHAM='TEMP',
-                   VALE_CALC=573.17165332038,
+                   VALE_CALC=575.0465364139636,
                    ),
                 _F(NUME_ORDRE=1,
                    TYPE_TEST='SOMM_ABS',
                    RESULTAT=THL10,
                    NOM_CHAM='META_ELNO',
-                   VALE_CALC=3710.651137322422,
+                   VALE_CALC=3696.770634863106,
                    ),
                 _F(NUME_ORDRE=1,
                    TYPE_TEST='SOMM_ABS',
                    RESULTAT=THL10,
                    NOM_CHAM='FLUX_ELGA',
-                   VALE_CALC=1120.0857980967,
+                   VALE_CALC=962.3618305341771,
                    ),
                 _F(NUME_ORDRE=1,
                    TYPE_TEST='SOMM_ABS',
                    RESULTAT=THL10,
                    NOM_CHAM='FLUX_ELNO',
-                   VALE_CALC=1245.0042888379,
+                   VALE_CALC=1075.4405110058726,
                    ),
                 _F(NUME_ORDRE=2,
                    TYPE_TEST='SOMM_ABS',
                    RESULTAT=THL10,
                    NOM_CHAM='TEMP',
-                   VALE_CALC=723.07235189486,
+                   VALE_CALC=694.0999373311463,
                    ),
                 _F(NUME_ORDRE=2,
                    TYPE_TEST='SOMM_ABS',
                    RESULTAT=THL10,
                    NOM_CHAM='META_ELNO',
-                   VALE_CALC=3726.622656588222,
+                   VALE_CALC=3651.9117008266585,
                    ),
                 _F(NUME_ORDRE=2,
                    TYPE_TEST='SOMM_ABS',
                    RESULTAT=THL10,
                    NOM_CHAM='FLUX_ELGA',
-                   VALE_CALC=1106.8678578828999,
+                   VALE_CALC=1072.1862281212955,
                    ),
                 _F(NUME_ORDRE=2,
                    TYPE_TEST='SOMM_ABS',
                    RESULTAT=THL10,
                    NOM_CHAM='FLUX_ELNO',
-                   VALE_CALC=1233.0444127143001,
+                   VALE_CALC=1198.1165002975054,
                    ),
                 _F(NUME_ORDRE=0,
                    TYPE_TEST='SOMM_ABS',

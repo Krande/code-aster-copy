@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -48,7 +48,7 @@ LTMPS=DEFI_LIST_REEL(   DEBUT=0.,INTERVALLE=(
 # 1. Calcul de reference :
 #-------------------------
 
-TEMPE=THER_NON_LINE(  MODELE=MODEL,
+TEMPE=THER_NON_LINE(  MODELE=MODEL, PARM_THETA=1,
                           ETAT_INIT=_F(  VALE = 0.E0),
                           INCREMENT=_F(  LIST_INST = LTMPS),
                           CHAM_MATER=CHMAT,
@@ -61,7 +61,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   NOM_CHAM='TEMP',
                   NOEUD='N15',
                   NOM_CMP='TEMP',
-                  VALE_CALC=22.4232294839,),
+                  VALE_CALC=23.47065084696734,),
           )
 
 
@@ -168,7 +168,7 @@ CHTH2=AFFE_CHAR_THER(MODELE=MODEL,
                      EVOL_CHAR=EVOL_RE2,
                      )
 
-TEMPE2=THER_NON_LINE(  MODELE=MODEL,
+TEMPE2=THER_NON_LINE(  MODELE=MODEL, PARM_THETA=1,
                           ETAT_INIT=_F(  VALE = 0.E0),
                           INCREMENT=_F(  LIST_INST = LTMPS),
                           CHAM_MATER=CHMAT,
@@ -182,8 +182,8 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   NOM_CHAM='TEMP',
                   NOEUD='N15',
                   NOM_CMP='TEMP',
-                  VALE_CALC=22.4232294839,
-                  VALE_REFE=22.4232294839,
+                  VALE_CALC=23.47065084696734,
+                  VALE_REFE=23.47065084696734,
                   PRECISION=1.E-6),
           )
 
@@ -302,7 +302,7 @@ CHTH3=AFFE_CHAR_THER(MODELE=MODEL,
                      EVOL_CHAR=EVOL_RE3,
                      )
 
-TEMPE3=THER_NON_LINE(  MODELE=MODEL,
+TEMPE3=THER_NON_LINE(  MODELE=MODEL, PARM_THETA=1,
                           ETAT_INIT=_F(  VALE = 0.E0),
                           INCREMENT=_F(  LIST_INST = LTMPS),
                           CHAM_MATER=CHMAT,
@@ -316,8 +316,8 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   NOM_CHAM='TEMP',
                   NOEUD='N15',
                   NOM_CMP='TEMP',
-                  VALE_CALC=22.4232294839,
-                  VALE_REFE=22.4232294839,
+                  VALE_CALC=23.47065084696734,
+                  VALE_REFE=23.47065084696734,
                   PRECISION=1.E-6),
           )
 

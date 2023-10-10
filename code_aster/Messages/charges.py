@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -188,6 +188,17 @@ On ne peut pas piloter en l'absence de forces de type FIXE_PILO.
     40: _(
         """
 On ne peut pas piloter plus d'une charge.
+"""
+    ),
+    41: _(
+        """
+La charge %(k1)s contient une condition de type %(k2)s et elle n'est pas compatible avec FONC_MULT,
+sauf si PARM_THETA vaut 1.
+"""
+    ),
+    42: _(
+        """
+""Les chargements de type EVOL_CHAR sont interdits avec THER_NON_LINE si PARM_THETA est différent de 1.
 """
     ),
     50: _(

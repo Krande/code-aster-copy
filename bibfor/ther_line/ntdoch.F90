@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,6 +27,7 @@ implicit none
 #include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
 #include "asterfort/focste.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/liscad.h"
 #include "asterfort/lisccr.h"
 #include "asterfort/nmdoch_nbload.h"
@@ -64,7 +65,7 @@ character(len=1), optional, intent(in) :: basez
     integer, parameter :: nb_type_neum  = 10
     aster_logical :: list_load_keyw(nb_type_neum)
     aster_logical :: l_func_mult, l_load_user, l_zero_allowed
-    aster_logical :: l_func_c
+    aster_logical :: l_func_c, l_theta_not_one
     integer :: nb_info_type
     character(len=24) :: info_type
     character(len=1) :: base
@@ -76,6 +77,8 @@ character(len=1), optional, intent(in) :: basez
     character(len=16) :: load_keyword, k16bid, nomcmd
     character(len=24) :: load_type, load_para, load_keyw
     character(len=16) :: load_opti_f
+    real(kind=8) :: theta, prec
+    parameter(prec=1d-6)
     integer, pointer :: v_llresu_info(:) => null()
     character(len=24), pointer :: v_llresu_name(:) => null()
     character(len=24), pointer :: v_llresu_func(:) => null()
@@ -122,6 +125,19 @@ character(len=1), optional, intent(in) :: basez
 ! ----- List of loads to avoid same loads
 !
         AS_ALLOCATE(vk8 = v_list_dble, size = nb_load)
+!
+! ----- Theta value
+!
+        l_theta_not_one = .false.
+        theta = 1.d0
+        if (nomcmd(1:13).eq.'THER_LINEAIRE' .or.&
+            nomcmd.eq.'THER_NON_LINE') then
+            call getvr8(' ', 'PARM_THETA', scal=theta)
+        endif
+        if (abs(theta-1.d0)>prec)then
+            l_theta_not_one = .true.
+        endif
+        
 !
 ! ----- Loop on loads
 !
@@ -189,11 +205,12 @@ character(len=1), optional, intent(in) :: basez
 !
             do i_type_neum = 1, nb_type_neum
                 info_type = 'RIEN'
-                if (list_load_keyw(i_type_neum)) then
+                if (list_load_keyw(i_type_neum)) then                
                     call load_neut_data(i_type_neum, nb_type_neum, '2MBR',&
                                         load_opti_f_ = load_opti_f,&
                                         load_obje_   = load_obje,&
                                         load_keyw_   = load_keyw)
+
                     cart_name  = load_name(1:8)//'.CHTH'//load_obje(1)
                     if ((load_opti_f .eq. 'No_load') .and. l_func_mult) then
                         call utmess('F', 'CHARGES_20', sk=load_name)
@@ -203,9 +220,15 @@ character(len=1), optional, intent(in) :: basez
                             call utmess('F', 'CHARGES_32', sk=load_name)
                         endif
                     endif
+                    if (l_func_mult .and. l_theta_not_one) then
+                        call utmess('F', 'CHARGES_41', nk=2, valk=[load_name,load_keyw])
+                    endif
                     if (load_keyw.eq.'EVOL_CHAR') then
                         if(nomcmd(1:13).eq.'THER_LINEAIRE') then
                             call utmess('F', 'CHARGES_11')
+                        elseif(nomcmd(1:13).eq.'THER_NON_LINE' .and.&
+                               l_theta_not_one) then
+                            call utmess('F', 'CHARGES_42', sk=load_keyw)
                         else
                             ASSERT (load_type(5:7) .ne. '_FO')
                             info_type = 'NEUM_CSTE'
