@@ -4058,6 +4058,9 @@ class GeneralizedDOFNumbering(DataStructure):
     def getModalBasis(self):
         pass
 
+    def getMorseStorage(self):
+        pass
+
     def setGeneralizedModel(self, arg0):
         pass
 
