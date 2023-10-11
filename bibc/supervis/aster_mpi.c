@@ -1013,6 +1013,45 @@ void DEFPPPPP( ASMPI_ALLGATHER_I, asmpi_allgather_i, ASTERINTEGER *sendbuf, ASTE
 }
 
 /*
+ * Wrappers around MPI_Allgather
+ * Do not check returncode because all errors raise
+ */
+void DEFPPPPP( ASMPI_ALLGATHER_R, asmpi_allgather_r, ASTERDOUBLE *sendbuf, ASTERINTEGER4 *sendcnt,
+               ASTERDOUBLE *recvbuf, ASTERINTEGER4 *recvcnt, MPI_Fint *comm ) {
+    MPI_Comm mpicom;
+#ifdef ASTER_HAVE_MPI
+    mpicom = MPI_Comm_f2c( *comm );
+    DEBUG_MPI( "MPI_Allgather: %d gather integer values by all ...%s\n", *sendcnt, " " );
+    double start = MPI_Wtime();
+    AS_MPICHECK( MPI_Allgather( (void *)sendbuf, *sendcnt, MPI_DOUBLE_PRECISION, (void *)recvbuf,
+                                *recvcnt, MPI_DOUBLE_PRECISION, mpicom ) );
+    double end = MPI_Wtime();
+    DEBUG_MPI( "MPI_Allgather: ... in %f sec %s\n", ( end - start ), " " );
+#endif
+    return;
+}
+
+/*
+ * Wrappers around MPI_Allgather
+ * Do not check returncode because all errors raise
+ */
+void DEFSPSPP( ASMPI_ALLGATHER_CHAR8, asmpi_allgather_char8, char *sendbuf, STRING_SIZE sbuff,
+               ASTERINTEGER4 *sendcnt, char *recvbuf, STRING_SIZE rbuff, ASTERINTEGER4 *recvcnt,
+               MPI_Fint *comm ) {
+    MPI_Comm mpicom;
+#ifdef ASTER_HAVE_MPI
+    mpicom = MPI_Comm_f2c( *comm );
+    DEBUG_MPI( "MPI_Allgather: %d gather integer values by all ...%s\n", *sendcnt, " " );
+    double start = MPI_Wtime();
+    AS_MPICHECK( MPI_Allgather( (void *)sendbuf, ( *sendcnt ) * 8, MPI_CHAR, (void *)recvbuf,
+                                ( *recvcnt ) * 8, MPI_CHAR, mpicom ) );
+    double end = MPI_Wtime();
+    DEBUG_MPI( "MPI_Allgather: ... in %f sec %s\n", ( end - start ), " " );
+#endif
+    return;
+}
+
+/*
  * Wrappers around MPI_Allgatherv
  * Do not check returncode because all errors raise
  */

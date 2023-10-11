@@ -186,7 +186,7 @@ subroutine op0107()
             call medomp(resuco, modele)
         end if
         call dismoi('NOM_MAILLA', modele, 'MODELE', repk=mesh)
-        ASSERT(.not. isParallelMesh(mesh))
+        ! ASSERT(.not. isParallelMesh(mesh))
         call pemima(n1, chdef, resu, modele, nbocc)
     end if
 !

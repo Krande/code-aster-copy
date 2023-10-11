@@ -29,6 +29,7 @@ subroutine pemima(indch, chamgd, resu, modele, nbocc)
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -70,7 +71,7 @@ subroutine pemima(indch, chamgd, resu, modele, nbocc)
     character(len=16), parameter :: nompar(nbpar) = ['CHAMP_GD  ', 'NUME_ORDRE', 'INST      ']
     character(len=19) :: knum, cham, kins, lisins
     character(len=24) :: nomcha, nomlieu
-    aster_logical :: exiord
+    aster_logical :: exiord, l_pmesh
     character(len=8), pointer :: cmp(:) => null()
     character(len=24), pointer :: v_gma(:) => null()
     integer, pointer :: v_lma(:) => null()
@@ -86,6 +87,7 @@ subroutine pemima(indch, chamgd, resu, modele, nbocc)
 !     --- RECUPERATION DU MAILLAGE ET DU NOMBRE DE MAILLES
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=mailla)
     call dismoi('NB_MA_MAILLA', mailla, 'MAILLAGE', repi=nbma)
+    l_pmesh = isParallelMesh(mailla)
 !
     if (indch .eq. 0) then
 !
@@ -211,26 +213,39 @@ subroutine pemima(indch, chamgd, resu, modele, nbocc)
             nbgma = -n1
             if (nbgma > 0) then
                 call wkvect('&&PEMIMA_GMA', 'V V K24', nbgma, vk24=v_gma)
-                call getvem(mailla, 'GROUP_MA', 'MINMAX', 'GROUP_MA', iocc, &
-                            nbgma, v_gma, n1)
+                call getvtx('MINMAX', 'GROUP_MA', iocc, nbval=nbgma, vect=v_gma)
                 do igm = 1, nbgma
                     call jeexin(jexnom(mailla//'.GROUPEMA', v_gma(igm)), iret)
                     if (iret .eq. 0) then
-                        call utmess('A', 'UTILITAI3_46', sk=v_gma(igm))
-                        goto 30
+                        if (.not. l_pmesh) then
+                            call utmess('A', 'UTILITAI3_46', sk=v_gma(igm))
+                            goto 30
+                        end if
                     end if
-                    call jelira(jexnom(mailla//'.GROUPEMA', v_gma(igm)), 'LONUTI', nbma)
+                    nbma = 0
+                    if (iret .ne. 0) then
+                        call jelira(jexnom(mailla//'.GROUPEMA', v_gma(igm)), 'LONUTI', nbma)
+                    end if
                     if (nbma .eq. 0) then
-                        call utmess('A', 'UTILITAI3_47', sk=v_gma(igm))
-                        goto 30
+                        if (.not. l_pmesh) then
+                            call utmess('A', 'UTILITAI3_47', sk=v_gma(igm))
+                            goto 30
+                        end if
                     end if
-                    call jeveuo(jexnom(mailla//'.GROUPEMA', v_gma(igm)), 'L', vi=v_lma)
+                    if (nbma .ne. 0) then
+                        call jeveuo(jexnom(mailla//'.GROUPEMA', v_gma(igm)), 'L', vi=v_lma)
+                    else
+                        AS_ALLOCATE(vi=v_lma, size=1)
+                    end if
                     if (tych(1:2) .eq. 'EL') then
                         call pemaxe(resu, nomcha, grpma, v_gma(igm), modele, &
                                     cham, nbcmp, cmp, numo, inst, nbma, v_lma)
                     else
                         call pemaxn(resu, nomcha, grpma, v_gma(igm), modele, &
                                     cham, nbcmp, cmp, numo, inst, nbma, v_lma)
+                    end if
+                    if (nbma .eq. 0) then
+                        AS_DEALLOCATE(vi=v_lma)
                     end if
 30                  continue
                 end do

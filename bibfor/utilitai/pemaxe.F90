@@ -24,13 +24,21 @@ subroutine pemaxe(resu, nomcha, lieu, nomlie, modele, &
 !
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterc/asmpi_allgather_char8.h"
+#include "asterc/asmpi_allgather_i.h"
+#include "asterc/asmpi_allgather_r.h"
+#include "asterc/asmpi_comm.h"
 #include "asterc/indik8.h"
 #include "asterc/r8maem.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -74,14 +82,15 @@ subroutine pemaxe(resu, nomcha, lieu, nomlie, modele, &
 !
     integer :: nbma, i, jcesl, jcesd
     integer :: nucmp, jcmpgd, ncmpm, iad
-    integer :: ipt, nbsp, nbpt, icmp, ima, nbpara
-    integer :: nmin, nmax, npara, pmax, pmin
+    integer :: ipt, nbsp, nbpt, icmp, ima, nbpara, iproc
+    integer :: nmin, nmax, npara, pmax, pmin, rank, nbproc
     real(kind=8) :: vmin, vmax, inst
     complex(kind=8) :: cbid
+    character(len=7) :: chnuma
     character(len=8) :: noma, k8b, nomgd, nomva, knmin, knmax
     character(len=19) :: cesout
     character(len=24) :: nommai
-    aster_logical :: exist
+    aster_logical :: exist, l_pmesh
 ! Tableaux automatiques F90
     real(kind=8) :: mima(2*nbcmp+2)
     character(len=24) :: nompar(6*nbcmp+5), mamax(2*nbcmp+3)
@@ -89,12 +98,22 @@ subroutine pemaxe(resu, nomcha, lieu, nomlie, modele, &
     character(len=8), pointer :: cesk(:) => null()
     real(kind=8), pointer :: cesv(:) => null()
     integer, pointer :: list_ma(:) => null()
+    real(kind=8), pointer :: v_value(:) => null()
+    character(len=8), pointer :: v_name(:) => null()
+    integer, pointer :: v_ipt(:) => null()
+    mpi_int :: mrank, msize, count_send, count_recv, mpicom
 !
     call jemarq()
 !
     cbid = (0.d0, 0.d0)
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
+    l_pmesh = isParallelMesh(noma)
+!
+    call asmpi_comm('GET', mpicom)
+    call asmpi_info(rank=mrank, size=msize)
+    rank = to_aster_int(mrank)
+    nbproc = to_aster_int(msize)
 !
     nommai = noma//'.NOMMAI'
 !
@@ -150,11 +169,21 @@ subroutine pemaxe(resu, nomcha, lieu, nomlie, modele, &
         end do
     end if
 !
+    if (l_pmesh) then
+        AS_ALLOCATE(vr=v_value, size=nbproc)
+        AS_ALLOCATE(vi=v_ipt, size=nbproc)
+        AS_ALLOCATE(vk8=v_name, size=nbproc)
+    end if
+!
     do icmp = 1, nbcmp
         nucmp = indik8(zk8(jcmpgd), nomcmp(icmp), 1, ncmpm)
         vmin = r8maem()
         vmax = -r8maem()
 !
+        nmax = -1
+        pmax = -1
+        nmin = -1
+        pmin = -1
         do ima = 1, nbma
             if (list_ma(ima) == 1) then
                 nbpt = zi(jcesd-1+5+4*(ima-1)+1)
@@ -186,16 +215,62 @@ subroutine pemaxe(resu, nomcha, lieu, nomlie, modele, &
         nompar(4+6*(icmp-1)+5) = 'MA_MIN_'//nomcmp(icmp)
         nompar(4+6*(icmp-1)+6) = 'PT_MIN_'//nomcmp(icmp)
 !
-        mima(1+2*(icmp-1)+1) = vmax
-        mima(1+2*(icmp-1)+2) = vmin
+        if (nmax .ne. -1) then
+            if (l_pmesh) then
+                ! Pas de numerotation globale
+                call codent(nmax, "G", chnuma)
+                knmax = 'M'//chnuma
+            else
+                call jenuno(jexnum(nommai, nmax), knmax)
+            end if
+        else
+            knmax = ' '
+        end if
+        if (nmin .ne. -1) then
+            if (l_pmesh) then
+                ! Pas de numerotation globale
+                call codent(nmin, "G", chnuma)
+                knmin = 'M'//chnuma
+            else
+                call jenuno(jexnum(nommai, nmin), knmin)
+            end if
+        else
+            knmin = ' '
+        end if
 !
-        call jenuno(jexnum(nommai, nmin), knmin)
-        call jenuno(jexnum(nommai, nmax), knmax)
-!
+        if (l_pmesh) then
+            count_send = to_mpi_int(1)
+            count_recv = count_send
+            call asmpi_allgather_r([vmax], count_send, v_value, count_recv, mpicom)
+            call asmpi_allgather_i([pmax], count_send, v_ipt, count_recv, mpicom)
+            call asmpi_allgather_char8([knmax], count_send, v_name, count_recv, mpicom)
+            vmax = -r8maem()
+            do iproc = 1, nbproc
+                if (v_value(iproc) .gt. vmax) then
+                    vmax = v_value(iproc)
+                    pmax = v_ipt(iproc)
+                    knmax = v_name(iproc)
+                end if
+            end do
+            call asmpi_allgather_r([vmin], count_send, v_value, count_recv, mpicom)
+            call asmpi_allgather_i([pmin], count_send, v_ipt, count_recv, mpicom)
+            call asmpi_allgather_char8([knmin], count_send, v_name, count_recv, mpicom)
+            vmin = r8maem()
+            do iproc = 1, nbproc
+                if (v_value(iproc) .lt. vmin) then
+                    vmin = v_value(iproc)
+                    pmin = v_ipt(iproc)
+                    knmin = v_name(iproc)
+                end if
+            end do
+        end if
         mamax(2+2*(icmp-1)+1) = knmax
         mamax(2+2*(icmp-1)+2) = knmin
         ptmax(1+2*(icmp-1)+1) = pmax
         ptmax(1+2*(icmp-1)+2) = pmin
+!
+        mima(1+2*(icmp-1)+1) = vmax
+        mima(1+2*(icmp-1)+2) = vmin
 !
         call tbexip(resu, nompar(4+6*(icmp-1)+1), exist, k8b)
         if (.not. exist) then
@@ -207,6 +282,11 @@ subroutine pemaxe(resu, nomcha, lieu, nomlie, modele, &
             call tbajpa(resu, 1, nompar(4+6*(icmp-1)+6), 'I')
         end if
     end do
+    if (l_pmesh) then
+        AS_DEALLOCATE(vr=v_value)
+        AS_DEALLOCATE(vi=v_ipt)
+        AS_DEALLOCATE(vk8=v_name)
+    end if
 !
     npara = 6*nbcmp
     ptmax(1) = nuord

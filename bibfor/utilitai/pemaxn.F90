@@ -23,12 +23,19 @@ subroutine pemaxn(resu, nomcha, lieu, nomlie, modele, &
 !
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterc/asmpi_allgather_char8.h"
+#include "asterc/asmpi_allgather_r.h"
+#include "asterc/asmpi_comm.h"
 #include "asterc/indik8.h"
 #include "asterc/r8maem.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/cnocns.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -68,28 +75,39 @@ subroutine pemaxn(resu, nomcha, lieu, nomlie, modele, &
 !     ------------------------------------------------------------------
 !
     integer :: i, jcesl, jcmpgd, ncmpm, nbnoma
-    integer :: icmp, nbpara, nbno, numno, iacnex
-    integer :: ino, nmin, nmax, npara, nbcmpm
+    integer :: icmp, nbpara, nbno, numno, iacnex, iproc
+    integer :: ino, nmin, nmax, npara, nbcmpm, rank, nbproc
     real(kind=8) :: vmin, vmax, inst
     complex(kind=8) :: cbid
+    character(len=7) :: chnuno
     character(len=8) :: noma, k8b, nomgd, nomva, knmin, knmax
     character(len=19) :: cesout
     character(len=24) :: nomnoe
-    aster_logical :: exist
+    aster_logical :: exist, l_pmesh
 ! Tableaux automatiques F90
     real(kind=8) :: mima(2*nbcmp+2)
     character(len=24) :: nompar(4*nbcmp+5), nomax(2*nbcmp+3)
     integer, pointer :: list_no(:) => null()
     integer, pointer :: cnsd(:) => null()
+    integer, pointer :: nulg(:) => null()
     character(len=8), pointer :: cnsk(:) => null()
     character(len=8), pointer :: cesc(:) => null()
+    character(len=8), pointer :: v_name(:) => null()
     real(kind=8), pointer :: cnsv(:) => null()
+    mpi_int :: mrank, msize, count_send, count_recv, mpicom
+    real(kind=8), pointer :: v_value(:) => null()
 !
     call jemarq()
     cbid = (0.d0, 0.d0)
 !
+    call asmpi_comm('GET', mpicom)
+    call asmpi_info(rank=mrank, size=msize)
+    rank = to_aster_int(mrank)
+    nbproc = to_aster_int(msize)
+!
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbno)
+    l_pmesh = isParallelMesh(noma)
 !
 ! --- CREATION D'UN TABLEAU D'INDICES POUR REPERER
 !     LES MAILLES DU POST TRAITEMENT
@@ -150,12 +168,19 @@ subroutine pemaxn(resu, nomcha, lieu, nomlie, modele, &
 !
     npara = 4*nbcmp
     nbcmpm = cnsd(2)
+    if (l_pmesh) then
+        call jeveuo(noma//".NULOGL", "L", vi=nulg)
+        AS_ALLOCATE(vr=v_value, size=nbproc)
+        AS_ALLOCATE(vk8=v_name, size=nbproc)
+    end if
 !
     do i = 1, nbcmp
         vmin = r8maem()
         vmax = -r8maem()
         icmp = indik8(cesc, nomcmp(i), 1, nbcmpm)
         ASSERT(icmp .gt. 0)
+        nmax = -1
+        nmin = -1
         do ino = 1, nbno
             if (list_no(ino) == 1 .and. zl(jcesl+(ino-1)*nbcmpm+icmp-1)) then
                 if (vmax .lt. cnsv(1+(ino-1)*nbcmpm+icmp-1)) then
@@ -168,12 +193,54 @@ subroutine pemaxn(resu, nomcha, lieu, nomlie, modele, &
                 end if
             end if
         end do
-        mima(1+2*(i-1)+1) = vmax
-        mima(1+2*(i-1)+2) = vmin
-        call jenuno(jexnum(nomnoe, nmin), knmin)
-        call jenuno(jexnum(nomnoe, nmax), knmax)
+        if (nmax .ne. -1) then
+            if (l_pmesh) then
+                ! Passage en numerotation globale
+                call codent(nulg(nmax), "G", chnuno)
+                knmax = 'N'//chnuno
+            else
+                call jenuno(jexnum(nomnoe, nmax), knmax)
+            end if
+        else
+            knmax = ' '
+        end if
+        if (nmin .ne. -1) then
+            if (l_pmesh) then
+                ! Passage en numerotation globale
+                call codent(nulg(nmin), "G", chnuno)
+                knmin = 'N'//chnuno
+            else
+                call jenuno(jexnum(nomnoe, nmin), knmin)
+            end if
+        else
+            knmin = ' '
+        end if
         nomax(2+2*(i-1)+1) = knmax
         nomax(2+2*(i-1)+2) = knmin
+        if (l_pmesh) then
+            count_send = to_mpi_int(1)
+            count_recv = count_send
+            call asmpi_allgather_r([vmax], count_send, v_value, count_recv, mpicom)
+            call asmpi_allgather_char8([knmax], count_send, v_name, count_recv, mpicom)
+            vmax = -r8maem()
+            do iproc = 1, nbproc
+                if (v_value(iproc) .gt. vmax) then
+                    vmax = v_value(iproc)
+                    knmax = v_name(iproc)
+                end if
+            end do
+            call asmpi_allgather_r([vmin], count_send, v_value, count_recv, mpicom)
+            call asmpi_allgather_char8([knmin], count_send, v_name, count_recv, mpicom)
+            vmin = r8maem()
+            do iproc = 1, nbproc
+                if (v_value(iproc) .lt. vmin) then
+                    vmin = v_value(iproc)
+                    knmin = v_name(iproc)
+                end if
+            end do
+        end if
+        mima(1+2*(i-1)+1) = vmax
+        mima(1+2*(i-1)+2) = vmin
 !
         nompar(4+4*(i-1)+1) = 'MAX_'//nomcmp(i)
         nompar(4+4*(i-1)+2) = 'NO_MAX_'//nomcmp(i)
@@ -191,6 +258,10 @@ subroutine pemaxn(resu, nomcha, lieu, nomlie, modele, &
 !
 !
     end do
+    if (l_pmesh) then
+        AS_DEALLOCATE(vr=v_value)
+        AS_DEALLOCATE(vk8=v_name)
+    end if
 !
 ! --- ON REMPLIT LA TABLE
     nbpara = 4+npara
