@@ -1,11 +1,6 @@
 #!/bin/bash -e
 
 env
-# CI_PROJECT_URL=https://gitlab.pleiade.edf.fr/codeaster/lab/experiment/src
-root=$(dirname ${CI_PROJECT_URL})
-if grep -q experiment <<< "${CI_PROJECT_URL}"; then
-    root=$(dirname $(dirname ${root}))
-fi
 
 echo "+ downloading the runner image..."
 source env.d/version.sh
@@ -19,14 +14,12 @@ if [ ! -z ${SIF} ]; then
 fi
 
 echo "+ downloading devtools..."
-DEVTOOLS_URL=${root}/devtools
-grep -q https: <<< "${DEVTOOLS_URL}" && DEVTOOLS_URL=${DEVTOOLS_URL}.git
+DEVTOOLS_URL=${ROOT_URL}/devtools.git
 git clone ${DEVTOOLS_URL} devtools
 (cd devtools ; git checkout main)
 
 echo "+ downloading data..."
-DATA_URL=${root}/data
-grep -q https: <<< "${DATA_URL}" && DATA_URL=${DATA_URL}.git
+DATA_URL=${ROOT_URL}/data.git
 git clone ${DATA_URL} data-src
 (
     cd data-src
