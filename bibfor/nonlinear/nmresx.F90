@@ -51,7 +51,7 @@ subroutine nmresx(sddisc, sderro, iter_newt)
     real(kind=8) :: r(1), vale_resi
     aster_logical :: l_resi_maxi
     integer :: nb_fail, i_fail, i_fail_acti
-    integer :: event_type
+    integer :: eventType
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -62,8 +62,8 @@ subroutine nmresx(sddisc, sderro, iter_newt)
     call utdidt('L', sddisc, 'LIST', 'NECHEC', vali_=nb_fail)
     i_fail_acti = 0
     do i_fail = 1, nb_fail
-        call getFailEvent(sddisc, i_fail, event_type)
-        if (event_type .eq. FAIL_EVT_RESI_MAXI) then
+        call getFailEvent(sddisc, i_fail, eventType)
+        if (eventType .eq. FAIL_EVT_RESI_MAXI) then
             i_fail_acti = i_fail
         end if
     end do

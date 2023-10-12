@@ -85,7 +85,7 @@ subroutine nmcrsu(sddisc, lisins, ds_conv, ds_algopara, l_implex, &
     character(len=24) :: tpsevr, tpsevk, tpseloca, tpsesu
     character(len=24) :: tpsavr, tpsaloca, tpstpr, tpstpk
     character(len=24) :: tpsext
-    integer :: jtpsex, event_type, action_type
+    integer :: jtpsex, eventType, action_type
     character(len=8), pointer:: v_modele_dli(:) => null()
     character(len=8):: modele_dli, modele_snl
 
@@ -198,8 +198,8 @@ subroutine nmcrsu(sddisc, lisins, ds_conv, ds_algopara, l_implex, &
     if (metlis .eq. 'AUTO') then
         call getvis('CONVERGENCE', 'ITER_GLOB_MAXI', iocc=1, scal=itmx, nbret=iret)
         do i_adap = 1, nb_adap
-            call getAdapEvent(sddisc, i_adap, event_type)
-            if (event_type .eq. ADAP_EVT_TRIGGER) then
+            call getAdapEvent(sddisc, i_adap, eventType)
+            if (eventType .eq. ADAP_EVT_TRIGGER) then
                 call utdidt('L', sddisc, 'ADAP', 'NOM_PARA', index_=i_adap, &
                             valk_=nopara)
                 if (nopara .eq. 'NB_ITER_NEWT') then

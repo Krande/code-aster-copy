@@ -17,16 +17,16 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine nminit(mesh       , model         , mater        , mateco         , cara_elem ,&
-                      list_load  ,                                                            &
-                      numedd     , numfix        , ds_algopara  , ds_constitutive, maprec    ,&
-                      solver     , numins        , sddisc       , sdnume         , sdcrit    ,&
-                      ds_material, listFuncActi, sdpilo       , ds_print  ,&
-                      sddyna, nlDynaDamping,&
-                      sd_suiv    , sd_obsv       , sderro       , ds_posttimestep, ds_inout  ,&
-                      ds_energy  , ds_conv       , ds_errorindic, valinc         , solalg    ,&
-                      measse     , veelem        , meelem       , veasse         , ds_contact,&
-                      ds_measure , ds_algorom    , ds_system    , hhoField)
+    subroutine nminit(mesh, model, mater, mateco, cara_elem, &
+                      list_load, &
+                      numedd, numfix, ds_algopara, ds_constitutive, maprec, &
+                      solver, numins, sddisc, sdnume, sdcrit, &
+                      ds_material, listFuncActi, sdpilo, ds_print, &
+                      sddyna, nlDynaDamping, &
+                      sd_suiv, sd_obsv, sderro, ds_posttimestep, ds_inout, &
+                      ds_energy, ds_conv, ds_errorindic, valinc, solalg, &
+                      measse, veelem, meelem, veasse, ds_contact, &
+                      ds_measure, ds_algorom, ds_system, hhoField)
         use NonLin_Datastructure_type
         use NonLinearDyna_type
         use Rom_Datastructure_type
@@ -55,7 +55,7 @@ interface
         type(NL_DS_Print), intent(inout) :: ds_print
         character(len=24), intent(out) :: sd_suiv
         character(len=19), intent(out) :: sd_obsv
-        character(len=24) :: sderro
+        character(len=24), intent(in)  :: sderro
         type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
         type(NL_DS_InOut), intent(inout) :: ds_inout
         type(NL_DS_Energy), intent(inout) :: ds_energy

@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmlecv(sderro, nombcl, lconv)
+subroutine nmlecv(sderro, loopName, lconv)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
@@ -25,7 +25,7 @@ subroutine nmlecv(sderro, nombcl, lconv)
 #include "jeveux.h"
 #include "asterfort/nmleeb.h"
     character(len=24) :: sderro
-    character(len=4) :: nombcl
+    character(len=4) :: loopName
     aster_logical :: lconv
 !
 ! ----------------------------------------------------------------------
@@ -53,7 +53,7 @@ subroutine nmlecv(sderro, nombcl, lconv)
 ! ----------------------------------------------------------------------
 !
     lconv = .false.
-    call nmleeb(sderro, nombcl, etabcl)
+    call nmleeb(sderro, loopName, etabcl)
     lconv = (etabcl .eq. 'CONV')
 !
 end subroutine

@@ -15,28 +15,29 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine nmleeb(sderro, nombcl, etabcl)
 !
-! person_in_charge: mickael.abbas at edf.fr
+subroutine nmleeb(sderro, loopName, loopState)
 !
     implicit none
+!
+#include "asterfort/NonLinear_type.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-    character(len=24) :: sderro
-    character(len=4) :: nombcl, etabcl
 !
-! ----------------------------------------------------------------------
+    character(len=24), intent(in) :: sderro
+    character(len=4), intent(in) :: loopName
+    character(len=4), intent(out) :: loopState
+!
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (ALGORITHME)
 !
 ! ETAT DE LA CONVERGENCE
 !
-! ----------------------------------------------------------------------
-!
+! --------------------------------------------------------------------------------------------------
 !
 ! IN  SDERRO : SD GESTION DES ERREURS
 ! IN  NOMBCL : NOM DE LA BOUCLE
@@ -53,59 +54,54 @@ subroutine nmleeb(sderro, nombcl, etabcl)
 !               'ERRE' - ON STOPPE LA BOUCLE : ERREUR TRAITEE
 !               'STOP' - ON STOPPE LA BOUCLE : ERREUR NON TRAITEE
 !
+! --------------------------------------------------------------------------------------------------
 !
+    character(len=24) :: eventCONVJv
+    integer, pointer :: eventCONV(:) => null()
+    integer :: convState
 !
-!
-    character(len=24) :: errcvg
-    integer :: jeconv
-    integer :: iconve
-!
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-!
-! --- INITIALISATIONS
-!
-    iconve = 0
-    etabcl = ' '
-!
-! --- ACCES SD
-!
-    errcvg = sderro(1:19)//'.CONV'
-    call jeveuo(errcvg, 'L', jeconv)
-!
-! --- LECTURE DE LA CONVERGENCE
-!
-    if (nombcl .eq. 'RESI') then
-        iconve = zi(jeconv-1+1)
-    else if (nombcl .eq. 'NEWT') then
-        iconve = zi(jeconv-1+2)
-    else if (nombcl .eq. 'FIXE') then
-        iconve = zi(jeconv-1+3)
-    else if (nombcl .eq. 'INST') then
-        iconve = zi(jeconv-1+4)
-    else if (nombcl .eq. 'CALC') then
-        iconve = zi(jeconv-1+5)
+
+! - INITIALISATIONS
+    convState = LOOP_STATE_CONTINUE
+    loopState = ' '
+
+! - Access to datastructure
+    eventCONVJv = sderro(1:19)//'.CONV'
+    call jeveuo(eventCONVJv, 'L', vi=eventCONV)
+
+! - Get state of convergence for loop
+    if (loopName .eq. 'RESI') then
+        convState = eventCONV(LOOP_RESI)
+    else if (loopName .eq. 'NEWT') then
+        convState = eventCONV(LOOP_NEWT)
+    else if (loopName .eq. 'FIXE') then
+        convState = eventCONV(LOOP_FIXE)
+    else if (loopName .eq. 'INST') then
+        convState = eventCONV(LOOP_INST)
+    else if (loopName .eq. 'CALC') then
+        convState = eventCONV(LOOP_CALC)
     else
-        ASSERT(.false.)
+        ASSERT(ASTER_FALSE)
     end if
-!
+
 ! --- SELON ETAT
-!
-    if (iconve .eq. 0) then
-        etabcl = 'CONT'
-    else if (iconve .eq. 1) then
-        etabcl = 'CONV'
-    else if (iconve .eq. 2) then
-        etabcl = 'EVEN'
-    else if (iconve .eq. 3) then
-        etabcl = 'ERRE'
-    else if (iconve .eq. 4) then
-        etabcl = 'STOP'
-    else if (iconve .eq. 5) then
-        etabcl = 'CTCD'
+    if (convState .eq. LOOP_STATE_CONTINUE) then
+        loopState = 'CONT'
+    else if (convState .eq. LOOP_STATE_CONVERGE) then
+        loopState = 'CONV'
+    else if (convState .eq. LOOP_STATE_EVENT) then
+        loopState = 'EVEN'
+    else if (convState .eq. LOOP_STATE_ERROR) then
+        loopState = 'ERRE'
+    else if (convState .eq. LOOP_STATE_STOP) then
+        loopState = 'STOP'
+    else if (convState .eq. LOOP_STATE_CTCD) then
+        loopState = 'CTCD'
     else
-        ASSERT(.false.)
+        ASSERT(ASTER_FALSE)
     end if
 !
     call jedema()

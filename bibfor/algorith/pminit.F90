@@ -134,20 +134,20 @@ subroutine pminit(imate, nbvari, ndim, typmod, table, &
     typmod(2) = ' '
     solveu = '&&OP0033'
     rac2 = sqrt(2.d0)
-    pgl(:, :) = 0.d0
+    pgl = 0.d0
     valimp = 0.d0
-!
+
 ! - Read parameters for convergence
-!
     call nmdocn(ds_conv)
-!
+
 ! - Read parameters for algorithm management
-!
     call nmdomt(ds_algopara)
-!
+
+! - Create datastructure for events in algorithm
+    call nmcrga(sderro)
+
 ! - Initializations for convergence management
-!
-    call nonlinDSConvergenceInit(ds_conv)
+    call nonlinDSConvergenceInit(ds_conv, sderro)
 !
 !     ----------------------------------------
 !     RECUPERATION DU NOM DE LA TABLE PRODUITE
@@ -477,11 +477,7 @@ subroutine pminit(imate, nbvari, ndim, typmod, table, &
     call getvid('INCREMENT', 'LIST_INST', iocc=1, scal=lisins, nbret=n1)
     instin = r8vide()
     call nmcrli(instin, lisins, sddisc)
-!     ----------------------------------------
-!     CREATION SD ERREUR
-!     ----------------------------------------
-!
-    call nmcrga(sderro)
+
 !
 !
 !     ----------------------------------------

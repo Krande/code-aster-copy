@@ -16,114 +16,82 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmcrel(sderro, nomevt, vall)
-!
-! person_in_charge: mickael.abbas at edf.fr
+subroutine nmcrel(sderro, eventName, eventFlag)
 !
     implicit none
+!
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nmeceb.h"
+#include "asterfort/NonLinear_type.h"
 !
-    character(len=24) :: sderro
-    character(len=9) :: nomevt
-    aster_logical :: vall
+    character(len=24), intent(in) :: sderro
+    character(len=9), intent(in) :: eventName
+    aster_logical, intent(in) :: eventFlag
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (SD ERREUR)
 !
 ! ENREGISTREMENT D'UN EVENEMENT INTRINSEQUE
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! POUR LES EVENEMENTS A CODE RETOUR, IL FAUT D'ABORD TRANSFORMER LE
 ! CODE RETOUR EN EVENEMENT - UTILISER NMCRET
 !
+! In  sderro           : name of datastructure for events in algorithm
+! In  eventName        : name of event
+! In  eventFlag
 !
-! IN  SDERRO : SD GESTION DES ERREURS
-! IN  NOMEVT : NOM DE L'EVENEMENT (VOIR LA LISTE DANS NMCRER)
-! IN  VALL   : .TRUE. SI ON ACTIVE
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+    integer :: iEvent
+    character(len=24) :: eventENOMJv, eventENIVJv, eventEACTJv
+    integer, pointer :: eventEACT(:) => null()
+    character(len=16), pointer :: eventENOM(:) => null(), eventENIV(:) => null()
+    character(len=16) :: eventLevel
+    character(len=4) :: loopName
+    integer :: eventIndx
 !
-    integer :: ieven, zeven
-    character(len=24) :: erreno, erreni, erraac
-    integer :: jeenom, jeeniv, jeeact
-    character(len=24) :: errinf
-    integer :: jeinfo
-    character(len=16) :: neven, teven
-    character(len=4) :: nombcl
-    integer :: ievact
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
-!
-    call jemarq()
-!
-! --- INITIALISATIONS
-!
-    ievact = 0
-!
-! --- ACCES SD
-!
-    errinf = sderro(1:19)//'.INFO'
-    call jeveuo(errinf, 'L', jeinfo)
-    zeven = zi(jeinfo-1+1)
-!
-    erreno = sderro(1:19)//'.ENOM'
-    erreni = sderro(1:19)//'.ENIV'
-    erraac = sderro(1:19)//'.EACT'
-    call jeveuo(erreno, 'L', jeenom)
-    call jeveuo(erreni, 'L', jeeniv)
-    call jeveuo(erraac, 'E', jeeact)
-!
-! --- RECHERCHE DE L'EVENEMENT
-!
-    do ieven = 1, zeven
-!
-! ----- NOM DE L'EVENEMENT
-!
-        neven = zk16(jeenom-1+ieven)
-!
-! ----- TYPE DE L'EVENEMENT
-!
-        teven = zk16(jeeniv-1+ieven)
-!
-! ----- ACTIVATION DE L'EVENEMENT
-!
-        if (neven .eq. nomevt) then
-            ievact = ieven
+    eventIndx = 0
+
+! - Access to datastructure
+    eventENOMJv = sderro(1:19)//'.ENOM'
+    eventENIVJv = sderro(1:19)//'.ENIV'
+    eventEACTJv = sderro(1:19)//'.EACT'
+    call jeveuo(eventENOMJv, 'L', vk16=eventENOM)
+    call jeveuo(eventENIVJv, 'L', vk16=eventENIV)
+    call jeveuo(eventEACTJv, 'E', vi=eventEACT)
+
+! - look for event
+    do iEvent = 1, ZEVEN
+        if (eventENOM(iEvent) .eq. eventName) then
+            eventIndx = iEvent
             goto 66
         end if
     end do
-!
 66  continue
-!
-    ASSERT(ievact .ne. 0)
-!
-! --- (DES-)ACTIVATION DE L'EVENEMENT
-!
-    if (vall) then
-        zi(jeeact-1+ievact) = 1
+    ASSERT(eventIndx .ne. 0)
+
+! - (DES-)ACTIVATION DE L'EVENEMENT
+    if (eventFlag) then
+        eventEACT(eventIndx) = EVENT_IS_ACTIVE
     else
-        zi(jeeact-1+ievact) = 0
+        eventEACT(eventIndx) = EVENT_IS_INACTIVE
     end if
-!
+
 ! --- EVENEMENT DE TYPE ERREUR ACTIVE: ON CHANGE LE STATUT DE LA BOUCLE
-!
-    if (vall) then
-        teven = zk16(jeeniv-1+ievact)
-        if (teven(1:5) .eq. 'ERRI_') then
-            nombcl = teven(6:9)
-            call nmeceb(sderro, nombcl, 'ERRE')
-!
-! ------- UNE ERREUR DE NIVEAU CALC EST FATALE POUR TOUT LE MONDE
-!
-            if (nombcl .eq. 'CALC') then
+    if (eventFlag) then
+        eventLevel = eventENIV(eventIndx)
+        if (eventLevel(1:5) .eq. 'ERRI_') then
+            loopName = eventLevel(6:9)
+            call nmeceb(sderro, loopName, 'ERRE')
+            if (loopName .eq. 'CALC') then
                 call nmeceb(sderro, 'NEWT', 'STOP')
                 call nmeceb(sderro, 'FIXE', 'STOP')
                 call nmeceb(sderro, 'INST', 'STOP')
@@ -131,6 +99,4 @@ subroutine nmcrel(sderro, nomevt, vall)
         end if
     end if
 !
-!
-    call jedema()
 end subroutine

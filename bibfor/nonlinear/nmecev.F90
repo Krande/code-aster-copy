@@ -15,52 +15,50 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmecev(sderro, acces, event_type, action_type)
+subroutine nmecev(sderro, acces, failType, actionType)
 !
     implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/NonLinear_type.h"
 !
-    character(len=24) :: sderro
-    character(len=1) :: acces
-    integer, intent(inout) :: event_type
-    integer, intent(inout) :: action_type
+    character(len=24), intent(in) :: sderro
+    character(len=1), intent(in) :: acces
+    integer, intent(inout) :: failType
+    integer, intent(inout) :: actionType
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (ALGORITHME)
 !
 ! ECHEC DU TRAITEMENT D'UNE ACTION - SAUVEGARDE/LECTURE POUR INFO
 !
-! ----------------------------------------------------------------------
-!
+! --------------------------------------------------------------------------------------------------
 !
 ! IN  SDERRO : SD ERREUR
 ! IN  ACCES  : TYPE ACCES 'E' OU 'L'
 ! I/O NOMEVD : NOM DE L'EVENEMENT
 ! I/O ACTION : NOM DE L'ACTION
 !
+! --------------------------------------------------------------------------------------------------
 !
+    character(len=24) :: eventEEVTJv
+    integer, pointer :: eventEEVT(:) => null()
 !
+! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: sderro_eevt
-    integer, pointer :: v_sderro_eevt(:) => null()
-!
-! ----------------------------------------------------------------------
-!
-    sderro_eevt = sderro(1:19)//'.EEVT'
-    call jeveuo(sderro_eevt, 'E', vi=v_sderro_eevt)
-!
+    eventEEVTJv = sderro(1:19)//'.EEVT'
+    call jeveuo(eventEEVTJv, 'E', vi=eventEEVT)
     if (acces .eq. 'E') then
-        v_sderro_eevt(1) = event_type
-        v_sderro_eevt(2) = action_type
+        eventEEVT(1) = failType
+        eventEEVT(2) = actionType
     else if (acces .eq. 'L') then
-        event_type = v_sderro_eevt(1)
-        action_type = v_sderro_eevt(2)
+        failType = eventEEVT(1)
+        actionType = eventEEVT(2)
     else
-        ASSERT(.false.)
+        ASSERT(ASTER_FALSE)
     end if
+!
 end subroutine

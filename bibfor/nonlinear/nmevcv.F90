@@ -16,11 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmevcv(sderro, fonact, nombcl)
-!
-! person_in_charge: mickael.abbas at edf.fr
+subroutine nmevcv(sderro, list_func_acti, loopName)
 !
     implicit none
+!
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/isfonc.h"
@@ -30,116 +29,139 @@ subroutine nmevcv(sderro, fonact, nombcl)
 #include "asterfort/nmeceb.h"
 #include "asterfort/nmerge.h"
 #include "asterfort/nmlecv.h"
-    integer :: fonact(*)
-    character(len=24) :: sderro
-    character(len=4) :: nombcl
+#include "asterfort/NonLinear_type.h"
 !
-! ----------------------------------------------------------------------
+    integer, intent(in) :: list_func_acti(*)
+    character(len=24), intent(in) :: sderro
+    character(len=4), intent(in) :: loopName
+!
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (ALGORITHME)
 !
 ! EVALUATION DE LA CONVERGENCE
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-!
-! IN  SDERRO : SD GESTION DES ERREURS
-! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
-! IN  NOMBCL : NOM DE LA BOUCLE
+! In  listFuncActi     : list of active functionnalities
+! In  sderro           : name of datastructure for events in algorithm
+! In  loopName         : name of loop
 !               'RESI' - BOUCLE SUR LES RESIDUS D'EQUILIBRE
 !               'NEWT' - BOUCLE DE NEWTON
 !               'FIXE' - BOUCLE DE POINT FIXE
 !               'INST' - BOUCLE SUR LES PAS DE TEMPS
 !               'CALC' - CALCUL
 !
-!
-!
+! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: cveven
-    integer :: ieven, zeven
-    character(len=24) :: erreni, erreno, errfct
-    integer :: jeeniv, jeenom, jeefct
-    character(len=24) :: errinf
-    integer :: jeinfo
-    character(len=9) :: neven, teven
-    character(len=24) :: feven
-    aster_logical :: dv, cv, lfonc
-    character(len=4) :: etabcl
+    integer :: iEvent
+    character(len=24) :: eventENIVJv, eventENOMJv, eventEFCTJv
+    character(len=9) :: eventName, eventLevel
+    character(len=24) :: eventActiFunc
+    aster_logical :: dv, cv, lfonc, withAnd, withOr
+    character(len=4) :: loopState
+    aster_logical :: convEqui
     aster_logical :: cvresi, cvnewt, cvfixe, cvinst
+    character(len=16), pointer :: eventENIV(:) => null()
+    character(len=16), pointer :: eventENOM(:) => null()
+    character(len=24), pointer :: eventEFCT(:) => null()
+    character(len=24) :: eventCONVJv
+    integer, pointer :: eventCONV(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-!
-! --- INITIALISATIONS
-!
-    etabcl = 'CONT'
-!
-! --- ACCES SD
-!
-    errinf = sderro(1:19)//'.INFO'
-    erreno = sderro(1:19)//'.ENOM'
-    erreni = sderro(1:19)//'.ENIV'
-    errfct = sderro(1:19)//'.EFCT'
-    call jeveuo(errinf, 'L', jeinfo)
-    call jeveuo(erreno, 'L', jeenom)
-    call jeveuo(erreni, 'L', jeeniv)
-    call jeveuo(errfct, 'L', jeefct)
-    zeven = zi(jeinfo-1+1)
-!
+
+! - Access to datastructure
+    eventENOMJv = sderro(1:19)//'.ENOM'
+    eventENIVJv = sderro(1:19)//'.ENIV'
+    eventEFCTJv = sderro(1:19)//'.EFCT'
+    eventCONVJv = sderro(1:19)//'.CONV'
+    call jeveuo(eventENOMJv, 'L', vk16=eventENOM)
+    call jeveuo(eventENIVJv, 'L', vk16=eventENIV)
+    call jeveuo(eventEFCTJv, 'L', vk24=eventEFCT)
+    call jeveuo(eventCONVJv, 'L', vi=eventCONV)
+
+! - Evaluate convergence
+    cveven = ASTER_TRUE
+    convEqui = ASTER_TRUE
+    do iEvent = 1, ZEVEN
+        eventLevel = eventENIV(iEvent) (1:9)
+        eventName = eventENOM(iEvent) (1:9)
+        eventActiFunc = eventEFCT(iEvent)
+        dv = ASTER_FALSE
+        cv = ASTER_TRUE
+        if (eventLevel .eq. 'CONV_'//loopName) then
+            if (eventActiFunc .eq. ' ') then
+                lfonc = ASTER_TRUE
+            else
+                lfonc = isfonc(list_func_acti, eventActiFunc)
+            end if
+            if (eventName(1:4) .eq. 'DIVE') then
+                call nmerge(sderro, eventName, dv)
+                dv = dv .and. lfonc
+                cv = ASTER_TRUE
+            else if (eventName(1:4) .eq. 'CONV') then
+                call nmerge(sderro, eventName, cv)
+                cv = cv .and. lfonc
+                dv = ASTER_FALSE
+            end if
+
+! --------- For law between residuals
+            if (eventName .eq. 'DIVE_RELA' .or. &
+                eventName .eq. 'DIVE_MAXI' .or. &
+                eventName .eq. 'DIVE_REFE' .or. &
+                eventName .eq. 'DIVE_COMP') then
+                if (eventCONV(NB_LOOP+1) .eq. 1) then
+                    withAnd = ASTER_FALSE
+                    withOr = ASTER_TRUE
+                else
+                    withAnd = ASTER_TRUE
+                    withOr = ASTER_FALSE
+                end if
+                if (eventName .eq. 'DIVE_RELA') then
+                    convEqui = (.not. dv) .and. cv
+                else
+                    if (withAnd) then
+                        convEqui = convEqui .and. (.not. dv) .and. cv
+                    else if (withOr) then
+                        convEqui = convEqui .or. (.not. dv) .or. cv
+                    end if
+                end if
+            else
+                cveven = cveven .and. (.not. dv) .and. cv
+            end if
+            cveven = cveven .and. convEqui
+        end if
+    end do
+
+! - Get state of previous loops
     call nmlecv(sderro, 'RESI', cvresi)
     call nmlecv(sderro, 'NEWT', cvnewt)
     call nmlecv(sderro, 'FIXE', cvfixe)
     call nmlecv(sderro, 'INST', cvinst)
-!
-! --- EVALUATION DE LA CONVERGENCE
-!
-    cveven = .true.
-    do ieven = 1, zeven
-        teven = zk16(jeeniv-1+ieven) (1:9)
-        neven = zk16(jeenom-1+ieven) (1:9)
-        feven = zk24(jeefct-1+ieven)
-        dv = .false.
-        cv = .true.
-        if (teven .eq. 'CONV_'//nombcl) then
-            if (feven .eq. ' ') then
-                lfonc = .true.
-            else
-                lfonc = isfonc(fonact, feven)
-            end if
-            if (neven(1:4) .eq. 'DIVE') then
-                call nmerge(sderro, neven, dv)
-                dv = dv .and. lfonc
-                cv = .true.
-            else if (neven(1:4) .eq. 'CONV') then
-                call nmerge(sderro, neven, cv)
-                cv = cv .and. lfonc
-                dv = .false.
-            end if
-            cveven = cveven .and. (.not. dv) .and. cv
-        end if
-    end do
-!
-! --- RECUPERE CONVERGENCES PRECEDENTES
-!
-    if (nombcl .eq. 'NEWT') then
+    if (loopName .eq. 'NEWT') then
         cveven = cveven .and. cvresi
     end if
-    if (nombcl .eq. 'FIXE') then
+    if (loopName .eq. 'FIXE') then
         cveven = cveven .and. cvnewt .and. cvresi
     end if
-    if (nombcl .eq. 'INST') then
+    if (loopName .eq. 'INST') then
         cveven = cveven .and. cvfixe .and. cvnewt .and. cvresi
     end if
-    if (nombcl .eq. 'CALC') then
+    if (loopName .eq. 'CALC') then
         cveven = cveven .and. cvinst .and. cvfixe .and. cvnewt .and. cvresi
     end if
-!
-    if (cveven) etabcl = 'CONV'
-!
-! --- ENREGISTREMENT DE LA CONVERGENCE
-!
-    call nmeceb(sderro, nombcl, etabcl)
+
+! - Set state of loop (continue loop/stop loop because converges)
+    loopState = 'CONT'
+    if (cveven) then
+        loopState = 'CONV'
+    end if
+
+! - Save state of loop
+    call nmeceb(sderro, loopName, loopState)
 !
     call jedema()
 end subroutine

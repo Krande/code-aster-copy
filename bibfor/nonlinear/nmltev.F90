@@ -15,31 +15,28 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine nmltev(sderro, typevt, nombcl, levent)
 !
-! person_in_charge: mickael.abbas at edf.fr
+subroutine nmltev(sderro, typevt, loopName, eventFlag)
 !
     implicit none
+    !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/asmpi_comm_logical.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/NonLinear_type.h"
+!
     character(len=24) :: sderro
     character(len=4) :: typevt
-    character(len=4) :: nombcl
-    aster_logical :: levent
+    character(len=4) :: loopName
+    aster_logical :: eventFlag
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (SD ERREUR)
 !
 ! DIT SI UN EVENEMENT DE TYPE DONNE EST ACTIVE
 !
-! ----------------------------------------------------------------------
-!
+! --------------------------------------------------------------------------------------------------
 !
 ! IN  SDERRO : SD GESTION DES ERREURS
 ! IN  TYPEVT : TYPE EVENEMENT
@@ -54,55 +51,45 @@ subroutine nmltev(sderro, typevt, nombcl, levent)
 !               'INST' - BOUCLE SUR LES PAS DE TEMPS
 ! OUT LEVENT : .TRUE. SI AU MOINS UN EVENT EST ACTIVE
 !
+! --------------------------------------------------------------------------------------------------
 !
+    integer :: iEvent, eventState
+    character(len=9) :: eventLevel
+    character(len=24) :: eventEACTJv, eventENIVJv
+    integer, pointer :: eventEACT(:) => null()
+    character(len=16), pointer :: eventENIV(:) => null()
 !
+! --------------------------------------------------------------------------------------------------
 !
-    integer :: ieven, zeven
-    character(len=24) :: errinf
-    integer :: jeinfo
-    character(len=24) :: erraac, erreni
-    integer :: jeeact, jeeniv
-    integer :: icode
-    character(len=9) :: teven
-!
-! ----------------------------------------------------------------------
-!
-    call jemarq()
-!
-! --- INITIALISATIONS
-!
-    levent = .false.
-!
-! --- ACCES SD
-!
-    errinf = sderro(1:19)//'.INFO'
-    call jeveuo(errinf, 'L', jeinfo)
-    zeven = zi(jeinfo-1+1)
-!
-    erraac = sderro(1:19)//'.EACT'
-    erreni = sderro(1:19)//'.ENIV'
-    call jeveuo(erraac, 'L', jeeact)
-    call jeveuo(erreni, 'L', jeeniv)
+    eventFlag = .false.
+
+! - Access to datastructure
+    eventEACTJv = sderro(1:19)//'.EACT'
+    eventENIVJv = sderro(1:19)//'.ENIV'
+    call jeveuo(eventEACTJv, 'L', vi=eventEACT)
+    call jeveuo(eventENIVJv, 'L', vk16=eventENIV)
 !
 ! --- AU MOINS UN EVENEMENT DE CE NIVEAU D'ERREUR EST ACTIVE ?
 !
-    do ieven = 1, zeven
-        icode = zi(jeeact-1+ieven)
-        teven = zk16(jeeniv-1+ieven) (1:9)
-        if (teven(1:4) .eq. typevt) then
+    do iEvent = 1, ZEVEN
+        eventState = eventEACT(iEvent)
+        eventLevel = eventENIV(iEvent) (1:9)
+        if (eventLevel(1:4) .eq. typevt) then
             if (typevt .eq. 'EVEN') then
-                if (icode .eq. 1) levent = .true.
+                if (eventState .eq. EVENT_IS_ACTIVE) then
+                    eventFlag = .true.
+                end if
             else
-                if (teven(6:9) .eq. nombcl) then
-                    if (icode .eq. 1) levent = .true.
+                if (eventLevel(6:9) .eq. loopName) then
+                    if (eventState .eq. EVENT_IS_ACTIVE) then
+                        eventFlag = .true.
+                    end if
                 end if
             end if
         end if
     end do
+
+! - Share error for HPC
+    call asmpi_comm_logical('MPI_LOR', scl=eventFlag)
 !
-! --- Share error for HPC
-!
-    call asmpi_comm_logical('MPI_LOR', scl=levent)
-!
-    call jedema()
 end subroutine

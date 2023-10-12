@@ -34,6 +34,7 @@ subroutine nmevim(ds_print, sddisc, sderro, loop_name)
 #include "asterfort/nmltev.h"
 #include "asterfort/utmess.h"
 #include "asterfort/getFailEvent.h"
+#include "asterfort/NonLinear_type.h"
 !
     type(NL_DS_Print), intent(in) :: ds_print
     character(len=24), intent(in) :: sderro
@@ -60,18 +61,14 @@ subroutine nmevim(ds_print, sddisc, sderro, loop_name)
 !
     aster_logical :: lacti, cvbouc, lerrei, l_sep_line, lldcbo
     integer :: i_fail_acti
-    integer :: ieven, zeven
-    character(len=24) :: sderro_info
-    character(len=24) :: sderro_eact
-    character(len=24) :: sderro_eniv
-    character(len=24) :: sderro_emsg
-    integer, pointer :: v_sderro_info(:) => null()
-    integer, pointer :: v_sderro_eact(:) => null()
-    character(len=16), pointer :: v_sderro_eniv(:) => null()
-    character(len=24), pointer :: v_sderro_emsg(:) => null()
-    integer :: icode, event_type
-    character(len=9) :: teven
-    character(len=24) :: meven
+    integer :: iEvent
+    character(len=24) :: eventEACTJv, eventENIVJv, eventEMSGJv
+    integer, pointer :: eventEACT(:) => null()
+    character(len=16), pointer :: eventENIV(:) => null()
+    character(len=24), pointer :: eventEMSG(:) => null()
+    integer :: eventState, eventType
+    character(len=9) :: eventLevel
+    character(len=24) :: eventMesg
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -82,63 +79,58 @@ subroutine nmevim(ds_print, sddisc, sderro, loop_name)
 ! - Separator line to print ?
 !
     l_sep_line = (.not. cvbouc .and. .not. lerrei .and. .not. lldcbo)
-!
-! - Access to error management datastructure
-!
-    sderro_info = sderro(1:19)//'.INFO'
-    sderro_eact = sderro(1:19)//'.EACT'
-    sderro_eniv = sderro(1:19)//'.ENIV'
-    sderro_emsg = sderro(1:19)//'.EMSG'
-    call jeveuo(sderro_info, 'L', vi=v_sderro_info)
-    call jeveuo(sderro_eact, 'L', vi=v_sderro_eact)
-    call jeveuo(sderro_eniv, 'L', vk16=v_sderro_eniv)
-    call jeveuo(sderro_emsg, 'L', vk24=v_sderro_emsg)
-    zeven = v_sderro_info(1)
-!
+
+! - Access to datastructure
+    eventEACTJv = sderro(1:19)//'.EACT'
+    eventENIVJv = sderro(1:19)//'.ENIV'
+    eventEMSGJv = sderro(1:19)//'.EMSG'
+    call jeveuo(eventEACTJv, 'L', vi=eventEACT)
+    call jeveuo(eventENIVJv, 'L', vk16=eventENIV)
+    call jeveuo(eventEMSGJv, 'L', vk24=eventEMSG)
+
 ! - Print event messages - Algorithm
-!
-    do ieven = 1, zeven
-        icode = v_sderro_eact(ieven)
-        teven = v_sderro_eniv(ieven) (1:9)
-        meven = v_sderro_emsg(ieven)
-        if (teven(1:4) .eq. 'EVEN' .and. (icode .eq. 1)) then
-            if (meven .ne. ' ') then
+    do iEvent = 1, ZEVEN
+        eventState = eventEACT(iEvent)
+        eventLevel = eventENIV(iEvent) (1:9)
+        eventMesg = eventEMSG(iEvent)
+        if (eventLevel(1:4) .eq. 'EVEN' .and. (eventState .eq. EVENT_IS_ACTIVE)) then
+            if (eventMesg .ne. ' ') then
                 if (l_sep_line) then
                     call nmimpx(ds_print)
                 end if
-                if (meven .eq. 'MECANONLINE10_1') then
+                if (eventMesg .eq. 'MECANONLINE10_1') then
                     call utmess('I', 'MECANONLINE10_1')
-                else if (meven .eq. 'MECANONLINE10_2') then
+                else if (eventMesg .eq. 'MECANONLINE10_2') then
                     call utmess('I', 'MECANONLINE10_2')
-                else if (meven .eq. 'MECANONLINE10_3') then
+                else if (eventMesg .eq. 'MECANONLINE10_3') then
                     call utmess('I', 'MECANONLINE10_3')
-                else if (meven .eq. 'MECANONLINE10_4') then
+                else if (eventMesg .eq. 'MECANONLINE10_4') then
                     call utmess('I', 'MECANONLINE10_4')
-                else if (meven .eq. 'MECANONLINE10_5') then
+                else if (eventMesg .eq. 'MECANONLINE10_5') then
                     call utmess('I', 'MECANONLINE10_5')
-                else if (meven .eq. 'MECANONLINE10_6') then
+                else if (eventMesg .eq. 'MECANONLINE10_6') then
                     call utmess('I', 'MECANONLINE10_6')
-                else if (meven .eq. 'MECANONLINE10_7') then
+                else if (eventMesg .eq. 'MECANONLINE10_7') then
                     call utmess('I', 'MECANONLINE10_7')
-                else if (meven .eq. 'MECANONLINE10_8') then
+                else if (eventMesg .eq. 'MECANONLINE10_8') then
                     call utmess('I', 'MECANONLINE10_8')
-                else if (meven .eq. 'MECANONLINE10_9') then
+                else if (eventMesg .eq. 'MECANONLINE10_9') then
                     call utmess('I', 'MECANONLINE10_9')
-                else if (meven .eq. 'MECANONLINE10_10') then
+                else if (eventMesg .eq. 'MECANONLINE10_10') then
                     call utmess('I', 'MECANONLINE10_10')
-                else if (meven .eq. 'MECANONLINE10_11') then
+                else if (eventMesg .eq. 'MECANONLINE10_11') then
                     call utmess('I', 'MECANONLINE10_11')
-                else if (meven .eq. 'MECANONLINE10_12') then
+                else if (eventMesg .eq. 'MECANONLINE10_12') then
                     call utmess('I', 'MECANONLINE10_12')
-                else if (meven .eq. 'MECANONLINE10_14') then
+                else if (eventMesg .eq. 'MECANONLINE10_14') then
                     call utmess('I', 'MECANONLINE10_14')
-                else if (meven .eq. 'MECANONLINE10_20') then
+                else if (eventMesg .eq. 'MECANONLINE10_20') then
                     call utmess('I', 'MECANONLINE10_20')
-                else if (meven .eq. 'MECANONLINE10_24') then
+                else if (eventMesg .eq. 'MECANONLINE10_24') then
                     call utmess('I', 'MECANONLINE10_24')
-                else if (meven .eq. 'MECANONLINE10_26') then
+                else if (eventMesg .eq. 'MECANONLINE10_26') then
                     call utmess('I', 'MECANONLINE10_26')
-                else if (meven .eq. 'MECANONLINE10_25') then
+                else if (eventMesg .eq. 'MECANONLINE10_25') then
                     if (cvbouc .and. loop_name .eq. 'NEWT') then
                         call utmess('A', 'MECANONLINE10_25')
                     end if
@@ -148,35 +140,34 @@ subroutine nmevim(ds_print, sddisc, sderro, loop_name)
             end if
         end if
     end do
-!
+
 ! - Print event messages - User
-!
     call nmacto(sddisc, i_fail_acti)
     lacti = i_fail_acti .gt. 0
     if (lacti) then
 ! ----- Get event type
-        call getFailEvent(sddisc, i_fail_acti, event_type)
-        if (event_type .eq. FAIL_EVT_COLLISION) then
+        call getFailEvent(sddisc, i_fail_acti, eventType)
+        if (eventType .eq. FAIL_EVT_COLLISION) then
             if (l_sep_line) then
                 call nmimpx(ds_print)
             end if
             call utmess('I', 'MECANONLINE10_21')
-        else if (event_type .eq. FAIL_EVT_INTERPENE) then
+        else if (eventType .eq. FAIL_EVT_INTERPENE) then
             if (l_sep_line) then
                 call nmimpx(ds_print)
             end if
             call utmess('I', 'MECANONLINE10_22')
-        else if (event_type .eq. FAIL_EVT_DIVE_RESI) then
+        else if (eventType .eq. FAIL_EVT_DIVE_RESI) then
             if (l_sep_line) then
                 call nmimpx(ds_print)
             end if
             call utmess('I', 'MECANONLINE10_23')
-        else if (event_type .eq. FAIL_EVT_RESI_MAXI) then
+        else if (eventType .eq. FAIL_EVT_RESI_MAXI) then
             if (l_sep_line) then
                 call nmimpx(ds_print)
             end if
             call utmess('I', 'MECANONLINE10_26')
-        else if (event_type .eq. FAIL_EVT_INCR_QUANT) then
+        else if (eventType .eq. FAIL_EVT_INCR_QUANT) then
             if (l_sep_line) then
                 call nmimpx(ds_print)
             end if

@@ -46,7 +46,7 @@ subroutine iseven(sddisc, event_type_in, lacti)
 ! ----------------------------------------------------------------------
 !
     integer :: i_fail, nb_fail
-    integer :: event_type
+    integer :: eventType
 !
 ! ----------------------------------------------------------------------
 !
@@ -54,7 +54,7 @@ subroutine iseven(sddisc, event_type_in, lacti)
     call utdidt('L', sddisc, 'LIST', 'NECHEC', vali_=nb_fail)
 !
     do i_fail = 1, nb_fail
-        call getFailEvent(sddisc, i_fail, event_type)
+        call getFailEvent(sddisc, i_fail, eventType)
         if (event_type_in .eq. event_type_in) then
             lacti = .true.
         end if

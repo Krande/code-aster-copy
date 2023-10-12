@@ -91,13 +91,13 @@ subroutine nonlinDSConvergenceCreate(ds_conv)
 !
 ! - Set event for divergence
 !
-    ds_conv%list_resi(1)%event_type = 'DIVE_RELA'
-    ds_conv%list_resi(2)%event_type = 'DIVE_MAXI'
-    ds_conv%list_resi(3)%event_type = 'DIVE_REFE'
-    ds_conv%list_resi(4)%event_type = 'DIVE_COMP'
-    ds_conv%list_resi(5)%event_type = 'DIVE_FROT'
-    ds_conv%list_resi(6)%event_type = 'DIVE_GEOM'
-    ds_conv%list_resi(7)%event_type = 'DIVE_PENE'
+    ds_conv%list_resi(1)%eventType = 'DIVE_RELA'
+    ds_conv%list_resi(2)%eventType = 'DIVE_MAXI'
+    ds_conv%list_resi(3)%eventType = 'DIVE_REFE'
+    ds_conv%list_resi(4)%eventType = 'DIVE_COMP'
+    ds_conv%list_resi(5)%eventType = 'DIVE_FROT'
+    ds_conv%list_resi(6)%eventType = 'DIVE_GEOM'
+    ds_conv%list_resi(7)%eventType = 'DIVE_PENE'
 !
 ! - Initializations for all residuals
 !

@@ -81,7 +81,7 @@ subroutine nmevel(sddisc, nume_inst, vale, loop_name, lsvimx, &
 ! ----------------------------------------------------------------------
 !
     integer :: nb_fail, i_fail, i_fail_acti
-    integer :: event_type
+    integer :: eventType
 !
 ! ----------------------------------------------------------------------
 !
@@ -97,53 +97,53 @@ subroutine nmevel(sddisc, nume_inst, vale, loop_name, lsvimx, &
 !
     do i_fail = 1, nb_fail
 ! ----- Get event type
-        call getFailEvent(sddisc, i_fail, event_type)
+        call getFailEvent(sddisc, i_fail, eventType)
 !
 ! ----- PAR DEFAUT: EVENEMENT NON ACTIVE
 !
         call eneven(sddisc, i_fail, .false._1)
 !
-        if (event_type .eq. FAIL_EVT_ERROR) then
+        if (eventType .eq. FAIL_EVT_ERROR) then
             if (lsvimx .or. lerrcv .or. lerror) then
                 i_fail_acti = i_fail
                 goto 99
             end if
-        else if (event_type .eq. FAIL_EVT_DIVE_RESI) then
+        else if (eventType .eq. FAIL_EVT_DIVE_RESI) then
             if (ldvres) then
                 i_fail_acti = i_fail
                 if (i_fail_acti .ne. 0) then
                     goto 99
                 end if
             end if
-        else if (event_type .eq. FAIL_EVT_RESI_MAXI) then
+        else if (eventType .eq. FAIL_EVT_RESI_MAXI) then
             if (lresmx) then
                 i_fail_acti = i_fail
                 if (i_fail_acti .ne. 0) then
                     goto 99
                 end if
             end if
-        else if (event_type .eq. FAIL_EVT_INCR_QUANT) then
+        else if (eventType .eq. FAIL_EVT_INCR_QUANT) then
             if (conver) then
                 call nmevdg(sddisc, vale, i_fail, i_fail_acti)
                 if (i_fail_acti .ne. 0) then
                     goto 99
                 end if
             end if
-        else if (event_type .eq. FAIL_EVT_COLLISION) then
+        else if (eventType .eq. FAIL_EVT_COLLISION) then
             if (loop_name .eq. 'INST') then
                 call nmevcx(sddisc, nume_inst, ds_contact_, i_fail, i_fail_acti)
                 if (i_fail_acti .ne. 0) then
                     goto 99
                 end if
             end if
-        else if (event_type .eq. FAIL_EVT_INTERPENE) then
+        else if (eventType .eq. FAIL_EVT_INTERPENE) then
             if (loop_name .eq. 'INST') then
                 call nmevin(sddisc, ds_contact_, i_fail, i_fail_acti)
                 if (i_fail_acti .ne. 0) then
                     goto 99
                 end if
             end if
-        else if (event_type .eq. FAIL_EVT_INSTABILITY) then
+        else if (eventType .eq. FAIL_EVT_INSTABILITY) then
             if (linsta) then
                 i_fail_acti = i_fail
             end if

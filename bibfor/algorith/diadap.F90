@@ -44,7 +44,7 @@ function diadap(sddisc, i_adap)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbinse, nbok, event_type
+    integer :: nbinse, nbok, eventType
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,13 +52,13 @@ function diadap(sddisc, i_adap)
 !
 ! - Get event type
 !
-    call getAdapEvent(sddisc, i_adap, event_type)
+    call getAdapEvent(sddisc, i_adap, eventType)
 !
-    if (event_type .eq. ADAP_EVT_NONE) then
+    if (eventType .eq. ADAP_EVT_NONE) then
         diadap = .false.
-    else if (event_type .eq. ADAP_EVT_ALLSTEPS) then
+    else if (eventType .eq. ADAP_EVT_ALLSTEPS) then
         diadap = .true.
-    else if (event_type .eq. ADAP_EVT_TRIGGER) then
+    else if (eventType .eq. ADAP_EVT_TRIGGER) then
 !
 ! ----- RECUP DU SEUIL SUR LE NB DE SUCCES CONSECUTIFS
 !

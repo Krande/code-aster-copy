@@ -70,7 +70,7 @@ subroutine nmcore(sdcrit, sderro, list_func_acti, nume_inst, iter_newt, &
 !
     character(len=24) :: sdcrit_crtr
     real(kind=8), pointer :: v_sdcrit_crtr(:) => null()
-    character(len=16) :: event_type
+    character(len=16) :: eventType
     real(kind=8) :: load_mini, last_resi_conv, user_para, vale_calc
     integer :: i_resi, nb_resi
     aster_logical :: l_resi_test, l_conv, l_swap_rela_maxi, l_swap_comp_rela
@@ -92,17 +92,16 @@ subroutine nmcore(sdcrit, sderro, list_func_acti, nume_inst, iter_newt, &
 !
     call SetResi(ds_conv, l_conv_=.false._1)
     do i_resi = 1, nb_resi
-        event_type = ds_conv%list_resi(i_resi)%event_type
-        call nmcrel(sderro, event_type, .false._1)
+        eventType = ds_conv%list_resi(i_resi)%eventType
+        call nmcrel(sderro, eventType, .false._1)
     end do
 !
 ! - Swap convergence criterias if necessary
 !
     call nmcore_swap(sderro, nume_inst, load_norm, load_mini, last_resi_conv, &
                      ds_conv)
-!
+
 ! - Check residuals stop criterias
-!
     do i_resi = 1, nb_resi
         vale_calc = ds_conv%list_resi(i_resi)%vale_calc
         user_para = ds_conv%list_resi(i_resi)%user_para
@@ -121,16 +120,15 @@ subroutine nmcore(sdcrit, sderro, list_func_acti, nume_inst, iter_newt, &
 ! - Save events
 !
     do i_resi = 1, nb_resi
-        event_type = ds_conv%list_resi(i_resi)%event_type
+        eventType = ds_conv%list_resi(i_resi)%eventType
         l_conv = ds_conv%list_resi(i_resi)%l_conv
         l_resi_test = ds_conv%l_resi_test(i_resi)
         if (l_resi_test) then
-            call nmcrel(sderro, event_type,.not. l_conv)
+            call nmcrel(sderro, eventType,.not. l_conv)
         end if
     end do
-!
-! - Event: evaluate convergence of residual
-!
+
+! - Event: evaluate convergence of residuals
     call nmevcv(sderro, list_func_acti, 'RESI')
     call nmlecv(sderro, 'RESI', cvresi)
 !

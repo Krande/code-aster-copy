@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine getAdapEvent(sddisc, i_adap, event_type)
+subroutine getAdapEvent(sddisc, i_adap, eventType)
 !
     implicit none
 !
@@ -26,7 +26,7 @@ subroutine getAdapEvent(sddisc, i_adap, event_type)
 !
     character(len=19), intent(in) :: sddisc
     integer, intent(in) :: i_adap
-    integer, intent(out) :: event_type
+    integer, intent(out) :: eventType
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -38,7 +38,7 @@ subroutine getAdapEvent(sddisc, i_adap, event_type)
 !
 ! In  sddisc           : name of datastructure for time discretization
 ! In  i_adap           : current index for ADAPTATION keyword
-! Out event_type       : type of event
+! Out eventType       : type of event
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,6 +52,6 @@ subroutine getAdapEvent(sddisc, i_adap, event_type)
 !
 ! - Type of event
 !
-    event_type = nint(v_sddisc_aevr(SIZE_LAEVR*(i_adap-1)+1))
+    eventType = nint(v_sddisc_aevr(SIZE_LAEVR*(i_adap-1)+1))
 !
 end subroutine

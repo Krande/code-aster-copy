@@ -17,10 +17,10 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine nonlinDSConvergenceInit(ds_conv, sderro, model_)
+    subroutine nonlinDSConvergenceInitCtc(ds_conv, list_func_acti, ds_contact)
         use NonLin_Datastructure_type
         type(NL_DS_Conv), intent(inout) :: ds_conv
-        character(len=24), intent(in) :: sderro
-        character(len=24), optional, intent(in) :: model_
-    end subroutine nonlinDSConvergenceInit
+        integer, intent(in) :: list_func_acti(*)
+        type(NL_DS_Contact), intent(in) :: ds_contact
+    end subroutine nonlinDSConvergenceInitCtc
 end interface

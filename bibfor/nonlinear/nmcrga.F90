@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine nmcrga(sderro)
 !
@@ -25,69 +24,69 @@ subroutine nmcrga(sderro)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/NonLinear_type.h"
 !
-    character(len=24) :: sderro
+    character(len=24), intent(in) :: sderro
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (SD GESTION ALGO)
 !
 ! CREATION DE LA SD
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! NB: LA SD S'APPELLE SDERRO
 !
 ! IN  SDERRO : SD ERREUR
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: zeven = 37
 ! - Name of events
-    character(len=16), parameter :: neven(zeven) = (/'ERRE_INTE', 'INTE_NPHY', 'DIVE_DEBO', &
-                                                     'INTE_BORN', 'ERRE_NPHY', &
-                                                     'ERRE_PILO', 'CONV_PILO', 'ERRE_FACS', &
-                                                     'ERRE_FACT', 'ERRE_CTD1', 'ERRE_CTD2', &
-                                                     'ERRE_TIMN', 'ERRE_TIMP', 'ERRE_EXCP', &
-                                                     'ITER_MAXI', &
-                                                     'DIVE_RESI', 'RESI_MAXR', 'RESI_MAXN', &
-                                                     'CRIT_STAB', 'DIVE_FIXG', 'RESI_MAXI', &
-                                                     'DIVE_FIXF', 'DIVE_FIXC', 'ERRE_CTCG', &
-                                                     'ERRE_CTCF', 'ERRE_CTCC', 'DIVE_FROT', &
-                                                     'DIVE_GEOM', 'DIVE_RELA', 'DIVE_MAXI', &
-                                                     'DIVE_REFE', 'DIVE_COMP', 'DIVE_CTCC', &
-                                                     'SOLV_ITMX', 'DIVE_HROM', 'DIVE_PENE', &
-                                                     'ERRE_APPA'/)
+    character(len=16), parameter :: eventName(ZEVEN) = (/'ERRE_INTE', 'INTE_NPHY', 'DIVE_DEBO', &
+                                                         'INTE_BORN', 'ERRE_NPHY', &
+                                                         'ERRE_PILO', 'CONV_PILO', 'ERRE_FACS', &
+                                                         'ERRE_FACT', 'ERRE_CTD1', 'ERRE_CTD2', &
+                                                         'ERRE_TIMN', 'ERRE_TIMP', 'ERRE_EXCP', &
+                                                         'ITER_MAXI', &
+                                                         'DIVE_RESI', 'RESI_MAXR', 'RESI_MAXN', &
+                                                         'CRIT_STAB', 'DIVE_FIXG', 'RESI_MAXI', &
+                                                         'DIVE_FIXF', 'DIVE_FIXC', 'ERRE_CTCG', &
+                                                         'ERRE_CTCF', 'ERRE_CTCC', 'DIVE_FROT', &
+                                                         'DIVE_GEOM', 'DIVE_RELA', 'DIVE_MAXI', &
+                                                         'DIVE_REFE', 'DIVE_COMP', 'DIVE_CTCC', &
+                                                         'SOLV_ITMX', 'DIVE_HROM', 'DIVE_PENE', &
+                                                         'ERRE_APPA'/)
 ! - Return code (name)
-    character(len=8), parameter :: ncret(zeven) = (/'LDC', 'LDC', 'LDC', &
-                                                    'LDC', 'XXX', &
-                                                    'PIL', 'PIL', 'FAC', &
-                                                    'FAC', 'CTC', 'CTC', &
-                                                    'XXX', 'XXX', 'XXX', &
-                                                    'XXX', &
-                                                    'XXX', 'XXX', 'XXX', &
-                                                    'XXX', 'XXX', 'XXX', &
-                                                    'XXX', 'XXX', 'XXX', &
-                                                    'XXX', 'XXX', 'XXX', &
-                                                    'XXX', 'XXX', 'XXX', &
-                                                    'XXX', 'XXX', 'XXX', &
-                                                    'RES', 'XXX', 'XXX', &
-                                                    'XXX'/)
+    character(len=8), parameter :: eventReturnCode(ZEVEN) = (/'LDC', 'LDC', 'LDC', &
+                                                              'LDC', 'XXX', &
+                                                              'PIL', 'PIL', 'FAC', &
+                                                              'FAC', 'CTC', 'CTC', &
+                                                              'XXX', 'XXX', 'XXX', &
+                                                              'XXX', &
+                                                              'XXX', 'XXX', 'XXX', &
+                                                              'XXX', 'XXX', 'XXX', &
+                                                              'XXX', 'XXX', 'XXX', &
+                                                              'XXX', 'XXX', 'XXX', &
+                                                              'XXX', 'XXX', 'XXX', &
+                                                              'XXX', 'XXX', 'XXX', &
+                                                              'RES', 'XXX', 'XXX', &
+                                                              'XXX'/)
 ! - Return code (value)
-    integer, parameter :: vcret(zeven) = (/1, 2, 3, &
-                                           4, 99, &
-                                           1, 2, 1, &
-                                           2, 1, 2, &
-                                           99, 99, 99, &
-                                           99, &
-                                           99, 99, 99, &
-                                           99, 99, 99, &
-                                           99, 99, 99, &
-                                           99, 99, 99, &
-                                           99, 99, 99, &
-                                           99, 99, 99, &
-                                           1, 99, 99, &
-                                           99/)
+    integer, parameter :: eventReturnValue(ZEVEN) = (/1, 2, 3, &
+                                                      4, 99, &
+                                                      1, 2, 1, &
+                                                      2, 1, 2, &
+                                                      99, 99, 99, &
+                                                      99, &
+                                                      99, 99, 99, &
+                                                      99, 99, 99, &
+                                                      99, 99, 99, &
+                                                      99, 99, 99, &
+                                                      99, 99, 99, &
+                                                      99, 99, 99, &
+                                                      1, 99, 99, &
+                                                      99/)
 !
 ! --- TYPE ET NIVEAU DE DECLENCHEMENT POSSIBLES DE L'EVENEMENT
 ! TROIS TYPES
@@ -98,41 +97,42 @@ subroutine nmcrga(sderro)
 ! ERRC_ : EVENEMENT A TRAITER A CONVERGENCE
 ! CONV_ : EVENEMENT A TRAITER POUR DETERMINER LA CONVERGENCE
 !
-    character(len=16), parameter :: teven(zeven) = (/'ERRI_NEWT', 'ERRC_NEWT', 'CONV_NEWT', &
-                                                     'EVEN     ', 'ERRI_NEWT', &
-                                                     'ERRI_NEWT', 'CONV_CALC', 'ERRI_NEWT', &
-                                                     'ERRI_NEWT', 'ERRI_NEWT', 'ERRI_NEWT', &
-                                                     'ERRI_CALC', 'ERRI_CALC', 'ERRI_CALC', &
-                                                     'ERRI_NEWT', &
-                                                     'EVEN     ', 'EVEN     ', 'EVEN     ', &
-                                                     'EVEN     ', 'CONV_FIXE', 'EVEN     ', &
-                                                     'CONV_FIXE', 'CONV_FIXE', 'ERRI_FIXE', &
-                                                     'ERRI_FIXE', 'ERRI_FIXE', 'CONV_RESI', &
-                                                     'CONV_NEWT', 'CONV_RESI', 'CONV_RESI', &
-                                                     'CONV_RESI', 'CONV_RESI', 'CONV_NEWT', &
-                                                     'ERRI_NEWT', 'CONV_FIXE', 'CONV_RESI', &
-                                                     'ERRI_NEWT'/)
+    character(len=16), parameter :: eventLevel(ZEVEN) = (/'ERRI_NEWT', 'ERRC_NEWT', 'CONV_NEWT', &
+                                                          'EVEN     ', 'ERRI_NEWT', &
+                                                          'ERRI_NEWT', 'CONV_CALC', 'ERRI_NEWT', &
+                                                          'ERRI_NEWT', 'ERRI_NEWT', 'ERRI_NEWT', &
+                                                          'ERRI_CALC', 'ERRI_CALC', 'ERRI_CALC', &
+                                                          'ERRI_NEWT', &
+                                                          'EVEN     ', 'EVEN     ', 'EVEN     ', &
+                                                          'EVEN     ', 'CONV_FIXE', 'EVEN     ', &
+                                                          'CONV_FIXE', 'CONV_FIXE', 'ERRI_FIXE', &
+                                                          'ERRI_FIXE', 'ERRI_FIXE', 'CONV_RESI', &
+                                                          'CONV_NEWT', 'CONV_RESI', 'CONV_RESI', &
+                                                          'CONV_RESI', 'CONV_RESI', 'CONV_NEWT', &
+                                                          'ERRI_NEWT', 'CONV_FIXE', 'CONV_RESI', &
+                                                          'ERRI_NEWT'/)
 !
 ! --- FONCTIONNALITE ACTIVE SI NECESSAIRE POUR CONVERGENCE
 !
-    character(len=24), parameter :: feven(zeven) = (/'         ', '         ', '         ', &
-                                                     '         ', '         ', &
-                                                     '         ', 'PILOTAGE ', '         ', &
-                                                     '         ', '         ', '         ', &
-                                                     '         ', '         ', '         ', &
-                                                     '         ', &
-                                                     '         ', '         ', '         ', &
-                                                     '         ', '         ', '         ', &
-                                                     '         ', '         ', '         ', &
-                                                     '         ', '         ', '         ', &
-                                                     '         ', '         ', '         ', &
-                                                     '         ', '         ', '         ', &
-                                                     'LDLT_SP  ', '         ', '         ', &
-                                                     '         '/)
+    character(len=24), parameter :: eventActiFunc(ZEVEN) = &
+                                    (/'         ', '         ', '         ', &
+                                      '         ', '         ', &
+                                      '         ', 'PILOTAGE ', '         ', &
+                                      '         ', '         ', '         ', &
+                                      '         ', '         ', '         ', &
+                                      '         ', &
+                                      '         ', '         ', '         ', &
+                                      '         ', '         ', '         ', &
+                                      '         ', '         ', '         ', &
+                                      '         ', '         ', '         ', &
+                                      '         ', '         ', '         ', &
+                                      '         ', '         ', '         ', &
+                                      'LDLT_SP  ', '         ', '         ', &
+                                      '         '/)
 !
 ! --- CODE DU MESSAGE A AFFICHER
 !
-    character(len=24), parameter :: meven(zeven) = (/ &
+    character(len=24), parameter :: eventMesg(ZEVEN) = (/ &
                                     'MECANONLINE10_1 ', 'MECANONLINE10_13', '                ', &
                                     'MECANONLINE10_25', 'MECANONLINE10_13', &
                                     'MECANONLINE10_2 ', '                ', 'MECANONLINE10_6 ', &
@@ -148,50 +148,48 @@ subroutine nmcrga(sderro)
                                     'MECANONLINE10_12', '                ', '                ', &
                                     'MECANONLINE10_14'/)
 !
-    integer :: ieven
-    character(len=24) :: errecn, errecv, erreni, erreno, erraac, errfct, errmsg
-    integer :: jeecon, jeecov, jeeniv, jeenom, jeeact, jeefct, jeemsg
-    character(len=24) :: errinf, errcvg, errevt
-    integer :: jeinfo, jeconv, jeeevt
+    integer :: iEvent
+    character(len=24) :: eventECONJv, eventECOVJv, eventENIVJv, eventEFCTJv, eventEMSGJv
+    character(len=24) :: eventCONVJv, eventEEVTJv, eventENOMJv, eventEACTJv
+    integer, pointer :: eventEACT(:) => null(), eventECOV(:) => null(), eventCONV(:) => null()
+    integer, pointer :: eventEEVT(:) => null()
+    character(len=16), pointer :: eventENOM(:) => null()
+    character(len=16), pointer :: eventENIV(:) => null()
+    character(len=24), pointer :: eventEMSG(:) => null(), eventEFCT(:) => null()
+    character(len=8), pointer :: eventECON(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
+
+! - OBJETS
+    eventENOMJv = sderro(1:19)//'.ENOM'
+    eventECOVJv = sderro(1:19)//'.ECOV'
+    eventECONJv = sderro(1:19)//'.ECON'
+    eventENIVJv = sderro(1:19)//'.ENIV'
+    eventEFCTJv = sderro(1:19)//'.EFCT'
+    eventEACTJv = sderro(1:19)//'.EACT'
+    eventCONVJv = sderro(1:19)//'.CONV'
+    eventEEVTJv = sderro(1:19)//'.EEVT'
+    eventEMSGJv = sderro(1:19)//'.EMSG'
+    call wkvect(eventENOMJv, 'V V K16', ZEVEN, vk16=eventENOM)
+    call wkvect(eventECOVJv, 'V V I', ZEVEN, vi=eventECOV)
+    call wkvect(eventECONJv, 'V V K8', ZEVEN, vk8=eventECON)
+    call wkvect(eventENIVJv, 'V V K16', ZEVEN, vk16=eventENIV)
+    call wkvect(eventEFCTJv, 'V V K24', ZEVEN, vk24=eventEFCT)
+    call wkvect(eventEACTJv, 'V V I', ZEVEN, vi=eventEACT)
+    call wkvect(eventCONVJv, 'V V I', NB_LOOP+1, vi=eventCONV)
+    call wkvect(eventEEVTJv, 'V V I', 2, vi=eventEEVT)
+    call wkvect(eventEMSGJv, 'V V K24', ZEVEN, vk24=eventEMSG)
 !
-! --- GENERAL
-!
-    errinf = sderro(1:19)//'.INFO'
-    call wkvect(errinf, 'V V I', 2, jeinfo)
-    zi(jeinfo-1+1) = zeven
-!
-! --- OBJETS
-!
-    erreno = sderro(1:19)//'.ENOM'
-    errecv = sderro(1:19)//'.ECOV'
-    errecn = sderro(1:19)//'.ECON'
-    erreni = sderro(1:19)//'.ENIV'
-    errfct = sderro(1:19)//'.EFCT'
-    erraac = sderro(1:19)//'.EACT'
-    errcvg = sderro(1:19)//'.CONV'
-    errevt = sderro(1:19)//'.EEVT'
-    errmsg = sderro(1:19)//'.EMSG'
-    call wkvect(erreno, 'V V K16', zeven, jeenom)
-    call wkvect(errecv, 'V V I', zeven, jeecov)
-    call wkvect(errecn, 'V V K8', zeven, jeecon)
-    call wkvect(erreni, 'V V K16', zeven, jeeniv)
-    call wkvect(errfct, 'V V K24', zeven, jeefct)
-    call wkvect(erraac, 'V V I', zeven, jeeact)
-    call wkvect(errcvg, 'V V I', 5, jeconv)
-    call wkvect(errevt, 'V V I', 2, jeeevt)
-    call wkvect(errmsg, 'V V K24', zeven, jeemsg)
-!
-    do ieven = 1, zeven
-        zk16(jeenom-1+ieven) = neven(ieven)
-        zk8(jeecon-1+ieven) = ncret(ieven)
-        zi(jeecov-1+ieven) = vcret(ieven)
-        zk16(jeeniv-1+ieven) = teven(ieven)
-        zk24(jeefct-1+ieven) = feven(ieven)
-        zk24(jeemsg-1+ieven) = meven(ieven)
+    do iEvent = 1, ZEVEN
+        eventENOM(iEvent) = eventName(iEvent)
+        eventEACT(iEvent) = EVENT_IS_INACTIVE
+        eventECON(iEvent) = eventReturnCode(iEvent)
+        eventECOV(iEvent) = eventReturnValue(iEvent)
+        eventENIV(iEvent) = eventLevel(iEvent)
+        eventEFCT(iEvent) = eventActiFunc(iEvent)
+        eventEMSG(iEvent) = eventMesg(iEvent)
     end do
 !
     call jedema()

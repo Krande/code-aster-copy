@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmstat_vale(ds_measure, time_curr, sderro)
 !
     use NonLin_Datastructure_type
@@ -29,8 +29,7 @@ subroutine nmstat_vale(ds_measure, time_curr, sderro)
 #include "asterfort/nmrvai.h"
 #include "asterfort/utgtme.h"
 #include "asterfort/SetTableColumn.h"
-!
-! person_in_charge: mickael.abbas at edf.fr
+#include "asterfort/NonLinear_type.h"
 !
     type(NL_DS_Measure), intent(inout) :: ds_measure
     real(kind=8), intent(in) :: time_curr
@@ -58,46 +57,42 @@ subroutine nmstat_vale(ds_measure, time_curr, sderro)
     type(NL_DS_Column) :: column
     type(NL_DS_Device) :: device
     aster_logical :: l_vale_inte, l_vale_real
-    integer :: count, i_event, zeven, icode
+    integer :: count, iEvent, eventState
     character(len=10) :: device_type
     real(kind=8) :: time
-    character(len=16) :: col_name, event_name, state
-    character(len=24) :: errinf, erreno, erraac
-    integer, pointer :: v_errinf(:) => null()
-    integer, pointer :: v_erraac(:) => null()
-    character(len=16), pointer :: v_erreno(:) => null()
+    character(len=16) :: col_name, eventName, state
+    character(len=24) :: eventENOMJv, eventEACTJv
+    integer, pointer :: eventEACT(:) => null()
+    character(len=16), pointer :: eventENOM(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
     table = ds_measure%table
     nb_cols = table%nb_cols
     nb_device = ds_measure%nb_device
-!
+
+! - Access to datastructure
+    eventENOMJv = sderro(1:19)//'.ENOM'
+    eventEACTJv = sderro(1:19)//'.EACT'
+    call jeveuo(eventENOMJv, 'L', vk16=eventENOM)
+    call jeveuo(eventEACTJv, 'L', vi=eventEACT)
+
 ! - State of step
-!
     state = 'CONV'
-    errinf = sderro(1:19)//'.INFO'
-    erreno = sderro(1:19)//'.ENOM'
-    erraac = sderro(1:19)//'.EACT'
-    call jeveuo(errinf, 'L', vi=v_errinf)
-    zeven = v_errinf(1)
-    call jeveuo(erreno, 'L', vk16=v_erreno)
-    call jeveuo(erraac, 'L', vi=v_erraac)
-    do i_event = 1, zeven
-        event_name = v_erreno(i_event)
-        icode = v_erraac(i_event)
-        if (icode .eq. 1) then
-            state = event_name
+
+    do iEvent = 1, ZEVEN
+        eventName = eventENOM(iEvent)
+        eventState = eventEACT(iEvent)
+        if (eventState .eq. EVENT_IS_ACTIVE) then
+            state = eventName
             exit
         end if
     end do
-!
+
 ! - Get memory
-!
     call utgtme(1, 'VMPEAK  ', vmpeak, iret)
-!
+
 ! - Set list of values in columns
-!
     do i_col = 1, nb_cols
         column = table%cols(i_col)
         i_device = table%indx_vale(i_col)

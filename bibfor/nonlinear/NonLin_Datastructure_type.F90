@@ -116,7 +116,7 @@ module NonLin_Datastructure_type
         character(len=16) :: type = ' '
         character(len=24) :: col_name = ' '
         character(len=24) :: col_name_locus = ' '
-        character(len=16) :: event_type = ' '
+        character(len=16) :: eventType = ' '
         real(kind=8)      :: vale_calc = 0.d0
         character(len=16) :: locus_calc = ' '
         real(kind=8)      :: user_para = 0.d0
@@ -134,14 +134,15 @@ module NonLin_Datastructure_type
 ! - Type: convergence management
 !
     type NL_DS_Conv
+        aster_logical :: lCritereOr = ASTER_FALSE
         integer :: nb_resi = 0
         integer :: nb_resi_maxi = 7
-        type(NL_DS_Resi)     :: list_resi(7)
-        aster_logical        :: l_resi_test(7) = ASTER_FALSE
+        type(NL_DS_Resi) :: list_resi(7)
+        aster_logical :: l_resi_test(7) = ASTER_FALSE
         integer :: nb_refe = 0
         integer :: nb_refe_maxi = 11
         type(NL_DS_RefeResi) :: list_refe(11)
-        aster_logical        :: l_refe_test(11) = ASTER_FALSE
+        aster_logical :: l_refe_test(11) = ASTER_FALSE
         integer :: iter_glob_maxi = 0
         integer :: iter_glob_elas = 0
         aster_logical :: l_stop = ASTER_FALSE

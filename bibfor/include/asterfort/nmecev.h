@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,10 +17,10 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine nmecev(sderro, acces, event_type, action_type)
-        character(len=24) :: sderro
-        character(len=1) :: acces
-        integer, intent(inout) :: event_type
-        integer, intent(inout) :: action_type
+    subroutine nmecev(sderro, acces, failType, actionType)
+        character(len=24), intent(in) :: sderro
+        character(len=1), intent(in) :: acces
+        integer, intent(inout) :: failType
+        integer, intent(inout) :: actionType
     end subroutine nmecev
 end interface

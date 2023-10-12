@@ -15,108 +15,95 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmerim(sderro)
 !
-! person_in_charge: mickael.abbas at edf.fr
-!
     implicit none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/utmess.h"
-    character(len=24) :: sderro
 !
-! ----------------------------------------------------------------------
+#include "asterfort/assert.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/NonLinear_type.h"
+#include "asterfort/utmess.h"
+#include "jeveux.h"
+!
+    character(len=24), intent(in) :: sderro
+!
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (SD ERREUR)
 !
 ! EMISSION MESSAGE ERRREUR
 !
-! ----------------------------------------------------------------------
-!
+! --------------------------------------------------------------------------------------------------
 !
 ! IN  SDERRO : SD ERREUR
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    integer :: ieven, zeven
-    character(len=24) :: errinf
-    integer :: jeinfo
-    character(len=24) :: erraac, erreni, errmsg
-    integer :: jeeact, jeeniv, jeemsg
-    integer :: icode
-    character(len=9) :: teven
-    character(len=24) :: meven
+    integer :: iEvent
+    integer :: eventState
+    character(len=9) :: eventLevel
+    character(len=24) :: eventMesg
+    character(len=24) :: eventEACTJv, eventENIVJv, eventEMSGJv
+    integer, pointer :: eventEACT(:) => null()
+    character(len=16), pointer :: eventENIV(:) => null()
+    character(len=24), pointer :: eventEMSG(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
-!
-! --- ACCES SD
-!
-    errinf = sderro(1:19)//'.INFO'
-    call jeveuo(errinf, 'L', jeinfo)
-    zeven = zi(jeinfo-1+1)
-!
-    erraac = sderro(1:19)//'.EACT'
-    erreni = sderro(1:19)//'.ENIV'
-    errmsg = sderro(1:19)//'.EMSG'
-    call jeveuo(erraac, 'L', jeeact)
-    call jeveuo(erreni, 'L', jeeniv)
-    call jeveuo(errmsg, 'L', jeemsg)
-!
-! --- EMISSION DES MESSAGES D'ERREUR
-!
-    do ieven = 1, zeven
-        icode = zi(jeeact-1+ieven)
-        teven = zk16(jeeniv-1+ieven) (1:9)
-        meven = zk24(jeemsg-1+ieven)
-        if ((teven(1:3) .eq. 'ERR') .and. (icode .eq. 1)) then
-            if (meven .eq. ' ') then
-                ASSERT(.false.)
-            end if
-            if (meven .eq. 'MECANONLINE10_1') then
+
+! - Access to datastructure
+    eventEACTJv = sderro(1:19)//'.EACT'
+    eventENIVJv = sderro(1:19)//'.ENIV'
+    eventEMSGJv = sderro(1:19)//'.EMSG'
+    call jeveuo(eventEACTJv, 'L', vi=eventEACT)
+    call jeveuo(eventENIVJv, 'L', vk16=eventENIV)
+    call jeveuo(eventEMSGJv, 'L', vk24=eventEMSG)
+
+! - Print error messages
+    do iEvent = 1, ZEVEN
+        eventState = eventEACT(iEvent)
+        eventLevel = eventENIV(iEvent) (1:9)
+        eventMesg = eventEMSG(iEvent)
+        if ((eventLevel(1:3) .eq. 'ERR') .and. (eventState .eq. EVENT_IS_ACTIVE)) then
+            if (eventMesg .eq. 'MECANONLINE10_1') then
                 call utmess('I', 'MECANONLINE10_1')
-            else if (meven .eq. 'MECANONLINE10_2') then
+            else if (eventMesg .eq. 'MECANONLINE10_2') then
                 call utmess('I', 'MECANONLINE10_2')
-            else if (meven .eq. 'MECANONLINE10_3') then
+            else if (eventMesg .eq. 'MECANONLINE10_3') then
                 call utmess('I', 'MECANONLINE10_3')
-            else if (meven .eq. 'MECANONLINE10_4') then
+            else if (eventMesg .eq. 'MECANONLINE10_4') then
                 call utmess('I', 'MECANONLINE10_4')
-            else if (meven .eq. 'MECANONLINE10_5') then
+            else if (eventMesg .eq. 'MECANONLINE10_5') then
                 call utmess('I', 'MECANONLINE10_5')
-            else if (meven .eq. 'MECANONLINE10_6') then
+            else if (eventMesg .eq. 'MECANONLINE10_6') then
                 call utmess('I', 'MECANONLINE10_6')
-            else if (meven .eq. 'MECANONLINE10_7') then
+            else if (eventMesg .eq. 'MECANONLINE10_7') then
                 call utmess('I', 'MECANONLINE10_7')
-            else if (meven .eq. 'MECANONLINE10_8') then
+            else if (eventMesg .eq. 'MECANONLINE10_8') then
                 call utmess('I', 'MECANONLINE10_8')
-            else if (meven .eq. 'MECANONLINE10_9') then
+            else if (eventMesg .eq. 'MECANONLINE10_9') then
                 call utmess('I', 'MECANONLINE10_9')
-            else if (meven .eq. 'MECANONLINE10_10') then
+            else if (eventMesg .eq. 'MECANONLINE10_10') then
                 call utmess('I', 'MECANONLINE10_10')
-            else if (meven .eq. 'MECANONLINE10_11') then
+            else if (eventMesg .eq. 'MECANONLINE10_11') then
                 call utmess('I', 'MECANONLINE10_11')
-            else if (meven .eq. 'MECANONLINE10_12') then
+            else if (eventMesg .eq. 'MECANONLINE10_12') then
                 call utmess('I', 'MECANONLINE10_12')
-            else if (meven .eq. 'MECANONLINE10_13') then
+            else if (eventMesg .eq. 'MECANONLINE10_13') then
                 call utmess('I', 'MECANONLINE10_13')
-            else if (meven .eq. 'MECANONLINE10_20') then
+            else if (eventMesg .eq. 'MECANONLINE10_20') then
                 call utmess('I', 'MECANONLINE10_20')
-            else if (meven .eq. 'MECANONLINE10_24') then
+            else if (eventMesg .eq. 'MECANONLINE10_24') then
                 call utmess('I', 'MECANONLINE10_24')
-            else if (meven .eq. 'MECANONLINE10_36') then
+            else if (eventMesg .eq. 'MECANONLINE10_36') then
                 call utmess('I', 'MECANONLINE10_36')
-            else if (meven .eq. 'MECANONLINE10_14') then
+            else if (eventMesg .eq. 'MECANONLINE10_14') then
                 call utmess('I', 'MECANONLINE10_14')
             else
-                ASSERT(.false.)
+                ASSERT(ASTER_FALSE)
             end if
         end if
     end do
 !
-    call jedema()
 end subroutine

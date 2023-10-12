@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -93,10 +93,11 @@ RESU = STAT_NON_LINE(
     EXCIT=(_F(CHARGE=CHA1, FONC_MULT=FONC),),
     CONTACT=CHA2,
     COMPORTEMENT=_F(RELATION="ELAS"),
-    NEWTON=_F(MATRICE="ELASTIQUE"),
+    NEWTON=_F(MATRICE="ELASTIQUE", REAC_ITER=1),
     INCREMENT=_F(LIST_INST=L_INST, NUME_INST_FIN=5),
-    CONVERGENCE=_F(ARRET="OUI", ITER_GLOB_MAXI=30, RESI_GLOB_RELA=1.0e-5, RESI_GLOB_MAXI=1.0e-2),
-    SOLVEUR=_F(METHODE="LDLT"),
+    CONVERGENCE=_F(
+        VERIF="AU_MOINS_UN", ITER_GLOB_MAXI=30, RESI_GLOB_RELA=1.0e-5, RESI_GLOB_MAXI=1.0e-2
+    ),
 )
 
 RESU = CALC_CHAMP(reuse=RESU, CONTRAINTE=("SIGM_ELNO"), VARI_INTERNE=("VARI_ELNO"), RESULTAT=RESU)
@@ -305,7 +306,7 @@ RESUF = STAT_NON_LINE(
     EXCIT=(_F(CHARGE=CHA1, FONC_MULT=FONC),),
     CONTACT=CHA3,
     COMPORTEMENT=_F(RELATION="ELAS"),
-    NEWTON=_F(MATRICE="ELASTIQUE"),
+    NEWTON=_F(MATRICE="ELASTIQUE", REAC_ITER=1),
     INCREMENT=_F(LIST_INST=L_INST, NUME_INST_FIN=5),
     CONVERGENCE=_F(ARRET="OUI", ITER_GLOB_MAXI=30, RESI_GLOB_RELA=1.0e-5, RESI_GLOB_MAXI=1.0e-2),
     SOLVEUR=_F(METHODE="LDLT"),

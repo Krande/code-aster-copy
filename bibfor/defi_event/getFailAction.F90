@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine getFailAction(sddisc, i_fail, action_type)
+subroutine getFailAction(sddisc, failIndx, actionType)
 !
     implicit none
 !
@@ -25,8 +25,8 @@ subroutine getFailAction(sddisc, i_fail, action_type)
 #include "asterfort/jeveuo.h"
 !
     character(len=19), intent(in) :: sddisc
-    integer, intent(in) :: i_fail
-    integer, intent(out) :: action_type
+    integer, intent(in) :: failIndx
+    integer, intent(out) :: actionType
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -37,21 +37,18 @@ subroutine getFailAction(sddisc, i_fail, action_type)
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  sddisc           : name of datastructure for time discretization
-! In  i_fail           : current index for ECHEC keyword
-! Out action_type      : type of action
+! In  failIndx         : current index for ECHEC keyword
+! Out actionType       : type of action
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: sddisc_eevr
-    real(kind=8), pointer :: v_sddisc_eevr(:) => null()
+    character(len=24) :: sddiscEEVRJv
+    real(kind=8), pointer :: sddiscEEVR(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    sddisc_eevr = sddisc(1:19)//'.EEVR'
-    call jeveuo(sddisc_eevr, 'L', vr=v_sddisc_eevr)
-!
-! - Type of action
-!
-    action_type = nint(v_sddisc_eevr(SIZE_LEEVR*(i_fail-1)+2))
+    sddiscEEVRJv = sddisc(1:19)//'.EEVR'
+    call jeveuo(sddiscEEVRJv, 'L', vr=sddiscEEVR)
+    actionType = nint(sddiscEEVR(SIZE_LEEVR*(failIndx-1)+2))
 !
 end subroutine

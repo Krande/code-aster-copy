@@ -15,7 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+! person_in_charge: mickael.abbas at edf.fr
+!
 subroutine SetResi(ds_conv, type_, &
                    col_name_, col_name_locus_, vale_calc_, locus_calc_, user_para_, &
                    l_conv_, event_type_, l_resi_test_)
@@ -26,8 +27,6 @@ subroutine SetResi(ds_conv, type_, &
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-!
-! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Conv), intent(inout) :: ds_conv
     character(len=*), optional, intent(in) :: type_
@@ -57,7 +56,7 @@ subroutine SetResi(ds_conv, type_, &
 ! In  locus_calc       : locus where is maximum norm of residual
 ! In  user_para        : user parameter for residual
 ! In  l_conv           : .true. if residual has converged
-! In  event_type       : type of event
+! In  eventType       : type of event
 ! In  l_resi_test      : .true. to test this residual to evaluate convergence
 !
 ! --------------------------------------------------------------------------------------------------
@@ -92,7 +91,7 @@ subroutine SetResi(ds_conv, type_, &
                 ds_conv%list_resi(i_resi)%col_name_locus = col_name_locus_
             end if
             if (present(event_type_)) then
-                ds_conv%list_resi(i_resi)%event_type = event_type_
+                ds_conv%list_resi(i_resi)%eventType = event_type_
             end if
             if (present(l_resi_test_)) then
                 ds_conv%l_resi_test(i_resi) = l_resi_test_
@@ -126,7 +125,7 @@ subroutine SetResi(ds_conv, type_, &
             ds_conv%list_resi(i_type)%col_name = col_name_
         end if
         if (present(event_type_)) then
-            ds_conv%list_resi(i_type)%event_type = event_type_
+            ds_conv%list_resi(i_type)%eventType = event_type_
         end if
         if (present(l_resi_test_)) then
             ds_conv%l_resi_test(i_type) = l_resi_test_

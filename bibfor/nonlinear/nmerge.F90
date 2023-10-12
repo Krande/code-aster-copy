@@ -16,68 +16,60 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmerge(sderro, nomevt, lactiv)
-!
-! person_in_charge: mickael.abbas at edf.fr
+subroutine nmerge(sderro, eventToTest, eventFlag)
 !
     implicit none
+!
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-    character(len=24) :: sderro
-    character(len=9) :: nomevt
-    aster_logical :: lactiv
+#include "asterfort/NonLinear_type.h"
 !
-! ----------------------------------------------------------------------
+    character(len=24), intent(in) :: sderro
+    character(len=9), intent(in) :: eventToTest
+    aster_logical, intent(out) :: eventFlag
+!
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (SD ERREUR)
 !
 ! DIT SI UN EVENEMENT EST DECLENCHE
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-!
-! IN  SDERRO : SD GESTION DES ERREURS
+! In  sderro           : name of datastructure for events in algorithm
 ! IN  NOMEVT : NOM DE L'EVENEMENT (VOIR LA LISTE DANS NMCRER)
 ! OUT LACTIV : .TRUE. SI EVENEMENT ACTIVE
 !
+! --------------------------------------------------------------------------------------------------
 !
+    integer :: iEvent, eventState
+    character(len=24) :: eventENOMJv, eventEACTJv
+    integer, pointer :: eventEACT(:) => null()
+    character(len=16), pointer :: eventENOM(:) => null()
+    character(len=16) :: eventName
 !
-!
-    integer :: zeven
-    integer :: ieven, icode
-    character(len=24) :: errinf
-    integer :: jeinf
-    character(len=24) :: erreno, erraac
-    integer :: jeenom, jeeact
-    character(len=16) :: neven
-!
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-!
-! --- INITIALISATIONS
-!
-    lactiv = .false.
-!
-! --- ACCES SD
-!
-    errinf = sderro(1:19)//'.INFO'
-    call jeveuo(errinf, 'L', jeinf)
-    zeven = zi(jeinf-1+1)
-!
-    erreno = sderro(1:19)//'.ENOM'
-    erraac = sderro(1:19)//'.EACT'
-    call jeveuo(erreno, 'L', jeenom)
-    call jeveuo(erraac, 'L', jeeact)
-!
-    do ieven = 1, zeven
-        neven = zk16(jeenom-1+ieven)
-        if (neven .eq. nomevt) then
-            icode = zi(jeeact-1+ieven)
-            if (icode .eq. 1) lactiv = .true.
+
+! - Access to datastructure
+    eventENOMJv = sderro(1:19)//'.ENOM'
+    eventEACTJv = sderro(1:19)//'.EACT'
+    call jeveuo(eventENOMJv, 'L', vk16=eventENOM)
+    call jeveuo(eventEACTJv, 'L', vi=eventEACT)
+
+! - Test
+    eventFlag = ASTER_FALSE
+    do iEvent = 1, ZEVEN
+        eventName = eventENOM(iEvent)
+        if (eventName .eq. eventToTest) then
+            eventState = eventEACT(iEvent)
+            if (eventState .eq. EVENT_IS_ACTIVE) then
+                eventFlag = ASTER_TRUE
+            end if
         end if
     end do
 !

@@ -26,7 +26,6 @@ subroutine nmdocn(ds_conv)
 #include "asterf_types.h"
 #include "asterc/r8nnem.h"
 #include "asterc/r8vide.h"
-#include "asterc/getexm.h"
 #include "asterfort/assert.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
@@ -51,10 +50,10 @@ subroutine nmdocn(ds_conv)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    character(len=16) :: keywf
-    integer :: iret, iret_rela, iret_maxi, iret_refe, iret_comp, para_inte
+    character(len=16), parameter :: factorKeyword = 'CONVERGENCE'
+    integer :: iret, iret_rela, iret_maxi, iret_refe, iret_comp, para_inte, iret_iter
     real(kind=8) :: para_real
-    character(len=8) :: answer
+    character(len=24) :: answer
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -62,116 +61,122 @@ subroutine nmdocn(ds_conv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE12_8')
     end if
-!
+
 ! - Initializations
-!
     iret_refe = 0
     iret_comp = 0
-    keywf = 'CONVERGENCE'
-!
+
 ! - Get convergence parameters (maximum iterations)
-!
-    call getvis(keywf, 'ITER_GLOB_MAXI', iocc=1, scal=para_inte)
+    call getvis(factorKeyword, 'ITER_GLOB_MAXI', iocc=1, scal=para_inte)
     ds_conv%iter_glob_maxi = para_inte
-    if (getexm(keywf, 'ITER_GLOB_ELAS') .eq. 1) then
-        call getvis(keywf, 'ITER_GLOB_ELAS', iocc=1, scal=para_inte)
+    call getvis(factorKeyword, 'ITER_GLOB_ELAS', iocc=1, scal=para_inte, nbret=iret_iter)
+    if (iret_iter .ne. 0) then
+        call getvis(factorKeyword, 'ITER_GLOB_ELAS', iocc=1, scal=para_inte)
         ds_conv%iter_glob_elas = para_inte
     end if
-!
+
 ! - Get convergence parameters (residuals)
-!
-    call getvr8(keywf, 'RESI_GLOB_RELA', iocc=1, scal=para_real, nbret=iret_rela)
+    call getvr8(factorKeyword, 'RESI_GLOB_RELA', iocc=1, scal=para_real, nbret=iret_rela)
     if (iret_rela .eq. 1) then
         call SetResi(ds_conv, type_='RESI_GLOB_RELA', &
                      user_para_=para_real, l_resi_test_=.true._1)
     end if
-    call getvr8(keywf, 'RESI_GLOB_MAXI', iocc=1, scal=para_real, nbret=iret_maxi)
+    call getvr8(factorKeyword, 'RESI_GLOB_MAXI', iocc=1, scal=para_real, nbret=iret_maxi)
     if (iret_maxi .eq. 1) then
         call SetResi(ds_conv, type_='RESI_GLOB_MAXI', &
                      user_para_=para_real, l_resi_test_=.true._1)
     end if
-    if (getexm(keywf, 'RESI_COMP_RELA') .eq. 1) then
-        call getvr8(keywf, 'RESI_COMP_RELA', iocc=1, scal=para_real, nbret=iret_comp)
-        if (iret_comp .eq. 1) then
-            call SetResi(ds_conv, type_='RESI_COMP_RELA', &
-                         user_para_=para_real, l_resi_test_=.true._1)
-        end if
+    call getvr8(factorKeyword, 'RESI_COMP_RELA', iocc=1, scal=para_real, nbret=iret_comp)
+    if (iret_comp .eq. 1) then
+        call SetResi(ds_conv, type_='RESI_COMP_RELA', &
+                     user_para_=para_real, l_resi_test_=.true._1)
     end if
-    if (getexm(keywf, 'RESI_REFE_RELA') .eq. 1) then
-        call getvr8(keywf, 'RESI_REFE_RELA', iocc=1, scal=para_real, nbret=iret_refe)
-        if (iret_refe .eq. 1) then
-            call SetResi(ds_conv, type_='RESI_REFE_RELA', &
-                         user_para_=para_real, l_resi_test_=.true._1)
-        end if
-    end if
-!
-! - Reference residuals
-!
+    call getvr8(factorKeyword, 'RESI_REFE_RELA', iocc=1, scal=para_real, nbret=iret_refe)
     if (iret_refe .eq. 1) then
-        call getvr8(keywf, 'SIGM_REFE', iocc=1, scal=para_real, nbret=iret)
+        call SetResi(ds_conv, type_='RESI_REFE_RELA', &
+                     user_para_=para_real, l_resi_test_=.true._1)
+    end if
+    call getvr8(factorKeyword, 'RESI_GLOB_RELA', iocc=1, scal=para_real, nbret=iret_rela)
+    if (iret_rela .eq. 1) then
+        call SetResi(ds_conv, type_='RESI_GLOB_RELA', &
+                     user_para_=para_real, l_resi_test_=.true._1)
+    end if
+    call getvtx(factorKeyword, 'VERIF', iocc=1, scal=answer, nbret=iret_rela)
+    ds_conv%lCritereOr = ASTER_FALSE
+    if (iret_rela .eq. 1) then
+        if (answer == "TOUT") then
+            ds_conv%lCritereOr = ASTER_FALSE
+        elseif (answer == "AU_MOINS_UN") then
+            ds_conv%lCritereOr = ASTER_TRUE
+        else
+            write (6, *) "answer:", answer
+            ASSERT(ASTER_FALSE)
+        end if
+    end if
+
+! - Reference residuals
+    if (iret_refe .eq. 1) then
+        call getvr8(factorKeyword, 'SIGM_REFE', iocc=1, scal=para_real, nbret=iret)
         if (iret .eq. 1) then
             call SetResiRefe(ds_conv, type_='SIGM_REFE', &
                              user_para_=para_real, l_refe_test_=.true._1)
         end if
-        call getvr8(keywf, 'EPSI_REFE', iocc=1, scal=para_real, nbret=iret)
+        call getvr8(factorKeyword, 'EPSI_REFE', iocc=1, scal=para_real, nbret=iret)
         if (iret .eq. 1) then
             call SetResiRefe(ds_conv, type_='EPSI_REFE', &
                              user_para_=para_real, l_refe_test_=.true._1)
         end if
-        call getvr8(keywf, 'FLUX_THER_REFE', iocc=1, scal=para_real, nbret=iret)
+        call getvr8(factorKeyword, 'FLUX_THER_REFE', iocc=1, scal=para_real, nbret=iret)
         if (iret .eq. 1) then
             call SetResiRefe(ds_conv, type_='FLUX_THER_REFE', &
                              user_para_=para_real, l_refe_test_=.true._1)
         end if
-        call getvr8(keywf, 'FLUX_HYD1_REFE', iocc=1, scal=para_real, nbret=iret)
+        call getvr8(factorKeyword, 'FLUX_HYD1_REFE', iocc=1, scal=para_real, nbret=iret)
         if (iret .eq. 1) then
             call SetResiRefe(ds_conv, type_='FLUX_HYD1_REFE', &
                              user_para_=para_real, l_refe_test_=.true._1)
         end if
-        call getvr8(keywf, 'FLUX_HYD2_REFE', iocc=1, scal=para_real, nbret=iret)
+        call getvr8(factorKeyword, 'FLUX_HYD2_REFE', iocc=1, scal=para_real, nbret=iret)
         if (iret .eq. 1) then
             call SetResiRefe(ds_conv, type_='FLUX_HYD2_REFE', &
                              user_para_=para_real, l_refe_test_=.true._1)
         end if
-        call getvr8(keywf, 'VARI_REFE', iocc=1, scal=para_real, nbret=iret)
+        call getvr8(factorKeyword, 'VARI_REFE', iocc=1, scal=para_real, nbret=iret)
         if (iret .eq. 1) then
             call SetResiRefe(ds_conv, type_='VARI_REFE', &
                              user_para_=para_real, l_refe_test_=.true._1)
         end if
-        call getvr8(keywf, 'EFFORT_REFE', iocc=1, scal=para_real, nbret=iret)
+        call getvr8(factorKeyword, 'EFFORT_REFE', iocc=1, scal=para_real, nbret=iret)
         if (iret .eq. 1) then
             call SetResiRefe(ds_conv, type_='EFFORT_REFE', &
                              user_para_=para_real, l_refe_test_=.true._1)
         end if
-        call getvr8(keywf, 'MOMENT_REFE', iocc=1, scal=para_real, nbret=iret)
+        call getvr8(factorKeyword, 'MOMENT_REFE', iocc=1, scal=para_real, nbret=iret)
         if (iret .eq. 1) then
             call SetResiRefe(ds_conv, type_='MOMENT_REFE', &
                              user_para_=para_real, l_refe_test_=.true._1)
         end if
-        call getvr8(keywf, 'DEPL_REFE', iocc=1, scal=para_real, nbret=iret)
+        call getvr8(factorKeyword, 'DEPL_REFE', iocc=1, scal=para_real, nbret=iret)
         if (iret .eq. 1) then
             call SetResiRefe(ds_conv, type_='DEPL_REFE', &
                              user_para_=para_real, l_refe_test_=.true._1)
         end if
-        call getvr8(keywf, 'LAGR_REFE', iocc=1, scal=para_real, nbret=iret)
+        call getvr8(factorKeyword, 'LAGR_REFE', iocc=1, scal=para_real, nbret=iret)
         if (iret .eq. 1) then
             call SetResiRefe(ds_conv, type_='LAGR_REFE', &
                              user_para_=para_real, l_refe_test_=.true._1)
         end if
-        call getvr8(keywf, 'PI_REFE', iocc=1, scal=para_real, nbret=iret)
+        call getvr8(factorKeyword, 'PI_REFE', iocc=1, scal=para_real, nbret=iret)
         if (iret .eq. 1) then
             call SetResiRefe(ds_conv, type_='PI_REFE', &
                              user_para_=para_real, l_refe_test_=.true._1)
         end if
     end if
-!
+
 ! - Forced convergence
-!
-    if (getexm(keywf, 'ARRET') .eq. 1) then
-        call getvtx(keywf, 'ARRET', iocc=1, scal=answer, nbret=iret)
-        if (iret .gt. 0) then
-            ds_conv%l_stop = answer .eq. 'OUI'
-        end if
+    call getvtx(factorKeyword, 'ARRET', iocc=1, scal=answer, nbret=iret)
+    if (iret .gt. 0) then
+        ds_conv%l_stop = answer .eq. 'OUI'
     end if
 !
 end subroutine

@@ -69,6 +69,7 @@ subroutine nminit(mesh, model, mater, mateco, cara_elem, &
 #include "asterfort/nonlinDSAlgoParaInit.h"
 #include "asterfort/nonlinDSContactInit.h"
 #include "asterfort/nonlinDSConvergenceInit.h"
+#include "asterfort/nonlinDSConvergenceInitCtc.h"
 #include "asterfort/nonlinDSEnergyInit.h"
 #include "asterfort/nonlinDSPrintInit.h"
 #include "asterfort/romAlgoNLInit.h"
@@ -117,7 +118,7 @@ subroutine nminit(mesh, model, mater, mateco, cara_elem, &
     type(NL_DS_Print), intent(inout) :: ds_print
     character(len=24), intent(out) :: sd_suiv
     character(len=19), intent(out) :: sd_obsv
-    character(len=24) :: sderro
+    character(len=24), intent(in) :: sderro
     type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
     type(NL_DS_InOut), intent(inout) :: ds_inout
     type(NL_DS_Energy), intent(inout) :: ds_energy
@@ -162,6 +163,7 @@ subroutine nminit(mesh, model, mater, mateco, cara_elem, &
 ! IO  ds_inout         : datastructure for input/output management
 ! IO  ds_errorindic    : datastructure for error indicator
 ! Out sd_obsv          : datastructure for observation parameters
+! In  sderro           : name of datastructure for events in algorithm
 ! Out sd_suiv          : datastructure for dof monitoring parameters
 ! In  sddyna           : name of datastructure for dynamic parameters
 ! In  nlDynaDamping    : damping parameters
@@ -269,7 +271,10 @@ subroutine nminit(mesh, model, mater, mateco, cara_elem, &
     call nonlinDSAlgoParaInit(listFuncActi, ds_algopara, ds_contact)
 
 ! - Initializations for convergence management
-    call nonlinDSConvergenceInit(ds_conv, listFuncActi, ds_contact, model)
+    call nonlinDSConvergenceInit(ds_conv, sderro, model)
+
+! - Initializations for convergence management with contact
+    call nonlinDSConvergenceInitCtc(ds_conv, listFuncActi, ds_contact)
 
 ! - Initializations for energy management
     call nonlinDSEnergyInit(ds_inout%result, ds_energy)

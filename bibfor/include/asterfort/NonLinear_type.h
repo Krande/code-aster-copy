@@ -31,3 +31,23 @@
 #define INTE_FORCE_COMB     1
 #define INTE_FORCE_INTE     2
 #define INTE_FORCE_FNOD     3
+
+! Number of events for management of algorithm
+#define ZEVEN               37
+#define EVENT_IS_INACTIVE   0
+#define EVENT_IS_ACTIVE     1
+
+#define NB_LOOP             5
+
+#define LOOP_RESI           1
+#define LOOP_NEWT           2
+#define LOOP_FIXE           3
+#define LOOP_INST           4
+#define LOOP_CALC           5
+
+#define LOOP_STATE_CONTINUE 0
+#define LOOP_STATE_CONVERGE 1
+#define LOOP_STATE_EVENT    2
+#define LOOP_STATE_ERROR    3
+#define LOOP_STATE_STOP     4
+#define LOOP_STATE_CTCD     5

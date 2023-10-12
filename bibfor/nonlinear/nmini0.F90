@@ -122,9 +122,8 @@ subroutine nmini0(eta, nume_inst, matass, &
 ! - Create material management datastructure
 !
     call nonlinDSMaterialCreate(ds_material)
-!
-! - Create non-linear algorithm management datastructure
-!
+
+! - Create datastructure for events in algorithm
     call nmcrga(sderro)
 !
 ! --- INITIALISATION BOUCLE EN TEMPS

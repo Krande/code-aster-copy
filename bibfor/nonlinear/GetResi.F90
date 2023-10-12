@@ -56,7 +56,7 @@ subroutine GetResi(ds_conv, type, &
 ! Out locus_calc       : locus where is maximum norm of residual
 ! Out user_para        : user parameter for residual
 ! Out l_conv           : .true. if residual has converged
-! Out event_type       : type of event
+! Out eventType       : type of event
 ! Out l_resi_test      : .true. to test this resiudal to evaluate convergence
 !
 ! --------------------------------------------------------------------------------------------------
@@ -93,13 +93,13 @@ subroutine GetResi(ds_conv, type, &
         l_conv_ = ds_conv%list_resi(i_type)%l_conv
     end if
     if (present(col_name_)) then
-        col_name_ = ds_conv%list_resi(i_type)%col_name
+        col_name_ = ds_conv%list_resi(i_type)%col_name(1:16)
     end if
     if (present(col_name_locus_)) then
-        col_name_locus_ = ds_conv%list_resi(i_type)%col_name_locus
+        col_name_locus_ = ds_conv%list_resi(i_type)%col_name_locus(1:16)
     end if
     if (present(event_type_)) then
-        event_type_ = ds_conv%list_resi(i_type)%event_type
+        event_type_ = ds_conv%list_resi(i_type)%eventType
     end if
     if (present(l_resi_test_)) then
         l_resi_test_ = ds_conv%l_resi_test(i_type)

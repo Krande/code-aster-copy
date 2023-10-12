@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine getFailEvent(sddisc, i_fail, event_type)
+subroutine getFailEvent(sddisc, failIndx, failType)
 !
     implicit none
 !
@@ -25,8 +25,8 @@ subroutine getFailEvent(sddisc, i_fail, event_type)
 #include "asterfort/jeveuo.h"
 !
     character(len=19), intent(in) :: sddisc
-    integer, intent(in) :: i_fail
-    integer, intent(out) :: event_type
+    integer, intent(in) :: failIndx
+    integer, intent(out) :: failType
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -37,21 +37,18 @@ subroutine getFailEvent(sddisc, i_fail, event_type)
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  sddisc           : name of datastructure for time discretization
-! In  i_fail           : current index for ECHEC keyword
-! Out event_type       : type of event
+! In  failIndx         : current index for ECHEC keyword
+! Out eventType        : type of event
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: sddisc_eevr
-    real(kind=8), pointer :: v_sddisc_eevr(:) => null()
+    character(len=24) :: sddiscEEVRJv
+    real(kind=8), pointer :: sddiscEEVR(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    sddisc_eevr = sddisc(1:19)//'.EEVR'
-    call jeveuo(sddisc_eevr, 'L', vr=v_sddisc_eevr)
-!
-! - Type of event
-!
-    event_type = nint(v_sddisc_eevr(SIZE_LEEVR*(i_fail-1)+1))
+    sddiscEEVRJv = sddisc(1:19)//'.EEVR'
+    call jeveuo(sddiscEEVRJv, 'L', vr=sddiscEEVR)
+    failType = nint(sddiscEEVR(SIZE_LEEVR*(failIndx-1)+1))
 !
 end subroutine

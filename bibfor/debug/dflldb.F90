@@ -60,7 +60,7 @@ subroutine dflldb(sdlist)
     real(kind=8) :: vale_ref, pene_maxi, resi_glob_maxi, pcent_iter_plus, coef_maxi
     character(len=16):: nom_cham, nom_cmp, crit_cmp
     integer :: nb_incr_seuil, nb_iter_newt, crit_compi
-    integer :: event_type, action_type
+    integer :: eventType, action_type
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -112,24 +112,24 @@ subroutine dflldb(sdlist)
             nom_cham = v_sdlist_eevenk(SIZE_LEEVK*(i_fail-1)+1)
             nom_cmp = v_sdlist_eevenk(SIZE_LEEVK*(i_fail-1)+2)
             crit_cmp = v_sdlist_eevenk(SIZE_LEEVK*(i_fail-1)+3)
-            event_type = nint(v_sdlist_eevenr(SIZE_LEEVR*(i_fail-1)+1))
-            if (event_type .eq. FAIL_EVT_ERROR) then
+            eventType = nint(v_sdlist_eevenr(SIZE_LEEVR*(i_fail-1)+1))
+            if (eventType .eq. FAIL_EVT_ERROR) then
                 call utmess('I', 'DISCRETISATION3_10', si=i_fail)
-            else if (event_type .eq. FAIL_EVT_INCR_QUANT) then
+            else if (eventType .eq. FAIL_EVT_INCR_QUANT) then
                 call utmess('I', 'DISCRETISATION3_11', si=i_fail)
                 call utmess('I', 'DISCRETISATION3_21', &
                             nk=3, valk=[nom_cham, nom_cmp, crit_cmp], &
                             sr=vale_ref)
-            else if (event_type .eq. FAIL_EVT_COLLISION) then
+            else if (eventType .eq. FAIL_EVT_COLLISION) then
                 call utmess('I', 'DISCRETISATION3_12', si=i_fail)
-            else if (event_type .eq. FAIL_EVT_INTERPENE) then
+            else if (eventType .eq. FAIL_EVT_INTERPENE) then
                 call utmess('I', 'DISCRETISATION3_13', si=i_fail)
                 call utmess('I', 'DISCRETISATION3_22', sr=pene_maxi)
-            else if (event_type .eq. FAIL_EVT_DIVE_RESI) then
+            else if (eventType .eq. FAIL_EVT_DIVE_RESI) then
                 call utmess('I', 'DISCRETISATION3_14', si=i_fail)
-            else if (event_type .eq. FAIL_EVT_INSTABILITY) then
+            else if (eventType .eq. FAIL_EVT_INSTABILITY) then
                 call utmess('I', 'DISCRETISATION3_15', si=i_fail)
-            else if (event_type .eq. FAIL_EVT_RESI_MAXI) then
+            else if (eventType .eq. FAIL_EVT_RESI_MAXI) then
                 call utmess('I', 'DISCRETISATION3_16', si=i_fail)
                 call utmess('I', 'DISCRETISATION3_23', sr=resi_glob_maxi)
             else
@@ -182,13 +182,13 @@ subroutine dflldb(sdlist)
             nb_incr_seuil = nint(v_sdlist_aevenr(SIZE_LAEVR*(i_adap-1)+2))
             nb_iter_newt = nint(v_sdlist_aevenr(SIZE_LAEVR*(i_adap-1)+5))
             crit_compi = nint(v_sdlist_aevenr(SIZE_LAEVR*(i_adap-1)+4))
-            event_type = nint(v_sdlist_aevenr(SIZE_LAEVR*(i_adap-1)+1))
-            if (event_type .eq. ADAP_EVT_NONE) then
+            eventType = nint(v_sdlist_aevenr(SIZE_LAEVR*(i_adap-1)+1))
+            if (eventType .eq. ADAP_EVT_NONE) then
                 call utmess('I', 'DISCRETISATION3_50', si=i_adap)
-            else if (event_type .eq. ADAP_EVT_ALLSTEPS) then
+            else if (eventType .eq. ADAP_EVT_ALLSTEPS) then
                 call utmess('I', 'DISCRETISATION3_51', si=i_adap)
                 call dflld3(sdlist, i_adap)
-            else if (event_type .eq. ADAP_EVT_TRIGGER) then
+            else if (eventType .eq. ADAP_EVT_TRIGGER) then
                 call utmess('I', 'DISCRETISATION3_52', si=i_adap)
                 if (crit_compi .eq. 1) then
                     call utmess('I', 'DISCRETISATION3_64', ni=2, &

@@ -395,20 +395,17 @@ subroutine nmresi(mesh, list_func_acti, ds_material, &
                     r_rela_vale, r_equi_vale, r_refe_vale, r_comp_vale, r_fric_vale, r_geom_vale, &
                     r_rela_indx, r_equi_indx, r_refe_indx, r_comp_name, r_comp_indx, r_fric_name, &
                     r_geom_name, r_pene_vale)
-!
+
 ! - Set value of residuals informations in convergence table
-!
     call nmimre(ds_conv, ds_print)
-!
-! - Get convergence parmeters
-!
+
+! - Get convergence parameters
     call GetResi(ds_conv, type='RESI_GLOB_RELA', user_para_=resi_glob_rela, &
                  l_resi_test_=l_rela)
     call GetResi(ds_conv, type='RESI_GLOB_MAXI', user_para_=resi_glob_maxi)
-!
+
 ! --- VERIFICATION QUE LES VARIABLES DE COMMANDE INITIALES CONDUISENT
 ! --- A DES FORCES NODALES NULLES
-!
     if (l_varc_init) then
         if (l_rela) then
             if (r_char_vale .gt. resi_glob_rela) then

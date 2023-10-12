@@ -84,5 +84,6 @@ def C_CONVERGENCE(command):
             ITER_GLOB_MAXI=SIMP(statut="f", typ="I", defaut=10),
             ITER_GLOB_ELAS=SIMP(statut="f", typ="I", defaut=25),
             ARRET=SIMP(statut="f", typ="TXM", defaut="OUI", into=("OUI", "NON")),
+            VERIF=SIMP(statut="f", typ="TXM", defaut="TOUT", into=("TOUT", "AU_MOINS_UN")),
         )
     return mcfact

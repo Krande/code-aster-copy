@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine nmerro(sderro, ds_measure, nume_inst)
 !
@@ -57,22 +56,20 @@ subroutine nmerro(sderro, ds_measure, nume_inst)
     aster_logical :: errres, err_appa
     real(kind=8) :: remain_time, iter_mean_time, step_mean_time
     character(len=16) :: valk(2)
-    integer :: event_type, action_type
+    integer :: failType, actionType
 !
 ! --------------------------------------------------------------------------------------------------
 !
     if (etausr() .eq. 1) then
         call sigusr()
     end if
-!
+
 ! - Get times
-!
     remain_time = ds_measure%step_remain_time
     iter_mean_time = ds_measure%iter_mean_time
     step_mean_time = ds_measure%step_mean_time
-!
+
 ! --- RECUPERE LES CODES ERREURS ACTIFS
-!
     call nmerge(sderro, 'ERRE_INTE', echldc)
     call nmerge(sderro, 'ERRE_PILO', echpil)
     call nmerge(sderro, 'ERRE_FACS', echeq1)
@@ -88,9 +85,7 @@ subroutine nmerro(sderro, ds_measure, nume_inst)
     call nmerge(sderro, 'SOLV_ITMX', errres)
     call nmerge(sderro, 'ERRE_APPA', err_appa)
 
-!
 ! --- LANCEE EXCEPTIONS
-!
     if (mtcpui) then
         itab(1) = nume_inst
         rtab(1) = iter_mean_time
@@ -126,11 +121,11 @@ subroutine nmerro(sderro, ds_measure, nume_inst)
     else if (err_appa) then
         call utmess('Z', 'MECANONLINE9_13', num_except=ASTER_CONTACT_ERROR)
     else
-        call nmecev(sderro, 'L', event_type, action_type)
-        valk(1) = failActionKeyword(action_type)
-        valk(2) = failEventKeyword(event_type)
-        if (action_type .eq. FAIL_ACT_STOP) then
-            call utmess('Z', 'MECANONLINE9_51', sk=failEventKeyword(event_type), &
+        call nmecev(sderro, 'L', failType, actionType)
+        valk(1) = failActionKeyword(actionType)
+        valk(2) = failEventKeyword(failType)
+        if (actionType .eq. FAIL_ACT_STOP) then
+            call utmess('Z', 'MECANONLINE9_51', sk=failEventKeyword(failType), &
                         num_except=ASTER_CONVERGENCE_ERROR)
         else
             call utmess('Z', 'MECANONLINE9_50', nk=2, valk=valk, &

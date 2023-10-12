@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine nmevac(sddisc, sderro, i_fail_acti, nume_inst, iterat, &
                   retact, ds_print_, ds_contact_)
@@ -25,10 +24,9 @@ subroutine nmevac(sddisc, sderro, i_fail_acti, nume_inst, iterat, &
     implicit none
 !
 #include "asterf_types.h"
-#include "event_def.h"
+#include "asterfort/assert.h"
 #include "asterfort/getFailAction.h"
 #include "asterfort/getFailEvent.h"
-#include "asterfort/assert.h"
 #include "asterfort/nmadcp.h"
 #include "asterfort/nmdeco.h"
 #include "asterfort/nmecev.h"
@@ -37,6 +35,7 @@ subroutine nmevac(sddisc, sderro, i_fail_acti, nume_inst, iterat, &
 #include "asterfort/nmevdp.h"
 #include "asterfort/nmitsp.h"
 #include "asterfort/utmess.h"
+#include "event_def.h"
 !
     character(len=19), intent(in) :: sddisc
     character(len=24), intent(in) :: sderro
@@ -47,13 +46,13 @@ subroutine nmevac(sddisc, sderro, i_fail_acti, nume_inst, iterat, &
     type(NL_DS_Print), optional, intent(in) :: ds_print_
     type(NL_DS_Contact), optional, intent(in) :: ds_contact_
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (ALGORITHME)
 !
 ! ACTIONS SUITE A UN EVENEMENT
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! In  ds_print         : datastructure for printing parameters
 ! In  sddisc           : datastructure for time discretization
@@ -68,37 +67,34 @@ subroutine nmevac(sddisc, sderro, i_fail_acti, nume_inst, iterat, &
 !     2 - ON CONTINUE LA BOUCLE DE NEWTON (ITERATIONS EN PLUS)
 !     3 - L'ACTION A ECHOUE
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    integer :: retsup, retswa, retpen, retdec, event_type, action_type
+    integer :: retsup, retswa, retpen, retdec, failType, actionType
     aster_logical :: trydec, litmax
 !
 ! ----------------------------------------------------------------------
 !
     retact = 3
-    action_type = FAIL_ACT_STOP
-    trydec = .false.
+    actionType = FAIL_ACT_STOP
+    trydec = ASTER_FALSE
     ASSERT(i_fail_acti .ne. 0)
-!
+
 ! --- RECUPERATION ERREURS PARTICULIERES
-!
-    litmax = .false.
+    litmax = ASTER_FALSE
     if (sderro .ne. ' ') then
         call nmerge(sderro, 'ITER_MAXI', litmax)
     end if
-!
+
 ! - Get event and action
-!
-    call getFailEvent(sddisc, i_fail_acti, event_type)
-    call getFailAction(sddisc, i_fail_acti, action_type)
-!
-! --- REALISATION DE L'ACTION
-!
-    if (action_type .eq. FAIL_ACT_STOP) then
+    call getFailEvent(sddisc, i_fail_acti, failType)
+    call getFailAction(sddisc, i_fail_acti, actionType)
+
+! - Action
+    if (actionType .eq. FAIL_ACT_STOP) then
         call utmess('I', 'MECANONLINE10_30')
         retact = 3
-        trydec = .false.
-    else if (action_type .eq. FAIL_ACT_ITER) then
+        trydec = ASTER_FALSE
+    else if (actionType .eq. FAIL_ACT_ITER) then
         ASSERT(iterat .ge. 0)
         if (litmax) then
             call utmess('I', 'MECANONLINE10_32')
@@ -107,15 +103,15 @@ subroutine nmevac(sddisc, sderro, i_fail_acti, nume_inst, iterat, &
             retsup = 0
         end if
         if (retsup .eq. 0) then
-            trydec = .true.
+            trydec = ASTER_TRUE
         else if (retsup .eq. 1) then
             retact = 2
         else
-            ASSERT(.false.)
+            ASSERT(ASTER_FALSE)
         end if
-    else if (action_type .eq. FAIL_ACT_CUT) then
-        trydec = .true.
-    else if (action_type .eq. FAIL_ACT_PILOTAGE) then
+    else if (actionType .eq. FAIL_ACT_CUT) then
+        trydec = ASTER_TRUE
+    else if (actionType .eq. FAIL_ACT_PILOTAGE) then
         if (litmax) then
             call utmess('I', 'MECANONLINE10_34')
             call nmevdp(sddisc, retswa)
@@ -123,31 +119,30 @@ subroutine nmevac(sddisc, sderro, i_fail_acti, nume_inst, iterat, &
             retswa = 0
         end if
         if (retswa .eq. 0) then
-            trydec = .true.
+            trydec = ASTER_TRUE
         else if (retswa .eq. 1) then
             retact = 1
         else
-            ASSERT(.false.)
+            ASSERT(ASTER_FALSE)
         end if
-    else if (action_type .eq. FAIL_ACT_ADAPT_COEF) then
+    else if (actionType .eq. FAIL_ACT_ADAPT_COEF) then
         call utmess('I', 'MECANONLINE10_35')
         call nmadcp(sddisc, ds_contact_, i_fail_acti, retpen)
-        trydec = .false.
+        trydec = ASTER_FALSE
         if (retpen .eq. 0) then
             retact = 3
         else if (retpen .eq. 1) then
             retact = 1
         else
-            ASSERT(.false.)
+            ASSERT(ASTER_FALSE)
         end if
-    else if (action_type .eq. FAIL_ACT_CONTINUE) then
+    else if (actionType .eq. FAIL_ACT_CONTINUE) then
         retact = 0
     else
-        ASSERT(.false.)
+        ASSERT(ASTER_FALSE)
     end if
-!
-! --- CAS DE LA DECOUPE
-!
+
+! - For step cutting
     if (trydec) then
         call utmess('I', 'MECANONLINE10_33')
         call nmdeco(sddisc, nume_inst, iterat, i_fail_acti, retdec)
@@ -158,14 +153,13 @@ subroutine nmevac(sddisc, sderro, i_fail_acti, nume_inst, iterat, &
         else if (retdec .eq. 2) then
             retact = 0
         else
-            ASSERT(.false.)
+            ASSERT(ASTER_FALSE)
         end if
     end if
-!
-! --- ECHEC DE L'ACTION -> EVENEMENT ERREUR FATALE
-!
+
+! - ECHEC DE L'ACTION -> EVENEMENT ERREUR FATALE
     if (retact .eq. 3) then
-        call nmecev(sderro, 'E', event_type, action_type)
+        call nmecev(sderro, 'E', failType, actionType)
     end if
 !
 ! --- ON DESACTIVE LES EVENEMENTS

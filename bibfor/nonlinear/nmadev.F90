@@ -51,7 +51,7 @@ subroutine nmadev(sddisc, sderro, iterat)
 ! ----------------------------------------------------------------------
 !
     integer :: vali, nb_event_ok
-    integer :: i_adap, nb_adap, event_type
+    integer :: i_adap, nb_adap, eventType
     real(kind=8) :: vale
     character(len=8) :: cricom, metlis
     character(len=16) :: nopara
@@ -83,9 +83,9 @@ subroutine nmadev(sddisc, sderro, iterat)
 !
     do i_adap = 1, nb_adap
 ! ----- Get event type
-        call getAdapEvent(sddisc, i_adap, event_type)
+        call getAdapEvent(sddisc, i_adap, eventType)
 !
-        if (event_type .eq. ADAP_EVT_TRIGGER) then
+        if (eventType .eq. ADAP_EVT_TRIGGER) then
 !
 ! ------- PARAMETRES DU SEUIL
 !
