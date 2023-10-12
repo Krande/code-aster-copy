@@ -100,7 +100,7 @@ subroutine nume_equa_crsd(nume_equaz, base, nb_equa, meshz, gran_namez, l_coll_c
         nb_equa2 = 1
     end if
     call wkvect(nume_equa//'.DELG', base//' V I', nb_equa2, vi=delg)
-    call jeecra(nume_equa//'.DELG', 'LONUTI', 0)
+    call jeecra(nume_equa//'.DELG', 'LONUTI', nb_equa)
     delg(1:nb_equa2) = 0
 !
 end subroutine
