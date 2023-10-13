@@ -573,7 +573,9 @@ DiscreteComputation::getThermalTangentNonLinearNeumannMatrix( const FieldOnNodes
             calcul->addOutputElementaryTerm( "PMATTTR", std::make_shared< ElementaryTermReal >() );
             calcul->compute();
             if ( calcul->hasOutputElementaryTerm( "PMATTTR" ) ) {
-                elemMatr->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATTTR" ) );
+                auto elem_term = calcul->getOutputElementaryTermReal( "PMATTTR" );
+                ( *elem_term ) *= -1.0;
+                elemMatr->addElementaryTerm( elem_term );
             }
         }
     };
