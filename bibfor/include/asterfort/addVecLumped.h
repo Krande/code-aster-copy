@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine te0296(option, nomte)
-!.......................................................................
-    implicit none
-#include "asterfort/utmess.h"
 !
-    character(len=16) :: option, nomte
 !
-    call utmess('F', 'FERMETUR_8')
-!
-end subroutine
+interface
+#include "FE_module.h"
+    subroutine addVecLumped(vec, vec_sub, ise, size, connec)
+        real(kind=8), intent(inout) :: vec(MAX_BS)
+        real(kind=8), intent(in) :: vec_sub(MAX_BS)
+        integer, intent(in) :: ise, size, connec(4,27)
+    end subroutine addVecLumped
+end interface

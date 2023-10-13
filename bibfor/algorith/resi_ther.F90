@@ -192,8 +192,6 @@ subroutine resi_ther(model, cara_elem, mate, time, compor, &
         lchin(5) = varc_curr(1:19)
         lpain(6) = 'PHYDRPR'
         lchin(6) = hydr_curr(1:19)
-        lpain(7) = 'PTEMPSR'
-        lchin(7) = time(1:19)
 !
 ! - --- Output fields
 !
@@ -208,7 +206,7 @@ subroutine resi_ther(model, cara_elem, mate, time, compor, &
 !
 ! - --- Number of fields
 !
-        call calcul(stop_calc, option2, ligrel_model, 7, lchin, &
+        call calcul(stop_calc, option2, ligrel_model, 6, lchin, &
                     lpain, 1, lchout, lpaout, base, &
                     'OUI')
 !

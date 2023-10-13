@@ -371,14 +371,13 @@ class THER_HEXA20(Element):
             para_out=((SP.PRESIDU, MVECTTR), (OP.RAPH_THER.PFLUXPR, EFLUXPG)),
         ),
         OP.MASS_THER_RESI(
-            te=296,
+            te=252,
             para_in=(
                 (OP.MASS_THER_RESI.PCOMPOR, CCOMPOR),
                 (SP.PGEOMER, NGEOMER),
                 (OP.MASS_THER_RESI.PHYDRPR, EHYDRPG),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPEI, DDL_THER),
-                (SP.PTEMPSR, CTEMPSR),
                 (OP.MASS_THER_RESI.PVARCPR, LC.ZVARCPG),
             ),
             para_out=((SP.PRESIDU, MVECTTR),),

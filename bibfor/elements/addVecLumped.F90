@@ -15,14 +15,30 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine te0296(option, nomte)
-!.......................................................................
+!
+subroutine addVecLumped(vec, vec_sub, ise, size, connec)
+!
     implicit none
-#include "asterfort/utmess.h"
 !
-    character(len=16) :: option, nomte
+#include "FE_module.h"
 !
-    call utmess('F', 'FERMETUR_8')
+    real(kind=8), intent(inout) :: vec(MAX_BS)
+    real(kind=8), intent(in) :: vec_sub(MAX_BS)
+    integer, intent(in) :: ise, size, connec(4,27)
+!
+! --------------------------------------------------------------------------------------------------
+!
+! Add subCell lumped vector to global vector
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: i, idi
+!
+! --------------------------------------------------------------------------------------------------
+!
+    do i = 1, size
+        idi = connec(ise, i)
+        vec(idi) = vec(idi)+vec_sub(i)
+    end do
 !
 end subroutine
