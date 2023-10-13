@@ -18,71 +18,62 @@
 !
 subroutine te0501(option, nomte)
 !
+    use FE_topo_module
+    use FE_quadrature_module
+    use FE_basis_module
+    use FE_stiffness_module
+    use FE_eval_module
 !
     implicit none
 #include "jeveux.h"
-#include "asterfort/dfdm2d.h"
-#include "asterfort/elrefe_info.h"
-#include "asterfort/jevech.h"
-#include "asterfort/lteatt.h"
+#include "asterfort/assert.h"
 #include "asterfort/ntfcma.h"
+#include "asterfort/jevech.h"
 #include "asterfort/rcfode.h"
+#include "asterfort/writeMatrix.h"
+#include "FE_module.h"
 !
     character(len=16) :: option, nomte
-! ----------------------------------------------------------------------
-!    - FONCTION REALISEE:  CALCUL DES MATRICES ELEMENTAIRES
-!                          OPTION : 'RIGI_THER_TRANS'
+! ......................................................................
+!    - FONCTION REALISEE:   OPTION : 'RIGI_THER_TRANS'
 !
 !    - ARGUMENTS:
 !        DONNEES:      OPTION       -->  OPTION DE CALCUL
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 !
+! ......................................................................
 !
-    real(kind=8) :: dfdx(9), dfdy(9), poids, r, tpg, xkpt, alpha
-    integer :: kp, i, j, k, itemps, ifon(6), imattt, igeom, imate
-    integer :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano
+    type(FE_Cell) :: FECell
+    type(FE_Quadrature) :: FEQuadCell
+    type(FE_basis) :: FEBasis
+!
+    integer :: kp, imate, ifon(6)
+    real(kind=8) :: tpg, alpha, dalpha
+    real(kind=8) :: rigi(MAX_BS, MAX_BS)
+    real(kind=8) ::  valQPK(3, 3, MAX_QP)
+    real(kind=8), pointer :: tempi(:) => null()
     aster_logical :: aniso
-! DEB ------------------------------------------------------------------
+! ----------------------------------------------------------------------
+    call FECell%init()
+    call FEQuadCell%initCell(FECell, "RIGI")
+    call FEBasis%initCell(FECell)
 !
-!-----------------------------------------------------------------------
-    integer :: ij, itemp, itempi
-!-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
-                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
-!
-    call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
-    call jevech('PTEMPSR', 'L', itemps)
-    call jevech('PTEMPER', 'L', itemp)
-    call jevech('PTEMPEI', 'L', itempi)
-    call jevech('PMATTTR', 'E', imattt)
+    call jevech('PTEMPEI', 'L', vr=tempi)
 !
-    aniso = .false.
+    aniso = ASTER_FALSE
     call ntfcma(' ', zi(imate), aniso, ifon)
-    do kp = 1, npg
-        k = (kp-1)*nno
-        call dfdm2d(nno, kp, ipoids, idfde, zr(igeom), &
-                    poids, dfdx, dfdy)
-        r = 0.d0
-        tpg = 0.d0
-        do i = 1, nno
-            r = r+zr(igeom+2*(i-1))*zr(ivf+k+i-1)
-            tpg = tpg+zr(itempi+i-1)*zr(ivf+k+i-1)
-        end do
-        if (lteatt('AXIS', 'OUI')) poids = poids*r
 !
-        call rcfode(ifon(2), tpg, alpha, xkpt)
-!
-        ij = imattt-1
-        do i = 1, nno
-!
-            do j = 1, i
-                ij = ij+1
-                zr(ij) = zr(ij)+poids*(alpha*(dfdx(i)*dfdx(j)+dfdy(i)*dfdy(j)))
-!
-            end do
-        end do
+    valQPK = 0.d0
+    do kp = 1, FEQuadCell%nbQuadPoints
+        tpg = FEEvalFuncScal(FEBasis, tempi, FEQuadCell%points_param(1:3, kp))
+        call rcfode(ifon(2), tpg, alpha, dalpha)
+        valQPK(1, 1, kp) = alpha
+        valQPK(2, 2, kp) = alpha
+        valQPK(3, 3, kp) = alpha
     end do
 !
-! FIN ------------------------------------------------------------------
+    call FEStiffMatScal(FEQuadCell, FEBasis, valQPK, rigi)
+    call writeMatrix("PMATTTR", FEBasis%size, FEBasis%size, ASTER_TRUE, rigi)
+!
 end subroutine

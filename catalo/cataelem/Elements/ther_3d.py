@@ -416,7 +416,7 @@ class THER_HEXA20(Element):
             para_out=((OP.RIGI_THER_CONV_T.PMATTTR, MMATTSR),),
         ),
         OP.RIGI_THER_TRANS(
-            te=521,
+            te=501,
             para_in=(
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
