@@ -324,7 +324,7 @@ class THPLQU4(Element):
             para_out=((SP.PPHASNOU, LC.EPHASNO_),),
         ),
         OP.RIGI_THER_TANG(
-            te=242,
+            te=243,
             para_in=(
                 (OP.RIGI_THER_TANG.PCOMPOR, CCOMPOR),
                 (SP.PGEOMER, NGEOMER),

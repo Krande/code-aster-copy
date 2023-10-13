@@ -305,7 +305,7 @@ class THER_HEXA20(Element):
             para_out=((SP.PPHASNOU, LC.EPHASNO_),),
         ),
         OP.RIGI_THER_TANG(
-            te=279,
+            te=243,
             para_in=(
                 (OP.RIGI_THER_TANG.PCOMPOR, CCOMPOR),
                 (SP.PGEOMER, NGEOMER),

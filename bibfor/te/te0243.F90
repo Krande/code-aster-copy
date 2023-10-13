@@ -33,12 +33,12 @@ subroutine te0243(option, nomte)
 #include "asterfort/rccoma.h"
 #include "asterfort/rcdiff.h"
 #include "asterfort/writeVector.h"
+#include "asterfort/writeMatrix.h"
 #include "FE_module.h"
 !
     character(len=16) :: option, nomte
 ! ......................................................................
-!    - FONCTION REALISEE:  CALCUL DES VECTEURS RESIDUS
-!                          OPTION : 'RAPH_THER'
+!    - FONCTION REALISEE:   OPTION : 'RAPH_THER' , 'RIGI_THER_TANG'
 !
 !    - ARGUMENTS:
 !        DONNEES:      OPTION       -->  OPTION DE CALCUL
@@ -54,24 +54,29 @@ subroutine te0243(option, nomte)
     parameter(nbres=3)
     integer :: icodre(nbres)
     character(len=32) :: phenom
-    real(kind=8) ::  tpg, dtpg(3), tpsec, diff, fluglo(3)
-    real(kind=8) :: resi(MAX_BS), valQP(3, MAX_QP)
+    real(kind=8) ::  tpg, dtpg(3), tpsec, diff, fluglo(3), Kglo(3, 3)
+    real(kind=8) :: resi(MAX_BS), rigi(MAX_BS, MAX_BS)
+    real(kind=8) :: valQPF(3, MAX_QP), valQPK(3, 3, MAX_QP)
     real(kind=8), pointer :: flux(:) => null()
     real(kind=8), pointer :: tempi(:) => null()
     real(kind=8), pointer :: sechf(:) => null()
     integer ::  kp, ifon(6)
-    integer ::  imate, icomp, nbDof
-    aster_logical :: aniso
+    integer ::  imate, icomp, j
+    aster_logical :: aniso, l_rhs
 ! ----------------------------------------------------------------------
     call FECell%init()
     call FEQuadCell%initCell(FECell, "RIGI")
     call FEBasis%initCell(FECell)
-    nbDof = FEBasis%size
 !
     call jevech('PMATERC', 'L', imate)
     call jevech('PTEMPEI', 'L', vr=tempi)
     call jevech('PCOMPOR', 'L', icomp)
-    call jevech('PFLUXPR', 'E', vr=flux)
+
+    l_rhs = option == "RAPH_THER"
+
+    if (l_rhs) then
+        call jevech('PFLUXPR', 'E', vr=flux)
+    end if
 !
     if ((zk16(icomp) (1:5) .eq. 'SECH_')) then
         if (zk16(icomp) (1:12) .eq. 'SECH_GRANGER' .or. zk16(icomp) (1:10) .eq. 'SECH_NAPPE') then
@@ -84,9 +89,9 @@ subroutine te0243(option, nomte)
 !
     else if (zk16(icomp) (1:5) .eq. 'THER_') then
         call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
-        aniso = .false.
+        aniso = ASTER_FALSE
         if (phenom(1:12) .eq. 'THER_NL_ORTH') then
-            aniso = .true.
+            aniso = ASTER_TRUE
         end if
         call ntfcma(zk16(icomp), zi(imate), aniso, ifon)
         if (aniso) then
@@ -94,26 +99,37 @@ subroutine te0243(option, nomte)
         end if
     end if
 !
-    valQP = 0.0
+    valQPF = 0.0
+    valQPK = 0.d0
     do kp = 1, FEQuadCell%nbQuadPoints
         tpg = FEEvalFuncScal(FEBasis, tempi, FEQuadCell%points_param(1:3, kp))
         dtpg = FEEvalGradVec(FEBasis, tempi, FEQuadCell%points_param(1:3, kp))
 !
         if (zk16(icomp) (1:5) .eq. 'THER_') then
             call ntcomp(icomp, icamas, FECell%ndim, tpg, dtpg, &
-                        FEQuadCell%points(1:3, kp), aniso, ifon, fluglo)
-            flux(FECell%ndim*(kp-1)+1:FECell%ndim*(kp-1)+FECell%ndim) = -fluglo(1:FECell%ndim)
-            valQP(1:3, kp) = fluglo
+                        FEQuadCell%points(1:3, kp), aniso, ifon, fluglo, Kglo)
+            valQPF(1:3, kp) = fluglo
+            valQPK(1:3, 1:3, kp) = Kglo
+            if (l_rhs) then
+                flux(FECell%ndim*(kp-1)+1:FECell%ndim*(kp-1)+FECell%ndim) = -fluglo(1:FECell%ndim)
+            end if
         else if (zk16(icomp) (1:5) .eq. 'SECH_') then
             tpsec = FEEvalFuncScal(FEBasis, sechf, FEQuadCell%points_param(1:3, kp))
             call rcdiff(zi(imate), zk16(icomp), tpsec, tpg, diff)
-            valQP(1:3, kp) = diff*dtpg
+            valQPF(1:3, kp) = diff*dtpg
+            do j = 1, FECell%ndim
+                valQPK(j, j, kp) = diff
+            end do
         else
             ASSERT(ASTER_FALSE)
         end if
     end do
 !
-    call FEStiffVecScal(FEQuadCell, FEBasis, valQP, resi)
-!
-    call writeVector("PRESIDU", nbDof, resi)
+    if (l_rhs) then
+        call FEStiffVecScal(FEQuadCell, FEBasis, valQPF, resi)
+        call writeVector("PRESIDU", FEBasis%size, resi)
+    else
+        call FEStiffMatScal(FEQuadCell, FEBasis, valQPK, rigi)
+        call writeMatrix("PMATTTR", FEBasis%size, FEBasis%size, ASTER_TRUE, rigi)
+    end if
 end subroutine

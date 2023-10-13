@@ -18,11 +18,10 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine ntcomp(icomp, icamas, ndim, temp, dtemp, coorpg, aniso, ifon, fluxglo, Kglo)
-        integer, intent(in) :: icomp, icamas, ndim, ifon(6)
-        real(kind=8), intent(in) :: temp, dtemp(3), coorpg(3)
+    subroutine matrRotLGTher(aniso, icamas, ndim, coorpg, matr)
+        integer, intent(in) ::  icamas, ndim
+        real(kind=8), intent(in) ::  coorpg(3)
         aster_logical, intent(in) :: aniso
-        real(kind=8), intent(out) :: fluxglo(3)
-        real(kind=8), intent(out) :: Kglo(3,3)
-    end subroutine ntcomp
+        real(kind=8), intent(out) :: matr(3,3)
+    end subroutine matrRotLGTher
 end interface

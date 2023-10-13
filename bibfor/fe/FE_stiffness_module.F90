@@ -37,7 +37,7 @@ module FE_stiffness_module
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    public :: FEStiffVecScal
+    public :: FEStiffVecScal, FEStiffMatScal
 !    private  ::
 !
 contains
@@ -79,6 +79,52 @@ contains
 !
             call dgemv('T', FEQuad%ndim, FEBasis%size, FEQuad%weights(ipg), BSEval, 3, &
                        ValuesQP(1:3, ipg), 1, 1.d0, vec, 1)
+        end do
+!
+    end subroutine
+!
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine FEStiffMatScal(FEQuad, FEBasis, ValuesQP, mat)
+!
+        implicit none
+!
+        type(FE_Quadrature), intent(in)     :: FEQuad
+        type(FE_Basis), intent(in)          :: FEBasis
+        real(kind=8), intent(out)           :: mat(MAX_BS, MAX_BS)
+        real(kind=8), intent(in)            :: ValuesQP(3, 3, MAX_QP)
+! --------------------------------------------------------------------------------------------------
+!   HHO
+!
+!   Compute the rigidity matrix
+!   In hhoQuad      : Quadrature
+!   In hhoBasis     : tBasis function
+!   In ValuesQP     : Values of scalar function f at the quadrature points
+!   Out rhs         : (f, grad v)
+!
+! --------------------------------------------------------------------------------------------------
+!
+! ----- Local variables
+        integer :: ipg, j
+        real(kind=8), dimension(3, MAX_BS) :: BSEval
+        real(kind=8) :: Kgradj(3)
+!
+        mat = 0.d0
+!
+! -- Loop on quadrature point
+        do ipg = 1, FEQuad%nbQuadPoints
+! ----- Eval cell basis function at the quadrature point
+            BSEval = FEBasis%grad(FEQuad%points_param(1:3, ipg))
+!
+            do j = 1, FEBasis%size
+                Kgradj = matmul(ValuesQP(1:3, 1:3, ipg), BSEval(1:3, j))
+                call dgemv('T', FEQuad%ndim, FEBasis%size, FEQuad%weights(ipg), BSEval, 3, &
+                           Kgradj, 1, 1.d0, mat(:, j), 1)
+            end do
+!
         end do
 !
     end subroutine
