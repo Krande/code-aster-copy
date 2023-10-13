@@ -45,7 +45,7 @@ contains
 !
 !===================================================================================================
 !
-    function FEEvalFuncScal( FEBasis, val_nodes, point) result(func)
+    function FEEvalFuncScal(FEBasis, val_nodes, point) result(func)
 !
         implicit none
 !
@@ -67,7 +67,7 @@ contains
         real(kind=8) :: funcEF(MAX_BS)
 !
         funcEF = FEBasis%func(point)
-        func =  ddot(FEBasis%size, val_nodes, 1, funcEF, 1)
+        func = ddot(FEBasis%size, val_nodes, 1, funcEF, 1)
 !
     end function
 !
@@ -75,7 +75,7 @@ contains
 !
 !===================================================================================================
 !
-    function FEEvalGradVec( FEBasis, val_nodes, point) result(grad)
+    function FEEvalGradVec(FEBasis, val_nodes, point) result(grad)
 !
         implicit none
 !

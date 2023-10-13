@@ -44,7 +44,7 @@ subroutine te0387(option, nomte)
     parameter(nbres=3)
     character(len=8) :: nompar(nbres)
     real(kind=8) :: valpar(nbres), poids, poids1, poids2, r, r1, r2
-    real(kind=8) :: z, z1, z2, hechp, nx, ny,  mat(6)
+    real(kind=8) :: z, z1, z2, hechp, nx, ny, mat(6)
     integer :: nno, kp, npg, ipoids, ivf, idfde, igeom
     integer :: itemps, imatt, k, i, j, l, li, lj
     aster_logical :: laxi
