@@ -77,7 +77,7 @@ contains
 ! ----- Eval cell basis function at the quadrature point
             BSEval = FEBasis%grad(FEQuad%points_param(1:3, ipg))
 !
-            call dgemv('T', FEQuad%ndim, FEBasis%size, FEQuad%weights(ipg), BSEval, 3, &
+            call dgemv('T', FEBasis%ndim, FEBasis%size, FEQuad%weights(ipg), BSEval, 3, &
                        ValuesQP(1:3, ipg), 1, 1.d0, vec, 1)
         end do
 !
@@ -121,7 +121,7 @@ contains
 !
             do j = 1, FEBasis%size
                 Kgradj = matmul(ValuesQP(1:3, 1:3, ipg), BSEval(1:3, j))
-                call dgemv('T', FEQuad%ndim, FEBasis%size, FEQuad%weights(ipg), BSEval, 3, &
+                call dgemv('T', FEBasis%ndim, FEBasis%size, FEQuad%weights(ipg), BSEval, 3, &
                            Kgradj, 1, 1.d0, mat(:, j), 1)
             end do
 !

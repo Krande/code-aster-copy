@@ -48,7 +48,6 @@ module FE_quadrature_module
 !
     type FE_Quadrature
         character(len=8)                    :: fami = " "
-        integer                             :: ndim = 0
         integer                             :: nbQuadPoints = 0
         real(kind=8), dimension(3, MAX_QP)  :: points_param = 0.d0
         real(kind=8), dimension(MAX_QP)     :: weights_param = 0.d0
@@ -77,13 +76,14 @@ contains
 !
 !===================================================================================================
 !
-    subroutine FE_transfo(coorno, nbnodes, typema, coorref, coorac, jacob)
+    subroutine FE_transfo(coorno, nbnodes, typema, l_skin, coorref, coorac, jacob)
 !
         implicit none
 !
         integer, intent(in)                             :: nbnodes
         real(kind=8), dimension(3, nbnodes), intent(in) :: coorno
         character(len=8), intent(in)                    :: typema
+        aster_logical, intent(in)                       :: l_skin
         real(kind=8), dimension(3), intent(in)          :: coorref
         real(kind=8), dimension(3), intent(out)         :: coorac
         real(kind=8), intent(out)                       :: jacob
@@ -107,10 +107,12 @@ contains
 ! ----- shape function
 !
         call elrfno(typema, ndim=ndim)
+        basis = 0.d0
         call elrfvf(typema, coorref, basis)
 !
 ! ----- derivative of shape function
 !
+        dbasis = 0.d0
         call elrfdf(typema, coorref, dbasis)
 !
         coorac = 0.d0
@@ -122,19 +124,27 @@ contains
 ! ---  Compute the jacobienne
         jaco = 0.d0
         do i = 1, nbnodes
+            ! print*, i, dbasis(1, i), coorno(1:2, i)
             jaco(1:3, 1) = jaco(1:3, 1)+coorno(1, i)*dbasis(1:3, i)
             jaco(1:3, 2) = jaco(1:3, 2)+coorno(2, i)*dbasis(1:3, i)
             jaco(1:3, 3) = jaco(1:3, 3)+coorno(3, i)*dbasis(1:3, i)
         end do
+        ! print*, jaco
 !
         if (ndim == 3) then
+            ASSERT(.not. l_skin)
             jacob = jaco(1, 1)*jaco(2, 2)*jaco(3, 3)+jaco(1, 3)*jaco(2, 1)*jaco(3, 2) &
                     +jaco(3, 1)*jaco(1, 2)*jaco(2, 3)-jaco(3, 1)*jaco(2, 2)*jaco(1, 3) &
                     -jaco(3, 3)*jaco(2, 1)*jaco(1, 2)-jaco(1, 1)*jaco(2, 3)*jaco(3, 2)
         elseif (ndim == 2) then
+            ASSERT(.not. l_skin)
             jacob = jaco(1, 1)*jaco(2, 2)-jaco(2, 1)*jaco(1, 2)
         elseif (ndim == 1) then
-            jacob = jaco(1, 1)
+            if (l_skin) then
+                jacob = norm2(jaco(1, 1:2))
+            else
+                jacob = jaco(1, 1)
+            end if
         else
             ASSERT(ASTER_FALSE)
         end if
@@ -150,12 +160,12 @@ contains
 !
 !===================================================================================================
 !
-    subroutine FE_rules(this, coorno, nbnodes, typema)
+    subroutine FE_rules(this, coorno, nbnodes, ndim, typema)
 !
         implicit none
 !
         real(kind=8), dimension(3, *), intent(in)  :: coorno
-        integer, intent(in)                        :: nbnodes
+        integer, intent(in)                        :: nbnodes, ndim
         character(len=8), intent(in)               :: typema
         class(FE_quadrature), intent(inout)        :: this
 !
@@ -170,8 +180,9 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: dimp, nbpg, ipg, jpoids, jcoopg, idim
+        integer :: nbpg, ipg, jpoids, jcoopg, idim, dimp
         real(kind=8) :: xp(3), coorac(3), jaco
+        aster_logical :: l_skin
 !
 !------ get quadrature points
         call elrefe_info(fami=this%fami, ndim=dimp, npg=nbpg, jpoids=jpoids, jcoopg=jcoopg)
@@ -179,14 +190,14 @@ contains
 ! ----- fill FEQuad
         ASSERT(nbpg <= MAX_QP)
         this%nbQuadPoints = nbpg
-        this%ndim = dimp
+        l_skin = ndim > dimp
 !
         do ipg = 1, nbpg
             xp = 0.d0
-            do idim = 1, dimp
-                xp(idim) = zr(jcoopg-1+dimp*(ipg-1)+idim)
+            do idim = 1, ndim
+                xp(idim) = zr(jcoopg-1+ndim*(ipg-1)+idim)
             end do
-            call FE_transfo(coorno, nbnodes, typema, xp, coorac, jaco)
+            call FE_transfo(coorno, nbnodes, typema, l_skin, xp, coorac, jaco)
             this%points_param(1:3, ipg) = xp
             this%weights_param(ipg) = zr(jpoids-1+ipg)
 !
@@ -222,7 +233,8 @@ contains
 !
         this%fami = fami
 !
-        call this%FE_rules(FECell%coorno(1:3, 1:FECell%nbnodes), FECell%nbnodes, FECell%typemas)
+        call this%FE_rules(FECell%coorno(1:3, 1:FECell%nbnodes), FECell%nbnodes, &
+                           FECell%ndim, FECell%typemas)
 !
         if (lteatt('AXIS', 'OUI')) then
             do ipg = 1, this%nbQuadPoints
@@ -236,11 +248,11 @@ contains
 !
 !===================================================================================================
 !
-    subroutine FEinitFaceFamiQ(this, FEFace, fami)
+    subroutine FEinitFaceFamiQ(this, FESkin, fami)
 !
         implicit none
 !
-        type(FE_Face), intent(in)          :: FEFace
+        type(FE_Skin), intent(in)          :: FESkin
         character(len=*), intent(in)       :: fami
         class(FE_quadrature), intent(out)  :: this
 !
@@ -248,7 +260,7 @@ contains
 !   FE
 !
 !   Get the quadrature rules from a familly definied in the catalogue of code_aster
-!   In FEFace  : FEFace
+!   In FESkin  : FESkin
 !   In npg      : number of quadrature points
 !   In axis     : axisymetric ? multpiply by r the weith if True
 !   Out this    : FE quadrature
@@ -259,7 +271,8 @@ contains
 !
         this%fami = fami
 !
-        call this%FE_rules(FEFace%coorno(1:3, 1:FEFace%nbnodes), FEFace%nbnodes, FEFace%typemas)
+        call this%FE_rules(FESkin%coorno(1:3, 1:FESkin%nbnodes), FESkin%nbnodes, &
+                           FESkin%ndim+1, FESkin%typemas)
 !
         if (lteatt('AXIS', 'OUI')) then
             do ipg = 1, this%nbQuadPoints

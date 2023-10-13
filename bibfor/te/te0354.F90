@@ -55,7 +55,7 @@ subroutine te0354(option, nomte)
     type(FE_Quadrature) :: FEQuadCell
     type(FE_basis) :: FEBasis
 !
-    integer :: nbDof, kp, iret, itemps, isour
+    integer :: kp, iret, itemps, isour
     real(kind=8) :: valQP(MAX_QP), tg, sour, theta, coefop, dsdt
     real(kind=8) :: resi(MAX_BS), mass(MAX_BS, MAX_BS)
     real(kind=8), pointer :: tempi(:) => null()
@@ -64,7 +64,6 @@ subroutine te0354(option, nomte)
     call FECell%init()
     call FEQuadCell%initCell(FECell, "RIGI")
     call FEBasis%initCell(FECell)
-    nbDof = FEBasis%size
 !
     call jevech('PTEMPSR', 'L', itemps)
     call jevech('PSOURNL', 'L', isour)
@@ -107,13 +106,13 @@ subroutine te0354(option, nomte)
 !
     if (option(1:4) .eq. 'CHAR') then
         call FeMakeRhsScal(FEQuadCell, FEBasis, valQP, resi)
-        call writeVector("PVECTTR", nbDof, resi)
+        call writeVector("PVECTTR", FEBasis%size, resi)
     else if (option(1:4) .eq. 'RESI') then
         call FeMakeRhsScal(FEQuadCell, FEBasis, valQP, resi)
-        call writeVector("PRESIDU", nbDof, resi)
+        call writeVector("PRESIDU", FEBasis%size, resi)
     else
         call FEMassMatScal(FEQuadCell, FEBasis, mass, valQP)
-        call writeMatrix("PMATTTR", nbDof, nbDof, ASTER_TRUE, mass)
+        call writeMatrix("PMATTTR", FEBasis%size, FEBasis%size, ASTER_TRUE, mass)
     end if
 !
 999 continue

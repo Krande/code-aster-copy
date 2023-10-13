@@ -40,13 +40,13 @@ module fe_topo_module
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    public :: FE_Cell, FE_Face
+    public :: FE_Cell, FE_Skin
 !
 !===================================================================================================
 !
 !===================================================================================================
 !
-    type FE_Face
+    type FE_Skin
 ! ----- Dimension topologique
         integer                     :: ndim = 0
 ! ----- Type maille
@@ -62,7 +62,7 @@ module fe_topo_module
         procedure, public, pass :: print => print_face
         procedure, public, pass :: func => func_face
         procedure, public, pass :: init => init_face
-    end type FE_Face
+    end type FE_Skin
 !
 !===================================================================================================
 !
@@ -93,14 +93,14 @@ contains
 !===================================================================================================
 !
 !---------------------------------------------------------------------------------------------------
-! -- member function for FE_Face type
+! -- member function for FE_Skin type
 !---------------------------------------------------------------------------------------------------
 !
     subroutine print_face(this)
 !
         implicit none
 !
-        class(FE_Face), intent(in) :: this
+        class(FE_Skin), intent(in) :: this
 !
 ! --------------------------------------------------------------------------------------------------
 ! Print information about the face
@@ -203,7 +203,7 @@ contains
 !
         implicit none
 !
-        class(FE_Face), intent(out) :: this
+        class(FE_Skin), intent(out) :: this
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -213,7 +213,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Out FEFace           : a FE cell
+! Out FESkin           : a FE cell
 ! --------------------------------------------------------------------------------------------------
 !
         aster_logical, parameter :: l_debug = ASTER_FALSE
@@ -312,7 +312,7 @@ contains
 !
         implicit none
 !
-        class(FE_Face), intent(in) :: this
+        class(FE_Skin), intent(in) :: this
         real(kind=8), intent(in) :: pt(3)
         real(kind=8) :: func(9)
 !
@@ -324,7 +324,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Out FEFace           : a FE cell
+! Out FESkin           : a FE cell
 ! --------------------------------------------------------------------------------------------------
 !
         func = 0.d0

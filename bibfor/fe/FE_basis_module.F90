@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
-module FE_basis_module
 !
-    use fe_topo_module
+module FE_Basis_module
+!
+    use FE_topo_module
 !
     implicit none
 !
@@ -37,18 +37,19 @@ module FE_basis_module
 #include "jeveux.h"
 ! --------------------------------------------------------------------------------------------------
 !
-! fe - generic
+! FE - generic
 !
 ! Module to generate basis function used for fe methods
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    type FE_basis
+    type FE_Basis
 !
         integer :: typeEF = EF_LAGRANGE
         integer :: size
 ! ----- Dimension topologique
         integer                     :: ndim = 0
+        aster_logical               :: l_skin = ASTER_FALSE
 ! ----- Type maille
         character(len=8)            :: typema = ''
 ! ----- Nombre de noeuds
@@ -65,7 +66,7 @@ module FE_basis_module
     end type
 !
 ! --------------------------------------------------------------------------------------------------
-    public  :: FE_basis
+    public  :: FE_Basis
     private :: feBSCEval, feBSCGradEv, init_cell, init_face, FE_grad_lagr
 !
 contains
@@ -78,8 +79,8 @@ contains
 !
         implicit none
 !
-        class(fe_basis), intent(inout) :: this
-        type(FE_Cell), intent(in)      :: FECEll
+        class(FE_Basis), intent(inout) :: this
+        type(FE_Cell), intent(in)      :: FECell
 !
 ! --------------------------------------------------------------------------------------------------
 !   fe - basis functions
@@ -87,11 +88,12 @@ contains
 !   Initialization
 ! --------------------------------------------------------------------------------------------------
 !
-        this%typema = FECEll%typemas
+        this%typema = FECell%typemas
         this%typeEF = EF_LAGRANGE
-        this%ndim = FECEll%ndim
-        this%nbnodes = FECEll%nbnodes
-        this%coorno = FECEll%coorno
+        this%ndim = FECell%ndim
+        this%nbnodes = FECell%nbnodes
+        this%coorno = FECell%coorno
+        this%l_skin = ASTER_FALSE
 !
         if (this%typeEF == EF_LAGRANGE) then
             call elrfno(this%typema, this%size)
@@ -105,12 +107,12 @@ contains
 !
 !===================================================================================================
 !
-    subroutine init_face(this, FEFace)
+    subroutine init_face(this, FESkin)
 !
         implicit none
 !
-        class(fe_basis), intent(inout) :: this
-        type(FE_Face), intent(in)      :: FEFace
+        class(FE_Basis), intent(inout) :: this
+        type(FE_Skin), intent(in)      :: FESkin
 !
 ! --------------------------------------------------------------------------------------------------
 !   fe - basis functions
@@ -118,11 +120,12 @@ contains
 !   Initialization
 ! --------------------------------------------------------------------------------------------------
 !
-        this%typema = FEFace%typemas
-        this%ndim = FEFace%ndim
-        this%nbnodes = FEFace%nbnodes
-        this%coorno(1:3, 1:9) = FEFace%coorno
+        this%typema = FESkin%typemas
+        this%ndim = FESkin%ndim
+        this%nbnodes = FESkin%nbnodes
+        this%coorno(1:3, 1:9) = FESkin%coorno
         this%typeEF = EF_LAGRANGE
+        this%l_skin = ASTER_TRUE
 !
         if (this%typeEF == EF_LAGRANGE) then
             call elrfno(this%typema, this%size)
@@ -140,7 +143,7 @@ contains
 !
         implicit none
 !
-        class(fe_basis), intent(in) :: this
+        class(FE_Basis), intent(in) :: this
         real(kind=8), intent(in)       :: point(3)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -153,6 +156,7 @@ contains
         real(kind=8) :: jaco(3, 3), cojac(3, 3), jacob
         real(kind=8), dimension(3, MAX_BS) :: BSGrad, BSGrad2
 !
+        ASSERT(.not. this%l_skin)
         BSGrad = 0.d0
         call elrfdf(this%typema, point, BSGrad)
 !
@@ -206,7 +210,7 @@ contains
 !
         implicit none
 !
-        class(fe_basis), intent(in)             :: this
+        class(FE_Basis), intent(in)             :: this
         real(kind=8), dimension(3), intent(in)  :: point
         real(kind=8), dimension(MAX_BS)         :: basisScalEval
 !
@@ -214,7 +218,7 @@ contains
 !   fe - basis functions
 !
 !   evaluate fe basis scalar
-!   In this                 : fe_basis_scalar_cell
+!   In this                 : FE_Basis_scalar_cell
 !   In point                : point where evaluate
 !   Out basisScalEval       : evaluation of the scalar basis
 !
@@ -238,7 +242,7 @@ contains
 !
         implicit none
 !
-        class(fe_basis), intent(in)             :: this
+        class(FE_Basis), intent(in)             :: this
         real(kind=8), dimension(3), intent(in)  :: point
         real(kind=8), dimension(3, MAX_BS)      :: BSGradEval
 !
@@ -246,7 +250,7 @@ contains
 !   fe - basis functions
 !
 !   evaluate fe basis scalar
-!   In this                 : fe_basis_scalar_cell
+!   In this                 : FE_Basis_scalar_cell
 !   In point                : point where evaluate
 !   Out BSGradEval   : evaluation of the gradient of the scalar basis
 !
