@@ -17,9 +17,15 @@
 ! --------------------------------------------------------------------
 !
 subroutine te0274(option, nomte)
+!
+    use FE_topo_module
+    use FE_quadrature_module
+    use FE_basis_module
+    use FE_rhs_module
+    use FE_eval_module
+!
 !     BUT: CALCUL DES VECTEURS ELEMENTAIRES EN THERMIQUE
 !          CORRESPONDANT AU FLUX NON-LINEAIRE
-!          ELEMENTS DE FACE 2D
 !
 !         OPTION : 'CHAR_THER_FLUNL'
 !
@@ -27,132 +33,56 @@ subroutine te0274(option, nomte)
 !        DONNEES:      OPTION       -->  OPTION DE CALCUL
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 !----------------------------------------------------------------------
-! CORPS DU PROGRAMME
+!
     implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/connec.h"
-#include "asterfort/elref1.h"
-#include "asterfort/elrefe_info.h"
-#include "asterfort/foderi.h"
+#include "asterfort/assert.h"
 #include "asterfort/jevech.h"
-#include "asterfort/lteatt.h"
-#include "asterfort/teattr.h"
-#include "asterfort/vff2dn.h"
+#include "asterfort/writeVector.h"
+#include "asterfort/foderi.h"
+#include "FE_module.h"
+!
+    type(FE_Skin) :: FESkin
+    type(FE_Quadrature) :: FEQuad
+    type(FE_Basis) :: FEBasis
 !
     character(len=16) :: option, nomte
-    real(kind=8) :: poids, r, nx, ny, theta, alpha, rbid, tpg, coorse(18)
-    real(kind=8) :: vectt(9)
-    integer :: nno, nnos, jgano, ndim, kp, npg, ipoids, ivf, idfde, igeom, i, j
-    integer :: l, li, iflux, ivectt, nnop2, c(6, 9), ise, nse, itempr, itemps
-    integer :: ibid
-    character(len=8) :: coef, elrefe, alias8
-    aster_logical :: laxi
+    real(kind=8) :: theta, alpha, dalpha, tpg
+    integer :: iflux, itemps, kp
+    character(len=8) :: coef
+    real(kind=8) :: rhs(MAX_BS), valQP(MAX_QP)
+    real(kind=8), pointer :: tempi(:) => null()
 !
+    call FESkin%init()
+    call FEQuad%initFace(FESkin, "RIGI")
+    call FEBasis%initFace(FESkin)
 !
-!====
-! 1.1 PREALABLES: RECUPERATION ADRESSES FONCTIONS DE FORMES...
-!====
-!
-    call elref1(elrefe)
-!
-    if (lteatt('LUMPE', 'OUI')) then
-        call teattr('S', 'ALIAS8', alias8, ibid)
-        if (alias8(6:8) .eq. 'SE3') elrefe = 'SE2'
-    end if
-!
-    call elrefe_info(elrefe=elrefe, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
-                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
-!
-    if (lteatt('AXIS', 'OUI')) then
-        laxi = .true.
-    else
-        laxi = .false.
-    end if
-!
-!====
-! 1.2 PREALABLES LIES AUX RECHERCHES DE DONNEES GENERALES
-!====
-!
-! RECUPERATION DE T-
-    call jevech('PTEMPER', 'L', itempr)
-!
-    call jevech('PGEOMER', 'L', igeom)
+    call jevech('PTEMPER', 'L', vr=tempi)
     call jevech('PTEMPSR', 'L', itemps)
-! FLUX NON-LIN
     call jevech('PFLUXNL', 'L', iflux)
-    call jevech('PVECTTR', 'E', ivectt)
-!
-!====
-! 1.3 PREALABLES LIES AUX CALCULS
-!====
 !
     theta = zr(itemps+2)
     coef = zk8(iflux)
-    if (coef(1:7) .eq. '&FOZERO') goto 130
+    if (coef(1:7) .eq. '&FOZERO') goto 999
 !
-    call connec(nomte, nse, nnop2, c)
-    do i = 1, nnop2
-        vectt(i) = 0.d0
+    valQP = 0.d0
+    do kp = 1, FEQuad%nbQuadPoints
+        tpg = FEEvalFuncScal(FEBasis, tempi, FEQuad%points_param(1:3, kp))
+!
+        call foderi(coef, tpg, alpha, dalpha)
+!
+        if (theta < -0.5d0) then
+            valQP(kp) = alpha
+        else
+            valQP(kp) = (1.d0-theta)*alpha
+        end if
     end do
 !
-!====
-! 2. CALCULS TERMES
-!====
-! BOUCLE SUR LES SOUS-ELEMENTS
+    call FeMakeRhsScal(FEQuad, FEBasis, valQP, rhs)
+    call writeVector("PVECTTR", FEBasis%size, rhs)
 !
-    do ise = 1, nse
+999 continue
 !
-        do i = 1, nno
-            do j = 1, 2
-                coorse(2*(i-1)+j) = zr(igeom-1+2*(c(ise, i)-1)+j)
-            end do
-        end do
-!
-! BOUCLE SUR LES POINTS DE GAUSS
-        do kp = 1, npg
-            call vff2dn(ndim, nno, kp, ipoids, idfde, &
-                        coorse, nx, ny, poids)
-            tpg = 0.d0
-            do i = 1, nno
-! CALCUL DE T-
-                l = (kp-1)*nno+i
-                tpg = tpg+zr(itempr-1+c(ise, i))*zr(ivf+l-1)
-            end do
-!
-! CALCUL DU JACOBIEN EN AXI
-            if (laxi) then
-                r = 0.d0
-                do i = 1, nno
-                    l = (kp-1)*nno+i
-                    r = r+coorse(2*(i-1)+1)*zr(ivf+l-1)
-                end do
-                poids = poids*r
-            end if
-!
-            call foderi(coef, tpg, alpha, rbid)
-!
-            if (theta < -0.5d0) then
-                do i = 1, nno
-                    li = ivf+(kp-1)*nno+i-1
-                    vectt(c(ise, i)) = vectt(c(ise, i))+poids*alpha*zr(li)
-                end do
-            else
-                do i = 1, nno
-                    li = ivf+(kp-1)*nno+i-1
-                    vectt(c(ise, i)) = vectt(c(ise, i))+poids*(1.d0-theta)*alpha*zr(li)
-                end do
-            end if
-! FIN BOUCLE SUR LES PTS DE GAUSS
-        end do
-! FIN BOUCLE SUR LES SOUS-ELEMENTS
-    end do
-!
-    do i = 1, nnop2
-        zr(ivectt-1+i) = vectt(i)
-    end do
-!
-130 continue
-! FIN ------------------------------------------------------------------
 end subroutine

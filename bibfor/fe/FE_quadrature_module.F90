@@ -33,6 +33,7 @@ module FE_quadrature_module
 #include "asterfort/elrfno.h"
 #include "asterfort/elrfvf.h"
 #include "asterfort/lteatt.h"
+#include "asterfort/provec.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
 #include "FE_module.h"
@@ -68,7 +69,6 @@ module FE_quadrature_module
     public   :: FE_Quadrature
     private  :: FE_transfo, FE_rules, FEQuadPrint, &
                 FEinitCellFamiQ, FEinitFaceFamiQ
-
 !
 contains
 !
@@ -102,6 +102,7 @@ contains
         real(kind=8), dimension(27) :: basis
         real(kind=8), dimension(3, 27) :: dbasis
         real(kind=8), dimension(3, 3) :: jaco
+        real(kind=8) :: normal(3)
         integer :: i, ndim, iadzi, iazk24
 !
 ! ----- shape function
@@ -124,12 +125,10 @@ contains
 ! ---  Compute the jacobienne
         jaco = 0.d0
         do i = 1, nbnodes
-            ! print*, i, dbasis(1, i), coorno(1:2, i)
             jaco(1:3, 1) = jaco(1:3, 1)+coorno(1, i)*dbasis(1:3, i)
             jaco(1:3, 2) = jaco(1:3, 2)+coorno(2, i)*dbasis(1:3, i)
             jaco(1:3, 3) = jaco(1:3, 3)+coorno(3, i)*dbasis(1:3, i)
         end do
-        ! print*, jaco
 !
         if (ndim == 3) then
             ASSERT(.not. l_skin)
@@ -137,8 +136,12 @@ contains
                     +jaco(3, 1)*jaco(1, 2)*jaco(2, 3)-jaco(3, 1)*jaco(2, 2)*jaco(1, 3) &
                     -jaco(3, 3)*jaco(2, 1)*jaco(1, 2)-jaco(1, 1)*jaco(2, 3)*jaco(3, 2)
         elseif (ndim == 2) then
-            ASSERT(.not. l_skin)
-            jacob = jaco(1, 1)*jaco(2, 2)-jaco(2, 1)*jaco(1, 2)
+            if (l_skin) then
+                call provec(jaco(1, 1:3), jaco(2, 1:3), normal)
+                jacob = norm2(normal)
+            else
+                jacob = jaco(1, 1)*jaco(2, 2)-jaco(2, 1)*jaco(1, 2)
+            end if
         elseif (ndim == 1) then
             if (l_skin) then
                 jacob = norm2(jaco(1, 1:2))
@@ -160,12 +163,13 @@ contains
 !
 !===================================================================================================
 !
-    subroutine FE_rules(this, coorno, nbnodes, ndim, typema)
+    subroutine FE_rules(this, coorno, nbnodes, l_skin, typema)
 !
         implicit none
 !
         real(kind=8), dimension(3, *), intent(in)  :: coorno
-        integer, intent(in)                        :: nbnodes, ndim
+        integer, intent(in)                        :: nbnodes
+        aster_logical, intent(in)                  :: l_skin
         character(len=8), intent(in)               :: typema
         class(FE_quadrature), intent(inout)        :: this
 !
@@ -182,7 +186,6 @@ contains
 !
         integer :: nbpg, ipg, jpoids, jcoopg, idim, dimp
         real(kind=8) :: xp(3), coorac(3), jaco
-        aster_logical :: l_skin
 !
 !------ get quadrature points
         call elrefe_info(fami=this%fami, ndim=dimp, npg=nbpg, jpoids=jpoids, jcoopg=jcoopg)
@@ -190,12 +193,11 @@ contains
 ! ----- fill FEQuad
         ASSERT(nbpg <= MAX_QP)
         this%nbQuadPoints = nbpg
-        l_skin = ndim > dimp
 !
         do ipg = 1, nbpg
             xp = 0.d0
-            do idim = 1, ndim
-                xp(idim) = zr(jcoopg-1+ndim*(ipg-1)+idim)
+            do idim = 1, dimp
+                xp(idim) = zr(jcoopg-1+dimp*(ipg-1)+idim)
             end do
             call FE_transfo(coorno, nbnodes, typema, l_skin, xp, coorac, jaco)
             this%points_param(1:3, ipg) = xp
@@ -234,7 +236,7 @@ contains
         this%fami = fami
 !
         call this%FE_rules(FECell%coorno(1:3, 1:FECell%nbnodes), FECell%nbnodes, &
-                           FECell%ndim, FECell%typemas)
+                           ASTER_FALSE, FECell%typemas)
 !
         if (lteatt('AXIS', 'OUI')) then
             do ipg = 1, this%nbQuadPoints
@@ -272,7 +274,7 @@ contains
         this%fami = fami
 !
         call this%FE_rules(FESkin%coorno(1:3, 1:FESkin%nbnodes), FESkin%nbnodes, &
-                           FESkin%ndim+1, FESkin%typemas)
+                           ASTER_TRUE, FESkin%typemas)
 !
         if (lteatt('AXIS', 'OUI')) then
             do ipg = 1, this%nbQuadPoints
