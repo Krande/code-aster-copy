@@ -51,6 +51,7 @@ subroutine te0080(option, nomte)
     real(kind=8) :: theta, soun, sounp1, rhs(MAX_BS)
 !
     call FECell%init()
+    call FEQuadCell%initCell(FECell, "RIGI")
     call FEBasis%initCell(FECell)
     nbDof = FEBasis%size
 !
@@ -63,11 +64,6 @@ subroutine te0080(option, nomte)
 !
     valQP = 0.d0
 !
-! BOUCLE SUR LES SOUS-ELEMENTS
-!
-    call FEQuadCell%initCell(FECell, "RIGI")
-    call FEBasis%initCell(FECell)
-
     do kp = 1, FEQuadCell%nbQuadPoints
         valpar(1:3) = FEQuadCell%points(1:3, kp)
         valpar(4) = zr(itemps)

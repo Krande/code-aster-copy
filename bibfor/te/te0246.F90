@@ -62,6 +62,7 @@ subroutine te0246(option, nomte)
 !-----------------------------------------------------------------------
 !
     call FECell%init()
+    call FEQuadCell%initCell(FECell, "MASS")
     call FEBasis%initCell(FECell)
     nbDof = FEBasis%size
 !
@@ -77,9 +78,6 @@ subroutine te0246(option, nomte)
         end if
         call ntfcma(zk16(icomp), zi(imate), aniso, ifon)
     end if
-!
-    call FEQuadCell%initCell(FECell, "MASS")
-    call FEBasis%initCell(FECell)
 !
     valQP = 0.0
     do kp = 1, FEQuadCell%nbQuadPoints

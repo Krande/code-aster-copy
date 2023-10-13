@@ -55,6 +55,7 @@ subroutine te0077(option, nomte)
 !-----------------------------------------------------------------------
 !
     call FECell%init()
+    call FEQuadCell%initCell(FECell, "MASS")
     call FEBasis%initCell(FECell)
     nbDof = FEBasis%size
 !
@@ -75,9 +76,6 @@ subroutine te0077(option, nomte)
     end if
 !
     valQP = cp(1)
-!
-    call FEQuadCell%initCell(FECell, "MASS")
-    call FEBasis%initCell(FECell)
 !
     call FEMassMatScal(FEQuadCell, FEBasis, mass, valQP)
 !

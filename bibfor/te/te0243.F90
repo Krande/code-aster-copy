@@ -64,6 +64,7 @@ subroutine te0243(option, nomte)
     aster_logical :: aniso
 ! ----------------------------------------------------------------------
     call FECell%init()
+    call FEQuadCell%initCell(FECell, "RIGI")
     call FEBasis%initCell(FECell)
     nbDof = FEBasis%size
 !
@@ -92,9 +93,6 @@ subroutine te0243(option, nomte)
             call jevech('PCAMASS', 'L', icamas)
         end if
     end if
-!
-    call FEQuadCell%initCell(FECell, "RIGI")
-    call FEBasis%initCell(FECell)
 !
     valQP = 0.0
     do kp = 1, FEQuadCell%nbQuadPoints

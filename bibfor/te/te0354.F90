@@ -18,19 +18,24 @@
 !
 subroutine te0354(option, nomte)
 !
+    use FE_topo_module
+    use FE_quadrature_module
+    use FE_basis_module
+    use FE_rhs_module
+    use FE_eval_module
+    use FE_mass_module
+!
     implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/dfdm2d.h"
-#include "asterfort/dfdm3d.h"
-#include "asterfort/elref1.h"
-#include "asterfort/elrefe_info.h"
-#include "asterfort/foderi.h"
-#include "asterfort/fointe.h"
+#include "asterfort/assert.h"
 #include "asterfort/jevech.h"
-#include "asterfort/lteatt.h"
-#include "blas/daxpy.h"
-#include "blas/ddot.h"
+#include "asterfort/fointe.h"
+#include "asterfort/foderi.h"
+#include "asterfort/utmess.h"
+#include "asterfort/writeVector.h"
+#include "asterfort/writeMatrix.h"
+#include "FE_module.h"
+#include "jeveux.h"
+!
     character(len=16) :: option, nomte
 !
 ! ----------------------------------------------------------------------
@@ -46,23 +51,21 @@ subroutine te0354(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
 !
-    integer :: nnomax
-    parameter(nnomax=27)
+    type(FE_Cell) :: FECell
+    type(FE_Quadrature) :: FEQuadCell
+    type(FE_basis) :: FEBasis
 !
-    aster_logical :: axi, resi
-!      INTEGER NDIM,NNO,NPG,NNOS,G,I,OS,OSM,M,N,IW,IVF,IDFDE,IRET,JGANO
-    integer :: ndim, nno, npg, nnos, g, os, osm, m, n, iw, ivf, idfde, iret
-    integer :: jgano
-    integer :: igeom, itemps, ivect, imatr, isour, ither
-    real(kind=8) :: dfdx(nnomax), dfdy(nnomax), dfdz(nnomax), w, rg, theta, sour
-    real(kind=8) :: tg
-    real(kind=8) :: dsdt, coef, coefop
-!      CHARACTER*8 ELREFE,FCT
-    character(len=8) :: elrefe
+    integer :: nbDof, kp, iret, itemps, isour
+    real(kind=8) :: valQP(MAX_QP), tg, sour, theta, coefop, dsdt
+    real(kind=8) :: resi(MAX_BS), mass(MAX_BS, MAX_BS)
+    real(kind=8), pointer :: tempi(:) => null()
+    aster_logical :: l_resi
 !
+    call FECell%init()
+    call FEQuadCell%initCell(FECell, "RIGI")
+    call FEBasis%initCell(FECell)
+    nbDof = FEBasis%size
 !
-!    LECTURE DES PARAMETRES COMMUNS
-    call jevech('PGEOMER', 'L', igeom)
     call jevech('PTEMPSR', 'L', itemps)
     call jevech('PSOURNL', 'L', isour)
     if (zk8(isour) (1:7) .eq. '&FOZERO') goto 999
@@ -70,82 +73,48 @@ subroutine te0354(option, nomte)
 !
 !    LECTURE DES PARAMETRES SPECIFIQUES A CHAQUE OPTION
     if (option(1:4) .eq. 'CHAR') then
-        resi = .true.
+        l_resi = .true.
         coefop = 1-theta
-        call jevech('PTEMPER', 'L', ither)
-        call jevech('PVECTTR', 'E', ivect)
+        call jevech('PTEMPER', 'L', vr=tempi)
     else if (option(1:4) .eq. 'RESI') then
-        resi = .true.
+        l_resi = .true.
         coefop = -theta
-        call jevech('PTEMPEI', 'L', ither)
-        call jevech('PRESIDU', 'E', ivect)
+        call jevech('PTEMPEI', 'L', vr=tempi)
     else
-        resi = .false.
+        l_resi = .false.
         coefop = -theta
-        call jevech('PTEMPEI', 'L', ither)
-        call jevech('PMATTTR', 'E', imatr)
+        call jevech('PTEMPEI', 'L', vr=tempi)
     end if
 !
-!    ACCES AUX CARACTERISTIQUES DE L'ELEMENT FINI
-    call elref1(elrefe)
-    call elrefe_info(elrefe=elrefe, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
-                     npg=npg, jpoids=iw, jvf=ivf, jdfde=idfde, jgano=jgano)
-    axi = lteatt('AXIS', 'OUI')
+    valQP = 0.0
+    do kp = 1, FEQuadCell%nbQuadPoints
+        tg = FEEvalFuncScal(FEBasis, tempi, FEQuadCell%points_param(1:3, kp))
 !
-    do g = 1, npg
-        os = (g-1)*nno
-!
-!      CALCUL DU POIDS DU POINT DE GAUSS
-        if (ndim .eq. 2) then
-            call dfdm2d(nno, g, iw, idfde, zr(igeom), &
-                        w, dfdx, dfdy)
-            if (axi) then
-                rg = ddot(nno, zr(igeom), 2, zr(ivf+os), 1)
-                w = w*rg
-            end if
-        else
-            call dfdm3d(nno, g, iw, idfde, zr(igeom), &
-                        w, dfdx, dfdy, dfdz)
-        end if
-!
-!      CALCUL DE LA TEMPERATURE AU POINT DE GAUSS
-        tg = ddot(nno, zr(ither), 1, zr(ivf+os), 1)
-!
-!      CALCUL DU RESIDU
-        if (resi) then
-!
-!        CALCUL DE LA SOURCE
+        if (l_resi) then
             call fointe('FM', zk8(isour), 1, ['TEMP'], [tg], &
                         sour, iret)
 
             if (theta < -0.5) then
-                coef = w*sour
+                valQP(kp) = sour
             else
-                coef = w*sour*coefop
+                valQP(kp) = sour*coefop
             end if
-!
-!        CONTRIBUTION AU RESIDU
-            call daxpy(nno, coef, zr(ivf+os), 1, zr(ivect), &
-                       1)
-!
-!      CALCUL DE LA MATRICE TANGENTE (STOCKAGE SYMETRIQUE)
         else
-!
-!        CALCUL DE LA DERIVEE DE LA SOURCE PAR RAPPORT A LA TEMPERATURE
             call foderi(zk8(isour), tg, sour, dsdt)
-            coef = w*dsdt*coefop
-!
-!        CONTRIBUTION A LA MATRICE
-            osm = 0
-            do n = 0, nno-1
-                do m = 0, n
-                    zr(imatr+osm) = zr(imatr+osm)+coef*zr(ivf+os+n)*zr( &
-                                    ivf+os+m)
-                    osm = osm+1
-                end do
-            end do
+            valQP(kp) = dsdt*coefop
         end if
     end do
+!
+    if (option(1:4) .eq. 'CHAR') then
+        call FeMakeRhsScal(FEQuadCell, FEBasis, valQP, resi)
+        call writeVector("PVECTTR", nbDof, resi)
+    else if (option(1:4) .eq. 'RESI') then
+        call FeMakeRhsScal(FEQuadCell, FEBasis, valQP, resi)
+        call writeVector("PRESIDU", nbDof, resi)
+    else
+        call FEMassMatScal(FEQuadCell, FEBasis, mass, valQP)
+        call writeMatrix("PMATTTR", nbDof, nbDof, ASTER_TRUE, mass)
+    end if
 !
 999 continue
 end subroutine
