@@ -55,7 +55,7 @@ subroutine te0246(option, nomte)
     real(kind=8) :: valQP(MAX_QP), tpgi, r8bid
     real(kind=8) :: mass(MAX_BS, MAX_BS)
     integer :: kp, imate, icomp
-    integer :: ifon(6), nbDof
+    integer :: ifon(6)
     aster_logical :: aniso
     real(kind=8), pointer :: tempi(:) => null()
 !
@@ -64,7 +64,6 @@ subroutine te0246(option, nomte)
     call FECell%init()
     call FEQuadCell%initCell(FECell, "MASS")
     call FEBasis%initCell(FECell)
-    nbDof = FEBasis%size
 !
     call jevech('PCOMPOR', 'L', icomp)
     if (zk16(icomp) (1:5) .eq. 'THER_') then
@@ -93,6 +92,6 @@ subroutine te0246(option, nomte)
 !
     call FEMassMatScal(FEQuadCell, FEBasis, mass, valQP)
 !
-    call writeMatrix("PMATTTR", nbDof, nbDof, ASTER_TRUE, mass)
+    call writeMatrix("PMATTTR", FEBasis%size, FEBasis%size, ASTER_TRUE, mass)
 !
 end subroutine

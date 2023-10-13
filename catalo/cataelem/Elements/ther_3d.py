@@ -427,7 +427,7 @@ class THER_HEXA20(Element):
             para_out=((OP.RIGI_THER_TRANS.PMATTTR, MMATTTR),),
         ),
         OP.SOUR_ELGA(
-            te=319,
+            te=318,
             para_in=(
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
