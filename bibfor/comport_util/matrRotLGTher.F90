@@ -63,6 +63,7 @@ subroutine matrRotLGTher(aniso, icamas, ndim, coorpg, matr)
                 dire(2) = sin(aalpha)*cos(abeta)
                 dire(3) = -sin(abeta)
                 call utrcyl(coorpg, dire, orig, p)
+                p = transpose(p)
             else
                 xu = orig(1)-coorpg(1)
                 yu = orig(2)-coorpg(2)
