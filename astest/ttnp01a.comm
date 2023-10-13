@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ MAILQ8 = LIRE_MAILLAGE(FORMAT="MED")
 
 MAILQ8 = DEFI_GROUP(reuse=MAILQ8, MAILLAGE=MAILQ8, CREA_GROUP_NO=_F(TOUT_GROUP_MA="OUI"))
 
-MAIL = CREA_MAILLAGE(MAILLAGE=MAILQ8, MODI_MAILLE=_F(OPTION="QUAD8_9", TOUT="OUI"))
+MAIL = CREA_MAILLAGE(MAILLAGE=MAILQ8, QUAD_LINE=_F(TOUT="OUI"))
 
 CONDUC = DEFI_FONCTION(
     NOM_PARA="TEMP", VALE=(-50.0, 1.08, 50.00, 1.08), PROL_DROITE="CONSTANT", PROL_GAUCHE="CONSTANT"
@@ -61,8 +61,8 @@ LR8 = DEFI_LIST_REEL(
     DEBUT=0.0e0,
     INTERVALLE=(
         _F(JUSQU_A=5.0e-3, NOMBRE=10),
-        _F(JUSQU_A=5.0e-2, NOMBRE=9),
-        _F(JUSQU_A=5.0e-1, NOMBRE=9),
+        _F(JUSQU_A=5.0e-2, NOMBRE=25),
+        _F(JUSQU_A=5.0e-1, NOMBRE=25),
         _F(JUSQU_A=4.0e-0, NOMBRE=35),
     ),
 )
@@ -105,7 +105,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=1.8,
             CHAM_GD=T_1,
-            VALE_CALC=-13.503175106,
+            VALE_CALC=-13.18941788805426,
             VALE_REFE=-11.800000000000001,
         ),
         _F(
@@ -115,7 +115,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=1.3,
             CHAM_GD=T_2,
-            VALE_CALC=-28.640667882,
+            VALE_CALC=-28.661563640581456,
             VALE_REFE=-29.899999999999999,
         ),
         _F(
@@ -125,7 +125,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=0.80000000000000004,
             CHAM_GD=T_3,
-            VALE_CALC=-33.966206305,
+            VALE_CALC=-33.95815240360276,
             VALE_REFE=-34.700000000000003,
         ),
         _F(
@@ -135,7 +135,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=0.10000000000000001,
             CHAM_GD=T_4,
-            VALE_CALC=-36.680581617,
+            VALE_CALC=-36.641875732402376,
             VALE_REFE=-36.700000000000003,
         ),
         _F(
@@ -145,7 +145,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=0.29999999999999999,
             CHAM_GD=T_1,
-            VALE_CALC=-0.231731444,
+            VALE_CALC=-0.2192241581688393,
             VALE_REFE=0.0,
         ),
         _F(
@@ -155,7 +155,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=1.3,
             CHAM_GD=T_2,
-            VALE_CALC=-16.869456101,
+            VALE_CALC=-17.225672991101924,
             VALE_REFE=-18.100000000000001,
         ),
         _F(
@@ -165,7 +165,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=0.40000000000000002,
             CHAM_GD=T_3,
-            VALE_CALC=-24.842369222,
+            VALE_CALC=-25.096755843596224,
             VALE_REFE=-25.199999999999999,
         ),
         _F(
@@ -175,7 +175,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=0.20000000000000001,
             CHAM_GD=T_4,
-            VALE_CALC=-29.418054431,
+            VALE_CALC=-29.310041093509714,
             VALE_REFE=-29.300000000000001,
         ),
     )
@@ -183,14 +183,14 @@ TEST_RESU(
 
 TEST_RESU(
     CHAM_NO=(
-        _F(GROUP_NO="N157", NOM_CMP="TEMP", CHAM_GD=T_1, VALE_CALC=-13.503175106115),
-        _F(GROUP_NO="N157", NOM_CMP="TEMP", CHAM_GD=T_2, VALE_CALC=-28.640667882124),
-        _F(GROUP_NO="N157", NOM_CMP="TEMP", CHAM_GD=T_3, VALE_CALC=-33.966206304865),
-        _F(GROUP_NO="N157", NOM_CMP="TEMP", CHAM_GD=T_4, VALE_CALC=-36.680581617296),
-        _F(GROUP_NO="N198", NOM_CMP="TEMP", CHAM_GD=T_1, VALE_CALC=-0.23173144386023),
-        _F(GROUP_NO="N198", NOM_CMP="TEMP", CHAM_GD=T_2, VALE_CALC=-16.869456100984),
-        _F(GROUP_NO="N198", NOM_CMP="TEMP", CHAM_GD=T_3, VALE_CALC=-24.842369221634),
-        _F(GROUP_NO="N198", NOM_CMP="TEMP", CHAM_GD=T_4, VALE_CALC=-29.418054430927),
+        _F(GROUP_NO="N157", NOM_CMP="TEMP", CHAM_GD=T_1, VALE_CALC=-13.18941788805426),
+        _F(GROUP_NO="N157", NOM_CMP="TEMP", CHAM_GD=T_2, VALE_CALC=-28.661563640581456),
+        _F(GROUP_NO="N157", NOM_CMP="TEMP", CHAM_GD=T_3, VALE_CALC=-33.95815240360276),
+        _F(GROUP_NO="N157", NOM_CMP="TEMP", CHAM_GD=T_4, VALE_CALC=-36.641875732402376),
+        _F(GROUP_NO="N198", NOM_CMP="TEMP", CHAM_GD=T_1, VALE_CALC=-0.2192241581688393),
+        _F(GROUP_NO="N198", NOM_CMP="TEMP", CHAM_GD=T_2, VALE_CALC=-17.225672991101924),
+        _F(GROUP_NO="N198", NOM_CMP="TEMP", CHAM_GD=T_3, VALE_CALC=-25.096755843596224),
+        _F(GROUP_NO="N198", NOM_CMP="TEMP", CHAM_GD=T_4, VALE_CALC=-29.31004109350971),
     )
 )
 

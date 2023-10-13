@@ -363,26 +363,3 @@ class THPLSL2(Element):
             ),
         ),
     )
-
-
-# ------------------------------------------------------------
-class THPLSL3(THPLSL2):
-    """Please document this element"""
-
-    meshType = MT.SEG3
-    elrefe = (
-        ElrefeLoc(MT.SE3, gauss=("RIGI=FPG4", "FPG1=FPG1"), mater=("FPG1",)),
-        ElrefeLoc(MT.SE2, gauss=("RIGI=FPG2",)),
-    )
-
-    calculs = (
-        OP.CHAR_THER_ACCE_R(te=-1),
-        OP.CHAR_THER_ACCE_X(te=-1),
-        OP.CHAR_THER_ACCE_Y(te=-1),
-        OP.CHAR_THER_FLUTNL(te=-1),
-        OP.FLUX_FLUI_X(te=-1),
-        OP.FLUX_FLUI_Y(te=-1),
-        OP.RESI_THER_COEH_F(te=-1),
-        OP.RESI_THER_COEH_R(te=-1),
-        OP.RIGI_THER_FLUTNL(te=-1),
-    )

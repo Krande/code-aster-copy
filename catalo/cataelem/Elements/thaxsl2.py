@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -316,27 +316,4 @@ class THAXSL2(Element):
         OP.TOU_INI_ELGA(te=99, para_out=((OP.TOU_INI_ELGA.PGEOM_R, EGGEOP_R),)),
         OP.TOU_INI_ELEM(te=99, para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM2D),)),
         OP.TOU_INI_ELNO(te=99, para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER),)),
-    )
-
-
-# ------------------------------------------------------------
-class THAXSL3(THAXSL2):
-    """Please document this element"""
-
-    meshType = MT.SEG3
-    elrefe = (
-        ElrefeLoc(MT.SE3, gauss=("RIGI=FPG4", "FPG1=FPG1"), mater=("FPG1",)),
-        ElrefeLoc(MT.SE2, gauss=("RIGI=FPG2",)),
-    )
-
-    calculs = (
-        OP.CHAR_THER_ACCE_R(te=-1),
-        OP.CHAR_THER_ACCE_X(te=-1),
-        OP.CHAR_THER_ACCE_Y(te=-1),
-        OP.CHAR_THER_FLUTNL(te=-1),
-        OP.FLUX_FLUI_X(te=-1),
-        OP.FLUX_FLUI_Y(te=-1),
-        OP.RESI_THER_COEH_F(te=-1),
-        OP.RESI_THER_COEH_R(te=-1),
-        OP.RIGI_THER_FLUTNL(te=-1),
     )

@@ -19,12 +19,12 @@
 
 # MODELISATION E  : LOI DE MENSI
 # ELEMENTS LUMPES
-# MAILLES Q9
+# MAILLES Q4
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 MA = LIRE_MAILLAGE(FORMAT="MED")
 
-MAIL = CREA_MAILLAGE(MAILLAGE=MA, MODI_MAILLE=_F(TOUT="OUI", OPTION="QUAD8_9"))
+MAIL = CREA_MAILLAGE(MAILLAGE=MA, QUAD_LINE=_F(TOUT="OUI"))
 #  DEFINTION DES PROPRIETES HYDRIQUES DU BETON
 
 BETON = DEFI_MATERIAU(SECH_MENSI=_F(A=0.73e-13, B=0.05))
@@ -636,7 +636,7 @@ TEST_RESU(
             RESULTAT=RESUSECH,
             NOM_CHAM="TEMP",
             NOM_CMP="TEMP",
-            VALE_CALC=128.799944282,
+            VALE_CALC=128.79993895049765,
             VALE_REFE=128.80000000000001,
             PRECISION=1.0e-2,
         ),
@@ -647,7 +647,7 @@ TEST_RESU(
             RESULTAT=RESUSECH,
             NOM_CHAM="TEMP",
             NOM_CMP="TEMP",
-            VALE_CALC=117.756330970,
+            VALE_CALC=117.7500418837302,
             VALE_REFE=117.49299999999999,
             PRECISION=1.0e-2,
         ),
@@ -658,7 +658,7 @@ TEST_RESU(
             RESULTAT=RESUSECH,
             NOM_CHAM="TEMP",
             NOM_CMP="TEMP",
-            VALE_CALC=105.376897134,
+            VALE_CALC=105.37139073553338,
             VALE_REFE=105.06100000000001,
             PRECISION=1.0e-2,
         ),
@@ -669,7 +669,7 @@ TEST_RESU(
             RESULTAT=RESUSECH,
             NOM_CHAM="TEMP",
             NOM_CMP="TEMP",
-            VALE_CALC=97.081202294,
+            VALE_CALC=97.07609253010172,
             VALE_REFE=96.766000000000005,
             PRECISION=1.0e-2,
         ),
@@ -708,7 +708,7 @@ TEST_RESU(
             RESULTAT=RESUSECH,
             NOM_CHAM="TEMP",
             NOM_CMP="TEMP",
-            VALE_CALC=128.655580729,
+            VALE_CALC=128.6538969417481,
             VALE_REFE=128.61099999999999,
             PRECISION=1.0e-2,
         ),
@@ -719,7 +719,7 @@ TEST_RESU(
             RESULTAT=RESUSECH,
             NOM_CHAM="TEMP",
             NOM_CMP="TEMP",
-            VALE_CALC=112.347640764,
+            VALE_CALC=112.347701822653,
             VALE_REFE=111.744,
             PRECISION=1.0e-2,
         ),
@@ -730,7 +730,7 @@ TEST_RESU(
             RESULTAT=RESUSECH,
             NOM_CHAM="TEMP",
             NOM_CMP="TEMP",
-            VALE_CALC=100.056341354,
+            VALE_CALC=100.05700867231413,
             VALE_REFE=99.427999999999997,
             PRECISION=1.0e-2,
         ),
@@ -741,7 +741,7 @@ TEST_RESU(
             RESULTAT=RESUSECH,
             NOM_CHAM="TEMP",
             NOM_CMP="TEMP",
-            VALE_CALC=91.993545486,
+            VALE_CALC=91.99432597020154,
             VALE_REFE=91.391000000000005,
             PRECISION=1.0e-2,
         ),
@@ -769,7 +769,7 @@ TEST_RESU(
             RESULTAT=RESUSECH,
             NOM_CHAM="TEMP",
             NOM_CMP="TEMP",
-            VALE_CALC=128.798837825,
+            VALE_CALC=128.79848418040797,
             VALE_REFE=128.797,
             PRECISION=1.0e-2,
         ),
@@ -780,7 +780,7 @@ TEST_RESU(
             RESULTAT=RESUSECH,
             NOM_CHAM="TEMP",
             NOM_CMP="TEMP",
-            VALE_CALC=125.651866766,
+            VALE_CALC=125.64552364726622,
             VALE_REFE=124.982,
             PRECISION=1.0e-2,
         ),
@@ -791,7 +791,7 @@ TEST_RESU(
             RESULTAT=RESUSECH,
             NOM_CHAM="TEMP",
             NOM_CMP="TEMP",
-            VALE_CALC=102.417290978,
+            VALE_CALC=102.41901672213693,
             VALE_REFE=101.316,
             PRECISION=0.012,
         ),
@@ -802,7 +802,7 @@ TEST_RESU(
             RESULTAT=RESUSECH,
             NOM_CHAM="TEMP",
             NOM_CMP="TEMP",
-            VALE_CALC=90.635749046,
+            VALE_CALC=90.63762338948113,
             VALE_REFE=89.599000000000004,
             PRECISION=0.012,
         ),
@@ -813,7 +813,7 @@ TEST_RESU(
             RESULTAT=RESUSECH,
             NOM_CHAM="TEMP",
             NOM_CMP="TEMP",
-            VALE_CALC=83.269421763,
+            VALE_CALC=83.27110505137128,
             VALE_REFE=82.331000000000003,
             PRECISION=0.012,
         ),

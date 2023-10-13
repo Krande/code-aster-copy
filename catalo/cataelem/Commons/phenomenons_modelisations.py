@@ -6473,14 +6473,7 @@ phen.add(
         dim=(2, 2),
         code="AXD",
         attrs=((AT.AXIS, "OUI"), (AT.LUMPE, "OUI")),
-        elements=(
-            (MT.TRIA3, EL.THAXTL3),
-            (MT.QUAD4, EL.THAXQL4),
-            (MT.SEG2, EL.THAXSL2),
-            (MT.TRIA6, EL.THAXTL6),
-            (MT.QUAD9, EL.THAXQL9),
-            (MT.SEG3, EL.THAXSL3),
-        ),
+        elements=((MT.TRIA3, EL.THAXTL3), (MT.QUAD4, EL.THAXQL4), (MT.SEG2, EL.THAXSL2)),
     ),
 )
 
@@ -6626,14 +6619,7 @@ phen.add(
         dim=(2, 2),
         code="PLD",
         attrs=((AT.LUMPE, "OUI"),),
-        elements=(
-            (MT.TRIA3, EL.THPLTL3),
-            (MT.QUAD4, EL.THPLQL4),
-            (MT.SEG2, EL.THPLSL2),
-            (MT.TRIA6, EL.THPLTL6),
-            (MT.QUAD9, EL.THPLQL9),
-            (MT.SEG3, EL.THPLSL3),
-        ),
+        elements=((MT.TRIA3, EL.THPLTL3), (MT.QUAD4, EL.THPLQL4), (MT.SEG2, EL.THPLSL2)),
     ),
 )
 

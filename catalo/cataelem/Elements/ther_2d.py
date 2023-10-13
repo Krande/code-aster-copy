@@ -621,33 +621,6 @@ class THAXQL4(THPLQU4):
 
 
 # ------------------------------------------------------------
-class THAXQL9(THPLQU4):
-    """Please document this element"""
-
-    meshType = MT.QUAD9
-    elrefe = (
-        ElrefeLoc(
-            MT.QU9, gauss=("RIGI=FPG9", "MASS=NOEU_S", "FPG1=FPG1", "NOEU=NOEU"), mater=("FPG1",)
-        ),
-        ElrefeLoc(MT.QU4, gauss=("RIGI=FPG4", "MASS=NOEU_S", "NOEU=NOEU")),
-    )
-
-    calculs = (
-        OP.CHAR_THER_TNL(te=-1),
-        OP.DURT_ELNO(te=-1),
-        OP.ETHE_ELEM(te=-1),
-        OP.META_ELNO(te=-1),
-        OP.META_INIT_ELNO(te=-1),
-        OP.RIGI_THER_CONV_T(te=-1),
-        OP.RIGI_THER_TRANS(te=-1),
-        OP.SOUR_ELGA(te=-1),
-        OP.CARA_CISA(te=-1),
-        OP.CARA_GAUCHI(te=-1),
-        OP.CARA_TORSION(te=-1),
-    )
-
-
-# ------------------------------------------------------------
 class THAXTL3(THPLQU4):
     """Please document this element"""
 
@@ -659,36 +632,6 @@ class THAXTL3(THPLQU4):
     )
 
     calculs = (OP.CARA_CISA(te=-1), OP.CARA_GAUCHI(te=-1), OP.CARA_TORSION(te=-1))
-
-
-# ------------------------------------------------------------
-class THAXTL6(THPLQU4):
-    """Please document this element"""
-
-    meshType = MT.TRIA6
-    elrefe = (
-        ElrefeLoc(
-            MT.TR6, gauss=("RIGI=FPG3", "MASS=NOEU_S", "FPG1=FPG1", "NOEU=NOEU"), mater=("FPG1",)
-        ),
-        ElrefeLoc(MT.TR3, gauss=("RIGI=FPG3", "MASS=NOEU_S", "NOEU=NOEU")),
-    )
-
-    calculs = (
-        OP.CHAR_THER_TNL(te=-1),
-        OP.DURT_ELNO(te=-1),
-        OP.ETHE_ELEM(te=-1),
-        OP.META_ELNO(te=-1),
-        OP.META_INIT_ELNO(te=-1),
-        OP.RIGI_THER_CONV_T(te=-1),
-        OP.RIGI_THER_TRANS(te=-1),
-        OP.SOUR_ELGA(te=-1),
-        OP.CARA_CISA(te=-1),
-        OP.CARA_GAUCHI(te=-1),
-        OP.CARA_TORSION(te=-1),
-        OP.CHAR_THER_SOURNL(te=-1),
-        OP.RESI_THER_SOURNL(te=-1),
-        OP.MTAN_THER_SOURNL(te=-1),
-    )
 
 
 # ------------------------------------------------------------
@@ -706,36 +649,6 @@ class THPLQL4(THPLQU4):
 
 
 # ------------------------------------------------------------
-class THPLQL9(THPLQU4):
-    """Please document this element"""
-
-    meshType = MT.QUAD9
-    elrefe = (
-        ElrefeLoc(
-            MT.QU9, gauss=("RIGI=FPG9", "MASS=NOEU_S", "FPG1=FPG1", "NOEU=NOEU"), mater=("FPG1",)
-        ),
-        ElrefeLoc(MT.QU4, gauss=("RIGI=FPG4", "MASS=NOEU_S", "NOEU=NOEU")),
-    )
-
-    calculs = (
-        OP.CHAR_THER_TNL(te=-1),
-        OP.DURT_ELNO(te=-1),
-        OP.ETHE_ELEM(te=-1),
-        OP.META_ELNO(te=-1),
-        OP.META_INIT_ELNO(te=-1),
-        OP.RIGI_THER_CONV_T(te=-1),
-        OP.RIGI_THER_TRANS(te=-1),
-        OP.SOUR_ELGA(te=-1),
-        OP.CARA_CISA(te=-1),
-        OP.CARA_GAUCHI(te=-1),
-        OP.CARA_TORSION(te=-1),
-        OP.CHAR_THER_SOURNL(te=-1),
-        OP.RESI_THER_SOURNL(te=-1),
-        OP.MTAN_THER_SOURNL(te=-1),
-    )
-
-
-# ------------------------------------------------------------
 class THPLTL3(THPLQU4):
     """Please document this element"""
 
@@ -747,33 +660,3 @@ class THPLTL3(THPLQU4):
     )
 
     calculs = (OP.CARA_CISA(te=-1), OP.CARA_GAUCHI(te=-1), OP.CARA_TORSION(te=-1))
-
-
-# ------------------------------------------------------------
-class THPLTL6(THPLQU4):
-    """Please document this element"""
-
-    meshType = MT.TRIA6
-    elrefe = (
-        ElrefeLoc(
-            MT.TR6, gauss=("RIGI=FPG3", "MASS=NOEU_S", "FPG1=FPG1", "NOEU=NOEU"), mater=("FPG1",)
-        ),
-        ElrefeLoc(MT.TR3, gauss=("RIGI=FPG3", "MASS=NOEU_S", "NOEU=NOEU")),
-    )
-
-    calculs = (
-        OP.CHAR_THER_TNL(te=-1),
-        OP.DURT_ELNO(te=-1),
-        OP.ETHE_ELEM(te=-1),
-        OP.META_ELNO(te=-1),
-        OP.META_INIT_ELNO(te=-1),
-        OP.RIGI_THER_CONV_T(te=-1),
-        OP.RIGI_THER_TRANS(te=-1),
-        OP.SOUR_ELGA(te=-1),
-        OP.CARA_CISA(te=-1),
-        OP.CARA_GAUCHI(te=-1),
-        OP.CARA_TORSION(te=-1),
-        OP.CHAR_THER_SOURNL(te=-1),
-        OP.RESI_THER_SOURNL(te=-1),
-        OP.MTAN_THER_SOURNL(te=-1),
-    )
