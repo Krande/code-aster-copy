@@ -311,26 +311,6 @@ class THPLSE2(Element):
             para_in=((SP.PCOEFHR, CCOEFHR), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
             para_out=((OP.RIGI_THER_COEH_R.PMATTTR, MMATTTR),),
         ),
-        OP.RIGI_THER_COET_F(
-            te=507,
-            para_in=((SP.PCOEFHF, CCOEFHF), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
-            para_out=((OP.RIGI_THER_COET_F.PMATTTR, MMATTTR),),
-        ),
-        OP.RIGI_THER_COET_R(
-            te=503,
-            para_in=((SP.PCOEFHR, CCOEFHR), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
-            para_out=((OP.RIGI_THER_COET_R.PMATTTR, MMATTTR),),
-        ),
-        OP.RIGI_THER_FLUTNL(
-            te=504,
-            para_in=(
-                (SP.PFLUXNL, CFLUXNF),
-                (SP.PGEOMER, NGEOMER),
-                (SP.PTEMPER, DDL_THER),
-                (SP.PTEMPSR, CTEMPSR),
-            ),
-            para_out=((OP.RIGI_THER_FLUTNL.PMATTTR, MMATTTR),),
-        ),
         OP.TOU_INI_ELGA(
             te=99,
             para_out=(

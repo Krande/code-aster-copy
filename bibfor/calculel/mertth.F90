@@ -66,26 +66,26 @@ subroutine mertth(model, lload_name, lload_info, cara_elem, mate, mateco, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nbchmx
-    parameter(nbchmx=4)
+    parameter(nbchmx=3)
     integer :: nbopt(nbchmx), nligr(nbchmx)
-    character(len=6) :: nomopr(nbchmx), nomopf(nbchmx), nomchp(nbchmx)
+    character(len=6) :: nomchp(nbchmx)
     character(len=7) :: nompar(nbchmx), nompaf(nbchmx)
 !
     character(len=8) :: lpain(6), lpaout(1), load_name
-    character(len=16) :: option
+    character(len=16) :: option, nomopr(nbchmx), nomopf(nbchmx)
     character(len=24) :: ligrel(2), lchin(6), lchout(1)
     character(len=24) :: chgeom, chcara(18)
     integer :: iret, nb_load, i_load, ilires, k, load_nume
     aster_logical :: load_empty
     character(len=24), pointer :: v_load_name(:) => null()
     integer, pointer :: v_load_info(:) => null()
-    data nomchp/'.COEFH', '.FLUNL', '.HECHP', '.COEFH'/
-    data nomopr/'COEH_R', '      ', 'PARO_R', 'COET_R'/
-    data nomopf/'COEH_F', 'FLUTNL', 'PARO_F', 'COET_F'/
-    data nompar/'PCOEFHR', '       ', 'PHECHPR', 'PCOEFHR'/
-    data nompaf/'PCOEFHF', 'PFLUXNL', 'PHECHPF', 'PCOEFHF'/
-    data nbopt/3, 4, 5, 3/
-    data nligr/1, 1, 2, 1/
+    data nomchp/'.FLUNL', '.HECHP', '.COEFH'/
+    data nomopr/'                ', 'MTAN_THER_PARO_R', 'RIGI_THER_COEH_R'/
+    data nomopf/'MTAN_THER_FLUXNL', 'MTAN_THER_PARO_F', 'RIGI_THER_COEH_F'/
+    data nompar/'       ', 'PHECHPR', 'PCOEFHR'/
+    data nompaf/'PFLUXNL', 'PHECHPF', 'PCOEFHF'/
+    data nbopt/4, 5, 3/
+    data nligr/1, 2, 1/
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -121,8 +121,6 @@ subroutine mertth(model, lload_name, lload_info, cara_elem, mate, mateco, &
         lchin(2) = mateco
         lpain(3) = 'PCACOQU'
         lchin(3) = chcara(7)
-        lpain(4) = 'PTEMPSR'
-        lchin(4) = time
         lpain(5) = 'PTEMPER'
         lchin(5) = temp_prev
         lpain(6) = 'PTEMPEI'
@@ -146,7 +144,7 @@ subroutine mertth(model, lload_name, lload_info, cara_elem, mate, mateco, &
                 lchin(1) = chgeom
                 lpain(3) = 'PTEMPSR'
                 lchin(3) = time
-                lpain(4) = 'PTEMPER'
+                lpain(4) = 'PTEMPEI'
                 lchin(4) = temp_iter
                 lpain(5) = 'PDEPLAR'
                 lchin(5) = '&&DEPPLU'
@@ -157,10 +155,10 @@ subroutine mertth(model, lload_name, lload_info, cara_elem, mate, mateco, &
                     call jeexin(lchin(2), iret)
                     if (iret .gt. 0) then
                         if (load_nume .eq. 1) then
-                            option = 'RIGI_THER_'//nomopr(k)
+                            option = nomopr(k)
                             lpain(2) = nompar(k)
                         else if (load_nume .eq. 2 .or. load_nume .eq. 3) then
-                            option = 'RIGI_THER_'//nomopf(k)
+                            option = nomopf(k)
                             lpain(2) = nompaf(k)
                         end if
                         if (option(11:14) .eq. 'PARO') then

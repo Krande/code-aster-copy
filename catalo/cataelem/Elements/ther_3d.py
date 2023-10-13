@@ -422,7 +422,6 @@ class THER_HEXA20(Element):
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPEI, DDL_THER),
                 (SP.PTEMPER, DDL_THER),
-                (SP.PTEMPSR, CTEMPSR),
             ),
             para_out=((OP.RIGI_THER_TRANS.PMATTTR, MMATTTR),),
         ),

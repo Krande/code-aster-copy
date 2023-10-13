@@ -76,7 +76,7 @@ subroutine nttcmv(model, mate, mateco, cara_elem, list_load, nume_dof, &
     character(len=19) :: merigi
     character(len=24) :: ligrmo, mediri
     character(len=19) ::  tlimat(3)
-    character(len=24) :: vediri, vechtp, vadirp, vachtp, metrnl
+    character(len=24) :: vediri, vechtp, vadirp, vachtp, metrnl, time_matr
     character(len=19) :: resu_elem
     real(kind=8) :: time_curr
     character(len=24), pointer :: v_resu_elem(:) => null()
@@ -98,6 +98,7 @@ subroutine nttcmv(model, mate, mateco, cara_elem, list_load, nume_dof, &
     vadirp = '&&VATDIR'
     vachtp = '&&VATCHA'
     time_move = '&&NTTCMV.TIMEMO'
+    time_matr = '&&NTTCMV.TIMEMA'
     merigi = '&&METRIG'
     creas = ' '
     time_curr = tpsthe(1)
@@ -121,6 +122,9 @@ subroutine nttcmv(model, mate, mateco, cara_elem, list_load, nume_dof, &
 !
         tpsthe(3) = 1.d0
         call mecact('V', time_move, 'MODELE', ligrmo, 'INST_R', &
+                    ncmp=6, lnomcmp=nomcmp, vr=tpsthe)
+        tpsthe(3) = -1.d0
+        call mecact('V', time_matr, 'MODELE', ligrmo, 'INST_R', &
                     ncmp=6, lnomcmp=nomcmp, vr=tpsthe)
         tpsthe(3) = 0.d0
 !
@@ -174,7 +178,7 @@ subroutine nttcmv(model, mate, mateco, cara_elem, list_load, nume_dof, &
 !
         creas = 'M'
         call mertth(model, lload_name, lload_info, cara_elem, mate, mateco, &
-                    time, time_move, vtemp, vtempm, merigi)
+                    time_matr, time_move, vtemp, vtempm, merigi)
 !
 ! ----- Elementary matrix for boundary conditions
 !
