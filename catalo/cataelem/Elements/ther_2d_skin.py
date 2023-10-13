@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,22 +36,32 @@ CCOEFHF = LocatedComponents(phys=PHY.COEH_F, type="ELEM", components=("H",))
 CCOEFHR = LocatedComponents(phys=PHY.COEH_R, type="ELEM", components=("H",))
 
 
-NACCELR = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY", "DZ"))
+NACCELR = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY"))
 
 
 CFLUXNF = LocatedComponents(phys=PHY.FLUN_F, type="ELEM", components=("FLUN",))
 
-CFLUXVF = LocatedComponents(phys=PHY.FLUX_F, type="ELEM", components=("FLUX", "FLUY", "FLUZ"))
 
 CFLUXNR = LocatedComponents(phys=PHY.FLUN_R, type="ELEM", components=("FLUN",))
 
 
-NGEOMER = LocatedComponents(phys=PHY.GEOM_R, type="ELNO", components=("X", "Y", "Z"))
+EFLUXNO = LocatedComponents(phys=PHY.FLUX_R, type="ELNO", components=("FLUX", "FLUY"))
+
+
+EFLUXPG = LocatedComponents(
+    phys=PHY.FLUX_R, type="ELGA", location="RIGI", components=("FLUX", "FLUY")
+)
+
+
+NGEOMER = LocatedComponents(phys=PHY.GEOM_R, type="ELNO", components=("X", "Y"))
 
 
 EGGEOP_R = LocatedComponents(
-    phys=PHY.GEOM_R, type="ELGA", location="RIGI", components=("X", "Y", "Z", "W")
+    phys=PHY.GEOM_R, type="ELGA", location="RIGI", components=("X", "Y", "W")
 )
+
+
+EGGEOM_R = LocatedComponents(phys=PHY.GEOM_R, type="ELGA", location="RIGI", components=("X", "Y"))
 
 
 CTEMPSR = LocatedComponents(
@@ -65,13 +75,17 @@ EGNEUT_F = LocatedComponents(phys=PHY.NEUT_F, type="ELGA", location="RIGI", comp
 EGNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type="ELGA", location="RIGI", components=("X[30]",))
 
 
+ESOURCR = LocatedComponents(phys=PHY.SOUR_R, type="ELGA", location="RIGI", components=("SOUR",))
+
+
 CT_EXTF = LocatedComponents(phys=PHY.TEMP_F, type="ELEM", components=("TEMP",))
 
 
 DDL_THER = LocatedComponents(phys=PHY.TEMP_R, type="ELNO", components=("TEMP",))
 
 
-MVECTAR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=NACCELR)
+EEFLUNR = LocatedComponents(phys=PHY.FLUN_R, type="ELEM", components=("FLUN",))
+
 
 MVECTTR = ArrayOfComponents(phys=PHY.VTEM_R, locatedComponents=DDL_THER)
 
@@ -79,44 +93,29 @@ MMATTTR = ArrayOfComponents(phys=PHY.MTEM_R, locatedComponents=DDL_THER)
 
 
 # ------------------------------------------------------------
-class THER_FACE3_D(Element):
+class THPLSE2(Element):
     """Please document this element"""
 
-    meshType = MT.TRIA3
-    elrefe = (ElrefeLoc(MT.TR3, gauss=("RIGI=COT3", "NOEU=NOEU", "FPG1=FPG1"), mater=("FPG1",)),)
+    meshType = MT.SEG2
+    elrefe = (ElrefeLoc(MT.SE2, gauss=("RIGI=FPG4", "FPG1=FPG1"), mater=("FPG1",)),)
     calculs = (
-        OP.ACCEPTANCE(
-            te=329,
-            para_in=((SP.PACCELR, NACCELR), (SP.PGEOMER, NGEOMER), (SP.PNUMMOD, LC.CNUMMOD)),
-            para_out=((SP.PVECTUR, MVECTAR),),
-        ),
-        OP.AMOR_AJOU(
-            te=327,
-            para_in=((SP.PACCELR, NACCELR), (SP.PGEOMER, NGEOMER)),
-            para_out=((OP.AMOR_AJOU.PMATTTR, MMATTTR),),
-        ),
         OP.CHAR_THER_ACCE_R(
-            te=325,
+            te=315,
             para_in=((SP.PACCELR, NACCELR), (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC)),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
         OP.CHAR_THER_ACCE_X(
-            te=325,
+            te=315,
             para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC), (SP.PTEMPER, DDL_THER)),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
         OP.CHAR_THER_ACCE_Y(
-            te=325,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC), (SP.PTEMPER, DDL_THER)),
-            para_out=((SP.PVECTTR, MVECTTR),),
-        ),
-        OP.CHAR_THER_ACCE_Z(
-            te=325,
+            te=315,
             para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC), (SP.PTEMPER, DDL_THER)),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
         OP.CHAR_THER_FLUNL(
-            te=273,
+            te=274,
             para_in=(
                 (SP.PFLUXNL, CFLUXNF),
                 (SP.PGEOMER, NGEOMER),
@@ -126,17 +125,17 @@ class THER_FACE3_D(Element):
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
         OP.CHAR_THER_FLUN_F(
-            te=58,
+            te=75,
             para_in=((SP.PFLUXNF, CFLUXNF), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
         OP.CHAR_THER_FLUN_R(
-            te=57,
+            te=74,
             para_in=((SP.PFLUXNR, CFLUXNR), (SP.PGEOMER, NGEOMER)),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
         OP.CHAR_THER_FLUTNL(
-            te=526,
+            te=506,
             para_in=(
                 (SP.PFLUXNL, CFLUXNF),
                 (SP.PGEOMER, NGEOMER),
@@ -147,22 +146,12 @@ class THER_FACE3_D(Element):
             para_out=((SP.PRESIDU, MVECTTR),),
         ),
         OP.CHAR_THER_FLUX_F(
-            te=95,
-            para_in=((SP.PFLUXVF, CFLUXVF), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
-            para_out=((SP.PVECTTR, MVECTTR),),
-        ),
-        OP.CHAR_THER_PHID_R(
-            te=326,
-            para_in=(
-                (SP.PACCELR, NACCELR),
-                (SP.PGEOMER, NGEOMER),
-                (SP.PMATERC, LC.CMATERC),
-                (SP.PTEMPER, DDL_THER),
-            ),
+            te=68,
+            para_in=((SP.PFLUXVF, LC.CFLUXVF), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
         OP.CHAR_THER_RAYO_F(
-            te=60,
+            te=73,
             para_in=(
                 (SP.PGEOMER, NGEOMER),
                 (SP.PRAYONF, LC.CRAYONF),
@@ -172,7 +161,7 @@ class THER_FACE3_D(Element):
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
         OP.CHAR_THER_RAYO_R(
-            te=59,
+            te=72,
             para_in=(
                 (SP.PGEOMER, NGEOMER),
                 (SP.PRAYONR, LC.CRAYONR),
@@ -182,7 +171,7 @@ class THER_FACE3_D(Element):
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
         OP.CHAR_THER_TEXT_F(
-            te=60,
+            te=73,
             para_in=(
                 (SP.PCOEFHF, CCOEFHF),
                 (SP.PGEOMER, NGEOMER),
@@ -193,7 +182,7 @@ class THER_FACE3_D(Element):
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
         OP.CHAR_THER_TEXT_R(
-            te=59,
+            te=72,
             para_in=(
                 (SP.PCOEFHR, CCOEFHR),
                 (SP.PGEOMER, NGEOMER),
@@ -204,29 +193,26 @@ class THER_FACE3_D(Element):
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
         OP.COOR_ELGA(
-            te=488, para_in=((SP.PGEOMER, NGEOMER),), para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R),)
+            te=478, para_in=((SP.PGEOMER, NGEOMER),), para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R),)
         ),
         OP.FLUX_FLUI_X(
-            te=309, para_in=((SP.PGEOMER, NGEOMER),), para_out=((OP.FLUX_FLUI_X.PMATTTR, MMATTTR),)
+            te=316, para_in=((SP.PGEOMER, NGEOMER),), para_out=((OP.FLUX_FLUI_X.PMATTTR, MMATTTR),)
         ),
         OP.FLUX_FLUI_Y(
-            te=309, para_in=((SP.PGEOMER, NGEOMER),), para_out=((OP.FLUX_FLUI_Y.PMATTTR, MMATTTR),)
-        ),
-        OP.FLUX_FLUI_Z(
-            te=309, para_in=((SP.PGEOMER, NGEOMER),), para_out=((OP.FLUX_FLUI_Z.PMATTTR, MMATTTR),)
+            te=317, para_in=((SP.PGEOMER, NGEOMER),), para_out=((OP.FLUX_FLUI_Y.PMATTTR, MMATTTR),)
         ),
         OP.MTAN_THER_COEF_F(
-            te=131,
+            te=250,
             para_in=((SP.PCOEFHF, CCOEFHF), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
             para_out=((OP.MTAN_THER_COEF_F.PMATTTR, MMATTTR),),
         ),
         OP.MTAN_THER_COEF_R(
-            te=130,
+            te=249,
             para_in=((SP.PCOEFHR, CCOEFHR), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
             para_out=((OP.MTAN_THER_COEF_R.PMATTTR, MMATTTR),),
         ),
         OP.MTAN_THER_FLUXNL(
-            te=132,
+            te=251,
             para_in=(
                 (SP.PFLUXNL, CFLUXNF),
                 (SP.PGEOMER, NGEOMER),
@@ -236,7 +222,7 @@ class THER_FACE3_D(Element):
             para_out=((OP.MTAN_THER_FLUXNL.PMATTTR, MMATTTR),),
         ),
         OP.MTAN_THER_RAYO_F(
-            te=131,
+            te=250,
             para_in=(
                 (SP.PGEOMER, NGEOMER),
                 (SP.PRAYONF, LC.CRAYONF),
@@ -246,7 +232,7 @@ class THER_FACE3_D(Element):
             para_out=((OP.MTAN_THER_RAYO_F.PMATTTR, MMATTTR),),
         ),
         OP.MTAN_THER_RAYO_R(
-            te=130,
+            te=249,
             para_in=(
                 (SP.PGEOMER, NGEOMER),
                 (SP.PRAYONR, LC.CRAYONR),
@@ -256,7 +242,7 @@ class THER_FACE3_D(Element):
             para_out=((OP.MTAN_THER_RAYO_R.PMATTTR, MMATTTR),),
         ),
         OP.RESI_THER_COEF_F(
-            te=128,
+            te=137,
             para_in=(
                 (SP.PCOEFHF, CCOEFHF),
                 (SP.PGEOMER, NGEOMER),
@@ -266,7 +252,7 @@ class THER_FACE3_D(Element):
             para_out=((SP.PRESIDU, MVECTTR),),
         ),
         OP.RESI_THER_COEF_R(
-            te=127,
+            te=136,
             para_in=(
                 (SP.PCOEFHR, CCOEFHR),
                 (SP.PGEOMER, NGEOMER),
@@ -276,7 +262,7 @@ class THER_FACE3_D(Element):
             para_out=((SP.PRESIDU, MVECTTR),),
         ),
         OP.RESI_THER_COEH_F(
-            te=308,
+            te=307,
             para_in=(
                 (SP.PCOEFHF, CCOEFHF),
                 (SP.PGEOMER, NGEOMER),
@@ -286,7 +272,7 @@ class THER_FACE3_D(Element):
             para_out=((SP.PRESIDU, MVECTTR),),
         ),
         OP.RESI_THER_COEH_R(
-            te=306,
+            te=305,
             para_in=(
                 (SP.PCOEFHR, CCOEFHR),
                 (SP.PGEOMER, NGEOMER),
@@ -296,7 +282,7 @@ class THER_FACE3_D(Element):
             para_out=((SP.PRESIDU, MVECTTR),),
         ),
         OP.RESI_THER_FLUXNL(
-            te=129,
+            te=138,
             para_in=(
                 (SP.PFLUXNL, CFLUXNF),
                 (SP.PGEOMER, NGEOMER),
@@ -306,7 +292,7 @@ class THER_FACE3_D(Element):
             para_out=((SP.PRESIDU, MVECTTR),),
         ),
         OP.RESI_THER_RAYO_F(
-            te=128,
+            te=137,
             para_in=(
                 (SP.PGEOMER, NGEOMER),
                 (SP.PRAYONF, LC.CRAYONF),
@@ -316,7 +302,7 @@ class THER_FACE3_D(Element):
             para_out=((SP.PRESIDU, MVECTTR),),
         ),
         OP.RESI_THER_RAYO_R(
-            te=127,
+            te=136,
             para_in=(
                 (SP.PGEOMER, NGEOMER),
                 (SP.PRAYONR, LC.CRAYONR),
@@ -326,27 +312,27 @@ class THER_FACE3_D(Element):
             para_out=((SP.PRESIDU, MVECTTR),),
         ),
         OP.RIGI_THER_COEH_F(
-            te=53,
+            te=71,
             para_in=((SP.PCOEFHF, CCOEFHF), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
             para_out=((OP.RIGI_THER_COEH_F.PMATTTR, MMATTTR),),
         ),
         OP.RIGI_THER_COEH_R(
-            te=52,
+            te=70,
             para_in=((SP.PCOEFHR, CCOEFHR), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
             para_out=((OP.RIGI_THER_COEH_R.PMATTTR, MMATTTR),),
         ),
         OP.RIGI_THER_COET_F(
-            te=527,
+            te=507,
             para_in=((SP.PCOEFHF, CCOEFHF), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
             para_out=((OP.RIGI_THER_COET_F.PMATTTR, MMATTTR),),
         ),
         OP.RIGI_THER_COET_R(
-            te=523,
+            te=503,
             para_in=((SP.PCOEFHR, CCOEFHR), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
             para_out=((OP.RIGI_THER_COET_R.PMATTTR, MMATTTR),),
         ),
         OP.RIGI_THER_FLUTNL(
-            te=524,
+            te=504,
             para_in=(
                 (SP.PFLUXNL, CFLUXNF),
                 (SP.PGEOMER, NGEOMER),
@@ -358,29 +344,68 @@ class THER_FACE3_D(Element):
         OP.TOU_INI_ELGA(
             te=99,
             para_out=(
-                (OP.TOU_INI_ELGA.PGEOM_R, LC.GGEOMER),
+                (OP.TOU_INI_ELGA.PFLUX_R, EFLUXPG),
+                (OP.TOU_INI_ELGA.PGEOM_R, EGGEOM_R),
                 (OP.TOU_INI_ELGA.PNEUT_F, EGNEUT_F),
                 (OP.TOU_INI_ELGA.PNEUT_R, EGNEUT_R),
+                (OP.TOU_INI_ELGA.PSOUR_R, ESOURCR),
+                (SP.PTEMP_R, LC.ETEMPPG),
             ),
         ),
         OP.TOU_INI_ELEM(
             te=99,
-            para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM3D), (OP.TOU_INI_ELEM.PCOEH_R, LC.EHECHPR)),
+            para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM2D), (OP.TOU_INI_ELEM.PFLUN_R, EEFLUNR)),
         ),
         OP.TOU_INI_ELNO(
             te=99,
             para_out=(
+                (OP.TOU_INI_ELNO.PFLUX_R, EFLUXNO),
                 (OP.TOU_INI_ELNO.PGEOM_R, NGEOMER),
+                (OP.TOU_INI_ELNO.PHYDR_R, LC.EHYDRNO),
+                (OP.TOU_INI_ELNO.PINST_R, LC.ENINST_R),
                 (OP.TOU_INI_ELNO.PNEUT_F, LC.ENNEUT_F),
                 (OP.TOU_INI_ELNO.PNEUT_R, LC.ENNEUT_R),
+                (OP.TOU_INI_ELNO.PVARI_R, LC.EPHASNO_),
             ),
         ),
     )
 
 
 # ------------------------------------------------------------
-class THER_FACE4_D(THER_FACE3_D):
+class THPLSE3(THPLSE2):
     """Please document this element"""
 
-    meshType = MT.QUAD4
-    elrefe = (ElrefeLoc(MT.QU4, gauss=("RIGI=FPG4", "NOEU=NOEU", "FPG1=FPG1"), mater=("FPG1",)),)
+    meshType = MT.SEG3
+    elrefe = (ElrefeLoc(MT.SE3, gauss=("RIGI=FPG4", "FPG1=FPG1"), mater=("FPG1",)),)
+
+
+# ------------------------------------------------------------
+class THPLSL2(THPLSE2):
+    """Please document this element"""
+
+    meshType = MT.SEG2
+    elrefe = (ElrefeLoc(MT.SE2, gauss=("RIGI=FPG4", "FPG1=FPG1"), mater=("FPG1",)),)
+
+
+# ------------------------------------------------------------
+class THAXSL2(THPLSE2):
+    """Please document this element"""
+
+    meshType = MT.SEG2
+    elrefe = (ElrefeLoc(MT.SE2, gauss=("RIGI=FPG4", "FPG1=FPG1"), mater=("FPG1",)),)
+
+
+# ------------------------------------------------------------
+class THAXSE2(THPLSE2):
+    """Please document this element"""
+
+    meshType = MT.SEG2
+    elrefe = (ElrefeLoc(MT.SE2, gauss=("RIGI=FPG4", "FPG1=FPG1"), mater=("FPG1",)),)
+
+
+# ------------------------------------------------------------
+class THAXSE3(THAXSE2):
+    """Please document this element"""
+
+    meshType = MT.SEG3
+    elrefe = (ElrefeLoc(MT.SE3, gauss=("RIGI=FPG4", "FPG1=FPG1"), mater=("FPG1",)),)
