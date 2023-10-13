@@ -196,10 +196,10 @@ class THPLSE2(Element):
             te=478, para_in=((SP.PGEOMER, NGEOMER),), para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R),)
         ),
         OP.FLUX_FLUI_X(
-            te=316, para_in=((SP.PGEOMER, NGEOMER),), para_out=((OP.FLUX_FLUI_X.PMATTTR, MMATTTR),)
+            te=309, para_in=((SP.PGEOMER, NGEOMER),), para_out=((OP.FLUX_FLUI_X.PMATTTR, MMATTTR),)
         ),
         OP.FLUX_FLUI_Y(
-            te=317, para_in=((SP.PGEOMER, NGEOMER),), para_out=((OP.FLUX_FLUI_Y.PMATTTR, MMATTTR),)
+            te=309, para_in=((SP.PGEOMER, NGEOMER),), para_out=((OP.FLUX_FLUI_Y.PMATTTR, MMATTTR),)
         ),
         OP.MTAN_THER_COEF_F(
             te=250,

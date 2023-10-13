@@ -15,10 +15,25 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0309(option, nomte)
-!.......................................................................
+!
+    use FE_topo_module
+    use FE_quadrature_module
+    use FE_basis_module
+    use FE_mass_module
+!
     implicit none
+!
+#include "asterfort/jevech.h"
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/writeMatrix.h"
+#include "FE_module.h"
+!
+    character(len=16) :: nomte, option
+!.......................................................................
+!
 !
 !     BUT: CALCUL DES VECTEURS ELEMENTAIRES DE FLUX FLUIDE EN MECANIQUE
 !          ELEMENTS ISOPARAMETRIQUES 1D
@@ -29,121 +44,36 @@ subroutine te0309(option, nomte)
 !          ---> NOMTE  : NOM DU TYPE ELEMENT
 !.......................................................................
 !
-#include "jeveux.h"
-#include "asterfort/elrefe_info.h"
-#include "asterfort/jevech.h"
+    type(FE_Skin) :: FESkin
+    type(FE_Quadrature) :: FEQuad
+    type(FE_basis) :: FEBasis
 !
-    character(len=16) :: nomte, option
-    real(kind=8) :: jac, nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9)
-    real(kind=8) :: norm(3)
-    integer :: ipoids, ivf, idfdx, idfdy, igeom
-    integer :: ndim, nno, ipg, npg1
-    integer :: idec, jdec, kdec, ldec, nnos, jgano
-!
-!
+    real(kind=8) :: normal(3)
+    integer :: index, kp
+    real(kind=8) :: mass(MAX_BS, MAX_BS)
+    real(kind=8) :: valQP(MAX_QP)
 !-----------------------------------------------------------------------
-    integer :: i, ij, imattt, ino, j, jno
-!-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1, &
-                     jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
-    idfdy = idfdx+1
+    call FESkin%init()
+    call FEQuad%initFace(FESkin, "RIGI")
+    call FEBasis%initFace(FESkin)
 !
-    call jevech('PGEOMER', 'L', igeom)
+    if (option(11:11) .eq. 'X') then
+        index = 1
+    elseif (option(11:11) .eq. 'Y') then
+        index = 2
+    elseif (option(11:11) .eq. 'Z') then
+        index = 3
+    else
+        ASSERT(ASTER_FALSE)
+    end if
 !
-!
-    call jevech('PMATTTR', 'E', imattt)
-!
-    do i = 1, ndim
-        zr(imattt+i-1) = 0.0d0
+    do kp = 1, FEQuad%nbQuadPoints
+        normal = FESkin%normal(FEQuad%points_param(1:2, kp))
+        valQP(kp) = normal(index)
     end do
 !
+    call FEMassMatScal(FEQuad, FEBasis, mass, valQP)
 !
-!     CALCUL DES PRODUITS VECTORIELS OMI X OMJ
-!
-    do ino = 1, nno
-        i = igeom+3*(ino-1)-1
-        do jno = 1, nno
-            j = igeom+3*(jno-1)-1
-            sx(ino, jno) = zr(i+2)*zr(j+3)-zr(i+3)*zr(j+2)
-            sy(ino, jno) = zr(i+3)*zr(j+1)-zr(i+1)*zr(j+3)
-            sz(ino, jno) = zr(i+1)*zr(j+2)-zr(i+2)*zr(j+1)
-        end do
-    end do
-!
-!
-!     BOUCLE SUR LES POINTS DE GAUSS
-!
-    do ipg = 1, npg1
-        kdec = (ipg-1)*nno*ndim
-        ldec = (ipg-1)*nno
-!
-!
-        nx = 0.0d0
-        ny = 0.0d0
-        nz = 0.0d0
-!
-! ON CALCULE LA NORMALE AU POINT DE GAUSS
-!
-!
-!
-!
-        do i = 1, nno
-            idec = (i-1)*ndim
-            do j = 1, nno
-                jdec = (j-1)*ndim
-!
-                nx = nx+zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)*sx(i, j)
-                ny = ny+zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)*sy(i, j)
-                nz = nz+zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)*sz(i, j)
-!
-!
-!
-            end do
-        end do
-!
-!        CALCUL DU JACOBIEN AU POINT DE GAUSS IPG
-!
-        jac = sqrt(nx*nx+ny*ny+nz*nz)
-!
-        norm(1) = nx/jac
-        norm(2) = ny/jac
-        norm(3) = nz/jac
-!
-        if (option(11:11) .eq. 'X') then
-            do i = 1, nno
-                do j = 1, i
-                    ij = (i-1)*i/2+j
-                    zr(imattt+ij-1) = zr(imattt+ij-1)+jac*zr(ipoids+ipg-1)*norm(1)*zr(iv&
-                                         &f+ldec+i-1)*zr(ivf+ldec+j-1)
-                end do
-            end do
-        else
-!
-            if (option(11:11) .eq. 'Y') then
-!
-                do i = 1, nno
-                    do j = 1, i
-                        ij = (i-1)*i/2+j
-                        zr(imattt+ij-1) = zr(imattt+ij-1)+jac*zr(ipoids+ipg-1)*norm(2)*zr&
-                                             &(ivf+ldec+i-1)*zr(ivf+ldec+j-1)
-                    end do
-                end do
-!
-            else
-                if (option(11:11) .eq. 'Z') then
-!
-                    do i = 1, nno
-                        do j = 1, i
-                            ij = (i-1)*i/2+j
-                            zr(imattt+ij-1) = zr(imattt+ij-1)+jac*zr(ipoids+ipg-1)*norm(3)&
-                                             &*zr(ivf+ldec+i-1)*zr(ivf+ldec+j-1)
-                        end do
-                    end do
-!
-                end if
-            end if
-        end if
-!
-    end do
+    call writeMatrix("PMATTTR", FEBasis%size, FEBasis%size, ASTER_TRUE, mass)
 !
 end subroutine

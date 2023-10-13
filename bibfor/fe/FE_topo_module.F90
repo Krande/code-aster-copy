@@ -24,6 +24,7 @@ module fe_topo_module
 !
     private
 #include "asterf_types.h"
+#include "asterfort/apnorm.h"
 #include "asterfort/assert.h"
 #include "asterfort/teattr.h"
 #include "asterfort/jevech.h"
@@ -41,6 +42,7 @@ module fe_topo_module
 ! --------------------------------------------------------------------------------------------------
 !
     public :: FE_Cell, FE_Skin
+    private :: normal_face, init_face, func_face, print_face
 !
 !===================================================================================================
 !
@@ -62,6 +64,7 @@ module fe_topo_module
         procedure, public, pass :: print => print_face
         procedure, public, pass :: func => func_face
         procedure, public, pass :: init => init_face
+        procedure, public, pass :: normal => normal_face
     end type FE_Skin
 !
 !===================================================================================================
@@ -329,6 +332,35 @@ contains
 !
         func = 0.d0
         call elrfvf(this%typemas, pt, func)
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function normal_face(this, qp_param) result(normal)
+!
+        implicit none
+!
+        class(FE_Skin), intent(in) :: this
+        real(kind=8), dimension(2), intent(in)    :: qp_param
+        real(kind=8), dimension(3)                :: normal
+!
+! --------------------------------------------------------------------------------------------------
+!
+! FE - generic tools
+!
+! Compute normal at quadrature point
+!
+! --------------------------------------------------------------------------------------------------
+!
+! Out FESkin           : a FE cell
+! --------------------------------------------------------------------------------------------------
+!
+!
+        call apnorm(this%nbnodes, this%typemas, this%ndim+1, this%coorno, &
+                    qp_param(1), qp_param(2), normal)
 !
     end function
 !
