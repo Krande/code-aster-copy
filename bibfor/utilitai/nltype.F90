@@ -29,8 +29,7 @@ function nltype(inttyp)
 
     data nltypes/'DIS_CHOC        ', 'FLAMBAGE        ', 'ANTI_SISM       ', &
         'DIS_VISC        ', 'DIS_ECRO_TRAC   ', 'ROTOR_FISS      ', &
-        'PALIER_EDYOS    ', 'RELA_EFFO_DEPL  ', 'RELA_EFFO_VITE  ', &
-        'YACS            '/
+        'RELA_EFFO_DEPL  ', 'RELA_EFFO_VITE  ', 'YACS            '/
 !
 !
     ASSERT((inttyp .gt. 0) .and. (inttyp .le. _NL_NB_TYPES))

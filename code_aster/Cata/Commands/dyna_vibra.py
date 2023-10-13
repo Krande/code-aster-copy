@@ -101,7 +101,6 @@ DYNA_VIBRA = OPER(
             condition="""equal_to("VITESSE_VARIABLE", 'NON')""",
             VITE_ROTA=SIMP(statut="f", typ="R", defaut=0.0e0),
         ),
-        COUPLAGE_EDYOS=FACT(statut="f", max=1, PAS_TPS_EDYOS=SIMP(statut="o", typ="R")),
     ),
     # Physical basis, harmonic (spectral) calculation
     b_matr_harm_phys=BLOC(

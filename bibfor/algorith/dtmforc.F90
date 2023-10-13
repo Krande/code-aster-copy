@@ -29,7 +29,6 @@ subroutine dtmforc(sd_dtm_, sd_int_, index, buffdtm, buffint, nlaccnt)
 #include "asterfort/assert.h"
 #include "asterfort/dtmcase_coder.h"
 #include "asterfort/dtmforc_yacs.h"
-#include "asterfort/dtmforc_lub.h"
 #include "asterfort/dtmforc_calcnoli.h"
 #include "asterfort/dtmget.h"
 #include "asterfort/intget.h"
@@ -222,9 +221,6 @@ subroutine dtmforc(sd_dtm_, sd_int_, index, buffdtm, buffint, nlaccnt)
         end if
 
         ! we take care of everything
-!        print *, "calling dtmforc_lub"
-        call dtmforc_lub(sd_dtm, sd_nl, buffdtm, buffnl, temps, itime, dt, depl, vite, fext)
-!        print *, "end of calling dtmforc_lub"
 
 !        print *, "calling dtmforc_yacs"
         call dtmforc_yacs(sd_dtm, sd_nl, itime, temps, dt, depl, vite, fext)

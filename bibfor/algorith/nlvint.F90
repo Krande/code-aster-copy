@@ -58,8 +58,6 @@ subroutine nlvint(sd_nl_)
             add = NBVARINT_DECR
         case (NL_CRACKED_ROTOR)
             add = NBVARINT_ROTF
-        case (NL_LUBRICATION)
-            add = NBVARINT_LUB
         case (NL_FX_RELATIONSHIP)
             add = NBVARINT_FXRL
         case (NL_FV_RELATIONSHIP)

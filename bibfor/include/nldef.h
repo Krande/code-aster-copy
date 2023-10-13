@@ -108,7 +108,7 @@
 #define _NUM_PALIER 103
 
 
-#define _NL_NB_TYPES     10
+#define _NL_NB_TYPES     9
 
 #define NL_CHOC            1
 #define NL_BUCKLING        2
@@ -116,10 +116,9 @@
 #define NL_DIS_VISC        4
 #define NL_DIS_ECRO_TRAC   5
 #define NL_CRACKED_ROTOR   6
-#define NL_LUBRICATION     7
-#define NL_FX_RELATIONSHIP 8
-#define NL_FV_RELATIONSHIP 9
-#define NL_YACS            10
+#define NL_FX_RELATIONSHIP 7
+#define NL_FV_RELATIONSHIP 8
+#define NL_YACS            9
 
 
 #define NBVARINT_CHOC 20
@@ -131,4 +130,3 @@
 #define NBVARINT_YACS 1
 #define NBVARINT_FXRL 3
 #define NBVARINT_FVRL 3
-#define NBVARINT_LUB  1

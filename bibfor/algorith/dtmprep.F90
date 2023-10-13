@@ -582,8 +582,7 @@ subroutine dtmprep(sd_dtm_)
 !                        (6)    Cracked rotor       / ROTOR_FISS
 !                        (7)    F(V) relationship   / RELA_EFFO_VITE
 !                        (8)    F(X) relationship   / RELA_EFFO_DEPL
-!                        (9)    Lubrication         / COUPLAGE_EDYOS
-!                        (10)   Generic coupling    / YACS_COUPLING
+!                        (9)    Generic coupling    / YACS_COUPLING
 !   --------------------------------------------------------------------------------------
 !
     call dtmprep_noli(sd_dtm)

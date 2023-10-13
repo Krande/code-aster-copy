@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -138,7 +138,6 @@ class ExtendedTransientGeneralizedResult:
                 "DZPLOC",
             ],
             "ROTOR_FISS": ["PHI_DEGR", "F_TANGE1", "F_TANGE2"],
-            "COUPLAGE_EDYOS": [],
             "RELA_EFFO_DEPL": ["DCMP_N1 ", "FCMP_LOC", "IND_NONZ"],
             "RELA_EFFO_VITE": ["VCMP_N1 ", "FCMP_LOC", "IND_NONZ"],
         }
@@ -172,9 +171,8 @@ class ExtendedTransientGeneralizedResult:
             4: "DIS_VISC",
             5: "DIS_ECRO_TRAC",
             6: "ROTOR_FISS",
-            7: "COUPLAGE_EDYOS",
-            8: "RELA_EFFO_DEPL",
-            9: "RELA_EFFO_VITE",
+            7: "RELA_EFFO_DEPL",
+            8: "RELA_EFFO_VITE",
         }
 
         nltypes = self.sdj.sd_nl.TYPE.get()
@@ -182,7 +180,8 @@ class ExtendedTransientGeneralizedResult:
 
     def FORCE_NORMALE(self, inoli=-1):
         """
-        Returns a 1D numpy array giving the evolution of the normal force at the archived instants"""
+        Returns a 1D numpy array giving the evolution of the normal force at the archived instants
+        """
 
         inoli = self._check_input_inoli(inoli)
 

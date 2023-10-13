@@ -34,7 +34,6 @@ def C_COMPORTEMENT_DYNA(COMMAND):  # COMMUN#
             into=(
                 "DIS_CHOC",
                 "ROTOR_FISS",
-                "PALIER_EDYOS",
                 "FLAMBAGE",
                 "ANTI_SISM",
                 "DIS_VISC",
@@ -107,21 +106,7 @@ def C_COMPORTEMENT_DYNA(COMMAND):  # COMMUN#
             K_PHI=SIMP(statut="o", typ=(fonction_sdaster, formule)),
             DK_DPHI=SIMP(statut="o", typ=(fonction_sdaster, formule)),
         ),  # end b_rotor
-        #       C.2.3 Code coupling with EDYOS
-        b_lubrication=BLOC(
-            condition="""equal_to("RELATION", 'PALIER_EDYOS')""",
-            regles=(
-                PRESENT_ABSENT("UNITE", "GROUP_NO"),
-                PRESENT_ABSENT("UNITE", "TYPE_EDYOS"),
-                EXCLUS("GROUP_NO", "NOEUD"),
-            ),
-            UNITE=SIMP(statut="f", typ=UnitType(), inout="in"),
-            GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
-            NOEUD=SIMP(statut="c", typ=no),
-            PAS_STOC_ED=SIMP(statut="f", typ="R"),
-            TYPE_EDYOS=SIMP(statut="f", typ="TXM", into=("PAPANL", "PAFINL", "PACONL", "PAHYNL")),
-        ),
-        #       C.2.3.2 Code coupling (Generic)
+        #       C.2.3 Code coupling (Generic)
         b_yacs_coupling=BLOC(
             condition="""equal_to("RELATION", 'YACS')""",
             regles=(UN_PARMI("NOEUD", "GROUP_NO"),),

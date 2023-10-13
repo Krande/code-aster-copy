@@ -249,14 +249,4 @@ cata_msg = {
        A l'itération numéro  : %(i1)d
 """
     ),
-    43: _(
-        """
-      Attention, le nombre maximal de palier est 20
-"""
-    ),
-    45: _(
-        """
-      Non convergence du code EDYOS
-"""
-    ),
 }

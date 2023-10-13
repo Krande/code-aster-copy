@@ -33,7 +33,6 @@ subroutine dtmprep_noli(sd_dtm_)
 !       (6)    Cracked rotor       / ROTOR_FISS
 !       (7)    F(V) relationship   / RELA_EFFO_VITE
 !       (8)    F(X) relationship   / RELA_EFFO_DEPL
-!       (9)    Lubrication         / COUPLAGE_EDYOS
 !   --------------------------------------------------------------------------------------
 !
 !   Note : Information about these 6 nonlinearity types are read using mdchoc
@@ -54,7 +53,6 @@ subroutine dtmprep_noli(sd_dtm_)
 #include "asterfort/dtmprep_noli_revi.h"
 #include "asterfort/dtmprep_noli_rotf.h"
 #include "asterfort/dtmprep_verichoc.h"
-#include "asterfort/dtmprep_noli_lub.h"
 #include "asterfort/dtmprep_noli_yacs.h"
 #include "asterfort/dtmsav.h"
 #include "asterfort/getvtx.h"
@@ -85,8 +83,7 @@ subroutine dtmprep_noli(sd_dtm_)
 !
     data nltypes/'DIS_CHOC        ', 'FLAMBAGE        ', 'ANTI_SISM       ', &
         'DIS_VISC        ', 'DIS_ECRO_TRAC   ', 'ROTOR_FISS      ', &
-        'PALIER_EDYOS    ', 'RELA_EFFO_DEPL  ', 'RELA_EFFO_VITE  ', &
-        'YACS            '/
+        'RELA_EFFO_DEPL  ', 'RELA_EFFO_VITE  ', 'YACS            '/
 !
 #define base0(row,col) basev0((col-1)*nbmode+row)
 !
@@ -145,9 +142,6 @@ subroutine dtmprep_noli(sd_dtm_)
 !
         case (NL_CRACKED_ROTOR)
             call dtmprep_noli_rotf(sd_dtm, sd_nl, icomp)
-!
-        case (NL_LUBRICATION)
-            call dtmprep_noli_lub(sd_dtm, sd_nl, icomp)
 !
         case (NL_YACS)
             call dtmprep_noli_yacs(sd_dtm, sd_nl, icomp)
