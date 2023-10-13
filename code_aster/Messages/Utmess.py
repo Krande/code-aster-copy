@@ -28,6 +28,8 @@ import aster_core
 import libaster
 
 from ..Utilities import (
+    ExecutionParameter,
+    Options,
     Singleton,
     _,
     center,
@@ -170,6 +172,8 @@ class MESSAGE_LOGGER(metaclass=Singleton):
                     # le formattage 'brut' échoue, on passera par une
                     # conversion complète
                     pass
+        if code == "A" and ExecutionParameter().option & Options.WarningAsError:
+            code = "F"
         if self._parent is None:
             self.set_parent(idmess)
         if not self.update_counter(code, idmess):
@@ -647,12 +651,6 @@ def UTMESS(
     """Utilitaire analogue à la routine fortran U2MESS/U2MESG avec les arguments
     optionnels.
 
-    Appel sans valeurs ::
-        UTMESS('A', 'SUPERVIS_40')
-
-    avec valeurs ::
-        UTMESS('A', 'SUPERVIS_40', vali=[1, 2])
-
     Remarques :
     - Nommer les arguments permet de ne pas tous les passer.
     - Meme fonctionnement que U2MESG :
@@ -713,9 +711,7 @@ def RetablirAlarme(idmess):
 
 # faux appels à UTMESS
 def __fake__():
-    UTMESS("I", "SUPERVIS_40")  # surcharge émis par asrun
     UTMESS("I", "SUPERVIS_96")  # émis depuis le C (inisig)
-    UTMESS("I", "SUPERVIS_97")  # émis depuis le C (inisig)
     UTMESS("I", "SUPERVIS_99")  # émis par le logger
     UTMESS("I", "JEVEUX_44")  # émis depuis le C (iodr)
     UTMESS("I", "JEVEUX_45")  # émis depuis le C (iodr)
@@ -734,15 +730,6 @@ def __fake__():
     UTMESS("I", "CATAMESS_90")
     UTMESS("I", "CATAMESS_92")
     # appelé par levé d'exception
-    # dans Miss/*.py
-    UTMESS("I", "MISS0_3")
-    UTMESS("I", "MISS0_5")
-    UTMESS("I", "MISS0_6")
-    UTMESS("I", "MISS0_7")
-    UTMESS("I", "MISS0_8")
-    UTMESS("I", "MISS0_9")
-    UTMESS("I", "MISS0_11")
-    UTMESS("I", "MISS0_17")
     # dans TableReader.py
     UTMESS("I", "TABLE0_10")
     UTMESS("I", "TABLE0_11")
@@ -750,16 +737,9 @@ def __fake__():
     UTMESS("I", "TABLE0_13")
     UTMESS("I", "TABLE0_15")
     UTMESS("I", "TABLE0_43")
-    # dans TestResult.py
-    UTMESS("I", "TEST0_12")
-    UTMESS("I", "TEST0_19")
     # dans function_py.py
     UTMESS("I", "FONCT0_27")
     UTMESS("I", "FONCT0_28")
     UTMESS("I", "FONCT0_29")
     # en C++, LinearSolver
     UTMESS("I", "FACTOR_13")
-
-    # TODO : current problem in asterxx in jefini.F90
-    UTMESS("I", "JEVEUX1_77")
-    UTMESS("I", "JEVEUX1_78")

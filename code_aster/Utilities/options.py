@@ -32,6 +32,7 @@ class Options:
 
     - *Debug*: Debug mode.
     - *Abort*: Abort instead of raising an exception in case of errors.
+    - *WarningAsError*: Turns warnings into errors.
     - *Continue*: Restart from an existing database.
     - *StrictUnpickling*: Fail when an object can not be unpickled.
     - *UseLegacyMode*: Create 'CO' objects instead of namedtuple.
@@ -60,6 +61,7 @@ class Options:
     SlaveMode = 0x0200
     LastStep = 0x0400
     HPCMode = 0x0800
+    WarningAsError = 0x1000
     # do not forget to document each new option
 
     @classmethod

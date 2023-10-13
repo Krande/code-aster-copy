@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -65,11 +65,6 @@ La trace ci-dessous doit montrer l'incohérence relevée.
 
 Message d'erreur :
 %(k1)s
-"""
-    ),
-    9: _(
-        """
-Les abscisses de l'accélérogramme '%(k1)s' doivent être à pas constant.
 """
     ),
     10: (
@@ -237,9 +232,9 @@ doivent obligatoirement être définies en utilisant le mot-clé MATER_FLUIDE.
 """
     ),
     44: _(
-        """Une valeur d'amortissement hystérétique renseignée par le mot-clé %(k1)s 
-est supérieure à 2. 
-              
+        """Une valeur d'amortissement hystérétique renseignée par le mot-clé %(k1)s
+est supérieure à 2.
+
 Conseil : les valeurs d'amortissement doivent être renseignées en absolu et non en pourcentage.
 """
     ),

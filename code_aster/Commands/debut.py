@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -163,6 +163,8 @@ class Starter(ExecuteCommand):
         if erreur:
             if erreur.get("ERREUR_F"):
                 stop_with = erreur["ERREUR_F"]
+            if erreur.get("ALARME") == "EXCEPTION":
+                ExecutionParameter().enable(Options.WarningAsError)
         if ExecutionParameter().option & Options.SlaveMode:
             stop_with = "EXCEPTION"
         # must be the first call to correctly set 'vini' in onerrf

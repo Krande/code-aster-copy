@@ -506,20 +506,6 @@ Cette valeur limite a été réactualisée lors de la mise en oeuvre d'un proces
 La plate-forme utilisée ne permet pas d'avoir accès aux valeurs VmPeak/VmSize.
 """
     ),
-    77: _(
-        """
- La mémoire demandée au lancement est sous estimée, elle est de %(r2).2f Mo.
- Le pic mémoire utilisée est de %(r1).2f Mo.
-
-"""
-    ),
-    78: _(
-        """
- La mémoire demandée au lancement est surestimée, elle est de %(r2).2f Mo.
- Le pic mémoire utilisée est de %(r1).2f Mo.
-
-"""
-    ),
     79: _(
         """
 Ajustement de la taille maximale des bases à %(r1).2f Go.

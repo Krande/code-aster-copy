@@ -167,12 +167,6 @@ Arrêt de l'exécution suite à la réception du signal utilisateur %(k1)s.
 Fermeture des bases jeveux afin de permettre la POURSUITE ultérieure du calcul.
 """
     ),
-    40: _(
-        """
- Vous utilisez une version dont les routines suivantes ont été surchargées :
-   %(ktout)s
-"""
-    ),
     41: {
         "message": _(
             """La version %(k1)s a été modifiée par %(i1)d révisions.
@@ -275,16 +269,6 @@ Fermeture des bases jeveux afin de permettre la POURSUITE ultérieure du calcul.
             """
 
     Réception du signal USR1. Interruption du calcul demandée...
-
-"""
-        ),
-        "flags": "DECORATED",
-    },
-    97: {
-        "message": _(
-            """
-
-    Interruption du calcul suite à la réception d'un <Control-C>.
 
 """
         ),

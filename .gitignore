@@ -20,3 +20,4 @@ vola.*
 .hg*
 .jenkins*
 .vscode/*
+devtools
