@@ -51,7 +51,7 @@ subroutine te0252(option, nomte)
     type(FE_basis) :: FEBasis
 !
     integer :: icodre(1)
-    character(len=16) :: phenom
+    character(len=32) :: phenom
     real(kind=8) :: valQP(MAX_QP), tpgi, r8bid
     real(kind=8) :: resi(MAX_BS)
     real(kind=8) :: chal(1)

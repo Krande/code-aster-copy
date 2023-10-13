@@ -27,7 +27,7 @@ subroutine nlcomp(phenom, imate, icamas, ndim, coorpg, time, tp, Kglo)
 #include "asterfort/utmess.h"
 #include "asterfort/matrRotLGTher.h"
 !
-    character(len=32), intent(in) :: phenom
+    character(len=16), intent(in) :: phenom
     integer, intent(in) :: imate, icamas, ndim
     real(kind=8), intent(in) :: coorpg(3), time, tp
     real(kind=8), intent(out) :: Kglo(3, 3)

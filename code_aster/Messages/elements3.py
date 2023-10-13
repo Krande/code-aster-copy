@@ -39,11 +39,6 @@ cata_msg = {
 
 """
     ),
-    10: _(
-        """
- on ne peut pas affecter la modélisation "AXIS_DIAG" aux éléments de l'axe
-"""
-    ),
     13: _(
         """
   Les composantes SIXZ et SIYZ du champs de contraintes sont nulles pour les

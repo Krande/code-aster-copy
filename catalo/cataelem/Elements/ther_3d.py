@@ -110,7 +110,7 @@ class THER_HEXA20(Element):
     )
     calculs = (
         OP.CHAR_THER_EVOL(
-            te=61,
+            te=78,
             para_in=(
                 (SP.PCAMASS, LC.CCAMA3D),
                 (SP.PGEOMER, NGEOMER),

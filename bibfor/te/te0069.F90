@@ -44,7 +44,7 @@ subroutine te0069(option, nomte)
 !
     integer :: icamas, kp, imate, itemps
     integer :: icodre(1)
-    character(len=32) :: phenom
+    character(len=16) :: phenom
     real(kind=8) :: time, Kglo(3, 3), fluglo(3), dtpg(3), tpg
     real(kind=8), pointer :: flux(:) => null()
     real(kind=8), pointer :: tempi(:) => null()

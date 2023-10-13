@@ -18,6 +18,28 @@
 
 subroutine te0078(option, nomte)
 !
+    use FE_topo_module
+    use FE_quadrature_module
+    use FE_basis_module
+    use FE_stiffness_module
+    use FE_rhs_module
+    use FE_eval_module
+!
+    implicit none
+!
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/jevech.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/utmess.h"
+#include "asterfort/nlcomp.h"
+#include "asterfort/writeVector.h"
+#include "FE_module.h"
+!
+    character(len=16) :: option, nomte
+!
 !    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES
 !                          OPTION : 'CHAR_THER_EVOL'
 !
@@ -25,223 +47,65 @@ subroutine te0078(option, nomte)
 !        DONNEES:      OPTION       -->  OPTION DE CALCUL
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 !----------------------------------------------------------------------
-! CORPS DU PROGRAMME
-    implicit none
 !
 !
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterc/r8dgrd.h"
-#include "asterfort/connec.h"
-#include "asterfort/dfdm2d.h"
-#include "asterfort/elref1.h"
-#include "asterfort/elrefe_info.h"
-#include "asterfort/jevech.h"
-#include "asterfort/lteatt.h"
-#include "asterfort/rccoma.h"
-#include "asterfort/rcvalb.h"
-#include "asterfort/teattr.h"
-#include "asterfort/utmess.h"
+    type(FE_Cell) :: FECell
+    type(FE_Quadrature) :: FEQuadRigi, FEQuadMass
+    type(FE_basis) :: FEBasis
 !
     integer :: nbres
-    parameter(nbres=3)
+    parameter(nbres=1)
     integer :: icodre(nbres)
-    character(len=8) :: elrefe, alias8
-    character(len=16) :: nomres(nbres), option, nomte
-    character(len=32) :: phenom
-    real(kind=8) :: valres(nbres), dfdx(9), dfdy(9), poids, r, tpg, theta, cp
-    real(kind=8) :: orig(2), lambor(2), lambda, fluglo(2), fluloc(2), p(2, 2)
-    real(kind=8) :: point(2), coorse(18), vectt(9), deltat, alpha, dtpgdx
-    real(kind=8) :: dtpgdy, xnorm, xu, yu
-    integer :: nno, kp, npg, i, j, k, itemps, ivectt, nnop2
-    integer :: c(6, 9), ise, nse, nuno, ipoids, ivf, idfde, igeom, imate, itemp
-    integer :: icamas, npg2, ipoid2, ivf2, idfde2, ibid
-    aster_logical :: aniso, global
+    character(len=16) :: phenom
+    real(kind=8) :: valQPM(MAX_QP), valQPF(3, MAX_QP), tpg, dtpg(3)
+    real(kind=8) :: resi_f(MAX_BS), resi_m(MAX_BS), resi(MAX_BS)
+    real(kind=8) :: cp, valres(1), Kglo(3, 3), time, deltat, theta
+    integer :: kp, imate, icamas, itemps
+    real(kind=8), pointer :: temp(:) => null()
 !
-!====
-! 1.1 PREALABLES: RECUPERATION ADRESSES FONCTIONS DE FORMES...
-!====
+    call FECell%init()
+    call FEBasis%initCell(FECell)
+    call FEQuadMass%initCell(FECell, "MASS")
+    call FEQuadRigi%initCell(FECell, "RIGI")
 !
-    call elref1(elrefe)
-!
-    if (lteatt('LUMPE', 'OUI')) then
-        call teattr('S', 'ALIAS8', alias8, ibid)
-        if (alias8(6:8) .eq. 'QU9') elrefe = 'QU4'
-        if (alias8(6:8) .eq. 'TR6') elrefe = 'TR3'
-    end if
-!
-    call elrefe_info(elrefe=elrefe, fami='MASS', nno=nno, &
-                     npg=npg2, jpoids=ipoid2, jvf=ivf2, jdfde=idfde2)
-    call elrefe_info(elrefe=elrefe, fami='RIGI', &
-                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde)
-!
-!====
-! 1.2 PREALABLES LIES AUX RECHERCHES DE DONNEES GENERALES
-!====
-    call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
     call jevech('PTEMPSR', 'L', itemps)
-    call jevech('PTEMPER', 'L', itemp)
-    call jevech('PVECTTR', 'E', ivectt)
+    call jevech('PTEMPER', 'L', vr=temp)
+!
+    time = zr(itemps)
     deltat = zr(itemps+1)
     theta = zr(itemps+2)
+!
     call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
 !
-!====
-! 1.3 PREALABLES LIES A LA RECUPERATION DES DONNEES MATERIAUX
-!====
-    if (phenom .eq. 'THER') then
-        nomres(1) = 'LAMBDA'
-        nomres(2) = 'RHO_CP'
-        aniso = .false.
-        call rcvalb('FPG1', 1, 1, '+', zi(imate), &
-                    ' ', phenom, 1, 'INST', [zr(itemps)], &
-                    2, nomres, valres, icodre, 1)
-        lambda = valres(1)
-        cp = valres(2)
-    else if (phenom .eq. 'THER_ORTH') then
-        nomres(1) = 'LAMBDA_L'
-        nomres(2) = 'LAMBDA_T'
-        nomres(3) = 'RHO_CP'
-        aniso = .true.
-        call rcvalb('FPG1', 1, 1, '+', zi(imate), &
-                    ' ', phenom, 1, 'INST', [zr(itemps)], &
-                    3, nomres, valres, icodre, 1)
-        lambor(1) = valres(1)
-        lambor(2) = valres(2)
-        cp = valres(3)
-    else
-        call utmess('F', 'ELEMENTS2_63')
-    end if
-!====
-! 1.4 PREALABLES LIES A L'ANISOTROPIE
-!====
-    if (aniso) then
+    if (phenom == "THER_ORTH") then
         call jevech('PCAMASS', 'L', icamas)
-        if (zr(icamas) .gt. 0.d0) then
-            global = .true.
-            alpha = zr(icamas+1)*r8dgrd()
-            p(1, 1) = cos(alpha)
-            p(2, 1) = sin(alpha)
-            p(1, 2) = -sin(alpha)
-            p(2, 2) = cos(alpha)
-        else
-            global = .false.
-            orig(1) = zr(icamas+4)
-            orig(2) = zr(icamas+5)
-        end if
     end if
 !
-!====
-! 3.1 CALCULS TERMES DE RIGIDITE
-!    POUR LES ELEMENTS LUMPES ET NON LUMPES
-!====
-!
-!  CALCUL ISO-P2 : ELTS P2 DECOMPOSES EN SOUS-ELTS LINEAIRES
-    call connec(nomte, nse, nnop2, c)
-    do i = 1, nnop2
-        vectt(i) = 0.d0
+    do kp = 1, FEQuadRigi%nbQuadPoints
+        tpg = FEEvalFuncScal(FEBasis, temp, FEQuadRigi%points_param(1:3, kp))
+        dtpg = FEEvalGradVec(FEBasis, temp, FEQuadRigi%points_param(1:3, kp))
+        call nlcomp(phenom, imate, icamas, FECell%ndim, FEQuadRigi%points(1:3, kp), time, &
+                    tpg, Kglo)
+        ValQPF(1:3, kp) = matmul(Kglo, dtpg)
     end do
 !
-! ----- TERME DE RIGIDITE : 2EME FAMILLE DE PTS DE GAUSS ---------
-! BOUCLE SUR LES SOUS-ELEMENTS
+    call FEStiffVecScal(FEQuadRigi, FEBasis, valQPF, resi_f)
 !
-    do ise = 1, nse
-        do i = 1, nno
-            do j = 1, 2
-                coorse(2*(i-1)+j) = zr(igeom-1+2*(c(ise, i)-1)+j)
-            end do
-        end do
-        do kp = 1, npg
-            k = (kp-1)*nno
-            call dfdm2d(nno, kp, ipoids, idfde, coorse, &
-                        poids, dfdx, dfdy)
-            r = 0.d0
-            tpg = 0.d0
-            dtpgdx = 0.d0
-            dtpgdy = 0.d0
-            do i = 1, nno
-! CALCUL DE T- ET DE GRAD(T-)
-                r = r+coorse(2*(i-1)+1)*zr(ivf+k+i-1)
-                dtpgdx = dtpgdx+zr(itemp-1+c(ise, i))*dfdx(i)
-                dtpgdy = dtpgdy+zr(itemp-1+c(ise, i))*dfdy(i)
-            end do
-            if (lteatt('AXIS', 'OUI')) poids = poids*r
+    call rcvalb('FPG1', 1, 1, '+', zi(imate), &
+                ' ', phenom, 1, 'INST', [time], &
+                1, 'RHO_CP', valres, icodre, 1)
+    cp = valres(1)
 !
-            if (.not. aniso) then
-                fluglo(1) = lambda*dtpgdx
-                fluglo(2) = lambda*dtpgdy
-            else
-                if (.not. global) then
-                    point(1) = 0.d0
-                    point(2) = 0.d0
-                    do nuno = 1, nno
-                        point(1) = point(1)+zr(ivf+k+nuno-1)*coorse(2*(nuno-1)+1)
-                        point(2) = point(2)+zr(ivf+k+nuno-1)*coorse(2*(nuno-1)+2)
-                    end do
-                    xu = orig(1)-point(1)
-                    yu = orig(2)-point(2)
-                    xnorm = sqrt(xu**2+yu**2)
-                    xu = xu/xnorm
-                    yu = yu/xnorm
-                    p(1, 1) = xu
-                    p(2, 1) = yu
-                    p(1, 2) = -yu
-                    p(2, 2) = xu
-                end if
-                fluglo(1) = dtpgdx
-                fluglo(2) = dtpgdy
-                fluloc(1) = p(1, 1)*dtpgdx+p(2, 1)*dtpgdy
-                fluloc(2) = p(1, 2)*dtpgdx+p(2, 2)*dtpgdy
-                fluloc(1) = lambor(1)*fluloc(1)
-                fluloc(2) = lambor(2)*fluloc(2)
-                fluglo(1) = p(1, 1)*fluloc(1)+p(1, 2)*fluloc(2)
-                fluglo(2) = p(2, 1)*fluloc(1)+p(2, 2)*fluloc(2)
-            end if
-            do i = 1, nno
-                vectt(c(ise, i)) = vectt(c(ise, i))+&
-                & poids*(theta-1.0d0)*(fluglo(1)*dfdx(i)+fluglo(2)*dfdy(i))
-            end do
-        end do
-!
-!====
-! 3.2 CALCULS TERMES DE MASSE
-!    POUR LES ELEMENTS LUMPES
-!====
-!
-        do i = 1, nno
-            do j = 1, 2
-                coorse(2*(i-1)+j) = zr(igeom-1+2*(c(ise, i)-1)+j)
-            end do
-        end do
-        do kp = 1, npg2
-            k = (kp-1)*nno
-            call dfdm2d(nno, kp, ipoid2, idfde2, coorse, &
-                        poids, dfdx, dfdy)
-            r = 0.d0
-            tpg = 0.d0
-            do i = 1, nno
-! CALCUL DE T-
-                r = r+coorse(2*(i-1)+1)*zr(ivf2+k+i-1)
-                tpg = tpg+zr(itemp-1+c(ise, i))*zr(ivf2+k+i-1)
-            end do
-            if (lteatt('AXIS', 'OUI')) then
-                poids = poids*r
-                if (r .eq. 0.d0) then
-                    call utmess('F', 'ELEMENTS3_10')
-                end if
-            end if
-!
-            do i = 1, nno
-                vectt(c(ise, i)) = vectt(c(ise, i))+poids*(cp/deltat*zr(ivf2+k+i-1)*tpg)
-            end do
-        end do
+    do kp = 1, FEQuadMass%nbQuadPoints
+        tpg = FEEvalFuncScal(FEBasis, temp, FEQuadMass%points_param(1:3, kp))
+        ValQPM(kp) = cp*tpg
     end do
 !
-! MISE SOUS FORME DE VECTEUR
+    call FeMakeRhsScal(FEQuadMass, FEBasis, ValQPM, resi_m)
 !
-    do i = 1, nnop2
-        zr(ivectt-1+i) = vectt(i)
-    end do
+    resi = (theta-1.0d0)*resi_f+resi_m/deltat
+!
+    call writeVector('PVECTTR', FEBasis%size, resi)
 !
 end subroutine
