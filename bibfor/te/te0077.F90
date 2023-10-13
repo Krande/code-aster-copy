@@ -50,14 +50,13 @@ subroutine te0077(option, nomte)
     character(len=16) :: phenom
     real(kind=8) :: valQP(MAX_QP), cp(1)
     real(kind=8) :: mass(MAX_BS, MAX_BS)
-    integer :: nbDof, imate, itemps
+    integer ::  imate, itemps
 !
 !-----------------------------------------------------------------------
 !
     call FECell%init()
     call FEQuadCell%initCell(FECell, "MASS")
     call FEBasis%initCell(FECell)
-    nbDof = FEBasis%size
 !
     call jevech('PMATERC', 'L', imate)
     call jevech('PTEMPSR', 'L', itemps)
@@ -79,6 +78,6 @@ subroutine te0077(option, nomte)
 !
     call FEMassMatScal(FEQuadCell, FEBasis, mass, valQP)
 !
-    call writeMatrix("PMATTTR", nbDof, nbDof, ASTER_TRUE, mass)
+    call writeMatrix("PMATTTR", FEBasis%size, FEBasis%size, ASTER_TRUE, mass)
 !
 end subroutine

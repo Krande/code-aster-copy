@@ -394,7 +394,7 @@ class THER_HEXA20(Element):
             para_out=((SP.PRESIDU, MVECTTR),),
         ),
         OP.RIGI_THER(
-            te=51,
+            te=76,
             para_in=(
                 (SP.PCAMASS, LC.CCAMA3D),
                 (SP.PGEOMER, NGEOMER),

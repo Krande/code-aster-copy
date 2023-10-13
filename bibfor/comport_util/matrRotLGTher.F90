@@ -32,7 +32,7 @@ subroutine matrRotLGTher(aniso, icamas, ndim, coorpg, matr)
     aster_logical, intent(in) :: aniso
     real(kind=8), intent(out) :: matr(3, 3)
 !
-    integer ::  j
+    integer :: j
     real(kind=8) :: orig(3), xu, yu, xnorm
     real(kind=8) :: alpha, angl(3), p(3, 3), dire(3)
     real(kind=8) :: aalpha, abeta
