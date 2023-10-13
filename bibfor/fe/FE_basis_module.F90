@@ -24,13 +24,17 @@ module FE_basis_module
     implicit none
 !
     private
+#include "asterc/r8gaem.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/elrfvf.h"
 #include "asterfort/elrfdf.h"
 #include "asterfort/elrfno.h"
-#include "FE_module.h"
+#include "asterfort/elrfvf.h"
+#include "asterfort/tecael.h"
+#include "asterfort/utmess.h"
 #include "blas/ddot.h"
+#include "FE_module.h"
+#include "jeveux.h"
 ! --------------------------------------------------------------------------------------------------
 !
 ! fe - generic
@@ -41,9 +45,16 @@ module FE_basis_module
 !
     type FE_basis
 !
-        character(len=8) :: typema = " "
         integer :: typeEF = EF_LAGRANGE
         integer :: size
+! ----- Dimension topologique
+        integer                     :: ndim = 0
+! ----- Type maille
+        character(len=8)            :: typema = ''
+! ----- Nombre de noeuds
+        integer                     :: nbnodes = 0
+! ----- Coordonnees des noeuds   (max 27 noeuds pour hexa)
+        real(kind=8), dimension(3, 27):: coorno = 0.d0
 
 ! ----- member function
     contains
@@ -55,7 +66,7 @@ module FE_basis_module
 !
 ! --------------------------------------------------------------------------------------------------
     public  :: FE_basis
-    private :: feBSCEval, feBSCGradEv, init_cell, init_face
+    private :: feBSCEval, feBSCGradEv, init_cell, init_face, FE_grad_lagr
 !
 contains
 !
@@ -78,6 +89,9 @@ contains
 !
         this%typema = FECEll%typemas
         this%typeEF = EF_LAGRANGE
+        this%ndim = FECEll%ndim
+        this%nbnodes = FECEll%nbnodes
+        this%coorno = FECEll%coorno
 !
         if (this%typeEF == EF_LAGRANGE) then
             call elrfno(this%typema, this%size)
@@ -105,6 +119,9 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         this%typema = FEFace%typemas
+        this%ndim = FEFace%ndim
+        this%nbnodes = FEFace%nbnodes
+        this%coorno(1:3, 1:9) = FEFace%coorno
         this%typeEF = EF_LAGRANGE
 !
         if (this%typeEF == EF_LAGRANGE) then
@@ -114,6 +131,72 @@ contains
         end if
 !
     end subroutine
+    !
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function FE_grad_lagr(this, point) result(BSGrad2)
+!
+        implicit none
+!
+        class(fe_basis), intent(in) :: this
+        real(kind=8), intent(in)       :: point(3)
+!
+! --------------------------------------------------------------------------------------------------
+!   fe - basis functions
+!
+!   Initialization
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: i, iadzi, iazk24
+        real(kind=8) :: jaco(3, 3), cojac(3, 3), jacob
+        real(kind=8), dimension(3, MAX_BS) :: BSGrad, BSGrad2
+!
+        BSGrad = 0.d0
+        call elrfdf(this%typema, point, BSGrad)
+!
+! ---  Compute the jacobienne
+        jaco = 0.d0
+        do i = 1, this%nbnodes
+            jaco(1:3, 1) = jaco(1:3, 1)+this%coorno(1, i)*BSGrad(1:3, i)
+            jaco(1:3, 2) = jaco(1:3, 2)+this%coorno(2, i)*BSGrad(1:3, i)
+            jaco(1:3, 3) = jaco(1:3, 3)+this%coorno(3, i)*BSGrad(1:3, i)
+        end do
+        if (this%ndim == 2) jaco(3, 3) = 1.d0
+
+        cojac(1, 1) = jaco(2, 2)*jaco(3, 3)-jaco(2, 3)*jaco(3, 2)
+        cojac(2, 1) = jaco(3, 1)*jaco(2, 3)-jaco(2, 1)*jaco(3, 3)
+        cojac(3, 1) = jaco(2, 1)*jaco(3, 2)-jaco(3, 1)*jaco(2, 2)
+        cojac(1, 2) = jaco(1, 3)*jaco(3, 2)-jaco(1, 2)*jaco(3, 3)
+        cojac(2, 2) = jaco(1, 1)*jaco(3, 3)-jaco(1, 3)*jaco(3, 1)
+        cojac(3, 2) = jaco(1, 2)*jaco(3, 1)-jaco(3, 2)*jaco(1, 1)
+        cojac(1, 3) = jaco(1, 2)*jaco(2, 3)-jaco(1, 3)*jaco(2, 2)
+        cojac(2, 3) = jaco(2, 1)*jaco(1, 3)-jaco(2, 3)*jaco(1, 1)
+        cojac(3, 3) = jaco(1, 1)*jaco(2, 2)-jaco(1, 2)*jaco(2, 1)
+!
+        if (this%ndim == 3) then
+            jacob = jaco(1, 1)*cojac(1, 1)+jaco(1, 2)*cojac(2, 1)+jaco(1, 3)*cojac(3, 1)
+        elseif (this%ndim == 2) then
+            jacob = cojac(3, 3)
+        elseif (this%ndim == 1) then
+            jacob = jaco(1, 1)
+        else
+            ASSERT(ASTER_FALSE)
+        end if
+!
+        if (abs(jacob) .le. 1.d0/r8gaem()) then
+            call tecael(iadzi, iazk24)
+            call utmess('F', 'ALGORITH2_59', sk=zk24(iazk24-1+3) (1:8))
+        end if
+!
+        BSGrad2 = 0.d0
+        do i = 1, this%size
+            BSGrad2(1:this%ndim, i) = &
+                matmul(cojac(1:this%ndim, 1:this%ndim), BSGrad(1:this%ndim, i))/jacob
+        end do
+!
+    end function
 !
 !===================================================================================================
 !
@@ -171,7 +254,7 @@ contains
 !
         BSGradEval = 0.d0
         if (this%typeEF == EF_LAGRANGE) then
-            call elrfdf(this%typema, point, BSGradEval)
+            BSGradEval = FE_grad_lagr(this, point)
         else
             ASSERT(ASTER_FALSE)
         end if

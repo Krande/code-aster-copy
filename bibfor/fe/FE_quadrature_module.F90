@@ -24,6 +24,7 @@ module FE_quadrature_module
     implicit none
 !
     private
+#include "asterc/r8gaem.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/elraga.h"
@@ -31,8 +32,10 @@ module FE_quadrature_module
 #include "asterfort/elrfdf.h"
 #include "asterfort/elrfno.h"
 #include "asterfort/elrfvf.h"
-#include "FE_module.h"
 #include "asterfort/lteatt.h"
+#include "asterfort/tecael.h"
+#include "asterfort/utmess.h"
+#include "FE_module.h"
 #include "jeveux.h"
 !
 ! --------------------------------------------------------------------------------------------------
@@ -45,6 +48,7 @@ module FE_quadrature_module
 !
     type FE_Quadrature
         character(len=8)                    :: fami = " "
+        integer                             :: ndim = 0
         integer                             :: nbQuadPoints = 0
         real(kind=8), dimension(3, MAX_QP)  :: points_param = 0.d0
         real(kind=8), dimension(MAX_QP)     :: weights_param = 0.d0
@@ -98,7 +102,7 @@ contains
         real(kind=8), dimension(27) :: basis
         real(kind=8), dimension(3, 27) :: dbasis
         real(kind=8), dimension(3, 3) :: jaco
-        integer :: i, ndim
+        integer :: i, ndim, iadzi, iazk24
 !
 ! ----- shape function
 !
@@ -133,6 +137,11 @@ contains
             jacob = jaco(1, 1)
         else
             ASSERT(ASTER_FALSE)
+        end if
+!
+        if (abs(jacob) .le. 1.d0/r8gaem()) then
+            call tecael(iadzi, iazk24)
+            call utmess('F', 'ALGORITH2_59', sk=zk24(iazk24-1+3) (1:8))
         end if
 !
     end subroutine
@@ -170,6 +179,7 @@ contains
 ! ----- fill FEQuad
         ASSERT(nbpg <= MAX_QP)
         this%nbQuadPoints = nbpg
+        this%ndim = dimp
 !
         do ipg = 1, nbpg
             xp = 0.d0

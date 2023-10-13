@@ -15,14 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine te0283(option, nomte)
-!.......................................................................
-    implicit none
-#include "asterfort/utmess.h"
+#include "asterf_types.h"
 !
-    character(len=16) :: option, nomte
-!
-    call utmess('F', 'FERMETUR_8')
-!
-end subroutine
+interface
+    subroutine ntcomp(icomp, icamas, ndim, temp, dtemp, coorpg, aniso, ifon, fluxglo)
+        integer, intent(in) :: icomp, icamas, ndim, ifon(6)
+        real(kind=8), intent(in) :: temp, dtemp(3), coorpg(3)
+        aster_logical, intent(in) :: aniso
+        real(kind=8), intent(out) :: fluxglo(3)
+    end subroutine ntcomp
+end interface

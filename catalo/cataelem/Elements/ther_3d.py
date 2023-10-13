@@ -359,7 +359,7 @@ class THER_HEXA20(Element):
             para_out=((SP.PREPLO1, LC.CGEOM3D), (SP.PREPLO2, LC.CGEOM3D), (SP.PREPLO3, LC.CGEOM3D)),
         ),
         OP.RAPH_THER(
-            te=283,
+            te=243,
             para_in=(
                 (OP.RAPH_THER.PCOMPOR, CCOMPOR),
                 (SP.PGEOMER, NGEOMER),
