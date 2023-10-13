@@ -278,26 +278,6 @@ class THER_FACE3(Element):
             ),
             para_out=((SP.PRESIDU, MVECTTR),),
         ),
-        OP.RESI_THER_COEH_F(
-            te=308,
-            para_in=(
-                (SP.PCOEFHF, CCOEFHF),
-                (SP.PGEOMER, NGEOMER),
-                (SP.PTEMPEI, DDL_THER),
-                (SP.PTEMPSR, CTEMPSR),
-            ),
-            para_out=((SP.PRESIDU, MVECTTR),),
-        ),
-        OP.RESI_THER_COEH_R(
-            te=306,
-            para_in=(
-                (SP.PCOEFHR, CCOEFHR),
-                (SP.PGEOMER, NGEOMER),
-                (SP.PTEMPEI, DDL_THER),
-                (SP.PTEMPSR, CTEMPSR),
-            ),
-            para_out=((SP.PRESIDU, MVECTTR),),
-        ),
         OP.RESI_THER_FLUXNL(
             te=129,
             para_in=(
