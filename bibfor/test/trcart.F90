@@ -122,7 +122,7 @@ subroutine trcart(ific, nocc)
             ASSERT(n1r .eq. n1 .and. n2r .eq. n2 .and. n3r .eq. n3)
         end if
         if (skip .and. .not. lref) then
-            call utmess('A', 'TEST0_11')
+            call utmess('I', 'TEST0_11')
         end if
 ! ----------------------------------------------------------------------
 !

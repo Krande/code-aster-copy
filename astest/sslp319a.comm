@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 
 # person_in_charge: samuel.geniaut at edf.fr
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), IGNORE_ALARM=("TEST0_12"))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 # DANS LE MAILLAGE IL Y A DES MAILLES SURFACIQUES QUI NE SONT PAS CONSIDEREES PAR
 # LA METHODE UPWIND FAST MARCHING. EN CONSEQUENCE ON IGNORE LE MESSAGE XFEM2_52.
@@ -95,7 +95,6 @@ RS = 2 * RI
 da_fiss = 30.0
 
 for i in range(1, NPS - 1):
-
     ModX[i] = MODI_MODELE_XFEM(MODELE_IN=plate, FISSURE=(FissL[i], FissR[i]))
 
     vinc[i] = AFFE_CHAR_MECA(
@@ -150,7 +149,6 @@ KIR_calc = [37792487.5013, 41567842.9915, 46739469.70788785]
 KIIR_calc = [2339.05095971, 1194.7345282059405, 5065.104766072414]
 
 for i in range(1, NPS - 1):
-
     a = a0 + da_fiss * (i - 1)
     #  VALEUR ANALYTIQUE DE KI (BROEK)
     Y = 1.99 + 0.76 * a / W - 8.48 * (a / W) ** 2 + 27.36 * (a / W) ** 3

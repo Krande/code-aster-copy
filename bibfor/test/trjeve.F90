@@ -79,7 +79,7 @@ subroutine trjeve(ific, nocc)
         if (n2 .eq. 1) then
             call tresu_ordgrd(refr, skip, ordgrd, mcf='OBJET', iocc=iocc)
             if (skip .and. .not. lref) then
-                call utmess('A', 'TEST0_11')
+                call utmess('I', 'TEST0_11')
             end if
             call tresu_obj(nomobj, 'R', tbtxt, refi, refr, &
                            epsi, crit, .true._1, ssigne, ignore=skip, &

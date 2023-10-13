@@ -182,10 +182,10 @@ subroutine trchno(ific, nocc)
             end if
         end if
         if (skip .and. .not. lref) then
-            call utmess('A', 'TEST0_11')
+            call utmess('I', 'TEST0_11')
         end if
         if (skip .and. .not. lref) then
-            call utmess('A', 'TEST0_11')
+            call utmess('I', 'TEST0_11')
         end if
 ! ----------------------------------------------------------------------
 !

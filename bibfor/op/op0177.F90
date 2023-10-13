@@ -199,7 +199,7 @@ subroutine op0177()
         end if
     end if
     if (skip .and. .not. lref) then
-        call utmess('A', 'TEST0_11')
+        call utmess('I', 'TEST0_11')
     end if
 ! ----------------------------------------------------------------------
     call getvtx(' ', 'NOM_PARA', scal=para)

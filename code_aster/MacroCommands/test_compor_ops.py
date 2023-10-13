@@ -431,7 +431,6 @@ def test_compor_ops(self, **args):
             Vim = NP.zeros(NB_VARI)
 
         for i in range(NCAL):
-
             timem = time
 
             time = timem + INST_FIN / NCAL
@@ -449,11 +448,9 @@ def test_compor_ops(self, **args):
             # correction eventuelle des valeurs initiales du temps ti
 
             if i > 0:
-
                 SXM = SXM * (YOUNG(Ti) / YOUNG(Tm))
                 # cas particuliers
                 if COMPORTEMENT[0]["RELATION"] == "VMIS_CINE_LINE":
-
                     if args.get("D_SIGM_EPSI") is not None:
                         D_SIGM_EPSI = args.get("D_SIGM_EPSI")
                     else:
@@ -529,7 +526,6 @@ def test_compor_ops(self, **args):
 
             # On ne peut pas faire de non régression puisqu'on ne connait pas ici
             # la valeur obtenue sur la machine de référence
-            MasquerAlarme("TEST0_12")
             TEST_TABLE(
                 TABLE=__RES[i],
                 NOM_PARA="VMIS",
@@ -576,7 +572,6 @@ def test_compor_ops(self, **args):
                                 FILTRE=_F(NOM_PARA="INST", VALE=time),
                                 REFERENCE="AUTRE_ASTER",
                             )
-            RetablirAlarme("TEST0_12")
 
     elif OPTION == "MECA":
         TEST_TANGENTE = args.get("TEST_TANGENTE")
@@ -622,7 +617,6 @@ def test_compor_ops(self, **args):
         else:
             modelisation = "3D"
         if modelisation == "3D":
-
             #
             #  TEST 3D
             #
@@ -633,7 +627,6 @@ def test_compor_ops(self, **args):
             ch_param = ch_param2 + ["SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"]
 
         elif modelisation == "C_PLAN":
-
             #
             #  TEST 2D C_PLAN
             #
@@ -727,7 +720,6 @@ def test_compor_ops(self, **args):
 
         # On ne peut pas faire de non régression puisqu'on ne connait pas ici
         # la valeur obtenue sur la machine de référence
-        MasquerAlarme("TEST0_12")
         for ch in ch_param2:
             i = ch_param2.index(ch)
             if INFO == 2:
@@ -746,7 +738,6 @@ def test_compor_ops(self, **args):
                     PRECISION=LIST_TOLE[j],
                     REFERENCE="ANALYTIQUE",
                 )
-        RetablirAlarme("TEST0_12")
         #
         # Test de la matrice tangente sur le calcul le plus fin
         #
@@ -802,7 +793,6 @@ def test_compor_ops(self, **args):
 
                 # On ne peut pas faire de non régression puisqu'on ne connait pas ici
                 # la valeur obtenue sur la machine de référence
-                MasquerAlarme("TEST0_12")
                 TEST_TABLE(
                     TABLE=__DIFFMAT,
                     NOM_PARA="MAT_DIFF",
@@ -814,7 +804,6 @@ def test_compor_ops(self, **args):
                     PRECISION=prec_tgt,
                     REFERENCE="ANALYTIQUE",
                 )
-                RetablirAlarme("TEST0_12")
                 if INFO == 2:
                     IMPR_TABLE(TABLE=__DIFFMAT)
     if U is None:
