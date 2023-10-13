@@ -219,17 +219,17 @@ class THER_FACE3(Element):
             te=309, para_in=((SP.PGEOMER, NGEOMER),), para_out=((OP.FLUX_FLUI_Z.PMATTTR, MMATTTR),)
         ),
         OP.MTAN_THER_COEF_F(
-            te=131,
+            te=251,
             para_in=((SP.PCOEFHF, CCOEFHF), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
             para_out=((OP.MTAN_THER_COEF_F.PMATTTR, MMATTTR),),
         ),
         OP.MTAN_THER_COEF_R(
-            te=130,
+            te=251,
             para_in=((SP.PCOEFHR, CCOEFHR), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
             para_out=((OP.MTAN_THER_COEF_R.PMATTTR, MMATTTR),),
         ),
         OP.MTAN_THER_FLUXNL(
-            te=132,
+            te=251,
             para_in=(
                 (SP.PFLUXNL, CFLUXNF),
                 (SP.PGEOMER, NGEOMER),
@@ -239,7 +239,7 @@ class THER_FACE3(Element):
             para_out=((OP.MTAN_THER_FLUXNL.PMATTTR, MMATTTR),),
         ),
         OP.MTAN_THER_RAYO_F(
-            te=131,
+            te=251,
             para_in=(
                 (SP.PGEOMER, NGEOMER),
                 (SP.PRAYONF, LC.CRAYONF),
@@ -249,7 +249,7 @@ class THER_FACE3(Element):
             para_out=((OP.MTAN_THER_RAYO_F.PMATTTR, MMATTTR),),
         ),
         OP.MTAN_THER_RAYO_R(
-            te=130,
+            te=251,
             para_in=(
                 (SP.PGEOMER, NGEOMER),
                 (SP.PRAYONR, LC.CRAYONR),
