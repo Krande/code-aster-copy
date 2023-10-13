@@ -85,7 +85,6 @@ module fe_topo_module
         procedure, public, pass :: init => init_cell
         procedure, public, pass :: func => func_cell
         procedure, public, pass :: evalCoor => coor_cell
-        procedure, public, pass :: splitLumped => splitLumpedCell
     end type FE_Cell
 !
 contains
@@ -332,51 +331,5 @@ contains
         call elrfvf(this%typemas, pt, func)
 !
     end function
-!
-!===================================================================================================
-!
-!===================================================================================================
-!
-    subroutine splitLumpedCell(this, nbSubCell, subFECell, connect)
-!
-        implicit none
-!
-        class(FE_Cell), intent(in) :: this
-        integer, intent(out) :: nbSubCell
-        type(FE_Cell), intent(out) :: subFECell(4)
-        integer, intent(out) :: connect(4, 27)
-!
-!
-        integer :: nnop2, c(6, 9), ise, inode
-        character(len=16), parameter :: nomte = "XXX"
-        character(len=8) :: typema
-!
-        connect = 0
-        if (this%ndim == 2) then
-            call connec(nomte, nbSubCell, nnop2, c, typema)
-            connect(1:4, 1:9) = c(1:4, 1:9)
-        else
-            typema = this%typemas
-            nbSubCell = 1
-            do inode = 1, this%nbnodes
-                connect(1, inode) = inode
-            end do
-        end if
-        ASSERT(nbSubCell <= 4)
-!
-        do ise = 1, nbSubCell
-            subFECell(ise)%typemas = typema
-            call elrfno(subFECell(ise)%typemas, nno=subFECell(ise)%nbnodes, &
-                        ndim=subFECell(ise)%ndim)
-            call CellNameS2L(subFECell(ise)%typemas, subFECell(ise)%typema)
-!
-! - Get coordinates
-!
-            do inode = 1, subFECell(ise)%nbnodes
-                subFECell(ise)%coorno(1:3, inode) = this%coorno(1:3, connect(ise, inode))
-            end do
-        end do
-!
-    end subroutine
 !
 end module

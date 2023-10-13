@@ -25,7 +25,6 @@ subroutine te0077(option, nomte)
 !
     implicit none
 #include "FE_module.h"
-#include "asterfort/addMatLumped.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
@@ -43,15 +42,15 @@ subroutine te0077(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
 !
-    type(FE_Cell) :: FECell, subFECell(4)
+    type(FE_Cell) :: FECell
     type(FE_Quadrature) :: FEQuadCell
     type(FE_basis) :: FEBasis
 !
     integer :: icodre(1)
     character(len=16) :: phenom
     real(kind=8) :: valQP(MAX_QP), cp(1)
-    real(kind=8) :: mass(MAX_BS, MAX_BS), mass_sub(MAX_BS, MAX_BS)
-    integer :: connec(4, 27), ise, nbSubCell, nbDof, imate, itemps
+    real(kind=8) :: mass(MAX_BS, MAX_BS)
+    integer :: nbDof, imate, itemps
 !
 !-----------------------------------------------------------------------
 !
@@ -76,17 +75,12 @@ subroutine te0077(option, nomte)
     end if
 !
     valQP = cp(1)
-    mass = 0.d0
 !
-    call FECell%splitLumped(nbSubCell, subFECell, connec)
-    do ise = 1, nbSubCell
-        call FEQuadCell%initCell(subFECell(ise), "MASS")
-        call FEBasis%initCell(subFECell(ise))
+    call FEQuadCell%initCell(FECell, "MASS")
+    call FEBasis%initCell(FECell)
 !
-        call FEMassMatScal(FEQuadCell, FEBasis, mass_sub, valQP)
+    call FEMassMatScal(FEQuadCell, FEBasis, mass, valQP)
 !
-        call addMatLumped(mass, mass_sub, ise, FEBasis%size, connec)
-    end do
 !
     call writeMatrix("PMATTTR", nbDof, nbDof, ASTER_TRUE, mass)
 !

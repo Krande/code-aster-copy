@@ -33,7 +33,7 @@ subroutine te0243(option, nomte)
 #include "asterfort/rccoma.h"
 #include "asterfort/rcdiff.h"
 #include "asterfort/writeVector.h"
-#include "asterfort/addVecLumped.h"
+#include "FE_module.h"
 !
     character(len=16) :: option, nomte
 ! ......................................................................
@@ -46,7 +46,7 @@ subroutine te0243(option, nomte)
 !
 ! ......................................................................
 !
-    type(FE_Cell) :: FECell, subFECell(4)
+    type(FE_Cell) :: FECell
     type(FE_Quadrature) :: FEQuadCell
     type(FE_basis) :: FEBasis
 !
@@ -55,12 +55,11 @@ subroutine te0243(option, nomte)
     integer :: icodre(nbres)
     character(len=32) :: phenom
     real(kind=8) ::  tpg, dtpg(3), tpsec, diff, fluglo(3)
-    real(kind=8) :: resi(MAX_BS), resi_sub(MAX_BS), valQP(3, MAX_QP)
+    real(kind=8) :: resi(MAX_BS), valQP(3, MAX_QP)
     real(kind=8) :: funcEF(MAX_BS), gradEF(3, MAX_BS)
     real(kind=8), pointer :: flux(:) => null()
     integer ::  kp, i, ifon(6)
-    integer ::  imate, icomp, itempi, isechf
-    integer :: connec(4, 27), ise, nbSubCell, nbDof
+    integer ::  imate, icomp, itempi, isechf, nbDof
     aster_logical :: aniso
 ! ----------------------------------------------------------------------
     call FECell%init()
@@ -93,45 +92,38 @@ subroutine te0243(option, nomte)
         end if
     end if
 !
-    resi = 0.d0
+    call FEQuadCell%initCell(FECell, "RIGI")
+    call FEBasis%initCell(FECell)
 !
-    call FECell%splitLumped(nbSubCell, subFECell, connec)
-    do ise = 1, nbSubCell
-        call FEQuadCell%initCell(subFECell(ise), "RIGI")
-        call FEBasis%initCell(subFECell(ise))
-!
-        valQP = 0.0
-        do kp = 1, FEQuadCell%nbQuadPoints
-            tpg = 0.d0
-            dtpg = 0.d0
-            funcEF = FEBasis%func(FEQuadCell%points_param(1:3, kp))
-            gradEF = FEBasis%grad(FEQuadCell%points_param(1:3, kp))
-            do i = 1, FEBasis%size
-                tpg = tpg+zr(itempi-1+connec(ise, i))*funcEF(i)
-                dtpg = dtpg+zr(itempi-1+connec(ise, i))*gradEF(1:3, i)
-            end do
-!
-            if (zk16(icomp) (1:5) .eq. 'THER_') then
-                call ntcomp(icomp, icamas, FECell%ndim, tpg, dtpg, &
-                            FEQuadCell%points(1:3, kp), aniso, ifon, fluglo)
-                flux(FECell%ndim*(kp-1)+1:FECell%ndim*(kp-1)+FECell%ndim) = -fluglo(1:FECell%ndim)
-                valQP(1:3, kp) = fluglo
-            else if (zk16(icomp) (1:5) .eq. 'SECH_') then
-                tpsec = 0.d0
-                do i = 1, FEBasis%size
-                    tpsec = tpsec+zr(isechf-1+connec(ise, i))*funcEF(i)
-                end do
-                call rcdiff(zi(imate), zk16(icomp), tpsec, tpg, diff)
-                valQP(1:3, kp) = diff*dtpg
-            else
-                ASSERT(ASTER_FALSE)
-            end if
+    valQP = 0.0
+    do kp = 1, FEQuadCell%nbQuadPoints
+        tpg = 0.d0
+        dtpg = 0.d0
+        funcEF = FEBasis%func(FEQuadCell%points_param(1:3, kp))
+        gradEF = FEBasis%grad(FEQuadCell%points_param(1:3, kp))
+        do i = 1, FEBasis%size
+            tpg = tpg+zr(itempi-1+i)*funcEF(i)
+            dtpg = dtpg+zr(itempi-1+i)*gradEF(1:3, i)
         end do
 !
-        call FEStiffVecScal(FEQuadCell, FEBasis, valQP, resi_sub)
-!
-        call addVecLumped(resi, resi_sub, ise, FEBasis%size, connec)
+        if (zk16(icomp) (1:5) .eq. 'THER_') then
+            call ntcomp(icomp, icamas, FECell%ndim, tpg, dtpg, &
+                        FEQuadCell%points(1:3, kp), aniso, ifon, fluglo)
+            flux(FECell%ndim*(kp-1)+1:FECell%ndim*(kp-1)+FECell%ndim) = -fluglo(1:FECell%ndim)
+            valQP(1:3, kp) = fluglo
+        else if (zk16(icomp) (1:5) .eq. 'SECH_') then
+            tpsec = 0.d0
+            do i = 1, FEBasis%size
+                tpsec = tpsec+zr(isechf-1+i)*funcEF(i)
+            end do
+            call rcdiff(zi(imate), zk16(icomp), tpsec, tpg, diff)
+            valQP(1:3, kp) = diff*dtpg
+        else
+            ASSERT(ASTER_FALSE)
+        end if
     end do
+!
+    call FEStiffVecScal(FEQuadCell, FEBasis, valQP, resi)
 !
     call writeVector("PRESIDU", nbDof, resi)
 end subroutine

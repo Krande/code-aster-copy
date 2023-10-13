@@ -39,16 +39,16 @@ subroutine te0080(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
 !
-    type(FE_Cell) :: FECell, subFECell(4)
+    type(FE_Cell) :: FECell
     type(FE_Quadrature) :: FEQuadCell
     type(FE_basis) :: FEBasis
 !
-    integer ::  kp, i, itemps, isour, icode
-    integer :: nbDof, connec(4, 27), ise, nbres, nbSubCell
+    integer ::  kp, itemps, isour, icode
+    integer :: nbDof, nbres
     parameter(nbres=4)
     character(len=8) :: nompar(nbres)
     real(kind=8) :: valpar(nbres), sour, valQP(MAX_QP)
-    real(kind=8) :: theta, soun, sounp1, rhs(MAX_BS), rhs_sub(MAX_BS)
+    real(kind=8) :: theta, soun, sounp1, rhs(MAX_BS)
 !
     call FECell%init()
     call FEBasis%initCell(FECell)
@@ -61,46 +61,38 @@ subroutine te0080(option, nomte)
     nompar(1:3) = ['X', 'Y', 'Z']
     nompar(4) = 'INST'
 !
-    rhs = 0.d0
     valQP = 0.d0
 !
 ! BOUCLE SUR LES SOUS-ELEMENTS
 !
-    call FECell%splitLumped(nbSubCell, subFECell, connec)
-    do ise = 1, nbSubCell
-        call FEQuadCell%initCell(subFECell(ise), "RIGI")
-        call FEBasis%initCell(subFECell(ise))
+    call FEQuadCell%initCell(FECell, "RIGI")
+    call FEBasis%initCell(FECell)
 
-        do kp = 1, FEQuadCell%nbQuadPoints
-            valpar(1:3) = FEQuadCell%points(1:3, kp)
-            valpar(4) = zr(itemps)
+    do kp = 1, FEQuadCell%nbQuadPoints
+        valpar(1:3) = FEQuadCell%points(1:3, kp)
+        valpar(4) = zr(itemps)
+        call fointe_varc('FM', 'FPG1', 1, 1, '+', &
+                         zk8(isour), 4, nompar, valpar, &
+                         sounp1, icode)
+        if (theta .ne. 1.0d0) then
+            valpar(3) = zr(itemps)-zr(itemps+1)
             call fointe_varc('FM', 'FPG1', 1, 1, '+', &
                              zk8(isour), 4, nompar, valpar, &
-                             sounp1, icode)
-            if (theta .ne. 1.0d0) then
-                valpar(3) = zr(itemps)-zr(itemps+1)
-                call fointe_varc('FM', 'FPG1', 1, 1, '+', &
-                                 zk8(isour), 4, nompar, valpar, &
-                                 soun, icode)
-            else
-                soun = 0.d0
-            end if
+                             soun, icode)
+        else
+            soun = 0.d0
+        end if
 !
-            if (theta < -0.5) then
-                sour = sounp1
-            else
-                sour = theta*sounp1+(1.0d0-theta)*soun
-            end if
+        if (theta < -0.5) then
+            sour = sounp1
+        else
+            sour = theta*sounp1+(1.0d0-theta)*soun
+        end if
 
-            valQP(kp) = sour
-        end do
-
-        call FeMakeRhsScal(FEQuadCell, FEBasis, valQP, rhs_sub)
-
-        do i = 1, FEBasis%size
-            rhs(connec(ise, i)) = rhs(connec(ise, i))+rhs_sub(i)
-        end do
+        valQP(kp) = sour
     end do
+
+    call FeMakeRhsScal(FEQuadCell, FEBasis, valQP, rhs)
 !
     call writeVector("PVECTTR", nbDof, rhs)
 !
