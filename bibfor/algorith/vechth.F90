@@ -155,12 +155,12 @@ subroutine vechth(type_ther, model_, lload_name_, lload_info_, cara_elem_, mate_
             if (type_ther .eq. 'MOVE') then
                 call load_neut_comp('2MBR', stop_calc, model, time_curr, time, &
                                     load_name, load_nume, nb_in_maxi, nb_in_prep, lpain, &
-                                    lchin, base, resu_elem, vect_elem, time_move, &
+                                    lchin, base, resu_elem, vect_elem, ASTER_FALSE, time_move, &
                                     i_load)
             else
                 call load_neut_comp('2MBR', stop_calc, model, time_curr, time, &
                                     load_name, load_nume, nb_in_maxi, nb_in_prep, lpain, &
-                                    lchin, base, resu_elem, vect_elem, i_load_=i_load)
+                                    lchin, base, resu_elem, vect_elem, ASTER_FALSE, i_load_=i_load)
             end if
         end if
     end do

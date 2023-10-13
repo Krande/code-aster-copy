@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine load_neut_comp(type_calc, stop_calc, model     , time_curr     , time      ,&
                               load_name, load_nume, nb_in_maxi, nb_in_prep    , lpain     ,&
-                              lchin    , base     , resu_elem , matr_vect_elem, time_move_,&
+                              lchin    , base     , resu_elem , matr_vect_elem, l_stat, time_move_,&
                               i_load_  )
         character(len=4), intent(in) :: type_calc
         character(len=1), intent(in) :: stop_calc
@@ -37,6 +37,7 @@ interface
         character(len=19), intent(inout) :: resu_elem
         character(len=19), intent(in) :: matr_vect_elem
         character(len=1), intent(in) :: base
+        aster_logical, intent(in) :: l_stat
         character(len=24), optional, intent(in) :: time_move_
         integer, optional, intent(in) :: i_load_
     end subroutine load_neut_comp

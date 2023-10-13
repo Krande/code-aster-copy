@@ -157,7 +157,7 @@ subroutine merxth(model, lload_name, lload_info, cara_elem, mate, mateco, &
         if (load_nume .gt. 0) then
             call load_neut_comp('MTAN', stop_calc, model, time_curr, time, &
                                 load_name, load_nume, nb_in_maxi, nb_in_prep, lpain, &
-                                lchin, base, resu_elem, matr_elem)
+                                lchin, base, resu_elem, matr_elem, l_stat)
         end if
     end do
 !

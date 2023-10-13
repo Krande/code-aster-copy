@@ -18,8 +18,8 @@
 
 subroutine load_neut_comp(type_calc, stop_calc, model, time_curr, time, &
                           load_name, load_nume, nb_in_maxi, nb_in_prep, lpain, &
-                          lchin, base, resu_elem, matr_vect_elem, time_move_, &
-                          i_load_)
+                          lchin, base, resu_elem, matr_vect_elem, l_stat, &
+                          time_move_, i_load_)
 !
     implicit none
 !
@@ -48,6 +48,7 @@ subroutine load_neut_comp(type_calc, stop_calc, model, time_curr, time, &
     character(len=19), intent(inout) :: resu_elem
     character(len=19), intent(in) :: matr_vect_elem
     character(len=1), intent(in) :: base
+    aster_logical, intent(in) :: l_stat
     character(len=24), optional, intent(in) :: time_move_
     integer, optional, intent(in) :: i_load_
 !
@@ -140,7 +141,7 @@ subroutine load_neut_comp(type_calc, stop_calc, model, time_curr, time, &
                         lpain, nbout, resu_elem, lpaout, base, &
                         'OUI')
 
-            if (type_calc .ne. "2MBR") then
+            if (type_calc .ne. "2MBR" .and. .not. l_stat) then
                 call multResuElem(resu_elem, theta)
             end if
 !
