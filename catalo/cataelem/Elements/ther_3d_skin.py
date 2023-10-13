@@ -139,7 +139,7 @@ class THER_FACE3(Element):
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
         OP.CHAR_THER_FLUTNL(
-            te=526,
+            te=506,
             para_in=(
                 (SP.PFLUXNL, CFLUXNF),
                 (SP.PGEOMER, NGEOMER),

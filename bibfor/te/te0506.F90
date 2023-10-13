@@ -18,68 +18,65 @@
 !
 subroutine te0506(option, nomte)
 !
+    use FE_topo_module
+    use FE_quadrature_module
+    use FE_basis_module
+    use FE_rhs_module
+    use FE_eval_module
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/elrefe_info.h"
-#include "asterfort/foderi.h"
-#include "asterfort/jevech.h"
-#include "asterfort/lteatt.h"
-#include "asterfort/vff2dn.h"
+!     BUT: CALCUL DES VECTEURS ELEMENTAIRES EN THERMIQUE
+!          CORRESPONDANT AU FLUX NON-LINEAIRE
 !
-    character(len=16) :: option, nomte
-! ......................................................................
-!    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES
-!                          OPTION : 'CHAR_THER_FLUTNL'
+!         OPTION : 'CHAR_THER_FLUTNL'
 !
 !    - ARGUMENTS:
 !        DONNEES:      OPTION       -->  OPTION DE CALCUL
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
+!----------------------------------------------------------------------
+!
+    implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jevech.h"
+#include "asterfort/writeVector.h"
+#include "asterfort/foderi.h"
+#include "FE_module.h"
+!
+    type(FE_Skin) :: FESkin
+    type(FE_Quadrature) :: FEQuad
+    type(FE_Basis) :: FEBasis
+!
+    character(len=16) :: option, nomte
+    real(kind=8) :: alpha, dalpha, tpg
+    integer :: iflux, kp
     character(len=8) :: coef
-    real(kind=8) :: poids, r, tpg
-    real(kind=8) :: alpha, alphap, nx, ny
-    integer :: nno, nnos, jgano, ndim, kp, npg, i, k, itemps, itemp, itempi
-    integer :: iflux
-    integer :: ipoids, ivf, idfde, igeom
-    integer :: iveres
-    aster_logical :: laxi
+    real(kind=8) :: rhs(MAX_BS), valQP(MAX_QP)
+    real(kind=8), pointer :: tempi(:) => null()
 !
+    call FESkin%init()
+    call FEQuad%initFace(FESkin, "RIGI")
+    call FEBasis%initFace(FESkin)
 !
-!
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
-                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
-    laxi = .false.
-    if (lteatt('AXIS', 'OUI')) laxi = .true.
-    call jevech('PGEOMER', 'L', igeom)
-    call jevech('PTEMPSR', 'L', itemps)
-    call jevech('PTEMPER', 'L', itemp)
-    call jevech('PTEMPEI', 'L', itempi)
+    call jevech('PTEMPEI', 'L', vr=tempi)
     call jevech('PFLUXNL', 'L', iflux)
-    call jevech('PRESIDU', 'E', iveres)
 !
     coef = zk8(iflux)
-    if (coef(1:7) .eq. '&FOZERO') goto 40
+    if (coef(1:7) .eq. '&FOZERO') goto 999
 !
+    valQP = 0.d0
+    do kp = 1, FEQuad%nbQuadPoints
+        tpg = FEEvalFuncScal(FEBasis, tempi, FEQuad%points_param(1:3, kp))
 !
-    do kp = 1, npg
-        k = (kp-1)*nno
-        call vff2dn(ndim, nno, kp, ipoids, idfde, &
-                    zr(igeom), nx, ny, poids)
-        r = 0.d0
-        tpg = 0.d0
-        do i = 1, nno
-            r = r+zr(igeom+2*(i-1))*zr(ivf+k+i-1)
-            tpg = tpg+zr(itempi+i-1)*zr(ivf+k+i-1)
-        end do
-        call foderi(coef, tpg, alpha, alphap)
-        if (laxi) poids = poids*r
+        call foderi(coef, tpg, alpha, dalpha)
 !
-!
-        do i = 1, nno
-            zr(iveres+i-1) = zr(iveres+i-1)+poids*zr(ivf+k+i-1)*(alpha-alphap*tpg)
-        end do
+        valQP(kp) = alpha-dalpha*tpg
     end do
-40  continue
-! FIN ------------------------------------------------------------------
+!
+    call FeMakeRhsScal(FEQuad, FEBasis, valQP, rhs)
+    call writeVector("PRESIDU", FEBasis%size, rhs)
+!
+999 continue
+!
 end subroutine
