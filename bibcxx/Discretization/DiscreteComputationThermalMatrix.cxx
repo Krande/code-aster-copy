@@ -427,7 +427,7 @@ DiscreteComputation::getThermalExchangeMatrix( const ASTERDOUBLE &time_curr ) co
                           std::to_string( time_curr ) );
             }
 
-            calcul->setOption( "RIGI_THER_COEH_R" );
+            calcul->setOption( "RIGI_THER_ECHA_R" );
             calcul->clearInputs();
             calcul->clearOutputs();
             calcul->setFiniteElementDescriptor( FEDesc );
@@ -444,7 +444,7 @@ DiscreteComputation::getThermalExchangeMatrix( const ASTERDOUBLE &time_curr ) co
 
         if ( load->hasLoadField( "COEFH" ) ) {
             auto exchange_field = load->getConstantLoadField( "COEFH" );
-            calcul->setOption( "RIGI_THER_COEH_R" );
+            calcul->setOption( "RIGI_THER_ECHA_R" );
             calcul->clearInputs();
             calcul->clearOutputs();
             calcul->setFiniteElementDescriptor( FEDesc );
@@ -491,7 +491,7 @@ DiscreteComputation::getThermalExchangeMatrix( const ASTERDOUBLE &time_curr ) co
 
         if ( load->hasLoadField( "COEFH" ) ) {
             auto exchange_field = load->getConstantLoadField( "COEFH" );
-            calcul->setOption( "RIGI_THER_COEH_F" );
+            calcul->setOption( "RIGI_THER_ECHA_F" );
             calcul->clearInputs();
             calcul->clearOutputs();
             calcul->setFiniteElementDescriptor( FEDesc );

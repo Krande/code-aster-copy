@@ -80,8 +80,8 @@ subroutine mertth(model, lload_name, lload_info, cara_elem, mate, mateco, &
     character(len=24), pointer :: v_load_name(:) => null()
     integer, pointer :: v_load_info(:) => null()
     data nomchp/'.FLUNL', '.HECHP', '.COEFH'/
-    data nomopr/'                ', 'MTAN_THER_PARO_R', 'RIGI_THER_COEH_R'/
-    data nomopf/'MTAN_THER_FLUXNL', 'MTAN_THER_PARO_F', 'RIGI_THER_COEH_F'/
+    data nomopr/'                ', 'MTAN_THER_PARO_R', 'RIGI_THER_ECHA_R'/
+    data nomopf/'MTAN_THER_FLUXNL', 'MTAN_THER_PARO_F', 'RIGI_THER_ECHA_F'/
     data nompar/'       ', 'PHECHPR', 'PCOEFHR'/
     data nompaf/'PFLUXNL', 'PHECHPF', 'PCOEFHF'/
     data nbopt/4, 5, 3/

@@ -88,7 +88,7 @@ class THCASE3(Element):
             para_in=((SP.PFLUXNR, CFLUXNR), (SP.PGEOMER, NGEOMER)),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
-        OP.CHAR_THER_TEXT_F(
+        OP.CHAR_THER_ECHA_F(
             te=107,
             para_in=(
                 (SP.PCOEFHF, CCOEFHF),
@@ -98,7 +98,7 @@ class THCASE3(Element):
             ),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
-        OP.CHAR_THER_TEXT_R(
+        OP.CHAR_THER_ECHA_R(
             te=108,
             para_in=(
                 (SP.PCOEFHR, CCOEFHR),
@@ -131,15 +131,15 @@ class THCASE3(Element):
             ),
             para_out=((OP.RIGI_THER.PMATTTR, MMATTTR),),
         ),
-        OP.RIGI_THER_COEH_F(
+        OP.RIGI_THER_ECHA_F(
             te=103,
             para_in=((SP.PCOEFHF, CCOEFHF), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
-            para_out=((OP.RIGI_THER_COEH_F.PMATTTR, MMATTTR),),
+            para_out=((OP.RIGI_THER_ECHA_F.PMATTTR, MMATTTR),),
         ),
-        OP.RIGI_THER_COEH_R(
+        OP.RIGI_THER_ECHA_R(
             te=104,
             para_in=((SP.PCOEFHR, CCOEFHR), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
-            para_out=((OP.RIGI_THER_COEH_R.PMATTTR, MMATTTR),),
+            para_out=((OP.RIGI_THER_ECHA_R.PMATTTR, MMATTTR),),
         ),
         OP.TOU_INI_ELGA(te=99, para_out=((OP.TOU_INI_ELGA.PGEOM_R, EGGEOP_R),)),
         OP.TOU_INI_ELEM(te=99, para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM2D),)),

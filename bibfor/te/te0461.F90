@@ -50,8 +50,8 @@ subroutine te0461(option, nomte)
 !          SUR UNE FACE POUR HHO
 !          (LE CHARGEMENT PEUT ETRE DONNE SOUS FORME D'UNE FONCTION)
 !
-!          OPTIONS : 'CHAR_THER_TEXT_R'
-!                    'CHAR_THER_TEXT_F'
+!          OPTIONS : 'CHAR_THER_ECHA_R'
+!                    'CHAR_THER_ECHA_F'
 !                    'CHAR_THER_FLUN_R'
 !                    'CHAR_THER_FLUN_F'
 !                    'CHAR_THER_FLUNL'
@@ -110,7 +110,7 @@ subroutine te0461(option, nomte)
 !
 ! ---- Which option ?
 !
-    if (option .eq. 'CHAR_THER_TEXT_R') then
+    if (option .eq. 'CHAR_THER_ECHA_R') then
 !
 ! ----- Get real value COEF_H
 !
@@ -122,7 +122,7 @@ subroutine te0461(option, nomte)
         call jevech('PT_EXTR', 'L', j_para)
         ParaQP_curr = zr(j_para)
 !
-    elseif (option .eq. 'CHAR_THER_TEXT_F') then
+    elseif (option .eq. 'CHAR_THER_ECHA_F') then
         call jevech('PCOEFHF', 'L', j_coefh)
         call jevech('PT_EXTF', 'L', j_para)
 !
@@ -228,7 +228,7 @@ subroutine te0461(option, nomte)
         ASSERT(ASTER_FALSE)
     end if
 !
-    if (option(1:15) .eq. 'CHAR_THER_TEXT_') then
+    if (option(1:15) .eq. 'CHAR_THER_ECHA_') then
 !
         call readVector('PTEMPER', fbs, temp_F_curr)
 !

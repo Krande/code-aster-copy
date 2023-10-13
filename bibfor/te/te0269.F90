@@ -26,7 +26,7 @@ subroutine te0269(option, nomte)
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES
-!                          OPTION : 'CHAR_THER_TEXT_R'
+!                          OPTION : 'CHAR_THER_ECHA_R'
 !                          ELEMENTS FOURIER
 !    - ARGUMENTS:
 !        DONNEES:      OPTION       -->  OPTION DE CALCUL

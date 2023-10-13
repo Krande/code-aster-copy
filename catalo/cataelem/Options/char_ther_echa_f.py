@@ -26,12 +26,9 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-PMATTTR = OutputParameter(phys=PHY.MTEM_R, type="RESL")
-
-
-RIGI_THER_COEH_F = Option(
-    para_in=(SP.PCOEFHF, SP.PGEOMER, SP.PTEMPSR),
-    para_out=(PMATTTR,),
+CHAR_THER_ECHA_F = Option(
+    para_in=(SP.PCOEFHF, SP.PGEOMER, SP.PTEMPER, SP.PTEMPSR, SP.PT_EXTF),
+    para_out=(SP.PVECTTR,),
     condition=(
         CondCalcul("+", ((AT.PHENO, "TH"), (AT.BORD, "-1"))),
         CondCalcul("+", ((AT.PHENO, "TH"), (AT.BORD, "0"), (AT.COQUE, "OUI"))),

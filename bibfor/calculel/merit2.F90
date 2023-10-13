@@ -45,7 +45,7 @@ subroutine merit2(modele, nchar, lchar, cara, time, &
 ! ----------------------------------------------------------------------
 !
 !     CALCUL DES MATRICES ELEMENTAIRES DE RIGIDITE THERMIQUE (2)
-!        ( ISO_FACE, 'RIGI_THER_COEH_R/F' , 'RIGI_THER_PARO_R/F' )
+!        ( ISO_FACE, 'RIGI_THER_ECHA_R/F' , 'RIGI_THER_PARO_R/F' )
 !
 !     LES RESUELEM PRODUITS S'APPELLENT :
 !           PREFCH(1:8).ME000I , I=NUMERO+1,NUMERO+N

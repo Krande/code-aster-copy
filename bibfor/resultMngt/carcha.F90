@@ -215,12 +215,12 @@ subroutine carcha(fieldType, fieldQuantity, fieldSupport, option, param)
     else if (fieldType .eq. 'T_EXT') then
         fieldQuantity = 'TEMP_R'
         fieldSupport = 'ELEM'
-        option = 'CHAR_THER_TEXT_R'
+        option = 'CHAR_THER_ECHA_R'
         param = 'PT_EXTR'
     else if (fieldType .eq. 'COEF_H') then
         fieldQuantity = 'COEH_R'
         fieldSupport = 'ELEM'
-        option = 'CHAR_THER_TEXT_R'
+        option = 'CHAR_THER_ECHA_R'
         param = 'PCOEFHR'
     else if (fieldType .eq. 'EPSG_NOEU') then
         fieldQuantity = 'EPSI_R'

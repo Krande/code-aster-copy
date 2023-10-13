@@ -104,7 +104,7 @@ subroutine load_neut_data(i_type_neum, nb_type_neumz, type_calc_, &
 !
 ! - Name of option for second member (real coefficient)
 !
-    data opti_2mbr_r/'CHAR_THER_TEXT_R', 'CHAR_THER_FLUN_R', &
+    data opti_2mbr_r/'CHAR_THER_ECHA_R', 'CHAR_THER_FLUN_R', &
         'CHAR_THER_FLUX_R', 'CHAR_THER_SOUR_R', &
         'CHAR_THER_PARO_R', 'CHAR_THER_GRAI_R', 'No_Load', &
         'No_Load', 'No_Load', &
@@ -112,7 +112,7 @@ subroutine load_neut_data(i_type_neum, nb_type_neumz, type_calc_, &
 !
 ! - Name of option for second member (function coefficient)
 !
-    data opti_2mbr_f/'CHAR_THER_TEXT_F', 'CHAR_THER_FLUN_F', &
+    data opti_2mbr_f/'CHAR_THER_ECHA_F', 'CHAR_THER_FLUN_F', &
         'CHAR_THER_FLUX_F', 'CHAR_THER_SOUR_F', &
         'CHAR_THER_PARO_F', 'CHAR_THER_GRAI_F', 'No_Load', 'No_Load', &
         'No_Load', 'No_Load', 'No_Load'/
@@ -179,13 +179,13 @@ subroutine load_neut_data(i_type_neum, nb_type_neumz, type_calc_, &
 !
 ! - Name of option for rigidity matrix (real coefficient)
 !
-    data opti_mrig_r/'RIGI_THER_COEH_R', 'No_Load', 'No_Load', 'No_Load', &
+    data opti_mrig_r/'RIGI_THER_ECHA_R', 'No_Load', 'No_Load', 'No_Load', &
         'RIGI_THER_PARO_R', 'No_Load', 'No_Load', 'No_Load', &
         'No_Load', 'No_Load', 'No_Load'/
 !
 ! - Name of option for rigidity matrix (function coefficient)
 !
-    data opti_mrig_f/'RIGI_THER_COEH_F', 'No_Load', 'No_Load', 'No_Load', &
+    data opti_mrig_f/'RIGI_THER_ECHA_F', 'No_Load', 'No_Load', 'No_Load', &
         'RIGI_THER_PARO_F', 'No_Load', 'No_Load', 'No_Load', &
         'No_Load', 'No_Load', 'No_Load'/
 !
@@ -203,13 +203,13 @@ subroutine load_neut_data(i_type_neum, nb_type_neumz, type_calc_, &
 !
 ! - Name of option for tangent matrix (real coefficient)
 !
-    data opti_mtan_r/'RIGI_THER_COEH_R', 'No_Load', 'No_Load', 'No_Load', &
+    data opti_mtan_r/'RIGI_THER_ECHA_R', 'No_Load', 'No_Load', 'No_Load', &
         'MTAN_THER_PARO_R', 'No_Load', 'No_Load', 'No_Load', &
         'MTAN_THER_RAYO_R', 'No_Load', 'No_Load'/
 !
 ! - Name of option for tangent matrix (function coefficient)
 !
-    data opti_mtan_f/'RIGI_THER_COEH_F', 'No_Load', 'No_Load', 'No_Load', &
+    data opti_mtan_f/'RIGI_THER_ECHA_F', 'No_Load', 'No_Load', 'No_Load', &
         'MTAN_THER_PARO_F', 'No_Load', 'MTAN_THER_FLUXNL', 'MTAN_THER_SOURNL', &
         'MTAN_THER_RAYO_F', 'No_Load', 'No_Load'/
 !

@@ -29,7 +29,7 @@ import cataelem.Commons.attributes as AT
 PMATTTR = OutputParameter(phys=PHY.MTEM_R, type="RESL")
 
 
-RIGI_THER_COEH_R = Option(
+RIGI_THER_ECHA_R = Option(
     para_in=(SP.PCOEFHR, SP.PGEOMER, SP.PTEMPSR),
     para_out=(PMATTTR,),
     condition=(

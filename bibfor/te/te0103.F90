@@ -31,7 +31,7 @@ subroutine te0103(option, nomte)
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES MATRICES ELEMENTAIRES
-!                          OPTION : 'RIGI_THER_COEH_F'
+!                          OPTION : 'RIGI_THER_ECHA_F'
 !                          CAS COQUE
 !    - ARGUMENTS:
 !        DONNEES:      OPTION       -->  OPTION DE CALCUL

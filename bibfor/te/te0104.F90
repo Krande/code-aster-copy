@@ -29,7 +29,7 @@ subroutine te0104(option, nomte)
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES MATRICES ELEMENTAIRES
-!                          OPTION : 'RIGI_THER_COEH_R'
+!                          OPTION : 'RIGI_THER_ECHA_R'
 !                          CAS COQUE
 !    - ARGUMENTS:
 !        DONNEES:      OPTION       -->  OPTION DE CALCUL

@@ -26,7 +26,7 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-CHAR_THER_TEXT_R = Option(
+CHAR_THER_ECHA_R = Option(
     para_in=(SP.PCOEFHR, SP.PGEOMER, SP.PTEMPER, SP.PTEMPSR, SP.PT_EXTR),
     para_out=(SP.PVECTTR,),
     condition=(

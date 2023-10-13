@@ -29,7 +29,7 @@ subroutine te0107(option, nomte)
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES
-!                          OPTION : 'CHAR_THER_TEXT_F'
+!                          OPTION : 'CHAR_THER_ECHA_F'
 !                          CAS COQUE
 !    - ARGUMENTS:
 !        DONNEES:      OPTION       -->  OPTION DE CALCUL

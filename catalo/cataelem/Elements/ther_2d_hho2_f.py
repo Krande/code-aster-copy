@@ -119,7 +119,7 @@ class THER_2D_HHO2_F(Element):
             ),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
-        OP.CHAR_THER_TEXT_F(
+        OP.CHAR_THER_ECHA_F(
             te=461,
             para_in=(
                 (SP.PCOEFHF, CCOEFHF),
@@ -130,7 +130,7 @@ class THER_2D_HHO2_F(Element):
             ),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
-        OP.CHAR_THER_TEXT_R(
+        OP.CHAR_THER_ECHA_R(
             te=461,
             para_in=(
                 (SP.PCOEFHR, CCOEFHR),
@@ -161,15 +161,15 @@ class THER_2D_HHO2_F(Element):
             ),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
-        OP.RIGI_THER_COEH_F(
+        OP.RIGI_THER_ECHA_F(
             te=457,
             para_in=((SP.PCOEFHF, CCOEFHF), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
-            para_out=((OP.RIGI_THER_COEH_F.PMATTTR, MMATTTR),),
+            para_out=((OP.RIGI_THER_ECHA_F.PMATTTR, MMATTTR),),
         ),
-        OP.RIGI_THER_COEH_R(
+        OP.RIGI_THER_ECHA_R(
             te=457,
             para_in=((SP.PCOEFHR, CCOEFHR), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
-            para_out=((OP.RIGI_THER_COEH_R.PMATTTR, MMATTTR),),
+            para_out=((OP.RIGI_THER_ECHA_R.PMATTTR, MMATTTR),),
         ),
         OP.MTAN_THER_FLUXNL(
             te=457,

@@ -81,7 +81,7 @@ class THFOSE2(Element):
             para_in=((SP.PFLUXNR, CFLUXNR), (SP.PGEOMER, NGEOMER)),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
-        OP.CHAR_THER_TEXT_F(
+        OP.CHAR_THER_ECHA_F(
             te=270,
             para_in=(
                 (SP.PCOEFHF, CCOEFHF),
@@ -92,7 +92,7 @@ class THFOSE2(Element):
             ),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
-        OP.CHAR_THER_TEXT_R(
+        OP.CHAR_THER_ECHA_R(
             te=269,
             para_in=(
                 (SP.PCOEFHR, CCOEFHR),
@@ -106,15 +106,15 @@ class THFOSE2(Element):
         OP.COOR_ELGA(
             te=478, para_in=((SP.PGEOMER, NGEOMER),), para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R),)
         ),
-        OP.RIGI_THER_COEH_F(
+        OP.RIGI_THER_ECHA_F(
             te=268,
             para_in=((SP.PCOEFHF, CCOEFHF), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
-            para_out=((OP.RIGI_THER_COEH_F.PMATTTR, MMATTTR),),
+            para_out=((OP.RIGI_THER_ECHA_F.PMATTTR, MMATTTR),),
         ),
-        OP.RIGI_THER_COEH_R(
+        OP.RIGI_THER_ECHA_R(
             te=267,
             para_in=((SP.PCOEFHR, CCOEFHR), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
-            para_out=((OP.RIGI_THER_COEH_R.PMATTTR, MMATTTR),),
+            para_out=((OP.RIGI_THER_ECHA_R.PMATTTR, MMATTTR),),
         ),
         OP.TOU_INI_ELGA(te=99, para_out=((OP.TOU_INI_ELGA.PGEOM_R, EGGEOP_R),)),
         OP.TOU_INI_ELEM(te=99, para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM2D),)),

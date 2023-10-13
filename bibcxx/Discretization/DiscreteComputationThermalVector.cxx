@@ -399,7 +399,7 @@ DiscreteComputation::getThermalExchangeForces( const FieldOnNodesRealPtr temp_cu
             auto exchange_field = load->getConstantLoadField( "COEFH" );
             auto ext_temp_field = load->getConstantLoadField( "T_EXT" );
 
-            calcul->setOption( "CHAR_THER_TEXT_R" );
+            calcul->setOption( "CHAR_THER_ECHA_R" );
             calcul->setFiniteElementDescriptor( model_FEDesc );
             calcul->clearInputs();
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
@@ -452,7 +452,7 @@ DiscreteComputation::getThermalExchangeForces( const FieldOnNodesRealPtr temp_cu
             auto exchange_field = load->getConstantLoadField( "COEFH" );
             auto ext_temp_field = load->getConstantLoadField( "T_EXT" );
 
-            calcul->setOption( "CHAR_THER_TEXT_F" );
+            calcul->setOption( "CHAR_THER_ECHA_F" );
             calcul->clearInputs();
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
             calcul->addInputField( "PTEMPER", temp_curr );
@@ -718,7 +718,7 @@ DiscreteComputation::getTransientThermalLoadForces( const ASTERDOUBLE time_curr,
             FieldOnCellsRealPtr evol_flow_xyz_field =
                 std::make_shared< FieldOnCellsReal >( model_FEDesc );
             // On cherche le champ FLUN. Si il existe on calcule l'option CHAR_THER_FLUN_R
-            // Si il n'existe pas on suppose l'existence des champs pour calculer CHAR_THER_TEXT_R
+            // Si il n'existe pas on suppose l'existence des champs pour calculer CHAR_THER_ECHA_R
             CALLO_RSINCH( evol_char_name, para_flun, access_var, &time_curr,
                           evol_flow_xyz_field->getName(), extr_right, extr_left, &stop, base,
                           &iret );
@@ -749,7 +749,7 @@ DiscreteComputation::getTransientThermalLoadForces( const ASTERDOUBLE time_curr,
                 }
                 AS_ASSERT( temp_prev && temp_prev->exists() );
 
-                calcul->setOption( "CHAR_THER_TEXT_R" );
+                calcul->setOption( "CHAR_THER_ECHA_R" );
                 calcul->setFiniteElementDescriptor( model_FEDesc );
                 calcul->clearInputs();
                 calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );

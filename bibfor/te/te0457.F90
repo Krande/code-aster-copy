@@ -50,8 +50,8 @@ subroutine te0457(option, nomte)
 !          CORRESPONDANT A ECHANGE PAROI POUR HHO
 !          (LE CHARGEMENT PEUT ETRE DONNE SOUS FORME D'UNE FONCTION)
 !
-!          OPTIONS : 'RIGI_THER_COEH_R'
-!                    'RIGI_THER_COEH_F'
+!          OPTIONS : 'RIGI_THER_ECHA_R'
+!                    'RIGI_THER_ECHA_F'
 !                    'MTAN_THER_FLUNL'
 !                    'MTAN_THER_RAYO_R'
 !                    'MTAN_THER_RAYO_F'
@@ -101,14 +101,14 @@ subroutine te0457(option, nomte)
 !
 ! ---- Which option ?
 !
-    if (option .eq. 'RIGI_THER_COEH_R') then
+    if (option .eq. 'RIGI_THER_ECHA_R') then
 !
 ! ----- Get real value COEF_H
 !
         call jevech('PCOEFHR', 'L', j_coefh)
         CoeffQP_curr(1:hhoQuadFace%nbQuadPoints) = zr(j_coefh)
 !
-    elseif (option .eq. 'RIGI_THER_COEH_F') then
+    elseif (option .eq. 'RIGI_THER_ECHA_F') then
 !
 ! ---- Get Function Parameters
 !

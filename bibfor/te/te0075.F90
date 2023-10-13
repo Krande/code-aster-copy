@@ -172,7 +172,7 @@ subroutine te0075(option, nomte)
                 valQPC(kp) = para1*para2*((para3+tz0)**4-(tpg+tz0)**4)
             end if
         end do
-    else if (option == "CHAR_THER_TEXT_F") then
+    else if (option == "CHAR_THER_ECHA_F") then
         !
         call jevech('PT_EXTF', 'L', ipara)
         call jevech('PCOEFHF', 'L', ipara2)
@@ -202,7 +202,7 @@ subroutine te0075(option, nomte)
                 valQPC(kp) = para2*(para1-tpg)
             end if
         end do
-    else if (option == "CHAR_THER_TEXT_R") then
+    else if (option == "CHAR_THER_ECHA_R") then
 !
         call jevech('PT_EXTR', 'L', ipara)
         call jevech('PCOEFHR', 'L', ipara2)
