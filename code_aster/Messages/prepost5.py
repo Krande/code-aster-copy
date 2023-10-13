@@ -71,12 +71,6 @@ Séchage moins %(r2)f  Séchage plus %(r3)f
  nombre de maille(s) éliminée(s) du maillage  %(i1)d
 """
     ),
-    21: _(
-        """
- le numéro du groupe de mailles est trop grand:  %(i1)d
-  le numéro du groupe doit être inférieur a  %(i2)d
-"""
-    ),
     41: _(
         """
   le paramètre  %(k1)s n'existe pas %(k2)s

@@ -40,20 +40,4 @@ cata_msg = {
  Erreur dans PROJ_CHAMP option COUPLAGE : type de maille non reconnue : %(k1)s
 """
     ),
-    10: _(
-        """
- Routine %(k1)s : argument %(k2)s : %(i1)d
-"""
-    ),
-    11: _(
-        """
- Routine %(k1)s : argument %(k2)s : %(k3)s
-"""
-    ),
-    12: _(
-        """
- Erreur dans PROJ_CHAMP option COUPLAGE :
-     le nombre de noeuds à l'interface : %(i1)i est supérieur à la limite autorisée : %(i2)i
-"""
-    ),
 }
