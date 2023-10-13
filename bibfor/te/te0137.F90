@@ -44,7 +44,7 @@ subroutine te0137(option, nomte)
     integer :: nbres
     parameter(nbres=3)
     character(len=8) :: nompar(nbres), elrefe, alias8
-    real(kind=8) :: valpar(nbres), poids, r, z, nx, ny, tpg, theta
+    real(kind=8) :: valpar(nbres), poids, r, z, nx, ny, tpg
     real(kind=8) :: coenp1, sigma, epsil, tz0
     real(kind=8) :: coorse(18), vectt(9)
     integer :: nno, nnos, ndim, kp, npg, ipoids, ivf, idfde, jgano, igeom
@@ -77,8 +77,6 @@ subroutine te0137(option, nomte)
     call jevech('PTEMPSR', 'L', itemps)
     call jevech('PTEMPEI', 'L', itemp)
     call jevech('PRESIDU', 'E', iveres)
-!
-    theta = zr(itemps+2)
 !
     call connec(nomte, nse, nnop2, c)
 !
@@ -121,7 +119,7 @@ subroutine te0137(option, nomte)
                 ASSERT(icode .eq. 0)
                 do i = 1, nno
                     li = ivf+(kp-1)*nno+i-1
-                    vectt(c(ise, i)) = vectt(c(ise, i))+poids*zr(li)*theta*coenp1*tpg
+                    vectt(c(ise, i)) = vectt(c(ise, i))+poids*zr(li)*coenp1*tpg
                 end do
             else if (option(11:14) .eq. 'RAYO') then
                 call fointe('A', zk8(iray), 4, nompar, valpar, &
@@ -132,8 +130,8 @@ subroutine te0137(option, nomte)
                 ASSERT(ier .eq. 0)
                 do i = 1, nno
                     li = ivf+(kp-1)*nno+i-1
-                    vectt(c(ise, i)) = vectt(c(ise, i))+poids*zr(li)*theta*sigma*epsil*(tpg+tz0 &
-                                                                                        )**4
+                    vectt(c(ise, i)) = vectt(c(ise, i))+poids*zr(li)*sigma*epsil*(tpg+tz0 &
+                                                                                  )**4
                 end do
             end if
 !

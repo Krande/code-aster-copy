@@ -77,11 +77,11 @@ subroutine te0354(option, nomte)
         call jevech('PTEMPER', 'L', vr=tempi)
     else if (option(1:4) .eq. 'RESI') then
         l_resi = .true.
-        coefop = -theta
+        coefop = -1.d0
         call jevech('PTEMPEI', 'L', vr=tempi)
     else
         l_resi = .false.
-        coefop = -theta
+        coefop = -1.d0
         call jevech('PTEMPEI', 'L', vr=tempi)
     end if
 !

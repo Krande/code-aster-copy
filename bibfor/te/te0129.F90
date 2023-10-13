@@ -32,7 +32,7 @@ subroutine te0129(option, nomte)
 !        DONNEES:      OPTION       -->  OPTION DE CALCUL
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
     real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9), jac
-    real(kind=8) :: theta, tpg, alpha, rbid
+    real(kind=8) :: tpg, alpha, rbid
     integer :: ndim, nno, npg1, ipoids, ivf, idfdx, idfdy
     integer :: igeom, iflux, itempi, itemps, ino, jno, iveres
     integer :: nnos, jgano
@@ -52,8 +52,6 @@ subroutine te0129(option, nomte)
     call jevech('PTEMPEI', 'L', itempi)
     call jevech('PFLUXNL', 'L', iflux)
     call jevech('PRESIDU', 'E', iveres)
-!
-    theta = zr(itemps+2)
     coef = zk8(iflux)
     if (coef(1:7) .eq. '&FOZERO') goto 999
 !
@@ -102,7 +100,7 @@ subroutine te0129(option, nomte)
 ! ----- FIGURE PAS DANS LE 2ND MEMBRE LINEAIRE
 !
         do i = 1, nno
-            zr(iveres+i-1) = zr(iveres+i-1)-zr(ipoids+kp-1)*jac*theta*alpha*zr(ivf+ldec+i-1)
+            zr(iveres+i-1) = zr(iveres+i-1)-zr(ipoids+kp-1)*jac*alpha*zr(ivf+ldec+i-1)
         end do
     end do
 999 continue

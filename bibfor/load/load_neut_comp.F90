@@ -28,6 +28,8 @@ subroutine load_neut_comp(type_calc, stop_calc, model, time_curr, time, &
 #include "asterfort/reajre.h"
 #include "asterfort/gcnco2.h"
 #include "asterfort/corich.h"
+#include "asterfort/ntdomt.h"
+#include "asterfort/multResuElem.h"
 #include "asterfort/load_neut_spec.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -88,8 +90,11 @@ subroutine load_neut_comp(type_calc, stop_calc, model, time_curr, time, &
     character(len=24) :: load_ligrel
     integer :: nbout, nbin
     character(len=8) :: lpaout, newnom
+    real(kind=8) :: theta
 !
 ! --------------------------------------------------------------------------------------------------
+!
+    call ntdomt(theta)
 !
     do i_type_neum = 1, nb_type_neum
 !
@@ -134,6 +139,10 @@ subroutine load_neut_comp(type_calc, stop_calc, model, time_curr, time, &
             call calcul(stop_calc, load_option, load_ligrel, nbin, lchin, &
                         lpain, nbout, resu_elem, lpaout, base, &
                         'OUI')
+
+            if (type_calc .ne. "2MBR") then
+                call multResuElem(resu_elem, theta)
+            end if
 !
 ! --------- Copying output field
 !

@@ -47,10 +47,10 @@ subroutine te0138(option, nomte)
 !
 ! VARIABLES LOCALES
     character(len=8) :: coef, alias8
-    real(kind=8) :: poids, r, nx, ny, theta, alpha, rbid, tpg, coorse(18)
+    real(kind=8) :: poids, r, nx, ny, alpha, rbid, tpg, coorse(18)
     real(kind=8) :: vectt(9)
     integer :: nno, nnos, jgano, ndim, kp, npg, ipoids, ivf, idfde, igeom, i, j
-    integer :: l, li, iflux, iveres, nse, c(6, 9), ise, nnop2, itemps, itempi
+    integer :: l, li, iflux, iveres, nse, c(6, 9), ise, nnop2, itempi
     integer :: ibid
     aster_logical :: laxi
     character(len=8) :: elrefe
@@ -72,13 +72,11 @@ subroutine te0138(option, nomte)
     if (lteatt('AXIS', 'OUI')) laxi = .true.
 !
     call jevech('PGEOMER', 'L', igeom)
-    call jevech('PTEMPSR', 'L', itemps)
     call jevech('PTEMPEI', 'L', itempi)
     call jevech('PFLUXNL', 'L', iflux)
     call jevech('PRESIDU', 'E', iveres)
 !
 ! INITS.
-    theta = zr(itemps+2)
     coef = zk8(iflux)
     if (coef(1:7) .eq. '&FOZERO') goto 100
     call connec(nomte, nse, nnop2, c)
@@ -116,7 +114,7 @@ subroutine te0138(option, nomte)
 !
             do i = 1, nno
                 li = ivf+(kp-1)*nno+i-1
-                vectt(c(ise, i)) = vectt(c(ise, i))-poids*theta*alpha*zr(li)
+                vectt(c(ise, i)) = vectt(c(ise, i))-poids*alpha*zr(li)
             end do
         end do
     end do

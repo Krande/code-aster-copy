@@ -39,10 +39,10 @@ subroutine te0136(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 !
     character(len=8) :: elrefe, alias8
-    real(kind=8) :: poids, r, nx, ny, tpg, theta
+    real(kind=8) :: poids, r, nx, ny, tpg
     real(kind=8) :: coorse(18), vectt(9), hech, sigma, epsil, tz0
     integer :: nno, nnos, ndim, kp, npg, ipoids, ivf, idfde, jgano, igeom
-    integer :: iveres, i, j, l, li, iech, iray, itemps, itemp
+    integer :: iveres, i, j, l, li, iech, iray, itemp
     integer :: nnop2, c(6, 9), ise, nse, ibid
     aster_logical :: laxi
 !
@@ -71,11 +71,8 @@ subroutine te0136(option, nomte)
         epsil = zr(iray+1)
     end if
     call jevech('PGEOMER', 'L', igeom)
-    call jevech('PTEMPSR', 'L', itemps)
     call jevech('PTEMPEI', 'L', itemp)
     call jevech('PRESIDU', 'E', iveres)
-!
-    theta = zr(itemps+2)
 !
     call connec(nomte, nse, nnop2, c)
 !
@@ -107,13 +104,13 @@ subroutine te0136(option, nomte)
             if (option(11:14) .eq. 'COEF') then
                 do i = 1, nno
                     li = ivf+(kp-1)*nno+i-1
-                    vectt(c(ise, i)) = vectt(c(ise, i))+poids*theta*zr(li)*hech*tpg
+                    vectt(c(ise, i)) = vectt(c(ise, i))+poids*zr(li)*hech*tpg
                 end do
             else if (option(11:14) .eq. 'RAYO') then
                 do i = 1, nno
                     li = ivf+(kp-1)*nno+i-1
-                    vectt(c(ise, i)) = vectt(c(ise, i))+poids*theta*zr(li)*sigma*epsil*(tpg+tz0 &
-                                                                                        )**4
+                    vectt(c(ise, i)) = vectt(c(ise, i))+poids*zr(li)*sigma*epsil*(tpg+tz0 &
+                                                                                  )**4
                 end do
             end if
 !

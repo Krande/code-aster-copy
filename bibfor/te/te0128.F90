@@ -36,7 +36,7 @@ subroutine te0128(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 !
     character(len=8) :: nompar(4)
-    real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9), jac, tpg, theta
+    real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9), jac, tpg
     real(kind=8) :: valpar(4), xx, yy, zz
     real(kind=8) :: echnp1, sigma, epsil, tz0
     integer :: ipoids, ivf, idfdx, idfdy, igeom, jgano
@@ -64,7 +64,6 @@ subroutine te0128(option, nomte)
     call jevech('PTEMPEI', 'L', itemp)
     call jevech('PRESIDU', 'E', iveres)
 !
-    theta = zr(itemps+2)
 !
 !    CALCUL DES PRODUITS VECTORIELS OMI   OMJ
 !
@@ -115,7 +114,7 @@ subroutine te0128(option, nomte)
                         echnp1, ier)
             ASSERT(ier .eq. 0)
             do i = 1, nno
-                zr(iveres+i-1) = zr(iveres+i-1)+jac*theta*zr(ipoids+ipg-1)*zr(ivf+ldec+i-1)&
+                zr(iveres+i-1) = zr(iveres+i-1)+jac*zr(ipoids+ipg-1)*zr(ivf+ldec+i-1)&
                                 &*echnp1*tpg
             end do
         else if (option(11:14) .eq. 'RAYO') then
@@ -126,7 +125,7 @@ subroutine te0128(option, nomte)
                         epsil, ier)
             ASSERT(ier .eq. 0)
             do i = 1, nno
-                zr(iveres+i-1) = zr(iveres+i-1)+jac*theta*zr(ipoids+ipg-1)*zr(ivf+ldec+i-1)&
+                zr(iveres+i-1) = zr(iveres+i-1)+jac*zr(ipoids+ipg-1)*zr(ivf+ldec+i-1)&
                                 &*sigma*epsil*(tpg+tz0)**4
             end do
         end if

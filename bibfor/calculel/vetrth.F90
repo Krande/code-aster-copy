@@ -35,7 +35,6 @@ subroutine vetrth(modele, charge, infcha, carele, mate, &
 #include "asterfort/megeom.h"
 #include "asterfort/reajre.h"
 #include "asterfort/utmess.h"
-#include "asterfort/multResuElem.h"
     character(len=24) :: modele, charge, infcha, carele, inst, chtn, chti
     character(len=24) :: chlapm, chlapp, veres, mate
 ! ----------------------------------------------------------------------
@@ -56,7 +55,6 @@ subroutine vetrth(modele, charge, infcha, carele, mate, &
 !
 !
 !
-    character(len=1) :: c1
     character(len=8) :: nomcha, lpain(7), lpaout(4), newnom
     character(len=16) :: option
     character(len=24) :: ligrmo, lchin(7), lchout(4)
@@ -149,26 +147,6 @@ subroutine vetrth(modele, charge, infcha, carele, mate, &
                 call calcul('S', option, ligrmo, 5, lchin, &
                             lpain, 1, lchout, lpaout, 'V', &
                             'OUI')
-                call reajre(veres, lchout(1), 'V')
-            end if
-            lchin(2) = zk24(jchar+icha-1) (1:8)//'.CHTH.T_EXT.DESC'
-            call jeexin(lchin(2), iret)
-            if (iret .ne. 0) then
-                lpaout(1) = 'PRESIDU'
-                c1 = 'R'
-                if (zi(jinf+nchar+icha) .gt. 1) then
-                    c1 = 'F'
-                end if
-                option = 'RESI_THER_COEF_'//c1
-                lpain(4) = 'PCOEFH'//c1
-                lchin(4) = zk24(jchar+icha-1) (1:8)//'.CHTH.COEFH'
-                call gcnco2(newnom)
-                lchout(1) = '&&VETRTH.'//newnom(2:8)
-                call corich('E', lchout(1), ichin_=-1)
-                call calcul('S', option, ligrmo, 5, lchin, &
-                            lpain, 1, lchout, lpaout, 'V', &
-                            'OUI')
-                call multResuElem(lchout(1), -1.d0)
                 call reajre(veres, lchout(1), 'V')
             end if
         end do
