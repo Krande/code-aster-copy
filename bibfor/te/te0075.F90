@@ -100,7 +100,7 @@ subroutine te0075(option, nomte)
 !
         do kp = 1, FEQuad%nbQuadPoints
             tpg = FEEvalFuncScal(FEBasis, tempi, FEQuad%points_param(1:3, kp))
-
+!
             valpar(1:3) = FEQuad%points(1:3, kp)
             valpar(4) = time_curr
             ! SIGM
@@ -122,6 +122,29 @@ subroutine te0075(option, nomte)
                 !
                 valQPP(kp) = para1*para2*((para3+tz0)**4-(tpg+tz0)**4)
             else
+                ! SIGM * EPS * ((TPF+T0)^4-(T+T0)^4)
+                valQPC(kp) = para1*para2*((para3+tz0)**4-(tpg+tz0)**4)
+            end if
+        end do
+    else if (option == "CHAR_THER_RAYO_R") then
+!
+        call jevech('PRAYONR', 'L', ipara)
+        call jevech('PTEMPER', 'L', vr=tempi)
+!
+        do kp = 1, FEQuad%nbQuadPoints
+            tpg = FEEvalFuncScal(FEBasis, tempi, FEQuad%points_param(1:3, kp))
+            ! SIGM
+            para1 = zr(ipara)
+            ! EPS
+            para2 = zr(ipara+1)
+            ! TPF
+            para3 = zr(ipara+2)
+            !
+            if (theta > -0.5d0) then
+                valQPC(kp) = para1*para2*((para3+tz0)**4)
+                valQPP(kp) = para1*para2*((para3+tz0)**4-(tpg+tz0)**4)
+            else
+                ! SIGM * EPS * ((TPF+T0)^4-(T+T0)^4)
                 valQPC(kp) = para1*para2*((para3+tz0)**4-(tpg+tz0)**4)
             end if
         end do
@@ -151,6 +174,28 @@ subroutine te0075(option, nomte)
                 !
                 valQPP(kp) = para2*(para1-tpg)
             else
+                ! COEF_H*(TEXT-T)
+                valQPC(kp) = para2*(para1-tpg)
+            end if
+        end do
+    else if (option == "CHAR_THER_TEXT_R") then
+!
+        call jevech('PT_EXTR', 'L', ipara)
+        call jevech('PCOEFHR', 'L', ipara2)
+        call jevech('PTEMPER', 'L', vr=tempi)
+!
+        do kp = 1, FEQuad%nbQuadPoints
+            tpg = FEEvalFuncScal(FEBasis, tempi, FEQuad%points_param(1:3, kp))
+            ! TEXT
+            para1 = zr(ipara)
+            ! COEFH
+            para2 = zr(ipara2)
+            !
+            if (theta > -0.5d0) then
+                valQPC(kp) = para2*para1
+                valQPP(kp) = para2*(para1-tpg)
+            else
+                ! COEF_H*(TEXT-T)
                 valQPC(kp) = para2*(para1-tpg)
             end if
         end do
