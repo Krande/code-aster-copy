@@ -17,6 +17,8 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+import code_aster
+
 # Pour des raisons de performances (x5), on force SDVERI='NON'.
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="NON"))
 
@@ -53,7 +55,6 @@ CHMAT = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=MATER))
 # Finite elements
 MOTH = AFFE_MODELE(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MODELISATION="PLAN", PHENOMENE="THERMIQUE"))
 
-
 # Loads
 TGAUCHE = DEFI_FONCTION(
     NOM_RESU="TEMP",
@@ -66,7 +67,6 @@ CHTH = AFFE_CHAR_THER_F(
     MODELE=MOTH,
     TEMP_IMPO=(_F(GROUP_NO="NOE_GAU", TEMP=TGAUCHE), _F(GROUP_NO="NOE_DRO", TEMP=TDROITE)),
 )
-
 
 #
 # DEFINITION DE LA STATEGIE DE CALCUL -----------------------------
@@ -86,24 +86,33 @@ LIST = DEFI_LIST_REEL(
 
 
 temp_init = 100.0
+theta = 0.57
 
 l_inst = LIST.getValues()
 
+phys_pb = code_aster.PhysicalProblem(MOTH, CHMAT)
+phys_pb.addLoad(CHTH)
+
+phys_pb.computeDOFNumbering()
+phys_pb.computeBehaviourProperty({"RELATION": "THER_NL", "TOUT": "OUI"})
+
+disc_comp = code_aster.DiscreteComputation(phys_pb)
+
 # Create numbering
-NU = NUME_DDL(MODELE=MOTH, CHARGE=CHTH)
+NU = phys_pb.getDOFNumbering()
 
 # Fields
-T = CREA_CHAMP(
-    TYPE_CHAM="NOEU_TEMP_R",
-    OPERATION="AFFE",
-    MAILLAGE=MAIL,
-    NUME_DDL=NU,
-    AFFE=_F(TOUT="OUI", NOM_CMP=("TEMP"), VALE=(temp_init,)),
-)
+T = code_aster.FieldOnNodesReal(NU)
+T.setValues({"TEMP": temp_init})
+
 DELTA_T = T.copy() * 0
 
+linear_solver = code_aster.MultFrontSolver()
+
 for i_inst in range(1, len(l_inst)):
+    inst_prev = l_inst[i_inst - 1]
     inst = l_inst[i_inst]
+    d_inst = inst - inst_prev
     print(" ")
     print("        ####################################")
     print("             instant de calcul ", inst)
@@ -114,87 +123,41 @@ for i_inst in range(1, len(l_inst)):
     # Routine NXPRED
     ####################################################################################################
 
-    # Linear loads
-    CHAR_EL = CALC_VECT_ELEM(OPTION="CHAR_THER", INST=inst, CHARGE=CHTH)
-    CHAR_AS = ASSE_VECTEUR(VECT_ELEM=CHAR_EL, NUME_DDL=NU)
+    # Linear loads - B * u
+    CHAR_AS = disc_comp.getImposedDualBC(inst)
 
     # Compute non linear quantities
-    PRED = CALCUL(
-        PHENOMENE="THERMIQUE",
-        OPTION=("CHAR_EVOL_ELEM", "MATR_TANG_ELEM", "CHAR_THER_ELEM"),
-        MODELE=MOTH,
-        CHAM_MATER=CHMAT,
-        INCREMENT=_F(LIST_INST=LIST, NUME_ORDRE=i_inst),
-        EXCIT=_F(CHARGE=CHTH),
-        INCR_TEMP=DELTA_T,
-        TEMP=T,
-        INFO=2,
-    )
+    mass_ther = disc_comp.getTangentCapacityMatrix(T, DELTA_T)
+
+    rigi_ther = disc_comp.getTangentConductivityMatrix(T, DELTA_T, with_dual=False)
+    rigi_ther_dual = disc_comp.getDualLinearConductivityMatrix()
+
+    MT_AS = code_aster.AssemblyMatrixTemperatureReal()
+    MT_AS.setDOFNumbering(NU)
+    MT_AS.addElementaryMatrix(rigi_ther, theta)
+    MT_AS.addElementaryMatrix(rigi_ther_dual)
+    MT_AS.addElementaryMatrix(mass_ther, 1.0 / d_inst)
+    MT_AS.assemble()
 
     # Get CHAR_EVNL
-    EVNL_EL = EXTR_TABLE(
-        TYPE_RESU="VECT_ELEM_TEMP_R",
-        TABLE=PRED,
-        NOM_PARA="NOM_SD",
-        FILTRE=(
-            _F(NOM_PARA="NOM_OBJET", VALE_K="CHAR_EVNL_ELEM"),
-            _F(NOM_PARA="NUME_ORDRE", VALE_I=i_inst),
-        ),
-    )
-
-    EVNL_AS = ASSE_VECTEUR(VECT_ELEM=EVNL_EL, NUME_DDL=NU)
-
-    # Get CHAR_EVNL
-    EVOL_EL = EXTR_TABLE(
-        TYPE_RESU="VECT_ELEM_TEMP_R",
-        TABLE=PRED,
-        NOM_PARA="NOM_SD",
-        FILTRE=(
-            _F(NOM_PARA="NOM_OBJET", VALE_K="CHAR_EVOL_ELEM"),
-            _F(NOM_PARA="NUME_ORDRE", VALE_I=i_inst),
-        ),
-    )
-
-    EVOL_AS = ASSE_VECTEUR(VECT_ELEM=EVOL_EL, NUME_DDL=NU)
+    EVNL_AS = disc_comp.getNonLinearTransientThermalForces(T, DELTA_T, inst_prev, d_inst, theta)
 
     # Get CHAR_THER_NONL
-    CHNL_EL = EXTR_TABLE(
-        TYPE_RESU="VECT_ELEM_TEMP_R",
-        TABLE=PRED,
-        NOM_PARA="NOM_SD",
-        FILTRE=(
-            _F(NOM_PARA="NOM_OBJET", VALE_K="CHAR_THER_ELEM"),
-            _F(NOM_PARA="NUME_ORDRE", VALE_I=i_inst),
-        ),
-    )
-
-    CHNL_AS = ASSE_VECTEUR(VECT_ELEM=CHNL_EL, NUME_DDL=NU)
+    CHNL_AS = disc_comp.getNeumannForces(inst)
 
     # Create second member (transient)
     F2M_PRED = CHAR_AS + CHNL_AS + EVNL_AS
-
-    # Get tangent matrix
-    MT_EL = EXTR_TABLE(
-        TYPE_RESU="MATR_ELEM_TEMP_R",
-        TABLE=PRED,
-        NOM_PARA="NOM_SD",
-        FILTRE=(
-            _F(NOM_PARA="NOM_OBJET", VALE_K="MATR_TANG_ELEM"),
-            _F(NOM_PARA="NUME_ORDRE", VALE_I=i_inst),
-        ),
-    )
-
-    MT_AS = ASSE_MATRICE(MATR_ELEM=MT_EL, NUME_DDL=NU)
 
     ####################################################################################################
     # Routine NXPRED
     ####################################################################################################
 
     # Factor matrix
-    MT_AS = FACTORISER(reuse=MT_AS, METHODE="MULT_FRONT", MATR_ASSE=MT_AS)
+    isFacto = linear_solver.factorize(MT_AS)
+    assert isFacto
 
     # Solve
-    DELTA_T = RESOUDRE(MATR=MT_AS, CHAM_NO=F2M_PRED)
+    DELTA_T = linear_solver.solve(F2M_PRED)
 
     # =========================================================
     #               BOUCLE DE NEWTON
@@ -218,48 +181,21 @@ for i_inst in range(1, len(l_inst)):
         ####################################################################################################
 
         # Compute non linear quantities
-        CORR = CALCUL(
-            PHENOMENE="THERMIQUE",
-            OPTION=("RESI_THER_ELEM", "MATR_TANG_ELEM"),
-            MODELE=MOTH,
-            CHAM_MATER=CHMAT,
-            INCREMENT=_F(LIST_INST=LIST, NUME_ORDRE=i_inst),
-            EXCIT=_F(CHARGE=CHTH),
-            INCR_TEMP=DELTA_T,
-            TEMP=T,
-            INFO=2,
-        )
 
-        # RESI_THER
-        RESI_EL = EXTR_TABLE(
-            TYPE_RESU="VECT_ELEM_TEMP_R",
-            TABLE=CORR,
-            NOM_PARA="NOM_SD",
-            FILTRE=(
-                _F(NOM_PARA="NOM_OBJET", VALE_K="RESI_THER_ELEM"),
-                _F(NOM_PARA="NUME_ORDRE", VALE_I=i_inst),
-            ),
-        )
+        # Residual
+        code, flux, resi_ther = disc_comp.getInternalThermalForces(DELTA_T)
+        resi_mass = disc_comp.getNonLinearCapacityForces(T, DELTA_T, d_inst)
 
-        RESI_AS = ASSE_VECTEUR(VECT_ELEM=RESI_EL, NUME_DDL=NU)
+        RESI_AS = theta * resi_ther + (1.0 / d_inst) * resi_mass
 
         # Reaction
-        BTLA_EL = EXTR_TABLE(
-            TYPE_RESU="VECT_ELEM_TEMP_R",
-            TABLE=CORR,
-            NOM_PARA="NOM_SD",
-            FILTRE=(
-                _F(NOM_PARA="NOM_OBJET", VALE_K="FORC_DIRI_ELEM"),
-                _F(NOM_PARA="NUME_ORDRE", VALE_I=i_inst),
-            ),
-        )
-        BTLA_AS = ASSE_VECTEUR(VECT_ELEM=BTLA_EL, NUME_DDL=NU)
+        BTLA_AS = disc_comp.getDualForces(T + DELTA_T)
 
         ####################################################################################################
         # Routine NXRESI
         ####################################################################################################
         # Evaluate equilibrium
-        CN2MBR = EVOL_AS - RESI_AS - BTLA_AS
+        CN2MBR = EVNL_AS - RESI_AS - BTLA_AS
 
         # Evaluate residual
         resi_maxi = CN2MBR.norm("NORM_INFINITY")
@@ -279,21 +215,8 @@ for i_inst in range(1, len(l_inst)):
         else:
             Conv[IterNewton - 1] = 0
 
-        # Compute non linear quantities
-        CORR = CALCUL(
-            PHENOMENE="THERMIQUE",
-            OPTION=("CHAR_THER_ELEM", "MATR_TANG_ELEM"),
-            MODELE=MOTH,
-            CHAM_MATER=CHMAT,
-            INCREMENT=_F(LIST_INST=LIST, NUME_ORDRE=i_inst),
-            EXCIT=_F(CHARGE=CHTH),
-            INCR_TEMP=DELTA_T,
-            TEMP=T,
-            INFO=2,
-        )
-
         # Solve
-        DDT = RESOUDRE(MATR=MT_AS, CHAM_NO=CN2MBR)
+        DDT = linear_solver.solve(CN2MBR)
 
         # Update TEMP increment
         DELTA_T += DDT
@@ -304,12 +227,12 @@ for i_inst in range(1, len(l_inst)):
         print("     %d     |   %e   |   %e  |    %d " % (i, Residu[i], ResiduX[i], Conv[i]))
 
     if Conv[IterNewton - 1] != 1:
-        raise ConvergenceError("echec de la convergence des iterations de Newton")
+        raise code_aster.ConvergenceError("echec de la convergence des iterations de Newton")
 
     # Somme en python T+ = DELTA_t + T-
     T = DELTA_T.copy()
 
-    DELTA_T *= 0.0
+    DELTA_T.setValues(0)
 
 FIN()
 #

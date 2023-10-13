@@ -26,7 +26,6 @@ subroutine op0026()
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/catabl.h"
-#include "asterfort/catabl_ther.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/diinst.h"
@@ -34,11 +33,8 @@ subroutine op0026()
 #include "asterfort/jedema.h"
 #include "asterfort/calcGetData.h"
 #include "asterfort/calcGetDataMeca.h"
-#include "asterfort/calcGetDataTher.h"
 #include "asterfort/calcPrepDataMeca.h"
-#include "asterfort/calcPrepDataTher.h"
 #include "asterfort/calcCalcMeca.h"
-#include "asterfort/calcCalcTher.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -57,19 +53,15 @@ subroutine op0026()
     integer :: nume_inst, nume_harm
     integer :: long
     real(kind=8) :: time_prev, time_curr
-    real(kind=8) :: deltat, khi, theta, tpsthe(6)
+    real(kind=8) :: deltat, khi
     character(len=8) :: table_new, table_old
     type(NL_DS_Constitutive) :: ds_constitutive
     character(len=16) :: phenom
     character(len=19) :: list_load, list_inst
-    character(len=24) :: model, mate, cara_elem, compor_ther, mateco
+    character(len=24) :: model, mate, cara_elem, mateco
     character(len=19) :: disp_prev, disp_cumu_inst, vari_prev, sigm_prev
-    character(len=19) :: temp_prev, temp_curr, incr_temp
     character(len=19) :: vediri, vefnod, vevarc_prev, vevarc_curr
     aster_logical :: l_elem_nonl
-    character(len=24) :: ve_charther, me_mtanther, ve_evolther_l, ve_evolther_nl
-    character(len=24) :: ve_resither
-    character(len=24) :: time
     type(NL_DS_Material) :: ds_material
     type(NL_DS_System) :: ds_system
     aster_logical :: l_pred
@@ -89,9 +81,6 @@ subroutine op0026()
         call calcGetDataMeca(list_load, model, mate, mateco, cara_elem, &
                              disp_prev, disp_cumu_inst, vari_prev, sigm_prev, &
                              ds_constitutive, l_elem_nonl, nume_harm)
-    elseif (phenom .eq. 'THERMIQUE') then
-        call calcGetDataTher(list_load, model, mate, mateco, cara_elem, &
-                             temp_prev, incr_temp, compor_ther, theta)
     else
         ASSERT(ASTER_FALSE)
     end if
@@ -120,12 +109,6 @@ subroutine op0026()
                               hval_incr, hval_algo, &
                               vediri, vefnod, &
                               vevarc_prev, vevarc_curr)
-    elseif (phenom .eq. 'THERMIQUE') then
-        call calcPrepDataTher(model, temp_prev, incr_temp, &
-                              time_curr, deltat, theta, khi, &
-                              time, temp_curr, &
-                              ve_charther, me_mtanther, vediri, &
-                              ve_evolther_l, ve_evolther_nl, ve_resither)
     else
         ASSERT(ASTER_FALSE)
     end if
@@ -142,18 +125,6 @@ subroutine op0026()
                           vevarc_prev, vevarc_curr, &
                           nb_obje_maxi, obje_name, obje_sdname, nb_obje, &
                           l_pred)
-    elseif (phenom .eq. 'THERMIQUE') then
-        tpsthe(:) = 0.d0
-        tpsthe(1) = time_curr
-        tpsthe(2) = deltat
-        tpsthe(3) = theta
-        call calcCalcTher(nb_option, list_option, &
-                          list_load, model, mate, mateco, cara_elem, &
-                          tpsthe, time, &
-                          temp_prev, incr_temp, compor_ther, temp_curr, &
-                          ve_charther, me_mtanther, vediri, &
-                          ve_evolther_l, ve_evolther_nl, ve_resither, &
-                          nb_obje_maxi, obje_name, obje_sdname, nb_obje)
     else
         ASSERT(ASTER_FALSE)
     end if
@@ -163,9 +134,6 @@ subroutine op0026()
     if (phenom .eq. 'MECANIQUE') then
         call catabl(table_new, table_old, time_curr, nume_inst, nb_obje, &
                     obje_name, obje_sdname)
-    elseif (phenom .eq. 'THERMIQUE') then
-        call catabl_ther(table_new, table_old, time_curr, nume_inst, nb_obje, &
-                         obje_name, obje_sdname)
     else
         ASSERT(ASTER_FALSE)
     end if
