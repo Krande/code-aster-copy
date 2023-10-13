@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -97,7 +97,7 @@ subroutine comdlh()
     integer :: nbsym, i, n1
     integer :: lfreq, nbfreq
     integer :: nb_equa, nb_matr, ifm, niv
-    integer :: ifreq, ieq, inom, ier, ierc
+    integer :: ifreq, ieq, inom, ier, ierc, ierc2
     integer :: lsecmb, nbmodi, nbmody, nbbas, j
     integer :: icoef, icode, nbmode, jrefe
     integer :: linst, iret, ladpa, dec
@@ -677,10 +677,13 @@ subroutine comdlh()
 ! --- STOCKAGE : MODELE,CARA_ELEM,CHAM_MATER, CALCUL PHYSIQUE
 !
     if (.not. calgen) then
-        call dismoi('NOM_MODELE', raide, 'MATR_ASSE', repk=nomo)
-        call dismoi('CHAM_MATER', raide, 'MATR_ASSE', repk=mate, arret='C', ier=ierc)
-        ! call dismoi('CHAM_MATER', raide, 'MATR_ASSE', repk=mate)
-        call dismoi('CARA_ELEM', raide, 'MATR_ASSE', repk=carele)
+        call getvid(' ', 'MODELE', scal=nomo, nbret=ier)
+        if (ier .eq. 0) call dismoi('NOM_MODELE', raide, 'MATR_ASSE', repk=nomo)
+!
+        call getvid(' ', 'CHAM_MATER', scal=mate, nbret=ierc)
+        if (ierc .eq. 0) call utmess('I', 'DYNALINE1_3')
+        call getvid(' ', 'CARA_ELEM', scal=carele, nbret=ierc2)
+!
         call jeveuo(result//'           .ORDR', 'L', vi=ordr)
         call jelira(result//'           .ORDR', 'LONUTI', nbord)
         do i = 1, nbord
@@ -688,16 +691,15 @@ subroutine comdlh()
                         0, sjv=ladpa, styp=k8bid)
             zk8(ladpa) = nomo
             if (ierc .ne. 0) then
-                call utmess('A', 'CHAMPS_21')
-            else
                 call rsadpa(result, 'E', 1, 'CHAMPMAT', ordr(i), &
                             0, sjv=ladpa, styp=k8bid)
                 zk8(ladpa) = mate(1:8)
             end if
-
-            call rsadpa(result, 'E', 1, 'CARAELEM', ordr(i), &
-                        0, sjv=ladpa, styp=k8bid)
-            zk8(ladpa) = carele(1:8)
+            if (ierc2 .ne. 0) then
+                call rsadpa(result, 'E', 1, 'CARAELEM', ordr(i), &
+                            0, sjv=ladpa, styp=k8bid)
+                zk8(ladpa) = carele(1:8)
+            end if
         end do
     end if
 !

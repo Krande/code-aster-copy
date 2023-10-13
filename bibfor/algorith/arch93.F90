@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,6 +29,7 @@ subroutine arch93(resultName, concep, nume, raide, nbmodd, &
 #include "asterfort/rs_get_liststore.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
@@ -103,8 +104,10 @@ subroutine arch93(resultName, concep, nume, raide, nbmodd, &
 !
     call dismoi('NB_EQUA', raide, 'MATR_ASSE', repi=neq)
     call dismoi('NOM_MODELE', raide, 'MATR_ASSE', repk=modele)
-    call dismoi('CHAM_MATER', raide, 'MATR_ASSE', repk=chmat)
-    call dismoi('CARA_ELEM', raide, 'MATR_ASSE', repk=carael)
+    chmat = '        '
+    carael = '        '
+    call getvid(' ', 'CHAM_MATER', scal=chmat, nbret=iret)
+    call getvid(' ', 'CARA_ELEM', scal=carael, nbret=iret)
 !
     call rscrsd('G', resultName, concep, modeNb)
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-function nbddlMaxMa(nume_ddlz, matr_assez, nbmat) result(maxDDLMa)
+function nbddlMaxMa(nume_ddlz, matr_assez, nbmat, v_name_mat) result(maxDDLMa)
 !
     implicit none
 !
@@ -42,6 +42,7 @@ function nbddlMaxMa(nume_ddlz, matr_assez, nbmat) result(maxDDLMa)
 !
     character(len=*), intent(in) :: nume_ddlz, matr_assez
     integer, intent(in)  :: nbmat
+    character(len=*), intent(in) :: v_name_mat(nbmat)
     integer              :: maxDDLMa
 !     ------------------------------------------------------------------
 ! person_in_charge: jacques.pellet at edf.fr
@@ -68,7 +69,6 @@ function nbddlMaxMa(nume_ddlz, matr_assez, nbmat) result(maxDDLMa)
     integer, pointer :: v_prn1(:) => null()
     integer, pointer :: v_prn2(:) => null()
     integer, pointer :: sssa(:) => null()
-    character(len=24), pointer :: v_name_mat(:) => null()
     character(len=24), pointer :: v_relr(:) => null()
     character(len=24), pointer :: v_nomlig(:) => null()
     character(len=24), pointer :: v_prtk(:) => null()
@@ -178,10 +178,6 @@ function nbddlMaxMa(nume_ddlz, matr_assez, nbmat) result(maxDDLMa)
         call jeveuo(jexatr(nume_ddl//'.NUME.PRNO', 'LONCUM'), 'L', vi=v_prn2)
     end if
 !
-! --- liste des matr_elem dans un objet jeveux
-!
-    call jeveuo(matr_asse//'.LIME', 'L', vk24=v_name_mat)
-!
 ! --- objet matr_asse.lili à partir de matr_asse.lime
 !
     call jeveuo(matr_asse//'.ADNE', 'L', vi=v_adne)
@@ -220,7 +216,7 @@ function nbddlMaxMa(nume_ddlz, matr_assez, nbmat) result(maxDDLMa)
     maxDDLMa = 0
 !
     do imat = 1, nbmat
-        matr_elem = v_name_mat(imat) (1:19)
+        matr_elem = v_name_mat(imat)
         call dismoi('NOM_MODELE', matr_elem, 'MATR_ELEM', repk=model_elem)
 !
         if (model_elem .ne. model) then

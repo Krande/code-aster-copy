@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,6 +28,9 @@ CALC_ERC_DYN = OPER(
     fr="Calcul de l'erreur en relation de comportement en dynamique sous une formulation fr?quentielle",
     reentrant="n",
     regles=(UN_PARMI("FREQ", "LIST_FREQ"),),
+    CHAM_MATER=SIMP(statut="f", typ=cham_mater),
+    CARA_ELEM=SIMP(statut="f", typ=cara_elem),
+    #
     MATR_MASS=SIMP(statut="o", typ=(matr_asse_depl_r)),
     MATR_RIGI=SIMP(statut="o", typ=(matr_asse_depl_r)),
     MATR_NORME=SIMP(statut="o", typ=matr_asse_gene_r),

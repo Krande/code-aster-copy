@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -281,7 +281,6 @@ subroutine copisd(typesd, base, sd1, sd2)
         call jedup1(k191//'.CONL', bas2, k192//'.CONL')
         call jedup1(k191//'.DESC', bas2, k192//'.DESC')
         call jedup1(k191//'.DIGS', bas2, k192//'.DIGS')
-        call jedup1(k191//'.LIME', bas2, k192//'.LIME')
         call jedup1(k191//'.REFA', bas2, k192//'.REFA')
         call jedup1(k191//'.PERM', bas2, k192//'.PERM')
         call jedup1(k191//'.UALF', bas2, k192//'.UALF')

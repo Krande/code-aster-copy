@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,6 +58,7 @@ subroutine op0066()
 #include "asterfort/eval_erc.h"
 #include "asterfort/archi_erc.h"
 #include "asterfort/jedetr.h"
+#include "asterfort/getvid.h"
 !
     character(len=1) :: typcst(2)
     character(len=8) :: baseno, result, matmas, matrig, matamo, nommes, numnu, mymat(2), nomo
@@ -107,7 +108,8 @@ subroutine op0066()
 !
 ! --- --- CREATION DU NUME_DDL_GENE ET INITIALISATION DU MATR/VECT_ASSE_GENE
 
- call crea_nume_erc(baseno, numnu, matprod, nom_nume_erc, nom_matr_erc, nom_vect_erc, solveu, valei)
+    call crea_nume_erc(baseno, numnu, matprod, nom_nume_erc, nom_matr_erc, &
+                       nom_vect_erc, solveu, valei)
 
 ! --- PRINT DES DIMENSIONS DU PROBLEME D'ERC
     valei(1) = nbfreq
@@ -193,9 +195,11 @@ subroutine op0066()
 !
 !
     call dismoi('NOM_MODELE', matrig, 'MATR_ASSE', repk=nomo)
-    call dismoi('CHAM_MATER', matrig, 'MATR_ASSE', repk=mate)
-    call dismoi('CARA_ELEM', matrig, 'MATR_ASSE', repk=carele)
-
+    call getvid(' ', 'CHAM_MATER', scal=mate, nbret=iret)
+    if (iret .eq. 0) mate = '        '
+    call getvid(' ', 'CARA_ELEM', scal=carele, nbret=iret)
+    if (iret .eq. 0) carele = '        '
+!
     do ii = 1, 2*nbfreq
         call rsadpa(result, 'E', 1, 'MODELE', ii, &
                     0, sjv=ladpa, styp=k8bid)

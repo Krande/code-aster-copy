@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -145,6 +145,7 @@ MODES = CALC_MODES(
     CALC_FREQ=_F(NMAX_FREQ=2),
     MATR_RIGI=MATRRIGI,
     MATR_MASS=MATRMASS,
+    CARA_ELEM=CARA,
     SOLVEUR_MODAL=_F(METHODE="SORENSEN"),
 )
 
@@ -186,7 +187,10 @@ AMORGEN = PROJ_MATR_BASE(BASE=MODES, NUME_DDL_GENE=DDLGENE, MATR_ASSE=MATAMOR)
 # -----------------------------------------------------------------------
 
 MODE_STA = MODE_STATIQUE(
-    MATR_RIGI=MATRRIGI, MATR_MASS=MATRMASS, MODE_STAT=_F(GROUP_NO=("P1", "P4"), AVEC_CMP="DX")
+    CARA_ELEM=CARA,
+    MATR_RIGI=MATRRIGI,
+    MATR_MASS=MATRMASS,
+    MODE_STAT=_F(GROUP_NO=("P1", "P4"), AVEC_CMP="DX"),
 )
 
 MODE_STA = CALC_CHAMP(reuse=MODE_STA, RESULTAT=MODE_STA, CONTRAINTE=("SIEF_ELGA", "EFGE_ELNO"))
@@ -245,7 +249,10 @@ TEST_RESU(
 # -----------------------------------------------------------------------
 
 MODE_CO2 = MODE_STATIQUE(
-    MATR_RIGI=MATRRIGI, MATR_MASS=MATRMASS, PSEUDO_MODE=_F(GROUP_NO=("P1", "P4"), AVEC_CMP="DX")
+    CARA_ELEM=CARA,
+    MATR_RIGI=MATRRIGI,
+    MATR_MASS=MATRMASS,
+    PSEUDO_MODE=_F(GROUP_NO=("P1", "P4"), AVEC_CMP="DX"),
 )
 
 MODE_CO2 = CALC_CHAMP(reuse=MODE_CO2, RESULTAT=MODE_CO2, CONTRAINTE=("SIEF_ELGA", "EFGE_ELNO"))

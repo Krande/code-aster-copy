@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -151,12 +151,6 @@ Erreur utilisateur :
         """
  On ne peut pas traiter ce champ car il y a des termes condensés dans la numérotation.
  Contactez le support.
-"""
-    ),
-    21: _(
-        """
- Le modèle contient plusieurs 'CHAM_MATER'. Aucun n'a été stocké dans le concept résultat.
-  aucun post-traitement lié à CHAM_MATER ne sera possible
 """
     ),
 }

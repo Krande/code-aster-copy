@@ -1936,6 +1936,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                     TYPE_RESU="DYNA_TRANS",
                     CONV_CHAR=_F(
                         MATR_RIGI=__RIGIDITE,
+                        CHAM_MATER=__CHAMPMAH,
                         CHARGE=(__ONDEX[0], __FSEISMX),
                         PRECISION=1.0e-6,
                         CRITERE="RELATIF",
@@ -1949,6 +1950,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                         TYPE_RESU="DYNA_TRANS",
                         CONV_CHAR=_F(
                             MATR_RIGI=__RIGIDITE,
+                            CHAM_MATER=__CHAMPMAH,
                             CHARGE=(__ONDEX[0]),
                             PRECISION=1.0e-6,
                             CRITERE="RELATIF",
@@ -1961,6 +1963,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                         TYPE_RESU="DYNA_TRANS",
                         CONV_CHAR=_F(
                             MATR_RIGI=__RIGIDITE,
+                            CHAM_MATER=__CHAMPMAH,
                             CHARGE=(__ONDEX[0], __ONDEX[1], __ONDEX[2]),
                             PRECISION=1.0e-6,
                             CRITERE="RELATIF",

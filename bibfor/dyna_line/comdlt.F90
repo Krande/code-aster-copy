@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -168,6 +168,7 @@ subroutine comdlt()
                 charge, infoch, fomult, iaadve, ialifo, &
                 nondp, iondp, solveu, iinteg, t0, &
                 nume, numrep, ds_inout)
+    if (nondp .gt. 0 .and. materi .eq. ' ') call utmess('F', 'DYNALINE1_4')
 
 ! - Get kinematic loads
     call dyGetKineLoad(masse, rigid, amort, lamort, listLoad, kineLoad, iinteg)
@@ -430,7 +431,7 @@ subroutine comdlt()
             call rsadpa(result, 'E', 1, 'CHAMPMAT', ordr(iordr), 0, sjv=ladpa)
             zk8(ladpa) = materi(1:8)
         else
-            call utmess('A', 'CHAMPS_21')
+            call utmess('I', 'DYNALINE1_3')
         end if
 
         call rsadpa(result, 'E', 1, 'CARAELEM', ordr(iordr), &

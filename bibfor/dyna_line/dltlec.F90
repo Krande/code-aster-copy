@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -100,7 +100,6 @@ subroutine dltlec(result, modele, numedd, materi, mate, &
     aster_logical :: lamort
     character(len=8) :: result
     character(len=8) :: masse, rigid, amort
-    character(len=8) :: carael
     character(len=19) :: lischa, solveu
     character(len=24) :: modele, numedd, mate, carele, mater, materi
     character(len=24) :: charge, infoch, fomult, loadType
@@ -118,6 +117,8 @@ subroutine dltlec(result, modele, numedd, materi, mate, &
 ! --------------------------------------------------------------------------------------------------
 !
     modele = ' '
+    materi = ' '
+    carele = ' '
     blan8 = ' '
 !
     lamort = .true.
@@ -228,6 +229,7 @@ subroutine dltlec(result, modele, numedd, materi, mate, &
             end if
             call nmdome(modele, mater, mate, carele, lischa, blan8, &
                         ibid)
+            materi = mater
             fomult = lischa//'.FCHA'
         end if
 !
@@ -277,23 +279,8 @@ subroutine dltlec(result, modele, numedd, materi, mate, &
 !
     call dismoi('NOM_NUME_DDL', rigid, 'MATR_ASSE', repk=numedd)
     call dismoi('NOM_MODELE', rigid, 'MATR_ASSE', repk=modele)
-    call dismoi('CARA_ELEM', rigid, 'MATR_ASSE', repk=carael)
-
-    if ((nchar .ne. 0) .and. (len_trim(carele) .ne. 0)) then
-        !- S'ASSURER DE LA COHRENCE ENTRE LES CARA_ELEM RECUPEREES
-        ASSERT(carael(1:8) .eq. carele(1:8))
-    else
-        carele = carael(1:8)//'               '
-    end if
-
-    materi = ' '
-    call dismoi('CHAM_MATER', rigid, 'MATR_ASSE', repk=materi, arret='C', ier=ierc)
-    if (ierc .ne. 0) then
-        materi = ' '
-    end if
-    if (materi .ne. ' ') then
-        call rcmfmc(materi, mate, l_ther_=ASTER_FALSE)
-    end if
+    if (materi .eq. ' ') call getvid(' ', 'CHAM_MATER', scal=materi, nbret=n1)
+    if (carele .eq. ' ') call getvid(' ', 'CARA_ELEM', scal=carele, nbret=n1)
 !
 ! 4.2. ==> LECTURE DES PARAMETRES DU MOT CLE FACTEUR SOLVEUR ---
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -317,20 +317,12 @@ subroutine assmam(jvBase, matrAsseZ, &
         nu14 = numeDof
         call jeveuo(mat19//'.REFA', 'L', jrefa)
         ASSERT(zk24(jrefa-1+2) (1:14) .eq. nu14)
-        call jedetr(mat19//'.LIME')
         call jedetr(mat19//'.REFA')
     end if
-
-!   -- recopie de la liste des matr_elem dans 1 objet jeveux
-    call wkvect(matrAsse//'.LIME', jvBase//' V K24 ', nbMatrElem, ilimat)
-    do i = 1, nbMatrElem
-        zk24(ilimat+i-1) = listMatrElem(i)
-        if (dbg .and. listMatrElem(i) .ne. ' ') call cheksd(listMatrElem(i), 'SD_MATR_ELEM', iret)
-    end do
-
 !  -- calcul d un repertoire,temporaire, matrAsse.lili a partir
 !     de la liste de matrices elementaires matrAsse.lime
-    call crelil('F', nbMatrElem, ilimat, matrAsse//'.LILI', 'V', &
+
+    call crelil('F', nbMatrElem, listMatrElem, matrAsse//'.LILI', 'V', &
                 '&MAILLA', matrAsse, ibid, mesh, ibid, &
                 ibid, ilimo, nlili, nbelm, nume_=numeDof)
     call jeveuo(matrAsse//'.ADLI', 'E', jadli)
@@ -344,7 +336,7 @@ subroutine assmam(jvBase, matrAsseZ, &
 ! --- On alloue ici les tableaux de travail pour assma3
 !     l'augmentation du temps d'assemblage est négligeable
 !
-    maxDDLMa = nbddlMaxMa(numeDof, matrAsse, nbMatrElem)
+    maxDDLMa = nbddlMaxMa(numeDof, matrAsse, nbMatrElem, listMatrElem)
 ! Le x2 est par sécurité - certains processeur peuvent ne pas avoir de ddls à assembler
     nbi1mx = max(1, 2*maxDDLMa*maxDDLMa)
     call wkvect('&&ASSMAM.TAB1', 'V V I', nbi1mx, vi=assma3_tab1)
@@ -420,7 +412,7 @@ subroutine assmam(jvBase, matrAsseZ, &
 !   =============================
     do imat = 1, nbMatrElem
         c1 = coefMatrElem(imat)
-        matel = zk24(ilimat+imat-1) (1:19)
+        matel = listMatrElem(imat)
         call dismoi('NOM_MODELE', matel, 'MATR_ELEM', repk=mo2)
         call dismoi('SUR_OPTION', matel, 'MATR_ELEM', repk=optio)
 

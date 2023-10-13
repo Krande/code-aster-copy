@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -72,7 +72,7 @@ subroutine op0168()
     real(kind=8) :: r8b, prec, zero, mastot, valr(7)
     character(len=1) :: typmod
     character(len=3) :: ouinon
-    character(len=8) :: k8b, modeou, modein
+    character(len=8) :: k8b, modeou, modein, modele, mate, cara
     character(len=16) :: typcon, nomcmd, critfi, nompar(3), nomsy, nompav
     character(len=16) :: nompa2(3)
     character(len=19) :: numedd
@@ -379,6 +379,10 @@ subroutine op0168()
 !
 !     --- STOCKAGE ---
 !
+    call dismoi('MODELE', modein, 'RESULTAT', repk=modele)
+    call dismoi('CARA_ELEM', modein, 'RESULTAT', repk=cara)
+    call dismoi('CHAM_MATER', modein, 'RESULTAT', repk=mate)
+
     if (ndimt .eq. 0) then
         call utmess('F', 'ALGELINE3_11')
     end if
@@ -412,12 +416,12 @@ subroutine op0168()
             call vpstor(-1, typmod, modeou, nbmode, neq, &
                         zr(lmod), [c16b], nbmode, nbpari, nbparr, &
                         nbpark, nopara, '    ', zi(lvali), zr(lvalr), &
-                        zk24(lvalk), iprec)
+                        zk24(lvalk), iprec, modele, mate, cara)
         else if (typmod .eq. 'C') then
             call vpstor(-1, typmod, modeou, nbmode, neq, &
                         [r8b], zc(lmod), nbmode, nbpari, nbparr, &
                         nbpark, nopara, '    ', zi(lvali), zr(lvalr), &
-                        zk24(lvalk), iprec)
+                        zk24(lvalk), iprec, modele, mate, cara)
         else
             call utmess('F', 'ALGELINE2_44', sk=typmod)
         end if

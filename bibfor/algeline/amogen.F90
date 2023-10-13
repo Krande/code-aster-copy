@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ subroutine amogen(mat19)
     integer :: nbid, jamog, iamog, idiff
     integer :: vali(3)
     integer :: iamat, n, m, m2, i, iam, iak, j, nbamor, nlist
-    integer :: iblo, ialime, iaconl, jrefa2, iadesc, n2, n1
+    integer :: iblo, iaconl, jrefa2, iadesc, n2, n1
     real(kind=8) :: kmin, valmin, kmax, rk
     integer, pointer :: desc(:) => null()
     character(len=24), pointer :: refa(:) => null()
@@ -117,7 +117,6 @@ subroutine amogen(mat19)
                 1)
     call jecroc(jexnum(mat19//'.VALM', iblo))
     call jeecra(mat19//'.VALM', 'LONMAX', m)
-    call wkvect(mat19//'.LIME', 'G V K24', 1, ialime)
     call wkvect(mat19//'.CONL', 'G V R', n, iaconl)
     call wkvect(mat19//'.REFA', 'G V K24', 20, jrefa2)
     zk24(jrefa2-1+11) = 'MPI_COMPLET'
@@ -132,8 +131,6 @@ subroutine amogen(mat19)
     zi(iadesc) = 2
     zi(iadesc+1) = n
     zi(iadesc+2) = 2
-!
-    zk24(ialime) = '                        '
 !
     do i = 1, n
         zr(iaconl+i-1) = 1.0d0

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -88,7 +88,13 @@ RIGIDITE = ASSE_MATRICE(MATR_ELEM=RIGI_ELE, NUME_DDL=NUME1)
 
 MASSE = ASSE_MATRICE(MATR_ELEM=MASS_ELE, NUME_DDL=NUME1)
 
-MODE_STA = MODE_STATIQUE(MATR_RIGI=RIGIDITE, MATR_MASS=MASSE, PSEUDO_MODE=_F(AXE=("X", "Y", "Z")))
+MODE_STA = MODE_STATIQUE(
+    MATR_RIGI=RIGIDITE,
+    MATR_MASS=MASSE,
+    PSEUDO_MODE=_F(AXE=("X", "Y", "Z")),
+    CHAM_MATER=CHMAT,
+    CARA_ELEM=CARLEM,
+)
 
 STA_X = CREA_CHAMP(
     OPERATION="EXTR", TYPE_CHAM="NOEU_DEPL_R", RESULTAT=MODE_STA, NOM_CHAM="DEPL", NUME_ORDRE=1
@@ -130,6 +136,8 @@ MODE_ST2 = CALC_CHAMP(
 MODE_MEC = CALC_MODES(
     OPTION="PROCHE",
     SOLVEUR=_F(METHODE="MULT_FRONT"),
+    CHAM_MATER=CHMAT,
+    CARA_ELEM=CARLEM,
     MATR_RIGI=RIGIDITE,
     MATR_MASS=MASSE,
     CALC_FREQ=_F(

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -305,8 +305,8 @@ subroutine op0037()
 !     --- NUMEROTATION ASSOCIEE AUX DDL ---
     call dismoi('NOM_NUME_DDL', raide, 'MATR_ASSE', repk=nume)
     call dismoi('NOM_MAILLA', raide, 'MATR_ASSE', repk=noma)
-    call dismoi('CARA_ELEM', raide, 'MATR_ASSE', repk=cara)
-    call dismoi('CHAM_MATER', raide, 'MATR_ASSE', repk=mate)
+    call dismoi('CARA_ELEM', modein, 'RESULTAT', repk=cara)
+    call dismoi('CHAM_MATER', modein, 'RESULTAT', repk=mate)
     call dismoi('NOM_MODELE', raide, 'MATR_ASSE', repk=modele)
 !
 !     --- COMPATIBILITE DES MODES ---
@@ -725,7 +725,7 @@ subroutine op0037()
         call vpstor(-1, typmod, modeou, nbmode, neq, &
                     zr(lmod), zc(1), nbmode, nbpari, nbparr, &
                     nbpark, nopara, '    ', zi(lvali), zr(lvalr), &
-                    zk24(lvalk), iprec)
+                    zk24(lvalk), iprec, modele, mate, cara)
         call vpnor2(modeou, nbmode, zi(lnumor), zr(lcoef))
 !
     else if (typmod .eq. 'C') then
@@ -741,7 +741,7 @@ subroutine op0037()
         call vpstor(-1, typmod, modeou, nbmode, neq, &
                     zr(1), zc(lmod), nbmode, nbpari, nbparr, &
                     nbpark, nopara, '    ', zi(lvali), zr(lvalr), &
-                    zk24(lvalk), iprec)
+                    zk24(lvalk), iprec, modele, mate, cara)
 !
     else
         call utmess('F', 'ALGELINE2_44', sk=typmod)

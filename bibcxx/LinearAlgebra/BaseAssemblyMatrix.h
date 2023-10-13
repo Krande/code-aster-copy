@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe AssemblyMatrix
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -61,8 +61,6 @@ class BaseAssemblyMatrix : public DataStructure {
     JeveuxVectorChar24 _description;
     /** @brief Objet '.CONL' */
     JeveuxVectorReal _scaleFactorLagrangian;
-    /** @brief Objet Jeveux '.LIME' */
-    JeveuxVectorChar24 _listOfElementaryMatrix;
     /** @brief Objet Jeveux '.PERM' */
     JeveuxVectorLong _perm;
 

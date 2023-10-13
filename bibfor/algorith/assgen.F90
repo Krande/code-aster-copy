@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -88,7 +88,7 @@ subroutine assgen(nomres, option, nugene)
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, ibid, iblel, iblo, icomp, j, jrefa, iadesc
-    integer ::  ldblo, ldconl, ldlim, llorl, llprof, llors
+    integer ::  ldblo, ldconl, llorl, llprof, llors
     integer :: ltadbl, ltconl, ltinbl, ltnobl, ltnomb, ltnumb, nbblel
     integer :: nblia, nbloc, nbprno, nbsst, nbterm, neq, ntbloc
     integer :: ntprno, numblo, nusst, ntria, ntualf
@@ -134,15 +134,6 @@ subroutine assgen(nomres, option, nugene)
     if (ibid .eq. 0) then
         call utmess('F', 'MATRICE0_13')
     end if
-!
-!
-!
-!--------------------------CREATION DU .LIME----------------------------
-!   POUR L'INSTANT ON DONNE LE NOM DU MODELE GENERALISE
-!
-    call wkvect(nomres//'           .LIME', 'G V K24', 1, ldlim)
-    zk24(ldlim) = modgen
-!
 !
 !------------------RECUPERATION DU NOMBRE DE SOUS-STRUCTURE-------------
 !

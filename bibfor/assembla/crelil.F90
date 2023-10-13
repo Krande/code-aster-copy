@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine crelil(kstop, nbmat, ilimat, lili, base, &
+subroutine crelil(kstop, nbmat, vlimat, lili, base, &
                   nomma, pref, gd, mailla, nec, &
                   ncmp, ilimo, nlili, nbelm, nume_)
 !
@@ -44,10 +44,11 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nbmat, ilimat, gd, nec, ilimo, nlili, iconx1, iconx2, nbelm
+    integer :: nbmat, gd, nec, ilimo, nlili, iconx1, iconx2, nbelm
     integer :: iadnem, iadlie
     character(len=*) :: lili, nomma, pref, mailla
     character(len=1) :: base, kstop
+    character(len=*) :: vlimat(nbmat)
     character(len=14), optional :: nume_
 !
 !
@@ -57,7 +58,7 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base, &
 ! ---- DESCRIPTION DES PARAMETRES
 ! IN  K1   KSTOP  : (VOIR L'ARGUMENT "OUT" NLILI)
 ! IN  I    NBMAT  : NBRE DE MATR_ELEM
-! IN  I    ILIMAT : ADRESSE DE LA LISTE DES MAT_ELE
+! IN  K* VLIMAT : LISTE DES MAT_ELE
 ! IN  K*24 LILI   : NOM DE L OBJET LILI QUI SERA CREE
 ! IN  K1   BASE   : ' G ' POUR CREER LILI SUR BASE GLOBALE
 !                   ' V ' POUR CREER LILI SUR BASE VOLATILE
@@ -134,7 +135,7 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base, &
 !     -------------------------------
     l_parallel_mesh = isParallelMesh(mailla)
     do imat = 1, nbmat
-        matel = zk24(ilimat+imat-1) (1:19)
+        matel = vlimat(imat)
         call jeexin(matel//'.RERR', iret1)
         ASSERT(iret1 .gt. 0)
         call jeveuo(matel//'.RERR', 'L', vk24=rerr)
@@ -204,7 +205,7 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base, &
 !---- CALCUL DE LILI
 !
     do imat = 1, nbmat
-        matel = zk24(ilimat+imat-1) (1:19)
+        matel = vlimat(imat)
         call jeexin(matel//'.RELR', iret)
         if (iret .eq. 0) goto 110
         call jelira(matel//'.RELR', 'LONUTI', nbresu)

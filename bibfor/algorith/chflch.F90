@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -83,8 +83,12 @@ subroutine chflch(rigthe, vec2nd, infcha)
     call jemarq()
 !
     call dismoi('NOM_MODELE', rigthe, 'MATR_ASSE', repk=modele)
-    call dismoi('CHAM_MATER', rigthe, 'MATR_ASSE', repk=mate)
-    call dismoi('CARA_ELEM', rigthe, 'MATR_ASSE', repk=carele)
+!    call dismoi('CHAM_MATER', rigthe, 'MATR_ASSE', repk=mate)
+!    call dismoi('CARA_ELEM', rigthe, 'MATR_ASSE', repk=carele)
+
+    mate = '        '
+    carele = '        '
+
     call dismoi('NOM_NUME_DDL', rigthe, 'MATR_ASSE', repk=numedd)
 !
     call vtcreb(vec2nd, 'V', 'R', nume_ddlz=numedd, nb_equa_outz=neq)

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,6 +36,9 @@ MODE_STATIQUE = OPER(
         PRESENT_PRESENT("MODE_INTERF", "MATR_MASS"),
         PRESENT_PRESENT("PSEUDO_MODE", "MATR_MASS"),
     ),
+    CHAM_MATER=SIMP(statut="f", typ=cham_mater),
+    CARA_ELEM=SIMP(statut="f", typ=cara_elem),
+    #
     MATR_RIGI=SIMP(statut="o", typ=matr_asse_depl_r),
     MATR_MASS=SIMP(statut="f", typ=matr_asse_depl_r),
     MODE_STAT=FACT(

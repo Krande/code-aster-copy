@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -124,6 +124,8 @@ MODE = CALC_MODES(
 
 MODE_DIA = CALC_MODES(
     MATR_RIGI=RIGIDITE,
+    CHAM_MATER=CHAMPMAT,
+    CARA_ELEM=CARA_ELE,
     CALC_FREQ=_F(NMAX_FREQ=9),
     MATR_MASS=MASSE_DI,
     SOLVEUR_MODAL=_F(METHODE="TRI_DIAG"),
@@ -314,12 +316,18 @@ TEST_RESU(
 #
 
 MODE_STA = MODE_STATIQUE(
-    MATR_RIGI=RIGIDITE, MATR_MASS=MASSE_DI, PSEUDO_MODE=_F(AXE=("X", "Y", "Z"))
+    CHAM_MATER=CHAMPMAT,
+    CARA_ELEM=CARA_ELE,
+    MATR_RIGI=RIGIDITE,
+    MATR_MASS=MASSE_DI,
+    PSEUDO_MODE=_F(AXE=("X", "Y", "Z")),
 )
 
 MODE_ST2 = MODE_STATIQUE(
     MATR_RIGI=RIGIDITE,
     MATR_MASS=MASSE_DI,
+    CHAM_MATER=CHAMPMAT,
+    CARA_ELEM=CARA_ELE,
     PSEUDO_MODE=(
         _F(AXE=("X", "Y", "Z")),
         _F(GROUP_NO=("N100", "N1500"), AVEC_CMP=("DX", "DY", "DZ")),

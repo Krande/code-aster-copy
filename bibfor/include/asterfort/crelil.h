@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,12 +19,12 @@
 !
 !
 interface
-    subroutine crelil(kstop, nbmat, ilimat, lili, base,&
+    subroutine crelil(kstop, nbmat, vlimat, lili, base,&
                       nomma, pref, gd, mailla, nec,&
                       ncmp, ilimo, nlili, nbelm, nume_)
         character(len=1) :: kstop
         integer :: nbmat
-        integer :: ilimat
+        character(len=*) :: vlimat(nbmat)
         character(len=*) :: lili
         character(len=1) :: base
         character(len=*) :: nomma

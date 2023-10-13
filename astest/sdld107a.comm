@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -175,6 +175,7 @@ LFREQ = DEFI_LIST_REEL(VALE=[0.12181191980055407, 1.25 * 0.22507907903927654])
 
 ERC = CALC_ERC_DYN(
     EVAL_FONC="OUI",
+    CARA_ELEM=CARE,
     MATR_PROJECTION=MATPROJ,
     MESURE=OBS,
     CHAMP_MESURE="DEPL",

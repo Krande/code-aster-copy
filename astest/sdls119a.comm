@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -233,6 +233,8 @@ FFACCE = CALC_FONCTION(FFT=_F(FONCTION=accel2, METHODE="COMPLET"))
 EVOL0 = DYNA_VIBRA(
     TYPE_CALCUL="TRAN",
     BASE_CALCUL="PHYS",
+    CARA_ELEM=cara,
+    CHAM_MATER=chmat,
     MATR_MASS=masse,
     MATR_RIGI=rigidite,
     SCHEMA_TEMPS=_F(SCHEMA="NEWMARK", BETA=1.0, GAMMA=1.5),
@@ -263,6 +265,8 @@ for k in range(1, NF):
         EVOL = DYNA_VIBRA(
             TYPE_CALCUL="TRAN",
             BASE_CALCUL="PHYS",
+            CARA_ELEM=cara,
+            CHAM_MATER=chmat,
             MODELE=mode,
             MATR_MASS=masse,
             MATR_RIGI=rigidite,
@@ -281,6 +285,8 @@ for k in range(1, NF):
         EVOLH = DYNA_VIBRA(
             TYPE_CALCUL="HARM",
             BASE_CALCUL="PHYS",
+            CARA_ELEM=cara,
+            CHAM_MATER=chmat,
             MATR_MASS=masse,
             MATR_RIGI=rigidite,
             MATR_AMOR=amorto,
@@ -365,6 +371,8 @@ for k in range(1, NF):
         EVOL = DYNA_VIBRA(
             TYPE_CALCUL="TRAN",
             BASE_CALCUL="PHYS",
+            CARA_ELEM=cara,
+            CHAM_MATER=chmat,
             MATR_MASS=masse,
             MATR_RIGI=rigidite,
             MATR_AMOR=amorto,
@@ -404,6 +412,8 @@ for k in range(1, NF):
         EVOLH = DYNA_VIBRA(
             TYPE_CALCUL="HARM",
             BASE_CALCUL="PHYS",
+            CARA_ELEM=cara,
+            CHAM_MATER=chmat,
             MATR_MASS=masse,
             MATR_RIGI=rigidite,
             MATR_AMOR=amorto,

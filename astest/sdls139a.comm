@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -123,6 +123,7 @@ MASNUM = ASSE_MATRICE(MATR_ELEM=MELNUM, NUME_DDL=NUMENUM)
 
 MODEAIR1 = CALC_MODES(
     MATR_RIGI=KASNUM,
+    CARA_ELEM=CARANUM,
     VERI_MODE=_F(STOP_ERREUR="NON", SEUIL=1e-03),
     SOLVEUR=_F(
         ELIM_LAGR="NON",

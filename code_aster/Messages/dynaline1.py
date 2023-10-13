@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,6 +24,19 @@ cata_msg = {
     2: _(
         """
 La méthode de Newmark est programmée sous sa forme implicite: le paramètre BETA ne doit pas être nul.
+ """
+    ),
+    3: _(
+        """
+DYNA_VIBRA : Vous n'avez pas fourni le champs de matériau (mot-clé CHAM_MATER). 
+Cette information n'est donc pas stockée dans le concept résultat.
+Aucun post-traitement lié à CHAM_MATER ne sera possible.
+ """
+    ),
+    4: _(
+        """
+DYNA_VIBRA : Vous n'avez pas fourni le champs de matériau (mot-clé CHAM_MATER)
+or il est obligatoire en présence de chargements de type onde plane.
  """
     ),
     11: _(

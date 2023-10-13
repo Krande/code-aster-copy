@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -84,7 +84,12 @@ ASSEMBLAGE(
 # --------- CAS1
 
 MODE1 = CALC_MODES(
-    MATR_RIGI=MATASSR1, OPTION="BANDE", CALC_FREQ=_F(FREQ=(8.0, 150.0)), MATR_MASS=MATASSM1
+    CARA_ELEM=CARELEM,
+    CHAM_MATER=CHMAT,
+    MATR_RIGI=MATASSR1,
+    OPTION="BANDE",
+    CALC_FREQ=_F(FREQ=(8.0, 150.0)),
+    MATR_MASS=MATASSM1,
 )
 
 MODE1 = NORM_MODE(reuse=MODE1, MODE=MODE1, NORME="MASS_GENE")
@@ -157,7 +162,12 @@ TEST_RESU(
 # --------- CAS2
 
 MODE2 = CALC_MODES(
-    MATR_RIGI=MATASSR2, OPTION="BANDE", CALC_FREQ=_F(FREQ=(0.0, 90.0)), MATR_MASS=MATASSM2
+    CARA_ELEM=CARELEM,
+    CHAM_MATER=CHMAT,
+    MATR_RIGI=MATASSR2,
+    OPTION="BANDE",
+    CALC_FREQ=_F(FREQ=(0.0, 90.0)),
+    MATR_MASS=MATASSM2,
 )
 
 TEST_RESU(

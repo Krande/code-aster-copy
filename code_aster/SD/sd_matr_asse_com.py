@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,6 @@ class sd_matr_asse_com(sd_titre):
     CONL = Facultatif(OJBVect(type=Parmi("C", "R")))
     DIGS = Facultatif(OJBVect(type=Parmi("C", "R")))
     # seulement si solveurs LDLT et MULT_FRONT
-    LIME = Facultatif(AsVK24())
     PERM = Facultatif(AsVI())
     cine = Facultatif(sd_matr_cine(SDNom(nomj="")))
 

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -245,6 +245,7 @@ CHA_ON = CREA_RESU(
     TYPE_RESU="DYNA_TRANS",
     CONV_CHAR=_F(
         MATR_RIGI=MATRRIGI,
+        CHAM_MATER=MATDYN,
         CHARGE=(CHARGX, ONDELATE),
         PRECISION=1.0e-6,
         CRITERE="RELATIF",
@@ -275,6 +276,7 @@ DYNA_V = DYNA_VIBRA(
     MODELE=MODYN,
     MATR_MASS=MATRMASS,
     MATR_RIGI=MATRRIGI,
+    CHAM_MATER=MATDYN,
     MATR_AMOR=MATRAMOR,
     AMOR_MODAL=_F(AMOR_REDUIT=0.0001, MODE_MECA=morime),
     SCHEMA_TEMPS=_F(SCHEMA="NEWMARK", BETA=0.25, GAMMA=0.5),

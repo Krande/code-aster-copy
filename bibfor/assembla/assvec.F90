@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -207,7 +207,7 @@ subroutine assvec(jvBase, vectAsseZ, &
 
 ! - Create list of ligrel (LILI) and objects ADNE and ADLI
     vectAsseLili = vectAsse//'.LILI'
-    call crelil('C', nbVectElem, jvVectElem, vectAsseLili, 'V', &
+    call crelil('C', nbVectElem, listVectElem, vectAsseLili, 'V', &
                 ligrelMesh, vectAsse, physQuan, mesh, nec, &
                 nbCmp, ilim, nlili, meshNbCell, nume_=numeDof)
 

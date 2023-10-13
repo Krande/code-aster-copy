@@ -1,5 +1,5 @@
 /**
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -25,7 +25,6 @@ BaseAssemblyMatrix::BaseAssemblyMatrix( const std::string &name, const std::stri
     : DataStructure( name, 19, type ),
       _description( JeveuxVectorChar24( getName() + ".REFA" ) ),
       _scaleFactorLagrangian( JeveuxVectorReal( getName() + ".CONL" ) ),
-      _listOfElementaryMatrix( JeveuxVectorChar24( getName() + ".LIME" ) ),
       _perm( JeveuxVectorLong( getName() + ".PERM" ) ),
       _ccid( JeveuxVectorLong( getName() + ".CCID" ) ),
       _ccll( JeveuxVectorLong( getName() + ".CCLL" ) ),
@@ -48,7 +47,6 @@ BaseAssemblyMatrix::BaseAssemblyMatrix( const std::string &name, const std::stri
     // Jeveux Pointer
     ( *_description ) = ( *toCopy._description );
     ( *_scaleFactorLagrangian ) = ( *toCopy._scaleFactorLagrangian );
-    ( *_listOfElementaryMatrix ) = ( *toCopy._listOfElementaryMatrix );
     ( *_perm ) = ( *toCopy._perm );
     ( *_ccid ) = ( *toCopy._ccid );
     ( *_ccll ) = ( *toCopy._ccll );
@@ -65,7 +63,6 @@ BaseAssemblyMatrix::BaseAssemblyMatrix( BaseAssemblyMatrix &&other )
     // Jeveux Pointer
     _description = other._description;
     _scaleFactorLagrangian = other._scaleFactorLagrangian;
-    _listOfElementaryMatrix = other._listOfElementaryMatrix;
     _perm = other._perm;
     _ccid = other._ccid;
     _ccll = other._ccll;

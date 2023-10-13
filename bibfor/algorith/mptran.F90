@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -420,20 +420,20 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr, &
                     ier=iret)
         call dismoi('REF_RIGI_PREM', nombas, 'RESU_DYNA', repk=raide, arret='C')
         if (typba(1:1) .ne. ' ') then
-            if (raide(1:8) .eq. '        ') then
-                call jeveuo(jexnum(nombas//'           .TACH', 1), 'L', jbasm)
-                sd2 = zk24(jbasm) (1:8)
-                call rsadpa(sd2, 'L', 1, 'MODELE', 1, &
-                            0, sjv=jpara, styp=k8b)
-                modele = zk8(jpara)
-                call rsadpa(sd2, 'L', 1, 'CHAMPMAT', 1, &
-                            0, sjv=jpara, styp=k8b)
-                chmat = zk8(jpara)
-                call rsadpa(sd2, 'L', 1, 'CARAELEM', 1, &
-                            0, sjv=jpara, styp=k8b)
-                carael = zk8(jpara)
-                goto 44
-            end if
+!            if (raide(1:8) .eq. '        ') then
+            call jeveuo(jexnum(nombas//'           .TACH', 1), 'L', jbasm)
+            sd2 = zk24(jbasm) (1:8)
+            call rsadpa(sd2, 'L', 1, 'MODELE', 1, &
+                        0, sjv=jpara, styp=k8b)
+            modele = zk8(jpara)
+            call rsadpa(sd2, 'L', 1, 'CHAMPMAT', 1, &
+                        0, sjv=jpara, styp=k8b)
+            chmat = zk8(jpara)
+            call rsadpa(sd2, 'L', 1, 'CARAELEM', 1, &
+                        0, sjv=jpara, styp=k8b)
+            carael = zk8(jpara)
+            goto 44
+!            end if
         end if
 !
 !       -- POUR LES BASES TYPE MODE_MECA SANS REFERENCE
@@ -445,8 +445,10 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr, &
         end if
 !
         call dismoi('NOM_MODELE', raide(1:8), 'MATR_ASSE', repk=modele)
-        call dismoi('CHAM_MATER', raide(1:8), 'MATR_ASSE', repk=chmat)
-        call dismoi('CARA_ELEM', raide(1:8), 'MATR_ASSE', repk=carael)
+!        call dismoi('CHAM_MATER', raide(1:8), 'MATR_ASSE', repk=chmat)
+!        call dismoi('CARA_ELEM', raide(1:8), 'MATR_ASSE', repk=carael)
+        chmat = '        '
+        carael = '        '
 44      continue
 !
 !

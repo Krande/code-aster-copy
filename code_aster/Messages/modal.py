@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -292,6 +292,16 @@ Opérateurs CALC_MODES ou NORM_MODES:
   Modifiez le type de norme choisi par le type correspondant prenant en compte les rotations :
     TRAN      -> TRAN_ROTA
     EUCL_TRAN -> EUCL
+"""
+    ),
+    24: _(
+        """
+Opérateur DYNA_ALEA_MODAL :
+  On ne parvient pas à trouver l'objet CARA_ELEM utiliser pour le calcul.
+  Vous avez certainement oublié de fournir le mot-clé CARA_ELEM à la commande de laquelle
+  est issu le MODE_MECA de BASE_MODALE que vous avez fourni.
+
+  Cette commande est CALC_MODES dans la plupart des cas. Il suffit de lui fournir le mot-clé CARA_ELEM.
 """
     ),
 }

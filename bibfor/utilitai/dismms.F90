@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,9 +56,7 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
     character(len=8) :: nommai
 !-----------------------------------------------------------------------
     integer :: i, ibid, ier
-    integer ::  nblime
     character(len=16) :: typeco
-    character(len=24), pointer :: lime(:) => null()
     character(len=24), pointer :: refa(:) => null()
     character(len=24), pointer :: slvk(:) => null()
 !-----------------------------------------------------------------------
@@ -185,30 +183,6 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
             repk = 'OUI'
         end if
 
-    else if ((questi .eq. 'CHAM_MATER') .or. (questi .eq. 'CARA_ELEM')) then
-        call jeveuo(nomob//'.LIME', 'L', vk24=lime)
-        call jelira(nomob//'.LIME', 'LONMAX', nblime)
-        p1 = ' '
-        p2 = ' '
-        ier = 0
-        do i = 1, nblime
-            if (lime(i) .eq. ' ') goto 1
-            call dismme(questi, lime(i) (1:19), ibid, p1, ierd)
-            if (p1 .ne. ' ') then
-                if (p2 .eq. ' ') then
-                    p2 = p1
-                else
-                    if (p1 .ne. p2) ier = 1
-                end if
-            end if
-1           continue
-        end do
-        if (ier .eq. 0) then
-            repk = p2
-        else
-            repk = ' '
-            ierd = 1
-        end if
     else
         ierd = 1
     end if

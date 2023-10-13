@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe GeneralizedAssemblyMatrix
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -53,8 +53,6 @@ class GenericGeneralizedAssemblyMatrix : public DataStructure {
     ForwardModeResultPtr _mecaModeC;
     /** @brief GeneralizedModeResult */
     ForwardGeneralizedModeResultPtr _geneModeC;
-    /** @brief V K24 '.LIME' */
-    JeveuxVectorChar24 _lime;
     /** @brief V K24 '.REFA' */
     JeveuxVectorChar24 _refa;
 
@@ -72,7 +70,6 @@ class GenericGeneralizedAssemblyMatrix : public DataStructure {
         : DataStructure( name, 19, "MATR_ASSE_GENE" ),
           _desc( JeveuxVectorLong( getName() + ".DESC" ) ),
           _refe( JeveuxVectorChar24( getName() + ".REFE" ) ),
-          _lime( JeveuxVectorChar24( getName() + ".LIME" ) ),
           _refa( JeveuxVectorChar24( getName() + ".REFA" ) ),
           _dofNum( nullptr ),
           _mecaModeC( nullptr ),

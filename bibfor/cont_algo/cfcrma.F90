@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,7 +60,7 @@ subroutine cfcrma(neqmat, noma, resoco)
     character(len=19) :: stoc, macont
     integer :: ieq, icol, icompt, iblc
     integer :: jschc, jscdi, jscbl, jscib, jscde
-    integer :: jrefa, jlime
+    integer :: jrefa
 !
 ! ----------------------------------------------------------------------
 !
@@ -217,11 +217,6 @@ subroutine cfcrma(neqmat, noma, resoco)
     zk24(jrefa-1+2) = resoco(1:14)
     zk24(jrefa-1+9) = 'MS'
     zk24(jrefa-1+10) = 'NOEU'
-!
-! --- CREATION .LIME
-!
-    call wkvect(macont(1:19)//'.LIME', 'V V K24', 1, jlime)
-    zk24(jlime) = ' '
 !
 ! --- CREATION .UALF
 !

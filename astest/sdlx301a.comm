@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -180,6 +180,8 @@ MODE2 = CALC_MODES(
 #
 MODE1 = CALC_MODES(
     MATR_RIGI=RIGIDITE,
+    CHAM_MATER=CHMAT,
+    CARA_ELEM=CARAELEM,
     VERI_MODE=_F(SEUIL=0.000001),
     OPTION="PLUS_PETITE",
     CALC_FREQ=_F(NMAX_FREQ=8),
@@ -925,7 +927,13 @@ SDEPL1 = CALC_FONC_INTERP(
 SPECT_X = DEFI_NAPPE(NOM_PARA="AMOR", PARA=0.05, FONCTION=SDEPL1, INTERPOL="LIN")
 #
 
-MODE_STA = MODE_STATIQUE(MATR_RIGI=RIGIDITE, MATR_MASS=MASSE, PSEUDO_MODE=_F(AXE="X"))
+MODE_STA = MODE_STATIQUE(
+    MATR_RIGI=RIGIDITE,
+    MATR_MASS=MASSE,
+    PSEUDO_MODE=_F(AXE="X"),
+    CHAM_MATER=CHMAT,
+    CARA_ELEM=CARAELEM,
+)
 #
 
 MODE_STA = CALC_CHAMP(reuse=MODE_STA, RESULTAT=MODE_STA, CONTRAINTE=("SIEF_ELGA", "EFGE_ELNO"))

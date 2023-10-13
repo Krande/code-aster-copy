@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -157,7 +157,11 @@ RIGITH = FACTORISER(reuse=RIGITH, MATR_ASSE=RIGITH)
 
 #  >--------- APPEL AU NOUVEL OPERATEUR FORTRAN CALC_CHAM_FLUI  -----------<
 result = CALC_CHAM_FLUI(
-    RIGI_THER=RIGITH, MODE_MECA=modes, POTENTIEL="DEPL", EXCIT=_F(CHARGE=PRESIMPO)
+    CHAM_MATER=MATFLUI,
+    RIGI_THER=RIGITH,
+    MODE_MECA=modes,
+    POTENTIEL="DEPL",
+    EXCIT=_F(CHARGE=PRESIMPO),
 )
 
 # pour vérification que le chargement est correctement stocké dans la SD issue de CALC_CHAM_FLUI
@@ -243,7 +247,11 @@ TEST_FONCTION(
 
 # TEST DE L'OPTION PRESSION
 PRESS = CALC_CHAM_FLUI(
-    RIGI_THER=RIGITH, MODE_MECA=modes, POTENTIEL="PRES", EXCIT=_F(CHARGE=PRESIMPO)
+    CHAM_MATER=MATFLUI,
+    RIGI_THER=RIGITH,
+    MODE_MECA=modes,
+    POTENTIEL="PRES",
+    EXCIT=_F(CHARGE=PRESIMPO),
 )
 
 
@@ -277,6 +285,7 @@ TEST_RESU(
 # TEST DE L'OPTION VITESSE
 FCONST = DEFI_CONSTANTE(VALE=1.0)
 VITESS = CALC_CHAM_FLUI(
+    CHAM_MATER=MATFLUI,
     RIGI_THER=RIGITH,
     MODE_MECA=modes,
     COEF_MULT=1.0,

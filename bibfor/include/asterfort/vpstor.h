@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
     subroutine vpstor(ineg, typ, modes, nbmode, neq,&
                       vecpr8, vecpc8, mxresf, nbpari, nbparr,&
                       nbpark, nopara, mod45, resufi, resufr,&
-                      resufk, iprec)
+                      resufk, iprec, modelz, matez, caraz)
         integer :: mxresf
         integer :: neq
         integer :: ineg
@@ -40,5 +40,8 @@ interface
         real(kind=8) :: resufr(mxresf, *)
         character(len=*) :: resufk(mxresf, *)
         integer :: iprec
+        character(len=8), intent(in), optional :: modelz
+        character(len=8), intent(in), optional :: matez
+        character(len=8), intent(in), optional :: caraz
     end subroutine vpstor
 end interface

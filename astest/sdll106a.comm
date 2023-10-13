@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -85,6 +85,7 @@ VECTASS1 = ASSE_VECTEUR(VECT_ELEM=VECT1, NUME_DDL=NUM)
 
 MODES = CALC_MODES(
     MATR_RIGI=MATASK,
+    CARA_ELEM=CARA,
     OPTION="AJUSTE",
     SOLVEUR=_F(METHODE="MULT_FRONT"),
     CALC_FREQ=_F(FREQ=(0.1, 300.0)),
