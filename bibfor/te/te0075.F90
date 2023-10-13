@@ -26,6 +26,7 @@ subroutine te0075(option, nomte)
 !
     implicit none
 #include "asterf_types.h"
+#include "asterc/r8t0.h"
 #include "asterfort/assert.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
@@ -52,13 +53,24 @@ subroutine te0075(option, nomte)
     real(kind=8) :: valpar(nbres), theta, time_curr, time_prev
     real(kind=8) :: rhs(MAX_BS), valQP(MAX_QP)
     real(kind=8) :: valQPC(MAX_BS), valQPP(MAX_QP)
-    integer :: kp, itemps, ipara, icode
+    real(kind=8) :: para1, para2, para3, tz0, tpg
+    integer :: kp, itemps, ipara, icode, ipara2
+    real(kind=8), pointer :: tempi(:) => null()
 !
     call FESkin%init()
     call FEQuad%initFace(FESkin, "RIGI")
     call FEBasis%initFace(FESkin)
 !
     theta = 1.d0
+    tz0 = r8t0()
+!
+    if (option .ne. "CHAR_THER_FLUN_R") then
+        call jevech('PTEMPSR', 'L', itemps)
+!
+        theta = zr(itemps+2)
+        time_curr = zr(itemps)
+        time_prev = zr(itemps)-zr(itemps+1)
+    end if
 !
     nompar(1:3) = ['X', 'Y', 'Z']
     nompar(4) = 'INST'
@@ -67,12 +79,6 @@ subroutine te0075(option, nomte)
     valQPP = 0.d0
 !
     if (option == "CHAR_THER_FLUN_F") then
-        call jevech('PTEMPSR', 'L', itemps)
-!
-        theta = zr(itemps+2)
-        time_curr = zr(itemps)
-        time_prev = zr(itemps)-zr(itemps+1)
-!
         call jevech('PFLUXNF', 'L', ipara)
 !
         do kp = 1, FEQuad%nbQuadPoints
@@ -87,6 +93,67 @@ subroutine te0075(option, nomte)
     elseif (option == "CHAR_THER_FLUN_R") then
         call jevech('PFLUXNR', 'L', ipara)
         valQPC = zr(ipara)
+    else if (option == "CHAR_THER_RAYO_F") then
+!
+        call jevech('PRAYONF', 'L', ipara)
+        call jevech('PTEMPER', 'L', vr=tempi)
+!
+        do kp = 1, FEQuad%nbQuadPoints
+            tpg = FEEvalFuncScal(FEBasis, tempi, FEQuad%points_param(1:3, kp))
+
+            valpar(1:3) = FEQuad%points(1:3, kp)
+            valpar(4) = time_curr
+            ! SIGM
+            call fointe('FM', zk8(ipara), 4, nompar, valpar, para1, icode)
+            ! EPS
+            call fointe('FM', zk8(ipara+1), 4, nompar, valpar, para2, icode)
+            ! TPF
+            call fointe('FM', zk8(ipara+2), 4, nompar, valpar, para3, icode)
+            !
+            if (theta > -0.5d0) then
+                valQPC(kp) = para1*para2*((para3+tz0)**4)
+                valpar(4) = time_prev
+                ! SIGM
+                call fointe('FM', zk8(ipara), 4, nompar, valpar, para1, icode)
+                ! EPS
+                call fointe('FM', zk8(ipara+1), 4, nompar, valpar, para2, icode)
+                ! TPF
+                call fointe('FM', zk8(ipara+2), 4, nompar, valpar, para3, icode)
+                !
+                valQPP(kp) = para1*para2*((para3+tz0)**4-(tpg+tz0)**4)
+            else
+                valQPC(kp) = para1*para2*((para3+tz0)**4-(tpg+tz0)**4)
+            end if
+        end do
+    else if (option == "CHAR_THER_TEXT_F") then
+        !
+        call jevech('PT_EXTF', 'L', ipara)
+        call jevech('PCOEFHF', 'L', ipara2)
+        call jevech('PTEMPER', 'L', vr=tempi)
+!
+        do kp = 1, FEQuad%nbQuadPoints
+            tpg = FEEvalFuncScal(FEBasis, tempi, FEQuad%points_param(1:3, kp))
+!
+            valpar(1:3) = FEQuad%points(1:3, kp)
+            valpar(4) = time_curr
+            ! TEXT
+            call fointe('FM', zk8(ipara), 4, nompar, valpar, para1, icode)
+            ! COEFH
+            call fointe('FM', zk8(ipara2), 4, nompar, valpar, para2, icode)
+            !
+            if (theta > -0.5d0) then
+                valQPC(kp) = para2*para1
+                valpar(4) = time_prev
+                ! TEXT
+                call fointe('FM', zk8(ipara), 4, nompar, valpar, para1, icode)
+                ! COEFH
+                call fointe('FM', zk8(ipara2), 4, nompar, valpar, para2, icode)
+                !
+                valQPP(kp) = para2*(para1-tpg)
+            else
+                valQPC(kp) = para2*(para1-tpg)
+            end if
+        end do
     else
         ASSERT(ASTER_FALSE)
     end if

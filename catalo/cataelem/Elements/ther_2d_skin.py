@@ -151,7 +151,7 @@ class THPLSE2(Element):
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
         OP.CHAR_THER_RAYO_F(
-            te=73,
+            te=75,
             para_in=(
                 (SP.PGEOMER, NGEOMER),
                 (SP.PRAYONF, LC.CRAYONF),
@@ -171,7 +171,7 @@ class THPLSE2(Element):
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
         OP.CHAR_THER_TEXT_F(
-            te=73,
+            te=75,
             para_in=(
                 (SP.PCOEFHF, CCOEFHF),
                 (SP.PGEOMER, NGEOMER),

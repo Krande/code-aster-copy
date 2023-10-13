@@ -165,7 +165,7 @@ class THER_FACE3(Element):
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
         OP.CHAR_THER_RAYO_F(
-            te=60,
+            te=75,
             para_in=(
                 (SP.PGEOMER, NGEOMER),
                 (SP.PRAYONF, LC.CRAYONF),
@@ -185,7 +185,7 @@ class THER_FACE3(Element):
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
         OP.CHAR_THER_TEXT_F(
-            te=60,
+            te=75,
             para_in=(
                 (SP.PCOEFHF, CCOEFHF),
                 (SP.PGEOMER, NGEOMER),
