@@ -81,7 +81,6 @@ subroutine te0077(option, nomte)
 !
     call FEMassMatScal(FEQuadCell, FEBasis, mass, valQP)
 !
-!
     call writeMatrix("PMATTTR", nbDof, nbDof, ASTER_TRUE, mass)
 !
 end subroutine

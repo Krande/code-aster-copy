@@ -21,6 +21,7 @@ subroutine te0385(nomopt, nomte)
     use FE_topo_module
     use FE_quadrature_module
     use FE_basis_module
+    use FE_eval_module
 !
     implicit none
 #include "asterfort/assert.h"
@@ -46,10 +47,13 @@ subroutine te0385(nomopt, nomte)
     type(FE_Quadrature) :: FEQuadCell
     type(FE_basis) :: FEBasis
 !
-    integer :: itemps, icomp, imate, itempm, itempp
-    integer ::  ifon(6), kp, i
-    real(kind=8) :: deltat, err, tpgm, tpgp, funcEF(MAX_BS)
+    integer :: itemps, icomp, imate
+    integer ::  ifon(6), kp
+    real(kind=8) :: deltat, err, tpgm, tpgp
     real(kind=8), pointer :: hydrgm(:) => null(), hydrgp(:) => null()
+    real(kind=8), pointer :: tempm(:) => null()
+    real(kind=8), pointer :: tempp(:) => null()
+
 !
     if (nomopt .ne. "HYDR_ELGA") then
         ASSERT(ASTER_FALSE)
@@ -61,28 +65,23 @@ subroutine te0385(nomopt, nomte)
         call FECell%init()
         call FEBasis%initCell(FECell)
         call FEQuadCell%initCell(FECell, "MASS")
-
+!
         call jevech('PMATERC', 'L', imate)
-        call jevech('PTEMPMR', 'L', itempm)
-        call jevech('PTEMPPR', 'L', itempp)
+        call jevech('PTEMPMR', 'L', vr=tempm)
+        call jevech('PTEMPPR', 'L', vr=tempp)
         call jevech('PHYDRMR', 'L', vr=hydrgm)
         call jevech('PHYDRPR', 'E', vr=hydrgp)
         call jevech('PTEMPSR', 'L', itemps)
-
+!
         deltat = zr(itemps+1)
-
+!
         call ntfcma(zk16(icomp), zi(imate), ASTER_FALSE, ifon)
-
+!
         do kp = 1, FEQuadCell%nbQuadPoints
-            tpgm = 0.d0
-            tpgp = 0.d0
             hydrgp(kp) = 0.d0
-            funcEF = FEBasis%func(FEQuadCell%points_param(1:3, kp))
-            do i = 1, FEBasis%size
-                tpgm = tpgm+zr(itempm+i-1)*funcEF(i)
-                tpgp = tpgp+zr(itempp+i-1)*funcEF(i)
-            end do
-
+            tpgm = FEEvalFuncScal(FEBasis, tempm, FEQuadCell%points_param(1:3, kp))
+            tpgp = FEEvalFuncScal(FEBasis, tempp, FEQuadCell%points_param(1:3, kp))
+!
             call runge6(ifon(3), deltat, tpgp, tpgm, hydrgm(kp), &
                         hydrgp(kp), err)
         end do

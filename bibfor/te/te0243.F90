@@ -1,5 +1,4 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 2019 Christophe Durand - www.code-aster.org
 ! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
@@ -23,6 +22,7 @@ subroutine te0243(option, nomte)
     use FE_quadrature_module
     use FE_basis_module
     use FE_stiffness_module
+    use FE_eval_module
 !
     implicit none
 #include "jeveux.h"
@@ -56,10 +56,11 @@ subroutine te0243(option, nomte)
     character(len=32) :: phenom
     real(kind=8) ::  tpg, dtpg(3), tpsec, diff, fluglo(3)
     real(kind=8) :: resi(MAX_BS), valQP(3, MAX_QP)
-    real(kind=8) :: funcEF(MAX_BS), gradEF(3, MAX_BS)
     real(kind=8), pointer :: flux(:) => null()
-    integer ::  kp, i, ifon(6)
-    integer ::  imate, icomp, itempi, isechf, nbDof
+    real(kind=8), pointer :: tempi(:) => null()
+    real(kind=8), pointer :: sechf(:) => null()
+    integer ::  kp, ifon(6)
+    integer ::  imate, icomp, nbDof
     aster_logical :: aniso
 ! ----------------------------------------------------------------------
     call FECell%init()
@@ -67,17 +68,17 @@ subroutine te0243(option, nomte)
     nbDof = FEBasis%size
 !
     call jevech('PMATERC', 'L', imate)
-    call jevech('PTEMPEI', 'L', itempi)
+    call jevech('PTEMPEI', 'L', vr=tempi)
     call jevech('PCOMPOR', 'L', icomp)
     call jevech('PFLUXPR', 'E', vr=flux)
 !
     if ((zk16(icomp) (1:5) .eq. 'SECH_')) then
         if (zk16(icomp) (1:12) .eq. 'SECH_GRANGER' .or. zk16(icomp) (1:10) .eq. 'SECH_NAPPE') then
-            call jevech('PTMPCHF', 'L', isechf)
+            call jevech('PTMPCHF', 'L', vr=sechf)
         else
 !          POUR LES AUTRES LOIS, PAS DE CHAMP DE TEMPERATURE
 !          ISECHF EST FICTIF
-            isechf = itempi
+            call jevech('PTEMPEI', 'L', vr=sechf)
         end if
 !
     else if (zk16(icomp) (1:5) .eq. 'THER_') then
@@ -97,14 +98,8 @@ subroutine te0243(option, nomte)
 !
     valQP = 0.0
     do kp = 1, FEQuadCell%nbQuadPoints
-        tpg = 0.d0
-        dtpg = 0.d0
-        funcEF = FEBasis%func(FEQuadCell%points_param(1:3, kp))
-        gradEF = FEBasis%grad(FEQuadCell%points_param(1:3, kp))
-        do i = 1, FEBasis%size
-            tpg = tpg+zr(itempi-1+i)*funcEF(i)
-            dtpg = dtpg+zr(itempi-1+i)*gradEF(1:3, i)
-        end do
+        tpg = FEEvalFuncScal(FEBasis, tempi, FEQuadCell%points_param(1:3, kp))
+        dtpg = FEEvalGradVec(FEBasis, tempi, FEQuadCell%points_param(1:3, kp))
 !
         if (zk16(icomp) (1:5) .eq. 'THER_') then
             call ntcomp(icomp, icamas, FECell%ndim, tpg, dtpg, &
@@ -112,10 +107,7 @@ subroutine te0243(option, nomte)
             flux(FECell%ndim*(kp-1)+1:FECell%ndim*(kp-1)+FECell%ndim) = -fluglo(1:FECell%ndim)
             valQP(1:3, kp) = fluglo
         else if (zk16(icomp) (1:5) .eq. 'SECH_') then
-            tpsec = 0.d0
-            do i = 1, FEBasis%size
-                tpsec = tpsec+zr(isechf-1+i)*funcEF(i)
-            end do
+            tpsec = FEEvalFuncScal(FEBasis, sechf, FEQuadCell%points_param(1:3, kp))
             call rcdiff(zi(imate), zk16(icomp), tpsec, tpg, diff)
             valQP(1:3, kp) = diff*dtpg
         else

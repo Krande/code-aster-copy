@@ -22,6 +22,7 @@ subroutine te0246(option, nomte)
     use FE_quadrature_module
     use FE_basis_module
     use FE_mass_module
+    use FE_eval_module
 !
     implicit none
 #include "asterfort/assert.h"
@@ -51,11 +52,12 @@ subroutine te0246(option, nomte)
 !
     integer :: icodre(1)
     character(len=16) :: phenom
-    real(kind=8) :: valQP(MAX_QP), tpgi, r8bid, funcEF(MAX_BS)
+    real(kind=8) :: valQP(MAX_QP), tpgi, r8bid
     real(kind=8) :: mass(MAX_BS, MAX_BS)
-    integer :: kp, i, imate, icomp, itempi
+    integer :: kp, imate, icomp
     integer :: ifon(6), nbDof
     aster_logical :: aniso
+    real(kind=8), pointer :: tempi(:) => null()
 !
 !-----------------------------------------------------------------------
 !
@@ -65,7 +67,7 @@ subroutine te0246(option, nomte)
 !
     call jevech('PCOMPOR', 'L', icomp)
     if (zk16(icomp) (1:5) .eq. 'THER_') then
-        call jevech('PTEMPEI', 'L', itempi)
+        call jevech('PTEMPEI', 'L', vr=tempi)
         call jevech('PMATERC', 'L', imate)
 !
         call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
@@ -82,11 +84,7 @@ subroutine te0246(option, nomte)
     valQP = 0.0
     do kp = 1, FEQuadCell%nbQuadPoints
         if (zk16(icomp) (1:5) .eq. 'THER_') then
-            tpgi = 0.d0
-            funcEF = FEBasis%func(FEQuadCell%points_param(1:3, kp))
-            do i = 1, FEBasis%size
-                tpgi = tpgi+zr(itempi-1+i)*funcEF(i)
-            end do
+            tpgi = FEEvalFuncScal(FEBasis, tempi, FEQuadCell%points_param(1:3, kp))
             call rcfode(ifon(1), tpgi, r8bid, valQP(kp))
         else if (zk16(icomp) (1:5) .eq. 'SECH_') then
             valQP(kp) = 1.d0
