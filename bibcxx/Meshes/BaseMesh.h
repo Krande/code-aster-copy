@@ -137,7 +137,7 @@ class BaseMesh : public DataStructure, public ListOfTables {
     /**
      * @brief Return the connectivity, node zero based
      */
-    const py::list getConnectivityZeroBased() const;
+    const std::vector< VectorLong > getConnectivityZeroBased() const;
 
     virtual std::vector< VectorString > getCellFamilyGroups() const {
         return std::vector< VectorString >();
@@ -157,7 +157,7 @@ class BaseMesh : public DataStructure, public ListOfTables {
     /**
      * @brief Return the connectivity with MED numberings, node zero based
      */
-    const py::list getMedConnectivityZeroBased() const;
+    const std::vector< VectorLong > getMedConnectivityZeroBased() const;
 
     /**
      * @brief Return the MED type for each cell

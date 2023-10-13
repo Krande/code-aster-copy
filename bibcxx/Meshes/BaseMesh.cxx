@@ -215,37 +215,41 @@ const JeveuxCollectionLong BaseMesh::getInverseConnectivity() const {
     return result;
 };
 
-const py::list BaseMesh::getConnectivityZeroBased() const {
-    py::list pylist;
+const std::vector< VectorLong > BaseMesh::getConnectivityZeroBased() const {
+    std::vector< VectorLong > result;
     if ( !_connectivity->build() || _connectivity->size() < 0 ) {
-        return pylist;
+        return result;
     }
+    result.reserve( _connectivity->size() );
     for ( const auto &pair : _connectivity ) {
         const auto &obj = pair.second;
         obj->updateValuePointer();
-        py::list items;
+        VectorLong items;
+        items.reserve( obj->size() );
         for ( const auto &val : obj )
-            items.append( val - 1 );
-        pylist.append( items );
+            items.push_back( val - 1 );
+        result.push_back( items );
     }
-    return pylist;
+    return result;
 }
 
-const py::list BaseMesh::getMedConnectivityZeroBased() const {
-    py::list pylist;
+const std::vector< VectorLong > BaseMesh::getMedConnectivityZeroBased() const {
+    std::vector< VectorLong > result;
     auto connectivity = getMedConnectivity();
     if ( !connectivity->build() || connectivity->size() < 0 ) {
-        return pylist;
+        return result;
     }
+    result.reserve( connectivity->size() );
     for ( const auto &pair : connectivity ) {
         const auto &obj = pair.second;
         obj->updateValuePointer();
-        py::list items;
+        VectorLong items;
+        items.reserve( obj->size() );
         for ( const auto &val : obj )
-            items.append( val - 1 );
-        pylist.append( items );
+            items.push_back( val - 1 );
+        result.push_back( items );
     }
-    return pylist;
+    return result;
 }
 
 std::string BaseMesh::getNodeName( const ASTERINTEGER &index ) const {
