@@ -23,7 +23,7 @@ from code_aster import MPI
 
 test = code_aster.TestCase()
 
-code_aster.init("--test")
+code_aster.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 
 nProc = MPI.ASTER_COMM_WORLD.Get_size()
 

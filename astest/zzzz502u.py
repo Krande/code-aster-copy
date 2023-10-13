@@ -26,7 +26,7 @@ rank = MPI.ASTER_COMM_WORLD.Get_rank()
 
 current_dir = os.getcwd()
 
-code_aster.init("--test")
+code_aster.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 
 test = code_aster.TestCase()
 

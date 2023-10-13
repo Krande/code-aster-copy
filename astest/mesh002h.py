@@ -22,7 +22,7 @@ from code_aster.Commands import *
 from code_aster import MPI
 
 
-code_aster.init("--test")
+code_aster.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 
 test = code_aster.TestCase()
 

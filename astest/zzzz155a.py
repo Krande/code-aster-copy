@@ -21,7 +21,7 @@ import code_aster
 from code_aster import MPI
 from code_aster.Commands import *
 
-code_aster.init("--test")
+code_aster.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 
 test = code_aster.TestCase()
 

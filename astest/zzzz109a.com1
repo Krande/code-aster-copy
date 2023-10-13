@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-POURSUITE(CODE="OUI")
+POURSUITE(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"))
 
 import numpy as np
 

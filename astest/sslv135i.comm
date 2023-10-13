@@ -53,7 +53,12 @@
 # ET AUX NOEUDS
 # ----------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), IGNORE_ALARM=("PREPOST4_27"))
+DEBUT(
+    CODE=_F(NIV_PUB_WEB="INTERNET"),
+    ERREUR=_F(ALARME="EXCEPTION"),
+    DEBUG=_F(SDVERI="OUI"),
+    IGNORE_ALARM=("PREPOST4_27"),
+)
 
 CUBE = LIRE_MAILLAGE(FORMAT="MED")
 

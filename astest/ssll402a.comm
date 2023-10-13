@@ -20,7 +20,7 @@
 # MODELISATION POU_D_T
 # ======================================================================
 #
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
 
 # nombre d'éléments par quart de cercle
 nb_elem = 200

@@ -25,7 +25,7 @@ from code_aster.Utilities import PETSc
 
 root = osp.dirname(__file__)
 
-code_aster.init("--test", "--abort")
+code_aster.init("--test", "--abort", ERREUR=_F(ALARME="EXCEPTION"))
 
 MA = code_aster.Mesh()
 MA.readMedFile(osp.join(root, "petsc05a.mmed"))

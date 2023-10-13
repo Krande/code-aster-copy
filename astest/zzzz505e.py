@@ -20,7 +20,9 @@
 import code_aster
 from code_aster.Commands import *
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), INFO=1)
+DEBUT(
+    CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"), INFO=1
+)
 
 test = code_aster.TestCase()
 

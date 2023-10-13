@@ -24,7 +24,7 @@ from code_aster import MPI
 
 from zzzz155c_data import valuesDeplRef, valuesSiefRef
 
-code_aster.init("--test")
+code_aster.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 
 test = code_aster.TestCase()
 

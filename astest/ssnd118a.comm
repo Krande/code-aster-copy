@@ -16,7 +16,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"))
 
 MA = DEFI_MATERIAU(
     ELAS=_F(E=100000.0e06, NU=0.3, RHO=40000.0), ECRO_LINE=_F(D_SIGM_EPSI=700.0e066, SY=10000.0e066)

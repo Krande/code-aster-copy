@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@
 # epaisseur de la plaque
 ep_beton = 0.15
 
-POURSUITE(CODE="OUI")
+POURSUITE(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"))
 
 MATER = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=(_F(TOUT="OUI", MATER=mat_dhrc),))
 

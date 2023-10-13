@@ -28,7 +28,7 @@
 # 1 : compression / Sigma 1d / Epsi  diagonal / Contrainte imposée
 #
 # --------------------------------------------------------------------------------------------------
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"))
 #
 # !! !! !! !! !! !! !! !! !! !! !! !! !! !! !! !! !! !! !! !! !! !! !! !! !!
 #

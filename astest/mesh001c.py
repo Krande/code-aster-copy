@@ -23,7 +23,7 @@ import code_aster
 from code_aster.Commands import DEFI_GROUP, LIRE_MAILLAGE, RECU_TABLE
 from code_aster.Utilities import shared_tmpdir
 
-code_aster.init("--test")
+code_aster.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 
 # check ParallelMesh object API
 test = code_aster.TestCase()

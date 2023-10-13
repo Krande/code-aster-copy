@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
 
 MAILET = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
 MAILET = DEFI_GROUP(reuse=MAILET, MAILLAGE=MAILET, CREA_GROUP_MA=_F(NOM="TOUT", TOUT="OUI"))

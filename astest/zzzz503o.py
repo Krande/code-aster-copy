@@ -25,7 +25,7 @@ from code_aster import MPI
 from code_aster.Commands import *
 from code_aster.Utilities import shared_tmpdir
 
-code_aster.init("--test")
+code_aster.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 
 rank = MPI.ASTER_COMM_WORLD.Get_rank()
 

@@ -26,7 +26,7 @@ import code_aster
 from code_aster.Cata.Commands import DEBUT
 from code_aster.Supervis import CommandSyntax
 
-code_aster.init("--test", "--abort", "--debug")
+code_aster.init("--test", "--abort", "--debug", ERREUR=_F(ALARME="EXCEPTION"))
 
 test = code_aster.TestCase()
 

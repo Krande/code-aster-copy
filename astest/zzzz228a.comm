@@ -33,7 +33,7 @@
 #       20.0   lorsque la température dépend du temps 10.0*inst
 # ----------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
 
 M = LIRE_MAILLAGE(FORMAT="MED")
 M = DEFI_GROUP(reuse=M, MAILLAGE=M, CREA_GROUP_MA=_F(NOM="TOUT", TOUT="OUI"))

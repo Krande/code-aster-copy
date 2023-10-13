@@ -19,7 +19,7 @@
 
 import code_aster
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"))
 
 test = code_aster.TestCase()
 

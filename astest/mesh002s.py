@@ -21,11 +21,10 @@ import os.path as osp
 import re
 from glob import glob
 
+import medcoupling as mc
+
 import code_aster
 from code_aster import MPI
-
-import medcoupling as mc
-from collections import Counter
 
 code_aster.init("--test")
 

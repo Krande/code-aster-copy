@@ -21,7 +21,7 @@
 # MAILLES : PENTA15 , QUAD8
 #
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"))
 
 #
 # LECTURE DU MAILLAGE --------------------------------------------------

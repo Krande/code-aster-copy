@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@
 #            REMARQUE 1   : LES PARAMETRES GLRC_DM ONT ETE IDENTIFIES
 #                           PAR LE TEST SSNS106A
 
-POURSUITE(CODE="OUI", DEBUG=_F(SDVERI="NON"))
+POURSUITE(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="NON"))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
 MATOR = DEFI_MATERIAU(ELAS=_F(E=2.0e11, NU=0.0, RHO=7800.0))

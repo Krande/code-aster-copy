@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 
 # person_in_charge: mathieu.courtois at edf.fr
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"))
 
 # Ce test vérifie les arguments dans le catalogue de commandes
 # et imprime l'ensemble des mots-clés et les commandes qui les utilisent

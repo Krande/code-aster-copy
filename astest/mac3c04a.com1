@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ except ImportError:
 from code_aster.Commands import *
 from code_aster.Utilities import ExecutionParameter
 
-POURSUITE(CODE="OUI", IMPR_MACRO="NON")
+POURSUITE(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"), IMPR_MACRO="NON")
 
 mac3c = osp.join(ExecutionParameter().get_option("rcdir"), "tests_data", "mac3c")
 with open(osp.join(mac3c, "%s.json" % testname)) as f:

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,12 @@
 # SPHERE RIGIDE MODELISER UNIQUEMENT PAR LA SURFACE DE CONTACT
 
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), IGNORE_ALARM=("MODELE1_63"), DEBUG=_F(SDVERI="OUI"))
+DEBUT(
+    CODE=_F(NIV_PUB_WEB="INTERNET"),
+    ERREUR=_F(ALARME="EXCEPTION"),
+    IGNORE_ALARM=("MODELE1_63"),
+    DEBUG=_F(SDVERI="OUI"),
+)
 
 # <MODELE1_63> : DANS UN MODELE, IL EXISTE DES ELEMENTS DE TYPE "BORD" QUI N'ONT PAS DE VOISIN AVEC RIGIDITE
 #  LE MODELE PROVOQUANT CES ALARMES CONTIENT UNE SURFACE RIGIDE POUR LE CONTACT

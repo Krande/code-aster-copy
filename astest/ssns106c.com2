@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@
 #            REMARQUE 1   : LES PARAMETRES GLRC_DM ONT ETE IDENTIFIES
 #                           A PARTIR DES TESTS SSNS106A ET SSNS106B
 
-POURSUITE(CODE="OUI", DEBUG=_F(SDVERI="NON"))
+POURSUITE(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="NON"))
 
 MATERD = AFFE_MATERIAU(MAILLAGE=MA, AFFE=(_F(GROUP_MA="DALLE_G", MATER=MAT_D_E),))
 

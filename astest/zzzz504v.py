@@ -32,7 +32,7 @@ from code_aster.Commands import *
 
 root = osp.dirname(__file__)
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"))
 
 test = code_aster.TestCase()
 

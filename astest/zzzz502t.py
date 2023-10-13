@@ -25,7 +25,7 @@ from code_aster.Utilities import petscInitialize
 
 test = code_aster.TestCase()
 
-code_aster.init("--test")
+code_aster.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 
 petscInitialize()
 rank = MPI.ASTER_COMM_WORLD.Get_rank()

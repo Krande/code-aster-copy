@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,12 @@
 # - METHODE PENALISATION POUR LE CONTACT ET LE FROTTEMENT
 # - JEU DEFINI AVEC DIST_2
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), MEMOIRE=_F(TAILLE_BLOC=0.5), DEBUG=_F(SDVERI="OUI"))
+DEBUT(
+    CODE=_F(NIV_PUB_WEB="INTERNET"),
+    ERREUR=_F(ALARME="EXCEPTION"),
+    MEMOIRE=_F(TAILLE_BLOC=0.5),
+    DEBUG=_F(SDVERI="OUI"),
+)
 
 MAILL = LIRE_MAILLAGE(FORMAT="MED", VERI_MAIL=_F(VERIF="OUI"))
 

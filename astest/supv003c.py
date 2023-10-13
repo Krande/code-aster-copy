@@ -25,7 +25,7 @@ from code_aster.Commands import *
 test = code_aster.TestCase()
 
 try:
-    DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ERREUR_F="EXCEPTION"))
+    DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION", ERREUR_F="EXCEPTION"))
 
 except AsterError as exc:
     assert False, "no exception should be thrown."

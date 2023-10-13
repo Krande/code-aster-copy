@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@
 # It creates a material called "mat_dhrc" that you should pass to AFFE_MATERIAU.
 # It uses the International System of Units (metre, kilogram and second)
 
-POURSUITE(CODE="OUI")
+POURSUITE(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"))
 
 mat_dhrc = DEFI_MATERIAU(
     ELAS_DHRC=_F(

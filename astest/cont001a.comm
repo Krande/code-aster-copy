@@ -26,6 +26,7 @@ from code_aster.Objects import PhysicalProblem, FieldOnNodesReal, ContactPairing
 
 DEBUT(
     CODE=_F(NIV_PUB_WEB="INTERNET"),
+    ERREUR=_F(ALARME="EXCEPTION"),
     # DEBUG=_F(SDVERI='OUI',),
     INFO=1,
 )

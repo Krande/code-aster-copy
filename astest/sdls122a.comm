@@ -20,6 +20,7 @@
 # person_in_charge: mathieu.corus at edf.fr
 DEBUT(
     CODE=_F(NIV_PUB_WEB="INTERNET"),
+    ERREUR=_F(ALARME="EXCEPTION"),
     # les mode_meca créés par CALC_CORR_SSD ont un solveur invalide
     DEBUG=_F(SDVERI="NON"),
 )

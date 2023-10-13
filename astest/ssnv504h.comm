@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,12 @@
 # UNITES   : NEWTON , METRE , SECONDE (N,M,S)
 #
 # Ce test est sensible : SOLVEUR=MUMPS avec RENUM='AUTO'
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), IGNORE_ALARM="CONTACT3_16", DEBUG=_F(SDVERI="OUI"))
+DEBUT(
+    CODE=_F(NIV_PUB_WEB="INTERNET"),
+    ERREUR=_F(ALARME="EXCEPTION"),
+    IGNORE_ALARM="CONTACT3_16",
+    DEBUG=_F(SDVERI="OUI"),
+)
 
 #
 #  CALCUL VALIDATION DU PASSAGE DES SINGULARITES GEOMETRIQUES

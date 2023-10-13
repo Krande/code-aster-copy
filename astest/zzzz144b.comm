@@ -23,7 +23,7 @@ import os.path as osp
 
 rank = MPI.ASTER_COMM_WORLD.Get_rank()
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"))
 
 MAIL = code_aster.ParallelMesh()
 MAIL.readMedFile("zzzz144b/{}.med".format(rank), partitioned=True)

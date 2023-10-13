@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-POURSUITE(CODE="OUI")
+POURSUITE(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"))
 
 # Fréquence et pulsation pour le calcul du pseudo-mode
 freqi = 15

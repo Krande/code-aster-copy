@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ from code_aster.Cata.Syntax import tr
 from code_aster.Commands import *
 from code_aster.Utilities import localization
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), LANG="EN")
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), LANG="EN")
 
 # si le dictionnaire anglais n'est pas disponible, on ne peut pas faire le test
 mofile = osp.join(localization.localedir, "en-US", "LC_MESSAGES", "aster_messages.mo")

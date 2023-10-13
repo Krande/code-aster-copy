@@ -20,7 +20,7 @@
 from code_aster.Commands import *
 from code_aster.MacroCommands.Contrib.calc_matr_ifs import CALC_MATR_IFS
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"))
 
 # --------------------------------
 # Donnees physiques des parametres

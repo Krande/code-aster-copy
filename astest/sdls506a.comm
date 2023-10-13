@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="NON"))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="NON"))
 
 # Python dump of geometry from salome: unit 26
 mesh = LIRE_MAILLAGE(UNITE=20)

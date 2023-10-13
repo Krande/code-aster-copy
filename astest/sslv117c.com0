@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 
 #
-POURSUITE(CODE="OUI")
+POURSUITE(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"))
 
 import numpy as N
 

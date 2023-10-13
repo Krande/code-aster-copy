@@ -19,7 +19,12 @@
 
 from math import exp, log
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), IGNORE_ALARM="UTILITAI3_37")
+DEBUT(
+    CODE=_F(NIV_PUB_WEB="INTERNET"),
+    ERREUR=_F(ALARME="EXCEPTION"),
+    DEBUG=_F(SDVERI="OUI"),
+    IGNORE_ALARM="UTILITAI3_37",
+)
 
 # ========================================================================
 #     DEFINITION DES NAPPES ET DES FONCTIONS

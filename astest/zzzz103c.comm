@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -78,7 +78,11 @@ Principe du test :
 
 from code_aster.Commands import DEBUT, FIN
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(VERI_BASE="GLOBALE", VERI_BASE_NB=50))
+DEBUT(
+    CODE=_F(NIV_PUB_WEB="INTERNET"),
+    ERREUR=_F(ALARME="EXCEPTION"),
+    DEBUG=_F(VERI_BASE="GLOBALE", VERI_BASE_NB=50),
+)
 
 FIN(RETASSAGE="OUI")
 # DEBUT/FIN:

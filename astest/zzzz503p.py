@@ -36,7 +36,7 @@ except ImportError:
 
 from math import pi, sqrt, log
 
-code_aster.init("--test")
+code_aster.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 
 test = code_aster.TestCase()
 

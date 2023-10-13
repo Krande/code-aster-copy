@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@
 #   RQ. 3 ALARMES NORMALES SI COMPILE AVEC MUMPS5.0.2, 2 AVEC MUMPS5.1.0
 #########################################################################
 
-POURSUITE(CODE="OUI")
+POURSUITE(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"))
 
 # 3EME CALCUL AVEC MUMPS AVEC CHAR_CINE + METIS + TOUTES LES VALEURS D'ACCELERATIONS
 # ------------------------------------------------------------------------------------

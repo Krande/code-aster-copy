@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 
 #   GRAN_IRRA_LOG DEPENDANT DE LA FLUENCE ET GRANDISSEMENT
 
-POURSUITE(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
+POURSUITE(CODE="OUI", DEBUG=_F(SDVERI="OUI"), ERREUR=_F(ALARME="EXCEPTION"))
 
 FON_T = DEFI_FONCTION(NOM_PARA="X", NOM_RESU="TEMP", VALE=(0.0, 299.85, 4000.0, 299.85))
 

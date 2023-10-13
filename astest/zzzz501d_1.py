@@ -21,7 +21,7 @@ import code_aster
 
 from zzzz501d_user import ComplexUserObject
 
-code_aster.init("--test", "--continue")
+code_aster.init("--test", "--continue", ERREUR=_F(ALARME="EXCEPTION"))
 test = code_aster.TestCase()
 
 values = ["SIEF_ELGA", 31, -325.03920740223253]

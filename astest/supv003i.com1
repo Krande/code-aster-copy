@@ -26,7 +26,7 @@ from code_aster.Commands import *
 POURSUITE(
     CODE="OUI",
     PAR_LOT="NON",
-    ERREUR=_F(ERREUR_F="EXCEPTION"),
+    ERREUR=_F(ERREUR_F="EXCEPTION", ALARME="EXCEPTION"),
     DEBUG=_F(HIST_ETAPE="OUI"),
     FORMAT_HDF="OUI",
 )

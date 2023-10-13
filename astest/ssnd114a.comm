@@ -20,7 +20,7 @@
 import numpy as np
 from math import *
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"))
 
 maillage = LIRE_MAILLAGE(FORMAT="MED", UNITE=20, INFO=2)
 

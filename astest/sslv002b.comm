@@ -32,7 +32,7 @@
 # MODELISATION B : calcul avec la méthode 2
 # Le champ d'orientation est au format MED et est enregistré dans le même fichier que le maillage.
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"))
 
 mesh = LIRE_MAILLAGE(UNITE=21, FORMAT="MED")
 

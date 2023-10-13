@@ -20,7 +20,7 @@
 import code_aster
 from code_aster.Commands import *
 
-code_aster.init("--test", "--continue")
+code_aster.init("--test", "--continue", ERREUR=_F(ALARME="EXCEPTION"))
 test = code_aster.TestCase()
 
 # test for usage of dict-like objects

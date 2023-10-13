@@ -23,7 +23,7 @@ from code_aster.Cata.Syntax import AU_MOINS_UN, EXCLUS, FACT, MACRO, PRESENT_PRE
 from code_aster.Commands import *
 from code_aster.Supervis.ExecuteCommand import UserMacro
 
-code_aster.init("--test")
+code_aster.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 
 
 class Spy:

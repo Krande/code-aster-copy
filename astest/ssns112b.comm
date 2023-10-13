@@ -54,7 +54,7 @@ sy_acier = 610 * MPa
 # masse volumique acier
 Rho_acier = 7500
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
 
 # -----------------------------------------------
 # LECTURE DU MAILLAGE

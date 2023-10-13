@@ -20,7 +20,7 @@
 # person_in_charge: mickael.abbas at edf.fr
 #
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTRANET"), DEBUG=_F(SDVERI="OUI"))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTRANET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
 
 # ......................................................................
 # PLAQUE CARREE EN TRACTION CISAILLEMENT CALCUL 3D

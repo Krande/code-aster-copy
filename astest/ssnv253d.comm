@@ -27,7 +27,7 @@
 # GROUPES DE NOEUDS: AXE, SPECIMEN, LATERAL, FIXE, SYME, TOP, DEPL, FIXE2
 # GROUPES DE MAILLES:  TOP, SYME, LATERAL, AXE, SPECIMEN
 # ----------------------------------------------------------------------
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
 
 import math
 import numpy as np

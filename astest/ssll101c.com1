@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 
 # Non-regression testcase for issue28120 - CREA_RESU / MULT_ELAS
-POURSUITE(CODE="OUI")
+POURSUITE(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"))
 
 # create a new field with ones
 chone = CREA_CHAMP(

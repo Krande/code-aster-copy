@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"))
 
 mesh = LIRE_MAILLAGE(FORMAT="MED")
 

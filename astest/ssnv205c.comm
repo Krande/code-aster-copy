@@ -23,7 +23,7 @@
 # >>> Shear test with SIMU_POINT_MAT with the KH_CSSM model
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="NON"))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="NON"))
 
 ### >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ### >>> Definition of the material

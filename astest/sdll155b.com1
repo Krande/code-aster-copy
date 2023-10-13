@@ -19,7 +19,7 @@
 
 import numpy as np
 
-POURSUITE(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
+POURSUITE(CODE="OUI", DEBUG=_F(SDVERI="OUI"), ERREUR=_F(ALARME="EXCEPTION"))
 
 # calcul des references pour POST_ROCHE, on extrait uniquement les valeurs de MT, MFY et MFZ non nulles
 

@@ -29,7 +29,7 @@ import code_aster
 from code_aster.Utilities.logger import WARNING, logger
 from run_aster.export import Export
 
-code_aster.init("--test")
+code_aster.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 test = code_aster.TestCase()
 
 logger.setLevel(WARNING)

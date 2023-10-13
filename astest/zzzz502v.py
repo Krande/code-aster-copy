@@ -24,7 +24,7 @@ from code_aster import MPI
 from code_aster.Utilities import PETSc
 
 
-code_aster.init("--test")
+code_aster.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 
 test = code_aster.TestCase()
 

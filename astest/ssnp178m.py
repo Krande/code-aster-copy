@@ -22,7 +22,7 @@ import os.path as osp
 from code_aster.Commands import *
 from code_aster.Utilities import shared_tmpdir
 
-POURSUITE(CODE="OUI")
+POURSUITE(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"))
 
 with shared_tmpdir("ssnp178m_") as tmpdir:
     medfile = osp.join(tmpdir, "resu.ssnp178m.med")

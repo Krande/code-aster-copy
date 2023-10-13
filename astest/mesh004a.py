@@ -23,7 +23,7 @@ from code_aster.Utilities import petscInitialize
 from code_aster import MPI
 
 
-code_aster.init("--test")
+code_aster.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 
 # force PETSc to start before solves for testing purpose only - no need in regular study
 petscInitialize("-ksp_view -log_view -ksp_monitor")

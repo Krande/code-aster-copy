@@ -24,7 +24,7 @@ Unittest for Utilities.
 import code_aster
 from code_aster.Utilities.outputs import command_text
 
-code_aster.init("--test", "--abort", "--debug")
+code_aster.init("--test", "--abort", "--debug", ERREUR=_F(ALARME="EXCEPTION"))
 
 test = code_aster.TestCase()
 
