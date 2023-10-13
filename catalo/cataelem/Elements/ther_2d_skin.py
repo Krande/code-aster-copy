@@ -130,7 +130,7 @@ class THPLSE2(Element):
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
         OP.CHAR_THER_FLUN_R(
-            te=74,
+            te=75,
             para_in=((SP.PFLUXNR, CFLUXNR), (SP.PGEOMER, NGEOMER)),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),

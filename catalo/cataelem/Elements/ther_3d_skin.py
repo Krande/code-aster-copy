@@ -129,12 +129,12 @@ class THER_FACE3(Element):
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
         OP.CHAR_THER_FLUN_F(
-            te=58,
+            te=75,
             para_in=((SP.PFLUXNF, CFLUXNF), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
         OP.CHAR_THER_FLUN_R(
-            te=57,
+            te=75,
             para_in=((SP.PFLUXNR, CFLUXNR), (SP.PGEOMER, NGEOMER)),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),

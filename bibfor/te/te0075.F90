@@ -17,116 +17,89 @@
 ! --------------------------------------------------------------------
 !
 subroutine te0075(option, nomte)
+!
+    use FE_topo_module
+    use FE_quadrature_module
+    use FE_basis_module
+    use FE_rhs_module
+    use FE_eval_module
+!
     implicit none
 #include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/connec.h"
-#include "asterfort/elref1.h"
-#include "asterfort/elrefe_info.h"
+#include "asterfort/assert.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
-#include "asterfort/lteatt.h"
-#include "asterfort/teattr.h"
-#include "asterfort/vff2dn.h"
+#include "asterfort/writeVector.h"
+#include "FE_module.h"
+#include "jeveux.h"
 !
     character(len=16) :: option, nomte
 ! ......................................................................
-!    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES
-!                          OPTION : 'CHAR_THER_FLUN_F'
+!    - FONCTION REALISEE:  CALCUL DES CHARGEMENTS ELEMENTAIRES
+
 !    - ARGUMENTS:
 !        DONNEES:      OPTION       -->  OPTION DE CALCUL
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
 !
-    integer :: nbres
-!-----------------------------------------------------------------------
-    integer :: icode, j
-    real(kind=8) :: flun, flunp1
-!-----------------------------------------------------------------------
-    parameter(nbres=3)
-    character(len=8) :: nompar(nbres), elrefe, alias8
-    real(kind=8) :: valpar(nbres), poids, r, z, flux, nx, ny, theta
-    real(kind=8) :: coorse(18), vectt(9)
-    integer :: nno, nnos, ndim, kp, npg, ipoids, ivf, idfde, jgano, igeom
-    integer :: itemps, ivectt, i, l, li, iflu
-    integer :: nnop2, c(6, 9), ise, nse, ibid
-    aster_logical :: laxi
 !
+    type(FE_Skin) :: FESkin
+    type(FE_Quadrature) :: FEQuad
+    type(FE_Basis) :: FEBasis
 !
-    call elref1(elrefe)
+    integer, parameter :: nbres = 4
+    character(len=8) :: nompar(nbres)
+    real(kind=8) :: valpar(nbres), theta, time_curr, time_prev
+    real(kind=8) :: rhs(MAX_BS), valQP(MAX_QP)
+    real(kind=8) :: valQPC(MAX_BS), valQPP(MAX_QP)
+    integer :: kp, itemps, ipara, icode
 !
-    if (lteatt('LUMPE', 'OUI')) then
-        call teattr('S', 'ALIAS8', alias8, ibid)
-        if (alias8(6:8) .eq. 'SE3') elrefe = 'SE2'
+    call FESkin%init()
+    call FEQuad%initFace(FESkin, "RIGI")
+    call FEBasis%initFace(FESkin)
+!
+    theta = 1.d0
+!
+    nompar(1:3) = ['X', 'Y', 'Z']
+    nompar(4) = 'INST'
+!
+    valQPC = 0.d0
+    valQPP = 0.d0
+!
+    if (option == "CHAR_THER_FLUN_F") then
+        call jevech('PTEMPSR', 'L', itemps)
+!
+        theta = zr(itemps+2)
+        time_curr = zr(itemps)
+        time_prev = zr(itemps)-zr(itemps+1)
+!
+        call jevech('PFLUXNF', 'L', ipara)
+!
+        do kp = 1, FEQuad%nbQuadPoints
+            valpar(1:3) = FEQuad%points(1:3, kp)
+            valpar(4) = time_curr
+            call fointe('FM', zk8(ipara), 4, nompar, valpar, valQPC(kp), icode)
+            if (theta > -0.5d0) then
+                valpar(4) = time_prev
+                call fointe('FM', zk8(ipara), 4, nompar, valpar, valQPP(kp), icode)
+            end if
+        end do
+    elseif (option == "CHAR_THER_FLUN_R") then
+        call jevech('PFLUXNR', 'L', ipara)
+        valQPC = zr(ipara)
+    else
+        ASSERT(ASTER_FALSE)
     end if
 !
-    call elrefe_info(elrefe=elrefe, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
-                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
-!
-    laxi = .false.
-    if (lteatt('AXIS', 'OUI')) laxi = .true.
-!
-    call jevech('PGEOMER', 'L', igeom)
-    call jevech('PTEMPSR', 'L', itemps)
-    call jevech('PFLUXNF', 'L', iflu)
-    call jevech('PVECTTR', 'E', ivectt)
-!
-    theta = zr(itemps+2)
-!
-    call connec(nomte, nse, nnop2, c)
-!
-    do i = 1, nnop2
-        vectt(i) = 0.d0
+    do kp = 1, FEQuad%nbQuadPoints
+        if (theta < -0.5d0) then
+            valQP(kp) = valQPC(kp)
+        else
+            valQP(kp) = theta*valQPC(kp)+(1.0d0-theta)*valQPP(kp)
+        end if
     end do
 !
-! BOUCLE SUR LES SOUS-ELEMENTS
-!
-    do ise = 1, nse
-        do i = 1, nno
-            do j = 1, 2
-                coorse(2*(i-1)+j) = zr(igeom-1+2*(c(ise, i)-1)+j)
-            end do
-        end do
-        do kp = 1, npg
-            call vff2dn(ndim, nno, kp, ipoids, idfde, &
-                        coorse, nx, ny, poids)
-            r = 0.d0
-            z = 0.d0
-            do i = 1, nno
-                l = (kp-1)*nno+i
-                r = r+coorse(2*(i-1)+1)*zr(ivf+l-1)
-                z = z+coorse(2*(i-1)+2)*zr(ivf+l-1)
-            end do
-            if (laxi) poids = poids*r
-            valpar(1) = r
-            nompar(1) = 'X'
-            valpar(2) = z
-            nompar(2) = 'Y'
-            nompar(3) = 'INST'
-            valpar(3) = zr(itemps)
-            call fointe('FM', zk8(iflu), 3, nompar, valpar, &
-                        flunp1, icode)
-            if (theta .ne. 1.0d0) then
-                valpar(3) = zr(itemps)-zr(itemps+1)
-                call fointe('FM', zk8(iflu), 3, nompar, valpar, &
-                            flun, icode)
-            else
-                flun = 0.0d0
-            end if
-            if (theta < -0.5) then
-                flux = flunp1
-            else
-                flux = theta*flunp1+(1.0d0-theta)*flun
-            end if
-            do i = 1, nno
-                li = ivf+(kp-1)*nno+i-1
-                vectt(c(ise, i)) = vectt(c(ise, i))+poids*zr(li)*flux
-            end do
-        end do
-    end do
-!
-    do i = 1, nnop2
-        zr(ivectt-1+i) = vectt(i)
-    end do
+    call FeMakeRhsScal(FEQuad, FEBasis, valQP, rhs)
+    call writeVector("PVECTTR", FEBasis%size, rhs)
 !
 end subroutine
