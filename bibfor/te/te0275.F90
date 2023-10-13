@@ -39,7 +39,7 @@ subroutine te0275(option, nomte)
     integer :: nno, nnos, jgano, ndim, kp, npg, ipoids, ivf, idfde, igeom
     integer :: iveres, i, l, li, ihechp, itemps, itemp
     real(kind=8) :: poids, poids1, poids2, coefh
-    real(kind=8) :: r1, r2, nx, ny, tpg, theta
+    real(kind=8) :: r1, r2, nx, ny, tpg
     aster_logical :: laxi
 !     ------------------------------------------------------------------
 !
@@ -55,8 +55,6 @@ subroutine te0275(option, nomte)
     coefh = zr(ihechp)
     call jevech('PTEMPEI', 'L', itemp)
     call jevech('PRESIDU', 'E', iveres)
-!
-    theta = zr(itemps+2)
 !
     do kp = 1, npg
         call vff2dn(ndim, nno, kp, ipoids, idfde, &
@@ -79,8 +77,8 @@ subroutine te0275(option, nomte)
         poids = (poids1+poids2)/2
         do i = 1, nno
             li = ivf+(kp-1)*nno+i-1
-            zr(iveres+i-1) = zr(iveres+i-1)-poids*zr(li)*coefh*theta*tpg
-            zr(iveres+i-1+nno) = zr(iveres+i-1+nno)+poids*zr(li)*coefh*theta*tpg
+            zr(iveres+i-1) = zr(iveres+i-1)-poids*zr(li)*coefh*tpg
+            zr(iveres+i-1+nno) = zr(iveres+i-1+nno)+poids*zr(li)*coefh*tpg
         end do
     end do
 end subroutine

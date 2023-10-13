@@ -41,7 +41,7 @@ subroutine te0276(option, nomte)
     integer :: idec, jdec, kdec, ldec, ino, jno, i, j
     integer ::  nnos, jgano
     real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9)
-    real(kind=8) :: jac, tem, theta, h
+    real(kind=8) :: jac, tem, h
 !     ------------------------------------------------------------------
 !
 !
@@ -56,7 +56,6 @@ subroutine te0276(option, nomte)
     call jevech('PTEMPEI', 'L', itemp)
     call jevech('PRESIDU', 'E', iveres)
 !
-    theta = zr(itemps+2)
     do i = 1, 2*nno
         zr(iveres+i-1) = 0.0d0
     end do
@@ -106,10 +105,9 @@ subroutine te0276(option, nomte)
             tem = tem+(zr(itemp+nno+i-1)-zr(itemp+i-1))*zr(ivf+ldec+i-1)
         end do
         do i = 1, nno
-            zr(iveres+i-1) = zr(iveres+i-1)-jac*h*zr(ipoids+ipg-1)*zr(ivf+ldec+i-1)*th&
-                             &eta*tem
+            zr(iveres+i-1) = zr(iveres+i-1)-jac*h*zr(ipoids+ipg-1)*zr(ivf+ldec+i-1)*tem
             zr(iveres+nno+i-1) = zr(iveres+nno+i-1)+jac*h*zr(ipoids+ipg-1)*zr(ivf+ldec+i-&
-                                 &1)*theta*tem
+                                 &1)*tem
         end do
     end do
 end subroutine

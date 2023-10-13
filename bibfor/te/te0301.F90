@@ -39,7 +39,7 @@ subroutine te0301(option, nomte)
     integer :: ndim, nno, ndi, ipg, npg1, imattt, ihechp, ij
     integer :: idec, jdec, kdec, ldec, ino, jno, itemps
     integer :: k1, k2, k3, k4, nnos, jgano
-    real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9), jac, theta, h
+    real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9), jac, h
     real(kind=8) :: mat(45)
 !     ------------------------------------------------------------------
 !
@@ -53,8 +53,6 @@ subroutine te0301(option, nomte)
     h = zr(ihechp)
     call jevech('PTEMPSR', 'L', itemps)
     call jevech('PMATTTR', 'E', imattt)
-!
-    theta = zr(itemps+2)
 !
     do i = 1, ndi
         mat(i) = 0.0d0
@@ -103,7 +101,7 @@ subroutine te0301(option, nomte)
         do i = 1, nno
             do j = 1, i
                 ij = (i-1)*i/2+j
-                mat(ij) = mat(ij)+jac*theta*zr(ipoids+ipg-1)*h*zr(ivf+ldec+i-1)*zr(iv&
+                mat(ij) = mat(ij)+jac*zr(ipoids+ipg-1)*h*zr(ivf+ldec+i-1)*zr(iv&
                           &f+ldec+j-1)
 !
             end do

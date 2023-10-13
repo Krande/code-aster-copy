@@ -37,7 +37,7 @@ subroutine te0302(option, nomte)
 !          ---> NOMTE  : NOM DU TYPE ELEMENT
 !.......................................................................
     character(len=8) ::  nompar(4)
-    real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9), jac, theta
+    real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9), jac
     real(kind=8) :: valpar(4), hechp, xx, yy, zz, mat(45)
     integer :: ipoids, ivf, idfdx, idfdy, igeom
     integer :: ndim, nno, ndi, ipg, npg1, imattt, ihechp
@@ -59,7 +59,6 @@ subroutine te0302(option, nomte)
     call jevech('PTEMPSR', 'L', itemps)
     call jevech('PMATTTR', 'E', imattt)
 !
-    theta = zr(itemps+2)
     valpar(4) = zr(itemps)
     nompar(1) = 'X'
     nompar(2) = 'Y'
@@ -129,7 +128,7 @@ subroutine te0302(option, nomte)
         do i = 1, nno
             do j = 1, i
                 ij = (i-1)*i/2+j
-                mat(ij) = mat(ij)+jac*theta*hechp*zr(ipoids+ipg-1)*zr(ivf+ldec+i-1)* &
+                mat(ij) = mat(ij)+jac*hechp*zr(ipoids+ipg-1)*zr(ivf+ldec+i-1)* &
                           &zr(ivf+ldec+j-1)
 !
             end do

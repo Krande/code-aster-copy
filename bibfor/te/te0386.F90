@@ -38,7 +38,7 @@ subroutine te0386(option, nomte)
 !
     integer :: nno, nnos, jgano, ndim, kp, npg, ipoids, ivf, idfde, igeom
     integer :: igeom2, imatt, k, i, j, l, li, lj, itemps, ihechp
-    real(kind=8) :: poids, poids1, poids2, nx, ny, theta, mat(6), coefh, r1, r2
+    real(kind=8) :: poids, poids1, poids2, nx, ny, mat(6), coefh, r1, r2
     aster_logical :: laxi
 !     ------------------------------------------------------------------
 !
@@ -53,7 +53,6 @@ subroutine te0386(option, nomte)
     coefh = zr(ihechp)
     call jevech('PMATTTR', 'E', imatt)
 !
-    theta = zr(itemps+2)
     if (nomte(5:8) .eq. 'SE22') then
         igeom2 = igeom+4
     else if (nomte(5:8) .eq. 'SE33') then
@@ -83,7 +82,7 @@ subroutine te0386(option, nomte)
             do j = 1, i
                 lj = ivf+(kp-1)*nno+j-1
                 k = k+1
-                mat(k) = poids*theta*zr(li)*zr(lj)*coefh
+                mat(k) = poids*zr(li)*zr(lj)*coefh
             end do
         end do
         if (nomte(5:8) .eq. 'SE22') then

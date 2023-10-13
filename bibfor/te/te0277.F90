@@ -45,7 +45,7 @@ subroutine te0277(option, nomte)
     parameter(nbres=3)
     character(len=8) :: nompar(nbres)
     real(kind=8) :: valpar(nbres), poids, poids1, poids2, r, r1, r2
-    real(kind=8) :: z, hechp, nx, ny, tpg, theta
+    real(kind=8) :: z, hechp, nx, ny, tpg
     integer :: nno, kp, npg, ipoids, ivf, idfde, igeom
     integer :: iveres, i, l, li, ihechp
     aster_logical :: laxi
@@ -63,8 +63,6 @@ subroutine te0277(option, nomte)
     call jevech('PHECHPF', 'L', ihechp)
     call jevech('PTEMPEI', 'L', itemp)
     call jevech('PRESIDU', 'E', iveres)
-!
-    theta = zr(itemps+2)
 !
     do kp = 1, npg
         call vff2dn(ndim, nno, kp, ipoids, idfde, &
@@ -102,8 +100,8 @@ subroutine te0277(option, nomte)
         ASSERT(icode .eq. 0)
         do i = 1, nno
             li = ivf+(kp-1)*nno+i-1
-            zr(iveres+i-1) = zr(iveres+i-1)-poids*zr(li)*hechp*theta*tpg
-            zr(iveres+i-1+nno) = zr(iveres+i-1+nno)+poids*zr(li)*hechp*theta*tpg
+            zr(iveres+i-1) = zr(iveres+i-1)-poids*zr(li)*hechp*tpg
+            zr(iveres+i-1+nno) = zr(iveres+i-1+nno)+poids*zr(li)*hechp*tpg
         end do
     end do
 end subroutine

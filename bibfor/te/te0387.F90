@@ -44,7 +44,7 @@ subroutine te0387(option, nomte)
     parameter(nbres=3)
     character(len=8) :: nompar(nbres)
     real(kind=8) :: valpar(nbres), poids, poids1, poids2, r, r1, r2
-    real(kind=8) :: z, z1, z2, hechp, nx, ny, theta, mat(6)
+    real(kind=8) :: z, z1, z2, hechp, nx, ny,  mat(6)
     integer :: nno, kp, npg, ipoids, ivf, idfde, igeom
     integer :: itemps, imatt, k, i, j, l, li, lj
     aster_logical :: laxi
@@ -60,7 +60,6 @@ subroutine te0387(option, nomte)
     call jevech('PTEMPSR', 'L', itemps)
     call jevech('PHECHPF', 'L', ihechp)
     call jevech('PMATTTR', 'E', imatt)
-    theta = zr(itemps+2)
     if (nomte(5:8) .eq. 'SE22') then
         igeom2 = igeom+4
     else if (nomte(5:8) .eq. 'SE33') then
@@ -104,7 +103,7 @@ subroutine te0387(option, nomte)
             do j = 1, i
                 lj = ivf+(kp-1)*nno+j-1
                 k = k+1
-                mat(k) = poids*theta*zr(li)*zr(lj)*hechp
+                mat(k) = poids*zr(li)*zr(lj)*hechp
             end do
         end do
         if (nomte(5:8) .eq. 'SE22') then

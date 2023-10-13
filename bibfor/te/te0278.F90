@@ -41,7 +41,7 @@ subroutine te0278(option, nomte)
 !
     character(len=8) :: nompar(4)
     real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9), xx, yy, zz
-    real(kind=8) :: jac, tem, theta, hechp, valpar(4)
+    real(kind=8) :: jac, tem, hechp, valpar(4)
     integer :: ipoids, ivf, idfdx, idfdy, igeom
     integer :: ndim, nno, ipg, npg1, iveres, ihechp
     integer :: idec, jdec, kdec, ldec
@@ -63,7 +63,6 @@ subroutine te0278(option, nomte)
     call jevech('PTEMPEI', 'L', itemp)
     call jevech('PRESIDU', 'E', iveres)
 !
-    theta = zr(itemps+2)
     valpar(4) = zr(itemps)
     nompar(1) = 'X'
     nompar(2) = 'Y'
@@ -135,9 +134,9 @@ subroutine te0278(option, nomte)
         end do
         do i = 1, nno
             zr(iveres+i-1) = zr(iveres+i-1)-jac*hechp*zr(ipoids+ipg-1)*zr(ivf+ldec+i-1) &
-                            &*theta*tem
+                            &*tem
             zr(iveres+nno+i-1) = zr(iveres+nno+i-1)+jac*hechp*zr(ipoids+ipg-1)*zr(ivf+lde&
-                                 &c+i-1)*theta*tem
+                                 &c+i-1)*tem
         end do
     end do
 end subroutine
