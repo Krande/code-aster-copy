@@ -122,7 +122,7 @@ class THER_HEXA20(Element):
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
         OP.CHAR_THER_EVOLNI(
-            te=281,
+            te=244,
             para_in=(
                 (OP.CHAR_THER_EVOLNI.PCOMPOR, CCOMPOR),
                 (SP.PGEOMER, NGEOMER),
