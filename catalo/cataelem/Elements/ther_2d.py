@@ -197,7 +197,7 @@ class THPLQU4(Element):
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
         OP.CHAR_THER_SOUR_R(
-            te=79,
+            te=80,
             para_in=((SP.PGEOMER, NGEOMER), (SP.PSOURCR, ESOURCR)),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),

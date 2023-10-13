@@ -178,7 +178,7 @@ class THER_HEXA20(Element):
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
         OP.CHAR_THER_SOUR_R(
-            te=55,
+            te=80,
             para_in=((SP.PGEOMER, NGEOMER), (SP.PSOURCR, ESOURCR)),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),

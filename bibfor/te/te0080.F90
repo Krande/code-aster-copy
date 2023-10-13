@@ -26,13 +26,14 @@ subroutine te0080(option, nomte)
 #include "FE_module.h"
 #include "asterfort/fointe_varc.h"
 #include "asterfort/jevech.h"
+#include "asterfort/assert.h"
 #include "asterfort/writeVector.h"
 #include "jeveux.h"
 !
     character(len=16) :: option, nomte
 ! ......................................................................
-!    - FONCTION REALISEE:  CALCUL DES MATRICES ELEMENTAIRES
-!                          OPTION : 'CHAR_THER_SOUR_F'
+!    - FONCTION REALISEE:  CALCUL DES CHARGEMENTS ELEMENTAIRES
+!                          OPTION : 'CHAR_THER_SOUR'
 !
 !    - ARGUMENTS:
 !        DONNEES:      OPTION       -->  OPTION DE CALCUL
@@ -55,39 +56,48 @@ subroutine te0080(option, nomte)
     call FEBasis%initCell(FECell)
     nbDof = FEBasis%size
 !
-    call jevech('PTEMPSR', 'L', itemps)
-    call jevech('PSOURCF', 'L', isour)
-!
-    theta = zr(itemps+2)
-    nompar(1:3) = ['X', 'Y', 'Z']
-    nompar(4) = 'INST'
-!
     valQP = 0.d0
 !
-    do kp = 1, FEQuadCell%nbQuadPoints
-        valpar(1:3) = FEQuadCell%points(1:3, kp)
-        valpar(4) = zr(itemps)
-        call fointe_varc('FM', 'FPG1', 1, 1, '+', &
-                         zk8(isour), 4, nompar, valpar, &
-                         sounp1, icode)
-        if (theta .ne. 1.0d0) then
-            valpar(3) = zr(itemps)-zr(itemps+1)
+    if (option .eq. 'CHAR_THER_SOUR_R') then
+        call jevech('PSOURCR', 'L', isour)
+        do kp = 1, FEQuadCell%nbQuadPoints
+            valQP(kp) = zr(isour+kp-1)
+        end do
+    elseif (option .eq. 'CHAR_THER_SOUR_F') then
+        call jevech('PTEMPSR', 'L', itemps)
+        call jevech('PSOURCF', 'L', isour)
+!
+        theta = zr(itemps+2)
+        nompar(1:3) = ['X', 'Y', 'Z']
+        nompar(4) = 'INST'
+!
+        do kp = 1, FEQuadCell%nbQuadPoints
+            valpar(1:3) = FEQuadCell%points(1:3, kp)
+            valpar(4) = zr(itemps)
             call fointe_varc('FM', 'FPG1', 1, 1, '+', &
                              zk8(isour), 4, nompar, valpar, &
-                             soun, icode)
-        else
-            soun = 0.d0
-        end if
+                             sounp1, icode)
+            if (theta .ne. 1.0d0) then
+                valpar(3) = zr(itemps)-zr(itemps+1)
+                call fointe_varc('FM', 'FPG1', 1, 1, '+', &
+                                 zk8(isour), 4, nompar, valpar, &
+                                 soun, icode)
+            else
+                soun = 0.d0
+            end if
 !
-        if (theta < -0.5) then
-            sour = sounp1
-        else
-            sour = theta*sounp1+(1.0d0-theta)*soun
-        end if
+            if (theta < -0.5) then
+                sour = sounp1
+            else
+                sour = theta*sounp1+(1.0d0-theta)*soun
+            end if
 
-        valQP(kp) = sour
-    end do
-
+            valQP(kp) = sour
+        end do
+    else
+        ASSERT(ASTER_FALSE)
+    end if
+!
     call FeMakeRhsScal(FEQuadCell, FEBasis, valQP, rhs)
 !
     call writeVector("PVECTTR", nbDof, rhs)
