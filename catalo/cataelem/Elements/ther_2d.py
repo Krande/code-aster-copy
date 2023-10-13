@@ -156,7 +156,7 @@ class THPLQU4(Element):
             para_out=((SP.PVECTTI, MVECTTR), (SP.PVECTTR, MVECTTR)),
         ),
         OP.CHAR_THER_GRAI_F(
-            te=219,
+            te=217,
             para_in=(
                 (SP.PGEOMER, NGEOMER),
                 (SP.PGRAINF, CGRAINF),
@@ -167,7 +167,7 @@ class THPLQU4(Element):
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
         OP.CHAR_THER_GRAI_R(
-            te=219,
+            te=217,
             para_in=(
                 (SP.PGEOMER, NGEOMER),
                 (SP.PGRAINR, CGRAINR),

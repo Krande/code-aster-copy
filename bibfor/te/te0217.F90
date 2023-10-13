@@ -17,55 +17,59 @@
 ! --------------------------------------------------------------------
 !
 subroutine te0217(option, nomte)
+!
+    use FE_topo_module
+    use FE_quadrature_module
+    use FE_basis_module
+    use FE_stiffness_module
+!
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/dfdm3d.h"
-#include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
+#include "asterfort/writeVector.h"
+#include "FE_module.h"
 !
     character(len=16) :: option, nomte
 !.......................................................................
 !
 !     BUT: CALCUL DU SECOND MEMBRE ELEMENTAIRE EN THERMIQUE CORRESPON-
 !          DANT A UN GRADIENT IMPOSE DE TEMPERATURE
-!          ELEMENTS ISOPARAMETRIQUES 3D
+!          ELEMENTS ISOPARAMETRIQUES
 !
-!          OPTION : 'CHAR_THER_GRAI_R '
+!          OPTION : 'CHAR_THER_GRAI_R/F'
 !
 !     ENTREES  ---> OPTION : OPTION DE CALCUL
 !              ---> NOMTE  : NOM DU TYPE ELEMENT
 !.......................................................................
 !
-    integer :: icodre(1), kpg, spt
+    type(FE_Cell) :: FECell
+    type(FE_Quadrature) :: FEQuadCell
+    type(FE_basis) :: FEBasis
+!
+    integer :: icodre(1), kp, igrai, imate, ier, itemps
     character(len=8) :: nompar(4), grxf, gryf, grzf, fami, poum
 !
-    real(kind=8) :: valres(1), valpar(4), x, y, z
-    real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), poids, grx, gry, grz
-    integer :: ipoids, ivf, idfde, igeom
-    integer :: jgano, nno, ndim, kp, npg1, i, l, ivectt, igrai, imate
+    real(kind=8) :: valres(1), valpar(4), lambda
+    real(kind=8) :: grx, gry, grz
+    real(kind=8) :: load(MAX_BS), valQP(3, MAX_QP)
 !
     aster_logical :: fonc
-!
-!
 !-----------------------------------------------------------------------
-    integer :: ier, itemps, nnos
-!-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1, &
-                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
-    call jevech('PGEOMER', 'L', igeom)
+    call FECell%init()
+    call FEBasis%initCell(FECell)
+    call FEQuadCell%initCell(FECell, "RIGI")
+!
     call jevech('PMATERC', 'L', imate)
-    call jevech('PVECTTR', 'E', ivectt)
     fami = 'FPG1'
-    kpg = 1
-    spt = 1
     poum = '+'
-    call rcvalb(fami, kpg, spt, poum, zi(imate), &
+    call rcvalb(fami, 1, 1, poum, zi(imate), &
                 ' ', 'THER', 0, ' ', [0.d0], &
                 1, 'LAMBDA', valres, icodre, 1)
+    lambda = valres(1)
 !
     if (option .eq. 'CHAR_THER_GRAI_R') then
         fonc = .false.
@@ -87,38 +91,24 @@ subroutine te0217(option, nomte)
         valpar(4) = zr(itemps)
     end if
 !
-    do kp = 1, npg1
-        l = (kp-1)*nno
-        call dfdm3d(nno, kp, ipoids, idfde, zr(igeom), &
-                    poids, dfdx, dfdy, dfdz)
-!
-        x = 0.d0
-        y = 0.d0
-        z = 0.d0
-        do i = 1, nno
-            x = x+zr(igeom-1+3*(i-1)+1)*zr(ivf+l+i-1)
-            y = y+zr(igeom-1+3*(i-1)+2)*zr(ivf+l+i-1)
-            z = z+zr(igeom-1+3*(i-1)+3)*zr(ivf+l+i-1)
-        end do
-!
-        poids = poids*valres(1)
+    do kp = 1, FEQuadCell%nbQuadPoints
 !
         if (fonc) then
-            valpar(1) = x
-            valpar(2) = y
-            valpar(3) = z
-            call fointe('FM', grxf, 4, nompar, valpar, &
-                        grx, ier)
-            call fointe('FM', gryf, 4, nompar, valpar, &
-                        gry, ier)
-            call fointe('FM', grzf, 4, nompar, valpar, &
-                        grz, ier)
+            valpar(1:3) = FEQuadCell%points_param(1:3, kp)
+            call fointe('FM', grxf, 4, nompar, valpar, grx, ier)
+            call fointe('FM', gryf, 4, nompar, valpar, gry, ier)
+            if (FECell%ndim == 3) then
+                call fointe('FM', grzf, 4, nompar, valpar, grz, ier)
+            else
+                grz = 0.d0
+            end if
         end if
-!
-        do i = 1, nno
-            zr(ivectt+i-1) = zr(ivectt+i-1)+poids*(+grx*dfdx(i)+gry*dfdy(i)+grz*dfdz(i))
-        end do
+        valQP(1:3, kp) = lambda*[grx, gry, grz]
 !
     end do
+!
+    call FEStiffVecScal(FEQuadCell, FEBasis, valQP, load)
+!
+    call writeVector("PVECTTR", FEBasis%size, load)
 !
 end subroutine
