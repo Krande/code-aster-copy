@@ -146,7 +146,7 @@ class THPLSE2(Element):
             para_out=((SP.PRESIDU, MVECTTR),),
         ),
         OP.CHAR_THER_FLUX_F(
-            te=68,
+            te=75,
             para_in=((SP.PFLUXVF, LC.CFLUXVF), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),

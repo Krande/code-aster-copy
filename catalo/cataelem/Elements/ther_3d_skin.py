@@ -150,7 +150,7 @@ class THER_FACE3(Element):
             para_out=((SP.PRESIDU, MVECTTR),),
         ),
         OP.CHAR_THER_FLUX_F(
-            te=95,
+            te=75,
             para_in=((SP.PFLUXVF, CFLUXVF), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),

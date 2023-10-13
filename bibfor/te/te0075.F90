@@ -53,7 +53,7 @@ subroutine te0075(option, nomte)
     real(kind=8) :: valpar(nbres), theta, time_curr, time_prev
     real(kind=8) :: rhs(MAX_BS), valQP(MAX_QP)
     real(kind=8) :: valQPC(MAX_BS), valQPP(MAX_QP)
-    real(kind=8) :: para1, para2, para3, tz0, tpg
+    real(kind=8) :: para1, para2, para3, tz0, tpg, normal(3)
     integer :: kp, itemps, ipara, icode, ipara2
     real(kind=8), pointer :: tempi(:) => null()
 !
@@ -93,6 +93,30 @@ subroutine te0075(option, nomte)
     elseif (option == "CHAR_THER_FLUN_R") then
         call jevech('PFLUXNR', 'L', ipara)
         valQPC = zr(ipara)
+    else if (option == "CHAR_THER_FLUX_F") then
+!
+        call jevech('PFLUXVF', 'L', ipara)
+        theta = -1.d0
+!
+        do kp = 1, FEQuad%nbQuadPoints
+!
+            valpar(1:3) = FEQuad%points(1:3, kp)
+            valpar(4) = time_curr
+            ! FLUX_X
+            call fointe('FM', zk8(ipara), 4, nompar, valpar, para1, icode)
+            ! FLUX_Y
+            call fointe('FM', zk8(ipara+1), 4, nompar, valpar, para2, icode)
+            ! FLUX_Z
+            if (FESkin%ndim+1 == 3) then
+                call fointe('FM', zk8(ipara+2), 4, nompar, valpar, para3, icode)
+            else
+                para3 = 0.d0
+            end if
+            normal = FESkin%normal(FEQuad%points_param(1:2, kp))
+            !
+            ! FLUX.NORMAL
+            valQPC(kp) = normal(1)*para1+normal(2)*para2+normal(3)*para3
+        end do
     else if (option == "CHAR_THER_RAYO_F") then
 !
         call jevech('PRAYONF', 'L', ipara)
