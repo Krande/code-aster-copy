@@ -117,7 +117,7 @@ subroutine te0251(option, nomte)
             ! 4*SIGM * EPS * (T+T0)^3
             valQPC(kp) = 4.d0*para1*para2*(tpg+tz0)**3
         end do
-    else if (option == "MTAN_THER_COEF_F") then
+    else if (option == "RIGI_THER_COEH_F") then
 !
         call jevech('PCOEFHF', 'L', ipara2)
 !
@@ -127,7 +127,7 @@ subroutine te0251(option, nomte)
             ! COEFH
             call fointe('FM', zk8(ipara2), 4, nompar, valpar, valQPC(kp), icode)
         end do
-    else if (option == "MTAN_THER_COEF_R") then
+    else if (option == "RIGI_THER_COEH_R") then
 !
         call jevech('PCOEFHR', 'L', ipara2)
         ! COEFH

@@ -201,16 +201,6 @@ class THPLSE2(Element):
         OP.FLUX_FLUI_Y(
             te=309, para_in=((SP.PGEOMER, NGEOMER),), para_out=((OP.FLUX_FLUI_Y.PMATTTR, MMATTTR),)
         ),
-        OP.MTAN_THER_COEF_F(
-            te=251,
-            para_in=((SP.PCOEFHF, CCOEFHF), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
-            para_out=((OP.MTAN_THER_COEF_F.PMATTTR, MMATTTR),),
-        ),
-        OP.MTAN_THER_COEF_R(
-            te=251,
-            para_in=((SP.PCOEFHR, CCOEFHR), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
-            para_out=((OP.MTAN_THER_COEF_R.PMATTTR, MMATTTR),),
-        ),
         OP.MTAN_THER_FLUXNL(
             te=251,
             para_in=(
@@ -312,12 +302,12 @@ class THPLSE2(Element):
             para_out=((SP.PRESIDU, MVECTTR),),
         ),
         OP.RIGI_THER_COEH_F(
-            te=71,
+            te=251,
             para_in=((SP.PCOEFHF, CCOEFHF), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
             para_out=((OP.RIGI_THER_COEH_F.PMATTTR, MMATTTR),),
         ),
         OP.RIGI_THER_COEH_R(
-            te=70,
+            te=251,
             para_in=((SP.PCOEFHR, CCOEFHR), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
             para_out=((OP.RIGI_THER_COEH_R.PMATTTR, MMATTTR),),
         ),
