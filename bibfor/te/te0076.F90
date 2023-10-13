@@ -69,7 +69,7 @@ subroutine te0076(option, nomte)
     valQPK = 0.d0
     do kp = 1, FEQuadCell%nbQuadPoints
         call nlcomp(phenom, imate, icamas, FECell%ndim, FEQuadCell%points(1:3, kp), time, &
-                    valQPK(1:3, 1:3, kp))
+                    0.d0, valQPK(1:3, 1:3, kp))
     end do
 !
     call FEStiffMatScal(FEQuadCell, FEBasis, valQPK, rigi)

@@ -18,10 +18,10 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nlcomp(phenom, imate, icamas, ndim, coorpg, time, Kglo)
+    subroutine nlcomp(phenom, imate, icamas, ndim, coorpg, time, tp, Kglo)
         character(len=32), intent(in) :: phenom
         integer, intent(in) :: imate, icamas, ndim
-        real(kind=8), intent(in) :: coorpg(3), time
+        real(kind=8), intent(in) :: coorpg(3), time, tp
         real(kind=8), intent(out) :: Kglo(3, 3)
     end subroutine nlcomp
 end interface

@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nlcomp(phenom, imate, icamas, ndim, coorpg, time, Kglo)
+subroutine nlcomp(phenom, imate, icamas, ndim, coorpg, time, tp, Kglo)
 !.
     implicit none
 !
@@ -29,44 +29,48 @@ subroutine nlcomp(phenom, imate, icamas, ndim, coorpg, time, Kglo)
 !
     character(len=32), intent(in) :: phenom
     integer, intent(in) :: imate, icamas, ndim
-    real(kind=8), intent(in) :: coorpg(3), time
+    real(kind=8), intent(in) :: coorpg(3), time, tp
     real(kind=8), intent(out) :: Kglo(3, 3)
 !
-    integer :: j, nbres, kpg, spt
+    integer :: j, nbres
     parameter(nbres=3)
     integer :: icodre(nbres)
-    character(len=8) :: fami, poum
     character(len=16) :: nomres(nbres)
     real(kind=8) :: lambor(3), lambda
-    real(kind=8) ::  p(3, 3), Kloc(3, 3), valres(nbres), valpar(nbres)
+    real(kind=8) ::  p(3, 3), Kloc(3, 3), valres(1)
     aster_logical :: aniso
 !
     Kglo = 0.d0
 !
 ! ------- EVALUATION DE LA CONDUCTIVITE LAMBDA
 !
-    fami = 'FPG1'
-    kpg = 1
-    spt = 1
-    poum = '+'
-    valpar(1) = time
     if (phenom .eq. 'THER') then
-        nomres(1) = 'LAMBDA'
-        call rcvalb(fami, kpg, spt, poum, zi(imate), &
-                    ' ', phenom, 1, 'INST', [valpar], &
-                    1, nomres, valres, icodre, 1)
+        call rcvalb('FPG1', 1, 1, '+', zi(imate), &
+                    ' ', phenom, 1, 'INST', [time], &
+                    1, 'LAMBDA', valres, icodre, 1)
         lambda = valres(1)
         aniso = ASTER_FALSE
     else if (phenom .eq. 'THER_ORTH') then
         nomres(1) = 'LAMBDA_L'
         nomres(2) = 'LAMBDA_T'
         nomres(3) = 'LAMBDA_N'
-        call rcvalb(fami, kpg, spt, poum, zi(imate), &
-                    ' ', phenom, 1, 'INST', [valpar], &
-                    3, nomres, valres, icodre, 1)
-        lambor(1) = valres(1)
-        lambor(2) = valres(2)
-        lambor(3) = valres(3)
+        call rcvalb('FPG1', 1, 1, '+', zi(imate), &
+                    ' ', phenom, 1, 'INST', [time], &
+                    3, nomres, lambor, icodre, 1)
+        aniso = ASTER_TRUE
+    else if (phenom .eq. 'THER_NL') then
+        call rcvalb('FPG1', 1, 1, '+', zi(imate), &
+                    ' ', phenom, 1, 'TEMP', [tp], &
+                    1, 'LAMBDA', valres, icodre, 1)
+        lambda = valres(1)
+        aniso = ASTER_FALSE
+    else if (phenom .eq. 'THER_NL_ORTH') then
+        nomres(1) = 'LAMBDA_L'
+        nomres(2) = 'LAMBDA_T'
+        nomres(3) = 'LAMBDA_N'
+        call rcvalb('FPG1', 1, 1, '+', zi(imate), &
+                    ' ', phenom, 1, 'TEMP', [tp], &
+                    3, nomres, lambor, icodre, 1)
         aniso = ASTER_TRUE
     else
         call utmess('F', 'ELEMENTS2_63')

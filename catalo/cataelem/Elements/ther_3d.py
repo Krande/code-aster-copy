@@ -238,7 +238,7 @@ class THER_HEXA20(Element):
             para_out=((OP.ETHE_ELEM.PENERDR, EENERR),),
         ),
         OP.FLUX_ELGA(
-            te=62,
+            te=69,
             para_in=(
                 (SP.PCAMASS, LC.CCAMA3D),
                 (SP.PGEOMER, NGEOMER),
