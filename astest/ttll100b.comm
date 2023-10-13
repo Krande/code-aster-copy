@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ MAILQ8 = LIRE_MAILLAGE(FORMAT="MED")
 
 MAILQ8 = DEFI_GROUP(reuse=MAILQ8, MAILLAGE=MAILQ8, CREA_GROUP_NO=_F(TOUT_GROUP_MA="OUI"))
 
-MA = CREA_MAILLAGE(MAILLAGE=MAILQ8, MODI_MAILLE=_F(OPTION="QUAD8_9", TOUT="OUI"))
+MA = CREA_MAILLAGE(MAILLAGE=MAILQ8, QUAD_LINE=_F(TOUT="OUI"))
 
 MOTHER = AFFE_MODELE(
     MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="THERMIQUE", MODELISATION="PLAN_DIAG")
@@ -104,7 +104,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=TEMP_1,
-            VALE_CALC=99.999905185,
+            VALE_CALC=99.99822130189783,
             VALE_REFE=100.0,
             REFERENCE="NON_DEFINI",
         ),
@@ -113,7 +113,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=TEMP_2,
-            VALE_CALC=99.278450190,
+            VALE_CALC=99.04213462894226,
             VALE_REFE=99.408000000000001,
             REFERENCE="NON_DEFINI",
         ),
@@ -122,7 +122,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=TEMP_3,
-            VALE_CALC=79.898149750,
+            VALE_CALC=79.79396094053341,
             VALE_REFE=79.858999999999995,
             REFERENCE="NON_DEFINI",
         ),
@@ -131,7 +131,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=0.029999999999999999,
             CHAM_GD=TEMP_4,
-            VALE_CALC=16.043077735,
+            VALE_CALC=16.13752982910742,
             VALE_REFE=15.717000000000001,
             REFERENCE="NON_DEFINI",
         ),
@@ -140,7 +140,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=TEMP_1,
-            VALE_CALC=94.077410158,
+            VALE_CALC=93.38033726179506,
             VALE_REFE=93.665999999999997,
             REFERENCE="NON_DEFINI",
         ),
@@ -149,7 +149,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=TEMP_2,
-            VALE_CALC=63.978773395,
+            VALE_CALC=63.81312115275874,
             VALE_REFE=63.5,
             REFERENCE="NON_DEFINI",
         ),
@@ -158,7 +158,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=TEMP_3,
-            VALE_CALC=35.825105866,
+            VALE_CALC=35.66703681121848,
             VALE_REFE=35.716999999999999,
             REFERENCE="NON_DEFINI",
         ),
@@ -167,7 +167,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=0.029999999999999999,
             CHAM_GD=TEMP_4,
-            VALE_CALC=6.932113095,
+            VALE_CALC=6.932571860841575,
             VALE_REFE=6.7948000000000004,
             REFERENCE="NON_DEFINI",
         ),
@@ -176,7 +176,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=TEMP_1,
-            VALE_CALC=99.999912932,
+            VALE_CALC=99.9983811514314,
             VALE_REFE=100.0,
             REFERENCE="NON_DEFINI",
         ),
@@ -185,7 +185,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=TEMP_2,
-            VALE_CALC=99.310612957,
+            VALE_CALC=99.07718490624319,
             VALE_REFE=99.408000000000001,
             REFERENCE="NON_DEFINI",
         ),
@@ -194,7 +194,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=TEMP_3,
-            VALE_CALC=80.101861777,
+            VALE_CALC=80.00234933779954,
             VALE_REFE=79.858999999999995,
             REFERENCE="NON_DEFINI",
         ),
@@ -203,7 +203,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=0.040000000000000001,
             CHAM_GD=TEMP_4,
-            VALE_CALC=16.092818456,
+            VALE_CALC=16.210935502787397,
             VALE_REFE=15.717000000000001,
             REFERENCE="NON_DEFINI",
         ),
@@ -212,7 +212,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=TEMP_1,
-            VALE_CALC=93.469314578,
+            VALE_CALC=92.8951879936254,
             VALE_REFE=93.665999999999997,
             REFERENCE="NON_DEFINI",
         ),
@@ -221,7 +221,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=0.029999999999999999,
             CHAM_GD=TEMP_2,
-            VALE_CALC=62.859829878,
+            VALE_CALC=61.8815435209939,
             VALE_REFE=63.5,
             REFERENCE="NON_DEFINI",
         ),
@@ -230,7 +230,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=0.02,
             CHAM_GD=TEMP_3,
-            VALE_CALC=35.641404650,
+            VALE_CALC=35.33112975102693,
             VALE_REFE=35.716999999999999,
             REFERENCE="NON_DEFINI",
         ),
@@ -239,7 +239,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=0.02,
             CHAM_GD=TEMP_4,
-            VALE_CALC=6.906787060,
+            VALE_CALC=6.888519439994357,
             VALE_REFE=6.7948000000000004,
             REFERENCE="NON_DEFINI",
         ),

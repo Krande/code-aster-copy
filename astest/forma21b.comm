@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -107,7 +107,6 @@ MAM[num_calc] = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=21)
 # BOUCLE PYTHON INDICATEUR D'ERREUR/REMAILLAGE
 # -------------------------------------------------------------------
 for num_calc in range(0, nb_calc1):
-
     # PREPARATION DU CALCUL SUR LE NOUVEAU MAILLAGE MA[num_calc]
     # MODELE THERMIQUE P1 LUMPE
     MOT[num_calc] = AFFE_MODELE(
@@ -119,7 +118,7 @@ for num_calc in range(0, nb_calc1):
 
     # MODELE THERMIQUE P2 POUR PROJECTION THERMIQUE --> MECANIQUE
     MOT2[num_calc] = AFFE_MODELE(
-        MAILLAGE=MAM[num_calc], AFFE=_F(TOUT="OUI", MODELISATION="PLAN_DIAG", PHENOMENE="THERMIQUE")
+        MAILLAGE=MAM[num_calc], AFFE=_F(TOUT="OUI", MODELISATION="PLAN", PHENOMENE="THERMIQUE")
     )
 
     # MODELE MECANIQUE P2
