@@ -171,11 +171,13 @@ subroutine resi_ther(model, cara_elem, mate, time, compor, &
         lchin(5) = temp_iter(1:19)
         lpain(6) = 'PHYDRMR'
         lchin(6) = hydr_prev(1:19)
+        lpain(7) = 'PGEOMER'
+        lchin(7) = chgeom(1:19)
 
         lpaout(1) = 'PHYDRPR'
         lchout(1) = hydr_curr(1:19)
 
-        call calcul(stop_calc, "HYDR_ELGA", ligrel_model, 6, lchin, &
+        call calcul(stop_calc, "HYDR_ELGA", ligrel_model, 7, lchin, &
                     lpain, 1, lchout, lpaout, base, 'OUI')
 !
 ! - --- Mass

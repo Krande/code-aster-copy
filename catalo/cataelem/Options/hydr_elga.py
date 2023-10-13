@@ -39,7 +39,7 @@ PHYDRPR = OutputParameter(
 
 
 HYDR_ELGA = Option(
-    para_in=(PTEMPMR, PTEMPPR, PHYDRMR, SP.PTEMPSR, PCOMPOR, SP.PMATERC),
+    para_in=(PTEMPMR, PTEMPPR, PHYDRMR, SP.PTEMPSR, PCOMPOR, SP.PMATERC, SP.PGEOMER),
     para_out=(PHYDRPR,),
     condition=(CondCalcul("+", ((AT.PHENO, "TH"), (AT.BORD, "0"))),),
     comment="""  HYDR_ELGA : CALCUL DU HYDR AUX NOEUDS PAR ELEMENT """,

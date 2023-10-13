@@ -255,6 +255,7 @@ class THER_HEXA20(Element):
         OP.HYDR_ELGA(
             te=385,
             para_in=(
+                (SP.PGEOMER, NGEOMER),
                 (OP.HYDR_ELGA.PHYDRMR, EHYDRPG),
                 (OP.HYDR_ELGA.PCOMPOR, CCOMPOR),
                 (SP.PMATERC, LC.CMATERC),
