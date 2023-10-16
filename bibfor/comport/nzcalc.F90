@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,6 @@ subroutine nzcalc(carcri, nb_phase, phase, zalpha,&
 implicit none
 !
 #include "asterfort/nzfpri.h"
-#include "asterfort/utmess.h"
 #include "asterfort/zeroco.h"
 !
 integer, intent(in) :: nb_phase
@@ -158,7 +157,8 @@ integer, intent(out) :: iret
                 fprim   , fdevi)
 
     if (fprim .lt. 0.d0) then
-        call utmess('F', 'ALGORITH9_12')
+        iret = 1
+        goto 999
     endif
     x(2) = dp
     y(2) = fprim
