@@ -74,7 +74,8 @@ class ExtendedTransientGeneralizedResult:
     def _check_input_inoli(self, inoli):
         if inoli == -1:
             print(
-                "Nonlinearity index not specified, by default the first nonlinearity will be considered."
+                "Nonlinearity index not specified, by default the first nonlinearity",
+                " will be considered.",
             )
             inoli = 1
         nbnoli = self._nb_nonl()
@@ -89,8 +90,10 @@ class ExtendedTransientGeneralizedResult:
         return inoli
 
     def FORCE_RELATION(self, inoli=-1):
-        """Returns a 1D numpy array giving the evolution of the forces defined
-        as displacement or velocity relationships"""
+        """
+        Returns a 1D numpy array giving the evolution of the forces defined
+        as displacement or velocity relationships
+        """
         inoli = self._check_input_inoli(inoli)
 
         nltypes = self._type_nonl()
@@ -111,23 +114,29 @@ class ExtendedTransientGeneralizedResult:
 
     def FORCE_AXIALE(self, inoli=-1):
         """
-        Returns a 1D numpy array giving the evolution of the axial force at the archived instants"""
+        Returns a 1D numpy array giving the evolution of the axial force at
+        the archived instants
+        """
 
         inoli = self._check_input_inoli(inoli)
 
         nltypes = self._type_nonl()
-        if not (nltypes[inoli - 1] in ("ANTI_SISM", "DIS_VISC", "DIS_ECRO_TRAC")):
+        if not (nltypes[inoli - 1] in ("ANTI_SISM", "DIS_VISC", "DIS_ECRO_TRAC", "CHOC_ELAS_TRAC")):
             dummy = self.INFO_NONL()
             raise AsException(
-                "The chosen nonlinearity index (%d) does not correspond to a ANTI_SISM, DIS_VISC, or DIS_ECRO_TRAC' nonlinearity\nThese are the only nonlinearities that calculate and save an axial force."
-                % (inoli)
+                "The chosen nonlinearity index (%d) does not correspond to a :\n"
+                "  ANTI_SISM, DIS_VISC, DIS_ECRO_TRAC, CHOC_ELAS_TRAC nonlinearity\n",
+                "These are the only nonlinearities that calculate and save an axial force."
+                % (inoli),
             )
 
         vint = self.VARI_INTERNE(inoli, describe=False)
-
-        # The axial forces are saved in position 1  for ANTI_SISM nonlinearities
-        if nltypes[inoli - 1] == "ANTI_SISM":
+        #
+        if nltypes[inoli - 1] in ["ANTI_SISM", "CHOC_ELAS_TRAC"]:
+            # The axial forces are saved in position 1 for ANTI_SISM, CHOC_ELAS_TRAC
             return vint[:, 0]
-
-        # The axial forces are saved in position 8 for DIS_VISC and DIS_ECRO_TRAC nonlinearities
-        return vint[:, 7]
+        elif nltypes[inoli - 1] in ["DIS_VISC", "DIS_ECRO_TRAC"]:
+            # The axial forces are saved in position 8 for DIS_VISC, DIS_ECRO_TRAC
+            return vint[:, 7]
+        #
+        return None

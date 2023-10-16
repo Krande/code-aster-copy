@@ -281,11 +281,11 @@ Conseils :
     ),
     43: _(
         """
-DYNA_VIBRA : Pour l'élément discret de type DIS_VISC ou DIS_ECRO_TRAC.
+DYNA_VIBRA : Pour l'élément discret de type :
+    DIS_VISC ou DIS_ECRO_TRAC ou CHOC_ELAS_TRAC
 
 Sa longueur est nulle ou trop petite.
 Il n'est pas possible de calculer le vecteur directeur de l'élément.
-
 """
     ),
     44: _(
@@ -356,7 +356,7 @@ La définition d'une des fonctions %(k2)s est incorrecte.
             - Être une constante ou une nappe
             - Prolongée linéairement à gauche ou à gauche
     3)  Les fonctions sont définies par au moins 5 points
-    4)  La 1ère abscisses doit être est 0.0
+    4)  La première abscisses doit être est 0.0
     5)  Les abscisses des fonctions doivent être identiques
     6)  Les abscisses des fonctions doivent être strictement croissantes
     7)  Pour FX, les 2ères ordonnées doivent être identiques
@@ -390,6 +390,24 @@ Les conditions à respecter sont :
     5)  MYM doit être inférieur ou égal au produit de KE par RDM
 ----------------------------------------------------------
 Condition non respectée :: <%(i1)d>
+"""
+    ),
+    66: _(
+        """
+Le Comportement %(k1)s est non valide.
+La définition de la fonction %(k2)s est incorrecte.
+    1)  Elle doit être définie avec DEFI_FONCTION
+        Le nom du paramètre est 'DX'
+        L'interpolation doit être linéaire entre les points
+        Elle ne peut pas être une constante ou une nappe
+        Prolongation à gauche, seulement EXCLU
+        Prolongation à droite, soit EXCLU ou LINEAIRE et pas CONSTANT
+    2)  La fonction est définie par au moins 2 points
+    3)  Le premier point doit être (0.0, 0.0)
+    4)  Abscisses et ordonnées doivent être strictement croissantes et >= 0
+----------------------------------------------------------
+Condition non respectée :: <%(i1)d>
+    %(k3)s
 """
     ),
 }

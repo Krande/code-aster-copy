@@ -38,7 +38,6 @@ subroutine dtmforc_choc(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl, &
 #include "asterfort/assert.h"
 #include "asterfort/distno.h"
 #include "asterfort/dtmget.h"
-#include "asterfort/fnorm.h"
 #include "asterfort/fointe.h"
 #include "asterfort/ftang.h"
 #include "asterfort/ftang_rail.h"
@@ -73,12 +72,12 @@ subroutine dtmforc_choc(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl, &
     integer           :: start, finish, unidir
     real(kind=8)      :: sina, cosa, sinb, cosb, sing
     real(kind=8)      :: cosg, depglo(3), vitglo(3), deploc(6), vitloc(6)
-    real(kind=8)      :: ddeplo(3), dvitlo(3), xjeu, knorm, cnorm
+    real(kind=8)      :: ddeplo(3), dvitlo(3), xjeu, knorm, cnorm, xforc
     real(kind=8)      :: ktang, cfrotd, cfrots, dist1, dist2
     real(kind=8)      :: ctang, dnorm, cost, sint, fn
     real(kind=8)      :: flocal(3), fgloba(3), eps, oldft(2), vnorm
     real(kind=8)      :: oldxl(3), oldvt(2), ftange(2), vtang(2)
-    character(len=8)  :: sd_dtm, sd_nl, monmot, obst_typ
+    character(len=8)  :: sd_dtm, sd_nl, monmot, obst_typ, nomfon
     character(len=19) :: nomres
 !
     integer, pointer :: vindx(:) => null()
@@ -202,7 +201,8 @@ subroutine dtmforc_choc(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl, &
 
         !   --- Conversion of these vectors to the local basis
         call gloloc(depglo, origob, sina, cosa, sinb, cosb, sing, cosg, deploc(1+(ino-1)*3))
-    call gloloc(vitglo, [0.d0, 0.d0, 0.d0], sina, cosa, sinb, cosb, sing, cosg, vitloc(1+(ino-1)*3))
+        call gloloc(vitglo, [0.d0, 0.d0, 0.d0], sina, cosa, sinb, cosb, sing, cosg, &
+                    vitloc(1+(ino-1)*3))
     end do
 
     if (nbno .eq. 2) then
@@ -219,6 +219,7 @@ subroutine dtmforc_choc(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl, &
 !
     call nlget(sd_nl, _GAP, iocc=nl_ind, rscal=xjeu, buffer=buffnl)
     call nlget(sd_nl, _STIF_NORMAL, iocc=nl_ind, rscal=knorm, buffer=buffnl)
+    call nlget(sd_nl, _NL_FUNC_NAME, iocc=nl_ind, kscal=nomfon, buffer=buffnl)
     call nlget(sd_nl, _DAMP_NORMAL, iocc=nl_ind, rscal=cnorm, buffer=buffnl)
     call nlget(sd_nl, _RIGI_TANGENTIAL, iocc=nl_ind, rscal=ktang, buffer=buffnl)
     call nlget(sd_nl, _DAMP_TANGENTIAL, iocc=nl_ind, rscal=ctang, buffer=buffnl)
@@ -228,20 +229,28 @@ subroutine dtmforc_choc(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl, &
     call nlget(sd_nl, _DIST_NO2, iocc=nl_ind, rscal=dist2, buffer=buffnl)
 !
     dnorm = 0.d0
-    call distno(deploc, sign_dyz, obst_typ, xjeu, dist1, &
-                dist2, dnorm, cost, sint)
+    call distno(deploc, sign_dyz, obst_typ, xjeu, dist1, dist2, dnorm, cost, sint)
 !
     if (dnorm .le. 0.d0) then
         fgloba(:) = 0.d0
         flocal(:) = 0.d0
 
-!       --- Calculation of the normal force in the local reference
-        call fnorm(dnorm, dvitlo, knorm, cnorm, cost, &
-                   sint, fn, flocal, vnorm)
-
+!       Calculation of the normal force in the local reference : dnorm <= 0
+        vnorm = dvitlo(2)*cost+dvitlo(3)*sint
+        fn = 0.0
+        if (nomfon .ne. '.') then
+            call fointe('F', nomfon, 1, ['DX'], [-dnorm], xforc, ier)
+            fn = xforc-cnorm*vnorm
+        else
+            fn = -knorm*dnorm-cnorm*vnorm
+        end if
+        if (fn .lt. 0.0) fn = 0.0
+        flocal(1) = 0.0
+        flocal(2) = fn*cost
+        flocal(3) = fn*sint
+!
 !       --- Conversion to the global (physical) reference
-        call locglo(flocal, sina, cosa, sinb, cosb, &
-                    sing, cosg, fgloba)
+        call locglo(flocal, sina, cosa, sinb, cosb, sing, cosg, fgloba)
 
 !       --- Generalized force on the first node
         call togene(dplmod1, fgloba, fext_nl)
@@ -282,8 +291,7 @@ subroutine dtmforc_choc(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl, &
             end if
 
 !       --- Conversion to the global (physical) reference
-            call locglo(flocal, sina, cosa, sinb, cosb, &
-                        sing, cosg, fgloba)
+            call locglo(flocal, sina, cosa, sinb, cosb, sing, cosg, fgloba)
 !       --- Generalized force on the first node
             call togene(dplmod1, fgloba, fext_tgt)
 

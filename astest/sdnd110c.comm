@@ -1,0 +1,232 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+#
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="NON"))
+#
+import numpy as NU
+
+mail = LIRE_MAILLAGE(UNITE=20, FORMAT="ASTER")
+
+Modele = AFFE_MODELE(
+    MAILLAGE=mail,
+    AFFE=_F(GROUP_MA=("GM1", "GM2", "GM3"), PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
+)
+
+# Disposition 1 : Galet
+RaidGxyz = 0.0
+MasseG = 0.0
+# Disposition : Ressort + Masse
+Raid13x = 300.0
+Raid13y = 300.0
+Raid13z = 300.0
+Masse13 = 3.0
+#
+carael = AFFE_CARA_ELEM(
+    MODELE=Modele,
+    DISCRET=(
+        _F(
+            GROUP_MA=("GM1", "GM3"),
+            REPERE="LOCAL",
+            CARA="K_T_D_L",
+            VALE=(Raid13x, Raid13y, Raid13z),
+        ),
+        _F(GROUP_MA=("GM1", "GM3"), CARA="M_T_D_L", VALE=(Masse13,)),
+        _F(GROUP_MA="GM2", REPERE="LOCAL", CARA="K_T_D_L", VALE=(RaidGxyz, RaidGxyz, RaidGxyz)),
+        _F(GROUP_MA="GM2", CARA="M_T_D_L", VALE=(MasseG,)),
+    ),
+)
+# Comportement du Galet : Force = fct(Déplacement)
+ldepla = NU.array([0.00, 2.00, 5.00, 7.000, 9.500, 10.000]) / 10.0
+lforce = NU.array([0.00, 4.00, 4.50, 6.000, 7.000, 10.000]) * 100.0
+#
+fctfx = DEFI_FONCTION(NOM_PARA="DX", ABSCISSE=ldepla, ORDONNEE=lforce, PROL_DROITE="LINEAIRE")
+#
+LongSeg2 = 0.10
+dist1 = 0.0
+dist2 = 0.0
+#
+#
+Blocage = AFFE_CHAR_MECA(
+    MODELE=Modele,
+    DDL_IMPO=(
+        _F(GROUP_NO="GPT1", DX=0.0, DY=0.0, DZ=0.0),
+        _F(GROUP_NO="GPT3", DX=0.0, DY=0.0, DZ=0.0),
+    ),
+)
+
+Frequence = 1.0
+Tsignal = 4.0 / Frequence
+LinstF = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=4.0 * Tsignal, PAS=0.5 / Frequence / 80.0))
+
+# Hertz
+Hz = 1.0
+
+# Fréquences des signaux
+f1, f2, f3 = 1.0 * Hz, 1.5 * Hz, 3.0 * Hz
+# Amplitudes des signaux
+Coeff = 2.0
+a1, a2, a3 = 0.25 * Coeff, 0.10 * Coeff, 0.22 * Coeff
+
+
+def PyDepl(Inst):
+    w1, w2, w3 = 2.0 * pi * f1, 2.0 * pi * f2, 2.0 * pi * f3
+    depl1, depl2, depl3 = a1 * sin(w1 * Inst), a2 * sin(w2 * Inst), a3 * sin(w3 * Inst)
+    return depl1 + depl2 + depl3
+
+
+def PyVite(Inst):
+    w1, w2, w3 = 2.0 * pi * f1, 2.0 * pi * f2, 2.0 * pi * f3
+    vite1, vite2, vite3 = (
+        a1 * w1 * cos(w1 * Inst),
+        a2 * w2 * cos(w2 * Inst),
+        a3 * w3 * cos(w3 * Inst),
+    )
+    return vite1 + vite2 + vite3
+
+
+def PyAcce(Inst):
+    w1, w2, w3 = 2.0 * pi * f1, 2.0 * pi * f2, 2.0 * pi * f3
+    acce1, acce2, acce3 = (
+        -a1 * w1 * w1 * sin(w1 * Inst),
+        -a2 * w2 * w2 * sin(w2 * Inst),
+        -a3 * w3 * w3 * sin(w3 * Inst),
+    )
+    return acce1 + acce2 + acce3
+
+
+FDeplT = FORMULE(VALE="PyDepl(INST)", NOM_PARA="INST", PyDepl=PyDepl)
+FViteT = FORMULE(VALE="PyVite(INST)", NOM_PARA="INST", PyVite=PyVite)
+FAcceT = FORMULE(VALE="PyAcce(INST)", NOM_PARA="INST", PyAcce=PyAcce)
+#
+DeplT = CALC_FONC_INTERP(
+    NOM_RESU="DEPL",
+    FONCTION=FDeplT,
+    LIST_PARA=LinstF,
+    NOM_PARA="INST",
+    PROL_GAUCHE="CONSTANT",
+    PROL_DROITE="CONSTANT",
+    INTERPOL="LIN",
+)
+ViteT = CALC_FONC_INTERP(
+    NOM_RESU="VITE",
+    FONCTION=FViteT,
+    LIST_PARA=LinstF,
+    NOM_PARA="INST",
+    PROL_GAUCHE="CONSTANT",
+    PROL_DROITE="CONSTANT",
+    INTERPOL="LIN",
+)
+AcceT = CALC_FONC_INTERP(
+    NOM_RESU="ACCE",
+    FONCTION=FAcceT,
+    LIST_PARA=LinstF,
+    NOM_PARA="INST",
+    PROL_GAUCHE="CONSTANT",
+    PROL_DROITE="CONSTANT",
+    INTERPOL="LIN",
+)
+#
+ASSEMBLAGE(
+    MODELE=Modele,
+    CARA_ELEM=carael,
+    CHARGE=Blocage,
+    NUME_DDL=CO("NumeDDL"),
+    MATR_ASSE=(
+        _F(MATRICE=CO("Rigidite"), OPTION="RIGI_MECA"),
+        _F(MATRICE=CO("Masse"), OPTION="MASS_MECA"),
+    ),
+)
+#
+# Mode de la structure
+ModeStr = CALC_MODES(
+    MATR_RIGI=Rigidite, OPTION="BANDE", CALC_FREQ=_F(FREQ=(0.0, 3.0)), MATR_MASS=Masse
+)
+#
+# calcul des modes statiques aux points d'ancrage et des chargements sismiques
+ModeSta = MODE_STATIQUE(
+    MATR_RIGI=Rigidite, MATR_MASS=Masse, MODE_STAT=_F(GROUP_NO=("GPT1", "GPT3"), AVEC_CMP="DX")
+)
+#
+DeplSis1 = CALC_CHAR_SEISME(
+    MATR_MASS=Masse, MODE_STAT=ModeSta, GROUP_NO="GPT1", DIRECTION=(1.0, 0.0, 0.0)
+)
+#
+
+# projection des matrices et vecteurs sur la base modale
+PROJ_BASE(
+    BASE=ModeStr,
+    STOCKAGE="DIAG",
+    MATR_ASSE_GENE=(
+        _F(MATRICE=CO("MasseGen"), MATR_ASSE=Masse),
+        _F(MATRICE=CO("RigidGen"), MATR_ASSE=Rigidite),
+    ),
+    VECT_ASSE_GENE=(_F(VECTEUR=CO("Depl1Gen"), VECT_ASSE=DeplSis1, TYPE_VECT="FORC"),),
+)
+
+dt = 0.5 / Frequence / 4000.0
+
+ResuGene = DYNA_VIBRA(
+    TYPE_CALCUL="TRAN",
+    BASE_CALCUL="GENE",
+    MATR_MASS=MasseGen,
+    MATR_RIGI=RigidGen,
+    SCHEMA_TEMPS=_F(SCHEMA="RUNGE_KUTTA_54", PAS_MINI=dt, PAS_MAXI=dt),
+    INCREMENT=_F(PAS=dt, INST_INIT=0.0, INST_FIN=4.0 * Tsignal),
+    MODE_STAT=ModeSta,
+    EXCIT=(_F(VECT_ASSE_GENE=Depl1Gen, ACCE=AcceT, VITE=ViteT, DEPL=DeplT),),
+    COMPORTEMENT=_F(RELATION="CHOC_ELAS_TRAC", GROUP_NO_1="GPT2", GROUP_NO_2="GPT3", FX=fctfx),
+    ARCHIVAGE=_F(PAS_ARCH=200),
+)
+
+# Récupération de Force, Long
+vint1 = ResuGene.VARI_INTERNE(1)
+
+# ===================================================================== TEST_FONCTION
+motclef = {}
+force0 = 0.0
+motclef["VALEUR"] = []
+for force, xlong in vint1:
+    if xlong <= 0.0:
+        xlong9 = -xlong
+    else:
+        xlong9 = 0.0
+    # Test de la force calculée par code_aster, si :
+    #   variation de l'effort de plus de 10%
+    #   passage à effort nul
+    ok = abs((force - force0) / lforce[-1]) >= 0.10
+    ok = ok or (force > -1.0 and force0 <= -1.0)
+    if ok:
+        force0 = force
+        if abs(force) >= 1.0:
+            motclef["VALEUR"].append(
+                _F(FONCTION=fctfx, NOM_PARA="DX", VALE_PARA=xlong9, VALE_CALC=force)
+            )
+        else:
+            motclef["VALEUR"].append(
+                _F(
+                    FONCTION=fctfx,
+                    NOM_PARA="DX",
+                    VALE_PARA=xlong9,
+                    VALE_CALC=force,
+                    CRITERE="ABSOLU",
+                )
+            )
+TEST_FONCTION(**motclef)
+
+FIN()

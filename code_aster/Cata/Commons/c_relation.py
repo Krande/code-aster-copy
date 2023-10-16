@@ -75,6 +75,7 @@ def C_RELATION(command):
             "DIS_GOUJ2E_PLAS",
             "DIS_GRICRA",
             "CHOC_ENDO",
+            "CHOC_ELAS_TRAC",
             "CHOC_ENDO_PENA",
             "JONC_ENDO_PLAS",
             "DIS_VISC",

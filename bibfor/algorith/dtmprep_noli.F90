@@ -25,14 +25,15 @@ subroutine dtmprep_noli(sd_dtm_)
 !            nonlinearities for a transient DYNA_VIBRA calculation
 !            on reduced basis (TRAN//GENE)
 !   --------------------------------------------------------------------------------------
-!       (1)    Stops (chocs)       / CHOC
-!       (2)    Anti sismic devices / ANTI_SISM
-!       (3)    Viscous dampers     / DIS_VISC
-!       (4)    Nonlinear springs   / DIS_ECRO_TRAC
-!       (5)    Buckling            / FLAMBAGE
-!       (6)    Cracked rotor       / ROTOR_FISS
-!       (7)    F(V) relationship   / RELA_EFFO_VITE
-!       (8)    F(X) relationship   / RELA_EFFO_DEPL
+!       (1)     Stops (chocs)               / CHOC
+!       (2)     Anti sismic devices         / ANTI_SISM
+!       (3)     Viscous dampers             / DIS_VISC
+!       (4)     Nonlinear springs           / DIS_ECRO_TRAC
+!       (5)     Buckling                    / FLAMBAGE
+!       (6)     Cracked rotor               / ROTOR_FISS
+!       (7)     F(V) relationship           / RELA_EFFO_VITE
+!       (8)     F(X) relationship           / RELA_EFFO_DEPL
+!       (9)     Elastic nonlinear springs   / CHOC_ELAS_TRAC
 !   --------------------------------------------------------------------------------------
 !
 !   Note : Information about these 6 nonlinearity types are read using mdchoc
@@ -54,6 +55,7 @@ subroutine dtmprep_noli(sd_dtm_)
 #include "asterfort/dtmprep_noli_rotf.h"
 #include "asterfort/dtmprep_verichoc.h"
 #include "asterfort/dtmprep_noli_yacs.h"
+#include "asterfort/dtmprep_noli_galet.h"
 #include "asterfort/dtmsav.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
@@ -61,9 +63,9 @@ subroutine dtmprep_noli(sd_dtm_)
 #include "asterfort/jemarq.h"
 #include "asterfort/nlget.h"
 #include "asterfort/nlsav.h"
+#include "asterfort/nltype.h"
 #include "asterfort/nlvint.h"
 #include "asterfort/utmess.h"
-#include "asterfort/utimsd.h"
 #include "asterfort/wkvect.h"
 !
 !   -0.1- Input/output arguments
@@ -75,15 +77,11 @@ subroutine dtmprep_noli(sd_dtm_)
     integer          :: nltype_i, ivchoc
     character(len=7) :: casek7
     character(len=8) :: sd_dtm, monmot, sd_nl
-    character(len=16):: nltreat_k, nltypes(_NL_NB_TYPES), nltype_k
+    character(len=16):: nltreat_k, nltype_k
     character(len=19):: nomres
 !
     real(kind=8), pointer :: basev0(:) => null()
     real(kind=8), pointer :: fext_tmp(:) => null()
-!
-    data nltypes/'DIS_CHOC        ', 'FLAMBAGE        ', 'ANTI_SISM       ', &
-        'DIS_VISC        ', 'DIS_ECRO_TRAC   ', 'ROTOR_FISS      ', &
-        'RELA_EFFO_DEPL  ', 'RELA_EFFO_VITE  ', 'YACS            '/
 !
 #define base0(row,col) basev0((col-1)*nbmode+row)
 !
@@ -111,17 +109,16 @@ subroutine dtmprep_noli(sd_dtm_)
     call nlsav(sd_nl, _NB_PALIE, 1, iscal=0)
     call nlsav(sd_nl, _NB_REL_FX, 1, iscal=0)
     call nlsav(sd_nl, _NB_REL_FV, 1, iscal=0)
+    call nlsav(sd_nl, _NB_DIS_CHOC_ELAS, 1, iscal=0)
 !
     do icomp = 1, nbcomp
 
         call getvtx('COMPORTEMENT', 'RELATION', iocc=icomp, scal=nltype_k)
         do nltype_i = 1, _NL_NB_TYPES
-            if (nltype_k .eq. nltypes(nltype_i)) goto 5
+            if (nltype_k .eq. nltype(nltype_i)) goto 5
         end do
+        ASSERT(.false.)
 5       continue
-        if (nltype_i .gt. _NL_NB_TYPES) then
-            ASSERT(.false.)
-        end if
 !
         select case (nltype_i)
 !
@@ -152,9 +149,11 @@ subroutine dtmprep_noli(sd_dtm_)
         case (NL_FV_RELATIONSHIP)
             call dtmprep_noli_revi(sd_dtm, sd_nl, icomp)
 !
+        case (NL_DIS_CHOC_ELAS)
+            call dtmprep_noli_galet(sd_dtm, sd_nl, icomp)
+!
         case default
             ASSERT(.false.)
-!
         end select
     end do
 

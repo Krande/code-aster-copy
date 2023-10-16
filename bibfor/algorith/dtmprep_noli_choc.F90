@@ -94,7 +94,7 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
     character(len=3)  :: unidirk
     character(len=8)  :: sd_dtm, sd_nl, mesh, mesh1, mesh2
     character(len=8)  :: nume, sst1, sst2, nomma, no1_name
-    character(len=8)  :: no2_name, monmot, k8typ, kbid, repere
+    character(len=8)  :: no2_name, monmot, k8typ, kbid, repere, nomfon
     character(len=8)  :: node, intk
     character(len=14) :: nume1, nume2
     character(len=16) :: typnum, typem, refo, limocl(2), tymocl(2)
@@ -378,10 +378,15 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
         call getvr8(motfac, 'DIST_2', iocc=icomp, scal=dist_no2, nbret=n1)
         if (n1 .gt. 0) call nlsav(sd_nl, _DIST_NO2, 1, iocc=i, rscal=dist_no2)
 
+!       Normal Stiffness or Function
         call nlsav(sd_nl, _STIF_NORMAL, 1, iocc=i, rscal=0.d0)
+        call nlsav(sd_nl, _NL_FUNC_NAME, 1, iocc=i, kscal='.')
+!       Dans le catalogue c'est l'un ou l'autre
         call getvr8(motfac, 'RIGI_NOR', iocc=icomp, scal=stif_normal, nbret=n1)
         if (n1 .gt. 0) call nlsav(sd_nl, _STIF_NORMAL, 1, iocc=i, rscal=stif_normal)
-
+        call getvid(motfac, 'FX', iocc=icomp, scal=nomfon, nbret=n1)
+        if (n1 .gt. 0) call nlsav(sd_nl, _NL_FUNC_NAME, 1, iocc=i, kscal=nomfon)
+!
         call nlsav(sd_nl, _DAMP_NORMAL, 1, iocc=i, rscal=0.d0)
         call getvr8(motfac, 'AMOR_NOR', iocc=icomp, scal=damp_normal, nbret=n1)
         if (n1 .gt. 0) call nlsav(sd_nl, _DAMP_NORMAL, 1, iocc=i, rscal=damp_normal)
@@ -492,7 +497,8 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
             ddpilo(2) = dpiloc(2)-dpiloc(5)
             ddpilo(3) = dpiloc(3)-dpiloc(6)
         end if
-       call nlsav(sd_nl, _SIGN_DYZ, 2, iocc=i, rvect=[-sign(one, ddpilo(2)), -sign(one, ddpilo(3))])
+        call nlsav(sd_nl, _SIGN_DYZ, 2, iocc=i, &
+                   rvect=[-sign(one, ddpilo(2)), -sign(one, ddpilo(3))])
 !
 !
 !       --- 3.6 - Printing out user information

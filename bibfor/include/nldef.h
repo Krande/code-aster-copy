@@ -19,7 +19,10 @@
 ! sd_nl data structure : Parameters <-> integer definitions
 ! -------------------------------------------------------------------------
 !
-#define _NL_NBPAR 80
+#ifndef NLDEF_H_
+#define NLDEF_H_
+
+#define _NL_NBPAR 81
 
 #define _ANG_INIT 1
 #define _ANG_ROTA 2
@@ -39,7 +42,7 @@
 #define _DAMP_NORMAL 16
 #define _DAMP_TANGENTIAL 17
 #define _DISC_ISOT_FX0DX0 18
-
+#define _NL_FUNC_NAME 19
 #define _DIST_NO1 20
 #define _DIST_NO2 21
 #define _DISVISC_A 22
@@ -101,6 +104,7 @@
 #define _BUCKLING_DEF_TOT 78
 #define _BUCKLING_AMOR 79
 #define _BUCKLING_AMOR_IN 80
+#define _NB_DIS_CHOC_ELAS 81
 
 
 #define _YACS_NOEUD 89
@@ -108,8 +112,9 @@
 #define _NUM_PALIER 103
 
 
-#define _NL_NB_TYPES     9
-
+! Nombre de non linéarités
+#define _NL_NB_TYPES     10
+! Les non linéarités
 #define NL_CHOC            1
 #define NL_BUCKLING        2
 #define NL_ANTI_SISMIC     3
@@ -119,8 +124,8 @@
 #define NL_FX_RELATIONSHIP 7
 #define NL_FV_RELATIONSHIP 8
 #define NL_YACS            9
-
-
+#define NL_DIS_CHOC_ELAS   10
+! Le nombre de variables internes
 #define NBVARINT_CHOC 20
 #define NBVARINT_FLAM 12
 #define NBVARINT_ANTS 8
@@ -130,3 +135,6 @@
 #define NBVARINT_YACS 1
 #define NBVARINT_FXRL 3
 #define NBVARINT_FVRL 3
+#define NBVARINT_DCG  2
+
+#endif

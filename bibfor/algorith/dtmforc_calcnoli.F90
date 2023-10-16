@@ -36,9 +36,9 @@ subroutine dtmforc_calcnoli(sd_dtm_, sd_nl_, buffdtm, buffnl, &
 !
 #include "jeveux.h"
 #include "asterc/r8prem.h"
-#include "asterc/r8maem.h"
 #include "asterfort/assert.h"
 #include "asterfort/dtmforc_choc.h"
+#include "asterfort/dtmforc_galet.h"
 #include "asterfort/dtmforc_ants.h"
 #include "asterfort/dtmforc_flam.h"
 #include "asterfort/dtmforc_decr.h"
@@ -84,14 +84,10 @@ subroutine dtmforc_calcnoli(sd_dtm_, sd_nl_, buffdtm, buffnl, &
         call nlget(sd_nl, _NL_TYPE, iocc=nl_ind, iscal=nl_type, buffer=buffnl)
         select case (nl_type)
 !
-!
         case (NL_CHOC)
-
             call dtmforc_choc(nl_ind, sd_dtm, sd_nl, buffdtm, buffnl, &
                               time, depl, vite, fext_nl, fext_tgt)
-
-!                   --- Special case of choc nonlinearities that can be
-!                       implicitely treated
+!           Special case of choc nonlinearities that can be implicitely treated
             if ((nlcase .eq. 0) .or. (nlacc .eq. 1)) then
                 do i = 1, nbmode
                     fext(i) = fext(i)+fext_nl(i)
@@ -101,6 +97,7 @@ subroutine dtmforc_calcnoli(sd_dtm_, sd_nl_, buffdtm, buffnl, &
                     fext(i) = fext(i)+fext_tgt(i)
                 end do
             end if
+
         case (NL_BUCKLING)
             call dtmforc_flam(nl_ind, sd_dtm, sd_nl, buffdtm, buffnl, &
                               time, depl, vite, fext)
@@ -116,6 +113,10 @@ subroutine dtmforc_calcnoli(sd_dtm_, sd_nl_, buffdtm, buffnl, &
         case (NL_DIS_ECRO_TRAC)
             call dtmforc_decr(nl_ind, sd_dtm, sd_nl, buffdtm, buffnl, &
                               time, dt, depl, vite, fext)
+
+        case (NL_DIS_CHOC_ELAS)
+            call dtmforc_galet(nl_ind, sd_dtm, sd_nl, buffdtm, buffnl, &
+                               time, dt, depl, fext)
 
         case (NL_CRACKED_ROTOR)
             call dtmforc_rotf(nl_ind, sd_dtm, sd_nl, buffdtm, buffnl, &

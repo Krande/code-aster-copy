@@ -38,6 +38,7 @@ def C_COMPORTEMENT_DYNA(COMMAND):  # COMMUN#
                 "ANTI_SISM",
                 "DIS_VISC",
                 "DIS_ECRO_TRAC",
+                "CHOC_ELAS_TRAC",
                 "RELA_EFFO_DEPL",
                 "RELA_EFFO_VITE",
                 "YACS",
@@ -249,6 +250,23 @@ def C_COMPORTEMENT_DYNA(COMMAND):  # COMMUN#
             ITER_INTE_MAXI=SIMP(statut="f", typ="I", defaut=20),
             RESI_INTE_RELA=SIMP(statut="f", typ="R", defaut=1.0e-6),
         ),  # end b_disecro
+        #       C.2.6.3 Discrete elastic nonlinear behavior in axial direction
+        b_dischocelastrac=BLOC(
+            condition="""equal_to("RELATION", 'CHOC_ELAS_TRAC')""",
+            fr=tr("Loi pour un discret de choc avec comportement élastique non-linéaire."),
+            regles=(UN_PARMI("NOEUD_1", "GROUP_NO_1"), UN_PARMI("NOEUD_2", "GROUP_NO_2")),
+            NOEUD_1=SIMP(statut="c", typ=no),
+            NOEUD_2=SIMP(statut="c", typ=no),
+            GROUP_NO_1=SIMP(statut="f", typ=grno),
+            GROUP_NO_2=SIMP(statut="f", typ=grno),
+            DIST_1=SIMP(statut="f", typ="R", val_min=0.0e0),
+            DIST_2=SIMP(statut="f", typ="R", val_min=0.0e0),
+            FX=SIMP(
+                statut="o",
+                typ=(fonction_sdaster),
+                fr=tr("Comportement axial élastique non-linéaire."),
+            ),
+        ),  # end b_dischocelastrac
         #       C.2.7 Force displacement relationship non linearity
         b_refx=BLOC(
             condition="""equal_to("RELATION", 'RELA_EFFO_DEPL')""",

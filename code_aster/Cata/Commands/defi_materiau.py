@@ -233,6 +233,7 @@ DEFI_MATERIAU = MACRO(
             "DIS_ECRO_TRAC",
             "DIS_BILI_ELAS",
             "DIS_CHOC_ENDO",
+            "DIS_CHOC_ELAS",
             "HHO",
             "JONC_ENDO_PLAS",
             "THER_NL",
@@ -2547,6 +2548,18 @@ DEFI_MATERIAU = MACRO(
         FXP=SIMP(statut="c", typ=fonction_sdaster),
         RIGIP=SIMP(statut="c", typ=fonction_sdaster),
         AMORP=SIMP(statut="c", typ=fonction_sdaster),
+    ),
+    DIS_CHOC_ELAS=FACT(
+        statut="f",
+        fr=tr("Loi de choc avec comportement élastique non-linéaire"),
+        FX=SIMP(
+            statut="o",
+            typ=fonction_sdaster,
+            fr=tr("Comportement axial élastique non-linéaire en fonction du déplacement relatif."),
+        ),
+        DIST_1=SIMP(statut="f", typ="R", defaut=0.0, val_min=0.0),
+        DIST_2=SIMP(statut="f", typ="R", defaut=0.0, val_min=0.0),
+        RIGIP=SIMP(statut="c", typ=fonction_sdaster),
     ),
     # Discrets non-linéaires : fin
     #

@@ -17,12 +17,26 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mathieu.courtois@edf.fr
+# person_in_charge: jean-luc.flejou@edf.fr
 
-"""
-This module gives objects to manage the execution.
-"""
+from .cata_comportement import LoiComportement
 
-from .LogicalUnit import Action, FileAccess, FileType, LogicalUnitFile, ReservedUnitUsed
-from .MGISHelper import MGISBuilder, adapt_for_mgis_behaviour
-from .Check_Material_Functions import check_dis_choc_elas
+loi = LoiComportement(
+    nom="CHOC_ELAS_TRAC",
+    lc_type=("MECANIQUE",),
+    doc="""Relation de comportement sur élément discret de choc
+           avec un comportement élastique non-linéaire""",
+    num_lc=0,
+    nb_vari=1,
+    nom_vari=("DIS1",),
+    mc_mater=None,
+    modelisation=("DIS_T",),
+    deformation=("PETIT",),
+    algo_inte=("ANALYTIQUE",),
+    type_matr_tang=None,
+    proprietes=None,
+    syme_matr_tang=("Yes",),
+    exte_vari=None,
+    deform_ldc=("OLD",),
+    regu_visc=("No",),
+)

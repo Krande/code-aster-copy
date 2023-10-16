@@ -26,12 +26,17 @@ from ..Objects import (
     FullTransientResult,
     HarmoGeneralizedResult,
     TransientGeneralizedResult,
+    Function,
 )
 from ..Supervis import ExecuteCommand
 
+from ..Helpers import check_dis_choc_elas
+
 
 class VibrationDynamics(ExecuteCommand):
-    """Command to solve linear vibration dynamics problem, on physical or modal bases, for harmonic or transient analysis."""
+    """Command to solve linear vibration dynamics problem, on physical or modal bases,
+    for harmonic or transient analysis.
+    """
 
     command_name = "DYNA_VIBRA"
 
@@ -98,6 +103,18 @@ class VibrationDynamics(ExecuteCommand):
         for key in ("MATR_MASS", "MATR_RIGI", "MATR_AMOR"):
             if keywords.get(key):
                 self._result.addDependency(keywords[key])
+
+    def adapt_syntax(self, keywords):
+        """Adapt syntax *after* syntax checking.
+
+        Arguments:
+            keywords (dict): User's keywords. Changed in place
+        """
+        LstComportement = keywords.get("COMPORTEMENT", None)
+        if not LstComportement is None:
+            for UnComportement in LstComportement:
+                if UnComportement.get("RELATION") == "CHOC_ELAS_TRAC":
+                    tmp = check_dis_choc_elas(UnComportement)
 
 
 DYNA_VIBRA = VibrationDynamics.run

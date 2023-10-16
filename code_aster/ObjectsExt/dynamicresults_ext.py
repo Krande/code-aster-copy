@@ -39,7 +39,8 @@ class ExtendedTransientGeneralizedResult:
     def _check_input_inoli(self, inoli):
         if inoli == -1:
             print(
-                "Nonlinearity index not specified, by default the first nonlinearity will be considered."
+                "Nonlinearity index not specified, by default the first nonlinearity",
+                " will be considered.",
             )
             inoli = 1
         nbnoli = self._nb_nonl()
@@ -47,8 +48,8 @@ class ExtendedTransientGeneralizedResult:
             raise AsException("Linear calculation, no information can be retrieved.")
         if (inoli <= 0) or (inoli > nbnoli):
             raise AsException(
-                "The nonlinearity index should be a comprised between 1 and %d, the total number of nonlinearities."
-                % (nbnoli)
+                "The nonlinearity index should be a comprised between 1 and %d,"
+                " the total number of nonlinearities." % (nbnoli)
             )
         return inoli
 
@@ -137,6 +138,7 @@ class ExtendedTransientGeneralizedResult:
                 "DYPLOC",
                 "DZPLOC",
             ],
+            "CHOC_ELAS_TRAC": ["FORCE", "DX_RELA"],
             "ROTOR_FISS": ["PHI_DEGR", "F_TANGE1", "F_TANGE2"],
             "RELA_EFFO_DEPL": ["DCMP_N1 ", "FCMP_LOC", "IND_NONZ"],
             "RELA_EFFO_VITE": ["VCMP_N1 ", "FCMP_LOC", "IND_NONZ"],
@@ -173,6 +175,7 @@ class ExtendedTransientGeneralizedResult:
             6: "ROTOR_FISS",
             7: "RELA_EFFO_DEPL",
             8: "RELA_EFFO_VITE",
+            10: "CHOC_ELAS_TRAC",
         }
 
         nltypes = self.sdj.sd_nl.TYPE.get()
@@ -180,27 +183,32 @@ class ExtendedTransientGeneralizedResult:
 
     def FORCE_NORMALE(self, inoli=-1):
         """
-        Returns a 1D numpy array giving the evolution of the normal force at the archived instants
+        Returns a 1D numpy array giving the evolution of the normal force
+        at the archived instants
         """
 
         inoli = self._check_input_inoli(inoli)
 
         nltypes = self._type_nonl()
-        if not (nltypes[inoli - 1] in ("DIS_CHOC", "FLAMBAGE")):
+        if not (nltypes[inoli - 1] in ("DIS_CHOC", "FLAMBAGE", "CHOC_ELAS_TRAC")):
             dummy = self.INFO_NONL()
             raise AsException(
-                "The chosen nonlinearity index (%d) does not correspond to a DIS_CHOC or FLAMBAGE nonlinearity\nThese are the only nonlinearities that save the local normal force."
-                % (inoli)
+                "The chosen nonlinearity index (%d) does not correspond to a :\n"
+                "    DIS_CHOC or FLAMBAGE or CHOC_ELAS_TRAC nonlinearity\n"
+                "These are the only nonlinearities that save the local normal force." % (inoli)
             )
 
         vint = self.VARI_INTERNE(inoli, describe=False)
-        # The normal force is saved in the first position (ind=0) of the internal variables for DIS_CHOC and FLAMBAGE nonlinearities
+        # The normal force is saved in the first position (ind=0) of the internal variables for :
+        #   DIS_CHOC | FLAMBAGE | CHOC_ELAS_TRAC nonlinearities
         return vint[:, 0]
 
     def INFO_NONL(self):
         """
-        Prints out information about the considered non linearities, returns a 2D python list (list in list) with
-        the retrieved information"""
+        Prints out information about the considered non linearities,
+        returns a 2D python list (list in list) with
+        the retrieved information
+        """
 
         nbnoli = self._nb_nonl()
         if nbnoli == 0:
@@ -268,16 +276,16 @@ class ExtendedTransientGeneralizedResult:
 
     def VARI_INTERNE(self, inoli=-1, describe=True):
         """
-        Returns a 2D numpy array of all internal variables for a given non linearity of index <inoli>
+        Returns a 2D numpy array of all internal variables for a given non linearity
+        at the index <inoli>
         """
 
         inoli = self._check_input_inoli(inoli)
         i = inoli - 1
 
         vindx = self.sdj.sd_nl.VIND.get()
-        nbvint = (
-            vindx[-1] - 1
-        )  # number of internal variables saved for all nonlinearities : record length of VINT
+        # number of internal variables saved for all nonlinearities : record length of VINT
+        nbvint = vindx[-1] - 1
 
         vint = self.sdj.sd_nl.VINT.get()
         nbsaves = len(vint) // nbvint

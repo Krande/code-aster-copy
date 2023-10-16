@@ -1,0 +1,52 @@
+ TITRE
+Maillage cousu main
+  V1  = Vecteur( 0.5 , 0.5 , 0.8)
+  V1n = NormeV( V1 )
+  N1  = Point(1.0,3.0,2.0)
+  N2  = N1 + V1n*0.1 = [1.04682929, 3.04682929, 2.07492686]
+  N3  = N1 + V1n*0.2 = [1.09365858, 3.09365858, 2.14985373]
+ FINSF
+ %
+ COOR_3D
+ N1        1.0        3.0        2.0
+ N2        1.04682929 3.04682929 2.07492686
+ N3        1.09365858 3.09365858 2.14985373
+ FINSF
+ %
+ SEG2
+ M1       N1       N2
+ M2       N2       N3
+ M3       N2       N3
+ FINSF
+ %
+ GROUP_NO
+ GPT1
+ N1
+ FINSF
+ %
+ GROUP_NO
+ GPT2
+ N2
+ FINSF
+ %
+ GROUP_NO
+ GPT3
+ N3
+ FINSF
+ %
+ GROUP_MA
+ GM1
+ M1
+ FINSF
+ %
+ GROUP_MA
+ GM2
+ M2
+ FINSF
+ %
+ GROUP_MA
+ GM3
+ M3
+ FINSF
+ %
+ FIN

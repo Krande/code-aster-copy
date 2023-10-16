@@ -1,0 +1,139 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+#
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="NON"))
+# SDVERI='NON' car la verification est trop couteuse en CPU
+import numpy as NU
+
+mail = LIRE_MAILLAGE(UNITE=20, FORMAT="ASTER")
+
+modele = AFFE_MODELE(
+    MAILLAGE=mail, AFFE=_F(GROUP_MA="M1", PHENOMENE="MECANIQUE", MODELISATION="DIS_T")
+)
+
+Raidxyz = 0.0
+Masse = 0.0
+carael = AFFE_CARA_ELEM(
+    MODELE=modele,
+    DISCRET=(
+        _F(GROUP_MA="M1", REPERE="LOCAL", CARA="K_T_D_L", VALE=(Raidxyz, Raidxyz, Raidxyz)),
+        _F(GROUP_MA="M1", CARA="M_T_D_L", VALE=(Masse,)),
+    ),
+)
+
+LongSeg2 = 0.10
+charge = AFFE_CHAR_MECA(
+    MODELE=modele,
+    DDL_IMPO=(
+        _F(GROUP_NO="PT2", DX=0.0, DY=0.0, DZ=0.0),
+        _F(GROUP_NO="PT1", DX=LongSeg2, DY=0.0, DZ=0.0),
+    ),
+)
+
+# fmt: off
+rampe = DEFI_FONCTION(
+    NOM_PARA="INST",
+    VALE=( 0.0,   0.0,
+           1.0,   0.8,
+           2.0,   2.0,
+           3.0,   4.0,
+           3.5,   3.0,
+           5.0,   0.0,
+           8.0,   3.0,
+          10.0,  15.0,
+          20.0,   0.0,),
+)
+# fmt: on
+Tfin = 20.0
+#
+ldepla = NU.array([0.00, 2.00, 5.00, 7.000, 9.500, 10.000]) / 10.0
+lforce = NU.array([0.00, 4.00, 4.50, 6.000, 7.000, 10.000]) * 100.0
+#
+fctfx = DEFI_FONCTION(NOM_PARA="DX", ABSCISSE=ldepla, ORDONNEE=lforce, PROL_DROITE="LINEAIRE")
+#
+dist1 = LongSeg2 * 0.50
+dist2 = LongSeg2 * 0.25
+galet = DEFI_MATERIAU(DIS_CHOC_ELAS=_F(FX=fctfx, DIST_1=dist1, DIST_2=dist2))
+#
+chmat = AFFE_MATERIAU(MAILLAGE=mail, AFFE=_F(GROUP_MA="M1", MATER=galet))
+# ---------------------------------------------------
+pas1 = 0.10
+l_inst1 = DEFI_LIST_REEL(
+    DEBUT=0.0,
+    INTERVALLE=(
+        _F(JUSQU_A=1.0, NOMBRE=1),
+        _F(JUSQU_A=2.0, PAS=pas1 * 2.0),
+        _F(JUSQU_A=Tfin, PAS=pas1 * 2.0),
+    ),
+)
+
+resu1 = STAT_NON_LINE(
+    MODELE=modele,
+    CHAM_MATER=chmat,
+    CARA_ELEM=carael,
+    EXCIT=(_F(CHARGE=charge, FONC_MULT=rampe),),
+    COMPORTEMENT=(_F(GROUP_MA="M1", RELATION="CHOC_ELAS_TRAC"),),
+    INCREMENT=_F(LIST_INST=l_inst1),
+    CONVERGENCE=_F(RESI_REFE_RELA=5.0e-02, EFFORT_REFE=1.0),
+    NEWTON=_F(REAC_INCR=1, MATRICE="TANGENTE", REAC_ITER=1),
+)
+#
+DEPL1 = RECU_FONCTION(RESULTAT=resu1, NOM_CHAM="DEPL", NOM_CMP="DX", GROUP_NO="PT1")
+FORC1 = RECU_FONCTION(RESULTAT=resu1, NOM_CHAM="SIEF_ELGA", NOM_CMP="N", GROUP_MA="M1", POINT=1)
+VARI1 = RECU_FONCTION(RESULTAT=resu1, NOM_CHAM="VARI_ELGA", NOM_CMP="V1", GROUP_MA="M1", POINT=1)
+#
+Inst = DEPL1.Absc()
+#
+# ===================================================================== TEST_FONCTION
+motclef = {}
+xlong0 = LongSeg2
+force0 = 0.0
+motclef["VALEUR"] = []
+for unInst in Inst:
+    # La longueur du discret
+    xlong = LongSeg2 - dist1 - dist2 - DEPL1(unInst)
+    if xlong <= 0:
+        force_discret = -fctfx(-xlong)
+    else:
+        force_discret = 0.0
+    # Test de la force calculée par code_aster
+    #   variation de l'effort de plus de 10%
+    #   passage à effort nul
+    ok = abs((force_discret - force0) / lforce[-1]) >= 0.10
+    ok = ok or (force_discret > -1.0 and force0 <= -1.0)
+    if ok:
+        # Si F >= 1.0 ==> RELATIF
+        #      <  1.0 ==> ABSOLU
+        if abs(force_discret) >= 1.0:
+            motclef["VALEUR"].append(
+                _F(FONCTION=FORC1, NOM_PARA="INST", VALE_PARA=unInst, VALE_CALC=force_discret)
+            )
+        else:
+            motclef["VALEUR"].append(
+                _F(
+                    FONCTION=FORC1,
+                    NOM_PARA="INST",
+                    VALE_PARA=unInst,
+                    VALE_CALC=force_discret,
+                    CRITERE="ABSOLU",
+                )
+            )
+TEST_FONCTION(**motclef)
+
+FIN()

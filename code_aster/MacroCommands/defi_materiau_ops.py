@@ -23,6 +23,7 @@ from libaster import AsterError, createEnthalpy, resetFortranLoggingLevel, setFo
 from ..Cata.Syntax import _F
 from ..Messages import UTMESS
 from ..Objects import Function, Material
+from ..Helpers import check_dis_choc_elas
 
 
 def defi_materiau_ops(self, **args):
@@ -121,6 +122,8 @@ def check_keywords(kwargs):
         check_dis_ecro_trac(kwargs["DIS_ECRO_TRAC"])
     if "DIS_CHOC_ENDO" in kwargs:
         check_dis_choc_endo(kwargs["DIS_CHOC_ENDO"])
+    if "DIS_CHOC_ELAS" in kwargs:
+        check_dis_choc_elas(kwargs["DIS_CHOC_ELAS"], options=["RIGIP"])
     if "JONC_ENDO_PLAS" in kwargs:
         check_dis_jvp(kwargs["JONC_ENDO_PLAS"])
     if "THER_NL" in kwargs:

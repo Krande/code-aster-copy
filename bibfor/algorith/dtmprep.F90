@@ -62,10 +62,7 @@ subroutine dtmprep(sd_dtm_)
 #include "asterfort/mdveri.h"
 #include "asterfort/mtdscr.h"
 #include "asterfort/mgutdm.h"
-#include "asterfort/nlget.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/rsexch.h"
-#include "asterfort/rsorac.h"
 #include "asterfort/trlds.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
@@ -574,15 +571,16 @@ subroutine dtmprep(sd_dtm_)
     call dtmsav(sd_dtm, _VITE_VAR, 1, kscal=k8var(1:3))
 
 !   --------------------------------------------------------------------------------------
-!   7 - Nonlinearities : (1)    Chocs               / CHOC
-!        (localized)     (2)    Anti sismic devices / ANTI_SISM
-!                        (3)    Viscous dampers     / DIS_VISC
-!                        (4)    Nonlinear springs   / DIS_ECRO_TRAC
-!                        (5)    Buckling            / FLAMBAGE
-!                        (6)    Cracked rotor       / ROTOR_FISS
-!                        (7)    F(V) relationship   / RELA_EFFO_VITE
-!                        (8)    F(X) relationship   / RELA_EFFO_DEPL
-!                        (9)    Generic coupling    / YACS_COUPLING
+!   7 - Nonlinearities (localized) :
+!       (1)     Chocs                       / CHOC
+!       (2)     Anti sismic devices         / ANTI_SISM
+!       (3)     Viscous dampers             / DIS_VISC
+!       (4)     Nonlinear springs           / DIS_ECRO_TRAC
+!       (5)     Buckling                    / FLAMBAGE
+!       (6)     Cracked rotor               / ROTOR_FISS
+!       (7)     F(V) relationship           / RELA_EFFO_VITE
+!       (8)     F(X) relationship           / RELA_EFFO_DEPL
+!       (9)    Elastic nonlinear springs    / CHOC_ELAS_TRAC
 !   --------------------------------------------------------------------------------------
 !
     call dtmprep_noli(sd_dtm)

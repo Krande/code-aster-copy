@@ -42,6 +42,7 @@ subroutine nlvint(sd_nl_)
 !
     call nlget(sd_nl, _MAX_LEVEL, iscal=mxlevel)
     call nlinivec(sd_nl, _INTERNAL_VARS_INDEX, mxlevel+1, vi=vindx)
+    add = 0
     vindx(1) = 1
     do i = 1, mxlevel
         call nlget(sd_nl, _NL_TYPE, iocc=i, iscal=nltype_i)
@@ -64,7 +65,8 @@ subroutine nlvint(sd_nl_)
             add = NBVARINT_FVRL
         case (NL_YACS)
             add = NBVARINT_YACS
-
+        case (NL_DIS_CHOC_ELAS)
+            add = NBVARINT_DCG
         case default
             ASSERT(.false.)
         end select

@@ -1,0 +1,47 @@
+ TITRE
+Maillage cousu main
+ FINSF
+ %
+ COOR_3D
+ N1        0.0E+00  0.0E+00  0.0E+00
+ N2        1.0E-01  0.0E+00  0.0E+00
+ N3        2.0E-01  0.0E+00  0.0E+00
+ FINSF
+ %
+ SEG2
+ M1       N1       N2
+ M2       N2       N3
+ M3       N2       N3
+ FINSF
+ %
+ GROUP_NO
+ GPT1
+ N1
+ FINSF
+ %
+ GROUP_NO
+ GPT2
+ N2
+ FINSF
+ %
+ GROUP_NO
+ GPT3
+ N3
+ FINSF
+ %
+ GROUP_MA
+ GM1
+ M1
+ FINSF
+ %
+ GROUP_MA
+ GM2
+ M2
+ FINSF
+ %
+ GROUP_MA
+ GM3
+ M3
+ FINSF
+ %
+ FIN

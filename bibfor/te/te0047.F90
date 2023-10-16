@@ -67,6 +67,7 @@ subroutine te0047(optioz, nomtez)
 #include "asterfort/diisotrope.h"
 #include "asterfort/difondabb.h"
 #include "asterfort/dichoc_endo_ldc.h"
+#include "asterfort/dichoc_galet_elasnl.h"
 #include "asterfort/dizeng.h"
 #include "asterfort/disjvp.h"
 #include "asterfort/infdis.h"
@@ -240,6 +241,9 @@ subroutine te0047(optioz, nomtez)
     else if (for_discret%rela_comp .eq. 'CHOC_ENDO_PENA') then
         ! comportement de choc avec déformation résiduelle par pénalisation
         call dichoc_endo_pena(for_discret, codret)
+    else if (for_discret%rela_comp .eq. 'CHOC_ELAS_TRAC') then
+        ! comportement de choc avec un comportement élastique non-linéaire
+        call dichoc_galet_elasnl(for_discret, codret)
     else if (for_discret%rela_comp .eq. 'JONC_ENDO_PLAS') then
         ! comportement élasto-plastique endommageable : jonction voile-plancher
         call disjvp(for_discret, codret)
