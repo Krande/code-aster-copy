@@ -24,7 +24,6 @@ subroutine nzcalc(carcri, nb_phase, phase, zalpha, &
     implicit none
 !
 #include "asterfort/nzfpri.h"
-#include "asterfort/utmess.h"
 #include "asterfort/zeroco.h"
 !
     integer, intent(in) :: nb_phase
@@ -158,7 +157,8 @@ subroutine nzcalc(carcri, nb_phase, phase, zalpha, &
                 fprim, fdevi)
 
     if (fprim .lt. 0.d0) then
-        call utmess('F', 'ALGORITH9_12')
+        iret = 1
+        goto 999
     end if
     x(2) = dp
     y(2) = fprim

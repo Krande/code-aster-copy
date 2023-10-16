@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -41,11 +41,6 @@ cata_msg = {
         """
  nombre de vecteurs demandé trop grand
  on prend tous les modes du concept MODE_MECA
-"""
-    ),
-    12: _(
-        """
- La borne inférieure est incorrecte.
 """
     ),
     15: _(
@@ -235,7 +230,7 @@ Les matrices ne possèdent pas toutes la même numérotation.
     ),
     85: _(
         """
- Vous avez défini %(i1)d accélérogrammes sous le mot clé ACCE_MONO_APPUI, 
+ Vous avez défini %(i1)d accélérogrammes sous le mot clé ACCE_MONO_APPUI,
  il faut donc définir %(i1)d directions soit %(i2)d composantes sous le mot clé DIRECTION.
 """
     ),
