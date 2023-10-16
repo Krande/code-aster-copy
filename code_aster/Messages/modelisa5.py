@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -299,13 +299,6 @@ Ce message est un message d'erreur développeur.
 Contactez le support technique.
 """
     ),
-    92: _(
-        """
- Erreur de mise en données :
- Le mot clé ORIE_LIGNE ne traite que les mailles linéiques.
- Or, des mailles surfaciques ont été fournies.
-"""
-    ),
     93: _(
         """
  Erreur de mise en données :
@@ -326,15 +319,6 @@ Contactez le support technique.
     98: _(
         """
  impossibilité de mélanger des "SEG" et des "TRIA" ou "QUAD" !
-"""
-    ),
-    99: _(
-        """
- Lors de la vérification automatique de l'orientation des mailles de bord, une erreur a été rencontrée : les groupes de mailles de bord ne forment pas un ensemble connexe.
-
- Conseils :
- - Commencez par vérifier que les groupes de mailles de bord fournies sont correctement définis.
- - Si ces groupes de mailles ont des raisons d'être non connexes, vous pouvez désactiver la vérification automatique en renseignant VERI_NORM='NON'.
 """
     ),
 }

@@ -54,15 +54,16 @@ subroutine checkNormals(model, slave, master)
     integer, parameter :: nbobj = 2
     integer :: ier
     integer :: ndim, ndim1, vali
-    integer :: iobj, ima, nbmail
-    integer :: numa, idtyma, nutyma, nbmapr, nbmabo, ntrait
-    integer :: jgro, jmab, norien, jlima, nbmamo
+    integer :: iobj, iCell, nbCell, nconex
+    integer :: cellNume, cellTypeNume, nbmapr, nbmabo, ntrait
+    integer ::  jmab, norien, jlima, nbmamo
     aster_logical, parameter :: reorie = ASTER_FALSE
     aster_logical :: l_exi, l_exi_p
-    character(len=8) ::  typel, mesh
+    character(len=8) ::  cellTypeName, mesh
     character(len=24) :: grmama, mailma, nogr
     character(len=24) :: valk(2)
     character(len=24) :: objet(nbobj)
+    integer, pointer :: listCellNume(:) => null(), typmail(:) => null()
 !
 !     INITIALISATIONS
     ier = 0
@@ -74,7 +75,7 @@ subroutine checkNormals(model, slave, master)
 !
     grmama = mesh//'.GROUPEMA       '
     mailma = mesh//'.NOMMAI'
-    call jeveuo(mesh//'.TYPMAIL', 'L', idtyma)
+    call jeveuo(mesh//'.TYPMAIL', 'L', vi=typmail)
 !
 ! ---     RECUPERATION DE LA DIMENSION DU PROBLEME
 !
@@ -91,25 +92,17 @@ subroutine checkNormals(model, slave, master)
             goto 211
         end if
 
-        call jelira(jexnom(grmama, nogr), 'LONUTI', nbmail)
-        call jeveuo(jexnom(grmama, nogr), 'L', jgro)
+        call jelira(jexnom(grmama, nogr), 'LONUTI', nbCell)
+        call jeveuo(jexnom(grmama, nogr), 'L', vi=listCellNume)
 !
-        do ima = 1, nbmail
-            numa = zi(jgro-1+ima)
-            nutyma = zi(idtyma+numa-1)
-!
-! ---  TYPE DE LA MAILLE :
-! -----------------
-            call jenuno(jexnum('&CATA.TM.NOMTM', nutyma), typel)
-!
-! ---  CAS D'UNE MAILLE POINT
-! ----------------------
-            if (typel(1:3) .eq. 'POI') then
+        do iCell = 1, nbCell
+            cellNume = listCellNume(iCell)
+            cellTypeNume = typmail(cellNume)
+            call jenuno(jexnum('&CATA.TM.NOMTM', cellTypeNume), cellTypeName)
+
+            if (cellTypeName(1:3) .eq. 'POI') then
                 goto 211
-!
-! ---   CAS D'UNE MAILLE SEG
-! --------------------
-            else if (typel(1:3) .eq. 'SEG') then
+            else if (cellTypeName(1:3) .eq. 'SEG') then
                 ndim1 = 2
                 if (ndim .ne. ndim1) then
                     goto 211
@@ -122,16 +115,19 @@ subroutine checkNormals(model, slave, master)
 !
         norien = 0
 !
-        if (nbmail .gt. 0) then
+        if (nbCell .gt. 0) then
 !
-            call wkvect('&&CHCKNO.MAILLE_BORD', 'V V I', nbmail, jmab)
-            call chbord(model, nbmail, zi(jgro), zi(jmab), nbmapr, nbmabo)
-            if (nbmapr .eq. nbmail .and. nbmabo .eq. 0) then
-                call ornorm(mesh, zi(jgro), nbmail, reorie, norien)
+            call wkvect('&&CHCKNO.MAILLE_BORD', 'V V I', nbCell, jmab)
+            call chbord(model, nbCell, listCellNume, zi(jmab), nbmapr, nbmabo)
+            if (nbmapr .eq. nbCell .and. nbmabo .eq. 0) then
+                call ornorm(mesh, listCellNume, nbCell, reorie, norien, nconex)
+                if (nconex .gt. 1) then
+                    call utmess('F', 'MESH3_99')
+                end if
             else
                 nbmamo = 0
                 jlima = 1
-                call orilma(mesh, ndim, zi(jgro), nbmail, norien, &
+                call orilma(mesh, ndim, listCellNume, nbCell, norien, &
                             ntrait, reorie, nbmamo, zi(jlima))
                 if ((ntrait .ne. 0)) then
                     call utmess('A', 'CONTACT2_20')

@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine utmavo(mail, kdim, lima, nlima, base, &
+subroutine utmavo(mail, kdim, listCellNume, nbCell, base, &
                   nomz, nbmavo, mailvo)
     implicit none
 #include "jeveux.h"
@@ -37,7 +37,8 @@ subroutine utmavo(mail, kdim, lima, nlima, base, &
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 !
-    integer :: lima(*), nlima, nbmavo, mailvo(*)
+    integer :: nbCell, nbmavo, mailvo(*)
+    integer, pointer :: listCellNume(:)
     character(len=1) :: base
     character(len=2) :: kdim
     character(len=8) :: mail
@@ -71,8 +72,8 @@ subroutine utmavo(mail, kdim, lima, nlima, base, &
 !     TYPE : XC V I ACCES(NUMEROTE) LONG(VARIABLE)
 !-----------------------------------------------------------------------
 !
-    integer :: ibid, nare, numa, nbno, nbmat, ino, nuno, p2
-    integer :: i, j, k, jmail, nbman, adrvlc, acncin, ima, ii
+    integer :: ibid, nare, cellNume, nbno, nbmat, ino, nuno, p2
+    integer :: iCell, j, k, jmail, nbman, adrvlc, acncin, ima, ii
     integer :: adra, iad, jtr1(1000), nutyma, iexinv
     character(len=8) :: type
     character(len=24) :: nom, ncninv
@@ -109,12 +110,12 @@ subroutine utmavo(mail, kdim, lima, nlima, base, &
 !
 ! --- DIMENSIONNEMENT DE LA SD
 !
-    AS_ALLOCATE(vi=trav2, size=nlima)
+    AS_ALLOCATE(vi=trav2, size=nbCell)
     nare = 0
-    do i = 1, nlima
-        numa = lima(i)
-        nbno = zi(p2+numa+1-1)-zi(p2+numa-1)
-        iad = zi(p2+numa-1)
+    do iCell = 1, nbCell
+        cellNume = listCellNume(iCell)
+        nbno = zi(p2+cellNume+1-1)-zi(p2+cellNume-1)
+        iad = zi(p2+cellNume-1)
         nbmat = 0
         do ino = 1, nbno
             nuno = connex(1+iad-1+ino-1)
@@ -133,7 +134,7 @@ subroutine utmavo(mail, kdim, lima, nlima, base, &
                 else
                     ima = mailvo(ii)
                 end if
-                if (ima .eq. numa) goto 120
+                if (ima .eq. cellNume) goto 120
                 nutyma = typmail(ima)
                 call jenuno(jexnum('&CATA.TM.NOMTM', nutyma), type)
                 if (type(1:4) .eq. 'HEXA') then
@@ -163,31 +164,31 @@ subroutine utmavo(mail, kdim, lima, nlima, base, &
 120             continue
             end do
         end do
-        trav2(i) = nbmat
+        trav2(iCell) = nbmat
         nare = nare+max(nbmat, 1)
     end do
 !
 ! --- CREATION DE LA SD
 !
     call jecrec(nom, base//' V I', 'NU', 'CONTIG', 'VARIABLE', &
-                nlima)
+                nbCell)
     call jeecra(nom, 'LONT', nare)
 !
 ! --- ON REMPLIT LA SD
 !
-    do i = 1, nlima
-        numa = lima(i)
-        nbno = zi(p2+numa+1-1)-zi(p2+numa-1)
-        iad = zi(p2+numa-1)
-        call jecroc(jexnum(nom, i))
-        if (trav2(i) .eq. 0) then
-            call jeecra(jexnum(nom, i), 'LONMAX', 1)
-            call jeecra(jexnum(nom, i), 'LONUTI', 0)
+    do iCell = 1, nbCell
+        cellNume = listCellNume(iCell)
+        nbno = zi(p2+cellNume+1-1)-zi(p2+cellNume-1)
+        iad = zi(p2+cellNume-1)
+        call jecroc(jexnum(nom, iCell))
+        if (trav2(iCell) .eq. 0) then
+            call jeecra(jexnum(nom, iCell), 'LONMAX', 1)
+            call jeecra(jexnum(nom, iCell), 'LONUTI', 0)
             goto 200
         else
-            call jeecra(jexnum(nom, i), 'LONMAX', trav2(i))
-            call jeecra(jexnum(nom, i), 'LONUTI', trav2(i))
-            call jeveuo(jexnum(nom, i), 'E', jmail)
+            call jeecra(jexnum(nom, iCell), 'LONMAX', trav2(iCell))
+            call jeecra(jexnum(nom, iCell), 'LONUTI', trav2(iCell))
+            call jeveuo(jexnum(nom, iCell), 'E', jmail)
         end if
 !
         nbmat = 0
@@ -204,7 +205,7 @@ subroutine utmavo(mail, kdim, lima, nlima, base, &
                 else
                     ima = mailvo(ii)
                 end if
-                if (ima .eq. numa) goto 220
+                if (ima .eq. cellNume) goto 220
                 nutyma = typmail(ima)
                 call jenuno(jexnum('&CATA.TM.NOMTM', nutyma), type)
                 if (type(1:4) .eq. 'HEXA') then

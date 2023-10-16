@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine utmasu(mail, kdim, nlima, lima, nomob1, &
+subroutine utmasu(mail, kdim, nbCell, listCellNume, nomob1, &
                   coor, nbmavo, mailvo, coince)
     implicit none
 ! person_in_charge: jacques.pellet at edf.fr
@@ -38,8 +38,9 @@ subroutine utmasu(mail, kdim, nlima, lima, nomob1, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: lima(*), nlima, nbmavo, mailvo(*)
+    integer :: nbCell, nbmavo, mailvo(*)
     real(kind=8) :: coor(*)
+    integer, pointer :: listCellNume(:)
     character(len=2) :: kdim
     character(len=8) :: mail
     character(len=*) :: nomob1
@@ -55,11 +56,11 @@ subroutine utmasu(mail, kdim, nlima, lima, nomob1, &
 !     mail (in)  : nom du maillage
 !     kdim (in)  : / '3D' recherche les mailles 3d voisines
 !                  / '2D' recherche les mailles 2d voisines
-!     nlima (in)  : nombre de mailles de lima
+!     nbCell (in)  : nombre de mailles de lima
 !     lima  (in)  : liste des numeros des mailles de peau
 !
 !     nomob1 (in/jxout) : nom de l' ojb a creer (vecteur d'entiers)
-!       Ce vecteur est de longueur nlima.
+!       Ce vecteur est de longueur nbCell.
 !       Pour chaque maille de peau, il contient une maille qui
 !       "borde" cette maille de peau.
 !       0 : si la maille de peau n'a pas de maille qui la borde.
@@ -85,11 +86,11 @@ subroutine utmasu(mail, kdim, nlima, lima, nomob1, &
 !-----------------------------------------------------------------------
 !
     integer :: p1, p2, p3, p4, jm3d, nbmat, im1, im2
-    integer :: ima, numa, nnoe, ino, nbm, i, k, indi, nnoem, nnoe1
-    integer :: ifm, niv, ipos, nutyma
+    integer :: iCell, cellNume, nnoe, ino, nbm, i, k, indi, nnoem, nnoe1
+    integer :: ifm, niv, ipos, cellTypeNume
     integer :: lisnoe(27), indmai
     aster_logical :: first
-    character(len=8) :: k8b, nomail, type
+    character(len=8) :: k8b, nomail, cellTypeName
     character(len=16) :: oper, k16b
     character(len=24) :: nomavo, valk(4)
     integer, pointer :: typmail(:) => null()
@@ -107,12 +108,12 @@ subroutine utmasu(mail, kdim, nlima, lima, nomob1, &
 !
 ! --- CREATION DE NOMOB1:
 !     -------------------
-    call wkvect(nomob1, 'V V I', nlima, jm3d)
+    call wkvect(nomob1, 'V V I', nbCell, jm3d)
 !
 !   -- recuperation des mailles voisines de lima :
 !   ----------------------------------------------
     nomavo = '&&UTMASU.MAILLE_VOISINE '
-    call utmavo(mail, kdim, lima, nlima, 'V', &
+    call utmavo(mail, kdim, listCellNume, nbCell, 'V', &
                 nomavo, nbmavo, mailvo)
     call jeveuo(jexatr(nomavo, 'LONCUM'), 'L', p4)
     call jeveuo(nomavo, 'L', p3)
@@ -120,18 +121,18 @@ subroutine utmasu(mail, kdim, nlima, lima, nomob1, &
 !
 !   -- on remplit nomob1 :
 !   ----------------------
-    do ima = 1, nlima
-        numa = lima(ima)
-        nutyma = typmail(numa)
-        nnoe = zi(p2+numa)-zi(p2-1+numa)
+    do iCell = 1, nbCell
+        cellNume = listCellNume(iCell)
+        cellTypeNume = typmail(cellNume)
+        nnoe = zi(p2+cellNume)-zi(p2-1+cellNume)
         ASSERT(nnoe .le. 27)
         do ino = 1, nnoe
-            lisnoe(ino) = zi(p1-1+zi(p2+numa-1)+ino-1)
+            lisnoe(ino) = zi(p1-1+zi(p2+cellNume-1)+ino-1)
         end do
-        nbmat = zi(p4+ima+1-1)-zi(p4+ima-1)
+        nbmat = zi(p4+iCell+1-1)-zi(p4+iCell-1)
         nbm = 0
         do i = 1, nbmat
-            im2 = zi(p3+zi(p4+ima-1)-1+i-1)
+            im2 = zi(p3+zi(p4+iCell-1)-1+i-1)
             if (im2 .eq. 0) goto 10
             if (zi(p1+zi(p2+im2-1)-1) .eq. 0) goto 10
             nnoem = zi(p2+im2)-zi(p2-1+im2)
@@ -142,14 +143,14 @@ subroutine utmasu(mail, kdim, nlima, lima, nomob1, &
             end do
             nbm = nbm+1
             if (nbm .eq. 1) then
-                zi(jm3d+ima-1) = im2
+                zi(jm3d+iCell-1) = im2
             else
 !               -- cas ou la maille de peau est bordee par plus
 !                  d'une maille. Il faut verifier la coherence.
-                im1 = zi(jm3d+ima-1)
+                im1 = zi(jm3d+iCell-1)
                 nnoe1 = zi(p2+im1)-zi(p2-1+im1)
-                call jenuno(jexnum('&CATA.TM.NOMTM', nutyma), type)
-                call oriem0(kdim, type, coor, zi(p1+zi(p2+im1-1)-1), nnoe1, &
+                call jenuno(jexnum('&CATA.TM.NOMTM', cellTypeNume), cellTypeName)
+                call oriem0(kdim, cellTypeName, coor, zi(p1+zi(p2+im1-1)-1), nnoe1, &
                             zi(p1+zi(p2+im2-1)-1), nnoem, lisnoe, nnoe, ipos, &
                             indmai)
                 if (ipos .eq. 0) then
@@ -161,7 +162,7 @@ subroutine utmasu(mail, kdim, nlima, lima, nomob1, &
                             call jenuno(jexnum(mail//'.NOMMAI', im1), valk(1))
                             call utmess('F', 'CALCULEL2_32', sk=valk(1))
 !                           -- C'est la maille 1 qui est degeneree => on prend la 2 :
-                            zi(jm3d+ima-1) = im2
+                            zi(jm3d+iCell-1) = im2
                         else
                             call jenuno(jexnum(mail//'.NOMMAI', im2), valk(1))
                             call utmess('F', 'CALCULEL2_32', sk=valk(1))
@@ -169,17 +170,17 @@ subroutine utmasu(mail, kdim, nlima, lima, nomob1, &
 !
                     else
 !
-!                       -- sinon, im2 et im1 sont de part et d'autre de numa
+!                       -- sinon, im2 et im1 sont de part et d'autre de cellNume
                         if (.not. coince) then
-                            call jenuno(jexnum(mail//'.NOMMAI', numa), valk(1))
+                            call jenuno(jexnum(mail//'.NOMMAI', cellNume), valk(1))
                             call jenuno(jexnum(mail//'.NOMMAI', im1), valk(2))
                             call jenuno(jexnum(mail//'.NOMMAI', im2), valk(3))
                             call utmess('F', 'PREPOST4_97', nk=3, valk=valk)
                         else
                             ASSERT(indmai .eq. 1 .or. indmai .eq. 2)
                             if (indmai .eq. 2) then
-!                               -- C'est im2 (qui est du cote "-" de ima) qu'il faut retenir :
-                                zi(jm3d+ima-1) = im2
+!                               -- C'est im2 (qui est du cote "-" de iCell) qu'il faut retenir :
+                                zi(jm3d+iCell-1) = im2
                             end if
                         end if
                     end if
@@ -190,7 +191,7 @@ subroutine utmasu(mail, kdim, nlima, lima, nomob1, &
 !
 !
         if (nbm .eq. 0 .and. niv .gt. 1) then
-            call jenuno(jexnum(mail//'.NOMMAI', numa), nomail)
+            call jenuno(jexnum(mail//'.NOMMAI', cellNume), nomail)
             if (first) then
                 valk(1) = nomail
                 call utmess('A+', 'PREPOST6_29', sk=valk(1))

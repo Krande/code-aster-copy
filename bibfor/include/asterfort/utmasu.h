@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,12 +21,12 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine utmasu(mail, kdim, nlima, lima, nomob1,&
+    subroutine utmasu(mail, kdim, nbCell, listCellNume, nomob1, &
                       coor, nbmavo, mailvo, coince)
         character(len=8) :: mail
         character(len=2) :: kdim
-        integer :: nlima
-        integer :: lima(*)
+        integer :: nbCell
+        integer, pointer :: listCellNume(:)
         character(len=*) :: nomob1
         real(kind=8) :: coor(*)
         integer :: nbmavo

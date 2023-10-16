@@ -63,20 +63,22 @@ subroutine chveno(valeType, meshZ, modelZ)
     parameter(nbt=5)
     integer :: ier, iret, zero
     integer :: imfac, nbmfac, n, geomDime, ndim1, vali
-    integer :: iocc, nocc, ic, nbmc, iobj, nbobj, ima, impb, nbmail
-    integer :: numail, numa, idtyma, nutyma, nbmapr, nbmabo, ntrait
-    integer :: jcoor, jtyma, jgro, jmab, jpri, jbor
+    integer :: iocc, nocc, ic, nbmc, iobj, nbobj, iCell, impb, nbCell
+    integer :: cellNume, idtyma, cellTypeNume, nbmapr, nbmabo, ntrait
+    integer :: jcoor
     integer :: if1, if2, if3, imf1, imf2, ipres, idnor, idtan
-    integer :: norien, norie1, norie2, jlima, nbmamo
+    integer :: norien, norie1, norie2, jlima, nbmamo, nconex
     real(kind=8) :: dnor
     aster_logical :: reorie, mcfl(nbt)
-    character(len=8) :: mot, mesh, model, typel, algo
+    character(len=8) :: mot, mesh, model, cellTypeName, algo
     character(len=16) :: mcft(nbt), motfac, valmc(4), typmc(4)
     character(len=19) :: limamo
-    character(len=24) :: grmama, mailma, nogr, nomail
+    character(len=24) :: grmama, mailma, nogr, cellName
     character(len=24) :: valk(2)
-    integer, pointer :: nume_maille(:) => null()
     character(len=24), pointer :: objet(:) => null()
+    integer, pointer :: listCellNume(:) => null(), typmail(:) => null()
+    integer, pointer :: listCellPrin(:) => null(), listCellBord(:) => null()
+    integer, pointer :: listCellBord2(:) => null()
 !
     data mcft/'FACE_IMPO', 'PRES_REP', 'FORCE_COQUE',&
      &            'EFFE_FOND', 'ZONE'/
@@ -107,10 +109,6 @@ subroutine chveno(valeType, meshZ, modelZ)
     geomDime = 0
     call dismoi('DIM_GEOM', modelZ, 'MODELE', repi=geomDime)
 !
-    call jeexin(mesh//'.TYPMAIL        ', iret)
-    if (iret .ne. 0) then
-        call jeveuo(mesh//'.TYPMAIL        ', 'L', jtyma)
-    end if
     call jeveuo(mesh//'.COORDO    .VALE', 'L', jcoor)
 !
     do imfac = 1, nbmfac
@@ -178,32 +176,31 @@ subroutine chveno(valeType, meshZ, modelZ)
 !
 ! ---             RECUPERATION DU NOMBRE DE MAILLES DU GROUP_MA :
 !                 ---------------------------------------------
-                            call jelira(jexnom(grmama, nogr), 'LONUTI', nbmail)
-                            call jeveuo(jexnom(grmama, nogr), 'L', jgro)
+                            call jelira(jexnom(grmama, nogr), 'LONUTI', nbCell)
+                            call jeveuo(jexnom(grmama, nogr), 'L', vi=listCellNume)
 !
-                            do ima = 1, nbmail
-                                numail = zi(jgro-1+ima)
-                                call jenuno(jexnum(mailma, numail), nomail)
+                            do iCell = 1, nbCell
+                                cellNume = listCellNume(iCell)
+                                call jenuno(jexnum(mailma, cellNume), cellName)
 !
 ! ---               NUMERO DE LA MAILLE
 !                   ------------------
-                                call jenonu(jexnom(mesh//'.NOMMAI', nomail), numa)
-                                call jeveuo(mesh//'.TYPMAIL', 'L', idtyma)
-                                nutyma = zi(idtyma+numa-1)
+                                call jeveuo(mesh//'.TYPMAIL', 'L', vi=typmail)
+                                cellTypeNume = typmail(cellNume)
 !
 ! ---               TYPE DE LA MAILLE :
 !                   -----------------
-                                call jenuno(jexnum('&CATA.TM.NOMTM', nutyma), typel)
+                                call jenuno(jexnum('&CATA.TM.NOMTM', cellTypeNume), cellTypeName)
 !
 ! ---               CAS D'UNE MAILLE POINT
 !                   ----------------------
-                                if (typel(1:3) .eq. 'POI') then
+                                if (cellTypeName(1:3) .eq. 'POI') then
 !                     ON SAUTE
                                     goto 211
 !
 ! ---               CAS D'UNE MAILLE SEG
 !                   --------------------
-                                else if (typel(1:3) .eq. 'SEG') then
+                                else if (cellTypeName(1:3) .eq. 'SEG') then
                                     ndim1 = 2
                                     if (geomDime .ne. ndim1) then
 !                       ON SAUTE
@@ -218,18 +215,21 @@ subroutine chveno(valeType, meshZ, modelZ)
                         end if
                         norie1 = 0
                         norie2 = 0
-                        call jelira(jexnom(grmama, nogr), 'LONUTI', nbmail)
-                        call jeveuo(jexnom(grmama, nogr), 'L', jgro)
+                        call jelira(jexnom(grmama, nogr), 'LONUTI', nbCell)
+                        call jeveuo(jexnom(grmama, nogr), 'L', vi=listCellNume)
 !
-                        if (mcfl(ic) .and. (nbmail .gt. 0)) then
+                        if (mcfl(ic) .and. (nbCell .gt. 0)) then
 !
-                            call wkvect('&&CHVENO.MAILLE_BORD', 'V V I', nbmail, jmab)
-                            call chbord(modelZ, nbmail, zi(jgro), zi(jmab), nbmapr, &
+                            call wkvect('&&CHVENO.MAILLE_BORD', 'V V I', nbCell, vi=listCellBord2)
+                            call chbord(modelZ, nbCell, listCellNume, listCellBord2, nbmapr, &
                                         nbmabo)
-                            if (nbmapr .eq. nbmail .and. nbmabo .eq. 0) then
-                                call ornorm(mesh, zi(jgro), nbmail, reorie, norie1)
+                            if (nbmapr .eq. nbCell .and. nbmabo .eq. 0) then
+                                call ornorm(mesh, listCellNume, nbCell, reorie, norie1, nconex)
+                                if (nconex .gt. 1) then
+                                    call utmess('F', 'MESH3_99')
+                                end if
                             elseif ((nbmapr .eq. 0 .and. &
-                                     nbmabo .eq. nbmail) .or. (motfac .eq. &
+                                     nbmabo .eq. nbCell) .or. (motfac .eq. &
                                                                'ZONE')) then
                                 if (motfac .eq. 'ZONE') then
                                     nbmamo = 0
@@ -238,7 +238,7 @@ subroutine chveno(valeType, meshZ, modelZ)
                                     call utmamo(model, nbmamo, limamo)
                                     call jeveuo(limamo, 'L', jlima)
                                 end if
-                                call orilma(mesh, geomDime, zi(jgro), nbmail, norie1, &
+                                call orilma(mesh, geomDime, listCellNume, nbCell, norie1, &
                                             ntrait, reorie, nbmamo, zi(jlima))
                                 if ((algo .eq. 'LAC') .and. (ntrait .ne. 0)) then
                                     call utmess('A', 'CONTACT2_20')
@@ -246,30 +246,39 @@ subroutine chveno(valeType, meshZ, modelZ)
                                 call jedetr(limamo)
                             elseif (nbmapr .eq. 0 .and. nbmabo .eq. 0) &
                                 then
-                                call ornorm(mesh, zi(jgro), nbmail, reorie, norie1)
+                                call ornorm(mesh, listCellNume, nbCell, reorie, norie1, nconex)
+                                if (nconex .gt. 1) then
+                                    call utmess('F', 'MESH3_99')
+                                end if
                             else
-                                call wkvect('&&CHVENO.PRIN', 'V V I', nbmapr, jpri)
-                                call wkvect('&&CHVENO.BORD', 'V V I', nbmabo, jbor)
+                                call wkvect('&&CHVENO.PRIN', 'V V I', nbmapr, vi=listCellPrin)
+                                call wkvect('&&CHVENO.BORD', 'V V I', nbmabo, vi=listCellBord)
                                 nbmapr = 0
                                 nbmabo = 0
-                                do impb = 1, nbmail
-                                    if (zi(jmab+impb-1) .eq. 0) then
+                                do impb = 1, nbCell
+                                    if (listCellBord2(impb) .eq. 0) then
                                         nbmapr = nbmapr+1
-                                        zi(jpri+nbmapr-1) = zi(jgro+impb-1)
+                                        listCellPrin(nbmapr) = listCellNume(impb)
                                     else
                                         nbmabo = nbmabo+1
-                                        zi(jbor+nbmabo-1) = zi(jgro+impb-1)
+                                        listCellBord(nbmabo) = listCellNume(impb)
                                     end if
                                 end do
-                                call ornorm(mesh, zi(jpri), nbmapr, reorie, norie1)
-                                call orilma(mesh, geomDime, zi(jbor), nbmabo, norie1, &
+                                call ornorm(mesh, listCellPrin, nbmapr, reorie, norie1, nconex)
+                                if (nconex .gt. 1) then
+                                    call utmess('F', 'MESH3_99')
+                                end if
+                                call orilma(mesh, geomDime, listCellBord, nbmabo, norie1, &
                                             ntrait, reorie, 0, [0])
                                 call jedetr('&&CHVENO.PRIN')
                                 call jedetr('&&CHVENO.BORD')
                             end if
                             call jedetr('&&CHVENO.MAILLE_BORD')
                         else
-                            call ornorm(mesh, zi(jgro), nbmail, reorie, norie2)
+                            call ornorm(mesh, listCellNume, nbCell, reorie, norie2, nconex)
+                            if (nconex .gt. 1) then
+                                call utmess('F', 'MESH3_99')
+                            end if
                         end if
                         norien = norie1+norie2
                         if (norien .ne. 0) then
@@ -283,25 +292,25 @@ subroutine chveno(valeType, meshZ, modelZ)
 ! ----------CAS DES MAILLES :
 !           ---------------
                 else
-                    AS_ALLOCATE(vi=nume_maille, size=nbobj)
+                    AS_ALLOCATE(vi=listCellNume, size=nbobj)
                     do iobj = 1, nbobj
-                        nomail = objet(iobj)
-                        call jenonu(jexnom(mesh//'.NOMMAI', nomail), numa)
-                        nume_maille(iobj) = numa
+                        cellName = objet(iobj)
+                        call jenonu(jexnom(mesh//'.NOMMAI', cellName), cellNume)
+                        listCellNume(iobj) = cellNume
                         if (motfac .eq. 'ZONE') then
                             call jeveuo(mesh//'.TYPMAIL', 'L', idtyma)
-                            nutyma = zi(idtyma+numa-1)
-                            call jenuno(jexnum('&CATA.TM.NOMTM', nutyma), typel)
+                            cellTypeNume = zi(idtyma+cellNume-1)
+                            call jenuno(jexnum('&CATA.TM.NOMTM', cellTypeNume), cellTypeName)
 !
 ! ---             CAS D'UNE MAILLE POINT
-!                 ----------------------
-                            if (typel(1:3) .eq. 'POI') then
+!                 -----------------------
+                            if (cellTypeName(1:3) .eq. 'POI') then
 !                   ON SAUTE
                                 goto 211
 !
 ! ---             CAS D'UNE MAILLE SEG
 !                 --------------------
-                            else if (typel(1:3) .eq. 'SEG') then
+                            else if (cellTypeName(1:3) .eq. 'SEG') then
                                 ndim1 = 2
                                 if (geomDime .ne. ndim1) then
 !                     ON SAUTE
@@ -314,11 +323,14 @@ subroutine chveno(valeType, meshZ, modelZ)
                     norie1 = 0
                     norie2 = 0
                     if (mcfl(ic)) then
-                        call wkvect('&&CHVENO.MAILLE_BORD', 'V V I', nbobj, jmab)
-                        call chbord(modelZ, nbobj, nume_maille, zi(jmab), nbmapr, &
+                        call wkvect('&&CHVENO.MAILLE_BORD', 'V V I', nbobj, vi=listCellBord2)
+                        call chbord(modelZ, nbobj, listCellNume, listCellBord2, nbmapr, &
                                     nbmabo)
                         if (nbmapr .eq. nbobj .and. nbmabo .eq. 0) then
-                            call ornorm(mesh, nume_maille, nbobj, reorie, norie1)
+                            call ornorm(mesh, listCellNume, nbobj, reorie, norie1, nconex)
+                            if (nconex .gt. 1) then
+                                call utmess('F', 'MESH3_99')
+                            end if
                         elseif ((nbmapr .eq. 0 .and. nbmabo .eq. nbobj) &
                                 .or. (motfac .eq. 'ZONE')) then
                             if (motfac .eq. 'ZONE') then
@@ -328,44 +340,54 @@ subroutine chveno(valeType, meshZ, modelZ)
                                 call utmamo(model, nbmamo, limamo)
                                 call jeveuo(limamo, 'L', jlima)
                             end if
-                            call orilma(mesh, geomDime, nume_maille, nbobj, norie1, &
+                            call orilma(mesh, geomDime, listCellNume, nbobj, norie1, &
                                         ntrait, reorie, nbmamo, zi(jlima))
                             call jedetr(limamo)
                         else if (nbmapr .eq. 0 .and. nbmabo .eq. 0) then
-                            call ornorm(mesh, nume_maille, nbobj, reorie, norie1)
+                            call ornorm(mesh, listCellNume, nbobj, reorie, norie1, nconex)
+                            if (nconex .gt. 1) then
+                                call utmess('F', 'MESH3_99')
+                            end if
                         else
-                            call wkvect('&&CHVENO.PRIN', 'V V I', nbmapr, jpri)
-                            call wkvect('&&CHVENO.BORD', 'V V I', nbmabo, jbor)
+                            call wkvect('&&CHVENO.PRIN', 'V V I', nbmapr, vi=listCellPrin)
+                            call wkvect('&&CHVENO.BORD', 'V V I', nbmabo, vi=listCellBord)
                             nbmapr = 0
                             nbmabo = 0
                             do impb = 1, nbobj
-                                if (zi(jmab+impb-1) .eq. 0) then
+                                if (listCellBord2(impb) .eq. 0) then
                                     nbmapr = nbmapr+1
-                                    zi(jpri+nbmapr-1) = nume_maille(impb)
+                                    listCellPrin(nbmapr) = listCellNume(impb)
                                 else
                                     nbmabo = nbmabo+1
-                                    zi(jbor+nbmabo-1) = nume_maille(impb)
+                                    listCellBord(nbmabo) = listCellNume(impb)
                                 end if
                             end do
-                            call ornorm(mesh, zi(jpri), nbmapr, reorie, norie1)
-                            call orilma(mesh, geomDime, zi(jbor), nbmabo, norie1, &
+                            call ornorm(mesh, listCellPrin, nbmapr, reorie, norie1, nconex)
+                            if (nconex .gt. 1) then
+                                call utmess('F', 'MESH3_99')
+                            end if
+                            call orilma(mesh, geomDime, listCellBord, nbmabo, norie1, &
                                         ntrait, reorie, 0, [0])
                             call jedetr('&&CHVENO.PRIN')
                             call jedetr('&&CHVENO.BORD')
                         end if
                         call jedetr('&&CHVENO.MAILLE_BORD')
                     else
-                        call ornorm(mesh, nume_maille, nbobj, reorie, norie2)
+                        call ornorm(mesh, listCellNume, nbobj, reorie, norie2, nconex)
+                        if (nconex .gt. 1) then
+                            call utmess('F', 'MESH3_99')
+                        end if
                     end if
                     norien = norie1+norie2
                     if (norien .ne. 0) then
                         ier = ier+1
-                        valk(1) = nomail
+                        valk(1) = cellName
                         call utmess('E', 'MODELISA8_57', sk=valk(1))
                     end if
+                    AS_DEALLOCATE(vi=listCellNume)
                 end if
 211             continue
-                AS_DEALLOCATE(vi=nume_maille)
+
                 AS_DEALLOCATE(vk24=objet)
 210             continue
             end do

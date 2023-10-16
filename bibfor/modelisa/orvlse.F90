@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine orvlse(noma, listma, nbmail, norien, vect, &
+subroutine orvlse(noma, listCellNume, nbCell, norien, vect, &
                   noeud)
     implicit none
 #include "asterf_types.h"
@@ -36,7 +36,8 @@ subroutine orvlse(noma, listma, nbmail, norien, vect, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: listma(*), nbmail, noeud, norien
+    integer :: nbCell, noeud, norien
+    integer, pointer :: listCellNume(:)
     character(len=8) :: noma
     real(kind=8) :: vect(*)
 !.======================================================================
@@ -54,8 +55,8 @@ subroutine orvlse(noma, listma, nbmail, norien, vect, &
 !    NOEUD          IN    I       NOEUD D'ORIENTATION
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  VARIABLES LOCALES
-    integer :: nutyma, lori, jori, nori, kori, iliste
-    integer :: ima, numail, numa, norieg, lliste, zero, ibid(1)
+    integer :: cellTypeNume, lori, jori, nori, kori, iliste
+    integer :: iCell, numail, cellNume, norieg, lliste, zero, ibid(1)
     integer :: im1, im2, ico
     integer :: p1, p2, ifm, niv, p3, p4
     integer :: jdesm1, jdesm2
@@ -63,12 +64,12 @@ subroutine orvlse(noma, listma, nbmail, norien, vect, &
     integer :: nbmaor, ii, kdeb
     aster_logical :: reorie
     character(len=2) :: kdim
-    character(len=8) :: typel, nomail
+    character(len=8) :: cellTypeName, nomail
     character(len=24) :: mailma, nomavo
     character(len=24) :: valk(2)
     integer, pointer :: typmail(:) => null()
 !
-#define pasori(ima) zi(lori-1+ima).eq.0
+#define pasori(iCell) zi(lori-1+iCell).eq.0
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
@@ -94,30 +95,30 @@ subroutine orvlse(noma, listma, nbmail, norien, vect, &
 !
 !     ALLOCATIONS :
 !     -----------
-    call wkvect('&&ORVLMA.ORI1', 'V V I', nbmail, lori)
-    call wkvect('&&ORVLMA.ORI2', 'V V I', nbmail, jori)
-    call wkvect('&&ORVLMA.ORI3', 'V V I', nbmail, nori)
-    call wkvect('&&ORVLMA.ORI4', 'V V I', nbmail, kori)
-    call wkvect('&&ORVLMA.ORI5', 'V V I', nbmail, kdeb)
+    call wkvect('&&ORVLMA.ORI1', 'V V I', nbCell, lori)
+    call wkvect('&&ORVLMA.ORI2', 'V V I', nbCell, jori)
+    call wkvect('&&ORVLMA.ORI3', 'V V I', nbCell, nori)
+    call wkvect('&&ORVLMA.ORI4', 'V V I', nbCell, kori)
+    call wkvect('&&ORVLMA.ORI5', 'V V I', nbCell, kdeb)
 !
 ! --- VERIFICATION DU TYPE DES MAILLES
 ! --- (ON DOIT AVOIR DES MAILLES DE PEAU) :
 !     -----------------------------------
-    do ima = 1, nbmail
-        zi(lori-1+ima) = 0
-        numa = listma(ima)
-        zi(nori-1+ima) = zi(p2+numa)-zi(p2-1+numa)
-        zi(kori-1+ima) = zi(p2+numa-1)
+    do iCell = 1, nbCell
+        zi(lori-1+iCell) = 0
+        cellNume = listCellNume(iCell)
+        zi(nori-1+iCell) = zi(p2+cellNume)-zi(p2-1+cellNume)
+        zi(kori-1+iCell) = zi(p2+cellNume-1)
 !
 ! ---   TYPE DE LA MAILLE COURANTE :
 !       --------------------------
-        nutyma = typmail(numa)
-        call jenuno(jexnum('&CATA.TM.NOMTM', nutyma), typel)
+        cellTypeNume = typmail(cellNume)
+        call jenuno(jexnum('&CATA.TM.NOMTM', cellTypeNume), cellTypeName)
 !
-        if (typel(1:3) .ne. 'SEG') then
-            call jenuno(jexnum(mailma, numa), nomail)
+        if (cellTypeName(1:3) .ne. 'SEG') then
+            call jenuno(jexnum(mailma, cellNume), nomail)
             valk(1) = nomail
-            valk(2) = typel
+            valk(2) = cellTypeName
             call utmess('F', 'MODELISA5_93', nk=2, valk=valk)
         end if
     end do
@@ -128,21 +129,21 @@ subroutine orvlse(noma, listma, nbmail, norien, vect, &
 !     ---------------------------------------------
     kdim = '1D'
     nomavo = '&&ORVLMA.MAILLE_VOISINE '
-    call utmavo(noma, kdim, listma, nbmail, 'V', &
+    call utmavo(noma, kdim, listCellNume, nbCell, 'V', &
                 nomavo, zero, ibid)
     call jeveuo(jexatr(nomavo, 'LONCUM'), 'L', p4)
     call jeveuo(nomavo, 'L', p3)
 !
 !
 ! --- ON TESTE SI LA POUTRE CONTIENT UN EMBRANCHEMENT
-    do ima = 1, nbmail
-        numail = zi(p4+ima)-zi(p4+ima-1)
+    do iCell = 1, nbCell
+        numail = zi(p4+iCell)-zi(p4+iCell-1)
         if (numail .ge. 3) then
             norieg = 0
             do ii = 1, numail
-                numa = zi(p3+zi(p4+ima-1)-1+ii-1)
-                do ico = 1, nbmail
-                    if (numa .eq. listma(ico)) then
+                cellNume = zi(p3+zi(p4+iCell-1)-1+ii-1)
+                do ico = 1, nbCell
+                    if (cellNume .eq. listCellNume(ico)) then
                         norieg = norieg+1
                         goto 12
                     end if
@@ -162,9 +163,9 @@ subroutine orvlse(noma, listma, nbmail, norien, vect, &
     norieg = 0
 !
     nbmaor = 0
-    do ima = 1, nbmail
-        numa = listma(ima)
-        jdesm1 = zi(kori-1+ima)
+    do iCell = 1, nbCell
+        cellNume = listCellNume(iCell)
+        jdesm1 = zi(kori-1+iCell)
 !
 ! ------ VERIFICATION QUE LE NOEUD EST DANS LA MAILLE
         ico = ioriv3(zi(p1+jdesm1-1), noeud, vect, zr(jcoor))
@@ -175,10 +176,10 @@ subroutine orvlse(noma, listma, nbmail, norien, vect, &
 ! ------ LA MAILLE A ETE REORIENTEE
         else if (ico .lt. 0) then
             nbmaor = nbmaor+1
-            zi(kdeb+nbmaor-1) = ima
-            zi(lori-1+ima) = 1
+            zi(kdeb+nbmaor-1) = iCell
+            zi(lori-1+iCell) = 1
             if (niv .eq. 2) then
-                call jenuno(jexnum(mailma, numa), nomail)
+                call jenuno(jexnum(mailma, cellNume), nomail)
                 write (ifm, *) 'LA MAILLE '//nomail//&
      &                       ' A ETE ORIENTEE PAR RAPPORT AU VECTEUR'
             end if
@@ -187,10 +188,10 @@ subroutine orvlse(noma, listma, nbmail, norien, vect, &
 ! ------ LA MAILLE A LA BONNE ORIENTATION
         else
             nbmaor = nbmaor+1
-            zi(kdeb+nbmaor-1) = ima
-            zi(lori-1+ima) = 1
+            zi(kdeb+nbmaor-1) = iCell
+            zi(lori-1+iCell) = 1
             if (niv .eq. 2) then
-                call jenuno(jexnum(mailma, numa), nomail)
+                call jenuno(jexnum(mailma, cellNume), nomail)
                 write (ifm, *) 'LA MAILLE '//nomail//&
      &                       ' EST ORIENTEE PAR RAPPORT AU VECTEUR'
             end if
@@ -216,9 +217,9 @@ subroutine orvlse(noma, listma, nbmail, norien, vect, &
         nbmavo = zi(p4+im1)-zi(p4-1+im1)
         do im3 = 1, nbmavo
             indi = zi(p3+zi(p4+im1-1)-1+im3-1)
-            im2 = indiis(listma, indi, 1, nbmail)
+            im2 = indiis(listCellNume, indi, 1, nbCell)
             if (im2 .eq. 0) goto 210
-            numail = listma(im2)
+            numail = listCellNume(im2)
             if (pasori(im2)) then
                 jdesm2 = zi(kori-1+im2)
 !           VERIFICATION DE LA CONNEXITE ET REORIENTATION EVENTUELLE
@@ -250,8 +251,8 @@ subroutine orvlse(noma, listma, nbmail, norien, vect, &
 !
 ! --- ON VERIFIE QU'ON A BIEN TRAITE TOUTES LES MAILLES
 !
-    do ima = 1, nbmail
-        if (pasori(ima)) then
+    do iCell = 1, nbCell
+        if (pasori(iCell)) then
             call utmess('F', 'MODELISA6_2')
         end if
     end do

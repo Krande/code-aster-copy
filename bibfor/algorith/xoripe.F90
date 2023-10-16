@@ -60,7 +60,7 @@ subroutine xoripe(modele)
     real(kind=8) :: gbo(3), gpr(3), next(3), norme, lsn
     real(kind=8) :: co(3, 3), ab(3), ac(3), n2d(3), a(3), b(3), c(3)
     integer :: ima, nbma, j, kk, i, ifis, nfis, iad2
-    integer :: jmail, nbmail, iret, jm3d, ibid, jvecno
+    integer :: nbmail, iret, jm3d, ibid, jvecno
     integer :: numapr, numab, nbnopr, nbnobo, nbnose, nbnott(3)
     integer :: nbnos, id4, id6
     integer :: jconx2, ino, nuno
@@ -86,6 +86,7 @@ subroutine xoripe(modele)
     real(kind=8), pointer :: cesv(:) => null()
     integer, pointer :: connex(:) => null()
     character(len=8), pointer :: vfiss(:) => null()
+    integer, pointer :: listCellNume(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -124,7 +125,7 @@ subroutine xoripe(modele)
 !     ------------------------------------------------------------------
 !
     grmape = '&&XORIPE.GRMAPE'
-    call wkvect(grmape, 'V V I', nbma, jmail)
+    call wkvect(grmape, 'V V I', nbma, vi=listCellNume)
 !
 !     INITIALISATION DU NOMBRE DE MAILLES DE LA LISTE
     nbmail = 0
@@ -158,7 +159,7 @@ subroutine xoripe(modele)
                     ndime = tmdim(typmail(ima))
                     if (ndim .eq. ndime+1) then
                         nbmail = nbmail+1
-                        zi(jmail-1+nbmail) = ima
+                        listCellNume(nbmail) = ima
                     end if
                 end do
 !               menage
@@ -179,7 +180,7 @@ subroutine xoripe(modele)
 !
     nomob = '&&XORIPE.NU_MAILLE_3D'
 !
-    call utmasu(noma, kdim, nbmail, zi(jmail), nomob, &
+    call utmasu(noma, kdim, nbmail, listCellNume, nomob, &
                 vale, 0, mailvo, .false._1)
     call jeveuo(nomob, 'L', jm3d)
 !
@@ -198,7 +199,7 @@ subroutine xoripe(modele)
 !
     do ima = 1, nbmail
 !       NUMEROS DES MAILLES PRINCIPALE ET DE BORD
-        numab = zi(jmail-1+ima)
+        numab = listCellNume(ima)
         numapr = zi(jm3d-1+ima)
 !
 !       NOMBRES DE NOEUDS DES MAILLES PRINCIPALE ET DE BORD
@@ -266,7 +267,7 @@ subroutine xoripe(modele)
             next(j) = zr(jvecno-1+ndim*(ima-1)+j)
         end do
 !
-        numab = zi(jmail-1+ima)
+        numab = listCellNume(ima)
 ! --- CA NE SERT A RIEN DE RECUPERER NDIME CAR ON A SELECTIONNÉ NUMAB
 ! --- TEL QUE NDIME = NDIM-1 (BOUCLE 120)
         ndime = tmdim(typmail(numab))

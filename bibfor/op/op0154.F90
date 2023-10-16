@@ -19,6 +19,9 @@
 subroutine op0154()
 !
     use mesh_module, only: checkInclude
+    use mesh_modification_module, only: meshOperModiGetPara, meshOperModiDelPara, &
+                                        meshOrieShell
+    use mesh_operators_type
 !
     implicit none
 !
@@ -59,13 +62,14 @@ subroutine op0154()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: n1, n2, nbocc, iOcc, nbDime, ier
+    integer :: n1, n2, nbocc, iOcc, nbDime, ier, iOrieShell
     aster_logical :: bidim, lModiTopo
     character(len=8) :: mesh, meshReuse, dispMesh
     character(len=16) :: kbi1, kbi2, option
     character(len=19) :: geomInit, geomModi, disp
     real(kind=8) :: ltchar, pt(3), pt2(3), dir(3), angl
     real(kind=8) :: axe1(3), axe2(3), perp(3), alea
+    type(MESH_OPER_MODI_PARA) :: meshOperModiPara
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -266,10 +270,17 @@ subroutine op0154()
         call getvr8(' ', 'ECHELLE', scal=ltchar, nbret=n2)
         call echell(geomInit, ltchar)
     end if
-!
+
 ! - For "ORIE_PEAU" , "ORIE_LIGNE" and "ORIE_NORM_COQUE"
-!
-    call orilgm(mesh)
+    call meshOperModiGetPara(mesh, meshOperModiPara)
+    if (meshOperModiPara%orieShell .gt. 0) then
+        do iOrieShell = 1, meshOperModiPara%orieShell
+            call meshOrieShell(mesh, meshOperModiPara%meshOperOrieShell(iOrieShell))
+        end do
+    else
+        call orilgm(mesh)
+    end if
+    call meshOperModiDelPara(meshOperModiPara)
 !
 ! - For "ABSC_CURV"
 !

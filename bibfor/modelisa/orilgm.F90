@@ -57,16 +57,17 @@ subroutine orilgm(noma)
 !
 ! ========================= DEBUT DES DECLARATIONS ====================
 ! -----  VARIABLES LOCALES
-    integer :: ifm, niv, nbf1, nbf3, jjj, jgro, n1, n2
+    integer :: ifm, niv, nbf1, nbf3, jjj, n1, n2
     integer :: n3, noeud, iocc, ier, ndim, igr, ng, nbmail, norit, norien
     integer :: ntrait, jjv, nbmato, ima, nbmavi, jmavi, k
-    integer :: ncf3, ngs, jgs, nbmasu, jmafr
+    integer :: ncf3, ngs, jgs, nbmasu, jmafr, nconex
     real(kind=8) :: vect(3)
     aster_logical :: reorie, orivec
     character(len=8) :: k8b
     character(len=16) :: mofac, mofb3d, mofc3d
     character(len=24) :: nomnoe, grmama, nnoeud, gmat
-    character(len=24) :: valk(2), cmd
+    character(len=24) :: valk(2)
+    integer, pointer :: listCellNume(:) => null()
 !
 ! ========================= DEBUT DU CODE EXECUTABLE ==================
 !
@@ -81,11 +82,9 @@ subroutine orilgm(noma)
     vect(:) = 0.d0
 !
     mofac = 'ORIE_PEAU'
-    mofb3d = 'ORIE_NORM_COQUE'
     mofc3d = 'ORIE_LIGNE'
 !
     call getfac(mofac, nbf1)
-    call getfac(mofb3d, nbf3)
     call getfac(mofc3d, ncf3)
 !
 ! --- RECUPERATION DU MAILLAGE ASSOCIE AU MODELE :
@@ -157,10 +156,10 @@ subroutine orilgm(noma)
         do igr = 1, ng
             gmat = zk24(jjj+igr-1)
             call jelira(jexnom(grmama, gmat), 'LONUTI', nbmail)
-            call jeveuo(jexnom(grmama, gmat), 'L', jgro)
+            call jeveuo(jexnom(grmama, gmat), 'L', vi=listCellNume)
             write (ifm, 1000) gmat, nbmail
             norien = 0
-            call orilma(noma, ndim, zi(jgro), nbmail, norien, &
+            call orilma(noma, ndim, listCellNume, nbmail, norien, &
                         ntrait, reorie, nbmasu, zi(jmafr))
             norit = norit+norien
             write (ifm, 1100) norien
@@ -170,71 +169,7 @@ subroutine orilgm(noma)
         call jedetr('&&ORILGM.GROUP_MA_FRONT')
     end do
 
-! --- TRAITEMENT DE 'ORIE_NORM_COQUE':
-!     -------------------------------
 !
-    do iocc = 1, nbf3
-        orivec = .false.
-        call getvr8(mofb3d, 'VECT_NORM', iocc=iocc, nbval=0, nbret=n1)
-        if (n1 .ne. 0) then
-            orivec = .true.
-            call getvr8(mofb3d, 'VECT_NORM', iocc=iocc, nbval=-n1, vect=vect, &
-                        nbret=n1)
-            call getvtx(mofb3d, 'NOEUD', iocc=iocc, nbval=0, nbret=n2)
-            if (n2 .ne. 0) then
-                call getvtx(mofb3d, 'NOEUD', iocc=iocc, scal=nnoeud, nbret=n2)
-                call jenonu(jexnom(nomnoe, nnoeud), noeud)
-                if (noeud .eq. 0) then
-                    call utmess('F', 'MODELISA5_97', sk=nnoeud)
-                end if
-            else
-                call getvtx(mofb3d, 'GROUP_NO', iocc=iocc, scal=nnoeud, nbret=n3)
-                call utnono(' ', noma, 'NOEUD', nnoeud, k8b, &
-                            ier)
-                if (ier .eq. 10) then
-                    call utmess('F', 'MODELISA8_75', sk=nnoeud)
-                else if (ier .eq. 1) then
-                    valk(1) = nnoeud
-                    valk(2) = k8b
-                    call utmess('A', 'SOUSTRUC_87', nk=2, valk=valk)
-                end if
-                call jenonu(jexnom(nomnoe, k8b), noeud)
-            end if
-        end if
-        call getvem(noma, 'GROUP_MA', mofb3d, 'GROUP_MA', iocc, &
-                    0, k8b, ng)
-        ng = -ng
-        call wkvect('&&ORILGM.WORK', 'V V K24', ng, jjj)
-        call getvem(noma, 'GROUP_MA', mofb3d, 'GROUP_MA', iocc, &
-                    ng, zk24(jjj), ng)
-        if (orivec) then
-            do igr = 1, ng
-                gmat = zk24(jjj+igr-1)
-                call jelira(jexnom(grmama, gmat), 'LONUTI', nbmail)
-                call jeveuo(jexnom(grmama, gmat), 'L', jgro)
-                write (ifm, 1000) gmat, nbmail
-                norien = 0
-                call orvlma(noma, zi(jgro), nbmail, norien, vect, &
-                            noeud)
-                norit = norit+norien
-                write (ifm, 1100) norien
-            end do
-        else
-            do igr = 1, ng
-                gmat = zk24(jjj+igr-1)
-                call jelira(jexnom(grmama, gmat), 'LONUTI', nbmail)
-                call jeveuo(jexnom(grmama, gmat), 'L', jgro)
-                write (ifm, 1000) gmat, nbmail
-                norien = 0
-                cmd = 'ORIE_NORM_COQUE'
-                call ornorm(noma, zi(jgro), nbmail, reorie, norien, &
-                            command=cmd)
-                norit = norit+norien
-                write (ifm, 1100) norien
-            end do
-        end if
-        call jedetr('&&ORILGM.WORK')
-    end do
 !
 ! --- TRAITEMENT DE 'ORIE_LIGNE':
 !     ------------------------------
@@ -277,10 +212,10 @@ subroutine orilgm(noma)
             do igr = 1, ng
                 gmat = zk24(jjj+igr-1)
                 call jelira(jexnom(grmama, gmat), 'LONUTI', nbmail)
-                call jeveuo(jexnom(grmama, gmat), 'L', jgro)
+                call jeveuo(jexnom(grmama, gmat), 'L', vi=listCellNume)
                 write (ifm, 1000) gmat, nbmail
                 norien = 0
-                call orvlse(noma, zi(jgro), nbmail, norien, vect, &
+                call orvlse(noma, listCellNume, nbmail, norien, vect, &
                             noeud)
                 norit = norit+norien
                 write (ifm, 1100) norien
@@ -289,12 +224,14 @@ subroutine orilgm(noma)
             do igr = 1, ng
                 gmat = zk24(jjj+igr-1)
                 call jelira(jexnom(grmama, gmat), 'LONUTI', nbmail)
-                call jeveuo(jexnom(grmama, gmat), 'L', jgro)
+                call jeveuo(jexnom(grmama, gmat), 'L', vi=listCellNume)
                 write (ifm, 1000) gmat, nbmail
                 norien = 0
-                cmd = 'ORIE_LIGNE'
-                call ornorm(noma, zi(jgro), nbmail, reorie, norien, &
-                            command=cmd)
+                call ornorm(noma, listCellNume, nbmail, reorie, norien, nconex, &
+                            onlySkin1D_=ASTER_TRUE)
+                if (nconex .gt. 1) then
+                    call utmess('F', 'MESH3_6')
+                end if
                 norit = norit+norien
                 write (ifm, 1100) norien
             end do

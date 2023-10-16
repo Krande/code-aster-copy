@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine chbord(nomo, nbmail, listma, mabord, nbmapr, &
+subroutine chbord(nomo, nbCell, listCellNume, mabord, nbmapr, &
                   nbmabo)
     implicit none
 #include "jeveux.h"
@@ -27,14 +27,15 @@ subroutine chbord(nomo, nbmail, listma, mabord, nbmapr, &
 #include "asterfort/jexnum.h"
 #include "asterfort/teattr.h"
 !
-    integer :: nbmail, listma(*), mabord(*), nbmapr, nbmabo
+    integer, pointer :: listCellNume(:)
+    integer :: nbCell, mabord(*), nbmapr, nbmabo
     character(len=*) :: nomo
 !
 !      OPERATEURS :     AFFE_CHAR_MECA ET AFFE_CHAR_MECA_C
 !                                      ET AFFE_CHAR_MECA_F
 !
 ! IN  : NOMO   : NOM DU MODELE
-! IN  : NBMAIL : NOMBRE DE MAILLES
+! IN  : nbCell : NOMBRE DE MAILLES
 ! IN  : LISTMA : LISTE DES NUMEROS DE MAILLE
 ! OUT : MABORD : MABORD(IMA) = 0 , MAILLE "PRINCIPAL"
 !                MABORD(IMA) = 1 , MAILLE "BORD"
@@ -42,7 +43,7 @@ subroutine chbord(nomo, nbmail, listma, mabord, nbmapr, &
 ! OUT : NBMABO : NOMBRE DE MAILLES "BORD"
 !
 !-----------------------------------------------------------------------
-    integer :: iret, nbgrel, igrel, ialiel, nel, itypel, ima, ier, numail, iel
+    integer :: iret, nbgrel, igrel, ialiel, nel, itypel, iCell, ier, cellNume, iel
     integer :: traite
     character(len=8) :: modele, dmo, dma
     character(len=16) :: nomte
@@ -66,20 +67,20 @@ subroutine chbord(nomo, nbmail, listma, mabord, nbmapr, &
         call jelira(jexnum(nolig//'.LIEL', igrel), 'LONMAX', nel)
         itypel = zi(ialiel-1+nel)
         call jenuno(jexnum('&CATA.TE.NOMTE', itypel), nomte)
-        do ima = 1, nbmail
-            numail = listma(ima)
+        do iCell = 1, nbCell
+            cellNume = listCellNume(iCell)
             do iel = 1, nel-1
-                if (numail .eq. zi(ialiel-1+iel)) then
+                if (cellNume .eq. zi(ialiel-1+iel)) then
                     traite = traite+1
                     call teattr('S', 'DIM_TOPO_MODELI', dmo, ier, typel=nomte)
                     call teattr('S', 'DIM_TOPO_MAILLE', dma, ier, typel=nomte)
                     if (dmo .eq. dma) then
 !                    on a un element principal
-                        mabord(ima) = 0
+                        mabord(iCell) = 0
                         nbmapr = nbmapr+1
                     else
 !                    on a un element de bord
-                        mabord(ima) = 1
+                        mabord(iCell) = 1
                         nbmabo = nbmabo+1
                     end if
                     goto 20
@@ -87,7 +88,7 @@ subroutine chbord(nomo, nbmail, listma, mabord, nbmapr, &
             end do
 20          continue
         end do
-        if (traite .eq. nbmail) goto 999
+        if (traite .eq. nbCell) goto 999
     end do
 !
 999 continue

@@ -26,7 +26,10 @@ module mesh_module
                checkNormalOnSkinCell, checkInclude, &
                getCellOptionForName, createNameOfCell, &
                getNodeOptionForName, createNameOfNode, &
-               getGroupsFromCell
+               getGroupsFromCell, &
+               getMeshDimension, &
+               getFirstNodeFromNodeGroup, getListOfCellGroup, &
+               checkCellsAreSkin
 ! ==================================================================================================
     private
 #include "asterf_types.h"
@@ -34,15 +37,17 @@ module mesh_module
 #include "MeshTypes_type.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/getvem.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/lxlgut.h"
@@ -50,6 +55,7 @@ module mesh_module
 #include "asterfort/provec.h"
 #include "asterfort/utmasu.h"
 #include "asterfort/utmess.h"
+#include "asterfort/utnono.h"
 #include "blas/ddot.h"
 ! ==================================================================================================
 contains
@@ -116,7 +122,7 @@ contains
 !
 ! In  mesh             : name of mesh
 ! In  nbSkinCell       : number of skin cells
-! In  cellSkinNume     : list of skin cells (number)
+! Ptr cellSkinNume     : list of skin cells (number)
 ! In  lCell2d          : flag if 2d cells exist
 ! In  lCell1d          : flag if 1D cells exist
 ! Ptr cellSuppNume  : volumic" cells support of skin cells
@@ -130,7 +136,8 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         character(len=*), intent(in) :: meshz
-        integer, intent(in) :: nbSkinCell, cellSkinNume(nbSkinCell)
+        integer, intent(in) :: nbSkinCell
+        integer, pointer :: cellSkinNume(:)
         aster_logical, intent(in) :: lCell2d, lCell1d
         integer, pointer :: cellSuppNume(:)
         integer, optional, intent(in) :: nbCellSupport_
@@ -802,6 +809,181 @@ contains
             end do
         end if
 100     continue
+!   ------------------------------------------------------------------------------------------------
+    end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! getMeshDimension
+!
+! Get dimension of mesh
+!
+! In  mesh             : mesh
+! Out meshDime         : dimension of mesh
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine getMeshDimension(meshZ, meshDime)
+!   ------------------------------------------------------------------------------------------------
+! ----- Parameters
+        character(len=*), intent(in) :: meshZ
+        integer, intent(out) :: meshDime
+! ----- Local
+        character(len=8) :: mesh
+        character(len=24) :: answer
+!   ------------------------------------------------------------------------------------------------
+!
+        mesh = meshZ
+        meshDime = 0
+        call dismoi('Z_CST', mesh, 'MAILLAGE', repk=answer)
+        if (answer .eq. 'OUI') then
+            meshDime = 2
+        else
+            meshDime = 3
+        end if
+!
+!   ------------------------------------------------------------------------------------------------
+    end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! getFirstNodeFromNodeGroup
+!
+! Get first node from group of nodes
+!
+! In  mesh             : mesh
+! In  nodeGroup        ; name of group of node
+! Out nodeName         : name of first node from group of nodes
+! Out nodeNume         : index of first node from group of nodes
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine getFirstNodeFromNodeGroup(meshZ, nodeGroupZ, nodeName, nodeNume)
+!   ------------------------------------------------------------------------------------------------
+! ----- Parameters
+        character(len=*), intent(in) :: meshZ, nodeGroupZ
+        character(len=8), intent(out) :: nodeName
+        integer, intent(out) :: nodeNume
+! ----- Local
+        character(len=8) :: mesh
+        character(len=24) :: nodeGroup
+        integer :: iret
+!   ------------------------------------------------------------------------------------------------
+!
+        mesh = meshZ
+        nodeGroup = nodeGroupZ
+        nodeName = " "
+        nodeNume = 0
+        call utnono(" ", mesh, 'NOEUD', nodeGroup, nodeName, iret)
+        if (iret .eq. 0) then
+            call jenonu(jexnom(mesh//'.NOMNOE', nodeName), nodeNume)
+        else if (iret .eq. 10) then
+            call utmess('F', 'MESH3_1', sk=nodeGroup)
+        else if (iret .eq. 1) then
+            call utmess('A', 'MESH3_2', sk=nodeGroup)
+        else
+            ASSERT(ASTER_FALSE)
+        end if
+!
+!   ------------------------------------------------------------------------------------------------
+    end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! getListOfCellGroup
+!
+! Get list of groups of cells
+!
+! In  mesh             : mesh
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine getListOfCellGroup(meshZ, factorKeywordZ, iFactorKeyword, nbGroup, listOfGroups)
+!   ------------------------------------------------------------------------------------------------
+! ----- Parameters
+        character(len=*), intent(in) :: meshZ, factorKeywordZ
+        integer, intent(in) :: iFactorKeyword
+        character(len=24), pointer :: listOfGroups(:)
+        integer, intent(out) :: nbGroup
+! ----- Local
+        character(len=8) :: mesh
+        character(len=24) :: k24Dummy
+        integer :: nbRet
+!   ------------------------------------------------------------------------------------------------
+!
+        mesh = meshZ
+        nbGroup = 0
+        call getvem(mesh, 'GROUP_MA', factorKeywordZ, 'GROUP_MA', iFactorKeyword, &
+                    0, k24Dummy, nbGroup)
+        nbGroup = -nbGroup
+        if (nbGroup .ne. 0) then
+            allocate (listOfGroups(nbGroup))
+            call getvem(mesh, 'GROUP_MA', factorKeywordZ, 'GROUP_MA', iFactorKeyword, &
+                        nbGroup, listOfGroups, nbRet)
+            ASSERT(nbRet .eq. nbGroup)
+        end if
+!
+!   ------------------------------------------------------------------------------------------------
+    end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! checkCellsAreSkin
+!
+! Check if cells are skins' ones
+!
+! In  mesh             : mesh
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine checkCellsAreSkin(meshZ, &
+                                 nbCell, listCellNume, &
+                                 onlySkin1D, &
+                                 listCellType, &
+                                 hasSkin1D, hasSkin2D)
+!   ------------------------------------------------------------------------------------------------
+! ----- Parameters
+        character(len=*), intent(in) :: meshZ
+        integer, intent(in) :: nbCell
+        integer, pointer :: listCellNume(:)
+        aster_logical, intent(in) :: onlySkin1D
+        character(len=8), pointer :: listCellType(:)
+        aster_logical, intent(out) :: hasSkin1D, hasSkin2D
+! ----- Local
+        character(len=8) :: mesh
+        integer :: cellNume, iCell, cellTypeNume
+        character(len=8) :: cellTypeName
+        integer, pointer :: typmail(:) => null()
+
+!   ------------------------------------------------------------------------------------------------
+!
+        mesh = meshZ
+        hasSkin1D = ASTER_FALSE
+        hasSkin2D = ASTER_FALSE
+
+! ----- Access to mesh datastructures
+        call jeveuo(mesh//'.TYPMAIL', 'L', vi=typmail)
+
+! ----- Check cells
+        do iCell = 1, nbCell
+            cellNume = listCellNume(iCell)
+
+! --------- Get type of cell
+            cellTypeNume = typmail(cellNume)
+            call jenuno(jexnum('&CATA.TM.NOMTM', cellTypeNume), cellTypeName)
+            listCellType(iCell) = cellTypeName
+
+! --------- Detect type
+            if (cellTypeName(1:4) .eq. 'QUAD') then
+                hasSkin2D = ASTER_TRUE
+            else if (cellTypeName(1:4) .eq. 'TRIA') then
+                hasSkin2D = ASTER_TRUE
+            else if (cellTypeName(1:3) .eq. 'SEG') then
+                hasSkin1D = ASTER_TRUE
+            else
+                call utmess('F', 'MESH3_94', sk=cellTypeName)
+            end if
+            if (hasSkin1D .and. hasSkin2D) then
+                call utmess('F', 'MESH3_98')
+            end if
+        end do
+!
+        if (onlySkin1D .and. hasSkin2D) then
+            call utmess('F', 'MESH3_92')
+        end if
+!
 !   ------------------------------------------------------------------------------------------------
     end subroutine
 !

@@ -59,14 +59,14 @@ subroutine srlima(mo, mail2d, mail3d, mailto, nbma2d)
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: jma2d, jma3d, n1, n2, n3
+    integer :: n1, n2, n3
     integer :: ima, iret, jcesd, jcesl, iad1, numa2d, numa3d
     integer :: nbma, nbmamo, jlima, nbmat, jmato, ndim, ndim2
-!
     character(len=8) :: ma, limocl(3), tymocl(3)
     character(len=24) :: mesmai, limamo
     character(len=19) :: ces, cel
     real(kind=8), pointer :: vale(:) => null()
+    integer, pointer :: listCell2d(:) => null(), listCell3d(:) => null()
 !
     data limocl/'TOUT', 'MAILLE', 'GROUP_MA'/
     data tymocl/'TOUT', 'MAILLE', 'GROUP_MA'/
@@ -103,7 +103,7 @@ subroutine srlima(mo, mail2d, mail3d, mailto, nbma2d)
     call utflmd(ma, mesmai, nbma, ndim2, ' ', &
                 nbma2d, mail2d)
     if (nbma2d .gt. 0) then
-        call jeveuo(mail2d, 'L', jma2d)
+        call jeveuo(mail2d, 'L', vi=listCell2d)
     else
         call utmess('F', 'CALCULEL5_54')
     end if
@@ -139,20 +139,20 @@ subroutine srlima(mo, mail2d, mail3d, mailto, nbma2d)
 !   ---------------------------------------------------------------
     call jeveuo(ma//'.COORDO    .VALE', 'L', vr=vale)
     if (ndim .eq. 3) then
-        call utmasu(ma, '3D', nbma2d, zi(jma2d), mail3d, &
+        call utmasu(ma, '3D', nbma2d, listCell2d, mail3d, &
                     vale, nbmamo, zi(jlima), .true._1)
     end if
     if (ndim .eq. 2) then
-        call utmasu(ma, '2D', nbma2d, zi(jma2d), mail3d, &
+        call utmasu(ma, '2D', nbma2d, listCell2d, mail3d, &
                     vale, nbmamo, zi(jlima), .true._1)
     end if
-    call jeveuo(mail3d, 'L', jma3d)
+    call jeveuo(mail3d, 'L', vi=listCell3d)
 !
     call wkvect(mailto, 'V V I', nbma2d*2, jmato)
 !
     do ima = 1, nbma2d
-        numa2d = zi(jma2d-1+ima)
-        numa3d = zi(jma3d-1+ima)
+        numa2d = listCell2d(ima)
+        numa3d = listCell3d(ima)
         if (numa3d .eq. 0) goto 1
 !
 !       -- si la maille 3d n'est pas du cote "-", on la met a zero (issue22570) :
@@ -162,7 +162,7 @@ subroutine srlima(mo, mail2d, mail3d, mailto, nbma2d)
 !
         zi(jmato-1+ima) = numa2d
         zi(jmato-1+nbma2d+ima) = numa3d
-        zi(jma3d-1+ima) = numa3d
+        listCell3d(ima) = numa3d
 1       continue
     end do
 !

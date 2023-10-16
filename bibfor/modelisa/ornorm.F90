@@ -16,9 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ornorm(noma, listma, nbmail, reorie, norien, &
-                  command)
+subroutine ornorm(mesh, listCellNume, nbCell, reorie, norien, nconex, &
+                  onlySkin1D_)
+!
+    use mesh_module, only: checkCellsAreSkin
+!
     implicit none
+!
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/as_allocate.h"
@@ -37,10 +41,12 @@ subroutine ornorm(noma, listma, nbmail, reorie, norien, &
 #include "asterfort/utmavo.h"
 #include "asterfort/utmess.h"
 !
-    integer :: listma(*), nbmail, norien
-    aster_logical :: reorie
-    character(len=8) :: noma
-    character(len=24), optional :: command
+    character(len=8), intent(in) :: mesh
+    integer, intent(in) :: nbCell
+    integer, pointer :: listCellNume(:)
+    aster_logical, intent(in) :: reorie
+    integer, intent(out) :: norien, nconex
+    aster_logical, intent(in), optional :: onlySkin1D_
 !.======================================================================
 !
 !   ORNORM  --  LE BUT EST QUE TOUTES LES MAILLES DE LA LISTE SOIENT
@@ -53,18 +59,18 @@ subroutine ornorm(noma, listma, nbmail, reorie, norien, &
 !    NORIEN        VAR            NOMBRE DE MAILLES REORIENTEES
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  VARIABLES LOCALES
-    integer :: nutyma, iliste
-    integer :: ima, numail, numa, norieg, lliste
+    integer :: iliste
+    integer :: iCell, cellNume, norieg, lliste
     integer :: im1, im2, ico, ibid(1)
     integer :: p1, p2, ifm, niv, p3, p4
     integer :: jdesm1, jdesm2
-    integer :: nbmavo, indi, im3, nconex, zero
-    aster_logical :: dime1, dime2
+    integer :: nbmavo, indi, im3
+    integer, parameter :: zero = 0
+    aster_logical :: hasSkin1D, hasSkin2D, onlySkin1D
     character(len=1) :: lect
     character(len=2) :: kdim
-    character(len=8) :: typel, nomail
-    character(len=24) :: mailma, nomavo
-    character(len=24) :: valk(2), cmd
+    character(len=8) :: cellName
+    character(len=24) :: nomavo
     integer, pointer :: ori1(:) => null()
     integer, pointer :: ori2(:) => null()
     integer, pointer :: ori3(:) => null()
@@ -72,87 +78,61 @@ subroutine ornorm(noma, listma, nbmail, reorie, norien, &
     character(len=8), pointer :: ori5(:) => null()
     integer, pointer :: typmail(:) => null()
 !
-#define pasori(ima) ori1(ima).eq.0
+#define pasori(iCell) ori1(iCell).eq.0
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
-    cmd = ' '
-    if (present(command)) cmd = command
-!
     call jemarq()
-    if (nbmail .eq. 0) goto 999
+    if (nbCell .eq. 0) goto 999
 !
     call infniv(ifm, niv)
-!
-    zero = 0
-    mailma = noma//'.NOMMAI'
-    lect = 'L'
-    if (reorie) lect = 'E'
-!
-! --- VECTEUR DU TYPE DES MAILLES DU MAILLAGE :
-!     ---------------------------------------
-    call jeveuo(noma//'.TYPMAIL', 'L', vi=typmail)
-!
-! --- APPEL A LA CONNECTIVITE :
-!     -----------------------
-    call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', p2)
-    call jeveuo(noma//'.CONNEX', lect, p1)
-!
-!     ALLOCATIONS :
-!     -----------
-    AS_ALLOCATE(vi=ori1, size=nbmail)
-    AS_ALLOCATE(vi=ori2, size=nbmail)
-    AS_ALLOCATE(vi=ori3, size=nbmail)
-    AS_ALLOCATE(vi=ori4, size=nbmail)
-    AS_ALLOCATE(vk8=ori5, size=nbmail)
-!
-! --- VERIFICATION DU TYPE DES MAILLES
-! --- (ON DOIT AVOIR DES MAILLES DE PEAU) :
-!     -----------------------------------
-    dime1 = .false.
-    dime2 = .false.
-    do ima = 1, nbmail
-        ori1(ima) = 0
-        numa = listma(ima)
-        ori3(ima) = zi(p2+numa)-zi(p2-1+numa)
-        ori4(ima) = zi(p2+numa-1)
-        jdesm1 = zi(p2+numa-1)
-!
-! ---   TYPE DE LA MAILLE COURANTE :
-!       --------------------------
-        nutyma = typmail(numa)
-        call jenuno(jexnum('&CATA.TM.NOMTM', nutyma), typel)
-        ori5(ima) = typel
-!
-        if (typel(1:4) .eq. 'QUAD') then
-            dime2 = .true.
-        else if (typel(1:4) .eq. 'TRIA') then
-            dime2 = .true.
-        else if (typel(1:3) .eq. 'SEG') then
-            dime1 = .true.
-        else
-            call jenuno(jexnum(mailma, numa), nomail)
-            valk(1) = nomail
-            valk(2) = typel
-            call utmess('F', 'MODELISA5_94', nk=2, valk=valk)
-        end if
-        if (dime1 .and. dime2) then
-            call utmess('F', 'MODELISA5_98')
-        end if
-    end do
-!
-    if (dime2 .and. cmd(1:10) .eq. 'ORIE_LIGNE') then
-        call utmess('F', 'MODELISA5_92')
+
+    onlySkin1D = ASTER_FALSE
+    if (present(onlySkin1D_)) then
+        onlySkin1D = onlySkin1D_
     end if
+    nconex = 0
+
+! - Options
+    lect = 'L'
+    if (reorie) then
+        lect = 'E'
+    end if
+
+! - Access to mesh datastructures
+    call jeveuo(mesh//'.TYPMAIL', 'L', vi=typmail)
+    call jeveuo(jexatr(mesh//'.CONNEX', 'LONCUM'), 'L', p2)
+    call jeveuo(mesh//'.CONNEX', lect, p1)
+
+! - Working vectors
+    AS_ALLOCATE(vi=ori1, size=nbCell)
+    AS_ALLOCATE(vi=ori2, size=nbCell)
+    AS_ALLOCATE(vi=ori3, size=nbCell)
+    AS_ALLOCATE(vi=ori4, size=nbCell)
+    AS_ALLOCATE(vk8=ori5, size=nbCell)
+
+! - Check type of cells (only skin)
+    call checkCellsAreSkin(mesh, &
+                           nbCell, listCellNume, &
+                           onlySkin1D, &
+                           ori5, &
+                           hasSkin1D, hasSkin2D)
+
+! - Prepare lists
+    do iCell = 1, nbCell
+        cellNume = listCellNume(iCell)
+        ori3(iCell) = zi(p2+cellNume)-zi(p2-1+cellNume)
+        ori4(iCell) = zi(p2+cellNume-1)
+    end do
 !
 !
 ! --- RECUPERATION DES MAILLES VOISINES DU GROUP_MA :
 !     ---------------------------------------------
     kdim = '  '
-    if (dime1) kdim = '1D'
-    if (dime2) kdim = '2D'
+    if (hasSkin1D) kdim = '1D'
+    if (hasSkin2D) kdim = '2D'
     nomavo = '&&ORNORM.MAILLE_VOISINE '
-    call utmavo(noma, kdim, listma, nbmail, 'V', &
+    call utmavo(mesh, kdim, listCellNume, nbCell, 'V', &
                 nomavo, zero, ibid)
     call jeveuo(jexatr(nomavo, 'LONCUM'), 'L', p4)
     call jeveuo(nomavo, 'L', p3)
@@ -161,28 +141,19 @@ subroutine ornorm(noma, listma, nbmail, reorie, norien, &
 !
 ! --- LA BOUCLE 100 DEFINIT LES CONNEXES
 !
-    nconex = 0
-    do ima = 1, nbmail
-        numail = listma(ima)
+    do iCell = 1, nbCell
+        cellNume = listCellNume(iCell)
 ! ----- SI LA MAILLE N'EST PAS ORIENTEE ON L'ORIENTE
-        if (pasori(ima)) then
+        if (pasori(iCell)) then
             if (niv .eq. 2) then
-                call jenuno(jexnum(mailma, numail), nomail)
-                write (ifm, *) 'LA MAILLE ', nomail,&
-     &                    ' SERT A ORIENTER UN NOUVEAU GROUPE CONNEXE'
+                call jenuno(jexnum(mesh//'.NOMMAI', cellNume), cellName)
+                call utmess('I', 'MESH3_9', sk=cellName)
             end if
             nconex = nconex+1
-            if (nconex .gt. 1) then
-                if (cmd .ne. ' ') then
-                    call utmess('F', 'MODELISA6_2')
-                else
-                    call utmess('F', 'MODELISA5_99')
-                end if
-            end if
-            ori1(ima) = 1
+            ori1(iCell) = 1
             lliste = 0
             iliste = 0
-            ori2(lliste+1) = ima
+            ori2(lliste+1) = iCell
 !
 ! ------- ON ORIENTE TOUTES LES MAILLES DU CONNEXE
 !
@@ -194,28 +165,28 @@ subroutine ornorm(noma, listma, nbmail, reorie, norien, &
             nbmavo = zi(p4+im1)-zi(p4-1+im1)
             do im3 = 1, nbmavo
                 indi = zi(p3+zi(p4+im1-1)-1+im3-1)
-                im2 = indiis(listma, indi, 1, nbmail)
+                im2 = indiis(listCellNume, indi, 1, nbCell)
                 if (im2 .eq. 0) goto 210
-                numail = listma(im2)
+                cellNume = listCellNume(im2)
                 if (pasori(im2)) then
                     jdesm2 = ori4(im2)
 !             VERIFICATION DE LA CONNEXITE ET REORIENTATION EVENTUELLE
-                    if (dime1) ico = iorim1(zi(p1+jdesm1-1), zi(p1+jdesm2-1), reorie)
-                    if (dime2) ico = iorim2( &
-                                     zi(p1+jdesm1-1), ori3(im1), zi(p1+jdesm2-1), ori3(im2), &
-                                     reorie &
-                                     )
+                    if (hasSkin1D) ico = iorim1(zi(p1+jdesm1-1), zi(p1+jdesm2-1), reorie)
+                    if (hasSkin2D) ico = iorim2( &
+                                         zi(p1+jdesm1-1), ori3(im1), zi(p1+jdesm2-1), ori3(im2), &
+                                         reorie &
+                                         )
 !             SI MAILLES CONNEXES
                     if (ico .ne. 0) then
                         ori1(im2) = 1
                         lliste = lliste+1
                         ori2(lliste+1) = im2
                         if (reorie .and. niv .eq. 2) then
-                            call jenuno(jexnum(mailma, numail), nomail)
+                            call jenuno(jexnum(mesh//'.NOMMAI', cellNume), cellName)
                             if (ico .lt. 0) then
-                                write (ifm, *) 'LA MAILLE ', nomail, ' A ETE REORIENTEE'
+                                call utmess('I', 'MESH3_7', sk=cellName)
                             else
-                                write (ifm, *) 'LA MAILLE ', nomail, ' EST ORIENTEE'
+                                call utmess('I', 'MESH3_8', sk=cellName)
                             end if
                         end if
                     end if

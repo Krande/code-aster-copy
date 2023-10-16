@@ -120,7 +120,7 @@ MODI_MAILLAGE = OPER(
         max="**",
         GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
         VECT_NORM=SIMP(statut="f", typ="R", max=3),
-        b_vect_norm=BLOC(condition="""exists("VECT_NORM")""", GROUP_NO=SIMP(statut="o", typ=grno)),
+        b_vect_norm=BLOC(condition="""exists("VECT_NORM")""", GROUP_NO=SIMP(statut="f", typ=grno)),
     ),
     ORIE_LIGNE=FACT(
         statut="f",

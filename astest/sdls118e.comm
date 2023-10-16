@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,11 @@ MAILLAGE = DEFI_GROUP(reuse=MAILLAGE, MAILLAGE=MAILLAGE, CREA_GROUP_NO=_F(GROUP_
 MAILLAGE = MODI_MAILLAGE(
     reuse=MAILLAGE,
     MAILLAGE=MAILLAGE,
-    ORIE_NORM_COQUE=_F(GROUP_MA="RADIER", VECT_NORM=(0, 0, -1), GROUP_NO="P3"),
+    ORIE_NORM_COQUE=_F(
+        GROUP_MA="RADIER",
+        VECT_NORM=(0, 0, -1),
+        # GROUP_NO="P3"
+    ),
 )
 
 STICKMOD = AFFE_MODELE(

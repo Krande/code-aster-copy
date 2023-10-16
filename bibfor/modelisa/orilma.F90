@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine orilma(noma, ndim, listma, nbmail, norien, &
+subroutine orilma(noma, ndim, listCellNume, nbCell, norien, &
                   ntrait, reorie, nbmavo, mailvo)
     implicit none
 #include "asterf_types.h"
@@ -36,7 +36,8 @@ subroutine orilma(noma, ndim, listma, nbmail, norien, &
 #include "asterfort/utmasu.h"
 #include "asterfort/utmess.h"
 !
-    integer :: ndim, listma(*), nbmail, norien, ntrait, nbmavo, mailvo(*)
+    integer :: ndim, nbCell, norien, ntrait, nbmavo, mailvo(*)
+    integer, pointer :: listCellNume(:)
     character(len=8) :: noma
     aster_logical :: reorie
 !.======================================================================
@@ -65,11 +66,11 @@ subroutine orilma(noma, ndim, listma, nbmail, norien, &
 !    NBMAVO         IN    I       NB DE MAILLES DE MAILVO
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  VARIABLES LOCALES
-    integer :: ifm, niv, ima, numa, nutyma, nbnmai, numa3d, noriem, norieg
+    integer :: ifm, niv, iCell, cellNume, cellTypeNume, nbnmai, numa3d, noriem, norieg
     integer :: p1, p2, jm3d, jdesm, jdes3d
-    aster_logical :: dime1, dime2
+    aster_logical :: hasSkin1D, hasSkin2D
     character(len=2) :: kdim
-    character(len=8) :: tpmail, nomail, typ3d
+    character(len=8) :: cellTypeName, nomail, typ3d
     character(len=24) :: mailma, nomob1
     character(len=24) :: valk(2)
     integer, pointer :: ori1(:) => null()
@@ -82,7 +83,7 @@ subroutine orilma(noma, ndim, listma, nbmail, norien, &
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
     call jemarq()
-    if (nbmail .eq. 0) goto 999
+    if (nbCell .eq. 0) goto 999
 !
 ! --- INITIALISATIONS :
 !     ---------------
@@ -104,41 +105,41 @@ subroutine orilma(noma, ndim, listma, nbmail, norien, &
 !
 !     ALLOCATIONS :
 !     -----------
-    AS_ALLOCATE(vi=ori1, size=nbmail)
-    AS_ALLOCATE(vi=ori2, size=nbmail)
-    AS_ALLOCATE(vk8=ori3, size=nbmail)
-    AS_ALLOCATE(vk8=ori4, size=nbmail)
+    AS_ALLOCATE(vi=ori1, size=nbCell)
+    AS_ALLOCATE(vi=ori2, size=nbCell)
+    AS_ALLOCATE(vk8=ori3, size=nbCell)
+    AS_ALLOCATE(vk8=ori4, size=nbCell)
 !
 ! --- VERIFICATION DU TYPE DES MAILLES
 ! --- (ON DOIT AVOIR DES MAILLES DE PEAU) :
 !     -----------------------------------
-    dime1 = .false.
-    dime2 = .false.
-    do ima = 1, nbmail
-        numa = listma(ima)
-        call jenuno(jexnum(mailma, numa), nomail)
-        ori3(ima) = nomail
-        ori1(ima) = zi(p2+numa+1-1)-zi(p2+numa-1)
-        ori2(ima) = zi(p2+numa-1)
+    hasSkin1D = .false.
+    hasSkin2D = .false.
+    do iCell = 1, nbCell
+        cellNume = listCellNume(iCell)
+        call jenuno(jexnum(mailma, cellNume), nomail)
+        ori3(iCell) = nomail
+        ori1(iCell) = zi(p2+cellNume+1-1)-zi(p2+cellNume-1)
+        ori2(iCell) = zi(p2+cellNume-1)
 !
 ! ---   TYPE DE LA MAILLE COURANTE :
 !       --------------------------
-        nutyma = typmail(numa)
-        call jenuno(jexnum('&CATA.TM.NOMTM', nutyma), tpmail)
-        ori4(ima) = tpmail
+        cellTypeNume = typmail(cellNume)
+        call jenuno(jexnum('&CATA.TM.NOMTM', cellTypeNume), cellTypeName)
+        ori4(iCell) = cellTypeName
 !
-        if (tpmail(1:4) .eq. 'QUAD') then
-            dime2 = .true.
-        else if (tpmail(1:4) .eq. 'TRIA') then
-            dime2 = .true.
-        else if (tpmail(1:3) .eq. 'SEG') then
-            dime1 = .true.
+        if (cellTypeName(1:4) .eq. 'QUAD') then
+            hasSkin2D = .true.
+        else if (cellTypeName(1:4) .eq. 'TRIA') then
+            hasSkin2D = .true.
+        else if (cellTypeName(1:3) .eq. 'SEG') then
+            hasSkin1D = .true.
         else
             valk(1) = nomail
-            valk(2) = tpmail
+            valk(2) = cellTypeName
             call utmess('F', 'MODELISA5_94', nk=2, valk=valk)
         end if
-        if (dime1 .and. dime2) then
+        if (hasSkin1D .and. hasSkin2D) then
             call utmess('F', 'MODELISA5_98')
         end if
 !
@@ -147,24 +148,24 @@ subroutine orilma(noma, ndim, listma, nbmail, norien, &
 ! --- RECHERCHE DES MAILLES SUPPORTS
 !
     kdim = ' '
-    if (dime1) kdim = '2D'
-    if (dime2) kdim = '3D'
+    if (hasSkin1D) kdim = '2D'
+    if (hasSkin2D) kdim = '3D'
     ASSERT(kdim .ne. ' ')
     nomob1 = '&&ORILMA.MAILLE_3D'
-    call utmasu(noma, kdim, nbmail, listma, nomob1, &
+    call utmasu(noma, kdim, nbCell, listCellNume, nomob1, &
                 vale, nbmavo, mailvo, .false._1)
     call jeveuo(nomob1, 'L', jm3d)
 !
     norieg = 0
     ntrait = 0
 !
-    do ima = 1, nbmail
+    do iCell = 1, nbCell
 !
-        nomail = ori3(ima)
-        tpmail = ori4(ima)
-        nbnmai = ori1(ima)
-        jdesm = ori2(ima)
-        numa3d = zi(jm3d-1+ima)
+        nomail = ori3(iCell)
+        cellTypeName = ori4(iCell)
+        nbnmai = ori1(iCell)
+        jdesm = ori2(iCell)
+        numa3d = zi(jm3d-1+iCell)
         if (numa3d .eq. 0) then
             ntrait = ntrait+1
             goto 100
@@ -172,7 +173,7 @@ subroutine orilma(noma, ndim, listma, nbmail, norien, &
         jdes3d = zi(p2+numa3d-1)
         call jenuno(jexnum('&CATA.TM.NOMTM', typmail(numa3d)), typ3d)
 !
-        call oriema(nomail, tpmail, nbnmai, zi(p1+jdesm-1), typ3d, &
+        call oriema(nomail, cellTypeName, nbnmai, zi(p1+jdesm-1), typ3d, &
                     zi(p1+jdes3d-1), ndim, vale, reorie, noriem, &
                     ifm, niv)
 !
