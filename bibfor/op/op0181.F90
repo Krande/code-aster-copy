@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,10 +25,12 @@ subroutine op0181()
 #include "asterc/getres.h"
 #include "asterfort/gettco.h"
 #include "asterfort/ecresu.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
@@ -41,7 +43,9 @@ subroutine op0181()
     character(len=19) :: resin, resou, vectot, k19bid
     character(len=24) :: typres
     character(len=12) :: bl11pt
+    character(len=8) :: mesh
     integer :: iret, igrand
+    aster_logical :: l_pmesh, l_gene
 !     ------------------------------------------------------------------
     call jemarq()
     call infmaj()
@@ -50,10 +54,12 @@ subroutine op0181()
 !     --- RECUPERATION DES ARGUMENTS UTILISATEUR
 !
 !     --- CAS D'UN CONCEPT SD_RESULTAT ENTRANT (BASE PHYS)
+    l_gene = ASTER_FALSE
     call getvid(' ', 'RESULTAT', scal=resin, nbret=nval)
     if (nval .eq. 0) then
 !        --- CAS D'UN CONCEPT SD_DYNA_GENE ENTRANT (BASE GENE)
         call getvid(' ', 'RESU_GENE', scal=resin, nbret=nval)
+        l_gene = ASTER_TRUE
     end if
     call getvtx(' ', 'METHODE', scal=method, nbret=nval)
     call getvtx(' ', 'SYMETRIE', scal=symetr, nbret=nval)
@@ -115,6 +121,17 @@ subroutine op0181()
 !     --- SI AUCUN CHAMP DEMANDE NE PEUT ETRE TRAITE => ERREUR
     if (ngrand .eq. 0) then
         call utmess('F', 'ALGORITH17_28')
+    end if
+!
+!     --- SI ON EST EN PARALLELISME HPC, ON DESACTIVE ACCELERATION_MPI
+    l_pmesh = ASTER_FALSE
+    if (.not. l_gene) then
+        call dismoi("NOM_MAILLA", resin, "RESULTAT", repk=mesh)
+        l_pmesh = isParallelMesh(mesh)
+        if (l_pmesh) then
+            kmpi = 'NON'
+            call utmess('I', 'DYNAMIQUE1_2')
+        end if
     end if
 !
     vectot = '&&OP0181.VECTOT'

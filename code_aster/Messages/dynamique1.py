@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,5 +23,9 @@ cata_msg = {
     1: _(
         """On ne peut pas utiliser le mode MULTI_APPUI avec un comportement non-linéaire.
 On doit être soit en élasticité, soit utiliser un comportement de type DIS_CONTACT ou DIS_CHOC."""
-    )
+    ),
+    2: _(
+        """On ne peut pas utiliser ACCELERATION_MPI en parallélisme distribué : on force
+ACCELERATION_MPI='NON'."""
+    ),
 }

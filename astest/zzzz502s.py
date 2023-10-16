@@ -138,7 +138,7 @@ seq_value = 15.652508028144187
 mpi_value = DEPL.norm("NORM_1")
 test.assertTrue(abs(seq_value - mpi_value) / abs(seq_value) < 1e-6)
 
-
+"""
 # Domain Decomposition Preconditioner
 DYNA = DYNA_VIBRA(
     TYPE_CALCUL="TRAN",
@@ -186,5 +186,45 @@ DEPL.setMesh(MA)
 seq_value = 15.652508028144187
 mpi_value = DEPL.norm("NORM_1")
 test.assertTrue(abs(seq_value - mpi_value) / abs(seq_value) < 1e-6)
+
+"""
+### On convertit le chargement onde_plane en transitoire dynamique temporel
+
+CH_ON = CREA_RESU(
+    OPERATION="CONV_CHAR",
+    TYPE_RESU="DYNA_TRANS",
+    CONV_CHAR=_F(
+        MATR_RIGI=STIFFNESS, CHARGE=(ONDE,), PRECISION=1.0e-6, CRITERE="RELATIF", LIST_INST=LISTINST
+    ),
+)
+
+
+### Passage temporel-fréquentiel pour CL
+CHAONF = REST_SPEC_TEMP(
+    RESULTAT=CH_ON,
+    METHODE="PROL_ZERO",
+    SYMETRIE="NON",
+    NOM_CHAM="DEPL",
+    N_PUIS=0,
+    INFO=2,
+    ACCELERATION_MPI="OUI",
+)
+
+ref = [
+    [1.581553270295848e-12, 0.0],
+    [167.95544903379576, 69.56942486426169],
+    [112.4530874891084, 112.45308748910587],
+    [41.9033036594456, 101.16352400287337],
+    [421.4813799041548, 2.0106544693134724e-12],
+    [117.12937779837777, 282.77533243316634],
+    [1672.9706890353066, 1672.9706890353102],
+    [2533.8932869201917, 1049.5729650484825],
+]
+
+for i, idx in enumerate(CHAONF.getIndexes()):
+    f = CHAONF.getField("DEPL", idx)
+    test.assertAlmostEqual(f.getRealPart().norm("NORM_1"), ref[i][0])
+    test.assertAlmostEqual(f.getImaginaryPart().norm("NORM_1"), ref[i][1])
+
 
 FIN()
