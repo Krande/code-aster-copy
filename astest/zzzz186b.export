@@ -5,6 +5,6 @@ P mpi_nbcpu 1
 P mpi_nbnoeud 1
 P testlist verification sequential
 
-F comm zzzz186a.comm D 1
-F mmed zzzz186a.mmed D 20
+F comm zzzz186b.comm D 1
+F mmed zzzz186b.mmed D 20
 

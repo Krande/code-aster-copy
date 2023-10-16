@@ -19,832 +19,276 @@
 
 from ..Objects.table_py import Table
 from ..Messages import UTMESS
+import numpy as np
+import time
+from ..Utilities.version import get_version
 
 
-def buildTabString(tabLevel):
-    """
-    Construit une chaine de tabulation
-    """
-    chaine = ""
-    for i in range(0, tabLevel):
-        chaine += "\t"
-
-    return chaine
-
-
-def getBornes(listIn, valTest):
-    """
-    Retourne un doublet de valeurs qui correspond aux valeurs de la liste qui encadrent la valeur (valTest)
-    Si val n'est pas encadrée par des valeurs de la liste, une des valeurs du doublet est None
-    """
-    v1 = None
-    v2 = None
-    for val in listIn:
-        if valTest > val:
-            v1 = val
-        if valTest < val:
-            v2 = val
-
-    # traitement des cas limites
-    if valTest == listIn[0]:
-        v1 = listIn[0]
-    if valTest == listIn[len(listIn) - 1]:
-        v2 = listIn[len(listIn) - 1]
-
-    return (v1, v2)
-
-
-def interpoleLin(listRealt, X):
-    """
-    Interpole linéairement entre deux bornes définies par listRealts[(X0, Y0), (X1, Y1)] la valeur Y en X
-    """
-    X0 = listRealt[0][0]
-    Y0 = listRealt[0][1]
-    X1 = listRealt[1][0]
-    Y1 = listRealt[1][1]
-
-    return Y0 + (X - X0) * (Y1 - Y0) / (X1 - X0)
-
-
-class interpolationError(Exception):
-    def __init__(self):
-        self.mess = "Interpolation sur une valeur hors bornes"
-        self.otherExcept = Exception()
-
-    def getMess(self):
-        """
-        retourne le message associé à l'erreur
-        """
-        # Analyse les différents cas d'erreurs
-        if self.otherExcept == IOError:
-            self.mess += "\nProblème à l'ouverture du fichier\n"
-
-        return self.mess
-
-
-class XMLNode:
-
-    """
-    Classe gérant un noeud de l'arborescence XML
-    Un noeud possède :
-        - un nom de balise
-        - un commentaire (optionnel)
-        - un ensemble de "paramètres" (optionnels)
-        - une liste d'élément ou d'autres noeuds (optionnels/possibilité de balises vides) :
-
-    La classe propose :
-        - une méthode "buildTree" qui parcoure le liste de manière récursive pour
-          produire l'arborescence XML en vu de son enregistrement ou son impression
-        - (TO DO) une methode statique "loadTree" qui produit un arbre XML à partir d'un fichier
-    """
-
-    def __init__(self, nomBalise, valeur=None, commentaire=None, **listOpt):
-        self.nomBalise = nomBalise
-        self.commentaire = commentaire
-        self.param = listOpt
-        self.arbre = list()
-        if valeur is not None:
-            self.addValue(valeur)  # None n'est pas 0 !
-
-    def getCommentaire(self):
-        return self.commentaire
-
-    def setCommentaire(sel, commentaire):
-        self.commentaire = commentaire
-
-    def getParametres(self):
-        return self.param
-
-    def setParametres(self, parametres):
-        self.param = parametres
-
-    def append(self, nodeName, valeur=None, commentaire=None, **listOpt):
-        """
-        Ajoute un noeud à l'arborescence et retourne une référence sur ce noeud
-        On peut ajouter directement la valeur, si simple, associée à la balise
-        """
-        node = XMLNode(nodeName, valeur, commentaire)
-
-        self.arbre.append(node)
-
-        return self.arbre[len(self.arbre) - 1]
-
-    def addValue(self, valeur):
-        """
-        Ajoute un élément "simple" (nombre, texte) à l'arborescence
-        """
-        self.arbre.append(valeur)
-
-    def buildTree(self, tabLevel=0):
-        """
-        Construit l'arborescence XML en parcourant récursivement la structure de donnée
-        et la retourne sous la forme d'une chaine de caractères
-
-        tabLevel permet de gérer l'indentation
-        """
-        # Construction de la chaine de tabulations nécessaire à une bonne
-        # lecture du fichier XML
-        tabString = buildTabString(tabLevel)
-
-        XMLString = ""
-
-        try:
-            # listOpt contient les paramètres optionnels de la balise
-            chaine = ""
-            for v in list(self.param.keys()):
-                chaine = chaine + " " + v + "=" + self.param[v]
-        except:
-            pass
-
-        baliseOuverture = tabString + "<" + self.nomBalise + chaine + ">\n"
-        XMLString += baliseOuverture
-
-        if self.commentaire:
-            XMLString = XMLString + tabString + "\t<!--" + self.commentaire + "-->\n"
-
-        for elem in self.arbre:
-            try:
-                XMLString += elem.buildTree(tabLevel + 1)
-            except:  # l'élément n'est pas un noeud
-                XMLString = XMLString + tabString + "\t" + str(elem) + "\n"
-
-        XMLString = XMLString + tabString + "</" + self.nomBalise + ">\n"
-
-        return XMLString
-
-    def save(self, fileObj):
-        """
-        Construit le l'arborescence XML et l'écrit dans un fichier
-        pointé par le handler passé en paramètres
-        """
-        try:
-            fileObj.write(self.buildTree())
-        except:
-            pass
-
-
-class OAR_element:
-
-    """
-    Classe de base des éléments manipulés par IMPR_OAR
-    """
-
-    def __init__(self):
-        self.nodeComp = None
-
-    def buildTree(self):
-        pass
-
-    def getNode(self):
-        """
-        Renvoie le noeud XML construit par buildTree
-        """
-        return self.nodeComp
-
-
-class composant(OAR_element):
-
-    """
-    Classe permettant de traiter les composants
-
-    NB :
-    1. L utilisateur est suppose faire la meme coupe pour le calcul mecanique et le calcul thermo-mecanique
-    2. Dans le cas d'un revetement, l'utilisateur est supposé définir son plan de coupe de telle sorte
-       que la coupe de la structure et la coupe du revetement se raccordent
-    """
-
+class OAR_EF:
     def __init__(self, **args):
-        self.nodeComp = XMLNode("COMPOSANT")
-        # Racine de l'arborescence composant
 
-        self.diametre = args["DIAMETRE"]
-        self.origine = args["ORIGINE"]
-        self.coef_u = args["COEF_U"]
-        self.angle_c = args["ANGLE_C"]
-        self.revet = args["REVET"]
+        """donnes d entrees : tables issues de la commande MACR_LIGN_COU"""
 
-        self.lastAbscisse = None  # Permet de gerer le recouvrement des points de coupe entre revetement et structure
-        self.num_char = -1
-        self.type_char = ""
-        self.tabAbscisses = list()
-        self.tabAbscisses_S = None
-        self.dictMeca = dict()
-        self.dictMeca_S = None  # Pas créé car optionnel
-        self.epaisseur = 0.0
-        self.epaisseur_R = 0.0
+        self.charg = {
+            "PRESSION": None,
+            "TORSION": None,
+            "FLEXION_HP": None,
+            "FLEXION_P": None,
+            "TEMP": None,
+            "CONTRAINTE": None,
+        }
+        self.etiquette = {
+            "PRESSION": "SIGM_P",
+            "TORSION": "SIGM_T",
+            "FLEXION_HP": "SIGM_HP",
+            "FLEXION_P": "SIGM_FP",
+            "TEMP": "TEMP",
+            "CONTRAINTE": "SIGM",
+        }
 
-        # dictionnaire gérant le résultat contraintes en fonction des instants
-        # et des abscisses
-        self.dictInstAbscSig = dict()
-        self.dictInstAbscSig_S = None  # Création si nécessaire
-        # dictionnaire gérant le résultat température en fonction des instants
-        # et des abscisses
-        self.dictInstAbscTemp = dict()
-        self.dictInstAbscTemp_S = None  # facultatif
-        self.list_inst = None
-        self.num_tran = None
+        self.nbAzim = 0
+        self.typefic = "meca"  # 2 possibilités : sortie 'meca' ou 'temp'
+        self.listeinstant_temp = None
+        self.ficsortie = None
+        self.ordre = None
 
-        self.noResuMeca = False
-        self.noResuTher = False
+        self.titre = None
 
-        # 1. resultat mecanique
-        try:
-            # On ne construit qu'une table des abscisses et une table des contraintes.
-            # Le revetement est obligatoirement en interne on commence par lui
-            para_resu_meca = args["RESU_MECA"][0]
-            self.num_char = para_resu_meca["NUM_CHAR"]
-            self.type_char = para_resu_meca["TYPE"]
+        self.type_unit = None
+        self.type_unit_etiquette = {
+            "SI": "Modele en S.I., Impression en (m, MPa)",
+            "MM-MPA": "Modele en (mm,MPa) , Impression en (m, MPa)",
+        }
 
-            if self.revet == "OUI":
-                # Construction de la table complementaire si revetement
-                self.dictMeca_S = dict()
-                self.tabAbscisses_S = list()
-                self.buildTablesMeca(
-                    "TABLE_S", para_resu_meca, self.tabAbscisses_S, self.dictMeca_S
-                )
-                self.epaisseur_R = abs(
-                    self.tabAbscisses_S[len(self.tabAbscisses_S) - 1] - self.tabAbscisses_S[0]
-                )
+    def Tablenonvide(self):
+        """renvoie une table non vide du dictionnaire des chargements"""
+        for key in self.charg.keys():
+            if self.charg[key] is not None:
+                table = self.charg[key]
+                break
+        return table
 
-            self.buildTablesMeca(
-                "TABLE", para_resu_meca, self.tabAbscisses, self.dictMeca, offset=self.epaisseur_R
-            )
+    def ajoutINST(self):
+        """dans le cas d'un MACRO_LIGN_COUPE après MACRO_ELAS_MULT
+         il n'y a pas d instants  on ajoute une liste d instants
+        factice pour eviter le bug"""
+        for key in self.charg.keys():
+            if self.charg[key] is not None:
+                try:
+                    a = self.charg[key].values()["INST"][0]
+                except:
+                    self.charg[key]["INST"] = np.zeros(len(self.charg[key].values()["ABSC_CURV"]))
 
-            if self.revet == "OUI":
-                self.mergeDictMeca()
-                # merge les tableaux resultats du revetement
-                # et de la structure
+    def ListeAzim(self):
+        """renvoie la liste des azimuts à imprimer sous forme de liste
+        d'intitulés"""
+        table = self.Tablenonvide()
+        tablereduit = table.INST == table.values()["INST"][0]
+        intituleliste = tablereduit.values()["INTITULE"]
+        liste = [intituleliste[0]]
+        i = 0
+        for item in intituleliste:
+            if item != liste[i]:
+                i = i + 1
+                liste.append(item)
+        return liste
 
-            # Calcul de l'épaisseur de la coupe.
-            self.epaisseur = abs(
-                self.tabAbscisses[len(self.tabAbscisses) - 1] - self.tabAbscisses[0]
-            )
+    def AbscisseAzim(self, macroc, intitule):
+        """Renvoie les abscisses en m d'un intitule/azimut"""
+        if self.type_unit == "SI":
+            conversion = 1.0
+        if self.type_unit == "MM-MPA":
+            conversion = 1e-3
+        macroreduit = macroc.INST == macroc.values()["INST"][0]
+        macrocr = macroreduit.INTITULE == intitule
+        abscisse = conversion * np.array(macrocr.values()["ABSC_CURV"])
+        repere = range(1, len(abscisse) + 1)
+        join = [repere, abscisse]
+        join = np.transpose(join)
+        return join
 
-        except:
-            self.noResuMeca = True
-
-        # 2. Résultat thermique
-        try:
-            para_resu_ther = RESU_THER
-            self.num_tran = para_resu_ther["NUM_TRAN"]
-            self.tabAbscisses = list()
-            self.tabAbscisses_S = None
-
-            if self.revet == "OUI":
-                # Le revetement est obligatoirement en interne on commence par lui
-                # 1. Construction champ temperature
-                self.dictInstAbscTemp_S = dict()
-                self.buildTemp("TABLE_ST", para_resu_ther, self.dictInstAbscTemp_S)
-
-                # 2. Construction de la "table" des contraintes
-                self.dictInstAbscSig_S = dict()
-                self.tabAbscisses_S = list()
-                self.buildTablesTher(
-                    "TABLE_S", para_resu_ther, self.tabAbscisses_S, self.dictInstAbscSig_S
-                )
-
-                # 3. calcul de l'épaisseur
-                self.epaisseur_R = abs(
-                    self.tabAbscisses_S[len(self.tabAbscisses_S) - 1] - self.tabAbscisses_S[0]
-                )
-
-            # Pour la structure
-            # 1. Construction champ température
-            self.buildTemp("TABLE_TEMP", para_resu_ther, self.dictInstAbscTemp, self.epaisseur_R)
-
-            # 2. Construction de la table des contraintes
-            self.buildTablesTher(
-                "TABLE_T",
-                para_resu_ther,
-                self.tabAbscisses,
-                self.dictInstAbscSig,
-                offset=self.epaisseur_R,
-            )
-
-            if self.revet == "OUI":
-                self.mergeDictTher()
-                # merge les tableaux resultats du revetement
-                # et de la structure
-
-            if not (self.compareListAbscTher()):
-                UTMESS("F", "OAR0_1")
-
+    def CoupeAzim(self, macroc, intitule, instant):
+        """renvoie le tableau des contraintes
+        pour un azimut/intitule donné"""
+        macroreduit = macroc.INST == instant
+        macrocr = macroreduit.INTITULE == intitule
+        if self.type_unit == "SI":
+            conversion = 1e-6
+        if self.type_unit == "MM-MPA":
+            conversion = 1.0
+        cles_sig = ["SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"]
+        tableau = []
+        for cles in cles_sig:
             try:
-                self.interpoleInstants()
-                # Interpolation des instants de la table
-                # des température sur celle de la table
-                # mécanique
-            except interpolationError as err:
-                UTMESS("F", "OAR0_2", valk=err.getMess())
+                tableau.append(conversion * np.array(macrocr.values()[cles]))
+            except:
+                # cas axisymétriques : certaines composantes peuvent manquer.
+                # on les remplace alors par des listes nulles.
+                tableau.append(np.zeros(len(macrocr.values()["ABSC_CURV"])))
 
-            # 3. Calcul de l'épaisseur de la coupe.
-            self.epaisseur = abs(
-                self.tabAbscisses[len(self.tabAbscisses) - 1] - self.tabAbscisses[0]
+        repere = range(1, len(tableau[0]) + 1)
+        tableau.insert(0, repere)
+        tableau = np.transpose(tableau)
+        return tableau
+
+    def CoupeAzim_temp(self, macroc, intitule, instant):
+        """renvoie le tableau des contraintes
+        pour un azimut/intitule donné"""
+        macroreduit = macroc.INST == instant
+        macrocr = macroreduit.INTITULE == intitule
+        TEMP = np.array(macrocr.values()["TEMP"])
+        repere = range(1, len(TEMP) + 1)
+        tableau = [repere, TEMP]
+        tableau = np.transpose(tableau)
+        return tableau
+
+    def ecrire_preambule(self, nomfichier):
+        """écriture des lignes d'introduction du fichier de sortie"""
+        with open(nomfichier, "a") as f:
+            f.write("; CODE_ASTER version " + get_version() + "\n")
+            f.write("; IMPRESSION AU FORMAT OAR \n")
+            f.write("; CREATION " + (time.strftime("LE %m/%d/%Y A %H:%M:%S")) + "\n \n")
+            if self.titre is not None:
+                f.write("; {} \n \n".format(self.titre))
+            f.write("; UNITES : " + self.type_unit_etiquette[self.type_unit])
+            f.write("\n \n")
+
+    def ecrire_abs(self, nomfichier, tableau):
+        """écriture des abscisses"""
+        with open(nomfichier, "a") as f:
+            f.write("ABSC \n ")
+            for i in range(len(tableau)):
+                f.write("  %.6e \n " % (tableau[i][1]))
+            f.write("\n \n")
+
+    def ecrire_contr(self, nomfichier, tableau, etiquette):
+        """écriture des contraintes - cas mécanique"""
+        with open(nomfichier, "a") as f:
+            f.write(etiquette + "\n")
+            f.write(
+                ";       SIXX            SIYY"
+                "            SIZZ            SIXY            SIXZ"
+                "            SIYZ \n"
             )
-
-        except:
-            self.noResuTher = True
-
-        # Construction de l arborescence
-        self.buildTree()
-
-    def getAbscisses(self, dicoTable, tableAbsc, offset=0.0):
-        """
-        Récupère la liste des abscisses
-        """
-        # récupération des abscisses
-        ABSCISSES = dicoTable["ABSC_CURV"]
-
-        valeurAbsc = 0.0
-        for val in ABSCISSES:
-            valeurAbsc = val + offset
-            tableAbsc.append(valeurAbsc)
-
-    def buildTablesMeca(self, label, para_resu, tableAbsc, dictMeca, offset=0.0):
-        """
-        Construction des tableaux mécanique
-        """
-        sigma_xml = ("S_RR", "S_TT", "S_ZZ", "S_RT", "S_TZ", "S_ZR")
-
-        table_meca = para_resu[label].EXTR_TABLE()
-
-        # Utilisation des méthodes de la classe table
-        dictTable = table_meca.values()
-
-        # récupération des abscisses
-        self.getAbscisses(dictTable, tableAbsc, offset)
-
-        # Construction de la table mécanique principale
-        for val in sigma_xml:
-            dictMeca[val] = list()
-
-        S_XX = dictTable["SIXX"]
-        S_YY = dictTable["SIYY"]
-        S_ZZ = dictTable["SIZZ"]
-        S_XY = dictTable["SIXY"]
-        S_YZ = dictTable["SIYZ"]
-        S_XZ = dictTable["SIXZ"]
-        for v1, v2, v3, v4, v5, v6 in zip(S_XX, S_YY, S_ZZ, S_XY, S_YZ, S_XZ):
-            dictMeca["S_RR"].append(v1)
-            dictMeca["S_TT"].append(v2)
-            dictMeca["S_ZZ"].append(v3)
-            dictMeca["S_RT"].append(v4)
-            dictMeca["S_TZ"].append(v5)
-            dictMeca["S_ZR"].append(v6)
-
-    def mergeDictMeca(self):
-        """
-        Merge des résultats mécaniques issus de la structure et du revetement
-        """
-        # Merge des listes d'abscisses
-        # Le revetement est interieur la derniere abscisse du revetement doit
-        # etre egal a la premiere de la structure
-        if self.tabAbscisses_S[len(self.tabAbscisses_S) - 1] != self.tabAbscisses[0]:
-            UTMESS("F", "OAR0_3")
-
-        # On construit une table des abscisses tempopraire
-        tableAbscTemp = self.tabAbscisses_S
-
-        # On recopie la table des abscisses en sautant le premier
-        debut = True
-        for val in self.tabAbscisses:
-            if debut:
-                debut = False
-                continue
-            tableAbscTemp.append(val)
-
-        self.tabAbscisses = tableAbscTemp
-
-        # On construit des listes de travail intermédiaires que l'on commence
-        # par remplir avec les tables "supplémentaires"
-        dictMecaBis = self.dictMeca_S
-
-        # On recopie les éléments de la structure dans le tableau
-        debut = True
-        for v1, v2, v3, v4, v5, v6 in zip(
-            self.dictMeca["S_RR"],
-            self.dictMeca["S_TT"],
-            self.dictMeca["S_ZZ"],
-            self.dictMeca["S_RT"],
-            self.dictMeca["S_TZ"],
-            self.dictMeca["S_ZR"],
-        ):
-            if debut:
-                debut = False
-                continue
-            dictMecaBis["S_RR"].append(v1)
-            dictMecaBis["S_TT"].append(v2)
-            dictMecaBis["S_ZZ"].append(v3)
-            dictMecaBis["S_RT"].append(v4)
-            dictMecaBis["S_TZ"].append(v5)
-            dictMecaBis["S_ZR"].append(v6)
-
-        # On restitue ensuite la liste globale dans self.dictMeca
-        self.dictMeca = dictMecaBis
-
-    def buildTemp(self, label, para_resu, dictInstAbscTemp, offset=0.0):
-        """
-        Récupération du champ température aux noeuds avec interpolation sur les "instants" du calcul mécanique
-        """
-        table_temp = para_resu[label].EXTR_TABLE()
-
-        # Utilisation des méthodes de la classe table
-        dictTable = table_temp.values()
-
-        # On construit un dictionnaire associant un "instant" avec un couple
-        # ("abscisse", "température")
-
-        # 1. Récupération de la liste des instants
-        INSTANTS = dictTable["INST"]
-        for val in INSTANTS:
-            dictInstAbscTemp[val] = 0  # On crée juste les clés du dictionnaire
-
-        listTables = list()  # liste de tables contenant une table pas instant
-        for inst in list(dictInstAbscTemp.keys()):
-            listTables.append(table_temp.INST == inst)
-
-        # 2. Récupération des abscisses
-        tableAbsc = list()
-        self.getAbscisses(listTables[0].values(), tableAbsc, offset)
-
-        # 3. Récupération des températures
-        tableTemp = list()  # liste de liste de température (1 par instant)
-        for tb in listTables:
-            TEMPERATURE = tb.values()["TEMP"]
-            tableTemp.append(TEMPERATURE)
-
-        # 4. Construction de dictInstAbscTemp
-        for i in range(0, len(list(dictInstAbscTemp.keys()))):
-            listRealts = list()
-            for absc, temp in zip(tableAbsc, tableTemp[i]):
-                listRealts.append((absc, temp))
-
-            inst = list(dictInstAbscTemp.keys())[i]
-            dictInstAbscTemp[inst] = listRealts
-
-    def buildTablesTher(self, label, para_resu, tabAbscisses, dictInstAbscSig, offset=0.0):
-        """
-        Construction des tableaux thermo-mécanique
-        listDictTher contient un dictionnaire par numéro d'ordre
-        """
-        table_temp = para_resu[label].EXTR_TABLE()
-
-        # On construit un dictionnaire associant un "instant" avec une liste de
-        # couples ("abscisse", liste de "sigma")
-
-        # Utilisation des méthodes de la classe table
-        dictTable = table_temp.values()
-
-        # On construit un dictionnaire associant un "instant" avec un couple
-        # ("abscisse", "température")
-
-        # 1. Récupération de la liste des instants
-        INSTANTS = dictTable["INST"]
-        for val in INSTANTS:
-            dictInstAbscSig[val] = 0  # On crée juste les clés du dictionnaire
-
-        listTables = list()  # liste de tables contenant une table pas instant
-        for inst in list(dictInstAbscSig.keys()):
-            listTables.append(table_temp.INST == inst)
-
-        # 2. Récupération des abscisses
-        self.getAbscisses(listTables[0].values(), tabAbscisses, offset)
-
-        # 3. Récupération des listes de sigma
-        listListListSigAbscInst = list()
-        # liste des sigma par abscisse par
-        # instant
-        for tbl in listTables:
-            listListSigAbscInst = list()
-
-            # On crée une table pour chaque instant
-            S_XX = tbl.values()["SIXX"]
-            S_YY = tbl.values()["SIYY"]
-            S_ZZ = tbl.values()["SIZZ"]
-            S_XY = tbl.values()["SIXY"]
-            S_YZ = tbl.values()["SIYZ"]
-            S_XZ = tbl.values()["SIXZ"]
-            for v1, v2, v3, v4, v5, v6 in zip(S_XX, S_YY, S_ZZ, S_XY, S_YZ, S_XZ):
-                listSigAbsc = list()  # Liste des sigmas pour une abscisse
-                listSigAbsc.append(v1)
-                listSigAbsc.append(v2)
-                listSigAbsc.append(v3)
-                listSigAbsc.append(v4)
-                listSigAbsc.append(v5)
-                listSigAbsc.append(v6)
-
-                listListSigAbscInst.append(listSigAbsc)
-
-            listListListSigAbscInst.append(listListSigAbscInst)
-
-        # 4. Assemblage du dictionnaire
-        for i in range(0, len(list(dictInstAbscSig.keys()))):
-            listRealt = list()
-            for j in range(0, len(tabAbscisses)):
-                listRealt.append((tabAbscisses[j], listListListSigAbscInst[i][j]))
-
-            dictInstAbscSig[list(dictInstAbscSig.keys())[i]] = listRealt
-
-    def mergeDictTher(self):
-        """
-        Merge les resultats issus de la coupe du revetement avec ceux issus de la coupe de la structure
-        """
-        # Merge des listes d'abscisses
-        # Le revetement est interieur la derniere abscisse du revetement doit
-        # etre egal a la premiere de la structure
-        if self.tabAbscisses_S[len(self.tabAbscisses_S) - 1] != self.tabAbscisses[0]:
-            UTMESS("F", "OAR0_3")
-
-        # On construit une table des abscisses tempopraire
-        tableAbscTemp = self.tabAbscisses_S
-
-        # On recopie la table des abscisses en sautant le premier
-        debut = True
-        for val in self.tabAbscisses:
-            if debut:
-                debut = False
-                continue
-            tableAbscTemp.append(val)
-
-        self.tabAbscisses = tableAbscTemp
-
-        # On construit des listes de travail intermédiaires que l'on commence
-        # par remplir avec les tables "supplémentaires"
-        dictInstAbscSigBis = self.dictInstAbscSig_S
-        dictInstAbscTempBis = self.dictInstAbscTemp_S
-
-        # On recopie les élément thermiques de la structure principale en
-        # sautant la première abscisse de la structure
-        for key in list(
-            dictInstAbscTempBis.keys()
-        ):  # Les dictionnaires partagent les memes instants
-            debut = True
-            for valTher in self.dictInstAbscTemp[key]:
-                if debut:
-                    debut = False
-                    continue
-                dictInstAbscTempBis[key].append(valTher)
-
-        # On recopie les élément mécaniques de la structure principale en
-        # sautant la première abscisse de la structure
-        for key in list(
-            dictInstAbscSigBis.keys()
-        ):  # Les dictionnaires partagent les memes instants
-            debut = True
-            for valSig in self.dictInstAbscSig[key]:
-                if debut:
-                    debut = False
-                    continue
-                dictInstAbscSigBis[key].append(valSig)
-
-        # On restitue ensuite la liste globale dans self.dictInstAbscSig
-        self.dictInstAbscSig = dictInstAbscSigBis
-        self.dictInstAbscTemp = dictInstAbscTempBis
-
-    def compareListAbscTher(self):
-        """
-        Vérifie que la coupe du champ thermique et la coupe mécanique partagent les memes abscisses
-        """
-        # 1. Récupération des abscisses associées aux températures
-        listAbsc = list()
-        lstRealt = self.dictInstAbscTemp[list(self.dictInstAbscTemp.keys())[0]]
-        for val in lstRealt:
-            listAbsc.append(val[0])
-
-        # 2. Comparaison des deux listes
-        for A1, A2 in zip(self.tabAbscisses, listAbsc):
-            if A1 != A2:
-                return False
-
-        return True
-
-    def interpoleInstants(self):
-        """
-        Interpole les résultats thermique sur les instants des résultats mécaniques
-        """
-        # 1. récupération des instants des deux tables
-        listInstTher = list(self.dictInstAbscTemp.keys())
-        listInstMeca = list(self.dictInstAbscSig.keys())
-
-        # 2. calcul de la liste des bornes de la table thermique qui encadrent
-        # les résultats mécaniques
-        dictInstAbscTemp = dict()
-        listAbscTemp = list()
-        listBornes = list()
-        for inst in listInstMeca:
-            bornes = getBornes(listInstTher, inst)
-            # Si une des bornes n'est pas définie, on lance une exception
-            if not (bornes[0]) or not (bornes[1]):
-                raise interpolationError
-
-            abscTempInf = self.dictInstAbscTemp[
-                bornes[0]
-            ]  # Liste de doublet (abscisse, temperature) pour la borne inférieure
-            abscTempSup = self.dictInstAbscTemp[
-                bornes[1]
-            ]  # Liste de doublet (abscisse, temperature) pour la borne supérieure
-
-            listAbscTemp = list()  # liste de couples abscisses/Température
-            for A1, A2 in zip(
-                abscTempInf, abscTempSup
-            ):  # A1 et A2 sont des doublets abscisse/Temperature
-                temperature = interpoleLin(((bornes[0], A1[1]), (bornes[1], A2[1])), inst)
-                listAbscTemp.append((A1[0], temperature))
-                # on aurait pu tout aussi bien prendre
-                # A2[0] (c est pareil ...)
-
-            dictInstAbscTemp[inst] = listAbscTemp
-
-        # remplacement de l'ancienne table par la nouvelle
-        self.dictInstAbscTemp = dictInstAbscTemp
-
-    def buildTree(self):
-        """
-        Construction (en mémoire) de l'arborescence du document XML
-        """
-        sigma_xml = ("S_RR", "S_TT", "S_ZZ", "S_RT", "S_TZ", "S_ZR")
-
-        # Création de l'arborescence "géométrie"
-        nodeGeomComp = self.nodeComp.append("GEOM_COMPO")
-        nodeGeomComp.append("REVETEMENT", valeur=self.revet)
-        if self.revet == "OUI":
-            nodeGeomComp.append("EP_REVET", valeur=self.epaisseur_R)
-        nodeLigneCoupe = nodeGeomComp.append("LIGNE_COUPE")
-        nodeLigneCoupe.append("EPAISSEUR_EF", valeur=self.epaisseur)
-        nodeLigneCoupe.append("DIAM_EXT_EF", valeur=self.diametre)
-        nodeLigneCoupe.append("ORI_ABSC", valeur=self.origine)
-
-        if self.noResuMeca == False:
-            # Création des abscisses
-            for val in self.tabAbscisses:
-                nodeLigneCoupe.append("ABSCISSE", val)
-
-            nodeLigneCoupe.append("PSI", self.angle_c)
-
-            # Création des résultats mécaniques
-            nodeSigma_u = self.nodeComp.append("SIGMA_UNITE")
-            nodeSigma_u.append("NUM_MECA", valeur=self.num_char)
-            nodeSigma_u.append("NOM_MECA", valeur=self.type_char)
-            nodeSigma_meca = nodeSigma_u.append("SIGMA_MECA")
-
-            for i in range(0, len(self.tabAbscisses)):
-                for val in list(self.dictMeca.keys()):
-                    nodeSigma_meca.append(val, valeur=self.dictMeca[val][i])
-
-        # Création de l'arborescence "résultat thermo_mécanique"
-        if self.noResuTher == False:
-            # Création des abscisses
-            listRealt = self.dictInstAbscTemp[list(self.dictInstAbscTemp.keys())[0]]
-            for val in listRealt:
-                nodeLigneCoupe.append("ABSCISSE", val[0])
-
-            nodeLigneCoupe.append("PSI", self.angle_c)
-
-            # Création des résultats mécaniques
-            nodeSigma_ther_c = self.nodeComp.append("SIGMA_THER_C")
-            nodeSigma_ther_c.append("NUM_TRANSI_THER", valeur=self.num_tran)
-
-            for inst in list(self.dictInstAbscTemp.keys()):  # boucle sur les instants
-                nodeSigma_ther = nodeSigma_ther_c.append("SIGMA_THER")
-                nodeSigma_ther.append("INSTANT", valeur=inst)
-
-                # boucle sur les abscisses
-                for doubletAbscSig, doubletAbscTemp in zip(
-                    self.dictInstAbscSig[inst], self.dictInstAbscTemp[inst]
-                ):
-                    nodeSigma_point = nodeSigma_ther.append("SIGMA_POINT")
-                    for val, label in zip(doubletAbscSig[1], sigma_xml):
-                        nodeSigma_point.append(label, valeur=val)
-
-                    nodeSigma_point.append("TEMPERATURE", doubletAbscTemp[1])
-
-
-class tuyauterie(OAR_element):
-
-    """
-    Classe permettant de traiter les tuyauteries
-    """
-
-    def __init__(self, **args):
-        self.nodeComp = XMLNode("TUYAUTERIE")
-
-        self.para_resu_meca = args["RESU_MECA"]
-        if len(self.para_resu_meca) > 1:
-            assert False
-        self.para_resu_meca = self.para_resu_meca[0]
-        self.num_char = self.para_resu_meca["NUM_CHAR"]
-
-        # Gestion du maillage
-        self.maillage = self.para_resu_meca["MAILLAGE"]
-
-        self.dictNoeudValTorseur = dict()
-        self.buildTableTorseur()
-
-        # Construction de l arborescence
-        self.buildTree()
-
-    def buildTableTorseur(self):
-        """
-        Construit un dictionnaire associant un noeud à un torseur exprimé sous la forme d'une liste de valeurs
-        """
-        table_temp = self.para_resu_meca["TABLE"].EXTR_TABLE()
-
-        # Utilisation des méthodes de la classe table
-        dictTable = table_temp.values()
-
-        # 1. Récupération de la liste des noeuds
-        NOEUDS = dictTable["NOEUD"]
-        for val in NOEUDS:
-            self.dictNoeudValTorseur[
-                val.rstrip()
-            ] = list()  # On crée juste les clés du dictionnaire
-
-        N = dictTable["N"]
-        VY = dictTable["VY"]
-        VZ = dictTable["VZ"]
-        MT = dictTable["MT"]
-        MFY = dictTable["MFY"]
-        MFZ = dictTable["MFZ"]
-
-        for no, n, vy, vz, mt, mfy, mfz in zip(NOEUDS, N, VY, VZ, MT, MFY, MFZ):
-            no = no.rstrip()
-            self.dictNoeudValTorseur[no].append(n)
-            self.dictNoeudValTorseur[no].append(vy)
-            self.dictNoeudValTorseur[no].append(vz)
-            self.dictNoeudValTorseur[no].append(mt)
-            self.dictNoeudValTorseur[no].append(mfy)
-            self.dictNoeudValTorseur[no].append(mfz)
-
-    def buildTree(self):
-        """
-        Construction (en mémoire) de l'arborescence du document XML
-        """
-        torseur_XML = ("FX", "FY", "FZ", "MX", "MY", "MZ")
-
-        # Création de l'arborescence "torseur"
-        nodeTMG = self.nodeComp.append("TORSEUR_MECA-GRP")
-        nodeTM = nodeTMG.append("TORSEUR_MECA")
-        nodeTM.append("oar:CHAR-REF", self.num_char)
-        nodeMTG = nodeTM.append("MAILLE_TORSEUR-GRP")
-        nodeMT = nodeMTG.append("MAILLE_TORSEUR")
-
-        for cell, nodes in enumerate(self.maillage.getConnectivity()):
-            NbNoeuds = 0
-            for node in nodes:
-                node_name = self.maillage.getNodeName(node)
-                if node_name in self.dictNoeudValTorseur.keys():
-                    NbNoeuds += 1
-            if NbNoeuds == 2:
-                nodeMT.append("oar:MAILLE-REF", self.maillage.getCellName(cell))
-                for node in nodes:
-                    node_name = self.maillage.getNodeName(node)
-                    nodeTorseur = nodeMT.append("oar:TORSEUR")
-                    for val, cle in zip(
-                        self.dictNoeudValTorseur[node_name], torseur_XML
-                    ):  # 6 valeurs
-                        nodeTorseur.append(cle, val)
-
-
-def impr_oar_ops(self, TYPE_CALC, **args):
+            for row in tableau:
+                f.write(
+                    f"{row[1]:15.4E} {row[2]:15.4E}"
+                    f" {row[3]:15.4E} {row[4]:15.4E} {row[5]:15.4E} "
+                    f"{row[6]:15.4E} \n"
+                )
+            f.write("\n")
+
+    def ecrire_temp(self, nomfichier, tabl_temp, tabl_tempsig):
+        """écriture des températures et contraintes - cas thermique"""
+        with open(nomfichier, "a") as f:
+            f.write(
+                "; TEMPERATURE             SIXX            SIYY"
+                "            SIZZ            SIXY            SIXZ"
+                "            SIYZ \n"
+            )
+            for row1, row2 in zip(tabl_temp, tabl_tempsig):
+                f.write(
+                    f"    {row1[1]:5.1f}         {row2[1]:15.4E} "
+                    f"{row2[2]:15.4E} {row2[3]:15.4E} {row2[4]:15.4E} "
+                    f"{row2[5]:15.4E} {row2[6]:15.4E} \n"
+                )
+            f.write("\n")
+
+    def Impression(self):
+        """Impression proprement dite du rapport de sortie"""
+        self.ajoutINST()
+        listeAzim = self.ListeAzim()
+        nbAzim = len(listeAzim)
+        tablenonvide = self.Tablenonvide()
+
+        if self.typefic == "meca":
+            self.ecrire_preambule(self.ficsortie)
+            for intitule in listeAzim:
+                with open(self.ficsortie, "a") as f:
+                    f.write("; " + intitule + "\n \n")
+                tableau_abs = self.AbscisseAzim(tablenonvide, intitule)
+                self.ecrire_abs(self.ficsortie, tableau_abs)
+
+                for key in self.ordre:
+                    if self.charg[key] is not None:
+                        instant = self.charg[key].values()["INST"][0]
+                        tableau = self.CoupeAzim(self.charg[key], intitule, instant)
+                        self.ecrire_contr(self.ficsortie, tableau, self.etiquette[key])
+
+        if self.typefic == "temp":
+            # determination liste des instants
+            premiereabsc = self.charg["TEMP"].values()["ABSC_CURV"][0]
+            tableintro = self.charg["TEMP"].ABSC_CURV == premiereabsc
+            tableintror = tableintro.INTITULE == tableintro.values()["INTITULE"][0]
+            NUME_ORDRE = np.array(tableintror.values()["NUME_ORDRE"])
+            INST = np.array(tableintror.values()["INST"])
+            self.listeinstant_temp = INST
+
+            # impression du preambule et de la liste des instants
+            self.ecrire_preambule(self.ficsortie)
+            with open(self.ficsortie, "a") as f:
+                f.write("; LISTE DES INSTANTS \n \n")
+                f.write("INST \n \n")
+                for instant in self.listeinstant_temp:
+                    f.write("{} \n".format(instant))
+                f.write("\n \n")
+                f.write("; LISTE DES TEMPERATURES ET CONTRAINTES PAR COUPE")
+                f.write("\n \n")
+
+            # impression
+            for intitule in listeAzim:
+                tableau_abs = self.AbscisseAzim(self.charg["TEMP"], intitule)
+                with open(self.ficsortie, "a") as f:
+                    f.write("; " + intitule + "\n \n")
+                self.ecrire_abs(self.ficsortie, tableau_abs)
+                with open(self.ficsortie, "a") as f:
+                    f.write("TEMP SIGM \n \n")
+                for instant in self.listeinstant_temp:
+                    with open(self.ficsortie, "a") as f:
+                        f.write("; INSTANT {} \n \n".format(instant))
+                    tableau_temp = self.CoupeAzim_temp(self.charg["TEMP"], intitule, instant)
+                    tableau_tempsig = self.CoupeAzim(self.charg["CONTRAINTE"], intitule, instant)
+                    self.ecrire_temp(self.ficsortie, tableau_temp, tableau_tempsig)
+                    with open(self.ficsortie, "a") as f:
+                        f.write("\n \n")
+
+
+def impr_oar_ops(self, **args):
     """
     Macro IMPR_OAR
-    Ecrit des fichiers au format XML selon la DTD OAR Fichier
 
-    IMPR_OAR va etre utilise en deux fois d abord calcul mecanique,
-    ensuite calcul thermique ce qui implique qu il ne peut y avoir qu'une seule des deux options a la fois
     """
+    resultat = OAR_EF()
 
-    obj = None
+    TABL_MECA = args.get("TABL_MECA")
+    TABL_THER = args.get("TABL_THER")
+    resultat.titre = args.get("TITRE")
+    resultat.type_unit = "SI" if args.get("TYPE_UNIT") is None else args.get("TYPE_UNIT")
 
-    if TYPE_CALC == "COMPOSANT":
-        obj = composant(**args)
-    elif TYPE_CALC == "MEF":
-        UTMESS("F", "OAR0_5")
-    elif TYPE_CALC == "TUYAUTERIE":
-        obj = tuyauterie(**args)
-    else:
-        UTMESS("F", "OAR0_6")
-
-    # Ecriture dans le fichier
-    # Récupération de la LU du fichier de sortie
     try:
         unite = args["UNITE"]
     except:
-        unite = 38
-
-    try:
-        ajout = args["AJOUT"]
-    except:
-        ajout = "NON"
+        UTMESS("F", "OAR0_1")
 
     name = "fort." + str(unite)
-    try:
-        if ajout == "NON":  # nouveau fichier
-            fileObj = open(name, "wt")
-        else:  # extension du fichier existant
-            fileObj = open(name, "a+t")
-    except IOError:
-        UTMESS("F", "OAR0_7")
-    else:
-        obj.getNode().save(fileObj)
-        fileObj.close()
+    resultat.ficsortie = name
+    open(resultat.ficsortie, "w").close()  # on vide le fichier
+
+    if (TABL_MECA is not None) and (TABL_THER is not None):
+        UTMESS("F", "OAR0_2")
+
+    if resultat.type_unit not in ["SI", "MM-MPA"]:
+        UTMESS("F", "OAR0_3")
+
+    if TABL_MECA is not None:
+        resultat.ordre = TABL_MECA[0].keys()
+        for key in resultat.ordre:
+            resultat.charg[key] = TABL_MECA[0][key].EXTR_TABLE()
+        resultat.typefic = "meca"
+        resultat.Impression()
+
+    if TABL_THER is not None:
+        resultat.charg["TEMP"] = TABL_THER[0]["TEMP"].EXTR_TABLE()
+        resultat.charg["CONTRAINTE"] = TABL_THER[0]["CONTRAINTE"].EXTR_TABLE()
+        resultat.typefic = "temp"
+        resultat.Impression()

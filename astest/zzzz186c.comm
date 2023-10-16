@@ -1,0 +1,165 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+"""
+======================================================================
+                Cas test de la commande IMPR_OAR 
+
+        Modélisation C - Chargement mécanique axisymétrique
+======================================================================
+Le maillage est en mm. 
+
+Les groupes du maillage sont :
+- aretes :
+    - Pencas : partie épaisse encastrée
+    - Plibre : partie fine
+    - Pint : peau intérieure
+
+"""
+
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="NON"))
+
+# Parametres :
+Re = 203.2 / 1000
+Ri = Re - 21.4 / 1000
+
+# MAILLAGE
+
+mail_lin = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
+
+mail = CREA_MAILLAGE(MAILLAGE=mail_lin, LINE_QUAD=_F(TOUT="OUI"))
+
+mail = MODI_MAILLAGE(reuse=mail, MAILLAGE=mail, ECHELLE=0.001)
+
+mail = MODI_MAILLAGE(reuse=mail, MAILLAGE=mail, ORIE_PEAU_2D=_F(GROUP_MA=("Pint", "Plibre")))
+
+
+# MODELE
+
+modl = AFFE_MODELE(
+    MAILLAGE=mail, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="AXIS_FOURIER")
+)
+
+
+# MATERIAU
+
+acier = DEFI_MATERIAU(ELAS=_F(E=210000000000.0, NU=0.3))
+
+
+chmat = AFFE_MATERIAU(MAILLAGE=mail, AFFE=_F(TOUT="OUI", MATER=acier))
+
+# CHARGEMENTS ET RESOLUTION
+
+# conditions aux limites
+# ----------------------
+
+clim = AFFE_CHAR_MECA(MODELE=modl, FACE_IMPO=_F(GROUP_MA="Pencas", DY=0, DZ=0))
+
+
+# Torsion
+# ---------
+
+chargT = AFFE_CHAR_MECA(MODELE=modl, FORCE_CONTOUR=_F(GROUP_MA=("Plibre",), FZ=1))
+
+resT = MACRO_ELAS_MULT(
+    MODELE=modl,
+    CHAM_MATER=chmat,
+    CHAR_MECA_GLOBAL=clim,
+    CAS_CHARGE=(_F(MODE_FOURIER=0, TYPE_MODE="ANTI", CHAR_MECA=chargT),),
+)
+
+resT = CALC_CHAMP(reuse=resT, RESULTAT=resT, CONTRAINTE=("SIGM_ELNO", "SIGM_NOEU"))
+
+tableT = MACR_LIGN_COUPE(
+    LIGN_COUPE=(_F(COOR_EXTR=(Re, 0, 0.0), COOR_ORIG=(Ri, 0, 0.0), NB_POINTS=20),),
+    NOM_CHAM="SIGM_NOEU",
+    RESULTAT=resT,
+)
+
+
+IMPR_TABLE(TABLE=tableT, UNITE=7)
+
+
+# Pression
+# ---------
+
+
+Pfond = Ri**2 / (Re**2 - Ri**2)
+chargP = AFFE_CHAR_MECA(
+    MODELE=modl, PRES_REP=(_F(GROUP_MA=("Pint",), PRES=1), _F(GROUP_MA=("Plibre",), PRES=-Pfond))
+)
+
+resP = MACRO_ELAS_MULT(
+    MODELE=modl,
+    CHAM_MATER=chmat,
+    CHAR_MECA_GLOBAL=clim,
+    CAS_CHARGE=(_F(MODE_FOURIER=0, TYPE_MODE="SYME", CHAR_MECA=chargP),),
+)
+resP = CALC_CHAMP(reuse=resP, RESULTAT=resP, CONTRAINTE=("SIGM_ELNO", "SIGM_NOEU"))
+
+tableP = MACR_LIGN_COUPE(
+    LIGN_COUPE=(_F(COOR_EXTR=(Re, 0, 0.0), COOR_ORIG=(Ri, 0, 0.0), NB_POINTS=20),),
+    NOM_CHAM="SIGM_NOEU",
+    RESULTAT=resP,
+)
+
+IMPR_TABLE(TABLE=tableP, UNITE=8)
+
+
+# Flexion
+# -----------
+
+chargF = AFFE_CHAR_MECA(MODELE=modl, PRES_REP=_F(GROUP_MA=("Plibre",), PRES=-1))
+
+resF = MACRO_ELAS_MULT(
+    MODELE=modl,
+    CHAM_MATER=chmat,
+    CHAR_MECA_GLOBAL=clim,
+    CAS_CHARGE=(_F(MODE_FOURIER=1, TYPE_MODE="SYME", CHAR_MECA=chargF),),
+)
+
+resF = CALC_CHAMP(reuse=resF, RESULTAT=resF, CONTRAINTE=("SIGM_ELNO", "SIGM_NOEU"))
+
+tableF = MACR_LIGN_COUPE(
+    LIGN_COUPE=(_F(COOR_EXTR=(Re, 0, 0.0), COOR_ORIG=(Ri, 0, 0.0), NB_POINTS=20),),
+    NOM_CHAM="SIGM_NOEU",
+    RESULTAT=resF,
+)
+
+IMPR_TABLE(TABLE=tableF, UNITE=9)
+
+
+# impression des tables au format OAR
+# ------------------------------------
+
+IMPR_OAR(
+    TABL_MECA=_F(TORSION=tableT, PRESSION=tableP, FLEXION_P=tableF),
+    UNITE=10,
+    TITRE="Modelisation mécanique axisymétrique - modélisation c",
+)
+
+TEST_FICHIER(
+    FICHIER="fort.10",
+    EXPR_IGNORE=("CODE_ASTER", "CREATION"),
+    NB_VALE=380,
+    VALE_CALC=0.2142287716211131,
+)
+
+FIN()

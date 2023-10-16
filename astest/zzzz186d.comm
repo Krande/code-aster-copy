@@ -1,0 +1,210 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+"""
+======================================================================
+                Cas test de la commande IMPR_OAR 
+
+        Modélisation D - Chargement mécanique volumique
+======================================================================
+Le maillage est en mm. 
+
+Les groupes du maillage sont :
+- faces :
+    - Pencas : partie épaisse encastrée
+    - Plibre : partie fine
+    - Pint : peau intérieure
+
+"""
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="NON"))
+
+# MAILLAGE
+mesh_lin = LIRE_MAILLAGE(UNITE=20)
+
+mesh = CREA_MAILLAGE(MAILLAGE=mesh_lin, LINE_QUAD=_F(TOUT="OUI"))
+
+
+mesh = MODI_MAILLAGE(
+    reuse=mesh, ECHELLE=0.001, MAILLAGE=mesh, ORIE_PEAU=_F(GROUP_MA_PEAU=("Plibre", "Pint"))
+)
+
+# MODELE
+model = AFFE_MODELE(
+    AFFE=(
+        _F(TOUT="OUI", MODELISATION="3D", PHENOMENE="MECANIQUE"),
+        _F(GROUP_MA="MO_libre", PHENOMENE="MECANIQUE", MODELISATION="DIS_TR"),
+    ),
+    MAILLAGE=mesh,
+)
+
+# MATERIAU
+mater = DEFI_MATERIAU(ELAS=_F(E=200000000000.0, NU=0.3))
+
+
+fieldma0 = AFFE_MATERIAU(AFFE=_F(MATER=mater, TOUT="OUI"), MODELE=model)
+
+# Caractéristiques du discret
+cara = AFFE_CARA_ELEM(
+    MODELE=model,
+    DISCRET=_F(GROUP_MA="MO_libre", CARA="K_TR_D_N", VALE=(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)),
+)
+
+# Conditions aux limites et lien du discret au modèle
+ddl = AFFE_CHAR_MECA(DDL_IMPO=_F(DX=0.0, DY=0.0, DZ=0.0, GROUP_MA=("Pencas",)), MODELE=model)
+
+liaison = AFFE_CHAR_MECA(
+    MODELE=model, LIAISON_ELEM=_F(OPTION="3D_POU", GROUP_MA_1="Plibre", GROUP_NO_2="NO_libre")
+)
+
+# Chargements mécaniques
+p = 1.0e6  # pression unitaire (=1 MPa)
+
+Ri_tube = (1e-3) * (406.4 - 2 * 21.4) / 2
+Re_tube = (1e-3) * 406.4 / 2
+pfond_tube = p * Ri_tube**2 / (Re_tube**2 - Ri_tube**2)
+
+
+chargP = AFFE_CHAR_MECA(
+    MODELE=model, PRES_REP=(_F(GROUP_MA="Pint", PRES=1e6), _F(GROUP_MA="Plibre", PRES=-pfond_tube))
+)
+
+chargT = AFFE_CHAR_MECA(FORCE_NODALE=_F(MY=10000.0, GROUP_NO=("NO_libre",)), MODELE=model)
+
+chargFP = AFFE_CHAR_MECA(FORCE_NODALE=_F(MZ=10000.0, GROUP_NO=("NO_libre",)), MODELE=model)
+
+chargHFP = AFFE_CHAR_MECA(FORCE_NODALE=_F(MX=10000.0, GROUP_NO=("NO_libre",)), MODELE=model)
+
+# Résolution
+resulP = MECA_STATIQUE(
+    CHAM_MATER=fieldma0,
+    CARA_ELEM=cara,
+    EXCIT=(_F(CHARGE=ddl), _F(CHARGE=chargP), _F(CHARGE=liaison)),
+    MODELE=model,
+    SOLVEUR=_F(RESI_RELA=1e-05),
+)
+
+resulFP = MECA_STATIQUE(
+    CHAM_MATER=fieldma0,
+    CARA_ELEM=cara,
+    EXCIT=(_F(CHARGE=ddl), _F(CHARGE=chargFP), _F(CHARGE=liaison)),
+    SOLVEUR=_F(RESI_RELA=1e-5),
+    MODELE=model,
+)
+
+
+resulHFP = MECA_STATIQUE(
+    CHAM_MATER=fieldma0,
+    CARA_ELEM=cara,
+    EXCIT=(_F(CHARGE=ddl), _F(CHARGE=chargHFP), _F(CHARGE=liaison)),
+    SOLVEUR=_F(RESI_RELA=1e-5),
+    MODELE=model,
+)
+
+resulT = MECA_STATIQUE(
+    CHAM_MATER=fieldma0,
+    CARA_ELEM=cara,
+    EXCIT=(_F(CHARGE=ddl), _F(CHARGE=chargT), _F(CHARGE=liaison)),
+    SOLVEUR=_F(RESI_RELA=1e-5),
+    MODELE=model,
+)
+
+# Posts-traitements
+#       Enrichissement des champs de résultats
+#       et impression des résultats
+resulP = CALC_CHAMP(
+    reuse=resulP, CONTRAINTE=("SIGM_NOEU",), CRITERES=("SIEQ_ELGA",), RESULTAT=resulP
+)
+
+resulFP = CALC_CHAMP(
+    reuse=resulFP, CONTRAINTE=("SIGM_NOEU",), CRITERES=("SIEQ_ELGA",), RESULTAT=resulFP
+)
+
+resulHFP = CALC_CHAMP(
+    reuse=resulHFP, CONTRAINTE=("SIGM_NOEU",), CRITERES=("SIEQ_ELGA",), RESULTAT=resulHFP
+)
+
+resulT = CALC_CHAMP(
+    reuse=resulT, CONTRAINTE=("SIGM_NOEU",), CRITERES=("SIEQ_ELGA",), RESULTAT=resulT
+)
+
+IMPR_RESU(RESU=_F(RESULTAT=resulT), UNITE=80)
+
+
+#       création et impression des tables au format aster
+tableP = MACR_LIGN_COUPE(
+    LIGN_COUPE=(
+        _F(COOR_EXTR=(0.2032, 0.0, 0.0), COOR_ORIG=(0.1818, 0.0, 0.0), NB_POINTS=40),
+        _F(COOR_EXTR=(0, 0.0, 0.2032), COOR_ORIG=(0, 0.0, 0.1818), NB_POINTS=40),
+    ),
+    NOM_CHAM="SIGM_NOEU",
+    RESULTAT=resulP,
+)
+
+tableFP = MACR_LIGN_COUPE(
+    LIGN_COUPE=(
+        _F(COOR_EXTR=(0.2032, 0, 0.0), COOR_ORIG=(0.1818, 0, 0.0), NB_POINTS=40),
+        _F(COOR_EXTR=(0, 0, 0.2032), COOR_ORIG=(0, 0, 0.1818), NB_POINTS=40),
+    ),
+    NOM_CHAM="SIGM_NOEU",
+    RESULTAT=resulFP,
+)
+
+tableHFP = MACR_LIGN_COUPE(
+    LIGN_COUPE=(
+        _F(COOR_EXTR=(0.2032, 0, 0.0), COOR_ORIG=(0.1818, 0, 0.0), NB_POINTS=40),
+        _F(COOR_EXTR=(0, 0, 0.2032), COOR_ORIG=(0, 0, 0.1818), NB_POINTS=40),
+    ),
+    NOM_CHAM="SIGM_NOEU",
+    RESULTAT=resulHFP,
+)
+
+tableT = MACR_LIGN_COUPE(
+    LIGN_COUPE=(
+        _F(COOR_EXTR=(0.2032, 0.0, 0.0), COOR_ORIG=(0.1818, 0.0, 0.0), NB_POINTS=40),
+        _F(COOR_EXTR=(0, 0.0, 0.2032), COOR_ORIG=(0, 0.0, 0.1818), NB_POINTS=40),
+    ),
+    NOM_CHAM="SIGM_NOEU",
+    RESULTAT=resulT,
+)
+
+
+IMPR_TABLE(TABLE=tableT, UNITE=7)
+IMPR_TABLE(TABLE=tableP, UNITE=8)
+IMPR_TABLE(TABLE=tableFP, UNITE=9)
+IMPR_TABLE(TABLE=tableHFP, UNITE=10)
+
+
+# impression des tables au format OAR
+
+IMPR_OAR(
+    TABL_MECA=_F(PRESSION=tableP, FLEXION_P=tableFP, FLEXION_HP=tableHFP, TORSION=tableT),
+    UNITE=11,
+    TITRE="Modelisation mécanique - Modélisation d",
+    TYPE_UNIT="SI",
+)
+
+TEST_FICHIER(
+    FICHIER="fort.10",
+    EXPR_IGNORE=("CODE_ASTER", "CREATION"),
+    NB_VALE=881,
+    VALE_CALC=1.7162437814e08,
+)
+
+FIN()

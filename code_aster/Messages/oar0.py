@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,32 +22,17 @@ from ..Utilities import _
 cata_msg = {
     1: _(
         """
-Les coupes mécanique et thermique doivent partager les mêmes abscisses.
+Le fichier de sortie de IMPR_OAR est manquant.
 """
     ),
     2: _(
         """
-Erreur d'interpolation: %(k1)s
+IMPR_OAR prend au choix soit des résultats thermiques, soit des résultats mécaniques.
 """
     ),
     3: _(
         """
-Les coupes du revêtement et de la structure doivent partager une abscisse commune.
-"""
-    ),
-    5: _(
-        """
-Fonction non implantée.
-"""
-    ),
-    6: _(
-        """
-Mot clé facteur inconnu.
-"""
-    ),
-    7: _(
-        """
-Erreur à l'ouverture du fichier.
+TYPE_UNIT prend soit la valeur 'SI' soit la valeur 'MM-MPA'.
 """
     ),
 }

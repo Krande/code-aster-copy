@@ -16,11 +16,12 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
+
 """
 ======================================================================
                 Cas test de la commande IMPR_OAR 
 
-        Modélisation A - Chargement thermique axisymétrique
+        Modélisation B - Chargement thermique axisymétrique
 ======================================================================
 
 La température est imposée en peau interne, l'échange est nul en peau externe.
@@ -33,13 +34,10 @@ Les tables asters sont ensuite imprimées au format OAR.
 Le maillage est en mm. 
 
 Les groupes du maillage sont :
-- noeuds :
-    - NO_A : noeud A
-- aretes :
+- faces :
     - Pencas : partie épaisse encastrée
     - Plibre : partie fine
     - Pint : peau intérieure
-
 
 """
 
@@ -61,7 +59,7 @@ MATER = DEFI_MATERIAU(
 
 
 MODTH = AFFE_MODELE(
-    MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", PHENOMENE="THERMIQUE", MODELISATION="AXIS_DIAG")
+    MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", PHENOMENE="THERMIQUE", MODELISATION="3D_DIAG")
 )
 
 CHMATER = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=MATER))
@@ -97,9 +95,21 @@ IMPR_TABLE(TABLE=tableTEMP, UNITE=8)
 MAIL_MECA = CREA_MAILLAGE(MAILLAGE=MAIL, LINE_QUAD=_F(TOUT="OUI"))
 
 MODMECA = AFFE_MODELE(
-    MAILLAGE=MAIL_MECA, AFFE=(_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="AXIS"),)
+    MAILLAGE=MAIL_MECA,
+    AFFE=(
+        _F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"),
+        _F(GROUP_MA="MO_libre", PHENOMENE="MECANIQUE", MODELISATION="DIS_TR"),
+    ),
 )
 
+cara = AFFE_CARA_ELEM(
+    MODELE=MODMECA,
+    DISCRET=_F(GROUP_MA="MO_libre", CARA="K_TR_D_N", VALE=(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)),
+)
+
+liaison = AFFE_CHAR_MECA(
+    MODELE=MODMECA, LIAISON_ELEM=_F(OPTION="3D_POU", GROUP_MA_1="Plibre", GROUP_NO_2="NO_libre")
+)
 
 therproj = PROJ_CHAMP(RESULTAT=TEMPE, MAILLAGE_1=MAIL, MAILLAGE_2=MAIL_MECA, METHODE="AUTO")
 
@@ -112,12 +122,21 @@ CHMECATH = AFFE_MATERIAU(
 
 CHMECA = AFFE_CHAR_MECA(
     MODELE=MODMECA,
-    DDL_IMPO=(_F(GROUP_MA="Pencas", DY=0),),
-    LIAISON_UNIF=(_F(GROUP_NO="NO_Plibre", DDL="DY")),
+    DDL_IMPO=(
+        _F(GROUP_MA="Pencas", DY=0),
+        _F(GROUP_MA="Pencas_edge", DZ=0),
+        _F(GROUP_NO="NO_B", DX=0),
+    ),
+    LIAISON_UNIF=(_F(GROUP_MA="Plibre", DDL="DY")),
 )
 
 RESU = MECA_STATIQUE(
-    MODELE=MODMECA, CHAM_MATER=CHMECATH, EXCIT=(_F(CHARGE=CHMECA)), LIST_INST=LINST
+    MODELE=MODMECA,
+    CHAM_MATER=CHMECATH,
+    CARA_ELEM=cara,
+    EXCIT=(_F(CHARGE=CHMECA), _F(CHARGE=liaison)),
+    LIST_INST=LINST,
+    SOLVEUR=_F(RESI_RELA=1e-05),
 )
 
 
@@ -138,14 +157,13 @@ IMPR_TABLE(TABLE=tableTEMPSIG, UNITE=9)
 IMPR_OAR(
     TABL_THER=_F(TEMP=tableTEMP, CONTRAINTE=tableTEMPSIG),
     UNITE=10,
-    TITRE="Choc thermique 150 50 - Modélisation a",
+    TITRE="Choc thermique 150 50 - Modélisation b",
 )
 
 TEST_FICHIER(
     FICHIER="fort.10",
     EXPR_IGNORE=("CODE_ASTER", "CREATION"),
     NB_VALE=1732,
-    VALE_CALC=25185.13873029122,
+    VALE_CALC=2.5159679962e04,
 )
-
 FIN()
