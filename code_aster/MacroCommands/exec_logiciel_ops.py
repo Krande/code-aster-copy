@@ -23,21 +23,14 @@
 This module defines the EXEC_LOGICIEL operator
 """
 
-import os
-import os.path as osp
-import re
 import subprocess
 import sys
-import tempfile
 import traceback
 from subprocess import PIPE
 
 from libaster import AsterError
 
-from ..Commands import LIRE_MAILLAGE
-from ..Helpers.LogicalUnit import FileAccess, FileType, LogicalUnitFile
 from ..Messages import UTMESS
-from ..Utilities import ExecutionParameter
 
 
 class CommandLine:
@@ -65,23 +58,6 @@ class ExecProgram:
     :exitCodeMax: the maximum acceptable return code
     :cmdBuilder: object to build the command line
     """
-
-    @staticmethod
-    def factory(macro, **kwargs):
-        """Factory that returns the object according to the arguments"""
-        if "SALOME" in kwargs:
-            class_ = ExecSalomeScript
-        elif "MAILLAGE" in kwargs:
-            fmt = kwargs.get("MAILLAGE")["FORMAT"]
-            if fmt == "SALOME":
-                class_ = ExecSalome
-            elif fmt == "GMSH":
-                class_ = ExecGmsh
-            else:
-                UTMESS("F", "EXECLOGICIEL0_2", valk=fmt)
-        else:
-            class_ = ExecProgram
-        return class_(macro)
 
     def __init__(self, step):
         """Initialisation"""
@@ -150,170 +126,10 @@ class ExecProgram:
         return exitCode <= self.exitCodeMax
 
 
-class ExecMesher(ExecProgram):
-    """Execute a mesher
-
-    fileIn --[ mesher ]--> fileOut --[ LIRE_MAILLAGE ]--> mesh
-
-    Additional attributes:
-    :fileIn: the data file used by the mesher
-    :fileOut: the file that Code_Aster will read
-    :format: format of the mesh that will be read by Code_Aster (not the
-             format of fileOut)
-    """
-
-    def __init__(self, *args):
-        """Initialization"""
-        super(ExecMesher, self).__init__(*args)
-        self.fileIn = None
-        self.fileOut = None
-        self.format = None
-
-    def configure(self, kwargs):
-        """Pre-execution function, read the keywords"""
-        super(ExecMesher, self).configure(kwargs)
-        self.fileIn = LogicalUnitFile.filename_from_unit(kwargs["MAILLAGE"]["UNITE_GEOM"])
-
-    def post(self):
-        """Create the mesh object"""
-        fileToRead = LogicalUnitFile.open(self.fileOut, FileType.Binary, FileAccess.Old)
-        ulMesh = fileToRead.unit
-        assert ulMesh, "file '{}' not associated to a logical unit".format(self.fileOut)
-        mesh = LIRE_MAILLAGE(UNITE=ulMesh, FORMAT=self.format, INFO=2 if self.debug else 1)
-        return mesh
-
-
-class ExecSalome(ExecMesher):
-    """Execute a SALOME script from Code_Aster to create a med file
-    A new SALOME session is started in background and stopped after
-    the execution of the script.
-
-    Additional attributes:
-    :pid: port id of the SALOME session
-    """
-
-    def __init__(self, *args):
-        """Initialization"""
-        super(ExecSalome, self).__init__(*args)
-        self.pid = None
-
-    def configure(self, kwargs):
-        """Pre-execution function, read the keywords"""
-        super(ExecSalome, self).configure(kwargs)
-        self.format = "MED"
-        if len(self.args) != 1:
-            UTMESS("F", "EXECLOGICIEL0_1")
-        self.fileOut = self.args[0]
-        LogicalUnitFile.new_free(self.fileOut)
-        # start a SALOME session
-        portFile = tempfile.NamedTemporaryFile(dir=".", suffix=".port").name
-        self.prog = self.prog or ExecutionParameter().get_option("prog:salome")
-        self.args = ["start", "-t", "--ns-port-log={}".format(portFile)]
-        # do not capture the output, it will block!
-        self.executeCommand(capture=False, silent=True)
-        with open(portFile, "r") as f:
-            self.pid = f.read().strip()
-        # prepare the main command
-        self.args = ["shell", "-p", self.pid, self.fileIn]
-
-    def cleanUp(self):
-        """Close the SALOME session"""
-        if not self.pid:
-            return
-        self.args = ["shell", "-p", self.pid, "killSalomeWithPort.py", "args:{}".format(self.pid)]
-        self.executeCommand(silent=True)
-
-
-class ExecGmsh(ExecMesher):
-    """Execute Gmsh from Code_Aster"""
-
-    def configure(self, kwargs):
-        """Pre-execution function, read the keywords"""
-        super(ExecGmsh, self).configure(kwargs)
-        self.format = "MED"
-        self.fileOut = tempfile.NamedTemporaryFile(dir=".", suffix=".med").name
-        LogicalUnitFile.new_free(self.fileOut)
-        self.prog = self.prog or ExecutionParameter().get_option("prog:gmsh")
-        self.args.extend(["-3", "-format", "med", self.fileIn, "-o", self.fileOut])
-
-
-class ExecSalomeScript(ExecProgram):
-    """Execute a SALOME script using the `salome` launcher"""
-
-    def __init__(self, *args):
-        """Initialization"""
-        super(ExecSalomeScript, self).__init__(*args)
-        self.pid = None
-
-    def configure(self, kwargs):
-        """Pre-execution function, read the keywords"""
-        super(ExecSalomeScript, self).configure(kwargs)
-        factKw = kwargs.get("SALOME")
-        if os.environ.get("APPLI"):
-            local = osp.join(os.environ["HOME"], os.environ["APPLI"], "salome")
-        else:
-            local = ExecutionParameter().get_option("prog:salome")
-        if not self.prog or factKw["MACHINE"]:
-            self.prog = local
-        self.args.insert(0, "shell")
-        if factKw["MACHINE"]:
-            self.args.extend(["-m", factKw["MACHINE"]])
-            # suppose the path to salome is the same on the remote host
-            # if LOGICIEL is not provided
-            self.args.extend(["-d", kwargs.get("LOGICIEL") or local])
-            self.args.extend(["-u", factKw["UTILISATEUR"]])
-        self.args.extend(["-p", str(factKw["PORT"])])
-        # change NOM_PARA/VALE in the original script
-        script = tempfile.NamedTemporaryFile(dir=".", suffix=".py").name
-        writeSalomeScript(factKw["CHEMIN_SCRIPT"], script, factKw)
-        self.args.append(script)
-        # input and output files
-        inputs = factKw["FICHIERS_ENTREE"] or []
-        if inputs:
-            self.args.append("args:" + ",".join(inputs))
-        outputs = factKw["FICHIERS_SORTIE"] or []
-        if outputs:
-            self.args.append("out:" + ",".join(outputs))
-        safe_remove(*outputs)
-
-
-def writeSalomeScript(orig, new, factKw):
-    """Create the SALOME script using a 'template'"""
-    with open(orig, "r") as f:
-        text = f.read()
-    text = _textReplace(text, factKw["NOM_PARA"], factKw["VALE"])
-    text = _textReplaceNumb(text, "INPUTFILE{}", factKw["FICHIERS_ENTREE"])
-    text = _textReplaceNumb(text, "OUTPUTFILE{}", factKw["FICHIERS_SORTIE"])
-    with open(new, "w") as f:
-        f.write(text)
-
-
-def _textReplace(text, inStr, outStr):
-    """Replace input strings by output strings"""
-    for orig, new in zip(inStr or [], outStr or []):
-        text = re.sub(re.escape(orig), new, text)
-    return text
-
-
-def _textReplaceNumb(text, pattern, outStr):
-    """Replace input strings by output strings"""
-    inStr = [pattern.format(i + 1) for i in range(len(outStr or []))]
-    return _textReplace(text, inStr, outStr)
-
-
-def safe_remove(*args):
-    """Remove a file without failing if it does not exist"""
-    for fileName in args:
-        try:
-            os.remove(fileName)
-        except OSError:
-            pass
-
-
 def exec_logiciel_ops(self, **kwargs):
-    """Execute a program, a script, a mesher... from Code_Aster"""
+    """Execute a program"""
 
-    action = ExecProgram.factory(self, **kwargs)
+    action = ExecProgram(self)
     try:
         action.configure(kwargs)
         action.execute()

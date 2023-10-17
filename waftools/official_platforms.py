@@ -34,7 +34,6 @@ def configure(self):
         os.environ["ENABLE_ALL"] = "1"
         # force to fail if a program is not found
         opts.with_prog_gmsh = True
-        # opts.with_prog_salome: only required by few testcases
         opts.with_prog_run_miss3d = True
         opts.with_prog_homard = True
         opts.with_prog_ecrevisse = True

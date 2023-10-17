@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,31 +17,17 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: j-pierre.lefebvre at edf.fr
-
 from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
 
-def exec_logiciel_prod(self, SALOME, MAILLAGE, **args):
-    if args.get("__all__"):
-        return (None, maillage_sdaster)
-    if SALOME is not None:
-        if len(SALOME.get("NOM_PARA") or []) != len(SALOME.get("VALE") or []):
-            raise AsException(tr("SALOME: NOM_PARA et VALE doivent avoir le " "même cardinal"))
-    if MAILLAGE is not None:
-        return maillage_sdaster
-    return None
-
-
 EXEC_LOGICIEL = MACRO(
     nom="EXEC_LOGICIEL",
     op=OPS("code_aster.MacroCommands.exec_logiciel_ops.exec_logiciel_ops"),
-    sd_prod=exec_logiciel_prod,
+    sd_prod=None,
     fr=tr("Exécute un logiciel ou une commande système depuis Aster"),
-    regles=(AU_MOINS_UN("LOGICIEL", "MAILLAGE", "SALOME"), EXCLUS("MAILLAGE", "SALOME")),
-    LOGICIEL=SIMP(statut="f", typ="TXM", fr=tr("Programme ou script à exécuter")),
+    LOGICIEL=SIMP(statut="o", typ="TXM", fr=tr("Programme ou script à exécuter")),
     ARGUMENT=SIMP(statut="f", max="**", typ="TXM", fr=tr("Arguments à transmettre à LOGICIEL")),
     SHELL=SIMP(
         statut="f",
@@ -52,65 +38,6 @@ EXEC_LOGICIEL = MACRO(
             "Execution dans un shell, nécessaire si LOGICIEL n'est pas "
             "un exécutable mais une ligne de commande complète utilisant "
             "des redirections ou des caractères de completions"
-        ),
-    ),
-    MAILLAGE=FACT(
-        statut="f",
-        FORMAT=SIMP(statut="o", typ="TXM", into=("GMSH", "SALOME")),
-        UNITE_GEOM=SIMP(
-            statut="f",
-            typ=UnitType(),
-            defaut=16,
-            inout="in",
-            fr=tr(
-                "Unité logique définissant le fichier (fort.N) "
-                "contenant les données géométriques (datg)"
-            ),
-        ),
-    ),
-    SALOME=FACT(
-        statut="f",
-        regles=(PRESENT_PRESENT("NOM_PARA", "VALE"),),
-        CHEMIN_SCRIPT=SIMP(statut="o", typ="TXM", fr=tr("Chemin du script Salome")),
-        MACHINE=SIMP(statut="f", typ="TXM", defaut="", fr=tr("Machine sur laquelle tourne Salome")),
-        b_remote=BLOC(
-            condition="""not is_in("MACHINE", (None, ''))""",
-            UTILISATEUR=SIMP(statut="o", typ="TXM", fr=tr("Utilisateur sur la machine distante")),
-        ),
-        PORT=SIMP(
-            statut="f",
-            typ="I",
-            defaut=2810,
-            val_min=2810,
-            val_max=2910,
-            fr=tr("Port de l'instance Salome (2810 ou supérieur)"),
-        ),
-        FICHIERS_ENTREE=SIMP(
-            statut="f",
-            typ="TXM",
-            validators=NoRepeat(),
-            max="**",
-            fr=tr("Liste des fichiers d'entrée du script Salome"),
-        ),
-        FICHIERS_SORTIE=SIMP(
-            statut="f",
-            typ="TXM",
-            validators=NoRepeat(),
-            max="**",
-            fr=tr("Liste des fichiers générés par le script Salome"),
-        ),
-        NOM_PARA=SIMP(
-            statut="f",
-            typ="TXM",
-            max="**",
-            validators=NoRepeat(),
-            fr=tr("Liste des noms des paramètres à modifier " "dans le script Salome"),
-        ),
-        VALE=SIMP(
-            statut="f",
-            typ="TXM",
-            max="**",
-            fr=tr("Valeur des paramètres à) modifier dans le " "script Salome"),
         ),
     ),
     CODE_RETOUR_MAXI=SIMP(

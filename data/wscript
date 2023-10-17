@@ -92,13 +92,6 @@ def options(self):
         help="Force support of gmsh program",
     )
     group.add_option(
-        "--with-prog-salome",
-        action="store_true",
-        default=None,
-        dest="with_prog_salome",
-        help="Force support of salome program",
-    )
-    group.add_option(
         "--with-prog-run_miss3d",
         action="store_true",
         default=None,
@@ -602,14 +595,6 @@ def _call_cmd(self, msg, cmd):
 def check_external_programs(self):
     _check_prog(
         self, "gmsh", ["gmsh"], mandatory=self.options.with_prog_gmsh, add_paths=["${GMSH_BIN_DIR}"]
-    )
-
-    _check_prog(
-        self,
-        "salome",
-        ["salome"],
-        mandatory=self.options.with_prog_salome,
-        add_paths=["${ABSOLUTE_APPLI_PATH}"],
     )
 
     _check_prog(
