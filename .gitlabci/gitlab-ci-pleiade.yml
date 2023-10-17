@@ -1,4 +1,5 @@
 variables:
+  ROOT_URL: https://$GITLAB_TOKEN_NAME:$GITLAB_TOKEN@gitlab.pleiade.edf.fr/codeaster
   MINIO_URL: https://minio.retd.edf.fr
   SIF: runner.sif
   BUILD: mpi
@@ -88,7 +89,7 @@ minimal_test:
 
 verification_test:
   stage: test
-  needs: ["prepare", "compile", "minimal_test"]
+  needs: ["prepare", "compile", "check_source", "minimal_test"]
   script:
     - singularity exec --bind $(pwd) --pwd $(pwd) ${SIF}
         .gitlabci/test.sh

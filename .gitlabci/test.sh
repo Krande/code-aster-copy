@@ -2,6 +2,8 @@
 
 jobs=$(( $(nproc) * 7 / 8 ))
 args=( "--clean" "--timefactor=4.0" "--jobs=${jobs}" "$@" )
+# to be directly readable in the browser
+export MESS_EXT="mess.txt"
 
 printf "\nrunning testcases #1... - $(date)\n"
 ./install/bin/run_ctest "${args[@]}"
