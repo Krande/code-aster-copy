@@ -9,8 +9,8 @@ variables:
 workflow:
   rules:
     - if: $CI_MERGE_REQUEST_IID
-    - if: $CI_COMMIT_BRANCH =~ $reg_debugging
-    # - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_REF_NAME =~ $reg_debugging
+    # - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
     #   seems redudant using fast-forward merges
 
 stages:
@@ -52,10 +52,10 @@ compile:
       - install/*
     expire_in: 3 days
   rules:
-    - if: $CI_COMMIT_BRANCH !~ $reg_debugging
+    - if: $CI_COMMIT_REF_NAME !~ $reg_debugging
       variables:
         BUILD: mpi
-    - if: $CI_COMMIT_BRANCH =~ $reg_debugging
+    - if: $CI_COMMIT_REF_NAME =~ $reg_debugging
       variables:
         BUILD: debug
 
@@ -65,7 +65,7 @@ check_source:
   script:
     - singularity exec --bind $(pwd) --pwd $(pwd) ${SIF} .gitlabci/check_source.sh
   rules:
-    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH && $CI_COMMIT_BRANCH !~ $reg_debugging
+    - if: $CI_COMMIT_REF_NAME != $CI_DEFAULT_BRANCH && $CI_COMMIT_REF_NAME !~ $reg_debugging
 
 minimal_test:
   stage: test
@@ -85,7 +85,7 @@ minimal_test:
     reports:
       junit: results_mini/run_testcases.xml
   rules:
-    - if: $CI_COMMIT_BRANCH !~ $reg_debugging
+    - if: $CI_COMMIT_REF_NAME !~ $reg_debugging
 
 verification_test:
   stage: test
@@ -107,7 +107,7 @@ verification_test:
     reports:
       junit: results/run_testcases.xml
   rules:
-    - if: $CI_COMMIT_BRANCH !~ $reg_debugging
+    - if: $CI_COMMIT_REF_NAME !~ $reg_debugging
   resource_group: testing_verification
 
 known_failures_test:
@@ -129,7 +129,7 @@ known_failures_test:
     reports:
       junit: results_failures/run_testcases.xml
   rules:
-    - if: $CI_COMMIT_BRANCH !~ $reg_debugging
+    - if: $CI_COMMIT_REF_NAME !~ $reg_debugging
 
 debugging_test:
   stage: test
@@ -150,4 +150,4 @@ debugging_test:
     reports:
       junit: results_debugging/run_testcases.xml
   rules:
-    - if: $CI_COMMIT_BRANCH =~ $reg_debugging
+    - if: $CI_COMMIT_REF_NAME =~ $reg_debugging

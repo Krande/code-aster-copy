@@ -24,7 +24,7 @@ usage()
 export CI_PROJECT_DIR=$(pwd)
 export CI_SERVER_URL=https://gitlab.pleiade.edf.fr
 export CI_PROJECT_URL=$(pwd)
-export CI_MERGE_REQUEST_SOURCE_BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
+export CI_COMMIT_REF_NAME=$(git rev-parse --abbrev-ref HEAD)
 
 export DEBUG_CI=1
 export ARTF=/tmp
@@ -189,7 +189,7 @@ pipeline() {
         SINGULARITY_CMD=()
     fi
 
-    echo "+++ debugging pipeline: branch=${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}"
+    echo "+++ debugging pipeline: branch=${CI_COMMIT_REF_NAME}"
     [ ${prepare} -eq 1 ] && do_prepare
     [ ${compile} -eq 1 ] && do_compile
     [ ${doc_html} -eq 1 ] && do_doc_html

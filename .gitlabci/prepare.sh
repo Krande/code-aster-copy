@@ -23,7 +23,7 @@ DATA_URL=${ROOT_URL}/data.git
 git clone ${DATA_URL} data-src
 (
     cd data-src
-    branch=${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}
+    branch=${CI_COMMIT_REF_NAME}
     git rev-parse --verify ${branch} > /dev/null 2>&1 || branch=v15
     git checkout ${branch}
 )
