@@ -1,6 +1,5 @@
 #!/bin/bash -e
 
-set -x
 refrev=v15
 
 if [ ! -z "${GITLAB_CI}" ]; then
