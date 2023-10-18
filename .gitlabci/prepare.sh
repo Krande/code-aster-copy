@@ -23,7 +23,7 @@ DATA_URL=${ROOT_URL}/data.git
 git clone ${DATA_URL} data-src
 (
     cd data-src
-    branch=${CI_COMMIT_BRANCH}
+    branch=${CI_COMMIT_REF_NAME}
     git rev-parse --verify ${branch} > /dev/null 2>&1 || branch=main
     git checkout ${branch}
 )

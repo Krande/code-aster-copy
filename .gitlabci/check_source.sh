@@ -5,7 +5,7 @@ refrev=main
 if [ ! -z "${GITLAB_CI}" ]; then
     echo "+ fetching '${refrev}' branch..."
     git branch -D ${refrev} || true
-    git fetch --depth=1 origin ${refrev}
+    git fetch --depth=50 origin ${refrev}
     git branch ${refrev} FETCH_HEAD
 fi
 base=$(git merge-base main HEAD)
