@@ -138,7 +138,7 @@ seq_value = 15.652508028144187
 mpi_value = DEPL.norm("NORM_1")
 test.assertTrue(abs(seq_value - mpi_value) / abs(seq_value) < 1e-6)
 
-"""
+
 # Domain Decomposition Preconditioner
 DYNA = DYNA_VIBRA(
     TYPE_CALCUL="TRAN",
@@ -187,7 +187,7 @@ seq_value = 15.652508028144187
 mpi_value = DEPL.norm("NORM_1")
 test.assertTrue(abs(seq_value - mpi_value) / abs(seq_value) < 1e-6)
 
-"""
+
 ### On convertit le chargement onde_plane en transitoire dynamique temporel
 
 CH_ON = CREA_RESU(
