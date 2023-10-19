@@ -23,7 +23,7 @@ from ..Messages import UTMESS
 from ..Utilities import MPI, Timer, config
 from ..Utilities import medcoupling as medc
 from ..Utilities import no_new_attributes
-from ..Utilities.MedUtils import MedFileReader
+from ..Utilities.MedUtils import MedFileReader, MedFileAccessType
 
 from ..Utilities.MedUtils.medtoasterconnectivity import ASTER_TYPES
 from ..Utilities.MedUtils.medtoasterconnectivity import MED_TYPES
@@ -335,7 +335,7 @@ class MEDCouplingMeshHelper:
         size = MPI.ASTER_COMM_WORLD.Get_size()
 
         fr = MedFileReader()
-        fr.openParallel(filename)
+        fr.openParallel(filename, MedFileAccessType.MedReadOnly)
         curMesh = fr.getMesh(0)
         seq = curMesh.getSequence(0)
         nodeNb = curMesh.getNodeNumberAtSequence(seq[0], seq[1])

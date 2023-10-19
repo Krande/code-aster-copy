@@ -30,6 +30,7 @@ from ..base_utils import config
 # aslint: disable=C4008
 if config.get("ASTER_HAVE_MPI") and config.get("ASTER_HAVE_MED"):
     from ...Objects import MedFileReader, IncompleteMesh, MeshBalancer, MeshConnectionGraph
+    from ...Objects import MedFileAccessType
     from ...Objects import PtScotchPartitioner
     from ...Objects import FieldCharacteristics, SimpleFieldOnNodesReal, Result
     from ...Objects import SimpleFieldOnCellsReal
@@ -37,4 +38,4 @@ if config.get("ASTER_HAVE_MPI") and config.get("ASTER_HAVE_MED"):
 else:
     MedFileReader = IncompleteMesh = MeshBalancer = MeshConnectionGraph = PtScotchPartitioner = None
     FieldCharacteristics = SimpleFieldOnNodesReal = Result = SimpleFieldOnCellsReal = None
-    MYMED2ASTER_CONNECT = MED_TYPES = ASTER_TYPES = None
+    MYMED2ASTER_CONNECT = MED_TYPES = ASTER_TYPES = MedFileAccessType = None

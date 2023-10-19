@@ -33,6 +33,12 @@
 #ifdef ASTER_HAVE_MED
 void exportMedFileReaderToPython( py::module_ &mod ) {
 
+    py::enum_< MedFileAccessType >( mod, "MedFileAccessType" )
+        .value( "MedReadOnly", MedReadOnly )
+        .value( "MedReadWrite", MedReadWrite )
+        .value( "MedCreate", MedCreate )
+        .export_values();
+
     py::class_< MedFileReader, MedFileReader::MedFileReaderPtr >( mod, "MedFileReader" )
         .def( py::init( &initFactoryPtr< MedFileReader > ) )
         .def( "__pickling_disabled__", disable_pickling< MedFileReader >() )
@@ -93,16 +99,20 @@ Get profile number
 Returns:
     int: profile number
             )" )
-        .def( "openParallel", &MedFileReader::openParallel, R"(
+        .def( "openParallel",
+              py::overload_cast< const std::string &, const MedFileAccessType & >(
+                  &MedFileReader::openParallel ),
+              R"(
 Open med file in parallel
 
 Arguments:
     path (str): path to med file
+    accessType (MedFileAccessType): med access type
 
 Returns:
     int: return code (0 if open is ok)
             )",
-              py::arg( "path" ) );
+              py::arg( "path" ), py::arg( "accessType" ) );
 };
 
 #endif

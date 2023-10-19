@@ -34,6 +34,9 @@
 #include <vector>
 
 #ifdef ASTER_HAVE_MED
+
+enum MedFileAccessType { MedReadOnly, MedReadWrite, MedCreate };
+
 #include "med.h"
 /**
  * @class MEdFilePointer
@@ -68,7 +71,7 @@ class MedFilePointer {
     bool isParallel() const { return _parallelOpen; };
 
     /** @brief open med file in parallel */
-    int openParallel( const std::string &filename );
+    int openParallel( const std::string &filename, const MedFileAccessType & );
 };
 
 #endif

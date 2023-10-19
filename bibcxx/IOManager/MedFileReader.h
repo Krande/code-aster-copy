@@ -100,7 +100,7 @@ class MedFileReader {
     int getProfileNumber() const;
 
     /** @brief med parallel open of file */
-    int openParallel( const std::string &filename );
+    int openParallel( const std::string &filename, const MedFileAccessType &openType );
 };
 
 /**

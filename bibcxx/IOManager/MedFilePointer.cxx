@@ -42,11 +42,21 @@ med_idt MedFilePointer::getFileId() const {
     return _fileId;
 };
 
-int MedFilePointer::openParallel( const std::string &filename ) {
+int MedFilePointer::openParallel( const std::string &filename, const MedFileAccessType &openType ) {
 #ifdef ASTER_HAVE_MPI
     MPI_Info info = MPI_INFO_NULL;
     MPI_Comm comm = aster_get_comm_world()->id;
-    _fileId = MEDparFileOpen( filename.c_str(), MED_ACC_RDEXT, comm, MPI_INFO_NULL );
+    med_access_mode medAccessMode = MED_ACC_UNDEF;
+    if ( openType == MedReadOnly ) {
+        medAccessMode = MED_ACC_RDONLY;
+    } else if ( openType == MedReadWrite ) {
+        medAccessMode = MED_ACC_RDEXT;
+    } else if ( openType == MedCreate ) {
+        medAccessMode = MED_ACC_CREAT;
+    } else {
+        throw std::runtime_error( "Med file access type not allowed" );
+    }
+    _fileId = MEDparFileOpen( filename.c_str(), medAccessMode, comm, MPI_INFO_NULL );
     _isOpen = true;
     _parallelOpen = true;
     return 0;
