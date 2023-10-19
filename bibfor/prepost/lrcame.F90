@@ -482,7 +482,7 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel, &
             call utmess('A+', 'MED_69', ni=2, vali=vali)
         end if
         if (existc .eq. 0) then
-            call utmess('A', 'MED_32')
+            call utmess('A', 'MED_32', sk=nochmd)
         else if (existc .eq. 1) then
             call utmess('A', 'MED_33')
         else if (existc .eq. 2) then
