@@ -31,8 +31,10 @@ implicit none
 #include "asterfort/as_mmhnme.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/get_field_names_from_medfile.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/lxlgut.h"
@@ -63,7 +65,7 @@ character(len=64) :: nochmd
     integer :: iret, nmatyp, ncmp
     integer :: nbma, jnbtyp, jmatyp, nbtym, nbtv, codret
     med_idt :: idfimd
-    integer :: i, j, iaux, jnbty2
+    integer :: i, j, iaux, jnbty2, nchmed
     integer :: vali(2), lnomam
     integer, parameter :: edlect=0,edconn=1,edmail=0,ednoda=0
     character(len=1) :: k1b
@@ -74,6 +76,7 @@ character(len=64) :: nochmd
     aster_logical :: lfirst
     character(len=16), pointer :: cname(:) => null()
     character(len=16), pointer :: cunit(:) => null()
+    character(len=80), pointer :: v_names(:) => null()
     integer, pointer :: typmail(:) => null()
     character(len=8), parameter :: nomast(MT_NTYMAX) = (/'POI1    ','SEG2    ','SEG22   ',&
                                                          'SEG3    ','SEG33   ','SEG4    ',&
@@ -153,7 +156,14 @@ character(len=64) :: nochmd
 !
     call as_mfdncn(idfimd, nochmd, ncmp, codret)
     if (codret .ne. 0) then
-        call utmess('F', 'MED_32', sk=nochmd)
+        call get_field_names_from_medfile(idfimd, '&&LRVEMA.CHAMNOM')
+        call utmess('F+', 'MED_57', sk=nochmd)
+        call jelira('&&LRVEMA.CHAMNOM', 'LONMAX', nchmed)
+        call jeveuo('&&LRVEMA.CHAMNOM', 'L', vk80=v_names)
+        do iaux = 1, nchmed
+            call utmess('F+', 'MED2_2', sk=v_names(iaux))
+        end do
+        call utmess('F', 'VIDE_1')
     endif
     AS_ALLOCATE(vk16=cname, size=ncmp)
     AS_ALLOCATE(vk16=cunit, size=ncmp)
