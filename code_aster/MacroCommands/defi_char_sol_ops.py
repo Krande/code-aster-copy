@@ -290,7 +290,8 @@ def defi_char_sol_ops(self, TITRE=None, INFO=None, **args):
                                 TYPE_ONDE="P",
                                 DEPL_IMPO=__FONCDX,
                                 FONC_SIGNAL=__FONCVX,
-                                GROUP_MA=(grma_gauch, grma_droit),
+                                GROUP_MA=tuple(l_group),
+                                # GROUP_MA=(grma_gauch, grma_droit),
                             ),
                         )
                     else:
@@ -300,7 +301,8 @@ def defi_char_sol_ops(self, TITRE=None, INFO=None, **args):
                                 DIRECTION=(0.0, 1.0, 0.0),
                                 TYPE_ONDE="P",
                                 FONC_SIGNAL=__FONCVX,
-                                GROUP_MA=(grma_gauch, grma_droit),
+                                GROUP_MA=tuple(l_group),
+                                # GROUP_MA=(grma_gauch, grma_droit),
                             ),
                         )
         if dime == "3D":
