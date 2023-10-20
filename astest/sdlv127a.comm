@@ -871,8 +871,8 @@ AS_NDB = CALC_FONC_INTERP(
 TEST_FONCTION(
     VALEUR=(
         _F(
-            VALE_CALC=-1.009005612806,
-            VALE_REFE=-1.0,
+            VALE_CALC=1.009005612806,
+            VALE_REFE=1.0,
             PRECISION=1.0e-2,
             REFERENCE="ANALYTIQUE",
             CRITERE="RELATIF",
@@ -880,8 +880,8 @@ TEST_FONCTION(
             FONCTION=AS_NGB,
         ),
         _F(
-            VALE_CALC=-0.99779015325572,
-            VALE_REFE=-1.0,
+            VALE_CALC=0.99779015325572,
+            VALE_REFE=1.0,
             PRECISION=3.0e-3,
             REFERENCE="ANALYTIQUE",
             CRITERE="RELATIF",
@@ -889,8 +889,8 @@ TEST_FONCTION(
             FONCTION=AS_NMB,
         ),
         _F(
-            VALE_CALC=-0.99647088505823,
-            VALE_REFE=-1.0,
+            VALE_CALC=0.99647088505823,
+            VALE_REFE=1.0,
             PRECISION=5.0e-3,
             REFERENCE="ANALYTIQUE",
             CRITERE="RELATIF",
@@ -898,8 +898,8 @@ TEST_FONCTION(
             FONCTION=AS_NDB,
         ),
         _F(
-            VALE_CALC=-1.976538204225,
-            VALE_REFE=-2.0,
+            VALE_CALC=1.976538204225,
+            VALE_REFE=2.0,
             PRECISION=1.3e-2,
             REFERENCE="ANALYTIQUE",
             CRITERE="RELATIF",
@@ -907,8 +907,8 @@ TEST_FONCTION(
             FONCTION=AS_NGH,
         ),
         _F(
-            VALE_CALC=-1.959818667293,
-            VALE_REFE=-2.0,
+            VALE_CALC=1.959818667293,
+            VALE_REFE=2.0,
             PRECISION=2.1e-2,
             REFERENCE="ANALYTIQUE",
             CRITERE="RELATIF",
@@ -916,8 +916,8 @@ TEST_FONCTION(
             FONCTION=AS_NMH,
         ),
         _F(
-            VALE_CALC=-2.025792007917,
-            VALE_REFE=-2.0,
+            VALE_CALC=2.025792007917,
+            VALE_REFE=2.0,
             PRECISION=1.4e-2,
             REFERENCE="ANALYTIQUE",
             CRITERE="RELATIF",

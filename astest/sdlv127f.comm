@@ -257,18 +257,18 @@ ONDEP = AFFE_CHAR_MECA_F(
 )
 
 # onde SV
-ONDESV = AFFE_CHAR_MECA_F(
-    MODELE=MODELE,
-    ONDE_PLANE=_F(
-        DIRECTION=(sina, 0.000, cosa),
-        TYPE_ONDE="SV",
-        FONC_SIGNAL=vite_1,
-        COOR_SOURCE=(x0, y0, z0),
-        COOR_REFLECHI=(x1, y1, z1),
-        DEPL_IMPO=depl_1,
-        GROUP_MA=("SUG", "SUD", "SUB"),
-    ),
-)
+# ONDESV = AFFE_CHAR_MECA_F(
+#     MODELE=MODELE,
+#     ONDE_PLANE=_F(
+#         DIRECTION=(sina, 0.000, cosa),
+#         TYPE_ONDE="SV",
+#         FONC_SIGNAL=vite_1,
+#         COOR_SOURCE=(x0, y0, z0),
+#         COOR_REFLECHI=(x1, y1, z1),
+#         DEPL_IMPO=depl_1,
+#         GROUP_MA=("SUG", "SUD", "SUB"),
+#     ),
+# )
 
 # Résultats avec ondes réfléchies
 ResuP = DYNA_VIBRA(

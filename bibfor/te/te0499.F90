@@ -49,14 +49,14 @@ subroutine te0499(option, nomte)
     integer :: icodre(5), kpg
     character(len=1) :: type
     real(kind=8) :: poids, nx, ny, valres(5), e, nu, lambda, mu, cp, cs
-    real(kind=8) :: rho, taux, tauy, nux, nuy, scal
+    real(kind=8) :: rho, taux, tauy, nux, nuy, scal, sign_tan, nortan
     real(kind=8) :: sigma(2, 2), epsi(2, 2), grad(2, 2)
     real(kind=8) :: xgg(4), ygg(4), vondn(2), vondt(2), uondn(2), uondt(2)
-    real(kind=8) :: taondx, taondy, norx, nory, dirx, diry, cele, cele2
+    real(kind=8) :: taondx, taondy, norx, nory, norz, dirx, diry, dirz, cele, cele2
     real(kind=8) :: trace, norm, jac, coef_amor
     real(kind=8) :: param0, param, h, h2, instd, ris, rip, l0, usl0
-    real(kind=8) :: a2, b2, sina, cosa, sinb2, cosb2, rc1c2, ra12, ra13
-    real(kind=8) :: coedir, typer, valfon
+    real(kind=8) :: a2, b2, sina, cosa, sinb2, cosb2, rc1c2, ra12, ra13, sing, cosg
+    real(kind=8) :: coedir, typer, valfon, tanx, tany
     real(kind=8) :: xsv, zsv, dist1, dist2, instd1, instd2, x0, z0, x1, z1
     real(kind=8) :: kr, nr
     real(kind=8) :: valfon1, valfon2, param1, param2
@@ -108,7 +108,7 @@ subroutine te0499(option, nomte)
 !     --- CARACTERISTIQUES DE L'ONDE PLANE
 !
     dirx = zr(iondc)
-    diry = zr(iondc+1)
+    dirz = zr(iondc+1)
     typer = zr(iondc+3)
     x0 = zr(iondc+4)
     z0 = zr(iondc+5)
@@ -120,14 +120,15 @@ subroutine te0499(option, nomte)
 !
 !     --- CALCUL DU VECTEUR DIRECTEUR UNITAIRE DE L'ONDE PLANE
 !
-    norm = sqrt(dirx**2.d0+diry**2.d0)
+    norm = sqrt(dirx**2.d0+dirz**2.d0)
     dirx = dirx/norm
-    diry = diry/norm
+    diry = 0.d0
+    dirz = dirz/norm
 
     if (x0 .ne. r8vide()) then
-        h = x0*dirx+z0*diry
+        h = x0*dirx+z0*dirz
         if (x1 .ne. r8vide()) then
-            h2 = x1*dirx+z1*diry
+            h2 = x1*dirx+z1*dirz
         else
             h2 = r8vide()
         end if
@@ -136,8 +137,25 @@ subroutine te0499(option, nomte)
     end if
 !
 !     CALCUL DU REPERE ASSOCIE A L'ONDE
-    norx = -diry
-    nory = dirx
+
+    sing = 0.d0
+    cosg = 1.d0
+
+    tanx = -sing
+    tany = cosg
+
+    sign_tan = tany/abs(tany)
+
+!
+    nortan = sqrt(tanx**2.d0+tany**2.d0)
+
+    tanx = tanx/nortan
+    tany = tany/nortan
+
+    norx = -tany*dirz
+    nory = tanx*dirz
+    norz = -tanx*diry+tany*dirx
+!
 !
     do kpg = 1, npg
         xgg(kpg) = 0.d0
@@ -209,7 +227,7 @@ subroutine te0499(option, nomte)
 
 ! Calcul de l'angle réflexion de l'onde SV réfléchie.
         sina = dirx
-        cosa = diry
+        cosa = dirz
         a2 = asin(sina)
 
         if (h .ne. r8vide()) then
@@ -260,7 +278,7 @@ subroutine te0499(option, nomte)
         k = (kpg-1)*nno
 !
 !        CALCUL DU CHARGEMENT PAR ONDE PLANE
-        param0 = dirx*xgg(kpg)+diry*ygg(kpg)
+        param0 = dirx*xgg(kpg)+dirz*ygg(kpg)
 
         valfon1 = 0.d0
         valfon2 = 0.d0
@@ -324,57 +342,57 @@ subroutine te0499(option, nomte)
 !
             if (abs(cosa) .gt. 0.d0) then
                 grad(1, 1) = dirx*valfon*dirx
-                grad(1, 2) = diry*valfon*dirx
+                grad(1, 2) = dirz*valfon*dirx
 
-                grad(2, 1) = dirx*valfon*diry
-                grad(2, 2) = diry*valfon*diry
+                grad(2, 1) = dirx*valfon*dirz
+                grad(2, 2) = dirz*valfon*dirz
 
                 if (h .ne. r8vide()) then
                     if (h2 .ne. r8vide()) then
                         grad(1, 1) = grad(1, 1)+dirx*valfon1*dirx
                         grad(1, 1) = grad(1, 1)+sinb2*valfon2*cosb2
-                        grad(1, 2) = grad(1, 2)-diry*valfon1*dirx
+                        grad(1, 2) = grad(1, 2)-dirz*valfon1*dirx
                         grad(1, 2) = grad(1, 2)-cosb2*valfon2*cosb2
 
-                        grad(2, 1) = grad(2, 1)-dirx*valfon1*diry
+                        grad(2, 1) = grad(2, 1)-dirx*valfon1*dirz
                         grad(2, 1) = grad(2, 1)+sinb2*valfon2*sinb2
-                        grad(2, 2) = grad(2, 2)+diry*valfon1*diry
+                        grad(2, 2) = grad(2, 2)+dirz*valfon1*dirz
                         grad(2, 2) = grad(2, 2)-cosb2*valfon2*sinb2
                     end if
                 end if
             else
                 grad(1, 1) = dirx*(valfon-valfon1)*dirx
-                grad(1, 2) = diry*(valfon-valfon1)*dirx
-                grad(2, 1) = dirx*(valfon-valfon1)*diry
-                grad(2, 2) = diry*(valfon-valfon1)*diry
+                grad(1, 2) = dirz*(valfon-valfon1)*dirx
+                grad(2, 1) = dirx*(valfon-valfon1)*dirz
+                grad(2, 2) = dirz*(valfon-valfon1)*dirz
             end if
         else if (type .eq. 'S') then
 !
             if (abs(cosa) .gt. 0.d0) then
                 grad(1, 1) = dirx*valfon*norx
-                grad(1, 2) = diry*valfon*norx
+                grad(1, 2) = dirz*valfon*norx
 
-                grad(2, 1) = dirx*valfon*nory
-                grad(2, 2) = diry*valfon*nory
+                grad(2, 1) = dirx*valfon*norz
+                grad(2, 2) = dirz*valfon*norz
 
                 if (h .ne. r8vide()) then
                     if (h2 .ne. r8vide()) then
                         grad(1, 1) = grad(1, 1)-dirx*valfon1*norx
-                        grad(1, 1) = grad(1, 1)+sinb2*valfon2*sinb2
-                        grad(1, 2) = grad(1, 2)+diry*valfon1*norx
-                        grad(1, 2) = grad(1, 2)-cosb2*valfon2*sinb2
+                        grad(1, 1) = grad(1, 1)+sinb2*cosg*valfon2*sinb2*cosg*sign_tan
+                        grad(1, 2) = grad(1, 2)+dirz*valfon1*norx
+                        grad(1, 2) = grad(1, 2)-cosb2*valfon2*sinb2*cosg*sign_tan
 
-                        grad(2, 1) = grad(2, 1)+dirx*valfon1*nory
-                        grad(2, 1) = grad(2, 1)-cosb2*valfon2*sinb2
-                        grad(2, 2) = grad(2, 2)-diry*valfon1*nory
-                        grad(2, 2) = grad(2, 2)+cosb2*valfon2*cosb2
+                        grad(2, 1) = grad(2, 1)+dirx*valfon1*norz
+                        grad(2, 1) = grad(2, 1)-sinb2*cosg*valfon2*cosb2*sign_tan
+                        grad(2, 2) = grad(2, 2)-dirz*valfon1*norz
+                        grad(2, 2) = grad(2, 2)+cosb2*valfon2*cosb2*sign_tan
                     end if
                 end if
             else
                 grad(1, 1) = dirx*(valfon-valfon1)*norx
-                grad(1, 2) = diry*(valfon-valfon1)*norx
-                grad(2, 1) = dirx*(valfon-valfon1)*nory
-                grad(2, 2) = diry*(valfon-valfon1)*nory
+                grad(1, 2) = dirz*(valfon-valfon1)*norx
+                grad(2, 1) = dirx*(valfon-valfon1)*norz
+                grad(2, 2) = dirz*(valfon-valfon1)*norz
             end if
 !
         end if
@@ -415,16 +433,11 @@ subroutine te0499(option, nomte)
 !        --- TEST DU SENS DE LA NORMALE PAR RAPPORT A LA DIRECTION
 !            DE L'ONDE
 !
-!ER        scal = nux*dirx + nuy*diry
-!ER        if (scal .gt. 0.d0) then
-!ER            coedir = 1.d0
-!ER        else
         if (h .ne. r8vide()) then
             coedir = -1.d0
         else
             coedir = 0.d0
         end if
-!ER        endif
 !
 !        --- CALCUL DE V.N ---
 !
@@ -434,37 +447,37 @@ subroutine te0499(option, nomte)
         if (type .eq. 'P') then
             if (abs(cosa) .gt. 0.d0) then
                 vondt(1) = -cele*valfon*dirx
-                vondt(2) = -cele*valfon*diry
+                vondt(2) = -cele*valfon*dirz
 
                 if (h .ne. r8vide()) then
                     if (h2 .ne. r8vide()) then
                         vondt(1) = vondt(1)-cele*valfon1*dirx
                         vondt(1) = vondt(1)-cele2*valfon2*cosb2
-                        vondt(2) = vondt(2)+cele*valfon1*diry
+                        vondt(2) = vondt(2)+cele*valfon1*dirz
                         vondt(2) = vondt(2)-cele2*valfon2*sinb2
                     end if
                 end if
 
             else
                 vondt(1) = -cele*(valfon+valfon1)*dirx
-                vondt(2) = -cele*(valfon+valfon1)*diry
+                vondt(2) = -cele*(valfon+valfon1)*dirz
             end if
         else if (type .eq. 'S') then
             if (abs(cosa) .gt. 0.d0) then
                 vondt(1) = -cele*valfon*norx
-                vondt(2) = -cele*valfon*nory
+                vondt(2) = -cele*valfon*norz
 
                 if (h .ne. r8vide()) then
                     if (h2 .ne. r8vide()) then
                         vondt(1) = vondt(1)+cele*valfon1*norx
-                        vondt(1) = vondt(1)-cele2*valfon2*sinb2
-                        vondt(2) = vondt(2)-cele*valfon1*nory
-                        vondt(2) = vondt(2)+cele2*valfon2*cosb2
+                        vondt(1) = vondt(1)-cele2*valfon2*sinb2*cosg*sign_tan
+                        vondt(2) = vondt(2)-cele*valfon1*norz
+                        vondt(2) = vondt(2)+cele2*valfon2*cosb2*sign_tan
                     end if
                 end if
             else
                 vondt(1) = -cele*(valfon+valfon1)*norx
-                vondt(2) = -cele*(valfon+valfon1)*nory
+                vondt(2) = -cele*(valfon+valfon1)*norz
             end if
         end if
 !
@@ -530,36 +543,36 @@ subroutine te0499(option, nomte)
         if (type .eq. 'P') then
             if (abs(cosa) .gt. 0.d0) then
                 uondt(1) = valfon*dirx
-                uondt(2) = valfon*diry
+                uondt(2) = valfon*dirz
 
                 if (h .ne. r8vide()) then
                     if (h2 .ne. r8vide()) then
                         uondt(1) = uondt(1)+valfon1*dirx
                         uondt(1) = uondt(1)+valfon2*cosb2
-                        uondt(2) = uondt(2)-valfon1*diry
+                        uondt(2) = uondt(2)-valfon1*dirz
                         uondt(2) = uondt(2)+valfon2*sinb2
                     end if
                 end if
             else
                 uondt(1) = (valfon+valfon1)*dirx
-                uondt(2) = (valfon+valfon1)*diry
+                uondt(2) = (valfon+valfon1)*dirz
             end if
         else if (type .eq. 'S') then
             if (abs(cosa) .gt. 0.d0) then
                 uondt(1) = valfon*norx
-                uondt(2) = valfon*nory
+                uondt(2) = valfon*norz
 
                 if (h .ne. r8vide()) then
                     if (h2 .ne. r8vide()) then
                         uondt(1) = uondt(1)-valfon1*norx
-                        uondt(1) = uondt(1)+valfon2*sinb2
-                        uondt(2) = uondt(2)+valfon1*nory
-                        uondt(2) = uondt(2)-valfon2*cosb2
+                        uondt(1) = uondt(1)+valfon2*sinb2*cosg*sign_tan
+                        uondt(2) = uondt(2)+valfon1*norz
+                        uondt(2) = uondt(2)-valfon2*cosb2*sign_tan
                     end if
                 end if
             else
                 uondt(1) = (valfon+valfon1)*norx
-                uondt(2) = (valfon+valfon1)*nory
+                uondt(2) = (valfon+valfon1)*norz
             end if
         end if
         scal = nux*uondt(1)+nuy*uondt(2)

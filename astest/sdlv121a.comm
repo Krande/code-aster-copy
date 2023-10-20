@@ -188,7 +188,7 @@ NUMEDDL = NUME_DDL(MATR_RIGI=RIGI_ELE)
 # --------------------------------------------------------------------------------
 VECT_EL1 = CALC_VECT_ELEM(INST=5.0e-3, OPTION="CHAR_MECA", CHAM_MATER=CHAMPMAT, CHARGE=ONDE)
 VECA1 = ASSE_VECTEUR(VECT_ELEM=VECT_EL1, NUME_DDL=NUMEDDL)
-TEST_RESU(CHAM_NO=_F(GROUP_NO="N41", NOM_CMP="DY", CHAM_GD=VECA1, VALE_CALC=-7.6231708412726098))
+TEST_RESU(CHAM_NO=_F(GROUP_NO="N41", NOM_CMP="DY", CHAM_GD=VECA1, VALE_CALC=7.623170841272613))
 
 # ------------------------------------------------------------------------------------
 
@@ -227,7 +227,7 @@ DZN22 = RECU_FONCTION(RESULTAT=DYNA, GROUP_NO="N22", NOM_CHAM="DEPL", NOM_CMP="D
 TEST_FONCTION(
     VALEUR=(
         _F(
-            VALE_CALC=0.0,
+            VALE_CALC=-6.108208129344e-18,
             VALE_REFE=0.0,
             REFERENCE="ANALYTIQUE",
             CRITERE="ABSOLU",
@@ -235,8 +235,8 @@ TEST_FONCTION(
             FONCTION=DXN22,
         ),
         _F(
-            VALE_CALC=1.002456482770e-3,
-            VALE_REFE=1.0e-3,
+            VALE_CALC=-1.002456482770e-3,
+            VALE_REFE=-1.0e-3,
             PRECISION=4.0e-3,
             REFERENCE="ANALYTIQUE",
             CRITERE="RELATIF",
@@ -244,8 +244,8 @@ TEST_FONCTION(
             FONCTION=DYN22,
         ),
         _F(
-            VALE_CALC=9.939582018115e-4,
-            VALE_REFE=1.0e-3,
+            VALE_CALC=-9.939582018122e-04,
+            VALE_REFE=-1.0e-3,
             PRECISION=7.0e-3,
             REFERENCE="ANALYTIQUE",
             CRITERE="RELATIF",
@@ -253,7 +253,7 @@ TEST_FONCTION(
             FONCTION=DYN22,
         ),
         _F(
-            VALE_CALC=-2.87e-06,
+            VALE_CALC=2.774333194966e-06,
             VALE_REFE=0.0,
             REFERENCE="ANALYTIQUE",
             CRITERE="ABSOLU",
@@ -261,7 +261,7 @@ TEST_FONCTION(
             FONCTION=DYN22,
         ),
         _F(
-            VALE_CALC=7.10e-18,
+            VALE_CALC=-3.510962081882e-18,
             VALE_REFE=0.0,
             REFERENCE="ANALYTIQUE",
             CRITERE="ABSOLU",
@@ -333,7 +333,7 @@ DZN22C = RECU_FONCTION(RESULTAT=DYNAC, GROUP_NO="N22", NOM_CHAM="DEPL", NOM_CMP=
 TEST_FONCTION(
     VALEUR=(
         _F(
-            VALE_CALC=0.0,
+            VALE_CALC=-6.108208129344e-18,
             VALE_REFE=0.0,
             REFERENCE="ANALYTIQUE",
             CRITERE="ABSOLU",
@@ -341,8 +341,8 @@ TEST_FONCTION(
             FONCTION=DXN22C,
         ),
         _F(
-            VALE_CALC=1.002456482770e-3,
-            VALE_REFE=1.0e-3,
+            VALE_CALC=-1.002456482770e-03,
+            VALE_REFE=-1.0e-3,
             PRECISION=4.0e-3,
             REFERENCE="ANALYTIQUE",
             CRITERE="RELATIF",
@@ -350,8 +350,8 @@ TEST_FONCTION(
             FONCTION=DYN22C,
         ),
         _F(
-            VALE_CALC=9.939582018115e-4,
-            VALE_REFE=1.0e-3,
+            VALE_CALC=-9.939582018122e-04,
+            VALE_REFE=-1.0e-3,
             PRECISION=7.0e-3,
             REFERENCE="ANALYTIQUE",
             CRITERE="RELATIF",
@@ -359,7 +359,7 @@ TEST_FONCTION(
             FONCTION=DYN22C,
         ),
         _F(
-            VALE_CALC=-2.87e-06,
+            VALE_CALC=2.774333194966e-06,
             VALE_REFE=0.0,
             REFERENCE="ANALYTIQUE",
             CRITERE="ABSOLU",
@@ -367,7 +367,7 @@ TEST_FONCTION(
             FONCTION=DYN22C,
         ),
         _F(
-            VALE_CALC=7.10e-18,
+            VALE_CALC=-3.510962081882e-18,
             VALE_REFE=0.0,
             REFERENCE="ANALYTIQUE",
             CRITERE="ABSOLU",
@@ -416,10 +416,10 @@ DZNB22 = RECU_FONCTION(
 
 TEST_FONCTION(
     VALEUR=(
-        _F(VALE_CALC=0.0, CRITERE="ABSOLU", VALE_PARA=0.2672, FONCTION=DXNB22),
+        _F(VALE_CALC=7.922329594300e-19, CRITERE="ABSOLU", VALE_PARA=0.2672, FONCTION=DXNB22),
         _F(
-            VALE_CALC=9.989051e-04,
-            VALE_REFE=1.003477e-3,
+            VALE_CALC=-9.989050715479e-04,
+            VALE_REFE=-1.003477e-3,
             REFERENCE="AUTRE_ASTER",
             CRITERE="RELATIF",
             VALE_PARA=0.2672,
@@ -427,16 +427,16 @@ TEST_FONCTION(
             FONCTION=DYNB22,
         ),
         _F(
-            VALE_CALC=9.914943e-04,
-            VALE_REFE=9.946329e-4,
+            VALE_CALC=-9.914943446659e-04,
+            VALE_REFE=-9.946329e-4,
             REFERENCE="AUTRE_ASTER",
             CRITERE="RELATIF",
             VALE_PARA=0.44,
             PRECISION=5.0e-3,
             FONCTION=DYNB22,
         ),
-        _F(VALE_CALC=4.61e-06, CRITERE="ABSOLU", VALE_PARA=0.72, FONCTION=DYNB22),
-        _F(VALE_CALC=1.63e-19, CRITERE="ABSOLU", VALE_PARA=0.2672, FONCTION=DZNB22),
+        _F(VALE_CALC=-4.613028177074e-06, CRITERE="ABSOLU", VALE_PARA=0.72, FONCTION=DYNB22),
+        _F(VALE_CALC=-5.410897555216e-20, CRITERE="ABSOLU", VALE_PARA=0.2672, FONCTION=DZNB22),
     )
 )
 
@@ -473,10 +473,10 @@ DZNB22D = RECU_FONCTION(
 
 TEST_FONCTION(
     VALEUR=(
-        _F(VALE_CALC=0.0, CRITERE="ABSOLU", VALE_PARA=0.2672, FONCTION=DXNB22D),
+        _F(VALE_CALC=7.922329594300e-19, CRITERE="ABSOLU", VALE_PARA=0.2672, FONCTION=DXNB22D),
         _F(
-            VALE_CALC=9.989051e-04,
-            VALE_REFE=1.003477e-3,
+            VALE_CALC=-9.989050715479e-04,
+            VALE_REFE=-1.003477e-3,
             REFERENCE="AUTRE_ASTER",
             CRITERE="RELATIF",
             VALE_PARA=0.2672,
@@ -484,16 +484,16 @@ TEST_FONCTION(
             FONCTION=DYNB22D,
         ),
         _F(
-            VALE_CALC=9.914943e-04,
-            VALE_REFE=9.946329e-4,
+            VALE_CALC=-9.914943446659e-04,
+            VALE_REFE=-9.946329e-4,
             REFERENCE="AUTRE_ASTER",
             CRITERE="RELATIF",
             VALE_PARA=0.44,
             PRECISION=5.0e-3,
             FONCTION=DYNB22D,
         ),
-        _F(VALE_CALC=4.61e-06, CRITERE="ABSOLU", VALE_PARA=0.72, FONCTION=DYNB22D),
-        _F(VALE_CALC=1.63e-19, CRITERE="ABSOLU", VALE_PARA=0.2672, FONCTION=DZNB22D),
+        _F(VALE_CALC=-4.613028177074e-06, CRITERE="ABSOLU", VALE_PARA=0.72, FONCTION=DYNB22D),
+        _F(VALE_CALC=-5.410897555216e-20, CRITERE="ABSOLU", VALE_PARA=0.2672, FONCTION=DZNB22D),
     )
 )
 
