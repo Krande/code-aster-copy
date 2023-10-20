@@ -260,13 +260,19 @@ def defi_char_sol_ops(self, TITRE=None, INFO=None, **args):
                         ONDE_PLANE=_F( DIRECTION = (0., 1., 0.,),
                         TYPE_ONDE = 'P',
                         DEPL_IMPO=__FONCDX,
-                        FONC_SIGNAL = __FONCVX, GROUP_MA=(grma_gauch,grma_droit))
+                        FONC_SIGNAL = __FONCVX, 
+                        # GROUP_MA=(grma_gauch,grma_droit)
+                        GROUP_MA=tuple(l_group),
+                                     )
                           );
                     else:
                       charout=AFFE_CHAR_MECA_F(  MODELE=modele,
                         ONDE_PLANE=_F( DIRECTION = (0., 1., 0.,),
                         TYPE_ONDE = 'P',
-                        FONC_SIGNAL = __FONCVX, GROUP_MA=(grma_gauch,grma_droit))
+                        FONC_SIGNAL = __FONCVX, 
+                        # GROUP_MA=(grma_gauch,grma_droit)
+                        GROUP_MA=tuple(l_group),
+                                     )
                           );
       if dime == "3D":
             if args['NOM_CMP'] == 'DX':
