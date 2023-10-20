@@ -54,7 +54,7 @@ subroutine te0498(option, nomte)
     real(kind=8) :: valres(5), e, nu, lambda, mu, cp, cs, rho, typer
     real(kind=8) :: taux, tauy, tauz, dirx, diry, dirz
     real(kind=8) :: norm, tanx, tany, norx, nory, norz
-    real(kind=8) :: taondx, taondy, taondz
+    real(kind=8) :: taondx, taondy, taondz, sign_tan
     real(kind=8) :: nux, nuy, nuz, scal, coedir, coef_amor, coef_dse
     real(kind=8) :: nortan, cele, trace, cele2
     real(kind=8) :: param0, param, h, h2, instd, ris, rip, l0, usl0
@@ -131,27 +131,85 @@ subroutine te0498(option, nomte)
     diry = diry/norm
     dirz = dirz/norm
 !
-!     CALCUL DU REPERE ASSOCIE A L'ONDE
-    tanx = diry
-    tany = -dirx
+    if (abs(dirz-1.d0) .le. r8prem()) then
+
+        cosa = dirz
+        sina = 0.d0
+        cosg = 1.d0
+        sing = 0.d0
+
+    else
+
+        cosa = dirz
+
+        if (abs(diry) .le. r8prem()) then
+
+            sina = dirx
+            cosg = 1.d0
+            sing = 0.d0
+
+        else if (abs(dirx) .le. r8prem()) then
+
+            sina = diry
+            cosg = 0.d0
+            sing = 1.d0
+
+        else
+
+            if (dirx .gt. 0.d0) then
+
+                sina = sin(acos(cosa))
+
+            else
+
+                sina = -sin(acos(cosa))
+
+            end if
+
+            cosg = dirx/sina
+            sing = diry/sina
+
+        end if
+
+    end if
+
+! Cette condition est nécéssaire pour DEFI_SOL_EQUI
+! qui opère avec l'axe vertical identifié comme l'axe Y
+
+    if (dirz .gt. 0) then
+
+        coef_dse = 1.d0
+
+    else
+
+        coef_dse = 0.d0
+
+    end if
+
+    !     CALCUL DU REPERE ASSOCIE A L'ONDE
+
+    tanx = sing
+    tany = -cosg
+
+    if (cosg .gt. 0) then
+
+        sign_tan = tany/abs(tany)
+
+    else
+
+        sign_tan = -tanx/abs(tanx)
+
+    end if
 !
     nortan = sqrt(tanx**2.d0+tany**2.d0)
+
+    tanx = tanx/nortan
+    tany = tany/nortan
 !
-    if (nortan .gt. r8prem()) then
-        tanx = tanx/nortan
-        tany = tany/nortan
+    norx = -tany*dirz
+    nory = tanx*dirz
+    norz = -tanx*diry+tany*dirx
 !
-        norx = tany*dirz
-        nory = -tanx*dirz
-        norz = tanx*diry-tany*dirx
-    else
-        norx = dirz
-        nory = 0.d0
-        norz = 0.d0
-!
-        tanx = 0.d0
-        tany = dirz
-    end if
 !
 !     --- CALCUL DES PRODUITS VECTORIELS OMI X OMJ ---
 !
@@ -237,52 +295,6 @@ subroutine te0498(option, nomte)
         rc1c2 = sqrt(2.d0+2.d0*nu/(1.d0-2.d0*nu))
 
 ! Calcul de l'angle réflexion de l'onde SV réfléchie.
-
-        if (dirz .eq. 1.d0) then
-
-            cosa = dirz
-            sina = 0.d0
-            cosg = 1.d0
-            sing = 0.d0
-
-        else
-
-            cosa = dirz
-
-            if (abs(diry) .le. r8prem()) then
-
-                sina = dirx
-                cosg = 1.d0
-                sing = 0.d0
-
-            else if (abs(dirx) .le. r8prem()) then
-
-                sina = diry
-                cosg = 0.d0
-                sing = 1.d0
-
-            else
-
-                sina = sin(acos(cosa))
-                cosg = cos(acos(dirx/sina))
-                sing = sin(asin(diry/sina))
-
-            end if
-
-        end if
-
-! Cette condition est nécéssaire pour DEFI_SOL_EQUI
-! qui opère avec l'axe vertical identifié comme l'axe Y
-
-        if (dirz .gt. 0) then
-
-            coef_dse = 1.d0
-
-        else
-
-            coef_dse = 0.d0
-
-        end if
 
         a2 = asin(sina)
 
@@ -478,25 +490,25 @@ subroutine te0498(option, nomte)
                 if (h .ne. r8vide()) then
                     if (h2 .ne. r8vide()) then
                         grad(1, 1) = grad(1, 1)-dirx*valfon1*norx
-                        grad(1, 1) = grad(1, 1)+sinb2*cosg*valfon2*sinb2*cosg
+                        grad(1, 1) = grad(1, 1)+sinb2*cosg*valfon2*sinb2*cosg*sign_tan
                         grad(1, 2) = grad(1, 2)-diry*valfon1*norx
-                        grad(1, 2) = grad(1, 2)+sinb2*sing*valfon2*sinb2*cosg
+                        grad(1, 2) = grad(1, 2)+sinb2*sing*valfon2*sinb2*cosg*sign_tan
                         grad(1, 3) = grad(1, 3)+dirz*valfon1*norx
-                        grad(1, 3) = grad(1, 3)-cosb2*valfon2*sinb2*cosg
+                        grad(1, 3) = grad(1, 3)-cosb2*valfon2*sinb2*cosg*sign_tan
 
                         grad(2, 1) = grad(2, 1)-dirx*valfon1*nory
-                        grad(2, 1) = grad(2, 1)+sinb2*cosg*valfon2*sinb2*sing
+                        grad(2, 1) = grad(2, 1)+sinb2*cosg*valfon2*sinb2*sing*sign_tan
                         grad(2, 2) = grad(2, 2)-diry*valfon1*nory
-                        grad(2, 2) = grad(2, 2)+sinb2*sing*valfon2*sinb2*sing
+                        grad(2, 2) = grad(2, 2)+sinb2*sing*valfon2*sinb2*sing*sign_tan
                         grad(2, 3) = grad(2, 3)+dirz*valfon1*nory
-                        grad(2, 3) = grad(2, 3)-cosb2*valfon2*sinb2*sing
+                        grad(2, 3) = grad(2, 3)-cosb2*valfon2*sinb2*sing*sign_tan
 
                         grad(3, 1) = grad(3, 1)+dirx*valfon1*norz
-                        grad(3, 1) = grad(3, 1)-sinb2*cosg*valfon2*cosb2
+                        grad(3, 1) = grad(3, 1)-sinb2*cosg*valfon2*cosb2*sign_tan
                         grad(3, 2) = grad(3, 2)+diry*valfon1*norz
-                        grad(3, 2) = grad(3, 2)-sinb2*sing*valfon2*cosb2
+                        grad(3, 2) = grad(3, 2)-sinb2*sing*valfon2*cosb2*sign_tan
                         grad(3, 3) = grad(3, 3)-dirz*valfon1*norz
-                        grad(3, 3) = grad(3, 3)+cosb2*valfon2*cosb2
+                        grad(3, 3) = grad(3, 3)+cosb2*valfon2*cosb2*sign_tan
                     end if
                 end if
 
@@ -646,11 +658,11 @@ subroutine te0498(option, nomte)
                 if (h .ne. r8vide()) then
                     if (h2 .ne. r8vide()) then
                         vondt(1) = vondt(1)+cele*valfon1*norx
-                        vondt(1) = vondt(1)-cele2*valfon2*sinb2*cosg
+                        vondt(1) = vondt(1)-cele2*valfon2*sinb2*cosg*sign_tan
                         vondt(2) = vondt(2)+cele*valfon1*nory
-                        vondt(2) = vondt(2)-cele2*valfon2*sinb2*sing
+                        vondt(2) = vondt(2)-cele2*valfon2*sinb2*sing*sign_tan
                         vondt(3) = vondt(3)-cele*valfon1*norz
-                        vondt(3) = vondt(3)+cele2*valfon2*cosb2
+                        vondt(3) = vondt(3)+cele2*valfon2*cosb2*sign_tan
                     end if
                 end if
             else
@@ -756,11 +768,11 @@ subroutine te0498(option, nomte)
                 if (h .ne. r8vide()) then
                     if (h2 .ne. r8vide()) then
                         uondt(1) = uondt(1)-valfon1*norx
-                        uondt(1) = uondt(1)+valfon2*sinb2*cosg
+                        uondt(1) = uondt(1)+valfon2*sinb2*cosg*sign_tan
                         uondt(2) = uondt(2)-valfon1*nory
-                        uondt(2) = uondt(2)+valfon2*sinb2*sing
+                        uondt(2) = uondt(2)+valfon2*sinb2*sing*sign_tan
                         uondt(3) = uondt(3)+valfon1*norz
-                        uondt(3) = uondt(3)-valfon2*cosb2
+                        uondt(3) = uondt(3)-valfon2*cosb2*sign_tan
                     end if
                 end if
             else
