@@ -144,7 +144,7 @@ IMPR_FONCTION(
 TEST_FONCTION(
     VALEUR=(
         _F(
-            VALE_CALC=0.0,
+            VALE_CALC=-7.645364984366e-08,
             VALE_REFE=0.0,
             REFERENCE="ANALYTIQUE",
             CRITERE="ABSOLU",
@@ -152,8 +152,8 @@ TEST_FONCTION(
             FONCTION=DXN26,
         ),
         _F(
-            VALE_CALC=1.020992285246e-3,
-            VALE_REFE=1.0e-3,
+            VALE_CALC=-1.020992285246e-03,
+            VALE_REFE=-1.0e-3,
             PRECISION=2.1e-2,
             REFERENCE="ANALYTIQUE",
             CRITERE="RELATIF",
@@ -161,8 +161,8 @@ TEST_FONCTION(
             FONCTION=DYN26,
         ),
         _F(
-            VALE_CALC=1.014434173011e-3,
-            VALE_REFE=1.0e-3,
+            VALE_CALC=-1.014434173011e-03,
+            VALE_REFE=-1.0e-3,
             PRECISION=2.0e-2,
             REFERENCE="ANALYTIQUE",
             CRITERE="RELATIF",
@@ -170,7 +170,7 @@ TEST_FONCTION(
             FONCTION=DYN26,
         ),
         _F(
-            VALE_CALC=-1.397448169822e-9,
+            VALE_CALC=1.397448169822e-09,
             VALE_REFE=0.0,
             REFERENCE="ANALYTIQUE",
             CRITERE="ABSOLU",
@@ -178,7 +178,7 @@ TEST_FONCTION(
             FONCTION=DYN26,
         ),
         _F(
-            VALE_CALC=-9.630528739434e-8,
+            VALE_CALC=8.397142649877e-08,
             VALE_REFE=0.0,
             REFERENCE="ANALYTIQUE",
             CRITERE="ABSOLU",
@@ -226,10 +226,10 @@ IMPR_FONCTION(
 
 TEST_FONCTION(
     VALEUR=(
-        _F(VALE_CALC=0.0, CRITERE="ABSOLU", VALE_PARA=0.2656, FONCTION=DXNB26),
+        _F(VALE_CALC=-7.684231735034e-08, CRITERE="ABSOLU", VALE_PARA=0.2656, FONCTION=DXNB26),
         _F(
-            VALE_CALC=1.020989687779e-3,
-            VALE_REFE=1.0e-3,
+            VALE_CALC=-1.020989687779e-03,
+            VALE_REFE=-1.0e-3,
             REFERENCE="AUTRE_ASTER",
             CRITERE="RELATIF",
             VALE_PARA=0.2656,
@@ -237,16 +237,16 @@ TEST_FONCTION(
             FONCTION=DYNB26,
         ),
         _F(
-            VALE_CALC=1.014426921099e-3,
-            VALE_REFE=1.0e-3,
+            VALE_CALC=-1.014426921099e-03,
+            VALE_REFE=-1.0e-3,
             REFERENCE="AUTRE_ASTER",
             CRITERE="RELATIF",
             VALE_PARA=0.44,
             PRECISION=2.0e-2,
             FONCTION=DYNB26,
         ),
-        _F(VALE_CALC=-1.397484112993e-9, CRITERE="ABSOLU", VALE_PARA=0.72, FONCTION=DYNB26),
-        _F(VALE_CALC=-8.044305003452e-8, CRITERE="ABSOLU", VALE_PARA=0.2656, FONCTION=DZNB26),
+        _F(VALE_CALC=1.397484112993e-09, CRITERE="ABSOLU", VALE_PARA=0.72, FONCTION=DYNB26),
+        _F(VALE_CALC=8.044305003449e-08, CRITERE="ABSOLU", VALE_PARA=0.2656, FONCTION=DZNB26),
     )
 )
 

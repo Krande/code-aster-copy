@@ -521,7 +521,7 @@ sro_axd = CALC_FONCTION(
 #
 # Valeurs de reference pour test :
 inst1 = 0.27
-calt1 = 1.258811841068
+calt1 = 1.258811841069
 reft1 = 1.273984709738
 tolt1 = 0.013
 calsro = 3.413043472460
