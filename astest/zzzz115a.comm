@@ -114,7 +114,7 @@ tbcoup = CALC_COUPURE(
     FORCE="FORC_NODA",
     RESULTAT=reslin,
     COUPURE=(
-        _F(NOM="START", GROUP_MA="ELEMENTS", GROUP_NO="START", POINT=(0, -1500, 0)),
+        _F(NOM="START", TOUT="OUI", GROUP_NO="START", POINT=(0, -1500, 0)),
         _F(NOM="3m", GROUP_MA="ELTS_DROITES", GROUP_NO="no_3m", POINT=(0, 1500, 0)),
         _F(
             NOM="CHGT_REPERE",
@@ -124,6 +124,7 @@ tbcoup = CALC_COUPURE(
             AXE_X=(0, 1, 0),
             AXE_Y=(0, 0, 1),
             AXE_Z=(1, 0, 0),
+            VERI_ORTHO="OUI",
         ),
     ),
 )
@@ -152,7 +153,6 @@ TEST_TABLE(
     VALE_REFE=-effortNormal,
 )
 
-import pdb
 
 TEST_TABLE(
     TABLE=tbcoup,
@@ -303,7 +303,6 @@ TEST_TABLE(
     PRECISION=1,  # 1N.m autorise
 )
 
-import pdb
 
 TEST_TABLE(
     TABLE=tbcoup,
