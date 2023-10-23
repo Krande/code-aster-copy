@@ -1,0 +1,161 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+# CAS_TEST__: TTLL01E
+# CAS TEST TTLL01E (MUR INFINI EN 40 PENTA6 )
+#
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+
+# PRE_GIBI()
+
+ACIER = DEFI_MATERIAU(THER=_F(LAMBDA=1.0, RHO_CP=1.0))
+
+MAIL0 = LIRE_MAILLAGE(FORMAT="MED")
+
+MAIL = CREA_MAILLAGE(MAILLAGE=MAIL0, MODI_HHO=_F(TOUT="OUI"))
+
+CHMAT = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=ACIER))
+
+MOTH = AFFE_MODELE(
+    MAILLAGE=MAIL,
+    AFFE=_F(TOUT="OUI", MODELISATION="3D_HHO", FORMULATION="QUADRATIQUE", PHENOMENE="THERMIQUE"),
+)
+
+TIMPVAR = DEFI_FONCTION(
+    NOM_RESU="TEMP", NOM_PARA="INST", VALE=(0.0, 0.0, 1.0e-3, 100.0, 100.0, 100.0)
+)
+
+CHTH = AFFE_CHAR_CINE(MODELE=MOTH, THER_IMPO=(_F(GROUP_MA=("FTIMP",), TEMP=1.0),))
+
+LR8 = DEFI_LIST_REEL(
+    DEBUT=0.0,
+    INTERVALLE=(
+        _F(JUSQU_A=1.0e-3, NOMBRE=10),
+        _F(JUSQU_A=1.0e-2, NOMBRE=9),
+        _F(JUSQU_A=1.0e-1, NOMBRE=9),
+        _F(JUSQU_A=1.0e0, NOMBRE=9),
+        _F(JUSQU_A=2.0, NOMBRE=10),
+    ),
+)
+
+TEMPE = THER_LINEAIRE(
+    MODELE=MOTH,
+    ETAT_INIT=_F(STAT="OUI"),
+    INCREMENT=_F(LIST_INST=LR8),
+    CHAM_MATER=CHMAT,
+    EXCIT=_F(CHARGE=CHTH, FONC_MULT=TIMPVAR),
+)
+
+TEMP_1 = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="NOEU_TEMP_R", NOM_CHAM="HHO_TEMP", RESULTAT=TEMPE, INST=0.1
+)
+
+TEMP_2 = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="NOEU_TEMP_R", NOM_CHAM="HHO_TEMP", RESULTAT=TEMPE, INST=0.2
+)
+
+TEMP_3 = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="NOEU_TEMP_R", NOM_CHAM="HHO_TEMP", RESULTAT=TEMPE, INST=0.7
+)
+
+TEMP_4 = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="NOEU_TEMP_R", NOM_CHAM="HHO_TEMP", RESULTAT=TEMPE, INST=2.0
+)
+
+
+TEST_RESU(
+    CHAM_NO=(
+        _F(
+            GROUP_NO="N21",
+            NOM_CMP="TEMP",
+            PRECISION=1.0e-2,
+            CHAM_GD=TEMP_1,
+            VALE_CALC=65.29469918179026,
+            VALE_REFE=65.480000000000004,
+            REFERENCE="NON_DEFINI",
+        ),
+        _F(
+            GROUP_NO="N21",
+            NOM_CMP="TEMP",
+            PRECISION=1.0e-2,
+            CHAM_GD=TEMP_2,
+            VALE_CALC=75.81430559112263,
+            VALE_REFE=75.579999999999998,
+            REFERENCE="NON_DEFINI",
+        ),
+        _F(
+            GROUP_NO="N21",
+            NOM_CMP="TEMP",
+            PRECISION=1.0e-2,
+            CHAM_GD=TEMP_3,
+            VALE_CALC=92.86691435243526,
+            VALE_REFE=93.010000000000005,
+            REFERENCE="NON_DEFINI",
+        ),
+        _F(
+            GROUP_NO="N21",
+            NOM_CMP="TEMP",
+            PRECISION=1.0e-3,
+            CHAM_GD=TEMP_4,
+            VALE_CALC=99.70001818374834,
+            VALE_REFE=99.719999999999999,
+            REFERENCE="NON_DEFINI",
+        ),
+        _F(
+            GROUP_NO="N69",
+            NOM_CMP="TEMP",
+            PRECISION=0.01,
+            CHAM_GD=TEMP_1,
+            VALE_CALC=8.035568175853301,
+            VALE_REFE=8.0899999999999999,
+            REFERENCE="NON_DEFINI",
+        ),
+        _F(
+            GROUP_NO="N69",
+            NOM_CMP="TEMP",
+            PRECISION=0.029999999999999999,
+            CHAM_GD=TEMP_2,
+            VALE_CALC=25.789758984606237,
+            VALE_REFE=26.370000000000001,
+            REFERENCE="NON_DEFINI",
+        ),
+        _F(
+            GROUP_NO="N69",
+            NOM_CMP="TEMP",
+            PRECISION=1.0e-2,
+            CHAM_GD=TEMP_3,
+            VALE_CALC=78.04706094707242,
+            VALE_REFE=78.469999999999999,
+            REFERENCE="NON_DEFINI",
+        ),
+        _F(
+            GROUP_NO="N69",
+            NOM_CMP="TEMP",
+            PRECISION=1.0e-3,
+            CHAM_GD=TEMP_4,
+            VALE_CALC=99.07675083581721,
+            VALE_REFE=99.129999999999995,
+            REFERENCE="NON_DEFINI",
+        ),
+    )
+)
+
+FIN()
+#
