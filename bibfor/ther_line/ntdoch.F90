@@ -104,18 +104,18 @@ subroutine ntdoch(list_load, l_load_user_, list_load_resu, basez)
     l_theta_not_one = ASTER_FALSE
     theta = 1.d0
     l_ther_lineaire = ASTER_FALSE
-    if (nomcmd.eq.'THER_NON_LINE2' ) then
+    if (nomcmd .eq. 'THER_NON_LINE2') then
         call getvr8(' ', 'PARM_THETA', scal=theta, nbret=nbval)
-        if(nbval==0) then
+        if (nbval == 0) then
             theta = 1.d0
         end if
-    endif
-    if (nomcmd.eq.'THER_LINEAIRE' ) then
+    end if
+    if (nomcmd .eq. 'THER_LINEAIRE') then
         l_ther_lineaire = ASTER_TRUE
-    endif
-    if (abs(theta-1.d0)>prec)then
+    end if
+    if (abs(theta-1.d0) > prec) then
         l_theta_not_one = ASTER_TRUE
-    endif
+    end if
 
 !
 ! - Get number of loads for loads datastructure
@@ -223,10 +223,10 @@ subroutine ntdoch(list_load, l_load_user_, list_load_resu, basez)
                         end if
                     end if
                     if (.not. l_ther_lineaire .and. l_func_mult .and. l_theta_not_one) then
-                        call utmess('F', 'CHARGES_41', nk=2, valk=[load_name,load_keyw])
-                    endif
+                        call utmess('F', 'CHARGES_41', nk=2, valk=[load_name, load_keyw])
+                    end if
                     if (load_keyw .eq. 'EVOL_CHAR') then
-                        if(.not.l_ther_lineaire .and. l_theta_not_one) then
+                        if (.not. l_ther_lineaire .and. l_theta_not_one) then
                             call utmess('F', 'CHARGES_42', sk=load_keyw)
                         else
                             ASSERT(load_type(5:7) .ne. '_FO')
@@ -246,7 +246,7 @@ subroutine ntdoch(list_load, l_load_user_, list_load_resu, basez)
                     if (load_keyw .eq. 'FLUX_NL' .or. &
                         load_keyw .eq. 'RAYONNEMENT' .or. load_keyw .eq. 'SOUR_NL') then
                         if (l_ther_lineaire) then
-                            call utmess('F', 'CHARGES_58', nk=2, valk=[load_name,load_keyw])
+                            call utmess('F', 'CHARGES_58', nk=2, valk=[load_name, load_keyw])
                         end if
                     end if
 
