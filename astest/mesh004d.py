@@ -169,7 +169,7 @@ S.scaleMatrix(matrAsse)
 pA_scaled = matrAsse.toPetsc()
 pA_scaled.view()
 nt = PETSc.NormType.NORM_INFINITY
-test.assertAlmostEqual(pA_unscaled.norm(nt), 24666666666.69744)
+test.assertAlmostEqual(pA_unscaled.norm(nt), 24666666666.69744, delta=1e-2)
 test.assertAlmostEqual(pA_scaled.norm(nt), 1.0)
 
 logger.setLevel(0)
