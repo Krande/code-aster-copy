@@ -184,6 +184,17 @@ On ne peut pas piloter en l'absence de forces de type FIXE_PILO.
 On ne peut pas piloter plus d'une charge.
 """
     ),
+    41: _(
+        """
+La charge %(k1)s contient une condition de type %(k2)s et elle n'est pas compatible avec FONC_MULT,
+sauf si PARM_THETA vaut 1.
+"""
+    ),
+    42: _(
+        """
+Les chargements de type EVOL_CHAR sont interdits avec THER_NON_LINE si PARM_THETA est différent de 1.
+"""
+    ),
     50: _(
         """
 Le chargement FORCE_SOL n'est utilisable qu'en dynamique.
@@ -222,5 +233,7 @@ Vous essayez d'appliquer un déplacement selon DZ à une modélisation qui n'est
 Conseil: Vérifié vos conditions aux limites.
 """
     ),
-    58: _("""La charge %(k1)s utilise un type de chargement impossible dans cet opérateur."""),
+    58: _(
+        """La charge %(k1)s utilise un type de chargement %(k2)s impossible dans cet opérateur."""
+    ),
 }

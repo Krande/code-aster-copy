@@ -23,6 +23,7 @@ subroutine ntdoch(list_load, l_load_user_, list_load_resu, basez)
 !
 #include "asterf_types.h"
 #include "asterc/getres.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/liscad.h"
@@ -52,7 +53,7 @@ subroutine ntdoch(list_load, l_load_user_, list_load_resu, basez)
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  list_load_resu : name of datastructure for list of loads from result datastructure
-! In  l_load_user    : .true. if loads come from user (EXCIT)
+! In  l_load_user    : ASTER_TRUE if loads come from user (EXCIT)
 ! In  list_load      : name of datastructure for list of loads
 !
 ! --------------------------------------------------------------------------------------------------
@@ -62,8 +63,10 @@ subroutine ntdoch(list_load, l_load_user_, list_load_resu, basez)
     integer, parameter :: nb_type_neum = 11
     aster_logical :: list_load_keyw(nb_type_neum)
     aster_logical :: l_func_mult, l_load_user, l_zero_allowed
-    aster_logical :: l_func_c
-    integer :: nb_info_type
+    aster_logical :: l_func_c, l_ther_lineaire, l_theta_not_one
+    real(kind=8) :: theta, prec
+    parameter(prec=1d-6)
+    integer :: nb_info_type, nbval
     character(len=24) :: info_type
     character(len=1) :: base
     integer :: nb_load, i_load, i_type_neum, iret, i_excit
@@ -85,9 +88,9 @@ subroutine ntdoch(list_load, l_load_user_, list_load_resu, basez)
     i_excit = 0
     call getres(k8bid, typesd, nomcmd)
     const_func = '&&NTDOCH'
-    l_func_c = .false.
-    l_load_user = .true.
-    l_zero_allowed = .true.
+    l_func_c = ASTER_FALSE
+    l_load_user = ASTER_TRUE
+    l_zero_allowed = ASTER_TRUE
     if (present(l_load_user_)) then
         l_load_user = l_load_user_
     end if
@@ -95,6 +98,25 @@ subroutine ntdoch(list_load, l_load_user_, list_load_resu, basez)
     if (present(basez)) then
         base = basez
     end if
+!
+! ----- Theta value
+!
+    l_theta_not_one = ASTER_FALSE
+    theta = 1.d0
+    l_ther_lineaire = ASTER_FALSE
+    if (nomcmd.eq.'THER_NON_LINE2' ) then
+        call getvr8(' ', 'PARM_THETA', scal=theta, nbret=nbval)
+        if(nbval==0) then
+            theta = 1.d0
+        end if
+    endif
+    if (nomcmd.eq.'THER_LINEAIRE' ) then
+        l_ther_lineaire = ASTER_TRUE
+    endif
+    if (abs(theta-1.d0)>prec)then
+        l_theta_not_one = ASTER_TRUE
+    endif
+
 !
 ! - Get number of loads for loads datastructure
 !
@@ -200,9 +222,16 @@ subroutine ntdoch(list_load, l_load_user_, list_load_resu, basez)
                             call utmess('F', 'CHARGES_32', sk=load_name)
                         end if
                     end if
+                    if (.not. l_ther_lineaire .and. l_func_mult .and. l_theta_not_one) then
+                        call utmess('F', 'CHARGES_41', nk=2, valk=[load_name,load_keyw])
+                    endif
                     if (load_keyw .eq. 'EVOL_CHAR') then
-                        ASSERT(load_type(5:7) .ne. '_FO')
-                        info_type = 'NEUM_CSTE'
+                        if(.not.l_ther_lineaire .and. l_theta_not_one) then
+                            call utmess('F', 'CHARGES_42', sk=load_keyw)
+                        else
+                            ASSERT(load_type(5:7) .ne. '_FO')
+                            info_type = 'NEUM_CSTE'
+                        end if
                     else
                         if (load_type(5:7) .eq. '_FO') then
                             info_type = 'NEUM_FO'
@@ -216,8 +245,8 @@ subroutine ntdoch(list_load, l_load_user_, list_load_resu, basez)
                     end if
                     if (load_keyw .eq. 'FLUX_NL' .or. &
                         load_keyw .eq. 'RAYONNEMENT' .or. load_keyw .eq. 'SOUR_NL') then
-                        if (nomcmd == "THER_LINEAIRE") then
-                            call utmess('F', 'CHARGES_58', sk=load_name)
+                        if (l_ther_lineaire) then
+                            call utmess('F', 'CHARGES_58', nk=2, valk=[load_name,load_keyw])
                         end if
                     end if
 
