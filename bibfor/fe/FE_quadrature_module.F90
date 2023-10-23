@@ -132,43 +132,33 @@ contains
                 jaco(2, 1:3) = jaco(2, 1:3)+coorno(1:3, i)*dbasis(2, i)
                 jaco(3, 1:3) = jaco(3, 1:3)+coorno(1:3, i)*dbasis(3, i)
             end do
-        elseif (ndim == 2) then
-            do i = 1, nbnodes
-                jaco(1, 1:3) = jaco(1, 1:3)+coorno(1:3, i)*dbasis(1, i)
-                jaco(2, 1:3) = jaco(2, 1:3)+coorno(1:3, i)*dbasis(2, i)
-            end do
-            if (.not. l_skin) then
-                jaco(3, 3) = 1.d0
-            end if
-        elseif (ndim == 1) then
-            do i = 1, nbnodes
-                jaco(1, 1:2) = jaco(1, 1:2)+coorno(1:2, i)*dbasis(1, i)
-            end do
-            if (.not. l_skin) then
-                jaco(2, 2) = 1.d0
-                jaco(3, 3) = 1.d0
-            end if
-        else
-            ASSERT(ASTER_FALSE)
-        end if
 !
-        if (ndim == 3) then
             ASSERT(.not. l_skin)
             jacob = jaco(1, 1)*jaco(2, 2)*jaco(3, 3)+jaco(1, 3)*jaco(2, 1)*jaco(3, 2) &
                     +jaco(3, 1)*jaco(1, 2)*jaco(2, 3)-jaco(3, 1)*jaco(2, 2)*jaco(1, 3) &
                     -jaco(3, 3)*jaco(2, 1)*jaco(1, 2)-jaco(1, 1)*jaco(2, 3)*jaco(3, 2)
         elseif (ndim == 2) then
-            if (l_skin) then
+            do i = 1, nbnodes
+                jaco(1, 1:3) = jaco(1, 1:3)+coorno(1:3, i)*dbasis(1, i)
+                jaco(2, 1:3) = jaco(2, 1:3)+coorno(1:3, i)*dbasis(2, i)
+            end do
+            if ( l_skin) then
                 call provec(jaco(1, 1:3), jaco(2, 1:3), normal)
                 jacob = norm2(normal)
             else
+                jaco(3, 3) = 1.d0
                 jacob = jaco(1, 1)*jaco(2, 2)-jaco(2, 1)*jaco(1, 2)
             end if
         elseif (ndim == 1) then
+            do i = 1, nbnodes
+                jaco(1, 1:2) = jaco(1, 1:2)+coorno(1:2, i)*dbasis(1, i)
+            end do
             if (l_skin) then
                 jacob = norm2(jaco(1, 1:2))
             else
                 jacob = jaco(1, 1)
+                jaco(2, 2) = 1.d0
+                jaco(3, 3) = 1.d0
             end if
         else
             ASSERT(ASTER_FALSE)
