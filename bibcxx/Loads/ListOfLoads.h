@@ -593,7 +593,7 @@ class ListOfLoads : public DataStructure {
      * @brief Construction de la liste de charge
      * @return Booleen indiquant que tout s'est bien passe
      */
-    bool build( ModelPtr model = nullptr );
+    bool build( ModelPtr model = nullptr, std::string command_name = std::string() );
 
     /**
      * @brief Function de récupération des informations des charges

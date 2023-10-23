@@ -22,6 +22,7 @@ subroutine ntdoch(list_load, l_load_user_, list_load_resu, basez)
     implicit none
 !
 #include "asterf_types.h"
+#include "asterc/getres.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/liscad.h"
@@ -69,8 +70,8 @@ subroutine ntdoch(list_load, l_load_user_, list_load_resu, basez)
     character(len=24) :: ligrch
     character(len=10) :: load_obje(2)
     character(len=19) :: cart_name
-    character(len=8) :: load_name, const_func, load_func
-    character(len=16) :: load_keyword
+    character(len=8) :: load_name, const_func, load_func, k8bid
+    character(len=16) :: load_keyword, nomcmd, typesd
     character(len=24) :: load_type, load_para, load_keyw
     character(len=16) :: load_opti_f
     integer, pointer :: v_llresu_info(:) => null()
@@ -82,6 +83,7 @@ subroutine ntdoch(list_load, l_load_user_, list_load_resu, basez)
 !
     nb_load = 0
     i_excit = 0
+    call getres(k8bid, typesd, nomcmd)
     const_func = '&&NTDOCH'
     l_func_c = .false.
     l_load_user = .true.
@@ -212,6 +214,13 @@ subroutine ntdoch(list_load, l_load_user_, list_load_resu, basez)
                             info_type = 'NEUM_CSTE'
                         end if
                     end if
+                    if (load_keyw .eq. 'FLUX_NL' .or. &
+                        load_keyw .eq. 'RAYONNEMENT' .or. load_keyw .eq. 'SOUR_NL') then
+                        if (nomcmd == "THER_LINEAIRE") then
+                            call utmess('F', 'CHARGES_58', sk=load_name)
+                        end if
+                    end if
+
                 end if
                 if (info_type .ne. 'RIEN') then
                     nb_info_type = nb_info_type+1

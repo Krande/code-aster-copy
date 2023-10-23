@@ -72,7 +72,7 @@ AFFE_CHAR_THER_F = OPER(
         statut="f",
         max="**",
         regles=(
-            UN_PARMI("TOUT", "GROUP_MA"),
+            UN_PARMI("TOUT", "GROUP_MA", TOUT="OUI"),
             AU_MOINS_UN("FLUN", "FLUN_INF", "FLUN_SUP", "FLUX_X", "FLUX_Y", "FLUX_Z"),
         ),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
@@ -87,7 +87,7 @@ AFFE_CHAR_THER_F = OPER(
     FLUX_NL=FACT(
         statut="f",
         max="**",
-        regles=(UN_PARMI("TOUT", "GROUP_MA"),),
+        regles=(UN_PARMI("TOUT", "GROUP_MA", TOUT="OUI"),),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         FLUN=SIMP(statut="o", typ=(fonction_sdaster,)),
@@ -96,7 +96,7 @@ AFFE_CHAR_THER_F = OPER(
         statut="f",
         max="**",
         fr=tr("Attention, exprimer les températures en Celsius si rayonnement"),
-        regles=(UN_PARMI("TOUT", "GROUP_MA"),),
+        regles=(UN_PARMI("TOUT", "GROUP_MA", TOUT="OUI"),),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         SIGMA=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
@@ -107,7 +107,7 @@ AFFE_CHAR_THER_F = OPER(
         statut="f",
         max="**",
         regles=(
-            UN_PARMI("TOUT", "GROUP_MA"),
+            UN_PARMI("TOUT", "GROUP_MA", TOUT="OUI"),
             AU_MOINS_UN("COEF_H", "COEF_H_INF", "COEF_H_SUP"),
             ENSEMBLE("COEF_H", "TEMP_EXT"),
             ENSEMBLE("COEF_H_INF", "TEMP_EXT_INF"),
@@ -125,7 +125,7 @@ AFFE_CHAR_THER_F = OPER(
     SOURCE=FACT(
         statut="f",
         max="**",
-        regles=(UN_PARMI("TOUT", "GROUP_MA"),),
+        regles=(UN_PARMI("TOUT", "GROUP_MA", TOUT="OUI"),),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         SOUR=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
@@ -133,7 +133,7 @@ AFFE_CHAR_THER_F = OPER(
     SOUR_NL=FACT(
         statut="f",
         max="**",
-        regles=(UN_PARMI("TOUT", "GROUP_MA"),),
+        regles=(UN_PARMI("TOUT", "GROUP_MA", TOUT="OUI"),),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         SOUR=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
@@ -141,7 +141,10 @@ AFFE_CHAR_THER_F = OPER(
     PRE_GRAD_TEMP=FACT(
         statut="f",
         max="**",
-        regles=(UN_PARMI("TOUT", "GROUP_MA"), AU_MOINS_UN("FLUX_X", "FLUX_Y", "FLUX_Z")),
+        regles=(
+            UN_PARMI("TOUT", "GROUP_MA", TOUT="OUI"),
+            AU_MOINS_UN("FLUX_X", "FLUX_Y", "FLUX_Z"),
+        ),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         FLUX_X=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),

@@ -60,7 +60,7 @@ AFFE_CHAR_THER = OPER(
         statut="f",
         max="**",
         regles=(
-            AU_MOINS_UN("TOUT", "GROUP_MA", "GROUP_NO"),
+            AU_MOINS_UN("TOUT", "GROUP_MA", "GROUP_NO", TOUT="OUI"),
             AU_MOINS_UN("TEMP", "TEMP_MIL", "TEMP_SUP", "TEMP_INF"),
         ),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
@@ -77,7 +77,7 @@ AFFE_CHAR_THER = OPER(
         statut="f",
         max="**",
         regles=(
-            UN_PARMI("TOUT", "GROUP_MA"),
+            UN_PARMI("TOUT", "GROUP_MA", TOUT="OUI"),
             PRESENT_PRESENT("CARA_TORSION", "GROUP_MA"),
             AU_MOINS_UN("FLUN", "FLUN_INF", "FLUN_SUP", "CARA_TORSION"),
         ),
@@ -92,7 +92,7 @@ AFFE_CHAR_THER = OPER(
         statut="f",
         max="**",
         fr=tr("Attention, exprimer les températures en Celsius si rayonnement"),
-        regles=(UN_PARMI("TOUT", "GROUP_MA"),),
+        regles=(UN_PARMI("TOUT", "GROUP_MA", TOUT="OUI"),),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         SIGMA=SIMP(statut="o", typ="R"),
@@ -103,7 +103,7 @@ AFFE_CHAR_THER = OPER(
         statut="f",
         max="**",
         regles=(
-            UN_PARMI("TOUT", "GROUP_MA"),
+            UN_PARMI("TOUT", "GROUP_MA", TOUT="OUI"),
             AU_MOINS_UN("COEF_H", "COEF_H_INF", "COEF_H_SUP"),
             ENSEMBLE("COEF_H", "TEMP_EXT"),
             ENSEMBLE("COEF_H_INF", "TEMP_EXT_INF"),
@@ -134,7 +134,10 @@ AFFE_CHAR_THER = OPER(
     PRE_GRAD_TEMP=FACT(
         statut="f",
         max="**",
-        regles=(UN_PARMI("TOUT", "GROUP_MA"), AU_MOINS_UN("FLUX_X", "FLUX_Y", "FLUX_Z")),
+        regles=(
+            UN_PARMI("TOUT", "GROUP_MA", TOUT="OUI"),
+            AU_MOINS_UN("FLUX_X", "FLUX_Y", "FLUX_Z"),
+        ),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         FLUX_X=SIMP(statut="f", typ="R"),

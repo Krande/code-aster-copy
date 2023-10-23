@@ -838,7 +838,7 @@ AFFE_CHAR_MECA = OPER(
         statut="f",
         max="**",
         fr=tr("Applique des forces volumiques (2D ou 3D) à un domaine volumique"),
-        regles=(UN_PARMI("TOUT", "GROUP_MA"), AU_MOINS_UN("FX", "FY", "FZ")),
+        regles=(UN_PARMI("TOUT", "GROUP_MA", TOUT="OUI"), AU_MOINS_UN("FX", "FY", "FZ")),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         FX=SIMP(statut="f", typ="R"),

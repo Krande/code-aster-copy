@@ -346,7 +346,7 @@ AFFE_CHAR_MECA_F = OPER(
             "Applique des forces volumiques (2D ou 3D) à un domaine volumique, dont les valeurs des composantes sont fournies"
             " par l'intermédiaire d'un concept fonction"
         ),
-        regles=(UN_PARMI("TOUT", "GROUP_MA"), AU_MOINS_UN("FX", "FY", "FZ")),
+        regles=(UN_PARMI("TOUT", "GROUP_MA", TOUT="OUI"), AU_MOINS_UN("FX", "FY", "FZ")),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         FX=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
@@ -390,7 +390,7 @@ AFFE_CHAR_MECA_F = OPER(
             " du tenseur de déformation sont fournies par l'intermédiaire d'un concept fonction"
         ),
         regles=(
-            UN_PARMI("TOUT", "GROUP_MA"),
+            UN_PARMI("TOUT", "GROUP_MA", TOUT="OUI"),
             AU_MOINS_UN(
                 "EPXX",
                 "EPYY",
@@ -636,7 +636,7 @@ AFFE_CHAR_MECA_F = OPER(
             "(flux hydraulique)"
         ),
         regles=(
-            UN_PARMI("TOUT", "GROUP_MA"),
+            UN_PARMI("TOUT", "GROUP_MA", TOUT="OUI"),
             AU_MOINS_UN("COEF_11", "COEF_12", "COEF_21", "COEF_22"),
         ),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),

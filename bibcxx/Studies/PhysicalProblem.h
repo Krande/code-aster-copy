@@ -129,7 +129,7 @@ class PhysicalProblem {
                                    const ASTERINTEGER verbosity = 1 );
 
     /** @brief Create list of loads */
-    bool computeListOfLoads() { return _listOfLoads->build( _model ); };
+    bool computeListOfLoads( std::string command_name = std::string() );
 
     /** @brief Compute field for external state variables reference values */
     void computeReferenceExternalStateVariables();

@@ -78,7 +78,7 @@ int ListOfLoads::getPhysics( void ) const {
     return -1;
 };
 
-bool ListOfLoads::build( ModelPtr model ) {
+bool ListOfLoads::build( ModelPtr model, std::string command_name ) {
     if ( !_isEmpty )
         return true;
 
@@ -101,8 +101,13 @@ bool ListOfLoads::build( ModelPtr model ) {
     SyntaxMapContainer dict;
     ListSyntaxMapContainer listeExcit;
 
+    std::string command = command_name;
+
     if ( physic == Physics::Mechanics ) {
-        CommandSyntax cmdSt( "MECA_STATIQUE" );
+        if ( command.empty() ) {
+            command = "MECA_STATIQUE";
+        }
+        CommandSyntax cmdSt( command );
 
         int pos = 0;
         for ( const auto &load : _listOfMechanicalLoadsReal ) {
@@ -175,7 +180,10 @@ bool ListOfLoads::build( ModelPtr model ) {
 
         CALLO_NMDOCH_WRAP( name, &iexcit, &icalc, blank, base, ligrel_slav, ligrel_cont );
     } else if ( physic == Physics::Thermal ) {
-        CommandSyntax cmdSt( "THER_NON_LINE" );
+        if ( command.empty() ) {
+            command = "THER_NON_LINE";
+        }
+        CommandSyntax cmdSt( command );
 
         int pos = 0;
         for ( const auto &load : _listOfThermalLoadsReal ) {

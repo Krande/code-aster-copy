@@ -11865,8 +11865,11 @@ class PhysicalProblem:
             Bool: True if success
         """
 
-    def computeListOfLoads(self):
+    def computeListOfLoads(self, command_name=""):
         """Build the list of loads from the added loads
+
+        Arguments:
+            command_name (str): It is possible to add a command name to add more checking (default: "")
 
         Returns:
             Bool: True if success

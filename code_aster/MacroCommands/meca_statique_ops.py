@@ -64,7 +64,7 @@ def _addLoads(phys_pb, args):
             else:
                 raise RuntimeError("Unknown load")
 
-    phys_pb.computeListOfLoads()
+    phys_pb.computeListOfLoads("MECA_STATIQUE")
 
     return phys_pb
 

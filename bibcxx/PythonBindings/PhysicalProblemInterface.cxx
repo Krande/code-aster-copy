@@ -91,9 +91,13 @@ Returns:
     c1.def( "computeListOfLoads", &PhysicalProblem::computeListOfLoads, R"(
 Build the list of loads from the added loads
 
+Arguments:
+    command_name (str): It is possible to add a command name to add more checking (default: "")
+
 Returns:
     Bool: True if success
-        )" );
+        )",
+            py::arg( "command_name" ) = std::string() );
     c1.def( "computeDOFNumbering", &PhysicalProblem::computeDOFNumbering, R"(
 Build DOF numbering from the model and loads
 

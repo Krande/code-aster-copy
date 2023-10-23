@@ -91,7 +91,7 @@ def _addLoads(phys_pb, args):
             else:
                 raise RuntimeError("Unknown load")
 
-    phys_pb.computeListOfLoads()
+    phys_pb.computeListOfLoads("THER_LINEAIRE")
 
     return phys_pb
 

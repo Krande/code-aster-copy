@@ -183,6 +183,10 @@ bool PhysicalProblem::computeDOFNumbering() {
     return _dofNume->computeNumbering( getModel(), getListOfLoads() );
 };
 
+bool PhysicalProblem::computeListOfLoads( std::string command_name ) {
+    return _listOfLoads->build( _model, command_name );
+};
+
 VectorLong PhysicalProblem::getDirichletBCDOFs( void ) const {
     JeveuxVectorLong ccid( "&&NUME_CCID" );
     std::string base( "V" );
