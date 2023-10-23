@@ -216,18 +216,20 @@ contains
 !
         BSGrad2 = 0.d0
         if (this%ndim == 3) then
+            cojac = cojac/jacob
             do i = 1, this%size
                 BSGrad2(1, i) = (cojac(1, 1)*BSGrad(1, i)+cojac(1, 2)*BSGrad(2, i) &
-                                 +cojac(1, 3)*BSGrad(3, i))/jacob
+                                 +cojac(1, 3)*BSGrad(3, i))
                 BSGrad2(2, i) = (cojac(2, 1)*BSGrad(1, i)+cojac(2, 2)*BSGrad(2, i) &
-                                 +cojac(2, 3)*BSGrad(3, i))/jacob
+                                 +cojac(2, 3)*BSGrad(3, i))
                 BSGrad2(3, i) = (cojac(3, 1)*BSGrad(1, i)+cojac(3, 2)*BSGrad(2, i) &
-                                 +cojac(3, 3)*BSGrad(3, i))/jacob
+                                 +cojac(3, 3)*BSGrad(3, i))
             end do
         elseif (this%ndim == 2) then
+            cojac(1:2, 1:2) = cojac(1:2, 1:2)/jacob
             do i = 1, this%size
-                BSGrad2(1, i) = (cojac(1, 1)*BSGrad(1, i)+cojac(1, 2)*BSGrad(2, i))/jacob
-                BSGrad2(2, i) = (cojac(2, 1)*BSGrad(1, i)+cojac(2, 2)*BSGrad(2, i))/jacob
+                BSGrad2(1, i) = (cojac(1, 1)*BSGrad(1, i)+cojac(1, 2)*BSGrad(2, i))
+                BSGrad2(2, i) = (cojac(2, 1)*BSGrad(1, i)+cojac(2, 2)*BSGrad(2, i))
             end do
         end if
 !
@@ -288,9 +290,12 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        BSGradEval = 0.d0
         if (this%typeEF == EF_LAGRANGE) then
-            BSGradEval = FE_grad_lagr(this, point, jacob_)
+            if (present(jacob_)) then
+                BSGradEval = FE_grad_lagr(this, point, jacob_)
+            else
+                BSGradEval = FE_grad_lagr(this, point)
+            end if
         else
             ASSERT(ASTER_FALSE)
         end if

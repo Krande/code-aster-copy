@@ -63,12 +63,30 @@ subroutine ntcomp(icomp, icamas, ndim, temp, dtemp, coorpg, aniso, ifon, fluxglo
                 Kloc(j, 1:3) = lambor(j)*Kloc(j, 1:3)
             end do
             Kglo = matmul(p, Kloc)
-            fluxglo = matmul(Kglo, dtemp)
+            if (ndim == 3) then
+                fluxglo(1) = Kglo(1, 1)*dtemp(1)+Kglo(1, 2)*dtemp(2)+Kglo(1, 3)*dtemp(3)
+                fluxglo(2) = Kglo(2, 1)*dtemp(1)+Kglo(2, 2)*dtemp(2)+Kglo(2, 3)*dtemp(3)
+                fluxglo(3) = Kglo(3, 1)*dtemp(1)+Kglo(3, 2)*dtemp(2)+Kglo(3, 3)*dtemp(3)
+            else
+                fluxglo(1) = Kglo(1, 1)*dtemp(1)+Kglo(1, 2)*dtemp(2)
+                fluxglo(2) = Kglo(2, 1)*dtemp(1)+Kglo(2, 2)*dtemp(2)
+            end if
         else
-            do j = 1, ndim
-                Kglo(j, j) = lambda
-            end do
-            fluxglo = lambda*dtemp
+            if (ndim == 3) then
+                Kglo(1, 1) = lambda
+                Kglo(2, 2) = lambda
+                Kglo(3, 3) = lambda
+!
+                fluxglo(1) = lambda*dtemp(1)
+                fluxglo(2) = lambda*dtemp(2)
+                fluxglo(3) = lambda*dtemp(3)
+            else
+                Kglo(1, 1) = lambda
+                Kglo(2, 2) = lambda
+!
+                fluxglo(1) = lambda*dtemp(1)
+                fluxglo(2) = lambda*dtemp(2)
+            end if
         end if
 !
     else
