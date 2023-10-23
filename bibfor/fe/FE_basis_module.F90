@@ -139,12 +139,13 @@ contains
 !
 !===================================================================================================
 !
-    function FE_grad_lagr(this, point) result(BSGrad2)
+    function FE_grad_lagr(this, point, jacob_) result(BSGrad2)
 !
         implicit none
 !
         class(FE_Basis), intent(in) :: this
         real(kind=8), intent(in)       :: point(3)
+        real(kind=8), optional, intent(in)  :: jacob_(3, 3)
 !
 ! --------------------------------------------------------------------------------------------------
 !   fe - basis functions
@@ -161,13 +162,32 @@ contains
         call elrfdf(this%typema, point, BSGrad)
 !
 ! ---  Compute the jacobienne
-        jaco = 0.d0
-        do i = 1, this%nbnodes
-            jaco(1:3, 1) = jaco(1:3, 1)+this%coorno(1, i)*BSGrad(1:3, i)
-            jaco(1:3, 2) = jaco(1:3, 2)+this%coorno(2, i)*BSGrad(1:3, i)
-            jaco(1:3, 3) = jaco(1:3, 3)+this%coorno(3, i)*BSGrad(1:3, i)
-        end do
-        if (this%ndim == 2) jaco(3, 3) = 1.d0
+        if (present(jacob_)) then
+            jaco = jacob_
+        else
+            jaco = 0.d0
+            if (this%ndim == 3) then
+                do i = 1, this%nbnodes
+                    jaco(1, 1:3) = jaco(1, 1:3)+this%coorno(1:3, i)*BSGrad(1, i)
+                    jaco(2, 1:3) = jaco(2, 1:3)+this%coorno(1:3, i)*BSGrad(2, i)
+                    jaco(3, 1:3) = jaco(3, 1:3)+this%coorno(1:3, i)*BSGrad(3, i)
+                end do
+            elseif (this%ndim == 2) then
+                do i = 1, this%nbnodes
+                    jaco(1, 1:2) = jaco(1, 1:2)+this%coorno(1:2, i)*BSGrad(1, i)
+                    jaco(2, 1:2) = jaco(2, 1:2)+this%coorno(1:2, i)*BSGrad(2, i)
+                end do
+                jaco(3, 3) = 1.d0
+            elseif (this%ndim == 1) then
+                do i = 1, this%nbnodes
+                    jaco(1, 1) = jaco(1, 1)+this%coorno(1, i)*BSGrad(1, i)
+                end do
+                jaco(2, 2) = 1.d0
+                jaco(3, 3) = 1.d0
+            else
+                ASSERT(ASTER_FALSE)
+            end if
+        end if
 
         cojac(1, 1) = jaco(2, 2)*jaco(3, 3)-jaco(2, 3)*jaco(3, 2)
         cojac(2, 1) = jaco(3, 1)*jaco(2, 3)-jaco(2, 1)*jaco(3, 3)
@@ -195,10 +215,21 @@ contains
         end if
 !
         BSGrad2 = 0.d0
-        do i = 1, this%size
-            BSGrad2(1:this%ndim, i) = &
-                matmul(cojac(1:this%ndim, 1:this%ndim), BSGrad(1:this%ndim, i))/jacob
-        end do
+        if (this%ndim == 3) then
+            do i = 1, this%size
+                BSGrad2(1, i) = (cojac(1, 1)*BSGrad(1, i)+cojac(1, 2)*BSGrad(2, i) &
+                                 +cojac(1, 3)*BSGrad(3, i))/jacob
+                BSGrad2(2, i) = (cojac(2, 1)*BSGrad(1, i)+cojac(2, 2)*BSGrad(2, i) &
+                                 +cojac(2, 3)*BSGrad(3, i))/jacob
+                BSGrad2(3, i) = (cojac(3, 1)*BSGrad(1, i)+cojac(3, 2)*BSGrad(2, i) &
+                                 +cojac(3, 3)*BSGrad(3, i))/jacob
+            end do
+        elseif (this%ndim == 2) then
+            do i = 1, this%size
+                BSGrad2(1, i) = (cojac(1, 1)*BSGrad(1, i)+cojac(1, 2)*BSGrad(2, i))/jacob
+                BSGrad2(2, i) = (cojac(2, 1)*BSGrad(1, i)+cojac(2, 2)*BSGrad(2, i))/jacob
+            end do
+        end if
 !
     end function
 !
@@ -238,12 +269,13 @@ contains
 !
 !===================================================================================================
 !
-    function feBSCGradEv(this, point) result(BSGradEval)
+    function feBSCGradEv(this, point, jacob_) result(BSGradEval)
 !
         implicit none
 !
         class(FE_Basis), intent(in)             :: this
         real(kind=8), dimension(3), intent(in)  :: point
+        real(kind=8), dimension(3, 3), optional, intent(in)  :: jacob_
         real(kind=8), dimension(3, MAX_BS)      :: BSGradEval
 !
 ! --------------------------------------------------------------------------------------------------
@@ -258,7 +290,7 @@ contains
 !
         BSGradEval = 0.d0
         if (this%typeEF == EF_LAGRANGE) then
-            BSGradEval = FE_grad_lagr(this, point)
+            BSGradEval = FE_grad_lagr(this, point, jacob_)
         else
             ASSERT(ASTER_FALSE)
         end if

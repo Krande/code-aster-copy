@@ -260,6 +260,7 @@ def _computeRhs(disr_comp, is_evol, time_curr, time_delta, time_theta, previousP
     rhs = disr_comp.getImposedDualBC(time_curr)
     logger.debug("<THER_LINEAIRE><RHS>: Nodal BC")
 
+    @profile
     def rhs_theta(disr_comp, time, temp):
         varc = disr_comp.getPhysicalProblem().getExternalStateVariables(time)
 

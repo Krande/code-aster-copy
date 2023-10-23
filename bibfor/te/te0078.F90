@@ -30,6 +30,7 @@ subroutine te0078(option, nomte)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
@@ -84,12 +85,13 @@ subroutine te0078(option, nomte)
 !
     resi_f = 0.d0
     do kp = 1, FEQuadRigi%nbQuadPoints
-        tpg = FEEvalFuncScal(FEBasis, temp, FEQuadRigi%points_param(1:3, kp))
-        BGSEval = FEBasis%grad(FEQuadRigi%points_param(1:3, kp))
+        BGSEval = FEBasis%grad(FEQuadRigi%points_param(1:3, kp), FEQuadRigi%jacob(1:3, 1:3, kp))
+!
         dtpg = FEEvalGradVec(FEBasis, temp, FEQuadRigi%points_param(1:3, kp), BGSEval)
+!
         call nlcomp(phenom, imate, icamas, FECell%ndim, FEQuadRigi%points(1:3, kp), time, &
-                    tpg, Kglo)
-        flux = matmul(Kglo, dtpg)
+                    0.d0, Kglo, dtp_=dtpg, fluglo_=flux)
+!
         call FEStiffVecScalAdd(FEBasis, BGSEval, FEQuadRigi%weights(kp), flux, resi_f)
     end do
 !

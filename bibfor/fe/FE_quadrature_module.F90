@@ -54,6 +54,7 @@ module FE_quadrature_module
         real(kind=8), dimension(MAX_QP)     :: weights_param = 0.d0
         real(kind=8), dimension(3, MAX_QP)  :: points = 0.d0
         real(kind=8), dimension(MAX_QP)     :: weights = 0.d0
+        real(kind=8), dimension(3, 3, MAX_QP) :: jacob = 0.d0
 ! ----- member functions
     contains
         procedure, private, pass :: FE_rules
@@ -76,7 +77,7 @@ contains
 !
 !===================================================================================================
 !
-    subroutine FE_transfo(coorno, nbnodes, typema, l_skin, coorref, coorac, jacob)
+    subroutine FE_transfo(coorno, nbnodes, typema, l_skin, coorref, coorac, jaco, jacob)
 !
         implicit none
 !
@@ -87,6 +88,8 @@ contains
         real(kind=8), dimension(3), intent(in)          :: coorref
         real(kind=8), dimension(3), intent(out)         :: coorac
         real(kind=8), intent(out)                       :: jacob
+        real(kind=8), dimension(3, 3), intent(out)     :: jaco
+
 !
 ! --------------------------------------------------------------------------------------------------
 !   FE
@@ -101,7 +104,6 @@ contains
 !
         real(kind=8), dimension(27) :: basis
         real(kind=8), dimension(3, 27) :: dbasis
-        real(kind=8), dimension(3, 3) :: jaco
         real(kind=8) :: normal(3)
         integer :: i, ndim, iadzi, iazk24
 !
@@ -124,11 +126,31 @@ contains
 !
 ! ---  Compute the jacobienne
         jaco = 0.d0
-        do i = 1, nbnodes
-            jaco(1:3, 1) = jaco(1:3, 1)+coorno(1, i)*dbasis(1:3, i)
-            jaco(1:3, 2) = jaco(1:3, 2)+coorno(2, i)*dbasis(1:3, i)
-            jaco(1:3, 3) = jaco(1:3, 3)+coorno(3, i)*dbasis(1:3, i)
-        end do
+        if (ndim == 3) then
+            do i = 1, nbnodes
+                jaco(1, 1:3) = jaco(1, 1:3)+coorno(1:3, i)*dbasis(1, i)
+                jaco(2, 1:3) = jaco(2, 1:3)+coorno(1:3, i)*dbasis(2, i)
+                jaco(3, 1:3) = jaco(3, 1:3)+coorno(1:3, i)*dbasis(3, i)
+            end do
+        elseif (ndim == 2) then
+            do i = 1, nbnodes
+                jaco(1, 1:3) = jaco(1, 1:3)+coorno(1:3, i)*dbasis(1, i)
+                jaco(2, 1:3) = jaco(2, 1:3)+coorno(1:3, i)*dbasis(2, i)
+            end do
+            if (.not. l_skin) then
+                jaco(3, 3) = 1.d0
+            end if
+        elseif (ndim == 1) then
+            do i = 1, nbnodes
+                jaco(1, 1:2) = jaco(1, 1:2)+coorno(1:2, i)*dbasis(1, i)
+            end do
+            if (.not. l_skin) then
+                jaco(2, 2) = 1.d0
+                jaco(3, 3) = 1.d0
+            end if
+        else
+            ASSERT(ASTER_FALSE)
+        end if
 !
         if (ndim == 3) then
             ASSERT(.not. l_skin)
@@ -199,7 +221,8 @@ contains
             do idim = 1, dimp
                 xp(idim) = zr(jcoopg-1+dimp*(ipg-1)+idim)
             end do
-            call FE_transfo(coorno, nbnodes, typema, l_skin, xp, coorac, jaco)
+            call FE_transfo(coorno, nbnodes, typema, l_skin, xp, &
+                            coorac, this%jacob(1:3, 1:3, ipg), jaco)
             this%points_param(1:3, ipg) = xp
             this%weights_param(ipg) = zr(jpoids-1+ipg)
 !

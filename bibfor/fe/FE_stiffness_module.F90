@@ -108,7 +108,7 @@ contains
 ! -- Loop on quadrature point
         do ipg = 1, FEQuad%nbQuadPoints
 ! ----- Eval cell basis function at the quadrature point
-            BSEval = FEBasis%grad(FEQuad%points_param(1:3, ipg))
+            BSEval = FEBasis%grad(FEQuad%points_param(1:3, ipg), FEQuad%jacob(1:3, 1:3, ipg))
 !
             call FEStiffVecScalAdd(FEBasis, BSEval, FEQuad%weights(ipg), ValuesQP(1:3, ipg), vec)
         end do
@@ -145,7 +145,19 @@ contains
         real(kind=8) :: Kgradj(3)
 !
         do j = 1, FEBasis%size
-            Kgradj = matmul(ValueQP, BGSEval(1:3, j))
+            if (FEBasis%ndim == 3) then
+                Kgradj(1) = ValueQP(1, 1)*BGSEval(1, j)+ValueQP(1, 2)*BGSEval(2, j)+ &
+                            ValueQP(1, 3)*BGSEval(3, j)
+                Kgradj(2) = ValueQP(2, 1)*BGSEval(1, j)+ValueQP(2, 2)*BGSEval(2, j)+ &
+                            ValueQP(2, 3)*BGSEval(3, j)
+                Kgradj(3) = ValueQP(3, 1)*BGSEval(1, j)+ValueQP(3, 2)*BGSEval(2, j)+ &
+                            ValueQP(3, 3)*BGSEval(3, j)
+            elseif (FEBasis%ndim == 2) then
+                Kgradj(1) = ValueQP(1, 1)*BGSEval(1, j)+ValueQP(1, 2)*BGSEval(2, j)
+                Kgradj(2) = ValueQP(2, 1)*BGSEval(1, j)+ValueQP(2, 2)*BGSEval(2, j)
+            else
+                Kgradj(1) = ValueQP(1, 1)*BGSEval(1, j)
+            end if
             call dgemv('T', FEBasis%ndim, j, weight, BGSEval, 3, Kgradj, 1, 1.d0, mat(:, j), 1)
         end do
 !
@@ -184,7 +196,7 @@ contains
 ! -- Loop on quadrature point
         do ipg = 1, FEQuad%nbQuadPoints
 ! ----- Eval cell basis function at the quadrature point
-            BSEval = FEBasis%grad(FEQuad%points_param(1:3, ipg))
+            BSEval = FEBasis%grad(FEQuad%points_param(1:3, ipg), FEQuad%jacob(1:3, 1:3, ipg))
 
             call FEStiffMatScalAdd(FEBasis, BSEval, FEQuad%weights(ipg), ValuesQP(1:3, 1:3, ipg), &
                                    mat)

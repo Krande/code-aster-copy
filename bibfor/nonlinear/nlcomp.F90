@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nlcomp(phenom, imate, icamas, ndim, coorpg, time, tp, Kglo)
+subroutine nlcomp(phenom, imate, icamas, ndim, coorpg, time, tp, Kglo, dtp_, fluglo_)
 !.
     implicit none
 !
@@ -31,6 +31,7 @@ subroutine nlcomp(phenom, imate, icamas, ndim, coorpg, time, tp, Kglo)
     integer, intent(in) :: imate, icamas, ndim
     real(kind=8), intent(in) :: coorpg(3), time, tp
     real(kind=8), intent(out) :: Kglo(3, 3)
+    real(kind=8), optional, intent(out) :: dtp_(3), fluglo_(3)
 !
     integer :: j, nbres
     parameter(nbres=3)
@@ -85,10 +86,18 @@ subroutine nlcomp(phenom, imate, icamas, ndim, coorpg, time, tp, Kglo)
             Kloc(j, 1:3) = lambor(j)*Kloc(j, 1:3)
         end do
         Kglo = matmul(p, Kloc)
+        if (present(fluglo_)) then
+            ASSERT(present(dtp_))
+            fluglo_ = matmul(Kglo, dtp_)
+        end if
     else
         do j = 1, ndim
             Kglo(j, j) = lambda
         end do
+        if (present(fluglo_)) then
+            ASSERT(present(dtp_))
+            fluglo_ = lambda*dtp_
+        end if
     end if
 !
 end subroutine

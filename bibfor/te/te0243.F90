@@ -103,7 +103,7 @@ subroutine te0243(option, nomte)
     rigi = 0.d0
     do kp = 1, FEQuadCell%nbQuadPoints
         tpg = FEEvalFuncScal(FEBasis, tempi, FEQuadCell%points_param(1:3, kp))
-        BGSEval = FEBasis%grad(FEQuadCell%points_param(1:3, kp))
+        BGSEval = FEBasis%grad(FEQuadCell%points_param(1:3, kp), FEQuadCell%jacob(1:3, 1:3, kp))
         dtpg = FEEvalGradVec(FEBasis, tempi, FEQuadCell%points_param(1:3, kp), BGSEval)
 !
         if (zk16(icomp) (1:5) .eq. 'THER_') then
