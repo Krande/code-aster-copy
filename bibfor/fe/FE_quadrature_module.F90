@@ -27,11 +27,7 @@ module FE_quadrature_module
 #include "asterc/r8gaem.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/elraga.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/elrfdf.h"
-#include "asterfort/elrfno.h"
-#include "asterfort/elrfvf.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/provec.h"
 #include "asterfort/tecael.h"
@@ -77,18 +73,18 @@ contains
 !
 !===================================================================================================
 !
-    subroutine FE_transfo(coorno, nbnodes, typema, l_skin, coorref, coorac, jaco, jacob)
+    subroutine FE_transfo(coorno, nbnodes, ndim, l_skin, &
+                          basis, dbasis, coorac, jaco, jacob)
 !
         implicit none
 !
-        integer, intent(in)                             :: nbnodes
+        integer, intent(in)                             :: nbnodes, ndim
         real(kind=8), dimension(3, nbnodes), intent(in) :: coorno
-        character(len=8), intent(in)                    :: typema
         aster_logical, intent(in)                       :: l_skin
-        real(kind=8), dimension(3), intent(in)          :: coorref
+        real(kind=8), intent(in)                        :: basis(*), dbasis(*)
         real(kind=8), dimension(3), intent(out)         :: coorac
         real(kind=8), intent(out)                       :: jacob
-        real(kind=8), dimension(3, 3), intent(out)     :: jaco
+        real(kind=8), dimension(3, 3), intent(out)      :: jaco
 
 !
 ! --------------------------------------------------------------------------------------------------
@@ -102,21 +98,8 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8), dimension(27) :: basis
-        real(kind=8), dimension(3, 27) :: dbasis
         real(kind=8) :: normal(3)
-        integer :: i, ndim, iadzi, iazk24
-!
-! ----- shape function
-!
-        call elrfno(typema, ndim=ndim)
-        basis = 0.d0
-        call elrfvf(typema, coorref, basis)
-!
-! ----- derivative of shape function
-!
-        dbasis = 0.d0
-        call elrfdf(typema, coorref, dbasis)
+        integer :: i, iadzi, iazk24, ind
 !
         coorac = 0.d0
 !
@@ -128,9 +111,10 @@ contains
         jaco = 0.d0
         if (ndim == 3) then
             do i = 1, nbnodes
-                jaco(1, 1:3) = jaco(1, 1:3)+coorno(1:3, i)*dbasis(1, i)
-                jaco(2, 1:3) = jaco(2, 1:3)+coorno(1:3, i)*dbasis(2, i)
-                jaco(3, 1:3) = jaco(3, 1:3)+coorno(1:3, i)*dbasis(3, i)
+                ind = 3*(i-1)
+                jaco(1, 1:3) = jaco(1, 1:3)+coorno(1:3, i)*dbasis(ind+1)
+                jaco(2, 1:3) = jaco(2, 1:3)+coorno(1:3, i)*dbasis(ind+2)
+                jaco(3, 1:3) = jaco(3, 1:3)+coorno(1:3, i)*dbasis(ind+3)
             end do
 !
             ASSERT(.not. l_skin)
@@ -139,10 +123,11 @@ contains
                     -jaco(3, 3)*jaco(2, 1)*jaco(1, 2)-jaco(1, 1)*jaco(2, 3)*jaco(3, 2)
         elseif (ndim == 2) then
             do i = 1, nbnodes
-                jaco(1, 1:3) = jaco(1, 1:3)+coorno(1:3, i)*dbasis(1, i)
-                jaco(2, 1:3) = jaco(2, 1:3)+coorno(1:3, i)*dbasis(2, i)
+                ind = 2*(i-1)
+                jaco(1, 1:3) = jaco(1, 1:3)+coorno(1:3, i)*dbasis(ind+1)
+                jaco(2, 1:3) = jaco(2, 1:3)+coorno(1:3, i)*dbasis(ind+2)
             end do
-            if ( l_skin) then
+            if (l_skin) then
                 call provec(jaco(1, 1:3), jaco(2, 1:3), normal)
                 jacob = norm2(normal)
             else
@@ -151,7 +136,7 @@ contains
             end if
         elseif (ndim == 1) then
             do i = 1, nbnodes
-                jaco(1, 1:2) = jaco(1, 1:2)+coorno(1:2, i)*dbasis(1, i)
+                jaco(1, 1:2) = jaco(1, 1:2)+coorno(1:2, i)*dbasis(i)
             end do
             if (l_skin) then
                 jacob = norm2(jaco(1, 1:2))
@@ -175,14 +160,13 @@ contains
 !
 !===================================================================================================
 !
-    subroutine FE_rules(this, coorno, nbnodes, l_skin, typema)
+    subroutine FE_rules(this, coorno, nbnodes, l_skin)
 !
         implicit none
 !
         real(kind=8), dimension(3, *), intent(in)  :: coorno
         integer, intent(in)                        :: nbnodes
         aster_logical, intent(in)                  :: l_skin
-        character(len=8), intent(in)               :: typema
         class(FE_quadrature), intent(inout)        :: this
 !
 ! --------------------------------------------------------------------------------------------------
@@ -196,25 +180,27 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: nbpg, ipg, jpoids, jcoopg, idim, dimp
-        real(kind=8) :: xp(3), coorac(3), jaco
+        integer :: nbpg, ipg, jpoids, jcoopg, idim, dimp, jdfde, jvf, ind
+        real(kind=8) :: coorac(3), jaco
 !
 !------ get quadrature points
-        call elrefe_info(fami=this%fami, ndim=dimp, npg=nbpg, jpoids=jpoids, jcoopg=jcoopg)
+        call elrefe_info(fami=this%fami, ndim=dimp, npg=nbpg, jpoids=jpoids, jcoopg=jcoopg, &
+                         jvf=jvf, jdfde=jdfde)
 !
 ! ----- fill FEQuad
         ASSERT(nbpg <= MAX_QP)
         this%nbQuadPoints = nbpg
 !
         do ipg = 1, nbpg
-            xp = 0.d0
+            ind = jcoopg-1+dimp*(ipg-1)
             do idim = 1, dimp
-                xp(idim) = zr(jcoopg-1+dimp*(ipg-1)+idim)
+                this%points_param(idim, ipg) = zr(ind+idim)
             end do
-            call FE_transfo(coorno, nbnodes, typema, l_skin, xp, &
-                            coorac, this%jacob(1:3, 1:3, ipg), jaco)
-            this%points_param(1:3, ipg) = xp
             this%weights_param(ipg) = zr(jpoids-1+ipg)
+!
+            call FE_transfo(coorno, nbnodes, dimp, l_skin, &
+                            zr(jvf+nbnodes*(ipg-1)), zr(jdfde+dimp*nbnodes*(ipg-1)), &
+                            coorac, this%jacob(1:3, 1:3, ipg), jaco)
 !
             this%points(1:3, ipg) = coorac
             this%weights(ipg) = abs(jaco)*zr(jpoids-1+ipg)
@@ -248,8 +234,7 @@ contains
 !
         this%fami = fami
 !
-        call this%FE_rules(FECell%coorno(1:3, 1:FECell%nbnodes), FECell%nbnodes, &
-                           ASTER_FALSE, FECell%typemas)
+        call this%FE_rules(FECell%coorno(1:3, 1:FECell%nbnodes), FECell%nbnodes, ASTER_FALSE)
 !
         if (lteatt('AXIS', 'OUI')) then
             do ipg = 1, this%nbQuadPoints
@@ -286,8 +271,7 @@ contains
 !
         this%fami = fami
 !
-        call this%FE_rules(FESkin%coorno(1:3, 1:FESkin%nbnodes), FESkin%nbnodes, &
-                           ASTER_TRUE, FESkin%typemas)
+        call this%FE_rules(FESkin%coorno(1:3, 1:FESkin%nbnodes), FESkin%nbnodes, ASTER_TRUE)
 !
         if (lteatt('AXIS', 'OUI')) then
             do ipg = 1, this%nbQuadPoints
