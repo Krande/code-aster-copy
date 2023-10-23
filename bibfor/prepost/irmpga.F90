@@ -19,7 +19,7 @@
 !
 subroutine irmpga(nofimd, chanom, nochmd, typech, nomtyp, &
                   nbimpr, caimpi, caimpk, modnum, nuanom, &
-                  sdcarm, lfichUniq, field_type, codret)
+                  sdcarm, carael, lfichUniq, field_type, codret)
 !
     implicit none
 !
@@ -40,7 +40,7 @@ subroutine irmpga(nofimd, chanom, nochmd, typech, nomtyp, &
     integer :: caimpi(10, nbimpr)
     integer :: modnum(MT_NTYMAX), nuanom(MT_NTYMAX, *)
     character(len=8) :: nomtyp(*)
-    character(len=8) :: typech, sdcarm
+    character(len=8) :: typech, sdcarm, carael
     character(len=16) :: tuyau, coque, grille, typmod2
     character(len=19) :: chanom
     character(len=80) :: caimpk(3, nbimpr)
@@ -49,7 +49,7 @@ subroutine irmpga(nofimd, chanom, nochmd, typech, nomtyp, &
     aster_logical :: lfichUniq
     character(len=16) :: field_type
     integer :: codret
-    
+
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -171,12 +171,12 @@ subroutine irmpga(nofimd, chanom, nochmd, typech, nomtyp, &
                 call teattr('C', 'TYPMOD2', typmod2, iret, typel=nomtef)
                 if (tuyau .eq. 'OUI' .or. coque .eq. 'OUI' .or. grille .eq. 'OUI' &
                     .or. typmod2 .eq. 'PMF') then
-                    if (nbsp .gt. 1 .and. sdcarm .eq. ' ') then
+                    if (nbsp .gt. 1 .and. carael .eq. ' ') then
                         valk(1) = field_type
                         valk(2) = nomtef
-                        call utmess('A', 'MED2_14', nk=2, valk=valk)
-                    endif
-                endif
+                        call utmess('F', 'MED2_14', nk=2, valk=valk)
+                    end if
+                end if
 !
                 call uteref(chanom, typech, ntypef, nomtef, lfichUniq, &
                             nomfpg, nbnoso, nbnoto, nbrepg, ndim, &

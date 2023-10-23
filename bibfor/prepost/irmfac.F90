@@ -71,7 +71,7 @@ subroutine irmfac(keywfIocc, fileFormat, fileUnit, fileVersion, modelIn, &
     real(kind=8) :: borsup, borinf
     character(len=1) :: paraFormat
     character(len=8) :: cplxFormat
-    character(len=8) :: modelMesh, model, caraElem, meshName
+    character(len=8) :: modelMesh, model, caraElem, meshName, visuSP
     character(len=8) :: fieldGsmh, fieldQuantity
     character(len=19) :: dsName, resultName, fieldName, answer
     character(len=16) :: realFormat, resultType
@@ -130,6 +130,14 @@ subroutine irmfac(keywfIocc, fileFormat, fileUnit, fileVersion, modelIn, &
 !
     caraElem = ' '
     call getvid(keywf, 'CARA_ELEM', iocc=keywfIocc, scal=caraElem, nbret=nbOcc)
+
+    if (caraElem .eq. ' ') then
+        call getvid(keywf, 'VISU_SP', iocc=keywfIocc, scal=visuSP, nbret=nbOcc)
+        if (visuSP .eq. 'NON') then
+            caraElem = '-'
+        end if
+    end if
+
 !
 ! - Get flag to print coordinates of nodes
 !

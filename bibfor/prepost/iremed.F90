@@ -119,7 +119,7 @@ subroutine iremed(fileUnit, dsNameZ, lResu, &
     nbCmpDyna = 0
 !
     sdcarm = ' '
-    if (caraElem .ne. ' ') then
+    if (caraElem .ne. ' ' .and. caraElem .ne. '-') then
         if (lResu) then
             call dismoi('CARA_ELEM', dsName, 'RESULTAT', repk=carel2, arret='C', &
                         ier=ierd)

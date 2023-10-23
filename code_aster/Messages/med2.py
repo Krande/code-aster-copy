@@ -108,7 +108,8 @@ On a besoin du CARA_ELEM pour imprimer des champs à sous-points pour les élém
 
     Conseils : 
         - Préciser le mot-clé CARA_ELEM sous le mot clé facteur RESU.
-        - Sans mot-clé CARA_ELEM le résultat n'est exploitable que pour la commande LIRE_RESU
+        - Autoriser l'impression sans CARA_ELEM en précisant le mot-clé VISU_SP='NON' sous le
+          mot clé facteur RESU ; le résultat n'est exploitable que pour la commande LIRE_RESU
           et il ne faut surtout pas chercher à le visualiser.
     """
     ),

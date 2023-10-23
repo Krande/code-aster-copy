@@ -389,7 +389,7 @@ subroutine ircame(ifi, nochmd, chanom, typech, modele, &
             end if
             call irmpga(nofimd, chanom, nochmd, typech, nomtyp, &
                         nbimpr, zi(adcaii), zk80(adcaik), modnum, nuanom, &
-                        sdcarm, lfichUniq, field_type, codret)
+                        sdcarm, carael, lfichUniq, field_type, codret)
         end if
 !
 !       Reperage du champ : existe-t-il deja ?

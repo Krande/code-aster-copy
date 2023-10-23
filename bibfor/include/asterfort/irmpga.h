@@ -18,9 +18,9 @@
 #include "MeshTypes_type.h"
 !
 interface
-    subroutine irmpga(nofimd, chanom, nochmd, typech, nomtyp,&
-                      nbimpr, caimpi, caimpk, modnum, nuanom,&
-                      sdcarm, lfichUniq, field_type, codret)
+    subroutine irmpga(nofimd, chanom, nochmd, typech, nomtyp, &
+                      nbimpr, caimpi, caimpk, modnum, nuanom, &
+                      sdcarm, carael, lfichUniq, field_type, codret)
         integer :: nbimpr
         character(len=*) :: nofimd
         character(len=19) :: chanom
@@ -31,6 +31,7 @@ interface
         integer :: modnum(MT_NTYMAX)
         integer :: nuanom(MT_NTYMAX, *)
         character(len=8) :: sdcarm
+        character(len=8) :: carael
         character(len=64) :: nochmd
         character(len=16) :: field_type
         aster_logical :: lfichUniq

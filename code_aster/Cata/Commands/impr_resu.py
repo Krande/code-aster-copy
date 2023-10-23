@@ -89,6 +89,10 @@ IMPR_RESU = PROC(
             ),
             MAILLAGE=SIMP(statut="f", typ=(maillage_sdaster, squelette)),
             CARA_ELEM=SIMP(statut="f", typ=cara_elem),
+            b_visu_sp=BLOC(
+                condition="""(not exists("CARA_ELEM"))""",
+                VISU_SP=SIMP(statut="f", typ="TXM", into=("NON",)),
+            ),
             CHAM_GD=SIMP(statut="f", typ=cham_gd_sdaster),
             RESULTAT=SIMP(statut="f", typ=resultat_sdaster),
             INFO_MAILLAGE=SIMP(statut="f", typ="TXM", defaut="NON", into=("OUI", "NON")),
