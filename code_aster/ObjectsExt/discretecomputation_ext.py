@@ -42,6 +42,15 @@ class ExtendedDiscreteComputation:
         """
         return (self.getPhysicalProblem(),)
 
+    # add profile to theses methods
+    getThermalNeumannForces = profile(DiscreteComputation.getThermalNeumannForces)
+    getThermalVolumetricForces = profile(DiscreteComputation.getThermalVolumetricForces)
+    getThermalExchangeForces = profile(DiscreteComputation.getThermalExchangeForces)
+    getTransientThermalLoadForces = profile(DiscreteComputation.getTransientThermalLoadForces)
+    getTransientThermalForces = profile(DiscreteComputation.getTransientThermalForces)
+    getThermalExchangeMatrix = profile(DiscreteComputation.getThermalExchangeMatrix)
+    getLinearCapacityMatrix = profile(DiscreteComputation.getLinearCapacityMatrix)
+
     @profile
     def getDirichletBC(self, time=0.0):
         """Return the imposed displacement vector used to remove imposed DDL

@@ -61,12 +61,12 @@ subroutine te0244(option, nomte)
     parameter(nbres=1)
     integer :: icodre(nbres)
     character(len=16) :: phenom
-    real(kind=8) :: valQPM(MAX_QP), valQPF(3, MAX_QP)
+    real(kind=8) :: valQPM(MAX_QP), BGSEval(3, MAX_BS)
     real(kind=8) :: valQPMP(MAX_QP)
     real(kind=8) :: resi_f(MAX_BS), resi_m(MAX_BS), resi(MAX_BS)
     real(kind=8) :: resi_mp(MAX_BS), resi_p(MAX_BS)
     real(kind=8) ::  deltat, theta, chal(1), fluglo(3), diff, Kglo(3, 3)
-    real(kind=8) :: beta, dbeta, tpg, dtpg(3), tpsec
+    real(kind=8) :: beta, dbeta, tpg, dtpg(3), tpsec, flux(3)
     integer :: kp, imate, icamas, icomp, ifon(6), itemps
     aster_logical :: lhyd, aniso
     real(kind=8), pointer :: tempi(:) => null()
@@ -107,24 +107,25 @@ subroutine te0244(option, nomte)
         end if
     end if
 !
+    resi_f = 0.d0
     do kp = 1, FEQuadRigi%nbQuadPoints
         tpg = FEEvalFuncScal(FEBasis, tempi, FEQuadRigi%points_param(1:3, kp))
-        dtpg = FEEvalGradVec(FEBasis, tempi, FEQuadRigi%points_param(1:3, kp))
+        BGSEval = FEBasis%grad(FEQuadRigi%points_param(1:3, kp))
+        dtpg = FEEvalGradVec(FEBasis, tempi, FEQuadRigi%points_param(1:3, kp), BGSEval)
 !
         if (zk16(icomp) (1:5) .eq. 'THER_') then
             call ntcomp(icomp, icamas, FECell%ndim, tpg, dtpg, &
                         FEQuadRigi%points(1:3, kp), aniso, ifon, fluglo, Kglo)
-            valQPF(1:3, kp) = fluglo
+            flux = fluglo
         else if (zk16(icomp) (1:5) .eq. 'SECH_') then
             tpsec = FEEvalFuncScal(FEBasis, sechf, FEQuadRigi%points_param(1:3, kp))
             call rcdiff(zi(imate), zk16(icomp), tpsec, tpg, diff)
-            valQPF(1:3, kp) = diff*dtpg
+            flux = diff*dtpg
         else
             ASSERT(ASTER_FALSE)
         end if
+        call FEStiffVecScalAdd(FEBasis, BGSEval, FEQuadRigi%weights(kp), flux, resi_f)
     end do
-!
-    call FEStiffVecScal(FEQuadRigi, FEBasis, valQPF, resi_f)
 !
     if (zk16(icomp) (1:9) .eq. 'THER_HYDR') then
         lhyd = ASTER_TRUE

@@ -39,10 +39,41 @@ module FE_stiffness_module
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    public :: FEStiffVecScal, FEStiffMatScal
+    public :: FEStiffVecScal, FEStiffMatScal, FEStiffVecScalAdd, FEStiffMatScalAdd
 !    private  ::
 !
 contains
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine FEStiffVecScalAdd(FEBasis, BGSEval, weight, ValuesQP, vec)
+!
+        implicit none
+!
+        type(FE_Basis), intent(in)          :: FEBasis
+        real(kind=8), intent(in), dimension(3, MAX_BS)  :: BGSEval
+        real(kind=8), intent(in)            :: weight
+        real(kind=8), intent(inout)         :: vec(MAX_BS)
+        real(kind=8), intent(in)            :: ValuesQP(3)
+! --------------------------------------------------------------------------------------------------
+!   HHO
+!
+!   Compute the rigidity vector
+!   In hhoQuad      : Quadrature
+!   In hhoBasis     : tBasis function
+!   In ValuesQP     : Values of scalar function f at the quadrature points
+!   Out rhs         : (f, grad v)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!
+!
+        call dgemv('T', FEBasis%ndim, FEBasis%size, weight, BGSEval, 3, &
+                   ValuesQP, 1, 1.d0, vec, 1)
+!
+    end subroutine
 !
 !
 !===================================================================================================
@@ -58,7 +89,7 @@ contains
         real(kind=8), intent(out)           :: vec(MAX_BS)
         real(kind=8), intent(in)            :: ValuesQP(3, MAX_QP)
 ! --------------------------------------------------------------------------------------------------
-!   HHO
+!
 !
 !   Compute the rigidity vector
 !   In hhoQuad      : Quadrature
@@ -79,8 +110,43 @@ contains
 ! ----- Eval cell basis function at the quadrature point
             BSEval = FEBasis%grad(FEQuad%points_param(1:3, ipg))
 !
-            call dgemv('T', FEBasis%ndim, FEBasis%size, FEQuad%weights(ipg), BSEval, 3, &
-                       ValuesQP(1:3, ipg), 1, 1.d0, vec, 1)
+            call FEStiffVecScalAdd(FEBasis, BSEval, FEQuad%weights(ipg), ValuesQP(1:3, ipg), vec)
+        end do
+!
+    end subroutine
+!
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine FEStiffMatScalAdd(FEBasis, BGSEval, weight, ValueQP, mat)
+!
+        implicit none
+!
+        type(FE_Basis), intent(in)          :: FEBasis
+        real(kind=8), intent(in), dimension(3, MAX_BS) :: BGSEval
+        real(kind=8), intent(in)            :: weight
+        real(kind=8), intent(inout)           :: mat(MAX_BS, MAX_BS)
+        real(kind=8), intent(in)            :: ValueQP(3, 3)
+! --------------------------------------------------------------------------------------------------
+!
+!
+!   Compute the rigidity matrix
+!   In hhoQuad      : Quadrature
+!   In hhoBasis     : tBasis function
+!   In ValuesQP     : Values of scalar function f at the quadrature points
+!   Out rhs         : (f, grad v)
+!
+! --------------------------------------------------------------------------------------------------
+!
+! ----- Local variables
+        integer :: j
+        real(kind=8) :: Kgradj(3)
+!
+        do j = 1, FEBasis%size
+            Kgradj = matmul(ValueQP, BGSEval(1:3, j))
+            call dgemv('T', FEBasis%ndim, j, weight, BGSEval, 3, Kgradj, 1, 1.d0, mat(:, j), 1)
         end do
 !
     end subroutine
@@ -99,7 +165,7 @@ contains
         real(kind=8), intent(out)           :: mat(MAX_BS, MAX_BS)
         real(kind=8), intent(in)            :: ValuesQP(3, 3, MAX_QP)
 ! --------------------------------------------------------------------------------------------------
-!   HHO
+!
 !
 !   Compute the rigidity matrix
 !   In hhoQuad      : Quadrature
@@ -110,9 +176,8 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
 ! ----- Local variables
-        integer :: ipg, j
+        integer :: ipg
         real(kind=8), dimension(3, MAX_BS) :: BSEval
-        real(kind=8) :: Kgradj(3)
 !
         mat = 0.d0
 !
@@ -120,12 +185,9 @@ contains
         do ipg = 1, FEQuad%nbQuadPoints
 ! ----- Eval cell basis function at the quadrature point
             BSEval = FEBasis%grad(FEQuad%points_param(1:3, ipg))
-!
-            do j = 1, FEBasis%size
-                Kgradj = matmul(ValuesQP(1:3, 1:3, ipg), BSEval(1:3, j))
-                call dgemv('T', FEBasis%ndim, j, FEQuad%weights(ipg), BSEval, 3, &
-                           Kgradj, 1, 1.d0, mat(:, j), 1)
-            end do
+
+            call FEStiffMatScalAdd(FEBasis, BSEval, FEQuad%weights(ipg), ValuesQP(1:3, 1:3, ipg), &
+                                   mat)
 !
         end do
 !

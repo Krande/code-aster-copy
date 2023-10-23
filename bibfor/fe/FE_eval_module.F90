@@ -75,7 +75,7 @@ contains
 !
 !===================================================================================================
 !
-    function FEEvalGradVec(FEBasis, val_nodes, point) result(grad)
+    function FEEvalGradVec(FEBasis, val_nodes, point, BGSEval) result(grad)
 !
         implicit none
 !
@@ -83,6 +83,8 @@ contains
         real(kind=8), intent(in)           :: val_nodes(*)
         real(kind=8), intent(in)           :: point(3)
         real(kind=8)                       :: grad(3)
+        real(kind=8), intent(in), optional :: BGSEval(3, MAX_BS)
+
 ! --------------------------------------------------------------------------------------------------
 !   FE
 !
@@ -98,10 +100,16 @@ contains
         real(kind=8) :: gradEF(3, MAX_BS)
 !
         grad = 0.d0
-        gradEF = FEBasis%grad(point)
-        do i = 1, FEBasis%size
-            grad = grad+val_nodes(i)*gradEF(1:3, i)
-        end do
+        if (present(BGSEval)) then
+            do i = 1, FEBasis%size
+                grad = grad+val_nodes(i)*BGSEval(1:3, i)
+            end do
+        else
+            gradEF = FEBasis%grad(point)
+            do i = 1, FEBasis%size
+                grad = grad+val_nodes(i)*gradEF(1:3, i)
+            end do
+        end if
 !
     end function
 !

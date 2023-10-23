@@ -57,7 +57,7 @@ subroutine te0078(option, nomte)
     parameter(nbres=1)
     integer :: icodre(nbres)
     character(len=16) :: phenom
-    real(kind=8) :: valQPM(MAX_QP), valQPF(3, MAX_QP), tpg, dtpg(3)
+    real(kind=8) :: valQPM(MAX_QP), tpg, dtpg(3), flux(3), BGSEval(3, MAX_BS)
     real(kind=8) :: resi_f(MAX_BS), resi_m(MAX_BS), resi(MAX_BS)
     real(kind=8) :: cp, valres(1), Kglo(3, 3), time, deltat, theta
     integer :: kp, imate, icamas, itemps
@@ -82,15 +82,16 @@ subroutine te0078(option, nomte)
         call jevech('PCAMASS', 'L', icamas)
     end if
 !
+    resi_f = 0.d0
     do kp = 1, FEQuadRigi%nbQuadPoints
         tpg = FEEvalFuncScal(FEBasis, temp, FEQuadRigi%points_param(1:3, kp))
-        dtpg = FEEvalGradVec(FEBasis, temp, FEQuadRigi%points_param(1:3, kp))
+        BGSEval = FEBasis%grad(FEQuadRigi%points_param(1:3, kp))
+        dtpg = FEEvalGradVec(FEBasis, temp, FEQuadRigi%points_param(1:3, kp), BGSEval)
         call nlcomp(phenom, imate, icamas, FECell%ndim, FEQuadRigi%points(1:3, kp), time, &
                     tpg, Kglo)
-        ValQPF(1:3, kp) = matmul(Kglo, dtpg)
+        flux = matmul(Kglo, dtpg)
+        call FEStiffVecScalAdd(FEBasis, BGSEval, FEQuadRigi%weights(kp), flux, resi_f)
     end do
-!
-    call FEStiffVecScal(FEQuadRigi, FEBasis, valQPF, resi_f)
 !
     call rcvalb('FPG1', 1, 1, '+', zi(imate), &
                 ' ', phenom, 1, 'INST', [time], &

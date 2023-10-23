@@ -56,7 +56,7 @@ subroutine te0243(option, nomte)
     character(len=32) :: phenom
     real(kind=8) ::  tpg, dtpg(3), tpsec, diff, fluglo(3), Kglo(3, 3)
     real(kind=8) :: resi(MAX_BS), rigi(MAX_BS, MAX_BS)
-    real(kind=8) :: valQPF(3, MAX_QP), valQPK(3, 3, MAX_QP)
+    real(kind=8) :: BGSEval(3, MAX_BS)
     real(kind=8), pointer :: flux(:) => null()
     real(kind=8), pointer :: tempi(:) => null()
     real(kind=8), pointer :: sechf(:) => null()
@@ -99,37 +99,40 @@ subroutine te0243(option, nomte)
         end if
     end if
 !
-    valQPF = 0.0
-    valQPK = 0.d0
+    resi = 0.0
+    rigi = 0.d0
     do kp = 1, FEQuadCell%nbQuadPoints
         tpg = FEEvalFuncScal(FEBasis, tempi, FEQuadCell%points_param(1:3, kp))
-        dtpg = FEEvalGradVec(FEBasis, tempi, FEQuadCell%points_param(1:3, kp))
+        BGSEval = FEBasis%grad(FEQuadCell%points_param(1:3, kp))
+        dtpg = FEEvalGradVec(FEBasis, tempi, FEQuadCell%points_param(1:3, kp), BGSEval)
 !
         if (zk16(icomp) (1:5) .eq. 'THER_') then
             call ntcomp(icomp, icamas, FECell%ndim, tpg, dtpg, &
                         FEQuadCell%points(1:3, kp), aniso, ifon, fluglo, Kglo)
-            valQPF(1:3, kp) = fluglo
-            valQPK(1:3, 1:3, kp) = Kglo
             if (l_rhs) then
                 flux(FECell%ndim*(kp-1)+1:FECell%ndim*(kp-1)+FECell%ndim) = -fluglo(1:FECell%ndim)
             end if
         else if (zk16(icomp) (1:5) .eq. 'SECH_') then
             tpsec = FEEvalFuncScal(FEBasis, sechf, FEQuadCell%points_param(1:3, kp))
             call rcdiff(zi(imate), zk16(icomp), tpsec, tpg, diff)
-            valQPF(1:3, kp) = diff*dtpg
+            fluglo = diff*dtpg
+            Kglo = 0.d0
             do j = 1, FECell%ndim
-                valQPK(j, j, kp) = diff
+                Kglo(j, j) = diff
             end do
         else
             ASSERT(ASTER_FALSE)
         end if
+        if (l_rhs) then
+            call FEStiffVecScalAdd(FEBasis, BGSEval, FEQuadCell%weights(kp), fluglo, resi)
+        else
+            call FEStiffMatScalAdd(FEBasis, BGSEval, FEQuadCell%weights(kp), Kglo, rigi)
+        end if
     end do
 !
     if (l_rhs) then
-        call FEStiffVecScal(FEQuadCell, FEBasis, valQPF, resi)
         call writeVector("PRESIDU", FEBasis%size, resi)
     else
-        call FEStiffMatScal(FEQuadCell, FEBasis, valQPK, rigi)
         call writeMatrix("PMATTTR", FEBasis%size, FEBasis%size, ASTER_TRUE, rigi)
     end if
 end subroutine
