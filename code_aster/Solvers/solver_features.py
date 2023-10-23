@@ -60,6 +60,12 @@ class SolverOptions(IntFlag):
     # hooks called after a step
     PostStepHook = auto()
 
+    # time integrator
+    TimeIntegrator = auto()
+
+    # FE operators manager
+    OperatorsManager = auto()
+
 
 class SolverFeature(BaseFeature):
     """Feature object for non linear operators."""

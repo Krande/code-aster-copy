@@ -231,6 +231,63 @@ class ExtendedDiscreteComputation:
         return matr_elem
 
     @profile
+    def getDampingMatrix(
+        self,
+        massMatrix=None,
+        stiffnessMatrix=None,
+        varc_curr=None,
+        groupOfCells=[],
+        fluiInt=1,
+        ondeFlui=1,
+        assembly=False,
+    ):
+        """Return the elementary matrices for damping matrix depending of the physic.
+        Option AMOR_MECA or AMOR_ACOU.
+
+        Arguments:
+              massMatrix : elementary mass matrix.
+              stiffnessMatrix : elementary stiffness matrix.
+              varc_curr (FieldOnCellsReal): external state variables at current time (default: None)
+              groupOfCells (list[str]): compute matrices on given groups of cells.
+                  If it is empty, the full model is used
+              fluiInt (int) : xxxx xxxx xxxx xxxx.
+              ondeFlui (int) : xxxx xxxx xxxx xxxx.
+              assembly (bool): assemble elementary matrix (default: False)
+        Returns:
+              ElementaryMatrix: elementary damping matrix
+        """
+
+        phys_pb = self.getPhysicalProblem()
+
+        if phys_pb.isMechanical():
+            matr_elem = self.getMechanicalDampingMatrix(
+                massMatrix, stiffnessMatrix, varc_curr, groupOfCells, fluiInt, ondeFlui
+            )
+
+            if assembly:
+                matr_asse = AssemblyMatrixDisplacementReal(self.getPhysicalProblem())
+                matr_asse.addElementaryMatrix(matr_elem)
+                matr_asse.assemble()
+                return matr_asse
+
+        elif phys_pb.isThermal():
+            raise RuntimeError("Not implemented yet")
+
+        elif phys_pb.isAcoustic():
+            matr_elem = self.getImpedanceMatrix(ondeFlui)
+
+            if assembly:
+                matr_asse = AssemblyMatrixPressureComplex(self.getPhysicalProblem())
+                matr_asse.addElementaryMatrix(matr_elem)
+                matr_asse.assemble()
+                return matr_asse
+
+        else:
+            raise RuntimeError("Unknown physic")
+
+        return matr_elem
+
+    @profile
     def getVolumetricForces(
         self, time_curr=0.0, time_step=0.0, theta=1, mode=0, varc_curr=None, assembly=True
     ):

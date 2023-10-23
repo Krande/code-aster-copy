@@ -17,84 +17,99 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from libaster import deleteTemporaryObjects
-
-from ..Supervis import ConvergenceError
-from ..Utilities import with_loglevel, no_new_attributes, profile
-from .logging_manager import LoggingManager
 from .solver_features import SolverFeature
 from .solver_features import SolverOptions as SOP
+from ..Supervis import ConvergenceError
+from ..Utilities import no_new_attributes, profile
 
 
-class StepSolver(SolverFeature):
+class NewtonSolver(SolverFeature):
     """Solves a step, loops on iterations."""
 
-    provide = SOP.StepSolver
+    provide = SOP.ConvergenceCriteria
+
     required_features = [
         SOP.PhysicalProblem,
         SOP.PhysicalState,
         SOP.ConvergenceManager,
         SOP.IncrementalSolver,
+        SOP.LinearSolver,
     ]
 
-    matr_update_incr = None
-    param = None
+    optional_features = [
+        SOP.OperatorsManager,
+        SOP.Contact
+    ]
+
+    matr_update_incr = prediction = None
+    param = logManager = None
     current_matrix = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
-    def setParameters(self, param):
-        """Set parameters from user keywords.
-
-        Arguments:
-            param (dict) : user keywords.
-        """
-        self.param = param
-        assert self._get("NEWTON", "PREDICTION") in (
-            "ELASTIQUE",
-            "TANGENTE",
-        ), f"unsupported value: "
-
-        self.matr_update_incr = self._get("NEWTON", "REAC_ITER", 1)
+    def __init__(self):
+        super().__init__()
 
     def initialize(self):
-        """Initialization."""
+        """Initialize the object for the next step."""
         self.check_features()
         self.current_matrix = None
-        self.phys_state.primal_step = self.phys_state.createPrimal(self.phys_pb, 0.0)
-
-        convManager = self.get_feature(SOP.ConvergenceManager)
-        convManager.initialize()
-
-        iter_glob = convManager.setdefault("ITER_GLOB_MAXI")
+        self.conv_manager.initialize()
+        iter_glob = self.conv_manager.setdefault("ITER_GLOB_MAXI")
         iter_glob.minValue = 1
+
+    @property
+    def conv_manager(self):
+        """ConvergenceManager: Convergence manager object."""
+        return self.get_feature(SOP.ConvergenceManager)
 
     @property
     def contact_manager(self):
         """ContactManager: contact object."""
         return self.get_feature(SOP.Contact, optional=True)
 
-    def update(self, primal_incr, internVar, sigma, convManager):
+    @property
+    def opers_manager(self):
+        """OperatorsManager: Operators manager object."""
+        return self.get_feature(SOP.OperatorsManager)
+
+    def setParameters(self, param):
+        """Assign parameters from user keywords.
+
+        Arguments:
+            param (dict) : user keywords.
+        """
+        self.param = param
+
+        self.prediction = self._get("NEWTON", "PREDICTION")
+
+        assert self.prediction in ("ELASTIQUE", "TANGENTE"), f"unsupported value: "
+
+        self.matr_update_incr = self._get("NEWTON", "REAC_INCR", 1)
+
+    def setLoggingManager(self, logManager):
+        """Assign the logging manager.
+
+        Arguments:
+            logManager (LoggingManager): Logging manager.
+        """
+        self.logManager = logManager
+
+    def update(self, primal_incr, callback=None):
         """Update the physical state.
 
         Arguments:
-           primal_incr (FieldOnNodes): Displacement increment.
-           internVar (FieldOnCells): Internal state variables.
-           sigma (FieldOnCells): Stress field.
-           convManager (ConvergenceManager): Object that manages the
-               convergency criteria.
+            primal_incr (FieldOnNodes): Displacement increment.
         """
 
         self.phys_state.primal_step += primal_incr
-
-        if convManager.isConverged():
-            self.phys_state.internVar = internVar
-            self.phys_state.stress = sigma
+        if callback:
+            callback(primal_incr)
 
     def _resetMatrix(self, current_incr):
         """Reset matrix if needed
 
         Arguments:
-        current_incr (int): index of the current increment
+            current_incr (int): index of the current increment
 
         """
         if (
@@ -113,81 +128,62 @@ class StepSolver(SolverFeature):
             str: Type of matrix to be computed.
         """
         if current_incr == 0:
-            matrix_type = "PRED_" + self._get("NEWTON", "PREDICTION")
+            matrix_type = "PRED_" + self.prediction
         else:
             matrix_type = self._get("NEWTON", "MATRICE", "TANGENTE")
             self._resetMatrix(current_incr)
         return matrix_type
 
-    def createLoggingManager(self):
-        """Return a logging manager
-
-        Returns:
-            LoggingManager: object for logging
-        """
-        logManager = LoggingManager()
-        logManager.addConvTableColumn("NEWTON")
-        logManager.addConvTableColumn("RESIDU RELATIF RESI_GLOB_RELA")
-        logManager.addConvTableColumn("RESIDU ABSOLU RESI_GLOB_MAXI")
-        logManager.addConvTableColumn("RESIDU GEOMETRIQUE RESI_GEOM")
-        logManager.addConvTableColumn("OPTION ASSEMBLAGE")
-
-        return logManager
-
     @profile
-    def solve(self):
+    def solve(self, current_matrix, callback=None):
         """Solve a step.
 
         Raises:
             *ConvergenceError* exception in case of error.
         """
+        self.current_matrix = current_matrix
 
-        logManager = self.createLoggingManager()
-        logManager.printConvTableEntries()
-
-        convManager = self.get_feature(SOP.ConvergenceManager)
-        iter_glob = convManager.setdefault("ITER_GLOB_MAXI")
+        iter_glob = self.conv_manager.setdefault("ITER_GLOB_MAXI")
 
         incr_solv = self.get_feature(SOP.IncrementalSolver)
+        incr_solv.use(self.opers_manager)
         current_incr = -1
 
-        while not convManager.isFinished():
+        self.opers_manager.initialize()
+
+        while not self.conv_manager.isFinished():
+
             current_incr += 1
             iter_glob.value = current_incr
 
             # Select type of matrix
             matrix_type = self._setMatrixType(current_incr)
 
-            if self.contact_manager:
-                self.contact_manager.pairing(self.phys_pb)
-
             # Solve current iteration
-            primal_incr, internVar, sigma, self.current_matrix = incr_solv.solve(
-                matrix_type, self.current_matrix
-            )
+            primal_incr, self.current_matrix = incr_solv.solve(matrix_type, self.current_matrix)
 
             # Update
-            self.update(primal_incr, internVar, sigma, convManager)
+            self.update(primal_incr, callback)
 
             if current_incr > 0:
-                logManager.printConvTableRow(
+                self.logManager.printConvTableRow(
                     [
                         current_incr - 1,
-                        convManager.get("RESI_GLOB_RELA"),
-                        convManager.get("RESI_GLOB_MAXI"),
-                        convManager.get("RESI_GEOM"),
+                        self.conv_manager.get("RESI_GLOB_RELA"),
+                        self.conv_manager.get("RESI_GLOB_MAXI"),
+                        self.conv_manager.get("RESI_GEOM"),
                         matrix_type,
                     ]
                 )
 
-        if not convManager.isConverged():
+        if not self.conv_manager.isConverged():
             raise ConvergenceError("MECANONLINE9_7")
 
-        deleteTemporaryObjects()
-
-        logManager.printConvTableEnd()
+        self.opers_manager.finalize()
 
         self._resetMatrix(current_incr)
+
+        return self.current_matrix
 
     def _get(self, keyword, parameter=None, default=None):
         """ "Return a keyword value"""

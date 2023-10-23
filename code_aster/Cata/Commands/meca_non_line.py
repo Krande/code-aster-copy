@@ -77,5 +77,38 @@ MECA_NON_LINE = MACRO(
         condition="""equal_to("METHODE", 'SNES')""", SOLVEUR=C_SOLVEUR("STAT_NON_LINE_SNES")
     ),
     # -------------------------------------------------------------------
+    SCHEMA_TEMPS=FACT(
+        statut="f",
+        SCHEMA=SIMP(
+            statut="o", min=1, max=1, typ="TXM", into=("NEWMARK",)
+        ),
+        COEF_MASS_SHIFT=SIMP(statut="f", typ="R", defaut=0.0e0),
+        # b_tchamwa=BLOC(
+        #     condition="""equal_to("SCHEMA", 'TCHAMWA')""",
+        #     PHI=SIMP(statut="f", typ="R", defaut=1.05),
+        # ),
+        b_newmark=BLOC(
+            condition="""equal_to("SCHEMA", 'NEWMARK')""",
+            BETA=SIMP(statut="f", typ="R", defaut=0.25),
+            GAMMA=SIMP(statut="f", typ="R", defaut=0.5),
+        ),
+        # b_hht=BLOC(
+        #     condition="""equal_to("SCHEMA", 'HHT')""",
+        #     ALPHA=SIMP(statut="f", typ="R", defaut=-0.1),
+        #     MODI_EQUI=SIMP(statut="f", typ="TXM", defaut="OUI", into=("OUI", "NON")),
+        # ),
+        # b_explicit=BLOC(
+        #     condition="""equal_to("SCHEMA", 'TCHAMWA') or equal_to("SCHEMA", 'DIFF_CENT')""",
+        #     STOP_CFL=SIMP(statut="f", typ="TXM", defaut="OUI", into=("OUI", "NON")),
+        #     FORMULATION=SIMP(statut="o", typ="TXM", into=("ACCELERATION",)),
+        # ),
+        b_implicit=BLOC(
+            condition="""not equal_to("SCHEMA", 'TCHAMWA') and not equal_to("SCHEMA", 'DIFF_CENT')""",
+            FORMULATION=SIMP(
+                statut="o", max=1, typ="TXM", into=("DEPLACEMENT",)
+            ),
+        ),
+    ),
+    # -------------------------------------------------------------------
     INFO=SIMP(statut="f", typ="I", into=(1, 2, 3, 4)),
 )

@@ -28,8 +28,10 @@ class IncrementalSolver(SolverFeature, EventSource):
     """Solve an iteration."""
 
     provide = SOP.IncrementalSolver | SOP.EventSource
+
     required_features = [SOP.PhysicalProblem, SOP.PhysicalState, SOP.LinearSolver, SOP.LineSearch]
-    optional_features = [SOP.Contact, SOP.ConvergenceManager]
+
+    optional_features = [SOP.Contact, SOP.ConvergenceManager, SOP.OperatorsManager]
 
     _data = None
     __setattr__ = no_new_attributes(object.__setattr__)
@@ -54,6 +56,11 @@ class IncrementalSolver(SolverFeature, EventSource):
         """Returns the current residuals to be shared with observers."""
         return SOP.IncrementalSolver, self._data
 
+    @property
+    def opers_manager(self):
+        """OperatorsManager: Operators manager object."""
+        return self.get_feature(SOP.OperatorsManager)
+
     @profile
     @SolverFeature.check_once
     def solve(self, matrix_type, matrix=None):
@@ -65,38 +72,36 @@ class IncrementalSolver(SolverFeature, EventSource):
                 to be reused.
 
         Returns:
-            tuple (FieldOnNodesReal, FieldOnCellsReal, FieldOnCellsReal,
-            AssemblyMatrixDisplacementReal): Tuple with incremental primal,
-            internal state variables (VARI_ELGA), Cauchy stress (SIEF_ELGA),
-            Jacobian matrix used (if computed).
+            tuple (FieldOnNodesReal, AssemblyMatrixDisplacementReal): Tuple
+            with incremental primal, Jacobian matrix used (if computed).
         """
         # we need the matrix to have scaling factor for Lagrange
 
         contact_manager = self.get_feature(SOP.Contact, optional=True)
+
         if contact_manager:
             contact_manager.update(self.phys_state)
             contact_manager.pairing(self.phys_pb)
 
-        disc_comp = DiscreteComputation(self.phys_pb)
-
         if not matrix:
-            stiffness = disc_comp.getTangentMatrix(self.phys_state, matrix_type, contact_manager)
+            jacobian = self.opers_manager.getJacobian(matrix_type)
         else:
-            stiffness = matrix
+            jacobian = matrix
 
         # Get scaling for Lagrange (j'aimerais bien m'en débarasser de là)
-        scaling = stiffness.getLagrangeScaling()
+        scaling = self.opers_manager.getLagrangeScaling(matrix_type)
 
         # compute residual
-        residuals, internVar, stress = disc_comp.getResidual(
-            self.phys_state, contact_manager, scaling
-        )
+        residuals = self.opers_manager.getResidual(scaling)
 
         # evaluate convergence
         convManager = self.get_feature(SOP.ConvergenceManager)
         convManager.evalNormResidual(residuals)
 
         if not convManager.isConverged():
+
+            disc_comp = DiscreteComputation(self.phys_pb)
+
             # Compute Dirichlet BC:=
             diriBCs = disc_comp.getIncrementalDirichletBC(
                 self.phys_state.time_curr, self.phys_state.primal_curr
@@ -104,15 +109,16 @@ class IncrementalSolver(SolverFeature, EventSource):
 
             # Solve linear system
             linear_solver = self.get_feature(SOP.LinearSolver)
-            if not stiffness.isFactorized():
-                linear_solver.factorize(stiffness, raiseException=True)
+            if not jacobian.isFactorized():
+                linear_solver.factorize(jacobian, raiseException=True)
             primal_incr = linear_solver.solve(residuals.resi, diriBCs)
 
             # Use line search
             lineSearch = self.get_feature(SOP.LineSearch)
+            lineSearch.use(self.opers_manager)
 
             if lineSearch.activated():
-                primal_incr, internVar, stress = lineSearch.solve(primal_incr, scaling)
+                primal_incr = lineSearch.solve(primal_incr, scaling)
         else:
             primal_incr = self.phys_state.createPrimal(self.phys_pb, 0.0)
 
@@ -120,4 +126,4 @@ class IncrementalSolver(SolverFeature, EventSource):
         convManager.evalGeometricResidual(primal_incr)
         self.notifyObservers(convManager, matrix_type)
 
-        return primal_incr, internVar, stress, stiffness
+        return primal_incr, jacobian

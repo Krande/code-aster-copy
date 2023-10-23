@@ -32,8 +32,11 @@ from ..Objects import (
     ParallelMechanicalLoadReal,
     PhysicalProblem,
 )
-from ..Solvers import PhysicalState, StorageManager, TimeStepper
+
 from ..Utilities import logger, print_stats, profile, reset_stats
+from ..Solvers import PhysicalState, StorageManager, TimeStepper
+from ..Solvers.problem_dispatcher import ProblemType as PBT
+
 
 
 @profile
@@ -228,7 +231,7 @@ def meca_statique_ops(self, **args):
     storage_manager = StorageManager(result)
 
     # Define main objects
-    phys_state = PhysicalState()
+    phys_state = PhysicalState(PBT.Static)
     disc_comp = DiscreteComputation(phys_pb)
 
     # we define the matrix before to have an unique name

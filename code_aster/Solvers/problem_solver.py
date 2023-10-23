@@ -22,13 +22,14 @@ from libaster import deleteTemporaryObjects, resetFortranLoggingLevel, setFortra
 from ..Objects import LinearSolver
 from ..Utilities import DEBUG, INFO, WARNING, ExecutionParameter, Options, logger, no_new_attributes
 from .convergence_manager import ConvergenceManager
+from .newton_solver import NewtonSolver
 from .incremental_solver import IncrementalSolver
 from .line_search import LineSearch
 from .physical_state import PhysicalState
 from .snes_solver import SNESSolver
 from .solver_features import SolverFeature
 from .solver_features import SolverOptions as SOP
-from .step_solver import StepSolver
+from .StepSolvers import BaseStepSolver
 from .storage_manager import StorageManager
 
 
@@ -62,11 +63,11 @@ class ProblemSolver(SolverFeature):
     _verb = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
-    def __init__(self, main, result) -> None:
+    def __init__(self, main, result, pb_type) -> None:
         super().__init__()
         self._main = main
         self._result = result
-        self._phys_state = PhysicalState()
+        self._phys_state = PhysicalState(pb_type)
         self._verb = logger.getEffectiveLevel(), ExecutionParameter().option & Options.ShowSyntax
 
     @property
@@ -146,6 +147,26 @@ class ProblemSolver(SolverFeature):
         if not store:
             args = self.get_feature(SOP.Keywords)
             store = StorageManager(self._result, args.get("ARCHIVAGE"))
+            reuse = args.get("REUSE")
+            if reuse:
+                init_state = args.get("ETAT_INIT")
+                assert(init_state)
+                if "EVOL_NOLI" in init_state:
+                    # Pour l'instant, on se restreint au cas où la sd passée
+                    # par reuse est la même que celle passée dans ETAT_INIT
+                    assert(init_state["EVOL_NOLI"] is reuse)
+                init_index = None
+                if "NUME_ORDRE" in init_state:
+                    init_index = init_state["NUME_ORDRE"]
+                elif "INST" in init_state:
+                    init_index = reuse._getIndexFromParameter(
+                        "INST",
+                        init_state["INST"],
+                        init_state["CRITERE"],
+                        init_state["PRECISION"],
+                        True
+                    )
+                if init_index: store.setInitialIndex(init_index + 1)
         self.use(store)
         return store
 
@@ -202,7 +223,13 @@ class ProblemSolver(SolverFeature):
         step_conv_solv = self.get_feature(SOP.ConvergenceCriteria, optional=True)
         args = self.get_feature(SOP.Keywords)
         if not step_conv_solv:
-            step_conv_solv = self._get(SOP.IncrementalSolver, True)
+            if args.get("METHODE", "NEWTON") == "NEWTON":
+                step_conv_solv = NewtonSolver()
+            else:
+                step_conv_solv = SNESSolver()
+        # FIXME replace by 'use(*, Keywords)'
+        if not step_conv_solv.param:
+            step_conv_solv.setParameters(args)
         for feat, required in step_conv_solv.undefined():
             step_conv_solv.use(self._get(feat, required))
         self.use(step_conv_solv)
@@ -212,21 +239,14 @@ class ProblemSolver(SolverFeature):
         logger.debug("+++ get StepSolver")
         step_solver = self.get_feature(SOP.StepSolver, optional=True)
         if not step_solver:
-            args = self.get_feature(SOP.Keywords)
-            method = args.get("METHODE", "NEWTON")
-            if method == "NEWTON":
-                step_solver = StepSolver()
-            elif method == "SNES":
-                step_solver = SNESSolver()
-            else:
-                raise RuntimeError("Method not supported: %s" % (method))
-
+            step_solver = BaseStepSolver.create(self.get_feature(SOP.Keywords))
         # FIXME replace by 'use(*, Keywords)'
         if not step_solver.param:
             step_solver.setParameters(self.get_feature(SOP.Keywords))
         for feat, required in step_solver.undefined():
             step_solver.use(self._get(feat, required))
         self.use(step_solver)
+        step_solver.setup()
         return step_solver
 
     def _get(self, option, required):

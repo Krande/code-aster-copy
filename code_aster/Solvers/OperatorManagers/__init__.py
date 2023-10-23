@@ -17,19 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-"""
-Useful objects used for various problem solvers.
-"""
-
-from .annealing import Annealing
-from .contact_manager import ContactManager
-from .convergence_manager import ConvergenceManager
-from .newton_solver import NewtonSolver
-from .incremental_solver import IncrementalSolver
-from .non_linear_solver import NonLinearSolver
-from .physical_state import PhysicalState
-from .problem_solver import ProblemSolver
-from .snes_solver import SNESSolver
-from .solver_features import SolverFeature, SolverOptions
-from .storage_manager import StorageManager
-from .time_stepper import TimeStepper
+from .base_opers_manager import BaseOperatorsManager
+from .static_opers_manager import StaticOperatorsManager
+from .dynamic_opers_manager import DynamicOperatorsManager
+from .thermal_opers_manager import ThermalOperatorsManager

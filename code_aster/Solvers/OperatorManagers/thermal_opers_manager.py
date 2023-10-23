@@ -17,19 +17,22 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-"""
-Useful objects used for various problem solvers.
-"""
+from .base_opers_manager import BaseOperatorsManager
+from ...Utilities import no_new_attributes
 
-from .annealing import Annealing
-from .contact_manager import ContactManager
-from .convergence_manager import ConvergenceManager
-from .newton_solver import NewtonSolver
-from .incremental_solver import IncrementalSolver
-from .non_linear_solver import NonLinearSolver
-from .physical_state import PhysicalState
-from .problem_solver import ProblemSolver
-from .snes_solver import SNESSolver
-from .solver_features import SolverFeature, SolverOptions
-from .storage_manager import StorageManager
-from .time_stepper import TimeStepper
+
+class ThermalOperatorsManager(BaseOperatorsManager):
+    """Solve an iteration."""
+
+    __setattr__ = no_new_attributes(object.__setattr__)
+
+    def __init__(self):
+        super().__init__()
+
+    def getResidual(self, scaling=1.0):
+        """Computes the functional."""
+        raise NotImplementedError
+
+    def getJacobian(self, matrix_type):
+        """Computes the jacobian."""
+        raise NotImplementedError

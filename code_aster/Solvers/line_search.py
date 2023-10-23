@@ -30,8 +30,10 @@ class LineSearch(SolverFeature):
     """Line search methods"""
 
     provide = SOP.LineSearch
+
     required_features = [SOP.PhysicalProblem, SOP.PhysicalState]
-    optional_features = [SOP.Contact]
+
+    optional_features = [SOP.OperatorsManager]
 
     param = None
     __setattr__ = no_new_attributes(object.__setattr__)
@@ -63,18 +65,16 @@ class LineSearch(SolverFeature):
         """
 
         if self.activated():
+
             method = self.param["METHODE"]
 
             def _f(rho, solution=solution, scaling=scaling):
                 self.phys_state.primal_step += rho * solution
                 # compute residual
-                disc_comp = DiscreteComputation(self.phys_pb)
-                contact_manager = self.get_feature(SOP.Contact, optional=True)
-                resi_state, varState, stressState = disc_comp.getResidual(
-                    self.phys_state, contact_manager, scaling
-                )
+                opersManager = self.get_feature(SOP.OperatorsManager)
+                resi_state = opersManager.getResidual(scaling)
                 self.phys_state.primal_step -= rho * solution
-                return resi_state.resi.dot(solution), varState, stressState
+                return resi_state.resi.dot(solution)
 
             def _proj(rho, param=self.param):
                 rhotmp = rho
@@ -90,7 +90,7 @@ class LineSearch(SolverFeature):
                 return rho
 
             # retrieve args
-            f0, _, _ = _f(0.0, solution)
+            f0 = _f(0.0, solution)
             fopt = np.finfo("float64").max
             tiny = np.finfo("float64").tiny
             fcvg = abs(self.param["RESI_LINE_RELA"] * f0)
@@ -106,11 +106,11 @@ class LineSearch(SolverFeature):
 
             for iter in range(self.param["ITER_LINE_MAXI"]):
                 try:
-                    f, varState, stressState = _f(rho)
+                    f = _f(rho)
                 except Exception as e:
                     # do we already have an rhoopt ?
                     if iter > 0:
-                        return rhoopt * solution, varState, stressState
+                        return rhoopt * solution
                     else:
                         raise e
 
@@ -124,7 +124,7 @@ class LineSearch(SolverFeature):
                         print(
                             "Linesearch: iter = %d, rho = %0.6f and f(rho) = %0.6f" % (iter, rho, f)
                         )
-                        return rhoopt * solution, varState, stressState
+                        return rhoopt * solution
 
                 rhotmp = rho
                 if abs(f - fm) > tiny:
@@ -141,4 +141,4 @@ class LineSearch(SolverFeature):
 
             raise ConvergenceError()
 
-        return solution, None, None
+        return solution

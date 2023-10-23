@@ -33,6 +33,7 @@ from ..Objects import (
     PhysicalProblem,
 )
 from ..Solvers import ContactManager, NonLinearSolver, ProblemSolver
+from ..Solvers.problem_dispatcher import ProblemType as PBT
 from ..Solvers import SolverOptions as SOP
 from ..Solvers import TimeStepper
 from ..Utilities import print_stats, reset_stats
@@ -95,13 +96,6 @@ def meca_non_line_ops(self, **args):
     _keywords_check(args)
     adapt_for_mgis_behaviour(self, args)
 
-    # Create the problem solver
-    solver = ProblemSolver(NonLinearSolver(), NonLinearResult())
-
-    # Create the physical problem (and use it in problem solver)
-    phys_pb = PhysicalProblem(args["MODELE"], args["CHAM_MATER"], args["CARA_ELEM"])
-    solver.use(phys_pb)
-
     # Add parameters
     param = dict(
         ARCHIVAGE=args["ARCHIVAGE"],
@@ -114,7 +108,25 @@ def meca_non_line_ops(self, **args):
         NEWTON=args["NEWTON"],
         RECH_LINEAIRE=args["RECH_LINEAIRE"],
         SOLVEUR=args["SOLVEUR"],
+        REUSE=args["reuse"],
     )
+
+    if "SCHEMA_TEMPS" in args:
+        problem_type = PBT.Dynamic
+        param["SCHEMA_TEMPS"] = args["SCHEMA_TEMPS"]
+    else:
+        problem_type = PBT.Static
+
+    result = args.get("reuse")
+    if not result: result = NonLinearResult()
+
+    # Create the problem solver
+    solver = ProblemSolver(NonLinearSolver(), result, problem_type)
+
+    # Create the physical problem (and use it in problem solver)
+    phys_pb = PhysicalProblem(args["MODELE"], args["CHAM_MATER"], args["CARA_ELEM"])
+    solver.use(phys_pb)
+
     solver.setKeywords(**param)
 
     # Add loads

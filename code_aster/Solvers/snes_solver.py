@@ -20,7 +20,6 @@
 from ..Objects import DiscreteComputation
 from ..Supervis import ConvergenceError
 from ..Utilities import PETSc, no_new_attributes, profile
-from .logging_manager import LoggingManager
 from .solver_features import SolverFeature
 from .solver_features import SolverOptions as SOP
 
@@ -28,11 +27,14 @@ from .solver_features import SolverOptions as SOP
 class SNESSolver(SolverFeature):
     """Solves a step, loops on iterations."""
 
-    provide = SOP.StepSolver
+    provide = SOP.ConvergenceCriteria
+
     required_features = [SOP.PhysicalProblem, SOP.PhysicalState, SOP.LinearSolver]
 
+    optional_features = [SOP.OperatorsManager]
+
     param = logManager = None
-    matr_update_incr = None
+    matr_update_incr = prediction = None
     current_incr = current_matrix = None
     _primal_incr = _resi_comp = None
     _scaling = _options = None
@@ -40,6 +42,27 @@ class SNESSolver(SolverFeature):
 
     def __init__(self):
         super().__init__()
+        self.matr_update_incr = self.prediction = None
+        self.param = self.logManager = None
+        self.current_incr = self.current_matrix = None
+        self._primal_incr = self._resi_comp = None
+        self._scaling = self._options = None
+
+    def initialize(self):
+        """Initialize the object for the next step."""
+        self.check_features()
+        self.current_incr = 0
+        self.current_matrix = None
+
+    @property
+    def matrix_type(self):
+        """Matrix type"""
+        return self._setMatrixType()
+
+    @property
+    def opers_manager(self):
+        """OperatorsManager: Operators manager object."""
+        return self.get_feature(SOP.OperatorsManager)
 
     def setParameters(self, param):
         """Set parameters from user keywords.
@@ -48,36 +71,20 @@ class SNESSolver(SolverFeature):
             param (dict) : user keywords.
         """
         self.param = param
-        assert self._get("NEWTON", "PREDICTION") in (
-            "ELASTIQUE",
-            "TANGENTE",
-        ), f"unsupported value: "
+
+        self.prediction = self._get("NEWTON", "PREDICTION")
+
+        assert self.prediction in ("ELASTIQUE", "TANGENTE"), f"unsupported value: "
 
         self.matr_update_incr = self._get("NEWTON", "REAC_ITER", 1)
 
-    def initialize(self):
-        """Initialize the object for the next step."""
-        self.check_features()
-        self.current_incr = 0
-        self.current_matrix = None
-        self.phys_state.primal_step = self.phys_state.createPrimal(self.phys_pb, 0.0)
+    def setLoggingManager(self, logManager):
+        """Assign the logging manager.
 
-        self.logManager = self._createLoggingManager()
-
-    def _createLoggingManager(self):
-        """Return a logging manager
-
-        Returns:
-            LoggingManager: object for logging
+        Arguments:
+            logManager (LoggingManager): Logging manager.
         """
-        logManager = LoggingManager()
-        logManager.addConvTableColumn("NEWTON")
-        logManager.addConvTableColumn("RESIDU RELATIF RESI_GLOB_RELA")
-        logManager.addConvTableColumn("RESIDU ABSOLU RESI_GLOB_MAXI")
-        logManager.addConvTableColumn("RESIDU GEOMETRIQUE RESI_GEOM")
-        logManager.addConvTableColumn("OPTION ASSEMBLAGE")
-
-        return logManager
+        self.logManager = logManager
 
     def _setMatrixType(self):
         """Set matrix type.
@@ -86,7 +93,7 @@ class SNESSolver(SolverFeature):
             str: Type of matrix to be computed.
         """
         if self.current_incr == 0:
-            matrix_type = "PRED_" + self._get("NEWTON", "PREDICTION")
+            matrix_type = "PRED_" + self.prediction
         else:
             matrix_type = self._get("NEWTON", "MATRICE", "TANGENTE")
 
@@ -100,7 +107,7 @@ class SNESSolver(SolverFeature):
         self.phys_state.primal_step += self._primal_incr
         # Build initial residual
         disc_comp = DiscreteComputation(self.phys_pb)
-        residual, _, _ = disc_comp.getResidual(self.phys_state, scaling=self._scaling)
+        residual = self.opers_manager.getResidual(self._scaling)
         # Apply Lagrange scaling
         residual.resi.applyLagrangeScaling(1 / self._scaling)
         # Apply DirichletBC into the residual
@@ -113,10 +120,9 @@ class SNESSolver(SolverFeature):
 
     def _evalJacobian(self, snes, X, J, P):
         if self.current_incr % self.matr_update_incr == 0:
-            disc_comp = DiscreteComputation(self.phys_pb)
-            _matrix = disc_comp.getTangentMatrix(self.phys_state, self._setMatrixType())
+            _matrix = self.opers_manager.getJacobian(self.matrix_type)
             self.current_matrix = _matrix
-            self._scaling = _matrix.getLagrangeScaling()
+            self._scaling = self.opers_manager.getLagrangeScaling(self.matrix_type)
             _matrix.toPetsc().copy(P)
         self.current_incr += 1
         if J != P:
@@ -124,19 +130,18 @@ class SNESSolver(SolverFeature):
         return PETSc.Mat.Structure.SAME_NONZERO_PATTERN
 
     @profile
-    def solve(self):
+    def solve(self, current_matrix):
         """Solve a step with SNES.
 
         Raises:
             *ConvergenceError* exception in case of error.
         """
-        disc_comp = DiscreteComputation(self.phys_pb)
 
-        # we assemble a first matrix, clone it in PETSc and keep a pointer on it
-        self.current_matrix = disc_comp.getInternalTangentMatrix(
-            self.phys_state, self._get("NEWTON", "PREDICTION"), True
-        )
-        self._scaling = self.current_matrix.getLagrangeScaling()
+        self.opers_manager.initialize()
+
+        self._scaling = self.opers_manager.getLagrangeScaling(self.matrix_type)
+        self.current_matrix = self.opers_manager.first_jacobian
+
         p_jac = self.current_matrix.toPetsc()
 
         snes = PETSc.SNES().create()
@@ -152,7 +157,7 @@ class SNESSolver(SolverFeature):
         snes.setJacobian(self._evalJacobian, p_jac)
 
         def _monitor(snes, its, fgnorm):
-            self.logManager.printConvTableRow([its, " - ", fgnorm, " - ", self._setMatrixType()])
+            self.logManager.printConvTableRow([its, " - ", fgnorm, " - ", self.matrix_type])
 
         snes.setMonitor(_monitor)
 
@@ -169,13 +174,10 @@ class SNESSolver(SolverFeature):
         x.set(0)  # zero initial guess
         snes.solve(b, x)
 
-        _, internVar, sigma = disc_comp.getResidual(self.phys_state)
-
-        self.phys_state.stress = sigma
-        self.phys_state.internVar = internVar
-
         if snes.getConvergedReason() < 0:
             raise ConvergenceError("MECANONLINE9_7")
+
+        self.opers_manager.finalize()
 
         return self.current_matrix
 

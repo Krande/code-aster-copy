@@ -1,0 +1,133 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+
+POURSUITE(CODE="OUI")
+
+
+# Valeurs de référence: calcul avec Rayleigh classique
+timeTest1 = 0.5
+timeTest2 = 1.0
+deplTest1 = 4.042124468373e-04
+deplTest2 = 7.922477511221e-04
+viteTest1 = 1.603142330538e-03
+viteTest2 = 2.812110718427e-05
+
+# Tests en non-régression sur Rayleigh classique
+TEST_FONCTION(
+    VALEUR=(
+        _F(
+            VALE_CALC=deplTest1, CRITERE="RELATIF", VALE_PARA=timeTest1, FONCTION=dyna1_deplDX_NodeB
+        ),
+    )
+)
+
+TEST_FONCTION(
+    VALEUR=(
+        _F(
+            VALE_CALC=deplTest2, CRITERE="RELATIF", VALE_PARA=timeTest2, FONCTION=dyna1_deplDX_NodeC
+        ),
+    )
+)
+TEST_FONCTION(
+    VALEUR=(
+        _F(
+            VALE_CALC=viteTest1, CRITERE="RELATIF", VALE_PARA=timeTest1, FONCTION=dyna1_viteDX_NodeB
+        ),
+    )
+)
+
+TEST_FONCTION(
+    VALEUR=(
+        _F(
+            VALE_CALC=viteTest2, CRITERE="RELATIF", VALE_PARA=timeTest2, FONCTION=dyna1_viteDX_NodeC
+        ),
+    )
+)
+
+"""
+# Tests en non-régression sur amortissement donné
+TEST_FONCTION(
+    VALEUR=(
+        _F(
+            VALE_CALC=deplTest1, CRITERE="RELATIF", VALE_PARA=timeTest1, FONCTION=dyna2_deplDX_NodeB
+        ),
+    )
+)
+
+TEST_FONCTION(
+    VALEUR=(
+        _F(
+            VALE_CALC=deplTest2, CRITERE="RELATIF", VALE_PARA=timeTest2, FONCTION=dyna2_deplDX_NodeC
+        ),
+    )
+)
+TEST_FONCTION(
+    VALEUR=(
+        _F(
+            VALE_CALC=viteTest1, CRITERE="RELATIF", VALE_PARA=timeTest1, FONCTION=dyna2_viteDX_NodeB
+        ),
+    )
+)
+
+TEST_FONCTION(
+    VALEUR=(
+        _F(
+            VALE_CALC=viteTest2, CRITERE="RELATIF", VALE_PARA=timeTest2, FONCTION=dyna2_viteDX_NodeC
+        ),
+    )
+)
+
+# Tests en non-régression sur Rayleigh classique + amortissement donné
+
+TEST_FONCTION(
+    VALEUR=(
+        _F(
+            VALE_CALC=deplTest1, CRITERE="RELATIF", VALE_PARA=timeTest1, FONCTION=dyna3_deplDX_NodeB
+        ),
+    )
+)
+
+TEST_FONCTION(
+    VALEUR=(
+        _F(
+            VALE_CALC=deplTest2, CRITERE="RELATIF", VALE_PARA=timeTest2, FONCTION=dyna3_deplDX_NodeC
+        ),
+    )
+)
+
+TEST_FONCTION(
+    VALEUR=(
+        _F(
+            VALE_CALC=viteTest1, CRITERE="RELATIF", VALE_PARA=timeTest1, FONCTION=dyna3_viteDX_NodeB
+        ),
+    )
+)
+
+TEST_FONCTION(
+    VALEUR=(
+        _F(
+            VALE_CALC=viteTest2, CRITERE="RELATIF", VALE_PARA=timeTest2, FONCTION=dyna3_viteDX_NodeC
+        ),
+    )
+)
+
+"""
+
+FIN()

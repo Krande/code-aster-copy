@@ -24,6 +24,7 @@ from ..Utilities import DEBUG, logger, no_new_attributes, profile
 from .annealing import Annealing
 from .solver_features import SolverFeature
 from .solver_features import SolverOptions as SOP
+from .problem_dispatcher import ProblemType as PBT
 
 """
 Notations to use for mechanics.
@@ -55,6 +56,7 @@ class NonLinearSolver(SolverFeature):
     """Main object to solve a non linear problem."""
 
     provide = SOP.ProblemSolver
+
     required_features = [
         SOP.PhysicalProblem,
         SOP.PhysicalState,
@@ -63,6 +65,7 @@ class NonLinearSolver(SolverFeature):
         SOP.TimeStepper,
         SOP.Keywords,
     ]
+
     optional_features = [SOP.PostStepHook]
 
     step_rank = current_matrix = None
@@ -70,6 +73,8 @@ class NonLinearSolver(SolverFeature):
 
     def __init__(self):
         super().__init__()
+        self.step_rank = None
+        self.current_matrix = None
 
     # convenient shortcuts properties
     @property
@@ -149,9 +154,11 @@ class NonLinearSolver(SolverFeature):
                 extract_time = init_state.get("INST")
                 if extract_time is None:
                     extract_time = resu.getLastTime()
-                if init_time is None:
-                    init_time = extract_time
+                init_time = extract_time
                 phys_state.primal_curr = resu.getField("DEPL", para="INST", value=extract_time)
+                if phys_state.pb_type == PBT.Dynamic:
+                    phys_state.current.dU = resu.getField("VITE", para="INST", value=extract_time)
+                    phys_state.current.d2U = resu.getField("ACCE", para="INST", value=extract_time)
                 phys_state.stress = resu.getField("SIEF_ELGA", para="INST", value=extract_time)
                 phys_state.internVar = resu.getField("VARI_ELGA", para="INST", value=extract_time)
             if "EVOL_THER" in init_state:
@@ -160,8 +167,7 @@ class NonLinearSolver(SolverFeature):
                 extract_time = init_state.get("INST")
                 if extract_time is None:
                     extract_time = resu.getLastTime()
-                if init_time is None:
-                    init_time = extract_time
+                init_time = extract_time
                 phys_state.primal_curr = resu.getField("TEMP", para="INST", value=extract_time)
             if "CHAM_NO" in init_state:
                 phys_state.primal_curr = init_state.get("CHAM_NO")
