@@ -20,6 +20,7 @@ module FE_stiffness_module
 !
     use FE_basis_module
     use FE_quadrature_module
+    use HHO_utils_module, only: hhoCopySymPartMat
 !
     implicit none
 !
@@ -27,6 +28,7 @@ module FE_stiffness_module
 #include "asterf_types.h"
 #include "FE_module.h"
 #include "blas/dgemv.h"
+#include "asterfort/assert.h"
 #include "jeveux.h"
 !
 ! --------------------------------------------------------------------------------------------------
@@ -121,11 +123,15 @@ contains
 !
             do j = 1, FEBasis%size
                 Kgradj = matmul(ValuesQP(1:3, 1:3, ipg), BSEval(1:3, j))
-                call dgemv('T', FEBasis%ndim, FEBasis%size, FEQuad%weights(ipg), BSEval, 3, &
+                call dgemv('T', FEBasis%ndim, j, FEQuad%weights(ipg), BSEval, 3, &
                            Kgradj, 1, 1.d0, mat(:, j), 1)
             end do
 !
         end do
+!
+! ----- Copy the lower part
+!
+        call hhoCopySymPartMat('U', mat(1:FEBasis%size, 1:FEBasis%size))
 !
     end subroutine
 !
