@@ -22,7 +22,4 @@ Time integrators classes.
 """
 
 from .base_integrator import BaseIntegrator, IntegrationType, IntegratorName
-from .tr_integrator import TRIntegrator
 from .newmark_integrator import NewmarkIntegrator
-from .bdf2_integrator import BDF2Integrator, OnSubStepIntegrator
-from .rk4_integrator import RK4Integrator

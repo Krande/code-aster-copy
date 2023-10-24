@@ -34,10 +34,7 @@ class IntegratorName:
     """Time integrators names."""
 
     Unset = 0x00
-    Tr = 0x01
-    Newmark = 0x02
-    Bdf2 = 0x04
-    Rk4 = 0x08
+    Newmark = 0x01
 
 
 class BaseIntegrator(MecaDynaOperatorsManager):

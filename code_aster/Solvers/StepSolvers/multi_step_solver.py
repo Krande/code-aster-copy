@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ..TimeIntegrators import IntegrationType, BaseIntegrator, OnSubStepIntegrator
+from ..TimeIntegrators import IntegrationType, BaseIntegrator
 from .meca_dyna_step_solver import MecaDynaStepSolver
 from math import sqrt
 
@@ -43,7 +43,7 @@ class MultiStepSolver(MecaDynaStepSolver):
     def __init__(self, step_solvers):
         assert len(step_solvers) == 2, len(step_solvers)
         assert isinstance(step_solvers[0]._integrator, BaseIntegrator)
-        assert isinstance(step_solvers[1]._integrator, OnSubStepIntegrator)
+        # assert isinstance(step_solvers[1]._integrator, OnSubStepIntegrator)
         self._step_solvers = step_solvers
         self._coef = 2.0 - sqrt(2)
 
@@ -64,7 +64,7 @@ class MultiStepSolver(MecaDynaStepSolver):
         step0.solve(t_init, self._coef * delta_t)
         print("++ Solving stage 2")
         step1.setInitialState(state0)
-        step1.setIntermediateState(self.phys_state)
+        # step1.setIntermediateState(self.phys_state)
         step1.solve(t_init, delta_t)
 
     def setup(self):

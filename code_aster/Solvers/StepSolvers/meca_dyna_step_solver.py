@@ -83,15 +83,15 @@ class MecaDynaStepSolver(BaseStepSolver):
         """
         return self._integrator.setInitialState(initial_state)
 
-    def setIntermediateState(self, state):
-        """Define the state at the beginning of the iteration.
+    # def setIntermediateState(self, state):
+    #     """Define the state at the beginning of the iteration.
 
-        Arguments:
-            state (PhysicalState): State at the beginning of the sub-step.
-        """
-        if not hasattr(self._integrator, "setIntermediateState"):
-            raise RuntimeError("only for OnSubStepIntegrator")
-        return self._integrator.setIntermediateState(state)
+    #     Arguments:
+    #         state (PhysicalState): State at the beginning of the sub-step.
+    #     """
+    #     if not hasattr(self._integrator, "setIntermediateState"):
+    #         raise RuntimeError("only for OnSubStepIntegrator")
+    #     return self._integrator.setIntermediateState(state)
 
     def getInitialState(self):
         """Return the physical state used at the beginning of the iteration.
@@ -134,13 +134,7 @@ class MecaDynaStepSolver(BaseStepSolver):
         """
         name = schema["SCHEMA"]
 
-        if name == "TR":
-            integrator_name = IntegratorName.Tr
-        elif name == "RK4":
-            integrator_name = IntegratorName.Rk4
-        elif name == "BDF2":
-            integrator_name = IntegratorName.Bdf2
-        elif name == "NEWMARK":
+        if name == "NEWMARK":
             integrator_name = IntegratorName.Newmark
         else:
             raise RuntimeError("Unsupported integration scheme")
