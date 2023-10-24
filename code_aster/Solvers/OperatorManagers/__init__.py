@@ -19,5 +19,5 @@
 
 from .base_opers_manager import BaseOperatorsManager
 from .static_opers_manager import StaticOperatorsManager
-from .dynamic_opers_manager import DynamicOperatorsManager
+from .meca_dyna_opers_manager import MecaDynaOperatorsManager
 from .thermal_opers_manager import ThermalOperatorsManager

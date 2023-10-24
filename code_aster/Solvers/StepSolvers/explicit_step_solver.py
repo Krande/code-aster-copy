@@ -18,11 +18,11 @@
 # --------------------------------------------------------------------
 
 from ..solver_features import SolverOptions as SOP
-from .dynamic_step_solver import DynamicStepSolver
+from .meca_dyna_step_solver import MecaDynaStepSolver
 from ..TimeIntegrators import IntegrationType
 
 
-class ExplicitStepSolver(DynamicStepSolver):
+class ExplicitStepSolver(MecaDynaStepSolver):
     """Solves a step, loops on iterations."""
 
     integration_type = IntegrationType.Explicit

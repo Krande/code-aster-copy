@@ -76,7 +76,7 @@ class PhysicalState(BaseFeature):
             if pb_type in [PBT.Thermal, PBT.Unset]:
                 raise NotImplementedError("Not supported !")
 
-            if pb_type == PBT.Dynamic:
+            if pb_type == PBT.MecaDyna:
                 fields_list = {"U": "DEPL", "dU": "VITE", "d2U": "ACCE"}
             elif pb_type == PBT.Static:
                 fields_list = {"U": "DEPL"}

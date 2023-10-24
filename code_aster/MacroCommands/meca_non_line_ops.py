@@ -112,7 +112,7 @@ def meca_non_line_ops(self, **args):
     )
 
     if "SCHEMA_TEMPS" in args:
-        problem_type = PBT.Dynamic
+        problem_type = PBT.MecaDyna
         param["SCHEMA_TEMPS"] = args["SCHEMA_TEMPS"]
     else:
         problem_type = PBT.Static

@@ -23,7 +23,7 @@ class ProblemType:
 
     Unset = 0x00
     Static = 0x01
-    Dynamic = 0x02
+    MecaDyna = 0x02
     Thermal = 0x04
 
 
@@ -49,7 +49,7 @@ class ProblemDispatcher:
     def _getProblemType(cls, param):
         """Identify the physical problem."""
         if "SCHEMA_TEMPS" in param:
-            pb_type = ProblemType.Dynamic
+            pb_type = ProblemType.MecaDyna
         else:
             pb_type = ProblemType.Static
         return pb_type

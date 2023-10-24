@@ -156,7 +156,7 @@ class NonLinearSolver(SolverFeature):
                     extract_time = resu.getLastTime()
                 init_time = extract_time
                 phys_state.primal_curr = resu.getField("DEPL", para="INST", value=extract_time)
-                if phys_state.pb_type == PBT.Dynamic:
+                if phys_state.pb_type == PBT.MecaDyna:
                     phys_state.current.dU = resu.getField("VITE", para="INST", value=extract_time)
                     phys_state.current.d2U = resu.getField("ACCE", para="INST", value=extract_time)
                 phys_state.stress = resu.getField("SIEF_ELGA", para="INST", value=extract_time)
@@ -219,7 +219,8 @@ class NonLinearSolver(SolverFeature):
 
             self.setExternalStateVariables(self.phys_state.time_curr)
             solv.initialize()
-            if (self.step_rank + 1) % matr_update_step:
+
+            if matr_update_step == 0 or (self.step_rank + 1) % matr_update_step:
                 solv.current_matrix = self.current_matrix
 
             if logger.getEffectiveLevel() <= DEBUG:

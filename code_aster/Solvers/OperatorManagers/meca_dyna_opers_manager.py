@@ -24,7 +24,7 @@ from ...Supervis import IntegrationError
 from ..solver_features import SolverOptions as SOP
 
 
-class DynamicOperatorsManager(BaseOperatorsManager):
+class MecaDynaOperatorsManager(BaseOperatorsManager):
     """Solve an iteration."""
 
     _mass = _elem_mass = None
@@ -38,7 +38,9 @@ class DynamicOperatorsManager(BaseOperatorsManager):
     def _getElemMassMatrix(self):
         """Compute the elementary mass matrix."""
         disc_comp = DiscreteComputation(self.phys_pb)
-        matr_elem_mass = disc_comp.getMassMatrix(time=self.phys_state.time_curr)
+        matr_elem_mass = disc_comp.getMassMatrix(
+            time=self.phys_state.time_curr,
+            varc_curr=self.phys_state.internVar)
         return matr_elem_mass
 
     def _getMassMatrix(self):

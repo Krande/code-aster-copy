@@ -22,10 +22,10 @@ from ..TimeIntegrators import IntegrationType, IntegratorName, BaseIntegrator
 from ..problem_dispatcher import ProblemType
 
 
-class DynamicStepSolver(BaseStepSolver):
+class MecaDynaStepSolver(BaseStepSolver):
     """Solves a step, loops on iterations."""
 
-    problem_type = ProblemType.Dynamic
+    problem_type = ProblemType.MecaDyna
     integration_type = IntegrationType.Unset
 
     @classmethod
@@ -66,7 +66,7 @@ class DynamicStepSolver(BaseStepSolver):
         return solver
 
     def __init__(self, integrator):
-        super(DynamicStepSolver, self).__init__()
+        super(MecaDynaStepSolver, self).__init__()
         self._integrator = integrator
 
     def initialize(self):

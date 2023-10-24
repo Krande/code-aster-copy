@@ -18,11 +18,11 @@
 # --------------------------------------------------------------------
 
 from ..TimeIntegrators import IntegrationType, BaseIntegrator, OnSubStepIntegrator
-from .dynamic_step_solver import DynamicStepSolver
+from .meca_dyna_step_solver import MecaDynaStepSolver
 from math import sqrt
 
 
-class MultiStepSolver(DynamicStepSolver):
+class MultiStepSolver(MecaDynaStepSolver):
     """Solves a step, loops on iterations."""
 
     integration_type = IntegrationType.Multiple

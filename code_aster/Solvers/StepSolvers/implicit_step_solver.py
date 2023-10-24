@@ -22,11 +22,11 @@ from libaster import deleteTemporaryObjects
 from ...Utilities import profile
 
 from ..solver_features import SolverOptions as SOP
-from .dynamic_step_solver import DynamicStepSolver
+from .meca_dyna_step_solver import MecaDynaStepSolver
 from ..TimeIntegrators import IntegrationType
 
 
-class ImplicitStepSolver(DynamicStepSolver):
+class ImplicitStepSolver(MecaDynaStepSolver):
     """Solves a step, loops on iterations."""
 
     integration_type = IntegrationType.Implicit

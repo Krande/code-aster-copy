@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 
 from ..solver_features import SolverOptions as SOP
-from ..OperatorManagers import DynamicOperatorsManager
+from ..OperatorManagers import MecaDynaOperatorsManager
 
 
 class IntegrationType:
@@ -40,7 +40,7 @@ class IntegratorName:
     Rk4 = 0x08
 
 
-class BaseIntegrator(DynamicOperatorsManager):
+class BaseIntegrator(MecaDynaOperatorsManager):
     """
     Integrator for systems like : M ddX = Fext - Fc(dX) - Fk(X) = funForce(X, dX)
     In case of a linear problem : M ddX = Fext - C dX - K X
@@ -50,7 +50,7 @@ class BaseIntegrator(DynamicOperatorsManager):
         df : Jacobian matrix of f
     """
 
-    provide = SOP.TimeIntegrator | DynamicOperatorsManager.provide
+    provide = SOP.TimeIntegrator | MecaDynaOperatorsManager.provide
 
     integration_type = IntegrationType.Unset
     integrator_name = IntegratorName.Unset

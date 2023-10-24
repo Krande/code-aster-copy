@@ -25,7 +25,7 @@ Step solvers classes.
 from .base_step_solver import BaseStepSolver
 from .static_step_solver import StaticStepSolver
 from .thermal_step_solver import ThermalStepSolver
-from .dynamic_step_solver import DynamicStepSolver
+from .meca_dyna_step_solver import MecaDynaStepSolver
 from .implicit_step_solver import ImplicitStepSolver
 from .explicit_step_solver import ExplicitStepSolver
 from .multi_step_solver import MultiStepSolver
