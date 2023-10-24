@@ -343,24 +343,27 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes, &
 
         if (nbvint*nbsauv .ne. 0) then
 !           Index
-            call crevec(nomres16//'.NL.VIND', typsau//' I', nbnoli+1, jvindx)
-            call nlget(sd_nl, _INTERNAL_VARS_INDEX, ivect=zi(jvindx))
+            call jeexin(nomres//'        .NL.VIND', iret)
+            if (iret .eq. 0) then
+                call crevec(nomres//'        .NL.VIND', typsau//' I', nbnoli+1, jvindx)
+                call nlget(sd_nl, _INTERNAL_VARS_INDEX, ivect=zi(jvindx))
+            end if
 !           Internal variables object
             call crevec(nomres16//'.NL.VINT', typsau//' R', nbvint*nbsauv, jvint)
             call r8inir(nbvint*nbsauv, 0.d0, zr(jvint), 1)
         end if
 
-        call jeexin(nomres16//'.NL.TYPE', iret)
+        call jeexin(nomres//'        .NL.TYPE', iret)
         if (iret .eq. 0) then
-            call crevec(nomres16//'.NL.TYPE', typsau//' I', nbnoli, jnltyp)
+            call crevec(nomres//'        .NL.TYPE', typsau//' I', nbnoli, jnltyp)
             do i = 1, nbnoli
                 call nlget(sd_nl, _NL_TYPE, iocc=i, iscal=zi(jnltyp-1+i))
             end do
         end if
 
-        call jeexin(nomres16//'.NL.INTI', iret)
+        call jeexin(nomres//'        .NL.INTI', iret)
         if (iret .eq. 0) then
-            call crevec(nomres16//'.NL.INTI', typsau//' K24', nbnoli*5, jinti)
+            call crevec(nomres//'        .NL.INTI', typsau//' K24', nbnoli*5, jinti)
             do i = 1, 4*nbnoli
                 zk24(jinti-1+i) = ' '
             end do

@@ -25,6 +25,8 @@ subroutine dtmallo(sd_dtm_)
 !
 #include "jeveux.h"
 #include "asterc/r8prem.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/codent.h"
 #include "asterfort/dtmget.h"
 #include "asterfort/dtmsav.h"
@@ -56,6 +58,13 @@ subroutine dtmallo(sd_dtm_)
     character(len=8), pointer :: fonrev(:) => null()
     character(len=8), target  :: blanc(1)
     integer, pointer :: vindx(:) => null()
+    integer, pointer :: allocs(:) => null()
+    integer :: ordr
+    real(kind=8) :: disc, ptem
+    real(kind=8), pointer :: v_depl(:) => null()
+    real(kind=8), pointer :: v_vite(:) => null()
+    real(kind=8), pointer :: v_acce(:) => null()
+    real(kind=8), pointer :: v_vint(:) => null()
 
 !
 !   0 - Initializations
@@ -91,7 +100,7 @@ subroutine dtmallo(sd_dtm_)
     if (nbnli .gt. 0) call dtmget(sd_dtm, _SD_NONL, kscal=sd_nl)
 !
 
-    call dtmget(sd_dtm, _IND_ALOC, lonvec=iret1)
+    call dtmget(sd_dtm, _IND_ALOC, lonvec=iret1, vi=allocs)
     if (iret1 .ne. 0) then
         call dtmget(sd_dtm, _ADAPT, iscal=adapt)
         call dtmget(sd_dtm, _IARCH_SD, iscal=iarch_sd)
@@ -171,6 +180,7 @@ subroutine dtmallo(sd_dtm_)
     write (*, *) '> NB STEPS PER 1 GB RAM  :', nint(1024*1024/(taille/(1024*nbsauv))), 'STEPS'
 
     nbsteps_1mb = nint(1024/(taille/(1024*nbsauv)))
+    if (nbsteps_1mb .lt. 2) nbsteps_1mb = 2
     write (*, *) '> NB STEPS PER 1 MB RAM  :', nbsteps_1mb, 'STEPS'
     write (*, *) '--------------------------------------------------------'
 
@@ -186,7 +196,23 @@ subroutine dtmallo(sd_dtm_)
 
     write (*, *) 'IN DTMALLO, iarch_sd =', iarch_sd
     if (iarch_sd .gt. 1) then
-        call dtmsav(sd_dtm, _ARCH_STO, 4, ivect=[0, 0, 0, 0])
+        ! copy last value from previous bloc ...
+        AS_ALLOCATE(vr=v_depl, size=nbmode)
+        AS_ALLOCATE(vr=v_vite, size=nbmode)
+        AS_ALLOCATE(vr=v_acce, size=nbmode)
+        if (nbvint .gt. 0) then
+            AS_ALLOCATE(vr=v_vint, size=nbvint)
+        end if
+        ordr = zi(allocs(1)-1+nbsauv)
+        disc = zr(allocs(2)-1+nbsauv)
+        ptem = zr(allocs(3)-1+nbsauv)
+        v_depl = zr(allocs(4)+nbmode*(nbsauv-1):allocs(4)-1+nbmode*nbsauv)
+        v_vite = zr(allocs(5)+nbmode*(nbsauv-1):allocs(5)-1+nbmode*nbsauv)
+        v_acce = zr(allocs(6)+nbmode*(nbsauv-1):allocs(6)-1+nbmode*nbsauv)
+        if (nbvint .gt. 0) then
+            v_vint = zr(allocs(7)+nbvint*(nbsauv-1):allocs(7)-1+nbvint*nbsauv)
+        end if
+        call dtmsav(sd_dtm, _ARCH_STO, 4, ivect=[1, 0, 0, 0])
         call mdlibe(nomres(1:8), nbnli, iarch_sd-1)
     end if
     call mdallo(nomres(1:8), 'TRAN', nbsauv, sauve='GLOB', method=schema, &
@@ -195,6 +221,24 @@ subroutine dtmallo(sd_dtm_)
                 jordr=jordr, jdisc=jdisc, jptem=jptem, jdepl=jdepl, jvite=jvite, &
                 jacce=jacce, jvint=jvint, sd_nl_=sd_nl, sd_index=iarch_sd)
 
+    if (iarch_sd .gt. 1) then
+        ! ... paste to next bloc first value
+        zi(jordr) = ordr
+        zr(jdisc) = disc
+        zr(jptem) = ptem
+        zr(jdepl:jdepl+nbmode) = v_depl
+        zr(jvite:jvite+nbmode) = v_vite
+        zr(jacce:jacce+nbmode) = v_acce
+        if (nbvint .gt. 0) then
+            zr(jvint:jvint+nbvint) = v_vint
+        end if
+        AS_DEALLOCATE(vr=v_depl)
+        AS_DEALLOCATE(vr=v_vite)
+        AS_DEALLOCATE(vr=v_acce)
+        if (nbvint .gt. 0) then
+            AS_DEALLOCATE(vr=v_vint)
+        end if
+    end if
     call dtmsav(sd_dtm, _IND_ALOC, 7, ivect=[jordr, jdisc, jptem, jdepl, jvite, jacce, jvint])
 
     call jedema()

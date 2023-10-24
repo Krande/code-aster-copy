@@ -61,9 +61,6 @@ subroutine mdlibe(nomres, nbnli, sd_index)
     call jelibe(nomres16//bl3pt//'PTEM')
 
     if (nbnli .gt. 0) then
-        call jelibe(nomres16//'.NL.TYPE')
-        call jelibe(nomres16//'.NL.INTI')
-        call jelibe(nomres16//'.NL.VIND')
         call jeexin(nomres16//'.NL.VINT', iret)
         if (iret .gt. 0) call jelibe(nomres16//'.NL.VINT')
     end if

@@ -300,7 +300,7 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
     end if
 
 !   --- Concatenate the results if needed
-    ! if (iarch_sd.gt.0) call dtmconc(sd_dtm)
+    if (iarch_sd .gt. 0) call dtmconc(sd_dtm)
 
 !   --- Append to an existing result in the case of "reuse"
     if (append .gt. 0) then
