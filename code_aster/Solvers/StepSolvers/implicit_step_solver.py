@@ -53,7 +53,6 @@ class ImplicitStepSolver(MecaDynaStepSolver):
         """
 
         logManager = self.createLoggingManager()
-        logManager.printIntro(self.phys_state.time_curr, 1)
         logManager.printConvTableEntries()
 
         criteria = self.get_feature(SOP.ConvergenceCriteria)
