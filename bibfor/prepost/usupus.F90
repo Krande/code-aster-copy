@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,6 +17,9 @@
 ! --------------------------------------------------------------------
 !
 subroutine usupus(puusur, kforn, kvgli, nbpt)
+
+    use DynaGene_module
+
     implicit none
 !     CALCULE LA PUISSANCE D'USURE AU SENS D'ARCHARD
 !                    PU  =  FN * VT
@@ -54,7 +57,7 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
     integer :: impr, j, jfn, jnomno, nbno
     integer :: jvg, jwk1, jwk2, jwk3, lg
     integer :: n1, n2, n3, nbnoli, nbloc
-    integer :: nbpas, nbpt, nbval, nt
+    integer :: nbpas, nbpt, nbval, nt, shift, long
     character(len=8) :: maillage, modele, base
     character(len=24) :: nomno
     character(len=16) :: motcle(2), typmcl(2)
@@ -75,6 +78,8 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
     character(len=8), pointer :: inti(:) => null()
     integer, pointer :: icho(:) => null()
     character(len=8), pointer :: ncho(:) => null()
+    real(kind=8), pointer :: v_disc(:) => null()
+    type(DynaGene) :: dyna_gene
 !
 !
 !-----------------------------------------------------------------------
@@ -94,8 +99,11 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
         goto 999
     end if
 !
+
     call getvid(' ', 'RESU_GENE', scal=trange, nbret=nt)
     if (nt .ne. 0) then
+
+        call dyna_gene%init(trange(1:8))
         call jeveuo(trange//'.DESC', 'L', vi=desc)
         if (desc(1) .eq. 2 .or. desc(1) .eq. 3) then
             nbnoli = desc(3)
@@ -122,44 +130,81 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
             call utmess('F', 'UTILITAI_87', sk=noeu(1:lg))
 12          continue
 !
-            call jeveuo(trange//'.DISC', 'L', vr=disc)
-            call jelira(trange//'.DISC', 'LONMAX', nbpt)
-            tmax = disc(nbpt)
-            tmin = disc(1)
-            if (n2 .eq. 0) then
-                tdebut = tmin
-            else
-                if (tdebut .lt. tmin) tdebut = tmin
-            end if
-            if (n3 .eq. 0) then
-                tfin = tmax
-            else
-                if (tfin .gt. tmax) tfin = tmax
-            end if
-            if (tdebut .ge. tfin) then
-                call utmess('F', 'PREPOST4_47')
-            end if
-            do j = 1, nbpt
-                if (disc(j) .ge. tdebut) then
-                    idebut = j
-                    goto 15
+
+            if (dyna_gene%n_bloc .eq. 0) then
+                call jeveuo(trange//'.DISC', 'L', vr=disc)
+                call jelira(trange//'.DISC', 'LONMAX', nbpt)
+                tmax = disc(nbpt)
+                tmin = disc(1)
+                if (n2 .eq. 0) then
+                    tdebut = tmin
+                else
+                    if (tdebut .lt. tmin) tdebut = tmin
                 end if
-            end do
-15          continue
-            do j = 1, nbpt
-                if (disc(j) .ge. tfin) then
-                    ifin = j
-                    goto 17
+                if (n3 .eq. 0) then
+                    tfin = tmax
+                else
+                    if (tfin .gt. tmax) tfin = tmax
                 end if
-            end do
-17          continue
+                if (tdebut .ge. tfin) then
+                    call utmess('F', 'PREPOST4_47')
+                end if
+                do j = 1, nbpt
+                    if (disc(j) .ge. tdebut) then
+                        idebut = j
+                        goto 15
+                    end if
+                end do
+15              continue
+                do j = 1, nbpt
+                    if (disc(j) .ge. tfin) then
+                        ifin = j
+                        goto 17
+                    end if
+                end do
+17              continue
+
+            else
+                nbpt = dyna_gene%length
+                if (n2 .eq. 0) then
+                    idebut = 1
+                else
+                    call dyna_gene%get_values_by_disc(dyna_gene%disc, tdebut, shift, long, vr=disc)
+                    idebut = 0
+                    do i = 1, long
+                        if (tdebut .le. disc(i)) then
+                            idebut = shift+i
+                            exit
+                        end if
+                    end do
+                    if (idebut .eq. 0) then
+                        idebut = shift+long
+                    end if
+                end if
+                if (n3 .eq. 0) then
+                    ifin = nbpt
+                else
+                    call dyna_gene%get_values_by_disc(dyna_gene%disc, tfin, shift, long, vr=disc)
+                    ifin = 0
+                    do i = 1, long
+                        if (tfin .le. disc(i)) then
+                            ifin = shift+i
+                            exit
+                        end if
+                    end do
+                    if (ifin .eq. 0) then
+                        ifin = shift+long
+                    end if
+                end if
+
+            end if
+
             nbpas = ifin-idebut+1
             if (nbloc .eq. 0) nbloc = 1
             nbval = nbpas/nbloc
 !
             call jeveuo(trange(1:16)//'.NL.TYPE', 'L', vi=nltype)
             call jeveuo(trange(1:16)//'.NL.VIND', 'L', vi=vindx)
-            call jeveuo(trange(1:16)//'.NL.VINT', 'L', vr=vint)
             nbvint = vindx(nbnoli+1)-1
 !
             AS_ALLOCATE(vi=chindx, size=nbnoli)
@@ -183,33 +228,42 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
 !
             nbtot = nbchoc+nbflam
 !
-            AS_ALLOCATE(vr=fcho, size=3*nbtot*nbpt)
-            AS_ALLOCATE(vr=dloc, size=2*3*nbtot*nbpt)
-            AS_ALLOCATE(vr=vcho, size=3*nbtot*nbpt)
-            AS_ALLOCATE(vi=icho, size=nbtot*nbpt)
+            AS_ALLOCATE(vr=fcho, size=3*nbtot*nbpas)
+            AS_ALLOCATE(vr=dloc, size=2*3*nbtot*nbpas)
+            AS_ALLOCATE(vr=vcho, size=3*nbtot*nbpas)
+            AS_ALLOCATE(vi=icho, size=nbtot*nbpas)
             AS_ALLOCATE(vk8=ncho, size=2*nbtot)
             AS_ALLOCATE(vk8=inti, size=nbtot)
+            AS_ALLOCATE(vr=v_disc, size=nbpas)
+
+            do j = idebut, ifin
+                call dyna_gene%get_values_by_index(dyna_gene%disc, j, shift, vr=disc)
+                v_disc(j-idebut+1) = disc(j-shift)
+            end do
 !
             do ic = 1, nbchoc
                 i = chindx(ic)
-                do j = 1, nbpt
-                    fcho((j-1)*3*nbtot+(ic-1)*3+1) = vint((j-1)*nbvint+vindx(i)-1+1)
-                    fcho((j-1)*3*nbtot+(ic-1)*3+2) = vint((j-1)*nbvint+vindx(i)-1+2)
-                    fcho((j-1)*3*nbtot+(ic-1)*3+3) = vint((j-1)*nbvint+vindx(i)-1+3)
-!
-                    dloc((j-1)*3*nbtot+(ic-1)*3+1) = vint((j-1)*nbvint+vindx(i)-1+4)
-                    dloc((j-1)*3*nbtot+(ic-1)*3+2) = vint((j-1)*nbvint+vindx(i)-1+5)
-                    dloc((j-1)*3*nbtot+(ic-1)*3+3) = vint((j-1)*nbvint+vindx(i)-1+6)
-                    dec = 3*nbtot*nbpt
-                    dloc(dec+(j-1)*3*nbtot+(ic-1)*3+1) = vint((j-1)*nbvint+vindx(i)-1+7)
-                    dloc(dec+(j-1)*3*nbtot+(ic-1)*3+2) = vint((j-1)*nbvint+vindx(i)-1+8)
-                    dloc(dec+(j-1)*3*nbtot+(ic-1)*3+3) = vint((j-1)*nbvint+vindx(i)-1+9)
-!
-                    vcho((j-1)*3*nbtot+(ic-1)*3+1) = vint((j-1)*nbvint+vindx(i)-1+10)
-                    vcho((j-1)*3*nbtot+(ic-1)*3+2) = vint((j-1)*nbvint+vindx(i)-1+11)
-                    vcho((j-1)*3*nbtot+(ic-1)*3+3) = vint((j-1)*nbvint+vindx(i)-1+12)
-!
-                    icho((j-1)*nbtot+(ic-1)+1) = nint(vint((j-1)*nbvint+vindx(i)-1+13))
+                do j = idebut, ifin
+
+                    call dyna_gene%get_values_by_index(dyna_gene%vint, j, shift, vr=vint)
+
+                    fcho((j-idebut)*3*nbtot+(ic-1)*3+1) = vint((j-1-shift)*nbvint+vindx(i)-1+1)
+                    fcho((j-idebut)*3*nbtot+(ic-1)*3+2) = vint((j-1-shift)*nbvint+vindx(i)-1+2)
+                    fcho((j-idebut)*3*nbtot+(ic-1)*3+3) = vint((j-1-shift)*nbvint+vindx(i)-1+3)
+
+                    dloc((j-idebut)*3*nbtot+(ic-1)*3+1) = vint((j-1-shift)*nbvint+vindx(i)-1+4)
+                    dloc((j-idebut)*3*nbtot+(ic-1)*3+2) = vint((j-1-shift)*nbvint+vindx(i)-1+5)
+                    dloc((j-idebut)*3*nbtot+(ic-1)*3+3) = vint((j-1-shift)*nbvint+vindx(i)-1+6)
+                    dec = 3*nbtot*nbpas
+                    dloc(dec+(j-idebut)*3*nbtot+(ic-1)*3+1) = vint((j-1-shift)*nbvint+vindx(i)-1+7)
+                    dloc(dec+(j-idebut)*3*nbtot+(ic-1)*3+2) = vint((j-1-shift)*nbvint+vindx(i)-1+8)
+                    dloc(dec+(j-idebut)*3*nbtot+(ic-1)*3+3) = vint((j-1-shift)*nbvint+vindx(i)-1+9)
+
+                    vcho((j-idebut)*3*nbtot+(ic-1)*3+1) = vint((j-1-shift)*nbvint+vindx(i)-1+10)
+                    vcho((j-idebut)*3*nbtot+(ic-1)*3+2) = vint((j-1-shift)*nbvint+vindx(i)-1+11)
+                    vcho((j-idebut)*3*nbtot+(ic-1)*3+3) = vint((j-1-shift)*nbvint+vindx(i)-1+12)
+
+                    icho((j-idebut)*nbtot+(ic-1)+1) = nint(vint((j-1-shift)*nbvint+vindx(i)-1+13))
                 end do
                 inti(ic) = nlname((i-1)*5+1) (1:8)
                 ncho(ic) = nlname((i-1)*5+2) (1:8)
@@ -219,24 +273,27 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
             do ifl = 1, nbflam
                 i = flindx(ifl)
                 ic = nbchoc+ifl
-                do j = 1, nbpt
-                    fcho((j-1)*3*nbtot+(ic-1)*3+1) = vint((j-1)*nbvint+vindx(i)-1+1)
-                    fcho((j-1)*3*nbtot+(ic-1)*3+2) = 0.d0
-                    fcho((j-1)*3*nbtot+(ic-1)*3+3) = 0.d0
-!
-                    dloc((j-1)*3*nbtot+(ic-1)*3+1) = vint((j-1)*nbvint+vindx(i)-1+2)
-                    dloc((j-1)*3*nbtot+(ic-1)*3+2) = vint((j-1)*nbvint+vindx(i)-1+3)
-                    dloc((j-1)*3*nbtot+(ic-1)*3+3) = vint((j-1)*nbvint+vindx(i)-1+4)
-                    dec = 3*nbtot*nbpt
-                    dloc(dec+(j-1)*3*nbtot+(ic-1)*3+1) = vint((j-1)*nbvint+vindx(i)-1+5)
-                    dloc(dec+(j-1)*3*nbtot+(ic-1)*3+2) = vint((j-1)*nbvint+vindx(i)-1+6)
-                    dloc(dec+(j-1)*3*nbtot+(ic-1)*3+3) = vint((j-1)*nbvint+vindx(i)-1+7)
-!
-                    vcho((j-1)*3*nbtot+(ic-1)*3+1) = vint((j-1)*nbvint+vindx(i)-1+8)
-                    vcho((j-1)*3*nbtot+(ic-1)*3+2) = 0.d0
-                    vcho((j-1)*3*nbtot+(ic-1)*3+3) = 0.d0
-!
-                    icho((j-1)*nbtot+(ic-1)+1) = 0
+                do j = idebut, ifin
+
+                    call dyna_gene%get_values_by_index(dyna_gene%vint, j, shift, vr=vint)
+
+                    fcho((j-idebut)*3*nbtot+(ic-1)*3+1) = vint((j-1-shift)*nbvint+vindx(i)-1+1)
+                    fcho((j-idebut)*3*nbtot+(ic-1)*3+2) = 0.d0
+                    fcho((j-idebut)*3*nbtot+(ic-1)*3+3) = 0.d0
+
+                    dloc((j-idebut)*3*nbtot+(ic-1)*3+1) = vint((j-1-shift)*nbvint+vindx(i)-1+2)
+                    dloc((j-idebut)*3*nbtot+(ic-1)*3+2) = vint((j-1-shift)*nbvint+vindx(i)-1+3)
+                    dloc((j-idebut)*3*nbtot+(ic-1)*3+3) = vint((j-1-shift)*nbvint+vindx(i)-1+4)
+                    dec = 3*nbtot*nbpas
+                    dloc(dec+(j-idebut)*3*nbtot+(ic-1)*3+1) = vint((j-1-shift)*nbvint+vindx(i)-1+5)
+                    dloc(dec+(j-idebut)*3*nbtot+(ic-1)*3+2) = vint((j-1-shift)*nbvint+vindx(i)-1+6)
+                    dloc(dec+(j-idebut)*3*nbtot+(ic-1)*3+3) = vint((j-1-shift)*nbvint+vindx(i)-1+7)
+
+                    vcho((j-idebut)*3*nbtot+(ic-1)*3+1) = vint((j-1-shift)*nbvint+vindx(i)-1+8)
+                    vcho((j-idebut)*3*nbtot+(ic-1)*3+2) = 0.d0
+                    vcho((j-idebut)*3*nbtot+(ic-1)*3+3) = 0.d0
+
+                    icho((j-idebut)*nbtot+(ic-1)+1) = 0
                 end do
                 inti(ic) = nlname((i-1)*5+1) (1:8)
                 ncho(ic) = nlname((i-1)*5+2) (1:8)
@@ -248,16 +305,15 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
             call jelibe(trange(1:16)//'.NL.TYPE')
             call jelibe(trange(1:16)//'.NL.VIND')
             call jelibe(trange(1:16)//'.NL.INTI')
-            call jelibe(trange(1:16)//'.NL.VINT')
 !
             call wkvect('&&USURPU.WK1', 'V V R', nbpt, jwk1)
             call wkvect('&&USURPU.WK2', 'V V R', nbpt, jwk2)
             call wkvect('&&USURPU.WK3', 'V V R', nbpt, jwk3)
             call wkvect('&&USURPU.IWK4', 'V V I', nbpt, idwk4)
 !
-            call statpu(nbnoli, nbpt, disc, fcho, vcho, &
+            call statpu(nbnoli, nbpas, v_disc, fcho, vcho, &
                         icho, zr(jwk1), zr(jwk2), zr(jwk3), zi(idwk4), &
-                        idebut, nbloc, nbval, ifires, ichoc, &
+                        1, nbloc, nbval, ifires, ichoc, &
                         impr, puusur)
 !
             call wkvect(kforn, 'V V R', nbpt, jfn)
@@ -279,13 +335,19 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
             AS_DEALLOCATE(vi=icho)
             AS_DEALLOCATE(vk8=ncho)
             AS_DEALLOCATE(vk8=inti)
+            AS_DEALLOCATE(vr=v_disc)
 !
         else
             call utmess('F', 'PREPOST4_84')
         end if
+
+        call dyna_gene%free()
+
     end if
+
 !
 999 continue
     call jedetr(nomno)
     call jedema()
+
 end subroutine
