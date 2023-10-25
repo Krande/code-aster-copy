@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,11 +21,10 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine aceagb(nomu, noma, lmax, locamb, nbocc)
-        character(len=8) :: nomu
-        character(len=8) :: noma
-        integer :: lmax
-        aster_logical :: locamb
-        integer :: nbocc
+    subroutine aceagb(nomu, noma, locamb, nbocc)
+        character(len=8), intent(in) :: nomu
+        character(len=8), intent(in) :: noma
+        aster_logical, intent(in) :: locamb
+        integer, intent(in) :: nbocc
     end subroutine aceagb
 end interface
