@@ -70,19 +70,19 @@ sina_N = sin(a2_N)
 # Coordonnées du point de départ de l'onde.
 z0_N = -100
 y0_N = 400.0
-x0_N = 50.0
+x0_N = -150.0
 
 z1_N = 100.0
 y1_N = 400.0
-x1_N = 50.0
+x1_N = -150.0
 
 
 # Angle de direction par rapport à l'axe X
-b = 45
+# b = 90
 
-b2 = radians(b)
-cosb = cos(b2)
-sinb = sin(b2)
+# b2 = radians(b)
+cosb = 0.0
+sinb = 1.0
 
 # Sollicitation en acceleration (ondelette de Ricker)
 
@@ -300,25 +300,17 @@ azNMHS = RECU_FONCTION(
 
 TEST_FONCTION(
     VALEUR=(
+        _F(VALE_CALC=4.909803062375e-13, CRITERE="ABSOLU", VALE_PARA=0.15, FONCTION=axNMHS),
         _F(
-            VALE_CALC=2.357008761766,
-            VALE_REFE=1.178504380883 * 2.0,
-            PRECISION=3.0e-3,
-            REFERENCE="ANALYTIQUE",
-            CRITERE="RELATIF",
-            VALE_PARA=0.15,
-            FONCTION=axNMHS,
-        ),
-        _F(
-            VALE_CALC=2.357008761766,
-            VALE_REFE=1.178504380884 * 2.0,
+            VALE_CALC=1.792538947424,
+            VALE_REFE=0.89626947371078 * 2.0,
             PRECISION=3.0e-3,
             REFERENCE="ANALYTIQUE",
             CRITERE="RELATIF",
             VALE_PARA=0.15,
             FONCTION=ayNMHS,
         ),
-        _F(VALE_CALC=3.634935930634e-14, CRITERE="ABSOLU", VALE_PARA=0.15, FONCTION=azNMHS),
+        _F(VALE_CALC=-8.369979355189e-13, CRITERE="ABSOLU", VALE_PARA=0.15, FONCTION=azNMHS),
     )
 )
 

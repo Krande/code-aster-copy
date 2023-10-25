@@ -144,7 +144,7 @@ subroutine te0498(option, nomte)
         h = r8vide()
     end if
 !
-    if (dirz .eq. 1.d0) then
+    if (abs(dirz-1.d0) .le. r8prem()) then
 
         cosa = dirz
         sina = 0.d0
@@ -179,8 +179,8 @@ subroutine te0498(option, nomte)
 
             end if
 
-            cosg = cos(acos(dirx/sina))
-            sing = sin(asin(diry/sina))
+            cosg = dirx/sina
+            sing = diry/sina
 
         end if
 
@@ -210,7 +210,7 @@ subroutine te0498(option, nomte)
 
     else
 
-        sign_tan = tanx/abs(tanx)
+        sign_tan = -tanx/abs(tanx)
 
     end if
 !

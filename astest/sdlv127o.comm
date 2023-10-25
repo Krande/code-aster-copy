@@ -227,7 +227,7 @@ ONDESVP = AFFE_CHAR_MECA_F(
     MODELE=MODELE,
     ONDE_PLANE=_F(
         DIRECTION=(sina_P * cosb, sina_P * sinb, cosa_P),
-        TYPE_ONDE="SH",
+        TYPE_ONDE="SV",
         FONC_SIGNAL=vite_1,
         COOR_SOURCE=(x0_P, y0_P, z0_P),
         COOR_REFLECHI=(x1_P, y1_P, z1_P),
@@ -241,7 +241,7 @@ ONDESVN = AFFE_CHAR_MECA_F(
     MODELE=MODELE,
     ONDE_PLANE=_F(
         DIRECTION=(sina_N * cosb, sina_N * sinb, cosa_N),
-        TYPE_ONDE="SH",
+        TYPE_ONDE="SV",
         FONC_SIGNAL=vite_1,
         COOR_SOURCE=(x0_N, y0_N, z0_N),
         COOR_REFLECHI=(x1_N, y1_N, z1_N),
@@ -301,8 +301,8 @@ azNMHS = RECU_FONCTION(
 TEST_FONCTION(
     VALEUR=(
         _F(
-            VALE_CALC=2.588872487555,
-            VALE_REFE=1.294436243777 * 2.0,
+            VALE_CALC=2.357008761766,
+            VALE_REFE=1.178504380883 * 2.0,
             PRECISION=3.0e-3,
             REFERENCE="ANALYTIQUE",
             CRITERE="RELATIF",
@@ -310,15 +310,15 @@ TEST_FONCTION(
             FONCTION=axNMHS,
         ),
         _F(
-            VALE_CALC=-2.588872487555,
-            VALE_REFE=-1.294436243776 * 2.0,
+            VALE_CALC=2.357008761766,
+            VALE_REFE=1.178504380884 * 2.0,
             PRECISION=3.0e-3,
             REFERENCE="ANALYTIQUE",
             CRITERE="RELATIF",
             VALE_PARA=0.15,
             FONCTION=ayNMHS,
         ),
-        _F(VALE_CALC=3.757527673027e-13, CRITERE="ABSOLU", VALE_PARA=0.15, FONCTION=azNMHS),
+        _F(VALE_CALC=3.634935930634e-14, CRITERE="ABSOLU", VALE_PARA=0.15, FONCTION=azNMHS),
     )
 )
 

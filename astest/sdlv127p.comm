@@ -69,20 +69,20 @@ sina_N = sin(a2_N)
 
 # Coordonnées du point de départ de l'onde.
 z0_N = -100
-y0_N = 200.0
+y0_N = 400.0
 x0_N = 50.0
 
 z1_N = 100.0
-y1_N = 200.0
+y1_N = 400.0
 x1_N = 50.0
 
 
 # Angle de direction par rapport à l'axe X
-# b = 0.
+b = 45
 
-# b2 = radians(b)
-cosb = 1.0
-sinb = 0.0
+b2 = radians(b)
+cosb = cos(b2)
+sinb = sin(b2)
 
 # Sollicitation en acceleration (ondelette de Ricker)
 
@@ -227,7 +227,7 @@ ONDESVP = AFFE_CHAR_MECA_F(
     MODELE=MODELE,
     ONDE_PLANE=_F(
         DIRECTION=(sina_P * cosb, sina_P * sinb, cosa_P),
-        TYPE_ONDE="SV",
+        TYPE_ONDE="SH",
         FONC_SIGNAL=vite_1,
         COOR_SOURCE=(x0_P, y0_P, z0_P),
         COOR_REFLECHI=(x1_P, y1_P, z1_P),
@@ -241,7 +241,7 @@ ONDESVN = AFFE_CHAR_MECA_F(
     MODELE=MODELE,
     ONDE_PLANE=_F(
         DIRECTION=(sina_N * cosb, sina_N * sinb, cosa_N),
-        TYPE_ONDE="SV",
+        TYPE_ONDE="SH",
         FONC_SIGNAL=vite_1,
         COOR_SOURCE=(x0_N, y0_N, z0_N),
         COOR_REFLECHI=(x1_N, y1_N, z1_N),
@@ -300,17 +300,25 @@ azNMHS = RECU_FONCTION(
 
 TEST_FONCTION(
     VALEUR=(
-        _F(VALE_CALC=-1.430312645331e-13, CRITERE="ABSOLU", VALE_PARA=0.15, FONCTION=ayNMHS),
         _F(
-            VALE_CALC=1.792538947423,
-            VALE_REFE=0.89626947371107 * 2.0,
+            VALE_CALC=2.588872487555,
+            VALE_REFE=1.294436243777 * 2.0,
             PRECISION=3.0e-3,
             REFERENCE="ANALYTIQUE",
             CRITERE="RELATIF",
             VALE_PARA=0.15,
             FONCTION=axNMHS,
         ),
-        _F(VALE_CALC=6.425871423494e-13, CRITERE="ABSOLU", VALE_PARA=0.15, FONCTION=azNMHS),
+        _F(
+            VALE_CALC=-2.588872487555,
+            VALE_REFE=-1.294436243776 * 2.0,
+            PRECISION=3.0e-3,
+            REFERENCE="ANALYTIQUE",
+            CRITERE="RELATIF",
+            VALE_PARA=0.15,
+            FONCTION=ayNMHS,
+        ),
+        _F(VALE_CALC=3.757527673027e-13, CRITERE="ABSOLU", VALE_PARA=0.15, FONCTION=azNMHS),
     )
 )
 
