@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,6 +17,9 @@
 ! --------------------------------------------------------------------
 
 subroutine rfrgen(trange)
+
+    use DynaGene_module
+
     implicit none
 #include "jeveux.h"
 #include "asterc/getres.h"
@@ -69,24 +72,25 @@ subroutine rfrgen(trange)
     character(len=8) :: monmot(2), nonmot, nomno
     character(len=14) :: nume
     character(len=16) :: nomcmd, typcon, nomcha, tysd
-    character(len=19) :: nomfon, knume, kinst, resu, fonct
+    character(len=19) :: nomfon, knume, kinst, nomres, fonct
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, idbase, iddl, idinsg, idvecf, ie
+    integer :: i, idbase, iddl, ie, shift
     integer :: ier, ierd, ii, inoeud, iordr
-    integer :: ip, iret, itresu, jfon, jinst
+    integer :: iret, jfon, jinst
     integer ::  lfon, lg1, lg2, lordr, lpro
     integer :: lvar, n1, n2, n3, nbexci, nbinsg
-    integer :: nbmode, nbordr, nbpas, neq
-    integer :: nfonct, ngn, numcmp
+    integer :: nbmode, nbordr, neq
+    integer :: nfonct, ngn, numcmp, i_cham, i_bloc
     real(kind=8) :: alpha, epsi, rep, rep1(1)
     complex(kind=8) :: cbid
-    real(kind=8), pointer :: dt(:) => null()
     real(kind=8), pointer :: vectgene(:) => null()
     integer, pointer :: desc(:) => null()
     real(kind=8), pointer :: ipsd(:) => null()
-    real(kind=8), pointer :: ptem(:) => null()
+    real(kind=8), pointer :: disc(:) => null()
+    real(kind=8), pointer :: resu(:) => null()
+    type(DynaGene) :: dyna_gene
     cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
     call jemarq()
@@ -114,7 +118,7 @@ subroutine rfrgen(trange)
         goto 999
     end if
 ! TRAITEMENT DU TRAN_GENE
-    resu = trange
+    nomres = trange
     interp(1) = 'LIN '
     interp(2) = 'LIN '
     intres = 'NON '
@@ -131,16 +135,10 @@ subroutine rfrgen(trange)
     call getvtx(' ', 'NOM_CMP', scal=cmp, nbret=n2)
     call getvtx(' ', 'NOM_CHAM', scal=nomcha, nbret=n3)
 !
-    call jeexin(resu//'.'//nomcha(1:4), iret)
-    if (iret .eq. 0) then
-        call utmess('F', 'UTILITAI4_23', sk=nomcha)
-    end if
-    call jeveuo(resu//'.'//nomcha(1:4), 'L', itresu)
-!
     nomacc = 'INST'
     knume = '&&RFRGEN.NUME_ORDR'
     kinst = '&&RFRGEN.INSTANT'
-    call rstran(intres, resu, ' ', 1, kinst, &
+    call rstran(intres, nomres, ' ', 1, kinst, &
                 knume, nbordr, ie)
     if (ie .ne. 0) then
         call utmess('F', 'UTILITAI4_24')
@@ -161,50 +159,56 @@ subroutine rfrgen(trange)
     zk24(lpro+3) = nomcha(1:4)
     zk24(lpro+4) = 'EE      '
     zk24(lpro+5) = nomfon
+
+    call dyna_gene%init(trange(1:8))
 !
 !----------------------------------------------------------------------
 !                            P T E M
 !----------------------------------------------------------------------
 !
     if (nomcha(1:4) .eq. 'PTEM') then
-        call jeveuo(resu//'.PTEM', 'L', vr=ptem)
-        call jelira(resu//'.PTEM', 'LONMAX', nbpas)
-! NORMALEMENT ON SORT LE dt SI ADAPT. MAIS AVEC DYNA_GENE ON PEUT
-! TOUJOURS LE SORTIR
-        AS_ALLOCATE(vr=dt, size=nbpas)
-        do ip = 1, nbpas
-            dt(ip) = ptem(ip)
-!            ZR(LPAS+IP-1) = LOG10(ZR(IPAS+IP-1))
-        end do
 !
         call wkvect(nomfon//'.VALE', 'G V R', 2*nbordr, lvar)
         lfon = lvar+nbordr
         if (intres(1:3) .ne. 'NON') then
-            call jeveuo(resu//'.DISC', 'L', idinsg)
-            call jelira(resu//'.DISC', 'LONMAX', nbinsg)
             do iordr = 0, nbordr-1
-                call extrac(intres, epsi, crit, nbinsg-2, zr(idinsg), &
-                            zr(jinst+iordr), dt, 1, rep1, ierd)
+                call dyna_gene%get_values_by_disc(dyna_gene%ptem, zr(jinst+iordr), length=nbinsg, &
+                                                  vr=resu)
+                call dyna_gene%get_current_bloc(dyna_gene%ptem, i_bloc)
+                call dyna_gene%get_values(dyna_gene%disc, i_bloc, vr=disc)
+                call extrac(intres, epsi, crit, nbinsg-2, disc, &
+                            zr(jinst+iordr), resu, 1, rep1, ierd)
                 zr(lvar+iordr) = zr(jinst+iordr)
                 zr(lfon+iordr) = rep1(1)
             end do
         else
             do iordr = 0, nbordr-1
                 ii = zi(lordr+iordr)
+                call dyna_gene%get_values_by_index(dyna_gene%ptem, ii, shift, vr=resu)
                 zr(lvar+iordr) = zr(jinst+iordr)
-                zr(lfon+iordr) = dt(iordr+1)
+                zr(lfon+iordr) = resu(ii-shift)
             end do
         end if
-        AS_DEALLOCATE(vr=dt)
 !
 !----------------------------------------------------------------------
 !                 D E P L   ---   V I T E   ---   A C C E
 !----------------------------------------------------------------------
 !
     else
-        call jeveuo(resu//'.DESC', 'L', vi=desc)
+        if (nomcha(1:4) .eq. 'DEPL') then
+            i_cham = dyna_gene%depl
+        else if (nomcha(1:4) .eq. 'VITE') then
+            i_cham = dyna_gene%vite
+        else if (nomcha(1:4) .eq. 'ACCE') then
+            i_cham = dyna_gene%acce
+        else
+            call utmess('F', 'UTILITAI4_23', sk=nomcha)
+        end if
+!
+        call jeveuo(nomres//'.DESC', 'L', vi=desc)
         nbmode = desc(2)
         call getvis(' ', 'NUME_CMP_GENE', scal=numcmp, nbret=n1)
+!
         if (n1 .ne. 0) then
             if (numcmp .gt. nbmode) then
                 call utmess('F', 'UTILITAI4_14')
@@ -212,24 +216,29 @@ subroutine rfrgen(trange)
             call wkvect(nomfon//'.VALE', 'G V R', 2*nbordr, lvar)
             lfon = lvar+nbordr
             if (intres(1:3) .ne. 'NON') then
-                call jeveuo(resu//'.DISC', 'L', idinsg)
-                call jelira(resu//'.DISC', 'LONMAX', nbinsg)
-                call wkvect('&&RFRGEN.VECTGENF', 'V V R', nbmode, idvecf)
+                AS_ALLOCATE(vr=vectgene, size=nbmode)
                 do iordr = 0, nbordr-1
-                    call extrac(intres, epsi, crit, nbinsg, zr(idinsg), &
-                                zr(jinst+iordr), zr(itresu), nbmode, zr(idvecf), ierd)
+                    call dyna_gene%get_values_by_disc(i_cham, zr(jinst+iordr), length=nbinsg, &
+                                                      vr=resu)
+                    call dyna_gene%get_current_bloc(i_cham, i_bloc)
+                    call dyna_gene%get_values(dyna_gene%disc, i_bloc, vr=disc)
+
+                    call extrac(intres, epsi, crit, nbinsg, disc, &
+                                zr(jinst+iordr), resu, nbmode, vectgene, ierd)
                     zr(lvar+iordr) = zr(jinst+iordr)
-                    zr(lfon+iordr) = zr(idvecf+numcmp-1)
+                    zr(lfon+iordr) = vectgene(numcmp)
                 end do
+                AS_DEALLOCATE(vr=vectgene)
             else
                 do iordr = 0, nbordr-1
                     ii = zi(lordr+iordr)
+                    call dyna_gene%get_values_by_index(i_cham, ii, shift, vr=resu)
                     zr(lvar+iordr) = zr(jinst+iordr)
-                    zr(lfon+iordr) = zr(itresu+nbmode*(ii-1)+numcmp-1)
+                    zr(lfon+iordr) = resu(nbmode*(ii-1-shift)+numcmp)
                 end do
             end if
         else
-            call dismoi('BASE_MODALE', resu, 'RESU_DYNA', repk=basemo)
+            call dismoi('BASE_MODALE', nomres, 'RESU_DYNA', repk=basemo)
             call dismoi('NUME_DDL', basemo, 'RESU_DYNA', repk=nume)
             call dismoi('NOM_MAILLA', nume, 'NUME_DDL', repk=noma)
 !
@@ -278,24 +287,25 @@ subroutine rfrgen(trange)
             call wkvect(nomfon//'.VALE', 'G V R', 2*nbordr, lvar)
             lfon = lvar+nbordr
             if (intres(1:3) .ne. 'NON') then
-                call jeveuo(resu//'.DISC', 'L', idinsg)
-                call jelira(resu//'.DISC', 'LONMAX', nbinsg)
                 AS_ALLOCATE(vr=vectgene, size=nbmode)
                 do iordr = 0, nbordr-1
-                    call extrac(intres, epsi, crit, nbinsg, zr(idinsg), &
-                                zr(jinst+iordr), zr(itresu), nbmode, vectgene, ierd)
-                    call mdgep2(neq, nbmode, zr(idbase), vectgene, iddl, &
-                                rep)
+                    call dyna_gene%get_values_by_disc(i_cham, zr(jinst+iordr), length=nbinsg, &
+                                                      vr=resu)
+                    call dyna_gene%get_current_bloc(i_cham, i_bloc)
+                    call dyna_gene%get_values(dyna_gene%disc, i_bloc, vr=disc)
+                    call extrac(intres, epsi, crit, nbinsg, disc, &
+                                zr(jinst+iordr), resu, nbmode, vectgene, ierd)
+                    call mdgep2(neq, nbmode, zr(idbase), vectgene, iddl, rep)
                     zr(lvar+iordr) = zr(jinst+iordr)
                     zr(lfon+iordr) = rep
                 end do
                 AS_DEALLOCATE(vr=vectgene)
-!
             else
                 do iordr = 0, nbordr-1
                     ii = zi(lordr+iordr)
-                    call mdgep2(neq, nbmode, zr(idbase), zr(itresu+nbmode*(ii-1)), iddl, &
-                                rep)
+                    call dyna_gene%get_values_by_index(i_cham, ii, shift, vr=resu)
+                    vectgene => resu(nbmode*(ii-1-shift)+1:nbmode*(ii-shift))
+                    call mdgep2(neq, nbmode, zr(idbase), vectgene, iddl, rep)
                     zr(lvar+iordr) = zr(jinst+iordr)
                     zr(lfon+iordr) = rep
                 end do
@@ -307,13 +317,13 @@ subroutine rfrgen(trange)
             call getvtx(' ', 'CORR_STAT', scal=monmot(2), nbret=n2)
             if (monmot(1) .eq. 'OUI' .or. monmot(2) .eq. 'OUI') nonmot = 'OUI'
             if (nonmot(1:3) .eq. 'OUI') then
-                call jeexin(resu//'.F'//nomcha(1:3), iret)
+                call jeexin(nomres//'.F'//nomcha(1:3), iret)
                 if (iret .eq. 0) then
                     call utmess('F', 'SEISME_45', sk=nomcha)
                 end if
-                call jeveuo(resu//'.F'//nomcha(1:3), 'L', jfon)
-                call jeveuo(resu//'.IPSD', 'L', vr=ipsd)
-                call jelira(resu//'.F'//nomcha(1:3), 'LONMAX', nbexci)
+                call jeveuo(nomres//'.F'//nomcha(1:3), 'L', jfon)
+                call jeveuo(nomres//'.IPSD', 'L', vr=ipsd)
+                call jelira(nomres//'.F'//nomcha(1:3), 'LONMAX', nbexci)
                 nbexci = nbexci/2
                 do iordr = 0, nbordr-1
                     call mdgep4(neq, nbexci, ipsd, zr(lvar+iordr), zk8(jfon), &
@@ -338,6 +348,9 @@ subroutine rfrgen(trange)
     end if
     call jedetr(knume)
     call jedetr(kinst)
+
+    call dyna_gene%free()
+
 999 continue
 !
     call foattr(' ', 1, nomfon)
@@ -350,4 +363,5 @@ subroutine rfrgen(trange)
     if (niv .gt. 1) call foimpr(nomfon, niv, ifm, 0, k8b)
 !
     call jedema()
+
 end subroutine
