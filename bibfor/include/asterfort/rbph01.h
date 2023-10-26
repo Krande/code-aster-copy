@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@
 !
 interface
     subroutine rbph01(trange, nbcham, typea, itresu, nfonct,&
-                      basemo, typref, typbas, tousno, multap)
+                      basemo, typref, typbas, tousno, multap, i_cham)
         character(len=19) :: trange
         integer :: nbcham
         character(len=16) :: typea(*)
@@ -33,5 +33,6 @@ interface
         character(len=16) :: typbas(*)
         aster_logical :: tousno
         aster_logical :: multap
+        integer, dimension(8), intent(out), optional :: i_cham
     end subroutine rbph01
 end interface

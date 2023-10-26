@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,6 +17,9 @@
 ! --------------------------------------------------------------------
 
 subroutine tran75(nomres, typres, nomin, basemo)
+
+    use DynaGene_module
+
     implicit none
 !
 !     ------------------------------------------------------------------
@@ -37,6 +40,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/cnocre.h"
+#include "asterfort/codent.h"
 #include "asterfort/copmod.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
@@ -76,7 +80,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 ! ----------------------------------------------------------------------
-    integer :: i, j, itresu(8)
+    integer :: i, j, itresu(8), i_cham(8)
     integer :: foci, focf, fomi, fomf, fomo
     real(kind=8) :: r8b, epsi, alpha, xnorm, coef(3), direction(9)
     character(len=1) :: typ1
@@ -93,13 +97,13 @@ subroutine tran75(nomres, typres, nomin, basemo)
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: iarchi, ibid, ich, id
-    integer :: idec, idefm, idresu, ie
+    integer :: idec, idefm, ie
     integer :: ier, inocmp, inoecp, inuddl, inumno, ipsdel, ir
     integer :: irou, jc, jinst
     integer :: jnume, jpsdel, jvec, linst
     integer :: lpsdel, lval2, lvale, n1, n2, n3
     integer :: n4, nbcham, nbd, nbexci, nbinsg, nbinst
-    integer :: nbmode, nbnoeu, ncmp, neq, nfonct, neq0, ifonct, vali(2), neq1
+    integer :: nbmode, nbnoeu, ncmp, neq, nfonct, neq0, ifonct, vali(2), neq1, shift, i_bloc
     complex(kind=8) :: cbid
     real(kind=8), pointer :: base(:) => null()
     integer, pointer :: ddl(:) => null()
@@ -109,7 +113,9 @@ subroutine tran75(nomres, typres, nomin, basemo)
     character(len=8), pointer :: facc(:) => null()
     integer, pointer :: desc(:) => null()
     real(kind=8), pointer :: disc(:) => null()
+    real(kind=8), pointer :: resu(:) => null()
     character(len=8), pointer :: fdep(:) => null()
+    type(DynaGene) :: dyna_gene
 !-----------------------------------------------------------------------
     data blanc/'        '/
     data chamn2/'&&TRAN75.CHAMN2'/
@@ -125,6 +131,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
     nomcha = ' '
     numddl = ' '
     numeq = ' '
+!
 !
 !     --- RECHERCHE SI UNE ACCELERATION D'ENTRAINEMENT EXISTE ---
     nfonct = 0
@@ -261,7 +268,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
 !     ---   RECUPERATION DES VECTEURS DEPLACEMENT, VITESSE ET   ---
 !     --- ACCELERATION GENERALISES SUIVANT LES CHAMPS SOUHAITES ---
     call rbph01(trange, nbcham, type, itresu, nfonct, &
-                basem2, typref, typbas, tousno, multap)
+                basem2, typref, typbas, tousno, multap, i_cham)
 !
 !     --- RECUPERATION DES NUMEROS DES NOEUDS ET DES DDLS ASSOCIES ---
 !     ---         DANS LE CAS D'UNE RESTITUTION PARTIELLE          ---
@@ -356,9 +363,13 @@ subroutine tran75(nomres, typres, nomin, basemo)
         )) then
         call utmess('F', 'ALGORITH10_95')
     end if
-    call jeveuo(trange//'.DISC', 'L', vr=disc)
-    call jelira(trange//'.DISC', 'LONMAX', nbinsg)
-    AS_ALLOCATE(vr=vectgene, size=nbmode)
+
+    call dyna_gene%init(trange(1:8))
+
+    if (interp(1:3) .ne. 'NON') then
+        AS_ALLOCATE(vr=vectgene, size=nbmode)
+    end if
+
     neq0 = neq
     do ich = 1, nbcham
         leffor = .true.
@@ -430,10 +441,9 @@ subroutine tran75(nomres, typres, nomin, basemo)
         end if
         iarchi = 0
         if (interp(1:3) .eq. 'NON') then
-            call jeexin(trange//'.ORDR', ir)
+            call dyna_gene%has_field(dyna_gene%ordr, ir)
             if (ir .ne. 0 .and. zi(jnume) .eq. 1) iarchi = -1
         end if
-        idresu = itresu(ich)
         prems = .true.
         do i = 0, nbinst-1
             iarchi = iarchi+1
@@ -476,13 +486,18 @@ subroutine tran75(nomres, typres, nomin, basemo)
             call jeveuo(chamno, 'E', lvale)
 !
             if (leffor .or. .not. tousno) call jelira(chamno, 'LONMAX', neq)
+
             if (interp(1:3) .ne. 'NON') then
+                call dyna_gene%get_values_by_disc(i_cham(ich), zr(jinst+i), length=nbinsg, vr=resu)
+                call dyna_gene%get_current_bloc(i_cham(ich), i_bloc)
+                call dyna_gene%get_values(dyna_gene%disc, i_bloc, vr=disc)
                 call extrac(interp, epsi, crit, nbinsg, disc, &
-                            zr(jinst+i), zr(idresu), nbmode, vectgene, ibid)
-                call mdgeph(neq, nbmode, base, vectgene, zr(lvale))
+                            zr(jinst+i), resu, nbmode, vectgene, ibid)
             else
-                call mdgeph(neq, nbmode, base, zr(idresu+(zi(jnume+i)-1)*nbmode), zr(lvale))
+                call dyna_gene%get_values_by_index(i_cham(ich), zi(jnume+i), shift, vr=resu)
+                vectgene => resu((zi(jnume+i)-1-shift)*nbmode+1:(zi(jnume+i)-shift)*nbmode)
             end if
+            call mdgeph(neq, nbmode, base, vectgene, zr(lvale))
             if (multap) then
                 if (type(ich) .eq. 'DEPL') call mdgep3(neq, nbexci, zr(lpsdel), zr(jinst+i), &
                                                        fdep, zr(lval2))
@@ -538,6 +553,13 @@ subroutine tran75(nomres, typres, nomin, basemo)
         end do
         AS_DEALLOCATE(vr=base)
     end do
+
+    if (interp(1:3) .ne. 'NON') then
+        AS_DEALLOCATE(vr=vectgene)
+    end if
+
+    call dyna_gene%free()
+
 !
 !
     if (mode .eq. blanc) then
@@ -557,7 +579,6 @@ subroutine tran75(nomres, typres, nomin, basemo)
     call jedetr('&&TRAN75.VAL2')
     call jedetr('&&TRAN75.NUM_RANG')
     call jedetr('&&TRAN75.INSTANT')
-    AS_DEALLOCATE(vr=vectgene)
 !
     call titre()
 !

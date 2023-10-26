@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,11 +17,13 @@
 ! --------------------------------------------------------------------
 !
 subroutine rbph01(trange, nbcham, typea, itresu, nfonct, &
-                  basemo, typref, typbas, tousno, multap)
+                  basemo, typref, typbas, tousno, multap, i_cham)
+
+    use DynaGene_module
+
     implicit none
 #include "asterf_types.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/utmess.h"
@@ -30,6 +32,7 @@ subroutine rbph01(trange, nbcham, typea, itresu, nfonct, &
     character(len=16) :: typea(*), typbas(*)
     character(len=19) :: trange, typref(*)
     aster_logical :: tousno, multap
+    integer, dimension(8), intent(out), optional :: i_cham
 !     OPERATEUR REST_BASE_PHYS
 !               TRAITEMENT DES MOTS CLES "TOUT_CHAM" ET "NOM_CHAM"
 !     ------------------------------------------------------------------
@@ -37,11 +40,13 @@ subroutine rbph01(trange, nbcham, typea, itresu, nfonct, &
     character(len=8) :: blanc, mode
     character(len=16) :: champ(8)
     character(len=19) :: nomcha
+    type(DynaGene) :: dyna_gene
 !     ------------------------------------------------------------------
     data blanc/'        '/
 !     ------------------------------------------------------------------
 !
     mode = basemo
+    call dyna_gene%init(trange(1:8))
 !
     champ(1) = ' '
     call getvtx(' ', 'TOUT_CHAM', scal=champ(1), nbret=n1)
@@ -51,30 +56,45 @@ subroutine rbph01(trange, nbcham, typea, itresu, nfonct, &
         typea(1) = 'DEPL            '
         typea(2) = 'VITE            '
         typea(3) = 'ACCE            '
-        call jeexin(trange//'.DEPL', iret)
+        call dyna_gene%has_field(dyna_gene%depl, iret)
         if (iret .eq. 0) then
             call utmess('F', 'ALGORITH10_11')
         else
-            call jeveuo(trange//'.DEPL', 'L', itresu(1))
-!
+            if (present(i_cham)) then
+                i_cham(1) = dyna_gene%depl
+            else
+                call jeveuo(trange//'.DEPL', 'L', itresu(1))
+            end if
         end if
 !
-        call jeexin(trange//'.VITE', iret)
+        call dyna_gene%has_field(dyna_gene%vite, iret)
         if (iret .eq. 0) then
             call utmess('F', 'ALGORITH10_12')
         else
-            call jeveuo(trange//'.VITE', 'L', itresu(2))
+            if (present(i_cham)) then
+                i_cham(2) = dyna_gene%vite
+            else
+                call jeveuo(trange//'.VITE', 'L', itresu(2))
+            end if
         end if
-        call jeexin(trange//'.ACCE', iret)
+        call dyna_gene%has_field(dyna_gene%acce, iret)
         if (iret .eq. 0) then
             call utmess('F', 'ALGORITH10_13')
         else
-            call jeveuo(trange//'.ACCE', 'L', itresu(3))
+            if (present(i_cham)) then
+                i_cham(3) = dyna_gene%acce
+            else
+                call jeveuo(trange//'.ACCE', 'L', itresu(3))
+            end if
         end if
         if (nfonct .ne. 0) then
             nbcham = 4
+            if (present(i_cham)) then
+                i_cham(4) = dyna_gene%acce
+            else
+                itresu(4) = itresu(3)
+            end if
             typea(4) = 'ACCE_ABSOLU     '
-            itresu(4) = itresu(3)
         end if
         if (mode .eq. blanc) then
             typref(1) = ' '
@@ -103,11 +123,15 @@ subroutine rbph01(trange, nbcham, typea, itresu, nfonct, &
         do i = 1, nbcham
             if (champ(i) .eq. 'DEPL') then
                 typea(i) = 'DEPL'
-                call jeexin(trange//'.DEPL', iret)
+                call dyna_gene%has_field(dyna_gene%depl, iret)
                 if (iret .eq. 0) then
                     call utmess('F', 'ALGORITH10_11')
                 else
-                    call jeveuo(trange//'.DEPL', 'L', itresu(i))
+                    if (present(i_cham)) then
+                        i_cham(i) = dyna_gene%depl
+                    else
+                        call jeveuo(trange//'.DEPL', 'L', itresu(i))
+                    end if
                 end if
                 if (mode .eq. blanc) then
                     typref(i) = ' '
@@ -120,11 +144,15 @@ subroutine rbph01(trange, nbcham, typea, itresu, nfonct, &
 !
             else if (champ(i) .eq. 'VITE') then
                 typea(i) = 'VITE'
-                call jeexin(trange//'.VITE', iret)
+                call dyna_gene%has_field(dyna_gene%vite, iret)
                 if (iret .eq. 0) then
                     call utmess('F', 'ALGORITH10_12')
                 else
-                    call jeveuo(trange//'.VITE', 'L', itresu(i))
+                    if (present(i_cham)) then
+                        i_cham(i) = dyna_gene%vite
+                    else
+                        call jeveuo(trange//'.VITE', 'L', itresu(i))
+                    end if
                 end if
                 if (mode .eq. blanc) then
                     typref(i) = ' '
@@ -137,11 +165,15 @@ subroutine rbph01(trange, nbcham, typea, itresu, nfonct, &
 !
             else if (champ(i) .eq. 'ACCE') then
                 typea(i) = 'ACCE'
-                call jeexin(trange//'.ACCE', iret)
+                call dyna_gene%has_field(dyna_gene%acce, iret)
                 if (iret .eq. 0) then
                     call utmess('F', 'ALGORITH10_13')
                 else
-                    call jeveuo(trange//'.ACCE', 'L', itresu(i))
+                    if (present(i_cham)) then
+                        i_cham(i) = dyna_gene%acce
+                    else
+                        call jeveuo(trange//'.ACCE', 'L', itresu(i))
+                    end if
                 end if
                 if (mode .eq. blanc) then
                     typref(i) = ' '
@@ -154,11 +186,15 @@ subroutine rbph01(trange, nbcham, typea, itresu, nfonct, &
 !
             else if (champ(i) .eq. 'ACCE_ABSOLU') then
                 typea(i) = 'ACCE_ABSOLU'
-                call jeexin(trange//'.ACCE', iret)
+                call dyna_gene%has_field(dyna_gene%acce, iret)
                 if (iret .eq. 0) then
                     call utmess('F', 'ALGORITH10_13')
                 else
-                    call jeveuo(trange//'.ACCE', 'L', itresu(i))
+                    if (present(i_cham)) then
+                        i_cham(i) = dyna_gene%acce
+                    else
+                        call jeveuo(trange//'.ACCE', 'L', itresu(i))
+                    end if
                 end if
                 if (mode .eq. blanc) then
                     typref(i) = ' '
@@ -172,11 +208,15 @@ subroutine rbph01(trange, nbcham, typea, itresu, nfonct, &
             elseif (champ(i) .eq. 'FORC_NODA' .or. champ(i) .eq. &
                     'REAC_NODA') then
                 typea(i) = champ(i)
-                call jeexin(trange//'.DEPL', iret)
+                call dyna_gene%has_field(dyna_gene%depl, iret)
                 if (iret .eq. 0) then
                     call utmess('F', 'ALGORITH10_11')
                 else
-                    call jeveuo(trange//'.DEPL', 'L', itresu(i))
+                    if (present(i_cham)) then
+                        i_cham(i) = dyna_gene%depl
+                    else
+                        call jeveuo(trange//'.DEPL', 'L', itresu(i))
+                    end if
                 end if
                 if (multap) then
                     call utmess('F', 'ALGORITH10_14')
@@ -192,11 +232,15 @@ subroutine rbph01(trange, nbcham, typea, itresu, nfonct, &
 !
             else
                 typea(i) = champ(i)
-                call jeexin(trange//'.DEPL', iret)
+                call dyna_gene%has_field(dyna_gene%depl, iret)
                 if (iret .eq. 0) then
                     call utmess('F', 'ALGORITH10_11')
                 else
-                    call jeveuo(trange//'.DEPL', 'L', itresu(i))
+                    if (present(i_cham)) then
+                        i_cham(i) = dyna_gene%depl
+                    else
+                        call jeveuo(trange//'.DEPL', 'L', itresu(i))
+                    end if
                 end if
                 if (.not. tousno) then
                     call utmess('F', 'ALGORITH10_17', sk=typea(i))
@@ -216,5 +260,7 @@ subroutine rbph01(trange, nbcham, typea, itresu, nfonct, &
             end if
         end do
     end if
+
+    call dyna_gene%free()
 !
 end subroutine
