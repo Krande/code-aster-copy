@@ -1,0 +1,17 @@
+@DSL Implicit;
+@Behaviour Plasticity_brick;
+
+@Algorithm NewtonRaphson;
+
+@MaterialProperty stress E;
+@MaterialProperty real NU;
+@MaterialProperty stress SY;
+@MaterialProperty stress D_SIGM_EPSI;
+
+@Brick StandardElastoViscoPlasticity {
+    stress_potential : "Hooke" { young_modulus : E, poisson_ratio : NU },
+    inelastic_flow : "Plastic" {
+        criterion : "Mises",
+        isotropic_hardening : "Linear" { R0 : SY, H : D_SIGM_EPSI }
+    }
+};

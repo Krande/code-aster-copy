@@ -9,4 +9,4 @@ P testlist verification sequential
 F comm mfron02i.comm D 1
 F datg wtnp114a.datg D 16
 F mmed wtnp114a.mmed D 20
-F libr Plasticity.mfront D 40
+F libr Plasticity_brick.mfront D 40
