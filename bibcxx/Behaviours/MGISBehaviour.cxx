@@ -368,10 +368,10 @@ void convertMatrixFromMgis( const VectorReal &vect, ASTERDOUBLE *array ) {
     case 25:
         break;
     case 36:
-        for ( auto i : {3, 4, 5, 9, 10, 11, 15, 16, 17, 18, 19, 20} ) {
+        for ( auto i : {3, 4, 5, 9, 10, 11, 15, 16, 17, 18, 19, 20, 24, 25, 26, 30, 31, 32} ) {
             array[i] = ( ASTERDOUBLE )( vect[i] / sqr2 );
         }
-        for ( auto i : {21, 22, 23, 27, 28, 29, 32, 33, 35} ) {
+        for ( auto i : {21, 22, 23, 27, 28, 29, 33, 34, 35} ) {
             array[i] = ( ASTERDOUBLE )( vect[i] / 2.0 );
         }
         break;
