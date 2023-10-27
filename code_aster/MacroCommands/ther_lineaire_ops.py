@@ -36,7 +36,7 @@ from ..Objects import (
     ThermalResult,
 )
 from ..Solvers import PhysicalState, StorageManager, TimeStepper
-from ..Utilities import SearchList, logger, print_stats, profile
+from ..Utilities import SearchList, logger, print_stats, profile, reset_stats
 
 
 def _checkArgs(args):
@@ -317,6 +317,7 @@ def ther_lineaire_ops(self, **args):
 
     verbosity = args.get("INFO") or 1
     setFortranLoggingLevel(verbosity)
+    reset_stats()
 
     is_evol = args["TYPE_CALCUL"] == "TRAN"
 
@@ -406,7 +407,7 @@ def ther_lineaire_ops(self, **args):
             matrix = _computeMatrix(
                 disc_comp, matrix, False, phys_state.time_curr, time_delta, time_theta
             )
-            profile(linear_solver.factorize)(matrix)
+            linear_solver.factorize(matrix)
 
             rhs = _computeRhs(
                 disc_comp,
@@ -418,8 +419,8 @@ def ther_lineaire_ops(self, **args):
             )
 
             # solve linear system
-            diriBCs = profile(disc_comp.getDirichletBC)(phys_state.time_curr)
-            phys_state.primal_curr = profile(linear_solver.solve)(rhs, diriBCs)
+            diriBCs = disc_comp.getDirichletBC(phys_state.time_curr)
+            phys_state.primal_curr = linear_solver.solve(rhs, diriBCs)
 
         phys_state.commit()
         if save_initial_state:
@@ -461,15 +462,15 @@ def ther_lineaire_ops(self, **args):
             matrix = _computeMatrix(
                 disc_comp, matrix, is_evol, phys_state.time_curr, time_delta, time_theta
             )
-            profile(linear_solver.factorize)(matrix)
+            linear_solver.factorize(matrix)
 
         rhs = _computeRhs(
             disc_comp, is_evol, phys_state.time_curr, time_delta, time_theta, phys_state.primal_curr
         )
 
         # solve linear system
-        diriBCs = profile(disc_comp.getDirichletBC)(phys_state.time_curr)
-        phys_state.primal_curr = profile(linear_solver.solve)(rhs, diriBCs)
+        diriBCs = disc_comp.getDirichletBC(phys_state.time_curr)
+        phys_state.primal_curr = linear_solver.solve(rhs, diriBCs)
 
         phys_state.commit()
 
@@ -496,9 +497,10 @@ def ther_lineaire_ops(self, **args):
     if model.isXfem():
         result = CALC_CHAMP(RESULTAT=result, reuse=result, THERMIQUE="TEMP_ELGA")
 
-    if verbosity > 1:
+    if verbosity:
         print_stats()
     resetFortranLoggingLevel()
+    reset_stats()
 
     # cleaning
     deleteCachedObjects()

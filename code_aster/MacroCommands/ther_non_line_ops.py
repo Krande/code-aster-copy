@@ -33,7 +33,7 @@ from ..Objects import (
 )
 from ..Solvers import NonLinearSolver, ProblemSolver, TimeStepper
 from ..Solvers import SolverOptions as SOP
-from ..Utilities import print_stats, force_list
+from ..Utilities import print_stats, force_list, reset_stats
 
 
 def use_fortran(keywords):
@@ -86,9 +86,12 @@ def ther_non_line_ops(self, **args):
     """
 
     args = _F(args)
+    reset_stats()
 
     if use_fortran(args):
         return THER_NON_LINE2(**args)
+
+    verbosity = args.get("INFO") or 1
 
     # python Version
     if "RESULTAT" in args:
@@ -194,5 +197,7 @@ def ther_non_line_ops(self, **args):
 
     # Run computation
     solver.run()
-    print_stats()
+    if verbosity:
+        print_stats()
+    reset_stats()
     return solver.result

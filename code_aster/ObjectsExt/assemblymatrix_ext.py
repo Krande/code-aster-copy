@@ -36,7 +36,7 @@ from libaster import (
 )
 
 from ..Objects.Serialization import InternalStateBuilder
-from ..Utilities import PETSc, deprecated, injector
+from ..Utilities import PETSc, deprecated, injector, profile
 
 
 class AssemblyMatrixStateBuilder(InternalStateBuilder):
@@ -275,34 +275,41 @@ class BaseAssemblyMatrixComplex(BaseAssemblyMatrix):
 
 @injector(AssemblyMatrixDisplacementReal)
 class ExtendedAssemblyMatrixDisplacementReal(BaseAssemblyMatrixReal):
-    pass
+    # add profile to theses methods
+    assemble = profile(AssemblyMatrixDisplacementReal.assemble)
 
 
 @injector(AssemblyMatrixEliminatedReal)
 class ExtendedAssemblyMatrixEliminatedReal(BaseAssemblyMatrixReal):
-    pass
+    # add profile to theses methods
+    assemble = profile(AssemblyMatrixEliminatedReal.assemble)
 
 
 @injector(AssemblyMatrixDisplacementComplex)
 class ExtendedAssemblyMatrixDisplacementComplex(BaseAssemblyMatrixComplex):
-    pass
+    # add profile to theses methods
+    assemble = profile(AssemblyMatrixDisplacementComplex.assemble)
 
 
 @injector(AssemblyMatrixTemperatureReal)
 class ExtendedAssemblyMatrixTemperatureReal(BaseAssemblyMatrixReal):
-    pass
+    # add profile to theses methods
+    assemble = profile(AssemblyMatrixTemperatureReal.assemble)
 
 
 @injector(AssemblyMatrixTemperatureComplex)
 class ExtendedAssemblyMatrixTemperatureComplex(BaseAssemblyMatrixComplex):
-    pass
+    # add profile to theses methods
+    assemble = profile(AssemblyMatrixTemperatureComplex.assemble)
 
 
 @injector(AssemblyMatrixPressureReal)
 class ExtendedAssemblyMatrixPressureReal(BaseAssemblyMatrixReal):
-    pass
+    # add profile to theses methods
+    assemble = profile(AssemblyMatrixPressureReal.assemble)
 
 
 @injector(AssemblyMatrixPressureComplex)
 class ExtendedAssemblyMatrixPressureComplex(BaseAssemblyMatrixComplex):
-    pass
+    # add profile to theses methods
+    assemble = profile(AssemblyMatrixPressureComplex.assemble)

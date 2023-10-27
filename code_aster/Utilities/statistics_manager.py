@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,9 +30,7 @@ class Profiler:
     """
 
     def __init__(self):
-        self._calls = {}
-        self._elaps = {}
-        self._lvl = 0
+        self.reset_stats()
 
     def measure(self, func):
         """Main decorator."""
@@ -55,6 +53,12 @@ class Profiler:
             return result
 
         return wrapper
+
+    def reset_stats(self):
+        """Reset statistics."""
+        self._calls = {}
+        self._elaps = {}
+        self._lvl = 0
 
     def print_stats(self, by_class=True):
         """Show profiler statistics.
@@ -108,7 +112,7 @@ class Profiler:
         """
         name = callable.__name__
         # is a method of class?
-        if args and hasattr(args[0], name) and type(args[0]).__class__.__module__ == "builtins":
+        if args and hasattr(args[0], name):
             name = args[0].__class__.__name__ + "." + name
         return name
 
@@ -117,6 +121,7 @@ class Profiler:
 PROFILER = Profiler()
 profile = PROFILER.measure
 print_stats = PROFILER.print_stats
+reset_stats = PROFILER.reset_stats
 
 
 def _unittest():

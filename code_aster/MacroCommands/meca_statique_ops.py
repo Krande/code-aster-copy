@@ -33,7 +33,7 @@ from ..Objects import (
     PhysicalProblem,
 )
 from ..Solvers import PhysicalState, StorageManager, TimeStepper
-from ..Utilities import logger, print_stats, profile
+from ..Utilities import logger, print_stats, profile, reset_stats
 
 
 @profile
@@ -117,7 +117,7 @@ def _computeMatrix(phys_pb, disr_comp, matrix, time):
     matr_elem = disr_comp.getLinearStiffnessMatrix(time=time, varc_curr=varc, with_dual=True)
     matrix.addElementaryMatrix(matr_elem)
 
-    profile(matrix.assemble)(True)
+    matrix.assemble(True)
 
     return matrix
 
@@ -192,6 +192,7 @@ def meca_statique_ops(self, **args):
 
     verbosity = args["INFO"]
     setFortranLoggingLevel(verbosity)
+    reset_stats()
 
     # Create result
     result = args.get("RESULTAT")
@@ -253,14 +254,14 @@ def meca_statique_ops(self, **args):
         # compute matrix and factorize it
         if not isConst or isFirst:
             matrix = _computeMatrix(phys_pb, disc_comp, matrix, phys_state.time_curr)
-            profile(linear_solver.factorize)(matrix)
+            linear_solver.factorize(matrix)
 
         # compute rhs
         rhs = _computeRhs(phys_pb, disc_comp, phys_state.time_curr)
 
         # solve linear system
-        diriBCs = profile(disc_comp.getDirichletBC)(phys_state.time_curr)
-        phys_state.primal_curr = profile(linear_solver.solve)(rhs, diriBCs)
+        diriBCs = disc_comp.getDirichletBC(phys_state.time_curr)
+        phys_state.primal_curr = linear_solver.solve(rhs, diriBCs)
         phys_state.commit()
 
         # store field
@@ -287,5 +288,6 @@ def meca_statique_ops(self, **args):
     if verbosity > 1:
         print_stats()
     resetFortranLoggingLevel()
+    reset_stats()
 
     return result

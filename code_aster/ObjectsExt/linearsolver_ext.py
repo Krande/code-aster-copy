@@ -33,12 +33,11 @@ from ..Objects import (
     MumpsSolver,
     PetscSolver,
 )
-from ..Utilities import injector, logger
+from ..Utilities import injector, logger, profile
 
 
 @injector(LinearSolver)
 class ExtendedLinearSolver:
-
     provide = SOP.LinearSolver
 
     @classmethod
@@ -72,6 +71,10 @@ class ExtendedLinearSolver:
         assert klass, f"Unknown solver: {name}"
         solver = klass(**kwargs)
         return solver
+
+    # add profile to theses methods
+    factorize = profile(LinearSolver.factorize)
+    solve = profile(LinearSolver.solve)
 
 
 class LinearSolverExt:

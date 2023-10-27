@@ -68,7 +68,7 @@ from .options import Options
 from .petsc_utils import petscFinalize, petscInitialize
 from .report import CR
 from .searchlist import SearchList
-from .statistics_manager import print_stats, profile
+from .statistics_manager import print_stats, profile, reset_stats
 from .strfunc import (
     center,
     clean_string,

@@ -35,7 +35,7 @@ from ..Objects import (
 from ..Solvers import ContactManager, NonLinearSolver, ProblemSolver
 from ..Solvers import SolverOptions as SOP
 from ..Solvers import TimeStepper
-from ..Utilities import print_stats
+from ..Utilities import print_stats, reset_stats
 
 
 def _contact_check(CONTACT):
@@ -86,6 +86,7 @@ def meca_non_line_ops(self, **args):
         **args (dict): User's keywords.
     """
     UTMESS("A", "QUALITY1_2")
+    reset_stats()
 
     args = _F(args)
 
@@ -168,4 +169,5 @@ def meca_non_line_ops(self, **args):
     # Run computation
     solver.run()
     print_stats()
+    reset_stats()
     return solver.result
