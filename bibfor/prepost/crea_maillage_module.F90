@@ -101,6 +101,8 @@ module crea_maillage_module
         integer :: nodes(27) = 0
         integer :: nb_faces = 0, faces(6) = 0
         integer :: nb_edges = 0, edges(12) = 0
+        integer :: parent = -1
+        integer :: isub = 0
     end type
 !
     type Mface
@@ -109,12 +111,16 @@ module crea_maillage_module
         integer :: nodes(9) = 0
         integer :: nnos_sort(4) = 0
         integer :: nb_edges = 0, edges(4) = 0
+        integer :: parent = -1
+        integer :: isub = 0
     end type
 !
     type Medge
         integer :: type = 0
         integer :: nodes(4) = 0
         integer :: nnos_sort(2) = 0
+        integer :: parent = -1
+        integer :: isub = 0
     end type
 !
     type Mnode
@@ -176,6 +182,10 @@ module crea_maillage_module
         procedure, private, pass :: add_point1
         procedure, private, pass :: add_volume
         procedure, private, pass :: barycenter
+        procedure, private, pass :: barycenter_edge
+        procedure, private, pass :: barycenter_face
+        procedure, private, pass :: barycenter_volume
+        procedure, private, pass :: barycenter_fe
         procedure, private, pass :: convert_edge
         procedure, private, pass :: convert_face
         procedure, private, pass :: convert_volume
@@ -1066,12 +1076,13 @@ contains
 !
 ! ==================================================================================================
 !
-    function add_volume(this, type, nodes) result(volume_id)
+    function add_volume(this, type, nodes, parent, isub) result(volume_id)
 !
         implicit none
 !
         class(Mmesh), intent(inout) :: this
         integer, intent(in) :: type, nodes(27)
+        integer, intent(in), optional :: parent, isub
         integer :: volume_id
 ! ----------------------------------------------------------------------
         integer :: nno, i_face
@@ -1090,6 +1101,12 @@ contains
         volume_id = this%nb_volumes
         this%volumes(volume_id)%type = type
         this%volumes(volume_id)%nodes(1:nno) = nodes(1:nno)
+        if (present(parent)) then
+            this%volumes(volume_id)%parent = parent
+        end if
+        if (present(isub)) then
+            this%volumes(volume_id)%isub = isub
+        end if
 ! --- create edges
         call numbering_edge(type, nb_edges, edge_type, edge_loc)
         this%volumes(volume_id)%nb_edges = nb_edges
@@ -1135,12 +1152,13 @@ contains
 !
 ! ==================================================================================================
 !
-    function add_face(this, face_type, nodes) result(face_id)
+    function add_face(this, face_type, nodes, parent, isub) result(face_id)
 !
         implicit none
 !
         class(Mmesh), intent(inout) :: this
         integer, intent(in) :: face_type, nodes(27)
+        integer, intent(in), optional :: parent, isub
         integer :: face_id
 ! ----------------------------------------------------------------------
         integer :: nno, nnos, nnos_sort(4), i_edge, edge_id
@@ -1170,6 +1188,12 @@ contains
             this%faces(face_id)%nodes(1:nno) = nodes(1:nno)
             this%faces(face_id)%nnos = nnos
             this%faces(face_id)%nnos_sort(1:nnos) = nnos_sort(1:nnos)
+            if (present(parent)) then
+                this%faces(face_id)%parent = parent
+            end if
+            if (present(isub)) then
+                this%faces(face_id)%isub = isub
+            end if
 ! --- create edges
             call numbering_edge(face_type, nb_edge, edge_type, edge_loc)
             this%faces(face_id)%nb_edges = nb_edge
@@ -1178,7 +1202,12 @@ contains
                 do i_node = 1, edge_nno
                     edge_nodes(i_node) = nodes(edge_loc(i_node, i_edge))
                 end do
-                edge_id = this%add_edge(edge_type(i_edge), edge_nodes)
+                if (present(isub)) then
+                    edge_id = this%add_edge(edge_type(i_edge), edge_nodes, &
+                                            isub=i_edge, face_id=face_id)
+                else
+                    edge_id = this%add_edge(edge_type(i_edge), edge_nodes)
+                end if
                 this%faces(face_id)%edges(i_edge) = edge_id
             end do
 !
@@ -1221,12 +1250,13 @@ contains
 !
 ! ==================================================================================================
 !
-    function add_edge(this, type, nodes) result(edge_id)
+    function add_edge(this, type, nodes, parent, isub, face_id) result(edge_id)
 !
         implicit none
 !
         class(Mmesh), intent(inout) :: this
         integer, intent(in) :: type, nodes(27)
+        integer, intent(in), optional :: parent, isub, face_id
         integer :: edge_id
 ! ----------------------------------------------------------------------
         integer :: nno, nnos_sort(2), old_size
@@ -1251,6 +1281,12 @@ contains
             this%edges(edge_id)%type = type
             this%edges(edge_id)%nodes(1:nno) = nodes(1:nno)
             this%edges(edge_id)%nnos_sort = nnos_sort
+            if (present(parent)) then
+                this%edges(edge_id)%parent = parent
+            end if
+            if (present(isub)) then
+                this%edges(edge_id)%isub = isub
+            end if
 !
             if (this%nodes(nnos_sort(1))%nb_edges >= this%nodes(nnos_sort(1))%max_edges) then
                 if (this%nodes(nnos_sort(1))%max_edges > 0) then
@@ -1270,7 +1306,11 @@ contains
             this%nodes(nnos_sort(1))%nb_edges = this%nodes(nnos_sort(1))%nb_edges+1
             this%nodes(nnos_sort(1))%edges(this%nodes(nnos_sort(1))%nb_edges) = edge_id
 !
-            call this%convert_edge(edge_id)
+            if (present(face_id)) then
+                call this%convert_edge(edge_id, face_id)
+            else
+                call this%convert_edge(edge_id)
+            end if
         end if
 !
         if (this%debug) then
@@ -1626,8 +1666,6 @@ contains
             print *, "Volume: ", volu_id, volu_type, volu_type_end
         end if
 !
-        this%volumes(volu_id)%type = volu_type_end
-!
         if (nno_end > nno) then
 ! --- Add nodes on edges
             if (volu_type == MT_HEXA8 .or. volu_type == MT_TETRA4 .or. &
@@ -1652,11 +1690,13 @@ contains
             end do
 ! --- Add node at barycenter
             owner = this%owner_cell(nno_end-1, this%volumes(volu_id)%nodes)
-            node_id = this%add_node(this%barycenter(this%volumes(volu_id)%nodes, volu_type), owner)
+            node_id = this%add_node(this%barycenter(volu_id, 3), owner)
             this%volumes(volu_id)%nodes(nno_end) = node_id
         else
             ASSERT(volu_type == volu_type_end)
         end if
+!
+        this%volumes(volu_id)%type = volu_type_end
 !
         if (this%debug) then
             do i_node = 1, nno_end
@@ -1687,24 +1727,24 @@ contains
             print *, "Face: ", face_id, face_type, face_type_end, this%faces(face_id)%nodes
         end if
 !
-        this%faces(face_id)%type = face_type_end
-!
         if (nno_end > nno) then
 ! --- Add nodes at the middle of edges
             if (face_type == MT_TRIA3 .or. face_type == MT_QUAD4) then
                 do i_edge = 1, this%faces(face_id)%nb_edges
-                    call this%convert_edge(this%faces(face_id)%edges(i_edge))
+                    call this%convert_edge(this%faces(face_id)%edges(i_edge), face_id)
                     this%faces(face_id)%nodes(nno+i_edge) = &
                         this%edges(this%faces(face_id)%edges(i_edge))%nodes(3)
                 end do
             end if
 ! --- Add node at the barycenter
             owner = this%owner_cell(nno_end-1, this%faces(face_id)%nodes)
-            node_id = this%add_node(this%barycenter(this%faces(face_id)%nodes, face_type), owner)
+            node_id = this%add_node(this%barycenter(face_id, 2), owner)
             this%faces(face_id)%nodes(nno_end) = node_id
         else
             ASSERT(face_type == face_type_end)
         end if
+!
+        this%faces(face_id)%type = face_type_end
 !
         if (this%debug) then
             do i_node = 1, nno_end
@@ -1716,12 +1756,13 @@ contains
 !
 ! ==================================================================================================
 !
-    subroutine convert_edge(this, edge_id)
+    subroutine convert_edge(this, edge_id, face_id)
 !
         implicit none
 !
         class(Mmesh), intent(inout) :: this
         integer, intent(in) :: edge_id
+        integer, intent(in), optional :: face_id
 ! ------------------------------------------------------------------
         integer :: edge_type, edge_type_end, owner
         integer :: nno, nno_end, node_id, i_node
@@ -1735,13 +1776,14 @@ contains
             print *, "Edge: ", edge_id, edge_type, edge_type_end, this%edges(edge_id)%nodes
         end if
 !
-        this%edges(edge_id)%type = edge_type_end
-!
         if (nno_end > nno) then
             if (edge_type_end == MT_SEG3) then
                 owner = this%owner_cell(2, this%edges(edge_id)%nodes)
-                node_id = this%add_node(this%barycenter(this%edges(edge_id)%nodes, &
-                                                        edge_type), owner)
+                if (present(face_id)) then
+                    node_id = this%add_node(this%barycenter_fe(edge_id, face_id), owner)
+                else
+                    node_id = this%add_node(this%barycenter(edge_id, 1), owner)
+                end if
                 this%edges(edge_id)%nodes(3) = node_id
             else
                 ASSERT(ASTER_FALSE)
@@ -1754,6 +1796,8 @@ contains
             ASSERT(edge_type == edge_type_end)
         end if
 !
+        this%edges(edge_id)%type = edge_type_end
+!
         if (this%debug) then
             do i_node = 1, nno_end
                 ASSERT(this%edges(edge_id)%nodes(i_node) > 0)
@@ -1764,42 +1808,398 @@ contains
 !
 ! ==================================================================================================
 !
-    function barycenter(this, nodes, type_cell) result(coor)
+    function barycenter(this, cell_id, cell_dim) result(coor)
 !
         implicit none
 !
         class(Mmesh), intent(in) :: this
-        integer, intent(in) :: nodes(*), type_cell
+        integer, intent(in) :: cell_id, cell_dim
         real(kind=8) :: coor(3)
 ! ---------------------------------------------------------------------------------
-        integer :: i_node, nb_nodes
-        real(kind=8) :: basis(27), bar(3)
-        character(len=8) :: stype
 !
-        stype = this%converter%short_name(type_cell)
-        if (stype(1:2) == "SE") then
-            bar = [0.d0, 0.d0, 0.d0]
-        elseif (stype(1:2) == "TR") then
-            bar = [1.d0/3.d0, 1.d0/3.d0, 0.d0]
-        elseif (stype(1:2) == "QU") then
-            bar = [0.d0, 0.d0, 0.d0]
-        elseif (stype == "TE4" .or. stype == "T10" .or. stype == "T15") then
-            bar = [0.25d0, 0.25d0, 0.25d0]
-        elseif (stype == "HE8" .or. stype == "H20" .or. stype == "H27") then
-            bar = [0.d0, 0.d0, 0.d0]
-        elseif (stype == "PE6" .or. stype == "P15" .or. stype == "P18" .or. stype == "P21") then
-            bar = [0.d0, 1.d0/3.d0, 1.d0/3.d0]
-        elseif (stype == "PY5" .or. stype == "P13" .or. stype == "P19") then
-            bar = [0.d0, 0.0, 0.2d0]
+        if (cell_dim == 3) then
+            coor = this%barycenter_volume(cell_id)
+        elseif (cell_dim == 2) then
+            coor = this%barycenter_face(cell_id)
+        elseif (cell_dim == 1) then
+            coor = this%barycenter_edge(cell_id)
         else
             ASSERT(ASTER_FALSE)
         end if
+    end function
 !
-        call elrfvf(stype, bar, basis, nb_nodes)
+! ==================================================================================================
+!
+    function barycenter_edge(this, edge_id) result(coor)
+!
+        implicit none
+!
+        class(Mmesh), intent(in) :: this
+        integer, intent(in) :: edge_id
+        real(kind=8) :: coor(3)
+! ---------------------------------------------------------------------------------
+        integer :: i_node, node
+        real(kind=8) :: basis(27), coor_ref(3)
+!
         coor = 0.d0
-        do i_node = 1, nb_nodes
-            coor(1:3) = coor(1:3)+this%nodes(nodes(i_node))%coor(1:3)*basis(i_node)
+!
+        if (this%edges(edge_id)%isub == 0) then
+            coor_ref = [0.d0, 0.d0, 0.d0]
+            call elrfvf("SE2", coor_ref, basis)
+            do i_node = 1, 2
+                node = this%edges(edge_id)%nodes(i_node)
+                coor(1:3) = coor(1:3)+this%nodes(node)%coor(1:3)*basis(i_node)
+            end do
+        else
+            if (this%edges(edge_id)%isub == 1) then
+                coor_ref = [-0.5d0, 0.d0, 0.d0]
+            else
+                coor_ref = [0.5d0, 0.d0, 0.d0]
+            end if
+            call elrfvf("SE3", coor_ref, basis)
+            ASSERT(this%edges(edge_id)%parent > 0)
+            do i_node = 1, 3
+                node = this%edges(this%edges(edge_id)%parent)%nodes(i_node)
+                coor(1:3) = coor(1:3)+this%nodes(node)%coor(1:3)*basis(i_node)
+            end do
+        end if
+!
+    end function
+!
+! ==================================================================================================
+!
+    function barycenter_fe(this, edge_id, face_id) result(coor)
+!
+        implicit none
+!
+        class(Mmesh), intent(in) :: this
+        integer, intent(in) :: edge_id, face_id
+        real(kind=8) :: coor(3)
+! ---------------------------------------------------------------------------------
+        integer :: i_node, node, type, nbnode, parent
+        real(kind=8) :: basis(27), coor_ref(3)
+!
+        coor = 0.d0
+!
+        type = this%faces(face_id)%type
+        if (type == MT_TRIA3 .or. type == MT_TRIA6 .or. type == MT_TRIA7) then
+            if (this%faces(face_id)%isub == 1) then
+                if (this%edges(edge_id)%isub == 1) then
+                    coor_ref = [0.25d0, 0.d0, 0.d0]
+                elseif (this%edges(edge_id)%isub == 2) then
+                    coor_ref = [0.25d0, 0.25d0, 0.d0]
+                elseif (this%edges(edge_id)%isub == 3) then
+                    coor_ref = [0.d0, 0.25d0, 0.d0]
+                else
+                    ASSERT(ASTER_FALSE)
+                end if
+            elseif (this%faces(face_id)%isub == 2) then
+                if (this%edges(edge_id)%isub == 1) then
+                    coor_ref = [0.75d0, 0.25d0, 0.d0]
+                elseif (this%edges(edge_id)%isub == 2) then
+                    coor_ref = [0.5d0, 0.25d0, 0.d0]
+                elseif (this%edges(edge_id)%isub == 3) then
+                    coor_ref = [0.75d0, 0.d0, 0.d0]
+                else
+                    ASSERT(ASTER_FALSE)
+                end if
+            elseif (this%faces(face_id)%isub == 3) then
+                if (this%edges(edge_id)%isub == 1) then
+                    coor_ref = [0.d0, 0.75d0, 0.d0]
+                elseif (this%edges(edge_id)%isub == 2) then
+                    coor_ref = [0.25d0, 0.5d0, 0.d0]
+                elseif (this%edges(edge_id)%isub == 3) then
+                    coor_ref = [0.25d0, 0.75d0, 0.d0]
+                else
+                    ASSERT(ASTER_FALSE)
+                end if
+            elseif (this%faces(face_id)%isub == 4) then
+                if (this%edges(edge_id)%isub == 1) then
+                    coor_ref = [0.5d0, 0.25d0, 0.d0]
+                elseif (this%edges(edge_id)%isub == 2) then
+                    coor_ref = [0.25d0, 0.5d0, 0.d0]
+                elseif (this%edges(edge_id)%isub == 3) then
+                    coor_ref = [0.25d0, 0.25d0, 0.d0]
+                else
+                    ASSERT(ASTER_FALSE)
+                end if
+            else
+                ASSERT(ASTER_FALSE)
+            end if
+        elseif (type == MT_QUAD4 .or. type == MT_QUAD8 .or. type == MT_QUAD9) then
+            if (this%faces(face_id)%isub == 1) then
+                if (this%edges(edge_id)%isub == 1) then
+                    coor_ref = [-0.5d0, -1.d0, 0.d0]
+                elseif (this%edges(edge_id)%isub == 2) then
+                    coor_ref = [0.0d0, -0.5d0, 0.d0]
+                elseif (this%edges(edge_id)%isub == 3) then
+                    coor_ref = [-0.5d0, 0.d0, 0.d0]
+                elseif (this%edges(edge_id)%isub == 4) then
+                    coor_ref = [-1.d0, -0.5d0, 0.d0]
+                else
+                    ASSERT(ASTER_FALSE)
+                end if
+            elseif (this%faces(face_id)%isub == 2) then
+                if (this%edges(edge_id)%isub == 1) then
+                    coor_ref = [1.0d0, -0.5d0, 0.d0]
+                elseif (this%edges(edge_id)%isub == 2) then
+                    coor_ref = [0.5d0, 0.0d0, 0.d0]
+                elseif (this%edges(edge_id)%isub == 3) then
+                    coor_ref = [0.0d0, -0.5d0, 0.d0]
+                elseif (this%edges(edge_id)%isub == 4) then
+                    coor_ref = [0.5d0, -1.0d0, 0.d0]
+                else
+                    ASSERT(ASTER_FALSE)
+                end if
+            elseif (this%faces(face_id)%isub == 3) then
+                if (this%edges(edge_id)%isub == 1) then
+                    coor_ref = [0.5d0, 1.d0, 0.d0]
+                elseif (this%edges(edge_id)%isub == 2) then
+                    coor_ref = [0.0d0, 0.5d0, 0.d0]
+                elseif (this%edges(edge_id)%isub == 3) then
+                    coor_ref = [0.5d0, 0.d0, 0.d0]
+                elseif (this%edges(edge_id)%isub == 4) then
+                    coor_ref = [1.d0, 0.5d0, 0.d0]
+                else
+                    ASSERT(ASTER_FALSE)
+                end if
+            elseif (this%faces(face_id)%isub == 4) then
+                if (this%edges(edge_id)%isub == 1) then
+                    coor_ref = [-1.0d0, 0.5d0, 0.d0]
+                elseif (this%edges(edge_id)%isub == 2) then
+                    coor_ref = [-0.5d0, 0.d0, 0.d0]
+                elseif (this%edges(edge_id)%isub == 3) then
+                    coor_ref = [0.d0, 0.5d0, 0.d0]
+                elseif (this%edges(edge_id)%isub == 4) then
+                    coor_ref = [-0.5d0, 1.0d0, 0.d0]
+                else
+                    ASSERT(ASTER_FALSE)
+                end if
+            else
+                ASSERT(ASTER_FALSE)
+            end if
+        else
+            ASSERT(ASTER_FALSE)
+        end if
+
+        parent = this%faces(face_id)%parent
+        ASSERT(parent > 0)
+        call elrfvf(this%converter%short_name(this%faces(parent)%type), coor_ref, basis, nbnode)
+        do i_node = 1, nbnode
+            node = this%faces(parent)%nodes(i_node)
+            coor(1:3) = coor(1:3)+this%nodes(node)%coor(1:3)*basis(i_node)
         end do
+!
+    end function
+!
+! ==================================================================================================
+!
+    function barycenter_face(this, face_id) result(coor)
+!
+        implicit none
+!
+        class(Mmesh), intent(in) :: this
+        integer, intent(in) :: face_id
+        real(kind=8) :: coor(3)
+! ---------------------------------------------------------------------------------
+        integer :: i_node, node, nbnode, parent, type
+        real(kind=8) :: basis(27), coor_ref(3)
+        character(len=8) :: stype
+!
+        coor = 0.d0
+!
+        type = this%faces(face_id)%type
+        stype = this%converter%short_name(type)
+        if (this%faces(face_id)%isub == 0) then
+            if (type == MT_TRIA3 .or. type == MT_TRIA6 .or. type == MT_TRIA7) then
+                coor_ref = [1.d0/3.d0, 1.d0/3.d0, 0.d0]
+            elseif (type == MT_QUAD4 .or. type == MT_QUAD8 .or. type == MT_QUAD9) then
+                coor_ref = [0.d0, 0.d0, 0.d0]
+            else
+                ASSERT(ASTER_FALSE)
+            end if
+            call elrfvf(stype, coor_ref, basis, nbnode)
+            do i_node = 1, nbnode
+                node = this%faces(face_id)%nodes(i_node)
+                coor(1:3) = coor(1:3)+this%nodes(node)%coor(1:3)*basis(i_node)
+            end do
+        else
+            if (type == MT_TRIA3 .or. type == MT_TRIA6 .or. type == MT_TRIA7) then
+                if (this%faces(face_id)%isub == 1) then
+                    coor_ref = [0.5d0/3.d0, 0.5d0/3.d0, 0.d0]
+                elseif (this%faces(face_id)%isub == 2) then
+                    coor_ref = [2.d0/3.d0, 0.5d0/3.d0, 0.d0]
+                elseif (this%faces(face_id)%isub == 3) then
+                    coor_ref = [0.5d0/3.d0, 2.d0/3.d0, 0.d0]
+                elseif (this%faces(face_id)%isub == 4) then
+                    coor_ref = [1.d0/3.d0, 1.d0/3.d0, 0.d0]
+                else
+                    ASSERT(ASTER_FALSE)
+                end if
+            elseif (type == MT_QUAD4 .or. type == MT_QUAD8 .or. type == MT_QUAD9) then
+                if (this%faces(face_id)%isub == 1) then
+                    coor_ref = [-0.5d0, -0.5d0, 0.d0]
+                elseif (this%faces(face_id)%isub == 2) then
+                    coor_ref = [0.5d0, -0.5d0, 0.d0]
+                elseif (this%faces(face_id)%isub == 3) then
+                    coor_ref = [0.5d0, 0.5d0, 0.d0]
+                elseif (this%faces(face_id)%isub == 4) then
+                    coor_ref = [-0.5d0, 0.5d0, 0.d0]
+                else
+                    ASSERT(ASTER_FALSE)
+                end if
+            else
+                ASSERT(ASTER_FALSE)
+            end if
+
+            parent = this%faces(face_id)%parent
+            ASSERT(parent > 0)
+            call elrfvf(this%converter%short_name(this%faces(parent)%type), coor_ref, basis, nbnode)
+            do i_node = 1, nbnode
+                node = this%faces(parent)%nodes(i_node)
+                coor(1:3) = coor(1:3)+this%nodes(node)%coor(1:3)*basis(i_node)
+            end do
+        end if
+!
+    end function
+!
+! ==================================================================================================
+!
+    function barycenter_volume(this, volu_id) result(coor)
+!
+        implicit none
+!
+        class(Mmesh), intent(in) :: this
+        integer, intent(in) :: volu_id
+        real(kind=8) :: coor(3)
+! ---------------------------------------------------------------------------------
+        integer :: i_node, node, nbnode, parent, type
+        real(kind=8) :: basis(27), coor_ref(3)
+        character(len=8) :: stype
+!
+        coor = 0.d0
+!
+        type = this%volumes(volu_id)%type
+        stype = this%converter%short_name(type)
+        if (this%volumes(volu_id)%isub == 0) then
+            if (type == MT_TETRA4 .or. type == MT_TETRA10 .or. type == MT_TETRA15) then
+                coor_ref = [0.25d0, 0.25d0, 0.25d0]
+            elseif (type == MT_HEXA8 .or. type == MT_HEXA20 .or. type == MT_HEXA27) then
+                coor_ref = [0.d0, 0.d0, 0.d0]
+            elseif (type == MT_PENTA6 .or. type == MT_PENTA15 .or. type == MT_PENTA18 &
+                    .or. type == MT_PENTA21) then
+                coor_ref = [0.d0, 1.d0/3.d0, 1.d0/3.d0]
+            elseif (type == MT_PYRAM5 .or. type == MT_PYRAM13 .or. type == MT_PYRAM19) then
+                coor_ref = [0.d0, 0.0, 0.2d0]
+            else
+                ASSERT(ASTER_FALSE)
+            end if
+            call elrfvf(stype, coor_ref, basis, nbnode)
+            do i_node = 1, nbnode
+                node = this%volumes(volu_id)%nodes(i_node)
+                coor(1:3) = coor(1:3)+this%nodes(node)%coor(1:3)*basis(i_node)
+            end do
+        else
+            if (type == MT_TETRA4 .or. type == MT_TETRA10 .or. type == MT_TETRA15) then
+                if (this%volumes(volu_id)%isub == 1) then
+                    coor_ref = [0.5d0/4.d0, 2.5d0/4.d0, 0.5d0/4.d0]
+                elseif (this%volumes(volu_id)%isub == 2) then
+                    coor_ref = [0.5d0/4.d0, 0.5d0/4.d0, 2.5d0/4.d0]
+                elseif (this%volumes(volu_id)%isub == 3) then
+                    coor_ref = [0.5d0/4.d0, 0.5d0/4.d0, 0.5d0/4.d0]
+                elseif (this%volumes(volu_id)%isub == 4) then
+                    coor_ref = [2.5d0/4.d0, 0.5d0/4.d0, 0.5d0/4.d0]
+                elseif (this%volumes(volu_id)%isub == 5) then
+                    coor_ref = [0.5d0/4.d0, 1.d0/4.d0, 1.5d0/4.d0]
+                elseif (this%volumes(volu_id)%isub == 6) then
+                    coor_ref = [1.d0/4.d0, 0.5d0/4.d0, 1.d0/4.d0]
+                elseif (this%volumes(volu_id)%isub == 7) then
+                    coor_ref = [1.d0/4.d0, 1.5d0/4.d0, 1.d0/4.d0]
+                elseif (this%volumes(volu_id)%isub == 8) then
+                    coor_ref = [1.5d0/4.d0, 1.d0/4.d0, 0.5d0/4.d0]
+                else
+                    ASSERT(ASTER_FALSE)
+                end if
+            elseif (type == MT_HEXA8 .or. type == MT_HEXA20 .or. type == MT_HEXA27) then
+                if (this%volumes(volu_id)%isub == 1) then
+                    coor_ref = [-0.5d0, -0.5d0, -0.5d0]
+                elseif (this%volumes(volu_id)%isub == 2) then
+                    coor_ref = [0.5d0, -0.5d0, -0.5d0]
+                elseif (this%volumes(volu_id)%isub == 3) then
+                    coor_ref = [0.5d0, 0.5d0, -0.5d0]
+                elseif (this%volumes(volu_id)%isub == 4) then
+                    coor_ref = [-0.5d0, 0.5d0, -0.5d0]
+                elseif (this%volumes(volu_id)%isub == 5) then
+                    coor_ref = [-0.5d0, -0.5d0, 0.5d0]
+                elseif (this%volumes(volu_id)%isub == 6) then
+                    coor_ref = [0.5d0, -0.5d0, 0.5d0]
+                elseif (this%volumes(volu_id)%isub == 7) then
+                    coor_ref = [0.5d0, 0.5d0, 0.5d0]
+                elseif (this%volumes(volu_id)%isub == 8) then
+                    coor_ref = [-0.5d0, 0.5d0, 0.5d0]
+                else
+                    ASSERT(ASTER_FALSE)
+                end if
+            elseif (type == MT_PENTA6 .or. type == MT_PENTA15 .or. type == MT_PENTA18 &
+                    .or. type == MT_PENTA21) then
+                if (this%volumes(volu_id)%isub == 1) then
+                    coor_ref = [-0.5d0, 2.d0/3.d0, 0.5d0/3.d0]
+                elseif (this%volumes(volu_id)%isub == 2) then
+                    coor_ref = [-0.5d0, 0.5d0/3.d0, 2.d0/3.d0]
+                elseif (this%volumes(volu_id)%isub == 3) then
+                    coor_ref = [-0.5d0, 1.d0/3.d0, 1.d0/3.d0]
+                elseif (this%volumes(volu_id)%isub == 4) then
+                    coor_ref = [-0.5d0, 0.5d0/3.d0, 0.5d0/3.d0]
+                elseif (this%volumes(volu_id)%isub == 5) then
+                    coor_ref = [0.5d0, 2.d0/3.d0, 0.5d0/3.d0]
+                elseif (this%volumes(volu_id)%isub == 6) then
+                    coor_ref = [0.5d0, 0.5d0/3.d0, 2.d0/3.d0]
+                elseif (this%volumes(volu_id)%isub == 7) then
+                    coor_ref = [0.5d0, 1.d0/3.d0, 1.d0/3.d0]
+                elseif (this%volumes(volu_id)%isub == 8) then
+                    coor_ref = [0.5d0, 0.5d0/3.d0, 0.5d0/3.d0]
+                else
+                    ASSERT(ASTER_FALSE)
+                end if
+            elseif (type == MT_PYRAM5 .or. type == MT_PYRAM13 .or. type == MT_PYRAM19) then
+                ASSERT(ASTER_FALSE)
+                ! if (this%volumes(volu_id)%isub == 1) then
+                !     coor_ref = []
+                ! elseif (this%volumes(volu_id)%isub == 2) then
+                !     coor_ref = []
+                ! elseif (this%volumes(volu_id)%isub == 3) then
+                !     coor_ref = []
+                ! elseif (this%volumes(volu_id)%isub == 4) then
+                !     coor_ref = []
+                ! elseif (this%volumes(volu_id)%isub == 5) then
+                !     coor_ref = []
+                ! elseif (this%volumes(volu_id)%isub == 6) then
+                !     coor_ref = []
+                ! elseif (this%volumes(volu_id)%isub == 7) then
+                !     coor_ref = []
+                ! elseif (this%volumes(volu_id)%isub == 8) then
+                !     coor_ref = []
+                ! elseif (this%volumes(volu_id)%isub == 9) then
+                !     coor_ref = []
+                ! elseif (this%volumes(volu_id)%isub == 10) then
+                !     coor_ref = []
+                ! else
+                !     ASSERT(ASTER_FALSE)
+                ! end if
+            else
+                ASSERT(ASTER_FALSE)
+            end if
+
+            parent = this%volumes(volu_id)%parent
+            ASSERT(parent > 0)
+            call elrfvf(this%converter%short_name(this%volumes(parent)%type), &
+                        coor_ref, basis, nbnode)
+            do i_node = 1, nbnode
+                node = this%volumes(parent)%nodes(i_node)
+                coor(1:3) = coor(1:3)+this%nodes(node)%coor(1:3)*basis(i_node)
+            end do
+        end if
+!
     end function
 !
 ! ==================================================================================================
@@ -2010,7 +2410,8 @@ contains
 !
         integer :: cell_type, cell_dim, cell_nodes(27), nb_nodes, cell_index, cell_type_sub
         integer :: nb_sub, sub_type(10), sub_loc(10, 10), i_sub, i_node, obj, cell_id_sub
-        integer :: nodes_loc(27), nno, conv_type(10)
+        integer :: nodes_loc(27), nno, conv_type(10), edges(12), nb_edges, i_edge, edge_id
+        integer :: nb_sub2, sub_type2(10), sub_loc2(10, 10), conv_type2(10), i_face, face_id
         character(len=8) :: nume
 !
         cell_dim = this%cells(cell_id)%dim
@@ -2032,6 +2433,63 @@ contains
                 this%converter%name(cell_type), cell_dim
         end if
 !
+! --- we begin by refining edges
+        nb_edges = 0
+        if (cell_dim == 3) then
+            edges = this%volumes(obj)%edges
+            nb_edges = this%volumes(obj)%nb_edges
+        elseif (cell_dim == 2) then
+            edges(1:4) = this%faces(obj)%edges
+            nb_edges = this%faces(obj)%nb_edges
+        end if
+!
+        do i_edge = 1, nb_edges
+            edge_id = edges(i_edge)
+            if (this%debug) then
+                print *, "Refine edge", edge_id, ": "
+            end if
+! --- compute sub-division
+            call dividing_cell(this%edges(edge_id)%type, nb_sub2, sub_type2, sub_loc2, conv_type2)
+
+            do i_sub = 1, nb_sub2
+                cell_type_sub = sub_type2(i_sub)
+                nb_nodes = this%converter%nno(cell_type_sub)
+                cell_nodes = 0
+
+                do i_node = 1, nb_nodes
+                    cell_nodes(i_node) = this%edges(edge_id)%nodes(sub_loc2(i_node, i_sub))
+                end do
+                cell_index = this%add_edge(cell_type_sub, cell_nodes, edge_id, i_sub)
+            end do
+        end do
+!
+! --- we refine the face after
+        if (cell_dim == 3) then
+        do i_face = 1, this%volumes(obj)%nb_faces
+            if (this%debug) then
+                print *, "Refine face", face_id, ": "
+            end if
+            face_id = this%volumes(obj)%faces(i_face)
+! --- compute sub-division
+            call dividing_cell(this%faces(face_id)%type, nb_sub2, sub_type2, sub_loc2, conv_type2)
+
+            do i_sub = 1, nb_sub2
+                cell_type_sub = sub_type2(i_sub)
+                nb_nodes = this%converter%nno(cell_type_sub)
+                cell_nodes = 0
+
+                do i_node = 1, nb_nodes
+                    cell_nodes(i_node) = this%faces(face_id)%nodes(sub_loc2(i_node, i_sub))
+                end do
+                cell_index = this%add_face(cell_type_sub, cell_nodes, face_id, i_sub)
+            end do
+        end do
+        end if
+!
+! --- we refine the cell
+        if (this%debug) then
+            print *, "Refine cell", cell_id, ": "
+        end if
         do i_sub = 1, nb_sub
             cell_type_sub = sub_type(i_sub)
             nb_nodes = this%converter%nno(cell_type_sub)
@@ -2041,17 +2499,17 @@ contains
                 do i_node = 1, nb_nodes
                     cell_nodes(i_node) = this%volumes(obj)%nodes(sub_loc(i_node, i_sub))
                 end do
-                cell_index = this%add_volume(cell_type_sub, cell_nodes)
+                cell_index = this%add_volume(cell_type_sub, cell_nodes, obj, i_sub)
             elseif (cell_dim == 2) then
                 do i_node = 1, nb_nodes
                     cell_nodes(i_node) = this%faces(obj)%nodes(sub_loc(i_node, i_sub))
                 end do
-                cell_index = this%add_face(cell_type_sub, cell_nodes)
+                cell_index = this%add_face(cell_type_sub, cell_nodes, obj, i_sub)
             elseif (cell_dim == 1) then
                 do i_node = 1, nb_nodes
                     cell_nodes(i_node) = this%edges(obj)%nodes(sub_loc(i_node, i_sub))
                 end do
-                cell_index = this%add_edge(cell_type_sub, cell_nodes)
+                cell_index = this%add_edge(cell_type_sub, cell_nodes, obj, i_sub)
             else
                 ASSERT(ASTER_FALSE)
             end if
