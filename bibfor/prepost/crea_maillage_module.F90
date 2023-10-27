@@ -1870,6 +1870,9 @@ contains
 !
     function barycenter_fe(this, edge_id, face_id) result(coor)
 !
+! --- Compute barycenter of a edge using geometry of the face
+!     It allows to preserve curvature
+!
         implicit none
 !
         class(Mmesh), intent(in) :: this
