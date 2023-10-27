@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe GeneralizedResult
  * @author Natacha Béreux
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -48,11 +48,6 @@ class GeneralizedResult : public DataStructure, DynamicResultsIndexing {
   private:
     /** @brief Vecteur Jeveux '.DESC' */
     JeveuxVectorLong _desc;
-    /** @brief Vecteur Jeveux '.DISC' */
-    /* Valeur des instants/fréquences sauvegardées */
-    JeveuxVectorReal _abscissasOfSamples;
-    /** @brief Vecteur Jeveux '.ORDR' */
-    JeveuxVectorLong _indicesOfSamples;
     /** @brief Vecteur Jeveux '.DEPL' */
     JeveuxVector< ValueType > _displacement;
     /** @brief Vecteur Jeveux '.VITE' */
@@ -65,6 +60,13 @@ class GeneralizedResult : public DataStructure, DynamicResultsIndexing {
     GeneralizedDOFNumberingPtr _genDOFNum;
     /** @brief DOFNumbering */
     DOFNumberingPtr _DOFNum;
+
+  protected:
+    /** @brief Vecteur Jeveux '.DISC' */
+    /* Valeur des instants/fréquences sauvegardées */
+    JeveuxVectorReal _abscissasOfSamples;
+    /** @brief Vecteur Jeveux '.ORDR' */
+    JeveuxVectorLong _indicesOfSamples;
 
   public:
     /**
@@ -135,16 +137,6 @@ class GeneralizedResult : public DataStructure, DynamicResultsIndexing {
         _desc->updateValuePointer();
         return ( *_desc )[1];
     };
-
-    VectorReal getAbscissasOfSamples() const {
-        _abscissasOfSamples->updateValuePointer();
-        return _abscissasOfSamples->toVector();
-    };
-
-    VectorLong getIndicesOfSamples() const {
-        _indicesOfSamples->updateValuePointer();
-        return _indicesOfSamples->toVector();
-    }
 };
 
 /** @typedef Définition d'un résultat généralisé à valeurs réelles */
@@ -198,6 +190,16 @@ class TransientGeneralizedResult : public GeneralizedResultReal {
     /** @brief Description des nonlinéarités (si mot-clé COMPORTEMENT) */
     NonLinearDescriptor _nonLinDesc;
 
+    JeveuxVectorReal _bloc;
+    JeveuxVectorLong _blo2;
+    std::vector< JeveuxVectorReal > _disc;
+    std::vector< JeveuxVectorLong > _ordr;
+    std::vector< JeveuxVectorReal > _ptem;
+    std::vector< JeveuxVectorReal > _depl;
+    std::vector< JeveuxVectorReal > _vite;
+    std::vector< JeveuxVectorReal > _acce;
+    std::vector< JeveuxVectorReal > _vint;
+
   public:
     /**
      * @typedef TransientGeneralizedResultPtr
@@ -218,10 +220,89 @@ class TransientGeneralizedResult : public GeneralizedResultReal {
         : GeneralizedResultReal( name, "TRAN_GENE" ),
           _nonLinDesc( name ),
           _timeSteps( JeveuxVectorReal( getName() + ".PTEM" ) ),
+          _bloc( JeveuxVectorReal( getName() + ".BLOC" ) ),
+          _blo2( JeveuxVectorLong( getName() + ".BLO2" ) ),
           _acceExcitFunction( JeveuxVectorChar8( getName() + ".FACC" ) ),
           _veloExcitFunction( JeveuxVectorChar8( getName() + ".FVIT" ) ),
           _displExcitFunction( JeveuxVectorChar8( getName() + ".FDEP" ) ),
           _ipsd( JeveuxVectorLong( getName() + ".IPSD" ) ) {};
+
+    bool build() {
+        if ( _bloc.exists() ) {
+            _bloc->updateValuePointer();
+            if ( _bloc->size() > _disc.size() ) {
+                _disc.reserve( _bloc->size() );
+                _ordr.reserve( _bloc->size() );
+                _ptem.reserve( _bloc->size() );
+                _depl.reserve( _bloc->size() );
+                _vite.reserve( _bloc->size() );
+                _acce.reserve( _bloc->size() );
+                _vint.reserve( _bloc->size() );
+                int size = _disc.size();
+                for ( int i = size; i < _bloc->size(); i++ ) {
+                    std::ostringstream oss;
+                    oss << ljust( getName(), 8 ) << "." << std::setfill( '0' ) << std::setw( 7 )
+                        << i + 1;
+                    _disc.push_back( JeveuxVectorReal( oss.str() + "   .DISC" ) );
+                    _ordr.push_back( JeveuxVectorLong( oss.str() + "   .ORDR" ) );
+                    _ptem.push_back( JeveuxVectorReal( oss.str() + "   .PTEM" ) );
+                    _depl.push_back( JeveuxVectorReal( oss.str() + "   .DEPL" ) );
+                    _vite.push_back( JeveuxVectorReal( oss.str() + "   .VITE" ) );
+                    _acce.push_back( JeveuxVectorReal( oss.str() + "   .ACCE" ) );
+                    _vint.push_back( JeveuxVectorReal( oss.str() + ".NL.VINT" ) );
+                }
+            } else {
+                _disc.resize( _bloc->size() );
+                _ordr.resize( _bloc->size() );
+                _ptem.resize( _bloc->size() );
+                _depl.resize( _bloc->size() );
+                _vite.resize( _bloc->size() );
+                _acce.resize( _bloc->size() );
+                _vint.resize( _bloc->size() );
+            }
+        }
+        return true;
+    }
+
+    VectorReal getTimes() const {
+        if ( not _bloc.exists() ) {
+            _abscissasOfSamples->updateValuePointer();
+            return _abscissasOfSamples->toVector();
+        } else {
+            int size = 1;
+            for ( auto disc : _disc ) {
+                disc->updateValuePointer();
+                size += disc->size() - 1;
+            }
+            VectorReal result;
+            result.reserve( size );
+            result.push_back( ( *_disc[0] )[0] );
+            for ( auto disc : _disc ) {
+                result.insert( result.end(), std::next( disc.begin() ), disc.end() );
+            }
+            return result;
+        }
+    }
+
+    VectorLong getIndexes() const {
+        if ( not _bloc.exists() ) {
+            _indicesOfSamples->updateValuePointer();
+            return _indicesOfSamples->toVector();
+        } else {
+            int size = 1;
+            for ( auto ordr : _ordr ) {
+                ordr->updateValuePointer();
+                size += ordr->size() - 1;
+            }
+            VectorLong result;
+            result.reserve( size );
+            result.push_back( ( *_ordr[0] )[0] );
+            for ( auto ordr : _ordr ) {
+                result.insert( result.end(), std::next( ordr.begin() ), ordr.end() );
+            }
+            return result;
+        }
+    }
 };
 typedef std::shared_ptr< TransientGeneralizedResult > TransientGeneralizedResultPtr;
 
