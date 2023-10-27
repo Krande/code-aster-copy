@@ -38,6 +38,7 @@ module crea_maillage_module
 #include "asterfort/codent.h"
 #include "asterfort/codlet.h"
 #include "asterfort/elrfno.h"
+#include "asterfort/elrfvf.h"
 #include "asterfort/isParallelMesh.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecreo.h"
@@ -1651,8 +1652,7 @@ contains
             end do
 ! --- Add node at barycenter
             owner = this%owner_cell(nno_end-1, this%volumes(volu_id)%nodes)
-            node_id = this%add_node(this%barycenter(nno_end-1, this%volumes(volu_id)%nodes), &
-                                    owner)
+            node_id = this%add_node(this%barycenter(this%volumes(volu_id)%nodes, volu_type), owner)
             this%volumes(volu_id)%nodes(nno_end) = node_id
         else
             ASSERT(volu_type == volu_type_end)
@@ -1700,8 +1700,7 @@ contains
             end if
 ! --- Add node at the barycenter
             owner = this%owner_cell(nno_end-1, this%faces(face_id)%nodes)
-            node_id = this%add_node(this%barycenter(nno_end-1, this%faces(face_id)%nodes), &
-                                    owner)
+            node_id = this%add_node(this%barycenter(this%faces(face_id)%nodes, face_type), owner)
             this%faces(face_id)%nodes(nno_end) = node_id
         else
             ASSERT(face_type == face_type_end)
@@ -1741,7 +1740,8 @@ contains
         if (nno_end > nno) then
             if (edge_type_end == MT_SEG3) then
                 owner = this%owner_cell(2, this%edges(edge_id)%nodes)
-                node_id = this%add_node(this%barycenter(2, this%edges(edge_id)%nodes), owner)
+                node_id = this%add_node(this%barycenter(this%edges(edge_id)%nodes, &
+                                                        edge_type), owner)
                 this%edges(edge_id)%nodes(3) = node_id
             else
                 ASSERT(ASTER_FALSE)
@@ -1764,21 +1764,42 @@ contains
 !
 ! ==================================================================================================
 !
-    function barycenter(this, nb_nodes, nodes) result(coor)
+    function barycenter(this, nodes, type_cell) result(coor)
 !
         implicit none
 !
         class(Mmesh), intent(in) :: this
-        integer, intent(in) :: nb_nodes, nodes(nb_nodes)
+        integer, intent(in) :: nodes(*), type_cell
         real(kind=8) :: coor(3)
 ! ---------------------------------------------------------------------------------
-        integer :: i_node
+        integer :: i_node, nb_nodes
+        real(kind=8) :: basis(27), bar(3)
+        character(len=8) :: stype
 !
+        stype = this%converter%short_name(type_cell)
+        if (stype(1:2) == "SE") then
+            bar = [0.d0, 0.d0, 0.d0]
+        elseif (stype(1:2) == "TR") then
+            bar = [1.d0/3.d0, 1.d0/3.d0, 0.d0]
+        elseif (stype(1:2) == "QU") then
+            bar = [0.d0, 0.d0, 0.d0]
+        elseif (stype == "TE4" .or. stype == "T10" .or. stype == "T15") then
+            bar = [0.25d0, 0.25d0, 0.25d0]
+        elseif (stype == "HE8" .or. stype == "H20" .or. stype == "H27") then
+            bar = [0.d0, 0.d0, 0.d0]
+        elseif (stype == "PE6" .or. stype == "P15" .or. stype == "P18" .or. stype == "P21") then
+            bar = [0.d0, 1.d0/3.d0, 1.d0/3.d0]
+        elseif (stype == "PY5" .or. stype == "P13" .or. stype == "P19") then
+            bar = [0.d0, 0.0, 0.2d0]
+        else
+            ASSERT(ASTER_FALSE)
+        end if
+!
+        call elrfvf(stype, bar, basis, nb_nodes)
         coor = 0.d0
         do i_node = 1, nb_nodes
-            coor(1:3) = coor(1:3)+this%nodes(nodes(i_node))%coor(1:3)
+            coor(1:3) = coor(1:3)+this%nodes(nodes(i_node))%coor(1:3)*basis(i_node)
         end do
-        coor(1:3) = coor(1:3)/real(nb_nodes, kind=8)
     end function
 !
 ! ==================================================================================================
@@ -2459,7 +2480,7 @@ contains
                 if (v_rnode(i_proc+1) > 0) then
                     nb_recv = nb_recv+1
                     v_proc(nb_recv) = i_proc
-                    v_pgid(i_proc+1) = i_proc
+                    v_pgid(i_proc+1) = to_mpi_int(i_proc)
                 else
                     v_pgid(i_proc+1) = -1
                 end if

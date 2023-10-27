@@ -572,6 +572,12 @@ test.assertSequenceEqual(
 test.assertEqual(len(builder.getCells("SURFEXT")), 128)
 test.assertEqual(len(builder.getCells("SURFINT")), 128)
 
+
+mesh4 = code_aster.Mesh()
+mesh4.readMedFile("mesh001a.mmed", verbose=2)
+mesh4r = mesh4.refine(1)
+test.assertAlmostEqual(sum(mesh4r.getCoordinates().getValues()), 216000.0)
+
 test.printSummary()
 
 code_aster.close()
