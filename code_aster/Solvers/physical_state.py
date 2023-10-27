@@ -73,8 +73,10 @@ class PhysicalState(BaseFeature):
 
         def __init__(self, pb_type):
 
-            if pb_type in [PBT.Thermal, PBT.Unset]:
+            if pb_type in [PBT.Unset]:
                 raise NotImplementedError("Not supported !")
+
+            self._primal_field = "DEPL"
 
             if pb_type == PBT.MecaDyna:
                 fields_list = {"U": "DEPL", "dU": "VITE", "d2U": "ACCE"}
@@ -82,9 +84,9 @@ class PhysicalState(BaseFeature):
                 fields_list = {"U": "DEPL"}
             elif pb_type == PBT.Thermal:
                 fields_list = {"U": "TEMP"}
+                self._primal_field = "TEMP"
 
             self._pb_type = pb_type
-            self._primal_field = "DEPL"
             self._available_fields = fields_list.keys()
 
             self._fields_prev = {f: None for f in fields_list.values()}

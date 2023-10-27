@@ -35,9 +35,10 @@ from ..Objects import (
     ThermalLoadReal,
     ThermalResult,
 )
-from ..Solvers import PhysicalState, StorageManager, TimeStepper
-from ..Utilities import SearchList, logger, print_stats, profile, reset_stats
 
+from ..Utilities import SearchList, logger, print_stats, profile, reset_stats
+from ..Solvers import PhysicalState, StorageManager, TimeStepper
+from ..Solvers.problem_dispatcher import ProblemType as PBT
 
 def _checkArgs(args):
     if args.get("RESULTAT") is not None and args.get("reuse") is not None:
@@ -375,7 +376,7 @@ def ther_lineaire_ops(self, **args):
     storage_manager.setInitialIndex(first_index)
 
     # Define main objects
-    phys_state = PhysicalState()
+    phys_state = PhysicalState(PBT.Thermal)
     disc_comp = DiscreteComputation(phys_pb)
 
     # we define the matrix before to have an unique name
