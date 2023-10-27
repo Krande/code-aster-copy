@@ -300,7 +300,7 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato, &
                 if (nbsp .gt. 1 .or. nbqcou .eq. 1 .or. nbfib .eq. 1) then
                     elga_sp = .true.
                     if (nbfib .ne. 0) imafib = ima
-                endif
+                end if
             end if
         end if
         !
@@ -355,12 +355,12 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato, &
                                 nrimpr = jaux
                                 goto 423
                             else
-                                ! autre cas 
+                                ! autre cas
                                 ! on compare le nom de la famille de pg et nbsp
-                               if (zi(adcaii+10*(jaux-1)+2) .eq. nbsp) then
-                                   nrimpr = jaux
-                                   goto 423
-                               end if
+                                if (zi(adcaii+10*(jaux-1)+2) .eq. nbsp) then
+                                    nrimpr = jaux
+                                    goto 423
+                                end if
                             end if
                         end if
                     end if
@@ -426,7 +426,7 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato, &
                 valk(1) = nomtef
                 valk(2) = field_type
                 call utmess('A', 'MED2_13', nk=2, valk=valk)
-            endif
+            end if
             zi(jaux+3) = 0
             zi(jaux+4) = 0
         end if
