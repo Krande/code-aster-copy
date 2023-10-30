@@ -202,7 +202,7 @@ subroutine sscgma(ma, nbgmp, nbgmin)
             call getvem(ma, 'GROUP_MA', 'CREA_GROUP_MA', 'GROUP_MA', iocc, &
                         1, nogma2, nbid)
             call getvtx('CREA_GROUP_MA', 'POSITION', iocc=iocc, nbval=0, nbret=n6b)
-            if( nbid.ne.0 ) then
+            if (nbid .ne. 0) then
                 call jenonu(jexnom(ma//'.GROUPEMA', nogma2), igm2)
                 call jelira(jexnum(ma//'.GROUPEMA', igm2), 'LONUTI', ili2)
                 call jeveuo(jexnum(ma//'.GROUPEMA', igm2), 'L', iagm2)
@@ -242,7 +242,7 @@ subroutine sscgma(ma, nbgmp, nbgmin)
                     ii = (ili2+1)/2
                     zi(jlisma) = zi(iagm2+ii-1)
                 end if
-            endif
+            end if
             goto 219
         end if
 !
@@ -261,7 +261,7 @@ subroutine sscgma(ma, nbgmp, nbgmin)
                 end if
             end do
 !
-            if( n3.ne.0 ) then
+            if (n3 .ne. 0) then
                 call jenonu(jexnom(ma//'.GROUPEMA', lik8(1)), igm1)
                 call jelira(jexnum(ma//'.GROUPEMA', igm1), 'LONUTI', ili1)
                 call jeveuo(jexnum(ma//'.GROUPEMA', igm1), 'L', iagm1)
@@ -303,7 +303,7 @@ subroutine sscgma(ma, nbgmp, nbgmin)
                 end if
             else
                 AS_DEALLOCATE(vk24=lik8)
-            endif
+            end if
             goto 219
         end if
 !
@@ -322,7 +322,7 @@ subroutine sscgma(ma, nbgmp, nbgmin)
                 end if
             end do
 !
-            if( n4.ne.0 ) then
+            if (n4 .ne. 0) then
                 call jenonu(jexnom(ma//'.GROUPEMA', lik8(1)), igm1)
                 call jelira(jexnum(ma//'.GROUPEMA', igm1), 'LONUTI', ili1)
                 call jeveuo(jexnum(ma//'.GROUPEMA', igm1), 'L', iagm1)
@@ -374,7 +374,7 @@ subroutine sscgma(ma, nbgmp, nbgmin)
                 end if
             else
                 AS_DEALLOCATE(vk24=lik8)
-            endif
+            end if
             goto 219
         end if
 !
@@ -393,7 +393,7 @@ subroutine sscgma(ma, nbgmp, nbgmin)
                 end if
             end do
 !
-            if( n5.ne.0 ) then
+            if (n5 .ne. 0) then
                 call jenonu(jexnom(ma//'.GROUPEMA', lik8(1)), igm1)
                 call jelira(jexnum(ma//'.GROUPEMA', igm1), 'LONUTI', ili1)
                 call jeveuo(jexnum(ma//'.GROUPEMA', igm1), 'L', iagm1)
@@ -435,7 +435,7 @@ subroutine sscgma(ma, nbgmp, nbgmin)
                 end if
             else
                 AS_DEALLOCATE(vk24=lik8)
-            endif
+            end if
             goto 219
         end if
 !
@@ -499,14 +499,14 @@ subroutine sscgma(ma, nbgmp, nbgmin)
 !       -- CREATION ET AFFECTATION DU GROUP_MA :
 !       ----------------------------------
         call jeexin(lisma, iret)
-        if( iret.ne.0 ) then
+        if (iret .ne. 0) then
             call jeveuo(lisma, 'L', idlima)
             call addGrpMa(ma, nogma, zi(idlima), nbma, l_added_grpma)
 
             if (l_added_grpma) then
                 nbgnaj = nbgnaj+1
             end if
-        endif
+        end if
 !
         call jedetr(lisma)
 !

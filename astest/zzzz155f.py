@@ -31,27 +31,21 @@ size = MPI.ASTER_COMM_WORLD.Get_size()
 pMesh = code_aster.ParallelMesh()
 pMesh.readMedFile("zzzz155f.med")
 
-pMesh = DEFI_GROUP(CREA_GROUP_MA=(_F(NOM='GRPM1',
-                                     TYPE_MAILLE='TOUT',
-                                     UNION=('M_A', 'M_B',),),
-                                  _F(NOM='GRPM2',
-                                     TYPE_MAILLE='TOUT',
-                                     INTERSEC=('M_A U M_B', 'M_A',),),
-                                  _F(NOM='GRPM3',
-                                     TYPE_MAILLE='TOUT',
-                                     GROUP_MA=('M_B',),),
-                                  _F(NOM='GRPM4',
-                                     TYPE_MAILLE='TOUT',
-                                     DIFFE=('M_A U M_B', 'M_B',),),),
-                   CREA_GROUP_NO=(_F(NOM='GRPN1',
-                                     UNION=('A', 'B',),),
-                                  _F(NOM='GRPN2',
-                                     INTERSEC=('A U B', 'A',),),
-                                  _F(NOM='GRPN3',
-                                     GROUP_NO=('B',),),
-                                  _F(NOM='GRPN4',
-                                     DIFFE=('A U B', 'B',),),),
-                   MAILLAGE=pMesh)
+pMesh = DEFI_GROUP(
+    CREA_GROUP_MA=(
+        _F(NOM="GRPM1", TYPE_MAILLE="TOUT", UNION=("M_A", "M_B")),
+        _F(NOM="GRPM2", TYPE_MAILLE="TOUT", INTERSEC=("M_A U M_B", "M_A")),
+        _F(NOM="GRPM3", TYPE_MAILLE="TOUT", GROUP_MA=("M_B",)),
+        _F(NOM="GRPM4", TYPE_MAILLE="TOUT", DIFFE=("M_A U M_B", "M_B")),
+    ),
+    CREA_GROUP_NO=(
+        _F(NOM="GRPN1", UNION=("A", "B")),
+        _F(NOM="GRPN2", INTERSEC=("A U B", "A")),
+        _F(NOM="GRPN3", GROUP_NO=("B",)),
+        _F(NOM="GRPN4", DIFFE=("A U B", "B")),
+    ),
+    MAILLAGE=pMesh,
+)
 
 if rank == 0:
     test.assertFalse(pMesh.hasGroupOfNodes("GRPN1", True))

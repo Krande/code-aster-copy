@@ -177,9 +177,9 @@ subroutine sscgno(ma, nbgnin)
             call getvem(ma, 'GROUP_NO', motfac, 'INTERSEC', iocc, &
                         n3, lik8, nbid)
             n3 = nbid
-            if( n3.eq.0 ) then
+            if (n3 .eq. 0) then
                 AS_DEALLOCATE(vk24=lik8)
-            endif
+            end if
         end if
         if (n3 .gt. 0) then
             call jenonu(jexnom(grpnoe, lik8(1)), ign1)
@@ -235,9 +235,9 @@ subroutine sscgno(ma, nbgnin)
             call getvem(ma, 'GROUP_NO', motfac, 'UNION', iocc, &
                         n4, lik8, nbid)
             n4 = nbid
-            if( n4.eq.0 ) then
+            if (n4 .eq. 0) then
                 AS_DEALLOCATE(vk24=lik8)
-            endif
+            end if
         end if
         if (n4 .gt. 0) then
             call jenonu(jexnom(grpnoe, lik8(1)), ign1)
@@ -303,9 +303,9 @@ subroutine sscgno(ma, nbgnin)
             call getvem(ma, 'GROUP_NO', motfac, 'DIFFE', iocc, &
                         n5, lik8, nbid)
             n5 = nbid
-            if( n5.eq.0 ) then
+            if (n5 .eq. 0) then
                 AS_DEALLOCATE(vk24=lik8)
-            endif
+            end if
         end if
         if (n5 .gt. 0) then
             call jenonu(jexnom(grpnoe, lik8(1)), ign1)
@@ -458,9 +458,9 @@ subroutine sscgno(ma, nbgnin)
             call getvem(ma, 'NOEUD', motfac, 'NOEUD', iocc, &
                         n2, l_noeud, nb)
             n2 = nb
-            if( n2.eq.0 ) then
+            if (n2 .eq. 0) then
                 AS_DEALLOCATE(vk8=l_noeud)
-            endif
+            end if
         end if
         if (n2 .gt. 0) then
             call wkvect('&&SSCGNO.NOEUD', 'V V I', n2, jnoeu)

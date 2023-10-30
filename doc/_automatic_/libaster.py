@@ -14529,6 +14529,74 @@ class MeshConnectionGraph:
         """Check graph"""
 
 
+# class MedFileAccessType in libaster
+
+
+class MedFileAccessType:
+    pass
+
+    # Method resolution order:
+    #     MedFileAccessType
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __eq__(self, other):
+        pass
+
+    def __getstate__(self):
+        pass
+
+    def __hash__(self):
+        pass
+
+    def __index__(self):
+        pass
+
+    def __init__(self, value):
+        pass
+
+    def __int__(self):
+        pass
+
+    def __ne__(self, other):
+        pass
+
+    def __repr__(self):
+        pass
+
+    def __setstate__(self, state):
+        pass
+
+    def name(self):
+        pass
+
+    # ----------------------------------------------------------------------
+    # Data descriptors defined here:
+
+    @property
+    def __members__(self):
+        pass
+
+    @property
+    def name(self):
+        """name(self: handle) -> str"""
+
+    @property
+    def value(self):
+        pass
+
+    # ----------------------------------------------------------------------
+    # Data and other attributes defined here:
+
+    MedCreate = 2
+
+    MedReadOnly = 0
+
+    MedReadWrite = 1
+
+
 # class MedFileReader in libaster
 
 
@@ -14616,11 +14684,12 @@ class MedFileReader:
             int: profile number
         """
 
-    def openParallel(self, path):
+    def openParallel(self, path, accessType):
         """Open med file in parallel
 
         Arguments:
             path (str): path to med file
+            accessType (MedFileAccessType): med access type
 
         Returns:
             int: return code (0 if open is ok)

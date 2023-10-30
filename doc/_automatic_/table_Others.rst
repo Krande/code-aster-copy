@@ -42,6 +42,7 @@
    * - :py:class:`~code_aster.Objects.LocalShellForceReal`
    * - :py:class:`~code_aster.Objects.MedFamily`
    * - :py:class:`~code_aster.Objects.MedField`
+   * - :py:class:`~code_aster.Objects.MedFileAccessType`
    * - :py:class:`~code_aster.Objects.MedFileReader`
    * - :py:class:`~code_aster.Objects.MedMesh`
    * - :py:class:`~code_aster.Objects.MedVector`

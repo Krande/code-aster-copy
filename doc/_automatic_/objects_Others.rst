@@ -300,6 +300,15 @@ Documentation of all other types.
 
 
 ********************************************************************************
+:py:class:`~code_aster.Objects.MedFileAccessType` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.MedFileAccessType
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
 :py:class:`~code_aster.Objects.MedFileReader` object
 ********************************************************************************
 
