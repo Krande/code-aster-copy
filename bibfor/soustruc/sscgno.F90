@@ -105,7 +105,6 @@ subroutine sscgno(ma, nbgnin)
     call jelira(grpnoe, 'NMAXOC', nbgrmn)
     nbis = nbgrmn
     nbk8 = nbgrmn
-    AS_ALLOCATE(vk24=lik8, size=nbk8)
     call wkvect('&&SSCGNO.LII1', 'V V I', nbis, ialii1)
     call wkvect('&&SSCGNO.LII2', 'V V I', nbis, ialii2)
 !
@@ -174,9 +173,13 @@ subroutine sscgno(ma, nbgnin)
 ! ----- MOT CLEF "INTERSEC" :
 !       ---------------------
         if (n3 .gt. 0) then
+            AS_ALLOCATE(vk24=lik8, size=n3)
             call getvem(ma, 'GROUP_NO', motfac, 'INTERSEC', iocc, &
                         n3, lik8, nbid)
             n3 = nbid
+            if( n3.eq.0 ) then
+                AS_DEALLOCATE(vk24=lik8)
+            endif
         end if
         if (n3 .gt. 0) then
             call jenonu(jexnom(grpnoe, lik8(1)), ign1)
@@ -205,6 +208,7 @@ subroutine sscgno(ma, nbgnin)
                     zi(ialii1-1+ii) = zi(ialii2-1+ii)
                 end do
             end do
+            AS_DEALLOCATE(vk24=lik8)
 !
             if (n .eq. 0) then
                 if (alarm .eq. 'OUI') then
@@ -227,9 +231,13 @@ subroutine sscgno(ma, nbgnin)
 ! ----- MOT CLEF "UNION" :
 !       ------------------
         if (n4 .gt. 0) then
+            AS_ALLOCATE(vk24=lik8, size=n4)
             call getvem(ma, 'GROUP_NO', motfac, 'UNION', iocc, &
                         n4, lik8, nbid)
             n4 = nbid
+            if( n4.eq.0 ) then
+                AS_DEALLOCATE(vk24=lik8)
+            endif
         end if
         if (n4 .gt. 0) then
             call jenonu(jexnom(grpnoe, lik8(1)), ign1)
@@ -268,6 +276,7 @@ subroutine sscgno(ma, nbgnin)
                     zi(ialii1-1+ii) = zi(ialii2-1+ii)
                 end do
             end do
+            AS_DEALLOCATE(vk24=lik8)
 !
             if (n .eq. 0) then
                 if (alarm .eq. 'OUI') then
@@ -290,9 +299,13 @@ subroutine sscgno(ma, nbgnin)
 ! ----- MOT CLEF "DIFFE" :
 !       ------------------
         if (n5 .gt. 0) then
+            AS_ALLOCATE(vk24=lik8, size=n5)
             call getvem(ma, 'GROUP_NO', motfac, 'DIFFE', iocc, &
                         n5, lik8, nbid)
             n5 = nbid
+            if( n5.eq.0 ) then
+                AS_DEALLOCATE(vk24=lik8)
+            endif
         end if
         if (n5 .gt. 0) then
             call jenonu(jexnom(grpnoe, lik8(1)), ign1)
@@ -321,6 +334,7 @@ subroutine sscgno(ma, nbgnin)
                     zi(ialii1-1+ii) = zi(ialii2-1+ii)
                 end do
             end do
+            AS_DEALLOCATE(vk24=lik8)
 !
             if (n .eq. 0) then
                 if (alarm .eq. 'OUI') then
@@ -437,10 +451,16 @@ subroutine sscgno(ma, nbgnin)
 ! ----- MOT CLEF "NOEUD" :
 !       ------------------
         if (n2 .gt. 0) then
+            if (l_parallel_mesh) then
+                call utmess('F', 'MODELISA7_86')
+            end if
             AS_ALLOCATE(vk8=l_noeud, size=n2)
             call getvem(ma, 'NOEUD', motfac, 'NOEUD', iocc, &
                         n2, l_noeud, nb)
             n2 = nb
+            if( n2.eq.0 ) then
+                AS_DEALLOCATE(vk8=l_noeud)
+            endif
         end if
         if (n2 .gt. 0) then
             call wkvect('&&SSCGNO.NOEUD', 'V V I', n2, jnoeu)
@@ -475,8 +495,6 @@ subroutine sscgno(ma, nbgnin)
             AS_DEALLOCATE(vi=noeud2)
             AS_DEALLOCATE(vk8=l_noeud)
             goto 100
-        else
-            AS_DEALLOCATE(vk8=l_noeud)
         end if
 !
 ! ----------------------------------------------------------------------
@@ -599,7 +617,6 @@ subroutine sscgno(ma, nbgnin)
 ! ----------------------------------------------------------------------
 ! --- MENAGE
     call jedetr(lisno)
-    AS_DEALLOCATE(vk24=lik8)
     call jedetr('&&SSCGNO.LII1')
     call jedetr('&&SSCGNO.LII2')
 !
