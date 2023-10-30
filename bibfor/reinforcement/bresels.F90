@@ -95,6 +95,7 @@ subroutine bresels(cequi, effmy, effmz, effn, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/cafels.h"
 #include "asterfort/dintels.h"
+#include "asterc/r8prem.h"
 !
     real(kind=8) :: cequi
     real(kind=8) :: effmy
@@ -148,7 +149,7 @@ subroutine bresels(cequi, effmy, effmz, effn, &
     real(kind=8), pointer :: nrdy(:) => null(), mrdy(:) => null()
     real(kind=8), pointer :: nrdz(:) => null(), mrdz(:) => null()
     character(24) :: pnrdy, pmrdy, pnrdz, pmrdz
-    real(kind=8) :: unite_pa, unite_m
+    real(kind=8) :: unite_pa, unite_m, seuil_moment
     real(kind=8) :: d, d0, dneg, d0neg, scmax, scmaxneg
     integer :: N_ET, N_PC, N_PCAC, N_EC, N_ECN, N_PCACN
     integer :: ntoty, ndemiy, ntotz, ndemiz
@@ -176,10 +177,11 @@ subroutine bresels(cequi, effmy, effmz, effn, &
     nrdyzE = -1.0
     nrd0 = -1.0
     s = 1
+    seuil_moment = sqrt(r8prem())
 
     !Effort Axial uniquement
     !if ((effmy.eq.0) .and. (effmz.eq.0) .and. (effn.ne.0)) then
-    if ((abs(effmy) .lt. epsilon(effmy)) .and. (abs(effmz) .lt. epsilon(effmz))) then
+    if ((abs(effmy) .lt. seuil_moment) .and. (abs(effmz) .lt. seuil_moment)) then
         call cafels(cequi, effmy, 0.5*effn, ht, bw, &
                     enrobzi, enrobzs, scmaxzs, scmaxzi, ssmax, &
                     ferrcomp, precs, ferrsyme, slsyme, uc, um, &
@@ -203,7 +205,7 @@ subroutine bresels(cequi, effmy, effmz, effn, &
 
         !Calcul suivant "y"
         !if (effmy.ne.0) then
-        if (abs(effmy) .gt. epsilon(effmy)) then
+        if (abs(effmy) .gt. seuil_moment) then
             call cafels(cequi, effmy, effn, ht, bw, &
                         enrobzi, enrobzs, scmaxzs, scmaxzi, ssmax, &
                         ferrcomp, precs, ferrsyme, slsyme, uc, um, &
@@ -217,7 +219,7 @@ subroutine bresels(cequi, effmy, effmz, effn, &
 
         !Calcul suivant "z"
         !if (effmz.ne.0) then
-        if (abs(effmz) .gt. epsilon(effmz)) then
+        if (abs(effmz) .gt. seuil_moment) then
             call cafels(cequi, effmz, effn, bw, ht, &
                         enrobyi, enrobys, scmaxys, scmaxyi, ssmax, &
                         ferrcomp, precs, ferrsyme, slsyme, uc, um, &
@@ -232,7 +234,7 @@ subroutine bresels(cequi, effmy, effmz, effn, &
     end if
 
     !if ((effmy.ne.0) .and. (effmz.ne.0)) then
-    if ((abs(effmy) .gt. epsilon(effmy)) .and. (abs(effmz) .gt. epsilon(effmz))) then
+    if ((abs(effmy) .gt. seuil_moment) .and. (abs(effmz) .gt. seuil_moment)) then
 
         !Iteration Bresler
         COND = .false.

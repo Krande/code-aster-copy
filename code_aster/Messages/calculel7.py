@@ -283,7 +283,8 @@ Commande CALC_FERRAILLAGE :
    ELU : Vous souhaitez réaliser un calcul de ferraillage de plaques (2D), avec la méthode SANDWICH.
    L'algorithme implémenté se base sur une méthode itérative pour la recherche de la configuration 'SANDWICH' associée.
    Pour le cas demandé, le code rencontre une incapacité à converger vers un ferraillage d'équilibre.
-   Conseil : on suggère, soit d'augmenter les critères de précision (THETA_ITER/EP_ITER/ALPHA_ITER), soit de passer à la méthode de Capra-Maury.
+   Conseil : on suggère d'augmenter les critères de précision (THETA_ITER/EP_ITER/ALPHA_ITER)
+   Par défaut, pour le cas actuel, on passe, localement, à la méthode de Capra-Maury.
 """
     ),
     35: _(

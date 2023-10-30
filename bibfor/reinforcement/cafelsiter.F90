@@ -676,7 +676,7 @@ subroutine cafelsiter(cequi, effm, effn, ht, bw, &
         end if
 
     end do
-    !print *,"ETAPE 10"
+
     !Searching for OPTIMUM Solution
     COUNT_F = 0
     COUNT_CARA = 0

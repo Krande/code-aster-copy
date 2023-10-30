@@ -151,7 +151,6 @@ subroutine clcplq(typcmb, typco, nb, precs, &
     integer :: ierrl
     integer :: ierrt
 !
-!
 !       NOMBRE DE DIVISIONS ENTRE -PI/2 ET +PI/2
     real(kind=8) :: fcttab(nb, 5)
 !       NOMBRE DE FACETTES COMPRIMEES EN PIVOT C (ELU ET ELS)
@@ -190,7 +189,6 @@ subroutine clcplq(typcmb, typco, nb, precs, &
     nb_fac_comp_els = 0
 !
 !   INITIALISATION DES FACETTES
-    !print *,"BEGIN"
 !
     call trgfct(nb, fcttab)
     do 5 i = 1, 6
@@ -216,8 +214,6 @@ subroutine clcplq(typcmb, typco, nb, precs, &
 !       CALCUL DU FERRAILLAGE A L'ELU
 
             if (typcmb .eq. 0) then
-
-                !print *,"ELU"
 
 !           CALCUL DES ACIERS DE FLEXION A L'ELU
 
@@ -251,7 +247,6 @@ subroutine clcplq(typcmb, typco, nb, precs, &
 !           CALCUL DU FERRAILLAGE TRANSVERSAL A L'ELU
 
                 if (ierrl .eq. 1) then
-                    !print *,"B"
                     ai(i) = 0
                     as(i) = 0
                     alpha = -1
@@ -281,8 +276,6 @@ subroutine clcplq(typcmb, typco, nb, precs, &
 
                 if ((ierrl .eq. 0) .and. (ierrt .eq. 0) &
                     & .and. (dnstra(i) .gt. 0) .and. (epucisa .eq. 1)) then
-
-                    !print *,"A"
 
                     Asl = abs(efft)/(tan(thetab))
 
@@ -578,7 +571,5 @@ subroutine clcplq(typcmb, typco, nb, precs, &
             end if
 
             ierrt = ierrtG
-
-            !print *,"OK DONE"
 
             end subroutine

@@ -107,6 +107,7 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/cafelu.h"
 #include "asterfort/dintelu.h"
+#include "asterc/r8prem.h"
 !
     integer :: typco
     real(kind=8) :: alphacc
@@ -163,7 +164,7 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn, &
     real(kind=8), pointer :: nrdy(:) => null(), mrdy(:) => null()
     real(kind=8), pointer :: nrdz(:) => null(), mrdz(:) => null()
     character(24) :: pnrdy, pmrdy, pnrdz, pmrdz
-    real(kind=8) :: unite_pa, unite_m
+    real(kind=8) :: unite_pa, unite_m, seuil_moment
     real(kind=8) :: piv_a, piv_b, piv_c, Esu, d, d0, dneg, d0neg, Xsup
     integer :: N_ET, N_PC, N_PCN, N_EC, ntoty, ndemiy, ntotz, ndemiz
 
@@ -190,10 +191,11 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn, &
     nrdyzE = -1.0
     nrd0 = -1.0
     s = 1
+    seuil_moment = sqrt(r8prem())
 
     !Effort Axial uniquement
     !if ((effmy.eq.0) .and. (effmz.eq.0) .and. (effn.ne.0)) then
-    if ((abs(effmy) .lt. epsilon(effmy)) .and. (abs(effmz) .lt. epsilon(effmz))) then
+    if ((abs(effmy) .lt. seuil_moment) .and. (abs(effmz) .lt. seuil_moment)) then
         call cafelu(typco, alphacc, effmy, 0.5*effn, ht, bw, &
                     enrobzi, enrobzs, facier, fbeton, gammas, gammac, &
                     clacier, eys, typdiag, ferrcomp, precs, ferrsyme, slsyme, uc, um, &
@@ -215,7 +217,7 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn, &
 
         !Calcul suivant "y"
         !if (effmy.ne.0) then
-        if (abs(effmy) .gt. epsilon(effmy)) then
+        if (abs(effmy) .gt. seuil_moment) then
             call cafelu(typco, alphacc, effmy, effn, ht, bw, &
                         enrobzi, enrobzs, facier, fbeton, gammas, gammac, &
                         clacier, eys, typdiag, ferrcomp, precs, ferrsyme, slsyme, uc, um, &
@@ -228,7 +230,7 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn, &
 
         !Calcul suivant "z"
         !if (effmz.ne.0) then
-        if (abs(effmz) .gt. epsilon(effmz)) then
+        if (abs(effmz) .gt. seuil_moment) then
             call cafelu(typco, alphacc, effmz, effn, bw, ht, &
                         enrobyi, enrobys, facier, fbeton, gammas, gammac, &
                         clacier, eys, typdiag, ferrcomp, precs, ferrsyme, slsyme, uc, um, &
@@ -242,7 +244,7 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn, &
     end if
 
     !if ((effmy.ne.0) .and. (effmz.ne.0)) then
-    if ((abs(effmy) .gt. epsilon(effmy)) .and. (abs(effmz) .gt. epsilon(effmz))) then
+    if ((abs(effmy) .gt. seuil_moment) .and. (abs(effmz) .gt. seuil_moment)) then
 
         if (uc .eq. 0) then
             unite_pa = 1.e-6

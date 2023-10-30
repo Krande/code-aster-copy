@@ -153,7 +153,7 @@ subroutine sandcas4bis(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gamma
 !Variables de calcul
     real(kind=8) :: pi, fcd, fyd, ySUP, yINF, alpha_INF, alpha_SUP, Z
     integer :: i, j, k, l, m, n, N1, N2, N3, N_IIbis, indx, count_F, indx_F, iret
-    real(kind=8) :: Nxx, Nxy, Nyy, Mxx, Mxy, Myy, CalcX, CalcY
+    real(kind=8) :: Nxx, Nxy, Nyy, Mxx, Mxy, Myy, CalcX, CalcY, denum
     real(kind=8) :: unite_m, fcSUP, fcINF, nC_INF, nC_SUP, mC_INF, mC_SUP
     real(kind=8) :: a11, a12, a21, a22, a00, b00, c00, Delta, X_alpha_inf, X_alpha_sup, t1, t2
     logical :: cond_t1, cond_t2
@@ -393,7 +393,7 @@ subroutine sandcas4bis(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gamma
         call wkvect(p(1), ' V V R ', N1, vr=AngleINF)
         call wkvect(p(2), ' V V R ', N1, vr=AngleSUP)
         call wkvect(p(3), ' V V R ', N2, vr=tINF)
-        call wkvect(p(4), ' V V R ', N2, vr=tINF)
+        call wkvect(p(4), ' V V R ', N2, vr=tSUP)
 
         call wkvect(p(5), ' V V R ', N_IIbis, vr=ncMAX_INF)
         call wkvect(p(6), ' V V R ', N_IIbis, vr=ncMIN_INF)
@@ -462,7 +462,11 @@ subroutine sandcas4bis(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gamma
                             alpha_INF = -1.d0
                             alpha_SUP = -1.d0
                         else
-                            X_alpha_sup = (Mxy+(a22/a12)*Nxy)/(a21+a11*a22/a12)
+                            denum = a21+a11*a22/a12
+                            if (abs(denum) .lt. epsilon(denum)) then
+                                goto 999
+                            end if
+                            X_alpha_sup = (Mxy+(a22/a12)*Nxy)/denum
                             X_alpha_inf = (Nxy-a11*X_alpha_sup)/a12
                             if (cond109 .eq. 1) then
                                 !Solve alpha_SUP
@@ -614,7 +618,6 @@ subroutine sandcas4bis(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gamma
                 end do
             end do
         end do
-
     end if
 
 !Choix de la solution finale

@@ -433,7 +433,6 @@ subroutine dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
     call wkvect(p08, ' V V R ', N_EC, vr=M_P4)
 
     do k = 1, N_EC
-
         X = (1-k)/100.0
         if (k .eq. N_EC) then
             X = -Xsup
@@ -445,8 +444,8 @@ subroutine dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
         EsINF = EcINF+(DE/ht)*(ht-d)
         EsSUP = EcINF+(DE/ht)*(ht-d0)
 
-        Ncc = bw*ht*fcd*(1+m2*(X**(nC)))
-        Mcc = bw*ht*ht*fcd*m1*(X**(nC))
+        Ncc = bw*ht*fcd*(1+m2*(abs(X)**(nC)))
+        Mcc = bw*ht*ht*fcd*m1*(abs(X)**(nC))
         Calc = EcSUP-EcINF
         if (abs(Calc) .gt. epsilon(Calc)) then
             alpha = (1/(1-EcINF/EcSUP))*(ht/d)

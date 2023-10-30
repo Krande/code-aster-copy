@@ -22,7 +22,9 @@ interface
      subroutine sandwich(enrobi, enrobs, facier, fbeton, gammas, gammac,&
                     thiter, epiter, aphiter, cond109,&
                     ferrcomp, ferrsyme, slsyme,&
-                    epucisa, ferrmin, rholmin, rhotmin, compress, uc, um,&
+                    epucisa, ferrmin, rholmin, rhotmin, compress,&
+                    alphacc, eys, typdiag, clacier, &
+                    uc, um,&
                     ht, effrts, dnsits, ierrl, ierrt)
     real(kind=8) :: enrobi
     real(kind=8) :: enrobs
@@ -42,6 +44,10 @@ interface
     real(kind=8) :: rholmin
     real(kind=8) :: rhotmin
     integer :: compress
+    real(kind=8) :: alphacc
+    real(kind=8) :: eys
+    integer :: typdiag
+    integer :: clacier
     integer :: uc
     integer :: um
     real(kind=8) :: ht

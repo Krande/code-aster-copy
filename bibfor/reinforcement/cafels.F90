@@ -260,12 +260,12 @@ subroutine cafels(cequi, effm, effn, ht, bw, &
             AsCOMP = 0
 
             if (AsTEND .lt. 0) then
-                !if (abs(AsTEND) .lt. ((1.e-4)*(1.e6/(unite_m**2)))) then
-                !AsTEND = 0
-                !else
-                COND_ITER = .true.
-                goto 998
-                !end if
+                if (abs(AsTEND) .lt. ((1.e-5)*(1.e6/(unite_m**2)))) then
+                    AsTEND = 0
+                else
+                    COND_ITER = .true.
+                    goto 998
+                end if
             else
                 COND_NS = .true.
             end if
@@ -309,12 +309,12 @@ subroutine cafels(cequi, effm, effn, ht, bw, &
             end if
 
             if (AsTEND .lt. 0) then
-                !if (abs(AsTEND) .lt. ((1.e-4)*(1.e6/(unite_m**2)))) then
-                !AsTEND = 0
-                !else
-                COND_ITER = .true.
-                goto 998
-                !end if
+                if (abs(AsTEND) .lt. ((1.e-5)*(1.e6/(unite_m**2)))) then
+                    AsTEND = 0
+                else
+                    COND_ITER = .true.
+                    goto 998
+                end if
             else
                 COND_NS = .true.
             end if

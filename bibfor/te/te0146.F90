@@ -328,7 +328,9 @@ subroutine te0146(option, nomte)
             call sandwich(enrobi, enrobs, facier, fbeton, gammas, gammac, &
                           thiter, epiter, aphiter, cond109, &
                           ferrcomp, ferrsyme, slsyme, &
-                          epucisa, ferrmin, rholmin, rhotmin, compress, uc, um, &
+                          epucisa, ferrmin, rholmin, rhotmin, compress, &
+                          alphacc, eys, typdiag, clacier, &
+                          uc, um, &
                           ht, effrts, dnsits, ierrl, ierrt)
         end if
     end if
@@ -424,10 +426,10 @@ subroutine te0146(option, nomte)
 
     if (ierrl .eq. 2001) then
 !       ELU-Sandwich : équilibre non possible
-!       on fixe toutes les densités de ferraillage de l'élément à -1
+!       on passe par Capra-Maury...
         call utmess('A', 'CALCULEL7_34')
-        dnsvol = -1.d0
-        construc = -1.d0
+        !dnsvol = -1.d0
+        !construc = -1.d0
     end if
 
     if (ierrl .eq. 2002) then

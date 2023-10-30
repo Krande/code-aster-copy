@@ -306,7 +306,10 @@ subroutine sandcas3(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gammac, 
                 tSUPA = tSUPmed
                 RESIDUB = RESIDUmed
             else
-                ierr = 1
+
+                tINF(i) = -1.d0
+                tSUP(i) = -1.d0
+                RESIDU(i) = -1.d0
                 goto 99
             end if
 
@@ -323,6 +326,7 @@ subroutine sandcas3(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gammac, 
         end do
         !Pour iteration sur tSUPmed
 
+99      continue
         !Verification de l'aboutissement de l'equilibre
         Calc1 = RESIDU(i)
         if ((tSUP(i) .eq. (-1.d0)) .or. (tINF(i) .eq. (-1.d0)) &
@@ -387,8 +391,6 @@ subroutine sandcas3(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gammac, 
     t_sup = vect(18)
     theta_inf = vect(19)
     theta_sup = vect(20)
-
-99  continue
 
     do i = 1, 15
         call jedetr(p(i))

@@ -19,7 +19,9 @@
 subroutine sandwich(enrobi, enrobs, facier, fbeton, gammas, gammac, &
                     thiter, epiter, aphiter, cond109, &
                     ferrcomp, ferrsyme, slsyme, &
-                    epucisa, ferrmin, rholmin, rhotmin, compress, uc, um, &
+                    epucisa, ferrmin, rholmin, rhotmin, compress, &
+                    alphacc, eys, typdiag, clacier, &
+                    uc, um, &
                     ht, effrts, dnsits, ierrl, ierrt)
 
 !______________________________________________________________________
@@ -60,6 +62,16 @@ subroutine sandwich(enrobi, enrobs, facier, fbeton, gammas, gammac, &
 !      I RHOTMIN       RATIO DE FERRAILLAGE TRNSV MINI (A RENSEIGNER SI FERMIN='OUI')
 !      I COMPRESS      VALORISATION DE LA COMPRESSION POUR LES ACIERS TRANSVERSAUX
 !                      (0 = NON, 1 = OUI)
+!      I ALPHACC       COEFFICIENT DE SECURITE SUR LA RESISTANCE
+!                      DE CALCUL DU BETON EN COMPRESSION
+!      I EYS           MODULE D'YOUNG DE L'ACIER
+!      I TYPDIAG       TYPE DE DIAGRAMME UTILISÉ POUR L'ACIER
+!                            TYPDIAG = 1 ("B1" ==> PALIER INCLINÉ)
+!                            TYPDIAG = 2 ("B2" ==> PALIER HORIZONTAL)
+!      I CLACIER       CLASSE DE DUCTILITE DES ACIERS (UTILISE POUR EC2) :
+!                            CLACIER = 0 ACIER PEU DUCTILE (CLASSE A)
+!                            CLACIER = 1 ACIER MOYENNEMENT DUCTILE (CLASSE B)
+!                            CLACIER = 2 ACIER FORTEMENT DUCTILE (CLASSE C)
 !      I UC            UNITE DES CONTRAINTES :
 !                         UC = 0 CONTRAINTES EN Pa
 !                         UC = 1 CONTRAINTES EN MPa
@@ -93,6 +105,7 @@ subroutine sandwich(enrobi, enrobs, facier, fbeton, gammas, gammac, &
 #include "asterfort/sandcas2bis.h"
 #include "asterfort/sandcas3bis.h"
 #include "asterfort/sandcas4bis.h"
+#include "asterfort/clcplq.h"
 
 !VARIABLES PRINCIPALES
 !------------------------------
@@ -114,6 +127,10 @@ subroutine sandwich(enrobi, enrobs, facier, fbeton, gammas, gammac, &
     real(kind=8) :: rholmin
     real(kind=8) :: rhotmin
     integer :: compress
+    real(kind=8) :: alphacc
+    real(kind=8) :: eys
+    integer :: typdiag
+    integer :: clacier
     integer :: uc
     integer :: um
     real(kind=8) :: ht
@@ -129,14 +146,14 @@ subroutine sandwich(enrobi, enrobs, facier, fbeton, gammas, gammac, &
     real(kind=8) :: Nxx, Nyy, Nxy, Mxx, Myy, Mxy, Qx, Qy
     real(kind=8) :: Nx_SUP, Nx_INF, Ny_SUP, Ny_INF, Nxy_SUP, Nxy_INF
     real(kind=8) :: cond_trac_inf, cond_trac_sup
-    integer :: CAS_SUP, CAS_INF, COUNT_ITER, j, ierr
+    integer :: CAS_SUP, CAS_INF, COUNT_ITER, j, ierr, nb, precs
     real(kind=8) :: dnsxi, dnsxs, dnsyi, dnsys, dnsxt, dnsyt
     integer :: etsxi, etsxs, etsyi, etsys
     real(kind=8) :: snsxi, snsxs, snsyi, snsys
     real(kind=8) :: ncmaxi, ncmini, ncmaxs, ncmins
     real(kind=8) :: t_inf, t_sup, theta_inf, theta_sup, unite_pa, unite_m
     real(kind=8) :: rhosxi, rhosxs, rhosyi, rhosys
-    real(kind=8) :: betha, rhoCALC, VEd, NEd, Scp, alphaCW, Nu, Nu1
+    real(kind=8) :: betha, rhoCALC, VEd, NEd, Scp, alphaCW, Nu, Nu1, ratio
     real(kind=8) :: tC, zMOY, CRdc, kBAR, rho, k1, vmin, vCALC, VRdc, AsT, ThetaB, VRdmax
     real(kind=8) :: thetaB_ITER(233), EQ_ITER(233), AsT_ITER(233)
 
@@ -251,7 +268,6 @@ subroutine sandwich(enrobi, enrobs, facier, fbeton, gammas, gammac, &
         !------------------------------------
         if ((CAS_SUP .ne. 4) .and. (CAS_INF .ne. 4)) then
 
-            !"CAS I!"
             call sandcas1(effrts(1:6), ht, enrobi, enrobs, facier, fbeton, gammas, gammac, &
                           thiter, epiter, cond109, ferrcomp, ferrsyme, slsyme, uc, &
                           dnsxi, dnsxs, dnsyi, dnsys, etsxi, etsxs, etsyi, etsys, &
@@ -262,7 +278,6 @@ subroutine sandwich(enrobi, enrobs, facier, fbeton, gammas, gammac, &
             !---------------------------------------
         elseif ((CAS_INF .eq. 4) .and. (CAS_SUP .ne. 4)) then
 
-            !"CAS II!"
             call sandcas2(effrts(1:6), ht, enrobi, enrobs, facier, fbeton, gammas, gammac, &
                           thiter, cond109, ferrcomp, ferrsyme, slsyme, uc, &
                           dnsxi, dnsxs, dnsyi, dnsys, etsxi, etsxs, etsyi, etsys, &
@@ -270,20 +285,20 @@ subroutine sandwich(enrobi, enrobs, facier, fbeton, gammas, gammac, &
                           t_inf, t_sup, theta_inf, theta_sup, ierr)
 
             if ((ierr .eq. 1) .and. (ferrcomp .eq. 1)) then
-                !"CAS IIBis!"
+
                 call sandcas2bis(effrts(1:6), ht, enrobi, enrobs, facier, fbeton, gammas, gammac, &
                                  thiter, epiter, aphiter, cond109, ferrcomp, ferrsyme, &
                                  slsyme, uc, um, &
                                  dnsxi, dnsxs, dnsyi, dnsys, etsxi, etsxs, etsyi, etsys, &
                                  snsxi, snsxs, snsyi, snsys, ncmaxi, ncmini, ncmaxs, ncmins, &
                                  t_inf, t_sup, theta_inf, theta_sup, ierr)
+
             end if
 
             !CAS III - REINF NEEDED FOR INF ONLY
             !---------------------------------------
         elseif ((CAS_INF .ne. 4) .and. (CAS_SUP .eq. 4)) then
 
-            !"CAS III!"
             call sandcas3(effrts(1:6), ht, enrobi, enrobs, facier, fbeton, gammas, gammac, &
                           thiter, cond109, ferrcomp, ferrsyme, slsyme, uc, &
                           dnsxi, dnsxs, dnsyi, dnsys, etsxi, etsxs, etsyi, etsys, &
@@ -291,20 +306,20 @@ subroutine sandwich(enrobi, enrobs, facier, fbeton, gammas, gammac, &
                           t_inf, t_sup, theta_inf, theta_sup, ierr)
 
             if ((ierr .eq. 1) .and. (ferrcomp .eq. 1)) then
-                !"CAS IIIBis!"
+
                 call sandcas3bis(effrts(1:6), ht, enrobi, enrobs, facier, fbeton, gammas, gammac, &
                                  thiter, epiter, aphiter, cond109, ferrcomp, ferrsyme, &
                                  slsyme, uc, um, &
                                  dnsxi, dnsxs, dnsyi, dnsys, etsxi, etsxs, etsyi, etsys, &
                                  snsxi, snsxs, snsyi, snsys, ncmaxi, ncmini, ncmaxs, ncmins, &
                                  t_inf, t_sup, theta_inf, theta_sup, ierr)
+
             end if
 
             !CAS IV - NO REINF NEEDED
             !------------------------
         else
 
-            !"CAS IV!"
             call sandcas4(effrts(1:6), ht, enrobi, enrobs, facier, fbeton, gammas, gammac, &
                           thiter, epiter, cond109, ferrcomp, ferrsyme, slsyme, uc, um, &
                           dnsxi, dnsxs, dnsyi, dnsys, etsxi, etsxs, etsyi, etsys, &
@@ -312,13 +327,14 @@ subroutine sandwich(enrobi, enrobs, facier, fbeton, gammas, gammac, &
                           t_inf, t_sup, theta_inf, theta_sup, ierr)
 
             if ((ierr .eq. 1) .and. (ferrcomp .eq. 1)) then
-                !"CAS IVBis!"
+
                 call sandcas4bis(effrts(1:6), ht, enrobi, enrobs, facier, fbeton, gammas, gammac, &
                                  thiter, epiter, aphiter, cond109, ferrcomp, ferrsyme, &
                                  slsyme, uc, um, &
                                  dnsxi, dnsxs, dnsyi, dnsys, etsxi, etsxs, etsyi, etsys, &
                                  snsxi, snsxs, snsyi, snsys, ncmaxi, ncmini, ncmaxs, ncmins, &
                                  t_inf, t_sup, theta_inf, theta_sup, ierr)
+
             end if
 
         end if
@@ -328,6 +344,24 @@ subroutine sandwich(enrobi, enrobs, facier, fbeton, gammas, gammac, &
 !-------------------------------------------------------------------------------------------------
 
         ierrl = ierr
+
+        if (ierrl .gt. 0) then
+
+            !NON CONVERGENCE DETECTED => CALL CAPRA MAURY
+            nb = ceiling(180/thiter)
+            precs = ceiling(1/epiter)
+            call clcplq(0, 2, nb, precs, &
+                        ferrsyme, slsyme, ferrcomp, epucisa, &
+                        ferrmin, rholmin, rhotmin, compress, -1.d0, &
+                        enrobi, enrobs, -1.d0, -1.d0, -1.d0, &
+                        alphacc, gammas, gammac, facier, eys, typdiag, &
+                        fbeton, clacier, uc, um, &
+                        -1.d0, -1.d0, -1.d0, -1.d0, -1.d0, -1.d0, -1.d0, -1.d0, &
+                        ht, effrts, dnsits, ierrl, ierrt)
+            ierrl = 2001
+            goto 998
+
+        end if
 
         if (ierrl .gt. 0) then
             dnsxi = 0
@@ -421,7 +455,7 @@ subroutine sandwich(enrobi, enrobs, facier, fbeton, gammas, gammac, &
         end if
 
 !Calcul du bras de levier des efforts internes
-        tC = ht-t_inf-t_sup
+        tC = ht-0.5*t_inf-0.5*t_sup
         zS = (0.5*t_sup)*(1.d0-cond_trac_sup)*(t_sup*fcd)+(t_sup-enrobs)*(dnsxs+dnsys)*fyd
         denom = (1.d0-cond_trac_sup)*(t_sup*fcd)+(dnsxs+dnsys)*fyd
         if (abs(denom) .gt. epsilon(denom)) then
@@ -461,7 +495,13 @@ subroutine sandwich(enrobi, enrobs, facier, fbeton, gammas, gammac, &
 
 !Calcul de AsT!
 
-        if ((VEd/VRdc) .le. 1) then
+        if (abs(VRdc) .lt. epsilon(VRdc)) then
+            ratio = 1.01
+        else
+            ratio = VEd/VRdc
+        end if
+
+        if (ratio .le. 1) then
 
             AsT = 0.d0
             ThetaB = -1.d0
@@ -616,5 +656,7 @@ subroutine sandwich(enrobi, enrobs, facier, fbeton, gammas, gammac, &
         dnsits(5) = dnsxt
         dnsits(6) = dnsyt
     end if
+
+998 continue
 
 end subroutine

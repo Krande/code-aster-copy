@@ -447,6 +447,7 @@ subroutine cafeluiter(typco, alphacc, effm, effn, ht, bw, &
 
         Ncc = (fcd*bw*d)*(alpha+(1/((nC+1)*x1))*(VAR_COEF1*((Abs(COEF1))**(nC+1)) &
                & -VAR_COEF2*((Abs(COEF2))**(nC+1))))
+
         Mcc = (bw*d*d*fcd)*(0.5*alpha*(1/DELTA-alpha) &
                & +(1/(2*DELTA))*(1/((nC+1)*x1))*(VAR_COEF1*((Abs(COEF1))**(nC+1)) &
                & -VAR_COEF2*((Abs(COEF2))**(nC+1))) &
@@ -463,16 +464,27 @@ subroutine cafeluiter(typco, alphacc, effm, effn, ht, bw, &
         f2 = abs(effm)-Mcc
 
         if (k .eq. (precs+1)) then
-            ascomp = (effn-Ncc)/sscomp
-            astend = 0
-            Calc = abs(effm)-Mcc-ascomp*sscomp*(0.5*ht-d0)
-            if (Abs(Calc/effm) .gt. 0.01) then
+            if (abs(sscomp) .gt. epsilon(sscomp)) then
+                ascomp = (effn-Ncc)/sscomp
+                astend = 0
+                Calc = abs(effm)-Mcc-ascomp*sscomp*(0.5*ht-d0)
+                if (Abs(Calc/effm) .gt. 0.01) then
+                    ascomp = -1
+                    astend = -1
+                end if
+            else
                 ascomp = -1
                 astend = -1
             end if
         else
-            ascomp = (f1*a22-a12*f2)/(a11*a22-a12*a21)
-            astend = (a11*f2-a21*f1)/(a11*a22-a12*a21)
+            Calc = a11*a22-a12*a21
+            if (abs(Calc) .gt. epsilon(Calc)) then
+                ascomp = (f1*a22-a12*f2)/Calc
+                astend = (a11*f2-a21*f1)/Calc
+            else
+                ascomp = -1
+                astend = -1
+            end if
         end if
 
         ascomp_PC(k) = ascomp
@@ -566,8 +578,14 @@ subroutine cafeluiter(typco, alphacc, effm, effn, ht, bw, &
         f1 = effn-Ncc
         f2 = abs(effm)-Mcc
 
-        ascomp = (f1*a22-a12*f2)/(a11*a22-a12*a21)
-        astend = (a11*f2-a21*f1)/(a11*a22-a12*a21)
+        Calc = a11*a22-a12*a21
+        if (abs(Calc) .gt. epsilon(Calc)) then
+            ascomp = (f1*a22-a12*f2)/Calc
+            astend = (a11*f2-a21*f1)/Calc
+        else
+            ascomp = -1
+            astend = -1
+        end if
 
         ascomp_EC(k) = ascomp
         astend_EC(k) = astend
