@@ -22,7 +22,7 @@ from enum import IntFlag, auto
 
 from code_aster import ConvergenceError, SolverError
 from code_aster.Commands import DEFI_LIST_REEL
-from code_aster.Solvers import ConvergenceManager, PhysicalState, TimeStepper
+from code_aster.Solvers import ConvergenceManager, PhysicalState, TimeStepper, ProblemType
 from code_aster.Solvers.base_features import BaseFeature
 
 list0 = DEFI_LIST_REEL(VALE=0.0)
@@ -544,7 +544,7 @@ class TestPhysicalState(unittest.TestCase):
             self.value = value
 
     def test01_stash(self):
-        phys = PhysicalState(size=2)
+        phys = PhysicalState(size=2, pb_type=ProblemType.Static)
         # []
         self.assertEqual(len(phys._stack), 0)
         self.assertIsNone(phys.time_prev)
@@ -556,8 +556,8 @@ class TestPhysicalState(unittest.TestCase):
         phys.time_prev = 0.0
         phys.time_step = 0.0
         # can not use the setters with FakeField object
-        phys.current._primal_prev = TestPhysicalState.FakeField(99.0)
-        phys.current._primal_step = TestPhysicalState.FakeField(1.0)
+        phys.current.primal_prev = TestPhysicalState.FakeField(99.0)
+        phys.current.primal_step = TestPhysicalState.FakeField(1.0)
         self.assertEqual(phys.time_prev, 0.0)
         self.assertEqual(phys.primal_prev.value, 99.0)
         self.assertEqual(phys.primal_step.value, 1.0)
@@ -574,7 +574,7 @@ class TestPhysicalState(unittest.TestCase):
 
         phys.stash()
         phys.time_prev = 1.0
-        phys.current._primal_prev = TestPhysicalState.FakeField(123.0)
+        phys.current.primal_prev = TestPhysicalState.FakeField(123.0)
         self.assertEqual(phys.time_prev, 1.0)
         self.assertEqual(phys.time_curr, 1.0)
         self.assertEqual(phys.primal_prev.value, 123.0)
@@ -588,7 +588,7 @@ class TestPhysicalState(unittest.TestCase):
         self.assertIsNone(phys._stash)
 
         phys.time_prev = 1.0
-        phys.current._primal_step = TestPhysicalState.FakeField(99.0)
+        phys.current.primal_step = TestPhysicalState.FakeField(99.0)
         self.assertEqual(phys.time_prev, 1.0)
         # valid this state
         phys.commit()
@@ -597,7 +597,7 @@ class TestPhysicalState(unittest.TestCase):
         self.assertEqual(len(phys._stack), 2)
 
     def test02_stack(self):
-        phys = PhysicalState(size=3)
+        phys = PhysicalState(size=3, pb_type=ProblemType.Static)
         # []
         self.assertEqual(len(phys._stack), 0)
         self.assertIsNone(phys.time_prev)
@@ -608,15 +608,15 @@ class TestPhysicalState(unittest.TestCase):
         phys.time_prev = 0.0
         phys.time_step = 0.0
         # can not use the setters with FakeField object
-        phys.current._primal_prev = TestPhysicalState.FakeField(99.0)
-        phys.current._primal_step = TestPhysicalState.FakeField(1.0)
+        phys.current.primal_prev = TestPhysicalState.FakeField(99.0)
+        phys.current.primal_step = TestPhysicalState.FakeField(1.0)
         phys.commit()
         self.assertEqual(phys.primal_prev.value, 100.0)
         # [phys_t0]
         self.assertEqual(len(phys._stack), 1)
 
         phys.time_prev = 1.0
-        phys.current._primal_step = TestPhysicalState.FakeField(33.0)
+        phys.current.primal_step = TestPhysicalState.FakeField(33.0)
         self.assertEqual(phys.time_prev, 1.0)
         phys.commit()
         self.assertEqual(phys.primal_prev.value, 133.0)
@@ -624,7 +624,7 @@ class TestPhysicalState(unittest.TestCase):
         self.assertEqual(len(phys._stack), 2)
 
         phys.time_prev = 2.0
-        phys.current._primal_step = TestPhysicalState.FakeField(67.0)
+        phys.current.primal_step = TestPhysicalState.FakeField(67.0)
         self.assertEqual(phys.time_prev, 2.0)
         phys.commit()
         self.assertEqual(phys.primal_prev.value, 200.0)
@@ -632,7 +632,7 @@ class TestPhysicalState(unittest.TestCase):
         self.assertEqual(len(phys._stack), 3)
 
         phys.time_prev = 3.0
-        phys.current._primal_step = TestPhysicalState.FakeField(22.0)
+        phys.current.primal_step = TestPhysicalState.FakeField(22.0)
         self.assertEqual(phys.time_prev, 3.0)
         phys.commit()
         self.assertEqual(phys.primal_prev.value, 222.0)

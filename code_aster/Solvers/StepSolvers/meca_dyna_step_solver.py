@@ -102,12 +102,7 @@ class MecaDynaStepSolver(BaseStepSolver):
         return self._integrator.getInitialState()
 
     def solve(self):
-        """Solve a step.
-
-        Arguments:
-            t_init (float): Time at the beginning of the step.
-            delta_t (float): Time step.
-        """
+        """Solve a step."""
         raise NotImplementedError
 
     @classmethod

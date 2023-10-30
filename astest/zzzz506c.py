@@ -20,7 +20,7 @@
 import code_aster
 from code_aster import LinearSolver, NonLinearResult, PhysicalProblem
 from code_aster.Commands import *
-from code_aster.Solvers import NonLinearSolver, ProblemSolver, TimeStepper
+from code_aster.Solvers import NonLinearSolver, ProblemSolver, TimeStepper, ProblemType
 from code_aster.Utilities import haveMPI
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), INFO=1)
@@ -71,7 +71,7 @@ SOLUT = STAT_NON_LINE(
     INFO=1,
 )
 
-snl = ProblemSolver(NonLinearSolver(), NonLinearResult())
+snl = ProblemSolver(NonLinearSolver(), NonLinearResult(), pb_type=ProblemType.Static)
 snl.use(PhysicalProblem(model, mater))
 snl.use(LinearSolver.factory(**linear_solver))
 snl.phys_pb.addLoadFromDict({"CHARGE": encast, "FONC_MULT": RAMPE})

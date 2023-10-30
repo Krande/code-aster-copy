@@ -20,7 +20,7 @@
 import code_aster
 from code_aster import LinearSolver, NonLinearResult, PhysicalProblem
 from code_aster.Commands import *
-from code_aster.Solvers import NonLinearSolver, ProblemSolver, TimeStepper
+from code_aster.Solvers import NonLinearSolver, ProblemSolver, TimeStepper, ProblemType
 
 DEBUT(
     CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"), INFO=1
@@ -65,7 +65,7 @@ SOLUT = STAT_NON_LINE(
 )
 
 
-snl = ProblemSolver(NonLinearSolver(), NonLinearResult())
+snl = ProblemSolver(NonLinearSolver(), NonLinearResult(), pb_type=ProblemType.Static)
 snl.use(PhysicalProblem(model, mater))
 snl.use(LinearSolver.factory(METHODE="MUMPS", RENUM="METIS", NPREC=8))
 snl.phys_pb.addLoadFromDict({"CHARGE": encast, "FONC_MULT": RAMPE})

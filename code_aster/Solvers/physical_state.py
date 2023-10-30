@@ -126,7 +126,7 @@ class PhysicalState(BaseFeature):
             Arguments:
                 field (FieldOnNodesReal): primal
             """
-            assert isinstance(field, FieldOnNodesReal), f"unexpected type: {field}"
+            # assert isinstance(field, FieldOnNodesReal), f"unexpected type: {field}"
             self._fields_prev[self._primal_field] = field
 
         @property
@@ -141,7 +141,7 @@ class PhysicalState(BaseFeature):
             Arguments:
                 field (FieldOnNodesReal): primal
             """
-            assert field is None or isinstance(field, FieldOnNodesReal), f"unexpected type: {field}"
+            # assert field is None or isinstance(field, FieldOnNodesReal), f"unexpected type: {field}"
             self._fields_step[self._primal_field] = field - self._fields_prev[self._primal_field]
 
         @property
@@ -156,7 +156,7 @@ class PhysicalState(BaseFeature):
             Arguments:
                 field (FieldOnNodesReal): primal
             """
-            assert field is None or isinstance(field, FieldOnNodesReal), f"unexpected type: {field}"
+            # assert field is None or isinstance(field, FieldOnNodesReal), f"unexpected type: {field}"
             self._fields_step[self._primal_field] = field
 
         @property

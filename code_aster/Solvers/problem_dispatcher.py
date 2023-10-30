@@ -48,7 +48,9 @@ class ProblemDispatcher:
     @classmethod
     def _getProblemType(cls, param):
         """Identify the physical problem."""
-        if "SCHEMA_TEMPS" in param:
+        if "TYPE_CALCUL" in param:
+            pb_type = ProblemType.Thermal
+        elif "SCHEMA_TEMPS" in param:
             pb_type = ProblemType.MecaDyna
         else:
             pb_type = ProblemType.Static

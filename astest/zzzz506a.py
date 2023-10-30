@@ -22,7 +22,8 @@ from code_aster import LinearSolver, NonLinearResult, PhysicalProblem
 from code_aster.Commands import *
 from code_aster.Solvers import NonLinearSolver, ProblemSolver
 from code_aster.Solvers import SolverOptions as SOP
-from code_aster.Solvers import StepSolver, TimeStepper
+from code_aster.Solvers import TimeStepper, ProblemType
+from code_aster.Solvers.StepSolvers import StaticStepSolver
 
 DEBUT(
     CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"), INFO=1
@@ -67,7 +68,7 @@ SOLUT = STAT_NON_LINE(
 )
 
 
-class CustomStepSolver(StepSolver):
+class CustomStepSolver(StaticStepSolver):
     """Example of custom object: just add a print.
 
     Whatever type of inherited from BaseFeature object can be used (not necessarly
@@ -105,7 +106,7 @@ class PostHook:
         nl_solver.phys_state.debugPrint()
 
 
-snl = ProblemSolver(NonLinearSolver(), NonLinearResult())
+snl = ProblemSolver(NonLinearSolver(), NonLinearResult(), pb_type=ProblemType.Static)
 snl.use(PhysicalProblem(model, mater))
 snl.use(LinearSolver.factory(METHODE="MUMPS"))
 snl.phys_pb.addLoadFromDict({"CHARGE": encast, "FONC_MULT": RAMPE})

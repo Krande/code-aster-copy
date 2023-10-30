@@ -33,3 +33,4 @@ from .snes_solver import SNESSolver
 from .solver_features import SolverFeature, SolverOptions
 from .storage_manager import StorageManager
 from .time_stepper import TimeStepper
+from .problem_dispatcher import ProblemType
