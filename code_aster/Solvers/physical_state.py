@@ -80,7 +80,7 @@ class PhysicalState(BaseFeature):
 
             if pb_type == PBT.MecaDyna:
                 fields_list = {"U": "DEPL", "dU": "VITE", "d2U": "ACCE"}
-            elif pb_type == PBT.Static:
+            elif pb_type == PBT.MecaStat:
                 fields_list = {"U": "DEPL"}
             elif pb_type == PBT.Thermal:
                 fields_list = {"U": "TEMP"}

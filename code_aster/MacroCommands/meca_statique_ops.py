@@ -231,7 +231,7 @@ def meca_statique_ops(self, **args):
     storage_manager = StorageManager(result)
 
     # Define main objects
-    phys_state = PhysicalState(PBT.Static)
+    phys_state = PhysicalState(PBT.MecaStat)
     disc_comp = DiscreteComputation(phys_pb)
 
     # we define the matrix before to have an unique name

@@ -23,7 +23,7 @@ Step solvers classes.
 
 
 from .base_step_solver import BaseStepSolver
-from .static_step_solver import StaticStepSolver
+from .meca_stat_step_solver import MecaStatStepSolver
 from .thermal_step_solver import ThermalStepSolver
 from .meca_dyna_step_solver import MecaDynaStepSolver
 from .implicit_step_solver import ImplicitStepSolver

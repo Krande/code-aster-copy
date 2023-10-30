@@ -18,6 +18,6 @@
 # --------------------------------------------------------------------
 
 from .base_opers_manager import BaseOperatorsManager
-from .static_opers_manager import StaticOperatorsManager
+from .meca_stat_opers_manager import MecaStatOperatorsManager
 from .meca_dyna_opers_manager import MecaDynaOperatorsManager
 from .thermal_opers_manager import ThermalOperatorsManager

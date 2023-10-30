@@ -22,14 +22,14 @@ from libaster import deleteTemporaryObjects
 from .base_step_solver import BaseStepSolver
 from ..solver_features import SolverOptions as SOP
 from ...Utilities import no_new_attributes, profile
-from ..OperatorManagers import StaticOperatorsManager
+from ..OperatorManagers import MecaStatOperatorsManager
 from ..problem_dispatcher import ProblemType
 
 
-class StaticStepSolver(BaseStepSolver):
+class MecaStatStepSolver(BaseStepSolver):
     """Solves a step, loops on iterations."""
 
-    problem_type = ProblemType.Static
+    problem_type = ProblemType.MecaStat
 
     __setattr__ = no_new_attributes(object.__setattr__)
 
@@ -46,7 +46,7 @@ class StaticStepSolver(BaseStepSolver):
         return cls()
 
     def __init__(self):
-        super(StaticStepSolver, self).__init__()
+        super(MecaStatStepSolver, self).__init__()
 
     def initialize(self):
         """Initialization."""
@@ -77,7 +77,7 @@ class StaticStepSolver(BaseStepSolver):
         """set up the step solver."""
         opers_manager = self.get_feature(SOP.OperatorsManager, optional=True)
         if not opers_manager:
-            opers_manager = StaticOperatorsManager()
+            opers_manager = MecaStatOperatorsManager()
         for feat, required in opers_manager.undefined():
             feat_obj = self.get_feature(feat, optional=(not required))
             opers_manager.use(feat_obj)

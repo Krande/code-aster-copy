@@ -21,7 +21,7 @@ from .base_opers_manager import BaseOperatorsManager
 from ...Utilities import no_new_attributes
 
 
-class StaticOperatorsManager(BaseOperatorsManager):
+class MecaStatOperatorsManager(BaseOperatorsManager):
     """Solve an iteration."""
 
     _first_jacobian = _lagr_scaling = None

@@ -71,7 +71,7 @@ SOLUT = STAT_NON_LINE(
     INFO=1,
 )
 
-snl = ProblemSolver(NonLinearSolver(), NonLinearResult(), pb_type=ProblemType.Static)
+snl = ProblemSolver(NonLinearSolver(), NonLinearResult(), pb_type=ProblemType.MecaStat)
 snl.use(PhysicalProblem(model, mater))
 snl.use(LinearSolver.factory(**linear_solver))
 snl.phys_pb.addLoadFromDict({"CHARGE": encast, "FONC_MULT": RAMPE})

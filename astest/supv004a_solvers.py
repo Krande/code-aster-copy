@@ -544,7 +544,7 @@ class TestPhysicalState(unittest.TestCase):
             self.value = value
 
     def test01_stash(self):
-        phys = PhysicalState(size=2, pb_type=ProblemType.Static)
+        phys = PhysicalState(size=2, pb_type=ProblemType.MecaStat)
         # []
         self.assertEqual(len(phys._stack), 0)
         self.assertIsNone(phys.time_prev)
@@ -597,7 +597,7 @@ class TestPhysicalState(unittest.TestCase):
         self.assertEqual(len(phys._stack), 2)
 
     def test02_stack(self):
-        phys = PhysicalState(size=3, pb_type=ProblemType.Static)
+        phys = PhysicalState(size=3, pb_type=ProblemType.MecaStat)
         # []
         self.assertEqual(len(phys._stack), 0)
         self.assertIsNone(phys.time_prev)

@@ -115,7 +115,7 @@ def meca_non_line_ops(self, **args):
         problem_type = PBT.MecaDyna
         param["SCHEMA_TEMPS"] = args["SCHEMA_TEMPS"]
     else:
-        problem_type = PBT.Static
+        problem_type = PBT.MecaStat
 
     result = args.get("reuse")
     if not result: result = NonLinearResult()

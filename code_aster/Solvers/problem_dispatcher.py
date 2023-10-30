@@ -22,7 +22,7 @@ class ProblemType:
     """Types of physical problems."""
 
     Unset = 0x00
-    Static = 0x01
+    MecaStat = 0x01
     MecaDyna = 0x02
     Thermal = 0x04
 
@@ -53,7 +53,7 @@ class ProblemDispatcher:
         elif "SCHEMA_TEMPS" in param:
             pb_type = ProblemType.MecaDyna
         else:
-            pb_type = ProblemType.Static
+            pb_type = ProblemType.MecaStat
         return pb_type
 
     def _createPrivate(self, param):
