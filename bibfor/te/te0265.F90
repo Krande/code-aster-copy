@@ -373,8 +373,8 @@ subroutine te0265(nomopt, nomte)
 
     !Code Aster uses negative N for compression
     effrts(1) = -VX
-    effrts(2) = MFY
-    effrts(3) = MFZ
+    effrts(2) = -MFY
+    effrts(3) = -MFZ
     effrts(4) = VY
     effrts(5) = VZ
     effrts(6) = MT

@@ -259,8 +259,8 @@ RESUELU1 = CALC_FERRAILLAGE(
     ),
 )
 
+COMP = ["AYS", "AYI", "AZS", "AZI", "AST", "ATOT", "DNSVOL", "CONSTRUC"]
 
-COMP = ["AYI", "AYS", "AZI", "AZS", "AST", "ATOT", "DNSVOL", "CONSTRUC"]
 # -----------------------------------------------------
 # Tests pour CAS 1
 # -----------------------------------------------------
@@ -618,7 +618,7 @@ RESUELU2 = CALC_FERRAILLAGE(
     ),
 )
 
-COMP = ["AYI", "AYS", "AZI", "AZS", "AST", "ATOT", "DNSVOL", "CONSTRUC"]
+
 # -----------------------------------------------------
 # Tests pour CAS 2
 # -----------------------------------------------------

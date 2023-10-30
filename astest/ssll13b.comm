@@ -258,7 +258,7 @@ RESUELS1 = CALC_FERRAILLAGE(
     ),
 )
 
-COMP = ["AYI", "AYS", "AZI", "AZS", "AST", "ATOT", "DNSVOL", "CONSTRUC"]
+COMP = ["AYS", "AYI", "AZS", "AZI", "AST", "ATOT", "DNSVOL", "CONSTRUC"]
 # -----------------------------------------------------
 # Tests pour CAS 1
 # -----------------------------------------------------
@@ -615,7 +615,7 @@ RESUELS2 = CALC_FERRAILLAGE(
     ),
 )
 
-COMP = ["AYI", "AYS", "AZI", "AZS", "AST", "ATOT", "DNSVOL", "CONSTRUC"]
+
 # -----------------------------------------------------
 # Tests pour CAS 2
 # -----------------------------------------------------
@@ -974,7 +974,7 @@ RESUELS3 = CALC_FERRAILLAGE(
     ),
 )
 
-COMP = ["AYI", "AYS", "AZI", "AZS", "AST", "ATOT", "DNSVOL", "CONSTRUC"]
+
 # -----------------------------------------------------
 # Tests pour CAS 3
 # -----------------------------------------------------
@@ -1330,7 +1330,7 @@ RESUELS4 = CALC_FERRAILLAGE(
     ),
 )
 
-COMP = ["AYI", "AYS", "AZI", "AZS", "AST", "ATOT", "DNSVOL", "CONSTRUC"]
+
 # -----------------------------------------------------
 # Tests pour CAS 4
 # -----------------------------------------------------
