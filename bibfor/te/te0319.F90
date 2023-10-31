@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,6 +58,11 @@ subroutine te0319(option, nomte)
     call jevech('PTEMPSR', 'L', itemps)
     call jevech('PTEMPER', 'L', itempe)
     call jevech('PSOUR_R', 'E', iflux)
+    
+    fami='FPG1'
+    kpg=1
+    spt=1
+    poum='+'
 !
     call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
 !
@@ -67,12 +72,8 @@ subroutine te0319(option, nomte)
                     ' ', phenom, 1, 'INST', [zr(itemps)],&
                     1, nomres, valres, icodre, 1)
         lambda = valres(1)
-    else if (phenom.eq.'THER_ORTH') then
+    else 
         call utmess('F', 'ELEMENTS2_67')
-    else if (phenom.eq.'THER_NL_ORTH') then
-        call utmess('F', 'ELEMENTS2_67')
-    else if (phenom.ne.'THER_NL') then
-        call utmess('F', 'ELEMENTS2_63')
     endif
 !
     a = 0.d0
@@ -96,13 +97,6 @@ subroutine te0319(option, nomte)
             fluxy = fluxy + zr(itempe-1+i)*dfdy(i)
             fluxz = fluxz + zr(itempe-1+i)*dfdz(i)
         end do
-!
-        if (phenom .eq. 'THER_NL') then
-            call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                        ' ', phenom, 1, 'TEMP', [tpg],&
-                        1, 'LAMBDA', valres, icodre, 1)
-            lambda = valres(1)
-        endif
 !
         a = a - lambda*fluxx/npg1
         b = b - lambda*fluxy/npg1
