@@ -84,7 +84,7 @@ class NewtonSolver(SolverFeature):
 
         assert self.prediction in ("ELASTIQUE", "TANGENTE"), f"unsupported value: "
 
-        self.matr_update_incr = self._get("NEWTON", "REAC_INCR", 1)
+        self.matr_update_incr = self._get("NEWTON", "REAC_ITER", 1)
 
     def setLoggingManager(self, logManager):
         """Assign the logging manager.
