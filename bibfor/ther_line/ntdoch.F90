@@ -74,7 +74,7 @@ character(len=1), optional, intent(in) :: basez
     character(len=10) :: load_obje(2)
     character(len=19) :: cart_name
     character(len=8) :: load_name, const_func, load_func, k8bid
-    character(len=16) :: load_keyword, k16bid, nomcmd
+    character(len=16) :: load_keyword, k16bid, nomcmd, typesd
     character(len=24) :: load_type, load_para, load_keyw
     character(len=16) :: load_opti_f
     real(kind=8) :: theta, prec
@@ -88,6 +88,7 @@ character(len=1), optional, intent(in) :: basez
 !
     nb_load        = 0
     i_excit        = 0
+    call getres(k8bid, typesd, nomcmd)
     const_func     = '&&NTDOCH'
     l_func_c       = .false.
     l_load_user    = .true.
@@ -244,6 +245,13 @@ character(len=1), optional, intent(in) :: basez
                            info_type = 'NEUM_CSTE'
                         endif
                     endif
+                    if (load_keyw .eq. 'FLUX_NL' .or. &
+                        load_keyw .eq. 'RAYONNEMENT' .or. load_keyw .eq. 'SOUR_NL') then
+                        if (nomcmd == "THER_LINEAIRE") then
+                            call utmess('F', 'CHARGES_58', sk=load_name)
+                        end if
+                    end if
+
                 endif
                 if (info_type .ne. 'RIEN') then
                     nb_info_type = nb_info_type + 1
