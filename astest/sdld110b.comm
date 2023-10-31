@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -70,22 +70,32 @@ GENE = DYNA_VIBRA(
     EXCIT=(_F(VECT_ASSE_GENE=VECT_X, FONC_MULT=SIN),),
 )
 
-d = np.array(GENE.sdj.DEPL.get()).reshape((-1, 4))
-d3 = d[:, 2]
+d3 = []
+for inst in L_INST.getValues():
+    recu_gene = RECU_GENE(RESU_GENE=GENE, INST=inst, NOM_CHAM="DEPL")
+    d3.append(recu_gene.getValues()[2])
+
 DP3 = DEFI_FONCTION(
-    NOM_PARA="INST", NOM_RESU="DEPL", VALE=np.ravel(list(zip(L_INST.getValues(), d3.tolist())))
+    NOM_PARA="INST", NOM_RESU="DEPL", VALE=np.ravel(list(zip(L_INST.getValues(), d3)))
 )
 
-v = np.array(GENE.sdj.VITE.get()).reshape((-1, 4))
-v3 = v[:, 2]
+
+v3 = []
+for inst in L_INST.getValues():
+    recu_gene = RECU_GENE(RESU_GENE=GENE, INST=inst, NOM_CHAM="VITE")
+    v3.append(recu_gene.getValues()[2])
+
 VP3 = DEFI_FONCTION(
-    NOM_PARA="INST", NOM_RESU="DEPL", VALE=np.ravel(list(zip(L_INST.getValues(), v3.tolist())))
+    NOM_PARA="INST", NOM_RESU="DEPL", VALE=np.ravel(list(zip(L_INST.getValues(), v3)))
 )
 
-a = np.array(GENE.sdj.ACCE.get()).reshape((-1, 4))
-a3 = a[:, 2]
+a3 = []
+for inst in L_INST.getValues():
+    recu_gene = RECU_GENE(RESU_GENE=GENE, INST=inst, NOM_CHAM="ACCE")
+    a3.append(recu_gene.getValues()[2])
+
 AP3 = DEFI_FONCTION(
-    NOM_PARA="INST", NOM_RESU="DEPL", VALE=np.ravel(list(zip(L_INST.getValues(), a3.tolist())))
+    NOM_PARA="INST", NOM_RESU="DEPL", VALE=np.ravel(list(zip(L_INST.getValues(), a3)))
 )
 
 

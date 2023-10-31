@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -136,9 +136,6 @@ IMPR_FONCTION(
     COURBE=(_F(FONCTION=FX_RELA3)),
 )
 
-
-F_REL = INTEGR3.FORCE_RELATION()
-np.savetxt("fx.csv", F_REL, delimiter=",")
 
 # ---------------------------------------------------
 # CALCUL DYNA_LINE AVEC CORRECTION STATIQUE

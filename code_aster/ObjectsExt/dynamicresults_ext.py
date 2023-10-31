@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,23 +35,6 @@ from ..Utilities import injector
 @injector(TransientGeneralizedResult)
 class ExtendedTransientGeneralizedResult:
     cata_sdj = "SD.sd_dyna_gene.sd_dyna_gene"
-
-    def _check_input_inoli(self, inoli):
-        if inoli == -1:
-            print(
-                "Nonlinearity index not specified, by default the first nonlinearity",
-                " will be considered.",
-            )
-            inoli = 1
-        nbnoli = self._nb_nonl()
-        if nbnoli == 0:
-            raise AsException("Linear calculation, no information can be retrieved.")
-        if (inoli <= 0) or (inoli > nbnoli):
-            raise AsException(
-                "The nonlinearity index should be a comprised between 1 and %d,"
-                " the total number of nonlinearities." % (nbnoli)
-            )
-        return inoli
 
     def _nb_nonl(self):
         desc = self.sdj.DESC.get()
@@ -181,28 +164,6 @@ class ExtendedTransientGeneralizedResult:
         nltypes = self.sdj.sd_nl.TYPE.get()
         return [Int2StrTypes[nltypes[i]] for i in range(len(nltypes))]
 
-    def FORCE_NORMALE(self, inoli=-1):
-        """
-        Returns a 1D numpy array giving the evolution of the normal force
-        at the archived instants
-        """
-
-        inoli = self._check_input_inoli(inoli)
-
-        nltypes = self._type_nonl()
-        if not (nltypes[inoli - 1] in ("DIS_CHOC", "FLAMBAGE", "CHOC_ELAS_TRAC")):
-            dummy = self.INFO_NONL()
-            raise AsException(
-                "The chosen nonlinearity index (%d) does not correspond to a :\n"
-                "    DIS_CHOC or FLAMBAGE or CHOC_ELAS_TRAC nonlinearity\n"
-                "These are the only nonlinearities that save the local normal force." % (inoli)
-            )
-
-        vint = self.VARI_INTERNE(inoli, describe=False)
-        # The normal force is saved in the first position (ind=0) of the internal variables for :
-        #   DIS_CHOC | FLAMBAGE | CHOC_ELAS_TRAC nonlinearities
-        return vint[:, 0]
-
     def INFO_NONL(self):
         """
         Prints out information about the considered non linearities,
@@ -265,45 +226,3 @@ class ExtendedTransientGeneralizedResult:
             Output[i] = add
         print("-" * 104)
         return Output
-
-    def LIST_ARCH(self):
-        """
-        Returns a python list of all archived instants
-        """
-
-        disc = self.sdj.DISC.get()
-        return list(disc)
-
-    def VARI_INTERNE(self, inoli=-1, describe=True):
-        """
-        Returns a 2D numpy array of all internal variables for a given non linearity
-        at the index <inoli>
-        """
-
-        inoli = self._check_input_inoli(inoli)
-        i = inoli - 1
-
-        vindx = self.sdj.sd_nl.VIND.get()
-        # number of internal variables saved for all nonlinearities : record length of VINT
-        nbvint = vindx[-1] - 1
-
-        vint = self.sdj.sd_nl.VINT.get()
-        nbsaves = len(vint) // nbvint
-
-        start = vindx[i] - 1
-        finish = vindx[i + 1] - 1
-        outputLength = (finish - start) * nbsaves
-
-        cntr = 0
-        output = [0.0] * outputLength
-        for iord in range(nbsaves):
-            for i in range(start, finish):
-                output[cntr] = vint[iord * (nbvint) + i]
-                cntr += 1
-
-        output = numpy.reshape(output, (nbsaves, finish - start))
-
-        if describe:
-            dummy = self._print_vint_description(inoli)
-
-        return output
