@@ -528,10 +528,12 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato, &
         call jedetr('&&IRCMPE.NBIMPR3')
     else
         nbimprt = nbimpr
-        call wkvect('&&IRCMPE.INDIR', 'V V I', nbimpr, jindir)
-        do jaux = 1, nbimpr
-            zi(jindir+jaux-1) = jaux
-        end do
+        if (nbimpr .ne. 0) then
+            call wkvect('&&IRCMPE.INDIR', 'V V I', nbimpr, jindir)
+            do jaux = 1, nbimpr
+                zi(jindir+jaux-1) = jaux
+            end do
+        end if
     end if
     if (nbimprt .eq. 0) then
         goto 999
