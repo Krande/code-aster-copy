@@ -84,7 +84,6 @@ implicit none
                        e1_ = e1r    , e2_ = e2r    , e3_ = e3r,&
                        nu12_ = nu12r, nu13_ = nu13r, nu23_ = nu23r,&
                        g1_ = g1r    , g2_ = g2r    , g3_ = g3r,&
-                       xyzgau_ = xyzgau,&
                        ei_ = ei    , nui_ = nui  , gi_ = gi,&
                        e1i_ = e1i    , e2i_ = e2i    , e3i_ = e3i,&
                        nu12i_ = nu12i, nu13i_ = nu13i, nu23i_ = nu23i,&
