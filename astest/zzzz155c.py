@@ -42,6 +42,7 @@ def splitEntitySet(nbElemT, rank, nbProcs):
 
 
 from code_aster.Utilities.MedUtils.MedMeshAndFieldsSplitter import splitMeshAndFieldsFromMedFile
+from code_aster import MedFileAccessType
 
 # Read med file and split mesh and fields
 filename = "fort.20"
@@ -63,7 +64,7 @@ for count, i in enumerate(loc2Glob):
 
 # Read mesh from file to read cell number
 fr = code_aster.MedFileReader()
-fr.openParallel(filename)
+fr.openParallel(filename, MedFileAccessType.MedReadOnly)
 medMesh = fr.getMesh(0)
 nbSeq = medMesh.getSequenceNumber()
 seq = medMesh.getSequence(0)
