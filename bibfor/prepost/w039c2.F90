@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine w039c2(nuzone, jvale, jdesc, nomgd, ifm, &
-                  ifr)
+subroutine w039c2(nuzone, nuzonr, jvale, jdesc, nomgd, &
+                  ifm, ifr)
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -29,7 +29,7 @@ subroutine w039c2(nuzone, jvale, jdesc, nomgd, ifm, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 !
-    integer :: nuzone, jvale, jdesc, ifm, ifr
+    integer :: nuzone, nuzonr, jvale, jdesc, ifm, ifr
     character(len=8) :: nomgd
 ! person_in_charge: jacques.pellet at edf.fr
 ! ----------------------------------------------------------------------
@@ -52,8 +52,8 @@ subroutine w039c2(nuzone, jvale, jdesc, nomgd, ifm, &
     ASSERT(nuzone .gt. 0)
     nzonmx = zi(jdesc-1+2)
 !
-    write (ifm, 1005) 'VALEUR =', dble(nuzone)
-    write (ifr, 1005) 'VALEUR =', dble(nuzone)
+    write (ifm, 1005) 'VALEUR =', dble(nuzonr)
+    write (ifr, 1005) 'VALEUR =', dble(nuzonr)
     debgd = 3+2*nzonmx+(nuzone-1)*nec+1
     ico = 0
     do kcmp = 1, ncmpmx

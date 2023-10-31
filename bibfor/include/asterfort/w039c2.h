@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,10 @@
 !
 !
 interface
-    subroutine w039c2(nuzone, jvale, jdesc, nomgd, ifm,&
-                      ifr)
+    subroutine w039c2(nuzone, nuzonr, jvale, jdesc, nomgd,&
+                      ifm, ifr)
         integer :: nuzone
+        integer :: nuzonr
         integer :: jvale
         integer :: jdesc
         character(len=8) :: nomgd
