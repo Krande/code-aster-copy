@@ -347,11 +347,13 @@ CHTHF=AFFE_CHAR_THER_F(         MODELE=MO,
                              _F(  GROUP_MA = 'GMA17',
                                         FLUN = FOH)) )
 
-CHTHFB=AFFE_CHAR_THER_F(         MODELE=MO,FLUX_NL=(
-                             _F(  MAILLE = ( 'M30', 'M112', ),
-                                       FLUN = FOI2),
-                             _F(  GROUP_MA = 'GMA11',
-                                       FLUN = FOE2)),ECHANGE=(
+CHTHFB=AFFE_CHAR_THER_F(         MODELE=MO,
+                            # FLUX_NL=(
+                             # _F(  MAILLE = ( 'M30', 'M112', ),
+                                       # FLUN = FOI2),
+                             # _F(  GROUP_MA = 'GMA11',
+                                       # FLUN = FOE2)),
+                            ECHANGE=(
                              _F(  GROUP_MA = 'GMA13',
                                        COEF_H = FOB,
                                        TEMP_EXT = FOC),
