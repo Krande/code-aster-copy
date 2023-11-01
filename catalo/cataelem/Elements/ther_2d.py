@@ -542,6 +542,7 @@ class THAXQL4(THPLQU4):
         OP.CARA_GAUCHI(te=-1),
 
         OP.CARA_TORSION(te=-1),
+
     )
 
 
@@ -577,6 +578,8 @@ class THAXQL9(THPLQU4):
         OP.CARA_GAUCHI(te=-1),
 
         OP.CARA_TORSION(te=-1),
+        
+        OP.FLUX_ELGA(te=-1),
     )
 
 
@@ -595,6 +598,7 @@ class THAXTL3(THPLQU4):
         OP.CARA_GAUCHI(te=-1),
 
         OP.CARA_TORSION(te=-1),
+        
     )
 
 
@@ -636,6 +640,8 @@ class THAXTL6(THPLQU4):
         OP.RESI_THER_SOURNL(te=-1),
 
         OP.MTAN_THER_SOURNL(te=-1),
+        
+        OP.FLUX_ELGA(te=-1),
     )
 
 
@@ -695,6 +701,8 @@ class THPLQL9(THPLQU4):
         OP.RESI_THER_SOURNL(te=-1),
 
         OP.MTAN_THER_SOURNL(te=-1),
+        
+        OP.FLUX_ELGA(te=-1),
     )
 
 
@@ -713,6 +721,7 @@ class THPLTL3(THPLQU4):
         OP.CARA_GAUCHI(te=-1),
 
         OP.CARA_TORSION(te=-1),
+
     )
 
 
@@ -754,4 +763,6 @@ class THPLTL6(THPLQU4):
         OP.RESI_THER_SOURNL(te=-1),
 
         OP.MTAN_THER_SOURNL(te=-1),
+        
+        OP.FLUX_ELGA(te=-1),
     )

@@ -67,6 +67,5 @@ type(NL_DS_TableIO), intent(inout) :: tableio
 ! - Set table parameters
 !
     tableio%tablName = tablName
-    print *, 'coucou tablName ', tablName
 !
 end subroutine

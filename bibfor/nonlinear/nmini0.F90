@@ -117,7 +117,6 @@ character(len=24) :: sderro
 !
 ! - Create energy management datastructure
 !
-    print *, 'coucou nonlinDSEnergyCreate'
     call nonlinDSEnergyCreate(ds_energy)
 !
 ! - Create material management datastructure
