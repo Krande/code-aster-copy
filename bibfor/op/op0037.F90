@@ -650,30 +650,26 @@ subroutine op0037()
 !
     if (lparam .and. .not. lbasm) then
 !       FIX ISSUE 30730 POUR LE CALCUL DES PARAMETRES GENERALISES
-        if (normini .eq. 'MASS_GENE') then
-            call jeexin(masse(1:19)//'.&INT', exmasse)
-            if (exmasse .ne. 0) then
-                call mtdscr(masse)
-                call jeveuo(masse(1:19)//'.&INT', 'E', lmasse)
-                call mtdscr(raide)
-                call jeveuo(raide(1:19)//'.&INT', 'E', lraide)
+        call jeexin(masse(1:19)//'.&INT', exmasse)
+        if (exmasse .ne. 0) then
+            call mtdscr(masse)
+            call jeveuo(masse(1:19)//'.&INT', 'E', lmasse)
+            call mtdscr(raide)
+            call jeveuo(raide(1:19)//'.&INT', 'E', lraide)
 !
-                call jeveuo(kvec, 'L', lmod)
+            call jeveuo(kvec, 'L', lmod)
 !
 !               CALCUL DES PARAMETRES GENERALISES
-                call wkvect('&&OP0037.POSI.DDL', 'V V I', neq, lddl2)
-                call wkvect('&&OP0037.DDL.BLOQ.CINE', 'V V I', neq, lprod)
-                call vpddl(raide(1:19), masse(1:19), neq, ib, ib, &
-                           ib, zi(lddl2), zi(lprod), ierd)
+            call wkvect('&&OP0037.POSI.DDL', 'V V I', neq, lddl2)
+            call wkvect('&&OP0037.DDL.BLOQ.CINE', 'V V I', neq, lprod)
+            call vpddl(raide(1:19), masse(1:19), neq, ib, ib, &
+                       ib, zi(lddl2), zi(lprod), ierd)
 
 !               CALCUL DES FACTEURS DE PARTICIPATIONS ET DES MASSES EFFECTIVES
-                call vppfac(lmasse, zr(lvalr+3*nbmode), zr(lmod), neq, nbmode, &
-                            nbmode, zr(lvalr+6*nbmode), zr(lvalr+9*nbmode))
-            else
-                call utmess('A', 'ALGELINE2_89')
-            end if
+            call vppfac(lmasse, zr(lvalr+3*nbmode), zr(lmod), neq, nbmode, &
+                        nbmode, zr(lvalr+6*nbmode), zr(lvalr+9*nbmode))
         else
-            call utmess('A', 'ALGELINE2_90', sk=normini)
+            call utmess('A', 'ALGELINE2_89')
         end if
 !
     else if (lbasm .and. .not. (lparam)) then
