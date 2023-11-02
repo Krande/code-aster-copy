@@ -46,6 +46,7 @@
 #ifdef ASTER_HAVE_PETSC
 #include <petscvec.h>
 #endif
+#include "ParallelUtilities/AsterMPI.h"
 
 #include <typeinfo>
 
@@ -753,8 +754,15 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
 
 template < class ValueType >
 bool FieldOnNodes< ValueType >::printMedFile( const std::string fileName, bool local ) const {
-    LogicalUnitFile a( fileName, Binary, New );
-    auto retour = a.getLogicalUnit();
+    const auto rank = getMPIRank();
+    LogicalUnitFile a;
+    ASTERINTEGER retour = -1;
+    // In case that the print file (single and absolute path) is unique between processors,
+    // it must only be created on proc 0.
+    if ( getMesh()->isParallel() || ( !getMesh()->isParallel() && rank == 0 ) ) {
+        a.openFile( fileName, Binary, New );
+        retour = a.getLogicalUnit();
+    }
     CommandSyntax cmdSt( "IMPR_RESU" );
 
     SyntaxMapContainer dict;

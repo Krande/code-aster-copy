@@ -31,6 +31,7 @@
 #include "aster_fort_utils.h"
 
 #include "Messages/Messages.h"
+#include "ParallelUtilities/AsterMPI.h"
 #include "PythonBindings/LogicalUnitManager.h"
 #include "Supervis/CommandSyntax.h"
 #include "Supervis/Exceptions.h"
@@ -727,8 +728,15 @@ void Result::printInfo() const {
 }
 
 void Result::printMedFile( const std::string fileName, std::string medName, bool local ) const {
-    LogicalUnitFile a( fileName, Binary, New );
-    ASTERINTEGER retour = a.getLogicalUnit();
+    const auto rank = getMPIRank();
+    LogicalUnitFile a;
+    ASTERINTEGER retour = -1;
+    // In case that the print file (single and absolute path) is unique between processors,
+    // it must only be created on proc 0.
+    if ( getMesh()->isParallel() || ( !getMesh()->isParallel() && rank == 0 ) ) {
+        a.openFile( fileName, Binary, New );
+        retour = a.getLogicalUnit();
+    }
     CommandSyntax cmdSt( "IMPR_RESU" );
 
     SyntaxMapContainer dict;

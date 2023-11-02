@@ -74,6 +74,18 @@ class LogicalUnitFile {
             releaseLogicalUnitFile( _logicalUnit );
     };
 
+    LogicalUnitFile( const LogicalUnitFile & ) = delete;
+
+    LogicalUnitFile &operator=( LogicalUnitFile & ) = delete;
+
+    void openFile( const std::string name, const FileType type, const FileAccess access ) {
+        if ( _isUsable )
+            releaseLogicalUnitFile( _logicalUnit );
+        _fileName = name;
+        _isUsable = true;
+        _logicalUnit = openLogicalUnitFile( name.c_str(), type, access );
+    };
+
     /**
      * @brief Recuperer le numéro d'unité logique correspondant
      * @return Unité logique

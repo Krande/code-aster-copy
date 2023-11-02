@@ -19,6 +19,7 @@
 
 import os
 import os.path as osp
+import time
 
 import code_aster
 from code_aster import MPI
@@ -34,6 +35,7 @@ parallel = nProc > 1
 
 
 rank = MPI.ASTER_COMM_WORLD.Get_rank()
+comm = MPI.ASTER_COMM_WORLD
 
 if parallel:
     rank = MPI.ASTER_COMM_WORLD.Get_rank()
@@ -159,5 +161,63 @@ if parallel:
     test.assertAlmostEqual(sfon[2, 0], 0.5175556367605225)
 else:
     test.assertAlmostEqual(sfon[6, 0], 0.0)
+
+pMesh2 = code_aster.Mesh()
+pMesh2.readMedFile("zzzz504a.med")
+
+# Test if med file print by #0 is not overwrite by others procs
+with shared_tmpdir("zzzz504a_") as tmpdir:
+    comm.bcast(tmpdir)
+    medfile = osp.join(tmpdir, "resu_new0.med")
+    # "sleep" is mandatory to be sure that #0 have written its file
+    if rank != 0:
+        time.sleep(3)
+    resu.printMedFile(medfile)
+
+model = AFFE_MODELE(
+    MAILLAGE=pMesh2,
+    AFFE=_F(MODELISATION="D_PLAN", PHENOMENE="MECANIQUE", TOUT="OUI"),
+    DISTRIBUTION=_F(METHODE="CENTRALISE"),
+)
+
+char_cin = AFFE_CHAR_CINE(
+    MODELE=model,
+    MECA_IMPO=(
+        _F(GROUP_NO="N2", DX=0.0, DY=0.0, DZ=0.0),
+        _F(GROUP_NO="N4", DX=0.0, DY=0.0, DZ=0.0),
+    ),
+)
+
+char_meca = AFFE_CHAR_MECA(
+    MODELE=model,
+    LIAISON_DDL=_F(GROUP_NO=("N1", "N3"), DDL=("DX", "DX"), COEF_MULT=(1.0, -1.0), COEF_IMPO=0),
+    DDL_IMPO=_F(GROUP_NO="N1", DX=1.0),
+)
+
+MATER1 = DEFI_MATERIAU(ELAS=_F(E=200000.0, NU=0.3))
+
+AFFMAT = AFFE_MATERIAU(MAILLAGE=pMesh2, AFFE=_F(TOUT="OUI", MATER=MATER1))
+
+LI = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=1))
+
+resu = STAT_NON_LINE(
+    CHAM_MATER=AFFMAT,
+    METHODE="NEWTON",
+    COMPORTEMENT=_F(RELATION="ELAS"),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-1),
+    EXCIT=(_F(CHARGE=char_cin), _F(CHARGE=char_meca)),
+    INCREMENT=_F(LIST_INST=LI),
+    MODELE=model,
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    SOLVEUR=_F(METHODE="PETSC", RESI_RELA=1.0e-10, PRE_COND="LDLT_SP"),
+)
+
+with shared_tmpdir("zzzz504a_") as tmpdir:
+    comm.bcast(tmpdir)
+    medfile = osp.join(tmpdir, f"resu_new1.med")
+    # "sleep" is mandatory to be sure that #0 have written its file
+    if rank != 0:
+        time.sleep(3)
+    resu.printMedFile(medfile, local=True)
 
 FIN()
