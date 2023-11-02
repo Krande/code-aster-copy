@@ -222,6 +222,8 @@ class NonLinearSolver(SolverFeature):
 
             if matr_update_step == 0 or (self.step_rank + 1) % matr_update_step:
                 solv.current_matrix = self.current_matrix
+            else:
+                solv.current_matrix = None
 
             if logger.getEffectiveLevel() <= DEBUG:
                 self.phys_state.debugPrint("<t-> ")
