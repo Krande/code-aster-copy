@@ -25,7 +25,7 @@ from .solver_features import SolverOptions as SOP
 
 
 class SNESSolver(SolverFeature):
-    """Solves a step, loops on iterations."""
+    """Solves a step using PETSc SNES, loops on iterations."""
 
     provide = SOP.ConvergenceCriteria
 
@@ -182,7 +182,7 @@ class SNESSolver(SolverFeature):
         return self.current_matrix
 
     def _get(self, keyword, parameter=None, default=None):
-        """ "Return a keyword value"""
+        """Return a keyword value"""
         args = self.param
         if parameter is not None:
             if args.get(keyword) is None:
