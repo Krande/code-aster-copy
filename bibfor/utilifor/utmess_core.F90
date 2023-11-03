@@ -25,6 +25,7 @@ subroutine utmess_core(typ, idmess, nk, valk, ni, &
     use parameters_module, only: ST_OK
     implicit none
 #include "asterc/getres.h"
+#include "asterc/jdcget.h"
 #include "asterc/isjvup.h"
 #include "asterc/uexcep.h"
 #include "asterc/utprin.h"
@@ -57,7 +58,7 @@ subroutine utmess_core(typ, idmess, nk, valk, ni, &
     character(len=8) :: nomres, k8b
     character(len=2) :: typm
     aster_logical :: lerror, lvalid, labort, suite, lstop, lerrm, ltrb
-    integer :: lout, idf, i, lc, imaap
+    integer :: lout, idf, i, lc, imaap, icode
     integer :: numex
 !
     aster_logical, save :: isFirst = ASTER_TRUE
@@ -85,9 +86,17 @@ subroutine utmess_core(typ, idmess, nk, valk, ni, &
     if (idf .eq. 0) then
         idf = 2
     end if
-    lstop = .false.
+!
+    if (idf .eq. 5) then
+        icode = jdcget("WarningAsError")
+        if (icode .ne. 0) then
+            idf = 2
+            typm(1:1) = 'F'
+        end if
+    end if
 !
 !     --- COMPORTEMENT EN CAS D'ERREUR
+    lstop = .false.
     call onerrf(' ', compex, lout)
 !
     lerrm = idf .eq. 4
@@ -127,7 +136,7 @@ subroutine utmess_core(typ, idmess, nk, valk, ni, &
 !   Keep the first message in memory because this is one that will be used
 !   to raise the exception
     if (isFirst) then
-        call init_message(firstMsg, typ, msgId, &
+        call init_message(firstMsg, typm, msgId, &
                           nk=nk, valk=valk, &
                           ni=ni, vali=vali, &
                           nr=nr, valr=valr, &
