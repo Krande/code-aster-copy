@@ -141,7 +141,7 @@ MEST21 = MECA_STATIQUE(MODELE=MO, CHAM_MATER=CHMAT, EXCIT=(_F(CHARGE=CH0), _F(CH
 
 # --------------------
 
-# répéter exprès LIAISON_MAIL (issue31296) pour tester ELIM_MULT='NON'
+# on répète LIAISON_MAIL (issue31296) pour tester ELIM_MULT='NON'
 CH22 = AFFE_CHAR_MECA(
     MODELE=MO,
     LIAISON_MAIL=(
@@ -245,16 +245,28 @@ MEST11 = THER_LINEAIRE(MODELE=MO, CHAM_MATER=CHMAT, EXCIT=(_F(CHARGE=CH0), _F(CH
 
 # --------------------
 
+# on répète LIAISON_MAIL (issue31296/issue33332) pour tester ELIM_MULT='NON'
 CH12 = AFFE_CHAR_THER(
     MODELE=MO,
     INFO=2,
-    LIAISON_MAIL=_F(
-        GROUP_MA_MAIT=("Q1", "Q2"),
-        GROUP_NO_ESCL="E",
-        DISTANCE_MAX=1.0e-6,
-        TRAN=(-5.0, 0.0),
-        CENTRE=(10.0, 0.0),
-        ANGL_NAUT=90.0,
+    LIAISON_MAIL=(
+        _F(
+            GROUP_MA_MAIT=("Q1", "Q2"),
+            GROUP_NO_ESCL="E",
+            DISTANCE_MAX=1.0e-6,
+            TRAN=(-5.0, 0.0),
+            CENTRE=(10.0, 0.0),
+            ANGL_NAUT=90.0,
+        ),
+        _F(
+            ELIM_MULT="NON",
+            GROUP_MA_MAIT=("Q1", "Q2"),
+            GROUP_NO_ESCL="E",
+            DISTANCE_MAX=1.0e-6,
+            TRAN=(-5.0, 0.0),
+            CENTRE=(10.0, 0.0),
+            ANGL_NAUT=90.0,
+        ),
     ),
 )
 
