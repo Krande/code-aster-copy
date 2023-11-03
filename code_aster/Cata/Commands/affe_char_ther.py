@@ -177,7 +177,7 @@ AFFE_CHAR_THER=OPER(nom="AFFE_CHAR_THER",op=34,sd_prod=char_ther
            TRAN            =SIMP(statut='f',typ='R',max='**' ),
            ANGL_NAUT       =SIMP(statut='f',typ='R',max='**' ),
            CENTRE          =SIMP(statut='f',typ='R',max='**' ),
-           ELIM_MULT       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
+           ELIM_MULT       =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
            DISTANCE_MAX    =SIMP(statut='f',typ='R'),
            DISTANCE_ALARME =SIMP(statut='f',typ='R'),
          ),
