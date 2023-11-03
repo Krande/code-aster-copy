@@ -600,7 +600,7 @@ class Mac3CoeurCalcul:
                 NOM_CHAM="DEPL", EVAL_CHAM="MAXI_ABS", GROUP_NO="CR_BAS", NOM_CMP=("DX",)
             ),
             "NEWTON": _F(MATRICE="TANGENTE", REAC_ITER=1),
-            "CONVERGENCE": _F(ITER_GLOB_MAXI=10, RESI_GLOB_MAXI=1.0e-6, RESI_GLOB_RELA=1.0e-6),
+            "CONVERGENCE": _F(ITER_GLOB_MAXI=10, RESI_GLOB_MAXI=1.0e-2, RESI_GLOB_RELA=1.0e-6),
             "SOLVEUR": _F(METHODE="MUMPS", PRETRAITEMENTS="AUTO"),
             "ARCHIVAGE": _F(LIST_INST=self.times_arch, PRECISION=1.0e-08),
             "AFFICHAGE": _F(INFO_RESIDU="OUI"),
