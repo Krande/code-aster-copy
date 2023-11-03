@@ -29,7 +29,7 @@ class ThermalOperatorsManager(BaseOperatorsManager):
     _temp_stress = _temp_internVar = _theta = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
-    def __init__(self, theta=0.57):
+    def __init__(self, theta=None):
         super().__init__()
         self._first_jacobian = self._lagr_scaling = None
         self._temp_stress = self._temp_internVar = None

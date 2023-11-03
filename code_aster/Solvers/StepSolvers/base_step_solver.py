@@ -40,7 +40,6 @@ class BaseStepSolver(SolverFeature, ProblemDispatcher):
     current_matrix = param = None
 
     def __init__(self):
-        """xxxx xxxx xxxx xxxx."""
         super(BaseStepSolver, self).__init__()
         self.current_matrix = self.param = None
 
@@ -50,7 +49,6 @@ class BaseStepSolver(SolverFeature, ProblemDispatcher):
         return self.get_feature(SOP.ConvergenceCriteria)
 
     def _createPrivate(self, param):
-        """xxxx xxxx xxxx xxxx."""
         self.setParameters(param)
 
     def setParameters(self, param):

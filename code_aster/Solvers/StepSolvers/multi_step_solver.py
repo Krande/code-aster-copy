@@ -56,7 +56,6 @@ class MultiStepSolver(MecaDynaStepSolver):
         self._step_solvers[0].setInitialState(initial_state)
 
     def solve(self, t_init, delta_t):
-        """xxxx xxxx xxxx xxxx xxxx xxxx"""
         # supprimer les arguments t_init et delta_t
         step0, step1 = self._step_solvers
         print("++ Solving stage 1")

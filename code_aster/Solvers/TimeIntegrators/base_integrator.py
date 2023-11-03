@@ -157,7 +157,7 @@ class BaseIntegrator(MecaDynaOperatorsManager):
         raise NotImplementedError
 
     def computeAcceleration(self):
-        """xxxx xxxx xxxx xxxx xxxx xxxx."""
+        """Computes the acceleration."""
         force = self.getFunctional(self.t0, self.dt, self.U, self.dU, self.d2U).resi
         linear_solver = self.get_feature(SOP.LinearSolver)
         if not self._mass.isFactorized():

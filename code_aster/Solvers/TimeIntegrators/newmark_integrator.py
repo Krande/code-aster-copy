@@ -43,7 +43,7 @@ class NewmarkIntegrator(BaseIntegrator):
         """
         return cls(gamma=schema["GAMMA"], beta=schema["BETA"])
 
-    def __init__(self, gamma=0.5, beta=0.25):
+    def __init__(self, gamma=None, beta=None):
         super().__init__()
         self._gamma = gamma
         self._beta = beta

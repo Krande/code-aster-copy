@@ -28,13 +28,14 @@ class ProblemType:
 
 
 class ProblemDispatcher:
-    """xxxx xxxx xxxx xxxx."""
+    """class that implements the problem dispatcher
+    based on the type of physical problem."""
 
     problem_type = ProblemType.Unset
 
     @classmethod
     def create(cls, param):
-        """xxxx xxxx xxxx xxxx."""
+        """factory function that returns the appropriate child class."""
         found = None
         ProblemType = cls._getProblemType(param)
         for klass in cls.__subclasses__():
@@ -57,5 +58,4 @@ class ProblemDispatcher:
         return pb_type
 
     def _createPrivate(self, param):
-        """xxxx xxxx xxxx xxxx."""
         raise NotImplementedError
