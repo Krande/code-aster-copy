@@ -98,6 +98,7 @@ nonlinearResult = MECA_NON_LINE(
     INCREMENT=_F(LIST_INST=timeStep),
     NEWTON=_F(PREDICTION="ELASTIQUE", MATRICE="TANGENTE", REAC_ITER=1),
     CONVERGENCE=_F(RESI_GLOB_MAXI=1.0e-1, ITER_GLOB_MAXI=50),
+    # CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6, ITER_GLOB_MAXI=50),
     # RECH_LINEAIRE=_F(ITER_LINE_MAXI=3),
 )
 
@@ -163,5 +164,46 @@ TEST_RESU(
     )
 )
 
+# Ajout d'un test avec un chargement de force extérieures nulles pour tester le calcul RESI_GLOB_RELA
+# avec présence de variables de commande TEMP
+nonlinearResult2 = MECA_NON_LINE(
+    MODELE=model,
+    CHAM_MATER=materialField,
+    EXCIT=(_F(CHARGE=clampBC)),
+    COMPORTEMENT=_F(RELATION="VMIS_ISOT_LINE", DEFORMATION="SIMO_MIEHE"),
+    INCREMENT=_F(LIST_INST=timeStep, INST_FIN=1.0),
+    NEWTON=_F(PREDICTION="ELASTIQUE", MATRICE="TANGENTE", REAC_ITER=1),
+    # CONVERGENCE=_F(RESI_GLOB_MAXI=1.0e-1, ITER_GLOB_MAXI=50),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6, ITER_GLOB_MAXI=50),
+    # RECH_LINEAIRE=_F(ITER_LINE_MAXI=3),
+)
+
+# nonlinearResult2 = STAT_NON_LINE(
+#     MODELE=model,
+#     CHAM_MATER=materialField,
+#     EXCIT=(_F(CHARGE=clampBC)),
+#     COMPORTEMENT=_F(RELATION="VMIS_ISOT_LINE", DEFORMATION="SIMO_MIEHE"),
+#     INCREMENT=_F(LIST_INST=timeStep, INST_FIN =1.0),
+#     NEWTON=_F(PREDICTION="ELASTIQUE", MATRICE="TANGENTE", REAC_ITER=1),
+#     #CONVERGENCE=_F(RESI_GLOB_MAXI=1.0e-1, ITER_GLOB_MAXI=50),
+#     CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6, ITER_GLOB_MAXI=50),
+#     # RECH_LINEAIRE=_F(ITER_LINE_MAXI=3),
+# )
+
+TEST_RESU(
+    RESU=(
+        _F(
+            INST=1.0,
+            RESULTAT=nonlinearResult2,
+            NOM_CHAM="DEPL",
+            GROUP_NO="NO3",
+            NOM_CMP="DY",
+            VALE_CALC=9.762840686151652,
+            VALE_REFE=9.762840686151653,
+            REFERENCE="NON_DEFINI",
+            PRECISION=3.21e-2,
+        ),
+    )
+)
 FIN()
 #

@@ -254,6 +254,7 @@ materialField = AFFE_MATERIAU(
 #     CONVERGENCE=_F(RESI_GLOB_RELA=5.0e-05, ITER_GLOB_MAXI=50),
 # )
 
+
 nonlinearResult = MECA_NON_LINE(
     MODELE=modelMeca,
     CHAM_MATER=materialField,
@@ -284,7 +285,7 @@ TEST_RESU(
             NOM_CHAM="VARI_NOEU",
             GROUP_NO="NO1",
             NOM_CMP="V1",
-            VALE_CALC=0.01834599252008838,
+            VALE_CALC=0.01834538584519512,
             VALE_REFE=0.01834599252008838,
             REFERENCE="SOURCE_EXTERNE",
             PRECISION=0.01,
@@ -295,7 +296,7 @@ TEST_RESU(
             NOM_CHAM="SIEF_NOEU",
             GROUP_NO="NO1",
             NOM_CMP="SIYY",
-            VALE_CALC=330165890.0380709,
+            VALE_CALC=330164415.9254925,
             VALE_REFE=327.0e06,
             REFERENCE="SOURCE_EXTERNE",
             PRECISION=0.1,

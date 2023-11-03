@@ -350,11 +350,20 @@ class ConvergenceManager(SolverFeature):
         nume_equa = self.phys_pb.getDOFNumbering().getEquationNumbering()
         cmp2dof = nume_equa.getDOFFromNodeAndComponent()
 
+        disc_comp = DiscreteComputation(self.phys_pb)
+        if self.phys_state.externVar:
+            varc = disc_comp.getExternalStateVariablesForces(
+                self.phys_state.time_curr, self.phys_state.externVar
+            ).getValues()
+
         for [iNode, cmp], ieq in cmp2dof.items():
             f_int = 0.0
             f_ext = 0.0
             f_cont = 0.0
-            f_varc = 0.0
+            if self.phys_state.externVar:
+                f_varc = varc[ieq]
+            else:
+                f_varc = 0.0
 
             if cmp in ("LAGR_C", "LAGR_F1", "LAGR_F2"):
                 continue
