@@ -84,7 +84,23 @@ Arguments:
 Returns:
     int: local number of the DOF.
         )",
-              py::arg( "glob" ) );
+              py::arg( "glob" ) )
+        // ---------------------------------------------------------------------
+        .def( "getDOFsWithDescription", &ParallelEquationNumbering::getDOFsWithDescription, R"(
+            Get the dofs associated to the given component restricted to the given group
+            Arguments:
+                str: component to extract
+                list[str] = []: group names to filter
+                local (bool) = True: if True use local dof index else use global index in HPC
+                same_rank : - None: keep all nodes (default: None)
+                            - True: keep the nodes which are owned by the current MPI-rank
+                            - False: keep the nodes which are not owned by the current MPI-rank
+            Returns:
+                pair[list[int], list[str]]: list of nodes and list of components
+                list[int]: list of dofs
+            )",
+              py::arg( "cmp" ), py::arg( "groupNames" ) = VectorString(), py::arg( "local" ) = true,
+              py::arg( "same_rank" ) = PythonBool::None );
 };
 
 #endif

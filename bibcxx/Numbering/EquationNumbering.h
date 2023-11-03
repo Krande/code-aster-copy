@@ -342,7 +342,8 @@ class EquationNumbering : public BaseEquationNumbering {
      * groups
      */
     std::pair< std::pair< VectorLong, VectorString >, VectorLong >
-    getDOFsWithDescription( const std::string, const VectorString ) const;
+    getDOFsWithDescription( const std::string, const VectorString, const bool local = false,
+                            const ASTERINTEGER same_rank = PythonBool::None ) const;
 
     /**
      * @brief Mise a jour des pointeurs Jeveux

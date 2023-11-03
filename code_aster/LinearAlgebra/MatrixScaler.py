@@ -143,7 +143,7 @@ class MatrixScaler:
         nmbrg = A.getDOFNumbering()
         pA = A.toPetsc()
 
-        dof2row = nmbrg.getDictComponentsToRows(local=False)
+        dof2row = nmbrg.getDictComponentsToDOFs(local=False)
 
         # Helper function to merge some dof if needed
         def merge_keys(data: Dict[str, Set[int]], *merge_list: List[Tuple[str, str]]):

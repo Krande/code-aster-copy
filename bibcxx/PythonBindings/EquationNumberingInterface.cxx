@@ -161,12 +161,15 @@ Returns:
                 list[str]: list of components
             )" )
         .def( "getDOFsWithDescription", &EquationNumbering::getDOFsWithDescription, R"(
-            Get list of components
+            Get the dofs associated to the given component restricted to the given group
             Arguments:
                 str: component to extract
-                list[str]: group names
+                list[str] = []: group names to filter
+                local (bool) = True: if True use local dof index else use global index in HPC
             Returns:
                 pair[list[int], list[str]]: list of nodes and list of components
                 list[int]: list of dofs
-            )" );
+            )",
+              py::arg( "cmp" ), py::arg( "groupNames" ) = VectorString(), py::arg( "local" ) = true,
+              py::arg( "same_rank" ) = PythonBool::None );
 };

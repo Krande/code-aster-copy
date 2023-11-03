@@ -39,21 +39,7 @@ class ExtendedParallelDOFNumbering:
         """
         return (self.getName(), self.getEquationNumbering(), self.getModel())
 
-    @functools.lru_cache()
-    def __Components2Rows(self, local=True):
-        """Build the dictionary from the components to the rows."""
-        ndofs = self.getNumberOfDOFs(local=True)  # iterate on the dof of the subdomain
-        dict_dof = {}
-        for row in range(ndofs):
-            component = self.getComponentFromDOF(int(row), local=True)
-            if local:
-                dict_dof.setdefault(component, []).append(row)
-            else:
-                glob_row = self.localToGlobalDOF(row)
-                dict_dof.setdefault(component, []).append(glob_row)
-        return dict_dof
-
-    def getRowsAssociatedToComponent(self, component: str, local=True):
+    def getDOFsAssociatedToComponent(self, component: str, local=True):
         """Return the rows associated to the input component.
 
         Arguments:
@@ -61,12 +47,22 @@ class ExtendedParallelDOFNumbering:
         """
         if component == "LAGR":
             return self.getLagrangeDOFs(local)
+        # TODO fix after issue33341
+        if component.startswith("LAGR:"):
+            ret = []
+            for dof in self.getLagrangeDOFs(local):
+                if self.getComponentFromDOF(dof, local) == component:
+                    ret.append(dof)
+            return ret
         available_components = self.getComponents()
         if component not in available_components:
             raise ValueError(f"Component {component} is not in {available_components}")
 
-        return self.__Components2Rows(local).get(component, [])
+        return self.getEquationNumbering().getDOFsWithDescription(component, local=local)[-1]
 
-    def getDictComponentsToRows(self, local=True):
+    def getDictComponentsToDOFs(self, local=True):
         """Return the dictionary with the available components as keys and the rows as values."""
-        return self.__Components2Rows(local)
+        ret = {}
+        for cmp in self.getComponents():
+            ret[cmp] = self.getDOFsAssociatedToComponent(cmp, local)
+        return ret

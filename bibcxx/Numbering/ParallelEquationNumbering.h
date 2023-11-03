@@ -119,6 +119,14 @@ class ParallelEquationNumbering : public EquationNumbering {
     ASTERINTEGER getNodeFromDOF( const ASTERINTEGER dof, const bool local = false ) const;
 
     /**
+     * @brief Get (Nodes And Components) and dofs corresponding to component name and list of node
+     * groups
+     */
+    std::pair< std::pair< VectorLong, VectorString >, VectorLong >
+    getDOFsWithDescription( const std::string, const VectorString, const bool local = false,
+                            const ASTERINTEGER same_rank = PythonBool::None ) const;
+
+    /**
      * @brief Return true if a physical dof is Associated To A Given Row
      */
     bool isPhysicalDOF( const ASTERINTEGER dof, const bool local = false ) const;

@@ -431,8 +431,8 @@ bool EquationNumbering::isPhysicalDOF( const ASTERINTEGER dof, const bool local 
 };
 
 std::pair< std::pair< VectorLong, VectorString >, VectorLong >
-EquationNumbering::getDOFsWithDescription( const std::string cmp,
-                                           const VectorString groupNames ) const {
+EquationNumbering::getDOFsWithDescription( const std::string cmp, const VectorString groupNames,
+                                           const bool local, const ASTERINTEGER same_rank ) const {
 
     VectorLong v_nodes;
     VectorString cmps;

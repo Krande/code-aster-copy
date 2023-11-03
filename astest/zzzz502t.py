@@ -85,11 +85,11 @@ lagr_components = [comp for comp in nume_ddl.getComponents() if comp.startswith(
 
 local_lagr_rows = set()
 for comp in lagr_components:
-    local_lagr_rows.update(nume_ddl.getRowsAssociatedToComponent(comp))
+    local_lagr_rows.update(nume_ddl.getDOFsAssociatedToComponent(comp))
 
 global_lagr_rows = set()
 for comp in lagr_components:
-    global_lagr_rows.update(nume_ddl.getRowsAssociatedToComponent(comp, local=False))
+    global_lagr_rows.update(nume_ddl.getDOFsAssociatedToComponent(comp, local=False))
 
 test.assertListEqual(sorted(local_lagr_rows), sorted(nume_ddl.getLagrangeDOFs(local=True)))
 test.assertListEqual(sorted(global_lagr_rows), sorted(nume_ddl.getLagrangeDOFs(local=False)))
@@ -103,6 +103,19 @@ ref1 = {0: [22], 1: [46, 22]}
 ref2 = {0: [23], 1: [47, 23]}
 test.assertListEqual(dicLag[1], ref1[rank])
 test.assertListEqual(dicLag[2], ref2[rank])
+
+nume_eq = nume_ddl.getEquationNumbering()
+localDX = nume_eq.getDOFsWithDescription("DX", local=True, same_rank=True)
+ref1 = {0: [0, 1, 2, 3, 4, 5, 6, 7, 8], 1: [0, 1, 2, 3, 4, 5, 6, 7, 8]}
+ref2 = {0: [0, 4, 8, 11, 14, 16, 18, 20, 22], 1: [0, 2, 7, 12, 15, 18, 20, 22, 24]}
+test.assertListEqual(localDX[0][0], ref1[rank])
+test.assertListEqual(localDX[-1], ref2[rank])
+globalDX = nume_eq.getDOFsWithDescription("DX", local=False, same_rank=True)
+ref1 = {0: [0, 1, 2, 3, 4, 5, 6, 7, 8], 1: [9, 10, 11, 12, 13, 14, 15, 16, 17]}
+ref2 = {0: [0, 3, 6, 9, 12, 14, 16, 18, 20], 1: [24, 26, 29, 32, 35, 38, 40, 42, 44]}
+test.assertListEqual(globalDX[0][0], ref1[rank])
+test.assertListEqual(globalDX[-1], ref2[rank])
+
 
 petscMat = AssemblyObj.asterRigi.toPetsc()
 print("Norm: ", petscMat.getSizes())

@@ -318,6 +318,67 @@ ParallelEquationNumbering::getNodeAndComponentFromDOF( const bool local ) const 
     return ret;
 };
 
+std::pair< std::pair< VectorLong, VectorString >, VectorLong >
+ParallelEquationNumbering::getDOFsWithDescription( const std::string cmp,
+                                                   const VectorString groupNames, const bool local,
+                                                   const ASTERINTEGER same_rank ) const {
+
+    VectorLong v_nodes;
+    VectorString cmps;
+    VectorLong dofs;
+
+    std::set< ASTERINTEGER > nodes;
+    if ( groupNames.size() == 0 ) {
+        auto group = _mesh->getNodes( std::string(), local, same_rank );
+        std::copy( group.begin(), group.end(), std::inserter( nodes, nodes.end() ) );
+    } else {
+        auto group = _mesh->getNodes( groupNames, local, same_rank );
+        std::copy( group.begin(), group.end(), std::inserter( nodes, nodes.end() ) );
+    }
+
+    auto idToName = getComponentsIdToName();
+
+    ASTERINTEGER icmp, ncmp;
+    bool all_cmp = strip( cmp ) == "";
+    if ( all_cmp ) {
+        ncmp = getComponents().size();
+        cmps.reserve( ncmp * nodes.size() );
+    } else {
+        ncmp = 1;
+        icmp = getComponentsNameToId()[cmp];
+    }
+    v_nodes.reserve( ncmp * nodes.size() );
+
+    const auto descr = getNodeAndComponentIdFromDOF( local );
+
+    auto mapLG = getLocalToGlobalMapping();
+    mapLG->updateValuePointer();
+    for ( auto dof = 0; dof < descr.size(); ++dof ) {
+        if ( all_cmp and descr[dof].second > 0 ) {
+            if ( nodes.find( descr[dof].first ) != nodes.end() ) {
+                v_nodes.push_back( descr[dof].first );
+                cmps.push_back( idToName[descr[dof].second] );
+                if ( local ) {
+                    dofs.push_back( dof );
+                } else {
+                    dofs.push_back( ( *mapLG )[dof] );
+                }
+            }
+        } else if ( icmp == descr[dof].second ) {
+            if ( nodes.find( descr[dof].first ) != nodes.end() ) {
+                v_nodes.push_back( descr[dof].first );
+                if ( local ) {
+                    dofs.push_back( dof );
+                } else {
+                    dofs.push_back( ( *mapLG )[dof] );
+                }
+            }
+        }
+    }
+
+    return std::make_pair( std::make_pair( v_nodes, cmps ), dofs );
+};
+
 std::pair< ASTERINTEGER, std::string >
 ParallelEquationNumbering::getNodeAndComponentFromDOF( const ASTERINTEGER dof,
                                                        const bool local ) const {

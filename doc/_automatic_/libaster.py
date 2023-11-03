@@ -1732,7 +1732,7 @@ class EquationNumbering(DataStructure):
             dict[int, str] : dofs id for each node id and component id
         """
 
-    def getDOFsWithDescription(self, arg0, arg1):
+    def getDOFsWithDescription(self, arg0, arg1, arg2):
         """Get list of components
         Arguments:
             str: component to extract
