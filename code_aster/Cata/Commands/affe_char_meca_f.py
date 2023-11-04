@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -163,6 +163,7 @@ AFFE_CHAR_MECA_F = OPER(
                 "PRE1",
                 "PRE2",
                 "DNOR",
+                "DRNOR",
                 "DTAN",
             ),
             EXCLUS("DNOR", "DX"),
@@ -195,6 +196,7 @@ AFFE_CHAR_MECA_F = OPER(
         PRE1=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
         PRE2=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
         DNOR=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
+        DRNOR=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
         DTAN=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
     ),
     LIAISON_DDL=FACT(

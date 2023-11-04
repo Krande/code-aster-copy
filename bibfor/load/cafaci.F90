@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -91,19 +91,19 @@ subroutine cafaci(load, mesh, model, valeType)
     integer :: nb_node, nb_elem
     character(len=4) :: coef_type
     character(len=8) :: nomg
-    character(len=8) :: name_node, dof_name
+    character(len=8) :: name_node, dof_name, rota_name
     character(len=16) :: keywordfact, keyword
     character(len=19) :: list_rela
     character(len=19) :: connex_inv, modelLigrel
     character(len=19) :: ch_xfem_stat, ch_xfem_node, ch_xfem_lnno, ch_xfem_ltno, ch_xfem_heav
     integer :: jnoxfl, jnoxfv
     aster_logical :: lxfem, l_ocmp
-    aster_logical :: l_dtan, l_dnor
-    integer :: val_nb_dnor, val_nb_dtan
-    real(kind=8) :: val_r_dnor, val_r_dtan
-    character(len=8) :: val_f_dnor, val_f_dtan
-    complex(kind=8) :: val_c_dnor, val_c_dtan
-    character(len=16) :: val_t_dnor, val_t_dtan
+    aster_logical :: l_dtan, l_dnor, l_drnor
+    integer :: val_nb_dnor, val_nb_dtan, val_nb_drnor
+    real(kind=8) :: val_r_dnor, val_r_dtan, val_r_drnor
+    character(len=8) :: val_f_dnor, val_f_dtan, val_f_drnor
+    complex(kind=8) :: val_c_dnor, val_c_dtan, val_c_drnor
+    character(len=16) :: val_t_dnor, val_t_dtan, val_t_drnor
     character(len=24) :: keywordexcl
     integer :: n_keyexcl
     integer, pointer :: icompt(:) => null()
@@ -123,6 +123,7 @@ subroutine cafaci(load, mesh, model, valeType)
     coef_cplx_unit = (1.d0, 0.d0)
     coef_real_unit = 1.d0
     dof_name = 'DEPL'
+    rota_name = 'ROTA'
 
 ! - Model informations
     call dismoi('DIM_GEOM', model, 'MODELE', repi=geomDime)
@@ -184,11 +185,16 @@ subroutine cafaci(load, mesh, model, valeType)
                             n_max_keyword, n_keyword, keywordlist, nbterm, vale_real, &
                             vale_func, vale_cplx)
 !
-! ----- Detection of DNOR, DTAN and others
+! ----- Detection of DNOR, DTAN, DRNOR and others
 !
         call char_read_val(keywordfact, iocc, 'DNOR', valeType, val_nb_dnor, &
                            val_r_dnor, val_f_dnor, val_c_dnor, val_t_dnor)
         l_dnor = val_nb_dnor .gt. 0
+!
+        call char_read_val(keywordfact, iocc, 'DRNOR', valeType, val_nb_drnor, &
+                           val_r_drnor, val_f_drnor, val_c_drnor, val_t_drnor)
+        l_drnor = val_nb_drnor .gt. 0
+
         call char_read_val(keywordfact, iocc, 'DTAN', valeType, val_nb_dtan, &
                            val_r_dtan, val_f_dtan, val_c_dtan, val_t_dtan)
         l_dtan = val_nb_dtan .gt. 0
@@ -199,6 +205,8 @@ subroutine cafaci(load, mesh, model, valeType)
         if (geomDime .eq. 3 .and. l_dtan) then
             call utmess('F', 'CHARGES2_63')
         end if
+        if (l_drnor .and. geomDime .ne. 3) call utmess('F', 'CHARGES2_68')
+        if (l_drnor .and. lxfem) call utmess('F', 'CHARGES2_69')
         if (valeType .eq. 'FONC') then
             if (l_dnor .or. l_dtan) then
                 if (.not. (geomDime .eq. 2 .or. geomDime .eq. 3)) then
@@ -209,7 +217,7 @@ subroutine cafaci(load, mesh, model, valeType)
 !
 ! ----- Normals and/or tangents
 !
-        if (l_dnor) then
+        if (l_dnor .or. l_drnor) then
             call canort(mesh, nb_elem, zi(jlima), geomDime, nb_node, &
                         zi(jlino), 1)
             call jeveuo('&&CANORT.NORMALE', 'L', vr=normale)
@@ -246,6 +254,25 @@ subroutine cafaci(load, mesh, model, valeType)
                             coef_type, valeType, 0.d0, list_rela)
 !
 105             continue
+            end do
+        end if
+!
+! ----- If DRNOR exists
+!
+        if (l_drnor) then
+            do ino = 1, nb_node
+
+                nume_node = zi(jlino+ino-1)
+                call jenuno(jexnum(mesh//'.NOMNOE', nume_node), name_node)
+                do idim = 1, geomDime
+                    repe_defi(idim) = normale(geomDime*(ino-1)+idim)
+                end do
+!
+                repe_type = geomDime
+                call afrela([coef_real_unit], [coef_cplx_unit], rota_name, name_node, [repe_type], &
+                            repe_defi, val_nb_drnor, val_r_drnor, val_c_drnor, val_f_drnor, &
+                            coef_type, valeType, 0.d0, list_rela)
+!
             end do
         end if
 !
