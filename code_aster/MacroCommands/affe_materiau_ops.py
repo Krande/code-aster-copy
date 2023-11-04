@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -20,7 +20,8 @@
 from libaster import deleteTemporaryObjects, setFortranLoggingLevel, resetFortranLoggingLevel
 
 from ..Cata.Syntax import _F
-from ..Objects import ExternalStateVariable, MaterialField, EvolutionParameter
+from ..Messages import UTMESS
+from ..Objects import ExternalStateVariable, MaterialField, EvolutionParameter, EntityType
 from ..Utilities import force_list
 
 
@@ -46,7 +47,32 @@ def affe_materiau_ops(self, **args):
     if model is not None:
         material.setModel(model)
 
-    fkw = args["AFFE"]
+    fkw = args.get("AFFE")
+
+    # Retrieve the materials from a given material field
+    if fkw is None:
+        refMaterialField = args.get("CHAM_MATER")
+        assert refMaterialField is not None
+        if refMaterialField.getMesh() is not mesh:
+            para_msg = (
+                refMaterialField.getMesh().getName(),
+                refMaterialField.getName(),
+                mesh.getName(),
+            )
+            UTMESS("F", "MATERIAL2_60", valk=para_msg)
+        if refMaterialField.hasExternalStateVariable():
+            UTMESS("A", "MATERIAL2_61", valk=refMaterialField.getName())
+        fkw = []
+        for (lmat, meshEntity) in refMaterialField.getMaterialsOnMeshEntities():
+            entityType = meshEntity.getType()
+            if entityType == EntityType.AllMeshEntitiesType:
+                fwk.append(dict(TOUT="OUI", MATER=lmat))
+            elif entityType == EntityType.GroupOfCellsType:
+                fkw.append(dict(GROUP_MA=meshEntity.getNames(), MATER=lmat))
+            else:
+                raise AssertionError
+        assert len(fkw) > 0
+
     if isinstance(fkw, dict):
         _addMaterial(material, fkw)
     elif type(fkw) in (list, tuple):
