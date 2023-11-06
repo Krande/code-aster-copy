@@ -30,82 +30,95 @@ subroutine ef0517(nomte)
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
+#include "asterfort/elrefe_info.h"
+#include "asterfort/jsd1ff.h"
+#include "asterfort/lonele.h"
+#include "asterfort/matela.h"
+#include "asterfort/moytem.h"
 #include "asterfort/pmfinfo.h"
+#include "asterfort/pmfitg.h"
+#include "asterfort/pmfmats.h"
+#include "asterfort/poutre_modloc.h"
 #include "asterfort/jevech.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: kp, adr, ncomp, i, cara, ne, jacf
+    integer :: kp, ncomp, ii, jacf
     integer :: icgp, icontn, npg, istrxr, nc
-    real(kind=8) :: fl(14), d1b3(2, 3), ksi1
-    real(kind=8) :: sigfib
+    real(kind=8) :: flel(14), co(3), xl, d1b(7, 14), carsec(6)
 !
     integer :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
 !
-! --------------------------------------------------------------------------------------------------
+    integer :: npge, kk, iret, ipoids, imate, ifgp
+    real(kind=8) :: aa, alfay, alfaz, young, nu, gcis, ey, ez, xiy, xiz, temp, phiy, phiz
+    character(len=8) :: mator
 !
+! --------------------------------------------------------------------------------------------------
+    integer, parameter :: nb_cara = 4
+    real(kind=8) :: vale_cara(nb_cara)
+    character(len=8), parameter :: noms_cara(nb_cara) = (/'AY1  ', 'AZ1  ', 'EY1  ', 'EZ1  '/)
+!
+! --------------------------------------------------------------------------------------------------
+!&<
     if (nomte .eq. 'MECA_POU_D_TGM') then
+        call jevech('PMATERC', 'L', imate)
         call jevech('PCONTRR', 'L', icgp)
         call jevech('PSTRXRR', 'L', istrxr)
         call jevech('PEFFORR', 'E', icontn)
-! --------------------------------------------------------------------------------------------------
-!       Récupération des caractéristiques des fibres
+        ! Récupération des caractéristiques des fibres
         call pmfinfo(nbfibr,nbgrfi,tygrfi,nbcarm,nug,jacf=jacf)
-!       On projette avec les fcts de forme sur les noeuds début et fin de l'élément
-!       pour le point 1
-        ksi1=-sqrt(5.d0/3.d0)
-        d1b3(1,1)=ksi1*(ksi1-1.d0)/2.0d0
-        d1b3(1,2)=1.d0-ksi1*ksi1
-        d1b3(1,3)=ksi1*(ksi1+1.d0)/2.0d0
-!       pour le point 2
-        ksi1=sqrt(5.d0/3.d0)
-        d1b3(2,1)=ksi1*(ksi1-1.d0)/2.0d0
-        d1b3(2,2)=1.d0-ksi1*ksi1
-        d1b3(2,3)=ksi1*(ksi1+1.d0)/2.0d0
-!
-        nc    =  7
-        npg   =  3
-        ncomp = 18
-!       calcul des forces intégrées
-        fl(:) = 0.0d+0
-        do i = 1, nc
-            do kp = 1, npg
-                adr=istrxr+ncomp*(kp-1)+i-1
-                fl(i)=fl(i)+zr(adr)*d1b3(1,kp)
-                fl(i+nc)=fl(i+nc)+zr(adr)*d1b3(2,kp)
-            enddo
-        enddo
-!
-!       A cause de la plastification de la section les efforts n,mfy,mfz doivent être
-!       recalculés pour les noeuds 1 et 2
-        fl(1)=0.0d+0
-        fl(5)=0.0d+0
-        fl(6)=0.0d+0
-        fl(1+nc)=0.0d+0
-        fl(5+nc)=0.0d+0
-        fl(6+nc)=0.0d+0
-!
-!       Pour les noeuds 1 et 2
-!          calcul des contraintes
-!          calcul des efforts generalises a partir des contraintes
-        do ne = 1, 2
-            do i = 1, nbfibr
-                sigfib=0.0d+0
-                do kp = 1, npg
-                    adr=icgp+nbfibr*(kp-1)+i-1
-                    sigfib=sigfib+zr(adr)*d1b3(ne,kp)
+        !
+        nc = 7; npg = 3; ncomp = 18
+        !
+        call elrefe_info(fami='RIGI', npg=npge, jpoids=ipoids)
+        ASSERT(npg .ge. npge)
+        co(1:npg) = zr(ipoids:ipoids+npg-1)
+        ! Longueur de l'élément
+        xl = lonele()
+        !  coefficient dependant de la temperature moyenne
+        call moytem('RIGI', npg, 1, '+', temp, iret)
+        call pmfmats(imate, mator)
+        ASSERT(mator .ne. ' ')
+        call matela(zi(imate), mator, 1, temp, young, nu)
+        gcis = young/(2.d0*(1.d0+nu))
+        !
+        call poutre_modloc('CAGNP2', noms_cara, nb_cara, lvaleur=vale_cara)
+        alfay = vale_cara(1)
+        alfaz = vale_cara(2)
+        ey    = vale_cara(3)
+        ez    = vale_cara(4)
+        ! Récupération des caracteristiques de la section
+        call pmfitg(tygrfi, nbfibr, nbcarm, zr(jacf), carsec)
+        aa  = carsec(1)
+        xiz = carsec(4)
+        xiy = carsec(5)
+        !
+        phiy = young*xiz*12.d0*alfay/(xl*xl*gcis*aa)
+        phiz = young*xiy*12.d0*alfaz/(xl*xl*gcis*aa)
+        !
+        flel(:) = 0.0d+0
+        ! boucle sur les points de gauss
+        do kp = 1, npg
+            call jsd1ff(kp, xl, phiy, phiz, d1b)
+            ifgp = ncomp*(kp-1)-1
+            do kk = 1, 2*nc
+                do ii = 1, nc
+                    flel(kk) = flel(kk)+xl*0.5*zr(istrxr+ifgp+ii)*d1b(ii,kk)*co(kp)
                 enddo
-                adr=nc*(ne-1)
-                cara=jacf+(i-1)*nbcarm
-                fl(1+adr)=fl(1+adr)+sigfib*zr(cara+2)
-                fl(5+adr)=fl(5+adr)+sigfib*zr(cara+2)*zr(cara+1)
-                fl(6+adr)=fl(6+adr)-sigfib*zr(cara+2)*zr(cara)
             enddo
         enddo
-!
-        do i = 1, 2*nc
-            zr(icontn+i-1)=fl(i)
+        ! Prise en compte du centre de torsion
+        flel(4)  = flel(4)-ez*flel(2)+ey*flel(3)
+        flel(11) = flel(11)-ez*flel(9)+ey*flel(10)
+        ! Comme d'hab on change le signe sur le noeud 1
+        do ii = 1, nc
+            zr(icontn+ii-1) = -flel(ii)
         enddo
+        do ii = nc+1, 2*nc
+            zr(icontn+ii-1) = flel(ii)
+        end do
+!&>
+! --------------------------------------------------------------------------------------------------
 !
     else if (nomte.eq.'MECA_POU_D_EM') then
         nc    =  6
@@ -114,13 +127,16 @@ subroutine ef0517(nomte)
         call jevech('PSTRXRR', 'L', istrxr)
         call jevech('PEFFORR', 'E', icontn)
         kp = 1
-        do i = 1,nc
-            zr(icontn-1+nc*(kp-1)+i) = - zr(istrxr-1+ncomp*(kp-1)+i)
+        do ii = 1, nc
+            zr(icontn-1+nc*(kp-1)+ii) = -zr(istrxr-1+ncomp*(kp-1)+ii)
         enddo
         kp = 2
-        do i = 1,nc
-            zr(icontn-1+nc*(kp-1)+i) = zr(istrxr-1+ncomp*(kp-1)+i)
+        do ii = 1, nc
+            zr(icontn-1+nc*(kp-1)+ii) = zr(istrxr-1+ncomp*(kp-1)+ii)
         enddo
+!
+! --------------------------------------------------------------------------------------------------
+!
     else if (nomte.eq.'MECA_POU_D_SQUE') then
         nc    =  9
         npg   =  2
@@ -128,18 +144,18 @@ subroutine ef0517(nomte)
         call jevech('PSTRXRR', 'L', istrxr)
         call jevech('PEFFORR', 'E', icontn)
         kp= 1
-        do i = 1,6
-          zr(icontn-1+nc*(kp-1)+i) = - zr(istrxr-1+ncomp*(kp-1)+i)
+        do ii = 1, 6
+            zr(icontn-1+nc*(kp-1)+ii) = -zr(istrxr-1+ncomp*(kp-1)+ii)
         enddo
-        do i = 7,nc
-            zr(icontn-1+nc*(kp-1)+i) = - zr(istrxr-1+ncomp*(kp-1)+12+i)
+        do ii = 7, nc
+            zr(icontn-1+nc*(kp-1)+ii) = -zr(istrxr-1+ncomp*(kp-1)+12+ii)
         enddo
         kp= 2
-        do i = 1,6
-          zr(icontn-1+nc*(kp-1)+i) = zr(istrxr-1+ncomp*(kp-1)+i)
+        do ii = 1, 6
+            zr(icontn-1+nc*(kp-1)+ii) = zr(istrxr-1+ncomp*(kp-1)+ii)
         enddo
-        do i = 7,nc
-            zr(icontn-1+nc*(kp-1)+i) = zr(istrxr-1+ncomp*(kp-1)+12+i)
+        do ii = 7, nc
+            zr(icontn-1+nc*(kp-1)+ii) = zr(istrxr-1+ncomp*(kp-1)+12+ii)
         enddo
 
     else

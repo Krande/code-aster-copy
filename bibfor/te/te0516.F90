@@ -83,12 +83,12 @@ character(len=16) :: option, nomte
     real(kind=8) :: rigge0(2*nc, 2*nc), ddu(2*nc), effgep(nc), d1bsig(4, 2*nc)
 !
     integer :: ne, cara, idepla, iiter, iterat, ifgp
-    integer :: i, jcret, npge
+    integer :: ii, jcret, npge
     integer :: igeom, imate, icontm, iorien, icompo, ivarim, iinstp, ipoids
     integer :: icarcr, ideplm, ideplp, iinstm, ivectu, icontp, ivarip, imat
     integer :: jacf, jtab(7), ivarmp, codret
     integer :: ncomp, nbvalc, isdcom
-    integer :: kp, j, k, kk, istrxm, istrxp, istrmp, ncomp2
+    integer :: kp, jj, kk, istrxm, istrxp, istrmp, ncomp2
     real(kind=8) :: ey, ez, gamma, xl, xls2, Nx, My, Mz
     real(kind=8) :: aa, xiy, xiz, alfay, alfaz, xjx, xjg
     real(kind=8) :: e, g, nu, temp, phiy, phiz
@@ -297,13 +297,13 @@ character(len=16) :: option, nomte
     call utpvgl(nno, nc, pgl, zr(ideplp), du)
     call utpvgl(nno, nc, pgl, zr(idepla), ddu)
 !   prise en compte de la position du centre de torsion
-    do i = 1, 2
-        u(7*(i-1)+2) = u(7*(i-1)+2) - ez* u(7*(i-1)+4)
-        u(7*(i-1)+3) = u(7*(i-1)+3) + ey* u(7*(i-1)+4)
-        du(7*(i-1)+2) = du(7*(i-1)+2) - ez*du(7*(i-1)+4)
-        du(7*(i-1)+3) = du(7*(i-1)+3) + ey*du(7*(i-1)+4)
-        ddu(7*(i-1)+2) = ddu(7*(i-1)+2) - ez*ddu(7*(i-1)+4)
-        ddu(7*(i-1)+3) = ddu(7*(i-1)+3) + ey*ddu(7*(i-1)+4)
+    do ii = 1, 2
+        u(7*(ii-1)+2) = u(7*(ii-1)+2)-ez*u(7*(ii-1)+4)
+        u(7*(ii-1)+3) = u(7*(ii-1)+3)+ey*u(7*(ii-1)+4)
+        du(7*(ii-1)+2) = du(7*(ii-1)+2)-ez*du(7*(ii-1)+4)
+        du(7*(ii-1)+3) = du(7*(ii-1)+3)+ey*du(7*(ii-1)+4)
+        ddu(7*(ii-1)+2) = ddu(7*(ii-1)+2)-ez*ddu(7*(ii-1)+4)
+        ddu(7*(ii-1)+3) = ddu(7*(ii-1)+3)+ey*ddu(7*(ii-1)+4)
     enddo
 !   coefficient dependant de la temperature moyenne
     call moytem(fami, npg, 1, '+', temp, iret)
@@ -346,38 +346,38 @@ character(len=16) :: option, nomte
         kk=ncomp*(kp-1)+ncomp2
         if (.not. reactu) then
 !           calcul classique des deformations à partir de DU
-            do i = 1, nc
-                do j = 1, 2*nc
-                    eps(i) = eps(i) + d1b(i,j)* u(j)
-                    deps(i) = deps(i) + d1b(i,j)*du(j)
+            do ii = 1, nc
+                do jj = 1, 2*nc
+                    eps(ii) = eps(ii)+d1b(ii, jj)*u(jj)
+                    deps(ii) = deps(ii)+d1b(ii, jj)*du(jj)
                 enddo
             enddo
         else
 !           calcul ameliore tenant compte de la reactualisation
 !           on cumule les increments de def de chaque iteration
             if (.not. lVect) then
-                do i = 1, nc
-                    do j = 1, 2*nc
-                        eps(i) = eps(i) + d1b(i,j)* u(j)
+                do ii = 1, nc
+                    do jj = 1, 2*nc
+                        eps(ii) = eps(ii)+d1b(ii, jj)*u(jj)
                     enddo
-                    deps(i) = 0.d0
+                    deps(ii) = 0.d0
                 enddo
             else if (iterat .ge. 2) then
-                do i = 1, nc
-                    deps(i) = zr(istrmp+kk+i)
-                    do j = 1, 2*nc
-                        eps(i) = eps(i) + d1b(i,j)* u(j)
-                        deps(i) = deps(i) + d1b(i,j)* ddu(j)
+                do ii = 1, nc
+                    deps(ii) = zr(istrmp+kk+ii)
+                    do jj = 1, 2*nc
+                        eps(ii) = eps(ii)+d1b(ii, jj)*u(jj)
+                        deps(ii) = deps(ii)+d1b(ii, jj)*ddu(jj)
                     enddo
-                    zr(istrxp+kk+i) = deps(i)
+                    zr(istrxp+kk+ii) = deps(ii)
                 enddo
             else
-                do i = 1, nc
-                    do j = 1, 2*nc
-                        eps(i) = eps(i) + d1b(i,j)* u(j)
-                        deps(i) = deps(i) + d1b(i,j)* ddu(j)
+                do ii = 1, nc
+                    do jj = 1, 2*nc
+                        eps(ii) = eps(ii)+d1b(ii, jj)*u(jj)
+                        deps(ii) = deps(ii)+d1b(ii, jj)*ddu(jj)
                     enddo
-                    zr(istrxp+kk+i) = deps(i)
+                    zr(istrxp+kk+ii) = deps(ii)
                 enddo
             endif
         endif
@@ -431,14 +431,14 @@ character(len=16) :: option, nomte
 !       On stocke a "+" : contraintes, fl, vari
         if (lSigm) then
 !           Contraintes
-            do i = 1, nbfibr
-                zr(icontp-1+nbfibr*(kp-1)+i) = vsigfib(i)
+            do ii = 1, nbfibr
+                zr(icontp-1+nbfibr*(kp-1)+ii) = vsigfib(ii)
             enddo
         endif
         if (lVari) then
 !           Variables internes
-            do i = 1, nbfibr*nbvalc*npg
-                zr(ivarip-1+i) = varfib(i)
+            do ii = 1, nbfibr*nbvalc*npg
+                zr(ivarip-1+ii) = varfib(ii)
             enddo
         endif
         if (lVect) then
@@ -465,9 +465,9 @@ character(len=16) :: option, nomte
             zr(istrxp+ifgp+6) = Mz
             zr(istrxp+ifgp+7) = zr(istrxm+ifgp+7) + hoel(7)*deps(7)
 !
-            do k = 1, 2*nc
-                do i = 1, nc
-                    fl(k)=fl(k) + xls2*zr(istrxp+ifgp+i)*d1b(i,k)*co(kp)
+            do kk = 1, 2*nc
+                do ii = 1, nc
+                    fl(kk) = fl(kk)+xls2*zr(istrxp+ifgp+ii)*d1b(ii, kk)*co(kp)
                 enddo
             enddo
         endif
@@ -475,8 +475,8 @@ character(len=16) :: option, nomte
         if (lMatr .and. reactu) then
             hotage(:,:) = 0.0d0
             ifgp=ncomp*(kp-1)-1
-            do i = 1, ncomp2
-                effgep(i) = zr(istrxp+ifgp+i)
+            do ii = 1, ncomp2
+                effgep(ii) = zr(istrxp+ifgp+ii)
             enddo
             hotage(1,2) = -effgep(3)
             hotage(1,3) = effgep(2)
@@ -538,14 +538,14 @@ character(len=16) :: option, nomte
 !               calcul des contraintes
 !               calcul des efforts generalises a partir des contraintes
             do ne = 1, 2
-                do i = 1, nbfibr
+                    do ii = 1, nbfibr
                     sigfib = 0.d0
                     do kp = 1, 3
-                        kk = icontp+nbfibr*(kp-1) + i - 1
+                            kk = icontp+nbfibr*(kp-1)+ii-1
                         sigfib = sigfib + zr(kk)*d1b3(ne,kp)
                     enddo
                     kk = 2*(ne-1)
-                    cara = jacf+(i-1)*nbcarm
+                        cara = jacf+(ii-1)*nbcarm
                     mflex(1+kk)=mflex(1+kk)+sigfib*zr(cara+2)*zr(cara+1)
                     mflex(2+kk)=mflex(2+kk)-sigfib*zr(cara+2)*zr(cara)
                 enddo
@@ -572,11 +572,11 @@ character(len=16) :: option, nomte
 !
 !   On rend le FL dans le repere global
     if (lVect) then
-!       Prise en compte du centre de torsion
-        do i = 1, 2
-            fl(7*(i-1)+4) = fl(7*(i-1)+4) - ez*fl(7*(i-1)+2) + ey*fl( 7*(i-1)+3 )
+        ! Prise en compte du centre de torsion
+        do ii = 1, 2
+            fl(7*(ii-1)+4) = fl(7*(ii-1)+4)-ez*fl(7*(ii-1)+2)+ey*fl(7*(ii-1)+3)
         enddo
-!        passage local -> global
+        ! passage local -> global
         call utpvlg(nno, nc, pgl, fl, zr(ivectu))
     endif
 !
