@@ -23,7 +23,7 @@
 # MODELISATION POU_D_SQUE AVEC PMFS ET ASSEMBLAGE_FIBRE
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="ALARME"))
 
 # DOFs (master-like) applied for the test
 DOFm = [

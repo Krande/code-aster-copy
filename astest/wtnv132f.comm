@@ -56,7 +56,7 @@ list_no_later_dro = ["N13", "N14", "N15", "N16", "N17", "N18", "N19", "N20", "N2
 
 DEBUT(
     CODE=_F(NIV_PUB_WEB="INTERNET"),
-    ERREUR=_F(ALARME="EXCEPTION"),
+    ERREUR=_F(ALARME="ALARME"),
     IGNORE_ALARM=("MODELISA4_8", "CALCULEL4_9", "MODELISA8_13"),
     DEBUG=_F(SDVERI="OUI"),
 )

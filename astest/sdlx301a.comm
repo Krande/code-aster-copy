@@ -19,7 +19,7 @@
 
 #
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), IGNORE_ALARM=("CALCCHAMP_6"))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="ALARME"), IGNORE_ALARM=("CALCCHAMP_6"))
 
 # On ignore l'alarme CALCCHAMP_6 : elle est generee par l'utilisation de CALC_CHAMP
 # sans le mot-cle EXCIT avec des concepts de type dynamique (modes) qui ne contiennent pas l'excitation

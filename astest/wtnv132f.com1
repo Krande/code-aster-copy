@@ -29,7 +29,7 @@
 # a un autre maillage.
 
 
-POURSUITE(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"))
+POURSUITE(CODE="OUI", ERREUR=_F(ALARME="ALARME"))
 
 #       ---------------
 # FIN-  Post-traitement
