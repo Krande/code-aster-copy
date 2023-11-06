@@ -19,17 +19,24 @@
 
 from libaster import deleteTemporaryObjects, resetFortranLoggingLevel, setFortranLoggingLevel
 
-from ..Objects import LinearSolver
-from ..Utilities import DEBUG, INFO, WARNING, ExecutionParameter, Options, logger, no_new_attributes
+from ...Objects import LinearSolver
+from ...Utilities import (
+    DEBUG,
+    INFO,
+    WARNING,
+    ExecutionParameter,
+    Options,
+    logger,
+    no_new_attributes,
+)
+from ..Basics import PhysicalState, SolverFeature
+from ..Basics import SolverOptions as SOP
+from ..StepSolvers import BaseStepSolver
 from .convergence_manager import ConvergenceManager
-from .newton_solver import NewtonSolver
 from .incremental_solver import IncrementalSolver
 from .line_search import LineSearch
-from .physical_state import PhysicalState
+from .newton_solver import NewtonSolver
 from .snes_solver import SNESSolver
-from .solver_features import SolverFeature
-from .solver_features import SolverOptions as SOP
-from .StepSolvers import BaseStepSolver
 from .storage_manager import StorageManager
 
 
@@ -150,11 +157,11 @@ class ProblemSolver(SolverFeature):
             reuse = args.get("REUSE")
             if reuse:
                 init_state = args.get("ETAT_INIT")
-                assert(init_state)
+                assert init_state
                 if "EVOL_NOLI" in init_state:
                     # Pour l'instant, on se restreint au cas où la sd passée
                     # par reuse est la même que celle passée dans ETAT_INIT
-                    assert(init_state["EVOL_NOLI"] is reuse)
+                    assert init_state["EVOL_NOLI"] is reuse
                 init_index = None
                 if "NUME_ORDRE" in init_state:
                     init_index = init_state["NUME_ORDRE"]
@@ -164,9 +171,10 @@ class ProblemSolver(SolverFeature):
                         init_state["INST"],
                         init_state["CRITERE"],
                         init_state["PRECISION"],
-                        True
+                        True,
                     )
-                if init_index: store.setInitialIndex(init_index + 1)
+                if init_index:
+                    store.setInitialIndex(init_index + 1)
         self.use(store)
         return store
 

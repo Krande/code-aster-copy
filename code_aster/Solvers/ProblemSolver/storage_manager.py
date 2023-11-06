@@ -17,10 +17,10 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ..Messages import UTMESS
-from ..Utilities import SearchList, force_list, no_new_attributes, profile
-from .solver_features import SolverFeature
-from .solver_features import SolverOptions as SOP
+from ...Messages import UTMESS
+from ...Utilities import SearchList, force_list, no_new_attributes, profile
+from ..Basics import SolverFeature
+from ..Basics import SolverOptions as SOP
 
 
 class StorageManager(SolverFeature):

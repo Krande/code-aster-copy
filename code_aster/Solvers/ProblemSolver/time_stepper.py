@@ -17,17 +17,16 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from math import log, sqrt, exp
+from math import exp, log, sqrt
 
 import numpy
 from libaster import ConvergenceError, IntegrationError, SolverError
 
-from ..Cata.Syntax import _F
-from ..Messages import MessageLog
-from ..Utilities import force_list, logger, no_new_attributes
-from .base_features import Observer
-from .solver_features import SolverFeature
-from .solver_features import SolverOptions as SOP
+from ...Cata.Syntax import _F
+from ...Messages import MessageLog
+from ...Utilities import force_list, logger, no_new_attributes
+from ..Basics import Observer, SolverFeature
+from ..Basics import SolverOptions as SOP
 
 
 class TimeStepper(SolverFeature, Observer):

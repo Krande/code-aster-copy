@@ -20,10 +20,10 @@
 from libaster import deleteTemporaryObjects
 
 from .base_step_solver import BaseStepSolver
-from ..solver_features import SolverOptions as SOP
+from ..Basics import SolverOptions as SOP
 from ...Utilities import no_new_attributes, profile
-from ..OperatorManagers import MecaStatOperatorsManager
-from ..problem_dispatcher import ProblemType
+from ..OperatorsManager import MecaStatOperatorsManager
+from ..Basics import ProblemType
 
 
 class MecaStatStepSolver(BaseStepSolver):

@@ -17,11 +17,11 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ..Objects import DiscreteComputation, FieldOnCellsReal, FieldOnNodesReal
-from ..Utilities import no_new_attributes, profile
+from ...Objects import DiscreteComputation, FieldOnCellsReal, FieldOnNodesReal
+from ...Utilities import no_new_attributes, profile
 from .base_features import BaseFeature
-from .solver_features import SolverOptions as SOP
 from .problem_dispatcher import ProblemType as PBT
+from .solver_features import SolverOptions as SOP
 
 
 class CustomAttribute:
@@ -30,12 +30,10 @@ class CustomAttribute:
     """
 
     def __init__(self, field_name, attr_name):
-
         self._field_name = field_name
         self._attr_name = attr_name
 
     def __get__(self, obj, objtype=None):
-
         if self._attr_name not in obj._available_fields:
             name, attr = objtype.__name__, self._attr_name
             err_msg = "'{}' object has no attribute '{}'"
@@ -44,7 +42,6 @@ class CustomAttribute:
         return obj._fields_prev[self._field_name] + obj._fields_step[self._field_name]
 
     def __set__(self, obj, value):
-
         if self._attr_name not in obj._available_fields:
             attr, name = self._attr_name, type(obj).__name__
             err_msg = "Can't add attribute {!r} to {}"
@@ -72,7 +69,6 @@ class PhysicalState(BaseFeature):
         __setattr__ = no_new_attributes(object.__setattr__)
 
         def __init__(self, pb_type):
-
             if pb_type in [PBT.Unset]:
                 raise NotImplementedError("Not supported !")
 
@@ -93,7 +89,6 @@ class PhysicalState(BaseFeature):
             self._fields_step = {f: None for f in fields_list.values()}
 
             for field, name in fields_list.items():
-
                 setattr(type(self), field, CustomAttribute(name, field))
 
             self._stress = self._internVar = self._externVar = None
@@ -205,7 +200,6 @@ class PhysicalState(BaseFeature):
             self._time_step = other.time_step
 
             for field in self.getFields():
-
                 prev = other.fields_prev[field]
                 self._fields_prev[field] = prev and prev.copy()
 
@@ -249,7 +243,6 @@ class PhysicalState(BaseFeature):
             other._time_step = temp
 
             for field in self.getFields():
-
                 temp = self._fields_prev[field]
                 self._fields_prev[field] = other.fields_prev[field]
                 other.fields_prev[field] = temp

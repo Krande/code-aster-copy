@@ -33,7 +33,7 @@ from ..Objects import (
     PhysicalProblem,
 )
 from ..Solvers import ContactManager, NonLinearSolver, ProblemSolver
-from ..Solvers.problem_dispatcher import ProblemType as PBT
+from ..Solvers import ProblemType as PBT
 from ..Solvers import SolverOptions as SOP
 from ..Solvers import TimeStepper
 from ..Utilities import print_stats, reset_stats
@@ -87,6 +87,7 @@ def _keywords_check(keywords):
             if keywords["COMPORTEMENT"]["DEFORMATION"] != "PETIT":
                 raise RuntimeError("unsupported value in DEFORMATION")
 
+
 def meca_non_line_ops(self, **args):
     """Execute the command.
 
@@ -125,7 +126,8 @@ def meca_non_line_ops(self, **args):
         problem_type = PBT.MecaStat
 
     result = args.get("reuse")
-    if not result: result = NonLinearResult()
+    if not result:
+        result = NonLinearResult()
 
     # Create the problem solver
     solver = ProblemSolver(NonLinearSolver(), result, problem_type)

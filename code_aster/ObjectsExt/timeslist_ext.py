@@ -31,7 +31,7 @@ This allows to continue to use the *TimesList* for legacy operators and the
 from libaster import TimesList
 
 from ..Objects.Serialization import InternalStateBuilder
-from ..Solvers.time_stepper import TimeStepper
+from ..Solvers import TimeStepper
 from ..Utilities import injector
 
 

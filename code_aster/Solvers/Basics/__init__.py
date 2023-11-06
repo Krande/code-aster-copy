@@ -18,26 +18,12 @@
 # --------------------------------------------------------------------
 
 """
-Useful objects used for various problem solvers.
+Features definition.
 """
 
-from .Basics import (
-    BaseFeature,
-    Observer,
-    PhysicalState,
-    ProblemType,
-    Residuals,
-    SolverFeature,
-    SolverOptions,
-)
-from .ProblemSolver import (
-    ContactManager,
-    ConvergenceManager,
-    IncrementalSolver,
-    NewtonSolver,
-    NonLinearSolver,
-    ProblemSolver,
-    SNESSolver,
-    StorageManager,
-    TimeStepper,
-)
+from .base_features import BaseFeature, EventSource, Observer
+from .logging_manager import LoggingManager
+from .physical_state import PhysicalState
+from .problem_dispatcher import ProblemDispatcher, ProblemType
+from .residual import Residuals
+from .solver_features import SolverFeature, SolverOptions

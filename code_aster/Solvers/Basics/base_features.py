@@ -90,7 +90,7 @@ class BaseFeature(metaclass=FeatureMeta):
         """Tell if the feature is available.
 
         Arguments:
-            feature (FeatureOptions): Resquested feature.
+            feature (FeatureOptions): Requested feature.
 
         Returns:
             bool: *True* if the feature is available, *False* otherwise.
@@ -128,7 +128,7 @@ class BaseFeature(metaclass=FeatureMeta):
         """Get the features that provide a feature.
 
         Arguments:
-            feature (FeatureOptions): Resquested feature.
+            feature (FeatureOptions): Requested feature.
 
         Returns:
             list[object]: List of feature objects.
@@ -140,7 +140,7 @@ class BaseFeature(metaclass=FeatureMeta):
         feature is expected.
 
         Arguments:
-            feature (FeatureOptions): Resquested feature.
+            feature (FeatureOptions): Requested feature.
             optional (bool): if *True* and there is no feature, returns *None*.
 
         Returns:
@@ -157,7 +157,7 @@ class BaseFeature(metaclass=FeatureMeta):
         """Get the features that provide a feature from all known features from childs.
 
         Arguments:
-            feature (FeatureOptions): Resquested feature.
+            feature (FeatureOptions): Requested feature.
 
         Returns:
             list[object]: List of feature objects. If *feature* is None, it returns

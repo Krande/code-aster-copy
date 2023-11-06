@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ..solver_features import SolverOptions as SOP
+from ..Basics import SolverOptions as SOP
 from .meca_dyna_step_solver import MecaDynaStepSolver
 from ..TimeIntegrators import IntegrationType
 

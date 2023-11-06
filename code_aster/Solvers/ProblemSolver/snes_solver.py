@@ -17,11 +17,11 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ..Objects import DiscreteComputation
-from ..Supervis import ConvergenceError
-from ..Utilities import PETSc, no_new_attributes, profile
-from .solver_features import SolverFeature
-from .solver_features import SolverOptions as SOP
+from ...Objects import DiscreteComputation
+from ...Supervis import ConvergenceError
+from ...Utilities import PETSc, no_new_attributes, profile
+from ..Basics import SolverFeature
+from ..Basics import SolverOptions as SOP
 
 
 class SNESSolver(SolverFeature):

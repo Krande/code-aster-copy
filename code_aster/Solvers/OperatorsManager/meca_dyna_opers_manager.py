@@ -21,7 +21,7 @@ from .base_opers_manager import BaseOperatorsManager
 from ...Objects import AssemblyMatrixDisplacementReal, DiscreteComputation
 from ...Supervis import IntegrationError
 
-from ..solver_features import SolverOptions as SOP
+from ..Basics import SolverOptions as SOP
 
 
 class MecaDynaOperatorsManager(BaseOperatorsManager):
@@ -39,8 +39,8 @@ class MecaDynaOperatorsManager(BaseOperatorsManager):
         """Compute the elementary mass matrix."""
         disc_comp = DiscreteComputation(self.phys_pb)
         matr_elem_mass = disc_comp.getMassMatrix(
-            time=self.phys_state.time_curr,
-            varc_curr=self.phys_state.internVar)
+            time=self.phys_state.time_curr, varc_curr=self.phys_state.internVar
+        )
         return matr_elem_mass
 
     def _getMassMatrix(self):

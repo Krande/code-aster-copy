@@ -35,8 +35,7 @@ from ..Objects import (
 
 from ..Utilities import logger, print_stats, profile, reset_stats
 from ..Solvers import PhysicalState, StorageManager, TimeStepper
-from ..Solvers.problem_dispatcher import ProblemType as PBT
-
+from ..Solvers import ProblemType as PBT
 
 
 @profile

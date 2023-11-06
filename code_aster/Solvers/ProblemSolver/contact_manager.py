@@ -17,10 +17,10 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from .solver_features import SolverFeature
-from .solver_features import SolverOptions as SOP
-from ..Objects import ContactComputation, ContactPairing
-from ..Utilities import no_new_attributes, profile
+from ...Objects import ContactComputation, ContactPairing
+from ...Utilities import no_new_attributes, profile
+from ..Basics import SolverFeature
+from ..Basics import SolverOptions as SOP
 
 
 class ContactManager(SolverFeature):

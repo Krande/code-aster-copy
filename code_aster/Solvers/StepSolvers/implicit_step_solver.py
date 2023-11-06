@@ -21,7 +21,7 @@ from libaster import deleteTemporaryObjects
 
 from ...Utilities import profile
 
-from ..solver_features import SolverOptions as SOP
+from ..Basics import SolverOptions as SOP
 from .meca_dyna_step_solver import MecaDynaStepSolver
 from ..TimeIntegrators import IntegrationType
 

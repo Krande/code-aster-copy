@@ -17,10 +17,11 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from .base_opers_manager import BaseOperatorsManager
-from ...Utilities import no_new_attributes
 from ...Objects import DiscreteComputation
-from ..residual import Residuals
+from ...Utilities import no_new_attributes
+from ..Basics import Residuals
+from .base_opers_manager import BaseOperatorsManager
+
 
 class ThermalOperatorsManager(BaseOperatorsManager):
     """Solve an iteration."""

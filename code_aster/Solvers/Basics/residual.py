@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ..Utilities import no_new_attributes
+from ...Utilities import no_new_attributes
 
 
 class Residuals:

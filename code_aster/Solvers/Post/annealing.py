@@ -17,8 +17,8 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ..Objects import PostProcessing
-from .solver_features import SolverOptions as SOP
+from ...Objects import PostProcessing
+from ..Basics import SolverOptions as SOP
 
 
 class Annealing:

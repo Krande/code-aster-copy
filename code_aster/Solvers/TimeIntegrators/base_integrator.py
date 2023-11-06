@@ -17,8 +17,8 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ..solver_features import SolverOptions as SOP
-from ..OperatorManagers import MecaDynaOperatorsManager
+from ..Basics import SolverOptions as SOP
+from ..OperatorsManager import MecaDynaOperatorsManager
 
 
 class IntegrationType:
@@ -41,7 +41,8 @@ class BaseIntegrator(MecaDynaOperatorsManager):
     """
     Integrator for systems like : M ddX = Fext - Fc(dX) - Fk(X) = funForce(X, dX)
     In case of a linear problem : M ddX = Fext - C dX - K X
-    Arguments :
+
+    Arguments:
         mass : Mass matrix
         f : difference between external and internal forces
         df : Jacobian matrix of f

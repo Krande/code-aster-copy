@@ -79,9 +79,7 @@ MECA_NON_LINE = MACRO(
     # -------------------------------------------------------------------
     SCHEMA_TEMPS=FACT(
         statut="f",
-        SCHEMA=SIMP(
-            statut="o", min=1, max=1, typ="TXM", into=("NEWMARK",)
-        ),
+        SCHEMA=SIMP(statut="o", min=1, max=1, typ="TXM", into=("NEWMARK",)),
         COEF_MASS_SHIFT=SIMP(statut="f", typ="R", defaut=0.0e0),
         # b_tchamwa=BLOC(
         #     condition="""equal_to("SCHEMA", 'TCHAMWA')""",
@@ -104,9 +102,7 @@ MECA_NON_LINE = MACRO(
         # ),
         b_implicit=BLOC(
             condition="""not equal_to("SCHEMA", 'TCHAMWA') and not equal_to("SCHEMA", 'DIFF_CENT')""",
-            FORMULATION=SIMP(
-                statut="o", max=1, typ="TXM", into=("DEPLACEMENT",)
-            ),
+            FORMULATION=SIMP(statut="o", max=1, typ="TXM", into=("DEPLACEMENT",)),
         ),
     ),
     # -------------------------------------------------------------------

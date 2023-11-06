@@ -17,11 +17,10 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ..Objects import DiscreteComputation
-from ..Utilities import no_new_attributes, profile
-from .base_features import EventSource
-from .solver_features import SolverFeature
-from .solver_features import SolverOptions as SOP
+from ...Objects import DiscreteComputation
+from ...Utilities import no_new_attributes, profile
+from ..Basics import EventSource, SolverFeature
+from ..Basics import SolverOptions as SOP
 
 
 class IncrementalSolver(SolverFeature, EventSource):
@@ -99,7 +98,6 @@ class IncrementalSolver(SolverFeature, EventSource):
         convManager.evalNormResidual(residuals)
 
         if not convManager.isConverged():
-
             disc_comp = DiscreteComputation(self.phys_pb)
 
             # Compute Dirichlet BC:=

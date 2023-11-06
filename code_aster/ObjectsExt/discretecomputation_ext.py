@@ -23,13 +23,13 @@
 """
 
 from libaster import (
-    DiscreteComputation,
     AssemblyMatrixDisplacementReal,
-    AssemblyMatrixTemperatureReal,
     AssemblyMatrixPressureComplex,
+    AssemblyMatrixTemperatureReal,
+    DiscreteComputation,
 )
 
-from ..Solvers.residual import Residuals
+from ..Solvers import Residuals
 from ..Supervis import IntegrationError
 from ..Utilities import injector, profile
 

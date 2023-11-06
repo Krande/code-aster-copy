@@ -22,8 +22,13 @@ from enum import IntFlag, auto
 
 from code_aster import ConvergenceError, SolverError
 from code_aster.Commands import DEFI_LIST_REEL
-from code_aster.Solvers import ConvergenceManager, PhysicalState, TimeStepper, ProblemType
-from code_aster.Solvers.base_features import BaseFeature
+from code_aster.Solvers import (
+    BaseFeature,
+    ConvergenceManager,
+    PhysicalState,
+    ProblemType,
+    TimeStepper,
+)
 
 list0 = DEFI_LIST_REEL(VALE=0.0)
 listr = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=10.0, PAS=1.0))

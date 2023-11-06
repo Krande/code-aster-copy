@@ -21,10 +21,10 @@ import copy
 import re
 from math import sqrt
 
-from ..Objects import DiscreteComputation
-from ..Utilities import MPI, logger, no_new_attributes, profile
-from .solver_features import SolverFeature
-from .solver_features import SolverOptions as SOP
+from ...Objects import DiscreteComputation
+from ...Utilities import MPI, logger, no_new_attributes, profile
+from ..Basics import SolverFeature
+from ..Basics import SolverOptions as SOP
 
 
 class ConvergenceManager(SolverFeature):

@@ -17,14 +17,16 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+from enum import IntFlag, auto
 
-class ProblemType:
+
+class ProblemType(IntFlag):
     """Types of physical problems."""
 
-    Unset = 0x00
-    MecaStat = 0x01
-    MecaDyna = 0x02
-    Thermal = 0x04
+    Unset = 0
+    MecaStat = auto()
+    MecaDyna = auto()
+    Thermal = auto()
 
 
 class ProblemDispatcher:
@@ -37,12 +39,11 @@ class ProblemDispatcher:
     def create(cls, param):
         """factory function that returns the appropriate child class."""
         found = None
-        ProblemType = cls._getProblemType(param)
+        pb_type = cls._getProblemType(param)
         for klass in cls.__subclasses__():
-            if klass.problem_type == ProblemType:
+            if klass.problem_type == pb_type:
                 found = klass.create(param=param)
-        if found is None:
-            raise RuntimeError
+        assert found, f"not found: {pb_type.name}"
         found._createPrivate(param)
         return found
 

@@ -17,10 +17,8 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ..solver_features import SolverFeature
-from ..solver_features import SolverOptions as SOP
-from ..problem_dispatcher import ProblemDispatcher
-from ..logging_manager import LoggingManager
+from ..Basics import LoggingManager, ProblemDispatcher, SolverFeature
+from ..Basics import SolverOptions as SOP
 
 
 class BaseStepSolver(SolverFeature, ProblemDispatcher):

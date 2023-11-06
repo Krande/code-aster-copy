@@ -20,10 +20,10 @@
 from libaster import deleteTemporaryObjects
 
 from .base_step_solver import BaseStepSolver
-from ..problem_dispatcher import ProblemType
-from ..solver_features import SolverOptions as SOP
+from ..Basics import ProblemType
+from ..Basics import SolverOptions as SOP
 from ...Utilities import no_new_attributes, profile
-from ..OperatorManagers import ThermalOperatorsManager
+from ..OperatorsManager import ThermalOperatorsManager
 
 
 class ThermalStepSolver(BaseStepSolver):
@@ -46,7 +46,7 @@ class ThermalStepSolver(BaseStepSolver):
         """
         calc_type, theta = param["TYPE_CALCUL"], None
         if calc_type == "TRANS":
-            assert(param["SCHEMA_TEMPS"]["SCHEMA"] == "HHT")
+            assert param["SCHEMA_TEMPS"]["SCHEMA"] == "HHT"
             theta = param["SCHEMA_TEMPS"]["THETA"]
         return cls(theta=theta)
 

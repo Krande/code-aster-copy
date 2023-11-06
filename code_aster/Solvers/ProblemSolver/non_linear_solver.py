@@ -17,14 +17,14 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ..Messages import MessageLog
-from ..Objects import HHO, NonLinearResult, ThermalResult
-from ..Supervis import ConvergenceError, IntegrationError, SolverError
-from ..Utilities import DEBUG, logger, no_new_attributes, profile
-from .annealing import Annealing
-from .solver_features import SolverFeature
-from .solver_features import SolverOptions as SOP
-from .problem_dispatcher import ProblemType as PBT
+from ...Messages import MessageLog
+from ...Objects import NonLinearResult, ThermalResult
+from ...Supervis import ConvergenceError, IntegrationError, SolverError
+from ...Utilities import DEBUG, logger, no_new_attributes, profile
+from ..Basics import ProblemType as PBT
+from ..Basics import SolverFeature
+from ..Basics import SolverOptions as SOP
+from ..Post import Annealing
 
 """
 Notations to use for mechanics.

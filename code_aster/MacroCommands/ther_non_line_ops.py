@@ -32,7 +32,7 @@ from ..Objects import (
     PostProcessing,
 )
 from ..Solvers import NonLinearSolver, ProblemSolver, TimeStepper
-from ..Solvers.problem_dispatcher import ProblemType as PBT
+from ..Solvers import ProblemType as PBT
 from ..Solvers import SolverOptions as SOP
 from ..Utilities import print_stats, force_list, reset_stats
 
@@ -140,7 +140,7 @@ def ther_non_line_ops(self, **args):
         METHODE=args["METHODE"],
         NEWTON=args["NEWTON"],
         SOLVEUR=args["SOLVEUR"],
-        TYPE_CALCUL=args["TYPE_CALCUL"]
+        TYPE_CALCUL=args["TYPE_CALCUL"],
     )
     solver.setKeywords(**param)
 

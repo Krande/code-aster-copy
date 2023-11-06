@@ -19,7 +19,7 @@
 
 from .base_step_solver import BaseStepSolver
 from ..TimeIntegrators import IntegrationType, IntegratorName, BaseIntegrator
-from ..problem_dispatcher import ProblemType
+from ..Basics import ProblemType
 
 
 class MecaDynaStepSolver(BaseStepSolver):
@@ -54,7 +54,7 @@ class MecaDynaStepSolver(BaseStepSolver):
             solvers_list.append(_setup_one(integrator))
 
         if len(solvers_list) > 2:
-            raise RuntimeError("only two steps supported yet")
+            raise ValueError("only two steps supported yet")
 
         if len(solvers_list) > 1:
             for klass in cls.__subclasses__():
@@ -117,13 +117,8 @@ class MecaDynaStepSolver(BaseStepSolver):
         Returns:
             List[IntegratorName]: list of integrator names.
         """
-        name = schema["SCHEMA"]
-
-        if name == "NEWMARK":
-            integrator_name = IntegratorName.Newmark
-        else:
-            raise RuntimeError("Unsupported integration scheme")
-
+        assert schema["SCHEMA"] == "NEWMARK", schema["SCHEMA"]
+        integrator_name = IntegratorName.Newmark
         return [integrator_name]
 
     def setup(self):

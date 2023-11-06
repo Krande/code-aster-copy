@@ -18,26 +18,16 @@
 # --------------------------------------------------------------------
 
 """
-Useful objects used for various problem solvers.
+PostProcessings definition.
 """
 
-from .Basics import (
-    BaseFeature,
-    Observer,
-    PhysicalState,
-    ProblemType,
-    Residuals,
-    SolverFeature,
-    SolverOptions,
-)
-from .ProblemSolver import (
-    ContactManager,
-    ConvergenceManager,
-    IncrementalSolver,
-    NewtonSolver,
-    NonLinearSolver,
-    ProblemSolver,
-    SNESSolver,
-    StorageManager,
-    TimeStepper,
-)
+from .contact_manager import ContactManager
+from .convergence_manager import ConvergenceManager
+from .incremental_solver import IncrementalSolver
+from .line_search import LineSearch
+from .newton_solver import NewtonSolver
+from .non_linear_solver import NonLinearSolver
+from .problem_solver import ProblemSolver
+from .snes_solver import SNESSolver
+from .storage_manager import StorageManager
+from .time_stepper import TimeStepper
