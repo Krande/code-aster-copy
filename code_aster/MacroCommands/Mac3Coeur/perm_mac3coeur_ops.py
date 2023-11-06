@@ -22,6 +22,7 @@
 import os.path as osp
 
 from ...Cata.Syntax import _F
+from ...Objects import PhysicalProblem, FieldOnCellsReal, FieldOnNodesReal
 from ...Commands import AFFE_CHAR_CINE, CREA_CHAMP, CREA_RESU, STAT_NON_LINE
 from ...Messages import UTMESS, MasquerAlarme, RetablirAlarme
 from ...Utilities import ExecutionParameter
@@ -33,7 +34,6 @@ def perm_mac3coeur_ops(self, **args):
     """Corps principal de la macro pour la permutation des AC dans MAC3COEUR"""
 
     MasquerAlarme("POUTRE0_59")
-    MasquerAlarme("COMPOR4_17")
 
     rcdir = ExecutionParameter().get_option("rcdir")
     datg = osp.join(rcdir, "datg")
@@ -95,13 +95,6 @@ def perm_mac3coeur_ops(self, **args):
     _CHTHNP1 = _coeurp1.definition_champ_temperature(_MA_NP1)
     _AFSCNP1 = _coeurp1.definition_materiau(_MA_NP1, _GFF_NP1, _FLU_NP1, _CHTHNP1, CONTACT="NON")
 
-    _CL_BID = AFFE_CHAR_CINE(
-        MODELE=_MO_NP1,
-        MECA_IMPO=(_F(TOUT="OUI", DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0)),
-    )
-
-    # calcul bidon aster pour initialisation de donnees
-
     compor = (
         _F(
             RELATION="MULTIFIBRE",
@@ -115,35 +108,18 @@ def perm_mac3coeur_ops(self, **args):
         _F(RELATION="VMIS_ISOT_TRAC", GROUP_MA="MAINTIEN", DEFORMATION="PETIT"),
     )
 
-    __BIDON = STAT_NON_LINE(
-        MODELE=_MO_NP1,
-        CHAM_MATER=_AFSCNP1,
-        CARA_ELEM=_CARANP1,
-        EXCIT=_F(CHARGE=_CL_BID),
-        COMPORTEMENT=compor,
-        INCREMENT=_F(LIST_INST=_timep1, NUME_INST_FIN=1),
-        NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
-        SOLVEUR=_F(METHODE="MUMPS", PRETRAITEMENTS="AUTO"),
-    )
+    phys_pb = PhysicalProblem(_MO_NP1, _AFSCNP1, _CARANP1)
+    phys_pb.computeBehaviourProperty(compor)
+    bhv_prop = phys_pb.getBehaviourProperty()
 
-    # il faut un resultat avec un seul instant : 0.
-    _tini = __BIDON.LIST_PARA()["INST"][-1]
+    __ASSDEP = FieldOnNodesReal(_MO_NP1)
+    __ASSDEP.setValues(0.0)
 
-    __CHDEP = CREA_CHAMP(
-        TYPE_CHAM="NOEU_DEPL_R",
-        OPERATION="EXTR",
-        PRECISION=1.0e-08,
-        RESULTAT=__BIDON,
-        NOM_CHAM="DEPL",
-        INST=_tini,
-    )
+    __ASSSIE = FieldOnCellsReal(_MO_NP1, "ELGA", "SIEF_R", bhv_prop, _CARANP1)
+    __ASSSIE.setValues(0.0)
 
-    __ASSDEP = CREA_CHAMP(
-        TYPE_CHAM="NOEU_DEPL_R",
-        MODELE=_MO_NP1,
-        OPERATION="ASSE",
-        ASSE=(_F(TOUT="OUI", CHAM_GD=__CHDEP, CUMUL="NON", COEF_R=0.0),),
-    )
+    __ASSVAR = FieldOnCellsReal(_MO_NP1, "ELGA", "VARI_R", bhv_prop, _CARANP1)
+    __ASSVAR.setValues(0.0)
 
     BIDON = CREA_RESU(
         OPERATION="AFFE",
@@ -153,22 +129,6 @@ def perm_mac3coeur_ops(self, **args):
         AFFE=_F(
             CHAM_GD=__ASSDEP, INST=0.0, CHAM_MATER=_AFSCNP1, CARA_ELEM=_CARANP1, MODELE=_MO_NP1
         ),
-    )
-
-    __CHSIE = CREA_CHAMP(
-        TYPE_CHAM="ELGA_SIEF_R",
-        OPERATION="EXTR",
-        PRECISION=1.0e-08,
-        RESULTAT=__BIDON,
-        NOM_CHAM="SIEF_ELGA",
-        INST=_tini,
-    )
-
-    __ASSSIE = CREA_CHAMP(
-        TYPE_CHAM="ELGA_SIEF_R",
-        MODELE=_MO_NP1,
-        OPERATION="ASSE",
-        ASSE=(_F(TOUT="OUI", CHAM_GD=__CHSIE, CUMUL="NON", COEF_R=0.0),),
     )
 
     CREA_RESU(
@@ -181,22 +141,6 @@ def perm_mac3coeur_ops(self, **args):
         AFFE=_F(
             CHAM_GD=__ASSSIE, INST=0.0, CHAM_MATER=_AFSCNP1, CARA_ELEM=_CARANP1, MODELE=_MO_NP1
         ),
-    )
-
-    __CHVAR = CREA_CHAMP(
-        TYPE_CHAM="ELGA_VARI_R",
-        OPERATION="EXTR",
-        PRECISION=1.0e-08,
-        RESULTAT=__BIDON,
-        NOM_CHAM="VARI_ELGA",
-        INST=_tini,
-    )
-
-    __ASSVAR = CREA_CHAMP(
-        TYPE_CHAM="ELGA_VARI_R",
-        MODELE=_MO_NP1,
-        OPERATION="ASSE",
-        ASSE=(_F(TOUT="OUI", CHAM_GD=__CHVAR, CUMUL="NON", COEF_R=0.0),),
     )
 
     CREA_RESU(
@@ -261,6 +205,5 @@ def perm_mac3coeur_ops(self, **args):
     UTMESS("I", "COEUR0_2", vali=(indice))
 
     RetablirAlarme("POUTRE0_59")
-    RetablirAlarme("COMPOR4_17")
 
     return BIDON
