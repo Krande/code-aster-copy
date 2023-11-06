@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,8 +35,10 @@ import shutil
 import sys
 import tempfile
 from math import log10, sqrt
+from pathlib import Path
 
 import numpy as NP
+import asrun
 from asrun.common.utils import find_command
 from asrun.distrib import DistribParametricTask
 from asrun.parametric import is_list_of_dict
@@ -53,6 +55,10 @@ from ...Cata.Syntax import _F
 from ...Utilities.misc import get_shared_tmpdir
 from ..Utils.TableReader import TableReaderFactory
 from . import reca_algo, reca_interp
+
+# asrun needs this variables
+ASRUN_ROOT = Path(asrun.__file__).parent.parent.parent.parent.parent
+os.environ["ASTER_ETC"] = str(ASRUN_ROOT / "etc")
 
 include_pattern = "# -->INCLUDE<--"
 debug = False
@@ -275,7 +281,6 @@ class CALCULS_ASTER:
         LANCEMENT="DISTRIBUTION",
         jdc=None,
     ):
-
         self.parametres = parametres
         self.calcul = calcul
         self.experience = experience
@@ -329,7 +334,6 @@ class CALCULS_ASTER:
         calcul=None,
         experience=None,
     ):
-
         # Current estimation
         self.X0 = X0
         self.dX = dX
@@ -657,7 +661,6 @@ class CALCULS_ASTER:
 
             # Pour la dynamique la table avec la matrice MAC a un traitement different
             if self.DYNAMIQUE:
-
                 if "MAC" in reponses[i][2]:
                     t.append(self.ajout_post_mac(reponses[i]))
 
@@ -774,7 +777,6 @@ class CALCULS_ASTER:
 
             # Calcul esclave NOOK
             if not diag[0:2] in ["OK", "<A"]:
-
                 # Affichage de l'output et/ou de l'error de l'esclave dans l'output du maitre
                 try:
                     affiche(unity=None, filename=output_filename, label=label, filetype="stdout")
@@ -978,7 +980,6 @@ class CALC_ERROR:
     def __init__(
         self, experience, X0, calcul, poids=None, objective_type="vector", info=0, unite_resu=None
     ):
-
         if poids is None:
             poids = NP.ones(len(experience))
         self.experience = experience
@@ -1015,7 +1016,6 @@ class CALC_ERROR:
 
     # ---------------------------------------------------------------------------
     def CalcError(self, Lcalc):
-
         self.F = Lcalc[0]
         if self.L_init is None:
             self.L_init = copy.copy(self.F)
@@ -1029,7 +1029,7 @@ class CALC_ERROR:
             self.J_init = copy.copy(self.J)
 
         # norme de l'erreur
-        self.norme = NP.sum([x ** 2 for x in self.erreur])
+        self.norme = NP.sum([x**2 for x in self.erreur])
 
         if self.debug:
             print("AA1/F=", self.F)
@@ -1055,7 +1055,6 @@ class CALC_ERROR:
 
     # ---------------------------------------------------------------------------
     def CalcSensibilityMatrix(self, Lcalc, val, dX=None, pas=None):
-
         """
         Calcul de F(X0) et de tous les F(X0+h)
         Formation de la matrice des sensibilites A
@@ -1090,7 +1089,6 @@ class CALC_ERROR:
             L_A.append(NP.zeros((len(resu_exp[i]), len(val))))
 
         for k in range(len(val)):  # pour une colone de A (dim = nb parametres)
-
             F_perturbe = Lcalc[k + 1]
 
             # Erreur de l'interpolation de F_perturb : valeur de F (perturbée) interpolée sur les valeurs experimentales
