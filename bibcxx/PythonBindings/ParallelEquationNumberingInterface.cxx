@@ -89,6 +89,7 @@ Returns:
         .def( "getDOFsWithDescription", &ParallelEquationNumbering::getDOFsWithDescription,
               R"(
 Get the dofs associated to the given component restricted to the given group
+
 Arguments:
     str: component to extract
     list[str] = []: group names to filter
@@ -96,6 +97,7 @@ Arguments:
     same_rank : - None: keep all nodes (default: None)
                 - True: keep the nodes which are owned by the current MPI-rank
                 - False: keep the nodes which are not owned by the current MPI-rank
+
 Returns:
     pair[list[int], list[str]]: list of nodes and list of components
     list[int]: list of dofs

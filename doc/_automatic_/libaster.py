@@ -1732,11 +1732,12 @@ class EquationNumbering(DataStructure):
             dict[int, str] : dofs id for each node id and component id
         """
 
-    def getDOFsWithDescription(self, arg0, arg1, arg2):
-        """Get list of components
+    def getDOFsWithDescription(self, cmp, groupNames=[], local=True, same_rank=-1):
+        """Get the dofs associated to the given component restricted to the given group
         Arguments:
             str: component to extract
-            list[str]: group names
+            list[str] = []: group names to filter
+            local (bool) = True: if True use local dof index else use global index in HPC
         Returns:
             pair[list[int], list[str]]: list of nodes and list of components
             list[int]: list of dofs
@@ -12950,6 +12951,22 @@ class ParallelEquationNumbering(EquationNumbering):
         1. __init__(self: libaster.ParallelEquationNumbering) -> None
 
         2. __init__(self: libaster.ParallelEquationNumbering, arg0: str) -> None
+        """
+
+    def getDOFsWithDescription(self, cmp, groupNames=[], local=True, same_rank=-1):
+        """Get the dofs associated to the given component restricted to the given group
+
+        Arguments:
+            str: component to extract
+            list[str] = []: group names to filter
+            local (bool) = True: if True use local dof index else use global index in HPC
+            same_rank : - None: keep all nodes (default: None)
+                        - True: keep the nodes which are owned by the current MPI-rank
+                        - False: keep the nodes which are not owned by the current MPI-rank
+
+        Returns:
+            pair[list[int], list[str]]: list of nodes and list of components
+            list[int]: list of dofs
         """
 
     def getGhostDOFs(self, local=True):
