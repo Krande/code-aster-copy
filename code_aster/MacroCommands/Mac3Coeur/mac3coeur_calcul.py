@@ -50,13 +50,11 @@ def calc_mac3coeur_ops(self, **kwargs):
     """Fonction d'appel de la macro CALC_MAC3COEUR"""
 
     MasquerAlarme("MECANONLINE5_57")  # DEPL_CALCULE
-    MasquerAlarme("POUTRE0_59")  # Coeff de poisson non constant
 
     analysis = Mac3CoeurCalcul.factory(self, kwargs)
     result = analysis.run()
 
     RetablirAlarme("MECANONLINE5_57")
-    RetablirAlarme("POUTRE0_59")
 
     return result
 

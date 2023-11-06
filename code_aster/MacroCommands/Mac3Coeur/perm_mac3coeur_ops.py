@@ -24,7 +24,7 @@ import os.path as osp
 from ...Cata.Syntax import _F
 from ...Objects import PhysicalProblem, FieldOnCellsReal, FieldOnNodesReal
 from ...Commands import AFFE_CHAR_CINE, CREA_CHAMP, CREA_RESU, STAT_NON_LINE
-from ...Messages import UTMESS, MasquerAlarme, RetablirAlarme
+from ...Messages import UTMESS
 from ...Utilities import ExecutionParameter
 from .mac3coeur_ac_permute import MACRO_AC_PERMUTE
 from .mac3coeur_coeur import CoeurFactory
@@ -32,8 +32,6 @@ from .mac3coeur_coeur import CoeurFactory
 
 def perm_mac3coeur_ops(self, **args):
     """Corps principal de la macro pour la permutation des AC dans MAC3COEUR"""
-
-    MasquerAlarme("POUTRE0_59")
 
     rcdir = ExecutionParameter().get_option("rcdir")
     datg = osp.join(rcdir, "datg")
@@ -203,7 +201,5 @@ def perm_mac3coeur_ops(self, **args):
                 break
 
     UTMESS("I", "COEUR0_2", vali=(indice))
-
-    RetablirAlarme("POUTRE0_59")
 
     return BIDON
