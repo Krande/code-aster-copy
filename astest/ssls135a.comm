@@ -121,6 +121,7 @@ Solution = CALC_CHAMP(reuse=Solution, RESULTAT=Solution, CONTRAINTE=("EFGE_ELNO"
 Solution = CALC_FERRAILLAGE(
     reuse=Solution,
     RESULTAT=Solution,
+    CARA_ELEM=AFFECARA,
     TYPE_COMB="ELS",
     UNITE_CONTRAINTE="Pa",
     UNITE_DIMENSION="m",

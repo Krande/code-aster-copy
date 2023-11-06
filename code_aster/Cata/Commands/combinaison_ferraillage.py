@@ -34,6 +34,7 @@ COMBINAISON_FERRAILLAGE = MACRO(
     fr=tr("COMBINAISON_FERRAILLAGE"),
     sd_prod=combinaison_ferraillage_prod,
     reentrant="o:RESULTAT",
+    CARA_ELEM=SIMP(statut="o", typ=cara_elem),
     reuse=SIMP(statut="c", typ=CO),
     RESULTAT=SIMP(statut="o", typ=mult_elas),
     COMBINAISON=FACT(

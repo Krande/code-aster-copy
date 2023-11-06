@@ -39,10 +39,7 @@ CALC_FERRAILLAGE = OPER(
     fr=tr("calcul de cartes de densité de ferraillage "),
     reuse=SIMP(statut="c", typ=CO),
     RESULTAT=SIMP(statut="o", typ=(evol_elas, evol_noli, dyna_trans, mult_elas)),
-    b_dyna_trans=BLOC(
-        condition="""is_type("RESULTAT") in (dyna_trans,)""",
-        CARA_ELEM=SIMP(statut="o", typ=cara_elem),
-    ),
+    CARA_ELEM=SIMP(statut="o", typ=cara_elem),
     #
     # ====
     # Sélection des numéros d'ordre pour lesquels on fait le calcul :

@@ -155,7 +155,22 @@ def values_from_simple_field_on_nodes(field, model, nodes_groups=()):
     simple_field = field.toSimpleFieldOnNodes()
     simple_field_values, simple_field_mask = simple_field.getValues()
     field_mask = field_all_components >= 0
-    field_mask[field_mask] = simple_field_mask.flatten().astype(bool)
+
+    # The following is unsafe and causes problems in large simulations
+    # done using civil master particularly in modal/spectral calculations
+    # (see Issue# for more details)
+    # -------------------------------------------------------------------------
+    # field_mask[field_mask] = simple_field_mask.flatten().astype(bool)
+    # -------------------------------------------------------------------------
+    # Safe casting is provided below ...
+
+    flattenned_mask = simple_field_mask.flatten().astype(bool)
+
+    nb_dofs_flattenned = len(flattenned_mask)
+    nb_dofs_original = np.count_nonzero(field_mask)
+
+    field_mask[field_mask][:nb_dofs_flattenned] = flattenned_mask[:nb_dofs_original]
+
     return simple_field_values[simple_field_mask], field_mask
 
 

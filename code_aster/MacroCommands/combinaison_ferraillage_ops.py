@@ -43,7 +43,7 @@ def combinaison_ferraillage_ops(self, **args):
     # Retriving from RESULTAT
     modele = resu.getModel()
     maillage = resu.getMesh()
-    caraelem = resu.getElementaryCharacteristics()
+    caraelem = args.get("CARA_ELEM")
 
     # Counting numbers of load combinations.
     nmb_cas = countCase(combinaison)
@@ -90,13 +90,13 @@ def combinaison_ferraillage_ops(self, **args):
     l_info.append(uc)
     l_info.append(um)
 
-    resu = algo_ferr(resu, affe, lst_inst_index, l_info, lst_type_combo)
+    resu = algo_ferr(resu, affe, lst_inst_index, l_info, lst_type_combo, caraelem)
 
     # - Build result type EVOL_ELAS from MULTI_ELAS and combo type list in order
     #   to select the right verify. This because CREA_CHAMP doesn't EXTR the
     #   MAXI from multi_elas
 
-    resferr = evolElasFromMulti(nmb_cas, combinaison, lst_inst_value, resu)
+    resferr = evolElasFromMulti(nmb_cas, combinaison, lst_inst_value, resu, caraelem)
 
     # Maximum reinforcement field (elementwise, component by component)
     maxiferr = CREA_CHAMP(
@@ -145,7 +145,7 @@ def combinaison_ferraillage_ops(self, **args):
     return resu
 
 
-def algo_ferr(resferr, affe, lst_nume_ordre, l_info, type_combo):
+def algo_ferr(resferr, affe, lst_nume_ordre, l_info, type_combo, cara):
 
     #   From physical_quantities.py :
     #   FER2_R   = PhysicalQuantity(type='R',
@@ -219,7 +219,7 @@ def algo_ferr(resferr, affe, lst_nume_ordre, l_info, type_combo):
         dic_type_comb["AFFE"] = tuple(lst_tmp_affe)
 
         resferr = CALC_FERRAILLAGE(
-            reuse=resferr, RESULTAT=resferr, NUME_ORDRE=nume_ordre, **dic_type_comb
+            reuse=resferr, RESULTAT=resferr, CARA_ELEM=cara, NUME_ORDRE=nume_ordre, **dic_type_comb
         )
 
     return resferr
@@ -294,10 +294,10 @@ def lstInst(ncas, comb, resultat):
 
 
 # Build result type EVOL_ELAS from MULTI_ELAS
-def evolElasFromMulti(ncas, comb, lst_inst_value, resu):
+def evolElasFromMulti(ncas, comb, lst_inst_value, resu, cara):
 
     modele = resu.getModel()
-    caraelem = resu.getElementaryCharacteristics()
+    caraelem = cara
 
     __EFGE = [None] * ncas
     lst_AFFE_EFGE = [None] * ncas

@@ -347,6 +347,7 @@ ferrDatSlu2 = dict(
 reslin = COMBINAISON_FERRAILLAGE(
     reuse=reslin,
     RESULTAT=reslin,
+    CARA_ELEM=elemprop,
     CODIFICATION="EC2",
     UNITE_CONTRAINTE="Pa",
     UNITE_DIMENSION="m",

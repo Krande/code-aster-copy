@@ -77,11 +77,7 @@ subroutine op0175()
     call rsadpa(resu, 'L', 1, 'MODELE', nuord, 0, sjv=jpara)
     model = zk8(jpara)
     ASSERT(model .ne. ' ')
-    call rsadpa(resu, 'L', 1, 'CARAELEM', nuord, 0, sjv=jpara)
-    caraElem = zk8(jpara)
-    if (caraElem .eq. ' ') then
-        call getvtx(' ', 'CARA_ELEM', scal=caraElem, nbret=ie)
-    end if
+    call getvtx(' ', 'CARA_ELEM', scal=caraElem, nbret=ie)
     ASSERT(caraElem .ne. ' ')
 !
 !     -- 1. ON CREE LE CHAMP DE DONNEES (CHFER1) :
