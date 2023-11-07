@@ -40,6 +40,7 @@ module FE_stiffness_module
 ! --------------------------------------------------------------------------------------------------
 !
     public :: FEStiffVecScal, FEStiffMatScal, FEStiffVecScalAdd, FEStiffMatScalAdd
+    public :: FEStiffVecVSymAdd
 !    private  ::
 !
 contains
@@ -206,6 +207,58 @@ contains
 ! ----- Copy the lower part
 !
         call hhoCopySymPartMat('U', mat(1:FEBasis%size, 1:FEBasis%size))
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine FEStiffVecVSymAdd(FEBasis, def, weight, stress, vec)
+!
+        implicit none
+!
+        type(FE_Basis), intent(in)          :: FEBasis
+        real(kind=8), intent(in), dimension(6, MAX_BS, 3) :: def
+        real(kind=8), intent(in)            :: weight
+        real(kind=8), intent(inout)         :: vec(*)
+        real(kind=8), intent(in)            :: stress(6)
+! --------------------------------------------------------------------------------------------------
+!   HHO
+!
+!   Compute the rigidity vector (with symetric stess)
+!   In hhoQuad      : Quadrature
+!   In hhoBasis     : tBasis function
+!   In ValuesQP     : Values of scalar function f at the quadrature points
+!   Out rhs         : (f, grad v)
+!
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: i, ind
+!
+        select case (FEBasis%ndim)
+        case (2)
+            ind = 0
+            do i = 1, FEBasis%size
+                vec(ind+1) = vec(ind+1)+weight*(def(1, i, 1)*stress(1)+def(2, i, 1)*stress(2)+ &
+                                                def(3, i, 1)*stress(3)+def(4, i, 1)*stress(4))
+                vec(ind+2) = vec(ind+2)+weight*(def(1, i, 2)*stress(1)+def(2, i, 2)*stress(2)+ &
+                                                def(3, i, 2)*stress(3)+def(4, i, 2)*stress(4))
+                ind = ind+2
+            end do
+        case (3)
+            do i = 1, FEBasis%size
+                vec(ind+1) = vec(ind+1)+weight*(def(1, i, 1)*stress(1)+ &
+                                                def(4, i, 1)*stress(4)+def(5, i, 1)*stress(5))
+                vec(ind+2) = vec(ind+2)+weight*(def(2, i, 2)*stress(2)+ &
+                                                def(4, i, 2)*stress(4)+def(6, i, 2)*stress(6))
+                vec(ind+3) = vec(ind+3)+weight*(def(3, i, 3)*stress(3)+ &
+                                                def(5, i, 3)*stress(5)+def(6, i, 3)*stress(6))
+                ind = ind+3
+            end do
+        case default
+            ASSERT(ASTER_FALSE)
+        end select
 !
     end subroutine
 !

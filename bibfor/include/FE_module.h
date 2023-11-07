@@ -23,6 +23,7 @@
 !
 ! --- maximum number of basis function
 #define MAX_BS 27
+#define MAX_BV 81
 !
 ! --- EF Lagrange
 #define EF_LAGRANGE 0

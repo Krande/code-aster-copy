@@ -24,6 +24,7 @@ module FE_eval_module
 !
     private
 #include "asterf_types.h"
+#include "asterfort/assert.h"
 #include "FE_module.h"
 #include "blas/ddot.h"
 !
@@ -35,7 +36,7 @@ module FE_eval_module
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    public :: FEEvalFuncScal, FEEvalGradVec
+    public :: FEEvalFuncScal, FEEvalGradVec, FEEvalGradMat, FEEvalGradSymMat
 !    private  ::
 !
 contains
@@ -109,6 +110,138 @@ contains
             do i = 1, FEBasis%size
                 grad = grad+val_nodes(i)*gradEF(1:3, i)
             end do
+        end if
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function FEEvalGradSymMat(FEBasis, val_nodes, point, BGSEval) result(grads)
+!
+        implicit none
+!
+        type(FE_Basis), intent(in)         :: FEBasis
+        real(kind=8), intent(in)           :: val_nodes(FEBasis%ndim, *)
+        real(kind=8), intent(in)           :: point(3)
+        real(kind=8)                       :: grads(6)
+        real(kind=8), intent(in), optional :: BGSEval(3, MAX_BS)
+
+! --------------------------------------------------------------------------------------------------
+!   FE
+!
+!   Evaluate scalar values from value at nodes
+!   In FEBasis     : tBasis function
+!   In ValuesQP     : Values of scalar function f at the quadrature points
+!   Out rhs         : (f, v)_F term
+!
+! --------------------------------------------------------------------------------------------------
+!
+! ----- Local variables
+        real(kind=8) :: grad(3, 3)
+        real(kind=8), parameter :: rac2_2 = sqrt(2.d0)/2.d0
+!
+        if (present(BGSEval)) then
+            grad = FEEvalGradMat(FEBasis, val_nodes, point, BGSEval)
+        else
+            grad = FEEvalGradMat(FEBasis, val_nodes, point)
+        end if
+!
+        grads = 0.d0
+        select case (FEBasis%ndim)
+        case (2)
+            grads(1) = grad(1, 1)
+            grads(2) = grad(2, 2)
+            grads(4) = (grad(2, 1)+grad(1, 2))*rac2_2
+        case (3)
+            grads(1) = grad(1, 1)
+            grads(2) = grad(2, 2)
+            grads(3) = grad(3, 3)
+            grads(4) = (grad(1, 2)+grad(2, 1))*rac2_2
+            grads(5) = (grad(1, 3)+grad(3, 1))*rac2_2
+            grads(6) = (grad(2, 3)+grad(3, 2))*rac2_2
+        case default
+            ASSERT(ASTER_FALSE)
+        end select
+!
+    end function
+!
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function FEEvalGradMat(FEBasis, val_nodes, point, BGSEval) result(grad)
+!
+        implicit none
+!
+        type(FE_Basis), intent(in)         :: FEBasis
+        real(kind=8), intent(in)           :: val_nodes(*)
+        real(kind=8), intent(in)           :: point(3)
+        real(kind=8)                       :: grad(3, 3)
+        real(kind=8), intent(in), optional :: BGSEval(3, MAX_BS)
+
+! --------------------------------------------------------------------------------------------------
+!   FE
+!
+!   Evaluate scalar values from value at nodes
+!   In FEBasis     : tBasis function
+!   In ValuesQP     : Values of scalar function f at the quadrature points
+!   Out rhs         : (f, v)_F term
+!
+! --------------------------------------------------------------------------------------------------
+!
+! ----- Local variables
+        integer :: i, n, ind
+        real(kind=8) :: gradEF(3, MAX_BS)
+!
+        grad = 0.d0
+        if (present(BGSEval)) then
+            ind = 0
+            select case (FEBasis%ndim)
+            case (2)
+                do n = 1, FEBasis%size
+                    do i = 1, 2
+                        grad(i, 1:2) = grad(i, 1:2)+BGSEval(1:2, n)*val_nodes(ind+i)
+                    end do
+                    ind = ind+2
+                end do
+            case (3)
+                do n = 1, FEBasis%size
+                    do i = 1, 3
+                        grad(i, 1:3) = grad(i, 1:3)+BGSEval(1:3, n)*val_nodes(ind+i)
+                    end do
+                    ind = ind+3
+                end do
+            case default
+                ASSERT(ASTER_FALSE)
+            end select
+        else
+            gradEF = FEBasis%grad(point)
+            ind = 0
+            select case (FEBasis%ndim)
+            case (2)
+                do n = 1, FEBasis%size
+                    do i = 1, 2
+                        grad(i, 1:2) = grad(i, 1:2)+gradEF(1:2, n)*val_nodes(ind+i)
+                    end do
+                    ind = ind+2
+                end do
+            case (3)
+                do n = 1, FEBasis%size
+                    do i = 1, 3
+                        grad(i, 1:3) = grad(i, 1:3)+gradEF(1:3, n)*val_nodes(ind+i)
+                    end do
+                    ind = ind+3
+                end do
+            case default
+                ASSERT(ASTER_FALSE)
+            end select
+        end if
+!
+        if (FEBasis%l_axis) then
+            ASSERT(ASTER_FALSE)
         end if
 !
     end function

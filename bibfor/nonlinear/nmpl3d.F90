@@ -27,6 +27,12 @@ subroutine nmpl3d(fami, nno, npg, &
                   matsym, sigmCurr, vip, &
                   matuu, vectu, codret)
 !
+    use FE_topo_module
+    use FE_quadrature_module
+    use FE_basis_module
+    use FE_stiffness_module
+    use FE_eval_module
+    use FE_mechanics_module
     use Behaviour_type
     use Behaviour_module
 !
@@ -38,6 +44,7 @@ subroutine nmpl3d(fami, nno, npg, &
 #include "asterfort/nmcomp.h"
 #include "asterfort/nmgeom.h"
 #include "asterfort/Behaviour_type.h"
+#include "FE_module.h"
 !
     character(len=*), intent(in) :: fami
     integer, intent(in) :: nno, npg
@@ -98,17 +105,22 @@ subroutine nmpl3d(fami, nno, npg, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    type(FE_Cell) :: FECell
+    type(FE_Quadrature) :: FEQuad
+    type(FE_basis) :: FEBasis
+!
     integer, parameter :: ndim = 3, sz_tens = 6
     aster_logical :: grand, axi
     aster_logical :: lVect, lMatr, lSigm
     integer :: kpg, kk, j, m, j1, kkd
     integer :: i_node, i_dime, i_tens
     integer :: cod(npg)
-    real(kind=8) :: dfdi(nno, ndim), def(sz_tens, nno, ndim)
-    real(kind=8) :: r
-    real(kind=8) :: f(3, 3), eps(6), deps(6)
+    real(kind=8) :: BGSEval(3, MAX_BS)
+    real(kind=8) :: def(6, MAX_BS, 3)
+    real(kind=8) :: coorpg(3)
+    real(kind=8) :: eps(6), deps(6)
     real(kind=8) :: dsidep(6, 6), sigmPost(6), sig(6), sigmPrep(6)
-    real(kind=8) :: poids, tmp
+    real(kind=8) :: tmp
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
     type(Behaviour_Integ) :: BEHinteg
 !
@@ -125,43 +137,34 @@ subroutine nmpl3d(fami, nno, npg, &
 !
     call behaviourInit(BEHinteg)
 !
+    call FECell%init()
+    if (compor(DEFO) == "PETIT_REAC") then
+        call FECell%updateCoordinates(dispPrev+dispIncr)
+    end if
+    call FEQuad%initCell(FECell, "RIGI")
+    call FEBasis%initCell(FECell)
+!
 ! - Prepare external state variables
 !
     call behaviourPrepESVAElem(carcri, typmod, &
-                               nno, npg, ndim, &
+                               nno, FEQuad%nbQuadPoints, ndim, &
                                ipoids, ivf, idfde, &
                                geom, BEHinteg, &
                                dispPrev, dispIncr)
 !
 ! - Loop on Gauss points
 !
-    do kpg = 1, npg
-        eps = 0.d0
-        deps = 0.d0
+    do kpg = 1, FEQuad%nbQuadPoints
+        coorpg = FEQuad%points_param(1:3, kpg)
+        BGSEval = FEBasis%grad(coorpg, FEQuad%jacob(1:3, 1:3, kpg))
+
 ! ----- Kinematic - Previous strains
-        call nmgeom(ndim, nno, axi, grand, geom, &
-                    kpg, ipoids, ivf, idfde, dispPrev, &
-                    .true._1, poids, dfdi, f, eps, &
-                    r)
+        eps = FEEvalGradSymMat(FEBasis, dispPrev, coorpg, BGSEval)
 ! ----- Kinematic - Increment of strains
-        call nmgeom(ndim, nno, axi, grand, geom, &
-                    kpg, ipoids, ivf, idfde, dispIncr, &
-                    .false._1, poids, dfdi, f, deps, &
-                    r)
-! ----- Kinematic - Product [F].[B]
-        do i_node = 1, nno
-            do i_dime = 1, ndim
-                def(1, i_node, i_dime) = f(i_dime, 1)*dfdi(i_node, 1)
-                def(2, i_node, i_dime) = f(i_dime, 2)*dfdi(i_node, 2)
-                def(3, i_node, i_dime) = f(i_dime, 3)*dfdi(i_node, 3)
-                def(4, i_node, i_dime) = (f(i_dime, 1)*dfdi(i_node, 2)+ &
-                                          f(i_dime, 2)*dfdi(i_node, 1))/rac2
-                def(5, i_node, i_dime) = (f(i_dime, 1)*dfdi(i_node, 3)+ &
-                                          f(i_dime, 3)*dfdi(i_node, 1))/rac2
-                def(6, i_node, i_dime) = (f(i_dime, 2)*dfdi(i_node, 3)+ &
-                                          f(i_dime, 3)*dfdi(i_node, 2))/rac2
-            end do
-        end do
+        deps = FEEvalGradSymMat(FEBasis, dispIncr, coorpg, BGSEval)
+
+! ----- Kinematic - Product [B]
+        call FEMatB(FEBasis, BGSEval, def)
 ! ----- Prepare stresses
         do i_tens = 1, 3
             sigmPrep(i_tens) = sigmPrev(i_tens, kpg)
@@ -208,7 +211,7 @@ subroutine nmpl3d(fami, nno, npg, &
                                       def(5, m, j)*sig(5)+def(6, m, j)*sig(6)
                                 if (j .le. j1) then
                                     kk = kkd+ndim*(m-1)+j
-                                    matuu(kk) = matuu(kk)+tmp*poids
+                                    matuu(kk) = matuu(kk)+tmp*FEQuad%weights(kpg)
                                 end if
                             end do
                         end do
@@ -232,7 +235,7 @@ subroutine nmpl3d(fami, nno, npg, &
                                       def(3, m, j)*sig(3)+def(4, m, j)*sig(4)+ &
                                       def(5, m, j)*sig(5)+def(6, m, j)*sig(6)
                                 kk = ndim*nno*(ndim*(i_node-1)+i_dime-1)+ndim*(m-1)+j
-                                matuu(kk) = matuu(kk)+tmp*poids
+                                matuu(kk) = matuu(kk)+tmp*FEQuad%weights(kpg)
                             end do
                         end do
                     end do
@@ -241,26 +244,10 @@ subroutine nmpl3d(fami, nno, npg, &
         end if
 ! ----- Internal forces
         if (lVect) then
-            do i_node = 1, nno
-                vectu(1, i_node) = vectu(1, i_node)+poids*(def(1, i_node, 1)*sigmPost(1)+ &
-                                        def(4, i_node, 1)*sigmPost(4)+def(5, i_node, 1)*sigmPost(5))
-                vectu(2, i_node) = vectu(2, i_node)+poids*(def(2, i_node, 2)*sigmPost(2)+ &
-                                        def(4, i_node, 2)*sigmPost(4)+def(6, i_node, 2)*sigmPost(6))
-                vectu(3, i_node) = vectu(3, i_node)+poids*(def(3, i_node, 3)*sigmPost(3)+ &
-                                        def(5, i_node, 3)*sigmPost(5)+def(6, i_node, 3)*sigmPost(6))
-            end do
+            call FEStiffVecVSymAdd(FEBasis, def, FEQuad%weights(kpg), sigmPost, vectu)
         end if
 ! ----- Cauchy stresses
-        if (lSigm) then
-            do i_tens = 1, 3
-                sigmCurr(i_tens, kpg) = sigmPost(i_tens)
-            end do
-            sigmCurr(4, kpg) = sigmPost(4)/rac2
-            sigmCurr(5, kpg) = sigmPost(5)/rac2
-            sigmCurr(6, kpg) = sigmPost(6)/rac2
-        end if
-! ----- Cauchy stresses for IMPLEX
-        if (option .eq. 'RIGI_MECA_IMPLEX') then
+        if (lSigm .or. option .eq. 'RIGI_MECA_IMPLEX') then
             do i_tens = 1, 3
                 sigmCurr(i_tens, kpg) = sigmPost(i_tens)
             end do
@@ -273,7 +260,7 @@ subroutine nmpl3d(fami, nno, npg, &
 ! - For POST_ITER='CRIT_RUPT'
 !
     if (carcri(13) .gt. 0.d0) then
-        call crirup(fami, imate, ndim, npg, lgpg, &
+        call crirup(fami, imate, ndim, FEQuad%nbQuadPoints, lgpg, &
                     option, compor, sigmCurr, vip, vim, &
                     instam, instap)
     end if
@@ -282,6 +269,6 @@ subroutine nmpl3d(fami, nno, npg, &
 !
 ! - Return code summary
 !
-    call codere(cod, npg, codret)
+    call codere(cod, FEQuad%nbQuadPoints, codret)
 !
 end subroutine

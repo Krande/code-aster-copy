@@ -1,0 +1,163 @@
+! --------------------------------------------------------------------
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! This file is part of code_aster.
+!
+! code_aster is free software: you can redistribute it and/or modify
+! it under the terms of the GNU General Public License as published by
+! the Free Software Foundation, either version 3 of the License, or
+! (at your option) any later version.
+!
+! code_aster is distributed in the hope that it will be useful,
+! but WITHOUT ANY WARRANTY; without even the implied warranty of
+! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+! GNU General Public License for more details.
+!
+! You should have received a copy of the GNU General Public License
+! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+! --------------------------------------------------------------------
+!
+module FE_mechanics_module
+!
+    use FE_basis_module
+!
+    implicit none
+!
+    private
+#include "asterf_types.h"
+#include "FE_module.h"
+#include "blas/dgemv.h"
+#include "asterfort/assert.h"
+#include "jeveux.h"
+!
+! --------------------------------------------------------------------------------------------------
+!
+! FE - Finite Element
+!
+! Module to compute mechanical terms
+!
+! --------------------------------------------------------------------------------------------------
+!
+    public :: FEMatFB, FEMatB
+!    private  ::
+!
+contains
+!
+!
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine FEMatFB(FEBasis, grad, f, matFB)
+!
+        implicit none
+!
+        type(FE_Basis), intent(in)          :: FEBasis
+        real(kind=8), intent(in), dimension(3, MAX_BS) :: grad
+        real(kind=8), intent(out)           :: matFB(6, MAX_BS, 3)
+        real(kind=8), intent(in)            :: f(3, 3)
+! --------------------------------------------------------------------------------------------------
+!
+!
+!   Compute the matrix [F].[B]
+!
+! --------------------------------------------------------------------------------------------------
+!
+! ----- Local variables
+!
+        integer :: i, i_dim
+        real(kind=8), parameter :: rac2 = sqrt(2.d0)
+!
+        matFB = 0.d0
+!
+        select case (FEBasis%ndim)
+        case (2)
+            do i = 1, FEBasis%size
+                do i_dim = 1, 2
+                    matFB(1, i, i_dim) = f(i_dim, 1)*grad(1, i)
+                    matFB(2, i, i_dim) = f(i_dim, 2)*grad(2, i)
+                    matFB(4, i, i_dim) = (f(i_dim, 1)*grad(2, i)+f(i_dim, 2)*grad(1, i))/rac2
+                end do
+            end do
+        case (3)
+            do i = 1, FEBasis%size
+                do i_dim = 1, 3
+                    matFB(1, i, i_dim) = f(i_dim, 1)*grad(1, i)
+                    matFB(2, i, i_dim) = f(i_dim, 2)*grad(2, i)
+                    matFB(3, i, i_dim) = f(i_dim, 3)*grad(3, i)
+                    matFB(4, i, i_dim) = (f(i_dim, 1)*grad(2, i)+f(i_dim, 2)*grad(1, i))/rac2
+                    matFB(5, i, i_dim) = (f(i_dim, 1)*grad(3, i)+f(i_dim, 3)*grad(1, i))/rac2
+                    matFB(6, i, i_dim) = (f(i_dim, 2)*grad(3, i)+f(i_dim, 3)*grad(2, i))/rac2
+                end do
+            end do
+        case default
+            ASSERT(ASTER_FALSE)
+        end select
+
+        if (FEBasis%l_axis) then
+            ASSERT(ASTER_FALSE)
+        end if
+!
+    end subroutine
+!
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine FEMatB(FEBasis, grad, matB)
+!
+        implicit none
+!
+        type(FE_Basis), intent(in)          :: FEBasis
+        real(kind=8), intent(in), dimension(3, MAX_BS) :: grad
+        real(kind=8), intent(out)           :: matB(6, MAX_BS, 3)
+! --------------------------------------------------------------------------------------------------
+!
+!
+!   Compute the rigidity vector
+!   In hhoQuad      : Quadrature
+!   In hhoBasis     : tBasis function
+!   In ValuesQP     : Values of scalar function f at the quadrature points
+!   Out rhs         : (f, grad v)
+!
+! --------------------------------------------------------------------------------------------------
+!
+! ----- Local variables
+!
+        integer :: i
+        real(kind=8), parameter :: rac2 = sqrt(2.d0)
+!
+        matB = 0.d0
+!
+        select case (FEBasis%ndim)
+        case (2)
+            do i = 1, FEBasis%size
+                matB(1, i, 1) = grad(1, i)
+                matB(2, i, 2) = grad(2, i)
+                matB(4, i, 1) = grad(2, i)/rac2
+                matB(4, i, 2) = grad(1, i)/rac2
+            end do
+        case (3)
+            do i = 1, FEBasis%size
+                matB(1, i, 1) = grad(1, i)
+                matB(2, i, 2) = grad(2, i)
+                matB(3, i, 3) = grad(3, i)
+                matB(4, i, 1) = grad(2, i)/rac2
+                matB(5, i, 1) = grad(3, i)/rac2
+                matB(4, i, 2) = grad(1, i)/rac2
+                matB(6, i, 2) = grad(3, i)/rac2
+                matB(5, i, 3) = grad(1, i)/rac2
+                matB(6, i, 3) = grad(2, i)/rac2
+            end do
+        case default
+            ASSERT(ASTER_FALSE)
+        end select
+
+        if (FEBasis%l_axis) then
+            ASSERT(ASTER_FALSE)
+        end if
+!
+    end subroutine
+!
+end module

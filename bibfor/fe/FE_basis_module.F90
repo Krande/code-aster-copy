@@ -31,6 +31,7 @@ module FE_Basis_module
 #include "asterfort/elrfno.h"
 #include "asterfort/elrfvf.h"
 #include "asterfort/tecael.h"
+#include "asterfort/lteatt.h"
 #include "asterfort/utmess.h"
 #include "blas/ddot.h"
 #include "FE_module.h"
@@ -50,6 +51,7 @@ module FE_Basis_module
 ! ----- Dimension topologique
         integer                     :: ndim = 0
         aster_logical               :: l_skin = ASTER_FALSE
+        aster_logical               :: l_axis = ASTER_FALSE
 ! ----- Type maille
         character(len=8)            :: typema = ''
 ! ----- Nombre de noeuds
@@ -94,6 +96,10 @@ contains
         this%nbnodes = FECell%nbnodes
         this%coorno = FECell%coorno
         this%l_skin = ASTER_FALSE
+!
+        if (lteatt('AXIS', 'OUI')) then
+            this%l_axis = ASTER_TRUE
+        end if
 !
         if (this%typeEF == EF_LAGRANGE) then
             call elrfno(this%typema, this%size)

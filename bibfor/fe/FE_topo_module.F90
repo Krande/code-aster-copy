@@ -88,6 +88,7 @@ module fe_topo_module
         procedure, public, pass :: init => init_cell
         procedure, public, pass :: func => func_cell
         procedure, public, pass :: evalCoor => coor_cell
+        procedure, public, pass :: updateCoordinates
     end type FE_Cell
 !
 contains
@@ -363,5 +364,41 @@ contains
                     qp_param(1), qp_param(2), normal)
 !
     end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine updateCoordinates(this, disp)
+!
+        implicit none
+!
+        class(FE_Cell), intent(inout) :: this
+        real(kind=8), intent(in) :: disp(*)
+!
+! --------------------------------------------------------------------------------------------------
+!
+! FE - generic tools
+!
+! Update coordinates with displacement
+!
+! --------------------------------------------------------------------------------------------------
+!
+! Out FECell           : a FE cell
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: inode, idim
+! --------------------------------------------------------------------------------------------------
+!
+!
+! - Update coordinates
+!
+        do inode = 1, this%nbnodes
+            do idim = 1, this%ndim
+                this%coorno(idim, inode) = this%coorno(idim, inode)+disp((inode-1)*this%ndim+idim)
+            end do
+        end do
+!
+    end subroutine
 !
 end module
