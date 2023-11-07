@@ -203,6 +203,7 @@ contains
 !
         do ipg = 1, hhoQuadCellRigi%nbQuadPoints
             coorpg(1:3) = hhoQuadCellRigi%points(1:3, ipg)
+            BEHinteg%elem%coor_elga(ipg, 1:3) = coorpg(1:3)
             weight = hhoQuadCellRigi%weights(ipg)
             !print*, ipg, "qp", coorpg(1:3), weight
 !

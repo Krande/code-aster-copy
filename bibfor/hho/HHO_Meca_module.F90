@@ -18,6 +18,8 @@
 !
 module HHO_Meca_module
 !
+    use Behaviour_type
+    use Behaviour_module
     use NonLin_Datastructure_type
     use HHO_compor_module
     use HHO_Dirichlet_module
@@ -29,7 +31,6 @@ module HHO_Meca_module
     use HHO_type
     use HHO_utils_module
     use HHO_basis_module
-    use NonLin_Datastructure_type
     use HHO_gradrec_module, only: hhoGradRecVec, hhoGradRecFullMat, hhoGradRecSymFullMat, &
                                  & hhoGradRecSymMat, hhoGradRecFullMatFromVec
 !
@@ -512,6 +513,7 @@ contains
 !   In imate        : materiau code
 ! --------------------------------------------------------------------------------------------------
 !
+        type(Behaviour_Integ) :: BEHinteg
         character(len=16) :: elas_keyword
         integer :: elas_id, ipg
         real(kind=8) :: e
@@ -521,9 +523,12 @@ contains
 !
         call get_elas_id(imate, elas_id, elas_keyword)
 !
+        call behaviourInit(BEHinteg)
+!
         do ipg = 1, hhoQuad%nbQuadPoints
+            BEHinteg%elem%coor_elga(ipg, 1:3) = hhoQuad%points(1:3, ipg)
             call get_elas_para(fami, imate, '+', ipg, 1, elas_id, elas_keyword, &
-                               e_=e, time=time)
+                               e_=e, time=time, BEHinteg=BEHinteg)
             coeff = coeff+e
         end do
 !
