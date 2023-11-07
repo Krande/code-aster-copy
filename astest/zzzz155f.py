@@ -73,3 +73,7 @@ elif rank == 1:
     test.assertTrue([939] == pMesh.getCells("GRPM3"))
     test.assertTrue(pMesh.hasGroupOfCells("GRPM4", True))
     test.assertTrue([924] == pMesh.getCells("GRPM4"))
+
+test.printSummary()
+
+code_aster.close()
