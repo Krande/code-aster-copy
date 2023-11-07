@@ -18,6 +18,8 @@
 !
 module HHO_Meca_module
 !
+use Behaviour_type
+use Behaviour_module
 use NonLin_Datastructure_type
 use HHO_type
 use HHO_Dirichlet_module
@@ -496,7 +498,7 @@ contains
 !
         if(hhoData%adapt()) then
              call hhoData%setCoeffStab(10.d0 * YoungModulus(fami, imate, &
-                                                             hhoQuadCellRigi%nbQuadPoints))
+                                                            hhoQuadCellRigi))
         end if
 !
         call dsymv('U', total_dofs, -hhoData%coeff_stab(), stab, MSIZE_TDOFS_VEC,&
@@ -610,12 +612,13 @@ contains
 !
 !===================================================================================================
 !
-    function YoungModulus(fami, imate, npg) result(coeff)
+    function YoungModulus(fami, imate, hhoQuad) result(coeff)
 !
     implicit none
 !
         character(len=*), intent(in)  :: fami
-        integer, intent(in)           :: imate, npg
+        integer, intent(in)           :: imate
+        type(HHO_Quadrature), intent(in) :: hhoQuad
         real(kind=8) :: coeff
 !
 ! --------------------------------------------------------------------------------------------------
@@ -626,6 +629,7 @@ contains
 !   In imate        : materiau code
 ! --------------------------------------------------------------------------------------------------
 !
+        type(Behaviour_Integ) :: BEHinteg
         character(len=16) :: elas_keyword
         integer :: elas_id, ipg
         real(kind=8) :: e
@@ -634,13 +638,16 @@ contains
 ! - Get type of elasticity (Isotropic/Orthotropic/Transverse isotropic)
 !
         call get_elas_id(imate, elas_id, elas_keyword)
+        call behaviourInit(BEHinteg)
 !
-        do ipg = 1, npg
-            call get_elas_para(fami, imate, '+', ipg, 1, elas_id , elas_keyword, e_ = e)
+        do ipg = 1, hhoQuad%nbQuadPoints
+            BEHinteg%elem%coor_elga(ipg, 1:3) = hhoQuad%points(1:3, ipg)
+            call get_elas_para(fami, imate, '+', ipg, 1, elas_id , elas_keyword, e_ = e,&
+                               BEHinteg=BEHinteg)
             coeff = coeff + e
         end do
 !
-        coeff = coeff / real(npg, kind=8)
+        coeff = coeff/real(hhoQuad%nbQuadPoints, kind=8)
 !
     end function
 !
