@@ -942,7 +942,7 @@ contains
                 state = PLASTIC_STATE
                 p = 1.d0
                 q = 1.d0
-                ts = tsm
+                ts = f_ts_hat(self, dka=dka)
                 t = tel
             end if
         end if
