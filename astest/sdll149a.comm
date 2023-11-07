@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -388,10 +388,11 @@ SRO = DEFI_NAPPE(NOM_PARA="AMOR", PARA=0.01, FONCTION=SPECTRE)
 ANA_A1 = COMB_SISM_MODAL(
     MODE_MECA=MODECA,
     AMOR_REDUIT=0.01,
-    MONO_APPUI="OUI",
-    EXCIT=_F(AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SRO, ECHELLE=386.4),
+    TYPE_ANALYSE="MONO_APPUI",
+    SPECTRE=_F(LIST_AXE=("X"), SPEC_OSCI=SRO, ECHELLE=386.4),
     COMB_MODE=_F(TYPE="SRSS"),
     OPTION=("REAC_NODA",),
+    TYPE_RESU=_F(TYPE="VALE_TOTA"),
 )
 
 # -------------------------------------------------------------
@@ -401,7 +402,7 @@ ANA_A1 = COMB_SISM_MODAL(
 TEST_RESU(
     RESU=(
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N1B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A1,
@@ -412,7 +413,7 @@ TEST_RESU(
             PRECISION=0.13,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N1B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A1,
@@ -423,7 +424,7 @@ TEST_RESU(
             PRECISION=0.10000000000000001,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N1B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A1,
@@ -434,7 +435,7 @@ TEST_RESU(
             PRECISION=0.089999999999999997,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N1B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A1,
@@ -445,7 +446,7 @@ TEST_RESU(
             PRECISION=0.059999999999999998,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N1B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A1,
@@ -456,7 +457,7 @@ TEST_RESU(
             PRECISION=0.059999999999999998,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N1B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A1,
@@ -467,7 +468,7 @@ TEST_RESU(
             PRECISION=0.12,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N4B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A1,
@@ -478,7 +479,7 @@ TEST_RESU(
             PRECISION=0.050000000000000003,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N4B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A1,
@@ -489,7 +490,7 @@ TEST_RESU(
             PRECISION=0.02,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N7B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A1,
@@ -500,7 +501,7 @@ TEST_RESU(
             PRECISION=0.02,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N11B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A1,
@@ -511,7 +512,7 @@ TEST_RESU(
             PRECISION=0.20000000000000001,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N11B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A1,
@@ -522,7 +523,7 @@ TEST_RESU(
             PRECISION=0.040000000000000001,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N15B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A1,
@@ -533,7 +534,7 @@ TEST_RESU(
             PRECISION=0.02,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N17B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A1,
@@ -544,7 +545,7 @@ TEST_RESU(
             PRECISION=3.0e-3,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N17B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A1,
@@ -555,7 +556,7 @@ TEST_RESU(
             PRECISION=0.02,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N36B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A1,
@@ -566,7 +567,7 @@ TEST_RESU(
             PRECISION=0.029999999999999999,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N36B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A1,
@@ -577,7 +578,7 @@ TEST_RESU(
             PRECISION=0.080000000000000002,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N38B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A1,
@@ -588,7 +589,7 @@ TEST_RESU(
             PRECISION=0.040000000000000001,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N38B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A1,
@@ -599,7 +600,7 @@ TEST_RESU(
             PRECISION=0.02,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N38B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A1,
@@ -610,7 +611,7 @@ TEST_RESU(
             PRECISION=0.075000000000000007,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N38B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A1,
@@ -621,7 +622,7 @@ TEST_RESU(
             PRECISION=1.0e-2,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N38B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A1,
@@ -632,7 +633,7 @@ TEST_RESU(
             PRECISION=0.065,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N38B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A1,
@@ -643,7 +644,7 @@ TEST_RESU(
             PRECISION=0.02,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N23B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A1,
@@ -654,7 +655,7 @@ TEST_RESU(
             PRECISION=0.050000000000000003,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N23B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A1,
@@ -665,7 +666,7 @@ TEST_RESU(
             PRECISION=0.040000000000000001,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N31B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A1,
@@ -676,7 +677,7 @@ TEST_RESU(
             PRECISION=0.02,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N31B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A1,
@@ -687,7 +688,7 @@ TEST_RESU(
             PRECISION=0.059999999999999998,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N31B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A1,
@@ -698,7 +699,7 @@ TEST_RESU(
             PRECISION=0.080000000000000002,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N31B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A1,
@@ -709,7 +710,7 @@ TEST_RESU(
             PRECISION=0.16,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N31B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A1,
@@ -720,7 +721,7 @@ TEST_RESU(
             PRECISION=0.23000000000000001,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N31B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A1,
@@ -741,10 +742,11 @@ TEST_RESU(
 ANA_A2 = COMB_SISM_MODAL(
     MODE_MECA=MODECA,
     AMOR_REDUIT=0.01,
-    MONO_APPUI="OUI",
-    EXCIT=_F(AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SRO, ECHELLE=386.4),
+    TYPE_ANALYSE="MONO_APPUI",
+    SPECTRE=_F(LIST_AXE=("X"), SPEC_OSCI=SRO, ECHELLE=386.4),
     COMB_MODE=_F(TYPE="CQC"),
     OPTION=("REAC_NODA",),
+    TYPE_RESU=_F(TYPE="VALE_TOTA"),
 )
 
 
@@ -755,7 +757,7 @@ ANA_A2 = COMB_SISM_MODAL(
 TEST_RESU(
     RESU=(
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N1B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A2,
@@ -766,7 +768,7 @@ TEST_RESU(
             PRECISION=0.13,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N1B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A2,
@@ -777,7 +779,7 @@ TEST_RESU(
             PRECISION=0.089999999999999997,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N1B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A2,
@@ -788,7 +790,7 @@ TEST_RESU(
             PRECISION=0.050000000000000003,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N1B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A2,
@@ -799,7 +801,7 @@ TEST_RESU(
             PRECISION=0.070000000000000007,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N1B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A2,
@@ -810,7 +812,7 @@ TEST_RESU(
             PRECISION=1.5e-3,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N1B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A2,
@@ -821,7 +823,7 @@ TEST_RESU(
             PRECISION=0.12,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N4B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A2,
@@ -832,7 +834,7 @@ TEST_RESU(
             PRECISION=0.050000000000000003,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N4B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A2,
@@ -843,7 +845,7 @@ TEST_RESU(
             PRECISION=1.0e-2,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N7B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A2,
@@ -854,7 +856,7 @@ TEST_RESU(
             PRECISION=0.11,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N11B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A2,
@@ -865,7 +867,7 @@ TEST_RESU(
             PRECISION=0.20000000000000001,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N11B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A2,
@@ -876,7 +878,7 @@ TEST_RESU(
             PRECISION=0.02,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N15B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A2,
@@ -887,7 +889,7 @@ TEST_RESU(
             PRECISION=0.029999999999999999,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N17B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A2,
@@ -898,7 +900,7 @@ TEST_RESU(
             PRECISION=0.02,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N17B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A2,
@@ -909,7 +911,7 @@ TEST_RESU(
             PRECISION=1.0e-2,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N36B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A2,
@@ -920,7 +922,7 @@ TEST_RESU(
             PRECISION=1.01e-2,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N36B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A2,
@@ -931,7 +933,7 @@ TEST_RESU(
             PRECISION=0.059999999999999998,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N38B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A2,
@@ -942,7 +944,7 @@ TEST_RESU(
             PRECISION=0.050000000000000003,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N38B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A2,
@@ -953,7 +955,7 @@ TEST_RESU(
             PRECISION=1.0e-2,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N38B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A2,
@@ -964,7 +966,7 @@ TEST_RESU(
             PRECISION=0.059999999999999998,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N38B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A2,
@@ -975,7 +977,7 @@ TEST_RESU(
             PRECISION=0.029999999999999999,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N38B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A2,
@@ -986,7 +988,7 @@ TEST_RESU(
             PRECISION=0.050000000000000003,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N38B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A2,
@@ -997,7 +999,7 @@ TEST_RESU(
             PRECISION=1.0e-2,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N23B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A2,
@@ -1008,7 +1010,7 @@ TEST_RESU(
             PRECISION=0.050000000000000003,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N23B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A2,
@@ -1019,7 +1021,7 @@ TEST_RESU(
             PRECISION=1.0e-2,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N31B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A2,
@@ -1030,7 +1032,7 @@ TEST_RESU(
             PRECISION=0.02,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N31B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A2,
@@ -1041,7 +1043,7 @@ TEST_RESU(
             PRECISION=0.050000000000000003,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N31B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A2,
@@ -1052,7 +1054,7 @@ TEST_RESU(
             PRECISION=0.070000000000000007,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N31B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A2,
@@ -1063,7 +1065,7 @@ TEST_RESU(
             PRECISION=0.14000000000000001,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N31B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A2,
@@ -1074,7 +1076,7 @@ TEST_RESU(
             PRECISION=0.23000000000000001,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N31B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A2,
@@ -1100,11 +1102,13 @@ CORR = CALC_CHAMP(reuse=CORR, RESULTAT=CORR, FORCE="REAC_NODA")
 ANA_A3 = COMB_SISM_MODAL(
     MODE_MECA=MODECA,
     AMOR_REDUIT=0.01,
-    MODE_CORR=CORR,
-    MONO_APPUI="OUI",
-    EXCIT=_F(AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SRO, ECHELLE=386.4),
+    MODE_CORR="OUI",
+    PSEUDO_MODE=CORR,
+    TYPE_ANALYSE="MONO_APPUI",
+    SPECTRE=_F(LIST_AXE=("X"), SPEC_OSCI=SRO, ECHELLE=386.4),
     COMB_MODE=_F(TYPE="CQC"),
     OPTION=("REAC_NODA",),
+    TYPE_RESU=_F(TYPE="VALE_TOTA"),
 )
 
 # -------------------------------------------------------------
@@ -1114,7 +1118,7 @@ ANA_A3 = COMB_SISM_MODAL(
 TEST_RESU(
     RESU=(
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N1B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A3,
@@ -1125,7 +1129,7 @@ TEST_RESU(
             PRECISION=0.029999999999999999,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N1B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A3,
@@ -1136,7 +1140,7 @@ TEST_RESU(
             PRECISION=0.080000000000000002,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N1B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A3,
@@ -1147,7 +1151,7 @@ TEST_RESU(
             PRECISION=0.050000000000000003,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N1B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A3,
@@ -1158,7 +1162,7 @@ TEST_RESU(
             PRECISION=0.070000000000000007,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N1B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A3,
@@ -1169,7 +1173,7 @@ TEST_RESU(
             PRECISION=1.0e-2,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N1B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A3,
@@ -1180,7 +1184,7 @@ TEST_RESU(
             PRECISION=0.11,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N4B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A3,
@@ -1191,7 +1195,7 @@ TEST_RESU(
             PRECISION=0.029999999999999999,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N4B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A3,
@@ -1202,7 +1206,7 @@ TEST_RESU(
             PRECISION=1.0e-2,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N7B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A3,
@@ -1213,7 +1217,7 @@ TEST_RESU(
             PRECISION=0.089999999999999997,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N11B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A3,
@@ -1224,7 +1228,7 @@ TEST_RESU(
             PRECISION=0.20000000000000001,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N11B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A3,
@@ -1235,7 +1239,7 @@ TEST_RESU(
             PRECISION=0.029999999999999999,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N15B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A3,
@@ -1246,7 +1250,7 @@ TEST_RESU(
             PRECISION=0.029999999999999999,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N17B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A3,
@@ -1257,7 +1261,7 @@ TEST_RESU(
             PRECISION=0.02,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N17B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A3,
@@ -1268,7 +1272,7 @@ TEST_RESU(
             PRECISION=1.0e-3,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N36B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A3,
@@ -1279,7 +1283,7 @@ TEST_RESU(
             PRECISION=0.029999999999999999,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N36B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A3,
@@ -1290,7 +1294,7 @@ TEST_RESU(
             PRECISION=0.10000000000000001,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N38B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A3,
@@ -1301,7 +1305,7 @@ TEST_RESU(
             PRECISION=0.12,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N38B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A3,
@@ -1312,7 +1316,7 @@ TEST_RESU(
             PRECISION=1.0e-2,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N38B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A3,
@@ -1323,7 +1327,7 @@ TEST_RESU(
             PRECISION=0.055,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N38B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A3,
@@ -1334,7 +1338,7 @@ TEST_RESU(
             PRECISION=0.029999999999999999,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N38B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A3,
@@ -1345,7 +1349,7 @@ TEST_RESU(
             PRECISION=0.045,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N38B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A3,
@@ -1356,7 +1360,7 @@ TEST_RESU(
             PRECISION=1.0e-2,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N23B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A3,
@@ -1367,7 +1371,7 @@ TEST_RESU(
             PRECISION=0.040000000000000001,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N23B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A3,
@@ -1378,7 +1382,7 @@ TEST_RESU(
             PRECISION=1.0e-2,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N31B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A3,
@@ -1389,7 +1393,7 @@ TEST_RESU(
             PRECISION=0.059999999999999998,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N31B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A3,
@@ -1400,7 +1404,7 @@ TEST_RESU(
             PRECISION=0.040000000000000001,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N31B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A3,
@@ -1411,7 +1415,7 @@ TEST_RESU(
             PRECISION=0.070000000000000007,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N31B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A3,
@@ -1422,7 +1426,7 @@ TEST_RESU(
             PRECISION=0.14000000000000001,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N31B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A3,
@@ -1433,7 +1437,7 @@ TEST_RESU(
             PRECISION=0.28000000000000003,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N31B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A3,
@@ -1455,11 +1459,13 @@ TEST_RESU(
 ANA_A4 = COMB_SISM_MODAL(
     MODE_MECA=MODECA,
     AMOR_REDUIT=0.01,
-    MONO_APPUI="OUI",
-    MODE_CORR=CORR,
-    EXCIT=_F(AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SRO, ECHELLE=386.4),
+    MODE_CORR="OUI",
+    PSEUDO_MODE=CORR,
+    TYPE_ANALYSE="MONO_APPUI",
+    SPECTRE=_F(LIST_AXE=("X"), SPEC_OSCI=SRO, ECHELLE=386.4),
     COMB_MODE=_F(TYPE="GUPTA", FREQ_1=2.80, FREQ_2=11.90),
     OPTION=("REAC_NODA",),
+    TYPE_RESU=_F(TYPE="VALE_TOTA"),
 )
 
 # -------------------------------------------------------------
@@ -1469,7 +1475,7 @@ ANA_A4 = COMB_SISM_MODAL(
 TEST_RESU(
     RESU=(
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N1B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A4,
@@ -1480,7 +1486,7 @@ TEST_RESU(
             PRECISION=1.0e-2,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N1B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A4,
@@ -1491,7 +1497,7 @@ TEST_RESU(
             PRECISION=0.080000000000000002,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N1B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A4,
@@ -1502,7 +1508,7 @@ TEST_RESU(
             PRECISION=0.040000000000000001,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N1B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A4,
@@ -1513,7 +1519,7 @@ TEST_RESU(
             PRECISION=0.13,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N1B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A4,
@@ -1524,7 +1530,7 @@ TEST_RESU(
             PRECISION=0.02,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N1B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A4,
@@ -1535,7 +1541,7 @@ TEST_RESU(
             PRECISION=0.029999999999999999,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N4B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A4,
@@ -1546,7 +1552,7 @@ TEST_RESU(
             PRECISION=1.0e-2,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N4B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A4,
@@ -1557,7 +1563,7 @@ TEST_RESU(
             PRECISION=0.059999999999999998,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N7B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A4,
@@ -1568,7 +1574,7 @@ TEST_RESU(
             PRECISION=0.20999999999999999,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N11B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A4,
@@ -1579,7 +1585,7 @@ TEST_RESU(
             PRECISION=0.33000000000000002,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N11B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A4,
@@ -1590,7 +1596,7 @@ TEST_RESU(
             PRECISION=0.02,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N15B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A4,
@@ -1601,7 +1607,7 @@ TEST_RESU(
             PRECISION=0.02,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N17B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A4,
@@ -1612,7 +1618,7 @@ TEST_RESU(
             PRECISION=1.0e-2,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N17B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A4,
@@ -1623,7 +1629,7 @@ TEST_RESU(
             PRECISION=0.02,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N36B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A4,
@@ -1634,7 +1640,7 @@ TEST_RESU(
             PRECISION=0.050000000000000003,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N36B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A4,
@@ -1645,7 +1651,7 @@ TEST_RESU(
             PRECISION=0.029999999999999999,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N38B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A4,
@@ -1656,7 +1662,7 @@ TEST_RESU(
             PRECISION=0.10000000000000001,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N38B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A4,
@@ -1667,7 +1673,7 @@ TEST_RESU(
             PRECISION=0.02,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N38B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A4,
@@ -1678,7 +1684,7 @@ TEST_RESU(
             PRECISION=0.080000000000000002,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N38B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A4,
@@ -1689,7 +1695,7 @@ TEST_RESU(
             PRECISION=0.089999999999999997,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N38B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A4,
@@ -1700,7 +1706,7 @@ TEST_RESU(
             PRECISION=0.070000000000000007,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N38B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A4,
@@ -1711,7 +1717,7 @@ TEST_RESU(
             PRECISION=0.02,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N23B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A4,
@@ -1722,7 +1728,7 @@ TEST_RESU(
             PRECISION=0.040000000000000001,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N23B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A4,
@@ -1733,7 +1739,7 @@ TEST_RESU(
             PRECISION=0.11,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N31B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A4,
@@ -1744,7 +1750,7 @@ TEST_RESU(
             PRECISION=0.029999999999999999,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N31B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A4,
@@ -1755,7 +1761,7 @@ TEST_RESU(
             PRECISION=0.040000000000000001,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N31B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A4,
@@ -1766,7 +1772,7 @@ TEST_RESU(
             PRECISION=0.11,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N31B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A4,
@@ -1777,7 +1783,7 @@ TEST_RESU(
             PRECISION=0.19,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N31B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A4,
@@ -1788,7 +1794,7 @@ TEST_RESU(
             PRECISION=0.31,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N31B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A4,
@@ -1810,11 +1816,13 @@ TEST_RESU(
 ANA_A6 = COMB_SISM_MODAL(
     MODE_MECA=MODECA,
     AMOR_REDUIT=0.01,
-    MONO_APPUI="OUI",
-    MODE_CORR=CORR,
-    EXCIT=_F(AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SRO, ECHELLE=386.4),
+    MODE_CORR="OUI",
+    PSEUDO_MODE=CORR,
+    TYPE_ANALYSE="MONO_APPUI",
+    SPECTRE=_F(LIST_AXE=("X"), SPEC_OSCI=SRO, ECHELLE=386.4),
     COMB_MODE=_F(TYPE="GUPTA", FREQ_1=2.80, FREQ_2=6.0),
     OPTION=("REAC_NODA",),
+    TYPE_RESU=_F(TYPE="VALE_TOTA"),
 )
 
 # -------------------------------------------------------------
@@ -1824,7 +1832,7 @@ ANA_A6 = COMB_SISM_MODAL(
 TEST_RESU(
     RESU=(
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N1B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A6,
@@ -1835,7 +1843,7 @@ TEST_RESU(
             PRECISION=1.0e-2,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N1B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A6,
@@ -1846,7 +1854,7 @@ TEST_RESU(
             PRECISION=0.16,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N1B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A6,
@@ -1857,7 +1865,7 @@ TEST_RESU(
             PRECISION=0.25,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N1B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A6,
@@ -1868,7 +1876,7 @@ TEST_RESU(
             PRECISION=0.11,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N1B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A6,
@@ -1879,7 +1887,7 @@ TEST_RESU(
             PRECISION=0.040000000000000001,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N1B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A6,
@@ -1890,7 +1898,7 @@ TEST_RESU(
             PRECISION=0.02,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N4B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A6,
@@ -1901,7 +1909,7 @@ TEST_RESU(
             PRECISION=1.0e-2,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N4B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A6,
@@ -1912,7 +1920,7 @@ TEST_RESU(
             PRECISION=0.059999999999999998,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N7B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A6,
@@ -1923,7 +1931,7 @@ TEST_RESU(
             PRECISION=0.39000000000000001,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N11B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A6,
@@ -1934,7 +1942,7 @@ TEST_RESU(
             PRECISION=0.37,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N11B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A6,
@@ -1945,7 +1953,7 @@ TEST_RESU(
             PRECISION=0.029999999999999999,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N15B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A6,
@@ -1956,7 +1964,7 @@ TEST_RESU(
             PRECISION=1.0e-2,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N17B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A6,
@@ -1967,7 +1975,7 @@ TEST_RESU(
             PRECISION=0.02,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N17B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A6,
@@ -1978,7 +1986,7 @@ TEST_RESU(
             PRECISION=0.029999999999999999,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N36B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A6,
@@ -1989,7 +1997,7 @@ TEST_RESU(
             PRECISION=0.20999999999999999,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N36B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A6,
@@ -2000,7 +2008,7 @@ TEST_RESU(
             PRECISION=0.20000000000000001,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N38B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A6,
@@ -2011,7 +2019,7 @@ TEST_RESU(
             PRECISION=0.10000000000000001,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N38B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A6,
@@ -2022,7 +2030,7 @@ TEST_RESU(
             PRECISION=1.0e-2,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N38B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A6,
@@ -2033,7 +2041,7 @@ TEST_RESU(
             PRECISION=0.065,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N38B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A6,
@@ -2044,7 +2052,7 @@ TEST_RESU(
             PRECISION=0.029999999999999999,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N38B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A6,
@@ -2055,7 +2063,7 @@ TEST_RESU(
             PRECISION=0.059999999999999998,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N38B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A6,
@@ -2066,7 +2074,7 @@ TEST_RESU(
             PRECISION=1.0e-2,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N23B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A6,
@@ -2077,7 +2085,7 @@ TEST_RESU(
             PRECISION=0.050000000000000003,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N23B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A6,
@@ -2088,7 +2096,7 @@ TEST_RESU(
             PRECISION=0.12,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N31B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A6,
@@ -2099,7 +2107,7 @@ TEST_RESU(
             PRECISION=0.029999999999999999,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N31B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A6,
@@ -2110,7 +2118,7 @@ TEST_RESU(
             PRECISION=0.059999999999999998,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N31B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A6,
@@ -2121,7 +2129,7 @@ TEST_RESU(
             PRECISION=0.042,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N31B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A6,
@@ -2132,7 +2140,7 @@ TEST_RESU(
             PRECISION=0.19,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N31B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A6,
@@ -2143,7 +2151,7 @@ TEST_RESU(
             PRECISION=0.32000000000000001,
         ),
         _F(
-            NUME_ORDRE=1,
+            NOM_CAS="TOTA",
             GROUP_NO="N31B",
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=ANA_A6,

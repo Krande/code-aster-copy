@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -147,13 +147,15 @@ SPECTRE = DEFI_NAPPE(
 
 REPGUP = COMB_SISM_MODAL(
     MODE_MECA=MODES,
-    MODE_CORR=CORRSTA,
+    MODE_CORR="OUI",
+    PSEUDO_MODE=CORRSTA,
     AMOR_REDUIT=amor,
-    EXCIT=_F(TRI_SPEC="OUI", SPEC_OSCI=(SPECTRE, SPECTRE, SPECTRE)),
-    MONO_APPUI="OUI",
-    COMB_DIRECTION=_F(TYPE="QUAD"),
+    SPECTRE=(_F(LIST_AXE=("X", "Y", "Z"), SPEC_OSCI=SPECTRE),),
+    TYPE_ANALYSE="MONO_APPUI",
+    COMB_DIRECTION="QUAD",
     COMB_MODE=_F(TYPE="GUPTA", FREQ_1=14.6, FREQ_2=40.0),
     OPTION=("ACCE_ABSOLU", "DEPL", "REAC_NODA"),
+    TYPE_RESU=_F(TYPE="VALE_TOTA"),
 )
 ###
 ### TEST_RESU
@@ -189,7 +191,7 @@ TEST_RESU(RESU=_F(PARA="FREQ", NUME_MODE=14, RESULTAT=MODECA, VALE_CALC=59.52820
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="H",
         RESULTAT=REPGUP,
         NOM_CHAM="DEPL",
@@ -200,7 +202,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="H",
         RESULTAT=REPGUP,
         NOM_CHAM="DEPL",
@@ -212,7 +214,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="H",
         RESULTAT=REPGUP,
         NOM_CHAM="DEPL",
@@ -223,7 +225,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="H",
         RESULTAT=REPGUP,
         NOM_CHAM="DEPL",
@@ -235,7 +237,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="H",
         RESULTAT=REPGUP,
         NOM_CHAM="DEPL",
@@ -246,7 +248,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="H",
         RESULTAT=REPGUP,
         NOM_CHAM="DEPL",
@@ -258,7 +260,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="R",
         RESULTAT=REPGUP,
         NOM_CHAM="DEPL",
@@ -269,7 +271,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="R",
         RESULTAT=REPGUP,
         NOM_CHAM="DEPL",
@@ -281,7 +283,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="R",
         RESULTAT=REPGUP,
         NOM_CHAM="DEPL",
@@ -292,7 +294,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="R",
         RESULTAT=REPGUP,
         NOM_CHAM="DEPL",
@@ -304,7 +306,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="R",
         RESULTAT=REPGUP,
         NOM_CHAM="DEPL",
@@ -316,7 +318,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="R",
         RESULTAT=REPGUP,
         NOM_CHAM="DEPL",
@@ -328,7 +330,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="S",
         RESULTAT=REPGUP,
         NOM_CHAM="DEPL",
@@ -339,7 +341,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="S",
         RESULTAT=REPGUP,
         NOM_CHAM="DEPL",
@@ -351,7 +353,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="S",
         RESULTAT=REPGUP,
         NOM_CHAM="DEPL",
@@ -362,7 +364,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="S",
         RESULTAT=REPGUP,
         NOM_CHAM="DEPL",
@@ -374,7 +376,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="S",
         RESULTAT=REPGUP,
         NOM_CHAM="DEPL",
@@ -385,7 +387,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="S",
         RESULTAT=REPGUP,
         NOM_CHAM="DEPL",
@@ -397,7 +399,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="O",
         RESULTAT=REPGUP,
         NOM_CHAM="DEPL",
@@ -409,7 +411,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="O",
         RESULTAT=REPGUP,
         NOM_CHAM="DEPL",
@@ -421,7 +423,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="O",
         RESULTAT=REPGUP,
         NOM_CHAM="DEPL",
@@ -433,7 +435,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="H",
         RESULTAT=REPGUP,
         NOM_CHAM="ACCE_ABSOLU",
@@ -444,7 +446,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="H",
         RESULTAT=REPGUP,
         NOM_CHAM="ACCE_ABSOLU",
@@ -455,7 +457,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="H",
         RESULTAT=REPGUP,
         NOM_CHAM="ACCE_ABSOLU",
@@ -466,7 +468,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="H",
         RESULTAT=REPGUP,
         NOM_CHAM="ACCE_ABSOLU",
@@ -477,18 +479,19 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="H",
         RESULTAT=REPGUP,
         NOM_CHAM="ACCE_ABSOLU",
         NOM_CMP="DRY",
-        VALE_CALC=0.0962842143496,
+        # VALE_CALC=0.0962842143496,
+        VALE_CALC=0.09628712297429251,
     )
 )
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="H",
         RESULTAT=REPGUP,
         NOM_CHAM="ACCE_ABSOLU",
@@ -499,7 +502,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="R",
         RESULTAT=REPGUP,
         NOM_CHAM="ACCE_ABSOLU",
@@ -510,7 +513,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="R",
         RESULTAT=REPGUP,
         NOM_CHAM="ACCE_ABSOLU",
@@ -521,7 +524,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="R",
         RESULTAT=REPGUP,
         NOM_CHAM="ACCE_ABSOLU",
@@ -532,7 +535,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="R",
         RESULTAT=REPGUP,
         NOM_CHAM="ACCE_ABSOLU",
@@ -543,7 +546,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="R",
         RESULTAT=REPGUP,
         NOM_CHAM="ACCE_ABSOLU",
@@ -554,7 +557,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="R",
         RESULTAT=REPGUP,
         NOM_CHAM="ACCE_ABSOLU",
@@ -565,7 +568,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="S",
         RESULTAT=REPGUP,
         NOM_CHAM="ACCE_ABSOLU",
@@ -576,7 +579,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="S",
         RESULTAT=REPGUP,
         NOM_CHAM="ACCE_ABSOLU",
@@ -587,7 +590,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="S",
         RESULTAT=REPGUP,
         NOM_CHAM="ACCE_ABSOLU",
@@ -598,7 +601,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="S",
         RESULTAT=REPGUP,
         NOM_CHAM="ACCE_ABSOLU",
@@ -609,18 +612,19 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="S",
         RESULTAT=REPGUP,
         NOM_CHAM="ACCE_ABSOLU",
         NOM_CMP="DRY",
-        VALE_CALC=0.0118246724141,
+        # VALE_CALC=0.0118246724141,
+        VALE_CALC=0.011824589985400867,
     )
 )
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="S",
         RESULTAT=REPGUP,
         NOM_CHAM="ACCE_ABSOLU",
@@ -631,7 +635,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="O",
         RESULTAT=REPGUP,
         NOM_CHAM="ACCE_ABSOLU",
@@ -642,7 +646,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="O",
         RESULTAT=REPGUP,
         NOM_CHAM="ACCE_ABSOLU",
@@ -653,7 +657,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="O",
         RESULTAT=REPGUP,
         NOM_CHAM="ACCE_ABSOLU",
@@ -664,7 +668,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="H",
         RESULTAT=REPGUP,
         NOM_CHAM="REAC_NODA",
@@ -677,7 +681,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="H",
         RESULTAT=REPGUP,
         NOM_CHAM="REAC_NODA",
@@ -688,7 +692,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="H",
         RESULTAT=REPGUP,
         NOM_CHAM="REAC_NODA",
@@ -701,7 +705,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="H",
         RESULTAT=REPGUP,
         NOM_CHAM="REAC_NODA",
@@ -712,7 +716,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="H",
         RESULTAT=REPGUP,
         NOM_CHAM="REAC_NODA",
@@ -725,7 +729,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="H",
         RESULTAT=REPGUP,
         NOM_CHAM="REAC_NODA",
@@ -738,7 +742,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="R",
         RESULTAT=REPGUP,
         NOM_CHAM="REAC_NODA",
@@ -751,7 +755,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="R",
         RESULTAT=REPGUP,
         NOM_CHAM="REAC_NODA",
@@ -762,7 +766,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="R",
         RESULTAT=REPGUP,
         NOM_CHAM="REAC_NODA",
@@ -775,7 +779,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="R",
         RESULTAT=REPGUP,
         NOM_CHAM="REAC_NODA",
@@ -786,7 +790,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="R",
         RESULTAT=REPGUP,
         NOM_CHAM="REAC_NODA",
@@ -797,7 +801,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="R",
         RESULTAT=REPGUP,
         NOM_CHAM="REAC_NODA",
@@ -810,7 +814,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="S",
         RESULTAT=REPGUP,
         NOM_CHAM="REAC_NODA",
@@ -823,7 +827,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="S",
         RESULTAT=REPGUP,
         NOM_CHAM="REAC_NODA",
@@ -834,7 +838,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="S",
         RESULTAT=REPGUP,
         NOM_CHAM="REAC_NODA",
@@ -847,7 +851,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="S",
         RESULTAT=REPGUP,
         NOM_CHAM="REAC_NODA",
@@ -860,7 +864,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="S",
         RESULTAT=REPGUP,
         NOM_CHAM="REAC_NODA",
@@ -873,7 +877,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="S",
         RESULTAT=REPGUP,
         NOM_CHAM="REAC_NODA",
@@ -886,7 +890,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="O",
         RESULTAT=REPGUP,
         NOM_CHAM="REAC_NODA",
@@ -897,7 +901,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="O",
         RESULTAT=REPGUP,
         NOM_CHAM="REAC_NODA",
@@ -910,7 +914,7 @@ TEST_RESU(
 
 TEST_RESU(
     RESU=_F(
-        NUME_ORDRE=4,
+        NOM_CAS="TOTA",
         GROUP_NO="O",
         RESULTAT=REPGUP,
         NOM_CHAM="REAC_NODA",

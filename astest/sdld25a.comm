@@ -285,13 +285,14 @@ SISM_SPE = COMB_SISM_MODAL(
         0.04698464,
         0.04924040,
     ),
-    MASS_INER=TABL_MAS,
-    CORR_FREQ="NON",
-    MONO_APPUI="OUI",
-    EXCIT=_F(AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPECT, NATURE="ACCE"),
+    TYPE_ANALYSE="MONO_APPUI",
+    SPECTRE=_F(LIST_AXE=("X",), SPEC_OSCI=SPECT, NATURE="ACCE", CORR_FREQ="NON"),
     COMB_MODE=_F(TYPE="SRSS"),
+    COMB_DIRECTION="QUAD",
     OPTION=("ACCE_ABSOLU",),
-    TITRE=("CAS TEST COMB_SISM_MODAL",),
+    TITRE=("CAS TEST ",),
+    TYPE_RESU=_F(TYPE="VALE_TOTA"),
+    INFO=2,
 )
 
 ###--->> REFERENCE : FICHE DE VALIDATION (DYNAM S&M)
@@ -307,7 +308,7 @@ TEST_RESU(
             VALE_REFE=1.0,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
             PRECISION=0.14999999999999999,
         ),
         _F(
@@ -319,7 +320,7 @@ TEST_RESU(
             VALE_REFE=10.449999999999999,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
             PRECISION=0.029999999999999999,
         ),
         _F(
@@ -331,7 +332,7 @@ TEST_RESU(
             VALE_REFE=19.030000000000001,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
         _F(
@@ -343,7 +344,7 @@ TEST_RESU(
             VALE_REFE=25.309999999999999,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
             PRECISION=1.0e-2,
         ),
         _F(
@@ -355,7 +356,7 @@ TEST_RESU(
             VALE_REFE=28.940000000000001,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
             PRECISION=1.0e-2,
         ),
     )
@@ -375,7 +376,7 @@ TEST_RESU(
             VALE_REFE=1.0,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
             PRECISION=0.14999999999999999,
         ),
         _F(
@@ -387,7 +388,7 @@ TEST_RESU(
             VALE_REFE=10.449999999999999,
             REFERENCE="SOURCE_EXTERNE",
             PRECISION=1.0e-3,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
         ),
         _F(
             RESULTAT=SISM_SPE,
@@ -398,7 +399,7 @@ TEST_RESU(
             VALE_REFE=19.030000000000001,
             REFERENCE="SOURCE_EXTERNE",
             PRECISION=1.0e-3,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
         ),
         _F(
             RESULTAT=SISM_SPE,
@@ -409,7 +410,7 @@ TEST_RESU(
             VALE_REFE=25.32,
             REFERENCE="SOURCE_EXTERNE",
             PRECISION=1.0e-3,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
         ),
         _F(
             RESULTAT=SISM_SPE,
@@ -420,7 +421,7 @@ TEST_RESU(
             VALE_REFE=28.949999999999999,
             REFERENCE="SOURCE_EXTERNE",
             PRECISION=1.0e-3,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
         ),
     )
 )

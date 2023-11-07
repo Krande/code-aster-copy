@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -295,9 +295,10 @@ Conseil:
     ),
     46: _(
         """
- --- GRANDEURS MODALES ---
+ --- GRANDEURS MODALES ISSUES DE LA BASE MODALE ---
+ --- (*) FACTEUR DE PARTICIPATION CALCULE AVEC MOUVEMENT CORPS RIGIDE---
                               FACTEUR DE   MASSE MODALE       FRACTION
- MODE     FREQUENCE  DIR   PARTICIPATION      EFFECTIVE   MASSE TOTALE   CUMUL
+ MODE     FREQUENCE  DIR   PARTICIPATION(*)      EFFECTIVE   MASSE TOTALE   CUMUL
 """
     ),
     47: _(
@@ -306,13 +307,14 @@ Conseil:
     ),
     48: _(
         """
- --- GRANDEURS MODALES ---
-                              FACTEUR DE   MASSE MODALE
- MODE     FREQUENCE  DIR   PARTICIPATION      EFFECTIVE
+ --- GRANDEURS MODALES DES MODES PRIS EN CONSIDERATION---
+ --- (*) FACTEUR DE PARTICIPATION CALCULE AVEC MOUVEMENT CORPS RIGIDE---
+                              FACTEUR DE   MASSE MODALE   MASSE MODALE
+ MODE     FREQUENCE  DIR   PARTICIPATION(*)      EFFECTIVE   UN EFFECTIVE
 """
     ),
     49: _(
-        """ %(i1)4d  %(r1)12.5e    %(k1)s    %(r2)12.5e    %(r3).5e
+        """ %(i1)4d  %(r1)12.5e    %(k1)s    %(r2)12.5e    %(r3).5e    %(r4).5e
 """
     ),
     50: _(
@@ -331,7 +333,7 @@ Conseil:
     ),
     53: _(
         """
- --- VALEURS DU SPECTRE ---
+ --- VALEURS DU SPECTRE ACCE (CORRECTION PAR CORR_FREQ et NATURE INCLUSES) ---
  MODE      FREQUENCE    AMORTISSEMENT    DIR         SPECTRE
 """
     ),
@@ -345,12 +347,12 @@ Conseil:
     ),
     56: _(
         """
- --- VALEURS LUES SUR LE SPECTRE POUR LA CORRECTION STATIQUE ---
- DIRECTION
+ --- VALEURS LUES SUR LE SPECTRE ACCE POUR LA CORRECTION STATIQUE ---
+ DIRECTION      FREQUENCE        SPECTRE        APPUI
 """
     ),
     57: _(
-        """         %(k1)s    %(r1)12.5e
+        """         %(k1)s    %(r1)12.5e    %(r2)12.5e    %(k2)s
 """
     ),
     58: _(
@@ -551,6 +553,30 @@ En mode multi-appui décorrélé, les appuis doivent obligatoirement être disjo
 groupes d'appuis définis avec le mot-clé GROUP_APPUI.
 
 Le noeud %(k1)s du groupe %(k2)s est impliqué dans au moins deux groupes d'appuis.
+"""
+    ),
+    95: _(
+        """
+ Le mot_clé FREQ_COUP n'est pas saisi, la fréquence de coupure est prise égale à
+ celle du dernier mode dans la base modale: FREQ_COUP = %(r1).2f Hz
+"""
+    ),
+    96: _(
+        """
+ La fréquence de coupure saisi FREQ_COUP = %(r1).2f Hz est inférieure à celle du
+ premier mode dans la base modale. Donc, zéro mode physique est pris en compte dans la
+ réponse.
+"""
+    ),
+    97: _(
+        """
+ --- EN CAS DU MULT APPUI ---
+ --- VALEURS DU SPECTRE ACCE (CORRECTION PAR CORR_FREQ et NATURE INCLUSES) ---
+ MODE      FREQUENCE    AMORTISSEMENT    DIR         SPECTRE         APPUI         FACTEUR PARTICIPATION
+"""
+    ),
+    98: _(
+        """ %(i1)4d   %(r1)12.5e     %(r2)12.5e      %(k1)s    %(r3)12.5e    %(k2)s    %(r4)12.5e
 """
     ),
 }

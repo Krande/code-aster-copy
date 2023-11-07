@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -407,13 +407,13 @@ L_TEMPS = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=30.0, PAS=0.01))
 #
 MONO = COMB_SISM_MODAL(
     MODE_MECA=MODES,
-    AMOR_REDUIT=0.0,
-    MASS_INER=MAS,
-    CORR_FREQ="NON",
-    MONO_APPUI="OUI",
-    EXCIT=_F(NATURE="ACCE", AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPEC1, ECHELLE=1.0),
+    TYPE_ANALYSE="MONO_APPUI",
+    MODE_CORR="NON",
+    SPECTRE=(_F(NATURE="ACCE", LIST_AXE=("X"), SPEC_OSCI=SPEC1, ECHELLE=1.0, CORR_FREQ="NON"),),
     COMB_MODE=_F(TYPE="SRSS"),
-    OPTION="DEPL",
+    OPTION=("DEPL",),
+    AMOR_REDUIT=0.0,
+    TYPE_RESU=_F(TYPE="VALE_TOTA"),
 )
 
 TEST_RESU(
@@ -426,7 +426,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=0.010132213398354,
             VALE_REFE=0.0101321,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
         ),
         _F(
             REFERENCE="ANALYTIQUE",
@@ -436,7 +436,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=0.010132213398354,
             VALE_REFE=0.0101321,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
         ),
     )
 )
@@ -447,21 +447,16 @@ TEST_RESU(
 CORRELE = COMB_SISM_MODAL(
     MODE_MECA=MODES,
     AMOR_REDUIT=0.0,
-    MASS_INER=MAS,
-    CORR_FREQ="NON",
-    MULTI_APPUI="CORRELE",
-    EXCIT=_F(GROUP_NO=("P1", "P4"), AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPEC1, ECHELLE=1.0),
-    COMB_MULT_APPUI=_F(GROUP_NO=("P1", "P4"), TYPE_COMBI="LINE"),
-    DEPL_MULT_APPUI=_F(
-        NUME_CAS=1,
-        NOM_CAS="DEPL EN X NUL EN P1 ET P4",
-        MODE_STAT=MODE_STA,
-        GROUP_NO_REFE="P1",
-        GROUP_NO=("P1", "P4"),
-        DX=0.0,
+    TYPE_ANALYSE="MULT_APPUI",
+    APPUIS=(_F(NOM="A_1", GROUP_NO=("P1")), _F(NOM="A_2", GROUP_NO=("P4"))),
+    SPECTRE=(
+        _F(NOM_APPUI="A_1", LIST_AXE=("X",), SPEC_OSCI=SPEC1),
+        _F(NOM_APPUI="A_2", LIST_AXE=("X",), SPEC_OSCI=SPEC1),
     ),
+    GROUP_APPUI_CORRELE=(_F(LIST_APPUI=("A_1", "A_2"), NOM="GA_1"),),
     COMB_MODE=_F(TYPE="SRSS"),
     OPTION="DEPL",
+    TYPE_RESU=(_F(TYPE="VALE_TOTA"),),
 )
 
 #
@@ -475,7 +470,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=0.010132213398354,
             VALE_REFE=0.0101321,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
         ),
         _F(
             REFERENCE="ANALYTIQUE",
@@ -485,270 +480,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=0.010132213398354,
             VALE_REFE=0.0101321,
-            NOEUD_CMP=("DIR", "X"),
-        ),
-    )
-)
-
-#
-# -------------------------------
-#
-#   SOLUTION NON REGRESSION
-#
-# --------------------------------
-#
-MUQASRS = COMB_SISM_MODAL(
-    MODE_MECA=MODES,
-    AMOR_REDUIT=0.0,
-    MASS_INER=MAS,
-    CORR_FREQ="NON",
-    MULTI_APPUI="CORRELE",
-    EXCIT=(
-        _F(GROUP_NO="P1", AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPEC1, ECHELLE=1.0),
-        _F(GROUP_NO="P4", AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPEC2, ECHELLE=1.0),
-    ),
-    COMB_MULT_APPUI=_F(GROUP_NO=("P1", "P4"), TYPE_COMBI="QUAD"),
-    DEPL_MULT_APPUI=_F(
-        NUME_CAS=1,
-        NOM_CAS="DEPL EN X NUL EN P1 ET P4",
-        MODE_STAT=MODE_STA,
-        GROUP_NO_REFE="P1",
-        GROUP_NO=("P1", "P4"),
-        DX=0.0,
-    ),
-    COMB_MODE=_F(TYPE="SRSS"),
-    OPTION=("DEPL", "SIEF_ELGA", "EFGE_ELNO", "FORC_NODA", "REAC_NODA"),
-)
-
-#
-TEST_RESU(
-    RESU=(
-        _F(
-            RESULTAT=MUQASRS,
-            NOM_CHAM="DEPL",
-            GROUP_NO="P2",
-            NOM_CMP="DX",
-            VALE_CALC=7.381829884267e-03,
-            VALE_REFE=7.38183e-3,
-            REFERENCE="ANALYTIQUE",
-            PRECISION=1.0e-3,
-            NOEUD_CMP=("DIR", "X"),
-        ),
-        _F(
-            RESULTAT=MUQASRS,
-            NOM_CHAM="DEPL",
-            GROUP_NO="P3",
-            NOM_CMP="DX",
-            VALE_CALC=7.381829884267e-03,
-            VALE_REFE=7.38183e-3,
-            REFERENCE="ANALYTIQUE",
-            PRECISION=1.0e-3,
-            NOEUD_CMP=("DIR", "X"),
-        ),
-    )
-)
-
-MUQAABS = COMB_SISM_MODAL(
-    MODE_MECA=MODES,
-    AMOR_REDUIT=0.0,
-    MASS_INER=MAS,
-    CORR_FREQ="NON",
-    MULTI_APPUI="CORRELE",
-    EXCIT=(
-        _F(GROUP_NO="P1", AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPEC1, ECHELLE=1.0),
-        _F(GROUP_NO="P4", AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPEC2, ECHELLE=1.0),
-    ),
-    COMB_MULT_APPUI=_F(GROUP_NO=("P1", "P4"), TYPE_COMBI="QUAD"),
-    DEPL_MULT_APPUI=_F(
-        NUME_CAS=1,
-        NOM_CAS="DEPL EN X NUL EN P1 ET P4",
-        MODE_STAT=MODE_STA,
-        GROUP_NO_REFE="P1",
-        GROUP_NO=("P1", "P4"),
-        DX=0.0,
-    ),
-    COMB_MODE=_F(TYPE="ABS"),
-    OPTION=("DEPL", "SIEF_ELGA", "EFGE_ELNO", "FORC_NODA", "REAC_NODA"),
-)
-
-#
-TEST_RESU(
-    RESU=(
-        _F(
-            RESULTAT=MUQAABS,
-            NOM_CHAM="DEPL",
-            GROUP_NO="P2",
-            NOM_CMP="DX",
-            VALE_CALC=8.9039564170181e-03,
-            VALE_REFE=8.90395e-3,
-            REFERENCE="ANALYTIQUE",
-            PRECISION=1.0e-3,
-            NOEUD_CMP=("DIR", "X"),
-        ),
-        _F(
-            RESULTAT=MUQAABS,
-            NOM_CHAM="DEPL",
-            GROUP_NO="P3",
-            NOM_CMP="DX",
-            VALE_CALC=8.9039564170181e-03,
-            VALE_REFE=8.90395e-3,
-            REFERENCE="ANALYTIQUE",
-            PRECISION=1.0e-3,
-            NOEUD_CMP=("DIR", "X"),
-        ),
-    )
-)
-
-#
-MUQADPC = COMB_SISM_MODAL(
-    MODE_MECA=MODES,
-    AMOR_REDUIT=0.0,
-    MASS_INER=MAS,
-    CORR_FREQ="NON",
-    MULTI_APPUI="CORRELE",
-    EXCIT=(
-        _F(GROUP_NO="P1", AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPEC1, ECHELLE=1.0),
-        _F(GROUP_NO="P4", AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPEC2, ECHELLE=1.0),
-    ),
-    COMB_MULT_APPUI=_F(GROUP_NO=("P1", "P4"), TYPE_COMBI="QUAD"),
-    DEPL_MULT_APPUI=_F(
-        NUME_CAS=1,
-        NOM_CAS="DEPL EN X NUL EN P1 ET P4",
-        MODE_STAT=MODE_STA,
-        GROUP_NO_REFE="P1",
-        GROUP_NO=("P1", "P4"),
-        DX=0.0,
-    ),
-    COMB_MODE=_F(TYPE="DPC"),
-    OPTION=("DEPL", "SIEF_ELGA", "EFGE_ELNO", "FORC_NODA", "REAC_NODA"),
-)
-
-TEST_RESU(
-    RESU=(
-        _F(
-            RESULTAT=MUQADPC,
-            NOM_CHAM="DEPL",
-            GROUP_NO="P2",
-            NOM_CMP="DX",
-            VALE_CALC=7.381829884267e-03,
-            VALE_REFE=7.38183e-3,
-            REFERENCE="ANALYTIQUE",
-            PRECISION=1.0e-3,
-            NOEUD_CMP=("DIR", "X"),
-        ),
-        _F(
-            RESULTAT=MUQADPC,
-            NOM_CHAM="DEPL",
-            GROUP_NO="P3",
-            NOM_CMP="DX",
-            VALE_CALC=7.381829884267e-03,
-            VALE_REFE=7.38183e-3,
-            REFERENCE="ANALYTIQUE",
-            PRECISION=1.0e-3,
-            NOEUD_CMP=("DIR", "X"),
-        ),
-    )
-)
-
-MUQACQC = COMB_SISM_MODAL(
-    MODE_MECA=MODES,
-    AMOR_REDUIT=0.05,
-    MASS_INER=MAS,
-    CORR_FREQ="NON",
-    MULTI_APPUI="CORRELE",
-    EXCIT=(
-        _F(GROUP_NO="P1", AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPEC1, ECHELLE=1.0),
-        _F(GROUP_NO="P4", AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPEC2, ECHELLE=1.0),
-    ),
-    COMB_MULT_APPUI=_F(GROUP_NO=("P1", "P4"), TYPE_COMBI="QUAD"),
-    DEPL_MULT_APPUI=_F(
-        NUME_CAS=1,
-        NOM_CAS="DEPL EN X NUL EN P1 ET P4",
-        MODE_STAT=MODE_STA,
-        GROUP_NO_REFE="P1",
-        GROUP_NO=("P1", "P4"),
-        DX=0.0,
-    ),
-    COMB_MODE=_F(TYPE="CQC"),
-    OPTION=("DEPL", "SIEF_ELGA", "EFGE_ELNO", "FORC_NODA", "REAC_NODA"),
-)
-
-#
-TEST_RESU(
-    RESU=(
-        _F(
-            RESULTAT=MUQACQC,
-            NOM_CHAM="DEPL",
-            GROUP_NO="P2",
-            NOM_CMP="DX",
-            VALE_CALC=7.4041786600841e-03,
-            VALE_REFE=7.40418e-3,
-            REFERENCE="ANALYTIQUE",
-            PRECISION=1.0e-3,
-            NOEUD_CMP=("DIR", "X"),
-        ),
-        _F(
-            RESULTAT=MUQACQC,
-            NOM_CHAM="DEPL",
-            GROUP_NO="P3",
-            NOM_CMP="DX",
-            VALE_CALC=7.4041786600841e-03,
-            VALE_REFE=7.40418e-3,
-            REFERENCE="ANALYTIQUE",
-            PRECISION=1.0e-3,
-            NOEUD_CMP=("DIR", "X"),
-        ),
-    )
-)
-
-#
-MUQADSC = COMB_SISM_MODAL(
-    MODE_MECA=MODES,
-    AMOR_REDUIT=0.05,
-    MASS_INER=MAS,
-    CORR_FREQ="NON",
-    MULTI_APPUI="CORRELE",
-    EXCIT=(
-        _F(GROUP_NO="P1", AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPEC1, ECHELLE=1.0),
-        _F(GROUP_NO="P4", AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPEC2, ECHELLE=1.0),
-    ),
-    COMB_MULT_APPUI=_F(GROUP_NO=("P1", "P4"), TYPE_COMBI="QUAD"),
-    DEPL_MULT_APPUI=_F(
-        NUME_CAS=1,
-        NOM_CAS="DEPL EN X NUL EN P1 ET P4",
-        MODE_STAT=MODE_STA,
-        GROUP_NO_REFE="P1",
-        GROUP_NO=("P1", "P4"),
-        DX=0.0,
-    ),
-    COMB_MODE=_F(TYPE="DSC", DUREE=15.0),
-    OPTION=("DEPL", "SIEF_ELGA", "EFGE_ELNO", "FORC_NODA", "REAC_NODA"),
-)
-
-#
-TEST_RESU(
-    RESU=(
-        _F(
-            RESULTAT=MUQADSC,
-            NOM_CHAM="DEPL",
-            GROUP_NO="P2",
-            NOM_CMP="DX",
-            VALE_CALC=7.4264206977472e-03,
-            VALE_REFE=7.42642e-3,
-            REFERENCE="ANALYTIQUE",
-            PRECISION=1.0e-3,
-            NOEUD_CMP=("DIR", "X"),
-        ),
-        _F(
-            RESULTAT=MUQADSC,
-            NOM_CHAM="DEPL",
-            GROUP_NO="P3",
-            NOM_CMP="DX",
-            VALE_CALC=7.4264206977472e-03,
-            VALE_REFE=7.42642e-3,
-            REFERENCE="ANALYTIQUE",
-            PRECISION=1.0e-3,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
         ),
     )
 )
@@ -756,24 +488,16 @@ TEST_RESU(
 MULISRS = COMB_SISM_MODAL(
     MODE_MECA=MODES,
     AMOR_REDUIT=0.00,
-    MASS_INER=MAS,
-    CORR_FREQ="NON",
-    MULTI_APPUI="CORRELE",
-    EXCIT=(
-        _F(GROUP_NO="P1", AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPEC1, ECHELLE=1.0),
-        _F(GROUP_NO="P4", AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPEC2, ECHELLE=1.0),
+    TYPE_ANALYSE="MULT_APPUI",
+    APPUIS=(_F(NOM="A_1", GROUP_NO=("P1")), _F(NOM="A_2", GROUP_NO=("P4"))),
+    SPECTRE=(
+        _F(NOM_APPUI="A_1", LIST_AXE=("X",), SPEC_OSCI=SPEC1),
+        _F(NOM_APPUI="A_2", LIST_AXE=("X",), SPEC_OSCI=SPEC2),
     ),
-    COMB_MULT_APPUI=_F(GROUP_NO=("P1", "P4"), TYPE_COMBI="LINE"),
-    DEPL_MULT_APPUI=_F(
-        NUME_CAS=1,
-        NOM_CAS="DEPL EN X NUL EN P1 ET P4",
-        MODE_STAT=MODE_STA,
-        GROUP_NO_REFE="P1",
-        GROUP_NO=("P1", "P4"),
-        DX=0.0,
-    ),
+    GROUP_APPUI_CORRELE=(_F(LIST_APPUI=("A_1", "A_2"), NOM="GA_1"),),
     COMB_MODE=_F(TYPE="SRSS"),
     OPTION=("DEPL", "SIEF_ELGA", "EFGE_ELNO", "FORC_NODA", "REAC_NODA"),
+    TYPE_RESU=(_F(TYPE="VALE_TOTA"),),
 )
 
 #
@@ -788,7 +512,7 @@ TEST_RESU(
             VALE_REFE=7.22208e-3,
             REFERENCE="ANALYTIQUE",
             PRECISION=1.0e-3,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
         ),
         _F(
             RESULTAT=MULISRS,
@@ -799,7 +523,7 @@ TEST_RESU(
             VALE_REFE=7.22208e-3,
             REFERENCE="ANALYTIQUE",
             PRECISION=1.0e-3,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
         ),
     )
 )
@@ -808,24 +532,16 @@ TEST_RESU(
 MULIABS = COMB_SISM_MODAL(
     MODE_MECA=MODES,
     AMOR_REDUIT=0.00,
-    MASS_INER=MAS,
-    CORR_FREQ="NON",
-    MULTI_APPUI="CORRELE",
-    EXCIT=(
-        _F(GROUP_NO="P1", AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPEC1, ECHELLE=1.0),
-        _F(GROUP_NO="P4", AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPEC2, ECHELLE=1.0),
+    TYPE_ANALYSE="MULT_APPUI",
+    APPUIS=(_F(NOM="A_1", GROUP_NO=("P1")), _F(NOM="A_2", GROUP_NO=("P4"))),
+    SPECTRE=(
+        _F(NOM_APPUI="A_1", LIST_AXE=("X",), SPEC_OSCI=SPEC1),
+        _F(NOM_APPUI="A_2", LIST_AXE=("X",), SPEC_OSCI=SPEC2),
     ),
-    COMB_MULT_APPUI=_F(GROUP_NO=("P1", "P4"), TYPE_COMBI="LINE"),
-    DEPL_MULT_APPUI=_F(
-        NUME_CAS=1,
-        NOM_CAS="DEPL EN X NUL EN P1 ET P4",
-        MODE_STAT=MODE_STA,
-        GROUP_NO_REFE="P1",
-        GROUP_NO=("P1", "P4"),
-        DX=0.0,
-    ),
+    GROUP_APPUI_CORRELE=(_F(LIST_APPUI=("A_1", "A_2"), NOM="GA_1"),),
     COMB_MODE=_F(TYPE="ABS"),
     OPTION=("DEPL", "SIEF_ELGA", "EFGE_ELNO", "FORC_NODA", "REAC_NODA"),
+    TYPE_RESU=(_F(TYPE="VALE_TOTA"),),
 )
 
 #
@@ -840,7 +556,7 @@ TEST_RESU(
             VALE_REFE=7.98287e-3,
             REFERENCE="ANALYTIQUE",
             PRECISION=1.0e-3,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
         ),
         _F(
             RESULTAT=MULIABS,
@@ -851,7 +567,7 @@ TEST_RESU(
             VALE_REFE=7.98287e-3,
             REFERENCE="ANALYTIQUE",
             PRECISION=1.0e-3,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
         ),
     )
 )
@@ -861,24 +577,16 @@ TEST_RESU(
 MULIDPC = COMB_SISM_MODAL(
     MODE_MECA=MODES,
     AMOR_REDUIT=0.00,
-    MASS_INER=MAS,
-    CORR_FREQ="NON",
-    MULTI_APPUI="CORRELE",
-    EXCIT=(
-        _F(GROUP_NO="P1", AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPEC1, ECHELLE=1.0),
-        _F(GROUP_NO="P4", AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPEC2, ECHELLE=1.0),
+    TYPE_ANALYSE="MULT_APPUI",
+    APPUIS=(_F(NOM="A_1", GROUP_NO=("P1")), _F(NOM="A_2", GROUP_NO=("P4"))),
+    SPECTRE=(
+        _F(NOM_APPUI="A_1", LIST_AXE=("X",), SPEC_OSCI=SPEC1),
+        _F(NOM_APPUI="A_2", LIST_AXE=("X",), SPEC_OSCI=SPEC2),
     ),
-    COMB_MULT_APPUI=_F(GROUP_NO=("P1", "P4"), TYPE_COMBI="LINE"),
-    DEPL_MULT_APPUI=_F(
-        NUME_CAS=1,
-        NOM_CAS="DEPL EN X NUL EN P1 ET P4",
-        MODE_STAT=MODE_STA,
-        GROUP_NO_REFE="P1",
-        GROUP_NO=("P1", "P4"),
-        DX=0.0,
-    ),
+    GROUP_APPUI_CORRELE=(_F(LIST_APPUI=("A_1", "A_2"), NOM="GA_1"),),
     COMB_MODE=_F(TYPE="DPC"),
     OPTION=("DEPL", "SIEF_ELGA", "EFGE_ELNO", "FORC_NODA", "REAC_NODA"),
+    TYPE_RESU=(_F(TYPE="VALE_TOTA"),),
 )
 
 #
@@ -892,7 +600,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=7.2220784669041e-03,
             VALE_REFE=7.22208e-3,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
         ),
         _F(
             REFERENCE="ANALYTIQUE",
@@ -902,7 +610,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=7.2220784669041e-03,
             VALE_REFE=7.22208e-3,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
         ),
     )
 )
@@ -910,24 +618,16 @@ TEST_RESU(
 MULICQC = COMB_SISM_MODAL(
     MODE_MECA=MODES,
     AMOR_REDUIT=0.05,
-    MASS_INER=MAS,
-    CORR_FREQ="NON",
-    MULTI_APPUI="CORRELE",
-    EXCIT=(
-        _F(GROUP_NO="P1", AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPEC1, ECHELLE=1.0),
-        _F(GROUP_NO="P4", AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPEC2, ECHELLE=1.0),
+    TYPE_ANALYSE="MULT_APPUI",
+    APPUIS=(_F(NOM="A_1", GROUP_NO=("P1")), _F(NOM="A_2", GROUP_NO=("P4"))),
+    SPECTRE=(
+        _F(NOM_APPUI="A_1", LIST_AXE=("X",), SPEC_OSCI=SPEC1),
+        _F(NOM_APPUI="A_2", LIST_AXE=("X",), SPEC_OSCI=SPEC2),
     ),
-    COMB_MULT_APPUI=_F(GROUP_NO=("P1", "P4"), TYPE_COMBI="LINE"),
-    DEPL_MULT_APPUI=_F(
-        NUME_CAS=1,
-        NOM_CAS="DEPL EN X NUL EN P1 ET P4",
-        MODE_STAT=MODE_STA,
-        GROUP_NO_REFE="P1",
-        GROUP_NO=("P1", "P4"),
-        DX=0.0,
-    ),
+    GROUP_APPUI_CORRELE=(_F(LIST_APPUI=("A_1", "A_2"), NOM="GA_1"),),
     COMB_MODE=_F(TYPE="CQC"),
     OPTION=("DEPL", "SIEF_ELGA", "EFGE_ELNO", "FORC_NODA", "REAC_NODA"),
+    TYPE_RESU=(_F(TYPE="VALE_TOTA"),),
 )
 
 #
@@ -942,7 +642,7 @@ TEST_RESU(
             VALE_REFE=7.21139e-3,
             REFERENCE="ANALYTIQUE",
             PRECISION=1.0e-3,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
         ),
         _F(
             RESULTAT=MULICQC,
@@ -953,7 +653,7 @@ TEST_RESU(
             VALE_REFE=7.23274e-3,
             REFERENCE="ANALYTIQUE",
             PRECISION=1.0e-3,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
         ),
     )
 )
@@ -962,24 +662,16 @@ TEST_RESU(
 MULIDSC = COMB_SISM_MODAL(
     MODE_MECA=MODES,
     AMOR_REDUIT=0.05,
-    MASS_INER=MAS,
-    CORR_FREQ="NON",
-    MULTI_APPUI="CORRELE",
-    EXCIT=(
-        _F(GROUP_NO="P1", AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPEC1, ECHELLE=1.0),
-        _F(GROUP_NO="P4", AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPEC2, ECHELLE=1.0),
+    TYPE_ANALYSE="MULT_APPUI",
+    APPUIS=(_F(NOM="A_1", GROUP_NO=("P1")), _F(NOM="A_2", GROUP_NO=("P4"))),
+    SPECTRE=(
+        _F(NOM_APPUI="A_1", LIST_AXE=("X",), SPEC_OSCI=SPEC1),
+        _F(NOM_APPUI="A_2", LIST_AXE=("X",), SPEC_OSCI=SPEC2),
     ),
-    COMB_MULT_APPUI=_F(GROUP_NO=("P1", "P4"), TYPE_COMBI="LINE"),
-    DEPL_MULT_APPUI=_F(
-        NUME_CAS=1,
-        NOM_CAS="DEPL EN X NUL EN P1 ET P4",
-        MODE_STAT=MODE_STA,
-        GROUP_NO_REFE="P1",
-        GROUP_NO=("P1", "P4"),
-        DX=0.0,
-    ),
+    GROUP_APPUI_CORRELE=(_F(LIST_APPUI=("A_1", "A_2"), NOM="GA_1"),),
     COMB_MODE=_F(TYPE="DSC", DUREE=15.0),
     OPTION=("DEPL", "SIEF_ELGA", "EFGE_ELNO", "FORC_NODA", "REAC_NODA"),
+    TYPE_RESU=(_F(TYPE="VALE_TOTA"),),
 )
 
 #
@@ -994,7 +686,7 @@ TEST_RESU(
             VALE_REFE=7.20071e-3,
             REFERENCE="ANALYTIQUE",
             PRECISION=1.0e-3,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
         ),
         _F(
             RESULTAT=MULIDSC,
@@ -1005,7 +697,7 @@ TEST_RESU(
             VALE_REFE=7.24338e-3,
             REFERENCE="ANALYTIQUE",
             PRECISION=1.0e-3,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
         ),
     )
 )

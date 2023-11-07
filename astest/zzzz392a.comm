@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -199,14 +199,14 @@ SPECT_Y = DEFI_NAPPE(
 SISM_SPE = COMB_SISM_MODAL(
     MODE_MECA=MODE_MEC,
     AMOR_REDUIT=0.02,
-    MASS_INER=TABL_MAS,
-    CORR_FREQ="NON",
-    MODE_CORR=MODE_STA,
-    MONO_APPUI="OUI",
-    EXCIT=_F(NATURE="ACCE", AXE=(1.0, 0.0, 0.0), ECHELLE=1.0, SPEC_OSCI=SPECT_XZ),
+    MODE_CORR="OUI",
+    PSEUDO_MODE=MODE_STA,
+    TYPE_ANALYSE="MONO_APPUI",
+    SPECTRE=_F(LIST_AXE=("X"), SPEC_OSCI=SPECT_XZ, ECHELLE=1.0, NATURE="ACCE"),
     COMB_MODE=_F(TYPE="SRSS"),
-    COMB_DIRECTION=_F(TYPE="QUAD"),
+    COMB_DIRECTION="QUAD",
     OPTION=("DEPL", "ACCE_ABSOLU", "EFGE_ELNO"),
+    TYPE_RESU=_F(TYPE="VALE_TOTA"),
 )
 
 TEST_RESU(
@@ -217,7 +217,7 @@ TEST_RESU(
             GROUP_NO="N17",
             NOM_CMP="DX",
             VALE_CALC=3.48609400765e-05,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
         ),
         _F(
             RESULTAT=SISM_SPE,
@@ -225,7 +225,7 @@ TEST_RESU(
             GROUP_NO="N17",
             NOM_CMP="DY",
             VALE_CALC=2.27232297054e-07,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
         ),
         _F(
             RESULTAT=SISM_SPE,
@@ -233,7 +233,7 @@ TEST_RESU(
             GROUP_NO="N17",
             NOM_CMP="DZ",
             VALE_CALC=5.51884924084e-09,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
         ),
         _F(
             RESULTAT=SISM_SPE,
@@ -241,7 +241,7 @@ TEST_RESU(
             GROUP_NO="N17",
             NOM_CMP="DRX",
             VALE_CALC=1.60079389976e-07,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
         ),
         _F(
             RESULTAT=SISM_SPE,
@@ -249,7 +249,7 @@ TEST_RESU(
             GROUP_NO="N17",
             NOM_CMP="DRY",
             VALE_CALC=1.82965997639e-06,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
         ),
         _F(
             RESULTAT=SISM_SPE,
@@ -257,7 +257,7 @@ TEST_RESU(
             GROUP_NO="N17",
             NOM_CMP="DRZ",
             VALE_CALC=5.19448817825e-05,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
         ),
     )
 )
@@ -270,7 +270,7 @@ TEST_RESU(
             GROUP_NO="N17",
             NOM_CMP="N",
             VALE_CALC=64.8999677428,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             GROUP_MA="E3",
         ),
         _F(
@@ -279,7 +279,7 @@ TEST_RESU(
             GROUP_NO="N17",
             NOM_CMP="VY",
             VALE_CALC=115.201146791,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             GROUP_MA="E3",
         ),
         _F(
@@ -288,7 +288,7 @@ TEST_RESU(
             GROUP_NO="N17",
             NOM_CMP="VZ",
             VALE_CALC=1.47977588387,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             GROUP_MA="E3",
         ),
         _F(
@@ -297,7 +297,7 @@ TEST_RESU(
             GROUP_NO="N17",
             NOM_CMP="MT",
             VALE_CALC=0.158596526448,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             GROUP_MA="E3",
         ),
         _F(
@@ -306,7 +306,7 @@ TEST_RESU(
             GROUP_NO="N17",
             NOM_CMP="MFY",
             VALE_CALC=0.115499044981,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             GROUP_MA="E3",
         ),
         _F(
@@ -315,7 +315,7 @@ TEST_RESU(
             GROUP_NO="N17",
             NOM_CMP="MFZ",
             VALE_CALC=22.4494406334,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             GROUP_MA="E3",
         ),
     )
@@ -325,14 +325,14 @@ TEST_RESU(
 SISM_SP2 = COMB_SISM_MODAL(
     MODE_MECA=MODE_MEC,
     AMOR_REDUIT=0.02,
-    MASS_INER=TABL_MAS,
-    CORR_FREQ="NON",
-    MODE_CORR=MODE_ST2,
-    MONO_APPUI="OUI",
-    EXCIT=_F(NATURE="ACCE", AXE=(1.0, 0.0, 0.0), ECHELLE=1.0, SPEC_OSCI=SPECT_XZ),
+    MODE_CORR="OUI",
+    PSEUDO_MODE=MODE_ST2,
+    TYPE_ANALYSE="MONO_APPUI",
+    SPECTRE=_F(LIST_AXE=("X"), SPEC_OSCI=SPECT_XZ, ECHELLE=1.0),
     COMB_MODE=_F(TYPE="SRSS"),
-    COMB_DIRECTION=_F(TYPE="QUAD"),
+    COMB_DIRECTION="QUAD",
     OPTION=("DEPL", "ACCE_ABSOLU", "EFGE_ELNO"),
+    TYPE_RESU=_F(TYPE="VALE_TOTA"),
 )
 
 
@@ -346,7 +346,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=3.48609400765e-05,
             VALE_REFE=3.48609400765e-05,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
         _F(
@@ -357,7 +357,7 @@ TEST_RESU(
             NOM_CMP="DY",
             VALE_CALC=2.27232297054e-07,
             VALE_REFE=2.27232297054e-07,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
         _F(
@@ -368,7 +368,7 @@ TEST_RESU(
             NOM_CMP="DZ",
             VALE_CALC=5.51884924084e-09,
             VALE_REFE=5.51884924084e-09,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
         _F(
@@ -379,7 +379,7 @@ TEST_RESU(
             NOM_CMP="DRX",
             VALE_CALC=1.60079389976e-07,
             VALE_REFE=1.60079389976e-07,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
         _F(
@@ -390,7 +390,7 @@ TEST_RESU(
             NOM_CMP="DRY",
             VALE_CALC=1.82965997639e-06,
             VALE_REFE=1.82965997639e-06,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
         _F(
@@ -401,7 +401,7 @@ TEST_RESU(
             NOM_CMP="DRZ",
             VALE_CALC=5.19448817825e-05,
             VALE_REFE=5.19448817825e-05,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
     )
@@ -417,7 +417,7 @@ TEST_RESU(
             NOM_CMP="N",
             VALE_CALC=64.8999677428,
             VALE_REFE=64.8999677428,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
             GROUP_MA="E3",
         ),
@@ -429,7 +429,7 @@ TEST_RESU(
             NOM_CMP="VY",
             VALE_CALC=115.201146791,
             VALE_REFE=115.201146791,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
             GROUP_MA="E3",
         ),
@@ -441,7 +441,7 @@ TEST_RESU(
             NOM_CMP="VZ",
             VALE_CALC=1.47977588387,
             VALE_REFE=1.47977588387,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
             GROUP_MA="E3",
         ),
@@ -453,7 +453,7 @@ TEST_RESU(
             NOM_CMP="MT",
             VALE_CALC=0.158596526448,
             VALE_REFE=0.158596526448,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
             GROUP_MA="E3",
         ),
@@ -465,7 +465,7 @@ TEST_RESU(
             NOM_CMP="MFY",
             VALE_CALC=0.115499044981,
             VALE_REFE=0.115499044981,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
             GROUP_MA="E3",
         ),
@@ -477,7 +477,7 @@ TEST_RESU(
             NOM_CMP="MFZ",
             VALE_CALC=22.4494406334,
             VALE_REFE=22.4494406334,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
             GROUP_MA="E3",
         ),
@@ -489,14 +489,14 @@ TEST_RESU(
 SISM_R_Y = COMB_SISM_MODAL(
     MODE_MECA=MODE_MEC,
     AMOR_REDUIT=0.02,
-    MASS_INER=TABL_MAS,
-    CORR_FREQ="NON",
-    MODE_CORR=MODE_STA,
-    MONO_APPUI="OUI",
-    EXCIT=_F(NATURE="ACCE", AXE=(0.0, 1.0, 0.0), ECHELLE=1.0, SPEC_OSCI=SPECT_XZ),
+    MODE_CORR="OUI",
+    PSEUDO_MODE=MODE_STA,
+    TYPE_ANALYSE="MONO_APPUI",
+    SPECTRE=_F(LIST_AXE=("Y"), SPEC_OSCI=SPECT_XZ),
     COMB_MODE=_F(TYPE="SRSS"),
-    COMB_DIRECTION=_F(TYPE="QUAD"),
+    COMB_DIRECTION="QUAD",
     OPTION=("DEPL", "ACCE_ABSOLU", "EFGE_ELNO"),
+    TYPE_RESU=_F(TYPE="VALE_TOTA"),
 )
 
 TEST_RESU(
@@ -507,7 +507,7 @@ TEST_RESU(
             GROUP_NO="N17",
             NOM_CMP="DX",
             VALE_CALC=2.67413418113e-08,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
         ),
     )
 )
@@ -516,14 +516,14 @@ TEST_RESU(
 SISM_Y = COMB_SISM_MODAL(
     MODE_MECA=MODE_MEC,
     AMOR_REDUIT=0.02,
-    MASS_INER=TABL_MAS,
-    CORR_FREQ="NON",
-    MODE_CORR=MODE_ST2,
-    MONO_APPUI="OUI",
-    EXCIT=_F(NATURE="ACCE", AXE=(0.0, 1.0, 0.0), ECHELLE=1.0, SPEC_OSCI=SPECT_XZ),
+    MODE_CORR="OUI",
+    PSEUDO_MODE=MODE_ST2,
+    TYPE_ANALYSE="MONO_APPUI",
+    SPECTRE=_F(LIST_AXE=("Y"), SPEC_OSCI=SPECT_XZ),
     COMB_MODE=_F(TYPE="SRSS"),
-    COMB_DIRECTION=_F(TYPE="QUAD"),
+    COMB_DIRECTION="QUAD",
     OPTION=("DEPL", "ACCE_ABSOLU", "EFGE_ELNO"),
+    TYPE_RESU=_F(TYPE="VALE_TOTA"),
 )
 
 
@@ -537,7 +537,8 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=2.67413418113e-08,
             VALE_REFE=2.67413418113e-08,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            # NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
     )
@@ -547,14 +548,14 @@ TEST_RESU(
 SISM_R_Z = COMB_SISM_MODAL(
     MODE_MECA=MODE_MEC,
     AMOR_REDUIT=0.02,
-    MASS_INER=TABL_MAS,
-    CORR_FREQ="NON",
-    MODE_CORR=MODE_STA,
-    MONO_APPUI="OUI",
-    EXCIT=_F(NATURE="ACCE", AXE=(0.0, 0.0, 1.0), ECHELLE=1.0, SPEC_OSCI=SPECT_XZ),
+    MODE_CORR="OUI",
+    PSEUDO_MODE=MODE_STA,
+    TYPE_ANALYSE="MONO_APPUI",
+    SPECTRE=_F(LIST_AXE=("Z"), SPEC_OSCI=SPECT_XZ, ECHELLE=1.0),
     COMB_MODE=_F(TYPE="SRSS"),
-    COMB_DIRECTION=_F(TYPE="QUAD"),
+    COMB_DIRECTION="QUAD",
     OPTION=("DEPL", "ACCE_ABSOLU", "EFGE_ELNO"),
+    TYPE_RESU=_F(TYPE="VALE_TOTA"),
 )
 
 TEST_RESU(
@@ -565,7 +566,8 @@ TEST_RESU(
             GROUP_NO="N17",
             NOM_CMP="DX",
             VALE_CALC=3.28929402203e-08,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            # NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
         ),
     )
 )
@@ -574,14 +576,14 @@ TEST_RESU(
 SISM_Z = COMB_SISM_MODAL(
     MODE_MECA=MODE_MEC,
     AMOR_REDUIT=0.02,
-    MASS_INER=TABL_MAS,
-    CORR_FREQ="NON",
-    MODE_CORR=MODE_ST2,
-    MONO_APPUI="OUI",
-    EXCIT=_F(NATURE="ACCE", AXE=(0.0, 0.0, 1.0), ECHELLE=1.0, SPEC_OSCI=SPECT_XZ),
+    MODE_CORR="OUI",
+    PSEUDO_MODE=MODE_ST2,
+    TYPE_ANALYSE="MONO_APPUI",
+    SPECTRE=_F(LIST_AXE=("Z"), SPEC_OSCI=SPECT_XZ),
     COMB_MODE=_F(TYPE="SRSS"),
-    COMB_DIRECTION=_F(TYPE="QUAD"),
+    COMB_DIRECTION="QUAD",
     OPTION=("DEPL", "ACCE_ABSOLU", "EFGE_ELNO"),
+    TYPE_RESU=_F(TYPE="VALE_TOTA"),
 )
 
 
@@ -595,7 +597,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=3.28929402203e-08,
             VALE_REFE=3.28929402203e-08,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
     )

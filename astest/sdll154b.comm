@@ -157,23 +157,45 @@ dilatation_thermique = CALC_CHAMP(
 sismique = COMB_SISM_MODAL(
     MODE_MECA=modes_dyn,
     AMOR_REDUIT=0.02,
-    CORR_FREQ="NON",
-    MODE_CORR=modes_sta,
-    MONO_APPUI="OUI",
-    EXCIT=_F(TRI_SPEC="OUI", SPEC_OSCI=(spect_xy, spect_xy, spect_xy), ECHELLE=(1.0, 1.0, 0.5)),
+    MODE_CORR="OUI",
+    PSEUDO_MODE=modes_sta,
+    TYPE_ANALYSE="MONO_APPUI",
+    SPECTRE=(
+        _F(LIST_AXE=("X", "Y"), SPEC_OSCI=spect_xy, ECHELLE=1),
+        _F(LIST_AXE=("Z"), SPEC_OSCI=spect_xy, ECHELLE=0.5),
+    ),
     COMB_MODE=_F(TYPE="SRSS"),
-    COMB_DIRECTION=_F(TYPE="QUAD"),
+    COMB_DIRECTION="QUAD",
     OPTION=("EFGE_ELNO"),
+    TYPE_RESU=(
+        _F(TYPE="VALE_TOTA"),  # reponse totale
+        _F(
+            TYPE="VALE_DIRE", LIST_AXE=("X", "Y", "Z")
+        ),  # reponse directionnelle = sqrt (osci**2+pseudo**2+dds**2)
+        _F(
+            TYPE="VALE_DYNA", LIST_AXE=("X", "Y", "Z")
+        ),  # reponse part dynamique = reponse osci combinee
+        _F(
+            TYPE="VALE_QS", LIST_AXE=("X", "Y", "Z")
+        ),  # reponse part quasi statique = reponse pseudo mode
+    ),
 )
 
 # résultats dépendant du temps
+# recherche NUME_ORDRE correspondant a NOM_CAS: attention que nume_ordre commence par 1
+nume_ordre_vale_tota = [list(sismique.getAccessParameters()["NOM_CAS"]).index("TOTA") + 1]
+print("nume_ordre_vale_tota:", nume_ordre_vale_tota)  # replace NUME_ORDRE 4
+nume_ordre_part_dyna = [list(sismique.getAccessParameters()["NOM_CAS"]).index("PART_DYNA") + 1]
+print("nume_ordre_part_dyna:", nume_ordre_part_dyna)
+nume_ordre_part_qs = [list(sismique.getAccessParameters()["NOM_CAS"]).index("PART_QS") + 1]
+print("nume_ordre_part_qs:", nume_ordre_part_qs)
 
 sismique_dyn_1 = CREA_CHAMP(
     TYPE_CHAM="ELNO_SIEF_R",
     OPERATION="EXTR",
     RESULTAT=sismique,
     NOM_CHAM="EFGE_ELNO",
-    NUME_ORDRE=14,
+    NUME_ORDRE=nume_ordre_part_dyna,
 )
 
 sismique_qs_1 = CREA_CHAMP(
@@ -181,7 +203,7 @@ sismique_qs_1 = CREA_CHAMP(
     OPERATION="EXTR",
     RESULTAT=sismique,
     NOM_CHAM="EFGE_ELNO",
-    NUME_ORDRE=24,
+    NUME_ORDRE=nume_ordre_part_qs,
 )
 
 sismique_dyn_2 = CREA_CHAMP(

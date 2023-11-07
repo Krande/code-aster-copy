@@ -659,17 +659,54 @@ class PostRocheCommon:
                 dire = charg.get("DIRECTION")
                 typeres = charg.get("TYPE_RESU")
                 ind = self.dirDisp.index(dire) + 1
+                # DIRECTION X--> ind = 1
+                # DIRECTION Y--> ind = 2
+                # DIRECTION Z--> ind = 3
+                # DIRECTION COMBI--> ind = 4
+                list_NOM_CAS = [
+                    "DIRE_X",  # iordr: 1
+                    "DIRE_Y",  # iordr: 2
+                    "DIRE_Z",  # iordr: 3
+                    "TOTA",  # iordr: 4
+                    None,
+                    None,
+                    None,
+                    None,
+                    None,
+                    None,
+                    "PART_DYNA_X",  # iordr: 11
+                    "PART_DYNA_Y",  # iordr: 12
+                    "PART_DYNA_Z",  # iordr: 13
+                    "PART_DYNA",  # iordr: 14
+                    None,
+                    None,
+                    None,
+                    None,
+                    None,
+                    None,
+                    "PART_QS_X",  # iordr: 21
+                    "PART_QS_Y",  # iordr: 22
+                    "PART_QS_Z",  # iordr: 23
+                    "PART_QS",  # iordr: 24
+                ]
 
                 # réponse totale
                 if typeres == "DYN_QS":
                     iordr = ind
+                    # type
+                    print("resin:", resin)
+                    print("resin type:", resin.getType())
+                    print("resin type == MULT_ELAS", resin.getType() == "MULT_ELAS")
+                    # acces parameter
+                    print("resin acces parameters:", resin.getAccessParameters())
 
                     __FIELD[nbfield] = CREA_CHAMP(
                         OPERATION="EXTR",
                         TYPE_CHAM="ELNO_SIEF_R",
                         RESULTAT=resin,
                         NOM_CHAM="EFGE_ELNO",
-                        NUME_ORDRE=iordr,
+                        # NUME_ORDRE=iordr,
+                        NOM_CAS=list_NOM_CAS[iordr - 1],
                     )
 
                     oc_asse = {
@@ -698,7 +735,8 @@ class PostRocheCommon:
                         TYPE_CHAM="ELNO_SIEF_R",
                         RESULTAT=resin,
                         NOM_CHAM="EFGE_ELNO",
-                        NUME_ORDRE=iordr,
+                        # NUME_ORDRE=iordr,
+                        NOM_CAS=list_NOM_CAS[iordr - 1],
                     )
 
                     oc_asse = {
@@ -729,9 +767,9 @@ class PostRocheCommon:
                         TYPE_CHAM="ELNO_SIEF_R",
                         RESULTAT=resin,
                         NOM_CHAM="EFGE_ELNO",
-                        NUME_ORDRE=iordr,
+                        # NUME_ORDRE=iordr,
+                        NOM_CAS=list_NOM_CAS[iordr - 1],
                     )
-
                     oc_asse = {
                         "CHAM_GD": __FIELD[nbfield],
                         "TOUT": "OUI",

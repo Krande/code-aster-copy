@@ -784,12 +784,13 @@ POST_RCCM = OPER(
                 b_extrac=BLOC(
                     condition="""exists("RESULTAT")""",
                     fr=tr("extraction d un champ de grandeur"),
-                    regles=(UN_PARMI("TOUT_ORDRE", "NUME_ORDRE", "INST", "NOEUD_CMP"),),
+                    regles=(UN_PARMI("TOUT_ORDRE", "NUME_ORDRE", "INST", "NOEUD_CMP", "NOM_CAS"),),
                     NOM_CHAM=SIMP(statut="o", typ="TXM", into=("EFGE_ELNO", "SIEF_ELNO")),
                     TOUT_ORDRE=SIMP(statut="f", typ="TXM", into=("OUI",)),
                     NUME_ORDRE=SIMP(statut="f", typ="I"),
                     INST=SIMP(statut="f", typ="R"),
                     NOEUD_CMP=SIMP(statut="f", typ="TXM", validators=NoRepeat(), max="**"),
+                    NOM_CAS=SIMP(statut="f", typ="TXM"),
                     b_acce_reel=BLOC(
                         condition="""(exists("INST"))""",
                         CRITERE=SIMP(

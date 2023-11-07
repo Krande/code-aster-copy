@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -434,43 +434,43 @@ SPEC3 = DEFI_NAPPE(
 # COMME COMBINAISON QUADRATIQUE INTERGROUPE
 # --------------------------------
 
-MUDEQA = COMB_SISM_MODAL(
-    MODE_MECA=MODES,
-    AMOR_REDUIT=0.0,
-    MASS_INER=MAS,
-    CORR_FREQ="NON",
-    MULTI_APPUI="DECORRELE",
-    EXCIT=(
-        _F(GROUP_NO="GROUP_NO_PO5", AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPEC3, ECHELLE=1.0),
-        _F(GROUP_NO=("GROUP_NO_PO1"), AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPEC1),
-        _F(GROUP_NO=("GROUP_NO_PO3"), AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPEC2),
+MUDEQA = (
+    COMB_SISM_MODAL(
+        MODE_MECA=MODES,
+        AMOR_REDUIT=0.0,
+        TYPE_ANALYSE="MULT_APPUI",
+        APPUIS=(
+            _F(NOM="APPUI_1", GROUP_NO=("GROUP_NO_PO1",)),
+            _F(NOM="APPUI_2", GROUP_NO=("GROUP_NO_PO3",)),
+            _F(NOM="APPUI_3", GROUP_NO=("GROUP_NO_PO5",)),
+        ),
+        SPECTRE=(
+            _F(
+                LIST_AXE=("X"),
+                SPEC_OSCI=SPEC1,
+                ECHELLE=1.0,
+                CORR_FREQ="NON",
+                NATURE="ACCE",
+                NOM_APPUI="APPUI_1",
+            ),
+            _F(NOM_APPUI="APPUI_2", LIST_AXE=("X"), SPEC_OSCI=SPEC2),
+            _F(NOM_APPUI="APPUI_3", LIST_AXE=("X"), SPEC_OSCI=SPEC3),
+        ),
+        DEPL_MULT_APPUI=(
+            _F(NOM_APPUI=("APPUI_1",), MODE_STAT=MODE_STA, DX=-0.04),
+            _F(NOM_APPUI="APPUI_2", MODE_STAT=MODE_STA, DX=-0.044),
+            _F(NOM_APPUI="APPUI_3", MODE_STAT=MODE_STA, DX=0.06),
+        ),
+        GROUP_APPUI_CORRELE=(
+            _F(LIST_APPUI=("APPUI_1", "APPUI_2"), NOM="GAPPUI_1"),
+            _F(LIST_APPUI=("APPUI_3"), NOM="GAPPUI_2"),
+        ),
+        COMB_DDS_CORRELE="LINE",
+        COMB_MODE=_F(TYPE="SRSS"),
+        COMB_DIRECTION="NEWMARK",
+        OPTION=("DEPL", "REAC_NODA"),
+        TYPE_RESU=(_F(TYPE="VALE_TOTA", NEWMARK="OUI"),),
     ),
-    DEPL_MULT_APPUI=(
-        _F(
-            NUME_CAS=1,
-            NOM_CAS="DEPL EN X NUL EN P1 ET P4",
-            MODE_STAT=MODE_STA,
-            GROUP_NO=("GROUP_NO_PO1",),
-            DX=-0.04,
-        ),
-        _F(
-            NUME_CAS=1,
-            NOM_CAS="DEPL EN X NUL EN P1 ET P4",
-            MODE_STAT=MODE_STA,
-            GROUP_NO=("GROUP_NO_PO3",),
-            DX=-0.044,
-        ),
-        _F(
-            NUME_CAS=1,
-            NOM_CAS="DEPL EN X NUL EN P1 ET P4",
-            MODE_STAT=MODE_STA,
-            GROUP_NO=("GROUP_NO_PO5",),
-            DX=0.06,
-        ),
-    ),
-    COMB_MODE=_F(TYPE="SRSS"),
-    GROUP_APPUI=(_F(GROUP_NO=("P1", "P3")), _F(GROUP_NO=("GROUP_NO_PO5",))),
-    OPTION=("DEPL", "REAC_NODA"),
 )
 
 #
@@ -485,7 +485,22 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=0.040000000,
             VALE_REFE=0.040000000000000001,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
+        ),
+    )
+)
+
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="GROUP_NO_PO1",
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MUDEQA,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DX",
+            VALE_CALC=0.040000000,
+            VALE_REFE=0.040000000000000001,
+            NOM_CAS="TOTA",
         ),
         _F(
             GROUP_NO="GROUP_NO_PO2",
@@ -495,7 +510,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=0.055808257,
             VALE_REFE=0.055800000000000002,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
         ),
         _F(
             GROUP_NO="GROUP_NO_PO3",
@@ -505,7 +520,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=0.044000000,
             VALE_REFE=0.043999999999999997,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
         ),
         _F(
             GROUP_NO="GROUP_NO_PO4",
@@ -515,7 +530,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=0.038568326,
             VALE_REFE=0.038559999999999997,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
         ),
         _F(
             GROUP_NO="GROUP_NO_PO5",
@@ -525,7 +540,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=0.060000000,
             VALE_REFE=0.059999999999999998,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
         ),
     )
 )
@@ -540,7 +555,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=36.804369022,
             VALE_REFE=36.799999999999997,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
         ),
         _F(
             GROUP_NO="GROUP_NO_PO2",
@@ -551,7 +566,7 @@ TEST_RESU(
             VALE_CALC=9.78697374e-15,
             VALE_REFE=0,
             CRITERE="ABSOLU",
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
         ),
         _F(
             GROUP_NO="GROUP_NO_PO3",
@@ -561,7 +576,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=86.490603722,
             VALE_REFE=86.489999999999995,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
         ),
         _F(
             GROUP_NO="GROUP_NO_PO4",
@@ -572,7 +587,7 @@ TEST_RESU(
             VALE_CALC=3.62992124e-14,
             VALE_REFE=0,
             CRITERE="ABSOLU",
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
         ),
         _F(
             GROUP_NO="GROUP_NO_PO5",
@@ -582,11 +597,11 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=77.136651166,
             VALE_REFE=77.140000000000001,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
         ),
     )
 )
 
 #
 
-FIN()
+FIN(INFO_RESU="OUI")

@@ -265,13 +265,28 @@ dilatation_thermique = CALC_CHAMP(
 sismique = COMB_SISM_MODAL(
     MODE_MECA=modes_dyn,
     AMOR_REDUIT=0.02,
-    CORR_FREQ="NON",
-    MODE_CORR=modes_sta,
-    MONO_APPUI="OUI",
-    EXCIT=_F(TRI_SPEC="OUI", SPEC_OSCI=(spect_xy, spect_xy, spect_xy), ECHELLE=(1.0, 1.0, 0.5)),
+    MODE_CORR="OUI",
+    PSEUDO_MODE=modes_sta,
+    TYPE_ANALYSE="MONO_APPUI",
+    SPECTRE=(
+        _F(LIST_AXE=("X", "Y"), SPEC_OSCI=spect_xy, ECHELLE=1),
+        _F(LIST_AXE=("Z"), SPEC_OSCI=spect_xy, ECHELLE=0.5),
+    ),
     COMB_MODE=_F(TYPE="SRSS"),
-    COMB_DIRECTION=_F(TYPE="QUAD"),
+    COMB_DIRECTION="QUAD",
     OPTION=("EFGE_ELNO"),
+    TYPE_RESU=(
+        _F(TYPE="VALE_TOTA"),  # reponse totale
+        _F(
+            TYPE="VALE_DIRE", LIST_AXE=("X", "Y", "Z")
+        ),  # reponse directionnelle = sqrt (osci**2+pseudo**2+dds**2)
+        _F(
+            TYPE="VALE_DYNA", LIST_AXE=("X", "Y", "Z")
+        ),  # reponse part dynamique = reponse osci combinee
+        _F(
+            TYPE="VALE_QS", LIST_AXE=("X", "Y", "Z")
+        ),  # reponse part quasi statique = reponse pseudo mode
+    ),
 )
 
 
@@ -503,6 +518,115 @@ sismique_lu = LIRE_RESU(
     FORMAT_MED=(_F(NOM_RESU="sismique", NOM_CHAM=("EFGE_ELNO",)),),
 )
 
+ch_direX = CREA_CHAMP(
+    OPERATION="EXTR",
+    TYPE_CHAM="ELNO_SIEF_R",
+    RESULTAT=sismique_lu,
+    NOM_CHAM="EFGE_ELNO",
+    NUME_ORDRE=1,
+)
+ch_direY = CREA_CHAMP(
+    OPERATION="EXTR",
+    TYPE_CHAM="ELNO_SIEF_R",
+    RESULTAT=sismique_lu,
+    NOM_CHAM="EFGE_ELNO",
+    NUME_ORDRE=2,
+)
+ch_direZ = CREA_CHAMP(
+    OPERATION="EXTR",
+    TYPE_CHAM="ELNO_SIEF_R",
+    RESULTAT=sismique_lu,
+    NOM_CHAM="EFGE_ELNO",
+    NUME_ORDRE=3,
+)
+ch_tota = CREA_CHAMP(
+    OPERATION="EXTR",
+    TYPE_CHAM="ELNO_SIEF_R",
+    RESULTAT=sismique_lu,
+    NOM_CHAM="EFGE_ELNO",
+    NUME_ORDRE=4,
+)
+ch_dynaX = CREA_CHAMP(
+    OPERATION="EXTR",
+    TYPE_CHAM="ELNO_SIEF_R",
+    RESULTAT=sismique_lu,
+    NOM_CHAM="EFGE_ELNO",
+    NUME_ORDRE=11,
+)
+ch_dynaY = CREA_CHAMP(
+    OPERATION="EXTR",
+    TYPE_CHAM="ELNO_SIEF_R",
+    RESULTAT=sismique_lu,
+    NOM_CHAM="EFGE_ELNO",
+    NUME_ORDRE=12,
+)
+ch_dynaZ = CREA_CHAMP(
+    OPERATION="EXTR",
+    TYPE_CHAM="ELNO_SIEF_R",
+    RESULTAT=sismique_lu,
+    NOM_CHAM="EFGE_ELNO",
+    NUME_ORDRE=13,
+)
+ch_dyna = CREA_CHAMP(
+    OPERATION="EXTR",
+    TYPE_CHAM="ELNO_SIEF_R",
+    RESULTAT=sismique_lu,
+    NOM_CHAM="EFGE_ELNO",
+    NUME_ORDRE=14,
+)
+ch_qsX = CREA_CHAMP(
+    OPERATION="EXTR",
+    TYPE_CHAM="ELNO_SIEF_R",
+    RESULTAT=sismique_lu,
+    NOM_CHAM="EFGE_ELNO",
+    NUME_ORDRE=21,
+)
+ch_qsY = CREA_CHAMP(
+    OPERATION="EXTR",
+    TYPE_CHAM="ELNO_SIEF_R",
+    RESULTAT=sismique_lu,
+    NOM_CHAM="EFGE_ELNO",
+    NUME_ORDRE=22,
+)
+ch_qsZ = CREA_CHAMP(
+    OPERATION="EXTR",
+    TYPE_CHAM="ELNO_SIEF_R",
+    RESULTAT=sismique_lu,
+    NOM_CHAM="EFGE_ELNO",
+    NUME_ORDRE=23,
+)
+ch_qs = CREA_CHAMP(
+    OPERATION="EXTR",
+    TYPE_CHAM="ELNO_SIEF_R",
+    RESULTAT=sismique_lu,
+    NOM_CHAM="EFGE_ELNO",
+    NUME_ORDRE=24,
+)
+# re creer resu comb_sism_modal avec les champs lus depuis un resultat medd
+sismique_re = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="MULT_ELAS",
+    NOM_CHAM="EFGE_ELNO",
+    AFFE=(
+        _F(CHAM_GD=ch_direX, NOM_CAS="DIRE_X", MODELE=modele),
+        _F(CHAM_GD=ch_direY, NOM_CAS="DIRE_Y", MODELE=modele),
+        _F(CHAM_GD=ch_direZ, NOM_CAS="DIRE_Z", MODELE=modele),
+        _F(CHAM_GD=ch_tota, NOM_CAS="TOTA", MODELE=modele),
+        _F(CHAM_GD=ch_dynaX, NOM_CAS="PART_DYNA_X", MODELE=modele),
+        _F(CHAM_GD=ch_dynaY, NOM_CAS="PART_DYNA_Y", MODELE=modele),
+        _F(CHAM_GD=ch_dynaZ, NOM_CAS="PART_DYNA_Z", MODELE=modele),
+        _F(CHAM_GD=ch_dyna, NOM_CAS="PART_DYNA", MODELE=modele),
+        _F(CHAM_GD=ch_qsX, NOM_CAS="PART_QS_X", MODELE=modele),
+        _F(CHAM_GD=ch_qsY, NOM_CAS="PART_QS_Y", MODELE=modele),
+        _F(CHAM_GD=ch_qsZ, NOM_CAS="PART_QS_Z", MODELE=modele),
+        _F(CHAM_GD=ch_qs, NOM_CAS="PART_QS", MODELE=modele),
+    ),
+)
+
+# mettre lire_resu --> crea_champs et puis un crea_resu/mult_elas/nom_cas:
+
+IMPR_RESU(UNITE=6, FORMAT="RESULTAT", RESU=_F(RESULTAT=sismique_re, NOM_CHAM="EFGE_ELNO"))
+
 # 2nd appel à POST_ROCHE
 
 chLuPostRocheTout = POST_ROCHE(
@@ -517,7 +641,7 @@ chLuPostRocheTout = POST_ROCHE(
         _F(TYPE_CHAR="POIDS", RESULTAT=poids_propre_lu, NUME_ORDRE=1),
         _F(TYPE_CHAR="DILAT_THERM", RESULTAT=dilatation_thermique_lu, NUME_ORDRE=1),
         _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose_lu, NUME_ORDRE=1),
-        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_lu, DIRECTION="COMBI"),
+        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_re, DIRECTION="COMBI"),
     ),
     PRESSION=(_F(TOUT="OUI", VALE=1e6),),
 )
@@ -542,7 +666,7 @@ chLuPostRocheRCCMRX = POST_ROCHE(
         _F(TYPE_CHAR="POIDS", RESULTAT=poids_propre_lu, NUME_ORDRE=1),
         _F(TYPE_CHAR="DILAT_THERM", RESULTAT=dilatation_thermique_lu, NUME_ORDRE=1),
         _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose_lu, NUME_ORDRE=1),
-        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_lu, DIRECTION="COMBI"),
+        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_re, DIRECTION="COMBI"),
     ),
     PRESSION=(_F(TOUT="OUI", VALE=1e6),),
 )

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -129,12 +129,12 @@ SPECT_Z = DEFI_NAPPE(NOM_PARA="AMOR", INTERPOL="LOG", PARA=(0.02, 0.05), FONCTIO
 SISM_MO1 = COMB_SISM_MODAL(
     MODE_MECA=MODE,
     AMOR_REDUIT=0.03,
-    MASS_INER=MAS,
-    CORR_FREQ="NON",
-    MONO_APPUI="OUI",
-    EXCIT=_F(AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPECT_XY, ECHELLE=1.0),
+    TYPE_ANALYSE="MONO_APPUI",
+    SPECTRE=(_F(LIST_AXE=("X"), SPEC_OSCI=SPECT_XY, CORR_FREQ="NON", ECHELLE=1.0),),
     COMB_MODE=_F(TYPE="CQC"),
     OPTION=("DEPL", "ACCE_ABSOLU", "REAC_NODA"),
+    TYPE_RESU=_F(TYPE="VALE_TOTA"),
+    INFO=2,
 )
 
 # -----------------------------------------
@@ -163,7 +163,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=0.000178493287046,
             VALE_REFE=1.7895199999999999e-4,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
             PRECISION=3.0000000000000001e-3,
         ),
         _F(
@@ -174,7 +174,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=0.00032927087105,
             VALE_REFE=3.2949900000000002e-4,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
             PRECISION=1.0000000000000001e-3,
         ),
         _F(
@@ -185,7 +185,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=0.00108971744115,
             VALE_REFE=1.0903200000000001e-3,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
             PRECISION=1.0000000000000001e-3,
         ),
     )
@@ -209,7 +209,7 @@ TEST_RESU(
             GROUP_NO="N1",
             NOM_CMP="DX",
             VALE_CALC=1.962,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
         ),
         _F(
             RESULTAT=SISM_MO1,
@@ -217,7 +217,7 @@ TEST_RESU(
             GROUP_NO="N5",
             NOM_CMP="DX",
             VALE_CALC=1.962,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
         ),
         _F(
             RESULTAT=SISM_MO1,
@@ -225,7 +225,7 @@ TEST_RESU(
             GROUP_NO="N9",
             NOM_CMP="DX",
             VALE_CALC=1.962,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
         ),
     )
 )
@@ -249,7 +249,7 @@ TEST_RESU(
             GROUP_NO="N1",
             NOM_CMP="DX",
             VALE_CALC=669.603610535,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
         ),
         _F(
             RESULTAT=SISM_MO1,
@@ -257,7 +257,7 @@ TEST_RESU(
             GROUP_NO="N5",
             NOM_CMP="DX",
             VALE_CALC=1164.22268299,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
         ),
         _F(
             RESULTAT=SISM_MO1,
@@ -265,7 +265,7 @@ TEST_RESU(
             GROUP_NO="N9",
             NOM_CMP="DX",
             VALE_CALC=928.199473667,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
         ),
     )
 )
@@ -293,13 +293,13 @@ MODE_ST1 = CALC_CHAMP(reuse=MODE_ST1, RESULTAT=MODE_ST1, FORCE=("FORC_NODA", "RE
 SISM_MO2 = COMB_SISM_MODAL(
     MODE_MECA=MODE,
     AMOR_REDUIT=0.03,
-    MASS_INER=MAS,
-    CORR_FREQ="NON",
-    MODE_CORR=MODE_ST1,
-    MONO_APPUI="OUI",
-    EXCIT=_F(AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPECT_XY, ECHELLE=1.0),
+    TYPE_ANALYSE="MONO_APPUI",
+    SPECTRE=(_F(LIST_AXE=("X"), SPEC_OSCI=SPECT_XY, CORR_FREQ="NON", ECHELLE=1.0),),
+    MODE_CORR="OUI",
+    PSEUDO_MODE=MODE_ST1,
     COMB_MODE=_F(TYPE="CQC"),
     OPTION=("DEPL", "ACCE_ABSOLU", "REAC_NODA"),
+    TYPE_RESU=_F(TYPE="VALE_TOTA"),
 )
 
 # -----------------------------------------
@@ -327,7 +327,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=0.000178493681539,
             VALE_REFE=1.7895199999999999e-4,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
             PRECISION=3.0000000000000001e-3,
         ),
         _F(
@@ -338,7 +338,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=0.000329270911406,
             VALE_REFE=3.2949900000000002e-4,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
             PRECISION=1.0000000000000001e-3,
         ),
         _F(
@@ -349,7 +349,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=0.00108971827966,
             VALE_REFE=1.0903200000000001e-3,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
             PRECISION=1.0000000000000001e-3,
         ),
     )
@@ -373,7 +373,7 @@ TEST_RESU(
             GROUP_NO="N1",
             NOM_CMP="DX",
             VALE_CALC=1.962,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
         ),
         _F(
             RESULTAT=SISM_MO2,
@@ -381,7 +381,7 @@ TEST_RESU(
             GROUP_NO="N5",
             NOM_CMP="DX",
             VALE_CALC=1.962,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
         ),
         _F(
             RESULTAT=SISM_MO2,
@@ -389,7 +389,7 @@ TEST_RESU(
             GROUP_NO="N9",
             NOM_CMP="DX",
             VALE_CALC=1.962,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
         ),
     )
 )
@@ -414,7 +414,7 @@ TEST_RESU(
             GROUP_NO="N1",
             NOM_CMP="DX",
             VALE_CALC=671.668298435,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
         ),
         _F(
             RESULTAT=SISM_MO2,
@@ -422,7 +422,7 @@ TEST_RESU(
             GROUP_NO="N5",
             NOM_CMP="DX",
             VALE_CALC=1169.72688401,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
         ),
         _F(
             RESULTAT=SISM_MO2,
@@ -430,7 +430,7 @@ TEST_RESU(
             GROUP_NO="N9",
             NOM_CMP="DX",
             VALE_CALC=937.326875437,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
         ),
     )
 )
@@ -461,40 +461,28 @@ MODE_STA = CALC_CHAMP(reuse=MODE_STA, RESULTAT=MODE_STA, FORCE=("FORC_NODA", "RE
 SISM_MU1 = COMB_SISM_MODAL(
     MODE_MECA=MODE,
     AMOR_REDUIT=0.03,
-    MASS_INER=MAS,
-    CORR_FREQ="NON",
-    MULTI_APPUI="CORRELE",
-    EXCIT=(
-        _F(GROUP_NO="GXXXXXX_ENCASTRE", AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPECT_XY, ECHELLE=1.0),
-        _F(GROUP_NO="N5", AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPECT_XY, ECHELLE=1.0),
-        _F(GROUP_NO="N9", AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPECT_XY, ECHELLE=1.0),
+    TYPE_ANALYSE="MULT_APPUI",
+    APPUIS=(
+        _F(NOM="APPUI_1", GROUP_NO=("GXXXXXX_ENCASTRE",)),
+        _F(NOM="APPUI_2", GROUP_NO=("N5",)),
+        _F(NOM="APPUI_3", GROUP_NO=("N9",)),
     ),
-    COMB_MULT_APPUI=(
-        _F(GROUP_NO="GXXXXXX_ENCASTRE", TYPE_COMBI="LINE"),
-        _F(GROUP_NO=("N5", "N9"), TYPE_COMBI="LINE"),
-    ),
-    # DEPLACEMENT RELATIF MAXIMAL
-    DEPL_MULT_APPUI=(
+    SPECTRE=(
         _F(
-            NUME_CAS=1,
-            NOM_CAS="DEPL EN N_ENCASTRE",
-            MODE_STAT=MODE_STA,
-            GROUP_NO_REFE="NOREF",
-            GROUP_NO="GXXXXXX_ENCASTRE",
-            DX=0.0,
-            DY=0.0,
+            LIST_AXE=("X"),
+            SPEC_OSCI=SPECT_XY,
+            ECHELLE=1.0,
+            CORR_FREQ="NON",
+            NATURE="ACCE",
+            NOM_APPUI="APPUI_1",
         ),
-        _F(
-            NUME_CAS=2,
-            MODE_STAT=MODE_STA,
-            NOM_CAS="DEPL EN N5 ET N9",
-            GROUP_NO=("N5", "N9"),
-            DX=0.0,
-            DY=0.0,
-        ),
+        _F(NOM_APPUI="APPUI_2", LIST_AXE=("X"), SPEC_OSCI=SPECT_XY),
+        _F(NOM_APPUI="APPUI_3", LIST_AXE=("X"), SPEC_OSCI=SPECT_XY),
     ),
+    GROUP_APPUI_CORRELE=(_F(LIST_APPUI=("APPUI_1", "APPUI_2", "APPUI_3"), NOM="GAPPUI_1"),),
     COMB_MODE=_F(TYPE="CQC"),
-    OPTION=("DEPL", "ACCE_ABSOLU", "REAC_NODA"),
+    OPTION=("DEPL", "REAC_NODA"),
+    TYPE_RESU=_F(TYPE="VALE_TOTA"),
 )
 
 # -----------------------------------------
@@ -522,7 +510,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=0.000178493287046,
             VALE_REFE=1.7895199999999999e-4,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
             PRECISION=3.0000000000000001e-3,
         ),
         _F(
@@ -533,7 +521,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=0.000329270871051,
             VALE_REFE=3.2949900000000002e-4,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
             PRECISION=3.0000000000000001e-3,
         ),
         _F(
@@ -544,55 +532,8 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=0.00108971744116,
             VALE_REFE=1.0903200000000001e-3,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
             PRECISION=3.0000000000000001e-3,
-        ),
-    )
-)
-
-# -----------------------------------------
-# TEST DES VALEURS DE ACCE_ABSOLU
-# VALEUR DE REFERENCE ACCE_ABSOLU
-#   IDENTIQUES A CELLES DU MONO_APPUI ASTER (13.2.2) SISM_MO1
-## N1_AX  = 1.96200E+00
-## N5_AX  = 1.96200E+00
-## N9_AX  = 1.96200E+00
-
-
-TEST_RESU(
-    RESU=(
-        _F(
-            REFERENCE="AUTRE_ASTER",
-            RESULTAT=SISM_MU1,
-            NOM_CHAM="ACCE_ABSOLU",
-            GROUP_NO="N1",
-            NOM_CMP="DX",
-            VALE_CALC=1.962,
-            VALE_REFE=1.962,
-            NOEUD_CMP=("DIR", "X"),
-            PRECISION=0.000001,
-        ),
-        _F(
-            REFERENCE="AUTRE_ASTER",
-            RESULTAT=SISM_MU1,
-            NOM_CHAM="ACCE_ABSOLU",
-            GROUP_NO="N5",
-            NOM_CMP="DX",
-            VALE_CALC=1.962,
-            VALE_REFE=1.962,
-            NOEUD_CMP=("DIR", "X"),
-            PRECISION=0.000001,
-        ),
-        _F(
-            REFERENCE="AUTRE_ASTER",
-            RESULTAT=SISM_MU1,
-            NOM_CHAM="ACCE_ABSOLU",
-            GROUP_NO="N9",
-            NOM_CMP="DX",
-            VALE_CALC=1.962,
-            VALE_REFE=1.962,
-            NOEUD_CMP=("DIR", "X"),
-            PRECISION=0.000001,
         ),
     )
 )
@@ -620,7 +561,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=669.603610535,
             VALE_REFE=669.603610535,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
             PRECISION=0.000001,
         ),
         _F(
@@ -631,7 +572,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=1164.22268299,
             VALE_REFE=1164.22268299,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
             PRECISION=0.000001,
         ),
         _F(
@@ -642,7 +583,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=928.199473668,
             VALE_REFE=928.199473667,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
             PRECISION=0.000001,
         ),
     )
@@ -659,45 +600,38 @@ TEST_RESU(
 SISM_MU2 = COMB_SISM_MODAL(
     MODE_MECA=MODE,
     AMOR_REDUIT=0.03,
-    MASS_INER=MAS,
-    CORR_FREQ="NON",
-    MODE_CORR=MODE_ST1,
-    MULTI_APPUI="CORRELE",
-    EXCIT=(
-        _F(GROUP_NO="GXXXXXX_ENCASTRE", AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPECT_XY, ECHELLE=1.0),
-        _F(GROUP_NO="GXXXXXX_ENCASTRE", AXE=(0.0, 1.0, 0.0), SPEC_OSCI=SPECT_XY, ECHELLE=1.0),
-        _F(GROUP_NO="N5", AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPECT_XY, ECHELLE=1.5),
-        _F(GROUP_NO="N5", AXE=(0.0, 1.0, 0.0), SPEC_OSCI=SPECT_XY, ECHELLE=1.5),
-        _F(GROUP_NO="N9", AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPECT_XY, ECHELLE=2.0),
-        _F(GROUP_NO="N9", AXE=(0.0, 1.0, 0.0), SPEC_OSCI=SPECT_XY, ECHELLE=2.0),
+    TYPE_ANALYSE="MULT_APPUI",
+    APPUIS=(
+        _F(NOM="APPUI_1", GROUP_NO=("GXXXXXX_ENCASTRE",)),
+        _F(NOM="APPUI_2", GROUP_NO=("N5",)),
+        _F(NOM="APPUI_3", GROUP_NO=("N9",)),
     ),
-    COMB_MULT_APPUI=(
-        _F(GROUP_NO="GXXXXXX_ENCASTRE", TYPE_COMBI="LINE"),
-        _F(GROUP_NO=("N5", "N9"), TYPE_COMBI="LINE"),
+    SPECTRE=(
+        _F(
+            LIST_AXE=("X", "Y"),
+            SPEC_OSCI=SPECT_XY,
+            ECHELLE=1.0,
+            CORR_FREQ="NON",
+            NATURE="ACCE",
+            NOM_APPUI="APPUI_1",
+        ),
+        _F(NOM_APPUI="APPUI_2", LIST_AXE=("X", "Y"), SPEC_OSCI=SPECT_XY, ECHELLE=1.5),
+        _F(NOM_APPUI="APPUI_3", LIST_AXE=("X", "Y"), SPEC_OSCI=SPECT_XY, ECHELLE=2.0),
     ),
+    GROUP_APPUI_CORRELE=(_F(LIST_APPUI=("APPUI_1", "APPUI_2", "APPUI_3"), NOM="GAPPUI_1"),),
+    MODE_CORR="OUI",
+    PSEUDO_MODE=MODE_ST1,
     # DEPLACEMENT RELATIF MAXIMAL
     DEPL_MULT_APPUI=(
-        _F(
-            NUME_CAS=1,
-            NOM_CAS="DEPL EN N_ENCASTRE",
-            MODE_STAT=MODE_STA,
-            GROUP_NO_REFE="N1",
-            GROUP_NO="GXXXXXX_ENCASTRE",
-            DX=0.0,
-            DY=0.0,
-        ),
-        _F(
-            NUME_CAS=1,
-            NOM_CAS="DEPL EN N5 ET N9",
-            MODE_STAT=MODE_STA,
-            GROUP_NO=("N5", "N9"),
-            DX=0.001,
-            DY=0.001,
-        ),
+        _F(NOM_APPUI=("APPUI_1",), MODE_STAT=MODE_STA, DX=0.0, DY=0.0),
+        _F(NOM_APPUI="APPUI_2", MODE_STAT=MODE_STA, DX=0.001, DY=0.001),
+        _F(NOM_APPUI="APPUI_3", MODE_STAT=MODE_STA, DX=0.001, DY=0.001),
     ),
+    COMB_DDS_CORRELE="QUAD",
     COMB_MODE=_F(TYPE="CQC"),
-    COMB_DIRECTION=_F(TYPE="QUAD"),
+    COMB_DIRECTION="QUAD",
     OPTION=("DEPL", "REAC_NODA"),
+    TYPE_RESU=(_F(TYPE="VALE_TOTA"), _F(TYPE="VALE_DIRE", LIST_AXE=("X", "Y"))),
 )
 
 # -----------------------------------------
@@ -714,7 +648,7 @@ TEST_RESU(
             GROUP_NO="N3",
             NOM_CMP="DX",
             VALE_CALC=0.000588655242424,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="DIRE_X",
         ),
         _F(
             RESULTAT=SISM_MU2,
@@ -722,7 +656,7 @@ TEST_RESU(
             GROUP_NO="N5",
             NOM_CMP="DX",
             VALE_CALC=0.001,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="DIRE_X",
         ),
         _F(
             RESULTAT=SISM_MU2,
@@ -730,7 +664,7 @@ TEST_RESU(
             GROUP_NO="N7",
             NOM_CMP="DX",
             VALE_CALC=0.00115925624967,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="DIRE_X",
         ),
         _F(
             RESULTAT=SISM_MU2,
@@ -738,7 +672,7 @@ TEST_RESU(
             GROUP_NO="N9",
             NOM_CMP="DX",
             VALE_CALC=0.001,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="DIRE_X",
         ),
         _F(
             RESULTAT=SISM_MU2,
@@ -746,7 +680,7 @@ TEST_RESU(
             GROUP_NO="N11",
             NOM_CMP="DX",
             VALE_CALC=0.00317156222561,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="DIRE_X",
         ),
     )
 )
@@ -764,7 +698,7 @@ TEST_RESU(
             GROUP_NO="N3",
             NOM_CMP="DY",
             VALE_CALC=0.000588655242424,
-            NOEUD_CMP=("DIR", "Y"),
+            NOM_CAS="DIRE_Y",
         ),
         _F(
             RESULTAT=SISM_MU2,
@@ -772,7 +706,7 @@ TEST_RESU(
             GROUP_NO="N5",
             NOM_CMP="DY",
             VALE_CALC=0.001,
-            NOEUD_CMP=("DIR", "Y"),
+            NOM_CAS="DIRE_Y",
         ),
         _F(
             RESULTAT=SISM_MU2,
@@ -780,7 +714,7 @@ TEST_RESU(
             GROUP_NO="N7",
             NOM_CMP="DY",
             VALE_CALC=0.00115925624967,
-            NOEUD_CMP=("DIR", "Y"),
+            NOM_CAS="DIRE_Y",
         ),
         _F(
             RESULTAT=SISM_MU2,
@@ -788,7 +722,7 @@ TEST_RESU(
             GROUP_NO="N9",
             NOM_CMP="DY",
             VALE_CALC=0.001,
-            NOEUD_CMP=("DIR", "Y"),
+            NOM_CAS="DIRE_Y",
         ),
         _F(
             RESULTAT=SISM_MU2,
@@ -796,7 +730,7 @@ TEST_RESU(
             GROUP_NO="N11",
             NOM_CMP="DY",
             VALE_CALC=0.00317156222562,
-            NOEUD_CMP=("DIR", "Y"),
+            NOM_CAS="DIRE_Y",
         ),
     )
 )
@@ -814,7 +748,7 @@ TEST_RESU(
             GROUP_NO="N3",
             NOM_CMP="DX",
             VALE_CALC=0.000588655242424,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
         ),
         _F(
             RESULTAT=SISM_MU2,
@@ -822,7 +756,7 @@ TEST_RESU(
             GROUP_NO="N5",
             NOM_CMP="DX",
             VALE_CALC=0.001,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
         ),
         _F(
             RESULTAT=SISM_MU2,
@@ -830,7 +764,7 @@ TEST_RESU(
             GROUP_NO="N7",
             NOM_CMP="DX",
             VALE_CALC=0.00115925624967,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
         ),
         _F(
             RESULTAT=SISM_MU2,
@@ -838,7 +772,7 @@ TEST_RESU(
             GROUP_NO="N9",
             NOM_CMP="DX",
             VALE_CALC=0.001,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
         ),
         _F(
             RESULTAT=SISM_MU2,
@@ -846,7 +780,7 @@ TEST_RESU(
             GROUP_NO="N11",
             NOM_CMP="DX",
             VALE_CALC=0.00317156222561,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
         ),
         _F(
             RESULTAT=SISM_MU2,
@@ -854,7 +788,7 @@ TEST_RESU(
             GROUP_NO="N3",
             NOM_CMP="DY",
             VALE_CALC=0.000588655242424,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
         ),
         _F(
             RESULTAT=SISM_MU2,
@@ -862,7 +796,7 @@ TEST_RESU(
             GROUP_NO="N5",
             NOM_CMP="DY",
             VALE_CALC=0.001,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
         ),
         _F(
             RESULTAT=SISM_MU2,
@@ -870,7 +804,7 @@ TEST_RESU(
             GROUP_NO="N7",
             NOM_CMP="DY",
             VALE_CALC=0.00115925624967,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
         ),
         _F(
             RESULTAT=SISM_MU2,
@@ -878,7 +812,7 @@ TEST_RESU(
             GROUP_NO="N9",
             NOM_CMP="DY",
             VALE_CALC=0.001,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
         ),
         _F(
             RESULTAT=SISM_MU2,
@@ -886,7 +820,7 @@ TEST_RESU(
             GROUP_NO="N11",
             NOM_CMP="DY",
             VALE_CALC=0.00317156222562,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
         ),
     )
 )
@@ -904,7 +838,7 @@ TEST_RESU(
             GROUP_NO="N1",
             NOM_CMP="DX",
             VALE_CALC=1291.6487138627888,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="DIRE_X",
         ),
         _F(
             RESULTAT=SISM_MU2,
@@ -912,7 +846,7 @@ TEST_RESU(
             GROUP_NO="N5",
             NOM_CMP="DX",
             VALE_CALC=1991.0720706572706,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="DIRE_X",
         ),
         _F(
             RESULTAT=SISM_MU2,
@@ -920,7 +854,7 @@ TEST_RESU(
             GROUP_NO="N9",
             NOM_CMP="DX",
             VALE_CALC=2063.9768220424535,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="DIRE_X",
         ),
     )
 )
@@ -943,41 +877,23 @@ TEST_RESU(
 SISM_MU6 = COMB_SISM_MODAL(
     MODE_MECA=MODE,
     AMOR_REDUIT=0.03,
-    MASS_INER=MAS,
-    CORR_FREQ="NON",
-    MODE_CORR=MODE_ST1,
-    MULTI_APPUI="CORRELE",
-    EXCIT=(
-        _F(GROUP_NO="GXXXXXX_ENCASTRE", AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPECT_XY, ECHELLE=1.0),
-        _F(GROUP_NO="N5", AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPECT_XY, ECHELLE=1.0),
-        _F(GROUP_NO="N9", AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPECT_XY, ECHELLE=1.0),
+    MODE_CORR="OUI",
+    PSEUDO_MODE=MODE_ST1,
+    TYPE_ANALYSE="MULT_APPUI",
+    APPUIS=(
+        _F(NOM="APPUI_1", GROUP_NO=("GXXXXXX_ENCASTRE",)),
+        _F(NOM="APPUI_2", GROUP_NO=("N5",)),
+        _F(NOM="APPUI_3", GROUP_NO=("N9",)),
     ),
-    COMB_MULT_APPUI=(
-        _F(GROUP_NO="GXXXXXX_ENCASTRE", TYPE_COMBI="LINE"),
-        _F(GROUP_NO=("N5", "N9"), TYPE_COMBI="LINE"),
+    SPECTRE=(
+        _F(NOM_APPUI="APPUI_1", LIST_AXE=("X"), SPEC_OSCI=SPECT_XY, ECHELLE=1.0),
+        _F(NOM_APPUI="APPUI_2", LIST_AXE=("X"), SPEC_OSCI=SPECT_XY, ECHELLE=1.0),
+        _F(NOM_APPUI="APPUI_3", LIST_AXE=("X"), SPEC_OSCI=SPECT_XY, ECHELLE=1.0),
     ),
-    # DEPLACEMENT RELATIF MAXIMAL
-    DEPL_MULT_APPUI=(
-        _F(
-            NUME_CAS=1,
-            NOM_CAS="DEPL EN N_ENCASTRE",
-            MODE_STAT=MODE_STA,
-            GROUP_NO_REFE="N1",
-            GROUP_NO="GXXXXXX_ENCASTRE",
-            DX=0.0,
-            DY=0.0,
-        ),
-        _F(
-            NUME_CAS=2,
-            MODE_STAT=MODE_STA,
-            NOM_CAS="DEPL EN N5 ET N9",
-            GROUP_NO=("N5", "N9"),
-            DX=0.0,
-            DY=0.0,
-        ),
-    ),
+    GROUP_APPUI_CORRELE=(_F(LIST_APPUI=("APPUI_1", "APPUI_2", "APPUI_3"), NOM="GAPPUI_1"),),
     COMB_MODE=_F(TYPE="CQC"),
-    OPTION=("DEPL", "ACCE_ABSOLU", "REAC_NODA"),
+    OPTION=("DEPL", "REAC_NODA"),
+    TYPE_RESU=(_F(TYPE="VALE_TOTA"), _F(TYPE="VALE_DIRE", LIST_AXE=("X",))),
 )
 
 # -----------------------------------------
@@ -1003,7 +919,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=0.000178493533072,
             VALE_REFE=N3_DX_2,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="DIRE_X",
             PRECISION=3.0000000000000001e-3,
         ),
         _F(
@@ -1014,7 +930,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=0.00032927092263,
             VALE_REFE=N7_DX_2,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="DIRE_X",
             PRECISION=1.0000000000000001e-3,
         ),
         _F(
@@ -1025,55 +941,12 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=0.00108971850627,
             VALE_REFE=N11_DX_2,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="DIRE_X",
             PRECISION=1.0000000000000001e-3,
         ),
     )
 )
 
-# -----------------------------------------
-# TEST DES VALEURS DE ACCE_ABSOLU
-# VALEUR DE REFERENCE ACCE_ABSOLU
-#   IDENTIQUES A CELLES DU MONO_APPUI ASTER (13.2.2) SISM_MO2
-## N1_AX  = 1.96200E+00
-## N5_AX  = 1.96200E+00
-## N9_AX  = 1.96200E+00
-
-
-TEST_RESU(
-    RESU=(
-        _F(
-            REFERENCE="AUTRE_ASTER",
-            RESULTAT=SISM_MU6,
-            NOM_CHAM="ACCE_ABSOLU",
-            GROUP_NO="N1",
-            NOM_CMP="DX",
-            VALE_CALC=1.962,
-            VALE_REFE=1.962,
-            NOEUD_CMP=("DIR", "X"),
-        ),
-        _F(
-            REFERENCE="AUTRE_ASTER",
-            RESULTAT=SISM_MU6,
-            NOM_CHAM="ACCE_ABSOLU",
-            GROUP_NO="N5",
-            NOM_CMP="DX",
-            VALE_CALC=1.962,
-            VALE_REFE=1.962,
-            NOEUD_CMP=("DIR", "X"),
-        ),
-        _F(
-            REFERENCE="AUTRE_ASTER",
-            RESULTAT=SISM_MU6,
-            NOM_CHAM="ACCE_ABSOLU",
-            GROUP_NO="N9",
-            NOM_CMP="DX",
-            VALE_CALC=1.962,
-            VALE_REFE=1.962,
-            NOEUD_CMP=("DIR", "X"),
-        ),
-    )
-)
 
 #
 # -----------------------------------------
@@ -1097,7 +970,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=669.6445359675666,
             VALE_REFE=N1_RX_2,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="DIRE_X",
             PRECISION=0.004,
         ),
         _F(
@@ -1108,7 +981,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=1164.4478950482583,
             VALE_REFE=N5_RX_2,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="DIRE_X",
             PRECISION=0.005,
         ),
         _F(
@@ -1119,7 +992,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=929.0629972767075,
             VALE_REFE=N9_RX_2,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="DIRE_X",
             PRECISION=0.009,
         ),
     )

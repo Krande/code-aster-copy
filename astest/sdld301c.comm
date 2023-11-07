@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -383,25 +383,17 @@ SPEC2 = DEFI_NAPPE(
 MUQACQC = COMB_SISM_MODAL(
     MODE_MECA=MODES,
     AMOR_GENE=AMORGEN,
-    #                        AMOR_REDUIT=(xi,xi),
-    MASS_INER=MAS,
-    CORR_FREQ="NON",
-    EXCIT=(
-        _F(AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPEC1, ECHELLE=1.0, GROUP_NO="P1"),
-        _F(AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPEC2, ECHELLE=1.0, GROUP_NO="P4"),
+    TYPE_ANALYSE="MULT_APPUI",
+    APPUIS=(_F(NOM="A_1", GROUP_NO=("P1")), _F(NOM="A_4", GROUP_NO=("P4"))),
+    SPECTRE=(
+        _F(NOM_APPUI="A_1", LIST_AXE=("X"), SPEC_OSCI=SPEC1, ECHELLE=1.0, CORR_FREQ="NON"),
+        _F(NOM_APPUI="A_4", LIST_AXE=("X"), SPEC_OSCI=SPEC2, ECHELLE=1.0, CORR_FREQ="NON"),
     ),
-    MULTI_APPUI="DECORRELE",
     COMB_MODE=_F(TYPE="CQC"),
-    DEPL_MULT_APPUI=_F(
-        NOM_CAS="DEPL EN X NUL EN P1 ET P4",
-        NUME_CAS=1,
-        MODE_STAT=MODE_STA,
-        GROUP_NO_REFE="P1",
-        GROUP_NO=("P1", "P4"),
-        DX=0.0,
-    ),
+    GROUP_APPUI_CORRELE=(_F(LIST_APPUI=("A_1"), NOM="GA_1"), _F(LIST_APPUI=("A_4"), NOM="GA_4")),
+    COMB_DDS_CORRELE="LINE",
     OPTION=("DEPL", "SIEF_ELGA", "EFGE_ELNO", "FORC_NODA", "REAC_NODA"),
-    IMPRESSION=_F(TOUT="OUI"),
+    TYPE_RESU=_F(TYPE="VALE_TOTA"),
 )
 
 # On retrouve bien avec l'utilisation de AMOR_GENE le meme resulat qu'avec un AMOR_REDUIT equivalent
@@ -410,7 +402,7 @@ TEST_RESU(
     RESU=(
         _F(
             RESULTAT=MUQACQC,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DX",
             GROUP_NO="P2",
@@ -420,7 +412,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=MUQACQC,
-            NOEUD_CMP=("DIR", "X"),
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DX",
             GROUP_NO="P3",

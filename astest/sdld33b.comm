@@ -39,8 +39,8 @@ MAILLAGE = CREA_MAILLAGE(
     MAILLAGE=MAILLAG0,
     CREA_POI1=(
         _F(NOM_GROUP_MA="GROUP_NO_MASSE", GROUP_NO="GROUP_NO_MASSE"),
-        _F(NOM_GROUP_MA="P2", NOEUD="P2"),
-        _F(NOM_GROUP_MA="P4", NOEUD="P4"),
+        _F(NOM_GROUP_MA="P2", GROUP_NO="P2"),
+        _F(NOM_GROUP_MA="P4", GROUP_NO="P4"),
     ),
 )
 #
@@ -210,7 +210,7 @@ CHAMPMAT = AFFE_MATERIAU(MAILLAGE=MAILLAGE, AFFE=_F(TOUT="OUI", MATER=MAT))
 COND_LIM = AFFE_CHAR_MECA(
     MODELE=MODELE,
     DDL_IMPO=(
-        _F(NOEUD=("P1", "P3", "P5"), DX=0.0, DY=0.0, DZ=0.0),
+        _F(GROUP_NO=("P1", "P3", "P5"), DX=0.0, DY=0.0, DZ=0.0),
         _F(GROUP_NO="GROUP_NO_MASSE", DY=0.0, DZ=0.0),
     ),
 )
@@ -350,40 +350,56 @@ SPEC3 = DEFI_NAPPE(
 # COMME COMBINAISON QUADRATIQUE INTERGROUPE
 # --------------------------------
 # calcul 1
-#  QUAD(LINE(N01,N03)+N05)
+#  QUAD(ABS(N01,N03)+N05)
 #
 RES_M2 = COMB_SISM_MODAL(
     MODE_MECA=MODES,
     AMOR_REDUIT=0.0,
-    MASS_INER=MAS,
-    CORR_FREQ="NON",
-    MULTI_APPUI="DECORRELE",
-    EXCIT=(
-        _F(GROUP_NO="GROUP_NO_PO5", AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPEC3, ECHELLE=1.0),
-        _F(GROUP_NO=("GROUP_NO_PO1"), AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPEC1),
-        _F(GROUP_NO=("GROUP_NO_PO3"), AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPEC2),
+    # MASS_INER=MAS,
+    TYPE_ANALYSE="MULT_APPUI",
+    APPUIS=(
+        _F(NOM="APPUI_1", GROUP_NO=("GROUP_NO_PO1",)),
+        _F(NOM="APPUI_2", GROUP_NO=("GROUP_NO_PO3",)),
+        _F(NOM="APPUI_3", GROUP_NO=("GROUP_NO_PO5",)),
+    ),
+    SPECTRE=(
+        _F(
+            LIST_AXE=("X"),
+            SPEC_OSCI=SPEC1,
+            ECHELLE=1.0,
+            CORR_FREQ="NON",
+            NATURE="ACCE",
+            NOM_APPUI="APPUI_1",
+        ),
+        _F(NOM_APPUI="APPUI_2", LIST_AXE=("X"), SPEC_OSCI=SPEC2),
+        _F(NOM_APPUI="APPUI_3", LIST_AXE=("X"), SPEC_OSCI=SPEC3),
     ),
     DEPL_MULT_APPUI=(
-        _F(NOM_CAS=("1",), NUME_CAS=(1,), MODE_STAT=MODE_STA, GROUP_NO=("GROUP_NO_PO1",), DX=-0.04),
-        _F(NOM_CAS=("2",), NUME_CAS=(2,), MODE_STAT=MODE_STA, GROUP_NO=("GROUP_NO_PO3",), DX=-0.04),
-        _F(NOM_CAS=("3",), NUME_CAS=(3,), MODE_STAT=MODE_STA, GROUP_NO=("GROUP_NO_PO5",), DX=0.06),
-        _F(NOM_CAS=("4",), NUME_CAS=(4,), MODE_STAT=MODE_STA, GROUP_NO=("GROUP_NO_PO3",), DX=0.0),
+        _F(MODE_STAT=MODE_STA, NOM_APPUI="APPUI_1", DX=-0.04),
+        _F(MODE_STAT=MODE_STA, NOM_APPUI="APPUI_2", DX=-0.04),
+        _F(MODE_STAT=MODE_STA, NOM_APPUI="APPUI_3", DX=+0.06),
     ),
-    COMB_DEPL_APPUI=(
-        _F(LIST_CAS=(1, 2), TYPE_COMBI="ABS"),
-        _F(LIST_CAS=(3, 4), TYPE_COMBI="QUAD"),
-        #   _F(LIST_CAS=(3),TYPE_COMBI='QUAD',),
+    GROUP_APPUI_CORRELE=(
+        _F(LIST_APPUI=("APPUI_1", "APPUI_2"), NOM="GA_N1"),
+        _F(LIST_APPUI=("APPUI_3",), NOM="GA_N3"),
     ),
+    COMB_DDS_CORRELE="ABS",  # pour APPUI_1 et APPUI_2
     COMB_MODE=_F(TYPE="SRSS"),
     OPTION=("DEPL", "REAC_NODA"),
+    TYPE_RESU=_F(TYPE="VALE_DDS"),
     INFO=2,
 )
+
+IMPR_RESU(FORMAT="RESULTAT", UNITE=6, RESU=_F(RESULTAT=RES_M2, NOM_CHAM="REAC_NODA"))
+
+IMPR_RESU(FORMAT="RESULTAT", UNITE=6, RESU=_F(RESULTAT=MODE_STA, NOM_CHAM="REAC_NODA"))
+
 # TEST RESU DEPL
 TEST_RESU(
     RESU=(
         _F(
             GROUP_NO="GROUP_NO_PO1",
-            NUME_ORDRE=202,
+            NOM_CAS="PART_DDS",
             REFERENCE="ANALYTIQUE",
             RESULTAT=RES_M2,
             NOM_CHAM="DEPL",
@@ -393,7 +409,7 @@ TEST_RESU(
         ),
         _F(
             GROUP_NO="GROUP_NO_PO2",
-            NUME_ORDRE=202,
+            NOM_CAS="PART_DDS",
             REFERENCE="ANALYTIQUE",
             RESULTAT=RES_M2,
             NOM_CHAM="DEPL",
@@ -403,7 +419,7 @@ TEST_RESU(
         ),
         _F(
             GROUP_NO="GROUP_NO_PO3",
-            NUME_ORDRE=202,
+            NOM_CAS="PART_DDS",
             REFERENCE="ANALYTIQUE",
             RESULTAT=RES_M2,
             NOM_CHAM="DEPL",
@@ -413,7 +429,7 @@ TEST_RESU(
         ),
         _F(
             GROUP_NO="GROUP_NO_PO4",
-            NUME_ORDRE=202,
+            NOM_CAS="PART_DDS",
             REFERENCE="ANALYTIQUE",
             RESULTAT=RES_M2,
             NOM_CHAM="DEPL",
@@ -423,7 +439,7 @@ TEST_RESU(
         ),
         _F(
             GROUP_NO="GROUP_NO_PO5",
-            NUME_ORDRE=202,
+            NOM_CAS="PART_DDS",
             REFERENCE="ANALYTIQUE",
             RESULTAT=RES_M2,
             NOM_CHAM="DEPL",
@@ -433,12 +449,13 @@ TEST_RESU(
         ),
     )
 )
+
 # TEST RESU REAC_NODA
 TEST_RESU(
     RESU=(
         _F(
             GROUP_NO="GROUP_NO_PO1",
-            NUME_ORDRE=202,
+            NOM_CAS="PART_DDS",
             REFERENCE="ANALYTIQUE",
             RESULTAT=RES_M2,
             NOM_CHAM="REAC_NODA",
@@ -449,7 +466,7 @@ TEST_RESU(
         ),
         _F(
             GROUP_NO="GROUP_NO_PO2",
-            NUME_ORDRE=202,
+            NOM_CAS="PART_DDS",
             REFERENCE="ANALYTIQUE",
             RESULTAT=RES_M2,
             NOM_CHAM="REAC_NODA",
@@ -460,7 +477,7 @@ TEST_RESU(
         ),
         _F(
             GROUP_NO="GROUP_NO_PO3",
-            NUME_ORDRE=202,
+            NOM_CAS="PART_DDS",
             REFERENCE="ANALYTIQUE",
             RESULTAT=RES_M2,
             NOM_CHAM="REAC_NODA",
@@ -470,7 +487,7 @@ TEST_RESU(
         ),
         _F(
             GROUP_NO="GROUP_NO_PO4",
-            NUME_ORDRE=202,
+            NOM_CAS="PART_DDS",
             REFERENCE="ANALYTIQUE",
             RESULTAT=RES_M2,
             NOM_CHAM="REAC_NODA",
@@ -481,7 +498,8 @@ TEST_RESU(
         ),
         _F(
             GROUP_NO="GROUP_NO_PO5",
-            NUME_ORDRE=202,
+            # NUME_ORDRE=202,
+            NOM_CAS="PART_DDS",
             REFERENCE="ANALYTIQUE",
             RESULTAT=RES_M2,
             NOM_CHAM="REAC_NODA",
@@ -495,20 +513,33 @@ TEST_RESU(
 RES_LINE = COMB_SISM_MODAL(
     MODE_MECA=MODES,
     AMOR_REDUIT=0.0,
-    MASS_INER=MAS,
-    CORR_FREQ="NON",
-    MULTI_APPUI="DECORRELE",
-    EXCIT=(
-        _F(GROUP_NO="GROUP_NO_PO5", AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPEC3, ECHELLE=1.0),
-        _F(GROUP_NO=("GROUP_NO_PO1"), AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPEC1),
-        _F(GROUP_NO=("GROUP_NO_PO3"), AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPEC2),
+    TYPE_ANALYSE="MULT_APPUI",
+    APPUIS=(
+        _F(NOM="APPUI_1", GROUP_NO=("GROUP_NO_PO1",)),
+        _F(NOM="APPUI_2", GROUP_NO=("GROUP_NO_PO3",)),
+        _F(NOM="APPUI_3", GROUP_NO=("GROUP_NO_PO5",)),
+    ),
+    SPECTRE=(
+        _F(
+            LIST_AXE=("X"),
+            SPEC_OSCI=SPEC1,
+            ECHELLE=1.0,
+            CORR_FREQ="NON",
+            NATURE="ACCE",
+            NOM_APPUI="APPUI_1",
+        ),
+        _F(NOM_APPUI="APPUI_2", LIST_AXE=("X"), SPEC_OSCI=SPEC2),
+        _F(NOM_APPUI="APPUI_3", LIST_AXE=("X"), SPEC_OSCI=SPEC3),
     ),
     DEPL_MULT_APPUI=(
-        _F(NOM_CAS=("1",), NUME_CAS=(1,), MODE_STAT=MODE_STA, GROUP_NO=("groupeN1",), DX=-0.04),
-        _F(NOM_CAS=("2",), NUME_CAS=(2,), MODE_STAT=MODE_STA, GROUP_NO=("groupeN2",), DX=0.06),
+        _F(MODE_STAT=MODE_STA, NOM_APPUI="APPUI_1", DX=-0.04),
+        _F(MODE_STAT=MODE_STA, NOM_APPUI="APPUI_2", DX=-0.04),
+        _F(MODE_STAT=MODE_STA, NOM_APPUI="APPUI_3", DX=0.06),
     ),
-    COMB_DEPL_APPUI=_F(LIST_CAS=(1, 2), TYPE_COMBI="LINE"),
+    GROUP_APPUI_CORRELE=(_F(LIST_APPUI=("APPUI_1", "APPUI_2", "APPUI_3"), NOM="GA_1"),),
+    COMB_DDS_CORRELE="LINE",
     COMB_MODE=_F(TYPE="SRSS"),
+    TYPE_RESU=(_F(TYPE="VALE_DDS"),),
     OPTION=("DEPL", "REAC_NODA"),
     INFO=2,
 )
@@ -517,7 +548,7 @@ TEST_RESU(
     RESU=(
         _F(
             GROUP_NO="GROUP_NO_PO1",
-            NUME_ORDRE=200,
+            NOM_CAS="PART_DDS",
             REFERENCE="ANALYTIQUE",
             RESULTAT=RES_LINE,
             NOM_CHAM="DEPL",
@@ -527,7 +558,7 @@ TEST_RESU(
         ),
         _F(
             GROUP_NO="GROUP_NO_PO2",
-            NUME_ORDRE=200,
+            NOM_CAS="PART_DDS",
             REFERENCE="ANALYTIQUE",
             RESULTAT=RES_LINE,
             NOM_CHAM="DEPL",
@@ -537,7 +568,7 @@ TEST_RESU(
         ),
         _F(
             GROUP_NO="GROUP_NO_PO3",
-            NUME_ORDRE=200,
+            NOM_CAS="PART_DDS",
             REFERENCE="ANALYTIQUE",
             RESULTAT=RES_LINE,
             NOM_CHAM="DEPL",
@@ -547,7 +578,7 @@ TEST_RESU(
         ),
         _F(
             GROUP_NO="GROUP_NO_PO4",
-            NUME_ORDRE=200,
+            NOM_CAS="PART_DDS",
             REFERENCE="ANALYTIQUE",
             RESULTAT=RES_LINE,
             NOM_CHAM="DEPL",
@@ -557,7 +588,7 @@ TEST_RESU(
         ),
         _F(
             GROUP_NO="GROUP_NO_PO5",
-            NUME_ORDRE=200,
+            NOM_CAS="PART_DDS",
             REFERENCE="ANALYTIQUE",
             RESULTAT=RES_LINE,
             NOM_CHAM="DEPL",
@@ -572,7 +603,7 @@ TEST_RESU(
     RESU=(
         _F(
             GROUP_NO="GROUP_NO_PO1",
-            NUME_ORDRE=200,
+            NOM_CAS="PART_DDS",
             REFERENCE="ANALYTIQUE",
             RESULTAT=RES_LINE,
             NOM_CHAM="REAC_NODA",
@@ -583,7 +614,7 @@ TEST_RESU(
         ),
         _F(
             GROUP_NO="GROUP_NO_PO2",
-            NUME_ORDRE=200,
+            NOM_CAS="PART_DDS",
             REFERENCE="ANALYTIQUE",
             RESULTAT=RES_LINE,
             NOM_CHAM="REAC_NODA",
@@ -594,7 +625,7 @@ TEST_RESU(
         ),
         _F(
             GROUP_NO="GROUP_NO_PO3",
-            NUME_ORDRE=200,
+            NOM_CAS="PART_DDS",
             REFERENCE="ANALYTIQUE",
             RESULTAT=RES_LINE,
             NOM_CHAM="REAC_NODA",
@@ -604,7 +635,7 @@ TEST_RESU(
         ),
         _F(
             GROUP_NO="GROUP_NO_PO4",
-            NUME_ORDRE=200,
+            NOM_CAS="PART_DDS",
             REFERENCE="ANALYTIQUE",
             RESULTAT=RES_LINE,
             NOM_CHAM="REAC_NODA",
@@ -615,7 +646,7 @@ TEST_RESU(
         ),
         _F(
             GROUP_NO="GROUP_NO_PO5",
-            NUME_ORDRE=200,
+            NOM_CAS="PART_DDS",
             REFERENCE="ANALYTIQUE",
             RESULTAT=RES_LINE,
             NOM_CHAM="REAC_NODA",
@@ -629,29 +660,46 @@ TEST_RESU(
 RES_QUAD = COMB_SISM_MODAL(
     MODE_MECA=MODES,
     AMOR_REDUIT=0.0,
-    MASS_INER=MAS,
-    CORR_FREQ="NON",
-    MULTI_APPUI="DECORRELE",
-    EXCIT=(
-        _F(GROUP_NO="GROUP_NO_PO5", AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPEC3, ECHELLE=1.0),
-        _F(GROUP_NO=("GROUP_NO_PO1"), AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPEC1),
-        _F(GROUP_NO=("GROUP_NO_PO3"), AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPEC2),
+    TYPE_ANALYSE="MULT_APPUI",
+    APPUIS=(
+        _F(NOM="APPUI_1", GROUP_NO=("GROUP_NO_PO1",)),
+        _F(NOM="APPUI_2", GROUP_NO=("GROUP_NO_PO3",)),
+        _F(NOM="APPUI_3", GROUP_NO=("GROUP_NO_PO5",)),
+    ),
+    SPECTRE=(
+        _F(
+            LIST_AXE=("X"),
+            SPEC_OSCI=SPEC1,
+            ECHELLE=1.0,
+            CORR_FREQ="NON",
+            NATURE="ACCE",
+            NOM_APPUI="APPUI_1",
+        ),
+        _F(NOM_APPUI="APPUI_2", LIST_AXE=("X"), SPEC_OSCI=SPEC2),
+        _F(NOM_APPUI="APPUI_3", LIST_AXE=("X"), SPEC_OSCI=SPEC3),
     ),
     DEPL_MULT_APPUI=(
-        _F(NOM_CAS=("1",), NUME_CAS=(1,), MODE_STAT=MODE_STA, GROUP_NO=("groupeN1",), DX=-0.04),
-        _F(NOM_CAS=("2",), NUME_CAS=(2,), MODE_STAT=MODE_STA, GROUP_NO=("groupeN2",), DX=0.06),
+        _F(MODE_STAT=MODE_STA, NOM_APPUI="APPUI_1", DX=-0.04),
+        _F(MODE_STAT=MODE_STA, NOM_APPUI="APPUI_2", DX=-0.04),
+        _F(MODE_STAT=MODE_STA, NOM_APPUI="APPUI_3", DX=0.06),
     ),
-    COMB_DEPL_APPUI=_F(LIST_CAS=(1, 2), TYPE_COMBI="QUAD"),
+    GROUP_APPUI_CORRELE=(
+        _F(LIST_APPUI=("APPUI_1",), NOM="GA_N1"),
+        _F(LIST_APPUI=("APPUI_2",), NOM="GA_N2"),
+        _F(LIST_APPUI=("APPUI_3",), NOM="GA_N3"),
+    ),
+    COMB_DDS_CORRELE="LINE",
     COMB_MODE=_F(TYPE="SRSS"),
     OPTION=("DEPL", "REAC_NODA"),
     INFO=2,
+    TYPE_RESU=_F(TYPE="VALE_DDS"),
 )
 # TEST RESU DEPL
 TEST_RESU(
     RESU=(
         _F(
             GROUP_NO="GROUP_NO_PO1",
-            NUME_ORDRE=200,
+            NOM_CAS="PART_DDS",
             REFERENCE="ANALYTIQUE",
             RESULTAT=RES_QUAD,
             NOM_CHAM="DEPL",
@@ -661,7 +709,7 @@ TEST_RESU(
         ),
         _F(
             GROUP_NO="GROUP_NO_PO2",
-            NUME_ORDRE=200,
+            NOM_CAS="PART_DDS",
             REFERENCE="ANALYTIQUE",
             RESULTAT=RES_QUAD,
             NOM_CHAM="DEPL",
@@ -671,7 +719,7 @@ TEST_RESU(
         ),
         _F(
             GROUP_NO="GROUP_NO_PO3",
-            NUME_ORDRE=200,
+            NOM_CAS="PART_DDS",
             REFERENCE="ANALYTIQUE",
             RESULTAT=RES_QUAD,
             NOM_CHAM="DEPL",
@@ -681,7 +729,7 @@ TEST_RESU(
         ),
         _F(
             GROUP_NO="GROUP_NO_PO4",
-            NUME_ORDRE=200,
+            NOM_CAS="PART_DDS",
             REFERENCE="ANALYTIQUE",
             RESULTAT=RES_QUAD,
             NOM_CHAM="DEPL",
@@ -691,7 +739,7 @@ TEST_RESU(
         ),
         _F(
             GROUP_NO="GROUP_NO_PO5",
-            NUME_ORDRE=200,
+            NOM_CAS="PART_DDS",
             REFERENCE="ANALYTIQUE",
             RESULTAT=RES_QUAD,
             NOM_CHAM="DEPL",
@@ -706,7 +754,7 @@ TEST_RESU(
     RESU=(
         _F(
             GROUP_NO="GROUP_NO_PO1",
-            NUME_ORDRE=200,
+            NOM_CAS="PART_DDS",
             REFERENCE="ANALYTIQUE",
             RESULTAT=RES_QUAD,
             NOM_CHAM="REAC_NODA",
@@ -716,7 +764,7 @@ TEST_RESU(
         ),
         _F(
             GROUP_NO="GROUP_NO_PO2",
-            NUME_ORDRE=200,
+            NOM_CAS="PART_DDS",
             REFERENCE="ANALYTIQUE",
             RESULTAT=RES_QUAD,
             NOM_CHAM="REAC_NODA",
@@ -727,7 +775,7 @@ TEST_RESU(
         ),
         _F(
             GROUP_NO="GROUP_NO_PO3",
-            NUME_ORDRE=200,
+            NOM_CAS="PART_DDS",
             REFERENCE="ANALYTIQUE",
             RESULTAT=RES_QUAD,
             NOM_CHAM="REAC_NODA",
@@ -737,7 +785,7 @@ TEST_RESU(
         ),
         _F(
             GROUP_NO="GROUP_NO_PO4",
-            NUME_ORDRE=200,
+            NOM_CAS="PART_DDS",
             REFERENCE="ANALYTIQUE",
             RESULTAT=RES_QUAD,
             NOM_CHAM="REAC_NODA",
@@ -748,7 +796,7 @@ TEST_RESU(
         ),
         _F(
             GROUP_NO="GROUP_NO_PO5",
-            NUME_ORDRE=200,
+            NOM_CAS="PART_DDS",
             REFERENCE="ANALYTIQUE",
             RESULTAT=RES_QUAD,
             NOM_CHAM="REAC_NODA",

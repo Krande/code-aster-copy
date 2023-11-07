@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -318,14 +318,12 @@ VERTIC = DEFI_NAPPE(
 SEISME = COMB_SISM_MODAL(
     MODE_MECA=modes,
     AMOR_REDUIT=0.04,
-    MASS_INER=MASSINER,
-    CORR_FREQ="NON",
-    EXCIT=_F(TRI_SPEC="OUI", SPEC_OSCI=(HORIZ, HORIZ, VERTIC), ECHELLE=(1.0, 1.0, 1.0)),
-    MONO_APPUI="OUI",
+    SPECTRE=(_F(LIST_AXE=("X", "Y"), SPEC_OSCI=HORIZ), _F(LIST_AXE=("Z"), SPEC_OSCI=VERTIC)),
+    TYPE_ANALYSE="MONO_APPUI",
     COMB_MODE=_F(TYPE="CQC"),
-    COMB_DIRECTION=_F(TYPE="QUAD"),
+    COMB_DIRECTION="QUAD",
     OPTION=("DEPL", "ACCE_ABSOLU"),
-    IMPRESSION=_F(NIVEAU="MASS_EFFE"),
+    TYPE_RESU=_F(TYPE="VALE_TOTA"),
 )
 
 # CALCUL SISMIQUE EN EAU
@@ -333,21 +331,20 @@ SEISME = COMB_SISM_MODAL(
 SEISMOU = COMB_SISM_MODAL(
     MODE_MECA=mode_mou,
     AMOR_REDUIT=0.04,
-    MASS_INER=MASSINER,
-    CORR_FREQ="NON",
-    EXCIT=_F(TRI_SPEC="OUI", SPEC_OSCI=(HORIZ, HORIZ, VERTIC), ECHELLE=(1.0, 1.0, 1.0)),
-    MONO_APPUI="OUI",
+    SPECTRE=(_F(LIST_AXE=("X", "Y"), SPEC_OSCI=HORIZ), _F(LIST_AXE=("Z"), SPEC_OSCI=VERTIC)),
+    TYPE_ANALYSE="MONO_APPUI",
     COMB_MODE=_F(TYPE="CQC"),
-    COMB_DIRECTION=_F(TYPE="QUAD"),
+    COMB_DIRECTION="QUAD",
     OPTION=("DEPL", "ACCE_ABSOLU"),
-    IMPRESSION=_F(NIVEAU="MASS_EFFE"),
+    TYPE_RESU=_F(TYPE="VALE_TOTA"),
 )
+
 
 TEST_RESU(
     RESU=_F(
         RESULTAT=SEISMOU,
         GROUP_NO="POINT",
-        NUME_ORDRE=1,
+        NOM_CAS="TOTA",
         NOM_CHAM="DEPL",
         NOM_CMP="DX",
         VALE_CALC=0.002135969,

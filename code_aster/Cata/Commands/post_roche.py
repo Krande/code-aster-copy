@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -72,7 +72,8 @@ POST_ROCHE = MACRO(
         ),
         b_sism_iner_spec=BLOC(
             condition="""equal_to("TYPE_CHAR", 'SISM_INER_SPEC') """,
-            RESULTAT=SIMP(statut="o", typ=(mode_meca,)),
+            # RESULTAT=SIMP(statut="o", typ=(mode_meca,)),
+            RESULTAT=SIMP(statut="o", typ=(mult_elas, mode_meca)),
             DIRECTION=SIMP(statut="f", typ="TXM", into=("COMBI", "X", "Y", "Z"), defaut="COMBI"),
             TYPE_RESU=SIMP(statut="f", typ="TXM", into=("DYN_QS", "DYN", "QS"), defaut="DYN_QS"),
         ),

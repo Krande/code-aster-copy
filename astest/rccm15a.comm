@@ -1082,19 +1082,31 @@ CREA_RESU(
 
 SISM_SPE = COMB_SISM_MODAL(
     MODE_MECA=MODE_MEC,
-    MODE_CORR=MODE_STA,
+    MODE_CORR="OUI",
+    PSEUDO_MODE=MODE_STA,
+    FREQ_COUP=20.0,  # dernière frequence = 20.26hz
     AMOR_REDUIT=0.02,
-    # MASS_INER=TABL_MAS,
-    CORR_FREQ="NON",
-    MONO_APPUI="OUI",
-    EXCIT=_F(
-        TRI_SPEC="OUI",
-        SPEC_OSCI=(SPECT_XY, SPECT_XY, SPECT_Z),
-        ECHELLE=(9.8100000000000005, 9.8100000000000005, 9.8100000000000005),
+    TYPE_ANALYSE="MONO_APPUI",
+    SPECTRE=(
+        _F(
+            NATURE="ACCE",
+            LIST_AXE=("X", "Y"),
+            SPEC_OSCI=SPECT_XY,
+            ECHELLE=9.8100000000000005,
+            CORR_FREQ="NON",
+        ),
+        _F(
+            NATURE="ACCE",
+            LIST_AXE=("Z"),
+            SPEC_OSCI=SPECT_Z,
+            ECHELLE=9.8100000000000005,
+            CORR_FREQ="NON",
+        ),
     ),
     COMB_MODE=_F(TYPE="SRSS"),
-    COMB_DIRECTION=_F(TYPE="QUAD"),
+    COMB_DIRECTION="QUAD",
     OPTION=("DEPL", "EFGE_ELNO"),
+    TYPE_RESU=_F(TYPE="VALE_TOTA"),
 )
 
 FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -869,17 +869,15 @@ SPECT_1 = DEFI_NAPPE(
 SISM_SPE = COMB_SISM_MODAL(
     MODE_MECA=MODES,
     AMOR_REDUIT=0.05,
-    MONO_APPUI="OUI",
-    # CORR_FREQ  ='OUI', # NTA: augement mais peu depl
-    EXCIT=_F(
-        TRI_SPEC="OUI",
-        SPEC_OSCI=(SPECT_0, SPECT_1, SPECT_0),
-        # ECHELLE = ( 1., 0.6667, 1., ),
-        ECHELLE=(1.0, 1.0, 1.0),
+    TYPE_ANALYSE="MONO_APPUI",
+    SPECTRE=(
+        _F(NATURE="ACCE", LIST_AXE=("X", "Z"), SPEC_OSCI=SPECT_0, ECHELLE=1.0, CORR_FREQ="NON"),
+        _F(NATURE="ACCE", LIST_AXE=("Y",), SPEC_OSCI=SPECT_1, ECHELLE=1.0, CORR_FREQ="NON"),
     ),
     COMB_MODE=_F(TYPE="DPC"),  # Methode NUREG (10% Clustering)
-    COMB_DIRECTION=_F(TYPE="QUAD"),
+    COMB_DIRECTION="QUAD",
     OPTION=("DEPL", "REAC_NODA", "EFGE_ELNO"),
+    TYPE_RESU=_F(TYPE="VALE_TOTA"),
 )
 
 
@@ -904,7 +902,7 @@ TEST_RESU(
     RESU=(
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DX",
             GROUP_NO=("PT_3",),
@@ -916,7 +914,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DY",
             GROUP_NO=("PT_3",),
@@ -928,7 +926,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DZ",
             GROUP_NO=("PT_3",),
@@ -940,7 +938,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DRX",
             GROUP_NO=("PT_3",),
@@ -952,7 +950,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DRY",
             GROUP_NO=("PT_3",),
@@ -964,7 +962,8 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            # NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DRZ",
             GROUP_NO=("PT_3",),
@@ -983,7 +982,8 @@ TEST_RESU(
     RESU=(
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            # NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DX",
             GROUP_NO=("PT_6",),
@@ -995,7 +995,8 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            # NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DY",
             GROUP_NO=("PT_6",),
@@ -1007,7 +1008,8 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            # NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DZ",
             GROUP_NO=("PT_6",),
@@ -1019,7 +1021,8 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            # NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DRX",
             GROUP_NO=("PT_6",),
@@ -1031,7 +1034,8 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            # NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DRY",
             GROUP_NO=("PT_6",),
@@ -1043,7 +1047,8 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            # NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DRZ",
             GROUP_NO=("PT_6",),
@@ -1062,7 +1067,8 @@ TEST_RESU(
     RESU=(
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            # NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DX",
             GROUP_NO=("PT_9",),
@@ -1074,7 +1080,8 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            # NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DY",
             GROUP_NO=("PT_9",),
@@ -1086,7 +1093,8 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            # NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DZ",
             GROUP_NO=("PT_9",),
@@ -1098,7 +1106,8 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            # NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DRX",
             GROUP_NO=("PT_9",),
@@ -1110,7 +1119,8 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            # NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DRY",
             GROUP_NO=("PT_9",),
@@ -1122,7 +1132,8 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            # NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DRZ",
             GROUP_NO=("PT_9",),
@@ -1141,7 +1152,7 @@ TEST_RESU(
     RESU=(
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DX",
             GROUP_NO=("PT_12",),
@@ -1153,7 +1164,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DY",
             GROUP_NO=("PT_12",),
@@ -1165,7 +1176,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DZ",
             GROUP_NO=("PT_12",),
@@ -1177,7 +1188,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DRX",
             GROUP_NO=("PT_12",),
@@ -1189,7 +1200,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DRY",
             GROUP_NO=("PT_12",),
@@ -1201,7 +1212,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DRZ",
             GROUP_NO=("PT_12",),
@@ -1220,7 +1231,7 @@ TEST_RESU(
     RESU=(
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DX",
             GROUP_NO=("PT_18",),
@@ -1232,7 +1243,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DY",
             GROUP_NO=("PT_18",),
@@ -1244,7 +1255,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DZ",
             GROUP_NO=("PT_18",),
@@ -1256,7 +1267,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DRX",
             GROUP_NO=("PT_18",),
@@ -1268,7 +1279,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DRY",
             GROUP_NO=("PT_18",),
@@ -1280,7 +1291,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DRZ",
             GROUP_NO=("PT_18",),
@@ -1299,7 +1310,7 @@ TEST_RESU(
     RESU=(
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DX",
             GROUP_NO=("PT_24",),
@@ -1311,7 +1322,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DY",
             GROUP_NO=("PT_24",),
@@ -1323,7 +1334,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DZ",
             GROUP_NO=("PT_24",),
@@ -1335,7 +1346,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DRX",
             GROUP_NO=("PT_24",),
@@ -1347,7 +1358,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DRY",
             GROUP_NO=("PT_24",),
@@ -1359,7 +1370,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DRZ",
             GROUP_NO=("PT_24",),
@@ -1378,7 +1389,7 @@ TEST_RESU(
     RESU=(
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DX",
             GROUP_NO=("PT_30",),
@@ -1390,7 +1401,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DY",
             GROUP_NO=("PT_30",),
@@ -1402,7 +1413,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DZ",
             GROUP_NO=("PT_30",),
@@ -1414,7 +1425,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DRX",
             GROUP_NO=("PT_30",),
@@ -1426,7 +1437,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DRY",
             GROUP_NO=("PT_30",),
@@ -1438,7 +1449,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DRZ",
             GROUP_NO=("PT_30",),
@@ -1457,7 +1468,7 @@ TEST_RESU(
     RESU=(
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DX",
             GROUP_NO=("PT_36",),
@@ -1469,7 +1480,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DY",
             GROUP_NO=("PT_36",),
@@ -1481,7 +1492,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DZ",
             GROUP_NO=("PT_36",),
@@ -1493,7 +1504,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DRX",
             GROUP_NO=("PT_36",),
@@ -1505,7 +1516,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DRY",
             GROUP_NO=("PT_36",),
@@ -1517,7 +1528,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DRZ",
             GROUP_NO=("PT_36",),
@@ -1536,7 +1547,7 @@ TEST_RESU(
     RESU=(
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DX",
             GROUP_NO=("PT_39",),
@@ -1548,7 +1559,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DY",
             GROUP_NO=("PT_39",),
@@ -1560,7 +1571,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DZ",
             GROUP_NO=("PT_39",),
@@ -1572,7 +1583,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DRX",
             GROUP_NO=("PT_39",),
@@ -1584,7 +1595,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DRY",
             GROUP_NO=("PT_39",),
@@ -1596,7 +1607,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="DEPL",
             NOM_CMP="DRZ",
             GROUP_NO=("PT_39",),
@@ -1615,7 +1626,7 @@ TEST_RESU(
     RESU=(
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="EFGE_ELNO",
             NOM_CMP="N",
             GROUP_NO=("PT_6",),
@@ -1628,7 +1639,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="EFGE_ELNO",
             NOM_CMP="VY",
             GROUP_NO=("PT_6",),
@@ -1641,7 +1652,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="EFGE_ELNO",
             NOM_CMP="VZ",
             GROUP_NO=("PT_6",),
@@ -1655,7 +1666,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="EFGE_ELNO",
             NOM_CMP="MT",
             GROUP_NO=("PT_6",),
@@ -1668,7 +1679,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="EFGE_ELNO",
             NOM_CMP="MFY",  # inversion MFZ Benchmark
             GROUP_NO=("PT_6",),
@@ -1681,7 +1692,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="EFGE_ELNO",
             NOM_CMP="MFZ",  # inversion MFY Benchmark
             GROUP_NO=("PT_6",),
@@ -1701,7 +1712,7 @@ TEST_RESU(
     RESU=(
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="EFGE_ELNO",
             NOM_CMP="N",
             GROUP_NO=("PT_17",),
@@ -1714,7 +1725,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="EFGE_ELNO",
             NOM_CMP="VZ",  # inversion VY Benchmark
             GROUP_NO=("PT_17",),
@@ -1727,7 +1738,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="EFGE_ELNO",
             NOM_CMP="VY",  # inversion VZ Benchmark
             GROUP_NO=("PT_17",),
@@ -1740,7 +1751,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="EFGE_ELNO",
             NOM_CMP="MT",
             GROUP_NO=("PT_17",),
@@ -1753,7 +1764,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="EFGE_ELNO",
             NOM_CMP="MFY",
             GROUP_NO=("PT_17",),
@@ -1766,7 +1777,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="EFGE_ELNO",
             NOM_CMP="MFZ",
             GROUP_NO=("PT_17",),
@@ -1785,7 +1796,7 @@ TEST_RESU(
     RESU=(
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="EFGE_ELNO",
             NOM_CMP="N",
             GROUP_NO=("PT_28",),
@@ -1798,7 +1809,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="EFGE_ELNO",
             NOM_CMP="VY",
             GROUP_NO=("PT_28",),
@@ -1811,7 +1822,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="EFGE_ELNO",
             NOM_CMP="VZ",
             GROUP_NO=("PT_28",),
@@ -1824,7 +1835,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="EFGE_ELNO",
             NOM_CMP="MT",
             GROUP_NO=("PT_28",),
@@ -1837,7 +1848,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="EFGE_ELNO",
             NOM_CMP="MFY",
             GROUP_NO=("PT_28",),
@@ -1850,7 +1861,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="EFGE_ELNO",
             NOM_CMP="MFZ",
             GROUP_NO=("PT_28",),
@@ -1870,7 +1881,7 @@ TEST_RESU(
     RESU=(
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="EFGE_ELNO",
             NOM_CMP="N",
             GROUP_NO=("PT_36",),
@@ -1883,7 +1894,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="EFGE_ELNO",
             NOM_CMP="VY",
             GROUP_NO=("PT_36",),
@@ -1896,7 +1907,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="EFGE_ELNO",
             NOM_CMP="VZ",
             GROUP_NO=("PT_36",),
@@ -1909,7 +1920,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="EFGE_ELNO",
             NOM_CMP="MT",
             GROUP_NO=("PT_36",),
@@ -1922,7 +1933,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="EFGE_ELNO",
             NOM_CMP="MFY",
             GROUP_NO=("PT_36",),
@@ -1935,7 +1946,7 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=SISM_SPE,
-            NUME_ORDRE=4,
+            NOM_CAS="TOTA",
             NOM_CHAM="EFGE_ELNO",
             NOM_CMP="MFZ",
             GROUP_NO=("PT_36",),

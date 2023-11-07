@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -311,26 +311,24 @@ SISM_SP3 = COMB_SISM_MODAL(
     MODE_MECA=MODE_MEC,
     NUME_MODE=(1, 2, 3),
     AMOR_REDUIT=0.01,
-    MASS_INER=TABL_MAS,
-    CORR_FREQ="NON",
-    MONO_APPUI="OUI",
-    EXCIT=_F(TRI_AXE=(1.0, 1.0, 1.0), SPEC_OSCI=SPECT),
+    TYPE_ANALYSE="MONO_APPUI",
+    SPECTRE=_F(LIST_AXE=("X", "Z", "Y"), SPEC_OSCI=SPECT, NATURE="ACCE", CORR_FREQ="NON"),
     COMB_MODE=_F(TYPE="DPC"),
-    COMB_DIRECTION=_F(TYPE="QUAD"),
+    COMB_DIRECTION="QUAD",
     OPTION=("DEPL", "REAC_NODA", "EFGE_ELNO", "SIPO_ELNO"),
+    TYPE_RESU=_F(TYPE="VALE_TOTA"),
 )
 
 SISMSP32 = COMB_SISM_MODAL(
     MODE_MECA=MODEMEC2,
     NUME_MODE=(1, 2, 3),
     AMOR_REDUIT=0.01,
-    CORR_FREQ="NON",
-    MASS_INER=TABL_MAS,
-    MONO_APPUI="OUI",
-    EXCIT=_F(TRI_AXE=(1.0, 1.0, 1.0), SPEC_OSCI=SPECT),
+    TYPE_ANALYSE="MONO_APPUI",
+    SPECTRE=_F(LIST_AXE=("X", "Y", "Z"), SPEC_OSCI=SPECT, NATURE="ACCE", CORR_FREQ="NON"),
     COMB_MODE=_F(TYPE="DPC"),
-    COMB_DIRECTION=_F(TYPE="QUAD"),
+    COMB_DIRECTION="QUAD",
     OPTION=("DEPL", "REAC_NODA"),
+    TYPE_RESU=_F(TYPE="VALE_TOTA"),
 )
 
 TEST_RESU(
@@ -344,7 +342,7 @@ TEST_RESU(
             VALE_REFE=0.012540000000000001,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
         _F(
@@ -356,7 +354,7 @@ TEST_RESU(
             VALE_REFE=1.2689999999999999,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
         _F(
@@ -368,7 +366,7 @@ TEST_RESU(
             VALE_REFE=2.8e-3,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
         _F(
@@ -380,7 +378,7 @@ TEST_RESU(
             VALE_REFE=0.75749999999999995,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
     )
@@ -397,7 +395,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=0.0,
             CRITERE="ABSOLU",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
         ),
         _F(
             RESULTAT=SISM_SP3,
@@ -408,7 +406,7 @@ TEST_RESU(
             VALE_REFE=1.231000e6,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
         _F(
@@ -420,7 +418,7 @@ TEST_RESU(
             VALE_REFE=2.7000e4,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
         _F(
@@ -432,7 +430,7 @@ TEST_RESU(
             VALE_REFE=2.56000e5,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.029999999999999999,
         ),
         _F(
@@ -444,7 +442,7 @@ TEST_RESU(
             VALE_REFE=5.91000e5,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
     )
@@ -462,7 +460,7 @@ TEST_RESU(
             VALE_REFE=4.611000000e9,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
             GROUP_MA="E01",
         ),
@@ -475,7 +473,7 @@ TEST_RESU(
             VALE_REFE=2.9800000000e10,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
             GROUP_MA="E01",
         ),
@@ -488,7 +486,7 @@ TEST_RESU(
             VALE_REFE=1.58800000e8,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
             GROUP_MA="E01",
         ),
@@ -501,7 +499,7 @@ TEST_RESU(
             VALE_REFE=3.481000e6,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.029999999999999999,
             GROUP_MA="E01",
         ),
@@ -518,7 +516,7 @@ TEST_RESU(
             NOM_CMP="DX",
             VALE_CALC=0.0,
             CRITERE="ABSOLU",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
         ),
         _F(
             RESULTAT=SISMSP32,
@@ -529,7 +527,7 @@ TEST_RESU(
             VALE_REFE=1.231000e6,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
         _F(
@@ -541,7 +539,7 @@ TEST_RESU(
             VALE_REFE=2.7000e4,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
         _F(
@@ -553,7 +551,7 @@ TEST_RESU(
             VALE_REFE=2.56000e5,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.029999999999999999,
         ),
         _F(
@@ -565,7 +563,7 @@ TEST_RESU(
             VALE_REFE=5.91000e5,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
     )
@@ -576,13 +574,13 @@ TEST_RESU(
 SISM_SP6 = COMB_SISM_MODAL(
     MODE_MECA=MODE_MEC,
     AMOR_REDUIT=0.01,
-    MASS_INER=TABL_MAS,
-    CORR_FREQ="NON",
-    MONO_APPUI="OUI",
-    EXCIT=_F(TRI_AXE=(1.0, 1.0, 1.0), SPEC_OSCI=SPECT),
+    TYPE_ANALYSE="MONO_APPUI",
+    SPECTRE=_F(LIST_AXE=("X", "Y", "Z"), SPEC_OSCI=SPECT, NATURE="ACCE", CORR_FREQ="NON"),
     COMB_MODE=_F(TYPE="DPC"),
-    COMB_DIRECTION=_F(TYPE="QUAD"),
+    COMB_DIRECTION="QUAD",
     OPTION=("DEPL", "REAC_NODA", "VITE", "ACCE_ABSOLU"),
+    TYPE_RESU=_F(TYPE="VALE_TOTA"),
+    INFO=2,
 )
 
 TEST_RESU(
@@ -596,7 +594,7 @@ TEST_RESU(
             VALE_REFE=1.3200000000000001e-4,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
         _F(
@@ -608,7 +606,7 @@ TEST_RESU(
             VALE_REFE=5.9999999999999995e-4,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
         _F(
@@ -620,7 +618,7 @@ TEST_RESU(
             VALE_REFE=0.01255,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
         _F(
@@ -632,7 +630,7 @@ TEST_RESU(
             VALE_REFE=1.2689999999999999,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
         _F(
@@ -644,7 +642,7 @@ TEST_RESU(
             VALE_REFE=3.8300000000000001e-3,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
         _F(
@@ -656,7 +654,7 @@ TEST_RESU(
             VALE_REFE=0.75800000000000001,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
     )
@@ -675,7 +673,7 @@ TEST_RESU(
             VALE_REFE=4.12000e5,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
         _F(
@@ -687,7 +685,7 @@ TEST_RESU(
             VALE_REFE=1.227000e6,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
         _F(
@@ -699,7 +697,7 @@ TEST_RESU(
             VALE_REFE=7.96000e5,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
         _F(
@@ -711,7 +709,7 @@ TEST_RESU(
             VALE_REFE=4.49000e5,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
         _F(
@@ -723,7 +721,7 @@ TEST_RESU(
             VALE_REFE=5.90000e5,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
     )
@@ -732,15 +730,15 @@ TEST_RESU(
 SISM_3ST = COMB_SISM_MODAL(
     MODE_MECA=MODE_MEC,
     NUME_MODE=(1, 2, 3),
-    MODE_CORR=MODE_STA,
+    PSEUDO_MODE=MODE_STA,
+    MODE_CORR="OUI",
     AMOR_REDUIT=0.01,
-    MASS_INER=TABL_MAS,
-    CORR_FREQ="NON",
-    MONO_APPUI="OUI",
-    EXCIT=_F(TRI_AXE=(1.0, 1.0, 1.0), SPEC_OSCI=SPECT),
+    TYPE_ANALYSE="MONO_APPUI",
+    SPECTRE=_F(LIST_AXE=("X", "Y", "Z"), SPEC_OSCI=SPECT, CORR_FREQ="NON"),
     COMB_MODE=_F(TYPE="SRSS"),
-    COMB_DIRECTION=_F(TYPE="QUAD"),
+    COMB_DIRECTION="QUAD",
     OPTION=("DEPL", "REAC_NODA"),
+    TYPE_RESU=_F(TYPE="VALE_TOTA"),
 )
 
 TEST_RESU(
@@ -754,7 +752,7 @@ TEST_RESU(
             VALE_CALC=4.40140845e-04,
             VALE_REFE=1.76e-4,
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=1.6000000000000001,
         ),
         _F(
@@ -766,7 +764,7 @@ TEST_RESU(
             VALE_CALC=1.20038412e-03,
             VALE_REFE=4.8000000000000001e-4,
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=1.6000000000000001,
         ),
         _F(
@@ -778,7 +776,7 @@ TEST_RESU(
             VALE_CALC=0.012473834,
             VALE_REFE=0.012670000000000001,
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
         _F(
@@ -790,7 +788,7 @@ TEST_RESU(
             VALE_CALC=1.282038367,
             VALE_REFE=1.2769999999999999,
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
         _F(
@@ -802,7 +800,7 @@ TEST_RESU(
             VALE_CALC=4.94923368e-03,
             VALE_REFE=3.3e-3,
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.5,
         ),
         _F(
@@ -814,7 +812,7 @@ TEST_RESU(
             VALE_CALC=0.767326041,
             VALE_REFE=0.76200000000000001,
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
     )
@@ -829,7 +827,7 @@ TEST_RESU(
             GROUP_NO="B",
             NOM_CMP="DX",
             VALE_CALC=4.4014084507042e-4,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
         ),
         _F(
             RESULTAT=SISM_3ST,
@@ -837,7 +835,7 @@ TEST_RESU(
             GROUP_NO="C",
             NOM_CMP="DX",
             VALE_CALC=1.2003841229193e-3,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
         ),
         _F(
             RESULTAT=SISM_3ST,
@@ -845,7 +843,7 @@ TEST_RESU(
             GROUP_NO="B",
             NOM_CMP="DY",
             VALE_CALC=0.012473833912904001,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
         ),
         _F(
             RESULTAT=SISM_3ST,
@@ -853,7 +851,7 @@ TEST_RESU(
             GROUP_NO="C",
             NOM_CMP="DY",
             VALE_CALC=1.2820383667859001,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
         ),
         _F(
             RESULTAT=SISM_3ST,
@@ -861,7 +859,7 @@ TEST_RESU(
             GROUP_NO="B",
             NOM_CMP="DZ",
             VALE_CALC=4.9492336845147001e-3,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
         ),
         _F(
             RESULTAT=SISM_3ST,
@@ -869,7 +867,7 @@ TEST_RESU(
             GROUP_NO="C",
             NOM_CMP="DZ",
             VALE_CALC=0.76732604110226998,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
         ),
     )
 )
@@ -887,7 +885,7 @@ TEST_RESU(
             VALE_CALC=1.37500000e06,
             VALE_REFE=5.46000e5,
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=1.6000000000000001,
         ),
         _F(
@@ -899,7 +897,7 @@ TEST_RESU(
             VALE_CALC=1.24072177e06,
             VALE_REFE=1.230000e6,
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
         _F(
@@ -911,7 +909,7 @@ TEST_RESU(
             VALE_CALC=1.24091682e06,
             VALE_REFE=4.90000e5,
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=1.6000000000000001,
         ),
         _F(
@@ -923,7 +921,7 @@ TEST_RESU(
             VALE_CALC=6.33655104e05,
             VALE_REFE=3.43000e5,
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.84999999999999998,
         ),
         _F(
@@ -935,7 +933,7 @@ TEST_RESU(
             VALE_CALC=5.96936678e05,
             VALE_REFE=5.91000e5,
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
     )
@@ -950,7 +948,7 @@ TEST_RESU(
             GROUP_NO="A",
             NOM_CMP="DX",
             VALE_CALC=1.375000e6,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
         ),
         _F(
             RESULTAT=SISM_3ST,
@@ -958,7 +956,7 @@ TEST_RESU(
             GROUP_NO="A",
             NOM_CMP="DY",
             VALE_CALC=1.2407217704157999e6,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
         ),
         _F(
             RESULTAT=SISM_3ST,
@@ -966,7 +964,7 @@ TEST_RESU(
             GROUP_NO="A",
             NOM_CMP="DZ",
             VALE_CALC=1.2409168199940999e6,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
         ),
         _F(
             RESULTAT=SISM_3ST,
@@ -974,7 +972,7 @@ TEST_RESU(
             GROUP_NO="A",
             NOM_CMP="DRY",
             VALE_CALC=6.3365510433958995e5,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
         ),
         _F(
             RESULTAT=SISM_3ST,
@@ -982,7 +980,7 @@ TEST_RESU(
             GROUP_NO="A",
             NOM_CMP="DRZ",
             VALE_CALC=5.9693667838728998e5,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
         ),
     )
 )
@@ -994,13 +992,12 @@ TEST_RESU(
 SISM_CQC = COMB_SISM_MODAL(
     MODE_MECA=MODE_MEC,
     AMOR_REDUIT=0.01,
-    MASS_INER=TABL_MAS,
-    CORR_FREQ="NON",
-    MONO_APPUI="OUI",
-    EXCIT=_F(TRI_AXE=(1.0, 1.0, 1.0), SPEC_OSCI=SPECT),
+    TYPE_ANALYSE="MONO_APPUI",
+    SPECTRE=_F(LIST_AXE=("X", "Y", "Z"), SPEC_OSCI=SPECT, NATURE="ACCE", CORR_FREQ="NON"),
     COMB_MODE=_F(TYPE="CQC"),
-    COMB_DIRECTION=_F(TYPE="QUAD"),
+    COMB_DIRECTION="QUAD",
     OPTION=("DEPL", "REAC_NODA"),
+    TYPE_RESU=_F(TYPE="VALE_TOTA"),
 )
 
 TEST_RESU(
@@ -1014,7 +1011,7 @@ TEST_RESU(
             VALE_REFE=1.3379599999999999e-4,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
         _F(
@@ -1026,7 +1023,7 @@ TEST_RESU(
             VALE_REFE=6.01243e-4,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
         _F(
@@ -1038,7 +1035,7 @@ TEST_RESU(
             VALE_REFE=0.0124739,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
         _F(
@@ -1050,7 +1047,7 @@ TEST_RESU(
             VALE_REFE=1.2820400000000001,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
         _F(
@@ -1062,7 +1059,7 @@ TEST_RESU(
             VALE_REFE=3.8149899999999999e-3,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
         _F(
@@ -1074,7 +1071,7 @@ TEST_RESU(
             VALE_REFE=0.76732599999999995,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
     )
@@ -1093,7 +1090,7 @@ TEST_RESU(
             VALE_REFE=4.17978e5,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
         _F(
@@ -1105,7 +1102,7 @@ TEST_RESU(
             VALE_REFE=1.240720e6,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
         _F(
@@ -1117,7 +1114,7 @@ TEST_RESU(
             VALE_REFE=7.81618e5,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
         _F(
@@ -1129,7 +1126,7 @@ TEST_RESU(
             VALE_REFE=4.48145e5,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
         _F(
@@ -1141,7 +1138,7 @@ TEST_RESU(
             VALE_REFE=5.96940e5,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
     )
@@ -1154,13 +1151,12 @@ TEST_RESU(
 SISM_DPC = COMB_SISM_MODAL(
     MODE_MECA=MODE_MEC,
     AMOR_REDUIT=0.01,
-    MASS_INER=TABL_MAS,
-    CORR_FREQ="NON",
-    MONO_APPUI="OUI",
-    EXCIT=_F(TRI_AXE=(1.0, 1.0, 1.0), SPEC_OSCI=SPECT),
+    TYPE_ANALYSE="MONO_APPUI",
+    SPECTRE=_F(LIST_AXE=("X", "Y", "Z"), SPEC_OSCI=SPECT),
     COMB_MODE=_F(TYPE="DSC", DUREE=5.0),
-    COMB_DIRECTION=_F(TYPE="QUAD"),
+    COMB_DIRECTION="QUAD",
     OPTION=("DEPL", "REAC_NODA"),
+    TYPE_RESU=_F(TYPE="VALE_TOTA"),
 )
 
 TEST_RESU(
@@ -1174,7 +1170,7 @@ TEST_RESU(
             VALE_REFE=1.3391299999999999e-4,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
         _F(
@@ -1186,7 +1182,7 @@ TEST_RESU(
             VALE_REFE=6.0098200000000001e-4,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
         _F(
@@ -1198,7 +1194,7 @@ TEST_RESU(
             VALE_REFE=0.0124805,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
         _F(
@@ -1210,7 +1206,7 @@ TEST_RESU(
             VALE_REFE=1.2820400000000001,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
         _F(
@@ -1222,7 +1218,7 @@ TEST_RESU(
             VALE_REFE=3.8168899999999999e-3,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
         _F(
@@ -1234,7 +1230,7 @@ TEST_RESU(
             VALE_REFE=0.76732599999999995,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
     )
@@ -1253,7 +1249,7 @@ TEST_RESU(
             VALE_REFE=4.18344e5,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
         _F(
@@ -1265,7 +1261,7 @@ TEST_RESU(
             VALE_REFE=1.240750e6,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
         _F(
@@ -1277,7 +1273,7 @@ TEST_RESU(
             VALE_REFE=7.81645e5,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
         _F(
@@ -1289,7 +1285,7 @@ TEST_RESU(
             VALE_REFE=4.48357e5,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
         _F(
@@ -1301,7 +1297,7 @@ TEST_RESU(
             VALE_REFE=5.97165e5,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             PRECISION=0.02,
         ),
     )

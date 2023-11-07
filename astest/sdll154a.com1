@@ -46,11 +46,17 @@ table = CREA_TABLE(
     )
 )
 dilatation_thermique_values = table.EXTR_TABLE().values()
-
+# recherche NUME_ORDRE correspondant a NOM_CAS: attention que nume_ordre commence par 1
+nume_ordre_vale_tota = [list(sismique.getAccessParameters()["NOM_CAS"]).index("TOTA") + 1]
+print("nume_ordre_vale_tota:", nume_ordre_vale_tota)
+nume_ordre_part_dyna = [list(sismique.getAccessParameters()["NOM_CAS"]).index("PART_DYNA") + 1]
+print("nume_ordre_part_dyna:", nume_ordre_part_dyna)
+nume_ordre_part_qs = [list(sismique.getAccessParameters()["NOM_CAS"]).index("PART_QS") + 1]
+print("nume_ordre_part_qs:", nume_ordre_part_qs)
 table = CREA_TABLE(
     RESU=_F(
         RESULTAT=sismique,
-        NUME_ORDRE=4,
+        NUME_ORDRE=nume_ordre_vale_tota,
         NOM_CHAM="EFGE_ELNO",
         TOUT="OUI",
         NOM_CMP=("MT", "MFY", "MFZ"),
@@ -63,7 +69,8 @@ mfz_sismique = np.array(sismique_values["MFZ"])
 table = CREA_TABLE(
     RESU=_F(
         RESULTAT=sismique,
-        NUME_ORDRE=14,
+        NUME_ORDRE=nume_ordre_part_dyna,
+        # NOM_CAS = "PART_DYNA",
         NOM_CHAM="EFGE_ELNO",
         TOUT="OUI",
         NOM_CMP=("MT", "MFY", "MFZ"),
@@ -76,7 +83,8 @@ mfz_sismique_dyn = np.array(sismique_dyn_values["MFZ"])
 table = CREA_TABLE(
     RESU=_F(
         RESULTAT=sismique,
-        NUME_ORDRE=24,
+        NUME_ORDRE=nume_ordre_part_qs,
+        # NOM_CAS = "PART_QS",
         NOM_CHAM="EFGE_ELNO",
         TOUT="OUI",
         NOM_CMP=("MT", "MFY", "MFZ"),

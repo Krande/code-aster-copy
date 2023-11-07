@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -119,7 +119,8 @@ TBRCCM1 = POST_RCCM(
             NUME_CHAR=1000,
             NOM_CHAR="SNA",
             RESULTAT=SISM_SPE,
-            NOEUD_CMP=("COMBI", "QUAD"),
+            # NOEUD_CMP=("COMBI", "QUAD"),
+            NOM_CAS="TOTA",
             NOM_CHAM="EFGE_ELNO",
         ),
         _F(

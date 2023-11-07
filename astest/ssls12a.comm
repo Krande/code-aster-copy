@@ -164,13 +164,17 @@ spectre = DEFI_NAPPE(
 )
 
 csism = COMB_SISM_MODAL(
-    COMB_DIRECTION=_F(TYPE="QUAD"),
+    COMB_DIRECTION="QUAD",
     COMB_MODE=_F(TYPE="CQC"),
-    EXCIT=_F(AXE=(0.8, 0.8, 0.5), SPEC_OSCI=spectre),
+    SPECTRE=(
+        _F(LIST_AXE=("X", "Y"), SPEC_OSCI=spectre, ECHELLE=0.8),
+        _F(LIST_AXE=("Z"), SPEC_OSCI=spectre, ECHELLE=0.5),
+    ),
     LIST_AMOR=amor,
     MODE_MECA=modes,
-    MONO_APPUI="OUI",
+    TYPE_ANALYSE="MONO_APPUI",
     OPTION=("DEPL", "EFGE_ELNO", "SIEF_ELGA"),
+    TYPE_RESU=(_F(TYPE="VALE_TOTA"),),
 )
 
 # ====================================================== #

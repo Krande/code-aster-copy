@@ -940,43 +940,40 @@ MODE_STA = CALC_CHAMP(reuse=MODE_STA, RESULTAT=MODE_STA, FORCE="REAC_NODA")
 
 SISMC = COMB_SISM_MODAL(
     MODE_MECA=MODE1,
-    MODE_CORR=MODE_STA,
+    MODE_CORR="OUI",
+    PSEUDO_MODE=MODE_STA,
     AMOR_REDUIT=(0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05),
-    MASS_INER=TABMASS,
-    CORR_FREQ="OUI",
-    MONO_APPUI="OUI",
-    EXCIT=_F(AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPECT_X, ECHELLE=1.0, NATURE="DEPL"),
+    TYPE_ANALYSE="MONO_APPUI",
+    SPECTRE=_F(LIST_AXE=("X"), SPEC_OSCI=SPECT_X, ECHELLE=1, NATURE="DEPL", CORR_FREQ="OUI"),
     COMB_MODE=_F(TYPE="CQC"),
     OPTION=("DEPL", "REAC_NODA", "EFGE_ELNO"),
-    IMPRESSION=_F(),
+    TYPE_RESU=_F(TYPE="VALE_TOTA"),
 )
 #
 
 SISMS = COMB_SISM_MODAL(
     MODE_MECA=MODE1,
-    MODE_CORR=MODE_STA,
+    MODE_CORR="OUI",
+    PSEUDO_MODE=MODE_STA,
     AMOR_REDUIT=(0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05),
-    MASS_INER=TABMASS,
-    CORR_FREQ="OUI",
-    MONO_APPUI="OUI",
-    EXCIT=_F(AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPECT_X, ECHELLE=1.0, NATURE="DEPL"),
+    TYPE_ANALYSE="MONO_APPUI",
+    SPECTRE=_F(LIST_AXE=("X"), SPEC_OSCI=SPECT_X, ECHELLE=1, NATURE="DEPL", CORR_FREQ="OUI"),
     COMB_MODE=_F(TYPE="SRSS"),
     OPTION=("DEPL", "REAC_NODA", "EFGE_ELNO"),
-    IMPRESSION=_F(),
+    TYPE_RESU=_F(TYPE="VALE_TOTA"),
 )
 #
 
 SISMR = COMB_SISM_MODAL(
     MODE_MECA=MODE1,
-    MODE_CORR=MODE_STA,
+    MODE_CORR="OUI",
+    PSEUDO_MODE=MODE_STA,
     AMOR_REDUIT=(0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05),
-    MASS_INER=TABMASS,
-    CORR_FREQ="OUI",
-    MONO_APPUI="OUI",
-    EXCIT=_F(AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPECT_X, ECHELLE=1.0, NATURE="DEPL"),
+    TYPE_ANALYSE="MONO_APPUI",
+    SPECTRE=_F(LIST_AXE=("X"), SPEC_OSCI=SPECT_X, ECHELLE=1, NATURE="DEPL", CORR_FREQ="OUI"),
     COMB_MODE=_F(TYPE="DSC", DUREE=30.0),
     OPTION=("DEPL", "REAC_NODA", "EFGE_ELNO"),
-    IMPRESSION=_F(),
+    TYPE_RESU=_F(TYPE="VALE_TOTA"),
 )
 #
 
@@ -985,7 +982,8 @@ DEPLMOC = CREA_CHAMP(
     OPERATION="EXTR",
     RESULTAT=SISMC,
     NOM_CHAM="DEPL",
-    NOEUD_CMP=("DIR", "X"),
+    # NOEUD_CMP=("DIR", "X"),
+    NOM_CAS="TOTA",
     TITRE="CHAMP DE DEPLACEMENT",
 )
 #
@@ -995,7 +993,7 @@ REACMOC = CREA_CHAMP(
     OPERATION="EXTR",
     RESULTAT=SISMC,
     NOM_CHAM="REAC_NODA",
-    NOEUD_CMP=("DIR", "X"),
+    NOM_CAS="TOTA",
     TITRE="REACTIONS NODALES",
 )
 #
@@ -1005,7 +1003,7 @@ EFGEMOC = CREA_CHAMP(
     OPERATION="EXTR",
     RESULTAT=SISMC,
     NOM_CHAM="EFGE_ELNO",
-    NOEUD_CMP=("DIR", "X"),
+    NOM_CAS="TOTA",
     TITRE="CONTRAINTES",
 )
 #
@@ -1015,7 +1013,7 @@ DEPLMOS = CREA_CHAMP(
     OPERATION="EXTR",
     RESULTAT=SISMS,
     NOM_CHAM="DEPL",
-    NOEUD_CMP=("DIR", "X"),
+    NOM_CAS="TOTA",
     TITRE="CHAMP DE DEPLACEMENT",
 )
 #
@@ -1025,7 +1023,7 @@ REACMOS = CREA_CHAMP(
     OPERATION="EXTR",
     RESULTAT=SISMS,
     NOM_CHAM="REAC_NODA",
-    NOEUD_CMP=("DIR", "X"),
+    NOM_CAS="TOTA",
     TITRE="REACTIONS NODALES",
 )
 #
@@ -1035,7 +1033,7 @@ EFGEMOS = CREA_CHAMP(
     OPERATION="EXTR",
     RESULTAT=SISMS,
     NOM_CHAM="EFGE_ELNO",
-    NOEUD_CMP=("DIR", "X"),
+    NOM_CAS="TOTA",
     TITRE="CONTRAINTES",
 )
 #
@@ -1045,7 +1043,7 @@ DEPLMOR = CREA_CHAMP(
     OPERATION="EXTR",
     RESULTAT=SISMR,
     NOM_CHAM="DEPL",
-    NOEUD_CMP=("DIR", "X"),
+    NOM_CAS="TOTA",
     TITRE="CHAMP DE DEPLACEMENT",
 )
 #
@@ -1055,7 +1053,7 @@ REACMOR = CREA_CHAMP(
     OPERATION="EXTR",
     RESULTAT=SISMR,
     NOM_CHAM="REAC_NODA",
-    NOEUD_CMP=("DIR", "X"),
+    NOM_CAS="TOTA",
     TITRE="REACTIONS NODALES",
 )
 #
@@ -1065,7 +1063,7 @@ EFGEMOR = CREA_CHAMP(
     OPERATION="EXTR",
     RESULTAT=SISMR,
     NOM_CHAM="EFGE_ELNO",
-    NOEUD_CMP=("DIR", "X"),
+    NOM_CAS="TOTA",
     TITRE="CONTRAINTES",
 )
 #
@@ -2995,7 +2993,7 @@ TEST_RESU(
             PRECISION=0.073999999999999996,
             GROUP_MA="PM1_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=3878.48581034,
+            VALE_CALC=3878.4694565287073,
             VALE_REFE=3633.0,
         ),
         _F(
@@ -3005,7 +3003,7 @@ TEST_RESU(
             PRECISION=0.014,
             GROUP_MA="PM1_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=1583.10351541,
+            VALE_CALC=1583.096765928775,
             VALE_REFE=1570.8,
         ),
         _F(
@@ -3015,7 +3013,7 @@ TEST_RESU(
             PRECISION=0.035000000000000003,
             GROUP_MA="PM1_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=34821.4208258,
+            VALE_CALC=34821.48782213783,
             VALE_REFE=3.3800e4,
         ),
         _F(
@@ -3025,7 +3023,7 @@ TEST_RESU(
             PRECISION=1.0,
             GROUP_MA="PM1_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=0.00177993261552,
+            VALE_CALC=0.0017799252225910354,
             VALE_REFE=0.17566999999999999,
         ),
         _F(
@@ -3035,7 +3033,7 @@ TEST_RESU(
             PRECISION=0.055,
             GROUP_MA="PM1_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=33643.6336872,
+            VALE_CALC=33643.69812587388,
             VALE_REFE=3.2040e4,
         ),
         _F(
@@ -3045,7 +3043,7 @@ TEST_RESU(
             PRECISION=0.025,
             GROUP_MA="PM1_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=503.572324544,
+            VALE_CALC=503.57018565273336,
             VALE_REFE=514.92999999999995,
         ),
         _F(
@@ -3055,7 +3053,7 @@ TEST_RESU(
             PRECISION=0.073999999999999996,
             GROUP_MA="PM2_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=3878.34503045,
+            VALE_CALC=3878.3286772912757,
             VALE_REFE=3632.9000000000001,
         ),
         _F(
@@ -3065,7 +3063,7 @@ TEST_RESU(
             PRECISION=1.0e-2,
             GROUP_MA="PM2_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=1562.0768908,
+            VALE_CALC=1562.0702373418478,
             VALE_REFE=1554.3,
         ),
         _F(
@@ -3075,7 +3073,7 @@ TEST_RESU(
             PRECISION=0.034000000000000002,
             GROUP_MA="PM2_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=34610.3387803,
+            VALE_CALC=34610.40536471864,
             VALE_REFE=3.3646e4,
         ),
         _F(
@@ -3085,7 +3083,7 @@ TEST_RESU(
             PRECISION=1.0,
             GROUP_MA="PM2_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=0.00177964978843,
+            VALE_CALC=0.0017796423968004977,
             VALE_REFE=0.16458999999999999,
         ),
         _F(
@@ -3095,7 +3093,7 @@ TEST_RESU(
             PRECISION=3.0e-3,
             GROUP_MA="PM2_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=18532.6156842,
+            VALE_CALC=18532.651322208258,
             VALE_REFE=1.8580e4,
         ),
         _F(
@@ -3105,7 +3103,7 @@ TEST_RESU(
             PRECISION=0.024,
             GROUP_MA="PM2_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=1858.07982412,
+            VALE_CALC=1858.071902221227,
             VALE_REFE=1825.5,
         ),
         _F(
@@ -3115,7 +3113,7 @@ TEST_RESU(
             PRECISION=0.070000000000000007,
             GROUP_MA="PM3_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=2033.44882701,
+            VALE_CALC=2033.4403306150239,
             VALE_REFE=1909.5999999999999,
         ),
         _F(
@@ -3125,7 +3123,7 @@ TEST_RESU(
             PRECISION=0.014999999999999999,
             GROUP_MA="PM3_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=1333.99615011,
+            VALE_CALC=1333.990510677277,
             VALE_REFE=1321.0999999999999,
         ),
         _F(
@@ -3135,7 +3133,7 @@ TEST_RESU(
             PRECISION=0.02,
             GROUP_MA="PM3_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=30965.2117341,
+            VALE_CALC=30965.27083768264,
             VALE_REFE=3.0505e4,
         ),
         _F(
@@ -3145,7 +3143,7 @@ TEST_RESU(
             PRECISION=1.0,
             GROUP_MA="PM3_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=0.00153732426303,
+            VALE_CALC=0.0015373178787586052,
             VALE_REFE=0.14027000000000001,
         ),
         _F(
@@ -3155,7 +3153,7 @@ TEST_RESU(
             PRECISION=0.032000000000000001,
             GROUP_MA="PM3_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=1434.30619963,
+            VALE_CALC=1434.3062132524567,
             VALE_REFE=1397.5,
         ),
         _F(
@@ -3165,7 +3163,7 @@ TEST_RESU(
             PRECISION=0.038000000000000002,
             GROUP_MA="PM3_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=124.93102244,
+            VALE_CALC=124.93049075906984,
             VALE_REFE=129.58000000000001,
         ),
         _F(
@@ -3175,7 +3173,7 @@ TEST_RESU(
             PRECISION=0.070000000000000007,
             GROUP_MA="PM4_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=2033.18640922,
+            VALE_CALC=2033.1779140391548,
             VALE_REFE=1909.4000000000001,
         ),
         _F(
@@ -3185,7 +3183,7 @@ TEST_RESU(
             PRECISION=1.0e-2,
             GROUP_MA="PM4_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=1278.67397043,
+            VALE_CALC=1278.668593470407,
             VALE_REFE=1270.4000000000001,
         ),
         _F(
@@ -3195,7 +3193,7 @@ TEST_RESU(
             PRECISION=0.017000000000000001,
             GROUP_MA="PM4_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=30279.3609459,
+            VALE_CALC=30279.418642549106,
             VALE_REFE=2.9904e4,
         ),
         _F(
@@ -3205,7 +3203,7 @@ TEST_RESU(
             PRECISION=1.0,
             GROUP_MA="PM4_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=0.00153670308242,
+            VALE_CALC=0.001536696701065382,
             VALE_REFE=0.10489999999999999,
         ),
         _F(
@@ -3215,7 +3213,7 @@ TEST_RESU(
             PRECISION=0.025000000000000001,
             GROUP_MA="PM4_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=46368.9023316,
+            VALE_CALC=46368.99129223929,
             VALE_REFE=4.5467e4,
         ),
         _F(
@@ -3225,7 +3223,7 @@ TEST_RESU(
             PRECISION=0.02,
             GROUP_MA="PM4_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=2083.35703835,
+            VALE_CALC=2083.3482218426866,
             VALE_REFE=2053.0,
         ),
         _F(
@@ -3235,7 +3233,7 @@ TEST_RESU(
             PRECISION=0.063,
             GROUP_MA="PM5_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=575.982543561,
+            VALE_CALC=575.9801743828951,
             VALE_REFE=544.12,
         ),
         _F(
@@ -3245,7 +3243,7 @@ TEST_RESU(
             PRECISION=5.0e-3,
             GROUP_MA="PM5_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=704.002368211,
+            VALE_CALC=703.9994851320662,
             VALE_REFE=706.83000000000004,
         ),
         _F(
@@ -3255,7 +3253,7 @@ TEST_RESU(
             PRECISION=5.0000000000000001e-3,
             GROUP_MA="PM5_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=19560.9228374,
+            VALE_CALC=19560.95911661334,
             VALE_REFE=1.9650e4,
         ),
         _F(
@@ -3265,7 +3263,7 @@ TEST_RESU(
             PRECISION=1.0,
             GROUP_MA="PM5_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=0.000913117579229,
+            VALE_CALC=0.0009131137897271873,
             VALE_REFE=0.0613748,
         ),
         _F(
@@ -3275,7 +3273,7 @@ TEST_RESU(
             PRECISION=0.042000000000000003,
             GROUP_MA="PM5_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=12488.9790163,
+            VALE_CALC=12489.00302850098,
             VALE_REFE=1.2046e4,
         ),
         _F(
@@ -3285,7 +3283,7 @@ TEST_RESU(
             PRECISION=0.03,
             GROUP_MA="PM5_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=242.386044977,
+            VALE_CALC=242.3850076407745,
             VALE_REFE=248.84,
         ),
         _F(
@@ -3295,7 +3293,7 @@ TEST_RESU(
             PRECISION=0.071999999999999995,
             GROUP_MA="PM0_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=3878.53273746,
+            VALE_CALC=3878.51638342481,
             VALE_REFE=3633.0,
         ),
         _F(
@@ -3305,7 +3303,7 @@ TEST_RESU(
             PRECISION=0.014999999999999999,
             GROUP_MA="PM0_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=1587.41506774,
+            VALE_CALC=1587.4082986928506,
             VALE_REFE=1572.5999999999999,
         ),
         _F(
@@ -3315,7 +3313,7 @@ TEST_RESU(
             PRECISION=0.035999999999999997,
             GROUP_MA="PM0_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=34861.3071127,
+            VALE_CALC=34861.37418194427,
             VALE_REFE=3.3817e4,
         ),
         _F(
@@ -3325,7 +3323,7 @@ TEST_RESU(
             PRECISION=1.0,
             GROUP_MA="PM0_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=0.00178002689523,
+            VALE_CALC=0.0017800195018140832,
             VALE_REFE=0.17705000000000001,
         ),
         _F(
@@ -3335,7 +3333,7 @@ TEST_RESU(
             PRECISION=0.042999999999999997,
             GROUP_MA="PM0_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=85901.4533295,
+            VALE_CALC=85901.61838747583,
             VALE_REFE=8.2735e4,
         ),
         _F(
@@ -3345,7 +3343,7 @@ TEST_RESU(
             PRECISION=8.9999999999999993e-3,
             GROUP_MA="PM0_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=2882.61311853,
+            VALE_CALC=2882.6008323223323,
             VALE_REFE=2872.1999999999998,
         ),
         _F(
@@ -3355,7 +3353,7 @@ TEST_RESU(
             PRECISION=0.073999999999999996,
             GROUP_MA="PM1_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=3878.48581034,
+            VALE_CALC=3878.469456528706,
             VALE_REFE=3633.0,
         ),
         _F(
@@ -3365,7 +3363,7 @@ TEST_RESU(
             PRECISION=0.014999999999999999,
             GROUP_MA="PM1_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=1583.10351541,
+            VALE_CALC=1583.096765928736,
             VALE_REFE=1564.9000000000001,
         ),
         _F(
@@ -3375,7 +3373,7 @@ TEST_RESU(
             PRECISION=0.036999999999999998,
             GROUP_MA="PM1_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=34820.1951501,
+            VALE_CALC=34820.26214882557,
             VALE_REFE=3.3747e4,
         ),
         _F(
@@ -3385,7 +3383,7 @@ TEST_RESU(
             PRECISION=1.0,
             GROUP_MA="PM1_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=0.00177993261544,
+            VALE_CALC=0.001779925222478311,
             VALE_REFE=0.17176,
         ),
         _F(
@@ -3395,7 +3393,7 @@ TEST_RESU(
             PRECISION=0.055,
             GROUP_MA="PM1_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=33643.6336872,
+            VALE_CALC=33643.69812587375,
             VALE_REFE=3.2038e4,
         ),
         _F(
@@ -3405,7 +3403,7 @@ TEST_RESU(
             PRECISION=0.025,
             GROUP_MA="PM1_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=503.572324544,
+            VALE_CALC=503.57018565270886,
             VALE_REFE=514.71000000000004,
         ),
         _F(
@@ -3415,7 +3413,7 @@ TEST_RESU(
             PRECISION=0.070000000000000007,
             GROUP_MA="PM2_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=2033.66153777,
+            VALE_CALC=2033.6530403907843,
             VALE_REFE=1909.7,
         ),
         _F(
@@ -3425,7 +3423,7 @@ TEST_RESU(
             PRECISION=0.028000000000000001,
             GROUP_MA="PM2_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=1370.33030105,
+            VALE_CALC=1370.324488072292,
             VALE_REFE=1339.0,
         ),
         _F(
@@ -3435,7 +3433,7 @@ TEST_RESU(
             PRECISION=0.027,
             GROUP_MA="PM2_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=31394.5865168,
+            VALE_CALC=31394.646497670383,
             VALE_REFE=3.0709e4,
         ),
         _F(
@@ -3445,7 +3443,7 @@ TEST_RESU(
             PRECISION=1.0,
             GROUP_MA="PM2_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=0.0015377826548,
+            VALE_CALC=0.0015377762690524611,
             VALE_REFE=0.15403,
         ),
         _F(
@@ -3455,7 +3453,7 @@ TEST_RESU(
             PRECISION=0.023,
             GROUP_MA="PM2_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=46436.5111636,
+            VALE_CALC=46436.599168031724,
             VALE_REFE=4.5592e4,
         ),
         _F(
@@ -3465,7 +3463,7 @@ TEST_RESU(
             PRECISION=0.027,
             GROUP_MA="PM2_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=1908.95831778,
+            VALE_CALC=1908.9502622489713,
             VALE_REFE=1869.4000000000001,
         ),
         _F(
@@ -3475,7 +3473,7 @@ TEST_RESU(
             PRECISION=0.070000000000000007,
             GROUP_MA="PM3_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=2033.44882701,
+            VALE_CALC=2033.440330615014,
             VALE_REFE=1909.5,
         ),
         _F(
@@ -3485,7 +3483,7 @@ TEST_RESU(
             PRECISION=0.033000000000000002,
             GROUP_MA="PM3_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=1333.99615011,
+            VALE_CALC=1333.9905106775855,
             VALE_REFE=1298.0999999999999,
         ),
         _F(
@@ -3495,7 +3493,7 @@ TEST_RESU(
             PRECISION=0.029000000000000001,
             GROUP_MA="PM3_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=30966.7280444,
+            VALE_CALC=30966.78714500336,
             VALE_REFE=3.0236e4,
         ),
         _F(
@@ -3505,7 +3503,7 @@ TEST_RESU(
             PRECISION=1.0,
             GROUP_MA="PM3_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=0.00153732426251,
+            VALE_CALC=0.001537317879474702,
             VALE_REFE=0.12375,
         ),
         _F(
@@ -3525,7 +3523,7 @@ TEST_RESU(
             PRECISION=0.04000000000000003,
             GROUP_MA="PM3_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=124.93102244,
+            VALE_CALC=124.9304907592069,
             VALE_REFE=129.83000000000001,
         ),
         _F(
@@ -3535,7 +3533,7 @@ TEST_RESU(
             PRECISION=0.065000000000000002,
             GROUP_MA="PM4_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=576.277275508,
+            VALE_CALC=576.2749049793646,
             VALE_REFE=544.25,
         ),
         _F(
@@ -3545,7 +3543,7 @@ TEST_RESU(
             PRECISION=0.047,
             GROUP_MA="PM4_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=771.067634769,
+            VALE_CALC=771.0644273961917,
             VALE_REFE=740.24000000000001,
         ),
         _F(
@@ -3555,7 +3553,7 @@ TEST_RESU(
             PRECISION=0.023,
             GROUP_MA="PM4_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=20455.8988913,
+            VALE_CALC=20455.937061671895,
             VALE_REFE=2.0083e4,
         ),
         _F(
@@ -3565,7 +3563,7 @@ TEST_RESU(
             PRECISION=1.0,
             GROUP_MA="PM4_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=0.000913868265048,
+            VALE_CALC=0.0009138644726126505,
             VALE_REFE=0.084069199999999997,
         ),
         _F(
@@ -3575,7 +3573,7 @@ TEST_RESU(
             PRECISION=1.5e-2,
             GROUP_MA="PM4_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=17690.2128174,
+            VALE_CALC=17690.244384062305,
             VALE_REFE=1.7892e4,
         ),
         _F(
@@ -3585,7 +3583,7 @@ TEST_RESU(
             PRECISION=0.037999999999999999,
             GROUP_MA="PM4_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=867.385014062,
+            VALE_CALC=867.3814839878605,
             VALE_REFE=838.88999999999999,
         ),
         _F(
@@ -3595,7 +3593,7 @@ TEST_RESU(
             PRECISION=0.065000000000000002,
             GROUP_MA="PM5_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=575.982543561,
+            VALE_CALC=575.9801743829202,
             VALE_REFE=544.0,
         ),
         _F(
@@ -3605,7 +3603,7 @@ TEST_RESU(
             PRECISION=0.055,
             GROUP_MA="PM5_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=704.00236821,
+            VALE_CALC=703.9994851315566,
             VALE_REFE=670.42999999999995,
         ),
         _F(
@@ -3615,7 +3613,7 @@ TEST_RESU(
             PRECISION=0.025999999999999999,
             GROUP_MA="PM5_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=19559.4727708,
+            VALE_CALC=19559.50905263302,
             VALE_REFE=1.9165e4,
         ),
         _F(
@@ -3625,7 +3623,7 @@ TEST_RESU(
             PRECISION=1.0,
             GROUP_MA="PM5_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=0.000913117578158,
+            VALE_CALC=0.0009131137899458665,
             VALE_REFE=0.037363899999999999,
         ),
         _F(
@@ -3635,7 +3633,7 @@ TEST_RESU(
             PRECISION=0.042000000000000003,
             GROUP_MA="PM5_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=12488.9790163,
+            VALE_CALC=12489.003028498739,
             VALE_REFE=1.2048e4,
         ),
         _F(
@@ -3645,7 +3643,7 @@ TEST_RESU(
             PRECISION=0.03,
             GROUP_MA="PM5_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=242.386044977,
+            VALE_CALC=242.3850076408278,
             VALE_REFE=248.97999999999999,
         ),
     )
@@ -3659,7 +3657,7 @@ TEST_RESU(
             GROUP_NO="PM1",
             PRECISION=0.065000000000000002,
             CHAM_GD=DEPLMOR,
-            VALE_CALC=0.00185056804649,
+            VALE_CALC=0.001850571600998503,
             VALE_REFE=1.74668e-3,
         ),
         _F(
@@ -3668,7 +3666,7 @@ TEST_RESU(
             GROUP_NO="PM2",
             PRECISION=0.059999999999999998,
             CHAM_GD=DEPLMOR,
-            VALE_CALC=0.00547558682012,
+            VALE_CALC=0.005475597329048088,
             VALE_REFE=5.1941000000000001e-3,
         ),
         _F(
@@ -3677,7 +3675,7 @@ TEST_RESU(
             GROUP_NO="PM3",
             PRECISION=0.059999999999999998,
             CHAM_GD=DEPLMOR,
-            VALE_CALC=0.0098771732134,
+            VALE_CALC=0.009877192137531132,
             VALE_REFE=9.3984800000000007e-3,
         ),
         _F(
@@ -3686,7 +3684,7 @@ TEST_RESU(
             GROUP_NO="PM4",
             PRECISION=0.059999999999999998,
             CHAM_GD=DEPLMOR,
-            VALE_CALC=0.0142611350261,
+            VALE_CALC=0.014261162301859667,
             VALE_REFE=0.013588899999999999,
         ),
         _F(
@@ -3695,7 +3693,7 @@ TEST_RESU(
             GROUP_NO="PM5",
             PRECISION=0.059999999999999998,
             CHAM_GD=DEPLMOR,
-            VALE_CALC=0.0180054211389,
+            VALE_CALC=0.018005455504158347,
             VALE_REFE=0.017174700000000001,
         ),
         _F(
@@ -3704,7 +3702,7 @@ TEST_RESU(
             GROUP_NO="PM6",
             PRECISION=0.059999999999999998,
             CHAM_GD=DEPLMOR,
-            VALE_CALC=0.0210980485061,
+            VALE_CALC=0.021098088701448685,
             VALE_REFE=0.0201309,
         ),
         _F(
@@ -3713,7 +3711,7 @@ TEST_RESU(
             GROUP_NO="PM1",
             PRECISION=0.016,
             CHAM_GD=DEPLMOR,
-            VALE_CALC=0.000222381994044,
+            VALE_CALC=0.00022238104640138676,
             VALE_REFE=2.19731e-4,
         ),
         _F(
@@ -3722,7 +3720,7 @@ TEST_RESU(
             GROUP_NO="PM2",
             PRECISION=1.0e-2,
             CHAM_GD=DEPLMOR,
-            VALE_CALC=0.000551235410814,
+            VALE_CALC=0.0005512330628279286,
             VALE_REFE=5.48256e-4,
         ),
         _F(
@@ -3731,7 +3729,7 @@ TEST_RESU(
             GROUP_NO="PM3",
             PRECISION=8.0000000000000002e-3,
             CHAM_GD=DEPLMOR,
-            VALE_CALC=0.000895822343777,
+            VALE_CALC=0.0008958185340281112,
             VALE_REFE=8.9269700000000002e-4,
         ),
         _F(
@@ -3740,7 +3738,7 @@ TEST_RESU(
             GROUP_NO="PM4",
             PRECISION=7.0000000000000001e-3,
             CHAM_GD=DEPLMOR,
-            VALE_CALC=0.00121586833042,
+            VALE_CALC=0.00121586316811696,
             VALE_REFE=1.21203e-3,
         ),
         _F(
@@ -3749,7 +3747,7 @@ TEST_RESU(
             GROUP_NO="PM5",
             PRECISION=7.0000000000000001e-3,
             CHAM_GD=DEPLMOR,
-            VALE_CALC=0.0014348457607,
+            VALE_CALC=0.0014348396824632088,
             VALE_REFE=1.4312999999999999e-3,
         ),
         _F(
@@ -3758,7 +3756,7 @@ TEST_RESU(
             GROUP_NO="PM6",
             PRECISION=7.0000000000000001e-3,
             CHAM_GD=DEPLMOR,
-            VALE_CALC=0.00160473286617,
+            VALE_CALC=0.0016047260828140327,
             VALE_REFE=1.6007599999999999e-3,
         ),
         _F(
@@ -3767,7 +3765,7 @@ TEST_RESU(
             GROUP_NO="PM1",
             PRECISION=0.073999999999999996,
             CHAM_GD=DEPLMOR,
-            VALE_CALC=1.81805488831e-06,
+            VALE_CALC=1.8180472223947533e-06,
             VALE_REFE=1.7029799999999999e-06,
         ),
         _F(
@@ -3776,7 +3774,7 @@ TEST_RESU(
             GROUP_NO="PM2",
             PRECISION=0.073999999999999996,
             CHAM_GD=DEPLMOR,
-            VALE_CALC=3.63606578266e-06,
+            VALE_CALC=3.636050451024206e-06,
             VALE_REFE=3.40592e-06,
         ),
         _F(
@@ -3785,7 +3783,7 @@ TEST_RESU(
             GROUP_NO="PM3",
             PRECISION=0.070999999999999994,
             CHAM_GD=DEPLMOR,
-            VALE_CALC=4.58894474607e-06,
+            VALE_CALC=4.588925430164356e-06,
             VALE_REFE=4.3007600000000001e-06,
         ),
         _F(
@@ -3794,7 +3792,7 @@ TEST_RESU(
             GROUP_NO="PM4",
             PRECISION=0.070999999999999994,
             CHAM_GD=DEPLMOR,
-            VALE_CALC=5.54183356137e-06,
+            VALE_CALC=5.541810262162718e-06,
             VALE_REFE=5.1956099999999997e-06,
         ),
         _F(
@@ -3803,7 +3801,7 @@ TEST_RESU(
             GROUP_NO="PM5",
             PRECISION=0.070999999999999994,
             CHAM_GD=DEPLMOR,
-            VALE_CALC=5.81138119965e-06,
+            VALE_CALC=5.811356787633654e-06,
             VALE_REFE=5.4500499999999996e-06,
         ),
         _F(
@@ -3812,7 +3810,7 @@ TEST_RESU(
             GROUP_NO="PM6",
             PRECISION=0.070999999999999994,
             CHAM_GD=DEPLMOR,
-            VALE_CALC=6.08083337828e-06,
+            VALE_CALC=6.080807854269906e-06,
             VALE_REFE=5.7044199999999997e-06,
         ),
         _F(
@@ -3821,7 +3819,7 @@ TEST_RESU(
             GROUP_NO="PM0",
             PRECISION=0.035999999999999997,
             CHAM_GD=REACMOR,
-            VALE_CALC=34862.396991,
+            VALE_CALC=34862.464058145415,
             VALE_REFE=3.3819e4,
         ),
         _F(
@@ -3830,7 +3828,7 @@ TEST_RESU(
             GROUP_NO="PM0",
             PRECISION=0.014,
             CHAM_GD=REACMOR,
-            VALE_CALC=1587.41506774,
+            VALE_CALC=1587.4082986928506,
             VALE_REFE=1572.7,
         ),
         _F(
@@ -3839,7 +3837,7 @@ TEST_RESU(
             GROUP_NO="PM0",
             PRECISION=0.071999999999999995,
             CHAM_GD=REACMOR,
-            VALE_CALC=3878.53273746,
+            VALE_CALC=3878.516383424809,
             VALE_REFE=3633.0,
         ),
         _F(
@@ -3848,7 +3846,7 @@ TEST_RESU(
             GROUP_NO="PM0",
             PRECISION=8.9999999999999993e-3,
             CHAM_GD=REACMOR,
-            VALE_CALC=2882.61311853,
+            VALE_CALC=2882.6008323223323,
             VALE_REFE=2872.1999999999998,
         ),
         _F(
@@ -3857,7 +3855,7 @@ TEST_RESU(
             GROUP_NO="PM0",
             PRECISION=0.042999999999999997,
             CHAM_GD=REACMOR,
-            VALE_CALC=85901.5102186,
+            VALE_CALC=85901.675276498,
             VALE_REFE=8.2735e4,
         ),
         _F(
@@ -3866,7 +3864,7 @@ TEST_RESU(
             GROUP_NO="PM0",
             PRECISION=1.0,
             CHAM_GD=REACMOR,
-            VALE_CALC=0.00178002689506,
+            VALE_CALC=0.0017800195016441217,
             VALE_REFE=0.17724000000000001,
         ),
         _F(
@@ -3884,7 +3882,7 @@ TEST_RESU(
             GROUP_NO="PM00",
             PRECISION=1.0e-2,
             CHAM_GD=REACMOR,
-            VALE_CALC=2008.18372715,
+            VALE_CALC=2008.1751672112948,
             VALE_REFE=1999.4000000000001,
         ),
         _F(
@@ -3902,7 +3900,7 @@ TEST_RESU(
             GROUP_NO="PM00",
             PRECISION=8.0000000000000002e-3,
             CHAM_GD=REACMOR,
-            VALE_CALC=3300.87197611,
+            VALE_CALC=3300.8579103787747,
             VALE_REFE=3298.9000000000001,
         ),
         _F(
@@ -3920,7 +3918,7 @@ TEST_RESU(
             GROUP_NO="PM00",
             PRECISION=1.0,
             CHAM_GD=REACMOR,
-            VALE_CALC=0.00177630767711,
+            VALE_CALC=0.0017763002949450898,
             VALE_REFE=0.17705000000000001,
         ),
     )
@@ -6220,7 +6218,7 @@ TEST_RESU(
             PRECISION=0.23,
             GROUP_MA="PM1_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=3878.48581034,
+            VALE_CALC=3878.4694565287073,
             VALE_REFE=5007.0,
         ),
         _F(
@@ -6230,7 +6228,7 @@ TEST_RESU(
             PRECISION=0.33,
             GROUP_MA="PM1_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=1583.10351541,
+            VALE_CALC=1583.096765928775,
             VALE_REFE=2266.0,
         ),
         _F(
@@ -6240,7 +6238,7 @@ TEST_RESU(
             PRECISION=0.051999999999999998,
             GROUP_MA="PM1_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=34821.4208258,
+            VALE_CALC=34821.48782213783,
             VALE_REFE=3.3250e4,
         ),
         _F(
@@ -6250,7 +6248,7 @@ TEST_RESU(
             PRECISION=1.0,
             GROUP_MA="PM1_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=0.00177993261552,
+            VALE_CALC=0.0017799252225910354,
             VALE_REFE=21.690000000000001,
         ),
         _F(
@@ -6260,7 +6258,7 @@ TEST_RESU(
             PRECISION=0.035999999999999997,
             GROUP_MA="PM1_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=33643.6336872,
+            VALE_CALC=33643.69812587388,
             VALE_REFE=3.2640e4,
         ),
         _F(
@@ -6270,7 +6268,7 @@ TEST_RESU(
             PRECISION=0.37,
             GROUP_MA="PM1_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=503.572324544,
+            VALE_CALC=503.57018565273336,
             VALE_REFE=765.89999999999998,
         ),
         _F(
@@ -6280,7 +6278,7 @@ TEST_RESU(
             PRECISION=0.25,
             GROUP_MA="PM2_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=3878.34503045,
+            VALE_CALC=3878.3286772912757,
             VALE_REFE=5007.0,
         ),
         _F(
@@ -6290,7 +6288,7 @@ TEST_RESU(
             PRECISION=0.33,
             GROUP_MA="PM2_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=1562.0768908,
+            VALE_CALC=1562.0702373418478,
             VALE_REFE=2235.0,
         ),
         _F(
@@ -6300,7 +6298,7 @@ TEST_RESU(
             PRECISION=0.057000000000000002,
             GROUP_MA="PM2_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=34610.3387803,
+            VALE_CALC=34610.40536471864,
             VALE_REFE=3.2900e4,
         ),
         _F(
@@ -6310,7 +6308,7 @@ TEST_RESU(
             PRECISION=1.0,
             GROUP_MA="PM2_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=0.00177964978843,
+            VALE_CALC=0.0017796423968004977,
             VALE_REFE=21.670000000000002,
         ),
         _F(
@@ -6320,7 +6318,7 @@ TEST_RESU(
             PRECISION=0.063,
             GROUP_MA="PM2_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=18532.6156842,
+            VALE_CALC=18532.651322208258,
             VALE_REFE=1.7520e4,
         ),
         _F(
@@ -6330,7 +6328,7 @@ TEST_RESU(
             PRECISION=0.33,
             GROUP_MA="PM2_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=1858.07982412,
+            VALE_CALC=1858.071902221227,
             VALE_REFE=2623.0,
         ),
         _F(
@@ -6340,7 +6338,7 @@ TEST_RESU(
             PRECISION=0.25,
             GROUP_MA="PM3_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=2033.44882701,
+            VALE_CALC=2033.4403306150239,
             VALE_REFE=2641.0,
         ),
         _F(
@@ -6350,7 +6348,7 @@ TEST_RESU(
             PRECISION=0.33,
             GROUP_MA="PM3_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=1333.99615011,
+            VALE_CALC=1333.990510677277,
             VALE_REFE=1934.0,
         ),
         _F(
@@ -6360,7 +6358,7 @@ TEST_RESU(
             PRECISION=0.037999999999999999,
             GROUP_MA="PM3_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=30965.2117341,
+            VALE_CALC=30965.27083768264,
             VALE_REFE=2.9970e4,
         ),
         _F(
@@ -6370,7 +6368,7 @@ TEST_RESU(
             PRECISION=1.0,
             GROUP_MA="PM3_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=0.00153732426303,
+            VALE_CALC=0.0015373178787586052,
             VALE_REFE=25.73,
         ),
         _F(
@@ -6390,7 +6388,7 @@ TEST_RESU(
             PRECISION=0.3500,
             GROUP_MA="PM3_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=124.93102244,
+            VALE_CALC=124.93049075906984,
             VALE_REFE=190.0,
         ),
         _F(
@@ -6400,7 +6398,7 @@ TEST_RESU(
             PRECISION=0.25,
             GROUP_MA="PM4_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=2033.18640922,
+            VALE_CALC=2033.1779140391548,
             VALE_REFE=2640.0,
         ),
         _F(
@@ -6410,7 +6408,7 @@ TEST_RESU(
             PRECISION=0.342,
             GROUP_MA="PM4_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=1278.67397043,
+            VALE_CALC=1278.668593470407,
             VALE_REFE=1859.0,
         ),
         _F(
@@ -6420,7 +6418,7 @@ TEST_RESU(
             PRECISION=0.035999999999999997,
             GROUP_MA="PM4_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=30279.3609459,
+            VALE_CALC=30279.418642549106,
             VALE_REFE=2.9350e4,
         ),
         _F(
@@ -6430,7 +6428,7 @@ TEST_RESU(
             PRECISION=1.0,
             GROUP_MA="PM4_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=0.00153670308242,
+            VALE_CALC=0.001536696701065382,
             VALE_REFE=25.73,
         ),
         _F(
@@ -6440,7 +6438,7 @@ TEST_RESU(
             PRECISION=0.050000000000000003,
             GROUP_MA="PM4_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=46368.9023316,
+            VALE_CALC=46368.99129223929,
             VALE_REFE=4.4360e4,
         ),
         _F(
@@ -6450,7 +6448,7 @@ TEST_RESU(
             PRECISION=0.31,
             GROUP_MA="PM4_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=2083.35703835,
+            VALE_CALC=2083.3482218426866,
             VALE_REFE=2999.0,
         ),
         _F(
@@ -6460,7 +6458,7 @@ TEST_RESU(
             PRECISION=0.27,
             GROUP_MA="PM5_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=575.982543561,
+            VALE_CALC=575.9801743828951,
             VALE_REFE=777.29999999999995,
         ),
         _F(
@@ -6470,7 +6468,7 @@ TEST_RESU(
             PRECISION=0.34,
             GROUP_MA="PM5_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=704.002368211,
+            VALE_CALC=703.9994851320662,
             VALE_REFE=1045.0,
         ),
         _F(
@@ -6480,7 +6478,7 @@ TEST_RESU(
             PRECISION=0.014,
             GROUP_MA="PM5_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=19560.9228374,
+            VALE_CALC=19560.95911661334,
             VALE_REFE=1.9370e4,
         ),
         _F(
@@ -6490,7 +6488,7 @@ TEST_RESU(
             PRECISION=1.0,
             GROUP_MA="PM5_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=0.000913117579229,
+            VALE_CALC=0.0009131137897271873,
             VALE_REFE=26.690000000000001,
         ),
         _F(
@@ -6500,7 +6498,7 @@ TEST_RESU(
             PRECISION=0.036999999999999998,
             GROUP_MA="PM5_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=12488.9790163,
+            VALE_CALC=12489.00302850098,
             VALE_REFE=1.2100e4,
         ),
         _F(
@@ -6510,7 +6508,7 @@ TEST_RESU(
             PRECISION=0.38,
             GROUP_MA="PM5_BAS",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=242.386044977,
+            VALE_CALC=242.3850076407745,
             VALE_REFE=381.5,
         ),
         _F(
@@ -6520,7 +6518,7 @@ TEST_RESU(
             PRECISION=0.24,
             GROUP_MA="PM1_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=3878.48581034,
+            VALE_CALC=3878.469456528706,
             VALE_REFE=5007.0,
         ),
         _F(
@@ -6530,7 +6528,7 @@ TEST_RESU(
             PRECISION=0.31,
             GROUP_MA="PM1_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=1583.10351541,
+            VALE_CALC=1583.096765928736,
             VALE_REFE=2255.0,
         ),
         _F(
@@ -6540,7 +6538,7 @@ TEST_RESU(
             PRECISION=0.058000000000000003,
             GROUP_MA="PM1_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=34820.1951501,
+            VALE_CALC=34820.26214882557,
             VALE_REFE=3.3060e4,
         ),
         _F(
@@ -6550,7 +6548,7 @@ TEST_RESU(
             PRECISION=1.0,
             GROUP_MA="PM1_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=0.00177993261544,
+            VALE_CALC=0.001779925222478311,
             VALE_REFE=21.68,
         ),
         _F(
@@ -6560,7 +6558,7 @@ TEST_RESU(
             PRECISION=0.035999999999999997,
             GROUP_MA="PM1_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=33643.6336872,
+            VALE_CALC=33643.69812587375,
             VALE_REFE=3.2630e4,
         ),
         _F(
@@ -6570,7 +6568,7 @@ TEST_RESU(
             PRECISION=0.37,
             GROUP_MA="PM1_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=503.572324544,
+            VALE_CALC=503.57018565270886,
             VALE_REFE=765.5,
         ),
         _F(
@@ -6580,7 +6578,7 @@ TEST_RESU(
             PRECISION=0.24,
             GROUP_MA="PM2_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=2033.66153777,
+            VALE_CALC=2033.6530403907843,
             VALE_REFE=2641.0,
         ),
         _F(
@@ -6590,7 +6588,7 @@ TEST_RESU(
             PRECISION=0.32,
             GROUP_MA="PM2_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=1370.33030105,
+            VALE_CALC=1370.324488072292,
             VALE_REFE=1955.0,
         ),
         _F(
@@ -6600,7 +6598,7 @@ TEST_RESU(
             PRECISION=0.044999999999999998,
             GROUP_MA="PM2_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=31394.5865168,
+            VALE_CALC=31394.646497670383,
             VALE_REFE=3.0170e4,
         ),
         _F(
@@ -6610,7 +6608,7 @@ TEST_RESU(
             PRECISION=1.0,
             GROUP_MA="PM2_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=0.0015377826548,
+            VALE_CALC=0.0015377762690524611,
             VALE_REFE=25.719999999999999,
         ),
         _F(
@@ -6620,7 +6618,7 @@ TEST_RESU(
             PRECISION=0.034000000000000002,
             GROUP_MA="PM2_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=46436.5111636,
+            VALE_CALC=46436.599168031724,
             VALE_REFE=4.5110e4,
         ),
         _F(
@@ -6630,7 +6628,7 @@ TEST_RESU(
             PRECISION=0.33,
             GROUP_MA="PM2_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=1908.95831778,
+            VALE_CALC=1908.9502622489713,
             VALE_REFE=2742.0,
         ),
         _F(
@@ -6640,7 +6638,7 @@ TEST_RESU(
             PRECISION=0.25,
             GROUP_MA="PM3_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=2033.44882701,
+            VALE_CALC=2033.440330615014,
             VALE_REFE=2641.0,
         ),
         _F(
@@ -6650,7 +6648,7 @@ TEST_RESU(
             PRECISION=0.31,
             GROUP_MA="PM3_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=1333.99615011,
+            VALE_CALC=1333.9905106775855,
             VALE_REFE=1902.0,
         ),
         _F(
@@ -6660,7 +6658,7 @@ TEST_RESU(
             PRECISION=0.048000000000000001,
             GROUP_MA="PM3_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=30966.7280444,
+            VALE_CALC=30966.78714500336,
             VALE_REFE=2.9690e4,
         ),
         _F(
@@ -6670,7 +6668,7 @@ TEST_RESU(
             PRECISION=1.0,
             GROUP_MA="PM3_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=0.00153732426251,
+            VALE_CALC=0.001537317879474702,
             VALE_REFE=25.73,
         ),
         _F(
@@ -6690,7 +6688,7 @@ TEST_RESU(
             PRECISION=0.35,
             GROUP_MA="PM3_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=124.93102244,
+            VALE_CALC=124.9304907592069,
             VALE_REFE=190.40000000000001,
         ),
         _F(
@@ -6700,7 +6698,7 @@ TEST_RESU(
             PRECISION=0.27,
             GROUP_MA="PM4_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=576.277275508,
+            VALE_CALC=576.2749049793646,
             VALE_REFE=777.5,
         ),
         _F(
@@ -6710,7 +6708,7 @@ TEST_RESU(
             PRECISION=0.29999999999999999,
             GROUP_MA="PM4_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=771.067634769,
+            VALE_CALC=771.0644273961917,
             VALE_REFE=1087.0,
         ),
         _F(
@@ -6720,7 +6718,7 @@ TEST_RESU(
             PRECISION=0.039,
             GROUP_MA="PM4_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=20455.8988913,
+            VALE_CALC=20455.937061671895,
             VALE_REFE=1.9770e4,
         ),
         _F(
@@ -6730,7 +6728,7 @@ TEST_RESU(
             PRECISION=1.0,
             GROUP_MA="PM4_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=0.000913868265048,
+            VALE_CALC=0.0009138644726126505,
             VALE_REFE=26.699999999999999,
         ),
         _F(
@@ -6740,7 +6738,7 @@ TEST_RESU(
             PRECISION=0.016,
             GROUP_MA="PM4_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=17690.2128174,
+            VALE_CALC=17690.244384062305,
             VALE_REFE=1.7970e4,
         ),
         _F(
@@ -6750,7 +6748,7 @@ TEST_RESU(
             PRECISION=0.33,
             GROUP_MA="PM4_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=867.385014062,
+            VALE_CALC=867.3814839878605,
             VALE_REFE=1284.0,
         ),
         _F(
@@ -6760,7 +6758,7 @@ TEST_RESU(
             PRECISION=0.27,
             GROUP_MA="PM5_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=575.982543561,
+            VALE_CALC=575.9801743829202,
             VALE_REFE=777.10000000000002,
         ),
         _F(
@@ -6770,7 +6768,7 @@ TEST_RESU(
             PRECISION=0.31,
             GROUP_MA="PM5_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=704.00236821,
+            VALE_CALC=703.9994851315566,
             VALE_REFE=996.79999999999995,
         ),
         _F(
@@ -6780,7 +6778,7 @@ TEST_RESU(
             PRECISION=0.039,
             GROUP_MA="PM5_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=19559.4727708,
+            VALE_CALC=19559.50905263302,
             VALE_REFE=1.8910e4,
         ),
         _F(
@@ -6790,7 +6788,7 @@ TEST_RESU(
             PRECISION=1.0,
             GROUP_MA="PM5_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=0.000913117578158,
+            VALE_CALC=0.0009131137899458665,
             VALE_REFE=26.690000000000001,
         ),
         _F(
@@ -6800,7 +6798,7 @@ TEST_RESU(
             PRECISION=0.035999999999999997,
             GROUP_MA="PM5_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=12488.9790163,
+            VALE_CALC=12489.003028498739,
             VALE_REFE=1.2110e4,
         ),
         _F(
@@ -6810,7 +6808,7 @@ TEST_RESU(
             PRECISION=0.37,
             GROUP_MA="PM5_HAUT",
             CHAM_GD=EFGEMOR,
-            VALE_CALC=242.386044977,
+            VALE_CALC=242.3850076408278,
             VALE_REFE=381.60000000000002,
         ),
     )
@@ -6823,7 +6821,7 @@ TEST_RESU(
             GROUP_NO="PM1",
             PRECISION=0.13200000000000001,
             CHAM_GD=DEPLMOR,
-            VALE_CALC=0.00185056804649,
+            VALE_CALC=0.001850571600998503,
             VALE_REFE=1.6429999999999999e-3,
         ),
         _F(
@@ -6832,7 +6830,7 @@ TEST_RESU(
             GROUP_NO="PM2",
             PRECISION=0.050000000000000003,
             CHAM_GD=DEPLMOR,
-            VALE_CALC=0.00547558682012,
+            VALE_CALC=0.005475597329048088,
             VALE_REFE=5.241e-3,
         ),
         _F(
@@ -6841,7 +6839,7 @@ TEST_RESU(
             GROUP_NO="PM3",
             PRECISION=0.040000000000000001,
             CHAM_GD=DEPLMOR,
-            VALE_CALC=0.0098771732134,
+            VALE_CALC=0.009877192137531132,
             VALE_REFE=9.5600000000000008e-3,
         ),
         _F(
@@ -6850,7 +6848,7 @@ TEST_RESU(
             GROUP_NO="PM4",
             PRECISION=0.040000000000000001,
             CHAM_GD=DEPLMOR,
-            VALE_CALC=0.0142611350261,
+            VALE_CALC=0.014261162301859667,
             VALE_REFE=0.01383,
         ),
         _F(
@@ -6859,7 +6857,7 @@ TEST_RESU(
             GROUP_NO="PM5",
             PRECISION=0.040000000000000001,
             CHAM_GD=DEPLMOR,
-            VALE_CALC=0.0180054211389,
+            VALE_CALC=0.018005455504158347,
             VALE_REFE=0.017479999999999999,
         ),
         _F(
@@ -6868,7 +6866,7 @@ TEST_RESU(
             GROUP_NO="PM6",
             PRECISION=0.029999999999999999,
             CHAM_GD=DEPLMOR,
-            VALE_CALC=0.0210980485061,
+            VALE_CALC=0.021098088701448685,
             VALE_REFE=0.020590000000000001,
         ),
         _F(
@@ -6877,7 +6875,7 @@ TEST_RESU(
             GROUP_NO="PM1",
             PRECISION=0.88,
             CHAM_GD=DEPLMOR,
-            VALE_CALC=0.000222381994044,
+            VALE_CALC=0.00022238104640138676,
             VALE_REFE=1.732e-3,
         ),
         _F(
@@ -6886,7 +6884,7 @@ TEST_RESU(
             GROUP_NO="PM2",
             PRECISION=0.89000000000000001,
             CHAM_GD=DEPLMOR,
-            VALE_CALC=0.000551235410814,
+            VALE_CALC=0.0005512330628279286,
             VALE_REFE=4.8450000000000003e-3,
         ),
         _F(
@@ -6895,7 +6893,7 @@ TEST_RESU(
             GROUP_NO="PM3",
             PRECISION=0.90200000000000002,
             CHAM_GD=DEPLMOR,
-            VALE_CALC=0.000895822343777,
+            VALE_CALC=0.0008958185340281112,
             VALE_REFE=8.6029999999999995e-3,
         ),
         _F(
@@ -6904,7 +6902,7 @@ TEST_RESU(
             GROUP_NO="PM4",
             PRECISION=0.90500000000000003,
             CHAM_GD=DEPLMOR,
-            VALE_CALC=0.00121586833042,
+            VALE_CALC=0.00121586316811696,
             VALE_REFE=0.0123,
         ),
         _F(
@@ -6913,7 +6911,7 @@ TEST_RESU(
             GROUP_NO="PM5",
             PRECISION=0.91200000000000003,
             CHAM_GD=DEPLMOR,
-            VALE_CALC=0.0014348457607,
+            VALE_CALC=0.0014348396824632088,
             VALE_REFE=0.0154,
         ),
         _F(
@@ -6922,7 +6920,7 @@ TEST_RESU(
             GROUP_NO="PM6",
             PRECISION=0.91500000000000004,
             CHAM_GD=DEPLMOR,
-            VALE_CALC=0.00160473286617,
+            VALE_CALC=0.0016047260828140327,
             VALE_REFE=0.017909999999999999,
         ),
         _F(
@@ -6931,7 +6929,7 @@ TEST_RESU(
             GROUP_NO="PM1",
             PRECISION=0.91500000000000004,
             CHAM_GD=DEPLMOR,
-            VALE_CALC=1.81805488831e-06,
+            VALE_CALC=1.8180472223947533e-06,
             VALE_REFE=2.1129999999999999e-05,
         ),
         _F(
@@ -6940,7 +6938,7 @@ TEST_RESU(
             GROUP_NO="PM2",
             PRECISION=0.91500000000000004,
             CHAM_GD=DEPLMOR,
-            VALE_CALC=3.63606578266e-06,
+            VALE_CALC=3.636050451024206e-06,
             VALE_REFE=4.2249999999999997e-05,
         ),
         _F(
@@ -6949,7 +6947,7 @@ TEST_RESU(
             GROUP_NO="PM3",
             PRECISION=0.92000000000000004,
             CHAM_GD=DEPLMOR,
-            VALE_CALC=4.58894474607e-06,
+            VALE_CALC=4.588925430164356e-06,
             VALE_REFE=5.5430000000000003e-05,
         ),
         _F(
@@ -6958,7 +6956,7 @@ TEST_RESU(
             GROUP_NO="PM4",
             PRECISION=0.92000000000000004,
             CHAM_GD=DEPLMOR,
-            VALE_CALC=5.54183356137e-06,
+            VALE_CALC=5.541810262162718e-06,
             VALE_REFE=6.8609999999999995e-05,
         ),
         _F(
@@ -6967,7 +6965,7 @@ TEST_RESU(
             GROUP_NO="PM5",
             PRECISION=0.92500000000000004,
             CHAM_GD=DEPLMOR,
-            VALE_CALC=5.81138119965e-06,
+            VALE_CALC=5.811356787633654e-06,
             VALE_REFE=7.381e-05,
         ),
         _F(
@@ -6976,7 +6974,7 @@ TEST_RESU(
             GROUP_NO="PM6",
             PRECISION=0.92500000000000004,
             CHAM_GD=DEPLMOR,
-            VALE_CALC=6.08083337828e-06,
+            VALE_CALC=6.080807854269906e-06,
             VALE_REFE=7.9010000000000004e-05,
         ),
         _F(
@@ -6985,7 +6983,7 @@ TEST_RESU(
             GROUP_NO="PM0",
             PRECISION=0.040000000000000001,
             CHAM_GD=REACMOR,
-            VALE_CALC=34862.396991,
+            VALE_CALC=34862.464058145415,
             VALE_REFE=3.3684400000000001e4,
         ),
         _F(
@@ -6994,7 +6992,7 @@ TEST_RESU(
             GROUP_NO="PM0",
             PRECISION=0.31,
             CHAM_GD=REACMOR,
-            VALE_CALC=1587.41506774,
+            VALE_CALC=1587.4082986928506,
             VALE_REFE=2270.4699999999998,
         ),
         _F(
@@ -7003,7 +7001,7 @@ TEST_RESU(
             GROUP_NO="PM0",
             PRECISION=0.25,
             CHAM_GD=REACMOR,
-            VALE_CALC=3878.53273746,
+            VALE_CALC=3878.516383424809,
             VALE_REFE=5007.21,
         ),
         _F(
@@ -7012,7 +7010,7 @@ TEST_RESU(
             GROUP_NO="PM0",
             PRECISION=0.31,
             CHAM_GD=REACMOR,
-            VALE_CALC=2882.61311853,
+            VALE_CALC=2882.6008323223323,
             VALE_REFE=4154.04,
         ),
         _F(
@@ -7021,7 +7019,7 @@ TEST_RESU(
             GROUP_NO="PM0",
             PRECISION=0.048000000000000001,
             CHAM_GD=REACMOR,
-            VALE_CALC=85901.5102186,
+            VALE_CALC=85901.675276498,
             VALE_REFE=8.2362899999999994e4,
         ),
         _F(
@@ -7030,7 +7028,7 @@ TEST_RESU(
             GROUP_NO="PM0",
             PRECISION=1.0,
             CHAM_GD=REACMOR,
-            VALE_CALC=0.00178002689506,
+            VALE_CALC=0.0017800195016441217,
             VALE_REFE=21.696899999999999,
         ),
         _F(
@@ -7048,7 +7046,7 @@ TEST_RESU(
             GROUP_NO="PM00",
             PRECISION=0.29999999999999999,
             CHAM_GD=REACMOR,
-            VALE_CALC=2008.18372715,
+            VALE_CALC=2008.1751672112948,
             VALE_REFE=2855.4099999999999,
         ),
         _F(
@@ -7066,7 +7064,7 @@ TEST_RESU(
             GROUP_NO="PM00",
             PRECISION=0.30499999999999999,
             CHAM_GD=REACMOR,
-            VALE_CALC=3300.87197611,
+            VALE_CALC=3300.8579103787747,
             VALE_REFE=4738.0699999999997,
         ),
         _F(
@@ -7084,7 +7082,7 @@ TEST_RESU(
             GROUP_NO="PM00",
             PRECISION=1.0,
             CHAM_GD=REACMOR,
-            VALE_CALC=0.00177630767711,
+            VALE_CALC=0.0017763002949450898,
             VALE_REFE=26.010200000000001,
         ),
     )

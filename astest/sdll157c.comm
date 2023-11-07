@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -184,25 +184,27 @@ dilatation_thermique = CALC_CHAMP(
 sismique_tot = COMB_SISM_MODAL(
     MODE_MECA=modes_dyn,
     AMOR_REDUIT=0.02,
-    CORR_FREQ="NON",
-    MODE_CORR=modes_sta,
-    MONO_APPUI="OUI",
-    EXCIT=_F(TRI_AXE=(1.0, 1.0, 1.0), SPEC_OSCI=sro02, ECHELLE=90.09),
+    MODE_CORR="OUI",
+    PSEUDO_MODE=modes_sta,
+    TYPE_ANALYSE="MONO_APPUI",
+    SPECTRE=(_F(LIST_AXE=("X", "Y", "Z"), SPEC_OSCI=sro02, ECHELLE=90.09),),
     COMB_MODE=_F(TYPE="CQC"),
-    COMB_DIRECTION=_F(TYPE="QUAD"),
+    COMB_DIRECTION="QUAD",
     OPTION=("EFGE_ELNO"),
+    TYPE_RESU=(_F(TYPE="VALE_TOTA"),),  # reponse totale
 )
 
 sismique_qs = COMB_SISM_MODAL(
     MODE_MECA=modes_dyn,
     AMOR_REDUIT=0.99,
-    CORR_FREQ="NON",
-    MODE_CORR=modes_sta,
-    MONO_APPUI="OUI",
-    EXCIT=_F(TRI_AXE=(1.0, 1.0, 1.0), SPEC_OSCI=sro99, ECHELLE=90.09),
+    MODE_CORR="OUI",
+    PSEUDO_MODE=modes_sta,
+    TYPE_ANALYSE="MONO_APPUI",
+    SPECTRE=(_F(LIST_AXE=("X", "Y", "Z"), SPEC_OSCI=sro99, ECHELLE=90.09),),
     COMB_MODE=_F(TYPE="CQC"),
-    COMB_DIRECTION=_F(TYPE="QUAD"),
+    COMB_DIRECTION="QUAD",
     OPTION=("EFGE_ELNO"),
+    TYPE_RESU=(_F(TYPE="VALE_TOTA"),),  # reponse totale
 )
 
 # sismique_dyn = sismique_tot - sismique_qs
@@ -212,7 +214,7 @@ ch_tot = CREA_CHAMP(
     TYPE_CHAM="ELNO_SIEF_R",
     RESULTAT=sismique_tot,
     NOM_CHAM="EFGE_ELNO",
-    NUME_ORDRE=4,
+    NOM_CAS="TOTA",
 )
 
 ch_qs = CREA_CHAMP(
@@ -220,7 +222,7 @@ ch_qs = CREA_CHAMP(
     TYPE_CHAM="ELNO_SIEF_R",
     RESULTAT=sismique_qs,
     NOM_CHAM="EFGE_ELNO",
-    NUME_ORDRE=4,
+    NOM_CAS="TOTA",
 )
 
 
@@ -236,16 +238,24 @@ ch_dyn = CREA_CHAMP(
 
 # on affecte le champ 4 fois pour obtenir un numero d'ordre 4
 # NUME_ORDRE n'est pas disponible dans CREA_RESU
+
+# sismique_dyn = CREA_RESU(
+#     OPERATION="AFFE",
+#     TYPE_RESU="MODE_MECA",
+#     NOM_CHAM="EFGE_ELNO",
+#     AFFE=(
+#         _F(CHAM_GD=ch_dyn, NUME_MODE=1, MODELE=modele),
+#         _F(CHAM_GD=ch_dyn, NUME_MODE=2, MODELE=modele),
+#         _F(CHAM_GD=ch_dyn, NUME_MODE=3, MODELE=modele),
+#         _F(CHAM_GD=ch_dyn, NUME_MODE=4, MODELE=modele),
+#     ),
+# )
+
 sismique_dyn = CREA_RESU(
     OPERATION="AFFE",
-    TYPE_RESU="MODE_MECA",
+    TYPE_RESU="MULT_ELAS",
     NOM_CHAM="EFGE_ELNO",
-    AFFE=(
-        _F(CHAM_GD=ch_dyn, NUME_MODE=1, MODELE=modele),
-        _F(CHAM_GD=ch_dyn, NUME_MODE=2, MODELE=modele),
-        _F(CHAM_GD=ch_dyn, NUME_MODE=3, MODELE=modele),
-        _F(CHAM_GD=ch_dyn, NUME_MODE=4, MODELE=modele),
-    ),
+    AFFE=(_F(CHAM_GD=ch_dyn, NOM_CAS="TOTA", MODELE=modele),),
 )
 
 # appel à POST_ROCHE : tous chargements
