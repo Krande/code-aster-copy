@@ -64,7 +64,7 @@ subroutine te0139(option, nomte)
     character(len=4) :: fami
     integer, parameter :: sz_tens = 6, ndim = 3
     integer :: i_node, i_dime
-    integer :: nno, npg, imatuu, lgpg, iret, ncd
+    integer :: nno, npg, imatuu, lgpg, iret
     integer :: ipoids, ivf, idfde, igeom, imate
     integer :: icontm, ivarim
     integer :: iinstm, iinstp, ideplm, ideplp, icompo, icarcr
@@ -83,7 +83,6 @@ subroutine te0139(option, nomte)
     real(kind=8) :: sdepl(3*27), svect(3*27), scont(6*27), smatr(3*27*3*27)
     real(kind=8) :: epsilo
     real(kind=8) :: varia(2*3*27*3*27)
-    real(kind=8), dimension(:), allocatable:: geom_updated
 ! --------------------------------------------------------------------------------------------------
 !
     icontp = 1
@@ -173,7 +172,7 @@ subroutine te0139(option, nomte)
     if (defo_comp .eq. 'PETIT') then
         call nmpl3d(fami, nno, npg, &
                     ipoids, ivf, idfde, &
-                    zr(igeom), typmod, option, zi(imate), &
+                    typmod, option, zi(imate), &
                     zk16(icompo), mult_comp, lgpg, zr(icarcr), &
                     zr(iinstm), zr(iinstp), &
                     zr(ideplm), zr(ideplp), &
@@ -183,20 +182,15 @@ subroutine te0139(option, nomte)
         if (codret .ne. 0) goto 999
 
     else if (defo_comp .eq. 'PETIT_REAC') then
-        ncd = nno*ndim
-        allocate (geom_updated(ncd))
-        geom_updated = zr(igeom:igeom+ncd)+zr(ideplm:ideplm+ncd)+zr(ideplp:ideplp+ncd)
-
         call nmpl3d(fami, nno, npg, &
                     ipoids, ivf, idfde, &
-                    geom_updated, typmod, option, zi(imate), &
+                    typmod, option, zi(imate), &
                     zk16(icompo), mult_comp, lgpg, zr(icarcr), &
                     zr(iinstm), zr(iinstp), &
                     zr(ideplm), zr(ideplp), &
                     angl_naut, zr(icontm), zr(ivarim), &
                     matsym, zr(icontp), zr(ivarip), &
                     zr(imatuu), zr(ivectu), codret)
-        deallocate (geom_updated)
         if (codret .ne. 0) goto 999
 
     else if (defo_comp .eq. 'SIMO_MIEHE') then
@@ -217,21 +211,6 @@ subroutine te0139(option, nomte)
                     zr(iinstm), zr(iinstp), &
                     zr(igeom), zr(ideplm), &
                     zr(ideplp), angl_naut, &
-                    zr(icontm), zr(icontp), &
-                    zr(ivarim), zr(ivarip), &
-                    matsym, zr(imatuu), zr(ivectu), &
-                    codret)
-        if (codret .ne. 0) goto 999
-
-    else if (defo_comp .eq. 'GROT_GDEP') then
-        call nmgr3d(option, typmod, &
-                    fami, zi(imate), &
-                    nno, npg, lgpg, &
-                    ipoids, ivf, zr(ivf), idfde, &
-                    zk16(icompo), zr(icarcr), mult_comp, &
-                    zr(iinstm), zr(iinstp), &
-                    zr(igeom), zr(ideplm), &
-                    zr(ideplp), &
                     zr(icontm), zr(icontp), &
                     zr(ivarim), zr(ivarip), &
                     matsym, zr(imatuu), zr(ivectu), &

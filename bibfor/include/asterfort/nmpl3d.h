@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 interface
     subroutine nmpl3d(fami  , nno      , npg   ,&
                       ipoids, ivf      , idfde ,&
-                      geom  , typmod   , option, imate ,&
+                      typmod   , option, imate ,&
                       compor, mult_comp, lgpg  , carcri,&
                       instam, instap   ,&
                       dispPrev , dispIncr    ,&
@@ -30,7 +30,6 @@ interface
         character(len=*), intent(in) :: fami
         integer, intent(in) :: nno, npg
         integer, intent(in) :: ipoids, ivf, idfde
-        real(kind=8), intent(in) :: geom(3, nno)
         character(len=8), intent(in) :: typmod(*)
         character(len=16), intent(in) :: option
         integer, intent(in) :: imate

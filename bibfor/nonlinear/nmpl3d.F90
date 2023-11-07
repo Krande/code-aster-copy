@@ -19,7 +19,7 @@
 !
 subroutine nmpl3d(fami, nno, npg, &
                   ipoids, ivf, idfde, &
-                  geom, typmod, option, imate, &
+                  typmod, option, imate, &
                   compor, mult_comp, lgpg, carcri, &
                   instam, instap, &
                   dispPrev, dispIncr, &
@@ -42,14 +42,12 @@ subroutine nmpl3d(fami, nno, npg, &
 #include "asterfort/codere.h"
 #include "asterfort/crirup.h"
 #include "asterfort/nmcomp.h"
-#include "asterfort/nmgeom.h"
 #include "asterfort/Behaviour_type.h"
 #include "FE_module.h"
 !
     character(len=*), intent(in) :: fami
     integer, intent(in) :: nno, npg
     integer, intent(in) :: ipoids, ivf, idfde
-    real(kind=8), intent(in) :: geom(3, nno)
     character(len=8), intent(in) :: typmod(*)
     character(len=16), intent(in) :: option
     integer, intent(in) :: imate
@@ -81,7 +79,6 @@ subroutine nmpl3d(fami, nno, npg, &
 ! IN  VFF     : VALEUR  DES FONCTIONS DE FORME
 ! IN  DFDE    : DERIVEE DES FONCTIONS DE FORME ELEMENT DE REFERENCE
 ! IN  DFDK    : DERIVEE DES FONCTIONS DE FORME ELEMENT DE REFERENCE
-! IN  GEOM    : COORDONEES DES NOEUDS
 ! IN  TYPMOD  : TYPE DE MODELISATION
 ! IN  OPTION  : OPTION DE CALCUL
 ! IN  IMATE   : MATERIAU CODE
@@ -109,18 +106,16 @@ subroutine nmpl3d(fami, nno, npg, &
     type(FE_Quadrature) :: FEQuad
     type(FE_basis) :: FEBasis
 !
-    integer, parameter :: ndim = 3, sz_tens = 6
+    integer, parameter :: ndim = 3
     aster_logical :: grand, axi
     aster_logical :: lVect, lMatr, lSigm
-    integer :: kpg, kk, j, m, j1, kkd
-    integer :: i_node, i_dime, i_tens
-    integer :: cod(npg)
+    integer :: kpg, i_tens
+    integer :: cod(MAX_QP)
     real(kind=8) :: BGSEval(3, MAX_BS)
     real(kind=8) :: def(6, MAX_BS, 3)
     real(kind=8) :: coorpg(3)
     real(kind=8) :: eps(6), deps(6)
-    real(kind=8) :: dsidep(6, 6), sigmPost(6), sig(6), sigmPrep(6)
-    real(kind=8) :: tmp
+    real(kind=8) :: dsidep(6, 6), sigmPost(6), sigmPrep(6)
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
     type(Behaviour_Integ) :: BEHinteg
 !
@@ -147,9 +142,9 @@ subroutine nmpl3d(fami, nno, npg, &
 ! - Prepare external state variables
 !
     call behaviourPrepESVAElem(carcri, typmod, &
-                               nno, FEQuad%nbQuadPoints, ndim, &
+                               FECell%nbnodes, FEQuad%nbQuadPoints, FECell%ndim, &
                                ipoids, ivf, idfde, &
-                               geom, BEHinteg, &
+                               FECell%coorno, BEHinteg, &
                                dispPrev, dispIncr)
 !
 ! - Loop on Gauss points
@@ -186,61 +181,7 @@ subroutine nmpl3d(fami, nno, npg, &
         end if
 ! ----- Rigidity matrix
         if (lMatr) then
-            if (matsym) then
-                do i_node = 1, nno
-                    do i_dime = 1, ndim
-                        kkd = (ndim*(i_node-1)+i_dime-1)*(ndim*(i_node-1)+i_dime)/2
-                        do i_tens = 1, sz_tens
-                            sig(i_tens) = 0.d0
-                            sig(i_tens) = sig(i_tens)+def(1, i_node, i_dime)*dsidep(1, i_tens)
-                            sig(i_tens) = sig(i_tens)+def(2, i_node, i_dime)*dsidep(2, i_tens)
-                            sig(i_tens) = sig(i_tens)+def(3, i_node, i_dime)*dsidep(3, i_tens)
-                            sig(i_tens) = sig(i_tens)+def(4, i_node, i_dime)*dsidep(4, i_tens)
-                            sig(i_tens) = sig(i_tens)+def(5, i_node, i_dime)*dsidep(5, i_tens)
-                            sig(i_tens) = sig(i_tens)+def(6, i_node, i_dime)*dsidep(6, i_tens)
-                        end do
-                        do j = 1, ndim
-                            do m = 1, i_node
-                                if (m .eq. i_node) then
-                                    j1 = i_dime
-                                else
-                                    j1 = ndim
-                                end if
-                                tmp = def(1, m, j)*sig(1)+def(2, m, j)*sig(2)+ &
-                                      def(3, m, j)*sig(3)+def(4, m, j)*sig(4)+ &
-                                      def(5, m, j)*sig(5)+def(6, m, j)*sig(6)
-                                if (j .le. j1) then
-                                    kk = kkd+ndim*(m-1)+j
-                                    matuu(kk) = matuu(kk)+tmp*FEQuad%weights(kpg)
-                                end if
-                            end do
-                        end do
-                    end do
-                end do
-            else
-                do i_node = 1, nno
-                    do i_dime = 1, ndim
-                        do i_tens = 1, sz_tens
-                            sig(i_tens) = 0.d0
-                            sig(i_tens) = sig(i_tens)+def(1, i_node, i_dime)*dsidep(1, i_tens)
-                            sig(i_tens) = sig(i_tens)+def(2, i_node, i_dime)*dsidep(2, i_tens)
-                            sig(i_tens) = sig(i_tens)+def(3, i_node, i_dime)*dsidep(3, i_tens)
-                            sig(i_tens) = sig(i_tens)+def(4, i_node, i_dime)*dsidep(4, i_tens)
-                            sig(i_tens) = sig(i_tens)+def(5, i_node, i_dime)*dsidep(5, i_tens)
-                            sig(i_tens) = sig(i_tens)+def(6, i_node, i_dime)*dsidep(6, i_tens)
-                        end do
-                        do j = 1, ndim
-                            do m = 1, nno
-                                tmp = def(1, m, j)*sig(1)+def(2, m, j)*sig(2)+ &
-                                      def(3, m, j)*sig(3)+def(4, m, j)*sig(4)+ &
-                                      def(5, m, j)*sig(5)+def(6, m, j)*sig(6)
-                                kk = ndim*nno*(ndim*(i_node-1)+i_dime-1)+ndim*(m-1)+j
-                                matuu(kk) = matuu(kk)+tmp*FEQuad%weights(kpg)
-                            end do
-                        end do
-                    end do
-                end do
-            end if
+            call FEStiffMatVSymAdd(FEBasis, def, FEQuad%weights(kpg), dsidep, matsym, matuu)
         end if
 ! ----- Internal forces
         if (lVect) then

@@ -40,7 +40,7 @@ module FE_stiffness_module
 ! --------------------------------------------------------------------------------------------------
 !
     public :: FEStiffVecScal, FEStiffMatScal, FEStiffVecScalAdd, FEStiffMatScalAdd
-    public :: FEStiffVecVSymAdd
+    public :: FEStiffVecVSymAdd, FEStiffMatVSymAdd
 !    private  ::
 !
 contains
@@ -256,6 +256,148 @@ contains
                                                 def(5, i, 3)*stress(5)+def(6, i, 3)*stress(6))
                 ind = ind+3
             end do
+        case default
+            ASSERT(ASTER_FALSE)
+        end select
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine FEStiffMatVSymAdd(FEBasis, def, weight, dsidep, l_matsym, mat)
+!
+        implicit none
+!
+        type(FE_Basis), intent(in)          :: FEBasis
+        real(kind=8), intent(in), dimension(6, MAX_BS, 3) :: def
+        real(kind=8), intent(in)            :: weight
+        aster_logical, intent(in)           :: l_matsym
+        real(kind=8), intent(inout)         :: mat(*)
+        real(kind=8), intent(in)            :: dsidep(6, 6)
+! --------------------------------------------------------------------------------------------------
+!   HHO
+!
+!   Compute the rigidity vector (with symetric stess)
+!   In hhoQuad      : Quadrature
+!   In hhoBasis     : tBasis function
+!   In ValuesQP     : Values of scalar function f at the quadrature points
+!   Out rhs         : (f, grad v)
+!
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: i_node, i_dime, i_tens, j, m, j1
+        integer :: kk, kkd
+        real(kind=8) :: tmp, sig(6)
+!
+        select case (FEBasis%ndim)
+        case (2)
+            if (l_matsym) then
+                do i_node = 1, FEBasis%size
+                    do i_dime = 1, 2
+                        kkd = (2*(i_node-1)+i_dime-1)*(2*(i_node-1)+i_dime)/2
+                        do i_tens = 1, 4
+                            sig(i_tens) = 0.d0
+                            sig(i_tens) = sig(i_tens)+def(1, i_node, i_dime)*dsidep(1, i_tens)
+                            sig(i_tens) = sig(i_tens)+def(2, i_node, i_dime)*dsidep(2, i_tens)
+                            sig(i_tens) = sig(i_tens)+def(3, i_node, i_dime)*dsidep(3, i_tens)
+                            sig(i_tens) = sig(i_tens)+def(4, i_node, i_dime)*dsidep(4, i_tens)
+                        end do
+                        do j = 1, 2
+                            do m = 1, i_node
+                                if (m .eq. i_node) then
+                                    j1 = i_dime
+                                else
+                                    j1 = 2
+                                end if
+                                tmp = def(1, m, j)*sig(1)+def(2, m, j)*sig(2)+ &
+                                      def(3, m, j)*sig(3)+def(4, m, j)*sig(4)
+                                if (j .le. j1) then
+                                    kk = kkd+2*(m-1)+j
+                                    mat(kk) = mat(kk)+tmp*weight
+                                end if
+                            end do
+                        end do
+                    end do
+                end do
+            else
+                do i_node = 1, FEBasis%size
+                    do i_dime = 1, 2
+                        do i_tens = 1, 4
+                            sig(i_tens) = 0.d0
+                            sig(i_tens) = sig(i_tens)+def(1, i_node, i_dime)*dsidep(1, i_tens)
+                            sig(i_tens) = sig(i_tens)+def(2, i_node, i_dime)*dsidep(2, i_tens)
+                            sig(i_tens) = sig(i_tens)+def(3, i_node, i_dime)*dsidep(3, i_tens)
+                            sig(i_tens) = sig(i_tens)+def(4, i_node, i_dime)*dsidep(4, i_tens)
+                        end do
+                        do j = 1, 2
+                            do m = 1, FEBasis%size
+                                tmp = def(1, m, j)*sig(1)+def(2, m, j)*sig(2)+ &
+                                      def(3, m, j)*sig(3)+def(4, m, j)*sig(4)
+                                kk = 2*FEBasis%size*(2*(i_node-1)+i_dime-1)+2*(m-1)+j
+                                mat(kk) = mat(kk)+tmp*weight
+                            end do
+                        end do
+                    end do
+                end do
+            end if
+        case (3)
+            if (l_matsym) then
+                do i_node = 1, FEBasis%size
+                    do i_dime = 1, 3
+                        kkd = (3*(i_node-1)+i_dime-1)*(3*(i_node-1)+i_dime)/2
+                        do i_tens = 1, 6
+                            sig(i_tens) = 0.d0
+                            sig(i_tens) = sig(i_tens)+def(1, i_node, i_dime)*dsidep(1, i_tens)
+                            sig(i_tens) = sig(i_tens)+def(2, i_node, i_dime)*dsidep(2, i_tens)
+                            sig(i_tens) = sig(i_tens)+def(3, i_node, i_dime)*dsidep(3, i_tens)
+                            sig(i_tens) = sig(i_tens)+def(4, i_node, i_dime)*dsidep(4, i_tens)
+                            sig(i_tens) = sig(i_tens)+def(5, i_node, i_dime)*dsidep(5, i_tens)
+                            sig(i_tens) = sig(i_tens)+def(6, i_node, i_dime)*dsidep(6, i_tens)
+                        end do
+                        do j = 1, 3
+                            do m = 1, i_node
+                                if (m .eq. i_node) then
+                                    j1 = i_dime
+                                else
+                                    j1 = 3
+                                end if
+                                tmp = def(1, m, j)*sig(1)+def(2, m, j)*sig(2)+ &
+                                      def(3, m, j)*sig(3)+def(4, m, j)*sig(4)+ &
+                                      def(5, m, j)*sig(5)+def(6, m, j)*sig(6)
+                                if (j .le. j1) then
+                                    kk = kkd+3*(m-1)+j
+                                    mat(kk) = mat(kk)+tmp*weight
+                                end if
+                            end do
+                        end do
+                    end do
+                end do
+            else
+                do i_node = 1, FEBasis%size
+                    do i_dime = 1, 3
+                        do i_tens = 1, 6
+                            sig(i_tens) = 0.d0
+                            sig(i_tens) = sig(i_tens)+def(1, i_node, i_dime)*dsidep(1, i_tens)
+                            sig(i_tens) = sig(i_tens)+def(2, i_node, i_dime)*dsidep(2, i_tens)
+                            sig(i_tens) = sig(i_tens)+def(3, i_node, i_dime)*dsidep(3, i_tens)
+                            sig(i_tens) = sig(i_tens)+def(4, i_node, i_dime)*dsidep(4, i_tens)
+                            sig(i_tens) = sig(i_tens)+def(5, i_node, i_dime)*dsidep(5, i_tens)
+                            sig(i_tens) = sig(i_tens)+def(6, i_node, i_dime)*dsidep(6, i_tens)
+                        end do
+                        do j = 1, 3
+                            do m = 1, FEBasis%size
+                                tmp = def(1, m, j)*sig(1)+def(2, m, j)*sig(2)+ &
+                                      def(3, m, j)*sig(3)+def(4, m, j)*sig(4)+ &
+                                      def(5, m, j)*sig(5)+def(6, m, j)*sig(6)
+                                kk = 3*FEBasis%size*(3*(i_node-1)+i_dime-1)+3*(m-1)+j
+                                mat(kk) = mat(kk)+tmp*weight
+                            end do
+                        end do
+                    end do
+                end do
+            end if
         case default
             ASSERT(ASTER_FALSE)
         end select
