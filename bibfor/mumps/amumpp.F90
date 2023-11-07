@@ -92,15 +92,16 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
     type(zmumps_struc), pointer :: zmpsk => null()
     integer :: n, nnbsol, rang, lmat, i, ierd, idvalc, k, ifm, niv
     integer :: jj, nbeql, nuglo, jrhs, j, dime, ntot, nec, nlili, ili
-    integer :: jrefn, jmlogl, jdeeq, nuno, nucmp, lonmax
-    integer :: nbno_prno, ino, ieq, nbcmp, jdee2, idprn1, idprn2
+    integer :: jrefn, jmlogl, jdeeq, nuno, nucmp, lonmax, iret
+    integer :: nbno_prno, ino, ieq, nbcmp, jdee2, idprn1, idprn2, jconl
+    integer :: iret1, iret2, iret3, js1, js2, js3, izrhs, i1, i2, nzrhs
     character(len=1) :: rouc
     character(len=4) :: etam
     character(len=8) :: mesh, k8bid
     character(len=14) :: nonu
     character(len=19) :: nomat, nosolv
-    character(len=24) :: vcival, nonulg
-    aster_logical :: ltypr, lverif
+    character(len=24) :: vcival, nonulg, kmumps_sparse(3), conl
+    aster_logical :: ltypr, lverif, lrhs_sparse, lverbose
     aster_logical, parameter :: l_debug = ASTER_FALSE
     real(kind=8) :: rr4max, raux, rmin, rmax, rtest, valr(2)
     complex(kind=8) :: cbid, caux
@@ -121,6 +122,9 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
 ! pour verifier la norme de la solution produite
     lverif = .true.
     lverif = .false.
+! pour forcer le mode VERBOSE en multiple RHS creux
+    lverbose = .true.
+    lverbose = .false.
 !
 !     ------------------------------------------------
 !     INITS
@@ -172,6 +176,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
     etam = etams(kxmps)
 !
     vcival = vcine//'.VALE'
+    call jeexin(vcival, ierd)
     call mtdscr(nomat)
     call jeveuo(nomat//'.&INT', 'E', lmat)
 !
@@ -184,6 +189,27 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
     else
         nbeql = n
     end if
+!
+! Pour appel a MUMPS solve en mode sparse: initialisations
+    kmumps_sparse(1) = '&&MUMPS.SPARSE1'
+    kmumps_sparse(2) = '&&MUMPS.SPARSE2'
+    kmumps_sparse(3) = '&&MUMPS.SPARSE3'
+    lrhs_sparse = .false.
+    iret1 = 0
+    iret2 = 0
+    iret3 = 0
+    call jeexin(kmumps_sparse(1), iret1)
+    call jeexin(kmumps_sparse(2), iret2)
+    call jeexin(kmumps_sparse(3), iret3)
+    if (((iret1*iret2*iret3) .ne. 0) .and. (.not. lmhpc) .and. (ierd .eq. 0)) then
+        ASSERT(type .eq. 'D')
+        ASSERT(.not. lpreco)
+        ASSERT(prepos)
+        lrhs_sparse = .true.
+    else
+        lrhs_sparse = .false.
+    end if
+
 !   Adresses needed to get the solution wrt nodes and dof numbers (see below)
     if (l_debug) then
         call jeveuo(nonu//'.NUME.REFN', 'L', jrefn)
@@ -228,8 +254,49 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
     end if
 !
 !
-!
-    if (option .eq. 0) then
+!! Pour appel a MUMPS solve en mode sparse: preparation des donnees
+    if ((option .eq. 0) .and. (lrhs_sparse)) then
+        call jeveuo(kmumps_sparse(1), 'L', js1)
+        js1 = js1-1
+        call jeveuo(kmumps_sparse(2), 'L', js2)
+        js2 = js2-1
+        call jeveuo(kmumps_sparse(3), 'L', js3)
+        izrhs = zi(js3)
+        i1 = zi(js3+izrhs)
+        i2 = zi(js3+izrhs+nbsol)
+        nzrhs = i2-i1
+        ! Traitements simplifies
+        if (rang .eq. 0) then
+            conl = zk24(zi(lmat+1)) (1:19)//'.CONL'
+            call jeexin(conl, iret)
+            ASSERT(iret .ne. 0)
+            call jeveuo(conl, 'L', jconl)
+            jconl = jconl-1
+            allocate (dmpsk%rhs(nnbsol))
+            dmpsk%nz_rhs = nzrhs
+            allocate (dmpsk%rhs_sparse(nzrhs))
+            allocate (dmpsk%irhs_sparse(nzrhs))
+            do i = 0, dmpsk%nz_rhs-1
+                dmpsk%rhs_sparse(i+1) = zr(js1+i1+i)*zr(jconl+zi(js2+i1+i))
+                dmpsk%irhs_sparse(i+1) = zi(js2+i1+i)
+            end do
+            allocate (dmpsk%irhs_ptr(nbsol+1))
+            dmpsk%irhs_ptr(1) = 1
+            do i = 0, nbsol
+                dmpsk%irhs_ptr(i+1) = zi(js3+izrhs+i)-(i1-1)
+            end do
+
+            if (lverbose) then
+                write (6, *) '<amumpp> ibatch/batch_size/nz_rhs/i1/i2=', izrhs, nbsol, nzrhs, i1, i2
+                do i = 1, dmpsk%nz_rhs
+                    write (6, *) i, dmpsk%rhs_sparse(i), dmpsk%irhs_sparse(i)
+                end do
+                do i = 1, nbsol+1
+                    write (6, *) i, dmpsk%irhs_ptr(i)
+                end do
+            end if
+        end if
+    else if ((option .eq. 0) .and. (.not. lrhs_sparse)) then
 !
         if (rang .eq. 0) then
             if (type .eq. 'S') then
@@ -256,16 +323,13 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
 !           --- MISE A L'ECHELLE DES LAGRANGES DANS LE SECOND MEMBRE
 !           --- RANG 0 UNIQUEMENT
                 if (ltypr) then
-                    call mrconl('MULT', lmat, nbeql, 'R', rsolu, &
-                                nbsol)
+                    call mrconl('MULT', lmat, nbeql, 'R', rsolu, nbsol)
                 else
-                    call mcconl('MULT', lmat, nbeql, 'C', csolu, &
-                                nbsol)
+                    call mcconl('MULT', lmat, nbeql, 'C', csolu, nbsol)
                 end if
             end if
 !
 !           --- PRISE EN COMPTE DES CHARGES CINEMATIQUES :
-            call jeexin(vcival, ierd)
             if (ierd .ne. 0) then
 !              --- ON RAZ RSOLU SUR LES RANGS > 0 POUR NE CUMULER QUE
 !              --- LA CONTRIBUTION DES CHARGES CINEMATIQUES EN DISTRIBUE

@@ -66,7 +66,7 @@ subroutine crsvmu(motfac, solveu, istop, nprec, &
     character(len=19) :: k19b, partsd
     character(len=24) :: kmonit(12)
     integer :: eximo1, eximo2, eximo3, eximod
-    integer :: iexi, redmpi
+    integer :: iexi, redmpi, nbrhs
     aster_logical :: ldgrel
     real(kind=8), pointer :: slvr(:) => null()
     character(len=24), pointer :: prtk(:) => null()
@@ -227,6 +227,9 @@ subroutine crsvmu(motfac, solveu, istop, nprec, &
     ASSERT(ibid .eq. 1)
     call getvtx(motfac, 'ELIM_LAGR', iocc=1, scal=klag2, nbret=ibid)
     ASSERT(ibid .eq. 1)
+    nbrhs = 1
+    call getvis(motfac, 'NB_RHS', iocc=1, scal=nbrhs, nbret=ibid)
+    ASSERT(ibid .eq. 1)
 !
     eps = -1.d0
     call getvr8(motfac, 'RESI_RELA', iocc=1, scal=eps, nbret=ibid)
@@ -270,7 +273,7 @@ subroutine crsvmu(motfac, solveu, istop, nprec, &
     slvi(5) = -9999
     slvi(6) = 1
     slvi(7) = redmpi
-    slvi(8) = 0
+    slvi(8) = nbrhs
 !
     call jedema()
 end subroutine

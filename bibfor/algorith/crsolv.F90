@@ -112,7 +112,11 @@ subroutine crsolv(method, renum, kacmum, blreps, solve, bas)
     zi(islvi-1+5) = -9999
     zi(islvi-1+6) = -9999
     zi(islvi-1+7) = -9999
-    zi(islvi-1+8) = 0
+    if (method .eq. 'MUMPS') then
+        zi(islvi-1+8) = 1
+    else
+        zi(islvi-1+8) = 0
+    end if
     zi(islvi-1+9) = 0
 !
     call jedema()

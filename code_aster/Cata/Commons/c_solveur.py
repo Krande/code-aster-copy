@@ -301,6 +301,13 @@ def C_SOLVEUR(command, base=None):  # COMMUN#
         _BlocMU["REDUCTION_MPI"] = SIMP(statut="f", typ="I", defaut=0, val_min=0)
     # --------------------------------------------------------------------
 
+    if command == "MODE_STATIQUE":
+        _BlocMU["NB_RHS"] = SIMP(statut="f", typ="I", defaut=-128, val_min=-1024, val_max=1024)
+    else:
+        _BlocMU["NB_RHS"] = SIMP(statut="f", typ="I", defaut=1, val_min=1, val_max=32)
+
+    # --------------------------------------------------------------------
+
     if _resol:
         if _type == "LIN":
             _BlocMU["RESI_RELA"] = SIMP(statut="f", typ="R", defaut=1.0e-6)

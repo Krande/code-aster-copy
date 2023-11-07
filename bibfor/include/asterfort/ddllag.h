@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,11 +19,12 @@
 !
 !
 interface
-    subroutine ddllag(nume, iddl, neq, lagr1, lagr2)
-        character(len=*) :: nume
-        integer :: iddl
-        integer :: neq
-        integer :: lagr1
-        integer :: lagr2
+    subroutine ddllag(nume, iddl, neq, lagr1, lagr2, ideb)
+        character(len=*), intent(in)  :: nume
+        integer, intent(in)           :: iddl
+        integer, intent(in)           :: neq
+        integer, intent(out)          :: lagr1
+        integer, intent(out)          :: lagr2
+        integer, intent(in), optional :: ideb
     end subroutine ddllag
 end interface

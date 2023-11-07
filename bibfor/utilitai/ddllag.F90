@@ -16,18 +16,27 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ddllag(nume, iddl, neq, lagr1, lagr2)
+subroutine ddllag(nume, iddl, neq, lagr1, lagr2, ideb)
+
     implicit none
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-    integer :: iddl, neq, lagr1, lagr2
-    character(len=*) :: nume
+    integer, intent(in)           :: iddl, neq
+    integer, intent(out)          :: lagr1, lagr2
+    character(len=*), intent(in)  :: nume
+    integer, intent(in), optional :: ideb
+
 !
 !     RECHERCHE LES DEUX LAGRANGES ASSOCIES AU DDL IDDL.
 !     CE IDDL DDL EST BLOQUE ET ON NE LE VERIFIE PAS.
 !     DANS LE CAS OU IDDL N'EST PAS BLOQUE, LAGR1=LAGR2=0
+!
+!     SI LE PARAMETRE OPTIONNEL IDEB EST RENSEIGNE, ON PEUT PARCOURIR
+!     LA LISTE DES DDLS POTENTIELLEMENT PLUS EFFICACEMMENT EN PARTANT
+!     D'UN POINT DE DEPART IDEB > 1. SI ON N'A RIEN TROUVE ON FAIT, EN
+!     DERNIER RESSORT LE PARCOURS DE 1 A IDEB-1.
 !
 ! IN  : NUME   : NOM D'UN NUME_DDL
 ! IN  : IDDL   : NUMERO D'UN DDL BLOQUE
@@ -38,11 +47,19 @@ subroutine ddllag(nume, iddl, neq, lagr1, lagr2)
     character(len=24) :: nomnu
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, icas, icmp, inoe, nc, nn
+    integer :: i, icas, icmp, inoe, nc, nn, idebu
     integer, pointer :: deeq(:) => null()
 !
 !-----------------------------------------------------------------------
     call jemarq()
+
+    idebu = 1
+    if (present(ideb)) then
+! VALEUR LICITE
+        if ((ideb .ge. 1) .and. (ideb .le. neq)) then
+            idebu = ideb
+        end if
+    end if
     lagr1 = 0
     lagr2 = 0
     nomnu(1:14) = nume
@@ -52,7 +69,7 @@ subroutine ddllag(nume, iddl, neq, lagr1, lagr2)
     inoe = deeq(1+(2*(iddl-1))+1-1)
     icmp = -deeq(1+(2*(iddl-1))+2-1)
     icas = 1
-    do i = 1, neq
+    do i = idebu, neq
         nn = deeq(1+(2*(i-1))+1-1)
         nc = deeq(1+(2*(i-1))+2-1)
         if (nn .eq. inoe .and. nc .eq. icmp) then
@@ -61,6 +78,22 @@ subroutine ddllag(nume, iddl, neq, lagr1, lagr2)
                 icas = 2
             else
                 lagr2 = i
+!               write(6,*)'<ddlag> standard',neq,inoe,icmp,lagr1,lagr2
+                goto 999
+            end if
+        end if
+    end do
+! SOLUTION DE RATTRAPAGE AU CAS OU (SI IDEB >1)
+    do i = 1, idebu-1
+        nn = deeq(1+(2*(i-1))+1-1)
+        nc = deeq(1+(2*(i-1))+2-1)
+        if (nn .eq. inoe .and. nc .eq. icmp) then
+            if (icas .eq. 1) then
+                lagr1 = i
+                icas = 2
+            else
+                lagr2 = i
+!               write(6,*)'<ddlag> secours',neq,inoe,icmp,lagr1,lagr2
                 goto 999
             end if
         end if

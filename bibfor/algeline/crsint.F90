@@ -80,7 +80,7 @@ subroutine crsint(solveu)
     zi(islvi-1+5) = -9999
     zi(islvi-1+6) = 1
     zi(islvi-1+7) = -9999
-    zi(islvi-1+8) = 0
+    zi(islvi-1+8) = 1
 
 !   -- si on ne veut pas se planter dans preres avec INFO=2,
 !      il faut ajouter tout ce bazar :

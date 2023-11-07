@@ -42,6 +42,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc, lbloc)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/utmess.h"
 #include "jeveux.h"
 #include "threading_interfaces.h"
@@ -59,7 +60,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc, lbloc)
     type(dmumps_struc), pointer :: dmpsk => null()
     type(zmumps_struc), pointer :: zmpsk => null()
     integer :: ifm, niv, i, isymm, isymv, isym, nbproc, i1, i2
-    integer :: nprec, nbomp
+    integer :: nprec, nbomp, nbrhs, iret1, iret2, iret3
     integer :: k370, k371, k401, k268, iaux, redmpi
     mumps_int :: i4, icntl(nicntl)
     real(kind=8) :: cntl(ncntl), rr4max, blreps
@@ -68,6 +69,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc, lbloc)
     character(len=8) :: kacmum
     character(len=14) :: nonu
     character(len=19) :: nomat, nosolv
+    character(len=24) :: kmumps_sparse(3)
     character(len=24), pointer :: refa(:) => null()
     real(kind=8), pointer :: slvr(:) => null()
     character(len=24), pointer :: slvk(:) => null()
@@ -111,6 +113,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc, lbloc)
     kacmum = trim(adjustl(slvk(5)))
     blreps = slvr(4)
     redmpi = slvi(7)
+    nbrhs = slvi(8)
 !
 !       -----------------------------------------------------
 !        INITIALISATION SYM, PAR ET JOB POUR MUMPS (CREATION)
@@ -517,8 +520,8 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc, lbloc)
         icntl(19) = 0
         icntl(26) = 0
 !
-! ---     PARAMETRE POUR RESOLUTIONS SIMULTANEES
-        icntl(27) = -8
+! ---     MULTIPLE RHS
+        icntl(27) = -32
 !
 ! ---     PAS DE CALCUL DE TERMES DE A-1
         icntl(30) = 0
@@ -630,6 +633,18 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc, lbloc)
                 end if
             end if
         end select
+
+! --     AFFECTATIONS A LA SD MUMPS
+! ---     PARAMETRE POUR RESOLUTIONS SIMULTANEES
+        iret1 = 0
+        iret2 = 0
+        iret3 = 0
+        kmumps_sparse(1) = '&&MUMPS.SPARSE1'
+        kmumps_sparse(2) = '&&MUMPS.SPARSE2'
+        kmumps_sparse(3) = '&&MUMPS.SPARSE3'
+        call jeexin(kmumps_sparse(1), iret1)
+        call jeexin(kmumps_sparse(2), iret2)
+        call jeexin(kmumps_sparse(3), iret3)
         if (type .eq. 'S') then
             smpsk%icntl(1) = icntl(1)
             smpsk%icntl(2) = icntl(2)
@@ -654,6 +669,13 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc, lbloc)
             dmpsk%icntl(10) = icntl(10)
             dmpsk%icntl(11) = icntl(11)
             dmpsk%cntl(2) = cntl(2)
+!
+! cas particulier des rhs par blocs, denses (nbrhs>1) ou sparses (nbrhs quelconque, meme 1)
+! pour conserver les post-traitements qualite avec nbrhs=1
+            if (nbrhs .ne. 1) then
+                if ((nbrhs .lt. 0) .and. ((iret1*iret2*iret3) .ne. 0)) dmpsk%icntl(20) = 3
+                dmpsk%icntl(27) = -abs(nbrhs)
+            end if
         else if (type .eq. 'Z') then
             zmpsk%icntl(1) = icntl(1)
             zmpsk%icntl(2) = icntl(2)

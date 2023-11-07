@@ -109,7 +109,10 @@ modes_dyn = CALC_MODES(MATR_RIGI=matrice_rigi, MATR_MASS=matrice_mass, CALC_FREQ
 modes_dyn = CALC_CHAMP(reuse=modes_dyn, RESULTAT=modes_dyn, CONTRAINTE="EFGE_ELNO")
 
 modes_sta = MODE_STATIQUE(
-    MATR_RIGI=matrice_rigi, MATR_MASS=matrice_mass, PSEUDO_MODE=_F(AXE=("X", "Y", "Z"))
+    SOLVEUR=_F(NB_RHS=2, RESI_RELA=-1.0),
+    MATR_RIGI=matrice_rigi,
+    MATR_MASS=matrice_mass,
+    PSEUDO_MODE=_F(AXE=("X", "Y", "Z")),
 )
 modes_sta = CALC_CHAMP(reuse=modes_sta, RESULTAT=modes_sta, CONTRAINTE="EFGE_ELNO")
 
