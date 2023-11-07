@@ -700,6 +700,10 @@ class ds_dict(ASSD):
     pass
 
 
+class evol_noli_dict(ds_dict):
+    pass
+
+
 class evol_elas_dict(ds_dict):
     pass
 

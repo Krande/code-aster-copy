@@ -33,11 +33,11 @@ CREA_COUPE = MACRO(
     COUPE=SIMP(statut="o", typ=table_sdaster),
     MAILLAGE=SIMP(statut="o", typ=(maillage_sdaster, maillage_p)),
     # Nommage automatique des coupes
-    NOM_AUTO=SIMP(statut="o", typ="TXM", defaut="NON", into=("OUI", "NON")),
+    NOM_AUTO=SIMP(statut="f", typ="TXM", defaut="NON", into=("OUI", "NON")),
     b_nom_auto=BLOC(
         condition="""(equal_to("NOM_AUTO", 'OUI'))""",
         PREFIXE=SIMP(
-            statut="o", typ="TXM", defaut="", fr=tr("préfixe à ajouter au début du nom des coupes")
+            statut="f", typ="TXM", defaut="", fr=tr("préfixe à ajouter au début du nom des coupes")
         ),
         PREM_NUME=SIMP(
             statut="f", typ="I", defaut=1, fr=tr("numéro à partir duquel la numérotation commence")
@@ -59,7 +59,7 @@ CREA_COUPE = MACRO(
         ),
         AXE=SIMP(statut="o", typ="R", min=3, max=3),
         CENTRE=SIMP(statut="o", typ="R", min=3, max=3),
-        ANGLE_AUTO=SIMP(statut="o", typ="TXM", defaut="OUI", into=("OUI", "NON")),
+        ANGLE_AUTO=SIMP(statut="f", typ="TXM", defaut="OUI", into=("OUI", "NON")),
         b_angle_auto_oui=BLOC(
             condition="""(equal_to("ANGLE_AUTO", 'OUI'))""",
             NOMBRE=SIMP(statut="o", typ="I", max=1, val_min=2),

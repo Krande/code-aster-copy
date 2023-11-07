@@ -4,7 +4,6 @@ P ncpus 1
 P mpi_nbcpu 1
 P mpi_nbnoeud 1
 P testlist verification sequential
-
-F comm zzzz138b.comm  D  1
-F libr zzzz138b.mmed D  20
-F libr zzzz138b/zzzz138b.csv D  10
+F comm zzzz139a.comm  D  1
+F libr zzzz139a.mmed D  20
+F libr zzzz139a.10 D  10

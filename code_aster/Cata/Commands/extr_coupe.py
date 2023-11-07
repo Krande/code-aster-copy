@@ -32,8 +32,8 @@ EXTR_COUPE = MACRO(
     ),
     COUPES=SIMP(statut="o", typ=table_sdaster),
     NOM_CHAM=SIMP(statut="f", typ="TXM", validators=NoRepeat(), max="**", into=C_NOM_CHAM_INTO()),
-    REPERE=SIMP(statut="o", typ="TXM", defaut="GLOBAL", into=("GLOBAL", "LOCAL")),
-    LINEARISATION=SIMP(statut="o", typ="TXM", defaut="NON", into=("OUI", "NON")),
+    REPERE=SIMP(statut="f", typ="TXM", defaut="GLOBAL", into=("GLOBAL", "LOCAL")),
+    LINEARISATION=SIMP(statut="f", typ="TXM", defaut="NON", into=("OUI", "NON")),
     b_linearisation=BLOC(
         condition="""equal_to("LINEARISATION", "NON")""",
         REPARTITION=SIMP(

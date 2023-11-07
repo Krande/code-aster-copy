@@ -365,7 +365,7 @@ def line_coupe(resu, path_name, mc_mesh, mesh_aster):
             field.setName("Line-" + field_name)
             field.setMesh(mesh_field)
             ctime = resu.getTimeValue(no)
-            field.setTime(ctime, 0, no)
+            field.setTime(ctime, no, no)
             fieldArray = mc.DataArrayDouble(sigm, mesh_field.getNumberOfNodes(), nb_cmp)
             fieldArray.setName(field_name + "_" + str(no))
             for iCmp in range(nb_cmp):

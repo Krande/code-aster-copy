@@ -51,7 +51,8 @@ cata_msg = {
         """Le groupe appelé "%(k1)s" utilisé dans le mot clé REVO n'a pas été trouvé dans le tableau d'entrée."""
     ),
     12: _(
-        """Le nom de coupe %(k1)s généréée par le mot clé REVO, est présent plusieurs fois dans le tableau de sortie."""
+        """Le nom de coupe %(k1)s générée par le mot clé REVO, est présent plusieurs fois dans le tableau de sortie."""
     ),
     13: _("""0° n'est pas un angle valide pour l'opérande %(k1)s du mot clé REVO."""),
+    14: _("""Il n'y a pas assez de point sur la coupe %(k1)s. Il en faut au minimum 2."""),
 }

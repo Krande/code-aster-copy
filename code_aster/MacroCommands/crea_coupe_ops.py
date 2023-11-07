@@ -129,6 +129,7 @@ class TableCoupes(Table):
         self.check_keywords()
         self.check_types()
         self.check_path_name()
+        self.check_path_nb_nodes()
 
     def check_keywords(self):
         """Check if the input table has the right column names"""
@@ -160,6 +161,13 @@ class TableCoupes(Table):
                     UTMESS("F", "COUPE_7", valk=name)
             else:
                 already_set_name.append(name)
+
+    def check_path_nb_nodes(self):
+        """Check if all path have a minimal number of nodes of 2"""
+        for line in self.rows:
+            nb_nodes = int(line[TableCoupes.ALL_KEYWORDS[TableCoupes.NUMBER_OF_NODES_ID]])
+            if nb_nodes < 2:
+                UTMESS("F", "COUPE_14", valk=[line[TableCoupes.ALL_KEYWORDS[TableCoupes.NAMES_ID]]])
 
     def change_names(self, auto_name="NON", prefix=None, first_num=None, progression=None):
         """
@@ -228,7 +236,7 @@ class TableCoupes(Table):
         for j, line in enumerate(self.rows):
             surf_in = str(line[TableCoupes.ALL_KEYWORDS[TableCoupes.MAIL_IN_ID]])
             surf_out = str(line[TableCoupes.ALL_KEYWORDS[TableCoupes.MAIL_OUT_ID]])
-            direction = self.get_direction(j)
+            direction, length = self.get_direction(j)
             path_name = str(line[TableCoupes.ALL_KEYWORDS[TableCoupes.NAMES_ID]])
             for i in range(2):
                 found_projection = False
@@ -251,12 +259,12 @@ class TableCoupes(Table):
                     elem_type = correspondance_types[mesh.getCellTypeName(element)]
                     elem_coords = []
                     for node in element_nodes:
-                        elem_coords.append(coordinates[node - 1, :].tolist())
+                        elem_coords.append(coordinates[node, :].tolist())
                     elem_coords = sum(elem_coords, [])
                     elem_size = _compute_elem_size(elem_coords, DIMENSION)
                     mesh_projection = 1
                     if _check_if_not_null_jacobian(
-                        coordinates[np.array(element_nodes) - 1, :], direction, dim
+                        np.array(elem_coords).reshape(-1, DIMENSION), direction, dim
                     ):
                         mesh_projection, beta, ksi1, ksi2 = projectionAlongDirection(
                             type_elem=elem_type,
@@ -264,8 +272,8 @@ class TableCoupes(Table):
                             nb_dim=dim,
                             elem_coor=elem_coords,
                             pt_coor=point,
-                            iter_maxi=10,
-                            tole_maxi=1.0e-3,
+                            iter_maxi=1000,
+                            tole_maxi=1.0e-6,
                             proj_dire=direction,
                         )
                     if mesh_projection < 1:
@@ -279,10 +287,12 @@ class TableCoupes(Table):
                                 np.max(coordinates, axis=None) - np.min(coordinates, axis=None)
                             ):
                                 if (
-                                    abs(beta - beta_old) / abs(beta_old) > 1e-9
-                                    and abs(beta - beta_old) > 1e-3 * elem_size
+                                    abs(beta - beta_old) > 1e-3 * abs(beta_old)
+                                    and abs(beta - beta_old) > 1e-1 * elem_size
                                 ):
-                                    UTMESS("F", "COUPE_3", valk=[surf, path_name])
+                                    if max(abs(beta), abs(beta_old)) > 5e-2 * length:
+                                        k_values = [surf, path_name]
+                                        UTMESS("F", "COUPE_3", valk=k_values)
                             beta_old = beta
                 if not found_projection:
                     UTMESS("F", "COUPE_6", valk=[surf, path_name])
@@ -312,7 +322,9 @@ class TableCoupes(Table):
             line[self.para[point_id + 2]],
         ]
         vect_dir = [xout - xin for xin, xout in zip(points_in, points_out)]
-        return vect_dir
+        length = np.linalg.norm(np.array(vect_dir))
+        vect_dir = [x / length for x in vect_dir]
+        return vect_dir, length
 
     def _check_group_maill(self, mesh):
         """
@@ -472,8 +484,13 @@ def _check_if_not_null_jacobian(coords, vect, dim, tole=1.0e-9):
 
 def _compute_elem_size(node_coords, dim):
     """
-    Compute the element size as the maximal distance between all points un a given list sorted
-    [x1, y1, z1, x2, y2, z2, ..., xn, yn, zn]
+    <<<<<<< HEAD
+        Compute the element size as the maximal distance between all points un a given list sorted
+        [x1, y1, z1, x2, y2, z2, ..., xn, yn, zn]
+    =======
+            Compute the element size as the maximal distance between all points in a given list sorted
+            [x1, y1, z1, x2, y2, z2, ..., xn, yn, zn]
+    >>>>>>> 94ff0c3b39 ([#33807] CREA_COUPE bug fix: node numbering, multiple intersections)
     """
     elem_size = 0.0
     node_coords = np.reshape(np.array(node_coords), (-1, dim))
