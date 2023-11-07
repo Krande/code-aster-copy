@@ -732,6 +732,37 @@ class Mesh(BaseMesh):
         2. __init__(self: libaster.Mesh, arg0: str) -> None
         """
 
+    def convertToBiQuadratic(self, info=1):
+        """Convert the mesh to a bi-quadratic one.
+        For cells that have no bi-quadratic version, the quadratic version is used.
+
+        Arguments:
+            info (int) : verbosity mode (1 or 2). Default 1.
+
+        Returns:
+            Mesh: the bi-quadratic mesh.
+        """
+
+    def convertToLinear(self, info=1):
+        """Convert the mesh to a linear one.
+
+        Arguments:
+            info (int) : verbosity mode (1 or 2). Default 1.
+
+        Returns:
+            Mesh: the linearized mesh.
+        """
+
+    def convertToQuadratic(self, info=1):
+        """Convert the mesh to a quadratic one.
+
+        Arguments:
+            info (int) : verbosity mode (1 or 2). Default 1.
+
+        Returns:
+            Mesh: the quadratic mesh.
+        """
+
     def getCells(self, *args, **kwargs):
         """Overloaded function.
 
@@ -12768,6 +12799,37 @@ class ParallelMesh(BaseMesh):
         1. __init__(self: libaster.ParallelMesh) -> None
 
         2. __init__(self: libaster.ParallelMesh, arg0: str) -> None
+        """
+
+    def convertToBiQuadratic(self, info=1):
+        """Convert the mesh to a bi-quadratic one.
+        For cells that have no bi-quadratic version, the quadratic version is used.
+
+        Arguments:
+            info (int) : verbosity mode (1 or 2). Default 1.
+
+        Returns:
+            ParallelMesh: the bi-quadratic mesh.
+        """
+
+    def convertToLinear(self, info=1):
+        """Convert the mesh to a linear one.
+
+        Arguments:
+            info (int) : verbosity mode (1 or 2). Default 1.
+
+        Returns:
+            ParallelMesh: the linearized mesh.
+        """
+
+    def convertToQuadratic(self, info=1):
+        """Convert the mesh to a quadratic one.
+
+        Arguments:
+            info (int) : verbosity mode (1 or 2). Default 1.
+
+        Returns:
+            ParallelMesh: the quadratic mesh.
         """
 
     def getCells(self, *args, **kwargs):
