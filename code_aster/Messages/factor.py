@@ -300,6 +300,18 @@ Solveur MUMPS :
   Limite atteinte : le solveur MUMPS est utilisé par plus de %(i1)d matrices simultanément.
 """
     ),
+    61: _(
+        """
+Solveur MUMPS :
+  L'occurence MUMPS associée à la matrice de travail n'a pas été trouvée.
+  C'est probablement une erreur de programmation, contactez l'équipe de développement.
+
+Conseils :
+  En attendant, si vous utilisez MUMPS en tant que préconditionneur de PETSc vous pouvez
+  probablement changer d'option et l'utiliser en tant que solveur direct:
+  Mot-clé: SOLVEUR=_F(METHODE='MUMPS') au lieu de SOLVEUR=_F(METHODE='PETSC'...)
+"""
+    ),
     62: _(
         """
 Solveur MUMPS :

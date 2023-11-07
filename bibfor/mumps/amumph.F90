@@ -291,6 +291,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu, &
         end if
     end do
     if (action(1:5) .eq. 'DETR_') goto 999
+    if (action(1:6) .eq. 'RESOUD') call utmess('F', 'FACTOR_61')
 !
 !        Y-A-T-IL ENCORE UNE PLACE LIBRE ?
     do k = 1, nmxins
