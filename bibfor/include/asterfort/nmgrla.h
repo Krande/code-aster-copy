@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ interface
     subroutine nmgrla(option  , typmod  ,&
                       fami    , imate   ,&
                       ndim    , nno     , npg     , lgpg     ,&
-                      ipoids  , ivf     , vff      , idfde,&
+                      ipoids  , ivf     , idfde,&
                       compor  , carcri  , mult_comp,&
                       instam  , instap  ,&
                       geomInit, dispPrev, dispIncr,&
@@ -35,7 +35,6 @@ interface
         integer, intent(in) :: imate
         integer, intent(in) :: ndim, nno, npg, lgpg
         integer, intent(in) :: ipoids, ivf, idfde
-        real(kind=8), intent(in) :: vff(*)
         character(len=16), intent(in) :: compor(*)
         real(kind=8), intent(in) :: carcri(*)
         character(len=16), intent(in) :: mult_comp

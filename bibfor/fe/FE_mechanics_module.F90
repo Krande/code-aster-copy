@@ -37,7 +37,7 @@ module FE_mechanics_module
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    public :: FEMatFB, FEMatB
+    public :: FEMatFB, FEMatB, matG2F, matG2E, FEMatBB
 !    private  ::
 !
 contains
@@ -109,6 +109,57 @@ contains
 !
     end subroutine
 !
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine FEMatBB(FEBasis, BGSEval, matBB)
+!
+        implicit none
+!
+        type(FE_Basis), intent(in)          :: FEBasis
+        real(kind=8), intent(in), dimension(3, MAX_BS) :: BGSEval
+        real(kind=8), intent(out)           :: matBB(6, MAX_BS, MAX_BS)
+! --------------------------------------------------------------------------------------------------
+!
+!
+!   Compute the matrix [B]^T.[B]
+!
+! --------------------------------------------------------------------------------------------------
+!
+! ----- Local variables
+!
+        integer :: i, j
+        real(kind=8), parameter :: rac2 = sqrt(2.d0)
+!
+        matBB = 0.d0
+!
+        select case (FEBasis%ndim)
+        case (2)
+            do i = 1, FEBasis%size
+                do j = 1, FEBasis%size
+                    matBB(1, i, j) = BGSEval(1, i)*BGSEval(1, j)
+                    matBB(2, i, j) = BGSEval(2, i)*BGSEval(2, j)
+                    matBB(4, i, j) = (BGSEval(1, i)*BGSEval(2, j)+BGSEval(2, i)*BGSEval(1, j))/rac2
+                end do
+            end do
+        case (3)
+            do i = 1, FEBasis%size
+                do j = 1, FEBasis%size
+                    matBB(1, i, j) = BGSEval(1, i)*BGSEval(1, j)
+                    matBB(2, i, j) = BGSEval(2, i)*BGSEval(2, j)
+                    matBB(3, i, j) = BGSEval(3, i)*BGSEval(3, j)
+                    matBB(4, i, j) = (BGSEval(1, i)*BGSEval(2, j)+BGSEval(2, i)*BGSEval(1, j))/rac2
+                    matBB(5, i, j) = (BGSEval(1, i)*BGSEval(3, j)+BGSEval(3, i)*BGSEval(1, j))/rac2
+                    matBB(6, i, j) = (BGSEval(2, i)*BGSEval(3, j)+BGSEval(3, i)*BGSEval(2, j))/rac2
+                end do
+            end do
+        case default
+            ASSERT(ASTER_FALSE)
+        end select
+!
+    end subroutine
+!
 !
 !===================================================================================================
 !
@@ -177,5 +228,77 @@ contains
         end if
 !
     end subroutine
+!
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function matG2F(grad) result(f)
+!
+        implicit none
+!
+        real(kind=8), intent(in)           :: grad(3, 3)
+        real(kind=8)                       :: f(3, 3)
+
+! --------------------------------------------------------------------------------------------------
+!   FE
+!
+!   Evaluate F = I + G
+!
+! --------------------------------------------------------------------------------------------------
+!
+!
+        f = grad
+        f(1, 1) = f(1, 1)+1.d0
+        f(2, 2) = f(2, 2)+1.d0
+        f(3, 3) = f(3, 3)+1.d0
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function matG2E(grad) result(e)
+!
+        implicit none
+!
+        real(kind=8), intent(in)           :: grad(3, 3)
+        real(kind=8)                       :: e(6)
+
+! --------------------------------------------------------------------------------------------------
+!   FE
+!
+!   Evaluate E = 1/2(C-I)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!
+        integer :: i, j, k
+        real(kind=8) :: c(3, 3), tmp
+        real(kind=8), parameter :: rac2 = sqrt(2.d0)
+
+        do i = 1, 3
+            do j = 1, i
+                tmp = grad(i, j)+grad(j, i)
+!
+                do k = 1, 3
+                    tmp = tmp+grad(k, i)*grad(k, j)
+                end do
+!
+                c(i, j) = 0.5d0*tmp
+!
+            end do
+        end do
+
+        e(1) = c(1, 1)
+        e(2) = c(2, 2)
+        e(3) = c(3, 3)
+        e(4) = c(2, 1)*rac2
+        e(5) = c(3, 1)*rac2
+        e(6) = c(3, 1)*rac2
+!
+    end function
 !
 end module

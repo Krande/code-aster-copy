@@ -204,8 +204,8 @@ subroutine te0139(option, nomte)
     else if (defo_comp .eq. 'GREEN_LAGRANGE') then
         call nmgrla(option, typmod, &
                     fami, zi(imate), &
-                    3, nno, npg, lgpg, &
-                    ipoids, ivf, zr(ivf), idfde, &
+                    ndim, nno, npg, lgpg, &
+                    ipoids, ivf, idfde, &
                     zk16(icompo), zr(icarcr), mult_comp, &
                     zr(iinstm), zr(iinstp), &
                     zr(igeom), zr(ideplm), &

@@ -15,12 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1504,W1306
+! aslint: disable=W1504
 !
 subroutine nmgrla(option, typmod, &
                   fami, imate, &
                   ndim, nno, npg, lgpg, &
-                  ipoids, ivf, vff, idfde, &
+                  ipoids, ivf, idfde, &
                   compor, carcri, mult_comp, &
                   instam, instap, &
                   geomInit, dispPrev, dispIncr, &
@@ -29,6 +29,12 @@ subroutine nmgrla(option, typmod, &
                   matsym, matuu, vectu, &
                   codret)
 !
+    use FE_topo_module
+    use FE_quadrature_module
+    use FE_basis_module
+    use FE_stiffness_module
+    use FE_eval_module
+    use FE_mechanics_module
     use Behaviour_type
     use Behaviour_module
 !
@@ -40,11 +46,10 @@ subroutine nmgrla(option, typmod, &
 #include "asterfort/codere.h"
 #include "asterfort/lcdetf.h"
 #include "asterfort/nmcomp.h"
-#include "asterfort/nmgeom.h"
-#include "asterfort/nmgrtg.h"
 #include "asterfort/pk2sig.h"
 #include "asterfort/utmess.h"
 #include "asterfort/Behaviour_type.h"
+#include "FE_module.h"
 !
     character(len=16), intent(in) :: option
     character(len=8), intent(in) :: typmod(*)
@@ -52,7 +57,6 @@ subroutine nmgrla(option, typmod, &
     integer, intent(in) :: imate
     integer, intent(in) :: ndim, nno, npg, lgpg
     integer, intent(in) :: ipoids, ivf, idfde
-    real(kind=8), intent(in) :: vff(*)
     character(len=16), intent(in) :: compor(*)
     real(kind=8), intent(in) :: carcri(*), angmas(*)
     character(len=16), intent(in) :: mult_comp
@@ -86,7 +90,6 @@ subroutine nmgrla(option, typmod, &
 ! In  ipoids           : Gauss point weight address (JEVEUX)
 ! In  ivf              : shape functions address (JEVEUX)
 ! In  idfde            : derivative of shape functions address (JEVEUX)
-! In  vff              : shape functions
 ! In  carcri           : parameters for behaviour
 ! In  compor           : behaviour
 ! In  mult_comp        : multi-comportment (DEFI_COMPOR for PMF)
@@ -106,25 +109,25 @@ subroutine nmgrla(option, typmod, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: grand, axi, cplan
+    type(FE_Cell) :: FECell
+    type(FE_Quadrature) :: FEQuad
+    type(FE_basis) :: FEBasis
+!
     aster_logical :: lVect, lMatr, lSigm, lMatrPred, lPred
     integer :: kpg
-    integer :: cod(npg)
-    real(kind=8) :: dsidep(6, 6)
-    real(kind=8) :: fPrev(3, 3), fCurr(3, 3)
+    integer :: cod(MAX_QP)
+    real(kind=8) :: dsidep(6, 6), coorpg(3), BGSEval(3, MAX_BS)
+    real(kind=8) :: fPrev(3, 3), fCurr(3, 3), gPrev(3, 3), gCurr(3, 3)
     real(kind=8) :: epsgPrev(6), epsgIncr(6), epsgCurr(6)
     real(kind=8) :: detfPrev, detfCurr
     real(kind=8) :: dispCurr(ndim*nno)
-    real(kind=8) :: r, sigmPost(6), sigmPrep(6), poids
+    real(kind=8) :: sigmPost(6), sigmPrep(6)
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
-    real(kind=8) :: dfdi(nno, ndim), pff(2*ndim, nno, nno), def(2*ndim, nno, ndim)
+    real(kind=8) ::  pff(6, MAX_BS, MAX_BS), def(6, MAX_BS, 3)
     type(Behaviour_Integ) :: BEHinteg
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    grand = ASTER_TRUE
-    axi = typmod(1) .eq. 'AXIS'
-    cplan = typmod(1) .eq. 'C_PLAN'
     cod = 0
     lSigm = L_SIGM(option)
     lVect = L_VECT(option)
@@ -132,6 +135,10 @@ subroutine nmgrla(option, typmod, &
     lPred = L_PRED(option)
     lMatrPred = L_MATR_PRED(option)
     dispCurr = 0.d0
+!
+    call FECell%init()
+    call FEQuad%initCell(FECell, "RIGI")
+    call FEBasis%initCell(FECell)
 !
 ! - Initialisation of behaviour datastructure
 !
@@ -151,19 +158,19 @@ subroutine nmgrla(option, typmod, &
 !
 ! - Loop on Gauss points
 !
-    do kpg = 1, npg
-        epsgPrev = 0.d0
-        epsgCurr = 0.d0
+    do kpg = 1, FEQuad%nbQuadPoints
+        coorpg = FEQuad%points_param(1:3, kpg)
+        BGSEval = FEBasis%grad(coorpg, FEQuad%jacob(1:3, 1:3, kpg))
+
 ! ----- Kinematic - Previous strains
-        call nmgeom(ndim, nno, axi, grand, geomInit, &
-                    kpg, ipoids, ivf, idfde, dispPrev, &
-                    .true._1, poids, dfdi, fPrev, epsgPrev, &
-                    r)
+        gPrev = FEEvalGradMat(FEBasis, dispPrev, coorpg, BGSEval)
+        fPrev = matG2F(gPrev)
+        epsgPrev = matG2E(gPrev)
+
 ! ----- Kinematic - Current strains
-        call nmgeom(ndim, nno, axi, grand, geomInit, &
-                    kpg, ipoids, ivf, idfde, dispCurr, &
-                    .true._1, poids, dfdi, fCurr, epsgCurr, &
-                    r)
+        gCurr = FEEvalGradMat(FEBasis, dispCurr, coorpg, BGSEval)
+        fCurr = matG2F(gCurr)
+        epsgCurr = matG2E(gCurr)
 
 ! ----- Stresses: convert Cauchy to PK2
         call lcdetf(ndim, fPrev, detfPrev)
@@ -191,12 +198,27 @@ subroutine nmgrla(option, typmod, &
 !        if (lMatr) write(6,*) 'dsdiep = ',dsidep
 
 ! ----- Compute internal forces vector and rigidity matrix
-        call nmgrtg(ndim, nno, poids, kpg, vff, &
-                    dfdi, def, pff, axi, &
-                    lVect, lMatr, lMatrPred, &
-                    r, fPrev, fCurr, dsidep, sigmPrep, &
-                    sigmPost, matsym, matuu, vectu)
-
+        if (lVect) then
+            call FEMatFB(FEBasis, coorpg, BGSEval, fCurr, def)
+        else
+            call FEMatFB(FEBasis, coorpg, BGSEval, fPrev, def)
+        end if
+! ----- Rigidity matrix
+        if (lMatr) then
+            call FEStiffMatVSymAdd(FEBasis, def, FEQuad%weights(kpg), dsidep, matsym, matuu)
+            call FEMatBB(FEBasis, BGSEval, pff)
+            if (lMatrPred) then
+                call FEStiffGeomMatVSymAdd(FEBasis, pff, FEQuad%weights(kpg), sigmPrep, matsym, &
+                                           matuu)
+            else
+                call FEStiffGeomMatVSymAdd(FEBasis, pff, FEQuad%weights(kpg), sigmPost, matsym, &
+                                           matuu)
+            end if
+        end if
+! ----- Internal forces
+        if (lVect) then
+            call FEStiffVecVSymAdd(FEBasis, def, FEQuad%weights(kpg), sigmPost, vectu)
+        end if
 ! ----- Stresses: convert PK2 to Cauchy
         if (option(1:4) .eq. 'RAPH' .or. option(1:4) .eq. 'FULL') then
             call lcdetf(ndim, fCurr, detfCurr)

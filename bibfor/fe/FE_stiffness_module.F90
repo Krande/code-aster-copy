@@ -40,7 +40,7 @@ module FE_stiffness_module
 ! --------------------------------------------------------------------------------------------------
 !
     public :: FEStiffVecScal, FEStiffMatScal, FEStiffVecScalAdd, FEStiffMatScalAdd
-    public :: FEStiffVecVSymAdd, FEStiffMatVSymAdd
+    public :: FEStiffVecVSymAdd, FEStiffMatVSymAdd, FEStiffGeomMatVSymAdd
 !    private  ::
 !
 contains
@@ -394,6 +394,108 @@ contains
                                 kk = 3*FEBasis%size*(3*(i_node-1)+i_dime-1)+3*(m-1)+j
                                 mat(kk) = mat(kk)+tmp*weight
                             end do
+                        end do
+                    end do
+                end do
+            end if
+        case default
+            ASSERT(ASTER_FALSE)
+        end select
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine FEStiffGeomMatVSymAdd(FEBasis, pff, weight, stress, l_matsym, mat)
+!
+        implicit none
+!
+        type(FE_Basis), intent(in)          :: FEBasis
+        real(kind=8), intent(in), dimension(6, MAX_BS, MAX_BS) :: pff
+        real(kind=8), intent(in)            :: weight
+        aster_logical, intent(in)           :: l_matsym
+        real(kind=8), intent(inout)         :: mat(*)
+        real(kind=8), intent(in)            :: stress(6)
+! --------------------------------------------------------------------------------------------------
+!   HHO
+!
+!   Compute the rigidity vector (with symetric stess)
+!   In hhoQuad      : Quadrature
+!   In hhoBasis     : tBasis function
+!   In ValuesQP     : Values of scalar function f at the quadrature points
+!   Out rhs         : (f, grad v)
+!
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: i_node, i_dime, m, j1
+        integer :: kk, kkd
+        real(kind=8) :: tmp
+!
+        select case (FEBasis%ndim)
+        case (2)
+            if (l_matsym) then
+                do i_node = 1, FEBasis%size
+                    do i_dime = 1, 2
+                        kkd = (2*(i_node-1)+i_dime-1)*(2*(i_node-1)+i_dime)/2
+                        do m = 1, i_node
+                            if (m .eq. i_node) then
+                                j1 = i_dime
+                            else
+                                j1 = 2
+                            end if
+                            tmp = pff(1, i_node, m)*stress(1)+pff(2, i_node, m)*stress(2)+ &
+                                  pff(3, i_node, m)*stress(3)+pff(4, i_node, m)*stress(4)
+                            if (i_dime .le. j1) then
+                                kk = kkd+2*(m-1)+i_dime
+                                mat(kk) = mat(kk)+tmp*weight
+                            end if
+                        end do
+                    end do
+                end do
+            else
+                do i_node = 1, FEBasis%size
+                    do i_dime = 1, 2
+                        do m = 1, FEBasis%size
+                            tmp = pff(1, i_node, m)*stress(1)+pff(2, i_node, m)*stress(2)+ &
+                                  pff(3, i_node, m)*stress(3)+pff(4, i_node, m)*stress(4)
+                            kk = 2*FEBasis%size*(2*(i_node-1)+i_dime-1)+2*(m-1)+i_dime
+                            mat(kk) = mat(kk)+tmp*weight
+                        end do
+                    end do
+                end do
+            end if
+        case (3)
+            if (l_matsym) then
+                do i_node = 1, FEBasis%size
+                    do i_dime = 1, 3
+                        kkd = (3*(i_node-1)+i_dime-1)*(3*(i_node-1)+i_dime)/2
+                        do m = 1, i_node
+                            if (m .eq. i_node) then
+                                j1 = i_dime
+                            else
+                                j1 = 3
+                            end if
+                            tmp = pff(1, i_node, m)*stress(1)+pff(2, i_node, m)*stress(2)+ &
+                                  pff(3, i_node, m)*stress(3)+pff(4, i_node, m)*stress(4)+ &
+                                  pff(5, i_node, m)*stress(5)+pff(6, i_node, m)*stress(6)
+                            if (i_dime .le. j1) then
+                                kk = kkd+3*(m-1)+i_dime
+                                mat(kk) = mat(kk)+tmp*weight
+                            end if
+                        end do
+                    end do
+                end do
+            else
+                do i_node = 1, FEBasis%size
+                    do i_dime = 1, 3
+                        do m = 1, FEBasis%size
+                            tmp = pff(1, i_node, m)*stress(1)+pff(2, i_node, m)*stress(2)+ &
+                                  pff(3, i_node, m)*stress(3)+pff(4, i_node, m)*stress(4)+ &
+                                  pff(5, i_node, m)*stress(5)+pff(6, i_node, m)*stress(6)
+                            kk = 3*FEBasis%size*(3*(i_node-1)+i_dime-1)+3*(m-1)+i_dime
+                            mat(kk) = mat(kk)+tmp*weight
                         end do
                     end do
                 end do
