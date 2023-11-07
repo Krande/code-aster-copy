@@ -327,12 +327,6 @@ Il n'y a aucun degré de liberté de déplacement sur le modèle.
   sur un modèle dont au moins une matrice assemblée (masse ou raideur) est non-symétrique.
 """
     ),
-    57: _(
-        """
-De manière générale, PREDICTION = 'DEPL_CALCULE' est là pour éviter de devoir factoriser une matrice et gagner en temps de calcul.
-Mais les limitations (problèmes de conditions limites) font que cette fonctionnalité n'est pas à recommander et qu'on lui préférera par exemple un PREDICTION='ELASTIQUE'.
-"""
-    ),
     58: _(
         """
 A cause des erreurs précédentes, le code s'arrête.

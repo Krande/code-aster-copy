@@ -87,7 +87,6 @@ subroutine nmdomt(ds_algopara, ds_algorom_)
         ds_algopara%matrix_pred = matrix_pred
         ds_algopara%matrix_corr = matrix_corr
         if (matrix_pred .eq. 'DEPL_CALCULE') then
-            call utmess('A', 'MECANONLINE5_57')
             call getvid(keywf, 'EVOL_NOLI', iocc=1, scal=result_prev_disp, nbret=iret)
             if (iret .le. 0) then
                 call utmess('F', 'MECANONLINE5_45')
@@ -122,7 +121,6 @@ subroutine nmdomt(ds_algopara, ds_algorom_)
         ds_algopara%matrix_pred = matrix_pred
         ds_algopara%matrix_corr = matrix_corr
         if (matrix_pred .eq. 'DEPL_CALCULE') then
-            call utmess('A', 'MECANONLINE5_57')
             call getvid(keywf, 'EVOL_NOLI', iocc=1, scal=result_prev_disp, nbret=iret)
             if (iret .le. 0) then
                 call utmess('F', 'MECANONLINE5_45')

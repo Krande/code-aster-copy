@@ -40,7 +40,7 @@ from ...Commands import (
 )
 from ...Objects import FieldOnCellsReal
 from ...Helpers.LogicalUnit import LogicalUnitFile
-from ...Messages import MasquerAlarme, RetablirAlarme, UTMESS
+from ...Messages import UTMESS
 from ...Utilities import logger, ExecutionParameter
 from .mac3coeur_coeur import CoeurFactory
 from .thyc_load import lire_resu_thyc
@@ -49,12 +49,8 @@ from .thyc_load import lire_resu_thyc
 def calc_mac3coeur_ops(self, **kwargs):
     """Fonction d'appel de la macro CALC_MAC3COEUR"""
 
-    MasquerAlarme("MECANONLINE5_57")  # DEPL_CALCULE
-
     analysis = Mac3CoeurCalcul.factory(self, kwargs)
     result = analysis.run()
-
-    RetablirAlarme("MECANONLINE5_57")
 
     return result
 
