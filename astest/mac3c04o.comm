@@ -19,7 +19,7 @@
 
 from code_aster.Commands import *
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTRANET"), ERREUR=_F(ALARME="ALARME"))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTRANET"), ERREUR=_F(ALARME="EXCEPTION"))
 
 testname = "mac3c04o"
 

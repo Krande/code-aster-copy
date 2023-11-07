@@ -36,7 +36,7 @@ except ImportError:
 from code_aster.Commands import *
 from code_aster.Utilities import ExecutionParameter
 
-POURSUITE(CODE="OUI", ERREUR=_F(ALARME="ALARME"), IMPR_MACRO="NON")
+POURSUITE(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"), IMPR_MACRO="NON")
 
 mac3c = osp.join(ExecutionParameter().get_option("rcdir"), "tests_data", "mac3c")
 with open(osp.join(mac3c, "%s.json" % testname)) as f:
