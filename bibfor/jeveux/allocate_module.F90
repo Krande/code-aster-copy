@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,7 +66,7 @@ module allocate_module
 !
     type save_lvec
         type(array_1), allocatable :: lvec(:)
-        integer :: nmax
+        integer :: nmax, kfree
     end type save_lvec
 !
     type(save_lvec), target :: slvec
@@ -83,6 +83,7 @@ contains
 !
         allocate(slvec%lvec(nmax))
         slvec%nmax=nmax
+        slvec%kfree = 1
         do k = 1, nmax
             slvec%lvec(k)%present=.false.
             slvec%lvec(k)%ptr_ident=C_NULL_PTR
@@ -110,17 +111,26 @@ contains
         type(c_ptr) :: pteur_c
 !
         ktrou=0
-        do k = 1, slvec%nmax
-            if (.not.slvec%lvec(k)%present) then
-                ktrou=k
-                goto 1
-            endif
-        enddo
-        call utmess('F', 'DVP_7')
+        if (slvec%kfree < 1) then
+            do k = 1, slvec%nmax
+                if (.not. slvec%lvec(k)%present) then
+                    ktrou = k
+                    goto 1
+                end if
+            end do
+            call utmess('F', 'DVP_7')
+        else
+            ktrou = slvec%kfree
+            ASSERT(.not. slvec%lvec(ktrou)%present)
+        end if
   1     continue
         if (kmax .lt. ktrou) then
             kmax=ktrou
         endif
+        slvec%kfree = -1
+        if (ktrou+1 <= slvec%nmax .and. .not. slvec%lvec(ktrou+1)%present) then
+            slvec%kfree = ktrou+1
+        end if
 !
         if (present(vl)) then
             allocate(slvec%lvec(ktrou)%vl(lon1))
@@ -187,7 +197,7 @@ contains
         endif
 !
         slvec%lvec(ktrou)%present=.true.
-        slvec%lvec(k)%ptr_ident=pteur_c
+        slvec%lvec(ktrou)%ptr_ident = pteur_c
     end subroutine allocate_slvec
 !
 !
@@ -247,6 +257,14 @@ contains
         endif
 !
         ktrou=0
+        if (slvec%kfree > 1) then
+            if (slvec%lvec(slvec%kfree-1)%present) then
+                if (c_associated(slvec%lvec(slvec%kfree-1)%ptr_ident, pteur_c)) then
+                    ktrou = slvec%kfree-1
+                    goto 1
+                end if
+            end if
+        end if
         do k = 1, slvec%nmax
             if (slvec%lvec(k)%present) then
                 if (c_associated(slvec%lvec(k)%ptr_ident,pteur_c)) then
@@ -295,6 +313,7 @@ contains
         slvec%lvec(ktrou)%present=.false.
         slvec%lvec(ktrou)%ptr_ident=C_NULL_PTR
         slvec%lvec(ktrou)%tsca=' '
+        slvec%kfree = ktrou
   2     continue
     end subroutine deallocate_slvec
 !
@@ -358,6 +377,8 @@ contains
                 slvec%lvec(k)%tsca=' '
             endif
         enddo
+        slvec%kfree = 1
+        kmax = 0
 !
 !   -- il faut "rendre" la memoire a JEVEUX
 !   -------------------------------------------------
