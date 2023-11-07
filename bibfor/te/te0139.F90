@@ -32,9 +32,8 @@ subroutine te0139(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/nmdlog.h"
 #include "asterfort/nmgpfi.h"
-#include "asterfort/nmgr3d.h"
 #include "asterfort/nmgrla.h"
-#include "asterfort/nmpl3d.h"
+#include "asterfort/nmplxd.h"
 #include "asterfort/nmtstm.h"
 #include "asterfort/rcangm.h"
 #include "asterfort/tecach.h"
@@ -170,7 +169,7 @@ subroutine te0139(option, nomte)
 500 continue
 
     if (defo_comp .eq. 'PETIT') then
-        call nmpl3d(fami, nno, npg, &
+        call nmplxd(fami, nno, npg, ndim, &
                     ipoids, ivf, idfde, &
                     typmod, option, zi(imate), &
                     zk16(icompo), mult_comp, lgpg, zr(icarcr), &
@@ -182,7 +181,7 @@ subroutine te0139(option, nomte)
         if (codret .ne. 0) goto 999
 
     else if (defo_comp .eq. 'PETIT_REAC') then
-        call nmpl3d(fami, nno, npg, &
+        call nmplxd(fami, nno, npg, ndim, &
                     ipoids, ivf, idfde, &
                     typmod, option, zi(imate), &
                     zk16(icompo), mult_comp, lgpg, zr(icarcr), &

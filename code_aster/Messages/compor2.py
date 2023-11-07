@@ -37,17 +37,6 @@ cata_msg = {
         """La somme des fractions volumiques est très différente de 1.0, elle vaut <%(r1).15E>.
 Vérifiez FRAC_VOL pour toutes les occurrences du mot clé POLYCRISTAL."""
     ),
-    9: _(
-        """
-Les déformations deviennent trop grandes : <%(r1)E>
-=> GROT_GDEP sous COMPORTEMENT n'est plus valide.
-
-Pour un calcul en grandes déformations
-il faut utiliser GDEF_LOG ou SIMO_MIEHE.
-
-Pour un calcul hyper-élastique, utiliser ELAS_HYPER.
-"""
-    ),
     10: _(
         """
 Le redécoupage local du pas de temps n'est pas compatible avec <%(k1)s>

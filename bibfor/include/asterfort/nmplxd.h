@@ -18,7 +18,7 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmpl3d(fami  , nno      , npg   ,&
+    subroutine nmplxd(fami  , nno      , npg   , ndim, &
                       ipoids, ivf      , idfde ,&
                       typmod   , option, imate ,&
                       compor, mult_comp, lgpg  , carcri,&
@@ -28,7 +28,7 @@ interface
                       matsym, sigmCurr     , vip   ,&
                       matuu , vectu    , codret)
         character(len=*), intent(in) :: fami
-        integer, intent(in) :: nno, npg
+        integer, intent(in) :: nno, npg, ndim
         integer, intent(in) :: ipoids, ivf, idfde
         character(len=8), intent(in) :: typmod(*)
         character(len=16), intent(in) :: option
@@ -37,12 +37,12 @@ interface
         real(kind=8), intent(in) :: carcri(*)
         integer, intent(in) :: lgpg
         real(kind=8), intent(in) :: instam, instap
-        real(kind=8), intent(inout) :: dispPrev(3, nno), dispIncr(3, nno)
+        real(kind=8), intent(inout) :: dispPrev(ndim, nno), dispIncr(ndim, nno)
         real(kind=8), intent(in) :: angmas(*)
-        real(kind=8), intent(inout) :: sigmPrev(6, npg), vim(lgpg, npg)
+        real(kind=8), intent(inout) :: sigmPrev(2*ndim, npg), vim(lgpg, npg)
         aster_logical, intent(in) :: matsym
-        real(kind=8), intent(inout) :: sigmCurr(6, npg), vip(lgpg, npg)
-        real(kind=8), intent(inout) :: matuu(*), vectu(3, nno)
+        real(kind=8), intent(inout) :: sigmCurr(2*ndim, npg), vip(lgpg, npg)
+        real(kind=8), intent(inout) :: matuu(*), vectu(ndim, nno)
         integer, intent(inout) :: codret
-    end subroutine nmpl3d
+    end subroutine nmplxd
 end interface

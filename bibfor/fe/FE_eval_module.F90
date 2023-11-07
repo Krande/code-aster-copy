@@ -153,6 +153,7 @@ contains
         case (2)
             grads(1) = grad(1, 1)
             grads(2) = grad(2, 2)
+            grads(3) = grad(3, 3)
             grads(4) = (grad(2, 1)+grad(1, 2))*rac2_2
         case (3)
             grads(1) = grad(1, 1)
@@ -194,7 +195,7 @@ contains
 !
 ! ----- Local variables
         integer :: i, n, ind
-        real(kind=8) :: gradEF(3, MAX_BS)
+        real(kind=8) :: gradEF(3, MAX_BS), funcEF(MAX_BS), ur, r
 !
         grad = 0.d0
         if (present(BGSEval)) then
@@ -241,7 +242,14 @@ contains
         end if
 !
         if (FEBasis%l_axis) then
-            ASSERT(ASTER_FALSE)
+            funcEF = FEBasis%func(point)
+            r = 0.d0
+            ur = 0.d0
+            do n = 1, FEBasis%size
+                r = r+funcEF(n)*FEBasis%coorno(1, n)
+                ur = ur+funcEF(n)*val_nodes(2*(n-1)+1)
+            end do
+            grad(3, 3) = ur/r
         end if
 !
     end function

@@ -15,9 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1504,W1306
+! aslint: disable=W1504
 !
-subroutine nmpl3d(fami, nno, npg, &
+subroutine nmplxd(fami, nno, npg, ndim, &
                   ipoids, ivf, idfde, &
                   typmod, option, imate, &
                   compor, mult_comp, lgpg, carcri, &
@@ -46,7 +46,7 @@ subroutine nmpl3d(fami, nno, npg, &
 #include "FE_module.h"
 !
     character(len=*), intent(in) :: fami
-    integer, intent(in) :: nno, npg
+    integer, intent(in) :: nno, npg, ndim
     integer, intent(in) :: ipoids, ivf, idfde
     character(len=8), intent(in) :: typmod(*)
     character(len=16), intent(in) :: option
@@ -55,19 +55,19 @@ subroutine nmpl3d(fami, nno, npg, &
     real(kind=8), intent(in) :: carcri(*)
     integer, intent(in) :: lgpg
     real(kind=8), intent(in) :: instam, instap
-    real(kind=8), intent(inout) :: dispPrev(3, nno), dispIncr(3, nno)
+    real(kind=8), intent(inout) :: dispPrev(ndim, nno), dispIncr(ndim, nno)
     real(kind=8), intent(in) :: angmas(*)
-    real(kind=8), intent(inout) :: sigmPrev(6, npg), vim(lgpg, npg)
+    real(kind=8), intent(inout) :: sigmPrev(2*ndim, npg), vim(lgpg, npg)
     aster_logical, intent(in) :: matsym
-    real(kind=8), intent(inout) :: sigmCurr(6, npg), vip(lgpg, npg)
-    real(kind=8), intent(inout) :: matuu(*), vectu(3, nno)
+    real(kind=8), intent(inout) :: sigmCurr(2*ndim, npg), vip(lgpg, npg)
+    real(kind=8), intent(inout) :: matuu(*), vectu(ndim, nno)
     integer, intent(inout) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Elementary computation
 !
-! Elements: 3D
+! Elements: 3D / D_PLAN / AXIS
 !
 ! Options: RIGI_MECA_TANG, RAPH_MECA and FULL_MECA - Hypoelasticity (PETIT/PETIT_REAC)
 !
@@ -106,8 +106,6 @@ subroutine nmpl3d(fami, nno, npg, &
     type(FE_Quadrature) :: FEQuad
     type(FE_basis) :: FEBasis
 !
-    integer, parameter :: ndim = 3
-    aster_logical :: grand, axi
     aster_logical :: lVect, lMatr, lSigm
     integer :: kpg, i_tens
     integer :: cod(MAX_QP)
@@ -121,8 +119,6 @@ subroutine nmpl3d(fami, nno, npg, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    grand = ASTER_FALSE
-    axi = ASTER_FALSE
     cod = 0
     lSigm = L_SIGM(option)
     lVect = L_VECT(option)
@@ -159,14 +155,14 @@ subroutine nmpl3d(fami, nno, npg, &
         deps = FEEvalGradSymMat(FEBasis, dispIncr, coorpg, BGSEval)
 
 ! ----- Kinematic - Product [B]
-        call FEMatB(FEBasis, BGSEval, def)
+        call FEMatB(FEBasis, coorpg, BGSEval, def)
 ! ----- Prepare stresses
         do i_tens = 1, 3
             sigmPrep(i_tens) = sigmPrev(i_tens, kpg)
         end do
-        sigmPrep(4) = sigmPrev(4, kpg)*rac2
-        sigmPrep(5) = sigmPrev(5, kpg)*rac2
-        sigmPrep(6) = sigmPrev(6, kpg)*rac2
+        do i_tens = ndim+1, 2*ndim
+            sigmPrep(i_tens) = sigmPrev(i_tens, kpg)*rac2
+        end do
 ! ----- Compute behaviour
         sigmPost = 0.d0
         call nmcomp(BEHinteg, &
@@ -192,9 +188,9 @@ subroutine nmpl3d(fami, nno, npg, &
             do i_tens = 1, 3
                 sigmCurr(i_tens, kpg) = sigmPost(i_tens)
             end do
-            sigmCurr(4, kpg) = sigmPost(4)/rac2
-            sigmCurr(5, kpg) = sigmPost(5)/rac2
-            sigmCurr(6, kpg) = sigmPost(6)/rac2
+            do i_tens = ndim+1, 2*ndim
+                sigmCurr(i_tens, kpg) = sigmPost(i_tens)/rac2
+            end do
         end if
     end do
 !
