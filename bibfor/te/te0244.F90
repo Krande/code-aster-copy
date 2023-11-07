@@ -123,7 +123,7 @@ subroutine te0244(option, nomte)
         else
             ASSERT(ASTER_FALSE)
         end if
-        call FEStiffVecScalAdd(FEBasis, BGSEval, FEQuadRigi%weights(kp), flux, resi_f)
+        call FEStiffResiScalAdd(FEBasis, BGSEval, FEQuadRigi%weights(kp), flux, resi_f)
     end do
 !
     if (zk16(icomp) (1:9) .eq. 'THER_HYDR') then

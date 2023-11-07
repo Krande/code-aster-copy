@@ -107,7 +107,7 @@ subroutine te0217(option, nomte)
 !
     end do
 !
-    call FEStiffVecScal(FEQuadCell, FEBasis, valQP, load)
+    call FEStiffResiScal(FEQuadCell, FEBasis, valQP, load)
 !
     call writeVector("PVECTTR", FEBasis%size, load)
 !

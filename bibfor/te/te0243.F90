@@ -124,9 +124,9 @@ subroutine te0243(option, nomte)
             ASSERT(ASTER_FALSE)
         end if
         if (l_rhs) then
-            call FEStiffVecScalAdd(FEBasis, BGSEval, FEQuadCell%weights(kp), fluglo, resi)
+            call FEStiffResiScalAdd(FEBasis, BGSEval, FEQuadCell%weights(kp), fluglo, resi)
         else
-            call FEStiffMatScalAdd(FEBasis, BGSEval, FEQuadCell%weights(kp), Kglo, rigi)
+            call FEStiffJacoScalAdd(FEBasis, BGSEval, FEQuadCell%weights(kp), Kglo, rigi)
         end if
     end do
 !

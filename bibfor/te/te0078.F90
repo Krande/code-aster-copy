@@ -92,7 +92,7 @@ subroutine te0078(option, nomte)
         call nlcomp(phenom, imate, icamas, FECell%ndim, FEQuadRigi%points(1:3, kp), time, &
                     0.d0, Kglo, dtp_=dtpg, fluglo_=flux)
 !
-        call FEStiffVecScalAdd(FEBasis, BGSEval, FEQuadRigi%weights(kp), flux, resi_f)
+        call FEStiffResiScalAdd(FEBasis, BGSEval, FEQuadRigi%weights(kp), flux, resi_f)
     end do
 !
     call rcvalb('FPG1', 1, 1, '+', zi(imate), &

@@ -73,7 +73,7 @@ subroutine te0501(option, nomte)
         valQPK(3, 3, kp) = alpha
     end do
 !
-    call FEStiffMatScal(FEQuadCell, FEBasis, valQPK, rigi)
+    call FEStiffJacoScal(FEQuadCell, FEBasis, valQPK, rigi)
     call writeMatrix("PMATTTR", FEBasis%size, FEBasis%size, ASTER_TRUE, rigi)
 !
 end subroutine

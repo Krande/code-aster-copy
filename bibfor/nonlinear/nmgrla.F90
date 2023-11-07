@@ -205,19 +205,19 @@ subroutine nmgrla(option, typmod, &
         end if
 ! ----- Rigidity matrix
         if (lMatr) then
-            call FEStiffMatVSymAdd(FEBasis, def, FEQuad%weights(kpg), dsidep, matsym, matuu)
+            call FEStiffJacoVectSymAdd(FEBasis, def, FEQuad%weights(kpg), dsidep, matsym, matuu)
             call FEMatBB(FEBasis, BGSEval, pff)
             if (lMatrPred) then
-                call FEStiffGeomMatVSymAdd(FEBasis, pff, FEQuad%weights(kpg), sigmPrep, matsym, &
+                call FEStiffGeomVectSymAdd(FEBasis, pff, FEQuad%weights(kpg), sigmPrep, matsym, &
                                            matuu)
             else
-                call FEStiffGeomMatVSymAdd(FEBasis, pff, FEQuad%weights(kpg), sigmPost, matsym, &
+                call FEStiffGeomVectSymAdd(FEBasis, pff, FEQuad%weights(kpg), sigmPost, matsym, &
                                            matuu)
             end if
         end if
 ! ----- Internal forces
         if (lVect) then
-            call FEStiffVecVSymAdd(FEBasis, def, FEQuad%weights(kpg), sigmPost, vectu)
+            call FEStiffResiVectSymAdd(FEBasis, def, FEQuad%weights(kpg), sigmPost, vectu)
         end if
 ! ----- Stresses: convert PK2 to Cauchy
         if (option(1:4) .eq. 'RAPH' .or. option(1:4) .eq. 'FULL') then

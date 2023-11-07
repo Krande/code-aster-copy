@@ -177,11 +177,11 @@ subroutine nmplxd(fami, nno, npg, ndim, &
         end if
 ! ----- Rigidity matrix
         if (lMatr) then
-            call FEStiffMatVSymAdd(FEBasis, def, FEQuad%weights(kpg), dsidep, matsym, matuu)
+            call FEStiffJacoVectSymAdd(FEBasis, def, FEQuad%weights(kpg), dsidep, matsym, matuu)
         end if
 ! ----- Internal forces
         if (lVect) then
-            call FEStiffVecVSymAdd(FEBasis, def, FEQuad%weights(kpg), sigmPost, vectu)
+            call FEStiffResiVectSymAdd(FEBasis, def, FEQuad%weights(kpg), sigmPost, vectu)
         end if
 ! ----- Cauchy stresses
         if (lSigm .or. option .eq. 'RIGI_MECA_IMPLEX') then

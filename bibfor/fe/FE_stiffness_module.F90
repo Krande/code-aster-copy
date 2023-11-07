@@ -39,8 +39,8 @@ module FE_stiffness_module
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    public :: FEStiffVecScal, FEStiffMatScal, FEStiffVecScalAdd, FEStiffMatScalAdd
-    public :: FEStiffVecVSymAdd, FEStiffMatVSymAdd, FEStiffGeomMatVSymAdd
+    public :: FEStiffResiScal, FEStiffJacoScal, FEStiffResiScalAdd, FEStiffJacoScalAdd
+    public :: FEStiffResiVectSymAdd, FEStiffJacoVectSymAdd, FEStiffGeomVectSymAdd
 !    private  ::
 !
 contains
@@ -49,7 +49,7 @@ contains
 !
 !===================================================================================================
 !
-    subroutine FEStiffVecScalAdd(FEBasis, BGSEval, weight, ValuesQP, vec)
+    subroutine FEStiffResiScalAdd(FEBasis, BGSEval, weight, ValuesQP, vec)
 !
         implicit none
 !
@@ -81,7 +81,7 @@ contains
 !
 !===================================================================================================
 !
-    subroutine FEStiffVecScal(FEQuad, FEBasis, ValuesQP, vec)
+    subroutine FEStiffResiScal(FEQuad, FEBasis, ValuesQP, vec)
 !
         implicit none
 !
@@ -111,7 +111,7 @@ contains
 ! ----- Eval cell basis function at the quadrature point
             BSEval = FEBasis%grad(FEQuad%points_param(1:3, ipg), FEQuad%jacob(1:3, 1:3, ipg))
 !
-            call FEStiffVecScalAdd(FEBasis, BSEval, FEQuad%weights(ipg), ValuesQP(1:3, ipg), vec)
+            call FEStiffResiScalAdd(FEBasis, BSEval, FEQuad%weights(ipg), ValuesQP(1:3, ipg), vec)
         end do
 !
     end subroutine
@@ -121,7 +121,7 @@ contains
 !
 !===================================================================================================
 !
-    subroutine FEStiffMatScalAdd(FEBasis, BGSEval, weight, ValueQP, mat)
+    subroutine FEStiffJacoScalAdd(FEBasis, BGSEval, weight, ValueQP, mat)
 !
         implicit none
 !
@@ -169,7 +169,7 @@ contains
 !
 !===================================================================================================
 !
-    subroutine FEStiffMatScal(FEQuad, FEBasis, ValuesQP, mat)
+    subroutine FEStiffJacoScal(FEQuad, FEBasis, ValuesQP, mat)
 !
         implicit none
 !
@@ -199,8 +199,8 @@ contains
 ! ----- Eval cell basis function at the quadrature point
             BSEval = FEBasis%grad(FEQuad%points_param(1:3, ipg), FEQuad%jacob(1:3, 1:3, ipg))
 
-            call FEStiffMatScalAdd(FEBasis, BSEval, FEQuad%weights(ipg), ValuesQP(1:3, 1:3, ipg), &
-                                   mat)
+            call FEStiffJacoScalAdd(FEBasis, BSEval, FEQuad%weights(ipg), ValuesQP(1:3, 1:3, ipg), &
+                                    mat)
 !
         end do
 !
@@ -214,7 +214,7 @@ contains
 !
 !===================================================================================================
 !
-    subroutine FEStiffVecVSymAdd(FEBasis, def, weight, stress, vec)
+    subroutine FEStiffResiVectSymAdd(FEBasis, def, weight, stress, vec)
 !
         implicit none
 !
@@ -266,7 +266,7 @@ contains
 !
 !===================================================================================================
 !
-    subroutine FEStiffMatVSymAdd(FEBasis, def, weight, dsidep, l_matsym, mat)
+    subroutine FEStiffJacoVectSymAdd(FEBasis, def, weight, dsidep, l_matsym, mat)
 !
         implicit none
 !
@@ -408,7 +408,7 @@ contains
 !
 !===================================================================================================
 !
-    subroutine FEStiffGeomMatVSymAdd(FEBasis, pff, weight, stress, l_matsym, mat)
+    subroutine FEStiffGeomVectSymAdd(FEBasis, pff, weight, stress, l_matsym, mat)
 !
         implicit none
 !
