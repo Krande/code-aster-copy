@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,6 +25,7 @@ implicit none
 #include "asterfort/jelibz.h"
 #include "asterfort/jerecu.h"
 #include "asterfort/jereou.h"
+#include "asterfort/check_aster_allocate.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -37,5 +38,6 @@ implicit none
 !   Delete objects on the volatile database
     call jedetv()
     call jereou('V', 0.01d0)
+    call check_aster_allocate()
 !
 end subroutine
