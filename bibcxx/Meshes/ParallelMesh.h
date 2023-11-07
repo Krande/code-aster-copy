@@ -222,6 +222,12 @@ class ParallelMesh : public BaseMesh {
 
     bool build();
 
+    ParallelMeshPtr convertToLinear( const ASTERINTEGER info = 1 );
+
+    ParallelMeshPtr convertToQuadratic( const ASTERINTEGER info = 1 );
+
+    ParallelMeshPtr convertToBiQuadratic( const ASTERINTEGER info = 1 );
+
     /* Mesh builder functions */
     void create_joints( const VectorLong &domains, const VectorLong &globalNumbering,
                         const VectorLong &nodesOwner, const VectorOfVectorsLong &joints );

@@ -153,6 +153,12 @@ class Mesh : public BaseMesh {
      * @return retourne true si tout est ok
      */
     bool readGmshFile( const std::string &fileName );
+
+    MeshPtr convertToLinear( const ASTERINTEGER info = 1 );
+
+    MeshPtr convertToQuadratic( const ASTERINTEGER info = 1 );
+
+    MeshPtr convertToBiQuadratic( const ASTERINTEGER info = 1 );
 };
 
 /**

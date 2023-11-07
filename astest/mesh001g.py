@@ -58,11 +58,11 @@ def printNumGlob(mesh, filename):
 
 
 def transfo(mesh):
-    mesh_line = CREA_MAILLAGE(MAILLAGE=mesh, QUAD_LINE=_F(TOUT="OUI"), INFO=1)
+    mesh_line = mesh.convertToLinear()
 
-    mesh_raf = CREA_MAILLAGE(MAILLAGE=mesh_line, RAFFINEMENT=_F(TOUT="OUI", NIVEAU=2), INFO=1)
+    mesh_raf = mesh_line.refine(2)
 
-    mesh_quad = CREA_MAILLAGE(MAILLAGE=mesh_raf, LINE_QUAD=_F(TOUT="OUI"), INFO=1)
+    mesh_quad = mesh_raf.convertToQuadratic()
 
     return mesh_quad
 

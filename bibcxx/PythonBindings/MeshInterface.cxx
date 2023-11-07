@@ -189,5 +189,36 @@ Returns:
     list[int]: indexes of the nodes.
         )",
               py::arg( "group_name" ), py::arg( "localNumbering" ) = true,
-              py::arg( "same_rank" ) = PythonBool::None );
+              py::arg( "same_rank" ) = PythonBool::None )
+        .def( "convertToLinear", &Mesh::convertToLinear, R"(
+Convert the mesh to a linear one.
+
+Arguments:
+    info (int) : verbosity mode (1 or 2). Default 1.
+
+Returns:
+    Mesh: the linearized mesh.
+        )",
+              py::arg( "info" ) = 1 )
+        .def( "convertToBiQuadratic", &Mesh::convertToBiQuadratic, R"(
+Convert the mesh to a bi-quadratic one.
+For cells that have no bi-quadratic version, the quadratic version is used.
+
+Arguments:
+    info (int) : verbosity mode (1 or 2). Default 1.
+
+Returns:
+    Mesh: the bi-quadratic mesh.
+        )",
+              py::arg( "info" ) = 1 )
+        .def( "convertToQuadratic", &Mesh::convertToQuadratic, R"(
+Convert the mesh to a quadratic one.
+
+Arguments:
+    info (int) : verbosity mode (1 or 2). Default 1.
+
+Returns:
+    Mesh: the quadratic mesh.
+        )",
+              py::arg( "info" ) = 1 );
 };

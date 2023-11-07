@@ -255,7 +255,38 @@ Arguments:
               py::arg( "joints" ) )
         .def( "_endDefinition", &ParallelMesh::endDefinition, R"(
 Terminate the mesh creation (*for internal use*).
-        )" );
+        )" )
+        .def( "convertToLinear", &ParallelMesh::convertToLinear, R"(
+Convert the mesh to a linear one.
+
+Arguments:
+    info (int) : verbosity mode (1 or 2). Default 1.
+
+Returns:
+    ParallelMesh: the linearized mesh.
+        )",
+              py::arg( "info" ) = 1 )
+        .def( "convertToBiQuadratic", &ParallelMesh::convertToBiQuadratic, R"(
+Convert the mesh to a bi-quadratic one.
+For cells that have no bi-quadratic version, the quadratic version is used.
+
+Arguments:
+    info (int) : verbosity mode (1 or 2). Default 1.
+
+Returns:
+    ParallelMesh: the bi-quadratic mesh.
+        )",
+              py::arg( "info" ) = 1 )
+        .def( "convertToQuadratic", &ParallelMesh::convertToQuadratic, R"(
+Convert the mesh to a quadratic one.
+
+Arguments:
+    info (int) : verbosity mode (1 or 2). Default 1.
+
+Returns:
+    ParallelMesh: the quadratic mesh.
+        )",
+              py::arg( "info" ) = 1 );
 };
 
 #endif /* ASTER_HAVE_MPI */

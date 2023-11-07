@@ -219,3 +219,27 @@ bool Mesh::isQuadratic() const {
 
     return false;
 }
+
+MeshPtr Mesh::convertToLinear( const ASTERINTEGER info ) {
+    auto mesh_out = std::make_shared< Mesh >();
+    ASTERINTEGER un = 1, inf = info;
+    CALL_CMBQBQ( getName(), mesh_out->getName(), &un, &inf );
+    mesh_out->build();
+    return mesh_out;
+};
+
+MeshPtr Mesh::convertToQuadratic( const ASTERINTEGER info ) {
+    auto mesh_out = std::make_shared< Mesh >();
+    ASTERINTEGER deux = 2, inf = info;
+    CALL_CMBQBQ( getName(), mesh_out->getName(), &deux, &inf );
+    mesh_out->build();
+    return mesh_out;
+};
+
+MeshPtr Mesh::convertToBiQuadratic( const ASTERINTEGER info ) {
+    auto mesh_out = std::make_shared< Mesh >();
+    ASTERINTEGER trois = 3, inf = info;
+    CALL_CMBQBQ( getName(), mesh_out->getName(), &trois, &inf );
+    mesh_out->build();
+    return mesh_out;
+};

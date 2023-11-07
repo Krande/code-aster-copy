@@ -413,6 +413,36 @@ bool ParallelMesh::build() {
     return BaseMesh::build();
 }
 
+ParallelMeshPtr ParallelMesh::convertToLinear( const ASTERINTEGER info ) {
+    auto mesh_out = std::make_shared< ParallelMesh >();
+    ASTERINTEGER un = 1, inf = info;
+    CALL_CMBQBQ( getName(), mesh_out->getName(), &un, &inf );
+    mesh_out->updateGlobalGroupOfNodes();
+    mesh_out->updateGlobalGroupOfCells();
+    mesh_out->build();
+    return mesh_out;
+};
+
+ParallelMeshPtr ParallelMesh::convertToQuadratic( const ASTERINTEGER info ) {
+    auto mesh_out = std::make_shared< ParallelMesh >();
+    ASTERINTEGER deux = 2, inf = info;
+    CALL_CMBQBQ( getName(), mesh_out->getName(), &deux, &inf );
+    mesh_out->updateGlobalGroupOfNodes();
+    mesh_out->updateGlobalGroupOfCells();
+    mesh_out->build();
+    return mesh_out;
+};
+
+ParallelMeshPtr ParallelMesh::convertToBiQuadratic( const ASTERINTEGER info ) {
+    auto mesh_out = std::make_shared< ParallelMesh >();
+    ASTERINTEGER trois = 3, inf = info;
+    CALL_CMBQBQ( getName(), mesh_out->getName(), &trois, &inf );
+    mesh_out->updateGlobalGroupOfNodes();
+    mesh_out->updateGlobalGroupOfCells();
+    mesh_out->build();
+    return mesh_out;
+};
+
 const ASTERINTEGER ParallelMesh::globalToLocalNodeId( const ASTERINTEGER glob ) {
     if ( _global2localMap.empty() )
         _buildGlobal2LocalMap();

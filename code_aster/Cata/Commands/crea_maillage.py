@@ -80,7 +80,7 @@ CREA_MAILLAGE = OPER(
         statut="f",
         max="**",
         fr=tr("Duplication de mailles"),
-        regles=(AU_MOINS_UN("TOUT", "GROUP_MA"),),
+        regles=(UN_PARMI("TOUT", "GROUP_MA", TOUT="OUI"),),
         NOM=SIMP(statut="o", typ="TXM"),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
@@ -156,7 +156,7 @@ CREA_MAILLAGE = OPER(
     LINE_QUAD=FACT(
         statut="f",
         fr=tr("Passage linéaire -> quadratique"),
-        regles=(AU_MOINS_UN("TOUT", "GROUP_MA"),),
+        regles=(UN_PARMI("TOUT", "GROUP_MA", TOUT="OUI"),),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         PREF_NOEUD=SIMP(statut="f", typ="TXM", defaut="NS"),
@@ -165,7 +165,7 @@ CREA_MAILLAGE = OPER(
     HEXA20_27=FACT(
         statut="f",
         fr=tr("Passage HEXA20 -> HEXA27"),
-        regles=(AU_MOINS_UN("TOUT", "GROUP_MA"),),
+        regles=(UN_PARMI("TOUT", "GROUP_MA", TOUT="OUI"),),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         PREF_NOEUD=SIMP(statut="f", typ="TXM", defaut="NS"),
@@ -174,7 +174,7 @@ CREA_MAILLAGE = OPER(
     PENTA15_18=FACT(
         statut="f",
         fr=tr("Passage PENTA15 -> PENTA18"),
-        regles=(AU_MOINS_UN("TOUT", "GROUP_MA"),),
+        regles=(UN_PARMI("TOUT", "GROUP_MA", TOUT="OUI"),),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         PREF_NOEUD=SIMP(statut="f", typ="TXM", defaut="NS"),
@@ -198,7 +198,7 @@ CREA_MAILLAGE = OPER(
     QUAD_LINE=FACT(
         statut="f",
         fr=tr("Passage quadratique -> linéaire"),
-        regles=(AU_MOINS_UN("TOUT", "GROUP_MA"),),
+        regles=(UN_PARMI("TOUT", "GROUP_MA", TOUT="OUI"),),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
     ),
