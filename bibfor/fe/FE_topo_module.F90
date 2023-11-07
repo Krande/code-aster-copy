@@ -362,6 +362,7 @@ contains
 !
         integer :: i_node
 !
+        bary = 0.d0
         do i_node = 1, this%nbnodes
             bary(1:3) = bary(1:3)+this%coorno(1:3, i_node)
         end do

@@ -27,11 +27,12 @@ subroutine te0139(option, nomte)
     implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/as_allocate.h"
-#include "asterfort/assert.h"
 #include "asterfort/as_deallocate.h"
+#include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
 #include "asterfort/nmdlog.h"
 #include "asterfort/nmgpfi.h"
 #include "asterfort/nmgrla.h"
@@ -40,8 +41,11 @@ subroutine te0139(option, nomte)
 #include "asterfort/rcangm.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tgveri.h"
-#include "asterfort/Behaviour_type.h"
+#include "blas/daxpy.h"
 #include "blas/dcopy.h"
+#include "FE_module.h"
+#include "jeveux.h"
+
 !
     character(len=16), intent(in) :: option, nomte
 !
@@ -67,7 +71,7 @@ subroutine te0139(option, nomte)
 !
     character(len=8) :: typmod(2)
     character(len=4) :: fami
-    integer, parameter :: sz_tens = 6, ndim = 3
+    integer :: sz_tens, ndim
     integer :: nno, npg, imatuu, lgpg, iret
     integer :: igeom, imate
     integer :: icontm, ivarim
@@ -83,7 +87,7 @@ subroutine te0139(option, nomte)
     integer :: jv_codret
 !     POUR TGVERI
     real(kind=8) :: sdepl(3*27), svect(3*27), scont(6*27), smatr(3*27*3*27)
-    real(kind=8) :: epsilo
+    real(kind=8) :: epsilo, disp_curr(MAX_BV)
     real(kind=8) :: varia(2*3*27*3*27)
 ! --------------------------------------------------------------------------------------------------
 !
@@ -95,11 +99,6 @@ subroutine te0139(option, nomte)
     jv_codret = 1
     fami = 'RIGI'
     codret = 0
-!
-! - Type of finite element
-!
-    typmod(1) = '3D'
-    typmod(2) = ' '
 !
 ! - Get input fields
 !
@@ -123,15 +122,40 @@ subroutine te0139(option, nomte)
     defo_comp = zk16(icompo-1+DEFO)
 !
     call FECell%init()
-    ! if (defo_comp == "PETIT_REAC") then
-    !     call FECell%updateCoordinates(dispPrev+dispIncr)
-    ! end if
-    call FEQuad%initCell(FECell, fami)
-    call FEBasis%initCell(FECell)
-!
     nno = FECell%nbnodes
     ASSERT(nno .le. 27)
+    ndim = FECell%ndim
+    sz_tens = 2*ndim
+!
+    if (defo_comp == "PETIT_REAC") then
+        call dcopy(ndim*nno, zr(ideplm), 1, disp_curr, 1)
+        call daxpy(ndim*nno, 1.d0, zr(ideplp), 1, disp_curr, 1)
+        call FECell%updateCoordinates(disp_curr)
+    end if
+!
+    call FEQuad%initCell(FECell, fami)
     npg = FEQuad%nbQuadPoints
+!
+    call FEBasis%initCell(FECell)
+!
+!
+! - Type of finite element
+!
+    if (ndim == 3) then
+        typmod(1) = '3D'
+    else
+        if (lteatt('AXIS', 'OUI')) then
+            typmod(1) = 'AXIS'
+        else if (lteatt('C_PLAN', 'OUI')) then
+            typmod(1) = 'C_PLAN'
+        else if (lteatt('D_PLAN', 'OUI')) then
+            typmod(1) = 'D_PLAN'
+        else
+            ASSERT(ASTER_FALSE)
+        end if
+    end if
+    typmod(2) = ' '
+!
 !
 ! - Get orientation
 !

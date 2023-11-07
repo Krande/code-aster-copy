@@ -659,7 +659,7 @@ class MECPQS8(Element):
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.FULL_MECA(
-            te=100,
+            te=139,
             para_in=(
                 (SP.PCAMASS, LC.CCAMA2D),
                 (SP.PCARCRI, LC.CCARCRI),
@@ -689,7 +689,7 @@ class MECPQS8(Element):
             ),
         ),
         OP.FULL_MECA_ELAS(
-            te=100,
+            te=139,
             para_in=(
                 (SP.PCAMASS, LC.CCAMA2D),
                 (SP.PCARCRI, LC.CCARCRI),
@@ -868,7 +868,7 @@ class MECPQS8(Element):
             para_out=((SP.PERRENO, LC.NERROR),),
         ),
         OP.RAPH_MECA(
-            te=100,
+            te=139,
             para_in=(
                 (SP.PCAMASS, LC.CCAMA2D),
                 (SP.PCARCRI, LC.CCARCRI),
@@ -942,7 +942,7 @@ class MECPQS8(Element):
             para_out=((SP.PMATUUR, MMATUUR),),
         ),
         OP.RIGI_MECA_ELAS(
-            te=100,
+            te=139,
             para_in=(
                 (SP.PCAMASS, LC.CCAMA2D),
                 (SP.PCARCRI, LC.CCARCRI),
@@ -978,7 +978,7 @@ class MECPQS8(Element):
             para_out=((SP.PMATUUC, MMATUUC),),
         ),
         OP.RIGI_MECA_IMPLEX(
-            te=100,
+            te=139,
             para_in=(
                 (SP.PCAMASS, LC.CCAMA2D),
                 (SP.PCARCRI, LC.CCARCRI),
@@ -999,7 +999,7 @@ class MECPQS8(Element):
             para_out=((SP.PCONTXR, LC.EGIG2DR), (SP.PMATUNS, MMATUNS), (SP.PMATUUR, MMATUUR)),
         ),
         OP.RIGI_MECA_TANG(
-            te=100,
+            te=139,
             para_in=(
                 (SP.PCAMASS, LC.CCAMA2D),
                 (SP.PCARCRI, LC.CCARCRI),
