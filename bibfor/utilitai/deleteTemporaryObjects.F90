@@ -23,7 +23,6 @@ subroutine deleteTemporaryObjects()
 #include "asterfort/jedetv.h"
 #include "asterfort/jerecu.h"
 #include "asterfort/jereou.h"
-#include "asterfort/check_aster_allocate.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -37,6 +36,5 @@ subroutine deleteTemporaryObjects()
     call jedetv()
     call jereou('V', 0.01d0)
     call jerecu('G')
-    call check_aster_allocate()
 !
 end subroutine

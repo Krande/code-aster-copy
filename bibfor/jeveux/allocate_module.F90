@@ -66,7 +66,7 @@ module allocate_module
 !
     type save_lvec
         type(array_1), allocatable :: lvec(:)
-        integer :: nmax, kfree
+        integer :: nmax = 0, kfree = 0
     end type save_lvec
 !
     type(save_lvec), target :: slvec
@@ -89,6 +89,18 @@ contains
             slvec%lvec(k)%ptr_ident = C_NULL_PTR
             slvec%lvec(k)%tsca = ' '
         end do
+    end subroutine
+!
+    subroutine free_slvec(slvec)
+        type(save_lvec) :: slvec
+        integer :: ierr
+!
+        if (slvec%nmax > 0) then
+            call deallocate_all_slvec(ierr)
+            deallocate (slvec%lvec)
+            slvec%nmax = 0
+            slvec%kfree = 0
+        end if
     end subroutine
 !
 !---------------------------------------------------------------------
