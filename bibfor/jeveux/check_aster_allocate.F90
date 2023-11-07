@@ -33,22 +33,28 @@ subroutine check_aster_allocate(init)
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 !
+    aster_logical :: clean
     integer, save :: icode = -1
+    integer :: ierr
 !
+    clean = .true.
     if (present(init)) then
         ASSERT(init .eq. 0)
         cuvtrav = 0.d0
+        clean = .false.
     end if
 !
-    if (abs(cuvtrav) > r8prem()) then
-        call utmess('A', 'DVP_6', sr=cuvtrav*lois/1.e6)
+    if (clean) then
         if (icode < 0) then
             icode = jdcget('TestMode')
         end if
         if (icode .ne. 0) then
             ASSERT(abs(cuvtrav) < r8prem())
         end if
-        call deallocate_all_slvec()
+        call deallocate_all_slvec(ierr)
+        if (ierr > 0) then
+            call utmess('A', 'DVP_6', sr=cuvtrav*lois/1.e6)
+        end if
     end if
 !
 end subroutine

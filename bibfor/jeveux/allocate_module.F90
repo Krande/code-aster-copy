@@ -179,7 +179,7 @@ contains
             slvec%lvec(ktrou)%vk24 = ' '
             vk24 => slvec%lvec(ktrou)%vk24
             pteur_c = c_loc(vk24(1))
-            slvec%lvec(ktrou)%tsca = '24'
+            slvec%lvec(ktrou)%tsca = 'K24'
         else if (present(vk32)) then
             allocate (slvec%lvec(ktrou)%vk32(lon1))
             slvec%lvec(ktrou)%vk32 = ' '
@@ -318,13 +318,14 @@ contains
     end subroutine deallocate_slvec
 !
 !---------------------------------------------------------------------
-    subroutine deallocate_all_slvec()
+    subroutine deallocate_all_slvec(ierr)
 ! but : desallouer tous les objets de slvec qui ne n'ont pas ete
 !
-        integer :: k, n1, n2, lonty, lsic
+        integer :: k, n1, n2, lonty, lsic, ierr
         character(len=3) :: tsca
 !
         n2 = 0
+        ierr = 0
         do k = 1, slvec%nmax
             if (slvec%lvec(k)%present) then
                 tsca = slvec%lvec(k)%tsca
@@ -371,6 +372,7 @@ contains
                 else
                     ASSERT(.false.)
                 end if
+                ierr = 1
                 n2 = n2+n1*lonty
                 slvec%lvec(k)%present = .false.
                 slvec%lvec(k)%ptr_ident = C_NULL_PTR
