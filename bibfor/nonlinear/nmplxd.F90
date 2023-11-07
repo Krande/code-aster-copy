@@ -151,7 +151,7 @@ subroutine nmplxd(FECell, FEBasis, FEQuad, nno, npg, ndim, &
         do i_tens = 1, 3
             sigmPrep(i_tens) = sigmPrev(i_tens, kpg)
         end do
-        do i_tens = ndim+1, 2*ndim
+        do i_tens = 4, 2*ndim
             sigmPrep(i_tens) = sigmPrev(i_tens, kpg)*rac2
         end do
 ! ----- Compute behaviour
@@ -179,7 +179,7 @@ subroutine nmplxd(FECell, FEBasis, FEQuad, nno, npg, ndim, &
             do i_tens = 1, 3
                 sigmCurr(i_tens, kpg) = sigmPost(i_tens)
             end do
-            do i_tens = ndim+1, 2*ndim
+            do i_tens = 4, 2*ndim
                 sigmCurr(i_tens, kpg) = sigmPost(i_tens)/rac2
             end do
         end if
