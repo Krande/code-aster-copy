@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,23 +18,23 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmdlog(fami    , option  , typmod  , ndim     , nno     ,&
-                      npg     , iw      , ivf     , vff      , idff    ,&
-                      geomInit, dff     , compor  , mult_comp, mate    , lgpg,&
+    subroutine nmdlog(FECell, FEBasis, FEQuad    , option  , typmod  , ndim     , nno     ,&
+                      npg     ,  compor  , mult_comp, mate    , lgpg,&
                       carcri  , angmas  , instm   , instp    , matsym  ,&
                       dispPrev, dispIncr, sigmPrev, vim      , sigmCurr,&
                       vip     , fint    , matuu   , codret)
+
+                      use FE_topo_module
+                      use FE_quadrature_module
+                      use FE_basis_module
+
+                      type(FE_Cell), intent(in) :: FECell
+type(FE_Quadrature), intent(in) :: FEQuad
+type(FE_basis), intent(in) :: FEBasis
         integer :: lgpg
         integer, intent(in) :: ndim, nno, npg
-        character(len=*) :: fami
         character(len=16) :: option
         character(len=8) :: typmod(*)
-        integer :: iw
-        integer :: ivf
-        real(kind=8) :: vff(nno, npg)
-        integer :: idff
-        real(kind=8) :: geomInit(*)
-        real(kind=8) :: dff(nno, *)
         character(len=16), intent(in) :: compor(*)
         character(len=16), intent(in) :: mult_comp
         real(kind=8), intent(in) :: carcri(*)

@@ -88,6 +88,7 @@ module fe_topo_module
         procedure, public, pass :: init => init_cell
         procedure, public, pass :: func => func_cell
         procedure, public, pass :: evalCoor => coor_cell
+        procedure, public, pass :: barycenter => bary_cell
         procedure, public, pass :: updateCoordinates
     end type FE_Cell
 !
@@ -333,6 +334,39 @@ contains
 !
         func = 0.d0
         call elrfvf(this%typemas, pt, func)
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function bary_cell(this) result(bary)
+!
+        implicit none
+!
+        class(FE_Cell), intent(in) :: this
+        real(kind=8), dimension(3)                :: bary
+!
+! --------------------------------------------------------------------------------------------------
+!
+! FE - generic tools
+!
+! Compute barycenter
+!
+! --------------------------------------------------------------------------------------------------
+!
+! Out FESkin           : a FE cell
+! --------------------------------------------------------------------------------------------------
+!
+!
+        integer :: i_node
+!
+        do i_node = 1, this%nbnodes
+            bary(1:3) = bary(1:3)+this%coorno(1:3, i_node)
+        end do
+!
+        bary = bary/real(this%nbnodes, kind=8)
 !
     end function
 !

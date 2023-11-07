@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,18 +18,17 @@
 !
 interface
     subroutine nmgpfi(fami, option, typmod, ndim, nno,&
-                      npg, iw, vff, idff, geomInit,&
-                      dff, compor, imate, mult_comp, lgpg, carcri,&
+                      npg, geomInit,&
+                      compor, imate, mult_comp, lgpg, carcri,&
                       angmas, instm, instp, dispPrev, dispIncr,&
                       sigmPrev, vim, sigmCurr, vip, fint,&
                       matr, codret)
-        integer :: ndim, nno, npg, imate, lgpg, iw, idff
+        integer :: ndim, nno, npg, imate, lgpg
         character(len=8) :: typmod(*)
         character(len=*) :: fami
         character(len=16) :: option, compor(*)
         character(len=16), intent(in) :: mult_comp
-        real(kind=8) :: geomInit(*), dff(nno, *), carcri(*), instm, instp
-        real(kind=8) :: vff(nno, npg)
+        real(kind=8) :: geomInit(*), carcri(*), instm, instp
         real(kind=8) :: angmas(3)
         real(kind=8) :: dispPrev(*), dispIncr(*), sigmPrev(2*ndim, npg)
         real(kind=8) :: vim(lgpg, npg), sigmCurr(2*ndim, npg), vip(lgpg, npg)

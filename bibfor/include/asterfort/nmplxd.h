@@ -18,8 +18,7 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmplxd(fami  , nno      , npg   , ndim, &
-                      ipoids, ivf      , idfde ,&
+    subroutine nmplxd(FECell, FEBasis, FEQuad  , nno      , npg   , ndim, &
                       typmod   , option, imate ,&
                       compor, mult_comp, lgpg  , carcri,&
                       instam, instap   ,&
@@ -27,9 +26,15 @@ interface
                       angmas, sigmPrev     , vim   ,&
                       matsym, sigmCurr     , vip   ,&
                       matuu , vectu    , codret)
-        character(len=*), intent(in) :: fami
+
+                      use FE_topo_module
+                      use FE_quadrature_module
+                      use FE_basis_module
+
+                      type(FE_Cell), intent(in) :: FECell
+type(FE_Quadrature), intent(in) :: FEQuad
+type(FE_basis), intent(in) :: FEBasis
         integer, intent(in) :: nno, npg, ndim
-        integer, intent(in) :: ipoids, ivf, idfde
         character(len=8), intent(in) :: typmod(*)
         character(len=16), intent(in) :: option
         integer, intent(in) :: imate

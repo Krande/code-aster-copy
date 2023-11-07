@@ -17,9 +17,8 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine nmdlog(fami, option, typmod, ndim, nno, &
-                  npg, iw, ivf, vff, idff, &
-                  geomInit, dff, compor, mult_comp, mate, lgpg, &
+subroutine nmdlog(FECell, FEBasis, FEQuad, option, typmod, ndim, nno, &
+                  npg, compor, mult_comp, mate, lgpg, &
                   carcri, angmas, instm, instp, matsym, &
                   dispPrev, dispIncr, sigmPrev, vim, sigmCurr, &
                   vip, fint, matuu, codret)
@@ -38,6 +37,7 @@ subroutine nmdlog(fami, option, typmod, ndim, nno, &
 #include "asterfort/assert.h"
 #include "asterfort/codere.h"
 #include "asterfort/dfdmip.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/nmcomp.h"
 #include "asterfort/nmepsi.h"
 #include "asterfort/nmgrtg.h"
@@ -48,6 +48,9 @@ subroutine nmdlog(fami, option, typmod, ndim, nno, &
 #include "asterfort/Behaviour_type.h"
 #include "FE_module.h"
 !
+    type(FE_Cell), intent(in) :: FECell
+    type(FE_Quadrature), intent(in) :: FEQuad
+    type(FE_basis), intent(in) :: FEBasis
     integer, intent(in) :: ndim, nno, npg
 !
 ! --------------------------------------------------------------------------------------------------
@@ -95,27 +98,22 @@ subroutine nmdlog(fami, option, typmod, ndim, nno, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    type(FE_Cell) :: FECell
-    type(FE_Quadrature) :: FEQuad
-    type(FE_basis) :: FEBasis
-!
-    aster_logical :: grand, axi, cplan
+    aster_logical :: cplan
     aster_logical :: matsym, lintbo
     aster_logical :: lVect, lMatr, lSigm, lMatrPred, lCorr, lVari
     integer :: kpg, nddl, cod(MAX_QP), ivf
     integer :: mate, lgpg, codret, iw, idff, iret
     character(len=8) :: typmod(*)
-    character(len=*) :: fami
     character(len=16) :: option
     character(len=16), intent(in) :: compor(*)
     character(len=16), intent(in) :: mult_comp
     real(kind=8), intent(in) :: carcri(*)
-    real(kind=8) :: geomInit(*), dff(nno, *), instm, instp
-    real(kind=8) :: vff(nno, npg), dtde(6, 6)
+    real(kind=8) :: instm, instp
+    real(kind=8) :: dtde(6, 6)
     real(kind=8) :: angmas(3), dispPrev(*), dispIncr(*), sigmPrev(2*ndim, npg), epslPrev(6)
     real(kind=8) :: vim(lgpg, npg), sigmCurr(2*ndim, npg), vip(lgpg, npg)
     real(kind=8) :: matuu(*), fint(ndim*nno)
-    real(kind=8) :: geomPrev(3*27), fPrev(3, 3), fCurr(3, 3), dispCurr(3*27)
+    real(kind=8) :: fPrev(3, 3), fCurr(3, 3), dispCurr(3*27)
     real(kind=8) :: tlogPrev(6), tlogCurr(6), epslIncr(6)
     real(kind=8) :: gn(3, 3), lamb(3), logl(3)
     real(kind=8) :: gPrev(3, 3), gCurr(3, 3), coorpg(3), BGSEval(3, MAX_BS)
@@ -124,8 +122,6 @@ subroutine nmdlog(fami, option, typmod, ndim, nno, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    grand = ASTER_TRUE
-    axi = typmod(1) .eq. 'AXIS'
     cplan = typmod(1) .eq. 'C_PLAN'
     lSigm = L_SIGM(option)
     lVari = L_VARI(option)
@@ -136,24 +132,19 @@ subroutine nmdlog(fami, option, typmod, ndim, nno, &
     nddl = ndim*nno
     ASSERT(nno .le. 27)
     ASSERT(compor(PLANESTRESS) .ne. 'DEBORST')
-!
-    call FECell%init()
-    call FEQuad%initCell(FECell, "RIGI")
-    call FEBasis%initCell(FECell)
 
 ! - Initialisation of behaviour datastructure
     call behaviourInit(BEHinteg)
 
 ! - Prepare external state variables
+    call elrefe_info(fami=FEQuad%fami, jpoids=iw, jvf=ivf, jdfde=idff)
     call behaviourPrepESVAElem(carcri, typmod, &
                                nno, npg, ndim, &
                                iw, ivf, idff, &
-                               geomInit, BEHinteg, &
+                               FECell%coorno(1:ndim, 1:nno), BEHinteg, &
                                dispPrev, dispIncr)
 
 ! - Update configuration
-    call dcopy(nddl, geomInit, 1, geomPrev, 1)
-    call daxpy(nddl, 1.d0, dispPrev, 1, geomPrev, 1)
     call dcopy(nddl, dispPrev, 1, dispCurr, 1)
     if (lCorr) then
         call daxpy(nddl, 1.d0, dispIncr, 1, dispCurr, 1)
@@ -186,7 +177,7 @@ subroutine nmdlog(fami, option, typmod, ndim, nno, &
         dtde = 0.d0
         tlogCurr = 0.d0
         call nmcomp(BEHinteg, &
-                    fami, kpg, 1, ndim, typmod, &
+                    FEQuad%fami, kpg, 1, ndim, typmod, &
                     mate, compor, carcri, instm, instp, &
                     6, epslPrev, epslIncr, 6, tlogPrev, &
                     vim(1, kpg), option, angmas, &
@@ -202,7 +193,7 @@ subroutine nmdlog(fami, option, typmod, ndim, nno, &
         call poslog(lCorr, lMatr, lSigm, lVari, &
                     tlogPrev, tlogCurr, fPrev, &
                     lgpg, vip(1, kpg), ndim, fCurr, kpg, &
-                    dtde, sigmPrev(1, kpg), cplan, fami, mate, &
+                    dtde, sigmPrev(1, kpg), cplan, FEQuad%fami, mate, &
                     instp, angmas, gn, lamb, logl, &
                     sigmCurr(1, kpg), dsidep, pk2Prev, pk2Curr, iret)
         if (iret .eq. 1) then

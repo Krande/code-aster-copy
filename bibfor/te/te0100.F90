@@ -19,6 +19,9 @@
 !
 subroutine te0100(option, nomte)
 !
+    use FE_topo_module
+    use FE_quadrature_module
+    use FE_basis_module
     use Behaviour_module, only: behaviourOption
 !
     implicit none
@@ -28,7 +31,6 @@ subroutine te0100(option, nomte)
 #include "asterfort/as_allocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/as_deallocate.h"
-#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/nmdlog.h"
@@ -61,19 +63,20 @@ subroutine te0100(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    type(FE_Cell) :: FECell
+    type(FE_Quadrature) :: FEQuad
+    type(FE_basis) :: FEBasis
+!
     character(len=8) :: typmod(2)
     character(len=4) :: fami
     integer, parameter :: sz_tens = 4, ndim = 2
-    integer :: i_node, i_dime
     integer :: nno, npg, imatuu, lgpg, iret
-    integer :: ipoids, ivf, idfde, igeom, imate
+    integer :: igeom, imate
     integer :: icontm, ivarim
     integer :: iinstm, iinstp, ideplm, ideplp, icompo, icarcr
     integer :: ivectu, icontp, ivarip
     integer :: ivarix, jv_mult_comp
     integer :: jtab(7)
-    real(kind=8) :: bary(3)
-    real(kind=8) :: dfdi(2*9)
     real(kind=8) :: angl_naut(7)
     aster_logical :: matsym
     character(len=16) :: mult_comp, defo_comp
@@ -94,12 +97,6 @@ subroutine te0100(option, nomte)
     jv_codret = 1
     fami = 'RIGI'
     codret = 0
-!
-! - Get element parameters
-!
-    call elrefe_info(fami=fami, nno=nno, npg=npg, &
-                     jpoids=ipoids, jvf=ivf, jdfde=idfde)
-    ASSERT(nno .le. 9)
 !
 ! - Type of finite element
 !
@@ -130,18 +127,25 @@ subroutine te0100(option, nomte)
     call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
     lgpg = max(jtab(6), 1)*jtab(7)
 !
-! - Compute barycentric center
+! - Properties of behaviour
 !
-    bary(:) = 0.d0
-    do i_node = 1, nno
-        do i_dime = 1, ndim
-            bary(i_dime) = bary(i_dime)+zr(igeom+i_dime+ndim*(i_node-1)-1)/nno
-        end do
-    end do
+    mult_comp = zk16(jv_mult_comp-1+1)
+    defo_comp = zk16(icompo-1+DEFO)
+!
+    call FECell%init()
+    ! if (defo_comp == "PETIT_REAC") then
+    !     call FECell%updateCoordinates(dispPrev+dispIncr)
+    ! end if
+    call FEQuad%initCell(FECell, fami)
+    call FEBasis%initCell(FECell)
+!
+    nno = FECell%nbnodes
+    ASSERT(nno .le. 9)
+    npg = FEQuad%nbQuadPoints
 !
 ! - Get orientation
 !
-    call rcangm(ndim, bary, angl_naut)
+    call rcangm(ndim, FECell%barycenter(), angl_naut)
 !
 ! - Select objects to construct from option name
 !
@@ -149,12 +153,6 @@ subroutine te0100(option, nomte)
                          lMatr, lVect, &
                          lVari, lSigm, &
                          codret)
-!
-! - Properties of behaviour
-!
-    mult_comp = zk16(jv_mult_comp-1+1)
-    defo_comp = zk16(icompo-1+DEFO)
-
 !
 ! - Get output fields
 !
@@ -181,8 +179,7 @@ subroutine te0100(option, nomte)
 
     if (defo_comp .eq. 'PETIT') then
 
-        call nmplxd(fami, nno, npg, ndim, &
-                    ipoids, ivf, idfde, &
+        call nmplxd(FECell, FEBasis, FEQuad, nno, npg, ndim, &
                     typmod, option, zi(imate), &
                     zk16(icompo), mult_comp, lgpg, zr(icarcr), &
                     zr(iinstm), zr(iinstp), &
@@ -193,8 +190,7 @@ subroutine te0100(option, nomte)
         if (codret .ne. 0) goto 999
 
     else if (defo_comp .eq. 'PETIT_REAC') then
-        call nmplxd(fami, nno, npg, ndim, &
-                    ipoids, ivf, idfde, &
+        call nmplxd(FECell, FEBasis, FEQuad, nno, npg, ndim, &
                     typmod, option, zi(imate), &
                     zk16(icompo), mult_comp, lgpg, zr(icarcr), &
                     zr(iinstm), zr(iinstp), &
@@ -206,21 +202,20 @@ subroutine te0100(option, nomte)
 
     else if (defo_comp .eq. 'SIMO_MIEHE') then
         call nmgpfi(fami, option, typmod, ndim, nno, &
-                    npg, ipoids, zr(ivf), idfde, zr(igeom), &
-                    dfdi, zk16(icompo), zi(imate), mult_comp, lgpg, zr(icarcr), &
+                    npg, zr(igeom), &
+                    zk16(icompo), zi(imate), mult_comp, lgpg, zr(icarcr), &
                     angl_naut, zr(iinstm), zr(iinstp), zr(ideplm), zr(ideplp), &
                     zr(icontm), zr(ivarim), zr(icontp), zr(ivarip), zr(ivectu), &
                     zr(imatuu), codret)
         if (codret .ne. 0) goto 999
 
     else if (defo_comp .eq. 'GREEN_LAGRANGE') then
-        call nmgrla(option, typmod, &
-                    fami, zi(imate), &
+        call nmgrla(FECell, FEBasis, FEQuad, &
+                    option, typmod, zi(imate), &
                     ndim, nno, npg, lgpg, &
-                    ipoids, ivf, idfde, &
                     zk16(icompo), zr(icarcr), mult_comp, &
                     zr(iinstm), zr(iinstp), &
-                    zr(igeom), zr(ideplm), &
+                    zr(ideplm), &
                     zr(ideplp), angl_naut, &
                     zr(icontm), zr(icontp), &
                     zr(ivarim), zr(ivarip), &
@@ -229,9 +224,8 @@ subroutine te0100(option, nomte)
         if (codret .ne. 0) goto 999
 
     else if (defo_comp .eq. 'GDEF_LOG') then
-        call nmdlog(fami, option, typmod, ndim, nno, &
-                    npg, ipoids, ivf, zr(ivf), idfde, &
-                    zr(igeom), dfdi, zk16(icompo), mult_comp, zi(imate), lgpg, &
+        call nmdlog(FECell, FEBasis, FEQuad, option, typmod, ndim, nno, npg, &
+                    zk16(icompo), mult_comp, zi(imate), lgpg, &
                     zr(icarcr), angl_naut, zr(iinstm), zr(iinstp), matsym, &
                     zr(ideplm), zr(ideplp), zr(icontm), zr(ivarim), zr(icontp), &
                     zr(ivarip), zr(ivectu), zr(imatuu), codret)

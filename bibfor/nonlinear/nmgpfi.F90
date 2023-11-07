@@ -18,8 +18,8 @@
 ! aslint: disable=W1504, W1306
 !
 subroutine nmgpfi(fami, option, typmod, ndim, nno, &
-                  npg, iw, vff, idff, geomInit, &
-                  dff, compor, imate, mult_comp, lgpg, carcri, &
+                  npg, geomInit, &
+                  compor, imate, mult_comp, lgpg, carcri, &
                   angmas, instm, instp, dispPrev, dispIncr, &
                   sigmPrev, vim, sigmCurr, vip, fint, &
                   matr, codret)
@@ -36,6 +36,7 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno, &
 #include "asterfort/codere.h"
 #include "asterfort/crirup.h"
 #include "asterfort/dfdmip.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/nmcomp.h"
 #include "asterfort/nmepsi.h"
 #include "asterfort/nmgpin.h"
@@ -50,8 +51,7 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno, &
     character(len=*) :: fami
     character(len=16) :: option, compor(*)
     character(len=16), intent(in) :: mult_comp
-    real(kind=8) :: geomInit(*), dff(nno, *), carcri(*), instm, instp
-    real(kind=8) :: vff(nno, npg)
+    real(kind=8) :: geomInit(*), carcri(*), instm, instp
     real(kind=8) :: angmas(3)
     real(kind=8) :: dispPrev(*), dispIncr(*), sigmPrev(2*ndim, npg)
     real(kind=8) :: vim(lgpg, npg), sigmCurr(2*ndim, npg), vip(lgpg, npg)
@@ -100,9 +100,9 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno, &
     aster_logical :: grand, axi
     aster_logical :: lMatr, lSigm
     integer :: lij(3, 3), ia, ja, na, ib, jb, nb, kpg, kk, os, ija
-    integer :: nddl, ndu, vu(3, 27)
+    integer :: nddl, ndu, vu(3, 27), ivf
     integer :: cod(npg)
-    real(kind=8) :: geomPrev(3*27), geomCurr(3*27), r, w
+    real(kind=8) :: geomPrev(3*27), geomCurr(3*27), r, w, dff(nno, ndim)
     real(kind=8) :: jacoPrev, jacoIncr, jacoCurr, fPrev(3, 3), fIncr(3, 3), coef
     real(kind=8) :: sigmPrevComp(6), tauCurr(6), dsidep(6, 3, 3)
     real(kind=8) :: rbid, tbid(6), t1, t2
@@ -123,6 +123,9 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno, &
     rbid = r8vide()
     tbid = r8vide()
     codret = 0
+!
+    call elrefe_info(fami=fami, jpoids=iw, jvf=ivf, jdfde=idff)
+
 !
 ! - Initialisation of behaviour datastructure
 !
@@ -153,21 +156,21 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno, &
         dsidep = 0.d0
 ! ----- Kinematic - Previous strains
         call dfdmip(ndim, nno, axi, geomInit, kpg, &
-                    iw, vff(1, kpg), idff, r, w, &
+                    iw, zr(ivf+(kpg-1)*nno), idff, r, w, &
                     dff)
-        call nmepsi(ndim, nno, axi, grand, vff(1, kpg), &
+        call nmepsi(ndim, nno, axi, grand, zr(ivf+(kpg-1)*nno), &
                     r, dff, dispPrev, fPrev)
 ! ----- Kinematic - Increment of strains
         call dfdmip(ndim, nno, axi, geomPrev, kpg, &
-                    iw, vff(1, kpg), idff, r, rbid, &
+                    iw, zr(ivf+(kpg-1)*nno), idff, r, rbid, &
                     dff)
-        call nmepsi(ndim, nno, axi, grand, vff(1, kpg), &
+        call nmepsi(ndim, nno, axi, grand, zr(ivf+(kpg-1)*nno), &
                     r, dff, dispIncr, fIncr)
 ! ----- LU decomposition of GRAD U
         call dfdmip(ndim, nno, axi, geomCurr, kpg, &
-                    iw, vff(1, kpg), idff, r, rbid, &
+                    iw, zr(ivf+(kpg-1)*nno), idff, r, rbid, &
                     dff)
-        call nmmalu(nno, axi, r, vff(1, kpg), dff, &
+        call nmmalu(nno, axi, r, zr(ivf+(kpg-1)*nno), dff, &
                     lij)
 ! ----- Kinematic - Jacobians
         jacoPrev = fPrev(1, 1)*(fPrev(2, 2)*fPrev(3, 3)-fPrev(2, 3)*fPrev(3, 2))- &

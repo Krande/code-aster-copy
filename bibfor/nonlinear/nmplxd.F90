@@ -17,8 +17,7 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine nmplxd(fami, nno, npg, ndim, &
-                  ipoids, ivf, idfde, &
+subroutine nmplxd(FECell, FEBasis, FEQuad, nno, npg, ndim, &
                   typmod, option, imate, &
                   compor, mult_comp, lgpg, carcri, &
                   instam, instap, &
@@ -41,13 +40,15 @@ subroutine nmplxd(fami, nno, npg, ndim, &
 #include "asterf_types.h"
 #include "asterfort/codere.h"
 #include "asterfort/crirup.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/nmcomp.h"
 #include "asterfort/Behaviour_type.h"
 #include "FE_module.h"
 !
-    character(len=*), intent(in) :: fami
+    type(FE_Cell), intent(in) :: FECell
+    type(FE_Quadrature), intent(in) :: FEQuad
+    type(FE_basis), intent(in) :: FEBasis
     integer, intent(in) :: nno, npg, ndim
-    integer, intent(in) :: ipoids, ivf, idfde
     character(len=8), intent(in) :: typmod(*)
     character(len=16), intent(in) :: option
     integer, intent(in) :: imate
@@ -102,12 +103,8 @@ subroutine nmplxd(fami, nno, npg, ndim, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    type(FE_Cell) :: FECell
-    type(FE_Quadrature) :: FEQuad
-    type(FE_basis) :: FEBasis
-!
     aster_logical :: lVect, lMatr, lSigm
-    integer :: kpg, i_tens
+    integer :: kpg, i_tens, ipoids, ivf, idfde
     integer :: cod(MAX_QP)
     real(kind=8) :: BGSEval(3, MAX_BS)
     real(kind=8) :: def(6, MAX_BS, 3)
@@ -128,24 +125,18 @@ subroutine nmplxd(fami, nno, npg, ndim, &
 !
     call behaviourInit(BEHinteg)
 !
-    call FECell%init()
-    if (compor(DEFO) == "PETIT_REAC") then
-        call FECell%updateCoordinates(dispPrev+dispIncr)
-    end if
-    call FEQuad%initCell(FECell, "RIGI")
-    call FEBasis%initCell(FECell)
-!
 ! - Prepare external state variables
 !
+    call elrefe_info(fami=FEQuad%fami, jpoids=ipoids, jvf=ivf, jdfde=idfde)
     call behaviourPrepESVAElem(carcri, typmod, &
-                               FECell%nbnodes, FEQuad%nbQuadPoints, FECell%ndim, &
+                               nno, npg, ndim, &
                                ipoids, ivf, idfde, &
-                               FECell%coorno(1:FECell%ndim, :), BEHinteg, &
+                               FECell%coorno(1:ndim, 1:nno), BEHinteg, &
                                dispPrev, dispIncr)
 !
 ! - Loop on Gauss points
 !
-    do kpg = 1, FEQuad%nbQuadPoints
+    do kpg = 1, npg
         coorpg = FEQuad%points_param(1:3, kpg)
         BGSEval = FEBasis%grad(coorpg, FEQuad%jacob(1:3, 1:3, kpg))
 
@@ -166,7 +157,7 @@ subroutine nmplxd(fami, nno, npg, ndim, &
 ! ----- Compute behaviour
         sigmPost = 0.d0
         call nmcomp(BEHinteg, &
-                    fami, kpg, 1, ndim, typmod, &
+                    FEQuad%fami, kpg, 1, ndim, typmod, &
                     imate, compor, carcri, instam, instap, &
                     6, eps, deps, 6, sigmPrep, &
                     vim(1, kpg), option, angmas, &
@@ -197,7 +188,7 @@ subroutine nmplxd(fami, nno, npg, ndim, &
 ! - For POST_ITER='CRIT_RUPT'
 !
     if (carcri(13) .gt. 0.d0) then
-        call crirup(fami, imate, ndim, FEQuad%nbQuadPoints, lgpg, &
+        call crirup(FEQuad%fami, imate, ndim, npg, lgpg, &
                     option, compor, sigmCurr, vip, vim, &
                     instam, instap)
     end if

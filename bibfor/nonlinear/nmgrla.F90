@@ -17,13 +17,12 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine nmgrla(option, typmod, &
-                  fami, imate, &
+subroutine nmgrla(FECell, FEBasis, FEQuad, option, typmod, &
+                  imate, &
                   ndim, nno, npg, lgpg, &
-                  ipoids, ivf, idfde, &
                   compor, carcri, mult_comp, &
                   instam, instap, &
-                  geomInit, dispPrev, dispIncr, &
+                  dispPrev, dispIncr, &
                   angmas, sigmPrev, sigmCurr, &
                   vim, vip, &
                   matsym, matuu, vectu, &
@@ -44,6 +43,7 @@ subroutine nmgrla(option, typmod, &
 #include "asterfort/assert.h"
 #include "asterfort/codere.h"
 #include "asterfort/lcdetf.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/nmcomp.h"
 #include "asterfort/nmgrtg.h"
 #include "asterfort/pk2sig.h"
@@ -51,17 +51,17 @@ subroutine nmgrla(option, typmod, &
 #include "asterfort/Behaviour_type.h"
 #include "FE_module.h"
 !
+    type(FE_Cell), intent(in) :: FECell
+    type(FE_Quadrature), intent(in) :: FEQuad
+    type(FE_basis), intent(in) :: FEBasis
     character(len=16), intent(in) :: option
     character(len=8), intent(in) :: typmod(*)
-    character(len=*), intent(in) :: fami
     integer, intent(in) :: imate
     integer, intent(in) :: ndim, nno, npg, lgpg
-    integer, intent(in) :: ipoids, ivf, idfde
     character(len=16), intent(in) :: compor(*)
     real(kind=8), intent(in) :: carcri(*), angmas(*)
     character(len=16), intent(in) :: mult_comp
     real(kind=8), intent(in) :: instam, instap
-    real(kind=8), intent(in) :: geomInit(ndim, nno)
     real(kind=8), intent(inout) :: dispPrev(ndim*nno), dispIncr(ndim*nno)
     real(kind=8), intent(inout) :: sigmPrev(2*ndim, npg), sigmCurr(2*ndim, npg)
     real(kind=8), intent(inout) :: vim(lgpg, npg), vip(lgpg, npg)
@@ -76,12 +76,11 @@ subroutine nmgrla(option, typmod, &
 !
 ! Elements: C_PLAN, D_PLAN, AXIS
 !
-! Options: RIGI_MECA_TANG, RAPH_MECA and FULL_MECA - Large displacements/rotations (GROT_GDEP)
+! Options: RIGI_MECA_TANG, RAPH_MECA and FULL_MECA - Large displacements/rotations (GREEN_LAGRANGE)
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  option           : name of option to compute
-! In  fami             : Gauss family for integration point rule
 ! In  imate            : coded material address (JEVEUX)
 ! In  ndim             : dimension (2 ou 3)
 ! In  nno              : number of nodes
@@ -95,7 +94,6 @@ subroutine nmgrla(option, typmod, &
 ! In  mult_comp        : multi-comportment (DEFI_COMPOR for PMF)
 ! In  instam           : time at beginning of time step
 ! In  instap           : time at end of time step
-! In  geomInit        : initial coordinates of nodes (from mesh)
 ! IO  dispPrev        : displacements at beginning of time step
 ! IO  dispIncr        : displacements from beginning of time step
 ! IO  sigmPrev             : stresses at beginning of time step
@@ -109,12 +107,9 @@ subroutine nmgrla(option, typmod, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    type(FE_Cell) :: FECell
-    type(FE_Quadrature) :: FEQuad
-    type(FE_basis) :: FEBasis
 !
     aster_logical :: lVect, lMatr, lSigm, lMatrPred, lPred
-    integer :: kpg
+    integer :: kpg, ipoids, ivf, idfde
     integer :: cod(MAX_QP)
     real(kind=8) :: dsidep(6, 6), coorpg(3), BGSEval(3, MAX_BS)
     real(kind=8) :: fPrev(3, 3), fCurr(3, 3), gPrev(3, 3), gCurr(3, 3)
@@ -135,20 +130,17 @@ subroutine nmgrla(option, typmod, &
     lMatrPred = L_MATR_PRED(option)
     dispCurr = 0.d0
 !
-    call FECell%init()
-    call FEQuad%initCell(FECell, "RIGI")
-    call FEBasis%initCell(FECell)
-!
 ! - Initialisation of behaviour datastructure
 !
     call behaviourInit(BEHinteg)
 !
 ! - Prepare external state variables
 !
+    call elrefe_info(fami=FEQuad%fami, jpoids=ipoids, jvf=ivf, jdfde=idfde)
     call behaviourPrepESVAElem(carcri, typmod, &
                                nno, npg, ndim, &
                                ipoids, ivf, idfde, &
-                               geomInit, BEHinteg, &
+                               FECell%coorno(1:ndim, 1:nno), BEHinteg, &
                                dispPrev, dispIncr)
 !
 ! - Update displacements
@@ -181,7 +173,7 @@ subroutine nmgrla(option, typmod, &
         epsgIncr = epsgCurr-epsgPrev
 
         call nmcomp(BEHinteg, &
-                    fami, kpg, 1, ndim, typmod, &
+                    FEQuad%fami, kpg, 1, ndim, typmod, &
                     imate, compor, carcri, instam, instap, &
                     6, epsgPrev, epsgIncr, 6, sigmPrep, &
                     vim(1, kpg), option, angmas, &
