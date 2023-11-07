@@ -46,7 +46,7 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno, &
 #include "blas/dscal.h"
 #include "asterfort/Behaviour_type.h"
 !
-    integer :: ndim, nno, npg, imate, lgpg, iw, idff
+    integer :: ndim, nno, npg, imate, lgpg
     character(len=8) :: typmod(*)
     character(len=*) :: fami
     character(len=16) :: option, compor(*)
@@ -100,9 +100,9 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno, &
     aster_logical :: grand, axi
     aster_logical :: lMatr, lSigm
     integer :: lij(3, 3), ia, ja, na, ib, jb, nb, kpg, kk, os, ija
-    integer :: nddl, ndu, vu(3, 27), ivf
+    integer :: nddl, ndu, vu(3, 27), ivf, iw, idff
     integer :: cod(npg)
-    real(kind=8) :: geomPrev(3*27), geomCurr(3*27), r, w, dff(nno, ndim)
+    real(kind=8) :: geomPrev(3*27), geomCurr(3*27), r, w, dff(nno, 4)
     real(kind=8) :: jacoPrev, jacoIncr, jacoCurr, fPrev(3, 3), fIncr(3, 3), coef
     real(kind=8) :: sigmPrevComp(6), tauCurr(6), dsidep(6, 3, 3)
     real(kind=8) :: rbid, tbid(6), t1, t2
@@ -125,7 +125,6 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno, &
     codret = 0
 !
     call elrefe_info(fami=fami, jpoids=iw, jvf=ivf, jdfde=idff)
-
 !
 ! - Initialisation of behaviour datastructure
 !
