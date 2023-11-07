@@ -33,28 +33,24 @@ use allocate_module
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 !
-    aster_logical :: clean
     integer, save :: icode = -1
     integer :: ierr
 !
-    clean = .true.
+    call deallocate_all_slvec(ierr)
+!
     if (present(init)) then
         ASSERT (init.eq.0)
         cuvtrav=0.d0
-        clean = .false.
-    endif
-!
-    if (clean) then
+    else
+        if (ierr > 0) then
+            call utmess('A', 'DVP_6', sr=cuvtrav*lois/1.e6)
+        end if
         if (icode < 0) then
             icode = jdcget('TestMode')
         endif
         if (icode .ne. 0) then
             ASSERT(abs(cuvtrav) < r8prem())
         endif
-        call deallocate_all_slvec(ierr)
-        if (ierr > 0) then
-            call utmess('A', 'DVP_6', sr=cuvtrav*lois/1.e6)
-        end if
     endif
 !
 end subroutine

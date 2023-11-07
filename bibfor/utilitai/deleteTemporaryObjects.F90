@@ -25,7 +25,6 @@ implicit none
 #include "asterfort/jelibz.h"
 #include "asterfort/jerecu.h"
 #include "asterfort/jereou.h"
-#include "asterfort/check_aster_allocate.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -38,6 +37,5 @@ implicit none
 !   Delete objects on the volatile database
     call jedetv()
     call jereou('V', 0.01d0)
-    call check_aster_allocate()
 !
 end subroutine

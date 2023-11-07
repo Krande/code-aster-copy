@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,6 +18,7 @@
 
 subroutine op9999(options)
     use parameters_module, only : ST_OK
+    use allocate_module
     implicit none
     integer, intent(in) :: options
 #include "asterc/chkmsg.h"
@@ -75,6 +76,7 @@ subroutine op9999(options)
 !   Finalize PETSc
     call apetsc('FIN', ' ', ' ', [0.d0], ' ', 0, 0, iret)
 #endif
+!
 
 !   Free dynamically loaded components
     call dllcls()
@@ -101,6 +103,9 @@ subroutine op9999(options)
         if ( iand(options, Repack) .ne. 0 ) then
             call jetass('G')
         endif
+
+!       Free as_allocate object
+        call free_slvec(slvec)
 
 !       Call jxveri to check that the execution is ending properly
         call jxveri()
