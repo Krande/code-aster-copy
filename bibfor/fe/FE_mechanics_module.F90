@@ -137,21 +137,32 @@ contains
         select case (FEBasis%ndim)
         case (2)
             do i = 1, FEBasis%size
-                do j = 1, FEBasis%size
+                do j = 1, i
                     matBB(1, i, j) = BGSEval(1, i)*BGSEval(1, j)
                     matBB(2, i, j) = BGSEval(2, i)*BGSEval(2, j)
                     matBB(4, i, j) = (BGSEval(1, i)*BGSEval(2, j)+BGSEval(2, i)*BGSEval(1, j))/rac2
+!
+                    matBB(1, j, i) = matBB(1, i, j)
+                    matBB(2, j, i) = matBB(2, i, j)
+                    matBB(4, j, i) = matBB(4, i, j)
                 end do
             end do
         case (3)
             do i = 1, FEBasis%size
-                do j = 1, FEBasis%size
+                do j = 1, i
                     matBB(1, i, j) = BGSEval(1, i)*BGSEval(1, j)
                     matBB(2, i, j) = BGSEval(2, i)*BGSEval(2, j)
                     matBB(3, i, j) = BGSEval(3, i)*BGSEval(3, j)
                     matBB(4, i, j) = (BGSEval(1, i)*BGSEval(2, j)+BGSEval(2, i)*BGSEval(1, j))/rac2
                     matBB(5, i, j) = (BGSEval(1, i)*BGSEval(3, j)+BGSEval(3, i)*BGSEval(1, j))/rac2
                     matBB(6, i, j) = (BGSEval(2, i)*BGSEval(3, j)+BGSEval(3, i)*BGSEval(2, j))/rac2
+!
+                    matBB(1, j, i) = matBB(1, i, j)
+                    matBB(2, j, i) = matBB(2, i, j)
+                    matBB(3, j, i) = matBB(3, i, j)
+                    matBB(4, j, i) = matBB(4, i, j)
+                    matBB(5, j, i) = matBB(5, i, j)
+                    matBB(6, j, i) = matBB(6, i, j)
                 end do
             end do
         case default
@@ -297,7 +308,7 @@ contains
         e(3) = c(3, 3)
         e(4) = c(2, 1)*rac2
         e(5) = c(3, 1)*rac2
-        e(6) = c(3, 1)*rac2
+        e(6) = c(3, 2)*rac2
 !
     end function
 !

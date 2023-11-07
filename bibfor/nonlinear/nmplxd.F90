@@ -140,7 +140,7 @@ subroutine nmplxd(fami, nno, npg, ndim, &
     call behaviourPrepESVAElem(carcri, typmod, &
                                FECell%nbnodes, FEQuad%nbQuadPoints, FECell%ndim, &
                                ipoids, ivf, idfde, &
-                               FECell%coorno, BEHinteg, &
+                               FECell%coorno(1:FECell%ndim, :), BEHinteg, &
                                dispPrev, dispIncr)
 !
 ! - Loop on Gauss points

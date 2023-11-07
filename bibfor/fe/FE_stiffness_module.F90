@@ -247,12 +247,16 @@ contains
                 ind = ind+2
             end do
         case (3)
+            ind = 0
             do i = 1, FEBasis%size
-                vec(ind+1) = vec(ind+1)+weight*(def(1, i, 1)*stress(1)+ &
-                                                def(4, i, 1)*stress(4)+def(5, i, 1)*stress(5))
-                vec(ind+2) = vec(ind+2)+weight*(def(2, i, 2)*stress(2)+ &
-                                                def(4, i, 2)*stress(4)+def(6, i, 2)*stress(6))
-                vec(ind+3) = vec(ind+3)+weight*(def(3, i, 3)*stress(3)+ &
+                vec(ind+1) = vec(ind+1)+weight*(def(1, i, 1)*stress(1)+def(2, i, 1)*stress(2)+ &
+                                                def(3, i, 1)*stress(3)+def(4, i, 1)*stress(4)+ &
+                                                def(5, i, 1)*stress(5)+def(6, i, 1)*stress(6))
+                vec(ind+2) = vec(ind+2)+weight*(def(1, i, 2)*stress(1)+def(2, i, 2)*stress(2)+ &
+                                                def(3, i, 2)*stress(3)+def(4, i, 2)*stress(4)+ &
+                                                def(5, i, 2)*stress(5)+def(6, i, 2)*stress(6))
+                vec(ind+3) = vec(ind+3)+weight*(def(1, i, 3)*stress(1)+def(2, i, 3)*stress(2)+ &
+                                                def(3, i, 3)*stress(3)+def(4, i, 3)*stress(4)+ &
                                                 def(5, i, 3)*stress(5)+def(6, i, 3)*stress(6))
                 ind = ind+3
             end do
@@ -287,34 +291,34 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: i_node, i_dime, i_tens, j, m, j1
+        integer :: i_n, i_d, i_tens, j_d, j_n, j1
         integer :: kk, kkd
         real(kind=8) :: tmp, sig(6)
 !
         select case (FEBasis%ndim)
         case (2)
             if (l_matsym) then
-                do i_node = 1, FEBasis%size
-                    do i_dime = 1, 2
-                        kkd = (2*(i_node-1)+i_dime-1)*(2*(i_node-1)+i_dime)/2
+                do i_n = 1, FEBasis%size
+                    do i_d = 1, 2
+                        kkd = (2*(i_n-1)+i_d-1)*(2*(i_n-1)+i_d)/2
                         do i_tens = 1, 4
                             sig(i_tens) = 0.d0
-                            sig(i_tens) = sig(i_tens)+def(1, i_node, i_dime)*dsidep(1, i_tens)
-                            sig(i_tens) = sig(i_tens)+def(2, i_node, i_dime)*dsidep(2, i_tens)
-                            sig(i_tens) = sig(i_tens)+def(3, i_node, i_dime)*dsidep(3, i_tens)
-                            sig(i_tens) = sig(i_tens)+def(4, i_node, i_dime)*dsidep(4, i_tens)
+                            sig(i_tens) = sig(i_tens)+def(1, i_n, i_d)*dsidep(1, i_tens)
+                            sig(i_tens) = sig(i_tens)+def(2, i_n, i_d)*dsidep(2, i_tens)
+                            sig(i_tens) = sig(i_tens)+def(3, i_n, i_d)*dsidep(3, i_tens)
+                            sig(i_tens) = sig(i_tens)+def(4, i_n, i_d)*dsidep(4, i_tens)
                         end do
-                        do j = 1, 2
-                            do m = 1, i_node
-                                if (m .eq. i_node) then
-                                    j1 = i_dime
+                        do j_d = 1, 2
+                            do j_n = 1, i_n
+                                if (j_n .eq. i_n) then
+                                    j1 = i_d
                                 else
                                     j1 = 2
                                 end if
-                                tmp = def(1, m, j)*sig(1)+def(2, m, j)*sig(2)+ &
-                                      def(3, m, j)*sig(3)+def(4, m, j)*sig(4)
-                                if (j .le. j1) then
-                                    kk = kkd+2*(m-1)+j
+                                if (j_d .le. j1) then
+                                    tmp = def(1, j_n, j_d)*sig(1)+def(2, j_n, j_d)*sig(2)+ &
+                                          def(3, j_n, j_d)*sig(3)+def(4, j_n, j_d)*sig(4)
+                                    kk = kkd+2*(j_n-1)+j_d
                                     mat(kk) = mat(kk)+tmp*weight
                                 end if
                             end do
@@ -322,20 +326,20 @@ contains
                     end do
                 end do
             else
-                do i_node = 1, FEBasis%size
-                    do i_dime = 1, 2
+                do i_n = 1, FEBasis%size
+                    do i_d = 1, 2
                         do i_tens = 1, 4
                             sig(i_tens) = 0.d0
-                            sig(i_tens) = sig(i_tens)+def(1, i_node, i_dime)*dsidep(1, i_tens)
-                            sig(i_tens) = sig(i_tens)+def(2, i_node, i_dime)*dsidep(2, i_tens)
-                            sig(i_tens) = sig(i_tens)+def(3, i_node, i_dime)*dsidep(3, i_tens)
-                            sig(i_tens) = sig(i_tens)+def(4, i_node, i_dime)*dsidep(4, i_tens)
+                            sig(i_tens) = sig(i_tens)+def(1, i_n, i_d)*dsidep(1, i_tens)
+                            sig(i_tens) = sig(i_tens)+def(2, i_n, i_d)*dsidep(2, i_tens)
+                            sig(i_tens) = sig(i_tens)+def(3, i_n, i_d)*dsidep(3, i_tens)
+                            sig(i_tens) = sig(i_tens)+def(4, i_n, i_d)*dsidep(4, i_tens)
                         end do
-                        do j = 1, 2
-                            do m = 1, FEBasis%size
-                                tmp = def(1, m, j)*sig(1)+def(2, m, j)*sig(2)+ &
-                                      def(3, m, j)*sig(3)+def(4, m, j)*sig(4)
-                                kk = 2*FEBasis%size*(2*(i_node-1)+i_dime-1)+2*(m-1)+j
+                        do j_d = 1, 2
+                            do j_n = 1, FEBasis%size
+                                tmp = def(1, j_n, j_d)*sig(1)+def(2, j_n, j_d)*sig(2)+ &
+                                      def(3, j_n, j_d)*sig(3)+def(4, j_n, j_d)*sig(4)
+                                kk = 2*FEBasis%size*(2*(i_n-1)+i_d-1)+2*(j_n-1)+j_d
                                 mat(kk) = mat(kk)+tmp*weight
                             end do
                         end do
@@ -344,30 +348,30 @@ contains
             end if
         case (3)
             if (l_matsym) then
-                do i_node = 1, FEBasis%size
-                    do i_dime = 1, 3
-                        kkd = (3*(i_node-1)+i_dime-1)*(3*(i_node-1)+i_dime)/2
+                do i_n = 1, FEBasis%size
+                    do i_d = 1, 3
+                        kkd = (3*(i_n-1)+i_d-1)*(3*(i_n-1)+i_d)/2
                         do i_tens = 1, 6
                             sig(i_tens) = 0.d0
-                            sig(i_tens) = sig(i_tens)+def(1, i_node, i_dime)*dsidep(1, i_tens)
-                            sig(i_tens) = sig(i_tens)+def(2, i_node, i_dime)*dsidep(2, i_tens)
-                            sig(i_tens) = sig(i_tens)+def(3, i_node, i_dime)*dsidep(3, i_tens)
-                            sig(i_tens) = sig(i_tens)+def(4, i_node, i_dime)*dsidep(4, i_tens)
-                            sig(i_tens) = sig(i_tens)+def(5, i_node, i_dime)*dsidep(5, i_tens)
-                            sig(i_tens) = sig(i_tens)+def(6, i_node, i_dime)*dsidep(6, i_tens)
+                            sig(i_tens) = sig(i_tens)+def(1, i_n, i_d)*dsidep(1, i_tens)
+                            sig(i_tens) = sig(i_tens)+def(2, i_n, i_d)*dsidep(2, i_tens)
+                            sig(i_tens) = sig(i_tens)+def(3, i_n, i_d)*dsidep(3, i_tens)
+                            sig(i_tens) = sig(i_tens)+def(4, i_n, i_d)*dsidep(4, i_tens)
+                            sig(i_tens) = sig(i_tens)+def(5, i_n, i_d)*dsidep(5, i_tens)
+                            sig(i_tens) = sig(i_tens)+def(6, i_n, i_d)*dsidep(6, i_tens)
                         end do
-                        do j = 1, 3
-                            do m = 1, i_node
-                                if (m .eq. i_node) then
-                                    j1 = i_dime
+                        do j_d = 1, 3
+                            do j_n = 1, i_n
+                                if (j_n .eq. i_n) then
+                                    j1 = i_d
                                 else
                                     j1 = 3
                                 end if
-                                tmp = def(1, m, j)*sig(1)+def(2, m, j)*sig(2)+ &
-                                      def(3, m, j)*sig(3)+def(4, m, j)*sig(4)+ &
-                                      def(5, m, j)*sig(5)+def(6, m, j)*sig(6)
-                                if (j .le. j1) then
-                                    kk = kkd+3*(m-1)+j
+                                if (j_d .le. j1) then
+                                    tmp = def(1, j_n, j_d)*sig(1)+def(2, j_n, j_d)*sig(2)+ &
+                                          def(3, j_n, j_d)*sig(3)+def(4, j_n, j_d)*sig(4)+ &
+                                          def(5, j_n, j_d)*sig(5)+def(6, j_n, j_d)*sig(6)
+                                    kk = kkd+3*(j_n-1)+j_d
                                     mat(kk) = mat(kk)+tmp*weight
                                 end if
                             end do
@@ -375,23 +379,23 @@ contains
                     end do
                 end do
             else
-                do i_node = 1, FEBasis%size
-                    do i_dime = 1, 3
+                do i_n = 1, FEBasis%size
+                    do i_d = 1, 3
                         do i_tens = 1, 6
                             sig(i_tens) = 0.d0
-                            sig(i_tens) = sig(i_tens)+def(1, i_node, i_dime)*dsidep(1, i_tens)
-                            sig(i_tens) = sig(i_tens)+def(2, i_node, i_dime)*dsidep(2, i_tens)
-                            sig(i_tens) = sig(i_tens)+def(3, i_node, i_dime)*dsidep(3, i_tens)
-                            sig(i_tens) = sig(i_tens)+def(4, i_node, i_dime)*dsidep(4, i_tens)
-                            sig(i_tens) = sig(i_tens)+def(5, i_node, i_dime)*dsidep(5, i_tens)
-                            sig(i_tens) = sig(i_tens)+def(6, i_node, i_dime)*dsidep(6, i_tens)
+                            sig(i_tens) = sig(i_tens)+def(1, i_n, i_d)*dsidep(1, i_tens)
+                            sig(i_tens) = sig(i_tens)+def(2, i_n, i_d)*dsidep(2, i_tens)
+                            sig(i_tens) = sig(i_tens)+def(3, i_n, i_d)*dsidep(3, i_tens)
+                            sig(i_tens) = sig(i_tens)+def(4, i_n, i_d)*dsidep(4, i_tens)
+                            sig(i_tens) = sig(i_tens)+def(5, i_n, i_d)*dsidep(5, i_tens)
+                            sig(i_tens) = sig(i_tens)+def(6, i_n, i_d)*dsidep(6, i_tens)
                         end do
-                        do j = 1, 3
-                            do m = 1, FEBasis%size
-                                tmp = def(1, m, j)*sig(1)+def(2, m, j)*sig(2)+ &
-                                      def(3, m, j)*sig(3)+def(4, m, j)*sig(4)+ &
-                                      def(5, m, j)*sig(5)+def(6, m, j)*sig(6)
-                                kk = 3*FEBasis%size*(3*(i_node-1)+i_dime-1)+3*(m-1)+j
+                        do j_d = 1, 3
+                            do j_n = 1, FEBasis%size
+                                tmp = def(1, j_n, j_d)*sig(1)+def(2, j_n, j_d)*sig(2)+ &
+                                      def(3, j_n, j_d)*sig(3)+def(4, j_n, j_d)*sig(4)+ &
+                                      def(5, j_n, j_d)*sig(5)+def(6, j_n, j_d)*sig(6)
+                                kk = 3*FEBasis%size*(3*(i_n-1)+i_d-1)+3*(j_n-1)+j_d
                                 mat(kk) = mat(kk)+tmp*weight
                             end do
                         end do
@@ -429,38 +433,38 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: i_node, i_dime, m, j1
+        integer :: i_n, i_d, j_n, j1
         integer :: kk, kkd
         real(kind=8) :: tmp
 !
         select case (FEBasis%ndim)
         case (2)
             if (l_matsym) then
-                do i_node = 1, FEBasis%size
-                    do i_dime = 1, 2
-                        kkd = (2*(i_node-1)+i_dime-1)*(2*(i_node-1)+i_dime)/2
-                        do m = 1, i_node
-                            if (m .eq. i_node) then
-                                j1 = i_dime
+                do i_n = 1, FEBasis%size
+                    do i_d = 1, 2
+                        kkd = (2*(i_n-1)+i_d-1)*(2*(i_n-1)+i_d)/2
+                        do j_n = 1, i_n
+                            if (j_n .eq. i_n) then
+                                j1 = i_d
                             else
                                 j1 = 2
                             end if
-                            tmp = pff(1, i_node, m)*stress(1)+pff(2, i_node, m)*stress(2)+ &
-                                  pff(3, i_node, m)*stress(3)+pff(4, i_node, m)*stress(4)
-                            if (i_dime .le. j1) then
-                                kk = kkd+2*(m-1)+i_dime
+                            tmp = pff(1, i_n, j_n)*stress(1)+pff(2, i_n, j_n)*stress(2)+ &
+                                  pff(3, i_n, j_n)*stress(3)+pff(4, i_n, j_n)*stress(4)
+                            if (i_d .le. j1) then
+                                kk = kkd+2*(j_n-1)+i_d
                                 mat(kk) = mat(kk)+tmp*weight
                             end if
                         end do
                     end do
                 end do
             else
-                do i_node = 1, FEBasis%size
-                    do i_dime = 1, 2
-                        do m = 1, FEBasis%size
-                            tmp = pff(1, i_node, m)*stress(1)+pff(2, i_node, m)*stress(2)+ &
-                                  pff(3, i_node, m)*stress(3)+pff(4, i_node, m)*stress(4)
-                            kk = 2*FEBasis%size*(2*(i_node-1)+i_dime-1)+2*(m-1)+i_dime
+                do i_n = 1, FEBasis%size
+                    do i_d = 1, 2
+                        do j_n = 1, FEBasis%size
+                            tmp = pff(1, i_n, j_n)*stress(1)+pff(2, i_n, j_n)*stress(2)+ &
+                                  pff(3, i_n, j_n)*stress(3)+pff(4, i_n, j_n)*stress(4)
+                            kk = 2*FEBasis%size*(2*(i_n-1)+i_d-1)+2*(j_n-1)+i_d
                             mat(kk) = mat(kk)+tmp*weight
                         end do
                     end do
@@ -468,33 +472,33 @@ contains
             end if
         case (3)
             if (l_matsym) then
-                do i_node = 1, FEBasis%size
-                    do i_dime = 1, 3
-                        kkd = (3*(i_node-1)+i_dime-1)*(3*(i_node-1)+i_dime)/2
-                        do m = 1, i_node
-                            if (m .eq. i_node) then
-                                j1 = i_dime
+                do i_n = 1, FEBasis%size
+                    do i_d = 1, 3
+                        kkd = (3*(i_n-1)+i_d-1)*(3*(i_n-1)+i_d)/2
+                        do j_n = 1, i_n
+                            if (j_n .eq. i_n) then
+                                j1 = i_d
                             else
                                 j1 = 3
                             end if
-                            tmp = pff(1, i_node, m)*stress(1)+pff(2, i_node, m)*stress(2)+ &
-                                  pff(3, i_node, m)*stress(3)+pff(4, i_node, m)*stress(4)+ &
-                                  pff(5, i_node, m)*stress(5)+pff(6, i_node, m)*stress(6)
-                            if (i_dime .le. j1) then
-                                kk = kkd+3*(m-1)+i_dime
+                            if (i_d .le. j1) then
+                                tmp = pff(1, i_n, j_n)*stress(1)+pff(2, i_n, j_n)*stress(2)+ &
+                                      pff(3, i_n, j_n)*stress(3)+pff(4, i_n, j_n)*stress(4)+ &
+                                      pff(5, i_n, j_n)*stress(5)+pff(6, i_n, j_n)*stress(6)
+                                kk = kkd+3*(j_n-1)+i_d
                                 mat(kk) = mat(kk)+tmp*weight
                             end if
                         end do
                     end do
                 end do
             else
-                do i_node = 1, FEBasis%size
-                    do i_dime = 1, 3
-                        do m = 1, FEBasis%size
-                            tmp = pff(1, i_node, m)*stress(1)+pff(2, i_node, m)*stress(2)+ &
-                                  pff(3, i_node, m)*stress(3)+pff(4, i_node, m)*stress(4)+ &
-                                  pff(5, i_node, m)*stress(5)+pff(6, i_node, m)*stress(6)
-                            kk = 3*FEBasis%size*(3*(i_node-1)+i_dime-1)+3*(m-1)+i_dime
+                do i_n = 1, FEBasis%size
+                    do i_d = 1, 3
+                        do j_n = 1, FEBasis%size
+                            tmp = pff(1, i_n, j_n)*stress(1)+pff(2, i_n, j_n)*stress(2)+ &
+                                  pff(3, i_n, j_n)*stress(3)+pff(4, i_n, j_n)*stress(4)+ &
+                                  pff(5, i_n, j_n)*stress(5)+pff(6, i_n, j_n)*stress(6)
+                            kk = 3*FEBasis%size*(3*(i_n-1)+i_d-1)+3*(j_n-1)+i_d
                             mat(kk) = mat(kk)+tmp*weight
                         end do
                     end do
