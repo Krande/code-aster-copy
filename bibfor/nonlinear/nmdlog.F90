@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1306,W1504
+! aslint: disable=W1504
 !
 subroutine nmdlog(fami, option, typmod, ndim, nno, &
                   npg, iw, ivf, vff, idff, &
@@ -24,6 +24,11 @@ subroutine nmdlog(fami, option, typmod, ndim, nno, &
                   dispPrev, dispIncr, sigmPrev, vim, sigmCurr, &
                   vip, fint, matuu, codret)
 !
+    use FE_topo_module
+    use FE_quadrature_module
+    use FE_basis_module
+    use FE_eval_module
+    use FE_mechanics_module
     use Behaviour_type
     use Behaviour_module
 !
@@ -41,6 +46,7 @@ subroutine nmdlog(fami, option, typmod, ndim, nno, &
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "asterfort/Behaviour_type.h"
+#include "FE_module.h"
 !
     integer, intent(in) :: ndim, nno, npg
 !
@@ -89,10 +95,14 @@ subroutine nmdlog(fami, option, typmod, ndim, nno, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    type(FE_Cell) :: FECell
+    type(FE_Quadrature) :: FEQuad
+    type(FE_basis) :: FEBasis
+!
     aster_logical :: grand, axi, cplan
     aster_logical :: matsym, lintbo
     aster_logical :: lVect, lMatr, lSigm, lMatrPred, lCorr, lVari
-    integer :: kpg, nddl, cod(npg), ivf
+    integer :: kpg, nddl, cod(MAX_QP), ivf
     integer :: mate, lgpg, codret, iw, idff, iret
     character(len=8) :: typmod(*)
     character(len=*) :: fami
@@ -106,9 +116,9 @@ subroutine nmdlog(fami, option, typmod, ndim, nno, &
     real(kind=8) :: vim(lgpg, npg), sigmCurr(2*ndim, npg), vip(lgpg, npg)
     real(kind=8) :: matuu(*), fint(ndim*nno)
     real(kind=8) :: geomPrev(3*27), fPrev(3, 3), fCurr(3, 3), dispCurr(3*27)
-    real(kind=8) :: r, poids, tlogPrev(6), tlogCurr(6), epslIncr(6)
+    real(kind=8) :: tlogPrev(6), tlogCurr(6), epslIncr(6)
     real(kind=8) :: gn(3, 3), lamb(3), logl(3)
-    real(kind=8) :: def(2*ndim, nno, ndim), pff(2*ndim, nno, nno)
+    real(kind=8) :: gPrev(3, 3), gCurr(3, 3), coorpg(3), BGSEval(3, MAX_BS)
     real(kind=8) :: dsidep(6, 6), pk2Curr(6), pk2Prev(6)
     type(Behaviour_Integ) :: BEHinteg
 !
@@ -126,6 +136,10 @@ subroutine nmdlog(fami, option, typmod, ndim, nno, &
     nddl = ndim*nno
     ASSERT(nno .le. 27)
     ASSERT(compor(PLANESTRESS) .ne. 'DEBORST')
+!
+    call FECell%init()
+    call FEQuad%initCell(FECell, "RIGI")
+    call FEBasis%initCell(FECell)
 
 ! - Initialisation of behaviour datastructure
     call behaviourInit(BEHinteg)
@@ -149,15 +163,17 @@ subroutine nmdlog(fami, option, typmod, ndim, nno, &
     lintbo = ASTER_FALSE
     cod = 0
     do kpg = 1, npg
+        coorpg = FEQuad%points_param(1:3, kpg)
+        BGSEval = FEBasis%grad(coorpg, FEQuad%jacob(1:3, 1:3, kpg))
+
 ! ----- Kinematic - Previous strains
-        call dfdmip(ndim, nno, axi, geomInit, kpg, &
-                    iw, vff(1, kpg), idff, r, poids, &
-                    dff)
-        call nmepsi(ndim, nno, axi, grand, vff(1, kpg), &
-                    r, dff, dispPrev, fPrev)
+        gPrev = FEEvalGradMat(FEBasis, dispPrev, coorpg, BGSEval)
+        fPrev = matG2F(gPrev)
+
 ! ----- Kinematic - Current strains
-        call nmepsi(ndim, nno, axi, grand, vff(1, kpg), &
-                    r, dff, dispCurr, fCurr)
+        gCurr = FEEvalGradMat(FEBasis, dispCurr, coorpg, BGSEval)
+        fCurr = matG2F(gCurr)
+
 ! ----- Pre-treatment of kinematic quantities
         call prelog(ndim, lgpg, vim(1, kpg), gn, lamb, &
                     logl, fPrev, fCurr, epslPrev, epslIncr, &
@@ -194,10 +210,9 @@ subroutine nmdlog(fami, option, typmod, ndim, nno, &
             goto 999
         end if
 ! ----- Compute internal forces and matrix
-        call nmgrtg(ndim, nno, poids, kpg, vff, &
-                    dff, def, pff, axi, &
+        call nmgrtg(FEBasis, coorpg, FEQuad%weights(kpg), BGSEval, &
                     lVect, lMatr, lMatrPred, &
-                    r, fPrev, fCurr, dsidep, pk2Prev, &
+                    fPrev, fCurr, dsidep, pk2Prev, &
                     pk2Curr, matsym, matuu, fint)
     end do
     if (lintbo) then

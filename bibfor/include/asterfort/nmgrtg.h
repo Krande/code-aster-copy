@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,17 +16,19 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 #include "asterf_types.h"
+#include "FE_module.h"
 !
 interface
-    subroutine nmgrtg(ndim    , nno   , poids    , kpg   , vff     ,&
-                      dfdi    , def   , pff      , axi   ,&
-                      lVect   , lMatr , lMatrPred,&
-                      r       , fPrev , fCurr    , dsidep, sigmPrev,&
-                      sigmCurr, matsym, matuu    , vectu)
-        integer :: ndim, nno, kpg
-        real(kind=8) :: pff(*), def(*), r, dsidep(6, 6), poids, vectu(*)
-        real(kind=8) :: sigmCurr(6), sigmPrev(6), matuu(*), vff(*)
-        real(kind=8) :: fPrev(3, 3), fCurr(3, 3), dfdi(*)
-        aster_logical :: matsym, axi, lVect, lMatr, lMatrPred
+    subroutine nmgrtg(FEBasis, coorpg, weight, BGSEval, &
+        lVect, lMatr, lMatrPred, &
+        fPrev, fCurr, dsidep, sigmPrev, &
+        sigmCurr, matsym, matuu, vectu)
+use FE_basis_module
+
+        type(FE_basis), intent(in) :: FEBasis
+        real(kind=8), intent(in) :: dsidep(6, 6), weight, coorpg(3), BGSEval(3, MAX_BS)
+        real(kind=8), intent(in) :: sigmCurr(6), sigmPrev(6), fPrev(3, 3), fCurr(3, 3)
+        real(kind=8), intent(inout) :: matuu(*), vectu(*)
+        aster_logical, intent(in) :: matsym, lVect, lMatr, lMatrPred
     end subroutine nmgrtg
 end interface

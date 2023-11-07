@@ -32,7 +32,6 @@ subroutine nmgrla(option, typmod, &
     use FE_topo_module
     use FE_quadrature_module
     use FE_basis_module
-    use FE_stiffness_module
     use FE_eval_module
     use FE_mechanics_module
     use Behaviour_type
@@ -46,6 +45,7 @@ subroutine nmgrla(option, typmod, &
 #include "asterfort/codere.h"
 #include "asterfort/lcdetf.h"
 #include "asterfort/nmcomp.h"
+#include "asterfort/nmgrtg.h"
 #include "asterfort/pk2sig.h"
 #include "asterfort/utmess.h"
 #include "asterfort/Behaviour_type.h"
@@ -123,7 +123,6 @@ subroutine nmgrla(option, typmod, &
     real(kind=8) :: dispCurr(ndim*nno)
     real(kind=8) :: sigmPost(6), sigmPrep(6)
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
-    real(kind=8) ::  pff(6, MAX_BS, MAX_BS), def(6, MAX_BS, 3)
     type(Behaviour_Integ) :: BEHinteg
 !
 ! --------------------------------------------------------------------------------------------------
@@ -198,27 +197,11 @@ subroutine nmgrla(option, typmod, &
 !        if (lMatr) write(6,*) 'dsdiep = ',dsidep
 
 ! ----- Compute internal forces vector and rigidity matrix
-        if (lVect) then
-            call FEMatFB(FEBasis, coorpg, BGSEval, fCurr, def)
-        else
-            call FEMatFB(FEBasis, coorpg, BGSEval, fPrev, def)
-        end if
-! ----- Rigidity matrix
-        if (lMatr) then
-            call FEStiffJacoVectSymAdd(FEBasis, def, FEQuad%weights(kpg), dsidep, matsym, matuu)
-            call FEMatBB(FEBasis, BGSEval, pff)
-            if (lMatrPred) then
-                call FEStiffGeomVectSymAdd(FEBasis, pff, FEQuad%weights(kpg), sigmPrep, matsym, &
-                                           matuu)
-            else
-                call FEStiffGeomVectSymAdd(FEBasis, pff, FEQuad%weights(kpg), sigmPost, matsym, &
-                                           matuu)
-            end if
-        end if
-! ----- Internal forces
-        if (lVect) then
-            call FEStiffResiVectSymAdd(FEBasis, def, FEQuad%weights(kpg), sigmPost, vectu)
-        end if
+        call nmgrtg(FEBasis, coorpg, FEQuad%weights(kpg), BGSEval, &
+                    lVect, lMatr, lMatrPred, &
+                    fPrev, fCurr, dsidep, sigmPrep, &
+                    sigmPost, matsym, matuu, vectu)
+
 ! ----- Stresses: convert PK2 to Cauchy
         if (option(1:4) .eq. 'RAPH' .or. option(1:4) .eq. 'FULL') then
             call lcdetf(ndim, fCurr, detfCurr)

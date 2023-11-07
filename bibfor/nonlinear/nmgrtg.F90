@@ -15,27 +15,27 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1504
 !
-subroutine nmgrtg(ndim, nno, poids, kpg, vff, &
-                  dfdi, def, pff, axi, &
+!
+subroutine nmgrtg(FEBasis, coorpg, weight, BGSEval, &
                   lVect, lMatr, lMatrPred, &
-                  r, fPrev, fCurr, dsidep, sigmPrev, &
+                  fPrev, fCurr, dsidep, sigmPrev, &
                   sigmCurr, matsym, matuu, vectu)
+!
+    use FE_basis_module
+    use FE_stiffness_module
+    use FE_mechanics_module
 !
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/nmfdff.h"
-#include "asterfort/nmgrt2.h"
-#include "asterfort/nmgrt3.h"
-#include "blas/dcopy.h"
+#include "FE_module.h"
 !
-    integer :: ndim, nno, kpg
-    real(kind=8) :: pff(*), def(*), r, dsidep(6, 6), poids, vectu(*)
-    real(kind=8) :: sigmCurr(6), sigmPrev(6), matuu(*), vff(*)
-    real(kind=8) :: fPrev(3, 3), fCurr(3, 3), dfdi(*)
-    aster_logical :: matsym, axi, lVect, lMatr, lMatrPred
+    type(FE_basis), intent(in) :: FEBasis
+    real(kind=8), intent(in) :: dsidep(6, 6), weight, coorpg(3), BGSEval(3, MAX_BS)
+    real(kind=8), intent(in) :: sigmCurr(6), sigmPrev(6), fPrev(3, 3), fCurr(3, 3)
+    real(kind=8), intent(inout) :: matuu(*), vectu(*)
+    aster_logical, intent(in) :: matsym, lVect, lMatr, lMatrPred
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -62,31 +62,31 @@ subroutine nmgrtg(ndim, nno, poids, kpg, vff, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    real(kind=8) :: fr(3, 3)
+    real(kind=8) ::  pff(6, MAX_BS, MAX_BS), def(6, MAX_BS, 3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
+! ----- Compute internal forces vector and rigidity matrix
     if (lVect) then
-        call dcopy(9, fCurr, 1, fr, 1)
+        call FEMatFB(FEBasis, coorpg, BGSEval, fCurr, def)
     else
-        call dcopy(9, fPrev, 1, fr, 1)
+        call FEMatFB(FEBasis, coorpg, BGSEval, fPrev, def)
     end if
-!
-    call nmfdff(ndim, nno, axi, kpg, r, &
-                lMatr, matsym, fr, vff, dfdi, &
-                def, pff)
-!
-    if (ndim .eq. 3) then
-        call nmgrt3(nno, poids, def, pff, &
-                    lVect, lMatr, lMatrPred, &
-                    dsidep, sigmPrev, sigmCurr, matsym, &
-                    matuu, vectu)
-    else if (ndim .eq. 2) then
-        call nmgrt2(nno, poids, kpg, vff, def, &
-                    pff, axi, r, &
-                    lVect, lMatr, lMatrPred, &
-                    dsidep, sigmPrev, sigmCurr, matsym, &
-                    matuu, vectu)
+! ----- Rigidity matrix
+    if (lMatr) then
+        call FEStiffJacoVectSymAdd(FEBasis, def, weight, dsidep, matsym, matuu)
+        call FEMatBB(FEBasis, BGSEval, pff)
+        if (lMatrPred) then
+            call FEStiffGeomVectSymAdd(FEBasis, pff, weight, sigmPrev, matsym, &
+                                       matuu)
+        else
+            call FEStiffGeomVectSymAdd(FEBasis, pff, weight, sigmCurr, matsym, &
+                                       matuu)
+        end if
+    end if
+! ----- Internal forces
+    if (lVect) then
+        call FEStiffResiVectSymAdd(FEBasis, def, weight, sigmCurr, vectu)
     end if
 !
 end subroutine
