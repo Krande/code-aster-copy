@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,22 +33,28 @@ use allocate_module
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 !
+    aster_logical :: clean
     integer, save :: icode = -1
+    integer :: ierr
 !
+    clean = .true.
     if (present(init)) then
         ASSERT (init.eq.0)
         cuvtrav=0.d0
+        clean = .false.
     endif
 !
-    if (abs(cuvtrav) > r8prem()) then
-        call utmess('A', 'DVP_6', sr=cuvtrav*lois/1.e6)
+    if (clean) then
         if (icode < 0) then
             icode = jdcget('TestMode')
         endif
         if (icode .ne. 0) then
             ASSERT(abs(cuvtrav) < r8prem())
         endif
-        call deallocate_all_slvec()
+        call deallocate_all_slvec(ierr)
+        if (ierr > 0) then
+            call utmess('A', 'DVP_6', sr=cuvtrav*lois/1.e6)
+        end if
     endif
 !
 end subroutine
