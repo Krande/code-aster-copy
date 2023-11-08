@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -70,14 +70,6 @@ nb_calc = 4
 nb_calc1 = nb_calc + 1
 nb_calc2 = nb_calc1 + 1
 MA = [None] * nb_calc1
-MO = [None] * nb_calc1
-CHMAT = [None] * nb_calc1
-CLIM = [None] * nb_calc1
-CH = [None] * nb_calc1
-DEPLA = [None] * nb_calc1
-RESV = [None] * nb_calc1
-ENER = [None] * nb_calc1
-FLEC = [None] * nb_calc1
 
 # -------------------------------------------------------------------
 #                       CALCUL ASTER
@@ -103,45 +95,33 @@ MA[num_calc] = DEFI_GROUP(
 for num_calc in range(0, nb_calc1):
 
     # PREPARATION DU CALCUL SUR LE NOUVEAU MAILLAGE MA[num_calc]
-    MO[num_calc] = AFFE_MODELE(
+    MO = AFFE_MODELE(
         MAILLAGE=MA[num_calc], AFFE=(_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="C_PLAN"),)
     )
-    CHMAT[num_calc] = AFFE_MATERIAU(MAILLAGE=MA[num_calc], AFFE=_F(GROUP_MA="GM14", MATER=ACIER))
+    CHMAT = AFFE_MATERIAU(MAILLAGE=MA[num_calc], AFFE=_F(GROUP_MA="GM14", MATER=ACIER))
 
     # CL D'ENCASTREMENT + PRESSION REPARTIE POUR FLEXION
-    CLIM[num_calc] = AFFE_CHAR_MECA(
-        MODELE=MO[num_calc], DDL_IMPO=_F(GROUP_MA="GM13", DX=0.0, DY=0.0)
-    )
-    CH[num_calc] = AFFE_CHAR_MECA(MODELE=MO[num_calc], PRES_REP=(_F(GROUP_MA="GM12", PRES=1.0e-1),))
+    CLIM = AFFE_CHAR_CINE(MODELE=MO, MECA_IMPO=_F(GROUP_MA="GM13", DX=0.0, DY=0.0))
+    CH = AFFE_CHAR_MECA(MODELE=MO, PRES_REP=(_F(GROUP_MA="GM12", PRES=1.0e-1),))
 
-    # CALCUL ELASTIQUE VIA STAT_NON_LINE OU MECA_STATIQUE
-    #   DEPLA[num_calc]=MECA_STATIQUE(MODELE=MO[num_calc],
-    #                     CHAM_MATER=CHMAT[num_calc],
-    #                     EXCIT=(
-    #                         _F(CHARGE = CLIM[num_calc]),
-    #                         _F(CHARGE = CH[num_calc]))
-    #                        )
-
-    RESV[num_calc] = STAT_NON_LINE(
-        MODELE=MO[num_calc],
-        CHAM_MATER=CHMAT[num_calc],
-        SOLVEUR=_F(POSTTRAITEMENTS="MINI"),
-        EXCIT=(_F(CHARGE=CLIM[num_calc]), _F(CHARGE=CH[num_calc], FONC_MULT=F_INST)),
+    RESV = STAT_NON_LINE(
+        MODELE=MO,
+        CHAM_MATER=CHMAT,
+        SOLVEUR=_F(POSTTRAITEMENTS="FORCE"),
+        EXCIT=(_F(CHARGE=CLIM), _F(CHARGE=CH, FONC_MULT=F_INST)),
         COMPORTEMENT=(_F(RELATION="VMIS_ISOT_LINE", TOUT="OUI"),),
         INCREMENT=_F(LIST_INST=L_INST),
     )
 
-    DEPLA[num_calc] = EXTR_RESU(RESULTAT=RESV[num_calc], ARCHIVAGE=_F(NUME_ORDRE=1))
+    DEPLA = EXTR_RESU(RESULTAT=RESV, ARCHIVAGE=_F(NUME_ORDRE=1))
 
     # POST_TRAITEMENT POUR OBTENIR LES CONTRAINTES AUX NOEUDS ET LES
     # DEUX TYPES D'INDICATEURS D'ERREUR EN MECANIQUE (ZZ1 ET RESIDU).
-    DEPLA[num_calc] = CALC_CHAMP(
-        reuse=DEPLA[num_calc], RESULTAT=DEPLA[num_calc], NUME_ORDRE=1, CONTRAINTE=("SIGM_ELNO")
-    )
+    DEPLA = CALC_CHAMP(reuse=DEPLA, RESULTAT=DEPLA, NUME_ORDRE=1, CONTRAINTE=("SIGM_ELNO"))
 
-    DEPLA[num_calc] = CALC_ERREUR(
-        reuse=DEPLA[num_calc],
-        RESULTAT=DEPLA[num_calc],
+    DEPLA = CALC_ERREUR(
+        reuse=DEPLA,
+        RESULTAT=DEPLA,
         TOUT="OUI",
         NUME_ORDRE=1,
         OPTION=(
@@ -158,28 +138,20 @@ for num_calc in range(0, nb_calc1):
     IMPR_RESU(
         FORMAT="MED",
         UNITE=55,
-        RESU=_F(
-            MAILLAGE=MA[num_calc],
-            RESULTAT=DEPLA[num_calc],
-            NOM_CHAM=("DEPL", "SIGM_ELNO", "ERME_ELNO"),
-        ),
+        RESU=_F(MAILLAGE=MA[num_calc], RESULTAT=DEPLA, NOM_CHAM=("DEPL", "SIGM_ELNO", "ERME_ELNO")),
     )
     DEFI_FICHIER(ACTION="LIBERER", UNITE=55)
 
-    # AFFICHAGE GIBI INTERACTIF DEPL + CONTRAINTE + INDICATEURS EN RESIDU
-    #   os.system('sed s/numcalc/'+str(num_calc)+'/g /home/boiteau/ASTER/TP_INDIC/TP14/post1.dgibi > post1.dgibi')
-    #   os.system('/logiciels/aster/outils/gibi2000.x post1.dgibi')
-
     # CALCUL DE L'ENERGIE POTENTIELLE DE DEFORMATION
-    ENER[num_calc] = POST_ELEM(RESULTAT=DEPLA[num_calc], ENER_POT=_F(TOUT="OUI"))
+    ENER = POST_ELEM(RESULTAT=DEPLA, ENER_POT=_F(TOUT="OUI"))
 
     # CALCUL DE LA FLECHE
-    FLEC[num_calc] = POST_RELEVE_T(
+    FLEC = POST_RELEVE_T(
         ACTION=(
             _F(
                 INTITULE="FLECHE",
                 GROUP_NO="GM10",
-                RESULTAT=DEPLA[num_calc],
+                RESULTAT=DEPLA,
                 NOM_CHAM="DEPL",
                 RESULTANTE=("DY"),
                 OPERATION="EXTRACTION",
@@ -187,19 +159,19 @@ for num_calc in range(0, nb_calc1):
         )
     )
 
-    FLEC[num_calc] = CALC_TABLE(
-        reuse=FLEC[num_calc],
-        TABLE=FLEC[num_calc],
+    FLEC = CALC_TABLE(
+        reuse=FLEC,
+        TABLE=FLEC,
         ACTION=(_F(OPERATION="FILTRE", NOM_PARA="NUME_ORDRE", CRIT_COMP="GT", VALE=0),),
     )
 
     # IMPRESSION DES TABLES PRECEDENTES DANS LE .RESU
-    IMPR_TABLE(TABLE=ENER[num_calc])
-    IMPR_TABLE(TABLE=FLEC[num_calc])
+    IMPR_TABLE(TABLE=ENER)
+    IMPR_TABLE(TABLE=FLEC)
 
     # PASSAGE VARIABLE ASTER --> VARIABLE PYTHON VIA DES TABLES
-    energie_vs_raff_NUM[num_calc][1] = ENER[num_calc]["TOTALE", 1]
-    fleche_vs_raff_NUM[num_calc][1] = FLEC[num_calc]["DY", 1]
+    energie_vs_raff_NUM[num_calc][1] = ENER["TOTALE", 1]
+    fleche_vs_raff_NUM[num_calc][1] = FLEC["DY", 1]
     erenergie_vs_raff_NUM[num_calc][1] = (
         abs((energie_vs_raff_NUM[num_calc][1] - ener_ref) / ener_ref) * 100
     )
@@ -266,7 +238,7 @@ for num_calc in range(0, nb_calc1):
         ADAPTATION="RAFF_DERA",
         MAILLAGE_N=MA[num_calc],
         MAILLAGE_NP1=MA[num_calc1],
-        RESULTAT_N=DEPLA[num_calc],
+        RESULTAT_N=DEPLA,
         NOM_CHAM="ERME_ELEM",
         NOM_CMP="NUEST",
         CRIT_RAFF_PE=0.2,
@@ -288,29 +260,28 @@ ERREEN4 = FORMULE(VALE="eren4*1.", eren4=eren4, NOM_PARA="BIDON")
 TEST_FONCTION(
     VALEUR=(
         _F(
-            VALE_CALC=0.10692930,
+            VALE_CALC=0.10692929695221,
             CRITERE="RELATIF",
             VALE_PARA=0.0,
             NOM_PARA="BIDON",
             FONCTION=ERREFL0,
         ),
         _F(
-            VALE_CALC=0.12563700,
+            VALE_CALC=0.12563700289023,
             CRITERE="RELATIF",
             VALE_PARA=0.0,
             NOM_PARA="BIDON",
             FONCTION=ERREEN0,
         ),
         _F(
-            VALE_CALC=0.01124863,
+            VALE_CALC=0.01124860723973,
             CRITERE="RELATIF",
             VALE_PARA=0.0,
             NOM_PARA="BIDON",
             FONCTION=ERREFL4,
         ),
         _F(
-            VALE_CALC=0.01319903,
-            TOLE_MACHINE=1.0e-3,  # TODO TOLE_MACHINE
+            VALE_CALC=0.01319899115879,
             CRITERE="RELATIF",
             VALE_PARA=0.0,
             NOM_PARA="BIDON",
