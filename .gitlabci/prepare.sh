@@ -24,9 +24,9 @@ git clone ${DATA_URL} data-src
 (
     cd data-src
     branch=${CI_COMMIT_REF_NAME}
-    echo "+ fetching branch: ${branch}"
-    ( git fetch origin ${branch} && git branch ${branch} FETCH_HEAD ) > /dev/null 2>&1 || branch=main
+    echo "+ trying to fetch branch: ${branch}"
+    git fetch origin ${branch}:${branch} > /dev/null 2>&1 || branch=main
     echo "+ checking out branch: ${branch}"
-    git rev-parse --verify ${branch} > /dev/null 2>&1 || branch=main
     git checkout ${branch}
+    git rev-parse --verify ${branch}
 )
