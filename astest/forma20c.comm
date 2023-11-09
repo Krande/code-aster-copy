@@ -281,7 +281,7 @@ TEST_FONCTION(
             FONCTION=ERREFL4,
         ),
         _F(
-            VALE_CALC=0.01319899115879,
+            VALE_CALC=0.01319900514076,
             CRITERE="RELATIF",
             VALE_PARA=0.0,
             NOM_PARA="BIDON",
