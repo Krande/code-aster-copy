@@ -694,11 +694,6 @@ class PostRocheCommon:
                 if typeres == "DYN_QS":
                     iordr = ind
                     # type
-                    print("resin:", resin)
-                    print("resin type:", resin.getType())
-                    print("resin type == MULT_ELAS", resin.getType() == "MULT_ELAS")
-                    # acces parameter
-                    print("resin acces parameters:", resin.getAccessParameters())
 
                     __FIELD[nbfield] = CREA_CHAMP(
                         OPERATION="EXTR",
@@ -1144,7 +1139,7 @@ class PostRocheCommon:
             if t == 0.0:
                 return 0
             else:
-                return A * sig**2 / t
+                return A * sig ** 2 / t
 
         fASigRef2RevLoc = FORMULE(NOM_PARA=("N", "A", "X1"), VALE="ff(N,A,X1)", ff=ff)
 
