@@ -308,20 +308,20 @@ contains
                             sig(i_tens) = sig(i_tens)+def(3, i_n, i_d)*dsidep(3, i_tens)
                             sig(i_tens) = sig(i_tens)+def(4, i_n, i_d)*dsidep(4, i_tens)
                         end do
-                        do j_d = 1, 2
-                            do j_n = 1, i_n
-                                if (j_n .eq. i_n) then
-                                    j1 = i_d
-                                else
-                                    j1 = 2
-                                end if
-                                if (j_d .le. j1) then
-                                    tmp = def(1, j_n, j_d)*sig(1)+def(2, j_n, j_d)*sig(2)+ &
-                                          def(3, j_n, j_d)*sig(3)+def(4, j_n, j_d)*sig(4)
-                                    kk = kkd+2*(j_n-1)+j_d
-                                    mat(kk) = mat(kk)+tmp*weight
-                                end if
+                        do j_n = 1, i_n-1
+                            do j_d = 1, 2
+                                tmp = def(1, j_n, j_d)*sig(1)+def(2, j_n, j_d)*sig(2)+ &
+                                      def(3, j_n, j_d)*sig(3)+def(4, j_n, j_d)*sig(4)
+                                kk = kkd+2*(j_n-1)+j_d
+                                mat(kk) = mat(kk)+tmp*weight
                             end do
+                        end do
+                        ! j_n = i_n
+                        do j_d = 1, i_d
+                            tmp = def(1, j_n, j_d)*sig(1)+def(2, j_n, j_d)*sig(2)+ &
+                                  def(3, j_n, j_d)*sig(3)+def(4, j_n, j_d)*sig(4)
+                            kk = kkd+2*(j_n-1)+j_d
+                            mat(kk) = mat(kk)+tmp*weight
                         end do
                     end do
                 end do
@@ -335,8 +335,8 @@ contains
                             sig(i_tens) = sig(i_tens)+def(3, i_n, i_d)*dsidep(3, i_tens)
                             sig(i_tens) = sig(i_tens)+def(4, i_n, i_d)*dsidep(4, i_tens)
                         end do
-                        do j_d = 1, 2
-                            do j_n = 1, FEBasis%size
+                        do j_n = 1, FEBasis%size
+                            do j_d = 1, 2
                                 tmp = def(1, j_n, j_d)*sig(1)+def(2, j_n, j_d)*sig(2)+ &
                                       def(3, j_n, j_d)*sig(3)+def(4, j_n, j_d)*sig(4)
                                 kk = 2*FEBasis%size*(2*(i_n-1)+i_d-1)+2*(j_n-1)+j_d
@@ -361,20 +361,21 @@ contains
                             sig(i_tens) = sig(i_tens)+def(6, i_n, i_d)*dsidep(6, i_tens)
                         end do
                         do j_d = 1, 3
-                            do j_n = 1, i_n
-                                if (j_n .eq. i_n) then
-                                    j1 = i_d
-                                else
-                                    j1 = 3
-                                end if
-                                if (j_d .le. j1) then
-                                    tmp = def(1, j_n, j_d)*sig(1)+def(2, j_n, j_d)*sig(2)+ &
-                                          def(3, j_n, j_d)*sig(3)+def(4, j_n, j_d)*sig(4)+ &
-                                          def(5, j_n, j_d)*sig(5)+def(6, j_n, j_d)*sig(6)
-                                    kk = kkd+3*(j_n-1)+j_d
-                                    mat(kk) = mat(kk)+tmp*weight
-                                end if
+                            do j_n = 1, i_n-1
+                                tmp = def(1, j_n, j_d)*sig(1)+def(2, j_n, j_d)*sig(2)+ &
+                                      def(3, j_n, j_d)*sig(3)+def(4, j_n, j_d)*sig(4)+ &
+                                      def(5, j_n, j_d)*sig(5)+def(6, j_n, j_d)*sig(6)
+                                kk = kkd+3*(j_n-1)+j_d
+                                mat(kk) = mat(kk)+tmp*weight
                             end do
+                        end do
+                        ! j_n = i_n
+                        do j_d = 1, i_d
+                            tmp = def(1, j_n, j_d)*sig(1)+def(2, j_n, j_d)*sig(2)+ &
+                                  def(3, j_n, j_d)*sig(3)+def(4, j_n, j_d)*sig(4)+ &
+                                  def(5, j_n, j_d)*sig(5)+def(6, j_n, j_d)*sig(6)
+                            kk = kkd+3*(j_n-1)+j_d
+                            mat(kk) = mat(kk)+tmp*weight
                         end do
                     end do
                 end do
@@ -390,8 +391,8 @@ contains
                             sig(i_tens) = sig(i_tens)+def(5, i_n, i_d)*dsidep(5, i_tens)
                             sig(i_tens) = sig(i_tens)+def(6, i_n, i_d)*dsidep(6, i_tens)
                         end do
-                        do j_d = 1, 3
-                            do j_n = 1, FEBasis%size
+                        do j_n = 1, FEBasis%size
+                            do j_d = 1, 3
                                 tmp = def(1, j_n, j_d)*sig(1)+def(2, j_n, j_d)*sig(2)+ &
                                       def(3, j_n, j_d)*sig(3)+def(4, j_n, j_d)*sig(4)+ &
                                       def(5, j_n, j_d)*sig(5)+def(6, j_n, j_d)*sig(6)
