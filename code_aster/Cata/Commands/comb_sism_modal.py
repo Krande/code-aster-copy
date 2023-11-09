@@ -121,7 +121,7 @@ COMB_SISM_MODAL = MACRO(
         statut="o",
         max=1,
         TYPE=SIMP(
-            statut="o", typ="TXM", into=("SRSS", "CQC", "DSC", "ABS", "DPC", "GUPTA"), defaut="CQC"
+            statut="f", typ="TXM", into=("SRSS", "CQC", "DSC", "ABS", "DPC", "GUPTA"), defaut="CQC"
         ),
         b_gupta=BLOC(
             condition="""equal_to("TYPE", 'GUPTA') """,
@@ -175,7 +175,7 @@ COMB_SISM_MODAL = MACRO(
             statut="o",
             max="**",
             TYPE=SIMP(
-                statut="o",
+                statut="f",
                 typ="TXM",
                 into=(
                     "VALE_SPEC",
@@ -243,7 +243,7 @@ COMB_SISM_MODAL = MACRO(
             statut="o",
             max="**",
             TYPE=SIMP(
-                statut="o",
+                statut="f",
                 typ="TXM",
                 into=(
                     "VALE_SPEC",
