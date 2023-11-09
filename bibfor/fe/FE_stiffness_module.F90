@@ -286,7 +286,7 @@ contains
                     do i_d = 1, 2
                         kkd = (2*(i_n-1)+i_d-1)*(2*(i_n-1)+i_d)/2
                         sig_w = 0.d0
-                        call dgemv('N', 4, 4, weight, dsidep, 6, def(1, i_n, i_d), &
+                        call dgemv('T', 4, 4, weight, dsidep, 6, def(1, i_n, i_d), &
                                    1, 0.0, sig_w, 1)
                         call dgemv('T', 4, i_n-1, 1.d0, def(1, 1, 1), 6, sig_w, 1, &
                                    1.d0, mat(kkd+1), 2)
@@ -306,7 +306,7 @@ contains
                     do i_d = 1, 2
                         kkd = 2*FEBasis%size*(2*(i_n-1)+i_d-1)
                         sig_w = 0.d0
-                        call dgemv('N', 4, 4, weight, dsidep, 6, def(1, i_n, i_d), 1, 0.0, sig_w, 1)
+                        call dgemv('T', 4, 4, weight, dsidep, 6, def(1, i_n, i_d), 1, 0.0, sig_w, 1)
                         call dgemv('T', 4, FEBasis%size, 1.d0, def(1, 1, 1), 6, sig_w, 1, &
                                    1.d0, mat(kkd+1), 2)
                         call dgemv('T', 4, FEBasis%size, 1.d0, def(1, 1, 2), 6, sig_w, 1, &
@@ -320,7 +320,7 @@ contains
                     do i_d = 1, 3
                         kkd = (3*(i_n-1)+i_d-1)*(3*(i_n-1)+i_d)/2
                         sig_w = 0.d0
-                        call dgemv('N', 6, 6, weight, dsidep, 6, def(1, i_n, i_d), &
+                        call dgemv('T', 6, 6, weight, dsidep, 6, def(1, i_n, i_d), &
                                    1, 0.0, sig_w, 1)
                         call dgemv('T', 6, i_n-1, 1.d0, def(1, 1, 1), 6, sig_w, 1, &
                                    1.d0, mat(kkd+1), 3)
@@ -343,7 +343,7 @@ contains
                     do i_d = 1, 3
                         kkd = 3*FEBasis%size*(3*(i_n-1)+i_d-1)
                         sig_w = 0.d0
-                        call dgemv('N', 6, 6, weight, dsidep, 6, def(1, i_n, i_d), 1, 0.0, sig_w, 1)
+                        call dgemv('T', 6, 6, weight, dsidep, 6, def(1, i_n, i_d), 1, 0.0, sig_w, 1)
                         call dgemv('T', 6, FEBasis%size, 1.d0, def(1, 1, 1), 6, sig_w, 1, &
                                    1.d0, mat(kkd+1), 3)
                         call dgemv('T', 6, FEBasis%size, 1.d0, def(1, 1, 2), 6, sig_w, 1, &
