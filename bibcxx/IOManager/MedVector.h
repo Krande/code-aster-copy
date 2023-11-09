@@ -138,13 +138,23 @@ class MedVector {
 
     /** @brief set component name */
     void setComponentName( const std::vector< std::string > &cmpName ) {
-        if ( cmpName.size() != _cmpNb )
-            throw std::runtime_error( "Bad component number" );
+        if ( _cmpNb == 0 ) {
+            _cmpNb = cmpName.size();
+        } else {
+            if ( cmpName.size() != _cmpNb )
+                throw std::runtime_error( "Bad component number" );
+        }
         _cmpName = cmpName;
     };
 
     /** @brief set component number */
     void setComponentNumber( int nbCmp ) { _cmpNb = nbCmp; };
+
+    /** @brief set component name */
+    void setComponentVector( const std::vector< int > &cmpVec ) { _cmps = cmpVec; };
+
+    /** @brief set cumulated sizes vector */
+    void setCumulatedSizesVector( const std::vector< int > cumSizes ) { _cumSize = cumSizes; };
 
     /** @brief set element component number */
     void setElement( int index, int nbCmp ) {
@@ -183,6 +193,9 @@ class MedVector {
 
     /** @brief set total size (usefull for memory preallocation) */
     void setTotalSize( int totalSize ) { _vector = std::vector< double >( totalSize ); };
+
+    /** @brief set total element number */
+    void setValues( const std::vector< double > &values ) { _vector = values; };
 
     /** @brief get element number */
     int size() const { return _size; };

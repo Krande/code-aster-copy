@@ -34,9 +34,12 @@
 void exportMedVectorToPython( py::module_ &mod ) {
 
     py::class_< MedVector, MedVectorPtr >( mod, "MedVector" )
-        .def( "__pickling_disabled__", disable_pickling< MedVector >() )
+        .def( py::init( &initFactoryPtr< MedVector > ) )
 
         .def( "getComponentName", &MedVector::getComponentName, R"(
+Get component name
+            )" )
+        .def( "getComponentNumber", &MedVector::getComponentNumber, R"(
 Get component name
             )" )
         .def( "getComponentVector", &MedVector::getComponentVector, R"(
@@ -53,6 +56,21 @@ Get vector values (WARNING values are owned by MedVector: no copy)
 
 Returns:
     numpy array: all field values
+            )" )
+        .def( "setComponentName", &MedVector::setComponentName, R"(
+Set component name
+            )" )
+        .def( "setComponentNumber", &MedVector::setComponentNumber, R"(
+Set component number
+            )" )
+        .def( "setComponentVector", &MedVector::setComponentVector, R"(
+Set component on element vector
+            )" )
+        .def( "setCumulatedSizesVector", &MedVector::setCumulatedSizesVector, R"(
+Set cumulated sizes vector
+            )" )
+        .def( "setValues", &MedVector::setValues, R"(
+Set vector values (WARNING values are owned by MedVector: no copy)
             )" )
         .def( "size", &MedVector::size, R"(
 Get vector size, ie: number of elements (cells or nodes)
