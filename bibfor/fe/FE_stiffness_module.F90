@@ -399,9 +399,10 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: i_n, i_d, j_n, j1
-        integer :: kk, kkd
-        real(kind=8) :: tmp
+        integer :: i_n, i_d, kkd
+        real(kind=8) :: stress_w(6)
+!
+        stress_w = weight*stress
 !
         select case (FEBasis%ndim)
         case (2)
@@ -409,30 +410,16 @@ contains
                 do i_n = 1, FEBasis%size
                     do i_d = 1, 2
                         kkd = (2*(i_n-1)+i_d-1)*(2*(i_n-1)+i_d)/2
-                        do j_n = 1, i_n
-                            if (j_n .eq. i_n) then
-                                j1 = i_d
-                            else
-                                j1 = 2
-                            end if
-                            tmp = pff(1, i_n, j_n)*stress(1)+pff(2, i_n, j_n)*stress(2)+ &
-                                  pff(3, i_n, j_n)*stress(3)+pff(4, i_n, j_n)*stress(4)
-                            if (i_d .le. j1) then
-                                kk = kkd+2*(j_n-1)+i_d
-                                mat(kk) = mat(kk)+tmp*weight
-                            end if
-                        end do
+                        call dgemv('T', 4, i_n, 1.d0, pff(1, 1, i_n), 6, stress_w, 1, &
+                                   1.d0, mat(kkd+i_d), 2)
                     end do
                 end do
             else
                 do i_n = 1, FEBasis%size
                     do i_d = 1, 2
-                        do j_n = 1, FEBasis%size
-                            tmp = pff(1, i_n, j_n)*stress(1)+pff(2, i_n, j_n)*stress(2)+ &
-                                  pff(3, i_n, j_n)*stress(3)+pff(4, i_n, j_n)*stress(4)
-                            kk = 2*FEBasis%size*(2*(i_n-1)+i_d-1)+2*(j_n-1)+i_d
-                            mat(kk) = mat(kk)+tmp*weight
-                        end do
+                        kkd = 2*FEBasis%size*(2*(i_n-1)+i_d-1)
+                        call dgemv('T', 4, FEBasis%size, 1.d0, pff(1, 1, i_n), 6, stress_w, 1, &
+                                   1.d0, mat(kkd+i_d), 2)
                     end do
                 end do
             end if
@@ -441,32 +428,16 @@ contains
                 do i_n = 1, FEBasis%size
                     do i_d = 1, 3
                         kkd = (3*(i_n-1)+i_d-1)*(3*(i_n-1)+i_d)/2
-                        do j_n = 1, i_n
-                            if (j_n .eq. i_n) then
-                                j1 = i_d
-                            else
-                                j1 = 3
-                            end if
-                            if (i_d .le. j1) then
-                                tmp = pff(1, i_n, j_n)*stress(1)+pff(2, i_n, j_n)*stress(2)+ &
-                                      pff(3, i_n, j_n)*stress(3)+pff(4, i_n, j_n)*stress(4)+ &
-                                      pff(5, i_n, j_n)*stress(5)+pff(6, i_n, j_n)*stress(6)
-                                kk = kkd+3*(j_n-1)+i_d
-                                mat(kk) = mat(kk)+tmp*weight
-                            end if
-                        end do
+                        call dgemv('T', 6, i_n, 1.d0, pff(1, 1, i_n), 6, stress_w, 1, &
+                                   1.d0, mat(kkd+i_d), 3)
                     end do
                 end do
             else
                 do i_n = 1, FEBasis%size
                     do i_d = 1, 3
-                        do j_n = 1, FEBasis%size
-                            tmp = pff(1, i_n, j_n)*stress(1)+pff(2, i_n, j_n)*stress(2)+ &
-                                  pff(3, i_n, j_n)*stress(3)+pff(4, i_n, j_n)*stress(4)+ &
-                                  pff(5, i_n, j_n)*stress(5)+pff(6, i_n, j_n)*stress(6)
-                            kk = 3*FEBasis%size*(3*(i_n-1)+i_d-1)+3*(j_n-1)+i_d
-                            mat(kk) = mat(kk)+tmp*weight
-                        end do
+                        kkd = 3*FEBasis%size*(3*(i_n-1)+i_d-1)
+                        call dgemv('T', 6, FEBasis%size, 1.d0, pff(1, 1, i_n), 6, stress_w, 1, &
+                                   1.d0, mat(kkd+i_d), 3)
                     end do
                 end do
             end if
