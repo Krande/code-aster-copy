@@ -303,7 +303,7 @@ Solveur MUMPS :
     61: _(
         """
 Solveur MUMPS :
-  L'occurence MUMPS associée à la matrice de travail n'a pas été trouvée.
+  L'occurrence MUMPS associée à la matrice de travail n'a pas été trouvée.
   C'est probablement une erreur de programmation, contactez l'équipe de développement.
 
 Conseils :
