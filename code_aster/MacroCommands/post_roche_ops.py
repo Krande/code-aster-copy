@@ -1139,7 +1139,7 @@ class PostRocheCommon:
             if t == 0.0:
                 return 0
             else:
-                return A * sig ** 2 / t
+                return A * sig**2 / t
 
         fASigRef2RevLoc = FORMULE(NOM_PARA=("N", "A", "X1"), VALE="ff(N,A,X1)", ff=ff)
 
