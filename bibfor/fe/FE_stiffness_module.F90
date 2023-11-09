@@ -291,9 +291,8 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: i_n, i_d, i_tens, j_d, j_n, j1
-        integer :: kk, kkd
-        real(kind=8) :: tmp, sig(6)
+        integer :: i_n, i_d, j_d, kkd
+        real(kind=8) :: sig_w(6)
 !
         select case (FEBasis%ndim)
         case (2)
@@ -301,48 +300,32 @@ contains
                 do i_n = 1, FEBasis%size
                     do i_d = 1, 2
                         kkd = (2*(i_n-1)+i_d-1)*(2*(i_n-1)+i_d)/2
-                        do i_tens = 1, 4
-                            sig(i_tens) = 0.d0
-                            sig(i_tens) = sig(i_tens)+def(1, i_n, i_d)*dsidep(1, i_tens)
-                            sig(i_tens) = sig(i_tens)+def(2, i_n, i_d)*dsidep(2, i_tens)
-                            sig(i_tens) = sig(i_tens)+def(3, i_n, i_d)*dsidep(3, i_tens)
-                            sig(i_tens) = sig(i_tens)+def(4, i_n, i_d)*dsidep(4, i_tens)
-                        end do
-                        do j_n = 1, i_n-1
-                            do j_d = 1, 2
-                                tmp = def(1, j_n, j_d)*sig(1)+def(2, j_n, j_d)*sig(2)+ &
-                                      def(3, j_n, j_d)*sig(3)+def(4, j_n, j_d)*sig(4)
-                                kk = kkd+2*(j_n-1)+j_d
-                                mat(kk) = mat(kk)+tmp*weight
-                            end do
-                        end do
+                        sig_w = 0.d0
+                        call dgemv('N', 4, 4, weight, dsidep, 6, def(1, i_n, i_d), &
+                                   1, 0.0, sig_w, 1)
+                        call dgemv('T', 4, i_n-1, 1.d0, def(1, 1, 1), 6, sig_w, 1, &
+                                   1.d0, mat(kkd+1), 2)
+                        call dgemv('T', 4, i_n-1, 1.d0, def(1, 1, 2), 6, sig_w, 1, &
+                                   1.d0, mat(kkd+2), 2)
                         ! j_n = i_n
+                        kkd = kkd+2*(i_n-1)
                         do j_d = 1, i_d
-                            tmp = def(1, j_n, j_d)*sig(1)+def(2, j_n, j_d)*sig(2)+ &
-                                  def(3, j_n, j_d)*sig(3)+def(4, j_n, j_d)*sig(4)
-                            kk = kkd+2*(j_n-1)+j_d
-                            mat(kk) = mat(kk)+tmp*weight
+                            mat(kkd+j_d) = mat(kkd+j_d)+ &
+                                           def(1, i_n, j_d)*sig_w(1)+def(2, i_n, j_d)*sig_w(2)+ &
+                                           def(3, i_n, j_d)*sig_w(3)+def(4, i_n, j_d)*sig_w(4)
                         end do
                     end do
                 end do
             else
                 do i_n = 1, FEBasis%size
                     do i_d = 1, 2
-                        do i_tens = 1, 4
-                            sig(i_tens) = 0.d0
-                            sig(i_tens) = sig(i_tens)+def(1, i_n, i_d)*dsidep(1, i_tens)
-                            sig(i_tens) = sig(i_tens)+def(2, i_n, i_d)*dsidep(2, i_tens)
-                            sig(i_tens) = sig(i_tens)+def(3, i_n, i_d)*dsidep(3, i_tens)
-                            sig(i_tens) = sig(i_tens)+def(4, i_n, i_d)*dsidep(4, i_tens)
-                        end do
-                        do j_n = 1, FEBasis%size
-                            do j_d = 1, 2
-                                tmp = def(1, j_n, j_d)*sig(1)+def(2, j_n, j_d)*sig(2)+ &
-                                      def(3, j_n, j_d)*sig(3)+def(4, j_n, j_d)*sig(4)
-                                kk = 2*FEBasis%size*(2*(i_n-1)+i_d-1)+2*(j_n-1)+j_d
-                                mat(kk) = mat(kk)+tmp*weight
-                            end do
-                        end do
+                        kkd = 2*FEBasis%size*(2*(i_n-1)+i_d-1)
+                        sig_w = 0.d0
+                        call dgemv('N', 4, 4, weight, dsidep, 6, def(1, i_n, i_d), 1, 0.0, sig_w, 1)
+                        call dgemv('T', 4, FEBasis%size, 1.d0, def(1, 1, 1), 6, sig_w, 1, &
+                                   1.d0, mat(kkd+1), 2)
+                        call dgemv('T', 4, FEBasis%size, 1.d0, def(1, 1, 2), 6, sig_w, 1, &
+                                   1.d0, mat(kkd+2), 2)
                     end do
                 end do
             end if
@@ -351,55 +334,37 @@ contains
                 do i_n = 1, FEBasis%size
                     do i_d = 1, 3
                         kkd = (3*(i_n-1)+i_d-1)*(3*(i_n-1)+i_d)/2
-                        do i_tens = 1, 6
-                            sig(i_tens) = 0.d0
-                            sig(i_tens) = sig(i_tens)+def(1, i_n, i_d)*dsidep(1, i_tens)
-                            sig(i_tens) = sig(i_tens)+def(2, i_n, i_d)*dsidep(2, i_tens)
-                            sig(i_tens) = sig(i_tens)+def(3, i_n, i_d)*dsidep(3, i_tens)
-                            sig(i_tens) = sig(i_tens)+def(4, i_n, i_d)*dsidep(4, i_tens)
-                            sig(i_tens) = sig(i_tens)+def(5, i_n, i_d)*dsidep(5, i_tens)
-                            sig(i_tens) = sig(i_tens)+def(6, i_n, i_d)*dsidep(6, i_tens)
-                        end do
-                        do j_d = 1, 3
-                            do j_n = 1, i_n-1
-                                tmp = def(1, j_n, j_d)*sig(1)+def(2, j_n, j_d)*sig(2)+ &
-                                      def(3, j_n, j_d)*sig(3)+def(4, j_n, j_d)*sig(4)+ &
-                                      def(5, j_n, j_d)*sig(5)+def(6, j_n, j_d)*sig(6)
-                                kk = kkd+3*(j_n-1)+j_d
-                                mat(kk) = mat(kk)+tmp*weight
-                            end do
-                        end do
+                        sig_w = 0.d0
+                        call dgemv('N', 6, 6, weight, dsidep, 6, def(1, i_n, i_d), &
+                                   1, 0.0, sig_w, 1)
+                        call dgemv('T', 6, i_n-1, 1.d0, def(1, 1, 1), 6, sig_w, 1, &
+                                   1.d0, mat(kkd+1), 3)
+                        call dgemv('T', 6, i_n-1, 1.d0, def(1, 1, 2), 6, sig_w, 1, &
+                                   1.d0, mat(kkd+2), 3)
+                        call dgemv('T', 6, i_n-1, 1.d0, def(1, 1, 3), 6, sig_w, 1, &
+                                   1.d0, mat(kkd+3), 3)
                         ! j_n = i_n
+                        kkd = kkd+3*(i_n-1)
                         do j_d = 1, i_d
-                            tmp = def(1, j_n, j_d)*sig(1)+def(2, j_n, j_d)*sig(2)+ &
-                                  def(3, j_n, j_d)*sig(3)+def(4, j_n, j_d)*sig(4)+ &
-                                  def(5, j_n, j_d)*sig(5)+def(6, j_n, j_d)*sig(6)
-                            kk = kkd+3*(j_n-1)+j_d
-                            mat(kk) = mat(kk)+tmp*weight
+                            mat(kkd+j_d) = mat(kkd+j_d)+ &
+                                           def(1, i_n, j_d)*sig_w(1)+def(2, i_n, j_d)*sig_w(2)+ &
+                                           def(3, i_n, j_d)*sig_w(3)+def(4, i_n, j_d)*sig_w(4)+ &
+                                           def(5, i_n, j_d)*sig_w(5)+def(6, i_n, j_d)*sig_w(6)
                         end do
                     end do
                 end do
             else
                 do i_n = 1, FEBasis%size
                     do i_d = 1, 3
-                        do i_tens = 1, 6
-                            sig(i_tens) = 0.d0
-                            sig(i_tens) = sig(i_tens)+def(1, i_n, i_d)*dsidep(1, i_tens)
-                            sig(i_tens) = sig(i_tens)+def(2, i_n, i_d)*dsidep(2, i_tens)
-                            sig(i_tens) = sig(i_tens)+def(3, i_n, i_d)*dsidep(3, i_tens)
-                            sig(i_tens) = sig(i_tens)+def(4, i_n, i_d)*dsidep(4, i_tens)
-                            sig(i_tens) = sig(i_tens)+def(5, i_n, i_d)*dsidep(5, i_tens)
-                            sig(i_tens) = sig(i_tens)+def(6, i_n, i_d)*dsidep(6, i_tens)
-                        end do
-                        do j_n = 1, FEBasis%size
-                            do j_d = 1, 3
-                                tmp = def(1, j_n, j_d)*sig(1)+def(2, j_n, j_d)*sig(2)+ &
-                                      def(3, j_n, j_d)*sig(3)+def(4, j_n, j_d)*sig(4)+ &
-                                      def(5, j_n, j_d)*sig(5)+def(6, j_n, j_d)*sig(6)
-                                kk = 3*FEBasis%size*(3*(i_n-1)+i_d-1)+3*(j_n-1)+j_d
-                                mat(kk) = mat(kk)+tmp*weight
-                            end do
-                        end do
+                        kkd = 3*FEBasis%size*(3*(i_n-1)+i_d-1)
+                        sig_w = 0.d0
+                        call dgemv('N', 6, 6, weight, dsidep, 6, def(1, i_n, i_d), 1, 0.0, sig_w, 1)
+                        call dgemv('T', 6, FEBasis%size, 1.d0, def(1, 1, 1), 6, sig_w, 1, &
+                                   1.d0, mat(kkd+1), 3)
+                        call dgemv('T', 6, FEBasis%size, 1.d0, def(1, 1, 2), 6, sig_w, 1, &
+                                   1.d0, mat(kkd+2), 3)
+                        call dgemv('T', 6, FEBasis%size, 1.d0, def(1, 1, 3), 6, sig_w, 1, &
+                                   1.d0, mat(kkd+3), 3)
                     end do
                 end do
             end if
