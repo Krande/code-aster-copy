@@ -234,32 +234,17 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: i, ind
+        real(kind=8) :: stress_w(6)
 !
+        stress_w = weight*stress
         select case (FEBasis%ndim)
         case (2)
-            ind = 0
-            do i = 1, FEBasis%size
-                vec(ind+1) = vec(ind+1)+weight*(def(1, i, 1)*stress(1)+def(2, i, 1)*stress(2)+ &
-                                                def(3, i, 1)*stress(3)+def(4, i, 1)*stress(4))
-                vec(ind+2) = vec(ind+2)+weight*(def(1, i, 2)*stress(1)+def(2, i, 2)*stress(2)+ &
-                                                def(3, i, 2)*stress(3)+def(4, i, 2)*stress(4))
-                ind = ind+2
-            end do
+            call dgemv('T', 4, FEBasis%size, 1.d0, def(1, 1, 1), 6, stress_w, 1, 1.d0, vec(1), 2)
+            call dgemv('T', 4, FEBasis%size, 1.d0, def(1, 1, 2), 6, stress_w, 1, 1.d0, vec(2), 2)
         case (3)
-            ind = 0
-            do i = 1, FEBasis%size
-                vec(ind+1) = vec(ind+1)+weight*(def(1, i, 1)*stress(1)+def(2, i, 1)*stress(2)+ &
-                                                def(3, i, 1)*stress(3)+def(4, i, 1)*stress(4)+ &
-                                                def(5, i, 1)*stress(5)+def(6, i, 1)*stress(6))
-                vec(ind+2) = vec(ind+2)+weight*(def(1, i, 2)*stress(1)+def(2, i, 2)*stress(2)+ &
-                                                def(3, i, 2)*stress(3)+def(4, i, 2)*stress(4)+ &
-                                                def(5, i, 2)*stress(5)+def(6, i, 2)*stress(6))
-                vec(ind+3) = vec(ind+3)+weight*(def(1, i, 3)*stress(1)+def(2, i, 3)*stress(2)+ &
-                                                def(3, i, 3)*stress(3)+def(4, i, 3)*stress(4)+ &
-                                                def(5, i, 3)*stress(5)+def(6, i, 3)*stress(6))
-                ind = ind+3
-            end do
+            call dgemv('T', 6, FEBasis%size, 1.d0, def(1, 1, 1), 6, stress_w, 1, 1.d0, vec(1), 3)
+            call dgemv('T', 6, FEBasis%size, 1.d0, def(1, 1, 2), 6, stress_w, 1, 1.d0, vec(2), 3)
+            call dgemv('T', 6, FEBasis%size, 1.d0, def(1, 1, 3), 6, stress_w, 1, 1.d0, vec(3), 3)
         case default
             ASSERT(ASTER_FALSE)
         end select
