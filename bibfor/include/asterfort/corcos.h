@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,14 +19,16 @@
 !
 !
 interface
-    function corcos(d1, d2, mes1, uc, kt,&
-                    kl, omega)
+    function corcos(d1, d2, mes1, mes2, uc, uct, l,&
+                    lt, omega)
         real(kind=8) :: d1
         real(kind=8) :: d2
         real(kind=8) :: mes1
+        real(kind=8) :: mes2
         real(kind=8) :: uc
-        real(kind=8) :: kt
-        real(kind=8) :: kl
+        real(kind=8) :: uct
+        real(kind=8) :: l
+        real(kind=8) :: lt
         real(kind=8) :: omega
         real(kind=8) :: corcos
     end function corcos

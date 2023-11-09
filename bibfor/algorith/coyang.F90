@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,23 +27,28 @@ function coyang(dist, dteta, rayon, omega, uc, &
 ! ARGUMENTS
 ! ---------
 #include "jeveux.h"
-    real(kind=8) :: dist, dteta, rayon, omega, uc, uct, l, lt
+#include "asterc/r8pi.h"
+    real(kind=8) :: dist, dteta, rayon, omega, uc, uct, l, lt, dteta2, pi
 !
 !
 ! VARIABLES LOCALES
 ! -----------------
     real(kind=8) :: coyang, codist, coteta
 !
-! CALCUL DE LA FONCTION DE COHERENCE EN X
-!
-    codist = exp(-dist/l)*cos(omega*dist/uc)
-!
-! CALCUL DE LA FONCTION DE COHERENCE EN TETA
-!
-    coteta = exp(-rayon*dteta/lt)*cos(rayon*omega*dteta/uct)*rayon*rayon
-!
-! CALCUL DE LA FONCTION DE COHERENCE SUIVANT AU-YANG
-!
-    coyang = codist*coteta
+! si la vitesse convective transversale est supérieure a 10 fois la vitesse convective
+! longitudinale alors la convection des tourbillons transversale n est pas prise
+! en compte
+! CALCUL DE LA FONCTION DE COHERENCE
+    pi = r8pi()
+    dteta2 = min(abs(dteta), abs(dteta+2*pi), abs(dteta-2*pi))
+    if (uct .gt. 10*uc) then
+        codist = exp(-abs(dist)/l)*cos(omega*dist/uc)
+        coteta = exp(-rayon*dteta2/lt)
+        coyang = codist*coteta
+    else
+        codist = exp(-abs(dist)/l)*exp(-rayon*abs(dteta2)/lt)
+        coteta = cos(rayon*omega*dteta/uct+omega*dist/uc)
+        coyang = codist*coteta
+    end if
 !
 end function

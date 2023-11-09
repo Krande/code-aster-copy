@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,17 +16,17 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-function corcos(d1, d2, mes1, uc, kt, &
-                kl, omega)
+function corcos(d1, d2, mes1, mes2, uc, uct, l, &
+                lt, omega)
     implicit none
-!
+!corcos(d1,d2,local(1), local(2), uc, uct, l,lt,omega)
 ! *****************   DECLARATIONS DES VARIABLES   ********************
 !
 !
 ! ARGUMENTS
 ! ---------
 #include "jeveux.h"
-    real(kind=8) :: d1, d2, omega, kt, uc, kl, mes1
+    real(kind=8) :: d1, d2, omega, l, lt, uc, uct, mes1, mes2
 !
 !
 ! VARIABLES LOCALES
@@ -36,10 +36,14 @@ function corcos(d1, d2, mes1, uc, kt, &
 !
 !
 ! CALCUL DE LA FONCTION DE COHERENCE
+! Attention : Si la vitesse convective transversale est supérieure a 10 fois
+! la vitesse convective longitudinale alors la convection des tourbillons
+! transversale n est pas prise en compte
 !
-!
-    corcos = exp(-kt*d2)*exp(-kl*d1)&
-            &                    *cos(omega*mes1/uc)
-!
+    if (uct .gt. 10*uc) then
+        corcos = exp(-d2/lt)*exp(-d1/l)*cos(omega*mes1/uc)
+    else
+        corcos = exp(-d2/lt)*exp(-d1/l)*cos(omega*mes1/uc+omega*mes2/uct)
+    end if
 !
 end function

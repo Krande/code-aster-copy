@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -221,11 +221,13 @@ subroutine op0145()
             zk16(lnom+9) = 'METHODE         '
         else if (nommcf .eq. 'SPEC_CORR_CONV_2') then
             zk16(lnom) = 'FONCTION        '
-            zk16(lnom+1) = 'VITE_FLUI       '
-            zk16(lnom+2) = 'FREQ_COUP       '
+            zk16(lnom+1) = 'LONG1_F         '
+            zk16(lnom+2) = 'LONG2_F         '
             zk16(lnom+3) = 'METHODE         '
-            zk16(lnom+4) = 'COEF_VITE_FLUI_A'
+            zk16(lnom+4) = 'VITE_FLUI       '
             zk16(lnom+5) = 'COEF_VITE_FLUI_O'
+            zk16(lnom+6) = 'FREQ_COUP       '
+            zk16(lnom+7) = 'COEF_VITE_FLUI_A'
         else if (nommcf .eq. 'SPEC_CORR_CONV_3') then
             zk16(lnom) = 'TABLE_FONCTION  '
         else if (nommcf .eq. 'SPEC_FONC_FORME') then
@@ -245,6 +247,7 @@ subroutine op0145()
             zk16(lnom+6) = 'CARA_ELEM      '
             zk16(lnom+7) = 'MODELE         '
         end if
+
         zk16(lvate) = nommcf
         imci = 0
         do imc = 1, nbmcl
@@ -257,6 +260,12 @@ subroutine op0145()
             else if (zk16(lnom+imc-1) .eq. 'FONCTION        ') then
                 call getvid(nommcf, 'FONCTION', iocc=1, scal=nomzon, nbret=ibid)
                 zk16(lvate+imc) = nomzon
+            else if (zk16(lnom+imc-1) .eq. 'LONG1_F         ') then
+                call getvid(nommcf, 'LONG1_F', iocc=1, scal=nomzon, nbret=ibid)
+                zk16(lvate+imc) = nomzon
+            else if (zk16(lnom+imc-1) .eq. 'LONG2_F         ') then
+                call getvid(nommcf, 'LONG2_F', iocc=1, scal=nomzon, nbret=ibid)
+                zk16(lvate+imc) = nomzon
             else if (zk16(lnom+imc-1) .eq. 'TABLE_FONCTION  ') then
                 call getvid(nommcf, 'TABLE_FONCTION', iocc=1, scal=nomzon, nbret=ibid)
                 zk16(lvate+imc) = nomzon
@@ -267,7 +276,6 @@ subroutine op0145()
             end if
         end do
         zi(lvain) = ispect
-!
 !
 ! ----2.MODELES "FONCTIONS DE FORME" ET "EXCITATIONS PONCTUELLES"
 !       ---------------------------------------------------------

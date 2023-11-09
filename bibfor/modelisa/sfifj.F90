@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-!
+
 subroutine sfifj(nomres)
     implicit none
 !     CALCUL DE LA FONCTION ACCEPTANCE
@@ -29,8 +29,6 @@ subroutine sfifj(nomres)
 #include "asterfort/accep1.h"
 #include "asterfort/accep2.h"
 #include "asterfort/accept.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/as_deallocate.h"
 #include "asterfort/chpver.h"
 #include "asterfort/dspprs.h"
 #include "asterfort/evalis.h"
@@ -50,6 +48,8 @@ subroutine sfifj(nomres)
 #include "asterfort/rsadpa.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: nfinit, nfin, nbm, nbpoin, nbid
     integer :: npoin, iff, lvale, ibid, in
@@ -64,7 +64,8 @@ subroutine sfifj(nomres)
     character(len=8) :: k8b, nomres, is
     character(len=8) :: spectr, method
     character(len=19) :: base, fonct, chamno, pg, phi, sphi
-    character(len=24) :: ligrmo
+    character(len=19) :: long1f, long2f
+    character(len=24) :: ligrmo, val_spec
     character(len=24) :: chnumi, chnumj, chfreq, chvale
     aster_logical :: yang
     real(kind=8), pointer :: vecx(:) => null()
@@ -145,10 +146,12 @@ subroutine sfifj(nomres)
     call getvid(' ', 'SPEC_TURB', scal=spectr, nbret=ibid)
     call jeveuo(spectr//'           .VARE', 'L', vr=vare)
     call jeveuo(spectr//'           .VATE', 'L', vk16=vate)
-!
+
 ! RECUPERATION DES CONSTANTES DU SPECTRES DU
 ! MODELE 5 : CONSTANT PUIS NUL POUR FR > 10
 !
+    val_spec = vate(1)
+
     if (vate(1) .eq. 'SPEC_CORR_CONV_1') then
         uflui = vare(3)
         rho = vare(4)
@@ -162,7 +165,7 @@ subroutine sfifj(nomres)
         uc = vare(8)*uflui
 ! VITESSE CONVECTIVE ORTHORADIALE (METHODE AU-YANG)
         ut = vare(9)*uflui
-!
+
 ! CALCUL DE LA FREQUENCE DE COUPURE PRONE PAR LE MODELE
 ! ET COMPARAISON AVEC LA FREQUENCE DE COUPURE DONNEE PAR
 ! L UTILISATEUR
@@ -191,17 +194,16 @@ subroutine sfifj(nomres)
 ! DE COHERENCE
 !
         method = vate(11) (1:8)
+
     else if (vate(1) .eq. 'SPEC_CORR_CONV_2') then
         uflui = vare(1)
-        fcoup = vare(2)
+        fcoup = vare(3)
         method = vate(5) (1:8)
         fonct = vate(2)
-!       on fixe à 1 les longueurs de corrélation pour fix de bug
-        long1 = 1
-        long2 = 1
-!       on fixe les valeurs de uc et ut pour fix un bug
-        uc = 0.65d0*uflui
-        ut = 0.65d0*uflui
+        long1f = vate(3)
+        long2f = vate(4)
+        uc = vare(4)*uflui
+        ut = vare(2)*uflui
     else if (vate(1) .eq. 'SPEC_CORR_CONV_3') then
         fonct = vate(2)
         goto 10
@@ -231,131 +233,140 @@ subroutine sfifj(nomres)
         vecz(1) = vecx(1+1)*vecy(1+2)-vecy(1+1)*vecx(1+2)
         vecz(1+1) = vecx(1+2)*vecy(1)-vecy(1+2)*vecx(1)
         vecz(1+2) = vecx(1)*vecy(1+1)-vecy(1)*vecx(1+1)
-        do in = 1, 3
+        do 2 in = 1, 3
             dir(1, in) = vecx(in)
             dir(2, in) = vecy(in)
             dir(3, in) = vecz(in)
-        end do
-    else if (method(1:7) .eq. 'AU_YANG') then
-        yang = .true.
-        call getvr8(' ', 'VECT_X', nbval=0, nbret=nvecx)
-        nvecx = -nvecx
-        if (nvecx .gt. 0) then
-            call getvr8(' ', 'VECT_X', nbval=nvecx, vect=dir(1, 1), nbret=nbid)
-        end if
-        call getvr8(' ', 'ORIG_AXE', nbval=0, nbret=nveco)
-        nveco = -nveco
-        if (nveco .gt. 0) then
-            call getvr8(' ', 'ORIG_AXE', nbval=nveco, vect=dir(1, 2), nbret=nbid)
-        end if
-        if (nvecx .lt. 0 .or. nveco .lt. 0) then
-            call utmess('F', 'MODELISA7_3')
-        end if
-    end if
+2           continue
+            else if (method(1:7) .eq. 'AU_YANG') then
+            yang = .true.
+            call getvr8(' ', 'VECT_X', nbval=0, nbret=nvecx)
+            nvecx = -nvecx
+            if (nvecx .gt. 0) then
+                call getvr8(' ', 'VECT_X', nbval=nvecx, vect=dir(1, 1), nbret=nbid)
+            end if
+            call getvr8(' ', 'ORIG_AXE', nbval=0, nbret=nveco)
+            nveco = -nveco
+            if (nveco .gt. 0) then
+                call getvr8(' ', 'ORIG_AXE', nbval=nveco, vect=dir(1, 2), nbret=nbid)
+            end if
+            if (nvecx .lt. 0 .or. nveco .lt. 0) then
+                call utmess('F', 'MODELISA7_3')
+            end if
+            end if
 !
 ! VALEURS NON DEPENDANTES DE LA FREQUENCE
 !
-10  continue
-    if (vate(1) .eq. 'SPEC_CORR_CONV_3') then
-        call accep2(base(1:8), nbm, pg, phi, sphi)
-    else
-        call accep1(base(1:8), ligrmo, nbm, dir, yang)
-    end if
+10          continue
+            if (vate(1) .eq. 'SPEC_CORR_CONV_3') then
+                call accep2(base(1:8), nbm, pg, phi, sphi)
+            else
+                call accep1(base(1:8), ligrmo, nbm, dir, yang)
+            end if
 !
 !
 ! CAS SPEC_CORR_CONV_1 ET 2
-    mxval = nbm*(nbm+1)/2
-    chnumi = nomres//'.NUMI'
-    call wkvect(chnumi, 'G V I', mxval, lnumi)
-    chnumj = nomres//'.NUMJ'
-    call wkvect(chnumj, 'G V I', mxval, lnumj)
-    chvale = nomres//'.VALE'
-    call jecrec(chvale, 'G V R', 'NU', 'DISPERSE', 'VARIABLE', &
-                mxval)
-    chfreq = nomres//'.DISC'
-    call wkvect(chfreq, 'G V R', nbpoin, lfreq)
+            mxval = nbm*(nbm+1)/2
+            chnumi = nomres//'.NUMI'
+            call wkvect(chnumi, 'G V I', mxval, lnumi)
+            chnumj = nomres//'.NUMJ'
+            call wkvect(chnumj, 'G V I', mxval, lnumj)
+            chvale = nomres//'.VALE'
+            call jecrec(chvale, 'G V R', 'NU', 'DISPERSE', 'VARIABLE', &
+                        mxval)
+            chfreq = nomres//'.DISC'
+            call wkvect(chfreq, 'G V R', nbpoin, lfreq)
 !
-    do iff = 0, nbpoin-1
-        f = finit+iff*df
-        zr(lfreq+iff) = f
-    end do
+            do 310 iff = 0, nbpoin-1
+                f = finit+iff*df
+                zr(lfreq+iff) = f
+310         end do
 !
 !  POUR LE CAS SPEC_CORR_CONV_3
-    if (vate(1) .eq. 'SPEC_CORR_CONV_3') then
+            if (vate(1) .eq. 'SPEC_CORR_CONV_3') then
 ! TABLE CONTENANT LES FONCTIONS DE FORME
-        is = vate(2)
-        do iff = 0, nbpoin-1
-            f = finit+iff*df
-            zr(lfreq+iff) = f
-            call evalis(is, pg, phi, sphi, f, &
-                        iff, nomres)
-        end do
-    else
-        ij = 0
-        do im2 = 1, nbm
+                is = vate(2)
+                do 320 iff = 0, nbpoin-1
+                    f = finit+iff*df
+                    zr(lfreq+iff) = f
+                    call evalis(is, pg, phi, sphi, f, &
+                                iff, nomres)
+320                 continue
+                    else
+                    ij = 0
+                    do 220 im2 = 1, nbm
 !
-            do im1 = im2, nbm
-                ij = ij+1
+                        do 210 im1 = im2, nbm
+                            ij = ij+1
 !
-                zi(lnumi-1+ij) = im1
-                zi(lnumj-1+ij) = im2
+                            zi(lnumi-1+ij) = im1
+                            zi(lnumj-1+ij) = im2
 !
-                call jecroc(jexnum(chvale, ij))
-                if (im1 .eq. im2) then
-                    nbabs = nbpoin
-                else
-                    nbabs = 2*nbpoin
-                end if
+                            call jecroc(jexnum(chvale, ij))
+                            if (im1 .eq. im2) then
+                                nbabs = nbpoin
+                            else
+                                nbabs = 2*nbpoin
+                            end if
 !
-                call jeecra(jexnum(chvale, ij), 'LONMAX', nbabs)
-                call jeecra(jexnum(chvale, ij), 'LONUTI', nbabs)
-                call jeveuo(jexnum(chvale, ij), 'E', lvale)
+                            call jeecra(jexnum(chvale, ij), 'LONMAX', nbabs)
+                            call jeecra(jexnum(chvale, ij), 'LONUTI', nbabs)
+                            call jeveuo(jexnum(chvale, ij), 'E', lvale)
 !
 ! BOUCLE SUR LES FREQUENCES ET REMPLISSAGE DU .VALE
 ! IE VALEURS DES INTERSPECTRS
 !
-                ier = 0
-                do iff = 0, nbpoin-1
-                    f = finit+iff*df
-                    if (f .gt. fcoup) then
-                        prs = 0.d0
-                    else if (vate(1) .eq. 'SPEC_CORR_CONV_2') then
-                        puls = deuxpi*f
-                        call fointe('F', fonct, 1, ['PULS'], [puls], &
-                                    prs, ier)
-                        call accept(f, nbm, method, im2, im1, &
-                                    uflui, jc, dir, uc, ut, &
-                                    long1, long2)
-                    else
-                        prs = dspprs(kste, uflui, dhyd, rho, f, fcoup_red)
-                        call accept(f, nbm, method, im2, im1, &
-                                    uflui, jc, dir, uc, ut, &
-                                    long1, long2)
-                    end if
-                    if (im1 .eq. im2) then
-                        zr(lvale+iff) = prs*jc
-                    else
-                        zr(lvale+2*iff) = prs*jc
-                        zr(lvale+2*iff+1) = 0.d0
-                    end if
-                end do
+                            ier = 0
+                            do 201 iff = 0, nbpoin-1
+                                f = finit+iff*df
+                                if (f .gt. fcoup) then
+                                    prs = 0.d0
+                                else if (vate(1) .eq. 'SPEC_CORR_CONV_2') then
+                                    puls = deuxpi*f
+                                    call fointe('F', fonct, 1, ['PULS'], [puls], &
+                                                prs, ier)
+
+! APPELS AUX LONGUEURS DE CORRELATION
+                                    call fointe('F', long1f, 1, ['PULS'], [puls], &
+                                                long1, ier)
+                                    call fointe('F', long2f, 1, ['PULS'], [puls], &
+                                                long2, ier)
+
+! APPEL A LA FONCTION DE CALCUL D ACCEPTANCE
+                                    call accept(f, nbm, method, im2, im1, &
+                                                jc, dir, uc, ut, &
+                                                long1, long2, val_spec)
+                                else
+                                    prs = dspprs(kste, uflui, dhyd, rho, f, fcoup_red)
+                                    call accept(f, nbm, method, im2, im1, &
+                                                jc, dir, uc, ut, &
+                                                long1, long2, val_spec)
+
+                                end if
+                                if (im1 .eq. im2) then
+                                    zr(lvale+iff) = prs*jc
+                                else
+                                    zr(lvale+2*iff) = prs*jc
+                                    zr(lvale+2*iff+1) = 0.d0
+                                end if
+201                             continue
 !
-            end do
+210                             continue
 !
-        end do
+220                         end do
 !
-    end if
+                            end if
 !
-    AS_DEALLOCATE(vr=vecx)
-    AS_DEALLOCATE(vr=vecy)
-    AS_DEALLOCATE(vr=vecz)
+                            AS_DEALLOCATE(vr=vecx)
+                            AS_DEALLOCATE(vr=vecy)
+                            AS_DEALLOCATE(vr=vecz)
 !
-    if (vate(1) .eq. 'SPEC_CORR_CONV_3') then
-    else
-        call jedetc('V', '&&329', 1)
-        call jedetc('V', '&&V.M', 1)
-        call jedetc('V', '&&GROTAB.TAB', 1)
-    end if
+                            if (vate(1) .eq. 'SPEC_CORR_CONV_3') then
+                            else
+                                call jedetc('V', '&&329', 1)
+                                call jedetc('V', '&&V.M', 1)
+                                call jedetc('V', '&&GROTAB.TAB', 1)
+                            end if
 !
-    call jedema()
-end subroutine
+                            call jedema()
+                            end subroutine
