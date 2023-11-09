@@ -93,6 +93,18 @@ class MedVector {
 
     MedVector() : _curVal( ElementValue( _vector ) ) {};
 
+    /** @brief restricted constructor (Set) and method (Get) to support pickling */
+    MedVector( const py::tuple &tup ) : MedVector() {
+        _vector = tup[0].cast< std::vector< double > >();
+        _cumSize = tup[1].cast< std::vector< int > >();
+        _cmps = tup[2].cast< std::vector< int > >();
+        _cmpNb = tup[3].cast< int >();
+        _cmpName = tup[4].cast< std::vector< std::string > >();
+    };
+    py::tuple _getState() const {
+        return py::make_tuple( _vector, _cumSize, _cmps, _cmpNb, _cmpName );
+    };
+
     /** @brief end vector definition -> vector allocation */
     void endDefinition() {
         _cumSize[0] = 0;
@@ -121,11 +133,11 @@ class MedVector {
      * @brief get values (WARNING values are owned by MedVector: no copy)
      * @return numpy array
      */
-    py::object getValues() {
-        npy_intp dims[1] = {(long int)_vector.size()};
+    py::object getValues() const {
+        npy_intp dims[1] = { (long int)_vector.size() };
 
         PyObject *values =
-            PyArray_SimpleNewFromData( 1, dims, npy_type< double >::value, &_vector[0] );
+            PyArray_SimpleNewFromData( 1, dims, npy_type< double >::value, (void *)&_vector[0] );
         AS_ASSERT( values != NULL );
 
         PyArray_CLEARFLAGS( (PyArrayObject *)values, NPY_ARRAY_WRITEABLE );

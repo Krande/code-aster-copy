@@ -78,7 +78,6 @@ from .listofloads_ext import ListOfLoads
 from .material_ext import Material
 from .materialfield_ext import MaterialField
 from .mechanicalload_ext import MechanicalLoadReal, MechanicalLoadFunction, MechanicalLoadComplex
-from .medvector_ext import MedVector
 from .mesh_ext import Mesh
 from .meshcoordinatesfield_ext import MeshCoordinatesField
 from .mgis_behaviour_ext import MGISBehaviour

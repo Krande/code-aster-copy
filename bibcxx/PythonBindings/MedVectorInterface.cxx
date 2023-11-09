@@ -27,14 +27,13 @@
 
 #include "aster_pybind.h"
 
-// Not DataStructures
-// aslint: disable=C3006
-
 #ifdef ASTER_HAVE_MED
 void exportMedVectorToPython( py::module_ &mod ) {
 
     py::class_< MedVector, MedVectorPtr >( mod, "MedVector" )
         .def( py::init( &initFactoryPtr< MedVector > ) )
+        .def( py::init( &initFactoryPtr< MedVector, int > ) )
+        .def( define_pickling< MedVector >() )
 
         .def( "getComponentName", &MedVector::getComponentName, R"(
 Get component name

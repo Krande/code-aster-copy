@@ -22,13 +22,10 @@ from code_aster.Utilities.MedUtils.MedMeshAndFieldsSplitter import splitMeshAndF
 
 from code_aster.Commands import *
 
-code_aster.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
+# code_aster.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"))
 
 test = code_aster.TestCase()
-
-test.assertTrue(True)
-
-import os
 
 filename = "zzzz155d.med"
 
@@ -88,5 +85,12 @@ for idx, medFieldName in enumerate(fieldToRead):
         # results[idx].setTime(curTime, index)
         results.setField(fieldToAdd, asterFieldName, index)
         results.setTime(curTime, index)
+
+values = curField.getValues()
+print(values)
+test.assertEqual(len(values), 81)
+test.assertAlmostEqual(values[-3], 0.0)
+test.assertAlmostEqual(values[-2], -0.1153846)
+test.assertAlmostEqual(values[-1], 0.5)
 
 FIN(PROC0="NON")

@@ -19,8 +19,11 @@
 
 POURSUITE(CODE="OUI")
 
-print("coucou")
-
-# MecaMail2021.printMedFile("toto.med")
+values = curField.getValues()
+print(values)
+test.assertEqual(len(values), 81)
+test.assertAlmostEqual(values[-3], 0.0)
+test.assertAlmostEqual(values[-2], -0.1153846)
+test.assertAlmostEqual(values[-1], 0.5)
 
 FIN()
