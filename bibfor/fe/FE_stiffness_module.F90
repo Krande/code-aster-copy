@@ -20,6 +20,7 @@ module FE_stiffness_module
 !
     use FE_basis_module
     use FE_quadrature_module
+    use FE_algebra_module
     use HHO_utils_module, only: hhoCopySymPartMat
 !
     implicit none
@@ -239,12 +240,12 @@ contains
         stress_w = weight*stress
         select case (FEBasis%ndim)
         case (2)
-            call dgemv('T', 4, FEBasis%size, 1.d0, def(1, 1, 1), 6, stress_w, 1, 1.d0, vec(1), 2)
-            call dgemv('T', 4, FEBasis%size, 1.d0, def(1, 1, 2), 6, stress_w, 1, 1.d0, vec(2), 2)
+            call dgemv_T_4xn(def(1, 1, 1), FEBasis%size, stress_w, vec(1), 2)
+            call dgemv_T_4xn(def(1, 1, 2), FEBasis%size, stress_w, vec(2), 2)
         case (3)
-            call dgemv('T', 6, FEBasis%size, 1.d0, def(1, 1, 1), 6, stress_w, 1, 1.d0, vec(1), 3)
-            call dgemv('T', 6, FEBasis%size, 1.d0, def(1, 1, 2), 6, stress_w, 1, 1.d0, vec(2), 3)
-            call dgemv('T', 6, FEBasis%size, 1.d0, def(1, 1, 3), 6, stress_w, 1, 1.d0, vec(3), 3)
+            call dgemv_T_6xn(def(1, 1, 1), FEBasis%size, stress_w, vec(1), 3)
+            call dgemv_T_6xn(def(1, 1, 2), FEBasis%size, stress_w, vec(2), 3)
+            call dgemv_T_6xn(def(1, 1, 3), FEBasis%size, stress_w, vec(3), 3)
         case default
             ASSERT(ASTER_FALSE)
         end select
@@ -288,10 +289,9 @@ contains
                         sig_w = 0.d0
                         call dgemv('T', 4, 4, weight, dsidep, 6, def(1, i_n, i_d), &
                                    1, 0.0, sig_w, 1)
-                        call dgemv('T', 4, i_n-1, 1.d0, def(1, 1, 1), 6, sig_w, 1, &
-                                   1.d0, mat(kkd+1), 2)
-                        call dgemv('T', 4, i_n-1, 1.d0, def(1, 1, 2), 6, sig_w, 1, &
-                                   1.d0, mat(kkd+2), 2)
+                        call dgemv_T_4xn(def(1, 1, 1), i_n-1, sig_w, mat(kkd+1), 2)
+                        call dgemv_T_4xn(def(1, 1, 2), i_n-1, sig_w, mat(kkd+2), 2)
+
                         ! j_n = i_n
                         kkd = kkd+2*(i_n-1)
                         do j_d = 1, i_d
@@ -307,10 +307,8 @@ contains
                         kkd = 2*FEBasis%size*(2*(i_n-1)+i_d-1)
                         sig_w = 0.d0
                         call dgemv('T', 4, 4, weight, dsidep, 6, def(1, i_n, i_d), 1, 0.0, sig_w, 1)
-                        call dgemv('T', 4, FEBasis%size, 1.d0, def(1, 1, 1), 6, sig_w, 1, &
-                                   1.d0, mat(kkd+1), 2)
-                        call dgemv('T', 4, FEBasis%size, 1.d0, def(1, 1, 2), 6, sig_w, 1, &
-                                   1.d0, mat(kkd+2), 2)
+                        call dgemv_T_4xn(def(1, 1, 1), FEBasis%size, sig_w, mat(kkd+1), 2)
+                        call dgemv_T_4xn(def(1, 1, 2), FEBasis%size, sig_w, mat(kkd+2), 2)
                     end do
                 end do
             end if
@@ -322,12 +320,10 @@ contains
                         sig_w = 0.d0
                         call dgemv('T', 6, 6, weight, dsidep, 6, def(1, i_n, i_d), &
                                    1, 0.0, sig_w, 1)
-                        call dgemv('T', 6, i_n-1, 1.d0, def(1, 1, 1), 6, sig_w, 1, &
-                                   1.d0, mat(kkd+1), 3)
-                        call dgemv('T', 6, i_n-1, 1.d0, def(1, 1, 2), 6, sig_w, 1, &
-                                   1.d0, mat(kkd+2), 3)
-                        call dgemv('T', 6, i_n-1, 1.d0, def(1, 1, 3), 6, sig_w, 1, &
-                                   1.d0, mat(kkd+3), 3)
+                        call dgemv_T_6xn(def(1, 1, 1), i_n-1, sig_w, mat(kkd+1), 3)
+                        call dgemv_T_6xn(def(1, 1, 2), i_n-1, sig_w, mat(kkd+2), 3)
+                        call dgemv_T_6xn(def(1, 1, 3), i_n-1, sig_w, mat(kkd+3), 3)
+
                         ! j_n = i_n
                         kkd = kkd+3*(i_n-1)
                         do j_d = 1, i_d
@@ -344,12 +340,9 @@ contains
                         kkd = 3*FEBasis%size*(3*(i_n-1)+i_d-1)
                         sig_w = 0.d0
                         call dgemv('T', 6, 6, weight, dsidep, 6, def(1, i_n, i_d), 1, 0.0, sig_w, 1)
-                        call dgemv('T', 6, FEBasis%size, 1.d0, def(1, 1, 1), 6, sig_w, 1, &
-                                   1.d0, mat(kkd+1), 3)
-                        call dgemv('T', 6, FEBasis%size, 1.d0, def(1, 1, 2), 6, sig_w, 1, &
-                                   1.d0, mat(kkd+2), 3)
-                        call dgemv('T', 6, FEBasis%size, 1.d0, def(1, 1, 3), 6, sig_w, 1, &
-                                   1.d0, mat(kkd+3), 3)
+                        call dgemv_T_6xn(def(1, 1, 1), FEBasis%size, sig_w, mat(kkd+1), 3)
+                        call dgemv_T_6xn(def(1, 1, 2), FEBasis%size, sig_w, mat(kkd+2), 3)
+                        call dgemv_T_6xn(def(1, 1, 3), FEBasis%size, sig_w, mat(kkd+3), 3)
                     end do
                 end do
             end if
@@ -384,7 +377,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: i_n, i_d, kkd
+        integer :: i_n, kkd
         real(kind=8) :: stress_w(6)
 !
         stress_w = weight*stress
@@ -393,37 +386,37 @@ contains
         case (2)
             if (l_matsym) then
                 do i_n = 1, FEBasis%size
-                    do i_d = 1, 2
-                        kkd = (2*(i_n-1)+i_d-1)*(2*(i_n-1)+i_d)/2
-                        call dgemv('T', 4, i_n, 1.d0, pff(1, 1, i_n), 6, stress_w, 1, &
-                                   1.d0, mat(kkd+i_d), 2)
-                    end do
+                    kkd = (2*(i_n-1)+0)*(2*(i_n-1)+1)/2
+                    call dgemv_T_4xn(pff(1, 1, i_n), i_n, stress_w, mat(kkd+1), 2)
+                    kkd = (2*(i_n-1)+1)*(2*(i_n-1)+2)/2
+                    call dgemv_T_4xn(pff(1, 1, i_n), i_n, stress_w, mat(kkd+2), 2)
                 end do
             else
                 do i_n = 1, FEBasis%size
-                    do i_d = 1, 2
-                        kkd = 2*FEBasis%size*(2*(i_n-1)+i_d-1)
-                        call dgemv('T', 4, FEBasis%size, 1.d0, pff(1, 1, i_n), 6, stress_w, 1, &
-                                   1.d0, mat(kkd+i_d), 2)
-                    end do
+                    kkd = 2*FEBasis%size*(2*(i_n-1)+0)
+                    call dgemv_T_4xn(pff(1, 1, i_n), FEBasis%size, stress_w, mat(kkd+1), 2)
+                    kkd = 2*FEBasis%size*(2*(i_n-1)+1)
+                    call dgemv_T_4xn(pff(1, 1, i_n), FEBasis%size, stress_w, mat(kkd+2), 2)
                 end do
             end if
         case (3)
             if (l_matsym) then
                 do i_n = 1, FEBasis%size
-                    do i_d = 1, 3
-                        kkd = (3*(i_n-1)+i_d-1)*(3*(i_n-1)+i_d)/2
-                        call dgemv('T', 6, i_n, 1.d0, pff(1, 1, i_n), 6, stress_w, 1, &
-                                   1.d0, mat(kkd+i_d), 3)
-                    end do
+                    kkd = (3*(i_n-1)+0)*(3*(i_n-1)+1)/2
+                    call dgemv_T_6xn(pff(1, 1, i_n), i_n, stress_w, mat(kkd+1), 3)
+                    kkd = (3*(i_n-1)+1)*(3*(i_n-1)+2)/2
+                    call dgemv_T_6xn(pff(1, 1, i_n), i_n, stress_w, mat(kkd+2), 3)
+                    kkd = (3*(i_n-1)+2)*(3*(i_n-1)+3)/2
+                    call dgemv_T_6xn(pff(1, 1, i_n), i_n, stress_w, mat(kkd+3), 3)
                 end do
             else
                 do i_n = 1, FEBasis%size
-                    do i_d = 1, 3
-                        kkd = 3*FEBasis%size*(3*(i_n-1)+i_d-1)
-                        call dgemv('T', 6, FEBasis%size, 1.d0, pff(1, 1, i_n), 6, stress_w, 1, &
-                                   1.d0, mat(kkd+i_d), 3)
-                    end do
+                    kkd = 3*FEBasis%size*(3*(i_n-1)+0)
+                    call dgemv_T_6xn(pff(1, 1, i_n), FEBasis%size, stress_w, mat(kkd+1), 3)
+                    kkd = 3*FEBasis%size*(3*(i_n-1)+1)
+                    call dgemv_T_6xn(pff(1, 1, i_n), FEBasis%size, stress_w, mat(kkd+2), 3)
+                    kkd = 3*FEBasis%size*(3*(i_n-1)+2)
+                    call dgemv_T_6xn(pff(1, 1, i_n), FEBasis%size, stress_w, mat(kkd+3), 3)
                 end do
             end if
         case default
