@@ -32,8 +32,8 @@ module FE_algebra_module
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    public :: dgemv_T_4xn, dgemv_T_6xn, dgemv_T_4x4, dgemv_T_6x6
-!    private  ::
+    public :: dgemv_T_2xn, dgemv_T_3xn, dgemv_T_4xn, dgemv_T_6xn
+    public :: dgemv_2x2, dgemv_3x3, dgemv_T_4x4, dgemv_T_6x6
 !
 contains
 !
@@ -55,7 +55,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
 !   Encapsulation of dgemv product with given size
-!   y = alpha * mat*x
+!   y = alpha * mat^T*x
 !
 !
 ! --------------------------------------------------------------------------------------------------
@@ -96,7 +96,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
 !   Encapsulation of dgemv product with given size
-!   y = alpha * mat*x
+!   y = alpha * mat^T*x
 !
 !
 ! --------------------------------------------------------------------------------------------------
@@ -118,6 +118,69 @@ contains
 !
 !===================================================================================================
 !
+    subroutine dgemv_3x3(mat, x, y, alpha)
+!
+        implicit none
+!
+        real(kind=8), intent(in)     :: mat(3, *)
+        real(kind=8), intent(in)     :: x(*), alpha
+        real(kind=8), intent(out)    :: y(*)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Encapsulation of dgemv product with given size
+!   y = alpha * mat*x
+!
+!
+! --------------------------------------------------------------------------------------------------
+!
+!
+#if FE_USE_BLAS
+        call dgemv('N', 3, 3, alpha, mat, 3, x, 1, 0.0, y, 1)
+#else
+!
+        y(1) = alpha*(mat(1, 1)*x(1)+mat(1, 2)*x(2)+mat(1, 3)*x(3))
+        y(2) = alpha*(mat(2, 1)*x(1)+mat(2, 2)*x(2)+mat(2, 3)*x(3))
+        y(3) = alpha*(mat(3, 1)*x(1)+mat(3, 2)*x(2)+mat(3, 3)*x(3))
+#endif
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine dgemv_2x2(mat, x, y, alpha)
+!
+        implicit none
+!
+        real(kind=8), intent(in)     :: mat(3, *)
+        real(kind=8), intent(in)     :: x(*), alpha
+        real(kind=8), intent(out)    :: y(*)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Encapsulation of dgemv product with given size
+!   y = alpha * mat*x
+!
+!
+! --------------------------------------------------------------------------------------------------
+!
+!
+#if FE_USE_BLAS
+        call dgemv('N', 2, 2, alpha, mat, 3, x, 1, 0.0, y, 1)
+#else
+!
+        y(1) = alpha*(mat(1, 1)*x(1)+mat(1, 2)*x(2))
+        y(2) = alpha*(mat(2, 1)*x(1)+mat(2, 2)*x(2))
+#endif
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
     subroutine dgemv_T_6xn(mat, ncol, x, y, offset)
 !
         implicit none
@@ -130,7 +193,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
 !   Encapsulation of dgemv product with given size
-!   y += mat * x
+!   y += mat^T * x
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -243,7 +306,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
 !   Encapsulation of dgemv product with given size
-!   y += mat * x
+!   y += mat^T * x
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -319,7 +382,146 @@ contains
                 ind = ind+offset
             end do
         end select
+#endif
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine dgemv_T_3xn(mat, ncol, x, y)
+!
+        implicit none
+!
+        real(kind=8), intent(in)     :: mat(3, *)
+        real(kind=8), intent(in)     :: x(*)
+        real(kind=8), intent(inout)  :: y(*)
+        integer, intent(in)          :: ncol
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Encapsulation of dgemv product with given size
+!   y += mat^T * x
+!
+! --------------------------------------------------------------------------------------------------
+!
+!
+#if FE_USE_BLAS
+        call dgemv('T', 3, ncol, 1.d0, mat, 3, x, 1, 1.d0, y)
+#else
+        integer :: icol
 
+        select case (ncol)
+        case (3)
+            do icol = 1, 3
+                y(icol) = y(icol)+mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)
+            end do
+        case (4)
+            do icol = 1, 4
+                y(icol) = y(icol)+mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)
+            end do
+        case (5)
+            do icol = 1, 5
+                y(icol) = y(icol)+mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)
+            end do
+        case (6)
+            do icol = 1, 6
+                y(icol) = y(icol)+mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)
+            end do
+        case (7)
+            do icol = 1, 7
+                y(icol) = y(icol)+mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)
+            end do
+        case (8)
+            do icol = 1, 8
+                y(icol) = y(icol)+mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)
+            end do
+        case (9)
+            do icol = 1, 9
+                y(icol) = y(icol)+mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)
+            end do
+        case (19)
+            do icol = 1, 19
+                y(icol) = y(icol)+mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)
+            end do
+        case (26)
+            do icol = 1, 26
+                y(icol) = y(icol)+mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)
+            end do
+        case default
+            do icol = 1, ncol
+                y(icol) = y(icol)+mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)
+            end do
+        end select
+#endif
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine dgemv_T_2xn(mat, ncol, x, y)
+!
+        implicit none
+!
+        real(kind=8), intent(in)     :: mat(3, *)
+        real(kind=8), intent(in)     :: x(*)
+        real(kind=8), intent(inout)  :: y(*)
+        integer, intent(in)          :: ncol
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Encapsulation of dgemv product with given size
+!   y += mat^T * x
+!
+! --------------------------------------------------------------------------------------------------
+!
+!
+#if FE_USE_BLAS
+        call dgemv('T', 2, ncol, 1.d0, mat, 3, x, 1, 1.d0, y)
+#else
+        integer :: icol
+
+        select case (ncol)
+        case (2)
+            do icol = 1, 2
+                y(icol) = y(icol)+mat(1, icol)*x(1)+mat(2, icol)*x(2)
+            end do
+        case (3)
+            do icol = 1, 3
+                y(icol) = y(icol)+mat(1, icol)*x(1)+mat(2, icol)*x(2)
+            end do
+        case (4)
+            do icol = 1, 4
+                y(icol) = y(icol)+mat(1, icol)*x(1)+mat(2, icol)*x(2)
+            end do
+        case (5)
+            do icol = 1, 5
+                y(icol) = y(icol)+mat(1, icol)*x(1)+mat(2, icol)*x(2)
+            end do
+        case (6)
+            do icol = 1, 6
+                y(icol) = y(icol)+mat(1, icol)*x(1)+mat(2, icol)*x(2)
+            end do
+        case (7)
+            do icol = 1, 7
+                y(icol) = y(icol)+mat(1, icol)*x(1)+mat(2, icol)*x(2)
+            end do
+        case (8)
+            do icol = 1, 8
+                y(icol) = y(icol)+mat(1, icol)*x(1)+mat(2, icol)*x(2)
+            end do
+        case (9)
+            do icol = 1, 9
+                y(icol) = y(icol)+mat(1, icol)*x(1)+mat(2, icol)*x(2)
+            end do
+        case default
+            do icol = 1, ncol
+                y(icol) = y(icol)+mat(1, icol)*x(1)+mat(2, icol)*x(2)
+            end do
+        end select
 #endif
 !
     end subroutine

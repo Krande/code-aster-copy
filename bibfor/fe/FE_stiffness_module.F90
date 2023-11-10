@@ -28,7 +28,6 @@ module FE_stiffness_module
     private
 #include "asterf_types.h"
 #include "FE_module.h"
-#include "blas/dgemv.h"
 #include "asterfort/assert.h"
 #include "jeveux.h"
 !
@@ -60,11 +59,11 @@ contains
         real(kind=8), intent(inout)         :: vec(MAX_BS)
         real(kind=8), intent(in)            :: ValuesQP(3)
 ! --------------------------------------------------------------------------------------------------
-!   HHO
+!   FE
 !
 !   Compute the rigidity vector
-!   In hhoQuad      : Quadrature
-!   In hhoBasis     : tBasis function
+!   In FEQuad      : Quadrature
+!   In FEBasis     : tBasis function
 !   In ValuesQP     : Values of scalar function f at the quadrature points
 !   Out rhs         : (f, grad v)
 !
@@ -72,8 +71,16 @@ contains
 !
 !
 !
-        call dgemv('T', FEBasis%ndim, FEBasis%size, weight, BGSEval, 3, &
-                   ValuesQP, 1, 1.d0, vec, 1)
+        real(kind=8) :: val_w(3)
+!
+        val_w = weight*ValuesQP
+        if (FEBasis%ndim == 3) then
+            call dgemv_T_3xn(BGSEval, FEBasis%size, val_w, vec)
+        elseif (FEBasis%ndim == 2) then
+            call dgemv_T_2xn(BGSEval, FEBasis%size, val_w, vec)
+        else
+            ASSERT(ASTER_FALSE)
+        end if
 !
     end subroutine
 !
@@ -94,8 +101,8 @@ contains
 !
 !
 !   Compute the rigidity vector
-!   In hhoQuad      : Quadrature
-!   In hhoBasis     : tBasis function
+!   In FEQuad      : Quadrature
+!   In FEBasis     : tBasis function
 !   In ValuesQP     : Values of scalar function f at the quadrature points
 !   Out rhs         : (f, grad v)
 !
@@ -129,14 +136,14 @@ contains
         type(FE_Basis), intent(in)          :: FEBasis
         real(kind=8), intent(in), dimension(3, MAX_BS) :: BGSEval
         real(kind=8), intent(in)            :: weight
-        real(kind=8), intent(inout)           :: mat(MAX_BS, MAX_BS)
+        real(kind=8), intent(inout)         :: mat(MAX_BS, MAX_BS)
         real(kind=8), intent(in)            :: ValueQP(3, 3)
 ! --------------------------------------------------------------------------------------------------
 !
 !
 !   Compute the rigidity matrix
-!   In hhoQuad      : Quadrature
-!   In hhoBasis     : tBasis function
+!   In FEQuad      : Quadrature
+!   In FEBasis     : tBasis function
 !   In ValuesQP     : Values of scalar function f at the quadrature points
 !   Out rhs         : (f, grad v)
 !
@@ -148,19 +155,14 @@ contains
 !
         do j = 1, FEBasis%size
             if (FEBasis%ndim == 3) then
-                Kgradj(1) = ValueQP(1, 1)*BGSEval(1, j)+ValueQP(1, 2)*BGSEval(2, j)+ &
-                            ValueQP(1, 3)*BGSEval(3, j)
-                Kgradj(2) = ValueQP(2, 1)*BGSEval(1, j)+ValueQP(2, 2)*BGSEval(2, j)+ &
-                            ValueQP(2, 3)*BGSEval(3, j)
-                Kgradj(3) = ValueQP(3, 1)*BGSEval(1, j)+ValueQP(3, 2)*BGSEval(2, j)+ &
-                            ValueQP(3, 3)*BGSEval(3, j)
+                call dgemv_3x3(ValueQP, BGSEval(1, j), Kgradj, weight)
+                call dgemv_T_3xn(BGSEval, j, Kgradj, mat(1, j))
             elseif (FEBasis%ndim == 2) then
-                Kgradj(1) = ValueQP(1, 1)*BGSEval(1, j)+ValueQP(1, 2)*BGSEval(2, j)
-                Kgradj(2) = ValueQP(2, 1)*BGSEval(1, j)+ValueQP(2, 2)*BGSEval(2, j)
+                call dgemv_2x2(ValueQP, BGSEval(1, j), Kgradj, weight)
+                call dgemv_T_2xn(BGSEval, j, Kgradj, mat(1, j))
             else
-                Kgradj(1) = ValueQP(1, 1)*BGSEval(1, j)
+                ASSERT(ASTER_FALSE)
             end if
-            call dgemv('T', FEBasis%ndim, j, weight, BGSEval, 3, Kgradj, 1, 1.d0, mat(:, j), 1)
         end do
 !
     end subroutine
@@ -182,8 +184,8 @@ contains
 !
 !
 !   Compute the rigidity matrix
-!   In hhoQuad      : Quadrature
-!   In hhoBasis     : tBasis function
+!   In FEQuad      : Quadrature
+!   In FEBasis     : tBasis function
 !   In ValuesQP     : Values of scalar function f at the quadrature points
 !   Out rhs         : (f, grad v)
 !
@@ -225,11 +227,11 @@ contains
         real(kind=8), intent(inout)         :: vec(*)
         real(kind=8), intent(in)            :: stress(6)
 ! --------------------------------------------------------------------------------------------------
-!   HHO
+!   FE
 !
 !   Compute the rigidity vector (with symetric stess)
-!   In hhoQuad      : Quadrature
-!   In hhoBasis     : tBasis function
+!   In FEQuad      : Quadrature
+!   In FEBasis     : tBasis function
 !   In ValuesQP     : Values of scalar function f at the quadrature points
 !   Out rhs         : (f, grad v)
 !
@@ -267,11 +269,11 @@ contains
         real(kind=8), intent(inout)         :: mat(*)
         real(kind=8), intent(in)            :: dsidep(6, 6)
 ! --------------------------------------------------------------------------------------------------
-!   HHO
+!   FE
 !
 !   Compute the rigidity vector (with symetric stess)
-!   In hhoQuad      : Quadrature
-!   In hhoBasis     : tBasis function
+!   In FEQuad      : Quadrature
+!   In FEBasis     : tBasis function
 !   In ValuesQP     : Values of scalar function f at the quadrature points
 !   Out rhs         : (f, grad v)
 !
@@ -361,11 +363,11 @@ contains
         real(kind=8), intent(inout)         :: mat(*)
         real(kind=8), intent(in)            :: stress(6)
 ! --------------------------------------------------------------------------------------------------
-!   HHO
+!   FE
 !
 !   Compute the rigidity vector (with symetric stess)
-!   In hhoQuad      : Quadrature
-!   In hhoBasis     : tBasis function
+!   In FEQuad      : Quadrature
+!   In FEBasis     : tBasis function
 !   In ValuesQP     : Values of scalar function f at the quadrature points
 !   Out rhs         : (f, grad v)
 !
