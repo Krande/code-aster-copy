@@ -322,11 +322,11 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
         call nlget(sd_nl, _NB_DIS_ECRO_TRAC, iscal=nbdecr)
         if ((nbdvis+nbdecr) .gt. 0) then
             call dtmget(sd_dtm, _IND_ALOC, vi=allocs)
-            if (nbdvis .gt. 0) then
-                call mdidisvisc(sd_nl, nbnli, nomres, i_nbar+1, zr(allocs(2)))
+            if (nbdvis.gt.0) then
+                call mdidisvisc(sd_nl, nbnli, nomres)
             end if
-            if (nbdecr .gt. 0) then
-                call mdidisisot(sd_nl, nbnli, nomres, i_nbar+1, zr(allocs(2)))
+            if (nbdecr.gt.0) then
+                call mdidisisot(sd_nl, nbnli, nomres)
             end if
         end if
 

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,6 +19,9 @@
 subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dt, &
                   dtmax, dtmin, tinit, tfin, nbpas, &
                   ier, lisins)
+
+    use DynaGene_module
+
     implicit none
 #include "jeveux.h"
 #include "asterc/getres.h"
@@ -55,7 +58,7 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dt, &
 ! OUT : LISINS : LISTE DES INSTANTS POUR L'ARCHIVAGE
 ! ----------------------------------------------------------------------
     integer :: ic, i, j, iveri, ibid, iret
-    integer :: jbint, jvale, jvalr, jinst
+    integer :: jbint, jvale, jvalr
     integer :: n1, n2, n3, n4, n5, n6, nr, nt, nni
     integer :: nbgrpa, nbinst, nbinsr, numef, nbordr
     integer :: vali
@@ -67,13 +70,17 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dt, &
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: k, n7, nume, nbcomps, nbno
+    integer :: k, n7, nume, nbcomps, nbno, shift, i_bloc
     integer, pointer :: ordr(:) => null()
     real(kind=8), pointer :: lpas(:) => null()
 !
     real(kind=8), pointer :: dplmod(:) => null()
     real(kind=8), pointer :: dplmod1(:) => null()
     real(kind=8), pointer :: dplmod2(:) => null()
+
+    real(kind=8), pointer :: disc(:) => null()
+    type(DynaGene) :: dyna_gene
+
 !
 !-----------------------------------------------------------------------
     call getres(nomres, typres, nomcmd)
@@ -102,25 +109,30 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dt, &
 !     RECUPERATION de TINIT
     call getvid('ETAT_INIT', 'RESULTAT', iocc=1, scal=tran, nbret=nr)
     if (nr .ne. 0) then
+
+        call dyna_gene%init(tran)
+
         call getvis('ETAT_INIT', 'NUME_ORDRE', iocc=1, scal=nume, nbret=nni)
         if (nni .eq. 0) then
             call getvr8('ETAT_INIT', 'INST_INIT', iocc=1, scal=tinit, nbret=nt)
             if (nt .eq. 0) then
-                call jeveuo(tran//'           .DISC', 'L', jinst)
-                call jelira(tran//'           .DISC', 'LONUTI', nbinst)
-                tinit = zr(jinst+nbinst-1)
+                call dyna_gene%get_values(dyna_gene%disc, dyna_gene%n_bloc, length=nbinst, vr=disc)
+                tinit = disc(nbinst)
             end if
         else
-            call jeveuo(tran//'           .ORDR', 'L', vi=ordr)
-            call jelira(tran//'           .ORDR', 'LONUTI', nbordr)
+            call dyna_gene%get_values_by_ordr(dyna_gene%ordr, nume, shift, nbordr, vi=ordr)
             do i = 1, nbordr
                 if (ordr(i) .eq. nume) goto 101
             end do
             call utmess('F', 'ALGORITH3_36', sk=tran)
 101         continue
-            call jeveuo(tran//'           .DISC', 'L', jinst)
-            tinit = zr(jinst+i-1)
+            call dyna_gene%get_current_bloc(dyna_gene%ordr, i_bloc)
+            call dyna_gene%get_values(dyna_gene%disc, i_bloc, vr=disc)
+            tinit = disc(i)
         end if
+
+        call dyna_gene%free
+
     else
         call getvid('INCREMENT', 'LIST_INST', iocc=1, scal=li, nbret=nt)
         if (nt .ne. 0) then

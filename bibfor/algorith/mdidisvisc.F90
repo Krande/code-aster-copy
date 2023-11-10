@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,14 +16,14 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mdidisvisc(sd_nl_, nbnoli, nomres, nbsauv, temps)
+subroutine mdidisvisc(sd_nl_, nbnoli, nomres)
 !
+    use DynaGene_module
+
     implicit none
     character(len=*) :: sd_nl_
     integer          :: nbnoli
     character(len=8) :: nomres
-    integer          :: nbsauv
-    real(kind=8)     :: temps(*)
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
@@ -51,10 +51,13 @@ subroutine mdidisvisc(sd_nl_, nbnoli, nomres, nbsauv, temps)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ific, nbocc, iocc, iret, ii
-    integer :: nbvint, nbvdisc, it, indx, jvint
+    integer :: ific, nbocc, iocc, iret, ii, i_bloc, nbsauv, bloc_ini
+    integer :: nbvint, nbvdisc, it, indx
     integer :: vv, nltype_i, start, finish, jvindx, jdesc
     character(len=8) :: noeud1, noeud2, sd_nl
+    real(kind=8), pointer :: disc(:) => null()
+    real(kind=8), pointer :: vint(:) => null()
+    type(DynaGene) :: dyna_gene
 !
     call jemarq()
     sd_nl = sd_nl_
@@ -70,8 +73,8 @@ subroutine mdidisvisc(sd_nl_, nbnoli, nomres, nbsauv, temps)
     nbvint = zi(jdesc-1+4)
     if (nbvint .eq. 0) goto 999
 
-    call jeveuo(nomres//'        .NL.VINT', 'L', jvint)
     call jeveuo(nomres//'        .NL.VIND', 'L', jvindx)
+    call dyna_gene%init(nomres)
 !
     do iocc = 1, nbocc
         call getvis('IMPRESSION', 'UNITE_DIS_VISC', iocc=iocc, scal=ific, nbret=iret)
@@ -101,14 +104,30 @@ subroutine mdidisvisc(sd_nl_, nbnoli, nomres, nbsauv, temps)
             write (ific, 100) '#RESULTAT '//nomres
             write (ific, 101) '#DIS_VISC ', ii, ' '//noeud1//' '//noeud2
             write (ific, 102) 'INST', 'FORCE', 'DEPLVISC', 'DEPL', 'PUISS'
-            do it = 1, nbsauv
-                indx = jvint-1+(it-1)*nbvint+start
-                write (ific, 103) temps(it), (zr(indx+vv-1), vv=1, nbvdisc)
+
+            if (dyna_gene%n_bloc .eq. 0) then
+                bloc_ini = 0
+            else
+                bloc_ini = 1
+            end if
+            do i_bloc = bloc_ini, dyna_gene%n_bloc
+                call dyna_gene%get_values(dyna_gene%disc, i_bloc, length=nbsauv, vr=disc)
+                call dyna_gene%get_values(dyna_gene%vint, i_bloc, vr=vint)
+                if (i_bloc .ne. dyna_gene%n_bloc) then
+                    nbsauv = nbsauv-1
+                end if
+                do it = 1, nbsauv
+                    indx = (it-1)*nbvint+start
+                    write (ific, 103) disc(it), (vint(indx+vv-1), vv=1, nbvdisc)
+                end do
             end do
         end do
 !       On ferme le fichier pour être sûr que le flush soit fait
         call ulopen(-ific, ' ', ' ', ' ', ' ')
     end do
+
+    call dyna_gene%free
+
 100 format(A)
 101 format(A, I5, A)
 102 format(5(1X, A18))
