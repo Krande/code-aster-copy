@@ -313,7 +313,12 @@ subroutine verif_affe_carte(ligrmo, carte, comment, non_lin)
             else
                 if (exiq3_coef_drz .or. exiq4_coef_drz) cycle
                 if (a_un_sens((igrel-1)*nbcmp+kcmp) .eq. 1) cycle
-                call utmess('A', 'CALCULEL_40', nk=5, valk=valk, si=nbmapb)
+
+                if (nocmp .eq. 'C_METR') then
+                    call utmess('F', 'MODELISA10_1')
+                else
+                    call utmess('A', 'CALCULEL_40', nk=5, valk=valk, si=nbmapb)
+                end if
             end if
             do k = 1, min(5, nbmapb)
                 valk = ' '

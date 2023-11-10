@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,6 +20,16 @@
 from ..Utilities import _
 
 cata_msg = {
+    1: _(
+        """
+AFFE_CARA_ELEM :
+Vous avez activé le mot-clé MODI_METRIQUE='OUI' sur des éléments pour lesquels cette fonctionnalité n'a
+pas d'effet ou n'est pas programmée.
+
+Cette fonctionnalité est disponible avec les modélisations suivantes uniquement :
+COQUE_AXIS, TUYAU_3M et TUYAU_6M.
+"""
+    ),
     4: _(
         """
 Les mailles affectées à la modélisation TUYAU ne semblent pas former des lignes continues.

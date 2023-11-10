@@ -49,6 +49,7 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/modiMetriVeri.h"
 #include "asterfort/nocart.h"
 #include "asterfort/tecart.h"
 #include "asterfort/utmess.h"
@@ -89,9 +90,10 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc, &
     integer :: nbcar, nbcolo, nblign, nbmagr, nbmail, nbo, nbval
     integer :: ncar, ncarac, ndim, nfcx, ng, nm, nnosec
     integer :: npoaff, nsec, nsecpo, ntab, ntypse, nummai, nutyel
-    integer :: nval, nvsec
+    integer :: nval, nvsec, nutyptu(3)
     real(kind=8) :: epy1, hy1
     character(len=8) :: caram(4)
+    character(len=16) :: nunoel
 !
     character(len=8), pointer :: cara(:) => null()
     character(len=8), pointer :: carpou(:) => null()
@@ -167,8 +169,23 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc, &
     call jeecra(tmpgef, 'LONMAX', 1)
     AS_ALLOCATE(vk24=poutre, size=lmax)
 !
+!   recupération des numeros des types d'éléments tuyaux
+    k = 0
+    do j = 1, nbepo
+        call jenuno(jexnum('&CATA.TE.NOMTE', ntyele(j)), nunoel)
+        if ((nunoel .eq. 'MET3SEG3') .or. (nunoel .eq. 'MET6SEG3') .or. &
+            (nunoel .eq. 'MET3SEG4')) then
+            k = k+1
+            nutyptu(k) = ntyele(j)
+        end if
+    end do
+    ASSERT(k .eq. 3)
+!
 ! --- LECTURE ET STOCKAGE DES DONNEES  DANS L OBJET TAMPON
     do ioc = 1, nbocc
+
+        call modiMetriVeri(noma, ioc, modmai, nutyptu)
+
         call getvtx('POUTRE', 'SECTION', iocc=ioc, scal=sec, nbret=nsec)
         if (sec .eq. 'COUDE') cycle
 !

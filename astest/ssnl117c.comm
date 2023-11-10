@@ -99,15 +99,7 @@ MO = AFFE_MODELE(
 
 CAREL = AFFE_CARA_ELEM(
     MODELE=MO,
-    POUTRE=(
-        _F(
-            GROUP_MA=("POUTRE"),
-            SECTION="CERCLE",
-            CARA=("R", "EP"),
-            VALE=(REXT, EP),
-            MODI_METRIQUE="OUI",
-        ),
-    ),
+    POUTRE=(_F(GROUP_MA=("POUTRE"), SECTION="CERCLE", CARA=("R", "EP"), VALE=(REXT, EP)),),
     DISCRET=(
         _F(
             GROUP_MA=("POI_X125", "POI_Y125"),

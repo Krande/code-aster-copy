@@ -62,7 +62,6 @@ CARA = AFFE_CARA_ELEM(
         EPAIS=epais,
         COQUE_NCOU=nb_cou,
         COEF_RIGI_DRZ=1.0e-08,
-        # MODI_METRIQUE='OUI',
         # A_CIS=5/6,
         ANGL_REP=(0.0, 0.0),
     ),
