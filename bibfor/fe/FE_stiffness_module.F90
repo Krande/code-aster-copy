@@ -377,8 +377,8 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: i_n, kkd
-        real(kind=8) :: stress_w(6)
+        integer :: i_n, kkd, j_n, i_d
+        real(kind=8) :: stress_w(6), tmp(MAX_BS)
 !
         stress_w = weight*stress
 !
@@ -386,37 +386,54 @@ contains
         case (2)
             if (l_matsym) then
                 do i_n = 1, FEBasis%size
-                    kkd = (2*(i_n-1)+0)*(2*(i_n-1)+1)/2
-                    call dgemv_T_4xn(pff(1, 1, i_n), i_n, stress_w, mat(kkd+1), 2)
-                    kkd = (2*(i_n-1)+1)*(2*(i_n-1)+2)/2
-                    call dgemv_T_4xn(pff(1, 1, i_n), i_n, stress_w, mat(kkd+2), 2)
+
+                    tmp = 0.d0
+                    call dgemv_T_4xn(pff(1, 1, i_n), i_n, stress_w, tmp, 1)
+                    do i_d = 1, 2
+                        kkd = (2*(i_n-1)+i_d-1)*(2*(i_n-1)+i_d)/2+i_d
+                        do j_n = 1, i_n
+                            mat(kkd) = mat(kkd)+tmp(j_n)
+                            kkd = kkd+2
+                        end do
+                    end do
                 end do
             else
                 do i_n = 1, FEBasis%size
-                    kkd = 2*FEBasis%size*(2*(i_n-1)+0)
-                    call dgemv_T_4xn(pff(1, 1, i_n), FEBasis%size, stress_w, mat(kkd+1), 2)
-                    kkd = 2*FEBasis%size*(2*(i_n-1)+1)
-                    call dgemv_T_4xn(pff(1, 1, i_n), FEBasis%size, stress_w, mat(kkd+2), 2)
+                    tmp = 0.d0
+                    call dgemv_T_4xn(pff(1, 1, i_n), FEBasis%size, stress_w, tmp, 1)
+                    do i_d = 1, 2
+                        kkd = 2*FEBasis%size*(2*(i_n-1)+i_d-1)+i_d
+                        do j_n = 1, i_n
+                            mat(kkd) = mat(kkd)+tmp(j_n)
+                            kkd = kkd+2
+                        end do
+                    end do
                 end do
             end if
         case (3)
             if (l_matsym) then
                 do i_n = 1, FEBasis%size
-                    kkd = (3*(i_n-1)+0)*(3*(i_n-1)+1)/2
-                    call dgemv_T_6xn(pff(1, 1, i_n), i_n, stress_w, mat(kkd+1), 3)
-                    kkd = (3*(i_n-1)+1)*(3*(i_n-1)+2)/2
-                    call dgemv_T_6xn(pff(1, 1, i_n), i_n, stress_w, mat(kkd+2), 3)
-                    kkd = (3*(i_n-1)+2)*(3*(i_n-1)+3)/2
-                    call dgemv_T_6xn(pff(1, 1, i_n), i_n, stress_w, mat(kkd+3), 3)
+                    tmp = 0.d0
+                    call dgemv_T_6xn(pff(1, 1, i_n), i_n, stress_w, tmp, 1)
+                    do i_d = 1, 3
+                        kkd = (3*(i_n-1)+i_d-1)*(3*(i_n-1)+i_d)/2+i_d
+                        do j_n = 1, i_n
+                            mat(kkd) = mat(kkd)+tmp(j_n)
+                            kkd = kkd+3
+                        end do
+                    end do
                 end do
             else
                 do i_n = 1, FEBasis%size
-                    kkd = 3*FEBasis%size*(3*(i_n-1)+0)
-                    call dgemv_T_6xn(pff(1, 1, i_n), FEBasis%size, stress_w, mat(kkd+1), 3)
-                    kkd = 3*FEBasis%size*(3*(i_n-1)+1)
-                    call dgemv_T_6xn(pff(1, 1, i_n), FEBasis%size, stress_w, mat(kkd+2), 3)
-                    kkd = 3*FEBasis%size*(3*(i_n-1)+2)
-                    call dgemv_T_6xn(pff(1, 1, i_n), FEBasis%size, stress_w, mat(kkd+3), 3)
+                    tmp = 0.d0
+                    call dgemv_T_6xn(pff(1, 1, i_n), FEBasis%size, stress_w, tmp, 1)
+                    do i_d = 1, 3
+                        kkd = 3*FEBasis%size*(3*(i_n-1)+i_d-1)+i_d
+                        do j_n = 1, i_n
+                            mat(kkd) = mat(kkd)+tmp(j_n)
+                            kkd = kkd+3
+                        end do
+                    end do
                 end do
             end if
         case default
