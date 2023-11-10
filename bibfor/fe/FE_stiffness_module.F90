@@ -399,7 +399,7 @@ contains
                     call dgemv_T_4xn(pff(1, 1, i_n), FEBasis%size, stress_w, tmp, 1)
                     do i_d = 1, 2
                         kkd = 2*FEBasis%size*(2*(i_n-1)+i_d-1)+i_d
-                        do j_n = 1, i_n
+                        do j_n = 1, FEBasis%size
                             mat(kkd) = mat(kkd)+tmp(j_n)
                             kkd = kkd+2
                         end do
@@ -425,7 +425,7 @@ contains
                     call dgemv_T_6xn(pff(1, 1, i_n), FEBasis%size, stress_w, tmp, 1)
                     do i_d = 1, 3
                         kkd = 3*FEBasis%size*(3*(i_n-1)+i_d-1)+i_d
-                        do j_n = 1, i_n
+                        do j_n = 1, FEBasis%size
                             mat(kkd) = mat(kkd)+tmp(j_n)
                             kkd = kkd+3
                         end do
