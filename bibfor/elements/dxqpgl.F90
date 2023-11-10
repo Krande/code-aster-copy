@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -148,7 +148,7 @@ subroutine dxqpgl(xyzg, pgl, kstop, iret)
             call tecael(iadzi, iazk24)
             valr = abs(dist)
             call utmess('A+', 'ELEMENTS4_80', sk=zk24(iazk24+2))
-            call utmess('A', 'ELEMENTS4_82', sr=valr)
+            call utmess('A', 'ELEMENTS4_82', nr=2, valr=[valr, pscal*100])
         else if (kstop .eq. 'C') then
             iret = 2
         else
