@@ -202,7 +202,7 @@ subroutine te0247(option, nomte)
         call porigi(nomte, e, nu, xl, klv)
 !
         if (option .eq. 'RAPH_MECA' .or. option .eq. 'FULL_MECA') then
-            if ((itemp .ne. 0) .and. (nu .ne. num)) then
+            if ((nomte .ne. 'MECA_POU_D_E') .and. (itemp .ne. 0) .and. (nu .ne. num)) then
                 call utmess('A', 'POUTRE0_59')
             end if
             call nmpoel(npg, klv, xl, nno, nc, pgl, zr(ideplp), &
