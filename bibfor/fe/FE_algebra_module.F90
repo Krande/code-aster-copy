@@ -141,13 +141,88 @@ contains
         integer :: icol, ind
         real(kind=8) :: tmp
 
-        ind = 1
-        do icol = 1, ncol
-            tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+ &
-                  mat(4, icol)*x(4)+mat(5, icol)*x(5)+mat(6, icol)*x(6)
-            y(ind) = y(ind)+tmp
-            ind = ind+offset
-        end do
+        select case (ncol)
+        case (3)
+            ind = 1
+            do icol = 1, 3
+                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+ &
+                      mat(4, icol)*x(4)+mat(5, icol)*x(5)+mat(6, icol)*x(6)
+                y(ind) = y(ind)+tmp
+                ind = ind+offset
+            end do
+        case (4)
+            ind = 1
+            do icol = 1, 4
+                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+ &
+                      mat(4, icol)*x(4)+mat(5, icol)*x(5)+mat(6, icol)*x(6)
+                y(ind) = y(ind)+tmp
+                ind = ind+offset
+            end do
+        case (5)
+            ind = 1
+            do icol = 1, 5
+                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+ &
+                      mat(4, icol)*x(4)+mat(5, icol)*x(5)+mat(6, icol)*x(6)
+                y(ind) = y(ind)+tmp
+                ind = ind+offset
+            end do
+        case (6)
+            ind = 1
+            do icol = 1, 6
+                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+ &
+                      mat(4, icol)*x(4)+mat(5, icol)*x(5)+mat(6, icol)*x(6)
+                y(ind) = y(ind)+tmp
+                ind = ind+offset
+            end do
+        case (7)
+            ind = 1
+            do icol = 1, 7
+                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+ &
+                      mat(4, icol)*x(4)+mat(5, icol)*x(5)+mat(6, icol)*x(6)
+                y(ind) = y(ind)+tmp
+                ind = ind+offset
+            end do
+        case (8)
+            ind = 1
+            do icol = 1, 8
+                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+ &
+                      mat(4, icol)*x(4)+mat(5, icol)*x(5)+mat(6, icol)*x(6)
+                y(ind) = y(ind)+tmp
+                ind = ind+offset
+            end do
+        case (9)
+            ind = 1
+            do icol = 1, 9
+                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+ &
+                      mat(4, icol)*x(4)+mat(5, icol)*x(5)+mat(6, icol)*x(6)
+                y(ind) = y(ind)+tmp
+                ind = ind+offset
+            end do
+        case (19)
+            ind = 1
+            do icol = 1, 19
+                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+ &
+                      mat(4, icol)*x(4)+mat(5, icol)*x(5)+mat(6, icol)*x(6)
+                y(ind) = y(ind)+tmp
+                ind = ind+offset
+            end do
+        case (26)
+            ind = 1
+            do icol = 1, 26
+                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+ &
+                      mat(4, icol)*x(4)+mat(5, icol)*x(5)+mat(6, icol)*x(6)
+                y(ind) = y(ind)+tmp
+                ind = ind+offset
+            end do
+        case default
+            ind = 1
+            do icol = 1, ncol
+                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+ &
+                      mat(4, icol)*x(4)+mat(5, icol)*x(5)+mat(6, icol)*x(6)
+                y(ind) = y(ind)+tmp
+                ind = ind+offset
+            end do
+        end select
 #endif
 !
     end subroutine
@@ -179,12 +254,72 @@ contains
         integer :: icol, ind
         real(kind=8) :: tmp
 
-        ind = 1
-        do icol = 1, ncol
-            tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+mat(4, icol)*x(4)
-            y(ind) = y(ind)+tmp
-            ind = ind+offset
-        end do
+        select case (ncol)
+        case (2)
+            ind = 1
+            do icol = 1, 2
+                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+mat(4, icol)*x(4)
+                y(ind) = y(ind)+tmp
+                ind = ind+offset
+            end do
+        case (3)
+            ind = 1
+            do icol = 1, 3
+                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+mat(4, icol)*x(4)
+                y(ind) = y(ind)+tmp
+                ind = ind+offset
+            end do
+        case (4)
+            ind = 1
+            do icol = 1, 4
+                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+mat(4, icol)*x(4)
+                y(ind) = y(ind)+tmp
+                ind = ind+offset
+            end do
+        case (5)
+            ind = 1
+            do icol = 1, 5
+                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+mat(4, icol)*x(4)
+                y(ind) = y(ind)+tmp
+                ind = ind+offset
+            end do
+        case (6)
+            ind = 1
+            do icol = 1, 6
+                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+mat(4, icol)*x(4)
+                y(ind) = y(ind)+tmp
+                ind = ind+offset
+            end do
+        case (7)
+            ind = 1
+            do icol = 1, 7
+                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+mat(4, icol)*x(4)
+                y(ind) = y(ind)+tmp
+                ind = ind+offset
+            end do
+        case (8)
+            ind = 1
+            do icol = 1, 8
+                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+mat(4, icol)*x(4)
+                y(ind) = y(ind)+tmp
+                ind = ind+offset
+            end do
+        case (9)
+            ind = 1
+            do icol = 1, 9
+                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+mat(4, icol)*x(4)
+                y(ind) = y(ind)+tmp
+                ind = ind+offset
+            end do
+        case default
+            ind = 1
+            do icol = 1, ncol
+                tmp = mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)+mat(4, icol)*x(4)
+                y(ind) = y(ind)+tmp
+                ind = ind+offset
+            end do
+        end select
+
 #endif
 !
     end subroutine
