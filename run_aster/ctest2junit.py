@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,6 +34,8 @@ import re
 from . import junit_xml_output as JUNIT
 from .config import CFG
 from .error_messages import search_msg
+
+MESS_EXT = os.environ.get("MESS_EXT", "mess")
 
 
 class XUnitReport:
@@ -92,7 +94,7 @@ class XUnitReport:
             ctname = mat.group("ctname")
             testname = mat.group("name")
             jstate = "failure" if ctname in failures else ""
-            mess = osp.join(self.base, testname + ".mess")
+            mess = osp.join(self.base, testname + "." + MESS_EXT)
             if osp.isfile(mess):
                 with open(mess, "rb") as fmess:
                     output = fmess.read().decode(errors="replace")
