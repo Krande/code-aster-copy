@@ -93,7 +93,7 @@ FE_CAR = AFFE_CARA_ELEM(
         # F L E X I B I L I T Y    C O E F F I C I E N T S
         ##############################################################################
         _F(GROUP_MA="BRAD_PT_10", SECTION="COUDE", COEF_FLEX=1.0),
-        _F(GROUP_MA="BRAD_PT_20", SECTION="COUDE", COEF_FLEX=1.0),
+        _F(GROUP_MA="BRAD_PT_20", SECTION="COUDE", COEF_FLEX_XY=1.0, COEF_FLEX_XZ=1.0),
     ),
     COQUE=(),
     ORIENTATION=(),

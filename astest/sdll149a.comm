@@ -135,7 +135,8 @@ CARA_ELE = AFFE_CARA_ELEM(
         _F(
             GROUP_MA=("E23", "E26", "E29"),
             SECTION="COUDE",
-            COEF_FLEX=cflex2,
+            COEF_FLEX_XY=cflex2,
+            COEF_FLEX_XZ=cflex2,
             INDI_SIGM_XY=1.0,
             INDI_SIGM_XZ=1.0,
         ),

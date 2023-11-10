@@ -128,7 +128,7 @@ CARA_ELE = AFFE_CARA_ELEM(
         # Poutres coudées
         _F(GROUP_MA=("E2", "E5", "E7", "E13", "E16", "E19"), SECTION="COUDE", COEF_FLEX=cflex1),
         _F(GROUP_MA=("E23", "E26", "E29"), SECTION="COUDE", COEF_FLEX=cflex2),
-        _F(GROUP_MA="E35", SECTION="COUDE", COEF_FLEX=cflex3),
+        _F(GROUP_MA="E35", SECTION="COUDE", COEF_FLEX_XY=cflex3, COEF_FLEX_XZ=cflex3),
     ),
     DISCRET=(
         _F(
