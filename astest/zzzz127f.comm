@@ -1,0 +1,175 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
+
+# Definition of material: Interior wall
+MAT_0 = DEFI_MATERIAU(THER=_F(LAMBDA=0.7, RHO_CP=1360000.0))
+
+# Definition of material: Isolation
+MAT_1 = DEFI_MATERIAU(THER=_F(LAMBDA=0.04, RHO_CP=200000.0))
+
+# Definition of material: Exterior Wall
+MAT_2 = DEFI_MATERIAU(THER=_F(LAMBDA=1.0, RHO_CP=2000000.0))
+
+# Definition of material: Horizontal Structure
+MAT_3 = DEFI_MATERIAU(THER=_F(LAMBDA=2.5, RHO_CP=3000000.0))
+
+# Definition of material: Floor
+MAT_4 = DEFI_MATERIAU(THER=_F(LAMBDA=1.0, RHO_CP=800000.0))
+
+# Define mesh file
+MESH = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
+
+# Creation of node groups from every element group
+MESH = DEFI_GROUP(CREA_GROUP_NO=_F(TOUT_GROUP_MA="OUI"), MAILLAGE=MESH, reuse=MESH)
+
+# Creation of element groups for result control items
+MESH = DEFI_GROUP(
+    CREA_GROUP_MA=(
+        _F(NOM="result_control_0", UNION=("face67", "face14", "face16")),
+        _F(NOM="result_control_1", UNION=("face49", "face6", "face8")),
+        _F(NOM="result_control_2", UNION=("face67")),
+        _F(NOM="result_control_3", UNION=("face16")),
+        _F(NOM="result_control_4", UNION=("face14")),
+        _F(NOM="result_control_5", UNION=("face49")),
+        _F(NOM="result_control_6", UNION=("face8")),
+        _F(NOM="result_control_7", UNION=("face6")),
+    ),
+    MAILLAGE=MESH,
+    reuse=MESH,
+)
+
+# Creating new node groups to avoid over-constrained systems
+MESH = DEFI_GROUP(
+    CREA_GROUP_NO=(
+        _F(NOM="up_cc_t_0_ini", UNION=("face9")),
+        _F(DIFFE=("up_cc_t_0_ini", "face66"), NOM="up_cc_t_0"),
+        _F(NOM="up_cc_t_1_ini", UNION=("face15")),
+        _F(DIFFE=("up_cc_t_1_ini", "face63"), NOM="up_cc_t_1"),
+        _F(NOM="up_cc_t_2_ini", UNION=("face25", "face26", "face27")),
+        _F(DIFFE=("up_cc_t_2_ini", "face62", "face65", "face71"), NOM="up_cc_t_2"),
+        _F(NOM="up_cc_t_3_ini", UNION=("face36", "face43", "face44", "face45")),
+        _F(DIFFE=("up_cc_t_3_ini", "face55", "face56", "face58", "face60"), NOM="up_cc_t_3"),
+        _F(NOM="up_cc_t_4_ini", UNION=("face50")),
+        _F(DIFFE=("up_cc_t_4_ini", "face64"), NOM="up_cc_t_4"),
+        _F(NOM="up_cc_t_5_ini", UNION=("face3", "face4")),
+        _F(DIFFE=("up_cc_t_5_ini", "face34", "face35"), NOM="up_cc_t_5"),
+        _F(NOM="up_cc_t_6_ini", UNION=("face11", "face12")),
+        _F(DIFFE=("up_cc_t_6_ini", "face38", "face39"), NOM="up_cc_t_6"),
+        _F(NOM="up_cc_t_7_ini", UNION=("face19", "face20")),
+        _F(DIFFE=("up_cc_t_7_ini", "face40", "face48"), NOM="up_cc_t_7"),
+        _F(NOM="up_cc_t_8_ini", UNION=("face52", "face54")),
+        _F(DIFFE=("up_cc_t_8_ini", "face1", "face2"), NOM="up_cc_t_8"),
+    ),
+    MAILLAGE=MESH,
+    reuse=MESH,
+)
+
+# Model definition of phenomena and element types
+MODEL = AFFE_MODELE(
+    AFFE=(
+        _F(MODELISATION="3D", PHENOMENE="THERMIQUE", TOUT="OUI"),
+        _F(
+            GROUP_MA=("region6", "region5", "region4", "region3", "region2", "region1"),
+            MODELISATION="3D",
+            PHENOMENE="THERMIQUE",
+        ),
+    ),
+    MAILLAGE=MESH,
+)
+
+# Assignment of materials to mesh groups
+MATS = AFFE_MATERIAU(
+    AFFE=(
+        _F(GROUP_MA=("region1", "region2"), MATER=MAT_0),
+        _F(GROUP_MA=("region4"), MATER=MAT_1),
+        _F(GROUP_MA=("region3"), MATER=MAT_2),
+        _F(GROUP_MA=("region6"), MATER=MAT_3),
+        _F(GROUP_MA=("region5"), MATER=MAT_4),
+    ),
+    MAILLAGE=MESH,
+)
+
+# Definition of boundary condition: Alpha
+BC_0 = AFFE_CHAR_THER(
+    MODELE=MODEL, ECHANGE=_F(COEF_H=5.0, GROUP_MA=("face67", "face14", "face16"), TEMP_EXT=293.15)
+)
+
+# Definition of boundary condition: Beta
+BC_1 = AFFE_CHAR_THER(
+    MODELE=MODEL, ECHANGE=_F(COEF_H=5.0, GROUP_MA=("face49", "face8", "face6"), TEMP_EXT=288.15)
+)
+
+# Definition of boundary condition: Gamma
+BC_2 = AFFE_CHAR_THER(
+    MODELE=MODEL,
+    ECHANGE=_F(
+        COEF_H=20.0,
+        GROUP_MA=("face31", "face33", "face61", "face32", "face28", "face69", "face59", "face24"),
+        TEMP_EXT=273.15,
+    ),
+)
+
+# issue33332: it fails with ELIM_MULT="NON" ("OUI" is the default)
+# Definition of linear connection boundary condition
+BC_3 = AFFE_CHAR_THER(
+    MODELE=MODEL,
+    LIAISON_MAIL=(
+        _F(GROUP_MA_MAIT=("region6"), GROUP_NO_ESCL=("up_cc_t_0")),
+        _F(GROUP_MA_MAIT=("region6"), GROUP_NO_ESCL=("up_cc_t_1")),
+        _F(GROUP_MA_MAIT=("region6"), GROUP_NO_ESCL=("up_cc_t_2")),
+        _F(GROUP_MA_MAIT=("region6"), GROUP_NO_ESCL=("up_cc_t_3")),
+        _F(GROUP_MA_MAIT=("region6"), GROUP_NO_ESCL=("up_cc_t_4")),
+        _F(GROUP_MA_MAIT=("region4"), GROUP_NO_ESCL=("up_cc_t_5")),
+        _F(GROUP_MA_MAIT=("region4"), GROUP_NO_ESCL=("up_cc_t_6")),
+        _F(GROUP_MA_MAIT=("region4"), GROUP_NO_ESCL=("up_cc_t_7")),
+        _F(GROUP_MA_MAIT=("region1"), GROUP_NO_ESCL=("up_cc_t_8")),
+    ),
+)
+
+SIM = THER_LINEAIRE(
+    CHAM_MATER=MATS,
+    EXCIT=(_F(CHARGE=BC_0), _F(CHARGE=BC_1), _F(CHARGE=BC_2), _F(CHARGE=BC_3)),
+    MODELE=MODEL,
+)
+
+TEST_RESU(
+    RESU=(
+        _F(
+            RESULTAT=SIM,
+            NUME_ORDRE=1,
+            NOM_CHAM="TEMP",
+            TYPE_TEST="MAX",
+            GROUP_MA="result_control_0",
+            VALE_CALC=291.05744,
+        ),
+        _F(
+            RESULTAT=SIM,
+            NUME_ORDRE=1,
+            NOM_CHAM="TEMP",
+            TYPE_TEST="MAX",
+            GROUP_MA="result_control_1",
+            VALE_CALC=291.05744,
+        ),
+        _F(RESULTAT=SIM, NUME_ORDRE=1, NOM_CHAM="TEMP", TYPE_TEST="MAX", VALE_CALC=291.05744),
+    )
+)
+
+FIN()
