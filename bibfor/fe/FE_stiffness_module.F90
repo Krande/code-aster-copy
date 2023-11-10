@@ -286,9 +286,7 @@ contains
                 do i_n = 1, FEBasis%size
                     do i_d = 1, 2
                         kkd = (2*(i_n-1)+i_d-1)*(2*(i_n-1)+i_d)/2
-                        sig_w = 0.d0
-                        call dgemv('T', 4, 4, weight, dsidep, 6, def(1, i_n, i_d), &
-                                   1, 0.0, sig_w, 1)
+                        call dgemv_T_4x4(dsidep, def(1, i_n, i_d), sig_w, weight)
                         call dgemv_T_4xn(def(1, 1, 1), i_n-1, sig_w, mat(kkd+1), 2)
                         call dgemv_T_4xn(def(1, 1, 2), i_n-1, sig_w, mat(kkd+2), 2)
 
@@ -305,8 +303,7 @@ contains
                 do i_n = 1, FEBasis%size
                     do i_d = 1, 2
                         kkd = 2*FEBasis%size*(2*(i_n-1)+i_d-1)
-                        sig_w = 0.d0
-                        call dgemv('T', 4, 4, weight, dsidep, 6, def(1, i_n, i_d), 1, 0.0, sig_w, 1)
+                        call dgemv_T_4x4(dsidep, def(1, i_n, i_d), sig_w, weight)
                         call dgemv_T_4xn(def(1, 1, 1), FEBasis%size, sig_w, mat(kkd+1), 2)
                         call dgemv_T_4xn(def(1, 1, 2), FEBasis%size, sig_w, mat(kkd+2), 2)
                     end do
@@ -317,9 +314,7 @@ contains
                 do i_n = 1, FEBasis%size
                     do i_d = 1, 3
                         kkd = (3*(i_n-1)+i_d-1)*(3*(i_n-1)+i_d)/2
-                        sig_w = 0.d0
-                        call dgemv('T', 6, 6, weight, dsidep, 6, def(1, i_n, i_d), &
-                                   1, 0.0, sig_w, 1)
+                        call dgemv_T_6x6(dsidep, def(1, i_n, i_d), sig_w, weight)
                         call dgemv_T_6xn(def(1, 1, 1), i_n-1, sig_w, mat(kkd+1), 3)
                         call dgemv_T_6xn(def(1, 1, 2), i_n-1, sig_w, mat(kkd+2), 3)
                         call dgemv_T_6xn(def(1, 1, 3), i_n-1, sig_w, mat(kkd+3), 3)
@@ -338,8 +333,7 @@ contains
                 do i_n = 1, FEBasis%size
                     do i_d = 1, 3
                         kkd = 3*FEBasis%size*(3*(i_n-1)+i_d-1)
-                        sig_w = 0.d0
-                        call dgemv('T', 6, 6, weight, dsidep, 6, def(1, i_n, i_d), 1, 0.0, sig_w, 1)
+                        call dgemv_T_6x6(dsidep, def(1, i_n, i_d), sig_w, weight)
                         call dgemv_T_6xn(def(1, 1, 1), FEBasis%size, sig_w, mat(kkd+1), 3)
                         call dgemv_T_6xn(def(1, 1, 2), FEBasis%size, sig_w, mat(kkd+2), 3)
                         call dgemv_T_6xn(def(1, 1, 3), FEBasis%size, sig_w, mat(kkd+3), 3)
