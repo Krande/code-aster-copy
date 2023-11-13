@@ -542,6 +542,7 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2, &
         end if
 !
         sigma = 0.d0
+        dsidep = 0.d0
         call nmcomp(BEHinteg, &
                     'RIGI', g, 1, ndim, typmod, &
                     mate, compor, carcri, instam, instap, &
