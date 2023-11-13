@@ -94,6 +94,7 @@ subroutine irmfac(keywfIocc, fileFormat, fileUnit, fileVersion, modelIn, &
 ! - Initializations
 !
     lResu = ASTER_FALSE
+    visuSP = ' '
 !
 ! - Has model ?
 !
