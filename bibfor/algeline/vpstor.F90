@@ -354,10 +354,13 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq, &
                 if (typmod(1:8) .eq. '        ') then
                     typmod = 'MODE_DYN'
                 end if
-                call rsadpa(modes, 'E', 1, nopast(3), nordr, &
-                            0, sjv=ladpa, styp=k8b)
-                zk16(ladpa) = typmod
+            else
+                typmod = "MODE_DYN"
             end if
+!
+            call rsadpa(modes, 'E', 1, nopast(3), nordr, &
+                        0, sjv=ladpa, styp=k8b)
+            zk16(ladpa) = typmod
 !
         end if
 !
