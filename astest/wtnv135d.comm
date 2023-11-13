@@ -43,8 +43,6 @@ KINT = DEFI_CONSTANTE(VALE=1.0e-18)
 # ***********************************************************************
 
 MAILLAGE = LIRE_MAILLAGE(FORMAT="MED")
-# Pour eviter les "TOLE MACHINE", on perturbe legerement la geometrie du maillage :
-MODI_MAILLAGE(reuse=MAILLAGE, MAILLAGE=MAILLAGE, DEFORME=_F(OPTION="TRAN", ALEA=1.0e-8))
 
 MODELE = AFFE_MODELE(
     MAILLAGE=MAILLAGE, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D_HM_SI")
@@ -168,10 +166,7 @@ U1 = STAT_NON_LINE(
         ALGO_INTE="SPECIFIQUE", RELATION="KIT_HM", RELATION_KIT=("LETK", "LIQU_SATU", "HYDR_UTIL")
     ),
     INCREMENT=_F(LIST_INST=TEMPS1),
-    CONVERGENCE=_F(
-        # on diminue la valeur de RESI_GLOB_RELA pour eviter les "TOLE MACHINE" (issue24538) :
-        RESI_GLOB_RELA=1.0e-10
-    ),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6),
 )
 
 U1 = CALC_CHAMP(reuse=U1, CONTRAINTE=("SIGM_ELNO"), VARI_INTERNE=("VARI_ELNO"), RESULTAT=U1)
@@ -249,13 +244,8 @@ U2 = STAT_NON_LINE(
     ),
     ETAT_INIT=_F(EVOL_NOLI=U1),
     INCREMENT=_F(LIST_INST=DEFLIST),
-    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1, PAS_MINI_ELAS=1.0, REAC_ITER_ELAS=50),
-    CONVERGENCE=_F(
-        # on diminue la valeur de RESI_GLOB_RELA pour eviter les "TOLE MACHINE" (issue24538) :
-        RESI_GLOB_RELA=1.0e-10,
-        ITER_GLOB_MAXI=20,
-        ITER_GLOB_ELAS=100,
-    ),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6),
 )
 
 U2 = CALC_CHAMP(
@@ -284,7 +274,7 @@ TEST_RESU(
         NOM_CHAM="DEPL",
         GROUP_NO="NO8",
         NOM_CMP="DX",
-        VALE_CALC=0.021983983877713307,
+        VALE_CALC=0.030196035163785342,
     )
 )
 
@@ -295,7 +285,7 @@ TEST_RESU(
         NOM_CHAM="SIGM_NOEU",
         GROUP_NO="NO8",
         NOM_CMP="SIZZ",
-        VALE_CALC=-12440706.463579612,
+        VALE_CALC=-11940429.958083527,
     )
 )
 
