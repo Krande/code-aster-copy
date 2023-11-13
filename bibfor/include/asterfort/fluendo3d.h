@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,8 @@ interface
                nstrs,var0,varf,nvari,nbelas3d,&
                teta1,teta2,dt,epstf,ierr1,&
                iso,mfr,end3d,fl3d,local,&
-               ndim,nmatbe2,iteflumax,sech)
+               ndim,nmatbe2,iteflumax,sech,&
+               matrEndo, matdech)
         real(kind=8), intent(in) :: xmat(:)
         real(kind=8) :: sig0(6)
         real(kind=8) :: sigf(:)
@@ -47,5 +48,7 @@ interface
         integer, intent(in) :: nmatbe2
         integer, intent(in) :: iteflumax
         real(kind=8) :: sech
+        aster_logical :: matrEndo
+        real(kind=8) :: matdech(6,6)
     end subroutine fluendo3d
 end interface

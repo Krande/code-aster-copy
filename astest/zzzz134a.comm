@@ -1,0 +1,764 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+import numpy as np
+import numpy.linalg as npl
+
+rc_hexa8 = np.array(
+    [
+        [-1.0, -1.0, -1.0],
+        [1.0, -1.0, -1.0],
+        [1.0, 1.0, -1.0],
+        [-1.0, 1.0, -1.0],
+        [-1.0, -1.0, 1.0],
+        [1.0, -1.0, 1.0],
+        [1.0, 1.0, 1.0],
+        [-1.0, 1.0, 1.0],
+    ]
+)
+
+xg_hexa8 = (1.0 / np.sqrt(3.0)) * rc_hexa8
+
+w_hexa8 = np.ones((8))
+
+try:
+    import sympy
+    from sympy import symbols, diff
+
+    a1, a2, a3 = symbols("a1 a2 a3")
+
+    def N_hexa8_s():
+        """
+        HEXA8 symbolic shape functions
+        """
+        return [
+            0.125
+            * (1.0 + rc_hexa8[i, 0] * a1)
+            * (1.0 + rc_hexa8[i, 1] * a2)
+            * (1.0 + rc_hexa8[i, 2] * a3)
+            for i in range(rc_hexa8.shape[0])
+        ]
+
+    def dN_hexa8_s():
+        """
+        HEXA8 symbolic derivatives shape functions
+        """
+        N = N_hexa8_s()
+        return [[diff(N[i], a1), diff(N[i], a2), diff(N[i], a3)] for i in range(rc_hexa8.shape[0])]
+
+    def dN_hexa8(a):
+        """
+        HEXA8 derivatives of shape functions with respect to ref coordinates at a
+        """
+        dN = dN_hexa8_s()
+        return np.array(
+            [
+                [dN[i][j].evalf(subs={a1: a[0], a2: a[1], a3: a[2]}) for j in range(3)]
+                for i in range(rc_hexa8.shape[0])
+            ],
+            dtype=np.float64,
+        )
+
+except ImportError:
+
+    def dN_hexa8(a):
+        """
+        HEXA8 derivatives of shape functions with respect to ref coordinates at a
+        """
+        return np.array(
+            [
+                [
+                    (1.0 - 1.0 * a[2]) * (0.125 * a[1] - 0.125),
+                    (1.0 - 1.0 * a[2]) * (0.125 * a[0] - 0.125),
+                    -1.0 * (0.125 - 0.125 * a[0]) * (1.0 - 1.0 * a[1]),
+                ],
+                [
+                    (0.125 - 0.125 * a[1]) * (1.0 - 1.0 * a[2]),
+                    (1.0 - 1.0 * a[2]) * (-0.125 * a[0] - 0.125),
+                    -1.0 * (1.0 - 1.0 * a[1]) * (0.125 * a[0] + 0.125),
+                ],
+                [
+                    (1.0 - 1.0 * a[2]) * (0.125 * a[1] + 0.125),
+                    (1.0 - 1.0 * a[2]) * (0.125 * a[0] + 0.125),
+                    -1.0 * (0.125 * a[0] + 0.125) * (1.0 * a[1] + 1.0),
+                ],
+                [
+                    (1.0 - 1.0 * a[2]) * (-0.125 * a[1] - 0.125),
+                    (0.125 - 0.125 * a[0]) * (1.0 - 1.0 * a[2]),
+                    -1.0 * (0.125 - 0.125 * a[0]) * (1.0 * a[1] + 1.0),
+                ],
+                [
+                    (1.0 - 1.0 * a[1]) * (-0.125 * a[2] - 0.125),
+                    -1.0 * (0.125 - 0.125 * a[0]) * (1.0 * a[2] + 1.0),
+                    (0.125 - 0.125 * a[0]) * (1.0 - 1.0 * a[1]),
+                ],
+                [
+                    (1.0 - 1.0 * a[1]) * (0.125 * a[2] + 0.125),
+                    -1.0 * (0.125 * a[0] + 0.125) * (1.0 * a[2] + 1.0),
+                    (1.0 - 1.0 * a[1]) * (0.125 * a[0] + 0.125),
+                ],
+                [
+                    (0.125 * a[1] + 0.125) * (1.0 * a[2] + 1.0),
+                    (0.125 * a[0] + 0.125) * (1.0 * a[2] + 1.0),
+                    1.0 * (0.125 * a[0] + 0.125) * (1.0 * a[1] + 1.0),
+                ],
+                [
+                    (-0.125 * a[1] - 0.125) * (1.0 * a[2] + 1.0),
+                    (0.125 - 0.125 * a[0]) * (1.0 * a[2] + 1.0),
+                    1.0 * (0.125 - 0.125 * a[0]) * (1.0 * a[1] + 1.0),
+                ],
+            ],
+            dtype=np.float64,
+        )
+
+
+def jacobian_matrix(a, xe):
+    """
+    Jacobian matrix of the ref -> real coordinates map at a, with nodal real coordinates xe.
+    """
+    dN = dN_hexa8(a)
+    return xe.T @ dN
+
+
+def jacobian(a, xe):
+    return npl.det(jacobian_matrix(a, xe))
+
+
+iel = np.array([[0, 0], [1, 1], [2, 2], [0, 1], [0, 2], [1, 2]])
+
+
+def ist(jj):
+    return [jj // 3, jj % 3]
+
+
+def B(a, xe):
+    """
+    Retrieve shape functions
+    """
+    # Preparatory matrices
+    Id = np.identity(3, dtype=np.float64)
+    matB = np.zeros((6, 3 * rc_hexa8.shape[0]), dtype=np.float64)
+    dN = dN_hexa8(a)
+    J = jacobian_matrix(a, xe)
+    invJ = npl.inv(J)
+
+    # There should be a way to code this in a more vectorial fashion
+    for ii in range(6):
+        for jj in range(3 * rc_hexa8.shape[0]):
+            matB[ii, jj] = matB[ii, jj] + 0.5 * (
+                np.dot(dN[ist(jj)[0], :], invJ[:, iel[ii, 1]]) * Id[iel[ii, 0], ist(jj)[1]]
+                + np.dot(dN[ist(jj)[0], :], invJ[:, iel[ii, 0]]) * Id[iel[ii, 1], ist(jj)[1]]
+            )
+            # Engineering conventions
+            if ii in range(3, 6):
+                matB[ii, jj] = matB[ii, jj] * np.sqrt(2.0)
+    return matB
+
+
+def elas2stif(D, xe):
+    """
+    Returns stiffness from elasticity matrix
+
+    Input:
+       D (ndarray): elasticity matrix, 6 x 6 format
+       xe (ndarray): coordinates array of the nodes, N x 3 format
+
+    Output:
+       Ke (ndarray): stiffness matrix
+    """
+    Ke = np.zeros((3 * rc_hexa8.shape[0], 3 * rc_hexa8.shape[0]))
+    for i, a in enumerate(xg_hexa8):
+        Be = B(a, xe)
+        Ke = Ke + jacobian(a, xe) * w_hexa8[i] * Be.T @ D @ Be
+    return Ke
+
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="NON"))
+
+
+M = LIRE_MAILLAGE(FORMAT="MED")
+
+IMPR_RESU(UNITE=6, FORMAT="ASTER", RESU=_F(MAILLAGE=M))
+
+L_INS1 = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=4.0, PAS=0.05),))
+
+
+mod = AFFE_MODELE(MAILLAGE=M, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"))
+
+HYDR1 = DEFI_CONSTANTE(VALE=1.0)
+PORO = DEFI_CONSTANTE(VALE=0.134)
+CNAD = DEFI_CONSTANTE(VALE=0.0)
+
+
+mat1 = DEFI_MATERIAU(
+    ELAS=_F(E=37000, NU=0.2, RHO=0.002500, ALPHA=1e-5),  # 45550,
+    RGI_BETON=_F(
+        DIM3=0.1,
+        # HYDRATATION
+        HYDR=HYDR1,
+        HYDS=0.0,
+        # RETRAIT / VOLUME D'EAU
+        PORO=PORO,
+        BSHR=0.5,
+        MSHR=0.000,
+        MVGN=0.0,
+        SFLD=14,
+        # MECANIQUE
+        RT=3.7,
+        EPT=1e-4,  # 2e-4,
+        RC=35.0,
+        EPC=1.0e-3,
+        DELT=1.0,
+        BETA=0.15,
+        REF=4.0,
+        EKDC=1.0e-3,
+        GFT=100e-6,
+        GFR=100e-6,
+        # ENDOMMAGEMENT THERMIQUE
+        DT80=0.0,
+        TSTH=45.0,
+        # FLUAGE
+        TREF=20.0,
+        TAUK=10000.0,
+        YKSY=4,
+        TAUM=8000.0,
+        EKFL=0.9e-4,
+        XFLU=2,
+        NRJM=25000.0,
+        DFMX=0.0,
+        # RGI
+        VVRG=5e-6,
+        KGEL=7000.0,
+        KRGI=1.0,
+        HRGI=0.03,
+        HPEV=1.0,
+        EKRG=0.3e-2,
+        # RAG
+        VRAG=1e-4,
+        TAUG=0.1,
+        SRSG=0.5,
+        NRJG=40000,
+        TRAG=20.0,
+        ALAT=0.0,
+        # RSI
+        TDEF=0,
+        NRJP=0.0,
+        VDEF=0.00,
+        SRSD=0.95,
+        CNAD=CNAD,
+        SSAD=1.0,
+        CNAK=0.8,
+        CNAB=1.8,
+        EXND=0.18,
+        EXMD=0,
+        TTDD=0,
+        TDID=0,
+        TFID=0,
+        NRJD=0.0,
+        TTRD=20.0,
+    ),
+)
+
+
+ftem1 = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 20.0, 1.0, 20.0, 2.0, 20.0, 8.0, 20.0))
+
+
+TEMPI = CREA_CHAMP(
+    TYPE_CHAM="NOEU_TEMP_F",
+    OPERATION="AFFE",
+    MAILLAGE=M,
+    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE_F=ftem1),
+)
+
+
+TEMP = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_THER",
+    NOM_CHAM="TEMP",
+    AFFE=(_F(CHAM_GD=TEMPI, LIST_INST=L_INS1),),
+)
+
+
+fhyd1 = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.134, 10.0, 0.134))
+
+
+SECHI = CREA_CHAMP(
+    TYPE_CHAM="NOEU_TEMP_F",
+    OPERATION="AFFE",
+    MAILLAGE=M,
+    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE_F=fhyd1),
+)
+
+SECH = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_THER",
+    NOM_CHAM="TEMP",
+    AFFE=(_F(CHAM_GD=SECHI, LIST_INST=L_INS1),),
+)
+
+
+fieldmat = AFFE_MATERIAU(
+    MAILLAGE=M,
+    AFFE=_F(TOUT="OUI", MATER=mat1),
+    AFFE_VARC=(
+        _F(
+            TOUT="OUI",
+            NOM_VARC="TEMP",
+            EVOL=TEMP,
+            NOM_CHAM="TEMP",
+            PROL_DROITE="CONSTANT",
+            PROL_GAUCHE="CONSTANT",
+            VALE_REF=20.0,
+        ),
+        _F(
+            TOUT="OUI",
+            NOM_VARC="SECH",
+            EVOL=SECH,
+            NOM_CHAM="TEMP",
+            PROL_DROITE="LINEAIRE",
+            PROL_GAUCHE="CONSTANT",
+            VALE_REF=0.0,
+        ),
+    ),
+)
+
+
+DEPL1 = DEFI_FONCTION(
+    NOM_PARA="INST",
+    VALE=(0.0, 0.0, 1.0, 1.5e-5, 2.0, 0.0, 3.0, -1.5e-4, 4.0, 0.0, 8.0, 0.0),
+    PROL_DROITE="EXCLU",
+    PROL_GAUCHE="EXCLU",
+)
+
+CHAR1 = AFFE_CHAR_CINE_F(MODELE=mod, MECA_IMPO=_F(GROUP_MA="SLOADXBE", DX=DEPL1))
+
+
+Csymz = AFFE_CHAR_CINE(MODELE=mod, MECA_IMPO=(_F(DZ=0.0, GROUP_MA=("SYMZBE",)),))
+
+Csymy = AFFE_CHAR_CINE(MODELE=mod, MECA_IMPO=(_F(DY=0.0, GROUP_MA=("SYMYBE",)),))
+
+Csymx = AFFE_CHAR_CINE(MODELE=mod, MECA_IMPO=(_F(DX=0.0, GROUP_MA=("SYMXBE",)),))
+
+
+RES1 = STAT_NON_LINE(
+    CHAM_MATER=fieldmat,
+    MODELE=mod,
+    CONVERGENCE=_F(ITER_GLOB_MAXI=150, RESI_GLOB_RELA=1e-6, ARRET="OUI"),
+    COMPORTEMENT=_F(TOUT="OUI", RELATION="RGI_BETON"),
+    INCREMENT=_F(LIST_INST=L_INS1, INST_FIN=4),
+    NEWTON=_F(PREDICTION="ELASTIQUE", MATRICE="ELASTIQUE"),
+    INFO=1,
+    EXCIT=(_F(CHARGE=CHAR1), _F(CHARGE=Csymy), _F(CHARGE=Csymz), _F(CHARGE=Csymx)),
+)
+
+NU = NUME_DDL(MODELE=mod)
+
+DU = code_aster.FieldOnNodesReal(NU)
+
+# ne fonctionne pas !!
+# DU = CREA_CHAMP(
+# TYPE_CHAM="NOEU_DEPL_R",
+# OPERATION="AFFE",
+# MAILLAGE=M,
+# AFFE=_F(TOUT="OUI", NOM_CMP=("DX", "DY", "DZ"), VALE=(0.0, 0.0, 0.0)),
+# )
+
+test = code_aster.TestCase()
+xe = 1.0 * np.array(
+    [
+        [0.0, 0.0, 0.0],
+        [0.1, 0.0, 0.0],
+        [0.1, 0.1, 0.0],
+        [0.0, 0.1, 0.0],
+        [0.0, 0.0, 0.1],
+        [0.1, 0.0, 0.1],
+        [0.1, 0.1, 0.1],
+        [0.0, 0.1, 0.1],
+    ],
+    dtype=np.float64,
+)
+
+DMAT = []
+
+DMAT.append(
+    np.array(
+        [
+            [
+                34120.979615019991,
+                8530.2449037549977,
+                8530.2449037549977,
+                0.0000000000000000,
+                0.0000000000000000,
+                0.0000000000000000,
+            ],
+            [
+                8529.0663429166998,
+                40270.167984973843,
+                9759.8468655780871,
+                2.7721491362761783e-011,
+                1.2309109259279076e-011,
+                -8.4976374618321137e-012,
+            ],
+            [
+                8529.0663429167016,
+                9759.8468655780871,
+                40270.167984973850,
+                1.7611359043893664e-011,
+                2.0551798627247472e-011,
+                -1.1801595351715930e-011,
+            ],
+            [
+                1.3511176965964939e-015,
+                3.8972724528477224e-014,
+                8.0647684446233929e-015,
+                25587.199028750132,
+                -1.8786365896532629e-013,
+                1.5148381758302351e-013,
+            ],
+            [
+                8.7506780150938926e-015,
+                4.0058623899478191e-014,
+                1.9154244148223544e-013,
+                7.1131063811191604e-013,
+                25587.199028750132,
+                3.0907956083390423e-014,
+            ],
+            [
+                -5.9590458964147886e-013,
+                -4.8306833082937883e-012,
+                1.6399315188648526e-012,
+                1.4365755988943414e-012,
+                3.9993851744674294e-012,
+                30510.321119395761,
+            ],
+        ],
+        dtype=np.float64,
+    )
+)
+
+DMAT.append(
+    np.array(
+        [
+            [
+                35032.847904170405,
+                8758.2119760426012,
+                8758.2119760426012,
+                3.7007434154171850e-010,
+                3.7007434154171819e-010,
+                0.0000000000000000,
+            ],
+            [
+                8722.3195793790219,
+                40455.959369472104,
+                9835.6557897702332,
+                6.1789343995601874e-012,
+                -4.8504520058442287e-012,
+                -6.2210372439706685,
+            ],
+            [
+                8722.3195793790237,
+                9835.6557897702387,
+                40455.959369472119,
+                -7.1502319329696195e-013,
+                9.0102881609992287e-012,
+                -6.2210372439639876,
+            ],
+            [
+                1.6181643785106787e-014,
+                5.0608039629351998e-014,
+                1.3357936682921857e-014,
+                26300.748839864107,
+                -1.0823847399478807e-012,
+                1.3614956345916217e-013,
+            ],
+            [
+                3.5254084699440648e-014,
+                4.9420703579235211e-014,
+                2.1184943319700474e-013,
+                2.5243773552998733e-012,
+                26300.748839864118,
+                2.7343513809418468e-014,
+            ],
+            [
+                -5.2639160734867625e-013,
+                -3.4814294981182660e-012,
+                1.2567744384557234e-012,
+                -2.7189599063912279e-012,
+                5.0621316604996114e-013,
+                30730.461842575700,
+            ],
+        ],
+        dtype=np.float64,
+    )
+)
+
+
+DMAT.append(
+    np.array(
+        [
+            [
+                35593.823045832432,
+                8898.4557614581081,
+                8898.4557614581081,
+                -3.6021556108305218e-005,
+                -3.6017115216205897e-005,
+                0.0000000000000000,
+            ],
+            [
+                8833.1205759552595,
+                35343.755887195694,
+                8835.3752926302004,
+                -0.35564369617847141,
+                -8.6152773433084919e-006,
+                -98.507433398991168,
+            ],
+            [
+                8833.1205759551212,
+                8835.3752926299203,
+                35343.755887195286,
+                -8.6151776235315326e-006,
+                -0.35564369637943738,
+                -98.507433399139416,
+            ],
+            [
+                -1.6752468526245265e-011,
+                -1.6404315999211674e-011,
+                -6.0211244828256153e-011,
+                26704.776312955593,
+                -4.3692977596530146e-010,
+                -8.7465039411629341e-011,
+            ],
+            [
+                2.6470835608074804e-010,
+                5.4676584063700335e-010,
+                7.8208490297641439e-010,
+                -3.2549095786748239e-010,
+                26704.776312955459,
+                2.0222062271922195e-010,
+            ],
+            [
+                -1.6690726597014914e-011,
+                -3.3417133871294173e-011,
+                -5.2982523350031696e-011,
+                8.2322054824530833e-011,
+                -2.0051066427624200e-011,
+                26606.888046701413,
+            ],
+        ],
+        dtype=np.float64,
+    )
+)
+
+DMAT.append(
+    np.array(
+        [
+            [
+                3679.5369647433072,
+                919.88424118582680,
+                919.88424118582680,
+                -4.6259292692715078e-011,
+                -4.6259292692714819e-011,
+                0.0000000000000000,
+            ],
+            [
+                919.74598327991748,
+                33365.336292469168,
+                6857.0164551495936,
+                1.1556080425557826e-010,
+                1.7549724437817976e-010,
+                6.7784026670986923e-011,
+            ],
+            [
+                919.74598327995864,
+                6857.0164551496564,
+                33365.336292469299,
+                1.6553084847708719e-010,
+                1.0329667983527788e-010,
+                5.1916402960116419e-011,
+            ],
+            [
+                1.5082162278975273e-016,
+                -1.4765074790909128e-011,
+                -2.9529847938571933e-012,
+                2759.2379498402511,
+                -1.4453619227354358e-013,
+                -1.3252087792976658e-012,
+            ],
+            [
+                9.4289304027211606e-016,
+                -3.3106647156423546e-013,
+                -1.6562752508619040e-012,
+                7.1924122850136996e-014,
+                2759.2379498402506,
+                -1.1812089997051974e-011,
+            ],
+            [
+                -4.1767509804825027e-012,
+                -2.7441128304827917e-011,
+                1.9758947881372376e-012,
+                6.8275171835315614e-012,
+                -3.3929263984300020e-012,
+                26508.319837319566,
+            ],
+        ],
+        dtype=np.float64,
+    )
+)
+
+
+i = -1
+for inst in [1, 2, 3, 4]:
+    i += 1
+
+    U = CREA_CHAMP(
+        OPERATION="EXTR", TYPE_CHAM="NOEU_DEPL_R", INFO=1, NOM_CHAM="DEPL", RESULTAT=RES1, INST=inst
+    )
+
+    SIGP = CREA_CHAMP(
+        OPERATION="EXTR",
+        TYPE_CHAM="ELGA_SIEF_R",
+        INFO=1,
+        NOM_CHAM="SIEF_ELGA",
+        RESULTAT=RES1,
+        INST=inst,
+    )
+
+    VARIP = CREA_CHAMP(
+        OPERATION="EXTR",
+        TYPE_CHAM="ELGA_VARI_R",
+        INFO=1,
+        NOM_CHAM="VARI_ELGA",
+        RESULTAT=RES1,
+        INST=inst,
+    )
+
+    MENDO = CALCUL(
+        __use_namedtuple__=True,
+        OPTION=("MATR_TANG_ELEM"),
+        MODELE=mod,
+        PHASE="PREDICTION",
+        CHAM_MATER=fieldmat,
+        INCREMENT=_F(LIST_INST=L_INS1, NUME_ORDRE=20 * inst),  # cette valeur semble ne rien changer
+        EXCIT=(_F(CHARGE=CHAR1), _F(CHARGE=Csymy), _F(CHARGE=Csymz), _F(CHARGE=Csymx)),
+        DEPL=U,
+        INCR_DEPL=DU,
+        SIGM=SIGP,
+        VARI=VARIP,
+        COMPORTEMENT=_F(RELATION="RGI_BETON", TYPE_MATR_TANG="MATR_ENDO"),
+        INFO=1,
+    )
+
+    M_EL = MENDO.MATR_TANG_ELEM
+    # ELT = M_EL.getElementaryTerms()[0]
+    # val = ELT.getValues()
+    MATR_DECH = ASSE_MATRICE(MATR_ELEM=M_EL, NUME_DDL=NU)
+
+    # calcul de la matrice de décharge de référence
+
+    D = 0.5 * (DMAT[i].T + DMAT[i])
+    Kref = elas2stif(D, xe)
+
+    test.assertAlmostEqual(npl.norm(MATR_DECH.toNumpy() - Kref), 0, delta=10)
+
+a = """
+
+# vérification de l'expression de SIXX en fonctionne de la matrice d'endommagement locale
+# ici les valeurs de la première ligne de la matrice sont représentées par V80 à V85
+
+# On pourra reprendre cette vérification si on a un jour accès aux valeurs de dsidep.
+
+TABVARI = CREA_TABLE(
+    RESU=_F(
+        RESULTAT=RES1,
+        TOUT_ORDRE="OUI",
+        TOUT="OUI",
+        NOM_CHAM="VARI_ELGA",
+        NOM_CMP=("V1", "V2", "V3", "V4", "V5", "V6", "V80", "V81", "V82", "V83", "V84", "V85"),
+    )
+)
+
+TABVARI = CALC_TABLE(
+    reuse=TABVARI,
+    TABLE=TABVARI,
+    ACTION=_F(
+        OPERATION="EXTR",
+        NOM_PARA=(
+            "INST",
+            "MAILLE",
+            "POINT",
+            "V1",
+            "V2",
+            "V3",
+            "V4",
+            "V5",
+            "V6",
+            "V80",
+            "V81",
+            "V82",
+            "V83",
+            "V84",
+            "V85",
+        ),
+    ),
+)
+
+TABSIXX = CREA_TABLE(
+    RESU=_F(RESULTAT=RES1, TOUT_ORDRE="OUI", TOUT="OUI", NOM_CHAM="SIEF_ELGA", NOM_CMP=("SIXX",))
+)
+
+TABSIXX = CALC_TABLE(
+    reuse=TABSIXX,
+    TABLE=TABSIXX,
+    ACTION=_F(OPERATION="EXTR", NOM_PARA=("INST", "MAILLE", "POINT", "SIXX")),
+)
+
+# IMPR_TABLE(UNITE=6, TABLE=TABSIXX, FILTRE=_F(NOM_PARA='POINT', VALE_I=1))
+
+
+TABVARI = CALC_TABLE(
+    reuse=TABVARI,
+    TABLE=TABVARI,
+    ACTION=_F(OPERATION="COMB", TABLE=TABSIXX, NOM_PARA=("INST", "MAILLE", "POINT")),
+)
+
+# IMPR_TABLE(UNITE=6, TABLE=TABVARI)
+
+F = FORMULE(
+    VALE="(V1*V80+V2*V81+V3*V82+V4*V83+V5*V84+V6*V85)",
+    NOM_PARA=("V1", "V2", "V3", "V4", "V5", "V6", "V80", "V81", "V82", "V83", "V84", "V85"),
+)
+
+
+TABVARI = CALC_TABLE(
+    reuse=TABVARI, TABLE=TABVARI, ACTION=(_F(OPERATION="OPER", FORMULE=F, NOM_PARA="SIXX_D"),)
+)
+
+
+TABVARI = CALC_TABLE(
+    reuse=TABVARI,
+    TABLE=TABVARI,
+    ACTION=_F(OPERATION="EXTR", NOM_PARA=("INST", "MAILLE", "POINT", "SIXX", "SIXX_D")),
+)
+
+IMPR_TABLE(UNITE=6, TABLE=TABVARI, FILTRE=_F(NOM_PARA="POINT", VALE_I=1))
+
+"""
+
+
+FIN()

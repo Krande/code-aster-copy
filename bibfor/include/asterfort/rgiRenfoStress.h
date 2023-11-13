@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ interface
     subroutine rgiRenfoStress(xmat, iadrmat, sigmf6, epstf6, epspt6,&
                           teta1, teta2, dt, ppas, theta, fl3d,&
                           end3d, wpl3, vwpl33, vwpl33t, dt3, dr3, ipzero,&
-                          ngf, rc00, var0, varf, sigf6d, ierr1)
+                          ngf, rc00, var0, varf, sigf6d, matdechac, rhov, ierr1)
         integer, intent(in) :: ngf
         real(kind=8), intent(in) :: dt3(3)
         real(kind=8), intent(in) :: dr3(3)
@@ -47,6 +47,8 @@ interface
         aster_logical, intent(in) :: ppas
         real(kind=8), intent(out) :: varf(*)
         real(kind=8), intent(out) :: sigf6d(6)
+        real(kind=8), intent(out) :: matdechac(6,6)
+        real(kind=8), intent(out) :: rhov
         integer, intent(out) :: ierr1
     end subroutine rgiRenfoStress
 end interface

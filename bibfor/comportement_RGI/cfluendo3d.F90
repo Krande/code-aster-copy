@@ -107,6 +107,7 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate, &
     real(kind=8) :: dt3d
 ! - Indicateur du type de matrice
     aster_logical :: matrEndo
+    real(kind=8)  :: matdech(6, 6)
 !
     character(len=16) :: rela_name
 !
@@ -128,6 +129,7 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate, &
 
 ! - Flag for elastic matrix
     matrEndo = nint(carcri(TYPE_MATR_T)) .eq. 4
+    if (.not. L_MATR(option)) matrEndo = ASTER_FALSE
 
     codret = 0
 !
@@ -146,6 +148,7 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate, &
     depst3d(:) = 0.d0
     valres1(:) = 0.d0
     valres(:) = 0.d0
+    matdech(:, :) = 0.d0
 !
     iteflumaxi = int(carcri(ITER_INTE_MAXI))
 !
@@ -390,7 +393,7 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate, &
                    var03d, varf3d, nvari3d, nbelas3d, teta13d, &
                    teta23d, dt3d, epstf3d, ierr1, iso1, &
                    mfr11, end3d, fl3d, local11, ndim, &
-                   nmatbe3, iteflumaxi, sech)
+                   nmatbe3, iteflumaxi, sech, matrEndo, matdech)
 !
     do i = 1, 3
         sigp(i) = sigf3d(i)
@@ -407,41 +410,46 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate, &
 !
     if (L_MATR(option)) then
 !
-        zero = 0.d0
-        un = 1.d0
-        deux = 2.d0
+        if (matrEndo) then
+            dsidep(1:nstrs, 1:nstrs) = matdech(1:nstrs, 1:nstrs)
+        else
+            zero = 0.d0
+            un = 1.d0
+            deux = 2.d0
 !
-        d(:, :) = zero
+            d(:, :) = zero
 !
-        e = xmat(1)
-        nu = xmat(2)
+            e = xmat(1)
+            nu = xmat(2)
 !
-        coef = un/((un+nu)*(un-deux*nu))
-        coef1 = e*(un-nu)*coef
-        coef2 = e*nu*coef
-        coef3 = e/(un+nu)
+            coef = un/((un+nu)*(un-deux*nu))
+            coef1 = e*(un-nu)*coef
+            coef2 = e*nu*coef
+            coef3 = e/(un+nu)
 !
-        d(1, 1) = coef1
-        d(1, 2) = coef2
-        d(1, 3) = coef2
+            d(1, 1) = coef1
+            d(1, 2) = coef2
+            d(1, 3) = coef2
 !
-        d(2, 1) = coef2
-        d(2, 2) = coef1
-        d(2, 3) = coef2
+            d(2, 1) = coef2
+            d(2, 2) = coef1
+            d(2, 3) = coef2
 !
-        d(3, 1) = coef2
-        d(3, 2) = coef2
-        d(3, 3) = coef1
+            d(3, 1) = coef2
+            d(3, 2) = coef2
+            d(3, 3) = coef1
 !
-        d(4, 4) = 0.5d0*coef3
-        d(5, 5) = 0.5d0*coef3
-        d(6, 6) = 0.5d0*coef3
+            d(4, 4) = 0.5d0*coef3
+            d(5, 5) = 0.5d0*coef3
+            d(6, 6) = 0.5d0*coef3
 !
-        do i = 1, nstrs
-            do j = 1, nstrs
-                dsidep(i, j) = d(i, j)
+            do i = 1, nstrs
+                do j = 1, nstrs
+                    dsidep(i, j) = d(i, j)
+                end do
             end do
-        end do
+!
+        end if
 !
     end if
 !

@@ -168,7 +168,7 @@ TEST_RESU(
             NOM_CHAM="SIGM_NOEU",
             GROUP_NO="N6",
             NOM_CMP="SIXX",
-            VALE_CALC=0.23359488528872774,
+            VALE_CALC=0.23359591586305611,
             GROUP_MA="M1",
         ),
         _F(
@@ -177,7 +177,7 @@ TEST_RESU(
             NOM_CHAM="SIGM_NOEU",
             GROUP_NO="N6",
             NOM_CMP="SIXX",
-            VALE_CALC=0.20614515666442992,
+            VALE_CALC=0.2061765147496824,
             GROUP_MA="M1",
         ),
     )

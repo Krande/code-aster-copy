@@ -111,7 +111,7 @@ subroutine endo3d(wpl3, vwpl33, vwpl33t, wplx3, vwplx33, vwplx33t, &
 !***********************************************************************
 !     passage de rt dans la base principale des ouvertures maxi
     call chrep3d(rt331, rt33, vwplx33)
-    call tail_reel(long3, vwpl33, dim3, ndim, ifour)
+    call tail_reel(long3, vwplx33, dim3, ndim, ifour)
     do i = 1, 3
         gftmin = long3(i)*(0.5d0*rt*ept)*1.1
         wkt = max(gft, gftmin)/rt331(i, i)-long3(i)*ept/2.d0
@@ -171,7 +171,7 @@ subroutine endo3d(wpl3, vwpl33, vwpl33t, wplx3, vwplx33, vwplx33t, &
 !     calcul des indicateur de refermetures
     xx = dmax1(souplesse66(1, 1), souplesse66(2, 2), souplesse66(3, 3))
     youngmin = 1.d0/xx
-    call tail_reel(long3, vwplx33, dim3, ndim, ifour)
+    call tail_reel(long3, vwpl33, dim3, ndim, ifour)
     do i = 1, 3
         gfrmin = 2.d0*(ref331(i, i)**2/youngmin)*long3(i)
         if (gfr .lt. gfrmin) then

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine rgiRenfoStress(xmat, iadrmat, sigmf6, epstf6, epspt6, &
                           teta1, teta2, dt, ppas, theta, fl3d, &
                           end3d, wpl3, vwpl33, vwpl33t, dt3, dr3, ipzero, &
-                          ngf, rc00, var0, varf, sigf6d, ierr1)
+                          ngf, rc00, var0, varf, sigf6d, matdechac, rhov, ierr1)
 ! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 !
@@ -42,13 +42,13 @@ subroutine rgiRenfoStress(xmat, iadrmat, sigmf6, epstf6, epspt6, &
     real(kind=8), intent(in) :: var0(*), rc00, teta1, teta2, dt, theta
     real(kind=8), intent(in) :: wpl3(3), vwpl33(3, 3), vwpl33t(3, 3), dt3(3), dr3(3)
     aster_logical, intent(in) :: end3d, fl3d, ppas
-    real(kind=8), intent(out) :: varf(*), sigf6d(6)
+    real(kind=8), intent(out) :: varf(*), sigf6d(6), matdechac(6, 6), rhov
     integer, intent(out) :: ierr1
 !-----------------------------------------------------------------------
 !   local variables
     integer :: nbrenf, nbparr, ngfba
     parameter(nbrenf=5, nbparr=21, ngfba=65)
-    integer :: i, j, k, l, istepbid, iadr, numf, numr, nrenf00
+    integer :: i, j, k, l, c, istepbid, iadr, numf, numr, nrenf00, m, n
     aster_logical :: errr, plast_seule
     real(kind=8) :: XN(ngfba), BN(ngfba), ANN(ngfba, ngfba+1)
     real(kind=8) :: rhor(nbrenf), deqr(nbrenf), yor(nbrenf), syr(nbrenf), taur(nbrenf)
@@ -59,7 +59,7 @@ subroutine rgiRenfoStress(xmat, iadrmat, sigmf6, epstf6, epspt6, &
     real(kind=8) :: eplr0(nbrenf), sigr0(nbrenf), eprm0(nbrenf), mu_r0(nbrenf)
     real(kind=8) :: spre0(nbrenf), sigrfissp(nbrenf, 3, 3), sigrd33p(3, 3), sigrf33p(3, 3)
     real(kind=8) :: sigrh6p(6), dri, epspmf33(3, 3), epstf33(3, 3)
-    real(kind=8) :: rhov, sigrf6p(6), sigrh33(3, 3), sigrh33p(3, 3), sigrm33p(3, 3), sigrm6p(6)
+    real(kind=8) :: sigrf6p(6), sigrh33(3, 3), sigrh33p(3, 3), sigrm33p(3, 3), sigrm6p(6)
     real(kind=8) :: epsrf(nbrenf), epspmf(nbrenf), sigrf(nbrenf), eprk0(nbrenf), eplrf(nbrenf)
     real(kind=8) :: eps_nl(nbrenf), eprkf(nbrenf), eprmf(nbrenf), sigrh6(6), sigrm6(6)
     real(kind=8) :: sig133(3, 3), vsig133(3, 3), sig13(3)
@@ -124,9 +124,6 @@ subroutine rgiRenfoStress(xmat, iadrmat, sigmf6, epstf6, epspt6, &
 
 !       calcul du taux volumique d armature
         rhov = sum(rhor(1:nrenf00))
-!       do j = 1, nrenf00
-!           rhov=rhov+rhor(j)
-!       end do
         if (rhov .gt. 1.d0) then
             call utmess('F', 'COMPOR3_10', nk=2, valk=[nomroa(1), nomroa(nrenf00)])
         end if
@@ -222,7 +219,7 @@ subroutine rgiRenfoStress(xmat, iadrmat, sigmf6, epstf6, epspt6, &
             do numf = 1, 3
                 do k = 1, 3
                     sigrd33p(k, numf) = 0.d0
-                    if (dt3(numf) .gt. 0.) then
+                    if (dr3(numf) .gt. 0.) then
                         do numr = 1, nrenf00
                             sigrd33p(k, numf) = sigrd33p(k, numf) &
                                                 +sigrfissp(numr, numf, k)*dr3(numf)
@@ -277,6 +274,20 @@ subroutine rgiRenfoStress(xmat, iadrmat, sigmf6, epstf6, epspt6, &
     do i = 1, 6
         varf(SBE(i)) = sigmf6(i)
     end do
+
+!   Matrice de rigidité acier
+    matdechac(:, :) = 0.d0
+    do l = 1, 6
+        call indice0(l, m, n)
+        do c = 1, 6
+            call indice0(c, i, j)
+            do k = 1, nrenf00
+                matdechac(l, c) = matdechac(l, c)+rhor(k)*yor(k)* &
+                                  (vecr(k, i)*vecr(k, j))*(vecr(k, m)*vecr(k, n))
+            end do
+        end do
+    end do
+
 999 continue
 
 end subroutine

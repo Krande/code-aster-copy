@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,8 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs, &
                      var0, varf, nvari, nbelas3d, teta1, &
                      teta2, dt, epstf, ierr1, &
                      iso, mfr, end3d, fl3d, local, &
-                     ndim, nmatbe2, iteflumax, sech)
+                     ndim, nmatbe2, iteflumax, sech, matrEndo, &
+                     matdech)
 ! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 !
@@ -37,7 +38,7 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs, &
 #include "asterfort/conso3d.h"
 #include "asterfort/bgpg3d.h"
 #include "asterfort/dflueff3d.h"
-#include "asterfort/endo3d.h"
+#include "asterfort/endotot.h"
 #include "asterfort/utmess.h"
 #include "asterfort/iniInt0.h"
 #include "asterfort/iniReal0.h"
@@ -60,8 +61,8 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs, &
     integer, intent(out) :: ierr1
     real(kind=8), intent(in) :: xmat(:)
     real(kind=8) :: var0(:), varf(:), epstf(6), sig0(6), sigf(:), deps(:)
-    real(kind=8) :: dt, teta1, teta2, sech
-    aster_logical :: iso
+    real(kind=8) :: dt, teta1, teta2, sech, matdech(6, 6)
+    aster_logical :: iso, matrEndo
 !   variable logique pour activer le fluage, l endo, le traitement local
     aster_logical, intent(in) :: end3d, fl3d, local
 !    nombre maximal de sous-itération de fluage
@@ -78,9 +79,9 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs, &
     real(kind=8) :: ept, ept00, ept1, epsklim, hyd00, inputR(25)
     real(kind=8) :: pg0, rc00, rc1, reduc1, ref00, ref1, rt00, rt1, outputR(6)
     real(kind=8) :: tauk00, tauk1, taum00, teta, treps, trepspg, gfr, epeqpc, errgf
-    real(kind=8) :: umdt, vrgi00, vrgi1, vrgi2, vw, vw1, vw2, we0s
+    real(kind=8) :: vrgi00, vrgi1, vrgi2, vw, vw1, vw2, we0s
     real(kind=8) :: xflu, young00, xnsat, xnsat00, outputVR6(6, 11)
-    integer :: i, j, npas1, nt, ifour, iplalim, inputI(4), outputI(3)
+    integer :: i, j, npas1, nt, ifour, iplalim, inputI(4), outputI(3), k
 !
     integer :: ngf
     parameter(ngf=65)
@@ -173,6 +174,10 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs, &
     real(kind=8) :: wplt6(6), wplt06(6), wplt006(6), wpltx6(6), wpltx06(6), wpltx006(6)
     real(kind=8) :: wpl3(3), vwpl33(3, 3), vwpl33t(3, 3), wplx3(3), vwplx33(3, 3), vwplx33t(3, 3)
     real(kind=8) :: epstf6(6), sigmf6(6)
+!   Objets pour matrice de decharge
+    real(kind=8) ::  sigv(6), sigvd(6), matendo(6, 6), matdechac(6, 6)
+    real(kind=8) ::  coef, coef1, coef2, coef3
+    real(kind=8) ::  mathook(6, 6), vremp, rhov
 !-----------------------------------------------------------------------
     if (nmatbe2 .eq. 0) then
         is_ba = ASTER_FALSE
@@ -188,16 +193,17 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs, &
                   epleqc01, we0s, epeqpc, we0, lambda, mu, bg, mg, pg)
     call iniReal0(pw, bw, sigp, cwtauk, srw, bw0, pw0, dfl00, dfl0, &
                   cwp, dcc, xmt, dtr, vrgi0, aar0, aar1, def1, def0)
-    call iniReal0(At, St, M1, E1, M2, E2, AtF, StF, M1F, E1F, M2F, E2F)
+    call iniReal0(At, St, M1, E1, M2, E2, AtF, StF, M1F, E1F, M2F, E2F, &
+                  coef1, coef2, coef3, vremp)
     call iniVect0(3, cc03, dt3, dr3, dgt3, dgc3, wl3)
     call iniVect0(6, deps6r2, deps6r3, deps6r, sigf6d, dsw6, &
-                  epsk06, sig16, epsm16, epsm06, epse06)
+                  epsk06, sig16, epsm16, epsm06, epse06, sigv, sigvd)
     call iniVect0(6, epspg6, epspc6, epspt600, epspt60, epspg600, epspg60, &
                   epspc600, epspc60, dpg_depsa6, dpg_depspg6)
     call iniVect0(6, sigke06, sigke16, epsk006, epsm006, ett600, ett60, &
                   wplt6, wplt06, wplt006, wpltx6, wpltx06, wpltx006)
     call iniMat0(3, ref33, rt33, rtg33, vcc33, vcc33t)
-    call iniMat0(6, souplesse66, raideur66)
+    call iniMat0(6, souplesse66, raideur66, matendo, matdechac, mathook)
     call iniVect0(ngf, X, B)
 !
     A(:, :) = 0.d0
@@ -730,25 +736,21 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs, &
         call dflueff3d(ccmax1, dflu0, dflu1, dfin1)
     end if
     varf(DFLU) = dflu1
-!
-!
 !***********************************************************************
-!       contraintes dans solide et rgi en fin de pas avec
-!       prise en compte de l endo thermique et de fluage
-    umdt = (1.d0-dth1)*(1.d0-dflu1)
+!       contraintes dans solide et rgi en fin de pas
 !       resultante des pressions intraporeuses RGI et Capillaire (depression)
     sigp = -bg*pg-bw*pw
 !       effet sur la contrainte apparente en non sature
     do i = 1, 6
         if (i .le. 3) then
 !               prise en compte de la pression rgi
-            sigf6(i) = (sig16(i)+sigp+dsw6(i))*umdt
+            sigf6(i) = sig16(i)+sigp+dsw6(i)
         else
-            sigf6(i) = (sig16(i)+dsw6(i))*umdt
+            sigf6(i) = sig16(i)+dsw6(i)
         end if
     end do
 !
-!***********************************************************************
+!
 !       prise en compte de l'endommagement mécanique
     if (end3d) then
 !       chargement endo traction pre-pic
@@ -757,15 +759,18 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs, &
         do i = 1, 3
             dt3(i) = var0(DTL(i))
         end do
+!
+!***********************************************************************
 !       calcul des endommagements et ouvertures de fissures
-        call endo3d(wpl3, vwpl33, vwpl33t, wplx3, vwplx33, &
-                    vwplx33t, gft, gfr, iso, sigf6, &
-                    sigf6d, rt33, ref33, souplesse66, epspg6, &
-                    eprg00, a, b, x, ipzero, &
-                    ngf, ekdc, epspc6, dt3, dr3, &
-                    dgt3, dgc3, dcc, wl3, xmt, &
-                    dtiso, rt, dtr, dim3, ndim, &
-                    ifour, epeqpc, ept, errgf)
+        call endotot(dth1, dflu1, end3d, &
+                     wpl3, vwpl33, vwpl33t, wplx3, vwplx33, &
+                     vwplx33t, gft, gfr, iso, sigf6, &
+                     sigf6d, rt33, ref33, souplesse66, epspg6, &
+                     eprg00, a, b, x, ipzero, &
+                     ngf, ekdc, epspc6, dt3, dr3, &
+                     dgt3, dgc3, dcc, wl3, xmt, &
+                     dtiso, rt, dtr, dim3, ndim, &
+                     ifour, epeqpc, ept, errgf)
 !            stockage des endommagements de fissuration et ouverture
         varf(DTPP) = dtr
         do i = 1, 3
@@ -803,12 +808,90 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs, &
         sigf6d(1:6) = sigf6(1:6)
         sigmf6(1:6) = sigf6(1:6)
     end if
+
 !
     if (is_ba) then
         call rgiRenfoStress(xmat, nbelas3d+nmatbe2+1, sigmf6, &
                             epstf6, epspt6, teta1, teta2, dt, ppas0, theta, &
                             fl3d, end3d, wpl3, vwpl33, vwpl33t, dt3, dr3, &
-                            ipzero, ngf, rc00, var0, varf, sigf6d, ierr1)
+                            ipzero, ngf, rc00, var0, varf, sigf6d, &
+                            matdechac, rhov, ierr1)
+    end if
+!***********************************************************************
+!      Matrice de décharge
+    if (matrEndo) then
+!       Boucle de remplissage du pseudovecteurvirtuel
+        do i = 1, 6
+            sigv(i) = 0.d0
+            do j = 1, 6
+                if (i .eq. j) then
+                    if (sigf6(j) .ge. (1.5d0*rt00/100.d0)) then
+                        sigv(j) = sigf6(j)-(rt00/100.d0)
+                    else
+                        sigv(j) = 2.d0*(rt00/100.d0)
+                    end if
+                else
+                    sigv(j) = sigf6(j)
+                end if
+            end do
+!       Appel de la routine avec les contrainte virtuelles
+            call endotot(dth1, dflu1, end3d, &
+                         wpl3, vwpl33, vwpl33t, wplx3, vwplx33, &
+                         vwplx33t, gft, gfr, iso, sigv, &
+                         sigvd, rt33, ref33, souplesse66, epspg6, &
+                         eprg00, a, b, x, ipzero, &
+                         ngf, ekdc, epspc6, dt3, dr3, &
+                         dgt3, dgc3, dcc, wl3, xmt, &
+                         dtiso, rt, dtr, dim3, ndim, &
+                         ifour, epeqpc, ept, errgf)
+            if (is_ba) then
+                do j = 1, 6
+                    matendo(j, i) = ((sigvd(j)-sigmf6(j))/(sigv(i)-sigf6(i)))
+                end do
+            else
+                do j = 1, 6
+                    matendo(j, i) = ((sigvd(j)-sigf6d(j))/(sigv(i)-sigf6(i)))
+                end do
+            end if
+        end do
+!       Multiplication avec la matrice de rigidité
+        coef = 1.d0/((1.d0+xmat(2))*(1.d0-2.d0*xmat(2)))
+        coef1 = xmat(1)*(1.d0-xmat(2))*coef
+        coef2 = xmat(1)*xmat(2)*coef
+        coef3 = xmat(1)*(1.d0-2*xmat(2))*coef
+        do i = 1, 6
+            do j = 1, 6
+                if (i .eq. j) then
+                    if (i .le. 3) then
+                        mathook(i, j) = coef1
+                    else
+                        mathook(i, j) = coef3
+                    end if
+                else if ((i .le. 3) .and. (j .le. 3)) then
+                    mathook(i, j) = coef2
+                else
+                    mathook(i, j) = 0.d0
+                end if
+            end do
+        end do
+        do i = 1, 6
+            do j = 1, 6
+                vremp = 0.d0
+                do k = 1, 6
+                    vremp = vremp+matendo(i, k)*mathook(k, j)
+                end do
+                matdech(i, j) = vremp
+            end do
+        end do
+
+        if (is_ba) then
+!           Matrice homogeneise
+            do i = 1, 6
+                do j = 1, 6
+                    matdech(i, j) = (1.d0-rhov)*matdech(i, j)+matdechac(i, j)
+                end do
+            end do
+        end if
     end if
 !
 !   affectation dans le tableau de sortie des contraintes

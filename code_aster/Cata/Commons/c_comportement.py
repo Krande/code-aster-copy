@@ -457,7 +457,9 @@ def C_COMPORTEMENT(command):
             ),
             b_ntype_matr=BLOC(
                 condition="""is_in("RELATION", ('RGI_BETON','FLUA_PORO_BETON','FLUA_ENDO_PORO', 'RGI_BETON_BA',))""",
-                TYPE_MATR_TANG=SIMP(statut="f", typ="TXM", into=("MATR_ELAS", "MATR_ENDO"), defaut="MATR_ELAS"),
+                TYPE_MATR_TANG=SIMP(
+                    statut="f", typ="TXM", into=("MATR_ELAS", "MATR_ENDO"), defaut="MATR_ELAS"
+                ),
                 PARM_THETA=SIMP(statut="f", typ="R", val_min=0.0, val_max=1.0, defaut=1.0),
                 b_radi=BLOC(
                     condition="""not exists("TYPE_MATR_TANG")""",
