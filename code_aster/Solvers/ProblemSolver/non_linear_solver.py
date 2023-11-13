@@ -172,7 +172,9 @@ class NonLinearSolver(SolverFeature):
             if "CHAM_NO" in init_state:
                 phys_state.primal_curr = init_state.get("CHAM_NO")
             if "DEPL" in init_state:
-                phys_state.primal_curr = init_state.get("DEPL")
+                phys_state.primal_curr = init_state.get("DEPL").copyUsingDescription(
+                    self.phys_pb.getDOFNumbering().getEquationNumbering()
+                )
             if "SIGM" in init_state:
                 phys_state.stress = init_state.get("SIGM")
             if "VARI" in init_state:
