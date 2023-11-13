@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -538,6 +538,7 @@ implicit none
             goto 999
         endif
 !
+        dsidep = 0.d0
         call nmcomp(BEHinteg,&
                     'RIGI', g, 1, ndim, typmod,&
                     mate, compor, carcri, instam, instap,&
