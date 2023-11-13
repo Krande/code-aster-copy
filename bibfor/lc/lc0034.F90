@@ -155,13 +155,15 @@ subroutine lc0034(BEHinteg, &
                 write (6, '(A)') '!!!(o_o)!!! ATTENTION:                   !!!(o_o)!!!'
                 write (6, '(A)') '!!!(o_o)!!! CV non atteinte a la maille  !!!(o_o)!!!'
                 write (6, '(3A)') '!!!(o_o)!!! ', nomail, '                     !!!(o_o)!!!'
-             write (6, '(A,I1,A)') '!!!(o_o)!!! CODRET    =', codret, '                 !!!(o_o)!!!'
-                write (6, '(A,E12.5,A)') '!!!(o_o)!!! ERREUR    = ', vip(34), '     !!!(o_o)!!!'
+                write (6, '(A,I1,A)') '!!!(o_o)!!! CODRET    =', codret, &
+                    '                 !!!(o_o)!!!'
+                write (6, '(A,E12.5,A)') '!!!(o_o)!!! ERREUR    = ', vip(34), &
+                    '     !!!(o_o)!!!'
                 write (6, '(A)') '!!!(o_o)!!! ---------------------------- !!!(o_o)!!!'
             end if
         end if
 !
-    elseif (algo_inte(1:16) .eq. 'BASCULE_EXPLICIT' .and. icomp .eq. 2) then
+    elseif (algo_inte(1:16) .eq. 'BASCULE_EXPLICIT' .and. icomp .eq. 3) then
 !
 ! initialisation des variables internes utilisees dans le cas suivant
 ! -------------------------------------------------------------------
@@ -170,9 +172,9 @@ subroutine lc0034(BEHinteg, &
         vip(34) = 0.d0
         vip(35) = 0.d0
 !
-    elseif (algo_inte(1:16) .eq. 'BASCULE_EXPLICIT' .and. icomp .gt. 2) then
+    elseif (algo_inte(1:16) .eq. 'BASCULE_EXPLICIT' .and. icomp .gt. 3) then
 !
-! npal = nombre d'iteration maximal pour icomp=3
+! npal = nombre d'iteration maximal pour icomp=4
         npal = 4.*abs(carcri(5))
 !
 ! dans le cas codret=0, on incremente l'erreur sur le critere (V34)
@@ -195,7 +197,8 @@ subroutine lc0034(BEHinteg, &
                 write (6, '(A)') '!!!(o_o)!!! ATTENTION:                   !!!(o_o)!!!'
                 write (6, '(A)') '!!!(o_o)!!! CV non atteinte a la maille  !!!(o_o)!!!'
                 write (6, '(3A)') '!!!(o_o)!!! ', nomail, '                     !!!(o_o)!!!'
-             write (6, '(A,I1,A)') '!!!(o_o)!!! CODRET    =', codret, '                 !!!(o_o)!!!'
+                write (6, '(A,I1,A)') '!!!(o_o)!!! CODRET    =', &
+                    codret, '                 !!!(o_o)!!!'
 !             write(6,'(A,2(I4,A))') '!!!(o_o)!!! ITERATION =',nint(iter),' SUR ',nint(npal),&
 !             '     !!!(o_o)!!!'
                 write (6, '(A,E12.5,A)') '!!!(o_o)!!! ERREUR    = ', vip(34), '     !!!(o_o)!!!'
@@ -203,7 +206,7 @@ subroutine lc0034(BEHinteg, &
             end if
         end if
 !
-! evaluation de l'erreur en fin de redecoupage pour icomp=3
+! evaluation de l'erreur en fin de redecoupage pour icomp=4
 ! l'erreur est calculee dans nmhuj et stockee dans la variable V34
 ! stockage du numero d'increment si on n'est pas au dernier pas
 !
@@ -220,7 +223,7 @@ subroutine lc0034(BEHinteg, &
 !
     elseif (algo_inte(1:14) .eq. 'SEMI_EXPLICITE' .and. codret .eq. 1) then
 !
-        if (icomp .gt. 2) then
+        if (icomp .gt. 3) then
             codret = 2
         end if
 !

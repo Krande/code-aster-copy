@@ -97,7 +97,7 @@ subroutine redece(BEHinteg, &
 !               codret=2 : ok loi de comportement mais condition non respectee -> pas de cvg globale
 ! --------------------------------------------------------------------------------------------------
     aster_logical:: lMatrPred, lMatr, lSigm, lVari
-    integer, parameter:: SANS = 0, FORCE = 1, AUTO = 2, NBR_DECOUP_MAX = 4
+    integer, parameter:: SANS = 0, FORCE = 1, AUTO = 2, NBR_DECOUP_MAX = 5
     integer:: decoup
     integer :: niv_dec, niv_ini, npas, iip, codret_sub, pas
     real(kind=8) :: epsm_sub(neps), deps_sub(neps), sigm_sub(nsig), vim_sub(nvi)
@@ -164,7 +164,7 @@ subroutine redece(BEHinteg, &
     ! Boucle sur les niveaux de decoupage
     do niv_dec = niv_ini, NBR_DECOUP_MAX
         codret = 0
-        npas = max(1, abs(iip)*niv_dec)
+        npas = max(1, merge(1, abs(iip)*(2**(niv_dec-1)), niv_dec .eq. 0))
         deltat = (instap-instam)/npas
         deps_sub = deps/npas
 
