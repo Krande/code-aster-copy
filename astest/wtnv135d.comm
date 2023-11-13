@@ -43,8 +43,6 @@ KINT=DEFI_CONSTANTE(    VALE=1.E-18)
 #***********************************************************************
 
 MAILLAGE=LIRE_MAILLAGE(FORMAT='MED')
-# Pour eviter les "TOLE MACHINE", on perturbe legerement la geometrie du maillage :
-MODI_MAILLAGE(reuse =MAILLAGE, MAILLAGE=MAILLAGE, DEFORME=_F(OPTION='TRAN', ALEA=1.e-8,),)
 
 MODELE=AFFE_MODELE(     MAILLAGE=MAILLAGE,
                              AFFE=_F(  TOUT = 'OUI',
@@ -212,10 +210,7 @@ U1=STAT_NON_LINE(
                          INCREMENT=_F(
                 LIST_INST = TEMPS1,
                 ),
-                       CONVERGENCE=_F(
-                # on diminue la valeur de RESI_GLOB_RELA pour eviter les "TOLE MACHINE" (issue24538) :
-                RESI_GLOB_RELA = 1.E-10,
-                )
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6),
               )
 
 U1=CALC_CHAMP(reuse=U1,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U1)
@@ -293,18 +288,8 @@ U2=STAT_NON_LINE(
                          INCREMENT=_F(
                 LIST_INST = DEFLIST,
                 ),
-                            NEWTON=_F(
-                MATRICE = 'TANGENTE',
-                REAC_ITER=1,
-                PAS_MINI_ELAS=1.0,
-                REAC_ITER_ELAS=50,
-                ),
-                       CONVERGENCE=_F(
-                # on diminue la valeur de RESI_GLOB_RELA pour eviter les "TOLE MACHINE" (issue24538) :
-                RESI_GLOB_RELA = 1.E-10,
-                ITER_GLOB_MAXI = 20,
-                ITER_GLOB_ELAS = 100,
-                )
+                NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+                CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6),
               )
 
 U2=CALC_CHAMP(reuse=U2,CRITERES=('SIEQ_ELNO'),VARI_INTERNE=('VARI_ELNO'),CONTRAINTE=('SIGM_ELNO'),RESULTAT=U2)
@@ -326,7 +311,7 @@ TEST_RESU(RESU=_F(INST=1.3000E4,
                   NOM_CHAM='DEPL',
                   NOEUD='NO8',
                   NOM_CMP='DX',
-                  VALE_CALC=0.0219839832563,
+        VALE_CALC=0.030196074233464227,
                   ),
           )
 
@@ -335,7 +320,7 @@ TEST_RESU(RESU=_F(INST=1.3000E4,
                   NOM_CHAM='SIGM_NOEU',
                   NOEUD='NO8',
                   NOM_CMP='SIZZ',
-                  VALE_CALC=-12440706.5276,
+        VALE_CALC=-11940429.958083527,
                   ),
           )
 

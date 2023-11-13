@@ -304,8 +304,7 @@ TEST_RESU(RESU=(_F(INST=700000.0,
                    NOM_CHAM='DEPL',
                    NOEUD='N4',
                    NOM_CMP='DX',
-                   VALE_CALC=0.0299422934892,
-                   TOLE_MACHINE=3.E-5,                 # TODO TOLE_MACHINE
+                   VALE_CALC=0.029936820368585443,
                    ),
                 ),
           )
@@ -322,8 +321,7 @@ TEST_RESU(RESU=(_F(INST=700000.0,
                    NOM_CHAM='SIGM_NOEU',
                    NOEUD='N4',
                    NOM_CMP='SIYY',
-                   VALE_CALC=-12.0090105551,
-                   TOLE_MACHINE=2.E-5,                 # TODO TOLE_MACHINE
+                   VALE_CALC=-12.009227843931724,
                    ),
                 ),
           )

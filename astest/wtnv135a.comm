@@ -213,17 +213,8 @@ U1=STAT_NON_LINE(
                        CONVERGENCE=_F(
                 RESI_GLOB_RELA = 1.E-6,
                 ), #INFO=2,
-                SOLVEUR=_F(ELIM_LAGR='NON',
-                              FILTRAGE_MATRICE=-1.0,
-                              LOW_RANK_SEUIL=0.0,
-                              METHODE='MUMPS',
-                              MIXER_PRECISION='NON',
-                              NPREC=8,
-                              PCENT_PIVOT=20,
-                              POSTTRAITEMENTS='FORCE',
-                              PRETRAITEMENTS='AUTO',
-                              RESI_RELA=1.0e-10,)
-              )
+                SOLVEUR=_F(METHODE='MUMPS',)
+                )
 
 U1=CALC_CHAMP(reuse=U1,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U1)
 
@@ -309,25 +300,13 @@ U2=STAT_NON_LINE(
                             NEWTON=_F(
                 MATRICE = 'TANGENTE',
                 REAC_ITER=1,
-                PAS_MINI_ELAS=1.0,
-                REAC_ITER_ELAS=100,
                 ),
                        CONVERGENCE=_F(
                 RESI_GLOB_RELA = 1.E-9,
                 ITER_GLOB_MAXI = 20,
                 ITER_GLOB_ELAS = 100,
                 ),
-                SOLVEUR=_F(ELIM_LAGR='NON',
-                              FILTRAGE_MATRICE=-1.0,
-                              LOW_RANK_SEUIL=0.0,
-                              METHODE='MUMPS',
-                              MIXER_PRECISION='NON',
-                              NPREC=8,
-                              PCENT_PIVOT=20,
-                              POSTTRAITEMENTS='FORCE',
-                              PRETRAITEMENTS='AUTO',
-                              RESI_RELA=1.0e-10,)
-                #INFO=2,
+                SOLVEUR=_F(METHODE='MUMPS',)
               )
 
 U2=CALC_CHAMP(reuse=U2,CRITERES=('SIEQ_ELNO'),VARI_INTERNE=('VARI_ELNO'),CONTRAINTE=('SIGM_ELNO'),RESULTAT=U2)

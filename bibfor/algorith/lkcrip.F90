@@ -83,9 +83,8 @@ subroutine lkcrip(invar, s, vin, nbmat, mater,&
 ! ---  CRITERE ELASTOPLASTIQUE ------------------------------------
 ! =================================================================
     ucrip = varpl(1)*sii*htheta + varpl(2)*invar+varpl(3)
-    if (ucrip .lt. zero) goto 100
+    if (ucrip .lt. zero) ucrip = zero
 !
     seuil = sii*htheta - sigc*h0c*(ucrip)**paraep(1)
 ! =================================================================
-100  continue
 end subroutine
