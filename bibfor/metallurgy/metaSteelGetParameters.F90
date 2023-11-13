@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,8 +43,8 @@ type(META_SteelParameters), intent(out) :: metaSteelPara
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: kpg, spt
-    character(len=8) :: fami, poum
+    integer, parameter :: kpg = 1, spt = 1
+    character(len=8), parameter :: fami = 'FPG1', poum = '+'
     integer, parameter :: nb_para_steel = 7 
     real(kind=8) :: para_steel_vale(nb_para_steel)
     integer :: icodre_steel(nb_para_steel)
@@ -65,14 +65,9 @@ type(META_SteelParameters), intent(out) :: metaSteelPara
 !            
 ! --------------------------------------------------------------------------------------------------
 !
-    fami = 'FPG1'
-    kpg  = 1
-    spt  = 1
-    poum = '+'
-!
+
 ! - Get parameters for behaviour law of steel
-!
-    para_steel_vale(:) = 0.d0
+    para_steel_vale = 0.d0
     call rcvalb(fami          , kpg             , spt            , poum,&
                 jv_mater      , ' '             , 'META_ACIER'   ,&
                 1             , 'INST'          , [0.d0]         ,&
@@ -85,10 +80,9 @@ type(META_SteelParameters), intent(out) :: metaSteelPara
     metaSteelPara%ac3    = para_steel_vale(5)
     metaSteelPara%taux_1 = para_steel_vale(6)
     metaSteelPara%taux_3 = para_steel_vale(7)
-!
+
 ! - Get parameters for austenite grain
-!
-    para_auste_vale(:) = 0.d0
+    para_auste_vale = 0.d0
     call rcvalb(fami          , kpg             , spt            , poum,&
                 jv_mater      , ' '             , 'META_ACIER'   ,&
                 1             , 'INST'          , [0.d0]         ,&
@@ -101,9 +95,8 @@ type(META_SteelParameters), intent(out) :: metaSteelPara
     if ((icodre_auste(1) .eq. 0) .and. (icodre_auste(3) .eq. 1)) then
         call utmess('F', 'METALLURGY1_73')
     endif
-!
+
 ! - Upadate size of martensite grain ?
-!
     if (icodre_auste(1) .eq. 0) then
         metaSteelPara%l_grain_size = ASTER_TRUE
         if (metaSteelPara%austenite%lambda0 .le. r8prem()) then
