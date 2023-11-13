@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine dtmforc(sd_dtm_, sd_int_, index, buffdtm, buffint, nlaccnt)
-    use yacsnl_module, only:
     implicit none
 !
 ! person_in_charge: hassan.berro at edf.fr
@@ -28,7 +27,6 @@ subroutine dtmforc(sd_dtm_, sd_int_, index, buffdtm, buffint, nlaccnt)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dtmcase_coder.h"
-#include "asterfort/dtmforc_yacs.h"
 #include "asterfort/dtmforc_calcnoli.h"
 #include "asterfort/dtmget.h"
 #include "asterfort/intget.h"
@@ -220,13 +218,6 @@ subroutine dtmforc(sd_dtm_, sd_int_, index, buffdtm, buffint, nlaccnt)
             fext = fext+fext_tmp
         end if
 
-        ! we take care of everything
-
-!        print *, "calling dtmforc_yacs"
-        call dtmforc_yacs(sd_dtm, sd_nl, itime, temps, dt, depl, vite, fext)
-!        print *, "end calling dtmforce_yacs"
-
-!
         if (nlcase .ne. 0) then
 !           --- Implicit treatment of chocs, project the force to the new basis
 !               by calculating : [Phi]_t x FORC

@@ -34,7 +34,6 @@ subroutine dtmclean(sd_dtm_)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/dtmget.h"
-#include "asterfort/dtmclean_noli_yacs.h"
 
 !     1. Input / output arguments
     character(len=*), intent(in)  :: sd_dtm_
@@ -51,8 +50,6 @@ subroutine dtmclean(sd_dtm_)
     if (nbnli .gt. 0) then
 
         call dtmget(sd_dtm, _SD_NONL, kscal=sd_nl)
-
-        call dtmclean_noli_yacs(sd_dtm, sd_nl)
 
     end if
 

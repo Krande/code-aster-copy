@@ -175,7 +175,7 @@ class ExtendedTransientGeneralizedResult:
             6: "ROTOR_FISS",
             7: "RELA_EFFO_DEPL",
             8: "RELA_EFFO_VITE",
-            10: "CHOC_ELAS_TRAC",
+            9: "CHOC_ELAS_TRAC",
         }
 
         nltypes = self.sdj.sd_nl.TYPE.get()

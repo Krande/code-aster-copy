@@ -107,13 +107,8 @@
 #define _NB_DIS_CHOC_ELAS 81
 
 
-#define _YACS_NOEUD 89
-#define _YACS_IDDL 94
-#define _NUM_PALIER 103
-
-
 ! Nombre de non linéarités
-#define _NL_NB_TYPES     10
+#define _NL_NB_TYPES     9
 ! Les non linéarités
 #define NL_CHOC            1
 #define NL_BUCKLING        2
@@ -123,8 +118,7 @@
 #define NL_CRACKED_ROTOR   6
 #define NL_FX_RELATIONSHIP 7
 #define NL_FV_RELATIONSHIP 8
-#define NL_YACS            9
-#define NL_DIS_CHOC_ELAS   10
+#define NL_DIS_CHOC_ELAS   9
 ! Le nombre de variables internes
 #define NBVARINT_CHOC 20
 #define NBVARINT_FLAM 12
@@ -132,7 +126,6 @@
 #define NBVARINT_DVIS 11
 #define NBVARINT_DECR 20
 #define NBVARINT_ROTF 3
-#define NBVARINT_YACS 1
 #define NBVARINT_FXRL 3
 #define NBVARINT_FVRL 3
 #define NBVARINT_DCG  2

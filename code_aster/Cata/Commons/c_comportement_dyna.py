@@ -41,7 +41,6 @@ def C_COMPORTEMENT_DYNA(COMMAND):  # COMMUN#
                 "CHOC_ELAS_TRAC",
                 "RELA_EFFO_DEPL",
                 "RELA_EFFO_VITE",
-                "YACS",
             ),
         ),
         #           C.2.1 Chocs
@@ -107,17 +106,7 @@ def C_COMPORTEMENT_DYNA(COMMAND):  # COMMUN#
             K_PHI=SIMP(statut="o", typ=(fonction_sdaster, formule)),
             DK_DPHI=SIMP(statut="o", typ=(fonction_sdaster, formule)),
         ),  # end b_rotor
-        #       C.2.3 Code coupling (Generic)
-        b_yacs_coupling=BLOC(
-            condition="""equal_to("RELATION", 'YACS')""",
-            regles=(UN_PARMI("NOEUD", "GROUP_NO"),),
-            NOEUD=SIMP(statut="c", typ=no),
-            GROUP_NO=SIMP(statut="f", typ=grno),
-            TYPE_CHAM=SIMP(statut="f", typ="TXM", into=("DEPL", "VITE", "FORCE")),
-            NOM_CMP=SIMP(statut="f", typ="TXM", max="**"),
-            PORT_YACS=SIMP(statut="f", typ="TXM", validators=NoRepeat()),
-        ),
-        #       C.2.4 Buckling
+        #       C.2.3 Buckling
         b_buckling=BLOC(
             condition="""equal_to("RELATION", 'FLAMBAGE')""",
             regles=(UN_PARMI("NOEUD_1", "GROUP_NO_1"), EXCLUS("NOEUD_2", "GROUP_NO_2")),
@@ -146,7 +135,7 @@ def C_COMPORTEMENT_DYNA(COMMAND):  # COMMUN#
             AMOR_POST_FL=SIMP(statut="f", typ="R", max="**"),
             CRIT_AMOR=SIMP(statut="f", typ="TXM", into=("INCLUS", "EXCLUS"), defaut="INCLUS"),
         ),  # end b_buckling
-        #       C.2.5 Anti-sismic disposition non linearity
+        #       C.2.4 Anti-sismic disposition non linearity
         b_antisism=BLOC(
             condition="""equal_to("RELATION", 'ANTI_SISM')""",
             regles=(UN_PARMI("NOEUD_1", "GROUP_NO_1"), UN_PARMI("NOEUD_2", "GROUP_NO_2")),
@@ -161,7 +150,7 @@ def C_COMPORTEMENT_DYNA(COMMAND):  # COMMUN#
             PUIS_ALPHA=SIMP(statut="f", typ="R", defaut=0.0e0),
             DX_MAX=SIMP(statut="f", typ="R", defaut=1.0),
         ),  # end b_antisism
-        #       C.2.6.1 Discrete viscous coupling, generalized Zener
+        #       C.2.5.1 Discrete viscous coupling, generalized Zener
         b_disvisc=BLOC(
             condition="""equal_to("RELATION", 'DIS_VISC')""",
             regles=(
@@ -219,7 +208,7 @@ def C_COMPORTEMENT_DYNA(COMMAND):  # COMMUN#
             ITER_INTE_MAXI=SIMP(statut="f", typ="I", defaut=20),
             RESI_INTE_RELA=SIMP(statut="f", typ="R", defaut=1.0e-6),
         ),  # end b_disvisc
-        #       C.2.6.2 Discrete nonlinear behavior in axial OR tangent direction
+        #       C.2.5.2 Discrete nonlinear behavior in axial OR tangent direction
         b_disecro=BLOC(
             condition="""equal_to("RELATION", 'DIS_ECRO_TRAC')""",
             fr=tr("Loi pour un discret avec écrouissage isotrope ."),
@@ -277,7 +266,7 @@ def C_COMPORTEMENT_DYNA(COMMAND):  # COMMUN#
             NOM_CMP=SIMP(statut="f", typ="TXM"),
             FONCTION=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
         ),  # end b_refx
-        #       C.2.8 Force velocity relationship non linearity
+        #       C.2.7 Force velocity relationship non linearity
         b_refv=BLOC(
             condition="""equal_to("RELATION", 'RELA_EFFO_VITE')""",
             regles=(UN_PARMI("NOEUD", "GROUP_NO"),),

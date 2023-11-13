@@ -63,8 +63,6 @@ subroutine nlvint(sd_nl_)
             add = NBVARINT_FXRL
         case (NL_FV_RELATIONSHIP)
             add = NBVARINT_FVRL
-        case (NL_YACS)
-            add = NBVARINT_YACS
         case (NL_DIS_CHOC_ELAS)
             add = NBVARINT_DCG
         case default

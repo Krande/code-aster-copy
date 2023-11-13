@@ -54,7 +54,6 @@ subroutine dtmprep_noli(sd_dtm_)
 #include "asterfort/dtmprep_noli_revi.h"
 #include "asterfort/dtmprep_noli_rotf.h"
 #include "asterfort/dtmprep_verichoc.h"
-#include "asterfort/dtmprep_noli_yacs.h"
 #include "asterfort/dtmprep_noli_galet.h"
 #include "asterfort/dtmsav.h"
 #include "asterfort/getvtx.h"
@@ -139,9 +138,6 @@ subroutine dtmprep_noli(sd_dtm_)
 !
         case (NL_CRACKED_ROTOR)
             call dtmprep_noli_rotf(sd_dtm, sd_nl, icomp)
-!
-        case (NL_YACS)
-            call dtmprep_noli_yacs(sd_dtm, sd_nl, icomp)
 !
         case (NL_FX_RELATIONSHIP)
             call dtmprep_noli_rede(sd_dtm, sd_nl, icomp)

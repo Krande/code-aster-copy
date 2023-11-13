@@ -56,7 +56,6 @@ subroutine pjxxco(typcal, method, lcorre, isole, resuin, &
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/pjefco.h"
-#include "asterfort/pjeftc.h"
 #include "asterfort/pjelco.h"
 #include "asterfort/pjngco.h"
 #include "asterfort/pjspco.h"
@@ -87,9 +86,6 @@ subroutine pjxxco(typcal, method, lcorre, isole, resuin, &
             cortmp = '&&PJXXCO.CORRES'
             if (method .eq. 'COLLOCATION') then
                 call pjefco(moa1, moa2, cortmp, 'V')
-            else if (method .eq. 'COUPLAGE') then
-!               méthode pour le couplage via YACS avec SATURNE pour ifs
-                call pjeftc(noma1, noma2, cortmp, 'V')
             end if
             call copisd('CORRESP_2_MAILLA', 'G', cortmp, corru)
             call detrsd('CORRESP_2_MAILLA', cortmp)

@@ -89,8 +89,6 @@ previous_errors = [
     "export",
     # Pour paramètre mem_aster
     "mem",
-    # Pour Edyos
-    "SSP",
     # Pour PHYSICAL GMSH
     "PHYSICAL",
     # Pour LD_LIBRARY_PATH
@@ -99,10 +97,6 @@ previous_errors = [
     "PATH",
     # librairie externe
     "HDF",
-    # Pour Code_Saturne (coupleur IFS)
-    "USASTE",
-    # CALC_IFS_DNL dans Contrib
-    "DNL",
 ]
 
 # TEST_TABLE are included in the "macro-command"

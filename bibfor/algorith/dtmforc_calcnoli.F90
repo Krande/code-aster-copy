@@ -122,11 +122,6 @@ subroutine dtmforc_calcnoli(sd_dtm_, sd_nl_, buffdtm, buffnl, &
             call dtmforc_rotf(nl_ind, sd_dtm, sd_nl, buffdtm, buffnl, &
                               time, depl, fext)
 ! !
-            ! TODO: change the name to NL_YACS
-        case (NL_YACS)
-            ! we will deal with it later
-            continue
-!
         case (NL_FX_RELATIONSHIP)
             call dtmforc_rede(nl_ind, sd_dtm, sd_nl, buffdtm, buffnl, &
                               depl, fext)
