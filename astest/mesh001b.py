@@ -168,7 +168,8 @@ node92 = [85, 84, 106]
 test.assertEqual(globalNodesNum[node92[rank] - 1], 92 - 1)
 test.assertEqual(nodesOwner[node92[rank] - 1], 1)
 
-nodesRanks = mesh.getNodesRank()
+nodesRanks = mesh.getNodesRanks()
+print(nodesRanks, flush=True)
 test.assertTrue(len(nodesRanks[node92[rank] - 1]) > 1)
 
 # Cells rank

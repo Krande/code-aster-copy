@@ -167,11 +167,12 @@ Return the rank of the processor which owns the nodes
 Returns:
     list[int]: MPI-Rank of the owner of the nodes
         )" )
-        .def( "getNodesRank", &ParallelMesh::getNodesRank, R"(
-Return the rank of the processors which have the nodes
+        .def( "getNodesRanks", &ParallelMesh::getNodesRanks, R"(
+Return the rank of the sub-domains which have the nodes.
+The first subdomain given for a node is its owner.
 
 Returns:
-    list[list[int]]: MPI-Rank of the owners of the nodes
+    list[list[int]]: MPI-Rank of of the subdomains
         )" )
         .def( "getCellsOwner", &ParallelMesh::getCellsOwner, R"(
 Return the rank of the processor which owns the cells
