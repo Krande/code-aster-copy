@@ -62,5 +62,6 @@ subroutine nzcomp_prep(jv_mater, phase_type, metaPara)
     end if
 !
     metaPara%steel = metaSteelPara
+    WRITE (6, *) "AC3:", metaPara%steel%ac1, metaPara%steel%ac3
 !
 end subroutine

@@ -84,31 +84,31 @@ module Metallurgy_type
 
 !
     type META_SteelParameters
-        real(kind=8) :: ar3
-        real(kind=8) :: alpha
-        real(kind=8) :: ms0
-        real(kind=8) :: ac1
-        real(kind=8) :: ac3
-        real(kind=8) :: taux_1
-        real(kind=8) :: taux_3
-        aster_logical :: l_grain_size
+        real(kind=8) :: ar3 = 0.d0
+        real(kind=8) :: alpha = 0.d0
+        real(kind=8) :: ms0 = 0.d0
+        real(kind=8) :: ac1 = 0.d0
+        real(kind=8) :: ac3 = 0.d0
+        real(kind=8) :: taux_1 = 0.d0
+        real(kind=8) :: taux_3 = 0.d0
+        aster_logical :: l_grain_size = ASTER_FALSE
         type(META_AusteniteParameters) :: austenite
         type(META_TRCParameters)       :: trc
     end type META_SteelParameters
 !
     type META_ZircParameters
-        real(kind=8) :: tdeq
-        real(kind=8) :: k
-        real(kind=8) :: n
-        real(kind=8) :: t1c
-        real(kind=8) :: t2c
-        real(kind=8) :: ac
-        real(kind=8) :: m
-        real(kind=8) :: qsrk
-        real(kind=8) :: t1r
-        real(kind=8) :: t2r
-        real(kind=8) :: ar
-        real(kind=8) :: br
+        real(kind=8) :: tdeq = 0.d0
+        real(kind=8) :: k = 0.d0
+        real(kind=8) :: n = 0.d0
+        real(kind=8) :: t1c = 0.d0
+        real(kind=8) :: t2c = 0.d0
+        real(kind=8) :: ac = 0.d0
+        real(kind=8) :: m = 0.d0
+        real(kind=8) :: qsrk = 0.d0
+        real(kind=8) :: t1r = 0.d0
+        real(kind=8) :: t2r = 0.d0
+        real(kind=8) :: ar = 0.d0
+        real(kind=8) :: br = 0.d0
     end type META_ZircParameters
 !
     type META_MaterialParameters
