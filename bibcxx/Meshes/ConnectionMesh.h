@@ -80,11 +80,11 @@ class ConnectionMesh : public BaseMesh {
 
     const JeveuxVectorLong &getNodesLocalNumbering() const { return _nodesLocalNumbering; };
 
-    const JeveuxVectorLong &getNodesOwner() const { return _nodesOwner; };
+    const JeveuxVectorLong getNodesOwner() const { return _nodesOwner; };
 
     const JeveuxVectorLong &getCellsLocalNumbering() const { return _cellsLocalNumbering; };
 
-    const JeveuxVectorLong &getCellsOwner() const { return _cellsOwner; };
+    const JeveuxVectorLong getCellsOwner() const { return _cellsOwner; };
 
     const ParallelMeshPtr &getParallelMesh() const { return _pMesh; };
 

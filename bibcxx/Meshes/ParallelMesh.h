@@ -97,13 +97,13 @@ class ParallelMesh : public BaseMesh {
      * @brief Get the JeveuxVector for outer subdomain nodes
      * @return _outerNodes
      */
-    const JeveuxVectorLong getNodesRank() const { return _outerNodes; };
+    const JeveuxVectorLong getNodesOwner() const { return _outerNodes; };
 
     /**
      * @brief Get the JeveuxVector for outer subdomain cells
      * @return _outerCells
      */
-    const JeveuxVectorLong getCellsRank() const { return _outerCells; };
+    const JeveuxVectorLong getCellsOwner() const { return _outerCells; };
 
     bool hasGroupOfCells( const std::string &name, const bool local = false ) const;
 
@@ -233,6 +233,8 @@ class ParallelMesh : public BaseMesh {
                         const VectorLong &nodesOwner, const VectorOfVectorsLong &joints );
 
     void endDefinition();
+
+    VectorOfVectorsLong getNodesRank() const;
 };
 
 /**

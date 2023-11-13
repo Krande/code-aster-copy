@@ -33,11 +33,11 @@ def printRank(mesh, filename):
         MAILLAGE=mesh,
         AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE=-1.0),
     )
-    nodes_rank = mesh.getNodesRank()
-    assert len(nodes_rank) == fon.size()
+    nodes_owner = mesh.getNodesOwner()
+    assert len(nodes_owner) == fon.size()
     fon.updateValuePointers()
     for i in range(fon.size()):
-        fon[i] = nodes_rank[i]
+        fon[i] = nodes_owner[i]
     fon.printMedFile(filename)
 
 

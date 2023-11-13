@@ -161,13 +161,19 @@ Return the list of the indexes of the outer cells in the mesh
 Returns:
     list[int]: Indexes of the cells.
         )" )
-        .def( "getNodesRank", &ParallelMesh::getNodesRank, R"(
+        .def( "getNodesOwner", &ParallelMesh::getNodesOwner, R"(
 Return the rank of the processor which owns the nodes
 
 Returns:
-    list[int]: MPI-Rank of the owners of the nodes
+    list[int]: MPI-Rank of the owner of the nodes
         )" )
-        .def( "getCellsRank", &ParallelMesh::getCellsRank, R"(
+        .def( "getNodesRank", &ParallelMesh::getNodesRank, R"(
+Return the rank of the processors which have the nodes
+
+Returns:
+    list[list[int]]: MPI-Rank of the owners of the nodes
+        )" )
+        .def( "getCellsOwner", &ParallelMesh::getCellsOwner, R"(
 Return the rank of the processor which owns the cells
 
 Returns:
@@ -176,7 +182,7 @@ Returns:
         .def( "_updateGlobalGroupOfCells", &ParallelMesh::updateGlobalGroupOfCells, R"(
 Share and update global groups of cells between MPI process.
 
-This function has to be used by developper only and not user
+This function has to be used by developer only and not user
 
 Returns:
     bool: *True* if succeeds, *False* otherwise.
@@ -184,7 +190,7 @@ Returns:
         .def( "_updateGlobalGroupOfNodes", &ParallelMesh::updateGlobalGroupOfNodes, R"(
 Share and update global groups of nodes between MPI process.
 
-This function has to be used by developper only and not user
+This function has to be used by developer only and not user
 
 Returns:
     bool: *True* if succeeds, *False* otherwise.

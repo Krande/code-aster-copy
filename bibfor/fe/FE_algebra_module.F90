@@ -413,10 +413,6 @@ contains
         integer :: icol
 
         select case (ncol)
-        case (3)
-            do icol = 1, 3
-                y(icol) = y(icol)+mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)
-            end do
         case (4)
             do icol = 1, 4
                 y(icol) = y(icol)+mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)
@@ -429,24 +425,20 @@ contains
             do icol = 1, 6
                 y(icol) = y(icol)+mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)
             end do
-        case (7)
-            do icol = 1, 7
-                y(icol) = y(icol)+mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)
-            end do
         case (8)
             do icol = 1, 8
                 y(icol) = y(icol)+mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)
             end do
-        case (9)
-            do icol = 1, 9
+        case (10)
+            do icol = 1, 10
                 y(icol) = y(icol)+mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)
             end do
-        case (19)
-            do icol = 1, 19
+        case (20)
+            do icol = 1, 20
                 y(icol) = y(icol)+mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)
             end do
-        case (26)
-            do icol = 1, 26
+        case (27)
+            do icol = 1, 27
                 y(icol) = y(icol)+mat(1, icol)*x(1)+mat(2, icol)*x(2)+mat(3, icol)*x(3)
             end do
         case default

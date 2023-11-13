@@ -501,6 +501,34 @@ void ParallelMesh::create_joints( const VectorLong &domains, const VectorLong &g
     }
 }
 
+VectorOfVectorsLong ParallelMesh::getNodesRank() const {
+    VectorOfVectorsLong ranks;
+
+    const auto rank_curr = getMPIRank();
+
+    auto nbNodes = this->getNumberOfNodes();
+    ranks.resize( nbNodes );
+    for ( auto i = 0; i < nbNodes; i++ ) {
+        ranks[i].push_back( rank_curr );
+    }
+
+    // On parcourt les joints maintenant
+    auto opp_domains = _joints->getOppositeDomains()->toVector();
+    for ( auto i = 0; i < opp_domains.size(); i++ ) {
+        auto dom = opp_domains[i];
+        auto nodes_send = _joints->getSendedElements( i );
+        for ( auto i = 0; i < nodes_send.size(); i += 2 ) {
+            ranks[nodes_send[i] - 1].push_back( dom );
+        }
+        auto nodes_recv = _joints->getReceivedElements( i );
+        for ( auto i = 0; i < nodes_recv.size(); i += 2 ) {
+            ranks[nodes_recv[i] - 1].push_back( dom );
+        }
+    }
+
+    return ranks;
+}
+
 void ParallelMesh::endDefinition() {
     BaseMesh::endDefinition();
     AS_ASSERT( build() );

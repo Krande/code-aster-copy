@@ -598,7 +598,7 @@ class FieldOnCells : public DataField {
         _values->updateValuePointer();
         _descriptor->updateValuePointer();
 
-        JeveuxVectorLong CellsRank = getMesh()->getCellsRank();
+        JeveuxVectorLong CellsRank = getMesh()->getCellsOwner();
         CellsRank->updateValuePointer();
 
         JeveuxCollectionLong collec = _dofDescription->getListOfGroupsOfElements();

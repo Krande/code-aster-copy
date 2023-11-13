@@ -63,7 +63,7 @@ nb_nodes_gl = MPI.ASTER_COMM_WORLD.allreduce(nb_nodes_lc, MPI.SUM)
 test.assertEqual(nb_nodes_std, nb_nodes_gl)
 
 nb_cells_std = mesh.getNumberOfCells()
-cells_rank = pMesh2.getCellsRank()
+cells_rank = pMesh2.getCellsOwner()
 nb_cells_lc = Counter(cells_rank)[rank]
 nb_cells_gl = MPI.ASTER_COMM_WORLD.allreduce(nb_cells_lc, MPI.SUM)
 test.assertEqual(nb_cells_std, nb_cells_gl)

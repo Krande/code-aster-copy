@@ -69,7 +69,7 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
     /* Total number of mesh cells related to the proc */
     const auto numberOfMeshCells = mesh->getNumberOfCells();
     /* Rank of the proc cells (to identify outer cells) */
-    const JeveuxVectorLong rankOfCells = mesh->getCellsRank();
+    const JeveuxVectorLong rankOfCells = mesh->getCellsOwner();
     /* Update the jeveux pointer to access the Fortran Jeveux pointer */
     rankOfCells->updateValuePointer();
     /* Get global cell connectivity to create cells group's later */
@@ -98,7 +98,7 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
     /* Total number of mesh nodes related to the proc */
     const auto numberOfMeshNodes = mesh->getNumberOfNodes();
     /* Rank of the proc nodes (to identify outer nodes) */
-    const JeveuxVectorLong rankOfNodes = mesh->getNodesRank();
+    const JeveuxVectorLong rankOfNodes = mesh->getNodesOwner();
     /* Update the jeveux pointer to access the Fortran Jeveux pointer */
     rankOfNodes->updateValuePointer();
     /* Global numbering of proc nodes (to link outer nodes on all procs) */

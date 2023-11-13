@@ -129,13 +129,13 @@ void Joints::setReceivedElements( const VectorOfVectorsLong &recv ) {
 };
 
 VectorLong Joints::getSendedElements( const ASTERINTEGER &id ) const {
-    const auto &obj = ( *_send )[id];
+    const auto &obj = ( *_send )[id + 1];
     obj->updateValuePointer();
     return obj->toVector();
 };
 
 VectorLong Joints::getReceivedElements( const ASTERINTEGER &id ) const {
-    const auto &obj = ( *_recv )[id];
+    const auto &obj = ( *_recv )[id + 1];
     obj->updateValuePointer();
     return obj->toVector();
 };

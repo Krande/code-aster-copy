@@ -12859,7 +12859,7 @@ class ParallelMesh(BaseMesh):
             list[int]: Indexes of the cells of the local groups.
         """
 
-    def getCellsRank(self):
+    def getCellsOwner(self):
         """Return the rank of the processor which owns the cells
 
         Returns:
@@ -12914,11 +12914,18 @@ class ParallelMesh(BaseMesh):
             list[int]: local to global numbering mapping.
         """
 
-    def getNodesRank(self):
+    def getNodesOwner(self):
         """Return the rank of the processor which owns the nodes
 
         Returns:
             list[int]: MPI-Rank of the owners of the nodes
+        """
+
+    def getNodesRank(self):
+        """Return the rank of the processors which have the nodes
+
+        Returns:
+            list[list[int]]: MPI-Rank of the owners of the nodes
         """
 
     def getOppositeDomains(self):

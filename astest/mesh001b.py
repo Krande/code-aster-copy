@@ -160,13 +160,16 @@ nodesGlobLast = [97, 97, 95]
 test.assertEqual(globalNodesNum[-1], nodesGlobLast[rank])
 
 # Owner of Nodes
-NodesRank = mesh.getNodesRank()
-test.assertEqual(NodesRank[1], rank)
+nodesOwner = mesh.getNodesOwner()
+test.assertEqual(nodesOwner[1], rank)
 
 # Node 92 (index is 91) is shared by all meshes (owner is 1)
 node92 = [85, 84, 106]
 test.assertEqual(globalNodesNum[node92[rank] - 1], 92 - 1)
-test.assertEqual(NodesRank[node92[rank] - 1], 1)
+test.assertEqual(nodesOwner[node92[rank] - 1], 1)
+
+nodesRanks = mesh.getNodesRank()
+test.assertTrue(len(nodesRanks[node92[rank] - 1]) > 1)
 
 # Cells rank
 cellsRankRef = [
@@ -365,8 +368,8 @@ cellsRankRef = [
         1,
     ],
 ]
-test.assertEqual(len(mesh.getCellsRank()), mesh.getNumberOfCells())
-test.assertSequenceEqual(mesh.getCellsRank(), cellsRankRef[rank])
+test.assertEqual(len(mesh.getCellsOwner()), mesh.getNumberOfCells())
+test.assertSequenceEqual(mesh.getCellsOwner(), cellsRankRef[rank])
 
 
 def inter(list1, list2):
@@ -389,7 +392,7 @@ outerNodes = []
 
 for i in range(mesh.getNumberOfNodes()):
     allNodes.append(i)
-    if NodesRank[i] == rank:
+    if nodesOwner[i] == rank:
         innerNodes.append(i)
     else:
         outerNodes.append(i)

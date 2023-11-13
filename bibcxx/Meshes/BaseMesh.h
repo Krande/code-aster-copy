@@ -348,7 +348,7 @@ class BaseMesh : public DataStructure, public ListOfTables {
      * @brief Get the JeveuxVector for outer subdomain nodes
      * @return VectorLong
      */
-    virtual const JeveuxVectorLong getNodesRank() const {
+    virtual const JeveuxVectorLong getNodesOwner() const {
         AS_ASSERT( false );
         return {};
     }
@@ -357,7 +357,7 @@ class BaseMesh : public DataStructure, public ListOfTables {
      * @brief Get the JeveuxVector for outer subdomain cells
      * @return VectorLong
      */
-    virtual const JeveuxVectorLong getCellsRank() const {
+    virtual const JeveuxVectorLong getCellsOwner() const {
         AS_ASSERT( false );
         return {};
     }

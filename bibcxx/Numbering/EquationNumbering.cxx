@@ -336,7 +336,7 @@ VectorLong EquationNumbering::getDOFs( const bool sameRank, const VectorString &
     if ( !_mesh )
         raiseAsterError( "Mesh is empty" );
 
-    const JeveuxVectorLong nodesRank = _mesh->getNodesRank();
+    const JeveuxVectorLong nodesRank = _mesh->getNodesOwner();
     nodesRank->updateValuePointer();
 
     SetLong set_nodes = toSet( getMesh()->getNodes( list_grpno ) );

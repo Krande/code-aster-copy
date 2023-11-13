@@ -120,7 +120,7 @@ class Mesh : public BaseMesh {
      * @brief Get inner nodes
      * @return list of node ids
      */
-    const JeveuxVectorLong getNodesRank() const {
+    const JeveuxVectorLong getNodesOwner() const {
         return JeveuxVectorLong( getName() + ".NOEX",
                                  VectorLong( getNumberOfNodes(), getMPIRank() ) );
     };
@@ -129,7 +129,7 @@ class Mesh : public BaseMesh {
      * @brief Get inner cells
      * @return list of cells ids
      */
-    const JeveuxVectorLong getCellsRank() const {
+    const JeveuxVectorLong getCellsOwner() const {
         return JeveuxVectorLong( getName() + ".MAEX",
                                  VectorLong( getNumberOfCells(), getMPIRank() ) );
     };
