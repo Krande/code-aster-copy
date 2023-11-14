@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,6 +21,27 @@
 from ..Utilities import _
 
 cata_msg = {
+    1: _(
+        """
+REST_GENE_PHYS : Vous avez indiqué %(k1)s = "OUI" mais le résultat fourni à RESU_GENE ne le permet pas.
+
+Conseil : Vous devez renseigner le mot-clé %(k1)s à l'opérateur DYNA_VIBRA.
+ 
+"""
+    ),
+    2: _(
+        """
+REST_GENE_PHYS : Vous avez fourni le mot-clé ACCE_MONO_APPUI. Le résultat donné dans RESU_GENE
+n'est pas compatible avec cela car il est de type multi-appui.
+"""
+    ),
+    3: _(
+        """
+REST_GENE_PHYS : La structure de données entrante (RESU_GENE) est de type multi-appui.
+Vous n'avez pas fourni le mot-clé MULT_APPUI = "OUI".
+La restitution sera donc faite en repère relatif.
+"""
+    ),
     8: _(
         """
  La composante %(k1)s n'existe pas dans le champ de la grandeur.

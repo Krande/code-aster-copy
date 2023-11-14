@@ -189,6 +189,22 @@ N02_DXC3 = RECU_FONCTION(
     RESU_GENE=TRA_GCS, NOM_CHAM="DEPL", NOM_CMP="DX", GROUP_NO="N02", CORR_STAT="OUI"
 )
 
+TRA_GCS_P = REST_GENE_PHYS(RESU_GENE=TRA_GCS, TOUT_INST="OUI", NOM_CHAM="DEPL", CORR_STAT="OUI")
+
+N04_DXC3_TA = POST_RELEVE_T(
+    ACTION=_F(
+        OPERATION="EXTRACTION",
+        INTITULE="DEPLN04",
+        RESULTAT=TRA_GCS_P,
+        TOUT_ORDRE="OUI",
+        NOM_CHAM="DEPL",
+        GROUP_NO=("N04",),
+        NOM_CMP="DX",
+        # REPERE="GLOBAL",
+    )
+)
+
+
 # -----------------------------------------------------------------------
 # CALCUL SUR BASE MODALE COMPLETE
 # -----------------------------------------------------------------------
@@ -423,6 +439,18 @@ TEST_FONCTION(
         ),
     )
 ),
+# Pour test de REST_GENE_PHYS/CORR_STAT="OUI"
+
+IMPR_TABLE(UNITE=6, TABLE=N04_DXC3_TA)
+
+TEST_TABLE(
+    TABLE=N04_DXC3_TA,
+    VALE_CALC=-0.01130286042724,
+    VALE_REFE=-0.01130135697227,
+    NOM_PARA="DX",
+    REFERENCE="AUTRE_ASTER",
+    FILTRE=_F(NOM_PARA="INST", VALE=19.399999999999999, PRECISION=1e-6),
+)
 
 TEST_FONCTION(
     VALEUR=(

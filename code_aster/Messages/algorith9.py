@@ -68,6 +68,12 @@ cata_msg = {
 Les matrices ne possèdent pas toutes la même numérotation.
 """
     ),
+    38: _(
+        """
+ Si "ACCE_MONO_APPUI" est présent, vous devez obligatoirement calculer ACCE_ABSOLU.
+Pour cela, il faut soit l'ajouter à NOM_CHAM, soit indiquer TOUT_CHAM="OUI".
+"""
+    ),
     39: _(
         """
  base modale et MATR_ASSE avec numérotations différentes

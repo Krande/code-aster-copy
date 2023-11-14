@@ -87,9 +87,9 @@ subroutine tran75(nomres, typres, nomin, basemo)
     character(len=19) :: fonct(3), kinst, knume, numeq, numeq1, trange
     character(len=19) :: typref(8), prof
     character(len=24) :: matric, chamno, crefe(2), nomcha, chamn2, objve1
-    character(len=24) :: objve2, objve3, objve4, chmod, tmpcha
-    aster_logical :: tousno, multap, leffor, prems
-    integer :: iexi
+    character(len=24) :: objve2, objve3, objve4, chmod, tmpcha, valk
+    aster_logical :: tousno, multap, leffor, prems, l_corr_stat, l_multi_app
+    integer :: iexi, iexi_ipsd
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: iarchi, ibid, ich, id
@@ -160,6 +160,23 @@ subroutine tran75(nomres, typres, nomin, basemo)
 !
     call jeveuo(trange//'.DESC', 'L', vi=desc)
     nbmode = desc(2)
+!   correction statique dans le résultat d'entrée
+    l_corr_stat = ASTER_FALSE
+    if (desc(5) .eq. 1) then
+        l_corr_stat = ASTER_TRUE
+    end if
+    call dismoi('CORR_STAT', trange, 'RESU_DYNA', repk=k8b)
+
+!   multi-appui dans le résultat d'entrée
+    call jeexin(trange//'.IPSD', iexi_ipsd)
+    l_multi_app = ASTER_FALSE
+    if (iexi_ipsd .gt. 0 .and. .not. l_corr_stat) then
+        l_multi_app = ASTER_TRUE
+    end if
+!
+    if (nfonct .ne. 0 .and. l_multi_app) then
+        call utmess('F', 'UTILITAI4_2')
+    end if
 !
 !
     if (mode .eq. blanc) then
@@ -229,7 +246,18 @@ subroutine tran75(nomres, typres, nomin, basemo)
     call getvtx(' ', 'MULT_APPUI', scal=monmot(1), nbret=n1)
     call getvtx(' ', 'CORR_STAT', scal=monmot(2), nbret=n2)
 !
-    if (monmot(1) .eq. 'OUI' .or. monmot(2) .eq. 'OUI') multap = .true.
+    if (monmot(1) .eq. 'OUI') then
+        multap = .true.
+        valk = 'MULT_APPUI'
+        if (.not. l_multi_app) call utmess('F', 'UTILITAI4_1', sk=valk)
+    elseif (monmot(2) .eq. 'OUI') then
+        multap = .true.
+        valk = 'CORR_STAT'
+        if (.not. l_corr_stat) call utmess('F', 'UTILITAI4_1', sk=valk)
+    end if
+    if (l_multi_app .and. monmot(1) .ne. 'OUI') then
+        call utmess('A', 'UTILITAI4_3')
+    end if
 !
 !     ---   RECUPERATION DES VECTEURS DEPLACEMENT, VITESSE ET   ---
 !     --- ACCELERATION GENERALISES SUIVANT LES CHAMPS SOUHAITES ---

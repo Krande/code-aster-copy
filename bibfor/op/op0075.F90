@@ -43,13 +43,13 @@ subroutine op0075()
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !     ------------------------------------------------------------------
-    character(len=8) :: k8bid, nomres, resin, mode, blanc8, param(3), val_param(3)
-    character(len=16) :: concep, nomcmd, typres, typrep, champ(4), typmat
+    character(len=8) :: k8bid, nomres, resin, mode, blanc8, param(3), val_param(3), ltch
+    character(len=16) :: concep, nomcmd, typres, typrep, champ(8), typmat
     character(len=19) :: profno
     character(len=24) :: matgen, numgen, basemo
-    aster_logical :: prsimp
+    aster_logical :: prsimp, l_err
     integer :: nbord, i, iord, lpain(3), lpaout(3), ibid, ir1
-    integer :: j, j3refe, jrefn, n1, nbcham
+    integer :: j, j3refe, jrefn, naccab, nbcham
     integer, pointer :: ordr(:) => null()
     character(len=24), pointer :: refa(:) => null()
 !     ------------------------------------------------------------------
@@ -65,9 +65,18 @@ subroutine op0075()
     call getres(nomres, typres, nomcmd)
 !
 !     --- PHASE DE TEST SUR LES CHAMPS A RESTITUER
-    call getvtx(' ', 'NOM_CHAM', nbval=4, vect=champ, nbret=nbcham)
+
+!   on verifie que si ACCE_MONO_APPUI est présent TOUT_CHAM ou ACCE_ABSOLU est présent
+    l_err = ASTER_FALSE
+    call getvid(' ', 'ACCE_MONO_APPUI', scal=k8bid, nbret=naccab)
+    if (naccab .gt. 0) l_err = ASTER_TRUE
+
+    call getvtx(' ', 'NOM_CHAM', nbval=8, vect=champ, nbret=nbcham)
     if (nbcham .lt. 0) then
         call utmess('E', 'ALGORITH9_44')
+    elseif (nbcham .eq. 0) then
+!       TOUT_CHAM est présent
+        l_err = ASTER_FALSE
     else
         do i = 1, nbcham
             do j = i+1, nbcham
@@ -76,13 +85,15 @@ subroutine op0075()
                 end if
             end do
             if (champ(i) .eq. 'ACCE_ABSOLU') then
-                call getvid(' ', 'ACCE_MONO_APPUI', scal=k8bid, nbret=n1)
-                if (n1 .eq. 0) then
+                l_err = ASTER_FALSE
+                if (naccab .eq. 0) then
                     call utmess('E', 'ALGORITH9_45')
                 end if
             end if
         end do
     end if
+
+    if (l_err) call utmess('F', 'ALGORITH9_38')
 !
 !     --- CREATION DU .REFN DU PROFIL :
     profno = '&&OP0075'//'.PROFC.NUME'
