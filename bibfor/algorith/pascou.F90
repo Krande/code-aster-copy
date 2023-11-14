@@ -23,6 +23,7 @@ subroutine pascou(mate, mateco, carele, sddyna, sddisc)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/celces.h"
 #include "asterfort/cesexi.h"
@@ -64,15 +65,19 @@ subroutine pascou(mate, mateco, carele, sddyna, sddisc)
 !
 !
 !
-    integer :: ibid, jcesd, jcesl, n1, i, numins
+    integer, parameter :: nbFieldInMax = 4, nbFieldOutMax = 1
+    character(len=8) :: lpain(nbFieldInMax), lpaout(nbFieldOutMax)
+    character(len=24) :: lchin(nbFieldInMax), lchout(nbFieldOutMax)
+!
+    integer :: ibid, jcesd, jcesl, n1, i, numins, nbFieldIn, nbFieldOut
     integer :: nbma, ima, iad, nbinst, nbmcfl
     real(kind=8) :: dtcou, valeur, phi, instin
     aster_logical :: booneg, boopos
     character(len=2) :: codret
     character(len=6) :: nompro
-    character(len=8) :: mo, lpain(4), lpaout(1), stocfl, maicfl, mail
+    character(len=8) :: mo, stocfl, maicfl, mail
     character(len=19) :: chams, chvarc
-    character(len=24) :: chgeom, ligrel, lchin(4), lchout(1), chcara(18)
+    character(len=24) :: chgeom, ligrel, chcara(18)
     real(kind=8), pointer :: ditr(:) => null()
     real(kind=8), pointer :: cesv(:) => null()
 !
@@ -84,6 +89,10 @@ subroutine pascou(mate, mateco, carele, sddyna, sddisc)
 !
     nompro = 'OP0070'
     chvarc = '&&PASCOU.CH_VARC_R'
+    lpain = ' '
+    lchin = ' '
+    lpaout = ' '
+    lchout = ' '
 !
     call getvid(' ', 'MODELE', scal=mo, nbret=ibid)
 !
@@ -110,16 +119,21 @@ subroutine pascou(mate, mateco, carele, sddyna, sddisc)
 ! --- CHAMP DE CARACTERISTIQUES ELEMENTAIRES
     call mecara(carele(1:8), chcara)
 !
+    nbFieldIn = 3
     if (carele(1:8) .ne. ' ') then
         lpain(4) = 'PCACOQU'
         lchin(4) = chcara(7)
+        nbFieldIn = nbFieldIn+1
     end if
 !
     lpaout(1) = 'PCOURAN'
     lchout(1) = '&&'//nompro//'.PAS_COURANT'
+    nbFieldOut = 1
 !
-    call calcul('S', 'PAS_COURANT', ligrel, 4, lchin, &
-                lpain, 1, lchout, lpaout, 'V', &
+    ASSERT(nbFieldIn .le. nbFieldInMax)
+    ASSERT(nbFieldOut .le. nbFieldOutMax)
+    call calcul('S', 'PAS_COURANT', ligrel, nbFieldIn, lchin, &
+                lpain, nbFieldOut, lchout, lpaout, 'V', &
                 'OUI')
 !
 !     PASSAGE D'UN CHAM_ELEM EN UN CHAM_ELEM_S
