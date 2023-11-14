@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -67,6 +67,17 @@ class ThermalLoadDefinition(ExecuteCommand):
                 return True
         return False
 
+    @classmethod
+    def _isOnAllEntities(cls, keywords):
+        """return True if instance has Neumann loadings"""
+        for key in keywords:
+            occ = keywords.get(key)
+            if isinstance(occ, (list, tuple)):
+                for occ2 in occ:
+                    if occ2.get("TOUT") is not None:
+                        return True
+        return False
+
     def create_result(self, keywords):
         """Initialize the result.
 
@@ -74,6 +85,10 @@ class ThermalLoadDefinition(ExecuteCommand):
             keywords (dict): Keywords arguments of user's keywords.
         """
         model = keywords["MODELE"]
+        l_para = model.getMesh().isParallel()
+        l_all = self._isOnAllEntities(keywords)
+        if l_para and l_all:
+            raise TypeError("Not allowed to mix up parallel mesh and TOUT='OUI'")
         l_neum = self._hasNeumannLoadings(keywords)
         l_diri = self._hasDirichletLoadings(keywords)
         if not model.getMesh().isParallel():
