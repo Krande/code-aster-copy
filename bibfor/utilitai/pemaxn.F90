@@ -169,7 +169,7 @@ subroutine pemaxn(resu, nomcha, lieu, nomlie, modele, &
     npara = 4*nbcmp
     nbcmpm = cnsd(2)
     if (l_pmesh) then
-        call jeveuo(noma//".NULOGL", "L", vi=nulg)
+        call jeveuo(noma//".NUNOLG", "L", vi=nulg)
         AS_ALLOCATE(vr=v_value, size=nbproc)
         AS_ALLOCATE(vk8=v_name, size=nbproc)
     end if

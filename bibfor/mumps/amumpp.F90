@@ -217,7 +217,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
         call wkvect(nonu//'.NUME.DEE2', 'V V I', 2*nnbsol, jdee2)
         mesh = zk24(jrefn) (1:8)
         if (lmhpc) then
-            nonulg = mesh//'.NULOGL'
+            nonulg = mesh//'.NUNOLG'
             call jeveuo(nonulg, 'L', jmlogl)
         end if
 

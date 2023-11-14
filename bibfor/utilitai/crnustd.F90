@@ -133,7 +133,7 @@ subroutine crnustd(numddl)
     mpicou = v_gco(1)
 !
     call jeveuo(mesh//'.DIME', 'L', dime)
-    call jeveuo(mesh//'.NULOGL', 'L', vi=v_nulg)
+    call jeveuo(mesh//'.NUNOLG', 'L', vi=v_nulg)
     call jeveuo(mesh//'.NOEX', 'L', vi=v_noext)
 !
 !   !!! VERIFIER QU'IL N'Y A PAS DE MACRO-ELTS

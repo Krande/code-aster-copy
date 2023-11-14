@@ -420,7 +420,7 @@ subroutine crnggc(chamnz)
 !
 ! --- Pour debuggage en hpc
     if (ASTER_FALSE) then
-        nonulg = mesh//'.NULOGL'
+        nonulg = mesh//'.NUNOLG'
         call jeveuo(nonulg, 'L', jmlogl)
         do iaux = 0, nbddll-1
             nuno = v_deeq(iaux*2+1)

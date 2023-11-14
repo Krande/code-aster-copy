@@ -45,7 +45,11 @@ void ParallelMesh::_buildGlobal2LocalMap() {
 };
 
 const JeveuxVectorLong ParallelMesh::getLocalToGlobalNodeNumberingMapping() const {
-    return _globalNumbering;
+    return _globalNodeNumbering;
+};
+
+const JeveuxVectorLong ParallelMesh::getLocalToGlobalCellNumberingMapping() const {
+    return _globalCellNumbering;
 };
 
 VectorLong ParallelMesh::getSendJoint( const int &id ) const {
@@ -275,10 +279,10 @@ VectorLong ParallelMesh::getNodes( const std::string name, const bool localNumbe
 
     VectorLong newNumbering;
     newNumbering.reserve( newRank.size() );
-    _globalNumbering->updateValuePointer();
+    _globalNodeNumbering->updateValuePointer();
 
     for ( auto &nodeId : newRank )
-        newNumbering.push_back( ( *_globalNumbering )[nodeId] );
+        newNumbering.push_back( ( *_globalNodeNumbering )[nodeId] );
     CALL_JEDEMA();
 
     return newNumbering;
@@ -343,9 +347,9 @@ VectorLong ParallelMesh::getNodesFromCells( const VectorLong &cells, const bool 
         VectorLong v_nodes;
         v_nodes.reserve( nodes.size() );
 
-        _globalNumbering->updateValuePointer();
+        _globalNodeNumbering->updateValuePointer();
         for ( auto &node : nodes )
-            v_nodes.push_back( ( *_globalNumbering )[node] );
+            v_nodes.push_back( ( *_globalNodeNumbering )[node] );
 
         CALL_JEDEMA();
         return v_nodes;
@@ -466,7 +470,7 @@ void ParallelMesh::create_joints( const VectorLong &domains, const VectorLong &g
     AS_ASSERT( joints.size() == 2 * domains.size() )
 
     _joints->setOppositeDomains( domains );
-    ( *_globalNumbering ) = globalNumbering;
+    ( *_globalNodeNumbering ) = globalNumbering;
     ( *_outerNodes ) = nodesOwner;
     const std::string cadre( "G" );
     const std::string error( "F" );

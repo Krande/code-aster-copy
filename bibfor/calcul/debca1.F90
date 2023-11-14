@@ -130,7 +130,7 @@ subroutine debca1(nin)
         call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', ca_ilmaco_)
     end if
     if (isParallelMesh(ma)) then
-        call jeveuo(ma//'.NULOGL', 'L', ca_ianulg_)
+        call jeveuo(ma//'.NUNOLG', 'L', ca_ianulg_)
     else
         ca_ianulg_ = -1
     end if

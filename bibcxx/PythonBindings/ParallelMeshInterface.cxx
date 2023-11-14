@@ -238,6 +238,14 @@ Returns global to local numbering mapping for nodes
 Returns:
     dict[int]: global to local numbering mapping.
     )" )
+        .def( "getLocalToGlobalCellNumberingMapping",
+              &ParallelMesh::getLocalToGlobalCellNumberingMapping,
+              R"(
+Returns local to global numbering mapping for cells
+
+Returns:
+    list[int]: local to global numbering mapping.
+        )" )
         .def( "getOppositeDomains", &ParallelMesh::getOppositeDomains,
               R"(
 Returns the list of opposite domains of local process

@@ -207,7 +207,7 @@ subroutine nmobs2(meshz, sd_obsv, tabl_name, time, title, &
         call jeveuo(work_node, 'L', vr=v_work_node)
         call jeveuo(list_node, 'L', vi=v_list_node)
         if (l_pmesh) then
-            call jeveuo(meshz(1:8)//'.NULOGL', 'L', vi=v_nonulg)
+            call jeveuo(meshz(1:8)//'.NUNOLG', 'L', vi=v_nonulg)
         end if
 !
         do i_node = 1, nb_node_r

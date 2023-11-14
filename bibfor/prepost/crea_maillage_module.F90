@@ -1476,7 +1476,7 @@ contains
                 deca = deca+v_nuloc(i_proc)
             end do
 !
-            call wkvect(mesh_out//'.NULOGL', 'G V I', this%nb_nodes, vi=v_nulogl)
+            call wkvect(mesh_out//'.NUNOLG', 'G V I', this%nb_nodes, vi=v_nulogl)
             v_nulogl = -1
             do i_node = 1, this%nb_nodes
                 if (v_noex(i_node) == rank) then
@@ -2912,7 +2912,7 @@ contains
 ! --- 1: On commence par compter le nombre de noeuds que l'on doit recevoir
 !
             call jeveuo(mesh_out//".NOEX", 'L', vi=v_noex)
-            call jeveuo(mesh_out//".NULOGL", 'L', vi=v_nulogl)
+            call jeveuo(mesh_out//".NUNOLG", 'L', vi=v_nulogl)
 
             call wkvect("&&CREAMA.RNODE", 'V V I', nbproc, vi=v_rnode)
             do i_node = 1, this%nb_nodes

@@ -92,7 +92,7 @@ subroutine irmhpc(idfimd, nomamd, nomast, nbnoeu)
 !
 ! -- Impression numerotation globale des noeuds
 !
-    nonulg = nomast//'.NULOGL'
+    nonulg = nomast//'.NUNOLG'
     call jeveuo(nonulg, 'L', jnumno)
 !
     call as_mmhgnw(idfimd, nomamd, MED_NODE, MED_NONE, zi(jnumno), nbnoeu, codret)

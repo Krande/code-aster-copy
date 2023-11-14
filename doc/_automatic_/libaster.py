@@ -12915,6 +12915,13 @@ class ParallelMesh(BaseMesh):
             list[int]: Indexes of the nodes.
         """
 
+    def getLocalToGlobalCellNumberingMapping(self):
+        """Returns local to global numbering mapping for cells
+
+        Returns:
+            list[int]: local to global numbering mapping.
+        """
+
     def getLocalToGlobalNodeNumberingMapping(self):
         """Returns local to global numbering mapping for nodes
 
