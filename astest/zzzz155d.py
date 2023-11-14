@@ -125,7 +125,7 @@ profileDepl = {
 }
 
 splitMesh = myTuple[0]
-loc2Glob = splitMesh.getLocalToGlobalMapping()
+loc2Glob = splitMesh.getLocalToGlobalNodeNumberingMapping()
 depl = myTuple[1]["00000008DEPL"][1]
 valuesDepl = depl.getValues()
 for count, i in enumerate(loc2Glob):

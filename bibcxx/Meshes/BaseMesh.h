@@ -406,7 +406,7 @@ class BaseMesh : public DataStructure, public ListOfTables {
      * @brief Get the mapping between local and global numbering of nodes
      * @return JeveuxVector of the indirection
      */
-    virtual const JeveuxVectorLong getLocalToGlobalMapping() const {
+    virtual const JeveuxVectorLong getLocalToGlobalNodeNumberingMapping() const {
         AS_ASSERT( false );
         return {};
     }

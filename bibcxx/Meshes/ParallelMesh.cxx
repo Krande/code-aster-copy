@@ -34,7 +34,7 @@
 #include "Utilities/Tools.h"
 
 void ParallelMesh::_buildGlobal2LocalMap() {
-    auto l2g = getLocalToGlobalMapping();
+    auto l2g = getLocalToGlobalNodeNumberingMapping();
     if ( l2g.exists() ) {
         l2g->updateValuePointer();
         ASTERINTEGER nloc = l2g->size();
@@ -44,7 +44,9 @@ void ParallelMesh::_buildGlobal2LocalMap() {
     }
 };
 
-const JeveuxVectorLong ParallelMesh::getLocalToGlobalMapping() const { return _globalNumbering; };
+const JeveuxVectorLong ParallelMesh::getLocalToGlobalNodeNumberingMapping() const {
+    return _globalNumbering;
+};
 
 VectorLong ParallelMesh::getSendJoint( const int &id ) const {
     return _joints->getSendedElements( id );

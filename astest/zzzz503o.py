@@ -44,7 +44,7 @@ q_elv = 380
 
 def checkJoints(mesh):
     comm = MPI.COMM_WORLD
-    l2G = mesh.getLocalToGlobalMapping()
+    l2G = mesh.getLocalToGlobalNodeNumberingMapping()
 
     j = 0
     for proc in mesh.getOppositeDomains():

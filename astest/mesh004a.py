@@ -118,7 +118,7 @@ nnodes = pMesh.getNumberOfNodes()
 test.assertEqual(
     numeDDL.getNodeAndComponentFromDOF(local=True)[::3], [(i, "DX") for i in range(nnodes)]
 )
-l2G = pMesh.getLocalToGlobalMapping()
+l2G = pMesh.getLocalToGlobalNodeNumberingMapping()
 test.assertEqual(
     numeDDL.getNodeAndComponentFromDOF(local=False)[::3], [(l2G[i], "DX") for i in range(nnodes)]
 )

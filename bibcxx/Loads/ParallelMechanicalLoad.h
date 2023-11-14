@@ -175,7 +175,7 @@ class ParallelMechanicalLoad : public DataStructure {
         this->DataStructure::debugPrint( logicalUnit );
         const auto &explorer = _FEDesc->getVirtualCellsExplorer();
         const auto &mesh = _FEDesc->getMesh();
-        auto &LToGmapMesh = mesh->getLocalToGlobalMapping();
+        auto &LToGmapMesh = mesh->getLocalToGlobalNodeNumberingMapping();
         auto &LToGmapFE = _FEDesc->getLocalToGlobalMapping();
         auto e1 = LToGmapMesh.exists();
         auto e2 = LToGmapFE.exists();

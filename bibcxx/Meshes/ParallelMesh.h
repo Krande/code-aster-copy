@@ -174,9 +174,9 @@ class ParallelMesh : public BaseMesh {
      * @brief Get the mapping between local and global numbering of nodes
      * @return JeveuxVector of the indirection
      */
-    const JeveuxVectorLong getLocalToGlobalMapping() const;
+    const JeveuxVectorLong getLocalToGlobalNodeNumberingMapping() const;
 
-    const std::map< ASTERINTEGER, ASTERINTEGER > getGlobalToLocalMapping() const {
+    const std::map< ASTERINTEGER, ASTERINTEGER > getGlobalToLocalNodeNumberingMapping() const {
         return _global2localMap;
     };
 

@@ -222,14 +222,16 @@ Returns:
         )",
               py::arg( "group_name" ), py::arg( "localNumbering" ) = true,
               py::arg( "same_rank" ) = PythonBool::None )
-        .def( "getLocalToGlobalMapping", &ParallelMesh::getLocalToGlobalMapping,
+        .def( "getLocalToGlobalNodeNumberingMapping",
+              &ParallelMesh::getLocalToGlobalNodeNumberingMapping,
               R"(
 Returns local to global numbering mapping for nodes
 
 Returns:
     list[int]: local to global numbering mapping.
         )" )
-        .def( "getGlobalToLocalMapping", &ParallelMesh::getGlobalToLocalMapping,
+        .def( "getGlobalToLocalNodeNumberingMapping",
+              &ParallelMesh::getGlobalToLocalNodeNumberingMapping,
               R"(
 Returns global to local numbering mapping for nodes
 

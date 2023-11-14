@@ -477,8 +477,8 @@ nodeglob = [[87], [], [0, 12, 18, 48, 87]]
 test.assertSequenceEqual(nodeglob[rank], mesh.getNodes("TEST_GN1", False))
 
 # test global to local mapping
-local_map = mesh.getLocalToGlobalMapping()
-global_map = mesh.getGlobalToLocalMapping()
+local_map = mesh.getLocalToGlobalNodeNumberingMapping()
+global_map = mesh.getGlobalToLocalNodeNumberingMapping()
 
 for i in range(len(local_map)):
     test.assertEqual(i, global_map[local_map[i]])

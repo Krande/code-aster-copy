@@ -12874,7 +12874,7 @@ class ParallelMesh(BaseMesh):
             list[list[int]]: MPI-Rank of of the subdomains
         """
 
-    def getGlobalToLocalMapping(self):
+    def getGlobalToLocalNodeNumberingMapping(self):
         """Returns global to local numbering mapping for nodes
 
         Returns:
@@ -12915,7 +12915,7 @@ class ParallelMesh(BaseMesh):
             list[int]: Indexes of the nodes.
         """
 
-    def getLocalToGlobalMapping(self):
+    def getLocalToGlobalNodeNumberingMapping(self):
         """Returns local to global numbering mapping for nodes
 
         Returns:
