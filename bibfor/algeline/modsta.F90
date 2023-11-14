@@ -231,14 +231,16 @@ subroutine modsta(motcle, matfac, matpre, solveu, lmatm, &
     do ib = 1, neq
         if (deeq(2*ib) .le. 0) nblag = nblag+1
     end do
-    call wkvect('&&MODSTA.LAG', 'V V I', nblag, jlag)
-    ie = 0
-    do ib = 1, neq
-        if (deeq(2*ib) .le. 0) then
-            zi(jlag+ie) = ib
-            ie = ie+1
-        end if
-    end do
+    if (nblag .ge. 1) then
+        call wkvect('&&MODSTA.LAG', 'V V I', nblag, jlag)
+        ie = 0
+        do ib = 1, neq
+            if (deeq(2*ib) .le. 0) then
+                zi(jlag+ie) = ib
+                ie = ie+1
+            end if
+        end do
+    end if
 !
     if (imod .gt. 0) then
         n_last_batch = mod(imod, icmpl27)
@@ -277,13 +279,14 @@ subroutine modsta(motcle, matfac, matpre, solveu, lmatm, &
 !*****************************************************************************************
 ! On annule les composantes de Lagranges des vecteurs solutions: vecteur par vecteur pour
 ! fluidifier les acces memoire.
-    do ib = 1, imod
-        do ie = 1, nblag
-            iaux = zi(jlag+ie-1)
-            zrmod(iaux, ib) = zero
+    if (nblag .ge. 1) then
+        do ib = 1, imod
+            do ie = 1, nblag
+                iaux = zi(jlag+ie-1)
+                zrmod(iaux, ib) = zero
+            end do
         end do
-    end do
-!
-    call jedetr('&&MODSTA.LAG')
+        call jedetr('&&MODSTA.LAG')
+    end if
     call jedema()
 end subroutine
