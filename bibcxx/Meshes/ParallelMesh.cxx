@@ -533,6 +533,36 @@ VectorOfVectorsLong ParallelMesh::getNodesRanks() const {
     return ranks;
 }
 
+VectorOfVectorsLong ParallelMesh::getCellsRanks() const {
+    VectorOfVectorsLong ranks;
+
+    const auto rank_curr = getMPIRank();
+
+    auto owner = this->getCellsOwner();
+    owner->updateValuePointer();
+
+    const auto &connecExp = getConnectivityExplorer();
+    auto nodes_owner = this->getNodesOwner();
+    nodes_owner->updateValuePointer();
+
+    auto nbCells = this->getNumberOfCells();
+    ranks.resize( nbCells );
+    for ( auto i = 0; i < nbCells; i++ ) {
+        ranks[i].push_back( ( *owner )[i] );
+
+        const auto cell = connecExp[i];
+        SetLong domain;
+        for ( auto &node : cell ) {
+            if ( ( *nodes_owner )[node - 1] != ( *owner )[i] ) {
+                domain.insert( ( *nodes_owner )[node - 1] );
+            }
+        }
+        ranks[i].insert( ranks[i].end(), domain.begin(), domain.end() );
+    }
+
+    return ranks;
+}
+
 void ParallelMesh::endDefinition() {
     BaseMesh::endDefinition();
     AS_ASSERT( build() );

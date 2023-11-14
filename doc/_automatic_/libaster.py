@@ -12866,6 +12866,14 @@ class ParallelMesh(BaseMesh):
             list[int]: MPI-Rank of the owners of the cells
         """
 
+    def getCellsRanks(self):
+        """Return the rank of the sub-domains which have the cells.
+        The first subdomain given for a cell is its owner.
+
+        Returns:
+            list[list[int]]: MPI-Rank of of the subdomains
+        """
+
     def getGlobalToLocalMapping(self):
         """Returns global to local numbering mapping for nodes
 

@@ -372,6 +372,9 @@ cellsRankRef = [
 test.assertEqual(len(mesh.getCellsOwner()), mesh.getNumberOfCells())
 test.assertSequenceEqual(mesh.getCellsOwner(), cellsRankRef[rank])
 
+cellsRanks = mesh.getCellsRanks()
+test.assertSequenceEqual([x[0] for x in cellsRanks], cellsRankRef[rank])
+
 
 def inter(list1, list2):
     return list(set(list1).intersection(list2))

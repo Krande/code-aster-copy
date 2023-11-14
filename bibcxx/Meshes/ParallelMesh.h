@@ -235,6 +235,8 @@ class ParallelMesh : public BaseMesh {
     void endDefinition();
 
     VectorOfVectorsLong getNodesRanks() const;
+
+    VectorOfVectorsLong getCellsRanks() const;
 };
 
 /**
