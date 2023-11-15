@@ -159,7 +159,7 @@ class ExtendedParallelMesh:
         graph = CommGraph()
 
         dictProc = {}
-        cmpt = 1
+        cmpt = 0
         for proc in self.getOppositeDomains():
             graph.addCommunication(proc)
             dictProc[proc] = cmpt

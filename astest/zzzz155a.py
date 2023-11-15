@@ -34,12 +34,12 @@ def checkJoints(mesh):
 
     j = 0
     for proc in mesh.getOppositeDomains():
-        fJ = mesh.getSendJoint(j + 1)
+        fJ = mesh.getSendJoint(j)
         gFJ = []
         for i in range(int(len(fJ) / 2)):
             gFJ.append(l2G[fJ[2 * i] - 1])
 
-        sJ = mesh.getReceiveJoint(j + 1)
+        sJ = mesh.getReceiveJoint(j)
         gSJ = []
         for i in range(int(len(sJ) / 2)):
             gSJ.append(l2G[sJ[2 * i] - 1])
