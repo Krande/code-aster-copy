@@ -73,6 +73,8 @@ class MeshBalancer {
     void sortCells( JeveuxVectorLong &typeIn, JeveuxCollectionLong &connexIn,
                     JeveuxVectorLong &typeOut, JeveuxCollectionLong &connexOut );
 
+    void sortCells( VectorLong &vectIn, VectorLong &vectOut ) const;
+
     void _enrichBalancers( VectorInt &newLocalNodesList, int iProc, int rank,
                            VectorOfVectorsLong &procInterfaces, VectorOfVectorsLong & );
 

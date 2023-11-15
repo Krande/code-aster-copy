@@ -35,6 +35,10 @@ pMesh = MODI_MAILLAGE(
     reuse=pMesh, MAILLAGE=pMesh, ORIE_PEAU=_F(GROUP_MA_PEAU=("HAUT", "BAS", "DROITE", "GAUCHE"))
 )
 
+cellNum = pMesh.getLocalToGlobalCellNumberingMapping()
+cellNumRef = [[0, 1, 2, 7, 4, 6, 9], [5, 7, 8, 2, 3, 9, 10]]
+test.assertSequenceEqual(cellNum, cellNumRef[rank])
+
 
 pmodel = AFFE_MODELE(
     MAILLAGE=pMesh,

@@ -236,9 +236,10 @@ ParallelMeshPtr MeshBalancer::applyBalancingStrategy( VectorInt &newLocalNodesLi
             cellGlobNumLoc.push_back( i + range2[0] );
         }
 
-        VectorLong globCellNumVect;
+        VectorLong globCellNumVect, globCellNumVect2;
         _cellsBalancer->balanceObjectOverProcesses( cellGlobNumLoc, globCellNumVect );
-        // outMesh->setLocalToGlobalCellNumberingMapping( globCellNumVect );
+        sortCells( globCellNumVect, globCellNumVect2 );
+        outMesh->setLocalToGlobalCellNumberingMapping( globCellNumVect2 );
     }
 
     outMesh->updateGlobalGroupOfNodes();
@@ -286,6 +287,15 @@ void MeshBalancer::sortCells( JeveuxVectorLong &typeIn, JeveuxCollectionLong &co
         auto &curCellOut = ( *connexOut )[count];
         curCellOut->setValues( *curCellIn );
         ++count;
+    }
+};
+
+void MeshBalancer::sortCells( VectorLong &vectIn, VectorLong &vectOut ) const {
+    AS_ASSERT( !_cellRenumbering.empty() );
+    vectOut.clear();
+    vectOut.reserve( vectIn.size() );
+    for ( const auto &num : _cellRenumbering ) {
+        vectOut.push_back( vectIn[num - 1] );
     }
 };
 
