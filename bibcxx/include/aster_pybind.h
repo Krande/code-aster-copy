@@ -64,10 +64,12 @@ struct type_caster< JeveuxVector< T > > {
     static handle cast( const JeveuxVector< T > &vect, return_value_policy /* policy */,
                         handle /* parent */ ) {
         py::list pylist;
-        vect->updateValuePointer();
-        auto size = vect->size();
-        for ( int i = 0; i < size; ++i ) {
-            pylist.append( ( *vect )[i] );
+        if ( vect.exists() ) {
+            vect->updateValuePointer();
+            auto size = vect->size();
+            for ( int i = 0; i < size; ++i ) {
+                pylist.append( ( *vect )[i] );
+            }
         }
         return pylist.inc_ref();
     }
