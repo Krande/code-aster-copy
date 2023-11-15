@@ -271,7 +271,7 @@ Create the joints between domains (*for internal use*).
 
 Arguments:
     domains (list[int]): Names of the remote domains.
-    globalNumbering (list[int]): Global number of each node.
+    globalNodeNumbering (list[int]): Global number of each node.
     nodesOwner (list[int]): Owner of each node.
     joints (list[list[int]]): Definition of *E*mission and *R*eception joints.
         )",

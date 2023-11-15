@@ -253,15 +253,15 @@ VectorLong ParallelMesh::getNodes( const std::string name, const bool localNumbe
     } else {
         newRank.reserve( listOfNodes.size() );
         ASTERINTEGER size = 0;
-        _outerNodes->updateValuePointer();
+        _nodesOwner->updateValuePointer();
         for ( auto &nodeId : listOfNodes ) {
             if ( same_rank ) {
-                if ( rank == ( *_outerNodes )[nodeId] ) {
+                if ( rank == ( *_nodesOwner )[nodeId] ) {
                     newRank.push_back( nodeId );
                     size++;
                 }
             } else {
-                if ( rank != ( *_outerNodes )[nodeId] ) {
+                if ( rank != ( *_nodesOwner )[nodeId] ) {
                     newRank.push_back( nodeId );
                     size++;
                 }
@@ -328,16 +328,16 @@ VectorLong ParallelMesh::getNodesFromCells( const VectorLong &cells, const bool 
     }
 
     if ( same_rank != PythonBool::None ) {
-        _outerNodes->updateValuePointer();
+        _nodesOwner->updateValuePointer();
         const int rank = getMPIRank();
 
         SetLong loopnodes = nodes;
         for ( auto &node : loopnodes ) {
             if ( same_rank ) {
-                if ( rank != ( *_outerNodes )[node] )
+                if ( rank != ( *_nodesOwner )[node] )
                     nodes.erase( node );
             } else {
-                if ( rank == ( *_outerNodes )[node] )
+                if ( rank == ( *_nodesOwner )[node] )
                     nodes.erase( node );
             }
         }
@@ -378,10 +378,10 @@ VectorLong ParallelMesh::getInnerCells() const {
     VectorLong newRank;
 
     newRank.reserve( listOfCells.size() );
-    _outerCells->updateValuePointer();
+    _cellsOwners->updateValuePointer();
 
     for ( auto &cell : listOfCells ) {
-        if ( rank == ( *_outerCells )[cell] ) {
+        if ( rank == ( *_cellsOwners )[cell] ) {
             newRank.push_back( cell );
         }
     }
@@ -400,10 +400,10 @@ VectorLong ParallelMesh::getOuterCells() const {
     VectorLong newRank;
 
     newRank.reserve( listOfCells.size() );
-    _outerCells->updateValuePointer();
+    _cellsOwners->updateValuePointer();
 
     for ( auto &cell : listOfCells ) {
-        if ( rank != ( *_outerCells )[cell] ) {
+        if ( rank != ( *_cellsOwners )[cell] ) {
             newRank.push_back( cell );
         }
     }
@@ -464,14 +464,14 @@ const ASTERINTEGER ParallelMesh::globalToLocalNodeId( const ASTERINTEGER glob ) 
     }
 }
 
-void ParallelMesh::create_joints( const VectorLong &domains, const VectorLong &globalNumbering,
+void ParallelMesh::create_joints( const VectorLong &domains, const VectorLong &globalNodeNumbering,
                                   const VectorLong &nodesOwner,
                                   const VectorOfVectorsLong &joints ) {
     AS_ASSERT( joints.size() == 2 * domains.size() )
 
     _joints->setOppositeDomains( domains );
-    ( *_globalNodeNumbering ) = globalNumbering;
-    ( *_outerNodes ) = nodesOwner;
+    ( *_globalNodeNumbering ) = globalNodeNumbering;
+    ( *_nodesOwner ) = nodesOwner;
     const std::string cadre( "G" );
     const std::string error( "F" );
     int i = 0;
@@ -492,17 +492,17 @@ void ParallelMesh::create_joints( const VectorLong &domains, const VectorLong &g
         ++i;
     }
 
-    _outerNodes->updateValuePointer();
-    CALLO_LRM_CLEAN_JOINT( getName(), _outerNodes->getDataPtr() );
+    _nodesOwner->updateValuePointer();
+    CALLO_LRM_CLEAN_JOINT( getName(), _nodesOwner->getDataPtr() );
     _joints->build();
 
     auto nbCells = getNumberOfCells();
-    _outerCells->allocate( nbCells, LONG_MAX );
+    _cellsOwners->allocate( nbCells, LONG_MAX );
     const auto &connecExp = getConnectivityExplorer();
     for ( int i = 0; i < nbCells; ++i ) {
         const auto cell = connecExp[i];
         for ( auto &node : cell ) {
-            ( *_outerCells )[i] = std::min( ( *_outerCells )[i], ( *_outerNodes )[node - 1] );
+            ( *_cellsOwners )[i] = std::min( ( *_cellsOwners )[i], ( *_nodesOwner )[node - 1] );
         }
     }
 }
@@ -568,6 +568,10 @@ VectorOfVectorsLong ParallelMesh::getCellsRanks() const {
 
     return ranks;
 }
+
+void ParallelMesh::setLocalToGlobalCellNumberingMapping( const VectorLong &l2gCellNum ) {
+    ( *_globalCellNumbering ) = l2gCellNum;
+};
 
 void ParallelMesh::endDefinition() {
     BaseMesh::endDefinition();

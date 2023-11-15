@@ -121,7 +121,7 @@ ParallelMeshPtr MeshBalancer::applyBalancingStrategy( VectorInt &newLocalNodesLi
     // Before sending, conversion to global numbering
     // After received go back to "new" local numbering
     auto dMask = ObjectBalancer::DistributedMaskOut( *_nodesBalancer, nodeGlobNum );
-    const auto &globNumVect = dMask.getBalancedMask();
+    const auto &globNodeNumVect = dMask.getBalancedMask();
 
     // interface completion with local id of opposite nodes
     VectorLong domains;
@@ -132,10 +132,10 @@ ParallelMeshPtr MeshBalancer::applyBalancingStrategy( VectorInt &newLocalNodesLi
             VectorLong idToSend, idToRecv;
             VectorLong vec1, vec2;
 
-            buildSortedVectorToSend( interfaces[2 * iProc], globNumVect, vec1 );
+            buildSortedVectorToSend( interfaces[2 * iProc], globNodeNumVect, vec1 );
             AsterMPI::send_receive( vec1, idToRecv, iProc, tag );
 
-            buildSortedVectorToSend( interfaces[2 * iProc + 1], globNumVect, vec2 );
+            buildSortedVectorToSend( interfaces[2 * iProc + 1], globNodeNumVect, vec2 );
             AsterMPI::send_receive( vec2, idToSend, iProc, tag );
 
             domains.push_back( iProc );
@@ -145,13 +145,13 @@ ParallelMeshPtr MeshBalancer::applyBalancingStrategy( VectorInt &newLocalNodesLi
             std::vector< LocalIdGlobalId > tmp2( interfaces[2 * iProc + 1].size() );
             for ( int i = 0; i < interfaces[2 * iProc].size(); ++i ) {
                 tmp[i].localId = interfaces[2 * iProc][i];
-                tmp[i].globalId = globNumVect[interfaces[2 * iProc][i] - 1];
+                tmp[i].globalId = globNodeNumVect[interfaces[2 * iProc][i] - 1];
             }
             // Sort joints on global id
             std::sort( tmp.begin(), tmp.end(), sortOnGlobalId );
             for ( int i = 0; i < interfaces[2 * iProc + 1].size(); ++i ) {
                 tmp2[i].localId = interfaces[2 * iProc + 1][i];
-                tmp2[i].globalId = globNumVect[interfaces[2 * iProc + 1][i] - 1];
+                tmp2[i].globalId = globNodeNumVect[interfaces[2 * iProc + 1][i] - 1];
             }
             std::sort( tmp2.begin(), tmp2.end(), sortOnGlobalId );
             for ( int i = 0; i < interfaces[2 * iProc].size(); ++i ) {
@@ -204,12 +204,43 @@ ParallelMeshPtr MeshBalancer::applyBalancingStrategy( VectorInt &newLocalNodesLi
         outMesh->buildInformations( dimension[0] );
     }
 
-    auto globNumVect2 = globNumVect;
-    std::for_each( globNumVect2.begin(), globNumVect2.end(), &decrement< long int > );
+    auto globNodeNumVect2 = globNodeNumVect;
+    std::for_each( globNodeNumVect2.begin(), globNodeNumVect2.end(), &decrement< long int > );
 
     // Build "dummy" name vectors (for cells and nodes)
     outMesh->buildNamesVectors();
-    outMesh->create_joints( domains, globNumVect2, nOwners, graphInterfaces );
+    outMesh->create_joints( domains, globNodeNumVect2, nOwners, graphInterfaces );
+
+    // create global cell numbering
+    // Build a global numbering (if there is not)
+    if ( _mesh != nullptr ) {
+        VectorLong cellGlobNumLoc;
+        std::array< ASTERINTEGER, 2 > range2;
+        if ( _mesh->isIncomplete() ) {
+            VectorLong toSend( 1, _mesh->getNumberOfCells() ), toSendAll;
+            AsterMPI::all_gather( toSend, toSendAll );
+            VectorLong result( nbProcs + 1, 0 );
+            int pos = 0;
+            for ( const auto &tmp : toSendAll ) {
+                result[pos + 1] = result[pos] + tmp;
+                ++pos;
+            }
+            range2 = {result[rank], result[rank + 1]};
+        } else {
+            range2 = {0, _mesh->getNumberOfCells()};
+        }
+
+        const auto size = _mesh->getNumberOfCells();
+        cellGlobNumLoc.reserve( size );
+        for ( int i = 0; i < size; ++i ) {
+            cellGlobNumLoc.push_back( i + range2[0] );
+        }
+
+        VectorLong globCellNumVect;
+        _cellsBalancer->balanceObjectOverProcesses( cellGlobNumLoc, globCellNumVect );
+        // outMesh->setLocalToGlobalCellNumberingMapping( globCellNumVect );
+    }
+
     outMesh->updateGlobalGroupOfNodes();
     outMesh->updateGlobalGroupOfCells();
     outMesh->endDefinition();

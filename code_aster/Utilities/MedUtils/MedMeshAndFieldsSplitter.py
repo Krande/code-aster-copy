@@ -41,7 +41,7 @@ def splitMeshAndFieldsFromMedFile(filename, cellBalancer=False, nodeBalancer=Fal
     fr = MedFileReader()
     fr.openParallel(filename, MedFileAccessType.MedReadOnly)
     mesh = IncompleteMesh()
-    mesh.readMedFile(filename)
+    mesh.readMedFile(filename, verbose=0)
     bMesh = MeshBalancer()
     bMesh.buildFromBaseMesh(mesh)
     meshGraph = MeshConnectionGraph()

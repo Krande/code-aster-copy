@@ -57,9 +57,9 @@ class ParallelMesh : public BaseMesh {
     /** @brief Set of all groups of cells (parallel mesh) */
     SetOfString _setOfAllGOE;
     /** @brief Identify outer nodes */
-    JeveuxVectorLong _outerNodes;
+    JeveuxVectorLong _nodesOwner;
     /** @brief Identify outer cells */
-    JeveuxVectorLong _outerCells;
+    JeveuxVectorLong _cellsOwners;
     /** @brief Global node numbering */
     JeveuxVectorLong _globalNodeNumbering;
     /** @brief Global cell numbering */
@@ -90,22 +90,23 @@ class ParallelMesh : public BaseMesh {
         : BaseMesh( name, "MAILLAGE_P" ),
           _globalGroupOfNodes( getName() + ".PAR_GRPNOE" ),
           _globalGroupOfCells( getName() + ".PAR_GRPMAI" ),
-          _outerNodes( getName() + ".NOEX" ),
-          _outerCells( getName() + ".MAEX" ),
+          _nodesOwner( getName() + ".NOEX" ),
+          _cellsOwners( getName() + ".MAEX" ),
           _globalNodeNumbering( getName() + ".NUNOLG" ),
+          _globalCellNumbering( getName() + ".NUMALG" ),
           _joints( std::make_shared< Joints >( getName() + ".JOIN" ) ) {};
 
     /**
      * @brief Get the JeveuxVector for outer subdomain nodes
-     * @return _outerNodes
+     * @return _nodesOwner
      */
-    const JeveuxVectorLong getNodesOwner() const { return _outerNodes; };
+    const JeveuxVectorLong getNodesOwner() const { return _nodesOwner; };
 
     /**
      * @brief Get the JeveuxVector for outer subdomain cells
-     * @return _outerCells
+     * @return _cellsOwners
      */
-    const JeveuxVectorLong getCellsOwner() const { return _outerCells; };
+    const JeveuxVectorLong getCellsOwner() const { return _cellsOwners; };
 
     bool hasGroupOfCells( const std::string &name, const bool local = false ) const;
 
@@ -188,6 +189,8 @@ class ParallelMesh : public BaseMesh {
      */
     const JeveuxVectorLong getLocalToGlobalCellNumberingMapping() const;
 
+    void setLocalToGlobalCellNumberingMapping( const VectorLong &l2gCellNum );
+
     /**
      * @brief Returns the nodes indexes of a group of cells
      * @param name name of group of cells
@@ -237,7 +240,7 @@ class ParallelMesh : public BaseMesh {
     ParallelMeshPtr convertToBiQuadratic( const ASTERINTEGER info = 1 );
 
     /* Mesh builder functions */
-    void create_joints( const VectorLong &domains, const VectorLong &globalNumbering,
+    void create_joints( const VectorLong &domains, const VectorLong &globalNodeNumbering,
                         const VectorLong &nodesOwner, const VectorOfVectorsLong &joints );
 
     void endDefinition();

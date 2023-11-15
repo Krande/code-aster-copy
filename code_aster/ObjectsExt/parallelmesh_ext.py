@@ -84,6 +84,7 @@ class ExtendedParallelMesh:
         """
         if not partitioned:
             self, field = splitMeshAndFieldsFromMedFile(filename, outMesh=self)
+            self.show(verbose & 3)
         else:
             mesh_builder.buildFromMedFile(self, filename, meshname, verbose)
 
