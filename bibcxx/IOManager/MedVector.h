@@ -134,7 +134,7 @@ class MedVector {
      * @return numpy array
      */
     py::object getValues() const {
-        npy_intp dims[1] = { (long int)_vector.size() };
+        npy_intp dims[1] = {(long int)_vector.size()};
 
         PyObject *values =
             PyArray_SimpleNewFromData( 1, dims, npy_type< double >::value, (void *)&_vector[0] );

@@ -15132,13 +15132,24 @@ class MedVector:
 
     # Methods defined here:
 
-    def __init__(self, *args, **kwargs):
-        """Initialize self.  See help(type(self)) for accurate signature."""
+    def __getstate__(self):
+        pass
 
-    def __pickling_disabled__(self):
+    def __init__(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. __init__(self: libaster.MedVector) -> None
+
+        2. __init__(self: libaster.MedVector, arg0: int) -> None
+        """
+
+    def __setstate__(self, arg0):
         pass
 
     def getComponentName(self):
+        """Get component name"""
+
+    def getComponentNumber(self):
         """Get component name"""
 
     def getComponentVector(self):
@@ -15157,6 +15168,21 @@ class MedVector:
         Returns:
             numpy array: all field values
         """
+
+    def setComponentName(self, arg0):
+        """Set component name"""
+
+    def setComponentNumber(self, arg0):
+        """Set component number"""
+
+    def setComponentVector(self, arg0):
+        """Set component on element vector"""
+
+    def setCumulatedSizesVector(self, arg0):
+        """Set cumulated sizes vector"""
+
+    def setValues(self, arg0):
+        """Set vector values (WARNING values are owned by MedVector: no copy)"""
 
     def size(self):
         """Get vector size, ie: number of elements (cells or nodes)"""
