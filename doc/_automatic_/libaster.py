@@ -1233,7 +1233,7 @@ class DiscreteComputation:
               FieldOnNodes: incremental imposed displacement vector
         """
 
-    def getInternalForces(
+    def getInternalMechanicalForces(
         self,
         displ_prev,
         displ_step,
@@ -1266,11 +1266,12 @@ class DiscreteComputation:
             field of internal forces (FieldOnNodesReal),
         """
 
-    def getInternalThermalForces(self, temp_step, varc_curr=None, groupOfCells=[]):
+    def getInternalThermalForces(self, temp_prev, temp_step, varc_curr=None, groupOfCells=[]):
         """Compute internal thermal forces (integration of behaviour)
         Option RAPH_THER.
 
         Arguments:
+            temp_prev (FieldOnNodes): thermal field at begin of current time
             temp_step (FieldOnNodes): field of increment of temperature
             varc_curr (FieldOnCellsReal): external state variables at current time
             groupOfCells (list[str]): compute matrices on given groups of cells.

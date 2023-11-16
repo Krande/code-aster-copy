@@ -1026,7 +1026,8 @@ FieldOnNodesRealPtr DiscreteComputation::getNonLinearTransientThermalForces(
  * @brief Compute elementary forces for internal forces (RAPH_THER)
  */
 std::tuple< ASTERINTEGER, FieldOnCellsRealPtr, FieldOnNodesRealPtr >
-DiscreteComputation::getInternalThermalForces( const FieldOnNodesRealPtr temp_step,
+DiscreteComputation::getInternalThermalForces( const FieldOnNodesRealPtr temp_prev,
+                                               const FieldOnNodesRealPtr temp_step,
                                                const FieldOnCellsRealPtr varc_curr,
                                                const VectorString &groupOfCells ) const {
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
@@ -1081,7 +1082,8 @@ DiscreteComputation::getInternalThermalForces( const FieldOnNodesRealPtr temp_st
     }
 
     // Add Thermal Field
-    calcul->addInputField( "PTEMPEI", temp_step );
+    auto temp_curr = std::make_shared< FieldOnNodesReal >( *temp_prev + *temp_step );
+    calcul->addInputField( "PTEMPEI", temp_curr );
 
     // TODO:
     // calcul->addInputField( "PTMPCHF", dry_curr );

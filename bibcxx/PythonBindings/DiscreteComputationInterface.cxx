@@ -718,7 +718,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             )",
               py::arg( "groupOfCells" ) = VectorString() )
 
-        .def( "getInternalForces", &DiscreteComputation::getInternalForces,
+        .def( "getInternalMechanicalForces", &DiscreteComputation::getInternalMechanicalForces,
               R"(
             Compute internal forces (integration of behaviour)
 
@@ -751,6 +751,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             Option RAPH_THER.
 
             Arguments:
+                temp_prev (FieldOnNodes): thermal field at begin of current time
                 temp_step (FieldOnNodes): field of increment of temperature
                 varc_curr (FieldOnCellsReal): external state variables at current time
                 groupOfCells (list[str]): compute matrices on given groups of cells.
@@ -762,7 +763,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                 fluxes FLUX_ELGA (FieldOnCellsReal),
                 internal forces (FieldOnNodesReal),
             )",
-              py::arg( "temp_step" ), py::arg( "varc_curr" ) = nullptr,
+              py::arg( "temp_prev" ), py::arg( "temp_step" ), py::arg( "varc_curr" ) = nullptr,
               py::arg( "groupOfCells" ) = VectorString() )
 
         .def( "getNonLinearCapacityForces", &DiscreteComputation::getNonLinearCapacityForces,

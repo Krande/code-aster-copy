@@ -400,12 +400,14 @@ class DiscreteComputation {
      */
     std::tuple< FieldOnCellsLongPtr, ASTERINTEGER, FieldOnCellsRealPtr, FieldOnCellsRealPtr,
                 FieldOnNodesRealPtr >
-    getInternalForces( const FieldOnNodesRealPtr displ_prev, const FieldOnNodesRealPtr displ_step,
-                       const FieldOnCellsRealPtr stress, const FieldOnCellsRealPtr internVar,
-                       const ASTERDOUBLE &time_prev, const ASTERDOUBLE &time_step,
-                       const FieldOnCellsRealPtr &varc_prev = nullptr,
-                       const FieldOnCellsRealPtr &varc_curr = nullptr,
-                       const VectorString &groupOfCells = VectorString() ) const;
+    getInternalMechanicalForces( const FieldOnNodesRealPtr displ_prev,
+                                 const FieldOnNodesRealPtr displ_step,
+                                 const FieldOnCellsRealPtr stress,
+                                 const FieldOnCellsRealPtr internVar, const ASTERDOUBLE &time_prev,
+                                 const ASTERDOUBLE &time_step,
+                                 const FieldOnCellsRealPtr &varc_prev = nullptr,
+                                 const FieldOnCellsRealPtr &varc_curr = nullptr,
+                                 const VectorString &groupOfCells = VectorString() ) const;
 
     /**
      * @brief Compute internal forces, stress and internal state variables
@@ -413,7 +415,8 @@ class DiscreteComputation {
      * field of internal forces (`B^T \sigma`)
      */
     std::tuple< ASTERINTEGER, FieldOnCellsRealPtr, FieldOnNodesRealPtr >
-    getInternalThermalForces( const FieldOnNodesRealPtr temp_step,
+    getInternalThermalForces( const FieldOnNodesRealPtr temp_prev,
+                              const FieldOnNodesRealPtr temp_step,
                               const FieldOnCellsRealPtr varc_curr = nullptr,
                               const VectorString &groupOfCells = VectorString() ) const;
 

@@ -426,7 +426,7 @@ class ExtendedDiscreteComputation:
 
         # Compute internal forces (B^t.stress)
         if phys_pb.isMechanical():
-            _, codret, internVar, stress, r_stress = self.getInternalForces(
+            _, codret, internVar, stress, r_stress = self.getInternalMechanicalForces(
                 phys_state.primal_prev,
                 phys_state.primal_step,
                 phys_state.stress,
@@ -438,7 +438,7 @@ class ExtendedDiscreteComputation:
             )
         else:
             codret, stress, r_stress = self.getInternalThermalForces(
-                phys_state.primal_step, phys_state.externVar
+                phys_state.primal_prev, phys_state.primal_step, phys_state.externVar
             )
             internVar = None
 

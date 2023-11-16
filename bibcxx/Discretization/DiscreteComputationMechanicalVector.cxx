@@ -405,14 +405,12 @@ DiscreteComputation::getMechanicalVolumetricForces( const ASTERDOUBLE time_curr,
 /** @brief Compute internal forces, stress and internal state variables */
 std::tuple< FieldOnCellsLongPtr, ASTERINTEGER, FieldOnCellsRealPtr, FieldOnCellsRealPtr,
             FieldOnNodesRealPtr >
-DiscreteComputation::getInternalForces( const FieldOnNodesRealPtr displ_prev,
-                                        const FieldOnNodesRealPtr displ_step,
-                                        const FieldOnCellsRealPtr stress,
-                                        const FieldOnCellsRealPtr internVar,
-                                        const ASTERDOUBLE &time_prev, const ASTERDOUBLE &time_step,
-                                        const FieldOnCellsRealPtr &varc_prev,
-                                        const FieldOnCellsRealPtr &varc_curr,
-                                        const VectorString &groupOfCells ) const {
+DiscreteComputation::getInternalMechanicalForces(
+    const FieldOnNodesRealPtr displ_prev, const FieldOnNodesRealPtr displ_step,
+    const FieldOnCellsRealPtr stress, const FieldOnCellsRealPtr internVar,
+    const ASTERDOUBLE &time_prev, const ASTERDOUBLE &time_step,
+    const FieldOnCellsRealPtr &varc_prev, const FieldOnCellsRealPtr &varc_curr,
+    const VectorString &groupOfCells ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
 
