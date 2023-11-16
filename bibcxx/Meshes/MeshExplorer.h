@@ -30,63 +30,41 @@
 #include "MemoryManager/JeveuxVector.h"
 
 class CellObject {
-    const ASTERINTEGER _cellIndex;
-    const ASTERINTEGER *const _listOfNodes;
-    const ASTERINTEGER _nbNodes;
+    const ASTERINTEGER _id;
+    const VectorLong _listOfNodes;
     const ASTERINTEGER _type;
 
   public:
-    CellObject( const ASTERINTEGER &num, const ASTERINTEGER *const listOfNodes,
-                const ASTERINTEGER &nbNodes, const ASTERINTEGER &type )
-        : _cellIndex( num ), _listOfNodes( listOfNodes ), _nbNodes( nbNodes ), _type( type ) {};
+    CellObject( const ASTERINTEGER &id, const VectorLong &listOfNodes, const ASTERINTEGER &type )
+        : _id( id ), _listOfNodes( listOfNodes ), _type( type ) {};
 
-    const ASTERINTEGER &getNumberOfNodes() const { return _nbNodes; };
+    ASTERINTEGER getNumberOfNodes() const { return _listOfNodes.size(); };
 
-    const ASTERINTEGER &getCellIndex() const { return _cellIndex; };
+    const VectorLong &getNodes() const { return _listOfNodes; };
 
-    const ASTERINTEGER &getType() const { return _type; };
+    ASTERINTEGER getId() const { return _id; };
 
-    struct const_iterator {
-        const ASTERINTEGER *positionInList;
-
-        inline const_iterator( const ASTERINTEGER *curList ) : positionInList( curList ) {};
-
-        inline const_iterator( const const_iterator &iter )
-            : positionInList( iter.positionInList ) {};
-
-        inline const_iterator &operator=( const const_iterator &testIter ) {
-            positionInList = testIter.positionInList;
-            return *this;
-        };
-
-        inline const_iterator &operator++() {
-            ++positionInList;
-            return *this;
-        };
-
-        inline bool operator==( const const_iterator &testIter ) const {
-            return ( testIter.positionInList == positionInList );
-        };
-
-        inline bool operator!=( const const_iterator &testIter ) const {
-            return ( testIter.positionInList != positionInList );
-        };
-
-        inline const ASTERINTEGER &operator->() const { return *positionInList; };
-
-        inline const ASTERINTEGER &operator*() const { return *positionInList; };
-    };
+    ASTERINTEGER getType() const { return _type; };
 
     /**
      * @brief
      */
-    const_iterator begin() const { return const_iterator( _listOfNodes ); };
+    auto begin() const { return _listOfNodes.begin(); };
 
     /**
      * @brief
-     * @todo revoir le fonctionnement du end car il peut provoquer de segfault
      */
-    const_iterator end() const { return const_iterator( _listOfNodes + _nbNodes ); };
+    auto end() const { return _listOfNodes.end(); };
+
+    /**
+     * @brief
+     */
+    auto cbegin() const { return _listOfNodes.cbegin(); };
+
+    /**
+     * @brief
+     */
+    auto cend() const { return _listOfNodes.cend(); };
 };
 
 class CellsIteratorFromConnectivity {
@@ -110,12 +88,13 @@ class CellsIteratorFromConnectivity {
         }
 
         if ( pos > size2 || pos < 0 )
-            return CellObject( 0, nullptr, 0, -1 );
+            return CellObject( -1, VectorLong(), -1 );
         auto &obj = ( *_connect )[pos + 1];
         obj->updateValuePointer();
-        const auto size = obj->size();
         const ASTERINTEGER type = ( *_type )[pos];
-        return CellObject( pos + 1, &obj->operator[]( 0 ), size, type );
+        auto listNodes = obj->toVector();
+        std::for_each( listNodes.begin(), listNodes.end(), []( ASTERINTEGER &d ) { d -= 1; } );
+        return CellObject( pos, listNodes, type );
     };
 
     int size() const { return _type->size(); };
@@ -140,12 +119,16 @@ class CellsIteratorFromFiniteElementDescriptor {
         }
 
         if ( pos > size2 || pos < 0 )
-            return CellObject( 0, nullptr, 0, -1 );
+            return CellObject( -1, VectorLong(), -1 );
         auto &obj = ( *_connectAndType )[pos + 1];
         obj->updateValuePointer();
         const auto size = obj->size() - 1;
         const ASTERINTEGER type = ( *obj )[size];
-        return CellObject( pos + 1, &obj->operator[]( 0 ), size, type );
+        auto listNodes = obj->toVector();
+        listNodes.pop_back();
+        // Not yet zero-based.
+        // std::for_each( listNodes.begin(), listNodes.end(), []( ASTERINTEGER &d ) { d -= 1; } );
+        return CellObject( pos, listNodes, type );
     };
 
     int size() const { return _connectAndType->size(); };

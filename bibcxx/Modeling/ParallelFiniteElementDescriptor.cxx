@@ -62,7 +62,7 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor(
     // On commence par regarder les noeuds et elements qui doivent etre
     // gardes dans le nouveau ligrel
     for ( const auto meshElem : explorer ) {
-        const auto &numElem = meshElem.getCellIndex();
+        const auto numElem = meshElem.getId();
         bool keepElem = false;
         int pos = 0, curOwner = -1;
         for ( auto numNode : meshElem ) {
@@ -114,7 +114,7 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor(
         // Si l'element est a conserver, on le note
         if ( keepElem ) {
             virtualCellToKeep.push_back( numElem );
-            _virtualCellToKeep[numElem - 1] = nbElemToKeep - 1;
+            _virtualCellToKeep[numElem] = nbElemToKeep - 1;
             --nbElemToKeep;
         }
     }
@@ -189,8 +189,8 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor(
                                                              totalSizeToKeep - nbElemToKeep );
 
         // Remplissage du .NEMA avec les elements tardifs a conserver
-        for ( int numElem : virtualCellToKeep ) {
-            const auto curElem = explorer[numElem - 1];
+        for ( auto &numElem : virtualCellToKeep ) {
+            const auto curElem = explorer[numElem];
             VectorLong toCopy;
             for ( const auto &numNode : curElem ) {
                 if ( numNode > 0 ) {

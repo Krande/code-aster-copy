@@ -188,10 +188,8 @@ class ParallelMechanicalLoad : public DataStructure {
         outFile.open( "fort." + std::to_string( logicalUnit ), std::ios::app );
         outFile << "\nEcriture de la connectivité des mailles fantômes en numérotation globale\n";
         for ( const auto meshElem : explorer ) {
-            const auto &numElem = meshElem.getCellIndex();
+            const auto &numElem = meshElem.getId() + 1;
             outFile << numElem << " : ";
-            bool keepElem = false;
-            int pos = 0, curOwner = -1;
             for ( auto numNode : meshElem ) {
                 if ( numNode > 0 ) {
                     outFile << ( *LToGmapMesh )[numNode - 1] << " ";

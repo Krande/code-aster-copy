@@ -247,8 +247,7 @@ void ContactZone::buildSlaveCellsVolu() {
     for ( auto &cellId : _slaveCells ) {
         const auto cell = exp[cellId];
         VectorLong candidat;
-        for ( const auto vertex : cell ) {
-            const auto nodeId = vertex - 1;
+        for ( const auto nodeId : cell ) {
             auto listCells = ( *invCon )[nodeId + 1]->toVector();
 
             std::for_each( listCells.begin(), listCells.end(), []( ASTERINTEGER &d ) { d -= 1; } );

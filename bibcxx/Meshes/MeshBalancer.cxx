@@ -233,7 +233,7 @@ ParallelMeshPtr MeshBalancer::applyBalancingStrategy( VectorInt &newLocalNodesLi
             cellGlobNumLoc.push_back( i + range2[0] );
         }
 
-        VectorLong globCellNumVect, globCellNumVect2;
+        VectorLong globCellNumVect;
         _cellsBalancer->balanceObjectOverProcesses( cellGlobNumLoc, globCellNumVect );
         sortCells( globCellNumVect, globCellNumVect2 );
     }

@@ -333,7 +333,7 @@ VectorLong ParallelMesh::getNodesFromCells( const VectorLong &cells, const bool 
     for ( auto &cellId : cells ) {
         const auto cell = connecExp[cellId];
         for ( auto &node : cell )
-            nodes.insert( node - 1 );
+            nodes.insert( node );
     }
 
     if ( same_rank != PythonBool::None ) {
@@ -512,7 +512,7 @@ void ParallelMesh::create_joints( const VectorLong &domains, const VectorLong &g
     for ( int i = 0; i < nbCells; ++i ) {
         const auto cell = connecExp[i];
         for ( auto &node : cell ) {
-            ( *_cellsOwners )[i] = std::min( ( *_cellsOwners )[i], ( *_nodesOwner )[node - 1] );
+            ( *_cellsOwners )[i] = std::min( ( *_cellsOwners )[i], ( *_nodesOwner )[node] );
         }
     }
 }
@@ -569,8 +569,8 @@ VectorOfVectorsLong ParallelMesh::getCellsRanks() const {
         const auto cell = connecExp[i];
         SetLong domain;
         for ( auto &node : cell ) {
-            if ( ( *nodes_owner )[node - 1] != ( *owner )[i] ) {
-                domain.insert( ( *nodes_owner )[node - 1] );
+            if ( ( *nodes_owner )[node] != ( *owner )[i] ) {
+                domain.insert( ( *nodes_owner )[node] );
             }
         }
         ranks[i].insert( ranks[i].end(), domain.begin(), domain.end() );

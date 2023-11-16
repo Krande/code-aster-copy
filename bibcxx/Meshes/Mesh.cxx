@@ -184,7 +184,7 @@ VectorLong Mesh::getNodesFromCells( const VectorLong &cells, const bool,
     for ( auto &cellId : cells ) {
         const auto cell = connecExp[cellId];
         for ( auto &node : cell )
-            auto ret = nodes.insert( node - 1 );
+            auto ret = nodes.insert( node );
     }
 
     CALL_JEDEMA();

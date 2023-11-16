@@ -165,8 +165,7 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
 
                     if ( !boolCellsToSend[cellId] ) {
                         const auto cell = connecExp[cellsToFind[i]];
-                        for ( const auto vertex : cell ) {
-                            const auto nodeId = vertex - 1;
+                        for ( const auto nodeId : cell ) {
                             if ( !boolNodesToSend[nodeId] ) {
                                 /*  Split the proc nodes (toSend) from outer ones (toCheck) */
                                 if ( ( *rankOfNodes )[nodeId] == rank ) {
@@ -286,8 +285,7 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
     /* Get nodes lying on cell */
     for ( auto i = 0; i < numberOfCellsToSend; i++ ) {
         const auto cell = connecExp[cellsToSend[i]];
-        for ( const auto vertex : cell ) {
-            const auto nodeId = vertex - 1;
+        for ( const auto nodeId : cell ) {
             if ( !boolNodesToSend[nodeId] ) {
                 if ( ( *rankOfNodes )[nodeId] == rank ) {
                     nodesToSend.push_back( nodeId );
@@ -303,8 +301,7 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
 
     for ( auto i = 0; i < numberOfCellsToCheck; i++ ) {
         const auto cell = connecExp[cellsToCheck[i]];
-        for ( const auto vertex : cell ) {
-            const auto nodeId = vertex - 1;
+        for ( const auto nodeId : cell ) {
             if ( !boolNodesToSend[nodeId] && ( *rankOfNodes )[nodeId] == rank ) {
                 nodesToSend.push_back( nodeId );
                 ++numberOfNodesToSend;
@@ -387,8 +384,7 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
         connectivitiesToSend.push_back( globalCellIds[cellId] );
         connectivitiesToSend.push_back( rank );
         connectivitiesToSend.push_back( cell.getNumberOfNodes() );
-        for ( const auto vertex : cell ) {
-            const auto nodeId = vertex - 1;
+        for ( const auto nodeId : cell ) {
             connectivitiesToSend.push_back( globalNodeIds[nodeId] );
         }
     }
