@@ -31,26 +31,35 @@
 
 #include "Meshes/ParallelMesh.h"
 #include "ParallelUtilities/AsterMPI.h"
+#include "Supervis/Exceptions.h"
 #include "Utilities/Tools.h"
 
-void ParallelMesh::_buildGlobal2LocalMap() {
-    auto l2g = getLocalToGlobalNodeNumberingMapping();
+ParallelMesh::ParallelMesh( const std::string &name )
+    : BaseMesh( name, "MAILLAGE_P" ),
+      _globalGroupOfNodes( getName() + ".PAR_GRPNOE" ),
+      _globalGroupOfCells( getName() + ".PAR_GRPMAI" ),
+      _nodesOwner( getName() + ".NOEX" ),
+      _cellsOwners( getName() + ".MAEX" ),
+      _globalNodeIds( getName() + ".NUNOLG" ),
+      _globalCellIds( getName() + ".NUMALG" ),
+      _joints( std::make_shared< Joints >( getName() + ".JOIN" ) ) {};
+
+void ParallelMesh::_buildGlobal2LocalNodeIdsMapPtr() {
+    _global2localNodeIdsPtr = std::make_shared< MapLong >();
+
+    auto l2g = getLocalToGlobalNodeIds();
     if ( l2g.exists() ) {
         l2g->updateValuePointer();
         ASTERINTEGER nloc = l2g->size();
 
         for ( auto j = 0; j < nloc; j++ )
-            _global2localMap[( *l2g )[j]] = j;
+            ( *_global2localNodeIdsPtr )[( *l2g )[j]] = j;
     }
 };
 
-const JeveuxVectorLong ParallelMesh::getLocalToGlobalNodeNumberingMapping() const {
-    return _globalNodeNumbering;
-};
+const JeveuxVectorLong ParallelMesh::getLocalToGlobalNodeIds() const { return _globalNodeIds; };
 
-const JeveuxVectorLong ParallelMesh::getLocalToGlobalCellNumberingMapping() const {
-    return _globalCellNumbering;
-};
+const JeveuxVectorLong ParallelMesh::getLocalToGlobalCellIds() const { return _globalCellIds; };
 
 VectorLong ParallelMesh::getSendJoint( const int &id ) const {
     return _joints->getSendedElements( id );
@@ -185,8 +194,8 @@ void ParallelMesh::setGroupOfNodes( const std::string &name, const VectorLong &n
             VectorLong node_g;
             node_g.reserve( node_ids_u.size() );
             for ( auto &node_id : node_ids_u ) {
-                if ( _global2localMap.count( node_id ) > 0 ) {
-                    node_g.push_back( _global2localMap[node_id] );
+                if ( ( *_global2localNodeIdsPtr ).count( node_id ) > 0 ) {
+                    node_g.push_back( ( *_global2localNodeIdsPtr )[node_id] );
                 }
             }
             node_ids_u = node_g;
@@ -279,10 +288,10 @@ VectorLong ParallelMesh::getNodes( const std::string name, const bool localNumbe
 
     VectorLong newNumbering;
     newNumbering.reserve( newRank.size() );
-    _globalNodeNumbering->updateValuePointer();
+    _globalNodeIds->updateValuePointer();
 
     for ( auto &nodeId : newRank )
-        newNumbering.push_back( ( *_globalNodeNumbering )[nodeId] );
+        newNumbering.push_back( ( *_globalNodeIds )[nodeId] );
     CALL_JEDEMA();
 
     return newNumbering;
@@ -347,9 +356,9 @@ VectorLong ParallelMesh::getNodesFromCells( const VectorLong &cells, const bool 
         VectorLong v_nodes;
         v_nodes.reserve( nodes.size() );
 
-        _globalNodeNumbering->updateValuePointer();
+        _globalNodeIds->updateValuePointer();
         for ( auto &node : nodes )
-            v_nodes.push_back( ( *_globalNodeNumbering )[node] );
+            v_nodes.push_back( ( *_globalNodeIds )[node] );
 
         CALL_JEDEMA();
         return v_nodes;
@@ -415,7 +424,7 @@ VectorLong ParallelMesh::getOuterCells() const {
 }
 
 bool ParallelMesh::build() {
-    _buildGlobal2LocalMap();
+    _buildGlobal2LocalNodeIdsMapPtr();
     return BaseMesh::build();
 }
 
@@ -449,28 +458,28 @@ ParallelMeshPtr ParallelMesh::convertToBiQuadratic( const ASTERINTEGER info ) {
     return mesh_out;
 };
 
-const ASTERINTEGER ParallelMesh::globalToLocalNodeId( const ASTERINTEGER glob ) {
-    if ( _global2localMap.empty() )
-        _buildGlobal2LocalMap();
-
-    auto search = _global2localMap.find( glob );
-    if ( search != _global2localMap.end() ) {
-        return search->second;
-    } else {
-        auto rank = getMPIRank();
-        throw std::out_of_range( "Global node number " + std::to_string( glob ) +
-                                 " not found on rank " + std::to_string( rank ) );
-        return -1;
+ASTERINTEGER ParallelMesh::getGlobalToLocalNodeId( const ASTERINTEGER &glob ) const {
+    if ( !_global2localNodeIdsPtr || _global2localNodeIdsPtr->empty() ) {
+        raiseAsterError( "GlobalToLocalNodeIds mapping is not build" );
     }
+
+    auto search = ( *_global2localNodeIdsPtr ).find( glob );
+    if ( search != ( *_global2localNodeIdsPtr ).end() ) {
+        return search->second;
+    }
+    auto rank = getMPIRank();
+    throw std::out_of_range( "Global node number " + std::to_string( glob ) +
+                             " not found on rank " + std::to_string( rank ) );
+    return -1;
 }
 
-void ParallelMesh::create_joints( const VectorLong &domains, const VectorLong &globalNodeNumbering,
+void ParallelMesh::create_joints( const VectorLong &domains, const VectorLong &globalNodeIds,
                                   const VectorLong &nodesOwner,
                                   const VectorOfVectorsLong &joints ) {
     AS_ASSERT( joints.size() == 2 * domains.size() )
 
     _joints->setOppositeDomains( domains );
-    ( *_globalNodeNumbering ) = globalNodeNumbering;
+    ( *_globalNodeIds ) = globalNodeIds;
     ( *_nodesOwner ) = nodesOwner;
     const std::string cadre( "G" );
     const std::string error( "F" );
@@ -569,8 +578,8 @@ VectorOfVectorsLong ParallelMesh::getCellsRanks() const {
     return ranks;
 }
 
-void ParallelMesh::setLocalToGlobalCellNumberingMapping( const VectorLong &l2gCellNum ) {
-    ( *_globalCellNumbering ) = l2gCellNum;
+void ParallelMesh::setLocalToGlobalCellIds( const VectorLong &l2gCellNum ) {
+    ( *_globalCellIds ) = l2gCellNum;
 };
 
 void ParallelMesh::endDefinition() {

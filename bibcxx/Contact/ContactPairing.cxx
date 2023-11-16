@@ -200,7 +200,7 @@ void ContactPairing::buildFiniteElementDescriptor() {
 
     using VectorPairLong = std::vector< std::pair< ASTERINTEGER, ASTERINTEGER > >;
 
-    std::map< ASTERINTEGER, ASTERINTEGER > listType;
+    MapLong listType;
 
     std::vector< VectorLong > listNodes;
     listNodes.reserve( nbContPairTot );

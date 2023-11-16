@@ -45,7 +45,7 @@ class ContactPairing : public DataStructure {
     /** @brief Vector of slave intersection points */
     std::vector< VectorReal > _slaveIntersectionPoints;
     /** @brief Map between pair and zone */
-    std::map< ASTERINTEGER, ASTERINTEGER > _pair2Zone;
+    MapLong _pair2Zone;
     // FED after pairing
     FiniteElementDescriptorPtr _fed;
 
@@ -130,7 +130,7 @@ class ContactPairing : public DataStructure {
     FiniteElementDescriptorPtr getFiniteElementDescriptor() const { return _fed; };
 
     /** @brief Get map */
-    std::map< ASTERINTEGER, ASTERINTEGER > pairsToZones() const { return _pair2Zone; };
+    MapLong pairsToZones() const { return _pair2Zone; };
 };
 
 typedef std::shared_ptr< ContactPairing > ContactPairingPtr;

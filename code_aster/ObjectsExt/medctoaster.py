@@ -160,7 +160,7 @@ class MEDCouplingMeshHelper:
         if mesh.isParallel():
             with timer("creating joints"):
                 mesh._create_joints(
-                    self.domains, self.globalNodeNumbering, self.nodesOwner, self.getAllJoints()
+                    self.domains, self.globalNodeIds, self.nodesOwner, self.getAllJoints()
                 )
         with timer("completion"):
             if not mesh.isIncomplete():
@@ -429,7 +429,7 @@ class MEDCouplingMeshHelper:
         return self._domains
 
     @property
-    def globalNodeNumbering(self):
+    def globalNodeIds(self):
         """list[int]: List of the global number of each node."""
         return self._gNodesNumbering
 

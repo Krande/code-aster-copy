@@ -133,7 +133,7 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
     VectorLong numNodesGathered;
     VectorLong numNodesToSend;
 
-    std::map< ASTERINTEGER, ASTERINTEGER > numNodesGloLoc, numCellsGloLoc, renumNodes;
+    MapLong numNodesGloLoc, numCellsGloLoc, renumNodes;
 
     ASTERINTEGER totalNumberOfNodes = 0, totalNumberOfCells = 0;
     ASTERINTEGER pos = 0;
@@ -323,7 +323,7 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
     AsterMPI::all_gather( outerNodesToSend, outerNodesToGathered );
     outerNodesToSend.clear();
 
-    std::map< ASTERINTEGER, ASTERINTEGER > inverseGlobalNodeIds;
+    MapLong inverseGlobalNodeIds;
     pos = 0;
     for ( auto globalId : globalNodeIds ) {
         inverseGlobalNodeIds[globalId] = pos++;

@@ -239,7 +239,7 @@ ParallelMeshPtr MeshBalancer::applyBalancingStrategy( VectorInt &newLocalNodesLi
         VectorLong globCellNumVect, globCellNumVect2;
         _cellsBalancer->balanceObjectOverProcesses( cellGlobNumLoc, globCellNumVect );
         sortCells( globCellNumVect, globCellNumVect2 );
-        outMesh->setLocalToGlobalCellNumberingMapping( globCellNumVect2 );
+        outMesh->setLocalToGlobalCellIds( globCellNumVect2 );
     }
 
     outMesh->updateGlobalGroupOfNodes();

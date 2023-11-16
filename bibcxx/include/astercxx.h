@@ -65,6 +65,8 @@ using VectorPairLong = std::vector< PairLong >;
 using VectorPairReal = std::vector< PairReal >;
 using VectorPairString = std::vector< PairString >;
 
+using MapLong = std::map< ASTERINTEGER, ASTERINTEGER >;
+
 #define AS_ABORT( message )                                                                        \
     DEBUG_LOC;                                                                                     \
     std::cout << message << std::endl;                                                             \

@@ -156,7 +156,7 @@ class ExtendedParallelMesh:
     def checkJoints(self):
         comm = MPI.COMM_WORLD
         rank = MPI.ASTER_COMM_WORLD.Get_rank()
-        l2G = self.getLocalToGlobalNodeNumberingMapping()
+        l2G = self.getLocalToGlobalNodeIds()
         graph = CommGraph()
 
         dictProc = {}

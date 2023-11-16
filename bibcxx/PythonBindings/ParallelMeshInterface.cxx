@@ -208,7 +208,7 @@ Returns:
                   &ParallelMesh::getNodesFromCells, py::const_ ),
               R"(
 Returns the nodes indexes of a group of cells.
-For developpers only.
+For developers only.
 
 Arguments:
     group_name (str): Name of the group.
@@ -222,30 +222,14 @@ Returns:
         )",
               py::arg( "group_name" ), py::arg( "localNumbering" ) = true,
               py::arg( "same_rank" ) = PythonBool::None )
-        .def( "getLocalToGlobalNodeNumberingMapping",
-              &ParallelMesh::getLocalToGlobalNodeNumberingMapping,
+        .def( "getGlobalToLocalNodeIds",
+              []( const ParallelMesh &pm ) -> MapLong { return *pm.getGlobalToLocalNodeIds(); },
               R"(
-Returns local to global numbering mapping for nodes
+        Returns global to local IDs mapping for nodes
 
-Returns:
-    list[int]: local to global numbering mapping.
-        )" )
-        .def( "getGlobalToLocalNodeNumberingMapping",
-              &ParallelMesh::getGlobalToLocalNodeNumberingMapping,
-              R"(
-Returns global to local numbering mapping for nodes
-
-Returns:
-    dict[int]: global to local numbering mapping.
-    )" )
-        .def( "getLocalToGlobalCellNumberingMapping",
-              &ParallelMesh::getLocalToGlobalCellNumberingMapping,
-              R"(
-Returns local to global numbering mapping for cells
-
-Returns:
-    list[int]: local to global numbering mapping.
-        )" )
+        Returns:
+            dict[int]: global to local IDs mapping.
+            )" )
         .def( "getOppositeDomains", &ParallelMesh::getOppositeDomains,
               R"(
 Returns the list of opposite domains of local process
@@ -271,7 +255,7 @@ Create the joints between domains (*for internal use*).
 
 Arguments:
     domains (list[int]): Names of the remote domains.
-    globalNodeNumbering (list[int]): Global number of each node.
+    globalNodeIds (list[int]): Global number of each node.
     nodesOwner (list[int]): Owner of each node.
     joints (list[list[int]]): Definition of *E*mission and *R*eception joints.
         )",

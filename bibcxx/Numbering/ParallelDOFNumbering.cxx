@@ -122,8 +122,7 @@ VectorString ParallelDOFNumbering::getComponentFromNode( const ASTERINTEGER node
                                                          const bool local ) const {
     auto localnode = node;
     if ( !local )
-        localnode =
-            std::static_pointer_cast< ParallelMesh >( getMesh() )->globalToLocalNodeId( node );
+        localnode = getMesh()->getGlobalToLocalNodeId( node );
     if ( localnode < 0 or localnode >= getMesh()->getNumberOfNodes() )
         throw std::out_of_range( "Invalid node index" );
     ASTERINTEGER ncmp, maxCmp = 100;

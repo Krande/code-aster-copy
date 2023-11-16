@@ -133,7 +133,7 @@ Returns:
         )",
               py::arg( "type" ) )
         .def( "getMedConnectivity", &BaseMesh::getMedConnectivityZeroBased, R"(
-Return the connectivity of the mesh as Python lists following the Med numbering.
+Return the connectivity of the mesh as Python lists following the Med IDs.
 
 Returns:
     list[list[int]]: List of, for each cell, a list of the nodes indexes.
@@ -166,7 +166,7 @@ Print the mesh in the MED format
 
 Arguments:
     filename (str): Name of the file
-    local (bool=True) : print local values only (relevent for ParallelMesh only)
+    local (bool=True) : print local values only (relevent for BaseMesh only)
 
 Returns:
     Bool: True if of
@@ -224,5 +224,19 @@ Check some properties of the mesh.
 Arguments:
     tolerance (float): Tolerance used to detect flat cells.
         )",
-              py::arg( "tolerance" ) );
+              py::arg( "tolerance" ) )
+        .def( "getLocalToGlobalNodeIds", &BaseMesh::getLocalToGlobalNodeIds,
+              R"(
+Returns local to global node Ids mapping
+
+Returns:
+    list[int]: local to global IDs mapping.
+        )" )
+        .def( "getLocalToGlobalCellIds", &BaseMesh::getLocalToGlobalCellIds,
+              R"(
+Returns local to global IDs mapping for cells
+
+Returns:
+    list[int]: local to global IDs mapping.
+        )" );
 };

@@ -67,7 +67,7 @@ class ContactZone : public DataStructure {
     /** @brief  slave cells neighbors */
     JeveuxCollectionLong _slaveNeighbors;
     /** @brief Map between slave surfaciv and volumic cell */
-    std::map< ASTERINTEGER, ASTERINTEGER > _slavSurf2Volu;
+    MapLong _slavSurf2Volu;
     /** @brief name of slave side */
     std::string _slaveGrp;
     /** @brief name of master side */

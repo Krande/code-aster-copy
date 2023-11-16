@@ -611,6 +611,20 @@ class BaseMesh(DataStructure):
             int: 2 or 3
         """
 
+    def getLocalToGlobalCellIds(self):
+        """Returns local to global IDs mapping for cells
+
+        Returns:
+            list[int]: local to global IDs mapping.
+        """
+
+    def getLocalToGlobalNodeIds(self):
+        """Returns local to global node Ids mapping
+
+        Returns:
+            list[int]: local to global IDs mapping.
+        """
+
     def getMedCellsTypes(self):
         """Return the Med type of each cell.
 
@@ -619,7 +633,7 @@ class BaseMesh(DataStructure):
         """
 
     def getMedConnectivity(self):
-        """Return the connectivity of the mesh as Python lists following the Med numbering.
+        """Return the connectivity of the mesh as Python lists following the Med IDs.
 
         Returns:
             list[list[int]]: List of, for each cell, a list of the nodes indexes.
@@ -688,7 +702,7 @@ class BaseMesh(DataStructure):
 
         Arguments:
             filename (str): Name of the file
-            local (bool=True) : print local values only (relevent for ParallelMesh only)
+            local (bool=True) : print local values only (relevent for BaseMesh only)
 
         Returns:
             Bool: True if of
@@ -12874,11 +12888,11 @@ class ParallelMesh(BaseMesh):
             list[list[int]]: MPI-Rank of of the subdomains
         """
 
-    def getGlobalToLocalNodeNumberingMapping(self):
-        """Returns global to local numbering mapping for nodes
+    def getGlobalToLocalNodeIds(self):
+        """Returns global to local IDs mapping for nodes
 
         Returns:
-            dict[int]: global to local numbering mapping.
+            dict[int]: global to local IDs mapping.
         """
 
     def getGroupsOfCells(self, local=False):
@@ -12913,20 +12927,6 @@ class ParallelMesh(BaseMesh):
 
         Returns:
             list[int]: Indexes of the nodes.
-        """
-
-    def getLocalToGlobalCellNumberingMapping(self):
-        """Returns local to global numbering mapping for cells
-
-        Returns:
-            list[int]: local to global numbering mapping.
-        """
-
-    def getLocalToGlobalNodeNumberingMapping(self):
-        """Returns local to global numbering mapping for nodes
-
-        Returns:
-            list[int]: local to global numbering mapping.
         """
 
     def getNodesOwner(self):

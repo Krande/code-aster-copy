@@ -310,7 +310,7 @@ void FiniteElementDescriptor::transferListOfGroupOfCellFrom( FiniteElementDescri
     typeCellFE.clear();
 
     std::vector< VectorLong > listOfGrel;
-    std::map< ASTERINTEGER, ASTERINTEGER > listOfGrelNume, listOfGrelNumeInv;
+    MapLong listOfGrelNume, listOfGrelNumeInv;
 
     _groupsOfCellsNumberByElement->allocate( 2 * nbCells );
 

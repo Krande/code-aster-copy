@@ -54,7 +54,7 @@ valuesDepl = vectDepl.getValues()
 mesh = myTuple[0]
 
 # Check DEPL field compared to file "mdump3"
-loc2Glob = mesh.getLocalToGlobalNodeNumberingMapping()
+loc2Glob = mesh.getLocalToGlobalNodeIds()
 for count, i in enumerate(loc2Glob):
     # 3 components: DX, DY, DZ
     for j in range(3):

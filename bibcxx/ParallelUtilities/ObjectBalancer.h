@@ -78,11 +78,11 @@ class ObjectBalancer {
         const ObjectBalancer &_balancer;
         const VectorLong _vectMaskIn;
         const VectorLong _vectMaskOut;
-        std::map< ASTERINTEGER, ASTERINTEGER > _mapMaskOut;
+        MapLong _mapMaskOut;
 
-        std::map< ASTERINTEGER, ASTERINTEGER > buildMask() const {
+        MapLong buildMask() const {
             int cmpt = 1;
-            std::map< ASTERINTEGER, ASTERINTEGER > mapMaskOut;
+            MapLong mapMaskOut;
             for ( const auto globId : _vectMaskOut ) {
                 mapMaskOut[globId] = cmpt;
                 ++cmpt;
@@ -128,11 +128,11 @@ class ObjectBalancer {
     class DistributedMaskOut {
         const ObjectBalancer &_balancer;
         const VectorLong _vectMaskOut;
-        std::map< ASTERINTEGER, ASTERINTEGER > _mapMaskOut;
+        MapLong _mapMaskOut;
 
-        std::map< ASTERINTEGER, ASTERINTEGER > buildMask() const {
+        MapLong buildMask() const {
             int cmpt = 1;
-            std::map< ASTERINTEGER, ASTERINTEGER > mapMaskOut;
+            MapLong mapMaskOut;
             for ( const auto globId : _vectMaskOut ) {
                 mapMaskOut[globId] = cmpt;
                 ++cmpt;

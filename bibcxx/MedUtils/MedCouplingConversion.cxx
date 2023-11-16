@@ -32,7 +32,7 @@ py::object getMedCouplingConversionData( const BaseMeshPtr &mesh ) {
     std::map< int, VectorInt > med_to_mc;
     std::map< int, VectorLong > connectivity;
     std::map< int, VectorLong > connectivity_index;
-    std::map< int, std::map< ASTERINTEGER, ASTERINTEGER > > corresponding_cells;
+    std::map< int, MapLong > corresponding_cells;
     std::map< int, std::map< std::string, VectorLong > > groups_c;
     std::map< std::string, VectorLong > groups_n;
 

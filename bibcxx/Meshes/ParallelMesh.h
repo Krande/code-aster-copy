@@ -61,15 +61,15 @@ class ParallelMesh : public BaseMesh {
     /** @brief Identify outer cells */
     JeveuxVectorLong _cellsOwners;
     /** @brief Global node numbering */
-    JeveuxVectorLong _globalNodeNumbering;
+    JeveuxVectorLong _globalNodeIds;
     /** @brief Global cell numbering */
-    JeveuxVectorLong _globalCellNumbering;
+    JeveuxVectorLong _globalCellIds;
     /** @brief List of joints */
     JointsPtr _joints;
     /** @brief Global to local node number */
-    std::map< ASTERINTEGER, ASTERINTEGER > _global2localMap;
+    std::shared_ptr< MapLong > _global2localNodeIdsPtr;
 
-    void _buildGlobal2LocalMap();
+    void _buildGlobal2LocalNodeIdsMapPtr();
 
   public:
     /**
@@ -86,15 +86,7 @@ class ParallelMesh : public BaseMesh {
     /**
      * @brief Constructeur
      */
-    ParallelMesh( const std::string &name )
-        : BaseMesh( name, "MAILLAGE_P" ),
-          _globalGroupOfNodes( getName() + ".PAR_GRPNOE" ),
-          _globalGroupOfCells( getName() + ".PAR_GRPMAI" ),
-          _nodesOwner( getName() + ".NOEX" ),
-          _cellsOwners( getName() + ".MAEX" ),
-          _globalNodeNumbering( getName() + ".NUNOLG" ),
-          _globalCellNumbering( getName() + ".NUMALG" ),
-          _joints( std::make_shared< Joints >( getName() + ".JOIN" ) ) {};
+    ParallelMesh( const std::string &name );
 
     /**
      * @brief Get the JeveuxVector for outer subdomain nodes
@@ -177,19 +169,17 @@ class ParallelMesh : public BaseMesh {
      * @brief Get the mapping between local and global numbering of nodes
      * @return JeveuxVector of the indirection
      */
-    const JeveuxVectorLong getLocalToGlobalNodeNumberingMapping() const;
+    const JeveuxVectorLong getLocalToGlobalNodeIds() const;
 
-    const std::map< ASTERINTEGER, ASTERINTEGER > getGlobalToLocalNodeNumberingMapping() const {
-        return _global2localMap;
-    };
+    std::shared_ptr< MapLong > getGlobalToLocalNodeIds() const { return _global2localNodeIdsPtr; };
 
     /**
      * @brief Get the mapping between local and global numbering of cells
      * @return JeveuxVector of the indirection
      */
-    const JeveuxVectorLong getLocalToGlobalCellNumberingMapping() const;
+    const JeveuxVectorLong getLocalToGlobalCellIds() const;
 
-    void setLocalToGlobalCellNumberingMapping( const VectorLong &l2gCellNum );
+    void setLocalToGlobalCellIds( const VectorLong &l2gCellNum );
 
     /**
      * @brief Returns the nodes indexes of a group of cells
@@ -225,7 +215,7 @@ class ParallelMesh : public BaseMesh {
      * @return Return the local number if the node if present on the subdomain ;
      * otherwise raise an exception
      */
-    const ASTERINTEGER globalToLocalNodeId( const ASTERINTEGER );
+    ASTERINTEGER getGlobalToLocalNodeId( const ASTERINTEGER &nodeId ) const;
 
     bool updateGlobalGroupOfNodes( void );
 
@@ -240,7 +230,7 @@ class ParallelMesh : public BaseMesh {
     ParallelMeshPtr convertToBiQuadratic( const ASTERINTEGER info = 1 );
 
     /* Mesh builder functions */
-    void create_joints( const VectorLong &domains, const VectorLong &globalNodeNumbering,
+    void create_joints( const VectorLong &domains, const VectorLong &globalNodeIds,
                         const VectorLong &nodesOwner, const VectorOfVectorsLong &joints );
 
     void endDefinition();

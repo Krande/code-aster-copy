@@ -375,7 +375,7 @@ test.assertSequenceEqual(mesh.getCellsOwner(), cellsRankRef[rank])
 cellsRanks = mesh.getCellsRanks()
 test.assertSequenceEqual([x[0] for x in cellsRanks], cellsRankRef[rank])
 
-local_map = mesh.getLocalToGlobalCellNumberingMapping()
+local_map = mesh.getLocalToGlobalCellIds()
 test.assertEqual(len(local_map), 0)
 
 
@@ -480,8 +480,8 @@ nodeglob = [[87], [], [0, 12, 18, 48, 87]]
 test.assertSequenceEqual(nodeglob[rank], mesh.getNodes("TEST_GN1", False))
 
 # test global to local mapping
-local_map = mesh.getLocalToGlobalNodeNumberingMapping()
-global_map = mesh.getGlobalToLocalNodeNumberingMapping()
+local_map = mesh.getLocalToGlobalNodeIds()
+global_map = mesh.getGlobalToLocalNodeIds()
 
 for i in range(len(local_map)):
     test.assertEqual(i, global_map[local_map[i]])

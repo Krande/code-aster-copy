@@ -245,7 +245,7 @@ VectorPairLong ParallelEquationNumbering::getNodeAndComponentIdFromDOF( const bo
 
     AS_ASSERT( _mesh->isParallel() );
     if ( !local ) {
-        auto mapLG = _mesh->getLocalToGlobalNodeNumberingMapping();
+        auto mapLG = _mesh->getLocalToGlobalNodeIds();
         mapLG->updateValuePointer();
         ASTERINTEGER nb_eq = ret.size();
         for ( ASTERINTEGER i_eq = 0; i_eq < nb_eq; i_eq++ ) {
@@ -262,7 +262,7 @@ PairLong ParallelEquationNumbering::getNodeAndComponentIdFromDOF( const ASTERINT
 
     AS_ASSERT( _mesh->isParallel() );
     if ( !local ) {
-        auto mapLG = _mesh->getLocalToGlobalNodeNumberingMapping();
+        auto mapLG = _mesh->getLocalToGlobalNodeIds();
         mapLG->updateValuePointer();
         auto node_id = ret.first;
         ret.first = ( *mapLG )[node_id];
@@ -307,7 +307,7 @@ ParallelEquationNumbering::getNodeAndComponentFromDOF( const bool local ) const 
 
     AS_ASSERT( _mesh->isParallel() );
     if ( !local ) {
-        auto mapLG = _mesh->getLocalToGlobalNodeNumberingMapping();
+        auto mapLG = _mesh->getLocalToGlobalNodeIds();
         mapLG->updateValuePointer();
         ASTERINTEGER nb_eq = ret.size();
         for ( ASTERINTEGER i_eq = 0; i_eq < nb_eq; i_eq++ ) {

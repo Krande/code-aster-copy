@@ -362,6 +362,16 @@ class BaseMesh : public DataStructure, public ListOfTables {
         return {};
     }
 
+    VectorOfVectorsLong getNodesRanks() const {
+        AS_ASSERT( false );
+        return {};
+    }
+
+    VectorOfVectorsLong getCellsRanks() const {
+        AS_ASSERT( false );
+        return {};
+    }
+
     /**
      * @brief Fonction permettant de savoir si un maillage est vide (non relu par exemple)
      * @return retourne true si le maillage est vide
@@ -406,7 +416,17 @@ class BaseMesh : public DataStructure, public ListOfTables {
      * @brief Get the mapping between local and global numbering of nodes
      * @return JeveuxVector of the indirection
      */
-    virtual const JeveuxVectorLong getLocalToGlobalNodeNumberingMapping() const {
+    virtual const JeveuxVectorLong getLocalToGlobalNodeIds() const {
+        AS_ASSERT( false );
+        return {};
+    }
+
+    virtual ASTERINTEGER getGlobalToLocalNodeId( const ASTERINTEGER &nodeId ) {
+        AS_ASSERT( false );
+        return -1;
+    }
+
+    virtual const JeveuxVectorLong getLocalToGlobalCellIds() const {
         AS_ASSERT( false );
         return {};
     }

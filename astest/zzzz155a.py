@@ -30,7 +30,7 @@ rank = MPI.ASTER_COMM_WORLD.Get_rank()
 
 def checkJoints(mesh):
     comm = MPI.COMM_WORLD
-    l2G = mesh.getLocalToGlobalNodeNumberingMapping()
+    l2G = mesh.getLocalToGlobalNodeIds()
 
     j = 0
     for proc in mesh.getOppositeDomains():
