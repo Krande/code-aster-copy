@@ -133,4 +133,19 @@ du groupe %(k2)s déclaré dans une occurrence du mot-clé COUDE.
 une maille du groupe %(k2)s déclaré dans une occurrence du mot-clé ZONE_ANALYSE.
 """
     ),
+    24: _(
+        """POST_ROCHE/RESU_MECA : on ne peut donner qu'un seul chargement de
+type SISM_INER_SPEC si TYPE_RESU vaut DYN_QS.
+"""
+    ),
+    25: _(
+        """POST_ROCHE/RESU_MECA : on ne peut donner qu'un seul chargement
+de type SISM_INER_SPEC avec TYPE_RESU valant %(k1)s.
+"""
+    ),
+    26: _(
+        """POST_ROCHE/RESU_MECA : vous avez déclaré un chargement de type SISM_INER_SPEC avec TYPE_RESU valant %(k1)s.
+Vous devez alors également donné un chargement SISM_INER_SPEC avec TYPE_RESU='%(k2)s'.
+"""
+    ),
 }

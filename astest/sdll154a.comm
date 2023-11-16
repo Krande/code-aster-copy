@@ -777,12 +777,47 @@ chLuPostRocheTout_SD = POST_ROCHE(
     CHAM_MATER=ch_mater,
     RESU_MECA=(
         _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, NUME_ORDRE=1),
-        # _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique, DIRECTION="COMBI"),
-        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique, DIRECTION="X"),
-        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique, DIRECTION="Y"),
-        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique, DIRECTION="Z"),
+        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique, DIRECTION="COMBI"),
     ),
 )
 
+# 8- seisme inertiel(X) + deplacement (SD)
+chLuPostRocheTout_SDX = POST_ROCHE(
+    RCCM_RX="NON",
+    ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
+    MODELE=modele,
+    CARA_ELEM=cara_elem,
+    CHAM_MATER=ch_mater,
+    RESU_MECA=(
+        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, NUME_ORDRE=1),
+        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique, DIRECTION="X"),
+    ),
+)
+
+# 9- seisme inertiel(Y) + deplacement (SD)
+chLuPostRocheTout_SDY = POST_ROCHE(
+    RCCM_RX="NON",
+    ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
+    MODELE=modele,
+    CARA_ELEM=cara_elem,
+    CHAM_MATER=ch_mater,
+    RESU_MECA=(
+        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, NUME_ORDRE=1),
+        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique, DIRECTION="Y"),
+    ),
+)
+
+# 10- seisme inertiel(Z) + deplacement (SD)
+chLuPostRocheTout_SDZ = POST_ROCHE(
+    RCCM_RX="NON",
+    ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
+    MODELE=modele,
+    CARA_ELEM=cara_elem,
+    CHAM_MATER=ch_mater,
+    RESU_MECA=(
+        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, NUME_ORDRE=1),
+        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique, DIRECTION="Z"),
+    ),
+)
 
 FIN()

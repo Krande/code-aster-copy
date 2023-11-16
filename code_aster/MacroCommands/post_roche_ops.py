@@ -599,6 +599,7 @@ class PostRocheCommon:
 
         iocc = 0
         nbSIT = 0
+        lSismInerSpec = [False] * 3
 
         for charg in self.dResuMeca:
             iocc += 1
@@ -656,6 +657,7 @@ class PostRocheCommon:
             typchar = charg.get("TYPE_CHAR")
 
             if typchar == "SISM_INER_SPEC":
+
                 dire = charg.get("DIRECTION")
                 typeres = charg.get("TYPE_RESU")
                 ind = self.dirDisp.index(dire) + 1
@@ -693,6 +695,10 @@ class PostRocheCommon:
                 # réponse totale
                 if typeres == "DYN_QS":
                     iordr = ind
+                    if lSismInerSpec[0] or lSismInerSpec[1] or lSismInerSpec[2]:
+                        UTMESS("F", "POSTROCHE_24")
+                    lSismInerSpec[0] = True
+
                     # type
 
                     __FIELD[nbfield] = CREA_CHAMP(
@@ -725,6 +731,12 @@ class PostRocheCommon:
                     else:
                         iordr = ind
 
+                        if lSismInerSpec[0]:
+                            UTMESS("F", "POSTROCHE_24")
+                        if lSismInerSpec[1]:
+                            UTMESS("F", "POSTROCHE_25", valk=typeres)
+                        lSismInerSpec[1] = True
+
                     __FIELD[nbfield] = CREA_CHAMP(
                         OPERATION="EXTR",
                         TYPE_CHAM="ELNO_SIEF_R",
@@ -756,6 +768,10 @@ class PostRocheCommon:
                         iordr = 20 + ind
                     else:
                         iordr = ind
+
+                        if lSismInerSpec[2]:
+                            UTMESS("F", "POSTROCHE_25", valk=typeres)
+                        lSismInerSpec[2] = True
 
                     __FIELD[nbfield] = CREA_CHAMP(
                         OPERATION="EXTR",
@@ -829,6 +845,11 @@ class PostRocheCommon:
             UTMESS("F", "POSTROCHE_3", valk="CARA_ELEM")
         if not self.chammater:
             UTMESS("F", "POSTROCHE_3", valk="CHAM_MATER")
+
+        if lSismInerSpec[1] and not lSismInerSpec[2]:
+            UTMESS("F", "POSTROCHE_26", valk=["DYN", "QS"])
+        if lSismInerSpec[2] and not lSismInerSpec[1]:
+            UTMESS("F", "POSTROCHE_26", valk=["QS", "DYN"])
 
         if asse_Mperm == []:
             __Mperm = None

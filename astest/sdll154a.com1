@@ -94,6 +94,139 @@ sismique_qs_values = table.EXTR_TABLE().values()
 mfy_sismique_qs = np.array(sismique_qs_values["MFY"])
 mfz_sismique_qs = np.array(sismique_qs_values["MFZ"])
 
+
+# pour validation SISM_INER_SPEC/DIRECTION="X"
+# recherche NUME_ORDRE correspondant a NOM_CAS: attention que nume_ordre commence par 1
+nume_ordre_vale_dire_x = [list(sismique.getAccessParameters()["NOM_CAS"]).index("DIRE_X") + 1]
+nume_ordre_part_dyna_x = [list(sismique.getAccessParameters()["NOM_CAS"]).index("PART_DYNA_X") + 1]
+nume_ordre_part_qs_x = [list(sismique.getAccessParameters()["NOM_CAS"]).index("PART_QS_X") + 1]
+table = CREA_TABLE(
+    RESU=_F(
+        RESULTAT=sismique,
+        NUME_ORDRE=nume_ordre_vale_dire_x,
+        NOM_CHAM="EFGE_ELNO",
+        TOUT="OUI",
+        NOM_CMP=("MT", "MFY", "MFZ"),
+    )
+)
+sismique_values_x = table.EXTR_TABLE().values()
+mfy_sismique_x = np.array(sismique_values_x["MFY"])
+mfz_sismique_x = np.array(sismique_values_x["MFZ"])
+
+table = CREA_TABLE(
+    RESU=_F(
+        RESULTAT=sismique,
+        NUME_ORDRE=nume_ordre_part_dyna_x,
+        NOM_CHAM="EFGE_ELNO",
+        TOUT="OUI",
+        NOM_CMP=("MT", "MFY", "MFZ"),
+    )
+)
+sismique_dyn_values_x = table.EXTR_TABLE().values()
+mfy_sismique_dyn_x = np.array(sismique_dyn_values_x["MFY"])
+mfz_sismique_dyn_x = np.array(sismique_dyn_values_x["MFZ"])
+
+table = CREA_TABLE(
+    RESU=_F(
+        RESULTAT=sismique,
+        NUME_ORDRE=nume_ordre_part_qs_x,
+        NOM_CHAM="EFGE_ELNO",
+        TOUT="OUI",
+        NOM_CMP=("MT", "MFY", "MFZ"),
+    )
+)
+sismique_qs_values_x = table.EXTR_TABLE().values()
+mfy_sismique_qs_x = np.array(sismique_qs_values_x["MFY"])
+mfz_sismique_qs_x = np.array(sismique_qs_values_x["MFZ"])
+
+# pour validation SISM_INER_SPEC/DIRECTION="Y"
+# recherche NUME_ORDRE correspondant a NOM_CAS: attention que nume_ordre commence par 1
+nume_ordre_vale_dire_y = [list(sismique.getAccessParameters()["NOM_CAS"]).index("DIRE_Y") + 1]
+nume_ordre_part_dyna_y = [list(sismique.getAccessParameters()["NOM_CAS"]).index("PART_DYNA_Y") + 1]
+nume_ordre_part_qs_y = [list(sismique.getAccessParameters()["NOM_CAS"]).index("PART_QS_Y") + 1]
+table = CREA_TABLE(
+    RESU=_F(
+        RESULTAT=sismique,
+        NUME_ORDRE=nume_ordre_vale_dire_y,
+        NOM_CHAM="EFGE_ELNO",
+        TOUT="OUI",
+        NOM_CMP=("MT", "MFY", "MFZ"),
+    )
+)
+sismique_values_y = table.EXTR_TABLE().values()
+mfy_sismique_y = np.array(sismique_values_y["MFY"])
+mfz_sismique_y = np.array(sismique_values_y["MFZ"])
+
+table = CREA_TABLE(
+    RESU=_F(
+        RESULTAT=sismique,
+        NUME_ORDRE=nume_ordre_part_dyna_y,
+        NOM_CHAM="EFGE_ELNO",
+        TOUT="OUI",
+        NOM_CMP=("MT", "MFY", "MFZ"),
+    )
+)
+sismique_dyn_values_y = table.EXTR_TABLE().values()
+mfy_sismique_dyn_y = np.array(sismique_dyn_values_y["MFY"])
+mfz_sismique_dyn_y = np.array(sismique_dyn_values_y["MFZ"])
+
+table = CREA_TABLE(
+    RESU=_F(
+        RESULTAT=sismique,
+        NUME_ORDRE=nume_ordre_part_qs_y,
+        NOM_CHAM="EFGE_ELNO",
+        TOUT="OUI",
+        NOM_CMP=("MT", "MFY", "MFZ"),
+    )
+)
+sismique_qs_values_y = table.EXTR_TABLE().values()
+mfy_sismique_qs_y = np.array(sismique_qs_values_y["MFY"])
+mfz_sismique_qs_y = np.array(sismique_qs_values_y["MFZ"])
+
+# pour validation SISM_INER_SPEC/DIRECTION="Z"
+# recherche NUME_ORDRE correspondant a NOM_CAS: attention que nume_ordre commence par 1
+nume_ordre_vale_dire_z = [list(sismique.getAccessParameters()["NOM_CAS"]).index("DIRE_Z") + 1]
+nume_ordre_part_dyna_z = [list(sismique.getAccessParameters()["NOM_CAS"]).index("PART_DYNA_Z") + 1]
+nume_ordre_part_qs_z = [list(sismique.getAccessParameters()["NOM_CAS"]).index("PART_QS_Z") + 1]
+table = CREA_TABLE(
+    RESU=_F(
+        RESULTAT=sismique,
+        NUME_ORDRE=nume_ordre_vale_dire_z,
+        NOM_CHAM="EFGE_ELNO",
+        TOUT="OUI",
+        NOM_CMP=("MT", "MFY", "MFZ"),
+    )
+)
+sismique_values_z = table.EXTR_TABLE().values()
+mfy_sismique_z = np.array(sismique_values_z["MFY"])
+mfz_sismique_z = np.array(sismique_values_z["MFZ"])
+
+table = CREA_TABLE(
+    RESU=_F(
+        RESULTAT=sismique,
+        NUME_ORDRE=nume_ordre_part_dyna_z,
+        NOM_CHAM="EFGE_ELNO",
+        TOUT="OUI",
+        NOM_CMP=("MT", "MFY", "MFZ"),
+    )
+)
+sismique_dyn_values_z = table.EXTR_TABLE().values()
+mfy_sismique_dyn_z = np.array(sismique_dyn_values_z["MFY"])
+mfz_sismique_dyn_z = np.array(sismique_dyn_values_z["MFZ"])
+
+table = CREA_TABLE(
+    RESU=_F(
+        RESULTAT=sismique,
+        NUME_ORDRE=nume_ordre_part_qs_z,
+        NOM_CHAM="EFGE_ELNO",
+        TOUT="OUI",
+        NOM_CMP=("MT", "MFY", "MFZ"),
+    )
+)
+sismique_qs_values_z = table.EXTR_TABLE().values()
+mfy_sismique_qs_z = np.array(sismique_qs_values_z["MFY"])
+mfz_sismique_qs_z = np.array(sismique_qs_values_z["MFZ"])
+
 from sdll154a_fonctions import PostRocheAnalytic
 
 zeros = np.zeros([4])
@@ -201,7 +334,7 @@ post_roche_analytic_SPG.calcul_ressort()
 post_roche_analytic_SPG.calcul_abattement()
 post_roche_analytic_SPG.calcul_sigma_eq()
 
-# 7- seisme inertiel + deplacement (SD)
+# 7- seisme inertiel(COMBI) + deplacement (SD)
 post_roche_analytic_SD = PostRocheAnalytic(
     zeros,
     mt_deplacement_impose,
@@ -216,6 +349,54 @@ post_roche_analytic_SD = PostRocheAnalytic(
 post_roche_analytic_SD.calcul_ressort()
 post_roche_analytic_SD.calcul_abattement()
 post_roche_analytic_SD.calcul_sigma_eq()
+
+# 8- seisme inertiel(X) + deplacement (SD)
+post_roche_analytic_SDX = PostRocheAnalytic(
+    zeros,
+    mt_deplacement_impose,
+    mfy_sismique_dyn_x,
+    mfz_sismique_dyn_x,
+    mfy_sismique_qs_x,
+    mfz_sismique_qs_x,
+    mfy_sismique_x,
+    mfz_sismique_x,
+)
+
+post_roche_analytic_SDX.calcul_ressort()
+post_roche_analytic_SDX.calcul_abattement()
+post_roche_analytic_SDX.calcul_sigma_eq()
+
+# 9- seisme inertiel(Y) + deplacement (SD)
+post_roche_analytic_SDY = PostRocheAnalytic(
+    zeros,
+    mt_deplacement_impose,
+    mfy_sismique_dyn_y,
+    mfz_sismique_dyn_y,
+    mfy_sismique_qs_y,
+    mfz_sismique_qs_y,
+    mfy_sismique_y,
+    mfz_sismique_y,
+)
+
+post_roche_analytic_SDY.calcul_ressort()
+post_roche_analytic_SDY.calcul_abattement()
+post_roche_analytic_SDY.calcul_sigma_eq()
+
+# 10- seisme inertiel(Z) + deplacement (SD)
+post_roche_analytic_SDZ = PostRocheAnalytic(
+    zeros,
+    mt_deplacement_impose,
+    mfy_sismique_dyn_z,
+    mfz_sismique_dyn_z,
+    mfy_sismique_qs_z,
+    mfz_sismique_qs_z,
+    mfy_sismique_z,
+    mfz_sismique_z,
+)
+
+post_roche_analytic_SDZ.calcul_ressort()
+post_roche_analytic_SDZ.calcul_abattement()
+post_roche_analytic_SDZ.calcul_sigma_eq()
 
 E = 2.0e11
 K = 0.01
@@ -15244,5 +15425,256 @@ TEST_RESU(
         ),
     )
 )
+
+
+# TEST_RESU chLuPostRocheTout_SDX
+print(
+    "\n----------------TEST_RESU CHAMP LU  seisme inertiel(X) + deplacement (SD)--------------------"
+)
+TEST_RESU(
+    CHAM_ELEM=(
+        # X15 = contrainte équivalente
+        _F(
+            GROUP_MA="M1",
+            POINT=1,
+            REFERENCE="AUTRE_ASTER",
+            CHAM_GD=chLuPostRocheTout_SDX,
+            NOM_CMP="X15",
+            VALE_CALC=3444861.379938065,
+            VALE_REFE=post_roche_analytic_SDX._sigma_eq[0],
+        ),
+        _F(
+            GROUP_MA="M1",
+            POINT=2,
+            REFERENCE="AUTRE_ASTER",
+            CHAM_GD=chLuPostRocheTout_SDX,
+            NOM_CMP="X15",
+            VALE_CALC=3444861.379938065,
+            VALE_REFE=post_roche_analytic_SDX._sigma_eq[1],
+        ),
+        _F(
+            GROUP_MA="M2",
+            POINT=1,
+            REFERENCE="AUTRE_ASTER",
+            CHAM_GD=chLuPostRocheTout_SDX,
+            NOM_CMP="X15",
+            VALE_CALC=3444861.379938065,
+            VALE_REFE=post_roche_analytic_SDX._sigma_eq[2],
+        ),
+        _F(
+            GROUP_MA="M2",
+            POINT=2,
+            REFERENCE="AUTRE_ASTER",
+            CHAM_GD=chLuPostRocheTout_SDX,
+            NOM_CMP="X15",
+            VALE_CALC=3444861.379938065,
+            VALE_REFE=post_roche_analytic_SDX._sigma_eq[3],
+        ),
+        # X16 = contrainte équivalente optimisée
+        _F(
+            GROUP_MA="M1",
+            POINT=1,
+            REFERENCE="AUTRE_ASTER",
+            CHAM_GD=chLuPostRocheTout_SDX,
+            NOM_CMP="X16",
+            VALE_CALC=3444861.379938065,
+            VALE_REFE=post_roche_analytic_SDX._sigma_eq_opt[0],
+        ),
+        _F(
+            GROUP_MA="M1",
+            POINT=2,
+            REFERENCE="AUTRE_ASTER",
+            CHAM_GD=chLuPostRocheTout_SDX,
+            NOM_CMP="X16",
+            VALE_CALC=3444861.379938065,
+            VALE_REFE=post_roche_analytic_SDX._sigma_eq_opt[1],
+        ),
+        _F(
+            GROUP_MA="M2",
+            POINT=1,
+            REFERENCE="AUTRE_ASTER",
+            CHAM_GD=chLuPostRocheTout_SDX,
+            NOM_CMP="X16",
+            VALE_CALC=3444861.379938065,
+            VALE_REFE=post_roche_analytic_SDX._sigma_eq_opt[2],
+        ),
+        _F(
+            GROUP_MA="M2",
+            POINT=2,
+            REFERENCE="AUTRE_ASTER",
+            CHAM_GD=chLuPostRocheTout_SDX,
+            NOM_CMP="X16",
+            VALE_CALC=3444861.379938065,
+            VALE_REFE=post_roche_analytic_SDX._sigma_eq_opt[3],
+        ),
+    )
+)
+
+# TEST_RESU chLuPostRocheTout_SDY
+print(
+    "\n----------------TEST_RESU CHAMP LU  seisme inertiel(Y) + deplacement (SD)--------------------"
+)
+TEST_RESU(
+    CHAM_ELEM=(
+        # X15 = contrainte équivalente
+        _F(
+            GROUP_MA="M1",
+            POINT=1,
+            REFERENCE="AUTRE_ASTER",
+            CHAM_GD=chLuPostRocheTout_SDY,
+            NOM_CMP="X15",
+            VALE_CALC=8319587.540651823,
+            VALE_REFE=post_roche_analytic_SDY._sigma_eq[0],
+        ),
+        _F(
+            GROUP_MA="M1",
+            POINT=2,
+            REFERENCE="AUTRE_ASTER",
+            CHAM_GD=chLuPostRocheTout_SDY,
+            NOM_CMP="X15",
+            VALE_CALC=4689208.701902988,
+            VALE_REFE=post_roche_analytic_SDY._sigma_eq[1],
+        ),
+        _F(
+            GROUP_MA="M2",
+            POINT=1,
+            REFERENCE="AUTRE_ASTER",
+            CHAM_GD=chLuPostRocheTout_SDY,
+            NOM_CMP="X15",
+            VALE_CALC=4689208.701903034,
+            VALE_REFE=post_roche_analytic_SDY._sigma_eq[2],
+        ),
+        _F(
+            GROUP_MA="M2",
+            POINT=2,
+            REFERENCE="AUTRE_ASTER",
+            CHAM_GD=chLuPostRocheTout_SDY,
+            NOM_CMP="X15",
+            VALE_CALC=3479155.2496192814,
+            VALE_REFE=post_roche_analytic_SDY._sigma_eq[3],
+        ),
+        # X16 = contrainte équivalente optimisée
+        _F(
+            GROUP_MA="M1",
+            POINT=1,
+            REFERENCE="AUTRE_ASTER",
+            CHAM_GD=chLuPostRocheTout_SDY,
+            NOM_CMP="X16",
+            VALE_CALC=16694281.898883559,
+            VALE_REFE=post_roche_analytic_SDY._sigma_eq_opt[0],
+        ),
+        _F(
+            GROUP_MA="M1",
+            POINT=2,
+            REFERENCE="AUTRE_ASTER",
+            CHAM_GD=chLuPostRocheTout_SDY,
+            NOM_CMP="X16",
+            VALE_CALC=6761118.033340045,
+            VALE_REFE=post_roche_analytic_SDY._sigma_eq_opt[1],
+        ),
+        _F(
+            GROUP_MA="M2",
+            POINT=1,
+            REFERENCE="AUTRE_ASTER",
+            CHAM_GD=chLuPostRocheTout_SDY,
+            NOM_CMP="X16",
+            VALE_CALC=6761118.0333401235,
+            VALE_REFE=post_roche_analytic_SDY._sigma_eq_opt[2],
+        ),
+        _F(
+            GROUP_MA="M2",
+            POINT=2,
+            REFERENCE="AUTRE_ASTER",
+            CHAM_GD=chLuPostRocheTout_SDY,
+            NOM_CMP="X16",
+            VALE_CALC=3479155.2496192814,
+            VALE_REFE=post_roche_analytic_SDY._sigma_eq_opt[3],
+        ),
+    )
+)
+
+# TEST_RESU chLuPostRocheTout_SDZ
+print(
+    "\n----------------TEST_RESU CHAMP LU  seisme inertiel(Z) + deplacement (SD)--------------------"
+)
+TEST_RESU(
+    CHAM_ELEM=(
+        # X15 = contrainte équivalente
+        _F(
+            GROUP_MA="M1",
+            POINT=1,
+            REFERENCE="AUTRE_ASTER",
+            CHAM_GD=chLuPostRocheTout_SDZ,
+            NOM_CMP="X15",
+            VALE_CALC=3691006.925184714,
+            VALE_REFE=post_roche_analytic_SDZ._sigma_eq[0],
+        ),
+        _F(
+            GROUP_MA="M1",
+            POINT=2,
+            REFERENCE="AUTRE_ASTER",
+            CHAM_GD=chLuPostRocheTout_SDZ,
+            NOM_CMP="X15",
+            VALE_CALC=3567517.3339575226,
+            VALE_REFE=post_roche_analytic_SDZ._sigma_eq[1],
+        ),
+        _F(
+            GROUP_MA="M2",
+            POINT=1,
+            REFERENCE="AUTRE_ASTER",
+            CHAM_GD=chLuPostRocheTout_SDZ,
+            NOM_CMP="X15",
+            VALE_CALC=3567517.3339575226,
+            VALE_REFE=post_roche_analytic_SDZ._sigma_eq[2],
+        ),
+        _F(
+            GROUP_MA="M2",
+            POINT=2,
+            REFERENCE="AUTRE_ASTER",
+            CHAM_GD=chLuPostRocheTout_SDZ,
+            NOM_CMP="X15",
+            VALE_CALC=3453466.7738346555,
+            VALE_REFE=post_roche_analytic_SDZ._sigma_eq[3],
+        ),
+        # X16 = contrainte équivalente optimisée
+        _F(
+            GROUP_MA="M1",
+            POINT=1,
+            REFERENCE="AUTRE_ASTER",
+            CHAM_GD=chLuPostRocheTout_SDZ,
+            NOM_CMP="X16",
+            VALE_CALC=5436911.608042035,
+            VALE_REFE=post_roche_analytic_SDZ._sigma_eq_opt[0],
+        ),
+        _F(
+            GROUP_MA="M1",
+            POINT=2,
+            REFERENCE="AUTRE_ASTER",
+            CHAM_GD=chLuPostRocheTout_SDZ,
+            NOM_CMP="X16",
+            VALE_CALC=4185937.0557784815,
+            VALE_REFE=post_roche_analytic_SDZ._sigma_eq_opt[1],
+        ),
+        _F(
+            GROUP_MA="M2",
+            POINT=1,
+            REFERENCE="AUTRE_ASTER",
+            CHAM_GD=chLuPostRocheTout_SDZ,
+            NOM_CMP="X16",
+            VALE_CALC=4185937.055778482,
+            VALE_REFE=post_roche_analytic_SDZ._sigma_eq_opt[2],
+        ),
+        _F(
+            GROUP_MA="M2",
+            POINT=2,
+            REFERENCE="AUTRE_ASTER",
+            CHAM_GD=chLuPostRocheTout_SDZ,
+            NOM_CMP="X16",
+            VALE_CALC=3453466.7738346555,
+            VALE_REFE=post_roche_analytic_SDZ._sigma_eq_opt[3],
+        ),
+    )
+)
+
 
 FIN()
