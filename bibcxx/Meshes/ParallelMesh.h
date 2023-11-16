@@ -179,8 +179,6 @@ class ParallelMesh : public BaseMesh {
      */
     const JeveuxVectorLong getLocalToGlobalCellIds() const;
 
-    void setLocalToGlobalCellIds( const VectorLong &l2gCellNum );
-
     /**
      * @brief Returns the nodes indexes of a group of cells
      * @param name name of group of cells
@@ -231,7 +229,8 @@ class ParallelMesh : public BaseMesh {
 
     /* Mesh builder functions */
     void create_joints( const VectorLong &domains, const VectorLong &globalNodeIds,
-                        const VectorLong &nodesOwner, const VectorOfVectorsLong &joints );
+                        const VectorLong &nodesOwner, const VectorLong &globalCellIds,
+                        const VectorOfVectorsLong &joints );
 
     void endDefinition();
 

@@ -207,12 +207,9 @@ ParallelMeshPtr MeshBalancer::applyBalancingStrategy( VectorInt &newLocalNodesLi
     auto globNodeNumVect2 = globNodeNumVect;
     std::for_each( globNodeNumVect2.begin(), globNodeNumVect2.end(), &decrement< long int > );
 
-    // Build "dummy" name vectors (for cells and nodes)
-    outMesh->buildNamesVectors();
-    outMesh->create_joints( domains, globNodeNumVect2, nOwners, graphInterfaces );
-
     // create global cell numbering
     // Build a global numbering (if there is not)
+    VectorLong globCellNumVect2;
     if ( _mesh != nullptr ) {
         VectorLong cellGlobNumLoc;
         std::array< ASTERINTEGER, 2 > range2;
@@ -239,8 +236,11 @@ ParallelMeshPtr MeshBalancer::applyBalancingStrategy( VectorInt &newLocalNodesLi
         VectorLong globCellNumVect, globCellNumVect2;
         _cellsBalancer->balanceObjectOverProcesses( cellGlobNumLoc, globCellNumVect );
         sortCells( globCellNumVect, globCellNumVect2 );
-        outMesh->setLocalToGlobalCellIds( globCellNumVect2 );
     }
+
+    // Build "dummy" name vectors (for cells and nodes)
+    outMesh->buildNamesVectors();
+    outMesh->create_joints( domains, globNodeNumVect2, nOwners, globCellNumVect2, graphInterfaces );
 
     outMesh->updateGlobalGroupOfNodes();
     outMesh->updateGlobalGroupOfCells();

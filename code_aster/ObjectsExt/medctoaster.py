@@ -160,7 +160,7 @@ class MEDCouplingMeshHelper:
         if mesh.isParallel():
             with timer("creating joints"):
                 mesh._create_joints(
-                    self.domains, self.globalNodeIds, self.nodesOwner, self.getAllJoints()
+                    self.domains, self.globalNodeIds, self.nodesOwner, [], self.getAllJoints()
                 )
         with timer("completion"):
             if not mesh.isIncomplete():

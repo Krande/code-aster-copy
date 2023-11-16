@@ -474,7 +474,7 @@ ASTERINTEGER ParallelMesh::getGlobalToLocalNodeId( const ASTERINTEGER &glob ) co
 }
 
 void ParallelMesh::create_joints( const VectorLong &domains, const VectorLong &globalNodeIds,
-                                  const VectorLong &nodesOwner,
+                                  const VectorLong &nodesOwner, const VectorLong &globalCellIds,
                                   const VectorOfVectorsLong &joints ) {
     AS_ASSERT( joints.size() == 2 * domains.size() )
 
@@ -501,6 +501,7 @@ void ParallelMesh::create_joints( const VectorLong &domains, const VectorLong &g
         ++i;
     }
 
+    ( *_globalCellIds ) = globalCellIds;
     _nodesOwner->updateValuePointer();
     CALLO_LRM_CLEAN_JOINT( getName(), _nodesOwner->getDataPtr() );
     _joints->build();
@@ -577,10 +578,6 @@ VectorOfVectorsLong ParallelMesh::getCellsRanks() const {
 
     return ranks;
 }
-
-void ParallelMesh::setLocalToGlobalCellIds( const VectorLong &l2gCellNum ) {
-    ( *_globalCellIds ) = l2gCellNum;
-};
 
 void ParallelMesh::endDefinition() {
     BaseMesh::endDefinition();

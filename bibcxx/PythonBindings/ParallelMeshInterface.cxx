@@ -255,12 +255,13 @@ Create the joints between domains (*for internal use*).
 
 Arguments:
     domains (list[int]): Names of the remote domains.
-    globalNodeIds (list[int]): Global number of each node.
+    globalNodeIds (list[int]): Global IDs of each node.
     nodesOwner (list[int]): Owner of each node.
+    globalCellIds (list[int]): Global IDs of each cell.
     joints (list[list[int]]): Definition of *E*mission and *R*eception joints.
         )",
-              py::arg( "domains" ), py::arg( "globalNumbering" ), py::arg( "nodesOwner" ),
-              py::arg( "joints" ) )
+              py::arg( "domains" ), py::arg( "globalNodeIds" ), py::arg( "nodesOwner" ),
+              py::arg( "globalCellIds" ), py::arg( "joints" ) )
         .def( "_endDefinition", &ParallelMesh::endDefinition, R"(
 Terminate the mesh creation (*for internal use*).
         )" )
