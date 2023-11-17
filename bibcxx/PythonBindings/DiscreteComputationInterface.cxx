@@ -276,8 +276,8 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             Returns:
                 FieldOnNodes: load
             )",
-              py::arg( "temp_prev" ), py::arg( "temp_step" ), py::arg( "time_prev" ),
-              py::arg( "time_step" ), py::arg( "theta" ), py::arg( "varc_curr" ) = nullptr )
+              py::arg( "temp_prev" ), py::arg( "time_prev" ), py::arg( "time_step" ),
+              py::arg( "theta" ), py::arg( "varc_curr" ) = nullptr )
 
         .def( "getMechanicalDirichletBC", &DiscreteComputation::getMechanicalDirichletBC,
               R"(
@@ -774,15 +774,14 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             Arguments:
                 temp_prev (FieldOnNodes): thermal field at begin of current time
                 temp_step (FieldOnNodes): field of increment of temperature
-                time_step (float): delta time between begin and end of the step
                 varc_curr (FieldOnCellsReal): external state variables at current time
                 groupOfCells (list[str]): compute matrices on given groups of cells.
                     If it empty, the full model is used
             Returns:
                 ElementaryMatrix: elementary mass matrix
             )",
-              py::arg( "temp_prev" ), py::arg( "temp_step" ), py::arg( "time_step" ),
-              py::arg( "varc_curr" ) = nullptr, py::arg( "groupOfCells" ) = VectorString() )
+              py::arg( "temp_prev" ), py::arg( "temp_step" ), py::arg( "varc_curr" ) = nullptr,
+              py::arg( "groupOfCells" ) = VectorString() )
 
         .def( "getTangentStiffnessMatrix", &DiscreteComputation::getTangentStiffnessMatrix,
               R"(

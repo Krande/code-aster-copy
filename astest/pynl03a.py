@@ -84,9 +84,11 @@ LIST = DEFI_LIST_REEL(
     ),
 )
 
-inst_fin = 13.0
 temp_init = 100.0
 theta = 0.57
+NbIterNewtonMax = 20
+ResiGlobRela = 1.0e-6
+inst_fin = 13.0
 
 l_inst = LIST.getValues()
 
@@ -104,28 +106,33 @@ NU = phys_pb.getDOFNumbering()
 # Fields
 T = code_aster.FieldOnNodesReal(NU)
 T.setValues({"TEMP": temp_init})
-T2 = T.copy()
 
-DELTA_T = T.copy() * 0
+DELTA_T = T.copy() * 0.0
+
+# initial residuals
+_, _, RESI_THER_PREV = disc_comp.getInternalThermalForces(T, DELTA_T)
+RESI_MASS_PREV = disc_comp.getNonLinearCapacityForces(T, DELTA_T)
 
 linear_solver = code_aster.MultFrontSolver()
 
 for i_inst in range(1, len(l_inst)):
     inst_prev = l_inst[i_inst - 1]
     inst = l_inst[i_inst]
+    if inst >= inst_fin:
+        break
     d_inst = inst - inst_prev
+
     print(" ")
     print("        ####################################")
     print("             instant de calcul ", inst)
     print("        ####################################")
     print(" ")
 
+    print("IterNewton | Resi_Glob_rela   | Resi_Glob_Maxi  | Convergence")
+
     ####################################################################################################
     # Routine NXPRED
     ####################################################################################################
-
-    # Linear loads - B * u
-    CHAR_AS = disc_comp.getImposedDualBC(inst)
 
     # Compute non linear quantities
     mass_ther = disc_comp.getTangentCapacityMatrix(T, DELTA_T)
@@ -140,47 +147,27 @@ for i_inst in range(1, len(l_inst)):
     MT_AS.addElementaryMatrix(mass_ther, 1.0 / d_inst)
     MT_AS.assemble()
 
-    # Get CHAR_EVNL
+    # CHAR_THER_EVNL
     EVNL_AS = disc_comp.getNonLinearTransientThermalForces(T, inst_prev, d_inst, theta)
 
-    # Get CHAR_THER_NONL
-    CHNL_AS = disc_comp.getNeumannForces(inst)
+    # RESI_PREV = RESI_MASS_PREV / d_inst - (1.0 - theta) * RESI_THER_PREV
+    RESI_PREV = EVNL_AS
 
-    # Create second member (transient)
-    F2M_PRED = CHAR_AS + EVNL_AS
-
-    print("CHAR_AS: ", CHAR_AS.norm("NORM_2"), flush=True)
-    print("CHNL_AS: ", CHNL_AS.norm("NORM_2"), flush=True)
-    print("EVNL_AS: ", EVNL_AS.norm("NORM_2"), flush=True)
-
-    ####################################################################################################
-    # Routine NXPRED
-    ####################################################################################################
+    # Linear loads - B * u
+    CHAR_AS = disc_comp.getImposedDualBC(inst)
 
     # Factor matrix
     scaling = MT_AS.getLagrangeScaling()
     isFacto = linear_solver.factorize(MT_AS)
     assert isFacto
 
-    # Solve
-    DELTA_T = linear_solver.solve(F2M_PRED)
-
     # =========================================================
     #               BOUCLE DE NEWTON
     # =========================================================
 
-    NbIterNewtonMax = 10
-    ResiGlobRela = 1.0e-6
-    Residu = NP.zeros(NbIterNewtonMax + 1)
-    ResiduX = NP.zeros(NbIterNewtonMax + 1)
-    Conv = NP.zeros(NbIterNewtonMax + 1)
+    Conv = False
 
-    for IterNewton in range(1, NbIterNewtonMax + 1):
-        print(" ")
-        print("        ####################################")
-        print("             iteration de Newton ", IterNewton)
-        print("        ####################################")
-        print(" ")
+    for IterNewton in range(NbIterNewtonMax + 1):
 
         ####################################################################################################
         # Routine NXNEWT
@@ -189,40 +176,48 @@ for i_inst in range(1, len(l_inst)):
         # Compute non linear quantities
 
         # Residual
-        code, flux, resi_ther = disc_comp.getInternalThermalForces(T * 0, DELTA_T)
-        resi_mass = disc_comp.getNonLinearCapacityForces(T * 0, DELTA_T)
+        _, _, RESI_THER = disc_comp.getInternalThermalForces(T, DELTA_T)
+        RESI_MASS = disc_comp.getNonLinearCapacityForces(T, DELTA_T)
 
-        RESI_AS = theta * resi_ther + (1.0 / d_inst) * resi_mass
+        RESI_AS = RESI_MASS / d_inst + theta * RESI_THER
 
-        BTLA_AS = disc_comp.getDualForces(T * 0 + DELTA_T)
+        # Reaction
+        BTLA_AS = disc_comp.getDualForces(T + DELTA_T)
+
+        DUAL_BC = disc_comp.getDualPrimal(T + DELTA_T, scaling)
+
+        DUAL_AS = BTLA_AS + DUAL_BC - CHAR_AS
 
         ####################################################################################################
         # Routine NXRESI
         ####################################################################################################
         # Evaluate equilibrium
-        CN2MBR = EVNL_AS - RESI_AS - BTLA_AS
+        CN2MBR = RESI_PREV - RESI_AS - DUAL_AS
 
+        print("EVNL_AS: ", RESI_PREV.norm("NORM_2"), flush=True)
         print("EVNL_AS: ", EVNL_AS.norm("NORM_2"), flush=True)
         print("RESI_AS: ", RESI_AS.norm("NORM_2"), flush=True)
-        print("BTLA_AS: ", BTLA_AS.norm("NORM_2"), flush=True)
+        print("DUAL_AS: ", BTLA_AS.norm("NORM_2"), flush=True)
 
         # Evaluate residual
         resi_maxi = CN2MBR.norm("NORM_INFINITY")
         resi_rela = CN2MBR.norm("NORM_2")
-        vnorm = (F2M_PRED - BTLA_AS).norm("NORM_2")
+        vnorm = (RESI_PREV - DUAL_AS).norm("NORM_2")
 
-        Residu[IterNewton - 1] = resi_rela / vnorm
-        ResiduX[IterNewton - 1] = resi_maxi
-
-        print("RESI_GLOB_RELA:", Residu[IterNewton - 1])
-        print("RESI_GLOB_MAXI:", ResiduX[IterNewton - 1])
+        Residu = resi_rela / vnorm
+        ResiduX = resi_maxi
 
         # Estimation de la convergence
-        if Residu[IterNewton - 1] <= ResiGlobRela:
-            Conv[IterNewton - 1] = 1
+        if IterNewton > 0:
+            if Residu <= ResiGlobRela:
+                Conv = True
+
+            print("     %d     |   %e   |   %e  |    %d " % (IterNewton, Residu, ResiduX, Conv))
+
+        if Conv:
+            RESI_THER_PREV = RESI_THER
+            RESI_MASS_PREV = RESI_MASS
             break
-        else:
-            Conv[IterNewton - 1] = 0
 
         # Solve
         DDT = linear_solver.solve(CN2MBR)
@@ -230,19 +225,15 @@ for i_inst in range(1, len(l_inst)):
         # Update TEMP increment
         DELTA_T += DDT
 
-    print("instant ", inst)
-    print("IterNewton | Resi_Glob_rela   | Resi_Glob_Maxi  | Convergence")
-    for i in range(0, IterNewton):
-        print("     %d     |   %e   |   %e  |    %d " % (i, Residu[i], ResiduX[i], Conv[i]))
-
-    if Conv[IterNewton - 1] != 1:
+    if not Conv:
         raise code_aster.ConvergenceError("echec de la convergence des iterations de Newton")
 
     # Somme en python T+ = DELTA_t + T-
-    T2 += DELTA_T.copy()
-    T = DELTA_T.copy()
-
+    T += DELTA_T
     DELTA_T.setValues(0)
+
+
+T.printMedFile("/home/C00976/tmp/pynl03a.med")
 
 FIN()
 #

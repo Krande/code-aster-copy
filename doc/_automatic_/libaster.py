@@ -1436,24 +1436,6 @@ class DiscreteComputation:
             ElementaryMatrix: elementary mass matrix
         """
 
-    def getNonLinearTransientThermalForces(
-        self, temp_prev, temp_step, time_prev, time_step, theta, varc_curr=None
-    ):
-        """Compute nonlinear Transient Thermal Load
-        Option CHAR_THER_EVOLNI.
-
-        Arguments:
-            temp_prev (FieldOnNodes): thermal field at begin of current time
-            temp_step (FieldOnNodes): field of increment of temperature
-            time_prev (float): time at begin of the step
-            time_step (float): delta time between begin and end of the step
-            theta (float): Theta parameter for integration
-            varc_curr (FieldOnCellsReal): external state variables at current time
-
-        Returns:
-            FieldOnNodes: load
-        """
-
     def getPhysicalProblem(self):
         """Get physical probelm
 

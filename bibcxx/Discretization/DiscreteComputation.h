@@ -384,10 +384,11 @@ class DiscreteComputation {
                                    const FieldOnNodesRealPtr temp_prev = nullptr,
                                    const bool assembly = true ) const;
 
-    FieldOnNodesRealPtr getNonLinearTransientThermalForces(
-        const FieldOnNodesRealPtr temp_prev, const FieldOnNodesRealPtr temp_step,
-        const ASTERDOUBLE time_prev, const ASTERDOUBLE time_step, const ASTERDOUBLE theta,
-        const FieldOnCellsRealPtr varc_curr = nullptr ) const;
+    FieldOnNodesRealPtr
+    getNonLinearTransientThermalForces( const FieldOnNodesRealPtr temp_prev,
+                                        const ASTERDOUBLE time_prev, const ASTERDOUBLE time_step,
+                                        const ASTERDOUBLE theta,
+                                        const FieldOnCellsRealPtr varc_curr = nullptr ) const;
 
     /**
      * @brief Compute internal forces, stress and internal state variables
@@ -423,7 +424,7 @@ class DiscreteComputation {
     // MASS_THER_RESI
     FieldOnNodesRealPtr
     getNonLinearCapacityForces( const FieldOnNodesRealPtr temp_prev,
-                                const FieldOnNodesRealPtr temp_step, const ASTERDOUBLE &time_step,
+                                const FieldOnNodesRealPtr temp_step,
                                 const FieldOnCellsRealPtr varc_curr = nullptr,
                                 const VectorString &groupOfCells = VectorString() ) const;
 
