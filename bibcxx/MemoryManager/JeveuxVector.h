@@ -657,6 +657,18 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
         return *this;
     };
 
+    JeveuxVectorClass< ValueType > &operator/=( const ValueType &scal ) {
+        CALL_JEMARQ();
+        this->updateValuePointer();
+        const auto size = this->size();
+
+        AsterBLAS::scal( size, 1.0 / scal, getDataPtr(), ASTERINTEGER( 1 ) );
+
+        CALL_JEDEMA();
+
+        return *this;
+    };
+
     /**
      * @brief MinusEqual overloading
      * @return Updated JeveuxVector

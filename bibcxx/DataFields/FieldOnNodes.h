@@ -319,9 +319,17 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @return Updated field
      */
     FieldOnNodes< ValueType > &operator*=( const ASTERDOUBLE &scal ) {
-        // AsterBLAS::scal(scal, _values);
-
         ( *_values ) *= scal;
+
+        return *this;
+    };
+
+    /**
+     * @brief DivideEqual overloading
+     * @return Updated field
+     */
+    FieldOnNodes< ValueType > &operator/=( const ASTERDOUBLE &scal ) {
+        ( *_values ) /= scal;
 
         return *this;
     };
@@ -360,6 +368,17 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     friend FieldOnNodes< ValueType > operator*( const ASTERDOUBLE &scal,
                                                 const FieldOnNodes< ValueType > &rhs ) {
         return rhs * scal;
+    };
+
+    /**
+     * @brief Dividing by a scalar on right overloading
+     * @return New field
+     */
+    friend FieldOnNodes< ValueType > operator/( FieldOnNodes< ValueType > lhs,
+                                                const ASTERDOUBLE &scal ) {
+
+        lhs /= scal;
+        return lhs;
     };
 
     /**

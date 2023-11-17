@@ -62,6 +62,8 @@ Returns:
         .def( py::self * float() )
         .def( float() * py::self )
         .def( py::self *= float() )
+        .def( py::self / float() )
+        .def( py::self /= float() )
         .def( -py::self )
         .def( "printMedFile", &FieldOnNodesReal::printMedFile, py::arg( "fileName" ),
               py::arg( "local" ) = true )
@@ -93,7 +95,7 @@ Returns:
 Extract the real part of the real field (the field is duplicated)
 
 Returns:
-    FieldOnNodesReal: real part 
+    FieldOnNodesReal: real part
         )" )
         .def( "getImaginaryPart", []( const FieldOnNodesReal &f ) { return getImaginaryPart( f ); },
               R"(
@@ -266,7 +268,7 @@ Returns:
 Extract the real part of the complex field
 
 Returns:
-    FieldOnNodesReal: real part 
+    FieldOnNodesReal: real part
         )" )
         .def( "getImaginaryPart",
               []( const FieldOnNodesComplex &f ) { return getImaginaryPart( f ); },
