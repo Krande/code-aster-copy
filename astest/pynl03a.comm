@@ -22,13 +22,11 @@ import code_aster
 # Pour des raisons de performances (x5), on force SDVERI='NON'.
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="NON"))
 
-import numpy as NP
-
 # Read mesh
-MAIL = LIRE_MAILLAGE(FORMAT="MED")
+MESH = code_aster.Mesh()
+MESH.readMedFile("ttnl303a.mmed")
 
 # Functions
-
 
 CONDUC = DEFI_FONCTION(
     NOM_PARA="TEMP",
@@ -50,10 +48,14 @@ ENTHAL = DEFI_FONCTION(
 # Material properties
 MATER = DEFI_MATERIAU(THER_NL=_F(LAMBDA=CONDUC, BETA=ENTHAL))
 
-CHMAT = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=MATER))
+CHMAT = code_aster.MaterialField(MESH)
+CHMAT.addMaterialOnMesh(MATER)
+CHMAT.build()
 
 # Finite elements
-MOTH = AFFE_MODELE(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MODELISATION="PLAN", PHENOMENE="THERMIQUE"))
+MOTH = code_aster.Model(MESH)
+MOTH.addModelingOnMesh(code_aster.Physics.Thermal, code_aster.Modelings.Planar)
+MOTH.build()
 
 # Loads
 TGAUCHE = DEFI_FONCTION(
@@ -61,11 +63,14 @@ TGAUCHE = DEFI_FONCTION(
     NOM_PARA="INST",
     VALE=(0.0e0, 200.0e0, 10.0e0, 200.0e0, 10.001e0, 100.0e0, 100.0e0, 100.0e0),
 )
+TDROITE = 100.0
 
-TDROITE = DEFI_FONCTION(NOM_RESU="TEMP", NOM_PARA="INST", VALE=(0.0e0, 100.0e0, 100.0e0, 100.0e0))
 CHTH = AFFE_CHAR_THER_F(MODELE=MOTH, TEMP_IMPO=(_F(GROUP_NO="NOE_GAU", TEMP=TGAUCHE),))
 
-CHDI = AFFE_CHAR_CINE_F(MODELE=MOTH, THER_IMPO=(_F(GROUP_NO="NOE_DRO", TEMP=TDROITE)))
+CHDI = code_aster.ThermalDirichletBC(MOTH)
+CHDI.addBCOnNodes(code_aster.PhysicalQuantityComponent.Temp, TDROITE, "NOE_DRO")
+CHDI.build()
+
 
 #
 # DEFINITION DE LA STATEGIE DE CALCUL -----------------------------
@@ -88,7 +93,7 @@ temp_init = 100.0
 theta = 0.57
 
 NbIterNewtonMax = 10
-ResiGlobRela = 1.0e-6
+ResiGlobRela = 5.0e-8
 
 l_inst = LIST.getValues()
 
@@ -102,13 +107,10 @@ phys_pb.computeBehaviourProperty({"RELATION": "THER_NL", "TOUT": "OUI"})
 
 disc_comp = code_aster.DiscreteComputation(phys_pb)
 
-# Create numbering
-NU = phys_pb.getDOFNumbering()
 
 # Fields
-T = code_aster.FieldOnNodesReal(NU)
+T = code_aster.FieldOnNodesReal(phys_pb.getDOFNumbering())
 T.setValues({"TEMP": temp_init})
-T2 = T.copy()
 
 DELTA_T = T.copy() * 0
 
@@ -124,52 +126,38 @@ for i_inst in range(1, len(l_inst)):
     d_inst = inst - inst_prev
     print(" ")
     print("        ####################################")
-    print("             instant de calcul ", inst)
+    print("             instant de calcul: ", inst)
     print("        ####################################")
     print(" ")
-
-    ################################################################################################
-    # Routine NXPRED
-    ################################################################################################
-
-    # Linear loads - B * u
-    CHAR_AS = disc_comp.getImposedDualBC(inst)
+    print(
+        " %s |  %s  |  %s | %s " % ("Iteration", "RESI_GLOB_RELA", "RESI_GLOB_MAXI", "Convergence")
+    )
 
     # Compute non linear quantities
-    mass_ther = disc_comp.getTangentCapacityMatrix(T, DELTA_T)
+    MASS_THER = disc_comp.getTangentCapacityMatrix(T, DELTA_T)
 
-    rigi_ther = disc_comp.getTangentConductivityMatrix(T, DELTA_T, with_dual=False)
-    rigi_ther_dual = disc_comp.getDualLinearConductivityMatrix()
+    RIGI_THER = disc_comp.getTangentConductivityMatrix(T, DELTA_T, with_dual=False)
+    RIGI_THER_DUAL = disc_comp.getDualLinearConductivityMatrix()
 
-    MT_AS = code_aster.AssemblyMatrixTemperatureReal(phys_pb)
-    MT_AS.addElementaryMatrix(rigi_ther, theta)
-    MT_AS.addElementaryMatrix(rigi_ther_dual)
-    MT_AS.addElementaryMatrix(mass_ther, 1.0 / d_inst)
-    MT_AS.assemble()
+    JABO_NW = code_aster.AssemblyMatrixTemperatureReal(phys_pb)
+    JABO_NW.addElementaryMatrix(RIGI_THER, theta)
+    JABO_NW.addElementaryMatrix(RIGI_THER_DUAL)
+    JABO_NW.addElementaryMatrix(MASS_THER, 1.0 / d_inst)
+    JABO_NW.assemble()
 
     # Get CHAR_EVNL
     RESI_PREV = RESI_MASS_PREV / d_inst - (1.0 - theta) * RESI_THER_PREV
 
+    # Linear loads - B * u
+    DUAL_IMPO = disc_comp.getImposedDualBC(inst)
+
     # Create second member (transient)
-    F2M_PRED = CHAR_AS + RESI_PREV
-
-    print("CHAR_AS: ", CHAR_AS.norm("NORM_2"), flush=True)
-    print("EVNL_AS: ", RESI_PREV.norm("NORM_2"), flush=True)
-
-    ################################################################################################
-    # Routine NXPRED
-    ################################################################################################
+    F2M_PRED = DUAL_IMPO + RESI_PREV
 
     # Factor matrix
-    scaling = MT_AS.getLagrangeScaling()
-    isFacto = linear_solver.factorize(MT_AS)
+    scaling = JABO_NW.getLagrangeScaling()
+    isFacto = linear_solver.factorize(JABO_NW)
     assert isFacto
-
-    # Compute Dirichlet BC:=
-    diriBCs = disc_comp.getIncrementalDirichletBC(inst, T)
-
-    # Solve
-    T = linear_solver.solve(F2M_PRED, diriBCs)
 
     # =========================================================
     #               BOUCLE DE NEWTON
@@ -177,7 +165,7 @@ for i_inst in range(1, len(l_inst)):
 
     Conv = False
 
-    for IterNewton in range(1, NbIterNewtonMax + 1):
+    for IterNewton in range(NbIterNewtonMax + 1):
         ############################################################################################
         # Routine NXNEWT
         ############################################################################################
@@ -188,27 +176,23 @@ for i_inst in range(1, len(l_inst)):
         _, _, RESI_THER = disc_comp.getInternalThermalForces(T, DELTA_T)
         RESI_MASS = disc_comp.getNonLinearCapacityForces(T, DELTA_T)
 
-        RESI_AS = theta * RESI_THER + (1.0 / d_inst) * RESI_MASS
+        RESI_CURR = RESI_MASS / d_inst + theta * RESI_THER
 
-        BTLA_AS = disc_comp.getDualForces(T + DELTA_T)
+        BTLA_FC = disc_comp.getDualForces(T + DELTA_T)
+
+        DUAL_BC = disc_comp.getDualPrimal(T + DELTA_T, scaling)
+
+        RESI_DUAL = BTLA_FC + (DUAL_BC - DUAL_IMPO)
 
         ############################################################################################
         # Routine NXRESI
         ############################################################################################
         # Evaluate equilibrium
-        CN2MBR = RESI_PREV - RESI_AS - BTLA_AS
-
-        print("EVNL_AS: ", RESI_PREV.norm("NORM_2"), flush=True)
-        print("RESI_AS: ", RESI_AS.norm("NORM_2"), flush=True)
-        print("BTLA_AS: ", BTLA_AS.norm("NORM_2"), flush=True)
+        RESI_NW = RESI_PREV - (RESI_CURR + RESI_DUAL)
 
         # Evaluate residual
-        resi_maxi = CN2MBR.norm("NORM_INFINITY")
-        resi_rela = CN2MBR.norm("NORM_2")
-        vnorm = (F2M_PRED - BTLA_AS).norm("NORM_2")
-
-        Residu = resi_rela / vnorm
-        ResiduX = resi_maxi
+        Residu = RESI_NW.norm("NORM_2") / (F2M_PRED - BTLA_FC).norm("NORM_2")
+        ResiduX = RESI_NW.norm("NORM_INFINITY")
 
         # Estimation de la convergence
         if IterNewton > 0:
@@ -226,7 +210,7 @@ for i_inst in range(1, len(l_inst)):
         diriBCs = disc_comp.getIncrementalDirichletBC(inst, T + DELTA_T)
 
         # Solve
-        DDT = linear_solver.solve(CN2MBR, diriBCs)
+        DDT = linear_solver.solve(RESI_NW, diriBCs)
 
         # Update TEMP increment
         DELTA_T += DDT
