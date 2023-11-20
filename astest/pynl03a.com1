@@ -34,8 +34,6 @@ TEMPE_REF = THER_NON_LINE(
 
 T_REF = TEMPE_REF.getField("TEMP", value=inst_fin, para="INST")
 
-T_REF.printMedFile("/home/C00976/tmp/pynl03a_ref.med")
-
 
 #
 # Tests
