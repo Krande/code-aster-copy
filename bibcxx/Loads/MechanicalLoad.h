@@ -167,9 +167,9 @@ class MechanicalLoad : public DataStructure, public ListOfTables {
     bool build() { return _mecaLoadDesc->build(); }
 };
 
-/**********************************************************/
-/*  Explicit instantiation of template classes
-/**********************************************************/
+/**********************************************************
+ *  Explicit instantiation of template classes
+ **********************************************************/
 
 /** @typedef MechanicalLoadReal Class d'une charge mécanique réelle */
 typedef MechanicalLoad< ConstantFieldOnCellsReal > MechanicalLoadReal;

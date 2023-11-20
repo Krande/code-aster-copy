@@ -1,5 +1,5 @@
 #ifndef CONVERTIBLEVALUE_H_
-#define CCONVERTIBLEVALUE_H_
+#define CONVERTIBLEVALUE_H_
 
 /**
  * @file ConvertibleValue.h

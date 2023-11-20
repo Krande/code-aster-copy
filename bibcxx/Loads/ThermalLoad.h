@@ -126,9 +126,9 @@ class ThermalLoad : public DataStructure {
     bool build() { return _therLoadDesc->build(); };
 };
 
-/**********************************************************/
-/*  Explicit instantiation of template classes
-/**********************************************************/
+/**********************************************************
+ *  Explicit instantiation of template classes
+ **********************************************************/
 
 /** @typedef ThermalLoadReal Class d'une charge mécanique réelle */
 typedef ThermalLoad< ConstantFieldOnCellsReal > ThermalLoadReal;

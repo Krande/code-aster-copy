@@ -148,7 +148,7 @@ to debug MPI (add to asterf_debug.h too)
 #if defined( ASTER_DEBUG_IODR ) || defined( ASTER_DEBUG_ALL )
 #define DEBUG_IODR( fmt, a, b ) DBGVV( fmt, a, b )
 #else
-#define DEBUG_IODR
+#define DEBUG_IODR( fmt, a, b )
 #endif
 
 #endif

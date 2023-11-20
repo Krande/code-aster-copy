@@ -201,9 +201,9 @@ class ThermalLoadDescription : public DataStructure {
     };
 };
 
-/**********************************************************/
-/*  Explicit instantiation of template classes
-/**********************************************************/
+/**********************************************************
+ *  Explicit instantiation of template classes
+ **********************************************************/
 
 /** @typedef ThermalLoadDescriptionReal Class d'une charge mécanique réelle */
 typedef ThermalLoadDescription< ConstantFieldOnCellsReal > ThermalLoadDescriptionReal;

@@ -15,7 +15,7 @@
 /* You should have received a copy of the GNU General Public License    */
 /* along with code_aster.  If not, see <http://www.gnu.org/licenses/>.  */
 /* -------------------------------------------------------------------- */
-/* aslint:disable=W3004
+/* aslint:disable=W3004 */
 /*! \file
 Copyright (c) 2003, The Regents of the University of California, through
 Lawrence Berkeley National Laboratory (subject to receipt of any required
@@ -143,8 +143,8 @@ void DEFPPPPPPPP( SLU_FACTORIZE, slu_factorize, ASTERINTEGER4 *m, ASTERINTEGER4 
     StatFree( &stat );
 }
 /*
-/* Get the number of non-zero terms in L factor
-*/
+ * Get the number of non-zero terms in L factor
+ */
 void DEFPPP( SLU_GET_NNZ_OF_LOWER_FACTOR, slu_get_nnz_of_lower_factor, fptr *f_factors,
              ASTERINTEGER *nnz_l, ASTERINTEGER4 *info ) {
     factors_t *LUfactors;
@@ -159,8 +159,8 @@ void DEFPPP( SLU_GET_NNZ_OF_LOWER_FACTOR, slu_get_nnz_of_lower_factor, fptr *f_f
     *info = 0;
 }
 /*
-/* Get the number of non-zero terms in U factor
-*/
+ * Get the number of non-zero terms in U factor
+ */
 void DEFPPP( SLU_GET_NNZ_OF_UPPER_FACTOR, slu_get_nnz_of_upper_factor, fptr *f_factors,
              ASTERINTEGER *nnz_u, ASTERINTEGER4 *info ) {
     factors_t *LUfactors;
@@ -175,9 +175,9 @@ void DEFPPP( SLU_GET_NNZ_OF_UPPER_FACTOR, slu_get_nnz_of_upper_factor, fptr *f_f
     *info = 0;
 }
 /*
-/* Obtain L  from LUfactors
-/* L is returned as a CSC matrix, stored in values, rowind, colptr arrays
-*/
+ * Obtain L  from LUfactors
+ * L is returned as a CSC matrix, stored in values, rowind, colptr arrays
+ */
 void DEFPPPPP( SLU_GET_LOWER_FACTOR, slu_get_lower_factor, fptr *f_factors, ASTERDOUBLE *values,
                ASTERINTEGER4 *rowind, ASTERINTEGER4 *colptr, ASTERINTEGER4 *info ) {
     SuperMatrix *L, *U;
@@ -245,8 +245,8 @@ void DEFPPPPP( SLU_GET_LOWER_FACTOR, slu_get_lower_factor, fptr *f_factors, ASTE
     *info = 0;
 }
 /*
-/* Obtain perm_row  from LUfactors
-*/
+ * Obtain perm_row  from LUfactors
+ */
 void DEFPPP( SLU_GET_PERM_ROW, slu_get_perm_row, fptr *f_factors, ASTERINTEGER4 *perm_row,
              ASTERINTEGER4 *info ) {
     SuperMatrix *L;
@@ -266,8 +266,8 @@ void DEFPPP( SLU_GET_PERM_ROW, slu_get_perm_row, fptr *f_factors, ASTERINTEGER4 
     *info = 0;
 }
 /*
-/* Obtain perm_col  from LUfactors
-*/
+ * Obtain perm_col  from LUfactors
+ */
 void DEFPPP( SLU_GET_PERM_COL, slu_get_perm_col, fptr *f_factors, ASTERINTEGER4 *perm_col,
              ASTERINTEGER4 *info ) {
     SuperMatrix *L;
@@ -287,8 +287,8 @@ void DEFPPP( SLU_GET_PERM_COL, slu_get_perm_col, fptr *f_factors, ASTERINTEGER4 
     *info = 0;
 }
 /*
-/* Obtain diagonal of upper factor U from LUFactors
-*/
+ * Obtain diagonal of upper factor U from LUFactors
+ */
 void DEFPPP( SLU_GET_DIAG_OF_UPPER_FACTOR, slu_get_diag_of_upper_factor, fptr *f_factors,
              ASTERDOUBLE *diag_u, ASTERINTEGER4 *info ) {
     SuperMatrix *L, *U;
@@ -344,9 +344,9 @@ void DEFPPP( SLU_GET_DIAG_OF_UPPER_FACTOR, slu_get_diag_of_upper_factor, fptr *f
     *info = 0;
 }
 /*
-/* Obtain  upper factor U from LUFactors
-/* U is returned as a CSC matrix, stored in values, rowind, colptr arrays
-*/
+ * Obtain  upper factor U from LUFactors
+ * U is returned as a CSC matrix, stored in values, rowind, colptr arrays
+ */
 void DEFPPPPP( SLU_GET_UPPER_FACTOR, slu_get_upper_factor, fptr *f_factors, ASTERDOUBLE *values,
                ASTERINTEGER4 *rowind, ASTERINTEGER4 *colptr, ASTERINTEGER4 *info ) {
     SuperMatrix *L, *U;
@@ -474,8 +474,8 @@ void DEFPPPPP( SLU_GET_UPPER_FACTOR, slu_get_upper_factor, fptr *f_factors, ASTE
     *info = 0;
 }
 /*
-/* Free memory
-*/
+ * Free memory
+ */
 void DEFPP( SLU_FREE_FACTORS, slu_free_factors, fptr *f_factors, ASTERINTEGER4 *info ) {
     factors_t *LUfactors;
     /* Free the LU factors in the factors handle */
@@ -490,9 +490,9 @@ void DEFPP( SLU_FREE_FACTORS, slu_free_factors, fptr *f_factors, ASTERINTEGER4 *
     *info = 0;
 }
 /*
-/* Solve linear system using LU decomposition stored in LUfactors
-/* On exit, right-hand-side b is overwritten with solution x
-*/
+ * Solve linear system using LU decomposition stored in LUfactors
+ * On exit, right-hand-side b is overwritten with solution x
+ */
 void DEFPPPPPP( SLU_SOLVE, slu_solve, fptr *f_factors, ASTERINTEGER4 *trans_option,
                 ASTERINTEGER4 *nrhs, ASTERDOUBLE *b, ASTERINTEGER4 *ldb, ASTERINTEGER4 *info ) {
     SuperLUStat_t stat;

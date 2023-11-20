@@ -123,8 +123,8 @@ ASTERINTEGER *niv;
     options[METIS_OPTION_IPTYPE] = METIS_IPTYPE_NODE; /*Why ?* */
     options[METIS_OPTION_RTYPE] = METIS_RTYPE_SEP1SIDED;    /* OK, consistant METIS4 */
     /*  options[METIS_OPTION_DBGLVL]   = METIS_DBG_INFO; */ /* Pour mode debug */
-    options[METIS_OPTION_UFACTOR] = 1.200;                  /* why ?*/
-    options[METIS_OPTION_PFACTOR] = 0.0;                    /* why ?*/
+    options[METIS_OPTION_UFACTOR] = 1;                      /* why ?*/
+    options[METIS_OPTION_PFACTOR] = 0;                      /* why ?*/
     options[METIS_OPTION_NO2HOP] = 0;                       /* why ?*/
     options[METIS_OPTION_COMPRESS] = 1;                     /* OK consistant METIS4 */
     options[METIS_OPTION_CCORDER] = 0;                      /* why ?*/

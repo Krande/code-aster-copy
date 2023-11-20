@@ -78,7 +78,10 @@ def check_mumps(self):
     if opts.enable_mumps is False:
         raise Errors.ConfigurationError("MUMPS disabled")
     self.check_mumps_headers()
-    self.check_mumps_version(("5.5", "5.4"))
+    try:
+        self.check_mumps_version(("5.5", "5.4"))
+    except Errors.ConfigurationError:
+        self.check_mumps_version(("5.6",), beta=True)
     self.check_sizeof_mumps_integer()
     if opts.mumps_libs is None:
         opts.mumps_libs = "dmumps zmumps smumps cmumps mumps_common pord"
@@ -92,7 +95,7 @@ def check_mumps(self):
 def check_mumps_libs(self):
     opts = self.options
     check_mumps = partial(
-        self.check_cc, uselib_store="MUMPS", use="MUMPS MPI OPENMP", mandatory=True
+        self.check_fc, uselib_store="MUMPS", use="MUMPS MPI OPENMP", mandatory=True
     )
     if opts.embed_all or opts.embed_mumps:
         check = lambda lib: check_mumps(stlib=lib)
@@ -134,7 +137,7 @@ def check_mumps_headers(self):
 
 
 @Configure.conf
-def check_mumps_version(self, expected_versions):
+def check_mumps_version(self, expected_versions, beta=False):
     fragment = r"""
 #include <stdio.h>
 #include "smumps_c.h"
@@ -164,7 +167,7 @@ int main(void){
         raise
     else:
         self.define("ASTER_MUMPS_VERSION", ret)
-        self.end_msg(self.env["MUMPS_VERSION"])
+        self.end_msg(self.env["MUMPS_VERSION"] + " beta support" if beta else "")
 
 
 @Configure.conf

@@ -95,7 +95,7 @@ def configure(self):
         value = params.get(key, "")
     else:
         self.end_msg("not found")
-        fcfg = osp.join(os.environ["HOME"], ".hgrc")
+        fcfg = osp.join(os.environ["HOME"], ".gitconfig")
         self.start_msg("Reading user prefs from %s" % fcfg)
         if osp.isfile(fcfg):
             cfg = ConfigParser()

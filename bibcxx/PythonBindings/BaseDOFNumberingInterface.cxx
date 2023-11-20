@@ -33,51 +33,51 @@ void exportBaseDOFNumberingToPython( py::module_ &mod ) {
     bool ( BaseDOFNumbering::*f2 )( const std::vector< BaseDOFNumbering::MatrElem > matrix ) =
         &BaseDOFNumbering::computeNumbering;
 
-    py::class_< BaseDOFNumbering, BaseDOFNumbering::BaseDOFNumberingPtr, DataStructure > c1(
-        mod, "BaseDOFNumbering" );
-    // fake initFactoryPtr: created by subclasses
-    // fake initFactoryPtr: created by subclasses
-    c1.def( "computeNumbering", f1 );
-    c1.def( "computeNumbering", f2 );
-    c1.def( "computeRenumbering", &BaseDOFNumbering::computeRenumbering );
-    c1.def( "getFiniteElementDescriptors", &BaseDOFNumbering::getFiniteElementDescriptors, R"(
+    py::class_< BaseDOFNumbering, BaseDOFNumbering::BaseDOFNumberingPtr, DataStructure >(
+        mod, "BaseDOFNumbering" )
+        // fake initFactoryPtr: created by subclasses
+        // fake initFactoryPtr: created by subclasses
+        .def( "computeNumbering", f1 )
+        .def( "computeNumbering", f2 )
+        .def( "computeRenumbering", &BaseDOFNumbering::computeRenumbering )
+        .def( "getFiniteElementDescriptors", &BaseDOFNumbering::getFiniteElementDescriptors, R"(
 Returns the objects defining the finite elements.
 
 Returns:
     list[FiniteElementDescriptor]: List of finite elements descriptions.
-    )" );
-    c1.def( "setFiniteElementDescriptors", &BaseDOFNumbering::setFiniteElementDescriptors, R"(
+    )" )
+        .def( "setFiniteElementDescriptors", &BaseDOFNumbering::setFiniteElementDescriptors, R"(
 Returns the object defining the finite elements.
 
 Arguments:
     descr (list[FiniteElementDescriptor]): List of finite elements descriptions.
     )",
-            py::arg( "descr" ) );
-    c1.def( "getEquationNumbering", &BaseDOFNumbering::getEquationNumbering, R"(
-Returns the global equation numbering object;
+              py::arg( "descr" ) )
+        .def( "getEquationNumbering", &BaseDOFNumbering::getEquationNumbering, R"(
+Returns the global equation numbering object
 
 Returns:
     EquationNumbering: global equation numbering.
-        )" );
-    c1.def( "getPhysicalQuantity", &BaseDOFNumbering::getPhysicalQuantity, R"(
+        )" )
+        .def( "getPhysicalQuantity", &BaseDOFNumbering::getPhysicalQuantity, R"(
 Returns the name of the physical quantity that is numbered.
 
 Returns:
     str: physical quantity name.
-        )" );
-    c1.def( "isParallel", &BaseDOFNumbering::isParallel, R"(
+        )" )
+        .def( "isParallel", &BaseDOFNumbering::isParallel, R"(
 The numbering is distributed across MPI processes for High Performance Computing.
 
 Returns:
     bool: *True* if used, *False* otherwise.
-        )" );
-    c1.def( "getMesh", &BaseDOFNumbering::getMesh, R"(
+        )" )
+        .def( "getMesh", &BaseDOFNumbering::getMesh, R"(
 Return the mesh
 
 Returns:
     MeshPtr: a pointer to the mesh
-        )" );
-    c1.def( "getModel", &BaseDOFNumbering::getModel );
-    c1.def( "setModel", &BaseDOFNumbering::setModel );
-    c1.def( "getMorseStorage", &BaseDOFNumbering::getMorseStorage );
+        )" )
+        .def( "getModel", &BaseDOFNumbering::getModel )
+        .def( "setModel", &BaseDOFNumbering::setModel )
+        .def( "getMorseStorage", &BaseDOFNumbering::getMorseStorage );
 };

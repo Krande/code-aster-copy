@@ -74,12 +74,13 @@ VectorLong ParallelEquationNumbering::getPhysicalDOFs( const bool local ) const 
 
     for ( int i = 0; i < size; i++ ) {
         physicalIndicator = ( *dofInformation )[i];
-        if ( physicalIndicator == 0 )
+        if ( physicalIndicator == 0 ) {
             if ( local )
                 physicalRows.push_back( i );
             else {
                 physicalRows.push_back( ( *loc2glo )[i] );
             }
+        }
     }
     return physicalRows;
 };
@@ -96,12 +97,13 @@ VectorLong ParallelEquationNumbering::getGhostDOFs( const bool local ) const {
 
     for ( int i = 0; i < getNumberOfDOFs( true ); i++ ) {
         dofOwner = ( *localToRank )[i];
-        if ( dofOwner != rank )
+        if ( dofOwner != rank ) {
             if ( local )
                 ghostRows.push_back( i );
             else {
                 ghostRows.push_back( ( *loc2glo )[i] );
             }
+        }
     }
     return ghostRows;
 };
@@ -132,12 +134,13 @@ VectorLong ParallelEquationNumbering::getLagrangeDOFs( const bool local ) const 
 
     for ( int i = 0; i < size; i++ ) {
         physicalIndicator = ( *dofInformation )[i];
-        if ( physicalIndicator != 0 )
+        if ( physicalIndicator != 0 ) {
             if ( local )
                 lagrangeRows.push_back( i );
             else {
                 lagrangeRows.push_back( ( *loc2glo )[i] );
             }
+        }
     }
     return lagrangeRows;
 };
@@ -157,16 +160,18 @@ ParallelEquationNumbering::getDictOfLagrangeDOFs( const bool local ) const {
 
     for ( int i = 0; i < size; i++ ) {
         physicalIndicator = ( *lagrInfo )[i];
-        if ( physicalIndicator == -1 )
+        if ( physicalIndicator == -1 ) {
             if ( local )
                 lag1.push_back( i );
             else
                 lag1.push_back( ( *loc2glo )[i] );
-        if ( physicalIndicator == -2 )
+        }
+        if ( physicalIndicator == -2 ) {
             if ( local )
                 lag2.push_back( i );
             else
                 lag2.push_back( ( *loc2glo )[i] );
+        }
     }
     return ret;
 };

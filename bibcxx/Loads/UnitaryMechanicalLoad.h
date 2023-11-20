@@ -376,9 +376,9 @@ class UnitaryMechanicalLoadReal : public MechanicalLoadReal {
     };
 };
 
-/**********************************************************/
-/*  Explicit instantiation of template classes
-/**********************************************************/
+/**********************************************************
+ *  Explicit instantiation of template classes
+ **********************************************************/
 
 /* Appliquer une force nodale sur une modélisation 3D */
 /** @typedef NodalForceReal  */

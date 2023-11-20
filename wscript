@@ -523,7 +523,7 @@ class ConfigHelper:
     def guard_begin(self):
         if self._lang in ("C", "Fortran"):
             guard = Utils.quote_define_name(self.filename)
-            return ["#ifndef {0}_".format(guard), self.define(guard), ""]
+            return ["#ifndef {0}_".format(guard), self.define(guard).strip() + "_", ""]
         elif self._lang == "Python":
             return ["config = dict("]
         return [""]

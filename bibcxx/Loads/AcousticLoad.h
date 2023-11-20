@@ -107,9 +107,9 @@ class AcousticLoad : public DataStructure {
     bool build() { return _acouLoadDesc->build(); };
 };
 
-/**********************************************************/
-/*  Explicit instantiation of template classes
-/**********************************************************/
+/**********************************************************
+ *  Explicit instantiation of template classes
+ **********************************************************/
 
 /** @typedef AcousticLoadComplex Class d'une charge mécanique réelle */
 typedef AcousticLoad< ConstantFieldOnCellsComplex > AcousticLoadComplex;

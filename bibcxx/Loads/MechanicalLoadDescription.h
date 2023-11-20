@@ -361,9 +361,9 @@ class MechanicalLoadDescription : public DataStructure {
     };
 };
 
-/**********************************************************/
-/*  Explicit instantiation of template classes
-/**********************************************************/
+/**********************************************************
+ *  Explicit instantiation of template classes
+ **********************************************************/
 
 /** @typedef MechanicalLoadDescriptionReal Class d'une charge mécanique réelle */
 typedef MechanicalLoadDescription< ConstantFieldOnCellsReal > MechanicalLoadDescriptionReal;

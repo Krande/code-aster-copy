@@ -866,7 +866,7 @@ void getvpy( _IN const char *mfc, _IN const char *mcs, _IN const int ioc, _OUT P
             Si le mot-cle simple est recherche sans un mot-cle facteur ioc n'est pas utilise
     */
     if ( isalpha( mfc[0] ) && ( ioc <= 0 ) ) {
-        printf( "<F> GETVPY : le numero d'occurence (IOCC=%ld) est invalide\n", ioc );
+        printf( "<F> GETVPY : le numero d'occurence (IOCC=%d) est invalide\n", ioc );
         printf( "             commande : %s\n",
                 PyUnicode_AsUTF8( PyObject_CallMethod( get_sh_etape(), "getName", "" ) ) );
         printf( "             mot-cle facteur : %s\n", mfc );

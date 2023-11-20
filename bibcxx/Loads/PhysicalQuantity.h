@@ -155,8 +155,6 @@ const std::string &value( const std::pair< PhysicalQuantityComponent, std::strin
  */
 /* This is the most general case (defined but intentionally not implemented) */
 /* It will be specialized for each physical quantity listed in the inventory */
-/*
-/*
 /*************************************************************************/
 
 template < PhysicalQuantityEnum PQ >
@@ -412,7 +410,7 @@ struct PhysicalQuantityTraits< HeatFlux > {
 };
 
 /****************************************/
-/*        Flux Hydraulique (THM)         */
+/*        Flux Hydraulique (THM)        */
 /****************************************/
 
 /**
@@ -435,8 +433,8 @@ struct PhysicalQuantityTraits< HydraulicFlux > {
 };
 
 /******************************************/
-/* @class PhysicalQuantity
-/* @brief Defines a physical quantity
+/* @class PhysicalQuantity                */
+/* @brief Defines a physical quantity     */
 /******************************************/
 
 template < class ValueType, PhysicalQuantityEnum PhysicalQuantityType >
@@ -545,9 +543,9 @@ class PhysicalQuantity {
     std::string getName() const { return Traits::name; };
 };
 
-/**********************************************************/
-/*  Explicit instantiation of template classes
-/**********************************************************/
+/**********************************************************
+ *  Explicit instantiation of template classes
+ **********************************************************/
 
 /** @typedef ForceReal FORC_R */
 template class PhysicalQuantity< ASTERDOUBLE, Force >;

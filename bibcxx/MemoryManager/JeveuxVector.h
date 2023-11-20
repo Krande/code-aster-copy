@@ -604,7 +604,7 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
 
         const_iterator( pointer ptr ) : m_ptr( ptr ) {}
 
-        const reference operator*() const { return *m_ptr; }
+        reference operator*() const { return *m_ptr; }
 
         const pointer operator->() { return m_ptr; }
 

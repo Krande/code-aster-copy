@@ -97,9 +97,7 @@ class ObjectBalancer {
               _vectMaskOut( _balancer.balanceVectorOverProcesses( _vectMaskIn ) ),
               _mapMaskOut( buildMask() ) {};
 
-        DistributedMask() : _balancer( ObjectBalancer() ), _vectMaskIn( VectorLong() ) {
-            throw std::runtime_error( "Mask constructor not allowed" );
-        };
+        DistributedMask() = delete;
 
         const ASTERINTEGER &apply( const ASTERINTEGER &valueIn ) const {
             return _vectMaskIn[valueIn - 1];
@@ -146,9 +144,7 @@ class ObjectBalancer {
               _vectMaskOut( _balancer.balanceVectorOverProcesses( mask ) ),
               _mapMaskOut( buildMask() ) {};
 
-        DistributedMaskOut() : _balancer( ObjectBalancer() ) {
-            throw std::runtime_error( "Mask constructor not allowed" );
-        };
+        DistributedMaskOut() = delete;
 
         const ASTERINTEGER apply( const ASTERINTEGER &valueIn ) const { return valueIn; };
 
