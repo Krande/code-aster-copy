@@ -138,14 +138,16 @@ subroutine orilgm(noma)
                 nbmasu = nbmasu+zi(jjv+ima-1)
             end do
 !          LISTE DES MAILLES 'INTERNES' (SANS DOUBLON) : ZI(jmafr)
-            call wkvect('&&ORILGM.GROUP_MA_FRONT', 'V V I', nbmasu, jmafr)
-            k = 0
-            do ima = 1, nbmato
-                if (zi(jjv+ima-1) .eq. 1) then
-                    k = k+1
-                    zi(jmafr+k-1) = ima
-                end if
-            end do
+            if (nbmasu .ne. 0) then
+                call wkvect('&&ORILGM.GROUP_MA_FRONT', 'V V I', nbmasu, jmafr)
+                k = 0
+                do ima = 1, nbmato
+                    if (zi(jjv+ima-1) .eq. 1) then
+                        k = k+1
+                        zi(jmafr+k-1) = ima
+                    end if
+                end do
+            end if
             call jedetr('&&ORILGM.WORK3')
             call jedetr('&&ORILGM.WORK2')
         else
