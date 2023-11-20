@@ -148,10 +148,7 @@ for i_inst in range(1, len(l_inst)):
     MT_AS.assemble()
 
     # CHAR_THER_EVNL
-    EVNL_AS = disc_comp.getNonLinearTransientThermalForces(T, inst_prev, d_inst, theta)
-
-    # RESI_PREV = RESI_MASS_PREV / d_inst - (1.0 - theta) * RESI_THER_PREV
-    RESI_PREV = EVNL_AS
+    RESI_PREV = RESI_MASS_PREV / d_inst - (1.0 - theta) * RESI_THER_PREV
 
     # Linear loads - B * u
     CHAR_AS = disc_comp.getImposedDualBC(inst)
@@ -195,7 +192,6 @@ for i_inst in range(1, len(l_inst)):
         CN2MBR = RESI_PREV - RESI_AS - DUAL_AS
 
         print("EVNL_AS: ", RESI_PREV.norm("NORM_2"), flush=True)
-        print("EVNL_AS: ", EVNL_AS.norm("NORM_2"), flush=True)
         print("RESI_AS: ", RESI_AS.norm("NORM_2"), flush=True)
         print("DUAL_AS: ", BTLA_AS.norm("NORM_2"), flush=True)
 

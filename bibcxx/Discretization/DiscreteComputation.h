@@ -384,12 +384,6 @@ class DiscreteComputation {
                                    const FieldOnNodesRealPtr temp_prev = nullptr,
                                    const bool assembly = true ) const;
 
-    FieldOnNodesRealPtr
-    getNonLinearTransientThermalForces( const FieldOnNodesRealPtr temp_prev,
-                                        const ASTERDOUBLE time_prev, const ASTERDOUBLE time_step,
-                                        const ASTERDOUBLE theta,
-                                        const FieldOnCellsRealPtr varc_curr = nullptr ) const;
-
     /**
      * @brief Compute internal forces, stress and internal state variables
      * @return Tuple with 5 objects:

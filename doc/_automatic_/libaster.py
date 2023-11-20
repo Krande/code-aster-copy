@@ -1419,16 +1419,13 @@ class DiscreteComputation:
               ElementaryVectorDisplacementReal: elementary Volumetric forces vector
         """
 
-    def getNonLinearCapacityForces(
-        self, temp_prev, temp_step, time_step, varc_curr=None, groupOfCells=[]
-    ):
+    def getNonLinearCapacityForces(self, temp_prev, temp_step, varc_curr=None, groupOfCells=[]):
         """Compute internal thermal forces (integration of behaviour)
         Option MASS_THER_RESI.
 
         Arguments:
             temp_prev (FieldOnNodes): thermal field at begin of current time
             temp_step (FieldOnNodes): field of increment of temperature
-            time_step (float): delta time between begin and end of the step
             varc_curr (FieldOnCellsReal): external state variables at current time
             groupOfCells (list[str]): compute matrices on given groups of cells.
                 If it empty, the full model is used
@@ -2931,6 +2928,9 @@ class FieldOnNodesReal(DataField):
     def __isub__(self, arg0):
         pass
 
+    def __itruediv__(self, arg0):
+        pass
+
     def __mul__(self, arg0):
         pass
 
@@ -2944,6 +2944,9 @@ class FieldOnNodesReal(DataField):
         pass
 
     def __sub__(self, arg0):
+        pass
+
+    def __truediv__(self, arg0):
         pass
 
     def applyLagrangeScaling(self, scaling):

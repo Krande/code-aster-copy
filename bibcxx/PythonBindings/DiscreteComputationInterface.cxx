@@ -259,26 +259,6 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
               py::arg( "time_curr" ), py::arg( "temp_prev" ) = nullptr,
               py::arg( "assembly" ) = true )
 
-        .def( "getNonLinearTransientThermalForces",
-              &DiscreteComputation::getNonLinearTransientThermalForces,
-              R"(
-            Compute nonlinear Transient Thermal Load
-            Option CHAR_THER_EVOLNI.
-
-            Arguments:
-                temp_prev (FieldOnNodes): thermal field at begin of current time
-                temp_step (FieldOnNodes): field of increment of temperature
-                time_prev (float): time at begin of the step
-                time_step (float): delta time between begin and end of the step
-                theta (float): Theta parameter for integration
-                varc_curr (FieldOnCellsReal): external state variables at current time
-
-            Returns:
-                FieldOnNodes: load
-            )",
-              py::arg( "temp_prev" ), py::arg( "time_prev" ), py::arg( "time_step" ),
-              py::arg( "theta" ), py::arg( "varc_curr" ) = nullptr )
-
         .def( "getMechanicalDirichletBC", &DiscreteComputation::getMechanicalDirichletBC,
               R"(
             Return the imposed displacement vector used to remove imposed DDL
