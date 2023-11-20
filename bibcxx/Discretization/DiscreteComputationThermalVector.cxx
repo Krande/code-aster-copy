@@ -649,7 +649,7 @@ DiscreteComputation::getThermalNonLinearVolumetricForces( const FieldOnNodesReal
         }
     };
 
-    auto therLoadReal = listOfLoads->getThermalLoadsReal();
+    auto therLoadReal = listOfLoads->getThermalLoadsFunction();
     for ( const auto &load : therLoadReal ) {
         impl( load, iload, "CHAR_THER_SOURNL", "SOUNL", "PSOURNL", model_FEDesc );
 
