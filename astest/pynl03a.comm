@@ -95,7 +95,7 @@ l_inst = LIST.getValues()
 phys_pb = code_aster.PhysicalProblem(MOTH, CHMAT)
 phys_pb.addLoad(CHTH)
 phys_pb.addDirichletBC(CHDI)
-phys_pb.computeListOfLoads("THER_NON_LINE")
+phys_pb.computeListOfLoads()
 
 phys_pb.computeDOFNumbering()
 phys_pb.computeBehaviourProperty({"RELATION": "THER_NL", "TOUT": "OUI"})
@@ -112,11 +112,11 @@ T2 = T.copy()
 
 DELTA_T = T.copy() * 0
 
-linear_solver = code_aster.MultFrontSolver()
+linear_solver = code_aster.MumpsSolver()
 
 # initial residuals
-_, _, RESI_THER_PREV = disc_comp.getInternalThermalForces(T * 0, T)
-RESI_MASS_PREV = disc_comp.getNonLinearCapacityForces(T * 0, T)
+_, _, RESI_THER_PREV = disc_comp.getInternalThermalForces(T, DELTA_T)
+RESI_MASS_PREV = disc_comp.getNonLinearCapacityForces(T, DELTA_T)
 
 for i_inst in range(1, len(l_inst)):
     inst_prev = l_inst[i_inst - 1]
@@ -128,9 +128,9 @@ for i_inst in range(1, len(l_inst)):
     print("        ####################################")
     print(" ")
 
-    ####################################################################################################
+    ################################################################################################
     # Routine NXPRED
-    ####################################################################################################
+    ################################################################################################
 
     # Linear loads - B * u
     CHAR_AS = disc_comp.getImposedDualBC(inst)
@@ -141,8 +141,7 @@ for i_inst in range(1, len(l_inst)):
     rigi_ther = disc_comp.getTangentConductivityMatrix(T, DELTA_T, with_dual=False)
     rigi_ther_dual = disc_comp.getDualLinearConductivityMatrix()
 
-    MT_AS = code_aster.AssemblyMatrixTemperatureReal()
-    MT_AS.setDOFNumbering(NU)
+    MT_AS = code_aster.AssemblyMatrixTemperatureReal(phys_pb)
     MT_AS.addElementaryMatrix(rigi_ther, theta)
     MT_AS.addElementaryMatrix(rigi_ther_dual)
     MT_AS.addElementaryMatrix(mass_ther, 1.0 / d_inst)
@@ -151,19 +150,15 @@ for i_inst in range(1, len(l_inst)):
     # Get CHAR_EVNL
     RESI_PREV = RESI_MASS_PREV / d_inst - (1.0 - theta) * RESI_THER_PREV
 
-    # Get CHAR_THER_NONL
-    CHNL_AS = disc_comp.getNeumannForces(inst)
-
     # Create second member (transient)
     F2M_PRED = CHAR_AS + RESI_PREV
 
     print("CHAR_AS: ", CHAR_AS.norm("NORM_2"), flush=True)
-    print("CHNL_AS: ", CHNL_AS.norm("NORM_2"), flush=True)
     print("EVNL_AS: ", RESI_PREV.norm("NORM_2"), flush=True)
 
-    ####################################################################################################
+    ################################################################################################
     # Routine NXPRED
-    ####################################################################################################
+    ################################################################################################
 
     # Factor matrix
     scaling = MT_AS.getLagrangeScaling()
@@ -174,7 +169,7 @@ for i_inst in range(1, len(l_inst)):
     diriBCs = disc_comp.getIncrementalDirichletBC(inst, T)
 
     # Solve
-    DELTA_T = linear_solver.solve(F2M_PRED, diriBCs)
+    T = linear_solver.solve(F2M_PRED, diriBCs)
 
     # =========================================================
     #               BOUCLE DE NEWTON
@@ -183,23 +178,23 @@ for i_inst in range(1, len(l_inst)):
     Conv = False
 
     for IterNewton in range(1, NbIterNewtonMax + 1):
-        ####################################################################################################
+        ############################################################################################
         # Routine NXNEWT
-        ####################################################################################################
+        ############################################################################################
 
         # Compute non linear quantities
 
         # Residual
-        _, _, RESI_THER = disc_comp.getInternalThermalForces(T * 0, DELTA_T)
-        RESI_MASS = disc_comp.getNonLinearCapacityForces(T * 0, DELTA_T)
+        _, _, RESI_THER = disc_comp.getInternalThermalForces(T, DELTA_T)
+        RESI_MASS = disc_comp.getNonLinearCapacityForces(T, DELTA_T)
 
         RESI_AS = theta * RESI_THER + (1.0 / d_inst) * RESI_MASS
 
-        BTLA_AS = disc_comp.getDualForces(T * 0 + DELTA_T)
+        BTLA_AS = disc_comp.getDualForces(T + DELTA_T)
 
-        ####################################################################################################
+        ############################################################################################
         # Routine NXRESI
-        ####################################################################################################
+        ############################################################################################
         # Evaluate equilibrium
         CN2MBR = RESI_PREV - RESI_AS - BTLA_AS
 
@@ -228,7 +223,7 @@ for i_inst in range(1, len(l_inst)):
             break
 
         # Compute Dirichlet BC:=
-        diriBCs = disc_comp.getIncrementalDirichletBC(inst, DELTA_T)
+        diriBCs = disc_comp.getIncrementalDirichletBC(inst, T + DELTA_T)
 
         # Solve
         DDT = linear_solver.solve(CN2MBR, diriBCs)
@@ -240,8 +235,7 @@ for i_inst in range(1, len(l_inst)):
         raise code_aster.ConvergenceError("echec de la convergence des iterations de Newton")
 
     # Somme en python T+ = DELTA_t + T-
-    T2 += DELTA_T.copy()
-    T = DELTA_T.copy()
+    T += DELTA_T
 
     DELTA_T.setValues(0)
 
