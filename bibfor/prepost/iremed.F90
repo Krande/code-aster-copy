@@ -29,6 +29,10 @@ subroutine iremed(fileUnit, dsNameZ, lResu, &
     implicit none
 !
 #include "asterf_types.h"
+#include "asterc/asmpi_barrier_wrap.h"
+#include "asterc/asmpi_comm.h"
+#include "asterc/asmpi_split_comm.h"
+#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/carces.h"
 #include "asterfort/celces.h"
 #include "asterfort/codent.h"
@@ -100,10 +104,11 @@ subroutine iremed(fileUnit, dsNameZ, lResu, &
     character(len=24) :: valk(2), resultType
     character(len=64) :: fieldNameMed
     integer :: storeIndx, iField, iStore, iret, ibid, codret
-    integer :: lnochm, ierd, nbCmpDyna
+    integer :: lnochm, ierd, nbCmpDyna, minval
     aster_logical :: lfirst, l_mult_model, l_vari_name, l_meta_name
     integer, pointer :: cmpListNume(:) => null()
     character(len=24), pointer :: celk(:) => null()
+    mpi_int :: world, newcom, color, key, ierror
     parameter(cesnsp='&&IREMED.CANBSP')
     parameter(cescoq='&&IREMED.CARCOQUE')
     parameter(cesfib='&&IREMED.CAFIBR')
@@ -190,7 +195,30 @@ subroutine iremed(fileUnit, dsNameZ, lResu, &
 ! --------- Get name of field
             if (lResu) then
                 call rsexch(' ', dsName, fieldType, storeIndx, fieldName, iret)
-                if (iret .ne. 0) goto 21
+                if (lfichUniq) then
+                    minval = iret
+                    call asmpi_comm_vect('MPI_MIN', 'I', sci=minval)
+                    if (minval .eq. 0) then
+                        call asmpi_comm('GET', world)
+                        if (iret .ne. 0) then
+                            color = 1
+                            key = 1
+                            call asmpi_split_comm(world, color, key, "TMPCOMM", newcom)
+                            call asmpi_comm('SET', newcom)
+                            goto 21
+                        else
+                            color = 0
+                            key = 0
+                            call asmpi_split_comm(world, color, key, "TMPCOMM", newcom)
+                            call asmpi_comm('SET', newcom)
+                        end if
+                    else
+                        newcom = 0
+                        goto 21
+                    end if
+                else
+                    if (iret .ne. 0) goto 21
+                end if
             else
                 fieldName = dsNameZ
             end if
@@ -290,6 +318,13 @@ subroutine iremed(fileUnit, dsNameZ, lResu, &
 22          continue
 !
 21          continue
+            if (lfichUniq) then
+                call asmpi_barrier_wrap(world, ierror)
+                call asmpi_comm('SET', world)
+                if (newcom .ne. 0) then
+                    call asmpi_comm('FREE', newcom)
+                end if
+            end if
         end do
         if (l_mult_model) then
             valk(1) = fieldType
