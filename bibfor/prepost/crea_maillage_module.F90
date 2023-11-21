@@ -2914,6 +2914,8 @@ contains
             call jeveuo(mesh_out//".NOEX", 'L', vi=v_noex)
             call jeveuo(mesh_out//".NUNOLG", 'L', vi=v_nulogl)
 
+            if (nbproc == 1) goto 100
+
             call wkvect("&&CREAMA.RNODE", 'V V I', nbproc, vi=v_rnode)
             do i_node = 1, this%nb_nodes
                 ind = v_noex(i_node)+1
@@ -3124,6 +3126,14 @@ contains
             call jedetr("&&CREAMA.RNODE")
             call jedetr("&&CREAMA.TAG")
             call jedetr("&&CREAMA.COMM")
+!
+100         continue
+!
+            if (nbproc == 1) then
+                do i_node = 1, this%nb_nodes
+                    v_nulogl(i_node) = i_node
+                end do
+            end if
 !
 ! --- verify
             do i_node = 1, this%nb_nodes

@@ -757,4 +757,4 @@ class ExtendedDiscreteComputation:
 
             return jacobian
 
-        return matr_elem_rigi, matr_elem_dual, matr_elem_cont
+        return matr_elem_rigi, matr_elem_dual, matr_elem_cont, matr_elem_ext
