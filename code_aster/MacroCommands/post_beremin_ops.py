@@ -188,6 +188,8 @@ def post_beremin_ops(self, **args):
         if resanpb is not None:
             self.register_result(resimpr, resanpb)
 
+        print("*"*80)
+        print("BRAVO RESULTAT IMPRIME")
         table = compute_beremin_integral(
             reswbrest.getModel(), args.get("COEF_MULT"), sigw, dwb, grmapb, resupb
         )
@@ -478,6 +480,7 @@ def tps_maxsigm(rsieq, mclinst, signul, maxsig, dwb, resanpb, modele, grmapb):
     if resanpb is not None:
         if resanpb.is_typco():
             resimpr = NonLinearResult()
+            print("nombre indices rsieq = ", rsieq.getNumberOfIndexes())
             resimpr.allocate(rsieq.getNumberOfIndexes())
 
     sigw = NonLinearResult()
@@ -485,6 +488,7 @@ def tps_maxsigm(rsieq, mclinst, signul, maxsig, dwb, resanpb, modele, grmapb):
     linstants = rsieq.getAccessParameters()["INST"]
 
     for (nume_inst, inst) in enumerate(linstants):
+
         if inst in [elt[2] for elt in mclinst]:
 
             # on peut optimiser ?
@@ -520,11 +524,14 @@ def tps_maxsigm(rsieq, mclinst, signul, maxsig, dwb, resanpb, modele, grmapb):
 
             if resanpb is not None:
                 resimpr.setField(chsixxm, "SIEF_ELGA", nume_inst)
+                resimpr.setTime(inst, nume_inst)
+
         else:
 
             chsixxm = signul
             if resanpb is not None:
                 resimpr.setField(chsixxm, "SIEF_ELGA", nume_inst)
+                resimpr.setTime(inst, nume_inst)
 
         sigw.setField(chsixxm, "SIEF_ELGA", nume_inst)
         sigw.setTime(inst, nume_inst)

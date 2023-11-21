@@ -23,7 +23,11 @@ DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(S
 
 M = LIRE_MAILLAGE(FORMAT="MED")
 
-M = DEFI_GROUP(reuse=M, MAILLAGE=M, CREA_GROUP_NO=(_F(GROUP_MA="SSUP"), _F(GROUP_MA="SINF")))
+M = DEFI_GROUP(reuse=M,
+	       MAILLAGE=M,
+	       CREA_GROUP_NO=(_F(GROUP_MA="SSUP"), _F(GROUP_MA="SINF")),
+	       CREA_GROUP_MA=_F(NOM="M198", MAILLE="M198"))
+
 
 MO = AFFE_MODELE(AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"), MAILLAGE=M)
 
@@ -98,10 +102,10 @@ CM = AFFE_MATERIAU(
 CHARG = AFFE_CHAR_MECA_F(
     MODELE=MO,
     DDL_IMPO=(
-        _F(DY=TRAC50, GROUP_NO="SSUP"),
-        _F(DY=ZERO, GROUP_NO="SINF"),
-        _F(DX=ZERO, DZ=ZERO, GROUP_NO="P5"),
-        _F(DZ=ZERO, GROUP_NO="P6"),
+	_F(DY=TRAC50, GROUP_NO="SSUP"),
+	_F(DY=ZERO, GROUP_NO="SINF"),
+	_F(DX=ZERO, DZ=ZERO, GROUP_NO="P5"),
+	_F(DZ=ZERO, GROUP_NO="P6"),
     ),
 )
 
@@ -125,7 +129,8 @@ WEIB = POST_ELEM(
 )
 
 BERE = POST_BEREMIN(
-    RESULTAT=U, COEF_MULT=2.0, DEFORMATION="PETIT", GROUP_MA="CYLINDRE", FILTRE_SIGM="SIGM_ELGA"
+    RESULTAT=U, COEF_MULT=2.0, DEFORMATION="PETIT", GROUP_MA="CYLINDRE", FILTRE_SIGM="SIGM_ELGA",
+    SIGM_MAXI=CO("SIGM_MAXI")
 )
 
 
@@ -138,7 +143,7 @@ WEIB2 = POST_ELEM(
 
 
 BERE2 = POST_BEREMIN(
-    RESULTAT=U, COEF_MULT=2.0, DEFORMATION="PETIT", GROUP_MA="CYLINDRE", FILTRE_SIGM="SIGM_ELMOY"
+    RESULTAT=U, COEF_MULT=2.0, DEFORMATION="PETIT", GROUP_MA="CYLINDRE", FILTRE_SIGM="SIGM_ELMOY", SIGM_MAXI=CO("SIGM_MAXI")
 )
 
 
@@ -178,6 +183,18 @@ TEST_TABLE(
     NOM_PARA="PROBA_WEIBULL",
     TABLE=BERE,
     FILTRE=_F(NOM_PARA="NUME_ORDRE", VALE_I=1),
+)
+
+TEST_RESU(
+    RESU=_F(
+	RESULTAT=SIGM_MAXI,
+	NUME_ORDRE=3,
+	NOM_CHAM="SIEF_ELGA",
+	NOM_CMP="SIXX",
+	GROUP_MA="M198",
+	POINT=10,
+	VALE_CALC=2.76191751001870E+72,
+    )
 )
 
 TEST_TABLE(
@@ -444,24 +461,24 @@ TEST_TABLE(
 COUI_MOY = POST_ELEM(
     NUME_ORDRE=(1, 2, 3, 4),
     RICE_TRACEY=_F(
-        LOCAL="OUI",
-        GROUP_MA=(
-            "M1",
-            "M2",
-            "M3",
-            "M4",
-            "M5",
-            "M6",
-            "M7",
-            "M8",
-            "M9",
-            "M10",
-            "M11",
-            "M12",
-            "M13",
-            "M14",
-        ),
-        OPTION="SIGM_ELMOY",
+	LOCAL="OUI",
+	GROUP_MA=(
+	    "M1",
+	    "M2",
+	    "M3",
+	    "M4",
+	    "M5",
+	    "M6",
+	    "M7",
+	    "M8",
+	    "M9",
+	    "M10",
+	    "M11",
+	    "M12",
+	    "M13",
+	    "M14",
+	),
+	OPTION="SIGM_ELMOY",
     ),
     RESULTAT=U,
 )
@@ -509,24 +526,24 @@ EOUI_ELG = POST_ELEM(
 FOUI_ELG = POST_ELEM(
     NUME_ORDRE=(1, 2, 3, 4),
     RICE_TRACEY=_F(
-        LOCAL="OUI",
-        GROUP_MA=(
-            "M1",
-            "M2",
-            "M3",
-            "M4",
-            "M5",
-            "M6",
-            "M7",
-            "M8",
-            "M9",
-            "M10",
-            "M11",
-            "M12",
-            "M13",
-            "M14",
-        ),
-        OPTION="SIGM_ELGA",
+	LOCAL="OUI",
+	GROUP_MA=(
+	    "M1",
+	    "M2",
+	    "M3",
+	    "M4",
+	    "M5",
+	    "M6",
+	    "M7",
+	    "M8",
+	    "M9",
+	    "M10",
+	    "M11",
+	    "M12",
+	    "M13",
+	    "M14",
+	),
+	OPTION="SIGM_ELGA",
     ),
     RESULTAT=U,
 )
@@ -564,24 +581,24 @@ BNON_MOY = POST_ELEM(
 CNON_MOY = POST_ELEM(
     NUME_ORDRE=(1, 2, 3, 4),
     RICE_TRACEY=_F(
-        LOCAL="NON",
-        GROUP_MA=(
-            "M1",
-            "M2",
-            "M3",
-            "M4",
-            "M5",
-            "M6",
-            "M7",
-            "M8",
-            "M9",
-            "M10",
-            "M11",
-            "M12",
-            "M13",
-            "M14",
-        ),
-        OPTION="SIGM_ELMOY",
+	LOCAL="NON",
+	GROUP_MA=(
+	    "M1",
+	    "M2",
+	    "M3",
+	    "M4",
+	    "M5",
+	    "M6",
+	    "M7",
+	    "M8",
+	    "M9",
+	    "M10",
+	    "M11",
+	    "M12",
+	    "M13",
+	    "M14",
+	),
+	OPTION="SIGM_ELMOY",
     ),
     RESULTAT=U,
 )
@@ -613,24 +630,24 @@ ENON_ELG = POST_ELEM(
 FNON_ELG = POST_ELEM(
     NUME_ORDRE=(1, 2, 3, 4),
     RICE_TRACEY=_F(
-        LOCAL="NON",
-        GROUP_MA=(
-            "M1",
-            "M2",
-            "M3",
-            "M4",
-            "M5",
-            "M6",
-            "M7",
-            "M8",
-            "M9",
-            "M10",
-            "M11",
-            "M12",
-            "M13",
-            "M14",
-        ),
-        OPTION="SIGM_ELGA",
+	LOCAL="NON",
+	GROUP_MA=(
+	    "M1",
+	    "M2",
+	    "M3",
+	    "M4",
+	    "M5",
+	    "M6",
+	    "M7",
+	    "M8",
+	    "M9",
+	    "M10",
+	    "M11",
+	    "M12",
+	    "M13",
+	    "M14",
+	),
+	OPTION="SIGM_ELGA",
     ),
     RESULTAT=U,
 )
