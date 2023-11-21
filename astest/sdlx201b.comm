@@ -19,6 +19,7 @@
 
 DEBUT(
     CODE=_F(NIV_PUB_WEB="INTERNET"),
+    # ALGELINE4_87 may be raised depending on eigen modes (cf. issue33372)
     ERREUR=_F(ALARME="EXCEPTION"),
     DEBUG=_F(SDVERI="OUI"),
     MESURE_TEMPS=_F(NIVE_DETAIL=2),

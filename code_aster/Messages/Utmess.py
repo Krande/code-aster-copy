@@ -174,6 +174,7 @@ class MESSAGE_LOGGER(metaclass=Singleton):
                     pass
         if code == "A" and ExecutionParameter().option & Options.WarningAsError:
             code = "F"
+            self.print_message("E", "CATAMESS_3", valk=[idmess])
         if self._parent is None:
             self.set_parent(idmess)
         if not self.update_counter(code, idmess):
@@ -722,6 +723,7 @@ def __fake__():
     UTMESS("I", "CATAMESS_69")  # pour u2mesg.f via UTPRIN
     UTMESS("I", "CATAMESS_70")  # pour u2mesg.f via UTPRIN
     # utilisé ici
+    UTMESS("I", "CATAMESS_3")
     UTMESS("I", "CATAMESS_6")
     UTMESS("I", "CATAMESS_41")
     UTMESS("I", "CATAMESS_57")

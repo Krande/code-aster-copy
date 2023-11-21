@@ -92,6 +92,8 @@ subroutine utmess_core(typ, idmess, nk, valk, ni, &
         if (icode .ne. 0) then
             idf = 2
             typm(1:1) = 'F'
+            call utprin('E', 0, 'CATAMESS_3', 1, [msgId], &
+                        0, vali, 0, valr, fname)
         end if
     end if
 !
