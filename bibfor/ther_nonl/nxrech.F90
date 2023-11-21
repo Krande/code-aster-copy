@@ -28,16 +28,22 @@ subroutine nxrech(model, mate, mateco, cara_elem, list_load, nume_dof, &
 !
     implicit none
 !
-#include "jeveux.h"
-#include "asterf_types.h"
 #include "asterc/r8prem.h"
+#include "asterf_types.h"
 #include "asterfort/asasve.h"
 #include "asterfort/ascova.h"
+#include "asterfort/asmpi_comm_vect.h"
+#include "asterfort/asmpi_info.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/verstp.h"
 #include "asterfort/vethbt.h"
+#include "asterfort/wkvect.h"
+#include "jeveux.h"
 !
     character(len=24), intent(in) :: model
     character(len=24), intent(in) :: mate, mateco
@@ -65,20 +71,24 @@ subroutine nxrech(model, mate, mateco, cara_elem, list_load, nume_dof, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i
-    integer ::    j2nd, jvare, jbtla
+    integer :: j2nd, jvare, jbtla, rang, i
     real(kind=8) :: rho0, rhot, f0, f1, rhomin, rhomax
     real(kind=8) :: rhof, ffinal
-    real(kind=8) :: testm, r8bid
+    real(kind=8) :: testm, r8bid, resi_i
     character(len=24) :: vebtla, veresi, varesi, bidon, vabtla
     character(len=1) :: typres
-    integer :: itrmax, k, iterho
+    character(len=8) :: noma
+    character(len=19) :: nume_equa
+    integer :: itrmax, iterho
     real(kind=8) :: time_curr
     real(kind=8), pointer :: tempm(:) => null()
     real(kind=8), pointer :: tempp(:) => null()
     real(kind=8), pointer :: tempr(:) => null()
+    aster_logical, pointer :: v_pddl(:) => null()
+    integer, pointer :: v_posdd(:) => null()
     character(len=24) :: lload_name, lload_info
     parameter(rhomin=-2.d0, rhomax=2.d0)
+    mpi_int :: mrank
     data typres/'R'/
     data bidon/'&&FOMULT.BIDON'/
     data vebtla/'&&VETBTL           .RELR'/
@@ -92,6 +102,9 @@ subroutine nxrech(model, mate, mateco, cara_elem, list_load, nume_dof, &
     lload_name = list_load(1:19)//'.LCHA'
     lload_info = list_load(1:19)//'.INFC'
 !
+    call asmpi_info(rank=mrank)
+    rang = to_aster_int(mrank)
+!
 ! --- RECUPERATION D'ADRESSES JEVEUX
 !
     call jeveuo(temp_iter(1:19)//'.VALE', 'E', vr=tempm)
@@ -101,12 +114,31 @@ subroutine nxrech(model, mate, mateco, cara_elem, list_load, nume_dof, &
     call jeveuo(cnresi(1:19)//'.VALE', 'L', jvare)
     call jeveuo(cnvabt(1:19)//'.VALE', 'L', jbtla)
 !
+    call wkvect("&&NXRECH.PDDL", "V V L", lonch, vl=v_pddl)
+
+    call dismoi('NOM_MAILLA', model, 'MODELE', repk=noma)
+    if (isParallelMesh(noma)) then
+        call dismoi('NUME_EQUA', nume_dof, 'NUME_DDL', repk=nume_equa)
+        call jeveuo(nume_equa//'.PDDL', 'L', vi=v_posdd)
+!
+        do i = 1, lonch
+            v_pddl(i) = v_posdd(i) == rang
+        end do
+    else
+        v_pddl = ASTER_TRUE
+    end if
+
+!
 ! --- RECHERCHE LINEAIRE (CALCUL DE RHO) SUR L'INCREMENT VTEMPP
 !
     f0 = 0.d0
     do i = 1, lonch
-        f0 = f0+tempp(i)*(zr(j2nd+i-1)-zr(jvare+i-1)-zr(jbtla+i-1))
+        if (v_pddl(i)) then
+            resi_i = zr(j2nd+i-1)-zr(jvare+i-1)-zr(jbtla+i-1)
+            f0 = f0+tempp(i)*resi_i
+        end if
     end do
+    call asmpi_comm_vect('MPI_SUM', 'R', 1, scr=f0)
 !
     rho0 = 0.d0
     rho = 1.d0
@@ -140,13 +172,19 @@ subroutine nxrech(model, mate, mateco, cara_elem, list_load, nume_dof, &
         call jeveuo(cnvabt(1:19)//'.VALE', 'L', jbtla)
 !
         f1 = 0.d0
-        do i = 1, lonch
-            f1 = f1+tempp(i)*(zr(j2nd+i-1)-zr(jvare+i-1)-zr(jbtla+i-1))
-        end do
         testm = 0.d0
-        do k = 1, lonch
-            testm = max(testm, abs(zr(j2nd+k-1)-zr(jvare+k-1)-zr(jbtla+k-1)))
+!
+        do i = 1, lonch
+            if (v_pddl(i)) then
+                resi_i = zr(j2nd+i-1)-zr(jvare+i-1)-zr(jbtla+i-1)
+                f1 = f1+tempp(i)*resi_i
+                testm = max(testm, abs(resi_i))
+            end if
         end do
+!
+        call asmpi_comm_vect('MPI_MAX', 'R', 1, scr=testm)
+        call asmpi_comm_vect('MPI_SUM', 'R', 1, scr=f1)
+!
         if (testm .lt. ds_algopara%line_search%resi_rela) then
             goto 999
         end if
@@ -179,5 +217,6 @@ subroutine nxrech(model, mate, mateco, cara_elem, list_load, nume_dof, &
 !
 999 continue
     iterho = iterho-1
+    call jedetr("&&NXRECH.PDDL")
     call jedema()
 end subroutine
