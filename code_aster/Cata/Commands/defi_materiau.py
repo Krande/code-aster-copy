@@ -4728,7 +4728,7 @@ DEFI_MATERIAU = MACRO(
         ),
         K_N=SIMP(statut="o", typ="R", val_min=1.0e-12),
         K_T=SIMP(statut="f", typ="R", val_min=1.0e-12),
-        PENA_RUPTURE=SIMP(statut="f", typ="R", val_min=1.0e-12, val_max=10.0e0),
+        PENA_RUPTURE=SIMP(statut="f", typ="R", val_min=1.0e-12),
         PRES_FLUIDE=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
         RHO_FLUIDE=SIMP(statut="f", typ="R", val_min=0.0),
         VISC_FLUIDE=SIMP(statut="f", typ="R", val_min=1.0e-20),

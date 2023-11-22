@@ -478,7 +478,7 @@ subroutine lcejdm(BEHinteg, &
             end do
             xnormp = sqrt(xnormp)
 !           Dlambda de l'equation 2.63
-            dlam = xnormp+mu*xvecpl(1)-cbar*alpha_pro**m2
+            dlam = xnormp+mu*xvecpl(1)
             dlam = dlam/((mu**2*kn+kt)*alpha_pro**m2+(mu**2*Bn+Bt)*(1-alpha_pro)**m1)
 !           Dplasti_n de l'equation 2.54a
             dplasti(1) = mu*dlam
