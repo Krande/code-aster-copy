@@ -372,7 +372,7 @@ void DEFSPPSSP( GETMJM, getmjm, _IN char *nomfac, _IN STRING_SIZE lfac, _IN ASTE
     if ( !PyArg_ParseTuple( res, "OO", &lnom, &lty ) )
         MYABORT( "erreur dans la partie Python" );
     nval = (int)PyList_Size( lnom );
-    *nbarg = ( ASTERINTEGER )( ( nval > *nbval ) ? -nval : nval );
+    *nbarg = nval > *nbval ? (ASTERINTEGER)-nval : (ASTERINTEGER)nval;
     DEBUG_ASSERT( ( ( nval <= *nbval ) && ( *nbarg == nval ) ) || ( *nbarg == -nval ) );
     if ( *nbarg < 0 )
         nval = (int)*nbval;
@@ -981,9 +981,7 @@ static char getvectjev_doc[] = "getvectjev(nomsd)->valsd      \n\
 Retourne la valeur du concept nomsd \n\
 dans un tuple.";
 
-static PyObject *aster_getvectjev( self, args ) PyObject *self; /* Not used */
-PyObject *args;
-{
+static PyObject *aster_getvectjev( PyObject *self, PyObject *args ) {
     char *nomsd, *nomsd32;
     char *nomob;
     ASTERDOUBLE *f;
@@ -1094,9 +1092,7 @@ Retourne la valeur du concept nomsd \n\
 dans un tuple.";
 
 /* ------------------------------------------------------------------ */
-static PyObject *aster_getcolljev( self, args ) PyObject *self; /* Not used */
-PyObject *args;
-{
+static PyObject *aster_getcolljev( PyObject *self, PyObject *args ) {
     char *nomsd, *nom, *nomsd32;
     char *nomob;
     ASTERDOUBLE *f;
@@ -1252,9 +1248,7 @@ Renvoie le contenu d'un objet python dans un vecteur jeveux.\n\
 ";
 
 /* ------------------------------------------------------------------ */
-static PyObject *aster_putvectjev( self, args ) PyObject *self; /* Not used */
-PyObject *args;
-{
+static PyObject *aster_putvectjev( PyObject *self, PyObject *args ) {
     PyObject *tupi = (PyObject *)0;
     PyObject *tupr = (PyObject *)0;
     PyObject *tupc = (PyObject *)0;
@@ -1314,9 +1308,7 @@ Renvoie le contenu d'un objet python dans  \n\
 un vecteur jeveux.";
 
 /* ------------------------------------------------------------------ */
-static PyObject *aster_putcolljev( self, args ) PyObject *self; /* Not used */
-PyObject *args;
-{
+static PyObject *aster_putcolljev( PyObject *self, PyObject *args ) {
     PyObject *tupi = (PyObject *)0;
     PyObject *tupr = (PyObject *)0;
     PyObject *tupc = (PyObject *)0;
@@ -1369,8 +1361,7 @@ PyObject *args;
 }
 
 /* ------------------------------------------------------------------ */
-static PyObject *aster_GetResu( self, args ) PyObject *self; /* Not used */
-PyObject *args;
+static PyObject *aster_GetResu( PyObject *self, PyObject *args )
 
 /* Construit sous forme d'un dictionnaire Python l'architecture d'une SD resultat
 
@@ -1579,17 +1570,14 @@ PyObject *args;
 }
 
 /* ------------------------------------------------------------------ */
-static PyObject *aster_impers( self, args ) PyObject *self, *args; /* Not used */
-{
+static PyObject *aster_impers( PyObject *self, PyObject *args ) {
     CALL_IMPERS();
     Py_INCREF( Py_None );
     return Py_None;
 }
 
 /* ------------------------------------------------------------------ */
-static PyObject *aster_affich( self, args ) PyObject *self; /* Not used */
-PyObject *args;
-{
+static PyObject *aster_affich( PyObject *self, PyObject *args ) {
     char *texte;
     char *nomfic;
 
@@ -1602,9 +1590,7 @@ PyObject *args;
 }
 
 /* ------------------------------------------------------------------ */
-static PyObject *aster_ulopen( self, args ) PyObject *self; /* Not used */
-PyObject *args;
-{
+static PyObject *aster_ulopen( PyObject *self, PyObject *args ) {
     char *fichie;
     char *name;
     char *acces;
@@ -1622,9 +1608,7 @@ PyObject *args;
 }
 
 /* ------------------------------------------------------------------ */
-static PyObject *aster_fclose( self, args ) PyObject *self; /* Not used */
-PyObject *args;
-{
+static PyObject *aster_fclose( PyObject *self, PyObject *args ) {
     int iunit = 0;
     ASTERINTEGER unit;
 
@@ -1638,9 +1622,7 @@ PyObject *args;
 }
 
 /* ------------------------------------------------------------------ */
-static PyObject *aster_gcncon( self, args ) PyObject *self; /* Not used */
-PyObject *args;
-{
+static PyObject *aster_gcncon( PyObject *self, PyObject *args ) {
     PyObject *res;
     char *type, *Fty, *result;
 
@@ -1673,9 +1655,7 @@ static char rcvale_doc[] =
     " Aucune verification n'est faite sur les arguments d'entree (c'est l'appelant,\n"
     " a priori mater_sdaster.rcvale, qui le fait)";
 
-static PyObject *aster_rcvale( self, args ) PyObject *self; /* Not used */
-PyObject *args;
-{
+static PyObject *aster_rcvale( PyObject *self, PyObject *args ) {
     char *nommat, *phenom;
     int istop;
     PyObject *t_nompar, *t_valpar, *t_nomres;
@@ -1735,9 +1715,7 @@ PyObject *args;
 }
 
 /* ---------------------------------------------------------------------- */
-static PyObject *aster_gmardm( self, args ) PyObject *self; /* Not used */
-PyObject *args;
-{
+static PyObject *aster_gmardm( PyObject *self, PyObject *args ) {
     char *nomgrm, *modele;
     char *Fnom, *Fmod;
     ASTERINTEGER iret;
@@ -1770,9 +1748,7 @@ static char postkutil_doc[] =
     "     modelisa : une chaine parmi 3D, AXIS, D_PLAN_C_PLAN \n"
     "Voir la description de la routine fortran postkutil pour plus de detail\n";
 
-static PyObject *aster_postkutil( self, args ) PyObject *self; /* Not used */
-PyObject *args;
-{
+static PyObject *aster_postkutil( PyObject *self, PyObject *args ) {
     int ilmater;
     char *nomres, *nomfis, *repmod, *nommat;
     ASTERINTEGER lmater;
@@ -1801,9 +1777,7 @@ PyObject *args;
 }
 
 /* ---------------------------------------------------------------------- */
-static PyObject *aster_mdnoma( self, args ) PyObject *self; /* Not used */
-PyObject *args;
-{
+static PyObject *aster_mdnoma( PyObject *self, PyObject *args ) {
     PyObject *temp = (PyObject *)0;
     ASTERINTEGER lnomam = 0;
     ASTERINTEGER codret = 0;
@@ -1823,9 +1797,7 @@ PyObject *args;
 }
 
 /* ------------------------------------------------------------------ */
-static PyObject *aster_mdnoch( self, args ) PyObject *self; /* Not used */
-PyObject *args;
-{
+static PyObject *aster_mdnoch( PyObject *self, PyObject *args ) {
     PyObject *temp = (PyObject *)0;
     ASTERINTEGER lnochm = 0;
     ASTERINTEGER lresu;
@@ -2255,32 +2227,32 @@ static PyObject *aster_argv( _UNUSED PyObject *self, _IN PyObject *args ) {
 /* List of functions defined in the module */
 static PyMethodDef aster_methods[] = {
     // {"onFatalError", aster_onFatalError, METH_VARARGS},
-    {"fclose", aster_fclose, METH_VARARGS},
-    {"ulopen", aster_ulopen, METH_VARARGS},
-    {"affiche", aster_affich, METH_VARARGS},
+    { "fclose", aster_fclose, METH_VARARGS },
+    { "ulopen", aster_ulopen, METH_VARARGS },
+    { "affiche", aster_affich, METH_VARARGS },
     // {"init",         aster_init,         METH_VARARGS},
     // {"debut",        aster_debut,        METH_VARARGS},
     // {"poursu",       aster_poursu,       METH_VARARGS},
     // {"oper",         aster_oper,         METH_VARARGS},
     // {"opsexe",       aster_opsexe,       METH_VARARGS},
-    {"impers", aster_impers, METH_VARARGS},
-    {"mdnoma", aster_mdnoma, METH_VARARGS},
-    {"mdnoch", aster_mdnoch, METH_VARARGS},
-    {"rcvale", aster_rcvale, METH_VARARGS, rcvale_doc},
-    {"gmardm", aster_gmardm, METH_VARARGS},
-    {"postkutil", aster_postkutil, METH_VARARGS, postkutil_doc},
-    {"argv", aster_argv, METH_VARARGS},
-    {"getvectjev", aster_getvectjev, METH_VARARGS, getvectjev_doc},
-    {"putvectjev", aster_putvectjev, METH_VARARGS, putvectjev_doc},
-    {"putcolljev", aster_putcolljev, METH_VARARGS, putcolljev_doc},
-    {"getcolljev", aster_getcolljev, METH_VARARGS, getcolljev_doc},
-    {"GetResu", aster_GetResu, METH_VARARGS},
-    {"jeveux_getobjects", jeveux_getobjects, METH_VARARGS},
-    {"jeveux_getattr", jeveux_getattr, METH_VARARGS},
-    {"jeveux_exists", jeveux_exists, METH_VARARGS},
+    { "impers", aster_impers, METH_VARARGS },
+    { "mdnoma", aster_mdnoma, METH_VARARGS },
+    { "mdnoch", aster_mdnoch, METH_VARARGS },
+    { "rcvale", aster_rcvale, METH_VARARGS, rcvale_doc },
+    { "gmardm", aster_gmardm, METH_VARARGS },
+    { "postkutil", aster_postkutil, METH_VARARGS, postkutil_doc },
+    { "argv", aster_argv, METH_VARARGS },
+    { "getvectjev", aster_getvectjev, METH_VARARGS, getvectjev_doc },
+    { "putvectjev", aster_putvectjev, METH_VARARGS, putvectjev_doc },
+    { "putcolljev", aster_putcolljev, METH_VARARGS, putcolljev_doc },
+    { "getcolljev", aster_getcolljev, METH_VARARGS, getcolljev_doc },
+    { "GetResu", aster_GetResu, METH_VARARGS },
+    { "jeveux_getobjects", jeveux_getobjects, METH_VARARGS },
+    { "jeveux_getattr", jeveux_getattr, METH_VARARGS },
+    { "jeveux_exists", jeveux_exists, METH_VARARGS },
     // {"jeveux_status", jeveux_status,     METH_VARARGS},
-    {"get_nom_concept_unique", aster_gcncon, METH_VARARGS},
-    {NULL, NULL} /* sentinel */
+    { "get_nom_concept_unique", aster_gcncon, METH_VARARGS },
+    { NULL, NULL } /* sentinel */
 };
 
 #ifndef ASTER_WITHOUT_PYMOD
@@ -2288,15 +2260,15 @@ static PyMethodDef aster_methods[] = {
 static char aster_module_documentation[] = "C implementation of the Python aster module\n"
                                            "\n";
 
-static struct PyModuleDef aster_def = {PyModuleDef_HEAD_INIT,
-                                       "aster",
-                                       aster_module_documentation,
-                                       -1,
-                                       aster_methods,
-                                       NULL,
-                                       NULL,
-                                       NULL,
-                                       NULL};
+static struct PyModuleDef aster_def = { PyModuleDef_HEAD_INIT,
+                                        "aster",
+                                        aster_module_documentation,
+                                        -1,
+                                        aster_methods,
+                                        NULL,
+                                        NULL,
+                                        NULL,
+                                        NULL };
 
 PyObject *PyInit_aster( void ) {
     PyObject *aster = (PyObject *)0;

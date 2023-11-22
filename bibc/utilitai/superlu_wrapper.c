@@ -155,7 +155,7 @@ void DEFPPP( SLU_GET_NNZ_OF_LOWER_FACTOR, slu_get_nnz_of_lower_factor, fptr *f_f
     SCformat *Lstore;
     Lstore = (SCformat *)L->Store;
     /* Returns the number of nonzeros in L*/
-    *nnz_l = ( ASTERINTEGER )( Lstore->nnz );
+    *nnz_l = (ASTERINTEGER)Lstore->nnz;
     *info = 0;
 }
 /*
@@ -171,7 +171,7 @@ void DEFPPP( SLU_GET_NNZ_OF_UPPER_FACTOR, slu_get_nnz_of_upper_factor, fptr *f_f
     NCformat *Ustore;
     Ustore = (NCformat *)U->Store;
     /* Returns the number of nonzeros in U*/
-    *nnz_u = ( ASTERINTEGER )( Ustore->nnz );
+    *nnz_u = (ASTERINTEGER)Ustore->nnz;
     *info = 0;
 }
 /*
