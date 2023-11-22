@@ -30,6 +30,7 @@ subroutine nmdpmf(compor, chmate)
 #include "asterfort/exisd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/jeveba.h"
 #include "asterfort/utmess.h"
 #include "asterfort/tecart.h"
 !
@@ -54,6 +55,7 @@ subroutine nmdpmf(compor, chmate)
     integer :: ibid, iret
     aster_logical :: lcumu(2)
     aster_logical :: lcoc
+    character(len=1) :: base
     character(len=8), parameter :: licmp(4) = (/'DEFORM  ', 'DEFO_LDC', 'RIGIGEOM', 'REGUVISC'/)
     character(len=19) :: chs(2), chs3, chsx
     real(kind=8) :: lcoer(2)
@@ -96,10 +98,11 @@ subroutine nmdpmf(compor, chmate)
                 'V', chs(2))
 !
 !     FUSION DES CHAM_ELEM_S + COPIE DANS "COMPOR"
+    call jeveba(compor//".DESC", base)
     call detrsd('CARTE', compor)
     call cesfus(2, chs, lcumu, lcoer, lcoec, &
                 lcoc, 'V', chs3)
-    call cescar(chs3, compor, 'V')
+    call cescar(chs3, compor, base)
 !
 ! - Compress COMPOR <CARTE>
 !
