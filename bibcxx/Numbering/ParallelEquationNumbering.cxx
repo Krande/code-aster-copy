@@ -254,8 +254,10 @@ VectorPairLong ParallelEquationNumbering::getNodeAndComponentIdFromDOF( const bo
         mapLG->updateValuePointer();
         ASTERINTEGER nb_eq = ret.size();
         for ( ASTERINTEGER i_eq = 0; i_eq < nb_eq; i_eq++ ) {
-            auto node_id = ret[i_eq].first;
-            ret[i_eq].first = ( *mapLG )[node_id];
+            const auto node_id = ret[i_eq].first;
+            if ( node_id >= 0 ) {
+                ret[i_eq].first = ( *mapLG )[node_id];
+            }
         }
     }
     return ret;
@@ -270,7 +272,9 @@ PairLong ParallelEquationNumbering::getNodeAndComponentIdFromDOF( const ASTERINT
         auto mapLG = _mesh->getLocalToGlobalNodeIds();
         mapLG->updateValuePointer();
         auto node_id = ret.first;
-        ret.first = ( *mapLG )[node_id];
+        if ( node_id >= 0 ) {
+            ret.first = ( *mapLG )[node_id];
+        }
     }
     return ret;
 };
@@ -363,6 +367,25 @@ ParallelEquationNumbering::getDOFsWithDescription( const std::string cmp,
             if ( nodes.find( descr[dof].first ) != nodes.end() ) {
                 v_nodes.push_back( descr[dof].first );
                 cmps.push_back( idToName[descr[dof].second] );
+        if ( all_cmp ) {
+            if ( descr[dof].second > 0 ) {
+                if ( nodes.find( descr[dof].first ) != nodes.end() ) {
+                    v_nodes.push_back( descr[dof].first );
+                    cmps.push_back( idToName[descr[dof].second] );
+                    if ( local ) {
+                        dofs.push_back( dof );
+                    } else {
+                        dofs.push_back( ( *mapLG )[dof] );
+                    }
+                }
+            } else if ( descr[dof].second == 0 ) {
+                v_nodes.push_back( descr[dof].first );
+                cmps.push_back( "LAGR:MPC" );
+                dofs.push_back( dof );
+            } else if ( descr[dof].second < 0 ) {
+                v_nodes.push_back( descr[dof].first );
+                const std::string cmpName( "LAGR:" + idToName[-descr[dof].second] );
+                cmps.push_back( cmpName );
                 if ( local ) {
                     dofs.push_back( dof );
                 } else {
