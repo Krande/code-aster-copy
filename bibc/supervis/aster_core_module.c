@@ -176,9 +176,7 @@ PyObject *asterc_getopt( _IN char *option ) {
     return res;
 }
 
-static PyObject *asterc_setopt( self, args ) PyObject *self; /* Not used */
-PyObject *args;
-{
+static PyObject *asterc_setopt( PyObject *self, PyObject *args ) {
     /*
      * Interface Fortran/Python pour définir une option de la ligne de commande.
      * Retourne :
@@ -343,9 +341,7 @@ void DEFSSP( GTOPTK, gtoptk, _IN char *option, STRING_SIZE lopt, _OUT char *valk
 
 static char get_mem_stat_doc[] = "Interface d'appel a la routine fortran UTGTME.\n";
 
-static PyObject *asterc_get_mem_stat( self, args ) PyObject *self; /* Not used */
-PyObject *args;
-{
+static PyObject *asterc_get_mem_stat( PyObject *self, PyObject *args ) {
     /*
      *  Interface d'appel à la routine fortran UTGTME
      */
@@ -387,9 +383,7 @@ static char set_mem_stat_doc[] =
     "   set_mem_stat(tuple_of_parameters, tuple_of_values)\n\n"
     "   The number of values must be the same as the number of parameters.";
 
-static PyObject *asterc_set_mem_stat( self, args ) PyObject *self; /* Not used */
-PyObject *args;
-{
+static PyObject *asterc_set_mem_stat( PyObject *self, PyObject *args ) {
     /*
      *  Interface d'appel à la routine fortran UTPTME
      */
@@ -660,9 +654,7 @@ static char matfpe_doc[] = "Interface d'appel a la routine C matfpe.\n"
                            "     matfpe(-1) : on desactive l'interception des erreurs numeriques,\n"
                            "     matfpe(1)  : on active l'interception des erreurs numeriques.\n";
 
-PyObject *asterc_matfpe( self, args ) PyObject *self; /* Not used */
-PyObject *args;
-{
+PyObject *asterc_matfpe( PyObject *self, PyObject *args ) {
     /*
      * Interface Python d'appel à la routine matfpe.
      */
@@ -686,9 +678,7 @@ PyObject *args;
  * Functions to communicate the execution status in parallel
  */
 
-static PyObject *aster_mpi_warn( self, args ) PyObject *self; /* Not used */
-PyObject *args;
-{
+static PyObject *aster_mpi_warn( PyObject *self, PyObject *args ) {
     ASTERINTEGER iexc = 1;
     /* call ASMPI_WARN */
     try {
@@ -704,17 +694,19 @@ PyObject *args;
  * Methods of the aster_core module.
  */
 static PyMethodDef methods[] = {
-    {"register", register_jdc, METH_VARARGS, register_jdc_doc},
-    {"matfpe", asterc_matfpe, METH_VARARGS, matfpe_doc},
-    {"get_mem_stat", asterc_get_mem_stat, METH_VARARGS, get_mem_stat_doc},
-    {"set_mem_stat", asterc_set_mem_stat, METH_VARARGS, set_mem_stat_doc},
-    {"MPI_Warn", aster_mpi_warn, METH_VARARGS},
-    {"set_option", asterc_setopt, METH_VARARGS},
+    { "register", register_jdc, METH_VARARGS, register_jdc_doc },
+    { "matfpe", asterc_matfpe, METH_VARARGS, matfpe_doc },
+    { "get_mem_stat", asterc_get_mem_stat, METH_VARARGS, get_mem_stat_doc },
+    { "set_mem_stat", asterc_set_mem_stat, METH_VARARGS, set_mem_stat_doc },
+    { "MPI_Warn", aster_mpi_warn, METH_VARARGS },
+    { "set_option", asterc_setopt, METH_VARARGS },
     // { "get_option",  ... } : method added in register_jdc
-    {NULL, NULL, 0, NULL}};
+    { NULL, NULL, 0, NULL }
+};
 
 static struct PyModuleDef aster_core_def = {
-    PyModuleDef_HEAD_INIT, "aster_core", NULL, -1, methods, NULL, NULL, NULL, NULL};
+    PyModuleDef_HEAD_INIT, "aster_core", NULL, -1, methods, NULL, NULL, NULL, NULL
+};
 
 #ifndef ASTER_WITHOUT_PYMOD
 PyObject *PyInit_aster_core( void ) {

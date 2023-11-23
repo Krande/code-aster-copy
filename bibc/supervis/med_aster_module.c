@@ -24,9 +24,7 @@
 #include "med.h"
 
 /* ---------------------------------------------------------------------- */
-static PyObject *aster_nom_ch_med( self, args ) PyObject *self; /* Not used */
-PyObject *args;
-{
+static PyObject *aster_nom_ch_med( PyObject *self, PyObject *args ) {
     PyObject *dic_champ_comp = (PyObject *)0;
     PyObject *tupstr;
     char *nomFichierMed;
@@ -82,12 +80,14 @@ PyObject *args;
 
 static PyMethodDef methods[] = {
 #ifdef ASTER_HAVE_MED
-    {"get_nom_champ_med", aster_nom_ch_med, METH_VARARGS},
+    { "get_nom_champ_med", aster_nom_ch_med, METH_VARARGS },
 #endif
-    {NULL, NULL, 0, NULL}};
+    { NULL, NULL, 0, NULL }
+};
 
 static struct PyModuleDef med_aster_def = {
-    PyModuleDef_HEAD_INIT, "med_aster", NULL, -1, methods, NULL, NULL, NULL, NULL};
+    PyModuleDef_HEAD_INIT, "med_aster", NULL, -1, methods, NULL, NULL, NULL, NULL
+};
 
 #ifndef ASTER_WITHOUT_PYMOD
 PyObject *PyInit_med_aster( void ) {

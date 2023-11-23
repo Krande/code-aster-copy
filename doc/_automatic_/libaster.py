@@ -1947,7 +1947,7 @@ class BaseDOFNumbering(DataStructure):
         pass
 
     def getEquationNumbering(self):
-        """Returns the global equation numbering object;
+        """Returns the global equation numbering object
 
         Returns:
             EquationNumbering: global equation numbering.
