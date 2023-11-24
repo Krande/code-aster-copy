@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine op0027()
 !
-use calcG_type
+   use calcG_type
 !
-implicit none
+   implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -34,6 +34,7 @@ implicit none
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/utmess.h"
 #include "jeveux.h"
 ! --------------------------------------------------------------------------------------------------
 !
@@ -44,77 +45,80 @@ implicit none
 !
 !---------------------------------------------------------------------------------------------------
 !
-    type(CalcG_field) :: cgField
-    type(CalcG_theta) :: cgTheta
-    type(CalcG_study) :: cgStudy
-    type(CalcG_table) :: cgTable
-    type(CalcG_stat)  :: cgStat
+   type(CalcG_field) :: cgField
+   type(CalcG_theta) :: cgTheta
+   type(CalcG_study) :: cgStudy
+   type(CalcG_table) :: cgTable
+   type(CalcG_stat)  :: cgStat
 !
-    integer           :: i_opt, i_nume
+   integer           :: i_opt, i_nume
 !---------------------------------------------------------------------------------------------------
-    call jemarq()
-    call infmaj()
+   call jemarq()
+   call infmaj()
 !
 !-- Initialisation des champs et des paramètres
-    call cgStat%initialize()
-    call cgField%initialize(cgStat)
-    call cgTheta%initialize(cgStat)
-    call cgTable%initialize(cgField, cgTheta, cgStat)
-    call cgStudy%initialize(cgField%result_in, cgField%list_nume(1), cgStat)
+   call cgStat%initialize()
+   call cgField%initialize(cgStat)
+   call cgTheta%initialize(cgStat)
+   call cgTable%initialize(cgField, cgTheta, cgStat)
+   call cgStudy%initialize(cgField%result_in, cgField%list_nume(1), cgStat)
+!
+!-- Alarme INCO + plasticité
+   if (cgField%l_incr .and. cgStudy%l_exi_inco) call utmess('A', 'RUPTURE3_14')
 !
 !-- Calcul de la courbure
-    if (cgField%ndim == 3) then
-        call cgTheta%compute_curvature(cgStudy%model)
-    endif
+   if (cgField%ndim == 3) then
+      call cgTheta%compute_curvature(cgStudy%model)
+   end if
 !
 !-- Verification (A nettoyer)
-    call cgVerification(cgField, cgTheta, cgStudy, cgStat)
+   call cgVerification(cgField, cgTheta, cgStudy, cgStat)
 !
 !-- Compute Theta factors
-    call cgComputeFactors(cgField, cgTheta, cgStat)
+   call cgComputeFactors(cgField, cgTheta, cgStat)
 !
 ! --- Compute A Matrix from equation A*G(s)=g(theta)
 !
-    call cgComputeMatrix(cgField, cgTheta, cgStat)
+   call cgComputeMatrix(cgField, cgTheta, cgStat)
 !
 !-- Loop on option
-    do i_nume = 1, cgField%nb_nume
+   do i_nume = 1, cgField%nb_nume
 !
-        call cgStudy%initialize(cgField%result_in, cgField%list_nume(i_nume), cgStat)
+      call cgStudy%initialize(cgField%result_in, cgField%list_nume(i_nume), cgStat)
 !
 ! ----  Récupération des champs utiles pour l'appel à calcul
-        call cgStudy%getField(cgField%result_in)
+      call cgStudy%getField(cgField%result_in)
 !
 ! ----  Maillage similaire sd_fond_fissure et sd_resu
-        ASSERT(cgTheta%mesh == cgStudy%mesh)
+      ASSERT(cgTheta%mesh == cgStudy%mesh)
 !
-        do i_opt = 1, cgField%nb_option
+      do i_opt = 1, cgField%nb_option
 !
-            call cgStudy%setOption(cgField%list_option(i_opt), cgField%isModeMeca())
+         call cgStudy%setOption(cgField%list_option(i_opt), cgField%isModeMeca())
 !
-            call cgStudy%getParameter(cgField%result_in)
+         call cgStudy%getParameter(cgField%result_in)
 !
 !---------- Calcul de G(theta) pour les éléments 2D/3D option G et K
-            call cgComputeGtheta(cgField, cgTheta, cgStudy, cgTable, cgStat)
-        end do
+         call cgComputeGtheta(cgField, cgTheta, cgStudy, cgTable, cgStat)
+      end do
 !
-        call cgTable%save(cgField, cgTheta, cgStudy, cgStat)
+      call cgTable%save(cgField, cgTheta, cgStudy, cgStat)
 !
-    end do
+   end do
 !
 ! --- Cleaning
-    call cgField%clean(cgStat)
-    call cgTable%clean(cgStat)
+   call cgField%clean(cgStat)
+   call cgTable%clean(cgStat)
 !
 !-- Création de la table container
-    call cgExportTableG(cgField, cgTheta, cgTable, cgStat)
+   call cgExportTableG(cgField, cgTheta, cgTable, cgStat)
 !
 !-- Print statistics
-    call cgStat%finish()
-    if(cgStat%level_info > 1) then
-        call cgStat%print()
-    endif
+   call cgStat%finish()
+   if (cgStat%level_info > 1) then
+      call cgStat%print()
+   end if
 !
-    call jedema()
+   call jedema()
 !
 end subroutine

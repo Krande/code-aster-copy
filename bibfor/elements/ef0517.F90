@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,8 +25,8 @@ subroutine ef0517(nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    implicit none
-    character(len=16) :: nomte
+   implicit none
+   character(len=16) :: nomte
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -43,123 +43,123 @@ subroutine ef0517(nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: kp, ncomp, ii, jacf
-    integer :: icgp, icontn, npg, istrxr, nc
-    real(kind=8) :: flel(14), co(3), xl, d1b(7, 14), carsec(6)
+   integer :: kp, ncomp, ii, jacf
+   integer :: icgp, icontn, npg, istrxr, nc
+   real(kind=8) :: flel(14), co(3), xl, d1b(7, 14), carsec(6)
 !
-    integer :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
+   integer :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
 !
-    integer :: npge, kk, iret, ipoids, imate, ifgp
-    real(kind=8) :: aa, alfay, alfaz, young, nu, gcis, ey, ez, xiy, xiz, temp, phiy, phiz
-    character(len=8) :: mator
+   integer :: npge, kk, iret, ipoids, imate, ifgp
+   real(kind=8) :: aa, alfay, alfaz, young, nu, gcis, ey, ez, xiy, xiz, temp, phiy, phiz
+   character(len=8) :: mator
 !
 ! --------------------------------------------------------------------------------------------------
-    integer, parameter :: nb_cara = 4
-    real(kind=8) :: vale_cara(nb_cara)
-    character(len=8), parameter :: noms_cara(nb_cara) = (/'AY1  ', 'AZ1  ', 'EY1  ', 'EZ1  '/)
+   integer, parameter :: nb_cara = 4
+   real(kind=8) :: vale_cara(nb_cara)
+   character(len=8), parameter :: noms_cara(nb_cara) = (/'AY1  ', 'AZ1  ', 'EY1  ', 'EZ1  '/)
 !
 ! --------------------------------------------------------------------------------------------------
 !&<
-    if (nomte .eq. 'MECA_POU_D_TGM') then
-        call jevech('PMATERC', 'L', imate)
-        call jevech('PCONTRR', 'L', icgp)
-        call jevech('PSTRXRR', 'L', istrxr)
-        call jevech('PEFFORR', 'E', icontn)
-        ! Récupération des caractéristiques des fibres
-        call pmfinfo(nbfibr,nbgrfi,tygrfi,nbcarm,nug,jacf=jacf)
-        !
-        nc = 7; npg = 3; ncomp = 18
-        !
-        call elrefe_info(fami='RIGI', npg=npge, jpoids=ipoids)
-        ASSERT(npg .ge. npge)
-        co(1:npg) = zr(ipoids:ipoids+npg-1)
-        ! Longueur de l'élément
-        xl = lonele()
-        !  coefficient dependant de la temperature moyenne
-        call moytem('RIGI', npg, 1, '+', temp, iret)
-        call pmfmats(imate, mator)
-        ASSERT(mator .ne. ' ')
-        call matela(zi(imate), mator, 1, temp, young, nu)
-        gcis = young/(2.d0*(1.d0+nu))
-        !
-        call poutre_modloc('CAGNP2', noms_cara, nb_cara, lvaleur=vale_cara)
-        alfay = vale_cara(1)
-        alfaz = vale_cara(2)
-        ey    = vale_cara(3)
-        ez    = vale_cara(4)
-        ! Récupération des caracteristiques de la section
-        call pmfitg(tygrfi, nbfibr, nbcarm, zr(jacf), carsec)
-        aa  = carsec(1)
-        xiz = carsec(4)
-        xiy = carsec(5)
-        !
-        phiy = young*xiz*12.d0*alfay/(xl*xl*gcis*aa)
-        phiz = young*xiy*12.d0*alfaz/(xl*xl*gcis*aa)
-        !
-        flel(:) = 0.0d+0
-        ! boucle sur les points de gauss
-        do kp = 1, npg
-            call jsd1ff(kp, xl, phiy, phiz, d1b)
-            ifgp = ncomp*(kp-1)-1
-            do kk = 1, 2*nc
-                do ii = 1, nc
-                    flel(kk) = flel(kk)+xl*0.5*zr(istrxr+ifgp+ii)*d1b(ii,kk)*co(kp)
-                enddo
+   if (nomte .eq. 'MECA_POU_D_TGM') then
+      call jevech('PMATERC', 'L', imate)
+      call jevech('PCONTRR', 'L', icgp)
+      call jevech('PSTRXRR', 'L', istrxr)
+      call jevech('PEFFORR', 'E', icontn)
+      ! Récupération des caractéristiques des fibres
+      call pmfinfo(nbfibr,nbgrfi,tygrfi,nbcarm,nug,jacf=jacf)
+      !
+      nc = 7; npg = 3; ncomp = 18
+      !
+      call elrefe_info(fami='RIGI', npg=npge, jpoids=ipoids)
+      ASSERT(npg .ge. npge)
+      co(1:npg) = zr(ipoids:ipoids+npg-1)
+      ! Longueur de l'élément
+      xl = lonele()
+      !  coefficient dependant de la temperature moyenne
+      call moytem('RIGI', npg, 1, '+', temp, iret)
+      call pmfmats(imate, mator)
+      ASSERT(mator .ne. ' ')
+      call matela(zi(imate), mator, 1, temp, young, nu)
+      gcis = young/(2.d0*(1.d0+nu))
+      !
+      call poutre_modloc('CAGNP2', noms_cara, nb_cara, lvaleur=vale_cara)
+      alfay = vale_cara(1)
+      alfaz = vale_cara(2)
+      ey    = vale_cara(3)
+      ez    = vale_cara(4)
+      ! Récupération des caracteristiques de la section
+      call pmfitg(tygrfi, nbfibr, nbcarm, zr(jacf), carsec)
+      aa  = carsec(1)
+      xiz = carsec(4)
+      xiy = carsec(5)
+      !
+      phiy = young*xiz*12.d0*alfay/(xl*xl*gcis*aa)
+      phiz = young*xiy*12.d0*alfaz/(xl*xl*gcis*aa)
+      !
+      flel(:) = 0.0d+0
+      ! boucle sur les points de gauss
+      do kp = 1, npg
+         call jsd1ff(kp, xl, phiy, phiz, d1b)
+         ifgp = ncomp*(kp-1)-1
+         do kk = 1, 2*nc
+            do ii = 1, nc
+               flel(kk) = flel(kk)+xl*0.5*zr(istrxr+ifgp+ii)*d1b(ii,kk)*co(kp)
             enddo
-        enddo
-        ! Prise en compte du centre de torsion
-        flel(4)  = flel(4)-ez*flel(2)+ey*flel(3)
-        flel(11) = flel(11)-ez*flel(9)+ey*flel(10)
-        ! Comme d'hab on change le signe sur le noeud 1
-        do ii = 1, nc
-            zr(icontn+ii-1) = -flel(ii)
-        enddo
-        do ii = nc+1, 2*nc
-            zr(icontn+ii-1) = flel(ii)
-        end do
+         enddo
+      enddo
+      ! Prise en compte du centre de torsion
+      flel(4)  = flel(4)-ez*flel(2)+ey*flel(3)
+      flel(11) = flel(11)-ez*flel(9)+ey*flel(10)
+      ! Comme d'hab on change le signe sur le noeud 1
+      do ii = 1, nc
+         zr(icontn+ii-1) = -flel(ii)
+      enddo
+      do ii = nc+1, 2*nc
+         zr(icontn+ii-1) = flel(ii)
+      end do
 !&>
 ! --------------------------------------------------------------------------------------------------
 !
-    else if (nomte.eq.'MECA_POU_D_EM') then
-        nc    =  6
-        npg   =  2
-        ncomp = 18
-        call jevech('PSTRXRR', 'L', istrxr)
-        call jevech('PEFFORR', 'E', icontn)
-        kp = 1
-        do ii = 1, nc
-            zr(icontn-1+nc*(kp-1)+ii) = -zr(istrxr-1+ncomp*(kp-1)+ii)
-        enddo
-        kp = 2
-        do ii = 1, nc
-            zr(icontn-1+nc*(kp-1)+ii) = zr(istrxr-1+ncomp*(kp-1)+ii)
-        enddo
+   else if (nomte .eq. 'MECA_POU_D_EM') then
+      nc = 6
+      npg = 2
+      ncomp = 18
+      call jevech('PSTRXRR', 'L', istrxr)
+      call jevech('PEFFORR', 'E', icontn)
+      kp = 1
+      do ii = 1, nc
+         zr(icontn - 1 + nc*(kp - 1) + ii) = -zr(istrxr - 1 + ncomp*(kp - 1) + ii)
+      end do
+      kp = 2
+      do ii = 1, nc
+         zr(icontn - 1 + nc*(kp - 1) + ii) = zr(istrxr - 1 + ncomp*(kp - 1) + ii)
+      end do
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    else if (nomte.eq.'MECA_POU_D_SQUE') then
-        nc    =  9
-        npg   =  2
-        ncomp = 21
-        call jevech('PSTRXRR', 'L', istrxr)
-        call jevech('PEFFORR', 'E', icontn)
-        kp= 1
-        do ii = 1, 6
-            zr(icontn-1+nc*(kp-1)+ii) = -zr(istrxr-1+ncomp*(kp-1)+ii)
-        enddo
-        do ii = 7, nc
-            zr(icontn-1+nc*(kp-1)+ii) = -zr(istrxr-1+ncomp*(kp-1)+12+ii)
-        enddo
-        kp= 2
-        do ii = 1, 6
-            zr(icontn-1+nc*(kp-1)+ii) = zr(istrxr-1+ncomp*(kp-1)+ii)
-        enddo
-        do ii = 7, nc
-            zr(icontn-1+nc*(kp-1)+ii) = zr(istrxr-1+ncomp*(kp-1)+12+ii)
-        enddo
+   else if (nomte .eq. 'MECA_POU_D_SQUE') then
+      nc = 9
+      npg = 2
+      ncomp = 21
+      call jevech('PSTRXRR', 'L', istrxr)
+      call jevech('PEFFORR', 'E', icontn)
+      kp = 1
+      do ii = 1, 6
+         zr(icontn - 1 + nc*(kp - 1) + ii) = -zr(istrxr - 1 + ncomp*(kp - 1) + ii)
+      end do
+      do ii = 7, nc
+         zr(icontn - 1 + nc*(kp - 1) + ii) = -zr(istrxr - 1 + ncomp*(kp - 1) + 12 + ii)
+      end do
+      kp = 2
+      do ii = 1, 6
+         zr(icontn - 1 + nc*(kp - 1) + ii) = zr(istrxr - 1 + ncomp*(kp - 1) + ii)
+      end do
+      do ii = 7, nc
+         zr(icontn - 1 + nc*(kp - 1) + ii) = zr(istrxr - 1 + ncomp*(kp - 1) + 12 + ii)
+      end do
 
-    else
-        ASSERT(.false.)
-    endif
+   else
+      ASSERT(.false.)
+   end if
 !
 end subroutine

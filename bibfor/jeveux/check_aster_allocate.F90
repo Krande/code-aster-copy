@@ -17,9 +17,9 @@
 ! --------------------------------------------------------------------
 
 subroutine check_aster_allocate(stage)
-use allocate_module
-    implicit none
-    integer, intent(in) :: stage
+   use allocate_module
+   implicit none
+   integer, intent(in) :: stage
 
 ! Check that objects allocated by 'as_allocate' have actually been deallocated.
 !   stage = 0: Reset the value cuvtrav (from common) to 0 (called before each command)
@@ -32,23 +32,23 @@ use allocate_module
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 !
-    integer, save :: icode = -1
+   integer, save :: icode = -1
 !
-    if (stage .eq. 0) then
-        cuvtrav=0.d0
-    else if (stage .eq. 1) then
-        if (abs(cuvtrav) > r8prem()) then
-            call utmess('A', 'DVP_6', sr=cuvtrav*lois/1.e6)
-        end if
-        if (icode < 0) then
-            icode = jdcget('TestMode')
-        endif
-        if (icode .ne. 0) then
-            ASSERT(abs(cuvtrav) < r8prem())
-        endif
-        call deallocate_all_slvec()
-    else
-        call deallocate_all_slvec()
-    endif
+   if (stage .eq. 0) then
+      cuvtrav = 0.d0
+   else if (stage .eq. 1) then
+      if (abs(cuvtrav) > r8prem()) then
+         call utmess('A', 'DVP_6', sr=cuvtrav*lois/1.e6)
+      end if
+      if (icode < 0) then
+         icode = jdcget('TestMode')
+      end if
+      if (icode .ne. 0) then
+         ASSERT(abs(cuvtrav) < r8prem())
+      end if
+      call deallocate_all_slvec()
+   else
+      call deallocate_all_slvec()
+   end if
 !
 end subroutine
