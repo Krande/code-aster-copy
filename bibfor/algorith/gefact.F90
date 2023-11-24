@@ -99,6 +99,7 @@ subroutine gefact(duree, nominf)
 !     --- INITIALISATION  ---
 !
     call jemarq()
+    indice = 1
 !
     call getres(k19bid, k16bid, nomcmd)
 !

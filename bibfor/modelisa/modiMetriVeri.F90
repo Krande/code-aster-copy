@@ -49,7 +49,7 @@ subroutine modiMetriVeri(noma, ioc, modmai, nutyptu)
     motcls(2) = 'MAILLE'
     typmcl(1) = 'GROUP_MA'
     typmcl(2) = 'MAILLE'
-
+    mmt = ' '
 !
     call getvtx(motfac, 'MODI_METRIQUE', iocc=ioc, scal=mmt, nbret=ibid)
     if (mmt .eq. 'OUI') then
