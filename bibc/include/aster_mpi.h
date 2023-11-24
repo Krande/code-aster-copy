@@ -54,7 +54,7 @@
  * - nbchild: number of childs
  * - name: for nicer print and debug
  */
-#define MAX_CHILDS 10
+#define MAX_CHILDS 200
 #define NAME_LENGTH 16
 
 #ifdef __cplusplus
@@ -71,7 +71,7 @@ struct aster_comm_t {
     char name[NAME_LENGTH];
 };
 
-//#define ASTER_DEBUG_UNITTEST_MPI
+// #define ASTER_DEBUG_UNITTEST_MPI
 
 /*
  *   PUBLIC FUNCTIONS
