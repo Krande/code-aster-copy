@@ -84,9 +84,31 @@ class FieldCreator(ExecuteCommand):
 
         mesh = self._getMesh(keywords)
         model = keywords.get("MODELE")
-        caraElem = keywords.get("CARA_ELEM")
         resultat = keywords.get("RESULTAT")
+        caraElem = keywords.get("CARA_ELEM")
         numeDdl = keywords.get("NUME_DDL")
+        chamF = keywords.get("CHAM_F")
+
+        if mesh is None:
+            if model is None:
+                if resultat is None:
+                    if caraElem is None:
+                        if numeDdl is None:
+                            if chamF is None:
+                                assert False
+                            else:
+                                mesh = chamF.getMesh()
+                        else:
+                            mesh = numeDdl.getMesh()
+                    else:
+                        mesh = caraElem.getModel().getMesh()
+                else:
+                    mesh = resultat.getModel().getMesh()
+            else:
+                mesh = model.getMesh()
+
+        if mesh.isParallel() and location == "NOEUD" and numeDdl is None:
+            raise NameError("NUME_DDL is mandatory with ParallelMesh")
 
         if location == "CART":
             if mesh is None:

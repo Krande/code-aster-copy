@@ -363,10 +363,6 @@ ParallelEquationNumbering::getDOFsWithDescription( const std::string cmp,
     auto mapLG = getLocalToGlobalMapping();
     mapLG->updateValuePointer();
     for ( auto dof = 0; dof < descr.size(); ++dof ) {
-        if ( all_cmp and descr[dof].second > 0 ) {
-            if ( nodes.find( descr[dof].first ) != nodes.end() ) {
-                v_nodes.push_back( descr[dof].first );
-                cmps.push_back( idToName[descr[dof].second] );
         if ( all_cmp ) {
             if ( descr[dof].second > 0 ) {
                 if ( nodes.find( descr[dof].first ) != nodes.end() ) {
