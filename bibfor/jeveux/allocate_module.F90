@@ -93,10 +93,9 @@ contains
 !
     subroutine free_slvec(slvec)
         type(save_lvec) :: slvec
-        integer :: ierr
 !
         if (slvec%nmax > 0) then
-            call deallocate_all_slvec(ierr)
+            call deallocate_all_slvec()
             deallocate (slvec%lvec)
             slvec%nmax = 0
             slvec%kfree = 0
@@ -330,14 +329,13 @@ contains
     end subroutine deallocate_slvec
 !
 !---------------------------------------------------------------------
-    subroutine deallocate_all_slvec(ierr)
+    subroutine deallocate_all_slvec()
 ! but : desallouer tous les objets de slvec qui ne n'ont pas ete
 !
-        integer :: k, n1, n2, lonty, lsic, ierr
+        integer :: k, n1, n2, lonty, lsic
         character(len=3) :: tsca
 !
         n2 = 0
-        ierr = 0
         do k = 1, slvec%nmax
             if (slvec%lvec(k)%present) then
                 tsca = slvec%lvec(k)%tsca
@@ -384,7 +382,6 @@ contains
                 else
                     ASSERT(.false.)
                 end if
-                ierr = 1
                 n2 = n2+n1*lonty
                 slvec%lvec(k)%present = .false.
                 slvec%lvec(k)%ptr_ident = C_NULL_PTR

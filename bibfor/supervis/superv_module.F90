@@ -103,7 +103,7 @@ contains
 !       Reinit calcul mark in case of exception
         call calcul_init()
 !       Reinitialize counter for as_[de]allocate
-        call check_aster_allocate(init=0)
+        call check_aster_allocate(stage=0)
     end subroutine superv_before
 
 !>  Initialize the values or reinitialize them between before executing an operator
@@ -115,16 +115,15 @@ contains
     subroutine superv_after(exception)
         logical, optional :: exception
         logical :: exc
-        exc = .false.
+        integer :: stage
+        stage = 1
         if (present(exception)) then
-            exc = exception
+!           Do not add another error message if an error has been raised
+            stage = 2
         end if
 !   Memory allocation
 !       Check for not deallocated vectors
-!       Do not add another error message if an error has been raised
-        if (.not. exc) then
-            call check_aster_allocate()
-        end if
+        call check_aster_allocate(stage)
 !
 !       Reset commons used for function interpolation
         call foint0()

@@ -154,3 +154,6 @@ help : makefile
 		fi; \
 	)
 	$(MAKE) --no-print-directory test n="$@"
+
+# parallelism is enabled by waf
+.NOTPARALLEL:
