@@ -226,13 +226,6 @@ L'usage de ARRET='NON' dans CONVERGENCE est dangereux et doit être utilisé ave
 même lorsque l'équilibre n'est pas vérifié.
 """
     ),
-    38: _(
-        """
-Vous utilisez l'option de convergence RESI_REFE_RELA en présence d'éléments de coque.
-Notez que la valeur attendue pour le mot-clé FORCE_REFE est une force linéique et que
-la valeur attendue pour MOMENT_REFE est un moment linéique.
-"""
-    ),
     39: _(
         """
 La recherche linéaire est incompatible avec des chargements de Dirichlet de type suiveur.

@@ -89,8 +89,6 @@ subroutine nonlinDSConvergenceInit(ds_conv, sderro, model_)
         call dismoi('EXI_POUTRE', model_, 'MODELE', repk=exipou)
         if (exicoq .eq. 'OUI' .and. exipou .eq. 'OUI') then
             call utmess('A', 'MECANONLINE5_32')
-        elseif (exicoq .eq. 'OUI') then
-            call utmess('A', 'MECANONLINE5_38')
         end if
     end if
 
