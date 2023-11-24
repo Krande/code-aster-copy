@@ -100,7 +100,7 @@ contains
 !       Reinit calcul mark in case of exception
         call calcul_init()
 !       Reinitialize counter for as_[de]allocate
-        call check_aster_allocate(init=0)
+        call check_aster_allocate(stage=0)
 !       Reset commons used for function interpolation
         call foint0()
     end subroutine superv_before
@@ -115,16 +115,15 @@ contains
     subroutine superv_after(exception)
         logical, optional :: exception
         logical :: exc
-        exc = .false.
+        integer :: stage
+        stage = 1
         if ( present(exception) ) then
-            exc = exception
+!           Do not add another error message if an error has been raised
+            stage = 2
         endif
 !   Memory allocation
 !       Check for not deallocated vectors
-!       Do not add another error message if an error has been raised
-        if (.not. exc) then
-            call check_aster_allocate()
-        endif
+        call check_aster_allocate(stage)
 !
 ! Delete all temporary Jeveux objects
         call cleanJeveuxMemory()

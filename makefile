@@ -148,3 +148,6 @@ help : makefile
 
 %:
 	$(MAKE) --no-print-directory test n="$@"
+
+# parallelism is enabled by waf
+.NOTPARALLEL:

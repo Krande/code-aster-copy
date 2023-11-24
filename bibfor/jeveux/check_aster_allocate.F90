@@ -16,16 +16,15 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine check_aster_allocate(init)
+subroutine check_aster_allocate(stage)
 use allocate_module
-! person_in_charge: jacques.pellet at edf.fr
     implicit none
-    integer, optional, intent(in) :: init
-!
-! --------------------------------------------------------------------------
-! verifier que les objets alloues par as_allocate ont bien ete desalloues
-! init=0 => on (re)initialise la variable du common : cuvtrav=0
-! --------------------------------------------------------------------------
+    integer, intent(in) :: stage
+
+! Check that objects allocated by 'as_allocate' have actually been deallocated.
+!   stage = 0: Reset the value cuvtrav (from common) to 0 (called before each command)
+!   stage = 1: Check and deallocate objects (called after each command)
+!   stage = 2: Only dellocate objects (because an exception was raised)
 !
 #include "jeveux_private.h"
 #include "asterc/jdcget.h"
@@ -34,15 +33,11 @@ use allocate_module
 #include "asterfort/utmess.h"
 !
     integer, save :: icode = -1
-    integer :: ierr
 !
-    call deallocate_all_slvec(ierr)
-!
-    if (present(init)) then
-        ASSERT (init.eq.0)
+    if (stage .eq. 0) then
         cuvtrav=0.d0
-    else
-        if (ierr > 0) then
+    else if (stage .eq. 1) then
+        if (abs(cuvtrav) > r8prem()) then
             call utmess('A', 'DVP_6', sr=cuvtrav*lois/1.e6)
         end if
         if (icode < 0) then
@@ -51,6 +46,9 @@ use allocate_module
         if (icode .ne. 0) then
             ASSERT(abs(cuvtrav) < r8prem())
         endif
+        call deallocate_all_slvec()
+    else
+        call deallocate_all_slvec()
     endif
 !
 end subroutine
