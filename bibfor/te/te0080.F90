@@ -78,7 +78,7 @@ subroutine te0080(option, nomte)
                              zk8(isour), 4, nompar, valpar, &
                              sounp1, icode)
             if (theta .ne. 1.0d0) then
-                valpar(3) = zr(itemps)-zr(itemps+1)
+                valpar(4) = zr(itemps)-zr(itemps+1)
                 call fointe_varc('FM', 'FPG1', 1, 1, '+', &
                                  zk8(isour), 4, nompar, valpar, &
                                  soun, icode)
