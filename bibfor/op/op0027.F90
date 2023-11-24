@@ -33,6 +33,7 @@ subroutine op0027()
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/utmess.h"
 #include "jeveux.h"
 ! --------------------------------------------------------------------------------------------------
 !
@@ -60,6 +61,9 @@ subroutine op0027()
     call cgTheta%initialize(cgStat)
     call cgTable%initialize(cgField, cgTheta, cgStat)
     call cgStudy%initialize(cgField%result_in, cgField%list_nume(1), cgStat)
+!
+!-- Alarme INCO + plasticité
+    if (cgField%l_incr .and. cgStudy%l_exi_inco) call utmess('A', 'RUPTURE3_14')
 !
 !-- Calcul de la courbure
     if (cgField%ndim == 3) then

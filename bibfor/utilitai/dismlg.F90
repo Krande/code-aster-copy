@@ -316,6 +316,17 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
                             exit
                         end if
 
+                    else if (questi .eq. 'EXI_INCO') then
+                        call dismte('MODELISATION', elemTypeName, repi, modelization, ierd)
+                        if (modelization(1:7) .eq. '3D_INCO' .or. &
+                            modelization(1:9) .eq. 'AXIS_INCO' .or. &
+                            modelization(1:11) .eq. 'D_PLAN_INCO' .or. &
+                            modelization(1:12) .eq. '3D_GRAD_INCO' .or. &
+                            modelization(1:14) .eq. 'AXIS_GRAD_INCO' .or. &
+                            modelization(1:16) .eq. 'D_PLAN_GRAD_INCO') then
+                            repk = 'OUI'
+                            exit
+                        end if
                     else
                         ASSERT(ASTER_FALSE)
 

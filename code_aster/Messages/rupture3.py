@@ -106,4 +106,10 @@ Ce calcul n'est pas compatible avec la discrétisation LEGENDRE.
 Veuillez utiliser la discrétisation LINEAIRE.
 """
     ),
+    14: _(
+        """
+Vous utilisez la commande CALC_G avec des éléments de type "INCO" et une loi élastoplastique. 
+Cette association est autorisée uniquement à titre expérimental et ne doit pas être utilisée pour des études de sûreté.
+"""
+    ),
 }

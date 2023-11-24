@@ -157,6 +157,8 @@ module calcG_type
         aster_logical      :: l_modal = ASTER_FALSE
 !------ axisymetric model
         aster_logical      :: l_axis = ASTER_FALSE
+!------ inco model
+        aster_logical      :: l_exi_inco = ASTER_FALSE
 ! ----- displacement field
         character(len=24)  :: depl = ' '
 ! ----- speed field
@@ -746,11 +748,8 @@ contains
 !   In nume_index : index nume
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: nbgrmo, igrel, itypel
         real(kind=8) :: start, finish
-        character(len=8) :: typmo
-        character(len=16) :: elemTypeName
-        character(len=19) :: ligrmo
+        character(len=3) :: exiInco, exiAxis
 !
         call cpu_time(start)
 !
@@ -760,26 +759,19 @@ contains
                     this%mateco, this%loading)
         call dismoi('CARA_ELEM', result_in, 'RESULTAT', repk=this%carael)
         call dismoi('NOM_MAILLA', this%model, 'MODELE', repk=this%mesh)
-        call dismoi('MODELISATION', this%model, 'MODELE', repk=typmo)
-
-!       Cas axisymétrique (gestion du cas de plusieurs modélisations)
-        if (typmo(1:4) == "AXIS") then
+!       Cas axisymétrique
+        call dismoi('EXI_AXIS', this%model, 'MODELE', repk=exiAxis)
+        if (exiAxis(1:3) .eq. 'OUI') then
             this%l_axis = ASTER_TRUE
-        elseif (typmo(1:4) == "#PLU") then
-            this%l_axis = ASTER_FALSE
-            ligrmo = this%model//'.MODELE'
-            nbgrmo = nbgrel(ligrmo)
-
-            do igrel = 1, nbgrmo
-                itypel = typele(ligrmo, igrel)
-                call jenuno(jexnum('&CATA.TE.NOMTE', itypel), elemTypeName)
-                if (lteatt('AXIS', 'OUI', typel=elemTypeName)) then
-                    this%l_axis = ASTER_TRUE
-                    exit
-                end if
-            end do
         else
             this%l_axis = ASTER_FALSE
+        end if
+!
+        call dismoi('EXI_INCO', this%model, 'MODELE', repk=exiInco)
+        if (exiInco(1:3) .eq. 'OUI') then
+            this%l_exi_inco = ASTER_TRUE
+        else
+            this%l_exi_inco = ASTER_FALSE
         end if
 !
         call cpu_time(finish)
