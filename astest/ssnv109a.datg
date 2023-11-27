@@ -1,0 +1,98 @@
+"""Script de maillage d'une plaque avec un trou
+"""
+
+import sys
+import salome
+
+L = 50 # coté de la plaque
+R = 40 # rayon du trou
+H = 80 # hauteur du centre du trou
+
+salome.salome_init()
+
+###
+### GEOM component
+###
+
+import GEOM
+from salome.geom import geomBuilder
+
+geompy = geomBuilder.New()
+
+O = geompy.MakeVertex(0, 0, 0)
+OX = geompy.MakeVectorDXDYDZ(1, 0, 0)
+OY = geompy.MakeVectorDXDYDZ(0, 1, 0)
+OZ = geompy.MakeVectorDXDYDZ(0, 0, 1)
+Face = geompy.MakeFaceHW(L, L, 1)
+geompy.TranslateDXDYDZ(Face, L/2, L/2, 0)
+Circle = geompy.MakeCircle(None, None, R)
+disque = geompy.MakeFaceWires([Circle], 1)
+geompy.TranslateDXDYDZ(disque, 0, H, 0)
+plaque = geompy.MakeCutList(Face, [disque], True)
+
+water = geompy.CreateGroup(plaque, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(water, [6, 8])
+droite = geompy.CreateGroup(plaque, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(droite, [10])
+gauche = geompy.CreateGroup(plaque, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(gauche, [3])
+bas = geompy.CreateGroup(plaque, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(bas, [12])
+A = geompy.CreateGroup(plaque, geompy.ShapeType["VERTEX"])
+geompy.UnionIDs(A, [4])
+B = geompy.CreateGroup(plaque, geompy.ShapeType["VERTEX"])
+geompy.UnionIDs(B, [11])
+C = geompy.CreateGroup(plaque, geompy.ShapeType["VERTEX"])
+geompy.UnionIDs(C, [5])
+[water, droite, gauche, bas, A, B, C] = geompy.GetExistingSubObjects(plaque, False)
+
+geompy.addToStudy( plaque, 'plaque' )
+geompy.addToStudyInFather( plaque, water, 'water' )
+geompy.addToStudyInFather( plaque, droite, 'droite' )
+geompy.addToStudyInFather( plaque, gauche, 'gauche' )
+geompy.addToStudyInFather( plaque, bas, 'bas' )
+geompy.addToStudyInFather( plaque, A, 'A' )
+geompy.addToStudyInFather( plaque, B, 'B' )
+geompy.addToStudyInFather( plaque, C, 'C' )
+
+###
+### SMESH component
+###
+
+import  SMESH, SALOMEDS
+from salome.smesh import smeshBuilder
+
+smesh = smeshBuilder.New()
+
+Mesh = smesh.Mesh(plaque, 'Mesh')
+MG_CADSurf = Mesh.Triangle(algo=smeshBuilder.MG_CADSurf)
+MG_CADSurf_Parameters = MG_CADSurf.Parameters()
+MG_CADSurf_Parameters.SetPhysicalMesh( 2 )
+MG_CADSurf_Parameters.SetPhySize( 14.1421 )
+MG_CADSurf_Parameters.SetMinSize( 0.141421 )
+MG_CADSurf_Parameters.SetMaxSize( 28.2843 )
+MG_CADSurf_Parameters.SetChordalError( 7.07107 )
+MG_CADSurf_Parameters.SetSizeMap(water, 'def f(t): return 2' )
+MG_CADSurf_Parameters.SetQuadraticMesh(True)
+isDone = Mesh.Compute()
+
+water_m = Mesh.GroupOnGeom(water,'water',SMESH.EDGE)
+droite_m = Mesh.GroupOnGeom(droite,'droite',SMESH.EDGE)
+gauche_m = Mesh.GroupOnGeom(gauche,'gauche',SMESH.EDGE)
+bas_m = Mesh.GroupOnGeom(bas,'bas',SMESH.EDGE)
+A_m = Mesh.GroupOnGeom(A,'A',SMESH.NODE)
+B_m = Mesh.GroupOnGeom(B,'B',SMESH.NODE)
+C_m = Mesh.GroupOnGeom(C,'C',SMESH.NODE)
+
+## Set names of Mesh objects
+smesh.SetName(MG_CADSurf.GetAlgorithm(), 'MG-CADSurf')
+smesh.SetName(MG_CADSurf_Parameters, 'MG-CADSurf Parameters_1')
+smesh.SetName(water_m, 'water')
+smesh.SetName(gauche_m, 'gauche')
+smesh.SetName(droite_m, 'droite')
+smesh.SetName(B_m, 'B')
+smesh.SetName(A_m, 'A')
+smesh.SetName(C_m, 'C')
+
+if salome.sg.hasDesktop():
+  salome.sg.updateObjBrowser()

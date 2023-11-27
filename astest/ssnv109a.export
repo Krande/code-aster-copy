@@ -1,0 +1,10 @@
+P time_limit 30
+P memory_limit 100
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist verification sequential
+
+F comm ssnv109a.comm D 1
+F datg ssnv109a.datg D 16
+F mmed ssnv109a.mmed D 20
