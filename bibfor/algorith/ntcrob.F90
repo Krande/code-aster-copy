@@ -58,12 +58,12 @@ subroutine ntcrob(meshz, modelz, result, sddisc, ds_inout, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_obsv, nb_keyw_fact, nume_reuse
+    integer :: nb_obsv, nb_keyw_fact, numeReuseCalc
     character(len=19) :: sdarch
     character(len=14) :: sdextr_obsv
     character(len=16) :: keyw_fact
-    character(len=24) :: arch_info
-    integer, pointer :: v_arch_info(:) => null()
+    character(len=24) :: sdarchAinfJv
+    integer, pointer :: sdarchAinf(:) => null()
     character(len=24) :: extr_info
     integer, pointer :: v_extr_info(:) => null()
 !
@@ -78,8 +78,8 @@ subroutine ntcrob(meshz, modelz, result, sddisc, ds_inout, &
 ! - Access to storage datastructure
 !
     sdarch = sddisc(1:14)//'.ARCH'
-    arch_info = sdarch(1:19)//'.AINF'
-    call jeveuo(arch_info, 'L', vi=v_arch_info)
+    sdarchAinfJv = sdarch(1:19)//'.AINF'
+    call jeveuo(sdarchAinfJv, 'L', vi=sdarchAinf)
 !
 ! - Read datas for extraction
 !
@@ -89,10 +89,10 @@ subroutine ntcrob(meshz, modelz, result, sddisc, ds_inout, &
 !
 ! - Set reuse index in OBSERVATION table
 !
-    nume_reuse = v_arch_info(3)
+    numeReuseCalc = sdarchAinf(3)
     extr_info = sdextr_obsv(1:14)//'     .INFO'
     call jeveuo(extr_info, 'E', vi=v_extr_info)
-    v_extr_info(4) = nume_reuse
+    v_extr_info(4) = numeReuseCalc
 !
 ! - Read parameters
 !

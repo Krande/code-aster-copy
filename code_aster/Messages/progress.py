@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,4 +27,6 @@ cata_msg = {
     2: _(
         """[%(i1)3d%%] Fréquence calculée :%(r1)12.5e, dernière fréquence archivée :%(r2)12.5e, au numéro d'ordre : %(i2)5d"""
     ),
+    3: _("""[%(i1)3d%%] Instant calculé :%(r1)12.5e, pas d'instant archivé"""),
+    4: _("""[%(i1)3d%%] Instant calculé :%(r1)12.5e, seul l'instant initial a été archivé"""),
 }

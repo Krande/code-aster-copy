@@ -40,38 +40,29 @@ subroutine ntcra0(sddisc)
 !
 ! ----------------------------------------------------------------------
 !
-    character(len=24) :: arcinf, arcexc
-    integer :: jarinf, jarexc
+    integer, parameter :: iocc = 0
+    character(len=16), parameter :: factorKeyword = ' ', keywStep = ' '
+    character(len=1), parameter :: base = 'V'
     character(len=19) :: sdarch
-    integer :: iocc
-    character(len=16) :: motfac, motpas
-    character(len=1) :: base
+    character(len=24) :: sdarchAinfJv, sdarchAexcJv
+    integer, pointer :: sdarchAinf(:) => null()
+    character(len=16), pointer :: sdarchAexc(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
     call jemarq()
-!
-! --- INITIALISATIONS
-!
-    motfac = ' '
-    motpas = ' '
-    iocc = 0
-    base = 'V'
-!
-! --- NOM SD ARCHIVAGE
-!
+
+! - Name of datastructures to store
     sdarch = sddisc(1:14)//'.ARCH'
-    arcinf = sdarch(1:19)//'.AINF'
-    arcexc = sdarch(1:19)//'.AEXC'
-!
-! --- CREATION DES SDS
-!
-    call wkvect(arcexc, 'V V K16', 1, jarexc)
-    call wkvect(arcinf, 'V V I', 3, jarinf)
-!
-! --- LECTURE LISTE INSTANTS D'ARCHIVAGE
-!
-    call nmcrpx(motfac, motpas, iocc, sdarch, base)
+    sdarchAinfJv = sdarch(1:19)//'.AINF'
+    sdarchAexcJv = sdarch(1:19)//'.AEXC'
+
+! - Create datastructures
+    call wkvect(sdarchAexcJv, 'V V K16', 1, vk16=sdarchAexc)
+    call wkvect(sdarchAinfJv, 'V V I', 4, vi=sdarchAinf)
+
+! - Get parameters from ARCHIVAGE
+    call nmcrpx(factorKeyword, keywStep, iocc, sdarch, base)
 !
     call jedema()
 !

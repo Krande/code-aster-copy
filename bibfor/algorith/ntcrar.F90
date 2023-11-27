@@ -15,13 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine ntcrar(result, sddisc, lreuse)
+!
+subroutine ntcrar(result, sddisc, lReuse)
 !
     implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
@@ -34,94 +33,79 @@ subroutine ntcrar(result, sddisc, lreuse)
 #include "asterfort/nmdide.h"
 #include "asterfort/wkvect.h"
 !
+    character(len=19), intent(in) :: sddisc
+    character(len=8), intent(in) :: result
+    aster_logical, intent(in) :: lReuse
 !
-    character(len=19) :: sddisc
-    character(len=8) :: result
-    aster_logical :: lreuse
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! THER_NON_LINE - Input/output datastructure
 !
-! ROUTINE THER_* (STRUCTURES DE DONNES)
+! Create datastructures for storing management
 !
-! CREATION SD ARCHIVAGE
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
-!
-!
-! IN  RESULT : NOM DE LA SD RESULTAT
-! IN  LREUSE : .TRUE. SI CONCEPT REENTRANT
-! IN  SDDISC : SD DISCRETISATION
+! In  result           : name of datastructure for results
+! In  sddisc           : datastructure for time discretization
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: nocc, iocc
-    integer :: numder, numrep, numreo
-    character(len=16) :: motfac, motpas
-    integer :: numarc
-    character(len=24) :: arcinf
-    integer :: jarinf
-    character(len=19) :: sdarch
     integer :: ifm, niv
-    character(len=1) :: base
-    real(kind=8) :: insder
+    integer, parameter :: iocc = 1
+    character(len=16), parameter :: factorKeyword = 'ARCHIVAGE', keywStep = 'PAS_ARCH'
+    character(len=1), parameter :: base = 'V'
+    integer :: nbFactorKeyword
+    integer :: lastIndex, numeReuseCalc, numeReuse
+    integer :: numeStoring
+    character(len=19) :: sdarch
+    character(len=24) :: sdarchAinfJv
+    integer, pointer :: sdarchAinf(:) => null()
+    real(kind=8) :: lastTime
 !
 ! ----------------------------------------------------------------------
 !
     call jemarq()
     call infniv(ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
         write (ifm, *) '<THERNONLINE> ... CREATION SD ARCHIVAGE'
     end if
-!
-! --- INITIALISATIONS
-!
-    motfac = 'ARCHIVAGE'
-    motpas = 'PAS_ARCH'
-    base = 'V'
-    iocc = 1
-    numarc = -1
-    numreo = -1
-    numrep = -1
-    call getfac(motfac, nocc)
-    ASSERT(nocc .le. 1)
-!
-! --- NOM SD ARCHIVAGE
-!
+
+! - Initializations
+    numeStoring = -1
+    numeReuse = -1
+    numeReuseCalc = -1
+    call getfac(factorKeyword, nbFactorKeyword)
+    ASSERT(nbFactorKeyword .le. 1)
+
+! - Name of datastructures to store
     sdarch = sddisc(1:14)//'.ARCH'
-    arcinf = sdarch(1:19)//'.AINF'
-!
-! --- DERNIER NUMERO ARCHIVE DANS L'EVOL SI REUSE
-!
-    call nmdide(lreuse, result, numder, insder)
-!
-! --- LECTURE LISTE INSTANTS D'ARCHIVAGE
-!
-    call nmcrpx(motfac, motpas, iocc, sdarch, base)
-!
-! --- CONSTRUCTION CHAMPS EXCLUS DE L'ARCHIVAGE
-!
-    call nmarex(motfac, sdarch)
-!
-! --- RECUPERATION DU PREMIER NUMERO A ARCHIVER
-!
-    call nmarpr(result, sddisc, lreuse, numder, insder, &
-                numarc)
-!
-! --- RECUPERATION NUMERO REUSE - TABLE OBSERVATION
-!
-    call nmarnr(result, 'OBSERVATION', numreo)
-!
-! --- NUMERO D'ARCHIVE COURANT ET NUMERO DE REUSE
-!
-    ASSERT(numarc .ge. 0)
-    ASSERT(numreo .ge. 0)
-    call wkvect(arcinf, 'V V I', 3, jarinf)
-    zi(jarinf-1+1) = numarc
-    zi(jarinf-1+2) = numreo
-    zi(jarinf-1+3) = numrep
+    sdarchAinfJv = sdarch(1:19)//'.AINF'
+
+! - Get last time in result datastructure if initial state given
+    call nmdide(lReuse, result, lastIndex, lastTime)
+
+! - Get parameters from ARCHIVAGE
+    call nmcrpx(factorKeyword, keywStep, iocc, sdarch, base)
+
+! - List of CHAM_EXCLU
+    call nmarex(factorKeyword, sdarch)
+
+! - Get index to save first time to store
+    call nmarpr(result, sddisc, lReuse, lastIndex, lastTime, numeStoring)
+
+! - Get reuse index from TABLE OBSERVATION
+    call nmarnr(result, 'OBSERVATION', numeReuse)
+
+! - Create datastructure
+    call wkvect(sdarchAinfJv, 'V V I', 4, vi=sdarchAinf)
+
+! - Save
+    ASSERT(numeStoring .ge. 0)
+    ASSERT(numeReuse .ge. 0)
+    sdarchAinf(1) = numeStoring
+    sdarchAinf(2) = numeReuse
+    sdarchAinf(3) = numeReuseCalc
+    sdarchAinf(4) = -1
 !
     call jedema()
 !

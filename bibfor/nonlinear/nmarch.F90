@@ -15,12 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmarch(numins, modele, ds_material, carele, fonact, &
+subroutine nmarch(numeInst, model, ds_material, caraElem, listFuncActi, &
                   ds_print, sddisc, sdcrit, &
                   ds_measure, sderro, sddyna, sdpilo, ds_energy, &
-                  ds_inout, ds_errorindic, ds_algorom_)
+                  ds_inout, ds_errorindic, ds_algorom_, lStoringInitState_)
 !
     use NonLin_Datastructure_type
     use Rom_Datastructure_type
@@ -46,8 +45,8 @@ subroutine nmarch(numins, modele, ds_material, carele, fonact, &
 #include "asterfort/uttcpg.h"
 #include "asterfort/romAlgoNLTableSave.h"
 !
-    integer :: fonact(*)
-    integer :: numins
+    integer :: listFuncActi(*)
+    integer :: numeInst
     type(NL_DS_Print), intent(in) :: ds_print
     type(NL_DS_InOut), intent(in) :: ds_inout
     type(NL_DS_Material), intent(in) :: ds_material
@@ -56,8 +55,9 @@ subroutine nmarch(numins, modele, ds_material, carele, fonact, &
     character(len=19) :: sddisc, sdcrit, sddyna, sdpilo
     character(len=24) :: sderro
     type(NL_DS_ErrorIndic), intent(in) :: ds_errorindic
-    character(len=24) :: modele, carele
+    character(len=24) :: model, caraElem
     type(ROM_DS_AlgoPara), optional, intent(in) :: ds_algorom_
+    aster_logical, intent(in), optional :: lStoringInitState_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -87,114 +87,99 @@ subroutine nmarch(numins, modele, ds_material, carele, fonact, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret, nume_store
-    real(kind=8) :: instan
+    integer :: iret, numeStoring
+    real(kind=8) :: timeCurr
     character(len=8) :: result
-    aster_logical :: force, lprint, l_hho
+    aster_logical :: force, lprint, l_hho, lStoringInitState
     character(len=19) :: k19bid, list_load_resu
     character(len=4) :: etcalc
-    integer :: nume_reuse
+    integer :: numeReuse
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    lStoringInitState = ASTER_FALSE
+    if (present(lStoringInitState_)) then
+        lStoringInitState = lStoringInitState_
+    end if
     result = ds_inout%result
     list_load_resu = ds_inout%list_load_resu
-    l_hho = isfonc(fonact, 'HHO')
-!
-! - Loop state.
-!
+    l_hho = isfonc(listFuncActi, 'HHO')
+
+! - Loop state
     call nmleeb(sderro, 'CALC', etcalc)
-!
+
 ! - Last step => storing
-!
     force = .false.
-    call nmfinp(sddisc, numins, force)
-!
+    call nmfinp(sddisc, numeInst, force)
+
 ! - Storing
-!
     if (etcalc .eq. 'CONV') then
         force = .true.
     end if
     if (etcalc .eq. 'STOP') then
         force = .true.
     end if
-!
+
 ! - Print timer
-!
     call uttcpg('IMPR', 'INCR')
-!
+
 ! - Get index for storing
-!
-    call dinuar(result, sddisc, numins, force, &
-                nume_store, nume_reuse)
-!
+    call dinuar(result, sddisc, numeInst, force, &
+                numeStoring, numeReuse, lStoringInitState)
+
 ! - Current time
-!
-    instan = diinst(sddisc, numins)
-!
+    timeCurr = diinst(sddisc, numeInst)
+
 ! - Save energy parameters in output table
-!
-    if (isfonc(fonact, 'ENERGIE')) then
-        call nmarpc(ds_energy, nume_reuse, instan)
+    if (isfonc(listFuncActi, 'ENERGIE')) then
+        call nmarpc(ds_energy, numeReuse, timeCurr)
     else
-        call nmcrpc(ds_inout, nume_reuse, instan)
+        call nmcrpc(ds_inout, numeReuse, timeCurr)
     end if
-!
+
 ! - Print or not ?
-!
     lprint = ds_print%l_print
-!
+
 ! - Storing
-!
-    if (nume_store .ge. 0) then
-!
+    if (numeStoring .ge. 0) then
 ! ----- Begin timer
-!
         call nmtime(ds_measure, 'Launch', 'Store')
-!
+
 ! ----- Print head
-!
         if (lprint) then
             call utmess('I', 'ARCHIVAGE_5')
         end if
-!
+
 ! ----- Increased result datastructure if necessary
-!
-        call rsexch(' ', result, 'DEPL', nume_store, k19bid, &
-                    iret)
+        call rsexch(' ', result, 'DEPL', numeStoring, k19bid, iret)
         if (iret .eq. 110) then
             call rsagsd(result, 0)
         end if
-!
+
 ! ----- Storing parameters
-!
-        call nmarc0(result, modele, ds_material, carele, fonact, &
+        call nmarc0(result, model, ds_material, caraElem, listFuncActi, &
                     sdcrit, sddyna, ds_errorindic, &
-                    sdpilo, list_load_resu, nume_store, instan)
-!
-! ----- Stroring fields
-!
-        call nmarce(ds_inout, result, sddisc, instan, nume_store, &
+                    sdpilo, list_load_resu, numeStoring, timeCurr)
+
+! ----- Storing fields
+        call nmarce(ds_inout, result, sddisc, timeCurr, numeStoring, &
                     force, ds_print)
-!
+
 ! ----- If HHO, we compute a post_processing
-!
         if (l_hho) then
-            call hhoPostDeplMeca(modele, result, nume_store)
+            call hhoPostDeplMeca(model, result, numeStoring)
         end if
-!
+
 ! ----- Storing reduced parameters table (ROM)
-!
         if (present(ds_algorom_)) then
             if (ds_algorom_%l_rom) then
-                if (nume_store .gt. 0) then
-                    call romAlgoNLTableSave(nume_store, instan, ds_algorom_)
+                if (numeStoring .gt. 0) then
+                    call romAlgoNLTableSave(numeStoring, timeCurr, ds_algorom_)
                 end if
             end if
         end if
-!
+
 ! ----- End timer
-!
         call nmtime(ds_measure, 'Stop', 'Store')
         call nmrinc(ds_measure, 'Store')
     end if

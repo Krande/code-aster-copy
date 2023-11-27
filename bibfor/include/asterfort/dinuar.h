@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@
 !
 interface
     subroutine dinuar(result    , sddisc     , nume_inst, force,&
-                      nume_store, nume_reuse_)
+                      nume_store, nume_reuse_, lStoringInitState_)
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: result
         character(len=19), intent(in) :: sddisc
@@ -30,5 +30,6 @@ interface
         aster_logical, intent(in) :: force
         integer, intent(out) :: nume_store
         integer, optional, intent(out) :: nume_reuse_
+        aster_logical, intent(in), optional :: lStoringInitState_
     end subroutine dinuar
 end interface

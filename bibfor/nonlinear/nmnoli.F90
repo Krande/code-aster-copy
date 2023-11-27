@@ -28,7 +28,7 @@ subroutine nmnoli(sddisc, sderro, ds_print, sdcrit, &
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/infdbg.h"
+#include "asterfort/infniv.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nmarch.h"
@@ -74,16 +74,16 @@ subroutine nmnoli(sddisc, sderro, ds_print, sdcrit, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=19) :: sdarch
-    character(len=24) :: sdarch_ainf
-    integer, pointer :: v_sdarch_ainf(:) => null()
-    integer :: numarc, numins
+    character(len=24) :: sdarchAinfJv
+    integer, pointer :: sdarchAinf(:) => null()
+    integer :: numeStoring, numeInst
     integer :: ifm, niv
     aster_logical :: lreuse
     character(len=8) :: result
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call infdbg('MECANONLINE', ifm, niv)
+    call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE13_25')
     end if
@@ -91,43 +91,37 @@ subroutine nmnoli(sddisc, sderro, ds_print, sdcrit, &
 ! --- FONCTIONNALITES ACTIVEES
 !
     lreuse = isfonc(fonact, 'REUSE')
-!
-! --- INSTANT INITIAL
-!
-    numins = 0
-!
+
+! - Initial state
+    numeInst = 0
+
 ! - Get name of result's datastructure
-!
     result = ds_inout%result
-!
-! --- ACCES SD ARCHIVAGE
-!
+
+! - Name of datastructures
     sdarch = sddisc(1:14)//'.ARCH'
-    sdarch_ainf = sdarch(1:19)//'.AINF'
-!
+    sdarchAinfJv = sdarch(1:19)//'.AINF'
+
 ! - Current storing index
-!
-    call jeveuo(sdarch_ainf, 'L', vi=v_sdarch_ainf)
-    numarc = v_sdarch_ainf(1)
-!
-! --- CREATION DE LA SD EVOL_NOLI OU NETTOYAGE DES ANCIENS NUMEROS
-!
+    call jeveuo(sdarchAinfJv, 'L', vi=sdarchAinf)
+    numeStoring = sdarchAinf(1)
+
+! - Create new datastructure
     if (lreuse) then
-        ASSERT(numarc .ne. 0)
-        call rsrusd(result, numarc)
+        ASSERT(numeStoring .ne. 0)
+        call rsrusd(result, numeStoring)
     else
-        ASSERT(numarc .eq. 0)
+        ASSERT(numeStoring .eq. 0)
         call rscrsd('G', result, 'EVOL_NOLI', 100)
     end if
-!
-! --- ARCHIVAGE ETAT INITIAL
-!
+
+! - Save initial state
     if (.not. lreuse) then
         call utmess('I', 'ARCHIVAGE_4')
-        call nmarch(numins, modele, ds_material, carele, fonact, &
+        call nmarch(numeInst, modele, ds_material, carele, fonact, &
                     ds_print, sddisc, sdcrit, &
                     ds_measure, sderro, sddyna, sdpilo, ds_energy, &
-                    ds_inout, ds_errorindic)
+                    ds_inout, ds_errorindic, lStoringInitState_=ASTER_TRUE)
     end if
 !
 end subroutine

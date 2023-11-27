@@ -15,112 +15,104 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmcrar(result, sddisc, fonact)
+subroutine nmcrar(result, sddisc, listFuncActi)
 !
     implicit none
 !
 #include "asterf_types.h"
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/utmess.h"
+#include "asterfort/infniv.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/nmarex.h"
 #include "asterfort/nmarnr.h"
 #include "asterfort/nmarpr.h"
 #include "asterfort/nmcrpx.h"
 #include "asterfort/nmdide.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    character(len=19) :: sddisc
-    character(len=8) :: result
-    integer :: fonact(*)
+    character(len=19), intent(in) :: sddisc
+    character(len=8), intent(in) :: result
+    integer, intent(in) :: listFuncActi(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE *_NON_LINE (STRUCTURES DE DONNES)
+! MECA_NON_LINE - Input/output datastructure
 !
-! CREATION SD ARCHIVAGE
+! Create datastructures for storing management
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! IN  RESULT : NOM DE LA SD RESULTAT
-! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
-! IN  SDDISC : SD DISCRETISATION
+! In  result           : name of datastructure for results
+! In  sddisc           : datastructure for time discretization
+! In  listFuncActi     : list of active functionnalities
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    character(len=16), parameter :: keywfact = 'ARCHIVAGE', keywStep = 'PAS_ARCH'
+    integer, parameter :: iocc = 1
+    character(len=16), parameter :: factorKeyword = 'ARCHIVAGE', keywStep = 'PAS_ARCH'
     character(len=1), parameter :: base = 'V'
-    integer :: nocc, iocc
-    integer :: numder, numrep, numarc, numreo
+    integer :: nbFactorKeyword
+    integer :: lastIndex, numeReuseCalc, numeStoring, numeReuse
     character(len=19) :: sdarch
-    character(len=24) :: arcinf
-    integer, pointer :: storeArcinf(:) => null()
-    aster_logical :: lreuse, lDyna
-    real(kind=8) :: insder
+    character(len=24) :: sdarchAinfJv
+    integer, pointer :: sdarchAinf(:) => null()
+    aster_logical :: lReuse, lDyna
+    real(kind=8) :: lastTime
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call infdbg('MECANONLINE', ifm, niv)
+    call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE13_14')
     end if
-!
+
 ! - Initializations
-!
-    iocc = 1
-    numarc = -1
-    numreo = -1
-    numrep = -1
-    call getfac(keywfact, nocc)
-    ASSERT(nocc .le. 1)
-!
+    numeStoring = -1
+    numeReuse = -1
+    numeReuseCalc = -1
+    call getfac(factorKeyword, nbFactorKeyword)
+    ASSERT(nbFactorKeyword .le. 1)
+
 ! - Active functionnalites
-!
-    lreuse = isfonc(fonact, 'REUSE')
-    lDyna = isfonc(fonact, 'DYNAMIQUE')
-!
-! - Name of datastructures to store
-!
+    lReuse = isfonc(listFuncActi, 'REUSE')
+    lDyna = isfonc(listFuncActi, 'DYNAMIQUE')
+
+! - Name of datastructures
     sdarch = sddisc(1:14)//'.ARCH'
-    arcinf = sdarch(1:19)//'.AINF'
-!
-! --- DERNIER NUMERO ARCHIVE DANS L'EVOL  SI REUSE
-!
-    call nmdide(lreuse, result, numder, insder)
-!
-! --- LECTURE LISTE INSTANTS D'ARCHIVAGE
-!
-    call nmcrpx(keywfact, keywStep, iocc, sdarch, base)
-!
-! --- CONSTRUCTION CHAMPS EXCLUS DE L'ARCHIVAGE
-!
-    call nmarex(keywfact, sdarch, lDyna)
-!
-! --- RECUPERATION DU PREMIER NUMERO A ARCHIVER
-!
-    call nmarpr(result, sddisc, lreuse, numder, insder, numarc)
-!
-! --- RECUPERATION NUMERO REUSE - TABLE OBSERVATION
-!
-    call nmarnr(result, 'OBSERVATION', numreo)
-!
-! --- RECUPERATION NUMERO REUSE - TABLE PARA_CALC
-!
-    call nmarnr(result, 'PARA_CALC', numrep)
-!
-! --- NUMERO D'ARCHIVE COURANT ET NUMERO DE REUSE
-!
-    ASSERT(numarc .ge. 0)
-    ASSERT(numreo .ge. 0)
-    ASSERT(numrep .ge. 0)
-    call wkvect(arcinf, 'V V I', 3, vi=storeArcinf)
-    storeArcinf(1) = numarc
-    storeArcinf(2) = numreo
-    storeArcinf(3) = numrep
+    sdarchAinfJv = sdarch(1:19)//'.AINF'
+
+! - Get last time in result datastructure if initial state given
+    call nmdide(lReuse, result, lastIndex, lastTime)
+
+! - Get parameters from ARCHIVAGE
+    call nmcrpx(factorKeyword, keywStep, iocc, sdarch, base)
+
+! - List of CHAM_EXCLU
+    call nmarex(factorKeyword, sdarch, lDyna)
+
+! - Get index to save first time to store
+    call nmarpr(result, sddisc, lReuse, lastIndex, lastTime, numeStoring)
+
+! - Get reuse index from TABLE OBSERVATION
+    call nmarnr(result, 'OBSERVATION', numeReuse)
+
+! - Get reuse index from TABLE PARA_CALC
+    call nmarnr(result, 'PARA_CALC', numeReuseCalc)
+
+! - Create datastructure
+    call wkvect(sdarchAinfJv, 'V V I', 4, vi=sdarchAinf)
+
+! - Save
+    ASSERT(numeStoring .ge. 0)
+    ASSERT(numeReuse .ge. 0)
+    ASSERT(numeReuseCalc .ge. 0)
+    sdarchAinf(1) = numeStoring
+    sdarchAinf(2) = numeReuse
+    sdarchAinf(3) = numeReuseCalc
+    sdarchAinf(4) = -1
 !
 end subroutine

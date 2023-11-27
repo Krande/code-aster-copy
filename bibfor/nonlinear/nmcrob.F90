@@ -75,7 +75,7 @@ subroutine nmcrob(meshz, modelz, sddisc, ds_inout, cara_elemz, &
     character(len=8) :: result
     character(len=14) :: sdextr_obsv
     character(len=16) :: keyw_fact
-    character(len=24) :: arch_info
+    character(len=24) :: sdarchAinfJv
     integer, pointer :: v_arch_info(:) => null()
     character(len=24) :: extr_info
     integer, pointer :: v_extr_info(:) => null()
@@ -92,8 +92,8 @@ subroutine nmcrob(meshz, modelz, sddisc, ds_inout, cara_elemz, &
 ! - Access to storage datastructure
 !
     sdarch = sddisc(1:14)//'.ARCH'
-    arch_info = sdarch(1:19)//'.AINF'
-    call jeveuo(arch_info, 'L', vi=v_arch_info)
+    sdarchAinfJv = sdarch(1:19)//'.AINF'
+    call jeveuo(sdarchAinfJv, 'L', vi=v_arch_info)
 !
 ! - Read datas for extraction
 !

@@ -70,8 +70,8 @@ subroutine nxnoli(model, mate, cara_elem, l_stat, l_evol, &
 !
     integer :: ifm, niv
     character(len=19) :: sdarch
-    character(len=24) :: sdarch_ainf
-    integer, pointer :: v_sdarch_ainf(:) => null()
+    character(len=24) :: sdarchAinfJv
+    integer, pointer :: sdarchAinf(:) => null()
     integer :: nume_store, nume_inst
     aster_logical :: force, lreuse
     character(len=8) :: result
@@ -96,12 +96,12 @@ subroutine nxnoli(model, mate, cara_elem, l_stat, l_evol, &
 ! --- ACCES SD ARCHIVAGE
 !
     sdarch = sddisc(1:14)//'.ARCH'
-    sdarch_ainf = sdarch(1:19)//'.AINF'
+    sdarchAinfJv = sdarch(1:19)//'.AINF'
 !
 ! - Current storing index
 !
-    call jeveuo(sdarch_ainf, 'L', vi=v_sdarch_ainf)
-    nume_store = v_sdarch_ainf(1)
+    call jeveuo(sdarchAinfJv, 'L', vi=sdarchAinf)
+    nume_store = sdarchAinf(1)
 !
 ! --- CREATION DE LA SD EVOL_THER OU NETTOYAGE DES ANCIENS NUMEROS
 !
