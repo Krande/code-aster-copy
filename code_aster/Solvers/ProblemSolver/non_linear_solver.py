@@ -121,7 +121,11 @@ class NonLinearSolver(SolverFeature):
         args = self.get_feature(SOP.Keywords)
         # essential to be called enough soon (may change the size of VARI field)
         phys_pb = self.phys_pb
-        phys_pb.computeBehaviourProperty(args["COMPORTEMENT"], "NON", 2)
+        init_state = self._get("ETAT_INIT")
+        if init_state:
+            phys_pb.computeBehaviourProperty(args["COMPORTEMENT"], "OUI", 2)
+        else:
+            phys_pb.computeBehaviourProperty(args["COMPORTEMENT"], "NON", 2)
         phys_pb.computeListOfLoads()
         phys_pb.computeDOFNumbering()
         if phys_pb.getMaterialField().hasExternalStateVariableForLoad():
@@ -129,7 +133,7 @@ class NonLinearSolver(SolverFeature):
         # Add some hooks
         if phys_pb.getBehaviourProperty().hasAnnealing():
             self.use(Annealing())
-        self.setInitialState()
+        self.setInitialState(init_state)
         self.step_rank = 0
         self._storeRank(self.phys_state.time_curr)
         # register observers
@@ -139,12 +143,11 @@ class NonLinearSolver(SolverFeature):
             source.add_observer(self.stepper)
 
     @profile
-    def setInitialState(self):
+    def setInitialState(self, init_state):
         """Initialize the physical state."""
         phys_state = self.phys_state
         phys_state.zeroInitialState(self.phys_pb)
         init_time = self.stepper.getInitial()
-        init_state = self._get("ETAT_INIT")
         if init_state:
             if "INST_ETAT_INIT" in init_state:
                 init_time = init_state.get("INST_ETAT_INIT")
