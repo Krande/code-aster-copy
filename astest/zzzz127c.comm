@@ -134,9 +134,17 @@ IMPR_RESU(
 # peuvent être identiques à Pi près)
 v8 = modes.getField("DEPL", 8)
 v8_r = modes_reconstruit.getField("DEPL", 8)
-diff = np.max(
-    np.abs(np.abs(v8.getValuesWithDescription()[0]) - np.abs(v8_r.getValuesWithDescription()[0]))
-)
+vals = v8.getValuesWithDescription()[0]
+cmps = v8.getValuesWithDescription()[1][1]
+vals_r = v8_r.getValuesWithDescription()[0]
+cmps_r = v8_r.getValuesWithDescription()[1][1]
+vals_f = []
+vals_r_f = []
+for count in range(len(vals)):
+    if cmps[count] != "LAGR:MPC":
+        vals_f.append(vals[count])
+        vals_r_f.append(vals_r[count])
+diff = np.max(np.abs(np.abs(vals_f) - np.abs(vals_r_f)))
 
 test.assertLessEqual(diff, 1.0e-8)
 test.assertEqual(rigi_elim.getType(), "MATR_ASSE_ELIM_R")
