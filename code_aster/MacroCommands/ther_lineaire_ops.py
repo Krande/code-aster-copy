@@ -176,14 +176,9 @@ def _createTimeStepper(stationary, args):
     # <zzzz185a> TYPE_CALCUL="TRAN" + STAT="OUI": initial=0., t=[]
     logger.debug("<THER_LINEAIRE><TIMESTEPPER>: Start")
     if stationary:
-        args = args.copy()
-        args.setdefault("INCREMENT", {})
-        if "LIST_INST" not in args["INCREMENT"]:
-            list_0 = ListOfFloats()
-            list_0.setVectorValues([0.0])
-            args["INCREMENT"]["LIST_INST"] = list_0
-        args["INCREMENT"].setdefault("INST_INIT", None)
-    stepper = TimeStepper.from_keywords(**args["INCREMENT"])
+        stepper = TimeStepper.from_keywords(**args["INCREMENT"], INST_INIT=None)
+    else:
+        stepper = TimeStepper.from_keywords(**args["INCREMENT"])
     resu = args.get("RESULTAT")
     if resu:
         last = resu.getLastTime()
@@ -502,7 +497,7 @@ def ther_lineaire_ops(self, **args):
     if model.isXfem():
         result = CALC_CHAMP(RESULTAT=result, reuse=result, THERMIQUE="TEMP_ELGA")
 
-    if verbosity:
+    if verbosity > 1:
         print_stats()
     resetFortranLoggingLevel()
     reset_stats()

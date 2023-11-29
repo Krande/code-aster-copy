@@ -36,7 +36,7 @@ CALC_PRECONT = MACRO(
     CARA_ELEM=SIMP(statut="o", typ=cara_elem),
     CABLE_BP=SIMP(statut="o", typ=cabl_precont, validators=NoRepeat(), max="**"),
     CABLE_BP_INACTIF=SIMP(statut="f", typ=cabl_precont, validators=NoRepeat(), max="**"),
-    INCREMENT=C_INCREMENT("MECANIQUE"),
+    INCREMENT=C_INCREMENT(),
     RECH_LINEAIRE=C_RECH_LINEAIRE(),
     CONVERGENCE=C_CONVERGENCE("MECA_NON_LINE"),
     ARCHIVAGE=C_ARCHIVAGE(),

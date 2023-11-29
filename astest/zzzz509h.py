@@ -128,7 +128,7 @@ def testRestart(command, restart_from, time_restart, reuse=False, info=1):
     else:
         args["ETAT_INIT"] = _F(INST_ETAT_INIT=time_restart, DEPL=depl, SIGM=sigm, VARI=vari)
 
-    cont = command(INCREMENT=_F(LIST_INST=times), **args)
+    cont = command(INCREMENT=_F(LIST_INST=times, INST_INIT=time_restart), **args)
     cont.userName = ("SNL2" if command is STAT_NON_LINE else "MNL2") + "_" + restart_from
     return first, cont
 

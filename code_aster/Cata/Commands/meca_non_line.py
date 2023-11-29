@@ -58,7 +58,7 @@ MECA_NON_LINE = MACRO(
     # -------------------------------------------------------------------
     RECH_LINEAIRE=C_RECH_LINEAIRE(),
     # -------------------------------------------------------------------
-    INCREMENT=C_INCREMENT("MECANIQUE"),
+    INCREMENT=C_INCREMENT(),
     # -------------------------------------------------------------------
     METHODE=SIMP(statut="f", typ="TXM", defaut="NEWTON", into=("NEWTON", "SNES")),
     b_meth_newton=BLOC(

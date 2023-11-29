@@ -102,7 +102,7 @@ DYNA_NON_LINE = OPER(
     # -------------------------------------------------------------------
     ETAT_INIT=C_ETAT_INIT("DYNA_NON_LINE", "f"),
     # -------------------------------------------------------------------
-    INCREMENT=C_INCREMENT("MECANIQUE"),
+    INCREMENT=C_INCREMENT(),
     # -------------------------------------------------------------------
     SCHEMA_TEMPS=FACT(
         statut="o",

@@ -162,21 +162,21 @@ class NonLinearSolver(SolverFeature):
                 extract_time = init_state.get("INST")
                 if extract_time is None:
                     extract_time = resu.getLastTime()
-
                 if init_state.get("NUME_ORDRE"):
                     para, value = "NUME_ORDRE", init_state["NUME_ORDRE"]
                 else:
                     para, value = "INST", extract_time
-
-                return para, value, extract_time
+                init_time = extract_time
+                if "INST_ETAT_INIT" in init_state:
+                    init_time = init_state.get("INST_ETAT_INIT")
+                return para, value, init_time
 
             if "INST_ETAT_INIT" in init_state:
                 init_time = init_state.get("INST_ETAT_INIT")
             if "EVOL_NOLI" in init_state:
                 resu = init_state.get("EVOL_NOLI")
                 assert isinstance(resu, NonLinearResult), resu
-                para, value, extract_time = extract_param(init_state, resu)
-                init_time = extract_time
+                para, value, init_time = extract_param(init_state, resu)
                 phys_state.primal_curr = resu.getField(
                     "DEPL", para=para, value=value
                 ).copyUsingDescription(nume_equa)
@@ -197,8 +197,7 @@ class NonLinearSolver(SolverFeature):
             if "EVOL_THER" in init_state:
                 resu = init_state.get("EVOL_THER")
                 assert isinstance(resu, ThermalResult), resu
-                para, value, extract_time = extract_param(init_state, resu)
-                init_time = extract_time
+                para, value, init_time = extract_param(init_state, resu)
                 phys_state.primal_curr = resu.getField(
                     "TEMP", para=para, value=value
                 ).copyUsingDescription(nume_equa)

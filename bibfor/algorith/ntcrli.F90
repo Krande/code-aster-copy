@@ -63,7 +63,7 @@ subroutine ntcrli(inst_init, list_inst, sddisc, lostat)
 !
     integer :: ifm, niv
     integer :: nume_ini, nume_end, nume_inst
-    integer :: nb_inst_new, nb_inst
+    integer :: nb_inst_new, nb_inst, nbret
     real(kind=8) :: tole
     real(kind=8) :: dtmin, dt0
     aster_logical :: l_init_noexist, l_inst_init
@@ -142,7 +142,10 @@ subroutine ntcrli(inst_init, list_inst, sddisc, lostat)
 !
 ! - Get parameters
 !
-    call getvr8(keywf, 'PRECISION', iocc=1, scal=tole)
+    call getvr8(keywf, 'PRECISION', iocc=1, scal=tole, nbret=nbret)
+    if (nbret == 0) then
+        tole = 1d-6
+    end if
     tole = abs(dtmin)*tole
 !
 ! - Have an initial time in ETAT_INIT ?

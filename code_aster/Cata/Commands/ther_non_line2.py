@@ -133,11 +133,11 @@ THER_NON_LINE2 = OPER(
     # -------------------------------------------------------------------
     TYPE_CALCUL=SIMP(statut="f", typ="TXM", into=("STAT", "TRAN"), defaut="TRAN"),
     # -------------------------------------------------------------------
+    INCREMENT=C_INCREMENT(),
+    # -------------------------------------------------------------------
     b_trans=BLOC(
         condition="""(equal_to("TYPE_CALCUL", 'TRAN'))""",
         PARM_THETA=SIMP(statut="f", typ="R", defaut=0.57, val_min=0.0, val_max=1.0),
-        # -------------------------------------------------------------------
-        INCREMENT=C_INCREMENT("THERMIQUE", True),
         # -------------------------------------------------------------------
         ETAT_INIT=FACT(
             statut="o",
@@ -168,9 +168,7 @@ THER_NON_LINE2 = OPER(
         ),
     ),
     # -------------------------------------------------------------------
-    b_stat=BLOC(
-        condition="""(equal_to("TYPE_CALCUL", 'STAT'))""", INCREMENT=C_INCREMENT("THERMIQUE", False)
-    ),
+    b_stat=BLOC(condition="""(equal_to("TYPE_CALCUL", 'STAT'))""", INCREMENT=C_INCREMENT()),
     CONVERGENCE=FACT(
         statut="d",
         RESI_GLOB_MAXI=SIMP(statut="f", typ="R"),

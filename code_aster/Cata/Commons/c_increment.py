@@ -20,35 +20,29 @@
 # person_in_charge: mickael.abbas at edf.fr
 
 from ..Language.DataStructure import list_inst, listr8_sdaster
-from ..Language.Syntax import EXCLUS, FACT, SIMP
+from ..Language.Syntax import EXCLUS, FACT, SIMP, BLOC
 
 
-def C_INCREMENT(phys, mandatory=True):  # COMMUN#
-    #
-    assert phys in ("THERMIQUE", "MECANIQUE")
+def C_INCREMENT():  # COMMUN#
     kwargs = {}
-    statut_liste_inst = " "
 
-    # La liste d'instants est facultative en thermique et obligatoire en mecanique
-
-    if phys in ("THERMIQUE"):
-        if mandatory:
-            statut_liste_inst = "o"
-        else:
-            statut_liste_inst = "f"
-    elif phys in ("MECANIQUE"):
-        statut_liste_inst = "o"
-
-    kwargs["LIST_INST"] = SIMP(statut=statut_liste_inst, typ=(listr8_sdaster, list_inst))
+    kwargs["LIST_INST"] = SIMP(statut="o", typ=(listr8_sdaster, list_inst))
     kwargs["NUME_INST_INIT"] = SIMP(statut="f", typ="I")
     kwargs["INST_INIT"] = SIMP(statut="f", typ="R")
     kwargs["NUME_INST_FIN"] = SIMP(statut="f", typ="I")
     kwargs["INST_FIN"] = SIMP(statut="f", typ="R")
-    kwargs["PRECISION"] = SIMP(statut="f", typ="R", defaut=1.0e-6)
 
     mcfact = FACT(
-        statut=statut_liste_inst,
+        statut="o",
         regles=(EXCLUS("NUME_INST_INIT", "INST_INIT"), EXCLUS("NUME_INST_FIN", "INST_FIN")),
+        b_inst=BLOC(
+            condition="""exists("INST_INIT") or "exists("INST_FIN")""",
+            CRITERE=SIMP(statut="f", typ="TXM", defaut="RELATIF", into=("RELATIF",)),
+            b_prec_rela=BLOC(
+                condition="""(equal_to("CRITERE", 'RELATIF'))""",
+                PRECISION=SIMP(statut="f", typ="R", defaut=1.0e-6),
+            ),
+        ),
         **kwargs
     )
 

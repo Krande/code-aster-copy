@@ -32,7 +32,7 @@ CALC_POINT_MAT_CATA = OPER(
     fr=tr("Intégrer une loi de comportement"),
     MATER=SIMP(statut="o", typ=mater_sdaster, max=30),
     COMPORTEMENT=C_COMPORTEMENT("SIMU_POINT_MAT"),
-    INCREMENT=C_INCREMENT("MECANIQUE"),
+    INCREMENT=C_INCREMENT(),
     NEWTON=C_NEWTON(),
     CONVERGENCE=C_CONVERGENCE("SIMU_POINT_MAT"),
     # --MASSIF : orientation du materiau (monocristal, orthotropie)

@@ -178,7 +178,7 @@ THER_NON_LINE = MACRO(
         ETAT_INIT=FACT(statut="d", STAT=SIMP(statut="f", typ="TXM", into=("OUI",), defaut="OUI")),
     ),
     # -------------------------------------------------------------------
-    INCREMENT=C_INCREMENT("THERMIQUE"),
+    INCREMENT=C_INCREMENT(),
     # -------------------------------------------------------------------
     CONVERGENCE=C_CONVERGENCE("THER_NON_LINE"),
     # -------------------------------------------------------------------

@@ -37,14 +37,6 @@ def compat_syntax(keywords):
             del keywords["ETAT_INIT"]["STATIONNAIRE"]
             keywords["ETAT_INIT"]["STAT"] = "OUI"
 
-    # fix that INCREMENT is mandatory for transitory
-    if "TYPE_CALCUL" not in keywords:
-        if "ETAT_INIT" not in keywords or "STAT" in keywords["ETAT_INIT"]:
-            if "INCREMENT" not in keywords:
-                keywords["TYPE_CALCUL"] = "STAT"
-                if "ETAT_INIT" in keywords:
-                    del keywords["ETAT_INIT"]
-
     # report default keywords
     if "TYPE_CALCUL" not in keywords or keywords["TYPE_CALCUL"] == "TRAN":
         if "ETAT_INIT" not in keywords:
@@ -124,13 +116,9 @@ THER_LINEAIRE = MACRO(
                 THETA=SIMP(statut="f", typ="R", defaut=0.57, val_min=0.0, val_max=1.0),
             ),
         ),
-        # ---------------------------------------------------------------
-        INCREMENT=C_INCREMENT("THERMIQUE", True),
     ),
     # -------------------------------------------------------------------
-    b_stat=BLOC(
-        condition="""(equal_to("TYPE_CALCUL", 'STAT'))""", INCREMENT=C_INCREMENT("THERMIQUE", False)
-    ),
+    INCREMENT=C_INCREMENT(),
     # -------------------------------------------------------------------
     SOLVEUR=C_SOLVEUR("THER_LINEAIRE"),
     # -------------------------------------------------------------------

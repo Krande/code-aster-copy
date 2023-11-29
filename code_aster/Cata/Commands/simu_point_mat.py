@@ -40,7 +40,7 @@ SIMU_POINT_MAT = MACRO(
         ANGL_REP=SIMP(statut="f", typ="R", min=1, max=3),
         ANGL_EULER=SIMP(statut="f", typ="R", min=1, max=3),
     ),
-    INCREMENT=C_INCREMENT("MECANIQUE"),
+    INCREMENT=C_INCREMENT(),
     NEWTON=C_NEWTON(),
     CONVERGENCE=C_CONVERGENCE("SIMU_POINT_MAT"),
     SUPPORT=SIMP(statut="f", typ="TXM", max=1, into=("POINT", "ELEMENT"), defaut=("POINT")),
