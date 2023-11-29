@@ -360,6 +360,7 @@ class ConvergenceManager(SolverFeature):
             f_int = 0.0
             f_ext = 0.0
             f_cont = 0.0
+            f_mass = 0.0
             if self.phys_state.externVar:
                 f_varc = varc[ieq]
             else:
@@ -374,8 +375,10 @@ class ConvergenceManager(SolverFeature):
                 f_int = residuals.resi_dual[ieq]
                 f_cont = residuals.resi_cont[ieq]
                 f_ext = residuals.resi_ext[ieq]
+                if residuals.resi_mass:
+                    f_mass = residuals.resi_mass[ieq]
 
-            value = abs(f_int + f_cont - f_ext) + abs(f_varc)
+            value = abs(f_mass + f_int + f_cont - f_ext) + abs(f_varc)
 
             if scaling < value:
                 scaling = value

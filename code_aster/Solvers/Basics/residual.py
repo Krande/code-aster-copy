@@ -30,9 +30,10 @@ class Residuals:
         resi_dual (FieldOnNodesReal): Dirichlet reactions.
         resi_stress (FieldOnNodesReal): Internal forces.
         resi_cont (FieldOnNodesReal): Contact residual.
+        resi_mass (FieldOnNodesReal): Inertial residual.
     """
 
-    resi = resi_int = resi_ext = resi_dual = resi_stress = resi_cont = None
+    resi = resi_int = resi_ext = resi_dual = resi_stress = resi_cont = resi_mass = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
     def update(self):
@@ -48,6 +49,8 @@ class Residuals:
             self.resi_stress.updateValuePointers()
         if self.resi_cont:
             self.resi_cont.updateValuePointers()
+        if self.resi_mass:
+            self.resi_mass.updateValuePointers()
 
     def reset(self):
         self.resi = None
@@ -56,3 +59,4 @@ class Residuals:
         self.resi_dual = None
         self.resi_stress = None
         self.resi_cont = None
+        self.resi_mass = None
