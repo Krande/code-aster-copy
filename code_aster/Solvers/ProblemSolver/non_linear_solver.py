@@ -156,41 +156,51 @@ class NonLinearSolver(SolverFeature):
         nume_equa = self.phys_pb.getDOFNumbering().getEquationNumbering()
 
         if init_state:
+
+            def extract_param(init_state, resu):
+                """Extract parameters for getField()."""
+                extract_time = init_state.get("INST")
+                if extract_time is None:
+                    extract_time = resu.getLastTime()
+
+                if init_state.get("NUME_ORDRE"):
+                    para, value = "NUME_ORDRE", init_state["NUME_ORDRE"]
+                else:
+                    para, value = "INST", extract_time
+
+                return para, value, extract_time
+
             if "INST_ETAT_INIT" in init_state:
                 init_time = init_state.get("INST_ETAT_INIT")
             if "EVOL_NOLI" in init_state:
                 resu = init_state.get("EVOL_NOLI")
                 assert isinstance(resu, NonLinearResult), resu
-                extract_time = init_state.get("INST")
-                if extract_time is None:
-                    extract_time = resu.getLastTime()
+                para, value, extract_time = extract_param(init_state, resu)
                 init_time = extract_time
                 phys_state.primal_curr = resu.getField(
-                    "DEPL", para="INST", value=extract_time
+                    "DEPL", para=para, value=value
                 ).copyUsingDescription(nume_equa)
                 _msginit("DEPL", resu.userName)
                 if phys_state.pb_type == PBT.MecaDyna:
                     phys_state.current.dU = resu.getField(
-                        "VITE", para="INST", value=extract_time
+                        "VITE", para=para, value=value
                     ).copyUsingDescription(nume_equa)
                     _msginit("VITE", resu.userName)
                     phys_state.current.d2U = resu.getField(
-                        "ACCE", para="INST", value=extract_time
+                        "ACCE", para=para, value=value
                     ).copyUsingDescription(nume_equa)
                     _msginit("ACCE", resu.userName)
-                phys_state.stress = resu.getField("SIEF_ELGA", para="INST", value=extract_time)
+                phys_state.stress = resu.getField("SIEF_ELGA", para=para, value=value)
                 _msginit("SIEF_ELGA", resu.userName)
-                phys_state.internVar = resu.getField("VARI_ELGA", para="INST", value=extract_time)
+                phys_state.internVar = resu.getField("VARI_ELGA", para=para, value=value)
                 _msginit("VARI_ELGA", resu.userName)
             if "EVOL_THER" in init_state:
                 resu = init_state.get("EVOL_THER")
                 assert isinstance(resu, ThermalResult), resu
-                extract_time = init_state.get("INST")
-                if extract_time is None:
-                    extract_time = resu.getLastTime()
+                para, value, extract_time = extract_param(init_state, resu)
                 init_time = extract_time
                 phys_state.primal_curr = resu.getField(
-                    "TEMP", para="INST", value=extract_time
+                    "TEMP", para=para, value=value
                 ).copyUsingDescription(nume_equa)
             if "CHAM_NO" in init_state:
                 phys_state.primal_curr = init_state.get("CHAM_NO").copyUsingDescription(nume_equa)

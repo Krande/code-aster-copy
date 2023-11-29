@@ -137,7 +137,7 @@ THER_NON_LINE = MACRO(
         # -------------------------------------------------------------------
         ETAT_INIT=FACT(
             statut="o",
-            regles=(UN_PARMI("EVOL_THER", "CHAM_NO", "VALE", "STAT"),),
+            regles=(UN_PARMI("EVOL_THER", "CHAM_NO", "VALE", "STAT"), EXCLUS("NUME_ORDRE", "INST")),
             STAT=SIMP(statut="f", typ="TXM", into=("OUI",)),
             EVOL_THER=SIMP(statut="f", typ=evol_ther),
             CHAM_NO=SIMP(statut="f", typ=cham_no_sdaster),
