@@ -615,8 +615,8 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::getThermalTangentNonLine
     CalculPtr calcul = std::make_shared< Calcul >( option );
     calcul->setModel( currModel );
 
-    auto therLoadReal = listOfLoads->getThermalLoadsFunction();
-    for ( const auto &load : therLoadReal ) {
+    auto therLoadFunc = listOfLoads->getThermalLoadsFunction();
+    for ( const auto &load : therLoadFunc ) {
         if ( load->hasLoadField( "SOUNL" ) ) {
             calcul->clearInputs();
             calcul->addTimeField( "PTEMPSR", time_curr, 0.0, -1.0 );

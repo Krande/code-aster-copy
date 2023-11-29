@@ -649,8 +649,8 @@ DiscreteComputation::getThermalNonLinearVolumetricForces( const FieldOnNodesReal
         }
     };
 
-    auto therLoadReal = listOfLoads->getThermalLoadsFunction();
-    for ( const auto &load : therLoadReal ) {
+    auto therLoadFunc = listOfLoads->getThermalLoadsFunction();
+    for ( const auto &load : therLoadFunc ) {
         impl( load, iload, "CHAR_THER_SOURNL", "SOUNL", "PSOURNL", model_FEDesc );
 
         iload++;
@@ -1131,7 +1131,7 @@ FieldOnNodesRealPtr DiscreteComputation::getDualTemperature( FieldOnNodesRealPtr
     auto cf_scaling = std::make_shared< ConstantFieldOnCellsReal >( _phys_problem->getMesh() );
     cf_scaling->allocate( "NEUT_R" );
     ConstantFieldOnZone a( _phys_problem->getMesh() );
-    ConstantFieldValues< ASTERDOUBLE > b( {"X1"}, {scaling} );
+    ConstantFieldValues< ASTERDOUBLE > b( { "X1" }, { scaling } );
     cf_scaling->setValueOnZone( a, b );
 
     auto impl = [&]( auto loads ) {

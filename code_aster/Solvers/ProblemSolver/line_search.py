@@ -49,7 +49,7 @@ class LineSearch(SolverFeature):
             bool: True if LineSearch is activated.
         """
 
-        return self.param is not None
+        return self.param is not None and self.param["ITER_LINE_MAXI"] > 0
 
     @profile
     @SolverFeature.check_once

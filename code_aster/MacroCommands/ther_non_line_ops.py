@@ -139,6 +139,7 @@ def ther_non_line_ops(self, **args):
         INFO=args["INFO"],
         METHODE=args["METHODE"],
         NEWTON=args["NEWTON"],
+        RECH_LINEAIRE=args["RECH_LINEAIRE"],
         SOLVEUR=args["SOLVEUR"],
         TYPE_CALCUL=args["TYPE_CALCUL"],
     )
