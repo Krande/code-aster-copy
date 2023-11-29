@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,6 @@ cata_msg = {
     11: _(
         """      L'état initial a été récupéré dans la structure de données résultat de nom <%(k1)s> pour le numéro d'ordre %(i1)d et à l'instant %(r1)19.12e"""
     ),
-    12: _("""      L'instant initial est défini par INST_ETAT_INIT et vaut %(r1)19.12e """),
     20: _("""      Il n'y a pas d'état initial défini. On prend un état initial nul."""),
     30: _(
         """

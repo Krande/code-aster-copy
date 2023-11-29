@@ -20,7 +20,7 @@
 # person_in_charge: mickael.abbas at edf.fr
 
 from ..Language.DataStructure import list_inst, listr8_sdaster
-from ..Language.Syntax import EXCLUS, FACT, SIMP, BLOC
+from ..Language.Syntax import UN_PARMI, EXCLUS, FACT, SIMP, BLOC
 
 
 def C_INCREMENT():  # COMMUN#
@@ -34,9 +34,12 @@ def C_INCREMENT():  # COMMUN#
 
     mcfact = FACT(
         statut="o",
-        regles=(EXCLUS("NUME_INST_INIT", "INST_INIT"), EXCLUS("NUME_INST_FIN", "INST_FIN")),
+        regles=(
+            UN_PARMI("NUME_INST_INIT", "INST_INIT", NUME_INST_INIT=0),
+            EXCLUS("NUME_INST_FIN", "INST_FIN"),
+        ),
         b_inst=BLOC(
-            condition="""exists("INST_INIT") or "exists("INST_FIN")""",
+            condition="""exists("INST_INIT") or exists("INST_FIN")""",
             CRITERE=SIMP(statut="f", typ="TXM", defaut="RELATIF", into=("RELATIF",)),
             b_prec_rela=BLOC(
                 condition="""(equal_to("CRITERE", 'RELATIF'))""",

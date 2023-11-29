@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -337,7 +337,7 @@ RESU = DYNA_NON_LINE(
     COMPORTEMENT=_F(RELATION="ELAS", DEFORMATION="PETIT", TOUT="OUI"),
     #  On impose explicitement une acceleration initiale nulle car la matrice de masse etant singuliere
     #  a cause du modele (u,p,phi), on ne peut calculer une acceleration non nulle :
-    ETAT_INIT=_F(INST_ETAT_INIT=0.0, DEPL=DEP0, VITE=VIT0, ACCE=ACCE0),
+    ETAT_INIT=_F(DEPL=DEP0, VITE=VIT0, ACCE=ACCE0),
     INCREMENT=_F(LIST_INST=LINST2),
     SCHEMA_TEMPS=_F(SCHEMA="HHT", ALPHA=-0.3, FORMULATION="DEPLACEMENT", MODI_EQUI="NON"),
     NEWTON=_F(REAC_INCR=1, MATRICE="TANGENTE", REAC_ITER=1),
@@ -367,7 +367,7 @@ RESUST = DYNA_NON_LINE(
     COMPORTEMENT=_F(RELATION="ELAS", DEFORMATION="PETIT", TOUT="OUI"),
     #  On impose explicitement une acceleration initiale nulle car la matrice de masse etant singuliere
     #  a cause du modele (u,p,phi), on ne peut calculer une acceleration non nulle :
-    ETAT_INIT=_F(INST_ETAT_INIT=0.0, DEPL=DEP0, VITE=VIT0, ACCE=ACCE0),
+    ETAT_INIT=_F(DEPL=DEP0, VITE=VIT0, ACCE=ACCE0),
     INCREMENT=_F(LIST_INST=LINST2, INST_FIN=0.4),
     SCHEMA_TEMPS=_F(SCHEMA="HHT", ALPHA=-0.3, FORMULATION="DEPLACEMENT", MODI_EQUI="NON"),
     NEWTON=_F(REAC_INCR=1, MATRICE="TANGENTE", REAC_ITER=1),

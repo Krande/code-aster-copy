@@ -73,7 +73,7 @@ def testRestart(command, restart_from, time_restart, reuse=False, info=1):
         command (Command): Command to be used, STAT_NON_LINE or MECA_NON_LINE.
         restart_from (str): One of "result", "crea_champ", "getField".
         time_restart (float): Time of the assignment of the initial state
-            (INST_ETAT_INIT). The initial state of the second stage is always
+            (INST_INIT). The initial state of the second stage is always
             extracted from the last step of the first stage.
         reuse (bool): Reuse the same result object or not.
         info (int): Verbosity level.
@@ -122,11 +122,11 @@ def testRestart(command, restart_from, time_restart, reuse=False, info=1):
         )
 
     if restart_from == "result":
-        args["ETAT_INIT"] = _F(EVOL_NOLI=first, INST_ETAT_INIT=time_restart)  # INST=last,
+        args["ETAT_INIT"] = _F(EVOL_NOLI=first)  # INST=last,
         if reuse:
             args["RESULTAT"] = first
     else:
-        args["ETAT_INIT"] = _F(INST_ETAT_INIT=time_restart, DEPL=depl, SIGM=sigm, VARI=vari)
+        args["ETAT_INIT"] = _F(DEPL=depl, SIGM=sigm, VARI=vari)
 
     cont = command(INCREMENT=_F(LIST_INST=times, INST_INIT=time_restart), **args)
     cont.userName = ("SNL2" if command is STAT_NON_LINE else "MNL2") + "_" + restart_from
@@ -256,7 +256,6 @@ if case in (0, 6):
         _F(command=MECA_NON_LINE, restart_from="crea_champ", reuse=False, time_restart=20.0),
     )
 
-# --- using INST_ETAT_INIT
 # restart using 2 different results
 if case in (0, 7) and run_failed:
     compare_exec(

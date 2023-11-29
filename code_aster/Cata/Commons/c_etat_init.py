@@ -44,7 +44,6 @@ def C_ETAT_INIT(command, statut):
         kwargs["ACCE"] = SIMP(statut="f", typ=cham_no_sdaster)
 
     kwargs["EVOL_NOLI"] = SIMP(statut="f", typ=evol_noli)
-    kwargs["INST_ETAT_INIT"] = SIMP(statut="f", typ="R")
 
     if command == "DYNA_NON_LINE":
         mcfact = FACT(

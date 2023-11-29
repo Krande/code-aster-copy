@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -183,8 +183,8 @@ RESU2 = STAT_NON_LINE(
         _F(GROUP_MA="CARR1", RELATION="VMIS_ISOT_LINE"),
         _F(GROUP_MA="CARR2", RELATION="VMIS_CINE_LINE"),
     ),
-    ETAT_INIT=_F(EVOL_NOLI=RESU21, INST_ETAT_INIT=5.0e3),
-    INCREMENT=_F(LIST_INST=LI2, INST_FIN=1.0e4),
+    ETAT_INIT=_F(EVOL_NOLI=RESU21),
+    INCREMENT=_F(LIST_INST=LI2, INST_INIT=5.0e3, INST_FIN=1.0e4),
     NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=2),
     CONVERGENCE=_F(ITER_GLOB_MAXI=40, RESI_GLOB_RELA=1.0e-06),
     SOLVEUR=_F(METHODE="LDLT"),

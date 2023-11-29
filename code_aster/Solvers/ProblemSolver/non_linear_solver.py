@@ -151,7 +151,6 @@ class NonLinearSolver(SolverFeature):
         """Initialize the physical state."""
         phys_state = self.phys_state
         phys_state.zeroInitialState(self.phys_pb)
-        init_time = self.stepper.getInitial()
         init_state = self._get("ETAT_INIT")
         nume_equa = self.phys_pb.getDOFNumbering().getEquationNumbering()
 
@@ -166,17 +165,12 @@ class NonLinearSolver(SolverFeature):
                     para, value = "NUME_ORDRE", init_state["NUME_ORDRE"]
                 else:
                     para, value = "INST", extract_time
-                init_time = extract_time
-                if "INST_ETAT_INIT" in init_state:
-                    init_time = init_state.get("INST_ETAT_INIT")
-                return para, value, init_time
+                return para, value
 
-            if "INST_ETAT_INIT" in init_state:
-                init_time = init_state.get("INST_ETAT_INIT")
             if "EVOL_NOLI" in init_state:
                 resu = init_state.get("EVOL_NOLI")
                 assert isinstance(resu, NonLinearResult), resu
-                para, value, init_time = extract_param(init_state, resu)
+                para, value = extract_param(init_state, resu)
                 phys_state.primal_curr = resu.getField(
                     "DEPL", para=para, value=value
                 ).copyUsingDescription(nume_equa)
@@ -197,7 +191,7 @@ class NonLinearSolver(SolverFeature):
             if "EVOL_THER" in init_state:
                 resu = init_state.get("EVOL_THER")
                 assert isinstance(resu, ThermalResult), resu
-                para, value, init_time = extract_param(init_state, resu)
+                para, value = extract_param(init_state, resu)
                 phys_state.primal_curr = resu.getField(
                     "TEMP", para=para, value=value
                 ).copyUsingDescription(nume_equa)
@@ -215,10 +209,8 @@ class NonLinearSolver(SolverFeature):
             if "VALE" in init_state:
                 phys_state.primal_curr.setValues({"TEMP": init_state.get("VALE")})
 
-            if init_time is not None:
-                self.stepper.setInitial(init_time)
-
-        self.setExternalStateVariables(init_time)
+        init_time = self.stepper.getInitial()
+        self.computeExternalStateVariables(init_time)
         phys_state.time_curr = init_time
 
         if init_state and init_state.get("STAT") == "OUI":
@@ -253,7 +245,7 @@ class NonLinearSolver(SolverFeature):
                 args = dict(valr=self.phys_state.time_curr, vali=self.stepper.splitting_level)
                 logger.info(MessageLog.GetText("I", "MECANONLINE6_5", **args))
 
-            self.setExternalStateVariables(self.phys_state.time_curr)
+            self.computeExternalStateVariables(self.phys_state.time_curr)
             solv.initialize()
 
             if matr_update_step == 0 or (self.step_rank + 1) % matr_update_step:
@@ -297,7 +289,7 @@ class NonLinearSolver(SolverFeature):
         for hook in self.get_features(SOP.PostStepHook):
             hook(self)
 
-    def setExternalStateVariables(self, current_time):
+    def computeExternalStateVariables(self, current_time):
         """Compute and set external variables in the physical state.
 
         Arguments:

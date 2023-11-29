@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -156,7 +156,6 @@ L_INST = DEFI_LIST_INST(METHODE="AUTO", DEFI_LIST=_F(LIST_INST=INST, PAS_MINI=0.
 #  BOUCLE POUR EVOLUTION EN TEMPS
 # -----------------------------------------------------------------------------
 for iNumPas in range(0, NbIncr):
-
     # -----------------------------------------------------------------------------
     #  RESOLUTION PAS (iNumPas)*DT->(iNumPas+1)*DT
     # -----------------------------------------------------------------------------
@@ -179,7 +178,7 @@ for iNumPas in range(0, NbIncr):
             CHAM_MATER=CM,
             EXCIT=(_F(CHARGE=CH1, FONC_MULT=F_DEPL),),
             COMPORTEMENT=_F(RELATION="VMIS_ISOT_TRAC"),
-            ETAT_INIT=_F(EVOL_NOLI=EQUILIB, INST_ETAT_INIT=iNumPas * DT),
+            ETAT_INIT=_F(EVOL_NOLI=EQUILIB, INST=iNumPas * DT),
             ARCHIVAGE=_F(LIST_INST=INST),
             METHODE="NEWTON_KRYLOV",
             INCREMENT=_F(LIST_INST=L_INST, INST_INIT=iNumPas * DT, INST_FIN=(iNumPas + 1) * DT),

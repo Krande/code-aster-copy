@@ -199,7 +199,7 @@ subroutine nmdoet(model, compor, list_func_acti, nume_ddl, sdpilo, &
             if (init_nume .eq. -1) then
                 call utmess('I', 'ETATINIT_20')
             else
-                call utmess('I', 'ETATINIT_12', sr=init_time)
+                ASSERT(ASTER_FALSE)
             end if
         end if
     else
