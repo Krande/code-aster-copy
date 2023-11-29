@@ -895,13 +895,16 @@ def macPlot(
         # function to retrieve left and right modes from a modal result
 
         def getLeftAndRightModes(_res, _idx, _imode, _dof, _lFreq):
-            tupleTot = _res.getField("DEPL", _imode).getValuesWithDescription()
-            values = tupleTot[0]
-            cmps = tupleTot[1][1]
+            vWithD = _res.getField("DEPL", _imode).getValuesWithDescription()
+            values = vWithD[0]
+            cmps1 = vWithD[1][1]
             vals_f = []
+            cmps = []
             for count in range(len(values)):
-                if cmps[count][:5] != "LAGR:":
+                if cmps1[count][:5] != "LAGR:":
                     vals_f.append(values[count])
+                    cmps.append(cmps1[count])
+            vals_f = np.array(vals_f)
 
             vectot = np.array(vals_f)
             v0_right = (
@@ -937,9 +940,7 @@ def macPlot(
                         rhof * (2 * np.pi * _lFreq[_idx]) ** 2 * vectot[id]
                         if d in ["DX", "DY", "DZ"]
                         else vectot[id]
-                        for id, d in enumerate(
-                            _res.getField("DEPL", _imode).getValuesWithDescription()[1][1]
-                        )
+                        for id, d in enumerate(cmps)
                     ]
                 )
             )
