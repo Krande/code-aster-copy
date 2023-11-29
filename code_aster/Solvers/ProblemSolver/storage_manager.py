@@ -37,6 +37,7 @@ class StorageManager(SolverFeature):
 
         __slots__ = (
             "index",
+            "store_index",
             "time",
             "model",
             "material_field",
@@ -46,56 +47,59 @@ class StorageManager(SolverFeature):
             "param",
         )
 
-    result = None
-    buffer = None
-    excl_fields = set()
-    crit = prec = None
-    list_time = pas_arch = None
-    curr_index = init_index = stor_index = 0
+    _result = _buffer = _excl_fields = None
+    _eps = _relative = None
+    _timelist = _step = None
+    _init_idx = _stor_idx = _last_idx = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
     def __init__(self, result, mcf=None, **kwargs):
-        """Create the storage manager object from the ARCHIVE factor keyword.
+        """Create the storage manager object from the ARCHIVAGE factor keyword.
 
         Arguments:
             result (Result): result where store fields
             mcf (list|tuple|dict): Convenient option to pass `(kwargs,)`, the value
-            returned for a factor keyword.
-            kwargs (dict): Valid ARCHIVE keywords (syntax checked, with defaults).
+                returned for a factor keyword.
+            kwargs (dict): Valid ARCHIVAGE keywords (syntax checked, with defaults).
 
         """
         super().__init__()
-        self.result = result
-        if self.result.getNumberOfIndexes() == 0:
-            self.result.resize(10)
-        self.buffer = []
+        self._result = result
+        if self._result.getNumberOfIndexes() == 0:
+            self._result.resize(10)
+        self._buffer = []
 
-        if mcf:
-            if isinstance(mcf, (list, tuple)):
-                mcf = mcf[0]
-            if isinstance(mcf, dict):
-                kwargs = mcf
+        if isinstance(mcf, (list, tuple)):
+            mcf = mcf[0]
+        if isinstance(mcf, dict):
+            kwargs = mcf
 
+        self._excl_fields = set()
         excl_fields = kwargs.get("CHAM_EXCLU")
         if excl_fields is not None:
             for field in excl_fields:
-                self.excl_fields.add(field)
+                self._excl_fields.add(field)
 
-        list_time = None
+        times = None
         if "INST" in kwargs:
-            list_time = force_list(kwargs["INST"])
+            times = force_list(kwargs["INST"])
         elif "LIST_INST" in kwargs:
-            list_time = kwargs["LIST_INST"].getValues()
+            times = kwargs["LIST_INST"].getValues()
         elif "PAS_ARCH" in kwargs:
-            self.pas_arch = kwargs["PAS_ARCH"]
+            self._step = kwargs["PAS_ARCH"]
         else:
-            self.pas_arch = 1
+            self._step = 1
 
-        if list_time is not None:
-            self.list_time = SearchList(list_time, kwargs["PRECISION"], kwargs["CRITERE"])
-            assert all(self.list_time.unique(t) for t in list_time)
+        self._last_idx = -999
+        self._eps = 1.0e-6
+        self._relative = True
+        if times is not None:
+            self._eps = kwargs["PRECISION"]
+            self._relative = kwargs["CRITERE"] == "RELATIF"
+            self._timelist = SearchList(times, self._eps, kwargs["CRITERE"])
+            assert all(self._timelist.unique(t) for t in times)
 
-        self.curr_index = self.init_index = self.stor_index = 0
+        self._init_idx = self._stor_idx = 0
 
     def setInitialIndex(self, index):
         """Set initial index.
@@ -103,47 +107,45 @@ class StorageManager(SolverFeature):
         Arguments:
             index (int): initial index.
         """
-        self.curr_index = index
-        self.init_index = index
-        self.stor_index = index
+        self._init_idx = index
+        self._stor_idx = index
 
-        if self.result.getNumberOfIndexes() > 0:
-            self.result.clear(self.init_index)
+        if self._result.getNumberOfIndexes() > 0:
+            self._result.clear(self._init_idx)
 
-    def hasToBeStored(self, time):
+    def hasToBeStored(self, idx, time):
         """To known if this time step has to be store
 
         Arguments:
+            idx (int): index of the time
             time (float): time step.
 
         Returns:
-            bool: True if the time step has to be store else False
+            bool: *True* if the time step has to be store else *False*.
         """
-
-        if self.pas_arch is not None:
-            return (self.curr_index - self.init_index) % self.pas_arch == 0
-
-        if self.list_time is not None:
+        if self._step is not None:
+            return (idx - self._init_idx) % self._step == 0
+        if self._timelist is not None:
             # always store first index
-            if self.curr_index == self.init_index:
+            if idx == self._init_idx:
                 return True
-            if time in self.list_time:
-                index = self.list_time.index(time)
-                return True
-            else:
-                return False
-
+            # FIXME use _eps/_relative
+            return time in self._timelist
         return True
 
-    def completed(self, time):
-        """Register the current step as completed successfully.
+    def wasStored(self, idx):
+        """Tell if a state was already stored for this index.
+
+        Note: It actually checks that `idx` is greater than the greatest index
+        already stored.
 
         Arguments:
-            time (float): time step.
+            idx (int): index of the time
+
+        Returns:
+            bool: *True* if the time was already stored, *False* otherwise.
         """
-        if self.hasToBeStored(time):
-            self.stor_index += 1
-        self.curr_index += 1
+        return idx <= self._last_idx
 
     def getResult(self):
         """Returns the Result container.
@@ -151,41 +153,46 @@ class StorageManager(SolverFeature):
         Returns:
             ~code_aster.Objects.Result: Result container.
         """
-        return self.result
+        return self._result
 
-    def storeParam(self, **kwargs):
+    def storeParam(self, idx, **kwargs):
         """Store parameters like time, model...
 
         Arguments:
+            idx (int): index of the current (pseudo-)time
             kwargs: named parameters
         """
-
-        self.result.resize(self.result.getNumberOfIndexes() + 10)
-
+        # FIXME use hasToBeStored
+        self._result.resize(self._result.getNumberOfIndexes() + 10)
         if "model" in kwargs:
-            self.result.setModel(kwargs["model"], self.curr_index)
-
+            self._result.setModel(kwargs["model"], idx)
         if "materialField" in kwargs:
-            self.result.setMaterialField(kwargs["materialField"], self.curr_index)
-
+            self._result.setMaterialField(kwargs["materialField"], idx)
         if "listOfLoads" in kwargs:
-            self.result.setListOfLoads(kwargs["listOfLoads"], self.curr_index)
-
+            self._result.setListOfLoads(kwargs["listOfLoads"], idx)
         if "time" in kwargs:
-            self.result.setTime(kwargs["time"], self.curr_index)
+            self._result.setTime(kwargs["time"], idx)
 
     @profile
-    def storeState(self, time, phys_pb, phys_state, param=None):
+    def storeState(self, idx, time, phys_pb, phys_state, param=None, force=True):
         """Store a new state.
 
         Arguments:
-            time (float): current (pseudo)-time.
+            idx (int): index of the current (pseudo-)time
+            time (float): current (pseudo-)time.
             phys_pb (PhysicalProblem): Physical problem.
             phys_state (PhysicalState): Physical state.
             param (dict, optional): Dict of parameters to be stored.
+            force (bool): force the storage even if storing-policy is not verified.
         """
+        if not force and not self.hasToBeStored(idx, time):
+            return
+        if self.wasStored(idx):
+            return
+        self._last_idx = idx
         slot = StorageManager.Slot()
-        slot.index = self.stor_index
+        slot.index = idx
+        slot.store_index = self._stor_idx
         slot.time = time
         slot.param = param
         slot.model = phys_pb.getModel()
@@ -200,46 +207,46 @@ class StorageManager(SolverFeature):
             else:
                 compor = "COMPORTEMENT"
             slot.fields[compor] = behav.getBehaviourField()
-        self.buffer.append(slot)
-
-        self.store()
+        self._buffer.append(slot)
+        self._store()
+        self._stor_idx += 1
 
     @profile
-    def storeField(self, field, field_type, time=0.0):
+    def storeField(self, idx, field, field_type, time=0.0):
         """Store a new field.
 
         Arguments:
+            idx (int): index of the current (pseudo-)time
             field (FieldOn***): field to store
             field_type (str) : type of the field as DEPL, SIEF_ELGA...
         """
-
-        if field is not None and field_type not in self.excl_fields:
-            self.result.setField(field, field_type, self.stor_index)
-            UTMESS("I", "ARCHIVAGE_6", valk=field_type, valr=time, vali=self.stor_index)
+        # FIXME use hasToBeStored(idx, time)
+        # TODO check if this fiels was already stored at this time
+        if field is not None and field_type not in self._excl_fields:
+            self._result.setField(field, field_type, self._stor_idx)
+            UTMESS("I", "ARCHIVAGE_6", valk=field_type, valr=time, vali=self._stor_idx)
 
     @profile
-    def store(self):
+    def _store(self):
         """Build result with all indexes in buffer."""
-
-        new_size = self.result.getNumberOfIndexes() + len(self.buffer)
-        self.result.resize(new_size)
-        for slot in self.buffer:
-            stor_index = slot.index
+        new_size = self._result.getNumberOfIndexes() + len(self._buffer)
+        self._result.resize(new_size)
+        for slot in self._buffer:
+            idx = slot.store_index
             if slot.time is not None:
-                self.result.setTime(slot.time, stor_index)
+                self._result.setTime(slot.time, idx)
             if slot.param is not None:
                 for param, value in slot.param.items():
-                    self.result.setParameterValue(param, value, stor_index)
+                    self._result.setParameterValue(param, value, idx)
             if slot.model:
-                self.result.setModel(slot.model, stor_index)
+                self._result.setModel(slot.model, idx)
             if slot.material_field:
-                self.result.setMaterialField(slot.material_field, stor_index)
+                self._result.setMaterialField(slot.material_field, idx)
             if slot.elem_char:
-                self.result.setElementaryCharacteristics(slot.elem_char, stor_index)
+                self._result.setElementaryCharacteristics(slot.elem_char, idx)
             if slot.load:
-                self.result.setListOfLoads(slot.load, stor_index)
+                self._result.setListOfLoads(slot.load, idx)
             if slot.fields:
                 for field_type, field in slot.fields.items():
-                    self.storeField(field, field_type, slot.time)
-
-        self.buffer = []
+                    self.storeField(slot.index, field, field_type, time=slot.time)
+        self._buffer = []

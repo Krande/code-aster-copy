@@ -17,15 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ...Messages import MessageLog
-from ...Objects import NonLinearResult, ThermalResult
-from ...Supervis import ConvergenceError, IntegrationError, SolverError
-from ...Utilities import DEBUG, logger, no_new_attributes, profile
-from ..Basics import ProblemType as PBT
-from ..Basics import SolverFeature
-from ..Basics import SolverOptions as SOP
-from ..Post import Annealing
-
 """
 Notations to use for mechanics.
 
@@ -50,6 +41,16 @@ For example for the displacement field and a Newton solver.
 - Delta_u = sum_{i=0}^I delta_u^i ( = u^{n} - u^{n-1} at convergence): step
   displacement (displ_step)
 """
+
+
+from ...Messages import MessageLog
+from ...Objects import NonLinearResult, ThermalResult
+from ...Supervis import ConvergenceError, IntegrationError, SolverError
+from ...Utilities import DEBUG, logger, no_new_attributes, profile
+from ..Basics import ProblemType as PBT
+from ..Basics import SolverFeature
+from ..Basics import SolverOptions as SOP
+from ..Post import Annealing
 
 
 class NonLinearSolver(SolverFeature):
@@ -103,16 +104,14 @@ class NonLinearSolver(SolverFeature):
         """
         return self.stepper.isFinished()
 
-    def _storeRank(self, time):
+    def _storeRank(self, time, force=False):
         """Store the current physical state.
 
         Arguments:
             time (float): current (pseudo)-time.
         """
         storage_manager = self.get_feature(SOP.Storage)
-        if storage_manager.hasToBeStored(time):
-            storage_manager.storeState(time, self.phys_pb, self.phys_state)
-        storage_manager.completed(time)
+        storage_manager.storeState(self.step_rank, time, self.phys_pb, self.phys_state, force=force)
 
     @profile
     def initialize(self):
@@ -247,8 +246,15 @@ class NonLinearSolver(SolverFeature):
                 self.stepper.completed()
                 self.current_matrix = solv.current_matrix
                 self.post_hooks()
-                self._storeRank(self.phys_state.time_curr)
                 self.step_rank += 1
+                self._storeRank(self.phys_state.time_curr)
+        if self.stepper.isFinished():
+            # check that last step was stored
+            logger.info("save the last step")
+            self._storeRank(self.phys_state.time_curr, force=True)
+        else:
+            # an error occurred, ensure that the previous step was stored
+            logger.warning("an error occurred, save the last converged step")
 
     def post_hooks(self):
         """Call post hooks"""

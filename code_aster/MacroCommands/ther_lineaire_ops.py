@@ -361,7 +361,7 @@ def ther_lineaire_ops(self, **args):
         resu = args["RESULTAT"]
         first_index = resu.getLastIndex()
         if resu is args["ETAT_INIT"].get("EVOL_THER"):
-            first_index += 1
+            first_index = 1
             save_initial_state = False
     logger.debug("<THER_LINEAIRE><STORAGE>: first_index = %s", first_index)
 
@@ -375,6 +375,7 @@ def ther_lineaire_ops(self, **args):
     # Create storage manager
     storage_manager = StorageManager(result, args["ARCHIVAGE"])
     storage_manager.setInitialIndex(first_index)
+    step_rank = first_index
 
     # Define main objects
     phys_state = PhysicalState(PBT.Thermal)
@@ -427,13 +428,15 @@ def ther_lineaire_ops(self, **args):
         phys_state.commit()
         if save_initial_state:
             storage_manager.storeState(
-                phys_state.time_curr, phys_pb, phys_state, param={"PARM_THETA": time_theta}
+                step_rank,
+                phys_state.time_curr,
+                phys_pb,
+                phys_state,
+                param={"PARM_THETA": time_theta},
             )
             if model.existsHHO():
                 hho_field = hho.projectOnLagrangeSpace(phys_state.primal_curr)
-                storage_manager.storeField(hho_field, "HHO_TEMP", phys_state.time_curr)
-
-            storage_manager.completed(phys_state.time_curr)
+                storage_manager.storeField(step_rank, hho_field, "HHO_TEMP", phys_state.time_curr)
 
     # Loop on time step
     while not timeStepper.isFinished():
@@ -446,13 +449,13 @@ def ther_lineaire_ops(self, **args):
             time_theta = 1.0
             time_delta = timeStepper.null_increment
 
-        logger.debug("<THER_LINEAIRE>:     IS_EVOL %s" % is_evol)
-        logger.debug("<THER_LINEAIRE>:     IS_CONST = %s" % is_const)
-        logger.debug("<THER_LINEAIRE>:     HAS_EXT_STATE_VAR = %s" % hasExternalStateVariable)
-        logger.debug("<THER_LINEAIRE>:     CURRENT TIME %s" % phys_state.time_curr)
-        logger.debug("<THER_LINEAIRE>:     TIME_CURR %s" % phys_state.time_curr)
-        logger.debug("<THER_LINEAIRE>:     TIME_DELTA %s" % time_delta)
-        logger.debug("<THER_LINEAIRE>:     TIME_THETA %s" % time_theta)
+        logger.debug("<THER_LINEAIRE>:     IS_EVOL %s", is_evol)
+        logger.debug("<THER_LINEAIRE>:     IS_CONST = %s", is_const)
+        logger.debug("<THER_LINEAIRE>:     HAS_EXT_STATE_VAR = %s", hasExternalStateVariable)
+        logger.debug("<THER_LINEAIRE>:     CURRENT TIME %s", phys_state.time_curr)
+        logger.debug("<THER_LINEAIRE>:     TIME_CURR %s", phys_state.time_curr)
+        logger.debug("<THER_LINEAIRE>:     TIME_DELTA %s", time_delta)
+        logger.debug("<THER_LINEAIRE>:     TIME_THETA %s", time_theta)
 
         if (
             not is_const
@@ -475,16 +478,14 @@ def ther_lineaire_ops(self, **args):
         phys_state.primal_curr = linear_solver.solve(rhs, diriBCs)
 
         phys_state.commit()
+        step_rank += 1
 
-        if storage_manager.hasToBeStored(phys_state.time_curr):
-            storage_manager.storeState(
-                phys_state.time_curr, phys_pb, phys_state, param={"PARM_THETA": time_theta}
-            )
-            if model.existsHHO():
-                hho_field = hho.projectOnLagrangeSpace(phys_state.primal_curr)
-                storage_manager.storeField(hho_field, "HHO_TEMP", phys_state.time_curr)
-
-            storage_manager.completed(phys_state.time_curr)
+        storage_manager.storeState(
+            step_rank, phys_state.time_curr, phys_pb, phys_state, param={"PARM_THETA": time_theta}
+        )
+        if model.existsHHO():
+            hho_field = hho.projectOnLagrangeSpace(phys_state.primal_curr)
+            storage_manager.storeField(step_rank, hho_field, "HHO_TEMP", phys_state.time_curr)
 
         timeStepper.completed()
         time_delta_prev = time_delta

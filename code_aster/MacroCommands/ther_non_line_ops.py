@@ -177,7 +177,9 @@ def ther_non_line_ops(self, **args):
                 phys_state.getState()._aux["HYDR_ELGA"] = hydr_curr
 
                 storage_manager = nl_solver.get_feature(SOP.Storage)
-                storage_manager.storeField(hydr_curr, "HYDR_ELGA", phys_state.time_curr)
+                storage_manager.storeField(
+                    nl_solver.step_rank, hydr_curr, "HYDR_ELGA", phys_state.time_curr
+                )
 
     class PostHookHHO:
         """Hook to compute HHO_TEMP."""
@@ -192,7 +194,9 @@ def ther_non_line_ops(self, **args):
                     nl_solver.phys_state.primal_curr
                 )
                 storage_manager = nl_solver.get_feature(SOP.Storage)
-                storage_manager.storeField(hho_field, "HHO_TEMP", nl_solver.phys_state.time_curr)
+                storage_manager.storeField(
+                    nl_solver.step_rank, hho_field, "HHO_TEMP", nl_solver.phys_state.time_curr
+                )
 
     solver.use(PostHookHydr())
     solver.use(PostHookHHO())

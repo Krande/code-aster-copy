@@ -183,7 +183,9 @@ def meca_non_line_ops(self, **args):
                     nl_solver.phys_state.primal_curr
                 )
                 storage_manager = nl_solver.get_feature(SOP.Storage)
-                storage_manager.storeField(hho_field, "HHO_DEPL", nl_solver.phys_state.time_curr)
+                storage_manager.storeField(
+                    nl_solver.step_rank, hho_field, "HHO_DEPL", time=nl_solver.phys_state.time_curr
+                )
 
     solver.use(PostHookHHO())
 

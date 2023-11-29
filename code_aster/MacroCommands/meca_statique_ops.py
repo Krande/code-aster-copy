@@ -245,7 +245,8 @@ def meca_statique_ops(self, **args):
         phys_pb.computeReferenceExternalStateVariables()
 
     # first index to use
-    storage_manager.setInitialIndex(result.getNumberOfIndexes() + 1)
+    step_rank = result.getNumberOfIndexes() + 1
+    storage_manager.setInitialIndex(step_rank)
 
     # Run computation
     logger.debug("<MECA_STATIQUE>: Run computation")
@@ -267,10 +268,9 @@ def meca_statique_ops(self, **args):
         phys_state.commit()
 
         # store field
-        storage_manager.storeState(phys_state.time_curr, phys_pb, phys_state)
+        storage_manager.storeState(step_rank, phys_state.time_curr, phys_pb, phys_state)
 
         timeStepper.completed()
-        storage_manager.completed(phys_state.time_curr)
         isFirst = False
 
     # delete factorized matrix - free memory
