@@ -173,7 +173,7 @@ vcine = dComputation.getDirichletBC(0.0)
 resu = monSolver.solve(retour, vcine)
 
 y, _ = resu.getValuesWithDescription()
-test.assertEqual(len(y), 81)
+test.assertEqual(len(y), 135)
 
 resu2 = resu.toSimpleFieldOnNodes()
 resu2.updateValuePointers()
