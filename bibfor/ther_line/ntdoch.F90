@@ -104,7 +104,7 @@ subroutine ntdoch(list_load, l_load_user_, list_load_resu, basez)
     l_theta_not_one = ASTER_FALSE
     theta = 1.d0
     l_ther_lineaire = ASTER_FALSE
-    if (nomcmd .eq. 'THER_NON_LINE2') then
+    if (nomcmd .eq. 'THER_NON_LINE_FORT') then
         call getvr8(' ', 'PARM_THETA', scal=theta, nbret=nbval)
         if (nbval == 0) then
             theta = 1.d0

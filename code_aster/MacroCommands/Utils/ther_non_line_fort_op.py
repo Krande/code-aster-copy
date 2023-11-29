@@ -19,15 +19,17 @@
 
 # person_in_charge: mickael.abbas at edf.fr
 
-from ..Objects import ThermalResult
-from ..Supervis import ExecuteCommand
+from ...Objects import ThermalResult
+from ...Supervis import ExecuteCommand
+from .ther_non_line_fort_cata import THER_NON_LINE_FORT_CATA
 
 
-class NonLinearThermalAnalysis(ExecuteCommand):
+class NonLinearThermalAnalysisFort(ExecuteCommand):
     """Command that creates the :class:`~code_aster.Objects.ThermalResult` by assigning
     finite elements on a :class:`~code_aster.Objects.ThermalResult`."""
 
-    command_name = "THER_NON_LINE2"
+    command_name = "THER_NON_LINE_FORT"
+    command_cata = THER_NON_LINE_FORT_CATA
 
     def create_result(self, keywords):
         """Initialize the result.
@@ -68,4 +70,4 @@ class NonLinearThermalAnalysis(ExecuteCommand):
         self.remove_dependencies(keywords, "ETAT_INIT", ("EVOL_THER, 'CHAM_NO"))
 
 
-THER_NON_LINE2 = NonLinearThermalAnalysis.run
+THER_NON_LINE_FORT = NonLinearThermalAnalysisFort.run

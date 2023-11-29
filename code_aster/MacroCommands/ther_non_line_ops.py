@@ -19,22 +19,23 @@
 
 
 from ..Cata.Syntax import _F
-from ..Commands import THER_NON_LINE2
 from ..Objects import (
     HHO,
-    ThermalDirichletBC,
-    ThermalLoadFunction,
-    ThermalLoadReal,
-    ThermalResult,
     ParallelThermalLoadFunction,
     ParallelThermalLoadReal,
     PhysicalProblem,
     PostProcessing,
+    ThermalDirichletBC,
+    ThermalLoadFunction,
+    ThermalLoadReal,
+    ThermalResult,
 )
-from ..Solvers import NonLinearSolver, ProblemSolver, TimeStepper
+from ..Solvers import NonLinearSolver, ProblemSolver
 from ..Solvers import ProblemType as PBT
 from ..Solvers import SolverOptions as SOP
-from ..Utilities import print_stats, force_list, reset_stats
+from ..Solvers import TimeStepper
+from ..Utilities import force_list, print_stats, reset_stats
+from .Utils.ther_non_line_fort_op import THER_NON_LINE_FORT
 
 
 def use_fortran(keywords):
@@ -90,7 +91,7 @@ def ther_non_line_ops(self, **args):
     reset_stats()
 
     if use_fortran(args):
-        return THER_NON_LINE2(**args)
+        return THER_NON_LINE_FORT(**args)
 
     verbosity = args.get("INFO") or 1
 

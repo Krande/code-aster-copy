@@ -19,9 +19,9 @@
 
 # person_in_charge: mickael.abbas at edf.fr
 
-from ..Commons import *
-from ..Language.DataStructure import *
-from ..Language.Syntax import *
+from ...Cata.Commons import *
+from ...Cata.Language.DataStructure import *
+from ...Cata.Language.Syntax import *
 
 
 def compat_syntax(keywords):
@@ -70,8 +70,8 @@ def compat_syntax(keywords):
             del keywords["ETAT_INIT"]
 
 
-THER_NON_LINE2 = OPER(
-    nom="THER_NON_LINE2",
+THER_NON_LINE_FORT_CATA = OPER(
+    nom="THER_NON_LINE_FORT",
     op=186,
     sd_prod=evol_ther,
     compat_syntax=compat_syntax,
