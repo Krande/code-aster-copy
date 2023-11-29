@@ -38,7 +38,7 @@ module FE_algebra_module
 contains
 !
 ! define to use hard coded loop or blas directly
-#define FE_USE_BLAS 0
+! #define FE_USE_BLAS
 !
 !===================================================================================================
 !
@@ -61,7 +61,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
 !
-#if FE_USE_BLAS
+#ifdef FE_USE_BLAS
         call dgemv('T', 6, 6, alpha, mat, 6, x, 1, 0.0, y, 1)
 #else
 !
@@ -102,7 +102,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
 !
-#if FE_USE_BLAS
+#ifdef FE_USE_BLAS
         call dgemv('T', 4, 4, alpha, mat, 6, x, 1, 0.0, y, 1)
 #else
 !
@@ -135,7 +135,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
 !
-#if FE_USE_BLAS
+#ifdef FE_USE_BLAS
         call dgemv('N', 3, 3, alpha, mat, 3, x, 1, 0.0, y, 1)
 #else
 !
@@ -167,7 +167,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
 !
-#if FE_USE_BLAS
+#ifdef FE_USE_BLAS
         call dgemv('N', 2, 2, alpha, mat, 3, x, 1, 0.0, y, 1)
 #else
 !
@@ -198,7 +198,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
 !
-#if FE_USE_BLAS
+#ifdef FE_USE_BLAS
         call dgemv('T', 6, ncol, 1.d0, mat, 6, x, 1, 1.d0, y, offset)
 #else
         integer :: icol, ind
@@ -311,7 +311,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
 !
-#if FE_USE_BLAS
+#ifdef FE_USE_BLAS
         call dgemv('T', 6, ncol, 1.d0, mat, 4, x, 1, 1.d0, y, offset)
 #else
         integer :: icol, ind
@@ -407,8 +407,8 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
 !
-#if FE_USE_BLAS
-        call dgemv('T', 3, ncol, 1.d0, mat, 3, x, 1, 1.d0, y)
+#ifdef FE_USE_BLAS
+        call dgemv('T', 3, ncol, 1.d0, mat, 3, x, 1, 1.d0, y, 1)
 #else
         integer :: icol
 
@@ -471,8 +471,8 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
 !
-#if FE_USE_BLAS
-        call dgemv('T', 2, ncol, 1.d0, mat, 3, x, 1, 1.d0, y)
+#ifdef FE_USE_BLAS
+        call dgemv('T', 2, ncol, 1.d0, mat, 3, x, 1, 1.d0, y, 1)
 #else
         integer :: icol
 

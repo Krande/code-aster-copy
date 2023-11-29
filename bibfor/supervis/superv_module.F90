@@ -114,7 +114,6 @@ contains
 !>  @param[in] exception tell if an exception/error will be raised
     subroutine superv_after(exception)
         logical, optional :: exception
-        logical :: exc
         integer :: stage
         stage = 1
         if (present(exception)) then

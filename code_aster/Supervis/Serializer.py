@@ -263,7 +263,7 @@ def saveObjects(level=1, delete=True, options=0):
     options |= FinalizeOptions.SaveBase
     rank = MPI.ASTER_COMM_WORLD.Get_rank()
     if options & FinalizeOptions.OnlyProc0 and rank != 0:
-        logger.info("Objects not saved on processor #{0}".format(rank))
+        logger.info("Objects not saved on processor #%d", rank)
         libaster.jeveux_finalize(FinalizeOptions.OnlyProc0)
         return
 

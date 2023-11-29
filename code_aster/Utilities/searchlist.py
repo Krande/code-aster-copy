@@ -1,6 +1,6 @@
 # coding: utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -122,10 +122,10 @@ class SearchList:
         """
         idx = self._search_candidates(value)
         if len(idx) == 0:
-            msg = "{0} is not in list".format(value)
+            msg = f"{value} is not in list"
             raise ValueError(msg)
         elif len(idx) > 1:
-            msg = "{0} is not unique in list".format(value)
+            msg = f"{value} is not unique in list"
             raise IndexError(msg)
         else:
             return idx[0]
