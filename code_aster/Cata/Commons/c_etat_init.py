@@ -52,6 +52,7 @@ def C_ETAT_INIT(command, statut):
             max=1,
             regles=(
                 AU_MOINS_UN("EVOL_NOLI", "ACCE", "VITE", "DEPL", "SIGM", "VARI"),
+                PRESENT_ABSENT("EVOL_NOLI", "ACCE", "VITE", "DEPL", "SIGM", "VARI"),
                 EXCLUS("NUME_ORDRE", "INST"),
             ),
             b_evol=BLOC(
@@ -82,6 +83,7 @@ def C_ETAT_INIT(command, statut):
             max=1,
             regles=(
                 AU_MOINS_UN("EVOL_NOLI", "DEPL", "SIGM", "VARI", "COHE"),
+                PRESENT_ABSENT("EVOL_NOLI", "ACCE", "VITE", "DEPL", "SIGM", "VARI"),
                 EXCLUS("NUME_ORDRE", "INST"),
             ),
             b_evol=BLOC(
