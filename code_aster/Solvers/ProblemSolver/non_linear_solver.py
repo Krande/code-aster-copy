@@ -153,6 +153,8 @@ class NonLinearSolver(SolverFeature):
         phys_state.zeroInitialState(self.phys_pb)
         init_time = self.stepper.getInitial()
         init_state = self._get("ETAT_INIT")
+        nume_equa = self.phys_pb.getDOFNumbering().getEquationNumbering()
+
         if init_state:
             if "INST_ETAT_INIT" in init_state:
                 init_time = init_state.get("INST_ETAT_INIT")
@@ -163,12 +165,18 @@ class NonLinearSolver(SolverFeature):
                 if extract_time is None:
                     extract_time = resu.getLastTime()
                 init_time = extract_time
-                phys_state.primal_curr = resu.getField("DEPL", para="INST", value=extract_time)
+                phys_state.primal_curr = resu.getField(
+                    "DEPL", para="INST", value=extract_time
+                ).copyUsingDescription(nume_equa)
                 _msginit("DEPL", resu.userName)
                 if phys_state.pb_type == PBT.MecaDyna:
-                    phys_state.current.dU = resu.getField("VITE", para="INST", value=extract_time)
+                    phys_state.current.dU = resu.getField(
+                        "VITE", para="INST", value=extract_time
+                    ).copyUsingDescription(nume_equa)
                     _msginit("VITE", resu.userName)
-                    phys_state.current.d2U = resu.getField("ACCE", para="INST", value=extract_time)
+                    phys_state.current.d2U = resu.getField(
+                        "ACCE", para="INST", value=extract_time
+                    ).copyUsingDescription(nume_equa)
                     _msginit("ACCE", resu.userName)
                 phys_state.stress = resu.getField("SIEF_ELGA", para="INST", value=extract_time)
                 _msginit("SIEF_ELGA", resu.userName)
@@ -181,13 +189,13 @@ class NonLinearSolver(SolverFeature):
                 if extract_time is None:
                     extract_time = resu.getLastTime()
                 init_time = extract_time
-                phys_state.primal_curr = resu.getField("TEMP", para="INST", value=extract_time)
+                phys_state.primal_curr = resu.getField(
+                    "TEMP", para="INST", value=extract_time
+                ).copyUsingDescription(nume_equa)
             if "CHAM_NO" in init_state:
-                phys_state.primal_curr = init_state.get("CHAM_NO")
+                phys_state.primal_curr = init_state.get("CHAM_NO").copyUsingDescription(nume_equa)
             if "DEPL" in init_state:
-                phys_state.primal_curr = init_state.get("DEPL").copyUsingDescription(
-                    self.phys_pb.getDOFNumbering().getEquationNumbering()
-                )
+                phys_state.primal_curr = init_state.get("DEPL").copyUsingDescription(nume_equa)
                 _msginit("DEPL")
             if "SIGM" in init_state:
                 phys_state.stress = init_state.get("SIGM")
@@ -196,7 +204,7 @@ class NonLinearSolver(SolverFeature):
                 phys_state.internVar = init_state.get("VARI")
                 _msginit("VARI_ELGA")
             if "VALE" in init_state:
-                phys_state.primal_curr.setValues(init_state.get("VALE"))
+                phys_state.primal_curr.setValues({"TEMP": init_state.get("VALE")})
 
             if init_time is not None:
                 self.stepper.setInitial(init_time)
