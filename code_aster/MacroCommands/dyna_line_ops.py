@@ -408,7 +408,14 @@ class DynaLineFEM:
             __vect = ASSE_VECTEUR(VECT_ELEM=__vectelem, NUME_DDL=self.getNumeddl())
 
             __champ = RESOUDRE(MATR=self.__getRigiPhyInv(), CHAM_NO=__vect)
-            py = np.array(__champ.getValuesWithDescription()[0])
+            vWithD = __champ.getValuesWithDescription()
+            values = vWithD[0]
+            cmps = vWithD[1][1]
+            values_f = []
+            for icount, cmp in enumerate(cmps):
+                if cmp[:5] != "LAGR:":
+                    values_f.append(values[icount])
+            py = np.array(values_f)
             if max(abs(py)) > np.finfo(float).eps:
                 active_dofs.append(dof)
         assert active_dofs
