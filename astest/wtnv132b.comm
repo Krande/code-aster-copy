@@ -93,7 +93,6 @@ T_DEP = [None] * nbcouche
 list_group_ma = ["ELEM0"]
 list_group_ma_ = ["ELEMS0"]
 for n in range(nbcouche - 1):
-
     list_group_ma.append("ELEM" + str(n + 1))
     list_group_ma_.append("ELEMS" + str(n + 1))
     print("   n=", n, "; liste=", list_group_ma)
@@ -346,6 +345,7 @@ CHNUL = CREA_CHAMP(
 # Hauteur successive de la colonne au fur et a mesure de la construction
 Height = [5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25]
 
+
 # DEFINITION FONCTION PROJECTION SUIVANT Y
 def PROJ(x, Hauteur):
     if x <= Hauteur:
@@ -358,7 +358,6 @@ list_noeu_haut = list_no_later_dro[:2]
 
 # -->10: Boucle sur la pose des couches 3 a nbcouche
 for n in range(1, nbcouche - 1):
-
     n_couche = n + 2
     print(" > n_couche          =", n_couche)
 
@@ -708,7 +707,7 @@ U9B = DYNA_NON_LINE(
     ),
     SOLVEUR=_F(RENUM="METIS", METHODE="MUMPS"),
     ETAT_INIT=_F(DEPL=DEP[9], SIGM=SIG[9], VARI=VAR[9], ACCE=ACCE0),
-    INCREMENT=_F(LIST_INST=DEFLISTh, PRECISION=1.0e-6),  # L_INSTh, #
+    INCREMENT=_F(LIST_INST=DEFLISTh),  # L_INSTh, #
     ARCHIVAGE=_F(LIST_INST=L_ARCH),
     SCHEMA_TEMPS=_F(SCHEMA="HHT", ALPHA=-0.35, MODI_EQUI="NON", FORMULATION="DEPLACEMENT"),
     NEWTON=_F(REAC_ITER=1),  # MATR_RIGI_SYME='OUI',),

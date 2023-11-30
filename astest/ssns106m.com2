@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -143,7 +143,7 @@ RESU_R = STAT_NON_LINE(
         _F(RELATION="ENDO_ISOT_BETON", GROUP_MA="DALLE"),
         _F(RELATION="GRILLE_ISOT_LINE", GROUP_MA=("ACIER1L", "ACIER2L", "ACIER1T", "ACIER2T")),
     ),
-    INCREMENT=_F(LIST_INST=DEFLIST, PRECISION=0.1),
+    INCREMENT=_F(LIST_INST=DEFLIST),
     NEWTON=_F(REAC_ITER=1),
     CONVERGENCE=_F(ITER_GLOB_MAXI=25),
 )
@@ -156,7 +156,7 @@ RESU_G = STAT_NON_LINE(
     CARA_ELEM=CAEL_G,
     EXCIT=(_F(CHARGE=COND_0G, FONC_MULT=chf1), _F(CHARGE=COND_1G, FONC_MULT=chf1)),
     COMPORTEMENT=_F(RELATION="GLRC_DM"),
-    INCREMENT=_F(LIST_INST=DEFLIST, PRECISION=0.1),
+    INCREMENT=_F(LIST_INST=DEFLIST),
     NEWTON=_F(REAC_ITER=1),
     CONVERGENCE=_F(ITER_GLOB_MAXI=25),
 )
@@ -175,7 +175,7 @@ RESU_D = STAT_NON_LINE(
     CARA_ELEM=CAEL_G,
     EXCIT=(_F(CHARGE=COND_0G, FONC_MULT=chf1), _F(CHARGE=COND_1G, FONC_MULT=chf1)),
     COMPORTEMENT=_F(RELATION="DHRC"),
-    INCREMENT=_F(LIST_INST=DEFLIST, PRECISION=0.1),
+    INCREMENT=_F(LIST_INST=DEFLIST),
     NEWTON=_F(REAC_ITER=1),
     CONVERGENCE=_F(ITER_GLOB_MAXI=25),
 )

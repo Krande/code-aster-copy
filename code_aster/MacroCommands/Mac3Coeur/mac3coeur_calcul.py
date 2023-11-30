@@ -925,7 +925,7 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
                     CHAM_MATER=self.cham_mater_free,
                     ETAT_INIT=_F(EVOL_NOLI=__RESULT, PRECISION=1.0e-08, CRITERE="RELATIF"),
                     EXCIT=loads_chin_t8_t9,
-                    INCREMENT=_F(LIST_INST=self.times, PRECISION=1.0e-08),
+                    INCREMENT=_F(LIST_INST=self.times),
                     COMPORTEMENT=self.char_ini_comp,
                 )
             )

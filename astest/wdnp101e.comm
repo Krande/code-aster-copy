@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -78,7 +78,6 @@ VAR = [None] * (nbcouche - 1)
 # -->5: debut boucle for
 list_group_ma = ["ELEM0"]
 for n in range(nbcouche - 1):
-
     list_group_ma.append("ELEM" + str(n + 1))
     print("   n=", n, "; liste=", list_group_ma)
 
@@ -316,6 +315,7 @@ CHPNUL = CREA_CHAMP(
 # Hauteur successive de la colonne au fur et a mesure de la construction
 Height = [5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25]
 
+
 # DEFINITION FONCTION PROJECTION SUIVANT Y
 def PROJ(x, Hauteur):
     if x <= Hauteur:
@@ -326,7 +326,6 @@ def PROJ(x, Hauteur):
 
 # -->10: Boucle sur la pose des couches 3 a nbcouche
 for n in range(1, nbcouche - 1):
-
     DETRUIRE(NOM=(CHLAT, PHAUT, SIEF, CHPAR))
 
     n_couche = n + 2
@@ -774,7 +773,7 @@ U9B = DYNA_NON_LINE(
     NEWTON=_F(MATR_RIGI_SYME="OUI"),
     SOLVEUR=_F(RENUM="METIS", METHODE="MUMPS"),
     ETAT_INIT=_F(EVOL_NOLI=U9B, INST=0.0, PRECISION=1.0e-6),
-    INCREMENT=_F(LIST_INST=DEFLISTh, PRECISION=1.0e-6),
+    INCREMENT=_F(LIST_INST=DEFLISTh),
     ARCHIVAGE=_F(LIST_INST=L_ARCH),
     SCHEMA_TEMPS=_F(
         SCHEMA="TCHAMWA",

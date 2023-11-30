@@ -79,7 +79,6 @@ def calc_precont_ops(
     #     Creation de la nouvelle liste d'instants
     # ----------------------------------------------------------
     dIncrement = INCREMENT[0].cree_dict_valeurs(INCREMENT[0].mc_liste)
-    __prec = dIncrement["PRECISION"]
 
     __L0 = dIncrement["LIST_INST"]
 
@@ -378,7 +377,7 @@ def calc_precont_ops(
             CARA_ELEM=CARA_ELEM,
             EXCIT=(_F(CHARGE=_B_CA), _F(CHARGE=_C_CN)),
             COMPORTEMENT=dComp_incrElas,
-            INCREMENT=_F(LIST_INST=__LST0, PRECISION=__prec),
+            INCREMENT=_F(LIST_INST=__LST0),
             SOLVEUR=dSolveur,
             INFO=INFO,
             TITRE=TITRE,
@@ -477,7 +476,7 @@ def calc_precont_ops(
             CHAM_MATER=CHAM_MATER,
             CARA_ELEM=CARA_ELEM,
             COMPORTEMENT=dComp_incr1,
-            INCREMENT=_F(LIST_INST=__LST, PRECISION=__prec),
+            INCREMENT=_F(LIST_INST=__LST),
             METHODE=METHODE,
             RECH_LINEAIRE=dRech_lin,
             CONVERGENCE=dConvergence,

@@ -170,7 +170,6 @@ liste_carac_grille = []
 
 EXT = 0.1
 for gr in ["M_H1", "M_H2"]:
-
     liste_carac_grille.append({"GROUP_MA": gr, "SECTION": 8e-4, "ANGL_REP_1": (0, 0)})
     EXT = -1.0 * EXT
 
@@ -299,7 +298,7 @@ RESU = STAT_NON_LINE(
     NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1, REAC_INCR=1),
     EXCIT=(_F(CHARGE=CHAR0), _F(CHARGE=DEPL, FONC_MULT=RAMPE), _F(CHARGE=POIDS, FONC_MULT=GG)),
     COMPORTEMENT=comp_incr,
-    INCREMENT=_F(LIST_INST=LINST, PRECISION=1.0e-2),
+    INCREMENT=_F(LIST_INST=LINST),
     CONVERGENCE=_F(RESI_GLOB_RELA=RESI_GLOB_RELA, ITER_GLOB_MAXI=Nmax),
 )
 
