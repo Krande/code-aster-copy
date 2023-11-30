@@ -43,6 +43,7 @@ subroutine dsqrig(nomte, xyzl, option, pgl, rig, &
 #include "asterfort/utbtab.h"
 #include "asterfort/utctab.h"
 #include "asterfort/utdtab.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
     real(kind=8) :: xyzl(3, *), pgl(*), rig(*), ener(*)
     character(len=16) :: option, nomte
@@ -85,7 +86,7 @@ subroutine dsqrig(nomte, xyzl, option, pgl, rig, &
     real(kind=8) :: kmpmt(8, 8), kmpm(8, 8), membcf(8, 8), bcapm(2, 8)
     real(kind=8) :: bsigth(24), enerth, ctor, un, zero, eta, excent, qsi
     real(kind=8) :: jacob(5), caraq4(25), t2iu(4), t2ui(4), t1ve(9)
-    aster_logical :: coupmf, exce, indith
+    aster_logical :: coupmf, exce, indith, ismultic
     integer :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
 !     ------------------------------------------------------------------
 !
@@ -123,6 +124,7 @@ subroutine dsqrig(nomte, xyzl, option, pgl, rig, &
 !
     exce = .false.
     if (abs(excent) .gt. un/r8gaem()) exce = .true.
+    ismultic = .false.
 !
 !     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE QUADRANGLE --------
     call gquad4(xyzl, caraq4)
@@ -132,6 +134,12 @@ subroutine dsqrig(nomte, xyzl, option, pgl, rig, &
     call dxmate('RIGI', df, dm, dmf, dc, &
                 dci, dmc, dfc, nno, pgl, &
                 multic, coupmf, t2iu, t2ui, t1ve)
+
+!   VERIFICATION CAS EXCENTREMENT MULTICOUCHES
+    if (multic .gt. 0) ismultic = .true.
+    if (exce .and. ismultic) then
+        call utmess('F', 'PLATE1_15')
+    end if
 !
 !     ---- CALCUL DE LA MATRICE PB -------------------------------------
     if (exce) then
@@ -400,7 +408,7 @@ subroutine dsqrig(nomte, xyzl, option, pgl, rig, &
         do i = 1, 8
             do j = 1, 8
                memb(i, j) = memb(i, j)+(memexc(i, j)+membi(i, j)+kmpm(i, j)+kmpmt(i, j)+membcf(i, j&
-                             &))*wgt
+                                &))*wgt
 !     +                            MEMBI(I,J)*WGT
 !*****************************************************************
             end do
