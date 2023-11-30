@@ -407,6 +407,19 @@ class TestTimeStepper(unittest.TestCase):
         self.assertEqual(stp.cmp(1.0, 1.1), -1)
         self.assertEqual(stp.cmp(1.2, 1.1), 1)
 
+    def test06_epsilon(self):
+        values = [1.0, 2.0, 2.001, 2.002, 3.0]
+        stp = TimeStepper(values)
+        self.assertEqual(stp.size(), 5)
+        with self.assertRaisesRegex(ValueError, "inconsistent"):
+            TimeStepper(values, epsilon=0.01)
+
+        list2 = DEFI_LIST_REEL(VALE=values)
+        stp = TimeStepper.from_keywords(LIST_INST=list2, INST_INIT=None, PRECISION=1.0e-6)
+        self.assertEqual(stp.size(), 5)
+        with self.assertRaisesRegex(ValueError, "inconsistent"):
+            TimeStepper.from_keywords(LIST_INST=list2, INST_INIT=None, PRECISION=1.0e-2)
+
     def test07_meca_statique(self):
         stp = TimeStepper([0.0], initial=None)
         self.assertEqual(stp.size(), 1)

@@ -52,7 +52,7 @@ class TimeStepper(SolverFeature, Observer):
     _split = _maxLevel = _minStep = _maxStep = _maxNbSteps = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
-    def __init__(self, times, epsilon=1e-6, initial=0.0, final=None):
+    def __init__(self, times, epsilon=1.0e-16, initial=0.0, final=None):
         super().__init__()
         times = list(times)
         if sorted(times) != times:
@@ -70,11 +70,18 @@ class TimeStepper(SolverFeature, Observer):
         self._resetState()
         logger.debug("TimeStepper.init: %s, %s, %s", initial, final, times)
         self._check_bounds()
+        self._check_epsilon()
 
     @property
     def null_increment(self):
         """float: delta between two steps to be considered as null."""
         return self._eps
+
+    @null_increment.setter
+    def null_increment(self, value):
+        """Setter for null_increment"""
+        self._eps = value
+        self._check_epsilon()
 
     def copy(self):
         """Return a copy of the object.
@@ -111,6 +118,15 @@ class TimeStepper(SolverFeature, Observer):
             return
         self._last = len(times) - 1
         self._final = times[-1]
+
+    def _check_epsilon(self):
+        """Remove values consistency with epsilon."""
+        times = numpy.array(self._times)
+        incr = times[1:] - times[:-1]
+        if (incr < self._eps).any():
+            raise ValueError(
+                f"inconsistent values: increment is lesser than epsilon: {self._eps:f}"
+            )
 
     def setInitial(self, time):
         """Define the initial time. Lesser values are removed.
@@ -343,7 +359,7 @@ class TimeStepper(SolverFeature, Observer):
         else:
             stp.setInitial(initial)
             stp.setFinal(final)
-            stp._eps = eps
+            stp.null_increment = eps
         stp.register_default_error_event()
         return stp
 

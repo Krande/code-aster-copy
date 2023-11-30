@@ -52,7 +52,7 @@ class TimesListStateBuilder(InternalStateBuilder):
         self._st["times"] = stp._times
         self._st["initial"] = stp.getInitial()
         self._st["final"] = stp.getFinal()
-        self._st["eps"] = stp._eps
+        self._st["eps"] = stp.null_increment
         self._st["actions"] = stp._actions
         return self
 
