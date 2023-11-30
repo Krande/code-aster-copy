@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 
 from ...Messages import UTMESS
-from ...Utilities import SearchList, force_list, no_new_attributes, profile
+from ...Utilities import SearchList, force_list, logger, no_new_attributes, profile
 from ..Basics import SolverFeature
 from ..Basics import SolverOptions as SOP
 
@@ -50,7 +50,7 @@ class StorageManager(SolverFeature):
     _result = _buffer = _excl_fields = None
     _eps = _relative = None
     _timelist = _step = None
-    _init_idx = _stor_idx = _last_idx = None
+    _stor_idx = _last_idx = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
     def __init__(self, result, mcf=None, **kwargs):
@@ -90,7 +90,6 @@ class StorageManager(SolverFeature):
         else:
             self._step = 1
 
-        self._last_idx = -999
         self._eps = 1.0e-6
         self._relative = True
         if times is not None:
@@ -99,36 +98,40 @@ class StorageManager(SolverFeature):
             self._timelist = SearchList(times, self._eps, kwargs["CRITERE"])
             assert all(self._timelist.unique(t) for t in times)
 
-        self._init_idx = self._stor_idx = 0
+        self._last_idx = -999
+        self._stor_idx = 0
 
-    def setInitialIndex(self, index):
-        """Set initial index.
+    def setFirstStorageIndex(self, index, first_exists=False):
+        """Set initial index (index where the first step should be stored).
 
         Arguments:
-            index (int): initial index.
+            index (int): index to be used for the next storage.
+            first_exist (bool): *True* if the first step already exists,
+                *False* otherwise.
         """
-        self._init_idx = index
         self._stor_idx = index
+        if first_exists:
+            self._last_idx = 0
 
         if self._result.getNumberOfIndexes() > 0:
-            self._result.clear(self._init_idx)
+            self._result.clear(self._stor_idx)
 
     def hasToBeStored(self, idx, time):
         """To known if this time step has to be store
 
         Arguments:
-            idx (int): index of the time
+            idx (int): index of the time (restarts at 0 at each new operator).
             time (float): time step.
 
         Returns:
             bool: *True* if the time step has to be store else *False*.
         """
+        # always store first index
+        if idx == 0:
+            return True
         if self._step is not None:
-            return (idx - self._init_idx) % self._step == 0
+            return idx % self._step == 0
         if self._timelist is not None:
-            # always store first index
-            if idx == self._init_idx:
-                return True
             # FIXME use _eps/_relative
             return time in self._timelist
         return True
@@ -140,7 +143,7 @@ class StorageManager(SolverFeature):
         already stored.
 
         Arguments:
-            idx (int): index of the time
+            idx (int): index of the time (restarts at 0 at each new operator).
 
         Returns:
             bool: *True* if the time was already stored, *False* otherwise.
@@ -160,6 +163,7 @@ class StorageManager(SolverFeature):
 
         Arguments:
             idx (int): index of the current (pseudo-)time
+                (restarts at 0 at each new operator).
             kwargs: named parameters
         """
         # FIXME use hasToBeStored
@@ -179,17 +183,20 @@ class StorageManager(SolverFeature):
 
         Arguments:
             idx (int): index of the current (pseudo-)time
+                (restarts at 0 at each new operator).
             time (float): current (pseudo-)time.
             phys_pb (PhysicalProblem): Physical problem.
             phys_state (PhysicalState): Physical state.
             param (dict, optional): Dict of parameters to be stored.
             force (bool): force the storage even if storing-policy is not verified.
         """
+        logger.debug(
+            "STORE: calc=%d, time=%f, last=%d, stor=%d", idx, time, self._last_idx, self._stor_idx
+        )
         if not force and not self.hasToBeStored(idx, time):
             return
         if self.wasStored(idx):
             return
-        self._last_idx = idx
         slot = StorageManager.Slot()
         slot.index = idx
         slot.store_index = self._stor_idx
@@ -209,7 +216,9 @@ class StorageManager(SolverFeature):
             slot.fields[compor] = behav.getBehaviourField()
         self._buffer.append(slot)
         self._store()
-        self._stor_idx += 1
+        if idx > self._last_idx:
+            self._stor_idx += 1
+        self._last_idx = idx
 
     @profile
     def storeField(self, idx, field, field_type, time=0.0):
@@ -217,6 +226,7 @@ class StorageManager(SolverFeature):
 
         Arguments:
             idx (int): index of the current (pseudo-)time
+                (restarts at 0 at each new operator).
             field (FieldOn***): field to store
             field_type (str) : type of the field as DEPL, SIEF_ELGA...
         """

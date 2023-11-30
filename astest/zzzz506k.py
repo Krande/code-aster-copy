@@ -72,7 +72,7 @@ common_keywords = _F(
     ARCHIVAGE=_F(INST=(0.2, 0.4, 1.0)),
 )
 
-# SNL will be store the last step
+# SNL will store the last step (t=0.6), but not t=0.8 in case of exception during t=1.0
 RES = STAT_NON_LINE(**common_keywords)
 
 # compute the first step to keep a reference to the result
@@ -84,7 +84,8 @@ try:
     common_keywords["reuse"] = RES_NEW
     common_keywords["ETAT_INIT"] = _F(EVOL_NOLI=RES_NEW)
     common_keywords["INCREMENT"]["INST_FIN"] = 1.0
-    # to force non convergence at 0.8
+    # to force non convergence at t=0.8
+    # the last converged step should be t=0.6
     common_keywords["CONVERGENCE"]["ITER_GLOB_MAXI"] = 4
     MECA_NON_LINE(**common_keywords)
 except ConvergenceError:

@@ -173,8 +173,9 @@ class ProblemSolver(SolverFeature):
                         init_state["PRECISION"],
                         True,
                     )
-                if init_index:
-                    store.setInitialIndex(init_index + 1)
+                else:
+                    init_index = reuse.getLastIndex()
+                store.setFirstStorageIndex(init_index + 1, first_exists=True)
         self.use(store)
         return store
 

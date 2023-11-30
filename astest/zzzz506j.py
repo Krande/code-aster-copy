@@ -48,8 +48,7 @@ LIST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=2))
 
 RAMPE = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 1000.0, 1000.0))
 
-# STAT_NON_LINE DE REFERENCE
-SOLUT = STAT_NON_LINE(
+common_keywords = _F(
     MODELE=model,
     CHAM_MATER=mater,
     EXCIT=(_F(CHARGE=encast, FONC_MULT=RAMPE), _F(CHARGE=depl, FONC_MULT=RAMPE)),
@@ -60,16 +59,15 @@ SOLUT = STAT_NON_LINE(
     INFO=1,
 )
 
-SOLU1 = MECA_NON_LINE(
-    MODELE=model,
-    CHAM_MATER=mater,
-    EXCIT=(_F(CHARGE=encast, FONC_MULT=RAMPE), _F(CHARGE=depl, FONC_MULT=RAMPE)),
-    COMPORTEMENT=_F(RELATION="VMIS_ISOT_LINE", DEFORMATION="GDEF_LOG"),
-    NEWTON=_F(REAC_INCR=1, PREDICTION="ELASTIQUE", MATRICE="TANGENTE", REAC_ITER=1),
-    CONVERGENCE=_F(RESI_GLOB_RELA=1e-8),
-    INCREMENT=_F(LIST_INST=LIST),
-    INFO=1,
-)
+init_keywords = common_keywords.copy()
+init_keywords["INCREMENT"] = _F(LIST_INST=LIST, INST_FIN=0.5)
+
+# STAT_NON_LINE DE REFERENCE
+ressnl = STAT_NON_LINE(**init_keywords)
+ressnl = STAT_NON_LINE(reuse=ressnl, ETAT_INIT=_F(EVOL_NOLI=ressnl), **common_keywords)
+
+resmnl = MECA_NON_LINE(**init_keywords)
+resmnl = MECA_NON_LINE(reuse=resmnl, ETAT_INIT=_F(EVOL_NOLI=resmnl), **common_keywords)
 
 # =========================================================
 #          DETERMINATION DE LA REFERENCE
@@ -77,19 +75,19 @@ SOLU1 = MECA_NON_LINE(
 
 # ON EXTRAIT LES CHAMPS A TESTER au dernier instant
 SIGMA_REF = CREA_CHAMP(
-    OPERATION="EXTR", TYPE_CHAM="ELGA_SIEF_R", NOM_CHAM="SIEF_ELGA", RESULTAT=SOLUT, INST=1.0
+    OPERATION="EXTR", TYPE_CHAM="ELGA_SIEF_R", NOM_CHAM="SIEF_ELGA", RESULTAT=ressnl, INST=1.0
 )
 
 VARI_REF = CREA_CHAMP(
-    OPERATION="EXTR", TYPE_CHAM="ELGA_VARI_R", NOM_CHAM="VARI_ELGA", RESULTAT=SOLUT, INST=1.0
+    OPERATION="EXTR", TYPE_CHAM="ELGA_VARI_R", NOM_CHAM="VARI_ELGA", RESULTAT=ressnl, INST=1.0
 )
 
 SIGMA1 = CREA_CHAMP(
-    OPERATION="EXTR", TYPE_CHAM="ELGA_SIEF_R", NOM_CHAM="SIEF_ELGA", RESULTAT=SOLU1, INST=1.0
+    OPERATION="EXTR", TYPE_CHAM="ELGA_SIEF_R", NOM_CHAM="SIEF_ELGA", RESULTAT=resmnl, INST=1.0
 )
 
 VARI1 = CREA_CHAMP(
-    OPERATION="EXTR", TYPE_CHAM="ELGA_VARI_R", NOM_CHAM="VARI_ELGA", RESULTAT=SOLU1, INST=1.0
+    OPERATION="EXTR", TYPE_CHAM="ELGA_VARI_R", NOM_CHAM="VARI_ELGA", RESULTAT=resmnl, INST=1.0
 )
 
 # =========================================================
@@ -151,7 +149,6 @@ TEST_RESU(
 # =========================================================
 
 if config["ASTER_HAVE_PETSC4PY"]:
-
     myOptions = "-pc_type lu -pc_factor_mat_solver_type mumps -ksp_type fgmres -snes_linesearch_type basic  -snes_max_it 10"
     SOLU2 = MECA_NON_LINE(
         MODELE=model,

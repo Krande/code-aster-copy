@@ -238,24 +238,23 @@ def meca_statique_ops(self, **args):
     matrix = AssemblyMatrixDisplacementReal(phys_pb)
     # the matrix depends on times or external variables
     isConst = phys_pb.getCodedMaterial().constant()
-    isFirst = True
 
     # Compute reference value vector for external state variables
     if phys_pb.getMaterialField().hasExternalStateVariableWithReference():
         phys_pb.computeReferenceExternalStateVariables()
 
-    # first index to use
-    step_rank = result.getNumberOfIndexes() + 1
-    storage_manager.setInitialIndex(step_rank)
+    # first index to use, +1 because there is no initial state
+    storage_manager.setFirstStorageIndex(result.getNumberOfIndexes() + 1, first_exists=False)
 
     # Run computation
+    step_rank = 0
     logger.debug("<MECA_STATIQUE>: Run computation")
     phys_state.zeroInitialState(phys_pb)
     while not timeStepper.isFinished():
         phys_state.time_curr = timeStepper.getCurrent()
 
         # compute matrix and factorize it
-        if not isConst or isFirst:
+        if not isConst or step_rank == 0:
             matrix = _computeMatrix(phys_pb, disc_comp, matrix, phys_state.time_curr)
             linear_solver.factorize(matrix)
 
@@ -271,7 +270,7 @@ def meca_statique_ops(self, **args):
         storage_manager.storeState(step_rank, phys_state.time_curr, phys_pb, phys_state)
 
         timeStepper.completed()
-        isFirst = False
+        step_rank += 1
 
     # delete factorized matrix - free memory
     linear_solver.deleteFactorizedMatrix()

@@ -361,9 +361,11 @@ def ther_lineaire_ops(self, **args):
         resu = args["RESULTAT"]
         first_index = resu.getLastIndex()
         if resu is args["ETAT_INIT"].get("EVOL_THER"):
-            first_index = 1
+            first_index += 1
             save_initial_state = False
-    logger.debug("<THER_LINEAIRE><STORAGE>: first_index = %s", first_index)
+    logger.debug(
+        "<THER_LINEAIRE><STORAGE>: first_index=%d, save_init=%s", first_index, save_initial_state
+    )
 
     # Create linear solver
     linear_solver = LinearSolver.factory("THER_LINEAIRE", args["SOLVEUR"])
@@ -374,8 +376,7 @@ def ther_lineaire_ops(self, **args):
 
     # Create storage manager
     storage_manager = StorageManager(result, args["ARCHIVAGE"])
-    storage_manager.setInitialIndex(first_index)
-    step_rank = first_index
+    storage_manager.setFirstStorageIndex(first_index)
 
     # Define main objects
     phys_state = PhysicalState(PBT.Thermal)
@@ -401,6 +402,7 @@ def ther_lineaire_ops(self, **args):
     phys_state.primal_curr = initial_field
     time_delta_prev = timeStepper.null_increment
 
+    step_rank = 0
     # Compute initial state
     if is_evol:
         phys_state.time_curr = timeStepper.getInitial()
