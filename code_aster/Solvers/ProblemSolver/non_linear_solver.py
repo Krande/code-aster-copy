@@ -104,14 +104,16 @@ class NonLinearSolver(SolverFeature):
         """
         return self.stepper.isFinished()
 
-    def _storeRank(self, time, force=False):
-        """Store the current physical state.
+    def _storeState(self, state, force=False):
+        """Store the physical state.
 
         Arguments:
             time (float): current (pseudo)-time.
         """
         storage_manager = self.get_feature(SOP.Storage)
-        storage_manager.storeState(self.step_rank, time, self.phys_pb, self.phys_state, force=force)
+        storage_manager.storeState(
+            self.step_rank, state.time_curr, self.phys_pb, state, force=force
+        )
 
     @profile
     def initialize(self):
@@ -134,7 +136,7 @@ class NonLinearSolver(SolverFeature):
             self.use(Annealing())
         self.setInitialState(init_state)
         self.step_rank = 0
-        self._storeRank(self.phys_state.time_curr)
+        self._storeState(self.phys_state)
         # register observers
         for source in self.get_childs(SOP.IncrementalSolver | SOP.EventSource):
             source.add_observer(self.stepper)
@@ -236,7 +238,15 @@ class NonLinearSolver(SolverFeature):
                 solv.solve()
             except (ConvergenceError, IntegrationError, SolverError) as exc:
                 logger.warning(exc.format("I"))
-                self.stepper.failed(exc)
+                try:
+                    self.stepper.failed(exc)
+                except (ConvergenceError, IntegrationError, SolverError):
+                    # an error occurred, ensure that the previous step was stored
+                    logger.warning(
+                        "An error occurred, ensure that the last converged step is saved"
+                    )
+                    self._storeState(self.phys_state.getState(-1), force=True)
+                    raise
             else:
                 if not self.stepper.check_event(self.phys_state):
                     # + reset current_matrix to None (REAC_INCR)
@@ -247,14 +257,9 @@ class NonLinearSolver(SolverFeature):
                 self.current_matrix = solv.current_matrix
                 self.post_hooks()
                 self.step_rank += 1
-                self._storeRank(self.phys_state.time_curr)
-        if self.stepper.isFinished():
-            # check that last step was stored
-            logger.info("save the last step")
-            self._storeRank(self.phys_state.time_curr, force=True)
-        else:
-            # an error occurred, ensure that the previous step was stored
-            logger.warning("an error occurred, save the last converged step")
+                self._storeState(self.phys_state)
+        # ensure that last step was stored
+        self._storeState(self.phys_state, force=True)
 
     def post_hooks(self):
         """Call post hooks"""

@@ -105,19 +105,19 @@ def meca_non_line_ops(self, **args):
     adapt_for_mgis_behaviour(self, args)
 
     # Add parameters
-    param = dict(
-        ARCHIVAGE=args["ARCHIVAGE"],
-        COMPORTEMENT=args["COMPORTEMENT"],
-        CONTACT=args["CONTACT"],
-        CONVERGENCE=args["CONVERGENCE"],
-        ETAT_INIT=args["ETAT_INIT"],
-        INFO=args["INFO"],
-        METHODE=args["METHODE"],
-        NEWTON=args["NEWTON"],
-        RECH_LINEAIRE=args["RECH_LINEAIRE"],
-        SOLVEUR=args["SOLVEUR"],
-        REUSE=args["reuse"],
-    )
+    param = {
+        "ARCHIVAGE": args["ARCHIVAGE"],
+        "COMPORTEMENT": args["COMPORTEMENT"],
+        "CONTACT": args["CONTACT"],
+        "CONVERGENCE": args["CONVERGENCE"],
+        "ETAT_INIT": args["ETAT_INIT"],
+        "INFO": args["INFO"],
+        "METHODE": args["METHODE"],
+        "NEWTON": args["NEWTON"],
+        "RECH_LINEAIRE": args["RECH_LINEAIRE"],
+        "SOLVEUR": args["SOLVEUR"],
+        "REUSE": args["reuse"],
+    }
 
     if "SCHEMA_TEMPS" in args:
         problem_type = PBT.MecaDyna

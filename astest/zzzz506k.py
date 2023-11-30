@@ -17,6 +17,9 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+import code_aster
+from code_aster import ConvergenceError
+from code_aster.Commands import *
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), INFO=1)
 
@@ -38,17 +41,7 @@ AFFE = AFFE_MATERIAU(AFFE=_F(MATER=mat1, TOUT="OUI"), MAILLAGE=Mail, MODELE=MODI
 
 lisi = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1, NOMBRE=5))
 
-LINST = DEFI_LIST_INST(
-    DEFI_LIST=_F(LIST_INST=lisi),
-    ECHEC=_F(
-        ACTION="DECOUPE",
-        EVENEMENT="ERREUR",
-        SUBD_METHODE="MANUEL",
-        SUBD_NIVEAU=3,
-        SUBD_PAS=4,
-        SUBD_PAS_MINI=0.0,
-    ),
-)
+LINST = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=lisi), ECHEC=_F(ACTION="ARRET", EVENEMENT="ERREUR"))
 
 RAMPE = DEFI_FONCTION(NOM_PARA="INST", VALE=(0, 0, 1, 1))
 
@@ -63,7 +56,7 @@ CHAR1 = AFFE_CHAR_CINE(
     MODELE=MODI,
 )
 
-RES = STAT_NON_LINE(
+common_keywords = _F(
     CHAM_MATER=AFFE,
     COMPORTEMENT=_F(DEFORMATION="PETIT", RELATION="VMIS_ISOT_LINE", TOUT="OUI"),
     CONVERGENCE=_F(RESI_GLOB_RELA=1e-8, ITER_GLOB_ELAS=25, ITER_GLOB_MAXI=10),
@@ -71,36 +64,42 @@ RES = STAT_NON_LINE(
         _F(CHARGE=CHAR1, FONC_MULT=RAMPE, TYPE_CHARGE="FIXE_CSTE"),
         _F(CHARGE=CHAR2, FONC_MULT=RAMPE, TYPE_CHARGE="FIXE_CSTE"),
     ),
-    INCREMENT=_F(LIST_INST=LINST, PRECISION=1e-06),
+    INCREMENT=_F(LIST_INST=LINST, PRECISION=1e-06, INST_FIN=0.6),
     INFO=1,
     MODELE=MODI,
     NEWTON=_F(MATRICE="TANGENTE", PREDICTION="TANGENTE", REAC_INCR=1, REAC_ITER=1),
     SOLVEUR=_F(METHODE="MUMPS"),
+    ARCHIVAGE=_F(INST=(0.2, 0.4, 1.0)),
 )
 
-RES_NEW = MECA_NON_LINE(
-    CHAM_MATER=AFFE,
-    COMPORTEMENT=_F(DEFORMATION="PETIT", RELATION="VMIS_ISOT_LINE", TOUT="OUI"),
-    CONVERGENCE=_F(RESI_GLOB_RELA=1e-8, ITER_GLOB_ELAS=25, ITER_GLOB_MAXI=10),
-    EXCIT=(
-        _F(CHARGE=CHAR1, FONC_MULT=RAMPE, TYPE_CHARGE="FIXE_CSTE"),
-        _F(CHARGE=CHAR2, FONC_MULT=RAMPE, TYPE_CHARGE="FIXE_CSTE"),
-    ),
-    INCREMENT=_F(LIST_INST=LINST, PRECISION=1e-06),
-    INFO=1,
-    MODELE=MODI,
-    NEWTON=_F(MATRICE="TANGENTE", PREDICTION="TANGENTE", REAC_INCR=1, REAC_ITER=1),
-    SOLVEUR=_F(METHODE="MUMPS"),
-)
+# SNL will be store the last step
+RES = STAT_NON_LINE(**common_keywords)
+
+# compute the first step to keep a reference to the result
+common_keywords["INCREMENT"]["INST_FIN"] = 0.2
+
+RES_NEW = MECA_NON_LINE(**common_keywords)
+
+try:
+    common_keywords["reuse"] = RES_NEW
+    common_keywords["ETAT_INIT"] = _F(EVOL_NOLI=RES_NEW)
+    common_keywords["INCREMENT"]["INST_FIN"] = 1.0
+    # to force non convergence at 0.8
+    common_keywords["CONVERGENCE"]["ITER_GLOB_MAXI"] = 4
+    MECA_NON_LINE(**common_keywords)
+except ConvergenceError:
+    pass
 
 # =========================================================
 #          DETERMINATION DE LA REFERENCE
 # =========================================================
 
 nbIndexes = RES.getNumberOfIndexes()
-test.assertEqual(RES.getNumberOfIndexes(), RES_NEW.getNumberOfIndexes())
-test.assertSequenceEqual(RES.getIndexes(), RES_NEW.getIndexes())
-test.assertSequenceEqual(RES_NEW.getIndexes(), range(6))
+test.assertEqual(
+    RES.getNumberOfIndexes(), RES_NEW.getNumberOfIndexes(), msg="number of stored steps"
+)
+test.assertSequenceEqual(RES.getIndexes(), RES_NEW.getIndexes(), msg="stored indexes")
+test.assertSequenceEqual(RES_NEW.getIndexes(), range(4), msg="values of indexes")
 
 
 # =========================================================

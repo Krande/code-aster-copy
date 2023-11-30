@@ -80,6 +80,8 @@ RES = STAT_NON_LINE(
     MODELE=MODI,
     NEWTON=_F(MATRICE="TANGENTE", PREDICTION="TANGENTE", REAC_INCR=2, REAC_ITER=2),
     SOLVEUR=_F(METHODE="MUMPS"),
+    # to check that the last one (1.0) will be added
+    ARCHIVAGE=_F(INST=(1.0 / 3.0, 2.0 / 3.0)),
 )
 
 RES_NEW = MECA_NON_LINE(
@@ -95,6 +97,8 @@ RES_NEW = MECA_NON_LINE(
     MODELE=MODI,
     NEWTON=_F(MATRICE="TANGENTE", PREDICTION="ELASTIQUE", REAC_INCR=2, REAC_ITER=2),
     SOLVEUR=_F(METHODE="MUMPS"),
+    # to check that the last one (1.0) will be added
+    ARCHIVAGE=_F(INST=(1.0 / 3.0, 2.0 / 3.0)),
 )
 
 # =========================================================

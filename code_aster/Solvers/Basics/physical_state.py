@@ -279,7 +279,33 @@ class PhysicalState(BaseFeature):
             """Return the list of available fields."""
             return self._fields_prev.keys()
 
+        def as_dict(self):
+            """Returns the fields as a dict.
+
+            Returns:
+                dict: Dict of fields.
+            """
+
+            def getStoringName(field, default=" "):
+                if field:
+                    quantity, _ = field.getPhysicalQuantity().split("_")
+                    if isinstance(field, (FieldOnNodesReal)):
+                        loc = "NOEU"
+                    else:
+                        loc = field.getLocalization()
+                    return quantity + "_" + loc
+                return default
+
+            ret = {
+                getStoringName(self.stress): self.stress,
+                getStoringName(self.internVar, "VARI_ELGA"): self.internVar,
+            }
+            for field_name in self.getFields():
+                ret[field_name] = self.fields_prev[field_name]
+            return ret
+
         def debugPrint(self, label=""):
+            """Print a representation of the object."""
             print(f"*** {label}Physical State at", self.time_curr, flush=True)
             values = self.primal_prev.getValues()
             print("* primal_prev ", sum(values) / len(values), flush=True)
@@ -716,31 +742,10 @@ class PhysicalState(BaseFeature):
         Returns:
             dict: Dict of fields.
         """
-        current = self.current
-
-        def getStoringName(field, default=" "):
-            if field:
-                quantity, _ = field.getPhysicalQuantity().split("_")
-                if isinstance(field, (FieldOnNodesReal)):
-                    loc = "NOEU"
-                else:
-                    loc = field.getLocalization()
-
-                return quantity + "_" + loc
-
-            return default
-
-        ret = {
-            getStoringName(current.stress): current.stress,
-            getStoringName(current.internVar, "VARI_ELGA"): current.internVar,
-        }
-
-        for field_name in current.getFields():
-            ret[field_name] = current.fields_prev[field_name]
-
-        return ret
+        return self.current.as_dict()
 
     def debugPrint(self, label=""):
+        """Print a representation of the object."""
         print(
             f"*** {label}Stack contains states for t =",
             [state.time_prev for state in self._stack],
