@@ -5636,10 +5636,10 @@ DEFI_MATERIAU = MACRO(
     ### RESTAURATION D'ECROUISSAGE (ANNEALING)
     REST_ECRO=FACT(
         statut="f",
-        COEF_ECRO=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
-        TAU_INF=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
-        TEMP_MINI=SIMP(statut="f", typ="R", fr=tr("Température début")),
-        TEMP_MAXI=SIMP(statut="f", typ="R", fr=tr("Température fin")),
+        COEF_ECRO=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
+        TAU_INF=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
+        TEMP_MINI=SIMP(statut="o", typ="R", fr=tr("Température début")),
+        TEMP_MAXI=SIMP(statut="o", typ="R", fr=tr("Température fin")),
         EPSQ_MINI=SIMP(
             statut="f",
             typ="R",
