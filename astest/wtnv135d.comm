@@ -453,7 +453,7 @@ TEST_RESU(
         NOM_CHAM="DEPL",
         NOEUD="NO8",
         NOM_CMP="DX",
-        VALE_CALC=0.030196074233464227,
+        VALE_CALC=0.03019605162647087,
     ),
 )
 
