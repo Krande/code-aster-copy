@@ -40,6 +40,7 @@ subroutine dstrig(nomte, xyzl, option, pgl, rig,&
 #include "asterfort/utbtab.h"
 #include "asterfort/utctab.h"
 #include "asterfort/utdtab.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
     real(kind=8) :: xyzl(3, *), pgl(*), rig(*), ener(*)
     character(len=16) :: option, nomte
@@ -77,7 +78,7 @@ subroutine dstrig(nomte, xyzl, option, pgl, rig,&
     real(kind=8) :: kmf12(6, 3), kmf12a(36)
     real(kind=8) :: bsigth(24), enerth, excent, un, zero
     real(kind=8) :: qsi, eta, carat3(21), t2iu(4), t2ui(4), t1ve(9)
-    aster_logical :: coupmf, exce, indith
+    aster_logical :: coupmf, exce, indith, ismultic
 !     ------------------------------------------------------------------
     real(kind=8) :: ctor
     data perm  / 1, 4,   7,  2,  5,  8, 3, 6, 9 /
@@ -108,6 +109,7 @@ subroutine dstrig(nomte, xyzl, option, pgl, rig,&
     excent = zr(jcoqu+4)
     exce = .false.
     if (abs(excent) .gt. un/r8gaem()) exce = .true.
+    ismultic = .false.
 !
 !     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE TRIANGLE --------
     call gtria3(xyzl, carat3)
@@ -117,6 +119,11 @@ subroutine dstrig(nomte, xyzl, option, pgl, rig,&
     call dxmate('RIGI', df, dm, dmf, dc,&
                 dci, dmc, dfc, nno, pgl,&
                 multic, coupmf, t2iu, t2ui, t1ve)
+!   VERIFICATION CAS EXCENTREMENT MULTICOUCHES
+    if (multic .gt. 0) ismultic = .true.
+    if (exce .and. ismultic) then
+        call utmess('F', 'PLATE1_15')
+    end if
 !     ------------------------------------------------------------------
 !     CALCUL DE LA MATRICE DE RIGIDITE DE L'ELEMENT EN MEMBRANE
 !     ------------------------------------------------------------------

@@ -62,7 +62,7 @@ Le calcul des déformations à l'aide de PETIT_REAC n'est qu'une approximation d
 Pour prendre en compte correctement les grands déplacements et surtout les grandes rotations, il est recommandé d'utiliser DEFORMATION='GROT_GDEP'."""),
 
     14 : _("""La déformation %(k1)s n'est pas possible sur les éléments COQUE_3D."""),
-
+    15: _("""On ne peut pas utiliser les éléments DST avec multi-couches et excentrement."""),
 
     40 : _("""L'élément de plaque ne peut pas être orienté. Par défaut, pour orienter l'élément, on y projette l'axe global X.
 L'axe de référence pour le calcul du repère local est ici normal à l'élément.
