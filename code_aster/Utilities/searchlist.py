@@ -20,10 +20,10 @@
 # person_in_charge: francesco.bettonte@edf.fr
 
 """
-:py:mod:`searchlist` --- General purpose utilities for search lines
-***************************************************************
+:py:mod:`searchlist` --- General purpose utilities for search lists
+*******************************************************************
 
-This modules gives some basic utilities for search lines.
+This modules gives some basic utilities for search lists.
 """
 
 import numpy as np
@@ -66,12 +66,11 @@ class SearchList:
     def criterion(self, value):
         expected = ("RELATIF", "ABSOLU")
         if value not in expected:
-            msg = "Criterion '{0}' is not in {1}".format(value, expected)
-            raise ValueError(msg)
+            raise ValueError(f"Criterion '{value}' is not in {expected}")
         self._criterion = value
 
     def __repr__(self):
-        return "[{0}]".format(", ".join(map(str, self.values)))
+        return f"[{' '.join(map(str, self.values))}]"
 
     def __iter__(self):
         yield from self.values

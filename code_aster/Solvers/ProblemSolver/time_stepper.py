@@ -24,7 +24,7 @@ from libaster import ConvergenceError, IntegrationError, SolverError
 
 from ...Cata.Syntax import _F
 from ...Messages import MessageLog
-from ...Utilities import force_list, logger, no_new_attributes
+from ...Utilities import cmp, force_list, logger, no_new_attributes
 from ..Basics import Observer, SolverFeature
 from ..Basics import SolverOptions as SOP
 
@@ -321,7 +321,7 @@ class TimeStepper(SolverFeature, Observer):
             int: -1 if time1 < time2, 0 if time1 == time2, +1 if time1 > time2
             using epsilon.
         """
-        return int(time1 > time2 + self._eps) - int(time1 + self._eps < time2)
+        return cmp(time1, time2, abs_tol=self._eps)
 
     def __repr__(self):
         return f"<TimeStepper(from {self._initial} to {self._final}, size {self.size()}: {self._times})>"

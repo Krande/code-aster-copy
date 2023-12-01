@@ -69,20 +69,20 @@ def import_object(uri):
     path = uri.split(".")
     modname = ".".join(path[:-1])
     if len(modname) == 0:
-        raise ImportError("invalid uri: {0}".format(uri))
+        raise ImportError(f"invalid uri: {uri}")
     mod = obj = "?"
     objname = path[-1]
     try:
         __import__(modname)
         mod = sys.modules[modname]
     except ImportError as err:
-        raise ImportError("can not import module : {0} ({1})".format(modname, str(err)))
+        raise ImportError(f"can not import module : {modname} ({err})")
     try:
         obj = getattr(mod, objname)
-    except AttributeError as err:
+    except AttributeError:
         raise AttributeError(
-            "object ({0}) not found in module {1!r}. "
-            "Module content is: {2}".format(objname, modname, tuple(dir(mod)))
+            f"object ({objname}) not found in module {modname!r}. "
+            f"Module content is: {tuple(dir(mod))}"
         )
     return obj
 
@@ -120,6 +120,31 @@ def force_tuple(values):
     a tuple.
     """
     return tuple(force_list(values))
+
+
+def cmp(a, b, rel_tol=None, abs_tol=None):
+    """Compare two values using relative or absolute tolerance
+    (similar to `math.isclose()`).
+
+    Arguments:
+        a (float): first argument.
+        b (float): second argument.
+        rel_tol (float, optional): relative tolerancev, *None* if not used.
+        abs_tol (float, optional): minimum absolute tolerance, *None* if not used.
+
+    Returns:
+        int: -1 if a < b, 0 if a == b, +1 if a > b using tolerances.
+    """
+    eps = 0.0
+    if rel_tol is not None:
+        eps = rel_tol * max(abs(a), abs(b))
+    if abs_tol is not None:
+        eps = max(eps, abs_tol)
+    if abs(a - b) < eps:
+        return 0
+    if a - eps < b:
+        return -1
+    return 1
 
 
 def is_int(obj, onvalue=False):

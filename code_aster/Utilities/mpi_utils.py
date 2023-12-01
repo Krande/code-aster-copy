@@ -68,7 +68,7 @@ try:
 
     MPI = MPIWrap()
 
-except:
+except ImportError:
 
     class FAKE_COMM_WORLD:
         """
@@ -119,7 +119,7 @@ except:
             """Allreduce"""
             return op(force_list(data))
 
-        def py2f():
+        def py2f(self):
             """Return the communicator id."""
             return 0
 

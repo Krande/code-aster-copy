@@ -31,6 +31,7 @@ from .base_utils import (
     Singleton,
     accept_array,
     array_to_list,
+    cmp,
     config,
     force_list,
     force_tuple,
