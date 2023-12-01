@@ -758,7 +758,7 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
         elif resu_init:
             if mesh:
                 UTMESS("I", "COEUR0_1")
-            self.etat_init = _F(EVOL_NOLI=resu_init, PRECISION=1.0e-08, CRITERE="RELATIF")
+            self.etat_init = _F(EVOL_NOLI=resu_init)
             mesh = resu_init.getModel().getMesh()
         elif self.char_init:
             if mesh:
@@ -896,7 +896,7 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
                     ),
                     COMPORTEMENT=self.char_ini_comp,
                     EXCIT=loads_chin_t5_t8,
-                    ETAT_INIT=_F(EVOL_NOLI=__RESULT, PRECISION=1.0e-08, CRITERE="RELATIF"),
+                    ETAT_INIT=_F(EVOL_NOLI=__RESULT),
                 )
             )
             logger.debug("<MAC3_CALCUL><DEFORMATION><CHAR_INIT>: Finish computing evolution T5-T8.")
@@ -923,7 +923,7 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
                     reuse=__RESULT,
                     RESULTAT=__RESULT,
                     CHAM_MATER=self.cham_mater_free,
-                    ETAT_INIT=_F(EVOL_NOLI=__RESULT, PRECISION=1.0e-08, CRITERE="RELATIF"),
+                    ETAT_INIT=_F(EVOL_NOLI=__RESULT),
                     EXCIT=loads_chin_t8_t9,
                     INCREMENT=_F(LIST_INST=self.times),
                     COMPORTEMENT=self.char_ini_comp,
@@ -1009,7 +1009,7 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
                         ETAT_INIT=_F(SIGM=self.null_sigma_field),
                     )
                 )
-                self.etat_init = _F(EVOL_NOLI=__RESULT, PRECISION=1.0e-08, CRITERE="RELATIF")
+                self.etat_init = _F(EVOL_NOLI=__RESULT)
                 logger.debug("<MAC3_CALCUL><DEFORMATION>: Finish computing initial state T0.")
 
             c_prediction = self.evaluate_contacts_prediction(
@@ -1054,7 +1054,7 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
                         INST_FIN=self.coeur.temps_simu["T8"],
                     ),
                     EXCIT=loads_def_t0_t8,
-                    ETAT_INIT=_F(EVOL_NOLI=__RESULT, PRECISION=1.0e-08, CRITERE="RELATIF"),
+                    ETAT_INIT=_F(EVOL_NOLI=__RESULT),
                 )
             )
             logger.debug("<MAC3_CALCUL><DEFORMATION>: Finish computing evolution T0b - T8.")
@@ -1077,7 +1077,7 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
                     reuse=__RESULT,
                     RESULTAT=__RESULT,
                     CHAM_MATER=chmat_contact,
-                    ETAT_INIT=_F(EVOL_NOLI=__RESULT, PRECISION=1.0e-08, CRITERE="RELATIF"),
+                    ETAT_INIT=_F(EVOL_NOLI=__RESULT),
                     EXCIT=loads_def_t8_t8b,
                     INCREMENT=_F(
                         LIST_INST=self.times,
@@ -1104,10 +1104,7 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
             )
 
             c_prediction = self.evaluate_contacts_prediction(
-                _F(EVOL_NOLI=__RESULT, PRECISION=1.0e-08, CRITERE="RELATIF"),
-                loads_def_t8b_t9,
-                "DEFORMATION",
-                "UNLOAD",
+                _F(EVOL_NOLI=__RESULT), loads_def_t8b_t9, "DEFORMATION", "UNLOAD"
             )
 
             logger.debug("<MAC3_CALCUL><DEFORMATION>: Start vessel opening using prediction.")
@@ -1128,7 +1125,7 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
                         INST_FIN=self.coeur.temps_simu["T9"],
                     ),
                     EXCIT=loads_def_t8b_t9,
-                    ETAT_INIT=_F(EVOL_NOLI=__RESULT, PRECISION=1.0e-08, CRITERE="RELATIF"),
+                    ETAT_INIT=_F(EVOL_NOLI=__RESULT),
                 )
             )
 
@@ -1297,10 +1294,7 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
         logger.debug("<MAC3_CALCUL><LAME>: Mesh is deformed.")
 
         c_prediction = self.evaluate_contacts_prediction(
-            _F(EVOL_NOLI=snl_lame_unloaded, PRECISION=1.0e-08, CRITERE="RELATIF"),
-            loads_lame_thyc,
-            "LAME",
-            "LOAD",
+            _F(EVOL_NOLI=snl_lame_unloaded), loads_lame_thyc, "LAME", "LOAD"
         )
 
         logger.debug(
@@ -1341,7 +1335,7 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
                     LIST_INST=self.times, PRECISION=1.0e-08, INST_FIN=self.coeur.temps_simu["T4"]
                 ),
                 EXCIT=loads_lame_thyc,
-                ETAT_INIT=_F(EVOL_NOLI=snl_lame, PRECISION=1.0e-08, CRITERE="RELATIF"),
+                ETAT_INIT=_F(EVOL_NOLI=snl_lame),
             )
         )
         logger.debug("<MAC3_CALCUL><LAME>: Finish computing evolution T0b - T4 (deformed mesh)")
