@@ -87,3 +87,5 @@ if rank == 0:
     test.assertAlmostEqual(sfon[2, 0], 0.05555538259520208)
 elif rank == 1:
     test.assertAlmostEqual(sfon[6, 0], 0.6666666627174732)
+
+FIN()

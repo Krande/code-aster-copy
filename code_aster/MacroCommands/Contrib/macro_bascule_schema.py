@@ -97,66 +97,9 @@ MACRO_BASCULE_SCHEMA_CATA = MACRO(
         ACCE_INIT_GENE=SIMP(statut="f", typ=vect_asse_gene),
     ),
     # -------------------------------------------------------------------
-    b_reuse=BLOC(
-        condition="""exists("reuse")""",
-        ETAT_INIT=FACT(
-            statut="o",
-            regles=(
-                AU_MOINS_UN("EVOL_NOLI", "DEPL", "VITE", "ACCE", "SIGM", "VARI"),
-                #  EXCLUS('EVOL_NOLI','DEPL',),
-                #  EXCLUS('EVOL_NOLI','VITE'),
-                #  EXCLUS('EVOL_NOLI','ACCE'),
-                #  EXCLUS('EVOL_NOLI','SIGM',),
-                #  EXCLUS('EVOL_NOLI','VARI',),
-                EXCLUS("NUME_ORDRE", "INST"),
-            ),
-            DEPL=SIMP(statut="f", typ=cham_no_sdaster),
-            VITE=SIMP(statut="f", typ=cham_no_sdaster),
-            ACCE=SIMP(statut="f", typ=cham_no_sdaster),
-            SIGM=SIMP(statut="f", typ=(cham_elem, carte_sdaster)),
-            VARI=SIMP(statut="f", typ=cham_elem),
-            STRX=SIMP(statut="f", typ=cham_elem),
-            EVOL_NOLI=SIMP(statut="f", typ=evol_noli),
-            NUME_ORDRE=SIMP(statut="f", typ="I"),
-            INST=SIMP(statut="f", typ="R"),
-            CRITERE=SIMP(statut="f", typ="TXM", defaut="RELATIF", into=("RELATIF", "ABSOLU")),
-            b_prec_rela=BLOC(
-                condition="(CRITERE=='RELATIF')", PRECISION=SIMP(statut="f", typ="R", defaut=1.0e-6)
-            ),
-            b_prec_abso=BLOC(condition="(CRITERE=='ABSOLU')", PRECISION=SIMP(statut="o", typ="R")),
-            NUME_DIDI=SIMP(statut="f", typ="I"),
-            INST_ETAT_INIT=SIMP(statut="f", typ="R"),
-        ),
-    ),
+    b_reuse=BLOC(condition="""exists("reuse")""", ETAT_INIT=C_ETAT_INIT("DYNA_NON_LINE", "o")),
     b_not_reuse=BLOC(
-        condition="""not exists("reuse")""",
-        ETAT_INIT=FACT(
-            statut="f",
-            regles=(
-                AU_MOINS_UN("EVOL_NOLI", "DEPL", "VITE", "ACCE", "SIGM", "VARI"),
-                #  EXCLUS('EVOL_NOLI','DEPL',),
-                #  EXCLUS('EVOL_NOLI','VITE'),
-                #  EXCLUS('EVOL_NOLI','ACCE'),
-                #  EXCLUS('EVOL_NOLI','SIGM',),
-                #  EXCLUS('EVOL_NOLI','VARI',),
-                EXCLUS("NUME_ORDRE", "INST"),
-            ),
-            DEPL=SIMP(statut="f", typ=cham_no_sdaster),
-            VITE=SIMP(statut="f", typ=cham_no_sdaster),
-            ACCE=SIMP(statut="f", typ=cham_no_sdaster),
-            SIGM=SIMP(statut="f", typ=(cham_elem, carte_sdaster)),
-            VARI=SIMP(statut="f", typ=cham_elem),
-            EVOL_NOLI=SIMP(statut="f", typ=evol_noli),
-            NUME_ORDRE=SIMP(statut="f", typ="I"),
-            INST=SIMP(statut="f", typ="R"),
-            CRITERE=SIMP(statut="f", typ="TXM", defaut="RELATIF", into=("RELATIF", "ABSOLU")),
-            b_prec_rela=BLOC(
-                condition="(CRITERE=='RELATIF')", PRECISION=SIMP(statut="f", typ="R", defaut=1.0e-6)
-            ),
-            b_prec_abso=BLOC(condition="(CRITERE=='ABSOLU')", PRECISION=SIMP(statut="o", typ="R")),
-            NUME_DIDI=SIMP(statut="f", typ="I"),
-            INST_ETAT_INIT=SIMP(statut="f", typ="R"),
-        ),
+        condition="""not exists("reuse")""", ETAT_INIT=C_ETAT_INIT("DYNA_NON_LINE", "f")
     ),
     # -------------------------------------------------------------------
     METHODE=SIMP(statut="d", typ="TXM", defaut="NEWTON", into=("NEWTON", "NEWTON_KRYLOV")),

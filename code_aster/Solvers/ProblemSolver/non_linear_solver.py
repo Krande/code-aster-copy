@@ -206,6 +206,12 @@ class NonLinearSolver(SolverFeature):
             if "VARI" in init_state:
                 phys_state.internVar = init_state.get("VARI")
                 _msginit("VARI_ELGA")
+            if "VITE" in init_state:
+                phys_state.current.dU = init_state.get("VITE").copyUsingDescription(nume_equa)
+                _msginit("VITE")
+            if "ACCE" in init_state:
+                phys_state.current.d2U = init_state.get("ACCE").copyUsingDescription(nume_equa)
+                _msginit("ACCE")
             if "VALE" in init_state:
                 phys_state.primal_curr.setValues({"TEMP": init_state.get("VALE")})
 

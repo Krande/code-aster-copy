@@ -1317,7 +1317,7 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
                     INST_FIN=self.coeur.temps_simu["T0b"],
                 ),
                 EXCIT=loads_lame_thyc,
-                ETAT_INIT=_F(EVOL_NOLI=snl_lame_unloaded, PRECISION=1.0e-08, CRITERE="RELATIF"),
+                ETAT_INIT=_F(EVOL_NOLI=snl_lame_unloaded),
             )
         )
 

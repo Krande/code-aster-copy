@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -476,45 +476,7 @@ DYTREX = DYNA_NON_LINE(
 
 # IMPR_CO(CONCEPT=_F(NOM=DYTREX,))
 
-"""
-DYTREX=DYNA_NON_LINE(reuse=DYTREX,
-                     MODELE=MODELE1,
-                     CARA_ELEM=PARAM1,
-                     CHAM_MATER=CHAMAT,
-                     MASS_DIAG='NON',
-                     EXCIT=(
-                            _F(CHARGE=EXCIMO1,
-                               FONC_MULT=FOC,),),
-                     COMPORTEMENT=(
-                                _F(
-                                  RELATION='ELAS',
-                                  GROUP_MA='PC1',
-                                  ),
-                                _F(
-                                  RELATION='VMIS_ISOT_LINE',
-                                  GROUP_MA='VOLU1',
-                                  ),
-                               ),
-                     ETAT_INIT=_F(
-                                EVOL_NOLI = DYTREX,
-                                INST=0.006,
-                                ),
-                     SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENT',
-                                FORMULATION='ACCELERATION',),
-                     INCREMENT=_F(LIST_INST=LINSDY2,INST_FIN=0.01),
-                     ARCHIVAGE=_F(LIST_INST=LINSDYN,),
-                     PROJ_MODAL=_F(MODE_MECA = RESMO2,
-                                   MASS_GENE = M_PROJ,
-                                   RIGI_GENE = RIGGENT,
-                                   AMOR_GENE = AMOGENT,
-                                   ),
-                     EXCIT_GENE=_F(
-                                   FONC_MULT = EVINT,
-                                   VECT_GENE = F_GENE,
-                                   ),
-                     )
 
-"""
 # RESTITUTION SUR MODELE COMPLET AVEC ENRICHISSEMENT DE RESULTAT
 
 
@@ -729,7 +691,7 @@ DYTREX2 = DYNA_NON_LINE(
         _F(RELATION="ELAS", GROUP_MA="PC1"),
         _F(RELATION="VMIS_ISOT_LINE", GROUP_MA="VOLU1"),
     ),
-    ETAT_INIT=_F(DEPL=DEP0, VITE=VIT0, ACCE=ACC0, SIGM=SIG0, VARI=VAR0, INST=0.004),
+    ETAT_INIT=_F(DEPL=DEP0, VITE=VIT0, ACCE=ACC0, SIGM=SIG0, VARI=VAR0),
     SCHEMA_TEMPS=_F(SCHEMA="DIFF_CENT", FORMULATION="ACCELERATION"),
     INCREMENT=_F(LIST_INST=LINSDY2, INST_INIT=0.0005),
     ARCHIVAGE=_F(LIST_INST=LINSDYN),
