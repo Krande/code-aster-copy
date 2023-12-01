@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -103,9 +103,9 @@ TRAN_DI = DYNA_NON_LINE(
     CHAM_MATER=CHMAT,
     CARA_ELEM=CHAMPCAR,
     EXCIT=_F(CHARGE=CHARGE),
-    ETAT_INIT=_F(INST=0.0, DEPL=DEPLINI),
+    ETAT_INIT=_F(DEPL=DEPLINI),
     COMPORTEMENT=_F(RELATION="DIS_CHOC", GROUP_MA="EL1"),
-    INCREMENT=_F(LIST_INST=DEFLIST),
+    INCREMENT=_F(LIST_INST=DEFLIST, INST_INIT=0.0),
     SCHEMA_TEMPS=_F(SCHEMA="HHT", MODI_EQUI="NON", FORMULATION="DEPLACEMENT", ALPHA=-0.02),  # 0.01
     CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-4, ITER_GLOB_MAXI=7),
     SOLVEUR=_F(METHODE="LDLT"),

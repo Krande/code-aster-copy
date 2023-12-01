@@ -175,8 +175,8 @@ subroutine nonlinDSInOutRead(phenom, result, ds_inout)
         call getvr8(keywf, 'INST', iocc=1, scal=user_time, nbret=nocc)
         ds_inout%user_time = user_time
         ds_inout%l_user_time = nocc .gt. 0
-        ds_inout%stin_time = user_time
-        ds_inout%l_stin_time = nocc .gt. 0
+        ds_inout%stin_time = 0.d0
+        ds_inout%l_stin_time = ASTER_FALSE
     end if
 !
 99  continue

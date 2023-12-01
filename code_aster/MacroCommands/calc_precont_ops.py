@@ -39,6 +39,14 @@ from ..Utilities import is_sequence
 from ..Messages import UTMESS, MasquerAlarme, RetablirAlarme
 
 
+def __remove_prec(keywords):
+    if "INST_INIT" or "INST_FIN" not in keywords:
+        if "PRECISION" in keywords:
+            del keywords["PRECISION"]
+
+    return keywords
+
+
 def calc_precont_ops(
     self,
     MODELE,
@@ -79,6 +87,7 @@ def calc_precont_ops(
     #     Creation de la nouvelle liste d'instants
     # ----------------------------------------------------------
     dIncrement = INCREMENT[0].cree_dict_valeurs(INCREMENT[0].mc_liste)
+    __prec = dIncrement["PRECISION"]
 
     __L0 = dIncrement["LIST_INST"]
 
@@ -442,6 +451,8 @@ def calc_precont_ops(
 
         if reuse:
             motscle4["reuse"] = reuse
+
+        dIncrement = __remove_prec(dIncrement)
 
         RES = STAT_NON_LINE(
             MODELE=MODELE,
