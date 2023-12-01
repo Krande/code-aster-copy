@@ -192,7 +192,6 @@ MA[0] = LIRE_MAILLAGE(FORMAT="ASTER")
 # ================================================================================================
 
 for remail in range(0, nb_remail):
-
     # ========================================================================================
     #          Preparation de calcul sur le nouveau maillage
     # ========================================================================================
@@ -215,7 +214,13 @@ for remail in range(0, nb_remail):
     )
 
     # Phase de resolution proprement dite
-    resolut = THER_LINEAIRE(MODELE=MO, CHAM_MATER=CHMAT, EXCIT=_F(CHARGE=CLIMIT))
+    resolut = THER_LINEAIRE(
+        MODELE=MO,
+        CHAM_MATER=CHMAT,
+        EXCIT=_F(CHARGE=CLIMIT),
+        TYPE_CALCUL="STAT",
+        INCREMENT=_F(LIST_INST=DEFI_LIST_REEL(VALE=0.0)),
+    )
 
     # ========================================================================================
     #          Calcul des normes d'erreur

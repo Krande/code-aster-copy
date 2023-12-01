@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -149,7 +149,12 @@ CHDI2 = AFFE_CHAR_MECA(
 )
 
 TEMPLI3 = THER_LINEAIRE(
-    CARA_ELEM=CARETHE, CHAM_MATER=CHMATHE, EXCIT=_F(CHARGE=CHTH2), MODELE=MOTHER
+    CARA_ELEM=CARETHE,
+    CHAM_MATER=CHMATHE,
+    EXCIT=_F(CHARGE=CHTH2),
+    MODELE=MOTHER,
+    TYPE_CALCUL="STAT",
+    INCREMENT=_F(LIST_INST=DEFI_LIST_REEL(VALE=0.0)),
 )
 
 T_INITN = CREA_CHAMP(

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,13 @@ CHTH = AFFE_CHAR_THER(
 #
 
 
-TEMPE = THER_LINEAIRE(MODELE=MOTH, CHAM_MATER=CHMAT, EXCIT=_F(CHARGE=CHTH))
+TEMPE = THER_LINEAIRE(
+    MODELE=MOTH,
+    CHAM_MATER=CHMAT,
+    EXCIT=_F(CHARGE=CHTH),
+    TYPE_CALCUL="STAT",
+    INCREMENT=_F(LIST_INST=DEFI_LIST_REEL(VALE=0.0)),
+)
 
 #
 # ANALYSE DES RESULTATS ------------------------------------------------

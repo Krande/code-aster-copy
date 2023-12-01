@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,13 @@ CHTH = AFFE_CHAR_THER(
     MODELE=MOTH, TEMP_IMPO=(_F(GROUP_NO="LIGGAU", TEMP=20.0), _F(GROUP_NO="LIGDRO", TEMP=220.0))
 )
 
-THLI = THER_LINEAIRE(MODELE=MOTH, CHAM_MATER=CMTH, EXCIT=_F(CHARGE=CHTH))
+THLI = THER_LINEAIRE(
+    MODELE=MOTH,
+    CHAM_MATER=CMTH,
+    EXCIT=_F(CHARGE=CHTH),
+    TYPE_CALCUL="STAT",
+    INCREMENT=_F(LIST_INST=DEFI_LIST_REEL(VALE=0.0)),
+)
 
 TEMP = CREA_CHAMP(
     TYPE_CHAM="NOEU_TEMP_R", OPERATION="EXTR", RESULTAT=THLI, NOM_CHAM="TEMP", INST=0.0

@@ -48,7 +48,6 @@ M[0] = CREA_MAILLAGE(MAILLAGE=MD1, LINE_QUAD=_F(TOUT="OUI"), INFO=2)
 # -------------------------------------------------------------------------------
 # On fait nbcalc iterations
 for k in range(nbcalc):
-
     # Affectation des materiaux/modele/chargement
     MATE[k] = AFFE_MATERIAU(MAILLAGE=M[k], AFFE=_F(TOUT="OUI", MATER=MATERI))
     MODE[k] = AFFE_MODELE(
@@ -75,7 +74,13 @@ for k in range(nbcalc):
 
     # Calcul thermique
 
-    RESU[k] = THER_LINEAIRE(MODELE=MODE[k], CHAM_MATER=MATE[k], EXCIT=_F(CHARGE=CHA1[k]))
+    RESU[k] = THER_LINEAIRE(
+        MODELE=MODE[k],
+        CHAM_MATER=MATE[k],
+        EXCIT=_F(CHARGE=CHA1[k]),
+        TYPE_CALCUL="STAT",
+        INCREMENT=_F(LIST_INST=DEFI_LIST_REEL(VALE=0.0)),
+    )
 
     # Calcul de l'indicateur d'erreur
 

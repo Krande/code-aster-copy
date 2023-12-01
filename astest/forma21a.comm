@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -113,7 +113,6 @@ MACR_INFO_MAIL(MAILLAGE=MAT[num_calc], QUALITE="OUI", CONNEXITE="OUI", TAILLE="O
 
 # BOUCLE PYTHON INDICATEUR D'ERREUR/REMAILLAGE
 for num_calc in range(0, nb_calc1):
-
     # PREPARATION DU CALCUL SUR LE NOUVEAU MAILLAGE MA[num_calc]
     MOT[num_calc] = AFFE_MODELE(
         MAILLAGE=MAT[num_calc], AFFE=_F(TOUT="OUI", MODELISATION="PLAN_DIAG", PHENOMENE="THERMIQUE")
@@ -139,6 +138,8 @@ for num_calc in range(0, nb_calc1):
         MODELE=MOT[num_calc],
         CHAM_MATER=CHMATT[num_calc],
         EXCIT=(_F(CHARGE=CHT[num_calc]), _F(CHARGE=CLIMT[num_calc])),
+        TYPE_CALCUL="STAT",
+        INCREMENT=_F(LIST_INST=DEFI_LIST_REEL(VALE=0.0)),
     )
 
     # POST_TRAITEMENT POUR OBTENIR LES FLUX AUX NOEUDS ET

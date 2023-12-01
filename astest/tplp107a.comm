@@ -63,7 +63,13 @@ CLIMIT = AFFE_CHAR_THER_F(
 )
 
 # Resolution
-RESO = THER_LINEAIRE(MODELE=MO, CHAM_MATER=CHMAT, EXCIT=_F(CHARGE=CLIMIT))
+RESO = THER_LINEAIRE(
+    MODELE=MO,
+    CHAM_MATER=CHMAT,
+    EXCIT=_F(CHARGE=CLIMIT),
+    TYPE_CALCUL="STAT",
+    INCREMENT=_F(LIST_INST=DEFI_LIST_REEL(VALE=0.0)),
+)
 
 # ========================================================================================
 #          Creation de la solution analytique
