@@ -27,8 +27,8 @@ from functools import wraps
 class FeatureMeta(type):
     """Metaclass to set the list of supported features."""
 
-    def __new__(cls, name, base, defcl):
-        obj = super().__new__(cls, name, base, defcl)
+    def __new__(mcs, name, base, defcl):
+        obj = super().__new__(mcs, name, base, defcl)
         # obj.required_features = defcl.get("required_features", getattr(base, "required_features"))
         # obj.optional_features = defcl.get("optional_features", getattr(base, "optional_features"))
         # compute '_supported' attribute value
@@ -44,6 +44,7 @@ class BaseFeature(metaclass=FeatureMeta):
     """
 
     provide = 0
+    _supported = 0
     required_features = []
     optional_features = []
     # for no_new_attributes
