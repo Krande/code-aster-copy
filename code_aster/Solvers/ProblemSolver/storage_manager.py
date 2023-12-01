@@ -116,8 +116,8 @@ class StorageManager(SolverFeature):
         if self._result.getNumberOfIndexes() > 0:
             self._result.clear(self._stor_idx)
 
-    def hasToBeStored(self, idx, time):
-        """To known if this time step has to be store
+    def _to_be_stored(self, idx, time):
+        """To known if this time step has to be store.
 
         Arguments:
             idx (int): index of the time (restarts at 0 at each new operator).
@@ -132,11 +132,11 @@ class StorageManager(SolverFeature):
         if self._step is not None:
             return idx % self._step == 0
         if self._timelist is not None:
-            # FIXME use _eps/_relative
+            # FIXME use _eps/_relative, see Utilities.cmp
             return time in self._timelist
         return True
 
-    def wasStored(self, idx):
+    def _was_stored(self, idx):
         """Tell if a state was already stored for this index.
 
         Note: It actually checks that `idx` is greater than the greatest index
@@ -166,7 +166,7 @@ class StorageManager(SolverFeature):
                 (restarts at 0 at each new operator).
             kwargs: named parameters
         """
-        # FIXME use hasToBeStored
+        # FIXME use _to_be_stored
         self._result.resize(self._result.getNumberOfIndexes() + 10)
         if "model" in kwargs:
             self._result.setModel(kwargs["model"], idx)
@@ -190,12 +190,12 @@ class StorageManager(SolverFeature):
             param (dict, optional): Dict of parameters to be stored.
             force (bool): force the storage even if storing-policy is not verified.
         """
-        logger.debug(
+        logger.info(
             "STORE: calc=%d, time=%f, last=%d, stor=%d", idx, time, self._last_idx, self._stor_idx
         )
-        if not force and not self.hasToBeStored(idx, time):
+        if not force and not self._to_be_stored(idx, time):
             return
-        if self.wasStored(idx):
+        if self._was_stored(idx):
             return
         slot = StorageManager.Slot()
         slot.index = idx
@@ -216,25 +216,44 @@ class StorageManager(SolverFeature):
             slot.fields[compor] = behav.getBehaviourField()
         self._buffer.append(slot)
         self._store()
-        if idx > self._last_idx:
-            self._stor_idx += 1
-        self._last_idx = idx
+        self.completed(idx)
 
     @profile
-    def storeField(self, idx, field, field_type, time=0.0):
+    def storeField(self, idx, field, field_type, time=0.0, force=False):
         """Store a new field.
 
         Arguments:
             idx (int): index of the current (pseudo-)time
                 (restarts at 0 at each new operator).
             field (FieldOn***): field to store
-            field_type (str) : type of the field as DEPL, SIEF_ELGA...
+            field_type (str): type of the field as DEPL, SIEF_ELGA...
+            time (float, optional): current (pseudo-)time.
+            force (bool): force the storage even if storing-policy is not verified.
         """
-        # FIXME use hasToBeStored(idx, time)
-        # TODO check if this fiels was already stored at this time
-        if field is not None and field_type not in self._excl_fields:
-            self._result.setField(field, field_type, self._stor_idx)
-            UTMESS("I", "ARCHIVAGE_6", valk=field_type, valr=time, vali=self._stor_idx)
+        logger.info(
+            "STORE: calc=%d, time=%f, field=%s, last=%d, stor=%d",
+            idx,
+            time,
+            field_type,
+            self._last_idx,
+            self._stor_idx,
+        )
+        # if not force and not self._to_be_stored(idx, time):
+        #    return
+        # if self._was_stored(idx):
+        #    return
+        self._store_field(time, field, field_type)
+
+    def completed(self, idx):
+        """Register the current step as completed successfully.
+
+        Arguments:
+            idx (int): index of the current (pseudo-)time
+                (restarts at 0 at each new operator).
+        """
+        if idx > self._last_idx:
+            self._stor_idx += 1
+        self._last_idx = idx
 
     @profile
     def _store(self):
@@ -258,5 +277,13 @@ class StorageManager(SolverFeature):
                 self._result.setListOfLoads(slot.load, idx)
             if slot.fields:
                 for field_type, field in slot.fields.items():
-                    self.storeField(slot.index, field, field_type, time=slot.time)
+                    self._store_field(slot.time, field, field_type)
         self._buffer = []
+
+    @profile
+    def _store_field(self, time, field, field_type):
+        """Store a field - internal function."""
+        if field is None or field_type in self._excl_fields:
+            return
+        self._result.setField(field, field_type, self._stor_idx)
+        UTMESS("I", "ARCHIVAGE_6", valk=field_type, valr=time, vali=self._stor_idx)

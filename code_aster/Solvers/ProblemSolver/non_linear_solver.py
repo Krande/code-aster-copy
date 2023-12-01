@@ -114,6 +114,7 @@ class NonLinearSolver(SolverFeature):
         storage_manager.storeState(
             self.step_rank, state.time_curr, self.phys_pb, state, force=force
         )
+        # storage_manager.completed(self.step_rank)
 
     @profile
     def initialize(self):
