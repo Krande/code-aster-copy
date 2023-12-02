@@ -104,17 +104,17 @@ class NonLinearSolver(SolverFeature):
         """
         return self.stepper.isFinished()
 
-    def _storeState(self, state, force=False):
+    def _storeState(self, state, ignore_policy=False):
         """Store the physical state.
 
         Arguments:
             time (float): current (pseudo)-time.
+            ignore_policy (bool): ignore storing-policy.
         """
         storage_manager = self.get_feature(SOP.Storage)
         storage_manager.storeState(
-            self.step_rank, state.time_curr, self.phys_pb, state, force=force
+            self.step_rank, state.time_curr, self.phys_pb, state, ignore_policy=ignore_policy
         )
-        # storage_manager.completed(self.step_rank)
 
     @profile
     def initialize(self):
@@ -123,8 +123,7 @@ class NonLinearSolver(SolverFeature):
         args = self.get_feature(SOP.Keywords)
         # essential to be called enough soon (may change the size of VARI field)
         phys_pb = self.phys_pb
-        init_state = self._get("ETAT_INIT")
-        if init_state:
+        if self._get("ETAT_INIT"):
             phys_pb.computeBehaviourProperty(args["COMPORTEMENT"], "OUI", 2)
         else:
             phys_pb.computeBehaviourProperty(args["COMPORTEMENT"], "NON", 2)
@@ -135,8 +134,8 @@ class NonLinearSolver(SolverFeature):
         # Add some hooks
         if phys_pb.getBehaviourProperty().hasAnnealing():
             self.use(Annealing())
-        self.setInitialState(init_state)
         self.step_rank = 0
+        self.setInitialState()
         self._storeState(self.phys_state)
         # register observers
         for source in self.get_childs(SOP.IncrementalSolver | SOP.EventSource):
@@ -145,11 +144,12 @@ class NonLinearSolver(SolverFeature):
             source.add_observer(self.stepper)
 
     @profile
-    def setInitialState(self, init_state):
+    def setInitialState(self):
         """Initialize the physical state."""
         phys_state = self.phys_state
         phys_state.zeroInitialState(self.phys_pb)
         init_time = self.stepper.getInitial()
+        init_state = self._get("ETAT_INIT")
         if init_state:
             if "INST_ETAT_INIT" in init_state:
                 init_time = init_state.get("INST_ETAT_INIT")
@@ -246,7 +246,7 @@ class NonLinearSolver(SolverFeature):
                     logger.warning(
                         "An error occurred, ensure that the last converged step is saved"
                     )
-                    self._storeState(self.phys_state.getState(-1), force=True)
+                    self._storeState(self.phys_state.getState(-1), ignore_policy=True)
                     raise
             else:
                 if not self.stepper.check_event(self.phys_state):
@@ -260,7 +260,7 @@ class NonLinearSolver(SolverFeature):
                 self.step_rank += 1
                 self._storeState(self.phys_state)
         # ensure that last step was stored
-        self._storeState(self.phys_state, force=True)
+        self._storeState(self.phys_state, ignore_policy=True)
 
     def post_hooks(self):
         """Call post hooks"""

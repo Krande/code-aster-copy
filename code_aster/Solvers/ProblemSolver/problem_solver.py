@@ -153,8 +153,10 @@ class ProblemSolver(SolverFeature):
         store = self.get_feature(SOP.Storage, optional=True)
         if not store:
             args = self.get_feature(SOP.Keywords)
-            store = StorageManager(self._result, args.get("ARCHIVAGE"))
             reuse = args.get("REUSE")
+            store = StorageManager(
+                self._result, args.get("ARCHIVAGE"), reused=reuse is self._result
+            )
             if reuse:
                 init_state = args.get("ETAT_INIT")
                 assert init_state
@@ -175,7 +177,7 @@ class ProblemSolver(SolverFeature):
                     )
                 else:
                     init_index = reuse.getLastIndex()
-                store.setFirstStorageIndex(init_index + 1, first_exists=True)
+                store.setFirstStorageIndex(init_index + 1)
         self.use(store)
         return store
 

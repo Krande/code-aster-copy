@@ -47,24 +47,26 @@ class StorageManager(SolverFeature):
             "param",
         )
 
-    _result = _buffer = _excl_fields = None
+    _result = _buffer = _excl_fields = _reused = None
     _eps = _relative = None
     _timelist = _step = None
     _stor_idx = _last_idx = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
-    def __init__(self, result, mcf=None, **kwargs):
+    def __init__(self, result, mcf=None, reused=False, **kwargs):
         """Create the storage manager object from the ARCHIVAGE factor keyword.
 
         Arguments:
             result (Result): result where store fields
             mcf (list|tuple|dict): Convenient option to pass `(kwargs,)`, the value
                 returned for a factor keyword.
+            reused (bool): *True* if this result is reused (index=0 will be skipped).
             kwargs (dict): Valid ARCHIVAGE keywords (syntax checked, with defaults).
 
         """
         super().__init__()
         self._result = result
+        self._reused = reused
         if self._result.getNumberOfIndexes() == 0:
             self._result.resize(10)
         self._buffer = []
@@ -99,22 +101,20 @@ class StorageManager(SolverFeature):
             assert all(self._timelist.unique(t) for t in times)
 
         self._last_idx = -999
-        self._stor_idx = 0
+        self._stor_idx = -1
 
-    def setFirstStorageIndex(self, index, first_exists=False):
+    def setFirstStorageIndex(self, storage_index):
         """Set initial index (index where the first step should be stored).
 
         Arguments:
-            index (int): index to be used for the next storage.
-            first_exist (bool): *True* if the first step already exists,
-                *False* otherwise.
+            storage_index (int): index to be used for the next storage.
         """
-        self._stor_idx = index
-        if first_exists:
-            self._last_idx = 0
+        logger.info("STORE: set first: %d", storage_index)
+        self._stor_idx = storage_index - 1
+        self._last_idx = -999
 
         if self._result.getNumberOfIndexes() > 0:
-            self._result.clear(self._stor_idx)
+            self._result.clear(storage_index)
 
     def _to_be_stored(self, idx, time):
         """To known if this time step has to be store.
@@ -137,10 +137,7 @@ class StorageManager(SolverFeature):
         return True
 
     def _was_stored(self, idx):
-        """Tell if a state was already stored for this index.
-
-        Note: It actually checks that `idx` is greater than the greatest index
-        already stored.
+        """Tell if something was already stored or skipped for this index.
 
         Arguments:
             idx (int): index of the time (restarts at 0 at each new operator).
@@ -149,6 +146,27 @@ class StorageManager(SolverFeature):
             bool: *True* if the time was already stored, *False* otherwise.
         """
         return idx <= self._last_idx
+
+    def _check(self, idx, time, ignore_policy):
+        """Tell if the storage should be skipped and the new values of the indexes.
+
+        Arguments:
+            idx (int): index of the time (restarts at 0 at each new operator).
+            time (float): time step.
+        """
+        if self._reused and idx == 0:
+            self._last_idx = idx
+            UTMESS("I", "ETATINIT_10")
+            return True
+        if not ignore_policy and not self._to_be_stored(idx, time):
+            return True
+        if self._was_stored(idx):
+            return True
+        if idx > self._last_idx:
+            self._stor_idx += 1
+            logger.info("STORE: new step: stor=%d", self._stor_idx)
+        self._last_idx = idx
+        return False
 
     def getResult(self):
         """Returns the Result container.
@@ -178,7 +196,7 @@ class StorageManager(SolverFeature):
             self._result.setTime(kwargs["time"], idx)
 
     @profile
-    def storeState(self, idx, time, phys_pb, phys_state, param=None, force=True):
+    def storeState(self, idx, time, phys_pb, phys_state, param=None, ignore_policy=False):
         """Store a new state.
 
         Arguments:
@@ -188,14 +206,12 @@ class StorageManager(SolverFeature):
             phys_pb (PhysicalProblem): Physical problem.
             phys_state (PhysicalState): Physical state.
             param (dict, optional): Dict of parameters to be stored.
-            force (bool): force the storage even if storing-policy is not verified.
+            ignore_policy (bool): ignore storing-policy.
         """
         logger.info(
             "STORE: calc=%d, time=%f, last=%d, stor=%d", idx, time, self._last_idx, self._stor_idx
         )
-        if not force and not self._to_be_stored(idx, time):
-            return
-        if self._was_stored(idx):
+        if self._check(idx, time, ignore_policy):
             return
         slot = StorageManager.Slot()
         slot.index = idx
@@ -216,10 +232,9 @@ class StorageManager(SolverFeature):
             slot.fields[compor] = behav.getBehaviourField()
         self._buffer.append(slot)
         self._store()
-        self.completed(idx)
 
     @profile
-    def storeField(self, idx, field, field_type, time=0.0, force=False):
+    def storeField(self, idx, field, field_type, time=0.0, ignore_policy=False):
         """Store a new field.
 
         Arguments:
@@ -228,7 +243,7 @@ class StorageManager(SolverFeature):
             field (FieldOn***): field to store
             field_type (str): type of the field as DEPL, SIEF_ELGA...
             time (float, optional): current (pseudo-)time.
-            force (bool): force the storage even if storing-policy is not verified.
+            ignore_policy (bool): ignore storing-policy.
         """
         logger.info(
             "STORE: calc=%d, time=%f, field=%s, last=%d, stor=%d",
@@ -238,22 +253,9 @@ class StorageManager(SolverFeature):
             self._last_idx,
             self._stor_idx,
         )
-        # if not force and not self._to_be_stored(idx, time):
-        #    return
-        # if self._was_stored(idx):
-        #    return
+        if self._check(idx, time, ignore_policy):
+            return
         self._store_field(time, field, field_type)
-
-    def completed(self, idx):
-        """Register the current step as completed successfully.
-
-        Arguments:
-            idx (int): index of the current (pseudo-)time
-                (restarts at 0 at each new operator).
-        """
-        if idx > self._last_idx:
-            self._stor_idx += 1
-        self._last_idx = idx
 
     @profile
     def _store(self):

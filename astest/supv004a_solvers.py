@@ -19,6 +19,7 @@
 
 import unittest
 from enum import IntFlag, auto
+from unittest.mock import MagicMock
 
 from code_aster import ConvergenceError, SolverError
 from code_aster.Commands import DEFI_LIST_REEL
@@ -27,8 +28,10 @@ from code_aster.Solvers import (
     ConvergenceManager,
     PhysicalState,
     ProblemType,
+    StorageManager,
     TimeStepper,
 )
+from code_aster.Utilities.logger import INFO, logger
 
 list0 = DEFI_LIST_REEL(VALE=0.0)
 listr = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=10.0, PAS=1.0))
@@ -763,6 +766,142 @@ class TestConvergenceManager(unittest.TestCase):
         resi_rela.value = 1.0e-8
         resi_geom.value = ConvergenceManager.undef
         self.assertFalse(conv.isConverged())
+
+
+class TestStorageManager(unittest.TestCase):
+    """Check for StorageManager"""
+
+    def setUp(self):
+        # logger.setLevel(INFO)
+        self.result = MagicMock(name="result")
+        self.result.getNumberOfIndexes.return_value = 0
+        self.prob = MagicMock(name="phys_pb")
+        self.state = MagicMock(name="phys_state")
+        self.field = MagicMock(name="field")
+
+    def test01_mnl_basics(self):
+        # calculation at 0., 1. stored at 0, 1
+        store = StorageManager(self.result)
+        self.assertIs(store.getResult(), self.result)
+        self.assertEqual(store._last_idx, -999)
+        self.assertEqual(store._stor_idx, -1)
+        self.assertFalse(self.result.clear.called)
+
+        self.assertTrue(store._to_be_stored(0, 0.0))
+        self.assertTrue(store._to_be_stored(1, 1.0))
+        self.assertFalse(store._was_stored(0))
+        self.assertFalse(store._was_stored(1))
+
+        # initial state
+        store.storeState(0, 0.0, self.prob, self.state)
+        self.assertEqual(store._last_idx, 0)
+        self.assertEqual(store._stor_idx, 0)
+
+        store.storeField(0, self.field, "HHO_TEMP", time=0.0)
+        self.assertEqual(store._last_idx, 0)
+        self.assertEqual(store._stor_idx, 0)
+        self.assertTrue(store._was_stored(0))
+        self.assertFalse(store._was_stored(1))
+
+        # first step
+        store.storeState(1, 1.0, self.prob, self.state)
+        self.assertEqual(store._last_idx, 1)
+        self.assertEqual(store._stor_idx, 1)
+
+        store.storeField(1, self.field, "HHO_TEMP", time=1.0)
+        self.assertEqual(store._last_idx, 1)
+        self.assertEqual(store._stor_idx, 1)
+        self.assertTrue(store._was_stored(0))
+        self.assertTrue(store._was_stored(1))
+
+    def test01_mnl_restart(self):
+        self.result.getNumberOfIndexes.return_value = 2
+        last_index = 1
+
+        # restart at 1. already (re)stored at 1
+        # calculation at 2., 3., 4. stored at -, 2, -
+        # then force storage of 4. at 3
+        store = StorageManager(self.result, PAS_ARCH=2, reused=True)
+        self.assertIs(store.getResult(), self.result)
+        self.assertEqual(store._last_idx, -999)
+        self.assertEqual(store._stor_idx, -1)
+
+        # first storage at index 'last_index + 1'
+        store.setFirstStorageIndex(storage_index=last_index + 1)
+        self.assertTrue(self.result.clear.called)
+        # same indexes than at the end of the previous calculation
+        self.assertEqual(store._last_idx, -999)
+        self.assertEqual(store._stor_idx, 1)
+
+        self.assertTrue(store._to_be_stored(0, 1.0))
+        self.assertFalse(store._to_be_stored(1, 2.0))
+        self.assertTrue(store._to_be_stored(2, 3.0))
+        self.assertFalse(store._to_be_stored(3, 4.0))
+        self.assertFalse(store._was_stored(0))
+        self.assertFalse(store._was_stored(1))
+        self.assertFalse(store._was_stored(2))
+        self.assertFalse(store._was_stored(3))
+
+        # initial state 0 at 1.0, already stored
+        store.storeState(0, 1.0, self.prob, self.state)
+        self.assertEqual(store._last_idx, 0)
+        self.assertEqual(store._stor_idx, 1)
+
+        store.storeField(0, self.field, "HHO_TEMP", time=1.0)
+        self.assertEqual(store._last_idx, 0)
+        self.assertEqual(store._stor_idx, 1)
+        self.assertTrue(store._was_stored(0))
+        self.assertFalse(store._was_stored(1))
+        self.assertFalse(store._was_stored(2))
+        self.assertFalse(store._was_stored(3))
+
+        # next step 1 at 2.0, rules not checked
+        store.storeState(1, 2.0, self.prob, self.state)
+        self.assertEqual(store._last_idx, 0)
+        self.assertEqual(store._stor_idx, 1)
+
+        store.storeField(1, self.field, "HHO_TEMP", time=2.0)
+        self.assertEqual(store._last_idx, 0)
+        self.assertEqual(store._stor_idx, 1)
+        self.assertTrue(store._was_stored(0))
+        self.assertFalse(store._was_stored(1))
+        self.assertFalse(store._was_stored(2))
+        self.assertFalse(store._was_stored(3))
+
+        # next step 2 at 3.0
+        store.storeState(2, 3.0, self.prob, self.state)
+        self.assertEqual(store._last_idx, 2)
+        self.assertEqual(store._stor_idx, 2)
+
+        store.storeField(2, self.field, "HHO_TEMP", time=3.0)
+        self.assertEqual(store._last_idx, 2)
+        self.assertEqual(store._stor_idx, 2)
+        self.assertTrue(store._was_stored(0))
+        self.assertTrue(store._was_stored(1))
+        self.assertTrue(store._was_stored(2))
+        self.assertFalse(store._was_stored(3))
+
+        # next step 3 at 4.0, rules not checked
+        store.storeState(3, 4.0, self.prob, self.state)
+        self.assertEqual(store._last_idx, 2)
+        self.assertEqual(store._stor_idx, 2)
+
+        store.storeField(3, self.field, "HHO_TEMP", time=4.0)
+        self.assertEqual(store._last_idx, 2)
+        self.assertEqual(store._stor_idx, 2)
+        self.assertTrue(store._was_stored(0))
+        self.assertTrue(store._was_stored(1))
+        self.assertTrue(store._was_stored(2))
+        self.assertFalse(store._was_stored(3))
+
+        # last step 3 at 4.0
+        store.storeState(3, 4.0, self.prob, self.state, ignore_policy=True)
+        self.assertEqual(store._last_idx, 3)
+        self.assertEqual(store._stor_idx, 3)
+
+        store.storeField(3, self.field, "HHO_TEMP", time=4.0, ignore_policy=True)
+        self.assertEqual(store._last_idx, 3)
+        self.assertEqual(store._stor_idx, 3)
 
 
 if __name__ == "__main__":

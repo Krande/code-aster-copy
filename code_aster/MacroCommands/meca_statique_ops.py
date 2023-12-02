@@ -244,7 +244,7 @@ def meca_statique_ops(self, **args):
         phys_pb.computeReferenceExternalStateVariables()
 
     # first index to use, +1 because there is no initial state
-    storage_manager.setFirstStorageIndex(result.getNumberOfIndexes() + 1, first_exists=False)
+    storage_manager.setFirstStorageIndex(result.getNumberOfIndexes() + 1)
 
     # Run computation
     step_rank = 0
