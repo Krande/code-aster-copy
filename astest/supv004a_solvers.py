@@ -789,19 +789,20 @@ class TestStorageManager(unittest.TestCase):
 
         self.assertTrue(store._to_be_stored(0, 0.0))
         self.assertTrue(store._to_be_stored(1, 1.0))
-        self.assertFalse(store._was_stored(0))
-        self.assertFalse(store._was_stored(1))
+        self.assertFalse(store._has_successor(0))
+        self.assertFalse(store._has_successor(1))
 
         # initial state
         store.storeState(0, 0.0, self.prob, self.state)
         self.assertEqual(store._last_idx, 0)
         self.assertEqual(store._stor_idx, 0)
+        self.assertFalse(store._has_successor(0))
 
         store.storeField(0, self.field, "HHO_TEMP", time=0.0)
         self.assertEqual(store._last_idx, 0)
         self.assertEqual(store._stor_idx, 0)
-        self.assertTrue(store._was_stored(0))
-        self.assertFalse(store._was_stored(1))
+        self.assertFalse(store._has_successor(0))
+        self.assertFalse(store._has_successor(1))
 
         # first step
         store.storeState(1, 1.0, self.prob, self.state)
@@ -811,8 +812,8 @@ class TestStorageManager(unittest.TestCase):
         store.storeField(1, self.field, "HHO_TEMP", time=1.0)
         self.assertEqual(store._last_idx, 1)
         self.assertEqual(store._stor_idx, 1)
-        self.assertTrue(store._was_stored(0))
-        self.assertTrue(store._was_stored(1))
+        self.assertTrue(store._has_successor(0))
+        self.assertFalse(store._has_successor(1))
 
     def test01_mnl_restart(self):
         self.result.getNumberOfIndexes.return_value = 2
@@ -837,10 +838,10 @@ class TestStorageManager(unittest.TestCase):
         self.assertFalse(store._to_be_stored(1, 2.0))
         self.assertTrue(store._to_be_stored(2, 3.0))
         self.assertFalse(store._to_be_stored(3, 4.0))
-        self.assertFalse(store._was_stored(0))
-        self.assertFalse(store._was_stored(1))
-        self.assertFalse(store._was_stored(2))
-        self.assertFalse(store._was_stored(3))
+        self.assertFalse(store._has_successor(0))
+        self.assertFalse(store._has_successor(1))
+        self.assertFalse(store._has_successor(2))
+        self.assertFalse(store._has_successor(3))
 
         # initial state 0 at 1.0, already stored
         store.storeState(0, 1.0, self.prob, self.state)
@@ -850,10 +851,10 @@ class TestStorageManager(unittest.TestCase):
         store.storeField(0, self.field, "HHO_TEMP", time=1.0)
         self.assertEqual(store._last_idx, 0)
         self.assertEqual(store._stor_idx, 1)
-        self.assertTrue(store._was_stored(0))
-        self.assertFalse(store._was_stored(1))
-        self.assertFalse(store._was_stored(2))
-        self.assertFalse(store._was_stored(3))
+        self.assertFalse(store._has_successor(0))
+        self.assertFalse(store._has_successor(1))
+        self.assertFalse(store._has_successor(2))
+        self.assertFalse(store._has_successor(3))
 
         # next step 1 at 2.0, rules not checked
         store.storeState(1, 2.0, self.prob, self.state)
@@ -863,10 +864,10 @@ class TestStorageManager(unittest.TestCase):
         store.storeField(1, self.field, "HHO_TEMP", time=2.0)
         self.assertEqual(store._last_idx, 0)
         self.assertEqual(store._stor_idx, 1)
-        self.assertTrue(store._was_stored(0))
-        self.assertFalse(store._was_stored(1))
-        self.assertFalse(store._was_stored(2))
-        self.assertFalse(store._was_stored(3))
+        self.assertFalse(store._has_successor(0))
+        self.assertFalse(store._has_successor(1))
+        self.assertFalse(store._has_successor(2))
+        self.assertFalse(store._has_successor(3))
 
         # next step 2 at 3.0
         store.storeState(2, 3.0, self.prob, self.state)
@@ -876,10 +877,10 @@ class TestStorageManager(unittest.TestCase):
         store.storeField(2, self.field, "HHO_TEMP", time=3.0)
         self.assertEqual(store._last_idx, 2)
         self.assertEqual(store._stor_idx, 2)
-        self.assertTrue(store._was_stored(0))
-        self.assertTrue(store._was_stored(1))
-        self.assertTrue(store._was_stored(2))
-        self.assertFalse(store._was_stored(3))
+        self.assertTrue(store._has_successor(0))
+        self.assertTrue(store._has_successor(1))
+        self.assertFalse(store._has_successor(2))
+        self.assertFalse(store._has_successor(3))
 
         # next step 3 at 4.0, rules not checked
         store.storeState(3, 4.0, self.prob, self.state)
@@ -889,10 +890,10 @@ class TestStorageManager(unittest.TestCase):
         store.storeField(3, self.field, "HHO_TEMP", time=4.0)
         self.assertEqual(store._last_idx, 2)
         self.assertEqual(store._stor_idx, 2)
-        self.assertTrue(store._was_stored(0))
-        self.assertTrue(store._was_stored(1))
-        self.assertTrue(store._was_stored(2))
-        self.assertFalse(store._was_stored(3))
+        self.assertTrue(store._has_successor(0))
+        self.assertTrue(store._has_successor(1))
+        self.assertFalse(store._has_successor(2))
+        self.assertFalse(store._has_successor(3))
 
         # last step 3 at 4.0
         store.storeState(3, 4.0, self.prob, self.state, ignore_policy=True)

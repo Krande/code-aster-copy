@@ -439,7 +439,6 @@ def ther_lineaire_ops(self, **args):
             if model.existsHHO():
                 hho_field = hho.projectOnLagrangeSpace(phys_state.primal_curr)
                 storage_manager.storeField(step_rank, hho_field, "HHO_TEMP", phys_state.time_curr)
-            # storage_manager.completed(step_rank)
 
     # Loop on time step
     while not timeStepper.isFinished():
@@ -489,7 +488,6 @@ def ther_lineaire_ops(self, **args):
         if model.existsHHO():
             hho_field = hho.projectOnLagrangeSpace(phys_state.primal_curr)
             storage_manager.storeField(step_rank, hho_field, "HHO_TEMP", phys_state.time_curr)
-        # storage_manager.completed(step_rank)
 
         timeStepper.completed()
         time_delta_prev = time_delta

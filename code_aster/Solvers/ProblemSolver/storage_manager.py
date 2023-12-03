@@ -136,19 +136,20 @@ class StorageManager(SolverFeature):
             return time in self._timelist
         return True
 
-    def _was_stored(self, idx):
-        """Tell if something was already stored or skipped for this index.
+    def _has_successor(self, idx):
+        """Tell if a step is followed by another one.
 
         Arguments:
             idx (int): index of the time (restarts at 0 at each new operator).
 
         Returns:
-            bool: *True* if the time was already stored, *False* otherwise.
+            bool: *True* if the step was already stored and followed by a more
+                recent one, *False* otherwise.
         """
-        return idx <= self._last_idx
+        return idx < self._last_idx
 
-    def _check(self, idx, time, ignore_policy):
-        """Tell if the storage should be skipped and the new values of the indexes.
+    def _skip(self, idx, time, ignore_policy):
+        """Tell if the storage should be skipped and set the new values of the indexes.
 
         Arguments:
             idx (int): index of the time (restarts at 0 at each new operator).
@@ -159,13 +160,16 @@ class StorageManager(SolverFeature):
             UTMESS("I", "ETATINIT_10")
             return True
         if not ignore_policy and not self._to_be_stored(idx, time):
+            logger.info("STORE: skipped, reason: policy")
             return True
-        if self._was_stored(idx):
+        if self._has_successor(idx):
+            logger.info("STORE: skipped, already done")
             return True
         if idx > self._last_idx:
             self._stor_idx += 1
             logger.info("STORE: new step: stor=%d", self._stor_idx)
         self._last_idx = idx
+        logger.info("STORE: checked")
         return False
 
     def getResult(self):
@@ -211,7 +215,7 @@ class StorageManager(SolverFeature):
         logger.info(
             "STORE: calc=%d, time=%f, last=%d, stor=%d", idx, time, self._last_idx, self._stor_idx
         )
-        if self._check(idx, time, ignore_policy):
+        if self._skip(idx, time, ignore_policy):
             return
         slot = StorageManager.Slot()
         slot.index = idx
@@ -253,7 +257,7 @@ class StorageManager(SolverFeature):
             self._last_idx,
             self._stor_idx,
         )
-        if self._check(idx, time, ignore_policy):
+        if self._skip(idx, time, ignore_policy):
             return
         self._store_field(time, field, field_type)
 
@@ -286,6 +290,7 @@ class StorageManager(SolverFeature):
     def _store_field(self, time, field, field_type):
         """Store a field - internal function."""
         if field is None or field_type in self._excl_fields:
+            logger.info("STORE: not exists or excluded: %s", field_type)
             return
         self._result.setField(field, field_type, self._stor_idx)
         UTMESS("I", "ARCHIVAGE_6", valk=field_type, valr=time, vali=self._stor_idx)
