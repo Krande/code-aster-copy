@@ -793,23 +793,27 @@ class TestStorageManager(unittest.TestCase):
         self.assertFalse(store._has_successor(1))
 
         # initial state
-        store.storeState(0, 0.0, self.prob, self.state)
+        done = store.storeState(0, 0.0, self.prob, self.state)
+        self.assertTrue(done)
         self.assertEqual(store._last_idx, 0)
         self.assertEqual(store._stor_idx, 0)
         self.assertFalse(store._has_successor(0))
 
-        store.storeField(0, self.field, "HHO_TEMP", time=0.0)
+        done = store.storeField(0, self.field, "HHO_TEMP", time=0.0)
+        self.assertTrue(done)
         self.assertEqual(store._last_idx, 0)
         self.assertEqual(store._stor_idx, 0)
         self.assertFalse(store._has_successor(0))
         self.assertFalse(store._has_successor(1))
 
         # first step
-        store.storeState(1, 1.0, self.prob, self.state)
+        done = store.storeState(1, 1.0, self.prob, self.state)
+        self.assertTrue(done)
         self.assertEqual(store._last_idx, 1)
         self.assertEqual(store._stor_idx, 1)
 
-        store.storeField(1, self.field, "HHO_TEMP", time=1.0)
+        done = store.storeField(1, self.field, "HHO_TEMP", time=1.0)
+        self.assertTrue(done)
         self.assertEqual(store._last_idx, 1)
         self.assertEqual(store._stor_idx, 1)
         self.assertTrue(store._has_successor(0))
@@ -844,11 +848,13 @@ class TestStorageManager(unittest.TestCase):
         self.assertFalse(store._has_successor(3))
 
         # initial state 0 at 1.0, already stored
-        store.storeState(0, 1.0, self.prob, self.state)
+        done = store.storeState(0, 1.0, self.prob, self.state)
+        self.assertFalse(done)
         self.assertEqual(store._last_idx, 0)
         self.assertEqual(store._stor_idx, 1)
 
-        store.storeField(0, self.field, "HHO_TEMP", time=1.0)
+        done = store.storeField(0, self.field, "HHO_TEMP", time=1.0)
+        self.assertFalse(done)
         self.assertEqual(store._last_idx, 0)
         self.assertEqual(store._stor_idx, 1)
         self.assertFalse(store._has_successor(0))
@@ -857,11 +863,13 @@ class TestStorageManager(unittest.TestCase):
         self.assertFalse(store._has_successor(3))
 
         # next step 1 at 2.0, rules not checked
-        store.storeState(1, 2.0, self.prob, self.state)
+        done = store.storeState(1, 2.0, self.prob, self.state)
+        self.assertFalse(done)
         self.assertEqual(store._last_idx, 0)
         self.assertEqual(store._stor_idx, 1)
 
-        store.storeField(1, self.field, "HHO_TEMP", time=2.0)
+        done = store.storeField(1, self.field, "HHO_TEMP", time=2.0)
+        self.assertFalse(done)
         self.assertEqual(store._last_idx, 0)
         self.assertEqual(store._stor_idx, 1)
         self.assertFalse(store._has_successor(0))
@@ -870,11 +878,13 @@ class TestStorageManager(unittest.TestCase):
         self.assertFalse(store._has_successor(3))
 
         # next step 2 at 3.0
-        store.storeState(2, 3.0, self.prob, self.state)
+        done = store.storeState(2, 3.0, self.prob, self.state)
+        self.assertTrue(done)
         self.assertEqual(store._last_idx, 2)
         self.assertEqual(store._stor_idx, 2)
 
-        store.storeField(2, self.field, "HHO_TEMP", time=3.0)
+        done = store.storeField(2, self.field, "HHO_TEMP", time=3.0)
+        self.assertTrue(done)
         self.assertEqual(store._last_idx, 2)
         self.assertEqual(store._stor_idx, 2)
         self.assertTrue(store._has_successor(0))
@@ -883,11 +893,13 @@ class TestStorageManager(unittest.TestCase):
         self.assertFalse(store._has_successor(3))
 
         # next step 3 at 4.0, rules not checked
-        store.storeState(3, 4.0, self.prob, self.state)
+        done = store.storeState(3, 4.0, self.prob, self.state)
+        self.assertFalse(done)
         self.assertEqual(store._last_idx, 2)
         self.assertEqual(store._stor_idx, 2)
 
-        store.storeField(3, self.field, "HHO_TEMP", time=4.0)
+        done = store.storeField(3, self.field, "HHO_TEMP", time=4.0)
+        self.assertFalse(done)
         self.assertEqual(store._last_idx, 2)
         self.assertEqual(store._stor_idx, 2)
         self.assertTrue(store._has_successor(0))
@@ -896,13 +908,19 @@ class TestStorageManager(unittest.TestCase):
         self.assertFalse(store._has_successor(3))
 
         # last step 3 at 4.0
-        store.storeState(3, 4.0, self.prob, self.state, ignore_policy=True)
+        done = store.storeState(3, 4.0, self.prob, self.state, ignore_policy=True)
+        self.assertTrue(done)
         self.assertEqual(store._last_idx, 3)
         self.assertEqual(store._stor_idx, 3)
 
-        store.storeField(3, self.field, "HHO_TEMP", time=4.0, ignore_policy=True)
+        done = store.storeField(3, self.field, "HHO_TEMP", time=4.0, ignore_policy=True)
+        self.assertTrue(done)
         self.assertEqual(store._last_idx, 3)
         self.assertEqual(store._stor_idx, 3)
+        self.assertTrue(store._has_successor(0))
+        self.assertTrue(store._has_successor(1))
+        self.assertTrue(store._has_successor(2))
+        self.assertFalse(store._has_successor(3))
 
 
 if __name__ == "__main__":

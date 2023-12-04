@@ -110,9 +110,12 @@ class NonLinearSolver(SolverFeature):
         Arguments:
             time (float): current (pseudo)-time.
             ignore_policy (bool): ignore storing-policy.
+
+        Returns:
+            bool: *True* if it was actually stored, else *False*.
         """
         storage_manager = self.get_feature(SOP.Storage)
-        storage_manager.storeState(
+        return storage_manager.storeState(
             self.step_rank, state.time_curr, self.phys_pb, state, ignore_policy=ignore_policy
         )
 
@@ -161,11 +164,16 @@ class NonLinearSolver(SolverFeature):
                     extract_time = resu.getLastTime()
                 init_time = extract_time
                 phys_state.primal_curr = resu.getField("DEPL", para="INST", value=extract_time)
+                _msginit("DEPL", resu.userName)
                 if phys_state.pb_type == PBT.MecaDyna:
                     phys_state.current.dU = resu.getField("VITE", para="INST", value=extract_time)
+                    _msginit("VITE", resu.userName)
                     phys_state.current.d2U = resu.getField("ACCE", para="INST", value=extract_time)
+                    _msginit("ACCE", resu.userName)
                 phys_state.stress = resu.getField("SIEF_ELGA", para="INST", value=extract_time)
+                _msginit("SIEF_ELGA", resu.userName)
                 phys_state.internVar = resu.getField("VARI_ELGA", para="INST", value=extract_time)
+                _msginit("VARI_ELGA", resu.userName)
             if "EVOL_THER" in init_state:
                 resu = init_state.get("EVOL_THER")
                 assert isinstance(resu, ThermalResult), resu
@@ -180,10 +188,13 @@ class NonLinearSolver(SolverFeature):
                 phys_state.primal_curr = init_state.get("DEPL").copyUsingDescription(
                     self.phys_pb.getDOFNumbering().getEquationNumbering()
                 )
+                _msginit("DEPL")
             if "SIGM" in init_state:
                 phys_state.stress = init_state.get("SIGM")
+                _msginit("SIEF_ELGA")
             if "VARI" in init_state:
                 phys_state.internVar = init_state.get("VARI")
+                _msginit("VARI_ELGA")
             if "VALE" in init_state:
                 phys_state.primal_curr.setValues(init_state.get("VALE"))
 
@@ -196,7 +207,7 @@ class NonLinearSolver(SolverFeature):
         if init_state and init_state.get("STAT") == "OUI":
             solv = self.get_feature(SOP.StepSolver)
             solv.initialize()
-            args = dict(valr=phys_state.time_curr, vali=self.stepper.splitting_level)
+            args = {"valr": phys_state.time_curr, "vali": self.stepper.splitting_level}
             logger.info(MessageLog.GetText("I", "MECANONLINE6_5", **args))
             solv.solve()
             self.post_hooks()
@@ -213,6 +224,7 @@ class NonLinearSolver(SolverFeature):
 
         # Solve nonlinear problem
         solv = self.get_feature(SOP.StepSolver)
+        last_stored = False
         while not self.isFinished():
             self.phys_state.time_curr = self.stepper.getCurrent()
             self.phys_state.time_step = self.phys_state.time_curr - self.phys_state.time_prev
@@ -258,9 +270,10 @@ class NonLinearSolver(SolverFeature):
                 self.current_matrix = solv.current_matrix
                 self.post_hooks()
                 self.step_rank += 1
-                self._storeState(self.phys_state)
+                last_stored = self._storeState(self.phys_state)
         # ensure that last step was stored
-        self._storeState(self.phys_state, ignore_policy=True)
+        if not last_stored:
+            self._storeState(self.phys_state, ignore_policy=True)
 
     def post_hooks(self):
         """Call post hooks"""
@@ -285,3 +298,10 @@ class NonLinearSolver(SolverFeature):
             return _F(args[keyword])[0].get(parameter, default)
 
         return args.get(keyword, default)
+
+
+def _msginit(field, result=None):
+    if result:
+        logger.info(MessageLog.GetText("I", "ETATINIT_32", valk=(field, result)))
+    else:
+        logger.info(MessageLog.GetText("I", "ETATINIT_33", valk=(field,)))

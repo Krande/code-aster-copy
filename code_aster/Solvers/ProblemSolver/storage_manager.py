@@ -17,8 +17,8 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ...Messages import UTMESS
-from ...Utilities import SearchList, force_list, logger, no_new_attributes, profile
+from ...Messages import MessageLog
+from ...Utilities import SearchList, cmp, force_list, logger, no_new_attributes, profile
 from ..Basics import SolverFeature
 from ..Basics import SolverOptions as SOP
 
@@ -109,7 +109,7 @@ class StorageManager(SolverFeature):
         Arguments:
             storage_index (int): index to be used for the next storage.
         """
-        logger.info("STORE: set first: %d", storage_index)
+        logger.debug("STORE: set first: %d", storage_index)
         self._stor_idx = storage_index - 1
         self._last_idx = -999
 
@@ -132,7 +132,6 @@ class StorageManager(SolverFeature):
         if self._step is not None:
             return idx % self._step == 0
         if self._timelist is not None:
-            # FIXME use _eps/_relative, see Utilities.cmp
             return time in self._timelist
         return True
 
@@ -157,19 +156,18 @@ class StorageManager(SolverFeature):
         """
         if self._reused and idx == 0:
             self._last_idx = idx
-            UTMESS("I", "ETATINIT_10")
             return True
         if not ignore_policy and not self._to_be_stored(idx, time):
-            logger.info("STORE: skipped, reason: policy")
+            logger.debug("STORE: skipped, reason: policy")
             return True
         if self._has_successor(idx):
-            logger.info("STORE: skipped, already done")
+            logger.debug("STORE: skipped, already done")
             return True
         if idx > self._last_idx:
             self._stor_idx += 1
-            logger.info("STORE: new step: stor=%d", self._stor_idx)
+            logger.debug("STORE: new step: stor=%d", self._stor_idx)
         self._last_idx = idx
-        logger.info("STORE: checked")
+        logger.debug("STORE: checked")
         return False
 
     def getResult(self):
@@ -188,16 +186,16 @@ class StorageManager(SolverFeature):
                 (restarts at 0 at each new operator).
             kwargs: named parameters
         """
-        # FIXME use _to_be_stored
-        self._result.resize(self._result.getNumberOfIndexes() + 10)
-        if "model" in kwargs:
-            self._result.setModel(kwargs["model"], idx)
-        if "materialField" in kwargs:
-            self._result.setMaterialField(kwargs["materialField"], idx)
-        if "listOfLoads" in kwargs:
-            self._result.setListOfLoads(kwargs["listOfLoads"], idx)
-        if "time" in kwargs:
-            self._result.setTime(kwargs["time"], idx)
+        raise NotImplementedError("not yet implemented!")
+        # self._result.resize(self._result.getNumberOfIndexes() + 10)
+        # if "model" in kwargs:
+        #     self._result.setModel(kwargs["model"], idx)
+        # if "materialField" in kwargs:
+        #     self._result.setMaterialField(kwargs["materialField"], idx)
+        # if "listOfLoads" in kwargs:
+        #     self._result.setListOfLoads(kwargs["listOfLoads"], idx)
+        # if "time" in kwargs:
+        #     self._result.setTime(kwargs["time"], idx)
 
     @profile
     def storeState(self, idx, time, phys_pb, phys_state, param=None, ignore_policy=False):
@@ -211,12 +209,15 @@ class StorageManager(SolverFeature):
             phys_state (PhysicalState): Physical state.
             param (dict, optional): Dict of parameters to be stored.
             ignore_policy (bool): ignore storing-policy.
+
+        Returns:
+            bool: *True* if it has been stored, *False* otherwise.
         """
-        logger.info(
+        logger.debug(
             "STORE: calc=%d, time=%f, last=%d, stor=%d", idx, time, self._last_idx, self._stor_idx
         )
         if self._skip(idx, time, ignore_policy):
-            return
+            return False
         slot = StorageManager.Slot()
         slot.index = idx
         slot.store_index = self._stor_idx
@@ -236,6 +237,7 @@ class StorageManager(SolverFeature):
             slot.fields[compor] = behav.getBehaviourField()
         self._buffer.append(slot)
         self._store()
+        return True
 
     @profile
     def storeField(self, idx, field, field_type, time=0.0, ignore_policy=False):
@@ -248,8 +250,11 @@ class StorageManager(SolverFeature):
             field_type (str): type of the field as DEPL, SIEF_ELGA...
             time (float, optional): current (pseudo-)time.
             ignore_policy (bool): ignore storing-policy.
+
+        Returns:
+            bool: *True* if it has been stored, *False* otherwise.
         """
-        logger.info(
+        logger.debug(
             "STORE: calc=%d, time=%f, field=%s, last=%d, stor=%d",
             idx,
             time,
@@ -258,8 +263,8 @@ class StorageManager(SolverFeature):
             self._stor_idx,
         )
         if self._skip(idx, time, ignore_policy):
-            return
-        self._store_field(time, field, field_type)
+            return False
+        return self._store_field(time, field, field_type)
 
     @profile
     def _store(self):
@@ -290,7 +295,9 @@ class StorageManager(SolverFeature):
     def _store_field(self, time, field, field_type):
         """Store a field - internal function."""
         if field is None or field_type in self._excl_fields:
-            logger.info("STORE: not exists or excluded: %s", field_type)
-            return
+            logger.debug("STORE: not exists or excluded: %s", field_type)
+            return False
         self._result.setField(field, field_type, self._stor_idx)
-        UTMESS("I", "ARCHIVAGE_6", valk=field_type, valr=time, vali=self._stor_idx)
+        args = {"valk": field_type, "valr": time, "vali": self._stor_idx}
+        logger.info(MessageLog.GetText("I", "ARCHIVAGE_6", **args))
+        return True

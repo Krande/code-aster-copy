@@ -70,10 +70,10 @@ class SearchList:
         self._criterion = value
 
     def __repr__(self):
-        return f"[{' '.join(map(str, self.values))}]"
+        return f"[{' '.join(map(str, self._values))}]"
 
     def __iter__(self):
-        yield from self.values
+        yield from self._values
 
     def __init__(self, values, precision=1.0e-6, criterion="RELATIF"):
         """Initialization of the Search List
@@ -103,7 +103,7 @@ class SearchList:
             max_v = value + self.precision
 
         min_v, max_v = sorted((min_v, max_v))
-        return np.flatnonzero(np.logical_and(self.values >= min_v, self.values <= max_v))
+        return np.flatnonzero(np.logical_and(self._values >= min_v, self._values <= max_v))
 
     def __contains__(self, value):
         idx = self._search_candidates(value)
@@ -124,7 +124,7 @@ class SearchList:
         if len(idx) == 0:
             msg = f"{value} is not in list"
             raise ValueError(msg)
-        elif len(idx) > 1:
+        if len(idx) > 1:
             msg = f"{value} is not unique in list"
             raise IndexError(msg)
         else:
