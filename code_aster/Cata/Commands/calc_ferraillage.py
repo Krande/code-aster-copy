@@ -50,8 +50,8 @@ CALC_FERRAILLAGE = OPER(
     LIST_ORDRE=SIMP(statut="f", typ=listis_sdaster),
     INST=SIMP(statut="f", typ="R", validators=NoRepeat(), max="**"),
     LIST_INST=SIMP(statut="f", typ=listr8_sdaster),
-#    FREQ=SIMP(statut="f", typ="R", validators=NoRepeat(), max="**"),
-#    LIST_FREQ=SIMP(statut="f", typ=listr8_sdaster),
+    #    FREQ=SIMP(statut="f", typ="R", validators=NoRepeat(), max="**"),
+    #    LIST_FREQ=SIMP(statut="f", typ=listr8_sdaster),
     b_acce_reel=BLOC(
         condition="""(exists("FREQ"))or(exists("LIST_FREQ"))or(exists("INST"))or(exists("LIST_INST"))""",
         CRITERE=SIMP(statut="f", typ="TXM", defaut="RELATIF", into=("RELATIF", "ABSOLU")),

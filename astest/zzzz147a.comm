@@ -1,73 +1,123 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
 #
-DEBUT()
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="ALARME"), DEBUG=_F(SDVERI="OUI"))
 #
 # -----------------------------------------------------------------------------
 #    M E S H    &   F I N I T E - E L E M E N T S   M O D E L
 # -----------------------------------------------------------------------------
 #
-MESH     = LIRE_MAILLAGE(FORMAT   = 'MED',)
+MESH = LIRE_MAILLAGE(FORMAT="MED")
 #
 #
-MODEL    = AFFE_MODELE  (MAILLAGE = MESH,
-                         AFFE     = (
-                                     _F(GROUP_MA     = ['LEVEL_0_PANEL_1', 'LEVEL_0_PANEL_2', 'LEVEL_0_PANEL_3', 'LEVEL_0_PANEL_4', 'LEVEL_0_SLAB_1', 'LEVEL_1_PANEL_5', 'LEVEL_1_PANEL_6', 'LEVEL_1_SLAB_2', 'LEVEL_2_SLAB_3', 'PANEL_4_SURFACE_1', 'SLAB_3_SURFACE_1'],
-                                        PHENOMENE    = 'MECANIQUE',
-                                        MODELISATION = 'DKT'),
-                                     _F(GROUP_MA     = ['LEVEL_1_COLUMN_1', 'LEVEL_1_COLUMN_2', 'LEVEL_1_COLUMN_3', 'LEVEL_1_COLUMN_4', 'LEVEL_1_COLUMN_5'],
-                                        PHENOMENE    = 'MECANIQUE',
-                                        MODELISATION = 'POU_D_T'),
-                                    ),)
+MODEL = AFFE_MODELE(
+    MAILLAGE=MESH,
+    AFFE=(
+        _F(
+            GROUP_MA=[
+                "LEVEL_0_PANEL_1",
+                "LEVEL_0_PANEL_2",
+                "LEVEL_0_PANEL_3",
+                "LEVEL_0_PANEL_4",
+                "LEVEL_0_SLAB_1",
+                "LEVEL_1_PANEL_5",
+                "LEVEL_1_PANEL_6",
+                "LEVEL_1_SLAB_2",
+                "LEVEL_2_SLAB_3",
+                "PANEL_4_SURFACE_1",
+                "SLAB_3_SURFACE_1",
+            ],
+            PHENOMENE="MECANIQUE",
+            MODELISATION="DKT",
+        ),
+        _F(
+            GROUP_MA=[
+                "LEVEL_1_COLUMN_1",
+                "LEVEL_1_COLUMN_2",
+                "LEVEL_1_COLUMN_3",
+                "LEVEL_1_COLUMN_4",
+                "LEVEL_1_COLUMN_5",
+            ],
+            PHENOMENE="MECANIQUE",
+            MODELISATION="POU_D_T",
+        ),
+    ),
+)
 #
 # -----------------------------------------------------------------------------
 #    M A T E R I A L S   D E F I N I T I O N
 # -----------------------------------------------------------------------------
 #
 # MAT_1 : Concrete/30MPa (Elastic)
-_YOUNG_1 = 30.0*1.E9  # GPa -> Pa
-_RHO_1   = 2400.0  # kg/m3
-_NU_1    = 0.2
+_YOUNG_1 = 30.0 * 1.0e9  # GPa -> Pa
+_RHO_1 = 2400.0  # kg/m3
+_NU_1 = 0.2
 _ALPHA_1 = 1.092e-05
 _LAMBDA_1 = 2.8
-MAT_1    = DEFI_MATERIAU(ELAS = _F(E          = _YOUNG_1,
-                                   RHO        = _RHO_1,
-                                   NU         = _NU_1,
-                                   ALPHA      = _ALPHA_1),
-                         THER = _F(LAMBDA     = _LAMBDA_1,),)
+MAT_1 = DEFI_MATERIAU(
+    ELAS=_F(E=_YOUNG_1, RHO=_RHO_1, NU=_NU_1, ALPHA=_ALPHA_1), THER=_F(LAMBDA=_LAMBDA_1)
+)
 #
 # -----------------------------------------------------------------------------
 #    S T R U C T U R A L    E L E M S.   C H A R A C T E R I S T I C S
 # -----------------------------------------------------------------------------
 #
 # SEC_1 : Thick/20cm (Panel/Slab thickness)
-THICK_1 = 200.0*1.E-3  # mm -> m
+THICK_1 = 200.0 * 1.0e-3  # mm -> m
 #
 # SEC_2 : Square/20x20cm (Square (beam))
-SIDE_2 = 200.0*1.E-3  # mm -> m
-THICK_2 = 100.0*1.E-3  # mm -> m
+SIDE_2 = 200.0 * 1.0e-3  # mm -> m
+THICK_2 = 100.0 * 1.0e-3  # mm -> m
 #
 #
-FE_CAR   = AFFE_CARA_ELEM(MODELE      = MODEL,
-                          POUTRE      = (
-                                         _F(GROUP_MA = ['LEVEL_1_COLUMN_1', 'LEVEL_1_COLUMN_2', 'LEVEL_1_COLUMN_3', 'LEVEL_1_COLUMN_4', 'LEVEL_1_COLUMN_5'],
-                                            SECTION  = 'RECTANGLE',
-                                            CARA     = ('H','EP'),
-                                            VALE     = (SIDE_2 , THICK_2),),
-                                        ),
-                          COQUE       = (
-                                         _F(GROUP_MA = ['LEVEL_0_SLAB_1', 'LEVEL_0_PANEL_1', 'LEVEL_1_SLAB_2', 'LEVEL_1_PANEL_6', 'LEVEL_2_SLAB_3'],
-                                            EPAIS    = THICK_1,
-                                            VECTEUR  = (1.0, 0.0, 0.0)),
-                                         _F(GROUP_MA = ['LEVEL_0_PANEL_3'],
-                                            EPAIS    = THICK_1,
-                                            VECTEUR  = (-1.0, 0.0, 0.0)),
-                                         _F(GROUP_MA = ['LEVEL_0_PANEL_4', 'LEVEL_1_PANEL_5'],
-                                            EPAIS    = THICK_1,
-                                            VECTEUR  = (0.0, 1.0, 0.0)),
-                                         _F(GROUP_MA = ['LEVEL_0_PANEL_2'],
-                                            EPAIS    = THICK_1,
-                                            VECTEUR  = (0.0, -1.0, 0.0)),
-                                        ),
-                          )
+FE_CAR = AFFE_CARA_ELEM(
+    MODELE=MODEL,
+    POUTRE=(
+        _F(
+            GROUP_MA=[
+                "LEVEL_1_COLUMN_1",
+                "LEVEL_1_COLUMN_2",
+                "LEVEL_1_COLUMN_3",
+                "LEVEL_1_COLUMN_4",
+                "LEVEL_1_COLUMN_5",
+            ],
+            SECTION="RECTANGLE",
+            CARA=("H", "EP"),
+            VALE=(SIDE_2, THICK_2),
+        ),
+    ),
+    COQUE=(
+        _F(
+            GROUP_MA=[
+                "LEVEL_0_SLAB_1",
+                "LEVEL_0_PANEL_1",
+                "LEVEL_1_SLAB_2",
+                "LEVEL_1_PANEL_6",
+                "LEVEL_2_SLAB_3",
+            ],
+            EPAIS=THICK_1,
+            VECTEUR=(1.0, 0.0, 0.0),
+        ),
+        _F(GROUP_MA=["LEVEL_0_PANEL_3"], EPAIS=THICK_1, VECTEUR=(-1.0, 0.0, 0.0)),
+        _F(GROUP_MA=["LEVEL_0_PANEL_4", "LEVEL_1_PANEL_5"], EPAIS=THICK_1, VECTEUR=(0.0, 1.0, 0.0)),
+        _F(GROUP_MA=["LEVEL_0_PANEL_2"], EPAIS=THICK_1, VECTEUR=(0.0, -1.0, 0.0)),
+    ),
+)
 #
 #
 # -----------------------------------------------------------------------------
@@ -75,113 +125,146 @@ FE_CAR   = AFFE_CARA_ELEM(MODELE      = MODEL,
 # -----------------------------------------------------------------------------
 #
 # Default (mean) temperature field (useful if temp-dependant materials are used)
-TEMP_IMP = CREA_CHAMP(MODELE    = MODEL,
-                      TYPE_CHAM = 'CART_TEMP_R',
-                      OPERATION = 'AFFE',
-                      AFFE      = (_F(TOUT     = 'OUI',
-                                      NOM_CMP  = 'TEMP',
-                                      VALE     = 20.),
-                                  ),)
+TEMP_IMP = CREA_CHAMP(
+    MODELE=MODEL,
+    TYPE_CHAM="CART_TEMP_R",
+    OPERATION="AFFE",
+    AFFE=(_F(TOUT="OUI", NOM_CMP="TEMP", VALE=20.0),),
+)
 #
-MATER_F  = AFFE_MATERIAU(MAILLAGE  = MESH,
-                         AFFE      = (
-                                      _F(GROUP_MA = ['LEVEL_0_PANEL_1', 'LEVEL_0_PANEL_2', 'LEVEL_0_PANEL_3', 'LEVEL_0_PANEL_4', 'LEVEL_0_SLAB_1', 'LEVEL_1_COLUMN_1', 'LEVEL_1_COLUMN_2', 'LEVEL_1_COLUMN_3', 'LEVEL_1_COLUMN_4', 'LEVEL_1_COLUMN_5', 'LEVEL_1_PANEL_5', 'LEVEL_1_PANEL_6', 'LEVEL_1_SLAB_2', 'LEVEL_2_SLAB_3'],
-                                         MATER    = MAT_1,),
-                                     ),
-                          AFFE_VARC  = (
-                                        _F(TOUT     = 'OUI',
-                                           NOM_VARC = 'TEMP',
-                                           VALE_REF = 20.0,
-                                           CHAM_GD  = TEMP_IMP,),
-                                        )
-                         )
+MATER_F = AFFE_MATERIAU(
+    MAILLAGE=MESH,
+    AFFE=(
+        _F(
+            GROUP_MA=[
+                "LEVEL_0_PANEL_1",
+                "LEVEL_0_PANEL_2",
+                "LEVEL_0_PANEL_3",
+                "LEVEL_0_PANEL_4",
+                "LEVEL_0_SLAB_1",
+                "LEVEL_1_COLUMN_1",
+                "LEVEL_1_COLUMN_2",
+                "LEVEL_1_COLUMN_3",
+                "LEVEL_1_COLUMN_4",
+                "LEVEL_1_COLUMN_5",
+                "LEVEL_1_PANEL_5",
+                "LEVEL_1_PANEL_6",
+                "LEVEL_1_SLAB_2",
+                "LEVEL_2_SLAB_3",
+            ],
+            MATER=MAT_1,
+        ),
+    ),
+    AFFE_VARC=(_F(TOUT="OUI", NOM_VARC="TEMP", VALE_REF=20.0, CHAM_GD=TEMP_IMP),),
+)
 #
 # -----------------------------------------------------------------------------
 #    M E C H A N I C A L    B O U N D A R Y    C O N D I T I O N S
 # -----------------------------------------------------------------------------
-BCONDS = AFFE_CHAR_MECA(MODELE   = MODEL,
-                        DDL_IMPO = (
-                                   _F(GROUP_NO = ['LEVEL_0_SLAB_1'],
-                                      LIAISON  = 'ENCASTRE'),
-                                    ),)
+BCONDS = AFFE_CHAR_MECA(
+    MODELE=MODEL, DDL_IMPO=(_F(GROUP_NO=["LEVEL_0_SLAB_1"], LIAISON="ENCASTRE"),)
+)
 # -----------------------------------------------------------------------------
 #    M E C H A N I C A L    L O A D I N G
 # -----------------------------------------------------------------------------
 #
 # LOAD_1 : Gravity/9.81 (Gravity/Constant acceleration)
-LOAD_1 = AFFE_CHAR_MECA(MODELE    = MODEL,
-                        PESANTEUR = _F(GROUP_MA  = ['LEVEL_0_PANEL_1', 'LEVEL_0_PANEL_2', 'LEVEL_0_PANEL_3', 'LEVEL_0_PANEL_4', 'LEVEL_0_SLAB_1', 'LEVEL_1_COLUMN_1', 'LEVEL_1_COLUMN_2', 'LEVEL_1_COLUMN_3', 'LEVEL_1_COLUMN_4', 'LEVEL_1_COLUMN_5', 'LEVEL_1_PANEL_5', 'LEVEL_1_PANEL_6', 'LEVEL_1_SLAB_2', 'LEVEL_2_SLAB_3'],
-                                       GRAVITE   = 9.81,
-                                       DIRECTION = (0.0, 0.0, -1.0),),)
+LOAD_1 = AFFE_CHAR_MECA(
+    MODELE=MODEL,
+    PESANTEUR=_F(
+        GROUP_MA=[
+            "LEVEL_0_PANEL_1",
+            "LEVEL_0_PANEL_2",
+            "LEVEL_0_PANEL_3",
+            "LEVEL_0_PANEL_4",
+            "LEVEL_0_SLAB_1",
+            "LEVEL_1_COLUMN_1",
+            "LEVEL_1_COLUMN_2",
+            "LEVEL_1_COLUMN_3",
+            "LEVEL_1_COLUMN_4",
+            "LEVEL_1_COLUMN_5",
+            "LEVEL_1_PANEL_5",
+            "LEVEL_1_PANEL_6",
+            "LEVEL_1_SLAB_2",
+            "LEVEL_2_SLAB_3",
+        ],
+        GRAVITE=9.81,
+        DIRECTION=(0.0, 0.0, -1.0),
+    ),
+)
 #
 # LOAD_1 : Load 2 (Loading pressure)
-PRES_1 = -10.0*-1.E3  # kN/m2 -> Pa
-LOAD_2 = AFFE_CHAR_MECA(MODELE   = MODEL,
-                        FORCE_COQUE = _F(GROUP_MA = ['LEVEL_1_SLAB_2', 'PANEL_4_SURFACE_1', 'SLAB_3_SURFACE_1'],
-                                         PRES     = PRES_1))
-    #
+PRES_1 = -10.0 * -1.0e3  # kN/m2 -> Pa
+LOAD_2 = AFFE_CHAR_MECA(
+    MODELE=MODEL,
+    FORCE_COQUE=_F(
+        GROUP_MA=["LEVEL_1_SLAB_2", "PANEL_4_SURFACE_1", "SLAB_3_SURFACE_1"], PRES=PRES_1
+    ),
+)
+#
 # -----------------------------------------------------------------------------
 #    L I N E A R    S T A T I C     S O L V E R
 # -----------------------------------------------------------------------------
 # Le poid seul
-STATIC_G   = MECA_STATIQUE(MODELE     = MODEL,
-                         CHAM_MATER = MATER_F,
-                         CARA_ELEM  = FE_CAR,
-                         EXCIT      = (
-                                       _F(CHARGE = BCONDS),
-                                       _F(CHARGE = LOAD_1),  # Gravity/9.81 (Gravity/Constant acceleration)
-                                      ),
-                         SOLVEUR = _F(RESI_RELA=1e-05, ))
+STATIC_G = MECA_STATIQUE(
+    MODELE=MODEL,
+    CHAM_MATER=MATER_F,
+    CARA_ELEM=FE_CAR,
+    EXCIT=(_F(CHARGE=BCONDS), _F(CHARGE=LOAD_1)),  # Gravity/9.81 (Gravity/Constant acceleration)
+    SOLVEUR=_F(RESI_RELA=1e-05),
+)
 #
 # BASIC POST PROCESSING -------------------------------------------------------
-STATIC_G   = CALC_CHAMP(reuse      = STATIC_G,
-                      RESULTAT   = STATIC_G,
-                      CONTRAINTE = ('EFGE_ELNO'),
-                      FORCE      = ('REAC_NODA'),
-                      CRITERES   = ('SIEQ_ELGA'),
-                      )
-                      
-                      #
+STATIC_G = CALC_CHAMP(
+    reuse=STATIC_G,
+    RESULTAT=STATIC_G,
+    CONTRAINTE=("EFGE_ELNO"),
+    FORCE=("REAC_NODA"),
+    CRITERES=("SIEQ_ELGA"),
+)
+
+#
 # -----------------------------------------------------------------------------
 #    A U T O M A T E D    T E S T I N G    ( F I E L D   R E S U L T S )
 # -----------------------------------------------------------------------------
 #
 #
 # VAL_G / DEPL:DZ on SLAB_2_VERTEX_1 = -0.010769824220746516
-_TT_1 = CREA_TABLE(RESU  = _F(RESULTAT = STATIC_G,
-                              GROUP_NO = 'SLAB_2_VERTEX_1',
-                              NOM_CHAM = 'DEPL',
-                              NOM_CMP  = 'DZ',),
-                   TITRE = 'EXTRACT DEPL:DZ on SLAB_2_VERTEX_1 ')
+_TT_1 = CREA_TABLE(
+    RESU=_F(RESULTAT=STATIC_G, GROUP_NO="SLAB_2_VERTEX_1", NOM_CHAM="DEPL", NOM_CMP="DZ"),
+    TITRE="EXTRACT DEPL:DZ on SLAB_2_VERTEX_1 ",
+)
 #
-TEST_TABLE(TABLE          = _TT_1,
-           NOM_PARA       = 'DZ',
-           TYPE_TEST      = 'MAX',
-           CRITERE        = 'RELATIF',
-           VALE_CALC      = -0.010769824220746516,
-           TOLE_MACHINE   = 1.0000000000000002e-06)
+TEST_TABLE(
+    TABLE=_TT_1,
+    NOM_PARA="DZ",
+    TYPE_TEST="MAX",
+    CRITERE="RELATIF",
+    VALE_CALC=-0.010769824220746516,
+    TOLE_MACHINE=1.0000000000000002e-06,
+)
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
 # Les pressions
-STATIC_Q   = MECA_STATIQUE(MODELE     = MODEL,
-                         CHAM_MATER = MATER_F,
-                         CARA_ELEM  = FE_CAR,
-                         EXCIT      = (
-                                       _F(CHARGE = BCONDS),
-                                       _F(CHARGE = LOAD_2),  # Load 2 (Loading pressure)
-                                      ),
-                         SOLVEUR = _F(RESI_RELA=1e-05, ))
+STATIC_Q = MECA_STATIQUE(
+    MODELE=MODEL,
+    CHAM_MATER=MATER_F,
+    CARA_ELEM=FE_CAR,
+    EXCIT=(_F(CHARGE=BCONDS), _F(CHARGE=LOAD_2)),  # Load 2 (Loading pressure)
+    SOLVEUR=_F(RESI_RELA=1e-05),
+)
 #
 # BASIC POST PROCESSING -------------------------------------------------------
-STATIC_Q   = CALC_CHAMP(reuse      = STATIC_Q,
-                      RESULTAT   = STATIC_Q,
-                      CONTRAINTE = ('EFGE_ELNO'),
-                      FORCE      = ('REAC_NODA'),
-                      CRITERES   = ('SIEQ_ELGA'),
-                      )
+STATIC_Q = CALC_CHAMP(
+    reuse=STATIC_Q,
+    RESULTAT=STATIC_Q,
+    CONTRAINTE=("EFGE_ELNO"),
+    FORCE=("REAC_NODA"),
+    CRITERES=("SIEQ_ELGA"),
+)
 
 #
 # -----------------------------------------------------------------------------
@@ -190,52 +273,49 @@ STATIC_Q   = CALC_CHAMP(reuse      = STATIC_Q,
 #
 #
 # VAL_Q / DEPL:DZ on SLAB_2_VERTEX_1 = -0.01548030937355706
-_TT_2 = CREA_TABLE(RESU  = _F(RESULTAT = STATIC_Q,
-                              GROUP_NO = 'SLAB_2_VERTEX_1',
-                              NOM_CHAM = 'DEPL',
-                              NOM_CMP  = 'DZ',),
-                   TITRE = 'EXTRACT DEPL:DZ on SLAB_2_VERTEX_1 ')
+_TT_2 = CREA_TABLE(
+    RESU=_F(RESULTAT=STATIC_Q, GROUP_NO="SLAB_2_VERTEX_1", NOM_CHAM="DEPL", NOM_CMP="DZ"),
+    TITRE="EXTRACT DEPL:DZ on SLAB_2_VERTEX_1 ",
+)
 
 #
-TEST_TABLE(TABLE          = _TT_2,
-           NOM_PARA       = 'DZ',
-           TYPE_TEST      = 'MAX',
-           CRITERE        = 'RELATIF',
-           VALE_CALC      = -0.01548030937355706,
-           TOLE_MACHINE   = 1.0000000000000002e-06)
+TEST_TABLE(
+    TABLE=_TT_2,
+    NOM_PARA="DZ",
+    TYPE_TEST="MAX",
+    CRITERE="RELATIF",
+    VALE_CALC=-0.01548030937355706,
+    TOLE_MACHINE=1.0000000000000002e-06,
+)
 
 # ---------------------------------------------------------------------------------------
 #    L O A D S   C O M B I N A T I O N   S O L V E R   -  P O S T _ C O M B I N A T I O N
 # ---------------------------------------------------------------------------------------
 
-_COEF_TAB = CREA_TABLE(LISTE=(
-                              _F(LISTE_K = ['C.0'],
-                                 PARA    = 'Cmb',
-                                 TYPE_K  = 'K24'),
-                              _F(LISTE_R = [1.0],
-                                 PARA    = 'G'),
-                              _F(LISTE_R = [1.0],
-                                 PARA    = 'Q'),
-                             ),
-                      )
+_COEF_TAB = CREA_TABLE(
+    LISTE=(
+        _F(LISTE_K=["C.0"], PARA="Cmb", TYPE_K="K24"),
+        _F(LISTE_R=[1.0], PARA="G"),
+        _F(LISTE_R=[1.0], PARA="Q"),
+    )
+)
 
-COMBI    = POST_COMBINAISON(MODELE          = MODEL,
-                            TOUT            = 'OUI',
-                            TABLE_COEF      = _COEF_TAB,
-                            TYPE_COMB       = 'RESULTAT',
-                            TABLE_COEF_RESU = CO('COMBI_TB'),
-                            # Le champ de Ferraillage n'est pas combine...
-                            NOM_CHAM        = ('DEPL', 'REAC_NODA',
-                                               'SIEF_ELGA', 'EFGE_ELNO',
-                                               # 'SIEQ_ELGA'
-                                               ),
-                            AFFE = (
-                                   _F(NOM_CAS  = 'Q',
-                                      RESULTAT = STATIC_Q),
-                                   _F(NOM_CAS  = 'G',
-                                      RESULTAT = STATIC_G),
-                                   ),
-                            )
+COMBI = POST_COMBINAISON(
+    MODELE=MODEL,
+    TOUT="OUI",
+    TABLE_COEF=_COEF_TAB,
+    TYPE_COMB="RESULTAT",
+    TABLE_COEF_RESU=CO("COMBI_TB"),
+    # Le champ de Ferraillage n'est pas combine...
+    NOM_CHAM=(
+        "DEPL",
+        "REAC_NODA",
+        "SIEF_ELGA",
+        "EFGE_ELNO",
+        # 'SIEQ_ELGA'
+    ),
+    AFFE=(_F(NOM_CAS="Q", RESULTAT=STATIC_Q), _F(NOM_CAS="G", RESULTAT=STATIC_G)),
+)
 #
 # -----------------------------------------------------------------------------
 #    A U T O M A T E D    T E S T I N G    ( F I E L D   R E S U L T S )
@@ -243,16 +323,17 @@ COMBI    = POST_COMBINAISON(MODELE          = MODEL,
 #
 #
 # VAL_Q / DEPL:DZ on SLAB_2_VERTEX_1 = -0.01548030937355706
-_TT_3 = CREA_TABLE(RESU  = _F(RESULTAT = COMBI,
-                              GROUP_NO = 'SLAB_2_VERTEX_1',
-                              NOM_CHAM = 'DEPL',
-                              NOM_CMP  = 'DZ',),
-                   TITRE = 'EXTRACT DEPL:DZ on SLAB_2_VERTEX_1 ')
+_TT_3 = CREA_TABLE(
+    RESU=_F(RESULTAT=COMBI, GROUP_NO="SLAB_2_VERTEX_1", NOM_CHAM="DEPL", NOM_CMP="DZ"),
+    TITRE="EXTRACT DEPL:DZ on SLAB_2_VERTEX_1 ",
+)
 #
-TEST_TABLE(TABLE          = _TT_3,
-           NOM_PARA       = 'DZ',
-           TYPE_TEST      = 'MAX',
-           CRITERE        = 'RELATIF',
-           VALE_CALC      = -0.02625013359430438,
-           TOLE_MACHINE   = 1.0000000000000002e-06)
+TEST_TABLE(
+    TABLE=_TT_3,
+    NOM_PARA="DZ",
+    TYPE_TEST="MAX",
+    CRITERE="RELATIF",
+    VALE_CALC=-0.02625013359430438,
+    TOLE_MACHINE=1.0000000000000002e-06,
+)
 FIN()
