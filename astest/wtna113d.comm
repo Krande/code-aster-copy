@@ -243,7 +243,7 @@ TEST_RESU(
         NOM_CHAM="DEPL",
         GROUP_NO="N3",
         NOM_CMP="PRE1",
-        VALE_CALC=1099999.999722692 ,
+        VALE_CALC=1099999.999722692,
         VALE_REFE=1.1e6,
         CRITERE="RELATIF",
         PRECISION=1.0e-2,

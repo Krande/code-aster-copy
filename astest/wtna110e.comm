@@ -18,6 +18,7 @@
 # --------------------------------------------------------------------
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="NON"))
+
 # SDVERI='NON' car la verification est trop couteuse en CPU
 # Ce test est une version partielle de wtna110c et n a pour but que de tester la modelisation
 # HHMD en non regression - On sait que D marche mal en mecanique mais on conserve ce test
@@ -226,7 +227,7 @@ DEP_FIX = (
             _F(GROUP_MA="HAUT", DY=0.0),
             _F(GROUP_MA="DROITE", DX=0.0),
             _F(GROUP_MA="BAS", DY=0.0),
-      #      _F(GROUP_MA="GAUCHE", DX=0.0),
+                  _F(GROUP_MA="GAUCHE", DX=0.0),
         ),
         DDL_IMPO=(_F(TOUT="OUI", PRE2=PGAGO0),),
     ),
@@ -326,7 +327,7 @@ U2 = STAT_NON_LINE(
     EXCIT=(_F(CHARGE=DEP_FIX), _F(CHARGE=DEP_VAR, FONC_MULT=MSTEP)),
     COMPORTEMENT=_F(RELATION="KIT_HHM", RELATION_KIT=("GonfElas", "LIQU_GAZ", "HYDR_VGM")),
     ETAT_INIT=_F(SIGM=SIGINIT, DEPL=DEPINAR),
-    INCREMENT=_F(LIST_INST=TEMPS2,INST_FIN=0.002),
+    INCREMENT=_F(LIST_INST=TEMPS2, INST_FIN=0.002),
     NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
     CONVERGENCE=_F(ITER_GLOB_MAXI=40, RESI_GLOB_RELA=RESI_GLOB_RELA),
 )
@@ -386,7 +387,6 @@ DEPL = POST_RELEVE_T(
 IMPR_TABLE(TABLE=DEPL, TRI=_F(NOM_PARA="INST", ORDRE="CROISSANT"), NOM_PARA=("INST", "DX", "DY"))
 
 
-
 TEST_RESU(
     RESU=_F(
         INST=0.002,
@@ -394,13 +394,10 @@ TEST_RESU(
         NOM_CHAM="SIEF_NOEU",
         GROUP_NO="N3",
         NOM_CMP="SIXX",
-        VALE_CALC=154779.63021182027,
+        VALE_CALC=99515.66951566949,
         CRITERE="RELATIF",
     )
 )
 
+
 FIN()
-#
-#
-#
-#
