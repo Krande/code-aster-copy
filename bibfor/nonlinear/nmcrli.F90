@@ -64,7 +64,7 @@ subroutine nmcrli(inst_init, list_inst, sddisc)
     integer :: nb_inst_new, nb_inst, nbret
     real(kind=8) :: tole
     real(kind=8) :: dtmin, dt0
-    aster_logical :: l_init_noexist, l_inst_init
+    aster_logical :: l_init_noexist
     character(len=24) :: list_inst_info
     character(len=24) :: list_inst_ditr
     character(len=16) :: list_inst_type, keywf
@@ -146,17 +146,9 @@ subroutine nmcrli(inst_init, list_inst, sddisc)
     end if
     tole = abs(dtmin)*tole
 !
-! - Have an initial time in ETAT_INIT ?
-!
-    if (inst_init .eq. r8vide()) then
-        l_inst_init = .false.
-    else
-        l_inst_init = .true.
-    end if
-!
 ! - Index of initial time
 !
-    call nmdini(keywf, list_inst_work, inst_init, l_inst_init, tole, &
+    call nmdini(keywf, list_inst_work, tole, &
                 nb_inst, l_init_noexist, nume_ini)
 !
 ! - Index of final time

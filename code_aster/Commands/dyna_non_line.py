@@ -19,7 +19,6 @@
 
 # person_in_charge: nicolas.sellenet@edf.fr
 
-from ..Helpers import adapt_for_mgis_behaviour
 from .stat_non_line import NonLinearStaticAnalysis
 
 
@@ -29,8 +28,6 @@ class NonLinearDynamicAnalysis(NonLinearStaticAnalysis):
     """
 
     command_name = "DYNA_NON_LINE"
-    # Change the content of the COMPORTEMENT keyword.
-    adapt_syntax = adapt_for_mgis_behaviour
 
 
 DYNA_NON_LINE = NonLinearDynamicAnalysis.run

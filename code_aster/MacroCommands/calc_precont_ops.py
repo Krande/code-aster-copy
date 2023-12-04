@@ -487,7 +487,7 @@ def calc_precont_ops(
             CHAM_MATER=CHAM_MATER,
             CARA_ELEM=CARA_ELEM,
             COMPORTEMENT=dComp_incr1,
-            INCREMENT=_F(LIST_INST=__LST),
+            INCREMENT=_F(LIST_INST=__LST, INST_INIT=RES.getLastTime()),
             METHODE=METHODE,
             RECH_LINEAIRE=dRech_lin,
             CONVERGENCE=dConvergence,

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -223,7 +223,7 @@ SOLNL = STAT_NON_LINE(
         ),
         _F(RELATION="ELAS", GROUP_MA=("PX1")),
     ),
-    INCREMENT=(_F(LIST_INST=LIS2DD, INST_FIN=tmax),),
+    INCREMENT=_F(LIST_INST=LIS2DD, INST_FIN=tmax),
     NEWTON=(_F(REAC_ITER=1, PREDICTION="EXTRAPOLE"),),
     ARCHIVAGE=_F(LIST_INST=LINSTDD),
     SUIVI_DDL=(
@@ -310,7 +310,6 @@ DEFI_FICHIER(UNITE=30, FICHIER="REPE_OUT/rho_eps_" + nom_cas + ".dat")
 DEFI_FICHIER(UNITE=31, FICHIER="REPE_OUT/gamma_eps_" + nom_cas + ".dat")
 
 for i in range(1, 13):
-
     gamma[i] = RECU_FONCTION(
         RESULTAT=SOLNL,
         NOM_CHAM="VARI_ELGA",
@@ -416,7 +415,7 @@ SOLNL2 = STAT_NON_LINE(
         ),
         _F(RELATION="ELAS", GROUP_MA=("PX1")),
     ),
-    INCREMENT=(_F(LIST_INST=LIS2DD, INST_FIN=tmax),),
+    INCREMENT=_F(LIST_INST=LIS2DD, INST_FIN=tmax),
     NEWTON=(_F(REAC_ITER=1, PREDICTION="EXTRAPOLE"),),
     ARCHIVAGE=_F(LIST_INST=LINSTDD),
     SUIVI_DDL=(
@@ -456,7 +455,6 @@ rho2 = [None] * 13
 system = ["", "B4", "B2", "B5", "D4", "D1", "D6", "A2", "A6", "A3", "C5", "C3", "C1"]
 
 for i in range(1, 13):
-
     gamm2[i] = RECU_FONCTION(
         RESULTAT=SOLNL2,
         NOM_CHAM="VARI_ELGA",
@@ -523,7 +521,7 @@ SOLNL3 = STAT_NON_LINE(
         ),
         _F(RELATION="ELAS", GROUP_MA=("PX1")),
     ),
-    INCREMENT=(_F(LIST_INST=LIS2DD, INST_FIN=tmax),),
+    INCREMENT=_F(LIST_INST=LIS2DD, INST_FIN=tmax),
     NEWTON=(_F(REAC_ITER=1, PREDICTION="EXTRAPOLE"),),
     ARCHIVAGE=_F(LIST_INST=LINSTDD),
     SUIVI_DDL=(
@@ -563,7 +561,6 @@ rho3 = [None] * 13
 system = ["", "B4", "B2", "B5", "D4", "D1", "D6", "A2", "A6", "A3", "C5", "C3", "C1"]
 
 for i in range(1, 13):
-
     gamm3[i] = RECU_FONCTION(
         RESULTAT=SOLNL3,
         NOM_CHAM="VARI_ELGA",

@@ -45,65 +45,34 @@ def C_ETAT_INIT(command, statut):
 
     kwargs["EVOL_NOLI"] = SIMP(statut="f", typ=evol_noli)
 
+    fields = ["DEPL", "SIGM", "VARI", "COHE"]
     if command == "DYNA_NON_LINE":
-        mcfact = FACT(
-            statut=statut,
-            max=1,
-            regles=(
-                AU_MOINS_UN("EVOL_NOLI", "ACCE", "VITE", "DEPL", "SIGM", "VARI"),
-                EXCLUS("NUME_ORDRE", "INST"),
-            ),
-            b_evol=BLOC(
-                condition="""exists("EVOL_NOLI")""",
-                NUME_ORDRE=SIMP(statut="f", typ="I"),
-                NUME_DIDI=SIMP(statut="f", typ="I"),
-                INST=SIMP(statut="f", typ="R"),
-                b_inst=BLOC(
-                    condition="""exists("INST")""",
-                    CRITERE=SIMP(
-                        statut="f", typ="TXM", defaut="RELATIF", into=("RELATIF", "ABSOLU")
-                    ),
-                    b_prec_rela=BLOC(
-                        condition="""(equal_to("CRITERE", 'RELATIF'))""",
-                        PRECISION=SIMP(statut="f", typ="R", defaut=1.0e-6),
-                    ),
-                    b_prec_abso=BLOC(
-                        condition="""(equal_to("CRITERE", 'ABSOLU'))""",
-                        PRECISION=SIMP(statut="o", typ="R"),
-                    ),
+        fields.append("ACCE")
+        fields.append("VITE")
+
+    mcfact = FACT(
+        statut=statut,
+        max=1,
+        regles=(AU_MOINS_UN("EVOL_NOLI", *fields), EXCLUS("NUME_ORDRE", "INST")),
+        b_evol=BLOC(
+            condition="""exists("EVOL_NOLI")""",
+            NUME_ORDRE=SIMP(statut="f", typ="I"),
+            NUME_DIDI=SIMP(statut="f", typ="I"),
+            INST=SIMP(statut="f", typ="R"),
+            b_inst=BLOC(
+                condition="""exists("INST")""",
+                CRITERE=SIMP(statut="f", typ="TXM", defaut="RELATIF", into=("RELATIF", "ABSOLU")),
+                b_prec_rela=BLOC(
+                    condition="""(equal_to("CRITERE", 'RELATIF'))""",
+                    PRECISION=SIMP(statut="f", typ="R", defaut=1.0e-6),
+                ),
+                b_prec_abso=BLOC(
+                    condition="""(equal_to("CRITERE", 'ABSOLU'))""",
+                    PRECISION=SIMP(statut="o", typ="R"),
                 ),
             ),
-            **kwargs
-        )
-    else:
-        mcfact = FACT(
-            statut=statut,
-            max=1,
-            regles=(
-                AU_MOINS_UN("EVOL_NOLI", "DEPL", "SIGM", "VARI", "COHE"),
-                EXCLUS("NUME_ORDRE", "INST"),
-            ),
-            b_evol=BLOC(
-                condition="""exists("EVOL_NOLI")""",
-                NUME_ORDRE=SIMP(statut="f", typ="I"),
-                NUME_DIDI=SIMP(statut="f", typ="I"),
-                INST=SIMP(statut="f", typ="R"),
-                b_inst=BLOC(
-                    condition="""exists("INST")""",
-                    CRITERE=SIMP(
-                        statut="f", typ="TXM", defaut="RELATIF", into=("RELATIF", "ABSOLU")
-                    ),
-                    b_prec_rela=BLOC(
-                        condition="""(equal_to("CRITERE", 'RELATIF'))""",
-                        PRECISION=SIMP(statut="f", typ="R", defaut=1.0e-6),
-                    ),
-                    b_prec_abso=BLOC(
-                        condition="""(equal_to("CRITERE", 'ABSOLU'))""",
-                        PRECISION=SIMP(statut="o", typ="R"),
-                    ),
-                ),
-            ),
-            **kwargs
-        )
+        ),
+        **kwargs
+    )
 
     return mcfact

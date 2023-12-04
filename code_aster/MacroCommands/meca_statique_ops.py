@@ -81,17 +81,19 @@ def _createTimeStepper(args):
     Returns:
         (TimeStepper): a time stepper.
     """
-    stepper = TimeStepper([args.get("INST", 0.0)], initial=None)
     listInst = args.get("LIST_INST")
     if listInst:
         # there is no initial state, all times are calculated
-        stepper = TimeStepper.from_keywords(
-            LIST_INST=listInst, INST_INIT=None, INST_FIN=args.get("INST_FIN"), PRECISION=1.0e-6
-        )
+        inst_init = args.get("INST_INIT")
         resu = args.get("RESULTAT")
-        if resu:
-            last = resu.getLastTime()
-            stepper.setInitial(last)
+        if inst_init is None and resu:
+            inst_init = resu.getLastTime()
+        stepper = TimeStepper.from_keywords(
+            LIST_INST=listInst, INST_INIT=inst_init, INST_FIN=args.get("INST_FIN"), PRECISION=1.0e-6
+        )
+    else:
+        stepper = TimeStepper([args["INST"]], initial=None)
+
     logger.debug(repr(stepper))
     return stepper
 

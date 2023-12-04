@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,13 +21,11 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmdini(keywf  , list_inst     , inst_init, l_inst_init, tole,&
+    subroutine nmdini(keywf  , list_inst     , tole,&
                       nb_inst, l_init_noexist, nume_ini )
         character(len=16), intent(in) :: keywf
         character(len=19), intent(in) :: list_inst
         real(kind=8), intent(in) :: tole
-        real(kind=8), intent(in) :: inst_init
-        aster_logical, intent(in) :: l_inst_init
         integer, intent(in) :: nb_inst
         aster_logical, intent(out) :: l_init_noexist
         integer, intent(out) :: nume_ini

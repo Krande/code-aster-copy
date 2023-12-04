@@ -82,11 +82,6 @@ def _keywords_check(keywords):
             if keywords["COMPORTEMENT"]["DEFORMATION"] != "PETIT":
                 raise RuntimeError("unsupported value in DEFORMATION")
 
-    if "ETAT_INIT" in keywords:
-        if "EVOL_NOLI" in keywords:
-            if "INST_INIT" or "NUME_INST_INIT" not in keywords["INCREMENT"]:
-                raise RuntimeError("INST_INIT not given explicitly")
-
 
 def meca_non_line_ops(self, **args):
     """Execute the command.

@@ -41,6 +41,8 @@ from .Utils.ther_non_line_fort_op import THER_NON_LINE_FORT
 def use_fortran(keywords):
     excluded_keys = ("EVOL_THER_SECH", "OBSERVATION")
 
+    # return False
+
     for key in excluded_keys:
         if key in keywords:
             return True

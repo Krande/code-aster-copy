@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,6 @@ from ...Commands import CREA_CHAMP, DEFI_LIST_REEL, DYNA_NON_LINE
 
 
 def macro_bascule_schema_ops(self, **args):
-
     args = _F(args)
     # On importe les definitions des commandes a utiliser dans la macro
     #
@@ -97,8 +96,8 @@ def macro_bascule_schema_ops(self, **args):
     MasquerAlarme("COMPOR4_70")
 
     if SCHEMA_INIT == "IMPLICITE":
-        dincri1 = dincri
-        dincri1[-1]["INST_FIN"] = __L0[0]
+        dincri1 = dincri[0]
+        dincri1["INST_FIN"] = __L0[0]
         nomres = DYNA_NON_LINE(
             EXCIT=dexct,
             COMPORTEMENT=dComp_incri,
@@ -116,8 +115,8 @@ def macro_bascule_schema_ops(self, **args):
         __prc = "IMPLICITE"
     #
     if SCHEMA_INIT == "EXPLICITE":
-        dincre1 = dincre
-        dincre1[-1]["INST_FIN"] = __L0[0]
+        dincre1 = dincre[0]
+        dincre1["INST_FIN"] = __L0[0]
         nomres = DYNA_NON_LINE(
             MASS_DIAG="OUI",
             EXCIT=dexct,
@@ -186,13 +185,13 @@ def macro_bascule_schema_ops(self, **args):
                 NOM_CHAM="VARI_ELGA",
                 INST=__L0[j - 1],
             )
-            dincre1 = dincre
-            dincre1[-1]["INST_INIT"] = __L0[j - 1]
+            dincre1 = dincre[0]
+            dincre1["INST_INIT"] = __L0[j - 1]
             if j < __nb:
-                dincre1[-1]["INST_FIN"] = __L0[j]
+                dincre1["INST_FIN"] = __L0[j]
             else:
-                if "INST_FIN" in dincre1[-1]:
-                    del dincre1[-1]["INST_FIN"]
+                if "INST_FIN" in dincre1:
+                    del dincre1["INST_FIN"]
 
             nomres = DYNA_NON_LINE(
                 reuse=nomres,
@@ -322,9 +321,9 @@ def macro_bascule_schema_ops(self, **args):
             #
             # equilibrage du premier pas implicite
             print("Equilibrage du pas explicite stabilisée")
-            dincri1 = dincri
-            dincri1[-1]["INST_FIN"] = (__L0[j - 1]) + (10 * (__dtexp))
-            dincri1[-1]["INST_INIT"] = __L0[j - 1]
+            dincri1 = dincri[0]
+            dincri1["INST_FIN"] = (__L0[j - 1]) + (10 * (__dtexp))
+            dincri1["INST_INIT"] = __L0[j - 1]
             nomres = DYNA_NON_LINE(
                 reuse=nomres,
                 EXCIT=dexct,
@@ -387,12 +386,12 @@ def macro_bascule_schema_ops(self, **args):
             )
             #
             print("Calcul implicite après équilibrage")
-            dincri1 = dincri
-            dincri1[-1]["INST_INIT"] = (__L0[j - 1]) + (10 * (__dtexp))
+            dincri1 = dincri[0]
+            dincri1["INST_INIT"] = (__L0[j - 1]) + (10 * (__dtexp))
             if j < __nb:
-                dincri1[-1]["INST_FIN"] = __L0[j]
+                dincri1["INST_FIN"] = __L0[j]
             else:
-                del dincri1[-1]["INST_FIN"]
+                del dincri1["INST_FIN"]
             nomres = DYNA_NON_LINE(
                 reuse=nomres,
                 EXCIT=dexct,

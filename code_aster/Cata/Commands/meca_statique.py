@@ -37,7 +37,11 @@ MECA_STATIQUE = MACRO(
     compat_syntax=compat_syntax,
     fr=tr("Résoudre un problème de mécanique statique linéaire"),
     reentrant="f:RESULTAT",
-    regles=(EXCLUS("INST", "LIST_INST"), AU_MOINS_UN("CHAM_MATER", "CARA_ELEM")),
+    regles=(
+        UN_PARMI("INST", "LIST_INST", INST=0.0),
+        AU_MOINS_UN("CHAM_MATER", "CARA_ELEM"),
+        PRESENT_PRESENT("reuse", "RESULTAT"),
+    ),
     reuse=SIMP(statut="c", typ=CO),
     RESULTAT=SIMP(statut="f", typ=evol_elas, fr=tr("Résultat utilisé en cas de réécriture")),
     MODELE=SIMP(statut="o", typ=modele_sdaster),
@@ -77,7 +81,11 @@ MECA_STATIQUE = MACRO(
     ),
     INST=SIMP(statut="f", typ="R"),
     LIST_INST=SIMP(statut="f", typ=listr8_sdaster),
-    INST_FIN=SIMP(statut="f", typ="R"),
+    b_list_inst=BLOC(
+        condition="""exists("LIST_INST")""",
+        INST_INIT=SIMP(statut="f", typ="R"),
+        INST_FIN=SIMP(statut="f", typ="R"),
+    ),
     OPTION=SIMP(
         statut="f",
         typ="TXM",

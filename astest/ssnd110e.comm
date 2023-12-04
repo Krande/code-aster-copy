@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -232,7 +232,7 @@ IMPLDDI = SIMU_POINT_MAT(
             TOUT="OUI",
         ),
     ),
-    INCREMENT=(_F(LIST_INST=LIS2DD),),
+    INCREMENT=_F(LIST_INST=LIS2DD),
     NEWTON=(_F(REAC_ITER=1),),
     CONVERGENCE=(_F(ITER_GLOB_MAXI=100),),
     VARI_INIT=_F(VALE=lvari),
@@ -265,7 +265,7 @@ IMPLDD = SIMU_POINT_MAT(
             TOUT="OUI",
         ),
     ),
-    INCREMENT=(_F(LIST_INST=LIS2DD),),
+    INCREMENT=_F(LIST_INST=LIS2DD),
     NEWTON=(_F(REAC_ITER=1),),
     CONVERGENCE=(_F(ITER_GLOB_MAXI=100),),
     VARI_INIT=_F(VALE=lvari),

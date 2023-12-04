@@ -47,6 +47,24 @@ class NonLinearStaticAnalysis(ExecuteCommand):
         except ValueError as exc:
             UTMESS("F", "SUPERVIS_4", valk=(self.command_name, str(exc)))
 
+        # modify ETAT_INIT
+        if (
+            "INST_INIT" not in keywords["INCREMENT"]
+            and "NUME_INST_INIT" not in keywords["INCREMENT"]
+        ):
+            if "ETAT_INIT" in keywords and "EVOL_NOLI" in keywords["ETAT_INIT"]:
+                etat_init = keywords["ETAT_INIT"]
+                if "EVOL_NOLI" in etat_init:
+                    evol_noli = etat_init["EVOL_NOLI"]
+                    inst_init = evol_noli.getLastTime()
+                    if "INST" in etat_init:
+                        inst_init = etat_init["INST"]
+                    if "NUME_ORDRE" in etat_init:
+                        inst_init = evol_noli.getTime(etat_init["NUME_ORDRE"])
+                    keywords["INCREMENT"]["INST_INIT"] = inst_init
+            else:
+                keywords["INCREMENT"]["NUME_INST_INIT"] = 0
+
     def create_result(self, keywords):
         """Initialize the result.
 

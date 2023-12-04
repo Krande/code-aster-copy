@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ assert val == ref, "un et un seul pas de temps attendu : %s" % repr(l_para)
 
 # 2. on calcule un pas supplémentaire (licite) pour vérifier que
 #    le concept est complet.
-l_inst2 = DEFI_LIST_REEL(VALE=(0.0, 4.0))
+l_inst2 = DEFI_LIST_REEL(VALE=(0.0, 3.0, 4.0))
 
 inst2 = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=l_inst2))
 

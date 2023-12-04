@@ -892,6 +892,7 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
                     INCREMENT=_F(
                         LIST_INST=self.times,
                         PRECISION=1.0e-08,
+                        INST_INIT=__RESULT.getLastTime(),
                         INST_FIN=self.coeur.temps_simu["T8"],
                     ),
                     COMPORTEMENT=self.char_ini_comp,
@@ -925,7 +926,9 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
                     CHAM_MATER=self.cham_mater_free,
                     ETAT_INIT=_F(EVOL_NOLI=__RESULT),
                     EXCIT=loads_chin_t8_t9,
-                    INCREMENT=_F(LIST_INST=self.times),
+                    INCREMENT=_F(
+                        LIST_INST=self.times, INST_INIT=__RESULT.getLastTime(), PRECISION=1e-8
+                    ),
                     COMPORTEMENT=self.char_ini_comp,
                 )
             )
@@ -1018,6 +1021,7 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
             logger.debug(
                 "<MAC3_CALCUL><DEFORMATION>: Start activation of contacts T0-T0b using prediction."
             )
+
             __RESULT = STAT_NON_LINE(
                 **self.snl(
                     reuse=__RESULT,
@@ -1032,6 +1036,7 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
                     INCREMENT=_F(
                         LIST_INST=self.times_woSubd,
                         PRECISION=1.0e-08,
+                        INST_INIT=self.coeur.temps_simu["T0"],
                         INST_FIN=self.coeur.temps_simu["T0b"],
                     ),
                     EXCIT=loads_def_t0_t8,
@@ -1051,6 +1056,7 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
                     INCREMENT=_F(
                         LIST_INST=self.times,
                         PRECISION=1.0e-08,
+                        INST_INIT=__RESULT.getLastTime(),
                         INST_FIN=self.coeur.temps_simu["T8"],
                     ),
                     EXCIT=loads_def_t0_t8,
@@ -1082,6 +1088,7 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
                     INCREMENT=_F(
                         LIST_INST=self.times,
                         PRECISION=1.0e-08,
+                        INST_INIT=__RESULT.getLastTime(),
                         INST_FIN=self.coeur.temps_simu["T8b"],
                     ),
                 )
@@ -1122,6 +1129,7 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
                     INCREMENT=_F(
                         LIST_INST=self.times_woSubd,
                         PRECISION=1.0e-08,
+                        INST_INIT=__RESULT.getLastTime(),
                         INST_FIN=self.coeur.temps_simu["T9"],
                     ),
                     EXCIT=loads_def_t8b_t9,
@@ -1314,6 +1322,7 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
                 INCREMENT=_F(
                     LIST_INST=self.times_woSubd,
                     PRECISION=1.0e-08,
+                    INST_INIT=snl_lame_unloaded.getLastTime(),
                     INST_FIN=self.coeur.temps_simu["T0b"],
                 ),
                 EXCIT=loads_lame_thyc,
@@ -1332,7 +1341,10 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
                 RESULTAT=snl_lame,
                 CHAM_MATER=self.cham_mater_contact,
                 INCREMENT=_F(
-                    LIST_INST=self.times, PRECISION=1.0e-08, INST_FIN=self.coeur.temps_simu["T4"]
+                    LIST_INST=self.times,
+                    PRECISION=1.0e-08,
+                    INST_INIT=snl_lame.getLastTime(),
+                    INST_FIN=self.coeur.temps_simu["T4"],
                 ),
                 EXCIT=loads_lame_thyc,
                 ETAT_INIT=_F(EVOL_NOLI=snl_lame),

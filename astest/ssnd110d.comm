@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -202,7 +202,7 @@ IMPLDD = SIMU_POINT_MAT(
             TOUT="OUI",
         ),
     ),
-    INCREMENT=(_F(LIST_INST=LIS2DDI),),
+    INCREMENT=_F(LIST_INST=LIS2DDI),
     NEWTON=(
         _F(
             REAC_ITER=1,
@@ -230,7 +230,7 @@ EXPLDD = SIMU_POINT_MAT(
             TOUT="OUI",
         ),
     ),
-    INCREMENT=(_F(LIST_INST=LIS2DD),),
+    INCREMENT=_F(LIST_INST=LIS2DD),
     NEWTON=(_F(MATRICE="ELASTIQUE"),),  # PREDICTION='EXTRAPOLE',
     CONVERGENCE=(_F(ITER_GLOB_MAXI=100),),
     VARI_INIT=_F(VALE=lvari),
@@ -315,7 +315,6 @@ rho = [None] * 13
 system = ["", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
 
 for i in range(1, 13):
-
     gamma[i] = RECU_FONCTION(
         TABLE=EXPLDD, PARA_X="INST", PARA_Y="V" + str(8 + 3 * (i - 1)), INTERPOL="LIN"
     )
@@ -356,7 +355,6 @@ rhoi = [None] * 13
 
 
 for i in range(1, 13):
-
     gammi[i] = RECU_FONCTION(
         TABLE=IMPLDD, PARA_X="INST", PARA_Y="V" + str(8 + 3 * (i - 1)), INTERPOL="LIN"
     )

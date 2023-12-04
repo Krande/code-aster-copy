@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmdini(keywf, list_inst, inst_init, l_inst_init, tole, &
+subroutine nmdini(keywf, list_inst, tole, &
                   nb_inst, l_init_noexist, nume_ini)
 !
     implicit none
@@ -34,8 +34,6 @@ subroutine nmdini(keywf, list_inst, inst_init, l_inst_init, tole, &
     character(len=16), intent(in) :: keywf
     character(len=19), intent(in) :: list_inst
     real(kind=8), intent(in) :: tole
-    real(kind=8), intent(in) :: inst_init
-    aster_logical, intent(in) :: l_inst_init
     integer, intent(in) :: nb_inst
     aster_logical, intent(out) :: l_init_noexist
     integer, intent(out) :: nume_ini
@@ -51,21 +49,20 @@ subroutine nmdini(keywf, list_inst, inst_init, l_inst_init, tole, &
 ! In  keywf            : factor keyword
 ! In  list_inst        : list of times from INCREMENT/LIST_INST
 ! In  tole             : tolerance to search time
-! In  inst_init        : initial time if ETAT_INIT
-! In  l_inst_init      : .true. if initial time in ETAT_INIT
 ! In  nb_inst          : number of time steps in list
 ! Out l_init_noexist   : .true. if initial time doesn't exist in list of times
 ! Out nume_ini         : index of initial time
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: n1, n2, i_inst
-    real(kind=8) :: inst, ins, dt, dtmin
+    integer :: n1, n2
+    real(kind=8) :: inst
     real(kind=8), pointer :: v_list_inst(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
     nume_ini = 0
+    inst = -1.d0
     l_init_noexist = .false.
 !
 ! - Acces to list of times
@@ -79,42 +76,14 @@ subroutine nmdini(keywf, list_inst, inst_init, l_inst_init, tole, &
 !
 ! - No NUME_INST_INIT/INST_INIT
 !
-    if ((n1+n2 .eq. 0) .and. (.not. l_inst_init)) then
-        nume_ini = 0
-!
-! - INCREMENT/INST_INIT or ETAT_INIT/INST_INIT
-!
-    else if (n1 .eq. 0) then
+    if (n1 .eq. 0) then
         if (n2 .eq. 0) then
-!
-! --------- ETAT_INIT/INST_INIT
-!
-            inst = inst_init
+            nume_ini = 0.0
+        else
             call utacli(inst, v_list_inst, nb_inst, tole, nume_ini)
-!
-! --------- Not found: get nearest time before
-!
             if (nume_ini .lt. 0) then
-                l_init_noexist = .true.
-                dtmin = inst-v_list_inst(1)
-                ins = v_list_inst(1)
-                do i_inst = 1, nb_inst-1
-                    dt = inst-v_list_inst(1+i_inst)
-                    if (dt .le. 0.d0) then
-                        goto 45
-                    end if
-                    if (dt .lt. dtmin) then
-                        dtmin = dt
-                        ins = v_list_inst(1+i_inst)
-                    end if
-                end do
-45              continue
-                inst = ins
+                call utmess('F', 'DISCRETISATION_89', sr=inst)
             end if
-        end if
-        call utacli(inst, v_list_inst, nb_inst, tole, nume_ini)
-        if (nume_ini .lt. 0) then
-            call utmess('F', 'DISCRETISATION_89', sr=inst)
         end if
     end if
 !

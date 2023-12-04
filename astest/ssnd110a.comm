@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -182,7 +182,7 @@ EXPLDD = SIMU_POINT_MAT(
             TOUT="OUI",
         ),
     ),
-    INCREMENT=(_F(LIST_INST=LIS2DD),),
+    INCREMENT=_F(LIST_INST=LIS2DD),
     NEWTON=(_F(MATRICE="ELASTIQUE"),),  # PREDICTION='EXTRAPOLE',
     CONVERGENCE=(_F(ITER_GLOB_MAXI=100),),
     VARI_INIT=_F(VALE=lvari),
@@ -265,7 +265,6 @@ rho = [None] * 13
 system = ["", "B4", "B2", "B5", "D4", "D1", "D6", "A2", "A6", "A3", "C5", "C3", "C1"]
 
 for i in range(1, 13):
-
     gamma[i] = RECU_FONCTION(
         TABLE=EXPLDD, PARA_X="INST", PARA_Y="V" + str(8 + 3 * (i - 1)), INTERPOL="LIN"
     )
@@ -414,7 +413,7 @@ IMPLDD = SIMU_POINT_MAT(
     INFO=1,
     MATER=ACIERDD,
     COMPORTEMENT=(_F(RELATION="MONOCRISTAL", COMPOR=COMPODDI, ITER_INTE_MAXI=100, TOUT="OUI"),),
-    INCREMENT=(_F(LIST_INST=LIS2DD),),
+    INCREMENT=_F(LIST_INST=LIS2DD),
     NEWTON=(_F(REAC_ITER=1),),
     CONVERGENCE=(_F(ITER_GLOB_MAXI=100),),
     VARI_INIT=_F(VALE=lvari),
@@ -430,7 +429,6 @@ rhoi = [None] * 13
 system = ["", "B4", "B2", "B5", "D4", "D1", "D6", "A2", "A6", "A3", "C5", "C3", "C1"]
 
 for i in range(1, 13):
-
     gammi[i] = RECU_FONCTION(
         TABLE=IMPLDD, PARA_X="INST", PARA_Y="V" + str(8 + 3 * (i - 1)), INTERPOL="LIN"
     )
@@ -587,7 +585,7 @@ POLYDD = SIMU_POINT_MAT(
     INFO=1,
     MATER=ACIERDD,
     COMPORTEMENT=(_F(RELATION="POLYCRISTAL", COMPOR=COMPODDP, ITER_INTE_MAXI=100, TOUT="OUI"),),
-    INCREMENT=(_F(LIST_INST=LIS2DD),),
+    INCREMENT=_F(LIST_INST=LIS2DD),
     NEWTON=(_F(REAC_ITER=1),),
     CONVERGENCE=(_F(ITER_GLOB_MAXI=100),),
     VARI_INIT=_F(VALE=lvari),
@@ -602,7 +600,6 @@ rhop = [None] * 13
 system = ["", "B4", "B2", "B5", "D4", "D1", "D6", "A2", "A6", "A3", "C5", "C3", "C1"]
 
 for i in range(1, 13):
-
     gammp[i] = RECU_FONCTION(
         TABLE=POLYDD, PARA_X="INST", PARA_Y="V" + str(15 + 3 * (i - 1)), INTERPOL="LIN"
     )
