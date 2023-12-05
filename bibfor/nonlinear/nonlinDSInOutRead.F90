@@ -56,7 +56,7 @@ subroutine nonlinDSInOutRead(phenom, result, ds_inout)
     integer :: ifm, niv
     character(len=16) :: keywf, init_keyw, result_type
     character(len=8) :: stin_evol, field, criterion, answer
-    real(kind=8) :: precision, user_time, stin_time, temp_init
+    real(kind=8) :: precision, user_time, temp_init
     integer :: nocc, didi_nume, i_field, user_nume, iret
 !
 ! --------------------------------------------------------------------------------------------------
