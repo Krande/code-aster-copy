@@ -33,6 +33,10 @@
 #include "scotch.h"
 
 #include <sys/types.h>
+
+#ifdef ASTER_PLATFORM_MINGW
+#include <stdint.h>
+#endif
 #endif
 
 void DEFPPP( LIHDFV, lihdfv, _OUT ASTERINTEGER *major, _OUT ASTERINTEGER *minor,

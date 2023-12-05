@@ -67,8 +67,6 @@ Platform types:
 - ``ASTER_PLATFORM_LINUX``
 - ``ASTER_PLATFORM_LINUX64``
 - ``ASTER_PLATFORM_POSIX``
-- ``ASTER_PLATFORM_SOLARIS``
-- ``ASTER_PLATFORM_SOLARIS64``
 - ``ASTER_PLATFORM_WINDOWS``
 
 Datatypes and adjustements to prerequisites datatypes:

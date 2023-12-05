@@ -52,9 +52,9 @@ std::tuple< bool, ASTERINTEGER, std::string > dismoi( const std::string &questio
  * @brief irange Create a vector of integer from begin to end (included).
  *      for exemple {-1, 0, 1, 2, 3}
  */
-VectorInt irange( const int begin, const int end );
+VectorInt irange( const ASTERINTEGER4 begin, const ASTERINTEGER4 end );
 
-VectorLong irange( const long begin, const long end );
+VectorLong irange( const ASTERINTEGER begin, const ASTERINTEGER end );
 
 /**
  * @brief vectorStringToFStrArray Fill an array of Fortran strings with a vector of strings.

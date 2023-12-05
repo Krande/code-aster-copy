@@ -51,14 +51,11 @@
  * One uses '.char_ptr()' for the pointeur and '.size()' instead of 'strlen'.
  */
 
-/* Appels : minuscules/majuscules, avec/sans underscore */
-#if defined ASTER_PLATFORM_POSIX
+/* Appels : avec/sans underscore */
+#ifndef ASTER_NO_UNDERSCORE
 #define F_FUNC( UN, LN ) LN##_
-#if defined ASTER_NO_UNDERSCORE
-#define F_FUNC( UN, LN ) LN
-#endif
 #else
-#define F_FUNC( UN, LN ) UN
+#define F_FUNC( UN, LN ) LN
 #endif
 
 /* http://gcc.gnu.org/onlinedocs/cpp/Stringification.html */

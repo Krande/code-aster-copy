@@ -99,7 +99,7 @@ char *vectorStringAsFStrArray( const VectorString &vector, const int flen ) {
     return tabFStr;
 }
 
-VectorInt irange( const int begin, const int end ) {
+VectorInt irange( const ASTERINTEGER4 begin, const ASTERINTEGER4 end ) {
     const int size = end - begin + 1;
     VectorInt v( size );
 
@@ -112,7 +112,7 @@ VectorInt irange( const int begin, const int end ) {
     return v;
 }
 
-VectorLong irange( const long begin, const long end ) {
+VectorLong irange( const ASTERINTEGER begin, const ASTERINTEGER end ) {
     const long size = end - begin + 1;
     VectorLong v( size );
 

@@ -22,9 +22,7 @@
 #include "definition_pt.h"
 #include "dll_register.h"
 
-#ifdef ASTER_PLATFORM_POSIX
 #include <dlfcn.h>
-#endif
 
 /* *********************************************************************
  *
@@ -52,12 +50,10 @@ PyObject *get_dll_register_dict() {
 }
 
 void DEF0( DLLCLS, dllcls ) {
-#ifdef ASTER_PLATFORM_POSIX
     /* Unload all components
      */
     dll_init();
     libsymb_apply_on_all( DLL_DICT, (FUNC_PTR)dlclose, 1 );
     Py_DECREF( DLL_DICT );
     DLL_DICT = NULL;
-#endif
 }

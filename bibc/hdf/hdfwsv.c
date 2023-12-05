@@ -90,7 +90,11 @@ ASTERINTEGER DEFPSSSPSP( HDFWSV, hdfwsv, hid_t *idf, char *nomg, STRING_SIZE lg,
         type_id = H5T_NATIVE_DOUBLE;
         dimsf[0] = (hsize_t)*lsv;
     } else if ( strcmp( vtype, "I" ) == 0 ) {
+#ifdef ASTER_HAVE_LONG_LONG
+        type_id = H5T_NATIVE_LLONG;
+#else
         type_id = H5T_NATIVE_LONG;
+#endif
     } else if ( strcmp( vtype, "S" ) == 0 ) {
         type_id = H5T_NATIVE_INT;
     } else if ( strcmp( vtype, "L" ) == 0 ) {

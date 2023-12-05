@@ -30,8 +30,8 @@ unsigned long int TemporaryDataStructureNaming::_number = 0;
 
 std::string TemporaryDataStructureNaming::getNewTemporaryName( const int lengthName ) {
     std::ostringstream oss;
-    assert( _number <= _maxNumberOfObjects );
-    assert( lengthName <= JeveuxNameMaxLength );
+    DEBUG_ASSERT( _number <= maxNumberOfObjects );
+    DEBUG_ASSERT( lengthName <= JeveuxNameMaxLength );
     oss << "&" << std::hex << _number;
     ++_number;
     return std::string( oss.str() + "                        ", 0, lengthName );

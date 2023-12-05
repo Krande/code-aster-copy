@@ -19,14 +19,16 @@
 /* person_in_charge: j-pierre.lefebvre at edf.fr */
 #include "aster.h"
 
-#ifdef ASTER_PLATFORM_POSIX
-#ifdef __FreeBSD__
+#if defined ASTER_PLATFORM_FREEBSD
 #include <err.h>
 #include <kvm.h>
 #include <sys/param.h>
 #include <sys/sysctl.h>
 #include <sys/user.h>
-#endif
+#elif defined ASTER_PLATFORM_MINGW
+#include <psapi.h>
+#include <windows.h>
+#else
 #include <fcntl.h>
 #endif
 
@@ -113,16 +115,25 @@ ASTERINTEGER DEFP( MEMPID, mempid, ASTERINTEGER *val ) {
 
     iret = 0;
 #endif
-
     return iret;
 
-#else
-    /*
-    ** Pour retourner des valeurs sous Windows
-    */
+#elif defined ASTER_PLATFORM_MINGW
+    PROCESS_MEMORY_COUNTERS_EX pmc;
+    GetProcessMemoryInfo( GetCurrentProcess(), &pmc, sizeof( pmc ) );
+    /* VmSize */
+    val[0] = (ASTERINTEGER)pmc.WorkingSetSize / 1024;
+    /* VmPeak */
+    val[1] = (ASTERINTEGER)pmc.PeakWorkingSetSize / 1024;
+    if ( val[1] == 0 )
+        val[1] = -1;
+    /* VmRSS */
+    // val[3] = (ASTERINTEGER)pmc.PrivateUsage/1024;
+    /* VmStk */
+    return 0; // stack size on windows ?
+
+#else /* POSIX and not ASTER_ENABLE_PROC_STATUS */
     val[0] = 0;
     val[1] = 0;
     return 0;
-
 #endif
 }

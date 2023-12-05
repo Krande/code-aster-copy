@@ -459,20 +459,22 @@ def check_platform(self):
     os_name = self.env.DEST_OS
     if os_name == "cygwin":
         os_name = "linux"
-    elif os_name == "sunos":
-        os_name = "solaris"
+    elif os_name == "win32":
+        os_name = "mingw32"
     if "64" in self.env.DEST_CPU:
+        if os_name.endswith("32"):
+            os_name = os_name[:-2]
         os_name += "64"
         self.define("ASTER_HAVE_64_BITS", 1)
-    os_name = "ASTER_PLATFORM_" + os_name.upper()
-    if not os_name.startswith("win"):
+    plt = "ASTER_PLATFORM_" + os_name.upper()
+    if not os_name.startswith("mingw"):
         self.define("ASTER_PLATFORM_POSIX", 1)
-        self.undefine("ASTER_PLATFORM_WINDOWS")
-        self.define(os_name, 1)
+        self.undefine("ASTER_PLATFORM_MINGW")
     else:
-        self.define("ASTER_PLATFORM_WINDOWS", 1)
+        self.define("ASTER_PLATFORM_MINGW", 1)
         self.undefine("ASTER_PLATFORM_POSIX")
-    self.end_msg(os_name)
+    self.define(plt, 1)
+    self.end_msg(plt)
 
 
 @Configure.conf

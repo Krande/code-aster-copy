@@ -143,9 +143,16 @@ def build_libaster(self, env):
         use=use,
         install_path=env.ASTERLIBDIR,
     )
-    for submodule in ("aster", "aster_core", "aster_fonctions", "med_aster"):
-        src = osp.join(env.ASTERLIBDIR, submodule + ".so")
-        self.symlink_as(src, "libaster.so")
+    extlib = ".so"
+    mods = ["aster", "aster_core", "aster_fonctions", "med_aster"]
+    libaster = "libaster.so"
+    if self.is_defined("ASTER_PLATFORM_MINGW"):
+        extlib = ".pyd"
+        mods.append("libaster")
+        libaster = "aster.dll"
+    for submodule in mods:
+        src = osp.join(env.ASTERLIBDIR, submodule + extlib)
+        self.symlink_as(src, libaster)
 
 
 @Configure.conf

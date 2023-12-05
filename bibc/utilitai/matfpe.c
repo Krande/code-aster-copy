@@ -30,9 +30,14 @@
 #include <stdio.h>
 
 #if defined ASTER_HAVE_SUPPORT_FPE
+#include <float.h>
 #include <signal.h>
+
+#ifdef ASTER_PLATFORM_POSIX
 #define _GNU_SOURCE 1
 #include <fenv.h>
+#endif
+
 void hanfpe( int sig );
 
 static int compteur_fpe = 1;
@@ -50,13 +55,22 @@ void DEFP( MATFPE, matfpe, ASTERINTEGER *enable ) {
     compteur_fpe = compteur_fpe + *enable;
 
     if ( compteur_fpe < 1 ) {
+#if defined ASTER_PLATFORM_MINGW
+        _controlfp( _MCW_EM, _MCW_EM );
+#else
         fedisableexcept( FE_DIVBYZERO | FE_OVERFLOW | FE_INVALID );
+#endif
         /* définition du handler : hanfpe appelle UTMFPE qui fait UTMESS('F') */
         signal( SIGFPE, hanfpe );
     } else if ( compteur_fpe >= 1 ) {
         /* avant de reactiver le controle des FPE, on abaisse les flags */
+#if defined ASTER_PLATFORM_MINGW
+        _clearfp();
+        _controlfp( _EM_UNDERFLOW | _EM_DENORMAL | _EM_INEXACT, _MCW_EM );
+#else
         feclearexcept( FE_DIVBYZERO | FE_OVERFLOW | FE_INVALID );
         feenableexcept( FE_DIVBYZERO | FE_OVERFLOW | FE_INVALID );
+#endif
         /* définition du handler : hanfpe appelle UTMFPE qui fait UTMESS('F') */
         signal( SIGFPE, hanfpe );
     }

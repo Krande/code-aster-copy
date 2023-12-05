@@ -100,13 +100,13 @@ void Mesh::setGroupOfNodes( const std::string &name, const VectorLong &node_ids,
 };
 
 VectorLong Mesh::getCells( const std::string name ) const {
-    return getCells( VectorString( {name} ) );
+    return getCells( VectorString( { name } ) );
 }
 
 VectorLong Mesh::getCells( const VectorString &names ) const {
 
     if ( names.empty() ) {
-        return irange( long( 0 ), long( getNumberOfCells() - 1 ) );
+        return irange( (ASTERINTEGER)0, ( ASTERINTEGER )( getNumberOfCells() - 1 ) );
     }
 
     std::vector< VectorLong > cells;
@@ -129,7 +129,7 @@ VectorLong Mesh::getCells( const VectorString &names ) const {
 VectorLong Mesh::getNodes( const VectorString &names, const bool, const ASTERINTEGER ) const {
 
     if ( names.empty() ) {
-        return irange( long( 0 ), long( getNumberOfNodes() - 1 ) );
+        return irange( (ASTERINTEGER)0, ( ASTERINTEGER )( getNumberOfNodes() - 1 ) );
     }
 
     std::vector< VectorLong > nodes;
@@ -165,7 +165,7 @@ VectorLong Mesh::getNodes( const std::string name, const bool, const ASTERINTEGE
         return getNodes( VectorString() );
     }
 
-    return getNodes( VectorString( {name} ) );
+    return getNodes( VectorString( { name } ) );
 }
 
 VectorLong Mesh::getNodesFromCells( const VectorLong &cells, const bool,

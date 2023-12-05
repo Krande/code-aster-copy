@@ -167,10 +167,10 @@ contains
         implicit none
         integer, intent(in) :: nbThreads
 #ifdef ASTER_HAVE_OPENMP
-# ifdef ASTER_HAVE_OPENBLAS
+#ifdef ASTER_HAVE_OPENBLAS
         call openblas_set_num_threads(nbThreads)
 # endif
-# ifdef ASTER_HAVE_MKL
+#ifdef ASTER_HAVE_MKL
         call mkl_set_num_threads(nbThreads)
 # endif
 #endif

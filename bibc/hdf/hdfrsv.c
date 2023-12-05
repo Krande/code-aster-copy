@@ -51,14 +51,18 @@ ASTERINTEGER DEFPPPP( HDFRSV, hdfrsv, hid_t *idat, ASTERINTEGER *lsv, void *sv,
             if ( ( rank = H5Sget_simple_extent_ndims( dasp ) ) == 1 ) {
                 status = H5Sget_simple_extent_dims( dasp, dims, NULL );
             }
-            if ( *lsv >= (long)dims[0] ) {
+            if ( *lsv >= (ASTERINTEGER)dims[0] ) {
                 if ( ( ier = H5Dread( ida, datatype, H5S_ALL, H5S_ALL, H5P_DEFAULT, sv ) ) >= 0 ) {
                     if ( H5Tequal( H5T_STD_I32LE, datatype ) > 0 ||
                          H5Tequal( H5T_STD_I64LE, datatype ) > 0 ||
                          H5Tequal( H5T_STD_I32BE, datatype ) > 0 ||
                          H5Tequal( H5T_STD_I64BE, datatype ) > 0 ) {
                         if ( *icv != 0 ) {
+#ifdef ASTER_HAVE_LONG_LONG
+                            if ( ( H5Tconvert( datatype, H5T_NATIVE_LLONG, *lsv, sv, NULL,
+#else
                             if ( ( H5Tconvert( datatype, H5T_NATIVE_LONG, *lsv, sv, NULL,
+#endif
                                                bidon ) ) >= 0 ) {
                                 iret = 0;
                             }

@@ -175,7 +175,7 @@ std::vector< DataStructure::DataStructurePtr > DataStructure::getDependencies() 
 
 void DataStructure::debugPrint( int logicalUnit ) const {
     ASTERINTEGER unit, niveau, ipos, True, False;
-    unit = ASTERINTEGER( logicalUnit );
+    unit = (ASTERINTEGER)logicalUnit;
     niveau = 2;
     True = 1;
     False = 0;

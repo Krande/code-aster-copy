@@ -26,19 +26,23 @@
 
 /* undef entier et réel */
 #ifdef ASTER_HAVE_64_BITS
-static long ISUND = 0x7FFFFFFFFFFFFFFF;
+static ASTERINTEGER ISUND = 0x7FFFFFFFFFFFFFFF;
 #else
 static long ISUND = LONG_MAX;
 #endif
 
 #ifdef ASTER_HAVE_64_BITS
-static int R8UND[2] = {0x00000000, 0x7ff80000};
+static int R8UND[2] = { 0x00000000, 0x7ff80000 };
 #else
-static long R8UND[2] = {0x00000000, 0x7ff80000};
+static long R8UND[2] = { 0x00000000, 0x7ff80000 };
 #endif
 
 /* entier max, réel max, réel min, précision en réel simple et double */
-static long ISMAX = LONG_MAX;
+#if defined ASTER_HAVE_64_BITS && defined ASTER_PLATFORM_MINGW
+static ASTERINTEGER ISMAX = 0x7FFFFFFFFFFFFFFF;
+#else
+static ASTERINTEGER ISMAX = LONG_MAX;
+#endif
 static ASTERDOUBLE R8MAX = DBL_MAX;
 static ASTERDOUBLE R8MIN = DBL_MIN;
 static ASTERDOUBLE R8PREC = DBL_EPSILON;

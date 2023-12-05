@@ -39,9 +39,10 @@ void hancpu( int sig );
 #include <ucontext.h>
 void hanfpe( int sig, siginfo_t *sip, ucontext_t *uap );
 
-#elif defined ASTER_PLATFORM_WINDOWS
+#elif defined ASTER_PLATFORM_MINGW
 #include <float.h>
 void hanfpe( int sig );
+void sigsegv( int sig );
 
 #elif defined ASTER_PLATFORM_POSIX
 void hanfpe( int sig );
@@ -84,11 +85,11 @@ void DEF0( INISIG, inisig ) {
 
     signal( SIGFPE, hanfpe );
 
-#elif defined ASTER_PLATFORM_WINDOWS
+#elif defined ASTER_PLATFORM_MINGW
     _clearfp();
     cw = _controlfp( 0, 0 );
-    cw &= ~( EM_OVERFLOW | EM_ZERODIVIDE );
-    cwOrig = _controlfp( cw, MCW_EM );
+    cw &= ~( _EM_OVERFLOW | _EM_ZERODIVIDE );
+    cwOrig = _controlfp( cw, _MCW_EM );
 
     signal( SIGFPE, hanfpe );
 #else
@@ -102,6 +103,8 @@ void DEF0( INISIG, inisig ) {
    il faudra essayer de trouver autre chose... */
 #if defined ASTER_PLATFORM_POSIX
     signal( SIGUSR1, stpusr1 );
+#elif defined ASTER_PLATFORM_MINGW
+    signal( SIGSEGV, sigsegv );
 #endif
 }
 
@@ -120,6 +123,13 @@ void stpusr1( int sig ) {
     CALL_UTMESS( "I", "SUPERVIS_96" );
     status_usr1 = (ASTERINTEGER)1;
 }
+
+#ifdef ASTER_PLATFORM_MINGW
+void sigsegv( int sig ) {
+    printf( "SIGSEGV\n" );
+    print_trace_();
+}
+#endif
 
 void DEF0( CLRUSR, clrusr ) {
     /* CLeaR USR1 :

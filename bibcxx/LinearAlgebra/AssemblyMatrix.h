@@ -375,22 +375,24 @@ template <>
 void AssemblyMatrix< ASTERDOUBLE, Temperature >::setValues( const VectorLong &idx,
                                                             const VectorLong &jdx,
                                                             const VectorReal &values );
-typedef AssemblyMatrix< ASTERDOUBLE, Temperature > AssemblyMatrixTemperatureReal;
-
+template <>
+void AssemblyMatrix< ASTERDOUBLE, Temperature >::scale( const VectorReal &lvect,
+                                                        const VectorReal &rvect );
 template <>
 void AssemblyMatrix< ASTERDOUBLE, Temperature >::applyDirichletBC(
     const FieldOnNodesReal &DirichletBC, FieldOnNodesReal &Rhs ) const;
+
+typedef AssemblyMatrix< ASTERDOUBLE, Temperature > AssemblyMatrixTemperatureReal;
 
 /** @typedef Definition d'une matrice assemblee de double pression */
 template <>
 void AssemblyMatrix< ASTERDOUBLE, Pressure >::setValues( const VectorLong &idx,
                                                          const VectorLong &jdx,
                                                          const VectorReal &values );
-typedef AssemblyMatrix< ASTERDOUBLE, Pressure > AssemblyMatrixPressureReal;
-
 template <>
 void AssemblyMatrix< ASTERDOUBLE, Pressure >::applyDirichletBC( const FieldOnNodesReal &DirichletBC,
                                                                 FieldOnNodesReal &Rhs ) const;
+typedef AssemblyMatrix< ASTERDOUBLE, Pressure > AssemblyMatrixPressureReal;
 
 /** @typedef Definition d'une matrice assemblee de ASTERCOMPLEX temperature */
 template class AssemblyMatrix< ASTERCOMPLEX, Temperature >;

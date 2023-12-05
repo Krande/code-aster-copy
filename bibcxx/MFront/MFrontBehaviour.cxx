@@ -173,8 +173,14 @@ char **getTridimMaterialPropertiesNames( const char *behav, unsigned int *size )
     std::string bname = toLower( behav );
     bname.insert( 0, "aster" );
 
+#ifdef ASTER_PLATFORM_POSIX
     MFrontBehaviour behaviour( "Tridimensional", "lib" + std::string( ASTER_BEHAVIOUR_LIB ) + ".so",
                                bname.c_str() );
+#else
+    MFrontBehaviour behaviour( "Tridimensional", std::string( ASTER_BEHAVIOUR_LIB ) + ".dll",
+                               bname.c_str() );
+#endif
+
     VectorString names = behaviour.getMaterialPropertiesNames();
     VectorString conv = toAsterParameterVect( names );
     res = vectorOfStringsAsCharArray( conv, size );

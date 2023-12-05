@@ -123,7 +123,7 @@ void DEFSSP( UMAT_GET_FUNCTION, umat_get_function, char *nomlib, STRING_SIZE lno
     FreeStr( libname );
     FreeStr( symbol );
 #else
-    printf( "Not available under Windows.\n" );
+    printf( "UMAT: Not available under Windows.\n" );
     abort();
 #endif
 }
@@ -152,7 +152,7 @@ void DEFPPPPPPPPPPPPPPPPPPPSPPPPPPPPPPPPPPPPPP(
               props, nprops, coords, drot, pnewdt, celent, dfgrd0, dfgrd1, noel, npt, layer, kspt,
               kstep, kinc );
 #else
-    printf( "Not available under Windows.\n" );
+    printf( "UMAT: Not available under Windows.\n" );
     abort();
 #endif
 }

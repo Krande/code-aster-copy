@@ -23,7 +23,7 @@
 
 ASTERINTEGER DEFSSPP( INDIK8, indik8, char *lstmot, STRING_SIZE llm, char *mot, STRING_SIZE lm,
                       ASTERINTEGER *n, ASTERINTEGER *nmot ) {
-    long i, j = 0;
+    ASTERINTEGER i, j = 0;
     char *p, m[8];
 
     // m = mot[1:8] to allow fast comparisons

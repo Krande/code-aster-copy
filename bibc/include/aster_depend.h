@@ -20,13 +20,13 @@
 #define ASTER_DEPEND_H_
 
 /*
- * Exactly one of ASTER_PLATFORM_POSIX and ASTER_PLATFORM_WINDOWS must be
- * defined, they are exclusive.
+ * Supported "platforms" are:
+ * - ASTER_PLATFORM_LINUX
+ * - ASTER_PLATFORM_DARWIN
+ * - ASTER_PLATFORM_FREEBSD
+ * - ASTER_PLATFORM_MINGW
  *
- * In the source code, only use ASTER_PLATFORM_POSIX or ASTER_PLATFORM_WINDOWS
- * and, when required, ASTER_HAVE_64_BITS.
- *
- * The only platform name used is ASTER_PLATFORM_SOLARIS in the signal features.
+ * ASTER_PLATFORM_POSIX means LINUX or DARWIN or FREEBSD.
  *
  */
 
@@ -48,12 +48,12 @@
 #define ASTER_PLATFORM_DARWIN
 #endif
 
-#if ( defined ASTER_PLATFORM_FREEBSD64 ) || ( defined __FreeBSD__ )
-#define ASTER_PLATFORM_FREEBSD
+#if defined ASTER_PLATFORM_MINGW32 || defined ASTER_PLATFORM_MINGW64 || defined __MINGW32__
+#define ASTER_PLATFORM_MINGW
 #endif
 
-#ifdef ASTER_PLATFORM_SOLARIS64
-#define ASTER_PLATFORM_SOLARIS
+#if ( defined ASTER_PLATFORM_FREEBSD64 ) || ( defined __FreeBSD__ )
+#define ASTER_PLATFORM_FREEBSD
 #endif
 
 /* MS Windows platforms */
@@ -62,7 +62,6 @@
 /* win64 - use LLP64 model */
 #ifdef ASTER_HAVE_64_BITS
 #define ASTER_STRLEN_AT_END
-#define ASTER_HAVE_LONG_LONG
 #define ASTER_INT_SIZE 8
 #define ASTER_REAL8_SIZE 8
 #define ASTER_C_FORTRAN_INT long long
@@ -107,10 +106,11 @@ typedef ASTER_C_FORTRAN_LOGICAL ASTERLOGICAL;
 
 /* Comportement par défaut des FPE dans matfpe pour les blas/lapack */
 /* On non GNU/Linux systems, FPE are always enabled */
-#ifdef ASTER_PLATFORM_LINUX
+#if defined ASTER_PLATFORM_LINUX || defined ASTER_PLATFORM_MINGW
 #ifndef ASTER_HAVE_SUPPORT_FPE
 #define ASTER_HAVE_SUPPORT_FPE
 #endif
+
 #else
 #undef ASTER_HAVE_SUPPORT_FPE
 #endif

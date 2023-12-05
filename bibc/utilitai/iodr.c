@@ -142,7 +142,11 @@ void DEFSP( CLOSDR, closdr, char *dfname, STRING_SIZE len_dfname, ASTERINTEGER *
 
 void DEFSPPPP( READDR, readdr, char *dfname, STRING_SIZE len_dfname, void *buf,
                ASTERINTEGER *nbytes, ASTERINTEGER *irec, ASTERINTEGER *ierr ) {
+#if defined ASTER_HAVE_LONG_LONG
+    long long offset;
+#else
     long offset;
+#endif
     long iu, nbseek;
     ASTERINTEGER nbval;
     char *fname;
@@ -166,7 +170,11 @@ void DEFSPPPP( READDR, readdr, char *dfname, STRING_SIZE len_dfname, void *buf,
         return;
     }
     offset = ( *irec - 1 ) * nenr[iu] + OFF_INIT;
+#if defined ASTER_HAVE_LONG_LONG
+    nbseek = _fseeki64( fpfile[iu], offset, SEEK_SET );
+#else
     nbseek = fseek( fpfile[iu], offset, SEEK_SET );
+#endif
     nbval = (ASTERINTEGER)fread( buf, 1, ( size_t )( *nbytes ), fpfile[iu] );
     if ( nbval != *nbytes ) {
         *ierr = -4;
@@ -176,7 +184,11 @@ void DEFSPPPP( READDR, readdr, char *dfname, STRING_SIZE len_dfname, void *buf,
 
 void DEFSPPPP( WRITDR, writdr, char *dfname, STRING_SIZE len_dfname, void *buf,
                ASTERINTEGER *nbytes, ASTERINTEGER *irec, ASTERINTEGER *ierr ) {
+#if defined ASTER_HAVE_LONG_LONG
+    long long offset;
+#else
     long offset;
+#endif
     long iu, nbseek, nbwrite;
     ASTERINTEGER nbval;
     char *fname;
@@ -199,7 +211,11 @@ void DEFSPPPP( WRITDR, writdr, char *dfname, STRING_SIZE len_dfname, void *buf,
         nbwrite = fwrite( &nenr[iu], OFF_INIT, 1, fpfile[iu] );
     }
     offset = ( *irec - 1 ) * ( nenr[iu] ) + OFF_INIT;
+#if defined ASTER_HAVE_LONG_LONG
+    nbseek = _fseeki64( fpfile[iu], offset, SEEK_SET );
+#else
     nbseek = fseek( fpfile[iu], offset, SEEK_SET );
+#endif
     nbval = (ASTERINTEGER)fwrite( buf, 1, ( size_t )( *nbytes ), fpfile[iu] );
 
     if ( nbval != *nbytes ) {

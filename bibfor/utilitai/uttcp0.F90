@@ -27,7 +27,6 @@ subroutine uttcp0(indi, para, nbv, temps)
     character(len=*) :: para
 ! ----------------------------------------------------------------------
 !  ROUTINE DE MESURE DU TEMPS CPU.
-!  UTILISE LES ROUTINES C SUIVANTES (ADHERENCE CRAY/ASTER_PLATFORM_SOLARIS)
 !     UTTCSM  : RENVOI LE  TEMPS CONSOMME TOTAL DU PROCESSUS (SEC)
 !     UTTRST  : RENVOI LES TEMPS RESTANT  TOTAL DU PROCESSUS (SEC)
 !

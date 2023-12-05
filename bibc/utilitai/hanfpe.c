@@ -29,14 +29,7 @@
 #include <stdlib.h>
 #endif
 
-#if defined ASTER_PLATFORM_SOLARIS
-#include <siginfo.h>
-#include <ucontext.h>
-void hanfpe( int sig, siginfo_t *sip, ucontext_t *uap )
-#else
-void hanfpe( int sig )
-#endif
-{
+void hanfpe( int sig ) {
     void exit( int status );
     void DEF0( UTMFPE, utmfpe );
 

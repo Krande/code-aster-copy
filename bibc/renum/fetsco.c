@@ -23,6 +23,10 @@
 #include "scotch.h"
 
 #include <sys/types.h>
+
+#ifdef ASTER_PLATFORM_MINGW
+#include <stdint.h>
+#endif
 #endif
 
 void DEFPPPPPPPPPP( FETSCO, fetsco, ASTERINTEGER *nbmato, ASTERINTEGER *nblien,

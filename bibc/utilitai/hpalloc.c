@@ -19,7 +19,11 @@
 #include "aster.h"
 
 #include <errno.h>
+
+#ifdef ASTER_PLATFORM_POSIX
 #include <sys/mman.h>
+#endif
+
 // <malloc.h> is linux-specific
 // http://stackoverflow.com/questions/12973311/difference-between-stdlib-h-and-malloc-h
 // <stdlib.h> should now be used instead

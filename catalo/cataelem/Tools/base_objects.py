@@ -1139,7 +1139,7 @@ def a_creer_seulement_dans(obj, l_autorises):
     # on remonte de 2 "crans" dans la trace:
     fram1 = trace[2].tb_frame.f_back.f_back
     filename = fram1.f_code.co_filename
-    l1 = filename.split("/")
+    l1 = filename.split(os.sep)
 
     OK = False
     for autor in l_autorises:

@@ -100,7 +100,7 @@ class DataStructure {
      */
     ~DataStructure();
 
-    inline long id() { return long( this ); };
+    inline ASTERINTEGER id() { return (ASTERINTEGER)this; };
 
     /**
      * @brief Function to add a datastructure as a dependency
