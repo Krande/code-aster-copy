@@ -354,7 +354,7 @@ AFFE_CARA_ELEM = OPER(
                     statut="o",
                     typ="TXM",
                     min=8,
-                    max=30,
+                    max=28,
                     fr=tr("A1,A2,IY1,IY2,IZ1,IZ2,JX1,JX2 sont des paramètres obligatoires"),
                     validators=[
                         NoRepeat(),
@@ -362,9 +362,9 @@ AFFE_CARA_ELEM = OPER(
                     ],
                     into=(
                         "A1",  "IY1",  "IZ1",  "AY1",  "AZ1",  "EY1",    "EZ1",
-                        "JX1", "RY1",  "RZ1",  "RT1",  "JG1",  "IYR21",  "IZR21", "AI1",
+                        "JX1", "RY1",  "RZ1",  "RT1",  "JG1",  "IYR21",  "IZR21",
                         "A2",  "IY2",  "IZ2",  "AY2",  "AZ2",  "EY2",    "EZ2",
-                        "JX2", "RY2",  "RZ2",  "RT2",  "JG2",  "IYR22",  "IZR22", "AI2",
+                        "JX2", "RY2",  "RZ2",  "RT2",  "JG2",  "IYR22",  "IZR22",
                     ),
                 ),
                 # fmt: on

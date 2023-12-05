@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -956,8 +956,23 @@ CA_PO_E2 = AFFE_CARA_ELEM(
     POUTRE=_F(GROUP_MA="MA_SEG2", SECTION="RECTANGLE", CARA=("H", "EP"), VALE=(HY, EPY)),
 )
 
+CA_PO_E2_HOMO = AFFE_CARA_ELEM(
+    MODELE=MO_POU_E,
+    POUTRE=_F(
+        VARI_SECT="HOMOTHETIQUE",
+        GROUP_MA="MA_SEG2",
+        SECTION="RECTANGLE",
+        CARA=("H1", "H2", "EP1", "EP2"),
+        VALE=(HY, HY, EPY, EPY),
+    ),
+)
+
 MA_PO_E2 = POST_ELEM(
     MODELE=MO_POU_E, MASS_INER=_F(GROUP_MA="MA_SEG2"), CHAM_MATER=CHMAT, CARA_ELEM=CA_PO_E2
+)
+
+MA_PO_E2_HOMO = POST_ELEM(
+    MODELE=MO_POU_E, MASS_INER=_F(GROUP_MA="MA_SEG2"), CHAM_MATER=CHMAT, CARA_ELEM=CA_PO_E2_HOMO
 )
 
 val22 = (HY * HY - E_HY * E_HY) * LONG * RHO
@@ -970,6 +985,15 @@ TEST_TABLE(
     FILTRE=_F(NOM_PARA="LIEU", VALE_K="MA_SEG2"),
 )
 
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC=0.806101731,
+    VALE_REFE=0.80610173055266399,
+    NOM_PARA="MASSE",
+    TABLE=MA_PO_E2_HOMO,
+    FILTRE=_F(NOM_PARA="LIEU", VALE_K="MA_SEG2"),
+)
+
 CA_PO_E3 = AFFE_CARA_ELEM(
     MODELE=MO_POU_E,
     POUTRE=_F(
@@ -979,9 +1003,23 @@ CA_PO_E3 = AFFE_CARA_ELEM(
         VALE=(HY, EPY, HZ, EPZ),
     ),
 )
+CA_PO_E3_HOMO = AFFE_CARA_ELEM(
+    MODELE=MO_POU_E,
+    POUTRE=_F(
+        GROUP_MA="MA_SEG2",
+        VARI_SECT="HOMOTHETIQUE",
+        SECTION="RECTANGLE",
+        CARA=("HY1", "HY2", "EPY1", "EPY2", "HZ1", "HZ2", "EPZ1", "EPZ2"),
+        VALE=(HY, HY, EPY, EPY, HZ, HZ, EPZ, EPZ),
+    ),
+)
 
 MA_PO_E3 = POST_ELEM(
     MODELE=MO_POU_E, MASS_INER=_F(GROUP_MA="MA_SEG2"), CHAM_MATER=CHMAT, CARA_ELEM=CA_PO_E3
+)
+
+MA_PO_E3_HOMO = POST_ELEM(
+    MODELE=MO_POU_E, MASS_INER=_F(GROUP_MA="MA_SEG2"), CHAM_MATER=CHMAT, CARA_ELEM=CA_PO_E3_HOMO
 )
 
 val23 = (HY * HZ - E_HY * E_HZ) * LONG * RHO
@@ -991,6 +1029,14 @@ TEST_TABLE(
     VALE_REFE=1.0861160159025363,
     NOM_PARA="MASSE",
     TABLE=MA_PO_E3,
+    FILTRE=_F(NOM_PARA="LIEU", VALE_K="MA_SEG2"),
+)
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC=1.086116016,
+    VALE_REFE=1.0861160159025363,
+    NOM_PARA="MASSE",
+    TABLE=MA_PO_E3_HOMO,
     FILTRE=_F(NOM_PARA="LIEU", VALE_K="MA_SEG2"),
 )
 
