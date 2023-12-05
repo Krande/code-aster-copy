@@ -227,7 +227,7 @@ DEP_FIX = (
             _F(GROUP_MA="HAUT", DY=0.0),
             _F(GROUP_MA="DROITE", DX=0.0),
             _F(GROUP_MA="BAS", DY=0.0),
-                  _F(GROUP_MA="GAUCHE", DX=0.0),
+            _F(GROUP_MA="GAUCHE", DX=0.0),
         ),
         DDL_IMPO=(_F(TOUT="OUI", PRE2=PGAGO0),),
     ),
