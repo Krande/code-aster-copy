@@ -24,7 +24,6 @@ subroutine lkdhds(nbmat, mater, invar, s, dhds, &
 #include "asterfort/cjst.h"
 #include "asterfort/cos3t.h"
 #include "asterfort/lkhlod.h"
-#include "asterfort/utmess.h"
     integer :: nbmat, retcom
     real(kind=8) :: mater(nbmat, 2), invar, s(6), dhds(6)
 ! --- MODELE LETK : LAIGLE VISCOPLASTIQUE--------------------------
@@ -68,7 +67,6 @@ subroutine lkdhds(nbmat, mater, invar, s, dhds, &
     ptit = r8miem()
     sii = norm2(s(1:ndt))
     if (sii .lt. ptit) then
-        call utmess('A', 'COMPOR1_29')
         retcom = 1
         goto 1000
     end if

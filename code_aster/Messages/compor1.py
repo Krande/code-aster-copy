@@ -188,24 +188,6 @@ La modélisation %(k2)s n'est pas autorisée avec la loi de comportement %(k1)s.
   comportement cristallin homogénéisé : les coefficients matériau ne peuvent dépendre de la température.
 """
     ),
-    29: _(
-        """
- LETK : division par zéro - entrée en plasticité avec un déviateur  nul.
- le pas de temps est trop petit - augmenter le pas de temps pour augmenter le déviateur.
-"""
-    ),
-    30: _(
-        """
- LETK : division par zéro - entrée en plasticité avec un déviateur nul.
- le pas de temps est trop petit - augmenter le pas de temps pour augmenter le déviateur.
-"""
-    ),
-    31: _(
-        """
- LETK : division par zéro - entrée en plasticité avec un déviateur nul.
- le pas de temps est trop petit - augmenter le pas de temps pour augmenter le déviateur.
-"""
-    ),
     32: _(
         """
  Comportement  %(k1)s : pour la viscosité, renseigner le mot-clé LEMAITRE dans DEFI_MATERIAU.

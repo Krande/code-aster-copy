@@ -20,7 +20,6 @@ subroutine lkcaln(s, b, vecn, retcom)
 !
     implicit none
 #include "asterc/r8miem.h"
-#include "asterfort/utmess.h"
     integer :: retcom
     real(kind=8) :: b, s(6), vecn(6)
 ! --- MODELE LETK : LAIGLE VISCOPLASTIQUE--------------------------
@@ -50,7 +49,6 @@ subroutine lkcaln(s, b, vecn, retcom)
     ptit = r8miem()
     sii = norm2(s(1:ndt))
     if (sii .lt. ptit) then
-        call utmess('A', 'COMPOR1_31')
         retcom = 1
         goto 1000
     end if

@@ -116,6 +116,7 @@ subroutine lkijac(mod, nmat, materf, timed, timef, &
         mident(i, i) = un
     end do
 !
+    retcom = 0
     varv = 0
     devgii = zero
     dlambd = yf(ndt+1)
@@ -158,6 +159,10 @@ subroutine lkijac(mod, nmat, materf, timed, timef, &
         call lkdgde(valv, vint(3), dt, seuilv, ucriv, &
                     i1, devsig, vint, nmat, materf, &
                     depsv, dgamv, retcom)
+        if (retcom .ne. 0) then
+            iret = retcom
+            goto 999
+        end if
     else
         dgamv = zero
         do i = 1, ndt
@@ -172,8 +177,16 @@ subroutine lkijac(mod, nmat, materf, timed, timef, &
 ! ------------------------------------------------------------------
     call lkdhds(nmat, materf, i1, devsig, dhds, &
                 retcom)
+    if (retcom .ne. 0) then
+        iret = retcom
+        goto 999
+    end if
     call lkds2h(nmat, materf, i1, devsig, dhds, &
                 ds2hds, retcom)
+    if (retcom .ne. 0) then
+        iret = retcom
+        goto 999
+    end if
 ! --- B-1) CALCUL FONCTION SEUIL PLASTIQUE EN YF
     seuilp = zero
     call lkcrip(i1, devsig, vint, nmat, materf, &
@@ -207,6 +220,10 @@ subroutine lkijac(mod, nmat, materf, timed, timef, &
         bprimp = lkbpri(valp, vint, nmat, materf, paraep, i1, devsig)
         vecnp(:) = zero
         call lkcaln(devsig, bprimp, vecnp, retcom)
+        if (retcom .ne. 0) then
+            iret = retcom
+            goto 999
+        end if
         call lkcalg(dfdsp, vecnp, gp, devgii)
 ! --- CALCUL DEFORMATION ELASTIQUE
         do i = 1, ndt
@@ -276,6 +293,10 @@ subroutine lkijac(mod, nmat, materf, timed, timef, &
     call lkvacv(nmat, materf, paravi, varavi)
     bprimv = lkbpri(valv, vint, nmat, materf, paravi, i1, devsig)
     call lkcaln(devsig, bprimv, vecnv, retcom)
+    if (retcom .ne. 0) then
+        iret = retcom
+        goto 999
+    end if
     call lkdfds(nmat, materf, devsig, paravi, varavi, &
                 ds2hds, ucriv, dfvdsi)
 ! --- CALCUL DE G_VISQUEUX
@@ -299,7 +320,8 @@ subroutine lkijac(mod, nmat, materf, timed, timef, &
 ! --- ASSEMBLAGE FINAL
     do i = 1, ndt
         do j = 1, ndt
-           drdy(i, j) = -(mident(i, j)-dhokds(i, j)+hnldgp(i, j)+hnldgv(i, j)*dt+hnldfg(i, j)*dt)/mu
+            drdy(i, j) = -(mident(i, j)-dhokds(i, j) &
+                           +hnldgp(i, j)+hnldgv(i, j)*dt+hnldfg(i, j)*dt)/mu
         end do
     end do
 ! ------------------------------------------------------------------
@@ -455,8 +477,8 @@ subroutine lkijac(mod, nmat, materf, timed, timef, &
         end do
     else
         do i = 1, ndt
-            drdy(ndt+2, i) = sqrt(deux/trois)*(dlambd*dgipds(i)+(dphvds(i)*devgiv+phiv*dgivds(i))&
-                                              &*dt)
+            drdy(ndt+2, i) = sqrt(deux/trois)*(dlambd*dgipds(i) &
+                                               +(dphvds(i)*devgiv+phiv*dgivds(i))*dt)
         end do
     end if
 ! ------------------------------------------------------------------
@@ -534,5 +556,6 @@ subroutine lkijac(mod, nmat, materf, timed, timef, &
 ! ------------------------------------------------------------------
         drdy(ndt+3, ndt+3) = un
     end if
+999 continue
 !
 end subroutine
