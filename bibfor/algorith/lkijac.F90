@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -126,6 +126,7 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
         mident(i,i) = un
     end do
 !
+    retcom = 0
     varv = 0
     devgii = zero
     dlambd = yf(ndt+1)
@@ -168,6 +169,10 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
         call lkdgde(valv, vint(3), dt, seuilv, ucriv,&
                     i1, devsig, vint, nmat, materf,&
                     depsv, dgamv, retcom)
+        if (retcom .ne. 0)then
+            iret = retcom
+            goto 999
+        endif
     else
         dgamv = zero
         do i = 1, ndt
@@ -184,6 +189,10 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
                 retcom)
     call lkds2h(nmat, materf, i1, devsig, dhds,&
                 ds2hds, retcom)
+    if (retcom .ne. 0)then
+        iret = retcom
+        goto 999
+    endif
 ! --- B-1) CALCUL FONCTION SEUIL PLASTIQUE EN YF
     seuilp = zero
     call lkcrip(i1, devsig, vint, nmat, materf,&
@@ -217,6 +226,10 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
         bprimp = lkbpri (valp,vint,nmat,materf,paraep,i1,devsig)
         call lcinve(zero, vecnp)
         call lkcaln(devsig, bprimp, vecnp, retcom)
+        if (retcom .ne. 0)then
+            iret = retcom
+            goto 999
+        endif
         call lkcalg(dfdsp, vecnp, gp, devgii)
 ! --- CALCUL DEFORMATION ELASTIQUE
         do i = 1, ndt
@@ -544,5 +557,6 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
 ! ------------------------------------------------------------------
         drdy(ndt+3,ndt+3) = un
     endif
+999 continue
 !
 end subroutine
