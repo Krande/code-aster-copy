@@ -348,7 +348,7 @@ def check_sizeof_string_size(self):
     else:
         typ = "unsigned int"
     # because win64
-    if self.is_defined("ASTER_PLATFORM_MINGW"):
+    if self.env.ASTER_PLATFORM_MINGW:
         typ = "size_t"
     self.define("ASTER_C_STRING_SIZE", typ, quote=False)
     self.end_msg(typ)

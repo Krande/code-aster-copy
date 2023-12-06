@@ -114,7 +114,7 @@ def check_scotch_libs(self):
 @Configure.conf
 def check_scotch_headers(self):
     self.start_msg("Checking for header scotch.h")
-    headers = "stdio.h stdlib.h sys/types.h scotch.h"
+    headers = "stdio.h stdlib.h stdint.h sys/types.h scotch.h"
     # can not test 'ptscotch.h' without including 'mpi.h' before...
     # if self.env.BUILD_MPI:
     #     headers += " ptscotch.h"
@@ -138,6 +138,7 @@ def check_scotch_version(self):
     # scotch.h may use int64_t without including <sys/types.h>
     fragment = r"""
 #include <stdio.h>
+#include <stdint.h>
 #include <sys/types.h>
 #include "scotch.h"
 

@@ -18,7 +18,8 @@
 # --------------------------------------------------------------------
 
 import os
-from subprocess import Popen, PIPE
+from pathlib import PureWindowsPath
+from subprocess import PIPE, Popen
 
 from waflib import Configure, Errors
 
@@ -71,6 +72,18 @@ def check_numpy_headers(self):
         ['"\\n".join(misc_util.get_numpy_include_dirs())'],
         ["from numpy.distutils import misc_util"],
     )
+    if self.is_defined("ASTER_PLATFORM_MINGW"):
+        incs = [PureWindowsPath(i) for i in numpy_includes]
+        numpy_includes = []
+        for path in incs:
+            parts = list(path.parts)
+            if path.anchor:
+                parts[0] = path.root
+            for i, sub in enumerate(parts):
+                if sub == "lib":
+                    parts[i] = "Lib"
+            numpy_includes.append(PureWindowsPath(*parts).as_posix())
+
     # check the given includes dirs
     self.check(
         feature="c",

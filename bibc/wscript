@@ -146,7 +146,7 @@ def build_libaster(self, env):
     extlib = ".so"
     mods = ["aster", "aster_core", "aster_fonctions", "med_aster"]
     libaster = "libaster.so"
-    if self.is_defined("ASTER_PLATFORM_MINGW"):
+    if env.ASTER_PLATFORM_MINGW:
         extlib = ".pyd"
         mods.append("libaster")
         libaster = "aster.dll"

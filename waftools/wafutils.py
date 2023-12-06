@@ -4,6 +4,7 @@ This modules defines some utilities shared by several *wscript* files.
 
 import os
 import os.path as osp
+from subprocess import check_output
 
 from waflib import Context, Errors, Logs, Utils
 
@@ -65,13 +66,22 @@ def exec_pyaster(self, pyfile, args, **kwargs):
 
 
 def add_to_env_paths(environ, name, path):
+    if not hasattr(add_to_env_paths, "pathsep"):
+        add_to_env_paths.pathsep = os.pathsep
+        # pathsep should be the one returned by the defined python exe interpreter
+        # that may differ from the python used to run waf in case of cross compiling
+        if "PYTHON" in environ.keys():
+            add_to_env_paths.pathsep = check_output(
+                [environ["PYTHON"], "-c", "import os; print(os.pathsep, end='')"], encoding="utf-8"
+            )
+
     if not path:
         return
     paths = [path] if isinstance(path, str) else path
     raw = environ.get(name, None)
     if raw is not None:
-        paths += raw.split(os.pathsep)
-    environ[name] = os.pathsep.join(p for p in paths)
+        paths += raw.split(add_to_env_paths.pathsep)
+    environ[name] = add_to_env_paths.pathsep.join(paths)
 
 
 def remove_previous(install_node, patterns):

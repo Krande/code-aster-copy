@@ -469,9 +469,11 @@ def check_platform(self):
     plt = "ASTER_PLATFORM_" + os_name.upper()
     if not os_name.startswith("mingw"):
         self.define("ASTER_PLATFORM_POSIX", 1)
+        self.env.ASTER_PLATFORM_POSIX = True
         self.undefine("ASTER_PLATFORM_MINGW")
     else:
         self.define("ASTER_PLATFORM_MINGW", 1)
+        self.env.ASTER_PLATFORM_MINGW = True
         self.undefine("ASTER_PLATFORM_POSIX")
     self.define(plt, 1)
     self.end_msg(plt)
