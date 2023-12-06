@@ -40,7 +40,7 @@ class TimeStepper(SolverFeature, Observer):
     Arguments:
         times (list[float]): List of time steps to be calculated.
         epsilon (float, optional): Value used to check equality between two times
-            (default: 1.e-6).
+            (default: 1.e-16).
         initial (float, optional): Initial time (default: 0.0).
         final (float, optional): Final time (default: the last given).
     """
@@ -52,7 +52,9 @@ class TimeStepper(SolverFeature, Observer):
     _split = _maxLevel = _minStep = _maxStep = _maxNbSteps = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
-    def __init__(self, times, epsilon=1.0e-16, initial=0.0, final=None):
+    default_increment = 1.0e-16
+
+    def __init__(self, times, epsilon=default_increment, initial=0.0, final=None):
         super().__init__()
         times = list(times)
         if sorted(times) != times:
@@ -326,8 +328,8 @@ class TimeStepper(SolverFeature, Observer):
     def __repr__(self):
         return f"<TimeStepper(from {self._initial} to {self._final}, size {self.size()}: {self._times})>"
 
-    @staticmethod
-    def from_keywords(**args):
+    @classmethod
+    def from_keywords(cls, **args):
         """Initialize a TimeStepper from user keywords as provided to
         the INCREMENT common set of keywords.
 
@@ -346,7 +348,7 @@ class TimeStepper(SolverFeature, Observer):
             times = args["LIST_INST"].getValues()
             stp = None
         initial = times[0]
-        eps = args.get("PRECISION", 1.0e-6)
+        eps = args.get("PRECISION", cls.default_increment)
         if "INST_INIT" in args:  # because None has a special meaning
             initial = args["INST_INIT"]
         if args.get("NUME_INST_INIT"):
