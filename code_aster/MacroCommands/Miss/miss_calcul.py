@@ -45,17 +45,19 @@ from ...Cata.Syntax import _F
 from ...Commands import IMPR_MACR_ELEM, MACR_ELEM_DYNA
 from ...Helpers.LogicalUnit import LogicalUnitFile
 from ...Messages import UTMESS
-from ...Utilities import ExecutionParameter, Timer
-from ...Utilities.misc import _print, _printDBG, decode_str, encode_str, send_file, set_debug
+from ...Utilities import ExecutionParameter, Timer, config
+from ...Utilities.misc import _print, decode_str, encode_str, send_file, set_debug
 from ...Utilities.mpi_utils import MPI
 from ...Utilities.System import ExecCommand
 from .miss_fichier_cmde import MissCmdeGen
 from .miss_fichier_interf import fichier_chp, fichier_ext, fichier_mvol, fichier_sign
 from .miss_fichier_option import fichier_option
 from .miss_fichier_sol import fichier_sol
-from .miss_post import PostMissFactory, info_freq
+from .miss_post import PostMissFactory
 from .miss_resu_aster import ResuAsterReader
 from .miss_utils import copie_fichier
+
+MODE = "wb" if config["ASTER_PLATFORM_MINGW"] else "w"
 
 
 class CalculMiss:
@@ -245,7 +247,7 @@ class CalculMiss:
         """Produit le fichier de maillage."""
         self._dbg_trace("Start")
         content = fichier_mvol(self.data)
-        with open(self._fichier_tmp("mvol"), "w") as f:
+        with open(self._fichier_tmp("mvol"), MODE) as f:
             f.write(content)
         self._dbg_trace("Stop")
 
@@ -266,7 +268,7 @@ class CalculMiss:
         """Produit le fichier chp (modes statiques, dynamiques...)."""
         self._dbg_trace("Start")
         content = fichier_chp(self.param, self.data)
-        with open(self._fichier_tmp("chp"), "w") as f:
+        with open(self._fichier_tmp("chp"), MODE) as f:
             f.write(content)
         self._dbg_trace("Stop")
 
@@ -278,7 +280,7 @@ class CalculMiss:
             sol_content = fichier_sol(tabsol, self.data, self.param)
             if self.verbose:
                 _print("Fichier de sol", sol_content)
-            with open(self._fichier_tmp("sol"), "w") as f:
+            with open(self._fichier_tmp("sol"), MODE) as f:
                 f.write(sol_content)
         self._dbg_trace("Stop")
 
@@ -290,7 +292,7 @@ class CalculMiss:
             self.param, self.data, self._fichier_tmp_local, lapl_temps=lapl_temps
         )
         content = generator.build()
-        with open(self._fichier_tmp(ext), "w") as f:
+        with open(self._fichier_tmp(ext), MODE) as f:
             f.write(content)
         self._dbg_trace("Stop")
 
@@ -300,7 +302,7 @@ class CalculMiss:
         option_content = fichier_option(self.param)
         if self.verbose:
             _print("Fichier d'option", option_content)
-        with open(self._fichier_tmp("optmis"), "w") as f:
+        with open(self._fichier_tmp("optmis"), MODE) as f:
             f.write(option_content)
         self._dbg_trace("Stop")
 

@@ -121,6 +121,8 @@ class TANGENT:
         diff = NP.where(refe > self.prec_zero, NP.abs(self.mat - matp) / (refe + self.prec_zero), 0)
         nook = (diff.ravel() > prec_diff).nonzero()[0]
         ok = (diff.ravel() <= prec_diff).nonzero()[0]
+        nook = nook.astype(NP.int32)
+        ok = ok.astype(NP.int32)
         if affi_ok:
             affi = [ok, nook]
         else:

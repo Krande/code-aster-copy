@@ -26,6 +26,7 @@ import os
 import re
 import sys
 from copy import copy
+from pathlib import Path
 
 import numpy
 
@@ -177,7 +178,7 @@ class TableBase:
         else:
             numpy.save(filename, tab)
             if not filename.endswith(".npy"):
-                os.rename(filename + ".npy", filename)
+                Path(filename + ".npy").rename(filename)
 
     def ReprTable(self, FORMAT="TABLEAU", dform=None, **ignore):
         """Représentation d'une Table ou d'une Colonne sous forme d'un tableau."""

@@ -31,6 +31,7 @@ from subprocess import PIPE
 from libaster import AsterError
 
 from ..Messages import UTMESS
+from ..Utilities import config
 
 
 class CommandLine:
@@ -89,7 +90,9 @@ class ExecProgram:
         Return output, error and the exit code"""
         if self.debug or not silent:
             UTMESS("I", "EXECLOGICIEL0_8", valk=repr(cmd))
-        options = {"close_fds": True}
+        options = {}
+        if config["ASTER_PLATFORM_POSIX"]:
+            options["close_fds"] = True
         if capture:
             options["stdout"] = PIPE
             options["stderr"] = PIPE

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,12 +22,10 @@
 
 debug = False
 
-import copy
 import getpass
 import glob
 import math
 import os
-import pprint
 import shutil
 import socket
 import sys
@@ -37,7 +35,7 @@ import numpy as NP
 from asrun.profil import AsterProfil
 
 from ...Messages import UTMESS
-
+from ...Utilities import config
 from ...Utilities.misc import get_shared_tmpdir
 from .recal import CALC_ERROR, CALCULS_ASTER, Affiche_Param
 
@@ -60,7 +58,6 @@ class CALCUL_ASTER:
         CALCUL_ESCLAVE=None,
         INFO=0,
     ):
-
         self.METHODE = METHODE
         self.UNITE_ESCL = UNITE_ESCL
         self.UNITE_RESU = UNITE_RESU
@@ -119,7 +116,6 @@ class CALCUL_ASTER:
 
     # ------------------------------------------------------------------------
     def reset(self):
-
         self.Lcalc = None
         self.erreur = None
         self.residu = None
@@ -168,7 +164,6 @@ class CALCUL_ASTER:
         # ASRUN distribue
         # ---------------------------------------------------------------------
         if self.LANCEMENT == "DISTRIBUTION":
-
             # Creation du repertoire temporaire pour l'execution de l'esclave
             tmp_macr_recal = self.Creation_Temporaire_Esclave()
 
@@ -268,7 +263,7 @@ class CALCUL_ASTER:
         self.erreur = E.CalcError(self.Lcalc)
 
         # norme de l'erreur
-        self.norme = NP.sum([x ** 2 for x in self.erreur])
+        self.norme = NP.sum([x**2 for x in self.erreur])
 
         if debug:
             print("self.reponses=", self.reponses)
@@ -435,7 +430,9 @@ class CALCUL_ASTER:
                 username = os.getlogin()
             except:
                 username = getpass.getuser()
-        user_mach_dist = "%s@%s:" % (username, socket.gethostname())
+        # not available under windows
+        if config["ASTER_PLATFORM_POSIX"]:
+            user_mach_dist = "%s@%s:" % (username, socket.gethostname())
 
         # On cherche s'il y a un fichier hostfile pour rajouter user@hostname
         l_fr = getattr(prof, "data")
@@ -482,10 +479,8 @@ class CALCUL_ASTER:
             l_tmp = l_fr[:]
 
             for dico in l_tmp:
-
                 # répertoires
                 if dico["isrep"]:
-
                     # base non prise en compte
                     if dico["type"] in ("base", "bhdf"):
                         l_fr.remove(dico)
@@ -497,7 +492,6 @@ class CALCUL_ASTER:
 
                 # fichiers
                 else:
-
                     # Nom du fichier .mess (pour recuperation dans REPE_OUT)
                     if dico["ul"] == 6:
                         self.nom_fichier_mess_fils = os.path.basename(dico["path"])

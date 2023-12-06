@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,10 +28,10 @@ import os.path
 import re
 import sys
 import time
-
-import numpy as np
+from pathlib import Path
 
 import aster_core
+import numpy as np
 
 from ..Messages import UTMESS
 from ..Utilities import ExecutionParameter, value_is_sequence
@@ -1387,7 +1387,7 @@ def IniGrace(fich):
     y1 = None
     if os.path.exists(fich) and os.stat(fich).st_size != 0:
         assert not is_binary(fich), "Can not append text to a binary file"
-        os.rename(fich, fich + ".prev")
+        Path(fich).rename(fich + ".prev")
         fpre = open(fich + ".prev", "r")
         fnew = open(fich, "w")
         for line in fpre:

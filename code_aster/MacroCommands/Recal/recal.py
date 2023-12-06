@@ -26,6 +26,7 @@
 # aslint: disable=C4007
 
 import copy
+import getpass
 import glob
 import os
 import platform
@@ -37,8 +38,8 @@ import tempfile
 from math import log10, sqrt
 from pathlib import Path
 
-import numpy as NP
 import asrun
+import numpy as NP
 from asrun.common.utils import find_command
 from asrun.distrib import DistribParametricTask
 from asrun.parametric import is_list_of_dict
@@ -49,9 +50,8 @@ from asrun.thread import Dispatcher
 from asrun.utils import search_enclosed
 
 from ...Messages import UTMESS
-
+from ...Utilities import config
 from ...Utilities.ExecutionParameter import ExecutionParameter
-from ...Cata.Syntax import _F
 from ...Utilities.misc import get_shared_tmpdir
 from ..Utils.TableReader import TableReaderFactory
 from . import reca_algo, reca_interp
@@ -600,12 +600,14 @@ class CALCULS_ASTER:
         try:
             username = prof.param["username"][0]
         except:
-            username = os.environ["LOGNAME"]
+            username = getpass.getuser()
         try:
             noeud = prof.param["noeud"][0]
         except:
             noeud = platform.uname()[1]
-        tmp_param = "%s@%s:%s" % (username, noeud, tmp_param)
+        # not available under windows
+        if config["ASTER_PLATFORM_POSIX"]:
+            tmp_param = "%s@%s:%s" % (username, noeud, tmp_param)
         prof.Set("R", {"type": "repe", "isrep": True, "ul": 0, "compr": False, "path": tmp_param})
         if info >= 2:
             print(prof)
