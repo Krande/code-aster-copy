@@ -298,7 +298,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             GROUP_NO="N4",
             NOM_CMP="DX",
-            VALE_CALC=0.029877323241274675,
+            VALE_CALC=0.02989338680563991,
         ),
     )
 )
@@ -319,7 +319,7 @@ TEST_RESU(
             NOM_CHAM="SIGM_NOEU",
             GROUP_NO="N4",
             NOM_CMP="SIYY",
-            VALE_CALC=-12.009670434202455,
+            VALE_CALC=-12.011385575564182,
         ),
     )
 )
