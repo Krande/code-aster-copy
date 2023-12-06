@@ -143,6 +143,7 @@ import os
 import os.path as osp
 import platform
 from fnmatch import fnmatchcase
+from pathlib import Path
 
 try:
     import yaml
@@ -189,7 +190,7 @@ class Config:
         mainfcfg (str): File name of the configuration file.
     """
 
-    usercfg = osp.join(os.getenv("HOME", ""), ".config", "aster", "config.yaml")
+    usercfg = str(Path.home() / ".config" / "aster" / "config.yaml")
 
     def __init__(self, mainfcfg):
         if not osp.exists(mainfcfg) or not yaml:

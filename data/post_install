@@ -27,7 +27,6 @@ the installation.
 """
 
 import argparse
-import os
 import os.path as osp
 import re
 import sys
@@ -40,8 +39,7 @@ def post_install(share_aster):
         share_aster (str): Path to the installation directory containing
             ``config.txt`` and ``profile.sh`` files.
     """
-    paths = ["profile.sh"] + ["config.txt", "CTestTestfile.cmake",
-                              "execute_codeaster"]
+    paths = ["profile.sh"] + ["config.txt", "CTestTestfile.cmake", "execute_codeaster"]
     files = [osp.join(share_aster, path) for path in paths]
 
     newdir = osp.normpath(osp.abspath(osp.dirname(osp.dirname(share_aster))))
@@ -69,11 +67,11 @@ def extract_previous(filename):
     return osp.normpath(osp.abspath(osp.dirname(osp.dirname(mat.group(1)))))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # command arguments parser
     parser = argparse.ArgumentParser(
-        usage=__doc__,
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+        usage=__doc__, formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
 
     args = parser.parse_args()
     here = osp.normpath(osp.abspath(osp.dirname(__file__)))

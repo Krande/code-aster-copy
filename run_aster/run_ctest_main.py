@@ -78,7 +78,7 @@ from subprocess import run
 from .config import CFG
 from .ctest2junit import XUnitReport
 from .run import get_nbcores
-from .utils import RUNASTER_ROOT
+from .utils import RUNASTER_ROOT, RUNASTER_PLATFORM
 
 USAGE = """
     run_ctest [options] [ctest-options] [other arguments...]
@@ -231,9 +231,9 @@ def parse_args(argv):
     return args, others
 
 
-def _run(cmd):
+def _run(cmd, shell=False):
     print("execute:", " ".join(cmd))
-    return run(cmd)
+    return run(cmd, shell=shell)
 
 
 def main(argv=None):
@@ -262,7 +262,10 @@ def main(argv=None):
             if answ.lower() not in ("y", "o"):
                 print("interrupt by user")
                 sys.exit(1)
-        _run(["rm", "-rf", resutest])
+        if RUNASTER_PLATFORM == "linux":
+            _run(["rm", "-rf", resutest])
+        else:
+            _run(["rd", "/s", "/q", resutest], shell=True)
 
     if not osp.exists(resutest):
         os.makedirs(resutest, exist_ok=True)
@@ -334,7 +337,7 @@ def create_ctest_file(testlist, exclude, filename, options):
 
 CTEST_DEF = """
 set(TEST_NAME ${{COMPONENT_NAME}}_{testname})
-add_test(${{TEST_NAME}} {ASTERDATADIR}/run_aster_for_ctest {options} {ASTERDATADIR}/tests/{testname}.export)
+add_test(${{TEST_NAME}} {ASTERDATADIR}/run_aster_for_ctest{ext} {options} {ASTERDATADIR}/tests/{testname}.export)
 set_tests_properties(${{TEST_NAME}} PROPERTIES
                      LABELS "${{COMPONENT_NAME}} {labels}"
                      PROCESSORS {processors}
@@ -403,6 +406,7 @@ def _build_def(bindir, datadir, lexport, options):
                 timeout=int(tim * 1.1 * float(os.environ["FACMTPS"])),
                 options=options,
                 ASTERDATADIR=datadir,
+                ext=".bat" if RUNASTER_PLATFORM == "win" else "",
             )
         )
     return "\n".join(text)

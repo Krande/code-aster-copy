@@ -94,6 +94,7 @@ import os.path as osp
 import shutil
 import sys
 import tempfile
+from pathlib import Path
 from subprocess import run
 
 from .command_files import AUTO_IMPORT
@@ -363,9 +364,9 @@ def main(argv=None):
             )
             run_aster = osp.join(RUNASTER_ROOT, "bin", "run_aster")
             try:
-                expdir = create_temporary_dir(dir=os.environ["HOME"] + "/.tmp_run_aster")
+                expdir = create_temporary_dir(dir=str(Path.home() / ".tmp_run_aster"))
             except (OSError, KeyError):
-                expdir = create_temporary_dir(dir="/tmp")
+                expdir = create_temporary_dir(dir=CFG.get("tmpdir"))
             statfile = osp.join(expdir, "__status__")
             basn = osp.basename(osp.splitext(args.file or "unnamed")[0])
             expected = export.get("expected_diag", [])
@@ -420,6 +421,7 @@ def main(argv=None):
             os.remove(tmpf)
     finally:
         if not args.wrkdir:
+            os.chdir(osp.dirname(wrkdir))
             shutil.rmtree(wrkdir)
     return exitcode
 

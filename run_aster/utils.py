@@ -44,6 +44,7 @@ from .logger import logger
 RUNASTER_ROOT = os.environ.get(
     "RUNASTER_ROOT", osp.dirname(osp.dirname(osp.dirname(osp.dirname(osp.abspath(__file__)))))
 )
+RUNASTER_PLATFORM = "linux" if os.name != "nt" else "win"
 
 
 def copy(src, dst, verbose=False):
@@ -168,6 +169,10 @@ def _waitstatus_to_exitcode(status):
     Returns:
         int: exit code.
     """
+    if RUNASTER_PLATFORM == "win":
+        # https://stackoverflow.com/questions/10931134
+        #   /return-value-of-system-function-call-in-c-used-to-run-a-python-program
+        return status >> 8
     if os.WIFSIGNALED(status):
         returncode = -os.WTERMSIG(status)
     elif os.WIFEXITED(status):

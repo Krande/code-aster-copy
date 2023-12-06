@@ -25,6 +25,7 @@ import tempfile
 from configparser import ConfigParser
 from fnmatch import fnmatchcase
 from glob import glob
+from pathlib import Path
 from subprocess import Popen
 
 from waflib import Errors, Logs, TaskGen
@@ -77,16 +78,16 @@ def configure(self):
     prefs = {}
     key = "outputdir"
 
-    fcfg = osp.join(os.environ["HOME"], ".config", "aster", "config.yaml")
+    fcfg = Path.home() / ".config" / "aster" / "config.yaml"
     self.start_msg("Reading user prefs from %s" % fcfg)
-    if not osp.isfile(fcfg) or not yaml:
+    if not fcfg.is_file() or not yaml:
         self.end_msg("not found")
-        fcfg = osp.splitext(fcfg)[0] + ".json"
+        fcfg = fcfg.with_name("config.json")
         self.start_msg("Reading user prefs from %s" % fcfg)
     value = ""
-    if osp.isfile(fcfg):
-        with open(fcfg, "rb") as fobj:
-            if osp.splitext(fcfg)[-1] == ".yaml":
+    if fcfg.is_file():
+        with fcfg.open("rb") as fobj:
+            if fcfg.suffix == ".yaml":
                 content = yaml.load(fobj, Loader=yaml.Loader)
             else:
                 content = json.load(fobj)
@@ -95,11 +96,11 @@ def configure(self):
         value = params.get(key, "")
     else:
         self.end_msg("not found")
-        fcfg = osp.join(os.environ["HOME"], ".gitconfig")
+        fcfg = Path.home() / ".gitconfig"
         self.start_msg("Reading user prefs from %s" % fcfg)
-        if osp.isfile(fcfg):
+        if fcfg.is_file():
             cfg = ConfigParser()
-            cfg.read(fcfg)
+            cfg.read(str(fcfg))
             value = cfg.get("aster", key, fallback="")
         else:
             self.end_msg("not found")

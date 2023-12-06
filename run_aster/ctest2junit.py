@@ -77,8 +77,8 @@ class XUnitReport:
         iternames = re_test_time.finditer(passed)
         failures = re_test.findall(failed)
 
-        with open(lastlog, "r") as flog:
-            log = flog.read()
+        with open(lastlog, "rb") as flog:
+            log = flog.read().decode(errors="replace")
         re_elaps = re.compile(
             r".(?P<ctname>ASTER_[0-9\.]+_(?P<name>\S+)). +"
             r"time elapsed: +(?P<time>[0-9]+:[0-9]+:[0-9]+)"
@@ -129,11 +129,11 @@ class XUnitReport:
             + self.legend,
             self.junit_test,
         )
-        with open(osp.join(self.base, filename), "w") as fobj:
+        with open(osp.join(self.base, filename), "wb") as fobj:
             dump = junit.dump()
             if isinstance(dump, bytes):
                 dump = dump.decode("utf-8", errors="replace")
-            fobj.write(dump)
+            fobj.write(dump.encode())
 
 
 RE_STATE = re.compile("DIAGNOSTIC JOB : (.*)", re.M)

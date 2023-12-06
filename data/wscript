@@ -197,26 +197,32 @@ def configure_data(self):
 
 
 def build(self):
-    ext = self.env["CFG_EXT"]
-    assert ext in ("yaml", "json"), ext
+    cfgext = self.env["CFG_EXT"]
+    assert cfgext in ("yaml", "json"), cfgext
     # src/srcbin distinction exists for exec mode (644 vs 755)
+    shext = ".bat" if self.env.ASTER_PLATFORM_MINGW else ""
     src = [
         "CTestTestfile.cmake.tmpl",
+        "code_aster_dict.aspell.per",
         "external_programs.yaml.tmpl",
         "config.yaml.tmpl",
-        "profile.sh.tmpl",
-        "code_aster_dict.aspell.per",
     ]
     tgt = [
         "CTestTestfile.cmake",
-        f"external_programs.{ext}",
-        f"config.{ext}",
-        "profile.sh",
         "code_aster_dict.aspell.per",
+        f"external_programs.{cfgext}",
+        f"config.{cfgext}",
     ]
-    if self.env.legacy:
-        src.append("config.txt.tmpl")
-        tgt.append("config.txt")
+    if self.env.ASTER_PLATFORM_POSIX:
+        src.extend(["profile.sh.tmpl"])
+        tgt.extend(["profile.sh"])
+        if self.env.legacy:
+            src.append("config.txt.tmpl")
+            tgt.append("config.txt")
+    else:
+        src.extend(["profile.bat.tmpl", "config-win.txt.tmpl"])
+        tgt.extend(["profile.bat", "config.txt"])
+
     srcbin = ["execute_codeaster.tmpl", "create_install_script"]
     tgtbin = ["execute_codeaster", "create_install_script"]
     try:
@@ -224,8 +230,9 @@ def build(self):
     except:
         Logs.error("ASTER_ENVIRON not found. Please run 'waf configure...'")
         raise Errors.BuildError
-    dict_conv["PROGRAMS_YAML"] = to_cfg(ext, self.env["EXTERNAL_PROGRAMS"])
-    dict_conv["CONFIG_YAML"] = to_cfg(ext, self.env["CONFIG_PARAMETERS"])
+    dict_conv["BASE_PREFIX"] = osp.basename(self.env.PREFIX)
+    dict_conv["PROGRAMS_YAML"] = to_cfg(cfgext, self.env["EXTERNAL_PROGRAMS"])
+    dict_conv["CONFIG_YAML"] = to_cfg(cfgext, self.env["CONFIG_PARAMETERS"])
     change_tests(dict_conv, self.env.install_tests)
     self(
         features="subst",
@@ -250,15 +257,18 @@ def build(self):
         self.symlink_as("${PREFIX}/share/aster/image", self.env.singularityimage)
 
     # without substitution
-    scripts = ["run_aster", "run_ctest"]
+    scripts = ["run_aster" + shext, "run_ctest" + shext]
+    shared = ["run_aster_for_ctest" + shext]
+    if self.env.ASTER_PLATFORM_POSIX:
+        shared.append("post_install")
     if self.env.PROG_sbatch:
-        scripts.append("run_sbatch")
+        scripts.append("run_sbatch" + shext)
     self.install_files(
         self.env.BINDIR, [self.path.get_src().find_node(src) for src in scripts], chmod=Utils.O755
     )
     self.install_files(
         self.env.ASTERDATADIR,
-        [self.path.get_src().find_node(src) for src in ("post_install", "run_aster_for_ctest")],
+        [self.path.get_src().find_node(src) for src in shared],
         chmod=Utils.O755,
     )
     self.install_files(
@@ -266,6 +276,13 @@ def build(self):
         [self.path.get_src().find_node(src) for src in ("gdb_wrapper",)],
         chmod=Utils.O755,
     )
+    if self.env.ASTER_PLATFORM_MINGW:
+        # in PREFIX ?!
+        self.install_files(
+            self.env.PREFIX,
+            [self.path.get_src().find_node(src) for src in ("update_pyd_links.bat",)],
+            chmod=Utils.O755,
+        )
     # install files from data repository
     if self.env.data_path:
         data_path = osp.relpath(self.env.data_path, self.path.get_src().abspath())
@@ -355,9 +372,9 @@ def env2dict(self, src):
     return dico
 
 
-def to_cfg(ext, dict_values):
+def to_cfg(cfgext, dict_values):
     """Format a dict of values to YAML or JSON."""
-    if ext == "json":
+    if cfgext == "json":
         return json.dumps(dict_values, sort_keys=True, indent=4, separators=(",", ": "))
 
     import yaml
@@ -448,9 +465,9 @@ def change_tests(dico, install_tests):
 def check_config(self):
     # Check for configuration parameters of the version
     cfg = {}
-    ext = self.env["CFG_EXT"]
-    self.start_msg(f"Set parameters for 'config.{ext}'")
-    tmpdir = "/tmp"
+    cfgext = self.env["CFG_EXT"]
+    self.start_msg(f"Set parameters for 'config.{cfgext}'")
+    tmpdir = os.environ["TEMP"] if self.env.ASTER_PLATFORM_MINGW else "/tmp"
     if os.environ.get("ASTER_TMPDIR"):
         tmpdir = os.environ["ASTER_TMPDIR"]
     cfg["tmpdir"] = tmpdir
@@ -593,6 +610,7 @@ def _call_cmd(self, msg, cmd):
 
 @Configure.conf
 def check_external_programs(self):
+    exe = ".exe" if self.env.ASTER_PLATFORM_MINGW else ""
     _check_prog(
         self, "gmsh", ["gmsh"], mandatory=self.options.with_prog_gmsh, add_paths=["${GMSH_BIN_DIR}"]
     )
@@ -603,6 +621,7 @@ def check_external_programs(self):
         ["run_miss3d"],
         mandatory=self.options.with_prog_run_miss3d,
         add_paths=["${MISS3D_DIR}"],
+        ext=exe,
     )
 
     _check_prog(
@@ -610,7 +629,11 @@ def check_external_programs(self):
         "homard",
         ["homard"],
         mandatory=self.options.with_prog_homard,
-        add_paths=[osp.join("${HOMARD_ASTER_ROOT_DIR}", "ASTER_HOMARD")],
+        add_paths=[
+            "${HOMARD_ASTER_ROOT_DIR}",
+            osp.join("${HOMARD_ASTER_ROOT_DIR}", "ASTER_HOMARD"),
+        ],
+        ext=exe,
     )
 
     _check_prog(
@@ -652,7 +675,7 @@ def _extract_keys(self, var_prefix):
     return extr
 
 
-def _check_prog(self, name, programs, mandatory=True, add_paths=None, var_prefix="PROG_"):
+def _check_prog(self, name, programs, mandatory=True, add_paths=None, var_prefix="PROG_", ext=""):
     """Search for the first available program from 'programs'."""
     paths0 = self.environ.get("PATH", "").split(os.pathsep)
     paths1 = [i for i in paths0 if "outils" not in i]
@@ -665,7 +688,7 @@ def _check_prog(self, name, programs, mandatory=True, add_paths=None, var_prefix
         paths = to_check.pop(0)
         for prog in programs:
             try:
-                self.find_program(prog, var=var_prefix + name, path_list=add_paths + paths)
+                self.find_program(prog + ext, var=var_prefix + name, path_list=add_paths + paths)
                 success = True
                 break
             except Errors.ConfigurationError:

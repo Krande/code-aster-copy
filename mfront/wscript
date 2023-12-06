@@ -117,6 +117,7 @@ def check_mfront(self):
     if tfelhome:
         paths.insert(0, osp.join(tfelhome[0], "bin"))
     self.env.TFELHOME = tfelhome
+    ext = ".exe" if self.env.ASTER_PLATFORM_MINGW else ""
     # export TFELHOME for future checkings
     os.environ["TFELHOME"] = tfelhome[0]
     # takes TFELVERS from env (wafcfg) or environment
@@ -129,8 +130,8 @@ def check_mfront(self):
     else:
         self.env.TFELSUFFIX = "-" + tfelvers[0]
     # Define programs names mfront and tfel-config
-    self.find_program("mfront" + self.env.TFELSUFFIX, path_list=paths, var="MFRONT")
-    self.find_program("tfel-config" + self.env.TFELSUFFIX, path_list=paths, var="TFEL_CONFIG")
+    self.find_program("mfront" + self.env.TFELSUFFIX + ext, path_list=paths, var="MFRONT")
+    self.find_program("tfel-config" + self.env.TFELSUFFIX + ext, path_list=paths, var="TFEL_CONFIG")
 
     tfel_config = self.env.TFEL_CONFIG[0]
     self.check_cfg(

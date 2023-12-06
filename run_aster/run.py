@@ -39,6 +39,7 @@ from .status import StateOptions, Status, get_status
 from .timer import Timer
 from .utils import (
     RUNASTER_ROOT,
+    RUNASTER_PLATFORM,
     cmd_abspath,
     compress,
     copy,
@@ -318,17 +319,15 @@ class RunAster:
                 Path(self._output).touch()
         elif self._tee:
             orig = " ".join(cmd)
-            cmd = [
-                f"( {orig} ; echo $? > {EXITCODE_FILE} )",
-                "2>&1",
-                "|",
-                "tee",
-                "-a",
-                self._output,
-            ]
+            if RUNASTER_PLATFORM == "linux":
+                cmd = [f"( {orig} ; echo $? > {EXITCODE_FILE} )", "2>&1"]
+            else:
+                cmd = [f"( {orig} & echo %errorlevel% > {EXITCODE_FILE} )"]
+            cmd.extend(["|", "tee", "-a", self._output])
         else:
             cmd.extend([">>", self._output, "2>&1"])
-        cmd.insert(0, f"ulimit -c unlimited ; ulimit -t {timeout:.0f} ;")
+        if RUNASTER_PLATFORM == "linux":
+            cmd.insert(0, f"ulimit -c unlimited ; ulimit -t {timeout:.0f} ;")
         return cmd
 
     def _get_status(self, exitcode):
@@ -460,12 +459,7 @@ def get_nbcores():
     Returns:
         int: Number of cores.
     """
-    proc = run(["nproc"], stdout=PIPE, universal_newlines=True)
-    try:
-        value = int(proc.stdout.strip())
-    except ValueError:
-        value = 1
-    return value
+    return os.cpu_count()
 
 
 def change_comm_file(comm, interact=False, wrkdir=None, show=False):
@@ -494,8 +488,8 @@ def change_comm_file(comm, interact=False, wrkdir=None, show=False):
         return comm
 
     filename = osp.join(wrkdir or ".", osp.basename(comm) + ".changed.py")
-    with open(filename, "w") as fobj:
-        fobj.write(text)
+    with open(filename, "wb") as fobj:
+        fobj.write(text.encode())
     return filename
 
 
@@ -582,5 +576,8 @@ def copy_resultfiles(files, copybase, test=False):
 
 
 def _ls(*paths):
-    proc = run(["ls", "-l"] + list(paths), stdout=PIPE, universal_newlines=True)
+    if RUNASTER_PLATFORM == "linux":
+        proc = run(["ls", "-l"] + list(paths), stdout=PIPE, universal_newlines=True)
+    else:
+        proc = run(["dir"] + list(paths), stdout=PIPE, universal_newlines=True, shell=True)
     return proc.stdout
