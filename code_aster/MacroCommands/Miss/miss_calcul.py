@@ -24,7 +24,7 @@
 Les classes définies sont :
     CalculMiss      : classe générique d'un appel à MISS3D
     CalculMissImpe  : spécialisation au calcul d'impédance
-    CalculMissFichierTemps : calcul dans le domained de Laplace
+    CalculMissFichierTemps : calcul dans le domaine de Laplace
     CalculMissIssf  : calcul avec prise en compte de l'interaction
                       sol-structure-fluide
     CalculMissPost  : étapes limitées au post-traitement

@@ -37,6 +37,7 @@ from ...Helpers.LogicalUnit import FileType, LogicalUnitFile
 from ...Messages import ASSERT, UTMESS
 from ...Utilities import force_list
 from ...Utilities.misc import _printDBG, get_shared_tmpdir
+from ...Utilities.mpi_utils import MPI
 
 dict_format = {"R": "15.6E", "sR": "%15.6E", "I": "6d", "sI": "%6d", "F": "6.6f"}
 
@@ -90,7 +91,8 @@ class MISS_PARAMETER:
         if self["REPERTOIRE"]:
             self._keywords["_WRKDIR"] = self["REPERTOIRE"]
         else:
-            self._keywords["_WRKDIR"] = get_shared_tmpdir("tmp_miss3d", initial_dir)
+            rank = MPI.ASTER_COMM_WORLD.Get_rank()
+            self._keywords["_WRKDIR"] = get_shared_tmpdir(f"tmp_miss3d_{rank}_", initial_dir)
         self.check()
 
     def check(self):
