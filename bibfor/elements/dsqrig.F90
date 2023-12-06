@@ -308,7 +308,8 @@ subroutine dsqrig(nomte, xyzl, option, pgl, rig,&
             do i = 1, 8
                 do j = 1, 8
                     do k = 1, 4
-                        kmpmt(i,j) = kmpmt(i,j) + pm(k,i)*(kma(j,k)+ kmf12(j,k))
+                        kmpmt(i, j) = kmpmt(i, j)+pm(k, i)*(kma(j, k) &
+                                                            +kmf12(j, k))
                     end do
                 end do
             end do
@@ -407,8 +408,8 @@ subroutine dsqrig(nomte, xyzl, option, pgl, rig,&
 ! ---------------------------------------------------------------
         do i = 1, 8
             do j = 1, 8
-                memb(i,j) = memb(i,j) + (memexc(i,j)+membi(i,j)+kmpm( i,j)+kmpmt(i,j) +membcf(i,j&
-                            &))*wgt
+                memb(i, j) = memb(i, j)+(memexc(i, j)+membi(i, j)+kmpm(i, j) &
+                                         +kmpmt(i, j)+membcf(i, j))*wgt
 !     +                            MEMBI(I,J)*WGT
 !*****************************************************************
             end do
@@ -437,7 +438,8 @@ subroutine dsqrig(nomte, xyzl, option, pgl, rig,&
             do i = 1, 8
                 do j = 1, 12
                     do k = 1, 4
-                        kmf(i,j) = kmf(i,j) + (kmf12(i,k)+kmc(i,k))* pb(k,j) + pm(k,i)*kfc12(j,k)
+                        kmf(i, j) = kmf(i, j)+(kmf12(i, k)+kmc(i, k))*pb(k, j) &
+                                    +pm(k, i)*kfc12(j, k)
                     end do
                     mefli(i,j) = kmf11(i,j) + kmf(i,j) + kmb(i,j) + kmapb(i,j)
                 end do
