@@ -38,6 +38,7 @@ from .line_search import LineSearch
 from .newton_solver import NewtonSolver
 from .snes_solver import SNESSolver
 from .storage_manager import StorageManager
+from .time_stepper import TimeStepper
 
 
 class ProblemSolver(SolverFeature):
@@ -104,7 +105,7 @@ class ProblemSolver(SolverFeature):
         self._main.use(self.phys_pb)
         self._main.use(self._phys_state)
         self._main.use(args, SOP.Keywords)
-        self._main.use(self.get_feature(SOP.TimeStepper))
+        self._main.use(self._get_stepper())
         self._main.use(self._get_storage())
         self._main.use(self._get_step_solver())
         self._main.use(self.get_features(SOP.PostStepHook), provide=SOP.PostStepHook)
@@ -165,21 +166,31 @@ class ProblemSolver(SolverFeature):
                     # par reuse est la même que celle passée dans ETAT_INIT
                     assert init_state["EVOL_NOLI"] is reuse
                 init_index = None
-                if "NUME_ORDRE" in init_state:
-                    init_index = init_state["NUME_ORDRE"]
-                elif "INST" in init_state:
+                stepper = self.get_feature(SOP.TimeStepper, optional=True)
+                if stepper:
                     init_index = reuse._getIndexFromParameter(
-                        "INST",
-                        init_state["INST"],
-                        init_state["CRITERE"],
-                        init_state["PRECISION"],
-                        True,
+                        "INST", stepper.getInitial(), "RELATIF", stepper._eps, True
                     )
                 else:
                     init_index = reuse.getLastIndex()
                 store.setFirstStorageIndex(init_index + 1)
         self.use(store)
         return store
+
+    def _get_stepper(self):
+        logger.debug("+++ get Stepper")
+        stepper = self.get_feature(SOP.TimeStepper, optional=True)
+        if not stepper:
+            args = self.get_feature(SOP.Keywords)
+            stepper = TimeStepper.from_keywords(**args["INCREMENT"])
+
+            if not ("INST_INIT" or "NUME_INST_INIT" in args["INCREMENT"]) and "ETAT_INIT" in args:
+                init_state = args.get("ETAT_INIT")
+                if "EVOL_NOLI" in init_state and not ("INST" or "NUME_ORDRE" in init_state):
+                    stepper.setInitial(init_state["EVOL_NOLI"].getLastTime())
+
+        self.use(stepper)
+        return stepper
 
     def _get_linear_solver(self):
         logger.debug("+++ get LinearSolver")

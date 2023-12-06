@@ -156,7 +156,13 @@ class NonLinearSolver(SolverFeature):
 
         if init_state:
 
-            def extract_param(init_state, resu):
+            def _msginit(field, result=None):
+                if result:
+                    logger.info(MessageLog.GetText("I", "ETATINIT_32", valk=(field, result)))
+                else:
+                    logger.info(MessageLog.GetText("I", "ETATINIT_33", valk=(field,)))
+
+            def _extract_param(init_state, resu):
                 """Extract parameters for getField()."""
                 extract_time = init_state.get("INST")
                 if extract_time is None:
@@ -170,7 +176,7 @@ class NonLinearSolver(SolverFeature):
             if "EVOL_NOLI" in init_state:
                 resu = init_state.get("EVOL_NOLI")
                 assert isinstance(resu, NonLinearResult), resu
-                para, value = extract_param(init_state, resu)
+                para, value = _extract_param(init_state, resu)
                 phys_state.primal_curr = resu.getField(
                     "DEPL", para=para, value=value
                 ).copyUsingDescription(nume_equa)
@@ -191,7 +197,7 @@ class NonLinearSolver(SolverFeature):
             if "EVOL_THER" in init_state:
                 resu = init_state.get("EVOL_THER")
                 assert isinstance(resu, ThermalResult), resu
-                para, value = extract_param(init_state, resu)
+                para, value = _extract_param(init_state, resu)
                 phys_state.primal_curr = resu.getField(
                     "TEMP", para=para, value=value
                 ).copyUsingDescription(nume_equa)
@@ -313,10 +319,3 @@ class NonLinearSolver(SolverFeature):
             return _F(args[keyword])[0].get(parameter, default)
 
         return args.get(keyword, default)
-
-
-def _msginit(field, result=None):
-    if result:
-        logger.info(MessageLog.GetText("I", "ETATINIT_32", valk=(field, result)))
-    else:
-        logger.info(MessageLog.GetText("I", "ETATINIT_33", valk=(field,)))

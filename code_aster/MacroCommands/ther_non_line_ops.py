@@ -145,12 +145,9 @@ def ther_non_line_ops(self, **args):
         RECH_LINEAIRE=args["RECH_LINEAIRE"],
         SOLVEUR=args["SOLVEUR"],
         TYPE_CALCUL=args["TYPE_CALCUL"],
+        INCREMENT=args["INCREMENT"],
     )
     solver.setKeywords(**param)
-
-    # Add stepper
-    timeStepper = TimeStepper.from_keywords(**args["INCREMENT"][0])
-    solver.use(timeStepper)
 
     class PostHookHydr:
         """Hook to compute HYDR_ELGA."""

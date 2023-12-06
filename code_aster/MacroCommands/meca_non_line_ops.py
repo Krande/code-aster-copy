@@ -112,6 +112,7 @@ def meca_non_line_ops(self, **args):
         "RECH_LINEAIRE": args["RECH_LINEAIRE"],
         "SOLVEUR": args["SOLVEUR"],
         "REUSE": args["reuse"],
+        "INCREMENT": args["INCREMENT"],
     }
 
     if "SCHEMA_TEMPS" in args:
@@ -159,10 +160,6 @@ def meca_non_line_ops(self, **args):
         phys_pb.getListOfLoads().addContactLoadDescriptor(fed_defi, None)
 
     solver.use(contact_manager)
-
-    # Add stepper
-    timeStepper = TimeStepper.from_keywords(**args["INCREMENT"][0])
-    solver.use(timeStepper)
 
     # Add Hook
     class PostHookHHO:
