@@ -50,7 +50,7 @@ class SearchList:
 
     @precision.setter
     def precision(self, value):
-        assert value > np.finfo(float).eps
+        assert value >= np.finfo(float).eps
         self._precision = value
 
     @property

@@ -52,7 +52,7 @@ class TimeStepper(SolverFeature, Observer):
     _split = _maxLevel = _minStep = _maxStep = _maxNbSteps = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
-    default_increment = 1.0e-16
+    default_increment = 1.0e-12
 
     def __init__(self, times, epsilon=default_increment, initial=0.0, final=None):
         super().__init__()
