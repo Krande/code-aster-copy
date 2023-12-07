@@ -1,0 +1,1737 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
+# Importation des librairies python
+import math
+import sys
+import string
+import os
+
+# Lire le maillage
+MA = LIRE_MAILLAGE(FORMAT="MED", INFO=1)
+
+MA = DEFI_GROUP(
+    reuse=MA,
+    MAILLAGE=MA,
+    CREA_GROUP_MA=(
+        _F(
+            NOM="SEC1",
+            UNION=(
+                "E1",
+                "E2",
+                "E3",
+                "E4",
+                "E5",
+                "E6",
+                "E7",
+                "E8",
+                "E9",
+                "E10",
+                "E11",
+                "E12",
+                "E13",
+                "E14",
+                "E15",
+                "E16",
+                "E17",
+                "E18",
+                "E19",
+                "E20",
+            ),
+        ),
+        _F(
+            NOM="SEC2", UNION=("E21", "E22", "E23", "E24", "E25", "E26", "E27", "E28", "E29", "E30")
+        ),
+        _F(NOM="SEC3", UNION=("E31", "E32", "E33", "E34", "E35", "E36", "E37")),
+    ),
+)
+
+MA = DEFI_GROUP(reuse=MA, MAILLAGE=MA, CREA_GROUP_NO=(_F(NOM="SEC1N", GROUP_MA=("SEC1",)),))
+
+MA = DEFI_GROUP(reuse=MA, MAILLAGE=MA, CREA_GROUP_NO=(_F(NOM="SEC2N", GROUP_MA=("SEC2",)),))
+
+MA = DEFI_GROUP(reuse=MA, MAILLAGE=MA, CREA_GROUP_NO=(_F(NOM="SEC3N", GROUP_MA=("SEC3",)),))
+# -------------------------------------------------------------
+# MODELISATION POUTRES DROITES ET COURBES DE TIMOCHENKO
+# -------------------------------------------------------------
+
+MODELE = AFFE_MODELE(
+    MAILLAGE=MA,
+    AFFE=(
+        _F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="POU_D_T"),
+        _F(
+            GROUP_MA=("E2", "E5", "E7", "E13", "E16", "E19", "E23", "E26", "E29", "E35"),
+            PHENOMENE="MECANIQUE",
+            MODELISATION="POU_D_T",
+        ),
+        _F(
+            GROUP_MA=("R1", "R4", "R7", "R11", "R15", "R17", "R23", "R36", "R38", "R31"),
+            PHENOMENE="MECANIQUE",
+            MODELISATION="DIS_TR",
+        ),
+    ),
+)
+
+# -------------------------------------------------------------
+# CARACTERISTIQUES DES SECTIONS ET DES RAIDEURS
+# -------------------------------------------------------------
+
+# SEC1:
+
+R1 = 1.75
+e1 = 0.2160
+rc1 = 4.5
+lambda1 = (e1 * rc1) / ((R1 - (e1 / 2.0)) ** 2)
+cflex1 = 1.65 / lambda1
+
+# SEC2:
+
+R2 = 2.25
+e2 = 0.2370
+rc2 = 6.0
+lambda2 = (e2 * rc2) / ((R2 - (e2 / 2.0)) ** 2)
+cflex2 = 1.65 / lambda2
+
+# SEC3:
+
+R3 = 4.3125
+e3 = 0.3220
+rc3 = 12.0
+lambda3 = (e3 * rc3) / ((R3 - (e3 / 2.0)) ** 2)
+cflex3 = 1.65 / lambda3
+
+# RAIDEUR :
+
+raideur1 = 1.0e20
+raideur2 = 1.0e11
+raideur3 = 1.0e8
+raideur4 = 1.0e5
+
+# AFFECTATION :
+
+CARA_ELE = AFFE_CARA_ELEM(
+    MODELE=MODELE,
+    POUTRE=(
+        _F(GROUP_MA="SEC1", SECTION="CERCLE", CARA=("R", "EP"), VALE=(R1, e1)),
+        _F(GROUP_MA="SEC2", SECTION="CERCLE", CARA=("R", "EP"), VALE=(R2, e2)),
+        _F(GROUP_MA="SEC3", SECTION="CERCLE", CARA=("R", "EP"), VALE=(R3, e3)),
+        # Poutres coudées
+        _F(
+            GROUP_MA=("E2", "E5", "E7", "E13", "E16", "E19"),
+            SECTION="COUDE",
+            COEF_FLEX=cflex1,
+            INDI_SIGM=1.0,
+        ),
+        _F(
+            GROUP_MA=("E23", "E26", "E29"),
+            SECTION="COUDE",
+            COEF_FLEX=cflex2,
+            INDI_SIGM_XY=1.0,
+            INDI_SIGM_XZ=1.0,
+        ),
+        _F(GROUP_MA="E35", SECTION="COUDE", COEF_FLEX=cflex3),
+    ),
+    DISCRET=(
+        _F(
+            CARA="K_TR_D_L",
+            GROUP_MA=("R1",),
+            VALE=(raideur2, raideur2, raideur2, raideur1, raideur1, raideur1),
+        ),
+        _F(CARA="K_TR_D_L", GROUP_MA=("R4",), VALE=(raideur3, 0.0, raideur3, 0.0, 0.0, 0.0)),
+        _F(CARA="K_TR_D_L", GROUP_MA=("R7",), VALE=(0.0, raideur3, 0.0, 0.0, 0.0, 0.0)),
+        _F(CARA="K_TR_D_L", GROUP_MA=("R11",), VALE=(0.0, raideur3, raideur4, 0.0, 0.0, 0.0)),
+        _F(CARA="K_TR_D_L", GROUP_MA=("R15",), VALE=(raideur4, 0.0, 0.0, 0.0, 0.0, 0.0)),
+        _F(CARA="K_TR_D_L", GROUP_MA=("R17",), VALE=(0.0, raideur3, raideur4, 0.0, 0.0, 0.0)),
+        _F(CARA="K_TR_D_L", GROUP_MA=("R36",), VALE=(0.0, raideur3, raideur4, 0.0, 0.0, 0.0)),
+        _F(
+            CARA="K_TR_D_L",
+            GROUP_MA=("R38",),
+            VALE=(raideur2, raideur2, raideur2, raideur1, raideur1, raideur1),
+        ),
+        _F(CARA="K_TR_D_L", GROUP_MA=("R23",), VALE=(raideur4, raideur3, 0.0, 0.0, 0.0, 0.0)),
+        _F(
+            CARA="K_TR_D_L",
+            GROUP_MA=("R31",),
+            VALE=(raideur2, raideur2, raideur2, raideur1, raideur1, raideur1),
+        ),
+        _F(CARA="M_TR_D_L", GROUP_MA=("R1",), VALE=(0.0, 0.0, 0.0, 0.0)),
+        _F(CARA="M_TR_D_L", GROUP_MA=("R4",), VALE=(0.0, 0.0, 0.0, 0.0)),
+        _F(CARA="M_TR_D_L", GROUP_MA=("R7",), VALE=(0.0, 0.0, 0.0, 0.0)),
+        _F(CARA="M_TR_D_L", GROUP_MA=("R11",), VALE=(0.0, 0.0, 0.0, 0.0)),
+        _F(CARA="M_TR_D_L", GROUP_MA=("R15",), VALE=(0.0, 0.0, 0.0, 0.0)),
+        _F(CARA="M_TR_D_L", GROUP_MA=("R17",), VALE=(0.0, 0.0, 0.0, 0.0)),
+        _F(CARA="M_TR_D_L", GROUP_MA=("R36",), VALE=(0.0, 0.0, 0.0, 0.0)),
+        _F(CARA="M_TR_D_L", GROUP_MA=("R38",), VALE=(0.0, 0.0, 0.0, 0.0)),
+        _F(CARA="M_TR_D_L", GROUP_MA=("R23",), VALE=(0.0, 0.0, 0.0, 0.0)),
+        _F(CARA="M_TR_D_L", GROUP_MA=("R31",), VALE=(0.0, 0.0, 0.0, 0.0)),
+    ),
+)
+
+# -------------------------------------------------------------
+# CARACTERISTIQUES MATERIAUX
+# -------------------------------------------------------------
+
+YOUNG = 2.9e7
+POISSON = 0.3
+
+MAT1 = DEFI_MATERIAU(ELAS=_F(E=YOUNG, NU=POISSON, RHO=1.0429e-3))
+
+MAT2 = DEFI_MATERIAU(ELAS=_F(E=YOUNG, NU=POISSON, RHO=1.1073e-3))
+
+MAT3 = DEFI_MATERIAU(ELAS=_F(E=YOUNG, NU=POISSON, RHO=1.2901e-3))
+
+CHMAT = AFFE_MATERIAU(
+    MAILLAGE=MA,
+    MODELE=MODELE,
+    AFFE=(
+        _F(GROUP_MA="SEC1", MATER=MAT1),
+        _F(GROUP_MA="SEC2", MATER=MAT2),
+        _F(GROUP_MA="SEC3", MATER=MAT3),
+    ),
+)
+
+# -------------------------------------------------------------
+# ANALYSE MODALE
+# -------------------------------------------------------------
+
+SUPPORT = AFFE_CHAR_MECA(
+    MODELE=MODELE,
+    DDL_IMPO=_F(
+        GROUP_NO=("N1B", "N4B", "N7B", "N11B", "N15B", "N17B", "N36B", "N38B", "N23B", "N31B"),
+        DX=0,
+        DY=0,
+        DZ=0,
+        DRX=0,
+        DRY=0,
+        DRZ=0,
+    ),
+)
+
+ASSEMBLAGE(
+    MODELE=MODELE,
+    CHAM_MATER=CHMAT,
+    CARA_ELEM=CARA_ELE,
+    CHARGE=SUPPORT,
+    NUME_DDL=CO("NUMEDDL"),
+    MATR_ASSE=(
+        _F(MATRICE=CO("RIGIDITE"), OPTION="RIGI_MECA"),
+        _F(MATRICE=CO("MASSE"), OPTION="MASS_MECA"),
+    ),
+)
+
+MODECA = CALC_MODES(
+    MATR_RIGI=RIGIDITE, OPTION="BANDE", CALC_FREQ=_F(FREQ=(0.0, 30.0)), MATR_MASS=MASSE
+)
+
+MODECA = NORM_MODE(reuse=MODECA, MODE=MODECA, NORME="MASS_GENE")
+
+MODECA = CALC_CHAMP(reuse=MODECA, RESULTAT=MODECA, FORCE="REAC_NODA")
+
+
+# -------------------------------------------------------------
+# LECTURE DU SRO
+# -------------------------------------------------------------
+
+SPEC_N7 = LIRE_FONCTION(UNITE=21, NOM_PARA="FREQ", PROL_GAUCHE="CONSTANT", PROL_DROITE="CONSTANT")
+
+SPEC_N1 = LIRE_FONCTION(UNITE=22, NOM_PARA="FREQ", PROL_GAUCHE="CONSTANT", PROL_DROITE="CONSTANT")
+
+
+SPEC_N23 = LIRE_FONCTION(UNITE=23, NOM_PARA="FREQ", PROL_GAUCHE="CONSTANT", PROL_DROITE="CONSTANT")
+
+SPEC_N31 = LIRE_FONCTION(UNITE=24, NOM_PARA="FREQ", PROL_GAUCHE="CONSTANT", PROL_DROITE="CONSTANT")
+
+SRO_N7 = DEFI_NAPPE(NOM_PARA="AMOR", PARA=0.04, FONCTION=SPEC_N7)
+
+SRO_N1 = DEFI_NAPPE(NOM_PARA="AMOR", PARA=0.04, FONCTION=SPEC_N1)
+
+SRO_N23 = DEFI_NAPPE(NOM_PARA="AMOR", PARA=0.04, FONCTION=SPEC_N23)
+
+SRO_N31 = DEFI_NAPPE(NOM_PARA="AMOR", PARA=0.04, FONCTION=SPEC_N31)
+
+
+###############################################################
+# -------------------------------------------------------------
+# pseudo mode correction statique
+# -------------------------------------------------------------
+
+CORR = MODE_STATIQUE(
+    MATR_RIGI=RIGIDITE,
+    MATR_MASS=MASSE,
+    PSEUDO_MODE=_F(
+        GROUP_NO=("N1B", "N4B", "N7B", "N11B", "N15B", "N17B", "N36B", "N38B", "N23B", "N31B"),
+        TOUT_CMP="OUI",
+    ),
+)
+
+CORR = CALC_CHAMP(reuse=CORR, RESULTAT=CORR, FORCE="REAC_NODA")
+
+
+###############################################################
+# -------------------------------------------------------------
+# resu1 : SRSS sans correction
+# -------------------------------------------------------------
+resu1 = COMB_SISM_MODAL(
+    MODE_MECA=MODECA,
+    AMOR_REDUIT=0.04,
+    TYPE_ANALYSE="MULT_APPUI",
+    APPUIS=(
+        _F(NOM="APPUI_1", GROUP_NO=("N1B", "N4B")),
+        _F(NOM="APPUI_2", GROUP_NO=("N7B", "N11B", "N15B", "N17B")),
+        _F(NOM="APPUI_3", GROUP_NO=("N23B", "N36B", "N38B")),
+        _F(NOM="APPUI_4", GROUP_NO=("N31B",)),
+    ),
+    SPECTRE=(
+        _F(
+            LIST_AXE=("X", "Y"),
+            SPEC_OSCI=SRO_N1,
+            ECHELLE=1.0 * 386.2204724,
+            CORR_FREQ="NON",
+            NATURE="ACCE",
+            NOM_APPUI="APPUI_1",
+        ),
+        _F(
+            LIST_AXE=("Z"),
+            SPEC_OSCI=SRO_N1,
+            ECHELLE=0.67 * 386.2204724,
+            CORR_FREQ="NON",
+            NATURE="ACCE",
+            NOM_APPUI="APPUI_1",
+        ),
+        _F(
+            LIST_AXE=("X", "Y"),
+            SPEC_OSCI=SRO_N7,
+            ECHELLE=1.0 * 386.2204724,
+            CORR_FREQ="NON",
+            NATURE="ACCE",
+            NOM_APPUI="APPUI_2",
+        ),
+        _F(
+            LIST_AXE=("Z"),
+            SPEC_OSCI=SRO_N7,
+            ECHELLE=0.67 * 386.2204724,
+            CORR_FREQ="NON",
+            NATURE="ACCE",
+            NOM_APPUI="APPUI_2",
+        ),
+        _F(
+            LIST_AXE=("X", "Y"),
+            SPEC_OSCI=SRO_N23,
+            ECHELLE=1.0 * 386.2204724,
+            CORR_FREQ="NON",
+            NATURE="ACCE",
+            NOM_APPUI="APPUI_3",
+        ),
+        _F(
+            LIST_AXE=("Z"),
+            SPEC_OSCI=SRO_N23,
+            ECHELLE=0.67 * 386.2204724,
+            CORR_FREQ="NON",
+            NATURE="ACCE",
+            NOM_APPUI="APPUI_3",
+        ),
+        _F(
+            LIST_AXE=("X", "Y"),
+            SPEC_OSCI=SRO_N31,
+            ECHELLE=1.0 * 386.2204724,
+            CORR_FREQ="NON",
+            NATURE="ACCE",
+            NOM_APPUI="APPUI_4",
+        ),
+        _F(
+            LIST_AXE=("Z"),
+            SPEC_OSCI=SRO_N31,
+            ECHELLE=0.67 * 386.2204724,
+            CORR_FREQ="NON",
+            NATURE="ACCE",
+            NOM_APPUI="APPUI_4",
+        ),
+    ),
+    GROUP_APPUI_CORRELE=(
+        _F(LIST_APPUI=("APPUI_1"), NOM="GAPPUI_1"),
+        _F(LIST_APPUI=("APPUI_2", "APPUI_3", "APPUI_4"), NOM="GAPPUI_2"),
+    ),
+    COMB_MODE=_F(TYPE="SRSS"),
+    COMB_DIRECTION="QUAD",
+    OPTION=("REAC_NODA",),
+    TYPE_RESU=(_F(TYPE="VALE_TOTA"),),
+)
+
+###############################################################
+# -------------------------------------------------------------
+# resu2 : CQC sans correction
+# -------------------------------------------------------------
+resu2 = COMB_SISM_MODAL(
+    MODE_MECA=MODECA,
+    AMOR_REDUIT=0.04,
+    TYPE_ANALYSE="MULT_APPUI",
+    APPUIS=(
+        _F(NOM="APPUI_1", GROUP_NO=("N1B", "N4B")),
+        _F(NOM="APPUI_2", GROUP_NO=("N7B", "N11B", "N15B", "N17B")),
+        _F(NOM="APPUI_3", GROUP_NO=("N23B", "N36B", "N38B")),
+        _F(NOM="APPUI_4", GROUP_NO=("N31B",)),
+    ),
+    SPECTRE=(
+        _F(
+            LIST_AXE=("X", "Y"),
+            SPEC_OSCI=SRO_N1,
+            ECHELLE=1.0 * 386.2204724,
+            CORR_FREQ="NON",
+            NATURE="ACCE",
+            NOM_APPUI="APPUI_1",
+        ),
+        _F(
+            LIST_AXE=("Z"),
+            SPEC_OSCI=SRO_N1,
+            ECHELLE=0.67 * 386.2204724,
+            CORR_FREQ="NON",
+            NATURE="ACCE",
+            NOM_APPUI="APPUI_1",
+        ),
+        _F(
+            LIST_AXE=("X", "Y"),
+            SPEC_OSCI=SRO_N7,
+            ECHELLE=1.0 * 386.2204724,
+            CORR_FREQ="NON",
+            NATURE="ACCE",
+            NOM_APPUI="APPUI_2",
+        ),
+        _F(
+            LIST_AXE=("Z"),
+            SPEC_OSCI=SRO_N7,
+            ECHELLE=0.67 * 386.2204724,
+            CORR_FREQ="NON",
+            NATURE="ACCE",
+            NOM_APPUI="APPUI_2",
+        ),
+        _F(
+            LIST_AXE=("X", "Y"),
+            SPEC_OSCI=SRO_N23,
+            ECHELLE=1.0 * 386.2204724,
+            CORR_FREQ="NON",
+            NATURE="ACCE",
+            NOM_APPUI="APPUI_3",
+        ),
+        _F(
+            LIST_AXE=("Z"),
+            SPEC_OSCI=SRO_N23,
+            ECHELLE=0.67 * 386.2204724,
+            CORR_FREQ="NON",
+            NATURE="ACCE",
+            NOM_APPUI="APPUI_3",
+        ),
+        _F(
+            LIST_AXE=("X", "Y"),
+            SPEC_OSCI=SRO_N31,
+            ECHELLE=1.0 * 386.2204724,
+            CORR_FREQ="NON",
+            NATURE="ACCE",
+            NOM_APPUI="APPUI_4",
+        ),
+        _F(
+            LIST_AXE=("Z"),
+            SPEC_OSCI=SRO_N31,
+            ECHELLE=0.67 * 386.2204724,
+            CORR_FREQ="NON",
+            NATURE="ACCE",
+            NOM_APPUI="APPUI_4",
+        ),
+    ),
+    GROUP_APPUI_CORRELE=(
+        _F(LIST_APPUI=("APPUI_1"), NOM="GAPPUI_1"),
+        _F(LIST_APPUI=("APPUI_2", "APPUI_3", "APPUI_4"), NOM="GAPPUI_2"),
+    ),
+    COMB_MODE=_F(TYPE="CQC"),
+    COMB_DIRECTION="QUAD",
+    OPTION=("REAC_NODA",),
+    TYPE_RESU=(_F(TYPE="VALE_TOTA"),),
+)
+
+###############################################################
+# -------------------------------------------------------------
+# resu3 : CQC avec correction
+# -------------------------------------------------------------
+resu3 = COMB_SISM_MODAL(
+    MODE_MECA=MODECA,
+    AMOR_REDUIT=0.04,
+    MODE_CORR="OUI",
+    PSEUDO_MODE=CORR,
+    TYPE_ANALYSE="MULT_APPUI",
+    APPUIS=(
+        _F(NOM="APPUI_1", GROUP_NO=("N1B", "N4B")),
+        _F(NOM="APPUI_2", GROUP_NO=("N7B", "N11B", "N15B", "N17B")),
+        _F(NOM="APPUI_3", GROUP_NO=("N23B", "N36B", "N38B")),
+        _F(NOM="APPUI_4", GROUP_NO=("N31B",)),
+    ),
+    SPECTRE=(
+        _F(
+            LIST_AXE=("X", "Y"),
+            SPEC_OSCI=SRO_N1,
+            ECHELLE=1.0 * 386.2204724,
+            CORR_FREQ="NON",
+            NATURE="ACCE",
+            NOM_APPUI="APPUI_1",
+        ),
+        _F(
+            LIST_AXE=("Z"),
+            SPEC_OSCI=SRO_N1,
+            ECHELLE=0.67 * 386.2204724,
+            CORR_FREQ="NON",
+            NATURE="ACCE",
+            NOM_APPUI="APPUI_1",
+        ),
+        _F(
+            LIST_AXE=("X", "Y"),
+            SPEC_OSCI=SRO_N7,
+            ECHELLE=1.0 * 386.2204724,
+            CORR_FREQ="NON",
+            NATURE="ACCE",
+            NOM_APPUI="APPUI_2",
+        ),
+        _F(
+            LIST_AXE=("Z"),
+            SPEC_OSCI=SRO_N7,
+            ECHELLE=0.67 * 386.2204724,
+            CORR_FREQ="NON",
+            NATURE="ACCE",
+            NOM_APPUI="APPUI_2",
+        ),
+        _F(
+            LIST_AXE=("X", "Y"),
+            SPEC_OSCI=SRO_N23,
+            ECHELLE=1.0 * 386.2204724,
+            CORR_FREQ="NON",
+            NATURE="ACCE",
+            NOM_APPUI="APPUI_3",
+        ),
+        _F(
+            LIST_AXE=("Z"),
+            SPEC_OSCI=SRO_N23,
+            ECHELLE=0.67 * 386.2204724,
+            CORR_FREQ="NON",
+            NATURE="ACCE",
+            NOM_APPUI="APPUI_3",
+        ),
+        _F(
+            LIST_AXE=("X", "Y"),
+            SPEC_OSCI=SRO_N31,
+            ECHELLE=1.0 * 386.2204724,
+            CORR_FREQ="NON",
+            NATURE="ACCE",
+            NOM_APPUI="APPUI_4",
+        ),
+        _F(
+            LIST_AXE=("Z"),
+            SPEC_OSCI=SRO_N31,
+            ECHELLE=0.67 * 386.2204724,
+            CORR_FREQ="NON",
+            NATURE="ACCE",
+            NOM_APPUI="APPUI_4",
+        ),
+    ),
+    GROUP_APPUI_CORRELE=(
+        _F(LIST_APPUI=("APPUI_1"), NOM="GAPPUI_1"),
+        _F(LIST_APPUI=("APPUI_2", "APPUI_3", "APPUI_4"), NOM="GAPPUI_2"),
+    ),
+    COMB_MODE=_F(TYPE="CQC"),
+    COMB_DIRECTION="QUAD",
+    OPTION=("REAC_NODA",),
+    TYPE_RESU=(_F(TYPE="VALE_TOTA"),),
+)
+
+###############################################################
+# -------------------------------------------------------------
+# resu4 : SRSS avec correction
+# -------------------------------------------------------------
+resu4 = COMB_SISM_MODAL(
+    MODE_MECA=MODECA,
+    AMOR_REDUIT=0.04,
+    MODE_CORR="OUI",
+    PSEUDO_MODE=CORR,
+    TYPE_ANALYSE="MULT_APPUI",
+    APPUIS=(
+        _F(NOM="APPUI_1", GROUP_NO=("N1B", "N4B")),
+        _F(NOM="APPUI_2", GROUP_NO=("N7B", "N11B", "N15B", "N17B")),
+        _F(NOM="APPUI_3", GROUP_NO=("N23B", "N36B", "N38B")),
+        _F(NOM="APPUI_4", GROUP_NO=("N31B",)),
+    ),
+    SPECTRE=(
+        _F(
+            LIST_AXE=("X", "Y"),
+            SPEC_OSCI=SRO_N1,
+            ECHELLE=1.0 * 386.2204724,
+            CORR_FREQ="NON",
+            NATURE="ACCE",
+            NOM_APPUI="APPUI_1",
+        ),
+        _F(
+            LIST_AXE=("Z"),
+            SPEC_OSCI=SRO_N1,
+            ECHELLE=0.67 * 386.2204724,
+            CORR_FREQ="NON",
+            NATURE="ACCE",
+            NOM_APPUI="APPUI_1",
+        ),
+        _F(
+            LIST_AXE=("X", "Y"),
+            SPEC_OSCI=SRO_N7,
+            ECHELLE=1.0 * 386.2204724,
+            CORR_FREQ="NON",
+            NATURE="ACCE",
+            NOM_APPUI="APPUI_2",
+        ),
+        _F(
+            LIST_AXE=("Z"),
+            SPEC_OSCI=SRO_N7,
+            ECHELLE=0.67 * 386.2204724,
+            CORR_FREQ="NON",
+            NATURE="ACCE",
+            NOM_APPUI="APPUI_2",
+        ),
+        _F(
+            LIST_AXE=("X", "Y"),
+            SPEC_OSCI=SRO_N23,
+            ECHELLE=1.0 * 386.2204724,
+            CORR_FREQ="NON",
+            NATURE="ACCE",
+            NOM_APPUI="APPUI_3",
+        ),
+        _F(
+            LIST_AXE=("Z"),
+            SPEC_OSCI=SRO_N23,
+            ECHELLE=0.67 * 386.2204724,
+            CORR_FREQ="NON",
+            NATURE="ACCE",
+            NOM_APPUI="APPUI_3",
+        ),
+        _F(
+            LIST_AXE=("X", "Y"),
+            SPEC_OSCI=SRO_N31,
+            ECHELLE=1.0 * 386.2204724,
+            CORR_FREQ="NON",
+            NATURE="ACCE",
+            NOM_APPUI="APPUI_4",
+        ),
+        _F(
+            LIST_AXE=("Z"),
+            SPEC_OSCI=SRO_N31,
+            ECHELLE=0.67 * 386.2204724,
+            CORR_FREQ="NON",
+            NATURE="ACCE",
+            NOM_APPUI="APPUI_4",
+        ),
+    ),
+    GROUP_APPUI_CORRELE=(
+        _F(LIST_APPUI=("APPUI_1"), NOM="GAPPUI_1"),
+        _F(LIST_APPUI=("APPUI_2", "APPUI_3", "APPUI_4"), NOM="GAPPUI_2"),
+    ),
+    COMB_MODE=_F(TYPE="SRSS"),
+    COMB_DIRECTION="QUAD",
+    OPTION=("REAC_NODA",),
+    TYPE_RESU=(_F(TYPE="VALE_TOTA"),),
+)
+
+###############################################################
+# -------------------------------------------------------------
+# TEST_RESU REAC_NODA
+# -------------------------------------------------------------
+# resu1 : SRSS sans correction
+
+
+TEST_RESU(
+    RESU=(
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N1B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu1,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=83.0563,
+            VALE_REFE=83.0711,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N4B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu1,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=137.75816883303153,
+            VALE_REFE=137.786,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N15B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu1,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=1048.17,
+            VALE_REFE=1048.47,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N23B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu1,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=530.623,
+            VALE_REFE=530.841,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N31B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu1,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=93.2761,
+            VALE_REFE=93.4003,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N38B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu1,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=386.051,
+            VALE_REFE=386.325,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N1B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu1,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DY",
+            VALE_CALC=89.2285,
+            VALE_REFE=89.2598,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N7B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu1,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DY",
+            VALE_CALC=222.70258162928369,
+            VALE_REFE=222.74,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N11B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu1,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DY",
+            VALE_CALC=444.199,
+            VALE_REFE=444.308,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N17B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu1,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DY",
+            VALE_CALC=207.379,
+            VALE_REFE=207.431,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N23B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu1,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DY",
+            VALE_CALC=660.339,
+            VALE_REFE=660.562,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N31B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu1,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DY",
+            VALE_CALC=172.85936974580622,
+            VALE_REFE=172.923,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N36B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu1,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DY",
+            VALE_CALC=708.122,
+            VALE_REFE=708.686,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N38B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu1,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DY",
+            VALE_CALC=469.325,
+            VALE_REFE=469.625,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N1B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu1,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DZ",
+            VALE_CALC=141.0377426504618,
+            VALE_REFE=140.979,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N4B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu1,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DZ",
+            VALE_CALC=302.806,
+            VALE_REFE=302.695,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N11B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu1,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DZ",
+            VALE_CALC=301.605,
+            VALE_REFE=301.495,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N17B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu1,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DZ",
+            VALE_CALC=226.3032439150957,
+            VALE_REFE=226.282,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N31B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu1,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DZ",
+            VALE_CALC=301.853,
+            VALE_REFE=301.916,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N36B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu1,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DZ",
+            VALE_CALC=809.605,
+            VALE_REFE=809.464,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N38B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu1,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DZ",
+            VALE_CALC=386.917,
+            VALE_REFE=386.978,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N1B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu1,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DRX",
+            VALE_CALC=4412.24,
+            VALE_REFE=4409.76,
+            PRECISION=1.0e-2,
+        ),
+    )
+)
+
+
+# resu2 : CQC sans correction
+TEST_RESU(
+    RESU=(
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N1B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu2,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=87.5315,
+            VALE_REFE=87.5508,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N4B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu2,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=141.66079343755405,
+            VALE_REFE=141.703,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N15B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu2,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=1169.2570160364269,
+            VALE_REFE=1169.5,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N23B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu2,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=624.064,
+            VALE_REFE=624.235,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N31B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu2,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=92.3064,
+            VALE_REFE=92.374,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N38B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu2,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=494.932,
+            VALE_REFE=495.172,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N1B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu2,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DY",
+            VALE_CALC=84.5977,
+            VALE_REFE=84.6382,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N7B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu2,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DY",
+            VALE_CALC=226.647,
+            VALE_REFE=226.662,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N11B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu2,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DY",
+            VALE_CALC=469.65,
+            VALE_REFE=469.682,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N17B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu2,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DY",
+            VALE_CALC=220.35323151841777,
+            VALE_REFE=220.404,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N23B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu2,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DY",
+            VALE_CALC=662.933,
+            VALE_REFE=663.063,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N31B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu2,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DY",
+            VALE_CALC=175.98322174852754,
+            VALE_REFE=176.041,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N36B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu2,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DY",
+            VALE_CALC=690.968,
+            VALE_REFE=691.482,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N38B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu2,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DY",
+            VALE_CALC=474.435,
+            VALE_REFE=474.763,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N1B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu2,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DZ",
+            VALE_CALC=60.7872,
+            VALE_REFE=60.7985,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N4B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu2,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DZ",
+            VALE_CALC=199.09832894866312,
+            VALE_REFE=199.115,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N11B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu2,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DZ",
+            VALE_CALC=254.318,
+            VALE_REFE=254.327,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N17B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu2,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DZ",
+            VALE_CALC=211.527,
+            VALE_REFE=211.536,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N31B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu2,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DZ",
+            VALE_CALC=296.0624730594099,
+            VALE_REFE=296.121,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N36B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu2,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DZ",
+            VALE_CALC=922.055,
+            VALE_REFE=921.894,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N38B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu2,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DZ",
+            VALE_CALC=381.333,
+            VALE_REFE=381.411,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N1B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu2,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DRX",
+            VALE_CALC=1729.904799030061,
+            VALE_REFE=1729.9,
+            PRECISION=1.0e-2,
+        ),
+    )
+)
+
+# resu3 : CQC avec correction
+TEST_RESU(
+    RESU=(
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N1B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu3,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=108.713,
+            VALE_REFE=108.611,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N4B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu3,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=177.5997505482686,
+            VALE_REFE=177.434,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N15B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu3,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=1170.3135163262205,
+            VALE_REFE=1170.55,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N23B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu3,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=686.791,
+            VALE_REFE=686.624,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N31B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu3,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=110.68643890603221,
+            VALE_REFE=110.679,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N38B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu3,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=1503.95,
+            VALE_REFE=1500.99,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N1B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu3,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DY",
+            VALE_CALC=307.632,
+            VALE_REFE=306.892,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N7B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu3,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DY",
+            VALE_CALC=239.113,
+            VALE_REFE=239.04,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N11B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu3,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DY",
+            VALE_CALC=482.919,
+            VALE_REFE=482.864,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N17B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu3,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DY",
+            VALE_CALC=228.56547651793872,
+            VALE_REFE=228.544,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N23B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu3,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DY",
+            VALE_CALC=667.335,
+            VALE_REFE=667.417,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N31B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu3,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DY",
+            VALE_CALC=240.579,
+            VALE_REFE=240.466,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N36B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu3,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DY",
+            VALE_CALC=792.8,
+            VALE_REFE=792.332,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N38B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu3,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DY",
+            VALE_CALC=531.67,
+            VALE_REFE=531.608,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N1B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu3,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DZ",
+            VALE_CALC=87.6476,
+            VALE_REFE=87.5389,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N4B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu3,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DZ",
+            VALE_CALC=300.805,
+            VALE_REFE=300.385,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N11B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu3,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DZ",
+            VALE_CALC=260.874,
+            VALE_REFE=260.841,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N17B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu3,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DZ",
+            VALE_CALC=240.624,
+            VALE_REFE=240.445,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N31B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu3,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DZ",
+            VALE_CALC=299.74,
+            VALE_REFE=299.792,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N36B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu3,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DZ",
+            VALE_CALC=922.182,
+            VALE_REFE=922.021,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N38B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu3,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DZ",
+            VALE_CALC=415.5214273325745,
+            VALE_REFE=415.456,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N1B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu3,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DRX",
+            VALE_CALC=1924.2,
+            VALE_REFE=1923.31,
+            PRECISION=1.0e-2,
+        ),
+    )
+)
+
+# resu4 : SRSS avec correction
+TEST_RESU(
+    RESU=(
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N1B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu4,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=105.14330334968106,
+            VALE_REFE=105.034,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N4B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu4,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=174.50273372552047,
+            VALE_REFE=174.322,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N15B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu4,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=1049.3485942716886,
+            VALE_REFE=1049.64,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N23B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu4,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=603.147,
+            VALE_REFE=602.972,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N31B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu4,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=111.49639305932455,
+            VALE_REFE=111.537,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N38B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu4,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            VALE_CALC=1471.7133033231714,
+            VALE_REFE=1468.68,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N1B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu4,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DY",
+            VALE_CALC=308.9376168678086,
+            VALE_REFE=308.199,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N7B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu4,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DY",
+            VALE_CALC=235.378,
+            VALE_REFE=235.325,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N11B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu4,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DY",
+            VALE_CALC=458.205,
+            VALE_REFE=458.221,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N17B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu4,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DY",
+            VALE_CALC=216.085,
+            VALE_REFE=216.06,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N23B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu4,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DY",
+            VALE_CALC=664.758,
+            VALE_REFE=664.933,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N31B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu4,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DY",
+            VALE_CALC=238.30364721471932,
+            VALE_REFE=238.193,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N36B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu4,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DY",
+            VALE_CALC=807.794,
+            VALE_REFE=807.389,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N38B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu4,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DY",
+            VALE_CALC=527.115,
+            VALE_REFE=527.025,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N1B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu4,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DZ",
+            VALE_CALC=154.52721656538773,
+            VALE_REFE=154.408,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N4B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu4,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DZ",
+            VALE_CALC=377.538,
+            VALE_REFE=377.106,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N11B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu4,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DZ",
+            VALE_CALC=307.1534213964503,
+            VALE_REFE=307.009,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N17B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu4,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DZ",
+            VALE_CALC=253.711,
+            VALE_REFE=253.515,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N31B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu4,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DZ",
+            VALE_CALC=305.461,
+            VALE_REFE=305.517,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N36B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu4,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DZ",
+            VALE_CALC=809.75,
+            VALE_REFE=809.608,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N38B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu4,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DZ",
+            VALE_CALC=420.652,
+            VALE_REFE=420.573,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N1B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu4,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DRX",
+            VALE_CALC=4491.98,
+            VALE_REFE=4489.16,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N31B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu4,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DRX",
+            VALE_CALC=23725.3,
+            VALE_REFE=23728.7,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N38B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu4,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DRX",
+            VALE_CALC=10862.2,
+            VALE_REFE=10861.4,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N1B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu4,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DRY",
+            VALE_CALC=3389.81,
+            VALE_REFE=3388.22,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N31B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu4,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DRY",
+            VALE_CALC=2044.31,
+            VALE_REFE=2044.13,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N38B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu4,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DRY",
+            VALE_CALC=21717.2,
+            VALE_REFE=21719.5,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N1B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu4,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DRZ",
+            VALE_CALC=5379.29,
+            VALE_REFE=5370.52,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N31B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu4,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DRZ",
+            VALE_CALC=6493.58,
+            VALE_REFE=6496.33,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NOM_CAS="TOTA",
+            GROUP_NO="N38B",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=resu4,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DRZ",
+            VALE_CALC=26606,
+            VALE_REFE=26615.7,
+            PRECISION=1.0e-2,
+        ),
+    )
+)
+
+FIN()
