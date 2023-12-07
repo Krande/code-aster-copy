@@ -23,6 +23,7 @@
 This module gives objects to manage the execution.
 """
 
+from .Check_Material_Functions import check_dis_choc_elas
 from .LogicalUnit import Action, FileAccess, FileType, LogicalUnitFile, ReservedUnitUsed
 from .MGISHelper import MGISBuilder, adapt_for_mgis_behaviour
-from .Check_Material_Functions import check_dis_choc_elas
+from .syntax_adapters import adapt_increment_init

@@ -21,6 +21,7 @@
 
 from ...Objects import ThermalResult
 from ...Supervis import ExecuteCommand
+from ...Helpers import adapt_increment_init
 from .ther_non_line_fort_cata import THER_NON_LINE_FORT_CATA
 
 
@@ -38,24 +39,8 @@ class NonLinearThermalAnalysisFort(ExecuteCommand):
             keywords (dict): Keywords arguments of user's keywords, changed
                 in place.
         """
-
-        # modify ETAT_INIT
-        if (
-            "INST_INIT" not in keywords["INCREMENT"]
-            and "NUME_INST_INIT" not in keywords["INCREMENT"]
-        ):
-            if "ETAT_INIT" in keywords and "EVOL_THER" in keywords["ETAT_INIT"]:
-                etat_init = keywords["ETAT_INIT"]
-                if "EVOL_THER" in etat_init:
-                    EVOL_THER = etat_init["EVOL_THER"]
-                    inst_init = EVOL_THER.getLastTime()
-                    if "INST" in etat_init:
-                        inst_init = etat_init["INST"]
-                    if "NUME_ORDRE" in etat_init:
-                        inst_init = EVOL_THER.getTime(etat_init["NUME_ORDRE"])
-                    keywords["INCREMENT"]["INST_INIT"] = inst_init
-            else:
-                keywords["INCREMENT"]["NUME_INST_INIT"] = 0
+        # use initial time from ETAT_INIT
+        adapt_increment_init(keywords, "EVOL_THER")
 
     def create_result(self, keywords):
         """Initialize the result.
