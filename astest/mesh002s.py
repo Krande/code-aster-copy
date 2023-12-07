@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -134,8 +134,8 @@ for mesh_file in meshes:
     MPI.COMM_WORLD.Barrier()
 
 
-list_nb_mesh = [512, 497, 494]
-list_nb_mesh_conv = [512, 497, 494]
+list_nb_mesh = [509, 497, 494]
+list_nb_mesh_conv = [509, 497, 494]
 
 print("Number of mesh: %s" % (nb_mesh), flush=True)
 print("Number of mesh converted: %s" % (nb_mesh_converted), flush=True)
