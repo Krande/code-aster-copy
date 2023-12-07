@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -97,7 +97,7 @@ import tempfile
 from pathlib import Path
 from subprocess import run
 
-from .command_files import AUTO_IMPORT
+from .command_files import AUTO_IMPORT, INTERACTIVE_START
 from .config import CFG
 from .export import Export, File, split_export
 from .logger import DEBUG, WARNING, logger
@@ -124,10 +124,13 @@ as '--interactive', '--env', '--no-comm', '--gdb', '--valgrind'.
 
 # for interactive executions (using IPython)
 SAVE_ARGV = """
+import os
 import sys
 
 from code_aster.Utilities import ExecutionParameter
 ExecutionParameter().set_argv(sys.argv)
+
+print(f"Working directory: {os.getcwd()}")
 """
 
 
@@ -155,6 +158,12 @@ def parse_args(argv):
         help="inspect interactively after running script instead of calling FIN command",
     )
     parser.add_argument(
+        "--no-init",
+        dest="no_init",
+        action="store_true",
+        help="do not automatically initialize code_aster with '--interactive'",
+    )
+    parser.add_argument(
         "--env",
         action="store_true",
         help="do not execute, only prepare the working directory ('--wrkdir' is required)",
@@ -180,20 +189,15 @@ def parse_args(argv):
         "--no-mpi",
         dest="auto_mpiexec",
         action="store_false",
-        help="if '%(prog)s' is executed with a parallel "
-        "version but not under 'mpiexec', it is "
-        "automatically restart with "
-        "'mpiexec -n N %(prog)s ...'; use '--no-mpi' "
-        "to not do it",
+        help="if '%(prog)s' is executed with a parallel version but not under 'mpiexec', it is "
+        "automatically restart with 'mpiexec -n N %(prog)s ...'; use '--no-mpi' to not do it",
     )
     parser.add_argument("-t", "--test", action="store_true", help="execution of a testcase")
     parser.add_argument(
         "--ctest",
         action="store_true",
-        help="testcase execution inside ctest (implies "
-        "'--test'), the 'code' file is saved into "
-        "the current directory (which is '--resutest' "
-        "directory for 'run_ctest').",
+        help="testcase execution inside ctest (implies '--test'), the 'code' file is saved into "
+        "the current directory (which is '--resutest' directory for 'run_ctest').",
     )
     parser.add_argument(
         "-n",
@@ -219,10 +223,10 @@ def parse_args(argv):
     )
     parser.add_argument(
         "--no-comm",
+        dest="no_comm",
         action="store_true",
-        help="do not execute the `.comm` files but start an "
-        "interactive Python session. Execute "
-        "`code_aster.init()` to copy data files.",
+        help="do not execute the `.comm` files but start an interactive Python session. "
+        "`CA.init()` or `DEBUT()` should be executed to copy data files.",
     )
     parser.add_argument(
         "--gdb",
@@ -320,7 +324,8 @@ def main(argv=None):
     elif not args.file or args.no_comm:
         args.interactive = True
         with tempfile.NamedTemporaryFile(mode="w", delete=False) as fobj:
-            fobj.write(AUTO_IMPORT.format(starter=SAVE_ARGV))
+            tmpl = AUTO_IMPORT if args.no_init else INTERACTIVE_START
+            fobj.write(tmpl.substitute(starter=SAVE_ARGV))
             export.add_file(File(fobj.name, filetype="comm", unit=1))
             tmpf = fobj.name
     # output = None

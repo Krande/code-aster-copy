@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -45,6 +45,7 @@ class Closer(ExecuteCommand):
     command_name = "FIN"
     _options = None
     _exit = None
+    _is_finalized = None
 
     def change_syntax(self, keywords):
         """Adapt syntax before checking syntax.
@@ -87,6 +88,7 @@ class Closer(ExecuteCommand):
         if keywords.get("PROC0") == "OUI":
             self._options |= FinalizeOptions.OnlyProc0
         super().exec_(keywords)
+        Closer._is_finalized = True
 
     def _call_oper(self, dummy):
         """Save objects that exist in the context of the caller.
@@ -111,3 +113,10 @@ class Closer(ExecuteCommand):
 
 
 FIN = Closer.run
+
+
+def close(**kwargs):
+    """Finalize code_aster as the `FIN` command does."""
+    if Closer._is_finalized:
+        return
+    FIN(**kwargs)

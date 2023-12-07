@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,6 +29,11 @@ All user's Commands are defined in :py:mod:`code_aster.Commands` package.
 For the details about the execution of the commands see :py:mod:`code_aster.Supervis`.
 
 """
+
+from ..Utilities.rc import rc
+
+if rc.initialize is None:
+    rc.initialize = False
 
 from ..Supervis import CO
 
@@ -59,8 +64,8 @@ from .calc_ferraillage import CALC_FERRAILLAGE
 from .calc_flui_stru import CALC_FLUI_STRU
 from .calc_fonc_interp import CALC_FONC_INTERP
 from .calc_forc_nonl import CALC_FORC_NONL
-from .calc_g_xfem import CALC_G_XFEM
 from .calc_g import CALC_G
+from .calc_g_xfem import CALC_G_XFEM
 from .calc_inte_spec import CALC_INTE_SPEC
 from .calc_matr_ajou import CALC_MATR_AJOU
 from .calc_meta import CALC_META
@@ -147,6 +152,9 @@ from .modi_modele_xfem import MODI_MODELE_XFEM
 from .modi_repere import MODI_REPERE
 from .norm_mode import NORM_MODE
 from .nume_ddl_gene import NUME_DDL_GENE
+
+# other commands are automatically added just using their catalog
+from .operator import define_operators
 from .post_cham_xfem import POST_CHAM_XFEM
 from .post_champ import POST_CHAMP
 from .post_dyna_moda_t import POST_DYNA_MODA_T
@@ -185,10 +193,6 @@ from .test_resu import TEST_RESU
 from .test_table import TEST_TABLE
 from .ther_non_line_mo import THER_NON_LINE_MO
 from .variable import VARIABLE
-
-
-# other commands are automatically added just using their catalog
-from .operator import define_operators
 
 define_operators(globals())
 del define_operators

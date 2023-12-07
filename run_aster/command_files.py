@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,16 +28,22 @@ This modules provides some functions that change commands files.
 """
 
 import re
+from string import Template
 
-
-AUTO_IMPORT = """
+_starter = Template(
+    """
 # temporarly added for compatibility with code_aster legacy
 from math import *
 
 import code_aster
-from code_aster.Commands import *
+${imports}from code_aster import CA
 
-{starter}"""
+${starter}"""
+)
+
+AUTO_IMPORT = Template(_starter.safe_substitute(imports="from code_aster.Commands import *\n"))
+
+INTERACTIVE_START = Template(_starter.safe_substitute(imports=""))
 
 
 def add_import_commands(text):
@@ -57,7 +63,7 @@ def add_import_commands(text):
     re_init = re.compile("^(?P<init>(DEBUT|POURSUITE))", re.M)
     if re_init.search(text):
         starter = r"\g<init>"
-        text = re_init.sub(AUTO_IMPORT.format(starter=starter), text)
+        text = re_init.sub(AUTO_IMPORT.substitute(starter=starter), text)
 
     re_coding = re.compile(r"^#( *(?:|\-\*\- *|en)coding.*)" + "\n", re.M)
     if not re_coding.search(text):

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ memory manager (*Jeveux*). For this task, it parses the arguments through the
 By default, arguments are those read from the command line and those passed
 :py:func:`.init`.
 If the command line arguments are not set for code_aster, they can be ignored
-with ``code_aster.init(..., noargv=True)``.
+with ``CA.init(..., noargv=True)``.
 
 Some Python objects that have to be available from :py:mod:`libaster` are
 passed during the initialization to the
@@ -186,7 +186,7 @@ class Starter(ExecuteCommand):
                 UTMESS("I", "SUPERVIS_12")
             iwarn = iwarn or jxveri or sdveri or dbgjeveux
         if iwarn:
-            UTMESS("I", "SUPERVIS_22", valk=("--test", "code_aster.init()"))
+            UTMESS("I", "SUPERVIS_22", valk=("--test", "CA.init()"))
         if ExecutionParameter().get_option("hook_post_exec"):
             path = ExecutionParameter().get_option("hook_post_exec")
             hook = import_object(path)
