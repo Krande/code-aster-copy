@@ -89,7 +89,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
     character(len=24) :: matric, chamno, crefe(2), nomcha, chamn2, objve1
     character(len=24) :: objve2, objve3, objve4, chmod, tmpcha, valk
     aster_logical :: tousno, multap, leffor, prems, l_corr_stat, l_multi_app
-    integer :: iexi, iexi_ipsd
+    integer :: iexi
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: iarchi, ibid, ich, id
@@ -162,15 +162,14 @@ subroutine tran75(nomres, typres, nomin, basemo)
     nbmode = desc(2)
 !   correction statique dans le résultat d'entrée
     l_corr_stat = ASTER_FALSE
-    if (desc(5) .eq. 1) then
+    call dismoi('CORR_STAT', trange, 'RESU_DYNA', repk=k8b)
+    if (k8b .eq. 'OUI') then
         l_corr_stat = ASTER_TRUE
     end if
-    call dismoi('CORR_STAT', trange, 'RESU_DYNA', repk=k8b)
-
 !   multi-appui dans le résultat d'entrée
-    call jeexin(trange//'.IPSD', iexi_ipsd)
     l_multi_app = ASTER_FALSE
-    if (iexi_ipsd .gt. 0 .and. .not. l_corr_stat) then
+    call dismoi('MULT_APPUI', trange, 'RESU_DYNA', repk=k8b)
+    if (k8b .eq. 'OUI') then
         l_multi_app = ASTER_TRUE
     end if
 !

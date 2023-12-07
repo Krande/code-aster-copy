@@ -190,6 +190,14 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm, &
                 else
                     call jeveuo(nomres//'           .IPSD', 'E', jpsdel)
                 end if
+!               Add the identifier .DESC[6] to 1 , i.e. MULT_APPUI exists
+                call jeexin(nomres//'           .DESC', iret)
+                if (iret .eq. 0) then
+                    call wkvect(nomres//'           .DESC', 'G V I', 6, jdesc)
+                else
+                    call jeveuo(nomres//'           .DESC', 'E', jdesc)
+                end if
+                zi(jdesc+6-1) = 1
 !
                 call getvid(' ', 'MODE_STAT', scal=modsta, nbret=nbv)
                 if (nbv .eq. 0) then
@@ -232,7 +240,7 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm, &
 !               Add the identifier .DESC[5] to 1 , i.e. CORR_STAT exists
                 call jeexin(nomres//'           .DESC', iret)
                 if (iret .eq. 0) then
-                    call wkvect(nomres//'           .DESC', 'G V I', 5, jdesc)
+                    call wkvect(nomres//'           .DESC', 'G V I', 6, jdesc)
                 else
                     call jeveuo(nomres//'           .DESC', 'E', jdesc)
                 end if

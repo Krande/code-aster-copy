@@ -241,7 +241,7 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes, &
 !   to 1 if a static correction is considered.
     call jeexin(nomres//'           .DESC', iret)
     if (iret .eq. 0) then
-        call wkvect(nomres//'           .DESC', typsau//' I', 5, jdesc)
+        call wkvect(nomres//'           .DESC', typsau//' I', 6, jdesc)
         do i = 1, 5
             zi(jdesc+i-1) = 0
         end do

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ class sd_dyna_gene_common(AsBase):
     # sauvegardes si TRANS et les frequences si HARM
     ORDR = AsVI()  # gros objet.
 
-    DESC = AsVI(lonmax=5)
+    DESC = AsVI(lonmax=6)
 
     # si nbexcit > 0 :
     FACC = Facultatif(AsVK8())

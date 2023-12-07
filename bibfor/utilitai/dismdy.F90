@@ -336,7 +336,18 @@ subroutine dismdy(questi, nomobz, repi, repkz, ierd)
     else if (questl(1:9) .eq. 'CORR_STAT') then
         repk = 'NON'
         call jeveuo(resdyn//'           .DESC', 'L', jdesc)
-        if (zi(jdesc+7-1) .eq. 1) repk = 'OUI'
+        if (zi(jdesc+5-1) .eq. 1) repk = 'OUI'
+        goto 88
+!
+!     -------------------
+!     --- QUESTION 10 ---
+!     ------------------------------------------------------------------
+!     --- POUR UN RESULTAT SUR BASE GENERALISE AVONS NOUS DES  CHARGEMENTS
+!         DE TYPE MULTI APPUI ?
+    else if (questl(1:10) .eq. 'MULT_APPUI') then
+        repk = 'NON'
+        call jeveuo(resdyn//'           .DESC', 'L', jdesc)
+        if (zi(jdesc+6-1) .eq. 1) repk = 'OUI'
         goto 88
 !
 !
