@@ -47,7 +47,7 @@ from ..Commands import (
 from ..Messages import UTMESS
 from .Fracture.post_k_varc import POST_K_VARC
 from .Fracture.post_beremin_utils import get_beremin_properties, get_resu_from_deftype
-from ..Objects import NonLinearResult
+from ..Objects import NonLinearResult, ExternalVariableTraits
 
 
 def post_beremin_ops(self, **args):
@@ -112,18 +112,6 @@ def post_beremin_ops(self, **args):
 
         modele = reswbrest.getModel()
 
-        chfmu = CREA_CHAMP(
-            OPERATION="AFFE",
-            TYPE_CHAM="ELGA_NEUT_F",
-            MODELE=modele,
-            PROL_ZERO="OUI",
-            AFFE=_F(
-                GROUP_MA="mgrplasfull",
-                NOM_CMP="X1",
-                VALE_F=FORMULE(NOM_PARA=("X1", "X2"), VALE="X1*X2"),
-            ),
-        )
-
         signul = CREA_CHAMP(
             OPERATION="AFFE",
             TYPE_CHAM="ELGA_SIEF_R",
@@ -142,7 +130,7 @@ def post_beremin_ops(self, **args):
                 rsieq,
                 mclinst,
                 signul,
-                sig1plasac(reswbrest, rsieq, numv1v2, dwb, resupb, grmapb, mclinst, signul, chfmu),
+                sig1plasac(reswbrest, rsieq, numv1v2, dwb, resupb, grmapb, mclinst, signul),
                 dwb,
                 resanpb,
                 modele,
@@ -175,7 +163,7 @@ def post_beremin_ops(self, **args):
                 rsieq,
                 mclinst,
                 signul,
-                sig1plasac(relmoysief, rsieq, numv1v2, dwb, resupb, grmapb, mclinst, signul, chfmu),
+                sig1plasac(relmoysief, rsieq, numv1v2, dwb, resupb, grmapb, mclinst, signul),
                 dwb,
                 resanpb,
                 modele,
@@ -240,15 +228,14 @@ def indic_plasac(_v1, _v2, seuil):
     return vale
 
 
-def sigma1(rsieq, nume_inst, inst, sg1fc, dwb, reswbrest, grwb):
+def sigma1(rsieq, nume_inst, inst, dwb, reswbrest, grwb):
     """
     Major principal stress
 
     Arguments:
         rsieq (NonLinearResult): SIEQ_ELGA field
         nume_inst (int): Rank of instant
-        inst (int): Instant
-        sg1fc (FieldOnCells): ELGA_NEUT_F field necessary if critical
+        inst (float): Instant
         stress depends of temperature
         dwb (dict): Beremin parameters
         reswbrest (NonLinearResult): result restricted where plasticity is
@@ -258,7 +245,7 @@ def sigma1(rsieq, nume_inst, inst, sg1fc, dwb, reswbrest, grwb):
     Returns:
         FieldOnCells: ELGA_NEUT_R filled by PRIN_3
     """
-    grcalc = "mgrplas_{}".format(nume_inst)
+    grmacalc = "mgrplas_{}".format(nume_inst)
     modele = reswbrest.getModel()
 
     if not "SIGM_CNV" in dwb[grwb]:
@@ -269,7 +256,7 @@ def sigma1(rsieq, nume_inst, inst, sg1fc, dwb, reswbrest, grwb):
             MODELE=modele,
             PROL_ZERO="OUI",
             ASSE=_F(
-                GROUP_MA=grcalc,
+                GROUP_MA=grmacalc,
                 CHAM_GD=rsieq.getField("SIEQ_ELGA", nume_inst),
                 NOM_CMP="PRIN_3",
                 NOM_CMP_RESU="X1",
@@ -278,16 +265,42 @@ def sigma1(rsieq, nume_inst, inst, sg1fc, dwb, reswbrest, grwb):
 
     else:
 
+        chf = CREA_CHAMP(
+            AFFE=_F(NOM_CMP="X1", GROUP_MA=grmacalc, VALE_F=dwb[grwb]["SIGM_REFE"]),
+            TYPE_CHAM="NOEU_NEUT_F",
+            MODELE=modele,
+            OPERATION="AFFE",
+        )
+
+        chmat = reswbrest.getMaterialField()
+        ExtVariAffe = chmat.getExtStateVariablesOnMeshEntities()
+        for curIter in ExtVariAffe:
+            dict_extvari = {}
+            # Reconstruction des syntaxes liées à l'objet ExternalStateVariable
+            ExtVari = curIter[0]
+            Nom_varc = ExternalVariableTraits.getExternVarTypeStr(ExtVari.getType())
+            if Nom_varc == "TEMP":
+                inputField = ExtVari.getField()
+                evolParam = ExtVari.getEvolutionParameter()
+
+                if inputField:
+                    chamchpar = inputField
+                if evolParam:
+                    chamchpar = evolParam.getTransientResult().getField("TEMP", nume_inst)
+
+        chpar = CREA_CHAMP(OPERATION="ASSE",
+                           TYPE_CHAM="NOEU_TEMP_R",
+                           MODELE=modele,
+                           ASSE=_F(GROUP_MA=grmacalc,
+                                   CHAM_GD=chamchpar,
+                                   NOM_CMP="TEMP",
+                                   NOM_CMP_RESU="TEMP"))
+
         sgrefeno = CREA_CHAMP(
             OPERATION="EVAL",
             TYPE_CHAM="NOEU_NEUT_R",
-            CHAM_F=CREA_CHAMP(
-                AFFE=_F(NOM_CMP="X1", GROUP_MA=grcalc, VALE_F=dwb[grwb]["SIGM_REFE"]),
-                TYPE_CHAM="NOEU_NEUT_F",
-                MODELE=modele,
-                OPERATION="AFFE",
-            ),
-            CHAM_PARA=POST_K_VARC(RESULTAT=reswbrest, INST=inst, NOM_VARC="TEMP"),
+            CHAM_F=chf,
+            CHAM_PARA=chpar
         )
 
         sgrefega = CREA_CHAMP(
@@ -305,12 +318,28 @@ def sigma1(rsieq, nume_inst, inst, sg1fc, dwb, reswbrest, grwb):
             PROL_ZERO="OUI",
             ASSE=(
                 _F(
-                    GROUP_MA=grcalc,
+                    GROUP_MA=grmacalc,
                     CHAM_GD=rsieq.getField("SIEQ_ELGA", nume_inst),
                     NOM_CMP="PRIN_3",
                     NOM_CMP_RESU="X1",
                 ),
-                _F(GROUP_MA=grcalc, CHAM_GD=sgrefega, NOM_CMP="X1", NOM_CMP_RESU="X2"),
+                _F(GROUP_MA=grmacalc, CHAM_GD=sgrefega, NOM_CMP="X1", NOM_CMP_RESU="X2"),
+            ),
+        )
+
+        sg1fc = CREA_CHAMP(
+            OPERATION="AFFE",
+            TYPE_CHAM="ELGA_NEUT_F",
+            MODELE=modele,
+            PROL_ZERO="OUI",
+            AFFE=_F(
+                GROUP_MA=grmacalc,
+                NOM_CMP="X1",
+                VALE_F=FORMULE(
+                    NOM_PARA=("X1", "X2"),
+                    VALE="X1/X2*sigm_cnv",
+                    sigm_cnv=dwb[grwb]["SIGM_CNV"],
+                ),
             ),
         )
 
@@ -321,7 +350,7 @@ def sigma1(rsieq, nume_inst, inst, sg1fc, dwb, reswbrest, grwb):
     return __sg1neut
 
 
-def sig1plasac(resultat, rsieq, numv1v2, dwb, reswbrest, grmapb, mclinst, signul, chfmu):
+def sig1plasac(resultat, rsieq, numv1v2, dwb, reswbrest, grmapb, mclinst, signul):
     """
     Major principal stress where the plasticity is active
 
@@ -337,49 +366,13 @@ def sig1plasac(resultat, rsieq, numv1v2, dwb, reswbrest, grmapb, mclinst, signul
         mclinst (list): List of medcoupling time steps
             (iteration, order, time step) where there is plasticity
         signul (FieldOnCellsReal): 0-SIEF_ELGA field
-        chfmu (FieldOnCells): ELGA_NEUT_F X1*X2
 
     Returns:
         FieldOnCells: ELGA_NEUT_R filled by PRIN_3
     """
     modele = resultat.getModel()
-    if grmapb[0] in dwb.keys():
-        tronque = CREA_CHAMP(
-            OPERATION="AFFE",
-            TYPE_CHAM="ELGA_NEUT_F",
-            MODELE=modele,
-            PROL_ZERO="OUI",
-            AFFE=_F(
-                GROUP_MA=grmapb,
-                NOM_CMP="X1",
-                VALE_F=FORMULE(
-                    NOM_PARA=("V{}".format(numv1v2[0]), "V{}".format(numv1v2[1])),
-                    VALE="indic_plasac(V{}, V{}, seuil)".format(numv1v2[0], numv1v2[1]),
-                    indic_plasac=indic_plasac,
-                    seuil=dwb[grmapb[0]]["SEUIL_EPSP_CUMU"],
-                ),
-            ),
-        )
-    else:
+    if not grmapb[0] in dwb.keys():
         UTMESS("F", "RUPTURE1_88", valk=(grmapb[0]))
-
-    sg1fc = None
-    if "SIGM_CNV" in dwb[grmapb[0]]:
-        sg1fc = CREA_CHAMP(
-            OPERATION="AFFE",
-            TYPE_CHAM="ELGA_NEUT_F",
-            MODELE=modele,
-            PROL_ZERO="OUI",
-            AFFE=_F(
-                GROUP_MA=grmapb,
-                NOM_CMP="X1",
-                VALE_F=FORMULE(
-                    NOM_PARA=("X1", "X2"),
-                    VALE="X1/X2*sigm_cnv",
-                    sigm_cnv=dwb[grmapb[0]]["SIGM_CNV"],
-                ),
-            ),
-        )
 
     maxsig = NonLinearResult()
     maxsig.allocate(rsieq.getNumberOfIndexes())
@@ -389,34 +382,56 @@ def sig1plasac(resultat, rsieq, numv1v2, dwb, reswbrest, grmapb, mclinst, signul
         inst = rsieq.getTime(nume_inst)
 
         if inst in [elt[2] for elt in mclinst]:
+            tronque = CALC_CHAMP(
+                RESULTAT=resultat,
+                INST=inst,
+                GROUP_MA=grmapb[0],
+                CHAM_UTIL=_F(
+                    NOM_CHAM="VARI_ELGA",
+                    FORMULE=FORMULE(
+                        NOM_PARA=("V{}".format(numv1v2[0]), "V{}".format(numv1v2[1])),
+                        VALE="indic_plasac(V{}, V{}, seuil)".format(numv1v2[0], numv1v2[1]),
+                        indic_plasac=indic_plasac,
+                        seuil=dwb[grmapb[0]]["SEUIL_EPSP_CUMU"],
+                    ),
+                    NUME_CHAM_RESU=1,
+                ),
+            )
+
             sign = CREA_CHAMP(
                 OPERATION="ASSE",
-                TYPE_CHAM="ELGA_NEUT_R",
+                TYPE_CHAM="ELGA_SIEF_R",
                 MODELE=modele,
                 PROL_ZERO="OUI",
                 ASSE=(
                     _F(
                         GROUP_MA=grcalc,
-                        CHAM_GD=sigma1(rsieq, nume_inst, inst, sg1fc, dwb, reswbrest, grmapb[0]),
+                        CHAM_GD=sigma1(rsieq, nume_inst, inst, dwb, reswbrest, grmapb[0]),
                         NOM_CMP="X1",
-                        NOM_CMP_RESU="X1",
+                        NOM_CMP_RESU="SIXX",
                     ),
                     _F(
                         GROUP_MA=grcalc,
-                        CHAM_GD=CREA_CHAMP(
-                            OPERATION="EVAL",
-                            TYPE_CHAM="ELGA_NEUT_R",
-                            CHAM_F=tronque,
-                            CHAM_PARA=resultat.getField("VARI_ELGA", nume_inst),
-                        ),
+                        CHAM_GD=tronque.getField("UT01_ELGA", nume_inst),
                         NOM_CMP="X1",
-                        NOM_CMP_RESU="X2",
+                        NOM_CMP_RESU="SIYY",
                     ),
                 ),
             )
 
-            sig1 = CREA_CHAMP(
-                OPERATION="EVAL", TYPE_CHAM="ELGA_NEUT_R", CHAM_F=chfmu, CHAM_PARA=sign
+            rsig1aux = NonLinearResult()
+            rsig1aux.allocate(1)
+            rsig1aux.setField(sign, "SIEF_ELGA", 0)
+            rsig1aux.setModel(modele, 0)
+
+            rsig1 = CALC_CHAMP(
+                RESULTAT=rsig1aux,
+                GROUP_MA=grcalc,
+                CHAM_UTIL=_F(
+                    NOM_CHAM="SIEF_ELGA",
+                    FORMULE=FORMULE(NOM_PARA=("SIXX", "SIYY"), VALE="SIXX*SIYY"),
+                    NUME_CHAM_RESU=1,
+                ),
             )
 
             sigtyp = CREA_CHAMP(
@@ -424,7 +439,12 @@ def sig1plasac(resultat, rsieq, numv1v2, dwb, reswbrest, grmapb, mclinst, signul
                 TYPE_CHAM="ELGA_SIEF_R",
                 MODELE=modele,
                 PROL_ZERO="OUI",
-                ASSE=_F(GROUP_MA=grcalc, CHAM_GD=sig1, NOM_CMP="X1", NOM_CMP_RESU="SIXX"),
+                ASSE=_F(
+                    GROUP_MA=grcalc,
+                    CHAM_GD=rsig1.getField("UT01_ELGA", 0),
+                    NOM_CMP="X1",
+                    NOM_CMP_RESU="SIXX",
+                ),
             )
 
             maxsig.setField(sigtyp, "SIEF_ELGA", nume_inst)
@@ -462,18 +482,6 @@ def tps_maxsigm(rsieq, mclinst, signul, maxsig, dwb, resanpb, modele, grmapb):
         - where the plasticity is active: maximum of major principal stress
         - where the plasticity is not active: 0
     """
-    chfxm = CREA_CHAMP(
-        OPERATION="AFFE",
-        TYPE_CHAM="ELGA_NEUT_F",
-        MODELE=modele,
-        PROL_ZERO="OUI",
-        AFFE=_F(
-            GROUP_MA=grmapb,
-            NOM_CMP="X1",
-            VALE_F=FORMULE(NOM_PARA="X1", VALE="X1**bere_m", bere_m=dwb[grmapb[0]]["M"]),
-        ),
-    )
-
     resimpr = None
     if resanpb is not None:
         if resanpb.is_typco():
@@ -499,16 +507,21 @@ def tps_maxsigm(rsieq, mclinst, signul, maxsig, dwb, resanpb, modele, grmapb):
                 INST=linstants[: nume_inst + 1],
             )
 
-            chmaxsign = CREA_CHAMP(
-                OPERATION="ASSE",
-                TYPE_CHAM="ELGA_NEUT_R",
-                MODELE=modele,
-                PROL_ZERO="OUI",
-                ASSE=_F(GROUP_MA=grmapb, CHAM_GD=chmaxsig, NOM_CMP="SIXX", NOM_CMP_RESU="X1"),
-            )
+            rchmaxsig = NonLinearResult()
+            rchmaxsig.allocate(1)
+            rchmaxsig.setField(chmaxsig, "SIEF_ELGA", 0)
+            rchmaxsig.setModel(modele, 0)
 
-            chmaxsigm = CREA_CHAMP(
-                OPERATION="EVAL", TYPE_CHAM="ELGA_NEUT_R", CHAM_F=chfxm, CHAM_PARA=chmaxsign
+            rsixxm = CALC_CHAMP(
+                RESULTAT=rchmaxsig,
+                GROUP_MA=grmapb,
+                CHAM_UTIL=_F(
+                    NOM_CHAM="SIEF_ELGA",
+                    FORMULE=FORMULE(
+                        NOM_PARA="SIXX", VALE="SIXX**bere_m", bere_m=dwb[grmapb[0]]["M"]
+                    ),
+                    NUME_CHAM_RESU=1,
+                ),
             )
 
             chsixxm = CREA_CHAMP(
@@ -516,7 +529,12 @@ def tps_maxsigm(rsieq, mclinst, signul, maxsig, dwb, resanpb, modele, grmapb):
                 TYPE_CHAM="ELGA_SIEF_R",
                 MODELE=modele,
                 PROL_ZERO="OUI",
-                ASSE=_F(GROUP_MA=grmapb, CHAM_GD=chmaxsigm, NOM_CMP="X1", NOM_CMP_RESU="SIXX"),
+                ASSE=_F(
+                    GROUP_MA=grmapb,
+                    CHAM_GD=rsixxm.getField("UT01_ELGA", 0),
+                    NOM_CMP="X1",
+                    NOM_CMP_RESU="SIXX",
+                ),
             )
 
             if resanpb is not None:
