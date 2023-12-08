@@ -61,7 +61,7 @@ subroutine pgppre(sd_pgp)
     integer           :: nbobs, iobs, nbcmp, nbsupp, ivsup
     integer           :: icomp, icmp, nbmcl, iret, jcomp
     integer           :: nbcmp1, nord, icorrst, multap, nfonct, vali(2)
-    character(len=3)  :: prsimp, corrst
+    character(len=3)  :: prsimp, corrst, kmultapp
     character(len=4)  :: typch, typsc
     character(len=8)  :: nomres, resin, base, base0
     character(len=8)  :: maillage, nume, ncmp, nomgd, modele
@@ -240,8 +240,8 @@ subroutine pgppre(sd_pgp)
 !       are actually in a MULT_APPUI case. Correction is thus to be done only if
 !       absolute fields are explicitely requested by the user (usind psi*delta vector)
         multap = 0
-        call jeexin(resin19//'.IPSD', iret)
-        if (iret .ne. 0) multap = 1
+        call dismoi('MULT_APPUI', resin, 'RESU_DYNA', repk=kmultapp)
+        if (kmultapp .eq. 'OUI') multap = 1
         if (multap .eq. 1) then
             if (champ(5:11) .eq. '_ABSOLU') icorrst = 1
         end if
