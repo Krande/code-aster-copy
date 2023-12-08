@@ -1,10 +1,9 @@
 P time_limit 60
-P memory_limit 300
+P memory_limit 512
 P ncpus 1
 P mpi_nbcpu 1
 P mpi_nbnoeud 1
 P testlist submit verification sequential
 
-F comm sdld106a.comm D 1
-F comm sdld106a.com1 D 1
-F mail sdld106a.mail D 20
+F comm sdld31c.comm D 1
+F mail sdld31c.mail D 20
