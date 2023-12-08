@@ -40,8 +40,6 @@ In a standard commands file, without advanced Python usage:
 
 """
 
-# from .version import get_version, get_version_desc
-
 import atexit
 from .Utilities.rc import rc
 
@@ -71,4 +69,5 @@ if rc.initialize:
     init()
 
 if rc.finalize:
+    # FIXME can not work: should store a pointer to the 'main' context into rc ?
     atexit.register(close)

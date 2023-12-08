@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -401,12 +401,20 @@ class ExecutionParameter(metaclass=Singleton):
             help="Stage number in the Study",
         )
         parser.add_argument(
+            "--start",
+            dest="ForceStart",
+            action="store_const",
+            const=1,
+            default=0,
+            help="turn on to start a new calculation (force initialization with DEBUT)",
+        )
+        parser.add_argument(
             "--continue",
             dest="Continue",
             action="store_const",
             const=1,
             default=0,
-            help="turn on to continue a previous execution",
+            help="turn on to continue a previous execution (force initialization with POURSUITE)",
         )
         parser.add_argument(
             "--last",
@@ -470,6 +478,11 @@ class ExecutionParameter(metaclass=Singleton):
         logger.debug("Read options: %r", vars(args))
         if "-max_base" in " ".join(ignored):
             deprecate("-max_base", case=4, help="Use '--max_base' instead.")
+
+        # at most one of...
+        if args.ForceStart and args.Continue:
+            logger.warning("'--start' and '--continue' are incompatible, '--continue' is removed.")
+            args.Continue = 0
 
         # default value with DEBUT
         if not args.Continue:

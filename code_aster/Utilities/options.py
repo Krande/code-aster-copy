@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,8 +23,10 @@
 Definition of options/flags for execution.
 """
 
+from enum import IntFlag, auto
 
-class Options:
+
+class Options(IntFlag):
     """Enumerator for execution options.
 
     Some options are enabled and/or disabled from command line options.
@@ -33,6 +35,7 @@ class Options:
     - *Debug*: Debug mode.
     - *Abort*: Abort instead of raising an exception in case of errors.
     - *WarningAsError*: Turns warnings into errors.
+    - *ForceStart*: Start a new calculation even if a database exists.
     - *Continue*: Restart from an existing database.
     - *StrictUnpickling*: Fail when an object can not be unpickled.
     - *UseLegacyMode*: Create 'CO' objects instead of namedtuple.
@@ -48,20 +51,21 @@ class Options:
       domain decomposition.
     """
 
-    Null = 0x0000
-    Debug = 0x0001
-    Abort = 0x0002
-    Continue = 0x0004
-    StrictUnpickling = 0x0008
-    UseLegacyMode = 0x0010
-    ShowDeprecated = 0x0020
-    ShowSyntax = 0x0040
-    ShowChildCmd = 0x0080
-    TestMode = 0x0100
-    SlaveMode = 0x0200
-    LastStep = 0x0400
-    HPCMode = 0x0800
-    WarningAsError = 0x1000
+    Null = 0
+    Debug = auto()
+    Abort = auto()
+    ForceStart = auto()
+    Continue = auto()
+    StrictUnpickling = auto()
+    UseLegacyMode = auto()
+    ShowDeprecated = auto()
+    ShowSyntax = auto()
+    ShowChildCmd = auto()
+    TestMode = auto()
+    SlaveMode = auto()
+    LastStep = auto()
+    HPCMode = auto()
+    WarningAsError = auto()
     # do not forget to document each new option
 
     @classmethod

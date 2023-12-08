@@ -119,4 +119,5 @@ def close(**kwargs):
     """Finalize code_aster as the `FIN` command does."""
     if Closer._is_finalized:
         return
+    # FIXME must increase level by 1 for saveObjects
     FIN(**kwargs)

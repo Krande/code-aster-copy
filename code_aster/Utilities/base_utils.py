@@ -1,6 +1,6 @@
 # coding: utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -98,8 +98,9 @@ def get_caller_context(level):
         dict: 'globals' context at this level.
     """
     caller = inspect.currentframe()
-    for _ in range(level + 1):
+    for i in range(level + 1):
         caller = caller.f_back
+        print(i, caller.f_globals.get("__name__"))
     try:
         context = caller.f_globals
     finally:

@@ -250,7 +250,7 @@ class Restarter(Starter):
         #  4:Restarter.run, 5:ExecuteCommand.run_, 6:ExecuteCmd.run, 7:user
         # 1:_call_oper, 2:ExecuteCommand.exec_, 3:Starter.exec_,
         #  4:_run_with_argv, 5:run_with_argv, 6:init, 7:user
-        # when called during 'import CA', some levels are added...
+        # when called during 'import CA', 8 levels are added...
         loadObjects(level=7 + 8 * int(rc.initialize))
 
 
@@ -300,8 +300,11 @@ def init(*argv, **kwargs):
 
     # restart = True | False | None from rc or keywords
     restart = rc.restart
-    if restart is None and ExecutionParameter().get_option("Continue"):
-        restart = True
+    if restart is None:
+        if ExecutionParameter().get_option("Continue"):
+            restart = True
+        elif ExecutionParameter().get_option("ForceStart"):
+            restart = False
     if restart is None:
         restart = Serializer.canRestart(silent=True)
     ExecutionParameter().set_option("Continue", restart)

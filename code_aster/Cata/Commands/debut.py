@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -181,4 +181,5 @@ DEBUT = MACRO(
         fr=tr("Permet de choisir la langue utilisée pour les messages (si disponible)"),
     ),
     INFO=SIMP(statut="f", typ="I", defaut=1, into=(1, 2)),
+    MODE=SIMP(statut="f", typ="TXM", defaut="AUTO", into=("AUTO", "INIT", "POURSUITE")),
 )
