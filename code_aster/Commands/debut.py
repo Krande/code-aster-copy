@@ -37,6 +37,7 @@ passed during the initialization to the
 
 import aster_core
 import libaster
+
 from run_aster.run import copy_datafiles
 
 from ..Behaviours import catalc
@@ -50,6 +51,7 @@ from ..Supervis.ctopy import checksd, print_header
 from ..Supervis.TestResult import testresu_print
 from ..Utilities import MPI, ExecutionParameter, Options, import_object, logger
 from ..Utilities.i18n import localization
+from ..Utilities.rc import rc
 
 try:
     import debugpy
@@ -248,7 +250,8 @@ class Restarter(Starter):
         #  4:Restarter.run, 5:ExecuteCommand.run_, 6:ExecuteCmd.run, 7:user
         # 1:_call_oper, 2:ExecuteCommand.exec_, 3:Starter.exec_,
         #  4:_run_with_argv, 5:run_with_argv, 6:init, 7:user
-        loadObjects(level=7)
+        # when called during 'import CA', some levels are added...
+        loadObjects(level=7 + 8 * int(rc.initialize))
 
 
 DEBUT = Starter.run
@@ -294,6 +297,14 @@ def init(*argv, **kwargs):
         tpmax = ExecutionParameter().get_option("tpmax")
         ExecutionParameter().set_option("tpmax", tpmax + 36000)
     kwargs.pop("debugpy", None)
+
+    # restart = True | False | None from rc or keywords
+    restart = rc.restart
+    if restart is None and ExecutionParameter().get_option("Continue"):
+        restart = True
+    if restart is None:
+        restart = Serializer.canRestart(silent=True)
+    ExecutionParameter().set_option("Continue", restart)
 
     if ExecutionStarter.params.option & Options.Continue:
         Restarter.run_with_argv(**kwargs)

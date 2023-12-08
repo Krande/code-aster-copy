@@ -51,6 +51,7 @@ class Rc:
 
     initialize = None
     finalize = None
+    restart = None
     errors = "exception"
 
     def __init__(self, **kwargs):

@@ -34,6 +34,7 @@ from ..Utilities.rc import rc
 
 if rc.initialize is None:
     rc.initialize = False
+del rc
 
 from ..Supervis import CO
 

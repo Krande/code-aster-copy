@@ -34,16 +34,16 @@ _starter = Template(
     """
 # temporarly added for compatibility with code_aster legacy
 from math import *
-
+${prolog}
 import code_aster
 ${imports}from code_aster import CA
 
 ${starter}"""
 )
 
-AUTO_IMPORT = Template(_starter.safe_substitute(imports="from code_aster.Commands import *\n"))
+NOINIT_START = Template(_starter.safe_substitute(imports="from code_aster.Commands import *\n"))
 
-INTERACTIVE_START = Template(_starter.safe_substitute(imports=""))
+AUTO_START = Template(_starter.safe_substitute(imports=""))
 
 
 def add_import_commands(text):
@@ -63,7 +63,7 @@ def add_import_commands(text):
     re_init = re.compile("^(?P<init>(DEBUT|POURSUITE))", re.M)
     if re_init.search(text):
         starter = r"\g<init>"
-        text = re_init.sub(AUTO_IMPORT.substitute(starter=starter), text)
+        text = re_init.sub(NOINIT_START.substitute(prolog="", starter=starter), text)
 
     re_coding = re.compile(r"^#( *(?:|\-\*\- *|en)coding.*)" + "\n", re.M)
     if not re_coding.search(text):

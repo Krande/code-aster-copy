@@ -97,7 +97,7 @@ import tempfile
 from pathlib import Path
 from subprocess import run
 
-from .command_files import AUTO_IMPORT, INTERACTIVE_START
+from .command_files import AUTO_START, NOINIT_START
 from .config import CFG
 from .export import Export, File, split_export
 from .logger import DEBUG, WARNING, logger
@@ -123,15 +123,14 @@ as '--interactive', '--env', '--no-comm', '--gdb', '--valgrind'.
 """
 
 # for interactive executions (using IPython)
-SAVE_ARGV = """
+PROLOG = """
 import os
 import sys
 
 from code_aster.Utilities import ExecutionParameter
 ExecutionParameter().set_argv(sys.argv)
-
-print(f"Working directory: {os.getcwd()}")
 """
+CWD = """print(f"Working directory: {os.getcwd()}")"""
 
 
 def parse_args(argv):
@@ -324,8 +323,8 @@ def main(argv=None):
     elif not args.file or args.no_comm:
         args.interactive = True
         with tempfile.NamedTemporaryFile(mode="w", delete=False) as fobj:
-            tmpl = AUTO_IMPORT if args.no_init else INTERACTIVE_START
-            fobj.write(tmpl.substitute(starter=SAVE_ARGV))
+            tmpl = NOINIT_START if args.no_init else AUTO_START
+            fobj.write(tmpl.substitute(prolog=PROLOG, starter=CWD))
             export.add_file(File(fobj.name, filetype="comm", unit=1))
             tmpf = fobj.name
     # output = None

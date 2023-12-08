@@ -107,42 +107,47 @@ class Serializer:
         self._ctxt = context
 
     @classmethod
-    def canRestart(cls):
+    def canRestart(cls, silent=False):
         """Tell if a restart is possible.
         This means that glob & pickled files are consistent.
+
+        Arguments:
+            silent (bool): if *True* returns silently, otherwise it raises an exception
+                in case of error.
 
         Returns:
             bool: *True* if the previous execution can be continued.
         """
+        log_error = logger.error if not silent else lambda *_: None
         for fname in (cls._base, cls._pick_filename, cls._info_filename, cls._sha_filename):
             if not osp.exists(fname):
-                logger.error("Can not restart, no such file: %s", fname)
+                log_error("Can not restart, no such file: %s", fname)
                 return False
 
         sign = read_signature(cls._sha_filename)
         if len(sign) != 3:
-            logger.error("Invalid sha file: %r", cls._sha_filename)
+            log_error("Invalid sha file: %r", cls._sha_filename)
             return False
         ref_pick, ref_info, ref_base = sign
         sign_pick = file_signature(cls._pick_filename)
         if sign_pick != ref_pick:
-            logger.error("Current pickled file: %s", sign_pick)
-            logger.error("Expected signature  : %s", ref_pick)
-            logger.error("The %r file is not the expected one.", cls._pick_filename)
+            log_error("Current pickled file: %s", sign_pick)
+            log_error("Expected signature  : %s", ref_pick)
+            log_error("The %r file is not the expected one.", cls._pick_filename)
             return False
 
         sign_info = file_signature(cls._info_filename)
         if sign_info != ref_info:
-            logger.error("Current info file : %s", sign_info)
-            logger.error("Expected signature: %s", ref_info)
-            logger.error("The %r file is not the expected one.", cls._info_filename)
+            log_error("Current info file : %s", sign_info)
+            log_error("Expected signature: %s", ref_info)
+            log_error("The %r file is not the expected one.", cls._info_filename)
             return False
 
         sign_base = file_signature(cls._base, 0, 8000000)
         if sign_base != ref_base:
-            logger.error("Current base file : %s", sign_base)
-            logger.error("Expected signature: %s", ref_base)
-            logger.error("The %r file is not the expected one.", cls._base)
+            log_error("Current base file : %s", sign_base)
+            log_error("Expected signature: %s", ref_base)
+            log_error("The %r file is not the expected one.", cls._base)
             return False
         return True
 
@@ -396,7 +401,7 @@ def _filteringContext(context):
         dict: New cleaned context.
     """
     # functions to be ignored
-    ignored = ("code_aster", "DETRUIRE", "FIN", "VARIABLE")
+    ignored = ("code_aster", "CA", "DETRUIRE", "FIN", "VARIABLE")
     re_system = re.compile("^__.*__$")
     ipython = "__IPYTHON__" in context or "get_ipython" in context
     ctxt = {}
