@@ -36,14 +36,20 @@ _starter = Template(
 from math import *
 ${prolog}
 import code_aster
-${imports}from code_aster import CA
+${imports}
 
 ${starter}"""
 )
 
-NOINIT_START = Template(_starter.safe_substitute(imports="from code_aster.Commands import *\n"))
+NOINIT_START = Template(
+    _starter.safe_substitute(
+        imports=("from code_aster.Commands import *\nfrom code_aster import CA")
+    )
+)
 
-AUTO_START = Template(_starter.safe_substitute(imports=""))
+AUTO_START = Template(
+    _starter.safe_substitute(imports="from code_aster import CA\nfrom code_aster.Commands import *")
+)
 
 
 def add_import_commands(text):

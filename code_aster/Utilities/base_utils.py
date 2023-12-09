@@ -98,9 +98,8 @@ def get_caller_context(level):
         dict: 'globals' context at this level.
     """
     caller = inspect.currentframe()
-    for i in range(level + 1):
+    for _ in range(level + 1):
         caller = caller.f_back
-        print(i, caller.f_globals.get("__name__"))
     try:
         context = caller.f_globals
     finally:

@@ -58,4 +58,5 @@ def get_version_desc():
     return names.get(name, _("DÉVELOPPEMENT (%s)") % name)
 
 
-__version__ = get_version()
+# may happen when building the doc
+__version__ = get_version() if version_info else ""

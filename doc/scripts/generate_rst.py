@@ -260,6 +260,10 @@ def main():
 
 
 if __name__ == "__main__":
-    import code_aster.CA
+    import code_aster
+
+    code_aster.rc.restart = False
+    from code_aster import CA
 
     all_objects(os.environ["AUTODOC_DESTDIR"])
+    CA.close()

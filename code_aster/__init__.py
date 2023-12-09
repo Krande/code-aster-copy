@@ -65,13 +65,12 @@ Here is the diagram of the package organization:
 import os
 
 try:
-    # import libaster to call initAsterModules
+    # embedded modules must be imported before libaster
+    # because there are set up by initAsterModules
     import aster
     import aster_core
     import aster_fonctions
     import med_aster
-
-    # libaster must be imported after embedded submodules
     import libaster
 
     del aster, aster_core, aster_fonctions, med_aster, libaster

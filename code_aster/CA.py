@@ -41,12 +41,11 @@ In a standard commands file, without advanced Python usage:
 """
 
 import atexit
+from functools import partial
 from .Utilities.rc import rc
 
 if rc.initialize is None:
     rc.initialize = True
-if rc.finalize is None:
-    rc.finalize = rc.initialize
 
 from .Commands import *
 from .Commands.debut import init
@@ -68,6 +67,7 @@ from .Utilities.version import __version__
 if rc.initialize:
     init()
 
-if rc.finalize:
-    # FIXME can not work: should store a pointer to the 'main' context into rc ?
-    atexit.register(close)
+exit = partial(close, exit=True)
+
+# objects can not be automatically saved during automatic exit
+atexit.register(partial(close, atexit=True))

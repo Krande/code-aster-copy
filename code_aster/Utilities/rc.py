@@ -32,11 +32,6 @@ class Rc:
         - If *False*, it does not call 'init()',
         - If *None*, to be decided.
 
-    Finalization:
-        - If *True*, it automatically calls 'close()' on normal termination,
-        - If *False*, it does nothing,
-        - If *None*, it will be consistent with the initialization.
-
     Restart policy:
         - If *True*, it restarts from the existing database (that must exist),
         - If *False*, it ignores any existing database and starts a new study,
@@ -45,14 +40,10 @@ class Rc:
     Attributes:
         initialize (bool): Automatic MPI initialization at import (default: None).
         restart (bool): Restart policy (default: None)
-        errors (str): Error handling policy: "exception", "default" or "fatal"
-            (default: "exception").
     """
 
     initialize = None
-    finalize = None
     restart = None
-    errors = "exception"
 
     def __init__(self, **kwargs):
         self(**kwargs)
