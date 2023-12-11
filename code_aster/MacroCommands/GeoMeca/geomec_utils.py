@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ from ...Messages import UTMESS
 
 from ...Behaviours import catalc
 from ...Cata.Syntax import _F
-from ...Commands import (
+from ...CodeCommands import (
     CREA_TABLE,
     DEFI_FICHIER,
     DEFI_FONCTION,
@@ -68,7 +68,6 @@ def ListR_2_Str(listreal):
     char = ""
 
     for i, r in enumerate(listreal):
-
         assert type(r) is float, (i, type(r))
 
         if str(r)[0] == "-":
@@ -108,45 +107,37 @@ def affiche_infos_essai(str_n_essai, type_essai, val_PRES_CONF, val2, val3=0.0):
     mesg1 = " ESSAI " + type_essai + " NUMERO " + str_n_essai + " :"
 
     if type_essai == "TRIA_DR_M_D":
-
         mesg2 = "  > PRES_CONF   = "
         mesg3 = "  > EPSI_IMPOSE = "
 
     elif type_essai == "TRIA_ND_M_D":
-
         mesg2 = "  > PRES_CONF   = "
         mesg3 = "  > EPSI_IMPOSE = "
 
     elif type_essai == "CISA_DR_C_D":
-
         mesg2 = "  > PRES_CONF   = "
         mesg3 = "  > EPSI_IMPOSE = "
 
     elif type_essai == "TRIA_ND_C_F":
-
         mesg2 = "  > PRES_CONF   = "
         mesg3 = "  > SIGM_IMPOSE = "
 
     elif type_essai == "TRIA_DR_C_D":
-
         mesg2 = "  > PRES_CONF        = "
         mesg3 = "  > EPSI_MINI_IMPOSE = "
         mesg4 = "  > EPSI_MAXI_IMPOSE = "
 
     elif type_essai == "TRIA_ND_C_D":
-
         mesg2 = "  > PRES_CONF        = "
         mesg3 = "  > EPSI_MINI_IMPOSE = "
         mesg4 = "  > EPSI_MAXI_IMPOSE = "
 
     elif type_essai == "OEDO_DR_C_F":
-
         mesg2 = "  > PRES_CONF   = "
         mesg3 = "  > SIGM_IMPOSE = "
         mesg4 = "  > SIGM_DECH   = "
 
     elif type_essai == "ISOT_DR_C_F":
-
         mesg2 = "  > PRES_CONF   = "
         mesg3 = "  > SIGM_IMPOSE = "
         mesg4 = "  > SIGM_DECH   = "
@@ -219,12 +210,10 @@ def verif_essais(
     # Essai TRIA_DR_M_D
     # ---
     if ESSAI_TRIA_DR_M_D is not None:
-
         typ_essai = "ESSAI_TRIA_DR_M_D"
         List_essais += ESSAI_TRIA_DR_M_D.List_F()
 
         for iocc, DicoEssai in enumerate(ESSAI_TRIA_DR_M_D.List_F()):
-
             # Le "bon" nombre d'elements a-t-il ete renseigne pr les Mot-Cles simples
             # PRES_CONF, EPSI_IMPOSE, TABLE_RESU ?
             # ------------------------------------------------------------------------
@@ -232,7 +221,6 @@ def verif_essais(
             test = len(DicoEssai["PRES_CONF"]) == len(DicoEssai["EPSI_IMPOSE"])
 
             if "TABLE_RESU" in DicoEssai:
-
                 char += ", <TABLE_RESU>"
 
                 test = test and (len(DicoEssai["PRES_CONF"]) == len(DicoEssai["TABLE_RESU"]))
@@ -243,9 +231,7 @@ def verif_essais(
             # on s'assure que tous les PRES_CONF et EPSI_IMPOSE sont bien > 0.
             # ------------------------------------------------------------------------
             for i in range(len(DicoEssai["PRES_CONF"])):
-
                 if DicoEssai["PRES_CONF"][i] <= 0.0:
-
                     valargs = _F(
                         valk=(typ_essai, "PRES_CONF"),
                         vali=(iocc + 1),
@@ -254,7 +240,6 @@ def verif_essais(
                     UTMESS("F", "COMPOR2_32", **valargs)
 
                 if DicoEssai["EPSI_IMPOSE"][i] == 0.0:
-
                     valargs = _F(
                         valk=(typ_essai, "EPSI_IMPOSE"),
                         vali=(iocc + 1),
@@ -265,19 +250,16 @@ def verif_essais(
             # on s'assure que KZERO est > 0
             # ------------------------------------------------------------------------
             if DicoEssai["KZERO"] <= 0.0:
-
                 valargs = _F(valk=(typ_essai, "KZERO"), valr=(DicoEssai["KZERO"]), vali=(iocc + 1))
                 UTMESS("F", "COMPOR2_34", **valargs)
     # ---
     # Essai TRIA_ND_M_D
     # ---
     if ESSAI_TRIA_ND_M_D is not None:
-
         typ_essai = "ESSAI_TRIA_ND_M_D"
         List_essais += ESSAI_TRIA_ND_M_D.List_F()
 
         for iocc, DicoEssai in enumerate(ESSAI_TRIA_ND_M_D.List_F()):
-
             # Le "bon" nbre d'elts a-t-il ete renseigne pr les MotCles simples
             # -> PRES_CONF, EPSI_IMPOSE, TABLE_RESU ?
             # ------------------------------------------------------------------------
@@ -285,7 +267,6 @@ def verif_essais(
             test = len(DicoEssai["PRES_CONF"]) == len(DicoEssai["EPSI_IMPOSE"])
 
             if "TABLE_RESU" in DicoEssai:
-
                 char += ", <TABLE_RESU>"
                 test = test and len(DicoEssai["PRES_CONF"]) == len(DicoEssai["TABLE_RESU"])
 
@@ -295,9 +276,7 @@ def verif_essais(
             # on s'assure que tous les PRES_CONF et EPSI_IMPOSE sont bien > 0.
             # ------------------------------------------------------------------------
             for i in range(len(DicoEssai["PRES_CONF"])):
-
                 if DicoEssai["PRES_CONF"][i] == 0.0:
-
                     valargs = _F(
                         valk=(typ_essai, "PRES_CONF"),
                         valr=(DicoEssai["PRES_CONF"][i]),
@@ -306,7 +285,6 @@ def verif_essais(
                     UTMESS("F", "COMPOR2_32", **valargs)
 
                 if DicoEssai["EPSI_IMPOSE"][i] == 0.0:
-
                     valargs = _F(
                         valk=(typ_essai, "EPSI_IMPOSE"),
                         valr=(DicoEssai["EPSI_IMPOSE"][i]),
@@ -318,47 +296,39 @@ def verif_essais(
             # ------------------------------------------------------------------------
             biot = DicoEssai["BIOT_COEF"]
             if biot <= 0.0 or biot > 1.0:
-
                 UTMESS("F", "COMPOR2_33", valk=(typ_essai), valr=(biot), vali=(iocc + 1))
 
             # on s'assure que KZERO est > 0
             # ------------------------------------------------------------------------
             if DicoEssai["KZERO"] <= 0.0:
-
                 valargs = _F(valk=(typ_essai, "KZERO"), valr=(DicoEssai["KZERO"]), vali=(iocc + 1))
                 UTMESS("F", "COMPOR2_34", **valargs)
     # ---
     # Essai CISA_DR_C_D
     # ---
     if ESSAI_CISA_DR_C_D is not None:
-
         typ_essai = "ESSAI_CISA_DR_C_D"
         List_essais += ESSAI_CISA_DR_C_D.List_F()
 
         for iocc, DicoEssai in enumerate(ESSAI_CISA_DR_C_D.List_F()):
-
             # coherence du nbre de TABLE_RESU avec le nbre de PRES_CONF
             # ------------------------------------------------------------------------
             if "TABLE_RESU" in DicoEssai:
-
                 n1 = len(DicoEssai["PRES_CONF"])
                 n2 = len(DicoEssai["TABLE_RESU"])
 
                 if not n2 == n1 + 1:
-
                     UTMESS("F", "COMPOR2_35", valk=(typ_essai), vali=(iocc + 1, n1, n1 + 1, n2))
 
             # on s'assure que KZERO est > 0
             # ------------------------------------------------------------------------
             if DicoEssai["KZERO"] <= 0.0:
-
                 valargs = _F(valk=(typ_essai, "KZERO"), valr=(DicoEssai["KZERO"]), vali=(iocc + 1))
                 UTMESS("F", "COMPOR2_34", **valargs)
 
             # on s'assure que tous les PRES_CONF sont bien > 0.
             # ------------------------------------------------------------------------
             for pconf in DicoEssai["PRES_CONF"]:
-
                 if pconf <= 0.0:
                     valargs = _F(valk=(typ_essai, "PRES_CONF"), valr=(pconf), vali=(iocc + 1))
                     UTMESS("F", "COMPOR2_32", **valargs)
@@ -366,13 +336,11 @@ def verif_essais(
             # on s'assure que tous les GAMMA_IMPOSE,GAMMA_ELAS sont bien > 0.
             # ------------------------------------------------------------------------
             for epsimpo in DicoEssai["GAMMA_IMPOSE"]:
-
                 if epsimpo <= 0.0:
                     valargs = _F(valk=(typ_essai, "GAMMA_IMPOSE"), valr=(epsimpo), vali=(iocc + 1))
                     UTMESS("F", "COMPOR2_34", **valargs)
 
             if DicoEssai["GAMMA_ELAS"] <= 0.0:
-
                 valargs = _F(
                     valk=(typ_essai, "GAMMA_ELAS"), valr=(DicoEssai["GAMMA_ELAS"]), vali=(iocc + 1)
                 )
@@ -394,21 +362,17 @@ def verif_essais(
     # Essai TRIA_ND_C_F
     # ---
     if ESSAI_TRIA_ND_C_F is not None:
-
         typ_essai = "ESSAI_TRIA_ND_C_F"
         List_essais += ESSAI_TRIA_ND_C_F.List_F()
 
         for iocc, DicoEssai in enumerate(ESSAI_TRIA_ND_C_F.List_F()):
-
             # coherence du nbre de TABLE_RESU avec le nbre de PRES_CONF
             # ------------------------------------------------------------------------
             if "TABLE_RESU" in DicoEssai:
-
                 n1 = len(DicoEssai["PRES_CONF"])
                 n2 = len(DicoEssai["TABLE_RESU"])
 
                 if not n2 == n1 + 1:
-
                     UTMESS("F", "COMPOR2_35", valk=(typ_essai), vali=(iocc + 1, n1, n1 + 1, n2))
 
             # on s'assure que SIGM_IMPOSE > 0.
@@ -428,7 +392,6 @@ def verif_essais(
             # on s'assure que PRES_CONF > 0. et PRES_CONF+SIGM_IMPOSE < 0.
             # ------------------------------------------------------------------------
             for pconf in DicoEssai["PRES_CONF"]:
-
                 if pconf <= 0.0:
                     valargs = _F(valk=(typ_essai, "PRES_CONF"), valr=(pconf), vali=(iocc + 1))
                     UTMESS("F", "COMPOR2_32", **valargs)
@@ -444,21 +407,18 @@ def verif_essais(
             # on s'assure que KZERO et UN_SUR_K sont > 0. et 0. < BIOT_COEF <= 1
             # ------------------------------------------------------------------------
             if DicoEssai["UN_SUR_K"] <= 0.0:
-
                 valargs = _F(
                     valk=(typ_essai, "UN_SUR_K"), valr=(DicoEssai["UN_SUR_K"]), vali=(iocc + 1)
                 )
                 UTMESS("F", "COMPOR2_34", **valargs)
 
             if DicoEssai["KZERO"] <= 0.0:
-
                 valargs = _F(valk=(typ_essai, "KZERO"), valr=(DicoEssai["KZERO"]), vali=(iocc + 1))
                 UTMESS("F", "COMPOR2_34", **valargs)
 
             biot = DicoEssai["BIOT_COEF"]
 
             if biot <= 0.0 or biot > 1.0:
-
                 UTMESS("F", "COMPOR2_33", valk=(typ_essai), valr=(biot), vali=(iocc + 1))
 
             # on s'assure que 0. < RU_MAX <= 1
@@ -467,15 +427,11 @@ def verif_essais(
             n2 = len(DicoEssai["VALE_CRIT"])
 
             if n1 != n2:
-
                 UTMESS("F", "COMPOR2_35", valk=(typ_essai), vali=(iocc + 1, n1, n1, n2))
 
             for i, t in enumerate(DicoEssai["CRIT_LIQUEFACTION"]):
-
                 if t == "RU_MAX":
-
                     if DicoEssai["VALE_CRIT"][i] <= 0.0 or DicoEssai["VALE_CRIT"][i] > 1.0:
-
                         UTMESS(
                             "F",
                             "COMPOR2_33",
@@ -485,9 +441,7 @@ def verif_essais(
                         )
 
                 elif t == "EPSI_ABS0_MAX":
-
                     if DicoEssai["VALE_CRIT"][i] < -0.5 or DicoEssai["VALE_CRIT"][i] > 0.5:
-
                         UTMESS(
                             "F",
                             "COMPOR2_33",
@@ -497,9 +451,7 @@ def verif_essais(
                         )
 
                 elif t == "EPSI_RELA_MAX":
-
                     if DicoEssai["VALE_CRIT"][i] <= 0.0 or DicoEssai["VALE_CRIT"][i] > 0.5:
-
                         UTMESS(
                             "F",
                             "COMPOR2_33",
@@ -515,7 +467,6 @@ def verif_essais(
             list_tmp.sort()
 
             if (len(list_tmp) > 1) and (not (tuple(DicoEssai[clef]) == tuple(list_tmp))):
-
                 valargs = _F(
                     valk=(typ_essai, clef, ListR_2_Str(DicoEssai[clef]), "croissante"),
                     vali=(iocc + 1),
@@ -525,16 +476,13 @@ def verif_essais(
     # Essai TRIA_DR_C_D
     # ---
     if ESSAI_TRIA_DR_C_D is not None:
-
         typ_essai = "ESSAI_TRIA_DR_C_D"
         List_essais += ESSAI_TRIA_DR_C_D.List_F()
 
         for iocc, DicoEssai in enumerate(ESSAI_TRIA_DR_C_D.List_F()):
-
             # coherence du nbre de TABLE_RESU avec le nbre de PRES_CONF
             # ------------------------------------------------------------------------
             if "TABLE_RESU" in DicoEssai:
-
                 n1 = len(DicoEssai["PRES_CONF"])
                 n2 = len(DicoEssai["TABLE_RESU"])
 
@@ -553,11 +501,9 @@ def verif_essais(
                 UTMESS("F", "COMPOR2_35", valk=(typ_essai), vali=(iocc + 1, n1, n1, n2))
 
             for j, epsmaxi in enumerate(DicoEssai["EPSI_MAXI"]):
-
                 epsmini = DicoEssai["EPSI_MINI"][j]
 
                 if epsmaxi <= epsmini:
-
                     valargs = _F(
                         valk=(typ_essai, "EPSI_MAXI-EPSI_MINI"),
                         valr=(epsmaxi - epsmini),
@@ -566,7 +512,6 @@ def verif_essais(
                     UTMESS("F", "COMPOR2_34", **valargs)
 
             if DicoEssai["EPSI_ELAS"] <= 0.0:
-
                 valargs = _F(
                     valk=(typ_essai, "EPSI_ELAS"), valr=(DicoEssai["EPSI_ELAS"]), vali=(iocc + 1)
                 )
@@ -575,9 +520,7 @@ def verif_essais(
             # on s'assure que PRES_CONF < 0.
             # ------------------------------------------------------------------------
             for pconf in DicoEssai["PRES_CONF"]:
-
                 if pconf <= 0.0:
-
                     valargs = _F(valk=(typ_essai, "PRES_CONF"), valr=(pconf), vali=(iocc + 1))
                     UTMESS("F", "COMPOR2_32", **valargs)
 
@@ -599,23 +542,19 @@ def verif_essais(
             # on s'assure que KZERO est > 0
             # ------------------------------------------------------------------------
             if DicoEssai["KZERO"] <= 0.0:
-
                 valargs = _F(valk=(typ_essai, "KZERO"), valr=(DicoEssai["KZERO"]), vali=(iocc + 1))
                 UTMESS("F", "COMPOR2_34", **valargs)
     # ---
     # Essai TRIA_ND_C_D
     # ---
     if ESSAI_TRIA_ND_C_D is not None:
-
         typ_essai = "ESSAI_TRIA_ND_C_D"
         List_essais += ESSAI_TRIA_ND_C_D.List_F()
 
         for iocc, DicoEssai in enumerate(ESSAI_TRIA_ND_C_D.List_F()):
-
             # coherence du nbre de TABLE_RESU avec le nbre de PRES_CONF
             # ------------------------------------------------------------------------
             if "TABLE_RESU" in DicoEssai:
-
                 n1 = len(DicoEssai["PRES_CONF"])
                 n2 = len(DicoEssai["TABLE_RESU"])
 
@@ -634,11 +573,9 @@ def verif_essais(
                 UTMESS("F", "COMPOR2_35", valk=(typ_essai), vali=(iocc + 1, n1, n1, n2))
 
             for j, epsmaxi in enumerate(DicoEssai["EPSI_MAXI"]):
-
                 epsmini = DicoEssai["EPSI_MINI"][j]
 
                 if epsmaxi <= epsmini:
-
                     valargs = _F(
                         valk=(typ_essai, "EPSI_MAXI-EPSI_MINI"),
                         valr=(epsmaxi - epsmini),
@@ -649,9 +586,7 @@ def verif_essais(
             # on s'assure que PRES_CONF < 0.
             # ------------------------------------------------------------------------
             for pconf in DicoEssai["PRES_CONF"]:
-
                 if pconf <= 0.0:
-
                     valargs = _F(valk=(typ_essai, "PRES_CONF"), valr=(pconf), vali=(iocc + 1))
                     UTMESS("F", "COMPOR2_32", **valargs)
 
@@ -673,19 +608,16 @@ def verif_essais(
             # on s'assure que KZERO est > 0
             # ------------------------------------------------------------------------
             if DicoEssai["KZERO"] <= 0.0:
-
                 valargs = _F(valk=(typ_essai, "KZERO"), valr=(DicoEssai["KZERO"]), vali=(iocc + 1))
                 UTMESS("F", "COMPOR2_34", **valargs)
     # ---
     # Essai OEDO_DR_C_F
     # ---
     if ESSAI_OEDO_DR_C_F is not None:
-
         typ_essai = "ESSAI_OEDO_DR_C_F"
         List_essais += ESSAI_OEDO_DR_C_F.List_F()
 
         for iocc, DicoEssai in enumerate(ESSAI_OEDO_DR_C_F.List_F()):
-
             # Le "bon" nbre d'elts a-t-il ete renseigne pr les MotCles simples
             # -> PRES_CONF, SIGM_DECH, TABLE_RESU ?
             # ------------------------------------------------------------------------
@@ -693,12 +625,10 @@ def verif_essais(
             test = len(DicoEssai["PRES_CONF"]) == len(DicoEssai["SIGM_DECH"])
 
             if "TABLE_RESU" in DicoEssai:
-
                 char += ", <TABLE_RESU>"
                 test = test and len(DicoEssai["PRES_CONF"]) == len(DicoEssai["TABLE_RESU"])
 
             if not test:
-
                 UTMESS("F", "COMPOR2_31", valk=(typ_essai, char), vali=(iocc + 1))
 
             # on s'assure que SIGM_IMPOSE < 0.
@@ -715,24 +645,19 @@ def verif_essais(
             # PRES_CONF+SIGM_IMPOSE < =SIGM_DECH
             # ------------------------------------------------------------------------
             for j, pconf in enumerate(DicoEssai["PRES_CONF"]):
-
                 if pconf <= 0.0:
-
                     valargs = _F(valk=(typ_essai, "PRES_CONF"), valr=(pconf), vali=(iocc + 1))
                     UTMESS("F", "COMPOR2_32", **valargs)
 
                 sdech = DicoEssai["SIGM_DECH"][j]
 
                 if sdech <= 0.0:
-
                     valargs = _F(valk=(typ_essai, "SIGM_DECH"), valr=(sdech), vali=(iocc + 1))
                     UTMESS("F", "COMPOR2_32", **valargs)
 
                 for sigimpo in DicoEssai["SIGM_IMPOSE"]:
-
                     # if pconf+sigimpo < sdech:
                     if sigimpo < sdech:
-
                         valargs = _F(
                             valk=(typ_essai),
                             vali=(iocc + 1),
@@ -755,19 +680,16 @@ def verif_essais(
             # on s'assure que KZERO est > 0
             # ------------------------------------------------------------------------
             if DicoEssai["KZERO"] <= 0.0:
-
                 valargs = _F(valk=(typ_essai, "KZERO"), valr=(DicoEssai["KZERO"]), vali=(iocc + 1))
                 UTMESS("F", "COMPOR2_34", **valargs)
     # ---
     # Essai ISOT_DR_C_F
     # ---
     if ESSAI_ISOT_DR_C_F is not None:
-
         typ_essai = "ESSAI_ISOT_DR_C_F"
         List_essais += ESSAI_ISOT_DR_C_F.List_F()
 
         for iocc, DicoEssai in enumerate(ESSAI_ISOT_DR_C_F.List_F()):
-
             # Le "bon" nbre d'elts a-t-il ete renseigne pr les MotCles simples
             # -> PRES_CONF, SIGM_DECH, TABLE_RESU ?
             # ------------------------------------------------------------------------
@@ -775,7 +697,6 @@ def verif_essais(
             test = len(DicoEssai["PRES_CONF"]) == len(DicoEssai["SIGM_DECH"])
 
             if "TABLE_RESU" in DicoEssai:
-
                 char += ", <TABLE_RESU>"
                 test = test and len(DicoEssai["PRES_CONF"]) == len(DicoEssai["TABLE_RESU"])
 
@@ -798,18 +719,14 @@ def verif_essais(
             # PRES_CONF+SIGM_IMPOSE <= SIGM_DECH
             # ------------------------------------------------------------------------
             for pconf in DicoEssai["PRES_CONF"]:
-
                 if pconf <= 0.0:
-
                     valargs = _F(valk=(typ_essai, "PRES_CONF"), valr=(pconf), vali=(iocc + 1))
                     UTMESS("F", "COMPOR2_32", **valargs)
 
                 sdech = DicoEssai["SIGM_DECH"][DicoEssai["PRES_CONF"].index(pconf)]
 
                 for sigimpo in DicoEssai["SIGM_IMPOSE"]:
-
                     if pconf + sigimpo < sdech:
-
                         valargs = _F(
                             valk=(typ_essai),
                             vali=(iocc + 1),
@@ -841,11 +758,8 @@ def verif_essais(
     #
     # --------------------------------------------------------------
     for DicoEssai in List_essais:
-
         if "TABLE_REF" in DicoEssai:
-
             for table_tmp in DicoEssai["TABLE_REF"]:
-
                 # on s'assure chaque TABLE_REF est bien construite...
                 # ------------------------------------------------------------------------
                 table_ref = table_tmp.EXTR_TABLE().values()
@@ -854,7 +768,6 @@ def verif_essais(
                 list_paras = ["TYPE", "LEGENDE", "ABSCISSE", "ORDONNEE"]
 
                 if not set(table_ref.keys()) == set(list_paras):
-
                     UTMESS("F", "COMPOR2_44", valk=(nom_tbref, SomListStr(table_ref.keys())))
 
                 typc = table_ref["TYPE"]
@@ -997,9 +910,7 @@ def preparer_graphique(niveau, DicoEssai, str_fich, Courbes, NomsFich, Leg_x, Le
     # Courbes NIVEAU 1 recapitulatives pour les essais cycliques
     # --------------------------------------------------------------
     if niveau == "1":
-
         for TypGraph in DicoEssai["GRAPHIQUE"]:
-
             nom_fichier = str_fich + TypGraph + ext
             nom_fichier = nom_fichier.lower()
 
@@ -1074,9 +985,7 @@ def preparer_graphique(niveau, DicoEssai, str_fich, Courbes, NomsFich, Leg_x, Le
     # Courbes NIVEAU2 pour chaque valeurs chargement
     # ---------------------------------------------------------
     elif niveau == "2":
-
         for TypGraph in DicoEssai["GRAPHIQUE"]:
-
             nom_fichier = str_fich + TypGraph + ext
             nom_fichier = nom_fichier.lower()
 
@@ -1159,11 +1068,9 @@ def preparer_graphique(niveau, DicoEssai, str_fich, Courbes, NomsFich, Leg_x, Le
             # Leg_y[TypGraph]    = "XXX"
 
             else:
-
                 li = TypGraph.split("-")
 
                 if len(li) == 2:
-
                     impr = True
                     for c in list_cmp_niveau1:
                         if (li[0] == c) or (li[1] == c):
@@ -1256,7 +1163,6 @@ def remplir_graphique(
         style = 1
 
     if TypGraph_in in DicoEssai["GRAPHIQUE"]:
-
         dico_tmp = {}
         dico_tmp["LEGENDE"] = str_leg
         dico_tmp["ABSCISSE"] = Resu_x
@@ -1305,7 +1211,6 @@ def impr_graphique(
     # boucle sur les types de graphiques demandes en sortie
     # ---
     for i, cle in enumerate(Courbes):
-
         curve = Courbes[cle]
 
         number = randint(0, 1.0e6)
@@ -1320,9 +1225,7 @@ def impr_graphique(
         # des courbes issues de TABLE_REF
         # ------------------------------------------
         if "TABLE_REF" in DicoEssai:
-
             for table_tmp in DicoEssai["TABLE_REF"]:
-
                 table_ref = table_tmp.EXTR_TABLE().values()
 
                 typr = table_ref["TYPE"][0].replace(" ", "")
@@ -1339,11 +1242,9 @@ def impr_graphique(
 
             DEFI_FICHIER(ACTION="ASSOCIER", FICHIER="./%s" % ("tmp_%d" % (number),), UNITE=unite)
         else:
-
             DEFI_FICHIER(ACTION="ASSOCIER", FICHIER="./%s" % ("tmp_%d" % (number),), UNITE=unite)
 
         if cle in Ech_x and cle in Ech_y:
-
             IMPR_FONCTION(
                 FORMAT="XMGRACE",
                 UNITE=unite,
@@ -1379,29 +1280,22 @@ def impr_graphique(
             fileout = open("./REPE_OUT/%s" % (NomsFich[cle],), "w")
 
         for s in contents:
-
             if not (graph + i):
-
                 fileout.write(s)
 
             elif s.find("@g0") >= 0:
-
                 fileout.write(s.replace("@g0", "@g%d" % (graph + i)))
 
             elif s.find("to g0") >= 0:
-
                 fileout.write(s.replace("to g0", "to g%d" % (graph + i)))
 
             elif s.find("@with g0") >= 0:
-
                 fileout.write(s.replace("@with g0", "@with g%d" % (graph + i)))
 
             elif s.find("@target g0.s") >= 0:
-
                 fileout.write(s.replace("@target g0.s", "@target g%d.s" % (graph + i)))
 
             else:
-
                 fileout.write(s)
 
         filein.close()
@@ -1417,12 +1311,10 @@ def remplir_tables(self, typ_essai, str_n_essai, DicoEssai, Resu_in):
     """
 
     if "TABLE_RESU" in DicoEssai:
-
         # Recuperation des variables supplementaires a imprimer
         # (si existantes) contenues sous le mot-cle 'NOM_CMP'
         # -----------------------------------------------------------
         if "NOM_CMP" in DicoEssai:
-
             List_Resu_Supp = list(DicoEssai["NOM_CMP"])
 
         else:
@@ -1431,14 +1323,12 @@ def remplir_tables(self, typ_essai, str_n_essai, DicoEssai, Resu_in):
         # Essai TRIA_DR_M_D
         # -----------------------------------------------------------
         if typ_essai == "TRIA_DR_M_D":
-
             PRES_CONF = DicoEssai["PRES_CONF"]
             EPSI_IMPOSE = DicoEssai["EPSI_IMPOSE"]
 
             param_predef = ["INST", "EPS_AXI", "EPS_LAT", "EPS_VOL", "SIG_AXI", "SIG_LAT", "P", "Q"]
 
             for i, sig0 in enumerate(PRES_CONF):
-
                 titre_table = "Resultats bruts : ESSAI %s NUMERO %s" % (
                     typ_essai,
                     str_n_essai,
@@ -1457,7 +1347,6 @@ def remplir_tables(self, typ_essai, str_n_essai, DicoEssai, Resu_in):
                 ]
 
                 for c in List_Resu_Supp:
-
                     if Resu_in[c][i] and (not c in param_predef):
                         LdicoRes += [_F(LISTE_R=Resu_in[c][i], PARA=c)]
 
@@ -1492,14 +1381,12 @@ def remplir_tables(self, typ_essai, str_n_essai, DicoEssai, Resu_in):
         # Essai TRIA_ND_M_D
         # -----------------------------------------------------------
         elif typ_essai == "TRIA_ND_M_D":
-
             PRES_CONF = DicoEssai["PRES_CONF"]
             EPSI_IMPOSE = DicoEssai["EPSI_IMPOSE"]
 
             param_predef = ["INST", "EPS_AXI", "EPS_LAT", "SIG_AXI", "SIG_LAT", "P", "Q", "PRE_EAU"]
 
             for i, sig0 in enumerate(PRES_CONF):
-
                 titre_table = "Resultats bruts : ESSAI %s NUMERO %s" % (
                     typ_essai,
                     str_n_essai,
@@ -1518,7 +1405,6 @@ def remplir_tables(self, typ_essai, str_n_essai, DicoEssai, Resu_in):
                 ]
 
                 for c in List_Resu_Supp:
-
                     if Resu_in[c][i] and (not c in param_predef):
                         LdicoRes += [_F(LISTE_R=Resu_in[c][i], PARA=c)]
 
@@ -1553,7 +1439,6 @@ def remplir_tables(self, typ_essai, str_n_essai, DicoEssai, Resu_in):
         # Essai CISA_DR_C_D
         # -----------------------------------------------------------
         elif typ_essai == "CISA_DR_C_D":
-
             PRES_CONF = DicoEssai["PRES_CONF"]
             GAMMA_IMPOSE = DicoEssai["GAMMA_IMPOSE"]
             LdicoResGlob = []
@@ -1561,7 +1446,6 @@ def remplir_tables(self, typ_essai, str_n_essai, DicoEssai, Resu_in):
             param_predef = ["INST", "GAMMA", "SIG_XY"]
 
             for i, sig0 in enumerate(PRES_CONF):
-
                 # Impression NIVEAU 2
                 # ----------------------------------------------------------
                 titre_table = "Resultats bruts : ESSAI %s NUMERO %s" % (
@@ -1571,7 +1455,6 @@ def remplir_tables(self, typ_essai, str_n_essai, DicoEssai, Resu_in):
 
                 LdicoRes = []
                 for j, eps0 in enumerate(GAMMA_IMPOSE):
-
                     stjp1 = int_2_str(j + 1, len(GAMMA_IMPOSE))
 
                     LdicoRes += (
@@ -1582,7 +1465,6 @@ def remplir_tables(self, typ_essai, str_n_essai, DicoEssai, Resu_in):
                     )
 
                     for c in List_Resu_Supp:
-
                         if Resu_in[c][i] and (not c in param_predef):
                             LdicoRes += [_F(LISTE_R=Resu_in[c][i][j], PARA="%s_" % (c) + stjp1)]
 
@@ -1635,7 +1517,6 @@ def remplir_tables(self, typ_essai, str_n_essai, DicoEssai, Resu_in):
         # Essai TRIA_ND_C_F
         # ----------------------------------------------------
         elif typ_essai == "TRIA_ND_C_F":
-
             PRES_CONF = DicoEssai["PRES_CONF"]
             SIGM_IMPOSE = DicoEssai["SIGM_IMPOSE"]
             LdicoResGlob = []
@@ -1654,7 +1535,6 @@ def remplir_tables(self, typ_essai, str_n_essai, DicoEssai, Resu_in):
             ]
 
             for i, sig0 in enumerate(PRES_CONF):
-
                 # Impression NIVEAU 2
                 # ----------------------------------------------------------
                 titre_table = "Resultats bruts : ESSAI %s NUMERO %s" % (
@@ -1664,7 +1544,6 @@ def remplir_tables(self, typ_essai, str_n_essai, DicoEssai, Resu_in):
 
                 LdicoRes = []
                 for j, dsig in enumerate(SIGM_IMPOSE):
-
                     stjp1 = int_2_str(j + 1, len(SIGM_IMPOSE))
 
                     LdicoRes += (
@@ -1682,7 +1561,6 @@ def remplir_tables(self, typ_essai, str_n_essai, DicoEssai, Resu_in):
                     )
 
                     for c in List_Resu_Supp:
-
                         if Resu_in[c][i] and (not c in param_predef):
                             LdicoRes += [_F(LISTE_R=Resu_in[c][i][j], PARA="%s_" % (c) + stjp1)]
 
@@ -1734,7 +1612,6 @@ def remplir_tables(self, typ_essai, str_n_essai, DicoEssai, Resu_in):
         # Essai TRIA_DR_C_D
         # -------------------------------------------------------
         elif typ_essai == "TRIA_DR_C_D":
-
             PRES_CONF = DicoEssai["PRES_CONF"]
             EPSI_MAXI = DicoEssai["EPSI_MAXI"]
             EPSI_MINI = DicoEssai["EPSI_MINI"]
@@ -1747,7 +1624,6 @@ def remplir_tables(self, typ_essai, str_n_essai, DicoEssai, Resu_in):
             param_predef = ["INST", "EPS_AXI", "EPS_LAT", "EPS_VOL", "SIG_AXI", "SIG_LAT", "P", "Q"]
 
             for i, sig0 in enumerate(PRES_CONF):
-
                 # Impression NIVEAU 2
                 # ----------------------------------------------------------
                 titre_table = "Resultats bruts : ESSAI %s NUMERO %s" % (
@@ -1757,7 +1633,6 @@ def remplir_tables(self, typ_essai, str_n_essai, DicoEssai, Resu_in):
 
                 LdicoRes = []
                 for j, eps0 in enumerate(EPSI_MINI):
-
                     stjp1 = int_2_str(j + 1, len(EPSI_MINI))
 
                     LdicoRes += (
@@ -1773,7 +1648,6 @@ def remplir_tables(self, typ_essai, str_n_essai, DicoEssai, Resu_in):
                     )
 
                     for c in List_Resu_Supp:
-
                         if Resu_in[c][i] and (not c in param_predef):
                             LdicoRes += [_F(LISTE_R=Resu_in[c][i][j], PARA="%s_" % (c) + stjp1)]
 
@@ -1826,7 +1700,6 @@ def remplir_tables(self, typ_essai, str_n_essai, DicoEssai, Resu_in):
         # Essai TRIA_ND_C_D
         # ----------------------------------------------------
         elif typ_essai == "TRIA_ND_C_D":
-
             PRES_CONF = DicoEssai["PRES_CONF"]
             EPSI_MAXI = DicoEssai["EPSI_MAXI"]
             EPSI_MINI = DicoEssai["EPSI_MINI"]
@@ -1850,7 +1723,6 @@ def remplir_tables(self, typ_essai, str_n_essai, DicoEssai, Resu_in):
             ]
 
             for i, sig0 in enumerate(PRES_CONF):
-
                 # Impression NIVEAU 2
                 # ----------------------------------------------------------
                 titre_table = "Resultats bruts : ESSAI %s NUMERO %s" % (
@@ -1860,7 +1732,6 @@ def remplir_tables(self, typ_essai, str_n_essai, DicoEssai, Resu_in):
 
                 LdicoRes = []
                 for j, eps0 in enumerate(EPSI_MINI):
-
                     stjp1 = int_2_str(j + 1, len(EPSI_MINI))
 
                     LdicoRes += (
@@ -1878,7 +1749,6 @@ def remplir_tables(self, typ_essai, str_n_essai, DicoEssai, Resu_in):
                     )
 
                     for c in List_Resu_Supp:
-
                         if Resu_in[c][i] and (not c in param_predef):
                             LdicoRes += [_F(LISTE_R=Resu_in[c][i][j], PARA="%s_" % (c) + stjp1)]
 
@@ -1933,14 +1803,12 @@ def remplir_tables(self, typ_essai, str_n_essai, DicoEssai, Resu_in):
         # Essais OEDO_CDR_C_F ou ISOT_DR_C_F
         # -------------------------------------------------------
         elif typ_essai == "OEDO_DR_C_F" or typ_essai == "ISOT_DR_C_F":
-
             PRES_CONF = DicoEssai["PRES_CONF"]
             SIGM_DECH = DicoEssai["SIGM_DECH"]
 
             param_predef = ["INST", "EPS_VOL", "SIG_AXI", "SIG_LAT", "P"]
 
             for i, sig0 in enumerate(PRES_CONF):
-
                 # Impression NIVEAU 2
                 # ----------------------------------------------------------
                 titre_table = (
@@ -1960,7 +1828,6 @@ def remplir_tables(self, typ_essai, str_n_essai, DicoEssai, Resu_in):
                 )
 
                 for c in List_Resu_Supp:
-
                     if Resu_in[c][i] and (not c in param_predef):
                         LdicoRes += [_F(LISTE_R=Resu_in[c][i], PARA="%s_%s" % (c, stip1))]
 
@@ -2147,7 +2014,6 @@ def essai_TRIA_ND_C_D_mono(
     )
 
     if sinusoidal:
-
         abscisse = [inst_init + inst_epsi * k / 3.0 / nombre for k in range(3 * nombre + 1)]
 
         # absc_cos varie de 0 a Pi sur l'intervalle
@@ -2210,7 +2076,6 @@ def essai_TRIA_ND_C_D_mono(
         )
 
     except AsterError as message:
-
         print("\n   !!!(@_@)!!! Arret pour la raison suivante !!!(@_@)!!!\n%s" % (message))
 
         calc_ok = False

@@ -36,8 +36,6 @@ In a standard commands file, without advanced Python usage:
 
     >>> import code_aster
     >>> from code_aster.Commands import *
-
-
 """
 
 import atexit
@@ -47,9 +45,9 @@ from .Utilities.rc import rc
 if rc.initialize is None:
     rc.initialize = True
 
-from .Commands import *
-from .Commands.debut import init
-from .Commands.fin import close
+from .CodeCommands import *
+from .CodeCommands.debut import init
+from .CodeCommands.fin import close
 from .Objects import *
 from .ObjectsExt import DataStructure
 from .Supervis import (

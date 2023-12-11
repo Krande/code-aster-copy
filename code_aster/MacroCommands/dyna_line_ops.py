@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ import numpy as np
 import aster
 from libaster import AsterError
 from ..Cata.Syntax import _F
-from ..Commands import (
+from ..CodeCommands import (
     AFFE_CHAR_MECA,
     ASSE_MATRICE,
     ASSE_VECTEUR,
@@ -391,7 +391,8 @@ class DynaLineFEM:
     ):
         """retrieve active dofs for nodes or node groups containded in nodes_or_node_groups
         A dof is considered as active for the current model, if a force_nodale imply a non
-        null displacement in the dof direction for all nodes or node groups contained in nodes_or_node_groups"""
+        null displacement in the dof direction for all nodes or node groups contained in nodes_or_node_groups
+        """
         active_dofs = []
         for dof in filter_dofs:
             force_nodale = nodes_or_node_groups.copy()

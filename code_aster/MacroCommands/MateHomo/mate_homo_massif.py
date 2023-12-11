@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 import numpy as np
 
 from ...Cata.Syntax import _F
-from ...Commands import (
+from ...CodeCommands import (
     AFFE_CHAR_CINE,
     AFFE_CHAR_MECA,
     AFFE_CHAR_MECA_F,
@@ -37,6 +37,7 @@ from ...Messages import ASSERT
 from ...Objects import ThermalResultDict, ElasticResultDict
 
 from . import mate_homo_utilities as utilities
+
 
 # fmt: off
 PARAMASSIF = [
@@ -56,7 +57,6 @@ PARAMASSIF = [
 ]
 # fmt: on
 def calc_corr_massif_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, ls_group_ma):
-
     # Chargements pour calcul des correcteurs MECANIQUES
     # =======================================================================
 
@@ -269,7 +269,6 @@ def calc_corr_massif_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, ls
 
 
 def calc_loimel_massif(DEPLMATE, ls_group_tout):
-
     LAME_1 = FORMULE(NOM_PARA=("E", "NU"), VALE="E*NU/((1+NU)*(1-2*NU))")
     LAME_2 = FORMULE(NOM_PARA=("E", "NU"), VALE="E/(2*(1+NU))")
     ALPHA_3K = FORMULE(NOM_PARA=("E", "NU", "ALPHA"), VALE="ALPHA*E/(1-2*NU)")
@@ -333,7 +332,6 @@ def calc_loimel_massif(DEPLMATE, ls_group_tout):
 
 
 def calc_tabpara_massif(DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, **fields):
-
     CORR_MECA11 = fields["CORR_MECA11"]
     CORR_MECA22 = fields["CORR_MECA22"]
     CORR_MECA33 = fields["CORR_MECA33"]

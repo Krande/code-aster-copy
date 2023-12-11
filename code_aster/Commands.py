@@ -17,26 +17,23 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mathieu.courtois at edf.fr
-# unittest for run_aster package
+"""
+This module provides a high level interface using Commands.
 
-import unittest
-import sys
+.. code-block:: python
 
-from code_aster import CA
+    >>> import code_aster
+    >>> from code_aster.Commands import *
+"""
 
-CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
-test = CA.TestCase()
+from .Utilities.rc import rc
 
-result = unittest.main(argv=["comm"], module="asrun01b", exit=False, verbosity=2).result
-isok = result.wasSuccessful()
+if rc.initialize is None:
+    rc.initialize = False
 
-# to flush printings from unittest
-sys.stdout.flush()
-sys.stderr.flush()
+from .CodeCommands import *
 
-test.assertTrue(isok)
-test.printSummary()
-del result
+# setup DataStructures with their injectors, do not keep references here
+from .ObjectsExt import DataStructure as _dummy
 
-CA.exit()
+del _dummy

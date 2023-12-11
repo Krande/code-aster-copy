@@ -2,7 +2,7 @@
 Structure of a command
 ######################
 
-.. automodule:: code_aster.Commands
+.. automodule:: code_aster.CodeCommands
    :show-inheritance:
    :members:
    :special-members: __init__

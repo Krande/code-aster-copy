@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ from run_aster.config import CFG
 
 from libaster import onFatalError
 
-from ..Commands import DEFI_LIST_REEL
+from ..CodeCommands import DEFI_LIST_REEL
 from ..Messages import UTMESS
 from .Recal import reca_algo, reca_calcul_aster, reca_interp, reca_message, reca_utilitaires, recal
 from .Recal.reca_controles import gestion
@@ -185,7 +185,6 @@ def macr_recal(
     INFO,
     **args
 ):
-
     ASTER_ROOT = os.environ["ASTER_ROOT"]
 
     try:
@@ -356,7 +355,6 @@ def macr_recal(
 
         # Utilisation du mot-cle MPI_NBCPU
         if "MPI_NBCPU" in dESCLAVE:
-
             # Verifie que le calcul maitre est bien en MPI sur 1 cpu
             mpi_nbcpu = str(prof["mpi_nbcpu"][0])
             if mpi_nbcpu != "1":
@@ -580,7 +578,6 @@ def macr_recal(
     # -------------------------------------------------------------------------------
     #
     else:
-
         # -------------------------------------------------------------------------------
         # Si METHODE=='HYBRIDE', on lance d'abord l'algo genetique et ensuite celui de
         # Levenberg-Marquardt qui demarre avec le jeu de parametres issu de
@@ -647,7 +644,6 @@ def macr_recal(
         # -------------------------------------------------------------------------------
         #
         if METHODE in ["FMINBFGS", "FMINNCG"]:
-
             UTMESS("I", "RECAL0_13", valk=METHODE, files=Mess.get_filename())
 
             # Derivees
@@ -710,7 +706,6 @@ def macr_recal(
         # Methode Levenberg-Marquardt
         # ----------------------------------------------------------------------
         elif METHODE in ["LEVENBERG", "HYBRIDE"]:
-
             # ___________________________________________________________
             #
             # BOUCLE PRINCIPALE DE L'ALGORITHME de Levenberg-Marquardt

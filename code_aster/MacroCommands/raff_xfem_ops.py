@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 from ..Messages import UTMESS
 
 from ..Cata.Syntax import _F
-from ..Commands import CREA_CHAMP, FORMULE
+from ..CodeCommands import CREA_CHAMP, FORMULE
 from .Fracture.raff_xfem_zone import RAFF_XFEM_ZONE
 
 
@@ -63,7 +63,6 @@ def raff_xfem_ops(self, FISSURE, TYPE, **args):
 
     # indicateur de type 'DISTANCE'
     if TYPE == "DISTANCE":
-
         #  formule distance pour une fissure: -r
         __MDISTF = FORMULE(NOM_PARA=("X1", "X2"), VALE="-1.*sqrt(X1**2+X2**2)")
         #  formule distance pour une interface: -r = -|lsn|
@@ -75,7 +74,6 @@ def raff_xfem_ops(self, FISSURE, TYPE, **args):
         for_max = "max("
 
         for i in range(0, nbfiss):
-
             fiss = FISSURE[i]
 
             # recuperation du type de discontinuite :'FISSURE' ou 'INTERFACE'
@@ -168,7 +166,6 @@ def raff_xfem_ops(self, FISSURE, TYPE, **args):
 
     # indicateur de type 'ZONE'
     elif TYPE == "ZONE":
-
         __CERR = [None] * nbfiss
         list_asse = []
 

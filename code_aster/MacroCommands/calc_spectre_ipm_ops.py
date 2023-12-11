@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ import aster
 import aster_fonctions
 from ..Cata.DataStructure import fonction_c, fonction_sdaster, nappe_sdaster
 from ..Cata.Syntax import _F
-from ..Commands import CALC_FONCTION, CREA_TABLE, DEFI_FONCTION, RECU_FONCTION
+from ..CodeCommands import CALC_FONCTION, CREA_TABLE, DEFI_FONCTION, RECU_FONCTION
 from ..Messages import UTMESS
 
 
@@ -167,7 +167,6 @@ def calc_spectre_ipm_ops(
                         UTMESS("F", "SPECTRAL0_22")
 
                     if ok1:
-
                         col_cham = resu["TABLE"].get_column("NOM_CMP")
                         if not "DZ" in col_cham:
                             UTMESS("F", "SPECTRAL0_23")

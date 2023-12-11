@@ -73,8 +73,10 @@ try:
     import med_aster
     import libaster
 
+    # setup, do not keep references here...
     del aster, aster_core, aster_fonctions, med_aster, libaster
 
+    # ... except for rc and package info
     from .Utilities.rc import rc
     from .Utilities.version import __version__
 except ImportError:

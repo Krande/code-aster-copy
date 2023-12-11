@@ -17,14 +17,12 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from unittest import result
-from ..Commands import EXTR_MODE, POST_RELEVE_T, DETRUIRE, CALC_CHAMP, CREA_TABLE
-from ..Cata.Syntax import _F
-from ..Messages import UTMESS
-from ..Objects.table_py import Table
-
 import numpy as np
 
+from ..Cata.Syntax import _F
+from ..CodeCommands import CALC_CHAMP, CREA_TABLE, DETRUIRE, POST_RELEVE_T
+from ..Messages import UTMESS
+from ..Objects.table_py import Table
 
 L_CMP = ["RESULT_X", "RESULT_Y", "RESULT_Z", "MOMENT_X", "MOMENT_Y", "MOMENT_Z"]
 L_CMP_RESU = ["R1", "R2", "R3", "M1", "M2", "M3"]

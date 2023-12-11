@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ from ...Messages import UTMESS
 
 from ...Behaviours import catalc
 from ...Cata.Syntax import _F
-from ...Commands import (
+from ...CodeCommands import (
     CREA_TABLE,
     DEFI_FONCTION,
     DEFI_LIST_INST,
@@ -62,7 +62,6 @@ def essai_TRIA_DR_M_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
     # Recuperation des options d'impression
     # -----------------------------------------
     if "COULEUR" in DicoEssai:
-
         COULEUR_NIV2 = DicoEssai["COULEUR"]
 
         assert len(COULEUR_NIV2) == len(PRES_CONF), (
@@ -76,7 +75,6 @@ def essai_TRIA_DR_M_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
         COULEUR_NIV2 = [-1] * len(PRES_CONF)
 
     if "MARQUEUR" in DicoEssai:
-
         MARQUEUR_NIV2 = DicoEssai["MARQUEUR"]
 
         assert len(MARQUEUR_NIV2) == len(PRES_CONF), (
@@ -89,7 +87,6 @@ def essai_TRIA_DR_M_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
         MARQUEUR_NIV2 = [-1] * len(PRES_CONF)
 
     if "STYLE" in DicoEssai:
-
         STYLE_NIV2 = DicoEssai["STYLE"]
 
         assert len(MARQUEUR_NIV2) == len(PRES_CONF), (
@@ -122,7 +119,6 @@ def essai_TRIA_DR_M_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
 
     cle = ["INST", "EPS_AXI", "EPS_LAT", "EPS_VOL", "SIG_AXI", "SIG_LAT", "P", "Q"]
     if List_Resu_Supp:
-
         try:
             List_Resu_Supp.remove("INST")
         except:
@@ -159,7 +155,6 @@ def essai_TRIA_DR_M_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
     # Boucle sur les pressions de confinement PRES_CONF
     # ---
     for i, sig0__ in enumerate(PRES_CONF):
-
         sig0 = -sig0__
 
         if str_n_essai:
@@ -194,7 +189,6 @@ def essai_TRIA_DR_M_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
             )
 
         except AsterError as message:
-
             print("\n   !!!(@_@)!!! Arret pour la raison suivante !!!(@_@)!!!\n%s" % (message))
 
             __EVPOST = self.get_last_concept()
@@ -264,9 +258,7 @@ def essai_TRIA_DR_M_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
         list_title = ["P-Q", "EPS_AXI-Q", "EPS_AXI-EPS_VOL", "P-EPS_VOL"]
 
         for g in DicoEssai["GRAPHIQUE"]:
-
             if g in list_title:
-
                 j = list_title.index(g)
 
                 remplir_graphique(
@@ -281,7 +273,6 @@ def essai_TRIA_DR_M_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
                     STYLE_NIV2[i],
                 )
             else:
-
                 li = g.split("-")
 
                 if len(li) != 2:
@@ -292,7 +283,6 @@ def essai_TRIA_DR_M_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
                 if (cmpx in Resu_Essai["LIST_CMP"] + cle) and (
                     cmpy in Resu_Essai["LIST_CMP"] + cle
                 ):
-
                     remplir_graphique(
                         DicoEssai,
                         Courbes,
@@ -346,7 +336,6 @@ def essai_TRIA_ND_M_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
     # Recuperation des options d'impression
     # -----------------------------------------
     if "COULEUR" in DicoEssai:
-
         COULEUR_NIV2 = DicoEssai["COULEUR"]
 
         assert len(COULEUR_NIV2) == len(PRES_CONF), (
@@ -360,7 +349,6 @@ def essai_TRIA_ND_M_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
         COULEUR_NIV2 = [-1] * len(PRES_CONF)
 
     if "MARQUEUR" in DicoEssai:
-
         MARQUEUR_NIV2 = DicoEssai["MARQUEUR"]
 
         assert len(MARQUEUR_NIV2) == len(PRES_CONF), (
@@ -373,7 +361,6 @@ def essai_TRIA_ND_M_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
         MARQUEUR_NIV2 = [-1] * len(PRES_CONF)
 
     if "STYLE" in DicoEssai:
-
         STYLE_NIV2 = DicoEssai["STYLE"]
 
         assert len(MARQUEUR_NIV2) == len(PRES_CONF), (
@@ -406,7 +393,6 @@ def essai_TRIA_ND_M_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
 
     cle = ["INST", "EPS_AXI", "EPS_LAT", "SIG_AXI", "SIG_LAT", "P", "Q", "PRE_EAU"]
     if List_Resu_Supp:
-
         try:
             List_Resu_Supp.remove("INST")
         except:
@@ -443,7 +429,6 @@ def essai_TRIA_ND_M_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
     # Boucle sur les pressions de confinement PRES_CONF
     # ---
     for i, sig0__ in enumerate(PRES_CONF):
-
         sig0 = -sig0__
 
         if str_n_essai:
@@ -478,7 +463,6 @@ def essai_TRIA_ND_M_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
             )
 
         except AsterError as message:
-
             print("\n   !!!(@_@)!!! Arret pour la raison suivante !!!(@_@)!!!\n%s" % (message))
 
             __EVPOST = self.get_last_concept()
@@ -550,9 +534,7 @@ def essai_TRIA_ND_M_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
         list_title = ["P-Q", "EPS_AXI-Q", "EPS_AXI-PRE_EAU"]
 
         for g in DicoEssai["GRAPHIQUE"]:
-
             if g in list_title:
-
                 j = list_title.index(g)
 
                 remplir_graphique(
@@ -567,7 +549,6 @@ def essai_TRIA_ND_M_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
                     STYLE_NIV2[i],
                 )
             else:
-
                 li = g.split("-")
 
                 if len(li) != 2:
@@ -578,7 +559,6 @@ def essai_TRIA_ND_M_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
                 if (cmpx in Resu_Essai["LIST_CMP"] + cle) and (
                     cmpy in Resu_Essai["LIST_CMP"] + cle
                 ):
-
                     remplir_graphique(
                         DicoEssai,
                         Courbes,
@@ -633,7 +613,6 @@ def essai_CISA_DR_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
     # Recuperation des options d'impression
     # -----------------------------------------
     if "COULEUR_NIV1" in DicoEssai:
-
         COULEUR_NIV1 = DicoEssai["COULEUR_NIV1"]
 
         assert len(COULEUR_NIV1) == len(PRES_CONF), (
@@ -647,7 +626,6 @@ def essai_CISA_DR_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
         COULEUR_NIV1 = [-1] * len(PRES_CONF)
 
     if "MARQUEUR_NIV1" in DicoEssai:
-
         MARQUEUR_NIV1 = DicoEssai["MARQUEUR_NIV1"]
 
         assert len(MARQUEUR_NIV1) == len(PRES_CONF), (
@@ -660,7 +638,6 @@ def essai_CISA_DR_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
         MARQUEUR_NIV1 = [-1] * len(PRES_CONF)
 
     if "STYLE_NIV1" in DicoEssai:
-
         STYLE_NIV1 = DicoEssai["STYLE_NIV1"]
 
         assert len(MARQUEUR_NIV1) == len(PRES_CONF), (
@@ -673,7 +650,6 @@ def essai_CISA_DR_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
         STYLE_NIV1 = [-1] * len(PRES_CONF)
 
     if "COULEUR_NIV2" in DicoEssai:
-
         COULEUR_NIV2 = DicoEssai["COULEUR_NIV2"]
 
         assert len(COULEUR_NIV2) == len(GAMMA_IMPOSE), (
@@ -687,7 +663,6 @@ def essai_CISA_DR_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
         COULEUR_NIV2 = [-1] * len(GAMMA_IMPOSE)
 
     if "MARQUEUR_NIV2" in DicoEssai:
-
         MARQUEUR_NIV2 = DicoEssai["MARQUEUR_NIV2"]
 
         assert len(MARQUEUR_NIV2) == len(GAMMA_IMPOSE), (
@@ -700,7 +675,6 @@ def essai_CISA_DR_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
         MARQUEUR_NIV2 = [-1] * len(GAMMA_IMPOSE)
 
     if "STYLE_NIV2" in DicoEssai:
-
         STYLE_NIV2 = DicoEssai["STYLE_NIV2"]
 
         assert len(MARQUEUR_NIV2) == len(GAMMA_IMPOSE), (
@@ -746,7 +720,6 @@ def essai_CISA_DR_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
 
     cle = ["INST", "G_SUR_GMAX", "DAMPING", "GAMMA", "SIG_XY"]
     if List_Resu_Supp:
-
         try:
             List_Resu_Supp.remove("INST")
         except:
@@ -800,7 +773,6 @@ def essai_CISA_DR_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
     # Boucle NIVEAU 1 sur les pressions de confinement PRES_CONF
     # ---
     for i, sig0__ in enumerate(PRES_CONF):
-
         sig0 = -sig0__
 
         # NIVEAU 2: preparation des graphiques
@@ -827,7 +799,6 @@ def essai_CISA_DR_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
         # Boucle NIVEAU 2 sur les amplitudes de distorsion GAMMA_IMPOSE
         # ---
         for j, eps0 in enumerate(GAMMA_IMPOSE):
-
             if str_n_essai:
                 affiche_infos_essai(str_n_essai, typessai, -sig0, eps0)
             else:
@@ -837,7 +808,6 @@ def essai_CISA_DR_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
             # Definition des chargements
             # ---
             if sinusoidal:
-
                 absc_peak = [10.0 * (2 * k + 1) for k in range(2 * NB_CYCLE + 1)]
                 abscisse = [10.0 * k / 3.0 / NB_INST for k in range(3 * NB_INST)]
 
@@ -889,7 +859,6 @@ def essai_CISA_DR_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
                 )
 
             except AsterError as mess:
-
                 print("\n!!!(@_@)!!! Arret pour la raison suivante !!!(@_@)!!!\n\n%s" % (mess))
 
                 __EVPOST = self.get_last_concept()
@@ -1014,9 +983,7 @@ def essai_CISA_DR_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
             list_title = ["P-Q", "GAMMA-SIGXY"]
 
             for g in DicoEssai["GRAPHIQUE"]:
-
                 if g in list_title:
-
                     k = list_title.index(g)
 
                     remplir_graphique(
@@ -1031,7 +998,6 @@ def essai_CISA_DR_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
                         STYLE_NIV2[j],
                     )
                 else:
-
                     li = g.split("-")
 
                     if len(li) != 2:
@@ -1042,7 +1008,6 @@ def essai_CISA_DR_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
                     if (cmpx in Resu_Essai["LIST_CMP"] + cle) and (
                         cmpy in Resu_Essai["LIST_CMP"] + cle
                     ):
-
                         remplir_graphique(
                             DicoEssai,
                             Courbes_niv2,
@@ -1064,7 +1029,6 @@ def essai_CISA_DR_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
         str_leg1 = "PRES_CONF=" + str("%.3E" % (sig0))
 
         if "GAMMA-G_SUR_GMAX" in DicoEssai["GRAPHIQUE"]:
-
             remplir_graphique(
                 DicoEssai,
                 Courbes_niv1,
@@ -1078,7 +1042,6 @@ def essai_CISA_DR_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
             )
 
         if "GAMMA-DAMPING" in DicoEssai["GRAPHIQUE"]:
-
             remplir_graphique(
                 DicoEssai,
                 Courbes_niv1,
@@ -1092,7 +1055,6 @@ def essai_CISA_DR_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
             )
 
         if "G_SUR_GMAX-DAMPING" in DicoEssai["GRAPHIQUE"]:
-
             remplir_graphique(
                 DicoEssai,
                 Courbes_niv1,
@@ -1177,9 +1139,7 @@ def essai_TRIA_ND_C_F(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
     nbcrit = len(DicoEssai["CRIT_LIQUEFACTION"])
 
     for i, t in enumerate(DicoEssai["CRIT_LIQUEFACTION"]):
-
         if t == "RU_MAX":
-
             vale_crit[t] = DicoEssai["VALE_CRIT"][i]
 
             print("\n   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
@@ -1191,7 +1151,6 @@ def essai_TRIA_ND_C_F(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
             print("   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 
         if t == "EPSI_ABSO_MAX":
-
             vale_crit[t] = DicoEssai["VALE_CRIT"][i]
 
             # Positif en compression
@@ -1208,7 +1167,6 @@ def essai_TRIA_ND_C_F(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
             print("   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 
         if t == "EPSI_RELA_MAX":
-
             vale_crit[t] = DicoEssai["VALE_CRIT"][i]
 
             # Positif en compression
@@ -1224,7 +1182,6 @@ def essai_TRIA_ND_C_F(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
     # Recuperation des options d'impression
     # -----------------------------------------
     if "COULEUR_NIV1" in DicoEssai:
-
         COULEUR_NIV1 = DicoEssai["COULEUR_NIV1"]
 
         assert len(COULEUR_NIV1) == len(PRES_CONF), (
@@ -1238,7 +1195,6 @@ def essai_TRIA_ND_C_F(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
         COULEUR_NIV1 = [-1] * len(PRES_CONF)
 
     if "MARQUEUR_NIV1" in DicoEssai:
-
         MARQUEUR_NIV1 = DicoEssai["MARQUEUR_NIV1"]
 
         assert len(MARQUEUR_NIV1) == len(PRES_CONF), (
@@ -1251,7 +1207,6 @@ def essai_TRIA_ND_C_F(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
         MARQUEUR_NIV1 = [-1] * len(PRES_CONF)
 
     if "STYLE_NIV1" in DicoEssai:
-
         STYLE_NIV1 = DicoEssai["STYLE_NIV1"]
 
         assert len(MARQUEUR_NIV1) == len(PRES_CONF), (
@@ -1264,7 +1219,6 @@ def essai_TRIA_ND_C_F(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
         STYLE_NIV1 = [-1] * len(PRES_CONF)
 
     if "COULEUR_NIV2" in DicoEssai:
-
         COULEUR_NIV2 = DicoEssai["COULEUR_NIV2"]
 
         assert len(COULEUR_NIV2) == len(SIGM_IMPOSE), (
@@ -1278,7 +1232,6 @@ def essai_TRIA_ND_C_F(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
         COULEUR_NIV2 = [-1] * len(SIGM_IMPOSE)
 
     if "MARQUEUR_NIV2" in DicoEssai:
-
         MARQUEUR_NIV2 = DicoEssai["MARQUEUR_NIV2"]
 
         assert len(MARQUEUR_NIV2) == len(SIGM_IMPOSE), (
@@ -1291,7 +1244,6 @@ def essai_TRIA_ND_C_F(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
         MARQUEUR_NIV2 = [-1] * len(SIGM_IMPOSE)
 
     if "STYLE_NIV2" in DicoEssai:
-
         STYLE_NIV2 = DicoEssai["STYLE_NIV2"]
 
         assert len(MARQUEUR_NIV2) == len(SIGM_IMPOSE), (
@@ -1357,7 +1309,6 @@ def essai_TRIA_ND_C_F(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
     ]
 
     if List_Resu_Supp:
-
         try:
             List_Resu_Supp.remove("INST")
         except:
@@ -1423,7 +1374,6 @@ def essai_TRIA_ND_C_F(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
     # Boucle NIVEAU 1 sur les pressions de confinement PRES_CONF
     # ----------------------------------------------------------------
     for i, sig0 in enumerate(PRES_CONF):
-
         q0 = -sig0 * (1.0 - KZERO)
 
         n_cyc_table.append([0] * len(SIGM_IMPOSE))
@@ -1448,7 +1398,6 @@ def essai_TRIA_ND_C_F(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
         # Boucle NIVEAU 2 sur les amplitudes de variation SIGM_IMPOSE
         # ----------------------------------------------------------------
         for j, dsig__ in enumerate(SIGM_IMPOSE):
-
             # dsig est negatif en compression
             dsig = -dsig__
 
@@ -1461,7 +1410,6 @@ def essai_TRIA_ND_C_F(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
             # Definition des chargements
             # ---
             if sinusoidal:
-
                 absc_peak = [10.0 * (2 * k + 1) for k in range(2 * NB_CYCLE)] + [
                     10.0 * (4 * NB_CYCLE)
                 ]
@@ -1547,7 +1495,6 @@ def essai_TRIA_ND_C_F(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
                 )
 
             except AsterError as message:
-
                 print("\n   !!!(@_@)!!! Arret pour la raison suivante !!!(@_@)!!!\n%s" % (message))
 
                 calc_ok = False
@@ -1611,7 +1558,6 @@ def essai_TRIA_ND_C_F(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
             indx_init, numcyc, inst_init = -1, -1, 0
 
             for k, n in enumerate(indx_peak):
-
                 n0 = min(interv, len(depzzm[:n]))
                 depzzmax = max(depzzm[n - n0 : n])
                 dqdpmin = min(dqdp[n - n0 : n])
@@ -1636,7 +1582,6 @@ def essai_TRIA_ND_C_F(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
                     )
 
                 if ncrit >= 2:
-
                     indx_init = nume2
                     numcyc = k
 
@@ -1656,13 +1601,10 @@ def essai_TRIA_ND_C_F(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
             # imposee
             # ----------------------------------------------------------
             if numcyc == -1 and (not calc_ok):
-
                 indx_init = len(inst) - 2
 
                 for n in range(NB_CYCLE):
-
                     if inst[-1] >= 10.0 + 40.0 * n and inst[-1] <= 10.0 + 40.0 * (n + 1):
-
                         numcyc = n
 
                         print("\n   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
@@ -1687,7 +1629,6 @@ def essai_TRIA_ND_C_F(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
             # ========================================================
             # if indx_init>0 or (not calc_ok):
             if indx_init > 0:
-
                 # 08/10/2018: heuristique pour detection de la
                 #             direction du chargement monotone:
                 #             on recule de 2 pas de temps pour eviter
@@ -1908,7 +1849,6 @@ def essai_TRIA_ND_C_F(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
                 rubool = [False] * nbcrit
 
                 for nbc in range(NB_CYCLE_EPSILON):
-
                     gamma = epsi_max * (-1.0) ** (nbc + nbc0)
 
                     if info_dbg:
@@ -1942,7 +1882,6 @@ def essai_TRIA_ND_C_F(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
                     q = __TabResm["SIZZ"][-1] - __TabResm["SIXX"][-1]
 
                     if abs(q - q0) < abs(0.95 * dsig):
-
                         if info_dbg:
                             print("\n   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
                             print("   !                                                   !")
@@ -2004,8 +1943,7 @@ def essai_TRIA_ND_C_F(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
                     # de la consigne dsig, ie minimisant dq-dsig
                     # -----------------------------------------------
                     for nlon in range(1, 8):
-
-                        lon = int(len(q) / 2.0 ** nlon)
+                        lon = int(len(q) / 2.0**nlon)
                         # dq   =list(NP.abs( q-q0-(-1.)**(nbc+nbc0)*abs(dsig) ))
                         dq = list(NP.abs(q - q0 - NP.sign(q[-1] - q0) * abs(dsig)))
                         dqmax = min(dq[lon:])
@@ -2084,9 +2022,7 @@ def essai_TRIA_ND_C_F(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
                     eps_zz = NP.array(__TabResm["EPZZ"][1:nf])
 
                     for jcrit, crit in enumerate(DicoEssai["CRIT_LIQUEFACTION"]):
-
                         if crit == "RU_MAX":
-
                             eps_xx = NP.array(__TabResm["EPXX"][1:nf])
                             eps_yy = NP.array(__TabResm["EPYY"][1:nf])
 
@@ -2096,7 +2032,6 @@ def essai_TRIA_ND_C_F(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
                             rubool__ = ru >= vale_crit[crit]
 
                             if not rubool[jcrit]:
-
                                 rubool[jcrit] = rubool__.any()
 
                                 if info_dbg and rubool[jcrit]:
@@ -2112,13 +2047,10 @@ def essai_TRIA_ND_C_F(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
                                     )
 
                         if crit == "EPSI_ABSO_MAX":
-
                             if vale_crit[crit] > 0.0:
-
                                 rubool__ = eps_zz <= -vale_crit[crit]
 
                                 if not rubool[jcrit]:
-
                                     rubool[jcrit] = rubool__.any()
 
                                     if info_dbg and rubool[jcrit]:
@@ -2137,7 +2069,6 @@ def essai_TRIA_ND_C_F(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
                                 rubool__ = eps_zz >= -vale_crit[crit]
 
                                 if not rubool[jcrit]:
-
                                     rubool[jcrit] = rubool__.any()
 
                                     if info_dbg and rubool[jcrit]:
@@ -2153,7 +2084,6 @@ def essai_TRIA_ND_C_F(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
                                         )
 
                         if crit == "EPSI_RELA_MAX":
-
                             #                       # On ajoute pour l'evaluation des criteres la
                             #                       # partie du cycle precedent se prolongeant dans
                             #                       # le cylce courant
@@ -2171,7 +2101,6 @@ def essai_TRIA_ND_C_F(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
                             #                          epszz__= list(eps_zz)
 
                             if not rubool[jcrit]:
-
                                 rubool[jcrit] = eps_zz.max() - eps_zz.min() >= vale_crit[crit]
 
                                 if info_dbg and rubool[jcrit]:
@@ -2209,7 +2138,6 @@ def essai_TRIA_ND_C_F(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
             # ---------------------------------
             # if indx_init>0 or (not calc_ok):
             if indx_init > 0:
-
                 calc_ok = calc_ok_mono
 
                 inst = TabRes["INST"][: indx_init + 1] + TabResm["INST"]
@@ -2229,7 +2157,6 @@ def essai_TRIA_ND_C_F(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
                         if lr in TabResm:
                             Vari_Supp[lr][i] = TabRes[lr][: indx_init + 1] + TabResm[lr]
             else:
-
                 inst = TabRes["INST"]
                 sig_xx = NP.array(TabRes["SIXX"])
                 sig_yy = NP.array(TabRes["SIYY"])
@@ -2276,9 +2203,7 @@ def essai_TRIA_ND_C_F(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
             indcrit__ = [None] * nbcrit
 
             for jcr, cr in enumerate(DicoEssai["CRIT_LIQUEFACTION"]):
-
                 if cr == "RU_MAX":
-
                     rubool__ = ru >= vale_crit[cr]
                     rubool[jcr] = rubool__.any()
                     try:
@@ -2299,7 +2224,6 @@ def essai_TRIA_ND_C_F(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
                         )
 
                 if cr == "EPSI_ABSO_MAX":
-
                     if vale_crit[cr] > 0.0:
                         rubool__ = eps_zz <= -vale_crit[cr]
                     else:
@@ -2312,7 +2236,6 @@ def essai_TRIA_ND_C_F(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
                         indcrit__[jcr] = 0
 
                     if rubool[jcr]:
-
                         if vale_crit[cr] > 0.0:
                             print(
                                 "\n   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
@@ -2427,7 +2350,6 @@ def essai_TRIA_ND_C_F(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
             # --------------------------------------------------------
             ncycrit = 0
             if crit:
-
                 # renvoie l'indice ou le critere liquefaction = True
                 # --------------------------------------------------------------
                 indcrit = max(indcrit__)
@@ -2529,9 +2451,7 @@ def essai_TRIA_ND_C_F(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
             ]
 
             for g in DicoEssai["GRAPHIQUE"]:
-
                 if g in list_title:
-
                     k = list_title.index(g)
 
                     remplir_graphique(
@@ -2546,7 +2466,6 @@ def essai_TRIA_ND_C_F(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
                         STYLE_NIV2[j],
                     )
                 else:
-
                     li = g.split("-")
 
                     if len(li) != 2:
@@ -2557,7 +2476,6 @@ def essai_TRIA_ND_C_F(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
                     if (cmpx in Resu_Essai["LIST_CMP"] + cle) and (
                         cmpy in Resu_Essai["LIST_CMP"] + cle
                     ):
-
                         remplir_graphique(
                             DicoEssai,
                             Courbes_niv2,
@@ -2587,7 +2505,6 @@ def essai_TRIA_ND_C_F(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
         # NIVEAU 1: remplissage des graphiques
         # --------------------------------------------------
         if "NCYCL-DSIGM" in DicoEssai["GRAPHIQUE"]:
-
             remplir_graphique(
                 DicoEssai,
                 Courbes_niv1,
@@ -2678,7 +2595,6 @@ def essai_TRIA_DR_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
     # Recuperation des options d'impression
     # -----------------------------------------
     if "COULEUR_NIV1" in DicoEssai:
-
         COULEUR_NIV1 = DicoEssai["COULEUR_NIV1"]
 
         assert len(COULEUR_NIV1) == len(PRES_CONF), (
@@ -2692,7 +2608,6 @@ def essai_TRIA_DR_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
         COULEUR_NIV1 = [-1] * len(PRES_CONF)
 
     if "MARQUEUR_NIV1" in DicoEssai:
-
         MARQUEUR_NIV1 = DicoEssai["MARQUEUR_NIV1"]
 
         assert len(MARQUEUR_NIV1) == len(PRES_CONF), (
@@ -2705,7 +2620,6 @@ def essai_TRIA_DR_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
         MARQUEUR_NIV1 = [-1] * len(PRES_CONF)
 
     if "STYLE_NIV1" in DicoEssai:
-
         STYLE_NIV1 = DicoEssai["STYLE_NIV1"]
 
         assert len(MARQUEUR_NIV1) == len(PRES_CONF), (
@@ -2718,7 +2632,6 @@ def essai_TRIA_DR_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
         STYLE_NIV1 = [-1] * len(PRES_CONF)
 
     if "COULEUR_NIV2" in DicoEssai:
-
         COULEUR_NIV2 = DicoEssai["COULEUR_NIV2"]
 
         assert len(COULEUR_NIV2) == len(EPSI_IMPOSE), (
@@ -2732,7 +2645,6 @@ def essai_TRIA_DR_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
         COULEUR_NIV2 = [-1] * len(EPSI_IMPOSE)
 
     if "MARQUEUR_NIV2" in DicoEssai:
-
         MARQUEUR_NIV2 = DicoEssai["MARQUEUR_NIV2"]
 
         assert len(MARQUEUR_NIV2) == len(EPSI_IMPOSE), (
@@ -2745,7 +2657,6 @@ def essai_TRIA_DR_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
         MARQUEUR_NIV2 = [-1] * len(EPSI_IMPOSE)
 
     if "STYLE_NIV2" in DicoEssai:
-
         STYLE_NIV2 = DicoEssai["STYLE_NIV2"]
 
         assert len(MARQUEUR_NIV2) == len(EPSI_IMPOSE), (
@@ -2810,7 +2721,6 @@ def essai_TRIA_DR_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
         "DAMPING",
     ]
     if List_Resu_Supp:
-
         try:
             List_Resu_Supp.remove("INST")
         except:
@@ -2862,7 +2772,6 @@ def essai_TRIA_DR_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
     # Boucle NIVEAU 1 sur les pressions de confinement PRES_CONF
     # ---
     for i, sig0__ in enumerate(PRES_CONF):
-
         sig0 = -sig0__
 
         # ---
@@ -2890,7 +2799,6 @@ def essai_TRIA_DR_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
         # Boucle NIVEAU 2 sur les amplitudes de variation EPSI_MINI (en compression)
         # ---
         for j, eps0__ in enumerate(EPSI_MAXI):
-
             eps0 = -eps0__
             eps1 = -EPSI_MINI[j]
 
@@ -2903,7 +2811,6 @@ def essai_TRIA_DR_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
             # Definition des chargements
             # ---
             if sinusoidal:
-
                 absc_peak = [10.0 * (2 * k + 1) for k in range(2 * NB_CYCLE + 1)]
                 abscisse = [10.0 * k / 3.0 / NB_INST for k in range(3 * NB_INST)]
 
@@ -2955,7 +2862,6 @@ def essai_TRIA_DR_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
                 )
 
             except AsterError as message:
-
                 print("\n   !!!(@_@)!!! Arret pour la raison suivante !!!(@_@)!!!\n%s" % (message))
 
                 __EVPOST = self.get_last_concept()
@@ -2993,7 +2899,6 @@ def essai_TRIA_DR_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
             Es = abs((q[ind3] - q[ind2]) / (eps0 - eps1) / Es_max)
 
             if not (Es <= 1.0 or abs(Es - 1.0) <= 1.0e-8):
-
                 UTMESS("F", "COMPOR2_36", valk=("TD_A", "young", "EPSI_ELAS"), valr=(EPSI_ELAS))
 
             # Definition gde l'amortissement hysteretique generalisee:
@@ -3075,9 +2980,7 @@ def essai_TRIA_DR_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
             list_title = ["P-Q", "EPS_AXI-EPS_VOL", "EPS_AXI-Q", "EPS_VOL-Q", "P-EPS_VOL"]
 
             for g in DicoEssai["GRAPHIQUE"]:
-
                 if g in list_title:
-
                     k = list_title.index(g)
 
                     remplir_graphique(
@@ -3092,7 +2995,6 @@ def essai_TRIA_DR_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
                         STYLE_NIV2[j],
                     )
                 else:
-
                     li = g.split("-")
 
                     if len(li) != 2:
@@ -3103,7 +3005,6 @@ def essai_TRIA_DR_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
                     if (cmpx in Resu_Essai["LIST_CMP"] + cle) and (
                         cmpy in Resu_Essai["LIST_CMP"] + cle
                     ):
-
                         remplir_graphique(
                             DicoEssai,
                             Courbes_niv2,
@@ -3125,7 +3026,6 @@ def essai_TRIA_DR_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
         # NIVEAU 1: remplissage des graphiques
         # ------------------------------------------------------
         if "DEPSI-E_SUR_EMAX" in DicoEssai["GRAPHIQUE"]:
-
             depsi = list(NP.array(EPSI_MAXI) - NP.array(EPSI_MINI))
 
             remplir_graphique(
@@ -3141,7 +3041,6 @@ def essai_TRIA_DR_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
             )
 
         if "DEPSI-DAMPING" in DicoEssai["GRAPHIQUE"]:
-
             remplir_graphique(
                 DicoEssai,
                 Courbes_niv1,
@@ -3230,7 +3129,6 @@ def essai_TRIA_ND_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
     # Recuperation des options d'impression
     # -----------------------------------------
     if "COULEUR_NIV1" in DicoEssai:
-
         COULEUR_NIV1 = DicoEssai["COULEUR_NIV1"]
 
         assert len(COULEUR_NIV1) == len(PRES_CONF), (
@@ -3244,7 +3142,6 @@ def essai_TRIA_ND_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
         COULEUR_NIV1 = [-1] * len(PRES_CONF)
 
     if "MARQUEUR_NIV1" in DicoEssai:
-
         MARQUEUR_NIV1 = DicoEssai["MARQUEUR_NIV1"]
 
         assert len(MARQUEUR_NIV1) == len(PRES_CONF), (
@@ -3257,7 +3154,6 @@ def essai_TRIA_ND_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
         MARQUEUR_NIV1 = [-1] * len(PRES_CONF)
 
     if "STYLE_NIV1" in DicoEssai:
-
         STYLE_NIV1 = DicoEssai["STYLE_NIV1"]
 
         assert len(MARQUEUR_NIV1) == len(PRES_CONF), (
@@ -3270,7 +3166,6 @@ def essai_TRIA_ND_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
         STYLE_NIV1 = [-1] * len(PRES_CONF)
 
     if "COULEUR_NIV2" in DicoEssai:
-
         COULEUR_NIV2 = DicoEssai["COULEUR_NIV2"]
 
         assert len(COULEUR_NIV2) == len(EPSI_IMPOSE), (
@@ -3284,7 +3179,6 @@ def essai_TRIA_ND_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
         COULEUR_NIV2 = [-1] * len(EPSI_IMPOSE)
 
     if "MARQUEUR_NIV2" in DicoEssai:
-
         MARQUEUR_NIV2 = DicoEssai["MARQUEUR_NIV2"]
 
         assert len(MARQUEUR_NIV2) == len(EPSI_IMPOSE), (
@@ -3297,7 +3191,6 @@ def essai_TRIA_ND_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
         MARQUEUR_NIV2 = [-1] * len(EPSI_IMPOSE)
 
     if "STYLE_NIV2" in DicoEssai:
-
         STYLE_NIV2 = DicoEssai["STYLE_NIV2"]
 
         assert len(MARQUEUR_NIV2) == len(EPSI_IMPOSE), (
@@ -3366,7 +3259,6 @@ def essai_TRIA_ND_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
         "DAMPING",
     ]
     if List_Resu_Supp:
-
         try:
             List_Resu_Supp.remove("INST")
         except:
@@ -3427,7 +3319,6 @@ def essai_TRIA_ND_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
     # Boucle NIVEAU 1 sur les pressions de confinement PRES_CONF
     # ---
     for i, sig0__ in enumerate(PRES_CONF):
-
         sig0 = -sig0__
 
         n_cyc_table.append([0] * len(EPSI_IMPOSE))
@@ -3456,7 +3347,6 @@ def essai_TRIA_ND_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
         # Boucle NIVEAU 2 sur les amplitudes de variation EPSI_MINI (en compression)
         # ---
         for j, eps0__ in enumerate(EPSI_MAXI):
-
             eps0 = -eps0__
             eps1 = -EPSI_MINI[j]
 
@@ -3469,7 +3359,6 @@ def essai_TRIA_ND_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
             # Definition des chargements
             # ---
             if sinusoidal:
-
                 absc_peak = [10.0 * (2 * k + 1) for k in range(2 * NB_CYCLE + 1)]
                 abscisse = [10.0 * k / 3.0 / NB_INST for k in range(3 * NB_INST)]
 
@@ -3537,7 +3426,6 @@ def essai_TRIA_ND_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
                 )
 
             except AsterError as message:
-
                 print("\n   !!!(@_@)!!! Arret pour la raison suivante !!!(@_@)!!!\n%s" % (message))
 
                 __EVPOST = self.get_last_concept()
@@ -3708,9 +3596,7 @@ def essai_TRIA_ND_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
             ]
 
             for g in DicoEssai["GRAPHIQUE"]:
-
                 if g in list_title:
-
                     k = list_title.index(g)
 
                     remplir_graphique(
@@ -3725,7 +3611,6 @@ def essai_TRIA_ND_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
                         STYLE_NIV2[j],
                     )
                 else:
-
                     li = g.split("-")
 
                     if len(li) != 2:
@@ -3736,7 +3621,6 @@ def essai_TRIA_ND_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
                     if (cmpx in Resu_Essai["LIST_CMP"] + cle) and (
                         cmpy in Resu_Essai["LIST_CMP"] + cle
                     ):
-
                         remplir_graphique(
                             DicoEssai,
                             Courbes_niv2,
@@ -3758,7 +3642,6 @@ def essai_TRIA_ND_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
         str_leg1 = "PRES_CONF = " + str("%.2E" % (sig0))
 
         if "NCYCL-DEPSI" in DicoEssai["GRAPHIQUE"]:
-
             remplir_graphique(
                 DicoEssai,
                 Courbes_niv1,
@@ -3772,7 +3655,6 @@ def essai_TRIA_ND_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
             )
 
         if "DEPSI-RU_MAX" in DicoEssai["GRAPHIQUE"]:
-
             remplir_graphique(
                 DicoEssai,
                 Courbes_niv1,
@@ -3786,7 +3668,6 @@ def essai_TRIA_ND_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
             )
 
         if "DEPSI-E_SUR_EMAX" in DicoEssai["GRAPHIQUE"]:
-
             remplir_graphique(
                 DicoEssai,
                 Courbes_niv1,
@@ -3800,7 +3681,6 @@ def essai_TRIA_ND_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
             )
 
         if "DEPSI-DAMPING" in DicoEssai["GRAPHIQUE"]:
-
             remplir_graphique(
                 DicoEssai,
                 Courbes_niv1,
@@ -3892,7 +3772,6 @@ def essai_OEDO_DR_C_F(
     # Recuperation des options d'impression
     # -----------------------------------------
     if "COULEUR" in DicoEssai:
-
         COULEUR_NIV2 = DicoEssai["COULEUR"]
 
         assert len(COULEUR_NIV2) == len(PRES_CONF), (
@@ -3906,7 +3785,6 @@ def essai_OEDO_DR_C_F(
         COULEUR_NIV2 = [-1] * len(PRES_CONF)
 
     if "MARQUEUR" in DicoEssai:
-
         MARQUEUR_NIV2 = DicoEssai["MARQUEUR"]
 
         assert len(MARQUEUR_NIV2) == len(PRES_CONF), (
@@ -3919,7 +3797,6 @@ def essai_OEDO_DR_C_F(
         MARQUEUR_NIV2 = [-1] * len(PRES_CONF)
 
     if "STYLE" in DicoEssai:
-
         STYLE_NIV2 = DicoEssai["STYLE"]
 
         assert len(MARQUEUR_NIV2) == len(PRES_CONF), (
@@ -3964,7 +3841,6 @@ def essai_OEDO_DR_C_F(
 
     cle = ["INST", "SIG_AXI", "SIG_LAT", "EPS_VOL", "P"]
     if List_Resu_Supp:
-
         try:
             List_Resu_Supp.remove("INST")
         except:
@@ -4009,12 +3885,10 @@ def essai_OEDO_DR_C_F(
     # Boucle NIVEAU 1 sur les pressions de consolidation initiale PRES_CONF
     # ---
     for i, sig0__ in enumerate(PRES_CONF):
-
         sig0 = -sig0__
         sigtrac = -SIGM_DECH[i]
 
         for j, sigcomp__ in enumerate(SIGM_IMPOSE):
-
             sigcomp = -sigcomp__
 
             if str_n_essai:
@@ -4026,7 +3900,6 @@ def essai_OEDO_DR_C_F(
         # Definition des chargements
         # ---
         if sinusoidal:
-
             absc_peak = [10.0 * (2 * k + 1) for k in range(2 * NB_CYCLE + 1)]
             abscisse = [10.0 * k / 3.0 / NB_INST for k in range(3 * NB_INST)]
 
@@ -4053,7 +3926,6 @@ def essai_OEDO_DR_C_F(
             ordonnee += list(sigm_mean + NP.sin(absc_sinus[3 * NB_INST : 9 * NB_INST]) * dsigm)
 
             for j, sigcomp__ in enumerate(SIGM_IMPOSE[1:]):
-
                 sigcomp = -sigcomp__
 
                 sigm_mean = 0.5 * (sigcomp + sigtrac)
@@ -4066,12 +3938,10 @@ def essai_OEDO_DR_C_F(
                     * dsigm
                 )
         else:
-
             abscisse = [0.0] + [10.0 * (2 * k + 1) for k in range(2 * NB_CYCLE + 2)]
 
             ordonnee = [sig0]
             for j, sigcomp__ in enumerate(SIGM_IMPOSE):
-
                 sigcomp = -sigcomp__
                 # ordon += [sigcomp,sigtrac]
                 # permet de retrouver le chargement defini par S. Assandi
@@ -4098,7 +3968,6 @@ def essai_OEDO_DR_C_F(
             PROL_DROITE="CONSTANT",
         )
         if oedometer:
-
             sigm_impo = _F(SIZZ=__CHAR1)
 
             epsi_impo = _F(EPXX=__CHAR2, EPYY=__CHAR2, EPXY=__CHAR2, EPXZ=__CHAR2, EPYZ=__CHAR2)
@@ -4127,7 +3996,6 @@ def essai_OEDO_DR_C_F(
             )
 
         except AsterError as message:
-
             print("\n   !!!(@_@)!!! Arret pour la raison suivante !!!(@_@)!!!\n%s" % (message))
 
             __EVPOST = self.get_last_concept()
@@ -4192,9 +4060,7 @@ def essai_OEDO_DR_C_F(
         list_title = ["P-EPS_VOL", "SIG_AXI-EPS_VOL"]
 
         for g in DicoEssai["GRAPHIQUE"]:
-
             if g in list_title:
-
                 k = list_title.index(g)
 
                 remplir_graphique(
@@ -4209,7 +4075,6 @@ def essai_OEDO_DR_C_F(
                     STYLE_NIV2[i],
                 )
             else:
-
                 li = g.split("-")
 
                 if len(li) != 2:
@@ -4220,7 +4085,6 @@ def essai_OEDO_DR_C_F(
                 if (cmpx in Resu_Essai["LIST_CMP"] + cle) and (
                     cmpy in Resu_Essai["LIST_CMP"] + cle
                 ):
-
                     remplir_graphique(
                         DicoEssai,
                         Courbes_niv2,

@@ -254,6 +254,140 @@ class Restarter(Starter):
         loadObjects(level=7 + 8 * int(rc.initialize))
 
 
+class NewStarter(ExecuteCommand):
+    """Define the commands DEBUT/POURSUITE."""
+
+    command_name = "DEBUT"
+
+    @classmethod
+    def run(cls, **keywords):
+        """Run the Command.
+
+        Arguments:
+            keywords (dict): User keywords
+        """
+        # import debugpy
+
+        # debugpy.listen(3000)
+        # print("Waiting for debugger attach")
+        # debugpy.wait_for_client()
+        # debugpy.breakpoint()
+
+        if not ExecutionStarter.init():
+            return
+        super().run(**keywords)
+
+    @classmethod
+    def run_with_argv(cls, **keywords):
+        """Wrapper to have the same depth calling loadObjects from
+        `init()` and `POURSUITE()`.
+        """
+        cmd = cls()
+        cmd._result = None
+        cmd._cata.addDefaultKeywords(keywords)
+        remove_none(keywords)
+        cmd.exec_(keywords)
+
+    def exec_(self, keywords):
+        """Execute the command.
+
+        Arguments:
+            keywords (dict): User's keywords.
+        """
+        params = ExecutionStarter.params
+        iwarn = False
+        stop_with = "EXCEPTION"
+        if params.option & Options.Abort:
+            stop_with = "ABORT"
+        if params.option & Options.TestMode or keywords.get("CODE"):
+            params.enable(Options.TestMode)
+            stop_with = "ABORT"
+            iwarn = True
+            track_coverage(self._cata, self.command_name, keywords)
+
+        erreur = keywords.get("ERREUR")
+        if erreur:
+            if erreur.get("ERREUR_F"):
+                stop_with = erreur["ERREUR_F"]
+            if erreur.get("ALARME") == "EXCEPTION":
+                params.enable(Options.WarningAsError)
+        if params.option & Options.SlaveMode:
+            stop_with = "EXCEPTION"
+        # must be the first call to correctly set 'vini' in onerrf
+        libaster.onFatalError(stop_with)
+
+        debug = keywords.get("DEBUG")
+        if debug:
+            jxveri = debug.get("JXVERI", "NON") == "OUI"
+            params.set_option("jxveri", int(jxveri))
+            if jxveri:
+                UTMESS("I", "SUPERVIS_23")
+            sdveri = debug.get("SDVERI", "NON") == "OUI"
+            params.set_option("sdveri", int(sdveri))
+            if sdveri:
+                UTMESS("I", "SUPERVIS_24")
+            dbgjeveux = debug.get("JEVEUX", "NON") == "OUI" or debug.get("VERI_BASE") is not None
+            params.set_option("dbgjeveux", int(dbgjeveux))
+            if dbgjeveux:
+                UTMESS("I", "SUPERVIS_12")
+            iwarn = iwarn or jxveri or sdveri or dbgjeveux
+        if iwarn:
+            UTMESS("I", "SUPERVIS_22", valk=("--test", "CA.init()"))
+        if params.get_option("hook_post_exec"):
+            path = params.get_option("hook_post_exec")
+            hook = import_object(path)
+            self.register_hook(hook)
+
+        params.enable(Options.ShowSyntax)
+        if keywords.get("IMPR_MACRO") == "OUI":
+            params.enable(Options.ShowChildCmd)
+
+        if keywords.get("LANG"):
+            translation = localization.translation(keywords["LANG"])
+            tr.set_translator(translation.gettext)
+
+        if keywords.get("IGNORE_ALARM"):
+            for idmess in keywords["IGNORE_ALARM"]:
+                MessageLog.disable_alarm(idmess)
+
+        # restart = 'True | False | None' from rc / override by keywords
+        restart = rc.restart
+        # force startup or continue ?
+        if keywords.get("MODE") == "DEBUT" or params.get_option("ForceStart"):
+            restart = False
+        if keywords.get("MODE") == "POURSUITE" or params.get_option("Continue"):
+            restart = True
+        if restart is None:
+            restart = Serializer.canRestart(silent=True)
+        params.set_option("ForceStart", not restart)
+        params.set_option("Continue", restart)
+
+        super().exec_(keywords)
+
+    def _call_oper(self, syntax):
+        """Call fortran operator.
+
+        Arguments:
+            syntax (*CommandSyntax*): Syntax description with user keywords.
+        """
+        if ExecutionStarter.params.option & Options.Continue:
+            if not Serializer.canRestart():
+                logger.error("restart aborted!")
+
+            logger.info("restarting from a previous execution...")
+            libaster.call_poursuite(syntax)
+            # 1:_call_oper, 2:ExecuteCommand.exec_, 3:Starter.exec_,
+            #  4:Restarter.run, 5:ExecuteCommand.run_, 6:ExecuteCmd.run, 7:user
+            # 1:_call_oper, 2:ExecuteCommand.exec_, 3:Starter.exec_,
+            #  4:_run_with_argv, 5:run_with_argv, 6:init, 7:user
+            # when called during 'import CA', 8 levels are added...
+            loadObjects(level=6 + 8 * int(rc.initialize))
+        else:
+            logger.info("starting the execution...")
+            libaster.call_debut(syntax)
+
+
+NEWD = NEWP = NewStarter.run
 DEBUT = Starter.run
 POURSUITE = Restarter.run
 

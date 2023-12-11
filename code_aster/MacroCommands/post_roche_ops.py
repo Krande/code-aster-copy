@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 from math import pi
 from ..Messages import UTMESS
 from ..Cata.Syntax import _F
-from ..Commands import (
+from ..CodeCommands import (
     CREA_CHAMP,
     CALC_CHAM_ELEM,
     POST_ELEM,
@@ -251,7 +251,6 @@ class PostRocheCommon:
         dicAllZones = {}
         lgrma = []
         for zone in self.dZone:
-
             dicAbscCurv = {"GROUP_NO_ORIG": zone.get("GROUP_NO_ORIG")}
 
             if zone.get("TOUT"):
@@ -280,7 +279,6 @@ class PostRocheCommon:
         lGrmaCoude = []
 
         for fact in self.dCoude:
-
             dicAffe = {"NOM_CMP": ("X1", "X2")}
             dicAffe["GROUP_MA"] = fact.get("GROUP_MA")
             dicAffe["VALE"] = (fact.get("ANGLE") * pi / 180, fact.get("RCOURB"))
@@ -351,7 +349,6 @@ class PostRocheCommon:
         affe = []
 
         for fact in self.dPression:
-
             dicAffe = {"NOM_CMP": "X1"}
 
             if fact.get("TOUT"):
@@ -394,7 +391,6 @@ class PostRocheCommon:
         # si ces paramètres n'ont pas été fournis par l'utilisateur leurs valeurs
         # sont négatives
         if self.lRCCM_RX:
-
             tabpara = POST_ELEM(
                 MINMAX=_F(
                     MODELE=self.model,
@@ -430,7 +426,6 @@ class PostRocheCommon:
 
         # pour les coudes, verification de la présence de RP02_MIN
         elif self.lGrmaCoude != []:
-
             tabRp02min = POST_ELEM(
                 MINMAX=_F(
                     MODELE=self.model,
@@ -657,7 +652,6 @@ class PostRocheCommon:
             typchar = charg.get("TYPE_CHAR")
 
             if typchar == "SISM_INER_SPEC":
-
                 dire = charg.get("DIRECTION")
                 typeres = charg.get("TYPE_RESU")
                 ind = self.dirDisp.index(dire) + 1
@@ -723,7 +717,6 @@ class PostRocheCommon:
 
                 # partie dynamique de la réponse
                 if typeres in ["DYN_QS", "DYN"]:
-
                     if typeres == "DYN_QS":
                         #                       msi : part dynamique de la réponse
                         #                       nume_ordre 11, 12, 13 et 14
@@ -761,7 +754,6 @@ class PostRocheCommon:
 
                 # partie quasi-statique de la réponse
                 if typeres in ["DYN_QS", "QS"]:
-
                     if typeres == "DYN_QS":
                         #                       MSI  : part quasi-statique de la réponse
                         #                       nume_ordre 21, 22, 23 et 24
@@ -816,7 +808,6 @@ class PostRocheCommon:
                 cham_gd = resin
 
             if typchar[:9] != "SISM_INER":
-
                 oc_asse = {
                     "CHAM_GD": cham_gd,
                     "TOUT": "OUI",
@@ -1211,7 +1202,6 @@ class PostRocheCommon:
 
         # pour RCCM_RC = OUI
         if self.lRCCM_RX:
-
             fSigVraieMax = FORMULE(
                 NOM_PARA=("COEF", "RP02_MOY", "RP02_MIN", "RM_MIN"),
                 VALE="2*COEF*(0.426*RP02_MIN+0.032*RM_MIN)*RP02_MOY/RP02_MIN",
@@ -1229,7 +1219,6 @@ class PostRocheCommon:
         else:
 
             def fsolve(sigRef, sigP, e, k, n, r, nbIterMax, seuil):
-
                 """
                 resolution de _funcToSolve par algo de Newton
                 """
@@ -1327,7 +1316,6 @@ class PostRocheCommon:
                 return sigV / E + K_FACT * pow(sigV / E, 1 / N_EXPO)
 
         if self.lRCCM_RX:
-
             fEpsVraieMax = FORMULE(
                 NOM_PARA=("X2", "E", "K_FACT", "N_EXPO"),
                 VALE="EpsVraie(X2, E, K_FACT, N_EXPO)",
@@ -1343,7 +1331,6 @@ class PostRocheCommon:
             )
 
         else:
-
             fEpsVraie = FORMULE(
                 NOM_PARA=("X1", "E", "K_FACT", "N_EXPO"),
                 VALE="EpsVraie(X1, E, K_FACT, N_EXPO)",
@@ -2228,7 +2215,6 @@ class PostRocheCalc:
             )
 
         else:
-
             chCoefsAbat = CREA_CHAMP(
                 OPERATION="EVAL",
                 TYPE_CHAM="ELNO_NEUT_R",

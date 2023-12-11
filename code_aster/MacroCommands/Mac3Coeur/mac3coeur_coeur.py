@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ from ...Utilities import logger, ExecutionParameter
 from ...Objects import Mesh
 
 from ...Cata.Syntax import _F
-from ...Commands import (
+from ...CodeCommands import (
     AFFE_CARA_ELEM,
     AFFE_CHAR_CINE,
     AFFE_CHAR_CINE_F,
@@ -403,7 +403,6 @@ class Coeur:
         return _F_TRAN1
 
     def definition_cara_coeur(self, MODELE, _GFF):
-
         mcm = self.mcf_cara_multifibre()
         mcr = self.mcf_cara_barre()
         mcp = self.mcf_cara_poutre()
@@ -433,7 +432,6 @@ class Coeur:
         return _CARA
 
     def definition_pesanteur(self, MODELE):
-
         _PESA = AFFE_CHAR_MECA(
             MODELE=MODELE, PESANTEUR=_F(GRAVITE=9.81, DIRECTION=(-1.0, 0.0, 0.0))
         )
@@ -571,7 +569,6 @@ class Coeur:
         return _F_EMBO
 
     def affectation_maillage(self, MA0):
-
         LISGRIL = []
         LISGRILI = []
         LISGRILE = []
@@ -641,7 +638,6 @@ class Coeur:
         gnodes = MAILL.getGroupsOfNodes()
 
         for pos_damac, ac in self.collAC.items():
-
             id_cr = "CR_%s" % ac.pos_aster
             grp_cr = [i for i in gcells if (i.startswith(id_cr) and i != id_cr)]
             ac.nb_cr_mesh = max(1, len(grp_cr))
@@ -1283,7 +1279,6 @@ class Coeur:
         return _CHTH_1
 
     def definition_materiau(self, MAILLAGE, GFF, FLUENCE, CHTH, CONTACT="NON", RATIO=1.0):
-
         # TP_REF = 20.
 
         if CONTACT == "OUI":

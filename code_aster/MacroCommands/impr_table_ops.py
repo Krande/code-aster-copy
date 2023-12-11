@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ import re
 
 import libaster
 from ..Cata.Syntax import _F
-from ..Commands import RECU_FONCTION
+from ..CodeCommands import RECU_FONCTION
 from ..Helpers import LogicalUnitFile, ReservedUnitUsed
 from ..Utilities.misc import fmtF2PY
 from ..Messages import UTMESS
@@ -77,7 +77,6 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
     # ----------------------------------------------
     # Boucle sur les tables
     for tab, sdtab in ltab:
-
         # ----- 1. Infos de base
         if INFO == 2:
             print("IMPRESSION DE LA TABLE : %s" % sdtab.getName())

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ import aster
 from ..Messages import UTMESS, MasquerAlarme
 
 from ..Cata.Syntax import _F
-from ..Commands import CALC_CHAM_ELEM, CREA_CHAMP, CREA_TABLE
+from ..CodeCommands import CALC_CHAM_ELEM, CREA_CHAMP, CREA_TABLE
 from .Fracture.post_voisin_czm import POST_VOISIN_CZM
 
 
@@ -57,7 +57,6 @@ def post_czm_fiss_ops(self, OPTION, RESULTAT, **args):
     # calcul de la longueur d'une fissure cohesive 2D
     #
     if OPTION == "LONGUEUR":
-
         # Mots cles specifiques au bloc "LONGUEUR"
         GROUP_MA = args["GROUP_MA"]
         POINT_ORIG = args["POINT_ORIG"]
@@ -135,7 +134,6 @@ def post_czm_fiss_ops(self, OPTION, RESULTAT, **args):
         __VI = [0] * (nbinst)
 
         for j in range(0, nbinst):
-
             __VI[j] = CREA_CHAMP(
                 TYPE_CHAM="ELGA_VARI_R",
                 OPERATION="EXTR",
@@ -227,7 +225,6 @@ def post_czm_fiss_ops(self, OPTION, RESULTAT, **args):
     # calcul de la triaxialite dans les elements massifs voisins de l'interface cohesive
     #
     elif OPTION == "TRIAXIALITE":
-
         CARTE_OUT = POST_VOISIN_CZM(RESULTAT=RESULTAT)
 
         return CARTE_OUT

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ from math import ceil, exp, log, pi, sqrt
 
 import numpy as np
 
-from ..Commands import FORMULE
+from ..CodeCommands import FORMULE
 from ..Messages import UTMESS
 
 
@@ -231,7 +231,7 @@ class Generator:
     def find_roots(self, x, vecf):
         roots = []
         signum = np.sign(vecf)
-        for (ii, vale) in enumerate(signum):
+        for ii, vale in enumerate(signum):
             if ii == 0:
                 pass
             elif vale != signum[ii - 1]:
@@ -258,7 +258,7 @@ class Generator:
         lamk = 2.0 * Lc * (1.0 + np.array(roots) ** 2 * Lc**2) ** (-1)
         print("NUMBER of ROOTS:", len(troots), "RETAINED EIGENVALUES:", nbmod)
         phik = []
-        for (ii, vk) in enumerate(roots):
+        for ii, vk in enumerate(roots):
             if self.is_even(ii):  # %even
                 phik.append(np.cos(vk * (x - 0.5)) / np.sqrt(0.5 * (1.0 + np.sin(vk) / vk)))
             else:  # %odd

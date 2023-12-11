@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ import numpy as NP
 from ...Messages import UTMESS
 
 from ...Cata.Syntax import _F
-from ...Commands import DEFI_FICHIER, IMPR_FONCTION, INFO_EXEC_ASTER
+from ...CodeCommands import DEFI_FICHIER, IMPR_FONCTION, INFO_EXEC_ASTER
 
 try:
     import Gnuplot
@@ -118,7 +118,6 @@ def temps_CPU(restant_old, temps_iter_old):
 # IMPRESSIONS GRAPHIQUES
 # _____________________________________________
 def graphique(FORMAT, L_F, res_exp, reponses, iter, UL_out, pilote, fichier=None, INFO=0):
-
     if iter:
         txt_iter = "Iteration : " + str(iter)
     else:
@@ -181,7 +180,6 @@ def graphique(FORMAT, L_F, res_exp, reponses, iter, UL_out, pilote, fichier=None
                     )
 
         elif FORMAT == "GNUPLOT":
-
             if fichier:
                 if INFO >= 2:
                     UTMESS("I", "RECAL0_41", valk=fichier)

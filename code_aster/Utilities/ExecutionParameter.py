@@ -25,7 +25,7 @@
 
 A singleton object :py:class:`.ExecutionParameter` is created during the
 initialization. Its main feature is to parse and store the arguments read from
-the command line or passed to the :py:func:`~code_aster.Commands.debut.init`
+the command line or passed to the :py:func:`~code_aster.CodeCommands.debut.init`
 function.
 It also stores Python objects that have to be available from :py:mod:`libaster`.
 They will be available though properties of the :py:class:`.ExecutionParameter`

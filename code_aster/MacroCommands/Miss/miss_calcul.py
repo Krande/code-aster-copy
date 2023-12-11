@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ import aster
 import numpy as NP
 
 from ...Cata.Syntax import _F
-from ...Commands import IMPR_MACR_ELEM, MACR_ELEM_DYNA
+from ...CodeCommands import IMPR_MACR_ELEM, MACR_ELEM_DYNA
 from ...Helpers.LogicalUnit import LogicalUnitFile
 from ...Messages import UTMESS
 from ...Utilities import ExecutionParameter, Timer, config

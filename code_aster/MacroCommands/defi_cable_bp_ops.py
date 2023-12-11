@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,9 @@ import aster
 from ..Messages import UTMESS
 
 from ..Cata.Syntax import _F
-from ..Commands import DEFI_GROUP
+from ..CodeCommands import DEFI_GROUP
 from .Utils.defi_cable_op import DEFI_CABLE_OP
+
 
 # ===========================================================================
 #           CORPS DE LA MACRO "DEFI_CABLE_BP"
@@ -163,7 +164,6 @@ def defi_cable_bp_ops(
 
         # CAS OU L'ON A DEFINI LE MOT-CLE "CONE"
         if CONE:
-
             # CREATION DU PREMIER TUNNEL
 
             if dCONE["PRESENT"][0] == "OUI":

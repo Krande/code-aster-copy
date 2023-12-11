@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ from math import cos, exp, pi
 
 import numpy
 
-from ..Commands import DEFI_FONCTION
+from ..CodeCommands import DEFI_FONCTION
 from ..Messages import UTMESS
 
 
@@ -99,7 +99,6 @@ def FcontinuGR2R(T, I1R, I2R, TRR, PHI1R, PHI2R, TAU1R, TAU2R, D):
 def defi_fonc_elec_ops(
     self, FREQ=None, SIGNAL=None, COUR=None, COUR_PRIN=None, COUR_SECO=None, **args
 ):
-
     # On importe les definitions des commandes a utiliser dans la macro
     # Le nom de la variable doit etre obligatoirement le nom de la commande
     #

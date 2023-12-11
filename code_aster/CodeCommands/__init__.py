@@ -24,17 +24,12 @@ Definition of user's Commands
 A command, as called by the final user, is a *classmethod* that wraps
 the actual purpose of the command by a serie of generic tasks.
 
-All user's Commands are defined in :py:mod:`code_aster.Commands` package.
+All user's Commands are defined in :py:mod:`code_aster.CodeCommands` package
+and provided to the user as :py:mod:`code_aster.Commands`.
 
 For the details about the execution of the commands see :py:mod:`code_aster.Supervis`.
 
 """
-
-from ..Utilities.rc import rc
-
-if rc.initialize is None:
-    rc.initialize = False
-del rc
 
 from ..Supervis import CO
 
@@ -78,7 +73,7 @@ from .crea_champ import CREA_CHAMP
 from .crea_maillage import CREA_MAILLAGE
 from .crea_resu import CREA_RESU
 from .crea_table import CREA_TABLE
-from .debut import DEBUT, POURSUITE
+from .debut import DEBUT, POURSUITE, NEWD, NEWP
 from .defi_base_modale import DEFI_BASE_MODALE
 from .defi_base_reduite import DEFI_BASE_REDUITE
 from .defi_compor import DEFI_COMPOR

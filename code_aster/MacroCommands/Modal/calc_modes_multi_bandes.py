@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ import aster
 from ...Messages import UTMESS
 
 from ...Cata.Syntax import _F
-from ...Commands import EXTR_MODE, IMPR_CO, INFO_MODE, MODI_MODELE, NUME_DDL
+from ...CodeCommands import EXTR_MODE, IMPR_CO, INFO_MODE, MODI_MODELE, NUME_DDL
 from ...Objects import (
     AssemblyMatrixDisplacementReal,
     GeneralizedAssemblyMatrixReal,
@@ -182,7 +182,6 @@ def calc_modes_multi_bandes(self, stop_erreur, sturm, INFO, **args):
     motscles["FILTRE_MODE"] = []
     numsb_nonvide = 0
     for i in range(0, nnfreq - 1):
-
         # --------------------------------------------------------------------
         #
         # 2. SOUS-BANDE NON VIDE
@@ -354,7 +353,6 @@ def calc_modes_multi_bandes(self, stop_erreur, sturm, INFO, **args):
         "GLOBAL",
         "OUI",
     ):  # in the case of CALC_MODES on several bands, OUI is reset to GLOBAL
-
         # Construction des 2 bornes de la bande a tester
         if nbmodeth != 0:
             omecor = CALC_FREQ["SEUIL_FREQ"]
@@ -431,7 +429,6 @@ def calc_modes_multi_bandes(self, stop_erreur, sturm, INFO, **args):
 # ----------------------
 # Routine pour recuperer sd_modele + option de la sd_partition (si elle existe)
 def recup_modele_partition(MATR_RIGI):
-
     if isinstance(MATR_RIGI, (GeneralizedAssemblyMatrixReal, GeneralizedAssemblyMatrixComplex)):
         UTMESS("F", "MODAL_18")
 
@@ -457,7 +454,6 @@ def recup_modele_partition(MATR_RIGI):
 
 
 def gestion_sous_bande(solveur_lineaire, __nbmodi, nnfreq, nbproc, lborne, stop):
-
     nbsb_nonvide = None
     proc_sb_nvide = []
     # Recuperation du nbre de modes total theorique
@@ -537,7 +533,6 @@ def gestion_sous_bande(solveur_lineaire, __nbmodi, nnfreq, nbproc, lborne, stop)
 
 
 def gestion_frequence(solveur_lineaire, nnfreq, nbproc):
-
     if nbproc > 1:
         if (nbproc < nnfreq - 1) | ((nbproc > nnfreq - 1) & (solveur_lineaire != "MUMPS")):
             aster.affiche("MESSAGE", 72 * "-")

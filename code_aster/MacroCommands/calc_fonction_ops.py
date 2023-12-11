@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ import numpy as NP
 from libaster import AsterError
 
 from ..Cata.Syntax import _F
-from ..Commands import DEFI_FONCTION, DEFI_NAPPE, IMPR_FONCTION
+from ..CodeCommands import DEFI_FONCTION, DEFI_NAPPE, IMPR_FONCTION
 from ..Messages import ASSERT, UTMESS
 from ..Objects import Function, Function2D, FunctionComplex
 from ..Objects.function_py import (

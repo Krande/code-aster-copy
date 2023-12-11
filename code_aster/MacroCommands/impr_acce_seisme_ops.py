@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ import numpy as np
 
 import aster
 from ..Cata.Syntax import _F
-from ..Commands import (
+from ..CodeCommands import (
     CALC_FONCTION,
     CREA_TABLE,
     DEFI_FICHIER,
@@ -79,14 +79,14 @@ def calc_bornes(
     if ind < 0:
         ind -= 1.0
     ind = int(ind)
-    ymin = 10 ** ind
+    ymin = 10**ind
 
     ymax = max(val)
     ind = np.log(ymax) / np.log(10)
     if ind > 0:
         ind += 1.0
     ind = int(ind)
-    ymax = 10 ** ind
+    ymax = 10**ind
 
     return ymin, ymax
 
@@ -227,7 +227,6 @@ def impr_acce_seisme_ops(self, **args):
     __MOY = [None] * dim
 
     for idi in range(1, dim + 1):
-
         inte_arias = []
         duree = []
         cav = []
@@ -245,7 +244,6 @@ def impr_acce_seisme_ops(self, **args):
         gym = 0.0
         gymd = 0.0
         for ii in range(nb_tirage):
-
             # signaux en accélération
 
             if dim >= 2:
@@ -299,7 +297,6 @@ def impr_acce_seisme_ops(self, **args):
                     GRILLE_Y=gy,
                 )
             else:
-
                 gx = (l_inst[-1] - l_inst[0]) / ngrid
                 gy = (max(l_acce) - min(l_acce)) / ngrid
 
@@ -651,7 +648,6 @@ def impr_acce_seisme_ops(self, **args):
 
         # +- sigma
         if SPEC_1_SIGMA:
-
             __spec1s = CALC_FONCTION(COMB=_F(FONCTION=SPEC_1_SIGMA, COEF=1.0 / ratio_hv))
 
             freq_cib, acce_cib = __specci.Valeurs()
@@ -736,7 +732,6 @@ def impr_acce_seisme_ops(self, **args):
             os.remove(chem_fic + ".wrk")
 
         if FREQ_MIN:
-
             # verif :
             freq_moy, acce_moy = __MOY[idi - 1].Valeurs()[1][0]
             freq_cib, acce_cib = __specci.Valeurs()
@@ -819,7 +814,6 @@ def impr_acce_seisme_ops(self, **args):
 
     #    moyenne géométrique des moyennes des spectres horizontaux
     if dim >= 2:
-
         liste_moy = [{"FONCTION": __MOY[0]}, {"FONCTION": __MOY[1]}]
         racn = 2
 

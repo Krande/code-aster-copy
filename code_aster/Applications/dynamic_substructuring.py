@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,17 +32,14 @@ try:
 except ImportError:
     HAS_MATPLOTLIB = False
 
-from ..Commands import (
+from ..CodeCommands import (
     CREA_CHAMP,
     RESOUDRE,
     CREA_RESU,
     FACTORISER,
     NUME_DDL_GENE,
-    ASSE_MATR_GENE,
     AFFE_MODELE,
     NUME_DDL,
-    DEFI_MATERIAU,
-    AFFE_MATERIAU,
     ASSEMBLAGE,
     CO,
     PROJ_MATR_BASE,

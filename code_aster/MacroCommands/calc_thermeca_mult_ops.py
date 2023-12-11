@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,11 +23,10 @@ from ..Cata.Syntax import _F
 from ..Messages import UTMESS, MasquerAlarme, RetablirAlarme
 
 # commandes utilisees dans la macro
-from ..Commands import CREA_CHAMP, CREA_RESU, CALC_CHAMP
+from ..CodeCommands import CREA_CHAMP, CREA_RESU, CALC_CHAMP
 
 
 def calc_thermeca_mult_ops(self, TEMP_FIN, TEMP_INIT, RESU_MECA_UNIT, RESU_SUPL_THER, **args):
-
     # debut macro
 
     if RESU_SUPL_THER == "OUI":
@@ -39,7 +38,6 @@ def calc_thermeca_mult_ops(self, TEMP_FIN, TEMP_INIT, RESU_MECA_UNIT, RESU_SUPL_
         final = [None] * nbinst
         arguments_affe = ()
         for i in range(nbinst):
-
             inst = list_instant[i]
             nume_ordre = lnume_ordre[i]
 
