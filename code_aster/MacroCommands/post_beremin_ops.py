@@ -491,7 +491,7 @@ def tps_maxsigm(rsieq, mclinst, signul, maxsig, dwb, resanpb, modele, grmapb):
         Returns:
             numpy array: array to power m
         """
-        return array ** bere_m
+        return array**bere_m
 
     for (nume_inst, inst) in enumerate(linstants):
 
