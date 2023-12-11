@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -336,7 +336,7 @@ subroutine dismdy(questi, nomobz, repi, repkz, ierd)
     else if (questl(1:9).eq.'CORR_STAT') then
         repk = 'NON'
         call jeveuo(resdyn//'           .DESC','L',jdesc)
-        if (zi(jdesc+7-1).eq.1) repk = 'OUI'
+        if (zi(jdesc+5-1).eq.1) repk = 'OUI'
         goto 88
 !
 !

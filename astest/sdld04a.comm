@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -434,6 +434,14 @@ TRA_GCS=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                            )
 
 
+# ajout de ce RECU_FONCTION/CORR_STAT="OUI"
+# pour valider POST_GENE_PHYS/CORR_STAT="OUI"
+N02_DXC3 = RECU_FONCTION(
+    NOEUD="N02", NOM_CMP="DX", NOM_CHAM="DEPL", CORR_STAT="OUI", RESU_GENE=TRA_GCS, INST=0.1
+)
+
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=-1.265078908944552, VALE_PARA=0.01, FONCTION=N02_DXC3),))
+
 TabPhy=POST_GENE_PHYS(RESU_GENE=TRA_GCS, 
                       OBSERVATION=(
                                    _F(NOM_CHAM='DEPL', NOM_CMP=('DX',), NOEUD='N02', LIST_INST=L_RECU,
@@ -443,12 +451,13 @@ TabPhy=POST_GENE_PHYS(RESU_GENE=TRA_GCS,
                        ), );
 
 TEST_TABLE(
-           VALE_CALC=-1.19881773366,
-           NOM_PARA='VALE_R',
-           TABLE=TabPhy,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=1E-1,),
-           )
+    VALE_CALC=-1.265078908944552,
+    VALE_REFE=-1.265078908944552,
+    REFERENCE="AUTRE_ASTER",
+    NOM_PARA="VALE_R",
+    TABLE=TabPhy,
+    FILTRE=_F(NOM_PARA="INST", VALE=1e-1),
+)
 
 #
 N04_DXC3=RECU_FONCTION(  NOEUD='N04',   NOM_CMP='DX',   NOM_CHAM='DEPL',
