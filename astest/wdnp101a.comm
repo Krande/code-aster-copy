@@ -770,6 +770,7 @@ U9B=STAT_NON_LINE(reuse=U9B,
 U0=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                 OPERATION='EXTR',
                 RESULTAT=U9B,
+                NUME_DDL=NU,
                 NOM_CHAM='DEPL',
                 INST=0.0,
                 INFO=1,);
