@@ -34,6 +34,8 @@ Integral must be computed on the initial configuration
 
 _biblio : CR-T66-2017-132, Lorentz
 """
+import numpy as np
+
 from ..Cata.Syntax import _F
 from ..Commands import (
     CALC_TABLE,
@@ -45,9 +47,8 @@ from ..Commands import (
     DEFI_GROUP,
 )
 from ..Messages import UTMESS
-from .Fracture.post_k_varc import POST_K_VARC
 from .Fracture.post_beremin_utils import get_beremin_properties, get_resu_from_deftype
-from ..Objects import NonLinearResult, ExternalVariableTraits
+from ..Objects import NonLinearResult, ExternalVariableTraits, FieldOnCellsReal
 
 
 def post_beremin_ops(self, **args):
@@ -112,13 +113,8 @@ def post_beremin_ops(self, **args):
 
         modele = reswbrest.getModel()
 
-        signul = CREA_CHAMP(
-            OPERATION="AFFE",
-            TYPE_CHAM="ELGA_SIEF_R",
-            MODELE=modele,
-            PROL_ZERO="OUI",
-            AFFE=_F(GROUP_MA="mgrplasfull", NOM_CMP="SIXX", VALE=0),
-        )
+        signul = FieldOnCellsReal(modele, "ELGA", "SIEF_R")
+        signul.setValues(0)
 
         if fspb == "SIGM_ELGA":
 
@@ -228,14 +224,13 @@ def indic_plasac(_v1, _v2, seuil):
     return vale
 
 
-def sigma1(rsieq, nume_inst, inst, dwb, reswbrest, grwb):
+def sigma1(rsieq, nume_inst, dwb, reswbrest, grwb):
     """
     Major principal stress
 
     Arguments:
         rsieq (NonLinearResult): SIEQ_ELGA field
         nume_inst (int): Rank of instant
-        inst (float): Instant
         stress depends of temperature
         dwb (dict): Beremin parameters
         reswbrest (NonLinearResult): result restricted where plasticity is
@@ -275,8 +270,6 @@ def sigma1(rsieq, nume_inst, inst, dwb, reswbrest, grwb):
         chmat = reswbrest.getMaterialField()
         ExtVariAffe = chmat.getExtStateVariablesOnMeshEntities()
         for curIter in ExtVariAffe:
-            dict_extvari = {}
-            # Reconstruction des syntaxes liées à l'objet ExternalStateVariable
             ExtVari = curIter[0]
             Nom_varc = ExternalVariableTraits.getExternVarTypeStr(ExtVari.getType())
             if Nom_varc == "TEMP":
@@ -288,19 +281,15 @@ def sigma1(rsieq, nume_inst, inst, dwb, reswbrest, grwb):
                 if evolParam:
                     chamchpar = evolParam.getTransientResult().getField("TEMP", nume_inst)
 
-        chpar = CREA_CHAMP(OPERATION="ASSE",
-                           TYPE_CHAM="NOEU_TEMP_R",
-                           MODELE=modele,
-                           ASSE=_F(GROUP_MA=grmacalc,
-                                   CHAM_GD=chamchpar,
-                                   NOM_CMP="TEMP",
-                                   NOM_CMP_RESU="TEMP"))
+        chpar = CREA_CHAMP(
+            OPERATION="ASSE",
+            TYPE_CHAM="NOEU_TEMP_R",
+            MODELE=modele,
+            ASSE=_F(GROUP_MA=grmacalc, CHAM_GD=chamchpar, NOM_CMP="TEMP", NOM_CMP_RESU="TEMP"),
+        )
 
         sgrefeno = CREA_CHAMP(
-            OPERATION="EVAL",
-            TYPE_CHAM="NOEU_NEUT_R",
-            CHAM_F=chf,
-            CHAM_PARA=chpar
+            OPERATION="EVAL", TYPE_CHAM="NOEU_NEUT_R", CHAM_F=chf, CHAM_PARA=chpar
         )
 
         sgrefega = CREA_CHAMP(
@@ -336,9 +325,7 @@ def sigma1(rsieq, nume_inst, inst, dwb, reswbrest, grwb):
                 GROUP_MA=grmacalc,
                 NOM_CMP="X1",
                 VALE_F=FORMULE(
-                    NOM_PARA=("X1", "X2"),
-                    VALE="X1/X2*sigm_cnv",
-                    sigm_cnv=dwb[grwb]["SIGM_CNV"],
+                    NOM_PARA=("X1", "X2"), VALE="X1/X2*sigm_cnv", sigm_cnv=dwb[grwb]["SIGM_CNV"]
                 ),
             ),
         )
@@ -406,7 +393,7 @@ def sig1plasac(resultat, rsieq, numv1v2, dwb, reswbrest, grmapb, mclinst, signul
                 ASSE=(
                     _F(
                         GROUP_MA=grcalc,
-                        CHAM_GD=sigma1(rsieq, nume_inst, inst, dwb, reswbrest, grmapb[0]),
+                        CHAM_GD=sigma1(rsieq, nume_inst, dwb, reswbrest, grmapb[0]),
                         NOM_CMP="X1",
                         NOM_CMP_RESU="SIXX",
                     ),
@@ -492,11 +479,24 @@ def tps_maxsigm(rsieq, mclinst, signul, maxsig, dwb, resanpb, modele, grmapb):
     sigw.allocate(rsieq.getNumberOfIndexes())
     linstants = rsieq.getAccessParameters()["INST"]
 
+    bere_m = dwb[grmapb[0]]["M"]
+
+    def form(array):
+        """
+        Elevation to power m
+
+        Arguments:
+            array (numpy array): sixx component
+
+        Returns:
+            numpy array: array to power m
+        """
+        return array ** bere_m
+
     for (nume_inst, inst) in enumerate(linstants):
 
         if inst in [elt[2] for elt in mclinst]:
 
-            # on peut optimiser ?
             chmaxsig = CREA_CHAMP(
                 TYPE_CHAM="ELGA_SIEF_R",
                 OPERATION="EXTR",
@@ -507,34 +507,9 @@ def tps_maxsigm(rsieq, mclinst, signul, maxsig, dwb, resanpb, modele, grmapb):
                 INST=linstants[: nume_inst + 1],
             )
 
-            rchmaxsig = NonLinearResult()
-            rchmaxsig.allocate(1)
-            rchmaxsig.setField(chmaxsig, "SIEF_ELGA", 0)
-            rchmaxsig.setModel(modele, 0)
-
-            rsixxm = CALC_CHAMP(
-                RESULTAT=rchmaxsig,
-                GROUP_MA=grmapb,
-                CHAM_UTIL=_F(
-                    NOM_CHAM="SIEF_ELGA",
-                    FORMULE=FORMULE(
-                        NOM_PARA="SIXX", VALE="SIXX**bere_m", bere_m=dwb[grmapb[0]]["M"]
-                    ),
-                    NUME_CHAM_RESU=1,
-                ),
-            )
-
-            chsixxm = CREA_CHAMP(
-                OPERATION="ASSE",
-                TYPE_CHAM="ELGA_SIEF_R",
-                MODELE=modele,
-                PROL_ZERO="OUI",
-                ASSE=_F(
-                    GROUP_MA=grmapb,
-                    CHAM_GD=rsixxm.getField("UT01_ELGA", 0),
-                    NOM_CMP="X1",
-                    NOM_CMP_RESU="SIXX",
-                ),
+            chsixxm = FieldOnCellsReal(modele, "ELGA", "SIEF_R")
+            chsixxm.setValues(
+                np.array([form(elt_sixx) for elt_sixx in np.array(chmaxsig.getValues())])
             )
 
             if resanpb is not None:
