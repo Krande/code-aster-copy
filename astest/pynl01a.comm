@@ -74,14 +74,6 @@ LIST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=1))
 #          CREATION DES OBJETS SOLUTIONS
 # =========================================================
 
-U = CREA_CHAMP(
-    TYPE_CHAM="NOEU_DEPL_R",
-    OPERATION="AFFE",
-    MAILLAGE=MA,
-    AFFE=_F(TOUT="OUI", NOM_CMP=("DX", "DY", "DZ"), VALE=(0.0, 0.0, 0.0)),
-)
-
-
 SIGP = CREA_CHAMP(
     TYPE_CHAM="ELGA_SIEF_R",
     OPERATION="AFFE",
@@ -101,13 +93,18 @@ VARIP = CREA_CHAMP(
     AFFE=_F(TOUT="OUI", NOM_CMP=("V1", "V2"), VALE=(0.0, 0.0)),
 )
 
+NU = NUME_DDL(MODELE=MO, CHARGE=CHARGE)
+
+# Déplacement nul avec Lagrange !
+U = code_aster.FieldOnNodesReal(NU)
+DU = code_aster.FieldOnNodesReal(NU)
+
 # =========================================================
 #               PREDICTION ELASTIQUE
 # =========================================================
 
 M_EL = CALC_MATR_ELEM(OPTION="RIGI_MECA", MODELE=MO, CHAM_MATER=CHMAT, CHARGE=CHARGE)
 
-NU = NUME_DDL(MATR_RIGI=M_EL)
 
 CHAR_EL = CALC_VECT_ELEM(OPTION="CHAR_MECA", CHARGE=CHARGE)
 
@@ -140,8 +137,6 @@ CONT = CALCUL(
     COMPORTEMENT=_F(RELATION="VMIS_ISOT_LINE"),
     INFO=2,
 )
-
-IMPR_TABLE(TABLE=CONT)
 
 MATR = EXTR_TABLE(
     TYPE_RESU="MATR_ELEM_DEPL_R",
