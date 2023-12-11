@@ -106,7 +106,7 @@ subroutine lc0058(BEHinteg, &
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: lMatr, lSigm, lVari
-    integer :: nstatv, i, nstran
+    integer :: nstatv, i, j, nstran
     integer :: strain_model
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
     integer, parameter :: s0 = 0, s1 = 1
@@ -315,7 +315,11 @@ subroutine lc0058(BEHinteg, &
     end if
     if (lMatr) then
         dsidep = 0.d0
-        dsidep(1:2*ndim, 1:2*ndim) = dsidep_loc(1:2*ndim, 1:2*ndim)
+        do i=1,2*ndim
+            do j=1,2*ndim
+                dsidep(i,j)=dsidep_loc(j,i)
+            enddo
+        enddo
     end if
 !
 end subroutine
