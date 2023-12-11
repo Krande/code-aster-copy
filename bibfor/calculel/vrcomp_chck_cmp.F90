@@ -183,7 +183,6 @@ subroutine vrcomp_chck_cmp(mesh, nbCell, &
             idxCurr = index(comp_comb_2, relaCompCurr)
             if (idxCurr .gt. 0) then
                 l_modif_vari = ASTER_TRUE
-                WRITE (6, *) 'Diff prev/curr - Cas 2'
                 cycle
             end if
 
@@ -194,7 +193,6 @@ subroutine vrcomp_chck_cmp(mesh, nbCell, &
                 relaCompPrev = compPrevCesv(iadm)
                 idxPrev = index(comp_comb_2, relaCompPrev)
                 if (idxPrev .gt. 0) then
-                    WRITE (6, *) 'Diff prev/curr - Cas 3'
                     l_modif_vari = ASTER_TRUE
                     cycle
                 end if
@@ -209,7 +207,6 @@ subroutine vrcomp_chck_cmp(mesh, nbCell, &
                         end if
                     end do
                     if (all_is_zero) then
-                        WRITE (6, *) 'Diff prev/curr - Cas 4'
                         l_modif_vari = ASTER_TRUE
                         cycle
                     end if
