@@ -433,7 +433,7 @@ def C_COMPORTEMENT(command):
                 ),
             ),
             b_type_matr=BLOC(
-                condition="""not is_in("RELATION", ('RGI_BETON','FLUA_PORO_BETON','FLUA_ENDO_PORO', 'RGI_BETON_BA',))""",
+                condition="""not is_in("RELATION", ('RGI_BETON','FLUA_PORO_BETON','FLUA_ENDO_PORO', 'RGI_BETON_BA', 'ENDO_PORO_BETON'))""",
                 TYPE_MATR_TANG=SIMP(statut="f", typ="TXM", into=("PERTURBATION", "VERIFICATION")),
                 b_perturb=BLOC(
                     condition=""" (exists("TYPE_MATR_TANG")) """,
@@ -456,7 +456,7 @@ def C_COMPORTEMENT(command):
                 ),
             ),
             b_ntype_matr=BLOC(
-                condition="""is_in("RELATION", ('RGI_BETON','FLUA_PORO_BETON','FLUA_ENDO_PORO', 'RGI_BETON_BA',))""",
+                condition="""is_in("RELATION", ('RGI_BETON','FLUA_PORO_BETON','FLUA_ENDO_PORO', 'RGI_BETON_BA', 'ENDO_PORO_BETON'))""",
                 TYPE_MATR_TANG=SIMP(
                     statut="f", typ="TXM", into=("MATR_ELAS", "MATR_ENDO"), defaut="MATR_ELAS"
                 ),
