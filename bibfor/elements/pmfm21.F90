@@ -116,7 +116,7 @@ subroutine pmfm21(kanl, m, casrho, casece, a, &
         zinex = (casrho(4)+casrho(5))*xl/c002
 
         c = zaire*xl
-        c = min(c*xl/c105, c/c048)
+        c = c*xl/c105
         m(ip(1)+1) = zaire/c002
         m(ip(2)+2) = zaire/c002
         m(ip(3)+3) = zaire/c002

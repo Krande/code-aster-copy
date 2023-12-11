@@ -144,7 +144,7 @@ subroutine ptma01(kanl, itype, m, ist, rho, &
             zinex2 = zinex1
         end if
         c = (zaire1+zaire2)*xl
-        c = min(c*xl/c105, c/c048)
+        c = c*xl/c105
         m(ip(1)+1) = zaire1
         m(ip(2)+2) = zaire1
         m(ip(3)+3) = zaire1

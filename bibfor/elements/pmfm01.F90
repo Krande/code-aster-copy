@@ -49,12 +49,11 @@ subroutine pmfm01(kanl, xl, kk12, kk13, cars, &
     real(kind=8) :: dix, onze, douze, treize
     real(kind=8) :: quinze, vingt, trente, v35, v70
     real(kind=8) :: v105, v140, v210, v420
-    real(kind=8) :: v48
 !
     parameter(zero=0.0d+0, deux=2.0d+0, trois=3.0d+0, cinq=5.0d+0,&
      &          six=6.0d+0, sept=7.0d+0, neuf=9.0d+0, dix=1.0d+1,&
      &          onze=1.1d+1, douze=1.2d+1, treize=1.3d+1, quinze=1.5d+1,&
-     &          vingt=2.0d+1, v35=3.5d+1, v48=4.8d+1, v70=7.0d+1,&
+     &          vingt=2.0d+1, v35=3.5d+1, v70=7.0d+1,&
      &          trente=3.0d+1, v105=1.05d+2, v140=1.4d+2, v210=2.1d+2,&
      &          v420=4.2d+2, quatre=4.d0)
     real(kind=8) :: co13, co112, co1335, co65, co720, c11210, co970, co320
@@ -79,7 +78,7 @@ subroutine pmfm01(kanl, xl, kk12, kk13, cars, &
         zaire = cars(1)*xl/deux
         zinex = xl*(cars(4)+cars(5))/deux
         c = deux*zaire*xl
-        c = min(c*xl/v105, c/v48)
+        c = c*xl/v105
         m(ip(1)+1) = zaire
         m(ip(2)+2) = zaire
         m(ip(3)+3) = zaire
