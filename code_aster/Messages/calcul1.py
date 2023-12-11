@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -84,6 +84,11 @@ Pour calculer des options non-linéaires dans la commande CALCUL, il faut les d�
 
    13 : _("""
 Pour calculer l'option FORC_NODA dans la commande CALCUL, il faut les déplacements et les contraintes précédents.
-"""),
-
+"""
+    ),
+    14: _(
+        """
+Le déplacement et l'incrément de déplacement ne sont pas définis sur la même numérotation. Soit le maillage est différent, soit ils ne reposent pas sur le même modèle, soit ils n'ont pas les mêmes conditions limites dualisées.
+"""
+    ),
 }

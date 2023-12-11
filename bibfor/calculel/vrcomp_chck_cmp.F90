@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -174,11 +174,10 @@ subroutine vrcomp_chck_cmp(mesh, nb_elem, compor_curr, compor_curr_r, compor_pre
 ! ----- Check number of components
 !
         if (nb_cmp_curr .ne. nb_cmp_prev) then
-!
-! --------- This element appears or disappears -> no problem
+! --------- No vari => skin element
 !
             if ((nb_cmp_prev.eq.0) .or. (nb_cmp_curr.eq.0)) then
-                l_modif_vari = .true.
+                
                 goto 40
             endif
 !

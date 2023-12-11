@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,13 +27,14 @@ implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/nmlect.h"
+#include "asterfort/chamnoIsSame.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
-#include "asterfort/nmdorc.h"
-#include "asterfort/nonlinDSConstitutiveInit.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/isOptionPossible.h"
+#include "asterfort/nmdorc.h"
+#include "asterfort/nmlect.h"
+#include "asterfort/nonlinDSConstitutiveInit.h"
 #include "asterfort/utmess.h"
 !
 character(len=19), intent(out) :: list_load
@@ -72,7 +73,7 @@ integer, intent(out) :: nume_harm
 !
     character(len=8) :: result
     aster_logical :: l_etat_init, verbose
-    integer :: nocc
+    integer :: nocc, ier
     character(len=19) :: ligrmo
 !
 ! --------------------------------------------------------------------------------------------------
@@ -109,6 +110,13 @@ integer, intent(out) :: nume_harm
     call getvid(' ', 'INCR_DEPL', scal=disp_cumu_inst, nbret = nocc)
     if (nocc .eq. 0) then
         disp_cumu_inst = ' '
+    end if
+
+    if (disp_prev .ne. " " .and. disp_cumu_inst .ne. " ") then
+        call chamnoIsSame(disp_prev, disp_cumu_inst, ier)
+        if (ier .gt. 0) then
+            call utmess('F', 'CALCUL1_14')
+        end if
     endif
 !
 ! - Get stresses
