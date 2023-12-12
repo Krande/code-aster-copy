@@ -158,15 +158,31 @@ void MeshConnectionGraph::buildFromIncompleteMesh( const IncompleteMeshPtr &mesh
     int posInEdges = 0;
     const int nbVert = graph.size();
     _vertices = VectorLong( nbVert + 1, 0 );
+    int orphanNodeNb = 0;
     for ( int pos = 0; pos < nbVert; ++pos ) {
         _vertices[pos] = posInEdges;
         auto &curSet = graph[pos];
         const int nodeNb = curSet.size();
+        if ( nodeNb == 0 ) {
+            ++orphanNodeNb;
+        }
         for ( const auto &nodeId : curSet ) {
             _edges.push_back( nodeId );
             ++posInEdges;
         }
         curSet = std::set< ASTERINTEGER >();
+    }
+    const int totNodeNb = allRanges[2 * nbProcs - 1];
+    int nbNodesByProcs = totNodeNb / nbProcs;
+    VectorInt tmp( 1, orphanNodeNb ), allON;
+    AsterMPI::all_gather( tmp, allON );
+    int orphanNodesTot = 0;
+    for ( const auto &val : allON ) {
+        orphanNodesTot += val;
+    }
+    if ( orphanNodesTot > nbNodesByProcs ) {
+        throw std::runtime_error( "Too many orphan nodes in mesh. Remove orphan"
+                                  " nodes from your mesh or reduce MPI process number." );
     }
     _vertices[nbVert] = posInEdges;
 };
