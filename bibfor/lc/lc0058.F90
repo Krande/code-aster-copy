@@ -315,11 +315,11 @@ subroutine lc0058(BEHinteg, &
     end if
     if (lMatr) then
         dsidep = 0.d0
-        do i=1,2*ndim
-            do j=1,2*ndim
-                dsidep(i,j)=dsidep_loc(j,i)
-            enddo
-        enddo
+        do i = 1, 2*ndim
+            do j = 1, 2*ndim
+                dsidep(i, j) = dsidep_loc(j, i)
+            end do
+        end do
     end if
 !
 end subroutine
