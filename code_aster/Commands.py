@@ -36,4 +36,4 @@ from .CodeCommands import *
 # setup DataStructures with their injectors, do not keep references here
 from .ObjectsExt import DataStructure as _dummy
 
-del _dummy
+del rc, _dummy

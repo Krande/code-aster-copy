@@ -36,6 +36,10 @@ def compat_syntax(keywords):
     if keywords.get("DEBUG", {}):
         if keywords["DEBUG"].pop("HIST_ETAPE", None):
             deprecate("DEBUT/DEBUG/HIST_ETAPE", case=2, level=7)
+    if keywords.get("CODE", {}) in ("OUI", "NON"):
+        if keywords.pop("CODE") == "OUI":
+            # the value is not used in POURSUITE
+            keywords["CODE"] = _F(NIV_PUB_WEB="INTERNET")
 
 
 DEBUT = MACRO(
@@ -181,5 +185,5 @@ DEBUT = MACRO(
         fr=tr("Permet de choisir la langue utilisée pour les messages (si disponible)"),
     ),
     INFO=SIMP(statut="f", typ="I", defaut=1, into=(1, 2)),
-    MODE=SIMP(statut="f", typ="TXM", defaut="AUTO", into=("AUTO", "INIT", "POURSUITE")),
+    MODE=SIMP(statut="f", typ="TXM", defaut="AUTO", into=("AUTO", "DEBUT", "POURSUITE")),
 )

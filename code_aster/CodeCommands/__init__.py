@@ -73,7 +73,7 @@ from .crea_champ import CREA_CHAMP
 from .crea_maillage import CREA_MAILLAGE
 from .crea_resu import CREA_RESU
 from .crea_table import CREA_TABLE
-from .debut import DEBUT, POURSUITE, NEWD, NEWP
+from .debut import DEBUT, POURSUITE
 from .defi_base_modale import DEFI_BASE_MODALE
 from .defi_base_reduite import DEFI_BASE_REDUITE
 from .defi_compor import DEFI_COMPOR

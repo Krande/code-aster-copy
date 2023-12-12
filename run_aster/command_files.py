@@ -62,7 +62,7 @@ def add_import_commands(text):
     Returns:
         str: Changed content.
     """
-    re_done = re.compile(r"^from +code_aster\.Commands", re.M)
+    re_done = re.compile(r"^from +code_aster(\.Commands| +import +CA)", re.M)
     if re_done.search(text):
         return text
 

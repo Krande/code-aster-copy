@@ -422,6 +422,7 @@ def _filteringContext(context):
             types.FunctionType,
             types.BuiltinMethodType,
             types.BuiltinFunctionType,
+            partial,
         ):
             continue
         ctxt[name] = obj
