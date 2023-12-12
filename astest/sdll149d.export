@@ -7,5 +7,7 @@ P testlist submit verification sequential
 
 F comm sdll149d.comm D 1
 F mmed sdll149a.mmed D 20
-F datg sdll149a.datg D 16
-F libr sdll149a.21 D 21
+F libr sdll149d.21 D 21
+F libr sdll149d.22 D 22
+F libr sdll149d.23 D 23
+F libr sdll149d.24 D 24
