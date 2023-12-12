@@ -115,6 +115,10 @@ def meca_non_line_ops(self, **args):
         "INCREMENT": args["INCREMENT"],
     }
 
+    if param["SOLVEUR"]["METHODE"] == "PETSC":
+        if param["SOLVEUR"]["PRE_COND"] == "LDLT_SP":
+            param["SOLVEUR"]["REAC_PRECOND"] = 0
+
     if "SCHEMA_TEMPS" in args:
         problem_type = PBT.MecaDyna
         param["SCHEMA_TEMPS"] = args["SCHEMA_TEMPS"]
