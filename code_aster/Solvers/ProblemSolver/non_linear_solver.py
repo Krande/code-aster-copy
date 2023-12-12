@@ -219,7 +219,9 @@ class NonLinearSolver(SolverFeature):
                 phys_state.current.d2U = init_state.get("ACCE").copyUsingDescription(nume_equa)
                 _msginit("ACCE")
             if "VALE" in init_state:
-                phys_state.primal_curr.setValues({"TEMP": init_state.get("VALE")})
+                phys_state.primal_curr = phys_state.createPrimal(
+                    self.phys_pb, value=init_state.get("VALE"), comp="TEMP"
+                )
 
         init_time = self.stepper.getInitial()
         self.computeExternalStateVariables(init_time)
