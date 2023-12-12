@@ -628,22 +628,18 @@ class PhysicalState(BaseFeature):
 
     # FIXME setPrimalValue?
     @profile
-    def createPrimal(self, phys_pb, value=0.0, comp=None):
+    def createPrimal(self, phys_pb, value=0.0):
         """Create primal field with a given value
 
         Arguments:
             phys_pb (PhysicalProblem): Physical problem
-            value (float): value to set everywhere
-            comp (str): name of component to be set
+            value (Union[float, dict]): value to set everywhere
 
         Returns:
             FieldOnNodes: primal field with a given value (DEPL|TEMP)
         """
         field = FieldOnNodesReal(phys_pb.getDOFNumbering())
-        if comp:
-            field.setValues({str(comp): value})
-        else:
-            field.setValues(value)
+        field.setValues(value)
         return field
 
     @profile

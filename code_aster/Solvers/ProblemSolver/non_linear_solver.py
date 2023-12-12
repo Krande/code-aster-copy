@@ -220,7 +220,7 @@ class NonLinearSolver(SolverFeature):
                 _msginit("ACCE")
             if "VALE" in init_state:
                 phys_state.primal_curr = phys_state.createPrimal(
-                    self.phys_pb, value=init_state.get("VALE"), comp="TEMP"
+                    self.phys_pb, value={"TEMP", init_state.get("VALE")}
                 )
 
         init_time = self.stepper.getInitial()
