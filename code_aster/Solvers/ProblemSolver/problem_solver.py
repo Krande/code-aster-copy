@@ -183,12 +183,6 @@ class ProblemSolver(SolverFeature):
         if not stepper:
             args = self.get_feature(SOP.Keywords)
             stepper = TimeStepper.from_keywords(**args["INCREMENT"])
-
-            if not ("INST_INIT" or "NUME_INST_INIT" in args["INCREMENT"]) and "ETAT_INIT" in args:
-                init_state = args.get("ETAT_INIT")
-                if "EVOL_NOLI" in init_state and not ("INST" or "NUME_ORDRE" in init_state):
-                    stepper.setInitial(init_state["EVOL_NOLI"].getLastTime())
-
         self.use(stepper)
         return stepper
 

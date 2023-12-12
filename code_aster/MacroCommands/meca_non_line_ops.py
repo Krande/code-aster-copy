@@ -35,8 +35,8 @@ from ..Objects import (
 from ..Solvers import ContactManager, NonLinearSolver, ProblemSolver
 from ..Solvers import ProblemType as PBT
 from ..Solvers import SolverOptions as SOP
-from ..Solvers import TimeStepper
 from ..Utilities import print_stats, reset_stats
+from ..Helpers.syntax_adapters import adapt_increment_init
 
 
 def _contact_check(CONTACT):
@@ -93,6 +93,7 @@ def meca_non_line_ops(self, **args):
     reset_stats()
 
     args = _F(args)
+    adapt_increment_init(args, "EVOL_NOLI")
 
     # Add controls to prohibit unconverted features
     _contact_check(args["CONTACT"])
