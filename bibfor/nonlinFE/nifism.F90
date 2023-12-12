@@ -115,7 +115,7 @@ subroutine nifism(ndim, nno1, nno2, nno3, npg, &
     real(kind=8) :: r, w, wm, wp, dff1(nno1, 4), dff2(nno2, 3)
     real(kind=8) :: presm(27), presd(27)
     real(kind=8) :: gonfm(27), gonfd(27)
-    real(kind=8) :: sigm_ldc(2*ndim)
+    real(kind=8) :: sigm_ldc(6)
     real(kind=8) :: gm, gd, gp, pm, pd, pp
     real(kind=8) :: fm(3, 3), jm, ftm(3, 3), corm
     real(kind=8) :: fd(3, 3), jd, jp, ftd(3, 3), cord
@@ -260,6 +260,11 @@ subroutine nifism(ndim, nno1, nno2, nno3, npg, &
         do ia = 4, 2*ndim
             sigm_ldc(ia) = sigm(ia, g)*rac2
         end do
+        if (ndim .lt. 3) then
+            do ia = 2*ndim, 6
+                sigm_ldc(ia) = 0.d0
+            end do
+        end if
 !
         taup = 0.d0
         call nmcomp(BEHinteg, &
