@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -104,6 +104,7 @@ def post_beremin_ops(self, **args):
         )
 
     else:
+
         dwb = get_beremin_properties(resupb, grmapb)
 
         make_plasticity_groups(
@@ -116,6 +117,7 @@ def post_beremin_ops(self, **args):
         signul.setValues(0)
 
         if fspb == "SIGM_ELGA":
+
             rsieq = CALC_CHAMP(
                 RESULTAT=reswbrest, GROUP_MA="mgrplasfull", INST=linstplasac, CRITERES="SIEQ_ELGA"
             )
@@ -132,6 +134,7 @@ def post_beremin_ops(self, **args):
             )
 
         elif fspb == "SIGM_ELMOY":
+
             rmelmoy = CALC_CHAMP(
                 RESULTAT=reswbrest, GROUP_MA="mgrplasfull", INST=linstplasac, CONTRAINTE="SIMY_ELGA"
             )
@@ -241,6 +244,7 @@ def sigma1(rsieq, nume_inst, dwb, reswbrest, grwb):
     modele = reswbrest.getModel()
 
     if not "SIGM_CNV" in dwb[grwb]:
+
         __sg1neut = CREA_CHAMP(
             OPERATION="ASSE",
             TYPE_CHAM="ELGA_NEUT_R",
@@ -255,6 +259,7 @@ def sigma1(rsieq, nume_inst, dwb, reswbrest, grwb):
         )
 
     else:
+
         chf = CREA_CHAMP(
             AFFE=_F(NOM_CMP="X1", GROUP_MA=grmacalc, VALE_F=dwb[grwb]["SIGM_REFE"]),
             TYPE_CHAM="NOEU_NEUT_F",
@@ -510,20 +515,21 @@ def tps_maxsigm(rsieq, mclinst, signul, maxsig, dwb, resanpb, modele, grmapb):
 
     bere_m = dwb[grmapb[0]]["M"]
 
-    def form(array):
+    def puiss_m(valsixx):
         """
         Elevation to power m
 
         Arguments:
-            array (numpy array): sixx component
+            valsixx (numpy array): sixx component
 
         Returns:
-            numpy array: array to power m
+            numpy array: valsixx**m
         """
-        return array**bere_m
+        return valsixx**bere_m
 
     for nume_inst, inst in enumerate(linstants):
         if inst in [elt[2] for elt in mclinst]:
+
             chmaxsig = CREA_CHAMP(
                 TYPE_CHAM="ELGA_SIEF_R",
                 OPERATION="EXTR",
@@ -534,16 +540,14 @@ def tps_maxsigm(rsieq, mclinst, signul, maxsig, dwb, resanpb, modele, grmapb):
                 INST=linstants[: nume_inst + 1],
             )
 
-            chsixxm = FieldOnCellsReal(modele, "ELGA", "SIEF_R")
-            chsixxm.setValues(
-                np.array([form(elt_sixx) for elt_sixx in np.array(chmaxsig.getValues())])
-            )
+            chsixxm = chmaxsig.transform(puiss_m)
 
             if resanpb is not None:
                 resimpr.setField(chsixxm, "SIEF_ELGA", nume_inst)
                 resimpr.setTime(inst, nume_inst)
 
         else:
+
             chsixxm = signul
             if resanpb is not None:
                 resimpr.setField(chsixxm, "SIEF_ELGA", nume_inst)
