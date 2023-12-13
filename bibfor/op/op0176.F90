@@ -123,6 +123,7 @@ subroutine op0176()
         call getvid('RESTREINT', 'CHAM_MATER', iocc=1, scal=nochmat, nbret=nchmat)
     end if
     if ((nbarch .eq. 0) .and. (nbrest .eq. 0)) then
+        AS_DEALLOCATE(vi=storeIndx)
         goto 999
     else if ((nbarch .eq. 0)) then
         archi => storeIndx
