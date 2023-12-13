@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,6 +20,7 @@ subroutine ibcata(ier)
     implicit none
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
+#include "asterc/jdcget.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/ibcatc.h"
@@ -38,8 +39,7 @@ subroutine ibcata(ier)
 !     ------------------------------------------------------------------
     real(kind=8) :: temps(7)
     real(kind=8) :: valr
-    character(len=8) :: nomres
-    character(len=16) :: concep, nomcmd, motfac
+    character(len=16) :: motfac
 !     ------------------------------------------------------------------
 !     --- DEFAUT POUR LES CATALOGUES D'ELEMENTS
 !     --- 3  = CATAELEM
@@ -54,7 +54,7 @@ subroutine ibcata(ier)
     character(len=32) :: dfnom(mxdfca), nom(mxcata)
     character(len=24) :: valk
     integer :: dfunit(mxdfca), unite(mxcata)
-    integer :: i
+    integer :: i, irestart
 !     ------------------------------------------------------------------
 !     OPTIONS PAR DEFAUT :
 !
@@ -71,9 +71,6 @@ subroutine ibcata(ier)
 !     --- DANS LA COMMANDE DEBUT
     ier = 0
     motfac = 'CATALOGUE'
-!
-!     --- RECUPERATION DU NOM DE LA COMMANDE UTILISATEUR ---
-    call getres(nomres, concep, nomcmd)
 !
 !     --- NOMBRE DE CATALOGUES SPECIFIES PAR L'UTILISATEUR ---
     call getfac(motfac, nbocc)
@@ -111,7 +108,8 @@ subroutine ibcata(ier)
             nbcata = nbcata+1
         end if
     end do
-    if (nbcata .eq. 0 .and. nomcmd .eq. 'DEBUT') then
+    irestart = jdcget('Continue')
+    if (nbcata .eq. 0 .and. irestart .eq. 0) then
         call ibcatc(dfnom(ieltdf), dfunit(ieltdf), ier1)
         ier = ier+ier1
     end if

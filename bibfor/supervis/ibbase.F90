@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,8 +18,10 @@
 !
 subroutine ibbase(ier)
     implicit none
+#include "asterf_types.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
+#include "asterc/jdcget.h"
 #include "asterc/loisem.h"
 #include "asterc/mofiem.h"
 #include "asterfort/getvis.h"
@@ -43,12 +45,11 @@ subroutine ibbase(ier)
 !     REMARQUE :  UN DDNAME OU SHORT NAME NE PEUT EXCEDER 7 CARACTERES
 !     ------------------------------------------------------------------
 !
-    character(len=16) :: motfac, nomres, concep, nomcmd
-!
 !     --- VARIABLES LOCALES --------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, ibase, ideb, indbas, indcas, ltt
     integer :: mxbase, mxcas, nb, nbbase, n
+    aster_logical :: restart
 !-----------------------------------------------------------------------
     parameter(mxbase=2, n=5)
     integer :: banbbl(mxbase), balgbl(mxbase), balgre(mxbase)
@@ -57,7 +58,7 @@ subroutine ibbase(ier)
     integer :: presba(mxbase)
     character(len=16) :: nomba(mxbase), nom
     character(len=16) :: stin(mxbase), stout(mxbase)
-    character(len=16) :: cas
+    character(len=16) :: cas, motfac
     character(len=32) :: titrba(mxbase)
 !
 !     --- VALEURS PAR DEFAUTS DES CAS ----------------------------------
@@ -97,9 +98,11 @@ subroutine ibbase(ier)
 !     INITIALISATION DU CODE RETOUR
     ier = 0
 !
-!     --- RECUPERATION DU NOM DE LA COMMANDE UTILISATEUR ---
-    call getres(nomres, concep, nomcmd)
-    stin(1) = nomcmd
+    stin(1) = "DEBUT"
+    restart = jdcget('Continue') .ne. 0
+    if (restart) then
+        stin(1) = "POURSUITE"
+    end if
 !
     indcas = 1
     do indbas = 1, mxbase
@@ -180,7 +183,7 @@ subroutine ibbase(ier)
 !
 !
 !     --- QUELQUES CONTROLES SUPPLEMENTAIRES SUR LA GLOBALE EN POURSUITE
-    if (nomcmd .eq. 'POURSUITE') then
+    if (restart) then
         call utremt('GLOBALE', nomba, mxbase, indbas)
         if (indbas .gt. 0) then
             if (stin(indbas) .ne. 'POURSUITE') then

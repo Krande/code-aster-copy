@@ -3,7 +3,7 @@
  * @brief Python bindings for Fortran interface.
  * @author Mathieu Courtois
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -55,31 +55,6 @@ Arguments:
 Execute initializations before and after operator but without executing any
 operator.
         )" );
-
-    mod.def( "call_ops", &call_ops, R"(
-Call a Fortran 'ops' subroutine.
-
-Arguments:
-    syntax (CommandSyntax): Object containing the user syntax.
-    ops (int): Number of the `ops00x` subroutine.
-        )",
-             py::arg( "syntax" ), py::arg( "ops" ) );
-
-    mod.def( "call_debut", &call_debut, R"(
-Call a Fortran 'debut' subroutine.
-
-Arguments:
-    syntax (CommandSyntax): Object containing the user syntax.
-        )",
-             py::arg( "syntax" ) );
-
-    mod.def( "call_poursuite", &call_poursuite, R"(
-Call a Fortran 'poursuite' subroutine.
-
-Arguments:
-    syntax (CommandSyntax): Object containing the user syntax.
-        )",
-             py::arg( "syntax" ) );
 
     mod.def( "cmd_ctxt_enter", &call_cmd_ctxt_enter, R"(
 Call Fortran 'cmd_ctxt_enter' subroutine.

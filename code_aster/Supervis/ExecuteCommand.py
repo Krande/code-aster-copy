@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -216,7 +216,7 @@ class ExecuteCommand:
         self.print_syntax(keywords)
         stop = False
         try:
-            if not self._op and self.command_name not in ("DEBUT", "POURSUITE"):
+            if self._op is None and self.command_name not in ("DEBUT", "POURSUITE"):
                 # for commands that do not call any operator, do initializations
                 libaster.call_oper_init()
             with command_execution():
@@ -605,20 +605,6 @@ def check_jeveux():
         raise RuntimeError(
             "code_aster memory manager is not started. " "No command can be executed."
         )
-
-
-class ExecuteCommandOps(ExecuteCommand):
-
-    """This implements an executor of commands that use an
-    `opsXXX` subroutine."""
-
-    def _call_oper(self, syntax):
-        """Call fortran operator.
-
-        Arguments:
-            syntax (*CommandSyntax*): Syntax description with user keywords.
-        """
-        return libaster.call_ops(syntax, self._op)
 
 
 HELP_LEGACY_MODE = """

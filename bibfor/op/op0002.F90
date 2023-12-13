@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ops026()
+subroutine op0002()
     implicit none
 !
 !    OPERATEUR DEFI_FICHIER

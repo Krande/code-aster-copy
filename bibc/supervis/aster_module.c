@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -2230,11 +2230,6 @@ static PyMethodDef aster_methods[] = {
     { "fclose", aster_fclose, METH_VARARGS },
     { "ulopen", aster_ulopen, METH_VARARGS },
     { "affiche", aster_affich, METH_VARARGS },
-    // {"init",         aster_init,         METH_VARARGS},
-    // {"debut",        aster_debut,        METH_VARARGS},
-    // {"poursu",       aster_poursu,       METH_VARARGS},
-    // {"oper",         aster_oper,         METH_VARARGS},
-    // {"opsexe",       aster_opsexe,       METH_VARARGS},
     { "impers", aster_impers, METH_VARARGS },
     { "mdnoma", aster_mdnoma, METH_VARARGS },
     { "mdnoch", aster_mdnoch, METH_VARARGS },
@@ -2250,7 +2245,6 @@ static PyMethodDef aster_methods[] = {
     { "jeveux_getobjects", jeveux_getobjects, METH_VARARGS },
     { "jeveux_getattr", jeveux_getattr, METH_VARARGS },
     { "jeveux_exists", jeveux_exists, METH_VARARGS },
-    // {"jeveux_status", jeveux_status,     METH_VARARGS},
     { "get_nom_concept_unique", aster_gcncon, METH_VARARGS },
     { NULL, NULL } /* sentinel */
 };

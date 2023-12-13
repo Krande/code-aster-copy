@@ -101,7 +101,7 @@ class ExecutionStarter:
 class Starter(ExecuteCommand):
     """Define the commands DEBUT/POURSUITE."""
 
-    command_name = None
+    command_name = "DEBUT"
     level = 7
 
     @classmethod
@@ -116,6 +116,10 @@ class Starter(ExecuteCommand):
             return
 
         params = ExecutionStarter.params
+        if caller == "init":
+            cls.level += 1
+        if rc.initialize:
+            cls.level += 8
         # restart = 'True | False | None' from rc / override by keywords
         restart = rc.restart
         # force startup or continue ?
@@ -124,28 +128,21 @@ class Starter(ExecuteCommand):
             restart = False
         if caller == "POURSUITE" or mode == "POURSUITE" or params.get_option("Continue"):
             restart = True
+
+        startable = Serializer.canRestart(silent=True)
         if restart is None:
-            restart = Serializer.canRestart(silent=True)
+            restart = startable
+        if restart:
+            if not startable:
+                logger.error("restart aborted!")
+            logger.info("restarting from a previous execution...")
+        else:
+            logger.info("starting the execution...")
+
         params.set_option("ForceStart", not restart)
         params.set_option("Continue", restart)
 
-        # FIXME use the same catalog
-        cls.command_name = "DEBUT" if not restart else "POURSUITE"
-        if restart:
-            keywords.pop("MODE", None)
-
         super().run(**keywords)
-
-    @classmethod
-    def run_with_argv(cls, **keywords):
-        """Wrapper to have the same depth calling loadObjects from
-        `init()` and `POURSUITE()`.
-        """
-        cmd = cls()
-        cmd._result = None
-        cmd._cata.addDefaultKeywords(keywords)
-        remove_none(keywords)
-        cmd.exec_(keywords)
 
     def exec_(self, keywords):
         """Execute the command.
@@ -217,22 +214,15 @@ class Starter(ExecuteCommand):
         Arguments:
             syntax (*CommandSyntax*): Syntax description with user keywords.
         """
-        if ExecutionStarter.params.option & Options.Continue:
-            if not Serializer.canRestart():
-                logger.error("restart aborted!")
+        super()._call_oper(syntax)
 
-            logger.info("restarting from a previous execution...")
-            libaster.call_poursuite(syntax)
+        if ExecutionStarter.params.option & Options.Continue:
             # 1:_call_oper, 2:ExecuteCommand.exec_, 3:Starter.exec_,
             #  4:Restarter.run, 5:ExecuteCommand.run_, 6:ExecuteCmd.run, 7:user
             # 1:_call_oper, 2:ExecuteCommand.exec_, 3:Starter.exec_,
             #  4:_run_with_argv, 5:run_with_argv, 6:init, 7:user
-            # when called during 'import CA', 8 levels are added...
-            # DEBUT(MODE="POURSUITE") / POURSUITE(): level=7
-            loadObjects(level=self.level + 9 * int(rc.initialize))
-        else:
-            logger.info("starting the execution...")
-            libaster.call_debut(syntax)
+            # when called during 'import CA', 9 levels are added...
+            loadObjects(level=self.level)
 
 
 DEBUT = partial(Starter.run, caller="DEBUT")

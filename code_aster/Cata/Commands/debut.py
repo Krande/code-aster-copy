@@ -32,10 +32,12 @@ def compat_syntax(keywords):
         keywords (dict): User's keywords, changed in place.
     """
     if keywords.pop("PAR_LOT", None):
-        deprecate("DEBUT/PAR_LOT", case=2, level=7)
+        deprecate("PAR_LOT", case=2, level=7)
+    if keywords.pop("FORMAT_HDF", None):
+        deprecate("POURSUITE/FORMAT_HDF", case=2, level=7)
     if keywords.get("DEBUG", {}):
         if keywords["DEBUG"].pop("HIST_ETAPE", None):
-            deprecate("DEBUT/DEBUG/HIST_ETAPE", case=2, level=7)
+            deprecate("DEBUG/HIST_ETAPE", case=2, level=7)
     if keywords.get("CODE", {}) in ("OUI", "NON"):
         if keywords.pop("CODE") == "OUI":
             # the value is not used in POURSUITE
@@ -44,10 +46,10 @@ def compat_syntax(keywords):
 
 DEBUT = MACRO(
     nom="DEBUT",
-    op=None,
+    op=0,
     compat_syntax=compat_syntax,
     repetable="n",
-    fr=tr("Ouverture d'une étude. Allocation des ressources mémoire et disque et fichiers"),
+    fr=tr("Initialisation des ressources, démarrage ou reprise d'un calcul."),
     IMPR_MACRO=SIMP(
         fr=tr("affichage des sous-commandes produites par les macros dans le fichier mess"),
         statut="f",

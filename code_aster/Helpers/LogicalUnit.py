@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -51,8 +51,10 @@ a Python command.
 import os
 import os.path as osp
 
+import libaster
+
 from ..Cata.Syntax import _F
-from ..Supervis import ExecuteCommandOps
+from ..Supervis import ExecuteCommand
 from ..Utilities.logger import logger
 
 # Units 6 and 9 can not be released/associated.
@@ -301,11 +303,10 @@ class ReservedUnitUsed:
             LogicalUnitFile.register(unit, None, Action.Open, FileType.Ascii, FileAccess.Append)
 
 
-class DefineUnitFile(ExecuteCommandOps):
+class DefineUnitFile(ExecuteCommand):
     """Execute legacy operator DEFI_FICHIER."""
 
     command_name = "DEFI_FICHIER"
-    command_op = 26
 
     def create_result(self, keywords):
         """Initialize the result.

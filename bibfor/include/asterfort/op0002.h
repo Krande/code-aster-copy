@@ -16,9 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine poursu()
-    implicit none
-!     --- CHARGEMENT DE LA MEMOIRE JEVEUX ------------------------------
-#include "asterfort/debut.h"
-    call debut()
-end subroutine
+interface
+    subroutine op0002()
+    end subroutine op0002
+end interface
