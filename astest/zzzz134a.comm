@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,6 +19,9 @@
 
 import numpy as np
 import numpy.linalg as npl
+
+from code_aster.Commands import *
+from code_aster import CA
 
 rc_hexa8 = np.array(
     [
@@ -39,7 +42,7 @@ w_hexa8 = np.ones((8))
 
 try:
     import sympy
-    from sympy import symbols, diff
+    from sympy import diff, symbols
 
     a1, a2, a3 = symbols("a1 a2 a3")
 
@@ -369,7 +372,7 @@ RES1 = STAT_NON_LINE(
 
 NU = NUME_DDL(MODELE=mod)
 
-DU = code_aster.FieldOnNodesReal(NU)
+DU = CA.FieldOnNodesReal(NU)
 
 # ne fonctionne pas !!
 # DU = CREA_CHAMP(
@@ -379,7 +382,7 @@ DU = code_aster.FieldOnNodesReal(NU)
 # AFFE=_F(TOUT="OUI", NOM_CMP=("DX", "DY", "DZ"), VALE=(0.0, 0.0, 0.0)),
 # )
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 xe = 1.0 * np.array(
     [
         [0.0, 0.0, 0.0],

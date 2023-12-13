@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,16 +17,16 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import code_aster
 from code_aster.Commands import *
+from code_aster import CA
 
-code_aster.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
+CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 
 from zzzz154a_cmd import MACRO_TEST
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
-mesh = code_aster.Mesh.buildSquare()
+mesh = CA.Mesh.buildSquare()
 
 ther1 = CREA_CHAMP(
     MAILLAGE=mesh,
@@ -47,7 +47,7 @@ ther3 = CREA_CHAMP(
     AFFE=_F(NOM_CMP="TEMP", VALE=3.0, TOUT="OUI"),
 )
 
-ther_dict = code_aster.ThermalResultDict("ther_dict")
+ther_dict = CA.ThermalResultDict("ther_dict")
 test.assertEqual(len(ther_dict), 0, msg="check len()")
 test.assertEqual(ther_dict.getType(), "EVOL_THER_DICT", msg="check type")
 
@@ -87,4 +87,4 @@ dict_test = MACRO_TEST(
 
 test.printSummary()
 
-code_aster.close()
+CA.close()
