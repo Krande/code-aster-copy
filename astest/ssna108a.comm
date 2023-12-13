@@ -154,9 +154,7 @@ ULOG_VI=EXTR_RESU(RESULTAT=TLOG,
                  NOM_CHAM = 'VARI_ELGA'))
 
 IMPR_RESU(
-          #MODELE=MO,
           FORMAT='MED',
-          UNITE=8,
           RESU=(
                 _F(RESULTAT=ULOG_VI,
                    NOM_CHAM='VARI_ELGA',
