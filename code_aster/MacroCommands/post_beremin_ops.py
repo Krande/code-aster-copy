@@ -263,18 +263,18 @@ def sigma1(rsieq, nume_inst, dwb, reswbrest, grwb):
         )
 
         chmat = reswbrest.getMaterialField()
-        ExtVariAffe = chmat.getExtStateVariablesOnMeshEntities()
-        for curIter in ExtVariAffe:
-            ExtVari = curIter[0]
-            Nom_varc = ExternalVariableTraits.getExternVarTypeStr(ExtVari.getType())
-            if Nom_varc == "TEMP":
-                inputField = ExtVari.getField()
-                evolParam = ExtVari.getEvolutionParameter()
+        extvariaffe = chmat.getExtStateVariablesOnMeshEntities()
+        for curiter in extvariaffe:
+            extvari = curiter[0]
+            nom_varc = ExternalVariableTraits.getExternVarTypeStr(extvari.getType())
+            if nom_varc == "TEMP":
+                inputfield = extvari.getField()
+                evolparam = extvari.getEvolutionParameter()
 
-                if inputField:
-                    chamchpar = inputField
-                if evolParam:
-                    chamchpar = evolParam.getTransientResult().getField("TEMP", nume_inst)
+                if inputfield:
+                    chamchpar = inputfield
+                if evolparam:
+                    chamchpar = evolparam.getTransientResult().getField("TEMP", nume_inst)
 
         chpar = CREA_CHAMP(
             OPERATION="ASSE",
@@ -358,27 +358,66 @@ def sig1plasac(resultat, rsieq, numv1v2, dwb, reswbrest, grmapb, mclinst, signul
 
     maxsig = NonLinearResult()
     maxsig.allocate(rsieq.getNumberOfIndexes())
+    seuil = dwb[grmapb[0]]["SEUIL_EPSP_CUMU"]
 
     for nume_inst in rsieq.getAccessParameters()["NUME_ORDRE"]:
         grcalc = "mgrplas_{}".format(nume_inst)
         inst = rsieq.getTime(nume_inst)
 
         if inst in [elt[2] for elt in mclinst]:
-            tronque = CALC_CHAMP(
-                RESULTAT=resultat,
-                INST=inst,
-                GROUP_MA=grmapb[0],
-                CHAM_UTIL=_F(
-                    NOM_CHAM="VARI_ELGA",
-                    FORMULE=FORMULE(
-                        NOM_PARA=("V{}".format(numv1v2[0]), "V{}".format(numv1v2[1])),
-                        VALE="indic_plasac(V{}, V{}, seuil)".format(numv1v2[0], numv1v2[1]),
-                        indic_plasac=indic_plasac,
-                        seuil=dwb[grmapb[0]]["SEUIL_EPSP_CUMU"],
+
+            chvari = resultat.getField("VARI_ELGA", nume_inst)
+
+            chvgrcalc = CREA_CHAMP(
+                OPERATION="ASSE",
+                TYPE_CHAM="ELGA_VARI_R",
+                MODELE=modele,
+                PROL_ZERO="OUI",
+                ASSE=(
+                    _F(
+                        GROUP_MA=grmapb[0],
+                        CHAM_GD=chvari,
+                        NOM_CMP="V{}".format(numv1v2[0]),
+                        NOM_CMP_RESU="V1",
                     ),
-                    NUME_CHAM_RESU=1,
+                    _F(
+                        GROUP_MA=grmapb[0],
+                        CHAM_GD=chvari,
+                        NOM_CMP="V{}".format(numv1v2[1]),
+                        NOM_CMP_RESU="V2",
+                    ),
                 ),
             )
+
+            siyynew = CREA_CHAMP(
+                OPERATION="AFFE",
+                TYPE_CHAM="ELGA_SIEF_R",
+                MODELE=modele,
+                PROL_ZERO="OUI",
+                AFFE=_F(GROUP_MA=grmapb[0], NOM_CMP="SIXX", VALE=1),
+            )
+
+            nzval = np.array(
+                (
+                    [
+                        indic_plasac(_v1, _v2, seuil)
+                        for (_v1, _v2) in zip(
+                            chvgrcalc.getValuesWithDescription("V1", [grmapb[0]])[0],
+                            chvgrcalc.getValuesWithDescription("V2", [grmapb[0]])[0],
+                        )
+                    ]
+                )
+            )
+
+            valsiyynew = []
+            iaux = 0
+            for value in siyynew.getValues():
+                if value == 1:
+                    valsiyynew.append(nzval[iaux])
+                    iaux = iaux + 1
+                else:
+                    valsiyynew.append(0)
+            siyynew.setValues(valsiyynew)
 
             sign = CREA_CHAMP(
                 OPERATION="ASSE",
@@ -392,12 +431,7 @@ def sig1plasac(resultat, rsieq, numv1v2, dwb, reswbrest, grmapb, mclinst, signul
                         NOM_CMP="X1",
                         NOM_CMP_RESU="SIXX",
                     ),
-                    _F(
-                        GROUP_MA=grcalc,
-                        CHAM_GD=tronque.getField("UT01_ELGA", nume_inst),
-                        NOM_CMP="X1",
-                        NOM_CMP_RESU="SIYY",
-                    ),
+                    _F(GROUP_MA=grcalc, CHAM_GD=siyynew, NOM_CMP="SIXX", NOM_CMP_RESU="SIYY"),
                 ),
             )
 
