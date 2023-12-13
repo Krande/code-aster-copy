@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -90,8 +90,7 @@ subroutine nmext3(mesh, field, field_type, field_s, &
     real(kind=8) :: vale_resu(nb_para_maxi)
     integer :: i_elem, i_poin, i_spoi, i_elem_r, i_poin_r, i_spoi_r, elem_nume
     integer :: poin_nume, spoi_nume, iret
-    integer :: nb_elem_poin, nb_elem_spoi, nb_poin_r, nb_spoi_r
-    character(len=8) :: elem_name
+    integer :: nb_elem_poin, nb_elem_spoi, nb_poin_r, nb_spoi_r, nb_elem_effe
     integer :: i_vale, nb_vale
     real(kind=8) :: valr, val2r
     integer :: jcesd, jcesl, jcesv, jcesc
@@ -105,6 +104,8 @@ subroutine nmext3(mesh, field, field_type, field_s, &
 ! --------------------------------------------------------------------------------------------------
 !
     ASSERT(nb_cmp .le. nb_para_maxi)
+    ASSERT(nb_poin .ge. 1)
+    ASSERT(nb_spoi .ge. 1)
 !
 ! - Conversion to reduced field (CHAM_ELEM_S)
 !
@@ -137,6 +138,17 @@ subroutine nmext3(mesh, field, field_type, field_s, &
     call jeveuo(list_poin, 'L', vi=v_list_poin)
     call jeveuo(list_spoi, 'L', vi=v_list_spoi)
 !
+! - Effective number of elements (for which there is at least one point and one subpoint)
+!
+    nb_elem_effe = 0
+    do i_elem = 1, nb_elem
+        elem_nume = v_list_elem(i_elem)
+        nb_elem_poin = zi(jcesd+5+4*(elem_nume-1))
+        nb_elem_spoi = zi(jcesd+5+4*(elem_nume-1)+1)
+        if (nb_elem_poin*nb_elem_spoi .ge. 1) nb_elem_effe = nb_elem_effe+1
+    end do
+    ASSERT(nb_elem_effe .ge. 1)
+!
 ! - Loop on elements
 !
     do i_elem = 1, nb_elem
@@ -148,7 +160,6 @@ subroutine nmext3(mesh, field, field_type, field_s, &
 ! ----- Current element
 !
         elem_nume = v_list_elem(i_elem)
-        call jenuno(jexnum(mesh(1:8)//'.NOMMAI', elem_nume), elem_name)
 !
 ! ----- Number of points/subpoints on current element
 !
@@ -157,10 +168,9 @@ subroutine nmext3(mesh, field, field_type, field_s, &
 !
 ! ----- Check
 !
-        nb_poin_r = nb_poin
-        nb_spoi_r = nb_spoi
-        if (nb_poin_r .gt. nb_elem_poin) nb_poin_r = nb_elem_poin
-        if (nb_spoi_r .gt. nb_elem_spoi) nb_spoi_r = nb_elem_spoi
+        nb_poin_r = min(nb_poin, nb_elem_poin)
+        nb_spoi_r = min(nb_spoi, nb_elem_spoi)
+        if (nb_poin_r*nb_spoi_r .eq. 0) goto 100
 !
 ! --------- Extract and set point/subpoint value(s) by element
 !
@@ -211,7 +221,7 @@ subroutine nmext3(mesh, field, field_type, field_s, &
                     else if (type_extr_elem .eq. 'MOY') then
                         v_work_poin(1+nb_poin*nb_spoi*(i_vale-1)+ &
                                     nb_spoi*(i_poin_r-1)+ &
-                                    (i_spoi_r-1)) = valr+val2r
+                                    (i_spoi_r-1)) = val2r+valr/(nb_poin_r*nb_spoi_r)
                     else
                         ASSERT(.false.)
                     end if
@@ -221,18 +231,8 @@ subroutine nmext3(mesh, field, field_type, field_s, &
 !
 ! --------- Extract and set point/subpoint value(s) by point/subpoint
 !
-        do i_poin = 1, nb_poin_r
-            do i_spoi = 1, nb_spoi_r
-!
-! ----------------- Select index in working vectors (point/subpoint)
-!
-                if (type_extr_elem .eq. 'VALE') then
-                    i_poin_r = i_poin
-                    i_spoi_r = i_spoi
-                else
-                    i_poin_r = 1
-                    i_spoi_r = 1
-                end if
+        do i_poin = 1, merge(nb_poin_r, 1, type_extr_elem .eq. 'VALE')
+            do i_spoi = 1, merge(nb_spoi_r, 1, type_extr_elem .eq. 'VALE')
 !
 ! ----------------- Save values in working vector (point)
 !
@@ -246,71 +246,51 @@ subroutine nmext3(mesh, field, field_type, field_s, &
                         i_elem_r = 1
                     end if
                     valr = v_work_poin(1+nb_poin*nb_spoi*(i_vale-1)+ &
-                                       nb_spoi*(i_poin_r-1)+ &
-                                       (i_spoi_r-1))
+                                       nb_spoi*(i_poin-1)+ &
+                                       (i_spoi-1))
 
                     val2r = v_work_elem(1+nb_cmp*nb_poin*nb_spoi*(i_elem_r-1)+ &
                                         nb_poin*nb_spoi*(i_vale-1)+ &
-                                        nb_spoi*(i_poin_r-1)+ &
-                                        (i_spoi_r-1))
+                                        nb_spoi*(i_poin-1)+ &
+                                        (i_spoi-1))
                     if (type_extr .eq. 'VALE') then
                         v_work_elem(1+nb_cmp*nb_poin*nb_spoi*(i_elem_r-1)+ &
                                     nb_poin*nb_spoi*(i_vale-1)+ &
-                                    nb_spoi*(i_poin_r-1)+ &
-                                    (i_spoi_r-1)) = valr
+                                    nb_spoi*(i_poin-1)+ &
+                                    (i_spoi-1)) = valr
                     else if (type_extr .eq. 'MAX') then
                         v_work_elem(1+nb_cmp*nb_poin*nb_spoi*(i_elem_r-1)+ &
                                     nb_poin*nb_spoi*(i_vale-1)+ &
-                                    nb_spoi*(i_poin_r-1)+ &
-                                    (i_spoi_r-1)) = max(valr, val2r)
+                                    nb_spoi*(i_poin-1)+ &
+                                    (i_spoi-1)) = max(valr, val2r)
                     else if (type_extr .eq. 'MIN') then
                         v_work_elem(1+nb_cmp*nb_poin*nb_spoi*(i_elem_r-1)+ &
                                     nb_poin*nb_spoi*(i_vale-1)+ &
-                                    nb_spoi*(i_poin_r-1)+ &
-                                    (i_spoi_r-1)) = min(valr, val2r)
+                                    nb_spoi*(i_poin-1)+ &
+                                    (i_spoi-1)) = min(valr, val2r)
                     else if (type_extr .eq. 'MAXI_ABS') then
                         v_work_elem(1+nb_cmp*nb_poin*nb_spoi*(i_elem_r-1)+ &
                                     nb_poin*nb_spoi*(i_vale-1)+ &
-                                    nb_spoi*(i_poin_r-1)+ &
-                                    (i_spoi_r-1)) = max(abs(val2r), abs(valr))
+                                    nb_spoi*(i_poin-1)+ &
+                                    (i_spoi-1)) = max(abs(val2r), abs(valr))
                     else if (type_extr .eq. 'MINI_ABS') then
                         v_work_elem(1+nb_cmp*nb_poin*nb_spoi*(i_elem_r-1)+ &
                                     nb_poin*nb_spoi*(i_vale-1)+ &
-                                    nb_spoi*(i_poin_r-1)+ &
-                                    (i_spoi_r-1)) = min(abs(val2r), abs(valr))
+                                    nb_spoi*(i_poin-1)+ &
+                                    (i_spoi-1)) = min(abs(val2r), abs(valr))
                     else if (type_extr .eq. 'MOY') then
                         v_work_elem(1+nb_cmp*nb_poin*nb_spoi*(i_elem_r-1)+ &
                                     nb_poin*nb_spoi*(i_vale-1)+ &
-                                    nb_spoi*(i_poin_r-1)+ &
-                                    (i_spoi_r-1)) = valr+val2r
+                                    nb_spoi*(i_poin-1)+ &
+                                    (i_spoi-1)) = val2r+valr/nb_elem_effe
                     else
                         ASSERT(.false.)
                     end if
                 end do
             end do
         end do
+100     continue
     end do
-
     AS_DEALLOCATE(vr=v_init_poin)
-!
-! - For mean value
-!
-    if (type_extr .eq. 'MOY') then
-        i_elem_r = 1
-        do i_poin = 1, nb_poin_r
-            do i_spoi = 1, nb_spoi_r
-                do i_vale = 1, nb_vale
-                    val2r = v_work_elem(1+nb_cmp*nb_poin*nb_spoi*(i_elem_r-1)+ &
-                                        nb_poin*nb_spoi*(i_vale-1)+ &
-                                        nb_spoi*(i_poin_r-1)+ &
-                                        (i_spoi_r-1))
-                    v_work_elem(1+nb_cmp*nb_poin*nb_spoi*(i_elem_r-1)+ &
-                                nb_poin*nb_spoi*(i_vale-1)+ &
-                                nb_spoi*(i_poin_r-1)+ &
-                                (i_spoi_r-1)) = val2r/nb_elem
-                end do
-            end do
-        end do
-    end if
 !
 end subroutine
