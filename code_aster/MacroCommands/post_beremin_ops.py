@@ -316,22 +316,52 @@ def sigma1(rsieq, nume_inst, dwb, reswbrest, grwb):
             ),
         )
 
-        sg1fc = CREA_CHAMP(
-            OPERATION="AFFE",
-            TYPE_CHAM="ELGA_NEUT_F",
+        sq2 = CREA_CHAMP(
+            OPERATION="ASSE",
+            TYPE_CHAM="ELGA_SIEF_R",
             MODELE=modele,
             PROL_ZERO="OUI",
-            AFFE=_F(
-                GROUP_MA=grmacalc,
-                NOM_CMP="X1",
-                VALE_F=FORMULE(
-                    NOM_PARA=("X1", "X2"), VALE="X1/X2*sigm_cnv", sigm_cnv=dwb[grwb]["SIGM_CNV"]
+            ASSE=(
+                _F(
+                    GROUP_MA=grmacalc,
+                    CHAM_GD=sqsursgrefe,
+                    NOM_CMP="X1",
+                    NOM_CMP_RESU="SIXX",
                 ),
+                _F(GROUP_MA=grmacalc,
+                   CHAM_GD=sqsursgrefe,
+                   NOM_CMP="X2",
+                   NOM_CMP_RESU="SIYY"),
+            ),
+        )
+
+        rdivaux = NonLinearResult()
+        rdivaux.allocate(1)
+        rdivaux.setField(sq2, "SIEF_ELGA", 0)
+        rdivaux.setModel(modele, 0)
+
+        rdiv1 = CALC_CHAMP(
+            RESULTAT=rdivaux,
+            GROUP_MA=grmacalc,
+            CHAM_UTIL=_F(
+                NOM_CHAM="SIEF_ELGA",
+                FORMULE=FORMULE(NOM_PARA=("SIXX", "SIYY"), VALE="SIXX/SIYY*sigm_cnv",
+                                sigm_cnv=dwb[grwb]["SIGM_CNV"]),
+                NUME_CHAM_RESU=1,
             ),
         )
 
         __sg1neut = CREA_CHAMP(
-            OPERATION="EVAL", TYPE_CHAM="ELGA_NEUT_R", CHAM_F=sg1fc, CHAM_PARA=sqsursgrefe
+            OPERATION="ASSE",
+            TYPE_CHAM="ELGA_NEUT_R",
+            MODELE=modele,
+            PROL_ZERO="OUI",
+            ASSE=_F(
+                GROUP_MA=grmacalc,
+                CHAM_GD=rdiv1.getField("UT01_ELGA", 0),
+                NOM_CMP="X1",
+                NOM_CMP_RESU="X1",
+            ),
         )
 
     return __sg1neut
