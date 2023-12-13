@@ -856,7 +856,9 @@ def get_depl_mult_appui(depl_mult_appui):
     return depl_mult_appuis, D_e_dirs
 
 
-def impr_vale_spec_mono(output_result, type_resu, option, mode_meca, dir, R_mi_all):
+def impr_vale_spec_mono(
+    output_result, type_resu, option, mode_meca, dir, R_mi_all, nume_ordres_resu
+):
     """print out spectral value for mono_appui
     Args:
         output_result   : SD output mult-elas
@@ -921,10 +923,12 @@ def impr_vale_spec_mono(output_result, type_resu, option, mode_meca, dir, R_mi_a
         # printing out spectral value for each mode and each direction
         for i_nume_ordre in range(len(nume_ordres)):
             nume_ordre = nume_ordres[i_nume_ordre]
+            # search for position in resu
+            i_nume_ordres_resu = (nume_ordres_resu.tolist()).index(nume_ordre)
             # NOM_CAS
             case_name = "SPEC_" + str(nume_ordre) + str(dir.replace("O", ""))
             # put values in field to be printed out
-            field_output.setValues(R_mi_all[i_nume_ordre])
+            field_output.setValues(R_mi_all[i_nume_ordres_resu])
             # Store field
             nbIndexes += 1
             output_result.resize(nbIndexes)
@@ -1070,7 +1074,9 @@ def impr_vale_tota(output_result, type_resu, option, mode_meca, R_xyz, R_newmark
     # return
 
 
-def impr_vale_spec_mult(output_result, type_resu, option, mode_meca, dir, R_mi_j, APPUI=None):
+def impr_vale_spec_mult(
+    output_result, type_resu, option, mode_meca, dir, R_mi_j, nume_ordres_resu, APPUI=None
+):
     """print out spectral response for each mode, direction and support (APPUI)
     Args:
         output_result   : SD output mult-elas
@@ -1145,11 +1151,14 @@ def impr_vale_spec_mult(output_result, type_resu, option, mode_meca, dir, R_mi_j
     ):
         # print out result for nom_appui = APPUI
         for i_nume_ordre in range(len(nume_ordres)):
+            # interation for each modes to be printed
             nume_ordre = nume_ordres[i_nume_ordre]
+            # search for position in resu
+            i_nume_ordres_resu = (nume_ordres_resu.tolist()).index(nume_ordre)
             # NOM_CAS
             case_name = "SPEC_" + str(nume_ordre) + str(dir.replace("O", "")) + str(APPUI)
             # Mettre les valeurs dans ce champ
-            field_output.setValues(R_mi_j[i_nume_ordre])
+            field_output.setValues(R_mi_j[i_nume_ordres_resu])
             # Store field
             nbIndexes += 1
             output_result.resize(nbIndexes)
@@ -1723,7 +1732,13 @@ def comb_sism_modal_ops(self, **args):
                 # Print output for spectral value for each mode and direction
                 if any(type_resu[i].get("TYPE") == "VALE_SPEC" for i in range(len(type_resu))):
                     impr_vale_spec_mono(
-                        output_result, type_resu, option, mode_meca, spectre_dir, R_mi_all
+                        output_result,
+                        type_resu,
+                        option,
+                        mode_meca,
+                        spectre_dir,
+                        R_mi_all,
+                        nume_ordres,
                     )
                 # step 3: modal combinaison
                 # Get input COMB_MODE
@@ -2101,6 +2116,7 @@ def comb_sism_modal_ops(self, **args):
                             mode_meca,
                             direction,
                             R_m_appui,
+                            nume_ordres,
                             APPUI=nom_appui,
                         )
                     # response due to DDS
@@ -2337,12 +2353,8 @@ def comb_sism_modal_ops(self, **args):
                 )
             # Print out for INFO = 1 or 2
             # print("mode_meca", mode_meca)
-            print("mode_meca.id()", mode_meca.id())
             # print("mode_meca.property", mode_meca.property)
-            print("mode_meca.getDependencies()", mode_meca.getDependencies)
             # print("mode_meca.getResultName()", mode_meca.getResultName())
-            print("mode_meca.getName", mode_meca.getName())
-            print("mode_meca.getTitle", mode_meca.getTitle())
             # print("mode_meca.LIST_PARA()", mode_meca.LIST_PARA())
             if verbosity and i_option == 1:
                 # about mode_meca

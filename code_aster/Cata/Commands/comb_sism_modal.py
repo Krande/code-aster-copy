@@ -106,10 +106,8 @@ COMB_SISM_MODAL = MACRO(
     DEPL_MULT_APPUI=FACT(
         statut="f",
         max="**",
-        regles=(EXCLUS("NOEUD_REFE", "GROUP_NO_REFE"), AU_MOINS_UN("DX", "DY", "DZ")),
+        regles=(AU_MOINS_UN("DX", "DY", "DZ")),
         MODE_STAT=SIMP(statut="o", typ=mode_meca),
-        NOEUD_REFE=SIMP(statut="c", typ=no, max=1),
-        GROUP_NO_REFE=SIMP(statut="f", typ=grno, max=1),
         NOM_APPUI=SIMP(statut="o", typ="TXM", max=1),
         DX=SIMP(statut="f", typ="R", max=1),
         DY=SIMP(statut="f", typ="R", max=1),
@@ -139,7 +137,7 @@ COMB_SISM_MODAL = MACRO(
             statut="o",
             max="**",
             regles=(UN_PARMI("TOUT", "LIST_APPUI"),),
-            TOUT=SIMP(statut="f", typ="TXM", into=("OUI", "NON")),
+            TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
             LIST_APPUI=SIMP(statut="f", typ="TXM", max="**"),
             NOM=SIMP(statut="o", typ="TXM", max=1),
         ),
@@ -277,20 +275,14 @@ COMB_SISM_MODAL = MACRO(
                         "TOUT_ORDRE", "NUME_ORDRE", "LIST_ORDRE", "NUME_MODE", "FREQ", "LIST_FREQ"
                     ),
                     EXCLUS("TOUT_APPUI", "LIST_APPUI"),
-                    EXCLUS("TOUT_GROUP_APPUI", "LIST_GROUP_APPUI"),
                 ),
                 LIST_APPUI=SIMP(statut="f", typ="TXM", max="**"),
-                TOUT_APPUI=SIMP(statut="f", typ="TXM", into=("OUI", "NON")),
-                LIST_GROUP_APPUI=SIMP(statut="f", typ="TXM", max="**"),
-                TOUT_GROUP_APPUI=SIMP(statut="f", typ="TXM", into=("OUI", "NON")),
+                TOUT_APPUI=SIMP(statut="f", typ="TXM", into=("OUI",)),
                 LIST_AXE=SIMP(statut="o", typ="TXM", into=("X", "Y", "Z"), max=3),
             ),
             b_vale_osci=BLOC(
                 condition="""equal_to("TYPE", 'VALE_OSCI') """,
                 LIST_AXE=SIMP(statut="f", typ="TXM", into=("X", "Y", "Z"), max=3),
-                regles=(EXCLUS("TOUT_GROUP_APPUI", "LIST_GROUP_APPUI"),),
-                LIST_GROUP_APPUI=SIMP(statut="f", typ="TXM", max="**"),
-                TOUT_GROUP_APPUI=SIMP(statut="f", typ="TXM", into=("OUI", "NON")),
             ),
             b_vale_qs=BLOC(
                 condition="""equal_to("TYPE", 'VALE_QS') """,
@@ -306,7 +298,7 @@ COMB_SISM_MODAL = MACRO(
             ),
             b_vale_tota=BLOC(
                 condition="""equal_to("TYPE", 'VALE_TOTA') """,
-                NEWMARK=SIMP(statut="f", typ="TXM", into=("OUI", "NON")),
+                NEWMARK=SIMP(statut="f", typ="TXM", into=("OUI",)),
             ),
             b_vale_dyna=BLOC(
                 condition="""equal_to("TYPE", 'VALE_DYNA') """,
