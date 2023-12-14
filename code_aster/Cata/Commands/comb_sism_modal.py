@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,6 @@ COMB_SISM_MODAL=OPER(nom="COMB_SISM_MODAL",op= 109,sd_prod=mode_meca,
            PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-3 ),
            CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
          ),
-         MODE_CORR       =SIMP(statut='f',typ=mode_meca ),
          FREQ_COUP = SIMP(statut='f',typ='R',min=1,max=1),
 
          AMOR_REDUIT     =SIMP(statut='f',typ='R',max='**'),
@@ -48,7 +47,7 @@ COMB_SISM_MODAL=OPER(nom="COMB_SISM_MODAL",op= 109,sd_prod=mode_meca,
          AMOR_GENE       =SIMP(statut='f',typ=matr_asse_gene_r ),
 
          MASS_INER       =SIMP(statut='f',typ=table_sdaster ),
-         CORR_FREQ       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
+         CORR_FREQ       =SIMP(statut='f',typ='TXM',defaut="NON",into=("NON",) ),
 
          MONO_APPUI      =SIMP(statut='f',typ='TXM',into=("OUI",),
                                  fr=tr("excitation imposée unique") ),
@@ -98,6 +97,18 @@ COMB_SISM_MODAL=OPER(nom="COMB_SISM_MODAL",op= 109,sd_prod=mode_meca,
               ),
               NATURE          =SIMP(statut='f',typ='TXM',defaut="ACCE",into=("ACCE","VITE","DEPL") ),
             ), # fin mcf_excit
+            
+            COMB_DEPL_APPUI=FACT(statut='f',max='**',
+                 regles=(UN_PARMI('TOUT','LIST_CAS'),),
+                 TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",)),
+                 LIST_CAS       =SIMP(statut='f',typ='I',max='**'),
+                 TYPE_COMBI      =SIMP(statut='f',typ='TXM',into=("QUAD","LINE","ABS") ),
+                 ),
+             OPTION          =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=9,
+                               into=("DEPL","VITE","ACCE_ABSOLU","SIGM_ELNO","SIEF_ELGA",
+                                     "EFGE_ELNO","REAC_NODA","FORC_NODA","SIEF_ELNO",
+                                     "SIPO_ELNO") ),
+             MODE_CORR       =SIMP(statut='f',typ=mode_meca ),
          ), # fin b_not_mult_appui
 
          b_decorrele     =BLOC(condition = """equal_to("MULTI_APPUI", 'DECORRELE') """,
@@ -105,7 +116,18 @@ COMB_SISM_MODAL=OPER(nom="COMB_SISM_MODAL",op= 109,sd_prod=mode_meca,
            regles=(UN_PARMI('NOEUD','GROUP_NO' ),),
            NOEUD           =SIMP(statut='c',typ=no  ,validators=NoRepeat(),max='**'),
            GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),),
-
+           
+           COMB_DEPL_APPUI=FACT(statut='f',max='**',
+           regles=(UN_PARMI('TOUT','LIST_CAS'),),
+           TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",)),
+           LIST_CAS       =SIMP(statut='f',typ='I',max='**'),
+           TYPE_COMBI      =SIMP(statut='f',typ='TXM',into=("QUAD","LINE","ABS") ),
+           ),
+           
+           OPTION          =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=9,
+                               into=("DEPL","VITE","SIGM_ELNO","SIEF_ELGA",
+                                     "EFGE_ELNO","REAC_NODA","FORC_NODA","SIEF_ELNO",
+                                     "SIPO_ELNO") ),
          ),
          b_correle =BLOC(condition = """equal_to("MULTI_APPUI", 'CORRELE') """,
            COMB_MULT_APPUI =FACT(statut='f',max='**',
@@ -113,11 +135,25 @@ COMB_SISM_MODAL=OPER(nom="COMB_SISM_MODAL",op= 109,sd_prod=mode_meca,
            TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            NOEUD           =SIMP(statut='c',typ=no  ,validators=NoRepeat(),max='**'),
            GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
-           TYPE_COMBI      =SIMP(statut='f',typ='TXM',into=("QUAD","LINE",) ),),
+           TYPE_COMBI      =SIMP(statut='o',typ='TXM',into=("LINE",) ),),
+           
+           COMB_DEPL_APPUI=FACT(statut='f',max='**',
+           regles=(UN_PARMI('TOUT','LIST_CAS'),),
+           TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",)),
+           LIST_CAS       =SIMP(statut='f',typ='I',max='**'),
+           TYPE_COMBI      =SIMP(statut='f',typ='TXM',into=("QUAD",) ),
+           ),
+           
+           OPTION          =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=9,
+                               into=("DEPL","VITE","ACCE_ABSOLU","SIGM_ELNO","SIEF_ELGA",
+                                     "EFGE_ELNO","REAC_NODA","FORC_NODA","SIEF_ELNO",
+                                     "SIPO_ELNO") ),
+           MODE_CORR       =SIMP(statut='f',typ=mode_meca ),
+           
          ),
 
          COMB_MODE       =FACT(statut='o',
-           TYPE            =SIMP(statut='o',typ='TXM',into=("SRSS","CQC","DSC","ABS","DPC","GUPTA") ),
+           TYPE            =SIMP(statut='o',typ='TXM',into=("SRSS","CQC","ABS","DPC","GUPTA") ),
            DUREE           =SIMP(statut='f',typ='R' ),
          b_gupta =BLOC(condition = """equal_to("TYPE", 'GUPTA') """,
            FREQ_1      =SIMP(statut='o',typ='R',),
@@ -127,12 +163,7 @@ COMB_SISM_MODAL=OPER(nom="COMB_SISM_MODAL",op= 109,sd_prod=mode_meca,
          COMB_DIRECTION  =FACT(statut='f',
            TYPE            =SIMP(statut='f',typ='TXM',into=("QUAD","NEWMARK") ),
          ),
-         COMB_DEPL_APPUI=FACT(statut='f',max='**',
-           regles=(UN_PARMI('TOUT','LIST_CAS'),),
-           TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",)),
-           LIST_CAS       =SIMP(statut='f',typ='I',max='**'),
-           TYPE_COMBI      =SIMP(statut='f',typ='TXM',into=("QUAD","LINE","ABS") ),
-         ),
+
          DEPL_MULT_APPUI =FACT(statut='f',max='**',
            regles=(UN_PARMI('NOEUD','GROUP_NO'),EXCLUS('NOEUD_REFE','GROUP_NO_REFE'),
                    AU_MOINS_UN('DX','DY','DZ' ),),
@@ -147,10 +178,6 @@ COMB_SISM_MODAL=OPER(nom="COMB_SISM_MODAL",op= 109,sd_prod=mode_meca,
            DY              =SIMP(statut='f',typ='R' ),
            DZ              =SIMP(statut='f',typ='R' ),
          ),
-         OPTION          =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=9,
-                               into=("DEPL","VITE","ACCE_ABSOLU","SIGM_ELNO","SIEF_ELGA",
-                                     "EFGE_ELNO","REAC_NODA","FORC_NODA","SIEF_ELNO",
-                                     "SIPO_ELNO") ),
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2 ) ),
          IMPRESSION      =FACT(statut='f',max='**',
            regles=(EXCLUS('TOUT','NIVEAU'),),

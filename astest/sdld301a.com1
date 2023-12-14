@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -202,38 +202,5 @@ TEST_RESU(RESU=(_F(REFERENCE='ANALYTIQUE',
           )
 
 #-----------------------------------------------------------------------
-
-CODSC=COMB_SISM_MODAL(CORR_FREQ='NON',
-                      MASS_INER=MAS,
-                      COMB_MODE=_F(DUREE=15.0,
-                                   TYPE='DSC',),
-                      MODE_MECA=MODES,
-                      AMOR_REDUIT=0.05,
-                      NUME_MODE=2,
-                      OPTION=('DEPL','EFGE_ELNO','FORC_NODA','REAC_NODA'),
-                      MODE_CORR=MODE_CO,
-                      MONO_APPUI='OUI',
-                      EXCIT=_F(AXE=(1.0,0.0,0.0),
-                               SPEC_OSCI=SPEC1,
-                               ECHELLE=1.0,),);
-
-TEST_RESU(RESU=(_F(REFERENCE='ANALYTIQUE',
-                   RESULTAT=CODSC,
-                   NOM_CHAM='DEPL',
-                   NOEUD='P2',
-                   NOM_CMP='DX',
-                   VALE_CALC=0.023027055,
-                   VALE_REFE=0.023023027049999999,
-                   NOEUD_CMP=('DIR', 'X'),),
-                _F(REFERENCE='ANALYTIQUE',
-                   RESULTAT=CODSC,
-                   NOM_CHAM='DEPL',
-                   NOEUD='P3',
-                   NOM_CMP='DX',
-                   VALE_CALC=0.023027055,
-                   VALE_REFE=0.023023027049999999,
-                   NOEUD_CMP=('DIR', 'X'),),
-                ),
-          )
 
 FIN();
