@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -44,6 +44,28 @@ cata_msg = {
     15: _("""L'excentrement ne fonctionne qu'avec des modélisations 3D."""),
     16: _(
         """L'excentrement ne fonctionne pas car un des noeuds n'a pas tous les degrés de liberté de rotation."""
+    ),
+    17: _(
+        """Vous cherchez à évaluer une formule issue de DEFI_PRES_EC8. 
+La coordonnée Z en entrée est inférieure à Z_FOND.
+Si vous évaluez cette fonction dans AFFE_CHAR_MECA/FORCE_COQUE_FO, vérifiez la cohérence du groupe de maille fourni.
+
+    Z      = %(r1)f
+    Z_FOND = %(r2)f
+    """
+    ),
+    18: _(
+        """DEFI_PRES_EC8 : dans l'occurrence %(i1)d de EVAL, LIST_EPAIS n'a pas la même longueur que LIST_H."""
+    ),
+    19: _(
+        """Vous cherchez à évaluer une formule issue de DEFI_PRES_EC8. 
+Les coordonnées X et Y fournies correspondent à un point plus éloigné de l'axe Z que le rayon du réservoir déclaré par le mot-clé RAYON.
+Si vous évaluez cette fonction dans AFFE_CHAR_MECA/FORCE_COQUE_FO, vérifiez la cohérence du groupe de maille fourni.
+
+    Distance à l'axe Z = %(r1)f
+    Rayon du réservoir = %(r2)f
+    Tolérance acceptée = %(r3)f
+    """
     ),
     48: _(
         """Il n'y a aucun noeud esclave à lier pour l'occurrence %(i1)d du mot clé LIAISON_MAIL.
