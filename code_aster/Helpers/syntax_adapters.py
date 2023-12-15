@@ -21,6 +21,8 @@
 This module defines `adapt_syntax` functions shared by several commands.
 """
 
+from ..Cata.Syntax import _F
+
 
 def adapt_increment_init(keywords, init_kwd):
     """Adapt INCREMENT keyword: automatically adds INST_INIT from ETAT_INIT
@@ -35,7 +37,9 @@ def adapt_increment_init(keywords, init_kwd):
     if "INST_INIT" in incr or "NUME_INST_INIT" in incr:
         return
 
-    init_state = keywords.get("ETAT_INIT", {})
+    init_state = keywords.get("ETAT_INIT", _F())
+    if init_state and type(init_state) in (list, tuple):
+        init_state = init_state[0]
     init_result = init_state.get(init_kwd)
     if init_state and init_result:
         inst_init = init_result.getLastTime()

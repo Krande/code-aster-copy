@@ -99,11 +99,9 @@ class MecaSolver:
 
         opt = {}
         if state_curr.sief_elga is not None:
-            opt["ETAT_INIT"] = {
-                "DEPL": state_prev.u,
-                "SIGM": state_prev.sief_elga,
-                "VARI": state_prev.vari_elga,
-            }
+            opt["ETAT_INIT"] = _F(
+                DEPL=state_prev.u, SIGM=state_prev.sief_elga, VARI=state_prev.vari_elga
+            )
 
         resuMeca = STAT_NON_LINE(
             MODELE=self.model,
