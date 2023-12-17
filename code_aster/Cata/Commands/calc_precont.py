@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,6 +34,7 @@ CALC_PRECONT = MACRO(
     MODELE=SIMP(statut="o", typ=modele_sdaster),
     CHAM_MATER=SIMP(statut="o", typ=cham_mater),
     CARA_ELEM=SIMP(statut="o", typ=cara_elem),
+    DOUBLE_LAGRANGE=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="OUI"),
     CABLE_BP=SIMP(statut="o", typ=cabl_precont, validators=NoRepeat(), max="**"),
     CABLE_BP_INACTIF=SIMP(statut="f", typ=cabl_precont, validators=NoRepeat(), max="**"),
     INCREMENT=C_INCREMENT(),
