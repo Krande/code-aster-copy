@@ -111,11 +111,6 @@ def post_beremin_ops(self, **args):
             reswbrest, numv1v2, grmapb, mclinst, dwb[grmapb[0]]["SEUIL_EPSP_CUMU"], l_epspmax
         )
 
-        modele = reswbrest.getModel()
-
-        signul = FieldOnCellsReal(modele, "ELGA", "SIEF_R")
-        signul.setValues(0)
-
         if fspb == "SIGM_ELGA":
 
             rsieq = CALC_CHAMP(
@@ -125,8 +120,7 @@ def post_beremin_ops(self, **args):
             (sigw, resimpr) = tps_maxsigm(
                 rsieq,
                 mclinst,
-                signul,
-                sig1plasac(reswbrest, rsieq, numv1v2, dwb, resupb, grmapb, mclinst, signul),
+                sig1plasac(reswbrest, rsieq, numv1v2, dwb, resupb, grmapb, mclinst),
                 resanpb,
                 bere_m,
             )
@@ -156,8 +150,7 @@ def post_beremin_ops(self, **args):
             (sigw, resimpr) = tps_maxsigm(
                 rsieq,
                 mclinst,
-                signul,
-                sig1plasac(relmoysief, rsieq, numv1v2, dwb, resupb, grmapb, mclinst, signul),
+                sig1plasac(relmoysief, rsieq, numv1v2, dwb, resupb, grmapb, mclinst),
                 resanpb,
                 bere_m,
             )
@@ -375,7 +368,7 @@ def sigma1_f(rsieq, nume_inst, dwb, reswbrest, grwb):
     return __sg1neut_f
 
 
-def sig1plasac(resultat, rsieq, numv1v2, dwb, reswbrest, grmapb, mclinst, signul):
+def sig1plasac(resultat, rsieq, numv1v2, dwb, reswbrest, grmapb, mclinst):
     """
     Major principal stress where the plasticity is active
 
@@ -390,7 +383,6 @@ def sig1plasac(resultat, rsieq, numv1v2, dwb, reswbrest, grmapb, mclinst, signul
         grmapb (str): Mesh cells group given in POST_BEREMIN
         mclinst (list): List of medcoupling time steps
             (iteration, order, time step) where there is plasticity
-        signul (FieldOnCellsReal): 0-SIEF_ELGA field
 
     Returns:
         FieldOnCells: ELGA_NEUT_R filled by PRIN_3
@@ -402,6 +394,7 @@ def sig1plasac(resultat, rsieq, numv1v2, dwb, reswbrest, grmapb, mclinst, signul
     maxsig = NonLinearResult()
     maxsig.allocate(rsieq.getNumberOfIndexes())
 
+    indice = 0
     for nume_inst in rsieq.getAccessParameters()["NUME_ORDRE"]:
         grcalc = "mgrplas_{}".format(nume_inst)
         inst = rsieq.getTime(nume_inst)
@@ -473,17 +466,14 @@ def sig1plasac(resultat, rsieq, numv1v2, dwb, reswbrest, grmapb, mclinst, signul
                 ),
             )
 
-            maxsig.setField(sigtyp, "SIEF_ELGA", nume_inst)
-            maxsig.setTime(resultat.getTime(nume_inst), nume_inst)
-
-        else:
-            maxsig.setField(signul, "SIEF_ELGA", nume_inst)
-            maxsig.setTime(resultat.getTime(nume_inst), nume_inst)
+            maxsig.setField(sigtyp, "SIEF_ELGA", indice)
+            maxsig.setTime(resultat.getTime(nume_inst), indice)
+            indice = indice + 1
 
     return maxsig
 
 
-def tps_maxsigm(rsieq, mclinst, signul, maxsig, resanpb, bere_m):
+def tps_maxsigm(rsieq, mclinst, maxsig, resanpb, bere_m):
     """
     Compute temporal maximum for each Gauss point and elevation to power m
 
@@ -491,7 +481,6 @@ def tps_maxsigm(rsieq, mclinst, signul, maxsig, resanpb, bere_m):
         rsieq (NonLinearResult): SIEQ_ELGA field
         mclinst (list): List of medcoupling time steps
             (iteration, order, time step) where there is plasticity
-        signul (FieldOnCellsReal): SIEF_ELGA field filled by 0 on grmapb
         maxsig (NonLinearResult): ELGA_NEUT_R filled by PRIN_3
         resanpb (NonLinearResult): Name of auxiliary result
         bere_m (float): Value of Beremin parameter M
@@ -517,29 +506,30 @@ def tps_maxsigm(rsieq, mclinst, signul, maxsig, resanpb, bere_m):
     linstants = rsieq.getAccessParameters()["INST"]
 
     def puiss_m(valsixx):
-        """
-        Elevation to power m
+        return valsixx ** bere_m
 
-        Arguments:
-            valsixx (numpy array): sixx component
-
-        Returns:
-            numpy array: valsixx**m
-        """
-        return valsixx**bere_m
-
+    indice = 0
     for nume_inst, inst in enumerate(linstants):
+
         if inst in [elt[2] for elt in mclinst]:
 
-            chmaxsig = CREA_CHAMP(
-                TYPE_CHAM="ELGA_SIEF_R",
-                OPERATION="EXTR",
-                RESULTAT=maxsig,
-                NOM_CHAM="SIEF_ELGA",
-                TYPE_MAXI="MAXI",
-                TYPE_RESU="VALE",
-                INST=linstants[: nume_inst + 1],
-            )
+            if inst == maxsig.getTime(0):
+                chmaxsig = maxsig.getField("SIEF_ELGA", 0)
+            elif inst > maxsig.getTime(0):
+                maxsig_r = NonLinearResult()
+                maxsig_r.allocate(2)
+                maxsig_r.setField(maxsig.getField("SIEF_ELGA", indice - 1), "SIEF_ELGA", 0)
+                maxsig_r.setField(maxsig.getField("SIEF_ELGA", indice), "SIEF_ELGA", 1)
+
+                chmaxsig = CREA_CHAMP(
+                    TYPE_CHAM="ELGA_SIEF_R",
+                    OPERATION="EXTR",
+                    RESULTAT=maxsig_r,
+                    NOM_CHAM="SIEF_ELGA",
+                    TYPE_MAXI="MAXI",
+                    TYPE_RESU="VALE",
+                    NUME_ORDRE=(0, 1),
+                )
 
             chsixxm = chmaxsig.transform(puiss_m)
 
@@ -547,10 +537,14 @@ def tps_maxsigm(rsieq, mclinst, signul, maxsig, resanpb, bere_m):
                 resimpr.setField(chsixxm, "SIEF_ELGA", nume_inst)
                 resimpr.setTime(inst, nume_inst)
 
+            indice = indice + 1
+
         else:
 
-            chsixxm = signul
             if resanpb is not None:
+
+                chsixxm = FieldOnCellsReal(chmaxsig.getModel(), "ELGA", "SIEF_R")
+                chsixxm.setValues(0)
                 resimpr.setField(chsixxm, "SIEF_ELGA", nume_inst)
                 resimpr.setTime(inst, nume_inst)
 
@@ -605,7 +599,7 @@ def compute_beremin_integral(model, coefmultpb, sigw, dwb, grmapb, resupb):
         {"bere_m": dwb[grmapb]["M"]},
         {"sigma_u": sigma_u, "bere_m": dwb[grmapb]["M"], "exp": np.exp},
     )
- 
+
     for clef in t_clef:
         d_form[clef] = Formula()
     for (clef, expression, variable, context) in zip(t_clef, t_expr, t_var, t_context):
