@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -122,7 +122,7 @@ class THER_XH_HEXA8(Element):
                 (OP.CHAR_THER_PARO_R.PCFACE, LC.E90NEUTI),
                 (SP.PGEOMER, NGEOMER),
                 (OP.CHAR_THER_PARO_R.PHEA_NO, LC.N5NEUTI),
-                (SP.PHECHPR, LC.EHECHPR),
+                (SP.PHECHPR, LC.CHECHPR),
                 (OP.CHAR_THER_PARO_R.PLONGCO, LC.E3NEUTI),
                 (OP.CHAR_THER_PARO_R.PLSN, LC.N1NEUT_R),
                 (OP.CHAR_THER_PARO_R.PLST, LC.N1NEUT_R),
@@ -206,7 +206,7 @@ class THER_XH_HEXA8(Element):
                 (OP.RIGI_THER_PARO_R.PCFACE, LC.E90NEUTI),
                 (SP.PGEOMER, NGEOMER),
                 (OP.RIGI_THER_PARO_R.PHEA_NO, LC.N5NEUTI),
-                (SP.PHECHPR, LC.EHECHPR),
+                (SP.PHECHPR, LC.CHECHPR),
                 (OP.RIGI_THER_PARO_R.PLONGCO, LC.E3NEUTI),
                 (OP.RIGI_THER_PARO_R.PLSN, LC.N1NEUT_R),
                 (OP.RIGI_THER_PARO_R.PLST, LC.N1NEUT_R),

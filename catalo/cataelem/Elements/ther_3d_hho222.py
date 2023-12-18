@@ -25,10 +25,9 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.mesh_types as MT
 from cataelem.Options.options import OP
 
-# ----------------
-# Modes locaux :
-# ----------------
-
+# --------------------------------------------------------------------------------------------------
+# Located components
+# --------------------------------------------------------------------------------------------------
 DDL_THER = LocatedComponents(
     phys=PHY.TEMP_R,
     type="ELNO",
@@ -36,66 +35,9 @@ DDL_THER = LocatedComponents(
     components=(("EN1", ("HHO_T[6]",)), ("EN2", ()), ("EN3", ("HHO_T[10]"))),
 )
 
-# Reuse PHY.COMPOR from mechanical => names of components are strange
-CCOMPOR = LocatedComponents(
-    phys=PHY.COMPOR, type="ELEM", components=("RELCOM", "NBVARI", "DEFORM", "INCELA", "C_PLAN")
-)
-
-
-NVITESR = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY", "DZ"))
-
-
-EENERR = LocatedComponents(phys=PHY.ENER_R, type="ELEM", components=("TOTALE",))
-
-
-CGRAINF = LocatedComponents(phys=PHY.FLUX_F, type="ELEM", components=("FLUX", "FLUY", "FLUZ"))
-
-
-CGRAINR = LocatedComponents(phys=PHY.FLUX_R, type="ELEM", components=("FLUX", "FLUY", "FLUZ"))
-
-
-EFLUXPG = LocatedComponents(
-    phys=PHY.FLUX_R, type="ELGA", location="RIGI", components=("FLUX", "FLUY", "FLUZ")
-)
-
-
-EFLUXNO = LocatedComponents(phys=PHY.FLUX_R, type="ELNO", components=("FLUX", "FLUY", "FLUZ"))
-
-
-NGEOMER = LocatedComponents(phys=PHY.GEOM_R, type="ELNO", components=("X", "Y", "Z"))
-
-NGEOMGR = LocatedComponents(
-    phys=PHY.GEOM_R, type="ELGA", location="RIGI", components=("X", "Y", "Z")
-)
-
-EGGEOP_R = LocatedComponents(
-    phys=PHY.GEOM_R, type="ELGA", location="RIGI", components=("X", "Y", "Z", "W")
-)
-
-
-CTEMPSR = LocatedComponents(
-    phys=PHY.INST_R, type="ELEM", components=("INST", "DELTAT", "THETA", "KHI", "R", "RHO")
-)
-
-
-EGNEUT_F = LocatedComponents(phys=PHY.NEUT_F, type="ELGA", location="RIGI", components=("X[30]",))
-
-
-EGNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type="ELGA", location="RIGI", components=("X[30]",))
-
-
-EMNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X[30]",))
-
-
-ESOURCR = LocatedComponents(phys=PHY.SOUR_R, type="ELGA", location="RIGI", components=("SOUR",))
-
-NSOURCR = LocatedComponents(phys=PHY.SOUR_R, type="ELNO", components=("SOUR",))
-
 TEMPHHO = LocatedComponents(phys=PHY.TEMP_R, type="ELNO", components=("TEMP",))
 
 PFONC = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[2]",))
-
-CINSTR = LocatedComponents(phys=PHY.INST_R, type="ELEM", components=("INST",))
 
 MVECTTR = ArrayOfComponents(phys=PHY.VTEM_R, locatedComponents=DDL_THER)
 
@@ -103,11 +45,9 @@ MMATTTR = ArrayOfComponents(phys=PHY.MTEM_R, locatedComponents=DDL_THER)
 
 MMATTSR = ArrayOfComponents(phys=PHY.MTNS_R, locatedComponents=DDL_THER)
 
-# ------------------------------------------------------------
-
-
+# --------------------------------------------------------------------------------------------------
 class THER3DH27_HHO222(Element):
-    """Please document this element"""
+    """Thermics - HHO_QUAD - 3D - HEXA"""
 
     meshType = MT.HEXA27
     nodes = (
@@ -127,10 +67,10 @@ class THER3DH27_HHO222(Element):
             te=445,
             para_in=(
                 (SP.PCAMASS, LC.CCAMA3D),
-                (SP.PGEOMER, NGEOMER),
+                (SP.PGEOMER, LC.EGEOM3D),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPER, DDL_THER),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PTEMPSR, LC.CTIMETR),
                 (OP.CHAR_THER_EVOL.PVARCPR, LC.ZVARCPG),
             ),
             para_out=((SP.PVECTTR, MVECTTR),),
@@ -138,66 +78,70 @@ class THER3DH27_HHO222(Element):
         OP.CHAR_THER_SOUR_F(
             te=465,
             para_in=(
-                (SP.PGEOMER, NGEOMER),
+                (SP.PGEOMER, LC.EGEOM3D),
                 (SP.PSOURCF, LC.CSOURCF),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PTEMPSR, LC.CTIMETR),
                 (OP.CHAR_THER_SOUR_F.PVARCPR, LC.ZVARCPG),
             ),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
         OP.CHAR_THER_SOUR_R(
             te=465,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PSOURCR, ESOURCR), (SP.PTEMPSR, CTEMPSR)),
+            para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PSOURCR, LC.ESOURCR), (SP.PTEMPSR, LC.CTIMETR)),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
         OP.COOR_ELGA(
-            te=488, para_in=((SP.PGEOMER, NGEOMER),), para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R),)
+            te=488,
+            para_in=((SP.PGEOMER, LC.EGEOM3D),),
+            para_out=((OP.COOR_ELGA.PCOORPG, LC.EGGAU3D),),
         ),
         OP.FLUX_ELGA(
             te=487,
             para_in=(
                 (SP.PCAMASS, LC.CCAMA3D),
-                (SP.PGEOMER, NGEOMER),
+                (SP.PGEOMER, LC.EGEOM3D),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPER, DDL_THER),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PTEMPSR, LC.CTIMETR),
                 (OP.FLUX_ELGA.PVARCPR, LC.ZVARCPG),
             ),
-            para_out=((OP.FLUX_ELGA.PFLUXPG, EFLUXPG),),
+            para_out=((OP.FLUX_ELGA.PFLUXPG, LC.EFLUX3R),),
         ),
         OP.FLUX_ELNO(
-            te=4, para_in=((OP.FLUX_ELNO.PFLUXPG, EFLUXPG),), para_out=((SP.PFLUXNO, EFLUXNO),)
+            te=4,
+            para_in=((OP.FLUX_ELNO.PFLUXPG, LC.EFLUX3R),),
+            para_out=((SP.PFLUXNO, LC.NFLUX3R),),
         ),
         OP.HHO_PROJ_THER(
             te=473,
             para_in=(
-                (SP.PGEOMER, NGEOMER),
+                (SP.PGEOMER, LC.EGEOM3D),
                 (OP.HHO_PROJ_THER.PFUNC_R, PFONC),
-                (SP.PINSTPR, CINSTR),
+                (SP.PINSTPR, LC.MTEMPSR),
             ),
             para_out=((OP.HHO_PROJ_THER.PTEMP_R, DDL_THER),),
         ),
         OP.HHO_PROJ2_THER(
             te=484,
-            para_in=((SP.PGEOMER, NGEOMER), (OP.HHO_PROJ2_THER.PH1TP_R, TEMPHHO)),
+            para_in=((SP.PGEOMER, LC.EGEOM3D), (OP.HHO_PROJ2_THER.PH1TP_R, TEMPHHO)),
             para_out=((OP.HHO_PROJ_THER.PTEMP_R, DDL_THER),),
         ),
         OP.HHO_PROJ3_THER(
             te=484,
-            para_in=((SP.PGEOMER, NGEOMER), (OP.HHO_PROJ3_THER.PQPTP_R, LC.ETEMPPG)),
+            para_in=((SP.PGEOMER, LC.EGEOM3D), (OP.HHO_PROJ3_THER.PQPTP_R, LC.ETEMPPG)),
             para_out=((OP.HHO_PROJ3_THER.PTEMP_R, DDL_THER),),
         ),
         OP.HHO_TEMP_THER(
             te=456,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PTMPCHF, DDL_THER)),
+            para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PTMPCHF, DDL_THER)),
             para_out=((OP.HHO_TEMP_THER.PTEMP_R, TEMPHHO),),
         ),
         OP.MASS_THER(
             te=449,
             para_in=(
-                (SP.PGEOMER, NGEOMER),
+                (SP.PGEOMER, LC.EGEOM3D),
                 (SP.PMATERC, LC.CMATERC),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PTEMPSR, LC.CTIMETR),
                 (OP.MASS_THER.PVARCPR, LC.ZVARCPG),
             ),
             para_out=((OP.MASS_THER.PMATTTR, MMATTTR),),
@@ -210,22 +154,22 @@ class THER3DH27_HHO222(Element):
         OP.RAPH_THER(
             te=477,
             para_in=(
-                (OP.RAPH_THER.PCOMPOR, CCOMPOR),
-                (SP.PGEOMER, NGEOMER),
+                (OP.RAPH_THER.PCOMPOR, LC.CCOMPOT),
+                (SP.PGEOMER, LC.EGEOM3D),
                 (SP.PCAMASS, LC.CCAMA3D),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPEI, DDL_THER),
                 (OP.RAPH_THER.PVARCPR, LC.ZVARCPG),
             ),
-            para_out=((SP.PRESIDU, MVECTTR), (OP.RAPH_THER.PFLUXPR, EFLUXPG)),
+            para_out=((SP.PRESIDU, MVECTTR), (OP.RAPH_THER.PFLUXPR, LC.EFLUX3R)),
         ),
         OP.RIGI_THER(
             te=454,
             para_in=(
                 (SP.PCAMASS, LC.CCAMA3D),
-                (SP.PGEOMER, NGEOMER),
+                (SP.PGEOMER, LC.EGEOM3D),
                 (SP.PMATERC, LC.CMATERC),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PTEMPSR, LC.CTIMETR),
                 (OP.RIGI_THER.PVARCPR, LC.ZVARCPG),
             ),
             para_out=((OP.RIGI_THER.PMATTTR, MMATTTR),),
@@ -233,8 +177,8 @@ class THER3DH27_HHO222(Element):
         OP.RIGI_THER_TANG(
             te=454,
             para_in=(
-                (OP.RIGI_THER_TANG.PCOMPOR, CCOMPOR),
-                (SP.PGEOMER, NGEOMER),
+                (OP.RIGI_THER_TANG.PCOMPOR, LC.CCOMPOT),
+                (SP.PGEOMER, LC.EGEOM3D),
                 (SP.PCAMASS, LC.CCAMA3D),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPEI, DDL_THER),
@@ -244,7 +188,7 @@ class THER3DH27_HHO222(Element):
         ),
         OP.TEMP_ELGA(
             te=456,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PTEMPER, DDL_THER)),
+            para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PTEMPER, DDL_THER)),
             para_out=((SP.PTEMP_R, LC.ETEMPPG),),
         ),
         OP.TOU_INI_ELEM(te=99, para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM3D),)),
@@ -255,11 +199,11 @@ class THER3DH27_HHO222(Element):
         OP.TOU_INI_ELGA(
             te=99,
             para_out=(
-                (OP.TOU_INI_ELGA.PFLUX_R, EFLUXPG),
-                (OP.TOU_INI_ELGA.PGEOM_R, NGEOMGR),
-                (OP.TOU_INI_ELGA.PNEUT_F, EGNEUT_F),
+                (OP.TOU_INI_ELGA.PFLUX_R, LC.EFLUX3R),
+                (OP.TOU_INI_ELGA.PGEOM_R, LC.EGGEO3D),
+                (OP.TOU_INI_ELGA.PNEUT_F, LC.EGTINIF),
                 (OP.TOU_INI_ELGA.PNEUT_R, LC.EGNEUT1R),
-                (OP.TOU_INI_ELGA.PSOUR_R, ESOURCR),
+                (OP.TOU_INI_ELGA.PSOUR_R, LC.ESOURCR),
                 (OP.TOU_INI_ELGA.PVARI_R, LC.ZVARIPG),
                 (SP.PTEMP_R, LC.ETEMPPG),
             ),
@@ -267,27 +211,25 @@ class THER3DH27_HHO222(Element):
         OP.TOU_INI_ELNO(
             te=99,
             para_out=(
-                (OP.TOU_INI_ELNO.PFLUX_R, EFLUXNO),
-                (OP.TOU_INI_ELNO.PGEOM_R, NGEOMER),
+                (OP.TOU_INI_ELNO.PFLUX_R, LC.NFLUX3R),
+                (OP.TOU_INI_ELNO.PGEOM_R, LC.EGEOM3D),
                 (OP.TOU_INI_ELNO.PHYDR_R, LC.EHYDRNO),
                 (OP.TOU_INI_ELNO.PINST_R, LC.ENINST_R),
                 (OP.TOU_INI_ELNO.PNEUT_F, LC.ENNEUT_F),
                 (OP.TOU_INI_ELNO.PNEUT_R, LC.ENNEUT_R),
-                (OP.TOU_INI_ELNO.PSOUR_R, NSOURCR),
                 (OP.TOU_INI_ELNO.PVARI_R, LC.EPHASNO_),
+                (OP.TOU_INI_ELNO.PSOUR_R, LC.NSOURCR),
             ),
         ),
         OP.VERI_JACOBIEN(
-            te=328, para_in=((SP.PGEOMER, NGEOMER),), para_out=((SP.PCODRET, LC.ECODRET),)
+            te=328, para_in=((SP.PGEOMER, LC.EGEOM3D),), para_out=((SP.PCODRET, LC.ECODRET),)
         ),
     )
 
 
-# ------------------------------------------------------------
-
-
+# --------------------------------------------------------------------------------------------------
 class THER3DT15_HHO222(THER3DH27_HHO222):
-    """Please document this element"""
+    """Thermics - HHO_QUAD - 3D - TETRA"""
 
     meshType = MT.TETRA15
     nodes = (
@@ -304,8 +246,9 @@ class THER3DT15_HHO222(THER3DH27_HHO222):
     )
 
 
+# --------------------------------------------------------------------------------------------------
 class THER3DP21_HHO222(THER3DH27_HHO222):
-    """Maille pentaèdre / prisme à 21 noeuds pour HHO en quadratique"""
+    """Thermics - HHO_QUAD - 3D - PENTA"""
 
     meshType = MT.PENTA21
     nodes = (
@@ -322,8 +265,9 @@ class THER3DP21_HHO222(THER3DH27_HHO222):
     )
 
 
+# --------------------------------------------------------------------------------------------------
 class THER3DP19_HHO222(THER3DH27_HHO222):
-    """Maille pyramide à 19 noeuds pour HHO en quadratique"""
+    """Thermics - HHO_QUAD - 3D - PYRAM"""
 
     meshType = MT.PYRAM19
     nodes = (

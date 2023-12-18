@@ -66,7 +66,7 @@ subroutine metnth(modele, lchar, cara, mate, mateco, time, &
 !
     character(len=8) :: nomcha, lpain(6), lpaout(1)
     character(len=8) :: vitess
-    character(len=16) :: option
+    character(len=16), parameter :: option = 'RIGI_THER_CONV'
     character(len=24) :: lchin(6), lchout(1), chgeom, chcara(18)
     character(len=24) :: chvite, ligrmo, convch, carele
     integer :: iret, ilires
@@ -97,8 +97,7 @@ subroutine metnth(modele, lchar, cara, mate, mateco, time, &
     call jeexin(metrnl, iret)
     if (iret .eq. 0) then
         metrnl = '&&METNTH           .RELR'
-        call memare('V', metrnl, modele(1:8), mate, carele, &
-                    'RIGI_THER_CONV_T')
+        call memare('V', metrnl, modele(1:8), mate, carele, 'RIGI_THER')
     else
         call jedetr(metrnl)
     end if
@@ -119,9 +118,8 @@ subroutine metnth(modele, lchar, cara, mate, mateco, time, &
                 call utmess('F', 'CALCULEL3_72')
             end if
 !
-            option = 'RIGI_THER_CONV_T'
-            call memare('V', metrnl, modele(1:8), mate, cara, &
-                        option)
+
+            call memare('V', metrnl, modele(1:8), mate, cara, option)
 !
             call jeveuo(convch, 'L', jvites)
             vitess = zk8(jvites)

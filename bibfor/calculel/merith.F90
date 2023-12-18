@@ -35,7 +35,6 @@ subroutine merith(model_, nb_load, list_name_, mate, mateco, cara_elem_, &
 #include "asterfort/memare.h"
 #include "asterfort/merit1.h"
 #include "asterfort/merit2.h"
-#include "asterfort/merit3.h"
 #include "asterfort/reajre.h"
     character(len=*) :: list_name_(*), mate, mateco
     character(len=*) :: model_, cara_elem_, matr_elem_, base_, time_
@@ -74,8 +73,7 @@ subroutine merith(model_, nb_load, list_name_, mate, mateco, cara_elem_, &
 !     VARIABLES LOCALES:
 !     ------------------
 !-----------------------------------------------------------------------
-    integer :: i, iret, long1, long2
-    integer :: long3, nh, numor3
+    integer :: i, iret, long1, long2, nh
     character(len=8) :: model, cara_elem, k8_dummy
     character(len=19) :: matr_elem
     character(len=1) :: base
@@ -83,7 +81,6 @@ subroutine merith(model_, nb_load, list_name_, mate, mateco, cara_elem_, &
     character(len=16) :: command
     character(len=24), pointer :: lire1(:) => null()
     character(len=24), pointer :: lire2(:) => null()
-    character(len=24), pointer :: lire3(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     model = model_
@@ -121,16 +118,6 @@ subroutine merith(model_, nb_load, list_name_, mate, mateco, cara_elem_, &
         call jeveuo('&MERITH2           .RELR', 'L', vk24=lire2)
     end if
 !
-!     -- OPERATEUR ELEMENTAIRE DE CONVECTION NATURELLE:
-    numor3 = long1+long2
-    call merit3(model, nb_load, list_name_, mate, mateco, cara_elem, &
-                time, '&MERITH3           ', matr_elem, numor3, base)
-    call jeexin('&MERITH3           .RELR', iret)
-    long3 = 0
-    if (iret .ne. 0) then
-        call jelira('&MERITH3           .RELR', 'LONUTI', long3)
-        call jeveuo('&MERITH3           .RELR', 'L', vk24=lire3)
-    end if
 !
 !
 !     -- ON RECOPIE LES .RELR DE &MERITH1, &MERITH2 ET
@@ -139,8 +126,7 @@ subroutine merith(model_, nb_load, list_name_, mate, mateco, cara_elem_, &
     call jedetr(matr_elem//'.RERR')
     call jedetr(matr_elem//'.RELR')
 !
-    call memare(base, matr_elem, model, mate, cara_elem, &
-                'RIGI_THER')
+    call memare(base, matr_elem, model, mate, cara_elem, 'RIGI_THER')
 !
     do i = 1, long1
         call reajre(matr_elem, lire1(i), base)
@@ -148,17 +134,12 @@ subroutine merith(model_, nb_load, list_name_, mate, mateco, cara_elem_, &
     do i = 1, long2
         call reajre(matr_elem, lire2(i), base)
     end do
-    do i = 1, long3
-        call reajre(matr_elem, lire3(i), base)
-    end do
 !
 ! --- MENAGE
     call jedetr('&MERITH1           .RELR')
     call jedetr('&MERITH2           .RELR')
-    call jedetr('&MERITH3           .RELR')
     call jedetr('&MERITH1           .RERR')
     call jedetr('&MERITH2           .RERR')
-    call jedetr('&MERITH3           .RERR')
 !
     matr_elem_ = matr_elem
     call jedema()

@@ -62,7 +62,7 @@ def assemblage_prod(self, NUME_DDL, MATR_ASSE, VECT_ASSE, **args):
             if opti in ("RIGI_ACOU", "MASS_ACOU", "AMOR_ACOU"):
                 t = matr_asse_pres_c
 
-            if opti in ("RIGI_THER", "RIGI_THER_CONV", "RIGI_THER_CONV_D"):
+            if opti in ("RIGI_THER", "RIGI_THER_CONV"):
                 t = matr_asse_temp_r
 
             if opti == "RIGI_MECA_HYST":

@@ -26,7 +26,7 @@ import cataelem.Commons.attributes as AT
 PMATTTR = OutputParameter(phys=PHY.MTNS_R, type="RESL")
 
 
-RIGI_THER_CONV_T = Option(
+RIGI_THER_CONV = Option(
     para_in=(SP.PGEOMER, SP.PMATERC, SP.PTEMPEI, SP.PTEMPSR, SP.PVITESR),
     para_out=(PMATTTR,),
     condition=(CondCalcul("+", ((AT.PHENO, "TH"), (AT.BORD, "0"))),),

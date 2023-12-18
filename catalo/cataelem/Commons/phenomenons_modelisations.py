@@ -6458,10 +6458,10 @@ phen.add(
         elements=(
             (MT.TRIA3, EL.THAXTR3),
             (MT.QUAD4, EL.THAXQU4),
-            (MT.SEG2, EL.THAXSE2),
             (MT.TRIA6, EL.THAXTR6),
             (MT.QUAD8, EL.THAXQU8),
             (MT.QUAD9, EL.THAXQU9),
+            (MT.SEG2, EL.THAXSE2),
             (MT.SEG3, EL.THAXSE3),
         ),
     ),
@@ -6604,10 +6604,10 @@ phen.add(
         elements=(
             (MT.TRIA3, EL.THPLTR3),
             (MT.QUAD4, EL.THPLQU4),
-            (MT.SEG2, EL.THPLSE2),
             (MT.TRIA6, EL.THPLTR6),
             (MT.QUAD8, EL.THPLQU8),
             (MT.QUAD9, EL.THPLQU9),
+            (MT.SEG2, EL.THPLSE2),
             (MT.SEG3, EL.THPLSE3),
         ),
     ),

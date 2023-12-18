@@ -37,13 +37,15 @@ MMATTTR = ArrayOfComponents(phys=PHY.MTEM_R, locatedComponents=DDL_THER)
 MMATTSR = ArrayOfComponents(phys=PHY.MTNS_R, locatedComponents=DDL_THER)
 
 # --------------------------------------------------------------------------------------------------
-class THER_HEXA20(Element):
-    """Thermics - 3D - HEXA20"""
+class THER_HEXA8_D(Element):
+    """Thermics - 3D_DIAG - HEXA8"""
 
-    meshType = MT.HEXA20
+    meshType = MT.HEXA8
     elrefe = (
-        ElrefeLoc(MT.H20, gauss=("RIGI=FPG27", "FPG1=FPG1", "MASS=FPG27"), mater=("FPG1",)),
-        ElrefeLoc(MT.QU8, gauss=("RIGI=FPG9", "MASS=FPG9")),
+        ElrefeLoc(
+            MT.HE8, gauss=("RIGI=FPG8", "FPG1=FPG1", "MASS=NOEU_S", "NOEU=NOEU_S"), mater=("FPG1",)
+        ),
+        ElrefeLoc(MT.QU4, gauss=("RIGI=FPG4", "MASS=FPG4")),
     )
     calculs = (
         OP.CHAR_THER_EVOL(
@@ -418,49 +420,13 @@ class THER_HEXA20(Element):
 
 
 # --------------------------------------------------------------------------------------------------
-class THER_HEXA27(THER_HEXA20):
-    """Thermics - 3D - HEXA27"""
-
-    meshType = MT.HEXA27
-    elrefe = (
-        ElrefeLoc(MT.H27, gauss=("RIGI=FPG27", "FPG1=FPG1", "MASS=FPG27"), mater=("FPG1",)),
-        ElrefeLoc(MT.QU9, gauss=("RIGI=FPG9", "MASS=FPG9")),
-    )
-
-
-# --------------------------------------------------------------------------------------------------
-class THER_HEXA8(THER_HEXA20):
-    """Thermics - 3D - HEXA8"""
-
-    meshType = MT.HEXA8
-    elrefe = (
-        ElrefeLoc(
-            MT.HE8, gauss=("RIGI=FPG8", "FPG1=FPG1", "MASS=FPG8", "NOEU=NOEU"), mater=("FPG1",)
-        ),
-        ElrefeLoc(MT.QU4, gauss=("RIGI=FPG4", "MASS=FPG4")),
-    )
-
-
-# --------------------------------------------------------------------------------------------------
-class THER_PENTA15(THER_HEXA20):
-    """Thermics - 3D - PENTA15"""
-
-    meshType = MT.PENTA15
-    elrefe = (
-        ElrefeLoc(MT.P15, gauss=("RIGI=FPG21", "FPG1=FPG1", "MASS=FPG21"), mater=("FPG1",)),
-        ElrefeLoc(MT.QU8, gauss=("RIGI=FPG9", "MASS=FPG9", "NOEU=NOEU")),
-        ElrefeLoc(MT.TR6, gauss=("RIGI=FPG6", "MASS=FPG6", "NOEU=NOEU")),
-    )
-
-
-# --------------------------------------------------------------------------------------------------
-class THER_PENTA6(THER_HEXA20):
-    """Thermics - 3D - PENTA6"""
+class THER_PENTA6_D(THER_HEXA8_D):
+    """Thermics - 3D_DIAG - PENTA6"""
 
     meshType = MT.PENTA6
     elrefe = (
         ElrefeLoc(
-            MT.PE6, gauss=("RIGI=FPG6", "FPG1=FPG1", "MASS=FPG6", "NOEU=NOEU"), mater=("FPG1",)
+            MT.PE6, gauss=("RIGI=FPG6", "FPG1=FPG1", "MASS=NOEU_S", "NOEU=NOEU_S"), mater=("FPG1",)
         ),
         ElrefeLoc(MT.QU4, gauss=("RIGI=FPG4", "MASS=FPG4", "NOEU=NOEU")),
         ElrefeLoc(MT.TR3, gauss=("RIGI=COT3", "MASS=COT3", "NOEU=NOEU")),
@@ -468,68 +434,13 @@ class THER_PENTA6(THER_HEXA20):
 
 
 # --------------------------------------------------------------------------------------------------
-class THER_PYRAM13(THER_HEXA20):
-    """Thermics - 3D - PYRAM13"""
-
-    meshType = MT.PYRAM13
-    elrefe = (
-        ElrefeLoc(MT.P13, gauss=("RIGI=FPG10", "FPG1=FPG1", "MASS=FPG10"), mater=("FPG1",)),
-        ElrefeLoc(MT.QU8, gauss=("RIGI=FPG9", "MASS=FPG9")),
-        ElrefeLoc(MT.TR6, gauss=("RIGI=FPG6", "MASS=FPG6")),
-    )
-    calculs = (
-        OP.CHAR_THER_GRAI_F(te=-1),
-        OP.CHAR_THER_GRAI_R(te=-1),
-        OP.DURT_ELNO(te=-1),
-        OP.META_ELNO(te=-1),
-        OP.META_INIT_ELNO(te=-1),
-        OP.ERTH_ELEM(te=-1),
-        OP.ERTH_ELNO(te=-1),
-    )
-
-
-# --------------------------------------------------------------------------------------------------
-class THER_PYRAM5(THER_HEXA20):
-    """Thermics - 3D - PYRAM5"""
-
-    meshType = MT.PYRAM5
-    elrefe = (
-        ElrefeLoc(
-            MT.PY5, gauss=("RIGI=FPG5", "FPG1=FPG1", "MASS=FPG5", "NOEU=NOEU"), mater=("FPG1",)
-        ),
-        ElrefeLoc(MT.QU4, gauss=("RIGI=FPG4", "MASS=FPG4")),
-        ElrefeLoc(MT.TR3, gauss=("RIGI=COT3", "MASS=COT3")),
-    )
-    calculs = (
-        OP.CHAR_THER_GRAI_F(te=-1),
-        OP.CHAR_THER_GRAI_R(te=-1),
-        OP.DURT_ELNO(te=-1),
-        OP.META_ELNO(te=-1),
-        OP.META_INIT_ELNO(te=-1),
-        OP.ERTH_ELEM(te=-1),
-        OP.ERTH_ELNO(te=-1),
-    )
-
-
-# --------------------------------------------------------------------------------------------------
-class THER_TETRA10(THER_HEXA20):
-    """Thermics - 3D - TETRA10"""
-
-    meshType = MT.TETRA10
-    elrefe = (
-        ElrefeLoc(MT.T10, gauss=("RIGI=FPG15", "FPG1=FPG1", "MASS=FPG15"), mater=("FPG1",)),
-        ElrefeLoc(MT.TR6, gauss=("RIGI=FPG6", "MASS=FPG6")),
-    )
-
-
-# --------------------------------------------------------------------------------------------------
-class THER_TETRA4(THER_HEXA20):
-    """Thermics - 3D - TETRA4"""
+class THER_TETRA4_D(THER_HEXA8_D):
+    """Thermics - 3D_DIAG - TETRA4"""
 
     meshType = MT.TETRA4
     elrefe = (
         ElrefeLoc(
-            MT.TE4, gauss=("RIGI=FPG4", "FPG1=FPG1", "MASS=FPG4", "NOEU=NOEU"), mater=("FPG1",)
+            MT.TE4, gauss=("RIGI=FPG4", "FPG1=FPG1", "MASS=NOEU_S", "NOEU=NOEU_S"), mater=("FPG1",)
         ),
         ElrefeLoc(MT.TR3, gauss=("RIGI=COT3", "MASS=COT3")),
     )

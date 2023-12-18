@@ -35,7 +35,7 @@ subroutine te0522(option, nomte)
 !
 ! Elements: THER_3D
 !
-! Options: RIGI_THER_CONV_T
+! Options: RIGI_THER_CONV
 !
 ! --------------------------------------------------------------------------------------------------
 !

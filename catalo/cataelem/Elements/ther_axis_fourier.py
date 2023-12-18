@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,53 +25,18 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.mesh_types as MT
 from cataelem.Options.options import OP
 
-# ----------------
-# Modes locaux :
-# ----------------
-
-
-# Reuse PHY.COMPOR from mechanical => names of components are strange
-CCOMPOR = LocatedComponents(
-    phys=PHY.COMPOR, type="ELEM", components=("RELCOM", "NBVARI", "DEFORM", "INCELA", "C_PLAN")
-)
-
-
-EFLUXPG = LocatedComponents(
-    phys=PHY.FLUX_R, type="ELGA", location="RIGI", components=("FLUX", "FLUY", "FLUZ")
-)
-
-
-EFLUXNO = LocatedComponents(phys=PHY.FLUX_R, type="ELNO", components=("FLUX", "FLUY", "FLUZ"))
-
-
-NGEOMER = LocatedComponents(phys=PHY.GEOM_R, type="ELNO", components=("X", "Y"))
-
-
-EGGEOP_R = LocatedComponents(
-    phys=PHY.GEOM_R, type="ELGA", location="RIGI", components=("X", "Y", "W")
-)
-
-
-ENGEOM_R = LocatedComponents(phys=PHY.GEOM_R, type="ELNO", components=("X", "Y"))
-
-
-CTEMPSR = LocatedComponents(phys=PHY.INST_R, type="ELEM", components=("INST", "DELTAT", "THETA"))
-
-
-ESOURCR = LocatedComponents(phys=PHY.SOUR_R, type="ELGA", location="RIGI", components=("SOUR",))
-
-
+# --------------------------------------------------------------------------------------------------
+# Located components
+# --------------------------------------------------------------------------------------------------
 DDL_THER = LocatedComponents(phys=PHY.TEMP_R, type="ELNO", components=("TEMP",))
-
 
 MVECTTR = ArrayOfComponents(phys=PHY.VTEM_R, locatedComponents=DDL_THER)
 
 MMATTTR = ArrayOfComponents(phys=PHY.MTEM_R, locatedComponents=DDL_THER)
 
-
-# ------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------
 class THFOQU4(Element):
-    """Please document this element"""
+    """Thermics - AXIS_FOURIER - QUAD4"""
 
     meshType = MT.QUAD4
     elrefe = (
@@ -79,18 +44,23 @@ class THFOQU4(Element):
         ElrefeLoc(MT.SE2, gauss=("RIGI=FPG2",)),
     )
     calculs = (
+        OP.CARA_CISA(te=-1),
+        OP.CARA_GAUCHI(te=-1),
+        OP.CARA_TORSION(te=-1),
         OP.CHAR_THER_SOUR_F(
             te=264,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PSOURCF, LC.CSOURCF), (SP.PTEMPSR, CTEMPSR)),
+            para_in=((SP.PGEOMER, LC.EGEOM2D), (SP.PSOURCF, LC.CSOURCF), (SP.PTEMPSR, LC.CTIMETR)),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
         OP.CHAR_THER_SOUR_R(
             te=263,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PSOURCR, ESOURCR)),
+            para_in=((SP.PGEOMER, LC.EGEOM2D), (SP.PSOURCR, LC.ESOURCR)),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
         OP.COOR_ELGA(
-            te=479, para_in=((SP.PGEOMER, NGEOMER),), para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R),)
+            te=479,
+            para_in=((SP.PGEOMER, LC.EGEOM2D),),
+            para_out=((OP.COOR_ELGA.PCOORPG, LC.EGGAU2D),),
         ),
         OP.DURT_ELNO(
             te=551,
@@ -100,35 +70,37 @@ class THFOQU4(Element):
         OP.FLUX_ELGA(
             te=266,
             para_in=(
-                (SP.PGEOMER, NGEOMER),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PHARMON, LC.CHARMON),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPER, DDL_THER),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PTEMPSR, LC.CTIMETR),
             ),
-            para_out=((OP.FLUX_ELGA.PFLUXPG, EFLUXPG),),
+            para_out=((OP.FLUX_ELGA.PFLUXPG, LC.EFLUX3R),),
         ),
         OP.FLUX_ELNO(
-            te=4, para_in=((OP.FLUX_ELNO.PFLUXPG, EFLUXPG),), para_out=((SP.PFLUXNO, EFLUXNO),)
+            te=4,
+            para_in=((OP.FLUX_ELNO.PFLUXPG, LC.EFLUX3R),),
+            para_out=((SP.PFLUXNO, LC.NFLUX3R),),
         ),
         OP.META_ELNO(
             te=67,
             para_in=(
-                (OP.META_ELNO.PCOMPOR, CCOMPOR),
+                (OP.META_ELNO.PCOMPOR, LC.CCOMPOT),
                 (SP.PFTRC, LC.CFTRC),
                 (SP.PMATERC, LC.CMATERC),
                 (OP.META_ELNO.PPHASIN, LC.EPHASNO_),
                 (SP.PTEMPAR, DDL_THER),
                 (SP.PTEMPER, DDL_THER),
                 (SP.PTEMPIR, DDL_THER),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PTEMPSR, LC.CTIMETR),
             ),
             para_out=((SP.PPHASNOU, LC.EPHASNO_),),
         ),
         OP.META_INIT_ELNO(
             te=320,
             para_in=(
-                (OP.META_INIT_ELNO.PCOMPOR, CCOMPOR),
+                (OP.META_INIT_ELNO.PCOMPOR, LC.CCOMPOT),
                 (SP.PMATERC, LC.CMATERC),
                 (OP.META_INIT_ELNO.PPHASIN, LC.CPHASIN_),
                 (SP.PTEMPER, DDL_THER),
@@ -138,19 +110,19 @@ class THFOQU4(Element):
         OP.RIGI_THER(
             te=260,
             para_in=(
-                (SP.PGEOMER, NGEOMER),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PHARMON, LC.CHARMON),
                 (SP.PMATERC, LC.CMATERC),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PTEMPSR, LC.CTIMETR),
             ),
             para_out=((OP.RIGI_THER.PMATTTR, MMATTTR),),
         ),
         OP.TOU_INI_ELEM(te=99, para_out=((OP.TOU_INI_ELEM.PSOUR_R, LC.CSOURCR),)),
-        OP.TOU_INI_ELGA(te=99, para_out=((OP.TOU_INI_ELGA.PGEOM_R, EGGEOP_R),)),
+        OP.TOU_INI_ELGA(te=99, para_out=((OP.TOU_INI_ELGA.PGEOM_R, LC.EGGEO2D),)),
         OP.TOU_INI_ELNO(
             te=99,
             para_out=(
-                (OP.TOU_INI_ELNO.PGEOM_R, ENGEOM_R),
+                (OP.TOU_INI_ELNO.PGEOM_R, LC.EGEOM2D),
                 (OP.TOU_INI_ELNO.PINST_R, LC.ENINST_R),
                 (OP.TOU_INI_ELNO.PNEUT_F, LC.ENNEUT_F),
                 (OP.TOU_INI_ELNO.PNEUT_R, LC.ENNEUT_R),
@@ -158,14 +130,14 @@ class THFOQU4(Element):
             ),
         ),
         OP.VERI_JACOBIEN(
-            te=328, para_in=((SP.PGEOMER, NGEOMER),), para_out=((SP.PCODRET, LC.ECODRET),)
+            te=328, para_in=((SP.PGEOMER, LC.EGEOM2D),), para_out=((SP.PCODRET, LC.ECODRET),)
         ),
     )
 
 
-# ------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------
 class THFOQU8(THFOQU4):
-    """Please document this element"""
+    """Thermics - AXIS_FOURIER - QUAD8"""
 
     meshType = MT.QUAD8
     elrefe = (
@@ -174,9 +146,9 @@ class THFOQU8(THFOQU4):
     )
 
 
-# ------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------
 class THFOQU9(THFOQU4):
-    """Please document this element"""
+    """Thermics - AXIS_FOURIER - QUAD9"""
 
     meshType = MT.QUAD9
     elrefe = (
@@ -185,9 +157,9 @@ class THFOQU9(THFOQU4):
     )
 
 
-# ------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------
 class THFOTR3(THFOQU4):
-    """Please document this element"""
+    """Thermics - AXIS_FOURIER - TRIA3"""
 
     meshType = MT.TRIA3
     elrefe = (
@@ -196,9 +168,9 @@ class THFOTR3(THFOQU4):
     )
 
 
-# ------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------
 class THFOTR6(THFOQU4):
-    """Please document this element"""
+    """Thermics - AXIS_FOURIER - TRIA6"""
 
     meshType = MT.TRIA6
     elrefe = (

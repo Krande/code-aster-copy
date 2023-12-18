@@ -39,8 +39,8 @@ MVECTTR = ArrayOfComponents(phys=PHY.VTEM_R, locatedComponents=DDL_THER)
 MMATTTR = ArrayOfComponents(phys=PHY.MTEM_R, locatedComponents=DDL_THER)
 
 # --------------------------------------------------------------------------------------------------
-class THER_FACE3(Element):
-    """Thermics - Skin element 3D - TRIA3"""
+class THER_FACE3_D(Element):
+    """Thermics - Skin element 3D_DIAG - TRIA3"""
 
     meshType = MT.TRIA3
     elrefe = (ElrefeLoc(MT.TR3, gauss=("RIGI=COT3", "NOEU=NOEU", "FPG1=FPG1"), mater=("FPG1",)),)
@@ -219,7 +219,7 @@ class THER_FACE3(Element):
                 (SP.PCALCI, LC.EMNEUT_I),
                 (SP.PCHAMPG, LC.EGTINIR),
                 (SP.PCOEFR, LC.CNORMCF),
-                (OP.NORME_L2.PCOORPG, LC.EGGEO3D),
+                (OP.NORME_L2.PCOORPG, LC.EGEOM3D),
             ),
             para_out=((SP.PNORME, LC.ENORME),),
         ),
@@ -311,32 +311,8 @@ class THER_FACE3(Element):
 
 
 # --------------------------------------------------------------------------------------------------
-class THER_FACE4(THER_FACE3):
-    """Thermics - Skin element 3D - QUAD4"""
+class THER_FACE4_D(THER_FACE3_D):
+    """Thermics - Skin element 3D_DIAG - QUAD4"""
 
     meshType = MT.QUAD4
     elrefe = (ElrefeLoc(MT.QU4, gauss=("RIGI=FPG4", "NOEU=NOEU", "FPG1=FPG1"), mater=("FPG1",)),)
-
-
-# --------------------------------------------------------------------------------------------------
-class THER_FACE6(THER_FACE3):
-    """Thermics - Skin element 3D - TRIA6"""
-
-    meshType = MT.TRIA6
-    elrefe = (ElrefeLoc(MT.TR6, gauss=("RIGI=FPG6", "NOEU=NOEU", "FPG1=FPG1"), mater=("FPG1",)),)
-
-
-# --------------------------------------------------------------------------------------------------
-class THER_FACE8(THER_FACE3):
-    """Thermics - Skin element 3D - QUAD8"""
-
-    meshType = MT.QUAD8
-    elrefe = (ElrefeLoc(MT.QU8, gauss=("RIGI=FPG9", "NOEU=NOEU", "FPG1=FPG1"), mater=("FPG1",)),)
-
-
-# --------------------------------------------------------------------------------------------------
-class THER_FACE9(THER_FACE3):
-    """Thermics - Skin element 3D - QUAD9"""
-
-    meshType = MT.QUAD9
-    elrefe = (ElrefeLoc(MT.QU9, gauss=("RIGI=FPG9", "NOEU=NOEU", "FPG1=FPG1"), mater=("FPG1",)),)

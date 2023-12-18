@@ -37,20 +37,24 @@ MMATTTR = ArrayOfComponents(phys=PHY.MTEM_R, locatedComponents=DDL_THER)
 MMATTSR = ArrayOfComponents(phys=PHY.MTNS_R, locatedComponents=DDL_THER)
 
 # --------------------------------------------------------------------------------------------------
-class THER_HEXA20(Element):
-    """Thermics - 3D - HEXA20"""
+class THAXTL3(Element):
+    """Thermics - AXIS_DIAG - TRIA3"""
 
-    meshType = MT.HEXA20
+    meshType = MT.TRIA3
     elrefe = (
-        ElrefeLoc(MT.H20, gauss=("RIGI=FPG27", "FPG1=FPG1", "MASS=FPG27"), mater=("FPG1",)),
-        ElrefeLoc(MT.QU8, gauss=("RIGI=FPG9", "MASS=FPG9")),
+        ElrefeLoc(
+            MT.TR3, gauss=("RIGI=FPG3", "MASS=NOEU_S", "FPG1=FPG1", "NOEU=NOEU"), mater=("FPG1",)
+        ),
     )
     calculs = (
+        OP.CARA_CISA(te=-1),
+        OP.CARA_GAUCHI(te=-1),
+        OP.CARA_TORSION(te=-1),
         OP.CHAR_THER_EVOL(
             te=78,
             para_in=(
                 (SP.PCAMASS, LC.CCAMA3D),
-                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPER, DDL_THER),
                 (SP.PTEMPSR, LC.CTIMETR),
@@ -62,7 +66,7 @@ class THER_HEXA20(Element):
             te=244,
             para_in=(
                 (OP.CHAR_THER_EVOLNI.PCOMPOR, LC.CCOMPOT),
-                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PCAMASS, LC.CCAMA3D),
                 (OP.CHAR_THER_EVOLNI.PHYDRPM, LC.EHYDRR),
                 (SP.PMATERC, LC.CMATERC),
@@ -76,8 +80,8 @@ class THER_HEXA20(Element):
         OP.CHAR_THER_GRAI_F(
             te=217,
             para_in=(
-                (SP.PGEOMER, LC.EGEOM3D),
-                (SP.PGRAINF, LC.CFLUX3F),
+                (SP.PGEOMER, LC.EGEOM2D),
+                (SP.PGRAINF, LC.CFLUX2F),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPSR, LC.CTIMETR),
                 (OP.CHAR_THER_GRAI_F.PVARCPR, LC.ZVARCPG),
@@ -87,8 +91,8 @@ class THER_HEXA20(Element):
         OP.CHAR_THER_GRAI_R(
             te=217,
             para_in=(
-                (SP.PGEOMER, LC.EGEOM3D),
-                (SP.PGRAINR, LC.CFLUX3R),
+                (SP.PGEOMER, LC.EGEOM2D),
+                (SP.PGRAINR, LC.CFLUX2R),
                 (SP.PMATERC, LC.CMATERC),
                 (OP.CHAR_THER_GRAI_R.PVARCPR, LC.ZVARCPG),
             ),
@@ -97,7 +101,7 @@ class THER_HEXA20(Element):
         OP.CHAR_THER_SOURNL(
             te=354,
             para_in=(
-                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PSOURNL, LC.CSOURCF),
                 (SP.PTEMPER, DDL_THER),
                 (SP.PTEMPSR, LC.CTIMETR),
@@ -107,7 +111,7 @@ class THER_HEXA20(Element):
         OP.CHAR_THER_SOUR_F(
             te=80,
             para_in=(
-                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PSOURCF, LC.CSOURCF),
                 (SP.PTEMPSR, LC.CTIMETR),
                 (OP.CHAR_THER_SOUR_F.PVARCPR, LC.ZVARCPG),
@@ -116,26 +120,26 @@ class THER_HEXA20(Element):
         ),
         OP.CHAR_THER_SOUR_R(
             te=80,
-            para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PSOURCR, LC.ESOURCR)),
+            para_in=((SP.PGEOMER, LC.EGEOM2D), (SP.PSOURCR, LC.ESOURCR)),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
         OP.CHAR_THER_TNL(
-            te=525,
+            te=505,
             para_in=(
-                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PLAGRM, LC.EGNEUT1R),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPEI, DDL_THER),
                 (SP.PTEMPER, DDL_THER),
                 (SP.PTEMPSR, LC.CTIMETR),
-                (SP.PVITESR, LC.NVITE3R),
+                (SP.PVITESR, LC.NVITE2R),
             ),
             para_out=((SP.PLAGRP, LC.EGNEUT1R), (SP.PRESIDU, MVECTTR), (SP.PVECTTR, MVECTTR)),
         ),
         OP.COOR_ELGA(
-            te=488,
-            para_in=((SP.PGEOMER, LC.EGEOM3D),),
-            para_out=((OP.COOR_ELGA.PCOORPG, LC.EGGAU3D),),
+            te=479,
+            para_in=((SP.PGEOMER, LC.EGEOM2D),),
+            para_out=((OP.COOR_ELGA.PCOORPG, LC.EGGAU2D),),
         ),
         OP.DURT_ELNO(
             te=551,
@@ -146,9 +150,9 @@ class THER_HEXA20(Element):
             te=3,
             para_in=(
                 (SP.PCHARG, LC.CREFERK),
-                (SP.PFLUX_M, LC.NFLUX3R),
-                (SP.PFLUX_P, LC.NFLUX3R),
-                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PFLUX_M, LC.NFLUX2R),
+                (SP.PFLUX_P, LC.NFLUX2R),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PSOURCF, LC.CSOURCF),
                 (SP.PSOURCR, LC.ESOURCR),
@@ -164,10 +168,10 @@ class THER_HEXA20(Element):
             para_out=((SP.PERRENO, LC.EERRENOT),),
         ),
         OP.ETHE_ELEM(
-            te=66,
+            te=220,
             para_in=(
                 (SP.PCAMASS, LC.CCAMA3D),
-                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPER, DDL_THER),
                 (SP.PVARCRR, LC.ZVARCPG),
@@ -180,23 +184,23 @@ class THER_HEXA20(Element):
             te=69,
             para_in=(
                 (SP.PCAMASS, LC.CCAMA3D),
-                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPER, DDL_THER),
                 (SP.PTEMPSR, LC.CTIMETR),
                 (OP.FLUX_ELGA.PVARCPR, LC.ZVARCPG),
             ),
-            para_out=((OP.FLUX_ELGA.PFLUXPG, LC.EFLUX3R),),
+            para_out=((OP.FLUX_ELGA.PFLUXPG, LC.EFLUX2R),),
         ),
         OP.FLUX_ELNO(
             te=4,
-            para_in=((OP.FLUX_ELNO.PFLUXPG, LC.EFLUX3R),),
-            para_out=((SP.PFLUXNO, LC.NFLUX3R),),
+            para_in=((OP.FLUX_ELNO.PFLUXPG, LC.EFLUX2R),),
+            para_out=((SP.PFLUXNO, LC.NFLUX2R),),
         ),
         OP.HYDR_ELGA(
             te=385,
             para_in=(
-                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (OP.HYDR_ELGA.PHYDRMR, LC.EHYDRR),
                 (OP.HYDR_ELGA.PCOMPOR, LC.CCOMPOT),
                 (SP.PMATERC, LC.CMATERC),
@@ -214,7 +218,7 @@ class THER_HEXA20(Element):
         OP.MASS_THER(
             te=77,
             para_in=(
-                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPSR, LC.CTIMETR),
                 (OP.MASS_THER.PVARCPR, LC.ZVARCPG),
@@ -222,7 +226,7 @@ class THER_HEXA20(Element):
             para_out=((OP.MASS_THER.PMATTTR, MMATTTR),),
         ),
         OP.META_ELNO(
-            te=64,
+            te=67,
             para_in=(
                 (OP.META_ELNO.PCOMPOR, LC.CCOMPOT),
                 (SP.PFTRC, LC.CFTRC),
@@ -236,7 +240,7 @@ class THER_HEXA20(Element):
             para_out=((SP.PPHASNOU, LC.EPHASNO_),),
         ),
         OP.META_INIT_ELNO(
-            te=321,
+            te=320,
             para_in=(
                 (OP.META_INIT_ELNO.PCOMPOR, LC.CCOMPOT),
                 (SP.PMATERC, LC.CMATERC),
@@ -249,7 +253,7 @@ class THER_HEXA20(Element):
             te=243,
             para_in=(
                 (OP.RIGI_THER_TANG.PCOMPOR, LC.CCOMPOT),
-                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PCAMASS, LC.CCAMA3D),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPEI, DDL_THER),
@@ -262,7 +266,7 @@ class THER_HEXA20(Element):
             te=246,
             para_in=(
                 (OP.MASS_THER_TANG.PCOMPOR, LC.CCOMPOT),
-                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPEI, DDL_THER),
                 (OP.MASS_THER_TANG.PVARCPR, LC.ZVARCPG),
@@ -272,7 +276,7 @@ class THER_HEXA20(Element):
         OP.MTAN_THER_SOURNL(
             te=354,
             para_in=(
-                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PSOURNL, LC.CSOURCF),
                 (SP.PTEMPEI, DDL_THER),
                 (SP.PTEMPSR, LC.CTIMETR),
@@ -285,7 +289,7 @@ class THER_HEXA20(Element):
                 (SP.PCALCI, LC.EMNEUT_I),
                 (SP.PCHAMPG, LC.EGTINIR),
                 (SP.PCOEFR, LC.CNTINIR),
-                (OP.NORME_L2.PCOORPG, LC.EGGAU3D),
+                (OP.NORME_L2.PCOORPG, LC.EGGAU2D),
             ),
             para_out=((SP.PNORME, LC.ENORME),),
         ),
@@ -296,27 +300,27 @@ class THER_HEXA20(Element):
         ),
         OP.REPERE_LOCAL(
             te=133,
-            para_in=((SP.PCAMASS, LC.CCAMA3D), (SP.PGEOMER, LC.EGEOM3D)),
-            para_out=((SP.PREPLO1, LC.CGEOM3D), (SP.PREPLO2, LC.CGEOM3D), (SP.PREPLO3, LC.CGEOM3D)),
+            para_in=((SP.PCAMASS, LC.CCAMA3D), (SP.PGEOMER, LC.EGEOM2D)),
+            para_out=((SP.PREPLO1, LC.CGEOM2D), (SP.PREPLO2, LC.CGEOM2D)),
         ),
         OP.RAPH_THER(
             te=243,
             para_in=(
                 (OP.RAPH_THER.PCOMPOR, LC.CCOMPOT),
-                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PCAMASS, LC.CCAMA3D),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPEI, DDL_THER),
                 (SP.PTMPCHF, DDL_THER),
                 (OP.RAPH_THER.PVARCPR, LC.ZVARCPG),
             ),
-            para_out=((SP.PRESIDU, MVECTTR), (OP.RAPH_THER.PFLUXPR, LC.EFLUX3R)),
+            para_out=((SP.PRESIDU, MVECTTR), (OP.RAPH_THER.PFLUXPR, LC.EFLUX2R)),
         ),
         OP.MASS_THER_RESI(
             te=252,
             para_in=(
                 (OP.MASS_THER_RESI.PCOMPOR, LC.CCOMPOT),
-                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (OP.MASS_THER_RESI.PHYDRPR, LC.EHYDRR),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPEI, DDL_THER),
@@ -327,7 +331,7 @@ class THER_HEXA20(Element):
         OP.RESI_THER_SOURNL(
             te=354,
             para_in=(
-                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PSOURNL, LC.CSOURCF),
                 (SP.PTEMPEI, DDL_THER),
                 (SP.PTEMPSR, LC.CTIMETR),
@@ -338,7 +342,7 @@ class THER_HEXA20(Element):
             te=76,
             para_in=(
                 (SP.PCAMASS, LC.CCAMA3D),
-                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPSR, LC.CTIMETR),
                 (OP.RIGI_THER.PVARCPR, LC.ZVARCPG),
@@ -346,20 +350,20 @@ class THER_HEXA20(Element):
             para_out=((OP.RIGI_THER.PMATTTR, MMATTTR),),
         ),
         OP.RIGI_THER_CONV(
-            te=522,
+            te=502,
             para_in=(
-                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPEI, DDL_THER),
                 (SP.PTEMPSR, LC.CTIMETR),
-                (SP.PVITESR, LC.NVITE3R),
+                (SP.PVITESR, LC.NVITE2R),
             ),
             para_out=((OP.RIGI_THER_CONV.PMATTTR, MMATTSR),),
         ),
         OP.RIGI_THER_TRANS(
             te=501,
             para_in=(
-                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPEI, DDL_THER),
                 (SP.PTEMPER, DDL_THER),
@@ -369,7 +373,7 @@ class THER_HEXA20(Element):
         OP.SOUR_ELGA(
             te=318,
             para_in=(
-                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPER, DDL_THER),
                 (SP.PTEMPSR, LC.CTIMETR),
@@ -377,19 +381,12 @@ class THER_HEXA20(Element):
             ),
             para_out=((OP.SOUR_ELGA.PSOUR_R, LC.ESOURCR),),
         ),
-        OP.TOU_INI_ELEM(
-            te=99,
-            para_out=(
-                (OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM3D),
-                (OP.TOU_INI_ELEM.PCOEH_R, LC.CHECHPR),
-                (OP.TOU_INI_ELEM.PSOUR_R, LC.CSOURCR),
-            ),
-        ),
+        OP.TOU_INI_ELEM(te=99, para_out=((OP.TOU_INI_ELEM.PSOUR_R, LC.CSOURCR),)),
         OP.TOU_INI_ELGA(
             te=99,
             para_out=(
-                (OP.TOU_INI_ELGA.PFLUX_R, LC.EFLUX3R),
-                (OP.TOU_INI_ELGA.PGEOM_R, LC.EGGEO3D),
+                (OP.TOU_INI_ELGA.PFLUX_R, LC.EFLUX2R),
+                (OP.TOU_INI_ELGA.PGEOM_R, LC.EGGEO2D),
                 (OP.TOU_INI_ELGA.PNEUT_F, LC.EGTINIF),
                 (OP.TOU_INI_ELGA.PNEUT_R, LC.EGTINIR),
                 (OP.TOU_INI_ELGA.PSOUR_R, LC.ESOURCR),
@@ -401,8 +398,8 @@ class THER_HEXA20(Element):
         OP.TOU_INI_ELNO(
             te=99,
             para_out=(
-                (OP.TOU_INI_ELNO.PFLUX_R, LC.NFLUX3R),
-                (OP.TOU_INI_ELNO.PGEOM_R, LC.EGEOM3D),
+                (OP.TOU_INI_ELNO.PFLUX_R, LC.NFLUX2R),
+                (OP.TOU_INI_ELNO.PGEOM_R, LC.EGEOM2D),
                 (OP.TOU_INI_ELNO.PHYDR_R, LC.EHYDRNO),
                 (OP.TOU_INI_ELNO.PINST_R, LC.ENINST_R),
                 (OP.TOU_INI_ELNO.PNEUT_F, LC.ENNEUT_F),
@@ -412,124 +409,18 @@ class THER_HEXA20(Element):
             ),
         ),
         OP.VERI_JACOBIEN(
-            te=328, para_in=((SP.PGEOMER, LC.EGEOM3D),), para_out=((SP.PCODRET, LC.ECODRET),)
+            te=328, para_in=((SP.PGEOMER, LC.EGEOM2D),), para_out=((SP.PCODRET, LC.ECODRET),)
         ),
     )
 
 
 # --------------------------------------------------------------------------------------------------
-class THER_HEXA27(THER_HEXA20):
-    """Thermics - 3D - HEXA27"""
+class THAXQL4(THAXTL3):
+    """Thermics - AXIS_DIAG - QUAD4"""
 
-    meshType = MT.HEXA27
-    elrefe = (
-        ElrefeLoc(MT.H27, gauss=("RIGI=FPG27", "FPG1=FPG1", "MASS=FPG27"), mater=("FPG1",)),
-        ElrefeLoc(MT.QU9, gauss=("RIGI=FPG9", "MASS=FPG9")),
-    )
-
-
-# --------------------------------------------------------------------------------------------------
-class THER_HEXA8(THER_HEXA20):
-    """Thermics - 3D - HEXA8"""
-
-    meshType = MT.HEXA8
+    meshType = MT.QUAD4
     elrefe = (
         ElrefeLoc(
-            MT.HE8, gauss=("RIGI=FPG8", "FPG1=FPG1", "MASS=FPG8", "NOEU=NOEU"), mater=("FPG1",)
+            MT.QU4, gauss=("RIGI=FPG4", "MASS=NOEU_S", "FPG1=FPG1", "NOEU=NOEU"), mater=("FPG1",)
         ),
-        ElrefeLoc(MT.QU4, gauss=("RIGI=FPG4", "MASS=FPG4")),
-    )
-
-
-# --------------------------------------------------------------------------------------------------
-class THER_PENTA15(THER_HEXA20):
-    """Thermics - 3D - PENTA15"""
-
-    meshType = MT.PENTA15
-    elrefe = (
-        ElrefeLoc(MT.P15, gauss=("RIGI=FPG21", "FPG1=FPG1", "MASS=FPG21"), mater=("FPG1",)),
-        ElrefeLoc(MT.QU8, gauss=("RIGI=FPG9", "MASS=FPG9", "NOEU=NOEU")),
-        ElrefeLoc(MT.TR6, gauss=("RIGI=FPG6", "MASS=FPG6", "NOEU=NOEU")),
-    )
-
-
-# --------------------------------------------------------------------------------------------------
-class THER_PENTA6(THER_HEXA20):
-    """Thermics - 3D - PENTA6"""
-
-    meshType = MT.PENTA6
-    elrefe = (
-        ElrefeLoc(
-            MT.PE6, gauss=("RIGI=FPG6", "FPG1=FPG1", "MASS=FPG6", "NOEU=NOEU"), mater=("FPG1",)
-        ),
-        ElrefeLoc(MT.QU4, gauss=("RIGI=FPG4", "MASS=FPG4", "NOEU=NOEU")),
-        ElrefeLoc(MT.TR3, gauss=("RIGI=COT3", "MASS=COT3", "NOEU=NOEU")),
-    )
-
-
-# --------------------------------------------------------------------------------------------------
-class THER_PYRAM13(THER_HEXA20):
-    """Thermics - 3D - PYRAM13"""
-
-    meshType = MT.PYRAM13
-    elrefe = (
-        ElrefeLoc(MT.P13, gauss=("RIGI=FPG10", "FPG1=FPG1", "MASS=FPG10"), mater=("FPG1",)),
-        ElrefeLoc(MT.QU8, gauss=("RIGI=FPG9", "MASS=FPG9")),
-        ElrefeLoc(MT.TR6, gauss=("RIGI=FPG6", "MASS=FPG6")),
-    )
-    calculs = (
-        OP.CHAR_THER_GRAI_F(te=-1),
-        OP.CHAR_THER_GRAI_R(te=-1),
-        OP.DURT_ELNO(te=-1),
-        OP.META_ELNO(te=-1),
-        OP.META_INIT_ELNO(te=-1),
-        OP.ERTH_ELEM(te=-1),
-        OP.ERTH_ELNO(te=-1),
-    )
-
-
-# --------------------------------------------------------------------------------------------------
-class THER_PYRAM5(THER_HEXA20):
-    """Thermics - 3D - PYRAM5"""
-
-    meshType = MT.PYRAM5
-    elrefe = (
-        ElrefeLoc(
-            MT.PY5, gauss=("RIGI=FPG5", "FPG1=FPG1", "MASS=FPG5", "NOEU=NOEU"), mater=("FPG1",)
-        ),
-        ElrefeLoc(MT.QU4, gauss=("RIGI=FPG4", "MASS=FPG4")),
-        ElrefeLoc(MT.TR3, gauss=("RIGI=COT3", "MASS=COT3")),
-    )
-    calculs = (
-        OP.CHAR_THER_GRAI_F(te=-1),
-        OP.CHAR_THER_GRAI_R(te=-1),
-        OP.DURT_ELNO(te=-1),
-        OP.META_ELNO(te=-1),
-        OP.META_INIT_ELNO(te=-1),
-        OP.ERTH_ELEM(te=-1),
-        OP.ERTH_ELNO(te=-1),
-    )
-
-
-# --------------------------------------------------------------------------------------------------
-class THER_TETRA10(THER_HEXA20):
-    """Thermics - 3D - TETRA10"""
-
-    meshType = MT.TETRA10
-    elrefe = (
-        ElrefeLoc(MT.T10, gauss=("RIGI=FPG15", "FPG1=FPG1", "MASS=FPG15"), mater=("FPG1",)),
-        ElrefeLoc(MT.TR6, gauss=("RIGI=FPG6", "MASS=FPG6")),
-    )
-
-
-# --------------------------------------------------------------------------------------------------
-class THER_TETRA4(THER_HEXA20):
-    """Thermics - 3D - TETRA4"""
-
-    meshType = MT.TETRA4
-    elrefe = (
-        ElrefeLoc(
-            MT.TE4, gauss=("RIGI=FPG4", "FPG1=FPG1", "MASS=FPG4", "NOEU=NOEU"), mater=("FPG1",)
-        ),
-        ElrefeLoc(MT.TR3, gauss=("RIGI=COT3", "MASS=COT3")),
     )

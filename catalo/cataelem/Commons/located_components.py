@@ -139,7 +139,7 @@ CERROR = LocatedComponents(
 # Field for frequency
 CFREQR = LocatedComponents(phys=PHY.FREQ_R, type="ELEM", components=("FREQ",))
 
-# Field for time in mechanics
+# Field for time
 MTEMPSR = LocatedComponents(phys=PHY.INST_R, type="ELEM", components=("INST",))
 
 # Field for material orientation in 3D (ANGLE_MASSIF)
@@ -172,6 +172,48 @@ CNTINII = LocatedComponents(phys=PHY.NEUT_I, type="ELEM", components=("X[30]",))
 
 # Field for coefficients of norm
 CNORMCF = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X[30]",))
+
+# Field for flux in thermic (2D - real)
+CFLUX2R = LocatedComponents(phys=PHY.FLUX_R, type="ELEM", components=("FLUX", "FLUY"))
+
+# Field for flux in thermic (3D - real)
+CFLUX3R = LocatedComponents(phys=PHY.FLUX_R, type="ELEM", components=("FLUX", "FLUY", "FLUZ"))
+
+# Field for flux in thermic (2D - function)
+CFLUX2F = LocatedComponents(phys=PHY.FLUX_F, type="ELEM", components=("FLUX", "FLUY"))
+
+# Field for flux in thermic (3D - function)
+CFLUX3F = LocatedComponents(phys=PHY.FLUX_F, type="ELEM", components=("FLUX", "FLUY", "FLUZ"))
+
+# Field for time parameters in thermics
+CTIMETR = LocatedComponents(
+    phys=PHY.INST_R, type="ELEM", components=("INST", "DELTAT", "THETA", "KHI", "R", "RHO")
+)
+
+# Field for section (equivalent problem for beams)
+CCASECT = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X[9]",))
+
+# Field for normal flux in thermic (function)
+CFLUXNF = LocatedComponents(phys=PHY.FLUN_F, type="ELEM", components=("FLUN",))
+
+# Field for normal flux in thermic (real)
+CFLUXNR = LocatedComponents(phys=PHY.FLUN_R, type="ELEM", components=("FLUN",))
+
+# Field for normal exchange in thermic (coefficient/function)
+CHECHPF = LocatedComponents(phys=PHY.COEH_F, type="ELEM", components=("H",))
+
+# Field for normal exchange in thermic (coefficient/real)
+CHECHPR = LocatedComponents(phys=PHY.COEH_R, type="ELEM", components=("H",))
+
+# Field for normal exchange in thermic (temperature/function)
+CTEMPEF = LocatedComponents(phys=PHY.TEMP_F, type="ELEM", components=("TEMP",))
+
+# Field for normal exchange in thermic (temperature/real)
+CTEMPER = LocatedComponents(phys=PHY.TEMP_R, type="ELEM", components=("TEMP",))
+
+
+CTEREFE = LocatedComponents(phys=PHY.TEMP_R, type="ELEM", components=("TEMP",))
+
 
 CBORNPI = LocatedComponents(phys=PHY.PILO_R, type="ELEM", components=("A0", "A1"))
 
@@ -287,6 +329,10 @@ CCOMPOR = LocatedComponents(
     ),
 )
 
+CCOMPOT = LocatedComponents(
+    phys=PHY.COMPOR, type="ELEM", components=("RELCOM", "NBVARI", "DEFORM", "INCELA", "C_PLAN")
+)
+
 CCMBHHO = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X[8]",))
 
 CCOMPO2 = LocatedComponents(phys=PHY.COMPOR, type="ELEM", components=("NBVARI",))
@@ -387,8 +433,6 @@ CFISSR = LocatedComponents(
 
 CFLAPLA = LocatedComponents(phys=PHY.FLAPLA, type="ELEM", components=("NOMAIL", "NOGEOM"))
 
-CFLUXVF = LocatedComponents(phys=PHY.FLUX_F, type="ELEM", components=("FLUX", "FLUY"))
-
 CFORCEC = LocatedComponents(
     phys=PHY.FORC_C, type="ELEM", components=("FX", "FY", "FZ", "MX", "MY", "MZ", "REP")
 )
@@ -401,7 +445,6 @@ CFTRC = LocatedComponents(phys=PHY.ADRSJEVN, type="ELEM", components=("I[2]",))
 
 CHARMON = LocatedComponents(phys=PHY.HARMON, type="ELEM", components=("NH",))
 
-CHECHPF = LocatedComponents(phys=PHY.COEH_F, type="ELEM", components=("H",))
 
 CIMPEDC = LocatedComponents(phys=PHY.IMPE_C, type="ELEM", components=("IMPE",))
 
@@ -447,9 +490,6 @@ CSOUSOP = LocatedComponents(phys=PHY.NEUT_K24, type="ELEM", components=("Z1",))
 
 CSUROPT = LocatedComponents(phys=PHY.NEUT_K24, type="ELEM", components=("Z1",))
 
-CTEMPEF = LocatedComponents(phys=PHY.TEMP_F, type="ELEM", components=("TEMP",))
-
-CTEREFE = LocatedComponents(phys=PHY.TEMP_R, type="ELEM", components=("TEMP",))
 
 CTYPEPI = LocatedComponents(phys=PHY.PILO_K, type="ELEM", components=("TYPE",))
 
@@ -852,6 +892,22 @@ NERROR = LocatedComponents(
     ),
 )
 
+# For speed in thermic (2D)
+NVITE2R = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY"))
+
+# For speed in thermic (3D)
+NVITE3R = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY", "DZ"))
+
+# Field for flux in thermic (2D - real)
+NFLUX2R = LocatedComponents(phys=PHY.FLUX_R, type="ELNO", components=("FLUX", "FLUY"))
+
+# Field for flux in thermic (3D - real)
+NFLUX3R = LocatedComponents(phys=PHY.FLUX_R, type="ELNO", components=("FLUX", "FLUY", "FLUZ"))
+
+# For body source in thermic
+NSOURCR = LocatedComponents(phys=PHY.SOUR_R, type="ELNO", components=("SOUR",))
+
+
 DDL_NOZ1 = LocatedComponents(phys=PHY.SIZZ_R, type="ELNO", components=("SIZZ",))
 
 E3NEUT_R = LocatedComponents(phys=PHY.NEUT_R, type="ELNO", components=("X[3]",))
@@ -1172,6 +1228,18 @@ ECOPILO = LocatedComponents(
     phys=PHY.PILO_R, type="ELGA", location="RIGI", components=("A0", "A[3]", "ETA")
 )
 
+# Field for flux in thermic (2D - real)
+EFLUX2R = LocatedComponents(
+    phys=PHY.FLUX_R, type="ELGA", location="RIGI", components=("FLUX", "FLUY")
+)
+
+# Field for flux in thermic (3D - real)
+EFLUX3R = LocatedComponents(
+    phys=PHY.FLUX_R, type="ELGA", location="RIGI", components=("FLUX", "FLUY", "FLUZ")
+)
+
+# Field for hydratation
+EHYDRR = LocatedComponents(phys=PHY.HYDR_R, type="ELGA", location="MASS", components=("HYDR",))
 
 EGMATE_R = LocatedComponents(
     phys=PHY.MATE_R,
@@ -1251,10 +1319,6 @@ EVARC_R = LocatedComponents(
 
 
 G27NEUTR = LocatedComponents(phys=PHY.NEUT_R, type="ELGA", location="RIGI", components=("X[27]",))
-
-GGEOMER = LocatedComponents(
-    phys=PHY.GEOM_R, type="ELGA", location="RIGI", components=("X", "Y", "Z")
-)
 
 # store all LocatedComponents objects
 MODES = objects_from_context(globals(), LocatedComponents)

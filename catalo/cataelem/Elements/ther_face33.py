@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -65,7 +65,7 @@ class THER_FACE33(Element):
             te=303,
             para_in=(
                 (SP.PGEOMER, NGEOMER),
-                (SP.PHECHPR, LC.EHECHPR),
+                (SP.PHECHPR, LC.CHECHPR),
                 (SP.PTEMPER, DDL_THER),
                 (SP.PTEMPSR, CTEMPSR),
             ),
@@ -78,7 +78,7 @@ class THER_FACE33(Element):
         ),
         OP.MTAN_THER_PARO_R(
             te=388,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PHECHPR, LC.EHECHPR), (SP.PTEMPSR, CTEMPSR)),
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PHECHPR, LC.CHECHPR), (SP.PTEMPSR, CTEMPSR)),
             para_out=((OP.MTAN_THER_PARO_R.PMATTTR, MMATTTR),),
         ),
         OP.RESI_THER_PARO_F(
@@ -95,7 +95,7 @@ class THER_FACE33(Element):
             te=276,
             para_in=(
                 (SP.PGEOMER, NGEOMER),
-                (SP.PHECHPR, LC.EHECHPR),
+                (SP.PHECHPR, LC.CHECHPR),
                 (SP.PTEMPEI, DDL_THER),
                 (SP.PTEMPSR, CTEMPSR),
             ),
@@ -108,7 +108,7 @@ class THER_FACE33(Element):
         ),
         OP.RIGI_THER_PARO_R(
             te=301,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PHECHPR, LC.EHECHPR), (SP.PTEMPSR, CTEMPSR)),
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PHECHPR, LC.CHECHPR), (SP.PTEMPSR, CTEMPSR)),
             para_out=((OP.RIGI_THER_PARO_R.PMATTTR, MMATTTR),),
         ),
         OP.TOU_INI_ELEM(te=99, para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM3D),)),
