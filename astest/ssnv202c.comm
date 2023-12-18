@@ -1,0 +1,150 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+# person_in_charge: goustan.bacquaert@edf.fr
+
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+# >>> Oedometric compression test on a 3D HEXA20 element with the MCC model
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
+
+### >>>>>>>>
+### >>> Mesh
+### <<<<<<<<
+MAIL = LIRE_MAILLAGE(FORMAT="MED")
+
+### >>>>>>>>>
+### >>> Model
+### <<<<<<<<<
+MODELE = AFFE_MODELE(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"))
+
+MAILLAGE = MODI_MAILLAGE(
+    reuse=MAIL, MAILLAGE=MAIL, ORIE_PEAU=_F(GROUP_MA_PEAU=("HAUT", "DEVANT", "DROITE"))
+)
+
+### >>>>>>>>>>>>
+### >>> Material
+### <<<<<<<<<<<<
+k = 160.0e6
+mu = 100.0e6
+kp = 50.0
+bt = 50.0
+pc0 = 1.0e6
+M = 1.0
+s0 = 10.0e3
+
+MATER = DEFI_MATERIAU(
+    ELAS=_F(
+        E=9.0 * k * mu / (3.0 * k + mu), NU=(3.0 * k - 2.0 * mu) / (2.0 * (3.0 * k + mu)), ALPHA=0.0
+    ),
+    MCC=_F(
+        BulkModulus=k,
+        ShearModulus=mu,
+        SwellingIndex=kp,
+        InitCritPress=pc0,
+        CritStateSlope=M,
+        TensileYieldStress=s0,
+        IncoPlastIndex=bt,
+    ),
+)
+
+MATE = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=MATER))
+
+### >>>>>>>>>>>>>>
+### >>> Time steps
+### <<<<<<<<<<<<<<
+LI1 = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=1.0, NOMBRE=50), _F(JUSQU_A=2.0, NOMBRE=50)))
+
+DEFLIST = DEFI_LIST_INST(
+    DEFI_LIST=_F(LIST_INST=LI1), ECHEC=_F(EVENEMENT="ERREUR", ACTION="DECOUPE", SUBD_METHODE="AUTO")
+)
+
+### >>>>>>>>>>>>>>>>>>>>>>
+### >>> Loading conditions
+### <<<<<<<<<<<<<<<<<<<<<<
+
+### >>>>>> Vertical stress
+PRESS = DEFI_FONCTION(
+    NOM_PARA="INST",
+    NOM_RESU="PRESSION",
+    VALE=(0.0, 0.0, 1.0, 10.0e6, 2.0, 10.0e3),
+    PROL_DROITE="CONSTANT",
+    PROL_GAUCHE="EXCLU",
+)
+
+CHA2 = AFFE_CHAR_MECA_F(MODELE=MODELE, PRES_REP=_F(GROUP_MA=("HAUT"), PRES=PRESS), VERI_NORM="OUI")
+
+### >>>>>> Displacements
+CHA1 = AFFE_CHAR_MECA(
+    MODELE=MODELE,
+    FACE_IMPO=(
+        _F(GROUP_MA="DEVANT", DX=0.0),
+        _F(GROUP_MA="DERRIERE", DX=0.0),
+        _F(GROUP_MA="GAUCHE", DY=0.0),
+        _F(GROUP_MA="DROITE", DY=0.0),
+        _F(GROUP_MA="BAS", DZ=0.0),
+    ),
+)
+
+### >>>>>>>>>>>>
+### >>> Solution
+### <<<<<<<<<<<<
+RESU = STAT_NON_LINE(
+    MODELE=MODELE,
+    CHAM_MATER=MATE,
+    EXCIT=(_F(CHARGE=CHA1), _F(CHARGE=CHA2)),
+    COMPORTEMENT=_F(RELATION="MCC"),
+    INCREMENT=_F(LIST_INST=DEFLIST),
+    NEWTON=_F(MATRICE="TANGENTE", MATR_RIGI_SYME="OUI", REAC_ITER=1),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=10, RESI_GLOB_RELA=1.0e-8),
+    SOLVEUR=_F(METHODE="MUMPS"),
+)
+
+### >>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+### >>> Compute some extra fields
+### <<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+RESU1 = CALC_CHAMP(reuse=RESU, RESULTAT=RESU, DEFORMATION="EPSI_NOEU", VARI_INTERNE="VARI_NOEU")
+
+### >>>>>>>>>
+### >>> Tests
+### <<<<<<<<<
+TEST_RESU(
+    RESU=_F(
+        INST=1.0,
+        RESULTAT=RESU1,
+        NOM_CHAM="EPSI_NOEU",
+        GROUP_NO="NO8",
+        NOM_CMP="EPZZ",
+        VALE_CALC=-0.05466521862922108,
+    )
+)
+
+TEST_RESU(
+    RESU=_F(
+        INST=1.0,
+        RESULTAT=RESU1,
+        NOM_CHAM="VARI_NOEU",
+        GROUP_NO="NO8",
+        NOM_CMP="V8",
+        VALE_CALC=-0.030515973948762758,
+    )
+)
+
+FIN()

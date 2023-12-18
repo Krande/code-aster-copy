@@ -225,4 +225,5 @@ def C_RELATION(command):
             "GonfElas",
             "KH_CSSM",
             "NLH_CSRM",
+            "MCC"
         )

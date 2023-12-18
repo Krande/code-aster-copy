@@ -1,0 +1,84 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
+
+### >>>>>>>>>>>>
+### >>> Material
+### <<<<<<<<<<<<
+k = 160.0e6
+mu = 100.0e6
+kp = 50.0
+bt = 50.0
+pc0 = 1.0e6
+M = 1.0
+s0 = 10.0e3
+
+MATER = DEFI_MATERIAU(
+    ELAS=_F(
+        E=9.0 * k * mu / (3.0 * k + mu), NU=(3.0 * k - 2.0 * mu) / (2.0 * (3.0 * k + mu)), ALPHA=0.0
+    ),
+    MCC=_F(
+        BulkModulus=k,
+        ShearModulus=mu,
+        SwellingIndex=kp,
+        InitCritPress=pc0,
+        CritStateSlope=M,
+        TensileYieldStress=s0,
+        IncoPlastIndex=bt,
+    ),
+)
+
+### >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+### >>> Solution for drained triaxial compression test
+### <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+nb_inst = 200
+epzz_max = 5.0e-2
+conf = 1.0e6
+
+CALC_ESSAI_GEOMECA(
+    INFO=2,
+    MATER=MATER,
+    COMPORTEMENT=_F(RELATION="MCC", RESI_INTE=1.0e-14),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-10, ITER_GLOB_MAXI=10),
+    ESSAI_TRIA_DR_M_D=_F(
+        PRES_CONF=conf, EPSI_IMPOSE=epzz_max, NB_INST=nb_inst, TABLE_RESU=CO("TSIMU")
+    ),
+)
+
+### >>> >>>>>
+### >>> Tests
+### <<<<<<<<<
+
+TEST_TABLE(
+    NOM_PARA="SIG_LAT",
+    TABLE=TSIMU,
+    FILTRE=_F(NOM_PARA="EPS_AXI", VALE=epzz_max, CRITERE="ABSOLU", PRECISION=1.0e-10),
+    VALE_CALC=conf,
+)
+
+TEST_TABLE(
+    NOM_PARA="SIG_AXI",
+    TABLE=TSIMU,
+    FILTRE=_F(NOM_PARA="EPS_AXI", VALE=epzz_max, CRITERE="ABSOLU", PRECISION=1.0e-10),
+    VALE_CALC=2392637.9437635597,
+)
+
+FIN()
