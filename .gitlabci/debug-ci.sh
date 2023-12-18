@@ -2,24 +2,38 @@
 
 usage()
 {
-    echo "usage: ${0} [arguments]"
+    cmd="${0}"
+    [ ! -z "${submit}" ] && cmd="check_ci.sh"
+    echo "usage: ${cmd} [arguments]"
     echo
     echo "  This script allows to debug the pipeline locally."
     echo
+    if [ ! -z "${submit}" ]; then
+        echo "  By default, only '--check', '--doc', '--test' are enabled"
+        echo "  because '--compile' and '--mini' change your build directory."
+        echo
+    fi
     echo "arguments:"
-    echo "  --all       run all jobs"
-    echo "  --prepare   run 'prepare' job"
+    if [ -z "${submit}" ]; then
+        echo "  --all       run all jobs"
+        echo "  --prepare   run 'prepare' job"
+    fi
     echo "  --compile   run 'compile' job"
+    echo "  --mini      run 'minimal_build' job"
+    echo "  --check     run 'check_source' and 'check_issues' jobs"
     echo "  --doc       run 'doc_html' job"
-    echo "  --check     run 'check_source' job"
     echo "  --test      run 'minimal_test' job"
     echo
-    echo "The repository should be partially cloned (gitlab uses depth=50)."
-    echo "From a local repository:"
-    echo "  git clone --depth=1 file://path-to-local-clone/src testCI"
-    echo "  cd testCI"
-    echo "  .gitlabci/debug-ci.sh ..."
+    if [ -z "${submit}" ]; then
+        echo "The repository should be partially cloned (gitlab uses depth=50)."
+        echo "From a local repository:"
+        echo "  git clone --depth=1 file://path-to-local-clone/src testCI"
+        echo "  cd testCI"
+        echo "  .gitlabci/debug-ci.sh ..."
+    fi
 }
+
+submit="${SUBMIT_MODE}"
 
 export CI_PROJECT_DIR=$(pwd)
 export CI_SERVER_URL=https://gitlab.pleiade.edf.fr
@@ -50,6 +64,7 @@ SINGULARITY_CMD=(
 )
 
 _cleanup() {
+    [ ! -z "${submit}" ] && return
     cd ${CI_PROJECT_DIR}
     echo "+++ cleanup $(pwd)..."
     rm -rf $(git status --porcelain --untracked-files=normal --ignored 2>&1 \
@@ -57,16 +72,19 @@ _cleanup() {
 }
 
 _extract() {
+    [ ! -z "${submit}" ] && return
     echo "+++ extracting artifacts from job '$1'..."
     tar xf ${ARTF}/${1}-artifacts.tar
 }
 
 _store() {
+    [ ! -z "${submit}" ] && return
     echo "+++ creating artifacts for job '$1'..."
     tar cf ${ARTF}/${1}-artifacts.tar $(cat artifacts)
 }
 
 do_prepare() {
+    [ ! -z "${submit}" ] && return
     _cleanup
     .gitlabci/prepare.sh
 
@@ -80,6 +98,7 @@ eof
 }
 
 do_compile() {
+    [ ! -z "${submit}" ] && return
     _cleanup
     _extract prepare
     "${SINGULARITY_CMD[@]}" .gitlabci/compile.sh
@@ -97,6 +116,13 @@ build/mpi*/*/*.mod
 install/*
 eof
     _store compile
+    _cleanup
+}
+
+do_compile_mini() {
+    _cleanup
+    _extract prepare
+    "${SINGULARITY_CMD[@]}" .gitlabci/compile_minimal.sh
     _cleanup
 }
 
@@ -118,6 +144,7 @@ do_check_source() {
     _extract prepare
     _extract compile
     "${SINGULARITY_CMD[@]}" .gitlabci/check_source.sh
+    "${SINGULARITY_CMD[@]}" .gitlabci/check_issues.sh
     _cleanup
 }
 
@@ -140,12 +167,15 @@ eof
 pipeline() {
     local prepare=0
     local compile=0
+    local mini=0
     local doc_html=0
     local check_source=0
     local minimal_test=0
     local native=0
+    local inall=1
+    [ ! -z "${submit}" ] && inall=0
 
-    OPTS=$(getopt -o h --long help,all,prepare,compile,doc,check,test,clean,native -n $(basename $0) -- "$@")
+    OPTS=$(getopt -o h --long help,all,prepare,compile,mini,doc,check,test,clean,native -n $(basename $0) -- "$@")
     if [ $? != 0 ] ; then
         _error "invalid arguments." >&2
     fi
@@ -153,9 +183,10 @@ pipeline() {
     while true; do
         case "$1" in
             -h | --help) usage; exit 1 ;;
-            --all) prepare=1; compile=1; doc_html=1; check_source=1; minimal_test=1 ;;
+            --all) prepare=${inall}; compile=${inall}; mini=${inall}; doc_html=1; check_source=1; minimal_test=1 ;;
             --prepare ) prepare=1 ;;
             --compile ) compile=1 ;;
+            --mini ) mini=1 ;;
             --doc ) doc_html=1 ;;
             --check ) check_source=1 ;;
             --test ) minimal_test=1 ;;
@@ -180,23 +211,33 @@ pipeline() {
         echo "+ running inside a docker container, 'native' mode enabled"
         native=1
     fi
+    if [ ! -z "${submit}" ]; then
+        echo "+ running in submit mode"
+        cleanup="${cleanup} echo cleanup... ; rm -rf artifacts list_issues.txt results_mini ;"
+        trap "${cleanup}" EXIT
+    fi
     if [ $(git status --porcelain -uno | wc -l) != "0" ]; then
-        echo "--- there are uncommitted changes!"
-        exit 1
+        echo "--- there are uncommitted changes, you should commit or stash them!"
+        printf "do you want to continue (y/n)? "
+        read answ
+        [ "${answ}" != "y" ] && exit 1
     fi
     if [ ${native} -eq 1 ]; then
         export SIF=""
         SINGULARITY_CMD=()
     fi
 
-    echo "+++ debugging pipeline: branch=${CI_COMMIT_REF_NAME}"
+    echo "++ running on branch=${CI_COMMIT_REF_NAME}"
     [ ${prepare} -eq 1 ] && do_prepare
     [ ${compile} -eq 1 ] && do_compile
-    [ ${doc_html} -eq 1 ] && do_doc_html
+    [ ${mini} -eq 1 ] && do_compile_mini
     [ ${check_source} -eq 1 ] && do_check_source
+    [ ${doc_html} -eq 1 ] && do_doc_html
     [ ${minimal_test} -eq 1 ] && do_minimal_test
 
-    echo "+++ run: 'git fetch --unshallow' to complete the repository"
+    if [ -z "${submit}" ]; then
+        echo "++ run: 'git fetch --unshallow' to complete the repository"
+    fi
 }
 
 pipeline "$@"
