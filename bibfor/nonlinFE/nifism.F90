@@ -254,17 +254,13 @@ subroutine nifism(ndim, nno1, nno2, nno3, npg, &
 ! - APPEL A LA LOI DE COMPORTEMENT
         cod(g) = 0
 !
+        sigm_ldc = 0.d0
         do ia = 1, 3
             sigm_ldc(ia) = sigm(ia, g)+sigm(2*ndim+1, g)
         end do
         do ia = 4, 2*ndim
             sigm_ldc(ia) = sigm(ia, g)*rac2
         end do
-        if (ndim .lt. 3) then
-            do ia = 2*ndim, 6
-                sigm_ldc(ia) = 0.d0
-            end do
-        end if
 !
         taup = 0.d0
         call nmcomp(BEHinteg, &

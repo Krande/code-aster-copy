@@ -223,6 +223,7 @@ def get_revision_info_git(self, depth):
 
     def _gettag(refs):
         tags = [i.split()[1] for i in refs.split(", ") if "tag:" in i]
+        tags = [i for i in tags if i[0].isdigit()]
         return tags
 
     try:

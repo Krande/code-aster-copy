@@ -307,7 +307,7 @@ subroutine copmod(base, bmodr, bmodz, champ, &
 !
 !       3.1.5 - MENAGE ET LIBERATION DE LA MEMOIRE SELON LE BESOIN
         call jelibe(valcha)
-        if (modnum .or. r2zbase) then
+        if (docu(1:4) == 'CHNO' .and. (modnum .or. r2zbase)) then
             call detrsd('CHAMP', tmpcha)
         end if
 !
