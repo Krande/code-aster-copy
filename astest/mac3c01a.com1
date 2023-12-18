@@ -19,17 +19,40 @@
 
 #
 
-POURSUITE(CODE="OUI", ERREUR=_F(ALARME="ALARME"), IMPR_MACRO="NON")
+POURSUITE(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"), IMPR_MACRO="NON")
 
 IMPR_RESU(
     FORMAT="MED",
     UNITE=81,
-    RESU=_F(
-        RESULTAT=RESU_C1,
-        IMPR_NOM_VARI="NON",
-        NOM_CHAM="VARI_ELGA",
-        INST=33.008,
-        CARA_ELEM=RESU_C1.getElementaryCharacteristics(),
+    RESU=(
+        _F(
+            RESULTAT=RESU_C1,
+            IMPR_NOM_VARI="NON",
+            GROUP_MA=("CRAYON", "T_GUIDE"),
+            NOM_CHAM="VARI_ELGA",
+            INST=33.008,
+            CARA_ELEM=RESU_C1.getElementaryCharacteristics(),
+        ),
+        _F(
+            RESULTAT=RESU_C1,
+            IMPR_NOM_VARI="NON",
+            GROUP_MA=(
+                "EBOSUP",
+                "EBOINF",
+                "ELA",
+                "RIG",
+                "DIL",
+                "GRIL_I",
+                "GRIL_E",
+                "MAINTIEN",
+                "RES_TOT",
+                "CREI",
+                "CREIC",
+                "ELAP",
+            ),
+            NOM_CHAM="VARI_ELGA",
+            INST=33.008,
+        ),
     ),
 )
 

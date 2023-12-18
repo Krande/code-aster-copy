@@ -256,9 +256,9 @@ class PostAC:
         self.nb_grilles = len(coor_x)
 
         self._props = {
-            "PositionDAMAC": AC.idDAM,
-            "PositionASTER": AC.idAST,
-            "Cycle": AC._cycle,
+            "PositionDAMAC": AC.pos_damac,
+            "PositionASTER": AC.pos_aster,
+            "Cycle": AC.cycle,
             "Repere": AC.name,
             "Rho": np.around(self._compute_rho(fy, fz), MAC3_ROUND),
             "DepY": dy[0] - dy[-1],
@@ -387,10 +387,6 @@ class PostAC:
 def post_mac3coeur_ops(self, **args):
     """Corps principal de la macro de post-traitement de MAC3COEUR"""
 
-    rcdir = ExecutionParameter().get_option("rcdir")
-    datg = osp.join(rcdir, "datg")
-    coeur_factory = CoeurFactory(datg)
-
     RESU = args["RESULTAT"]
     inst = args["INST"]
 
@@ -400,15 +396,11 @@ def post_mac3coeur_ops(self, **args):
     TYPE_CALCUL = args.get("TYPE_CALCUL")
     OPERATION = args.get("OPERATION")
 
-    DATAMAC = args["TABLE"]
-    datamac = DATAMAC.EXTR_TABLE()
-    core_name = datamac.para[0]
-    label_type, label_calcul = datamac.titr.split()
+    datamac = args["TABLE"]
+    label_type, label_calcul = datamac.EXTR_TABLE().titr.split()
     nb_grids = 8 if "900" in label_type else 10
 
-    datamac.Renomme(core_name, "idAC")
-    core_mac3 = coeur_factory.get(core_type)(core_name, core_type, self, datg, row_size)
-    core_mac3.init_from_table(datamac)
+    core_mac3 = CoeurFactory.build(core_type, datamac, row_size)
 
     #
     # LAME
@@ -483,7 +475,7 @@ def post_mac3coeur_ops(self, **args):
                 RESU=_F(
                     RESULTAT=RESU,
                     NOM_CMP=("DY", "DZ"),
-                    GROUP_NO=["G_%s_%d" % (AC.idAST, g + 1) for g in range(AC.NBGR)],
+                    GROUP_NO=["G_%s_%d" % (AC.pos_aster, g + 1) for g in range(AC.NBGR)],
                     NOM_CHAM="DEPL",
                     INST=inst,
                     PRECISION=1.0e-08,

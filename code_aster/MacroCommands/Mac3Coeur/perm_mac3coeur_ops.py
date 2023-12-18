@@ -23,7 +23,7 @@ import os.path as osp
 
 from ...Cata.Syntax import _F
 from ...Objects import PhysicalProblem, FieldOnCellsReal, FieldOnNodesReal
-from ...Commands import AFFE_CHAR_CINE, CREA_CHAMP, CREA_RESU, STAT_NON_LINE
+from ...Commands import CREA_RESU
 from ...Messages import UTMESS
 from ...Utilities import ExecutionParameter
 from .mac3coeur_ac_permute import MACRO_AC_PERMUTE
@@ -33,22 +33,15 @@ from .mac3coeur_coeur import CoeurFactory
 def perm_mac3coeur_ops(self, **args):
     """Corps principal de la macro pour la permutation des AC dans MAC3COEUR"""
 
-    rcdir = ExecutionParameter().get_option("rcdir")
-    datg = osp.join(rcdir, "datg")
-    coeur_factory = CoeurFactory(datg)
-
-    _typ_coeur_N = args.get("TYPE_COEUR_N")
-    _typ_coeur_P = args.get("TYPE_COEUR_NP1")
+    _type_coeur_N = args.get("TYPE_COEUR_N")
+    _type_coeur_P = args.get("TYPE_COEUR_NP1")
     _long_ligne_N = None
     _long_ligne_P = None
-    if _typ_coeur_N[:5] == "LIGNE":
+    if _type_coeur_N[:5] == "LIGNE":
         _long_ligne_N = args.get("NB_ASSEMBLAGE_N")
-    if _typ_coeur_P[:5] == "LIGNE":
+    if _type_coeur_P[:5] == "LIGNE":
         _long_ligne_P = args.get("NB_ASSEMBLAGE_NP1")
     _TAB_N = args.get("TABLE_N")
-    _l_tabn1 = []
-    for el in _TAB_N:
-        _l_tabn1.append(el.EXTR_TABLE())
 
     l_RESUI = args.get("RESU_N")
     assert len(_TAB_N) == len(l_RESUI)
@@ -61,29 +54,17 @@ def perm_mac3coeur_ops(self, **args):
         _l_MA_N.append(_MA_N)
 
     _l_coeur = []
-    for _tabn1 in _l_tabn1:
-        # on recupere le nom du coeur
-        name = _tabn1.para[0]
-        # et on renomme la colonne qui identifie les assemblages
-        _tabn1.Renomme(name, "idAC")
-        _coeur = coeur_factory.get(_typ_coeur_N)(name, _typ_coeur_N, self, datg, _long_ligne_N)
-        _coeur.init_from_table(_tabn1)
+    for _tabn1 in _TAB_N:
+        _coeur = CoeurFactory.build(_type_coeur_N, _tabn1, _long_ligne_N)
         _l_coeur.append(_coeur)
 
     _TAB_NP1 = args.get("TABLE_NP1")
-    _tabp1 = _TAB_NP1.EXTR_TABLE()
-
-    # on recupere le nom du coeurq
-    namep1 = _tabp1.para[0]
-    # et on renomme la colonne qui identifie les assemblages
-    _tabp1.Renomme(namep1, "idAC")
-    _coeurp1 = coeur_factory.get(_typ_coeur_P)(namep1, _typ_coeur_P, self, datg, _long_ligne_P)
-    _coeurp1.init_from_table(_tabp1)
+    _coeurp1 = CoeurFactory.build(_type_coeur_P, _TAB_NP1, _long_ligne_P)
 
     _MA1 = args.get("MAILLAGE_NP1")
     _MA_NP1 = _coeurp1.affectation_maillage(_MA1)
     _MO_NP1 = _coeurp1.affectation_modele(_MA_NP1)
-    _coeurp1.recuperation_donnees_geom(_MA_NP1)
+    _coeurp1.init_from_mesh(_MA_NP1)
     _GFF_NP1 = _coeurp1.definition_geom_fibre()
     _CARANP1 = _coeurp1.definition_cara_coeur(_MO_NP1, _GFF_NP1)
 

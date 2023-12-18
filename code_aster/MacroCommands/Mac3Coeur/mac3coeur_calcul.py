@@ -25,8 +25,8 @@ This module defines the different types of calculations
 
 import os.path as osp
 from functools import wraps
-
 from libaster import ConvergenceError
+
 
 from ...Cata.Syntax import _F
 from ...Commands import (
@@ -39,11 +39,10 @@ from ...Commands import (
     STAT_NON_LINE,
 )
 from ...Objects import FieldOnCellsReal
-from ...Helpers.LogicalUnit import LogicalUnitFile
 from ...Messages import UTMESS
-from ...Utilities import logger, ExecutionParameter
+from ...Utilities import logger
 from .mac3coeur_coeur import CoeurFactory
-from .thyc_load import lire_resu_thyc
+from .thyc_load import ThycLoadManager
 
 
 def calc_mac3coeur_ops(self, **kwargs):
@@ -165,7 +164,7 @@ class Mac3CoeurCalcul:
     def _prepare_data(self, **kwargs):
         """Prepare the data for the calculation"""
 
-        self.coeur.recuperation_donnees_geom(self.mesh)
+        self.coeur.init_from_mesh(self.mesh)
         if not self.coeur.check_groups(self.mesh):
             UTMESS("F", "COEUR0_5", valk=("CU_*",))
         # force the computation of the times to ensure it is done first
@@ -262,13 +261,12 @@ class Mac3CoeurCalcul:
     def coeur(self):
         """Return the `Coeur` object"""
         fcoreargs = {
-            "typ_coeur": self.keyw["TYPE_COEUR"],
-            "macro": self.macro,
+            "type_coeur": self.keyw["TYPE_COEUR"],
             "sdtab": self.keyw["TABLE_N"],
             "longueur": self.keyw["NB_ASSEMBLAGE"] if self.is_row else None,
         }
 
-        return _build_coeur(**fcoreargs)
+        return CoeurFactory.build(**fcoreargs)
 
     @coeur.setter
     def coeur(self, value):
@@ -473,7 +471,7 @@ class Mac3CoeurCalcul:
     def thyc_load(self):
         """Return the loading due to the fluid flow"""
 
-        thyc = read_thyc(self.coeur, self.model, self.mcf["UNITE_THYC"])
+        thyc = ThycLoadManager.from_unit(self.coeur, self.model, self.mcf["UNITE_THYC"])
 
         coef_mult_thv = self.mcf.get("COEF_MULT_THV", 1.0)
         coef_mult_tht = self.mcf.get("COEF_MULT_THT", 1.0)
@@ -1170,8 +1168,7 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
         self.model = resu.getModel()
 
         # initializations
-        self.coeur
-        self.coeur.recuperation_donnees_geom(self.mesh)
+        self.coeur.init_from_mesh(self.mesh)
         self.times
         self.null_sigma_field = null_sf
 
@@ -1414,29 +1411,3 @@ class Mac3CoeurEtatInitial(Mac3CoeurLame):
         )
 
         return resu_def
-
-
-# helper functions
-def _build_coeur(typ_coeur, macro, sdtab, longueur=None):
-    """Return a `Coeur` object of the given type"""
-    rcdir = ExecutionParameter().get_option("rcdir")
-    datg = osp.join(rcdir, "datg")
-    factory = CoeurFactory(datg)
-    # prepare the Table object
-    tab = sdtab.EXTR_TABLE()
-    name = tab.para[0]
-    tab.Renomme(name, "idAC")
-    coeur = factory.get(typ_coeur)(name, typ_coeur, macro, datg, longueur)
-    coeur.init_from_table(tab)
-    return coeur
-
-
-def read_thyc(coeur, model, unit):
-    """Read a file containing THYC results"""
-    res = None
-    try:
-        fname = LogicalUnitFile.filename_from_unit(unit)
-        res = lire_resu_thyc(coeur, model, fname)
-    finally:
-        logger.debug("<MAC3_CALCUL><PREPRO>: Reading of THYC file completed.")
-    return res

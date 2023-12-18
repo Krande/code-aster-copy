@@ -24,6 +24,10 @@ import numpy as np
 MAC3_ROUND = 14
 
 
+def flat_list(list_of_list):
+    return [item for element in list_of_list for item in element]
+
+
 def get_first_digit(spline):
 
     digit = 0

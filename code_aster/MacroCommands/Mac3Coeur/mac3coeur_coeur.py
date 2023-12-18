@@ -26,7 +26,8 @@ Définition d'une conception de coeur (ensemble d'assemblages).
 """
 
 import os
-from ...Utilities import logger
+import os.path as osp
+from ...Utilities import logger, ExecutionParameter
 from ...Objects import Mesh
 
 from ...Cata.Syntax import _F
@@ -55,13 +56,13 @@ from ...Commands import (
 )
 from .mac3coeur_assemblage import ACFactory
 from .mac3coeur_factory import Mac3Factory
+from .mac3coeur_commons import flat_list
 
 
 class Coeur:
 
     """Classe définissant un coeur de reacteur."""
 
-    type_coeur = None
     required_parameters = [
         # Nombre d'assemblages pour définir le coeur
         "NBAC",
@@ -121,29 +122,52 @@ class Coeur:
 
     _time = ("T0", "T0b", "T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T8b", "T9")
     _subtime = ("N0", "N0b", "N1", "N2", "N3", "N4", "N5", "N6", "N7", "N8", "N8b", "N9")
-    _nb_nodes_grid = 0
+
+    @property
+    def type_coeur(self):
+        return self._type_coeur
 
     @property
     def nb_nodes_grid(self):
         """Number of nodes of a grid"""
-        assert self._nb_nodes_grid > 0, "Parameter not set"
-        return self._nb_nodes_grid
+        assert len(self.collAC) > 0, "Parameter not set"
+        ls_items = list(set((ac.nb_nodes_grid for ac in self.collAC.values())))
+        assert len(ls_items) == 1, "Invalid mesh"
+        return ls_items[0]
 
-    @nb_nodes_grid.setter
-    def nb_nodes_grid(self, val):
-        assert val >= 4, "Invalid Parameter"
-        self._nb_nodes_grid = val
+    @property
+    def nb_cr_mesh(self):
+        """Number of rods in mesh"""
+        assert len(self.collAC) > 0, "Parameter not set"
+        ls_items = list(set((ac.nb_cr_mesh for ac in self.collAC.values())))
+        assert len(ls_items) == 1, "Invalid mesh"
+        return ls_items[0]
 
-    def __init__(self, name, typ_coeur, macro, datg, longueur=None):
+    @property
+    def nb_tg_mesh(self):
+        """Number of tubes in mesh"""
+        assert len(self.collAC) > 0, "Parameter not set"
+        ls_items = list(set((ac.nb_tg_mesh for ac in self.collAC.values())))
+        assert len(ls_items) == 1, "Invalid mesh"
+        return ls_items[0]
+
+    @property
+    def NBGR(self):
+        """Number of tubes in mesh"""
+        assert len(self.collAC) > 0, "Parameter not set"
+        ls_items = list(set((ac.NBGR for ac in self.collAC.values())))
+        assert len(ls_items) == 1, "Invalid mesh"
+        return ls_items[0]
+
+    def __init__(self, name, type_coeur, datg, longueur=None):
         """Initialisation d'un type de coeur."""
         self.name = name
-        self.macro = macro
-        self.typ_coeur = typ_coeur
+        self._type_coeur = type_coeur
         self.NBAC = 0
         self.factory = ACFactory(datg)
         self.collAC = {}
-        self._mateAC = {}
         self.nameAC = {}
+        self._mateAC = {}
         self.temps_simu = {}.fromkeys(self._time)
         self.temps_archiv = None
         self.sub_temps_simu = {}.fromkeys(self._subtime)
@@ -151,6 +175,20 @@ class Coeur:
         self._keys = {}.fromkeys(self.required_parameters)
         self._init_from_attrs()
         self.longueur = longueur
+
+    def init_from_mesh(self, mesh):
+        """Avoid recursion and add data from mesh. Load materials considering geometry."""
+        self.recuperation_donnees_geom(mesh)
+
+        update_materials = {
+            "TG": self.nb_tg_mesh,
+            "CR": self.nb_cr_mesh,
+            "GC_ME": self.nb_cr_mesh,
+            "GC_EB": self.nb_cr_mesh,
+            "GC_EH": self.nb_cr_mesh,
+        }
+
+        self.load_materials(update_materials)
 
     def _init_from_attrs(self):
         """Initialisation à partir des attributs de classe."""
@@ -199,120 +237,83 @@ class Coeur:
     def get_index(self, letter):
         return self.ALPHA_MAC.index(letter)
 
-    def init_from_table(self, tab):
+    def init_from_table(self, damactab):
         """Initialise le coeur à partir d'une table."""
-        self.NBAC = len(tab)
-        for rows in tab:
-            idAC = rows["idAC"].strip()
-            # print 'idAC = ',idAC
-            typeAC = rows["Milieu"].strip()
-            nameAC = rows["Repere"].strip()
-            ac = self.factory.get(typeAC)(self.typ_coeur)
-            ac.register_position(self.position_toaster, self.position_todamac)
-            ac.place(idAC, rows["Cycle"], nameAC)
-            if self._mateAC.get(typeAC) is None:
-                self._mateAC[typeAC] = MateriauAC(typeAC, self.macro)
-            ac_def = {}
-            for igr in range(0, ac._para["NBGR"]):
-                ac_def["DY%d" % (igr + 1)] = rows["XG%d" % (igr + 1)] / 1000.0
-                ac_def["DZ%d" % (igr + 1)] = rows["YG%d" % (igr + 1)] / 1000.0
-            ac.set_deforDAM(ac_def)
-            ac.set_materiau(self._mateAC[typeAC])
+        self.NBAC = len(damactab)
+        for item in damactab:
+            idAC = item["idAC"].strip()
+            typeAC = item["Milieu"].strip()
+            nameAC = item["Repere"].strip()
+
+            ac = self.factory.get(typeAC)(self.type_coeur)
+            ac.position_todamac = self.position_todamac
+            ac.position_toaster = self.position_toaster
+            ac.pos_damac = idAC
+            ac.cycle = item["Cycle"]
+            ac.name = nameAC
+            for igr in range(ac._para.get("NBGR")):
+                ac.bow["DY%d" % (igr + 1)] = item["XG%d" % (igr + 1)] / 1000.0
+                ac.bow["DZ%d" % (igr + 1)] = item["YG%d" % (igr + 1)] / 1000.0
+
+            ac.post_definition()
             ac.check()
             self.collAC[idAC] = ac
-            self.nameAC[nameAC] = ac.idAST
+            self.nameAC[ac.name] = ac.pos_aster
 
-    def mcf_deform_impo(self):
-        """Retourne les mots-clés facteurs pour AFFE_CHAR_CINE/MECA_IMPO."""
-        mcf = []
-        for ac in list(self.collAC.values()):
-            mcf.extend(ac.mcf_deform_impo())
-        return mcf
+    def load_materials(self, update_materials={}):
+        assert not self._mateAC
+        for ac in self.collAC.values():
+            ac.materiau = self._mateAC.setdefault(
+                ac.typeAC, MateriauAC(ac.typeAC, update_materials)
+            )
 
+    ### CARAC
     def mcf_geom_fibre(self):
         """Retourne les mots-clés facteurs pour DEFI_GEOM_FIBRE."""
-        mcf = []
-        for ac in list(self.collAC.values()):
-            mcf.extend(ac.mcf_geom_fibre())
-        return mcf
+        return flat_list([ac.mcf_geom_fibre() for ac in self.collAC.values()])
+
+    def definition_geom_fibre(self):
+        _GFF = DEFI_GEOM_FIBRE(FIBRE=self.mcf_geom_fibre())
+        return _GFF
 
     def mcf_cara_multifibre(self):
         """Retourne les mots-clés facteurs pour AFFE_CARA_ELEM/MULTIFIBRE."""
-        mcf = []
-        for ac in list(self.collAC.values()):
-            mcf.extend(ac.mcf_cara_multifibre())
-        return mcf
+        return flat_list([ac.mcf_cara_multifibre() for ac in self.collAC.values()])
 
     def mcf_cara_barre(self):
         """Retourne les mots-clés facteurs pour AFFE_CARA_ELEM/BARRE."""
-        mcf = []
-        for ac in list(self.collAC.values()):
-            mcf.extend(ac.mcf_cara_barre())
-        return mcf
+        return flat_list([ac.mcf_cara_barre() for ac in self.collAC.values()])
 
     def mcf_cara_poutre(self):
         """Retourne les mots-clés facteurs pour AFFE_CARA_ELEM/POUTRE."""
-        mcf = []
-        for ac in list(self.collAC.values()):
-            mcf.extend(ac.mcf_cara_poutre())
-        return mcf
+        return flat_list([ac.mcf_cara_poutre() for ac in self.collAC.values()])
 
     def mcf_cara_discret(self):
         """Retourne les mots-clés facteurs pour AFFE_CARA_ELEM/DISCRET."""
-        mcf = []
-        for ac in list(self.collAC.values()):
-            mcf.extend(ac.mcf_cara_discret())
-        return mcf
+        return flat_list([ac.mcf_cara_discret() for ac in self.collAC.values()])
 
-    def definition_geom_fibre(self):
-
-        mcf = self.mcf_geom_fibre()
-        _GFF = DEFI_GEOM_FIBRE(FIBRE=mcf)
-
-        return _GFF
+    def mcf_deform_impo(self):
+        """Retourne les mots-clés facteurs pour AFFE_CHAR_CINE/MECA_IMPO."""
+        return flat_list([ac.mcf_deform_impo() for ac in self.collAC.values()])
 
     def affe_char_lame(self, MODELE):
-        mcf = self.mcf_deform_impo()
-
-        _AF_CIN = AFFE_CHAR_CINE(MODELE=MODELE, MECA_IMPO=mcf)
+        _AF_CIN = AFFE_CHAR_CINE(MODELE=MODELE, MECA_IMPO=self.mcf_deform_impo())
         return _AF_CIN
 
     def mcf_archimede_nodal(self):
         """Retourne les mots-clés facteurs pour AFFE_CHAR_MECA/FORCE_NODALE."""
-        mcf = []
-        for ac in list(self.collAC.values()):
-            mcf.extend(ac.mcf_archimede_nodal())
-        return mcf
+        return flat_list([ac.mcf_archimede_nodal() for ac in self.collAC.values()])
 
     def definition_archimede_nodal(self, MODELE):
-        mcf = self.mcf_archimede_nodal()
-
-        _ARCH_1 = AFFE_CHAR_MECA(MODELE=MODELE, FORCE_NODALE=mcf)
+        _ARCH_1 = AFFE_CHAR_MECA(MODELE=MODELE, FORCE_NODALE=self.mcf_archimede_nodal())
         return _ARCH_1
 
     def mcf_archimede_poutre(self):
         """Retourne les mots-clés facteurs pour AFFE_CHAR_MECA_F/FORCE_POUTRE."""
-        mcf = []
-        for ac in list(self.collAC.values()):
-            _FCT_TG = DEFI_FONCTION(
-                NOM_PARA="X",
-                PROL_DROITE="CONSTANT",
-                PROL_GAUCHE="CONSTANT",
-                VALE=(ac.XINFT, (ac.AFTG_1 / ac.LONTU), ac.XSUPT, (ac.AFTG_1 / ac.LONTU)),
-            )
-            _FCT_CR = DEFI_FONCTION(
-                NOM_PARA="X",
-                PROL_DROITE="CONSTANT",
-                PROL_GAUCHE="CONSTANT",
-                VALE=(ac.XINFC, (ac.AFCRA_1 / ac.LONCR), ac.XSUPC, (ac.AFCRA_1 / ac.LONCR)),
-            )
-            mcf.extend(ac.mcf_archimede_poutre(_FCT_TG, _FCT_CR))
-        return mcf
+        return flat_list([ac.mcf_archimede_poutre() for ac in self.collAC.values()])
 
     def definition_archimede_poutre(self, MODELE):
-        mcf = self.mcf_archimede_poutre()
-
-        _FOARCH_1 = AFFE_CHAR_MECA_F(MODELE=MODELE, FORCE_POUTRE=mcf)
+        _FOARCH_1 = AFFE_CHAR_MECA_F(MODELE=MODELE, FORCE_POUTRE=self.mcf_archimede_poutre())
         return _FOARCH_1
 
     def definition_temp_archimede(self, use_archimede):
@@ -322,18 +323,11 @@ class Coeur:
         assert use_archimede in ("OUI", "NON")
 
         # cas ou la force d'archimede est activee
-        if use_archimede == "OUI":
+        gravity = self.ACC_PESA if use_archimede == "OUI" else 0.0
 
-            ARCHFR1 = self.ACC_PESA * self.RHO_EAU20
-            ARCHFR2 = self.ACC_PESA * self.RHO_EAU60
-            ARCHCH = self.ACC_PESA * self.RHO_EAU307
-
-        # cas ou la force d'archimede n'est pas activee
-        elif use_archimede == "NON":
-
-            ARCHFR1 = 0.0
-            ARCHFR2 = 0.0
-            ARCHCH = 0.0
+        ARCHFR1 = gravity * self.RHO_EAU20
+        ARCHFR2 = gravity * self.RHO_EAU60
+        ARCHCH = gravity * self.RHO_EAU307
 
         _ARCH_F1 = DEFI_FONCTION(
             NOM_PARA="INST",
@@ -585,43 +579,31 @@ class Coeur:
         LIS_PG = []
         nbgrmax = 0
         for ac in list(self.collAC.values()):
-            nbgrmax = max(nbgrmax, ac._para["NBGR"])
+            nbgrmax = max(nbgrmax, ac.NBGR)
             LIS_GNO = []
-            for igr in range(0, ac._para["NBGR"]):
-                LIS_GNO.append("G_%s_%d" % (ac.idAST, igr + 1))
-                LIS_PG.append("P_%s_%d" % (ac.idAST, igr + 1))
+            for igr in range(ac.NBGR):
+                LIS_GNO.append("G_%s_%d" % (ac.pos_aster, igr + 1))
+                LIS_PG.append("P_%s_%d" % (ac.pos_aster, igr + 1))
 
-            DICG = {}
-            DICG["GROUP_NO"] = tuple(LIS_GNO)
-            DICG["NOM_GROUP_MA"] = "GR_%s" % ac.idAST
+            DICG = {"NOM_GROUP_MA": "GR_%s" % ac.pos_aster, "GROUP_NO": LIS_GNO}
             LISG.append(DICG)
 
         for igr in range(0, nbgrmax):
-            DICGRIL = {}
-            DICGRIL["GROUP_NO"] = "GRIL_%d" % (igr + 1)
-            DICGRIL["NOM_GROUP_MA"] = "GRIL_%d" % (igr + 1)
+            grid_name = "GRIL_%d" % (igr + 1)
+            DICGRIL = {"NOM_GROUP_MA": grid_name, "GROUP_NO": grid_name}
             LISGRIL.append(DICGRIL)
-
-            if igr == 0:
-                LISGRILE.append("GRIL_%d" % (igr + 1))
-            elif igr == (nbgrmax - 1):
-                LISGRILE.append("GRIL_%d" % (igr + 1))
+            if igr in (0, nbgrmax - 1):
+                LISGRILE.append(grid_name)
             else:
-                LISGRILI.append("GRIL_%d" % (igr + 1))
+                LISGRILI.append(grid_name)
 
         _MA1 = CREA_MAILLAGE(MAILLAGE=MA0, CREA_POI1=tuple(LISGRIL + LISG))
 
-        DICCR = {}
-        DICCR["GROUP_MA"] = "CREI"
-        DICCR["NOM"] = "CREIC"
-        DICCR["PREF_MAILLE"] = "MM"
-        LISCR2 = []
-        LISCR2.append(DICCR)
-        DICCR = {}
-        DICCR["GROUP_MA"] = "ELA"
-        DICCR["NOM"] = "ELAP"
-        DICCR["PREF_MAILLE"] = "MM"
-        LISCR2.append(DICCR)
+        DICCR1 = {"GROUP_MA": "CREI", "NOM": "CREIC", "PREF_MAILLE": "MM"}
+
+        DICCR2 = {"GROUP_MA": "ELA", "NOM": "ELAP", "PREF_MAILLE": "MM"}
+
+        LISCR2 = [DICCR1, DICCR2]
 
         _MA = CREA_MAILLAGE(MAILLAGE=_MA1, INFO=1, CREA_MAILLE=tuple(LISCR2))
 
@@ -652,85 +634,70 @@ class Coeur:
 
         # --- recuperation de donnees géometriques ---
         # nombre d'assemblages dans le coeur
+
         self.NBAC = len(list(self.collAC.values()))
+        coords_x = MAILL.getCoordinates().toNumpy().T[0].copy()
         gcells = MAILL.getGroupsOfCells()
         gnodes = MAILL.getGroupsOfNodes()
 
         for pos_damac, ac in self.collAC.items():
 
-            id_cr = "CR_%s" % ac.idAST
+            id_cr = "CR_%s" % ac.pos_aster
             grp_cr = [i for i in gcells if (i.startswith(id_cr) and i != id_cr)]
             ac.nb_cr_mesh = max(1, len(grp_cr))
 
-            id_tg = "TG_%s" % ac.idAST
+            id_tg = "TG_%s" % ac.pos_aster
             grp_tg = [i for i in gcells if (i.startswith(id_tg) and i != id_tg)]
             ac.nb_tg_mesh = max(1, len(grp_tg))
 
-            id_grid = "G_%s" % ac.idAST
+            id_grid = "G_%s" % ac.pos_aster
             grp_grid = [i for i in gnodes if (i.startswith(id_grid) and i != id_grid)]
             ls_nodes_grid = list(set(len(MAILL.getNodes(i)) for i in grp_grid))
             assert len(ls_nodes_grid) == 1, "Invalid mesh"
             ac.nb_nodes_grid = ls_nodes_grid[0]
 
-        assert len(set((ac.nb_cr_mesh for ac in self.collAC.values()))) == 1, "Invalid mesh"
-        assert len(set((ac.nb_tg_mesh for ac in self.collAC.values()))) == 1, "Invalid mesh"
-        assert len(set((ac.nb_nodes_grid for ac in self.collAC.values()))) == 1, "Invalid mesh"
-        self.nb_nodes_grid = ac.nb_nodes_grid
-
         logger.debug("<MAC3_COEUR>: nb_nodes_grid = %s" % (self.nb_nodes_grid))
+        logger.debug("<MAC3_COEUR>: nb_cr_mesh = %s" % (self.nb_cr_mesh))
+        logger.debug("<MAC3_COEUR>: nb_tg_mesh = %s" % (self.nb_tg_mesh))
 
         # altitudes mini et maxi de la cavité de coeur
-        _ma_tmp = CREA_MAILLAGE(MAILLAGE=MAILL, RESTREINT=_F(GROUP_MA="EBOINF"))
-        _TAB_tmp = RECU_TABLE(CO=_ma_tmp, NOM_TABLE="CARA_GEOM")
-        self.XINFCUVE = _TAB_tmp["X_MIN", 1]
+        x_eboinf = coords_x[MAILL.getNodesFromCells("EBOINF")]
+        self.XINFCUVE = x_eboinf.min()
         logger.debug("<MAC3_COEUR>: xinfcuve = %s" % (self.XINFCUVE))
 
-        _ma_tmp = CREA_MAILLAGE(MAILLAGE=MAILL, RESTREINT=_F(GROUP_MA="MAINTIEN"))
-        _TAB_tmp = RECU_TABLE(CO=_ma_tmp, NOM_TABLE="CARA_GEOM")
-        self.XSUPCUVE = _TAB_tmp["X_MAX", 1]
+        x_maintien = coords_x[MAILL.getNodesFromCells("MAINTIEN")]
+        self.XSUPCUVE = x_maintien.max()
         logger.debug("<MAC3_COEUR>: xsupcuve = %s" % (self.XSUPCUVE))
 
         # altitudes mini et maxi, et longueur de l'ensemble des crayons
-        _ma_tmp = CREA_MAILLAGE(MAILLAGE=MAILL, RESTREINT=_F(GROUP_MA="CRAYON"))
-        _TAB_tmp = RECU_TABLE(CO=_ma_tmp, NOM_TABLE="CARA_GEOM")
-        self.XINFC = _TAB_tmp["X_MIN", 1]
-        self.XSUPC = _TAB_tmp["X_MAX", 1]
-        self.LONCR = _TAB_tmp["X_MAX", 1] - _TAB_tmp["X_MIN", 1]
+        x_crayon = coords_x[MAILL.getNodesFromCells("CRAYON")]
+        self.XINFC = x_crayon.min()
+        self.XSUPC = x_crayon.max()
+        self.LONCR = self.XSUPC - self.XINFC
         logger.debug("<MAC3_COEUR>: xinfcrayon = %s" % (self.XINFC))
         logger.debug("<MAC3_COEUR>: xsupcrayon = %s" % (self.XSUPC))
         logger.debug("<MAC3_COEUR>: lcrayon = %s" % (self.LONCR))
 
         # altitudes mini et maxi, et longueur de l'ensemble des tubes
-        _ma_tmp = CREA_MAILLAGE(MAILLAGE=MAILL, RESTREINT=_F(GROUP_MA="T_GUIDE"))
-        _TAB_tmp = RECU_TABLE(CO=_ma_tmp, NOM_TABLE="CARA_GEOM")
-        self.XINFT = _TAB_tmp["X_MIN", 1]
-        self.XSUPT = _TAB_tmp["X_MAX", 1]
-        self.LONTU = _TAB_tmp["X_MAX", 1] - _TAB_tmp["X_MIN", 1]
+        x_tguide = coords_x[MAILL.getNodesFromCells("T_GUIDE")]
+        self.XINFT = min(x_tguide)
+        self.XSUPT = max(x_tguide)
+        self.LONTU = self.XSUPT - self.XINFT
         logger.debug("<MAC3_COEUR>: xinftube = %s" % (self.XINFT))
         logger.debug("<MAC3_COEUR>: xsuptube = %s" % (self.XSUPT))
         logger.debug("<MAC3_COEUR>: ltube = %s" % (self.LONTU))
 
         # altitudes moyennes des grilles
         self.altitude = []
-        _ma_tmp = CREA_MAILLAGE(MAILLAGE=MAILL, RESTREINT=_F(GROUP_MA="ELA"))
-        _TAB_tmp = RECU_TABLE(CO=_ma_tmp, NOM_TABLE="CARA_GEOM")
-        altimax = _TAB_tmp["X_MAX", 1]
-        altimaxtmp = 0
-        while altimaxtmp != altimax:  # tant que l'on ne dépasse pas la grille la plus haute
-            _ma_tmp = CREA_MAILLAGE(
-                MAILLAGE=MAILL, RESTREINT=_F(GROUP_MA="GRIL_%d" % (len(self.altitude) + 1))
-            )
-            _TAB_tmp = RECU_TABLE(CO=_ma_tmp, NOM_TABLE="CARA_GEOM")
-            altimintmp = _TAB_tmp["X_MAX", 1]
-            altimaxtmp = _TAB_tmp["X_MAX", 1]
-            h_gri = (altimintmp + altimaxtmp) / 2.0
-            logger.debug("<MAC3_COEUR>: h_gri %s = %s" % (len(self.altitude) + 1, h_gri))
-
+        for igr in range(self.NBGR):
+            x_gr = coords_x[MAILL.getNodesFromCells("GRIL_%d" % (igr + 1))]
+            h_gri = 0.5 * (x_gr.min() + x_gr.max())
+            logger.debug("<MAC3_COEUR>: h_gri %s = %s" % (igr + 1, h_gri))
             self.altitude.append(h_gri)
 
     def cl_rigidite_grille(self):
         return [
-            _F(GROUP_NO="G_%s_%d" % (ac.idAST, igr + 1))
+            _F(GROUP_NO="G_%s_%d" % (ac.pos_aster, igr + 1))
             for ac in self.collAC.values()
             for igr in range(ac._para["NBGR"])
         ]
@@ -739,18 +706,15 @@ class Coeur:
         _MODELE = AFFE_MODELE(
             MAILLAGE=MAILLAGE,
             AFFE=(
-                _F(GROUP_MA="CRAYON", PHENOMENE="MECANIQUE", MODELISATION="POU_D_TGM"),
-                _F(GROUP_MA="T_GUIDE", PHENOMENE="MECANIQUE", MODELISATION="POU_D_TGM"),
+                _F(GROUP_MA=("CRAYON",), PHENOMENE="MECANIQUE", MODELISATION="POU_D_TGM"),
+                _F(GROUP_MA=("T_GUIDE",), PHENOMENE="MECANIQUE", MODELISATION="POU_D_TGM"),
                 _F(GROUP_MA=("EBOSUP", "EBOINF"), PHENOMENE="MECANIQUE", MODELISATION="POU_D_E"),
+                _F(GROUP_MA=("DIL",), PHENOMENE="MECANIQUE", MODELISATION="POU_D_E"),
                 _F(GROUP_MA=("ELA", "RIG"), PHENOMENE="MECANIQUE", MODELISATION="DIS_TR"),
-                _F(GROUP_MA="DIL", PHENOMENE="MECANIQUE", MODELISATION="POU_D_E"),
                 _F(GROUP_MA=("GRIL_I", "GRIL_E"), PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
+                _F(GROUP_MA=("RES_TOT", "CREI"), PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
+                _F(GROUP_MA=("CREIC", "ELAP"), PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
                 _F(GROUP_MA=("MAINTIEN",), PHENOMENE="MECANIQUE", MODELISATION="BARRE"),
-                _F(
-                    GROUP_MA=("RES_TOT", "CREI", "CREIC", "ELAP"),
-                    PHENOMENE="MECANIQUE",
-                    MODELISATION="DIS_T",
-                ),
             ),
         )
 
@@ -1062,7 +1026,7 @@ class Coeur:
 
             if all(i == 0.0 for i in _dilatbu):
                 groups_ma_tini.extend(
-                    ["DI_%s%d" % (ac.idAST, (igr + 1)) for igr in range(ac._para["NBGR"])]
+                    ["DI_%s%d" % (ac.pos_aster, (igr + 1)) for igr in range(ac._para["NBGR"])]
                 )
             else:
                 for igr in range(0, ac._para["NBGR"]):
@@ -1071,7 +1035,7 @@ class Coeur:
                         (
                             _F(
                                 NOM_CMP="TEMP",
-                                GROUP_MA="DI_%s%d" % (ac.idAST, (igr + 1)),
+                                GROUP_MA="DI_%s%d" % (ac.pos_aster, (igr + 1)),
                                 VALE=Ttmp_val,
                             )
                         ),
@@ -1359,7 +1323,7 @@ class Coeur:
                             (
                                 _F(
                                     NOM_VARC="TEMP",
-                                    GROUP_MA="DI_%s%d" % (ac.idAST, (igr + 1)),
+                                    GROUP_MA="DI_%s_%d" % (ac.pos_aster, (igr + 1)),
                                     EVOL=CHTH,
                                     PROL_DROITE="CONSTANT",
                                     VALE_REF=Ttmp,
@@ -1378,25 +1342,29 @@ class Coeur:
         for ac in list(self.collAC.values()):
             _CMPC = DEFI_COMPOR(
                 GEOM_FIBRE=GFF,
-                MATER_SECT=ac.mate.mate["CR"],
+                MATER_SECT=ac.materiau["CR"],
                 MULTIFIBRE=_F(
-                    GROUP_FIBRE="CR_%s" % ac.idAST,
-                    MATER=ac.mate.mate["CR"],
+                    GROUP_FIBRE="CR_%s" % ac.pos_aster,
+                    MATER=ac.materiau["CR"],
                     RELATION="GRAN_IRRA_LOG",
                 ),
             )
             _CMPT = DEFI_COMPOR(
                 GEOM_FIBRE=GFF,
-                MATER_SECT=ac.mate.mate["TG"],
+                MATER_SECT=ac.materiau["TG"],
                 MULTIFIBRE=_F(
-                    GROUP_FIBRE=("LG_%s" % ac.idAST, "BI_%s" % ac.idAST, "RE_%s" % ac.idAST),
-                    MATER=ac.mate.mate["TG"],
+                    GROUP_FIBRE=(
+                        "LG_%s" % ac.pos_aster,
+                        "BI_%s" % ac.pos_aster,
+                        "RE_%s" % ac.pos_aster,
+                    ),
+                    MATER=ac.materiau["TG"],
                     RELATION="GRAN_IRRA_LOG",
                 ),
             )
             mtmp = (
-                _F(GROUP_MA="CR_%s" % ac.idAST, COMPOR=_CMPC),
-                _F(GROUP_MA="TG_%s" % ac.idAST, COMPOR=_CMPT),
+                _F(GROUP_MA="CR_%s" % ac.pos_aster, COMPOR=_CMPC),
+                _F(GROUP_MA="TG_%s" % ac.pos_aster, COMPOR=_CMPT),
             )
             mcf.extend(mtmp)
 
@@ -1414,9 +1382,9 @@ class Coeur:
         for ac in list(self.collAC.values()):
             mcf.extend(ac.mcf_AC_mater())
             mtmp = (
-                _F(GROUP_MA=("GT_%s_M" % ac.idAST, "GT_%s_E" % ac.idAST), MATER=_MAT_BID),
-                _F(GROUP_MA="GR_%s" % ac.idAST, MATER=_MAT_GR),
-                _F(GROUP_MA="DI_%s" % ac.idAST, MATER=ac.mate.mate["DIL"]),
+                _F(GROUP_MA=("GT_%s_M" % ac.pos_aster, "GT_%s_E" % ac.pos_aster), MATER=_MAT_BID),
+                _F(GROUP_MA="GR_%s" % ac.pos_aster, MATER=_MAT_GR),
+                _F(GROUP_MA="DI_%s" % ac.pos_aster, MATER=ac.materiau["DIL"]),
             )
             mcf.extend(mtmp)
         mtmp = (_F(GROUP_MA="CREIC", MATER=_M_BCR),)
@@ -1685,6 +1653,20 @@ class CoeurFactory(Mac3Factory):
     # Coeur_900.datg
     prefix = "Coeur_"
 
+    @classmethod
+    def build(cls, type_coeur, sdtab, longueur=None):
+        """Return a `Coeur` object of the given type"""
+        rcdir = ExecutionParameter().get_option("rcdir")
+        datg = osp.join(rcdir, "datg")
+        factory = cls(datg)
+        # prepare the Table object
+        damactab = sdtab.EXTR_TABLE()
+        name = damactab.para[0]
+        damactab.Renomme(name, "idAC")
+        coeur = factory.get(type_coeur)(name, type_coeur, datg, longueur)
+        coeur.init_from_table(damactab)
+        return coeur
+
     def build_supported_types(self):
         """Construit la liste des types autorisés."""
         ctxt = {}
@@ -1700,20 +1682,28 @@ class MateriauAC:
 
     _types = ("DIL", "MNT", "ES", "EI", "CR", "TG", "GC_ME", "GC_EB", "GC_EH")
 
-    def __init__(self, typeAC, macro):
+    def __init__(self, typeAC, update_values):
         """Initialisation"""
         self.typeAC = typeAC
-        self.macro = macro
-        self.mate = {}.fromkeys(self._types)
-        self.include_materiau()
+        self._mate = {}
+        self.include_materiau(update_values)
 
-    def include_materiau(self):
+    def __getitem__(self, para):
+        """Retourne le matériau pour un composant."""
+        if self._mate.get(para) is None:
+            raise KeyError("Material not defined : '%s'" % para)
+        return self._mate.get(para)
+
+    def include_materiau(self, update_values):
         """Crée les matériaux"""
 
         for typ in self._types:
-            self.mate[typ] = INCLUDE_MATERIAU(
+            cmult = update_values.get(typ, 1.0)
+
+            self._mate[typ] = INCLUDE_MATERIAU(
                 NOM_AFNOR="%s_%s" % (self.typeAC, typ),
                 TYPE_MODELE="REF",
                 VARIANTE="A",
                 TYPE_VALE="NOMI",
+                COEF_MULT=cmult,
             )
