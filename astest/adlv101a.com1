@@ -1,0 +1,139 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+POURSUITE(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"))
+
+TEST_RESU(
+    RESU=(
+        _F(
+            CRITERE=("RELATIF",),
+            NUME_ORDRE=1,
+            PARA="FREQ",
+            PRECISION=0.002,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=modesBalWithGrav,
+            VALE_CALC=(0.899460084,),
+            VALE_REFE=(0.89825,),
+        ),
+        _F(
+            CRITERE=("RELATIF",),
+            NUME_ORDRE=2,
+            PARA="FREQ",
+            PRECISION=0.005,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=modesBalWithGrav,
+            VALE_CALC=(1.390098736,),
+            VALE_REFE=(1.38452,),
+        ),
+        _F(
+            CRITERE=("RELATIF",),
+            NUME_ORDRE=3,
+            PARA="FREQ",
+            PRECISION=0.009,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=modesBalWithGrav,
+            VALE_CALC=(1.724063879,),
+            VALE_REFE=(1.70952,),
+        ),
+        _F(
+            CRITERE=("RELATIF",),
+            NUME_ORDRE=4,
+            PARA="FREQ",
+            PRECISION=0.016,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=modesBalWithGrav,
+            VALE_CALC=(2.005260827,),
+            VALE_REFE=(1.97551,),
+        ),
+        _F(
+            CRITERE=("RELATIF",),
+            NUME_ORDRE=5,
+            PARA="FREQ",
+            PRECISION=0.03,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=modesBalWithGrav,
+            VALE_CALC=(2.261155,),
+            VALE_REFE=(2.20885017307732,),
+        ),
+        _F(
+            CRITERE=("RELATIF",),
+            NUME_ORDRE=6,
+            PARA="FREQ",
+            PRECISION=0.14,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=modesBalWithGrav,
+            VALE_CALC=(2.737074,),
+            VALE_REFE=(2.41969088521527,),
+        ),
+    )
+)
+
+
+TEST_RESU(
+    RESU=(
+        _F(
+            CRITERE=("RELATIF",),
+            NUME_ORDRE=1,
+            PARA="FREQ",
+            PRECISION=0.002,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=modesAcouWithGrav,
+            VALE_CALC=(1168.1488,),
+            VALE_REFE=(1166.67,),
+        ),
+        _F(
+            CRITERE=("RELATIF",),
+            NUME_ORDRE=2,
+            PARA="FREQ",
+            PRECISION=0.002,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=modesAcouWithGrav,
+            VALE_CALC=(1460.117,),
+            VALE_REFE=(1458.33,),
+        ),
+    )
+)
+
+
+TEST_RESU(
+    RESU=(
+        _F(
+            CRITERE=("RELATIF",),
+            NUME_ORDRE=2,
+            PARA="FREQ",
+            PRECISION=0.002,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MODACUSP,
+            VALE_CALC=(1460.117,),
+            VALE_REFE=(1458.33,),
+        ),
+        _F(
+            CRITERE=("RELATIF",),
+            NUME_ORDRE=1,
+            PARA="FREQ",
+            PRECISION=0.002,
+            REFERENCE="NON_DEFINI",
+            RESULTAT=MODACUSP,
+            VALE_CALC=(1168.148,),
+            VALE_REFE=(1166.67,),
+        ),
+    )
+)
+
+FIN()

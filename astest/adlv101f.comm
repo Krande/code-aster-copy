@@ -1,0 +1,68 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="ALARME"), DEBUG=_F(SDVERI="OUI"))
+
+
+mesh = LIRE_MAILLAGE()
+
+# Material properties
+water = DEFI_MATERIAU(FLUIDE=_F(CELE_R=1400.0, PESA_Z=9.81, RHO=1000.0))
+CHAMPMAT = AFFE_MATERIAU(AFFE=_F(GROUP_MA=("MAFLUIDE",), MATER=(water,)), MAILLAGE=mesh)
+
+
+CUV_ACOU = AFFE_MODELE(
+    AFFE=_F(GROUP_MA=("MAFLUIDE",), MODELISATION=("3D",), PHENOMENE="ACOUSTIQUE"), MAILLAGE=mesh
+)
+
+
+CL_PRESS = AFFE_CHAR_ACOU(MODELE=CUV_ACOU, PRES_IMPO=_F(GROUP_NO=("NOSURF",), PRES=0j))
+
+
+RIGIELEM = CALC_MATR_ELEM(
+    CHAM_MATER=CHAMPMAT, CHARGE=(CL_PRESS,), MODELE=CUV_ACOU, OPTION="RIGI_ACOU"
+)
+
+
+MASSELEM = CALC_MATR_ELEM(CHAM_MATER=CHAMPMAT, MODELE=CUV_ACOU, OPTION="MASS_ACOU")
+
+
+NU = NUME_DDL(MATR_RIGI=(RIGIELEM,))
+
+
+MATRAS = ASSE_MATRICE(MATR_ELEM=RIGIELEM, NUME_DDL=NU)
+
+
+MATRASR = COMB_MATR_ASSE(COMB_R=_F(COEF_R=1.0, MATR_ASSE=MATRAS, PARTIE="REEL"))
+
+
+MATMAS = ASSE_MATRICE(MATR_ELEM=MASSELEM, NUME_DDL=NU)
+
+
+MATMASR = COMB_MATR_ASSE(COMB_R=_F(COEF_R=1.0, MATR_ASSE=MATMAS, PARTIE="REEL"))
+
+
+MODE = CALC_MODES(
+    CALC_FREQ=_F(FREQ=(0.0, 3600.0)), MATR_MASS=MATMASR, MATR_RIGI=MATRASR, OPTION="BANDE"
+)
+
+
+#
+
+FIN()

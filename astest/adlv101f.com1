@@ -1,0 +1,79 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+POURSUITE(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"))
+
+
+TEST_RESU(
+    RESU=(
+        _F(
+            CRITERE="RELATIF",
+            NUME_ORDRE=1,
+            PARA="FREQ",
+            PRECISION=0.002,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MODE,
+            VALE_CALC=1168.148,
+            VALE_REFE=1166.67,
+        ),
+        _F(
+            CRITERE="RELATIF",
+            NUME_ORDRE=2,
+            PARA="FREQ",
+            PRECISION=0.002,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MODE,
+            VALE_CALC=1460.117,
+            VALE_REFE=1458.33,
+        ),
+        _F(
+            CRITERE="RELATIF",
+            NUME_ORDRE=3,
+            PARA="FREQ",
+            PRECISION=0.004,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MODE,
+            VALE_CALC=2110.706,
+            VALE_REFE=2103.24,
+        ),
+        _F(
+            CRITERE="RELATIF",
+            NUME_ORDRE=4,
+            PARA="FREQ",
+            PRECISION=0.009,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MODE,
+            VALE_CALC=2897.864,
+            VALE_REFE=2872.58,
+        ),
+        _F(
+            CRITERE="RELATIF",
+            NUME_ORDRE=5,
+            PARA="FREQ",
+            PRECISION=0.012,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MODE,
+            VALE_CALC=3540.106,
+            VALE_REFE=3500.0,
+        ),
+    )
+)
+
+
+FIN()
