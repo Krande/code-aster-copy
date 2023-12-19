@@ -585,7 +585,10 @@ class Mac3CoeurCalcul:
                 ),
                 _F(RELATION="DIS_GRICRA", GROUP_MA="ELA"),
                 _F(RELATION="DIS_CHOC", GROUP_MA=("CREIC", "RES_TOT")),
-                _F(RELATION="ELAS", GROUP_MA=("CREI", "EBOINF", "EBOSUP", "RIG", "DIL")),
+                _F(
+                    RELATION="ELAS",
+                    GROUP_MA=("GRIL_I", "GRIL_E", "ELAP", "CREI", "EBOINF", "EBOSUP", "RIG", "DIL"),
+                ),
                 _F(RELATION="VMIS_ISOT_TRAC", GROUP_MA="MAINTIEN", DEFORMATION="PETIT"),
             ),
             "SUIVI_DDL": _F(

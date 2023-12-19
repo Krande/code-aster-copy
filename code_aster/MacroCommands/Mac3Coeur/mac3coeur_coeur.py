@@ -706,14 +706,18 @@ class Coeur:
         _MODELE = AFFE_MODELE(
             MAILLAGE=MAILLAGE,
             AFFE=(
-                _F(GROUP_MA=("CRAYON",), PHENOMENE="MECANIQUE", MODELISATION="POU_D_TGM"),
-                _F(GROUP_MA=("T_GUIDE",), PHENOMENE="MECANIQUE", MODELISATION="POU_D_TGM"),
-                _F(GROUP_MA=("EBOSUP", "EBOINF"), PHENOMENE="MECANIQUE", MODELISATION="POU_D_E"),
-                _F(GROUP_MA=("DIL",), PHENOMENE="MECANIQUE", MODELISATION="POU_D_E"),
+                _F(GROUP_MA=("CRAYON", "T_GUIDE"), PHENOMENE="MECANIQUE", MODELISATION="POU_D_TGM"),
+                _F(
+                    GROUP_MA=("EBOSUP", "EBOINF", "DIL"),
+                    PHENOMENE="MECANIQUE",
+                    MODELISATION="POU_D_E",
+                ),
                 _F(GROUP_MA=("ELA", "RIG"), PHENOMENE="MECANIQUE", MODELISATION="DIS_TR"),
-                _F(GROUP_MA=("GRIL_I", "GRIL_E"), PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
-                _F(GROUP_MA=("RES_TOT", "CREI"), PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
-                _F(GROUP_MA=("CREIC", "ELAP"), PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
+                _F(
+                    GROUP_MA=("GRIL_I", "GRIL_E", "RES_TOT", "CREI", "CREIC", "ELAP"),
+                    PHENOMENE="MECANIQUE",
+                    MODELISATION="DIS_T",
+                ),
                 _F(GROUP_MA=("MAINTIEN",), PHENOMENE="MECANIQUE", MODELISATION="BARRE"),
             ),
         )
