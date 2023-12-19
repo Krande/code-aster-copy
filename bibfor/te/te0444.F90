@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,7 +62,7 @@ subroutine te0444(option, nomte)
     integer :: multic
     integer :: i, j, ivectu
     integer :: nno, igeom, imatuu, jener, jfreq, iacce
-    integer :: nddl, nvec, ndim, iret, n1, ni, n2
+    integer :: nddl, nvec, ndim, n1, ni, n2
     real(kind=8) :: rho, epais
     real(kind=8) :: pgl(3, 3), xyzl(3, 4)
     real(kind=8) :: ener(3), matp(24, 24), matv(300)
@@ -83,7 +83,7 @@ subroutine te0444(option, nomte)
     if (nno .eq. 3) then
         call dxtpgl(zr(igeom), pgl)
     else if (nno .eq. 4) then
-        call dxqpgl(zr(igeom), pgl, 'S', iret)
+        call dxqpgl(zr(igeom), pgl)
     else
         ASSERT(ASTER_FALSE)
     end if

@@ -46,7 +46,7 @@ subroutine te0032(option, nomte)
 !     -----------------------------------------------------------------
     integer :: ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano
     integer :: i, j, ier, iplan, jgeom, jcoqu, jvecg, jpres, itemps
-    integer :: iadzi, iazk24, lpesa, iret
+    integer :: iadzi, iazk24, lpesa
     real(kind=8) :: pgl(3, 3), xyzl(3, 4), pglo(3), ploc(3)
     real(kind=8) :: vecl(24), for(6, 4), for2(6, 4), rho, epais
     real(kind=8) :: undemi
@@ -69,7 +69,7 @@ subroutine te0032(option, nomte)
     if (nno .eq. 3) then
         call dxtpgl(zr(jgeom), pgl)
     else if (nno .eq. 4) then
-        call dxqpgl(zr(jgeom), pgl, 'S', iret)
+        call dxqpgl(zr(jgeom), pgl)
     end if
     call utpvgl(nno, 3, pgl, zr(jgeom), xyzl)
 !

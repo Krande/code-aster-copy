@@ -209,23 +209,9 @@ On ne trouve pas le coefficient de Poisson
  Problème récupération donnée matériau dans THM_DIFFU %(k1)s
 """
     ),
-    80: _(
-        """
-  L'élément de plaque QUAD4 défini sur la maille : %(k1)s
-  n'est pas plan et peut conduire a des résultats faux.
-
-  Conseil : Si vous utilisez de l'excentrement, essayez de mailler
-            en utilisant des triangles.
-"""
-    ),
     81: _(
         """
  Il manque le paramètre  %(k1)s pour la maille  %(k2)s
-"""
-    ),
-    82: _(
-        """
-  Distance au plan :  %(r1)f  (soit %(r2)f %% de la longueur d'arête)
 """
     ),
     90: _(

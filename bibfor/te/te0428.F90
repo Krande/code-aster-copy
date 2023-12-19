@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ subroutine te0428(option, nomte)
 !       => option rigi_meca_geom
 !
     integer :: ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano
-    integer :: jgeom, jmatr, iret
+    integer :: jgeom, jmatr
     real(kind=8) :: pgl(3, 3), xyzl(3, 4)
 !
 !     ---> pour dkt/dktg  matelem = 3 * 6 ddl = 171 termes stockage syme
@@ -57,7 +57,7 @@ subroutine te0428(option, nomte)
     if (nno .eq. 3) then
         call dxtpgl(zr(jgeom), pgl)
     else if (nno .eq. 4) then
-        call dxqpgl(zr(jgeom), pgl, 'S', iret)
+        call dxqpgl(zr(jgeom), pgl)
     end if
 !
     call utpvgl(nno, 3, pgl, zr(jgeom), xyzl)

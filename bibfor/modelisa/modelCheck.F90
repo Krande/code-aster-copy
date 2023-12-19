@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine modelCheck(model, lCheckJacobian, lCheckFSINorms)
+subroutine modelCheck(model, lCheckJacobian, lCheckFSINorms, lCheckPlaneity)
 !
     implicit none
 !
@@ -28,9 +28,10 @@ subroutine modelCheck(model, lCheckJacobian, lCheckFSINorms)
 #include "asterfort/utmess.h"
 #include "asterfort/taxis.h"
 #include "asterfort/modelCheckFSINormals.h"
+#include "asterfort/modelCheckPlaneity.h"
 !
     character(len=8), intent(in) :: model
-    aster_logical, intent(in) :: lCheckJacobian, lCheckFSINorms
+    aster_logical, intent(in) :: lCheckJacobian, lCheckFSINorms, lCheckPlaneity
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -43,6 +44,7 @@ subroutine modelCheck(model, lCheckJacobian, lCheckFSINorms)
 ! In  model           : name of the model
 ! In  lCheckJacobian  : .true. if check jacobian (element quality)
 ! In  lCheckFSINorms  : .true. if check normals for FSI elements
+! In  lCheckPlaneity  : .true. if check planeity for plate elements
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,14 +60,12 @@ subroutine modelCheck(model, lCheckJacobian, lCheckFSINorms)
 ! --------------------------------------------------------------------------------------------------
 !
     modelLigrel = model//'.MODELE'
-!
+
 ! - Get mesh support
-!
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
     call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nbCell)
-!
+
 ! - Parameters about model
-!
     call dismoi('AXIS', model, 'MODELE', repk=repk)
     lAxis = repk .eq. 'OUI'
     call dismoi('DIM_GEOM', model, 'MODELE', repi=nb_dim_geom)
@@ -132,11 +132,15 @@ subroutine modelCheck(model, lCheckJacobian, lCheckFSINorms)
                     'PGEOMER', 1, '&&OP0018.CODRET', 'PCODRET', 'V', &
                     'OUI')
     end if
-!
+
 ! - Check FSI norms
-!
     if (lCheckFSINorms) then
         call modelCheckFSINormals(model)
+    end if
+
+! - Check planeity of plate elements
+    if (lCheckPlaneity) then
+        call modelCheckPlaneity(mesh, model)
     end if
 !
 end subroutine

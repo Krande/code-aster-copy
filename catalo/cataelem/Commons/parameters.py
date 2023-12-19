@@ -206,6 +206,8 @@ PCHARG = InputParameter(
 """,
 )
 
+PCHCKPR = InputParameter(phys=PHY.NEUT_R, comment="""Parameters for checking in AFFE_MODELE""")
+
 PCHDYNR = InputParameter(
     phys=PHY.DEPL_R,
     comment="""  PCHDYNR : CHAMP D'ACCELERATIONS
@@ -1357,6 +1359,10 @@ PCAFI_R = OutputParameter(phys=PHY.CAFI_R, type="ELEM", comment="""""")
 PCARAGE = OutputParameter(phys=PHY.MASS_R, type="ELEM", comment="""""")
 
 PCASECT = OutputParameter(phys=PHY.NEUT_R, type="ELEM", comment="""""")
+
+PINDICR = OutputParameter(phys=PHY.NEUT_R, type="ELEM", comment="""Real value for indicator""")
+
+PCOURAN = OutputParameter(phys=PHY.NEUT_R, type="ELEM", comment="""""")
 
 PCODRET = OutputParameter(
     phys=PHY.CODE_I,

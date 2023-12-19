@@ -116,7 +116,7 @@ subroutine te0430(option, nomte)
         if (nomte .eq. 'MEGCTR3') then
             call dxtpgl(zr(igeom), pgl)
         else if (nomte .eq. 'MEGCQU4') then
-            call dxqpgl(zr(igeom), pgl, 'S', iret)
+            call dxqpgl(zr(igeom), pgl)
         end if
 !
         do i = 1, 3
@@ -235,18 +235,16 @@ subroutine te0430(option, nomte)
 !
             do n = 1, nno
                 do i = 1, 3
-                    zr(ivectu+(n-1)*nddl+i-1) = zr(ivectu+(n-1)*nddl+i-1)+sig*sqrt(abs(jac) &
-                                                                                   )*densit/npg
+                    zr(ivectu+(n-1)*nddl+i-1) = zr(ivectu+(n-1)*nddl+i-1)+ &
+                                                sig*sqrt(abs(jac))*densit/npg
                 end do
                 b_max_rot = 0.d0
                 do i = 4, nddl
                     if (abs(b(i, n)) .gt. b_max_rot) b_max_rot = abs(b(i, n))
                 end do
                 do i = 4, nddl
-                    zr(ivectu+(n-1)*nddl+i-1) = zr( &
-                                                ivectu+(n-1)*nddl+i-1)+b_max_rot*sig*sqrt(a&
-                                                &bs(jac) &
-                                                )*densit/npg
+                    zr(ivectu+(n-1)*nddl+i-1) = zr(ivectu+(n-1)*nddl+i-1)+ &
+                                                b_max_rot*sig*sqrt(abs(jac))*densit/npg
                 end do
             end do
 !

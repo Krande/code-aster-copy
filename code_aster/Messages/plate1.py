@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -70,4 +70,10 @@ L'axe de référence pour le calcul du repère local est ici normal à l'éléme
 Il faut donc modifier l'axe de référence en utilisant ANGL_REP ou VECTEUR dans AFFE_CARA_ELEM."""
     ),
     75: _("""Les matériaux de coque homogénéisées (ELAS_COQUE) sont interdits en non-linéaire."""),
+    80: _(
+        """L'élément de plaque QUAD4 défini sur la maille %(k1)s n'est pas plan. Distance au plan : %(r1)f  (soit %(r2)f %% de la longueur d'arête)."""
+    ),
+    81: _(
+        """Un des éléments de plaque QUAD4 n'est pas plan et peut conduire a des résultats faux."""
+    ),
 }

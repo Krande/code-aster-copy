@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ subroutine ef0033(nomte)
 !     CALCUL DE EFGE_ELNO EN LINEAIRE
 !     ------------------------------------------------------------------
     integer :: ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano
-    integer :: iret, jcara
+    integer :: jcara
     integer :: jdepg, jeffg, jgeom
     integer :: np
 !
@@ -61,7 +61,7 @@ subroutine ef0033(nomte)
     if (nno .eq. 3) then
         call dxtpgl(zr(jgeom), pgl)
     else if (nno .eq. 4) then
-        call dxqpgl(zr(jgeom), pgl, 'S', iret)
+        call dxqpgl(zr(jgeom), pgl)
     end if
 !
     call utpvgl(nno, 3, pgl, zr(jgeom), xyzl)

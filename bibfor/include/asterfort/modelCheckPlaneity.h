@@ -17,8 +17,7 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine dxqpgl(xyzg, pgl)
-        real(kind=8) :: xyzg(3, *)
-        real(kind=8) :: pgl(3, 3)
-    end subroutine dxqpgl
+    subroutine modelCheckPlaneity(mesh, model)
+        character(len=8), intent(in) :: mesh, model
+    end subroutine modelCheckPlaneity
 end interface

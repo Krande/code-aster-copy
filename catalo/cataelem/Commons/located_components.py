@@ -216,6 +216,14 @@ CTIMMTR = LocatedComponents(phys=PHY.INST_R, type="ELEM", components=("INST", "D
 
 CTEREFE = LocatedComponents(phys=PHY.TEMP_R, type="ELEM", components=("TEMP",))
 
+# Field for error code
+ECODRET = LocatedComponents(phys=PHY.CODE_I, type="ELEM", components=("IRET",))
+
+# Field for values of indicator (AFFE_MODELE)
+CINDICR = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X[2]",))
+
+# Field for parameters of indicator (AFFE_MODELE)
+CCHCKPR = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X[2]",))
 
 CBORNPI = LocatedComponents(phys=PHY.PILO_R, type="ELEM", components=("A0", "A1"))
 
@@ -616,7 +624,6 @@ ECARAGE = LocatedComponents(
 
 ECHALIM = LocatedComponents(phys=PHY.CHLI_R, type="ELEM", components=("CHLI[3]",))
 
-ECODRET = LocatedComponents(phys=PHY.CODE_I, type="ELEM", components=("IRET",))
 
 ECOOR1R = LocatedComponents(phys=PHY.N120_R, type="ELEM", components=("X[81]",))
 
@@ -1242,6 +1249,22 @@ EFLUX3R = LocatedComponents(
 
 # Field for hydratation
 EHYDRR = LocatedComponents(phys=PHY.HYDR_R, type="ELGA", location="MASS", components=("HYDR",))
+
+# For generalized forces - Plates (Real-3D)
+EGFG3DR = LocatedComponents(
+    phys=PHY.SIEF_R,
+    type="ELGA",
+    location="RIGI",
+    components=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
+)
+
+# For generalized forces - Plates (Complex-3D)
+EGFG3DC = LocatedComponents(
+    phys=PHY.SIEF_C,
+    type="ELGA",
+    location="RIGI",
+    components=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
+)
 
 EGMATE_R = LocatedComponents(
     phys=PHY.MATE_R,

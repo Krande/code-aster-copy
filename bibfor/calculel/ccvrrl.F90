@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -212,13 +212,9 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames, &
                             iepais, jalpha, jbeta, jgamma, ligrmo, &
                             ino, pgl, modeli, ier)
                 if (ier .eq. 3) goto 20
-                if (ier .eq. 1 .or. ier .eq. 2) then
+                if (ier .eq. 1) then
                     call jenuno(jexnum(nommai//'.NOMMAI', numma), nomail)
-                    if (ier .eq. 1) then
-                        call utmess('A', 'MODELISA10_5', sk=nomail)
-                    else
-                        call utmess('A', 'ELEMENTS4_80', sk=nomail)
-                    end if
+                    call utmess('A', 'MODELISA10_5', sk=nomail)
                 end if
 !
                 vl(1) = 1.d0
@@ -266,13 +262,9 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames, &
                                 iepais, jalpha, jbeta, jgamma, ligrmo, &
                                 ino, pgl, modeli, ier)
                     if (ier .eq. 3) goto 30
-                    if (ier .eq. 1 .or. ier .eq. 2) then
+                    if (ier .eq. 1) then
                         call jenuno(jexnum(nommai//'.NOMMAI', numma2), nomail)
-                        if (ier .eq. 1) then
-                            call utmess('A', 'MODELISA10_5', sk=nomail)
-                        else
-                            call utmess('A', 'ELEMENTS4_80', sk=nomail)
-                        end if
+                        call utmess('A', 'MODELISA10_5', sk=nomail)
                     end if
 !
                     vl(1) = 1.d0

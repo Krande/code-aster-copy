@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ cata_msg = {
     11: _("""On ne peut utiliser qu'un seul phénomène."""),
     12: _("""La formulation %(k1)s n'est pas disponible pour les modélisations choisies."""),
     13: _(
-        """Les méthodes de partition MAIL_CONTIGU et MAIL_DISPERSE sont interdites avec des 
+        """Les méthodes de partition MAIL_CONTIGU et MAIL_DISPERSE sont interdites avec des
 modélisations nécessitant des informations sur les mailles voisines (3D_JOINT, 3D_INTERFACE, ...)"""
     ),
     14: _(
@@ -57,6 +57,9 @@ Parfois, cela empêche de faire le "bon choix". Cette alarme risque de se transf
         ),
         "flags": "DECORATED",
     },
+    16: _(
+        """Il n'est pas possible de vérifier la planéité des plaques sur un maillage parallèle."""
+    ),
     20: _(""" Modélisation     Formulation      Type maille  Élément fini     Nombre"""),
     21: _(""" %(k1)-16s %(k2)-16s %(k3)-12s %(k4)-16s %(i1)d"""),
     38: _("""%(k1)-8s %(k2)-8s %(k3)-8s %(k4)-8s %(k5)-8s %(k6)-8s %(k7)-8s %(k8)-8s"""),
@@ -109,7 +112,7 @@ Il est d'usage d'utiliser un maillage dans le plan Z passant par l'origine pour 
    ne supporte pas tous les types des mailles présentes dans le maillage et
    non encore affectées d'une modélisation.
 
-   Le nombre de mailles non encore affectées que l'on n'a pas pu affecter 
+   Le nombre de mailles non encore affectées que l'on n'a pas pu affecter
    (lors de cette occurrence de AFFE) est :  %(i2)d
 
  Risques & conseils :
@@ -118,7 +121,7 @@ Il est d'usage d'utiliser un maillage dans le plan Z passant par l'origine pour 
      Pour connaître les mailles non affectées (à la fin de l'opérateur), on peut utiliser INFO=2.
    * Ce problème est fréquent quand on souhaite une modélisation "sous intégrée"
      (par exemple AXIS_SI). Pour l'éviter, il faut donner, dans une occurrence précédent l'occurrence
-     en question, une modélisation de "substitution" pour les mailles qui n'existent pas dans 
+     en question, une modélisation de "substitution" pour les mailles qui n'existent pas dans
      la modélisation désirée (ici 'AXIS_SI').
      On fera par exemple :
         MO=AFFE_MODELE( MAILLAGE=MA,  INFO=2, AFFE=(

@@ -15,10 +15,17 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+
 !
-interface
-    subroutine dxqpgl(xyzg, pgl)
-        real(kind=8) :: xyzg(3, *)
-        real(kind=8) :: pgl(3, 3)
-    end subroutine dxqpgl
-end interface
+! --------------------------------------------------------------------------------------------------
+!
+! Error codes when defining base
+!
+! --------------------------------------------------------------------------------------------------
+!
+#define BASE_NO_ERROR       0
+#define BASE_CELL_DEGE      1
+#define BASE_NORM_ZERO      2
+#define BASE_QUAD_NOPLANE   3
+
+#define BASE_TOLE_PLANE     1.d-4

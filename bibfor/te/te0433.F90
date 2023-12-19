@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@ subroutine te0433(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: codres(2), iret
+    integer :: codres(2)
     character(len=4), parameter :: fami = 'RIGI'
     character(len=16) :: nomres(2)
     integer :: nddl, nno, npg, i, j, n, kpg
@@ -119,7 +119,7 @@ subroutine te0433(option, nomte)
         if (nomte .eq. 'MEGCTR3') then
             call dxtpgl(zr(igeom), pgl)
         else if (nomte .eq. 'MEGCQU4') then
-            call dxqpgl(zr(igeom), pgl, 'S', iret)
+            call dxqpgl(zr(igeom), pgl)
         end if
 !
         do i = 1, 3

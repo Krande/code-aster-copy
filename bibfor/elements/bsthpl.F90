@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ subroutine bsthpl(nomte, bsigth, indith)
 !     OUT INDITH : LOGICAL = .TRUE.  YA DES DEFORMATIONS THERMIQUES
 !                          = .FALSE. SINON
 !     ------------------------------------------------------------------
-    integer :: i, jgeom, nno, iret
+    integer :: i, jgeom, nno
     real(kind=8) :: pgl(3, 3), xyzl(3, 4), sigth(32), zero
 !     ------------------------------------------------------------------
 !
@@ -62,13 +62,13 @@ subroutine bsthpl(nomte, bsigth, indith)
         .eq. 'MET3TR3' .or. nomte .eq. 'MET3GG3') then
         nno = 3
         call dxtpgl(zr(jgeom), pgl)
-    else if (nomte .eq. 'MEDKQU4' .or.&
- &         nomte .eq. 'MEDKQG4' .or.&
- &         nomte .eq. 'MEDSQU4' .or.&
- &         nomte .eq. 'MEQ4QU4' .or.&
- &         nomte .eq. 'MEQ4GG4') then
+    else if (nomte .eq. 'MEDKQU4' .or. &
+             nomte .eq. 'MEDKQG4' .or. &
+             nomte .eq. 'MEDSQU4' .or. &
+             nomte .eq. 'MEQ4QU4' .or. &
+             nomte .eq. 'MEQ4GG4') then
         nno = 4
-        call dxqpgl(zr(jgeom), pgl, 'S', iret)
+        call dxqpgl(zr(jgeom), pgl)
     else
         call utmess('F', 'ELEMENTS_14', sk=nomte)
     end if
