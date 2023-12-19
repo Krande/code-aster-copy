@@ -107,8 +107,15 @@ def post_beremin_ops(self, **args):
 
         dwb = get_beremin_properties(resupb, grmapb)
         bere_m = dwb[grmapb[0]]["M"]
+
+        mawbrest = reswbrest.getModel().getMesh()
+
+        mawbrest = DEFI_GROUP(
+            reuse=mawbrest, MAILLAGE=mawbrest, CREA_GROUP_NO=_F(GROUP_MA=grmapb[0], NOM="ngrmapb")
+        )
+
         make_plasticity_groups(
-            reswbrest, numv1v2, grmapb, mclinst, dwb[grmapb[0]]["SEUIL_EPSP_CUMU"], l_epspmax
+            reswbrest, numv1v2, mclinst, dwb[grmapb[0]]["SEUIL_EPSP_CUMU"], l_epspmax
         )
 
         if fspb == "SIGM_ELGA":
@@ -352,7 +359,7 @@ def sigma1_f(rsieq, nume_inst, dwb, reswbrest, grwb):
         CHAM_UTIL=_F(NOM_CHAM="SIEF_ELGA", FORMULE=formule, NUME_CHAM_RESU=1),
     )
 
-    __sg1neut_f = CREA_CHAMP(
+    return CREA_CHAMP(
         OPERATION="ASSE",
         TYPE_CHAM="ELGA_NEUT_R",
         MODELE=modele,
@@ -364,8 +371,6 @@ def sigma1_f(rsieq, nume_inst, dwb, reswbrest, grwb):
             NOM_CMP_RESU="X1",
         ),
     )
-
-    return __sg1neut_f
 
 
 def sig1plasac(resultat, rsieq, numv1v2, dwb, reswbrest, grmapb, mclinst):
@@ -570,15 +575,21 @@ def compute_beremin_integral(model, coefmultpb, sigw, dwb, grmapb, resupb):
     Returns:
         Table: POST_BEREMIN final table
     """
-    sigwaux = POST_ELEM(
-        MODELE=model,
-        RESULTAT=sigw,
-        INTEGRALE=_F(
-            NOM_CHAM="SIEF_ELGA",
-            NOM_CMP="SIXX",
-            GROUP_MA="mgrplasfull",
-            TYPE_MAILLE="{}D".format(model.getMesh().getDimension()),
-        ),
+    coor = CALC_CHAM_ELEM(MODELE=model, OPTION="COOR_ELGA")
+    poids = coor.getValuesWithDescription("W", ["mgrplasfull"])[0]
+    sigwinst = sigw.getAccessParameters()["NUME_ORDRE"]
+    valinte_sixx = []
+    for nume_inst in sigwinst:
+        chsigw = sigw.getField("SIEF_ELGA", nume_inst)
+        sigw_intg = chsigw.getValuesWithDescription("SIXX", ["mgrplasfull"])[0]
+
+        nzval = np.array(
+            ([elt_poids * elt_sigw for (elt_poids, elt_sigw) in zip(poids, sigw_intg)])
+        )
+        valinte_sixx.append(np.sum(nzval))
+
+    sigwaux = CREA_TABLE(
+        LISTE=(_F(PARA="NUME_ORDRE", LISTE_I=sigwinst), _F(PARA="INTE_SIXX", LISTE_R=valinte_sixx))
     )
 
     if "SIGM_CNV" in dwb[grmapb[0]]:
@@ -637,7 +648,7 @@ def compute_beremin_integral(model, coefmultpb, sigw, dwb, grmapb, resupb):
     return tab_final
 
 
-def make_plasticity_groups(reswbrest, numv1v2, grmapb, mclinst, seuil, l_epspmax):
+def make_plasticity_groups(reswbrest, numv1v2, mclinst, seuil, l_epspmax):
     """
     Construct groups of plasticity for each time step when there is plasticity
 
@@ -645,7 +656,6 @@ def make_plasticity_groups(reswbrest, numv1v2, grmapb, mclinst, seuil, l_epspmax
         reswbrest (NonLinearResult): result to consider to compute Weibull
             stress
         numv1v2 (tuple): Indices of internal variables EPSPEQ and INDIPLAS
-        grmapb (str): Mesh cells group given in POST_BEREMIN
         mclinst (list): List of medcoupling time steps
             (iteration, order, time step) where there is plasticity
         seuil (float): value of SEUIL_EPSP_CUMU
@@ -657,6 +667,7 @@ def make_plasticity_groups(reswbrest, numv1v2, grmapb, mclinst, seuil, l_epspmax
     dval = {}
     for indice, iteration in enumerate(liter):
 
+        dval = {}
         if l_epspmax[indice] < seuil:
             dval["min{}".format(indice)] = 0
             dval["max{}".format(indice)] = l_epspmax[indice]
@@ -664,22 +675,20 @@ def make_plasticity_groups(reswbrest, numv1v2, grmapb, mclinst, seuil, l_epspmax
             dval["min{}".format(indice)] = seuil
             dval["max{}".format(indice)] = l_epspmax[indice]
 
-
         mawbrest = DEFI_GROUP(
             reuse=mawbrest,
             MAILLAGE=mawbrest,
             CREA_GROUP_NO=(
-                _F(GROUP_MA=grmapb[0], NOM="ngrmapb_{}".format(iteration)),
                 _F(
                     NOM="vale_{}".format(iteration),
                     OPTION="INTERVALLE_VALE",
                     CHAM_GD=reswbrest.getField("VARI_ELGA", iteration).toFieldOnNodes(),
                     NOM_CMP="V{}".format(numv1v2[0]),
-                    VALE=(valmin, valmax),
+                    VALE=(dval["min"], dval["max"]),
                 ),
                 _F(
                     NOM="ngrplas_{}".format(iteration),
-                    INTERSEC=("vale_{}".format(iteration), "ngrmapb_{}".format(iteration)),
+                    INTERSEC=("vale_{}".format(iteration), "ngrmapb"),
                 ),
             ),
         )
