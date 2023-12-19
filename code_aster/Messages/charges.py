@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -73,6 +73,10 @@ La liaison 3D_POU_ARLEQUIN n'est pas disponible avec les mailles de type %(k1)s.
     ),
     10: _(
         """On n'a pas trouvé l'élément volumique rattaché à la maille de surface sur laquelle on veut appliquer une pression."""
+    ),
+    11: _(
+        """
+Pour FORCE_COQUE, seule la composante PRES est compatible avec les charges suiveuses"""
     ),
     20: _(
         """

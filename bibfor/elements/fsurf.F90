@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,6 +63,7 @@ subroutine fsurf(option, nomte, xi, nb1, vecl, &
     if (option .eq. 'CHAR_MECA_FRCO3D') then
         call jevech('PFRCO3D', 'L', jpres)
         global = abs(zr(jpres-1+7)) .lt. 1.d-3
+        locapr = abs(zr(jpres-1+7)-3.d0) .lt. 1.d-3
         if (global) then
             do j = 1, nb1
                 do i = 1, 6
@@ -71,10 +72,15 @@ subroutine fsurf(option, nomte, xi, nb1, vecl, &
             end do
         else
             do j = 1, nb1
-                do i = 1, 5
-                    chgsrl(i) = zr(jpres-1+7*(j-1)+i)
-                end do
-                chgsrl(i) = 0.d0
+                chgsrl(:) = 0.d0
+                if (locapr) then
+                    chgsrl(3) = -zr(jpres-1+7*(j-1)+3)
+                else
+                    do i = 1, 5
+                        chgsrl(i) = zr(jpres-1+7*(j-1)+i)
+                    end do
+                end if
+!
                 do jp = 1, 3
                     do ip = 1, 3
                         pgl(jp, ip) = vectpt(j, jp, ip)

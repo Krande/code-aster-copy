@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -94,6 +94,7 @@ subroutine te0032(option, nomte)
 !              ------------------------------
         call jevech('PFRCO3D', 'L', jpres)
         global = abs(zr(jpres+6)) .lt. 1.d-3
+        locapr = abs(zr(jpres+6)-3.d0) .lt. 1.d-3
         if (global) then
             call utpvgl(1, 6, pgl, zr(jpres), for(1, 1))
             call utpvgl(1, 6, pgl, zr(jpres+8), for(1, 2))
@@ -101,13 +102,12 @@ subroutine te0032(option, nomte)
             if (nno .eq. 4) then
                 call utpvgl(1, 6, pgl, zr(jpres+24), for(1, 4))
             end if
+        elseif (locapr) then
+            for(:, :) = 0.d0
+            do j = 1, nno
+                for(3, j) = -zr(jpres-1+8*(j-1)+3)
+            end do
         else
-!----------------------------------------------------------------------
-!          LE SIGNE AFFECTE A FOR(3,J) A ETE CHANGE PAR AFFE_CHAR_MECA
-!          SI PRES POUR RESPECTER LA CONVENTION :
-!              UNE PRESSION POSITIVE PROVOQUE UN GONFLEMENT
-!              ET IL N'Y A PAS LIEU DE LE CHANGER ICI
-!----------------------------------------------------------------------
             do j = 1, nno
                 do i = 1, 5
                     for(i, j) = zr(jpres-1+8*(j-1)+i)

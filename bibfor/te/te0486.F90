@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,6 +20,7 @@ subroutine te0486(option, nomte)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterc/r8prem.h"
 #include "asterfort/antisy.h"
 #include "asterfort/assert.h"
 #include "asterfort/b1tdb2.h"
@@ -158,9 +159,21 @@ subroutine te0486(option, nomte)
 !        ---- RECUPERATION DU VECTEUR DE PRESSION NODALE A INTERPOLER
         if (option(10:16) .eq. '_SRCO3D') then
             call jevech('PFRCO3D', 'L', irco3d)
-            do kn = 1, nb2
-                presno(kn) = -zr(irco3d-1+(kn-1)*7+3)
-            end do
+            locapr = abs(zr(irco3d-1+7)-3.d0) .lt. 1.d-3
+            if (locapr) then
+                do kn = 1, nb2
+                    presno(kn) = zr(irco3d-1+(kn-1)*7+3)
+                end do
+            else
+                do kn = 1, nb2
+                    do i = 1, 6
+                        if (abs(zr(irco3d-1+(kn-1)*7+i)) .gt. r8prem()) then
+                            call utmess('F', 'CHARGES_11')
+                        end if
+                    end do
+                end do
+                presno(1:nb2) = 0.d0
+            end if
 !
         else if (option(10:16) .eq. '_SFCO3D') then
             call jevech('PFFCO3D', 'L', ifco3d)
@@ -178,31 +191,34 @@ subroutine te0486(option, nomte)
                 presno(i) = 0.d0
             end do
 !
-!            GLOBAL = ZK8 ( IFCO3D + 6 ) .EQ. 'GLOBAL'
             locapr = zk8(ifco3d+6) .eq. 'LOCAL_PR'
 !
-            if (locapr) then
+            do in = 0, nb2-1
+                valpar(1) = zr(igeom+3*in)
+                valpar(2) = zr(igeom+3*in+1)
+                valpar(3) = zr(igeom+3*in+2)
+                valpar(5) = geom_reac(3*in+1)
+                valpar(6) = geom_reac(3*in+2)
+                valpar(7) = geom_reac(3*in+3)
 !
-!             if (NOMTE.EQ.'MEC3QU9H') then
-                do in = 0, nb2-1
-                    valpar(1) = zr(igeom+3*in)
-                    valpar(2) = zr(igeom+3*in+1)
-                    valpar(3) = zr(igeom+3*in+2)
-                    valpar(5) = geom_reac(3*in+1)
-                    valpar(6) = geom_reac(3*in+2)
-                    valpar(7) = geom_reac(3*in+3)
-!
+                if (locapr) then
+
                     call fointe('FM', zk8(ifco3d+2), 4, nompar, valpar, &
                                 pr, ierz)
                     presno(in+1) = pr
                     if (ierz .ne. 0) then
                         call utmess('F', 'ELEMENTS4_1')
                     end if
+                else
+                    do i = 1, 6
+                        call fointe('FM', zk8(ifco3d-1+i), 4, nompar, valpar, &
+                                    pr, ierz)
+                        if (abs(pr) .gt. r8prem()) call utmess('F', 'CHARGES_11')
+                    end do
+                    presno(in+1) = 0.d0
+                end if
 !
-                end do
-!
-!             ENDIF
-            end if
+            end do
 !
 !
         else if (option(10:16) .eq. '_PRSU_R') then
