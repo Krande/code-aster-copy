@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -288,7 +288,7 @@ INTERF1 = DEFI_INTERF_DYNA(
 )
 
 #
-BAMO1 = DEFI_BASE_MODALE(CLASSIQUE=_F(INTERF_DYNA=INTERF1, MODE_MECA=MODES1, NMAX_MODE=0o5))
+BAMO1 = DEFI_BASE_MODALE(CLASSIQUE=_F(INTERF_DYNA=INTERF1, MODE_MECA=MODES1, NMAX_MODE=5))
 
 #
 MACRO1 = MACR_ELEM_DYNA(BASE_MODALE=BAMO1)
@@ -535,7 +535,7 @@ INTERF2 = DEFI_INTERF_DYNA(
 )
 
 #
-BAMO2 = DEFI_BASE_MODALE(CLASSIQUE=_F(INTERF_DYNA=INTERF2, MODE_MECA=MODES2, NMAX_MODE=0o5))
+BAMO2 = DEFI_BASE_MODALE(CLASSIQUE=_F(INTERF_DYNA=INTERF2, MODE_MECA=MODES2, NMAX_MODE=5))
 
 #
 MACRO2 = MACR_ELEM_DYNA(BASE_MODALE=BAMO2)
