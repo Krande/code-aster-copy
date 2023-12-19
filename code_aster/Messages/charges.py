@@ -74,6 +74,10 @@ La liaison 3D_POU_ARLEQUIN n'est pas disponible avec les mailles de type %(k1)s.
     10: _(
         """On n'a pas trouvé l'élément volumique rattaché à la maille de surface sur laquelle on veut appliquer une pression."""
     ),
+    11: _(
+        """
+Pour FORCE_COQUE, seule la composante PRES est compatible avec les charges suiveuses"""
+    ),
     20: _(
         """
 La charge %(k1)s n'est pas compatible avec FONC_MULT.

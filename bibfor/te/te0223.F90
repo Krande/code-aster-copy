@@ -41,7 +41,7 @@ subroutine te0223(option, nomte)
     real(kind=8) :: poids, r, fx, fy, mz, f1, f3, m2, nx, ny, cour, dfdx(3)
     integer :: nno, nddl, kp, npg, ipoids, ivf, idfdk, igeom
     integer :: ivectu, k, i, l, iforc
-    aster_logical :: global
+    aster_logical :: global, locapr
 !
 !
 !-----------------------------------------------------------------------
@@ -58,6 +58,7 @@ subroutine te0223(option, nomte)
     call jevech('PVECTUR', 'E', ivectu)
     nddl = 3
     global = abs(zr(iforc+5)) .lt. 1.d-3
+    locapr = abs(zr(iforc+5)-3.d0) .lt. 1.d-3
 !
     do kp = 1, npg
         k = (kp-1)*nno
@@ -74,14 +75,15 @@ subroutine te0223(option, nomte)
                 fy = fy+zr(iforc-1+6*(i-1)+2)*zr(ivf+l-1)
                 mz = mz+zr(iforc-1+6*(i-1)+5)*zr(ivf+l-1)
             else
-                f1 = zr(iforc+6*(i-1))
-!-----------------------------------------------------
-!  LE SIGNE AFFECTE A F3 A ETE CHANGE PAR AFFE_CHAR_MECA SI PRES
-!  POUR RESPECTER LA CONVENTION
-!      UNE PRESSION POSITIVE PROVOQUE UN GONFLEMENT
-!-----------------------------------------------------
-                f3 = zr(iforc+6*(i-1)+2)
-                m2 = zr(iforc+6*(i-1)+3)
+                if (locapr) then
+                    f1 = 0.d0
+                    f3 = -zr(iforc+6*(i-1)+2)
+                    m2 = 0.d0
+                else
+                    f1 = zr(iforc+6*(i-1))
+                    f3 = zr(iforc+6*(i-1)+2)
+                    m2 = zr(iforc+6*(i-1)+3)
+                end if
                 fx = fx+(nx*f3-ny*f1)*zr(ivf+l-1)
                 fy = fy+(ny*f3+nx*f1)*zr(ivf+l-1)
                 mz = mz+m2*zr(ivf+l-1)
