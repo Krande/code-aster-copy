@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -58,7 +58,8 @@ CHARGC_1 = AFFE_CHAR_CINE(
 
 CHARGE_2 = AFFE_CHAR_MECA(MODELE=MODELE_1, FORCE_COQUE=_F(TOUT="OUI", PRES=0.5))
 PRES = DEFI_FONCTION(NOM_PARA="X", VALE=(-104.0, 0.5, 104.0, 0.5))
-CHARGE_F = AFFE_CHAR_MECA_F(MODELE=MODELE_1, FORCE_COQUE=_F(TOUT="OUI", PRES=PRES))
+CHARGE_F = AFFE_CHAR_MECA(MODELE=MODELE_1, FORCE_COQUE_FO=_F(TOUT="OUI", PRES=PRES))
+CHARGE_FF = AFFE_CHAR_MECA_F(MODELE=MODELE_1, FORCE_COQUE=_F(TOUT="OUI", PRES=PRES))
 
 CARAC_1 = AFFE_CARA_ELEM(MODELE=MODELE_1, COQUE=_F(GROUP_MA="TOUT", EPAIS=0.125))
 D_FONC = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 1.0, 1.0))
@@ -106,7 +107,7 @@ NONLIN2 = STAT_NON_LINE(
     EXCIT=(
         _F(CHARGE=CHARGC_1),
         _F(CHARGE=CHARGE_2, FONC_MULT=D_FONC, TYPE_CHARGE="SUIV"),
-        _F(CHARGE=CHARGE_F, FONC_MULT=D_FONC, TYPE_CHARGE="SUIV"),
+        _F(CHARGE=CHARGE_FF, FONC_MULT=D_FONC, TYPE_CHARGE="SUIV"),
     ),
     COMPORTEMENT=_F(RELATION="ELAS", DEFORMATION="GROT_GDEP"),
     INCREMENT=_F(LIST_INST=L_INST),

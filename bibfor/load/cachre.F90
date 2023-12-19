@@ -360,7 +360,7 @@ subroutine cachre(load, model, mesh, geomDime, valeType, &
                     call getvid(keywordFact, 'MT', iocc=iocc, scal=kmx, nbret=nmx)
                     call getvid(keywordFact, 'MFY', iocc=iocc, scal=kmy, nbret=nmy)
                     call getvid(keywordFact, 'MFZ', iocc=iocc, scal=kmz, nbret=nmz)
-                else if (keywordFact .eq. 'FORCE_COQUE') then
+                else if (keywordFact(1:11) .eq. 'FORCE_COQUE') then
                     nrep = 1
                     call getvid(keywordFact, 'PRES', iocc=iocc, scal=kfz, nbret=nfz)
                     if (nfz .eq. 0) then
