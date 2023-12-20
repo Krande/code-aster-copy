@@ -106,7 +106,6 @@ def post_beremin_ops(self, **args):
     else:
 
         dwb = get_beremin_properties(resupb, grmapb)
-        bere_m = dwb[grmapb[0]]["M"]
 
         mawbrest = reswbrest.getModel().getMesh()
 
@@ -129,7 +128,7 @@ def post_beremin_ops(self, **args):
                 mclinst,
                 sig1plasac(reswbrest, rsieq, numv1v2, dwb, resupb, grmapb, mclinst),
                 resanpb,
-                bere_m,
+                dwb[grmapb[0]]["M"],
             )
 
         elif fspb == "SIGM_ELMOY":
@@ -159,7 +158,7 @@ def post_beremin_ops(self, **args):
                 mclinst,
                 sig1plasac(relmoysief, rsieq, numv1v2, dwb, resupb, grmapb, mclinst),
                 resanpb,
-                bere_m,
+                dwb[grmapb[0]]["M"],
             )
 
         else:
