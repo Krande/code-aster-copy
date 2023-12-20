@@ -43,9 +43,11 @@ export CI_COMMIT_REF_NAME=$(git rev-parse --abbrev-ref HEAD)
 export DEBUG_CI=1
 export ARTF=/tmp
 [ -d /local00/tmp ] && export ARTF=/local00/tmp
-export ORIG_HOME=${HOME}
-export HOME=${ARTF}/home
-mkdir -p ${HOME}
+if [ -z "${submit}" ]; then
+    export ORIG_HOME=${HOME}
+    export HOME=${ARTF}/home
+    mkdir -p ${HOME}
+fi
 
 # variables (: -> =, ' -> ", +export)
 export MINIO_URL=https://minio.retd.edf.fr
@@ -164,6 +166,38 @@ eof
     _cleanup
 }
 
+check_devtools() {
+    mark="${HOME}/.config/aster/devtools_fetch.mark"
+    ftest=$(mktemp tmp.devtools_fetch.XXXXXXXX)
+    touch -d "-10 days" "${ftest}"
+    if [ ! -f "${mark}" ] || [ "${mark}" -ot "${ftest}" ]; then
+        echo "+ devtools should be regularly updated"
+        printf "do you want to updated 'devtools' now (y/[n])? "
+        read answ
+        if [ "${answ}" = "y" ]; then
+            date > "${mark}"
+            (cd devtools && git checkout main && git pull)
+        fi
+    fi
+    rm -f "${ftest}"
+}
+
+check_install_env() {
+    mark="${HOME}/.config/aster/install_env.mark"
+    ftest=$(mktemp tmp.install_env.XXXXXXXX)
+    touch -d "-20 days" "${ftest}"
+    if [ ! -f "${mark}" ] || [ "${mark}" -ot "${ftest}" ]; then
+        echo "+ install_env should be regularly run"
+        printf "do you want to run 'install_env' now (y/[n])? "
+        read answ
+        if [ "${answ}" = "y" ]; then
+            date > "${mark}"
+            ./devtools/bin/install_env --no-build
+        fi
+    fi
+    rm -f "${ftest}"
+}
+
 pipeline() {
     local prepare=0
     local compile=0
@@ -215,10 +249,13 @@ pipeline() {
         echo "+ running in submit mode"
         cleanup="${cleanup} echo cleanup... ; rm -rf artifacts list_issues.txt results_mini ;"
         trap "${cleanup}" EXIT
+        export GIT_PAGER=cat
+        check_devtools
+        check_install_env
     fi
     if [ $(git status --porcelain -uno | wc -l) != "0" ]; then
         echo "--- there are uncommitted changes, you should commit or stash them!"
-        printf "do you want to continue (y/n)? "
+        printf "do you want to continue (y/[n])? "
         read answ
         [ "${answ}" != "y" ] && exit 1
     fi
