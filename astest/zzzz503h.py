@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,15 +17,15 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import code_aster
+from code_aster import CA
 from code_aster.Commands import *
 from code_aster.Messages import MessageLog
 
-code_aster.init("--test", IGNORE_ALARM="MATERIAL2_20")
+CA.init("--test", IGNORE_ALARM="MATERIAL2_20")
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
-mesh = code_aster.Mesh.buildCube(refine=0)
+mesh = CA.Mesh.buildCube(refine=0)
 
 trac = DEFI_FONCTION(
     NOM_PARA="EPSI",
@@ -38,7 +38,7 @@ trac = DEFI_FONCTION(
 cst1 = DEFI_CONSTANTE(VALE=1.0)
 cst2 = DEFI_CONSTANTE(VALE=2.0)
 
-mater = code_aster.Material()
+mater = CA.Material()
 mater.addProperties("ELAS", E=3.7272000000e10, NU=0.0, RHO=2400.0)
 mater.addProperties("TRACTION", SIGM=trac)
 mater.addProperties("MFRONT", LISTE_COEF=(3.69e10, 0.3, 151.0, 87.0, 2.3))
@@ -88,7 +88,7 @@ Gam1 = 341.0
 Gam2 = 341.0
 C_Pa = 1.0e6
 
-matvisco = code_aster.Material()
+matvisco = CA.Material()
 matvisco.addProperties("ELAS", E=3.7272000000e10, NU=0.0, RHO=2400.0)
 matvisco.addProperties(
     "VISCOCHAB",
@@ -126,7 +126,7 @@ D1212 = C_FLE * (1.0 - NU) / 2.0
 G11 = C_CIS * 5.0 / 12.0
 G22 = C_CIS * 5.0 / 12.0
 
-matord = code_aster.Material()
+matord = CA.Material()
 matord.addProperties(
     "ELAS_COQUE",
     MEMB_L=C1111,
@@ -169,7 +169,7 @@ KINT = DEFI_CONSTANTE(VALE=1.0e-18)
 
 THMALP1 = DEFI_CONSTANTE(VALE=0.000100)
 
-matthm = code_aster.Material()
+matthm = CA.Material()
 matthm.addProperties("ELAS", E=22.4e6, NU=0.3, RHO=2500.0, ALPHA=1.0e-5)
 matthm.addProperties("CJS", BETA_CJS=-0.03, GAMMA_CJS=0.82, RM=0.289, PA=-100.0e3)
 
@@ -235,7 +235,7 @@ test.assertCountEqual(
     ["ELAS", "CJS", "THM_LIQU", "THM_GAZ", "THM_VAPE_GAZ", "THM_DIFFU", "THM_INIT"],
 )
 
-matrag1 = code_aster.Material()
+matrag1 = CA.Material()
 matrag1.addProperties("ELAS", E=32000.0e06, NU=0.25)
 matrag1.addProperties(
     "BETON_RAG",
@@ -250,7 +250,7 @@ matrag1.addProperties(
 test.assertEqual(matrag1.size(), 2, msg="number of material properties")
 test.assertCountEqual(matrag1.getMaterialNames(), ["ELAS", "BETON_RAG"])
 
-matrag2 = code_aster.Material()
+matrag2 = CA.Material()
 matrag2.addProperties("ELAS", E=32000.0e06, NU=0.25)
 matrag2.addProperties(
     "BETON_RAG",
@@ -275,7 +275,7 @@ matrag2.addProperties(
 test.assertEqual(matrag2.size(), 2, msg="number of material properties")
 test.assertCountEqual(matrag2.getMaterialNames(), ["ELAS", "BETON_RAG"])
 
-matdis = code_aster.Material()
+matdis = CA.Material()
 matdis.addProperties(
     "DIS_CONTACT",
     COULOMB=0.5,
@@ -293,7 +293,7 @@ K = complex(2.22e9, 0)
 nu = (3 * K - 2 * G) / (3 * K + 2 * G) * 0.5
 rho_d = 1460
 
-matcmplx = code_aster.Material()
+matcmplx = CA.Material()
 matcmplx.addProperties("ELAS_VISCO", G=G, NU=nu, RHO=rho_d)
 
 test.assertEqual(matcmplx.getNumberOfMaterialProperties(), 1, msg="number of material properties")
@@ -466,7 +466,7 @@ TRCMNDA = DEFI_TRC(
     GRAIN_AUST=_F(DREF=11.00e-6, A=11200.0),
 )
 
-matmeta = code_aster.Material()
+matmeta = CA.Material()
 matmeta.addProperties("THER", RHO_CP=5260000.0, LAMBDA=33.5)
 matmeta.addProperties(
     "META_ACIER",
@@ -503,7 +503,7 @@ Fkecoul = DEFI_FONCTION(
     PROL_GAUCHE="CONSTANT",
 )
 
-matbpel = code_aster.Material()
+matbpel = CA.Material()
 matbpel.addProperties("ELAS", E=Young, NU=0.10, ALPHA=20.0e-05)
 matbpel.addProperties(
     "RELAX_ACIER",
@@ -579,7 +579,7 @@ g20_F = DEFI_FONCTION(NOM_PARA="TEMP", VALE=(T0, 1500, Tmax, 1000))
 
 ainfi_F = DEFI_FONCTION(NOM_PARA="TEMP", VALE=(T0, 0.41, Tmax, 0.56))
 
-matcomp0 = code_aster.Material()
+matcomp0 = CA.Material()
 matcomp0.addProperties(
     "ELAS_FO",
     ALPHA=ALPH,
@@ -623,7 +623,7 @@ matcomp0.addProperties(
 test.assertEqual(matcomp0.size(), 2, msg="number of material properties")
 test.assertCountEqual(matcomp0.getMaterialNames(), ["ELAS", "VISCOCHAB"])
 
-matcomp = code_aster.Material()
+matcomp = CA.Material()
 matcomp.addProperties(
     "ELAS", ALPHA=0.0, B_ENDOGE=0.0, COEF_AMOR=1.0, E=149500.0, K_DESSIC=0.0, NU=0.0
 )
@@ -659,7 +659,7 @@ matcomp.addProperties(
 test.assertEqual(matcomp.size(), 2, msg="number of material properties")
 test.assertCountEqual(matcomp.getMaterialNames(), ["ELAS", "VISCOCHAB"])
 
-matmeta2 = code_aster.Material()
+matmeta2 = CA.Material()
 matmeta2.addProperties(
     "ELAS_META_FO",
     E=YOUN,
@@ -687,7 +687,7 @@ test.assertEqual(fE.userName, YOUN.userName)
 fSY = matmeta2.getFunction("ELAS_META", "SY_MELANGE")
 test.assertEqual(fSY.userName, cst1.userName)
 
-mater = code_aster.Material()
+mater = CA.Material()
 mater.addProperties("ELAS", E=3.7272000000e10, NU=0.0, RHO=2400.0)
 
 with test.assertRaisesRegex(RuntimeError, "already defined"):
@@ -723,7 +723,7 @@ NULT = 0.075
 NULN = 0.075
 NUTN = 0.0142857143
 
-matorth = code_aster.Material()
+matorth = CA.Material()
 matorth.addProperties(
     "ELAS_ORTH",
     E_L=EL,
@@ -747,7 +747,7 @@ test.assertEqual(len(emitted), 0, msg="check for warning MATERIAL2_20: off")
 # this will raised a warning on checking eigen value of the Hooke matrix
 NULN = 0.075 + 1
 
-matorth = code_aster.Material()
+matorth = CA.Material()
 matorth.addProperties(
     "ELAS_ORTH",
     E_L=EL,

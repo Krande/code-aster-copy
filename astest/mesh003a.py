@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,15 +17,14 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import code_aster
-from code_aster.Objects import ConnectionMesh
+from code_aster import CA
 from code_aster.Commands import *
-from code_aster import MPI
+from code_aster.CA import MPI
 
 
-code_aster.init("--test")
+CA.init("--test")
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 rank = MPI.ASTER_COMM_WORLD.Get_rank()
 print("Nb procs", MPI.ASTER_COMM_WORLD.Get_size())
@@ -42,7 +41,7 @@ test.assertEqual(pMesh.getNumberOfCells(), 7)
 
 # Test ConnectionMesh - The full mesh
 print("cMesh1", flush=True)
-cMesh1 = ConnectionMesh(pMesh, ["FACE"], [])
+cMesh1 = CA.ConnectionMesh(pMesh, ["FACE"], [])
 test.assertEqual(cMesh1.getParallelMesh().getName(), pMesh.getName())
 test.assertEqual(cMesh1.getDimension(), 2)
 test.assertEqual(cMesh1.getNumberOfNodes(), 8)
@@ -60,7 +59,7 @@ test.assertSequenceEqual(sorted(cMesh1.getNodesLocalNumbering()), [1, 1, 2, 3, 4
 
 # Test ConnectionMesh - The full mesh
 print("cMesh2", flush=True)
-cMesh2 = ConnectionMesh(pMesh, [], ["FACE"])
+cMesh2 = CA.ConnectionMesh(pMesh, [], ["FACE"])
 test.assertEqual(cMesh2.getDimension(), 2)
 test.assertEqual(cMesh2.getNumberOfNodes(), 8)
 test.assertEqual(cMesh2.getNumberOfCells(), 11)
@@ -76,7 +75,7 @@ test.assertSequenceEqual(sorted(cMesh2.getNodesLocalNumbering()), [1, 1, 2, 3, 4
 
 # Test ConnectionMesh - a part mesh
 print("cMesh3", flush=True)
-cMesh3 = ConnectionMesh(pMesh, ["N0", "N2"], [])
+cMesh3 = CA.ConnectionMesh(pMesh, ["N0", "N2"], [])
 test.assertEqual(cMesh3.getDimension(), 2)
 test.assertEqual(cMesh3.getNumberOfNodes(), 8)
 test.assertEqual(cMesh3.getNumberOfCells(), 6)
@@ -89,7 +88,7 @@ test.assertSequenceEqual(sorted(cMesh3.getNodesLocalNumbering()), [1, 1, 2, 3, 4
 
 # Test ConnectionMesh - a part mesh
 print("cMesh4", flush=True)
-cMesh4 = ConnectionMesh(pMesh, ["N1", "N3"], [])
+cMesh4 = CA.ConnectionMesh(pMesh, ["N1", "N3"], [])
 test.assertEqual(cMesh4.getDimension(), 2)
 test.assertEqual(cMesh4.getNumberOfNodes(), 8)
 test.assertEqual(cMesh4.getNumberOfCells(), 6)
@@ -99,7 +98,7 @@ test.assertSequenceEqual(sorted(cMesh4.getNodesGlobalNumbering()), [0, 1, 2, 3, 
 
 # Test ConnectionMesh - a part mesh
 print("cMesh5", flush=True)
-cMesh5 = ConnectionMesh(pMesh, ["N1", "FACE"], [])
+cMesh5 = CA.ConnectionMesh(pMesh, ["N1", "FACE"], [])
 test.assertEqual(cMesh5.getDimension(), 2)
 test.assertEqual(cMesh5.getNumberOfNodes(), 8)
 test.assertEqual(cMesh5.getNumberOfCells(), 11)
@@ -108,7 +107,7 @@ test.assertSequenceEqual(sorted(cMesh5.getGroupsOfNodes()), ["FACE", "N1"])
 
 # Test ConnectionMesh - a part mesh
 print("cMesh6", flush=True)
-cMesh6 = ConnectionMesh(pMesh, ["N0"], [])
+cMesh6 = CA.ConnectionMesh(pMesh, ["N0"], [])
 test.assertEqual(cMesh6.getDimension(), 2)
 test.assertEqual(cMesh6.getNumberOfNodes(), 4)
 test.assertEqual(cMesh6.getNumberOfCells(), 3)
@@ -118,7 +117,7 @@ test.assertSequenceEqual(sorted(cMesh6.getNodesGlobalNumbering()), [0, 1, 4, 6])
 
 # Test ConnectionMesh - a part mesh
 print("cMesh7", flush=True)
-cMesh7 = ConnectionMesh(pMesh, ["N0", "N1", "N2", "N3"], [])
+cMesh7 = CA.ConnectionMesh(pMesh, ["N0", "N1", "N2", "N3"], [])
 test.assertEqual(cMesh7.getDimension(), 2)
 test.assertEqual(cMesh7.getNumberOfNodes(), 8)
 test.assertEqual(cMesh7.getNumberOfCells(), 8)
@@ -127,7 +126,7 @@ test.assertSequenceEqual(sorted(cMesh7.getGroupsOfNodes()), ["N0", "N1", "N2", "
 
 # Test ConnectionMesh - a part mesh
 print("cMesh8", flush=True)
-cMesh8 = ConnectionMesh(pMesh, [], ["GAUCHE"])
+cMesh8 = CA.ConnectionMesh(pMesh, [], ["GAUCHE"])
 test.assertEqual(cMesh8.getDimension(), 2)
 test.assertEqual(cMesh8.getNumberOfNodes(), 4)
 test.assertEqual(cMesh8.getNumberOfCells(), 4)
@@ -138,7 +137,7 @@ test.assertSequenceEqual(sorted(cMesh8.getNodesLocalNumbering()), [1, 3, 5, 6])
 
 # Test ConnectionMesh - a part mesh
 print("cMesh9", flush=True)
-cMesh9 = ConnectionMesh(pMesh, [], ["DROITE"])
+cMesh9 = CA.ConnectionMesh(pMesh, [], ["DROITE"])
 test.assertEqual(cMesh9.getDimension(), 2)
 test.assertEqual(cMesh9.getNumberOfNodes(), 4)
 test.assertEqual(cMesh9.getNumberOfCells(), 4)
@@ -147,7 +146,7 @@ test.assertSequenceEqual(sorted(cMesh9.getGroupsOfCells()), ["DROITE"])
 
 # Test ConnectionMesh - a part mesh
 print("cMesh10", flush=True)
-cMesh10 = ConnectionMesh(pMesh, [], ["GAUCHE", "DROITE"])
+cMesh10 = CA.ConnectionMesh(pMesh, [], ["GAUCHE", "DROITE"])
 test.assertEqual(cMesh10.getDimension(), 2)
 test.assertEqual(cMesh10.getNumberOfNodes(), 8)
 test.assertEqual(cMesh10.getNumberOfCells(), 8)
@@ -161,7 +160,7 @@ test.assertSequenceEqual(sorted(cMesh10.getNodesLocalNumbering()), [1, 1, 2, 3, 
 
 # Test ConnectionMesh - a part mesh
 print("cMesh11", flush=True)
-cMesh11 = ConnectionMesh(pMesh, [], ["BAS"])
+cMesh11 = CA.ConnectionMesh(pMesh, [], ["BAS"])
 test.assertEqual(cMesh11.getDimension(), 2)
 test.assertEqual(cMesh11.getNumberOfNodes(), 8)
 test.assertEqual(cMesh11.getNumberOfCells(), 8)
@@ -170,7 +169,7 @@ test.assertSequenceEqual(sorted(cMesh11.getGroupsOfCells()), ["BAS"])
 
 # Test ConnectionMesh - a part mesh
 print("cMesh12", flush=True)
-cMesh12 = ConnectionMesh(pMesh, [], ["HAUT", "BAS"])
+cMesh12 = CA.ConnectionMesh(pMesh, [], ["HAUT", "BAS"])
 test.assertEqual(cMesh12.getDimension(), 2)
 test.assertEqual(cMesh12.getNumberOfNodes(), 8)
 test.assertEqual(cMesh12.getNumberOfCells(), 11)
@@ -178,7 +177,7 @@ test.assertSequenceEqual(sorted(cMesh12.getGroupsOfCells()), ["BAS", "HAUT"])
 
 # Test ConnectionMesh - The full mesh
 print("cMesh13", flush=True)
-cMesh13 = ConnectionMesh(pMesh, ["FACE"], ["FACE"])
+cMesh13 = CA.ConnectionMesh(pMesh, ["FACE"], ["FACE"])
 test.assertEqual(cMesh13.getDimension(), 2)
 test.assertEqual(cMesh13.getNumberOfNodes(), 8)
 test.assertEqual(cMesh13.getNumberOfCells(), 11)
@@ -192,7 +191,7 @@ test.assertFalse(cMesh13.hasGroupOfNodes("AFCE"))
 
 # Test ConnectionMesh - The full mesh
 print("cMesh14", flush=True)
-cMesh14 = ConnectionMesh(pMesh, ["N0"], ["DROITE"])
+cMesh14 = CA.ConnectionMesh(pMesh, ["N0"], ["DROITE"])
 test.assertEqual(cMesh14.getDimension(), 2)
 test.assertEqual(cMesh14.getNumberOfNodes(), 8)
 test.assertEqual(cMesh14.getNumberOfCells(), 7)
@@ -202,7 +201,7 @@ test.assertSequenceEqual(sorted(cMesh14.getGroupsOfCells()), ["DROITE"])
 
 # Test ConnectionMesh
 print("cMesh15", flush=True)
-cMesh15 = ConnectionMesh(pMesh, ["N0", "N1", "N2", "N3"], ["DROITE", "GAUCHE", "BAS", "HAUT"])
+cMesh15 = CA.ConnectionMesh(pMesh, ["N0", "N1", "N2", "N3"], ["DROITE", "GAUCHE", "BAS", "HAUT"])
 test.assertEqual(cMesh15.getParallelMesh().getName(), pMesh.getName())
 test.assertEqual(cMesh15.getDimension(), 2)
 test.assertEqual(cMesh15.getNumberOfNodes(), 8)
@@ -214,7 +213,7 @@ test.assertSequenceEqual(sorted(cMesh15.getNodesLocalNumbering()), [1, 1, 2, 3, 
 
 # Test ConnectionMesh - Isolated node
 print("cMesh16", flush=True)
-cMesh16 = ConnectionMesh(pMesh, ["N4"], [])
+cMesh16 = CA.ConnectionMesh(pMesh, ["N4"], [])
 test.assertEqual(cMesh16.getDimension(), 2)
 test.assertEqual(cMesh16.getNumberOfNodes(), 6)
 test.assertEqual(cMesh16.getNumberOfCells(), 4)

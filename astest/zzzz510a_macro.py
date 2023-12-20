@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,12 +19,12 @@
 """
 POST_BEREMIN option SIGM_ELMOY codée par Sébastien Meunier
 """
-import code_aster
+from code_aster import CA
 import aster
 
 from code_aster.Commands import CALC_CHAM_ELEM, CREA_CHAMP, CALC_CHAMP
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 
 def sigelmoy(
@@ -38,7 +38,7 @@ def sigelmoy(
     """
     dim_geom = reswbrest.getModel().getMesh().getDimension()
 
-    rmelmoy = code_aster.NonLinearResult()
+    rmelmoy = CA.NonLinearResult()
     rmelmoy.allocate(reswbrest.getNumberOfIndexes())
 
     poids = CALC_CHAM_ELEM(MODELE=reswbrest.getModel(), GROUP_MA=grmapb, OPTION="COOR_ELGA")
@@ -51,11 +51,11 @@ def sigelmoy(
     for (num_maille, maille) in enumerate(cells):
         volume.update({maille: volume[maille] + pds[num_maille]})
 
-    sief_elga = code_aster.NonLinearResult()
+    sief_elga = CA.NonLinearResult()
     # sief_elga.allocate(len(mclinst))
     sief_elga.allocate(reswbrest.getNumberOfIndexes())
 
-    vari_elga = code_aster.NonLinearResult()
+    vari_elga = CA.NonLinearResult()
     # vari_elga.allocate(len(mclinst))
     vari_elga.allocate(reswbrest.getNumberOfIndexes())
 

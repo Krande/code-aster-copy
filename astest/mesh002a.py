@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,14 +18,14 @@
 # --------------------------------------------------------------------
 
 import os
-import code_aster
+from code_aster import CA
 from code_aster.Commands import *
-from code_aster import MPI
+from code_aster.CA import MPI
 
 
-code_aster.init("--test")
+CA.init("--test")
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 rank = MPI.ASTER_COMM_WORLD.Get_rank()
 print("Nb procs", MPI.ASTER_COMM_WORLD.Get_size())
@@ -39,7 +39,7 @@ else:
 
 # Split the mesh
 
-ms = code_aster.ParallelMesh()
+ms = CA.ParallelMesh()
 ms.readMedFile("ssnv187a.mmed")
 
 # Where to save the mesh in a single folder
@@ -59,12 +59,12 @@ ms.printMedFile(meshFolder + "/" + str(rank) + ".med")
 # 3 different way to read a Parallel Mesh
 
 # 1) File by File after partioning (need a preliminary partioning )
-pMesh1 = code_aster.ParallelMesh()
+pMesh1 = CA.ParallelMesh()
 pMesh1.readMedFile(meshFolder + "/" + str(rank) + ".med", partitioned=True)
 pMesh1.checkConsistency("ssnv187a.mmed")
 
 # 3) Directely from a file (without preliminary partioning )
-pMesh3 = code_aster.ParallelMesh()
+pMesh3 = CA.ParallelMesh()
 pMesh3.readMedFile("ssnv187a.mmed")
 pMesh3.checkConsistency("ssnv187a.mmed")
 

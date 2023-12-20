@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,28 +19,27 @@
 
 # Test inspiré de zzzz255a
 
-import code_aster
+from code_aster.Commands import *
+from code_aster import CA
 import numpy as np
 
-code_aster.init("--test")
+CA.init("--test")
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 # Creation of the mesh
-mesh = code_aster.Mesh()
+mesh = CA.Mesh()
 mesh.readMedFile("zzzz255a.mmed")
 
 # Creation of the model
-model = code_aster.Model(mesh)
-model.addModelingOnGroupOfCells(
-    code_aster.Physics.Mechanics, code_aster.Modelings.Tridimensional, "ALL"
-)
+model = CA.Model(mesh)
+model.addModelingOnGroupOfCells(CA.Physics.Mechanics, CA.Modelings.Tridimensional, "ALL")
 model.build()
 
 # Creation of the crack
-crack = code_aster.XfemCrack(mesh)
+crack = CA.XfemCrack(mesh)
 
-shape = code_aster.CrackShape()
+shape = CA.CrackShape()
 rayon = 250.0
 shape.setEllipseCrackShape(rayon, rayon, [0.0, 0.0, 0.0], [1.0, 0.0, 0.0], [0.0, 1.0, 0.0], "IN")
 
@@ -64,4 +63,4 @@ test.assertAlmostEqual(tangentialLevelSet[10000], 64.4660377352206)
 
 test.printSummary()
 
-code_aster.close()
+CA.close()

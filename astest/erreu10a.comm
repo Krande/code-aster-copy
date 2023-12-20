@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,8 +19,8 @@
 # person_in_charge: mickael.abbas at edf.fr
 #
 
-from code_aster import AsterError
 from code_aster.Commands import *
+from code_aster import CA
 
 # CE CAS-TEST S'INSPIRE DE SSLL105D : ON VERIFIE ICI L'EXCEPTION INSTABILITE
 #
@@ -93,7 +93,7 @@ try:
         SOLVEUR=_F(METHODE="LDLT"),
         CRIT_STAB=_F(OPTION="BANDE", CHAR_CRIT=(0.0, 2.0), SIGNE="POSITIF_NEGATIF"),
     )
-except AsterError as err:
+except CA.AsterError as err:
     print(fmt_raison % str(err))
     # on verifie que l'erreur fatale est bien celle que l'on attendait :
     if err.id_message == "MECANONLINE9_51":
@@ -129,7 +129,7 @@ try:
         SOLVEUR=_F(METHODE="LDLT"),
         CRIT_STAB=_F(OPTION="BANDE", CHAR_CRIT=(0.0, 2.0), SIGNE="POSITIF"),
     )
-except AsterError as err:
+except CA.AsterError as err:
     print(fmt_raison % str(err))
     # on verifie que l'erreur fatale est bien celle que l'on attendait :
     if err.id_message == "MECANONLINE9_51":
@@ -167,7 +167,7 @@ try:
         SOLVEUR=_F(METHODE="LDLT"),
         CRIT_STAB=_F(OPTION="BANDE", CHAR_CRIT=(0.0, 2.0), SIGNE="NEGATIF"),
     )
-except AsterError as err:
+except CA.AsterError as err:
     print(fmt_raison % str(err))
     # on verifie que l'erreur fatale est bien celle que l'on attendait :
     if err.id_message == "MECANONLINE9_51":

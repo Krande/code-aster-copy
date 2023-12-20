@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 
 import os.path as osp
 
-import code_aster
+from code_aster import CA
 from code_aster.Commands import *
 from code_aster.Utilities import ExecutionParameter
 
@@ -28,7 +28,7 @@ meshfile = osp.join(mac3c, "mac3c14a.mmed")
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTRANET"), ERREUR=_F(ALARME="EXCEPTION"))
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 dist_geom = 5.0e-3
 R_TG = 5.0e-3
@@ -46,7 +46,7 @@ coulomb_glis = 0.1
 fser_adh = 100.0
 coulomb_adh = 0.5
 
-MA = code_aster.Mesh()
+MA = CA.Mesh()
 MA.readMedFile(meshfile)
 
 MAT = DEFI_MATERIAU(ELAS=_F(E=2.0e11, NU=0.3, RHO=7800))

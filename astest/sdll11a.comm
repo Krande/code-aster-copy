@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@
 # ELEMENTS  : HEXA20
 # REFERENCE : GUIDE VPCS
 
-from code_aster import SolverError
 from code_aster.Commands import *
+from code_aster import CA
 
 DEBUT(
     CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), MESURE_TEMPS=_F(NIVE_DETAIL=2)
@@ -61,7 +61,6 @@ M_ASSE = ASSE_MATRICE(MATR_ELEM=M_ELEM, NUME_DDL=NUMERO)
 
 # ON EN PROFITE POUR TESTER LE MECANISME D'EXCEPTION
 # DES BANDES DE FREQUENCE VIDES
-import aster
 
 try:
     MODE1 = CALC_MODES(
@@ -72,7 +71,7 @@ try:
         CALC_FREQ=_F(FREQ=(100.0, 200.0)),
     )
 
-except SolverError:
+except CA.SolverError:
     MODE1 = CALC_MODES(
         MATR_RIGI=K_ASSE,
         MATR_MASS=M_ASSE,
@@ -230,20 +229,15 @@ TEST_RESU(
 
 # On peut tester la validation des resultats en cas d'erreur sur VERI_MODE
 # en reduisant le seuil
-try:
-    MODE2 = CALC_MODES(
-        MATR_RIGI=K_ASSE,
-        VERI_MODE=_F(SEUIL=1.0e-3),
-        CALC_FREQ=_F(FREQ=(200.0, 3500.0)),
-        OPTION="BANDE",
-        SOLVEUR=_F(METHODE="MUMPS"),
-        MATR_MASS=M_ASSE,
-        SOLVEUR_MODAL=_F(METHODE="JACOBI"),
-    )
-    #  VERI_MODE=_F(  SEUIL = 1.E-4))
-except aster.EventError:
-    # on verifie l'etat de 'MODE2' par le TEST_RESU qui suit
-    print("  Test validation resultats sur erreur VERI_MODE!!! ")
+MODE2 = CALC_MODES(
+    MATR_RIGI=K_ASSE,
+    VERI_MODE=_F(SEUIL=1.0e-3),
+    CALC_FREQ=_F(FREQ=(200.0, 3500.0)),
+    OPTION="BANDE",
+    SOLVEUR=_F(METHODE="MUMPS"),
+    MATR_MASS=M_ASSE,
+    SOLVEUR_MODAL=_F(METHODE="JACOBI"),
+)
 
 
 TEST_RESU(
@@ -395,19 +389,15 @@ TEST_RESU(
 
 # On peut tester la validation des resultats en cas d'erreur sur VERI_MODE
 # en reduisant le seuil
-try:
-    MODE4 = CALC_MODES(
-        CALC_FREQ=_F(FREQ=(200.0, 3500.0)),
-        VERI_MODE=_F(SEUIL=1.0e-3),
-        OPTION="AJUSTE",
-        SOLVEUR=_F(METHODE="MULT_FRONT", NPREC=9),
-        MATR_RIGI=K_ASSE,
-        # VERI_MODE=_F(  SEUIL = 1.E-7)
-        MATR_MASS=M_ASSE,
-    )
-except aster.EventError:
-    # on verifie l'etat de 'MODE4' par le TEST_RESU qui suit
-    print("  Test validation resultats sur erreur VERI_MODE!!! ")
+MODE4 = CALC_MODES(
+    CALC_FREQ=_F(FREQ=(200.0, 3500.0)),
+    VERI_MODE=_F(SEUIL=1.0e-3),
+    # VERI_MODE=_F(  SEUIL = 1.E-7)
+    OPTION="AJUSTE",
+    SOLVEUR=_F(METHODE="MULT_FRONT", NPREC=9),
+    MATR_RIGI=K_ASSE,
+    MATR_MASS=M_ASSE,
+)
 
 
 TEST_RESU(

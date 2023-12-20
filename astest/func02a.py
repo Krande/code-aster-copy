@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import code_aster
+from code_aster import CA
 from code_aster.Commands import *
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
-code_aster.init("--test", debug=True, ERREUR=_F(ALARME="EXCEPTION"))
+CA.init("--test", debug=True, ERREUR=_F(ALARME="EXCEPTION"))
 
 one = 1
 
@@ -45,7 +45,7 @@ test.assertEqual(SIYY(0, 0, 0), 2.0e6)
 test.assertEqual(two(0), 2.0)
 test.assertEqual(form_two(0), 2.0)
 
-code_aster.saveObjects()
+CA.saveObjects()
 
 test.printSummary()
 

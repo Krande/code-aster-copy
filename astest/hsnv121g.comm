@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,13 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
-import code_aster.LinearAlgebra
-from code_aster import MPI
-from code_aster.Utilities import shared_tmpdir, petscInitialize
+
 import os.path as osp
+
+from code_aster.Commands import *
+from code_aster import CA
+from code_aster.CA import MPI
+from code_aster.Utilities import petscInitialize, shared_tmpdir
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
@@ -30,9 +33,9 @@ lParallel = nbproc > 1
 petscInitialize("-ksp_monitor_true_residual -log_view")
 
 if lParallel:
-    MA0 = code_aster.ParallelMesh.buildCube(refine=2)
+    MA0 = CA.ParallelMesh.buildCube(refine=2)
 else:
-    MA0 = code_aster.Mesh.buildCube(refine=2)
+    MA0 = CA.Mesh.buildCube(refine=2)
 
 MA = CREA_MAILLAGE(MAILLAGE=MA0, LINE_QUAD=_F(TOUT="OUI"))
 
@@ -166,7 +169,7 @@ s = VT.getField("SIEF_ELGA", VT.getAccessParameters()["NUME_ORDRE"][-1])
 with shared_tmpdir("foo") as tmpdir:
     VT.printMedFile(osp.join(tmpdir, f"hsnv121f_{rank}.resu.med"))
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 test.assertAlmostEqual(s.norm("NORM_2"), 32728.611, delta=1.0e-1)
 

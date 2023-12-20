@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,8 +18,8 @@
 # --------------------------------------------------------------------
 
 #
-import code_aster
 from code_aster.Commands import *
+from code_aster import CA
 from code_aster.MacroCommands.defi_cont import DEFI_CONT
 
 
@@ -30,7 +30,7 @@ DEBUT(
     INFO=1,
 )
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 
 Mail = LIRE_MAILLAGE(UNITE=20, PARTITIONNEUR="PTSCOTCH", FORMAT="MED")
@@ -113,8 +113,8 @@ test.assertEqual(DEFICO.getMesh(), Mail)
 test.assertFalse(DEFICO.hasFriction)
 test.assertTrue(DEFICO.hasSmoothing)
 
-algo_cont = [code_aster.ContactAlgo.Lagrangian, code_aster.ContactAlgo.Nitsche]
-vari_cont = [code_aster.ContactVariant.Empty, code_aster.ContactVariant.Fast]
+algo_cont = [CA.ContactAlgo.Lagrangian, CA.ContactAlgo.Nitsche]
+vari_cont = [CA.ContactVariant.Empty, CA.ContactVariant.Fast]
 
 for i in range(DEFICO.getNumberOfContactZones()):
     zone = DEFICO.getContactZone(i)
@@ -136,9 +136,9 @@ for i in range(DEFICO.getNumberOfContactZones()):
     contParam.setAlgorithm(algo_cont[1 - i])
     test.assertEqual(contParam.getAlgorithm(), algo_cont[1 - i])
 
-    test.assertEqual(contParam.getType(), code_aster.ContactType.Unilateral)
-    contParam.setType(code_aster.ContactType.Bilateral)
-    test.assertEqual(contParam.getType(), code_aster.ContactType.Bilateral)
+    test.assertEqual(contParam.getType(), CA.ContactType.Unilateral)
+    contParam.setType(CA.ContactType.Bilateral)
+    test.assertEqual(contParam.getType(), CA.ContactType.Bilateral)
 
     test.assertEqual(contParam.getVariant(), vari_cont[i])
     contParam.setVariant(vari_cont[1 - i])
@@ -201,23 +201,22 @@ DEFICO2.appendContactZone(zone)
 zone1 = DEFICO2.getContactZone(1)
 
 contParam = zone.getContactParameter()
-test.assertEqual(contParam.getAlgorithm(), code_aster.ContactAlgo.Nitsche)
-test.assertEqual(contParam.getType(), code_aster.ContactType.Bilateral)
-test.assertEqual(contParam.getVariant(), code_aster.ContactVariant.Fast)
+test.assertEqual(contParam.getAlgorithm(), CA.ContactAlgo.Nitsche)
+test.assertEqual(contParam.getType(), CA.ContactType.Bilateral)
+test.assertEqual(contParam.getVariant(), CA.ContactVariant.Fast)
 test.assertEqual(contParam.getCoefficient(), 312.0)
 
 DEFICO2.hasFriction = True
-# from code_aster.Objects import FrictionParameter
-fricParam = code_aster.Objects.FrictionParameter()
+fricParam = CA.FrictionParameter()
 zone.setFrictionParameter(fricParam)  # setFrictionParameter ??
 fricParam.hasFriction = True
 test.assertTrue(fricParam.hasFriction)
 
-fricParam.setAlgorithm(code_aster.FrictionAlgo.Nitsche)
-test.assertEqual(fricParam.getAlgorithm(), code_aster.FrictionAlgo.Nitsche)
+fricParam.setAlgorithm(CA.FrictionAlgo.Nitsche)
+test.assertEqual(fricParam.getAlgorithm(), CA.FrictionAlgo.Nitsche)
 
-fricParam.setType(code_aster.FrictionType.Coulomb)
-test.assertEqual(fricParam.getType(), code_aster.FrictionType.Coulomb)
+fricParam.setType(CA.FrictionType.Coulomb)
+test.assertEqual(fricParam.getType(), CA.FrictionType.Coulomb)
 
 test.assertEqual(fricParam.getCoefficient(), 100.0)
 fricParam.setCoefficient(1000.0)
@@ -233,11 +232,11 @@ fricParam = zone1.getFrictionParameter()  # setFrictionParameter ??
 fricParam.hasFriction = True
 test.assertTrue(fricParam.hasFriction)
 
-fricParam.setAlgorithm(code_aster.FrictionAlgo.Penalization)
-test.assertEqual(fricParam.getAlgorithm(), code_aster.FrictionAlgo.Penalization)
+fricParam.setAlgorithm(CA.FrictionAlgo.Penalization)
+test.assertEqual(fricParam.getAlgorithm(), CA.FrictionAlgo.Penalization)
 
-fricParam.setType(code_aster.FrictionType.Tresca)
-test.assertEqual(fricParam.getType(), code_aster.FrictionType.Tresca)
+fricParam.setType(CA.FrictionType.Tresca)
+test.assertEqual(fricParam.getType(), CA.FrictionType.Tresca)
 
 # test.assertEqual(fricParam.getCoefficient(), 100.) # =1000. modifié par zone0
 fricParam.setCoefficient(1000.0)
@@ -285,21 +284,21 @@ for i in range(DEFICO3.getNumberOfContactZones()):
     test.assertEqual(zone.getModel(), MODI)
     test.assertFalse(zone.checkNormals)
     contParam = zone.getContactParameter()
-    test.assertEqual(contParam.getAlgorithm(), code_aster.ContactAlgo.Nitsche)
-    test.assertEqual(contParam.getType(), code_aster.ContactType.Bilateral)
+    test.assertEqual(contParam.getAlgorithm(), CA.ContactAlgo.Nitsche)
+    test.assertEqual(contParam.getType(), CA.ContactType.Bilateral)
     test.assertEqual(contParam.getCoefficient(), 312.0)
     fricParam = zone.getFrictionParameter()
     test.assertTrue(fricParam.hasFriction)
-    test.assertEqual(fricParam.getAlgorithm(), code_aster.FrictionAlgo.Nitsche)
-    test.assertEqual(fricParam.getType(), code_aster.FrictionType.Without)
+    test.assertEqual(fricParam.getAlgorithm(), CA.FrictionAlgo.Nitsche)
+    test.assertEqual(fricParam.getType(), CA.FrictionType.Without)
 
     pairParam = zone.getPairingParameter()  # setPairingParameter ??
-    test.assertEqual(pairParam.getAlgorithm(), code_aster.PairingAlgo.Mortar)
+    test.assertEqual(pairParam.getAlgorithm(), CA.PairingAlgo.Mortar)
     pairParam.setDistanceRatio(0.1)
     test.assertEqual(pairParam.getDistanceRatio(), 0.1)
 
-    test.assertEqual(pairParam.getInitialState(), code_aster.InitialState.Interpenetrated)
-    pairParam.setInitialState(code_aster.InitialState.Yes)
+    test.assertEqual(pairParam.getInitialState(), CA.InitialState.Interpenetrated)
+    pairParam.setInitialState(CA.InitialState.Yes)
 
 
 DEFICO4 = DEFI_CONT(
@@ -331,8 +330,8 @@ for i in range(DEFICO4.getNumberOfContactZones()):
     contParam = zone.getContactParameter()
     fricParam = zone.getFrictionParameter()
     test.assertTrue(fricParam.hasFriction)
-    test.assertEqual(fricParam.getAlgorithm(), code_aster.FrictionAlgo.Nitsche)
-    test.assertEqual(fricParam.getType(), code_aster.FrictionType.Coulomb)
+    test.assertEqual(fricParam.getAlgorithm(), CA.FrictionAlgo.Nitsche)
+    test.assertEqual(fricParam.getType(), CA.FrictionType.Coulomb)
     test.assertEqual(fricParam.getCoulomb(), 200.0)
 
     pairParam = zone.getPairingParameter()

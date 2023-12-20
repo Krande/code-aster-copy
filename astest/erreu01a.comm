@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,9 +17,8 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import code_aster
-from code_aster import AsterError
 from code_aster.Commands import *
+from code_aster import CA
 
 DEBUT(
     CODE=_F(NIV_PUB_WEB="INTERNET"),
@@ -27,7 +26,7 @@ DEBUT(
     DEBUG=_F(SDVERI="OUI"),
 )
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 MAIL = LIRE_MAILLAGE(FORMAT="ASTER")
 
@@ -58,7 +57,7 @@ try:
     UELAS = MECA_STATIQUE(
         MODELE=MOD, CHAM_MATER=CHMAT, CARA_ELEM=CARBA, EXCIT=_F(CHARGE=CH2), INST=1.0
     )
-except AsterError as exc:
+except CA.AsterError as exc:
     test.assertEqual(exc.id_message, "CALCUL_37")
 
 test.assertFalse("UELAS" in globals())
@@ -70,7 +69,7 @@ try:
         MODELE=MOD, CHAM_MATER=CHMAT, CARA_ELEM=CARBA, EXCIT=_F(CHARGE=CH1), INST=1.0
     )
 
-except AsterError as exc:
+except CA.AsterError as exc:
     test.assertEqual(exc.id_message, "FACTOR_11")
 
 test.assertFalse("UELAS" in globals())

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,14 +17,14 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import code_aster
+from code_aster import CA
 from code_aster.Commands import *
 
 DEBUT(
     CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"), INFO=1
 )
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 # Mesh and model
 mesh = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
@@ -35,14 +35,14 @@ acier = DEFI_MATERIAU(ELAS=_F(E=200000.0, NU=0.3), ECRO_LINE=_F(D_SIGM_EPSI=2000
 mater = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", MATER=acier))
 
 # The physical problem
-phys_pb = code_aster.PhysicalProblem(model, mater)
+phys_pb = CA.PhysicalProblem(model, mater)
 
 # Numbering of equations
 phys_pb.computeDOFNumbering()
 
 # Load
 value = 0.0
-zero = code_aster.FieldOnNodesReal(phys_pb.getDOFNumbering())
+zero = CA.FieldOnNodesReal(phys_pb.getDOFNumbering())
 kinematic = AFFE_CHAR_CINE(
     MODELE=model, MECA_IMPO=(_F(GROUP_MA="BAS", DX=0, DY=0.0, DZ=0.0), _F(GROUP_MA="HAUT", DZ=1.0))
 )
@@ -53,25 +53,25 @@ phys_pb.computeBehaviourProperty(COMPORTEMENT=(_F(RELATION="VMIS_ISOT_LINE", TOU
 
 # Create displacement field
 value = 0.0
-disp = code_aster.FieldOnNodesReal(phys_pb.getDOFNumbering())
+disp = CA.FieldOnNodesReal(phys_pb.getDOFNumbering())
 disp.setValues(value)
-disp_incr = code_aster.FieldOnNodesReal(phys_pb.getDOFNumbering())
+disp_incr = CA.FieldOnNodesReal(phys_pb.getDOFNumbering())
 disp_incr.setValues(value)
 
 # Create stress field
 value = 0.0
-stress = code_aster.FieldOnCellsReal(phys_pb.getModel(), "ELGA", "SIEF_R")
+stress = CA.FieldOnCellsReal(phys_pb.getModel(), "ELGA", "SIEF_R")
 stress.setValues(value)
 
 # Create internal state variable field
 value = 0.0
-internVar = code_aster.FieldOnCellsReal(
+internVar = CA.FieldOnCellsReal(
     phys_pb.getModel(), "ELGA", "VARI_R", phys_pb.getBehaviourProperty()
 )
 internVar.setValues(value)
 
 # Object for discrete computation
-disc_comp = code_aster.DiscreteComputation(phys_pb)
+disc_comp = CA.DiscreteComputation(phys_pb)
 
 # Time
 timeBeginStep = 0.0

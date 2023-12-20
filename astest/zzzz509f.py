@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 
 # This testcase is a copy of ssnv160f, but using MECA_NON_LINE.
-import code_aster
+
 from code_aster.Commands import *
 
 command = MECA_NON_LINE

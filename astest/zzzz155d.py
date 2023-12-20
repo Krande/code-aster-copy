@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,13 +18,13 @@
 # --------------------------------------------------------------------
 
 import os
-import code_aster
+from code_aster import CA
 from code_aster.Commands import *
-from code_aster import MPI
+from code_aster.CA import MPI
 
-code_aster.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
+CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 rank = MPI.ASTER_COMM_WORLD.Get_rank()
 size = MPI.ASTER_COMM_WORLD.Get_size()
@@ -368,9 +368,9 @@ for i in range(len(bCellGlobId)):
                 abs(valuesSief[posInNew + j] - valuesSiefRef[(posInRef) * nbCmp + j]), 0, delta=1e-6
             )
 
-deplChar = code_aster.FieldCharacteristics("DEPL")
+deplChar = CA.FieldCharacteristics("DEPL")
 deplQt = deplChar.getQuantity()
-sFON = code_aster.SimpleFieldOnNodesReal(splitMesh, deplQt, depl.getComponentName(), True)
+sFON = CA.SimpleFieldOnNodesReal(splitMesh, deplQt, depl.getComponentName(), True)
 
 nodeNb = splitMesh.getNumberOfNodes()
 cmpNb = len(depl.getComponentName())
@@ -386,12 +386,10 @@ model = AFFE_MODELE(
     MAILLAGE=splitMesh, AFFE=_F(GROUP_MA="DEMICUBE", PHENOMENE="MECANIQUE", MODELISATION="3D")
 )
 
-siefChar = code_aster.FieldCharacteristics("SIEF_ELGA")
+siefChar = CA.FieldCharacteristics("SIEF_ELGA")
 siefQt = siefChar.getQuantity()
 siefLoc = siefChar.getLocalization()
-sFOC = code_aster.SimpleFieldOnCellsReal(
-    splitMesh, siefLoc, siefQt, sief.getComponentName(), 8, 1, True
-)
+sFOC = CA.SimpleFieldOnCellsReal(splitMesh, siefLoc, siefQt, sief.getComponentName(), 8, 1, True)
 
 cmpNb = len(sief.getComponentName())
 siefCmps = sief.getComponentVector()
@@ -411,7 +409,7 @@ for iCell, curCmpNum in enumerate(siefCmps):
 fED = model.getFiniteElementDescriptor()
 fOC = sFOC.toFieldOnCells(fED, "TOU_INI_ELGA", " ")
 
-result = code_aster.NonLinearResult()
+result = CA.NonLinearResult()
 result.resize(1)
 result.setField(fON, "DEPL", 1)
 result.setField(fOC, "SIEF_ELGA", 1)
@@ -419,7 +417,7 @@ result.setField(fOC, "SIEF_ELGA", 1)
 myResu = splitMedFileToResults(
     filename,
     {"00000008DEPL": "DEPL", "00000008SIEF_ELGA": "SIEF_ELGA", "00000008SIEF_ELNO": "SIEF_ELNO"},
-    code_aster.NonLinearResult,
+    CA.NonLinearResult,
     model,
 )
 
@@ -427,7 +425,7 @@ deplSplit = myResu.getField("DEPL", 1)
 siefSplit = myResu.getField("SIEF_ELGA", 1)
 siefSplit2 = myResu.getField("SIEF_ELNO", 1)
 
-MA = code_aster.ParallelMesh()
+MA = CA.ParallelMesh()
 MA.readMedFile("zzzz155d/" + str(rank) + ".med", partitioned=True)
 MO = AFFE_MODELE(
     MAILLAGE=MA, AFFE=_F(GROUP_MA="DEMICUBE", PHENOMENE="MECANIQUE", MODELISATION="3D")

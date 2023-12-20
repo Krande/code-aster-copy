@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,16 +20,16 @@
 
 import os.path as osp
 
-import code_aster
-from code_aster import MPI
+from code_aster import CA
+from code_aster.CA import MPI
 from code_aster.Commands import *
 from code_aster.Utilities import shared_tmpdir
 
-code_aster.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
+CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 
 rank = MPI.ASTER_COMM_WORLD.Get_rank()
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 # --------------------------------------------------------------------------------------------------
 # Valeur de chargement de reference
@@ -73,19 +73,19 @@ def checkJoints(mesh):
         j += 1
 
 
-mesh3 = code_aster.IncompleteMesh()
+mesh3 = CA.IncompleteMesh()
 mesh3.readMedFile("zzzz503o.mmed")
-bMesh = code_aster.MeshBalancer()
+bMesh = CA.MeshBalancer()
 bMesh.buildFromBaseMesh(mesh3)
-meshGraph = code_aster.MeshConnectionGraph()
+meshGraph = CA.MeshConnectionGraph()
 meshGraph.buildFromIncompleteMesh(mesh3)
-part2 = code_aster.PtScotchPartitioner()
+part2 = CA.PtScotchPartitioner()
 part2.buildGraph(meshGraph)
 scotchPart = part2.partitionGraph()
 MA = bMesh.applyBalancingStrategy(scotchPart)
 checkJoints(MA)
 
-# MA = code_aster.ParallelMesh()
+# MA = CA.ParallelMesh()
 
 MA = CREA_MAILLAGE(MAILLAGE=MA, QUAD_LINE=_F(TOUT="OUI"))
 

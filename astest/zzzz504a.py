@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,14 +21,14 @@ import os
 import os.path as osp
 import time
 
-import code_aster
-from code_aster import MPI
+from code_aster import CA
+from code_aster.CA import MPI
 from code_aster.Commands import *
 from code_aster.Utilities import shared_tmpdir
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
-code_aster.init("--test")
+CA.init("--test")
 
 nProc = MPI.ASTER_COMM_WORLD.Get_size()
 parallel = nProc > 1
@@ -39,13 +39,13 @@ comm = MPI.ASTER_COMM_WORLD
 
 if parallel:
     rank = MPI.ASTER_COMM_WORLD.Get_rank()
-    pMesh2 = code_aster.ParallelMesh()
+    pMesh2 = CA.ParallelMesh()
     pMesh2.readMedFile(f"mesh004c/{rank}.med", partitioned=True)
     # os.system('echo "-mat_view :/tmp/par.txt:ascii_matlab " > ~/.petscrc')
     # os.system('echo "-ksp_view_rhs ascii:/tmp/rhs_par.txt " >> ~/.petscrc')
     # os.system('echo "-ksp_view_solution ascii:/tmp/sol_par.txt  " >> ~/.petscrc')
 else:
-    pMesh2 = code_aster.Mesh()
+    pMesh2 = CA.Mesh()
     pMesh2.readMedFile("zzzz504a.med")
     # os.system('echo "-mat_view :/tmp/seq.txt:ascii_matlab " > ~/.petscrc')
     # os.system('echo "-ksp_view_rhs ascii:/tmp/rhs_seq.txt  " >> ~/.petscrc')
@@ -162,7 +162,7 @@ if parallel:
 else:
     test.assertAlmostEqual(sfon[6, 0], 0.0)
 
-pMesh2 = code_aster.Mesh()
+pMesh2 = CA.Mesh()
 pMesh2.readMedFile("zzzz504a.med")
 
 # Test if med file print by #0 is not overwrite by others procs

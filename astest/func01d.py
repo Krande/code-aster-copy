@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import code_aster
+from code_aster import CA
 from code_aster.Commands import *
 
-code_aster.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
+CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 SIYY = DEFI_FONCTION(
     NOM_PARA="EPSI",

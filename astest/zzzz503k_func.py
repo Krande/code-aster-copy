@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import code_aster
+from code_aster import CA
 from code_aster.Commands import *
 
 
@@ -39,8 +39,6 @@ from code_aster.Commands import *
 #
 ####################################################################################
 
-import code_aster
-from code_aster.Commands import *
 from code_aster.Utilities import force_list
 from code_aster.Solvers import TimeStepper
 
@@ -151,18 +149,18 @@ class DamageSolver:
         material = self.create_material(state_curr.u_nodes)
 
         # create PhysicalProblem
-        phys_pb = code_aster.PhysicalProblem(self.model, material)
+        phys_pb = CA.PhysicalProblem(self.model, material)
 
         for load in self.loads:
-            if isinstance(load["CHARGE"], code_aster.ThermalDirichletBC):
+            if isinstance(load["CHARGE"], CA.ThermalDirichletBC):
                 phys_pb.addDirichletBC(load["CHARGE"])
 
         # compute DOF numbering
         phys_pb.computeDOFNumbering()
 
         # create discrete computation
-        disc_comp = code_aster.DiscreteComputation(phys_pb)
-        hho = code_aster.HHO(phys_pb)
+        disc_comp = CA.DiscreteComputation(phys_pb)
+        hho = CA.HHO(phys_pb)
 
         # compute K = (lamda * GkT(hdT), GkT(hpT))_T + lambda * stab(hdT, hpT)
         matK = disc_comp.getLinearStiffnessMatrix(assembly=True)
@@ -173,7 +171,7 @@ class DamageSolver:
         diriBCs = disc_comp.getDirichletBC()
 
         # linear solver
-        mySolver = code_aster.MumpsSolver()
+        mySolver = CA.MumpsSolver()
 
         # init with previous converged solution
         d_curr = state_curr.d
@@ -213,16 +211,16 @@ class CoupledSolver:
         meca_solver = MecaSolver(self.meca_para)
         dama_solver = DamageSolver(self.dama_para)
 
-        hho_meca = code_aster.HHO(code_aster.PhysicalProblem(self.meca_para["MODELE"], None))
-        hho_dama = code_aster.HHO(code_aster.PhysicalProblem(self.dama_para["MODELE"], None))
+        hho_meca = CA.HHO(CA.PhysicalProblem(self.meca_para["MODELE"], None))
+        hho_dama = CA.HHO(CA.PhysicalProblem(self.dama_para["MODELE"], None))
 
         # Time stepper
         stepper = TimeStepper(timeList.getValues())
 
         # initial solution
         time_init = 0.0
-        u_init = code_aster.FieldOnNodesReal(self.meca_para["MODELE"])
-        dx_init = code_aster.FieldOnNodesReal(self.dama_para["MODELE"])
+        u_init = CA.FieldOnNodesReal(self.meca_para["MODELE"])
+        dx_init = CA.FieldOnNodesReal(self.dama_para["MODELE"])
         d_init = hho_dama.projectOnHHOCellSpace(self.dama_para["SOURCE"])
 
         state_prev = CoupledState(u_init, dx_init, d_init, time_init)

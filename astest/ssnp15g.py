@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,12 +18,12 @@
 # --------------------------------------------------------------------
 
 # unittest for 'ListOfTables' object and its 'getTable()' accessor
-import code_aster
+from code_aster import CA
 from code_aster.Commands import *
 
-code_aster.init("--test", "--continue", ERREUR=_F(ALARME="EXCEPTION"))
+CA.init("--test", "--continue", ERREUR=_F(ALARME="EXCEPTION"))
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 tab = U2.getTable("undefined-tab-name")
 test.assertIsNone(tab)
@@ -43,4 +43,4 @@ test.assertEqual(tab1.INST.values(), tab2.INST.values())
 
 test.printSummary()
 
-code_aster.close()
+CA.close()

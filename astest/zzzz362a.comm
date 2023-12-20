@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -16,6 +16,10 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
+
+from code_aster.Commands import *
+from code_aster import CA
+
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), IGNORE_ALARM="MODELISA4_6", DEBUG=_F(SDVERI="OUI"))
 
@@ -145,8 +149,6 @@ MLTHX = MODI_MODELE_XFEM(MODELE_IN=MLTHS, FISSURE=(FISSLI, INTELI))
 # On filtre les lignes fournies par UTIMSD contenant des valeurs (.VALE/.CELV).
 # On compare la somme de contrôle (SOMMI ou SOMMR).
 
-import code_aster
-
 
 def getVALE(model, filter, debug=False):
     """Extract relevant lines from UTIMSD about values."""
@@ -177,7 +179,7 @@ valMEX = getVALE(MLMEX, func_test, debug=True)
 valMEXC = getVALE(MLMEXC, func_test, debug=True)
 valTHX = getVALE(MLTHX, func_test, debug=True)
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 test.assertEqual(len(valMEX), len(valMEXC), msg="size of valMEX/valMEXC")
 test.assertEqual(len(valMEX), len(valTHX), msg="size of valMEX/valTHX")

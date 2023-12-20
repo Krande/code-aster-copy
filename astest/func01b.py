@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,12 +20,12 @@
 from math import sin, pi
 import numpy as np
 
-import code_aster
+from code_aster import CA
 from code_aster.Commands import *
 
-code_aster.init("--test", ERREUR=_F(ERREUR_F="EXCEPTION"))
+CA.init("--test", ERREUR=_F(ERREUR_F="EXCEPTION"))
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 tps = DEFI_LIST_REEL(VALE=(0, 0.5, 1))
 test.assertEqual(tps.size, 3)
@@ -81,7 +81,7 @@ for x, y in zip(valx, valy):
 
 fsin = DEFI_FONCTION(NOM_PARA="INST", NOM_RESU="TEMP", VALE=values, INTERPOL=("LIN", "LIN"))
 
-with test.assertRaisesRegex(code_aster.AsterError, "listes.*longueurs"):
+with test.assertRaisesRegex(CA.AsterError, "listes.*longueurs"):
     fsin = DEFI_FONCTION(
         NOM_PARA="INST",
         NOM_RESU="TEMP",
@@ -90,7 +90,7 @@ with test.assertRaisesRegex(code_aster.AsterError, "listes.*longueurs"):
         INTERPOL=("LIN", "LIN"),
     )
 
-with test.assertRaisesRegex(code_aster.AsterError, "Unexpected type.*str"):
+with test.assertRaisesRegex(CA.AsterError, "Unexpected type.*str"):
     bad_type = valy.tolist()
     bad_type[5] = "a"
     fsin = DEFI_FONCTION(

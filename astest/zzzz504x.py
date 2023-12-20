@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,21 +18,21 @@
 # --------------------------------------------------------------------
 
 import numpy as N
-import code_aster
+from code_aster import CA
 from code_aster.Commands import *
 
-code_aster.init("--test")
+CA.init("--test")
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
-rank = code_aster.MPI.ASTER_COMM_WORLD.Get_rank()
+rank = CA.MPI.ASTER_COMM_WORLD.Get_rank()
 
 MAIL = LIRE_MAILLAGE(FORMAT="MED", PARTITIONNEUR="PTSCOTCH", INFO=1)
 DEFI_GROUP(reuse=MAIL, MAILLAGE=MAIL, CREA_GROUP_NO=_F(TOUT_GROUP_MA="OUI"))
 
 MATER = DEFI_MATERIAU(ELAS=_F(E=10000.0, NU=0.0, RHO=1.0))
 
-affectMat = code_aster.MaterialField(MAIL)
+affectMat = CA.MaterialField(MAIL)
 affectMat.addMaterialOnMesh(MATER)
 affectMat.build()
 
@@ -48,28 +48,28 @@ MODT = AFFE_MODELE(
 
 CHT1 = AFFE_CHAR_MECA(MODELE=MODT, PRES_REP=_F(TOUT="OUI", PRES=-1))
 
-charCine = code_aster.MechanicalDirichletBC(MODT)
-charCine.addBCOnCells(code_aster.PhysicalQuantityComponent.Dx, 0.0, "Bas1")
-charCine.addBCOnCells(code_aster.PhysicalQuantityComponent.Dy, 1.0, "Bas1")
-charCine.addBCOnCells(code_aster.PhysicalQuantityComponent.Dx, 0.0, "Bas3")
-charCine.addBCOnCells(code_aster.PhysicalQuantityComponent.Dy, -1.0, "Bas3")
+charCine = CA.MechanicalDirichletBC(MODT)
+charCine.addBCOnCells(CA.PhysicalQuantityComponent.Dx, 0.0, "Bas1")
+charCine.addBCOnCells(CA.PhysicalQuantityComponent.Dy, 1.0, "Bas1")
+charCine.addBCOnCells(CA.PhysicalQuantityComponent.Dx, 0.0, "Bas3")
+charCine.addBCOnCells(CA.PhysicalQuantityComponent.Dy, -1.0, "Bas3")
 charCine.build()
 
-study = code_aster.PhysicalProblem(MODT, affectMat)
+study = CA.PhysicalProblem(MODT, affectMat)
 study.addDirichletBC(charCine)
 study.addLoad(CHT1)
 study.computeDOFNumbering()
-dComputation = code_aster.DiscreteComputation(study)
+dComputation = CA.DiscreteComputation(study)
 # compute Neumann
 retour = dComputation.getNeumannForces()
 matr_elem = dComputation.getElasticStiffnessMatrix()
 
-monSolver = code_aster.MumpsSolver()
+monSolver = CA.MumpsSolver()
 
 numeDDL = study.getDOFNumbering()
 test.assertEqual(numeDDL.getType(), "NUME_DDL_P")
 
-matrAsse = code_aster.AssemblyMatrixDisplacementReal(study)
+matrAsse = CA.AssemblyMatrixDisplacementReal(study)
 matrAsse.addElementaryMatrix(matr_elem)
 matrAsse.assemble()
 test.assertEqual(matrAsse.getType(), "MATR_ASSE_DEPL_R")

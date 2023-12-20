@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 
 import logging
-import code_aster
+from code_aster import CA
 from code_aster.Commands import *
 from code_aster.Utilities import logger
 
@@ -26,7 +26,7 @@ logger.setLevel(logging.DEBUG)
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), INFO=1)
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 mesh = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
 
@@ -222,7 +222,7 @@ for rank in range(nbIndexes):
 
 # test issue32923
 v0 = SOLUR.getField("DEPL", 0)
-vmodel = code_aster.FieldOnNodesReal(model)
+vmodel = CA.FieldOnNodesReal(model)
 vmodel.setValues(1.0)
 
 vnew = vmodel.copyUsingDescription(v0.getDescription())

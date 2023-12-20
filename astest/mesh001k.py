@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,14 +19,15 @@
 
 import os.path as osp
 
-import code_aster
+from code_aster.Commands import *
+from code_aster import CA
 from medcoupling import *
 
 from code_aster.Utilities import shared_tmpdir
-from code_aster import MPI
+from code_aster.CA import MPI
 
 
-code_aster.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
+CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 
 
 def create_mesh(nb_node_dir, meshfile):
@@ -54,7 +55,7 @@ def create_mesh(nb_node_dir, meshfile):
 
 
 # check ParallelMesh object API
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 # MPI test
 rank = MPI.ASTER_COMM_WORLD.Get_rank()
@@ -62,7 +63,7 @@ nbproc = MPI.ASTER_COMM_WORLD.Get_size()
 
 
 # from MED format (only this one a ParallelMesh)
-mesh = code_aster.ParallelMesh()
+mesh = CA.ParallelMesh()
 
 with shared_tmpdir("mesh001k_") as tmpdir:
     print("Create Mesh", flush=True)
@@ -82,10 +83,10 @@ with shared_tmpdir("mesh001k_") as tmpdir:
     test.assertTrue(mesh.isParallel())
 
     print("Read full Mesh", flush=True)
-    mesh_std = code_aster.Mesh()
+    mesh_std = CA.Mesh()
     mesh_std.readMedFile(medfile)
 
-    mesh_relu = code_aster.Mesh()
+    mesh_relu = CA.Mesh()
     mesh_relu.readMedFile(medfile2)
 
     # test mesh
@@ -100,4 +101,4 @@ with shared_tmpdir("mesh001k_") as tmpdir:
 
 test.printSummary()
 
-code_aster.close()
+CA.close()

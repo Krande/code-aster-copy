@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,13 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import code_aster
+from code_aster.Commands import *
+from code_aster import CA
 
-code_aster.init("--test")
+CA.init("--test")
 
-test = code_aster.TestCase()
-mesh = code_aster.Mesh()
+test = CA.TestCase()
+mesh = CA.Mesh()
 mesh.readMedFile("zzzz503a.mmed")
 
 mcmesh = mesh.createMedCouplingMesh()
@@ -63,13 +64,13 @@ connect_hexa8_mc.rearrange(8)
 test.assertEqual(connect_hexa8_mc.getValuesAsTuple(), connect_hexa8_aster)
 
 
-gmsh = code_aster.Mesh()
+gmsh = CA.Mesh()
 gmsh.readGmshFile("ssnv187a.msh")
 mcgmsh = gmsh.createMedCouplingMesh()
 test.assertEqual(gmsh.getDimension(), 2)
 test.assertEqual(mcgmsh.getSpaceDimension(), 2)
 
-mesh2 = code_aster.Mesh()
+mesh2 = CA.Mesh()
 mesh2.buildFromMedCouplingMesh(mcmesh)
 test.assertEqual(mesh.getDimension(), mesh2.getDimension())
 test.assertEqual(mesh.getNumberOfCells(), mesh2.getNumberOfCells())
@@ -81,4 +82,4 @@ test.assertSequenceEqual(mesh.getMedConnectivity(), mesh2.getMedConnectivity())
 
 test.printSummary()
 
-code_aster.close()
+CA.close()

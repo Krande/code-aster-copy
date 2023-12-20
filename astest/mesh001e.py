@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,14 +17,14 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import code_aster
+from code_aster import CA
 from code_aster.Commands import DEFI_GROUP
 
-code_aster.init("--test")
+CA.init("--test")
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
-mesh = code_aster.Mesh.buildCube()
+mesh = CA.Mesh.buildCube()
 
 mesh = DEFI_GROUP(
     reuse=mesh,
@@ -68,4 +68,4 @@ test.assertSequenceEqual(gcells_ref, gcells)
 
 test.printSummary()
 
-code_aster.close()
+CA.close()

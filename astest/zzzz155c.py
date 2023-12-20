@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,16 +17,15 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import os
-import code_aster
 from code_aster.Commands import *
-from code_aster import MPI
+from code_aster import CA
+from code_aster.CA import MPI
 
 from zzzz155c_data import valuesDeplRef, valuesSiefRef
 
-code_aster.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
+CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 rank = MPI.ASTER_COMM_WORLD.Get_rank()
 size = MPI.ASTER_COMM_WORLD.Get_size()
@@ -42,7 +41,6 @@ def splitEntitySet(nbElemT, rank, nbProcs):
 
 
 from code_aster.Utilities.MedUtils.MedMeshAndFieldsSplitter import splitMeshAndFieldsFromMedFile
-from code_aster import MedFileAccessType
 
 # Read med file and split mesh and fields
 filename = "fort.20"
@@ -63,8 +61,8 @@ for count, i in enumerate(loc2Glob):
         )
 
 # Read mesh from file to read cell number
-fr = code_aster.MedFileReader()
-fr.openParallel(filename, MedFileAccessType.MedReadOnly)
+fr = CA.MedFileReader()
+fr.openParallel(filename, CA.MedFileAccessType.MedReadOnly)
 medMesh = fr.getMesh(0)
 nbSeq = medMesh.getSequenceNumber()
 seq = medMesh.getSequence(0)

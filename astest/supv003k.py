@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -51,14 +51,17 @@ if superv:
     nodes = [999, 998]
 
 if for_aster:
-    print("starting code_aster")
-    import code_aster
+    print("starting code_aster", flush=True)
+    from code_aster import rc
 
-    test = code_aster.TestCase()
+    rc.initialize = False
+    from code_aster import CA
 
-    code_aster.init("--test", comm=subcomm, ERREUR=_F(ALARME="EXCEPTION"))
+    test = CA.TestCase()
 
-    mesh = code_aster.ParallelMesh()
+    CA.init("--test", comm=subcomm, ERREUR=_F(ALARME="EXCEPTION"))
+
+    mesh = CA.ParallelMesh()
     mesh.readMedFile(osp.join(STUDY, "mesh004b", f"{rank}.med"), partitioned=True, verbose=1)
 
     nb_nodes = mesh.getNumberOfNodes()
@@ -88,4 +91,4 @@ if superv:
 if for_aster:
     test.printSummary()
     assert osp.exists("glob.1")
-    code_aster.close()
+    CA.close()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 # aslint: disable=C2020
 # Check other deprecation warnings
 # + 'max' behaviour in commands catalogs
-import code_aster
+from code_aster import CA
 from code_aster.Commands import *
 
 POURSUITE(
@@ -31,20 +31,20 @@ POURSUITE(
     FORMAT_HDF="OUI",
 )
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 # check default value for "max" attribute: must be equivalent to "max=1"
 # for simple keywords...
-with test.assertRaisesRegex(code_aster.AsterError, "SUPERVIS_4"):
+with test.assertRaisesRegex(CA.AsterError, "SUPERVIS_4"):
     LIRE_MAILLAGE(FORMAT=("MED", "ASTER"))
 
 # ... and factor keywords
-with test.assertRaisesRegex(code_aster.AsterError, "SUPERVIS_4"):
+with test.assertRaisesRegex(CA.AsterError, "SUPERVIS_4"):
     MODI_MAILLAGE(
         reuse=MA, MAILLAGE=MA, ORIE_FISSURE=(_F(GROUP_MA="DCB_J"), _F(GROUP_MA="DCB_I")), INFO=1
     )
 
-with test.assertRaisesRegex(code_aster.AsterError, "SUPERVIS_4"):
+with test.assertRaisesRegex(CA.AsterError, "SUPERVIS_4"):
     CREA_MAILLAGE(RESTREINT=(_F(GROUP_MA="group1"), _F(GROUP_MA="group2")), MAILLAGE=MA)
 
 test.printSummary()

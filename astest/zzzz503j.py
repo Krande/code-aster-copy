@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import code_aster
+from code_aster import CA
 from code_aster.Commands import *
 
-code_aster.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
+CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 ###################################################################
 #
@@ -36,7 +36,7 @@ test = code_aster.TestCase()
 #
 ###################################################################
 
-mesh0 = code_aster.Mesh.buildSquare(refine=3)
+mesh0 = CA.Mesh.buildSquare(refine=3)
 
 mesh = CREA_MAILLAGE(MAILLAGE=mesh0, MODI_HHO=_F(TOUT="OUI"))
 
@@ -62,26 +62,26 @@ bc = AFFE_CHAR_CINE(
 load = AFFE_CHAR_THER(MODELE=model, SOURCE=_F(GROUP_MA="SURFACE", SOUR=H * f))
 
 # define discrete object
-phys_pb = code_aster.PhysicalProblem(model, mater)
+phys_pb = CA.PhysicalProblem(model, mater)
 phys_pb.addDirichletBC(bc)
 phys_pb.addLoad(load)
 
-disc_comp = code_aster.DiscreteComputation(phys_pb)
+disc_comp = CA.DiscreteComputation(phys_pb)
 
-hho = code_aster.HHO(phys_pb)
+hho = CA.HHO(phys_pb)
 
 # compute DOF numbering
 phys_pb.computeDOFNumbering()
 
 # compute (GkT(huT), GkT(hvT))_T
 matEK = disc_comp.getLinearStiffnessMatrix()
-matK = code_aster.AssemblyMatrixTemperatureReal(phys_pb)
+matK = CA.AssemblyMatrixTemperatureReal(phys_pb)
 matK.addElementaryMatrix(matEK)
 matK.assemble()
 
 # compute (u_T, v_T) _T
 matEM = disc_comp.getMassMatrix()
-matM = code_aster.AssemblyMatrixTemperatureReal(phys_pb)
+matM = CA.AssemblyMatrixTemperatureReal(phys_pb)
 matM.addElementaryMatrix(matEM)
 matM.assemble()
 
@@ -100,7 +100,7 @@ diriBCs = disc_comp.getDirichletBC()
 lhs = A * matK + H * matM
 
 # solve linear system
-mySolver = code_aster.MumpsSolver()
+mySolver = CA.MumpsSolver()
 mySolver.factorize(lhs)
 solution = mySolver.solve(rhs, diriBCs)
 

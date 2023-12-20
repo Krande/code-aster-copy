@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,24 +20,24 @@
 import os
 from collections import Counter
 
-import code_aster
+from code_aster import CA
 from code_aster.Commands import *
 
-MPI = code_aster.MPI
+MPI = CA.MPI
 
-code_aster.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
+CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
-rank = code_aster.MPI.ASTER_COMM_WORLD.Get_rank()
+rank = CA.MPI.ASTER_COMM_WORLD.Get_rank()
 
 
-pMesh2 = code_aster.ParallelMesh()
+pMesh2 = CA.ParallelMesh()
 pMesh2.readMedFile("sdlx400b.mmed")
 
 
 # STD Mesh for comparaison
-mesh = code_aster.Mesh()
+mesh = CA.Mesh()
 mesh.readMedFile("sdlx400b.mmed")
 
 

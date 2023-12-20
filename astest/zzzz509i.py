@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,10 +17,10 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import code_aster
+from code_aster import CA
 from code_aster.Commands import *
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 
@@ -58,7 +58,7 @@ time_values = DEFI_LIST_REEL(
 times = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=time_values))
 
 
-with test.assertRaisesRegex(code_aster.AsterError, "niveaux.*subdivision.*atteint"):
+with test.assertRaisesRegex(CA.AsterError, "niveaux.*subdivision.*atteint"):
     MECA_NON_LINE(
         INCREMENT=_F(LIST_INST=times, INST_FIN=time_inter),
         MODELE=model,

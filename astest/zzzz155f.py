@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,18 +17,18 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import code_aster
-from code_aster import MPI
+from code_aster import CA
+from code_aster.CA import MPI
 from code_aster.Commands import *
 
-code_aster.init("--test")
+CA.init("--test")
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 rank = MPI.ASTER_COMM_WORLD.Get_rank()
 size = MPI.ASTER_COMM_WORLD.Get_size()
 
-pMesh = code_aster.ParallelMesh()
+pMesh = CA.ParallelMesh()
 pMesh.readMedFile("zzzz155f.med")
 
 pMesh = DEFI_GROUP(
@@ -76,4 +76,4 @@ elif rank == 1:
 
 test.printSummary()
 
-code_aster.close()
+CA.close()

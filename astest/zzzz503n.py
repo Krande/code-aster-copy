@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import code_aster
+from code_aster import CA
 from code_aster.Commands import *
 
-code_aster.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
+CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 ###################################################################################
 #
@@ -60,11 +60,11 @@ for form in ("LINEAIRE", "QUADRATIQUE"):
     bc = AFFE_CHAR_CINE_F(MODELE=model, MECA_IMPO=_F(GROUP_MA="FACES", DX=uX, DY=uY, DZ=uZ))
 
     # define discrete object
-    phys_pb = code_aster.PhysicalProblem(model, mater)
+    phys_pb = CA.PhysicalProblem(model, mater)
     phys_pb.addDirichletBC(bc)
     phys_pb.computeDOFNumbering()
 
-    hho = code_aster.HHO(phys_pb)
+    hho = CA.HHO(phys_pb)
 
     # project function
     u_hho = hho.projectOnHHOSpace([uX, uY, uZ])

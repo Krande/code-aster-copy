@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,17 +17,17 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import code_aster
+from code_aster import CA
 from code_aster.Commands import RECU_TABLE, CREA_CHAMP
 import numpy as np
 
-code_aster.init("--test")
+CA.init("--test")
 
 # check Mesh object API
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 # from MED format
-mesh = code_aster.Mesh()
+mesh = CA.Mesh()
 mesh.readMedFile("zzzz503a.mmed", verbose=2)
 with test.assertRaisesRegex(AssertionError, "not empty"):
     mesh.readMedFile("zzzz503a.mmed")
@@ -263,7 +263,7 @@ mesh = mesh.refine(2)
 test.assertEqual(mesh.getNumberOfNodes(), 729)
 
 # read a HEXA27 from ASTER format
-mail = code_aster.Mesh()
+mail = CA.Mesh()
 mail.readAsterFile("zzzz366a.mail")
 test.assertTrue(mail.isQuadratic())
 
@@ -342,7 +342,7 @@ test.assertSequenceEqual(m2, med20)
 test.assertSequenceEqual(m3, med08)
 
 # from ASTER format
-mail = code_aster.Mesh()
+mail = CA.Mesh()
 mail.readAsterFile("ssnp14c.mail")
 
 test.assertFalse(mail.isParallel())
@@ -387,7 +387,7 @@ mail = mail.refine(2)
 test.assertEqual(mail.getNumberOfNodes(), 505)
 
 # from GMSH format
-gmsh = code_aster.Mesh()
+gmsh = CA.Mesh()
 gmsh.readGmshFile("ssnv187a.msh")
 
 test.assertFalse(gmsh.isParallel())
@@ -402,7 +402,7 @@ values = coord.getValues()
 test.assertEqual(len(values), 132 * 3)
 
 # from GIBI format
-gibi = code_aster.Mesh()
+gibi = CA.Mesh()
 gibi.readGibiFile("erreu03a.mgib")
 
 test.assertFalse(gibi.isParallel())
@@ -417,7 +417,7 @@ values = coord.getValues()
 test.assertEqual(len(values), 125 * 3)
 
 # from mesh builder - Cube
-builder = code_aster.Mesh.buildCube(refine=3)
+builder = CA.Mesh.buildCube(refine=3)
 test.assertFalse(builder.isParallel())
 test.assertEqual(builder.getDimension(), 3)
 test.assertEqual(builder.getNumberOfNodes(), 729)
@@ -449,26 +449,26 @@ test.assertSequenceEqual(
         "VOLUME",
     ],
 )
-test.assertEqual(code_aster.Mesh.buildCube(refine=2).getNumberOfNodes(), 125)
-builder = code_aster.Mesh.buildCube()
+test.assertEqual(CA.Mesh.buildCube(refine=2).getNumberOfNodes(), 125)
+builder = CA.Mesh.buildCube()
 test.assertSequenceEqual(builder.getNodesFromCells("VOLUME"), [0, 1, 2, 3, 4, 5, 6, 7])
 
 # from mesh builder - Cylinder
-builder = code_aster.Mesh.buildCylinder(refine=3)
+builder = CA.Mesh.buildCylinder(refine=3)
 test.assertFalse(builder.isParallel())
 test.assertEqual(builder.getDimension(), 3)
 test.assertEqual(builder.getNumberOfNodes(), 9225)
 test.assertEqual(builder.getNumberOfCells(), 10752)
 test.assertSequenceEqual(sorted(builder.getGroupsOfNodes()), [])
 test.assertSequenceEqual(sorted(builder.getGroupsOfCells()), ["BOTTOM", "SURFEXT", "TOP", "VOLUME"])
-test.assertEqual(code_aster.Mesh.buildCylinder(refine=2).getNumberOfNodes(), 1285)
-builder = code_aster.Mesh.buildCylinder()
+test.assertEqual(CA.Mesh.buildCylinder(refine=2).getNumberOfNodes(), 1285)
+builder = CA.Mesh.buildCylinder()
 test.assertSequenceEqual(
     builder.getNodesFromCells("BOTTOM"), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
 )
 
 # from mesh builder -Square
-builder = code_aster.Mesh.buildSquare(refine=3)
+builder = CA.Mesh.buildSquare(refine=3)
 test.assertFalse(builder.isParallel())
 test.assertEqual(builder.getDimension(), 2)
 test.assertEqual(builder.getNumberOfNodes(), 81)
@@ -478,10 +478,10 @@ test.assertSequenceEqual(
     sorted(builder.getGroupsOfCells()), ["BOTTOM", "LEFT", "RIGHT", "SURFACE", "TOP"]
 )
 test.assertSequenceEqual(builder.getNodesFromCells("BOTTOM"), [0, 1, 2, 3, 4, 5, 6, 7, 8])
-test.assertEqual(code_aster.Mesh.buildSquare(refine=2).getNumberOfNodes(), 25)
+test.assertEqual(CA.Mesh.buildSquare(refine=2).getNumberOfNodes(), 25)
 
 # from mesh builder -  Disk
-builder = code_aster.Mesh.buildDisk(refine=3)
+builder = CA.Mesh.buildDisk(refine=3)
 test.assertFalse(builder.isParallel())
 test.assertEqual(builder.getDimension(), 2)
 test.assertEqual(builder.getNumberOfNodes(), 1025)
@@ -557,15 +557,15 @@ test.assertSequenceEqual(
         1024,
     ],
 )
-test.assertEqual(code_aster.Mesh.buildDisk(refine=2).getNumberOfNodes(), 257)
+test.assertEqual(CA.Mesh.buildDisk(refine=2).getNumberOfNodes(), 257)
 
 # from mesh builder -  Disk
-builder = code_aster.Mesh.buildRing(refine=3)
+builder = CA.Mesh.buildRing(refine=3)
 test.assertSequenceEqual(sorted(builder.getGroupsOfCells()), ["REXT", "RINT", "SURFACE"])
 test.assertEqual(len(builder.getCells("RINT")), 64)
 test.assertEqual(len(builder.getCells("REXT")), 64)
 
-builder = code_aster.Mesh.buildTube(refine=2)
+builder = CA.Mesh.buildTube(refine=2)
 test.assertSequenceEqual(
     sorted(builder.getGroupsOfCells()), ["BOTTOM", "SURFEXT", "SURFINT", "TOP", "VOLUME"]
 )
@@ -573,11 +573,11 @@ test.assertEqual(len(builder.getCells("SURFEXT")), 128)
 test.assertEqual(len(builder.getCells("SURFINT")), 128)
 
 
-mesh4 = code_aster.Mesh()
+mesh4 = CA.Mesh()
 mesh4.readMedFile("mesh001a.mmed", verbose=2)
 mesh4r = mesh4.refine(1)
 test.assertAlmostEqual(sum(mesh4r.getCoordinates().getValues()), 216000.0)
 
 test.printSummary()
 
-code_aster.close()
+CA.close()

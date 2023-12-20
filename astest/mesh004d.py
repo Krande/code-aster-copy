@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,25 +19,25 @@
 
 from code_aster.Utilities import logger
 import numpy as N
-import code_aster
+from code_aster import CA
 from code_aster.Commands import *
 from code_aster.Utilities import PETSc
 
-code_aster.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
+CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 
 from code_aster.LinearAlgebra import MatrixScaler
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
-rank = code_aster.MPI.ASTER_COMM_WORLD.Get_rank()
+rank = CA.MPI.ASTER_COMM_WORLD.Get_rank()
 
-pMesh = code_aster.ParallelMesh()
+pMesh = CA.ParallelMesh()
 pMesh.readMedFile("mesh004b/%d.med" % rank, partitioned=True)
 # MAIL.debugPrint()
 
 MATER = DEFI_MATERIAU(THER=_F(LAMBDA=6.0e9, RHO_CP=1.0))
 
-affectMat = code_aster.MaterialField(pMesh)
+affectMat = CA.MaterialField(pMesh)
 affectMat.addMaterialOnMesh(MATER)
 affectMat.build()
 
@@ -48,28 +48,28 @@ MODT = AFFE_MODELE(
 )
 
 
-charCine = code_aster.ThermalDirichletBC(MODT)
-charCine.addBCOnNodes(code_aster.PhysicalQuantityComponent.Temp, 0.0, "EncastN")
+charCine = CA.ThermalDirichletBC(MODT)
+charCine.addBCOnNodes(CA.PhysicalQuantityComponent.Temp, 0.0, "EncastN")
 charCine.build()
 charCine.debugPrint()
 
 CHT1 = AFFE_CHAR_THER(MODELE=MODT, FLUX_REP=_F(GROUP_MA="Press", FLUN=10.0), INFO=1)
 
-# study = code_aster.PhysicalProblem(MODT, affectMat)
+# study = CA.PhysicalProblem(MODT, affectMat)
 # study.addDirichletBC(charCine)
 # study.addLoad(CHT1)
-# dProblem = code_aster.DiscreteComputation(study)
+# dProblem = CA.DiscreteComputation(study)
 
 vect_elem = CALC_VECT_ELEM(OPTION="CHAR_THER", CHARGE=CHT1)
 matr_elem = CALC_MATR_ELEM(OPTION="RIGI_THER", MODELE=MODT, CHAM_MATER=affectMat)
 
-monSolver = code_aster.PetscSolver(RENUM="SANS", PRE_COND="SANS")
+monSolver = CA.PetscSolver(RENUM="SANS", PRE_COND="SANS")
 
-numeDDL = code_aster.ParallelDOFNumbering()
+numeDDL = CA.ParallelDOFNumbering()
 numeDDL.computeNumbering([matr_elem])
 test.assertEqual(numeDDL.getType(), "NUME_DDL_P")
 
-matrAsse = code_aster.AssemblyMatrixTemperatureReal()
+matrAsse = CA.AssemblyMatrixTemperatureReal()
 matrAsse.addElementaryMatrix(matr_elem)
 matrAsse.setDOFNumbering(numeDDL)
 matrAsse.addDirichletBC(charCine)

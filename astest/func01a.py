@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,14 +20,14 @@
 from math import sin, pi
 import numpy as np
 
-import code_aster
+from code_aster import CA
 from code_aster.Commands import *
 
-code_aster.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
+CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
-fsin = code_aster.Function()
+fsin = CA.Function()
 fsin.setParameterName("INST")
 fsin.setResultName("TEMP")
 fsin.setInterpolation("LIN LIN")
@@ -72,7 +72,7 @@ values = fsin.getValuesAsArray()
 test.assertEqual(values.shape, (n, 2), msg="fsin: shape")
 
 # complex
-fcmpl = code_aster.FunctionComplex()
+fcmpl = CA.FunctionComplex()
 fcmpl.setParameterName("INST")
 fcmpl.setResultName("TEMP")
 fcmpl.setInterpolation("LIN LIN")

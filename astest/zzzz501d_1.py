@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,13 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import code_aster
+from code_aster.Commands import *
+from code_aster import CA
 
 from zzzz501d_user import ComplexUserObject
 
-code_aster.init("--test", "--continue", ERREUR=_F(ALARME="EXCEPTION"))
-test = code_aster.TestCase()
+CA.init("--test", "--continue", ERREUR=_F(ALARME="EXCEPTION"))
+test = CA.TestCase()
 
 values = ["SIEF_ELGA", 31, -325.03920740223253]
 
@@ -39,4 +40,4 @@ test.assertAlmostEqual(user_object.values[2], -325.03920740223253)
 
 test.printSummary()
 
-code_aster.close()
+CA.close()

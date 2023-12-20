@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ import unittest
 from enum import IntFlag, auto
 from unittest.mock import MagicMock
 
-from code_aster import ConvergenceError, SolverError
+from code_aster import CA
 from code_aster.Commands import DEFI_LIST_REEL
 from code_aster.Solvers import (
     BaseFeature,
@@ -463,8 +463,8 @@ class TestTimeStepper(unittest.TestCase):
     def test20_event(self):
         stp = TimeStepper([1.0, 1.1, 2.0])
         stp.register_event(TimeStepper.Interrupt(TimeStepper.Error()))
-        with self.assertRaisesRegex(ConvergenceError, "MESSAGEID"):
-            stp.failed(ConvergenceError("MESSAGEID"))
+        with self.assertRaisesRegex(CA.ConvergenceError, "MESSAGEID"):
+            stp.failed(CA.ConvergenceError("MESSAGEID"))
 
         stp = TimeStepper([1.0, 1.1, 2.0])
         self.assertAlmostEqual(stp.getCurrent(), 1.0)
@@ -478,12 +478,12 @@ class TestTimeStepper(unittest.TestCase):
         self.assertAlmostEqual(stp.getCurrent(), 1.0)
         stp.register_event(TimeStepper.Split(TimeStepper.Error(), nbSubSteps=2, minStep=0.05))
         # print("\n+ split #1")
-        stp.failed(ConvergenceError("MESSAGEID"))
+        stp.failed(CA.ConvergenceError("MESSAGEID"))
         # [0.5, 1.0, 1.1, 2.0, 3.0]
         self.assertEqual(stp.size(), 5)
         self.assertAlmostEqual(stp.getCurrent(), 0.5)
         # print("+ split #2")
-        stp.failed(ConvergenceError("MESSAGEID"))
+        stp.failed(CA.ConvergenceError("MESSAGEID"))
         # [0.25, 0.5, 1.0, 1.1, 2.0, 3.0]
         self.assertEqual(stp.size(), 6)
         self.assertAlmostEqual(stp.getCurrent(), 0.25)
@@ -492,36 +492,36 @@ class TestTimeStepper(unittest.TestCase):
         stp.completed()
         self.assertAlmostEqual(stp.getCurrent(), 1.0)
         # print("+ split #1")
-        stp.failed(ConvergenceError("MESSAGEID"))
+        stp.failed(CA.ConvergenceError("MESSAGEID"))
         # [0.25, 0.5, 0.75, 1.0, 1.1, 2.0, 3.0]
         self.assertEqual(stp.size(), 7)
         self.assertAlmostEqual(stp.getCurrent(), 0.75)
         # print("+ split #2")
-        stp.failed(ConvergenceError("MESSAGEID"))
+        stp.failed(CA.ConvergenceError("MESSAGEID"))
         # [0.25, 0.5, 0.625, 0.75, 1.0, 1.1, 2.0, 3.0]
         self.assertEqual(stp.size(), 8)
         self.assertAlmostEqual(stp.getCurrent(), 0.625)
         # print("+ split #3")
-        stp.failed(ConvergenceError("MESSAGEID"))
+        stp.failed(CA.ConvergenceError("MESSAGEID"))
         # [0.25, 0.5, 0.5625, 0.625, 0.75, 1.0, 1.1, 2.0, 3.0]
         self.assertEqual(stp.size(), 9)
         self.assertAlmostEqual(stp.getCurrent(), 0.5625)
         # print("+ split #4")
-        with self.assertRaisesRegex(SolverError, "max.*subdivision"):
-            stp.failed(ConvergenceError("MESSAGEID"))
+        with self.assertRaisesRegex(CA.SolverError, "max.*subdivision"):
+            stp.failed(CA.ConvergenceError("MESSAGEID"))
         stp.completed()
         stp.completed()
         stp.completed()
         stp.completed()
         self.assertAlmostEqual(stp.getCurrent(), 1.1)
         # print("+ split #1")
-        stp.failed(ConvergenceError("MESSAGEID"))
+        stp.failed(CA.ConvergenceError("MESSAGEID"))
         # [0.25, 0.5, 0.5625, 0.625, 0.75, 1.0, 1.05, 1.1, 2.0, 3.0]
         self.assertEqual(stp.size(), 10)
         self.assertAlmostEqual(stp.getCurrent(), 1.05)
         # print("+ split #2")
-        with self.assertRaisesRegex(SolverError, "trop petit"):
-            stp.failed(ConvergenceError("MESSAGEID"))
+        with self.assertRaisesRegex(CA.SolverError, "trop petit"):
+            stp.failed(CA.ConvergenceError("MESSAGEID"))
 
     def test30_autosplit(self):
         residuals = [
