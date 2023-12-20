@@ -180,7 +180,7 @@ def post_beremin_ops(self, **args):
             MAILLAGE=mawbrest,
             DETR_GROUP_NO=_F(
                 NOM=tuple(
-                    ["ngrmapb_{}".format(iteration) for iteration in itlist]
+                    ["ngrmapb"]
                     + ["vale_{}".format(iteration) for iteration in itlist]
                     + ["ngrplas_{}".format(iteration) for iteration in itlist]
                 )
@@ -575,16 +575,24 @@ def compute_beremin_integral(model, coefmultpb, sigw, dwb, grmapb, resupb):
     Returns:
         Table: POST_BEREMIN final table
     """
-    coor = CALC_CHAM_ELEM(MODELE=model, OPTION="COOR_ELGA")
-    poids = coor.getValuesWithDescription("W", ["mgrplasfull"])[0]
+    poids = CALC_CHAM_ELEM(MODELE=model, OPTION="COOR_ELGA").getValuesWithDescription(
+        "W", ["mgrplasfull"]
+    )[0]
     sigwinst = sigw.getAccessParameters()["NUME_ORDRE"]
     valinte_sixx = []
     for nume_inst in sigwinst:
-        chsigw = sigw.getField("SIEF_ELGA", nume_inst)
-        sigw_intg = chsigw.getValuesWithDescription("SIXX", ["mgrplasfull"])[0]
-
         nzval = np.array(
-            ([elt_poids * elt_sigw for (elt_poids, elt_sigw) in zip(poids, sigw_intg)])
+            (
+                [
+                    elt_poids * elt_sigw
+                    for (elt_poids, elt_sigw) in zip(
+                        poids,
+                        sigw.getField("SIEF_ELGA", nume_inst).getValuesWithDescription(
+                            "SIXX", ["mgrplasfull"]
+                        )[0],
+                    )
+                ]
+            )
         )
         valinte_sixx.append(np.sum(nzval))
 
@@ -667,7 +675,8 @@ def make_plasticity_groups(reswbrest, numv1v2, mclinst, seuil, l_epspmax):
     dval = {}
     for indice, iteration in enumerate(liter):
 
-        dval = {}
+    for (indice, iteration) in enumerate(liter):
+
         if l_epspmax[indice] < seuil:
             dval["min{}".format(indice)] = 0
             dval["max{}".format(indice)] = l_epspmax[indice]
@@ -675,44 +684,50 @@ def make_plasticity_groups(reswbrest, numv1v2, mclinst, seuil, l_epspmax):
             dval["min{}".format(indice)] = seuil
             dval["max{}".format(indice)] = l_epspmax[indice]
 
-        mawbrest = DEFI_GROUP(
-            reuse=mawbrest,
-            MAILLAGE=mawbrest,
-            CREA_GROUP_NO=(
+    mawbrest = DEFI_GROUP(
+        reuse=mawbrest,
+        MAILLAGE=mawbrest,
+        CREA_GROUP_NO=tuple(
+            [
                 _F(
                     NOM="vale_{}".format(iteration),
                     OPTION="INTERVALLE_VALE",
                     CHAM_GD=reswbrest.getField("VARI_ELGA", iteration).toFieldOnNodes(),
                     NOM_CMP="V{}".format(numv1v2[0]),
-                    VALE=(dval["min"], dval["max"]),
-                ),
+                    VALE=(dval["min{}".format(indice)], dval["max{}".format(indice)]),
+                )
+                for (indice, iteration) in enumerate(liter)
+            ]
+            + [
                 _F(
                     NOM="ngrplas_{}".format(iteration),
                     INTERSEC=("vale_{}".format(iteration), "ngrmapb"),
-                ),
-            ),
-        )
+                )
+                for iteration in liter
+            ]
+        ),
+    )
 
-        mawbrest = DEFI_GROUP(
-            reuse=mawbrest,
-            MAILLAGE=mawbrest,
-            CREA_GROUP_MA=_F(
+    mawbrest = DEFI_GROUP(
+        reuse=mawbrest,
+        MAILLAGE=mawbrest,
+        CREA_GROUP_MA=tuple(
+            _F(
                 NOM="mgrplas_{}".format(iteration),
                 OPTION="APPUI",
                 TYPE_MAILLE="{}D".format(mawbrest.getDimension()),
                 GROUP_NO="ngrplas_{}".format(iteration),
                 TYPE_APPUI="AU_MOINS_UN",
-            ),
+            )
+            for iteration in liter
         )
-
-    mawbrest = DEFI_GROUP(
-        reuse=mawbrest,
-        MAILLAGE=mawbrest,
-        CREA_GROUP_MA=_F(
-            NOM="mgrplasfull",
-            TYPE_MAILLE="{}D".format(mawbrest.getDimension()),
-            UNION=tuple(
-                "mgrplas_{}".format(iteration) for iteration in [elt[0] for elt in mclinst]
-            ),
+        + tuple(
+            [
+                _F(
+                    NOM="mgrplasfull",
+                    TYPE_MAILLE="{}D".format(mawbrest.getDimension()),
+                    UNION=tuple("mgrplas_{}".format(iteration) for iteration in liter),
+                )
+            ]
         ),
     )
