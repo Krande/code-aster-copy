@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -43,6 +43,7 @@ import re
 import sys
 from glob import glob
 from itertools import chain
+from subprocess import PIPE, check_call
 
 try:
     import yaml
@@ -482,7 +483,11 @@ def check_config(self):
     cfg["version_tag"] = ".".join([str(i) for i in self.env.ASTER_VERSION[0]])
     cfg["version_sha1"] = self.env.ASTER_VERSION[1]
     cfg["python"] = "python3"
-    cfg["python_interactive"] = cfg["python"]
+    _check_prog(self, "IPYTHON", ["ipython3", "ipython"], mandatory=False, var_prefix="")
+    cfg["python_interactive"] = (
+        osp.basename(self.env.IPYTHON[0]) if self.env.IPYTHON else cfg["python"]
+    )
+    cfg["python_interactive_is_wrapped"] = int(is_python_wrapped(cfg["python_interactive"]))
     cfg["parallel"] = int(self.get_define("ASTER_HAVE_MPI") or 0)
     cfg["require_mpiexec"] = 0
     cfg["only-proc0"] = 0
@@ -504,6 +509,7 @@ def check_config(self):
         "addmem",
         "python",
         "python_interactive",
+        "python_interactive_is_wrapped",
         "mpiexec",
         "mpi_get_rank",
         "only-proc0",
@@ -516,6 +522,7 @@ def check_config(self):
         cfg[param] = from_env.get(param, cfg.get(param))
         if verbose:
             self.end_msg(str(cfg.get(param)))
+    cfg["python_interactive_is_wrapped"] = int(is_python_wrapped(cfg["python_interactive"]))
     # for config.txt
     self.env["addmem"] = cfg["addmem"]
     self.env["CONFIG_PARAMETERS"] = cfg
@@ -697,3 +704,24 @@ def _check_prog(self, name, programs, mandatory=True, add_paths=None, var_prefix
             break
     if not success and mandatory:
         raise Errors.ConfigurationError("not found in $PATH: {0}".format(programs))
+
+
+def is_python_wrapped(interp):
+    """Tell if the given python interpreter is a wrapper.
+    It is used to separate command line arguments passed to the interpreter
+    and those passed to code_aster command file.
+    Only IPython is currently detected.
+
+    Arguments:
+        interp (str): Python interpreter.
+
+    Returns:
+        bool: *True* if `interp` is a wrapper on Python, *False* otherwise.
+    """
+    wrapped = False
+    try:
+        check_call([interp, "-c", "__IPYTHON__"], stderr=PIPE, stdout=PIPE)
+        wrapped = True
+    except:
+        pass
+    return wrapped

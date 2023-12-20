@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -398,6 +398,7 @@ def _filteringContext(context):
     # functions to be ignored
     ignored = ("code_aster", "DETRUIRE", "FIN", "VARIABLE")
     re_system = re.compile("^__.*__$")
+    ipython = "__IPYTHON__" in context or "get_ipython" in context
     ctxt = {}
     for name, obj in context.items():
         if not name or name in ignored or re_system.search(name):
@@ -406,6 +407,8 @@ def _filteringContext(context):
             continue
         # check attr needed for python<=3.6
         if hasattr(obj, "__class__") and isinstance(obj, IOBase):
+            continue
+        if ipython and name in ("_", "__", "___", "_ih", "_oh", "_dh", "In", "Out", "exit", "quit"):
             continue
         if type(obj) in (
             types.ModuleType,
