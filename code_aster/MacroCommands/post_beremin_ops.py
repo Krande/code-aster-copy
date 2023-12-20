@@ -81,11 +81,12 @@ def post_beremin_ops(self, **args):
     """
     resupb = args.get("RESULTAT")
     grmapb = args.get("GROUP_MA")
-    defopb = args.get("DEFORMATION")
     resanpb = args.get("SIGM_MAXI")
     fspb = args.get("FILTRE_SIGM")
 
-    (reswbrest, numv1v2, mclinst, l_epspmax) = get_resu_from_deftype(resupb, grmapb, defopb)
+    (reswbrest, numv1v2, mclinst, l_epspmax) = get_resu_from_deftype(
+        resupb, grmapb, args.get("DEFORMATION")
+    )
 
     linstplasac = tuple(elt[2] for elt in mclinst)
 

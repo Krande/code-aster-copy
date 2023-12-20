@@ -45,7 +45,7 @@ POST_BEREMIN = MACRO(
     GROUP_MA=SIMP(
         statut="o",
         typ=grma,
-        max="**",
+        max=1,
         fr=tr("Groupe de mailles sur lequel effectuer le post-traitement"),
     ),
     DEFORMATION=SIMP(
