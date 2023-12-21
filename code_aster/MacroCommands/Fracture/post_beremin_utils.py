@@ -66,7 +66,7 @@ def get_beremin_properties(resusd, group_ma):
                     for grpname in eltmater.getMeshEntity().getNames():
                         dwb.update({grpname: dict(list(zip(nomres, lwbmat)))})
                 elif etttype == EntityType.AllMeshEntitiesType:
-                    dwb.update({group_ma[0]: dict(list(zip(nomres, lwbmat)))})
+                    dwb.update({group_ma: dict(list(zip(nomres, lwbmat)))})
 
     return dwb
 
