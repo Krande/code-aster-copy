@@ -9,34 +9,10 @@ fi
 : ${RUNASTER_ROOT:=@PREFIX@}
 
 @BUILD_ENV@
-@OPT_ENV@
 
-remove_path()
-{
-    # usage: remove_path value pattern1 [pattern2 [...]]
-    #     Returns the 'value' with excluding the given patterns.
-    #     Example of use: export PATH=$(remove_path "${PATH}" ${HOME}/local)
-    if [ ${#} -lt 2 ]
-    then
-        echo ${1}
-        return
-    fi
-    local values=${1}
-    shift
-
-    local i
-    for i in ${@}
-    do
-        values=$(echo ${values} | tr ":" "\n" | grep -v -F ${i} | tr "\n" ":" | sed -e "s%:\+%:%g;s%^:%%g;s%:$%%g")
-    done
-
-    echo ${values}
-}
+@CONFIG_ENV@
 
 export LD_LIBRARY_PATH=${RUNASTER_ROOT}/@RELATIVE_LIBDIR@:${LD_LIBRARY_PATH}:.
-
-# Exclude paths to 'python2.7'.
-PYTHONPATH=$(remove_path "${PYTHONPATH}" python2.7)
 
 export PYTHONPATH=${RUNASTER_ROOT}/@RELATIVE_LIBDIR@:${PYTHONPATH}:.
 
@@ -51,8 +27,6 @@ export ASTER_DATADIR=${RUNASTER_ROOT}/@RELATIVE_DATADIR@
 export ASTER_LOCALEDIR=${RUNASTER_ROOT}/@RELATIVE_LOCALEDIR@
 
 export ASTER_ELEMENTSDIR=${RUNASTER_ROOT}/@RELATIVE_LIBDIR@
-
-@OPT_ENV_FOOTER@
 
 # to avoid recursive calls
 export ASTER_PROFILE_LOADED=1
