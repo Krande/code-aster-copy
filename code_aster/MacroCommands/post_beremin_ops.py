@@ -97,7 +97,7 @@ def post_beremin_ops(self, **args):
             LISTE=(
                 _F(PARA="NUME_ORDRE", LISTE_I=resupb.getAccessParameters()["NUME_ORDRE"]),
                 _F(PARA="INST", LISTE_R=resupb.getAccessParameters()["INST"]),
-                _F(PARA="GROUP_MA", LISTE_K=[grmapb[0]] * lentable),
+                _F(PARA="GROUP_MA", LISTE_K=[grmapb] * lentable),
                 _F(PARA="SIGMA_WEIBULL", LISTE_R=liste_r),
                 _F(PARA="SIGMA_WEIBULL**M", LISTE_R=liste_r),
                 _F(PARA="PROBA_WEIBULL", LISTE_R=liste_r),
@@ -111,11 +111,11 @@ def post_beremin_ops(self, **args):
         mawbrest = reswbrest.getModel().getMesh()
 
         mawbrest = DEFI_GROUP(
-            reuse=mawbrest, MAILLAGE=mawbrest, CREA_GROUP_NO=_F(GROUP_MA=grmapb[0], NOM="ngrmapb")
+            reuse=mawbrest, MAILLAGE=mawbrest, CREA_GROUP_NO=_F(GROUP_MA=grmapb, NOM="ngrmapb")
         )
 
         make_plasticity_groups(
-            reswbrest, numv1v2, mclinst, dwb[grmapb[0]]["SEUIL_EPSP_CUMU"], l_epspmax
+            reswbrest, numv1v2, mclinst, dwb[grmapb]["SEUIL_EPSP_CUMU"], l_epspmax
         )
 
         if fspb == "SIGM_ELGA":
@@ -129,7 +129,7 @@ def post_beremin_ops(self, **args):
                 mclinst,
                 sig1plasac(reswbrest, rsieq, numv1v2, dwb, resupb, grmapb, mclinst),
                 resanpb,
-                dwb[grmapb[0]]["M"],
+                dwb[grmapb]["M"],
             )
 
         elif fspb == "SIGM_ELMOY":
@@ -159,7 +159,7 @@ def post_beremin_ops(self, **args):
                 mclinst,
                 sig1plasac(relmoysief, rsieq, numv1v2, dwb, resupb, grmapb, mclinst),
                 resanpb,
-                dwb[grmapb[0]]["M"],
+                dwb[grmapb]["M"],
             )
 
         else:
@@ -393,32 +393,30 @@ def sig1plasac(resultat, rsieq, numv1v2, dwb, reswbrest, grmapb, mclinst):
         FieldOnCells: ELGA_NEUT_R filled by PRIN_3
     """
     modele = resultat.getModel()
-    if not grmapb[0] in dwb.keys():
-        UTMESS("F", "RUPTURE1_88", valk=(grmapb[0]))
+    if not grmapb in dwb.keys():
+        UTMESS("F", "RUPTURE1_88", valk=(grmapb))
 
     maxsig = NonLinearResult()
     maxsig.allocate(rsieq.getNumberOfIndexes())
+    seuil = dwb[grmapb]["SEUIL_EPSP_CUMU"]
 
     indice = 0
     for nume_inst in rsieq.getAccessParameters()["NUME_ORDRE"]:
-        grcalc = "mgrplas_{}".format(nume_inst)
+        grcalc = f"mgrplas_{}".format(nume_inst)
         inst = rsieq.getTime(nume_inst)
 
         if inst in [elt[2] for elt in mclinst]:
+
+            formule = Formula()
+            formule.setExpression("indic_plasac(V{}, V{}, seuil)".format(numv1v2[0], numv1v2[1]))
+            formule.setVariables(["V{}".format(numv1v2[0]), "V{}".format(numv1v2[1])])
+            formule.setContext({"indic_plasac": indic_plasac, "seuil": seuil})
+
             tronque = CALC_CHAMP(
                 RESULTAT=resultat,
                 INST=inst,
-                GROUP_MA=grmapb[0],
-                CHAM_UTIL=_F(
-                    NOM_CHAM="VARI_ELGA",
-                    FORMULE=FORMULE(
-                        NOM_PARA=("V{}".format(numv1v2[0]), "V{}".format(numv1v2[1])),
-                        VALE="indic_plasac(V{}, V{}, seuil)".format(numv1v2[0], numv1v2[1]),
-                        indic_plasac=indic_plasac,
-                        seuil=dwb[grmapb[0]]["SEUIL_EPSP_CUMU"],
-                    ),
-                    NUME_CHAM_RESU=1,
-                ),
+                GROUP_MA=grmapb,
+                CHAM_UTIL=_F(NOM_CHAM="VARI_ELGA", FORMULE=formule, NUME_CHAM_RESU=1),
             )
 
             sign = CREA_CHAMP(
@@ -429,8 +427,8 @@ def sig1plasac(resultat, rsieq, numv1v2, dwb, reswbrest, grmapb, mclinst):
                 ASSE=(
                     _F(
                         GROUP_MA=grcalc,
-                        CHAM_GD=sigma1(rsieq, nume_inst, dwb, reswbrest, grmapb[0]),
-                        NOM_CMP="X1",
+                        CHAM_GD=sigma1(rsieq, nume_inst, dwb, reswbrest, grmapb),
+                        NOM_CMP="DX",
                         NOM_CMP_RESU="SIXX",
                     ),
                     _F(
@@ -600,10 +598,10 @@ def compute_beremin_integral(model, coefmultpb, sigw, dwb, grmapb, resupb):
         LISTE=(_F(PARA="NUME_ORDRE", LISTE_I=sigwinst), _F(PARA="INTE_SIXX", LISTE_R=valinte_sixx))
     )
 
-    if "SIGM_CNV" in dwb[grmapb[0]]:
-        sigma_u = dwb[grmapb[0]]["SIGM_CNV"]
+    if "SIGM_CNV" in dwb[grmapb]:
+        sigma_u = dwb[grmapb]["SIGM_CNV"]
     else:
-        sigma_u = dwb[grmapb[0]]["SIGM_REFE"]
+        sigma_u = dwb[grmapb]["SIGM_REFE"]
 
     d_form = {}
     t_clef = ("intfin", "sigwm", "probaw")
@@ -646,7 +644,7 @@ def compute_beremin_integral(model, coefmultpb, sigw, dwb, grmapb, resupb):
         LISTE=(
             _F(PARA="NUME_ORDRE", LISTE_I=resupb.getAccessParameters()["NUME_ORDRE"]),
             _F(PARA="INST", LISTE_R=resupb.getAccessParameters()["INST"]),
-            _F(PARA="GROUP_MA", LISTE_K=[grmapb[0]] * lentable),
+            _F(PARA="GROUP_MA", LISTE_K=[grmapb] * lentable),
             _F(PARA="SIGMA_WEIBULL", LISTE_R=liste_zero + tab_aux["SIGMA_WEIBULL"]),
             _F(PARA="SIGMA_WEIBULL**M", LISTE_R=liste_zero + tab_aux["SIGMA_WEIBULL**M"]),
             _F(PARA="PROBA_WEIBULL", LISTE_R=liste_zero + tab_aux["PROBA_WEIBULL"]),
