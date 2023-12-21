@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-refrev=main
+refrev=v16
 
 if [ ! -z "${GITLAB_CI}" ]; then
     echo "+ fetching '${refrev}' branch..."
@@ -8,7 +8,7 @@ if [ ! -z "${GITLAB_CI}" ]; then
     git fetch --depth=50 origin ${refrev}
     git branch ${refrev} FETCH_HEAD
 fi
-base=$(git merge-base main HEAD)
+base=$(git merge-base ${refrev} HEAD)
 
 echo "+ printing all branches..."
 git branch -av
