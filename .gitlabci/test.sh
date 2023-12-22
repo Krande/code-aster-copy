@@ -5,15 +5,13 @@ args=( "--clean" "--timefactor=4.0" "--jobs=${jobs}" "$@" )
 # to be directly readable in the browser
 export MESS_EXT="mess.txt"
 
-refrev=main
-
 if [ ! -z "${GITLAB_CI}" ]; then
-    echo "+ fetching '${refrev}' branch..."
-    git branch -D ${refrev} || true
-    git fetch --depth=50 origin ${refrev}
-    git branch ${refrev} FETCH_HEAD
+    echo "+ fetching '${REFREV}' branch..."
+    git branch -D ${REFREV} || true
+    git fetch --depth=50 origin ${REFREV}
+    git branch ${REFREV} FETCH_HEAD
 fi
-base=$(git merge-base main HEAD)
+base=$(git merge-base ${REFREV} HEAD)
 
 # check if it only changed testcases
 changes=$(git diff --name-status ${base} | grep -v astest/)

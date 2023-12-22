@@ -3,6 +3,7 @@ variables:
   MINIO_URL: https://minio.retd.edf.fr
   SIF: runner.sif
   BUILD: mpi
+  REFREV: main
   GIT_SSL_NO_VERIFY: "true"
   reg_debugging: '/^debugci.*/'
 
