@@ -189,5 +189,36 @@ TEST_RESU(
     )
 )
 
+# ==================================================================================================
+#
+# Compute FORC_EXTE
+#
+# ==================================================================================================
+
+# Add loads
+phys_pb.addLoad(CHR_LIAI)
+phys_pb.addLoadFromDict({"CHARGE": CHR_FORC, "FONC_MULT": F_CHAR})
+
+# Compute new numbering
+phys_pb.computeDOFNumbering()
+
+# Compute forces
+forc_exte = disc_comp.getMechanicalForces(time_curr=timeToTest, varc_curr=varc_curr)
+
+TEST_RESU(
+    CHAM_NO=(
+        _F(
+            GROUP_NO="NO8",
+            CHAM_GD=forc_exte,
+            NOM_CMP="DX",
+            VALE_CALC=valeCalc,
+            VALE_REFE=valeRefe,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+        ),
+    )
+)
+
+
 FIN()
 #

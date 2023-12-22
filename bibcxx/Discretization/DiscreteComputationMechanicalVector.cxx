@@ -770,7 +770,29 @@ DiscreteComputation::getMechanicalNodalForces( const FieldOnNodesRealPtr disp,
     }
 
     return elemVect;
-}
+};
+
+FieldOnNodesRealPtr
+DiscreteComputation::getMechanicalForces( const ASTERDOUBLE time_curr, const ASTERDOUBLE time_step,
+                                          const ASTERDOUBLE theta, const ASTERINTEGER modeFourier,
+                                          const FieldOnCellsRealPtr varc_curr ) const {
+
+    AS_ASSERT( _phys_problem->getModel()->isMechanical() );
+
+    const FieldOnNodesRealPtr neumannForces =
+        std::get< FieldOnNodesRealPtr >( DiscreteComputation::getMechanicalNeumannForces(
+            time_curr, time_step, theta, modeFourier, varc_curr ) );
+
+    const FieldOnNodesRealPtr volumetricForces =
+        std::get< FieldOnNodesRealPtr >( DiscreteComputation::getMechanicalVolumetricForces(
+            time_curr, time_step, theta, modeFourier, varc_curr ) );
+
+    FieldOnNodesRealPtr vectAsse =
+        std::make_shared< FieldOnNodesReal >( *neumannForces + *volumetricForces );
+
+    vectAsse->build();
+    return vectAsse;
+};
 
 FieldOnNodesRealPtr
 DiscreteComputation::dualMechanicalVector( FieldOnNodesRealPtr lagr_curr ) const {

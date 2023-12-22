@@ -172,6 +172,12 @@ class DiscreteComputation {
                                 const FieldOnCellsRealPtr varc_curr = nullptr,
                                 const bool assembly = true ) const;
 
+    FieldOnNodesRealPtr getMechanicalForces( const ASTERDOUBLE time_curr = 0.0,
+                                             const ASTERDOUBLE time_step = 0.0,
+                                             const ASTERDOUBLE theta = 1.0,
+                                             const ASTERINTEGER modeFourier = 0,
+                                             const FieldOnCellsRealPtr varc_curr = nullptr ) const;
+
     std::variant< ElementaryVectorTemperatureRealPtr, FieldOnNodesRealPtr >
     getThermalNeumannForces( const ASTERDOUBLE time_curr = 0.0, const bool assembly = true ) const;
 

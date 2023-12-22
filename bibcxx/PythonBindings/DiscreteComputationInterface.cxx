@@ -872,5 +872,22 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
         )",
               py::arg( "disp" ), py::arg( "stress" ), py::arg( "modeFourier" ) = 0,
               py::arg( "varc_curr" ) = nullptr, py::arg( "behaviourMap" ) = nullptr,
-              py::arg( "groupOfCells" ) = VectorString(), py::arg( "assembly" ) = true );
+              py::arg( "groupOfCells" ) = VectorString(), py::arg( "assembly" ) = true )
+
+        .def( "getMechanicalForces", &DiscreteComputation::getMechanicalForces,
+              R"(
+      Return the total mechanical Neumann forces vector
+
+      Arguments:
+            time_curr (float): Current time
+            time_step (float): Time increment
+            theta (float): Theta parameter for time-integration
+            modeFourier (int) : fourier mode
+            varc_curr (FieldOnCellsReal): external state variables at current time
+
+      Returns:
+            ElementaryVectorDisplacementReal: elementary Neumann forces vector
+        )",
+              py::arg( "time_curr" ) = 0.0, py::arg( "time_step" ) = 0.0, py::arg( "theta" ) = 1.0,
+              py::arg( "modeFourier" ) = 0, py::arg( "varc_curr" ) = nullptr );
 };
