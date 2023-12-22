@@ -176,12 +176,37 @@ def fByrne(inst, GAMMA, E, NU, Y, RHO, N1):
     return Ru, EpsiV, instant
 
 
+def get_position_grma(__TMAT, lcoucheacc):
+
+    tmat = __TMAT.EXTR_TABLE().values()
+    grma = tmat["M"]
+
+    listout = []
+    liststr = "list of strings : "
+    for couche in lcoucheacc:
+        if couche not in grma:
+            text = (
+                "La couche "
+                + couche
+                + " n'a pas été définie dans la table de sol "
+                + "et ne sera pas prise en compte pour la table UNITE_RESU_TRAN"
+            )
+            aster.affiche("MESSAGE", text)
+            continue
+        index = grma.index(couche)
+        listout.append(int(index + 1))
+        liststr = liststr + str(index + 1) + " "
+
+    # aster.affiche("MESSAGE", liststr)
+    return listout
+
+
 # ================================================
 #            FIN DE LA FONCTION  BYRNE
 # ================================================
 
 
-def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
+def defi_sol_equi_ops(self, INFO=None, **args):
     """
     Macro DEFI_SOL_EQUI
     """
@@ -189,9 +214,12 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
     # calculs de deconvolution ou reconvolution sur une colonne de sol en 2D
     # avec approche harmonique lineaire equivalente (courbes G et D gamma)
 
-    titre = "Etude Reconvolution 500m TRI"
-
     args = _F(args)
+
+    titre = ""
+    if args["TITRE"] is not None:
+        titre = args["TITRE"]
+
     SURF = args["SURF"]
 
     # coefficient de variabilite sur le profil de modules Emax : 2/3 ou 3/2
@@ -237,6 +265,12 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
         num_dime = 3
 
     ldevi = args["TOUT_CHAM"]
+    lacce = args["TOUT_ACCE"]
+    lcoucheacc = []
+    if args["LIST_COUCHE_ACCE"] is not None:
+        lcoucheacc = args["LIST_COUCHE_ACCE"]
+        # lcoucheacc = list(np.array(lcoucheacc.Valeurs()).astype(int))
+
     if args["CHARGEMENT"] == "ONDE_PLANE":
         if args["LIAISON"] == "PERIODIQUE":
             lliaison = "OUI"
@@ -652,9 +686,9 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
     # for s in range (1,nbsol+1):
     #  for v in range (1,len(cvar)+1) :
     #    for a in range (1,nbacc+1):
-    a = 1
-    v = 1
-    s = 1
+    # a = 1
+    # v = 1
+    # s = 1
     nprec = 10
     deltaE = 100
     # initialisation de l erreur sur E
@@ -662,7 +696,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
     # indicateur du nombre d iterations
     etat = "debut"
 
-    legende = "-acce" + str(a) + "-sol" + str(s) + "-cvar=" + str(v)
+    legende = " cvar=" + str(cvar)
     if args.get("TABLE_MATER_ELAS") is not None:
         nom_para_table_elas = ["Y", "M", "RHO", "Emax", "NU", "AH", "GDgam"]
         if Byrne:
@@ -877,6 +911,9 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
         __TMAT = CREA_TABLE(**dprod)
 
     IMPR_TABLE(TABLE=__TMAT, UNITE=6)
+
+    if lacce == "NON":
+        listacce = get_position_grma(__TMAT, lcoucheacc)
 
     if SURF == "NON":
         NCOU2 = args["NIVE_COUCH_ENFO"]
@@ -3593,7 +3630,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
 
         deltaE = max(max(diff), abs(min(diff)))
 
-        text = "deltaE=" + str(deltaE)
+        text = " deltaE=" + str(deltaE)
         aster.affiche("MESSAGE", text)
 
         __Enew = DEFI_FONCTION(
@@ -3812,7 +3849,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                                 LEGENDE="SAX_CL"
                                 + name_dime[n]
                                 + legende
-                                + "deltaE ="
+                                + " deltaE = "
                                 + str(deltaE),
                             ),
                             _F(
@@ -3821,7 +3858,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                                 LEGENDE="SAX_RA"
                                 + name_dime[n]
                                 + legende
-                                + "deltaE ="
+                                + " deltaE = "
                                 + str(deltaE),
                             ),
                         ),
@@ -3834,9 +3871,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                 SEPARATEUR=args["SEPARATEUR"],
                 FORMAT_R="E13.7",
                 TITRE=(
-                    "Resultats du calcul lineaire equivalent pour le sol"
-                    + str(s)
-                    + "avec E="
+                    "Resultats du calcul lineaire equivalent avec E="
                     + str(cvar)
                     + "*E0 \
                    Les valeurs max sont calculees au 1er Point de Gauss de la couche definie par sa cote inferieure Y"
@@ -3851,14 +3886,14 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                         _F(
                             FONCTION=__AHX_CL,
                             MARQUEUR=0,
-                            LEGENDE="AX_CL" + legende + "deltaE =" + str(deltaE),
+                            LEGENDE="AX_CL" + legende + " deltaE = " + str(deltaE),
                         )
                     )
                     ifacc.append(
                         _F(
                             FONCTION=__AHX_RA[0],
                             MARQUEUR=0,
-                            LEGENDE="AX_RA" + legende + "deltaE =" + str(deltaE),
+                            LEGENDE="AX_RA" + legende + " deltaE = " + str(deltaE),
                         )
                     )
                 else:
@@ -3866,32 +3901,48 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                         _F(
                             FONCTION=__AX_CL[0],
                             MARQUEUR=0,
-                            LEGENDE="AX_CL" + legende + "deltaE =" + str(deltaE),
+                            LEGENDE="AX_CL" + legende + " deltaE = " + str(deltaE),
                         )
                     )
                     ifacc.append(
                         _F(
                             FONCTION=__AX_RA[0],
                             MARQUEUR=0,
-                            LEGENDE="AX_RA" + legende + "deltaE =" + str(deltaE),
+                            LEGENDE="AX_RA" + legende + " deltaE = " + str(deltaE),
                         )
                     )
-
-                for d in range(1, NCOU + 1):
-                    ifacc.append(
-                        _F(
-                            FONCTION=__axa[d],
-                            MARQUEUR=0,
-                            LEGENDE="AX_" + str(d) + legende + "deltaE =" + str(deltaE),
+                if lacce == "OUI":
+                    for d in range(1, NCOU + 1):
+                        ifacc.append(
+                            _F(
+                                FONCTION=__axa[d],
+                                MARQUEUR=0,
+                                LEGENDE="AX_" + str(d) + legende + " deltaE = " + str(deltaE),
+                            )
                         )
-                    )
+                else:
+                    for k, d in enumerate(listacce):
+                        ifacc.append(
+                            _F(
+                                FONCTION=__axa[d],
+                                MARQUEUR=0,
+                                LEGENDE="AX_"
+                                + str(d)
+                                + " grma "
+                                + str(lcoucheacc[k])
+                                + " "
+                                + legende
+                                + " deltaE = "
+                                + str(deltaE),
+                            )
+                        )
 
                 if "DSP" in args:
                     ifacc.append(
                         _F(
                             FONCTION=__AHX_BH,
                             MARQUEUR=0,
-                            LEGENDE="AX_BH" + legende + "deltaE =" + str(deltaE),
+                            LEGENDE="AX_BH" + legende + " deltaE = " + str(deltaE),
                         )
                     )
                 else:
@@ -3899,7 +3950,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                         _F(
                             FONCTION=__AX_BH[0],
                             MARQUEUR=0,
-                            LEGENDE="AX_BH" + legende + "deltaE =" + str(deltaE),
+                            LEGENDE="AX_BH" + legende + " deltaE = " + str(deltaE),
                         )
                     )
 
@@ -3908,9 +3959,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                     FORMAT="TABLEAU",
                     SOUS_TITRE=titre,
                     TITRE=(
-                        "Resultats du calcul lineaire equivalent pour le sol"
-                        + str(s)
-                        + "avec E="
+                        "Resultats du calcul lineaire equivalent avec E="
                         + str(cvar)
                         + "*E0 \
                    Les acce max sont calculees a la base de la couche definie par sa cote inferieure Y"
@@ -3918,7 +3967,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                     COURBE=(ifacc),
                 )
 
-                if ldevi == "OUI":
+                if ldevi == "OUI" and lacce == "OUI":
                     ifvit = []
                     ifdep = []
 
@@ -3926,14 +3975,14 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                         _F(
                             FONCTION=__VX_CL[0],
                             MARQUEUR=0,
-                            LEGENDE="VX_CL" + legende + "deltaE =" + str(deltaE),
+                            LEGENDE="VX_CL" + legende + " deltaE = " + str(deltaE),
                         )
                     )
                     ifvit.append(
                         _F(
                             FONCTION=__VX_RA[0],
                             MARQUEUR=0,
-                            LEGENDE="VX_RA" + legende + "deltaE =" + str(deltaE),
+                            LEGENDE="VX_RA" + legende + " deltaE = " + str(deltaE),
                         )
                     )
 
@@ -3942,7 +3991,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                             _F(
                                 FONCTION=__vix[d],
                                 MARQUEUR=0,
-                                LEGENDE="VX_" + str(d) + legende + "deltaE =" + str(deltaE),
+                                LEGENDE="VX_" + str(d) + legende + " deltaE = " + str(deltaE),
                             )
                         )
 
@@ -3950,7 +3999,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                         _F(
                             FONCTION=__VX_BH[0],
                             MARQUEUR=0,
-                            LEGENDE="VX_BH" + legende + "deltaE =" + str(deltaE),
+                            LEGENDE="VX_BH" + legende + " deltaE = " + str(deltaE),
                         )
                     )
 
@@ -3959,9 +4008,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                         FORMAT="TABLEAU",
                         SOUS_TITRE=titre,
                         TITRE=(
-                            "Resultats du calcul lineaire equivalent pour le sol"
-                            + str(s)
-                            + "avec E="
+                            "Resultats du calcul lineaire equivalent avec E="
                             + str(cvar)
                             + "*E0 \
                    Les vitesses sont calculees a la base de la couche definie par sa cote inferieure Y"
@@ -3972,14 +4019,14 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                         _F(
                             FONCTION=__DX_CL[0],
                             MARQUEUR=0,
-                            LEGENDE="DX_CL" + legende + "deltaE =" + str(deltaE),
+                            LEGENDE="DX_CL" + legende + " deltaE = " + str(deltaE),
                         )
                     )
                     ifdep.append(
                         _F(
                             FONCTION=__DX_RA[0],
                             MARQUEUR=0,
-                            LEGENDE="DX_RA" + legende + "deltaE =" + str(deltaE),
+                            LEGENDE="DX_RA" + legende + " deltaE = " + str(deltaE),
                         )
                     )
 
@@ -3988,7 +4035,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                             _F(
                                 FONCTION=__dex[d],
                                 MARQUEUR=0,
-                                LEGENDE="DX_" + str(d) + legende + "deltaE =" + str(deltaE),
+                                LEGENDE="DX_" + str(d) + legende + " deltaE = " + str(deltaE),
                             )
                         )
 
@@ -3996,7 +4043,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                         _F(
                             FONCTION=__DX_BH[0],
                             MARQUEUR=0,
-                            LEGENDE="DX_BH" + legende + "deltaE =" + str(deltaE),
+                            LEGENDE="DX_BH" + legende + " deltaE = " + str(deltaE),
                         )
                     )
 
@@ -4005,9 +4052,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                         FORMAT="TABLEAU",
                         SOUS_TITRE=titre,
                         TITRE=(
-                            "Resultats du calcul lineaire equivalent pour le sol"
-                            + str(s)
-                            + "avec E="
+                            "Resultats du calcul lineaire equivalent avec E="
                             + str(cvar)
                             + "*E0 \
                    Les deplacements sont calcules a la base de la couche definie par sa cote inferieure Y"
@@ -4016,61 +4061,58 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                     )
                 ifgam = []
 
-                for d in range(1, NCOU + 1):
-                    ifgam.append(
-                        _F(
-                            FONCTION=__gam[d],
-                            MARQUEUR=0,
-                            LEGENDE="GAM_" + str(d) + legende + "deltaE =" + str(deltaE),
+                if lacce == "OUI":
+                    for d in range(1, NCOU + 1):
+                        ifgam.append(
+                            _F(
+                                FONCTION=__gam[d],
+                                MARQUEUR=0,
+                                LEGENDE="GAM_" + str(d) + legende + " deltaE = " + str(deltaE),
+                            )
                         )
+
+                    IMPR_FONCTION(
+                        UNITE=utabtran,
+                        FORMAT="TABLEAU",
+                        SOUS_TITRE=titre,
+                        TITRE=(
+                            "Resultats du calcul lineaire equivalent avec E="
+                            + str(cvar)
+                            + "*E0 \
+                    Les valeurs max sont calculees au 1er Point de Gauss de la couche definie par sa cote inferieure Y"
+                        ),
+                        COURBE=(ifgam),
                     )
+                    iftau = []
 
-                IMPR_FONCTION(
-                    UNITE=utabtran,
-                    FORMAT="TABLEAU",
-                    SOUS_TITRE=titre,
-                    TITRE=(
-                        "Resultats du calcul lineaire equivalent pour le sol"
-                        + str(s)
-                        + "avec E="
-                        + str(cvar)
-                        + "*E0 \
-                Les valeurs max sont calculees au 1er Point de Gauss de la couche definie par sa cote inferieure Y"
-                    ),
-                    COURBE=(ifgam),
-                )
-                iftau = []
-
-                for d in range(1, NCOU + 1):
-                    iftau.append(
-                        _F(
-                            FONCTION=__tau[d],
-                            MARQUEUR=0,
-                            LEGENDE="TAU_" + str(d) + legende + "deltaE =" + str(deltaE),
+                    for d in range(1, NCOU + 1):
+                        iftau.append(
+                            _F(
+                                FONCTION=__tau[d],
+                                MARQUEUR=0,
+                                LEGENDE="TAU_" + str(d) + legende + " deltaE = " + str(deltaE),
+                            )
                         )
-                    )
 
-                IMPR_FONCTION(
-                    UNITE=utabtran,
-                    FORMAT="TABLEAU",
-                    SOUS_TITRE=titre,
-                    TITRE=(
-                        "Resultats du calcul lineaire equivalent pour le sol"
-                        + str(s)
-                        + "avec E="
-                        + str(cvar)
-                        + "*E0 \
-                Les valeurs max sont calculees au 1er Point de Gauss de la couche definie par sa cote inferieure Y"
-                    ),
-                    COURBE=(iftau),
-                )
+                    IMPR_FONCTION(
+                        UNITE=utabtran,
+                        FORMAT="TABLEAU",
+                        SOUS_TITRE=titre,
+                        TITRE=(
+                            "Resultats du calcul lineaire equivalent avec E="
+                            + str(cvar)
+                            + "*E0 \
+                    Les valeurs max sont calculees au 1er Point de Gauss de la couche definie par sa cote inferieure Y"
+                        ),
+                        COURBE=(iftau),
+                    )
                 if ldevi == "OUI":
                     iffoy = []
                     iffoy.append(
                         _F(
                             FONCTION=__FX_CL[0],
                             MARQUEUR=0,
-                            LEGENDE="FY_CL" + legende + "deltaE =" + str(deltaE),
+                            LEGENDE="FY_CL" + legende + " deltaE = " + str(deltaE),
                         )
                     )
 
@@ -4079,7 +4121,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                             _F(
                                 FONCTION=__foy[d],
                                 MARQUEUR=0,
-                                LEGENDE="FY_" + str(d) + legende + "deltaE =" + str(deltaE),
+                                LEGENDE="FY_" + str(d) + legende + " deltaE = " + str(deltaE),
                             )
                         )
 
@@ -4087,7 +4129,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                         _F(
                             FONCTION=__FX_BH[0],
                             MARQUEUR=0,
-                            LEGENDE="FY_BH" + legende + "deltaE =" + str(deltaE),
+                            LEGENDE="FY_BH" + legende + " deltaE = " + str(deltaE),
                         )
                     )
 
@@ -4096,9 +4138,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                         FORMAT="TABLEAU",
                         SOUS_TITRE=titre,
                         TITRE=(
-                            "Resultats du calcul lineaire equivalent pour le sol"
-                            + str(s)
-                            + "avec E="
+                            "Resultats du calcul lineaire equivalent avec E="
                             + str(cvar)
                             + "*E0 \
                   Les forces sont calculees a la base de la couche definie par sa cote inferieure Y"
@@ -4106,7 +4146,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                         COURBE=(iffoy),
                     )
 
-                if Byrne:
+                if Byrne and lacce == "OUI":
                     ifru = []
 
                     for d in range(1, NCOU + 1):
@@ -4114,7 +4154,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                             _F(
                                 FONCTION=__ru[d],
                                 MARQUEUR=0,
-                                LEGENDE="RU_" + str(d) + legende + "deltaE =" + str(deltaE),
+                                LEGENDE="RU_" + str(d) + legende + " deltaE = " + str(deltaE),
                             )
                         )
 
@@ -4123,9 +4163,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                         FORMAT="TABLEAU",
                         SOUS_TITRE=titre,
                         TITRE=(
-                            "Resultats du calcul lineaire equivalent pour le sol"
-                            + str(s)
-                            + "avec E="
+                            "Resultats du calcul lineaire equivalent avec E="
                             + str(cvar)
                             + "*E0 \
                     Les valeurs max sont calculees au 1er Point de Gauss de la couche definie par sa cote inferieure Y"
@@ -4140,7 +4178,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                             _F(
                                 FONCTION=__ev[d],
                                 MARQUEUR=0,
-                                LEGENDE="EV_" + str(d) + legende + "deltaE =" + str(deltaE),
+                                LEGENDE="EV_" + str(d) + legende + " deltaE = " + str(deltaE),
                             )
                         )
 
@@ -4149,9 +4187,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                         FORMAT="TABLEAU",
                         SOUS_TITRE=titre,
                         TITRE=(
-                            "Resultats du calcul lineaire equivalent pour le sol"
-                            + str(s)
-                            + "avec E="
+                            "Resultats du calcul lineaire equivalent avec E="
                             + str(cvar)
                             + "*E0 \
                     Les valeurs max sont calculees au 1er Point de Gauss de la couche definie par sa cote inferieure Y"
@@ -4166,14 +4202,14 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                     _F(
                         FONCTION=__SAX_CL[0],
                         MARQUEUR=0,
-                        LEGENDE="SAX_CL" + legende + "deltaE =" + str(deltaE),
+                        LEGENDE="SAX_CL" + legende + " deltaE = " + str(deltaE),
                     )
                 )
                 ifspec.append(
                     _F(
                         FONCTION=__SAX_RA[0],
                         MARQUEUR=0,
-                        LEGENDE="SAX_RA" + legende + "deltaE =" + str(deltaE),
+                        LEGENDE="SAX_RA" + legende + " deltaE = " + str(deltaE),
                     )
                 )
 
@@ -4182,7 +4218,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                         _F(
                             FONCTION=__SPEC[d],
                             MARQUEUR=0,
-                            LEGENDE="SAX_" + str(d) + legende + "deltaE =" + str(deltaE),
+                            LEGENDE="SAX_" + str(d) + legende + " deltaE = " + str(deltaE),
                         )
                     )
 
@@ -4190,7 +4226,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                     _F(
                         FONCTION=__SAX_BH[0],
                         MARQUEUR=0,
-                        LEGENDE="SAX_BH" + legende + "deltaE =" + str(deltaE),
+                        LEGENDE="SAX_BH" + legende + " deltaE = " + str(deltaE),
                     )
                 )
 
@@ -4216,14 +4252,14 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                         _F(
                             FONCTION=__PAX_CL,
                             MARQUEUR=0,
-                            LEGENDE="DSP_CL" + legende + "deltaE =" + str(deltaE),
+                            LEGENDE="DSP_CL" + legende + " deltaE = " + str(deltaE),
                         )
                     )
                     ifdsp.append(
                         _F(
                             FONCTION=__PAX_RA,
                             MARQUEUR=0,
-                            LEGENDE="DSP_RA" + legende + "deltaE =" + str(deltaE),
+                            LEGENDE="DSP_RA" + legende + " deltaE = " + str(deltaE),
                         )
                     )
 
@@ -4231,7 +4267,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                         _F(
                             FONCTION=__PAX_BH,
                             MARQUEUR=0,
-                            LEGENDE="DSP_BH" + legende + "deltaE =" + str(deltaE),
+                            LEGENDE="DSP_BH" + legende + " deltaE = " + str(deltaE),
                         )
                     )
 
@@ -4251,36 +4287,52 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                     _F(
                         FONCTION=__AX_CL[0],
                         MARQUEUR=0,
-                        LEGENDE="AX_CL" + name_dime[0] + legende + "deltaE =" + str(deltaE),
+                        LEGENDE="AX_CL" + name_dime[0] + legende + " deltaE = " + str(deltaE),
                     )
                 )
                 ifaccX.append(
                     _F(
                         FONCTION=__AX_RA[0],
                         MARQUEUR=0,
-                        LEGENDE="AX_RA" + name_dime[0] + legende + "deltaE =" + str(deltaE),
+                        LEGENDE="AX_RA" + name_dime[0] + legende + " deltaE = " + str(deltaE),
                     )
                 )
-
-                for d in range(1, NCOU + 1):
-                    ifaccX.append(
-                        _F(
-                            FONCTION=__axaX[d],
-                            MARQUEUR=0,
-                            LEGENDE="AX_"
-                            + str(d)
-                            + name_dime[0]
-                            + legende
-                            + "deltaE ="
-                            + str(deltaE),
+                if lacce == "OUI":
+                    for d in range(1, NCOU + 1):
+                        ifaccX.append(
+                            _F(
+                                FONCTION=__axaX[d],
+                                MARQUEUR=0,
+                                LEGENDE="AX_"
+                                + str(d)
+                                + name_dime[0]
+                                + legende
+                                + " deltaE = "
+                                + str(deltaE),
+                            )
                         )
-                    )
+                else:
+                    for k, d in enumerate(listacce):
+                        ifaccX.append(
+                            _F(
+                                FONCTION=__axaX[d],
+                                MARQUEUR=0,
+                                LEGENDE="AX_"
+                                + str(d)
+                                + name_dime[0]
+                                + " grma "
+                                + str(lcoucheacc[k])
+                                + legende
+                                + " deltaE = "
+                                + str(deltaE),
+                            )
+                        )
 
                 ifaccX.append(
                     _F(
                         FONCTION=__AX_BH[0],
                         MARQUEUR=0,
-                        LEGENDE="AX_BH" + name_dime[0] + legende + "deltaE =" + str(deltaE),
+                        LEGENDE="AX_BH" + name_dime[0] + legende + " deltaE = " + str(deltaE),
                     )
                 )
 
@@ -4288,36 +4340,53 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                     _F(
                         FONCTION=__AX_CL[1],
                         MARQUEUR=0,
-                        LEGENDE="AX_CL" + name_dime[1] + legende + "deltaE =" + str(deltaE),
+                        LEGENDE="AX_CL" + name_dime[1] + legende + " deltaE = " + str(deltaE),
                     )
                 )
                 ifaccY.append(
                     _F(
                         FONCTION=__AX_RA[1],
                         MARQUEUR=0,
-                        LEGENDE="AX_RA" + name_dime[1] + legende + "deltaE =" + str(deltaE),
+                        LEGENDE="AX_RA" + name_dime[1] + legende + " deltaE = " + str(deltaE),
                     )
                 )
 
-                for d in range(1, NCOU + 1):
-                    ifaccY.append(
-                        _F(
-                            FONCTION=__axaY[d],
-                            MARQUEUR=0,
-                            LEGENDE="AX_"
-                            + str(d)
-                            + name_dime[1]
-                            + legende
-                            + "deltaE ="
-                            + str(deltaE),
+                if lacce == "OUI":
+                    for d in range(1, NCOU + 1):
+                        ifaccY.append(
+                            _F(
+                                FONCTION=__axaY[d],
+                                MARQUEUR=0,
+                                LEGENDE="AX_"
+                                + str(d)
+                                + name_dime[1]
+                                + legende
+                                + " deltaE = "
+                                + str(deltaE),
+                            )
                         )
-                    )
+                else:
+                    for k, d in enumerate(listacce):
+                        ifaccY.append(
+                            _F(
+                                FONCTION=__axaY[d],
+                                MARQUEUR=0,
+                                LEGENDE="AX_"
+                                + str(d)
+                                + name_dime[1]
+                                + " grma "
+                                + str(lcoucheacc[k])
+                                + legende
+                                + " deltaE = "
+                                + str(deltaE),
+                            )
+                        )
 
                 ifaccY.append(
                     _F(
                         FONCTION=__AX_BH[1],
                         MARQUEUR=0,
-                        LEGENDE="AX_BH" + name_dime[1] + legende + "deltaE =" + str(deltaE),
+                        LEGENDE="AX_BH" + name_dime[1] + legende + " deltaE = " + str(deltaE),
                     )
                 )
 
@@ -4325,40 +4394,56 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                     _F(
                         FONCTION=__AX_CL[2],
                         MARQUEUR=0,
-                        LEGENDE="AX_CL" + name_dime[2] + legende + "deltaE =" + str(deltaE),
+                        LEGENDE="AX_CL" + name_dime[2] + legende + " deltaE = " + str(deltaE),
                     )
                 )
                 ifaccZ.append(
                     _F(
                         FONCTION=__AX_RA[2],
                         MARQUEUR=0,
-                        LEGENDE="AX_RA" + name_dime[2] + legende + "deltaE =" + str(deltaE),
+                        LEGENDE="AX_RA" + name_dime[2] + legende + " deltaE = " + str(deltaE),
                     )
                 )
-
-                for d in range(1, NCOU + 1):
-                    ifaccZ.append(
-                        _F(
-                            FONCTION=__axaZ[d],
-                            MARQUEUR=0,
-                            LEGENDE="AX_"
-                            + str(d)
-                            + name_dime[2]
-                            + legende
-                            + "deltaE ="
-                            + str(deltaE),
+                if lacce == "OUI":
+                    for d in range(1, NCOU + 1):
+                        ifaccZ.append(
+                            _F(
+                                FONCTION=__axaZ[d],
+                                MARQUEUR=0,
+                                LEGENDE="AX_"
+                                + str(d)
+                                + name_dime[2]
+                                + legende
+                                + " deltaE = "
+                                + str(deltaE),
+                            )
                         )
-                    )
+                else:
+                    for k, d in enumerate(listacce):
+                        ifaccZ.append(
+                            _F(
+                                FONCTION=__axaZ[d],
+                                MARQUEUR=0,
+                                LEGENDE="AX_"
+                                + str(d)
+                                + name_dime[2]
+                                + " grma "
+                                + str(lcoucheacc[k])
+                                + legende
+                                + " deltaE = "
+                                + str(deltaE),
+                            )
+                        )
 
                 ifaccZ.append(
                     _F(
                         FONCTION=__AX_BH[2],
                         MARQUEUR=0,
-                        LEGENDE="AX_BH" + name_dime[2] + legende + "deltaE =" + str(deltaE),
+                        LEGENDE="AX_BH" + name_dime[2] + legende + " deltaE = " + str(deltaE),
                     )
                 )
 
-                if ldevi == "OUI":
+                if ldevi == "OUI" and lacce == "OUI":
                     ifvitX = []
                     ifdepX = []
                     ifvitY = []
@@ -4369,14 +4454,14 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                         _F(
                             FONCTION=__VX_CL[0],
                             MARQUEUR=0,
-                            LEGENDE="VX_CL" + name_dime[0] + legende + "deltaE =" + str(deltaE),
+                            LEGENDE="VX_CL" + name_dime[0] + legende + " deltaE = " + str(deltaE),
                         )
                     )
                     ifvitX.append(
                         _F(
                             FONCTION=__VX_RA[0],
                             MARQUEUR=0,
-                            LEGENDE="VX_RA" + name_dime[0] + legende + "deltaE =" + str(deltaE),
+                            LEGENDE="VX_RA" + name_dime[0] + legende + " deltaE = " + str(deltaE),
                         )
                     )
 
@@ -4389,7 +4474,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                                 + str(d)
                                 + name_dime[0]
                                 + legende
-                                + "deltaE ="
+                                + " deltaE = "
                                 + str(deltaE),
                             )
                         )
@@ -4398,7 +4483,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                         _F(
                             FONCTION=__VX_BH[0],
                             MARQUEUR=0,
-                            LEGENDE="VX_BH" + name_dime[0] + legende + "deltaE =" + str(deltaE),
+                            LEGENDE="VX_BH" + name_dime[0] + legende + " deltaE = " + str(deltaE),
                         )
                     )
 
@@ -4406,14 +4491,14 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                         _F(
                             FONCTION=__VX_CL[1],
                             MARQUEUR=0,
-                            LEGENDE="VX_CL" + name_dime[1] + legende + "deltaE =" + str(deltaE),
+                            LEGENDE="VX_CL" + name_dime[1] + legende + " deltaE = " + str(deltaE),
                         )
                     )
                     ifvitY.append(
                         _F(
                             FONCTION=__VX_RA[1],
                             MARQUEUR=0,
-                            LEGENDE="VX_RA" + name_dime[1] + legende + "deltaE =" + str(deltaE),
+                            LEGENDE="VX_RA" + name_dime[1] + legende + " deltaE = " + str(deltaE),
                         )
                     )
 
@@ -4426,7 +4511,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                                 + str(d)
                                 + name_dime[1]
                                 + legende
-                                + "deltaE ="
+                                + " deltaE = "
                                 + str(deltaE),
                             )
                         )
@@ -4435,7 +4520,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                         _F(
                             FONCTION=__VX_BH[1],
                             MARQUEUR=0,
-                            LEGENDE="VX_BH" + name_dime[1] + legende + "deltaE =" + str(deltaE),
+                            LEGENDE="VX_BH" + name_dime[1] + legende + " deltaE = " + str(deltaE),
                         )
                     )
 
@@ -4443,14 +4528,14 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                         _F(
                             FONCTION=__VX_CL[2],
                             MARQUEUR=0,
-                            LEGENDE="VX_CL" + name_dime[2] + legende + "deltaE =" + str(deltaE),
+                            LEGENDE="VX_CL" + name_dime[2] + legende + " deltaE = " + str(deltaE),
                         )
                     )
                     ifvitZ.append(
                         _F(
                             FONCTION=__VX_RA[2],
                             MARQUEUR=0,
-                            LEGENDE="VX_RA" + name_dime[2] + legende + "deltaE =" + str(deltaE),
+                            LEGENDE="VX_RA" + name_dime[2] + legende + " deltaE = " + str(deltaE),
                         )
                     )
 
@@ -4463,7 +4548,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                                 + str(d)
                                 + name_dime[2]
                                 + legende
-                                + "deltaE ="
+                                + " deltaE = "
                                 + str(deltaE),
                             )
                         )
@@ -4472,7 +4557,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                         _F(
                             FONCTION=__VX_BH[2],
                             MARQUEUR=0,
-                            LEGENDE="VX_BH" + name_dime[2] + legende + "deltaE =" + str(deltaE),
+                            LEGENDE="VX_BH" + name_dime[2] + legende + " deltaE = " + str(deltaE),
                         )
                     )
 
@@ -4480,14 +4565,14 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                         _F(
                             FONCTION=__DX_CL[0],
                             MARQUEUR=0,
-                            LEGENDE="DX_CL" + name_dime[0] + legende + "deltaE =" + str(deltaE),
+                            LEGENDE="DX_CL" + name_dime[0] + legende + " deltaE = " + str(deltaE),
                         )
                     )
                     ifdepX.append(
                         _F(
                             FONCTION=__DX_RA[0],
                             MARQUEUR=0,
-                            LEGENDE="DX_RA" + name_dime[0] + legende + "deltaE =" + str(deltaE),
+                            LEGENDE="DX_RA" + name_dime[0] + legende + " deltaE = " + str(deltaE),
                         )
                     )
 
@@ -4500,7 +4585,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                                 + str(d)
                                 + name_dime[0]
                                 + legende
-                                + "deltaE ="
+                                + " deltaE = "
                                 + str(deltaE),
                             )
                         )
@@ -4509,7 +4594,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                         _F(
                             FONCTION=__DX_BH[0],
                             MARQUEUR=0,
-                            LEGENDE="DX_BH" + name_dime[0] + legende + "deltaE =" + str(deltaE),
+                            LEGENDE="DX_BH" + name_dime[0] + legende + " deltaE = " + str(deltaE),
                         )
                     )
 
@@ -4517,14 +4602,14 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                         _F(
                             FONCTION=__DX_CL[1],
                             MARQUEUR=0,
-                            LEGENDE="DX_CL" + name_dime[1] + legende + "deltaE =" + str(deltaE),
+                            LEGENDE="DX_CL" + name_dime[1] + legende + " deltaE = " + str(deltaE),
                         )
                     )
                     ifdepY.append(
                         _F(
                             FONCTION=__DX_RA[1],
                             MARQUEUR=0,
-                            LEGENDE="DX_RA" + name_dime[1] + legende + "deltaE =" + str(deltaE),
+                            LEGENDE="DX_RA" + name_dime[1] + legende + " deltaE = " + str(deltaE),
                         )
                     )
 
@@ -4537,7 +4622,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                                 + str(d)
                                 + name_dime[1]
                                 + legende
-                                + "deltaE ="
+                                + " deltaE = "
                                 + str(deltaE),
                             )
                         )
@@ -4546,7 +4631,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                         _F(
                             FONCTION=__DX_BH[1],
                             MARQUEUR=0,
-                            LEGENDE="DX_BH" + name_dime[1] + legende + "deltaE =" + str(deltaE),
+                            LEGENDE="DX_BH" + name_dime[1] + legende + " deltaE = " + str(deltaE),
                         )
                     )
 
@@ -4554,14 +4639,14 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                         _F(
                             FONCTION=__DX_CL[2],
                             MARQUEUR=0,
-                            LEGENDE="DX_CL" + name_dime[2] + legende + "deltaE =" + str(deltaE),
+                            LEGENDE="DX_CL" + name_dime[2] + legende + " deltaE = " + str(deltaE),
                         )
                     )
                     ifdepZ.append(
                         _F(
                             FONCTION=__DX_RA[2],
                             MARQUEUR=0,
-                            LEGENDE="DX_RA" + name_dime[2] + legende + "deltaE =" + str(deltaE),
+                            LEGENDE="DX_RA" + name_dime[2] + legende + " deltaE = " + str(deltaE),
                         )
                     )
 
@@ -4574,7 +4659,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                                 + str(d)
                                 + name_dime[2]
                                 + legende
-                                + "deltaE ="
+                                + " deltaE = "
                                 + str(deltaE),
                             )
                         )
@@ -4583,7 +4668,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                         _F(
                             FONCTION=__DX_BH[2],
                             MARQUEUR=0,
-                            LEGENDE="DX_BH" + name_dime[2] + legende + "deltaE =" + str(deltaE),
+                            LEGENDE="DX_BH" + name_dime[2] + legende + " deltaE = " + str(deltaE),
                         )
                     )
 
@@ -4592,24 +4677,20 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                     FORMAT="TABLEAU",
                     SOUS_TITRE=titre,
                     TITRE=(
-                        "Resultats du calcul lineaire equivalent pour le sol"
-                        + str(s)
-                        + "avec E="
+                        "Resultats du calcul lineaire equivalent avec E="
                         + str(cvar)
                         + "*E0 \
                    Les acce max sont calculees a la base de la couche definie par sa cote inferieure Y"
                     ),
                     COURBE=(ifaccX),
                 )
-                if ldevi == "OUI":
+                if ldevi == "OUI" and lacce == "OUI":
                     IMPR_FONCTION(
                         UNITE=utabtran,
                         FORMAT="TABLEAU",
                         SOUS_TITRE=titre,
                         TITRE=(
-                            "Resultats du calcul lineaire equivalent pour le sol"
-                            + str(s)
-                            + "avec E="
+                            "Resultats du calcul lineaire equivalent avec E="
                             + str(cvar)
                             + "*E0 \
                      Les vitesses sont calculees a la base de la couche definie par sa cote inferieure Y"
@@ -4621,9 +4702,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                         FORMAT="TABLEAU",
                         SOUS_TITRE=titre,
                         TITRE=(
-                            "Resultats du calcul lineaire equivalent pour le sol"
-                            + str(s)
-                            + "avec E="
+                            "Resultats du calcul lineaire equivalent avec E="
                             + str(cvar)
                             + "*E0 \
                      Les deplacements sont calcules a la base de la couche definie par sa cote inferieure Y"
@@ -4635,24 +4714,20 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                     FORMAT="TABLEAU",
                     SOUS_TITRE=titre,
                     TITRE=(
-                        "Resultats du calcul lineaire equivalent pour le sol"
-                        + str(s)
-                        + "avec E="
+                        "Resultats du calcul lineaire equivalent avec E="
                         + str(cvar)
                         + "*E0 \
                    Les acce max sont calculees a la base de la couche definie par sa cote inferieure Y"
                     ),
                     COURBE=(ifaccY),
                 )
-                if ldevi == "OUI":
+                if ldevi == "OUI" and lacce == "OUI":
                     IMPR_FONCTION(
                         UNITE=utabtran,
                         FORMAT="TABLEAU",
                         SOUS_TITRE=titre,
                         TITRE=(
-                            "Resultats du calcul lineaire equivalent pour le sol"
-                            + str(s)
-                            + "avec E="
+                            "Resultats du calcul lineaire equivalent avec E="
                             + str(cvar)
                             + "*E0 \
                      Les vitesses sont calculees a la base de la couche definie par sa cote inferieure Y"
@@ -4664,9 +4739,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                         FORMAT="TABLEAU",
                         SOUS_TITRE=titre,
                         TITRE=(
-                            "Resultats du calcul lineaire equivalent pour le sol"
-                            + str(s)
-                            + "avec E="
+                            "Resultats du calcul lineaire equivalent avec E="
                             + str(cvar)
                             + "*E0 \
                      Les deplacements sont calcules a la base de la couche definie par sa cote inferieure Y"
@@ -4678,24 +4751,20 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                     FORMAT="TABLEAU",
                     SOUS_TITRE=titre,
                     TITRE=(
-                        "Resultats du calcul lineaire equivalent pour le sol"
-                        + str(s)
-                        + "avec E="
+                        "Resultats du calcul lineaire equivalent avec E="
                         + str(cvar)
                         + "*E0 \
                    Les acce max sont calculees a la base de la couche definie par sa cote inferieure Y"
                     ),
                     COURBE=(ifaccZ),
                 )
-                if ldevi == "OUI":
+                if ldevi == "OUI" and lacce == "OUI":
                     IMPR_FONCTION(
                         UNITE=utabtran,
                         FORMAT="TABLEAU",
                         SOUS_TITRE=titre,
                         TITRE=(
-                            "Resultats du calcul lineaire equivalent pour le sol"
-                            + str(s)
-                            + "avec E="
+                            "Resultats du calcul lineaire equivalent avec E="
                             + str(cvar)
                             + "*E0 \
                      Les vitesses sont calculees a la base de la couche definie par sa cote inferieure Y"
@@ -4707,9 +4776,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                         FORMAT="TABLEAU",
                         SOUS_TITRE=titre,
                         TITRE=(
-                            "Resultats du calcul lineaire equivalent pour le sol"
-                            + str(s)
-                            + "avec E="
+                            "Resultats du calcul lineaire equivalent avec E="
                             + str(cvar)
                             + "*E0 \
                      Les deplacements sont calcules a la base de la couche definie par sa cote inferieure Y"
@@ -4718,64 +4785,13 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                     )
                 ifgam = []
 
-                for d in range(1, NCOU + 1):
-                    ifgam.append(
-                        _F(
-                            FONCTION=__gam[d],
-                            MARQUEUR=0,
-                            LEGENDE="GAM_" + str(d) + legende + "deltaE =" + str(deltaE),
-                        )
-                    )
-
-                IMPR_FONCTION(
-                    UNITE=utabtran,
-                    FORMAT="TABLEAU",
-                    SOUS_TITRE=titre,
-                    TITRE=(
-                        "Resultats du calcul lineaire equivalent pour le sol"
-                        + str(s)
-                        + "avec E="
-                        + str(cvar)
-                        + "*E0 \
-                Les valeurs max sont calculees au 1er Point de Gauss de la couche definie par sa cote inferieure Y"
-                    ),
-                    COURBE=(ifgam),
-                )
-                iftau = []
-
-                for d in range(1, NCOU + 1):
-                    iftau.append(
-                        _F(
-                            FONCTION=__tau[d],
-                            MARQUEUR=0,
-                            LEGENDE="TAU_" + str(d) + legende + "deltaE =" + str(deltaE),
-                        )
-                    )
-
-                IMPR_FONCTION(
-                    UNITE=utabtran,
-                    FORMAT="TABLEAU",
-                    SOUS_TITRE=titre,
-                    TITRE=(
-                        "Resultats du calcul lineaire equivalent pour le sol"
-                        + str(s)
-                        + "avec E="
-                        + str(cvar)
-                        + "*E0 \
-                Les valeurs max sont calculees au 1er Point de Gauss de la couche definie par sa cote inferieure Y"
-                    ),
-                    COURBE=(iftau),
-                )
-
-                if Byrne:
-                    ifru = []
-
+                if lacce == "OUI":
                     for d in range(1, NCOU + 1):
-                        ifru.append(
+                        ifgam.append(
                             _F(
-                                FONCTION=__ru[d],
+                                FONCTION=__gam[d],
                                 MARQUEUR=0,
-                                LEGENDE="RU_" + str(d) + legende + "deltaE =" + str(deltaE),
+                                LEGENDE="GAM_" + str(d) + legende + " deltaE = " + str(deltaE),
                             )
                         )
 
@@ -4784,9 +4800,55 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                         FORMAT="TABLEAU",
                         SOUS_TITRE=titre,
                         TITRE=(
-                            "Resultats du calcul lineaire equivalent pour le sol"
-                            + str(s)
-                            + "avec E="
+                            "Resultats du calcul lineaire equivalent avec E="
+                            + str(cvar)
+                            + "*E0 \
+                    Les valeurs max sont calculees au 1er Point de Gauss de la couche definie par sa cote inferieure Y"
+                        ),
+                        COURBE=(ifgam),
+                    )
+                    iftau = []
+
+                    for d in range(1, NCOU + 1):
+                        iftau.append(
+                            _F(
+                                FONCTION=__tau[d],
+                                MARQUEUR=0,
+                                LEGENDE="TAU_" + str(d) + legende + " deltaE = " + str(deltaE),
+                            )
+                        )
+
+                    IMPR_FONCTION(
+                        UNITE=utabtran,
+                        FORMAT="TABLEAU",
+                        SOUS_TITRE=titre,
+                        TITRE=(
+                            "Resultats du calcul lineaire equivalent avec E="
+                            + str(cvar)
+                            + "*E0 \
+                    Les valeurs max sont calculees au 1er Point de Gauss de la couche definie par sa cote inferieure Y"
+                        ),
+                        COURBE=(iftau),
+                    )
+
+                if Byrne and lacce == "OUI":
+                    ifru = []
+
+                    for d in range(1, NCOU + 1):
+                        ifru.append(
+                            _F(
+                                FONCTION=__ru[d],
+                                MARQUEUR=0,
+                                LEGENDE="RU_" + str(d) + legende + " deltaE = " + str(deltaE),
+                            )
+                        )
+
+                    IMPR_FONCTION(
+                        UNITE=utabtran,
+                        FORMAT="TABLEAU",
+                        SOUS_TITRE=titre,
+                        TITRE=(
+                            "Resultats du calcul lineaire equivalent avec E="
                             + str(cvar)
                             + "*E0 \
                     Les valeurs max sont calculees au 1er Point de Gauss de la couche definie par sa cote inferieure Y"
@@ -4801,7 +4863,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                             _F(
                                 FONCTION=__ev[d],
                                 MARQUEUR=0,
-                                LEGENDE="RU_" + str(d) + legende + "deltaE =" + str(deltaE),
+                                LEGENDE="RU_" + str(d) + legende + " deltaE = " + str(deltaE),
                             )
                         )
 
@@ -4810,9 +4872,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                         FORMAT="TABLEAU",
                         SOUS_TITRE=titre,
                         TITRE=(
-                            "Resultats du calcul lineaire equivalent pour le sol"
-                            + str(s)
-                            + "avec E="
+                            "Resultats du calcul lineaire equivalent avec E="
                             + str(cvar)
                             + "*E0 \
                     Les valeurs max sont calculees au 1er Point de Gauss de la couche definie par sa cote inferieure Y"
@@ -4828,42 +4888,42 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                     _F(
                         FONCTION=__SAX_CL[0],
                         MARQUEUR=0,
-                        LEGENDE="SAX_CL" + name_dime[0] + legende + "deltaE =" + str(deltaE),
+                        LEGENDE="SAX_CL" + name_dime[0] + legende + " deltaE = " + str(deltaE),
                     )
                 )
                 ifspecX.append(
                     _F(
                         FONCTION=__SAX_RA[0],
                         MARQUEUR=0,
-                        LEGENDE="SAX_RA" + name_dime[0] + legende + "deltaE =" + str(deltaE),
+                        LEGENDE="SAX_RA" + name_dime[0] + legende + " deltaE = " + str(deltaE),
                     )
                 )
                 ifspecY.append(
                     _F(
                         FONCTION=__SAX_CL[1],
                         MARQUEUR=0,
-                        LEGENDE="SAX_CL" + name_dime[1] + legende + "deltaE =" + str(deltaE),
+                        LEGENDE="SAX_CL" + name_dime[1] + legende + " deltaE = " + str(deltaE),
                     )
                 )
                 ifspecY.append(
                     _F(
                         FONCTION=__SAX_RA[1],
                         MARQUEUR=0,
-                        LEGENDE="SAX_RA" + name_dime[1] + legende + "deltaE =" + str(deltaE),
+                        LEGENDE="SAX_RA" + name_dime[1] + legende + " deltaE = " + str(deltaE),
                     )
                 )
                 ifspecZ.append(
                     _F(
                         FONCTION=__SAX_CL[2],
                         MARQUEUR=0,
-                        LEGENDE="SAX_CL" + name_dime[2] + legende + "deltaE =" + str(deltaE),
+                        LEGENDE="SAX_CL" + name_dime[2] + legende + " deltaE = " + str(deltaE),
                     )
                 )
                 ifspecZ.append(
                     _F(
                         FONCTION=__SAX_RA[2],
                         MARQUEUR=0,
-                        LEGENDE="SAX_RA" + name_dime[2] + legende + "deltaE =" + str(deltaE),
+                        LEGENDE="SAX_RA" + name_dime[2] + legende + " deltaE = " + str(deltaE),
                     )
                 )
 
@@ -4876,7 +4936,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                             + str(d)
                             + name_dime[0]
                             + legende
-                            + "deltaE ="
+                            + " deltaE = "
                             + str(deltaE),
                         )
                     )
@@ -4888,7 +4948,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                             + str(d)
                             + name_dime[1]
                             + legende
-                            + "deltaE ="
+                            + " deltaE = "
                             + str(deltaE),
                         )
                     )
@@ -4900,7 +4960,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                             + str(d)
                             + name_dime[2]
                             + legende
-                            + "deltaE ="
+                            + " deltaE = "
                             + str(deltaE),
                         )
                     )
@@ -4909,21 +4969,21 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                     _F(
                         FONCTION=__SAX_BH[0],
                         MARQUEUR=0,
-                        LEGENDE="SAX_BH" + name_dime[0] + legende + "deltaE =" + str(deltaE),
+                        LEGENDE="SAX_BH" + name_dime[0] + legende + " deltaE = " + str(deltaE),
                     )
                 )
                 ifspecY.append(
                     _F(
                         FONCTION=__SAX_BH[1],
                         MARQUEUR=0,
-                        LEGENDE="SAX_BH" + name_dime[1] + legende + "deltaE =" + str(deltaE),
+                        LEGENDE="SAX_BH" + name_dime[1] + legende + " deltaE = " + str(deltaE),
                     )
                 )
                 ifspecZ.append(
                     _F(
                         FONCTION=__SAX_BH[2],
                         MARQUEUR=0,
-                        LEGENDE="SAX_BH" + name_dime[2] + legende + "deltaE =" + str(deltaE),
+                        LEGENDE="SAX_BH" + name_dime[2] + legende + " deltaE = " + str(deltaE),
                     )
                 )
 
@@ -5108,12 +5168,12 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                         _F(
                             FONCTION=__SAX_CL,
                             MARQUEUR=0,
-                            LEGENDE="SAX_CL" + legende + "deltaE =" + str(deltaE),
+                            LEGENDE="SAX_CL" + legende + " deltaE = " + str(deltaE),
                         ),
                         _F(
                             FONCTION=__SAX_RA,
                             MARQUEUR=0,
-                            LEGENDE="SAX_RA" + legende + "deltaE =" + str(deltaE),
+                            LEGENDE="SAX_RA" + legende + " deltaE = " + str(deltaE),
                         ),
                     ),
                 )

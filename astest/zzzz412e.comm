@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,6 +35,7 @@ mailcol = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
 #    (LONG BEACH EAST WEST)
 #
 
+from code_aster.CodeCommands.defi_list_reel import DEFI_LIST_REEL
 from sdnx100h import F_FONC
 
 LBEW, LBNS = F_FONC()
@@ -231,7 +232,7 @@ lfreqc = DEFI_LIST_REEL(DEBUT=0.15, INTERVALLE=_F(PAS=0.15, JUSQU_A=8.4))
 #                       COEF_AMPL_ACCE=1.)
 
 # IMPR_TABLE(TABLE=tabsol2D)
-
+LCOUCHE_ACCE = ["COUCH1", "COUCH1B"]
 
 tabsolSB = DEFI_SOL_EQUI(  # MAILLAGE=mailcol,
     GROUP_MA_DROITE="DR8",
@@ -613,6 +614,7 @@ tabsolSB = DEFI_SOL_EQUI(  # MAILLAGE=mailcol,
         ),
     ),
     UNITE_TABLE_RESU=24,
+    UNITE_RESU_TRAN=6,
     LIEU_SIGNAL="CHAMP_LIBRE",
     CORRECTION="BYRNE",
     COEF_KSI=0.6666667,
@@ -621,6 +623,9 @@ tabsolSB = DEFI_SOL_EQUI(  # MAILLAGE=mailcol,
     SURF="OUI",
     FREQ_COUP=9.5,
     COEF_AMPL_ACCE=1.0,
+    TOUT_ACCE="NON",
+    LIST_COUCHE_ACCE=LCOUCHE_ACCE,
+    TITRE="Calcul LEQ avec méthode Byrne",
 )
 
 IMPR_TABLE(TABLE=tabsolSB)
