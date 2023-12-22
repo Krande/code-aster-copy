@@ -852,5 +852,25 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
         )",
               py::arg( "geom" ), py::arg( "displ_prev" ), py::arg( "displ_step" ),
               py::arg( "time_prev" ), py::arg( "time_step" ), py::arg( "data" ),
-              py::arg( "coef_cont" ), py::arg( "coef_frot" ) );
+              py::arg( "coef_cont" ), py::arg( "coef_frot" ) )
+
+        .def( "getMechanicalNodalForces", &DiscreteComputation::getMechanicalNodalForces,
+              R"(
+      Return the elementary mechanical nodal forces vector
+
+      Arguments:
+            disp (FieldOnNodes): displacement field
+            stress (FieldOnCells): field of stresses
+            modeFourier (int) : fourier mode
+            varc_curr (FieldOnCellsReal): external state variables
+            behaviourMap (FieldOnCellsReal): map for non-linear behaviour
+            groupOfCells (list[str]): compute vector on given groups of cells.
+            assembly (bool) : if True return assembled vector (default: True)
+
+      Returns:
+            ElementaryVectorDisplacementReal: elementary Neumann forces vector
+        )",
+              py::arg( "disp" ), py::arg( "stress" ), py::arg( "modeFourier" ) = 0,
+              py::arg( "varc_curr" ) = nullptr, py::arg( "behaviourMap" ) = nullptr,
+              py::arg( "groupOfCells" ) = VectorString(), py::arg( "assembly" ) = true );
 };

@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe DataField
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -73,6 +73,8 @@ class DataField : public DataStructure {
     DataField() : DataStructure( 19, "CHAM_GD" ) {};
 
     std::string getFieldType() const;
+
+    std::string getFieldScalar() const;
 
     virtual bool exists() const {
         AS_ABORT( "Not implemented" );

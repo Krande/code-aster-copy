@@ -185,7 +185,6 @@ class DiscreteComputation {
 
     /**
      * @brief Compute volumetric loads
-     * @param TimeParameters Parameters for time
      */
     std::variant< ElementaryVectorDisplacementRealPtr, FieldOnNodesRealPtr >
     getMechanicalVolumetricForces( const ASTERDOUBLE time_curr = 0.0,
@@ -206,6 +205,17 @@ class DiscreteComputation {
     getThermalNonLinearVolumetricForces( const FieldOnNodesRealPtr temp_curr,
                                          const ASTERDOUBLE time_curr,
                                          const bool assembly = true ) const;
+
+    /**
+     * @brief Compute nodal forces
+     */
+    std::variant< ElementaryVectorDisplacementRealPtr, FieldOnNodesRealPtr >
+    getMechanicalNodalForces( const FieldOnNodesRealPtr disp, const FieldOnCellsRealPtr stress,
+                              const ASTERINTEGER modeFourier = 0,
+                              const FieldOnCellsRealPtr varc_curr = nullptr,
+                              const ConstantFieldOnCellsChar16Ptr behaviourMap = nullptr,
+                              const VectorString &groupOfCells = VectorString(),
+                              const bool assembly = true ) const;
 
     /**
      * @brief Compute elementary matrices for mechanical stiffness (RIGI_MECA)

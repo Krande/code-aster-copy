@@ -2,7 +2,7 @@
  * @file Calcul.cxx
  * @brief Implementation of Calcul
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -102,7 +102,7 @@ void Calcul::addFourierModeField( const ASTERINTEGER &nh ) {
     const std::string physicalName( "HARMON" );
     _FourierField->allocate( physicalName );
     ConstantFieldOnZone a( _mesh );
-    ConstantFieldValues< ASTERINTEGER > b( {"NH"}, {nh} );
+    ConstantFieldValues< ASTERINTEGER > b( { "NH" }, { nh } );
     _FourierField->setValueOnZone( a, b );
     addInputField( "PHARMON", _FourierField );
 }
@@ -113,7 +113,7 @@ void Calcul::addTimeField( const std::string &parameterName, const ASTERDOUBLE t
     const std::string physicalName( "INST_R" );
     _timeField->allocate( physicalName );
     ConstantFieldOnZone a( _mesh );
-    ConstantFieldValues< ASTERDOUBLE > b( {"INST"}, {time_value} );
+    ConstantFieldValues< ASTERDOUBLE > b( { "INST" }, { time_value } );
     _timeField->setValueOnZone( a, b );
     addInputField( parameterName, _timeField );
 }
@@ -125,8 +125,8 @@ void Calcul::addTimeField( const std::string &parameterName, const ASTERDOUBLE &
     const std::string physicalName( "INST_R" );
     _timeField->allocate( physicalName );
     ConstantFieldOnZone a( _mesh );
-    ConstantFieldValues< ASTERDOUBLE > b( {"INST", "DELTAT", "THETA", "KHI", "R", "RHO"},
-                                          {time_value, time_delta, time_theta, 0.0, 0.0, 0.0} );
+    ConstantFieldValues< ASTERDOUBLE > b( { "INST", "DELTAT", "THETA", "KHI", "R", "RHO" },
+                                          { time_value, time_delta, time_theta, 0.0, 0.0, 0.0 } );
     _timeField->setValueOnZone( a, b );
     addInputField( parameterName, _timeField );
 }
@@ -241,7 +241,7 @@ void Calcul::compute() {
 
 void Calcul::postCompute() {
 
-    const std::string questi1( "TYPE_CHAMP" ), questi2( "TYPE_SCA" );
+    const std::string questi1( "TYPE_CHAMP" );
     const std::string typeco( "CHAMP" );
     ASTERINTEGER repi = 0, ier = 0;
     JeveuxChar32 repk( " " );
@@ -251,8 +251,7 @@ void Calcul::postCompute() {
         std::string fieldName = field->getName();
         std::string fieldType = field->getFieldType();
         if ( fieldType == "ELEM" || fieldType == "ELNO" || fieldType == "ELGA" ) {
-            CALLO_DISMOI( questi2, fieldName, typeco, &repi, repk, arret, &ier );
-            std::string fieldScalar( strip( repk.toString() ) );
+            std::string fieldScalar = field->getFieldScalar();
             if ( fieldScalar == "R" ) {
                 std::static_pointer_cast< FieldOnCellsReal >( field )->setDescription( _FEDesc );
             } else if ( fieldScalar == "C" ) {
@@ -301,4 +300,25 @@ Calcul::getOutputElementaryTermComplex( const std::string &parameterName ) const
     AS_ASSERT( hasOutputElementaryTerm( parameterName ) );
     return std::static_pointer_cast< ElementaryTermComplex >(
         _outputElemTerms.at( parameterName ) );
+};
+
+/** @brief Detect input fields with complex values */
+bool Calcul::hasComplexInputFields( void ) const {
+    bool returnValue;
+    returnValue = false;
+    for ( const auto &[parameterName, field] : _inputFields ) {
+        std::string fieldName = field->getName();
+        std::string fieldType = field->getFieldType();
+#ifdef ASTER_DEBUG_CXX
+        std::cout << "Input Field :" << parameterName << ", " << fieldName << ", "
+                  << field->exists() << std::endl;
+#endif
+        if ( fieldType == "ELEM" || fieldType == "ELNO" || fieldType == "ELGA" ) {
+            std::string fieldScalar = field->getFieldScalar();
+            if ( fieldScalar == "C" ) {
+                return true;
+            }
+        }
+    }
+    return returnValue;
 };

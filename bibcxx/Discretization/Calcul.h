@@ -5,7 +5,7 @@
  * @file Calcul.h
  * @brief Header of Calcul class
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -184,6 +184,9 @@ class Calcul {
 
     /** @brief Get current FE descriptor */
     FiniteElementDescriptorPtr getFiniteElementDescriptor() { return _FEDesc; };
+
+    /** @brief Detect input fields with complex values */
+    bool hasComplexInputFields( void ) const;
 };
 
 /**  @typedef CalculPtr */

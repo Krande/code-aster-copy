@@ -3,7 +3,6 @@
  * @brief Implementation of class DiscreteComputation
  * @section LICENCE
  *   Copyright (C) 1991 2024  EDF R&D                www.code-aster.org
- *   Copyright (C) 1991 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -652,6 +651,125 @@ FieldOnNodesRealPtr DiscreteComputation::getContactForces(
     elemVect->build();
 
     return elemVect->assemble( _phys_problem->getDOFNumbering() );
+}
+
+/**
+ * @brief Compute nodal forces
+ */
+std::variant< ElementaryVectorDisplacementRealPtr, FieldOnNodesRealPtr >
+DiscreteComputation::getMechanicalNodalForces( const FieldOnNodesRealPtr disp,
+                                               const FieldOnCellsRealPtr stress,
+                                               const ASTERINTEGER modeFourier,
+                                               const FieldOnCellsRealPtr varc_curr,
+                                               const ConstantFieldOnCellsChar16Ptr behaviourMap,
+                                               const VectorString &groupOfCells,
+                                               const bool assembly ) const {
+
+    // Get main parameters
+    auto currModel = _phys_problem->getModel();
+    auto currMater = _phys_problem->getMaterialField();
+    auto currCodedMater = _phys_problem->getCodedMaterial();
+    auto currElemChara = _phys_problem->getElementaryCharacteristics();
+    auto currBehav = _phys_problem->getBehaviourProperty();
+
+    // Some checks
+    AS_ASSERT( currModel->isMechanical() );
+    AS_ASSERT( currMater );
+    if ( currMater && currMater->hasExternalStateVariable() ) {
+        if ( !varc_curr || !varc_curr->exists() ) {
+            raiseAsterError( "External state variables are needed but not given" );
+        }
+    }
+    if ( currModel->existsSTRX() ) {
+        throw std::runtime_error( "Beams not yet implemented" );
+    }
+
+    // Preparation of elementary vector
+    const std::string vect_option( "CHAR_MECA" );
+    auto elemVect = std::make_shared< ElementaryVectorDisplacementReal >(
+        currModel, currMater, currElemChara, _phys_problem->getListOfLoads() );
+    elemVect->prepareCompute( vect_option );
+
+    // Create object for calcul
+    const std::string calcul_option( "FORC_NODA" );
+    auto calcul = std::make_unique< Calcul >( calcul_option );
+
+    // Prepare calcul
+    if ( groupOfCells.empty() ) {
+        calcul->setModel( currModel );
+    } else {
+        calcul->setGroupsOfCells( currModel, groupOfCells );
+    }
+
+    // Add input fields: geometry
+    calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
+
+    // Add input fields: material parameters
+    calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
+
+    // Add input fields: elementary characteristics
+    if ( currElemChara ) {
+        calcul->addElementaryCharacteristicsField( currElemChara );
+    }
+
+    // Add input fields: for XFEM
+    if ( currModel->existsXfem() ) {
+        XfemModelPtr currXfemModel = currModel->getXfemModel();
+        calcul->addXFEMField( currXfemModel );
+    }
+
+    // Add Fourier field
+    calcul->addFourierModeField( modeFourier );
+
+    // Add behaviour field (non-linear)
+    if ( currBehav && !behaviourMap ) {
+        calcul->addInputField( "PCOMPOR", currBehav->getBehaviourField() );
+    };
+    if ( behaviourMap ) {
+        calcul->addInputField( "PCOMPOR", behaviourMap );
+    };
+
+    // Add external state variables
+    if ( varc_curr ) {
+        calcul->addInputField( "PVARCPR", varc_curr );
+    }
+
+    // Set current physical state
+    calcul->addInputField( "PDEPLAR", disp );
+    calcul->addInputField( "PSIEFR", stress );
+    // calcul->addInputField( "PSTRXMR", strx );
+
+    // Set output fields
+    calcul->addOutputElementaryTerm( "PVECTUR", std::make_shared< ElementaryTermReal >() );
+
+    // // Compute
+    if ( calcul->hasComplexInputFields() ) {
+        AS_ABORT( "Complex fields no supported" );
+    } else {
+        calcul->compute();
+    }
+
+    // Add RESU_ELEM to VECT_ELEM
+    if ( calcul->hasOutputElementaryTerm( "PVECTUR" ) ) {
+        elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTUR" ) );
+    }
+
+    // Prepare output
+    elemVect->build();
+
+    if ( assembly ) {
+        if ( elemVect->hasElementaryTerm() ) {
+            return elemVect->assemble( _phys_problem->getDOFNumbering() );
+        } else {
+            FieldOnNodesRealPtr vectAsse =
+                std::make_shared< FieldOnNodesReal >( _phys_problem->getDOFNumbering() );
+            vectAsse->setValues( 0.0 );
+            vectAsse->build();
+            return vectAsse;
+        }
+    }
+
+    return elemVect;
 }
 
 FieldOnNodesRealPtr
