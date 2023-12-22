@@ -1,0 +1,211 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
+
+MA = LIRE_MAILLAGE(FORMAT="MED", PARTITIONNEUR="PTSCOTCH")
+
+MO = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="THERMIQUE", MODELISATION="3D"))
+
+TINT = DEFI_FONCTION(NOM_PARA="INST", VALE=(-2, -15, -1, -10, 0, -4, 1, 1, 2, 2))
+
+CH0 = AFFE_CHAR_THER_F(INFO=2, MODELE=MO, TEMP_IMPO=(_F(GROUP_NO=("A", "A2"), TEMP=TINT),))
+
+MAT = DEFI_MATERIAU(THER=_F(LAMBDA=1.0, RHO_CP=100000000.0))
+MATC = DEFI_MATERIAU(THER=_F(LAMBDA=1.0, RHO_CP=0.0))
+
+LB = DEFI_CONSTANTE(VALE=1.0)
+RCP = DEFI_CONSTANTE(VALE=100000000.0)
+MAT_NL = DEFI_MATERIAU(THER_NL=_F(LAMBDA=LB, RHO_CP=RCP))
+
+
+CHMAT = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=MAT))
+CHMATC = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=MATC))
+CHMAT_NL = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=MAT_NL))
+
+
+LINST = DEFI_LIST_REEL(VALE=(-2, -1, 0, 1, 2))
+LINSTR = DEFI_LIST_REEL(VALE=(0, 1, 2))
+
+# calcul initial jusqu'à l'instant 0
+MEST = THER_LINEAIRE(
+    MODELE=MO,
+    CHAM_MATER=CHMAT,
+    EXCIT=(_F(CHARGE=CH0)),
+    TYPE_CALCUL="STAT",
+    INCREMENT=_F(LIST_INST=LINST, INST_FIN=0.0),
+)
+
+# suite du calcul cas 1: THER_LINEAIRE / utilisation reuse/ ETAT_INIT/ EVOL_THER (calcul STAT)/ INST
+MEST = THER_LINEAIRE(
+    reuse=MEST,
+    MODELE=MO,
+    CHAM_MATER=CHMAT,
+    EXCIT=(_F(CHARGE=CH0)),
+    ETAT_INIT=_F(EVOL_THER=MEST, INST=0.0),
+    INCREMENT=_F(LIST_INST=LINST),
+)
+
+# suite du calcul cas 2: THER_LINEAIRE / sans reuse/ ETAT_INIT/ EVOL_THER (calcul STAT)/ INST
+MEST2 = THER_LINEAIRE(
+    MODELE=MO,
+    CHAM_MATER=CHMAT,
+    EXCIT=(_F(CHARGE=CH0)),
+    ETAT_INIT=_F(EVOL_THER=MEST, INST=0.0),
+    INCREMENT=_F(LIST_INST=LINST, INST_INIT=0.0),
+)
+
+# suite du calcul cas 3 : THER_LINEAIRE / sans reuse/ ETAT_INIT/ EVOL_THER (calcul STAT)/ NUME_ORDRE
+MEST3 = THER_LINEAIRE(
+    MODELE=MO,
+    CHAM_MATER=CHMAT,
+    EXCIT=(_F(CHARGE=CH0)),
+    ETAT_INIT=_F(EVOL_THER=MEST, NUME_ORDRE=3),
+    INCREMENT=_F(LIST_INST=LINST, INST_INIT=0.0),
+)
+
+# suite du calcul cas 4: THER_NON_LINE / sans reuse/ ETAT_INIT/ EVOL_THER (calcul STAT)/ INST
+MEST4 = THER_NON_LINE(
+    MODELE=MO,
+    CHAM_MATER=CHMAT_NL,
+    EXCIT=(_F(CHARGE=CH0)),
+    ETAT_INIT=_F(EVOL_THER=MEST, INST=0.0),
+    INCREMENT=_F(LIST_INST=LINST),
+)
+
+# calcul cas 5: THER_LINEAIRE / utilisation reuse/ ETAT_INIT/ EVOL_THER (calcul TRAN) / INST
+# calcul initial avec TRAN
+MEST5 = THER_LINEAIRE(
+    MODELE=MO,
+    CHAM_MATER=CHMATC,
+    EXCIT=(_F(CHARGE=CH0)),
+    TYPE_CALCUL="TRAN",
+    INCREMENT=_F(LIST_INST=LINST, INST_FIN=0.0),
+)
+
+MEST5 = THER_LINEAIRE(
+    reuse=MEST5,
+    MODELE=MO,
+    CHAM_MATER=CHMAT,
+    EXCIT=(_F(CHARGE=CH0)),
+    ETAT_INIT=_F(EVOL_THER=MEST5, INST=0.0),
+    INCREMENT=_F(LIST_INST=LINST),
+)
+
+# calcul cas 6 à partir de CREA_RESU
+TEMPINIm1 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_TEMP_R",
+    OPERATION="AFFE",
+    MODELE=MO,
+    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE=-10.0),
+)
+
+TEMPINI0 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_TEMP_R",
+    OPERATION="AFFE",
+    MODELE=MO,
+    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE=-4.0),
+)
+RESINI = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_THER",
+    NOM_CHAM="TEMP",
+    AFFE=(_F(CHAM_GD=TEMPINIm1, INST=-1), _F(CHAM_GD=TEMPINI0, INST=0)),
+)
+
+MEST6 = THER_LINEAIRE(
+    MODELE=MO,
+    CHAM_MATER=CHMAT,
+    EXCIT=(_F(CHARGE=CH0)),
+    ETAT_INIT=_F(EVOL_THER=RESINI, INST=0.0),
+    INCREMENT=_F(LIST_INST=LINST, INST_INIT=0.0),
+)
+
+
+TEST_RESU(
+    RESU=(
+        _F(  # cas 1
+            NUME_ORDRE=4,
+            RESULTAT=MEST,
+            NOM_CHAM="TEMP",
+            GROUP_NO="F",
+            NOM_CMP="TEMP",
+            VALE_CALC=-4.357142856541546,
+        ),
+        _F(  # cas 2 inst init
+            NUME_ORDRE=0,
+            RESULTAT=MEST2,
+            NOM_CHAM="TEMP",
+            GROUP_NO="F",
+            NOM_CMP="TEMP",
+            VALE_CALC=-4,
+        ),
+        _F(  # cas 2
+            NUME_ORDRE=1,
+            RESULTAT=MEST2,
+            NOM_CHAM="TEMP",
+            GROUP_NO="F",
+            NOM_CMP="TEMP",
+            VALE_CALC=-4.357142856541546,
+        ),
+        _F(  # cas 3 instinit
+            NUME_ORDRE=0,
+            RESULTAT=MEST3,
+            NOM_CHAM="TEMP",
+            GROUP_NO="F",
+            NOM_CMP="TEMP",
+            VALE_CALC=-4,
+        ),
+        _F(  # cas 3
+            NUME_ORDRE=1,
+            RESULTAT=MEST3,
+            NOM_CHAM="TEMP",
+            GROUP_NO="F",
+            NOM_CMP="TEMP",
+            VALE_CALC=-4.357142856541546,
+        ),
+        _F(  # cas 4
+            NUME_ORDRE=1,
+            RESULTAT=MEST4,
+            NOM_CHAM="TEMP",
+            GROUP_NO="F",
+            NOM_CMP="TEMP",
+            VALE_CALC=-4.357142856541546,
+        ),
+        _F(  # cas 5
+            NUME_ORDRE=3,  # numero ordre change car le premier calcul est TRAN
+            RESULTAT=MEST5,
+            NOM_CHAM="TEMP",
+            GROUP_NO="F",
+            NOM_CMP="TEMP",
+            VALE_CALC=-4.357142856541546,
+        ),
+        _F(  # cas 6
+            NUME_ORDRE=1,
+            RESULTAT=MEST6,
+            NOM_CHAM="TEMP",
+            GROUP_NO="F",
+            NOM_CMP="TEMP",
+            VALE_CALC=-4.357142856541546,
+        ),
+    )
+)
+
+FIN()
+#
