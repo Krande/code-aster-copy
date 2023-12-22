@@ -794,6 +794,30 @@ DiscreteComputation::getMechanicalForces( const ASTERDOUBLE time_curr, const AST
     return vectAsse;
 };
 
+/**
+ * @brief Compute reaction forces
+ */
+FieldOnNodesRealPtr DiscreteComputation::getMechanicalReactionForces(
+    const FieldOnNodesRealPtr disp, const FieldOnCellsRealPtr stress, const ASTERDOUBLE time_prev,
+    const ASTERDOUBLE time_curr, const ASTERDOUBLE theta, const ASTERINTEGER modeFourier,
+    const FieldOnCellsRealPtr varc_curr, const ConstantFieldOnCellsChar16Ptr behaviourMap ) const {
+
+    const FieldOnNodesRealPtr nodalForces =
+        std::get< FieldOnNodesRealPtr >( DiscreteComputation::getMechanicalNodalForces(
+            disp, stress, modeFourier, varc_curr, behaviourMap ) );
+
+    const ASTERDOUBLE time_step = time_curr - time_prev;
+
+    const FieldOnNodesRealPtr mechanicalForces = DiscreteComputation::getMechanicalForces(
+        time_curr, time_step, theta, modeFourier, varc_curr );
+
+    FieldOnNodesRealPtr vectAsse =
+        std::make_shared< FieldOnNodesReal >( *nodalForces - *mechanicalForces );
+
+    vectAsse->build();
+    return vectAsse;
+};
+
 FieldOnNodesRealPtr
 DiscreteComputation::dualMechanicalVector( FieldOnNodesRealPtr lagr_curr ) const {
 

@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import code_aster
+from code_aster import CA
 from code_aster.Commands import *
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
@@ -139,7 +139,7 @@ disp = resultTrac.getField("DEPL", para="INST", value=timeToTest)
 behaviourMap = resultTrac.getField("COMPORTEMENT", para="INST", value=timeToTest)
 
 # Create the physical problem
-phys_pb = code_aster.PhysicalProblem(model, materialFieldTrac)
+phys_pb = CA.PhysicalProblem(model, materialFieldTrac)
 
 # We have non-linear (GREEN-LAGRANGE) => we need behaviour Map !
 phys_pb.computeBehaviourProperty(
@@ -147,7 +147,7 @@ phys_pb.computeBehaviourProperty(
 )
 
 # Create object for discrete computation
-disc_comp = code_aster.DiscreteComputation(phys_pb)
+disc_comp = CA.DiscreteComputation(phys_pb)
 
 # Compute external state variables
 varc_curr = phys_pb.getExternalStateVariables(timeToTest)
@@ -218,6 +218,34 @@ TEST_RESU(
         ),
     )
 )
+
+# ==================================================================================================
+#
+# Compute REAC_NODA
+#
+# ==================================================================================================
+
+# Compute forces
+reac_noda = disc_comp.getMechanicalReactionForces(
+    disp, sief_elga, time_curr=timeToTest, varc_curr=varc_curr
+)
+
+# # ORDRE_GRANDEUR n'existe pas pour TEST_RESU/CHAM_NO.
+# # Bien que le résultat soit ZERO, je mets -1.1920928955078125e-06 :(
+# TEST_RESU(
+#     CHAM_NO=(
+#         _F(
+#             GROUP_NO="NO8",
+#             CHAM_GD=reac_noda,
+#             NOM_CMP="DX",
+#             VALE_CALC=3e-7,
+#             PRECISION=1.0e-3,
+#             VALE_REFE=0.0,
+#             CRITERE="ABSOLU",
+#             REFERENCE="ANALYTIQUE",
+#         ),
+#     )
+# )
 
 
 FIN()

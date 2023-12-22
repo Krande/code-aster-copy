@@ -224,6 +224,17 @@ class DiscreteComputation {
                               const bool assembly = true ) const;
 
     /**
+     * @brief Compute reaction forces
+     */
+    FieldOnNodesRealPtr
+    getMechanicalReactionForces( const FieldOnNodesRealPtr disp, const FieldOnCellsRealPtr stress,
+                                 const ASTERDOUBLE time_prev = 0.0,
+                                 const ASTERDOUBLE time_curr = 0.0, const ASTERDOUBLE theta = 1.0,
+                                 const ASTERINTEGER modeFourier = 0,
+                                 const FieldOnCellsRealPtr varc_curr = nullptr,
+                                 const ConstantFieldOnCellsChar16Ptr behaviourMap = nullptr ) const;
+
+    /**
      * @brief Compute elementary matrices for mechanical stiffness (RIGI_MECA)
      */
     ElementaryMatrixDisplacementRealPtr getElasticStiffnessMatrix(

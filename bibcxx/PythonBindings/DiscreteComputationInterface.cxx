@@ -886,8 +886,29 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             varc_curr (FieldOnCellsReal): external state variables at current time
 
       Returns:
-            ElementaryVectorDisplacementReal: elementary Neumann forces vector
+            FieldOnNodesReal: forces vector
         )",
               py::arg( "time_curr" ) = 0.0, py::arg( "time_step" ) = 0.0, py::arg( "theta" ) = 1.0,
-              py::arg( "modeFourier" ) = 0, py::arg( "varc_curr" ) = nullptr );
+              py::arg( "modeFourier" ) = 0, py::arg( "varc_curr" ) = nullptr )
+
+        .def( "getMechanicalReactionForces", &DiscreteComputation::getMechanicalReactionForces,
+              R"(
+      Return the reaction forces
+
+      Arguments:
+            disp(FieldOnNodes): displacement field
+            stress (FieldOnCells): field of stresse
+            time_prev (float): time at begin of the step
+            time_curr (float): time at end of the step
+            theta (float): Theta parameter for time-integration
+            modeFourier (int) : fourier mode
+            varc_curr (FieldOnCellsReal): external state variables at current time
+            behaviourMap (FieldOnCellsReal): map for non-linear behaviour
+
+      Returns:
+            FieldOnNodesReal: forces vector
+        )",
+              py::arg( "disp" ), py::arg( "stress" ), py::arg( "time_prev" ) = 0.0,
+              py::arg( "time_curr" ) = 0.0, py::arg( "theta" ) = 1.0, py::arg( "modeFourier" ) = 0,
+              py::arg( "varc_curr" ) = nullptr, py::arg( "behaviourMap" ) = nullptr );
 };

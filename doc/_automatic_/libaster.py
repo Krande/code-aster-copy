@@ -1361,6 +1361,22 @@ class DiscreteComputation:
               FieldOnNodesReal: imposed displacement vector
         """
 
+    def getMechanicalForces(
+        self, time_curr=0.0, time_step=0.0, theta=1.0, modeFourier=0, varc_curr=None
+    ):
+        """Return the total mechanical Neumann forces vector
+
+        Arguments:
+              time_curr (float): Current time
+              time_step (float): Time increment
+              theta (float): Theta parameter for time-integration
+              modeFourier (int) : fourier mode
+              varc_curr (FieldOnCellsReal): external state variables at current time
+
+        Returns:
+              FieldOnNodesReal: forces vector
+        """
+
     def getMechanicalImposedDualBC(self, time_curr=0.0, assembly=True):
         """Return the mechanical imposed nodal BC elementary vector
 
@@ -1400,6 +1416,58 @@ class DiscreteComputation:
 
         Returns:
               ElementaryVectorDisplacementReal: elementary Neumann forces vector
+        """
+
+    def getMechanicalNodalForces(
+        self,
+        disp,
+        stress,
+        modeFourier=0,
+        varc_curr=None,
+        behaviourMap=None,
+        groupOfCells=[],
+        assembly=True,
+    ):
+        """Return the elementary mechanical nodal forces vector
+
+        Arguments:
+              disp (FieldOnNodes): displacement field
+              stress (FieldOnCells): field of stresses
+              modeFourier (int) : fourier mode
+              varc_curr (FieldOnCellsReal): external state variables
+              behaviourMap (FieldOnCellsReal): map for non-linear behaviour
+              groupOfCells (list[str]): compute vector on given groups of cells.
+              assembly (bool) : if True return assembled vector (default: True)
+
+        Returns:
+              ElementaryVectorDisplacementReal: elementary Neumann forces vector
+        """
+
+    def getMechanicalReactionForces(
+        self,
+        disp,
+        stress,
+        time_prev=0.0,
+        time_curr=0.0,
+        theta=1.0,
+        modeFourier=0,
+        varc_curr=None,
+        behaviourMap=None,
+    ):
+        """Return the reaction forces
+
+        Arguments:
+              disp(FieldOnNodes): displacement field
+              stress (FieldOnCells): field of stresse
+              time_prev (float): time at begin of the step
+              time_curr (float): time at end of the step
+              theta (float): Theta parameter for time-integration
+              modeFourier (int) : fourier mode
+              varc_curr (FieldOnCellsReal): external state variables at current time
+              behaviourMap (FieldOnCellsReal): map for non-linear behaviour
+
+        Returns:
+              FieldOnNodesReal: forces vector
         """
 
     def getMechanicalVolumetricForces(
