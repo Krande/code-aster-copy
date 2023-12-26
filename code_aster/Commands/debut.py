@@ -41,7 +41,6 @@ from run_aster.run import copy_datafiles
 
 from ..Behaviours import catalc
 from ..Cata.Syntax import tr
-from ..Cata.SyntaxUtils import remove_none
 from ..Helpers import LogicalUnitFile
 from ..Messages import UTMESS, MessageLog
 from ..Supervis import CommandSyntax, ExecuteCommand, Serializer, loadObjects

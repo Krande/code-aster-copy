@@ -395,15 +395,16 @@ def _build_def(bindir, datadir, lexport, options):
         if testname in TEST_FILES_INTEGR:
             lab.append("SMECA_INTEGR")
         procs = mpi * thr
+        timeout = int(tim * 1.1 * float(os.environ["FACMTPS"]))
         if "sbatch" in options:
-            tim *= 10
+            timeout = 12 * 3600
             procs = 1
         text.append(
             CTEST_DEF.format(
                 testname=testname,
                 labels=" ".join(sorted(lab)),
                 processors=procs,
-                timeout=int(tim * 1.1 * float(os.environ["FACMTPS"])),
+                timeout=timeout,
                 options=options,
                 ASTERDATADIR=datadir,
                 ext=".bat" if RUNASTER_PLATFORM == "win" else "",
