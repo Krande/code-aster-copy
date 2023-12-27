@@ -73,11 +73,14 @@ or:
 TEMPLATE = """#!/bin/bash
 #SBATCH --job-name={name}
 
-# nbnodes
-#SBATCH -N {mpi_nbnodes}
+# number of nodes
+#SBATCH --nodes={mpi_nbnodes}
 
-# nb proc MPI total
-#SBATCH -n {mpi_nbcpu}
+# number of MPI processes
+#SBATCH --ntasks={mpi_nbcpu}
+
+# number of threads per MPI process
+#SBATCH --cpus-per-task={nbthreads} --threads-per-core=1
 
 # max walltime
 #SBATCH --time="00:00:{time_limit}"
@@ -85,8 +88,8 @@ TEMPLATE = """#!/bin/bash
 # memory in MB
 #SBATCH --mem={memory_node}M
 
-# add `--exclusive` if several nodes
-#SBATCH {opt_exclusive}
+# add `--exclusive` if several nodes, define `--partition=...`
+#SBATCH {options}
 
 # redirect output in the current directory
 #SBATCH --output={output}
@@ -134,8 +137,10 @@ def check_parameters(params):
     cpu_per_node = ceil(params["mpi_nbcpu"] / nbnodes)
     params["memory_node"] = int(cpu_per_node * params["memory_limit"])
     params["time_limit"] = int(params["time_limit"])
-    if nbnodes > 1 or cpu_per_node >= 6:
-        params["opt_exclusive"] = "--exclusive"
+    if nbnodes > 1 or cpu_per_node >= 6 or "performance" in params["testlist"]:
+        params["options"] += " --exclusive"
+    if "bm" in params["testlist"]:
+        params["options"] += " --partition=bm"
 
 
 def main(argv=None):
@@ -161,18 +166,20 @@ def main(argv=None):
     addmem = CFG.get("addmem", 0.0)
     memory = export.get("memory_limit", 16384) + addmem
     opts = "--ctest" if args.ctest else ""
-    params = dict(
-        name=osp.splitext(osp.basename(args.file))[0],
-        mpi_nbcpu=export.get("mpi_nbcpu", 1),
-        mpi_nbnodes=nbnodes,
-        time_limit=export.get("time_limit", 3600),
-        memory_limit=memory,
-        memory_node=memory,
-        opt_exclusive="",
-        study=args.file,
-        run_aster_options=opts,
-        RUNASTER_ROOT=RUNASTER_ROOT,
-    )
+    params = {
+        "name": osp.splitext(osp.basename(args.file))[0],
+        "mpi_nbcpu": export.get("mpi_nbcpu", 1),
+        "mpi_nbnodes": nbnodes,
+        "nbthreads": export.get("ncpus", 1),
+        "time_limit": export.get("time_limit", 3600),
+        "memory_limit": memory,
+        "memory_node": memory,
+        "options": "",
+        "study": args.file,
+        "run_aster_options": opts,
+        "RUNASTER_ROOT": RUNASTER_ROOT,
+        "testlist": export.get("testlist", []),
+    }
     params["output"] = args.output or params["name"] + "-%j.txt"
     check_parameters(params)
 

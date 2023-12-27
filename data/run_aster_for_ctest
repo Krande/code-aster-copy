@@ -32,6 +32,7 @@ if [ ${use_sbatch} -eq 1 ]; then
         cmd=( "${prefix}/bin/run_sbatch" "--wait" "--output" "${base}.${MESS_EXT}" )
     else
         echo "no such file: ${prefix}/bin/run_sbatch, use 'run_aster'"
+        exit 2
     fi
 fi
 cmd+=( "--ctest" "${export}" )
