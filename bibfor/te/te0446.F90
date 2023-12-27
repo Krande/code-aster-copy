@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,10 +47,8 @@ subroutine te0446(option, nomte)
 !
 !        OPTIONS     FORC_NODA
 !
-! person_in_charge: sebastien.fayolle at edf.fr
-!
     integer :: nnos, ipoids, ivf, idfdx, jgano
-    integer :: jtab(7), ideplm, ideplp
+    integer :: jtab(7), ideplm
     integer :: icompo, i, i1, i2, j, k, ivectu, ipg, npg
     integer :: icontm, iretc
     integer :: nno, igeom
@@ -115,13 +113,12 @@ subroutine te0446(option, nomte)
 !
         if (reactu) then
             call jevech('PDEPLMR', 'L', ideplm)
-            call jevech('PDEPLPR', 'L', ideplp)
             do i = 1, nno
                 i1 = 3*(i-1)
                 i2 = 6*(i-1)
-                zr(igeom+i1) = zr(igeom+i1)+zr(ideplm+i2)+zr(ideplp+i2)
-                zr(igeom+i1+1) = zr(igeom+i1+1)+zr(ideplm+i2+1)+zr(ideplp+i2+1)
-                zr(igeom+i1+2) = zr(igeom+i1+2)+zr(ideplm+i2+2)+zr(ideplp+i2+2)
+                zr(igeom+i1) = zr(igeom+i1)+zr(ideplm+i2)
+                zr(igeom+i1+1) = zr(igeom+i1+1)+zr(ideplm+i2+1)
+                zr(igeom+i1+2) = zr(igeom+i1+2)+zr(ideplm+i2+2)
             end do
             if (nno .eq. 3) then
                 call dxtpgl(zr(igeom), pgl)

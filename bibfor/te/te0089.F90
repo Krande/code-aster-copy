@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,7 +53,7 @@ subroutine te0089(option, nomte)
     real(kind=8) :: nx, ny, norm(2), ul(9)
     real(kind=8) :: poids, celer
     integer :: jv_geom, jv_mate, jv_matr
-    integer :: jv_vect, jv_deplm, jv_deplp, jv_compo, jv_codret
+    integer :: jv_vect, jv_deplm, jv_compo, jv_codret
     integer :: ipoids, ivf, idfde
     integer :: nno, npg, ndim
     integer :: ij, i
@@ -169,10 +169,9 @@ subroutine te0089(option, nomte)
         if (FEForm .eq. 'U_P') then
             call jevech('PVECTUR', 'E', jv_vect)
             call jevech('PDEPLMR', 'L', jv_deplm)
-            call jevech('PDEPLPR', 'L', jv_deplp)
             do i = 1, 3*nno
                 zr(jv_vect+i-1) = 0.d0
-                ul(i) = zr(jv_deplm+i-1)+zr(jv_deplp+i-1)
+                ul(i) = zr(jv_deplm+i-1)
             end do
             do n1 = 1, 3*nno
                 do n2 = 1, 3*nno

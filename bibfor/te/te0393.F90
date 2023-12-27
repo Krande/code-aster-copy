@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,8 +48,8 @@ subroutine te0393(option, nomte)
 !
     real(kind=8) :: forref, momref
     integer :: nno, nc, ino, i, ndim, nnos, npg, ipoids, ivf, idfdk, jgano, kp
-    integer :: ne, ic, kc, k0, k1, k2, ico
-    integer :: ivectu, idepm, igeom, idepde, isigma, lorien, jefint
+    integer :: ne, ic, kc, k0, k1, ico
+    integer :: ivectu, idepm, igeom, isigma, lorien, jefint
     integer :: ifint
 !
     parameter(zero=0.0d0, un=1.0d0)
@@ -90,7 +90,6 @@ subroutine te0393(option, nomte)
 !        CALL JEVECH('PTEMPPR','L',ITEMPR)
         call jevech('PGEOMER', 'L', igeom)
         call jevech('PDEPLMR', 'L', idepm)
-        call jevech('PDEPLPR', 'L', idepde)
         call jevech('PCONTMR', 'L', isigma)
 !
 !        --- RECUPERATION DES ORIENTATIONS INITIALES Y0(1), Y0(2), Y0(3)
@@ -113,20 +112,17 @@ subroutine te0393(option, nomte)
 !
         k0 = igeom-1
         k1 = idepm-1
-        k2 = idepde-1
 !
         do ne = 1, nno
             do kc = 1, 3
                 k0 = k0+1
                 k1 = k1+1
-                k2 = k2+1
                 x00(kc, ne) = zr(k0)
-                x0k(kc, ne) = zr(k0)+zr(k1)+zr(k2)
+                x0k(kc, ne) = zr(k0)+zr(k1)
             end do
             do kc = 1, 3
                 k1 = k1+1
-                k2 = k2+1
-                qik(kc, ne) = zr(k1)+zr(k2)
+                qik(kc, ne) = zr(k1)
             end do
         end do
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@ subroutine te0019(option, nomte)
     real(kind=8) :: celer
     integer :: jv_geom, jv_mate, jv_matr
     integer :: ipoids, ivf, idfdx, idfdy
-    integer :: jv_vect, jv_deplm, jv_deplp, jv_compo, jv_codret
+    integer :: jv_vect, jv_deplm, jv_compo, jv_codret
     integer :: ndim, nno, npg
     integer :: ij, i
     integer :: n1, n2
@@ -180,10 +180,9 @@ subroutine te0019(option, nomte)
         if (FEForm .eq. 'U_P') then
             call jevech('PVECTUR', 'E', jv_vect)
             call jevech('PDEPLMR', 'L', jv_deplm)
-            call jevech('PDEPLPR', 'L', jv_deplp)
             do i = 1, 4*nno
                 zr(jv_vect+i-1) = 0.d0
-                ul(i) = zr(jv_deplm+i-1)+zr(jv_deplp+i-1)
+                ul(i) = zr(jv_deplm+i-1)
             end do
             do n1 = 1, 4*nno
                 do n2 = 1, 4*nno

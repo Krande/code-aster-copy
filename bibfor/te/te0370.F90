@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,7 +53,7 @@ subroutine te0370(option, nomte)
     integer :: nn, nno2, nt2
     integer :: ldec, kdec
     integer :: ipg, ik, ijkl
-    integer :: jv_compo, jv_deplm, jv_deplp
+    integer :: jv_compo, jv_deplm
     integer :: jv_geom, jv_mate
     integer :: jv_vect, jv_codret, jv_matr
     character(len=16) :: rela_comp
@@ -176,10 +176,9 @@ subroutine te0370(option, nomte)
     if (lVect .or. option .eq. 'FORC_NODA') then
         call jevech('PVECTUR', 'E', jv_vect)
         call jevech('PDEPLMR', 'L', jv_deplm)
-        call jevech('PDEPLPR', 'L', jv_deplp)
         do i = 1, nno2
             zr(jv_vect+i-1) = 0.d0
-            ul(i) = zr(jv_deplm+i-1)+zr(jv_deplp+i-1)
+            ul(i) = zr(jv_deplm+i-1)
         end do
         nn = 0
         do n1 = 1, nno2

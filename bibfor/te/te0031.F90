@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -303,13 +303,12 @@ subroutine te0031(option, nomte)
             defo_comp = zk16(icompo-1+DEFO)
             if ((defo_comp(6:10) .eq. '_REAC') .or. (defo_comp .eq. 'GROT_GDEP')) then
                 call jevech('PDEPLMR', 'L', jdepm)
-                call jevech('PDEPLPR', 'L', jdepr)
                 do i = 1, nno
                     i1 = 3*(i-1)
                     i2 = 6*(i-1)
-                    zr(jgeom+i1) = zr(jgeom+i1)+zr(jdepm+i2)+zr(jdepr+i2)
-                    zr(jgeom+i1+1) = zr(jgeom+i1+1)+zr(jdepm+i2+1)+zr(jdepr+i2+1)
-                    zr(jgeom+i1+2) = zr(jgeom+i1+2)+zr(jdepm+i2+2)+zr(jdepr+i2+2)
+                    zr(jgeom+i1) = zr(jgeom+i1)+zr(jdepm+i2)
+                    zr(jgeom+i1+1) = zr(jgeom+i1+1)+zr(jdepm+i2+1)
+                    zr(jgeom+i1+2) = zr(jgeom+i1+2)+zr(jdepm+i2+2)
                 end do
                 if (nno .eq. 3) then
                     call dxtpgl(zr(jgeom), pgl)

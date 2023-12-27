@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -69,7 +69,6 @@ class MEFL_HEXA20PSI(Element):
             para_in=(
                 (SP.PCOMPOR, LC.CCOMPOR),
                 (SP.PDEPLMR, DDL_MECA),
-                (SP.PDEPLPR, DDL_MECA),
                 (SP.PGEOMER, LC.EGEOM3D),
                 (SP.PMATERC, LC.CMATERC),
             ),
@@ -79,7 +78,7 @@ class MEFL_HEXA20PSI(Element):
             te=170,
             para_in=(
                 (SP.PDEPLMR, DDL_MECA),
-                (SP.PDEPLPR, DDL_MECA),
+                #  (SP.PDEPLPR, DDL_MECA),
                 (SP.PGEOMER, LC.EGEOM3D),
                 (SP.PMATERC, LC.CMATERC),
             ),
