@@ -106,7 +106,6 @@ subroutine calcCalcMeca(nb_option, list_option, &
     integer :: iter_newt, ixfem, nb_subs_stat
     aster_logical :: l_meta_zirc, l_meta_acier, l_xfem, l_macr_elem
     integer :: ldccvg
-    real(kind=8) :: partps(3)
     character(len=19) :: ligrmo, caco3d
     character(len=32) :: answer
     type(HHO_Field) :: hhoField
@@ -114,7 +113,6 @@ subroutine calcCalcMeca(nb_option, list_option, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    partps(:) = 0.d0
     nb_obje = 0
     base = 'G'
     caco3d = '&&MERIMO.CARA_ROTAF'
@@ -233,13 +231,13 @@ subroutine calcCalcMeca(nb_option, list_option, &
             ! calcul avec sigma init (sans integration de comportement)
             call copisd('CHAMP_GD', 'V', sigm_prev, sigm_curr)
             call vefnme(option, model, ds_material%mateco, cara_elem, &
-                        ds_constitutive%compor, partps, 0, ligrmo, &
+                        ds_constitutive%compor, 0, ligrmo, &
                         varc_curr, sigm_curr, ' ', disp, &
                         base, vefnod)
         else
             ! t(i) => t(i+1) : depplu => depmoi, depdel = 0
             call vefnme(option, model, ds_material%mateco, cara_elem, &
-                        ds_constitutive%compor, partps, 0, ligrmo, &
+                        ds_constitutive%compor, 0, ligrmo, &
                         varc_curr, sigm_curr, ' ', disp_curr, base, vefnod)
         end if
     end if

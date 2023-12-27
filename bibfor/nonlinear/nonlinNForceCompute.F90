@@ -19,7 +19,6 @@
 subroutine nonlinNForceCompute(model, cara_elem, list_func_acti, &
                                ds_material, ds_constitutive, &
                                ds_measure, ds_system, &
-                               time_prev, time_curr, &
                                hval_incr, hval_algo)
 !
     use NonLin_Datastructure_type
@@ -44,7 +43,6 @@ subroutine nonlinNForceCompute(model, cara_elem, list_func_acti, &
     type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     type(NL_DS_Measure), intent(inout) :: ds_measure
     type(NL_DS_System), intent(in) :: ds_system
-    real(kind=8), intent(in) :: time_prev, time_curr
     character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -70,7 +68,6 @@ subroutine nonlinNForceCompute(model, cara_elem, list_func_acti, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    real(kind=8) :: time_list(2)
     character(len=19) :: disp_prev, strx_prev, sigm_prev, varc_prev
     character(len=19) :: disp_cumu_inst, sigm_extr
     character(len=24) :: vrcmoi
@@ -96,10 +93,6 @@ subroutine nonlinNForceCompute(model, cara_elem, list_func_acti, &
 ! - Active functionnalities
     l_implex = isfonc(list_func_acti, 'IMPLEX')
 
-! - Time
-    time_list(1) = time_prev
-    time_list(2) = time_curr
-
 ! - Launch timer
     call nmtime(ds_measure, 'Init', '2nd_Member')
     call nmtime(ds_measure, 'Launch', '2nd_Member')
@@ -107,13 +100,13 @@ subroutine nonlinNForceCompute(model, cara_elem, list_func_acti, &
 ! - Compute
     if (l_implex) then
         call vefnme(option, model, ds_material%mateco, cara_elem, &
-                    ds_constitutive%compor, time_list, 0, ' ', &
+                    ds_constitutive%compor, 0, ' ', &
                     vrcmoi, sigm_extr, ' ', &
                     disp_prev, &
                     'V', ds_system%vefnod)
     else
         call vefnme(option, model, ds_material%mateco, cara_elem, &
-                    ds_constitutive%compor, time_list, 0, ' ', &
+                    ds_constitutive%compor, 0, ' ', &
                     vrcmoi, sigm_prev, strx_prev, &
                     disp_prev, &
                     'V', ds_system%vefnod)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -298,6 +298,9 @@ subroutine coeihm(ds_thm, option, &
                 sigp(adcop1+f+1) = defgep(addlh1-1+f)-defgep(addep1)
             end do
         end if
+    end if
+    if (lMatrPred) then
+        sigp = sigm
     end if
     if (lVect) then
         if (kpi .le. npg) then

@@ -68,9 +68,9 @@ subroutine te0588(option, nomte)
 !
     integer :: nno, imatuu, ndim, imate, iinstm, jcret
     integer :: dimmat, npi, npg, li, ibid, yaenrm
-    integer :: codret, iretp, iretm, icodre(1)
+    integer :: codret, icodre(1)
     integer :: ipoids, ivf, idfde, igeom, idim
-    integer :: iinstp, ideplm, ideplp, icompo, icarcr, ipesa
+    integer :: iinstp, ideplm, ideplp, jvCompor, icarcr, ipesa
     integer :: icontm, ivarip, ivarim, ivectu, icontp
     integer :: mecani(5), press1(7), press2(7), tempe(5), dimuel
     integer :: dimdef, dimcon, nbvari, nddls, nddlm
@@ -149,6 +149,9 @@ subroutine te0588(option, nomte)
     integer :: jlonch, jlst, jstno
     character(len=8) :: enr
     aster_logical :: lVect, lMatr, lVari, lSigm
+    character(len=16) :: compor_copy(COMPOR_SIZE)
+    integer :: iCompor
+    integer :: itabin(2), iSigm, iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -213,11 +216,22 @@ subroutine te0588(option, nomte)
         call jevech('PINSTPR', 'L', iinstp)
         call jevech('PDEPLMR', 'L', ideplm)
         call jevech('PDEPLPR', 'L', ideplp)
-        call jevech('PCOMPOR', 'L', icompo)
+        call jevech('PCOMPOR', 'L', jvCompor)
         call jevech('PCARCRI', 'L', icarcr)
         call jevech('PVARIMR', 'L', ivarim)
         call jevech('PCONTMR', 'L', icontm)
-        read (zk16(icompo-1+NVAR), '(I16)') nbvari
+
+! ---- Make copy of COMPOR map
+        do iCompor = 1, COMPOR_SIZE
+            compor_copy(iCompor) = zk16(jvCompor-1+iCompor)
+        end do
+
+! ----- Force DEFO_LDC="MECANIQUE" for THM
+        if (option(1:9) .eq. 'RIGI_MECA') then
+            compor_copy(DEFO_LDC) = "MECANIQUE"
+        end if
+
+        read (compor_copy(NVAR), '(I16)') nbvari
 ! =====================================================================
 ! ----RECUPERATION DES ANGLES NAUTIQUES/EULER DEFINIS PAR AFFE_CARA_ELEM
 ! --- ORIENTATION DU MASSIF
@@ -254,10 +268,11 @@ subroutine te0588(option, nomte)
             end if
         end if
 ! ----- Select objects to construct from option name
-        call behaviourOption(option, zk16(icompo), &
+        call behaviourOption(option, compor_copy, &
                              lMatr, lVect, &
                              lVari, lSigm, &
                              codret)
+
 ! ----- Output fields
         if (lMatr) then
             call jevech('PMATUNS', 'E', imatuu)
@@ -270,6 +285,10 @@ subroutine te0588(option, nomte)
         end if
         if (lSigm) then
             call jevech('PCONTPR', 'E', icontp)
+            call tecach('OOO', 'PCONTMR', 'L', iret=iret, nval=2, itab=itabin)
+            do iSigm = 1, itabin(2)
+                zr(icontp-1+iSigm) = zr(icontm-1+iSigm)
+            end do
             call jevech('PCODRET', 'E', jcret)
         end if
 ! ----- Compute
@@ -279,14 +298,14 @@ subroutine te0588(option, nomte)
             call xasshm(ds_thm, &
                         nno, npg, npi, ipoids, ivf, &
                         idfde, igeom, zr(igeom), zr(icarcr), zr(ideplm), &
-                        zr(ideplm), zr(icontm), zr(icontm), zr(ivarim), zr(ivarim), &
+                        zr(ideplm), zr(icontm), zr(icontp), zr(ivarim), zr(ivarim), &
                         defgem, defgep, drds, drdsr, dsde, &
                         b, dfdi, dfdi2, r, sigbar, &
                         c, ck, cs, zr(imatuu), zr(ivectu), &
                         zr(iinstm), zr(iinstp), option, zi(imate), mecani, &
                         press1, press2, tempe, dimdef, dimcon, &
                         dimuel, nbvari, nddls, nddlm, nmec, &
-                        np1, ndim, zk16(icompo), axi, modint, &
+                        np1, ndim, compor_copy, axi, modint, &
                         codret, nnop, nnops, nnopm, enrmec, &
                         dimenr, zi(jheavt), zi(jlonch), zi(jcnset), jpintt, &
                         jpmilt, jheavn, angnau, dimmat, enrhyd, nfiss, nfh, jfisno, &
@@ -305,7 +324,7 @@ subroutine te0588(option, nomte)
                         zr(iinstm), zr(iinstp), option, zi(imate), mecani, &
                         press1, press2, tempe, dimdef, dimcon, &
                         dimuel, nbvari, nddls, nddlm, nmec, &
-                        np1, ndim, zk16(icompo), axi, modint, &
+                        np1, ndim, compor_copy, axi, modint, &
                         codret, nnop, nnops, nnopm, enrmec, &
                         dimenr, zi(jheavt), zi(jlonch), zi(jcnset), jpintt, &
                         jpmilt, jheavn, angnau, dimmat, enrhyd, nfiss, nfh, jfisno, &
@@ -360,20 +379,11 @@ subroutine te0588(option, nomte)
         call jevech('PGEOMER', 'L', igeom)
         call jevech('PSIEFR', 'L', icontm)
         call jevech('PMATERC', 'L', imate)
-! ======================================================================
-! --- SI LES TEMPS PLUS ET MOINS SONT PRESENTS -------------------------
-! --- C EST QUE L ON APPELLE DEPUIS STAT NON LINE ET -------------------
-! --- ALORS LES TERMES DEPENDANT DE DT SONT EVALUES --------------------
-! ======================================================================
-        call tecach('ONO', 'PINSTMR', 'L', iretm, iad=iinstm)
-        call tecach('ONO', 'PINSTPR', 'L', iretp, iad=iinstp)
-        if (iretm .eq. 0 .and. iretp .eq. 0) then
-            dt = zr(iinstp)-zr(iinstm)
-            fnoevo = .true.
-        else
-            fnoevo = .false.
-            dt = 0.d0
-        end if
+
+! ----- Not a transient computation (CALC_CHAMP only !)
+        dt = 0.d0
+        fnoevo = .false.
+
 ! ======================================================================
 ! --- PARAMETRES EN SORTIE ---------------------------------------------
 ! ======================================================================

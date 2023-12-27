@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -252,7 +252,7 @@ U0 = STAT_NON_LINE(
     COMPORTEMENT=_F(RELATION="KIT_THM", RELATION_KIT=("ELAS", "LIQU_SATU", "HYDR_UTIL")),
     INCREMENT=_F(LIST_INST=INST1, INST_FIN=T1),
     ETAT_INIT=_F(SIGM=SIGINIT, DEPL=DDL_INIT),
-    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1, PAS_MINI_ELAS=4000),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1, PAS_MINI_ELAS=4),
     CONVERGENCE=_F(ITER_GLOB_MAXI=50),
     ARCHIVAGE=_F(LIST_INST=INST1),
 )

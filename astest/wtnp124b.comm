@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -348,7 +348,7 @@ TEST_RESU(
         NOM_CHAM="DEPL",
         GROUP_NO="N51",
         NOM_CMP="PRE1",
-        VALE_CALC=-124.562842415,
+        VALE_CALC=-124.56269822690805,
         VALE_REFE=-125.092,
         CRITERE="RELATIF",
         PRECISION=1.0e-2,
@@ -414,7 +414,7 @@ TEST_RESU(
         NOM_CHAM="DEPL",
         GROUP_NO="N51",
         NOM_CMP="PRE1",
-        VALE_CALC=-9.474859858,
+        VALE_CALC=-9.474845107718528,
         VALE_REFE=-9.4749999999999996,
         CRITERE="RELATIF",
         PRECISION=1.0e-2,

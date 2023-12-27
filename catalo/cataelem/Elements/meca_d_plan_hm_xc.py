@@ -293,8 +293,6 @@ class TemplateElement(Element):
                 (SP.PGEOMER, NGEOMER),
                 (OP.FORC_NODA.PHEAVTO, E6NEUTI),
                 (OP.FORC_NODA.PHEA_NO, LC.N5NEUTI),
-                (SP.PINSTMR, CTEMPSR),
-                (SP.PINSTPR, CTEMPSR),
                 (OP.FORC_NODA.PLONCHA, LC.E10NEUTI),
                 (OP.FORC_NODA.PLSN, LC.N1NEUT_R),
                 (OP.FORC_NODA.PLST, LC.N1NEUT_R),

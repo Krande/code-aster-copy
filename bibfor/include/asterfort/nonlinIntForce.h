@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,15 +17,14 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine nonlinIntForce(phaseType     ,&
-                              model         , cara_elem      ,&
-                              list_func_acti, iter_newt      , sdnume,&
-                              ds_material   , ds_constitutive,&
-                              ds_system     , ds_measure     ,&
-                              hval_incr     , hval_algo      ,&
-                              ldccvg        ,&
-                              hhoField_     , sddyna_        ,&
-                              time_prev_    , time_curr_     ,&
+    subroutine nonlinIntForce(phaseType, &
+                              model, cara_elem, &
+                              list_func_acti, iter_newt, sdnume, &
+                              ds_material, ds_constitutive, &
+                              ds_system, ds_measure, &
+                              hval_incr, hval_algo, &
+                              ldccvg, &
+                              hhoField_, sddyna_, &
                               ds_algorom_)
         use NonLin_Datastructure_type
         use HHO_type
@@ -43,7 +42,6 @@ interface
         integer, intent(out) :: ldccvg
         type(HHO_Field), optional, intent(in) :: hhoField_
         character(len=19), optional, intent(in) :: sddyna_
-        real(kind=8), optional, intent(in) :: time_prev_, time_curr_
         type(ROM_DS_AlgoPara), optional, intent(in) :: ds_algorom_
     end subroutine nonlinIntForce
 end interface

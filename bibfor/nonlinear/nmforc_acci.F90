@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine nmforc_acci(list_func_acti, &
                        model, cara_elem, nume_dof, &
@@ -156,7 +155,6 @@ subroutine nmforc_acci(list_func_acti, &
     call nonlinNForceCompute(model, cara_elem, list_func_acti, &
                              ds_material, ds_constitutive, &
                              ds_measure, ds_system, &
-                             time_prev, time_curr, &
                              hval_incr, hval_algo)
     call assvec('V', ds_system%cnfnod, 1, ds_system%vefnod, [1.d0], &
                 ds_system%nume_dof)

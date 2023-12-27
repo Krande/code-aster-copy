@@ -18,14 +18,13 @@
 !
 interface
     subroutine vefnme(optionz, modelz, mate, cara_elem, &
-                      compor, partps, nh, ligrelz, &
+                      compor, nh, ligrelz, &
                       varcz, sigmz, strxz, &
                       dispz, &
                       base, vect_elemz)
         character(len=*), intent(in) :: optionz, modelz
         character(len=24), intent(in) :: cara_elem, mate
         character(len=19), intent(in) :: compor
-        real(kind=8), intent(in) :: partps(*)
         integer, intent(in) :: nh
         character(len=*), intent(in) :: ligrelz
         character(len=*), intent(in) :: sigmz, varcz, strxz, dispz

@@ -440,15 +440,10 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, resultType)
                 call cpu_time(rctdeb)
             end if
 !
-! Initialisation
-            partps(1) = time
-            partps(2) = time
-            partps(3) = 0.D0
-!
 !
 ! separation reel imag si dyna_harmo
             call vefnme_cplx(option, 'V', modele, mateco, carac, &
-                             compor, partps, nh, ligrel, chvarc, &
+                             compor, nh, ligrel, chvarc, &
                              sigma, strx, chdepl, vfono)
 !       --- ASSEMBLAGE DES VECTEURS ELEMENTAIRES ---
             if (resultType .ne. 'DYNA_HARMO') then

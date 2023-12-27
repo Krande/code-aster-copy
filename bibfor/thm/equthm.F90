@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -117,17 +117,15 @@ subroutine equthm(ds_thm, option, j_mater, &
     r(1:dimdef+1) = 0.d0
     gravity(:) = 0.d0
     retcom = 0
-!
+
 ! - Address in generalized strains vector
-!
     addeme = mecani(2)
     addete = tempe(2)
     addep1 = press1(3)
     addep2 = press2(3)
     adde2nd = second(2)
-!
+
 ! - Address in generalized stresses vector
-!
     adcome = mecani(3)
     adcote = tempe(3)
     adcp11 = press1(4)
@@ -135,26 +133,23 @@ subroutine equthm(ds_thm, option, j_mater, &
     adcp21 = press2(4)
     adcp22 = press2(5)
     adco2nd = second(3)
-!
+
 ! - Add sqrt(2) for stresses
-!
     if (ds_thm%ds_elem%l_dof_meca) then
         do i = 4, 6
             congem(adcome+i-1) = congem(adcome+i-1)*rac2
             congem(adcome+6+i-1) = congem(adcome+6+i-1)*rac2
         end do
     end if
-!
+
 ! - Initialization of stresses
-!
     if (lSigm) then
         do i = 1, dimcon
             congep(i) = congem(i)
         end do
     end if
-!
-! - Compute generalized stresses and derivatives at current Gauss point
 
+! - Compute generalized stresses and derivatives at current Gauss point
     call comthm(ds_thm, &
                 lMatr, lSigm, &
                 lVari, lMatrPred, &
@@ -175,9 +170,8 @@ subroutine equthm(ds_thm, option, j_mater, &
     if (retcom .ne. 0) then
         goto 99
     end if
-!
+
 ! - Compute non-linear residual
-!
     if (lSigm) then
         call thmComputeResidual(ds_thm, parm_theta, gravity, &
                                 ndim, &
@@ -187,9 +181,8 @@ subroutine equthm(ds_thm, option, j_mater, &
                                 time_incr, &
                                 r)
     end if
-!
+
 ! - Compute derivative
-!
     if (lMatr) then
         call thmComputeMatrix(ds_thm, parm_theta, gravity, &
                               ndim, &
@@ -199,9 +192,8 @@ subroutine equthm(ds_thm, option, j_mater, &
                               time_incr, &
                               drds)
     end if
-!
+
 ! - Add sqrt(2) for stresses
-!
     if (ds_thm%ds_elem%l_dof_meca .and. lSigm) then
         do i = 4, 6
             congep(adcome+i-1) = congep(adcome+i-1)/rac2

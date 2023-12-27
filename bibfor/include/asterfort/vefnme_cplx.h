@@ -18,12 +18,11 @@
 !
 interface
     subroutine vefnme_cplx(option, base, model, mate, carele, &
-                           compor, partps, nh, ligrelz, varicomz, &
+                           compor, nh, ligrelz, varicomz, &
                            sigmaz, strxz, deplz, vecelz)
         character(len=16), intent(in) :: option
         character(len=1), intent(in) :: base
         character(len=8), intent(in) :: model
-        real(kind=8), intent(in) :: partps(*)
         character(len=24), intent(in) :: carele
         character(len=24), intent(in) :: mate
         character(len=*), intent(in) :: ligrelz

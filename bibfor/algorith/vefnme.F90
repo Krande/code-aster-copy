@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 !
 subroutine vefnme(optionz, modelz, mate, cara_elem, &
-                  compor, partps, nh, ligrelz, &
+                  compor, nh, ligrelz, &
                   varcz, sigmz, strxz, &
                   dispz, &
                   base, vect_elemz)
@@ -43,7 +43,6 @@ subroutine vefnme(optionz, modelz, mate, cara_elem, &
     character(len=*), intent(in) :: optionz, modelz
     character(len=24), intent(in) :: cara_elem, mate
     character(len=19), intent(in) :: compor
-    real(kind=8), intent(in) :: partps(*)
     integer, intent(in) :: nh
     character(len=*), intent(in) :: ligrelz
     character(len=*), intent(in) :: sigmz, varcz, strxz, dispz
@@ -83,10 +82,9 @@ subroutine vefnme(optionz, modelz, mate, cara_elem, &
     character(len=8) :: mesh, newnom, model
     character(len=16) :: option
     character(len=19) :: vect_elem, resu_elem
-    character(len=19) :: chharm, tpsmoi, tpsplu, ligrel_local, ligrel
+    character(len=19) :: chharm, ligrel_local, ligrel
     character(len=19) :: chgeom, chcara(18)
     integer :: iret, nbin
-    real(kind=8) :: instm, instp
     character(len=19) :: sigm, varc, strx, disp
 !
 ! --------------------------------------------------------------------------------------------------
@@ -111,8 +109,6 @@ subroutine vefnme(optionz, modelz, mate, cara_elem, &
     call exixfe(model, iret)
     l_xfem = (iret .eq. 1)
     chharm = '&&VEFNME.NUME_HARM'
-    tpsmoi = '&&VEFNME.CH_INSTAM'
-    tpsplu = '&&VEFNME.CH_INSTAP'
     option = optionz
     if (ligrel .eq. ' ') then
         ligrel_local = model(1:8)//'.MODELE'
@@ -139,15 +135,6 @@ subroutine vefnme(optionz, modelz, mate, cara_elem, &
 !
     call mecact('V', chharm, 'MAILLA', mesh, 'HARMON', &
                 ncmp=1, nomcmp='NH', si=nh)
-!
-! - Field for time
-!
-    instm = partps(1)
-    instp = partps(2)
-    call mecact('V', tpsmoi, 'MAILLA', mesh, 'INST_R', &
-                ncmp=1, nomcmp='INST', sr=instm)
-    call mecact('V', tpsplu, 'MAILLA', mesh, 'INST_R', &
-                ncmp=1, nomcmp='INST', sr=instp)
 !
 ! - Suppress old vect_elem result
 !
@@ -180,10 +167,6 @@ subroutine vefnme(optionz, modelz, mate, cara_elem, &
     lchin(12) = chharm
     lpain(13) = 'PCAMASS'
     lchin(13) = chcara(12)
-    lpain(14) = 'PINSTMR'
-    lchin(14) = tpsmoi
-    lpain(15) = 'PINSTPR'
-    lchin(15) = tpsplu
     lpain(16) = 'PVARCPR'
     lchin(16) = varc
     lpain(17) = 'PCAGEPO'
@@ -225,8 +208,6 @@ subroutine vefnme(optionz, modelz, mate, cara_elem, &
 ! - Clean
 !
     call detrsd('CHAMP_GD', chharm)
-    call detrsd('CHAMP_GD', tpsmoi)
-    call detrsd('CHAMP_GD', tpsplu)
 !
     call jedema()
 end subroutine

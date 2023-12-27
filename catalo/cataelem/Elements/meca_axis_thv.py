@@ -148,8 +148,6 @@ class THV_AXIS_QU8D(Element):
             para_in=(
                 (SP.PSIEFR, ECONTPG),
                 (SP.PGEOMER, NGEOMER),
-                (SP.PINSTMR, CTEMPSR),
-                (SP.PINSTPR, CTEMPSR),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PVARCPR, LC.ZVARCPG),
             ),

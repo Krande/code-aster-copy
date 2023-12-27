@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,14 +66,15 @@ subroutine thmCompNonLin(option, ds_thm)
     integer:: lg_vi, lg_sig
     real(kind=8), allocatable:: varip(:), sigp(:), deplp(:)
     aster_logical :: lVect, lMatr, lVari, lSigm, lMatrPred
+    character(len=16) :: compor_copy(COMPOR_SIZE), rela_meca
+    integer :: iCompor
 !
 ! --------------------------------------------------------------------------------------------------
 !
     codret = 0
     lMatrPred = option(1:9) .eq. 'RIGI_MECA'
-!
+
 ! - Get all parameters for current element
-!
     call thmGetElemPara(ds_thm, l_axi, &
                         type_elem, inte_type, ndim, &
                         mecani, press1, press2, tempe, second, &
@@ -84,9 +85,8 @@ subroutine thmCompNonLin(option, ds_thm)
                         jv_poids, jv_func, jv_dfunc, &
                         jv_poids2, jv_func2, jv_dfunc2, &
                         jv_gano)
-!
+
 ! - Input fields
-!
     call jevech('PGEOMER', 'L', jv_geom)
     call jevech('PMATERC', 'L', jv_mater)
     call jevech('PINSTMR', 'L', jv_instm)
@@ -97,16 +97,27 @@ subroutine thmCompNonLin(option, ds_thm)
     call jevech('PCARCRI', 'L', jv_carcri)
     call jevech('PVARIMR', 'L', jv_varim)
     call jevech('PCONTMR', 'L', jv_sigmm)
-!
+
+! - Make copy of COMPOR map
+    do iCompor = 1, COMPOR_SIZE
+        compor_copy(iCompor) = zk16(jv_compor-1+iCompor)
+    end do
+
+! - Force DEFO_LDC="MECANIQUE" for THM
+    rela_meca = compor_copy(MECA_NAME)
+
+! - Something (very) strange with Hujeux => glute
+    if (rela_meca .ne. "HUJEUX") then
+        compor_copy(DEFO_LDC) = "MECANIQUE"
+    end if
+
 ! - Select objects to construct from option name
-!
-    call behaviourOption(option, zk16(jv_compor), &
+    call behaviourOption(option, compor_copy, &
                          lMatr, lVect, &
                          lVari, lSigm, &
                          codret)
-!
+
 ! - Output fields
-!
     if (lMatr) then
         call jevech('PMATUNS', 'E', jv_matr)
     else
@@ -119,15 +130,11 @@ subroutine thmCompNonLin(option, ds_thm)
         jv_vect = ismaem()
     end if
 
-!
 ! - Get frame orientation for anisotropy
-!
     call thmGetParaOrientation(ndim, nno, jv_geom, angl_naut)
 
-!
 ! - Number of (total) internal variables
-!
-    read (zk16(jv_compor-1+NVAR), '(I16)') nbvari
+    read (compor_copy(NVAR), '(I16)') nbvari
 
 ! - Intermediate arrays to be safe when the addresses do not exist
     lg_sig = dimcon*npi
@@ -146,15 +153,11 @@ subroutine thmCompNonLin(option, ds_thm)
         varip(1:lg_vi) = 0
     end if
 
-!
 ! - Prepare reference configuration
-!
     allocate (deplp(dimuel))
     deplp(1:dimuel) = zr(jv_dispm:jv_dispm+dimuel-1)+zr(jv_dispp:jv_dispp+dimuel-1)
 
-!
 ! - Compute
-!
     call assthm(ds_thm, option, zi(jv_mater), &
                 lMatr, lSigm, lVect, &
                 lVari, lMatrPred, l_axi, &
@@ -165,7 +168,7 @@ subroutine thmCompNonLin(option, ds_thm)
                 nddl_p1, nddl_p2, nddl_2nd, &
                 dimdef, dimcon, dimuel, &
                 mecani, press1, press2, tempe, second, &
-                zk16(jv_compor), zr(jv_carcri), &
+                compor_copy, zr(jv_carcri), &
                 jv_poids, jv_poids2, &
                 jv_func, jv_func2, &
                 jv_dfunc, jv_dfunc2, &
@@ -175,7 +178,7 @@ subroutine thmCompNonLin(option, ds_thm)
                 zr(jv_instm), zr(jv_instp), &
                 zr(jv_matr), zr(jv_vect), codret)
 
-! Copy fields if required
+! - Copy fields if required
     if (lSigm) then
         call jevech('PCONTPR', 'E', jv_sigmp)
         zr(jv_sigmp:jv_sigmp+lg_sig-1) = sigp(1:lg_sig)

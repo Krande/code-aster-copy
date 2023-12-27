@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,8 +51,7 @@ subroutine thmCompForcNoda(ds_thm)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: elrefe, elref2
-    integer :: jv_geom, jv_mater, jv_sigm, jv_vect, jv_instm, jv_instp
-    integer :: iretm, iretp
+    integer :: jv_geom, jv_mater, jvSief, jv_vect
     aster_logical :: fnoevo
     integer :: nno, nnos, nnom
     integer :: npi, npi2, npg
@@ -89,24 +88,16 @@ subroutine thmCompForcNoda(ds_thm)
 !
     call thmGetGene(ds_thm, l_vf, ndim, &
                     mecani, press1, press2, tempe, second)
-!
-! - Is transient computation (STAT_NON_LINE or CALC_CHAMP ? )
-!
-    call tecach('ONO', 'PINSTMR', 'L', iretm, iad=jv_instm)
-    call tecach('ONO', 'PINSTPR', 'L', iretp, iad=jv_instp)
-    if (iretm .eq. 0 .and. iretp .eq. 0) then
-        dt = zr(jv_instp)-zr(jv_instm)
-        fnoevo = .true.
-    else
-        dt = 0.d0
-        fnoevo = .false.
-    end if
+
+! - Not a transient computation (CALC_CHAMP only !)
+    dt = 0.d0
+    fnoevo = .false.
 !
 ! - Input/ouput fields
 !
     call jevech('PGEOMER', 'L', jv_geom)
     call jevech('PMATERC', 'L', jv_mater)
-    call jevech('PCONTMR', 'L', jv_sigm)
+    call jevech('PSIEFR', 'L', jvSief)
     call jevech('PVECTUR', 'E', jv_vect)
 !
 ! - Get reference elements
@@ -146,6 +137,6 @@ subroutine thmCompForcNoda(ds_thm)
                 jv_poids, jv_poids2, &
                 jv_func, jv_func2, jv_dfunc, jv_dfunc2, &
                 nddls, nddlm, nddl_meca, nddl_p1, nddl_p2, nddl_2nd, &
-                zr(jv_sigm), b, r, zr(jv_vect))
+                zr(jvSief), b, r, zr(jv_vect))
 !
 end subroutine

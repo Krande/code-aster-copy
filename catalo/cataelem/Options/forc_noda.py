@@ -115,8 +115,6 @@ FORC_NODA = Option(
         SP.PHARMON,
         PHEAVTO,
         PHEA_NO,
-        SP.PINSTMR,
-        SP.PINSTPR,
         PLONCHA,
         PLSN,
         PLST,

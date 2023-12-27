@@ -138,8 +138,6 @@ class HM_J_AXQ8S(Element):
                 (SP.PCAMASS, LC.CCAMA2D),
                 (SP.PSIEFR, ECONTPG),
                 (SP.PGEOMER, NGEOMER),
-                (SP.PINSTMR, CTEMPSR),
-                (SP.PINSTPR, CTEMPSR),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PVARCPR, LC.ZVARCPG),
             ),

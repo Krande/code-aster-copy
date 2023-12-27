@@ -355,13 +355,7 @@ class HM_DPQ8(Element):
         ),
         OP.FORC_NODA(
             te=600,
-            para_in=(
-                (SP.PSIEFR, ECONTPG),
-                (SP.PGEOMER, NGEOMER),
-                (SP.PINSTMR, CTEMPSR),
-                (SP.PINSTPR, CTEMPSR),
-                (SP.PMATERC, LC.CMATERC),
-            ),
+            para_in=((SP.PSIEFR, ECONTPG), (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.FULL_MECA(

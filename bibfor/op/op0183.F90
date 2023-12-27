@@ -70,7 +70,7 @@ subroutine op0183()
     integer :: lonch, lvafon, n0
     integer :: nbddl, nbordr, nc, nh, np
     integer :: ltps, ltps2
-    real(kind=8) :: time, prec, partps(3)
+    real(kind=8) :: time, prec
 !
     character(len=2) :: codret
     character(len=6) :: nompro
@@ -155,7 +155,6 @@ subroutine op0183()
 !
 !
     time = 0.d0
-    partps = 0.d0
     l_etat_init = .false.
 !
     numref = ' '
@@ -246,7 +245,7 @@ subroutine op0183()
         end if
 !
         call vefnme(option, model, mateco, caraElem, &
-                    compor, partps, nh, ligrel, chvarc, &
+                    compor, nh, ligrel, chvarc, &
                     sigma, ' ', chdepl, 'V', &
                     vefnod)
 !
