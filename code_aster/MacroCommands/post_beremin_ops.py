@@ -245,14 +245,14 @@ def sigma1(rsieq, nume_inst, dwb, reswbrest, grwb):
 
         __sg1neut = CREA_CHAMP(
             OPERATION="ASSE",
-            TYPE_CHAM="ELGA_NEUT_R",
+            TYPE_CHAM="ELGA_DEPL_R",
             MODELE=modele,
             PROL_ZERO="OUI",
             ASSE=_F(
                 GROUP_MA=grmacalc,
                 CHAM_GD=rsieq.getField("SIEQ_ELGA", nume_inst),
                 NOM_CMP="PRIN_3",
-                NOM_CMP_RESU="X1",
+                NOM_CMP_RESU="DX",
             ),
         )
 
@@ -361,14 +361,14 @@ def sigma1_f(rsieq, nume_inst, dwb, reswbrest, grwb):
 
     return CREA_CHAMP(
         OPERATION="ASSE",
-        TYPE_CHAM="ELGA_NEUT_R",
+        TYPE_CHAM="ELGA_DEPL_R",
         MODELE=modele,
         PROL_ZERO="OUI",
         ASSE=_F(
             GROUP_MA=grmacalc,
             CHAM_GD=rdiv1.getField("UT01_ELGA", 0),
             NOM_CMP="X1",
-            NOM_CMP_RESU="X1",
+            NOM_CMP_RESU="DX",
         ),
     )
 
@@ -445,15 +445,15 @@ def sig1plasac(resultat, rsieq, numv1v2, dwb, reswbrest, grmapb, mclinst):
             rsig1aux.setField(sign, "SIEF_ELGA", 0)
             rsig1aux.setModel(modele, 0)
 
-            fmult = Formula()
-            fmult.setExpression("SIXX*SIYY")
-            fmult.setVariables(["SIXX", "SIYY"])
-            fmult.setContext(dict())
+            formule = Formula()
+            formule.setExpression("SIXX*SIYY")
+            formule.setVariables(["SIXX", "SIYY"])
+            formule.setContext({})
 
             rsig1 = CALC_CHAMP(
                 RESULTAT=rsig1aux,
                 GROUP_MA=grcalc,
-                CHAM_UTIL=_F(NOM_CHAM="SIEF_ELGA", FORMULE=fmult, NUME_CHAM_RESU=1),
+                CHAM_UTIL=_F(NOM_CHAM="SIEF_ELGA", FORMULE=formule, NUME_CHAM_RESU=1),
             )
 
             sigtyp = CREA_CHAMP(
@@ -577,22 +577,24 @@ def compute_beremin_integral(model, coefmultpb, sigw, dwb, grmapb, resupb):
         "W", ["mgrplasfull"]
     )[0]
     sigwinst = sigw.getAccessParameters()["NUME_ORDRE"]
-    valinte_sixx = []
-    for nume_inst in sigwinst:
-        nzval = np.array(
-            (
-                [
-                    elt_poids * elt_sigw
-                    for (elt_poids, elt_sigw) in zip(
-                        poids,
-                        sigw.getField("SIEF_ELGA", nume_inst).getValuesWithDescription(
-                            "SIXX", ["mgrplasfull"]
-                        )[0],
-                    )
-                ]
+    valinte_sixx = [
+        np.sum(
+            np.array(
+                (
+                    [
+                        elt_poids * elt_sigw
+                        for (elt_poids, elt_sigw) in zip(
+                            poids,
+                            sigw.getField("SIEF_ELGA", nume_inst).getValuesWithDescription(
+                                "SIXX", ["mgrplasfull"]
+                            )[0],
+                        )
+                    ]
+                )
             )
         )
-        valinte_sixx.append(np.sum(nzval))
+        for nume_inst in sigwinst
+    ]
 
     sigwaux = CREA_TABLE(
         LISTE=(_F(PARA="NUME_ORDRE", LISTE_I=sigwinst), _F(PARA="INTE_SIXX", LISTE_R=valinte_sixx))
@@ -619,7 +621,9 @@ def compute_beremin_integral(model, coefmultpb, sigw, dwb, grmapb, resupb):
 
     for clef in t_clef:
         d_form[clef] = Formula()
+
     for (clef, expression, variable, context) in zip(t_clef, t_expr, t_var, t_context):
+
         d_form[clef].setExpression(expression)
         d_form[clef].setVariables(variable)
         d_form[clef].setContext(context)
