@@ -110,9 +110,7 @@ def post_beremin_ops(self, **args):
 
         mawbrest = reswbrest.getModel().getMesh()
 
-        mawbrest = DEFI_GROUP(
-            reuse=mawbrest, MAILLAGE=mawbrest, CREA_GROUP_NO=_F(GROUP_MA=grmapb, NOM="ngrmapb")
-        )
+        mawbrest.setGroupOfNodes("ngrmapb", mawbrest.getNodesFromCells(grmapb))
 
         make_plasticity_groups(
             reswbrest, numv1v2, mclinst, dwb[grmapb]["SEUIL_EPSP_CUMU"], l_epspmax
@@ -243,7 +241,7 @@ def sigma1(rsieq, nume_inst, dwb, reswbrest, grwb):
         grmacalc = "mgrplas_{}".format(nume_inst)
         modele = reswbrest.getModel()
 
-        __sg1neut = CREA_CHAMP(
+        __sg1 = CREA_CHAMP(
             OPERATION="ASSE",
             TYPE_CHAM="ELGA_DEPL_R",
             MODELE=modele,
@@ -258,14 +256,14 @@ def sigma1(rsieq, nume_inst, dwb, reswbrest, grwb):
 
     else:
 
-        __sg1neut = sigma1_f(rsieq, nume_inst, dwb, reswbrest, grwb)
+        __sg1 = sigma1_f(rsieq, nume_inst, dwb, reswbrest, grwb)
 
-    return __sg1neut
+    return __sg1
 
 
 def sigma1_f(rsieq, nume_inst, dwb, reswbrest, grwb):
     """
-        Major principal stress (WEIBULL_FO)
+    Major principal stress (WEIBULL_FO)
 
     Arguments:
         rsieq (NonLinearResult): SIEQ_ELGA field
@@ -491,7 +489,7 @@ def tps_maxsigm(rsieq, mclinst, maxsig, resanpb, bere_m):
     Returns:
         FieldOnCells:
 
-            ELGA_NEUT_R filled by PRIN_3
+            ELGA_SIEF_R filled by PRIN_3
 
     if SIGM_MAXI in command file, MED file containing:
 
