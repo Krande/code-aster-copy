@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -91,14 +91,19 @@ class NewtonSolver(SolverFeature):
         """
         self.logManager = logManager
 
-    def update(self, primal_incr, callback=None):
+    def update(self, primal_incr, resi_fields=None, callback=None):
         """Update the physical state.
 
         Arguments:
             primal_incr (FieldOnNodes): Displacement increment.
+            resi_fields (dict of FieldOnNodes): Fields of residual values
         """
 
         self.phys_state.primal_step += primal_incr
+
+        for key, field in resi_fields.items():
+            self.phys_state.auxiliary(key, field)
+
         if callback:
             callback(primal_incr)
 
@@ -156,10 +161,12 @@ class NewtonSolver(SolverFeature):
             matrix_type = self._setMatrixType(current_incr)
 
             # Solve current iteration
-            primal_incr, self.current_matrix = incr_solv.solve(matrix_type, self.current_matrix)
+            primal_incr, self.current_matrix, resi_fields = incr_solv.solve(
+                matrix_type, self.current_matrix
+            )
 
             # Update
-            self.update(primal_incr, callback)
+            self.update(primal_incr, resi_fields, callback)
 
             if current_incr > 0:
                 self.logManager.printConvTableRow(

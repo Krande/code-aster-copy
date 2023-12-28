@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -115,7 +115,7 @@ subroutine rscrsd(baseZ, resultNameZ, resultTypeZ, nbStore)
 !     ------------------------------------------------------------------
 !                      For mechanic
 !     ------------------------------------------------------------------
-    integer, parameter :: nbFieldMeca = 129
+    integer, parameter :: nbFieldMeca = 131
     character(len=16), parameter :: fieldMeca(nbFieldMeca) = (/ &
                                     'DEPL            ', 'VITE            ', 'ACCE            ', &
                                     'DEPL_ABSOLU     ', 'VITE_ABSOLU     ', 'ACCE_ABSOLU     ', &
@@ -165,7 +165,8 @@ subroutine rscrsd(baseZ, resultNameZ, resultTypeZ, nbStore)
                                     'EPFD_NOEU       ', 'EPFP_NOEU       ', 'PDIL_ELGA       ', &
                                     'MATE_ELGA       ', 'MATE_ELEM       ', &
                                     'HHO_DEPL        ', 'HHO_VITE        ', 'HHO_ACCE        ', &
-                                    'PRES_NOEU       ', 'DEPL_ELGA       ', 'TEMP_ELGA       '/)
+                                    'PRES_NOEU       ', 'DEPL_ELGA       ', 'TEMP_ELGA       ', &
+                                    'RESI_NOEU       ', 'RESI_RELA_NOEU  '/)
 
 !     ------------------------------------------------------------------
 !                      For loads (EVOl_CHAR)

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -95,7 +95,7 @@ class IncrementalSolver(SolverFeature, EventSource):
 
         # evaluate convergence
         convManager = self.get_feature(SOP.ConvergenceManager)
-        convManager.evalNormResidual(residuals)
+        resi_fields = convManager.evalNormResidual(residuals)
 
         if not convManager.isConverged():
             disc_comp = DiscreteComputation(self.phys_pb)
@@ -124,4 +124,4 @@ class IncrementalSolver(SolverFeature, EventSource):
         convManager.evalGeometricResidual(primal_incr)
         self.notifyObservers(convManager, matrix_type)
 
-        return primal_incr, jacobian
+        return primal_incr, jacobian, resi_fields

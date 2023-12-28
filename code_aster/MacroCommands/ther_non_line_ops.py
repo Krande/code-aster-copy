@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -175,12 +175,7 @@ def ther_non_line_ops(self, **args):
                         phys_state.getState(-1).auxiliary["HYDR_ELGA"],
                     )
 
-                phys_state.getState()._aux["HYDR_ELGA"] = hydr_curr
-
-                storage_manager = nl_solver.get_feature(SOP.Storage)
-                storage_manager.storeField(
-                    nl_solver.step_rank, hydr_curr, "HYDR_ELGA", phys_state.time_curr
-                )
+                phys_state.auxiliary("HYDR_ELGA", hydr_curr)
 
     class PostHookHHO:
         """Hook to compute HHO_TEMP."""
@@ -194,10 +189,8 @@ def ther_non_line_ops(self, **args):
                 hho_field = HHO(nl_solver.phys_pb).projectOnLagrangeSpace(
                     nl_solver.phys_state.primal_curr
                 )
-                storage_manager = nl_solver.get_feature(SOP.Storage)
-                storage_manager.storeField(
-                    nl_solver.step_rank, hho_field, "HHO_TEMP", nl_solver.phys_state.time_curr
-                )
+
+                nl_solver.phys_state.auxiliary("HHO_TEMP", hho_field)
 
     solver.use(PostHookHydr())
     solver.use(PostHookHHO())

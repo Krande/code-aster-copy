@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -65,7 +65,8 @@ class PhysicalState(BaseFeature):
         _fields_prev = _fields_step = None
         _stress = _internVar = _externVar = None
         _primal_field = _available_fields = None
-        _pb_type = _aux = None
+        _pb_type = None
+        _aux = {}
         __setattr__ = no_new_attributes(object.__setattr__)
 
         def __init__(self, pb_type):
@@ -179,10 +180,11 @@ class PhysicalState(BaseFeature):
             """FieldOnCellsReal: External state variables."""
             return self._externVar
 
-        def auxiliary(self, field):
+        @property
+        def auxiliary(self, field_name):
             """Return an auxiliary field"""
-            if self._aux and field in self._aux:
-                return self._aux[field]
+            if self._aux and field_name in self._aux:
+                return self._aux[field_name]
 
             return None
 
@@ -216,7 +218,10 @@ class PhysicalState(BaseFeature):
             if other._aux:
                 self._aux = {}
                 for key, field in other._aux.items():
-                    self._aux[key] = field.copy()
+                    if field is None:
+                        self._aux[key] = None
+                    else:
+                        self._aux[key] = field.copy()
 
             return self
 
@@ -302,6 +307,12 @@ class PhysicalState(BaseFeature):
             }
             for field_name in self.getFields():
                 ret[field_name] = self.fields_prev[field_name]
+
+            # add _aux fields
+            if self._aux:
+                for field_name in self._aux:
+                    ret[field_name] = self._aux[field_name]
+
             return ret
 
         def debugPrint(self, label=""):
@@ -547,9 +558,18 @@ class PhysicalState(BaseFeature):
         self.current._externVar = field
 
     @property
-    def auxiliary(self):
+    def auxiliary(self, key):
         """FieldOnCellsReal: auxiliary field."""
-        return self.current._aux
+        assert key in self.current._aux.keys(), f"unexpected key: {key}"
+        return self.current._aux[key]
+
+    def auxiliary(self, key, field):
+        """Set auxiliary state variables for key.
+
+        Arguments:
+            field (FieldOnCellsReal): external state variables
+        """
+        self.current._aux[key] = field
 
     def stash(self):
         """Stores the object state to provide transactionality semantics."""
