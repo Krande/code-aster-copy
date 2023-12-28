@@ -5,7 +5,7 @@
  * @file FieldOnCells.h
  * @brief Header of class for FieldOnCells
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -337,7 +337,7 @@ class FieldOnCells : public DataField {
             if ( PyComplex_Check( res ) ) {
                 ASTERDOUBLE re = (ASTERDOUBLE)PyComplex_RealAsDouble( res );
                 ASTERDOUBLE im = (ASTERDOUBLE)PyComplex_ImagAsDouble( res );
-                tmp[i] = {re, im};
+                tmp[i] = { re, im };
             } else {
                 PyErr_Format( PyExc_ValueError, "Returned value of \
                     type different from ASTERCOMPLEX" );
@@ -443,7 +443,10 @@ class FieldOnCells : public DataField {
      * @brief Get values of the field
      *
      */
-    const JeveuxVector< ValueType > &getValues() const { return _values; }
+    const JeveuxVector< ValueType > &getValues() const {
+        _values->updateValuePointer();
+        return _values;
+    }
 
     /**
      * @brief Get descriptor of the field
@@ -590,6 +593,8 @@ class FieldOnCells : public DataField {
     template < class T = ValueType >
     typename std::enable_if< std::is_same< T, ASTERDOUBLE >::value, ASTERDOUBLE >::type
     norm( const std::string normType ) const {
+        AS_ASSERT( normType == "NORM_1" || normType == "NORM_2" || normType == "NORM_INFINITY" );
+
         ASTERDOUBLE norme = 0.0;
         ASTERINTEGER beg = 0, end = 0, nbgrp = 0;
 
@@ -650,8 +655,6 @@ class FieldOnCells : public DataField {
                         norme = std::max( norme, std::abs( ( *this )[pos] ) );
                     }
                 }
-            } else {
-                AS_ASSERT( false );
             }
         }
 
@@ -710,7 +713,7 @@ class FieldOnCells : public DataField {
 
         CALLO_CHPCHD( getName(), loc, getName(), prol, base, cham_elem->getName(), model );
 
-        cham_elem->build( {_dofDescription} );
+        cham_elem->build( { _dofDescription } );
 
         return cham_elem;
     }

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,14 +24,6 @@ from ..Language.Syntax import EXCLUS, FACT, SIMP, BLOC
 
 
 def C_INCREMENT():  # COMMUN#
-    kwargs = {}
-
-    kwargs["LIST_INST"] = SIMP(statut="o", typ=(listr8_sdaster, list_inst))
-    kwargs["NUME_INST_INIT"] = SIMP(statut="f", typ="I")
-    kwargs["INST_INIT"] = SIMP(statut="f", typ="R")
-    kwargs["NUME_INST_FIN"] = SIMP(statut="f", typ="I")
-    kwargs["INST_FIN"] = SIMP(statut="f", typ="R")
-
     mcfact = FACT(
         statut="o",
         regles=(EXCLUS("NUME_INST_INIT", "INST_INIT"), EXCLUS("NUME_INST_FIN", "INST_FIN")),
@@ -43,7 +35,11 @@ def C_INCREMENT():  # COMMUN#
                 PRECISION=SIMP(statut="f", typ="R", defaut=1.0e-6),
             ),
         ),
-        **kwargs
+        LIST_INST=SIMP(statut="o", typ=(listr8_sdaster, list_inst)),
+        NUME_INST_INIT=SIMP(statut="f", typ="I"),
+        INST_INIT=SIMP(statut="f", typ="R"),
+        NUME_INST_FIN=SIMP(statut="f", typ="I"),
+        INST_FIN=SIMP(statut="f", typ="R"),
     )
 
     return mcfact
