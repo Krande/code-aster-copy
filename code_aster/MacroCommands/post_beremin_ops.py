@@ -516,10 +516,11 @@ def tps_maxsigm(rsieq, mclinst, maxsig, resanpb, bere_m):
 
             if inst == maxsig.getTime(0):
                 chmaxsig = maxsig.getField("SIEF_ELGA", 0)
-            elif inst > maxsig.getTime(0):
                 maxsig_r = NonLinearResult()
                 maxsig_r.allocate(2)
-                maxsig_r.setField(maxsig.getField("SIEF_ELGA", indice - 1), "SIEF_ELGA", 0)
+                maxsig_r.setField(chmaxsig, "SIEF_ELGA", 0)
+            elif inst > maxsig.getTime(0):
+
                 maxsig_r.setField(maxsig.getField("SIEF_ELGA", indice), "SIEF_ELGA", 1)
 
                 chmaxsig = CREA_CHAMP(
@@ -531,6 +532,8 @@ def tps_maxsigm(rsieq, mclinst, maxsig, resanpb, bere_m):
                     TYPE_RESU="VALE",
                     NUME_ORDRE=(0, 1),
                 )
+
+                maxsig_r.setField(chmaxsig, "SIEF_ELGA", 0)
 
             chsixxm = chmaxsig.transform(puiss_m)
 
