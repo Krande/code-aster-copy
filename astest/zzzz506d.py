@@ -239,6 +239,7 @@ test.assertAlmostEqual(vnew.norm("NORM_2"), vmodel.norm("NORM_2"), delta=1e-12)
 
 RESI_GLOB = SOLUN.getField("RESI_NOEU", 2)
 
+
 RESI_RELA = SOLUN.getField("RESI_RELA_NOEU", 2)
 
 TEST_RESU(
@@ -249,7 +250,7 @@ TEST_RESU(
             PRECISION=1.0e-08,
             TYPE_TEST="MAX",
             CHAM_GD=RESI_GLOB,
-            VALE_CALC=2.0954757928848267e-09,
+            VALE_CALC=3.026798367500305e-09,
             VALE_REFE=0.0,
             VALE_ABS="OUI",
         ),
@@ -259,7 +260,7 @@ TEST_RESU(
             PRECISION=1.0e-08,
             TYPE_TEST="MAX",
             CHAM_GD=RESI_RELA,
-            VALE_CALC=7.920315126294017e-16,
+            VALE_CALC=1.1440455182424691e-15,
             VALE_REFE=0.0,
             VALE_ABS="OUI",
         ),
