@@ -69,8 +69,8 @@ def check_numpy_headers(self):
     self.start_msg("Checking for numpy include")
     # retrieve includes dir from numpy module
     numpy_includes = self.get_python_variables(
-        ['"\\n".join(misc_util.get_numpy_include_dirs())'],
-        ["from numpy.distutils import misc_util"],
+        ['get_include()'],
+        ["from numpy import get_include"],
     )
     if self.is_defined("ASTER_PLATFORM_MINGW"):
         incs = [PureWindowsPath(i) for i in numpy_includes]
