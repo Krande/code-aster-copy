@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine vefnme_cplx(option, base, model, mate, carele, &
                        compor, partps, nh, ligrelz, varicomz, &
-                       sigmaz, strxz, deplz, depl_incrz, vecelz)
+                       sigmaz, strxz, deplz, vecelz)
 !
     implicit none
 !
@@ -59,7 +58,6 @@ subroutine vefnme_cplx(option, base, model, mate, carele, &
     character(len=*), intent(in) :: varicomz
     character(len=*), intent(in) :: strxz
     character(len=*), intent(in) :: deplz
-    character(len=*), intent(in) :: depl_incrz
     character(len=*), intent(inout) :: vecelz(*)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -105,7 +103,7 @@ subroutine vefnme_cplx(option, base, model, mate, carele, &
     character(len=19) :: pintto, cnseto, heavto, loncha, basloc, lsn, lst, stano
     character(len=19) :: pmilto, fissno, hea_no
     character(len=19) :: sigma, varicom, strx
-    character(len=19) :: depl, depl_incr
+    character(len=19) :: depl
     character(len=19) :: chdecr(nbin), chdeci(nbin), ch19, chr, chi, ch1(nbout), ch2(nbout)
     aster_logical :: debug, lcmplx, lsspt
     integer :: ifmdbg, nivdbg
@@ -122,7 +120,6 @@ subroutine vefnme_cplx(option, base, model, mate, carele, &
     varicom = varicomz
     strx = strxz
     depl = deplz
-    depl_incr = depl_incrz
     ligrel = ligrelz
     newnom = '.0000000'
     numhar = '&&VEFNME.NUME_HARM'
@@ -203,12 +200,10 @@ subroutine vefnme_cplx(option, base, model, mate, carele, &
     lchin(4) = chcara(1)
     lpain(5) = 'PCOMPOR'
     lchin(5) = compor
-    lpain(6) = 'PCONTMR'
+    lpain(6) = 'PSIEFR'
     lchin(6) = sigma
-    lpain(7) = 'PDEPLMR'
+    lpain(7) = 'PDEPLAR'
     lchin(7) = depl
-    lpain(8) = 'PDEPLPR'
-    lchin(8) = depl_incr
     lpain(9) = 'PCAARPO'
     lchin(9) = chcara(9)
     lpain(10) = 'PCADISK'

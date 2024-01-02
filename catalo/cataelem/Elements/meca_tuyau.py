@@ -521,8 +521,8 @@ class MET3SEG3(Element):
             para_in=(
                 (SP.PCAGEPO, CCAGEPO),
                 (OP.FORC_NODA.PCAORIE, CCAORIE),
-                (OP.FORC_NODA.PCOMPOR, LC.CCOMPOR),
-                (OP.FORC_NODA.PCONTMR, ECONTPG),
+                (SP.PCOMPOR, LC.CCOMPOR),
+                (SP.PSIEFR, ECONTPG),
                 (SP.PGEOMER, NGEOMER),
                 (OP.FORC_NODA.PNBSP_I, ENBSP_I),
             ),

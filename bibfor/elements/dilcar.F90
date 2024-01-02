@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -105,7 +105,7 @@ subroutine dilcar(option, icompo, icontm, ivarim, ideplm, ideplp, &
         call jevech('PINSTPR', 'L', iinstp)
     else if (option .eq. 'FORC_NODA') then
         call jevech('PCOMPOR', 'L', icompo)
-        call jevech('PCONTMR', 'L', icontm)
+        call jevech('PSIEFR', 'L', icontm)
         call jevech('PGEOMER', 'L', igeom)
     else
         ASSERT(ASTER_FALSE)

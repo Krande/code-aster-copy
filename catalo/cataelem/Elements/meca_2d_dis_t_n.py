@@ -196,7 +196,7 @@ class MECA_2D_DIS_T_N(Element):
             para_in=(
                 (OP.FORC_NODA.PCAORIE, CCAORIE),
                 (SP.PCINFDI, LC.CCINFDI),
-                (OP.FORC_NODA.PCONTMR, EEFGEGA),
+                (SP.PSIEFR, EEFGEGA),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ subroutine te0395(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
     real(kind=8) :: bsigm(3, 8), geo(24), sigtmp(6), ftemp(24), sigref
     integer :: jgano, nno, k, npg1, i, j, ivectu, ndim, nnos
-    integer :: ipoids, ivf, idfde, igeom, icontm, imate, idepl
+    integer :: ipoids, ivf, idfde, igeom, jvSief, imate, jvDisp
     integer :: icomp, ii, iretc, iretd
 ! DEB ------------------------------------------------------------------
 !
@@ -67,28 +67,22 @@ subroutine te0395(option, nomte)
     if (option .eq. 'FORC_NODA') then
 !      --------------------
 !         CHAMPS POUR LA REACTUALISATION DE LA GEOMETRIE
-        call tecach('ONO', 'PDEPLMR', 'L', iretd, iad=idepl)
-        if ((iretd .eq. 0) .and. (iretc .eq. 0)) then
-            if (zk16(icomp+2) (1:6) .ne. 'PETIT ') then
-                do i = 1, ndim*nno
-                    geo(i) = geo(i)+zr(idepl-1+i)
-                end do
-            end if
-        end if
+        call jevech('PDEPLAR', 'L', jvDisp)
+
 ! ----     CONTRAINTES AUX POINTS D'INTEGRATION
-        call jevech('PCONTMR', 'L', icontm)
+        call jevech('PSIEFR', 'L', jvSief)
 !
 ! ---- CALCUL DU VECTEUR DES FORCES INTERNES (BT*SIGMA) :
 !      --------------------------------------------------
         call nmasf3(nno, npg1, ipoids, ivf, idfde, &
-                    zi(imate), geo, zr(idepl), zr(icontm), zr(ivectu), &
+                    zi(imate), geo, zr(jvDisp), zr(jvSief), zr(ivectu), &
                     zk16(icomp))
 !
 !
     else if (option .eq. 'REFE_FORC_NODA') then
         call terefe('SIGM_REFE', 'MECA_ISO', sigref)
 !
-        call tecach('ONO', 'PDEPLMR', 'L', iretd, iad=idepl)
+        call tecach('ONO', 'PDEPLMR', 'L', iretd, iad=jvDisp)
 !
         call r8inir(6*npg1, 0.d0, sigtmp, 1)
         call r8inir(3*nno, 0.d0, ftemp, 1)
@@ -96,7 +90,7 @@ subroutine te0395(option, nomte)
 !
             sigtmp(i) = sigref
             call nmasf3(nno, npg1, ipoids, ivf, idfde, &
-                        zi(imate), geo, zr(idepl), sigtmp, bsigm, &
+                        zi(imate), geo, zr(jvDisp), sigtmp, bsigm, &
                         zk16(icomp))
 !
             do j = 1, nno
@@ -108,8 +102,7 @@ subroutine te0395(option, nomte)
 !
         end do
 !
-        call daxpy(ndim*nno, 1.d0/npg1, ftemp, 1, zr(ivectu), &
-                   1)
+        call daxpy(ndim*nno, 1.d0/npg1, ftemp, 1, zr(ivectu), 1)
 !
     end if
 !

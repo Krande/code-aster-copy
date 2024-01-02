@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -137,7 +137,7 @@ subroutine tuforc(option, nomte, nbrddl, b, f, &
     end if
     if (option .eq. 'FORC_NODA') then
         nspg = (2*nbsec+1)*(2*nbcou+1)
-        call tecach('OOO', 'PCONTMR', 'L', iret, nval=7, &
+        call tecach('OOO', 'PSIEFR', 'L', iret, nval=7, &
                     itab=itab)
         jin = itab(1)
         nbsp = itab(7)

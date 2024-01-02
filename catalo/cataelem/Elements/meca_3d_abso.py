@@ -80,7 +80,12 @@ class MEAB_FACE3(Element):
         ),
         OP.FORC_NODA(
             te=569,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC), (SP.PDEPLMR, DDL_MECA)),
+            para_in=(
+                (SP.PGEOMER, NGEOMER),
+                (SP.PMATERC, LC.CMATERC),
+                (SP.PVARCPR, LC.ZVARCPG),
+                (SP.PDEPLAR, DDL_MECA),
+            ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.FULL_MECA(

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,18 +17,18 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine vefnme(optionz, modelz    , mate , cara_elem,&
-                      compor , partps    , nh   , ligrelz  ,&
-                      varcz  , sigmz     , strxz,&
-                      dispz  , disp_incrz,&
-                      base   , vect_elemz)
+    subroutine vefnme(optionz, modelz, mate, cara_elem, &
+                      compor, partps, nh, ligrelz, &
+                      varcz, sigmz, strxz, &
+                      dispz, &
+                      base, vect_elemz)
         character(len=*), intent(in) :: optionz, modelz
         character(len=24), intent(in) :: cara_elem, mate
         character(len=19), intent(in) :: compor
         real(kind=8), intent(in) :: partps(*)
         integer, intent(in) :: nh
         character(len=*), intent(in) :: ligrelz
-        character(len=*), intent(in) :: sigmz, varcz, strxz, dispz, disp_incrz
+        character(len=*), intent(in) :: sigmz, varcz, strxz, dispz
         character(len=1), intent(in) :: base
         character(len=*), intent(in) :: vect_elemz
     end subroutine vefnme

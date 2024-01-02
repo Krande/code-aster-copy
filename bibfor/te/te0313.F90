@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,7 +64,7 @@ subroutine te0313(option, nomte)
     integer :: codret, iretp, iretm
     integer :: ipoids, ivf1, idf1, igeom
     integer :: iinstp, ideplm, ideplp, icompo, icamas
-    integer :: icontm, ivarip, ivarim, ivectu, icontp
+    integer :: icontm, ivarip, ivarim, ivectu, icontp, jvSief
     integer :: mecani(8), press1(9), press2(9), tempe(5), dimuel
     integer :: dimdef, dimcon, nbvari, nb_vari_meca
     integer :: nno1, nno2
@@ -198,7 +198,7 @@ subroutine te0313(option, nomte)
 ! --- PARAMETRES EN ENTREE ---------------------------------------------
 ! ======================================================================
         call jevech('PGEOMER', 'L', igeom)
-        call jevech('PCONTMR', 'L', icontm)
+        call jevech('PSIEFR', 'L', jvSief)
         call jevech('PMATERC', 'L', imate)
 ! ======================================================================
 ! --- SI LES TEMPS PLUS ET MOINS SONT PRESENTS -------------------------
@@ -223,7 +223,7 @@ subroutine te0313(option, nomte)
         call fneihm(ds_thm, fnoevo, dt, nno1, nno2, &
                     npi, npg, zr(ipoids), iu, ip, &
                     ipf, iq, zr(ivf1), zr(ivf2), zr(idf2), &
-                    zr(igeom), ang, zr(icontm), r, zr(ivectu), &
+                    zr(igeom), ang, zr(jvSief), r, zr(ivectu), &
                     mecani, press1, press2, dimdef, &
                     dimcon, dimuel, ndim, axi)
 !

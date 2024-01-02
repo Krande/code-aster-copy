@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,7 +67,7 @@ subroutine te0347(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: jtab(7), nno, nc, ichg, icompo, ichn, lgpg, nbvar, i, k, npg
-    integer :: lorien, icgp, icontn, icontg, ivectu, in, iret(2)
+    integer :: lorien, icgp, icontn, jvSief, ivectu, in, iret(2)
     integer :: igeom, kp, kk, imate
     integer :: istrxm, iretc
 !
@@ -167,7 +167,7 @@ subroutine te0347(option, nomte)
                 end do
             end if
         else if (option .eq. 'FORC_NODA') then
-            call jevech('PCONTMR', 'L', icontg)
+            call jevech('PSIEFR', 'L', jvSief)
             call jevech('PCAORIE', 'L', lorien)
             call jevech('PVECTUR', 'E', ivectu)
             call jevech('PGEOMER', 'L', igeom)
@@ -209,7 +209,7 @@ subroutine te0347(option, nomte)
                 do kp = 1, npg
                     call jsd1ff(kp, xl, phiy, phiz, d1b)
                     do i = 1, nc
-                        sigp(i) = zr(icontg-1+nc*(kp-1)+i)
+                        sigp(i) = zr(jvSief-1+nc*(kp-1)+i)
                     end do
                     do k = 1, 2*nc
                         do kk = 1, nc
@@ -223,13 +223,13 @@ subroutine te0347(option, nomte)
             else
                 if (npg .eq. 2) then
                     do in = 1, nc
-                        fs(in) = -zr(icontg+in-1)
-                        fs(in+nc) = zr(icontg+in+nc-1)
+                        fs(in) = -zr(jvSief+in-1)
+                        fs(in+nc) = zr(jvSief+in+nc-1)
                     end do
                 else
                     do in = 1, nc
-                        fs(in) = -zr(icontg+in-1)
-                        fs(in+nc) = zr(icontg+in+nc+nc-1)
+                        fs(in) = -zr(jvSief+in-1)
+                        fs(in+nc) = zr(jvSief+in+nc+nc-1)
                     end do
                 end if
             end if
@@ -237,7 +237,7 @@ subroutine te0347(option, nomte)
             if (reactu) then
                 call jevech('PSTRXMR', 'L', istrxm)
                 gamma = zr(istrxm+3-1)
-                call porea2(nno, nc, zr(igeom), gamma, pgl, xl)
+                call porea2(nno, nc, zr(igeom), gamma, pgl, xl, "PDEPLAR")
             else
                 call matrot(zr(lorien), pgl)
             end if

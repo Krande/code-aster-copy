@@ -50,7 +50,7 @@ subroutine te0019(option, nomte)
     real(kind=8) :: celer
     integer :: jv_geom, jv_mate, jv_matr
     integer :: ipoids, ivf, idfdx, idfdy
-    integer :: jv_vect, jv_deplm, jv_compo, jv_codret
+    integer :: jvVect, jvDisp, jv_compo, jv_codret, jvDispM, jvDispP
     integer :: ndim, nno, npg
     integer :: ij, i
     integer :: n1, n2
@@ -177,16 +177,25 @@ subroutine te0019(option, nomte)
 ! - Save vector
 !
     if (lVect .or. option .eq. 'FORC_NODA') then
+        call jevech('PVECTUR', 'E', jvVect)
         if (FEForm .eq. 'U_P') then
-            call jevech('PVECTUR', 'E', jv_vect)
-            call jevech('PDEPLMR', 'L', jv_deplm)
-            do i = 1, 4*nno
-                zr(jv_vect+i-1) = 0.d0
-                ul(i) = zr(jv_deplm+i-1)
-            end do
+            if (option .eq. "FORC_NODA") then
+                call jevech('PDEPLAR', 'L', jvDisp)
+                do i = 1, 4*nno
+                    zr(jvVect+i-1) = 0.d0
+                    ul(i) = zr(jvDisp+i-1)
+                end do
+            else
+                call jevech('PDEPLMR', 'L', jvDispM)
+                call jevech('PDEPLPR', 'L', jvDispP)
+                do i = 1, 4*nno
+                    zr(jvVect+i-1) = 0.d0
+                    ul(i) = zr(jvDispM+i-1)+zr(jvDispP+i-1)
+                end do
+            end if
             do n1 = 1, 4*nno
                 do n2 = 1, 4*nno
-                    zr(jv_vect+n1-1) = zr(jv_vect+n1-1)+mmat(n1, n2)*ul(n2)
+                    zr(jvVect+n1-1) = zr(jvVect+n1-1)+mmat(n1, n2)*ul(n2)
                 end do
             end do
         else
@@ -194,9 +203,7 @@ subroutine te0019(option, nomte)
         end if
     end if
 
-!
 ! - Save return code
-!
     if (lSigm) then
         if (FEForm .eq. 'U_P') then
             call jevech('PCODRET', 'E', jv_codret)

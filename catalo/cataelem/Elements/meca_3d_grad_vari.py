@@ -435,9 +435,9 @@ class MVCA_HEXA20(Element):
         OP.FORC_NODA(
             te=508,
             para_in=(
-                (OP.FORC_NODA.PCOMPOR, LC.CCOMPOR),
-                (OP.FORC_NODA.PCONTMR, ECONTPG),
-                (SP.PDEPLMR, DDL_MECA),
+                (SP.PCOMPOR, LC.CCOMPOR),
+                (SP.PSIEFR, ECONTPG),
+                (SP.PDEPLAR, DDL_MECA),
                 (SP.PGEOMER, NGEOMER),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),

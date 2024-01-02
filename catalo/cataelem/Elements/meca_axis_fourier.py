@@ -283,11 +283,7 @@ class MEFOQU4(Element):
         ),
         OP.FORC_NODA(
             te=117,
-            para_in=(
-                (OP.FORC_NODA.PCONTMR, ECONTPG),
-                (SP.PGEOMER, NGEOMER),
-                (SP.PHARMON, LC.CHARMON),
-            ),
+            para_in=((SP.PSIEFR, ECONTPG), (SP.PGEOMER, NGEOMER), (SP.PHARMON, LC.CHARMON)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.INIT_VARC(te=99, para_out=((OP.INIT_VARC.PVARCPR, LC.ZVARCPG),)),

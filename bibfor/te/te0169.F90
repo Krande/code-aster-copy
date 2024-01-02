@@ -36,7 +36,7 @@ subroutine te0169(option, nomte)
 !
     real(kind=8) :: w(9), l1(3), l2(3), forref
     real(kind=8) :: norml1, norml2, coef1, coef2
-    integer :: jefint, lsigma, igeom, idepla, ivectu, nno, nc
+    integer :: jefint, jvSief, igeom, jvDisp, ivectu, nno, nc
     integer :: ino, i, kc
 ! ----------------------------------------------------------------------
 !
@@ -53,12 +53,12 @@ subroutine te0169(option, nomte)
 !
     else if (option .eq. 'FORC_NODA') then
         call jevech('PGEOMER', 'L', igeom)
-        call jevech('PDEPLMR', 'L', idepla)
-        call jevech('PCONTMR', 'L', lsigma)
+        call jevech('PDEPLAR', 'L', jvDisp)
+        call jevech('PSIEFR', 'L', jvSief)
         call jevech('PVECTUR', 'E', jefint)
 !
         do i = 1, 9
-            w(i) = zr(idepla-1+i)
+            w(i) = zr(jvDisp-1+i)
         end do
 
         do kc = 1, 3
@@ -72,8 +72,8 @@ subroutine te0169(option, nomte)
         norml1 = sqrt(norml1)
         norml2 = sqrt(norml2)
 !
-        coef1 = zr(lsigma)/norml1
-        coef2 = zr(lsigma)/norml2
+        coef1 = zr(jvSief)/norml1
+        coef2 = zr(jvSief)/norml2
 !
         do i = 1, 3
             zr(jefint+i-1) = coef1*l1(i)

@@ -56,7 +56,7 @@ subroutine te0167(option, nomte)
     real(kind=8) :: rho, alpha, r_impe, rhon, q_alpha, q_c
     integer :: ipoids, ivf, idfde
     integer :: jv_geom, jv_mate, jv_matr
-    integer :: jv_vect, jv_deplm, jv_compo
+    integer :: jvVect, jvDisp, jv_compo, jvDispm, jvDispp
     integer :: ndim, nno, ndi, ipg, npg, n1, n2, nn
     integer :: ldec
     integer :: i, ij, j
@@ -259,13 +259,24 @@ subroutine te0167(option, nomte)
 ! - Save vector
 !
     if (lVect .or. option .eq. 'FORC_NODA') then
+        call jevech('PVECTUR', 'E', jvVect)
         if (FEForm .eq. 'U_P' .or. FEForm .eq. 'U_PSI') then
-            call jevech('PVECTUR', 'E', jv_vect)
-            call jevech('PDEPLMR', 'L', jv_deplm)
-            do i = 1, nno
-                zr(jv_vect+i-1) = 0.d0
-                us(i) = zr(jv_deplm+i-1)
-            end do
+            if (lVect) then
+                call jevech('PDEPLMR', 'L', jvDispm)
+                call jevech('PDEPLPR', 'L', jvDispp)
+                do i = 1, nno
+                    zr(jvVect+i-1) = 0.d0
+                    us(i) = zr(jvDispm+i-1)+zr(jvDispp+i-1)
+                end do
+            elseif (option .eq. "FORC_NODA") then
+                call jevech('PDEPLAR', 'L', jvDisp)
+                do i = 1, nno
+                    zr(jvVect+i-1) = 0.d0
+                    us(i) = zr(jvDisp+i-1)
+                end do
+            else
+                ASSERT(ASTER_FALSE)
+            end if
             nn = 0
             do n1 = 1, nno
                 do n2 = 1, n1
@@ -276,7 +287,7 @@ subroutine te0167(option, nomte)
             end do
             do n1 = 1, nno
                 do n2 = 1, nno
-                    zr(jv_vect+n1-1) = zr(jv_vect+n1-1)+e(n1, n2)*us(n2)
+                    zr(jvVect+n1-1) = zr(jvVect+n1-1)+e(n1, n2)*us(n2)
                 end do
             end do
         else

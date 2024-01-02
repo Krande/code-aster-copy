@@ -802,9 +802,9 @@ class MECA_HEXA20(Element):
         OP.FORC_NODA(
             te=8,
             para_in=(
-                (OP.FORC_NODA.PCOMPOR, LC.CCOMPOR),
-                (OP.FORC_NODA.PCONTMR, LC.EGIG3DR),
-                (SP.PDEPLMR, DDL_MECA),
+                (SP.PCOMPOR, LC.CCOMPOR),
+                (SP.PSIEFR, LC.EGIG3DR),
+                (SP.PDEPLAR, DDL_MECA),
                 (SP.PGEOMER, LC.EGEOM3D),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),

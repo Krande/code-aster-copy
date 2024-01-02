@@ -3,6 +3,7 @@
  * @brief Implementation of class DiscreteComputation
  * @section LICENCE
  *   Copyright (C) 1991 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -323,14 +324,14 @@ DiscreteComputation::getMechanicalVolumetricForces( const ASTERDOUBLE time_curr,
                 std::string base = "G";
                 CALLO_COPISD( typeco, base, pre_sgm_name, pre_sigm->getName() );
                 impl( load, iload, "FORC_NODA", "SIINT", "", model_FEDesc,
-                      { { "PCONTMR", pre_sigm } } );
+                      { { "PSIEFR", pre_sigm } } );
             } else if ( retour == "CART" ) {
                 auto pre_sigm =
                     std::make_shared< ConstantFieldOnCellsReal >( currModel->getMesh() );
                 std::string base = "G";
                 CALLO_COPISD( typeco, base, pre_sgm_name, pre_sigm->getName() );
                 impl( load, iload, "FORC_NODA", "SIINT", "", model_FEDesc,
-                      { { "PCONTMR", pre_sigm } } );
+                      { { "PSIEFR", pre_sigm } } );
             } else {
                 AS_ABORT( "Error: " + retour );
             }

@@ -500,9 +500,9 @@ class MECA_POU_D_T(Element):
             para_in=(
                 (SP.PCAGNPO, CCAGNPO),
                 (OP.FORC_NODA.PCAORIE, CCAORIE),
-                (OP.FORC_NODA.PCOMPOR, LC.CCOMPOR),
-                (OP.FORC_NODA.PCONTMR, EEFGEGA),
-                (SP.PDEPLMR, DDL_MECA),
+                (SP.PCOMPOR, LC.CCOMPOR),
+                (SP.PSIEFR, EEFGEGA),
+                (SP.PDEPLAR, DDL_MECA),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PSTRXMR, ESTRAUX),
             ),

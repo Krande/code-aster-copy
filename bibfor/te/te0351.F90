@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,8 +32,8 @@ subroutine te0351(option, nomte)
     character(len=16) :: option, nomte
 !
     character(len=8) :: typmod(2)
-    integer :: nno, npg1, ipoids, ivf, idfde, igeom
-    integer :: icontm, ivectu, ndim, nnos, jgano
+    integer :: nno, npg1, ipoids, ivf, idfde, jvGeom
+    integer :: jvSief, ivectu, ndim, nnos, jgano
     real(kind=8) :: work(18)
 !
 !
@@ -57,11 +57,11 @@ subroutine te0351(option, nomte)
     typmod(2) = 'ASSU    '
 !
 ! - PARAMETRES
-    call jevech('PGEOMER', 'L', igeom)
-    call jevech('PCONTMR', 'L', icontm)
+    call jevech('PGEOMER', 'L', jvGeom)
+    call jevech('PSIEFR', 'L', jvSief)
     call jevech('PVECTUR', 'E', ivectu)
 !
     call nmasf2(nno, npg1, ipoids, ivf, idfde, &
-                zr(igeom), typmod, zr(icontm), work, zr(ivectu))
+                zr(jvGeom), typmod, zr(jvSief), work, zr(ivectu))
 !
 end subroutine

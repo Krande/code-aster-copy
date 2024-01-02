@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,7 +49,7 @@ subroutine te0434(option, nomte)
     integer :: nddl, nno, nnos, npg, ndim, ncomp
     integer :: n, kpg
     integer :: ipoids, ivf, idfde, jgano, iret, icompo, itab(1), itemps
-    integer :: igeom, icacoq, imate, icontm, ipesa, iepsin, ivectu
+    integer :: igeom, icacoq, imate, jvSief, ipesa, iepsin, ivectu
     integer :: icodre1, icodre2
     real(kind=8) :: dff(2, 9), vff(9)
     real(kind=8) :: alpha, beta, h, preten
@@ -82,7 +82,7 @@ subroutine te0434(option, nomte)
     icompo = itab(1)
 !
     if (option .eq. 'FORC_NODA') then
-        call jevech('PCONTMR', 'L', icontm)
+        call jevech('PSIEFR', 'L', jvSief)
         call jevech('PMATERC', 'L', imate)
 !
     else if (option .eq. 'REFE_FORC_NODA') then
@@ -155,14 +155,14 @@ subroutine te0434(option, nomte)
         if (icodre1 .eq. 0) then
 
             call mbxchg(option, fami, nddl, nno, ncomp, kpg, npg, iepsin, itemps, ipoids, igeom, &
-                        imate, ipesa, ivectu, icontm, vff, dff, alpha, beta)
+                        imate, ipesa, ivectu, jvSief, vff, dff, alpha, beta)
 
         elseif (icodre2 .eq. 0) then
 
             if ((option .ne. 'FORC_NODA') .and. (option .ne. 'CHAR_MECA_PESA_R')) then
                 call utmess('F', 'MEMBRANE_7')
             end if
-            call mbgchg(option, fami, nddl, nno, ncomp, kpg, imate, icontm, &
+            call mbgchg(option, fami, nddl, nno, ncomp, kpg, imate, jvSief, &
                         ipoids, ipesa, igeom, ivectu, vff, dff, h, alpha, beta, preten)
 
         end if

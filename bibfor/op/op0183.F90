@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -247,7 +247,7 @@ subroutine op0183()
 !
         call vefnme(option, model, mateco, caraElem, &
                     compor, partps, nh, ligrel, chvarc, &
-                    sigma, ' ', chdepl, chdep2, 'V', &
+                    sigma, ' ', chdepl, 'V', &
                     vefnod)
 !
 !       --- ASSEMBLAGE DES VECTEURS ELEMENTAIRES ---

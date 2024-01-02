@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -463,9 +463,9 @@ class TemplateElement(Element):
             para_in=(
                 (OP.FORC_NODA.PBASLOR, LC.N6NEUT_R),
                 (OP.FORC_NODA.PCNSETO, LC.E36NEUI),
-                (OP.FORC_NODA.PCOMPOR, LC.CCOMPOR),
-                (OP.FORC_NODA.PCONTMR, ECONTPG),
-                (SP.PDEPLMR, DDL_MECA),
+                (SP.PCOMPOR, LC.CCOMPOR),
+                (SP.PSIEFR, ECONTPG),
+                (SP.PDEPLAR, DDL_MECA),
                 (SP.PGEOMER, NGEOMER),
                 (OP.FORC_NODA.PHEAVTO, E6NEUTI),
                 (OP.FORC_NODA.PHEA_NO, LC.N5NEUTI),
@@ -475,7 +475,6 @@ class TemplateElement(Element):
                 (OP.FORC_NODA.PPINTTO, LC.E6NEUTR),
                 (OP.FORC_NODA.PPMILTO, LC.E22NEUTR),
                 (OP.FORC_NODA.PSTANO, STANO_I),
-                (OP.FORC_NODA.PVARCPR, LC.ZVARCPG),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),

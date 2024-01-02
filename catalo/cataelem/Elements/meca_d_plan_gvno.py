@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -290,11 +290,11 @@ class MNDPTR6(Element):
         OP.FORC_NODA(
             te=561,
             para_in=(
-                (OP.FORC_NODA.PCONTMR, ECONTPG),
-                (SP.PDEPLMR, DDL_MECA),
+                (SP.PSIEFR, ECONTPG),
+                (SP.PDEPLAR, DDL_MECA),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
-                (OP.FORC_NODA.PVARCPR, LC.ZVARCPG),
+                (SP.PVARCPR, LC.ZVARCPG),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),

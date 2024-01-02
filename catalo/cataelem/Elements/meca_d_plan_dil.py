@@ -225,11 +225,7 @@ class TR6_DP_2D(Element):
         ),
         OP.FORC_NODA(
             te=5,
-            para_in=(
-                (OP.FORC_NODA.PCOMPOR, LC.CCOMPOR),
-                (OP.FORC_NODA.PCONTMR, ECONTPG),
-                (SP.PGEOMER, NGEOMER),
-            ),
+            para_in=((SP.PCOMPOR, LC.CCOMPOR), (SP.PSIEFR, ECONTPG), (SP.PGEOMER, NGEOMER)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.FULL_MECA(

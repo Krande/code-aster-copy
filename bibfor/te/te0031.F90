@@ -81,11 +81,11 @@ subroutine te0031(option, nomte)
 !
     integer, parameter :: npge = 3
     integer :: ndim, nno, ind
-    integer :: multic, codret, jdepm, jdepr
-    integer :: icompo, i1, i2, j, jvect
+    integer :: multic, codret, jvDisp, jdepr
+    integer :: jvCompor, i1, i2, j, jvect
     integer :: k, jcret, jfreq, iacce
     integer :: jgeom, jmatr, jener, i
-    integer :: ivect, nddl, nvec, iret, icontp
+    integer :: ivect, nddl, nvec, iret, jvSief
     integer :: nbcou, jnbspi, iret1, itab(7), nbsp
     integer :: ibid, n1, n2, ni
     real(kind=8) :: pgl(3, 3), xyzl(3, 4), bsigma(24), effgt(32)
@@ -107,8 +107,12 @@ subroutine te0031(option, nomte)
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno)
     ASSERT(nno .eq. 3 .or. nno .eq. 4)
 !
+    if (option .eq. 'FORC_NODA') then
+        ! --- PASSAGE DES CONTRAINTES DANS LE REPERE INTRINSEQUE :
+        call cosiro(nomte, 'PSIEFR', 'L', 'UI', 'G', ibid, 'S')
+        call tecach('NNO', 'PNBSP_I', 'L', iret1, iad=jnbspi)
 
-    if (option .ne. 'REFE_FORC_NODA') then
+    elseif (option .ne. 'REFE_FORC_NODA') then
 ! --- PASSAGE DES CONTRAINTES DANS LE REPERE INTRINSEQUE :
         call cosiro(nomte, 'PCONTMR', 'L', 'UI', 'G', ibid, 'S')
         call cosiro(nomte, 'PCONTRR', 'L', 'UI', 'G', ibid, 'S')
@@ -228,11 +232,11 @@ subroutine te0031(option, nomte)
 !
     else if (l_nonlin) then
 !
-        call jevech('PDEPLMR', 'L', jdepm)
+        call jevech('PDEPLMR', 'L', jvDisp)
         call jevech('PDEPLPR', 'L', jdepr)
-        call jevech('PCOMPOR', 'L', icompo)
+        call jevech('PCOMPOR', 'L', jvCompor)
 ! ----- Select objects to construct from option name
-        call behaviourOption(option, zk16(icompo), &
+        call behaviourOption(option, zk16(jvCompor), &
                              lMatr, lVect, &
                              lVari, lSigm, &
                              codret)
@@ -240,14 +244,14 @@ subroutine te0031(option, nomte)
             call utmess('F', 'PLATE1_75')
         end if
 ! ----- Update configuration
-        defo_comp = zk16(icompo-1+DEFO)
+        defo_comp = zk16(jvCompor-1+DEFO)
         if ((defo_comp(6:10) .eq. '_REAC') .or. (defo_comp .eq. 'GROT_GDEP')) then
             do i = 1, nno
                 i1 = 3*(i-1)
                 i2 = 6*(i-1)
-                zr(jgeom+i1) = zr(jgeom+i1)+zr(jdepm+i2)+zr(jdepr+i2)
-                zr(jgeom+i1+1) = zr(jgeom+i1+1)+zr(jdepm+i2+1)+zr(jdepr+i2+1)
-                zr(jgeom+i1+2) = zr(jgeom+i1+2)+zr(jdepm+i2+2)+zr(jdepr+i2+2)
+                zr(jgeom+i1) = zr(jgeom+i1)+zr(jvDisp+i2)+zr(jdepr+i2)
+                zr(jgeom+i1+1) = zr(jgeom+i1+1)+zr(jvDisp+i2+1)+zr(jdepr+i2+1)
+                zr(jgeom+i1+2) = zr(jgeom+i1+2)+zr(jvDisp+i2+2)+zr(jdepr+i2+2)
             end do
             if (nno .eq. 3) then
                 call dxtpgl(zr(jgeom), pgl)
@@ -257,7 +261,7 @@ subroutine te0031(option, nomte)
             call utpvgl(nno, 3, pgl, zr(jgeom), xyzl)
         end if
 ! ----- Change frame
-        call utpvgl(nno, 6, pgl, zr(jdepm), uml)
+        call utpvgl(nno, 6, pgl, zr(jvDisp), uml)
         call utpvgl(nno, 6, pgl, zr(jdepr), dul)
 ! ----- Compute non-linear options
         if (nomte .eq. 'MEDKTR3') then
@@ -286,8 +290,8 @@ subroutine te0031(option, nomte)
     else if (option .eq. 'FORC_NODA') then
 !     -------------------------------------
         effgt = 0.d0
-        call tecach('OOO', 'PCONTMR', 'L', iret, nval=7, itab=itab)
-        icontp = itab(1)
+        call tecach('OOO', 'PSIEFR', 'L', iret, nval=7, itab=itab)
+        jvSief = itab(1)
         nbsp = itab(7)
         nbcou = zi(jnbspi)
 !
@@ -296,19 +300,19 @@ subroutine te0031(option, nomte)
         end if
 !
         ind = 8
-        call dxeffi(option, nomte, pgl, zr(icontp), ind, effgt)
+        call dxeffi(option, nomte, pgl, zr(jvSief), ind, effgt)
 !
-        call tecach('NNO', 'PCOMPOR', 'L', iret, iad=icompo)
-        if (icompo .ne. 0) then
-            defo_comp = zk16(icompo-1+DEFO)
+        call tecach('NNO', 'PCOMPOR', 'L', iret, iad=jvCompor)
+        if (jvCompor .ne. 0) then
+            defo_comp = zk16(jvCompor-1+DEFO)
             if ((defo_comp(6:10) .eq. '_REAC') .or. (defo_comp .eq. 'GROT_GDEP')) then
-                call jevech('PDEPLMR', 'L', jdepm)
+                call jevech('PDEPLAR', 'L', jvDisp)
                 do i = 1, nno
                     i1 = 3*(i-1)
                     i2 = 6*(i-1)
-                    zr(jgeom+i1) = zr(jgeom+i1)+zr(jdepm+i2)
-                    zr(jgeom+i1+1) = zr(jgeom+i1+1)+zr(jdepm+i2+1)
-                    zr(jgeom+i1+2) = zr(jgeom+i1+2)+zr(jdepm+i2+2)
+                    zr(jgeom+i1) = zr(jgeom+i1)+zr(jvDisp+i2)
+                    zr(jgeom+i1+1) = zr(jgeom+i1+1)+zr(jvDisp+i2+1)
+                    zr(jgeom+i1+2) = zr(jgeom+i1+2)+zr(jvDisp+i2+2)
                 end do
                 if (nno .eq. 3) then
                     call dxtpgl(zr(jgeom), pgl)

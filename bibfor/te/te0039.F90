@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,12 +61,12 @@ subroutine te0039(option, nomte)
     real(kind=8)        :: varmo(nbvari), varpl(nbvari)
 !
     integer :: lorien, lmater, ii, jj
-    integer :: ivectu, icontg, neq
+    integer :: ivectu, jvSief, neq
     integer :: iplouf, infodi, itype, ibid
-    integer :: igeom, ideplm, ideplp, icompo, jdc, irep, ifono, ilogic
+    integer :: igeom, jvCompor, jdc, irep, ifono, ilogic, jvDisp
 !
     real(kind=8) :: pgl(3, 3), force(3)
-    real(kind=8) :: fs(12), ugp(12), dug(12), ulp(12), dul(12), dvl(12), dpe(12), dve(12)
+    real(kind=8) :: fs(12), ugp(12), ulp(12), dvl(12), dpe(12), dve(12)
     real(kind=8) :: sim(12), sip(12), fono(12)
     real(kind=8) :: klv(78)
     real(kind=8) :: forref, momref
@@ -145,9 +145,8 @@ subroutine te0039(option, nomte)
         end if
     else if (option .eq. 'FONL_NOEU') then
         call jevech('PGEOMER', 'L', igeom)
-        call jevech('PDEPLMR', 'L', ideplm)
-        call jevech('PDEPLPR', 'L', ideplp)
-        call jevech('PCOMPOR', 'L', icompo)
+        call jevech('PDEPLAR', 'L', jvDisp)
+        call jevech('PCOMPOR', 'L', jvCompor)
         call jevech('PMATERC', 'L', lmater)
         if (lteatt('MODELI', 'DTR') .or. lteatt('MODELI', 'DIT')) then
             !   PARAMETRES EN ENTREE
@@ -155,21 +154,17 @@ subroutine te0039(option, nomte)
             call matrot(zr(lorien), for_discret%pgl)
             ! DEPLACEMENTS DANS LE REPERE GLOBAL
             !   UGM = DEPLACEMENT PRECEDENT
-            !   DUG = INCREMENT DE DEPLACEMENT
             !   UGP = DEPLACEMENT COURANT
             do ii = 1, neq
-                dug(ii) = zr(ideplp+ii-1)
-                ugp(ii) = zr(ideplm+ii-1)+dug(ii)
+                ugp(ii) = zr(jvDisp+ii-1)
             end do
             ! Deplacements dans le repere local
             !   ULM = DEPLACEMENT PRECEDENT    = PLG * UGM
             !   DUL = INCREMENT DE DEPLACEMENT = PLG * DUG
             !   ULP = DEPLACEMENT COURANT      = PLG * UGP
             if (for_discret%ndim .eq. 3) then
-                call utpvgl(for_discret%nno, for_discret%nc, for_discret%pgl, dug, dul)
                 call utpvgl(for_discret%nno, for_discret%nc, for_discret%pgl, ugp, ulp)
             else if (for_discret%ndim .eq. 2) then
-                call ut2vgl(for_discret%nno, for_discret%nc, for_discret%pgl, dug, dul)
                 call ut2vgl(for_discret%nno, for_discret%nc, for_discret%pgl, ugp, ulp)
             end if
             ! Seul le cas symetrique est traite
@@ -188,7 +183,7 @@ subroutine te0039(option, nomte)
             if (irep .eq. 1) then
                 call utpsgl(for_discret%nno, for_discret%nc, for_discret%pgl, zr(jdc), klv)
             end if
-            if (zk16(icompo) .eq. 'DIS_CHOC') then
+            if (zk16(jvCompor) .eq. 'DIS_CHOC') then
                 varmo(:) = 0.0; dvl(:) = 0.0; dpe(:) = 0.0; dve(:) = 0.0
                 ! Relation de comportement de choc : forces nodales
                 call jevech('PVECTUR', 'E', ifono)
@@ -214,16 +209,16 @@ subroutine te0039(option, nomte)
             end if
         end if
     else if (option .eq. 'FORC_NODA') then
-        call jevech('PCONTMR', 'L', icontg)
+        call jevech('PSIEFR', 'L', jvSief)
         call jevech('PVECTUR', 'E', ivectu)
         if (for_discret%nno .eq. 1) then
             do ii = 1, neq
-                fs(ii) = zr(icontg+ii-1)
+                fs(ii) = zr(jvSief+ii-1)
             end do
         else
             do ii = 1, for_discret%nc
-                fs(ii) = -zr(icontg+ii-1)
-                fs(ii+for_discret%nc) = zr(icontg+ii+for_discret%nc-1)
+                fs(ii) = -zr(jvSief+ii-1)
+                fs(ii+for_discret%nc) = zr(jvSief+ii+for_discret%nc-1)
             end do
         end if
         call jevech('PCAORIE', 'L', lorien)

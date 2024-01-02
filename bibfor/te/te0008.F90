@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,8 +54,8 @@ subroutine te0008(option, nomte)
     integer :: nbsig, ndim, nno, nnos, npg1
     integer :: ipoids, ivf, idfde, jgano
     integer :: igeom, ivectu
-    integer :: idepl, icomp, icontm
-    integer :: i, j, iretd, iretc, nbinco
+    integer :: jvDisp, jvSief, jvCompor
+    integer :: i, j, nbinco, iretc
 !
 ! ----------------------------------------------------------------------
 !
@@ -77,32 +77,23 @@ subroutine te0008(option, nomte)
 !
     call jevech('PVECTUR', 'E', ivectu)
 !
-! --- PARAMETRE EN ENTREE: GEROMETRIE
+! --- PARAMETRE EN ENTREE: GEOMETRIE
 !
     call jevech('PGEOMER', 'L', igeom)
     call dcopy(nbinco, zr(igeom), 1, geo, 1)
 !
     if (option .eq. 'FORC_NODA') then
-        call tecach('ONO', 'PDEPLMR', 'L', iretd, iad=idepl)
-        call tecach('ONO', 'PCOMPOR', 'L', iretc, iad=icomp)
-        if ((iretd .eq. 0) .and. (iretc .eq. 0)) then
-            if (zk16(icomp+2) (1:6) .ne. 'PETIT ') then
-                call daxpy(nbinco, 1.d0, zr(idepl), 1, geo, 1)
+        call jevech('PSIEFR', 'L', jvSief)
+        call tecach('ONO', 'PCOMPOR', 'L', iretc, iad=jvCompor)
+        if (iretc .eq. 0) then
+            if (zk16(jvCompor+2) (1:6) .ne. 'PETIT ') then
+                call jevech('PDEPLAR', 'L', jvDisp)
+                call daxpy(nbinco, 1.d0, zr(jvDisp), 1, geo, 1)
             end if
         end if
-!
-! ----- CONTRAINTES AUX POINTS D'INTEGRATION
-!
-        call jevech('PCONTMR', 'L', icontm)
-!
-! ----- CALCUL DU VECTEUR DES FORCES INTERNES (BT*SIGMA)
-!
         call bsigmc(nno, ndim, nbsig, npg1, ipoids, &
-                    ivf, idfde, geo, nharm, zr(icontm), &
+                    ivf, idfde, geo, nharm, zr(jvSief), &
                     bsigm)
-!
-! ----- AFFECTATION DU VECTEUR EN SORTIE
-!
         call dcopy(nbinco, bsigm, 1, zr(ivectu), 1)
 !
     else if (option .eq. 'REFE_FORC_NODA') then

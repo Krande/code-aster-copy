@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ subroutine te0117(option, nomte)
 ! DEB ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, icontm, igeom, iharmo, ivectu, nbsig, nh
+    integer :: i, jvSief, igeom, iharmo, ivectu, nbsig, nh
 !
     real(kind=8) :: zero
 !-----------------------------------------------------------------------
@@ -63,7 +63,7 @@ subroutine te0117(option, nomte)
 ! ----     COORDONNEES DES CONNECTIVITES
     call jevech('PGEOMER', 'L', igeom)
 ! ----     CONTRAINTES AUX POINTS D'INTEGRATION
-    call jevech('PCONTMR', 'L', icontm)
+    call jevech('PSIEFR', 'L', jvSief)
 !
 ! ---- PARAMETRES EN SORTIE
 !      --------------------
@@ -73,7 +73,7 @@ subroutine te0117(option, nomte)
 ! ---- CALCUL DU VECTEUR DES FORCES INTERNES (BT*SIGMA) :
 !      --------------------------------------------------
     call bsigmc(nno, ndim, nbsig, npg, ipoids, &
-                ivf, idfde, zr(igeom), nharm, zr(icontm), &
+                ivf, idfde, zr(igeom), nharm, zr(jvSief), &
                 bsigm)
 !
 ! ---- AFFECTATION DU VECTEUR EN SORTIE :

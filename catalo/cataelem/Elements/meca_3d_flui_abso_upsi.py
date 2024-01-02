@@ -74,12 +74,7 @@ class MEFA_FACE3UPSI(Element):
         ),
         OP.FORC_NODA(
             te=174,
-            para_in=(
-                (SP.PDEPLMR, DDL_MECA),
-                # (SP.PDEPLPR, DDL_MECA),
-                (SP.PGEOMER, LC.EGEOM3D),
-                (SP.PMATERC, LC.CMATERC),
-            ),
+            para_in=((SP.PDEPLAR, DDL_MECA), (SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.IMPE_ABSO(

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,8 +40,8 @@ subroutine te0007(option, nomte)
 ! ---- GEOMETRIE ET INTEGRATION
 !      ------------------------
 !-----------------------------------------------------------------------
-    integer :: i, icomp, icontm, idepl, idfde, igeom, ipoids
-    integer :: iretc, iretd, ivectu, ivf, jgano, kp, ku
+    integer :: i, icomp, jvSief, jvDisp, idfde, igeom, ipoids
+    integer :: iretc, ivectu, ivf, jgano, kp, ku
     integer :: n, nbsig, ndim, ndimsi, nno, nnos, npg
 !
     real(kind=8) :: zero
@@ -75,18 +75,18 @@ subroutine te0007(option, nomte)
 ! ----     COORDONNEES DES CONNECTIVITES
     call jevech('PGEOMER', 'L', igeom)
 ! ----     CONTRAINTES AUX POINTS D'INTEGRATION
-    call jevech('PCONTMR', 'L', icontm)
+    call jevech('PSIEFR', 'L', jvSief)
 !
 !         CHAMPS POUR LA REACTUALISATION DE LA GEOMETRIE
     do i = 1, ndim*nno
         geo(i) = zr(igeom-1+i)
     end do
-    call tecach('ONO', 'PDEPLMR', 'L', iretd, iad=idepl)
+    call jevech('PDEPLAR', 'L', jvDisp)
     call tecach('ONO', 'PCOMPOR', 'L', iretc, iad=icomp)
-    if ((iretd .eq. 0) .and. (iretc .eq. 0)) then
+    if ((iretc .eq. 0)) then
         if (zk16(icomp+2) (1:6) .ne. 'PETIT ') then
             do i = 1, ndim*nno
-                geo(i) = geo(i)+zr(idepl-1+i)
+                geo(i) = geo(i)+zr(jvDisp-1+i)
             end do
         end if
     end if
@@ -99,7 +99,7 @@ subroutine te0007(option, nomte)
 ! ---- CALCUL DU VECTEUR DES FORCES INTERNES (BT*SIGMA) :
 !      --------------------------------------------------
     call bsigmc(nno, ndim, nbsig, npg, ipoids, &
-                ivf, idfde, zr(igeom), nharm, zr(icontm), &
+                ivf, idfde, zr(igeom), nharm, zr(jvSief), &
                 bsigm)
 !
 ! ---- AFFECTATION DU VECTEUR EN SORTIE :

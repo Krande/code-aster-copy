@@ -229,8 +229,8 @@ class MECA_POU_D_T_GD(Element):
             te=393,
             para_in=(
                 (OP.FORC_NODA.PCAORIE, CCAORIE),
-                (OP.FORC_NODA.PCONTMR, EEFGEGA),
-                (SP.PDEPLMR, DDL_MECA),
+                (SP.PSIEFR, EEFGEGA),
+                (SP.PDEPLAR, DDL_MECA),
                 (SP.PGEOMER, NGEOMER),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),

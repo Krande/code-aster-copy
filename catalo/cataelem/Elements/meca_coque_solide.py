@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -208,11 +208,9 @@ class MESSHELL_SB9(Element):
             te=125,
             para_in=(
                 (SP.PGEOMER, LC.EGEOM3D),
-                (SP.PMATERC, LC.CMATERC),
                 (SP.PCOMPOR, LC.CCOMPOR),
-                (SP.PVARCPR, LC.ZVARCPG),
-                (SP.PCONTMR, LC.EGIG3DR),
-                (SP.PDEPLMR, DDL_MECA),
+                (SP.PSIEFR, LC.EGIG3DR),
+                (SP.PDEPLAR, DDL_MECA),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),

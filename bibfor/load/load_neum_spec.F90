@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -330,7 +330,7 @@ subroutine load_neum_spec(load_name, load_nume, load_type, ligrel_calc, i_type_n
         else if (l_sigm_int) then
             call jeveuo(ligrel_load(1:13)//'.SIINT.VALE', 'L', vk8=p_vale_sigm)
             i_field_in = i_field_in+1
-            lpain(i_field_in) = 'PCONTMR'
+            lpain(i_field_in) = 'PSIEFR'
             lchin(i_field_in) = p_vale_sigm(1)
         else
             ASSERT(.false.)

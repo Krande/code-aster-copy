@@ -70,7 +70,7 @@ class MEFP_FACE3(Element):
         ),
         OP.FORC_NODA(
             te=370,
-            para_in=((SP.PDEPLMR, DDL_MECA), (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC)),
+            para_in=((SP.PDEPLAR, DDL_MECA), (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.FULL_MECA(

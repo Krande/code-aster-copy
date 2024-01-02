@@ -594,9 +594,9 @@ class MECA_POU_D_EM(Element):
             te=517,
             para_in=(
                 (OP.FORC_NODA.PCAORIE, CCAORIE),
-                (OP.FORC_NODA.PCOMPOR, LC.CCOMPOR),
-                (OP.FORC_NODA.PCONTMR, ECONTPG),
-                (SP.PDEPLMR, DDL_MECA),
+                (SP.PCOMPOR, LC.CCOMPOR),
+                (SP.PSIEFR, ECONTPG),
+                (SP.PDEPLAR, DDL_MECA),
                 (SP.PFIBRES, LC.ECAFIEL),
                 (SP.PGEOMER, NGEOMER),
                 (OP.FORC_NODA.PNBSP_I, ENBSP_I),

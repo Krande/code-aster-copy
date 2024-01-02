@@ -455,9 +455,9 @@ class MEQ4GG4(Element):
             te=446,
             para_in=(
                 (SP.PCACOQU, CCACOQU),
-                (OP.FORC_NODA.PCOMPOR, LC.CCOMPOR),
-                (OP.FORC_NODA.PCONTMR, EEFGEGA),
-                (SP.PDEPLMR, DDL_MECA),
+                (SP.PCOMPOR, LC.CCOMPOR),
+                (SP.PSIEFR, EEFGEGA),
+                (SP.PDEPLAR, DDL_MECA),
                 (SP.PGEOMER, NGEOMER),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),

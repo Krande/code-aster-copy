@@ -76,12 +76,7 @@ class MEFL_HEXA20PSI(Element):
         ),
         OP.FORC_NODA(
             te=170,
-            para_in=(
-                (SP.PDEPLMR, DDL_MECA),
-                #  (SP.PDEPLPR, DDL_MECA),
-                (SP.PGEOMER, LC.EGEOM3D),
-                (SP.PMATERC, LC.CMATERC),
-            ),
+            para_in=((SP.PDEPLAR, DDL_MECA), (SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.RAPH_MECA(

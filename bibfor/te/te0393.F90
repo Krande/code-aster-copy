@@ -49,7 +49,7 @@ subroutine te0393(option, nomte)
     real(kind=8) :: forref, momref
     integer :: nno, nc, ino, i, ndim, nnos, npg, ipoids, ivf, idfdk, jgano, kp
     integer :: ne, ic, kc, k0, k1, ico
-    integer :: ivectu, idepm, igeom, isigma, lorien, jefint
+    integer :: ivectu, jvDisp, igeom, jvSief, lorien, jefint
     integer :: ifint
 !
     parameter(zero=0.0d0, un=1.0d0)
@@ -89,8 +89,8 @@ subroutine te0393(option, nomte)
 !
 !        CALL JEVECH('PTEMPPR','L',ITEMPR)
         call jevech('PGEOMER', 'L', igeom)
-        call jevech('PDEPLMR', 'L', idepm)
-        call jevech('PCONTMR', 'L', isigma)
+        call jevech('PDEPLAR', 'L', jvDisp)
+        call jevech('PSIEFR', 'L', jvSief)
 !
 !        --- RECUPERATION DES ORIENTATIONS INITIALES Y0(1), Y0(2), Y0(3)
         call jevech('PCAORIE', 'L', lorien)
@@ -111,7 +111,7 @@ subroutine te0393(option, nomte)
 !21      CONTINUE
 !
         k0 = igeom-1
-        k1 = idepm-1
+        k1 = jvDisp-1
 !
         do ne = 1, nno
             do kc = 1, 3
@@ -152,8 +152,8 @@ subroutine te0393(option, nomte)
             call promat(rot, 3, 3, 3, rot0, &
                         3, 3, 3, rotabs)
             do ic = 1, 3
-                gn(ic) = zr(isigma-1+6*(kp-1)+ic)
-                gm(ic) = zr(isigma+2+6*(kp-1)+ic)
+                gn(ic) = zr(jvSief-1+6*(kp-1)+ic)
+                gm(ic) = zr(jvSief+2+6*(kp-1)+ic)
             end do
             call promat(rotabs, 3, 3, 3, gn, &
                         3, 3, 1, pn)

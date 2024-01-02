@@ -136,7 +136,7 @@ class EJHYME_HEXA20(Element):
         ),
         OP.FORC_NODA(
             te=323,
-            para_in=((OP.FORC_NODA.PCONTMR, ECONTPG), (SP.PGEOMER, NGEOMER)),
+            para_in=((SP.PSIEFR, ECONTPG), (SP.PGEOMER, NGEOMER)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.FULL_MECA(

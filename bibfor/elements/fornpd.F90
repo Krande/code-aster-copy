@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+! aslint: disable=W0413
+! => real zero (init by calcul.F90)
 subroutine fornpd(option, nomte)
     implicit none
 #include "jeveux.h"
@@ -49,7 +50,7 @@ subroutine fornpd(option, nomte)
     character(len=10) :: phenom
 !
     integer :: i, ib, icou, inte, intsn, intsr, j, k1, kpgs, kwgt, itab(7), iret
-    integer :: icontm, ideplm, imate, ivectu, jcara, jgeom, lzi, lzr
+    integer :: icontm, jvDisp, imate, ivectu, jcara, jgeom, lzi, lzr
     integer :: nb1, nb2, npge, npgsr, npgsn, jnbspi, nbcou, nval, nbsp
 !
     real(kind=8) :: vecta(9, 2, 3), vectn(9, 3), vectpt(9, 2, 3), vecpt(9, 3, 3)
@@ -96,7 +97,7 @@ subroutine fornpd(option, nomte)
     call jevech('PMATERC', 'L', imate)
 !
     if (option .eq. 'FORC_NODA') then
-        call tecach('OOO', 'PCONTMR', 'L', iret, nval=7, &
+        call tecach('OOO', 'PSIEFR', 'L', iret, nval=7, &
                     itab=itab)
         icontm = itab(1)
         nbsp = itab(7)
@@ -106,7 +107,12 @@ subroutine fornpd(option, nomte)
     else if (option .eq. 'REFE_FORC_NODA') then
         call terefe('SIGM_REFE', 'MECA_COQUE3D', sigref)
     end if
-    call jevech('PDEPLMR', 'L', ideplm)
+
+    if (option .eq. "FORC_NODA") then
+        call jevech('PDEPLAR', 'L', jvDisp)
+    else
+        call jevech('PDEPLMR', 'L', jvDisp)
+    end if
 !
     call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
 !
@@ -117,7 +123,7 @@ subroutine fornpd(option, nomte)
     call vectan(nb1, nb2, zr(jgeom), zr(lzr), vecta, &
                 vectn, vectpt)
 !
-    call trndgl(nb2, vectn, vectpt, zr(ideplm), deplm, &
+    call trndgl(nb2, vectn, vectpt, zr(jvDisp), deplm, &
                 rotfm)
 !
     do i = 1, 5*nb1+2

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ subroutine te0323(option, nomte)
     character(len=8) :: lielrf(10)
     aster_logical :: axi
     integer :: nno1, nno2, npg, ivf2, idf2, nnos, jgn, nddl
-    integer :: iw, ivf1, idf1, igeom, ivectu, icontm, ndim, ntrou
+    integer :: iw, ivf1, idf1, igeom, ivectu, jvSief, ndim, ntrou
     integer :: iu(3, 16), ip(8)
     real(kind=8) :: sigref, fhyref
 !
@@ -63,12 +63,12 @@ subroutine te0323(option, nomte)
 !
     if (option .eq. 'FORC_NODA') then
 !
-        call jevech('PCONTMR', 'L', icontm)
+        call jevech('PSIEFR', 'L', jvSief)
 !
         call ejfono(ndim, nddl, axi, nno1, nno2, &
                     npg, iw, zr(iw), zr(ivf1), zr(ivf2), &
                     idf2, zr(idf2), zr(igeom), iu, ip, &
-                    zr(icontm), zr(ivectu))
+                    zr(jvSief), zr(ivectu))
 !
     else if (option .eq. 'REFE_FORC_NODA') then
 !

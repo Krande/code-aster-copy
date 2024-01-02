@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -205,7 +205,8 @@ contains
             epsi = epsi-epvcElga(kpg, :)
 
 ! ----- Compute stresses
-        siefElga(1+(kpg-1)*SSH_SIZE_TENS:SSH_SIZE_TENS*kpg) = matmul(matePara%elemHookeMatrix, epsi)
+            siefElga(1+(kpg-1)*SSH_SIZE_TENS:SSH_SIZE_TENS*kpg) = &
+                matmul(matePara%elemHookeMatrix, epsi)
 
         end do
 !
@@ -252,15 +253,11 @@ contains
         if (defoComp .eq. 'PETIT') then
             call initGeomCellHexa(cellGeom, geomHexa)
         else
-            call tecach('ONO', 'PDEPLMR', 'L', iretc, iad=jvDisp)
-            if (iretc .eq. 0) then
-                do iDof = 1, SSH_NBDOF_HEXA
-                    disp(iDof) = zr(jvDisp-1+iDof)
-                end do
-                call initGeomCellHexa(cellGeom, geomHexa, disp)
-            else
-                call utmess('F', 'SOLIDSHELL1_4')
-            end if
+            call jevech('PDEPLAR', 'L', jvDisp)
+            do iDof = 1, SSH_NBDOF_HEXA
+                disp(iDof) = zr(jvDisp-1+iDof)
+            end do
+            call initGeomCellHexa(cellGeom, geomHexa, disp)
         end if
         if (SSH_DBG_GEOM) call dbgObjGeomHexa(geomHexa)
 
@@ -353,8 +350,10 @@ contains
         integer, parameter :: nbNodeGeom = SSH_NBNODEG_HEXA
         integer :: iNodeGeom, jNodeGeom
         real(kind=8) :: const(SSH_SIZE_TENS)
-       real(kind=8) :: GCova0(SSH_SIZE_TENS), GCovaZETA(SSH_SIZE_TENS), GCovaZETAZETA(SSH_SIZE_TENS)
-      real(kind=8) :: GPinchZETA(SSH_SIZE_TENS), GPinchZZETA(SSH_SIZE_TENS), GPinchZZ(SSH_SIZE_TENS)
+        real(kind=8) :: GCova0(SSH_SIZE_TENS), GCovaZETA(SSH_SIZE_TENS)
+        real(kind=8) :: GCovaZETAZETA(SSH_SIZE_TENS)
+        real(kind=8) :: GPinchZETA(SSH_SIZE_TENS), GPinchZZETA(SSH_SIZE_TENS)
+        real(kind=8) :: GPinchZZ(SSH_SIZE_TENS)
 !   ------------------------------------------------------------------------------------------------
 !
         matrGeom = 0.d0
@@ -372,7 +371,8 @@ contains
                               matmul(geomHexa%TZETA, GCova0))+ &
                         zeta*zeta*(matmul(geomHexa%T0, GCovaZETAZETA)+ &
                                    matmul(geomHexa%TZETA, GCovaZETA))
-              matrGeom(3*(iNodeGeom-1)+1:3*(iNodeGeom-1)+3, 3*(jNodeGeom-1)+1:3*(jNodeGeom-1)+3) = &
+                matrGeom(3*(iNodeGeom-1)+1:3*(iNodeGeom-1)+3, &
+                         3*(jNodeGeom-1)+1:3*(jNodeGeom-1)+3) = &
                     sum(const*sigm)*matr3Iden
             end do
         end do

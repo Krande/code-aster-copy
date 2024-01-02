@@ -283,8 +283,8 @@ class MECA_2D_BARRE(Element):
             te=156,
             para_in=(
                 (OP.FORC_NODA.PCAORIE, CCAORIE),
-                (OP.FORC_NODA.PCOMPOR, LC.CCOMPOR),
-                (OP.FORC_NODA.PCONTMR, EEFGEGA),
+                (SP.PCOMPOR, LC.CCOMPOR),
+                (SP.PSIEFR, EEFGEGA),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),

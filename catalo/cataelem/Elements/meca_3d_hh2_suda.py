@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -101,9 +101,7 @@ class ZHH2_HEXA27_SUDA(Element):
             para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC)),
             para_out=((SP.PMATUUR, MMATUUR),),
         ),
-        OP.FORC_NODA(
-            te=515, para_in=((OP.FORC_NODA.PCONTMR, ECONTPG),), para_out=((SP.PVECTUR, MVECTUR),)
-        ),
+        OP.FORC_NODA(te=515, para_in=((SP.PSIEFR, ECONTPG),), para_out=((SP.PVECTUR, MVECTUR),)),
         OP.FULL_MECA(
             te=515,
             para_in=(

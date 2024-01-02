@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ subroutine te0202(option, nomte)
 !-----------------------------------------------------------------------
 !
 !
-    integer :: igeom, icont, ivect, npg
+    integer :: igeom, jvSief, ivect, npg
     character(len=8) :: typmod(2)
 !
 !
@@ -51,9 +51,9 @@ subroutine te0202(option, nomte)
     npg = 2
 !
     call jevech('PGEOMER', 'L', igeom)
-    call jevech('PCONTMR', 'L', icont)
+    call jevech('PSIEFR', 'L', jvSief)
     call jevech('PVECTUR', 'E', ivect)
 !
-    call nmfifi(npg, typmod, zr(igeom), zr(icont), zr(ivect))
+    call nmfifi(npg, typmod, zr(igeom), zr(jvSief), zr(ivect))
 !
 end subroutine

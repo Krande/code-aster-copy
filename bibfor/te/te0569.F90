@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ subroutine te0569(option, nomte)
     integer :: ndim, nno, kpg, npg, ino, jno, ij
     integer :: idec, jdec, kdec, ldec, imate, imatuu
     integer :: mater, ll, k, l, nnos
-    integer :: ideplm, ideplp, ivectu
+    integer :: jvDispM, jvDispP, ivectu, jvDisp
     real(kind=8) :: jac, nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9)
     real(kind=8) :: valres(5), e, nu, lambda, mu, rho, coef_amor
     real(kind=8) :: rhocp, rhocs, l0, usl0
@@ -258,12 +258,20 @@ subroutine te0569(option, nomte)
         end do
     end if
     if (lVect) then
-        call jevech('PDEPLMR', 'L', ideplm)
-        call jevech('PDEPLPR', 'L', ideplp)
-        do i = 1, 3*nno
-            depla(i) = zr(ideplm+i-1)+zr(ideplp+i-1)
-            zr(ivectu+i-1) = 0.d0
-        end do
+        if (option .eq. "FORC_NODA") then
+            call jevech('PDEPLAR', 'L', jvDisp)
+            do i = 1, 3*nno
+                depla(i) = zr(jvDisp+i-1)
+                zr(ivectu+i-1) = 0.d0
+            end do
+        else
+            call jevech('PDEPLMR', 'L', jvDispM)
+            call jevech('PDEPLPR', 'L', jvDispP)
+            do i = 1, 3*nno
+                depla(i) = zr(jvDispM+i-1)+zr(jvDispP+i-1)
+                zr(ivectu+i-1) = 0.d0
+            end do
+        end if
         do i = 1, 3*nno
             do j = 1, 3*nno
                 zr(ivectu+i-1) = zr(ivectu+i-1)+matr(i, j)*depla(j)

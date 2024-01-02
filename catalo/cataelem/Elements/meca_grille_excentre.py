@@ -292,7 +292,7 @@ class MEGCTR3(Element):
         ),
         OP.FORC_NODA(
             te=430,
-            para_in=((SP.PCACOQU, CCACOQU), (OP.FORC_NODA.PCONTMR, ECONTPG), (SP.PGEOMER, NGEOMER)),
+            para_in=((SP.PCACOQU, CCACOQU), (SP.PSIEFR, ECONTPG), (SP.PGEOMER, NGEOMER)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.FULL_MECA(

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -78,7 +78,7 @@ subroutine te0430(option, nomte)
     call jevech('PGEOMER', 'L', igeom)
 !
     if (option .eq. 'FORC_NODA') then
-        call jevech('PCONTMR', 'L', icontm)
+        call jevech('PSIEFR', 'L', icontm)
 !
     else if (option .eq. 'REFE_FORC_NODA') then
         call jevech('PMATERC', 'L', imate)
@@ -258,8 +258,8 @@ subroutine te0430(option, nomte)
                         1, 'RHO', rho, codres, 1)
             do n = 1, nno
                 do i = 1, 3
-                    zr(ivectu+(n-1)*nddl+i-1) = zr(ivectu+(n-1)*nddl+i- &
-                                                 1)+rho(1)*zr(ipoids+kpg-1)*zr(ipesa)*zr(ipesa+i)* &
+                    zr(ivectu+(n-1)*nddl+i-1) = zr(ivectu+(n-1)*nddl+i-1)+ &
+                                                rho(1)*zr(ipoids+kpg-1)*zr(ipesa)*zr(ipesa+i)* &
                                                 vff(n)*densit*jac
                 end do
             end do

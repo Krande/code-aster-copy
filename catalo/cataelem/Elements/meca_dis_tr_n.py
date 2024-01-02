@@ -224,8 +224,7 @@ class MECA_DIS_TR_N(Element):
                 (OP.FONL_NOEU.PCAORIE, CCAORIE),
                 (SP.PCINFDI, LC.CCINFDI),
                 (OP.FONL_NOEU.PCOMPOR, LC.CCOMPOR),
-                (SP.PDEPLMR, DDL_MECA),
-                (SP.PDEPLPR, DDL_MECA),
+                (SP.PDEPLAR, DDL_MECA),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
             ),
@@ -236,7 +235,7 @@ class MECA_DIS_TR_N(Element):
             para_in=(
                 (OP.FORC_NODA.PCAORIE, CCAORIE),
                 (SP.PCINFDI, LC.CCINFDI),
-                (OP.FORC_NODA.PCONTMR, EEFGEGA),
+                (SP.PSIEFR, EEFGEGA),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine vefnme(optionz, modelz, mate, cara_elem, &
                   compor, partps, nh, ligrelz, &
                   varcz, sigmz, strxz, &
-                  dispz, disp_incrz, &
+                  dispz, &
                   base, vect_elemz)
 !
     implicit none
@@ -47,7 +46,7 @@ subroutine vefnme(optionz, modelz, mate, cara_elem, &
     real(kind=8), intent(in) :: partps(*)
     integer, intent(in) :: nh
     character(len=*), intent(in) :: ligrelz
-    character(len=*), intent(in) :: sigmz, varcz, strxz, dispz, disp_incrz
+    character(len=*), intent(in) :: sigmz, varcz, strxz, dispz
     character(len=1), intent(in) :: base
     character(len=*), intent(in) :: vect_elemz
 !
@@ -88,7 +87,7 @@ subroutine vefnme(optionz, modelz, mate, cara_elem, &
     character(len=19) :: chgeom, chcara(18)
     integer :: iret, nbin
     real(kind=8) :: instm, instp
-    character(len=19) :: sigm, varc, strx, disp, disp_incr
+    character(len=19) :: sigm, varc, strx, disp
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -105,7 +104,6 @@ subroutine vefnme(optionz, modelz, mate, cara_elem, &
     varc = varcz
     strx = strxz
     disp = dispz
-    disp_incr = disp_incrz
     ligrel = ligrelz
     newnom = '.0000000'
     vect_elem = vect_elemz
@@ -168,12 +166,10 @@ subroutine vefnme(optionz, modelz, mate, cara_elem, &
     lchin(4) = chcara(1)
     lpain(5) = 'PCOMPOR'
     lchin(5) = compor
-    lpain(6) = 'PCONTMR'
+    lpain(6) = 'PSIEFR'
     lchin(6) = sigm
-    lpain(7) = 'PDEPLMR'
+    lpain(7) = 'PDEPLAR'
     lchin(7) = disp
-    lpain(8) = 'PDEPLPR'
-    lchin(8) = disp_incr
     lpain(9) = 'PCAARPO'
     lchin(9) = chcara(9)
     lpain(10) = 'PCADISK'

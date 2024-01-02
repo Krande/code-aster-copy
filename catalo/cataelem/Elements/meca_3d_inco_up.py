@@ -589,11 +589,12 @@ class MIUP_HEXA20(Element):
         OP.FORC_NODA(
             te=596,
             para_in=(
-                (OP.FORC_NODA.PCOMPOR, LC.CCOMPOR),
-                (OP.FORC_NODA.PCONTMR, ECONTPG),
+                (SP.PCOMPOR, LC.CCOMPOR),
+                (SP.PDEPLAR, DDL_MECA),
+                (SP.PSIEFR, ECONTPG),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
-                (OP.FORC_NODA.PVARCPR, LC.ZVARCPG),
+                (SP.PVARCPR, LC.ZVARCPG),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),

@@ -44,7 +44,7 @@ subroutine te0156(option, nomte)
 !
 !
     integer :: ivectu, icontg, lorien, nno, nc, ino, i
-    integer :: icompo, ideplm, igeom, iretc
+    integer :: jvCompor, jvDisp, jvGeom, iretc
     real(kind=8) :: fs(6), pgl(3, 3), vect(6), forref
     real(kind=8) :: w(6), ang1(3), xd(3)
     aster_logical :: reactu
@@ -67,11 +67,11 @@ subroutine te0156(option, nomte)
         end do
 !
     else if (option .eq. 'FORC_NODA') then
-        call jevech('PCONTMR', 'L', icontg)
+        call jevech('PSIEFR', 'L', icontg)
         call jevech('PCAORIE', 'L', lorien)
-        call tecach('ONO', 'PCOMPOR', 'L', iretc, iad=icompo)
+        call tecach('ONO', 'PCOMPOR', 'L', iretc, iad=jvCompor)
         reactu = .false.
-        if (iretc .eq. 0) reactu = (zk16(icompo+2) .eq. 'PETIT_REAC')
+        if (iretc .eq. 0) reactu = (zk16(jvCompor+2) .eq. 'PETIT_REAC')
 !
 !        PARAMETRES EN SORTIE
         call jevech('PVECTUR', 'E', ivectu)
@@ -85,20 +85,21 @@ subroutine te0156(option, nomte)
 !
 !
         if (reactu) then
-            call jevech('PGEOMER', 'L', igeom)
-            call jevech('PDEPLMR', 'L', ideplm)
+            call jevech('PGEOMER', 'L', jvGeom)
+            call jevech('PDEPLAR', 'L', jvDisp)
+
             if (nomte .eq. 'MECA_BARRE') then
                 do i = 1, 3
-                    w(i) = zr(igeom-1+i)+zr(ideplm-1+i)
-                    w(i+3) = zr(igeom+2+i)+zr(ideplm+2+i)
+                    w(i) = zr(jvGeom-1+i)+zr(jvDisp-1+i)
+                    w(i+3) = zr(jvGeom+2+i)+zr(jvDisp+2+i)
                     xd(i) = w(i+3)-w(i)
                 end do
             else if (nomte .eq. 'MECA_2D_BARRE') then
-                w(1) = zr(igeom-1+1)+zr(ideplm-1+1)
-                w(2) = zr(igeom-1+2)+zr(ideplm-1+2)
+                w(1) = zr(jvGeom-1+1)+zr(jvDisp-1+1)
+                w(2) = zr(jvGeom-1+2)+zr(jvDisp-1+2)
                 w(3) = 0.d0
-                w(4) = zr(igeom-1+3)+zr(ideplm-1+3)
-                w(5) = zr(igeom-1+4)+zr(ideplm-1+4)
+                w(4) = zr(jvGeom-1+3)+zr(jvDisp-1+3)
+                w(5) = zr(jvGeom-1+4)+zr(jvDisp-1+4)
                 w(6) = 0.d0
                 xd(1) = w(4)-w(1)
                 xd(2) = w(5)-w(2)

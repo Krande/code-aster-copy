@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine porea4(nno, nc, geom, gamma, pgl, &
-                  xl)
+                  xl, dispParaNameZ_)
     implicit none
 #include "jeveux.h"
 #include "asterfort/angvx.h"
@@ -31,6 +31,7 @@ subroutine porea4(nno, nc, geom, gamma, pgl, &
     real(kind=8) :: geom(3, nno), gamma
 !
     real(kind=8) :: pgl(3, 3), xl
+    character(len=*), optional, intent(in) :: dispParaNameZ_
 !
 !
 !     ------------------------------------------------------------------
@@ -48,10 +49,15 @@ subroutine porea4(nno, nc, geom, gamma, pgl, &
 !     VARIABLES LOCALES
     integer :: i, ideplm, ideplp, iret
     real(kind=8) :: utg(14), xug(6), xd(3), alfa1, beta1, ang1(3)
+    character(len=16) :: dispParaName
 !
     ASSERT(nno .eq. 2)
+    dispParaName = "PDEPLMR"
+    if (present(dispParaNameZ_)) then
+        dispParaName = dispParaNameZ_
+    end if
 !
-    call tecach('ONO', 'PDEPLMR', 'L', iret, iad=ideplm)
+    call tecach('ONO', dispParaName, 'L', iret, iad=ideplm)
     if (iret .ne. 0) then
         do i = 1, 2*nc
             utg(i) = 0.d0
@@ -62,11 +68,13 @@ subroutine porea4(nno, nc, geom, gamma, pgl, &
         end do
     end if
 !
-    call tecach('ONO', 'PDEPLPR', 'L', iret, iad=ideplp)
-    if (iret .eq. 0) then
-        do i = 1, 2*nc
-            utg(i) = utg(i)+zr(ideplp-1+i)
-        end do
+    if (dispParaName .ne. "PDEPLAR") then
+        call tecach('ONO', 'PDEPLPR', 'L', iret, iad=ideplp)
+        if (iret .eq. 0) then
+            do i = 1, 2*nc
+                utg(i) = utg(i)+zr(ideplp-1+i)
+            end do
+        end if
     end if
 !
     do i = 1, 3

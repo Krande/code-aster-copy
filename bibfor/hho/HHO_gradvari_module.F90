@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,6 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+! aslint: disable=W1504
 !
 module HHO_GV_module
 !
@@ -1173,8 +1174,10 @@ contains
             call hhoTherDofs(hhoCell, hhoData, gv_cbs, gv_fbs, gv_total_dofs)
             total_dofs = mk_total_dofs+gv_total_dofs+gv_cbs
 !
-            call readVector('PDEPLMR', total_dofs, tmp_prev)
-            if (.not. forc_noda) then
+            if (forc_noda) then
+                call readVector('PDEPLAR', total_dofs, tmp_prev)
+            else
+                call readVector('PDEPLMR', total_dofs, tmp_prev)
                 call readVector('PDEPLPR', total_dofs, tmp_incr)
             end if
 !

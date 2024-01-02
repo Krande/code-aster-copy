@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,6 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+! aslint: disable=W0413
+! => real zero (init by calcul.F90)
 !
 subroutine forngr(option, nomte)
     implicit none
@@ -98,7 +100,7 @@ subroutine forngr(option, nomte)
 !
 !---- DECLARATIONS COQUE NON LINEAIRE
 !
-    integer :: ium
+    integer :: jvDisp
     real(kind=8) :: b1su(5, 51), b2su(5, 51)
     real(kind=8) :: b1src(2, 51, 4)
     real(kind=8) :: b2src(2, 51, 4)
@@ -165,7 +167,7 @@ subroutine forngr(option, nomte)
 !
     if (option .eq. 'FORC_NODA') then
 !
-        call tecach('OOO', 'PCONTMR', 'L', iret, nval=7, &
+        call tecach('OOO', 'PSIEFR', 'L', iret, nval=7, &
                     itab=itab)
         icontm = itab(1)
         nbsp = itab(7)
@@ -212,7 +214,11 @@ subroutine forngr(option, nomte)
 !
 !---- A L INSTANT MOINS  ( PAS PRECEDENT )
 !
-    call jevech('PDEPLMR', 'L', ium)
+    if (option .eq. "FORC_NODA") then
+        call jevech('PDEPLAR', 'L', jvDisp)
+    else
+        call jevech('PDEPLMR', 'L', jvDisp)
+    end if
 !
 !______________________________________________________________________
 !
@@ -227,10 +233,7 @@ subroutine forngr(option, nomte)
 !
     do in = 1, nb1
         do ii = 1, 3
-!
-            vecu(in, ii) = zr(ium-1+6*(in-1)+ii &
-                              )
-!
+            vecu(in, ii) = zr(jvDisp-1+6*(in-1)+ii)
         end do
     end do
 !
@@ -245,15 +248,14 @@ subroutine forngr(option, nomte)
 !
     do in = 1, nb1
         do ii = 1, 3
-            vecthe(in, ii) = zr(ium-1+6*(in-1)+ii+ &
-                                3)
+            vecthe(in, ii) = zr(jvDisp-1+6*(in-1)+ii+3)
         end do
     end do
 !
 !--------- SUPERNOEUD
 !
     do ii = 1, 3
-        vecthe(nb2, ii) = zr(ium-1+6*nb1+ii)
+        vecthe(nb2, ii) = zr(jvDisp-1+6*nb1+ii)
     end do
 !
 !
@@ -434,8 +436,7 @@ subroutine forngr(option, nomte)
 !
 !------- CONTRAINTES DE CAUCHY = PK2 AUX POINTS DE GAUSS
 !
-                    k1 = 6*((intsn-1)*npge*nbcou+(icou-1)*npge+inte- &
-                            1)
+                    k1 = 6*((intsn-1)*npge*nbcou+(icou-1)*npge+inte-1)
                     stild(1) = zr(icontm-1+k1+1)
                     stild(2) = zr(icontm-1+k1+2)
                     stild(3) = zr(icontm-1+k1+4)
@@ -448,9 +449,7 @@ subroutine forngr(option, nomte)
 !
                     call btsig(6*nb1+3, 5, zr(lzr-1+127+intsn-1)*detj*coef, &
                                b2su, stild, zr(ivectu))
-!
-!++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-!
+
 !------------- VARIABLES INTERNES INACTIVES COMPORTEMENT NON PLASTIQUE
 !
                 else if (option .eq. 'REFE_FORC_NODA') then
@@ -472,18 +471,8 @@ subroutine forngr(option, nomte)
                         end do
                     end do
                 end if
-!
-!========== FIN BOUCLE NPGSN
-!
             end do
-!
-!
-!-------- FIN BOUCLE NPGE
-!
         end do
-!
-!---- FIN BOUCLE NBCOU
-!
     end do
 !
 !      ON PREND LA VALEUR MOYENNE DES FORCES NODALES DE REFERENCE

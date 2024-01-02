@@ -2,7 +2,7 @@
  * @file DiscreteComputationInterface.cxx
  * @brief Interface python de DiscreteComputation
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *

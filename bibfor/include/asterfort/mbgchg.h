@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,14 +19,14 @@
 !
 !
 interface
-    subroutine mbgchg(option,fami,nddl,nno,ncomp,kpg,imate,icontm,&
-              ipoids,ipesa,igeom,ivectu,vff,dff,h,alpha,beta,preten)
-    character(len=16) :: option
-    character(len=4) :: fami
-    integer :: nddl, nno,ncomp
-    integer :: kpg
-    integer :: ipoids, igeom, icontm, imate, ipesa
-    integer :: ivectu
-    real(kind=8) :: vff(nno), dff(2, nno), h, preten, alpha, beta
+    subroutine mbgchg(option, fami, nddl, nno, ncomp, kpg, imate, jvSief, &
+                      ipoids, ipesa, igeom, ivectu, vff, dff, h, alpha, beta, preten)
+        character(len=16) :: option
+        character(len=4) :: fami
+        integer :: nddl, nno, ncomp
+        integer :: kpg
+        integer :: ipoids, igeom, jvSief, imate, ipesa
+        integer :: ivectu
+        real(kind=8) :: vff(nno), dff(2, nno), h, preten, alpha, beta
     end subroutine mbgchg
 end interface

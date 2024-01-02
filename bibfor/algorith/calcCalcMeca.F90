@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
+! aslint: disable=W1504
 !
 subroutine calcCalcMeca(nb_option, list_option, &
                         l_elem_nonl, nume_harm, &
@@ -33,20 +33,21 @@ subroutine calcCalcMeca(nb_option, list_option, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/exixfe.h"
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/exixfe.h"
 #include "asterfort/knindi.h"
-#include "asterfort/nmchex.h"
-#include "asterfort/merimo.h"
 #include "asterfort/medime.h"
-#include "asterfort/vebtla.h"
-#include "asterfort/vefnme.h"
+#include "asterfort/merimo.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmvcd2.h"
 #include "asterfort/nmvcpr_elem.h"
 #include "asterfort/utmess.h"
-#include "asterfort/nmvcd2.h"
+#include "asterfort/vebtla.h"
+#include "asterfort/vefnme.h"
+#include "asterfort/vtaxpy.h"
 #include "asterfort/vtzero.h"
 !
     integer, intent(in) :: nb_option
@@ -99,6 +100,7 @@ subroutine calcCalcMeca(nb_option, list_option, &
     aster_logical :: l_matr, l_nonl, l_varc_prev, l_varc_curr, l_forc_noda
     aster_logical :: l_lagr, l_hho
     character(len=16) :: option
+    character(len=24), parameter :: disp = "&&OP0026.DISP"
     character(len=19) :: varc_curr, disp_curr, sigm_curr, vari_curr
     character(len=19) :: vari_prev, disp_prev, sigm_prev, disp_cumu_inst
     integer :: iter_newt, ixfem, nb_subs_stat
@@ -109,7 +111,6 @@ subroutine calcCalcMeca(nb_option, list_option, &
     character(len=32) :: answer
     type(HHO_Field) :: hhoField
     character(len=1) :: base
-    character(len=24) :: depnul
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -224,21 +225,22 @@ subroutine calcCalcMeca(nb_option, list_option, &
     if (l_forc_noda) then
         option = 'FORC_NODA'
         if (.not. l_nonl .and. .not. l_matr) then
+! ----- Update displacement
+            call copisd('CHAMP_GD', 'V', disp_prev, disp)
+            call vtzero(disp)
+            call vtaxpy(1.0, disp_prev, disp)
+            call vtaxpy(1.0, disp_cumu_inst, disp)
             ! calcul avec sigma init (sans integration de comportement)
             call copisd('CHAMP_GD', 'V', sigm_prev, sigm_curr)
             call vefnme(option, model, ds_material%mateco, cara_elem, &
                         ds_constitutive%compor, partps, 0, ligrmo, &
-                        varc_curr, sigm_curr, ' ', disp_prev, &
-                        disp_cumu_inst, base, vefnod)
+                        varc_curr, sigm_curr, ' ', disp, &
+                        base, vefnod)
         else
             ! t(i) => t(i+1) : depplu => depmoi, depdel = 0
-            depnul = '&&calcul.depl_nul'
-            call copisd('CHAMP_GD', 'V', disp_cumu_inst, depnul)
-            call vtzero(depnul)
             call vefnme(option, model, ds_material%mateco, cara_elem, &
                         ds_constitutive%compor, partps, 0, ligrmo, &
-                        varc_curr, sigm_curr, ' ', disp_curr, &
-                        depnul, base, vefnod)
+                        varc_curr, sigm_curr, ' ', disp_curr, base, vefnod)
         end if
     end if
 !

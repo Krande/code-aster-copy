@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -336,6 +336,12 @@ PCONTR = InputParameter(
 """,
 )
 
+PSIEFR = InputParameter(
+    phys=PHY.SIEF_R,
+    comment="""  PSIEFR : stress tensor
+""",
+)
+
 PCONTRG = InputParameter(phys=PHY.SIEF_R, comment="""""")
 
 PCOOR1R = InputParameter(
@@ -403,16 +409,14 @@ PDEPLA = InputParameter(phys=PHY.DEPL_R, comment="""""")
 PDEPLAC = InputParameter(
     phys=PHY.DEPL_C,
     container="RESU!DEPL!N",
-    comment="""  PDEPLAC : DEPLACEMENTS
+    comment="""  PDEPLAC : displacements (complex)
 """,
 )
 
 PDEPLAR = InputParameter(
     phys=PHY.DEPL_R,
     container="RESU!DEPL!N",
-    comment="""  PDEPLAR : DEPLACEMENTS INSTANT ACTUEL
- PDEPLAR : DEPLACEMENTS GENERALISES EN THM INSTANT ACTUEL
- PDEPLAR  :  DEPLACEMENT
+    comment="""  PDEPLAR : displacements (real)
 """,
 )
 
@@ -1220,6 +1224,8 @@ PVARCRR = InputParameter(
 PVARCPR = InputParameter(
     phys=PHY.VARI_R, comment=""" External state variables at end of current time step """
 )
+
+PVARCCR = InputParameter(phys=PHY.VARI_R, comment=""" External state variables """)
 
 PVARIGR = InputParameter(
     phys=PHY.VARI_R,

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -37,16 +37,7 @@ PCAORIE = InputParameter(
 
 
 FONL_NOEU = Option(
-    para_in=(
-        SP.PCADISK,
-        PCAORIE,
-        SP.PCINFDI,
-        PCOMPOR,
-        SP.PDEPLMR,
-        SP.PDEPLPR,
-        SP.PGEOMER,
-        SP.PMATERC,
-    ),
+    para_in=(SP.PCADISK, PCAORIE, SP.PCINFDI, PCOMPOR, SP.PDEPLAR, SP.PGEOMER, SP.PMATERC),
     para_out=(SP.PVECTUR,),
     condition=(CondCalcul("+", ((AT.PHENO, "ME"), (AT.DISCRET, "OUI"))),),
     comment="""  FONL_NOEU : CALCUL DES FORCES NODALES NONLIN """,

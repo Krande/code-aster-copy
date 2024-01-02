@@ -40,7 +40,7 @@ subroutine te0164(option, nomte)
     real(kind=8) :: coef, jacobi, nx, ytywpq(9), w(9), forref
     integer :: nno, kp, i, ipoids, ivf, igeom, nc, nordre, k
     integer :: ivectu, ino, ndim, nnos, npg
-    integer :: idfdk, jgano, iyty, idepla, lsigma, jefint
+    integer :: idfdk, jgano, iyty, jvDisp, jvSief, jefint
 ! ----------------------------------------------------------------------
 !
     if (option .eq. 'REFE_FORC_NODA') then
@@ -59,23 +59,20 @@ subroutine te0164(option, nomte)
                          jpoids=ipoids, jvf=ivf, jdfde=idfdk, jgano=jgano)
         call jevete('&INEL.CABPOU.YTY', 'L', iyty)
         nordre = 3*nno
-!        PARAMETRES EN ENTREE
         call jevech('PGEOMER', 'L', igeom)
-!
-        call jevech('PDEPLMR', 'L', idepla)
-        call jevech('PCONTMR', 'L', lsigma)
-!        PARAMETRES EN SORTIE
+        call jevech('PDEPLAR', 'L', jvDisp)
+        call jevech('PSIEFR', 'L', jvSief)
         call jevech('PVECTUR', 'E', jefint)
 !
 
         do i = 1, 3*nno
-            w(i) = zr(idepla-1+i)
+            w(i) = zr(jvDisp-1+i)
         end do
 
         do kp = 1, npg
             k = (kp-1)*nordre*nordre
             jacobi = sqrt(biline(nordre, zr(igeom), zr(iyty+k), zr(igeom)))
-            nx = zr(lsigma-1+kp)
+            nx = zr(jvSief-1+kp)
             call matvec(nordre, zr(iyty+k), 2, zr(igeom), w, &
                         ytywpq)
             coef = nx*zr(ipoids-1+kp)/jacobi

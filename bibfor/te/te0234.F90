@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+! aslint: disable=W0413
+! => real zero (affect here)
+!
 subroutine te0234(option, nomte)
     implicit none
 #include "asterf_types.h"
@@ -41,7 +43,7 @@ subroutine te0234(option, nomte)
 !
     integer :: nbres, jnbspi, nbsp, itab(7)
 !
-    integer :: nbcou, npge, icontm, ideplm, ivectu, icou, inte, kpki, k1
+    integer :: nbcou, npge, jvSief, jvDisp, ivectu, icou, inte, kpki, k1
 !
     real(kind=8) :: cisail, zic, coef, rhos, rhot, epsx3, gsx3, sgmsx3
 !
@@ -104,15 +106,15 @@ subroutine te0234(option, nomte)
     call jevech('PMATERC', 'L', imate)
     nomres(1) = 'E'
     nomres(2) = 'NU'
-    call tecach('OOO', 'PCONTMR', 'L', iret, nval=7, &
+    call tecach('OOO', 'PSIEFR', 'L', iret, nval=7, &
                 itab=itab)
-    icontm = itab(1)
+    jvSief = itab(1)
     nbsp = itab(7)
     if (nbsp .ne. npge*nbcou) then
         call utmess('F', 'ELEMENTS_4')
     end if
 !
-    call jevech('PDEPLMR', 'L', ideplm)
+    call jevech('PDEPLAR', 'L', jvDisp)
 !---- INITIALISATION DU VECTEUR FORCE INTERNE
 !
     call jevech('PVECTUR', 'E', ivectu)
@@ -187,7 +189,7 @@ subroutine te0234(option, nomte)
 !
                 call defgen(testl1, testl2, nno, r, x3, &
                             sina, cosa, cour, zr(ivf+k), dfdx, &
-                            zr(ideplm), eps2d, epsx3)
+                            zr(jvDisp), eps2d, epsx3)
 !
 !
 !-- CONSTRUCTION DE LA DEFORMATION GSX3 ET DE LA CONTRAINTE SGMSX3
@@ -202,10 +204,10 @@ subroutine te0234(option, nomte)
 !-- CALCUL DES CONTRAINTES TILDE, ON A REMPLACE ICONTP PAR ICONTM
 !
 
-                sigtdi(1) = zr(icontm-1+k1+1)/rhos
-                sigtdi(2) = x3*zr(icontm-1+k1+1)/rhos
-                sigtdi(3) = zr(icontm-1+k1+2)/rhot
-                sigtdi(4) = x3*zr(icontm-1+k1+2)/rhot
+                sigtdi(1) = zr(jvSief-1+k1+1)/rhos
+                sigtdi(2) = x3*zr(jvSief-1+k1+1)/rhos
+                sigtdi(3) = zr(jvSief-1+k1+2)/rhot
+                sigtdi(4) = x3*zr(jvSief-1+k1+2)/rhot
                 sigtdi(5) = sgmsx3/rhos
 
 !

@@ -185,11 +185,7 @@ class MECABL2(Element):
         ),
         OP.FORC_NODA(
             te=164,
-            para_in=(
-                (OP.FORC_NODA.PCONTMR, EEFGEGA),
-                (SP.PDEPLMR, DDL_MECA),
-                (SP.PGEOMER, NGEOMER),
-            ),
+            para_in=((SP.PSIEFR, EEFGEGA), (SP.PDEPLAR, DDL_MECA), (SP.PGEOMER, NGEOMER)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.FULL_MECA(

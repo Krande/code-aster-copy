@@ -374,9 +374,9 @@ class MECA_BARRE(Element):
             te=156,
             para_in=(
                 (OP.FORC_NODA.PCAORIE, CCAORIE),
-                (OP.FORC_NODA.PCOMPOR, LC.CCOMPOR),
-                (OP.FORC_NODA.PCONTMR, EEFGEGA),
-                (SP.PDEPLMR, DDL_MECA),
+                (SP.PCOMPOR, LC.CCOMPOR),
+                (SP.PSIEFR, EEFGEGA),
+                (SP.PDEPLAR, DDL_MECA),
                 (SP.PGEOMER, NGEOMER),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
