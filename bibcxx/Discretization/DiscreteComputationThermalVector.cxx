@@ -2,7 +2,7 @@
  * @file DiscreteComputation.cxx
  * @brief Implementation of class DiscreteComputation
  * @section LICENCE
- *   Copyright (C) 1991 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -1179,4 +1179,76 @@ FieldOnNodesRealPtr DiscreteComputation::getDualTemperature( FieldOnNodesRealPtr
         CALLO_AP_ASSEMBLY_VECTOR( buth->getName() );
 
     return buth;
+};
+
+FieldOnNodesRealPtr DiscreteComputation::dualThermalVector( FieldOnNodesRealPtr lagr_curr ) const {
+
+    AS_ASSERT( _phys_problem->getModel()->isThermal() );
+
+    // Init
+    ASTERINTEGER iload = 1;
+
+    // Get main parameters
+    auto currModel = _phys_problem->getModel();
+    auto currElemChara = _phys_problem->getElementaryCharacteristics();
+    auto currMater = _phys_problem->getMaterialField();
+    auto currListOfLoads = _phys_problem->getListOfLoads();
+
+    // Select option to compute
+    std::string option = "THER_BTLA_R";
+
+    // Create elementary vector
+    auto elemVect = std::make_shared< ElementaryVectorReal >( currModel, currMater, currElemChara,
+                                                              currListOfLoads );
+
+    // Setup
+    const std::string calcul_option( "CHAR_THER" );
+    elemVect->prepareCompute( calcul_option );
+
+    // Prepare computing
+    CalculPtr calcul = std::make_unique< Calcul >( option );
+
+    auto impl_load = [&]( auto loads ) {
+        for ( const auto &load : loads ) {
+            auto load_FEDesc = load->getFiniteElementDescriptor();
+            auto mult_field = load->getMultiplicativeField();
+            if ( mult_field && mult_field->exists() && load_FEDesc ) {
+
+                // Add input fields
+                calcul->clearInputs();
+                calcul->addInputField( "PLAGRAR", lagr_curr );
+                calcul->addInputField( "PDDLMUR", mult_field );
+
+                // Add output fields
+                calcul->clearOutputs();
+                calcul->addOutputElementaryTerm( "PVECTTR",
+                                                 std::make_shared< ElementaryTermReal >() );
+
+                // Compute
+                calcul->setFiniteElementDescriptor( load_FEDesc );
+                calcul->compute();
+                if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
+                    elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ),
+                                                 iload );
+                }
+            }
+            iload++;
+        }
+    };
+
+    impl_load( currListOfLoads->getThermalLoadsReal() );
+    impl_load( currListOfLoads->getThermalLoadsFunction() );
+
+#ifdef ASTER_HAVE_MPI
+    impl_load( currListOfLoads->getParallelThermalLoadsReal() );
+    impl_load( currListOfLoads->getParallelThermalLoadsFunction() );
+#endif
+
+    // Construct elementary vector
+    auto FEDs = _phys_problem->getListOfLoads()->getFiniteElementDescriptors();
+    FEDs.push_back( _phys_problem->getModel()->getFiniteElementDescriptor() );
+    elemVect->build( FEDs );
+
+    // Assemble
+    return elemVect->assemble( _phys_problem->getDOFNumbering() );
 };

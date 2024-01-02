@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -177,17 +177,6 @@ void DEFSSSPSSSPSP( RSINCH, rsinch, const char *, STRING_SIZE, const char *, STR
 void DEFSSSPSS( VEDIME, vedime, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
                 STRING_SIZE, const ASTERDOUBLE *, const char *, STRING_SIZE, const char *,
                 STRING_SIZE );
-
-#define CALLO_VEBTLA( a, b, c, d, e, f, g ) CALLOOOOOOO( VEBTLA, vebtla, a, b, c, d, e, f, g )
-void DEFSSSSSSS( VEBTLA, vebtla, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
-                 STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
-                 STRING_SIZE, const char *, STRING_SIZE );
-
-#define CALLO_VETHBT( a, b, c, d, e, f, g, h )                                                     \
-    CALLOOOOOOOO( VETHBT, vethbt, a, b, c, d, e, f, g, h )
-void DEFSSSSSSSS( VETHBT, vethbt, const char *, STRING_SIZE, const char *, STRING_SIZE,
-                  const char *, STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE,
-                  const char *, STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE );
 
 #define CALLO_VEBUME( a, b, c, d, e, f ) CALLOOOOPO( VEBUME, vebume, a, b, c, d, e, f )
 void DEFSSSSPS( VEBUME, vebume, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,

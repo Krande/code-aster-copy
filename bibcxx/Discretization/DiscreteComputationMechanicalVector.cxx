@@ -2,7 +2,7 @@
  * @file DiscreteComputation.cxx
  * @brief Implementation of class DiscreteComputation
  * @section LICENCE
- *   Copyright (C) 1991 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -171,7 +171,7 @@ DiscreteComputation::getMechanicalNeumannForces( const ASTERDOUBLE time_curr,
         impl( load, iload, "CHAR_MECA_FR1D2D", "F1D2D", "PFR1D2D", model_FEDesc );
         impl( load, iload, "CHAR_MECA_PRES_R", "PRESS", "PPRESSR", model_FEDesc );
         impl( load, iload, "CHAR_MECA_EFON_R", "EFOND", "PEFOND", model_FEDesc,
-              {{"PPREFFR", load->getConstantLoadField( "PREFF" )}} );
+              { { "PPREFFR", load->getConstantLoadField( "PREFF" ) } } );
         iload++;
     }
 
@@ -185,7 +185,7 @@ DiscreteComputation::getMechanicalNeumannForces( const ASTERDOUBLE time_curr,
         impl( load, iload, "CHAR_MECA_FF1D2D", "F1D2D", "PFF1D2D", model_FEDesc );
         impl( load, iload, "CHAR_MECA_PRES_F", "PRESS", "PPRESSF", model_FEDesc );
         impl( load, iload, "CHAR_MECA_EFON_F", "EFOND", "PEFOND", model_FEDesc,
-              {{"PPREFFF", load->getConstantLoadField( "PREFF" )}} );
+              { { "PPREFFF", load->getConstantLoadField( "PREFF" ) } } );
 
         iload++;
     }
@@ -323,14 +323,14 @@ DiscreteComputation::getMechanicalVolumetricForces( const ASTERDOUBLE time_curr,
                 std::string base = "G";
                 CALLO_COPISD( typeco, base, pre_sgm_name, pre_sigm->getName() );
                 impl( load, iload, "FORC_NODA", "SIINT", "", model_FEDesc,
-                      {{"PCONTMR", pre_sigm}} );
+                      { { "PCONTMR", pre_sigm } } );
             } else if ( retour == "CART" ) {
                 auto pre_sigm =
                     std::make_shared< ConstantFieldOnCellsReal >( currModel->getMesh() );
                 std::string base = "G";
                 CALLO_COPISD( typeco, base, pre_sgm_name, pre_sigm->getName() );
                 impl( load, iload, "FORC_NODA", "SIINT", "", model_FEDesc,
-                      {{"PCONTMR", pre_sigm}} );
+                      { { "PCONTMR", pre_sigm } } );
             } else {
                 AS_ABORT( "Error: " + retour );
             }
@@ -379,7 +379,7 @@ DiscreteComputation::getMechanicalVolumetricForces( const ASTERDOUBLE time_curr,
         impl( load, iload, "CHAR_MECA_FF1D1D", "F1D1D", "PFF1D1D", model_FEDesc );
         impl( load, iload, "CHAR_MECA_EPSI_F", "EPSIN", "PEPSINF", model_FEDesc );
         impl( load, iload, "ONDE_PLAN", "ONDPL", "PONDPLA", model_FEDesc,
-              {{"PONDPLR", load->getConstantLoadField( "ONDPR" )}} );
+              { { "PONDPLR", load->getConstantLoadField( "ONDPR" ) } } );
 
         iload++;
     }
@@ -609,6 +609,7 @@ FieldOnNodesRealPtr DiscreteComputation::getContactForces(
     const FieldOnNodesRealPtr displ_step, const ASTERDOUBLE &time_prev,
     const ASTERDOUBLE &time_step, const FieldOnCellsRealPtr data,
     const FieldOnNodesRealPtr coef_cont, const FieldOnNodesRealPtr coef_frot ) const {
+
     // Select option for matrix
     std::string option = "CHAR_MECA_CONT";
 
@@ -651,3 +652,76 @@ FieldOnNodesRealPtr DiscreteComputation::getContactForces(
 
     return elemVect->assemble( _phys_problem->getDOFNumbering() );
 }
+
+FieldOnNodesRealPtr
+DiscreteComputation::dualMechanicalVector( FieldOnNodesRealPtr lagr_curr ) const {
+
+    AS_ASSERT( _phys_problem->getModel()->isMechanical() );
+
+    // Init
+    ASTERINTEGER iload = 1;
+
+    // Get main parameters
+    auto currModel = _phys_problem->getModel();
+    auto currElemChara = _phys_problem->getElementaryCharacteristics();
+    auto currMater = _phys_problem->getMaterialField();
+    auto currListOfLoads = _phys_problem->getListOfLoads();
+
+    // Select option to compute
+    std::string option = "MECA_BTLA_R";
+
+    // Create elementary vector
+    auto elemVect = std::make_shared< ElementaryVectorReal >( currModel, currMater, currElemChara,
+                                                              currListOfLoads );
+
+    // Setup
+    const std::string calcul_option( "CHAR_MECA" );
+    elemVect->prepareCompute( calcul_option );
+
+    // Prepare computing
+    CalculPtr calcul = std::make_unique< Calcul >( option );
+
+    auto impl_load = [&]( auto loads ) {
+        for ( const auto &load : loads ) {
+            auto load_FEDesc = load->getFiniteElementDescriptor();
+            auto mult_field = load->getMultiplicativeField();
+            if ( mult_field && mult_field->exists() && load_FEDesc ) {
+
+                // Add input fields
+                calcul->clearInputs();
+                calcul->addInputField( "PLAGRAR", lagr_curr );
+                calcul->addInputField( "PDDLMUR", mult_field );
+
+                // Add output fields
+                calcul->clearOutputs();
+                calcul->addOutputElementaryTerm( "PVECTUR",
+                                                 std::make_shared< ElementaryTermReal >() );
+
+                // Compute
+                calcul->setFiniteElementDescriptor( load_FEDesc );
+                calcul->compute();
+                if ( calcul->hasOutputElementaryTerm( "PVECTUR" ) ) {
+                    elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTUR" ),
+                                                 iload );
+                }
+            }
+            iload++;
+        }
+    };
+
+    impl_load( currListOfLoads->getMechanicalLoadsReal() );
+    impl_load( currListOfLoads->getMechanicalLoadsFunction() );
+
+#ifdef ASTER_HAVE_MPI
+    impl_load( currListOfLoads->getParallelMechanicalLoadsReal() );
+    impl_load( currListOfLoads->getParallelMechanicalLoadsFunction() );
+#endif
+
+    // Construct elementary vector
+    auto FEDs = _phys_problem->getListOfLoads()->getFiniteElementDescriptors();
+    FEDs.push_back( _phys_problem->getModel()->getFiniteElementDescriptor() );
+    elemVect->build( FEDs );
+
+    // Assemble
+    return elemVect->assemble( _phys_problem->getDOFNumbering() );
+};
