@@ -17,10 +17,11 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), IMPR_MACRO="NON")
 
 from numpy import array, shape, reshape, real
 from cmath import *
+
 
 #
 # --------
@@ -184,7 +185,7 @@ STATIC = CALC_CHAMP(
     MODELE=MODSTAT,
     CHAM_MATER=MATSTAT,
     EXCIT=(_F(CHARGE=PES), _F(CHARGE=CL)),
-    CONTRAINTE=("SIEF_ELGA",),
+    CONTRAINTE=("SIEF_ELGA", "SIEF_NOEU"),
 )
 
 ### ===============================================================
@@ -586,7 +587,7 @@ DYNA_VC = CALC_CHAMP(
     RESULTAT=DYNA_VC,
     MODELE=MODYN,
     EXCIT=(_F(CHARGE=CHARGX), _F(CHARGE=ONDELATE)),
-    CONTRAINTE=("SIEF_ELGA",),
+    CONTRAINTE=("SIEF_ELGA", "SIEF_NOEU"),
 )
 
 ky = 0.001
@@ -638,7 +639,7 @@ TAB_RES4 = POST_NEWMARK(
     CHAM_FS=CO("CHAM_FS"),
 )
 
-IMPR_TABLE(TABLE=TAB_RES3, UNITE=6)
+IMPR_TABLE(TABLE=TAB_RES4, UNITE=6)
 
 
 #### TEST SUR FS
@@ -647,9 +648,43 @@ TEST_TABLE(
     NOM_PARA="FS",
     FILTRE=_F(NOM_PARA="INST", VALE=1.00000e-02, CRITERE="RELATIF"),
     REFERENCE="AUTRE_ASTER",
-    VALE_REFE=2.6623585372660767,
+    VALE_REFE=2.6623585372660767,  ## valeur de référence avec maillage PATCH
     VALE_CALC=2.6667802255541333,
     PRECISION=0.002,
+    CRITERE="RELATIF",
+    VALE_ABS="NON",
+)
+
+##################################################################################
+
+TAB_RES5 = POST_NEWMARK(
+    RESULTAT=DYNA_VC,
+    KY=ky,
+    # MAILLAGE_GLIS=MA_PATCH,
+    RAYON=r,
+    CENTRE_X=posx,
+    CENTRE_Y=posy,
+    RAFF_CERCLE=7,
+    GROUP_MA_CALC=Tout,
+    RESULTAT_PESANTEUR=STATIC,
+    CHAM_PHI=CHAPHI,
+    CHAM_COHESION=CHAC,
+    CHAM_FS=CO("CHAM_FS"),
+    METHODE="COLLOCATION",
+)
+
+IMPR_TABLE(TABLE=TAB_RES5, UNITE=6)
+
+
+#### TEST SUR FS
+TEST_TABLE(
+    TABLE=TAB_RES5,
+    NOM_PARA="FS",
+    FILTRE=_F(NOM_PARA="INST", VALE=1.00000e-02, CRITERE="RELATIF"),
+    REFERENCE="AUTRE_ASTER",
+    VALE_REFE=2.6667802255541333,  ## valeur de référence pour projection avec ECLA_PG
+    VALE_CALC=2.6671721097061445,
+    PRECISION=0.0002,
     CRITERE="RELATIF",
     VALE_ABS="NON",
 )

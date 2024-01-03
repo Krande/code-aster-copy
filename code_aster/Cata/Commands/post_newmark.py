@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -78,6 +78,13 @@ POST_NEWMARK = MACRO(
         CHAM_PHI=SIMP(statut="o", typ=cham_no_sdaster, fr="Champ de phi en dégrées"),
         CHAM_COHESION=SIMP(statut="o", typ=cham_no_sdaster, fr="Champ de cohesion"),
         CHAM_FS=SIMP(statut="f", typ=CO, fr="Champ du facteur de sécurité local"),
+        METHODE=SIMP(
+            statut="f",
+            typ="TXM",
+            defaut="ECLA_PG",
+            into=("ECLA_PG", "COLLOCATION"),
+            fr="Choix de la méthode de projection des contraintes",
+        ),
     ),
     KY=SIMP(statut="f", typ="R", fr="Valeur de ky pour le calcul de l'accélération critique"),
     GROUP_MA_CALC=SIMP(statut="o", typ=grma, max="**", fr="GROUP_MA associé au modèle utilisé"),
