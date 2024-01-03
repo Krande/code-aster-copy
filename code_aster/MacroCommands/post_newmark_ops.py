@@ -377,7 +377,7 @@ def cleanRuptureMeshwithCreatedGroup(__mail_1):
         reuse=__mail_1,
         MAILLAGE=__mail_1,
         DETR_GROUP_NO=_F(NOM=("LIGNE_", "DOMAIN_")),
-        DETR_GROUP_MA=_F(NOM=("LIGNE_", "DOMAIN_")),
+        DETR_GROUP_MA=_F(NOM=("LIGNE_", "DOMAIN_", "DOMAIN_L")),
     )
     return None
 
@@ -644,13 +644,22 @@ def post_newmark_ops(self, **args):
         ORIE_PEAU=_F(GROUP_MA_PEAU=("LIGNE_",), GROUP_MA_INTERNE=("DOMAIN_")),
     )
 
+    DEFI_GROUP(
+        reuse=__mail_1,
+        MAILLAGE=__mail_1,
+        CREA_GROUP_MA=_F(
+            NOM="DOMAIN_L", OPTION="APPUI", TYPE_APPUI="AU_MOINS_UN", GROUP_NO="LIGNE_"
+        ),
+    ),
+
     ## Restrain sliding mesh to the commun zone to the structure mesh to increase numerical performance
     __mail_2 = CREA_MAILLAGE(
         MAILLAGE=__mail_1,  # INFO=2,
         RESTREINT=_F(
             # GROUP_MA=("LIGNE_", "DOMAIN_", "RUPTURE"), GROUP_NO=("LIGNE_", "DOMAIN_", "RUPTURE")
-            GROUP_MA=("LIGNE_", "DOMAIN_"),
-            GROUP_NO=("LIGNE_", "DOMAIN_"),
+            # GROUP_MA=("LIGNE_", "DOMAIN_", "DOMAIN_L"),
+            GROUP_MA=("LIGNE_", "DOMAIN_L"),
+            GROUP_NO=("LIGNE_",),
         ),
     )
 
@@ -661,8 +670,13 @@ def post_newmark_ops(self, **args):
     )
 
     if TYPE == "MAILLAGE":
-        getMeshwithGLISSEGroupMAILLAGE(__mail, __mail_2)
+        getMeshwithGLISSEGroupMAILLAGE(__mail, __mail_1)
     # IMPR_RESU(RESU=_F(MAILLAGE = __mail_2,),FORMAT='MED',UNITE=23)
+
+    ## Restrain strature mesh to increase numerical performance
+    __mail_s = CREA_MAILLAGE(MAILLAGE=__mail, RESTREINT=_F(GROUP_MA=("GLISSE")))
+
+    IMPR_RESU(RESU=_F(MAILLAGE=__mail_s), FORMAT="MED", UNITE=24)
 
     ###############################################################################
     ####
