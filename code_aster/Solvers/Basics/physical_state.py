@@ -24,36 +24,10 @@ from .problem_dispatcher import ProblemType as PBT
 from .solver_features import SolverOptions as SOP
 
 
-class CustomAttribute:
-    """A descriptor class to manage the field U in
-    static, and the fields U, dU and d2U in dynamic.
-    """
-
-    def __init__(self, field_name, attr_name):
-        self._field_name = field_name
-        self._attr_name = attr_name
-
-    def __get__(self, obj, objtype=None):
-        if self._attr_name not in obj._available_fields:
-            name, attr = objtype.__name__, self._attr_name
-            err_msg = "'{}' object has no attribute '{}'"
-            raise AttributeError(err_msg.format(name, attr))
-
-        return obj._fields_prev[self._field_name] + obj._fields_step[self._field_name]
-
-    def __set__(self, obj, value):
-        if self._attr_name not in obj._available_fields:
-            attr, name = self._attr_name, type(obj).__name__
-            err_msg = "Can't add attribute {!r} to {}"
-            raise AttributeError(err_msg.format(attr, name))
-
-        obj._fields_step[self._field_name] = value - obj._fields_prev[self._field_name]
-
-
 class PhysicalState(BaseFeature):
     """This object represents a Physical State of the model.
 
-    Actually, it stores a stack of physical states et works as an *adapter*
+    Actually, it stores a stack of physical states and works as an *adapter*
     on the current state. Only the current state, the working one, has setters
     and so is writable. All other states on the stack are read-only.
     """
@@ -61,39 +35,63 @@ class PhysicalState(BaseFeature):
     class State:
         """Represents an elementary physical state (private)."""
 
+        class CustomAttribute:
+            """A descriptor class to manage the field U in
+            static, and the fields U, dU and d2U in dynamic.
+            """
+
+            def __init__(self, field_name, attr_name):
+                self._field_name = field_name
+                self._attr_name = attr_name
+
+            def __get__(self, obj, objtype=None):
+                if self._attr_name not in obj._primal_names:
+                    name, attr = objtype.__name__, self._attr_name
+                    err_msg = "'{}' object has no attribute '{}'"
+                    raise AttributeError(err_msg.format(name, attr))
+
+                return obj._prim_prev[self._field_name] + obj._prim_step[self._field_name]
+
+            def __set__(self, obj, value):
+                if self._attr_name not in obj._primal_names:
+                    attr, name = self._attr_name, type(obj).__name__
+                    err_msg = "Can't add attribute {!r} to {}"
+                    raise AttributeError(err_msg.format(attr, name))
+
+                obj._prim_step[self._field_name] = value - obj._prim_prev[self._field_name]
+
         _time_prev = _time_step = None
-        _fields_prev = _fields_step = None
-        _stress = _internVar = _externVar = None
-        _primal_field = _available_fields = None
+        _prim_prev = _prim_step = None
+        _primal = _primal_names = _dual = None
         _pb_type = None
-        _aux = None
+        _data = None
         __setattr__ = no_new_attributes(object.__setattr__)
 
         def __init__(self, pb_type):
             if pb_type in [PBT.Unset]:
                 raise NotImplementedError("Not supported !")
-            self._aux = {}
-            self._primal_field = "DEPL"
-
-            if pb_type == PBT.MecaDyna:
-                fields_list = {"U": "DEPL", "dU": "VITE", "d2U": "ACCE"}
-            elif pb_type == PBT.MecaStat:
-                fields_list = {"U": "DEPL"}
-            elif pb_type == PBT.Thermal:
-                fields_list = {"U": "TEMP"}
-                self._primal_field = "TEMP"
-
             self._pb_type = pb_type
-            self._available_fields = fields_list.keys()
-
-            self._fields_prev = {f: None for f in fields_list.values()}
-            self._fields_step = {f: None for f in fields_list.values()}
-
-            for field, name in fields_list.items():
-                setattr(type(self), field, CustomAttribute(name, field))
-
-            self._stress = self._internVar = self._externVar = None
+            self._data = {}
+            self._primal = "DEPL"
+            self._dual = "SIEF_ELGA"
+            if pb_type == PBT.MecaDyna:
+                names = {"U": self._primal, "dU": "VITE", "d2U": "ACCE"}
+            elif pb_type == PBT.MecaStat:
+                names = {"U": self._primal}
+            elif pb_type == PBT.Thermal:
+                self._primal = "TEMP"
+                names = {"U": self._primal}
+                self._dual = "FLUX_ELGA"
+            self._primal_names = names.keys()
+            self._prim_prev = {f: None for f in names.values()}
+            self._prim_step = {f: None for f in names.values()}
+            for field, name in names.items():
+                setattr(type(self), field, PhysicalState.State.CustomAttribute(name, field))
             self._time_prev = self._time_step = None
+
+        def getFields(self):
+            """Return the list of available fields."""
+            return self._prim_prev.keys()
 
         @property
         def time_prev(self):
@@ -113,7 +111,7 @@ class PhysicalState(BaseFeature):
         @property
         def primal_prev(self):
             """FieldOnNodesReal: Primal field at previous time."""
-            return self._fields_prev[self._primal_field]
+            return self._prim_prev[self._primal]
 
         @primal_prev.setter
         def primal_prev(self, field):
@@ -123,12 +121,12 @@ class PhysicalState(BaseFeature):
                 field (FieldOnNodesReal): primal
             """
             # assert isinstance(field, FieldOnNodesReal), f"unexpected type: {field}"
-            self._fields_prev[self._primal_field] = field
+            self._prim_prev[self._primal] = field
 
         @property
         def primal_curr(self):
             """FieldOnNodesReal: Primal field at current time."""
-            return self._fields_prev[self._primal_field] + self._fields_step[self._primal_field]
+            return self._prim_prev[self._primal] + self._prim_step[self._primal]
 
         @primal_curr.setter
         def primal_curr(self, field):
@@ -138,12 +136,12 @@ class PhysicalState(BaseFeature):
                 field (FieldOnNodesReal): primal
             """
             # assert field is None or isinstance(field, FieldOnNodesReal), f"unexpected type: {field}"
-            self._fields_step[self._primal_field] = field - self._fields_prev[self._primal_field]
+            self._prim_step[self._primal] = field - self._prim_prev[self._primal]
 
         @property
         def primal_step(self):
             """FieldOnNodesReal: Primal increment."""
-            return self._fields_step[self._primal_field]
+            return self._prim_step[self._primal]
 
         @primal_step.setter
         def primal_step(self, field):
@@ -153,36 +151,40 @@ class PhysicalState(BaseFeature):
                 field (FieldOnNodesReal): primal
             """
             # assert field is None or isinstance(field, FieldOnNodesReal), f"unexpected type: {field}"
-            self._fields_step[self._primal_field] = field
+            self._prim_step[self._primal] = field
 
         @property
         def fields_prev(self):
             """dict: Dictionary of previous fields."""
-            return self._fields_prev
+            return self._prim_prev
 
         @property
         def fields_step(self):
             """dict: Dictionary of fields steps."""
-            return self._fields_step
+            return self._prim_step
+
+        def get(self, key):
+            """Return a field."""
+            return self._data.get(key)
+
+        def set(self, key, field):
+            """Assign a field."""
+            self._data[key] = field
 
         @property
         def stress(self):
             """FieldOnCellsReal: Stress field."""
-            return self._stress
+            return self.get(self._dual)
 
         @property
         def internVar(self):
             """FieldOnCellsReal: Internal state variables."""
-            return self._internVar
+            return self.get("VARI_ELGA")
 
         @property
         def externVar(self):
             """FieldOnCellsReal: External state variables."""
-            return self._externVar
-
-        def getAuxiliary(self, field_name):
-            """Return an auxiliary field"""
-            return self._aux.get(field_name)
+            return self.get("VARI_EXTE")
 
         def copy(self, other):
             """Copy the content of an object into the current one.
@@ -196,24 +198,15 @@ class PhysicalState(BaseFeature):
             assert self._pb_type == other._pb_type
             self._time_prev = other.time_prev
             self._time_step = other.time_step
-
+            self._primal = other._primal
+            self._primal_names = list(other._primal_names)
             for field in self.getFields():
                 prev = other.fields_prev[field]
-                self._fields_prev[field] = prev and prev.copy()
-
+                self._prim_prev[field] = prev and prev.copy()
                 step = other.fields_step[field]
-                self._fields_step[field] = step and step.copy()
-
-            self._stress = other.stress and other.stress.copy()
-            self._internVar = other.internVar and other.internVar.copy()
-            self._externVar = other.externVar and other.externVar.copy()
-
-            self._primal_field = other._primal_field
-            self._available_fields = [f for f in other._available_fields]
-
-            for key, field in other._aux.items():
-                self._aux[key] = field and field.copy()
-
+                self._prim_step[field] = step and step.copy()
+            for key, field in other._data.items():
+                self._data[key] = field and field.copy()
             return self
 
         def duplicate(self):
@@ -230,50 +223,22 @@ class PhysicalState(BaseFeature):
             Arguments:
                 other (PhysicalState.State): Object to be swaped.
             """
-            temp = self._time_prev
-            self._time_prev = other.time_prev
-            other._time_prev = temp
-
-            temp = self._time_step
-            self._time_step = other.time_step
-            other._time_step = temp
-
+            self._time_prev, other._time_prev = other._time_prev, self._time_prev
+            self._time_step, other._time_step = other._time_step, self._time_step
+            self._pb_type, other._pb_type = other._pb_type, self._pb_type
+            self._primal, other._primal = other._primal, self._primal
+            self._primal_names, other._primal_names = other._primal_names, self._primal_names
             for field in self.getFields():
-                temp = self._fields_prev[field]
-                self._fields_prev[field] = other.fields_prev[field]
-                other.fields_prev[field] = temp
-
-                temp = self._fields_step[field]
-                self._fields_step[field] = other.fields_step[field]
-                other._fields_step[field] = temp
-
-            temp = self._stress
-            self._stress = other.stress
-            other._stress = temp
-
-            temp = self._internVar
-            self._internVar = other.internVar
-            other._internVar = temp
-
-            temp = self._externVar
-            self._externVar = other.externVar
-            other._externVar = temp
-
-            temp = self._pb_type
-            self._pb_type = other._pb_type
-            other._pb_type = temp
-
-            temp = self._primal_field
-            self._primal_field = other._primal_field
-            other._primal_field = temp
-
-            temp = self._available_fields
-            self._available_fields = other._available_fields
-            other._available_fields = temp
-
-        def getFields(self):
-            """Return the list of available fields."""
-            return self._fields_prev.keys()
+                self._prim_prev[field], other._prim_prev[field] = (
+                    other._prim_prev[field],
+                    self._prim_prev[field],
+                )
+                self._prim_step[field], other._prim_step[field] = (
+                    other._prim_step[field],
+                    self._prim_step[field],
+                )
+            for key in set(self._data.keys()).union(other._data.keys()):
+                self._data[key], other._data[key] = other._data.het(key), self._data.get(key)
 
         def as_dict(self):
             """Returns the fields as a dict.
@@ -281,26 +246,15 @@ class PhysicalState(BaseFeature):
             Returns:
                 dict: Dict of fields.
             """
-
-            def getStoringName(field, default=" "):
-                if field:
-                    quantity, _ = field.getPhysicalQuantity().split("_")
-                    if isinstance(field, (FieldOnNodesReal)):
-                        loc = "NOEU"
-                    else:
-                        loc = field.getLocalization()
-                    return quantity + "_" + loc
-                return default
-
-            ret = {
-                getStoringName(self.stress): self.stress,
-                getStoringName(self.internVar, "VARI_ELGA"): self.internVar,
-            }
+            ret = {}
             for field_name in self.getFields():
                 ret[field_name] = self.fields_prev[field_name]
-            # add _aux fields
-            for field_name in self._aux:
-                ret[field_name] = self._aux[field_name]
+            # add _data fields
+            for key in self._data:
+                if key == "VARI_EXTE":
+                    # not yet supported in Result
+                    continue
+                ret[key] = self._data[key]
             return ret
 
         def debugPrint(self, label=""):
@@ -311,15 +265,10 @@ class PhysicalState(BaseFeature):
             if self.primal_step:
                 values = self.primal_step.getValues()
                 print("* primal_step", sum(values) / len(values), flush=True)
-            if self._stress:
-                values = self._stress.getValues()
-                print("* stress     ", sum(values) / len(values), flush=True)
-            if self._internVar:
-                values = self._internVar.getValues()
-                print("* internVar  ", sum(values) / len(values), flush=True)
-            if self._externVar:
-                values = self._externVar.getValues()
-                print("* externVar  ", sum(values) / len(values), flush=True)
+            for key, field in self._data.items():
+                if field:
+                    values = field.getValues()
+                    print(f"* {key:10s} ", sum(values) / len(values), flush=True)
 
     provide = SOP.PhysicalState
 
@@ -369,25 +318,11 @@ class PhysicalState(BaseFeature):
         Arguments:
             other (PhysicalState): the physical state to be swaped.
         """
-        temp = self._pb_type
-        self._pb_type = other._pb_type
-        other._pb_type = temp
-
-        temp = self._current
-        self._current = other._current
-        other._current = temp
-
-        temp = self._stack
-        self._stack = other._stack
-        other._stack = temp
-
-        temp = self._size
-        self._size = other._size
-        other._size = temp
-
-        temp = self._stash
-        self._stash = other._stash
-        other._stash = temp
+        self._pb_type, other._pb_type = other._pb_type, self._pb_type
+        self._current, other._current = other._current, self._current
+        self._stack, other._stack = other._stack, self._stack
+        self._size, other._size = other._size, self._size
+        self._stash, other._stash = other._stash, self._stash
 
     def getState(self, index=0):
         """Return a physical state by index (relative position).
@@ -512,7 +447,7 @@ class PhysicalState(BaseFeature):
         """
         if field:
             assert isinstance(field, FieldOnCellsReal), f"unexpected type: {field}"
-        self.current._stress = field
+        self.current.set(self.current._dual, field)
 
     @property
     def internVar(self):
@@ -528,7 +463,7 @@ class PhysicalState(BaseFeature):
         """
         if field:
             assert isinstance(field, FieldOnCellsReal), f"unexpected type: {field}"
-        self.current._internVar = field
+        self.current.set("VARI_ELGA", field)
 
     @property
     def externVar(self):
@@ -543,19 +478,19 @@ class PhysicalState(BaseFeature):
             field (FieldOnCellsReal): external state variables
         """
         assert field is None or isinstance(field, FieldOnCellsReal), f"unexpected type: {field}"
-        self.current._externVar = field
+        self.current.set("VARI_EXTE", field)
 
-    def getAuxiliary(self, key):
-        """FieldOnCellsReal: auxiliary field."""
-        return self.current.getAuxiliary(key)
+    def get(self, key):
+        """FieldOnCellsReal: The field stored at this key."""
+        return self.current.get(key)
 
-    def setAuxiliary(self, key, field):
-        """Set auxiliary state variables for key.
+    def set(self, key, field):
+        """Assign a field at the given key.
 
         Arguments:
-            field (FieldOnCellsReal): external state variables
+            field (FieldOnCellsReal): Field
         """
-        self.current._aux[key] = field
+        self.current._data[key] = field
 
     def stash(self):
         """Stores the object state to provide transactionality semantics."""
@@ -617,19 +552,14 @@ class PhysicalState(BaseFeature):
     @staticmethod
     def _states_difference(one, two):
         """Delta between states as returned by py:method:`as_dict`."""
-        ret = {"SIEF_ELGA": None, "VARI_ELGA": None}
-
+        ret = {}
         for field in one.getFields():
-            first_field = one.fields_prev[field] + one._fields_step[field]
-            second_field = two.fields_prev[field] + two._fields_step[field]
+            first_field = one.fields_prev[field] + one._prim_step[field]
+            second_field = two.fields_prev[field] + two._prim_step[field]
             ret[field] = second_field - first_field
-
-        if one.stress and two.stress:
-            ret["SIEF_ELGA"] = two.stress - one.stress
-
-        if one.internVar and two.internVar:
-            ret["VARI_ELGA"] = two.internVar - one.internVar
-
+        for key in set(one._data.keys()).intersection(two._data.keys()):
+            if one._data[key] and two._data[key]:
+                ret[key] = two._data[key] - one._data[key]
         return ret
 
     # FIXME setPrimalValue?
@@ -681,7 +611,7 @@ class PhysicalState(BaseFeature):
             value (float): value to set everywhere
 
         Returns:
-            FieldOnCells: Stress field with a given value (SIEF_ELGA)
+            FieldOnCells: Stress field with a given value (SIEF_ELGA/FLUX_ELGA)
         """
 
         if phys_pb.isMechanical():
@@ -729,7 +659,7 @@ class PhysicalState(BaseFeature):
         self.time_step = 0.0
 
         current = self.current
-        current._aux = {}
+        current._data = {}
 
         for field in current.getFields():
             current.fields_prev[field] = self.createPrimal(phys_pb, 0.0)

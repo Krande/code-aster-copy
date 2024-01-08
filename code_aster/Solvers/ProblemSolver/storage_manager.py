@@ -270,7 +270,7 @@ class StorageManager(SolverFeature):
         if field is None or field_type in self._excl_fields:
             logger.debug("STORE: not exists or excluded: %s", field_type)
             return False
-        self._result.setField(field, field_type, self._stor_idx)
         args = {"valk": field_type, "valr": time, "vali": self._stor_idx}
         logger.info(MessageLog.GetText("I", "ARCHIVAGE_6", **args))
+        self._result.setField(field, field_type, self._stor_idx)
         return True

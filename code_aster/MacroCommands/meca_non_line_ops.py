@@ -179,7 +179,7 @@ def meca_non_line_ops(self, **args):
                 hho_field = HHO(nl_solver.phys_pb).projectOnLagrangeSpace(
                     nl_solver.phys_state.primal_curr
                 )
-                nl_solver.phys_state.setAuxiliary("HHO_DEPL", hho_field)
+                nl_solver.phys_state.set("HHO_DEPL", hho_field)
 
     solver.use(PostHookHHO())
 

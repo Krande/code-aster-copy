@@ -102,7 +102,7 @@ class NewtonSolver(SolverFeature):
         self.phys_state.primal_step += primal_incr
 
         for key, field in resi_fields.items():
-            self.phys_state.setAuxiliary(key, field)
+            self.phys_state.set(key, field)
 
         if callback:
             callback(primal_incr)
