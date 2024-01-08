@@ -175,7 +175,7 @@ def ther_non_line_ops(self, **args):
                         phys_state.getState(-1).auxiliary["HYDR_ELGA"],
                     )
 
-                phys_state.auxiliary("HYDR_ELGA", hydr_curr)
+                phys_state.setAuxiliary("HYDR_ELGA", hydr_curr)
 
     class PostHookHHO:
         """Hook to compute HHO_TEMP."""
@@ -190,7 +190,7 @@ def ther_non_line_ops(self, **args):
                     nl_solver.phys_state.primal_curr
                 )
 
-                nl_solver.phys_state.auxiliary("HHO_TEMP", hho_field)
+                nl_solver.phys_state.setAuxiliary("HHO_TEMP", hho_field)
 
     solver.use(PostHookHydr())
     solver.use(PostHookHHO())

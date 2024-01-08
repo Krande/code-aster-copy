@@ -66,13 +66,13 @@ class PhysicalState(BaseFeature):
         _stress = _internVar = _externVar = None
         _primal_field = _available_fields = None
         _pb_type = None
-        _aux = {}
+        _aux = None
         __setattr__ = no_new_attributes(object.__setattr__)
 
         def __init__(self, pb_type):
             if pb_type in [PBT.Unset]:
                 raise NotImplementedError("Not supported !")
-
+            self._aux = {}
             self._primal_field = "DEPL"
 
             if pb_type == PBT.MecaDyna:
@@ -180,13 +180,9 @@ class PhysicalState(BaseFeature):
             """FieldOnCellsReal: External state variables."""
             return self._externVar
 
-        @property
-        def auxiliary(self, field_name):
+        def getAuxiliary(self, field_name):
             """Return an auxiliary field"""
-            if self._aux and field_name in self._aux:
-                return self._aux[field_name]
-
-            return None
+            return self._aux.get(field_name)
 
         def copy(self, other):
             """Copy the content of an object into the current one.
@@ -215,13 +211,8 @@ class PhysicalState(BaseFeature):
             self._primal_field = other._primal_field
             self._available_fields = [f for f in other._available_fields]
 
-            if other._aux:
-                self._aux = {}
-                for key, field in other._aux.items():
-                    if field is None:
-                        self._aux[key] = None
-                    else:
-                        self._aux[key] = field.copy()
+            for key, field in other._aux.items():
+                self._aux[key] = field and field.copy()
 
             return self
 
@@ -307,12 +298,9 @@ class PhysicalState(BaseFeature):
             }
             for field_name in self.getFields():
                 ret[field_name] = self.fields_prev[field_name]
-
             # add _aux fields
-            if self._aux:
-                for field_name in self._aux:
-                    ret[field_name] = self._aux[field_name]
-
+            for field_name in self._aux:
+                ret[field_name] = self._aux[field_name]
             return ret
 
         def debugPrint(self, label=""):
@@ -557,13 +545,11 @@ class PhysicalState(BaseFeature):
         assert field is None or isinstance(field, FieldOnCellsReal), f"unexpected type: {field}"
         self.current._externVar = field
 
-    @property
-    def auxiliary(self, key):
+    def getAuxiliary(self, key):
         """FieldOnCellsReal: auxiliary field."""
-        assert key in self.current._aux.keys(), f"unexpected key: {key}"
-        return self.current._aux[key]
+        return self.current.getAuxiliary(key)
 
-    def auxiliary(self, key, field):
+    def setAuxiliary(self, key, field):
         """Set auxiliary state variables for key.
 
         Arguments:
@@ -743,6 +729,7 @@ class PhysicalState(BaseFeature):
         self.time_step = 0.0
 
         current = self.current
+        current._aux = {}
 
         for field in current.getFields():
             current.fields_prev[field] = self.createPrimal(phys_pb, 0.0)
@@ -753,8 +740,6 @@ class PhysicalState(BaseFeature):
             if phys_pb.isMechanical():
                 self.internVar = self.createInternalVariablesNext(phys_pb, 0.0)
                 self.externVar = None
-
-        self._current._aux = {}
 
     def as_dict(self):
         """Returns the fields as a dict.

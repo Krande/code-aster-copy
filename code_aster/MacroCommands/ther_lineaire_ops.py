@@ -426,7 +426,7 @@ def ther_lineaire_ops(self, **args):
 
         if model.existsHHO():
             hho_field = hho.projectOnLagrangeSpace(phys_state.primal_curr)
-            phys_state.auxiliary("HHO_TEMP", hho_field)
+            phys_state.setAuxiliary("HHO_TEMP", hho_field)
 
         if save_initial_state:
             storage_manager.storeState(
@@ -481,7 +481,7 @@ def ther_lineaire_ops(self, **args):
 
         if model.existsHHO():
             hho_field = hho.projectOnLagrangeSpace(phys_state.primal_curr)
-            phys_state.auxiliary("HHO_TEMP", hho_field)
+            phys_state.setAuxiliary("HHO_TEMP", hho_field)
 
         storage_manager.storeState(
             step_rank, phys_state.time_curr, phys_pb, phys_state, param={"PARM_THETA": time_theta}
