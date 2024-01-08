@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine comp_init(mesh, compor, base, nbCmp_)
 #include "asterfort/Behaviour_type.h"
 !
     character(len=8), intent(in) :: mesh
-    character(len=19), intent(in) :: compor
+    character(len=24), intent(in) :: compor
     character(len=1), intent(in) :: base
     integer, optional, intent(out) :: nbCmp_
 !

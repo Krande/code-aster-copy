@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine comp_meta_info(ds_comporMeta)
+subroutine comp_meta_info(metaPrepPara)
 !
     use Metallurgy_type
 !
@@ -26,47 +25,40 @@ subroutine comp_meta_info(ds_comporMeta)
 #include "asterf_types.h"
 #include "asterc/getfac.h"
 !
-    type(META_PrepPara), intent(out) :: ds_comporMeta
+    type(META_PrepPara), intent(out) :: metaPrepPara
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Preparation of comportment (metallurgy)
 !
-! Create datastructure to prepare comportement
+! Create datastructure to prepare parameters for behaviour of metallurgy
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Out ds_comporMeta    : datastructure to prepare comportement
+! Out metaPrepPara     : datastructure to prepare parameters for behaviour of metallurgy
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=16) :: keywordfact
-    integer :: nb_info_comp, nbocc_compor
+    character(len=16), parameter :: factorKeyword = 'COMPORTEMENT'
+    integer :: nb_info_comp, nbFactorKeyword
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nbocc_compor = 0
-    keywordfact = 'COMPORTEMENT'
-    call getfac(keywordfact, nbocc_compor)
-!
-! - Initializations
-!
-    ds_comporMeta%v_comp => null()
-!
-! - Number of comportement information
-!
-    if (nbocc_compor .eq. 0) then
+    nbFactorKeyword = 0
+    call getfac(factorKeyword, nbFactorKeyword)
+    metaPrepPara%para => null()
+
+! - Number of behaviours
+    if (nbFactorKeyword .eq. 0) then
         nb_info_comp = 1
     else
-        nb_info_comp = nbocc_compor
+        nb_info_comp = nbFactorKeyword
     end if
-!
-! - Save number of comportments
-!
-    ds_comporMeta%nb_comp = nbocc_compor
-!
+
+! - Save number of behaviours
+    metaPrepPara%nb_comp = nbFactorKeyword
+
 ! - Allocate comportment informations objects
-!
-    allocate (ds_comporMeta%v_comp(nb_info_comp))
+    allocate (metaPrepPara%para(nb_info_comp))
 !
 end subroutine

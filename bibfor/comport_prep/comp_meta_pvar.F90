@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine comp_meta_pvar(model, compor_cart, compor_info)
+subroutine comp_meta_pvar(model, comporMeta, comporMetaInfo)
 !
     use Metallurgy_type
 !
@@ -44,8 +43,8 @@ subroutine comp_meta_pvar(model, compor_cart, compor_info)
 #include "asterfort/wkvect.h"
 !
     character(len=8), intent(in) :: model
-    character(len=19), intent(in) :: compor_cart
-    character(len=19), intent(in) :: compor_info
+    character(len=24), intent(in) :: comporMeta
+    character(len=19), intent(in) :: comporMetaInfo
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,152 +54,135 @@ subroutine comp_meta_pvar(model, compor_cart, compor_info)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  model            : name of model
-! In  compor_info      : name of object for information about internal variables and comportement
-! In  compor_cart      : name of <CARTE> COMPOR
+! In  model             : name of model
+! In  comporMetaInfo    : name of object for information about internal variables and comportement
+! In  comporMeta        : name of map for behaviour in metallurgy
 !
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: l_zone_read
     character(len=8) :: mesh
-    character(len=19) :: ligrmo
-    integer, pointer :: v_info(:) => null()
-    integer, pointer :: v_zone(:) => null()
-    integer, pointer :: v_zone_read(:) => null()
-    integer, pointer :: v_model_elem(:) => null()
-    character(len=16), pointer :: v_vari(:) => null()
-    character(len=16), pointer :: v_rela(:) => null()
-    character(len=16), pointer :: v_compor_vale(:) => null()
-    integer, pointer :: v_compor_desc(:) => null()
-    integer, pointer :: v_compor_lima(:) => null()
-    integer, pointer :: v_compor_lima_lc(:) => null()
-    integer, pointer :: v_compor_ptma(:) => null()
-    integer :: nb_vale, nb_cmp_max, nb_zone, nb_vari, nt_vari, nb_vari_maxi, nb_zone_acti
-    integer :: i_zone, i_elem, nb_elem_mesh, iret, nume_comp
-    character(len=16) :: phase_type, model_meta
-    integer :: nb_comp_elem, nb_vari_max
-    character(len=16) :: comp_elem(2), comp_code_py
+    character(len=19) :: modelLigrel
+    integer, pointer :: comporInfoInfo(:) => null()
+    integer, pointer :: comporInfoZone(:) => null()
+    integer, pointer :: zoneRead(:) => null()
+    integer, pointer :: modelCell(:) => null()
+    character(len=16), pointer :: comporInfoVari(:) => null()
+    character(len=16), pointer :: comporInfoRela(:) => null()
+    character(len=16), pointer :: comporMetaVale(:) => null()
+    integer, pointer :: comporMetaDesc(:) => null()
+    !integer, pointer :: v_compor_lima(:) => null()
+    !integer, pointer :: v_compor_lima_lc(:) => null()
+    integer, pointer :: comporMetaPtma(:) => null()
+    integer :: nbVale, mapNbCmpMax, mapNbZone, nbVari, nt_vari, nb_vari_maxi, nb_zone_acti
+    integer :: mapZoneNume, iCellMesh, nbCellMesh, iret, numeComp
+    character(len=16) :: metaType, metaLaw
+    integer :: nbCompElem, nb_vari_max
+    character(len=16) :: compElem(2), compCodePY
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-!
+
 ! - Initializations
-!
     nb_zone_acti = 0
-!
-! - Access to mesh
-!
-    call dismoi('NOM_MAILLA', compor_cart, 'CARTE', repk=mesh)
-    call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nb_elem_mesh)
-!
-! - Access to model
-!
-    ligrmo = model(1:8)//'.MODELE'
-    call jeveuo(model//'.MAILLE', 'L', vi=v_model_elem)
-!
-! - Access to COMPOR
-!
-    call jeveuo(compor_cart//'.DESC', 'L', vi=v_compor_desc)
-    call jeveuo(compor_cart//'.VALE', 'L', vk16=v_compor_vale)
-    call jelira(compor_cart//'.VALE', 'LONMAX', nb_vale)
-    call jeveuo(jexnum(compor_cart//'.LIMA', 1), 'L', vi=v_compor_lima)
-    call jeveuo(jexatr(compor_cart//'.LIMA', 'LONCUM'), 'L', vi=v_compor_lima_lc)
-    nb_zone = v_compor_desc(3)
-    nb_cmp_max = nb_vale/v_compor_desc(2)
-!
-! - Extend field on model
-!
-    call etenca(compor_cart, ligrmo, iret)
-    call jeveuo(compor_cart//'.PTMA', 'L', vi=v_compor_ptma)
-!
-! - Create list of zones: for each zone (in CARTE), how many elements
-!
-    call wkvect(compor_info(1:19)//'.ZONE', 'V V I', nb_zone, vi=v_zone)
-!
+
+! - Access to map
+    call jeveuo(comporMeta(1:19)//'.DESC', 'L', vi=comporMetaDesc)
+    call jeveuo(comporMeta(1:19)//'.VALE', 'L', vk16=comporMetaVale)
+    call jelira(comporMeta(1:19)//'.VALE', 'LONMAX', nbVale)
+    mapNbZone = comporMetaDesc(3)
+    mapNbCmpMax = nbVale/comporMetaDesc(2)
+    call dismoi('NOM_MAILLA', comporMeta, 'CARTE', repk=mesh)
+    call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nbCellMesh)
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=modelLigrel)
+    call jeveuo(model//'.MAILLE', 'L', vi=modelCell)
+    call etenca(comporMeta, modelLigrel, iret)
+    call jeveuo(comporMeta(1:19)//'.PTMA', 'L', vi=comporMetaPtma)
+
+! - Create list of zones: for each zone (in CARTE), how many elements ?
+    call wkvect(comporMetaInfo(1:19)//'.ZONE', 'V V I', mapNbZone, vi=comporInfoZone)
+
 ! - Count number of elements by zone (in CARTE)
-!
-    do i_elem = 1, nb_elem_mesh
-        i_zone = v_compor_ptma(i_elem)
-        if (i_zone .ne. 0 .and. v_model_elem(i_elem) .ne. 0) then
-            v_zone(i_zone) = v_zone(i_zone)+1
+    do iCellMesh = 1, nbCellMesh
+        mapZoneNume = comporMetaPtma(iCellMesh)
+        if (mapZoneNume .ne. 0 .and. modelCell(iCellMesh) .ne. 0) then
+            comporInfoZone(mapZoneNume) = comporInfoZone(mapZoneNume)+1
         end if
     end do
-!
+
 ! - Count total of internal variables
-!
     nt_vari = 0
     nb_vari_max = 0
-    do i_zone = 1, nb_zone
-        read (v_compor_vale(nb_cmp_max*(i_zone-1)+2), '(I16)') nb_vari
-        nt_vari = nt_vari+nb_vari
-        nb_vari_maxi = max(nb_vari_maxi, nb_vari)
+    do mapZoneNume = 1, mapNbZone
+        read (comporMetaVale(mapNbCmpMax*(mapZoneNume-1)+2), '(I16)') nbVari
+        nt_vari = nt_vari+nbVari
+        nb_vari_maxi = max(nb_vari_maxi, nbVari)
     end do
-    AS_ALLOCATE(vi=v_zone_read, size=nb_zone)
-!
-! - No internal variables names
-!
+    AS_ALLOCATE(vi=zoneRead, size=mapNbZone)
     if (nt_vari .eq. 0) then
         goto 99
     end if
-!
+
 ! - Create list of comportment information
-!
-    call wkvect(compor_info(1:19)//'.RELA', 'V V K16', 2*nb_zone, vk16=v_rela)
-!
+    call wkvect(comporMetaInfo(1:19)//'.RELA', 'V V K16', 2*mapNbZone, vk16=comporInfoRela)
+
 ! - Create list of internal variables names
-!
-    call jecrec(compor_info(1:19)//'.VARI', 'V V K16', 'NU', 'DISPERSE', 'VARIABLE', nb_zone)
-    do i_zone = 1, nb_zone
-        call jecroc(jexnum(compor_info(1:19)//'.VARI', i_zone))
+    call jecrec(comporMetaInfo(1:19)//'.VARI', 'V V K16', 'NU', 'DISPERSE', 'VARIABLE', mapNbZone)
+    do mapZoneNume = 1, mapNbZone
+        call jecroc(jexnum(comporMetaInfo(1:19)//'.VARI', mapZoneNume))
     end do
 !
-    do i_elem = 1, nb_elem_mesh
+    do iCellMesh = 1, nbCellMesh
 ! ----- Get current zone
-        i_zone = v_compor_ptma(i_elem)
-        if (i_zone .eq. 0) then
-            l_zone_read = .true.
+        mapZoneNume = comporMetaPtma(iCellMesh)
+        if (mapZoneNume .eq. 0) then
+            l_zone_read = ASTER_TRUE
         else
-            ASSERT(i_zone .ne. 0)
-            l_zone_read = v_zone_read(i_zone) .eq. 1
+            ASSERT(mapZoneNume .ne. 0)
+            l_zone_read = zoneRead(mapZoneNume) .eq. 1
         end if
         if (.not. l_zone_read) then
 ! --------- Get parameters
-            phase_type = v_compor_vale(nb_cmp_max*(i_zone-1)+1)
-            model_meta = v_compor_vale(nb_cmp_max*(i_zone-1)+3)
-            read (v_compor_vale(nb_cmp_max*(i_zone-1)+2), '(I16)') nb_vari
-            read (v_compor_vale(nb_cmp_max*(i_zone-1)+4), '(I16)') nume_comp
+            metaType = comporMetaVale(mapNbCmpMax*(mapZoneNume-1)+1)
+            metaLaw = comporMetaVale(mapNbCmpMax*(mapZoneNume-1)+3)
+            read (comporMetaVale(mapNbCmpMax*(mapZoneNume-1)+2), '(I16)') nbVari
+            read (comporMetaVale(mapNbCmpMax*(mapZoneNume-1)+4), '(I16)') numeComp
+
 ! --------- Create composite comportment
-            nb_comp_elem = 2
-            comp_elem(1) = phase_type
-            comp_elem(2) = model_meta
-            call lccree(nb_comp_elem, comp_elem, comp_code_py)
+            nbCompElem = 2
+            compElem(1) = metaType
+            compElem(2) = metaLaw
+            call lccree(nbCompElem, compElem, compCodePY)
+
 ! --------- Save names of relation
-            v_rela(2*(i_zone-1)+1) = phase_type
-            v_rela(2*(i_zone-1)+2) = model_meta
+            comporInfoRela(2*(mapZoneNume-1)+1) = metaType
+            comporInfoRela(2*(mapZoneNume-1)+2) = metaLaw
+
 ! --------- Save name of internal variables
-            call jeecra(jexnum(compor_info(1:19)//'.VARI', i_zone), 'LONMAX', nb_vari)
-            call jeveuo(jexnum(compor_info(1:19)//'.VARI', i_zone), 'E', vk16=v_vari)
-            call lcvari(comp_code_py, nb_vari, v_vari)
-            call lcdiscard(comp_code_py)
+            call jeecra(jexnum(comporMetaInfo(1:19)//'.VARI', mapZoneNume), 'LONMAX', nbVari)
+            call jeveuo(jexnum(comporMetaInfo(1:19)//'.VARI', mapZoneNume), &
+                        'E', vk16=comporInfoVari)
+            call lcvari(compCodePY, nbVari, comporInfoVari)
+            call lcdiscard(compCodePY)
+
 ! --------- Save current zone
-            v_zone_read(i_zone) = 1
+            zoneRead(mapZoneNume) = 1
             nb_zone_acti = nb_zone_acti+1
         end if
     end do
 !
 99  continue
-!
+
 ! - Save general information
+    call wkvect(comporMetaInfo(1:19)//'.INFO', 'V V I', 5, vi=comporInfoInfo)
+    comporInfoInfo(1) = nbCellMesh
+    comporInfoInfo(2) = mapNbZone
+    comporInfoInfo(3) = nb_vari_maxi
+    comporInfoInfo(4) = nt_vari
+    comporInfoInfo(5) = nb_zone_acti
 !
-    call wkvect(compor_info(1:19)//'.INFO', 'V V I', 5, vi=v_info)
-    v_info(1) = nb_elem_mesh
-    v_info(2) = nb_zone
-    v_info(3) = nb_vari_maxi
-    v_info(4) = nt_vari
-    v_info(5) = nb_zone_acti
-!
-    AS_DEALLOCATE(vi=v_zone_read)
+    AS_DEALLOCATE(vi=zoneRead)
 !
     call jedema()
 !

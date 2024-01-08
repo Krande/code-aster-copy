@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,21 +15,20 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine comp_meta_read(ds_comporMeta)
+subroutine comp_meta_read(metaPrepPara)
 !
     use Metallurgy_type
 !
     implicit none
 !
 #include "asterf_types.h"
-#include "asterc/lcinfo.h"
-#include "asterc/lcdiscard.h"
 #include "asterc/lccree.h"
+#include "asterc/lcdiscard.h"
+#include "asterc/lcinfo.h"
 #include "asterfort/getvtx.h"
 !
-    type(META_PrepPara), intent(inout) :: ds_comporMeta
+    type(META_PrepPara), intent(inout) :: metaPrepPara
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -39,45 +38,48 @@ subroutine comp_meta_read(ds_comporMeta)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! IO  ds_comporMeta    : datastructure to prepare comportement
+! IO  metaPrepPara     : datastructure to prepare parameters for behaviour of metallurgy
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=16) :: keywordfact
+    character(len=16), parameter :: factorKeyword = 'COMPORTEMENT'
     integer :: i_comp, nb_comp
-    character(len=16) :: phase_type, loi_meta
-    integer :: nb_comp_elem, nume_comp, nb_vari, idummy, idummy2, iret, nb_phase
-    character(len=16) :: comp_elem(2), comp_code_py, meta_code_py
+    character(len=16) :: metaType, metaLaw
+    integer :: nbCompElem, numeComp, nbVari, idummy, idummy2, iret, nbPhase
+    character(len=16) :: compElem(2), compCodePY, metaCodePY
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    keywordfact = 'COMPORTEMENT'
-    nb_comp = ds_comporMeta%nb_comp
-!
+    nb_comp = metaPrepPara%nb_comp
+
 ! - Read informations in CALC_META
-!
     do i_comp = 1, nb_comp
-        call getvtx(keywordfact, 'RELATION', iocc=i_comp, scal=phase_type, nbret=iret)
-        call getvtx(keywordfact, 'LOI_META', iocc=i_comp, scal=loi_meta, nbret=iret)
-! ----- Create composite comportments
-        nb_comp_elem = 2
-        comp_elem(1) = phase_type
-        comp_elem(2) = loi_meta
-        call lccree(nb_comp_elem, comp_elem, comp_code_py)
-        nb_comp_elem = 1
-        comp_elem(1) = phase_type
-        call lccree(nb_comp_elem, comp_elem, meta_code_py)
+        call getvtx(factorKeyword, 'RELATION', iocc=i_comp, scal=metaType, nbret=iret)
+        call getvtx(factorKeyword, 'LOI_META', iocc=i_comp, scal=metaLaw, nbret=iret)
+
+! ----- Create composite
+        nbCompElem = 2
+        compElem(1) = metaType
+        compElem(2) = metaLaw
+        call lccree(nbCompElem, compElem, compCodePY)
+        nbCompElem = 1
+        compElem(1) = metaType
+        call lccree(nbCompElem, compElem, metaCodePY)
+
 ! ----- Get number of variables and index of behaviour
-        call lcinfo(comp_code_py, nume_comp, nb_vari, idummy)
-        call lcinfo(meta_code_py, idummy, nb_phase, idummy2)
-! ----- Glute provisoire: nombre de phases different entre CALC_META et STAT_NON_LINE
-        call lcdiscard(comp_code_py)
+        call lcinfo(compCodePY, numeComp, nbVari, idummy)
+        call lcinfo(metaCodePY, idummy, nbPhase, idummy2)
+
 ! ----- Save values
-        ds_comporMeta%v_comp(i_comp)%phase_type = phase_type
-        ds_comporMeta%v_comp(i_comp)%loi_meta = loi_meta
-        ds_comporMeta%v_comp(i_comp)%nb_vari = nb_vari
-        ds_comporMeta%v_comp(i_comp)%nb_phase = nb_phase
-        ds_comporMeta%v_comp(i_comp)%nume_comp = nume_comp
+        metaPrepPara%para(i_comp)%metaType = metaType
+        metaPrepPara%para(i_comp)%metaLaw = metaLaw
+        metaPrepPara%para(i_comp)%nbVari = nbVari
+        metaPrepPara%para(i_comp)%nbPhase = nbPhase
+        metaPrepPara%para(i_comp)%numeComp = numeComp
+
+! ----- Clean
+        call lcdiscard(compCodePY)
+        call lcdiscard(metaCodePY)
     end do
 !
 end subroutine
