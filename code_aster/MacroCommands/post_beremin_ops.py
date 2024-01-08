@@ -179,8 +179,8 @@ def post_beremin_ops(self, **args):
             DETR_GROUP_NO=_F(
                 NOM=tuple(
                     ["ngrmapb"]
-                    + ["vale_{}".format(iteration) for iteration in itlist]
-                    + ["ngrplas_{}".format(iteration) for iteration in itlist]
+                    + [f"vale_{iteration}" for iteration in itlist]
+                    + [f"ngrplas_{iteration}" for iteration in itlist]
                 )
             ),
         )
@@ -190,8 +190,8 @@ def post_beremin_ops(self, **args):
             MAILLAGE=mawbrest,
             DETR_GROUP_MA=_F(
                 NOM=tuple(
-                    ["mgrplas_{}".format(iteration) for iteration in itlist]
-                    + ["ngrplas_{}".format(iteration) for iteration in itlist]
+                    [f"mgrplas_{iteration}" for iteration in itlist]
+                    + [f"ngrplas_{iteration}" for iteration in itlist]
                     + ["mgrplasfull"]
                 )
             ),
@@ -241,7 +241,7 @@ def sigma1(rsieq, nume_inst, dwb, reswbrest, grwb):
         grmacalc = "mgrplas_{}".format(nume_inst)
         modele = reswbrest.getModel()
 
-        __sg1 = CREA_CHAMP(
+        sg1 = CREA_CHAMP(
             OPERATION="ASSE",
             TYPE_CHAM="ELGA_DEPL_R",
             MODELE=modele,
@@ -256,9 +256,9 @@ def sigma1(rsieq, nume_inst, dwb, reswbrest, grwb):
 
     else:
 
-        __sg1 = sigma1_f(rsieq, nume_inst, dwb, reswbrest, grwb)
+        sg1 = sigma1_f(rsieq, nume_inst, dwb, reswbrest, grwb)
 
-    return __sg1
+    return sg1
 
 
 def sigma1_f(rsieq, nume_inst, dwb, reswbrest, grwb):
@@ -391,7 +391,7 @@ def sig1plasac(resultat, rsieq, numv1v2, dwb, reswbrest, grmapb, mclinst):
         FieldOnCells: ELGA_NEUT_R filled by PRIN_3
     """
     modele = resultat.getModel()
-    if not grmapb in dwb.keys():
+    if not grmapb in dwb:
         UTMESS("F", "RUPTURE1_88", valk=(grmapb))
 
     maxsig = NonLinearResult()
@@ -619,12 +619,9 @@ def compute_beremin_integral(model, coefmultpb, sigw, dwb, grmapb, resupb):
         {"bere_m": dwb[grmapb]["M"]},
         {"sigma_u": sigma_u, "bere_m": dwb[grmapb]["M"], "exp": np.exp},
     )
-
     for clef in t_clef:
         d_form[clef] = Formula()
-
     for (clef, expression, variable, context) in zip(t_clef, t_expr, t_var, t_context):
-
         d_form[clef].setExpression(expression)
         d_form[clef].setVariables(variable)
         d_form[clef].setContext(context)
@@ -639,7 +636,7 @@ def compute_beremin_integral(model, coefmultpb, sigw, dwb, grmapb, resupb):
         ),
     )
 
-    tab_aux = dict()
+    tab_aux = {}
     for clef in ("SIGMA_WEIBULL", "SIGMA_WEIBULL**M", "PROBA_WEIBULL"):
         tab_aux[clef] = (sigwaux.EXTR_TABLE()).values()[clef]
 
@@ -677,8 +674,6 @@ def make_plasticity_groups(reswbrest, numv1v2, mclinst, seuil, l_epspmax):
     liter = [elt[0] for elt in mclinst]
     dval = {}
     for indice, iteration in enumerate(liter):
-
-    for (indice, iteration) in enumerate(liter):
 
         if l_epspmax[indice] < seuil:
             dval["min{}".format(indice)] = 0

@@ -64,9 +64,9 @@ def get_beremin_properties(resusd, group_ma):
                     nomres += ["SIGM_REFE"]
                 if etttype == EntityType.GroupOfCellsType:
                     for grpname in eltmater.getMeshEntity().getNames():
-                        dwb.update({grpname: dict(list(zip(nomres, lwbmat)))})
+                        dwb.update({grpname: dict(zip(nomres, lwbmat))})
                 elif etttype == EntityType.AllMeshEntitiesType:
-                    dwb.update({group_ma: dict(list(zip(nomres, lwbmat)))})
+                    dwb.update({group_ma: dict(zip(nomres, lwbmat))})
 
     return dwb
 
