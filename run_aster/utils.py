@@ -152,7 +152,12 @@ def run_command(cmd, exitcode_file=None):
     """
     # previous revisions used `subprocess.run` but IntelMPI mpiexec does not
     # support the way the process is forked.
-    iret = os.system(" ".join(cmd))
+    if RUNASTER_PLATFORM == "win" and len(" ".join(cmd)) > 8191:
+        # https://learn.microsoft.com/en-us/troubleshoot/windows-client/shell-experience/command-line-string-limitation
+        logger.error("cannot run export file with too much lines")
+        return 4
+    else:
+        iret = os.system(" ".join(cmd))
     iret = waitstatus_to_exitcode(iret)
     if exitcode_file and osp.isfile(exitcode_file):
         with open(exitcode_file) as fexit:
