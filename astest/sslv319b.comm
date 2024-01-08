@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,8 +19,10 @@
 
 # MODELISATION B : METHODE GEOMETRIQUE
 
-from code_aster import AsterError
+from math import log
 
+from code_aster.Commands import *
+from code_aster import CA
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
@@ -146,7 +148,6 @@ MAIT[i_tot] = MODI_MAILLAGE(
 
 # boucle de raffinements +une iteration en plus pour la definition de la fissure sur le maillage le plus fin
 for i_raff in range(nb_raff + 1):
-
     MO = AFFE_MODELE(
         MAILLAGE=MAIT[i_tot], AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D")
     )
@@ -166,7 +167,6 @@ for i_raff in range(nb_raff + 1):
 
     # pas de raffinement a la derniere iteration
     if i_raff != nb_raff:
-
         # evaluation de l'erreur
         CHERR = RAFF_XFEM(FISSURE=FISS[i_propa])
 
@@ -209,11 +209,9 @@ IMPR_RESU(FORMAT="MED", UNITE=100 + i_propa, RESU=_F(MAILLAGE=MAIT[i_tot]))
 # --------------------------------------------------------------------
 
 for i_propa in range(nb_pas):
-
     print("_" * 3 + "INFO" + 3 * "_" + " pas de propagation ", i_propa)
 
     if i_propa != 0:
-
         MO = AFFE_MODELE(
             MAILLAGE=MAIT[i_tot], AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D")
         )
@@ -227,14 +225,13 @@ for i_propa in range(nb_pas):
         DETRUIRE(NOM=LST[nb_raff])
 
     if type_cas == "etude":
-
         # RECUPERATION DE LA TABLE CONTENANT LE NOMBRE DE FONDS DE FISSURE
         NB_FOND = RECU_TABLE(CO=FISS[i_propa], NOM_TABLE="NB_FOND_FISS")
 
         values = NB_FOND.EXTR_TABLE().values()
         nb_fond = values["NOMBRE"][0]
         if nb_fond != 1:
-            raise AsterError(
+            raise CA.AsterError(
                 "<F> : erreur fatale : le nombre de fonds de fissure est different de 1"
             )
 
@@ -243,7 +240,6 @@ for i_propa in range(nb_pas):
     CHMAT = AFFE_MATERIAU(MAILLAGE=MAIT[i_tot], MODELE=MODX, AFFE=_F(TOUT="OUI", MATER=MAT))
 
     if type_cas == "cas_test":
-
         AFFE = AFFE_CHAR_MECA(
             MODELE=MODX,
             DDL_IMPO=(
@@ -254,7 +250,6 @@ for i_propa in range(nb_pas):
         )
 
     elif type_cas == "etude":
-
         AFFE = AFFE_CHAR_MECA(
             MODELE=MODX,
             DDL_IMPO=(
@@ -343,7 +338,6 @@ for i_propa in range(nb_pas):
     # Raffinements successifs autour du fond de fissure
     # la boucle de raffinement recalcule les level sets par interpolation Homard, puis re-calcul du critere
     for i_raff in range(nb_raff):
-
         # definition du type du maillage n+1
         MAIT[i_tot + 1] = CO("MAIT_%d" % (i_tot + 1))
         LSN[i_raff + 1] = CO("LSN_%d" % (i_raff + 1))
@@ -458,7 +452,6 @@ for i_propa in range(nb_pas):
 
 # Procedure de validation
 if type_cas == "cas_test":
-
     # Modele
     MO_TEST = AFFE_MODELE(
         MAILLAGE=MAIT[i_tot], AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D")

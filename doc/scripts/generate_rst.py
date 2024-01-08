@@ -262,8 +262,8 @@ def main():
 if __name__ == "__main__":
     import code_aster
 
-    code_aster.init()
+    code_aster.rc.restart = False
+    from code_aster import CA
 
     all_objects(os.environ["AUTODOC_DESTDIR"])
-
-    code_aster.close()
+    CA.close()

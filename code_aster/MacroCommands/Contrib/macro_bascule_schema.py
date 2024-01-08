@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -65,7 +65,7 @@ MACRO_BASCULE_SCHEMA_CATA = MACRO(
     CONTACT=SIMP(statut="f", typ=char_contact),
     SOUS_STRUC=FACT(
         statut="f",
-        min=0o1,
+        min=1,
         max="**",
         regles=(UN_PARMI("TOUT", "SUPER_MAILLE"),),
         CAS_CHARGE=SIMP(statut="o", typ="TXM"),

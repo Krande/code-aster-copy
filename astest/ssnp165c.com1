@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,11 +17,12 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import code_aster
+from code_aster.Commands import *
+from code_aster import CA
 
-code_aster.init("--test", "--continue", ERREUR=_F(ALARME="ALARME"))
+CA.init("--test", "--continue", ERREUR=_F(ALARME="ALARME"))
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 pres_noeu = RESU.getField("PRES_NOEU", 8).toSimpleFieldOnNodes()
 values, mask = pres_noeu.getValues()
@@ -39,4 +40,4 @@ test.assertEqual(mask.all(), True)
 
 test.printSummary()
 
-code_aster.close()
+CA.close()

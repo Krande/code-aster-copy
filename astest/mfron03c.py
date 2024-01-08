@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,12 +19,12 @@
 
 import medcoupling as MEDC
 
-import code_aster
+from code_aster import CA
 from code_aster.Commands import *
 
-code_aster.init("--test", "--continue")
+CA.init("--test", "--continue")
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 expected = ["ElasticStrain" + cmp for cmp in ("XX", "YY", "ZZ", "XY", "XZ", "YZ")]
 expected.extend([f"g[{i}]" for i in range(12)])
@@ -43,4 +43,4 @@ test.assertSequenceEqual(components, expected, msg="check names of the component
 
 test.printSummary()
 
-code_aster.close()
+CA.close()

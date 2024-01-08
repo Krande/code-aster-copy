@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ import aster
 from ...Messages import UTMESS, MasquerAlarme, RetablirAlarme
 
 from ...Cata.Syntax import _F
-from ...Commands import CREA_CHAMP, DEFI_LIST_REEL, DYNA_NON_LINE
+from ...CodeCommands import CREA_CHAMP, DEFI_LIST_REEL, DYNA_NON_LINE
 
 
 def macro_bascule_schema_ops(self, **args):

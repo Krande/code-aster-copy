@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ import aster
 import numpy as NP
 
 from ..Cata.Syntax import _F
-from ..Commands import (
+from ..CodeCommands import (
     ASSE_MAILLAGE,
     CALC_TABLE,
     DEFI_GROUP,
@@ -309,7 +309,6 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
         or (METHODE_PROPA == "UPWIND")
         or (METHODE_PROPA == "GEOMETRIQUE" and OPERATION == "RIEN")
     ) and TEST_MAIL == "OUI":
-
         #      Ok. I should make several crack propagation and check for the
         #      distance between each propagated front and the corresponding one
         #      at the beginning of the propagation.
@@ -352,7 +351,6 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
         FissNou = [Fiss["FISS_PROPAGEE"] for Fiss in Fissures]
 
         for NumStep in range(0, StepTot):
-
             aster.affiche("MESSAGE", " ------------------------")
             texte = " TEST_MAIL - ITERATION %d" % (NumStep + 1)
             aster.affiche("MESSAGE", texte)
@@ -481,7 +479,6 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
     #     effectué juste avant le calcul
 
     elif (TEST_MAIL == "NON") or (METHODE_PROPA == "MAILLAGE"):
-
         Fissures = args["FISSURE"]
         Nbfissure = len(Fissures)
 
@@ -517,7 +514,6 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
         __TAB_CUMUL = [None] * Nbfissure
 
         for numfis, Fiss in enumerate(Fissures):
-
             fiss0 = Fiss["FISS_ACTUELLE"]
 
             # Recuperation des K et de G
@@ -687,7 +683,6 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
             #     Stockage de Da/Dt de beta et de gamma
             # Si METHODE_PROPA !='MAILLAGE'
             if TEST_MAIL == "NON":
-
                 if not "K3" in __tabsif.para and Fiss.get("NB_POINT_FOND") is not None:
                     UTMESS("A", "XFEM2_73")
                     Fiss["NB_POINT_FOND"] = None
@@ -696,7 +691,6 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
                 #       pour permettre ensuite de trouver ces parametres aux points "physiques"
                 #       par interpolation lineaire
                 if Fiss.get("NB_POINT_FOND") is not None:
-
                     if "ABSC_CURV" in tab_cumul.para:
                         absc = tab_cumul.ABSC_CURV.values()
                         presence_colonne_absc = True
@@ -845,12 +839,10 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
         else:
             calc_gamma = False
         for numfis, Fiss in enumerate(Fissures):
-
             Coorfo = Fiss["FISS_ACTUELLE"].sdj.FONDFISS.get()
 
             #     Si NB_POINT_FOND: calcul de beta et Da/Dt aux points "physiques"
             if Fiss.get("NB_POINT_FOND") is not None:
-
                 TABLE_BETA[numfis] = []
                 if calc_gamma:
                     TABLE_GAMMA[numfis] = []
@@ -985,7 +977,6 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
     # CAS 3 : METHODE_PROPA = 'MAILLAGE'
     #
     if METHODE_PROPA == "MAILLAGE":
-
         print("AVANCE MAXIMALE DU FOND DE FISSURE", Damax)
         print("NOMBRE DE CYCLES DE FATIGUE", NBCYCLE)
 
@@ -1011,7 +1002,6 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
             # CAS 3a : MODELE 3D
             #
             if dime == 3:
-
                 # Recuperation des informations sur le maillage
                 nbno = MAIL_FISS1.getNumberOfNodes()
                 Fondmult = fiss0.sdj.FONDMULT.get()

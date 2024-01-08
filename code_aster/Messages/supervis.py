@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -204,12 +204,6 @@ Fermeture des bases jeveux afin de permettre la POURSUITE ultérieure du calcul.
     56: _(
         """
   Incohérence entre le catalogue et le corps de la macro-commande.
-"""
-    ),
-    60: _(
-        """
-  La procédure a un numéro non appelable dans cette version.
-  Le numéro erroné est %(i1)d.
 """
     ),
     61: _(

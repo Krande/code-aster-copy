@@ -4,13 +4,13 @@
 
 export SUBMIT_MODE=1
 
-ln -sf ../devtools .
-ln -sf ~/.install/debian-10/mpi install
-trap "rm -f devtools install" EXIT
-
 args=( "${@}" )
 if [ $# -eq 0 ]; then
     args=( "--all" )
 fi
+
+ln -sf ../devtools .
+ln -sf ~/.install/debian-10/mpi install
+trap "rm -f devtools install" EXIT
 
 .gitlabci/debug-ci.sh "${args[@]}"

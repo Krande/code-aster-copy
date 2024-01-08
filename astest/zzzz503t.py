@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,20 +17,20 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import code_aster
+from code_aster import CA
 from code_aster.Commands import *
-from code_aster import MPI
+from code_aster.CA import MPI
 from code_aster.Utilities import shared_tmpdir
 import os.path as osp
 
-code_aster.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
+CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 rank = MPI.ASTER_COMM_WORLD.Get_rank()
 size = MPI.ASTER_COMM_WORLD.Get_size()
 
-mesh = code_aster.ParallelMesh()
+mesh = CA.ParallelMesh()
 mesh.readMedFile("fort.20")
 
 ACIER = DEFI_MATERIAU(ELAS=_F(RHO=2400.0, NU=0.0, E=6.7e10))

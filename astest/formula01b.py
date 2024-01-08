@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,12 +21,12 @@ from math import pi
 
 import numpy
 
-import code_aster
+from code_aster import CA
 from code_aster.Commands import *
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
-code_aster.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
+CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 
 n = 100000
 # valx = DEFI_LIST_REEL(DEBUT=0,

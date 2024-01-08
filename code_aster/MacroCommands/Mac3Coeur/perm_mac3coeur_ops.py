@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,9 +23,8 @@ import os.path as osp
 
 from ...Cata.Syntax import _F
 from ...Objects import PhysicalProblem, FieldOnCellsReal, FieldOnNodesReal
-from ...Commands import CREA_RESU
+from ...CodeCommands import CREA_RESU
 from ...Messages import UTMESS
-from ...Utilities import ExecutionParameter
 from .mac3coeur_ac_permute import MACRO_AC_PERMUTE
 from .mac3coeur_coeur import CoeurFactory
 
@@ -144,7 +143,6 @@ def perm_mac3coeur_ops(self, **args):
 
     for nom in list(_coeurp1.nameAC.keys()):
         for i, _coeur in enumerate(_l_coeur):
-
             last_i = l_last_i[i]
             RESUI = l_RESUI[i]
             _MA_N = _l_MA_N[i]

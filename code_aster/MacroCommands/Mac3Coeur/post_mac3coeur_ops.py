@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ from collections import OrderedDict
 import numpy as np
 
 from ...Cata.Syntax import _F
-from ...Commands import CREA_TABLE
+from ...CodeCommands import CREA_TABLE
 from ...Objects.table_py import Table
 from ...Utilities import ExecutionParameter
 from .mac3coeur_coeur import CoeurFactory
@@ -100,7 +100,6 @@ class CollectionDiscretChoc:
         return Table(listdic, listpara, listtype)
 
     def extr_analysis_table(self):
-
         values = self.analysis()
 
         listdic = [values]
@@ -142,7 +141,6 @@ class CollectionPostAC:
         self._collection[key] = item
 
     def analysis(self):
-
         for pos_damac in sorted(self.keys):
             AC = self[pos_damac]
 
@@ -193,13 +191,11 @@ class CollectionPostAC:
         }
 
     def extr_table(self):
-
         listdic = [AC.get_fleche_props(self.label) for pos, AC in sorted(self._collection.items())]
         listpara, listtype = PostAC.fleche_parameters_types(self.label)
         return Table(listdic, listpara, listtype)
 
     def extr_analysis_table(self):
-
         self.analysis()
 
         values = {
@@ -248,7 +244,6 @@ class PostAC:
         self._props[key] = item
 
     def __init__(self, coor_x, dy, dz, AC):
-
         fy = dy - dy[0] - (dy[-1] - dy[0]) / (coor_x[-1] - coor_x[0]) * (coor_x - coor_x[0])
         fz = dz - dz[0] - (dz[-1] - dz[0]) / (coor_x[-1] - coor_x[0]) * (coor_x - coor_x[0])
         FormeY, FormeZ, Forme = self._compute_forme(fy, fz)
@@ -298,7 +293,6 @@ class PostAC:
         return np.sqrt(fy**2 + fz**2)
 
     def _compute_gravite(self, coor_x, fy, fz):
-
         K_star = 100000.0
         sum_of_squared_sin = 0
 
@@ -333,7 +327,6 @@ class PostAC:
         return shape_x, shape_y, shape_global
 
     def get_fleche_props(self, label):
-
         fleche_props = {
             label: self["PositionDAMAC"],
             "Cycle": self["Cycle"],
@@ -361,7 +354,6 @@ class PostAC:
 
     @staticmethod
     def fleche_parameters_types(label):
-
         para = [label, "Cycle", "T5", "T6", "Repere", "Ro", "EinfXgg", "EinfYgg"]
         para += ["XG%d" % (d + 1) for d in range(10)] + ["YG%d" % (d + 1) for d in range(10)]
         para += [
@@ -407,7 +399,6 @@ def post_mac3coeur_ops(self, **args):
     #
 
     if TYPE_CALCUL in ("LAME",):
-
         collection = CollectionDiscretChoc("LE")
         collection["GRILLE"] = ["G%s" % (i + 1) for i in range(nb_grids)]
 
@@ -437,12 +428,10 @@ def post_mac3coeur_ops(self, **args):
     #
 
     elif TYPE_CALCUL in ("FORCE_CONTACT",):
-
         collection = CollectionDiscretChoc("N")
         collection["GRILLE"] = ["G%s" % (i + 1) for i in range(nb_grids)]
 
         for name in core_mac3.get_contactAssLame() + core_mac3.get_contactCuve():
-
             TMP = CREA_TABLE(
                 RESU=_F(
                     RESULTAT=RESU,
@@ -467,10 +456,8 @@ def post_mac3coeur_ops(self, **args):
     #
 
     elif TYPE_CALCUL in ("DEFORMATION",):
-
         collection = CollectionPostAC(label_calcul)
         for AC in core_mac3.collAC.values():
-
             TMP = CREA_TABLE(
                 RESU=_F(
                     RESULTAT=RESU,

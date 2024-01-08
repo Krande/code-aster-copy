@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ import os
 
 import numpy as NP
 
-from ...Commands import LIRE_MAILLAGE
+from ...CodeCommands import LIRE_MAILLAGE
 from ...Helpers.LogicalUnit import FileAccess, LogicalUnitFile
 
 # RETURN A UNIQUE VECTOR
@@ -160,7 +160,6 @@ def crea_mail_lin(XcreteTot, YcreteTot, ZcreteTot, ConnTot, lstNomFiss, dime):
 # CREATE AN MESH OBJECT FROM A STRING REPRESENTING
 #    A MESH IN THE ASTER FORMAT
 def crea_sd_mail(self, mailString):
-
     nomFichierSortie = os.path.join(os.getcwd(), "maillage.mail")
     fproc = open(nomFichierSortie, "w")
     fproc.write(mailString)
@@ -195,7 +194,7 @@ def conv_smoothing1D(lreg, Coorx, Coory, Fun0):
     True
     """
     Absc = curvilinearAbsissa(Coorx, Coory, len(Coorx) // 2)
-    Gauss = NP.exp(-(Absc ** 2) / (2.0 * lreg ** 2))
+    Gauss = NP.exp(-(Absc**2) / (2.0 * lreg**2))
     area = NP.convolve(Gauss, NP.ones(len(Gauss)), "valid")
     area = float(area)
     FunReg = NP.convolve(Fun0, Gauss, "same")
@@ -212,11 +211,11 @@ def conv_smoothing1D(lreg, Coorx, Coory, Fun0):
 def conv_smoothing_arc(lreg, Coorx, Coory, Fun0):
     DX = Coorx[1 : len(Coorx)] - Coorx[0 : len(Coorx) - 1]
     DY = Coorx[1 : len(Coory)] - Coory[0 : len(Coory) - 1]
-    DS = NP.sqrt(DX ** 2 + DY ** 2)
+    DS = NP.sqrt(DX**2 + DY**2)
     AbsC = NP.cumsum(DS)
     AbsC = NP.concatenate((NP.array([0.0]), AbsC))
     FunReg = NP.array([])
-    Gauss = NP.exp(-(AbsC ** 2) / (2.0 * lreg ** 2))
+    Gauss = NP.exp(-(AbsC**2) / (2.0 * lreg**2))
     area = float(NP.convolve(Gauss, NP.ones(len(Gauss)), "valid"))
     for i in range(len(Fun0)):
         Fun_I = NP.concatenate((Fun0[i:], Fun0[0:i]), axis=0)
@@ -235,7 +234,7 @@ def conv_smoothing_arc_old(lreg, CoorxOrth, CooryOrth, EndoOrth):
     Y1 = NP.concatenate((CooryOrth[1 : len(CoorxOrth)], NP.array([CooryOrth[0]])))
     DX = X1 - CoorxOrth
     DY = Y1 - CooryOrth
-    DS = NP.sqrt(DX ** 2 + DY ** 2)
+    DS = NP.sqrt(DX**2 + DY**2)
     for l in range(len(EndoOrth)):
         DSa = DS[(l - 1) : len(DS)]
         DSb = DS[0 : (l - 1)]
@@ -528,7 +527,7 @@ def curvilinearAbsissa(Coorx, Coory, idxZero):
 #   errPerc : errors expressed as pourcentage (NP array)
 def crackOpeningStrong(lreg, Coorx, Coory, Epsi):
     Absc = curvilinearAbsissa(Coorx, Coory, len(Coorx) // 2)
-    Gauss = NP.exp(-(Absc ** 2) / (2.0 * lreg ** 2))
+    Gauss = NP.exp(-(Absc**2) / (2.0 * lreg**2))
     area = NP.trapz(Gauss, x=Absc)
     EpsiReg = conv_smoothing1D(lreg, Coorx, Coory, Epsi)
     idxMax, epsMax = nearestMax(EpsiReg, len(Coorx) // 2)
@@ -538,7 +537,7 @@ def crackOpeningStrong(lreg, Coorx, Coory, Epsi):
     xcentre = Coorx[idxMax]
     ycentre = Coory[idxMax]
     Absc = curvilinearAbsissa(Coorx, Coory, idxMax)
-    EpsSDreg = CO / area * NP.exp(-(Absc ** 2) / (2.0 * lreg ** 2))
+    EpsSDreg = CO / area * NP.exp(-(Absc**2) / (2.0 * lreg**2))
     errPerc = 100.0 * (NP.trapz(abs(EpsiReg - EpsSDreg), x=Absc)) / (NP.trapz(abs(EpsiReg), x=Absc))
     return CO, errPerc
 

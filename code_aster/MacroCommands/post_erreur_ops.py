@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ import os
 from ..Objects import Physics
 
 from ..Cata.Language.SyntaxObjects import _F
-from ..Commands import CALC_TABLE, CREA_CHAMP, CREA_RESU, CREA_TABLE, FORMULE, POST_ELEM
+from ..CodeCommands import CALC_TABLE, CREA_CHAMP, CREA_RESU, CREA_TABLE, FORMULE, POST_ELEM
 from ..Messages import ASSERT, UTMESS
 
 
@@ -297,7 +297,6 @@ def post_erreur_ops(self, OPTION, CHAM_GD, MODELE, GROUP_MA, **args):
         TITRE = "ERREUR EN NORME L2 DU DEPLACEMENT"
 
     if OPTION == "ENER_RELA":
-
         # Extraction du nom de materiau
         CHAM_MATER = args["CHAM_MATER"]
         # Extraction du type de deformation
@@ -586,7 +585,6 @@ def post_erreur_ops(self, OPTION, CHAM_GD, MODELE, GROUP_MA, **args):
         l_F = []
         # boucle sur les groupes
         for ig, group in enumerate(GROUP_MA):
-
             # creation du mot-clef facteur pour le groupe
             # et le ddl courants
             d_asse = {}
@@ -607,7 +605,6 @@ def post_erreur_ops(self, OPTION, CHAM_GD, MODELE, GROUP_MA, **args):
         l_F = []
         # boucle sur les groupes
         for ig, group in enumerate(GROUP_MA):
-
             # creation du mot-clef facteur pour le groupe
             # et le ddl courants
             d_asse = {}
@@ -636,7 +633,6 @@ def post_erreur_ops(self, OPTION, CHAM_GD, MODELE, GROUP_MA, **args):
         l_F = []
         # boucle sur les groupes
         for ig, group in enumerate(GROUP_MA):
-
             # * traitement des déplacements calculés
             d_asse = {}
             d_asse["GROUP_MA"] = group

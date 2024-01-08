@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ import aster
 from libaster import AsterError, ConvergenceError
 
 from ...Cata.Syntax import _F
-from ...Commands import (
+from ...CodeCommands import (
     CREA_CHAMP,
     DEFI_CONSTANTE,
     DEFI_FONCTION,
@@ -53,7 +53,6 @@ def calc_endo_ops(
     IMPR,
     **args
 ):
-
     """
     Calcul d'endommagement a partir d'un champ d'endommagement initial
     sur une sequence de pas de pilotage
@@ -127,7 +126,6 @@ def calc_endo_ops(
     # -------------------------------------------------------------
 
     if initial:
-
         # Single time step
         __INST_1 = DEFI_LIST_REEL(DEBUT=-2, INTERVALLE=_F(JUSQU_A=0, NOMBRE=2))
 
@@ -244,7 +242,6 @@ def calc_endo_ops(
 
         # Convergence
         if iteglob <= 5:
-
             __INIT_DEPL = CREA_CHAMP(
                 OPERATION="EXTR", TYPE_CHAM="NOEU_DEPL_R", RESULTAT=__INIT, INST=0, NOM_CHAM="DEPL"
             )
@@ -265,7 +262,6 @@ def calc_endo_ops(
             formerTangent = True
 
         else:
-
             # 4.2. Second strategy: Estimation of the load amplitude and direct computation
 
             # Estimation of the load amplitude to reach the damage threshold
@@ -364,7 +360,6 @@ def calc_endo_ops(
 
     # Use of the  tangent operator provided by the initial internal variable field
     if initial and formerTangent:
-
         asse = Extract(COMPORTEMENT, __INIT_VARI, __PROV_VARI, ENDO_FISS_EXP=("INDIENDO",))
         __INIT_VARI_MOD = CREA_CHAMP(
             TYPE_CHAM="ELGA_VARI_R", MODELE=MODELE, OPERATION="ASSE", ASSE=asse
@@ -416,7 +411,6 @@ def calc_endo_ops(
         filtre = IMPR[0]["FILTRE"]
 
         if filtre == "OUI":
-
             chk3d = "DZ" in EVOL.LIST_NOM_CMP()["DEPL"]
 
             if chk3d:
@@ -499,7 +493,7 @@ def Extract(COMPORTEMENT, baseField, cplField=None, **components):
     baseCmpsList = []
     cplCmpsList = []
 
-    for (compor, law) in zip(COMPORTEMENT, laws):
+    for compor, law in zip(COMPORTEMENT, laws):
         nbvi = law.get_nb_vari()  # number of internal variables of the constitutive law
         viNames = law.get_nom_vari()
         viNbrs = tuple(["V%d" % (i + 1) for i in range(nbvi)])
@@ -521,7 +515,7 @@ def Extract(COMPORTEMENT, baseField, cplField=None, **components):
     # 3 - Field assembly
 
     asse = []
-    for (compor, baseCmps, cplCmps) in zip(COMPORTEMENT, baseCmpsList, cplCmpsList):
+    for compor, baseCmps, cplCmps in zip(COMPORTEMENT, baseCmpsList, cplCmpsList):
         # print "baseCmps = ",baseCmps
         # print "cplCmps  = ",cplCmps
 

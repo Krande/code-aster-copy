@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,8 @@ import tempfile
 import types
 from inspect import isclass
 
-import code_aster
+from code_aster.Commands import *
+from code_aster import CA
 from code_aster.Cata.Commands import DEFI_MATERIAU, commandStore
 from code_aster.Cata.DataStructure import DataStructure, UnitType
 from code_aster.Cata.Language.DataStructure import UnitBaseType
@@ -32,7 +33,7 @@ from code_aster.Cata.Language.SyntaxUtils import add_none_sdprod
 from code_aster.Cata.Syntax import *
 from code_aster.Messages import UTMESS
 from code_aster.Supervis.ExecuteCommand import UserMacro
-from code_aster.Utilities import CR, force_list, logger
+from code_aster.Utilities import CR, force_list
 
 
 class CataChecker:
@@ -105,7 +106,7 @@ class CataChecker:
         op = step.definition.get("op")
         if (
             op is not None
-            and (isinstance(op, int) and not valmin < op <= valmax)
+            and (isinstance(op, int) and not valmin <= op <= valmax)
             or (isinstance(op, str) and not isinstance(op, str))
         ):
             self.cr.fatal("Attribute 'op' must be between %d and %d: %r", valmin, valmax, op)
@@ -226,7 +227,7 @@ class CataChecker:
         self.check_reentrant(step)
         self.check_docu(step)
         self.check_nom(step)
-        self.check_op(step, valmax=0)
+        self.check_op(step, valmin=0)
         # self.verif_cata_regles(step)
         for entity in step.entities.values():
             entity.accept(self)
@@ -516,7 +517,7 @@ def check_material_def(test):
 
 def vocab01_ops(self, EXISTANT, INFO, **kwargs):
     """Fake macro-command to check the catalog"""
-    test = code_aster.TestCase()
+    test = CA.TestCase()
 
     # start the job
     commands = getListOfCommands()

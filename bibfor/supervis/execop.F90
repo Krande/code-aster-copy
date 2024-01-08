@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,14 +22,14 @@ subroutine execop(num)
 !     EXECUTION DE LA COMMANDE
 !     ------------------------------------------------------------------
 !     COMMON POUR LE NIVEAU D'"INFO"
-#include "asterf.h"
 #include "asterc/etausr.h"
 #include "asterc/gcecdu.h"
 #include "asterc/uttrst.h"
+#include "asterf.h"
+#include "asterfort/assert.h"
 #include "asterfort/ex0000.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/jevema.h"
-#include "asterfort/opsexe.h"
 #include "asterfort/sigusr.h"
 #include "asterfort/utmess.h"
 #include "asterfort/uttcpg.h"
@@ -38,7 +38,7 @@ subroutine execop(num)
     integer :: nivuti, nivpgm, unite
     common/inf001/nivuti, nivpgm, unite
 !
-    integer :: nuoper, nuop2, imaav, imaap
+    integer :: nuoper, imaav, imaap
     real(kind=8) :: tpres
 !     ------------------------------------------------------------------
 !
@@ -48,51 +48,55 @@ subroutine execop(num)
         call gcecdu(nuoper)
     end if
 !
-!     -- ON NOTE LA MARQUE AVANT D'APPELER LA PROCHAINE COMMANDE :
-    call jevema(imaav)
+    if (nuoper .le. 0) then
+        ! only DEBUT in this case
+        ASSERT(nuoper .eq. 0)
+        call ex0000(nuoper)
+    else
 !
-    call superv_before()
+!     -- ON NOTE LA MARQUE AVANT D'APPELER LA PROCHAINE COMMANDE :
+        call jevema(imaav)
+!
+        call superv_before()
 !
 !     -- ON INITIALISATION DES COMPTEURS DE TEMPS :
-    call uttcpg('INIT', ' ')
+        call uttcpg('INIT', ' ')
 !
 !     -- ON MET A JOUR LE COMMON INF001 :
-    nivuti = 1
-    nivpgm = 1
-    unite = iunifi('MESSAGE')
+        nivuti = 1
+        nivpgm = 1
+        unite = iunifi('MESSAGE')
 !
-    if (nuoper .lt. 0) then
-        nuop2 = abs(nuoper)
-        call opsexe(nuop2)
-    else if (nuoper .lt. 200) then
-        call ex0000(nuoper)
-    else if (nuoper .eq. 8888) then
+        if (nuoper .lt. 200) then
+            call ex0000(nuoper)
+        else if (nuoper .eq. 8888) then
 !       special operator number: does nothing, just to pass after/before steps
-    else
-        call utmess('E', 'SUPERVIS_61', si=nuoper)
-    end if
+        else
+            call utmess('E', 'SUPERVIS_61', si=nuoper)
+        end if
 !
 ! --- VERIFICATION SI INTERRUPTION DEMANDEE PAR SIGNAL USR1
 !
-    if (etausr() .eq. 1) then
-        call sigusr()
-    end if
+        if (etausr() .eq. 1) then
+            call sigusr()
+        end if
 !
-    call uttrst(tpres)
-    if (tpres .lt. 0.d0) then
-        call utmess('Z', 'SUPERVIS_63', sr=-tpres, num_except=ASTER_TIMELIMIT_ERROR)
-    end if
+        call uttrst(tpres)
+        if (tpres .lt. 0.d0) then
+            call utmess('Z', 'SUPERVIS_63', sr=-tpres, num_except=ASTER_TIMELIMIT_ERROR)
+        end if
 !
 !     -- CONTROLE DE L'APPARIEMMENT DES JEMARQ/JEDEMA
-    call jevema(imaap)
-    if (imaav .ne. imaap) then
-        call utmess('F', 'SUPERVIS_3', sk='JEMARQ/JEDEMA')
-    end if
+        call jevema(imaap)
+        if (imaav .ne. imaap) then
+            call utmess('F', 'SUPERVIS_3', sk='JEMARQ/JEDEMA')
+        end if
 !
 !     -- ON IMPRIME LES COMPTEURS DE TEMPS :
 !        (IL FAUT LE FAIRE AVANT LA DESTRUCTION DES OBJETS VOLATILES)
-    call uttcpg('IMPR', 'CUMU')
+        call uttcpg('IMPR', 'CUMU')
 !
-    call superv_after()
+        call superv_after()
+    end if
 !
 end subroutine

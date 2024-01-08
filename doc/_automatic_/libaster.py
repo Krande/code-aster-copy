@@ -4662,40 +4662,6 @@ def call_oper_init():
     """
 
 
-# built-in function call_ops in libaster
-
-
-def call_ops(syntax, ops):
-    """Call a Fortran 'ops' subroutine.
-
-    Arguments:
-        syntax (CommandSyntax): Object containing the user syntax.
-        ops (int): Number of the `ops00x` subroutine.
-    """
-
-
-# built-in function call_debut in libaster
-
-
-def call_debut(syntax):
-    """Call a Fortran 'debut' subroutine.
-
-    Arguments:
-        syntax (CommandSyntax): Object containing the user syntax.
-    """
-
-
-# built-in function call_poursuite in libaster
-
-
-def call_poursuite(syntax):
-    """Call a Fortran 'poursuite' subroutine.
-
-    Arguments:
-        syntax (CommandSyntax): Object containing the user syntax.
-    """
-
-
 # built-in function cmd_ctxt_enter in libaster
 
 

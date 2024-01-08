@@ -252,10 +252,9 @@ Common errors
 
       $ cp ../src/build/mpidebug/catalo/cata_ele.ojb fort.4
       $ python
-      >>> import code_aster
-      >>> code_aster.init(CATALOGUE={"FICHIER": "CATAELEM", "UNITE": 4})
-      >>> from code_aster.Commands import MAJ_CATA
-      >>> MAJ_CATA(ELEMENT={})
+      >>> from code_aster import CA
+      >>> CA.init(CATALOGUE={"FICHIER": "CATAELEM", "UNITE": 4})
+      >>> CA.MAJ_CATA(ELEMENT={})
       >>> exit()
 
   An undefined symbol in an underlying library, for example ``libaster.so``,

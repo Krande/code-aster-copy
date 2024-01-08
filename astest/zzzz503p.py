@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import code_aster
+from code_aster import CA
 from code_aster.Commands import *
 
 import os
@@ -36,9 +36,9 @@ except ImportError:
 
 from math import pi, sqrt, log
 
-code_aster.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
+CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 ###################################################################################
 #
@@ -66,7 +66,7 @@ error = {}
 conv_order = {}
 
 # initial_mesh - domain [0,1]^2 - 4 quads
-mesh0_quad = code_aster.Mesh.buildSquare(refine=1)
+mesh0_quad = CA.Mesh.buildSquare(refine=1)
 # split in triangular mesh
 mesh0_tri = CREA_MAILLAGE(MAILLAGE=mesh0_quad, MODI_MAILLE=_F(TOUT="OUI", OPTION="QUAD_TRIA3"))
 # convert for hho-cells
@@ -110,7 +110,7 @@ for order in ("LINEAIRE", "QUADRATIQUE"):
 
         ## COMPUTE DISCRETE SOLUTION
         # define physical problem
-        phys_pb = code_aster.PhysicalProblem(model, mater)
+        phys_pb = CA.PhysicalProblem(model, mater)
         phys_pb.addLoad(load)
         phys_pb.addDirichletBC(bc)
 
@@ -118,7 +118,7 @@ for order in ("LINEAIRE", "QUADRATIQUE"):
         phys_pb.computeDOFNumbering()
 
         # create discrete computation
-        disc_comp = code_aster.DiscreteComputation(phys_pb)
+        disc_comp = CA.DiscreteComputation(phys_pb)
 
         # compute rigidity matrix: (lambda * GkT(huT), GkT(hvT))_T + lambda * stab(huT, hvT)
         rigidity = disc_comp.getLinearStiffnessMatrix(assembly=True)
@@ -130,7 +130,7 @@ for order in ("LINEAIRE", "QUADRATIQUE"):
         diriBCs = disc_comp.getDirichletBC()
 
         # define linear solver - MUMPS
-        mySolver = code_aster.MumpsSolver()
+        mySolver = CA.MumpsSolver()
 
         # factorize and solve
         mySolver.factorize(rigidity)
@@ -138,7 +138,7 @@ for order in ("LINEAIRE", "QUADRATIQUE"):
 
         ## COMPUTE ERROR
         # create hho handler
-        hho = code_aster.HHO(phys_pb)
+        hho = CA.HHO(phys_pb)
 
         # Project analytical solution on HHO space
         u_proj = hho.projectOnHHOSpace(u_ana)
@@ -252,4 +252,4 @@ if HAS_MATPLOTLIB and os.getenv("DISPLAY"):
         plt.clf()
 
 # close
-code_aster.close()
+CA.close()

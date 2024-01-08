@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,33 +17,34 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import code_aster
+from code_aster.Commands import *
+from code_aster import CA
 
-code_aster.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
+CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 # Définition d'une force
 
-traction = code_aster.ForceReal()
+traction = CA.ForceReal()
 # Affecter composantes/valeurs
-traction.setValue(code_aster.PhysicalQuantityComponent.Fx, 1.0)
-traction.setValue(code_aster.PhysicalQuantityComponent.Fy, 2.0)
-traction.setValue(code_aster.PhysicalQuantityComponent.Fz, 3.0)
+traction.setValue(CA.PhysicalQuantityComponent.Fx, 1.0)
+traction.setValue(CA.PhysicalQuantityComponent.Fy, 2.0)
+traction.setValue(CA.PhysicalQuantityComponent.Fz, 3.0)
 
 # Mauvaise composante
 # Dx n'est pas une composante de FORC_R !
 with test.assertRaisesRegex(RuntimeError, "component is not allowed"):
-    traction.setValue(code_aster.PhysicalQuantityComponent.Dx, 0.0)
+    traction.setValue(CA.PhysicalQuantityComponent.Dx, 0.0)
 
 # Affichage
 traction.debugPrint()
 
 # On change la valeur d'une composante
-traction.setValue(code_aster.PhysicalQuantityComponent.Fy, 4.0)
+traction.setValue(CA.PhysicalQuantityComponent.Fy, 4.0)
 # Affichage
 traction.debugPrint()
 
 test.printSummary()
 
-code_aster.close()
+CA.close()

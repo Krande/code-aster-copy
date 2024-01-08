@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ import string
 import sys
 import aster
 from ..Cata.Syntax import _F
-from ..Commands import CALC_FERRAILLAGE, CREA_CHAMP, CREA_RESU
+from ..CodeCommands import CALC_FERRAILLAGE, CREA_CHAMP, CREA_RESU
 from ..Messages import UTMESS
 
 
@@ -146,7 +146,6 @@ def combinaison_ferraillage_ops(self, **args):
 
 
 def algo_ferr(resferr, affe, lst_nume_ordre, l_info, type_combo, cara):
-
     #   From physical_quantities.py :
     #   FER2_R   = PhysicalQuantity(type='R',
     #   components=(
@@ -167,7 +166,6 @@ def algo_ferr(resferr, affe, lst_nume_ordre, l_info, type_combo, cara):
     # ),)
 
     for idx, nume_ordre in enumerate(lst_nume_ordre):
-
         dic_type_comb = {}
         if type_combo[idx] == "ELS_CARACTERISTIQUE":
             dic_type_comb["TYPE_COMB"] = "ELS"
@@ -197,7 +195,6 @@ def algo_ferr(resferr, affe, lst_nume_ordre, l_info, type_combo, cara):
         lst_tmp_affe = []
 
         for i_affe in affe:
-
             dict_i_affe = i_affe.List_F()[0]
             i_affe_for_cf = dict_i_affe.copy()
 
@@ -240,7 +237,6 @@ def countCase(comb):
 
 
 def lstInst(ncas, comb, resultat):
-
     lst_inst_value = [None] * ncas  # list of float value as time for AFFE
     lst_inst_index = [None] * ncas  # list of int value as index
     type_combo = [None] * ncas  # list of string as type of combo
@@ -266,7 +262,6 @@ def lstInst(ncas, comb, resultat):
             key_name_combo = "NOM_CAS"
 
         for idx_combo, val_combo in enumerate(lst_combo):
-
             # type combo list couple with instant
             type_combo[idx_shift] = i_combo.get("TYPE")
 
@@ -295,7 +290,6 @@ def lstInst(ncas, comb, resultat):
 
 # Build result type EVOL_ELAS from MULTI_ELAS
 def evolElasFromMulti(ncas, comb, lst_inst_value, resu, cara):
-
     modele = resu.getModel()
     caraelem = cara
 
@@ -304,7 +298,6 @@ def evolElasFromMulti(ncas, comb, lst_inst_value, resu, cara):
 
     idx_shift = 0
     for idx_i_combo, i_combo in enumerate(comb):
-
         # Case number from MULTI_ELAS
         lst_nomcas = i_combo.get("NOM_CAS")
         lst_numord = i_combo.get("NUME_ORDRE")
@@ -316,7 +309,6 @@ def evolElasFromMulti(ncas, comb, lst_inst_value, resu, cara):
             key_name_combo = "NOM_CAS"
 
         for idx_combo, val_combo in enumerate(lst_combo):
-
             dic_idx_combo = {key_name_combo: val_combo}
 
             __EFGE[idx_shift] = CREA_CHAMP(

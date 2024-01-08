@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,15 +17,15 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import code_aster
+from code_aster.Commands import *
+from code_aster import CA
 from code_aster.Utilities.MedUtils.MedMeshAndFieldsSplitter import splitMeshAndFieldsFromMedFile
 
-from code_aster.Commands import *
 
-# code_aster.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
+# CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"))
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 filename = "zzzz155d.med"
 
@@ -39,14 +39,14 @@ fieldToRead = {
 }  # "00000008SIEF_ELGA": "SIEF_ELGA", "00000008SIEF_ELNO": "SIEF_ELNO"}
 tmp = None
 # results = [TEMPER, IRRAD]
-results = code_aster.NonLinearResult()
+results = CA.NonLinearResult()
 # Loop over field dict given by user
 for idx, medFieldName in enumerate(fieldToRead):
     # Get aster name of med field
     asterFieldName = fieldToRead[medFieldName]
 
     # Get characteristics (localization, quantity name) of field from aster name
-    fieldChar = code_aster.FieldCharacteristics(asterFieldName)
+    fieldChar = CA.FieldCharacteristics(asterFieldName)
     loc = fieldChar.getLocalization()
     qt = fieldChar.getQuantity()
     opt = fieldChar.getOption()
@@ -68,7 +68,7 @@ for idx, medFieldName in enumerate(fieldToRead):
         fieldToAdd = None
         # FieldOnNodes case
         if loc == "NOEU":
-            sFON = code_aster.SimpleFieldOnNodesReal(MecaMail2021, qt, compName, True)
+            sFON = CA.SimpleFieldOnNodesReal(MecaMail2021, qt, compName, True)
             nodeNb = MecaMail2021.getNumberOfNodes()
             cmpNb = len(compName)
             i = 0

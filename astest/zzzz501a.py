@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,14 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import code_aster
+from code_aster.Commands import *
+from code_aster import CA
 
-code_aster.init("--test")
-test = code_aster.TestCase()
+CA.init("--test")
+test = CA.TestCase()
 
 # Creation du maillage
-mesh = code_aster.Mesh()
+mesh = CA.Mesh()
 test.assertEqual(mesh.getType(), "MAILLAGE_SDASTER")
 
 # Relecture du fichier MED
@@ -44,23 +45,23 @@ node = coord.getNode(3)
 test.assertSequenceEqual(coord[3], [node.x(), node.y(), node.z()])
 
 # Definition du modele Aster
-model = code_aster.Model(mesh)
+model = CA.Model(mesh)
 test.assertEqual(model.getType(), "MODELE_SDASTER")
-model.addModelingOnMesh(code_aster.Physics.Mechanics, code_aster.Modelings.Tridimensional)
+model.addModelingOnMesh(CA.Physics.Mechanics, CA.Modelings.Tridimensional)
 
-model.setSplittingMethod(code_aster.ModelSplitingMethod.GroupOfCells)
-test.assertEqual(model.getSplittingMethod(), code_aster.ModelSplitingMethod.GroupOfCells)
+model.setSplittingMethod(CA.ModelSplitingMethod.GroupOfCells)
+test.assertEqual(model.getSplittingMethod(), CA.ModelSplitingMethod.GroupOfCells)
 
-model.setSplittingMethod(code_aster.ModelSplitingMethod.Centralized)
-test.assertEqual(model.getSplittingMethod(), code_aster.ModelSplitingMethod.Centralized)
+model.setSplittingMethod(CA.ModelSplitingMethod.Centralized)
+test.assertEqual(model.getSplittingMethod(), CA.ModelSplitingMethod.Centralized)
 
 model.build()
 
 # Definition du modele Aster
-model2 = code_aster.Model(mesh)
+model2 = CA.Model(mesh)
 
 with test.assertRaisesRegex(RuntimeError, "not allowed"):
-    model2.addModelingOnMesh(code_aster.Physics.Thermal, code_aster.Modelings.DKT)
+    model2.addModelingOnMesh(CA.Physics.Thermal, CA.Modelings.DKT)
 
 # Verification du comptage de référence sur le maillage
 del mesh
@@ -75,8 +76,8 @@ test.assertTrue("Tout" in mesh2.getGroupsOfCells())
 mesh2.debugPrint(66)
 
 del coord
-code_aster.saveObjects()
+CA.saveObjects()
 
 test.printSummary()
 
-code_aster.close()
+CA.close()

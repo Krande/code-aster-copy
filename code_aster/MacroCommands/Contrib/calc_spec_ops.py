@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ import aster
 from ...Messages import UTMESS
 
 from ...Cata.Syntax import _F
-from ...Commands import DEFI_FONCTION, DEFI_INTE_SPEC
+from ...CodeCommands import DEFI_FONCTION, DEFI_INTE_SPEC
 from ...SD.sd_fonction import sd_fonction
 from ...Objects.function_py import raise_function_error
 
@@ -75,7 +75,6 @@ def calc_spec_ops(self, **args):
         dt = vale_sig[0][1] - vale_sig[0][0]
 
     else:
-
         tab_ast = l_t[0][1]["NOM_TAB"]
         fonc_py = []
         for i in range(tab_ast.getNumberOfFunctions()):
@@ -353,7 +352,6 @@ def calc_spec_ops(self, **args):
 
     # -- Calcul des transferts
     if TRANSFERT:
-
         l_fc = []
         nume_i1 = []
         nume_j1 = []

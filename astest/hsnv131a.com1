@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,12 +18,12 @@
 # --------------------------------------------------------------------
 
 # This second part of hsnv131a checks PROL_GAUCHE/PROL_DROITE in INCLUDE_MATERIAU
-import code_aster
+from code_aster import CA
 from code_aster.Commands import *
 
 POURSUITE(CODE="OUI")
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 INCLUDE_MATERIAU(
     NOM_AFNOR="Z2CND1712",
@@ -44,7 +44,7 @@ try:
         UNITE_LONGUEUR="MM",
         EXTRACTION=_F(TEMP_EVAL=10.0, COMPOR="THER"),
     )
-except code_aster.AsterError as exc:
+except CA.AsterError as exc:
     idmess = exc.id_message
 
 test.assertEqual(idmess, "FONCT0_29", msg="expecting exception with message 'FONCT0_29'")

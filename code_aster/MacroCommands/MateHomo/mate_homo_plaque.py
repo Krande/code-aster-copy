@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 import numpy as np
 
 from ...Cata.Syntax import _F
-from ...Commands import (
+from ...CodeCommands import (
     AFFE_CHAR_CINE,
     AFFE_CHAR_MECA,
     AFFE_CHAR_MECA_F,
@@ -48,7 +48,6 @@ PARAPLAQUE = [
 
 
 def calc_corr_plaque_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, ls_group_ma, dir_plaque):
-
     SYME_MECA_XX_mm = AFFE_CHAR_CINE(
         MODELE=MODME,
         MECA_IMPO=(
@@ -160,7 +159,6 @@ def calc_corr_plaque_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, ls_group_ma, d
 
 
 def calc_loimel_plaque(DEPLMATE, ls_group_tout, dir_plaque):
-
     LAME_1_mm = FORMULE(NOM_PARA=("E", "NU"), VALE="E*NU/((1+NU)*(1-2*NU))")
     LAME_2_mm = FORMULE(NOM_PARA=("E", "NU"), VALE="E/(2*(1+NU))")
 
@@ -240,7 +238,6 @@ def calc_loimel_plaque(DEPLMATE, ls_group_tout, dir_plaque):
 def calc_tabpara_plaque(
     DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, dir_plaque, dirthick, **fields
 ):
-
     CORR_MECA11_MEMB = fields["CORR_MECA11_MEMB"]
     CORR_MECA22_MEMB = fields["CORR_MECA22_MEMB"]
     CORR_MECA12_MEMB = fields["CORR_MECA12_MEMB"]

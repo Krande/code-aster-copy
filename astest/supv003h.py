@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,12 +19,12 @@
 
 import sys
 
-import code_aster
+from code_aster import CA
 from code_aster.Commands import *
 from code_aster.Utilities import ExecutionParameter, Options
 
-code_aster.init("--test", ERREUR=_F(ERREUR_F="EXCEPTION", ALARME="EXCEPTION"))
-test = code_aster.TestCase()
+CA.init("--test", ERREUR=_F(ERREUR_F="EXCEPTION", ALARME="EXCEPTION"))
+test = CA.TestCase()
 
 MAIL = LIRE_MAILLAGE(FORMAT="MED")
 
@@ -70,7 +70,7 @@ try:
         ),
         VECT_ASSE=list_vect,
     )
-except code_aster.AsterError as exc:
+except CA.AsterError as exc:
     test.assertEqual(exc.id_message, "SUPERVIS2_90")
     test.assertTrue(sys.version_info < (3, 7))
 else:
@@ -78,6 +78,6 @@ else:
     test.assertEqual(len(result), 1 + 3 + 300)
     assert result.main is None, result.main
 
-code_aster.close()
+CA.close()
 
 # TODO: check result after POURSUITE

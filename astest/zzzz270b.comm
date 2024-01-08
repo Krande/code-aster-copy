@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,8 @@
 #
 import numpy as NU
 
-#
-from code_aster import AsterError
 from code_aster.Commands import *
+from code_aster import CA
 
 DEBUT(
     CODE=_F(NIV_PUB_WEB="INTERNET"),
@@ -94,7 +93,7 @@ try:
             FX=fctfx, RIGI_NOR=fctrd, AMOR_NOR=fctam, DIST_1=11.0, DIST_2=22.0, CRIT_AMOR="INCLUS"
         )
     )
-except AsterError as err:
+except CA.AsterError as err:
     zz = str(err)
     # print(fmt_raison % zz )
     if err.id_message == "DISCRETS_63":
@@ -132,7 +131,7 @@ try:
             FX=fctfx, RIGI_NOR=fctrd, AMOR_NOR=fctam, DIST_1=11.0, DIST_2=22.0, CRIT_AMOR="INCLUS"
         )
     )
-except AsterError as err:
+except CA.AsterError as err:
     zz = str(err)
     # print(fmt_raison % zz )
     if err.id_message == "DISCRETS_63":
@@ -169,7 +168,7 @@ try:
             FX=fctfx, RIGI_NOR=fctrd, AMOR_NOR=fctam, DIST_1=11.0, DIST_2=22.0, CRIT_AMOR="INCLUS"
         )
     )
-except AsterError as err:
+except CA.AsterError as err:
     zz = str(err)
     # print(fmt_raison % zz )
     if err.id_message == "DISCRETS_63":
@@ -207,7 +206,7 @@ try:
             FX=fctfx, RIGI_NOR=fctrd, AMOR_NOR=fctam, DIST_1=11.0, DIST_2=22.0, CRIT_AMOR="INCLUS"
         )
     )
-except AsterError as err:
+except CA.AsterError as err:
     zz = str(err)
     # print(fmt_raison % zz )
     if err.id_message == "DISCRETS_63":
@@ -244,7 +243,7 @@ try:
             FX=fctfx, RIGI_NOR=fctrd, AMOR_NOR=fctam, DIST_1=11.0, DIST_2=22.0, CRIT_AMOR="INCLUS"
         )
     )
-except AsterError as err:
+except CA.AsterError as err:
     zz = str(err)
     # print(fmt_raison % zz )
     if err.id_message == "DISCRETS_63":
@@ -281,7 +280,7 @@ try:
             FX=fctfx, RIGI_NOR=fctrd, AMOR_NOR=fctam, DIST_1=11.0, DIST_2=22.0, CRIT_AMOR="INCLUS"
         )
     )
-except AsterError as err:
+except CA.AsterError as err:
     zz = str(err)
     # print(fmt_raison % zz )
     if err.id_message == "DISCRETS_63":
@@ -318,7 +317,7 @@ try:
             FX=fctfx, RIGI_NOR=fctrd, AMOR_NOR=fctam, DIST_1=11.0, DIST_2=22.0, CRIT_AMOR="INCLUS"
         )
     )
-except AsterError as err:
+except CA.AsterError as err:
     zz = str(err)
     # print(fmt_raison % zz )
     if err.id_message == "DISCRETS_63":
@@ -355,7 +354,7 @@ try:
             FX=fctfx, RIGI_NOR=fctrd, AMOR_NOR=fctam, DIST_1=11.0, DIST_2=22.0, CRIT_AMOR="INCLUS"
         )
     )
-except AsterError as err:
+except CA.AsterError as err:
     zz = str(err)
     # print(fmt_raison % zz )
     if err.id_message == "DISCRETS_63":

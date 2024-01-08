@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ import numpy as np
 from scipy.optimize import curve_fit
 
 from ..Cata.Syntax import _F
-from ..Commands import (
+from ..CodeCommands import (
     AFFE_MATERIAU,
     AFFE_MODELE,
     CALC_CHAMP,
@@ -592,7 +592,6 @@ def post_newmark_ops(self, **args):
     )
 
     if args["GROUP_MA_LIGNE"] is not None:
-
         ma_ligne = args["GROUP_MA_LIGNE"]
 
     ## In case GROUP_MA_LIGNE not available : all SEG2 and SEG3 meshs are considered
@@ -672,7 +671,6 @@ def post_newmark_ops(self, **args):
     ###############################################################################
 
     if args["RESULTAT_PESANTEUR"] is not None:
-
         ## ASSERT necessary if original model other than D_PLAN
         ## model in this case on slinding mesh
         __MODST = AFFE_MODELE(
@@ -883,7 +881,6 @@ def post_newmark_ops(self, **args):
 
         ##### Only with sliding mesh
         if args["RESULTAT"] is not None:
-
             __MODYN = AFFE_MODELE(
                 MAILLAGE=__mail_2,
                 AFFE=(_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN"),),
@@ -931,7 +928,6 @@ def post_newmark_ops(self, **args):
                 )
 
                 for inst in __instSD[1:]:
-
                     __instSD = RESULTAT.LIST_PARA()["INST"]
 
                     ## Loop to create dynamic result with stresses from structure mesh using ECLA_PG projection
@@ -967,7 +963,6 @@ def post_newmark_ops(self, **args):
 
             ## In case static analysis was performed, dynamic safety factor can be calculated
             if args["RESULTAT_PESANTEUR"] is not None:
-
                 ## Obtain SIRO_ELEM on sliding line
                 __recoSD = CALC_CHAMP(
                     reuse=__recoSD,
@@ -982,7 +977,6 @@ def post_newmark_ops(self, **args):
                 SIGT_dyn = []
 
                 for inst in __instSD:
-
                     # print ("Instant de calcul = "+str(inst))
 
                     __CSISD = CREA_CHAMP(
@@ -1054,7 +1048,6 @@ def post_newmark_ops(self, **args):
     ###############################################################################
 
     if args["RESULTAT"] is not None:
-
         ## Some mesh group definitions on structure mesh to obtain center of mass of sliding zone
         ## Mass obtained from GROUPE_MA 'GLISSE'
 

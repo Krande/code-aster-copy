@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -37,23 +37,14 @@ extern void DEFP( EXPASS, expass, ASTERINTEGER * );
 #define CALL_EXECOP( a ) CALLP( EXECOP, execop, a )
 extern void DEFP( EXECOP, execop, ASTERINTEGER * );
 
-#define CALL_OPSEXE( a ) CALLP( OPSEXE, opsexe, a )
-extern void DEFP( OPSEXE, opsexe, ASTERINTEGER * );
-
 #define CALL_OP9999( a ) CALLP( OP9999, op9999, a )
 extern void DEFP( OP9999, op9999, ASTERINTEGER * );
 
 #define CALL_IMPERS() CALL0( IMPERS, impers )
 extern void DEF0( IMPERS, impers );
 
-#define CALL_DEBUT() CALL0( DEBUT, debut )
-extern void DEF0( DEBUT, debut );
-
 #define CALL_IBMAIN() CALL0( IBMAIN, ibmain )
 extern void DEF0( IBMAIN, ibmain );
-
-#define CALL_POURSU() CALL0( POURSU, poursu )
-extern void DEF0( POURSU, poursu );
 
 #define CALL_CMD_CTXT_ENTER() CALL0( CMD_CTXT_ENTER, cmd_ctxt_enter )
 extern void DEF0( CMD_CTXT_ENTER, cmd_ctxt_enter );

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,8 @@
 # MAILLES : QUAD4(AXIS)
 #
 
-import code_aster
+from code_aster.Commands import *
+from code_aster import CA
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"))
 
@@ -95,7 +96,7 @@ MTRA1 = ASSE_MATRICE(MATR_ELEM=MTRE1, NUME_DDL=NUDL1)
 
 VCTA1 = ASSE_VECTEUR(VECT_ELEM=VCTER1, NUME_DDL=NUDL1)
 
-linear_solver = code_aster.LinearSolver.factory(
+linear_solver = CA.LinearSolver.factory(
     "MECA_STATIQUE", _F(METHODE="LDLT", NPREC=8, RENUM="RCMK", STOP_SINGULIER="OUI")
 )
 

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,17 +17,18 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import code_aster
+from code_aster.Commands import *
+from code_aster import CA
 
-code_aster.init("--test", "--continue", ERREUR=_F(ALARME="EXCEPTION"))
+CA.init("--test", "--continue", ERREUR=_F(ALARME="EXCEPTION"))
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 # before fixing issue31609, 'pres' was a tuple, 'a' was the list 'pres' and 'b' wad 'a'
 test.assertIsInstance(pres, list, type(pres))
 test.assertEqual(len(pres), 2, len(pres))
-test.assertIsInstance(a, code_aster.Function, a)
-test.assertIsInstance(b, code_aster.Function, b)
+test.assertIsInstance(a, CA.Function, a)
+test.assertIsInstance(b, CA.Function, b)
 
 test.assertEqual(pres[0](1.0), 1.0)
 test.assertEqual(pres[1][0](1.0), 2.0)
@@ -44,4 +45,4 @@ test.assertEqual(form(0.0), 0.0)
 
 test.printSummary()
 
-code_aster.close()
+CA.close()

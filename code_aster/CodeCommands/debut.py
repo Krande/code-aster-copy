@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mathieu.courtois@edf.fr
 """
 :py:class:`DEBUT` --- Initialization of code_aster
 **************************************************
@@ -28,15 +27,18 @@ memory manager (*Jeveux*). For this task, it parses the arguments through the
 By default, arguments are those read from the command line and those passed
 :py:func:`.init`.
 If the command line arguments are not set for code_aster, they can be ignored
-with ``code_aster.init(..., noargv=True)``.
+with ``CA.init(..., noargv=True)``.
 
 Some Python objects that have to be available from :py:mod:`libaster` are
 passed during the initialization to the
 :py:class:`~code_aster.Utilities.ExecutionParameter.ExecutionParameter`.
 """
 
+from functools import partial
+
 import aster_core
 import libaster
+
 from run_aster.run import copy_datafiles
 
 from ..Behaviours import catalc
@@ -50,6 +52,7 @@ from ..Supervis.ctopy import checksd, print_header
 from ..Supervis.TestResult import testresu_print
 from ..Utilities import MPI, ExecutionParameter, Options, import_object, logger
 from ..Utilities.i18n import localization
+from ..Utilities.rc import rc
 
 try:
     import debugpy
@@ -96,52 +99,50 @@ class ExecutionStarter:
 
 
 class Starter(ExecuteCommand):
-    """Define the command DEBUT."""
+    """Define the commands DEBUT/POURSUITE."""
 
     command_name = "DEBUT"
-    arg_init = []
-
-    @staticmethod
-    def _code_enabled(keywords):
-        """Tell if CODE is enabled.
-
-        Arguments:
-            keywords (dict): User's keywords, changed in place.
-
-        Returns:
-            bool: *True* if CODE is present, *False* otherwise.
-        """
-        return keywords.get("CODE")
+    level = 7
 
     @classmethod
-    def run(cls, **keywords):
+    def run(cls, caller, **keywords):
         """Run the Command.
 
         Arguments:
             keywords (dict): User keywords
         """
-        if not ExecutionStarter.init(cls.arg_init):
+        init_args = keywords.pop("init_args", ())
+        if not ExecutionStarter.init(*init_args):
             return
 
-        super(Starter, cls).run(**keywords)
+        params = ExecutionStarter.params
+        if caller == "init":
+            cls.level += 1
+        if rc.initialize:
+            cls.level += 8
+        # restart = 'True | False | None' from rc / override by keywords
+        restart = rc.restart
+        # force startup or continue ?
+        mode = keywords.get("MODE")
+        if mode == "DEBUT" or params.get_option("ForceStart"):
+            restart = False
+        if caller == "POURSUITE" or mode == "POURSUITE" or params.get_option("Continue"):
+            restart = True
 
-    @classmethod
-    def _run_with_argv(cls, **keywords):
-        """Wrapper to have the same depth calling loadObjects..."""
-        cmd = cls()
-        cmd._result = None
-        cmd._cata.addDefaultKeywords(keywords)
-        remove_none(keywords)
-        cmd.exec_(keywords)
+        startable = Serializer.canRestart(silent=True)
+        if restart is None:
+            restart = startable
+        if restart:
+            if not startable:
+                logger.error("restart aborted!")
+            logger.info("restarting from a previous execution...")
+        else:
+            logger.info("starting the execution...")
 
-    @classmethod
-    def run_with_argv(cls, **keywords):
-        """Run the command with the arguments from the command line.
+        params.set_option("ForceStart", not restart)
+        params.set_option("Continue", restart)
 
-        Arguments:
-            keywords (dict): User keywords
-        """
-        cls._run_with_argv(**keywords)
+        super().run(**keywords)
 
     def exec_(self, keywords):
         """Execute the command.
@@ -149,12 +150,13 @@ class Starter(ExecuteCommand):
         Arguments:
             keywords (dict): User's keywords.
         """
+        params = ExecutionStarter.params
         iwarn = False
         stop_with = "EXCEPTION"
-        if ExecutionParameter().option & Options.Abort:
+        if params.option & Options.Abort:
             stop_with = "ABORT"
-        if ExecutionParameter().option & Options.TestMode or self._code_enabled(keywords):
-            ExecutionParameter().enable(Options.TestMode)
+        if params.option & Options.TestMode or keywords.get("CODE"):
+            params.enable(Options.TestMode)
             stop_with = "ABORT"
             iwarn = True
             track_coverage(self._cata, self.command_name, keywords)
@@ -164,8 +166,8 @@ class Starter(ExecuteCommand):
             if erreur.get("ERREUR_F"):
                 stop_with = erreur["ERREUR_F"]
             if erreur.get("ALARME") == "EXCEPTION":
-                ExecutionParameter().enable(Options.WarningAsError)
-        if ExecutionParameter().option & Options.SlaveMode:
+                params.enable(Options.WarningAsError)
+        if params.option & Options.SlaveMode:
             stop_with = "EXCEPTION"
         # must be the first call to correctly set 'vini' in onerrf
         libaster.onFatalError(stop_with)
@@ -173,28 +175,28 @@ class Starter(ExecuteCommand):
         debug = keywords.get("DEBUG")
         if debug:
             jxveri = debug.get("JXVERI", "NON") == "OUI"
-            ExecutionParameter().set_option("jxveri", int(jxveri))
+            params.set_option("jxveri", int(jxveri))
             if jxveri:
                 UTMESS("I", "SUPERVIS_23")
             sdveri = debug.get("SDVERI", "NON") == "OUI"
-            ExecutionParameter().set_option("sdveri", int(sdveri))
+            params.set_option("sdveri", int(sdveri))
             if sdveri:
                 UTMESS("I", "SUPERVIS_24")
             dbgjeveux = debug.get("JEVEUX", "NON") == "OUI" or debug.get("VERI_BASE") is not None
-            ExecutionParameter().set_option("dbgjeveux", int(dbgjeveux))
+            params.set_option("dbgjeveux", int(dbgjeveux))
             if dbgjeveux:
                 UTMESS("I", "SUPERVIS_12")
             iwarn = iwarn or jxveri or sdveri or dbgjeveux
         if iwarn:
-            UTMESS("I", "SUPERVIS_22", valk=("--test", "code_aster.init()"))
-        if ExecutionParameter().get_option("hook_post_exec"):
-            path = ExecutionParameter().get_option("hook_post_exec")
+            UTMESS("I", "SUPERVIS_22", valk=("--test", "CA.init()"))
+        if params.get_option("hook_post_exec"):
+            path = params.get_option("hook_post_exec")
             hook = import_object(path)
             self.register_hook(hook)
 
-        ExecutionParameter().enable(Options.ShowSyntax)
+        params.enable(Options.ShowSyntax)
         if keywords.get("IMPR_MACRO") == "OUI":
-            ExecutionParameter().enable(Options.ShowChildCmd)
+            params.enable(Options.ShowChildCmd)
 
         if keywords.get("LANG"):
             translation = localization.translation(keywords["LANG"])
@@ -203,7 +205,8 @@ class Starter(ExecuteCommand):
         if keywords.get("IGNORE_ALARM"):
             for idmess in keywords["IGNORE_ALARM"]:
                 MessageLog.disable_alarm(idmess)
-        super(Starter, self).exec_(keywords)
+
+        super().exec_(keywords)
 
     def _call_oper(self, syntax):
         """Call fortran operator.
@@ -211,48 +214,19 @@ class Starter(ExecuteCommand):
         Arguments:
             syntax (*CommandSyntax*): Syntax description with user keywords.
         """
-        logger.info("starting the execution...")
-        libaster.call_debut(syntax)
+        super()._call_oper(syntax)
+
+        if ExecutionStarter.params.option & Options.Continue:
+            # 1:_call_oper, 2:ExecuteCommand.exec_, 3:Starter.exec_,
+            #  4:Restarter.run, 5:ExecuteCommand.run_, 6:ExecuteCmd.run, 7:user
+            # 1:_call_oper, 2:ExecuteCommand.exec_, 3:Starter.exec_,
+            #  4:_run_with_argv, 5:run_with_argv, 6:init, 7:user
+            # when called during 'import CA', 9 levels are added...
+            loadObjects(level=self.level)
 
 
-class Restarter(Starter):
-    """Define the command POURSUITE."""
-
-    command_name = "POURSUITE"
-    arg_init = ["--continue"]
-
-    @staticmethod
-    def _code_enabled(keywords):
-        """Tell if CODE is enabled.
-
-        Arguments:
-            keywords (dict): User's keywords, changed in place.
-
-        Returns:
-            bool: *True* if CODE is present, *False* otherwise.
-        """
-        return keywords.get("CODE") == "OUI"
-
-    def _call_oper(self, syntax):
-        """Call fortran operator.
-
-        Arguments:
-            syntax (*CommandSyntax*): Syntax description with user keywords.
-        """
-        if not Serializer.canRestart():
-            logger.error("restart aborted!")
-
-        logger.info("restarting from a previous execution...")
-        libaster.call_poursuite(syntax)
-        # 1:_call_oper, 2:ExecuteCommand.exec_, 3:Starter.exec_,
-        #  4:Restarter.run, 5:ExecuteCommand.run_, 6:ExecuteCmd.run, 7:user
-        # 1:_call_oper, 2:ExecuteCommand.exec_, 3:Starter.exec_,
-        #  4:_run_with_argv, 5:run_with_argv, 6:init, 7:user
-        loadObjects(level=7)
-
-
-DEBUT = Starter.run
-POURSUITE = Restarter.run
+DEBUT = partial(Starter.run, caller="DEBUT")
+POURSUITE = partial(Starter.run, caller="POURSUITE")
 
 
 def init(*argv, **kwargs):
@@ -279,8 +253,6 @@ def init(*argv, **kwargs):
         MPI.ASTER_COMM_WORLD = comm
     else:
         fcomm = 0
-    if not ExecutionStarter.init(argv, fcomm):
-        return
 
     if kwargs.pop("debug", False):
         ExecutionParameter().enable(Options.Debug)
@@ -295,7 +267,4 @@ def init(*argv, **kwargs):
         ExecutionParameter().set_option("tpmax", tpmax + 36000)
     kwargs.pop("debugpy", None)
 
-    if ExecutionStarter.params.option & Options.Continue:
-        Restarter.run_with_argv(**kwargs)
-    else:
-        Starter.run_with_argv(**kwargs)
+    Starter.run("init", init_args=(argv, fcomm), **kwargs)

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 
 from ..Cata.Syntax import _F
-from ..Commands import ASSE_MATR_GENE, DEFI_MODELE_GENE, NUME_DDL_GENE
+from ..CodeCommands import ASSE_MATR_GENE, DEFI_MODELE_GENE, NUME_DDL_GENE
 
 
 def asse_elem_ssd_ops(self, RESU_ASSE_SSD, SOUS_STRUC, LIAISON, VERIF, **args):

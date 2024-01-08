@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ import os
 
 import aster
 from ..Cata.Syntax import _F
-from ..Commands import CREA_CHAMP, CREA_RESU, FORMULE
+from ..CodeCommands import CREA_CHAMP, CREA_RESU, FORMULE
 
 
 # -------------------------------------------------------
@@ -30,7 +30,6 @@ from ..Commands import CREA_CHAMP, CREA_RESU, FORMULE
 
 
 def post_liquefaction_ops(self, AXE, RESULTAT, CRITERE, **args):
-
     ### On importe les definitions des commandes a utiliser dans la macro
 
     ### RECUPERATION DU MODELE A PARTIR DU RESULTAT
@@ -148,7 +147,6 @@ def post_liquefaction_ops(self, AXE, RESULTAT, CRITERE, **args):
 
     if CRITERE != "P_SIGM":
         for i, ordre in enumerate(__numo):
-
             ### Extraction du champ SIEF_ELGA
             __sigt = CREA_CHAMP(
                 OPERATION="EXTR",

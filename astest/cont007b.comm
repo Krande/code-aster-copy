@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 # ELEMENTS LINEAIRES, GRANDES ROTATIONS, DEFORMATIONS PLANES,
 # p=1.0E6, E1=1.0E9, E2=1.0E9, nu1=0.2, nu2=0.2, R1 = 1.0, R2 = 0.6, R3 = 0.2
 
-import code_aster
+
 from code_aster.MacroCommands.defi_cont import DEFI_CONT
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ import aster
 from ..Messages import UTMESS, MasquerAlarme, RetablirAlarme
 
 from ..Cata.Syntax import _F
-from ..Commands import (
+from ..CodeCommands import (
     AFFE_MODELE,
     CALC_TABLE,
     CREA_MAILLAGE,
@@ -269,7 +269,6 @@ def expand_values(self, tabout, liste_noeu_a_extr, titre, type_para):
 
 
 def verif_config_init(FOND_FISS):
-
     if FOND_FISS.getConfigInit() != "COLLEE":
         UTMESS("F", "RUPTURE0_16")
 
@@ -307,12 +306,10 @@ def get_noeud_a_calculer(Lnoff, ndim, FOND_FISS, MAILLAGE, EnumTypes, args):
     TOUT = args.get("TOUT")
 
     if ndim == 2:
-
         Lnocal = Lnoff
         assert len(Lnocal) == 1
 
     elif ndim == 3:
-
         #        construction de la liste des noeuds "AVEC" et des noeuds "SANS"
         NO_SANS = []
         NO_AVEC = []
@@ -856,7 +853,6 @@ def affiche_traitement(FOND_FISS, Lnofon, ino):
 def get_tab(self, lev, ino, Tlib, Lno, TTSo, FOND_FISS, TYPE_MAILLAGE, tabl_depl, is_symmetric):
     """retourne la table des deplacements des noeuds perpendiculaires"""
     if lev == "sup" or (lev == "inf" and (not is_symmetric) and FOND_FISS):
-
         if FOND_FISS:
             if TYPE_MAILLAGE == "LIBRE":
                 tab = Tlib.INTITULE == "l.coupe%i" % (ino + 1)
@@ -1011,7 +1007,6 @@ def get_liste_freq(tabsup, args):
 
 
 def affiche_instant(inst, type_para):
-
     if inst is not None:
         if type_para == "FREQ":
             texte = "#" + "=" * 80 + "\n" + "==> FREQUENCE: %f" % inst
@@ -1249,7 +1244,6 @@ def get_depl_sup(FOND_FISS, tabsupi, ndim, Lnofon, d_coor, ino, TYPE_MAILLAGE):
     abscs = getattr(tabsupi, "ABSC_CURV").values()
 
     if FOND_FISS:
-
         nbval = len(abscs)
 
         if TYPE_MAILLAGE != "LIBRE":
@@ -1338,7 +1332,6 @@ def get_depl_inf(FOND_FISS, tabinfi, ndim, Lnofon, is_symmetric, d_coor, ino, TY
         di = NP.asarray([dxi, dyi, dzi])
 
     else:
-
         absci = []
         di = []
 
@@ -1949,7 +1942,6 @@ def post_k1_k2_k3_ops(
     #  I. CAS FOND_FISS
     #  ------------------------------------------------------------------
     if FOND_FISS:
-
         NB_NOEUD_COUPE = args.get("NB_NOEUD_COUPE")
 
         #     Verification que les levres sont bien en configuration initiale collees
@@ -2003,7 +1995,6 @@ def post_k1_k2_k3_ops(
 
         #     creation des directions normales et macr_lign_coup
         if TYPE_MAILLAGE == "LIBRE":
-
             if not is_symmetric:
                 ListmaI = FOND_FISS.sdj.LEVREINF_MAIL.get()
             else:
@@ -2077,7 +2068,6 @@ def post_k1_k2_k3_ops(
     #  ------------------------------------------------------------------
 
     elif FISSURE:
-
         #     Recuperation de la liste des tailles de maille en chaque noeud du fond
         if not ABSC_CURV_MAXI:
             list_tail = FISSURE.sdj.FOND_TAILLE_R.get()
@@ -2168,7 +2158,6 @@ def post_k1_k2_k3_ops(
     dico_list_var = RESULTAT.LIST_VARI_ACCES()
 
     for ino in range(0, Nbnofo):
-
         if INFO == 2:
             affiche_traitement(FOND_FISS, Lnofon, ino)
 
@@ -2211,7 +2200,6 @@ def post_k1_k2_k3_ops(
         #                         BOUCLE SUR LES INSTANTS/FREQUENCES
         #     ------------------------------------------------------------------
         for iord, inst in enumerate(l_inst):
-
             #        impression de l'instant de calcul
             if INFO == 2:
                 affiche_instant(inst, type_para)
@@ -2235,7 +2223,6 @@ def post_k1_k2_k3_ops(
 
             para = None
             if nbval < 3:
-
                 UTMESS("A+", "RUPTURE0_46")
                 if FOND_FISS:
                     UTMESS("A+", "RUPTURE0_47", valk=Lnofon[ino])
@@ -2250,7 +2237,6 @@ def post_k1_k2_k3_ops(
                     para = 0.0
 
             else:
-
                 #           SI NBVAL >= 3 :
 
                 #            récupération des valeurs des propriétés materiau fonctions des variables de commande

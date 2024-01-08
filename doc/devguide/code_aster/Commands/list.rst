@@ -7,12 +7,12 @@ to the fortran operator.
 
 Some other are more specific and do more things in Python.
 
-.. automodule:: code_aster.Commands.debut
+.. automodule:: code_aster.CodeCommands.debut
    :show-inheritance:
    :members:
    :special-members: __init__
 
-.. automodule:: code_aster.Commands.fin
+.. automodule:: code_aster.CodeCommands.fin
    :show-inheritance:
    :members:
    :special-members: __init__

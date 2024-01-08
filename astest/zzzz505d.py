@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,14 +17,14 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import code_aster
+from code_aster import CA
 from code_aster.Commands import *
 
 DEBUT(
     CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"), INFO=1
 )
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 mesh = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
 
@@ -57,16 +57,16 @@ refe2 = CREA_CHAMP(
 )
 
 # Using Python binding for behaviour
-study = code_aster.PhysicalProblem(model, mater)
+study = CA.PhysicalProblem(model, mater)
 
 # With default values: no initial state, no implex and info=1
 study.computeBehaviourProperty(COMPORTEMENT=(_F(RELATION="VMIS_ISOT_LINE", TOUT="OUI"),))
 behav = study.getBehaviourProperty()
 # Build testfield with model and compor
-testfield1 = code_aster.FieldOnCellsReal(model, "ELGA", "SIEF_R")
+testfield1 = CA.FieldOnCellsReal(model, "ELGA", "SIEF_R")
 testfield1.setValues(value)
 
-testfield2 = code_aster.FieldOnCellsReal(model, "ELGA", "VARI_R", behav)
+testfield2 = CA.FieldOnCellsReal(model, "ELGA", "VARI_R", behav)
 testfield2.setValues(value)
 
 # Test
@@ -134,14 +134,14 @@ refe1 = CREA_CHAMP(
 )
 
 
-study = code_aster.PhysicalProblem(MODELE, CHMAT, CAREL)
+study = CA.PhysicalProblem(MODELE, CHMAT, CAREL)
 
 study.computeBehaviourProperty(COMPORTEMENT=(_F(RELATION="VMIS_ISOT_LINE", TOUT="OUI"),))
 behav = study.getBehaviourProperty()
-testfield1 = code_aster.FieldOnCellsReal(MODELE, "ELGA", "SIEF_R", behav, CAREL)
+testfield1 = CA.FieldOnCellsReal(MODELE, "ELGA", "SIEF_R", behav, CAREL)
 
 # TEST LENGTH EQUALITY
 test.assertAlmostEqual(len(refe1.getValues()), len(testfield1.getValues()))
 
 test.printSummary()
-code_aster.close()
+CA.close()

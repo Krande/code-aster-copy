@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 Calcul de proprietés homo
 """
 from ...Cata.Syntax import _F
-from ...Commands import IMPR_RESU
+from ...CodeCommands import IMPR_RESU
 from ...Messages import ASSERT, UTMESS
 
 from .mate_homo_utilities import setup_calcul
@@ -31,7 +31,6 @@ from .mate_homo_plaque import calc_tabpara_plaque, calc_corr_plaque_syme
 
 
 def mate_homo_ops(self, **kwargs):
-
     meshin = kwargs.get("MAILLAGE")
     ls_affe = kwargs.get("AFFE")
     ls_varc = kwargs.get("VARC")

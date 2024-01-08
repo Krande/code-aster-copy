@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,9 +34,8 @@
 # AVEC MUMPS, VALIDATION DE LA VALEUR 'EVAL' DU MOT-CLE GESTION_MEMOIRE
 #########################################################################
 
-import code_aster
-from code_aster import AsterError
 from code_aster.Commands import *
+from code_aster import CA
 
 DEBUT(
     CODE=_F(NIV_PUB_WEB="INTERNET"),
@@ -44,7 +43,7 @@ DEBUT(
     DEBUG=_F(SDVERI="OUI"),
 )
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 MA = LIRE_MAILLAGE(FORMAT="GIBI", UNITE=19)
 DEFI_GROUP(reuse=MA, MAILLAGE=MA, CREA_GROUP_NO=_F(TOUT_GROUP_MA="OUI"))
@@ -79,7 +78,7 @@ try:
         SOLVEUR=_F(METHODE="MUMPS", GESTION_MEMOIRE="EVAL"),
     )
 
-except AsterError as exc:
+except CA.AsterError as exc:
     test.assertEqual(exc.id_message, "FACTOR_77")
 
 # 1 : MANQUE DE BLOCAGE DETECTE VIA LE MECANISME NPREC/STOP_SINGULIER
@@ -94,7 +93,7 @@ try:
         SOLVEUR=_F(METHODE="LDLT", NPREC=8, STOP_SINGULIER="OUI"),
     )
 
-except AsterError as exc:
+except CA.AsterError as exc:
     test.assertEqual(exc.id_message, "FACTOR_10")
 
 try:
@@ -105,7 +104,7 @@ try:
         EXCIT=(_F(CHARGE=CHAR),),
         SOLVEUR=_F(METHODE="MULT_FRONT", NPREC=8, STOP_SINGULIER="OUI"),
     )
-except AsterError as exc:
+except CA.AsterError as exc:
     test.assertEqual(exc.id_message, "FACTOR_10")
 
 try:
@@ -116,7 +115,7 @@ try:
         EXCIT=(_F(CHARGE=CHAR),),
         SOLVEUR=_F(METHODE="MUMPS", NPREC=8, STOP_SINGULIER="OUI"),
     )
-except AsterError as exc:
+except CA.AsterError as exc:
     test.assertEqual(exc.id_message, "FACTOR_11")
 
 try:
@@ -127,7 +126,7 @@ try:
         EXCIT=(_F(CHARGE=CHAR),),
         SOLVEUR=_F(METHODE="MUMPS", NPREC=-8, STOP_SINGULIER="OUI"),
     )
-except AsterError as exc:
+except CA.AsterError as exc:
     test.assertEqual(exc.id_message, "FACTOR_57")
 
 
@@ -143,7 +142,7 @@ try:
         SOLVEUR=_F(METHODE="LDLT", NPREC=8, STOP_SINGULIER="OUI"),
     )
 
-except AsterError as exc:
+except CA.AsterError as exc:
     test.assertEqual(exc.id_message, "FACTOR_11")
 
 ## #issue29549, we let a loop to check the garbage collector
@@ -156,7 +155,7 @@ for i in range(100):
             EXCIT=(_F(CHARGE=CTROP), _F(CHARGE=CHARCI)),
             SOLVEUR=_F(METHODE="MULT_FRONT", NPREC=8, STOP_SINGULIER="OUI"),
         )
-    except AsterError as exc:
+    except CA.AsterError as exc:
         test.assertEqual(exc.id_message, "FACTOR_11")
 
 try:
@@ -167,7 +166,7 @@ try:
         EXCIT=(_F(CHARGE=CTROP), _F(CHARGE=CHARCI)),
         SOLVEUR=_F(METHODE="MUMPS", NPREC=8, STOP_SINGULIER="OUI"),
     )
-except AsterError as exc:
+except CA.AsterError as exc:
     test.assertEqual(exc.id_message, "FACTOR_11")
 
 try:
@@ -178,7 +177,7 @@ try:
         EXCIT=(_F(CHARGE=CTROP), _F(CHARGE=CHARCI)),
         SOLVEUR=_F(METHODE="MUMPS", NPREC=-8, STOP_SINGULIER="OUI"),
     )
-except AsterError as exc:
+except CA.AsterError as exc:
     test.assertEqual(exc.id_message, "FACTOR_42")
 
 try:
@@ -189,7 +188,7 @@ try:
         EXCIT=(_F(CHARGE=CTROP), _F(CHARGE=CHARCI)),
         SOLVEUR=_F(METHODE="MUMPS", TYPE_RESOL="SYMDEF"),
     )
-except AsterError as exc:
+except CA.AsterError as exc:
     test.assertEqual(exc.id_message, "FACTOR_84")
 
 FIN()

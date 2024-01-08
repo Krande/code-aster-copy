@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -253,6 +253,7 @@ class RunAster:
         cmd = []
         if self._exectool:
             cmd.append(self._exectool)
+        wrapped = False
         python = CFG.get("python")
         if not self._interact:
             # absolute path is necessary to call the debugger
@@ -262,6 +263,8 @@ class RunAster:
                 cmd.extend(["-m", "mpi4py"])
         else:
             cmd.append(CFG.get("python_interactive", python))
+            wrapped = CFG.get("python_interactive_is_wrapped")
+            print("DEBUG:", cmd[-1], wrapped)
             cmd.append("-i")
         # To show executed lines with trace module:
         # import sys
@@ -269,6 +272,8 @@ class RunAster:
         # cmd.extend(["-m", "trace", "--trace",
         #             "--ignore-dir=" + ":".join(ign)])
         cmd.append(commfile)
+        if wrapped:
+            cmd.append("--")
         # remaining arguments are treated by code_aster script
         if self._test:
             cmd.append("--test")

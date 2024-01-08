@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ import medcoupling as mc
 from libaster import EntityType
 
 from ...Cata.Syntax import _F
-from ...Commands import DEFI_FICHIER, IMPR_RESU, CREA_CHAMP
+from ...CodeCommands import DEFI_FICHIER, IMPR_RESU, CREA_CHAMP
 
 from ...Objects import NonLinearResult
 
@@ -128,7 +128,6 @@ def get_resu_from_deftype(resusd, grmapb, defopb):
                 ]
 
         if defopb == "GDEF_LOG":
-
             cmd_result = (
                 get_resu_gdef_log(resusd, med_filename_in, rvga, grmapb),
                 numv1v2,
@@ -137,7 +136,6 @@ def get_resu_from_deftype(resusd, grmapb, defopb):
             )
 
         else:
-
             cmd_result = (resusd, numv1v2, mclinst, l_epspmax)
     else:
         cmd_result = (None, None, mclinst, l_epspmax)
@@ -201,7 +199,6 @@ def get_resu_gdef_log(resusd, med_filename_in, rvga, grmapb):
     reswbrest.allocate(resusd.getNumberOfIndexes())
 
     for rank in resusd.getIndexes():
-
         chvga = rvga.getField("VARI_ELGA", rank)
 
         sglog = CREA_CHAMP(

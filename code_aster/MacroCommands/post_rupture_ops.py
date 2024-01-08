@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ import aster
 import numpy as NP
 
 from ..Cata.Syntax import _F
-from ..Commands import CALC_TABLE, CREA_TABLE, FORMULE, POST_FATIGUE, RECU_FONCTION
+from ..CodeCommands import CALC_TABLE, CREA_TABLE, FORMULE, POST_FATIGUE, RECU_FONCTION
 from ..Messages import UTMESS
 from ..SD.sd_mater import sd_compor1
 
@@ -90,26 +90,22 @@ def sittmax(k1, k2):
 
 
 def puissance(k1, k2, k3, p):
-
     k3n = k3 / (k1 + NP.abs(k2) + NP.abs(k3))
 
     return (1 - k3n) ** p
 
 
 def terme_general(k1, k2, k3, mode3):
-
     k1n = k1 / (k1 + NP.abs(k2) + NP.abs(k3))
     k2n = k2 / (k1 + NP.abs(k2) + NP.abs(k3))
     return (1 + k1n - mode3) / k2n
 
 
 def racine(k2, x):
-
-    return x - NP.sign(k2) * NP.sqrt(x ** 2 + 8)
+    return x - NP.sign(k2) * NP.sqrt(x**2 + 8)
 
 
 def trigo(x):
-
     return 2 * NP.arctan(x / 4)
 
 
@@ -129,7 +125,6 @@ def membre_2(k2, theta, nu):
 
 
 def division(a, b, c):
-
     return NP.arctan(c / (a + b)) / 2
 
 
@@ -175,7 +170,6 @@ def amestoy(k1, k2, crit_ang):
 
 
 def paris_seuil(dkeq, C, M, DELTA_K_SEUIL):
-
     # Si dkeq contient des valeurs négatives, le passage à la puissance dans la loi
     # de Paris va faire planter le calcul. On ajoute une erreur fatale pour orienter
     # l'utilisateur sur l'origine de l'erreur et le laisser corriger les valeurs.
@@ -278,7 +272,6 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
 
     # -----------------------------------------------------------------------
     if OPERATION == "ABSC_CURV_NORM":
-
         # verification que la table contient une colonne 'ABSC_CURV'
         verif_exi(tabin, "ABSC_CURV")
 
@@ -325,7 +318,6 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
 
     # -----------------------------------------------------------------------
     if OPERATION == "ANGLE_BIFURCATION":
-
         crit_ang = args["CRITERE"]
 
         # verification que la table contient les colonnes necessaires
@@ -486,7 +478,6 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
 
     # -----------------------------------------------------------------------
     if OPERATION[-4:] == "K_EQ":
-
         cumul = args["CUMUL"]
 
         if len(OPERATION) == 4:
@@ -534,7 +525,6 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
                 __cumul = FORMULE(NOM_PARA=(Q1, Q2), VALE="sqrt(" + Q1 + "**2+" + Q2 + "**2)")
 
         elif cumul == "LINEAIRE":
-
             if ndim == 3:
                 __cumul = FORMULE(
                     NOM_PARA=("K1", "K2", "K3"), VALE="max(K1,0)+abs(K2)+0.74*abs(K3))"
@@ -543,7 +533,6 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
                 __cumul = FORMULE(NOM_PARA=("K1", "K2"), VALE="max(K1,0)+abs(K2)")
 
         elif cumul == "MODE_I":
-
             verif_exi(tabin, Q1)
             __cumul = FORMULE(NOM_PARA=Q1, VALE=Q1)
 
@@ -555,7 +544,6 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
 
     # -----------------------------------------------------------------------
     if OPERATION == "COMPTAGE_CYCLES":
-
         COMPTAGE = args["COMPTAGE"]
 
         # quantites sur lesquelles s'effectue le comptage
@@ -574,7 +562,6 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
 
         #  comptage unitaire
         if COMPTAGE == "UNITAIRE":
-
             # recuperation des mot-clés
             COEF_MULT_MAXI = args["COEF_MULT_MAXI"]
             COEF_MULT_MINI = args["COEF_MULT_MINI"]
@@ -586,7 +573,6 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
             verif_un_instant(tabin, OPERATION, COMPTAGE)
 
             for i, q in enumerate(list_q):
-
                 # definition de la formule
                 const_context = {
                     "q": q,
@@ -628,7 +614,6 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
 
         # vrai comptage des cycles avec POST_FATIGUE
         else:
-
             verif_exi(tabin, "INST")
             __delta = FORMULE(NOM_PARA=("VALE_MIN", "VALE_MAX"), VALE="VALE_MAX-VALE_MIN")
 
@@ -656,20 +641,17 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
             nume_fond = list(set(contenu_nume_fond))
 
             for j, fond_j in enumerate(nume_fond):
-
                 # récupération du num_pt maximale pour le fond 'fond_j'
                 tab_fond_j = tabin.NUME_FOND == fond_j
                 nbpt = max(tab_fond_j.NUM_PT.values())
 
                 # boucle sur les points du fond de fissure du fond 'fond_i'
                 for ipt in range(nbpt):
-
                     numpt = ipt + 1
 
                     # boucle sur les quantites à compter
                     __TABC = [None] * nq
                     for i, q in enumerate(list_q):
-
                         __EVOLQ = RECU_FONCTION(
                             TABLE=__COPIE_TABIN,
                             PARA_X="INST",
@@ -757,7 +739,6 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
 
     # -----------------------------------------------------------------------
     if OPERATION == "LOI_PROPA":
-
         # nom de la colonne correspondant au delta_K_eq
         dkeq = args["NOM_DELTA_K_EQ"]
         verif_exi(tabin, dkeq)
@@ -790,7 +771,6 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
 
     # -----------------------------------------------------------------------
     if OPERATION == "CUMUL_CYCLES":
-
         # quantité sur laquelle s'effectue le cumul
         q = args["NOM_PARA"]
         verif_exi(tabin, q)
@@ -814,7 +794,6 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
         nume_fond = list(set(contenu_nume_fond))
 
         for i, fond_i in enumerate(nume_fond):
-
             tab_fond_i = tabin.NUME_FOND == fond_i
 
             # récupération du num_pt maximale pour le fond 'fond_i'
@@ -857,7 +836,6 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
 
     # -----------------------------------------------------------------------
     if OPERATION == "PILO_PROPA":
-
         # creation d'une table vide (en fait qui contient juste une ligne qui
         # sera supprimee en fin)
         tabout = CREA_TABLE(LISTE=_F(LISTE_I=(0,), PARA="&BIDON&"))
@@ -882,7 +860,6 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
         # si pilotage en increment d'avancee max : calcul du l'increment de
         # cycles pilo
         if DAmax_pilo:
-
             # récupération de l'avancee max des points des fonds pour toutes
             # les fissures
             damax = 0
@@ -897,7 +874,6 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
         __DNpilo = FORMULE(NOM_PARA="DELTA_A", VALE="DN_pilo * DELTA_A ", DN_pilo=DN_pilo)
 
         for TABLE_i in TABLE:
-
             __tabtmp = CALC_TABLE(
                 TABLE=TABLE_i,
                 ACTION=(
@@ -923,7 +899,6 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
 
     # -----------------------------------------------------------------------
     if OPERATION == "K1_NEGATIF":
-
         # verification que K1 existe
         verif_exi(tabin, "K1")
 
@@ -932,7 +907,6 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
 
         # si on a trouve au moins une valeur negative de K1 et G present
         if change == True and ("G" or "G_IRWIN" in tabin.para):
-
             # verification que K2 existe
             verif_exi(tabin, "K2")
 
@@ -1005,7 +979,6 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
 
         # si on a trouve au moins une valeur negative de K1 et G non present
         elif change == True and ("G" and "G_IRWIN" not in tabin.para):
-
             # formule servant a mettre a zero les valeurs negatives de K1
             __formul = FORMULE(NOM_PARA="K1", VALE="mise_zero(K1)", mise_zero=mise_zero)
 

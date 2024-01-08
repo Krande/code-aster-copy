@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -41,6 +41,7 @@ The list of the supported *version parameters* are (with their type):
     parallel: bool          - true for a parallel version
     python: str             - Python interpreter
     python_interactive: str - Python interpreter for interactive executions
+    python_interactive_is_wrapped: bool - Tell of Python for interactive sessions is a wrapper.
     mpiexec: str            - mpiexec command line with arguments
     mpi_get_rank: str       - command line to get the mpi rank
     only-proc0: bool        - true to limit output to proc #0, false to show all
@@ -163,6 +164,7 @@ VERSION_PARAMS = {
     "parallel": "bool",
     "python": "str",
     "python_interactive": "str",
+    "python_interactive_is_wrapped": "bool",
     "mpiexec": "str",
     "mpi_get_rank": "str",
     "require_mpiexec": "bool",

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,12 +21,13 @@
 Unittest for Utilities.
 """
 
-import code_aster
+from code_aster.Commands import *
+from code_aster import CA
 from code_aster.Utilities.outputs import command_text
 
-code_aster.init("--test", "--abort", "--debug", ERREUR=_F(ALARME="EXCEPTION"))
+CA.init("--test", "--abort", "--debug", ERREUR=_F(ALARME="EXCEPTION"))
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 
 class FakeDS:
@@ -73,4 +74,4 @@ test.assertEqual(len(text.splitlines()), 5)
 
 test.printSummary()
 
-code_aster.close()
+CA.close()

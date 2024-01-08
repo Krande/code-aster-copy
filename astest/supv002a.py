@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ from functools import partial
 from glob import glob
 from subprocess import PIPE, CalledProcessError, Popen, check_call
 
-import code_aster.Messages
+from code_aster import Messages
 from code_aster.Messages import UTMESS, MessageLog
 from code_aster.Utilities import ExecutionParameter, convert, is_int
 from code_aster.Utilities import localization as LO
@@ -423,7 +423,7 @@ def supv002_ops(self, ERREUR, **kwargs):
     keys = [k for k in list(os.environ.keys()) if k.startswith("LC_")]
     for k in keys:
         del os.environ[k]
-    msgdir = osp.dirname(code_aster.Messages.__file__)
+    msgdir = osp.dirname(Messages.__file__)
     LCATA = [osp.basename(osp.splitext(cata)[0]) for cata in glob(osp.join(msgdir, "*.py"))]
     # LCATA = [osp.basename(osp.splitext(cata)[0]) for cata in glob(osp.join(msgdir, 'mecanonline9.py'))]
 

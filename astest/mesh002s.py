@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,12 +23,13 @@ from glob import glob
 
 import medcoupling as mc
 
-import code_aster
-from code_aster import MPI
+from code_aster.Commands import *
+from code_aster import CA
+from code_aster.CA import MPI
 
-code_aster.init("--test")
+CA.init("--test")
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 rank = MPI.ASTER_COMM_WORLD.Get_rank()
 nbproc = MPI.ASTER_COMM_WORLD.Get_size()
@@ -90,7 +91,7 @@ for mesh_file in meshes:
         )
 
     # read parallel mesh and partitioning
-    pmesh = code_aster.ParallelMesh()
+    pmesh = CA.ParallelMesh()
     try:
         pmesh.readMedFile(mesh_name)
     except Exception as exc:
@@ -100,7 +101,7 @@ for mesh_file in meshes:
         continue
 
     # read std mesh
-    mesh = code_aster.Mesh()
+    mesh = CA.Mesh()
     mesh.readMedFile(mesh_name)
 
     if not pmesh.checkConsistency(mesh_name):
@@ -132,4 +133,4 @@ test.assertEqual(len(conversion_error), list_nb_conv_error[nbproc])
 
 test.printSummary()
 
-code_aster.close()
+CA.close()

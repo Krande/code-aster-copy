@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine debut()
+subroutine op0000()
     implicit none
 !   COMMANDE DEBUT OU POURSUITE
 !

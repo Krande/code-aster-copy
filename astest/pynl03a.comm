@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,14 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import code_aster
+from code_aster.Commands import *
+from code_aster import CA
 
 # Pour des raisons de performances (x5), on force SDVERI='NON'.
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="NON"))
 
 # Read mesh
-MESH = code_aster.Mesh()
+MESH = CA.Mesh()
 MESH.readMedFile("ttnl303a.mmed")
 
 # Functions
@@ -48,13 +49,13 @@ ENTHAL = DEFI_FONCTION(
 # Material properties
 MATER = DEFI_MATERIAU(THER_NL=_F(LAMBDA=CONDUC, BETA=ENTHAL))
 
-CHMAT = code_aster.MaterialField(MESH)
+CHMAT = CA.MaterialField(MESH)
 CHMAT.addMaterialOnMesh(MATER)
 CHMAT.build()
 
 # Finite elements
-MOTH = code_aster.Model(MESH)
-MOTH.addModelingOnMesh(code_aster.Physics.Thermal, code_aster.Modelings.Planar)
+MOTH = CA.Model(MESH)
+MOTH.addModelingOnMesh(CA.Physics.Thermal, CA.Modelings.Planar)
 MOTH.build()
 
 # Loads
@@ -67,8 +68,8 @@ TDROITE = 100.0
 
 CHTH = AFFE_CHAR_THER_F(MODELE=MOTH, TEMP_IMPO=(_F(GROUP_NO="NOE_GAU", TEMP=TGAUCHE),))
 
-CHDI = code_aster.ThermalDirichletBC(MOTH)
-CHDI.addBCOnNodes(code_aster.PhysicalQuantityComponent.Temp, TDROITE, "NOE_DRO")
+CHDI = CA.ThermalDirichletBC(MOTH)
+CHDI.addBCOnNodes(CA.PhysicalQuantityComponent.Temp, TDROITE, "NOE_DRO")
 CHDI.build()
 
 
@@ -97,7 +98,7 @@ ResiGlobRela = 5.0e-8
 
 l_inst = LIST.getValues()
 
-phys_pb = code_aster.PhysicalProblem(MOTH, CHMAT)
+phys_pb = CA.PhysicalProblem(MOTH, CHMAT)
 phys_pb.addLoad(CHTH)
 phys_pb.addDirichletBC(CHDI)
 phys_pb.computeListOfLoads()
@@ -105,16 +106,16 @@ phys_pb.computeListOfLoads()
 phys_pb.computeDOFNumbering()
 phys_pb.computeBehaviourProperty({"RELATION": "THER_NL", "TOUT": "OUI"})
 
-disc_comp = code_aster.DiscreteComputation(phys_pb)
+disc_comp = CA.DiscreteComputation(phys_pb)
 
 
 # Fields
-T = code_aster.FieldOnNodesReal(phys_pb.getDOFNumbering())
+T = CA.FieldOnNodesReal(phys_pb.getDOFNumbering())
 T.setValues({"TEMP": temp_init})
 
 DELTA_T = T.copy() * 0
 
-linear_solver = code_aster.MumpsSolver()
+linear_solver = CA.MumpsSolver()
 
 # initial residuals
 _, _, RESI_THER_PREV = disc_comp.getInternalThermalForces(T, DELTA_T)
@@ -139,7 +140,7 @@ for i_inst in range(1, len(l_inst)):
     RIGI_THER = disc_comp.getTangentConductivityMatrix(T, DELTA_T, with_dual=False)
     RIGI_THER_DUAL = disc_comp.getDualLinearConductivityMatrix()
 
-    JABO_NW = code_aster.AssemblyMatrixTemperatureReal(phys_pb)
+    JABO_NW = CA.AssemblyMatrixTemperatureReal(phys_pb)
     JABO_NW.addElementaryMatrix(RIGI_THER, theta)
     JABO_NW.addElementaryMatrix(RIGI_THER_DUAL)
     JABO_NW.addElementaryMatrix(MASS_THER, 1.0 / d_inst)
@@ -216,7 +217,7 @@ for i_inst in range(1, len(l_inst)):
         DELTA_T += DDT
 
     if not Conv:
-        raise code_aster.ConvergenceError("echec de la convergence des iterations de Newton")
+        raise CA.ConvergenceError("echec de la convergence des iterations de Newton")
 
     # Somme en python T+ = DELTA_t + T-
     T += DELTA_T

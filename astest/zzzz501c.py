@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,20 +17,21 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import code_aster
+from code_aster.Commands import *
+from code_aster import CA
 
-code_aster.init("--test")
+CA.init("--test")
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 # Creation du maillage
-monMaillage = code_aster.Mesh()
+monMaillage = CA.Mesh()
 
 # test de relecture d'un fichier Gmsh
 monMaillage.readGmshFile("ssnv187a.msh")
 
 # test du format Gibi
-mtest = code_aster.Mesh()
+mtest = CA.Mesh()
 mtest.readGibiFile("zzzz364a.mgib")
 
 coord = monMaillage.getCoordinates()
@@ -39,8 +40,8 @@ coord = monMaillage.getCoordinates()
 test.assertSequenceEqual(coord[3], [0.0, 1.0, 0.0])
 
 # Definition du modele Aster
-monModel = code_aster.Model(monMaillage)
-monModel.addModelingOnMesh(code_aster.Physics.Mechanics, code_aster.Modelings.Tridimensional)
+monModel = CA.Model(monMaillage)
+monModel.addModelingOnMesh(CA.Physics.Mechanics, CA.Modelings.Tridimensional)
 
 # delete monMaillage and check that the C++ object still exists because
 # referenced by the model object
@@ -54,4 +55,4 @@ test.assertEqual(coord[3], [0.0, 1.0, 0.0])
 
 test.printSummary()
 
-code_aster.close()
+CA.close()

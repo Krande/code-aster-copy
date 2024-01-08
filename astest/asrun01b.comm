@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,11 +23,11 @@
 import unittest
 import sys
 
-import code_aster
-from code_aster.Commands import FIN
+from code_aster.Commands import *
+from code_aster import CA
 
-code_aster.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
-test = code_aster.TestCase()
+CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
+test = CA.TestCase()
 
 result = unittest.main(argv=["comm"], module="asrun01b", exit=False, verbosity=2).result
 isok = result.wasSuccessful()
@@ -38,5 +38,6 @@ sys.stderr.flush()
 
 test.assertTrue(isok)
 test.printSummary()
+del result
 
-FIN()
+CA.exit()

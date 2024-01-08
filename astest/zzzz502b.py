@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,32 +17,33 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import code_aster
+from code_aster.Commands import *
+from code_aster import CA
 
-code_aster.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
+CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 # Creation du maillage
-monMaillage = code_aster.Mesh()
+monMaillage = CA.Mesh()
 
 # Relecture du fichier MED
 monMaillage.readMedFile("zzzz503a.mmed")
 
 # Definition du modele Aster
-monModel = code_aster.Model(monMaillage)
-monModel.addModelingOnMesh(code_aster.Physics.Mechanics, code_aster.Modelings.Tridimensional)
+monModel = CA.Model(monMaillage)
+monModel.addModelingOnMesh(CA.Physics.Mechanics, CA.Modelings.Tridimensional)
 
 monModel.build()
 
-charCine = code_aster.MechanicalDirichletBC(monModel)
-charCine.addBCOnCells(code_aster.PhysicalQuantityComponent.Dx, 0.0, "Bas")
+charCine = CA.MechanicalDirichletBC(monModel)
+charCine.addBCOnCells(CA.PhysicalQuantityComponent.Dx, 0.0, "Bas")
 test.assertEqual(charCine.getType(), "CHAR_CINE_MECA")
 
 # Impossible d'affecter un blocage en temperature sur un DEPL
 with test.assertRaises(RuntimeError):
-    charCine.addBCOnCells(code_aster.PhysicalQuantityComponent.Temp, 0.0, "Haut")
+    charCine.addBCOnCells(CA.PhysicalQuantityComponent.Temp, 0.0, "Haut")
 
 charCine.build()
 
-code_aster.close()
+CA.close()

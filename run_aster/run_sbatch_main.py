@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -63,11 +63,11 @@ Use 'sbatch --help' for details and example below.
 """
 
 EPILOG = """Example:
-    sbatch --wckey=p11yb:aster --partition=bm FILE.export
+    run_sbatch --wckey=p11yb:aster --partition=bm FILE.export
 or:
     export SBATCH_WCKEY=p11yb:aster
     export SBATCH_PARTITION=bm
-    sbatch FILE.export
+    run_sbatch FILE.export
 """
 
 TEMPLATE = """#!/bin/bash

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,17 +19,17 @@
 
 import os.path as osp
 
-import code_aster
-from code_aster import MPI
+from code_aster import CA
+from code_aster.CA import MPI
 from code_aster.Commands import *
 from code_aster.Utilities import shared_tmpdir
 
-code_aster.init("--test")
+CA.init("--test")
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 rank = MPI.ASTER_COMM_WORLD.Get_rank()
-pMesh = code_aster.ParallelMesh()
+pMesh = CA.ParallelMesh()
 pMesh.readMedFile("mesh004a/%d.med" % rank, partitioned=True)
 DEFI_GROUP(
     reuse=pMesh,
@@ -46,8 +46,8 @@ test.assertEqual(len(list_cells), nb_cells[rank])
 test.assertEqual(pMesh.hasGroupOfCells("BLABLA", True), exi_grp[rank])
 test.assertEqual(pMesh.hasGroupOfCells("BLABLA", False), True)
 
-monModel = code_aster.Model(pMesh)
-monModel.addModelingOnMesh(code_aster.Physics.Mechanics, code_aster.Modelings.Tridimensional)
+monModel = CA.Model(pMesh)
+monModel.addModelingOnMesh(CA.Physics.Mechanics, CA.Modelings.Tridimensional)
 monModel.build()
 
 testMesh = monModel.getMesh()
@@ -55,21 +55,21 @@ test.assertEqual(testMesh.getType(), "MAILLAGE_P")
 
 acier = DEFI_MATERIAU(ELAS=_F(E=2.0e11, NU=0.3))
 
-affectMat = code_aster.MaterialField(pMesh)
+affectMat = CA.MaterialField(pMesh)
 affectMat.addMaterialOnMesh(acier)
 affectMat.build()
 
 testMesh2 = affectMat.getMesh()
 test.assertEqual(testMesh2.getType(), "MAILLAGE_P")
 
-charCine = code_aster.MechanicalDirichletBC(monModel)
-charCine.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dx, 0.0, "COTE_B")
-charCine.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dy, 0.0, "COTE_B")
-charCine.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dz, 0.0, "COTE_B")
+charCine = CA.MechanicalDirichletBC(monModel)
+charCine.addBCOnNodes(CA.PhysicalQuantityComponent.Dx, 0.0, "COTE_B")
+charCine.addBCOnNodes(CA.PhysicalQuantityComponent.Dy, 0.0, "COTE_B")
+charCine.addBCOnNodes(CA.PhysicalQuantityComponent.Dz, 0.0, "COTE_B")
 charCine.build()
 
-charCine2 = code_aster.MechanicalDirichletBC(monModel)
-charCine2.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dz, 1.0, "COTE_H")
+charCine2 = CA.MechanicalDirichletBC(monModel)
+charCine2.addBCOnNodes(CA.PhysicalQuantityComponent.Dz, 1.0, "COTE_H")
 charCine2.build()
 
 resu = MECA_STATIQUE(
@@ -139,18 +139,18 @@ with shared_tmpdir("zzzz503c_") as tmpdir:
         AFFE=_F(MODELISATION=("3D",), PHENOMENE="MECANIQUE", TOUT="OUI"), MAILLAGE=mesh_std
     )
 
-    affectMat_std = code_aster.MaterialField(mesh_std)
+    affectMat_std = CA.MaterialField(mesh_std)
     affectMat_std.addMaterialOnMesh(acier)
     affectMat_std.build()
 
-    charCine_std = code_aster.MechanicalDirichletBC(model_std)
-    charCine_std.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dx, 0.0, "COTE_B")
-    charCine_std.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dy, 0.0, "COTE_B")
-    charCine_std.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dz, 0.0, "COTE_B")
+    charCine_std = CA.MechanicalDirichletBC(model_std)
+    charCine_std.addBCOnNodes(CA.PhysicalQuantityComponent.Dx, 0.0, "COTE_B")
+    charCine_std.addBCOnNodes(CA.PhysicalQuantityComponent.Dy, 0.0, "COTE_B")
+    charCine_std.addBCOnNodes(CA.PhysicalQuantityComponent.Dz, 0.0, "COTE_B")
     charCine_std.build()
 
-    charCine2_std = code_aster.MechanicalDirichletBC(model_std)
-    charCine2_std.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dz, 1.0, "COTE_H")
+    charCine2_std = CA.MechanicalDirichletBC(model_std)
+    charCine2_std.addBCOnNodes(CA.PhysicalQuantityComponent.Dz, 1.0, "COTE_H")
     charCine2_std.build()
 
     resu_std = LIRE_RESU(

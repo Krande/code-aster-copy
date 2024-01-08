@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,15 +17,17 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from code_aster import MPI
-from code_aster.Utilities import shared_tmpdir
 import os.path as osp
 
-rank = MPI.ASTER_COMM_WORLD.Get_rank()
+from code_aster.Commands import *
+from code_aster import CA
+from code_aster.Utilities import shared_tmpdir
+
+rank = CA.MPI.ASTER_COMM_WORLD.Get_rank()
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"))
 
-MAIL = code_aster.ParallelMesh()
+MAIL = CA.ParallelMesh()
 MAIL.readMedFile("zzzz144b/{}.med".format(rank), partitioned=True)
 
 MAIL = DEFI_GROUP(reuse=MAIL, MAILLAGE=MAIL, CREA_GROUP_NO=_F(TOUT_GROUP_MA="OUI"))

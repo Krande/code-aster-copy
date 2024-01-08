@@ -6,7 +6,7 @@
  * @brief Definition of interface functions between C++ and Fortran
  * @author Mathieu Courtois
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -37,12 +37,6 @@ void jeveux_finalize( const ASTERINTEGER options = 0 );
 void call_oper( py::object &syntax, int jxveri );
 
 void call_oper_init();
-
-void call_ops( py::object &syntax, int ops );
-
-void call_debut( py::object &syntax );
-
-void call_poursuite( py::object &syntax );
 
 void call_cmd_ctxt_enter();
 

@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -19,7 +19,7 @@
 
 from libaster import deleteCachedObjects, resetFortranLoggingLevel, setFortranLoggingLevel
 
-from ..Commands import CALC_CHAMP
+from ..CodeCommands import CALC_CHAMP
 from ..Objects import (
     HHO,
     AssemblyMatrixTemperatureReal,

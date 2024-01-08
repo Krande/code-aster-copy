@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,18 +32,24 @@ def compat_syntax(keywords):
         keywords (dict): User's keywords, changed in place.
     """
     if keywords.pop("PAR_LOT", None):
-        deprecate("DEBUT/PAR_LOT", case=2, level=7)
+        deprecate("PAR_LOT", case=2, level=7)
+    if keywords.pop("FORMAT_HDF", None):
+        deprecate("POURSUITE/FORMAT_HDF", case=2, level=7)
     if keywords.get("DEBUG", {}):
         if keywords["DEBUG"].pop("HIST_ETAPE", None):
-            deprecate("DEBUT/DEBUG/HIST_ETAPE", case=2, level=7)
+            deprecate("DEBUG/HIST_ETAPE", case=2, level=7)
+    if keywords.get("CODE", {}) in ("OUI", "NON"):
+        if keywords.pop("CODE") == "OUI":
+            # the value is not used in POURSUITE
+            keywords["CODE"] = _F(NIV_PUB_WEB="INTERNET")
 
 
 DEBUT = MACRO(
     nom="DEBUT",
-    op=None,
+    op=0,
     compat_syntax=compat_syntax,
     repetable="n",
-    fr=tr("Ouverture d'une étude. Allocation des ressources mémoire et disque et fichiers"),
+    fr=tr("Initialisation des ressources, démarrage ou reprise d'un calcul."),
     IMPR_MACRO=SIMP(
         fr=tr("affichage des sous-commandes produites par les macros dans le fichier mess"),
         statut="f",
@@ -181,4 +187,5 @@ DEBUT = MACRO(
         fr=tr("Permet de choisir la langue utilisée pour les messages (si disponible)"),
     ),
     INFO=SIMP(statut="f", typ="I", defaut=1, into=(1, 2)),
+    MODE=SIMP(statut="f", typ="TXM", defaut="AUTO", into=("AUTO", "DEBUT", "POURSUITE")),
 )

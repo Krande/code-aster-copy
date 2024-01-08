@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import code_aster
+from code_aster import CA
 from code_aster.Commands import *
 
-code_aster.init("--test")
+CA.init("--test")
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 ###################################################################################
 #
@@ -102,11 +102,11 @@ for unite in (20, 21, 22, 23, 24):
         u_sol = resu.getField("DEPL", para="INST", value=1.0)
 
         # define discrete object
-        phys_pb = code_aster.PhysicalProblem(model, mater)
+        phys_pb = CA.PhysicalProblem(model, mater)
         phys_pb.addDirichletBC(bc)
         phys_pb.computeDOFNumbering()
 
-        hho = code_aster.HHO(phys_pb)
+        hho = CA.HHO(phys_pb)
 
         # project function
         u_hho = hho.projectOnHHOSpace([uX[form], uY[form], uZ[form]])
@@ -115,7 +115,7 @@ for unite in (20, 21, 22, 23, 24):
 
         test.assertAlmostEqual(u_diff.norm("NORM_2") / u_hho.norm("NORM_2"), 0.0, delta=1e-7)
 
-        dc = code_aster.DiscreteComputation(phys_pb)
+        dc = CA.DiscreteComputation(phys_pb)
         mass = dc.getMassMatrix(assembly=True)
         l2_diff = (mass * u_diff).dot(u_diff)
         l2_ref = (mass * u_hho).dot(u_hho)

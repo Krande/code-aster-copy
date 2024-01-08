@@ -3,7 +3,7 @@
  * @brief Definition of interface functions between C++ and Fortran
  * @author Mathieu Courtois
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -75,28 +75,6 @@ void call_oper_init() {
     ASTERINTEGER op = 8888;
     CALL_EXECOP( &op );
 }
-
-void call_ops( py::object &syntax, int ops ) {
-    ASTERINTEGER nops = ops;
-
-    // Add the new syntax object on the stack
-    register_sh_etape( append_etape( syntax.ptr() ) );
-
-    try {
-        CALL_OPSEXE( &nops );
-
-    } catch ( ... ) {
-        // unstack the syntax object
-        register_sh_etape( pop_etape() );
-        throw;
-    }
-    // unstack the syntax object
-    register_sh_etape( pop_etape() );
-}
-
-void call_debut( py::object &syntax ) { return call_ops( syntax, -1 ); }
-
-void call_poursuite( py::object &syntax ) { return call_ops( syntax, -2 ); }
 
 void call_cmd_ctxt_enter() { CALL_CMD_CTXT_ENTER(); }
 

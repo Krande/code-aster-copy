@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,15 +17,14 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import code_aster
-from code_aster import LinearSolver, NonLinearResult, PhysicalProblem
 from code_aster.Commands import *
+from code_aster import CA
 from code_aster.Solvers import NonLinearSolver, ProblemSolver, TimeStepper, ProblemType
 from code_aster.Utilities import haveMPI
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), INFO=1)
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 mesh = LIRE_MAILLAGE(FORMAT="MED", UNITE=20, PARTITIONNEUR="PTSCOTCH")
 
@@ -71,9 +70,9 @@ SOLUT = STAT_NON_LINE(
     INFO=1,
 )
 
-snl = ProblemSolver(NonLinearSolver(), NonLinearResult(), pb_type=ProblemType.MecaStat)
-snl.use(PhysicalProblem(model, mater))
-snl.use(LinearSolver.factory(**linear_solver))
+snl = ProblemSolver(NonLinearSolver(), CA.NonLinearResult(), pb_type=ProblemType.MecaStat)
+snl.use(CA.PhysicalProblem(model, mater))
+snl.use(CA.LinearSolver.factory(**linear_solver))
 snl.phys_pb.addLoadFromDict({"CHARGE": encast, "FONC_MULT": RAMPE})
 snl.phys_pb.addLoadFromDict({"CHARGE": depl, "FONC_MULT": RAMPE})
 snl.setKeywords(

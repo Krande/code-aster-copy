@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,12 +19,12 @@
 
 # Copy of hsnv140b test-case with PETIT (and NOT PETIT_REAC) to être plus rapide
 
-import code_aster
+from code_aster import CA
 from code_aster.Commands import *
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), INFO=1)
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 mesh = LIRE_MAILLAGE(FORMAT="ASTER")
 

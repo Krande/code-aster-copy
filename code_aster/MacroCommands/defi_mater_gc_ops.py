@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 
 import numpy as NP
 
-from ..Commands import DEFI_MATERIAU
+from ..CodeCommands import DEFI_MATERIAU
 from ..Messages import UTMESS
 
 
@@ -182,6 +182,7 @@ def Mazars_Unil(DMATER, args):
         FTJ = MATER["FTJ"]
         EPSI_C = MATER["EPSI_C"]
         MATER["UNITE_CONTRAINTE"] = ""
+
     # L'ordre dans la liste est important à cause des dépendances des relations
     # Les coefficients FCJ , EIJ, FTJ, EPSI_C doivent déjà être définis
     # Optional keywords
@@ -320,6 +321,7 @@ def Acier_Cine_Line(DMATER, args):
     E = MATER["E"]
     # Obligatoire SY
     SY = MATER["SY"]
+
     # Optional keywords
     def mater_value(name, default):
         return MATER[name] if MATER.get(name) is not None else default

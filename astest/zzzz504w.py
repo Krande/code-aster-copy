@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,13 +18,13 @@
 # --------------------------------------------------------------------
 
 import numpy as N
-import code_aster
+from code_aster import CA
 from code_aster.Commands import *
-from code_aster import MPI
+from code_aster.CA import MPI
 
-code_aster.init("--test")
+CA.init("--test")
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 rank = MPI.ASTER_COMM_WORLD.Get_rank()
 
@@ -33,7 +33,7 @@ DEFI_GROUP(reuse=MAIL, MAILLAGE=MAIL, CREA_GROUP_NO=_F(TOUT_GROUP_MA="OUI"))
 
 MATER = DEFI_MATERIAU(ELAS=_F(E=10000.0, NU=0.0, RHO=1.0))
 
-affectMat = code_aster.MaterialField(MAIL)
+affectMat = CA.MaterialField(MAIL)
 affectMat.addMaterialOnMesh(MATER)
 affectMat.build()
 

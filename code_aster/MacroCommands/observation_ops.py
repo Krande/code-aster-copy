@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,9 +25,9 @@ import numpy
 
 from ..Cata.DataStructure import dyna_harmo, dyna_trans, evol_elas, mode_meca
 from ..Cata.Syntax import _F
-from ..Commands import CREA_CHAMP, CREA_RESU, DEFI_GROUP
-from ..Commands import MODI_REPERE as MODI_REPERE_CMD
-from ..Commands import POST_RELEVE_T, PROJ_CHAMP, RECU_TABLE
+from ..CodeCommands import CREA_CHAMP, CREA_RESU, DEFI_GROUP
+from ..CodeCommands import MODI_REPERE as MODI_REPERE_CMD
+from ..CodeCommands import POST_RELEVE_T, PROJ_CHAMP, RECU_TABLE
 from ..Messages import UTMESS
 
 
@@ -398,7 +398,6 @@ def observation_ops(
     #  BOUCLE SUR LES NOM_CHAM
     # ***********************************************
     for nomcham in NOM_CHAM:
-
         if nomcham == "DEPL" or nomcham == "VITE" or nomcham == "ACCE":
             if RESULTAT.getType() == "DYNA_HARMO":
                 TYPE_CHAM = "NOEU_DEPL_C"
@@ -556,7 +555,6 @@ def observation_ops(
                         __proj = __bid[-1:][0]
 
                     if modi_rep["REPERE"] == "UTILISATEUR" or modi_rep["REPERE"] == "CYLINDRIQUE":
-
                         if type_cham == "TENS_2D" or type_cham == "TENS_3D":
                             for typ in ["MAILLE", "GROUP_MA"]:
                                 if typ in modi_rep:
@@ -619,7 +617,6 @@ def observation_ops(
                         nomchamx = None
 
                     if nomchamx is None or nomchamx == nomcham:
-
                         mcfact1 = {}
 
                         atraiter = None

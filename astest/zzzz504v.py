@@ -1,7 +1,7 @@
 #!/usr/bin/env run_aster
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,19 +26,19 @@
 
 import os.path as osp
 
-import code_aster
-from code_aster import MPI
+from code_aster import CA
+from code_aster.CA import MPI
 from code_aster.Commands import *
 
 root = osp.dirname(__file__)
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"))
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 rank = MPI.ASTER_COMM_WORLD.Get_rank()
 
-POUTRE0 = code_aster.ParallelMesh()
+POUTRE0 = CA.ParallelMesh()
 POUTRE0.readMedFile(osp.join(root, f"zzzz504v/{rank}.med"), partitioned=True)
 
 DEFI_GROUP(reuse=POUTRE0, MAILLAGE=POUTRE0, CREA_GROUP_NO=_F(TOUT_GROUP_MA="OUI"))

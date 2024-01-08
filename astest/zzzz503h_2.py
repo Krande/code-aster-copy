@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import code_aster
+from code_aster import CA
 from code_aster.Commands import *
 
-code_aster.init("--test", "--continue")
+CA.init("--test", "--continue")
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 test.assertEqual(matcomp0.size(), 2, msg="number of material properties")
 test.assertCountEqual(matcomp0.getMaterialNames(), ["ELAS", "VISCOCHAB"])
@@ -42,7 +42,7 @@ with test.assertRaisesRegex(RuntimeError, "property not found"):
     matcmplx.getValueReal("ELAS_VISCO", "G")
 
 # check for copy constructor
-copied = code_aster.Material(matthm)
+copied = CA.Material(matthm)
 
 test.assertEqual(copied.size(), 7, msg="number of material properties")
 test.assertCountEqual(
@@ -57,4 +57,4 @@ with test.assertRaisesRegex(RuntimeError, "property not found"):
 
 test.printSummary()
 
-code_aster.close()
+CA.close()

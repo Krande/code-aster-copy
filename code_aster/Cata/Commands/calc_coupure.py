@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import sys
 from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
@@ -25,7 +24,7 @@ from ..Language.Syntax import *
 
 CALC_COUPURE = MACRO(
     nom="CALC_COUPURE",
-    op=OPS("code_aster.Commands.calc_coupure.calc_coupure_ops"),
+    op=OPS("code_aster.CodeCommands.calc_coupure.calc_coupure_ops"),
     sd_prod=table_sdaster,
     fr=tr("Calcul du torseur résultant"),
     RESULTAT=SIMP(statut="o", typ=resultat_sdaster),

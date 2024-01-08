@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,10 +21,10 @@ import os
 import numpy
 from functools import lru_cache
 
-import code_aster
+from code_aster import CA
 from code_aster.Commands import *
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 
@@ -204,7 +204,7 @@ def check_fields(result, names):
     for idx, time_i in zip(params["NUME_ORDRE"], params["INST"]):
         for field_name in names:
             field = result.getField(field_name, idx)
-            ojb = ".VALE" if isinstance(field, code_aster.FieldOnNodesReal) else ".CELV"
+            ojb = ".VALE" if isinstance(field, CA.FieldOnNodesReal) else ".CELV"
             print("UTIMSD:", idx, time_i, field_name, flush=True)
             IMPR_CO(CHAINE=field.getName() + ojb, NIVEAU=-1, UNITE=6)
 

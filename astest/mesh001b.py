@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,17 +17,17 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import code_aster
+from code_aster import CA
 import numpy as np
 
 from code_aster.Commands import DEFI_GROUP
-from code_aster import MPI
+from code_aster.CA import MPI
 
 
-code_aster.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
+CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 
 # check ParallelMesh object API
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 # MPI test
 rank = MPI.ASTER_COMM_WORLD.Get_rank()
@@ -36,7 +36,7 @@ nbproc = MPI.ASTER_COMM_WORLD.Get_size()
 test.assertEqual(nbproc, 3)
 
 # from MED format (only this one a ParallelMesh)
-mesh = code_aster.ParallelMesh()
+mesh = CA.ParallelMesh()
 mesh.readMedFile("mesh001b/%d.med" % rank, partitioned=True)
 
 
@@ -489,19 +489,13 @@ for i in range(len(local_map)):
 new_mesh = mesh.refine(2)
 
 # test mesh builder
+test.assertEqual(CA.ParallelMesh.buildSquare(refine=4).getNumberOfNodes(), [114, 115, 120][rank])
+test.assertEqual(CA.ParallelMesh.buildCube(refine=4).getNumberOfNodes(), [1955, 2032, 2134][rank])
+test.assertEqual(CA.ParallelMesh.buildDisk(refine=5).getNumberOfNodes(), [5546, 5426, 6027][rank])
 test.assertEqual(
-    code_aster.ParallelMesh.buildSquare(refine=4).getNumberOfNodes(), [114, 115, 120][rank]
-)
-test.assertEqual(
-    code_aster.ParallelMesh.buildCube(refine=4).getNumberOfNodes(), [1955, 2032, 2134][rank]
-)
-test.assertEqual(
-    code_aster.ParallelMesh.buildDisk(refine=5).getNumberOfNodes(), [5546, 5426, 6027][rank]
-)
-test.assertEqual(
-    code_aster.ParallelMesh.buildCylinder(refine=3).getNumberOfNodes(), [3321, 3321, 3825][rank]
+    CA.ParallelMesh.buildCylinder(refine=3).getNumberOfNodes(), [3321, 3321, 3825][rank]
 )
 
 test.printSummary()
 
-code_aster.close()
+CA.close()

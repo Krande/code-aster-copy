@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 from collections import OrderedDict
 
 from ...Cata.Syntax import _F
-from ...Commands import (
+from ...CodeCommands import (
     DEFI_CONSTANTE,
     DEFI_MATERIAU,
     AFFE_MATERIAU,
@@ -83,7 +83,6 @@ def parse_mater_groups(type_homo, ls_affe, varc_name, ls_group_tout):
     ls_temp_def_alpha = []
 
     for item in ls_affe:
-
         mater = item["MATER"]
 
         if "GROUP_MA" in item:
@@ -214,7 +213,6 @@ def prepare_alpha_loads(ls_affe_mod_mate, varc_values):
 
 
 def setup_calcul(type_homo, mesh, ls_group_tout, ls_affe, varc_name, varc_values):
-
     ls_affe_mod_mate, ls_affe_mod_calc = parse_mater_groups(
         type_homo, ls_affe, varc_name, ls_group_tout
     )
@@ -319,7 +317,6 @@ def combine_enerpot(RESU1, RESU2, N_ORDRE, ls_group_tout):
         return epot_ch1
 
     else:
-
         CH2 = CREA_CHAMP(
             RESULTAT=RESU2,
             TYPE_CHAM="NOEU_%s_R" % CH_TYPE,

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,14 +20,13 @@
 # Same as ssna111a up to STAT_NON_LINE.
 # Here, it's run in slave mode to enable to catch TimeLimitError.
 
-import code_aster
-from code_aster import TimeLimitError
 from code_aster.Commands import *
+from code_aster import CA
 from code_aster.Utilities import ExecutionParameter
 
 params = ExecutionParameter()
 
-code_aster.init("--test", "--slave")
+CA.init("--test", "--slave")
 
 MA = LIRE_MAILLAGE(FORMAT="MED")
 
@@ -104,7 +103,7 @@ try:
         NEWTON=_F(MATRICE="TANGENTE", PREDICTION="ELASTIQUE", MATR_RIGI_SYME="OUI", REAC_ITER=1),
         ARCHIVAGE=_F(LIST_INST=L_INST),
     )
-except TimeLimitError as err:
+except CA.TimeLimitError as err:
     if err.id_message in ("MECANONLINE9_1", "MECANONLINE9_2"):
         is_ok = 1
 

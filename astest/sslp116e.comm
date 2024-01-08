@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,12 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
 
-from code_aster import MPI
-import code_aster
+from code_aster.Commands import *
+from code_aster.CA import MPI
+from code_aster import CA
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
 
 rank = MPI.ASTER_COMM_WORLD.Get_rank()
 nbproc = MPI.ASTER_COMM_WORLD.Get_size()
@@ -30,7 +32,7 @@ meshHE8 = LIRE_MAILLAGE(FORMAT="MED", PARTITIONNEUR="PTSCOTCH")
 if not meshHE8.checkConsistency("fort.20"):
     print("ERROR in consistency check")
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 test.assertTrue(meshHE8.checkJoints())
 

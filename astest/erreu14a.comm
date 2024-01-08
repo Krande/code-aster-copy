@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from code_aster import AsterError
 from code_aster.Commands import *
+from code_aster import CA
 
 DEBUT(
     CODE=_F(NIV_PUB_WEB="INTERNET"),
@@ -79,7 +79,7 @@ CHMAT1 = AFFE_MATERIAU(
 is_ok = 0
 try:
     DEF1 = MECA_STATIQUE(MODELE=MO, CHAM_MATER=CHMAT1, EXCIT=_F(CHARGE=CHARGT))
-except AsterError as err:
+except CA.AsterError as err:
     print(fmt_raison % str(err))
     # on verifie que l'erreur fatale est bien celle que l'on attendait :
     if err.id_message == "CALCULEL6_62":
@@ -134,7 +134,7 @@ CHMAT3 = AFFE_MATERIAU(
 is_ok = 0
 try:
     DEF3 = MECA_STATIQUE(MODELE=MO, CHAM_MATER=CHMAT3, EXCIT=_F(CHARGE=CHARGT))
-except AsterError as err:
+except CA.AsterError as err:
     print(fmt_raison % str(err))
     # on verifie que l'erreur fatale est bien celle que l'on attendait :
     if err.id_message == "CALCULEL6_62":
@@ -172,7 +172,7 @@ CHMAT4 = AFFE_MATERIAU(
 is_ok = 0
 try:
     DEF4 = MECA_STATIQUE(MODELE=MO, CHAM_MATER=CHMAT4, EXCIT=_F(CHARGE=CHARGT))
-except AsterError as err:
+except CA.AsterError as err:
     print(fmt_raison % str(err))
     # on verifie que l'erreur fatale est bien celle que l'on attendait :
     if err.id_message == "CALCULEL6_62":
@@ -198,7 +198,7 @@ TEST_TABLE(
 is_ok = 0
 try:
     CHAR_FI = AFFE_CHAR_MECA(MODELE=MO, FORCE_INTERNE=_F(GROUP_MA=("CARRE", "BORD1"), FX=4.0))
-except AsterError as err:
+except CA.AsterError as err:
     print(fmt_raison % str(err))
     # on verifie que l'erreur fatale est bien celle que l'on attendait :
     if err.id_message == "MODELISA6_96":

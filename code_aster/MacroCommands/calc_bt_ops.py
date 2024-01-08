@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ import aster
 import numpy as np
 
 from ..Cata.Syntax import _F
-from ..Commands import (
+from ..CodeCommands import (
     AFFE_CARA_ELEM,
     AFFE_CHAR_MECA,
     AFFE_MATERIAU,
@@ -106,7 +106,6 @@ def calc_bt_ops(self, **args):
                 __GROUP_C[__j + 1] = __current
                 __j = __j + 1
         else:
-
             for __j in range(len(GROUP_MA_INT)):
                 __GROUP_C[__j + 1] = GROUP_MA_INT[__j]
                 __j = __j + 1
@@ -213,16 +212,13 @@ def calc_bt_ops(self, **args):
                 )
 
             if sum(AS[:, i_]) != 0:
-
                 reduced_ang = red_ang_disp(angle_[AS[:, i_]])
 
                 if angle_disp_test(reduced_ang):
-
                     try:
                         mean_CQ[i_, 0] = loess(X, Y, reduced_ang)
 
                     except:
-
                         Sin_ = sum(np.sin(reduced_ang))
                         Cos_ = sum(np.cos(reduced_ang))
 
@@ -234,7 +230,6 @@ def calc_bt_ops(self, **args):
                             mean_CQ[i_, 0] = np.arctan2(Sin_, Cos_) + 2 * pi
 
                 else:
-
                     Sin_ = sum(np.sin(reduced_ang))
                     Cos_ = sum(np.cos(reduced_ang))
 
@@ -270,7 +265,6 @@ def calc_bt_ops(self, **args):
             return tuple(ar2tuple(i) for i in a)
 
         except TypeError:
-
             return a
 
     # ==============================================================================
@@ -619,7 +613,6 @@ def calc_bt_ops(self, **args):
         C = np.diag(K_red)
 
         if 0 in C:
-
             B = False
 
         elif min(abs(A)) < 10**-6:
@@ -693,7 +686,6 @@ def calc_bt_ops(self, **args):
             # p = np.unique(intersec_[np.isnan(intersec_[:, 0]) == False, :], axis=0)
 
         else:
-
             p = np.array([[np.nan]])
 
         return p
@@ -723,7 +715,6 @@ def calc_bt_ops(self, **args):
 
         Opt1 = sum(Opt1)
         if Opt1 == 1:
-
             if poly[0, 0] != poly[-1, 0]:
                 A = np.zeros(((len(poly[:]) + 1), 2))
                 A[0:-1, :] = poly
@@ -887,7 +878,6 @@ def calc_bt_ops(self, **args):
 
     # ==============================================================================
     def matmult(A, B):
-
         rows_A = len(A)
         cols_A = len(A[0])
         cols_B = len(B[0])
@@ -953,7 +943,6 @@ def calc_bt_ops(self, **args):
         resu.append("COOR_%dD" % 3)
 
         for i_ in range(len(GS_nodes[:, 0])):  # Nodal list
-
             add_s1 = " " * (8 - count_digit(i_ + 1))
             add_s2 = " " * int(np.sign(GS_nodes[i_, 0]) >= 0)
             add_s3 = " " * int(np.sign(GS_nodes[i_, 1]) >= 0)
@@ -979,7 +968,6 @@ def calc_bt_ops(self, **args):
 
         resu.append("SEG2")
         for i_ in range(len(Con_Mat[:, 0])):  # Connectivity matrix
-
             add_s1 = " " * (8 - count_digit(i_ + 1))
             add_s2 = " " * (8 - count_digit(Con_Mat[i_, 0] + 1))
 
@@ -1003,7 +991,6 @@ def calc_bt_ops(self, **args):
         i = 1
 
         for key in __GROUP_S.keys():  # Nodes on the boundary conditions
-
             try:
                 S1 = N_o_S[key]
 
@@ -1042,7 +1029,6 @@ def calc_bt_ops(self, **args):
             resu.append("GROUP_MA")
             resu.append("Ties")
             for i_ in Tot[Forces > 0]:
-
                 resu.append("M%d" % (i_) + " " * (8 - count_digit(i_)))
 
             resu.append("FINSF")
@@ -1056,7 +1042,6 @@ def calc_bt_ops(self, **args):
             resu.append("FINSF")
 
         else:
-
             resu.append("GROUP_MA")
             resu.append("Ties")
 
@@ -1078,7 +1063,6 @@ def calc_bt_ops(self, **args):
 
     # ==============================================================================
     def strut_path1(seeds, mean_CQ, vertices, regions, N_Bound, Bound):
-
         """
         Description:
             Proposes the first strut path based on the computed directions and
@@ -1104,13 +1088,11 @@ def calc_bt_ops(self, **args):
             last_p = int(sum(points_1[:, 0] < 1000000))
 
             for j_ in range(len(regions)):
-
                 if j_ not in points_1[i_, 2:]:
                     region = regions[j_]  # Current region
                     polygon = vertices[region]
 
                     if is_inpolygon(nodo_, polygon, 1) and (np.isnan(mean_CQ[j_, 0]) == False):
-
                         i_node = np.array(
                             [
                                 nodo_[0] - 1000 * np.cos(mean_CQ[j_, 0]),
@@ -1144,7 +1126,6 @@ def calc_bt_ops(self, **args):
                         inside = np.zeros((len(A_[:, 0])), dtype=bool)
 
                         for L_ in range(len(A_[:, 0])):
-
                             inside[L_] = is_inpolygon(A_[L_, :], N_Bound[Bound, :], 1)
 
                         A = A_[inside, :]
@@ -1281,7 +1262,6 @@ def calc_bt_ops(self, **args):
         INIT_ALEA,
         percent1,
     ):
-
         """
         Description:
             Topology optimisation.  Reduce the quantity of elements contained in a
@@ -1444,7 +1424,6 @@ def calc_bt_ops(self, **args):
         __GROUP_S,
         __GROUP_F,
     ):
-
         """
         Description:
             Global optimisation. Performs the optimisations.
@@ -1484,7 +1463,6 @@ def calc_bt_ops(self, **args):
             AB = GROUP_S[key]
             S1 = N_o_S[key]
             if len(S1) > 1:
-
                 for i in range(len(S1)):
                     N_S[j_, 1::] = AB.astype(float)
                     N_S[np.isnan(N_S)] = 10e9
@@ -1492,7 +1470,6 @@ def calc_bt_ops(self, **args):
                     j_ = j_ + 1
 
             else:
-
                 N_S[j_, 1::] = AB.astype(float)
                 N_S[np.isnan(N_S)] = 10e9
                 N_S[j_, 0] = int(N_o_S[key])
@@ -1531,7 +1508,6 @@ def calc_bt_ops(self, **args):
             # V_i = truss_volume(GS_nodes, Con_Mat, E_sections)
 
             if i_ <= 200:  # Generate the geometry
-
                 ST_MESH = mesh_create2(
                     GS_nodes, Con_Mat, N_o_S, __Forces, Title_, UNITE_MAILLAGE, __GROUP_S, __GROUP_F
                 )
@@ -1572,7 +1548,6 @@ def calc_bt_ops(self, **args):
             # print("Iteration %d, Volume reduction ratio %.2F, convergence C=%.6f" % (i_, V_red, Conv_))
 
             if scheme == "TOPO" and Conv_ <= 13.3 * GC:
-
                 if s == 2:
                     break
 
@@ -1760,7 +1735,6 @@ def calc_bt_ops(self, **args):
 
     # ==============================================================================
     def red_ang_disp(ang):
-
         """ """
         ang = ang[np.isnan(ang) == False]
         ad_1 = np.max(ang) - np.min(ang)
@@ -1833,7 +1807,7 @@ def calc_bt_ops(self, **args):
                 motscles["BARRE"].append(
                     _F(CARA=H, GROUP_MA=__group[i_], SECTION=RECTANGLE, VALE=__S[i_])
                 )
-                #% (i_ + 1, __S[i_])]
+                # % (i_ + 1, __S[i_])]
 
             else:
                 motscles["BARRE"].append(
@@ -1841,7 +1815,7 @@ def calc_bt_ops(self, **args):
                 )
                 # motscles["BARRE"] =  motscles["BARRE"] + \
                 # [('_F(CARA=(\'H\'), GROUP_MA=(\'EG_%d\'), SECTION=\'RECTANGLE\', VALE=(%.8f)),')
-                #% (i_ + 1, __S[i_])]
+                # % (i_ + 1, __S[i_])]
 
         # Assigning sections
         __carael = AFFE_CARA_ELEM(MODELE=__model, **motscles)
@@ -1988,7 +1962,7 @@ def calc_bt_ops(self, **args):
                 motscles["BARRE"].append(
                     _F(CARA=H, GROUP_MA=__group[i_], SECTION=RECTANGLE, VALE=__S[i_])
                 )
-                #% (i_ + 1, __S[i_])]
+                # % (i_ + 1, __S[i_])]
 
             else:
                 motscles["BARRE"].append(
@@ -1996,7 +1970,7 @@ def calc_bt_ops(self, **args):
                 )
                 # motscles["BARRE"] =  motscles["BARRE"] + \
                 # [('_F(CARA=(\'H\'), GROUP_MA=(\'EG_%d\'), SECTION=\'RECTANGLE\', VALE=(%.8f)),')
-                #% (i_ + 1, __S[i_])]
+                # % (i_ + 1, __S[i_])]
 
         # Assigning sections
         __carael = AFFE_CARA_ELEM(MODELE=__model, **motscles)
@@ -2261,13 +2235,11 @@ def calc_bt_ops(self, **args):
 
         if len(Holes) > 0:
             for key in Holes.keys():
-
                 n = n + len(Holes[key])
 
         A = np.zeros((n))
         if len(Holes) > 0:
             for key in Holes.keys():
-
                 A[sum(A > 0) : len(Holes[key])] = Holes[key]
 
         if len(Holes) > 0:
@@ -2330,7 +2302,6 @@ def calc_bt_ops(self, **args):
         Opt1,
         __CORNERS,
     ):
-
         """ """
         if Opt1 == 1:
             GS_nodes = unique_local(
@@ -2405,7 +2376,7 @@ def calc_bt_ops(self, **args):
                     )
                 )
                 __A.append(GROUP_C[key])
-                #% (i_ + 1, __S[i_])]
+                # % (i_ + 1, __S[i_])]
 
             elif (i_ + 1) < len(GROUP_C.keys()):
                 motscles["CREA_GROUP_NO"].append(
@@ -2524,7 +2495,6 @@ def calc_bt_ops(self, **args):
             __H_bound = __Holes[key]
             n = n + len(__H_bound) - 1
             for i_ in range(len(__V_S_III[:, 0])):
-
                 B[i_, j_] = is_inpolygon(__V_S_III[i_, :], __Nodes[__H_bound.astype(int), 1:3], 1)
 
             j_ = j_ + 1

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,13 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import code_aster
-from code_aster import MPI
+from code_aster import CA
+from code_aster.CA import MPI
 from code_aster.Commands import *
 
-code_aster.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
+CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 rank = MPI.ASTER_COMM_WORLD.Get_rank()
 
@@ -55,8 +55,8 @@ def checkJoints(mesh):
         j += 1
 
 
-graph = code_aster.CommGraph()
-balancer = code_aster.ObjectBalancer()
+graph = CA.CommGraph()
+balancer = CA.ObjectBalancer()
 a = [i + rank * 10 for i in range(10)]
 
 if rank == 0:
@@ -128,9 +128,9 @@ elif rank == 3:
     test.assertEqual(result[11], 1.0)
     test.assertEqual(result[12], 3.0)
 
-bMesh = code_aster.MeshBalancer()
+bMesh = CA.MeshBalancer()
 if rank == 0:
-    myMesh = code_aster.Mesh()
+    myMesh = CA.Mesh()
     myMesh.readMedFile("fort.20")
     bMesh.buildFromBaseMesh(myMesh)
     outMesh = bMesh.applyBalancingStrategy([1, 2, 9, 11, 17, 19, 25, 31])
@@ -141,14 +141,14 @@ elif rank == 2:
 elif rank == 3:
     outMesh = bMesh.applyBalancingStrategy([3, 4, 10, 12, 21, 23, 27, 29])
 
-checkMesh = code_aster.Mesh()
+checkMesh = CA.Mesh()
 checkMesh.readMedFile("fort.20")
 
-mesh2 = code_aster.IncompleteMesh()
+mesh2 = CA.IncompleteMesh()
 mesh2.readMedFile("fort.20")
 test.assertEqual(mesh2.debugCheckFromBaseMesh(checkMesh), True)
 
-bMesh = code_aster.MeshBalancer()
+bMesh = CA.MeshBalancer()
 bMesh.buildFromBaseMesh(mesh2)
 if rank == 0:
     outMesh = bMesh.applyBalancingStrategy([1, 2, 9, 11, 17, 19, 25, 31])
@@ -532,7 +532,7 @@ elif rank == 3:
     )
 checkJoints(outMesh)
 
-part = code_aster.PtScotchPartitioner()
+part = CA.PtScotchPartitioner()
 if rank == 0:
     part.buildGraph([0, 2, 6, 9], [2, 1, 2, 4, 3, 0, 3, 1, 0])
 elif rank == 1:
@@ -543,43 +543,43 @@ elif rank == 3:
     part.buildGraph([0, 5, 7], [4, 3, 5, 6, 8, 7, 6])
 part.checkGraph()
 
-meshGraph = code_aster.MeshConnectionGraph()
+meshGraph = CA.MeshConnectionGraph()
 meshGraph.buildFromIncompleteMesh(mesh2)
 test.assertTrue(meshGraph.debugCheck())
-part2 = code_aster.PtScotchPartitioner()
+part2 = CA.PtScotchPartitioner()
 part2.buildGraph(meshGraph)
 scotchPart = part2.partitionGraph()
 outMesh2 = bMesh.applyBalancingStrategy(scotchPart)
 
 checkJoints(outMesh2)
 
-mesh3 = code_aster.IncompleteMesh()
+mesh3 = CA.IncompleteMesh()
 mesh3.readMedFile("petsc04a.mmed")
-checkMesh3 = code_aster.Mesh()
+checkMesh3 = CA.Mesh()
 checkMesh3.readMedFile("petsc04a.mmed")
 test.assertTrue(mesh3.debugCheckFromBaseMesh(checkMesh3))
-bMesh = code_aster.MeshBalancer()
+bMesh = CA.MeshBalancer()
 bMesh.buildFromBaseMesh(mesh3)
-meshGraph = code_aster.MeshConnectionGraph()
+meshGraph = CA.MeshConnectionGraph()
 meshGraph.buildFromIncompleteMesh(mesh3)
 test.assertTrue(meshGraph.debugCheck())
-part2 = code_aster.PtScotchPartitioner()
+part2 = CA.PtScotchPartitioner()
 part2.buildGraph(meshGraph)
 scotchPart = part2.partitionGraph()
 outMesh3 = bMesh.applyBalancingStrategy(scotchPart)
 
 checkJoints(outMesh3)
 
-mesh3 = code_aster.IncompleteMesh()
+mesh3 = CA.IncompleteMesh()
 mesh3.readMedFile("forma02a.mmed")
-checkMesh3 = code_aster.Mesh()
+checkMesh3 = CA.Mesh()
 checkMesh3.readMedFile("forma02a.mmed")
 test.assertEqual(mesh3.debugCheckFromBaseMesh(checkMesh3), True)
-bMesh = code_aster.MeshBalancer()
+bMesh = CA.MeshBalancer()
 bMesh.buildFromBaseMesh(mesh3)
-meshGraph = code_aster.MeshConnectionGraph()
+meshGraph = CA.MeshConnectionGraph()
 meshGraph.buildFromIncompleteMesh(mesh3)
-part2 = code_aster.PtScotchPartitioner()
+part2 = CA.PtScotchPartitioner()
 part2.buildGraph(meshGraph)
 scotchPart = part2.partitionGraph()
 outMesh3 = bMesh.applyBalancingStrategy(scotchPart)

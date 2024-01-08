@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ from optparse import OptionGroup, OptionParser
 
 import aster
 from ..Cata.Syntax import _F
-from ..Commands import CREA_TABLE, INFO_EXEC_ASTER, TEST_TABLE
+from ..CodeCommands import CREA_TABLE, INFO_EXEC_ASTER, TEST_TABLE
 from ..Messages import UTMESS
 
 
@@ -300,7 +300,6 @@ def test_iter(obj, function, verbose=False):
 
 
 if __name__ == "__main__":
-
     p = OptionParser(usage="usage: %s fichier [options]" % sys.argv[0])
     p.add_option(
         "--type_test",

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ import aster
 from ...Messages import UTMESS
 
 from ...Cata.Syntax import _F
-from ...Commands import (
+from ...CodeCommands import (
     ASSE_VECTEUR,
     CALC_VECT_ELEM,
     COMB_MATR_ASSE,
@@ -54,7 +54,6 @@ def dyna_visco_harm(
     __num,
     **args
 ):
-
     """
     Macro-command DYNA_VISCO,
     function to compute the harmonic response of the structure
@@ -186,7 +185,6 @@ def dyna_visco_harm(
 
     # compute the response of the projected problem for f>fmin
     for num_freq in range(1, len(list_FREQ)):
-
         __Kwproj = __Kgproj
         ny = 0
         for y in MATER_ELAS_FO:
@@ -221,7 +219,6 @@ def dyna_visco_harm(
         )
 
         for champ in NOM_CHAM:
-
             __resveu = CREA_CHAMP(
                 OPERATION="EXTR",
                 NOM_CHAM=champ,

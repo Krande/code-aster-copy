@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,13 +22,14 @@ Unittest for CommandSyntax.
 """
 
 
-import code_aster
+from code_aster.Commands import *
+from code_aster import CA
 from code_aster.Cata.Commands import DEBUT
 from code_aster.Supervis import CommandSyntax
 
-code_aster.init("--test", "--abort", "--debug", ERREUR=_F(ALARME="EXCEPTION"))
+CA.init("--test", "--abort", "--debug", ERREUR=_F(ALARME="EXCEPTION"))
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 # just for testing import of command description from path
 syntax = CommandSyntax("code_aster.Cata.Commands.DEBUT")
@@ -97,9 +98,9 @@ test.assertSequenceEqual(types, ["IS", "R8"])
 
 kws, types = syntax.getmjm(" ", 0, 99)
 test.assertEqual(len(kws), len(types))
-test.assertEqual(len(kws), 3)
-test.assertSequenceEqual(kws, ["IGNORE_ALARM", "IMPR_MACRO", "INFO"])
-test.assertSequenceEqual(types, ["TX", "TX", "IS"])
+test.assertEqual(len(kws), 4)
+test.assertSequenceEqual(kws, ["IGNORE_ALARM", "IMPR_MACRO", "INFO", "MODE"])
+test.assertSequenceEqual(types, ["TX", "TX", "IS", "TX"])
 
 rand = syntax.getran()
 test.assertGreaterEqual(rand[0], 0.0)
@@ -133,6 +134,6 @@ syntax.free()
 
 test.printSummary()
 
-code_aster.close(exit=True)
+CA.close(exit=True)
 
 raise RuntimeError("no should pass here!")

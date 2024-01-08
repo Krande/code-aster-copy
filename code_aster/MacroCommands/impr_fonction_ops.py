@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ from ..Messages import UTMESS
 
 from ..Cata.DataStructure import fonction_c, formule, formule_c, nappe_sdaster
 from ..Cata.Syntax import _F
-from ..Commands import CALC_FONC_INTERP, DEFI_LIST_REEL
+from ..CodeCommands import CALC_FONC_INTERP, DEFI_LIST_REEL
 from ..Helpers import LogicalUnitFile, ReservedUnitUsed
 from ..Objects.table_graph import AjoutParaCourbe, Graph
 from ..Utilities.misc import fmtF2PY
@@ -159,7 +159,6 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
                     dic.update(ldicf[i])
 
                     if interp or "LIST_PARA" in dCi:
-
                         try:
                             __ftmp = CALC_FONC_INTERP(
                                 FONCTION=obj, VALE_PARA=p, LIST_PARA_FONC=__li, **dic
@@ -197,7 +196,6 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
                     try:
                         __ftmp = CALC_FONC_INTERP(FONCTION=obj, LIST_PARA=__linter, **dpar)
                     except AsterError as err:
-
                         # on verifie que la bonne exception a ete levee
                         assert err.id_message == "FONCT0_9", "unexpected id : %s" % err.id_message
                         continue

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,23 +18,23 @@
 # --------------------------------------------------------------------
 
 import numpy as N
-import code_aster
+from code_aster import CA
 from code_aster.Commands import *
-from code_aster import MPI
+from code_aster.CA import MPI
 from code_aster.Utilities import PETSc
 
-code_aster.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
+CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 rank = MPI.ASTER_COMM_WORLD.Get_rank()
 
-pMesh = code_aster.ParallelMesh()
+pMesh = CA.ParallelMesh()
 pMesh.readMedFile("mesh004b/%d.med" % rank, partitioned=True)
 
 MATER = DEFI_MATERIAU(ELAS=_F(E=10000.0, NU=0.0, RHO=1.0))
 
-affectMat = code_aster.MaterialField(pMesh)
+affectMat = CA.MaterialField(pMesh)
 affectMat.addMaterialOnMesh(MATER)
 affectMat.build()
 
@@ -42,11 +42,11 @@ MODT = AFFE_MODELE(
     MAILLAGE=pMesh, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN")
 )
 
-# MODT = code_aster.Model(MAIL))
+# MODT = CA.Model(MAIL))
 
-charCine = code_aster.MechanicalDirichletBC(MODT)
-charCine.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dx, 0.0, "EncastN")
-charCine.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dy, 0.0, "EncastN")
+charCine = CA.MechanicalDirichletBC(MODT)
+charCine.addBCOnNodes(CA.PhysicalQuantityComponent.Dx, 0.0, "EncastN")
+charCine.addBCOnNodes(CA.PhysicalQuantityComponent.Dy, 0.0, "EncastN")
 charCine.build()
 
 # CHT1 = AFFE_CHAR_MECA(MODELE=MODT,
@@ -59,16 +59,16 @@ charCine.build()
 CHT1 = AFFE_CHAR_MECA(MODELE=MODT, PRES_REP=_F(GROUP_MA="Press", PRES=-10), INFO=1, VERI_NORM="NON")
 vect_elem = CALC_VECT_ELEM(OPTION="CHAR_MECA", CHARGE=CHT1)
 
-study = code_aster.PhysicalProblem(MODT, affectMat)
+study = CA.PhysicalProblem(MODT, affectMat)
 study.addDirichletBC(charCine)
 study.addLoad(CHT1)
 study.computeDOFNumbering()
-dComputation = code_aster.DiscreteComputation(study)
+dComputation = CA.DiscreteComputation(study)
 matr_elem = dComputation.getElasticStiffnessMatrix()
 
-monSolver = code_aster.PetscSolver(RENUM="SANS", PRE_COND="SANS")
+monSolver = CA.PetscSolver(RENUM="SANS", PRE_COND="SANS")
 
-numeDDL = code_aster.ParallelDOFNumbering()
+numeDDL = CA.ParallelDOFNumbering()
 numeDDL.computeNumbering(MODT, study.getListOfLoads())
 test.assertEqual(numeDDL.getType(), "NUME_DDL_P")
 
@@ -78,7 +78,7 @@ print("vecass=", vecass.getValues())
 retour = dComputation.getNeumannForces(0, 0, 0)
 
 
-matrAsse = code_aster.AssemblyMatrixDisplacementReal()
+matrAsse = CA.AssemblyMatrixDisplacementReal()
 matrAsse.addElementaryMatrix(matr_elem)
 matrAsse.setDOFNumbering(numeDDL)
 matrAsse.addDirichletBC(charCine)

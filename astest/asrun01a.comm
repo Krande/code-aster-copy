@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,8 +36,9 @@ Le fichier de paramètres contient les variables suivantes :
    info_mail     : 1 / 0
    info_cmd      : 1 / 2 niveau d'info des commandes
 """
-import code_aster
+
 from code_aster.Commands import *
+from code_aster import CA
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"))
 
@@ -71,7 +72,7 @@ if os.path.exists(fpara):
     )
     exec(compile(open(fpara).read(), fpara, "exec"))
 else:
-    raise code_aster.AsterError(
+    raise CA.AsterError(
         """ <meshtool> File not found : %s
             It should have been created by meshtool script..."""
         % fpara
@@ -109,17 +110,17 @@ IMPR_RESU(FORMAT=format_out, UNITE=unite_out, RESU=_F(MAILLAGE=ma), INFO=info_cm
 
 # -----------------------------------------------------------------------------
 # analyse du maillage par homard
-code_aster.onFatalError("EXCEPTION")
+CA.onFatalError("EXCEPTION")
 if info_mail:
     # options
     opts_info_mail = {"LANGUE": lang}
     opts_info_mail["ELEMENTS_ACCEPTES"] = "IGNORE_PYRA"
     try:
         MACR_INFO_MAIL(MAILLAGE=ma, **opts_info_mail)
-    except code_aster.AsterError as msg:
+    except CA.AsterError as msg:
         print("""Erreur lors de l'appel à HOMARD...""")
         print(msg)
 
-code_aster.onFatalError("ABORT")
+CA.onFatalError("ABORT")
 
 FIN()

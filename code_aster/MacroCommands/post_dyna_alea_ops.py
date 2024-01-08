@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ import aster
 from ..Messages import UTMESS
 
 from ..Cata.Syntax import _F
-from ..Commands import CALC_FONCTION, CREA_TABLE, DEFI_FONCTION, DEFI_LIST_REEL, RECU_FONCTION
+from ..CodeCommands import CALC_FONCTION, CREA_TABLE, DEFI_FONCTION, DEFI_LIST_REEL, RECU_FONCTION
 from ..Objects.function_py import t_fonction
 from ..Objects.table_py import Table
 from .Utils.optimize import fmin
@@ -36,7 +36,6 @@ EnumTypes = (list, tuple)
 
 
 def post_dyna_alea_ops(self, INFO, **args):
-
     # On importe les définitions des commandes a utiliser dans la macro
     # Le nom de la variable doit être obligatoirement le nom de la commande
 
@@ -187,7 +186,6 @@ def post_dyna_alea_ops(self, INFO, **args):
                 __ORDO = [None] * Nbval
 
                 for kb in range(Nboot):  # in range(Nbval)
-
                     lpfa = []
                     list_rand = []
 
@@ -228,7 +226,6 @@ def post_dyna_alea_ops(self, INFO, **args):
     #  OPTION INTESPEC
     # ------------------------------------------------------------------
     if "INTERSPECTRE" in args:
-
         INTERSPECTRE = args["INTERSPECTRE"]
 
         INTE_SPEC = INTERSPECTRE["INTE_SPEC"]

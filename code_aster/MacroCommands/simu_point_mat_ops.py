@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ import math
 from ..Messages import UTMESS, MasquerAlarme, RetablirAlarme
 
 from ..Cata.Syntax import _F
-from ..Commands import (
+from ..CodeCommands import (
     AFFE_CARA_ELEM,
     AFFE_CHAR_MECA,
     AFFE_MATERIAU,
@@ -103,7 +103,6 @@ def simu_point_mat_ops(
     # cas ou il n'y a pas d'élement fini : appel à CALC_POINT_MAT
     # ===============================================================
     if itetra == 0:
-
         isig = 0
         ieps = 0
         igrd = 0
@@ -278,7 +277,6 @@ def simu_point_mat_ops(
     # cas ou on fait le calcul sur un TETRA4 A UN SEUL POINT DE GAUSS
     # ===============================================================
     elif itetra == 1:
-
         EPS = {}
         SIG = {}
         MODELISATION = "3D"
@@ -318,7 +316,6 @@ def simu_point_mat_ops(
 
         #     -- Definition du maillage
         if MODELISATION == "3D":
-
             texte_ma = """
            COOR_3D
              P0  0.0   0.0   0.0
@@ -372,7 +369,6 @@ def simu_point_mat_ops(
          """
 
         else:
-
             texte_ma = """
            COOR_2D
              P0  0.0   0.0
@@ -542,7 +538,6 @@ def simu_point_mat_ops(
         )
 
         if MODELISATION == "3D":
-
             __E[2] = AFFE_CHAR_MECA(
                 MODELE=__MO, LIAISON_OBLIQUE=_F(GROUP_NO="P3", DZ=1, ANGL_NAUT=ANGLE)
             )
@@ -571,7 +566,6 @@ def simu_point_mat_ops(
         __S = [None] * nbsig
 
         if MODELISATION == "3D":
-
             r33 = 3**-0.5
             __S[0] = AFFE_CHAR_MECA(
                 MODELE=__MO, FORCE_FACE=(_F(GROUP_MA="F1", FX=-1), _F(GROUP_MA="F4", FX=r33))
@@ -1061,7 +1055,6 @@ def simu_point_mat_ops(
                 motscles["SUIVI_DDL"] = args["SUIVI_DDL"]
 
         if etatinit == 1:
-
             if MASSIF:
                 __EVOL1 = STAT_NON_LINE(
                     INFO=INFO,
@@ -1083,7 +1076,6 @@ def simu_point_mat_ops(
                 )
 
         else:
-
             if MASSIF:
                 __EVOL1 = STAT_NON_LINE(
                     INFO=INFO,

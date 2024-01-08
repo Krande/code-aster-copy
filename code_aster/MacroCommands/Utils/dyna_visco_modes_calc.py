@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ import aster
 import numpy as NP
 
 from ...Cata.Syntax import _F
-from ...Commands import CALC_MODES, COMB_MATR_ASSE, CREA_CHAMP, CREA_RESU
+from ...CodeCommands import CALC_MODES, COMB_MATR_ASSE, CREA_CHAMP, CREA_RESU
 
 
 def dyna_visco_modes_calc(
@@ -45,7 +45,6 @@ def dyna_visco_modes_calc(
     reuse="non",
     **args
 ):
-
     """
     Macro-command DYNA_VISCO,
     function to compute with iterations one eigenmode,
@@ -55,7 +54,6 @@ def dyna_visco_modes_calc(
     dfreq = freq1
 
     while abs(dfreq) >= RESI_RELA * freq1:
-
         if i > 10:
             nmode = nmode + 5
             i = 0

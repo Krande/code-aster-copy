@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,14 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+import numpy as NP
+
+from code_aster.Commands import *
+from code_aster import CA
+
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), IMPR_MACRO="OUI")
 
 # MODELISATION A : COMPORTEMENT VMIS_ECMI_TRAC AVEC PLUSIEURS PAS DE TEMPS
-
-from code_aster import ConvergenceError, IntegrationError
-
-import numpy as NP
 
 # =========================================================
 #          DEFINITION DE L'ETUDE
@@ -285,7 +286,7 @@ for i_inst in range(1, len(l_inst)):
         #   VERIFICATION DU CODE RETOUR DE L'INTEGRATION DE LA LC
         # =========================================================
         if result.CODE_RETOUR_INTE > 0:
-            raise IntegrationError("echec d integration de la loi de comportement")
+            raise CA.IntegrationError("echec d integration de la loi de comportement")
 
         # =========================================================
         #   MATRICE TANGENTE
@@ -340,7 +341,7 @@ for i_inst in range(1, len(l_inst)):
         print("     %d     |   %e   |   %e  |    %d " % (i, Residu[i], ResiduX[i], Conv[i]))
 
     if Conv[IterNewton - 1] != 1:
-        raise ConvergenceError("echec de la convergence des iterations de Newton")
+        raise CA.ConvergenceError("echec de la convergence des iterations de Newton")
 
 
 # =========================================================

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,21 +18,19 @@
 # --------------------------------------------------------------------
 
 import numpy as np
-from math import sin, pi
+from math import pi
 import os
 
-import code_aster
+from code_aster import CA
 from code_aster.Commands import *
 
-code_aster.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
+CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 n = 10
 valx = np.arange(n) * 2.0 * pi / n
 valy = np.sin(valx)
-
-DEBUT()
 
 fsin = DEFI_FONCTION(NOM_PARA="INST", NOM_RESU="TEMP", ABSCISSE=valx, ORDONNEE=valy)
 fsin.debugPrint()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,14 +18,14 @@
 # --------------------------------------------------------------------
 
 import numpy as N
-import code_aster
+from code_aster import CA
 from code_aster.Commands import *
-from code_aster import MPI
+from code_aster.CA import MPI
 from code_aster.Utilities import PETSc
 
-code_aster.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
+CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 
-test = code_aster.TestCase()
+test = CA.TestCase()
 
 rank = MPI.ASTER_COMM_WORLD.Get_rank()
 
@@ -41,7 +41,7 @@ mat_field = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", MATER=material))
 
 dirichlet = AFFE_CHAR_MECA(MODELE=model, DDL_IMPO=_F(GROUP_MA="Encast", DX=1.0, DY=2.0))
 
-phys_pb = code_aster.PhysicalProblem(model, mat_field)
+phys_pb = CA.PhysicalProblem(model, mat_field)
 phys_pb.addLoad(dirichlet)
 
 # Numbering of equations
@@ -51,13 +51,13 @@ phys_pb.computeDOFNumbering()
 phys_pb.computeBehaviourProperty(COMPORTEMENT=(_F(RELATION="ELAS", TOUT="OUI"),))
 
 # Create discrete problem
-disc_comp = code_aster.DiscreteComputation(phys_pb)
+disc_comp = CA.DiscreteComputation(phys_pb)
 
 # Build matrices
 matr_elem = disc_comp.getElasticStiffnessMatrix()
 matr_elem_dual = disc_comp.getDualStiffnessMatrix()
 
-matrAsse = code_aster.AssemblyMatrixDisplacementReal()
+matrAsse = CA.AssemblyMatrixDisplacementReal()
 matrAsse.addElementaryMatrix(matr_elem)
 matrAsse.addElementaryMatrix(matr_elem_dual)
 matrAsse.setDOFNumbering(phys_pb.getDOFNumbering())

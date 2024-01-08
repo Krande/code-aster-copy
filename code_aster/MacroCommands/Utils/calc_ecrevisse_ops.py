@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ from math import atan, atan2, cos, degrees, pi, radians, sin, sqrt
 import aster
 
 from ...Cata.Syntax import _F
-from ...Commands import (
+from ...CodeCommands import (
     AFFE_CHAR_MECA_F,
     AFFE_CHAR_THER_F,
     CREA_TABLE,
@@ -42,6 +42,7 @@ from .macr_ecre_calc import MACR_ECRE_CALC
 
 # ------------------OUTILS ------------------------------
 
+
 # Determination de la direction de la fissure
 #   a partir du points initial et final :
 # theta : angle par rapport a la verticale ascendente (degres)
@@ -51,7 +52,6 @@ from .macr_ecre_calc import MACR_ECRE_CALC
 #         positif si sens anti-horaire
 #         -180< beta <=180
 def dirfiss(Xa, Ya, Xb, Yb):
-
     xia = Xa[0]
     yia = Ya[0]
     xea = Xa[-1]
@@ -102,7 +102,6 @@ def dirfiss(Xa, Ya, Xb, Yb):
 
 # Determination de l ouverture de la fissure
 def ouvFiss(DIR_FISS, beta, Xa, Ya, Xb, Yb):
-
     if DIR_FISS == "X":
         Ouv = list(map(lambda y1, y2: abs(y2 - y1), Ya, Yb))
         Gli = list(map(lambda x1, x2: abs(x2 - x1), Xa, Xb))

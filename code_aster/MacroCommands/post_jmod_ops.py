@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ from ..SD.sd_mater import sd_compor1
 from ..Objects.table_py import Table, merge
 from ..Messages import UTMESS, MasquerAlarme
 from ..Utilities.misc import get_titre_concept
-from ..Commands import (
+from ..CodeCommands import (
     AFFE_MODELE,
     CALC_CHAMP,
     CALC_TABLE,

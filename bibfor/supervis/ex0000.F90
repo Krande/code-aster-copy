@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,9 @@
 
 subroutine ex0000(nuoper)
     implicit none
+#include "asterfort/op0000.h"
 #include "asterfort/op0001.h"
+#include "asterfort/op0002.h"
 #include "asterfort/op0003.h"
 #include "asterfort/op0004.h"
 #include "asterfort/op0006.h"
@@ -178,8 +180,12 @@ subroutine ex0000(nuoper)
     integer :: vali
 !
     select case (nuoper)
+    case (0)
+        call op0000()
     case (1)
         call op0001()
+    case (2)
+        call op0002()
     case (3)
         call op0003()
     case (4)

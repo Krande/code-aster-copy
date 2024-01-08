@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,16 +17,8 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from code_aster import (
-    AsterError,
-    ContactError,
-    ConvergenceError,
-    IntegrationError,
-    SolverError,
-    TimeLimitError,
-    onFatalError,
-)
 from code_aster.Commands import *
+from code_aster import CA
 
 DEBUT(
     CODE=_F(NIV_PUB_WEB="INTERNET"),
@@ -54,31 +46,31 @@ print(sep)
 
 is_ok = 0
 try:
-    raise AsterError(
+    raise CA.AsterError(
         "GENERIC_1", """CAS 1 : declencher error car l'exception n'est pas particularisee."""
     )
 
-except ConvergenceError as err:
+except CA.ConvergenceError as err:
     print("Exception NonConvergence interceptee")
     print("Raison : " + str(err.message))
 
-except IntegrationError as err:
+except CA.IntegrationError as err:
     print("Exception EchecComportement interceptee")
     print("Raison : " + str(err.message))
 
-except SolverError as err:
+except CA.SolverError as err:
     print("Exception BandeFrequenceVide interceptee")
     print("Raison : " + err.message)
 
-except ContactError as err:
+except CA.ContactError as err:
     print("Exception TraitementContact interceptee")
     print("Raison : " + err.message)
 
-except TimeLimitError as err:
+except CA.TimeLimitError as err:
     print("Exception ArretCPU interceptee")
     print("Raison : " + err.message)
 
-except AsterError as err:
+except CA.AsterError as err:
     is_ok = 1
     print("Exception error interceptee")
     print("Raison : " + str(err.message))
@@ -104,16 +96,16 @@ print(sep)
 
 is_ok = 0
 try:
-    raise ConvergenceError(
+    raise CA.ConvergenceError(
         "GENERIC_1", 'CAS 2 : declencher une exception particularisee plus precise que "error"'
     )
 
-except ConvergenceError as err:
+except CA.ConvergenceError as err:
     is_ok = 1
     print("Exception NonConvergence interceptee")
     print("Raison : " + str(err.message))
 
-except AsterError as err:
+except CA.AsterError as err:
     print("Exception error interceptee")
     print("Raison : " + str(err.message))
 
@@ -138,18 +130,20 @@ print(sep)
 
 is_ok = 0
 try:
-    raise IntegrationError("GENERIC_1", "CAS 3 : ne pas confondre les exceptions particularisees")
+    raise CA.IntegrationError(
+        "GENERIC_1", "CAS 3 : ne pas confondre les exceptions particularisees"
+    )
 
-except SolverError as err:
+except CA.SolverError as err:
     print("Exception BandeFrequenceVide interceptee")
     print("Raison : " + str(err.message))
 
-except IntegrationError as err:
+except CA.IntegrationError as err:
     is_ok = 1
     print("Exception EchecComportement interceptee")
     print("Raison : " + str(err.message))
 
-except AsterError as err:
+except CA.AsterError as err:
     print("Exception error interceptee")
     print("Raison : " + str(err.message))
 
@@ -177,22 +171,22 @@ is_ok = 0
 fmt = """
    Comportement en cas d'erreur fatale : %s
 """
-prev = onFatalError()
+prev = CA.onFatalError()
 print(fmt % prev)
 
-onFatalError("EXCEPTION")
-print(fmt % onFatalError())
+CA.onFatalError("EXCEPTION")
+print(fmt % CA.onFatalError())
 try:
     ma = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=999)  # unite invalide
-except AsterError as err:
+except CA.AsterError as err:
     # on verifie que la bonne exception a ete levee
     assert err.id_message == "MODELISA4_94", "unexpected id : %s" % err.id_message
     is_ok = 1
 
 
 # on remet dans l'etat initial
-onFatalError(prev)
-print(fmt % onFatalError())
+CA.onFatalError(prev)
+print(fmt % CA.onFatalError())
 print(sep)
 
 # TEST_RESU
@@ -242,7 +236,7 @@ try:
         AFFE=_F(GROUP_MA="XXX", PHENOMENE="MECANIQUE", MODELISATION="DIS_TR"),
         DISTRIBUTION=_F(METHODE="CENTRALISE"),
     )
-except AsterError as err:
+except CA.AsterError as err:
     # on verifie que la bonne exception a ete levee
     assert err.id_message == "MODELISA7_77", "unexpected id : %s" % err.id_message
     # on peut aussi verifier les arguments
@@ -350,7 +344,7 @@ try:
         NEWTON=_F(MATRICE="ELASTIQUE", REAC_ITER=1),
     )
 
-except ConvergenceError as err:
+except CA.ConvergenceError as err:
     is_ok = 1
     # on verifie que la bonne exception a ete levee
     assert err.id_message == "MECANONLINE9_7", "unexpected id : %s" % err.id_message
@@ -383,7 +377,7 @@ try:
             OPERATION="EXTRACTION",
         )
     )
-except AsterError as err:
+except CA.AsterError as err:
     # on verifie que la bonne exception a ete levee
     assert err.id_message == "POSTRELE_46", "unexpected id : %s" % err.id_message
     TAB_DEPL = POST_RELEVE_T(

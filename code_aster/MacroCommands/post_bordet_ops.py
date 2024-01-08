@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ import numpy as NP
 
 import aster
 from ..Cata.Syntax import _F
-from ..Commands import CALC_CHAM_ELEM, CALC_CHAMP, CALC_TABLE, CREA_CHAMP, CREA_TABLE, FORMULE
+from ..CodeCommands import CALC_CHAM_ELEM, CALC_CHAMP, CALC_TABLE, CREA_CHAMP, CREA_TABLE, FORMULE
 from ..Objects import Function as fonction_sdaster
 from ..Objects import Function2D as nappe_sdaster
 from ..Messages import UTMESS
@@ -160,7 +160,6 @@ def post_bordet_ops(
         UTMESS("F", "RUPTURE0_3")
 
     for ordre in range(list_ordre[0], fin_ordre):
-
         tempe = TEMP(list_inst[ordre])
 
         def fseuil(epsi):
