@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -240,33 +240,6 @@ class StorageManager(SolverFeature):
         return True
 
     @profile
-    def storeField(self, idx, field, field_type, time=0.0, ignore_policy=False):
-        """Store a new field.
-
-        Arguments:
-            idx (int): index of the current (pseudo-)time
-                (restarts at 0 at each new operator).
-            field (FieldOn***): field to store
-            field_type (str): type of the field as DEPL, SIEF_ELGA...
-            time (float, optional): current (pseudo-)time.
-            ignore_policy (bool): ignore storing-policy.
-
-        Returns:
-            bool: *True* if it has been stored, *False* otherwise.
-        """
-        logger.debug(
-            "STORE: calc=%d, time=%f, field=%s, last=%d, stor=%d",
-            idx,
-            time,
-            field_type,
-            self._last_idx,
-            self._stor_idx,
-        )
-        if self._skip(idx, time, ignore_policy):
-            return False
-        return self._store_field(time, field, field_type)
-
-    @profile
     def _store(self):
         """Build result with all indexes in buffer."""
         new_size = self._result.getNumberOfIndexes() + len(self._buffer)
@@ -297,7 +270,7 @@ class StorageManager(SolverFeature):
         if field is None or field_type in self._excl_fields:
             logger.debug("STORE: not exists or excluded: %s", field_type)
             return False
-        self._result.setField(field, field_type, self._stor_idx)
         args = {"valk": field_type, "valr": time, "vali": self._stor_idx}
         logger.info(MessageLog.GetText("I", "ARCHIVAGE_6", **args))
+        self._result.setField(field, field_type, self._stor_idx)
         return True

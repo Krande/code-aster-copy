@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -179,10 +179,7 @@ def meca_non_line_ops(self, **args):
                 hho_field = HHO(nl_solver.phys_pb).projectOnLagrangeSpace(
                     nl_solver.phys_state.primal_curr
                 )
-                storage_manager = nl_solver.get_feature(SOP.Storage)
-                storage_manager.storeField(
-                    nl_solver.step_rank, hho_field, "HHO_DEPL", time=nl_solver.phys_state.time_curr
-                )
+                nl_solver.phys_state.set("HHO_DEPL", hho_field)
 
     solver.use(PostHookHHO())
 

@@ -77,7 +77,8 @@ SOLUN = MECA_NON_LINE(
     CONVERGENCE=_F(RESI_GLOB_MAXI=1e-8),
     NEWTON=_F(REAC_INCR=1, PREDICTION="ELASTIQUE", MATRICE="TANGENTE", REAC_ITER=1),
     INCREMENT=_F(LIST_INST=LIST),
-    INFO=2,
+    ARCHIVAGE=_F(CHAM_EXCLU=[]),
+    INFO=1,
 )
 
 print("Field in new SNL:", flush=True)
@@ -230,5 +231,40 @@ vnew = vmodel.copyUsingDescription(v0.getDescription())
 test.assertSequenceEqual(v0.getComponents(), vnew.getComponents())
 test.assertEqual(v0.getDescription().getNumberOfDOFs(), vnew.size())
 test.assertAlmostEqual(vnew.norm("NORM_2"), vmodel.norm("NORM_2"), delta=1e-12)
+
+
+# =========================================================
+#           TEST CHAMPS DE RESIDUS
+# =========================================================
+
+RESI_GLOB = SOLUN.getField("RESI_NOEU", 2)
+
+
+RESI_RELA = SOLUN.getField("RESI_RELA_NOEU", 2)
+
+TEST_RESU(
+    CHAM_NO=(
+        _F(
+            CRITERE="ABSOLU",
+            REFERENCE="AUTRE_ASTER",
+            PRECISION=1.0e-08,
+            TYPE_TEST="MAX",
+            CHAM_GD=RESI_GLOB,
+            VALE_CALC=3.026798367500305e-09,
+            VALE_REFE=0.0,
+            VALE_ABS="OUI",
+        ),
+        _F(
+            CRITERE="ABSOLU",
+            REFERENCE="AUTRE_ASTER",
+            PRECISION=1.0e-08,
+            TYPE_TEST="MAX",
+            CHAM_GD=RESI_RELA,
+            VALE_CALC=1.1440455182424691e-15,
+            VALE_REFE=0.0,
+            VALE_ABS="OUI",
+        ),
+    )
+)
 
 FIN()

@@ -423,6 +423,11 @@ def ther_lineaire_ops(self, **args):
             phys_state.primal_curr = linear_solver.solve(rhs, diriBCs)
 
         phys_state.commit()
+
+        if model.existsHHO():
+            hho_field = hho.projectOnLagrangeSpace(phys_state.primal_curr)
+            phys_state.set("HHO_TEMP", hho_field)
+
         if save_initial_state:
             storage_manager.storeState(
                 step_rank,
@@ -431,9 +436,6 @@ def ther_lineaire_ops(self, **args):
                 phys_state,
                 param={"PARM_THETA": time_theta},
             )
-            if model.existsHHO():
-                hho_field = hho.projectOnLagrangeSpace(phys_state.primal_curr)
-                storage_manager.storeField(step_rank, hho_field, "HHO_TEMP", phys_state.time_curr)
 
     # Loop on time step
     while not timeStepper.isFinished():
@@ -477,12 +479,13 @@ def ther_lineaire_ops(self, **args):
         phys_state.commit()
         step_rank += 1
 
+        if model.existsHHO():
+            hho_field = hho.projectOnLagrangeSpace(phys_state.primal_curr)
+            phys_state.set("HHO_TEMP", hho_field)
+
         storage_manager.storeState(
             step_rank, phys_state.time_curr, phys_pb, phys_state, param={"PARM_THETA": time_theta}
         )
-        if model.existsHHO():
-            hho_field = hho.projectOnLagrangeSpace(phys_state.primal_curr)
-            storage_manager.storeField(step_rank, hho_field, "HHO_TEMP", phys_state.time_curr)
 
         timeStepper.completed()
         time_delta_prev = time_delta

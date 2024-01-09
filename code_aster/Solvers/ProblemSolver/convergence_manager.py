@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -399,10 +399,17 @@ class ConvergenceManager(SolverFeature):
 
         resi_maxi.value = residual.norm("NORM_INFINITY")
         scaling = self.getRelativeScaling(residuals)
+        residual_rela = residual.copy()
         if scaling == 0.0:
             resi_rela.value = -1.0
+            residual_rela = residual_rela.setValues([-1] * residual_rela.size())
         else:
             resi_rela.value = resi_maxi.value / scaling
+            residual_rela = residual / scaling
+
+        resi_fields = {"RESI_NOEU": residual, "RESI_RELA_NOEU": residual_rela}
+
+        return resi_fields
 
     @profile
     @SolverFeature.check_once
