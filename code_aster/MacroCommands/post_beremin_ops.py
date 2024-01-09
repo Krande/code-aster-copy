@@ -400,7 +400,7 @@ def sig1plasac(resultat, rsieq, numv1v2, dwb, reswbrest, grmapb, mclinst):
 
     indice = 0
     for nume_inst in rsieq.getAccessParameters()["NUME_ORDRE"]:
-        grcalc = f"mgrplas_{}".format(nume_inst)
+        grcalc = f"mgrplas_{nume_inst}"
         inst = rsieq.getTime(nume_inst)
 
         if inst in [elt[2] for elt in mclinst]:
