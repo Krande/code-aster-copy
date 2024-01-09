@@ -41,8 +41,7 @@ from ..CodeCommands import (
     CALC_TABLE,
     CALC_CHAMP,
     CREA_CHAMP,
-    FORMULE,
-    POST_ELEM,
+    CALC_CHAM_ELEM,
     CREA_TABLE,
     DEFI_GROUP,
 )
@@ -507,7 +506,7 @@ def tps_maxsigm(rsieq, mclinst, maxsig, resanpb, bere_m):
     linstants = rsieq.getAccessParameters()["INST"]
 
     def puiss_m(valsixx):
-        return valsixx ** bere_m
+        return valsixx**bere_m
 
     indice = 0
     for nume_inst, inst in enumerate(linstants):
