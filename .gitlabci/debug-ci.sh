@@ -39,6 +39,7 @@ export CI_PROJECT_DIR=$(pwd)
 export CI_SERVER_URL=https://gitlab.pleiade.edf.fr
 export CI_PROJECT_URL=$(pwd)
 export CI_COMMIT_REF_NAME=$(git rev-parse --abbrev-ref HEAD)
+export REFREV=main
 
 export DEBUG_CI=1
 export ARTF=/tmp

@@ -27,7 +27,7 @@ check again in the implementation of the
 Utility functions for executors
 *******************************
 
-.. automodule:: code_aster.Commands.operator
+.. automodule:: code_aster.CodeCommands.operator
    :show-inheritance:
    :members:
    :special-members: __init__

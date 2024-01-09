@@ -9,8 +9,9 @@ if [ $# -eq 0 ]; then
     args=( "--all" )
 fi
 
+installdir=${PREFIX_ROOT:-..}
 ln -sf ../devtools .
-ln -sf ~/.install/debian-10/mpi install
+ln -sf ${installdir}/mpi install
 trap "rm -f devtools install" EXIT
 
 .gitlabci/debug-ci.sh "${args[@]}"
