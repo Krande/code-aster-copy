@@ -304,8 +304,6 @@ Calcul::getOutputElementaryTermComplex( const std::string &parameterName ) const
 
 /** @brief Detect input fields with complex values */
 bool Calcul::hasComplexInputFields( void ) const {
-    bool returnValue;
-    returnValue = false;
     for ( const auto &[parameterName, field] : _inputFields ) {
         std::string fieldName = field->getName();
         std::string fieldType = field->getFieldType();
@@ -320,5 +318,5 @@ bool Calcul::hasComplexInputFields( void ) const {
             }
         }
     }
-    return returnValue;
+    return false;
 };
