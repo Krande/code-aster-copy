@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -103,7 +103,7 @@ CHPES = AFFE_CHAR_MECA(
         _F(GROUP_NO="N6", DX=2.0, DY=3.0, DZ=4.0, DRX=1.0, DRY=2.0, DRZ=5.0),
     ),
     FORCE_ARETE=_F(GROUP_MA="S1", FZ=8.0),
-    FORCE_COQUE=_F(TOUT="OUI", F1=5.0, F2=8.0, F3=9.0, MF1=5.0),
+    FORCE_COQUE=_F(TOUT="OUI", F1=5.0, F2=8.0, F3=9.0, MF1=5.0, MF2=8.0),
 )
 
 CHME2 = AFFE_CHAR_MECA(MODELE=MO, FORCE_COQUE=_F(TOUT="OUI", PRES=5.0))
@@ -145,63 +145,63 @@ TEST_RESU(
             TYPE_TEST="SOMM_ABS",
             RESULTAT=MESTAT,
             NOM_CHAM="DEPL",
-            VALE_CALC=45031.3033356,
+            VALE_CALC=45030.83597859375,
         ),
         _F(
             NUME_ORDRE=1,
             TYPE_TEST="SOMM_ABS",
             RESULTAT=MESTAT,
             NOM_CHAM="EFGE_ELNO",
-            VALE_CALC=183836.693352,
+            VALE_CALC=183739.96967792526,
         ),
         _F(
             NUME_ORDRE=1,
             TYPE_TEST="SOMM_ABS",
             RESULTAT=MESTAT,
             NOM_CHAM="EPSI_ELGA",
-            VALE_CALC=85399.5602598,
+            VALE_CALC=85376.00692920726,
         ),
         _F(
             NUME_ORDRE=1,
             TYPE_TEST="SOMM_ABS",
             RESULTAT=MESTAT2,
             NOM_CHAM="EPSI_ELNO",
-            VALE_CALC=31618.269149,
+            VALE_CALC=31604.90915165536,
         ),
         _F(
             NUME_ORDRE=1,
             TYPE_TEST="SOMM_ABS",
             RESULTAT=MESTAT2,
             NOM_CHAM="EPSI_NOEU",
-            VALE_CALC=9399.59624836,
+            VALE_CALC=9398.627403754555,
         ),
         _F(
             NUME_ORDRE=1,
             TYPE_TEST="SOMM_ABS",
             RESULTAT=MESTAT,
             NOM_CHAM="SIEF_ELGA",
-            VALE_CALC=1366489.5073,
+            VALE_CALC=1366728.60436311,
         ),
         _F(
             NUME_ORDRE=1,
             TYPE_TEST="SOMM_ABS",
             RESULTAT=MESTAT,
             NOM_CHAM="SIGM_ELNO",
-            VALE_CALC=1597700.74562,
+            VALE_CALC=1597970.0727358384,
         ),
         _F(
             NUME_ORDRE=1,
             TYPE_TEST="SOMM_ABS",
             RESULTAT=MESTAT,
             NOM_CHAM="DEGE_ELNO",
-            VALE_CALC=63974.2953883,
+            VALE_CALC=64012.18365314708,
         ),
         _F(
             NUME_ORDRE=1,
             TYPE_TEST="SOMM_ABS",
             RESULTAT=MESTAT,
             NOM_CHAM="DEGE_ELGA",
-            VALE_CALC=48779.4753311,
+            VALE_CALC=48759.1429842473,
         ),
     )
 )
@@ -226,7 +226,7 @@ TEST_TABLE(VALE_CALC_I=6, NOM_PARA="NUME_ORDRE", TYPE_TEST="SOMM_ABS", TABLE=MAS
 
 TEST_TABLE(CRITERE="ABSOLU", VALE_CALC=0.0, NOM_PARA="INST", TYPE_TEST="SOMM_ABS", TABLE=MASS2)
 
-TEST_TABLE(VALE_CALC=31737674.2361, NOM_PARA="TOTALE", TYPE_TEST="SOMM_ABS", TABLE=MASS2)
+TEST_TABLE(VALE_CALC=31737386.095305778, NOM_PARA="TOTALE", TYPE_TEST="SOMM_ABS", TABLE=MASS2)
 
 TEST_TABLE(VALE_CALC=100.0, NOM_PARA="POUR_CENT", TYPE_TEST="SOMM_ABS", TABLE=MASS2)
 
