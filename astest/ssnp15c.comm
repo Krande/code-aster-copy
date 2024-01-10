@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -148,6 +148,24 @@ DEGE = MODI_REPERE(
     AFFE=_F(ANGL_REP=(90.0, -53.13), TOUT="OUI"),
 )
 
+
+SIGM_GRMA = MODI_REPERE(
+    RESULTAT=USUP,
+    MODI_CHAM=_F(TYPE_CHAM="TENS_3D", GROUP_MA="MA2", NOM_CHAM="SIGM_ELNO"),
+    REPERE="COQUE",
+    LIST_ORDRE=L_ORDRE,
+    AFFE=_F(ANGL_REP=(90.0, -53.13), GROUP_MA="MA2"),
+)
+
+
+DEGE_GRMA = MODI_REPERE(
+    RESULTAT=U,
+    MODI_CHAM=_F(TYPE_CHAM="COQUE_GENE", GROUP_MA="MA1", NOM_CHAM="DEGE_ELNO"),
+    REPERE="COQUE",
+    AFFE=_F(ANGL_REP=(90.0, -53.13), GROUP_MA="MA1"),
+)
+
+
 TEST_RESU(
     RESU=(
         _F(
@@ -215,6 +233,59 @@ TEST_RESU(
             VALE_CALC=-4.35586723e-03,
             VALE_REFE=-4.355867928e-3,
             PRECISION=9.9999999999999995e-07,
+        ),
+    )
+)
+
+TEST_RESU(
+    RESU=(
+        _F(
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=SIGM_GRMA,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="NO1",
+            NOM_CMP="SIXX",
+            VALE_CALC=151.199681597,
+            VALE_REFE=151.19999999999999,
+            PRECISION=1.0e-2,
+            GROUP_MA="MA2",
+        ),
+        _F(
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=SIGM_GRMA,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="NO1",
+            NOM_CMP="SIXY",
+            VALE_CALC=93.100267388,
+            VALE_REFE=93.099999999999994,
+            PRECISION=1.0e-2,
+            GROUP_MA="MA2",
+        ),
+        _F(
+            INST=1.0,
+            RESULTAT=SIGM_GRMA,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="NO3",
+            NOM_CMP="SIXX",
+            VALE_CALC=151.199681597,
+            VALE_REFE=151.19999999999999,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-2,
+            GROUP_MA="MA2",
+        ),
+        _F(
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=SIGM_GRMA,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="NO3",
+            NOM_CMP="SIXY",
+            VALE_CALC=93.100267388,
+            VALE_REFE=93.099999999999994,
+            PRECISION=1.0e-2,
+            GROUP_MA="MA2",
         ),
     )
 )
@@ -841,5 +912,46 @@ TEST_RESU(
         ),
     )
 )
+TEST_RESU(
+    RESU=(
+        _F(
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=DEGE_GRMA,
+            NOM_CHAM="DEGE_ELNO",
+            GROUP_NO="NO3",
+            NOM_CMP="EXX",
+            VALE_CALC=0.014829665,
+            VALE_REFE=0.014800000000000001,
+            PRECISION=1.0e-2,
+            GROUP_MA="MA1",
+        ),
+        _F(
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=DEGE_GRMA,
+            NOM_CHAM="DEGE_ELNO",
+            GROUP_NO="NO3",
+            NOM_CMP="EYY",
+            VALE_CALC=-7.25973013e-03,
+            VALE_REFE=-7.2500000000000004e-3,
+            PRECISION=1.0e-2,
+            GROUP_MA="MA1",
+        ),
+        _F(
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=DEGE_GRMA,
+            NOM_CHAM="DEGE_ELNO",
+            GROUP_NO="NO3",
+            NOM_CMP="EXY",
+            VALE_CALC=0.013601440,
+            VALE_REFE=0.013601,
+            PRECISION=1.0e-4,
+            GROUP_MA="MA1",
+        ),
+    )
+)
+
 
 FIN()

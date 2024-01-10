@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine chrpel(champ1, repere, nom_cham, icham, type_chamz, &
-                  nomch, model, carele, lModelVariable)
+                  nomch, model, carele, ligrel, lModelVariable)
 ! aslint: disable=W1501
 !
     implicit none
@@ -71,8 +71,9 @@ subroutine chrpel(champ1, repere, nom_cham, icham, type_chamz, &
 #include "blas/ddot.h"
     !
     integer :: icham
-    character(len=*) :: champ1, repere, type_chamz, nomch, nom_cham
-    character(len=8) :: model, carele
+    character(len=*)  :: champ1, repere, type_chamz, nomch, nom_cham
+    character(len=8)  :: model, carele
+    character(len=19) :: ligrel
     aster_logical, intent(in) :: lModelVariable
 !
 ! --------------------------------------------------------------------------------------------------
@@ -87,6 +88,7 @@ subroutine chrpel(champ1, repere, nom_cham, icham, type_chamz, &
 !                         ou coque_util_cyl)
 !       nom_cham    : nom de type de champ
 !       icham       : numero d'occurrence
+!       ligrel      : nom du ligrel servant à restreindre le calcul aux elements du ligrel
 !       type_chamz  : type du champ :'tens' 'vect' ou 'coque'
 !       nomch       : nom de champ
 !
@@ -118,7 +120,7 @@ subroutine chrpel(champ1, repere, nom_cham, icham, type_chamz, &
     character(len=8)    :: ma, k8b, typmcl(2), nomgd, tych, nom_cmp(nbCmpMax)
     character(len=8)    :: lpain(5), paout, licmp(9), nomgdr, paoutc
     character(len=16)   :: option, motcle(2), type_cham
-    character(len=19)   :: chams1, chams0, ligrel, canbsp
+    character(len=19)   :: chams1, chams0, ligrel1, canbsp
     character(len=19)   :: changl, carte, chr, chi, ch1, ch2
     character(len=19)   :: celgauss, cesgauss
     character(len=24)   :: mesmai, chgeom, lchin(5), chaout
@@ -147,7 +149,8 @@ subroutine chrpel(champ1, repere, nom_cham, icham, type_chamz, &
 !
     mesmai = '&&CHRPEL.MES_MAILLES'
 !
-    call dismoi('NOM_LIGREL', champ1, 'CHAM_ELEM', repk=ligrel)
+    call dismoi('NOM_LIGREL', champ1, 'CHAM_ELEM', repk=ligrel1)
+
 !
 !   DEFINITION ET CREATION DU CHAM_ELEM SIMPLE CHAMS1 A PARTIR DU CHAM_ELEM CHAMP1
     chams0 = '&&CHRPEL.CHAMS0'
@@ -398,7 +401,7 @@ subroutine chrpel(champ1, repere, nom_cham, icham, type_chamz, &
                 call exisd('CHAMP', celgauss, iexist)
                 if (iexist .eq. 0) then
                     call megeom(model, chgeom)
-                    call calc_coor_elga(model, ligrel, chgeom, celgauss)
+                    call calc_coor_elga(model, ligrel1, chgeom, celgauss)
                 end if
 !               On transforme ce champ en champ simple
                 cesgauss = '&&CHRPEL.CES_GAUSS'
@@ -508,7 +511,7 @@ subroutine chrpel(champ1, repere, nom_cham, icham, type_chamz, &
         (repere(1:11) .eq. 'UTILISATEUR')) then
 !       Champ simple -> Cham_elem
         call dismoi('NOM_OPTION', champ1, 'CHAM_ELEM', repk=option)
-        call cescel(chams1, ligrel, option, ' ', 'OUI', nncp, 'G', champ1, 'F', ibid)
+        call cescel(chams1, ligrel1, option, ' ', 'OUI', nncp, 'G', champ1, 'F', ibid)
         call detrsd('CHAM_ELEM_S', chams1)
         if (exi_local) then
             do ii = 1, 3
@@ -523,6 +526,10 @@ subroutine chrpel(champ1, repere, nom_cham, icham, type_chamz, &
         (repere(1:15) .eq. 'COQUE_INTR_UTIL') .or. &
         (repere(1:15) .eq. 'COQUE_UTIL_INTR') .or. &
         (repere(1:14) .eq. 'COQUE_UTIL_CYL')) then
+!        Verifier ligrel
+        if (ligrel .eq. ' ') then
+            ligrel = ligrel1
+        end if
 !       Pour l'instant on ne traite pas le cas de plusieurs occurrences du mot-clé AFFE
         if (nocc /= 1) then
             call utmess('F', 'ALGORITH17_23', sk=repere, si=nocc)

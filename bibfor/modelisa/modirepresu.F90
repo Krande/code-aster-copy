@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,6 +29,8 @@ subroutine modirepresu(resuou, resuin)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterc/getfac.h"
 #include "asterfort/gettco.h"
 #include "asterfort/celces.h"
@@ -39,6 +41,7 @@ subroutine modirepresu(resuou, resuin)
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/exlima.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
@@ -48,6 +51,7 @@ subroutine modirepresu(resuou, resuin)
 #include "asterfort/jemarq.h"
 #include "asterfort/jerecu.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/medome_once.h"
 #include "asterfort/refdcp.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rscrsd.h"
@@ -56,24 +60,29 @@ subroutine modirepresu(resuou, resuin)
 #include "asterfort/rslesd.h"
 #include "asterfort/rsnoch.h"
 #include "asterfort/rsnopa.h"
+#include "asterfort/rsorac.h"
 #include "asterfort/rsutnu.h"
 #include "asterfort/titre.h"
 #include "asterfort/utmess.h"
 !
-    integer :: n0, nbordr, iret, nocc, i, j, np, iordr
+    integer :: n0, nbordr, iret, nocc, i, j, np, iordr, ndim
     integer :: iord, ioc, ibid, nc
     integer :: jordr, nbnosy, jpa, iadin, iadou
     integer :: nbpara, nbac, nbpa, ifm, niv, nncp
     real(kind=8) :: prec
     real(kind=8) :: lcoer(2)
+    real(kind=8) :: r8b
+    complex(kind=8) :: c16b
     complex(kind=8) :: lcoec(2)
+    character(len=8) :: k8b
     character(len=8) :: crit, tych, nomma, model, modelRefe
     character(len=8) :: carele, exipla, exicoq
     character(len=16) :: option, tysd, type, type_cham, repere
     character(len=19) :: knum
-    character(len=19) :: chams1, chams0, chafus, chs(2), ligrel
+    character(len=19) :: chams1, chams0, chafus, chs(2), ligrel, ligrel1
     character(len=24) :: nompar, champ0, champ1
     character(len=24) :: valk(2)
+    integer, pointer :: nume_ordre(:) => null()
 !
     aster_logical :: lreuse, lcumu(2), lcoc(2), lModelVariable
 !
@@ -134,6 +143,18 @@ subroutine modirepresu(resuou, resuin)
 !
     lModelVariable = ASTER_FALSE
     modelRefe = " "
+    ligrel1 = " "
+
+    ! POUR REPERE = COQUE_* VERIFIER QU'ON N'EST PAS EN MULTI MODELES
+    if (repere(1:5) .eq. 'COQUE') then
+        AS_ALLOCATE(vi=nume_ordre, size=nbordr)
+        call rsorac(resuin, 'TOUT_ORDRE', ibid, r8b, k8b, &
+                    c16b, r8b, k8b, nume_ordre, nbordr, &
+                    ndim)
+        call medome_once(resuin, nume_ordre, nbordr)
+        AS_DEALLOCATE(vi=nume_ordre)
+    end if
+
     do ioc = 1, nocc
         call getvtx('MODI_CHAM', 'NOM_CHAM', iocc=ioc, scal=option, nbret=n0)
         call getvtx('MODI_CHAM', 'TYPE_CHAM', iocc=ioc, scal=type_cham, nbret=n0)
@@ -179,8 +200,11 @@ subroutine modirepresu(resuou, resuin)
             if (tych(1:4) .eq. 'NOEU') then
                 call chrpno(champ1, repere, option, type_cham)
             else if (tych(1:2) .eq. 'EL') then
+                if (iord .eq. 1 .or. modelRefe .ne. model) then
+                    call exlima('MODI_CHAM', ioc, 'G', model, ligrel1)
+                end if
                 call chrpel(champ1, repere, option, ioc, type_cham, &
-                            option, model, carele, lModelVariable)
+                            option, model, carele, ligrel1, lModelVariable)
             else
                 valk(1) = tych
                 valk(2) = champ1
@@ -190,6 +214,7 @@ subroutine modirepresu(resuou, resuin)
             call jedema()
         end do
     end do
+
 !
     nompar = '&&OP0191.NOMS_PARA'
     call rsnopa(resuin, 2, nompar, nbac, nbpa)

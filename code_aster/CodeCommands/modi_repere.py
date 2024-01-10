@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -33,6 +33,10 @@ class ModiRepere(ExecuteCommand):
         Arguments:
             keywords (dict): Keywords arguments of user's keywords.
         """
+        if "MODI_CHAM" in keywords:
+            for cham in keywords.get("MODI_CHAM"):
+                if not any([key in cham for key in ("TOUT", "GROUP_MA")]):
+                    cham["TOUT"] = "OUI"
         if "reuse" in keywords:
             self._result = keywords["reuse"]
         elif "RESULTAT" in keywords:

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -85,11 +85,14 @@ MODI_REPERE = OPER(
         MODI_CHAM=FACT(
             statut="o",
             max="**",
+            regles=(EXCLUS("TOUT", "GROUP_MA"),),
             TYPE_CHAM=SIMP(
                 statut="o",
                 typ="TXM",
                 into=("VECT_2D", "VECT_3D", "TENS_2D", "TENS_3D", "COQUE_GENE", "1D_GENE"),
             ),
+            TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
+            GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
             b_vect=BLOC(
                 condition="""(equal_to("TYPE_CHAM", "VECT_2D") or equal_to("TYPE_CHAM", "VECT_3D"))""",
                 NOM_CHAM=SIMP(
