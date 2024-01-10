@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -211,6 +211,8 @@ CTEMPEF = LocatedComponents(phys=PHY.TEMP_F, type="ELEM", components=("TEMP",))
 # Field for normal exchange in thermic (temperature/real)
 CTEMPER = LocatedComponents(phys=PHY.TEMP_R, type="ELEM", components=("TEMP",))
 
+# Field for time parameters in metallurgy
+CTIMMTR = LocatedComponents(phys=PHY.INST_R, type="ELEM", components=("INST", "DELTA01", "DELTA12"))
 
 CTEREFE = LocatedComponents(phys=PHY.TEMP_R, type="ELEM", components=("TEMP",))
 

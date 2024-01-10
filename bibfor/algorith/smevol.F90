@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,21 +62,18 @@ subroutine smevol(temper, modelz, chmat, mateco, compor, option, &
 !
     integer :: nbhist, iadtrc(2), long, jordr, nbordr(1), i, iret, vali(2), iad
     integer :: ifm, ibid, num0, num1, num2, num3, iord, iainst, numphi
-    real(kind=8) :: r8b, time(6), inst0, inst1, inst2, dt3
+    real(kind=8) :: r8b, time(3), inst0, inst1, inst2, dt3
     real(kind=8) :: valr(2)
     integer :: valii
     complex(kind=8) :: cbid
     integer :: icodre, test
-    character(len=8) :: k8b, modele, nomcm2(2), mater, timcmp(6), lpain(8)
+    character(len=8) :: k8b, modele, nomcm2(2), mater, lpain(8)
     character(len=8) :: lpaout(2)
     character(len=19) :: sdtemp, lchin(8), lchout(2)
     character(len=24) :: ch24, ligrmo, tempe, tempa, nomch, chtime, kordre
     character(len=24) :: chmate, tempi, chftrc
     character(len=8), pointer :: vale(:) => null()
-!
-    data timcmp/'INST    ', 'DELTAT  ', 'THETA   ', 'KHI     ',&
-     &             'R       ', 'RHO     '/
-    data time/6*0.d0/
+    character(len=8), parameter :: timcmp(3) = (/'INST    ', 'DELTA01 ', 'DELTA12 '/)
     data nomcm2/'I1  ', 'I2  '/
 !     ------------------------------------------------------------------
 !
@@ -215,7 +212,7 @@ subroutine smevol(temper, modelz, chmat, mateco, compor, option, &
 !
         chtime = '&&SMEVOL.CH_INST_R'
         call mecact('V', chtime, 'MODELE', ligrmo, 'INST_R  ', &
-                    ncmp=6, lnomcmp=timcmp, vr=time)
+                    ncmp=3, lnomcmp=timcmp, vr=time)
 !
 ! CALCUL DE META_ELNO
 ! ------------------------
@@ -233,7 +230,7 @@ subroutine smevol(temper, modelz, chmat, mateco, compor, option, &
         lchin(4) = tempe(1:19)
         lpain(5) = 'PTEMPIR'
         lchin(5) = tempi(1:19)
-        lpain(6) = 'PTEMPSR'
+        lpain(6) = 'PTIMMTR'
         lchin(6) = chtime(1:19)
         lpain(7) = 'PPHASIN'
         lchin(7) = phasin(1:19)

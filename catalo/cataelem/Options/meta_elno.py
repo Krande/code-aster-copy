@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,18 +31,11 @@ PCOMPOR = InputParameter(phys=PHY.COMPOR)
 
 PPHASIN = InputParameter(phys=PHY.VARI_R)
 
+PTIMMTR = InputParameter(phys=PHY.INST_R)
+
 
 META_ELNO = Option(
-    para_in=(
-        PCOMPOR,
-        SP.PFTRC,
-        SP.PMATERC,
-        PPHASIN,
-        SP.PTEMPAR,
-        SP.PTEMPER,
-        SP.PTEMPIR,
-        SP.PTEMPSR,
-    ),
+    para_in=(PCOMPOR, SP.PFTRC, SP.PMATERC, PPHASIN, SP.PTEMPAR, SP.PTEMPER, SP.PTEMPIR, PTIMMTR),
     para_out=(SP.PPHASNOU,),
     condition=(CondCalcul("+", ((AT.PHENO, "TH"), (AT.BORD, "0"))),),
 )
