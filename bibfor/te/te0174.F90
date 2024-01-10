@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,6 +41,7 @@ subroutine te0174(option, nomte)
 ! Elements: 3D_FLUI_ABSO
 !
 ! Options: RIGI_MECA
+!          FORC_NODA
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,7 +55,7 @@ subroutine te0174(option, nomte)
     real(kind=8) :: rho, alpha, r_impe, rhon, q_alpha, q_c
     integer :: ipoids, ivf, idfdx, idfdy
     integer :: jv_geom, jv_mate, jv_matr
-    integer :: jv_vect, jv_deplm, jv_deplp, jv_compo
+    integer :: jvVect, jvDisp, jv_compo, jvDispM, jvDispP
     integer :: ndim, nno, ndi, ipg, npg, n1, n2, nn
     integer :: idec, jdec, kdec, ldec
     integer :: i, ij, ino, j, jno
@@ -272,13 +273,22 @@ subroutine te0174(option, nomte)
 !
     if (lVect .or. option .eq. 'FORC_NODA') then
         if (FEForm .eq. 'U_P' .or. FEForm .eq. 'U_PSI') then
-            call jevech('PVECTUR', 'E', jv_vect)
-            call jevech('PDEPLMR', 'L', jv_deplm)
-            call jevech('PDEPLPR', 'L', jv_deplp)
-            do i = 1, nno
-                zr(jv_vect+i-1) = 0.d0
-                us(i) = zr(jv_deplm+i-1)+zr(jv_deplp+i-1)
-            end do
+            call jevech('PVECTUR', 'E', jvVect)
+            if (option .eq. "FORC_NODA") then
+                call jevech('PDEPLAR', 'L', jvDisp)
+                do i = 1, nno
+                    zr(jvVect+i-1) = 0.d0
+                    us(i) = zr(jvDisp+i-1)
+                end do
+            else
+                call jevech('PDEPLMR', 'L', jvDispM)
+                call jevech('PDEPLPR', 'L', jvDispP)
+                do i = 1, nno
+                    zr(jvVect+i-1) = 0.d0
+                    us(i) = zr(jvDispM+i-1)+zr(jvDispP+i-1)
+                end do
+            end if
+
             nn = 0
             do n1 = 1, nno
                 do n2 = 1, n1
@@ -289,7 +299,7 @@ subroutine te0174(option, nomte)
             end do
             do n1 = 1, nno
                 do n2 = 1, nno
-                    zr(jv_vect+n1-1) = zr(jv_vect+n1-1)+e(n1, n2)*us(n2)
+                    zr(jvVect+n1-1) = zr(jvVect+n1-1)+e(n1, n2)*us(n2)
                 end do
             end do
         else

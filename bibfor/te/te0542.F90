@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,8 +25,9 @@ subroutine te0542(option, nomte)
 #include "asterfort/assert.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/ltequa.h"
 #include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/ltequa.h"
 #include "asterfort/nbsigm.h"
 #include "asterfort/teattr.h"
 #include "asterfort/terefe.h"
@@ -35,7 +36,6 @@ subroutine te0542(option, nomte)
 #include "asterfort/xbsir2.h"
 #include "asterfort/xteddl.h"
 #include "asterfort/xteini.h"
-#include "asterfort/lteatt.h"
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! FONCTION REALISEE:  CALCUL DES OPTION FORC_NODA ET REFE_FORC_NODA
@@ -46,8 +46,8 @@ subroutine te0542(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 !
     integer :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano, igeom, ivectu
-    integer :: jpintt, jcnset, jheavt, jlonch, jbaslo, icontm, jlsn, jlst
-    integer :: jpmilt, ddlm, nfiss, jfisno, ideplm, icompo, jheavn
+    integer :: jpintt, jcnset, jheavt, jlonch, jbaslo, jvSief, jlsn, jlst
+    integer :: jpmilt, ddlm, nfiss, jfisno, jvDisp, icompo, jheavn
     integer :: nfh, ddlc, nfe, ibid, ddls, nbsig, nddl, jstno, imate
     integer :: contac, nnom, singu
     aster_logical :: lbid
@@ -72,7 +72,13 @@ subroutine te0542(option, nomte)
     nbsig = nbsigm()
 !
     call jevech('PGEOMER', 'L', igeom)
-    call jevech('PDEPLMR', 'L', ideplm)
+    if (option .eq. "FORC_NODA") then
+        call jevech('PDEPLAR', 'L', jvDisp)
+    elseif (option .eq. "REFE_FORC_NODA") then
+        call jevech('PDEPLMR', 'L', jvDisp)
+    else
+        ASSERT(ASTER_FALSE)
+    end if
     call jevech('PCOMPOR', 'L', icompo)
     call jevech('PVECTUR', 'E', ivectu)
 !
@@ -94,7 +100,7 @@ subroutine te0542(option, nomte)
     if (option .eq. 'FORC_NODA') then
 !      --------------------
 ! VECTEUR SECOND MEMBRE DONNE EN ENTREE
-        call jevech('PCONTMR', 'L', icontm)
+        call jevech('PSIEFR', 'L', jvSief)
         call jevech('PSTANO', 'L', jstno)
         if (nfe .gt. 0) then
             call jevech('PMATERC', 'L', imate)
@@ -102,8 +108,8 @@ subroutine te0542(option, nomte)
 !       CALCUL DU VECTEUR DES FORCES INTERNES (BT*SIGMA)
         call xbsig(ndim, nno, nfh, nfe, ddlc, &
                    ddlm, igeom, zk16(icompo), jpintt, zi(jcnset), &
-                   zi(jheavt), zi(jlonch), zr(jbaslo), zr(icontm), nbsig, &
-                   ideplm, zr(jlsn), zr(jlst), ivectu, jpmilt, &
+                   zi(jheavt), zi(jlonch), zr(jbaslo), zr(jvSief), nbsig, &
+                   jvDisp, zr(jlsn), zr(jlst), ivectu, jpmilt, &
                    nfiss, jheavn, jstno, imate)
 !
         call xteddl(ndim, nfh, nfe, ddls, nddl, &
@@ -126,7 +132,7 @@ subroutine te0542(option, nomte)
         call xbsir(ndim, nno, nfh, nfe, ddlc, &
                    ddlm, igeom, zk16(icompo), jpintt, zi(jcnset), &
                    zi(jheavt), zi(jlonch), zr(jbaslo), sigref, nbsig, &
-                   ideplm, zr(jlsn), zr(jlst), ivectu, jpmilt, &
+                   jvDisp, zr(jlsn), zr(jlst), ivectu, jpmilt, &
                    nfiss, jheavn, jstno)
 !
 ! --- SI ELEMENT DE CONTACT, ON Y AJOUTE LES CONTRIBUTIONS SURFACIQUES

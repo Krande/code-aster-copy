@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,14 +19,14 @@
 !
 !
 interface
-    subroutine mbxchg(option,fami,nddl,nno,ncomp,kpg, npg,iepsin,itemps,ipoids,&
-                  igeom,imate,ipesa,ivectu,icontm,vff,dff,alpha,beta)
-    character(len=16) :: option
-    character(len=4) :: fami
-    integer :: nddl, nno, ncomp, npg
-    integer :: kpg
-    integer :: ipoids, igeom, imate, ipesa,iepsin,itemps
-    integer :: ivectu, icontm
-    real(kind=8) :: dff(2, nno), alpha, beta, vff(nno)
+    subroutine mbxchg(option, fami, nddl, nno, ncomp, kpg, npg, iepsin, itemps, ipoids, &
+                      igeom, imate, ipesa, ivectu, jvSief, vff, dff, alpha, beta)
+        character(len=16) :: option
+        character(len=4) :: fami
+        integer :: nddl, nno, ncomp, npg
+        integer :: kpg
+        integer :: ipoids, igeom, imate, ipesa, iepsin, itemps
+        integer :: ivectu, jvSief
+        real(kind=8) :: dff(2, nno), alpha, beta, vff(nno)
     end subroutine mbxchg
 end interface

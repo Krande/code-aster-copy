@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,6 @@ subroutine nonlinIntForce(phaseType, &
                           hval_incr, hval_algo, &
                           ldccvg, &
                           hhoField_, sddyna_, &
-                          time_prev_, time_curr_, &
                           ds_algorom_)
 !
     use NonLin_Datastructure_type
@@ -56,7 +55,6 @@ subroutine nonlinIntForce(phaseType, &
     integer, intent(out) :: ldccvg
     type(HHO_Field), optional, intent(in) :: hhoField_
     character(len=19), optional, intent(in) :: sddyna_
-    real(kind=8), optional, intent(in) :: time_prev_, time_curr_
     type(ROM_DS_AlgoPara), optional, intent(in) :: ds_algorom_
 !
 ! --------------------------------------------------------------------------------------------------
@@ -95,21 +93,14 @@ subroutine nonlinIntForce(phaseType, &
     character(len=19) :: sddyna
     type(HHO_Field) :: hhoField
     type(ROM_DS_AlgoPara) :: ds_algorom
-    real(kind=8) :: time_prev, time_curr
     aster_logical :: lNodeComp, lInteComp
     integer :: typeAsse
 !
 ! --------------------------------------------------------------------------------------------------
 !
     sddyna = ' '
-    time_prev = r8nnem()
-    time_curr = r8nnem()
     if (present(sddyna_)) then
         sddyna = sddyna_
-    end if
-    if (present(time_prev_)) then
-        time_prev = time_prev_
-        time_curr = time_curr_
     end if
     if (present(hhoField_)) then
         hhoField = hhoField_
@@ -132,7 +123,6 @@ subroutine nonlinIntForce(phaseType, &
         call nonlinNForceCompute(model, cara_elem, list_func_acti, &
                                  ds_material, ds_constitutive, &
                                  ds_measure, ds_system, &
-                                 time_prev, time_curr, &
                                  hval_incr, hval_algo)
         ldccvg = -1
     end if

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,9 +42,9 @@ subroutine te0341(option, nomte)
 !
     character(len=8) :: lielrf(10)
     integer :: nno1, nno2, npg, ivf2, idf2, nnos, jgn
-    integer :: iw, ivf1, idf1, igeom, icontm, ivectu, ndim, ntrou
+    integer :: iw, ivf1, idf1, igeom, jvSief, ivectu, ndim, ntrou
     integer :: npgn, iwn, ivf1n, idf1n, jgnn, ino, i, nddl1
-    integer :: iu(3, 3), iuc(3), im(3), isect, iddlm, icompo
+    integer :: iu(3, 3), iuc(3), im(3), isect, jvDisp, icompo
     real(kind=8) :: tang(3, 3), forref, sigref, depref, a
     real(kind=8) :: geom(3, 3)
     aster_logical :: reactu
@@ -80,10 +80,10 @@ subroutine te0341(option, nomte)
             end do
         end do
     else
-        call jevech('PDEPLMR', 'L', iddlm)
+        call jevech('PDEPLAR', 'L', jvDisp)
         do ino = 1, nno1
             do i = 1, ndim
-                geom(i, ino) = zr(igeom-1+(ino-1)*ndim+i)+zr(iddlm-1+(ino-1)*nddl1+i)
+                geom(i, ino) = zr(igeom-1+(ino-1)*ndim+i)+zr(jvDisp-1+(ino-1)*nddl1+i)
             end do
         end do
     end if
@@ -96,10 +96,10 @@ subroutine te0341(option, nomte)
 !
     if (option .eq. 'FORC_NODA') then
 !
-        call jevech('PCONTMR', 'L', icontm)
+        call jevech('PSIEFR', 'L', jvSief)
         call cgfono(ndim, nno1, nno2, npg, zr(iw), &
                     zr(ivf1), zr(ivf2), zr(idf1), geom, tang, &
-                    iu, iuc, im, zr(icontm), zr(ivectu))
+                    iu, iuc, im, zr(jvSief), zr(ivectu))
 !
     else
 !

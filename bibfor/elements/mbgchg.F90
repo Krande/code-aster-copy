@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mbgchg(option, fami, nddl, nno, ncomp, kpg, imate, icontm, &
+subroutine mbgchg(option, fami, nddl, nno, ncomp, kpg, imate, jvSief, &
                   ipoids, ipesa, igeom, ivectu, vff, dff, h, alpha, beta, preten)
 !
     implicit none
@@ -33,7 +33,7 @@ subroutine mbgchg(option, fami, nddl, nno, ncomp, kpg, imate, icontm, &
     character(len=4) :: fami
     integer :: nddl, nno, ncomp
     integer :: kpg
-    integer :: ipoids, igeom, icontm, imate, ipesa
+    integer :: ipoids, igeom, jvSief, imate, ipesa
     integer :: ivectu
     real(kind=8) :: vff(nno), dff(2, nno), h, preten, alpha, beta
 ! ----------------------------------------------------------------------
@@ -61,7 +61,7 @@ subroutine mbgchg(option, fami, nddl, nno, ncomp, kpg, imate, icontm, &
 ! ----------------------------------------------------------------------
 !
     integer :: i, n, c
-    integer :: ideplm
+    integer :: jvDisp
     integer :: codres(2)
     real(kind=8) :: posdef(3*nno)
     real(kind=8) :: covaini(3, 3), metrini(2, 2), jacini, cnvaini(3, 2), aini(2, 2)
@@ -72,7 +72,7 @@ subroutine mbgchg(option, fami, nddl, nno, ncomp, kpg, imate, icontm, &
 !
 ! - FORC_NODA
     if (option .eq. 'FORC_NODA') then
-        call jevech('PDEPLMR', 'L', ideplm)
+        call jevech('PDEPLAR', 'L', jvDisp)
 
 !
 ! ---   CALCUL DES COORDONNEES COVARIANTES ET CONTRAVARIANTES DE LA SURFACE INITIALE
@@ -84,7 +84,7 @@ subroutine mbgchg(option, fami, nddl, nno, ncomp, kpg, imate, icontm, &
 ! ---   CALCUL DES COORDONNEES COVARIANTES ET CONTRAVARIANTES DE LA SURFACE DEFORMEE
 !
         do n = 1, 3*nno
-            posdef(n) = zr(igeom+n-1)+zr(ideplm+n-1)
+            posdef(n) = zr(igeom+n-1)+zr(jvDisp+n-1)
         end do
 
         call subaco(nno, dff, posdef, covadef)
@@ -94,7 +94,7 @@ subroutine mbgchg(option, fami, nddl, nno, ncomp, kpg, imate, icontm, &
 ! ---   ON EXTRAIT LES CONTRAINTES DE CAUCHY INTEGREES QUE L'ON TRANSFORME EN PKII (NON INTEGREES)
 !
         do c = 1, ncomp
-            sighca(c) = zr(icontm+(kpg-1)*ncomp+c-1)
+            sighca(c) = zr(jvSief+(kpg-1)*ncomp+c-1)
         end do
 
         call mbpk2c(1, alpha, beta, h, covaini, jacini, jacdef, sighca, sigout)

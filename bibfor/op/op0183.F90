@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,7 +70,7 @@ subroutine op0183()
     integer :: lonch, lvafon, n0
     integer :: nbddl, nbordr, nc, nh, np
     integer :: ltps, ltps2
-    real(kind=8) :: time, prec, partps(3)
+    real(kind=8) :: time, prec
 !
     character(len=2) :: codret
     character(len=6) :: nompro
@@ -155,7 +155,6 @@ subroutine op0183()
 !
 !
     time = 0.d0
-    partps = 0.d0
     l_etat_init = .false.
 !
     numref = ' '
@@ -246,8 +245,8 @@ subroutine op0183()
         end if
 !
         call vefnme(option, model, mateco, caraElem, &
-                    compor, partps, nh, ligrel, chvarc, &
-                    sigma, ' ', chdepl, chdep2, 'V', &
+                    compor, nh, ligrel, chvarc, &
+                    sigma, ' ', chdepl, 'V', &
                     vefnod)
 !
 !       --- ASSEMBLAGE DES VECTEURS ELEMENTAIRES ---

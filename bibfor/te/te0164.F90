@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,9 +38,9 @@ subroutine te0164(option, nomte)
 ! ......................................................................
 !
     real(kind=8) :: coef, jacobi, nx, ytywpq(9), w(9), forref
-    integer :: nno, kp, i, ipoids, ivf, igeom, nc, nordre, iret, k
+    integer :: nno, kp, i, ipoids, ivf, igeom, nc, nordre, k
     integer :: ivectu, ino, ndim, nnos, npg
-    integer :: idfdk, jgano, iyty, idepla, ideplp, lsigma, jefint
+    integer :: idfdk, jgano, iyty, jvDisp, jvSief, jefint
 ! ----------------------------------------------------------------------
 !
     if (option .eq. 'REFE_FORC_NODA') then
@@ -59,28 +59,20 @@ subroutine te0164(option, nomte)
                          jpoids=ipoids, jvf=ivf, jdfde=idfdk, jgano=jgano)
         call jevete('&INEL.CABPOU.YTY', 'L', iyty)
         nordre = 3*nno
-!        PARAMETRES EN ENTREE
         call jevech('PGEOMER', 'L', igeom)
-!
-        call jevech('PDEPLMR', 'L', idepla)
-        call tecach('ONO', 'PDEPLPR', 'L', iret, iad=ideplp)
-        call jevech('PCONTMR', 'L', lsigma)
-!        PARAMETRES EN SORTIE
+        call jevech('PDEPLAR', 'L', jvDisp)
+        call jevech('PSIEFR', 'L', jvSief)
         call jevech('PVECTUR', 'E', jefint)
 !
-        if (ideplp .eq. 0) then
-            do i = 1, 3*nno
-                w(i) = zr(idepla-1+i)
-            end do
-        else
-            do i = 1, 3*nno
-                w(i) = zr(idepla-1+i)+zr(ideplp-1+i)
-            end do
-        end if
+
+        do i = 1, 3*nno
+            w(i) = zr(jvDisp-1+i)
+        end do
+
         do kp = 1, npg
             k = (kp-1)*nordre*nordre
             jacobi = sqrt(biline(nordre, zr(igeom), zr(iyty+k), zr(igeom)))
-            nx = zr(lsigma-1+kp)
+            nx = zr(jvSief-1+kp)
             call matvec(nordre, zr(iyty+k), 2, zr(igeom), w, &
                         ytywpq)
             coef = nx*zr(ipoids-1+kp)/jacobi

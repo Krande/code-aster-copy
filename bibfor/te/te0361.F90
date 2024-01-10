@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,6 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+! aslint: disable=W0413
+! Comparison: exact value (from AFFE_CARA_ELEM)
 !
 subroutine te0361(option, nomte)
 !
@@ -56,7 +58,7 @@ subroutine te0361(option, nomte)
     character(len=8) :: lielrf(10)
     aster_logical :: axi
     integer :: nno1, nno2, npg, ivf2, idf2, nnos, jgn
-    integer :: iw, ivf1, idf1, igeom, icontm, ivectu, ndim, ntrou, icamas
+    integer :: iw, ivf1, idf1, igeom, jvSief, ivectu, ndim, ntrou, icamas
     integer :: iu(3, 18), im(3, 9), it(18)
     real(kind=8) :: ang(24), sigref, depref
 !
@@ -94,10 +96,10 @@ subroutine te0361(option, nomte)
 !      OPTIONS FORC_NODA ET REFE_FORC_NODA
 !
     if (option .eq. 'FORC_NODA') then
-        call jevech('PCONTMR', 'L', icontm)
+        call jevech('PSIEFR', 'L', jvSief)
         call eifono(ndim, axi, nno1, nno2, npg, &
                     zr(iw), zr(ivf1), zr(ivf2), zr(idf2), zr(igeom), &
-                    ang, iu, im, zr(icontm), zr(ivectu))
+                    ang, iu, im, zr(jvSief), zr(ivectu))
     elseif (option .eq. 'REFE_FORC_NODA') then
         call terefe('SIGM_REFE', 'MECA_INTERFACE', sigref)
         call terefe('DEPL_REFE', 'MECA_INTERFACE', depref)

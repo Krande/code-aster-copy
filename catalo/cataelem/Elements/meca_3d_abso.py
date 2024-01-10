@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -83,9 +83,8 @@ class MEAB_FACE3(Element):
             para_in=(
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
-                (SP.PDEPLMR, DDL_MECA),
-                (SP.PDEPLPR, DDL_MECA),
-                (OP.FORC_NODA.PVARCPR, LC.ZVARCPG),
+                (SP.PVARCPR, LC.ZVARCPG),
+                (SP.PDEPLAR, DDL_MECA),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),

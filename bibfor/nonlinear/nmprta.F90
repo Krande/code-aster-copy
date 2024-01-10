@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
 subroutine nmprta(mesh, model, nume_dof, numfix, ds_material, cara_elem, &
@@ -135,7 +134,7 @@ subroutine nmprta(mesh, model, nume_dof, numfix, ds_material, cara_elem, &
     integer, parameter :: phaseType = PRED_EULER
     integer, parameter :: iterNewtPred = 0
     integer :: ifm, niv
-    real(kind=8) :: time_prev, time_curr
+    real(kind=8) :: time_curr
     character(len=19) :: cncine, cndonn, cnpilo
     aster_logical :: leltc
 !
@@ -162,7 +161,6 @@ subroutine nmprta(mesh, model, nume_dof, numfix, ds_material, cara_elem, &
 
 ! - Get time
     ASSERT(nume_inst .gt. 0)
-    time_prev = diinst(sddisc, nume_inst-1)
     time_curr = diinst(sddisc, nume_inst)
 
 !
@@ -226,8 +224,6 @@ subroutine nmprta(mesh, model, nume_dof, numfix, ds_material, cara_elem, &
                         ldccvg, &
                         hhoField_=hhoField, &
                         sddyna_=sddyna, &
-                        time_prev_=time_prev, &
-                        time_curr_=time_curr, &
                         ds_algorom_=ds_algorom)
     if (ldccvg .eq. 1) then
         goto 999

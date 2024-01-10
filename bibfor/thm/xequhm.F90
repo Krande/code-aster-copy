@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,6 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
-! person_in_charge: daniele.colombo at ifpen.fr
 !
 subroutine xequhm(ds_thm, &
                   imate, option, ta, ta1, ndim, &
@@ -31,6 +30,8 @@ subroutine xequhm(ds_thm, &
 !
     implicit none
 !
+#include "asterf_types.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/xcomhm.h"
 !
 !     BUT:  CALCUL DES OPTIONS RIGI_MECA_TANG, RAPH_MECA ET FULL_MECA
@@ -75,6 +76,7 @@ subroutine xequhm(ds_thm, &
     real(kind=8) :: angmas(3)
     parameter(deux=2.d0)
     character(len=16) :: option
+    aster_logical :: lSigm, lVect, lMatr
 !
 ! DECLARATIONS POUR XFEM
     integer :: dimenr, enrmec(3), enrhyd(3)
@@ -117,7 +119,10 @@ subroutine xequhm(ds_thm, &
 ! --- INITIALISATION DES TABLEAUX A ZERO ---------------------
 ! --- ET DU TABLEAU CONGEP A CONGEM --------------------------
 ! ============================================================
-    if ((option .eq. 'RAPH_MECA') .or. (option(1:9) .eq. 'FULL_MECA')) then
+    lSigm = L_SIGM(option)
+    lVect = L_VECT(option)
+    lMatr = L_MATR(option)
+    if (lSigm) then
         do i = 1, dimcon
             congep(i) = congem(i)
         end do
@@ -148,7 +153,7 @@ subroutine xequhm(ds_thm, &
 ! ======================================================================
 ! --- CALCUL DE LA CONTRAINTE VIRTUELLE R ------------------------------
 ! ======================================================================
-    if ((option(1:9) .eq. 'FULL_MECA') .or. (option(1:9) .eq. 'RAPH_MECA')) then
+    if (lVect) then
 ! ======================================================================
 ! --- SI PRESENCE DE MECANIQUE -----------------------------------------
 ! ======================================================================
@@ -208,7 +213,7 @@ subroutine xequhm(ds_thm, &
 ! ======================================================================
 ! --- CALCUL DES MATRICES DERIVEES CONSTITUTIVES DE DF -----------------
 ! ======================================================================
-    if ((option(1:9) .eq. 'RIGI_MECA') .or. (option(1:9) .eq. 'FULL_MECA')) then
+    if (lMatr) then
 ! ======================================================================
 ! --- SI PRESENCE DE MECANIQUE -----------------------------------------
 ! ======================================================================

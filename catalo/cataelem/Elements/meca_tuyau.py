@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -521,11 +521,10 @@ class MET3SEG3(Element):
             para_in=(
                 (SP.PCAGEPO, CCAGEPO),
                 (OP.FORC_NODA.PCAORIE, CCAORIE),
-                (OP.FORC_NODA.PCOMPOR, LC.CCOMPOR),
-                (OP.FORC_NODA.PCONTMR, ECONTPG),
+                (SP.PCOMPOR, LC.CCOMPOR),
+                (SP.PSIEFR, ECONTPG),
                 (SP.PGEOMER, NGEOMER),
                 (OP.FORC_NODA.PNBSP_I, ENBSP_I),
-                (OP.FORC_NODA.PVARCPR, LC.ZVARCPG),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),

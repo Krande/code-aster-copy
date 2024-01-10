@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -162,11 +162,10 @@ subroutine te0515(option, nomte)
             zi(jcret) = retloi
         end if
     end if
-!
+
 ! - Option: FORC_NODA
-!
     if (option .eq. 'FORC_NODA') then
-        call jevech('PCONTMR', 'L', icontm)
+        call jevech('PSIEFR', 'L', icontm)
         call jevech('PVECTUR', 'E', ivectu)
         call fnoesu(nface, &
                     dimcon, dimuel, &

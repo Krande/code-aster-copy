@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,12 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine vefnme_cplx(option, base  , model , mate      , carele  ,&
-                           compor, partps, nh    , ligrelz   , varicomz,&
-                           sigmaz, strxz , deplz , depl_incrz, vecelz)
+    subroutine vefnme_cplx(option, base, model, mate, carele, &
+                           compor, nh, ligrelz, varicomz, &
+                           sigmaz, strxz, deplz, vecelz)
         character(len=16), intent(in) :: option
         character(len=1), intent(in) :: base
         character(len=8), intent(in) :: model
-        real(kind=8), intent(in) :: partps(*)
         character(len=24), intent(in) :: carele
         character(len=24), intent(in) :: mate
         character(len=*), intent(in) :: ligrelz
@@ -33,7 +32,6 @@ interface
         character(len=*), intent(in) :: varicomz
         character(len=*), intent(in) :: strxz
         character(len=*), intent(in) :: deplz
-        character(len=*), intent(in) :: depl_incrz
         character(len=*), intent(inout) :: vecelz(*)
     end subroutine vefnme_cplx
 end interface

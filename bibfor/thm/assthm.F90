@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,6 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504,W1306
-! person_in_charge: sylvie.granet at edf.fr
 !
 subroutine assthm(ds_thm, option, j_mater, &
                   lMatr, lSigm, lVect, &
@@ -70,8 +69,8 @@ subroutine assthm(ds_thm, option, j_mater, &
     integer, intent(in) :: nddls, nddlm, nddl_meca, nddl_p1, nddl_p2, nddl_2nd
     integer, intent(in) :: dimuel, dimdef, dimcon
     integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5), second(5)
-    character(len=16), intent(in)  :: compor(*)
-    real(kind=8), intent(in) :: carcri(*)
+    character(len=16), intent(in)  :: compor(COMPOR_SIZE)
+    real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
     integer, intent(in) :: jv_poids, jv_poids2
     integer, intent(in) :: jv_func, jv_func2
     integer, intent(in) :: jv_dfunc, jv_dfunc2
@@ -163,62 +162,51 @@ subroutine assthm(ds_thm, option, j_mater, &
     ASSERT(nddls*nnos .le. dimmat)
     ASSERT(dimuel .le. dimmat)
     codret = 0
-    defgep(:) = 0.d0
-    defgem(:) = 0.d0
-    dfdi(:, :) = 0.d0
-    dfdi2(:, :) = 0.d0
-    b(:, :) = 0.d0
-    drds(:, :) = 0.d0
-    drdsr(:, :) = 0.d0
-    dsde(:, :) = 0.d0
-    r(:) = 0.d0
-    sigbar(:) = 0.d0
-    work1(:, :) = 0.d0
-    work2(:, :) = 0.d0
+    defgep = 0.d0
+    defgem = 0.d0
+    dfdi = 0.d0
+    dfdi2 = 0.d0
+    b = 0.d0
+    drds = 0.d0
+    drdsr = 0.d0
+    dsde = 0.d0
+    r = 0.d0
+    sigbar = 0.d0
+    work1 = 0.d0
+    work2 = 0.d0
     addeme = mecani(2)
     addep1 = press1(3)
     addep2 = press2(3)
     addete = tempe(2)
     adde2nd = second(2)
-!
+
 ! - Get parameters for behaviour
-!
     call thmGetBehaviour(compor, ds_thm)
 
-!
 ! - Get parameters for internal variables
-!
     call thmGetBehaviourVari(ds_thm)
 
-!
 ! - Some checks between behaviour and model
-!
     call thmGetBehaviourChck(ds_thm)
 
-!
 ! - Get storage parameters for behaviours
-!
     nb_vari_meca = ds_thm%ds_behaviour%nb_vari_meca
-!
+
 ! - Get initial parameters (THM_INIT)
-!
     call thmGetParaInit(j_mater, ds_thm, l_check_=ASTER_TRUE)
-!
+
 ! - Time parameters
-!
     time_incr = time_curr-time_prev
     parm_theta = carcri(PARM_THETA_THM)
-!
-! - Create matrix for selection of dof
-!
+
+! - Create matrix for selection of dof for reduced integration
     call thmSelectMatrix(ds_thm, &
                          ndim, dimdef, inte_type, &
                          addeme, addete, addep1, addep2, adde2nd, &
                          a, as, &
                          c, cs)
-!
+
 ! - Initialization of output fields
-!
     if (lVect) then
         vectu(1:dimuel) = 0.d0
     end if
@@ -226,11 +214,11 @@ subroutine assthm(ds_thm, option, j_mater, &
         matuu(1:dimuel*dimuel) = 0.d0
         matri(:, :) = 0.d0
     end if
-!
+
 ! - Loop on integration points
-!
     do ipi = 1, npi
         kpi = ipi
+
 ! ----- Compute [B] matrix for generalized strains
         call cabthm(ds_thm, l_axi, ndim, &
                     nddls, nddlm, &
@@ -245,6 +233,7 @@ subroutine assthm(ds_thm, option, j_mater, &
                     dfdi, dfdi2, &
                     poids, poids2, &
                     b)
+
 ! ----- Compute generalized strains
         do i = 1, dimdef
             defgem(i) = 0.d0
@@ -254,6 +243,7 @@ subroutine assthm(ds_thm, option, j_mater, &
                 defgep(i) = defgep(i)+b(i, n)*dispp(n)
             end do
         end do
+
 ! ----- Compute generalized stresses and derivatives at current Gauss point
         call equthm(ds_thm, option, j_mater, &
                     lMatr, lSigm, &
@@ -269,7 +259,8 @@ subroutine assthm(ds_thm, option, j_mater, &
                     vintm((kpi-1)*nbvari+1), vintp((kpi-1)*nbvari+1), &
                     time_prev, time_curr, time_incr, &
                     r, drds, dsde, codret)
-! --------- For selective integrations => move Gauss points to nodes
+
+! ----- For selective integrations => move Gauss points to nodes
         if (ds_thm%ds_elem%l_dof_meca) then
             if (kpi .gt. npg) then
                 if (lSigm) then

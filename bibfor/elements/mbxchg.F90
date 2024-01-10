@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine mbxchg(option, fami, nddl, nno, ncomp, kpg, npg, iepsin, itemps, ipoids, igeom, &
-                  imate, ipesa, ivectu, icontm, vff, dff, alpha, beta)
+                  imate, ipesa, ivectu, jvSief, vff, dff, alpha, beta)
 !
     implicit none
 #include "jeveux.h"
@@ -36,7 +36,7 @@ subroutine mbxchg(option, fami, nddl, nno, ncomp, kpg, npg, iepsin, itemps, ipoi
     integer :: nddl, nno, ncomp, npg
     integer :: kpg
     integer :: ipoids, igeom, imate, ipesa, iepsin, itemps
-    integer :: ivectu, icontm
+    integer :: ivectu, jvSief
     real(kind=8) :: dff(2, nno), alpha, beta, vff(nno)
 ! ----------------------------------------------------------------------
 !    - FONCTION REALISEE:  CALCUL DES OPTIONS DE DE CHARGEMENT :
@@ -98,7 +98,7 @@ subroutine mbxchg(option, fami, nddl, nno, ncomp, kpg, npg, iepsin, itemps, ipoi
 !
         if (option .eq. 'FORC_NODA') then
             do c = 1, ncomp
-                sig(c) = zr(icontm+(kpg-1)*ncomp+c-1)
+                sig(c) = zr(jvSief+(kpg-1)*ncomp+c-1)
             end do
 !
 ! ---   CHAR_MECA_EPSI_R : SIG = RIG*EPSIN

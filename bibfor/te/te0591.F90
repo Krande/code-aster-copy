@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ subroutine te0591(option, nomte)
     integer :: ndim, nno1, nno2, nno3, nnos, npg, jgn, ntrou
     integer :: iw, ivf1, ivf2, ivf3, idf1, idf2, idf3
     integer :: vu(3, 27), vg(27), vp(27), vpi(3, 27)
-    integer :: igeom, icontm, iddlm, icompo, imate, ivectu
+    integer :: igeom, jvSief, jvDisp, icompo, imate, ivectu
     character(len=8) :: lielrf(10), typmod(2)
 ! ----------------------------------------------------------------------
 !
@@ -76,8 +76,8 @@ subroutine te0591(option, nomte)
     call niinit(typmod, ndim, nno1, nno2, nno3, 0, vu, vg, vp, vpi)
 !
     call jevech('PGEOMER', 'L', igeom)
-    call jevech('PCONTMR', 'L', icontm)
-    call jevech('PDEPLMR', 'L', iddlm)
+    call jevech('PSIEFR', 'L', jvSief)
+    call jevech('PDEPLAR', 'L', jvDisp)
     call jevech('PCOMPOR', 'L', icompo)
     call jevech('PVECTUR', 'E', ivectu)
 !
@@ -87,14 +87,14 @@ subroutine te0591(option, nomte)
         call nifnpd(ndim, nno1, nno2, nno3, npg, &
                     iw, zr(ivf1), zr(ivf2), zr(ivf3), idf1, &
                     vu, vg, vp, typmod, zr(igeom), &
-                    zr(icontm), zr(iddlm), zr(ivectu))
+                    zr(jvSief), zr(jvDisp), zr(ivectu))
     else if (zk16(icompo+2) (1:8) .eq. 'GDEF_LOG') then
 !
         call jevech('PMATERC', 'L', imate)
         call nifnlg(ndim, nno1, nno2, nno3, npg, &
                     iw, zr(ivf1), zr(ivf2), zr(ivf3), idf1, &
                     idf2, vu, vg, vp, typmod, &
-                    zi(imate), zr(igeom), zr(icontm), zr(iddlm), zr(ivectu))
+                    zi(imate), zr(igeom), zr(jvSief), zr(jvDisp), zr(ivectu))
 
     else if (zk16(icompo+2) (1:10) .eq. 'SIMO_MIEHE') then
 !
@@ -102,7 +102,7 @@ subroutine te0591(option, nomte)
         call nifnsm(ndim, nno1, nno2, nno3, npg, &
                     iw, zr(ivf1), zr(ivf2), zr(ivf3), idf1, &
                     idf2, vu, vg, vp, typmod, &
-                    zi(imate), zr(igeom), zr(icontm), zr(iddlm), zr(ivectu))
+                    zi(imate), zr(igeom), zr(jvSief), zr(jvDisp), zr(ivectu))
 !
     else
         call utmess('F', 'ELEMENTS3_16', sk=zk16(icompo+2))

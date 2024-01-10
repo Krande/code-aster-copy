@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,8 @@ subroutine te0561(option, nomte)
     integer :: nnoQ, nnoL, npg
     integer :: jv_poids, jv_vfQ, jv_dfdeQ, igeom, imate
     integer :: jv_vfL, jv_dfdeL, nnos, jv_ganoQ, jv_ganoL
-    integer :: icontm, idplgm, ivectu
+    integer :: ivectu
+    integer :: jvDisp, jvSief
     integer :: ndim
 !
 ! --------------------------------------------------------------------------------------------------
@@ -75,13 +76,13 @@ subroutine te0561(option, nomte)
 !
     if (option .eq. 'FORC_NODA') then
         call jevech('PGEOMER', 'L', igeom)
-        call jevech('PCONTMR', 'L', icontm)
+        call jevech('PSIEFR', 'L', jvSief)
         call jevech('PMATERC', 'L', imate)
-        call jevech('PDEPLMR', 'L', idplgm)
+        call jevech('PDEPLAR', 'L', jvDisp)
         call jevech('PVECTUR', 'E', ivectu)
         call nmfogn(ndim, nnoQ, nnoL, npg, jv_poids, &
                     zr(jv_vfQ), zr(jv_vfL), jv_dfdeQ, jv_dfdeL, zr(igeom), &
-                    typmod, zi(imate), zr(idplgm), zr(icontm), zr(ivectu))
+                    typmod, zi(imate), zr(jvDisp), zr(jvSief), zr(ivectu))
     elseif (option .eq. 'REFE_FORC_NODA') then
         call jevech('PMATERC', 'L', imate)
         call jevech('PGEOMER', 'L', igeom)

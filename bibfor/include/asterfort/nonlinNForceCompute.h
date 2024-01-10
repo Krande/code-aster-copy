@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,11 +17,10 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine nonlinNForceCompute(model      , cara_elem      , list_func_acti,&
-                                   ds_material, ds_constitutive,&
-                                   ds_measure , ds_system      ,&
-                                   time_prev  , time_curr      ,&
-                                   hval_incr  , hval_algo)
+    subroutine nonlinNForceCompute(model, cara_elem, list_func_acti, &
+                                   ds_material, ds_constitutive, &
+                                   ds_measure, ds_system, &
+                                   hval_incr, hval_algo)
         use NonLin_Datastructure_type
         character(len=24), intent(in) :: model, cara_elem
         integer, intent(in) :: list_func_acti(*)
@@ -29,7 +28,6 @@ interface
         type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         type(NL_DS_Measure), intent(inout) :: ds_measure
         type(NL_DS_System), intent(in) :: ds_system
-        real(kind=8), intent(in) :: time_prev, time_curr
         character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
     end subroutine nonlinNForceCompute
 end interface

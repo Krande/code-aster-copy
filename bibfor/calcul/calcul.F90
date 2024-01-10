@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -113,7 +113,9 @@ subroutine calcul(stop, option_, ligrel_, nin, lchin, &
 
 !     sorties:
 !       allocation et calcul des objets correspondant aux champs "out"
-!-----------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
+!
     aster_logical :: dbg, l_thm
     character(len=8) :: lpain2(nin), lpaou2(nou)
     character(len=19) :: lchin2(nin), lchou2(nou)
@@ -134,13 +136,16 @@ subroutine calcul(stop, option_, ligrel_, nin, lchin, &
 !   -- fonctions formules :
 !   numail(igr,iel) = numero de la maille associee a l'element (igr,iel)
 # define numail(ca_igr_,ca_iel_) zi(ca_ialiel_-1+zi(ca_illiel_-1+ca_igr_)-1+ca_iel_)
-
-!-------------------------------------------------------------------
-
+!
+! --------------------------------------------------------------------------------------------------
+!
     call jemarq()
 
-!   dbg : une variable pour provoquer des ecritures de debug :
+!   dbg : une variable pour provoquer des ecritures de debug
     dbg = .false.
+    ! if (option_ .eq. "RAPH_MECA") then
+    !     dbg = .true.
+    ! end if
 
     ca_ligrel_ = ligrel_
     ca_option_ = option_

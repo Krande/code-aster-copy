@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,9 @@ subroutine thmSelectMatrix(ds_thm, &
 !
 ! THM
 !
-! Create matrix for selection of dof
+! Create matrix for selection of dof for reduced integration
+!
+! Identity matrix for not-reduced integration
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -63,17 +65,16 @@ subroutine thmSelectMatrix(ds_thm, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    c(:) = 0.d0
-    cs(:) = 0.d0
-    a(:) = 0.d0
-    as(:) = 0.d0
+    c = 0.d0
+    cs = 0.d0
+    a = 0.d0
+    as = 0.d0
     c(1:dimdef) = 1.d0
     cs(1:dimdef) = 1.d0
-    a(1:2) = 1.d0
-    as(1:2) = 1.d0
-!
+    a = 1.d0
+    as = 1.d0
+
 ! - For reduced integration
-!
     if (inte_type .eq. 'RED') then
         if (ds_thm%ds_elem%l_dof_meca) then
             do i = 1, ndim

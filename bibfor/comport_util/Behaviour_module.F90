@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -747,7 +747,6 @@ contains
 !    -> If defo_ldc = 'MECANIQUE', prepare mechanical strain
 !    -> If defo_ldc = 'TOTALE' or 'OLD', keep total strain
 !
-! In  l_pred           : flag if prediction
 ! In  l_czm            : flag for CZM models
 ! In  l_large          : flag for large strain models
 ! In  l_defo_meca      : flag for defo_ldc .eq. 'MECANIQUE'
@@ -763,12 +762,12 @@ contains
 ! IO  BEHesva          : parameters for external state variables
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine behaviourPrepStrain(l_pred, l_czm, l_large, l_defo_meca, &
+    subroutine behaviourPrepStrain(l_czm, l_large, l_defo_meca, &
                                    l_grad_vari, imate, fami, kpg, ksp, &
                                    neps, BEHesva, epsm, deps)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-        aster_logical, intent(in) :: l_pred, l_czm, l_large, l_defo_meca, l_grad_vari
+        aster_logical, intent(in) :: l_czm, l_large, l_defo_meca, l_grad_vari
         integer, intent(in) :: imate
         character(len=*), intent(in) :: fami
         integer, intent(in) :: kpg, ksp
@@ -782,7 +781,7 @@ contains
 ! --------- Compute "thermic" strains for some external state variables
                 call computeStrainESVA(fami, kpg, ksp, imate, neps, BEHesva)
 ! --------- Subtract to get mechanical strain epsm and deps become mechanical strains
-                call computeStrainMeca(l_pred, l_czm, l_grad_vari, neps, BEHesva, epsm, deps)
+                call computeStrainMeca(l_czm, l_grad_vari, neps, BEHesva, epsm, deps)
             end if
         end if
         if (LDC_PREP_DEBUG .eq. 1) then
@@ -1332,7 +1331,6 @@ contains
 !
 ! Prepare strains (substracting "thermic" strains to total strains to get mechanical part)
 !
-! In  l_pred           : flag if prediction
 ! In  l_czm            : flag for CZM models
 ! In  neps             : number of components of strains
 ! In  BEHesva           : parameters for external state variables
@@ -1342,19 +1340,18 @@ contains
 !                        Out : increment of mechanical strains during current step time
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine computeStrainMeca(l_pred, l_czm, l_grad_vari, neps, BEHesva, epsm, deps)
+    subroutine computeStrainMeca(l_czm, l_grad_vari, neps, BEHesva, epsm, deps)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-        aster_logical, intent(in) :: l_pred, l_czm, l_grad_vari
+        aster_logical, intent(in) :: l_czm, l_grad_vari
         integer, intent(in) :: neps
         type(Behaviour_ESVA), intent(in) :: BEHesva
         real(kind=8), intent(inout) :: epsm(neps), deps(neps)
 ! - Local
         real(kind=8) :: stran(12), dstran(12)
         integer :: nepu
-
 !   ------------------------------------------------------------------------------------------------
-
+!
         dstran(1:neps) = 0.d0
         stran(1:neps) = 0.d0
 
@@ -1482,7 +1479,7 @@ contains
                                codret_)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-        character(len=16), intent(in) :: option, compor(*)
+        character(len=16), intent(in) :: option, compor(COMPOR_SIZE)
         aster_logical, intent(out) :: lMatr, lVect, lVari, lSigm
         integer, optional, intent(out) :: codret_
 ! - Local

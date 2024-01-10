@@ -2,7 +2,7 @@
  * @file DiscreteComputation.cxx
  * @brief Implementation of class DiscreteComputation
  * @section LICENCE
- *   Copyright (C) 1991 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -171,7 +171,7 @@ DiscreteComputation::getMechanicalNeumannForces( const ASTERDOUBLE time_curr,
         impl( load, iload, "CHAR_MECA_FR1D2D", "F1D2D", "PFR1D2D", model_FEDesc );
         impl( load, iload, "CHAR_MECA_PRES_R", "PRESS", "PPRESSR", model_FEDesc );
         impl( load, iload, "CHAR_MECA_EFON_R", "EFOND", "PEFOND", model_FEDesc,
-              {{"PPREFFR", load->getConstantLoadField( "PREFF" )}} );
+              { { "PPREFFR", load->getConstantLoadField( "PREFF" ) } } );
         iload++;
     }
 
@@ -185,7 +185,7 @@ DiscreteComputation::getMechanicalNeumannForces( const ASTERDOUBLE time_curr,
         impl( load, iload, "CHAR_MECA_FF1D2D", "F1D2D", "PFF1D2D", model_FEDesc );
         impl( load, iload, "CHAR_MECA_PRES_F", "PRESS", "PPRESSF", model_FEDesc );
         impl( load, iload, "CHAR_MECA_EFON_F", "EFOND", "PEFOND", model_FEDesc,
-              {{"PPREFFF", load->getConstantLoadField( "PREFF" )}} );
+              { { "PPREFFF", load->getConstantLoadField( "PREFF" ) } } );
 
         iload++;
     }
@@ -323,14 +323,14 @@ DiscreteComputation::getMechanicalVolumetricForces( const ASTERDOUBLE time_curr,
                 std::string base = "G";
                 CALLO_COPISD( typeco, base, pre_sgm_name, pre_sigm->getName() );
                 impl( load, iload, "FORC_NODA", "SIINT", "", model_FEDesc,
-                      {{"PCONTMR", pre_sigm}} );
+                      { { "PSIEFR", pre_sigm } } );
             } else if ( retour == "CART" ) {
                 auto pre_sigm =
                     std::make_shared< ConstantFieldOnCellsReal >( currModel->getMesh() );
                 std::string base = "G";
                 CALLO_COPISD( typeco, base, pre_sgm_name, pre_sigm->getName() );
                 impl( load, iload, "FORC_NODA", "SIINT", "", model_FEDesc,
-                      {{"PCONTMR", pre_sigm}} );
+                      { { "PSIEFR", pre_sigm } } );
             } else {
                 AS_ABORT( "Error: " + retour );
             }
@@ -379,7 +379,7 @@ DiscreteComputation::getMechanicalVolumetricForces( const ASTERDOUBLE time_curr,
         impl( load, iload, "CHAR_MECA_FF1D1D", "F1D1D", "PFF1D1D", model_FEDesc );
         impl( load, iload, "CHAR_MECA_EPSI_F", "EPSIN", "PEPSINF", model_FEDesc );
         impl( load, iload, "ONDE_PLAN", "ONDPL", "PONDPLA", model_FEDesc,
-              {{"PONDPLR", load->getConstantLoadField( "ONDPR" )}} );
+              { { "PONDPLR", load->getConstantLoadField( "ONDPR" ) } } );
 
         iload++;
     }
@@ -609,6 +609,7 @@ FieldOnNodesRealPtr DiscreteComputation::getContactForces(
     const FieldOnNodesRealPtr displ_step, const ASTERDOUBLE &time_prev,
     const ASTERDOUBLE &time_step, const FieldOnCellsRealPtr data,
     const FieldOnNodesRealPtr coef_cont, const FieldOnNodesRealPtr coef_frot ) const {
+
     // Select option for matrix
     std::string option = "CHAR_MECA_CONT";
 
@@ -651,3 +652,241 @@ FieldOnNodesRealPtr DiscreteComputation::getContactForces(
 
     return elemVect->assemble( _phys_problem->getDOFNumbering() );
 }
+
+/**
+ * @brief Compute nodal forces
+ */
+std::variant< ElementaryVectorDisplacementRealPtr, FieldOnNodesRealPtr >
+DiscreteComputation::getMechanicalNodalForces( const FieldOnNodesRealPtr disp,
+                                               const FieldOnCellsRealPtr stress,
+                                               const ASTERINTEGER modeFourier,
+                                               const FieldOnCellsRealPtr varc_curr,
+                                               const ConstantFieldOnCellsChar16Ptr behaviourMap,
+                                               const VectorString &groupOfCells,
+                                               const bool assembly ) const {
+
+    // Get main parameters
+    auto currModel = _phys_problem->getModel();
+    auto currMater = _phys_problem->getMaterialField();
+    auto currCodedMater = _phys_problem->getCodedMaterial();
+    auto currElemChara = _phys_problem->getElementaryCharacteristics();
+    auto currBehav = _phys_problem->getBehaviourProperty();
+
+    // Some checks
+    AS_ASSERT( currModel->isMechanical() );
+    AS_ASSERT( currMater );
+    if ( currMater && currMater->hasExternalStateVariable() ) {
+        if ( !varc_curr || !varc_curr->exists() ) {
+            raiseAsterError( "External state variables are needed but not given" );
+        }
+    }
+    if ( currModel->existsSTRX() ) {
+        throw std::runtime_error( "Beams not yet implemented" );
+    }
+
+    // Preparation of elementary vector
+    const std::string vect_option( "CHAR_MECA" );
+    auto elemVect = std::make_shared< ElementaryVectorDisplacementReal >(
+        currModel, currMater, currElemChara, _phys_problem->getListOfLoads() );
+    elemVect->prepareCompute( vect_option );
+
+    // Create object for calcul
+    const std::string calcul_option( "FORC_NODA" );
+    auto calcul = std::make_unique< Calcul >( calcul_option );
+
+    // Prepare calcul
+    if ( groupOfCells.empty() ) {
+        calcul->setModel( currModel );
+    } else {
+        calcul->setGroupsOfCells( currModel, groupOfCells );
+    }
+
+    // Add input fields: geometry
+    calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
+
+    // Add input fields: material parameters
+    calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
+
+    // Add input fields: elementary characteristics
+    if ( currElemChara ) {
+        calcul->addElementaryCharacteristicsField( currElemChara );
+    }
+
+    // Add input fields: for XFEM
+    if ( currModel->existsXfem() ) {
+        XfemModelPtr currXfemModel = currModel->getXfemModel();
+        calcul->addXFEMField( currXfemModel );
+    }
+
+    // Add Fourier field
+    calcul->addFourierModeField( modeFourier );
+
+    // Add behaviour field (non-linear)
+    if ( currBehav && !behaviourMap ) {
+        calcul->addInputField( "PCOMPOR", currBehav->getBehaviourField() );
+    };
+    if ( behaviourMap ) {
+        calcul->addInputField( "PCOMPOR", behaviourMap );
+    };
+
+    // Add external state variables
+    if ( varc_curr ) {
+        calcul->addInputField( "PVARCPR", varc_curr );
+    }
+
+    // Set current physical state
+    calcul->addInputField( "PDEPLAR", disp );
+    calcul->addInputField( "PSIEFR", stress );
+    // calcul->addInputField( "PSTRXMR", strx );
+
+    // Set output fields
+    calcul->addOutputElementaryTerm( "PVECTUR", std::make_shared< ElementaryTermReal >() );
+
+    // // Compute
+    if ( calcul->hasComplexInputFields() ) {
+        AS_ABORT( "Complex fields no supported" );
+    } else {
+        calcul->compute();
+    }
+
+    // Add RESU_ELEM to VECT_ELEM
+    if ( calcul->hasOutputElementaryTerm( "PVECTUR" ) ) {
+        elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTUR" ) );
+    }
+
+    // Prepare output
+    elemVect->build();
+
+    if ( assembly ) {
+        if ( elemVect->hasElementaryTerm() ) {
+            return elemVect->assemble( _phys_problem->getDOFNumbering() );
+        } else {
+            FieldOnNodesRealPtr vectAsse =
+                std::make_shared< FieldOnNodesReal >( _phys_problem->getDOFNumbering() );
+            vectAsse->setValues( 0.0 );
+            vectAsse->build();
+            return vectAsse;
+        }
+    }
+
+    return elemVect;
+};
+
+FieldOnNodesRealPtr
+DiscreteComputation::getMechanicalForces( const ASTERDOUBLE time_curr, const ASTERDOUBLE time_step,
+                                          const ASTERDOUBLE theta, const ASTERINTEGER modeFourier,
+                                          const FieldOnCellsRealPtr varc_curr ) const {
+
+    AS_ASSERT( _phys_problem->getModel()->isMechanical() );
+
+    const FieldOnNodesRealPtr neumannForces =
+        std::get< FieldOnNodesRealPtr >( DiscreteComputation::getMechanicalNeumannForces(
+            time_curr, time_step, theta, modeFourier, varc_curr ) );
+
+    const FieldOnNodesRealPtr volumetricForces =
+        std::get< FieldOnNodesRealPtr >( DiscreteComputation::getMechanicalVolumetricForces(
+            time_curr, time_step, theta, modeFourier, varc_curr ) );
+
+    FieldOnNodesRealPtr vectAsse =
+        std::make_shared< FieldOnNodesReal >( *neumannForces + *volumetricForces );
+
+    vectAsse->build();
+    return vectAsse;
+};
+
+/**
+ * @brief Compute reaction forces
+ */
+FieldOnNodesRealPtr DiscreteComputation::getMechanicalReactionForces(
+    const FieldOnNodesRealPtr disp, const FieldOnCellsRealPtr stress, const ASTERDOUBLE time_prev,
+    const ASTERDOUBLE time_curr, const ASTERDOUBLE theta, const ASTERINTEGER modeFourier,
+    const FieldOnCellsRealPtr varc_curr, const ConstantFieldOnCellsChar16Ptr behaviourMap ) const {
+
+    const FieldOnNodesRealPtr nodalForces =
+        std::get< FieldOnNodesRealPtr >( DiscreteComputation::getMechanicalNodalForces(
+            disp, stress, modeFourier, varc_curr, behaviourMap ) );
+
+    const ASTERDOUBLE time_step = time_curr - time_prev;
+
+    const FieldOnNodesRealPtr mechanicalForces = DiscreteComputation::getMechanicalForces(
+        time_curr, time_step, theta, modeFourier, varc_curr );
+
+    FieldOnNodesRealPtr vectAsse =
+        std::make_shared< FieldOnNodesReal >( *nodalForces - *mechanicalForces );
+
+    vectAsse->build();
+    return vectAsse;
+};
+
+FieldOnNodesRealPtr
+DiscreteComputation::dualMechanicalVector( FieldOnNodesRealPtr lagr_curr ) const {
+
+    AS_ASSERT( _phys_problem->getModel()->isMechanical() );
+
+    // Init
+    ASTERINTEGER iload = 1;
+
+    // Get main parameters
+    auto currModel = _phys_problem->getModel();
+    auto currElemChara = _phys_problem->getElementaryCharacteristics();
+    auto currMater = _phys_problem->getMaterialField();
+    auto currListOfLoads = _phys_problem->getListOfLoads();
+
+    // Select option to compute
+    std::string option = "MECA_BTLA_R";
+
+    // Create elementary vector
+    auto elemVect = std::make_shared< ElementaryVectorReal >( currModel, currMater, currElemChara,
+                                                              currListOfLoads );
+
+    // Setup
+    const std::string calcul_option( "CHAR_MECA" );
+    elemVect->prepareCompute( calcul_option );
+
+    // Prepare computing
+    CalculPtr calcul = std::make_unique< Calcul >( option );
+
+    auto impl_load = [&]( auto loads ) {
+        for ( const auto &load : loads ) {
+            auto load_FEDesc = load->getFiniteElementDescriptor();
+            auto mult_field = load->getMultiplicativeField();
+            if ( mult_field && mult_field->exists() && load_FEDesc ) {
+
+                // Add input fields
+                calcul->clearInputs();
+                calcul->addInputField( "PLAGRAR", lagr_curr );
+                calcul->addInputField( "PDDLMUR", mult_field );
+
+                // Add output fields
+                calcul->clearOutputs();
+                calcul->addOutputElementaryTerm( "PVECTUR",
+                                                 std::make_shared< ElementaryTermReal >() );
+
+                // Compute
+                calcul->setFiniteElementDescriptor( load_FEDesc );
+                calcul->compute();
+                if ( calcul->hasOutputElementaryTerm( "PVECTUR" ) ) {
+                    elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTUR" ),
+                                                 iload );
+                }
+            }
+            iload++;
+        }
+    };
+
+    impl_load( currListOfLoads->getMechanicalLoadsReal() );
+    impl_load( currListOfLoads->getMechanicalLoadsFunction() );
+
+#ifdef ASTER_HAVE_MPI
+    impl_load( currListOfLoads->getParallelMechanicalLoadsReal() );
+    impl_load( currListOfLoads->getParallelMechanicalLoadsFunction() );
+#endif
+
+    // Construct elementary vector
+    auto FEDs = _phys_problem->getListOfLoads()->getFiniteElementDescriptors();
+    FEDs.push_back( _phys_problem->getModel()->getFiniteElementDescriptor() );
+    elemVect->build( FEDs );
+
+    // Assemble
+    return elemVect->assemble( _phys_problem->getDOFNumbering() );
+};

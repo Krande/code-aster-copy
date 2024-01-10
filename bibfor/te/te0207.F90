@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) 2007 NECS - BRUNO ZUBER   WWW.NECS.FR
-! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+! aslint: disable=W1006
+!
 subroutine te0207(option, nomte)
 !
 !
@@ -36,7 +37,7 @@ subroutine te0207(option, nomte)
 !
     integer :: ndim, nno, nnos, npg, nddl
     integer :: ipoids, ivf, idfde, jgano
-    integer :: igeom, icont, ivect
+    integer :: jvGeom, jvSief, jvVect
 ! ----------------------------------------------------------------------
 !
 !
@@ -58,11 +59,11 @@ subroutine te0207(option, nomte)
     nddl = 6*nno
 !
 ! - LECTURE DES PARAMETRES
-    call jevech('PGEOMER', 'L', igeom)
-    call jevech('PCONTMR', 'L', icont)
-    call jevech('PVECTUR', 'E', ivect)
+    call jevech('PGEOMER', 'L', jvGeom)
+    call jevech('PSIEFR', 'L', jvSief)
+    call jevech('PVECTUR', 'E', jvVect)
 !
     call nmfifn(nno, nddl, npg, zr(ipoids), zr(ivf), &
-                zr(idfde), zr(igeom), zr(icont), zr(ivect))
+                zr(idfde), zr(jvGeom), zr(jvSief), zr(jvVect))
 !
 end subroutine

@@ -5,7 +5,7 @@
  * @file DiscreteComputation.h
  * @brief Header of class DiscreteComputation
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -77,6 +77,19 @@ class DiscreteComputation {
     /** @brief Compute B elementary matrices fo dualized acoustic boundary conditions */
     void baseDualAcousticMatrix( CalculPtr &calcul,
                                  ElementaryMatrixPressureComplexPtr &elemMatr ) const;
+    /**
+     * @brief Compute Dirichlet reaction vector B^T * \lambda for mechanical case
+     * @param lagr_curr Field on nodes for Lagrange multipliers
+     * @return Nodal field for Dirichlet reaction vector
+     */
+    FieldOnNodesRealPtr dualMechanicalVector( FieldOnNodesRealPtr lagr_curr ) const;
+
+    /**
+     * @brief Compute Dirichlet reaction vector B^T * \lambda for thermal case
+     * @param lagr_curr Field on nodes for Lagrange multipliers
+     * @return Nodal field for Dirichlet reaction vector
+     */
+    FieldOnNodesRealPtr dualThermalVector( FieldOnNodesRealPtr lagr_curr ) const;
 
   public:
     /** @typedef DiscreteComputationPtr */
@@ -122,7 +135,7 @@ class DiscreteComputation {
 
     /**
      * @brief Compute Dirichlet reaction vector B^T * \lambda
-     * @param time_curr time
+     * @param lagr_curr Field on nodes for Lagrange multipliers
      * @return Nodal field for Dirichlet reaction vector
      */
     FieldOnNodesRealPtr getDualForces( FieldOnNodesRealPtr lagr_curr ) const;
@@ -159,6 +172,12 @@ class DiscreteComputation {
                                 const FieldOnCellsRealPtr varc_curr = nullptr,
                                 const bool assembly = true ) const;
 
+    FieldOnNodesRealPtr getMechanicalForces( const ASTERDOUBLE time_curr = 0.0,
+                                             const ASTERDOUBLE time_step = 0.0,
+                                             const ASTERDOUBLE theta = 1.0,
+                                             const ASTERINTEGER modeFourier = 0,
+                                             const FieldOnCellsRealPtr varc_curr = nullptr ) const;
+
     std::variant< ElementaryVectorTemperatureRealPtr, FieldOnNodesRealPtr >
     getThermalNeumannForces( const ASTERDOUBLE time_curr = 0.0, const bool assembly = true ) const;
 
@@ -172,7 +191,6 @@ class DiscreteComputation {
 
     /**
      * @brief Compute volumetric loads
-     * @param TimeParameters Parameters for time
      */
     std::variant< ElementaryVectorDisplacementRealPtr, FieldOnNodesRealPtr >
     getMechanicalVolumetricForces( const ASTERDOUBLE time_curr = 0.0,
@@ -193,6 +211,28 @@ class DiscreteComputation {
     getThermalNonLinearVolumetricForces( const FieldOnNodesRealPtr temp_curr,
                                          const ASTERDOUBLE time_curr,
                                          const bool assembly = true ) const;
+
+    /**
+     * @brief Compute nodal forces
+     */
+    std::variant< ElementaryVectorDisplacementRealPtr, FieldOnNodesRealPtr >
+    getMechanicalNodalForces( const FieldOnNodesRealPtr disp, const FieldOnCellsRealPtr stress,
+                              const ASTERINTEGER modeFourier = 0,
+                              const FieldOnCellsRealPtr varc_curr = nullptr,
+                              const ConstantFieldOnCellsChar16Ptr behaviourMap = nullptr,
+                              const VectorString &groupOfCells = VectorString(),
+                              const bool assembly = true ) const;
+
+    /**
+     * @brief Compute reaction forces
+     */
+    FieldOnNodesRealPtr
+    getMechanicalReactionForces( const FieldOnNodesRealPtr disp, const FieldOnCellsRealPtr stress,
+                                 const ASTERDOUBLE time_prev = 0.0,
+                                 const ASTERDOUBLE time_curr = 0.0, const ASTERDOUBLE theta = 1.0,
+                                 const ASTERINTEGER modeFourier = 0,
+                                 const FieldOnCellsRealPtr varc_curr = nullptr,
+                                 const ConstantFieldOnCellsChar16Ptr behaviourMap = nullptr ) const;
 
     /**
      * @brief Compute elementary matrices for mechanical stiffness (RIGI_MECA)

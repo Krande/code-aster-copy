@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -93,8 +93,8 @@ subroutine te0508(option, nomte)
     ivectu = itab(1)
     nddl = itab(2)
     if (.not. refe) then
-        call jevech('PCONTMR', 'L', icont)
-        call jevech('PDEPLMR', 'L', idepl)
+        call jevech('PSIEFR', 'L', icont)
+        call jevech('PDEPLAR', 'L', idepl)
     else
         allocate (sref(neps))
         ! En attendant de lire le deplacement dans l'option REFE_FORC_NODA

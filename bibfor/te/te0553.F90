@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,14 +56,14 @@ subroutine te0553(option, nomte)
     real(kind=8) :: rhocp, rhocs, l0, usl0, depla(6), coef_amor
     real(kind=8) :: rho, taux, tauy, nux, nuy, scal, vnx, vny, vtx, vty
     real(kind=8) :: vituni(2, 2), vect(3, 2, 6), matr(6, 6), jac
-    integer :: nno, npg, ipoids, ivf, idfde, igeom
+    integer :: nno, npg, ipoids, ivf, idfde, igeom, jvDisp
     integer :: ldec, i, l, mater, ndim2
     character(len=8) :: nompar(2)
     integer :: imate, j, ll, ndim
     character(len=16), parameter :: nomres(5) = (/'E        ', 'NU       ', &
                                                   'RHO      ', &
                                                   'COEF_AMOR', 'LONG_CARA'/)
-    integer :: ideplm, ideplp, ivectu
+    integer :: jvDispm, jvDispp, jvVect
     integer :: nnos
     aster_logical :: lDamp, lMatr, lVect
     real(kind=8) :: xygau(2)
@@ -195,8 +195,8 @@ subroutine te0553(option, nomte)
 !
 ! - Get output fields
 !
-    if (lVect) then
-        call jevech('PVECTUR', 'E', ivectu)
+    if (lVect .or. option .Eq. "FORC_NODA") then
+        call jevech('PVECTUR', 'E', jvVect)
     end if
 !
 !       --- PASSAGE AU STOCKAGE TRIANGULAIRE
@@ -204,16 +204,24 @@ subroutine te0553(option, nomte)
     if (lMatr .or. lDamp) then
         call writeMatrix('PMATUUR', 2*nno, 2*nno, ASTER_TRUE, matr)
     end if
-    if (lVect) then
-        call jevech('PDEPLMR', 'L', ideplm)
-        call jevech('PDEPLPR', 'L', ideplp)
-        do i = 1, 2*nno
-            depla(i) = zr(ideplm+i-1)+zr(ideplp+i-1)
-            zr(ivectu+i-1) = 0.d0
-        end do
+    if (lVect .or. option .Eq. "FORC_NODA") then
+        if (option .Eq. "FORC_NODA") then
+            call jevech('PDEPLAR', 'L', jvDisp)
+            do i = 1, 2*nno
+                depla(i) = zr(jvDisp+i-1)
+                zr(jvVect+i-1) = 0.d0
+            end do
+        else
+            call jevech('PDEPLMR', 'L', jvDispm)
+            call jevech('PDEPLPR', 'L', jvDispp)
+            do i = 1, 2*nno
+                depla(i) = zr(jvDispm+i-1)+zr(jvDispp+i-1)
+                zr(jvVect+i-1) = 0.d0
+            end do
+        end if
         do i = 1, 2*nno
             do j = 1, 2*nno
-                zr(ivectu+i-1) = zr(ivectu+i-1)+matr(i, j)*depla(j)
+                zr(jvVect+i-1) = zr(jvVect+i-1)+matr(i, j)*depla(j)
             end do
         end do
     end if

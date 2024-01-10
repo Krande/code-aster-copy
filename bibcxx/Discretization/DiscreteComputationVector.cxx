@@ -2,7 +2,7 @@
  * @file DiscreteComputation.cxx
  * @brief Implementation of class DiscreteComputation
  * @section LICENCE
- *   Copyright (C) 1991 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -38,46 +38,13 @@
 
 FieldOnNodesRealPtr DiscreteComputation::getDualForces( FieldOnNodesRealPtr lagr_curr ) const {
 
-    auto elemVect = std::make_shared< ElementaryVectorReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
-
-    // Prepare loads
-    auto listOfLoads = _phys_problem->getListOfLoads();
-
-    // Get JEVEUX names of objects to call Fortran
-    std::string modelName = ljust( _phys_problem->getModel()->getName(), 24 );
-    std::string materName = ljust( _phys_problem->getMaterialField()->getName(), 24 );
-    auto currElemChara = _phys_problem->getElementaryCharacteristics();
-    std::string caraName( " " );
-    if ( currElemChara )
-        caraName = currElemChara->getName();
-    caraName.resize( 24, ' ' );
-    std::string vectElemName = ljust( elemVect->getName(), 24 );
-    std::string base( "G" );
-    std::string lagrName = lagr_curr->getName();
-
     if ( _phys_problem->getModel()->isMechanical() ) {
-        std::string listLoadsName = ljust( listOfLoads->getName(), 19 );
-        // Wrapper FORTRAN
-        CALLO_VEBTLA( base, modelName, materName, caraName, lagrName, listLoadsName, vectElemName );
+        return dualMechanicalVector( lagr_curr );
     } else if ( _phys_problem->getModel()->isThermal() ) {
-        // Wrapper FORTRAN
-        auto lload_name = ljust( listOfLoads->getListVector()->getName(), 24 );
-        auto lload_info = ljust( listOfLoads->getInformationVector()->getName(), 24 );
-        CALLO_VETHBT( modelName, lload_name, lload_info, caraName, materName, lagrName,
-                      vectElemName, base );
+        return dualThermalVector( lagr_curr );
     } else {
         AS_ABORT( "Should not be here" );
     }
-
-    // Construct vect_elem object
-    auto FEDs = _phys_problem->getListOfLoads()->getFiniteElementDescriptors();
-    FEDs.push_back( _phys_problem->getModel()->getFiniteElementDescriptor() );
-    elemVect->build( FEDs );
-
-    // Assemble
-    return elemVect->assemble( _phys_problem->getDOFNumbering() );
 };
 
 FieldOnNodesRealPtr DiscreteComputation::getDualPrimal( FieldOnNodesRealPtr primal_curr,

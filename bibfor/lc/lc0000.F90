@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -280,7 +280,7 @@ subroutine lc0000(BEHinteg, &
 ! - Prepare input strains for the behaviour law
     epsm = epsm_tot
     deps = deps_tot
-    call behaviourPrepStrain(l_pred, l_czm, l_large, l_defo_meca, &
+    call behaviourPrepStrain(l_czm, l_large, l_defo_meca, &
                              l_grad_vari, imate, fami, kpg, ksp, &
                              neps, BEHinteg%esva, epsm, deps)
 

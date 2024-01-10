@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1504,C1505
+! aslint: disable=W1504,C1505,W1306
 !
 subroutine nmcomp(BEHinteg, &
                   fami, kpg, ksp, ndim, typmod, &
@@ -184,7 +184,7 @@ subroutine nmcomp(BEHinteg, &
 
         epsm_meca = epsm
         deps_meca = 0
-        call behaviourPrepStrain(lPred, l_czm, l_large, l_defo_meca, l_grad_vari, imate, fami, &
+        call behaviourPrepStrain(l_czm, l_large, l_defo_meca, l_grad_vari, imate, fami, &
                                  kpg, ksp, neps, BEHinteg%esva, epsm_meca, deps_meca)
         deps = -deps_meca
     end if

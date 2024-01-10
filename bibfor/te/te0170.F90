@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,9 +54,9 @@ subroutine te0170(option, nomte)
     integer :: n1, n2
     integer :: nn, nno2, nt1, nt2
     integer :: ipg, ij, ik, ijkl
-    integer :: jv_compo, jv_deplm, jv_deplp
+    integer :: jv_compo, jvDisp, jvDispM, jvDispP
     integer :: jv_geom, jv_mate
-    integer :: jv_vect, jv_codret, jv_matr
+    integer :: jvVect, jv_codret, jv_matr
     character(len=16) :: rela_comp
     real(kind=8) :: a(2, 2, 27, 27), mmat(27, 27)
     real(kind=8) :: b(54, 54), e(27, 27), ul(54), us(27), c(1485), d(378)
@@ -215,14 +215,22 @@ subroutine te0170(option, nomte)
 ! - Save vector
 !
     if (lVect .or. option .eq. 'FORC_NODA') then
+        call jevech('PVECTUR', 'E', jvVect)
         if (FEForm .eq. 'U_P_PHI') then
-            call jevech('PVECTUR', 'E', jv_vect)
-            call jevech('PDEPLMR', 'L', jv_deplm)
-            call jevech('PDEPLPR', 'L', jv_deplp)
-            do i = 1, nno2
-                zr(jv_vect+i-1) = 0.d0
-                ul(i) = zr(jv_deplm+i-1)+zr(jv_deplp+i-1)
-            end do
+            if (option .Eq. "FORC_NODA") then
+                call jevech('PDEPLAR', 'L', jvDisp)
+                do i = 1, nno2
+                    zr(jvVect+i-1) = 0.d0
+                    ul(i) = zr(jvDisp+i-1)
+                end do
+            else
+                call jevech('PDEPLMR', 'L', jvDispM)
+                call jevech('PDEPLPR', 'L', jvDispP)
+                do i = 1, nno2
+                    zr(jvVect+i-1) = 0.d0
+                    ul(i) = zr(jvDispM+i-1)+zr(jvDispP+i-1)
+                end do
+            end if
             nn = 0
             do n1 = 1, nno2
                 do n2 = 1, n1
@@ -233,17 +241,25 @@ subroutine te0170(option, nomte)
             end do
             do n1 = 1, nno2
                 do n2 = 1, nno2
-                    zr(jv_vect+n1-1) = zr(jv_vect+n1-1)+b(n1, n2)*ul(n2)
+                    zr(jvVect+n1-1) = zr(jvVect+n1-1)+b(n1, n2)*ul(n2)
                 end do
             end do
         elseif (FEForm .eq. 'U_P' .or. FEForm .eq. 'U_PSI') then
-            call jevech('PVECTUR', 'E', jv_vect)
-            call jevech('PDEPLMR', 'L', jv_deplm)
-            call jevech('PDEPLPR', 'L', jv_deplp)
-            do i = 1, nno
-                zr(jv_vect+i-1) = 0.d0
-                us(i) = zr(jv_deplm+i-1)+zr(jv_deplp+i-1)
-            end do
+            call jevech('PVECTUR', 'E', jvVect)
+            if (option .Eq. "FORC_NODA") then
+                call jevech('PDEPLAR', 'L', jvDisp)
+                do i = 1, nno
+                    zr(jvVect+i-1) = 0.d0
+                    us(i) = zr(jvDisp+i-1)
+                end do
+            else
+                call jevech('PDEPLMR', 'L', jvDispM)
+                call jevech('PDEPLPR', 'L', jvDispP)
+                do i = 1, nno
+                    zr(jvVect+i-1) = 0.d0
+                    us(i) = zr(jvDispM+i-1)+zr(jvDispP+i-1)
+                end do
+            end if
             nn = 0
             do n1 = 1, nno
                 do n2 = 1, n1
@@ -254,7 +270,7 @@ subroutine te0170(option, nomte)
             end do
             do n1 = 1, nno
                 do n2 = 1, nno
-                    zr(jv_vect+n1-1) = zr(jv_vect+n1-1)+e(n1, n2)*us(n2)
+                    zr(jvVect+n1-1) = zr(jvVect+n1-1)+e(n1, n2)*us(n2)
                 end do
             end do
         else

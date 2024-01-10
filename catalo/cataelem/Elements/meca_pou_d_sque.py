@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -344,16 +344,13 @@ class MECA_POU_D_SQUE(Element):
             para_in=(
                 (SP.PCAGNPO, CCAGNPO),
                 (OP.FORC_NODA.PCAORIE, CCAORIE),
-                (OP.FORC_NODA.PCOMPOR, LC.CCOMPOR),
-                (OP.FORC_NODA.PCONTMR, ECONTPG),
-                (SP.PDEPLMR, DDL_MECA),
-                (SP.PDEPLPR, DDL_MECA),
+                (SP.PCOMPOR, LC.CCOMPOR),
+                (SP.PSIEFR, ECONTPG),
+                (SP.PDEPLAR, DDL_MECA),
                 (SP.PFIBRES, LC.ECAFIEL),
                 (SP.PGEOMER, NGEOMER),
-                (SP.PMATERC, LC.CMATERC),
                 (OP.FORC_NODA.PNBSP_I, ENBSP_I),
                 (SP.PSTRXMR, ESTRAUX),
-                (OP.FORC_NODA.PVARCPR, LC.ZVARCPG),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),

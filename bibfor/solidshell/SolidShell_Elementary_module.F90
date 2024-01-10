@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -475,7 +475,7 @@ contains
         if (SSH_DBG_GEOM) call dbgObjCellGeom(cellGeom)
 
 ! - Get stresses
-        call jevech('PCONTMR', 'L', jvSigm)
+        call jevech('PSIEFR', 'L', jvSigm)
 
 ! - Compute nodal forces
         if (elemProp%cellType .eq. SSH_CELL_HEXA) then

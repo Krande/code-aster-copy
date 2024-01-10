@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine te0596(option, nomte)
 !
@@ -50,7 +49,7 @@ subroutine te0596(option, nomte)
     integer :: ndim, nno1, nno2, nnos, npg, jgn, ntrou
     integer :: iw, ivf1, ivf2, idf1, idf2
     integer :: vu(3, 27), vg(27), vp(27), vpi(3, 27)
-    integer :: igeom, icontm, iddlm, icompo, imate, ivectu
+    integer :: igeom, jvSief, jvDisp, icompo, imate, ivectu
     integer :: ibid
     character(len=8) :: lielrf(10), typmod(2), alias8
     character(len=24) :: valk
@@ -77,8 +76,8 @@ subroutine te0596(option, nomte)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
-    call jevech('PCONTMR', 'L', icontm)
-    call jevech('PDEPLMR', 'L', iddlm)
+    call jevech('PSIEFR', 'L', jvSief)
+    call jevech('PDEPLAR', 'L', jvDisp)
     call jevech('PCOMPOR', 'L', icompo)
     call jevech('PVECTUR', 'E', ivectu)
 !
@@ -100,8 +99,8 @@ subroutine te0596(option, nomte)
 !
             call nufnpd(ndim, nno1, nno2, npg, iw, &
                         zr(ivf1), zr(ivf2), idf1, vu, vp, &
-                        typmod, zi(imate), zk16(icompo), zr(igeom), zr(icontm), &
-                        zr(iddlm), mini, zr(ivectu))
+                        typmod, zi(imate), zk16(icompo), zr(igeom), zr(jvSief), &
+                        zr(jvDisp), mini, zr(ivectu))
         else if (lteatt('INCO', 'C2O')) then
 ! --------- Get index of dof
             call niinit(typmod, ndim, nno1, 0, &
@@ -111,7 +110,7 @@ subroutine te0596(option, nomte)
             call nofnpd(ndim, nno1, nno2, nno2, npg, &
                         iw, zr(ivf1), zr(ivf2), zr(ivf2), idf1, &
                         vu, vp, vpi, typmod, zi(imate), &
-                        zk16(icompo), zr(igeom), nomte, zr(icontm), zr(iddlm), &
+                        zk16(icompo), zr(igeom), nomte, zr(jvSief), zr(jvDisp), &
                         zr(ivectu))
         else
             valk = zk16(icompo+2)
@@ -134,8 +133,8 @@ subroutine te0596(option, nomte)
 !
             call nufnlg(ndim, nno1, nno2, npg, iw, &
                         zr(ivf1), zr(ivf2), idf1, vu, vp, &
-                        typmod, zi(imate), zk16(icompo), zr(igeom), zr(icontm), &
-                        zr(iddlm), zr(ivectu))
+                        typmod, zi(imate), zk16(icompo), zr(igeom), zr(jvSief), &
+                        zr(jvDisp), zr(ivectu))
         else
             valk = zk16(icompo+2)
             call utmess('F', 'MODELISA10_17', sk=valk)

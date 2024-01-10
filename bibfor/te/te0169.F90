@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,8 +36,8 @@ subroutine te0169(option, nomte)
 !
     real(kind=8) :: w(9), l1(3), l2(3), forref
     real(kind=8) :: norml1, norml2, coef1, coef2
-    integer :: jefint, lsigma, igeom, idepla, ideplp, ivectu, nno, nc
-    integer :: ino, i, kc, iret
+    integer :: jefint, jvSief, igeom, jvDisp, ivectu, nno, nc
+    integer :: ino, i, kc
 ! ----------------------------------------------------------------------
 !
     if (option .eq. 'REFE_FORC_NODA') then
@@ -52,26 +52,15 @@ subroutine te0169(option, nomte)
         end do
 !
     else if (option .eq. 'FORC_NODA') then
-!
-!        PARAMETRES EN ENTREE
         call jevech('PGEOMER', 'L', igeom)
-!
-        call jevech('PDEPLMR', 'L', idepla)
-        call tecach('ONO', 'PDEPLPR', 'L', iret, iad=ideplp)
-        call jevech('PCONTMR', 'L', lsigma)
-!        PARAMETRES EN SORTIE
+        call jevech('PDEPLAR', 'L', jvDisp)
+        call jevech('PSIEFR', 'L', jvSief)
         call jevech('PVECTUR', 'E', jefint)
 !
-        if (ideplp .eq. 0) then
-            do i = 1, 9
-                w(i) = zr(idepla-1+i)
-            end do
-        else
-            do i = 1, 9
-                w(i) = zr(idepla-1+i)+zr(ideplp-1+i)
-            end do
-        end if
-!
+        do i = 1, 9
+            w(i) = zr(jvDisp-1+i)
+        end do
+
         do kc = 1, 3
             l1(kc) = w(kc)+zr(igeom-1+kc)-w(6+kc)-zr(igeom+5+kc)
         end do
@@ -83,8 +72,8 @@ subroutine te0169(option, nomte)
         norml1 = sqrt(norml1)
         norml2 = sqrt(norml2)
 !
-        coef1 = zr(lsigma)/norml1
-        coef2 = zr(lsigma)/norml2
+        coef1 = zr(jvSief)/norml1
+        coef2 = zr(jvSief)/norml2
 !
         do i = 1, 3
             zr(jefint+i-1) = coef1*l1(i)

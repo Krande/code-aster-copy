@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -136,12 +136,10 @@ class HM_J_AXQ8S(Element):
             te=313,
             para_in=(
                 (SP.PCAMASS, LC.CCAMA2D),
-                (OP.FORC_NODA.PCONTMR, ECONTPG),
+                (SP.PSIEFR, ECONTPG),
                 (SP.PGEOMER, NGEOMER),
-                (SP.PINSTMR, CTEMPSR),
-                (SP.PINSTPR, CTEMPSR),
                 (SP.PMATERC, LC.CMATERC),
-                (OP.FORC_NODA.PVARCPR, LC.ZVARCPG),
+                (SP.PVARCPR, LC.ZVARCPG),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),

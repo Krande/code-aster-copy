@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine vefnme_cplx(option, base, model, mate, carele, &
-                       compor, partps, nh, ligrelz, varicomz, &
-                       sigmaz, strxz, deplz, depl_incrz, vecelz)
+                       compor, nh, ligrelz, varicomz, &
+                       sigmaz, strxz, deplz, vecelz)
 !
     implicit none
 !
@@ -49,7 +48,6 @@ subroutine vefnme_cplx(option, base, model, mate, carele, &
     character(len=16), intent(in) :: option
     character(len=1), intent(in) :: base
     character(len=8), intent(in) :: model
-    real(kind=8), intent(in) :: partps(*)
     character(len=24), intent(in) :: carele
     character(len=24), intent(in) :: mate
     character(len=*), intent(in) :: ligrelz
@@ -59,7 +57,6 @@ subroutine vefnme_cplx(option, base, model, mate, carele, &
     character(len=*), intent(in) :: varicomz
     character(len=*), intent(in) :: strxz
     character(len=*), intent(in) :: deplz
-    character(len=*), intent(in) :: depl_incrz
     character(len=*), intent(inout) :: vecelz(*)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -96,16 +93,15 @@ subroutine vefnme_cplx(option, base, model, mate, carele, &
 !
     character(len=8) :: k8bla, mesh
     character(len=8) :: newnom, nomgd, carael
-    character(len=19) :: numhar, tpsmoi, tpsplu, ligrel_local, ligrel
+    character(len=19) :: numhar, ligrel_local, ligrel
     character(len=19) :: chgeom, chcara(18), vecele, veceli
     character(len=19) :: lchinr(nbin), lchini(nbin)
     character(len=16) :: optio2
     integer :: iret, inddec(nbin), iexi, k
-    real(kind=8) :: instm, instp
     character(len=19) :: pintto, cnseto, heavto, loncha, basloc, lsn, lst, stano
     character(len=19) :: pmilto, fissno, hea_no
     character(len=19) :: sigma, varicom, strx
-    character(len=19) :: depl, depl_incr
+    character(len=19) :: depl
     character(len=19) :: chdecr(nbin), chdeci(nbin), ch19, chr, chi, ch1(nbout), ch2(nbout)
     aster_logical :: debug, lcmplx, lsspt
     integer :: ifmdbg, nivdbg
@@ -122,12 +118,9 @@ subroutine vefnme_cplx(option, base, model, mate, carele, &
     varicom = varicomz
     strx = strxz
     depl = deplz
-    depl_incr = depl_incrz
     ligrel = ligrelz
     newnom = '.0000000'
     numhar = '&&VEFNME.NUME_HARM'
-    tpsmoi = '&&VEFNME.CH_INSTAM'
-    tpsplu = '&&VEFNME.CH_INSTAP'
     k8bla = ' '
     optio2 = option
     if (option .ne. 'FONL_NOEU') optio2 = 'FORC_NODA'
@@ -172,24 +165,11 @@ subroutine vefnme_cplx(option, base, model, mate, carele, &
 !
     call mecact('V', numhar, 'MAILLA', mesh, 'HARMON', &
                 ncmp=1, nomcmp='NH', si=nh)
-!
-! - <CARTE> for instant
-!
-    instm = partps(1)
-    instp = partps(2)
-    call mecact('V', tpsmoi, 'MAILLA', mesh, 'INST_R', &
-                ncmp=1, nomcmp='INST', sr=instm)
-    call mecact('V', tpsplu, 'MAILLA', mesh, 'INST_R', &
-                ncmp=1, nomcmp='INST', sr=instp)
-!
+
 ! - Init fields
-!
-    call inical(nbin, lpain, lchin, nbout, lpaout, &
-                lchout)
-    call inical(nbin, lpain, lchin, nbout, lpaout, &
-                ch1)
-    call inical(nbin, lpain, lchin, nbout, lpaout, &
-                ch2)
+    call inical(nbin, lpain, lchin, nbout, lpaout, lchout)
+    call inical(nbin, lpain, lchin, nbout, lpaout, ch1)
+    call inical(nbin, lpain, lchin, nbout, lpaout, ch2)
 !
 ! - CREATION DES LISTES DES CHAMPS IN
 !
@@ -203,12 +183,10 @@ subroutine vefnme_cplx(option, base, model, mate, carele, &
     lchin(4) = chcara(1)
     lpain(5) = 'PCOMPOR'
     lchin(5) = compor
-    lpain(6) = 'PCONTMR'
+    lpain(6) = 'PSIEFR'
     lchin(6) = sigma
-    lpain(7) = 'PDEPLMR'
+    lpain(7) = 'PDEPLAR'
     lchin(7) = depl
-    lpain(8) = 'PDEPLPR'
-    lchin(8) = depl_incr
     lpain(9) = 'PCAARPO'
     lchin(9) = chcara(9)
     lpain(10) = 'PCADISK'
@@ -219,10 +197,6 @@ subroutine vefnme_cplx(option, base, model, mate, carele, &
     lchin(12) = numhar
     lpain(13) = 'PCAMASS'
     lchin(13) = chcara(12)
-    lpain(14) = 'PINSTMR'
-    lchin(14) = tpsmoi
-    lpain(15) = 'PINSTPR'
-    lchin(15) = tpsplu
     lpain(16) = 'PVARCPR'
     lchin(16) = varicom
     lpain(17) = 'PCAGEPO'
@@ -231,9 +205,8 @@ subroutine vefnme_cplx(option, base, model, mate, carele, &
     lchin(18) = chcara(16)
     lpain(19) = 'PFIBRES'
     lchin(19) = chcara(17)
-!
+
 ! --- CADRE X-FEM
-!
     call exixfe(model, iret)
     if (iret .ne. 0) then
         pintto = model(1:8)//'.TOPOSE.PIN'
@@ -390,7 +363,5 @@ subroutine vefnme_cplx(option, base, model, mate, carele, &
     end do
 
     call detrsd('CHAMP_GD', numhar)
-    call detrsd('CHAMP_GD', tpsmoi)
-    call detrsd('CHAMP_GD', tpsplu)
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine vefnme(optionz, modelz, mate, cara_elem, &
-                  compor, partps, nh, ligrelz, &
+                  compor, nh, ligrelz, &
                   varcz, sigmz, strxz, &
-                  dispz, disp_incrz, &
+                  dispz, &
                   base, vect_elemz)
 !
     implicit none
@@ -44,10 +43,9 @@ subroutine vefnme(optionz, modelz, mate, cara_elem, &
     character(len=*), intent(in) :: optionz, modelz
     character(len=24), intent(in) :: cara_elem, mate
     character(len=19), intent(in) :: compor
-    real(kind=8), intent(in) :: partps(*)
     integer, intent(in) :: nh
     character(len=*), intent(in) :: ligrelz
-    character(len=*), intent(in) :: sigmz, varcz, strxz, dispz, disp_incrz
+    character(len=*), intent(in) :: sigmz, varcz, strxz, dispz
     character(len=1), intent(in) :: base
     character(len=*), intent(in) :: vect_elemz
 !
@@ -84,11 +82,10 @@ subroutine vefnme(optionz, modelz, mate, cara_elem, &
     character(len=8) :: mesh, newnom, model
     character(len=16) :: option
     character(len=19) :: vect_elem, resu_elem
-    character(len=19) :: chharm, tpsmoi, tpsplu, ligrel_local, ligrel
+    character(len=19) :: chharm, ligrel_local, ligrel
     character(len=19) :: chgeom, chcara(18)
     integer :: iret, nbin
-    real(kind=8) :: instm, instp
-    character(len=19) :: sigm, varc, strx, disp, disp_incr
+    character(len=19) :: sigm, varc, strx, disp
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -105,7 +102,6 @@ subroutine vefnme(optionz, modelz, mate, cara_elem, &
     varc = varcz
     strx = strxz
     disp = dispz
-    disp_incr = disp_incrz
     ligrel = ligrelz
     newnom = '.0000000'
     vect_elem = vect_elemz
@@ -113,8 +109,6 @@ subroutine vefnme(optionz, modelz, mate, cara_elem, &
     call exixfe(model, iret)
     l_xfem = (iret .eq. 1)
     chharm = '&&VEFNME.NUME_HARM'
-    tpsmoi = '&&VEFNME.CH_INSTAM'
-    tpsplu = '&&VEFNME.CH_INSTAP'
     option = optionz
     if (ligrel .eq. ' ') then
         ligrel_local = model(1:8)//'.MODELE'
@@ -142,15 +136,6 @@ subroutine vefnme(optionz, modelz, mate, cara_elem, &
     call mecact('V', chharm, 'MAILLA', mesh, 'HARMON', &
                 ncmp=1, nomcmp='NH', si=nh)
 !
-! - Field for time
-!
-    instm = partps(1)
-    instp = partps(2)
-    call mecact('V', tpsmoi, 'MAILLA', mesh, 'INST_R', &
-                ncmp=1, nomcmp='INST', sr=instm)
-    call mecact('V', tpsplu, 'MAILLA', mesh, 'INST_R', &
-                ncmp=1, nomcmp='INST', sr=instp)
-!
 ! - Suppress old vect_elem result
 !
     call detrsd('VECT_ELEM', vect_elem)
@@ -168,12 +153,10 @@ subroutine vefnme(optionz, modelz, mate, cara_elem, &
     lchin(4) = chcara(1)
     lpain(5) = 'PCOMPOR'
     lchin(5) = compor
-    lpain(6) = 'PCONTMR'
+    lpain(6) = 'PSIEFR'
     lchin(6) = sigm
-    lpain(7) = 'PDEPLMR'
+    lpain(7) = 'PDEPLAR'
     lchin(7) = disp
-    lpain(8) = 'PDEPLPR'
-    lchin(8) = disp_incr
     lpain(9) = 'PCAARPO'
     lchin(9) = chcara(9)
     lpain(10) = 'PCADISK'
@@ -184,10 +167,6 @@ subroutine vefnme(optionz, modelz, mate, cara_elem, &
     lchin(12) = chharm
     lpain(13) = 'PCAMASS'
     lchin(13) = chcara(12)
-    lpain(14) = 'PINSTMR'
-    lchin(14) = tpsmoi
-    lpain(15) = 'PINSTPR'
-    lchin(15) = tpsplu
     lpain(16) = 'PVARCPR'
     lchin(16) = varc
     lpain(17) = 'PCAGEPO'
@@ -229,8 +208,6 @@ subroutine vefnme(optionz, modelz, mate, cara_elem, &
 ! - Clean
 !
     call detrsd('CHAMP_GD', chharm)
-    call detrsd('CHAMP_GD', tpsmoi)
-    call detrsd('CHAMP_GD', tpsplu)
 !
     call jedema()
 end subroutine

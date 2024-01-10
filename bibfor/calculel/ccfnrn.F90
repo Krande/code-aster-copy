@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -91,7 +91,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, resultType)
     character(len=6) :: nompro
     character(len=8) :: k8bid, kiord, ctyp, nomcmp(3), para, mesh
     character(len=16) :: typmo, optio2, motfac
-    character(len=19) :: ligrel, chdep2, vebid, k19bid, listLoad, partsd
+    character(len=19) :: ligrel, vebid, k19bid, listLoad, partsd
     character(len=24) :: numref, fomult, charge, infoch, vechmp, vachmp, cnchmp
     character(len=24) :: vecgmp, vacgmp, cncgmp, vefpip, vafpip, cnfpip, vfono(2)
     character(len=24) :: carac, cnchmpc
@@ -335,9 +335,11 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, resultType)
                 if (iret2 .ne. 0) then
                     optio2 = 'SIEF_ELGA'
                     if (ldist) then
-                     call calcop(optio2, ' ', resuin, resuou, lisori, nbordi, resultType, cret, 'V')
+                        call calcop(optio2, ' ', resuin, resuou, lisori, nbordi, &
+                                    resultType, cret, 'V')
                     else
-                     call calcop(optio2, ' ', resuin, resuou, lisord, nbordr, resultType, cret, 'V')
+                        call calcop(optio2, ' ', resuin, resuou, lisord, nbordr, &
+                                    resultType, cret, 'V')
                     end if
                     call rsexch(' ', resuou, 'SIEF_ELGA', iordr, sigma, iret)
                 end if
@@ -348,9 +350,11 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, resultType)
                 if (iret .ne. 0 .and. lstr2) then
                     optio2 = 'STRX_ELGA'
                     if (ldist) then
-                     call calcop(optio2, ' ', resuin, resuou, lisori, nbordi, resultType, cret, 'V')
+                        call calcop(optio2, ' ', resuin, resuou, lisori, nbordi, &
+                                    resultType, cret, 'V')
                     else
-                     call calcop(optio2, ' ', resuin, resuou, lisord, nbordr, resultType, cret, 'V')
+                        call calcop(optio2, ' ', resuin, resuou, lisord, nbordr, &
+                                    resultType, cret, 'V')
                     end if
                     call rsexch(' ', resuou, 'STRX_ELGA', iordr, strx, iret)
                 end if
@@ -363,15 +367,6 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, resultType)
                 valk(2) = option
                 call utmess('A', 'PREPOST5_3', nk=2, valk=valk)
                 goto 280
-!
-            else
-!
-!         CREATION D'UN VECTEUR ACCROISSEMENT DE DEPLACEMENT NUL
-!         POUR LE CALCUL DE FORC_NODA DANS LES POU_D_T_GD
-                chdep2 = '&&'//nompro//'.CHDEP_NUL'
-                call copisd('CHAMP_GD', 'V', chdepl, chdep2)
-                call jelira(chdep2//'.VALE', 'LONMAX', nbddl)
-                call jerazo(chdep2//'.VALE', nbddl, 1)
             end if
 !
 !       -- CALCUL D'UN NUME_DDL "MINIMUM" POUR ASASVE :
@@ -395,16 +390,20 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, resultType)
                         call numecn(modele, chdepk, k24b)
                         numk = ' '
                         numk = trim(adjustl(k24b))
-                        if (dbg_ob) &
-                      write (ifm, *) '< ', rang, 'ccfnrn> numeddl_avant/numddl_apres=', numnew, numk
+                        if (dbg_ob) then
+                            write (ifm, *) '< ', rang, &
+                                'ccfnrn> numeddl_avant/numddl_apres=', numnew, numk
+                        end if
                         if (numnew .ne. numk) call utmess('F', 'PREPOST_16')
                     end do
                 else
 ! SI PARALLELISME EN TEMPS et NPAS ATTEINT (RELIQUAT DE PAS DE TEMPS)
 ! ET SI NON PARALLELISME EN TEMPS
                     if (ldist) then
-                        if (dbg_ob) &
-                      write (ifm, *) '< ', rang, 'ccfnrn> numeddl_avant/numddl_apres=', nume, numnew
+                        if (dbg_ob) then
+                            write (ifm, *) '< ', rang, &
+                                'ccfnrn> numeddl_avant/numddl_apres=', nume, numnew
+                        end if
                         if (nume .ne. numnew) call utmess('F', 'PREPOST_16')
                     end if
                 end if
@@ -441,16 +440,11 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, resultType)
                 call cpu_time(rctdeb)
             end if
 !
-! Initialisation
-            partps(1) = time
-            partps(2) = time
-            partps(3) = 0.D0
-!
 !
 ! separation reel imag si dyna_harmo
             call vefnme_cplx(option, 'V', modele, mateco, carac, &
-                             compor, partps, nh, ligrel, chvarc, &
-                             sigma, strx, chdepl, chdep2, vfono)
+                             compor, nh, ligrel, chvarc, &
+                             sigma, strx, chdepl, vfono)
 !       --- ASSEMBLAGE DES VECTEURS ELEMENTAIRES ---
             if (resultType .ne. 'DYNA_HARMO') then
                 call asasve(vfono(1), nume, 'R', vafono)
@@ -508,7 +502,8 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, resultType)
             if (resultType .ne. 'DYNA_HARMO') then
                 ktyp = 'R'
                 if ((ldist) .and. (ideb .ne. ifin)) then
-           call vtcreb(chamno, 'G', 'R', nume_ddlz=nume, nb_equa_outz=neq, nbz=nbproc, vchamz=vcham)
+                    call vtcreb(chamno, 'G', 'R', nume_ddlz=nume, nb_equa_outz=neq, &
+                                nbz=nbproc, vchamz=vcham)
                 else
                     call vtcreb(chamno, 'G', 'R', nume_ddlz=nume, nb_equa_outz=neq)
                 end if
@@ -516,7 +511,8 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, resultType)
             else
                 ktyp = 'C'
                 if ((ldist) .and. (ideb .ne. ifin)) then
-           call vtcreb(chamno, 'G', 'C', nume_ddlz=nume, nb_equa_outz=neq, nbz=nbproc, vchamz=vcham)
+                    call vtcreb(chamno, 'G', 'C', nume_ddlz=nume, nb_equa_outz=neq, &
+                                nbz=nbproc, vchamz=vcham)
                 else
                     call vtcreb(chamno, 'G', 'C', nume_ddlz=nume, nb_equa_outz=neq)
                 end if
@@ -583,7 +579,8 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, resultType)
 !
                 if (resultType .ne. 'DYNA_HARMO') then
                     call vechme(stop, modele, charge, infoch, partps, &
-                             carac, mater, mateco, vechmp, varc_currz=chvarc, ligrel_calcz=ligrel, &
+                                carac, mater, mateco, vechmp, &
+                                varc_currz=chvarc, ligrel_calcz=ligrel, &
                                 nharm=nh)
                     call asasve(vechmp, nume, 'R', vachmp)
                     call ascova('D', vachmp, fomult, 'INST', time, 'R', cnchmp)
@@ -806,14 +803,17 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, resultType)
                     call rsnoch(resuou, option, iordk)
                     k24b = ' '
                     if (resultType .eq. 'EVOL_THER') then
-                  call ntdoth(k24b, mater, mateco, carac, listLoad, result=resuou, nume_store=iordk)
+                        call ntdoth(k24b, mater, mateco, carac, listLoad, &
+                                    result=resuou, nume_store=iordk)
                     else
                         call nmdome(k24b, mater, mateco, carac, listLoad, resuou(1:8), iordk)
                     end if
                     modnew = ' '
                     modnew = trim(adjustl(k24b))
-                    if (dbg_ob) &
-                     write (ifm, *) '< ', rang, 'ccfnrn> modele_avant/modele_apres=', modele, modnew
+                    if (dbg_ob) then
+                        write (ifm, *) '< ', rang, &
+                            'ccfnrn> modele_avant/modele_apres=', modele, modnew
+                    end if
                     if (modele .ne. modnew) then
                         call utmess('F', 'PREPOST_1')
                     else
@@ -827,7 +827,8 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, resultType)
                 call rsnoch(resuou, option, iordr)
                 k24b = ' '
                 if (resultType .eq. 'EVOL_THER') then
-                  call ntdoth(k24b, mater, mateco, carac, listLoad, result=resuou, nume_store=iordr)
+                    call ntdoth(k24b, mater, mateco, carac, listLoad, &
+                                result=resuou, nume_store=iordr)
                 else
                     call nmdome(k24b, mater, mateco, carac, listLoad, resuou(1:8), iordr)
                 end if
@@ -835,8 +836,10 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, resultType)
                 modnew = trim(adjustl(k24b))
 ! CAS DE FIGURE DU RELIQUAT DE PAS DE TEMPS
                 if (ldist) then
-                    if (dbg_ob) &
-                     write (ifm, *) '< ', rang, 'ccfnrn> modele_avant/modele_apres=', modele, modnew
+                    if (dbg_ob) then
+                        write (ifm, *) '< ', rang, &
+                            'ccfnrn> modele_avant/modele_apres=', modele, modnew
+                    end if
                     if (modele .ne. modnew) call utmess('F', 'PREPOST_1')
                 end if
                 modele = modnew
