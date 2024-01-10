@@ -1322,7 +1322,7 @@ class Coeur:
                             (
                                 _F(
                                     NOM_VARC="TEMP",
-                                    GROUP_MA="DI_%s_%d" % (ac.pos_aster, (igr + 1)),
+                                    GROUP_MA="DI_%s%d" % (ac.pos_aster, (igr + 1)),
                                     EVOL=CHTH,
                                     PROL_DROITE="CONSTANT",
                                     VALE_REF=Ttmp,
