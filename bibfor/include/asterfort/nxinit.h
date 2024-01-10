@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,14 +17,14 @@
 ! --------------------------------------------------------------------
 #include "asterf_types.h"
 !
-interface 
-    subroutine nxinit(mesh         , model   , mate       ,&
-                      cara_elem    , compor  , list_load  ,&
-                      para         , nume_dof, &
-                      sddisc       , ds_inout, sdobse     ,&
-                      sdcrit       , time    , ds_algopara,&
-                      ds_algorom   , ds_print, vhydr      ,&
-                      l_stat       , l_evol  , l_rom      ,&
+interface
+    subroutine nxinit(mesh, model, mate, &
+                      cara_elem, compor, list_load, &
+                      para, nume_dof, &
+                      sddisc, ds_inout, sdobse, &
+                      time, ds_algopara, &
+                      ds_algorom, ds_print, vhydr, &
+                      l_stat, l_evol, l_rom, &
                       l_line_search, lnkry)
         use NonLin_Datastructure_type
         use Rom_Datastructure_type
@@ -36,7 +36,6 @@ interface
         character(len=19), intent(in) :: sddisc
         type(NL_DS_InOut), intent(inout) :: ds_inout
         character(len=19), intent(out) :: sdobse
-        character(len=19), intent(in) :: sdcrit
         character(len=24), intent(out) :: time
         type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
         type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
@@ -44,4 +43,4 @@ interface
         character(len=24), intent(in) :: vhydr
         aster_logical, intent(out) :: l_stat, l_evol, l_rom, l_line_search, lnkry
     end subroutine nxinit
-end interface 
+end interface

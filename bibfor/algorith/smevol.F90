@@ -60,11 +60,9 @@ subroutine smevol(temper, modelz, chmat, mateco, compor, option, &
 !
 !
 !
-    integer :: nbhist, iadtrc(2), long, jordr, nbordr(1), i, iret, vali(2), iad
+    integer :: nbhist, iadtrc(2), long, jordr, nbordr(1), i, iret, vali(2)
     integer :: ifm, ibid, num0, num1, num2, num3, iord, iainst, numphi
-    real(kind=8) :: r8b, time(3), inst0, inst1, inst2, dt3
-    real(kind=8) :: valr(2)
-    integer :: valii
+    real(kind=8) :: r8b, time(3), inst0, inst1, inst2
     complex(kind=8) :: cbid
     integer :: icodre, test
     character(len=8) :: k8b, modele, nomcm2(2), mater, lpain(8)
@@ -194,21 +192,6 @@ subroutine smevol(temper, modelz, chmat, mateco, compor, option, &
         time(1) = inst1
         time(2) = inst1-inst0
         time(3) = inst2-inst1
-!
-        call jenonu(jexnom(sdtemp//'.NOVA', 'DELTAT'), iad)
-        if (iad .ne. 0) then
-            call rsadpa(sdtemp, 'L', 1, 'DELTAT', num3, &
-                        0, sjv=iad, styp=k8b, istop=0)
-            dt3 = zr(iad)
-            if (dt3 .ne. r8vide()) then
-                if (abs(dt3-time(3)) .gt. r8prem()) then
-                    valii = num3
-                    valr(1) = dt3
-                    valr(2) = time(3)
-                    call utmess('A', 'ALGORITH14_61', si=valii, nr=2, valr=valr)
-                end if
-            end if
-        end if
 !
         chtime = '&&SMEVOL.CH_INST_R'
         call mecact('V', chtime, 'MODELE', ligrmo, 'INST_R  ', &

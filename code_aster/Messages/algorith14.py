@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -139,15 +139,6 @@ cata_msg = {
     35: _(
         """
  aucun champ n'est calculé dans la structure de données  %(k1)s
-"""
-    ),
-    61: _(
-        """
- le pas de temps du calcul métallurgique ne correspond pas
- au pas de temps du calcul thermique
- - numéro d'ordre              : %(i1)d
- - pas de temps thermique      : %(r1)f
- - pas de temps métallurgique  : %(r2)f
 """
     ),
     63: _(
