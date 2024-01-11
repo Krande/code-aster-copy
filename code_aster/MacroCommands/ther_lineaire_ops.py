@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -142,8 +142,8 @@ def _setupInitialField(phys_pb, args):
             timelist = SearchList(
                 para["INST"], initial_state["PRECISION"], initial_state["CRITERE"]
             )
-
-            index = timelist.index(initial_state["INST"])
+            indext = timelist.index(initial_state["INST"])
+            index = para["NUME_ORDRE"][indext]
 
         initial_field = resu_ther.getField("TEMP", index).copyUsingDescription(
             phys_pb.getDOFNumbering().getEquationNumbering()
