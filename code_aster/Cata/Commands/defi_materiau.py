@@ -19,6 +19,7 @@
 
 # person_in_charge: mickael.abbas at edf.fr
 
+from math import pi
 from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
@@ -71,6 +72,7 @@ DEFI_MATERIAU = MACRO(
         PRESENT_PRESENT("KICHENIN_NL_FO", "ELAS"),
         EXCLUS("ENDO_SCALAIRE", "ENDO_SCALAIRE_FO"),
         EXCLUS("ENDO_LOCA_EXP", "ENDO_LOCA_EXP_FO"),
+        EXCLUS("ENDO_LOCA_TC", "ENDO_LOCA_TC_FO"),
         EXCLUS("ENDO_FISS_EXP", "ENDO_FISS_EXP_FO"),
         EXCLUS("ROUSSELIER", "ROUSSELIER_FO"),
         EXCLUS("VISC_SINH", "VISC_SINH_FO"),
@@ -189,6 +191,8 @@ DEFI_MATERIAU = MACRO(
             "ENDO_SCALAIRE_FO",
             "ENDO_LOCA_EXP",
             "ENDO_LOCA_EXP_FO",
+            "ENDO_LOCA_TC",
+            "ENDO_LOCA_TC_FO",
             "ENDO_FISS_EXP",
             "ENDO_FISS_EXP_FO",
             "DIS_GRICRA",
@@ -1440,6 +1444,28 @@ DEFI_MATERIAU = MACRO(
         SIG0=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
         BETA0=SIMP(statut="f", typ="R", defaut=0.1),
         REST_RIGIDITE=SIMP(statut="o", typ="R", val_min=0.0),
+    ),
+    ENDO_LOCA_TC=FACT(
+        statut="f",
+        KAPPA=SIMP(statut="o", typ="R", val_min=0.0),
+        P=SIMP(statut="o", typ="R", val_min=(4 / (3 * pi)) ** (-2.0 / 3.0) - 2),
+        FT=SIMP(statut="o", typ="R", val_min=0.0),
+        SIG0=SIMP(statut="o", typ="R", val_min=0.0),
+        FC=SIMP(statut="o", typ="R", val_min=1.0),
+        CRIT_REGU=SIMP(statut="o", typ="R", val_min=1.0),
+        REST_RIGIDITE=SIMP(statut="o", typ="R", val_min=0.0),
+        TAU_REGU_VISC=SIMP(statut="f", typ="R", val_min=0.0, defaut=0.0),
+    ),
+    ENDO_LOCA_TC_FO=FACT(
+        statut="f",
+        KAPPA=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
+        P=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
+        FT=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
+        SIG0=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
+        FC=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
+        CRIT_REGU=SIMP(statut="o", typ="R", val_min=1.0),
+        REST_RIGIDITE=SIMP(statut="o", typ="R", val_min=0.0),
+        TAU_REGU_VISC=SIMP(statut="f", typ="R", val_min=0.0, defaut=0.0),
     ),
     ENDO_FISS_EXP=FACT(
         statut="f",

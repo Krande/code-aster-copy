@@ -73,6 +73,7 @@ subroutine lc0000(BEHinteg, &
 #include "asterfort/lc0076.h"
 #include "asterfort/lc0077.h"
 #include "asterfort/lc0078.h"
+#include "asterfort/lc0079.h"
 #include "asterfort/lc0120.h"
 #include "asterfort/lc0137.h"
 #include "asterfort/lc0145.h"
@@ -599,6 +600,12 @@ subroutine lc0000(BEHinteg, &
                     ndsde, dsidep, codret)
     case (78)
         call lc0078(BEHinteg, fami, kpg, ksp, ndim, imate, &
+                    compor, carcri, instam, instap, neps, epsm, &
+                    deps, nsig, sigm, nvi, vim, option, angmas, &
+                    sigp, vip, typmod, icomp, &
+                    ndsde, dsidep, codret)
+    case (79)
+        call lc0079(BEHinteg, fami, kpg, ksp, ndim, imate, &
                     compor, carcri, instam, instap, neps, epsm, &
                     deps, nsig, sigm, nvi, vim, option, angmas, &
                     sigp, vip, typmod, icomp, &

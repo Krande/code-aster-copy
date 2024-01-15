@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,8 +39,11 @@ module endo_loca_module
         ComputePathFollowing
 
     use endo_rigi_unil_module, only: &
+        UNILATERAL, &
         UNIL_MAT => MATERIAL, &
+        InitUnilateral => Init, &
         ComputeStress, &
+        ComputeStiffness, &
         ComputeEnergy
 
     implicit none
@@ -69,17 +72,18 @@ module endo_loca_module
     ! Shared attibutes through the global variable self
     type CONSTITUTIVE_LAW
         integer       :: exception = 0
-        aster_logical :: elas, rigi, vari, pred, pilo
+        aster_logical :: elas, rigi, resi, pilo
         integer       :: ndimsi, itemax
         real(kind=8)  :: cvuser, deltat
         type(MATERIAL):: mat
+        type(UNILATERAL):: unil
     end type CONSTITUTIVE_LAW
 
     ! Post-treatment results
     type POST_TREATMENT
         real(kind=8)  :: damsti
-        real(kind=8)  :: welas
-        real(kind=8)  :: wdiss
+        real(kind=8)  :: wpos
+        real(kind=8)  :: wneg
     end type POST_TREATMENT
 
 contains
@@ -114,10 +118,14 @@ contains
         self%elas = option .eq. 'RIGI_MECA_ELAS' .or. option .eq. 'FULL_MECA_ELAS'
         self%rigi = option .eq. 'RIGI_MECA_TANG' .or. option .eq. 'RIGI_MECA_ELAS' &
                     .or. option .eq. 'FULL_MECA' .or. option .eq. 'FULL_MECA_ELAS'
-        self%vari = option .eq. 'FULL_MECA_ELAS' .or. option .eq. 'FULL_MECA' &
+        self%resi = option .eq. 'FULL_MECA_ELAS' .or. option .eq. 'FULL_MECA' &
                     .or. option .eq. 'RAPH_MECA'
-        self%pred = option .eq. 'RIGI_MECA_ELAS' .or. option .eq. 'RIGI_MECA_TANG'
         self%pilo = option .eq. 'PILO_PRED_ELAS'
+
+        ASSERT(self%rigi .or. self%resi .or. self%pilo)
+
+        ! On force la matrice secante en prediction
+        if (self%rigi .and. .not. self%resi) self%elas = ASTER_TRUE
 
         self%ndimsi = ndimsi
         self%itemax = itemax
@@ -147,30 +155,32 @@ contains
 ! dsde  tangent matrix (ndimsi,ndimsi)
 ! ----------------------------------------------------------------------
         integer             :: state
-        real(kind=8)        :: bem, be
+        real(kind=8)        :: be
         real(kind=8)        :: eps(self%ndimsi)
-        type(POST_TREATMENT):: postm, post
+        type(POST_TREATMENT):: post
 ! ---------------------------------------------------------------------
 
 ! Current strain
         eps = epsm+deps
 
 ! unpack internal variables
-        bem = vim(1)
-        postm = POST_TREATMENT(damsti=vim(3), welas=vim(4), wdiss=vim(5))
+        be = vim(1)
+        state = nint(vim(2))
 
 ! damage behaviour integration
-        call ComputeDamage(self, eps, bem, state, be, sig, dsde)
+        call ComputeDamage(self, eps, be, state, sig, dsde)
         if (self%exception .ne. 0) goto 999
 
-! pack internal variables and post-treatments
-        if (self%vari) then
-            post = PostTreatment(self, eps, deps, be, postm)
+! Post-treatments
+        if (self%resi) post = PostTreatment(self, be)
+
+! pack internal variables
+        if (self%resi) then
             vip(1) = be
             vip(2) = state
             vip(3) = post%damsti
-            vip(4) = post%welas
-            vip(5) = post%wdiss
+            vip(4) = post%wpos
+            vip(5) = post%wneg
         end if
 
 999     continue
@@ -206,7 +216,8 @@ contains
 ! ----------------------------------------------------------------------
 
 !  Elasticity
-    call rcvalb(fami, kpg, ksp, '+', imate, ' ', 'ELAS', 0, ' ', [0.d0], nbel, nomel, valel, iok, 2)
+        call rcvalb(fami, kpg, ksp, '+', imate, ' ', 'ELAS', 0, ' ', [0.d0], &
+                    nbel, nomel, valel, iok, 2)
 
         lambda = valel(1)*valel(2)/((1+valel(2))*(1-2*valel(2)))
         deuxmu = valel(1)/(1+valel(2))
@@ -214,7 +225,8 @@ contains
         ec = lambda+deuxmu
 
 !   Damage parameters
-        call rcvalb(fami,kpg,ksp,'+',imate,' ','ENDO_LOCA_EXP',0,' ',[0.d0],nben,nomen,valen,iok,2)
+        call rcvalb(fami, kpg, ksp, '+', imate, ' ', 'ENDO_LOCA_EXP', 0, ' ', [0.d0], &
+                    nben, nomen, valen, iok, 2)
 
         sc = valen(3)
 
@@ -259,29 +271,28 @@ contains
 !  DAMAGE COMPUTATION AND TANGENT OPERATOR (ACCORDING TO RIGI AND RESI)
 ! =====================================================================
 
-    subroutine ComputeDamage(self, eps, bem, state, be, sig, dsde)
+    subroutine ComputeDamage(self, eps, be, state, sig, dsde)
 
         implicit none
 
         type(CONSTITUTIVE_LAW), intent(inout):: self
         real(kind=8), intent(in)             :: eps(:)
-        real(kind=8), intent(in)              :: bem
-        integer, intent(out)                  :: state
-        real(kind=8), intent(out)             :: be
+        integer, intent(inout)                :: state
+        real(kind=8), intent(inout)           :: be
         real(kind=8), intent(out)             :: sig(:), dsde(:, :)
 ! ---------------------------------------------------------------------
 ! eps   strain at the end of the time step
-! bem   damage at the beginning of the time-step
-! state damage state for the current time-step (0:elastic, 1:damage, 2:saturated)
-! be    damage at the end of the time-step
+! be    damage at the beginning (in) of the time-step then its end (out)
+! state damage state for the former (in) then the current (out) time-step
 ! sig   stress at the end of the time step
 ! dsde  tangent matrix (ndimsi,ndimsi)
 ! ---------------------------------------------------------------------
-        real(kind=8):: cvtole
+        real(kind=8), parameter:: cvtole = 1.d-3
         integer     :: iter
         real(kind=8), dimension(self%ndimsi):: sigpos, signeg, deps_quad
         real(kind=8), dimension(self%ndimsi, self%ndimsi):: deps_sigpos, deps_signeg
-     real(kind=8):: cvsig, cveps, cvbe, cvquad, cvequ, norpos, hn, db_hn, db_hu, db_phin, majB, majQ
+        real(kind=8):: cvsig, cveps, cvbe, cvquad, cvequ, norpos, hn, db_hn
+        real(kind=8)::db_hu, db_phin, majB, majQ
         real(kind=8):: quad, equ, db_equ, phi, stiff
         real(kind=8):: db_B, db_phi
         type(newton_state):: mem
@@ -289,22 +300,21 @@ contains
 ! ---------------------------------------------------------------------
 
         ! Expected accuracy for the stress and the strain
-        cvtole = self%cvuser
         cvsig = 0.5d0*self%mat%sigc*self%cvuser
         cveps = cvsig/(self%mat%unil%lambda+self%mat%unil%deuxmu)
 
         ! Nonlinear elastic stresses and tangent (or secant) matrices
-        call ComputeStress(self%mat%unil, eps, self%rigi, self%elas, cveps, &
-                           sigpos, signeg, deps_sigpos, deps_signeg)
+        self%unil = InitUnilateral(self%mat%unil, eps, cveps)
+        call ComputeStress(self%unil, sigpos, signeg)
 
         ! Convergence thresholds
         norpos = sqrt(dot_product(sigpos, sigpos))
-        hn = Fh(self, bem)
-        db_hn = Db_Fh(self, bem)
+        hn = Fh(self, be)
+        db_hn = Db_Fh(self, be)
         db_hu = Db_Fh(self, 1.d0)
-        db_phin = Db_Fphi(self, bem)
+        db_phin = Db_Fphi(self, be)
 
-        majB = 1/hn+(1-bem)*db_hu/hn**2
+        majB = 1/hn+(1-be)*db_hu/hn**2
         majQ = 0.5d0*db_phin
 
         if (norpos .gt. cvsig/majB/cvtole) then
@@ -312,7 +322,7 @@ contains
         else
             cvbe = cvtole
         end if
-        cvbe = min(cvbe, cvtole)
+
         cvquad = min(majQ*cvbe, cvtole)
         cvequ = min(majQ*cvbe, cvtole)
 
@@ -320,64 +330,65 @@ contains
         crit = CritInit(self%ndimsi, self%mat%cmat, self%itemax, cvquad)
         call SetQuad(crit, eps)
 
-! --------------------------------------------------------------------------------------------------
-!  Damage computation
-! --------------------------------------------------------------------------------------------------
+        ! Damage computation (if required)
+        if (self%resi) then
 
-        ! Already saturated point
-        if (bem .ge. 1.d0) then
-            state = 2
-            be = 1.d0
-            goto 200
+            ! Already saturated point
+            if (state .eq. 2) then
+                goto 200
+            end if
+
+            ! Saturated point: fast check (for large eps)
+            if (IsQuadLarger(crit, Fphi(self, 1.d0))) then
+                state = 2
+                be = 1.d0
+                goto 200
+            end if
+
+            quad = ComputeQuad(crit)
+            if (crit%exception .ne. 0) then
+                self%exception = crit%exception
+                goto 999
+            end if
+
+            ! Elastic regime
+            if (quad-Fphi(self, be) .le. cvequ) then
+                state = 0
+                goto 200
+            end if
+
+            ! Saturated point
+            if (quad-Fphi(self, 1.d0) .ge. -cvequ) then
+                state = 2
+                be = 1.d0
+                goto 200
+            end if
+
+            ! Damage regime
+            state = 1
+            do iter = 1, self%itemax
+                phi = Fphi(self, be)
+                equ = phi-quad
+                if (abs(equ) .le. cvequ) exit
+                db_equ = Db_Fphi(self, be)
+                be = utnewt(be, equ, db_equ, iter, mem, xmin=be, xmax=1.d0)
+            end do
+            if (iter .gt. self%itemax) then
+                self%exception = 1
+                goto 999
+            end if
+
+200         continue
+
         end if
 
-        ! Saturated point (avoid the computation of the quad for large values of srain)
-        if (IsQuadLarger(crit, Fphi(self, 1.d0))) then
-            state = 2
-            be = 1.d0
-            goto 200
-        end if
-
-        quad = ComputeQuad(crit)
-        if (crit%exception .ne. 0) then
-            self%exception = crit%exception
-            goto 999
-        end if
-
-        ! Elastic regime
-        if (quad-Fphi(self, bem) .le. 0.d0) then
-            state = 0
-            be = bem
-            goto 200
-        end if
-
-        ! Damage regime
-        state = 1
-        be = bem
-        do iter = 1, self%itemax
-            phi = Fphi(self, be)
-            equ = phi-quad
-            if (abs(equ) .le. cvequ) exit
-            db_equ = Db_Fphi(self, be)
-            be = utnewt(be, equ, db_equ, iter, mem, xmin=be, xmax=1.d0)
-        end do
-        if (iter .gt. self%itemax) then
-            self%exception = 1
-            goto 999
-        end if
-
-200     continue
-
-        ! Stress computation
+        ! Stress computation (even if not resi)
         stiff = FB(self, be)
         sig = stiff*sigpos+signeg
 
         if (self%rigi) then
 
-            ! Correction de state en phase de prediction (facteur 10 pour enveloppe)
-            if (self%pred .and. state .eq. 0) then
-                if (IsQuadLarger(crit, Fphi(self, max(0.d0, bem-1.d1*cvbe)))) state = 1
-            end if
+            call ComputeStiffness(self%unil, deps_sigpos, deps_signeg)
 
             ! Contribution elastique a endommagement fixe
             dsde = stiff*deps_sigpos+deps_signeg
@@ -576,34 +587,23 @@ contains
 !  POST-TREATMENTS
 ! =====================================================================
 
-    function PostTreatment(self, eps, deps, be, postm) result(post)
+    function PostTreatment(self, be) result(post)
 
         implicit none
         type(CONSTITUTIVE_LAW), intent(in)  :: self
-        real(kind=8), intent(in)  :: eps(:)
-        real(kind=8), intent(in)  :: deps(:)
         real(kind=8), intent(in)  :: be
-        type(POST_TREATMENT), intent(in)  :: postm
         type(POST_TREATMENT)                :: post
 ! ---------------------------------------------------------------------
 ! eps   strain at the end of the time-step
 ! deps  strain increment
 ! be    damage at the end of the time-step
-! postm post-treatment variables at the beginning of the time-step
-! ---------------------------------------------------------------------
-        real(kind=8):: wpos, wneg, wpos12, wneg12
 ! ---------------------------------------------------------------------
 
         ! stiffness damage
         post%damsti = 1-FB(self, be)
 
         ! elastic energy
-        call ComputeEnergy(self%mat%unil, eps, wpos, wneg)
-        post%welas = wneg+(1-post%damsti)*wpos
-
-        ! dissipated energy
-        call ComputeEnergy(self%mat%unil, eps-0.5d0*deps, wpos12, wneg12)
-        post%wdiss = postm%wdiss+(post%damsti-postm%damsti)*wpos12
+        call ComputeEnergy(self%unil, post%wpos, post%wneg)
 
     end function PostTreatment
 

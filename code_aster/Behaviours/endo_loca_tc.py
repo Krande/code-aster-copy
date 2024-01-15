@@ -17,19 +17,16 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-
 from .cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom="ENDO_LOCA_EXP",
+    nom="ENDO_LOCA_TC",
     lc_type=("MECANIQUE",),
-    doc="""Comportement élastique-fragile, à
-endommagement scalaire, seuil exponentiel et
-   non local à gradient d'endommagement - R5.03.25""",
-    num_lc=60,
-    nb_vari=5,
-    nom_vari=("ENDO", "INDIENDO", "ENDORIGI", "ENERTRAC", "ENERCOMP"),
-    mc_mater=("ELAS", "ENDO_LOCA_EXP"),
+    doc="""Comportement quasi-fragile isotrope pour le béton - R5.03.XX""",
+    num_lc=79,
+    nb_vari=7,
+    nom_vari=("ENDO", "ENDOTRAC", "HISTTRAC", "ENERTRAC", "ENDOCOMP", "HISTCOMP", "ENERCOMP"),
+    mc_mater=("ELAS", "ENDO_LOCA_TC"),
     modelisation=("3D", "AXIS", "D_PLAN"),
     deformation=("PETIT", "GDEF_LOG"),
     algo_inte=("SPECIFIQUE",),
@@ -39,5 +36,4 @@ endommagement scalaire, seuil exponentiel et
     exte_vari=None,
     deform_ldc=("MECANIQUE",),
     regu_visc=("REGU_VISC_ELAS",),
-    post_incr=None,
 )

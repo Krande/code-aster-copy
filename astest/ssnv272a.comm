@@ -18,89 +18,109 @@
 # --------------------------------------------------------------------
 
 # ---------------------------------------------------------------------
-#  Traction - compression confinee pour la loi ENDO_LOCA_EXP (3D)
+#  Traction - compression confinee pour la loi ENDO_LOCA_TC (3D)
 # ---------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), IMPR_MACRO="OUI")
 
 import math
 
-## PARAMETRES MATERIAUX EN ENTREE DE LA LOI
 
-# e  = 34129.12261731629         Young modulus (MPa)
-# nu = 0.2                       Poisson ratio
-# fc = 40.0                      Compressive strength (MPa)
-# ft = 3.023810519747695         Tensile strength (MPa)
-# gf = 0.14180569037671892       Fracture energy (N/mm)
-# s0 = 0.8271021337402532        sig0 threshold parameter (MPa)
-# g0 = 41.77999513417511         tau0 threshold parameter
-# b0 = 0.1                       beta0 threshold parameter
-# lb = 9480.311838143414         lambda Lame coefficient (MPa)
-# mu = 14220.46775721512         mu Lame coefficient
-# ec = 37921.24735257366         confined stiffness
-# wc = 0.00012136865377790994    peak elastic energy
-# sc = 3.0339580553333283        confined peak stress (MPa)
-# lc = 344.1186994573466         critical length (mm)
-# Lf = 200.0                     average crack distance (mm)
-# ka = 5.841940483092377         normalised damage energy
-# m0 = 0.5890486225480862        cohesive response m0 parameter
-# d1 = 4.08104856952699          cohesive response D1 parameter
-# r  = 3.9498515721856102        cohesive response r exponent
-
-
-# parametres a renseigner dans DEFI_MATER_GC (si utilise)
-young = 34129.12261731629
-nu = 0.20
+# Donnees d'entree
 fc = 40.0
-ft = 3.023810519747695
-GF = 0.14180569037671892
-p = 2.0
+nu = 0.2
+p = 1.5
 Lf = 200.0
 
 
-# Parametres a renseigner dans DEFI_MATERIAU (si utilise)
-young = 34129.12261731629
-nu = 0.20
-kappa = 5.841940483092377
-p = 2.0
-sigc = 3.0339580553333283
-sig0 = 0.8271021337402532
-rest = 8532.280654329064
+# Donnees estimees sur la base du fib model 2010 et estimation de la perte de linearite
+young = (fc / 10) ** (1 / 3.0) * 21500.0
+ft = 0.3 * (fc - 8) ** (2 / 3.0)
+GF = 73e-3 * fc**0.18
+sig0 = fc / 3.0
+
+
+# Parametres internes du modele pour DEFI_MATERIAU
+lbd = young * nu / (1 + nu) / (1 - 2 * nu)
+dmu = young / (1 + nu)
+ec = lbd + dmu
+kappa = 2 * ec * GF / (Lf * ft**2)
 
 
 # Autres parametres internes pour la solution analytique
-m0 = 0.5890486225480862
-D1 = 4.08104856952699
-r = 3.9498515721856102
-ec = 37921.24735257366
+m0 = 1.5 * pi * (p + 2) ** (-1.5)
+D1 = 0.75 * pi * (p + 1) ** 0.5
+r = (2 * (D1 - 1) - m0) / (2 - m0)
+beta = fc / sig0
 
 
-# Solution analytique pour une valeur de b donnee
-b = 0.1
-epsc = sigc / ec
-sig = (1 - b) * sigc
+# Valeur cible pour l'endommagement en traction
+b = 0.1  # endommagement cible en traction
+rct = 15  # ratio deformation compression max / deformation traction max
+
+
+# Parametres de regularisation numerique
+rrc = 0.95  # rest_rigi_rc
+rest = young / (fc * 2.0 * (1 - rrc))  # rest_rigidite
+
+
+print("fc    = ", fc)
+print("nu    = ", nu)
+print("p     = ", p)
+print("Lf    = ", Lf)
+print("young = ", young)
+print("ft    = ", ft)
+print("GF    = ", GF)
+print("sig0  = ", sig0)
+print("lambda = ", lbd)
+print("mu     = ", 0.5 * dmu)
+print("ec     = ", ec)
+print("kappa  = ", kappa)
+print("rest   = ", rrc)
+print("rest   = ", rest)
+print("m0     = ", m0)
+print("D1     = ", D1)
+print("r      = ", r)
+print("beta   = ", beta)
+print("b      = ", b)
+print("rct    = ", rct)
+
+
+# Solution analytique en traction
+eps_e = ft / ec
+sig_t = (1 - b) * ft
 h = 1 - b + 0.5 * kappa * b * (m0 + (D1 - m0) * b ** (r - 1))
-B = (1 - b) / h
-eps = sig / (ec * B)
+stf_t = (1 - b) / h
+eps_t = sig_t / (ec * stf_t)
 
-# Solution pour les variables de post-traitement
-wc = 0.5 * sigc**2 / ec
+
+# Post-traitements en traction
 a = 0.5 * (m0 * b + (D1 - m0) * b**r - (D1 - m0) * (r - 1) / (r + 1) * b ** (r + 1))
-wdiss = kappa * wc * a
-welas = 0.5 * eps * sig
-wpos_t = 0.5 * ec * eps**2
+wall_t = 0.5 * ec * eps_t**2
+wneg_t = 0.0
+wpos_t = wall_t - wneg_t
 
 
 # Branche en compression
-epscomp = -2 * eps
+eps_c = -rct * eps_t
+sigall_c = ec * eps_c
+signeg_c = ec * (eps_c - 0.5 / rest) * math.exp(1 / (rest * eps_c))
+sigpos_c = sigall_c - signeg_c
+chi_c = -signeg_c / sig0
 
-wall = 0.5 * ec * epscomp**2
-wneg = 0.5 * ec * epscomp**2 * math.exp(1 / (rest * epscomp))
-wecomp = B * wall + (1 - B) * wneg
+if chi_c < 1:
+    stf_c = 1.0
+else:
+    sqp = 1 + (beta - 1) * math.tanh((chi_c - 1) / (beta - 1))
+    stf_c = sqp / chi_c
 
-sigall = ec * epscomp
-signeg = ec * (epscomp - 0.5 / rest) * math.exp(1 / (rest * epscomp))
-sigcomp = B * sigall + (1 - B) * signeg
+sig_c = stf_c * (stf_t * sigpos_c + signeg_c)
+
+
+# Post-traitements en compression
+wall_c = 0.5 * ec * eps_c**2
+wneg_c = 0.5 * ec * eps_c**2 * math.exp(1 / (rest * eps_c))
+wpos_c = wall_c - wneg_c
 
 
 # ----------------------------------------------------------------#
@@ -112,22 +132,35 @@ sigcomp = B * sigall + (1 - B) * signeg
 # E=young,
 # NU=nu,
 # ),
-# ENDO_LOCA_EXP = _F(
-# KAPPA = kappa,
-# P     = p,
-# SIGC  = sigc,
-# SIG0  = sig0,
+# ENDO_LOCA_TC = _F(
+# KAPPA         = kappa,
+# P             = p,
+# FT            = ft,
+# SIG0          = sig0,
+# FC            = fc,
+# CRIT_REGU     = 0.95,
 # REST_RIGIDITE = rest,
 # ),
 # )
 
 MATE = DEFI_MATER_GC(
-    ENDO_LOCA_EXP=_F(FC=fc, NU=nu, E=young, FT=ft, GF=GF, P=p, DIST_FISSURE=Lf, REST_RIGI_FC=0.95)
+    ENDO_LOCA_TC=_F(
+        FC=fc,
+        NU=nu,
+        E=young,
+        FT=ft,
+        GF=GF,
+        P=p,
+        DIST_FISSURE=Lf,
+        REST_RIGI_FC=rrc,
+        SIG0=sig0,
+        COEF_REDU_SEUIL=0.95,  # sans influence en uniaxial
+    )
 )
 
 TEMPS1 = DEFI_LIST_REEL(
     DEBUT=0.0,
-    INTERVALLE=(_F(JUSQU_A=1.0, NOMBRE=2), _F(JUSQU_A=2.0, NOMBRE=50), _F(JUSQU_A=3.0, NOMBRE=10)),
+    INTERVALLE=(_F(JUSQU_A=1.0, NOMBRE=2), _F(JUSQU_A=2.0, NOMBRE=5), _F(JUSQU_A=3.0, NOMBRE=5)),
 )
 
 DEFLIST1 = DEFI_LIST_INST(
@@ -139,16 +172,16 @@ DEFLIST1 = DEFI_LIST_INST(
 # ESSAI DE TRACRION A DEFORMATIONS IMPOSEES                    #
 # ----------------------------------------------------------------#
 
-HISTORY = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 1.0, epsc, 2.0, eps, 3.0, epscomp))
+HISTORY = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 1.0, eps_e, 2.0, eps_t, 3.0, eps_c))
 
 
 ZERO = DEFI_CONSTANTE(VALE=0.0)
 
 
-EVOL_3D = SIMU_POINT_MAT(
+evol = SIMU_POINT_MAT(
     SUPPORT="ELEMENT",
     MODELISATION="3D",
-    COMPORTEMENT=_F(RELATION="ENDO_LOCA_EXP", ITER_INTE_MAXI=20, RESI_INTE=1.0e-8),
+    COMPORTEMENT=_F(RELATION="ENDO_LOCA_TC", ITER_INTE_MAXI=20, RESI_INTE=1.0e-8),
     MATER=MATE,
     INCREMENT=_F(LIST_INST=DEFLIST1),
     NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
@@ -162,65 +195,59 @@ EVOL_3D = SIMU_POINT_MAT(
 # TESTS PAR RAPPORT AUX RESULTAT ANALYTIQUE                      #
 # ----------------------------------------------------------------#
 
+from code_aster.Behaviours.endo_loca_tc import loi
+
+vi_names = loi.get_nom_vari()
+vi_num = dict()
+vi_num.update(zip(vi_names, ["V" + repr(i) for i in range(1, len(vi_names) + 1)]))
+
+
 tol = 1.0e-6
 
 TEST_TABLE(
-    TABLE=EVOL_3D,
+    TABLE=evol,
     CRITERE="RELATIF",
     REFERENCE="ANALYTIQUE",
     PRECISION=tol,
-    VALE_CALC=2.7305622496832695,
-    VALE_REFE=sig,
+    VALE_CALC=2.721429217988165,
+    VALE_REFE=sig_t,
     NOM_PARA="SIXX",
     FILTRE=_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=2.0, CRITERE="RELATIF", PRECISION=1.0e-08),
 )
 
 
 TEST_TABLE(
-    TABLE=EVOL_3D,
+    TABLE=evol,
     CRITERE="RELATIF",
     REFERENCE="ANALYTIQUE",
     PRECISION=tol,
-    VALE_CALC=0.10000000002342764,
+    VALE_CALC=0.10000004224128356,
     VALE_REFE=b,
-    NOM_PARA="V1",
+    NOM_PARA=vi_num["HISTTRAC"],
     FILTRE=_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=2.0, CRITERE="RELATIF", PRECISION=1.0e-08),
 )
 
 
 TEST_TABLE(
-    TABLE=EVOL_3D,
+    TABLE=evol,
     CRITERE="RELATIF",
     REFERENCE="ANALYTIQUE",
     PRECISION=tol,
-    VALE_CALC=0.161389791862796,
-    VALE_REFE=1 - B,
-    NOM_PARA="V3",
+    VALE_CALC=0.19167393341721495,
+    VALE_REFE=1 - stf_t,
+    NOM_PARA=vi_num["ENDOTRAC"],
     FILTRE=_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=2.0, CRITERE="RELATIF", PRECISION=1.0e-08),
 )
 
 
 TEST_TABLE(
-    TABLE=EVOL_3D,
+    TABLE=evol,
     CRITERE="RELATIF",
     REFERENCE="ANALYTIQUE",
     PRECISION=tol,
-    VALE_CALC=0.00013978844194595995,
+    VALE_CALC=0.00014945426341367903,
     VALE_REFE=wpos_t,
-    NOM_PARA="V4",
-    FILTRE=_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=2.0, CRITERE="RELATIF", PRECISION=1.0e-08),
-)
-
-
-TEST_TABLE(
-    TABLE=EVOL_3D,
-    CRITERE="RELATIF",
-    REFERENCE="ANALYTIQUE",
-    PRECISION=tol,
-    VALE_CALC=0.0,
-    VALE_REFE=0.0,
-    ORDRE_GRANDEUR=wpos_t,
-    NOM_PARA="V5",
+    NOM_PARA=vi_num["ENERTRAC"],
     FILTRE=_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=2.0, CRITERE="RELATIF", PRECISION=1.0e-08),
 )
 
@@ -231,49 +258,61 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-    TABLE=EVOL_3D,
+    TABLE=evol,
     CRITERE="RELATIF",
     REFERENCE="ANALYTIQUE",
     PRECISION=tol,
-    VALE_CALC=-6.173493130946158,
-    VALE_REFE=sigcomp,
+    VALE_CALC=-37.73646615139175,
+    VALE_REFE=sig_c,
     NOM_PARA="SIXX",
     FILTRE=_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=3.0, CRITERE="RELATIF", PRECISION=1.0e-08),
 )
 
 
 TEST_TABLE(
-    TABLE=EVOL_3D,
+    TABLE=evol,
     CRITERE="RELATIF",
     REFERENCE="ANALYTIQUE",
     PRECISION=tol,
-    VALE_CALC=0.10000000002342764,
+    VALE_CALC=0.10000004224128356,
     VALE_REFE=b,
-    NOM_PARA="V1",
+    NOM_PARA=vi_num["HISTTRAC"],
     FILTRE=_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=3.0, CRITERE="RELATIF", PRECISION=1.0e-08),
 )
 
 
 TEST_TABLE(
-    TABLE=EVOL_3D,
+    TABLE=evol,
     CRITERE="RELATIF",
     REFERENCE="ANALYTIQUE",
     PRECISION=tol,
-    VALE_CALC=0.0002765811194039721,
-    VALE_REFE=wall - wneg,
-    NOM_PARA="V4",
+    VALE_CALC=0.24641291245103047,
+    VALE_REFE=1 - stf_c,
+    NOM_PARA=vi_num["ENDOCOMP"],
     FILTRE=_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=3.0, CRITERE="RELATIF", PRECISION=1.0e-08),
 )
 
 
 TEST_TABLE(
-    TABLE=EVOL_3D,
+    TABLE=evol,
     CRITERE="RELATIF",
     REFERENCE="ANALYTIQUE",
     PRECISION=tol,
-    VALE_CALC=0.00028257264837986773,
-    VALE_REFE=wneg,
-    NOM_PARA="V5",
+    VALE_CALC=0.0028329331187138783,
+    VALE_REFE=wpos_c,
+    NOM_PARA=vi_num["ENERTRAC"],
+    FILTRE=_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=3.0, CRITERE="RELATIF", PRECISION=1.0e-08),
+)
+
+
+TEST_TABLE(
+    TABLE=evol,
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=tol,
+    VALE_CALC=0.030794276149363902,
+    VALE_REFE=wneg_c,
+    NOM_PARA=vi_num["ENERCOMP"],
     FILTRE=_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=3.0, CRITERE="RELATIF", PRECISION=1.0e-08),
 )
 
