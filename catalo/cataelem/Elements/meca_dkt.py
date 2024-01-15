@@ -299,6 +299,11 @@ class MEDKQU4(Element):
             para_in=((SP.PGEOMER, NGEOMER), (SP.PORIGIN, LC.CGEOM3D)),
             para_out=((SP.PVECTU1, MVECTUR), (SP.PVECTU2, MVECTUR)),
         ),
+        OP.CHAR_MECA_EPSA_R(
+            te=312,
+            para_in=((SP.PMATERC, LC.CMATERC), (OP.CHAR_MECA_EPSA_R.PVARCPR, LC.ZVARCPG)),
+            para_out=((SP.PVECTUR, MVECTUR),),
+        ),
         OP.CHAR_MECA_EPSI_R(
             te=35,
             para_in=(
@@ -575,6 +580,11 @@ class MEDKQU4(Element):
                 (SP.PVARCRR, LC.ZVARCPG),
             ),
             para_out=((OP.EPOT_ELEM.PENERDR, EENERR),),
+        ),
+        OP.CHAR_MECA_EPSA_R(
+            te=312,
+            para_in=((SP.PMATERC, LC.CMATERC), (OP.CHAR_MECA_EPSA_R.PVARCPR, LC.ZVARCPG)),
+            para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.EPSI_ELGA(
             te=33,
@@ -1044,6 +1054,7 @@ class MEDKQU4(Element):
                 (OP.TOU_INI_ELNO.PGEOM_R, NGEOMER),
                 (OP.TOU_INI_ELNO.PNEUT_F, LC.ENNEUT_F),
                 (OP.TOU_INI_ELNO.PNEUT_R, LC.ENNEUT_R),
+                (SP.PTEMPN_R, LC.ETEMPNO),
                 (OP.TOU_INI_ELNO.PPRES_R, EPRESNO),
                 (OP.TOU_INI_ELNO.PSIEF_R, EEFGENOR),
             ),

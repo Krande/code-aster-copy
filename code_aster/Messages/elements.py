@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -412,6 +412,16 @@ pour préciser les orientations des couches
       Attention avec ELAS_ORTH vous devez absolument définir DEFI_COMPOSITE pour préciser l'orientation des couches.
       Attention ELAS_COQUE donne les propriétés matériaux (membrane, flexion) dans le repère
       intrinsèque de la coque.
+"""
+    ),
+    93: _(
+        """
+Erreur :
+   Le calcul du chargement dû aux déformations anélastiques n'est pas programmé pour le type d'élément %(k1)s.
+
+   Conseil :
+  Pour pouvoir continuer le calcul, EPSA doit être nul. Le chargement sera nul.
+  Il faut émettre une demande d'évolution pour que ce chargement soit pris en compte.
 """
     ),
 }

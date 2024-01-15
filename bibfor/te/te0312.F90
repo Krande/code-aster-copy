@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,6 +46,8 @@ subroutine te0312(option, nomte)
 #include "asterfort/jeveuo.h"
 #include "asterfort/pmfinfo.h"
 #include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/utmess.h"
 !
 ! --------------------------------------------------------------------------------------------------
@@ -56,7 +58,8 @@ subroutine te0312(option, nomte)
 !
     integer :: lmater, icompo, iret, ig, icp
     integer :: icodre(2), kpg, spt
-    real(kind=8)      :: bendog(1), kdessi(1), alpha(1)
+    integer :: ndim, nno, nnos, npg1, ipoids, ivf, idfde, jgano, igau
+    real(kind=8)      :: bendog(1), kdessi(1), alpha(1), epsa(6)
     character(len=8)  :: fami, poum, materi
     character(len=16) :: mult_comp
 !
@@ -70,6 +73,7 @@ subroutine te0312(option, nomte)
 !
     call jevech('PMATERC', 'L', lmater)
     fami = 'FPG1'; kpg = 1; spt = 1; poum = '+'
+    epsa(:) = 0.0d0
 !
     IsPmf = ASTER_FALSE
 !   Si c'est une PMF : Il peut y avoir plusieurs matériaux sur la maille
@@ -119,6 +123,44 @@ subroutine te0312(option, nomte)
             if ((icodre(1) .eq. 0) .and. (alpha(1) .ne. 0.d0)) then
                 call utmess('F', 'ELEMENTS_19', sk=nomte)
             end if
+        else if (option .eq. 'CHAR_MECA_EPSA_R') then
+            ! EPSA DOIT ETRE NUL SUR LES ELEMENTS DE STRUCTURE
+            call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg1, &
+                             jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
+
+            do igau = 1, npg1
+                epsa(:) = 0.0d0
+                call rcvarc(' ', 'EPSAXX', '+', 'RIGI', igau, &
+                            1, epsa(1), icodre(1))
+                if ((icodre(1) .eq. 0) .and. (epsa(1) .ne. 0.d0)) then
+                    call utmess('F', 'ELEMENTS_93', sk=nomte)
+                end if
+                call rcvarc(' ', 'EPSAYY', '+', 'RIGI', igau, &
+                            1, epsa(2), icodre(1))
+                if ((icodre(1) .eq. 0) .and. (epsa(2) .ne. 0.d0)) then
+                    call utmess('F', 'ELEMENTS_93', sk=nomte)
+                end if
+                call rcvarc(' ', 'EPSAZZ', '+', 'RIGI', igau, &
+                            1, epsa(3), icodre(1))
+                if ((icodre(1) .eq. 0) .and. (epsa(3) .ne. 0.d0)) then
+                    call utmess('F', 'ELEMENTS_93', sk=nomte)
+                end if
+                call rcvarc(' ', 'EPSAXY', '+', 'RIGI', igau, &
+                            1, epsa(4), icodre(1))
+                if ((icodre(1) .eq. 0) .and. (epsa(4) .ne. 0.d0)) then
+                    call utmess('F', 'ELEMENTS_93', sk=nomte)
+                end if
+                call rcvarc(' ', 'EPSAXZ', '+', 'RIGI', igau, &
+                            1, epsa(5), icodre(1))
+                if ((icodre(1) .eq. 0) .and. (epsa(5) .ne. 0.d0)) then
+                    call utmess('F', 'ELEMENTS_93', sk=nomte)
+                end if
+                call rcvarc(' ', 'EPSAYZ', '+', 'RIGI', igau, &
+                            1, epsa(6), icodre(1))
+                if ((icodre(1) .eq. 0) .and. (epsa(6) .ne. 0.d0)) then
+                    call utmess('F', 'ELEMENTS_93', sk=nomte)
+                end if
+            end do
         else
             ASSERT(.false.)
         end if

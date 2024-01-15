@@ -139,6 +139,11 @@ class MECA_DIS_TR_N(Element):
             ),
             para_out=((SP.PMATUNS, MMATUNS), (SP.PMATUUR, MMATUUR)),
         ),
+        OP.CHAR_MECA_EPSA_R(
+            te=99,
+            para_in=((SP.PGEOMER, NGEOMER), (OP.CHAR_MECA_EPSA_R.PVARCPR, LC.ZVARCPG)),
+            para_out=((SP.PVECTUR, MVECTUR),),
+        ),
         #       -- te0580 : ne resout que le cas trivial : EPXX=0.
         OP.CHAR_MECA_EPSI_R(
             te=580, para_in=((SP.PEPSINR, CEPSINR),), para_out=((SP.PVECTUR, MVECTUR),)

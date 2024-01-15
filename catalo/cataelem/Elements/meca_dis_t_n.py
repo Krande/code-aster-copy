@@ -130,6 +130,11 @@ class MECA_DIS_T_N(Element):
             ),
             para_out=((SP.PMATUNS, MMATUNS), (SP.PMATUUR, MMATUUR)),
         ),
+        OP.CHAR_MECA_EPSA_R(
+            te=99,
+            para_in=((SP.PGEOMER, NGEOMER), (OP.CHAR_MECA_EPSA_R.PVARCPR, LC.ZVARCPG)),
+            para_out=((SP.PVECTUR, MVECTUR),),
+        ),
         #       -- te0580 : ne resout que le cas trivial : EPXX=0.
         OP.CHAR_MECA_EPSI_R(
             te=580, para_in=((SP.PEPSINR, CEPSINR),), para_out=((SP.PVECTUR, MVECTUR),)
@@ -523,6 +528,7 @@ class MECA_DIS_T_N(Element):
                 (OP.TOU_INI_ELNO.PINST_R, LC.EEINST_R),
                 (OP.TOU_INI_ELNO.PNEUT_F, LC.EENEUT_F),
                 (OP.TOU_INI_ELNO.PNEUT_R, LC.EENEUT_R),
+                (SP.PTEMPN_R, LC.ETEMPNO),
                 (OP.TOU_INI_ELNO.PSIEF_R, EEFGENO),
                 (OP.TOU_INI_ELNO.PVARI_R, LC.ZVARINO),
             ),

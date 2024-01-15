@@ -142,6 +142,11 @@ class MEGMTR3(Element):
             ),
             para_out=((SP.PMATUUR, MMATUUR),),
         ),
+        OP.CHAR_MECA_EPSA_R(
+            te=312,
+            para_in=((SP.PMATERC, LC.CMATERC), (OP.CHAR_MECA_EPSA_R.PVARCPR, LC.ZVARCPG)),
+            para_out=((SP.PVECTUR, MVECTUR),),
+        ),
         OP.CHAR_MECA_EPSI_R(
             te=430,
             para_in=(
@@ -603,7 +608,9 @@ class MEGMTR3(Element):
                 (OP.TOU_INI_ELGA.PVARI_R, ZVARIPG),
             ),
         ),
-        OP.TOU_INI_ELNO(te=99, para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER),)),
+        OP.TOU_INI_ELNO(
+            te=99, para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER), (SP.PTEMPN_R, LC.ETEMPNO))
+        ),
         OP.VARI_ELNO(
             te=4, para_in=((SP.PVARIGR, ZVARIPG),), para_out=((OP.VARI_ELNO.PVARINR, LC.ZVARINO),)
         ),

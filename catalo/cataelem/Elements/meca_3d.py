@@ -32,6 +32,8 @@ NDEPLAC = LocatedComponents(phys=PHY.DEPL_C, type="ELNO", components=("DX", "DY"
 
 DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY", "DZ"))
 
+ENEU1_R = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X[30]",))
+
 MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
 MVECZZR = ArrayOfComponents(phys=PHY.VSIZ_R, locatedComponents=LC.DDL_NOZ1)
@@ -1346,7 +1348,11 @@ class MECA_HEXA20(Element):
         OP.SING_ELNO(te=99, para_out=((SP.PSINGNO, LC.ESINGNO),)),
         OP.TOU_INI_ELEM(
             te=99,
-            para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM3D), (OP.TOU_INI_ELEM.PNEUT_I, LC.CNTINII)),
+            para_out=(
+                (OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM3D),
+                (OP.TOU_INI_ELEM.PNEUT_I, LC.CNTINII),
+                (SP.PNEU1_R, ENEU1_R),
+            ),
         ),
         OP.TOU_INI_ELGA(
             te=99,
@@ -1373,6 +1379,7 @@ class MECA_HEXA20(Element):
                 (OP.TOU_INI_ELNO.PINST_R, LC.ENINST_R),
                 (OP.TOU_INI_ELNO.PNEUT_F, LC.ENNEUT_F),
                 (OP.TOU_INI_ELNO.PNEUT_R, LC.ENNEUT_R),
+                (SP.PTEMPN_R, LC.ETEMPNO),
                 (OP.TOU_INI_ELNO.PSIEF_R, LC.ESIG3DR),
                 (OP.TOU_INI_ELNO.PVARI_R, LC.ZVARINO),
             ),

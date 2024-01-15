@@ -282,6 +282,11 @@ class TemplateElement(Element):
             ),
             para_out=((SP.PMATUUR, MMATUUR),),
         ),
+        OP.CHAR_MECA_EPSA_R(
+            te=312,
+            para_in=((SP.PMATERC, LC.CMATERC), (OP.CHAR_MECA_EPSA_R.PVARCPR, LC.ZVARCPG)),
+            para_out=((SP.PVECTUR, MVECTUR),),
+        ),
         OP.CHAR_MECA_FFCO3D(
             te=403,
             para_in=((SP.PFFCO3D, CFORCEF), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),

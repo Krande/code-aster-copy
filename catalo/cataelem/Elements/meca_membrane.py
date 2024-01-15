@@ -148,6 +148,11 @@ class MEMBTR3(Element):
             ),
             para_out=((SP.PMATUUR, MMATUUR),),
         ),
+        OP.CHAR_MECA_EPSA_R(
+            te=312,
+            para_in=((SP.PMATERC, LC.CMATERC), (OP.CHAR_MECA_EPSA_R.PVARCPR, LC.ZVARCPG)),
+            para_out=((SP.PVECTUR, MVECTUR),),
+        ),
         OP.CHAR_MECA_EPSI_R(
             te=434,
             para_in=(

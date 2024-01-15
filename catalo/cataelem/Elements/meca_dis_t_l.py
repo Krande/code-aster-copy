@@ -134,6 +134,11 @@ class MECA_DIS_T_L(Element):
             ),
             para_out=((SP.PMATUNS, MMATUNS), (SP.PMATUUR, MMATUUR)),
         ),
+        OP.CHAR_MECA_EPSA_R(
+            te=99,
+            para_in=((SP.PGEOMER, NGEOMER), (OP.CHAR_MECA_EPSA_R.PVARCPR, LC.ZVARCPG)),
+            para_out=((SP.PVECTUR, MVECTUR),),
+        ),
         OP.CHAR_MECA_PESA_R(
             te=43,
             para_in=(
