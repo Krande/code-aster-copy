@@ -165,7 +165,7 @@ class NewtonSolver(SolverFeature):
 
             # Solve current iteration
             primal_incr, self.current_matrix, resi_fields = incr_solv.solve(
-                matrix_type, self.current_matrix
+                matrix_type, self.current_matrix, force
             )
 
             # Update

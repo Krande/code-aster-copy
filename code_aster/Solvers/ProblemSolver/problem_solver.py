@@ -286,5 +286,7 @@ class ProblemSolver(SolverFeature):
             return self._get_step_conv_solver()
         if option & SOP.StepSolver:
             return self._get_step_solver()
+        if option & SOP.TimeStepper:
+            return self.get_feature(SOP.TimeStepper)
         if required:
             raise NotImplementedError(f"unsupported feature id: {option}")
