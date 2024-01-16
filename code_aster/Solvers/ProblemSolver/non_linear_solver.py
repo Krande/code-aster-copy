@@ -146,6 +146,12 @@ class NonLinearSolver(SolverFeature):
         for source in self.get_childs(SOP.ConvergenceCriteria | SOP.EventSource):
             source.add_observer(self.stepper)
 
+    def getField(self, result, name, pname, pvale):
+        """Retrieve a field from a result."""
+        field = result.getField(name, para=pname, value=pvale)
+        eq_numbrng = self.phys_pb.getDOFNumbering().getEquationNumbering()
+        return field.copyUsingDescription(eq_numbrng)
+
     @profile
     def setInitialState(self):
         """Initialize the physical state."""

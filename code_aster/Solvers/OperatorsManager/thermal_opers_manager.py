@@ -147,31 +147,31 @@ class ThermalOperatorsManager(BaseOperatorsManager):
         )
         rigi_ther_ext.build()
 
-        result = AssemblyMatrixTemperatureReal(self.phys_pb)
-        result.addElementaryMatrix(rigi_ther, theta)
-        result.addElementaryMatrix(rigi_ther_ext, theta)
-        result.addElementaryMatrix(rigi_ther_dual)
-        result.addElementaryMatrix(mass_ther, 1.0 / dt)
-        result.assemble()
+        jacobian = AssemblyMatrixTemperatureReal(self.phys_pb)
+        jacobian.addElementaryMatrix(rigi_ther, theta)
+        jacobian.addElementaryMatrix(rigi_ther_ext, theta)
+        jacobian.addElementaryMatrix(rigi_ther_dual)
+        jacobian.addElementaryMatrix(mass_ther, 1.0 / dt)
+        jacobian.assemble()
 
-        return result
+        return jacobian
 
     def getResidual(self, scaling=1.0):
         """Computes the residual."""
         if self.isStationary():
-            result = self._getResidualStat(scaling)
+            residual = self._getResidualStat(scaling)
         else:
-            result = self._getResidualTrans(scaling)
-        return result
+            residual = self._getResidualTrans(scaling)
+        return residual
 
     def _getResidualStat(self, scaling=1.0):
         """Computes the residual for the stationary case."""
-        resi_state, internVar, stress = super().getResidual(scaling=scaling)
+        residual, internVar, stress = super().getResidual(scaling=scaling)
         self._temp_stress = stress
         self._temp_internVar = internVar
         if self._stat_init:
-            self._resi_temp = resi_state
-        return resi_state
+            self._resi_temp = residual
+        return residual
 
     def _getResidualTrans(self, scaling=1.0):
         """Computes the residual for the transient case."""
