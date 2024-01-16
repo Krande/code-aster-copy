@@ -352,16 +352,12 @@ class ExtendedDiscreteComputation:
             raise RuntimeError("Not implemented")
 
     @profile
-    def getNonLinearNeumannForces(
-        self, primal_prev, primal_step, time_prev, time_step, assembly=True
-    ):
+    def getNonLinearNeumannForces(self, primal_curr, time_curr, assembly=True):
         """Return the nonlinear Neumann forces field
 
         Arguments:
-                primal_prev : primal solution at the beginning of the time step
-                primal_step : incremental primal solution
-                time_prev (float): Previous time at the beginning of the time step
-                time_step (float): Time increment
+                primal_curr : current primal solution
+                time_curr (float): current time
                 assembly (bool): assemble if True
 
         Returns:
@@ -372,9 +368,7 @@ class ExtendedDiscreteComputation:
         phys_pb = self.getPhysicalProblem()
 
         if phys_pb.isThermal():
-            return self.getThermalNonLinearNeumannForces(
-                primal_prev + primal_step, time_prev + time_step, assembly
-            )
+            return self.getThermalNonLinearNeumannForces(primal_curr, time_curr, assembly)
         elif phys_pb.isMechanical():
             raise RuntimeError("Not implemented")
         elif phys_pb.isAcoustic():
@@ -492,14 +486,12 @@ class ExtendedDiscreteComputation:
                 phys_state.time_curr, varc_curr=phys_state.externVar
             )
 
-            resi_ext += self.getNonLinearNeumannForces(
-                phys_state.primal_prev,
-                phys_state.primal_step,
-                phys_state.time_prev,
-                phys_state.time_step,
-            )
+            resi_ext += self.getNonLinearNeumannForces(phys_state.primal_curr, phys_state.time_curr)
 
             resi_ext += self.getThermalExchangeForces(phys_state.primal_curr, phys_state.time_curr)
+            resi_ext += self.getThermalNonLinearVolumetricForces(
+                phys_state.primal_curr, phys_state.time_curr
+            )
         elif self.getPhysicalProblem().isMechanical():
             resi_ext = self.getNeumannForces(phys_state.time_curr, varc_curr=phys_state.externVar)
 
@@ -604,10 +596,7 @@ class ExtendedDiscreteComputation:
                 )
             else:
                 matr_elem_rigi = self.getTangentConductivityMatrix(
-                    phys_state.primal_prev,
-                    phys_state.primal_step,
-                    phys_state.externVar,
-                    with_dual=False,
+                    phys_state.primal_curr, phys_state.externVar, with_dual=False
                 )
                 codret = 0
         elif matrix_type == "TANGENTE":
@@ -624,10 +613,7 @@ class ExtendedDiscreteComputation:
                 )
             else:
                 matr_elem_rigi = self.getTangentConductivityMatrix(
-                    phys_state.primal_prev,
-                    phys_state.primal_step,
-                    phys_state.externVar,
-                    with_dual=False,
+                    phys_state.primal_curr, phys_state.externVar, with_dual=False
                 )
                 codret = 0
         else:

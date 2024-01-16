@@ -24,6 +24,7 @@ from ...Utilities import no_new_attributes
 from ...Objects import DiscreteComputation
 from ..Basics import Residuals
 
+
 class ThermalOperatorsManager(BaseOperatorsManager):
     """Solve an iteration."""
 
@@ -56,7 +57,6 @@ class ThermalOperatorsManager(BaseOperatorsManager):
         """Finalizes the operator manager."""
         self.phys_state.stress = self._temp_stress
         self.phys_state.internVar = self._temp_internVar
-        self.phys_state.primal_curr = self.phys_state.primal_step
         if self._stat_init:
             self.computeFirstResidual(self._resi_temp)
         else:
@@ -80,10 +80,7 @@ class ThermalOperatorsManager(BaseOperatorsManager):
 
         disc_comp = DiscreteComputation(self.phys_pb)
         self._resi_prev.resi_mass = disc_comp.getNonLinearCapacityForces(
-            self.phys_state.primal_prev,
-            self.phys_state.primal_step,
-            self.phys_state.time_step,
-            self.phys_state.externVar
+            self.phys_state.primal_curr, self.phys_state.externVar
         )
 
         self._first_iter = self._stat_init = False
@@ -123,21 +120,15 @@ class ThermalOperatorsManager(BaseOperatorsManager):
         disc_comp = DiscreteComputation(self.phys_pb)
 
         mass_ther = disc_comp.getTangentCapacityMatrix(
-            self.phys_state.primal_prev,
-            self.phys_state.primal_step,
-            self.phys_state.externVar,
+            self.phys_state.primal_curr, self.phys_state.externVar
         )
 
         rigi_ther = disc_comp.getTangentConductivityMatrix(
-            self.phys_state.primal_prev,
-            self.phys_state.primal_step,
-            self.phys_state.externVar,
-            with_dual=False
+            self.phys_state.primal_curr, self.phys_state.externVar, with_dual=False
         )
 
         rigi_ther_dual = disc_comp.getDualLinearConductivityMatrix()
         dt, theta = self.phys_state.time_step, self._theta
-
 
         rigi_ther_ext = disc_comp.getThermalExchangeMatrix(self.phys_state.time_curr)
         rigi_ther_ext *= -1.0
@@ -185,42 +176,26 @@ class ThermalOperatorsManager(BaseOperatorsManager):
         dt, theta = self.phys_state.time_step, self._theta
         disc_comp = DiscreteComputation(self.phys_pb)
 
-        temp_prev = self.phys_state.primal_prev
-        temp_time = self.phys_state.time_prev
-
-        self.phys_state.primal_prev = self.phys_state.primal_curr
-        self.phys_state.time_prev = self.phys_state.time_curr
-
         resi_curr, internVar, stress = super().getResidual(scaling=scaling)
 
-        self.phys_state.primal_prev = temp_prev
-        self.phys_state.time_prev = temp_time
-
         resi_mass = disc_comp.getNonLinearCapacityForces(
-            self.phys_state.primal_prev,
-            self.phys_state.primal_step,
-            self.phys_state.time_step,
-            self.phys_state.externVar
+            self.phys_state.primal_curr, self.phys_state.externVar
         )
 
-        EVNL_AS = (
-            (1.0 / dt) * self._resi_prev.resi_mass - \
-            (1.0 - theta) * self._resi_prev.resi_stress
-        )
+        EVNL_AS = (1.0 / dt) * self._resi_prev.resi_mass - (
+            1.0 - theta
+        ) * self._resi_prev.resi_stress
 
         residual = Residuals()
 
-        residual.resi_stress = - EVNL_AS + (
-            theta * resi_curr.resi_stress +
-            (1.0 / dt) * resi_mass
-        )
+        residual.resi_stress = -EVNL_AS + (theta * resi_curr.resi_stress + (1.0 / dt) * resi_mass)
 
         resi_dual = resi_curr.resi_int - resi_curr.resi_stress
 
         residual.resi_int = residual.resi_stress + resi_dual
 
         residual.resi_dual = resi_curr.resi_dual
-        residual.resi_ext = theta * resi_curr.resi_ext + (1.0-theta) * self._resi_prev.resi_ext
+        residual.resi_ext = theta * resi_curr.resi_ext + (1.0 - theta) * self._resi_prev.resi_ext
         residual.resi_cont = resi_curr.resi_cont
 
         residual.resi = residual.resi_ext - residual.resi_int

@@ -110,9 +110,8 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::getLinearConductivityMat
  * @brief Compute elementary matrices for mass matrix (RIGI_THER_TANG)
  */
 ElementaryMatrixTemperatureRealPtr DiscreteComputation::getTangentConductivityMatrix(
-    const FieldOnNodesRealPtr temp_prev, const FieldOnNodesRealPtr temp_step,
-    const FieldOnCellsRealPtr varc_curr, const VectorString &groupOfCells,
-    const bool &with_dual ) const {
+    const FieldOnNodesRealPtr temp_curr, const FieldOnCellsRealPtr varc_curr,
+    const VectorString &groupOfCells, const bool &with_dual ) const {
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
     const std::string option( "RIGI_THER_TANG" );
 
@@ -164,7 +163,6 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::getTangentConductivityMa
     }
 
     // Current Thermal Field
-    auto temp_curr = std::make_shared< FieldOnNodesReal >( *temp_prev + *temp_step );
     calcul->addInputField( "PTEMPEI", temp_curr );
 
     // Add output elementary terms
@@ -254,9 +252,10 @@ DiscreteComputation::getLinearCapacityMatrix( const ASTERDOUBLE time_curr,
 /**
  * @brief Compute elementary matrices for mass matrix (MASS_THER_TANG)
  */
-ElementaryMatrixTemperatureRealPtr DiscreteComputation::getTangentCapacityMatrix(
-    const FieldOnNodesRealPtr temp_prev, const FieldOnNodesRealPtr temp_step,
-    const FieldOnCellsRealPtr varc_curr, const VectorString &groupOfCells ) const {
+ElementaryMatrixTemperatureRealPtr
+DiscreteComputation::getTangentCapacityMatrix( const FieldOnNodesRealPtr temp_curr,
+                                               const FieldOnCellsRealPtr varc_curr,
+                                               const VectorString &groupOfCells ) const {
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
     const std::string option( "MASS_THER_TANG" );
 
@@ -308,7 +307,6 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::getTangentCapacityMatrix
     }
 
     // Current Thermal Field
-    auto temp_curr = std::make_shared< FieldOnNodesReal >( *temp_prev + *temp_step );
     calcul->addInputField( "PTEMPEI", temp_curr );
 
     // Add output elementary terms
