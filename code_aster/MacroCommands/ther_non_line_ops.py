@@ -47,8 +47,8 @@ def use_fortran(keywords):
         if key in keywords:
             return True
 
-    if keywords["TYPE_CALCUL"] == "TRAN":
-        return True
+    # if keywords["TYPE_CALCUL"] == "TRAN":
+    #     return True
 
     if keywords["METHODE"] in ("MODELE_REDUIT", "NEWTON_KRYLOV"):
         return True
@@ -147,6 +147,10 @@ def ther_non_line_ops(self, **args):
         TYPE_CALCUL=args["TYPE_CALCUL"],
         INCREMENT=args["INCREMENT"],
     )
+
+    if "SCHEMA_TEMPS" in args:
+        param["SCHEMA_TEMPS"] = args["SCHEMA_TEMPS"]
+
     solver.setKeywords(**param)
 
     class PostHookHydr:

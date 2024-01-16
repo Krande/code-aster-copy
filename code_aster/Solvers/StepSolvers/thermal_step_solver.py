@@ -45,7 +45,7 @@ class ThermalStepSolver(BaseStepSolver):
             *StepSolver*: A relevant *StepSolver* object.
         """
         calc_type, theta = param["TYPE_CALCUL"], None
-        if calc_type == "TRANS":
+        if calc_type == "TRAN":
             assert param["SCHEMA_TEMPS"]["SCHEMA"] == "HHT"
             theta = param["SCHEMA_TEMPS"]["THETA"]
         return cls(theta=theta)
