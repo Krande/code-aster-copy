@@ -83,7 +83,8 @@ class ThermalStepSolver(BaseStepSolver):
         """set up the step solver."""
         opers_manager = self.get_feature(SOP.OperatorsManager, optional=True)
         if not opers_manager:
-            opers_manager = ThermalOperatorsManager(theta=self._theta)
+            stat = self.param["ETAT_INIT"].get("STAT") == "OUI"
+            opers_manager = ThermalOperatorsManager(theta=self._theta, stat=stat)
         for feat, required in opers_manager.undefined():
             feat_obj = self.get_feature(feat, optional=(not required))
             opers_manager.use(feat_obj)

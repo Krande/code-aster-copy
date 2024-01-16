@@ -29,48 +29,64 @@ class ThermalOperatorsManager(BaseOperatorsManager):
 
     _first_jacobian = _lagr_scaling = None
     _temp_stress = _temp_internVar = _theta = None
-    _resi_prev = _resi_temp = _curr_iter = None
+    _resi_prev = _resi_temp = _first_iter = _stat_init = None
 
     __setattr__ = no_new_attributes(object.__setattr__)
 
-    def __init__(self, theta=None):
+    def __init__(self, theta=None, stat=None):
         super().__init__()
         self._first_jacobian = self._lagr_scaling = None
         self._temp_stress = self._temp_internVar = None
-        self._theta, self._curr_iter = theta, 0
-        self._resi_prev, self._resi_temp = None, []
+        self._resi_prev = self._resi_temp = None
+        self._theta, self._first_iter = theta, True
+        self._stat_init = stat
 
     def isStationary(self):
         """Checks whether it is a stationary or transient case"""
-        return self._theta is None
+        return self._stat_init or self._theta is None
 
     def initialize(self):
         """Initializes the operator manager."""
         self._first_jacobian = self._lagr_scaling = None
         self._temp_stress = self._temp_internVar = None
-        if self._curr_iter == 0:
-            disc_comp = DiscreteComputation(self.phys_pb)
-            self._resi_prev, _, _ = super().getResidual(scaling=1.0)
-            self._resi_prev.resi_mass = disc_comp.getNonLinearCapacityForces(
-                self.phys_state.primal_prev,
-                self.phys_state.primal_step,
-                self.phys_state.time_step,
-                self.phys_state.externVar
-            )
-            self._curr_iter = self._curr_iter + 1
+        if not self.isStationary():
+            self.computeFirstResidual()
 
     def finalize(self):
         """Finalizes the operator manager."""
         self.phys_state.stress = self._temp_stress
         self.phys_state.internVar = self._temp_internVar
         self.phys_state.primal_curr = self.phys_state.primal_step
-        self._resi_prev = self._resi_temp[-1]
+        if self._stat_init:
+            self.computeFirstResidual(self._resi_temp)
+        else:
+            self._resi_prev = self._resi_temp
 
     @property
     def first_jacobian(self):
         """Returns the first computed Jacobian"""
         assert self._first_jacobian is not None
         return self._first_jacobian
+
+    def computeFirstResidual(self, residual=None):
+        """Computes the first residual."""
+        if not self._first_iter:
+            return
+
+        if residual is None:
+            self._resi_prev = super().getResidual(scaling=1.0)[0]
+        else:
+            self._resi_prev = residual
+
+        disc_comp = DiscreteComputation(self.phys_pb)
+        self._resi_prev.resi_mass = disc_comp.getNonLinearCapacityForces(
+            self.phys_state.primal_prev,
+            self.phys_state.primal_step,
+            self.phys_state.time_step,
+            self.phys_state.externVar
+        )
+
+        self._first_iter = self._stat_init = False
 
     def getLagrangeScaling(self, matrix_type):
         """Returns Lagrange scaling.
@@ -160,6 +176,8 @@ class ThermalOperatorsManager(BaseOperatorsManager):
         resi_state, internVar, stress = super().getResidual(scaling=scaling)
         self._temp_stress = stress
         self._temp_internVar = internVar
+        if self._stat_init:
+            self._resi_temp = resi_state
         return resi_state
 
     def _getResidualTrans(self, scaling=1.0):
@@ -211,6 +229,6 @@ class ThermalOperatorsManager(BaseOperatorsManager):
         self._temp_internVar = internVar
 
         resi_curr.resi_mass = resi_mass
-        self._resi_temp.append(resi_curr)
+        self._resi_temp = resi_curr
 
         return residual
