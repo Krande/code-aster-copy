@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,13 +34,14 @@ class LineSearch(SolverFeature):
 
     optional_features = [SOP.OperatorsManager]
 
-    param = None
+    param = solve = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
     def __init__(self, keywords):
         super().__init__()
 
         self.param = keywords
+        self.solve = None
 
     def activated(self):
         """Return True if LineSearch is activated
@@ -51,10 +52,17 @@ class LineSearch(SolverFeature):
 
         return self.param is not None and self.param["ITER_LINE_MAXI"] > 0
 
+    def setup(self):
+        """Set up the line search object"""
+        if self.phys_pb.isMechanical():
+            self.solve = self.__solve_meca
+        elif self.phys_pb.isThermal():
+            self.solve = self.__solve_ther
+
     @profile
     @SolverFeature.check_once
-    def solve(self, solution, scaling=1.0):
-        """Apply linear search.
+    def __solve_meca(self, solution, scaling=1.0):
+        """Apply linear search for mechanical problems.
 
         Arguments:
             solution (FieldOnNodes): Displacement solution.
@@ -137,5 +145,75 @@ class LineSearch(SolverFeature):
                 fm = f
 
             raise ConvergenceError()
+
+        return solution
+
+    @profile
+    @SolverFeature.check_once
+    def __solve_ther(self, solution, scaling=1.0):
+        """Apply linear search for thermal problems.
+
+        Arguments:
+            solution (FieldOnNodes): Temperature solution.
+
+        Returns:
+            FieldOnNodes: Accelerated solution by linear search.
+        """
+
+        if self.activated():
+
+            def _f(rho, solution=solution, scaling=scaling):
+                self.phys_state.primal_step += rho * solution
+                opersManager = self.get_feature(SOP.OperatorsManager)
+                resi_state = opersManager.getResidual(scaling)
+                self.phys_state.primal_step -= rho * solution
+                testm = resi_state.resi.norm("NORM_INFINITY")
+                return resi_state.resi.dot(solution), testm
+
+            # retrieve args
+            f0, testm = _f(0.0, solution)
+
+            rho0 = 0.0
+            rho = 1.0
+
+            for iter in range(self.param["ITER_LINE_MAXI"] + 1):
+
+                f1, testm = _f(rho)
+
+                if testm < self.param["RESI_LINE_RELA"]:
+                    return rho * solution
+
+                if iter == 0:
+                    ffinal = f1
+                    rhof = 1.0
+
+                if abs(f1) < abs(ffinal):
+                    ffinal = f1
+                    rhof = rho
+
+                rhot = rho
+
+                if abs(f1 - f0) > np.finfo("float64").tiny:
+                    rho = -(f0 * rhot - f1 * rho0) / (f1 - f0)
+                    # print(
+                    #     "Linesearch: f1 = {}, rho0 = {}, f0 = {}, rhot = {}, rho = {}".format(f1, rho0, f0, rhot, rho),
+                    #     flush=True
+                    # )
+                    if rho < self.param["RHO_MIN"]:
+                        rho = self.param["RHO_MIN"]
+                    if rho > self.param["RHO_MAX"]:
+                        rho = self.param["RHO_MAX"]
+                    if abs(rho - rhot) < 1.0e-8:
+                        break
+                else:
+                    break
+
+                rho0 = rhot
+                f0 = f1
+
+            rho = rhof
+            f1 = ffinal
+
+            return rho * solution
 
         return solution

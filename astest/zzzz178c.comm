@@ -135,11 +135,6 @@ RESU = MECA_STATIQUE(MODELE=MODE_MQ, CHAM_MATER=MATE_M, EXCIT=(_F(CHARGE=CHAR), 
 # Extract the field from the result
 displ = RESU.getField("DEPL", 1)
 
-with shared_tmpdir("foo") as tmpdir:
-    DEFI_FICHIER(UNITE=87, FICHIER=osp.join(tmpdir, "resu_{}.med".format(rank)), TYPE="BINARY")
-    IMPR_RESU(FORMAT="MED", UNITE=87, RESU=_F(RESULTAT=RESU))
-    DEFI_FICHIER(ACTION="LIBERER", UNITE=87)
-
 # Validate the result againt sequential run
 # norm = displ.norm("NORM_2")
 norm = 0.18058607402884772

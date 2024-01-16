@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -130,7 +130,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=TEMP_10,
-            VALE_CALC=152.132802492,
+            VALE_CALC=152.132522538,
             VALE_REFE=153.213,
             REFERENCE="SOURCE_EXTERNE",
         ),
@@ -184,7 +184,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=TEMP_10,
-            VALE_CALC=152.104958534,
+            VALE_CALC=152.104677873,
             VALE_REFE=153.213,
             REFERENCE="SOURCE_EXTERNE",
         ),
@@ -238,7 +238,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=TEMP_10,
-            VALE_CALC=152.132802492,
+            VALE_CALC=152.132522538,
             VALE_REFE=153.213,
             REFERENCE="SOURCE_EXTERNE",
         ),

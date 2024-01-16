@@ -36,19 +36,15 @@ from ..Solvers import SolverOptions as SOP
 from ..Solvers import TimeStepper
 from ..Utilities import force_list, print_stats, reset_stats
 from .Utils.ther_non_line_fort_op import THER_NON_LINE_FORT
+from ..Helpers.syntax_adapters import adapt_increment_init
 
 
 def use_fortran(keywords):
     excluded_keys = ("EVOL_THER_SECH", "OBSERVATION")
 
-    # return False
-
     for key in excluded_keys:
         if key in keywords:
             return True
-
-    if keywords["TYPE_CALCUL"] == "TRAN":
-        return True
 
     if keywords["METHODE"] in ("MODELE_REDUIT", "NEWTON_KRYLOV"):
         return True
@@ -67,15 +63,7 @@ def use_fortran(keywords):
         return True
 
     for load in keywords["EXCIT"]:
-        if isinstance(
-            load["CHARGE"],
-            (
-                ThermalLoadFunction,
-                ThermalLoadReal,
-                ParallelThermalLoadFunction,
-                ParallelThermalLoadReal,
-            ),
-        ):
+        if isinstance(load["CHARGE"], (ThermalLoadFunction, ThermalLoadReal)):
             if load["CHARGE"].hasLoadResult():
                 return True
 
@@ -94,6 +82,8 @@ def ther_non_line_ops(self, **args):
 
     if use_fortran(args):
         return THER_NON_LINE_FORT(**args)
+
+    adapt_increment_init(args, "EVOL_THER")
 
     verbosity = args.get("INFO") or 1
 
@@ -146,7 +136,9 @@ def ther_non_line_ops(self, **args):
         SOLVEUR=args["SOLVEUR"],
         TYPE_CALCUL=args["TYPE_CALCUL"],
         INCREMENT=args["INCREMENT"],
+        REUSE=args["reuse"],
     )
+    param["SCHEMA_TEMPS"] = args.get("SCHEMA_TEMPS")
     solver.setKeywords(**param)
 
     class PostHookHydr:

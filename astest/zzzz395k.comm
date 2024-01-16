@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -217,7 +217,7 @@ TEST_RESU(
             NOM_CHAM="TEMP",
             GROUP_NO="N27",
             NOM_CMP="TEMP",
-            VALE_CALC=(0.0851156981709, -0.0851156981709),
+            VALE_CALC=(0.0851158147125, -0.0851158147125),
         ),
     )
 )
@@ -230,7 +230,7 @@ TEST_RESU(
             NOM_CHAM="FLUX_NOEU",
             GROUP_NO="N27",
             NOM_CMP="FLUX",
-            VALE_CALC=(-0.000131913642177, 0.000131913642177),
+            VALE_CALC=(-0.000131913484050, 0.000131913484050),
         ),
         _F(
             RESULTAT=base_d,
@@ -238,7 +238,7 @@ TEST_RESU(
             NOM_CHAM="FLUX_NOEU",
             GROUP_NO="N27",
             NOM_CMP="FLUY",
-            VALE_CALC=(-0.000264685470879, 0.000264685470879),
+            VALE_CALC=(-0.000264685089762, 0.000264685089762),
         ),
         _F(
             RESULTAT=base_d,
@@ -246,7 +246,7 @@ TEST_RESU(
             NOM_CHAM="FLUX_NOEU",
             GROUP_NO="N27",
             NOM_CMP="FLUX",
-            VALE_CALC=(0.00210320104369, -0.00210320104369),
+            VALE_CALC=(0.00210322144697, -0.00210322144697),
         ),
         _F(
             RESULTAT=base_d,
@@ -254,7 +254,7 @@ TEST_RESU(
             NOM_CHAM="FLUX_NOEU",
             GROUP_NO="N27",
             NOM_CMP="FLUY",
-            VALE_CALC=(0.00422456825203, -0.00422456825203),
+            VALE_CALC=(0.00422460229674, -0.00422460229674),
         ),
         _F(
             RESULTAT=base_d,
@@ -262,7 +262,7 @@ TEST_RESU(
             NOM_CHAM="FLUX_NOEU",
             GROUP_NO="N27",
             NOM_CMP="FLUX",
-            VALE_CALC=(0.00540174775494, -0.00540174775494),
+            VALE_CALC=(0.00540173583501, -0.00540173583501),
         ),
         _F(
             RESULTAT=base_d,
@@ -270,7 +270,7 @@ TEST_RESU(
             NOM_CHAM="FLUX_NOEU",
             GROUP_NO="N27",
             NOM_CMP="FLUY",
-            VALE_CALC=(0.010855124341, -0.010855124341),
+            VALE_CALC=(0.010855090211, -0.010855090211),
         ),
     )
 )
@@ -295,7 +295,7 @@ TEST_TABLE(
     ),
 )
 TEST_TABLE(
-    VALE_CALC=(0.135906406893, -0.135906406893),
+    VALE_CALC=(0.135878725766, -0.135878725766),
     NOM_PARA="COOR_REDUIT",
     TABLE=coorredp,
     FILTRE=(
@@ -304,7 +304,7 @@ TEST_TABLE(
     ),
 )
 TEST_TABLE(
-    VALE_CALC=(0.0564625439087, -0.0564625439087),
+    VALE_CALC=(0.0563366268858, -0.0563366268858),
     NOM_PARA="COOR_REDUIT",
     TABLE=coorredp,
     FILTRE=(
@@ -315,7 +315,7 @@ TEST_TABLE(
 #
 
 TEST_TABLE(
-    VALE_CALC=(5.01049807634, -5.01049807634),
+    VALE_CALC=(5.01052461547, -5.01052461547),
     NOM_PARA="COOR_REDUIT",
     TABLE=coorredd,
     FILTRE=(
@@ -333,7 +333,7 @@ TEST_TABLE(
     ),
 )
 TEST_TABLE(
-    VALE_CALC=(0.0112726127965, -0.0112726127965),
+    VALE_CALC=(0.0112736054440, -0.0112736054440),
     NOM_PARA="COOR_REDUIT",
     TABLE=coorredd,
     FILTRE=(
@@ -342,7 +342,7 @@ TEST_TABLE(
     ),
 )
 TEST_TABLE(
-    VALE_CALC=(0.00632713385844, -0.00632713385844),
+    VALE_CALC=(0.00632342949742, -0.00632342949742),
     NOM_PARA="COOR_REDUIT",
     TABLE=coorredd,
     FILTRE=(

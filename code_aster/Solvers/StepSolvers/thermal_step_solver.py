@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ class ThermalStepSolver(BaseStepSolver):
             *StepSolver*: A relevant *StepSolver* object.
         """
         calc_type, theta = param["TYPE_CALCUL"], None
-        if calc_type == "TRANS":
+        if calc_type == "TRAN":
             assert param["SCHEMA_TEMPS"]["SCHEMA"] == "HHT"
             theta = param["SCHEMA_TEMPS"]["THETA"]
         return cls(theta=theta)
@@ -83,7 +83,8 @@ class ThermalStepSolver(BaseStepSolver):
         """set up the step solver."""
         opers_manager = self.get_feature(SOP.OperatorsManager, optional=True)
         if not opers_manager:
-            opers_manager = ThermalOperatorsManager(theta=self._theta)
+            stat = self.param["ETAT_INIT"].get("STAT") == "OUI"
+            opers_manager = ThermalOperatorsManager(theta=self._theta, stat=stat)
         for feat, required in opers_manager.undefined():
             feat_obj = self.get_feature(feat, optional=(not required))
             opers_manager.use(feat_obj)

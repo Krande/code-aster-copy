@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -246,7 +246,7 @@ TEST_RESU(
             NOM_CHAM="TEMP",
             GROUP_NO="N27",
             NOM_CMP="TEMP",
-            VALE_CALC=(0.0851156981709, -0.0851156981709),
+            VALE_CALC=(0.0851158143522, -0.0851158143522),
         ),
     )
 )
@@ -272,7 +272,7 @@ TEST_TABLE(
     ),
 )
 TEST_TABLE(
-    VALE_CALC=(0.135906406893, -0.135906406893),
+    VALE_CALC=(0.135878725766, -0.135878725766),
     NOM_PARA="COOR_REDUIT",
     TABLE=coorredp,
     FILTRE=(
@@ -281,7 +281,7 @@ TEST_TABLE(
     ),
 )
 TEST_TABLE(
-    VALE_CALC=(0.0564625439087, -0.0564625439087),
+    VALE_CALC=(0.0563366268874, -0.0563366268874),
     NOM_PARA="COOR_REDUIT",
     TABLE=coorredp,
     FILTRE=(

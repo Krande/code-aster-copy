@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -129,7 +129,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=TEMP_10,
-            VALE_CALC=152.307307970,
+            VALE_CALC=152.306990647,
             VALE_REFE=153.21299999999999,
             REFERENCE="NON_DEFINI",
         ),
@@ -183,7 +183,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=TEMP_10,
-            VALE_CALC=152.153627444,
+            VALE_CALC=152.153302949,
             VALE_REFE=153.21299999999999,
             REFERENCE="NON_DEFINI",
         ),
@@ -237,7 +237,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=TEMP_10,
-            VALE_CALC=152.153627444,
+            VALE_CALC=152.153302949,
             VALE_REFE=153.21299999999999,
             REFERENCE="NON_DEFINI",
         ),
@@ -336,7 +336,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=TEMP_13,
-            VALE_CALC=128.384501616,
+            VALE_CALC=128.384318968,
             VALE_REFE=128.125,
             REFERENCE="NON_DEFINI",
         ),
@@ -390,7 +390,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=TEMP_13,
-            VALE_CALC=128.384501616,
+            VALE_CALC=128.384318968,
             VALE_REFE=128.125,
             REFERENCE="NON_DEFINI",
         ),

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -42,6 +42,18 @@ class BaseOperatorsManager(SolverFeature):
     def finalize(self):
         """Finalizes the operator manager."""
         raise NotImplementedError
+
+    def executeIteration(self, iter_idx):
+        """Should Newton iteration iter_idx be performed
+
+        Arguments:
+            iter_idx (int): Newton iteration number.
+
+        Returns:
+            bool: whether Newton's iteration should be excuted or
+            not, even if the solver has converged
+        """
+        return False
 
     @profile
     @SolverFeature.check_once

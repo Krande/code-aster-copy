@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -384,7 +384,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=T2,
-            VALE_CALC=79.25966836978523,
+            VALE_CALC=79.25988886124287,
             VALE_REFE=79.299999999999997,
             REFERENCE="NON_DEFINI",
         ),
@@ -393,7 +393,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=T3,
-            VALE_CALC=49.96189948868803,
+            VALE_CALC=49.95937451742902,
             VALE_REFE=49.600000000000001,
             REFERENCE="NON_DEFINI",
         ),
@@ -416,7 +416,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=T2,
-            VALE_CALC=97.76126681392665,
+            VALE_CALC=97.76095358039363,
             VALE_REFE=96.799999999999997,
             REFERENCE="NON_DEFINI",
         ),
@@ -425,7 +425,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=T3,
-            VALE_CALC=50.284585778718785,
+            VALE_CALC=50.28167990269438,
             VALE_REFE=49.899999999999999,
             REFERENCE="NON_DEFINI",
         ),
@@ -448,7 +448,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=2.0e-2,
             CHAM_GD=T2,
-            VALE_CALC=109.61907472795751,
+            VALE_CALC=109.6176480039704,
             VALE_REFE=108.0,
             REFERENCE="NON_DEFINI",
         ),
@@ -457,7 +457,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=T3,
-            VALE_CALC=50.30710532465407,
+            VALE_CALC=50.30408539878714,
             VALE_REFE=49.899999999999999,
             REFERENCE="NON_DEFINI",
         ),

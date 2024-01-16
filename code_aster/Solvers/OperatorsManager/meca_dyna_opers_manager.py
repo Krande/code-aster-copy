@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -88,7 +88,7 @@ class MecaDynaOperatorsManager(BaseOperatorsManager):
         rigi_matr.addElementaryMatrix(matr_elem_rigi)
         rigi_matr.addElementaryMatrix(matr_elem_dual)
         rigi_matr.addElementaryMatrix(matr_elem_cont)
-        rigi_matr.addElementaryMatrix(matr_elem_ext, -1.0)
+        rigi_matr.addElementaryMatrix(matr_elem_ext)
         rigi_matr.assemble()
 
         # Assemble damping matrix

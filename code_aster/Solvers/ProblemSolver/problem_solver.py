@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -200,6 +200,7 @@ class ProblemSolver(SolverFeature):
             line = LineSearch(args.get("RECH_LINEAIRE"))
         for feat, required in line.undefined():
             line.use(self._get(feat, required))
+        line.setup()
         self.use(line)
         return self.get_feature(SOP.LineSearch)
 
@@ -286,5 +287,7 @@ class ProblemSolver(SolverFeature):
             return self._get_step_conv_solver()
         if option & SOP.StepSolver:
             return self._get_step_solver()
+        if option & SOP.TimeStepper:
+            return self.get_feature(SOP.TimeStepper)
         if required:
             raise NotImplementedError(f"unsupported feature id: {option}")

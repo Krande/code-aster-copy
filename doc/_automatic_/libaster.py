@@ -1690,13 +1690,14 @@ class DiscreteComputation:
             ElementaryVector: elementary field
         """
 
-    def getThermalTangentNonLinearNeumannMatrix(self, temp_curr, time_curr):
+    def getThermalTangentNonLinearNeumannMatrix(self, temp_curr, time_curr, varc_curr=None):
         """Return the elementary matrices for tangent nonlinear neumann forces.
         Option MTAN_THER_FLUXNL, MTAN_THER_RAYO_R, MTAN_THER_RAYO_F.
 
         Arguments:
             temp_curr (FieldOnNodesReal): thermal field at end of current time
             time_curr (float): Current time
+            varc_curr (FieldOnCellsReal): external state variables at current time
 
         Returns:
             ElementaryMatrix: elementary matrix
