@@ -29,6 +29,7 @@ subroutine modirepresu(resuou, resuin)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterc/getfac.h"
@@ -65,7 +66,7 @@ subroutine modirepresu(resuou, resuin)
 #include "asterfort/titre.h"
 #include "asterfort/utmess.h"
 !
-    integer :: n0, nbordr, iret, nocc, i, j, np, iordr, ndim
+    integer :: n0, n1, nbordr, iret, nocc, i, j, np, iordr, ndim
     integer :: iord, ioc, ibid, nc
     integer :: jordr, nbnosy, jpa, iadin, iadou
     integer :: nbpara, nbac, nbpa, ifm, niv, nncp
@@ -77,14 +78,15 @@ subroutine modirepresu(resuou, resuin)
     character(len=8) :: k8b
     character(len=8) :: crit, tych, nomma, model, modelRefe
     character(len=8) :: carele, exipla, exicoq
-    character(len=16) :: option, tysd, type, type_cham, repere
+    character(len=16) :: option, tysd, type, type_cham, repere, option1, optinit
+    character(len=16) :: cham_resu
     character(len=19) :: knum
     character(len=19) :: chams1, chams0, chafus, chs(2), ligrel, ligrel1
-    character(len=24) :: nompar, champ0, champ1
+    character(len=24) :: nompar, champ0, champ01, champ1, champ2
     character(len=24) :: valk(2)
     integer, pointer :: nume_ordre(:) => null()
 !
-    aster_logical :: lreuse, lcumu(2), lcoc(2), lModelVariable
+    aster_logical :: lreuse, lcumu(2), lcoc(2), lModelVariable, check
 !
     data lcumu/.false., .false./
     data lcoc/.false., .false./
@@ -141,9 +143,14 @@ subroutine modirepresu(resuou, resuin)
     call jeveuo(knum, 'L', jordr)
     call rscrsd('G', resuou, tysd, nbordr)
 !
+    ! QUELQUES INITIALISATIONS
     lModelVariable = ASTER_FALSE
     modelRefe = " "
     ligrel1 = " "
+    option1 = 'EGRU_ELNO       '
+    check = .false.
+    optinit = ' '
+    n1 = 0
 
     ! POUR REPERE = COQUE_* VERIFIER QU'ON N'EST PAS EN MULTI MODELES
     if (repere(1:5) .eq. 'COQUE') then
@@ -158,16 +165,44 @@ subroutine modirepresu(resuou, resuin)
     do ioc = 1, nocc
         call getvtx('MODI_CHAM', 'NOM_CHAM', iocc=ioc, scal=option, nbret=n0)
         call getvtx('MODI_CHAM', 'TYPE_CHAM', iocc=ioc, scal=type_cham, nbret=n0)
+        call getvtx('MODI_CHAM', 'NOM_CHAM_RESU', iocc=ioc, scal=cham_resu, nbret=n1)
+        optinit = option
         do iord = 1, nbordr
+            ! SI OPTION CHANGE DANS LE CASE DE EGRU_ELNO
+            option = optinit
+            !
             call jemarq()
             call jerecu('V')
             iordr = zi(jordr-1+iord)
             call rsexch('F', resuin, option, iordr, champ0, iret)
             call dismoi('NOM_MAILLA', champ0(1:19), 'CHAMP', repk=nomma)
             call dismoi('TYPE_CHAMP', champ0, 'CHAMP', repk=tych, arret='C', ier=iret)
+
+            !
+            if ((option(1:9) .eq. option1(1:9)) .and. (repere(1:15) .eq. 'COQUE_UTIL_INTR')) then
+                valk(1) = option(1:9)
+                valk(2) = 'COQUE_UTIL_INTR'
+                call utmess('F', 'ALGORITH5_87', nk=2, valk=valk)
+            end if
+
+            ! TRAITEMENT SPECIFIQUE POUR EFGE_ELNO
+            if ((option(1:9) .eq. 'EFGE_ELNO') .and. (n1 .gt. 0)) then
+                ASSERT(cham_resu(1:9) .eq. 'EGRU_ELNO')
+                ! CREER LE CHAMP EGRU
+                call rsexch(' ', resuou, option, iordr, champ2, iret)
+                call copisd('CHAMP_GD', 'G', champ0, champ2)
+                call rsnoch(resuou, option, iordr)
+                if (lreuse) then
+                    call rsexch(' ', resuin, option1, iordr, champ01, iret)
+                    check = .true.
+                end if
+                option = option1
+            end if
+
+            ! CHAMP1 SERA ENSUITE RECREE SUR LA BASE GLOBALE
             call rsexch(' ', resuou, option, iordr, champ1, iret)
-!           CHAMP1 SERA ENSUITE RECREE SUR LA BASE GLOBALE
-            call copisd('CHAMP_GD', 'V', champ0, champ1)
+            call copisd('CHAMP_GD', 'G', champ0, champ1)
+
 !           RECUPERATION DU MODELE ASSOCIE AU CHAMP
             model = ''; carele = ''
             call rslesd(resuin(1:8), iordr, model_=model, cara_elem_=carele)
@@ -211,6 +246,11 @@ subroutine modirepresu(resuou, resuin)
                 call utmess('A', 'ALGORITH9_69', nk=2, valk=valk)
             end if
             call rsnoch(resuou, option, iordr)
+            ! COPIER CHAMP1 SI EGRU_ELNO ET REUSE
+            if (check) then
+                call copisd('CHAMP_GD', 'G', champ1, champ01)
+                call rsnoch(resuin, option, iordr)
+            end if
             call jedema()
         end do
     end do

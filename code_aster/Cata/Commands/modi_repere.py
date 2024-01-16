@@ -108,7 +108,11 @@ MODI_REPERE = OPER(
                     statut="o",
                     typ="TXM",
                     max=1,
-                    into=("EFGE_ELNO", "EFGE_ELGA", "SIEF_ELNO", "SIEF_ELGA"),
+                    into=("EFGE_ELNO", "EGRU_ELNO", "EFGE_ELGA", "SIEF_ELNO", "SIEF_ELGA"),
+                ),
+                cham_resu=BLOC(
+                    condition="""(equal_to("NOM_CHAM", "EFGE_ELNO"))""",
+                    NOM_CHAM_RESU=SIMP(statut="f", typ="TXM", max=1, into=("EGRU_ELNO",)),
                 ),
             ),
             b_cgene=BLOC(
@@ -119,12 +123,17 @@ MODI_REPERE = OPER(
                     max=1,
                     into=(
                         "EFGE_ELNO",
+                        "EGRU_ELNO",
                         "EFGE_ELGA",
                         "SIEF_ELGA",
                         "SIEF_ELNO",
                         "DEGE_ELNO",
                         "DEGE_ELGA",
                     ),
+                ),
+                cham_resu=BLOC(
+                    condition="""(equal_to("NOM_CHAM", "EFGE_ELNO"))""",
+                    NOM_CHAM_RESU=SIMP(statut="f", typ="TXM", max=1, into=("EGRU_ELNO",)),
                 ),
             ),
             b_tens=BLOC(

@@ -20,6 +20,7 @@
 # person_in_charge: nicolas.sellenet@edf.fr
 
 from ..Supervis import ExecuteCommand
+from ..Messages import UTMESS
 
 
 class ModiRepere(ExecuteCommand):
@@ -37,6 +38,9 @@ class ModiRepere(ExecuteCommand):
             for cham in keywords.get("MODI_CHAM"):
                 if not any([key in cham for key in ("TOUT", "GROUP_MA")]):
                     cham["TOUT"] = "OUI"
+            no_chams = {cham.get("NOM_CHAM") for cham in keywords.get("MODI_CHAM")}
+            if {"EFGE_ELNO", "EGRU_ELNO"}.issubset(no_chams):
+                UTMESS("F", "ALGORITH2_83", valk=("EFGE_ELNO", "EGRU_ELNO"))
         if "reuse" in keywords:
             self._result = keywords["reuse"]
         elif "RESULTAT" in keywords:
