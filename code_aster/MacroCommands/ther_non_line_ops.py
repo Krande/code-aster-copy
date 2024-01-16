@@ -138,10 +138,7 @@ def ther_non_line_ops(self, **args):
         INCREMENT=args["INCREMENT"],
         REUSE=args["reuse"],
     )
-
-    if "SCHEMA_TEMPS" in args:
-        param["SCHEMA_TEMPS"] = args["SCHEMA_TEMPS"]
-
+    param["SCHEMA_TEMPS"] = args.get("SCHEMA_TEMPS")
     solver.setKeywords(**param)
 
     class PostHookHydr:
