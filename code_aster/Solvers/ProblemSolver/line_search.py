@@ -196,8 +196,8 @@ class LineSearch(SolverFeature):
 
                 rhot = rho
 
-                if abs(f1-f0) > np.finfo("float64").tiny:
-                    rho = -(f0*rhot-f1*rho0) / (f1-f0)
+                if abs(f1 - f0) > np.finfo("float64").tiny:
+                    rho = -(f0 * rhot - f1 * rho0) / (f1 - f0)
                     # print(
                     #     "[ZHRSMR] Linesearch: f1 = {}, rho0 = {}, f0 = {}, rhot = {}, rho = {}".format(f1, rho0, f0, rhot, rho),
                     #     flush=True
@@ -206,7 +206,7 @@ class LineSearch(SolverFeature):
                         rho = self.param["RHO_MIN"]
                     if rho > self.param["RHO_MAX"]:
                         rho = self.param["RHO_MAX"]
-                    if abs(rho-rhot) < 1.0e-8:
+                    if abs(rho - rhot) < 1.0e-8:
                         break
                 else:
                     break

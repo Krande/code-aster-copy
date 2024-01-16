@@ -48,7 +48,7 @@ class TimeStepper(SolverFeature, Observer):
     provide = SOP.TimeStepper
 
     _times = _eps = _current = _initial = _final = _last = None
-    _actions = _state = _updateInitTime = None
+    _actions = _state = None
     _split = _maxLevel = _minStep = _maxStep = _maxNbSteps = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
@@ -63,7 +63,6 @@ class TimeStepper(SolverFeature, Observer):
         self._eps = epsilon
         self._initial = initial
         self._final = final
-        self._updateInitTime = update
         self._actions = []
         self._split = []
         self._maxLevel = -1
@@ -352,17 +351,13 @@ class TimeStepper(SolverFeature, Observer):
         eps = args.get("PRECISION", cls.default_increment)
         if "INST_INIT" in args:  # because None has a special meaning
             initial = args["INST_INIT"]
-            updateInitTime = False
         if args.get("NUME_INST_INIT"):
             initial = times[args["NUME_INST_INIT"]]
-            updateInitTime = False
         final = args.get("INST_FIN")
         if args.get("NUME_INST_FIN"):
             final = times[args["NUME_INST_FIN"]]
         if stp is None:
-            stp = TimeStepper(
-                times, initial=initial, final=final, epsilon=eps, update=updateInitTime
-            )
+            stp = TimeStepper(times, initial=initial, final=final, epsilon=eps)
         else:
             stp.setInitial(initial)
             stp.setFinal(final)

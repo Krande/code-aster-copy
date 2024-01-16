@@ -36,6 +36,7 @@ from ..Solvers import SolverOptions as SOP
 from ..Solvers import TimeStepper
 from ..Utilities import force_list, print_stats, reset_stats
 from .Utils.ther_non_line_fort_op import THER_NON_LINE_FORT
+from ..Helpers.syntax_adapters import adapt_increment_init
 
 
 def use_fortran(keywords):
@@ -94,6 +95,8 @@ def ther_non_line_ops(self, **args):
 
     if use_fortran(args):
         return THER_NON_LINE_FORT(**args)
+
+    adapt_increment_init(args, "EVOL_THER")
 
     verbosity = args.get("INFO") or 1
 

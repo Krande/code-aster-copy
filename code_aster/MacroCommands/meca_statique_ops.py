@@ -230,7 +230,6 @@ def meca_statique_ops(self, **args):
 
     # Create storage manager
     storage_manager = StorageManager(result)
-    storage_manager.use(timeStepper)
 
     # Define main objects
     phys_state = PhysicalState(PBT.MecaStat)

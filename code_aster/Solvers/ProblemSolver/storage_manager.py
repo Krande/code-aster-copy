@@ -32,8 +32,6 @@ class StorageManager(SolverFeature):
 
     provide = SOP.Storage
 
-    required_features = [SOP.TimeStepper]
-
     class Slot:
         """Container that holds objects to be saved"""
 
