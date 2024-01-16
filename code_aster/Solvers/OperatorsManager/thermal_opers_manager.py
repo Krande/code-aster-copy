@@ -40,7 +40,7 @@ class ThermalOperatorsManager(BaseOperatorsManager):
         self._temp_stress = self._temp_internVar = None
         self._resi_prev = self._resi_temp = None
         self._theta, self._first_iter = theta, True
-        self._stat_init = stat
+        self._stat_init = stat and self._theta is not None
 
     def isStationary(self):
         """Checks whether it is a stationary or transient case"""
