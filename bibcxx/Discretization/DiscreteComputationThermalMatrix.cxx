@@ -532,9 +532,9 @@ DiscreteComputation::getThermalExchangeMatrix( const ASTERDOUBLE &time_curr ) co
     return elemMatr;
 };
 
-ElementaryMatrixTemperatureRealPtr
-DiscreteComputation::getThermalTangentNonLinearNeumannMatrix( const FieldOnNodesRealPtr temp_curr,
-                                                              const ASTERDOUBLE time_curr ) const {
+ElementaryMatrixTemperatureRealPtr DiscreteComputation::getThermalTangentNonLinearNeumannMatrix(
+    const FieldOnNodesRealPtr temp_curr, const ASTERDOUBLE time_curr,
+    const FieldOnCellsRealPtr varc_curr ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
 
@@ -548,6 +548,7 @@ DiscreteComputation::getThermalTangentNonLinearNeumannMatrix( const FieldOnNodes
 
     // Main parameters
     auto currModel = _phys_problem->getModel();
+    auto currMater = _phys_problem->getMaterialField();
     auto listOfLoads = _phys_problem->getListOfLoads();
     auto model_FEDesc = currModel->getFiniteElementDescriptor();
     AS_ASSERT( model_FEDesc );
@@ -564,6 +565,13 @@ DiscreteComputation::getThermalTangentNonLinearNeumannMatrix( const FieldOnNodes
             calcul->addTimeField( "PTEMPSR", time_curr, 0.0, -1.0 );
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
             calcul->addInputField( "PTEMPEI", temp_curr );
+
+            if ( currMater && currMater->hasExternalStateVariable() ) {
+                if ( !varc_curr || !varc_curr->exists() ) {
+                    raiseAsterError( "External state variables are needed but not given" );
+                }
+                calcul->addInputField( "PVARCPR", varc_curr );
+            }
 
             calcul->addInputField( param, load->getConstantLoadField( name ) );
 

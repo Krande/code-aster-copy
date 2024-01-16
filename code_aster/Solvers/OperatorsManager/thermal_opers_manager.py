@@ -135,7 +135,7 @@ class ThermalOperatorsManager(BaseOperatorsManager):
 
         rigi_ther_ext.addElementaryTerm(
             disc_comp.getThermalTangentNonLinearNeumannMatrix(
-                self.phys_state.primal_curr, self.phys_state.time_curr
+                self.phys_state.primal_curr, self.phys_state.time_curr, self.phys_state.externVar
             ).getElementaryTerms()
         )
         rigi_ther_ext.addElementaryTerm(
@@ -176,7 +176,7 @@ class ThermalOperatorsManager(BaseOperatorsManager):
         dt, theta = self.phys_state.time_step, self._theta
         disc_comp = DiscreteComputation(self.phys_pb)
 
-        resi_curr, internVar, stress = super().getResidual(scaling=scaling)
+        resi_curr, _, _ = super().getResidual(scaling=scaling)
 
         resi_mass = disc_comp.getNonLinearCapacityForces(
             self.phys_state.primal_curr, self.phys_state.externVar
@@ -199,9 +199,6 @@ class ThermalOperatorsManager(BaseOperatorsManager):
         residual.resi_cont = resi_curr.resi_cont
 
         residual.resi = residual.resi_ext - residual.resi_int
-
-        self._temp_stress = stress
-        self._temp_internVar = internVar
 
         resi_curr.resi_mass = resi_mass
         self._resi_temp = resi_curr

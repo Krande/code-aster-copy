@@ -687,7 +687,7 @@ class ExtendedDiscreteComputation:
 
             matr_elem_ext.addElementaryTerm(
                 self.getThermalTangentNonLinearNeumannMatrix(
-                    phys_state.primal_curr, phys_state.time_curr
+                    phys_state.primal_curr, phys_state.time_curr, phys_state.externVar
                 ).getElementaryTerms()
             )
             matr_elem_ext.addElementaryTerm(

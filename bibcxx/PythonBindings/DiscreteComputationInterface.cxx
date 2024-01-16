@@ -486,11 +486,12 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             Arguments:
                 temp_curr (FieldOnNodesReal): thermal field at end of current time
                 time_curr (float): Current time
+                varc_curr (FieldOnCellsReal): external state variables at current time
 
             Returns:
                 ElementaryMatrix: elementary matrix
             )",
-              py::arg( "temp_curr" ), py::arg( "time_curr" ) )
+              py::arg( "temp_curr" ), py::arg( "time_curr" ), py::arg( "varc_curr" ) = nullptr )
 
         .def( "getThermalExchangeMatrix", &DiscreteComputation::getThermalExchangeMatrix,
               R"(

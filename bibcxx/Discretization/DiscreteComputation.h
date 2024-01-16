@@ -466,7 +466,8 @@ class DiscreteComputation {
 
     ElementaryMatrixTemperatureRealPtr
     getThermalTangentNonLinearNeumannMatrix( const FieldOnNodesRealPtr temp_curr,
-                                             const ASTERDOUBLE time_curr ) const;
+                                             const ASTERDOUBLE time_curr,
+                                             const FieldOnCellsRealPtr varc_curr = nullptr ) const;
 
     /**
      * @brief Compute tangent matrix (not assembled)
