@@ -689,8 +689,8 @@ class ExtendedDiscreteComputation:
 
         if phys_pb.isThermal():
             matr_elem_ext = self.getThermalExchangeMatrix(phys_state.time_curr)
-            if scale:
-                matr_elem_ext *= -1.0
+            # if scale:
+            #     matr_elem_ext *= -1.0
 
             matr_elem_ext.addElementaryTerm(
                 self.getThermalTangentNonLinearNeumannMatrix(
@@ -744,7 +744,8 @@ class ExtendedDiscreteComputation:
             jacobian.addElementaryMatrix(matr_elem_rigi)
             jacobian.addElementaryMatrix(matr_elem_dual)
             jacobian.addElementaryMatrix(matr_elem_cont)
-            jacobian.addElementaryMatrix(matr_elem_ext, -1.0)
+            # jacobian.addElementaryMatrix(matr_elem_ext, -1.0)
+            jacobian.addElementaryMatrix(matr_elem_ext)
 
             jacobian.assemble()
 

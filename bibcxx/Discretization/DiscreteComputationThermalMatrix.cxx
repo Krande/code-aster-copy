@@ -599,7 +599,7 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::getThermalTangentNonLine
     }
 
     elemMatr->build();
-    ( *elemMatr ) *= -1.0;
+    // ( *elemMatr ) *= -1.0;
 
     return elemMatr;
 };
