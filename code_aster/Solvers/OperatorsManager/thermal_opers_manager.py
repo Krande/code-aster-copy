@@ -74,7 +74,10 @@ class ThermalOperatorsManager(BaseOperatorsManager):
             return
 
         if residual is None:
+            timec = self.phys_state.time_curr
+            self.phys_state.time_curr = self.phys_state.time_prev
             self._resi_prev = super().getResidual(scaling=scaling)[0]
+            self.phys_state.time_curr = timec
         else:
             self._resi_prev = residual
 
