@@ -596,7 +596,7 @@ class ExtendedDiscreteComputation:
                 )
             else:
                 matr_elem_rigi = self.getTangentConductivityMatrix(
-                    phys_state.primal_curr, phys_state.externVar, with_dual=False
+                    phys_state.primal_prev, phys_state.primal_step, phys_state.externVar, with_dual=False
                 )
                 codret = 0
         elif matrix_type == "TANGENTE":
@@ -613,7 +613,7 @@ class ExtendedDiscreteComputation:
                 )
             else:
                 matr_elem_rigi = self.getTangentConductivityMatrix(
-                    phys_state.primal_curr, phys_state.externVar, with_dual=False
+                    phys_state.primal_prev, phys_state.primal_step, phys_state.externVar, with_dual=False
                 )
                 codret = 0
         else:

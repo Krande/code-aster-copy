@@ -289,7 +289,8 @@ class DiscreteComputation {
      * @brief Compute elementary matrices for thermal model (RIGI_THER_TANG)
      */
     ElementaryMatrixTemperatureRealPtr getTangentConductivityMatrix(
-        const FieldOnNodesRealPtr temp_curr, const FieldOnCellsRealPtr varc_curr = nullptr,
+        const FieldOnNodesRealPtr temp_prev, const FieldOnNodesRealPtr temp_step,
+        const FieldOnCellsRealPtr varc_curr = nullptr,
         const VectorString &groupOfCells = VectorString(), const bool &with_dual = true ) const;
 
     /**
@@ -325,7 +326,8 @@ class DiscreteComputation {
      * @brief Compute elementary matrices for mass matrix (MASS_THER_TANG)
      */
     ElementaryMatrixTemperatureRealPtr
-    getTangentCapacityMatrix( const FieldOnNodesRealPtr temp_curr,
+    getTangentCapacityMatrix( const FieldOnNodesRealPtr temp_prev,
+                              const FieldOnNodesRealPtr temp_step,
                               const FieldOnCellsRealPtr varc_curr = nullptr,
                               const VectorString &groupOfCells = VectorString() ) const;
 

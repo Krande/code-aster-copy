@@ -80,7 +80,7 @@ class ThermalOperatorsManager(BaseOperatorsManager):
 
         disc_comp = DiscreteComputation(self.phys_pb)
         self._resi_prev.resi_mass = disc_comp.getNonLinearCapacityForces(
-            self.phys_state.primal_curr, self.phys_state.externVar
+            self.phys_state.primal_prev, self.phys_state.primal_step, self.phys_state.externVar
         )
 
         self._first_iter = self._stat_init = False
@@ -120,11 +120,11 @@ class ThermalOperatorsManager(BaseOperatorsManager):
         disc_comp = DiscreteComputation(self.phys_pb)
 
         mass_ther = disc_comp.getTangentCapacityMatrix(
-            self.phys_state.primal_curr, self.phys_state.externVar
+            self.phys_state.primal_prev, self.phys_state.primal_step, self.phys_state.externVar
         )
 
         rigi_ther = disc_comp.getTangentConductivityMatrix(
-            self.phys_state.primal_curr, self.phys_state.externVar, with_dual=False
+            self.phys_state.primal_prev, self.phys_state.primal_step, self.phys_state.externVar, with_dual=False
         )
 
         rigi_ther_dual = disc_comp.getDualLinearConductivityMatrix()
@@ -178,7 +178,7 @@ class ThermalOperatorsManager(BaseOperatorsManager):
         resi_curr, _, _ = super().getResidual(scaling=scaling)
 
         resi_mass = disc_comp.getNonLinearCapacityForces(
-            self.phys_state.primal_curr, self.phys_state.externVar
+            self.phys_state.primal_prev, self.phys_state.primal_step, self.phys_state.externVar
         )
 
         EVNL_AS = (1.0 / dt) * self._resi_prev.resi_mass - (
