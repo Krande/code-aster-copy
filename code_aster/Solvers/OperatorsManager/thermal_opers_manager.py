@@ -131,7 +131,6 @@ class ThermalOperatorsManager(BaseOperatorsManager):
         dt, theta = self.phys_state.time_step, self._theta
 
         rigi_ther_ext = disc_comp.getThermalExchangeMatrix(self.phys_state.time_curr)
-        rigi_ther_ext *= -1.0
 
         rigi_ther_ext.addElementaryTerm(
             disc_comp.getThermalTangentNonLinearNeumannMatrix(
@@ -147,7 +146,7 @@ class ThermalOperatorsManager(BaseOperatorsManager):
 
         result = AssemblyMatrixTemperatureReal(self.phys_pb)
         result.addElementaryMatrix(rigi_ther, theta)
-        result.addElementaryMatrix(rigi_ther_ext, -theta)
+        result.addElementaryMatrix(rigi_ther_ext, theta)
         result.addElementaryMatrix(rigi_ther_dual)
         result.addElementaryMatrix(mass_ther, 1.0 / dt)
         result.assemble()
