@@ -88,7 +88,6 @@ class MecaDynaOperatorsManager(BaseOperatorsManager):
         rigi_matr.addElementaryMatrix(matr_elem_rigi)
         rigi_matr.addElementaryMatrix(matr_elem_dual)
         rigi_matr.addElementaryMatrix(matr_elem_cont)
-        # rigi_matr.addElementaryMatrix(matr_elem_ext, -1.0)
         rigi_matr.addElementaryMatrix(matr_elem_ext)
         rigi_matr.assemble()
 

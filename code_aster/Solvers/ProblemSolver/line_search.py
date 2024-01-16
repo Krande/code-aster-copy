@@ -172,7 +172,6 @@ class LineSearch(SolverFeature):
 
             # retrieve args
             f0, testm = _f(0.0, solution)
-            # print("[ZHRSMR] La norme du résidu (rho = 0.0) = {}".format(testm))
 
             rho0 = 0.0
             rho = 1.0
@@ -180,8 +179,6 @@ class LineSearch(SolverFeature):
             for iter in range(self.param["ITER_LINE_MAXI"] + 1):
 
                 f1, testm = _f(rho)
-
-                # print("[ZHRSMR] La norme du résidu (rho = {}) = {}".format(rho, testm))
 
                 if testm < self.param["RESI_LINE_RELA"]:
                     return rho * solution
@@ -199,7 +196,7 @@ class LineSearch(SolverFeature):
                 if abs(f1 - f0) > np.finfo("float64").tiny:
                     rho = -(f0 * rhot - f1 * rho0) / (f1 - f0)
                     # print(
-                    #     "[ZHRSMR] Linesearch: f1 = {}, rho0 = {}, f0 = {}, rhot = {}, rho = {}".format(f1, rho0, f0, rhot, rho),
+                    #     "Linesearch: f1 = {}, rho0 = {}, f0 = {}, rhot = {}, rho = {}".format(f1, rho0, f0, rhot, rho),
                     #     flush=True
                     # )
                     if rho < self.param["RHO_MIN"]:

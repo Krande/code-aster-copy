@@ -42,14 +42,9 @@ from ..Helpers.syntax_adapters import adapt_increment_init
 def use_fortran(keywords):
     excluded_keys = ("EVOL_THER_SECH", "OBSERVATION")
 
-    # return False
-
     for key in excluded_keys:
         if key in keywords:
             return True
-
-    # if keywords["TYPE_CALCUL"] == "TRAN":
-    #     return True
 
     if keywords["METHODE"] in ("MODELE_REDUIT", "NEWTON_KRYLOV"):
         return True
@@ -68,15 +63,7 @@ def use_fortran(keywords):
         return True
 
     for load in keywords["EXCIT"]:
-        if isinstance(
-            load["CHARGE"],
-            (
-                ThermalLoadFunction,
-                ThermalLoadReal,
-                # ParallelThermalLoadFunction,
-                # ParallelThermalLoadReal,
-            ),
-        ):
+        if isinstance(load["CHARGE"], (ThermalLoadFunction, ThermalLoadReal)):
             if load["CHARGE"].hasLoadResult():
                 return True
 

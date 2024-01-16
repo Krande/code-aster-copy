@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -248,7 +248,7 @@ TEST_RESU(
             NOM_CHAM="FLUX_NOEU",
             GROUP_NO="N27",
             NOM_CMP="FLUX",
-            VALE_CALC=-0.0005673343795326032,
+            VALE_CALC=-0.000567335584843633,
         ),
         _F(
             RESULTAT=thnl,
@@ -256,7 +256,7 @@ TEST_RESU(
             NOM_CHAM="FLUX_NOEU",
             GROUP_NO="N27",
             NOM_CMP="FLUX",
-            VALE_CALC=-0.003152488515227189,
+            VALE_CALC=-0.003152458125276149,
         ),
     )
 )
@@ -269,7 +269,7 @@ TEST_RESU(
             NOM_CHAM="FLUX_NOEU",
             GROUP_NO="N7",
             NOM_CMP="FLUX",
-            VALE_CALC=0.0011356797075429094,
+            VALE_CALC=0.001135682117723514,
         ),
         _F(
             RESULTAT=thnl,
@@ -277,7 +277,7 @@ TEST_RESU(
             NOM_CHAM="FLUX_NOEU",
             GROUP_NO="N7",
             NOM_CMP="FLUX",
-            VALE_CALC=0.0063191212851786,
+            VALE_CALC=0.006319061327729906,
         ),
     )
 )
