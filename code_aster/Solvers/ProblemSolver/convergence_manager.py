@@ -378,7 +378,7 @@ class ConvergenceManager(SolverFeature):
                 if residuals.resi_mass:
                     f_mass = residuals.resi_mass[ieq]
 
-            value = abs(f_mass + f_int + f_cont - f_ext) + abs(f_varc)
+            value = abs(f_int + f_cont + f_mass - f_ext) + abs(f_varc)
 
             if scaling < value:
                 scaling = value

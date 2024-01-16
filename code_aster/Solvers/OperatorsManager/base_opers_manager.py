@@ -43,6 +43,18 @@ class BaseOperatorsManager(SolverFeature):
         """Finalizes the operator manager."""
         raise NotImplementedError
 
+    def executeIteration(self, iter_idx):
+        """Should Newton iteration iter_idx be performed
+
+        Arguments:
+            iter_idx (int): Newton iteration number.
+
+        Returns:
+            bool: whether Newton's iteration should be excuted or
+            not, even if the solver has converged
+        """
+        return False
+
     @profile
     @SolverFeature.check_once
     def getResidual(self, scaling=1.0):

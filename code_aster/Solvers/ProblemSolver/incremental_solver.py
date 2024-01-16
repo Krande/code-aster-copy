@@ -62,7 +62,7 @@ class IncrementalSolver(SolverFeature, EventSource):
 
     @profile
     @SolverFeature.check_once
-    def solve(self, matrix_type, matrix=None):
+    def solve(self, matrix_type, matrix=None, force=False):
         """Solve the iteration.
 
         Arguments:
@@ -97,7 +97,7 @@ class IncrementalSolver(SolverFeature, EventSource):
         convManager = self.get_feature(SOP.ConvergenceManager)
         resi_fields = convManager.evalNormResidual(residuals)
 
-        if not convManager.isConverged():
+        if not convManager.isConverged() or force:
             disc_comp = DiscreteComputation(self.phys_pb)
 
             # Compute Dirichlet BC:=

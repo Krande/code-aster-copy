@@ -62,6 +62,18 @@ class ThermalOperatorsManager(BaseOperatorsManager):
         else:
             self._resi_prev = self._resi_temp
 
+    def executeIteration(self, iter_idx):
+        """Should Newton iteration iter_idx be performed
+
+        Arguments:
+            iter_idx (int): Newton iteration number.
+
+        Returns:
+            bool: whether Newton's iteration should be excuted or
+            not, even if the solver has converged
+        """
+        return iter_idx == 0 and self._theta is not None
+
     @property
     def first_jacobian(self):
         """Returns the first computed Jacobian"""
@@ -202,6 +214,7 @@ class ThermalOperatorsManager(BaseOperatorsManager):
         residual.resi_dual = resi_curr.resi_dual
         residual.resi_ext = theta * resi_curr.resi_ext + (1.0 - theta) * self._resi_prev.resi_ext
         residual.resi_cont = resi_curr.resi_cont
+        residual.resi_mass = resi_mass
 
         residual.resi = residual.resi_ext - residual.resi_int
 
