@@ -58,7 +58,7 @@ class ThermalOperatorsManager(BaseOperatorsManager):
         self.phys_state.stress = self._temp_stress
         self.phys_state.internVar = self._temp_internVar
         if self._stat_init:
-            self.computeFirstResidual(self._resi_temp)
+            self.computeFirstResidual(residual=self._resi_temp)
         else:
             self._resi_prev = self._resi_temp
 
@@ -68,13 +68,13 @@ class ThermalOperatorsManager(BaseOperatorsManager):
         assert self._first_jacobian is not None
         return self._first_jacobian
 
-    def computeFirstResidual(self, residual=None):
+    def computeFirstResidual(self, residual=None, scaling=1.0):
         """Computes the first residual."""
         if not self._first_iter:
             return
 
         if residual is None:
-            self._resi_prev = super().getResidual(scaling=1.0)[0]
+            self._resi_prev = super().getResidual(scaling=scaling)[0]
         else:
             self._resi_prev = residual
 
@@ -124,7 +124,10 @@ class ThermalOperatorsManager(BaseOperatorsManager):
         )
 
         rigi_ther = disc_comp.getTangentConductivityMatrix(
-            self.phys_state.primal_prev, self.phys_state.primal_step, self.phys_state.externVar, with_dual=False
+            self.phys_state.primal_prev,
+            self.phys_state.primal_step,
+            self.phys_state.externVar,
+            with_dual=False,
         )
 
         rigi_ther_dual = disc_comp.getDualLinearConductivityMatrix()

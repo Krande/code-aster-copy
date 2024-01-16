@@ -146,6 +146,7 @@ def ther_non_line_ops(self, **args):
         SOLVEUR=args["SOLVEUR"],
         TYPE_CALCUL=args["TYPE_CALCUL"],
         INCREMENT=args["INCREMENT"],
+        REUSE=args["reuse"],
     )
 
     if "SCHEMA_TEMPS" in args:
