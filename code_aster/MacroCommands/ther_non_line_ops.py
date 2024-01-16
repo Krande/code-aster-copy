@@ -73,8 +73,8 @@ def use_fortran(keywords):
             (
                 ThermalLoadFunction,
                 ThermalLoadReal,
-                ParallelThermalLoadFunction,
-                ParallelThermalLoadReal,
+                # ParallelThermalLoadFunction,
+                # ParallelThermalLoadReal,
             ),
         ):
             if load["CHARGE"].hasLoadResult():

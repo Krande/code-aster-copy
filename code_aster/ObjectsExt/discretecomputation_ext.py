@@ -671,7 +671,7 @@ class ExtendedDiscreteComputation:
         return None
 
     @profile
-    def getExternalTangentMatrix(self, phys_state):
+    def getExternalTangentMatrix(self, phys_state, scale=True):
         """Compute external tangent matrix for nonlinear problem.
             K(u) = d(Rext(u)) / du
 
@@ -689,7 +689,8 @@ class ExtendedDiscreteComputation:
 
         if phys_pb.isThermal():
             matr_elem_ext = self.getThermalExchangeMatrix(phys_state.time_curr)
-            matr_elem_ext *= -1.0
+            if scale:
+                matr_elem_ext *= -1.0
 
             matr_elem_ext.addElementaryTerm(
                 self.getThermalTangentNonLinearNeumannMatrix(

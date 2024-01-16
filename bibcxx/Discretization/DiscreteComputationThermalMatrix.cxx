@@ -582,7 +582,6 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::getThermalTangentNonLine
             calcul->compute();
             if ( calcul->hasOutputElementaryTerm( "PMATTTR" ) ) {
                 auto elem_term = calcul->getOutputElementaryTermReal( "PMATTTR" );
-                ( *elem_term ) *= -1.0;
                 elemMatr->addElementaryTerm( elem_term );
             }
         }
@@ -600,6 +599,7 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::getThermalTangentNonLine
     }
 
     elemMatr->build();
+    ( *elemMatr ) *= -1.0;
 
     return elemMatr;
 };

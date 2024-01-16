@@ -148,19 +148,7 @@ class ThermalOperatorsManager(BaseOperatorsManager):
         rigi_ther_dual = disc_comp.getDualLinearConductivityMatrix()
         dt, theta = self.phys_state.time_step, self._theta
 
-        rigi_ther_ext = disc_comp.getThermalExchangeMatrix(self.phys_state.time_curr)
-
-        rigi_ther_ext.addElementaryTerm(
-            disc_comp.getThermalTangentNonLinearNeumannMatrix(
-                self.phys_state.primal_curr, self.phys_state.time_curr, self.phys_state.externVar
-            ).getElementaryTerms()
-        )
-        rigi_ther_ext.addElementaryTerm(
-            disc_comp.getThermalTangentNonLinearVolumetricMatrix(
-                self.phys_state.primal_curr, self.phys_state.time_curr
-            ).getElementaryTerms()
-        )
-        rigi_ther_ext.build()
+        rigi_ther_ext = disc_comp.getExternalTangentMatrix(self.phys_state, scale=False)
 
         jacobian = AssemblyMatrixTemperatureReal(self.phys_pb)
         jacobian.addElementaryMatrix(rigi_ther, theta)
