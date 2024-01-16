@@ -200,6 +200,7 @@ class ProblemSolver(SolverFeature):
             line = LineSearch(args.get("RECH_LINEAIRE"))
         for feat, required in line.undefined():
             line.use(self._get(feat, required))
+        line.setup()
         self.use(line)
         return self.get_feature(SOP.LineSearch)
 
