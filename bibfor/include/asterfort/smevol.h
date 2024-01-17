@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,18 +15,17 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine smevol(temper, modelz, chmat, mateco, compor, option,&
-                      phasin, numpha)
-        character(len=8) :: temper
-        character(len=*) :: modelz
-        character(len=24) :: chmat, mateco
-        character(len=19) :: compor
-        character(len=16) :: option
-        character(len=24) :: phasin
-        integer :: numpha
+    subroutine smevol(resultName, nbStore, listStore, &
+                      model, materialField, materialCoding, comporMeta, &
+                      metaInitUser, numeFieldInit)
+        character(len=8), intent(in) :: resultName
+        integer, intent(in) :: nbStore
+        integer, pointer :: listStore(:)
+        character(len=8), intent(in) :: model, materialField
+        character(len=24), intent(in) :: materialCoding, comporMeta
+        integer, intent(in) :: numeFieldInit
+        character(len=24), intent(in) :: metaInitUser
     end subroutine smevol
 end interface

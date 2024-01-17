@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,11 +64,7 @@ subroutine utpar1(resu_type, nb_para_maxi, para_list, nb_para)
         ico = ico+1
         para_list(ico) = 'EXCIT#P#K24'
         ico = ico+1
-        para_list(ico) = 'ITER_GLOB#P#I'
-        ico = ico+1
         para_list(ico) = 'PARM_THETA#P#R'
-        ico = ico+1
-        para_list(ico) = 'DELTAT#P#R'
         nb_para = ico
         ASSERT(nb_para .le. nb_para_maxi)
 !

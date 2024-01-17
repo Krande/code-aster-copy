@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -127,21 +127,6 @@ cata_msg = {
  résidu fonction = %(r2)f
  résidu = %(r3)f
  précision = %(r4)f
-"""
-    ),
-    51: _(
-        """
- pas de champ correspondant à l'instant demandé.
- résultat  %(k1)s
- accès "INST_INIT" : %(r1)f
-"""
-    ),
-    52: _(
-        """
- plusieurs champs correspondant à l'instant demandé
- résultat  %(k1)s
- accès "INST_INIT" : %(r1)f
- nombre : %(i1)d
 """
     ),
     53: _(

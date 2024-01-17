@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,6 +23,7 @@ subroutine te0067(option, nomte)
     implicit none
 !
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/Metallurgy_type.h"
@@ -48,7 +49,7 @@ subroutine te0067(option, nomte)
     character(len=16) :: phase_type
     real(kind=8) :: dt10, dt21, inst2
     real(kind=8) :: tno1, tno0, tno2
-    integer :: nno, i_node, itempe, itempa, jv_time
+    integer :: nno, i_node, itempe, itempa, jvTime
     integer :: imate, nb_vari, nume_comp, nb_phase
     integer :: itempi
     integer :: jv_phase_in, jv_phase_out, icompo
@@ -58,41 +59,40 @@ subroutine te0067(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
     call elrefe_info(fami='RIGI', nno=nno)
-!
+
 ! - Input/Output fields
-!
     call jevech('PMATERC', 'L', imate)
+    jv_mater = zi(imate)
     call jevech('PTEMPAR', 'L', itempa)
     call jevech('PTEMPER', 'L', itempe)
     call jevech('PTEMPIR', 'L', itempi)
-    call jevech('PTEMPSR', 'L', jv_time)
+    call jevech('PTIMMTR', 'L', jvTime)
     call jevech('PPHASIN', 'L', jv_phase_in)
     call jevech('PCOMPOR', 'L', icompo)
     call jevech('PPHASNOU', 'E', jv_phase_out)
-!
+
+! - Metallurgical parameters
+    call jevech('PCOMPOR', 'L', icompo)
     phase_type = zk16(icompo-1+1)
-    jv_mater = zi(imate)
     read (zk16(icompo-1+4), '(I16)') nume_comp
     read (zk16(icompo-1+5), '(I16)') nb_phase
     read (zk16(icompo-1+2), '(I16)') nb_vari
-!
+
 ! - Preparation
-!
     call nzcomp_prep(jv_mater, phase_type, metaPara)
-!
+
 ! - Time parameters: 0 - 1 - 2
-!
-    dt10 = zr(jv_time+1)
-    dt21 = zr(jv_time+2)
-    inst2 = zr(jv_time)+dt21
-!
+    dt10 = zr(jvTime+1)
+    dt21 = zr(jvTime+2)
+    inst2 = zr(jvTime)+dt21
+
 ! - Loop on nodes
-!
     do i_node = 1, nno
 ! ----- Temperatures: 0 - 1 - 2
         tno1 = zr(itempe+i_node-1)
         tno0 = zr(itempa+i_node-1)
         tno2 = zr(itempi+i_node-1)
+
 ! ----- General switch
         call nzcomp(jv_mater, metaPara, nume_comp, nb_phase, &
                     dt10, dt21, inst2, &

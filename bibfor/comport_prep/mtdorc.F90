@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mtdorc(model, compor)
+subroutine mtdorc(model, comporMeta)
 !
     use Metallurgy_type
 !
@@ -32,49 +32,49 @@ subroutine mtdorc(model, compor)
 #include "asterfort/dismoi.h"
 !
     character(len=8), intent(in) :: model
-    character(len=19), intent(in) :: compor
+    character(len=24), intent(in) :: comporMeta
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Preparation of comportment (metallurgy)
 !
-! Prepare objects COMPOR <CARTE>
+! Construct map for behaviour in metallurgy
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  model       : name of model
-! In  compor      : name of <CARTE> COMPOR
+! In  model            : name of model
+! In  comporMeta       : name of map for behaviour in metallurgy
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nbCmp
     character(len=8) :: mesh
-    character(len=19), parameter :: comporInfo = '&&MTDORC.INFO'
-    type(META_PrepPara) :: behaviourPrepMeta
+    character(len=19), parameter :: comporMetaInfo = '&&MTDORC.INFO'
+    type(META_PrepPara) :: metaPrepPara
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
 
 ! - Create datastructure to prepare comportement
-    call comp_meta_info(behaviourPrepMeta)
+    call comp_meta_info(metaPrepPara)
 
 ! - Create COMPOR <CARTE>
-    call comp_init(mesh, compor, 'V', nbCmp)
+    call comp_init(mesh, comporMeta, 'V', nbCmp)
 
 ! - Read informations from command file
-    call comp_meta_read(behaviourPrepMeta)
+    call comp_meta_read(metaPrepPara)
 
 ! - Save informations in COMPOR <CARTE>
-    call comp_meta_save(mesh, compor, nbCmp, behaviourPrepMeta)
+    call comp_meta_save(mesh, comporMeta, nbCmp, metaPrepPara)
 
 ! - Prepare informations about internal variables
-    call comp_meta_pvar(model, compor, comporInfo)
+    call comp_meta_pvar(model, comporMeta, comporMetaInfo)
 
 ! - Print informations about internal variables
-    call comp_meta_prnt(comporInfo)
+    call comp_meta_prnt(comporMetaInfo)
 
 ! - Clean
-    deallocate (behaviourPrepMeta%v_comp)
+    deallocate (metaPrepPara%para)
 !
 end subroutine

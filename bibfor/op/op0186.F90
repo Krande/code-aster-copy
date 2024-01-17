@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -87,13 +87,12 @@ subroutine op0186()
     real(kind=8) :: rtab(2), theta_read
     character(len=8) :: result, result_dry, mesh
     character(len=19) :: sdobse
-    character(len=19) :: solver, maprec, sddisc, sdcrit, varc_curr, list_load
+    character(len=19) :: solver, maprec, sddisc, varc_curr, list_load
     character(len=24) :: model, mateco, mater, cara_elem
     character(len=24) :: time, dry_prev, dry_curr, compor, vtemp, vtempm, vtempp
     character(len=24) :: vtempr, cn2mbr_stat, cn2mbr_tran, nume_dof, mediri, matass, cndiri, cn2mbr
     character(len=24) :: cncine, cnresi, vabtla, vhydr, vhydrp
     character(len=24) :: tpscvt
-    real(kind=8), pointer :: v_crit_crtr(:) => null()
     real(kind=8), pointer :: tempm(:) => null()
 !
     type(NL_DS_InOut)     :: ds_inout
@@ -101,7 +100,6 @@ subroutine op0186()
     type(ROM_DS_AlgoPara) :: ds_algorom
     type(NL_DS_Print)     :: ds_print
 !
-    data sdcrit/'&&OP0186.CRITERE'/
     data maprec/'&&OP0186.MAPREC'/
     data cndiri/1*' '/
     data cncine/1*' '/
@@ -155,7 +153,7 @@ subroutine op0186()
                 cara_elem, compor, list_load, &
                 para, nume_dof, &
                 sddisc, ds_inout, sdobse, &
-                sdcrit, time, ds_algopara, &
+                time, ds_algopara, &
                 ds_algorom, ds_print, vhydr, &
                 l_stat, l_evol, l_rom, &
                 l_line_search, lnkry)
@@ -383,10 +381,6 @@ subroutine op0186()
 ! ======================================================================
 ! -- PREPARATION DES PARAMETRES ARCHIVES  ------------------------------
 ! ======================================================================
-    if (conver) then
-        call jeveuo(sdcrit(1:19)//'.CRTR', 'E', vr=v_crit_crtr)
-        v_crit_crtr(1) = iter_newt
-    end if
 !
     finpas = didern(sddisc, nume_inst)
 !
@@ -418,7 +412,7 @@ subroutine op0186()
         force = .false.
     end if
     call ntarch(nume_inst, model, mater, cara_elem, para, &
-                sddisc, ds_inout, force, sdcrit, ds_algorom)
+                sddisc, ds_inout, force, ds_algorom)
 !
 ! - Make observation
 !

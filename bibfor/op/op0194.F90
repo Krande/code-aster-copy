@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,19 +18,17 @@
 !
 subroutine op0194()
 !
+    use MetallurgyOperator_module
+!
     implicit none
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcop.h"
-#include "asterfort/chpver.h"
-#include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/gettco.h"
 #include "asterfort/getvid.h"
-#include "asterfort/getvis.h"
-#include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
@@ -38,9 +36,7 @@ subroutine op0194()
 #include "asterfort/jemarq.h"
 #include "asterfort/mtdorc.h"
 #include "asterfort/rcmfmc.h"
-#include "asterfort/rsexch.h"
 #include "asterfort/rs_get_liststore.h"
-#include "asterfort/rs_getnume.h"
 #include "asterfort/rslesd.h"
 #include "asterfort/smevol.h"
 #include "asterfort/utmess.h"
@@ -52,14 +48,13 @@ subroutine op0194()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret, n1, n2, n3, numpha
-    integer :: nbtrou, ier, nbOption, nb, iOption
-    integer :: nbStore, numeStore0, numeStoreInit
-    real(kind=8) :: inst, prec
-    character(len=8) :: crit, temper, temper2, model
+    integer :: iret, n1, numeFieldInit
+    integer :: nbOption, nb, iOption
+    integer :: nbStore, numeStore0
+    character(len=8) :: resultName, model, materialField
     character(len=16) :: resultType, option
-    character(len=19), parameter :: compor = '&&OP0194.COMPOR'
-    character(len=24) :: chmeta, phasin, mateco, chmate
+    character(len=24), parameter :: comporMeta = '&&OP0194.COMPOR'
+    character(len=24) :: metaInitUser, materialCoding
     character(len=24), parameter :: listOptionsJv = '&&OP0194.LES_OPTION'
     character(len=16), parameter :: keywordfact = 'COMPORTEMENT'
     integer :: i_comp, nbocc
@@ -74,32 +69,34 @@ subroutine op0194()
     call infmaj()
 
 ! - Get output result
-    call getvid(' ', 'RESULTAT', scal=temper, nbret=n1)
-    call gettco(temper, resultType)
+    call getvid(' ', 'RESULTAT', scal=resultName, nbret=n1)
+    call gettco(resultName, resultType)
     ASSERT(resultType .eq. 'EVOL_THER')
 
-! - Get list of storing index
-    call rs_get_liststore(temper, nbStore)
+! - Get all storing index in result
+    call rs_get_liststore(resultName, nbStore)
+    if (nbStore .ne. 0) then
+        call wkvect(listStoreJv, "V V I", nbStore, vi=listStore)
+        call rs_get_liststore(resultName, nbStore, listStore)
+    end if
     if (nbStore .lt. 2) then
         call utmess('F', 'META1_1')
     end if
-    call wkvect(listStoreJv, 'V V I', nbStore, vi=listStore)
-    call rs_get_liststore(temper, nbStore, listStore)
-    numeStore0 = listStore(1)
 
 ! - Get main parameters
-    mateco = ' '
+    materialCoding = ' '
     model = ' '
-    chmate = ' '
-    call rslesd(temper, numeStore0, model, chmate)
-    if (chmate .ne. ' ') then
-        call rcmfmc(chmate, mateco, l_ther_=ASTER_TRUE)
+    materialField = ' '
+    numeStore0 = listStore(1)
+    call rslesd(resultName, numeStore0, model, materialField)
+    if (materialField .ne. ' ') then
+        call rcmfmc(materialField, materialCoding, l_ther_=ASTER_TRUE)
     end if
 !
 ! - Get options to compute
     call getvtx(' ', 'OPTION', nbval=0, nbret=nb)
     nbOption = -nb
-    call wkvect(listOptionsJv, 'V V K16', nbOption, vk16=listOption)
+    call wkvect(listOptionsJv, "V V K16", nbOption, vk16=listOption)
     call getvtx(' ', 'OPTION', nbval=nbOption, vect=listOption, nbret=nb)
 
 ! - Compute options
@@ -109,41 +106,17 @@ subroutine op0194()
         if (option .eq. 'META_ELNO') then
 
 ! --------- Construct map for thermic behaviour
-            call mtdorc(model, compor)
+            call mtdorc(model, comporMeta)
 
 ! --------- Initial state
-            numpha = 0
-            call getvid('ETAT_INIT', 'META_INIT_ELNO', iocc=1, scal=chmeta, nbret=n3)
-            if (n3 .gt. 0) then
-                phasin = '&&SMEVOL_ZINIT'
-                call chpver('F', chmeta(1:19), 'CART', 'VAR2_R', ier)
-                call copisd('CHAMP_GD', 'V', chmeta, phasin)
-            else
-                call getvid('ETAT_INIT', 'EVOL_THER', iocc=1, scal=temper2, nbret=n1)
-                if (temper2 .ne. temper) then
-                    call utmess('F', 'META1_2')
-                end if
-                call getvis('ETAT_INIT', 'NUME_INIT', iocc=1, scal=numeStoreInit, nbret=n2)
-                if (n2 .eq. 0) then
-                    call getvr8('ETAT_INIT', 'INST_INIT', iocc=1, scal=inst, nbret=n3)
-                    call getvr8('ETAT_INIT', 'PRECISION', iocc=1, scal=prec, nbret=n3)
-                    call getvtx('ETAT_INIT', 'CRITERE', iocc=1, scal=crit, nbret=n3)
-                    call rs_getnume(temper, inst, crit, prec, numeStoreInit, nbtrou)
-                    if (nbtrou .eq. 0) then
-                        call utmess('F', 'UTILITAI6_51', sk=temper, sr=inst)
-                    else if (nbtrou .gt. 1) then
-                        call utmess('F', 'UTILITAI6_52', sk=temper, si=nbtrou, sr=inst)
-                    end if
-                end if
-                call rsexch('F', temper, 'META_ELNO', numeStoreInit, phasin, iret)
-                numpha = numeStoreInit
-            end if
+            call metaGetInitialState(resultName, metaInitUser, numeFieldInit)
 
 ! --------- Compute
-            call smevol(temper, model, chmate, mateco, compor, option, &
-                        phasin, numpha)
+            call smevol(resultName, nbStore, listStore, &
+                        model, materialField, materialCoding, comporMeta, &
+                        metaInitUser, numeFieldInit)
 !
-            call detrsd('CARTE', '&&NMDORC.COMPOR')
+            call detrsd('CARTE', comporMeta)
 !
         else
             nbocc = 0
@@ -156,14 +129,15 @@ subroutine op0194()
                     end if
                 end if
             end do
-            call calcop(option, listOptionsJv, temper, temper, listStoreJv, &
+            call calcop(option, listOptionsJv, resultName, resultName, listStoreJv, &
                         nbStore, resultType, iret)
             if (iret .eq. 0) cycle
-!
         end if
     end do
-!
+
+! - Cleaning
     call jedetr(listOptionsJv)
+    call jedetr(listStoreJv)
 !
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ntarc0(result, model, mate, cara_elem, list_load_resu, &
-                  para, nume_store, time_curr, sdcrit_nonl_)
+                  para, nume_store, time_curr)
 !
     implicit none
 !
@@ -29,8 +29,6 @@ subroutine ntarc0(result, model, mate, cara_elem, list_load_resu, &
 #include "asterfort/rsadpa.h"
 #include "asterfort/rssepa.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
-!
     character(len=8), intent(in) :: result
     integer, intent(in) :: nume_store
     real(kind=8), intent(in) :: time_curr
@@ -39,7 +37,6 @@ subroutine ntarc0(result, model, mate, cara_elem, list_load_resu, &
     character(len=24), intent(in) :: model
     character(len=24), intent(in) :: mate
     character(len=24), intent(in) :: cara_elem
-    character(len=19), optional, intent(in) :: sdcrit_nonl_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -64,8 +61,6 @@ subroutine ntarc0(result, model, mate, cara_elem, list_load_resu, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: jv_para
-    real(kind=8), pointer :: v_crit_crtr(:) => null()
-    character(len=16), pointer :: v_crit_crde(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -80,17 +75,6 @@ subroutine ntarc0(result, model, mate, cara_elem, list_load_resu, &
 !
     call rsadpa(result, 'E', 1, 'PARM_THETA', nume_store, 0, sjv=jv_para)
     zr(jv_para) = para(1)
-    call rsadpa(result, 'E', 1, 'DELTAT', nume_store, 0, sjv=jv_para)
-    zr(jv_para) = para(2)
-!
-! - Store non-linear criteria
-!
-    if (present(sdcrit_nonl_)) then
-        call jeveuo(sdcrit_nonl_(1:19)//'.CRTR', 'L', vr=v_crit_crtr)
-        call jeveuo(sdcrit_nonl_(1:19)//'.CRDE', 'L', vk16=v_crit_crde)
-        call rsadpa(result, 'E', 1, v_crit_crde(1), nume_store, 0, sjv=jv_para)
-        zi(jv_para) = nint(v_crit_crtr(1))
-    end if
 !
 ! - Store others
 !

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -614,6 +614,9 @@ COMPOR = PhysicalQuantity(
        REGUVISC : régularisation visqueuse
        MGISADDR : adresse de l'objet C++ MGISBehaviour
        POSTINCR : parameter for POST_INCR option
+       METATYPE : type of material for metallurgy (steel, zirc, ...)
+       METALAW  : law for metallurgy
+       METANBPH : number of phases for metallurgy
 """,
 )
 
@@ -2071,7 +2074,7 @@ INFC_R = PhysicalQuantity(
 
 INST_R = PhysicalQuantity(
     type="R",
-    components=("INST", "DELTAT", "THETA", "KHI", "R", "RHO"),
+    components=("INST", "DELTAT", "THETA", "KHI", "R", "RHO", "DELTA01", "DELTA12"),
     comment="""  INST_R Type:R Instant de calcul pour une evolution temporelle
        INST : valeur du temps (instant)
        DELTAT : increment de temps pour un calcul par ''pas de temps''
@@ -2080,6 +2083,9 @@ INST_R = PhysicalQuantity(
        KHI : indicateur pour le calcul stationnaire ou transitoire
        R : parametre du lagrangien augmente
        RHO : parametre du lagrangien augmente
+       DELTA01: time increment between 0 and 1 (for META_ELNO)
+       DELTA12: time increment between 1 and 2 (for META_ELNO)
+
 """,
 )
 

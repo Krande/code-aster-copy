@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 module Metallurgy_type
 !
@@ -35,25 +34,25 @@ module Metallurgy_type
 ! - Type: parameters for behaviour
 !
     type META_Parameters
-! ----- Keyword RELATION
-        character(len=16) :: phase_type = ' '
+! ----- Keyword RELATION (steel, zirc, etc.)
+        character(len=16) :: metaType = ' '
 ! ----- Keyword LOI_META
-        character(len=16) :: loi_meta = ' '
+        character(len=16) :: metaLaw = ' '
 ! ----- Total number of internal state variables
-        integer           :: nb_vari = 0
+        integer           :: nbVari = 0
 ! ----- Number of phases
-        integer           :: nb_phase = 0
+        integer           :: nbPhase = 0
 ! ----- Index of behaviour
-        integer           :: nume_comp = 0
+        integer           :: numeComp = 0
     end type META_Parameters
 !
 ! - Type: for preparation of comportment
 !
     type META_PrepPara
 ! ----- Number of factor keywords
-        integer                        :: nb_comp
+        integer :: nb_comp = 0
 ! ----- List of parameters
-        type(META_Parameters), pointer :: v_comp(:)
+        type(META_Parameters), pointer :: para(:) => null()
     end type META_PrepPara
 !
     type META_AusteniteParameters

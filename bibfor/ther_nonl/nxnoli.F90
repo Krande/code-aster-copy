@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine nxnoli(model, mate, cara_elem, l_stat, l_evol, &
-                  para, sddisc, sdcrit, ds_inout, ds_algorom)
+                  para, sddisc, ds_inout, ds_algorom)
 !
     use NonLin_Datastructure_type
     use Rom_Datastructure_type
@@ -42,7 +42,6 @@ subroutine nxnoli(model, mate, cara_elem, l_stat, l_evol, &
     aster_logical, intent(in) :: l_evol
     real(kind=8), intent(in) :: para(*)
     character(len=19), intent(in) :: sddisc
-    character(len=19), intent(in) :: sdcrit
     type(NL_DS_InOut), intent(inout) :: ds_inout
     type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
 !
@@ -63,7 +62,6 @@ subroutine nxnoli(model, mate, cara_elem, l_stat, l_evol, &
 !                            (1) THETA
 !                            (2) DELTAT
 ! In  sddisc           : datastructure for time discretization
-! In  sdcrit           : name of datastructure to save convergence parameters
 ! IO  ds_inout         : datastructure for input/output management
 !
 ! --------------------------------------------------------------------------------------------------
@@ -118,7 +116,7 @@ subroutine nxnoli(model, mate, cara_elem, l_stat, l_evol, &
     if ((.not. lreuse) .and. (.not. l_stat) .and. l_evol) then
         call utmess('I', 'ARCHIVAGE_4')
         call ntarch(nume_inst, model, mate, cara_elem, para, &
-                    sddisc, ds_inout, force, sdcrit, ds_algorom)
+                    sddisc, ds_inout, force, ds_algorom)
     end if
 !
 end subroutine

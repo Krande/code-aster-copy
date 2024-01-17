@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine ntarch(numins, modele, mate, carele, para, &
-                  sddisc, ds_inout, force, sdcrit_nonl_, ds_algorom_)
+                  sddisc, ds_inout, force, ds_algorom_)
 !
     use NonLin_Datastructure_type
     use Rom_Datastructure_type
@@ -45,7 +45,6 @@ subroutine ntarch(numins, modele, mate, carele, para, &
     character(len=19), intent(in) :: sddisc
     type(NL_DS_InOut), intent(in) :: ds_inout
     aster_logical, intent(inout) :: force
-    character(len=19), optional, intent(in) :: sdcrit_nonl_
     type(ROM_DS_AlgoPara), optional, intent(in) :: ds_algorom_
 !
 ! --------------------------------------------------------------------------------------------------
@@ -109,13 +108,8 @@ subroutine ntarch(numins, modele, mate, carele, para, &
 !
 ! ----- Storing parameters
 !
-        if (present(sdcrit_nonl_)) then
-            call ntarc0(result, modele, mate, carele, list_load_resu, &
-                        para, nume_store, instan, sdcrit_nonl_)
-        else
-            call ntarc0(result, modele, mate, carele, list_load_resu, &
-                        para, nume_store, instan)
-        end if
+        call ntarc0(result, modele, mate, carele, list_load_resu, &
+                    para, nume_store, instan)
 !
 ! ----- Storing fields
 !

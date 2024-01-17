@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,14 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
 subroutine nxinit(mesh, model, mate, &
                   cara_elem, compor, list_load, &
                   para, nume_dof, &
                   sddisc, ds_inout, sdobse, &
-                  sdcrit, time, ds_algopara, &
+                  time, ds_algopara, &
                   ds_algorom, ds_print, vhydr, &
                   l_stat, l_evol, l_rom, &
                   l_line_search, lnkry)
@@ -35,7 +34,6 @@ subroutine nxinit(mesh, model, mate, &
 #include "asterf_types.h"
 #include "asterfort/ntcrob.h"
 #include "asterfort/ntcrch.h"
-#include "asterfort/ntcrcv.h"
 #include "asterfort/ntetcr.h"
 #include "asterfort/ntdoet.h"
 #include "asterfort/nxcerr.h"
@@ -55,7 +53,6 @@ subroutine nxinit(mesh, model, mate, &
     character(len=19), intent(in) :: sddisc
     type(NL_DS_InOut), intent(inout) :: ds_inout
     character(len=19), intent(out) :: sdobse
-    character(len=19), intent(in) :: sdcrit
     character(len=24), intent(out) :: time
     type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
     type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
@@ -84,7 +81,6 @@ subroutine nxinit(mesh, model, mate, &
 ! In  sddisc           : datastructure for time discretization
 ! IO  ds_inout         : datastructure for input/output management
 ! Out sdobse           : datastructure for observation parameters
-! In  sdcrit           : name of datastructure to save convergence parameters
 ! Out time             : name of field to save time parameters
 ! In  ds_algopara      : datastructure for algorithm parameters
 ! IO  ds_algorom       : datastructure for ROM parameters
@@ -122,10 +118,6 @@ subroutine nxinit(mesh, model, mate, &
 ! - Check loads
 !
     call ntload_chck(list_load)
-!
-! --- CREATION DE LA SD POUR ARCHIVAGE DES INFORMATIONS DE CONVERGENCE
-!
-    call ntcrcv(sdcrit)
 !
 ! - Create unknowns
 !
@@ -166,6 +158,6 @@ subroutine nxinit(mesh, model, mate, &
 ! - Prepare storing
 !
     call nxnoli(model, mate, cara_elem, l_stat, l_evol, &
-                para, sddisc, sdcrit, ds_inout, ds_algorom)
+                para, sddisc, ds_inout, ds_algorom)
 !
 end subroutine
