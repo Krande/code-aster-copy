@@ -6,4 +6,5 @@ echo "+ checking issues status..."
 ./devtools/bin/maint/check_issue_status --expected=valide_EDA ${flist}
 
 echo "+ checking that expected documents have been committed..."
-./devtools/bin/maint/check_expected_documents ${flist}
+# turn as information during doc migration
+./devtools/bin/maint/check_expected_documents ${flist} || true
