@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -92,9 +92,7 @@ RESULTAT = STAT_NON_LINE(
     CHAM_MATER=CH_MAT_B,
     CARA_ELEM=CAR_EL_B,
     EXCIT=(_F(CHARGE=CHAR0), _F(CHARGE=PRES_LIM, TYPE_CHARGE="FIXE_PILO")),
-    COMPORTEMENT=_F(
-        RELATION="MFRONT", COMPOR_MFRONT=behaviour, RESI_INTE_MAXI=1.0e-12, ALGO_CPLAN="ANALYTIQUE"
-    ),
+    COMPORTEMENT=_F(RELATION="MFRONT", COMPOR_MFRONT=behaviour, ALGO_CPLAN="ANALYTIQUE"),
     INCREMENT=_F(LIST_INST=LIS_INST),
     NEWTON=_F(PAS_MINI_ELAS=0.24, REAC_INCR=1, REAC_ITER=1, REAC_ITER_ELAS=1),
     CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6, ITER_GLOB_MAXI=1030, ITER_GLOB_ELAS=60),

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -84,8 +84,8 @@ def C_COMPORTEMENT(command):
             # Parametres d'integration
             b_mfront_resi=BLOC(
                 condition="""equal_to('RELATION', 'MFRONT')""",
-                RESI_INTE_MAXI=SIMP(statut="f", typ="R", defaut=1.0e-8),
-                ITER_INTE_MAXI=SIMP(statut="f", typ="I", defaut=100),
+                RESI_INTE_MAXI=SIMP(statut="f", typ="R"),
+                ITER_INTE_MAXI=SIMP(statut="f", typ="I"),
             ),
             b_no_mfront=BLOC(
                 condition="""not equal_to('RELATION', 'MFRONT')""",
@@ -339,7 +339,7 @@ def C_COMPORTEMENT(command):
                     ALGO_CPLAN=SIMP(
                         statut="f", typ="TXM", defaut="DEBORST", into=("DEBORST", "ANALYTIQUE")
                     ),
-                    RESI_INTE_MAXI=SIMP(statut="f", typ="R", defaut=1.0e-8),
+                    RESI_INTE_MAXI=SIMP(statut="f", typ="R"),
                     ITER_INTE_MAXI=SIMP(statut="f", typ="I", defaut=100),
                     SYME_MATR_TANG=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="OUI"),
                 ),
@@ -395,8 +395,8 @@ def C_COMPORTEMENT(command):
             # Parametres d'integration
             b_mfront_resi=BLOC(
                 condition="""(equal_to("RELATION", 'MFRONT'))""",
-                RESI_INTE_MAXI=SIMP(statut="f", typ="R", defaut=1.0e-8),
-                ITER_INTE_MAXI=SIMP(statut="f", typ="I", defaut=100),
+                RESI_INTE_MAXI=SIMP(statut="f", typ="R"),
+                ITER_INTE_MAXI=SIMP(statut="f", typ="I"),
             ),
             b_flua_resi=BLOC(
                 condition="""is_in("RELATION", ('RGI_BETON','FLUA_PORO_BETON','FLUA_ENDO_PORO', 'RGI_BETON_BA',))""",

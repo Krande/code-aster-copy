@@ -43,7 +43,7 @@ inline MGISBehaviour *getPtr( const char *hexid, STRING_SIZE l_id ) {
 void DEFSP( MGIS_GET_NUMBER_OF_ESVS, mgis_get_number_of_esvs, const char *hexid, STRING_SIZE l_id,
             ASTERINTEGER *nbvar ) {
 #ifdef ASTER_HAVE_MGIS
-    *nbvar = ( ASTERINTEGER )( getPtr( hexid, l_id )->getNumberOfExternalStateVariables() );
+    *nbvar = (ASTERINTEGER)( getPtr( hexid, l_id )->getNumberOfExternalStateVariables() );
 #endif
 }
 
@@ -74,7 +74,7 @@ void DEFSPPP( MGIS_SET_EXTERNAL_STATE_VARIABLES, mgis_set_external_state_variabl
 void DEFSP( MGIS_GET_NUMBER_OF_ISVS, mgis_get_number_of_isvs, const char *hexid, STRING_SIZE l_id,
             ASTERINTEGER *nbvar ) {
 #ifdef ASTER_HAVE_MGIS
-    *nbvar = ( ASTERINTEGER )( getPtr( hexid, l_id )->getNumberOfInternalStateVariables() );
+    *nbvar = (ASTERINTEGER)( getPtr( hexid, l_id )->getNumberOfInternalStateVariables() );
 #endif
 }
 
@@ -82,7 +82,7 @@ void DEFSP( MGIS_GET_NUMBER_OF_ISVS, mgis_get_number_of_isvs, const char *hexid,
 void DEFSP( MGIS_GET_SIZEOF_ISVS, mgis_get_sizeof_isvs, const char *hexid, STRING_SIZE l_id,
             ASTERINTEGER *vectsize ) {
 #ifdef ASTER_HAVE_MGIS
-    *vectsize = ( ASTERINTEGER )( getPtr( hexid, l_id )->getSizeOfInternalStateVariables() );
+    *vectsize = (ASTERINTEGER)( getPtr( hexid, l_id )->getSizeOfInternalStateVariables() );
 #endif
 }
 
@@ -157,6 +157,13 @@ void DEFSP( MGIS_SET_ROTATION_MATRIX, mgis_set_rotation_matrix, const char *hexi
 }
 
 /* Parameters */
+void DEFSSP( MGIS_GET_DOUBLE_MFRONT_PARAMETER, mgis_get_double_mfront_parameter, const char *hexid,
+             STRING_SIZE l_id, const char *param_, STRING_SIZE l_par, ASTERDOUBLE *value ) {
+#ifdef ASTER_HAVE_MGIS
+    std::string param = strip( std::string( param_, l_par ) );
+    *value = (ASTERDOUBLE)( getPtr( hexid, l_id )->getMFrontParameter( param ) );
+#endif
+}
 
 void DEFSSP( MGIS_SET_DOUBLE_PARAMETER, mgis_set_double_parameter, const char *hexid,
              STRING_SIZE l_id, const char *param_, STRING_SIZE l_par, ASTERDOUBLE *value ) {
@@ -187,7 +194,7 @@ void DEFSP( MGIS_SET_OUTOFBOUNDS_POLICY, mgis_set_outofbounds_policy, const char
 void DEFSP( MGIS_GET_NUMBER_OF_PROPS, mgis_get_number_of_props, const char *hexid, STRING_SIZE l_id,
             ASTERINTEGER *nbprop ) {
 #ifdef ASTER_HAVE_MGIS
-    *nbprop = ( ASTERINTEGER )( getPtr( hexid, l_id )->getNumberOfMaterialProperties() );
+    *nbprop = (ASTERINTEGER)( getPtr( hexid, l_id )->getNumberOfMaterialProperties() );
 #endif
 }
 

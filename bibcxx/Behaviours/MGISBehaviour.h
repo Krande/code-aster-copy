@@ -107,6 +107,7 @@ class MGISBehaviour : public DataStructure {
     /* Parameters */
     void setParameter( const std::string param, const ASTERDOUBLE value );
     void setParameter( const std::string param, const ASTERINTEGER value );
+    double getMFrontParameter( const std::string param );
 
     /* Material Properties */
     int getNumberOfMaterialProperties() const;

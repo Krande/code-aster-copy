@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -90,9 +90,7 @@ U = STAT_NON_LINE(
         _F(CHARGE=TRACTION, FONC_MULT=SIGMA_F),
         _F(CHARGE=CISAIL, FONC_MULT=TAU_F),
     ),
-    COMPORTEMENT=_F(
-        RELATION="MFRONT", COMPOR_MFRONT=behaviour, ITER_INTE_MAXI=30, RESI_INTE_MAXI=1.0e-8
-    ),
+    COMPORTEMENT=_F(RELATION="MFRONT", COMPOR_MFRONT=behaviour, ITER_INTE_MAXI=30),
     INCREMENT=_F(LIST_INST=L_INST),
     NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=3),
     RECH_LINEAIRE=_F(RHO_MAX=150),

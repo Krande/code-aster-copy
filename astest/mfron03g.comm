@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -248,9 +248,7 @@ IMPLMF = SIMU_POINT_MAT(
     INFO=1,
     MATER=MATFR,
     MASSIF=_F(ANGL_EULER=angles),
-    COMPORTEMENT=_F(
-        RELATION="MFRONT", COMPOR_MFRONT=behaviour, RESI_INTE_MAXI=1e-12, ITER_INTE_MAXI=100
-    ),
+    COMPORTEMENT=_F(RELATION="MFRONT", COMPOR_MFRONT=behaviour, ITER_INTE_MAXI=100),
     INCREMENT=_F(LIST_INST=LIS2DD),
     NEWTON=(_F(REAC_ITER=1, PREDICTION="ELASTIQUE"),),
     CONVERGENCE=(_F(ITER_GLOB_MAXI=100),),

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,8 +35,8 @@ subroutine getBehaviourPara(l_mfront_offi, l_mfront_proto, l_kit_thm, &
     character(len=16), intent(in) :: keywf
     integer, intent(in) :: i_comp
     character(len=16), intent(in) :: algo_inte
-    real(kind=8), intent(out) :: iter_inte_maxi
-    real(kind=8), intent(out) :: resi_inte_rela
+    integer, pointer :: iter_inte_maxi
+    real(kind=8), pointer :: resi_inte_rela
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,31 +46,28 @@ subroutine getBehaviourPara(l_mfront_offi, l_mfront_proto, l_kit_thm, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  l_mfront_proto   : .true. if MFront prototype
-! In  l_mfront_offi    : .true. if MFront official
-! In  l_kit_thm        : .true. if kit THM
-! In  keywf            : factor keyword to read (COMPORTEMENT)
-! In  i_comp           : factor keyword index
-! In  algo_inte        : algorithm for integration of behaviour
-! Out iter_inte_maxi   : value for ITER_INTE_MAXI
-! Out resi_inte_rela   : value for RESI_INTE_RELA
+! In  l_mfront_proto     : .true. if MFront prototype
+! In  l_mfront_offi      : .true. if MFront official
+! In  l_kit_thm          : .true. if kit THM
+! In  keywf              : factor keyword to read (COMPORTEMENT)
+! In  i_comp             : factor keyword index
+! In  algo_inte          : algorithm for integration of behaviour
+! Out iter_inte_maxi     : value for ITER_INTE_MAXI
+! Out resi_inte_rela     : value for RESI_INTE_****
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    iter_inte_maxi = 0.d0
-    resi_inte_rela = 0.d0
-!
 ! - Get
 !
-    call nmdocv(keywf, i_comp, algo_inte, 'ITER_INTE_MAXI', iter_inte_maxi)
+    call nmdocv(keywf, i_comp, algo_inte, 'ITER_INTE_MAXI', vali=iter_inte_maxi)
     if (l_mfront_offi .or. l_mfront_proto) then
         if (l_mfront_offi .or. l_kit_thm) then
-            call nmdocv(keywf, i_comp, algo_inte, 'RESI_INTE_RELA', resi_inte_rela)
+            call nmdocv(keywf, i_comp, algo_inte, 'RESI_INTE_RELA', valr=resi_inte_rela)
         else
-            call nmdocv(keywf, i_comp, algo_inte, 'RESI_INTE_MAXI', resi_inte_rela)
+            call nmdocv(keywf, i_comp, algo_inte, 'RESI_INTE_MAXI', valr=resi_inte_rela)
         end if
     else
-        call nmdocv(keywf, i_comp, algo_inte, 'RESI_INTE_RELA', resi_inte_rela)
+        call nmdocv(keywf, i_comp, algo_inte, 'RESI_INTE_RELA', valr=resi_inte_rela)
     end if
 !
 end subroutine

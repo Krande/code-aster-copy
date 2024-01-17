@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,11 +23,13 @@ subroutine setMFrontPara(behaviourCrit, iFactorKeyword)
 !
     implicit none
 !
+#include "asterc/mgis_get_double_mfront_parameter.h"
 #include "asterc/mgis_set_double_parameter.h"
 #include "asterc/mgis_set_integer_parameter.h"
 #include "asterc/mgis_set_outofbounds_policy.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
+#include "asterfort/utmess.h"
 !
     type(Behaviour_Crit), pointer :: behaviourCrit(:)
     integer, intent(in) :: iFactorKeyword
@@ -45,23 +47,38 @@ subroutine setMFrontPara(behaviourCrit, iFactorKeyword)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    real(kind=8) :: iter_inte_maxi, resi_inte_rela
+    real(kind=8) :: resi_inte_mfront_rela, valr(2)
     integer:: extern_type, iveriborne
     character(len=16) :: extern_addr
+    real(kind=8) :: resi_inte_rela
+    integer :: iter_inte_maxi
 !
 ! --------------------------------------------------------------------------------------------------
 !
     iveriborne = behaviourCrit(iFactorKeyword)%iveriborne
-    resi_inte_rela = behaviourCrit(iFactorKeyword)%resi_inte_rela
-    iter_inte_maxi = behaviourCrit(iFactorKeyword)%iter_inte_maxi
+    if (associated(behaviourCrit(iFactorKeyword)%iter_inte_maxi)) then
+        iter_inte_maxi = behaviourCrit(iFactorKeyword)%iter_inte_maxi
+    end if
     extern_addr = behaviourCrit(iFactorKeyword)%paraExte%extern_addr
     extern_type = behaviourCrit(iFactorKeyword)%extern_type
 !
 ! - Set values
 !
     if (extern_type .eq. 1 .or. extern_type .eq. 2) then
-        call mgis_set_double_parameter(extern_addr, "epsilon", resi_inte_rela)
-        call mgis_set_integer_parameter(extern_addr, "iterMax", int(iter_inte_maxi))
+        if (associated(behaviourCrit(iFactorKeyword)%resi_inte_rela)) then
+            resi_inte_rela = behaviourCrit(iFactorKeyword)%resi_inte_rela
+            call mgis_get_double_mfront_parameter(extern_addr, "epsilon", resi_inte_mfront_rela)
+            if (resi_inte_rela .gt. resi_inte_mfront_rela) then
+                valr(1) = resi_inte_rela
+                valr(2) = resi_inte_mfront_rela
+                call utmess('A', 'COMPOR6_16', nr=2, valr=valr)
+            end if
+            call mgis_set_double_parameter(extern_addr, "epsilon", resi_inte_rela)
+        end if
+        if (associated(behaviourCrit(iFactorKeyword)%iter_inte_maxi)) then
+            iter_inte_maxi = behaviourCrit(iFactorKeyword)%iter_inte_maxi
+            call mgis_set_integer_parameter(extern_addr, "iterMax", iter_inte_maxi)
+        end if
         call mgis_set_outofbounds_policy(extern_addr, iveriborne)
     end if
 !

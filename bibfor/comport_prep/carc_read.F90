@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -92,7 +92,9 @@ subroutine carc_read(behaviourPrepCrit, model_)
     character(len=16) :: texte(3)
     integer, pointer :: modelCell(:) => null()
     character(len=16) :: algo_inte
-    real(kind=8) :: algo_inte_r, iter_inte_maxi, resi_inte_rela
+    real(kind=8) :: algo_inte_r
+    real(kind=8), pointer :: resi_inte_rela => null()
+    integer, pointer :: iter_inte_maxi => null()
     type(Behaviour_ParaExte) :: paraExte
 !
 ! --------------------------------------------------------------------------------------------------
@@ -310,8 +312,6 @@ subroutine carc_read(behaviourPrepCrit, model_)
                               algo_inte, algo_inte_r)
 
 ! ----- Get RESI_INTE_RELA/ITER_INTE_MAXI
-        resi_inte_rela = 0.d0
-        iter_inte_maxi = 0
         call getBehaviourPara(l_mfront_offi, l_mfront_proto, l_kit_thm, &
                               factorKeyword, iFactorKeyword, algo_inte, &
                               iter_inte_maxi, resi_inte_rela)
@@ -340,14 +340,27 @@ subroutine carc_read(behaviourPrepCrit, model_)
         behaviourPrepCrit%v_crit(iFactorKeyword)%iveriborne = iveriborne
         behaviourPrepCrit%v_crit(iFactorKeyword)%l_matr_unsymm = l_matr_unsymm
         behaviourPrepCrit%v_crit(iFactorKeyword)%algo_inte_r = algo_inte_r
-        behaviourPrepCrit%v_crit(iFactorKeyword)%resi_inte_rela = resi_inte_rela
-        behaviourPrepCrit%v_crit(iFactorKeyword)%iter_inte_maxi = iter_inte_maxi
+        if (associated(resi_inte_rela)) then
+            allocate (behaviourPrepCrit%v_crit(iFactorKeyword)%resi_inte_rela)
+            behaviourPrepCrit%v_crit(iFactorKeyword)%resi_inte_rela = resi_inte_rela
+        end if
+        if (associated(iter_inte_maxi)) then
+            allocate (behaviourPrepCrit%v_crit(iFactorKeyword)%iter_inte_maxi)
+            behaviourPrepCrit%v_crit(iFactorKeyword)%iter_inte_maxi = iter_inte_maxi
+        end if
         behaviourPrepCrit%v_crit(iFactorKeyword)%extern_ptr = paraExte%extern_ptr
         behaviourPrepCrit%v_crit(iFactorKeyword)%extern_type = extern_type
         behaviourPrepCrit%v_crit(iFactorKeyword)%jvariext1 = variExteCode(1)
         behaviourPrepCrit%v_crit(iFactorKeyword)%jvariext2 = variExteCode(2)
         behaviourPrepCrit%v_crit(iFactorKeyword)%exte_strain = exte_strain
         behaviourPrepCrit%v_crit(iFactorKeyword)%paraExte = paraExte
+!
+! --- Reset pointers and avoid memory leaks
+!
+        if (associated(resi_inte_rela)) deallocate (resi_inte_rela)
+        if (associated(iter_inte_maxi)) deallocate (iter_inte_maxi)
+        nullify (resi_inte_rela)
+        nullify (iter_inte_maxi)
     end do
 
 ! - Get SCHEMA_THM parameters

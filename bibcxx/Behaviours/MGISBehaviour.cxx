@@ -68,7 +68,7 @@ void MGISBehaviour::repr() const {
 
 VectorString MGISBehaviour::internal_state() const {
     // add arguments for `load()`?
-    VectorString ret = {_libpath, _bname};
+    VectorString ret = { _libpath, _bname };
     return ret;
 }
 
@@ -227,6 +227,15 @@ void MGISBehaviour::setParameter( const std::string param, const ASTERDOUBLE val
     }
 }
 
+double MGISBehaviour::getMFrontParameter( const std::string param ) {
+    //    try {
+    double value = MGB::getParameterDefaultValue< double >( *_behav, param );
+    //    } catch ( std::runtime_error ) {
+    //        // Output a proper erreur
+    //    }
+    return value;
+}
+
 void MGISBehaviour::setParameter( const std::string param, const ASTERINTEGER value ) {
     VectorString ivect = _behav->iparams;
     VectorString usvect = _behav->usparams;
@@ -305,7 +314,7 @@ void MGISBehaviour::setOutputs( ASTERDOUBLE *stress, ASTERDOUBLE *internal_varia
                                 ASTERDOUBLE *K, ASTERDOUBLE *rdt ) {
     convertTensorFromMgis( _data->s1.thermodynamic_forces, stress );
     for ( auto i = 0; i < getSizeOfInternalStateVariables(); ++i ) {
-        internal_variables[i] = ( ASTERDOUBLE )( _data->s1.internal_state_variables[i] );
+        internal_variables[i] = (ASTERDOUBLE)( _data->s1.internal_state_variables[i] );
     }
     convertMatrixFromMgis( _data->K, K );
     *rdt = (ASTERDOUBLE)_data->rdt;
@@ -360,19 +369,19 @@ void convertMatrixFromMgis( const VectorReal &vect, ASTERDOUBLE *array ) {
     case 9:
         break;
     case 16:
-        for ( auto i : {3, 7, 11, 12, 13, 14} ) {
-            array[i] = ( ASTERDOUBLE )( vect[i] / sqr2 );
+        for ( auto i : { 3, 7, 11, 12, 13, 14 } ) {
+            array[i] = (ASTERDOUBLE)( vect[i] / sqr2 );
         }
-        array[15] = ( ASTERDOUBLE )( vect[15] / 2.0 );
+        array[15] = (ASTERDOUBLE)( vect[15] / 2.0 );
         break;
     case 25:
         break;
     case 36:
-        for ( auto i : {3, 4, 5, 9, 10, 11, 15, 16, 17, 18, 19, 20, 24, 25, 26, 30, 31, 32} ) {
-            array[i] = ( ASTERDOUBLE )( vect[i] / sqr2 );
+        for ( auto i : { 3, 4, 5, 9, 10, 11, 15, 16, 17, 18, 19, 20, 24, 25, 26, 30, 31, 32 } ) {
+            array[i] = (ASTERDOUBLE)( vect[i] / sqr2 );
         }
-        for ( auto i : {21, 22, 23, 27, 28, 29, 33, 34, 35} ) {
-            array[i] = ( ASTERDOUBLE )( vect[i] / 2.0 );
+        for ( auto i : { 21, 22, 23, 27, 28, 29, 33, 34, 35 } ) {
+            array[i] = (ASTERDOUBLE)( vect[i] / 2.0 );
         }
         break;
     case 81: // dest is 6 x 3 x 3 (see lcmelas.F90)
