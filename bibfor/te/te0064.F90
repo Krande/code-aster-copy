@@ -23,12 +23,16 @@ subroutine te0064(option, nomte)
     implicit none
 !
 #include "jeveux.h"
+#include "asterc/r8nnem.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/Metallurgy_type.h"
 #include "asterfort/nzcomp_prep.h"
 #include "asterfort/nzcomp.h"
+#include "asterfort/nzcompTemper.h"
+#include "asterfort/tecach.h"
+#include "MeshTypes_type.h"
 !
     character(len=16), intent(in) :: option, nomte
 !
@@ -46,60 +50,99 @@ subroutine te0064(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    real(kind=8) :: deltaTime01, deltaTime12, time2
+    real(kind=8) :: temp1, tempInit, temp2
+    integer :: nbNode, iNode, itempe, jvTempInit, jvTime
+    integer :: jvMater
     character(len=16) :: metaType
-    real(kind=8) :: dt10, dt21, inst2
-    real(kind=8) :: tno1, tno0, tno2
-    integer :: nbNode, iNode, itempe, itempa, jvTime
-    integer :: jvMater, nbVari, numeComp, nbPhase
+    integer :: numeComp
+    integer :: nbVari, nbPhase
+    integer :: nbVariTemper, nbPhaseTemper
     integer :: itempi
-    integer :: jvPhaseIn, jvPhaseOut
+    integer :: jvPhaseIn, jvPhaseOut, jvPhasePrev
     integer :: jvMaterCode
-    integer :: jvComporMeta
+    integer :: jvComporMeta, itab(1), iret, jvComporMetaTemper
+    aster_logical :: hasTemper
     type(META_MaterialParameters) :: metaPara
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call elrefe_info(fami='RIGI', nno=nbNode)
+    ASSERT(nbNode .le. MT_NNOMAX3D)
 
 ! - Input/Output fields
     call jevech('PMATERC', 'L', jvMater)
     jvMaterCode = zi(jvMater)
-    call jevech('PTEMPAR', 'L', itempa)
     call jevech('PTEMPER', 'L', itempe)
     call jevech('PTEMPIR', 'L', itempi)
     call jevech('PTIMMTR', 'L', jvTime)
     call jevech('PPHASIN', 'L', jvPhaseIn)
-    call jevech('PCOMPOR', 'L', jvComporMeta)
-    call jevech('PPHASNOU', 'E', jvPhaseOut)
+    call jevech('PCOMPME', 'L', jvComporMeta)
+    call jevech('PPHASOUT', 'E', jvPhaseOut)
 
-! - Parameters from map
+! - Get parameters from metallurgy behaviour (without tempering)
     metaType = zk16(jvComporMeta-1+ZMETATYPE)
     read (zk16(jvComporMeta-1+ZNUMECOMP), '(I16)') numeComp
     read (zk16(jvComporMeta-1+ZNBPHASE), '(I16)') nbPhase
     read (zk16(jvComporMeta-1+ZNBVARI), '(I16)') nbVari
 
-! - Preparation
+! - Specific input/output fields
+    hasTemper = ASTER_FALSE
+    call tecach("ONN", "PCOMPMT", 'L', iret, nval=1, itab=itab)
+    if (iret .eq. 0) then
+        jvComporMetaTemper = itab(1)
+        hasTemper = ASTER_TRUE
+        if (metaType .ne. 'ACIER') then
+            ASSERT(ASTER_FALSE)
+        end if
+        call jevech('PPHASEP', 'L', jvPhasePrev)
+    else
+        call jevech('PTEMPAR', 'L', jvTempInit)
+    end if
+
+! - Get parameters from metallurgy behaviour (with tempering)
+    if (hasTemper) then
+        metaType = zk16(jvComporMetaTemper-1+ZMETATYPE)
+        read (zk16(jvComporMetaTemper-1+ZNUMECOMP), '(I16)') numeComp
+        read (zk16(jvComporMetaTemper-1+ZNBPHASE), '(I16)') nbPhaseTemper
+        read (zk16(jvComporMetaTemper-1+ZNBVARI), '(I16)') nbVariTemper
+        if (metaType .ne. 'ACIER_REVENU') then
+            ASSERT(ASTER_FALSE)
+        end if
+    end if
+
+! - Get material and TRC parameters
     call nzcomp_prep(jvMaterCode, metaType, metaPara)
 
-! - Time parameters: 0 - 1 - 2
-    dt10 = zr(jvTime+1)
-    dt21 = zr(jvTime+2)
-    inst2 = zr(jvTime)+dt21
+! - Time parameters: 1 - 2
+    deltaTime12 = zr(jvTime+2)
+    time2 = zr(jvTime)+deltaTime12
 
 ! - Loop on nodes
     do iNode = 1, nbNode
-! ----- Temperatures: 0 - 1 - 2
-        tno1 = zr(itempe+iNode-1)
-        tno0 = zr(itempa+iNode-1)
-        tno2 = zr(itempi+iNode-1)
+! ----- Temperatures: 1 - 2
+        temp1 = zr(itempe+iNode-1)
+        temp2 = zr(itempi+iNode-1)
 
-! ----- General switch
-        call nzcomp(jvMaterCode, metaPara, &
-                    numeComp, nbPhase, nbVari, &
-                    dt10, dt21, inst2, &
-                    tno0, tno1, tno2, &
-                    zr(jvPhaseIn+nbVari*(iNode-1)), &
-                    zr(jvPhaseOut+nbVari*(iNode-1)))
+! ----- General switches
+        if (hasTemper) then
+            call nzcompTemper(metaPara, numeComp, &
+                              nbVari, nbVariTemper, &
+                              deltaTime12, &
+                              temp1, temp2, &
+                              zr(jvPhasePrev+nbVariTemper*(iNode-1)), &
+                              zr(jvPhaseIn+nbVari*(iNode-1)), &
+                              zr(jvPhaseOut+nbVariTemper*(iNode-1)))
+        else
+            deltaTime01 = zr(jvTime+1)
+            tempInit = zr(jvTempInit+iNode-1)
+            call nzcomp(jvMaterCode, metaPara, numeComp, &
+                        nbPhase, nbVari, &
+                        deltaTime01, deltaTime12, time2, &
+                        tempInit, temp1, temp2, &
+                        zr(jvPhaseIn+nbVari*(iNode-1)), &
+                        zr(jvPhaseOut+nbVari*(iNode-1)))
+        end if
     end do
 !
 end subroutine

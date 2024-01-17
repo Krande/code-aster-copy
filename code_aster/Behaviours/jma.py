@@ -19,18 +19,21 @@
 
 # person_in_charge: sofiane.hendili at edf.fr
 
+from .cata_comportement import LoiComportement
 
-from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
-import cataelem.Commons.physical_quantities as PHY
-import cataelem.Commons.parameters as SP
-import cataelem.Commons.attributes as AT
-
-PPHASOUT = OutputParameter(
-    phys=PHY.VARI_R, type="ELNO", comment="""Output field for phases in metallurgy"""
-)
-
-META_INIT_ELNO = Option(
-    para_in=(SP.PCOMPME, SP.PMATERC, SP.PPHASII, SP.PTEMPER),
-    para_out=(PPHASOUT,),
-    condition=(CondCalcul("+", ((AT.PHENO, "TH"), (AT.BORD, "0"))),),
+loi = LoiComportement(
+    nom="JMA",
+    lc_type=("MODELE_METALLURGIQUE",),
+    doc="""Modèle métallurgique avec revenu pour l'acier""",
+    num_lc=3,
+    nb_vari=4,
+    nom_vari=("TAILLE_GRAIN", "TEMP", "TEMP_MARTENSITE", "CYCL_THER"),
+    mc_mater=("META_ACIER",),
+    modelisation=("3D", "AXIS", "D_PLAN"),
+    deformation=None,
+    algo_inte=None,
+    type_matr_tang=None,
+    proprietes=None,
+    syme_matr_tang=None,
+    exte_vari=None,
 )

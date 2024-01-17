@@ -23,7 +23,10 @@
 #define META_STEEL       1
 #define META_ZIRC        2
 
-! - Phases for steel
+! - Phases for steel: total number (4 cold, 1 hot + 1 sum of cold)
+#define NBPHASESTEEL     6
+
+! - Phases for standard steel
 #define PSTEEL_NB        5
 #define PFERRITE         1
 #define PPERLITE         2
@@ -38,6 +41,9 @@
 ! Number of  internal states variables required for initial state
 #define PVARIINIT        7
 
+! For steel, law : waeckel
+#define NBVARIWAECKEL    9
+
 ! - Phases for zircaloy
 #define PZIRC_NB         3
 #define PALPHA1          1
@@ -47,7 +53,10 @@
 #define ZIRC_TEMP        1
 #define TIME_TRAN        2
 
-! - Phases for steel with revenu
+! - Phases for steel with tempering: total number (6 cold, 1 hot + 1 sum of cold)
+#define NBPHASESTEELR     8
+
+! - Phases for steel with tempering
 #define PRSTEEL_NB        7
 #define PRFERRITE         1
 #define PRPERLITE         2
@@ -57,7 +66,7 @@
 #define PRMARTENSR        6
 #define PRAUSTENITE       7
 #define PRSUMCOLD         8
-! For next ones: add total number of phases to access in internal state variable vector
+! Same as standard steel:
 ! #define SIZE_GRAIN        1
 ! #define STEEL_TEMP        2
 ! #define TEMP_MARTENSITE   3
@@ -73,6 +82,17 @@
 ! - Kinetic
 #define COOLING          0
 #define HEATING          1
+
+!
+! --------------------------------------------------------------------------------------------------
+!
+! The field <COMPOR_META>
+!   List of strings (K16) for each cell
+!   Definition of behaviour (relation, strain model, number of internal state vari, etc.)
+!
+! --------------------------------------------------------------------------------------------------
+! Size
+#define COMPORMETA_SIZE  5
 
 ! - Slot in COMPOR_META map
 #define ZMETATYPE        1

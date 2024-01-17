@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -137,13 +137,19 @@ class THPLSE2(Element):
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
         OP.COOR_ELGA(
-            te=478, para_in=((SP.PGEOMER, LC.EGEOM2D),), para_out=((OP.COOR_ELGA.PCOORPG, LC.EGGAU2D),)
+            te=478,
+            para_in=((SP.PGEOMER, LC.EGEOM2D),),
+            para_out=((OP.COOR_ELGA.PCOORPG, LC.EGGAU2D),),
         ),
         OP.FLUX_FLUI_X(
-            te=309, para_in=((SP.PGEOMER, LC.EGEOM2D),), para_out=((OP.FLUX_FLUI_X.PMATTTR, MMATTTR),)
+            te=309,
+            para_in=((SP.PGEOMER, LC.EGEOM2D),),
+            para_out=((OP.FLUX_FLUI_X.PMATTTR, MMATTTR),),
         ),
         OP.FLUX_FLUI_Y(
-            te=309, para_in=((SP.PGEOMER, LC.EGEOM2D),), para_out=((OP.FLUX_FLUI_Y.PMATTTR, MMATTTR),)
+            te=309,
+            para_in=((SP.PGEOMER, LC.EGEOM2D),),
+            para_out=((OP.FLUX_FLUI_Y.PMATTTR, MMATTTR),),
         ),
         OP.MTAN_THER_FLUXNL(
             te=251,
@@ -258,10 +264,11 @@ class THPLSE2(Element):
                 (OP.TOU_INI_ELNO.PINST_R, LC.ENINST_R),
                 (OP.TOU_INI_ELNO.PNEUT_F, LC.ENNEUT_F),
                 (OP.TOU_INI_ELNO.PNEUT_R, LC.ENNEUT_R),
-                (OP.TOU_INI_ELNO.PVARI_R, LC.EPHASNO_),
+                (OP.TOU_INI_ELNO.PVARI_R, LC.EPHASES),
             ),
         ),
     )
+
 
 # --------------------------------------------------------------------------------------------------
 class THPLSE3(THPLSE2):
@@ -270,12 +277,14 @@ class THPLSE3(THPLSE2):
     meshType = MT.SEG3
     elrefe = (ElrefeLoc(MT.SE3, gauss=("RIGI=FPG4", "FPG1=FPG1"), mater=("FPG1",)),)
 
+
 # --------------------------------------------------------------------------------------------------
 class THPLSL2(THPLSE2):
     """Thermics - Skin (diag) element 2D - SEG2"""
 
     meshType = MT.SEG2
     elrefe = (ElrefeLoc(MT.SE2, gauss=("RIGI=FPG4", "FPG1=FPG1"), mater=("FPG1",)),)
+
 
 # --------------------------------------------------------------------------------------------------
 class THAXSL2(THPLSE2):

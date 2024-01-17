@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nzcomp(jvMaterCode, metaPara, &
-                  numeComp, nbPhase, nbVari, &
-                  dt10, dt21, inst2, &
-                  tno0, tno1, tno2, &
+subroutine nzcomp(jvMaterCode, metaPara, numeComp, &
+                  nbPhase, nbVari, &
+                  deltaTime01, deltaTime12, time2, &
+                  tempInit, temp1, temp2, &
                   metaPrev, metaCurr)
 !
     use Metallurgy_type
@@ -27,8 +27,8 @@ subroutine nzcomp(jvMaterCode, metaPara, &
     implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/assert.h"
+#include "asterfort/utmess.h"
 #include "asterfort/zacier.h"
 #include "asterfort/zedgar.h"
 #include "asterfort/Metallurgy_type.h"
@@ -36,8 +36,8 @@ subroutine nzcomp(jvMaterCode, metaPara, &
     integer, intent(in) :: jvMaterCode
     type(META_MaterialParameters), intent(in) :: metaPara
     integer, intent(in) :: numeComp, nbPhase, nbVari
-    real(kind=8), intent(in) :: dt10, dt21, inst2
-    real(kind=8), intent(in) :: tno0, tno1, tno2
+    real(kind=8), intent(in) :: deltaTime01, deltaTime12, time2
+    real(kind=8), intent(in) :: tempInit, temp1, temp2
     real(kind=8), intent(in) :: metaPrev(nbVari)
     real(kind=8), intent(out) :: metaCurr(nbVari)
 !
@@ -54,12 +54,12 @@ subroutine nzcomp(jvMaterCode, metaPara, &
 ! In  numeComp            : index of behaviour law for metallurgy
 ! In  nbPhase             : number of phases
 ! In  nbVari              : number of internal state variables
-! In  tno0                : temperature at time N-1
-! In  tno1                : temperature at time N
-! In  tno2                : temperature at time N+1
-! In  dt10                : increment of time [N-1, N]
-! In  dt21                : increment of time [N, N+1]
-! In  inst2               : value of time N+1
+! In  tempInit            : temperature at time N-1
+! In  temp1               : temperature at time N
+! In  temp2               : temperature at time N+1
+! In  deltaTime01         : increment of time [N-1, N]
+! In  deltaTime12         : increment of time [N, N+1]
+! In  time2               : value of time N+1
 ! In  metaPrev            : value of internal state variable at previous time step
 ! Out metaCurr            : value of internal state variable at current time step
 !
@@ -69,16 +69,18 @@ subroutine nzcomp(jvMaterCode, metaPara, &
 !
     case (1)
         call zedgar(jvMaterCode, nbPhase, &
-                    tno1, tno2, &
-                    inst2, dt21, &
+                    temp1, temp2, &
+                    time2, deltaTime12, &
                     metaPrev, metaCurr)
     case (2)
         call zacier(metaPara%steel, nbPhase, nbVari, &
-                    tno0, tno1, tno2, &
-                    dt10, dt21, &
+                    tempInit, temp1, temp2, &
+                    deltaTime01, deltaTime12, &
                     metaPrev, metaCurr)
+
     case default
-        ASSERT(ASTER_FALSE)
+        call utmess('F', 'COMPOR1_43', si=numeComp)
+
     end select
 !
 end subroutine

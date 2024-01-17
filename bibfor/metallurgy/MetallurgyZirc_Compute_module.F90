@@ -96,16 +96,16 @@ contains
         integer, intent(in) :: jvTemp, jvPhaseIn, jvPhaseOut
 ! ----- Local
         integer :: iNode, iVari
-        real(kind=8) :: metaZirc(nbNodeMaxi*nbVariZirc), tno0
+        real(kind=8) :: metaZirc(nbNodeMaxi*nbVariZirc), temp0
         real(kind=8) :: zalpha, zbeta
 !   ------------------------------------------------------------------------------------------------
 !
         metaZirc = 0.d0
         do iNode = 1, nbNode
-            tno0 = zr(jvTemp+iNode-1)
+            temp0 = zr(jvTemp+iNode-1)
             metaZirc(nbVari*(iNode-1)+PALPHA1) = zr(jvPhaseIn-1+PALPHA1)
             metaZirc(nbVari*(iNode-1)+PALPHA2) = zr(jvPhaseIn-1+PALPHA2)
-            metaZirc(nbVari*(iNode-1)+nbPhase+ZIRC_TEMP) = tno0
+            metaZirc(nbVari*(iNode-1)+nbPhase+ZIRC_TEMP) = temp0
             metaZirc(nbVari*(iNode-1)+nbPhase+TIME_TRAN) = zr(jvPhaseIn-1+nbPhase+TIME_TRAN)
             zalpha = metaZirc(nbVari*(iNode-1)+PALPHA1)+metaZirc(nbVari*(iNode-1)+PALPHA2)
             zbeta = 1.d0-zalpha

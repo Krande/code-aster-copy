@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine metaSteelGetParameters(jvMaterCode, metaSteelPara)
+subroutine metaSteelGetParameters(jvMaterCode, metaType, metaSteelPara)
 !
     use Metallurgy_type
 !
@@ -28,6 +28,7 @@ subroutine metaSteelGetParameters(jvMaterCode, metaSteelPara)
 #include "asterfort/utmess.h"
 !
     integer, intent(in) :: jvMaterCode
+    character(len=16), intent(in) :: metaType
     type(META_SteelParameters), intent(inout) :: metaSteelPara
 !
 ! --------------------------------------------------------------------------------------------------
@@ -39,6 +40,7 @@ subroutine metaSteelGetParameters(jvMaterCode, metaSteelPara)
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  jvMaterCode         : coded material address
+! In  metaType            : type of phase
 ! IO  metaSteelPara       : parameters for metallurgy of steel
 !
 ! --------------------------------------------------------------------------------------------------
@@ -62,6 +64,15 @@ subroutine metaSteelGetParameters(jvMaterCode, metaSteelPara)
                                                                        'QSR_K  ', &
                                                                        'D10    ', &
                                                                        'WSR_K  '/)
+    integer, parameter :: nb_para_temper = 6
+    real(kind=8) :: para_temper_vale(nb_para_temper)
+    integer :: icodre_temper(nb_para_temper)
+    character(len=16), parameter :: para_temper_name(nb_para_temper) = (/'BAINITE_B    ', &
+                                                                         'BAINITE_N    ', &
+                                                                         'MARTENSITE_B ', &
+                                                                         'MARTENSITE_N ', &
+                                                                         'TEMP         ', &
+                                                                         'TEMP_MAINTIEN'/)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -104,6 +115,28 @@ subroutine metaSteelGetParameters(jvMaterCode, metaSteelPara)
         end if
     else
         metaSteelPara%l_grain_size = ASTER_FALSE
+    end if
+
+! - Get parameters for steel tempering
+    if (metaType .eq. 'ACIER_REVENU') then
+        para_temper_vale = 0.d0
+        call rcvalb(fami, kpg, spt, poum, &
+                    jvMaterCode, ' ', 'META_ACIER_REVENU', &
+                    1, 'INST', [0.d0], &
+                    nb_para_temper, para_temper_name, para_temper_vale, &
+                    icodre_temper, iarret=0)
+        if ((icodre_temper(1) .eq. 0) .and. (icodre_temper(2) .eq. 0) .and. &
+            (icodre_temper(3) .eq. 0) .and. (icodre_temper(4) .eq. 0) .and. &
+            (icodre_temper(5) .eq. 0) .and. (icodre_temper(6) .eq. 0)) then
+            metaSteelPara%temper%bainite_b = para_temper_vale(1)
+            metaSteelPara%temper%bainite_n = para_temper_vale(2)
+            metaSteelPara%temper%martensite_b = para_temper_vale(3)
+            metaSteelPara%temper%martensite_n = para_temper_vale(4)
+            metaSteelPara%temper%temp = para_temper_vale(5)
+            metaSteelPara%temper%tempHold = para_temper_vale(6)
+        else
+            call utmess('F', 'METALLURGY1_74')
+        end if
     end if
 !
 end subroutine

@@ -15,12 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-#include "asterf_types.h"
 !
 interface
-    subroutine comp_meta_info(factorKeyword, metaPrepBehaviour)
-        use Metallurgy_type
-        character(len=16), intent(in) :: factorKeyword
-        type(META_PrepBehaviour), intent(out) :: metaPrepBehaviour
-    end subroutine comp_meta_info
+    subroutine comp_meta_clean(comporMetaInfo)
+        character(len=19), intent(in) :: comporMetaInfo
+    end subroutine comp_meta_clean
 end interface

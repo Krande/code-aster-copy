@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -171,10 +171,11 @@ class THER_2D_HHO1_F(Element):
                 (OP.TOU_INI_ELNO.PINST_R, LC.ENINST_R),
                 (OP.TOU_INI_ELNO.PNEUT_F, LC.ENNEUT_F),
                 (OP.TOU_INI_ELNO.PNEUT_R, LC.ENNEUT_R),
-                (OP.TOU_INI_ELNO.PVARI_R, LC.EPHASNO_),
+                (OP.TOU_INI_ELNO.PVARI_R, LC.EPHASES),
             ),
         ),
     )
+
 
 class THER_AX_HHO1_F(THER_2D_HHO1_F):
     """Thermics - Skin element HHO_LINE - AXIS - SEG"""

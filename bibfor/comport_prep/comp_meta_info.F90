@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine comp_meta_info(metaPrepPara)
+subroutine comp_meta_info(factorKeyword, metaPrepBehaviour)
 !
     use Metallurgy_type
 !
@@ -25,7 +25,8 @@ subroutine comp_meta_info(metaPrepPara)
 #include "asterf_types.h"
 #include "asterc/getfac.h"
 !
-    type(META_PrepPara), intent(out) :: metaPrepPara
+    character(len=16), intent(in) :: factorKeyword
+    type(META_PrepBehaviour), intent(out) :: metaPrepBehaviour
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -35,20 +36,20 @@ subroutine comp_meta_info(metaPrepPara)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Out metaPrepPara     : datastructure to prepare parameters for behaviour of metallurgy
+! In  factorKeyword    : factor keyword to read
+! Out metaPrepBehaviour: datastructure to prepare parameters for behaviour of metallurgy
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=16), parameter :: factorKeyword = 'COMPORTEMENT'
     integer :: nb_info_comp, nbFactorKeyword
 !
 ! --------------------------------------------------------------------------------------------------
 !
     nbFactorKeyword = 0
-    call getfac(factorKeyword, nbFactorKeyword)
-    metaPrepPara%para => null()
+    metaPrepBehaviour%factorKeyword = factorKeyword
 
 ! - Number of behaviours
+    call getfac(factorKeyword, nbFactorKeyword)
     if (nbFactorKeyword .eq. 0) then
         nb_info_comp = 1
     else
@@ -56,9 +57,9 @@ subroutine comp_meta_info(metaPrepPara)
     end if
 
 ! - Save number of behaviours
-    metaPrepPara%nb_comp = nbFactorKeyword
+    metaPrepBehaviour%nbFactorKeyword = nbFactorKeyword
 
 ! - Allocate comportment informations objects
-    allocate (metaPrepPara%para(nb_info_comp))
+    allocate (metaPrepBehaviour%paraBehaviour(nb_info_comp))
 !
 end subroutine

@@ -64,7 +64,7 @@ class THFOQU4(Element):
         ),
         OP.DURT_ELNO(
             te=551,
-            para_in=((SP.PMATERC, LC.CMATERC), (OP.DURT_ELNO.PPHASIN, LC.EPHASNO_)),
+            para_in=((SP.PMATERC, LC.CMATERC), (OP.DURT_ELNO.PPHASIN, LC.EPHASES)),
             para_out=((SP.PDURT_R, LC.EDURTNO),),
         ),
         OP.FLUX_ELGA(
@@ -86,26 +86,28 @@ class THFOQU4(Element):
         OP.META_ELNO(
             te=67,
             para_in=(
-                (OP.META_ELNO.PCOMPOR, LC.CCOMPOT),
+                (SP.PCOMPME, LC.CCOMPOT),
+                (SP.PCOMPMT, LC.CCOMPOT),
                 (SP.PFTRC, LC.CFTRC),
                 (SP.PMATERC, LC.CMATERC),
-                (OP.META_ELNO.PPHASIN, LC.EPHASNO_),
+                (SP.PPHASIN, LC.EPHASES),
                 (SP.PTEMPAR, DDL_THER),
                 (SP.PTEMPER, DDL_THER),
                 (SP.PTEMPIR, DDL_THER),
-                (OP.META_ELNO.PTIMMTR, LC.CTIMMTR),
+                (SP.PTIMMTR, LC.CTIMMTR),
+                (SP.PPHASEP, LC.EPHASES),
             ),
-            para_out=((SP.PPHASNOU, LC.EPHASNO_),),
+            para_out=((OP.META_ELNO.PPHASOUT, LC.EPHASES),),
         ),
         OP.META_INIT_ELNO(
             te=320,
             para_in=(
-                (OP.META_INIT_ELNO.PCOMPOR, LC.CCOMPOT),
+                (SP.PCOMPME, LC.CCOMPOT),
                 (SP.PMATERC, LC.CMATERC),
-                (OP.META_INIT_ELNO.PPHASIN, LC.CPHASIN_),
+                (SP.PPHASII, LC.CPHASES),
                 (SP.PTEMPER, DDL_THER),
             ),
-            para_out=((SP.PPHASNOU, LC.EPHASNO_),),
+            para_out=((OP.META_INIT_ELNO.PPHASOUT, LC.EPHASES),),
         ),
         OP.RIGI_THER(
             te=260,
@@ -126,7 +128,7 @@ class THFOQU4(Element):
                 (OP.TOU_INI_ELNO.PINST_R, LC.ENINST_R),
                 (OP.TOU_INI_ELNO.PNEUT_F, LC.ENNEUT_F),
                 (OP.TOU_INI_ELNO.PNEUT_R, LC.ENNEUT_R),
-                (OP.TOU_INI_ELNO.PVARI_R, LC.EPHASNO_),
+                (OP.TOU_INI_ELNO.PVARI_R, LC.EPHASES),
             ),
         ),
         OP.VERI_JACOBIEN(

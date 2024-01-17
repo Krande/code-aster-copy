@@ -52,9 +52,12 @@ subroutine nzcomp_prep(jvMaterCode, metaType, metaPara)
 !
     if (metaType .eq. 'ACIER') then
 ! ----- Get material parameters for steel
-        call metaSteelGetParameters(jvMaterCode, metaSteelPara)
+        call metaSteelGetParameters(jvMaterCode, metaType, metaSteelPara)
 ! ----- Get material parameters for TRC curve
         call metaSteelTRCGetParameters(jvMaterCode, metaSteelPara)
+    else if (metaType .eq. 'ACIER_REVENU') then
+! ----- Get material parameters for steel
+        call metaSteelGetParameters(jvMaterCode, metaType, metaSteelPara)
     elseif (metaType .eq. 'ZIRC') then
 ! ----- Depending on temperature: too early here !
     else

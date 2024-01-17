@@ -17,15 +17,18 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine smevol(resultName, nbStore, listStore, &
-                      model, materialField, materialCoding, comporMeta, &
-                      metaInitUser, numeFieldInit)
-        character(len=8), intent(in) :: resultName
-        integer, intent(in) :: nbStore
-        integer, pointer :: listStore(:)
-        character(len=8), intent(in) :: model, materialField
-        character(len=24), intent(in) :: materialCoding, comporMeta
-        integer, intent(in) :: numeFieldInit
-        character(len=24), intent(in) :: metaInitUser
-    end subroutine smevol
+    subroutine nzcompTemper(metaPara, numeComp, &
+                            nbVari, nbVariTemper, &
+                            deltaTime12, &
+                            temp1, temp2, &
+                            metaPrev, metaCurr, metaCurrTemper)
+        use Metallurgy_type
+        type(META_MaterialParameters), intent(in) :: metaPara
+        integer, intent(in) :: numeComp, nbVari, nbVariTemper
+        real(kind=8), intent(in) ::  deltaTime12
+        real(kind=8), intent(in) :: temp1, temp2
+        real(kind=8), intent(in) :: metaPrev(nbVariTemper)
+        real(kind=8), intent(in) :: metaCurr(nbVari)
+        real(kind=8), intent(out) :: metaCurrTemper(nbVariTemper)
+    end subroutine nzcompTemper
 end interface

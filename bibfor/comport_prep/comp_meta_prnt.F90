@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine comp_meta_prnt(comporMetaInfo)
+subroutine comp_meta_prnt(hasTemper, comporMetaInfo)
 !
     implicit none
 !
@@ -30,6 +30,7 @@ subroutine comp_meta_prnt(comporMetaInfo)
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 !
+    aster_logical, intent(in) :: hasTemper
     character(len=19), intent(in) :: comporMetaInfo
 !
 ! --------------------------------------------------------------------------------------------------
@@ -40,6 +41,7 @@ subroutine comp_meta_prnt(comporMetaInfo)
 !
 ! --------------------------------------------------------------------------------------------------
 !
+! In  hasTemper         : flag for tempering
 ! In  comporMetaInfo    : name of object for information about internal variables and comportement
 !
 ! --------------------------------------------------------------------------------------------------
@@ -62,7 +64,12 @@ subroutine comp_meta_prnt(comporMetaInfo)
     if (ntVari .eq. 0) then
         goto 99
     end if
-    call utmess('I', 'METALLURGY1_1')
+
+    if (hasTemper) then
+        call utmess('I', 'METALLURGY1_2')
+    else
+        call utmess('I', 'METALLURGY1_1')
+    end if
     mapNbZone = comporInfoInfo(2)
     call jeveuo(comporMetaInfo(1:19)//'.RELA', 'L', vk16=comporInfoRela)
     call jeveuo(comporMetaInfo(1:19)//'.ZONE', 'L', vi=comporInfoZone)

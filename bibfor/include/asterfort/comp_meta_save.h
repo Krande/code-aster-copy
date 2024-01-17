@@ -17,11 +17,11 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine comp_meta_save(mesh, comporMeta, nbCmp, metaPrepPara)
+    subroutine comp_meta_save(mesh, comporMeta, nbCmp, metaPrepBehaviour)
         use Metallurgy_type
         character(len=8), intent(in) :: mesh
         character(len=19), intent(in) :: comporMeta
         integer, intent(in) :: nbCmp
-        type(META_PrepPara), intent(in) :: metaPrepPara
+        type(META_PrepBehaviour), intent(in) :: metaPrepBehaviour
     end subroutine comp_meta_save
 end interface

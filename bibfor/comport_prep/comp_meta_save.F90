@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine comp_meta_save(mesh, comporMeta, nbCmp, metaPrepPara)
+subroutine comp_meta_save(mesh, comporMeta, nbCmp, metaPrepBehaviour)
 !
     use Metallurgy_type
 !
@@ -32,7 +32,7 @@ subroutine comp_meta_save(mesh, comporMeta, nbCmp, metaPrepPara)
     character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: comporMeta
     integer, intent(in) :: nbCmp
-    type(META_PrepPara), intent(in) :: metaPrepPara
+    type(META_PrepBehaviour), intent(in) :: metaPrepBehaviour
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -45,15 +45,15 @@ subroutine comp_meta_save(mesh, comporMeta, nbCmp, metaPrepPara)
 ! In  mesh             : name of mesh
 ! In  comporMeta       : name of map for behaviour in metallurgy
 ! In  nbCmp            : number of components in <CARTE> COMPOR
-! In  metaPrepPara     : datastructure to prepare parameters for behaviour of metallurgy
+! In  metaPrepBehaviour: datastructure to prepare parameters for behaviour of metallurgy
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=16), parameter :: factorKeyword = 'COMPORTEMENT'
+    character(len=16) :: factorKeyword
     character(len=24), parameter :: list_elem_affe = '&&COMPMETASAVE.LIST'
     aster_logical :: l_affe_all
     integer :: nb_elem_affe
-    integer :: i_comp, nb_comp, nbPhase
+    integer :: iFactorKeyword, nbFactorKeyword, nbPhase
     integer :: nbVari, numeComp
     character(len=16) :: metaType, metaLaw
     character(len=16), pointer :: comporMetaValv(:) => null()
@@ -61,20 +61,21 @@ subroutine comp_meta_save(mesh, comporMeta, nbCmp, metaPrepPara)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nb_comp = metaPrepPara%nb_comp
-!
+    factorKeyword = metaPrepBehaviour%factorKeyword
+    nbFactorKeyword = metaPrepBehaviour%nbFactorKeyword
+
 ! - Access to COMPOR <CARTE>
     call jeveuo(comporMeta(1:19)//'.VALV', 'E', vk16=comporMetaValv)
 
 ! - Read list
-    do i_comp = 1, nb_comp
+    do iFactorKeyword = 1, nbFactorKeyword
 
 ! ----- Get options
-        metaType = metaPrepPara%para(i_comp)%metaType
-        metaLaw = metaPrepPara%para(i_comp)%metaLaw
-        nbVari = metaPrepPara%para(i_comp)%nbVari
-        numeComp = metaPrepPara%para(i_comp)%numeComp
-        nbPhase = metaPrepPara%para(i_comp)%nbPhase
+        metaType = metaPrepBehaviour%paraBehaviour(iFactorKeyword)%metaType
+        metaLaw = metaPrepBehaviour%paraBehaviour(iFactorKeyword)%metaLaw
+        nbVari = metaPrepBehaviour%paraBehaviour(iFactorKeyword)%nbVari
+        numeComp = metaPrepBehaviour%paraBehaviour(iFactorKeyword)%numeComp
+        nbPhase = metaPrepBehaviour%paraBehaviour(iFactorKeyword)%nbPhase
 
 ! ----- Set options
         comporMetaValv(1) = metaType
@@ -84,7 +85,7 @@ subroutine comp_meta_save(mesh, comporMeta, nbCmp, metaPrepPara)
         write (comporMetaValv(5), '(I16)') nbPhase
 
 ! ----- Get list of elements where comportment is defined
-        call comp_read_mesh(mesh, factorKeyword, i_comp, &
+        call comp_read_mesh(mesh, factorKeyword, iFactorKeyword, &
                             list_elem_affe, l_affe_all, nb_elem_affe)
 
 ! ----- Affect in COMPOR <CARTE>

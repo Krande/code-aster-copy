@@ -214,6 +214,9 @@ CTEMPER = LocatedComponents(phys=PHY.TEMP_R, type="ELEM", components=("TEMP",))
 # Field for time parameters in metallurgy
 CTIMMTR = LocatedComponents(phys=PHY.INST_R, type="ELEM", components=("INST", "DELTA01", "DELTA12"))
 
+# For phases in metallurgy
+CPHASES = LocatedComponents(phys=PHY.VAR2_R, type="ELEM", components=("V[9]",))
+
 CTEREFE = LocatedComponents(phys=PHY.TEMP_R, type="ELEM", components=("TEMP",))
 
 # Field for error code
@@ -478,7 +481,7 @@ CONDPLR = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X[10]",))
 
 CPESANR = LocatedComponents(phys=PHY.PESA_R, type="ELEM", components=("G", "AG", "BG", "CG"))
 
-CPHASIN_ = LocatedComponents(phys=PHY.VAR2_R, type="ELEM", components=("V[7]",))
+CPHASES = LocatedComponents(phys=PHY.VAR2_R, type="ELEM", components=("V[9]",))
 
 CRAYONF = LocatedComponents(phys=PHY.RAYO_F, type="ELEM", components=("SIGMA", "EPSIL", "TPINF"))
 
@@ -767,7 +770,6 @@ EVITEFR = LocatedComponents(
 # ----------------------------------------------------------------------------------------------
 # Located components - ELNO - Field on nodes by element
 # ----------------------------------------------------------------------------------------------
-
 # For TOU_INI_ELNO
 ENNEUT_F = LocatedComponents(phys=PHY.NEUT_F, type="ELNO", components=("X[30]",))
 ENNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type="ELNO", components=("X[30]",))
@@ -916,6 +918,8 @@ NFLUX3R = LocatedComponents(phys=PHY.FLUX_R, type="ELNO", components=("FLUX", "F
 # For body source in thermic
 NSOURCR = LocatedComponents(phys=PHY.SOUR_R, type="ELNO", components=("SOUR",))
 
+# For phases in metallurgy
+EPHASES = LocatedComponents(phys=PHY.VARI_R, type="ELNO", components=("VARI",))
 
 DDL_NOZ1 = LocatedComponents(phys=PHY.SIZZ_R, type="ELNO", components=("SIZZ",))
 
@@ -995,7 +999,6 @@ ENOMIMA = LocatedComponents(
     phys=PHY.SPMX_R, type="ELNO", components=("VAL", "NUCOU", "NUSECT", "NUFIBR", "POSIC", "POSIS")
 )
 
-EPHASNO_ = LocatedComponents(phys=PHY.VARI_R, type="ELNO", components=("VARI",))
 
 EPRACNO = LocatedComponents(phys=PHY.PRAC_R, type="ELNO", components=("PRES_R", "PRES_I", "DB"))
 

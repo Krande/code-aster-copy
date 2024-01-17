@@ -16,48 +16,37 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine op0194()
+subroutine comp_meta_clean(comporMetaInfo)
 !
     use Metallurgy_type
-    use MetallurgyOperator_module
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 !
-! --------------------------------------------------------------------------------------------------
-!
-! Command: CALC_META
+    character(len=19), intent(in) :: comporMetaInfo
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iOption
-    character(len=16) :: option
-    type(META_ParaOperator) :: metaParaOperator
+! Preparation of comportment (metallurgy)
+!
+! Delete informations about internal variables
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  comporMetaInfo    : name of object for information about internal variables and comportement
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-    call infmaj()
-
-! - Get parameters of command
-    call metaGetParameters(metaParaOperator)
-
-! - Compute options
-    do iOption = 1, metaParaOperator%nbOption
-        option = metaParaOperator%listOption(iOption)
-        if (option .eq. 'META_ELNO') then
-            call metaCompPhases(metaParaOperator)
-        else
-            call metaCompOtherOptions(metaParaOperator, option)
-        end if
-    end do
-
-! - Cleaning
-    call metaDelParameters(metaParaOperator)
-!
+    call jedetr(comporMetaInfo(1:19)//'.ZONE')
+    call jedetr(comporMetaInfo(1:19)//'.RELA')
+    call jedetr(comporMetaInfo(1:19)//'.VARI')
+    call jedetr(comporMetaInfo(1:19)//'.INFO')
     call jedema()
+!
 end subroutine

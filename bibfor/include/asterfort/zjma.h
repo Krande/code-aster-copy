@@ -15,12 +15,19 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-#include "asterf_types.h"
 !
 interface
-    subroutine comp_meta_info(factorKeyword, metaPrepBehaviour)
+    subroutine zjma(metaSteelPara, &
+                    nbVari, nbVariTemper, &
+                    temp1, temp2, &
+                    deltaTime12, &
+                    metaPrev, metaCurr, metaCurrTemper)
         use Metallurgy_type
-        character(len=16), intent(in) :: factorKeyword
-        type(META_PrepBehaviour), intent(out) :: metaPrepBehaviour
-    end subroutine comp_meta_info
+        integer, intent(in) :: nbVari, nbVariTemper
+        type(META_SteelParameters), intent(in) :: metaSteelPara
+        real(kind=8), intent(in) :: deltaTime12, temp1, temp2
+        real(kind=8), intent(in) :: metaPrev(nbVariTemper)
+        real(kind=8), intent(in) :: metaCurr(nbVari)
+        real(kind=8), intent(out) :: metaCurrTemper(nbVariTemper)
+    end subroutine zjma
 end interface

@@ -62,6 +62,13 @@ contains
                 end if
                 phase_tot = phase_tot+zr(jvPhaseIn-1+iPhase)
             end do
+        elseif (metaType .eq. 'ACIER_REVENU') then
+            do iPhase = 1, PRSTEEL_NB
+                if (zr(jvPhaseIn-1+iPhase) .eq. r8vide() .or. isnan(zr(jvPhaseIn-1+iPhase))) then
+                    call utmess('F', 'META1_43')
+                end if
+                phase_tot = phase_tot+zr(jvPhaseIn-1+iPhase)
+            end do
         else
             ASSERT(ASTER_FALSE)
         end if
@@ -110,6 +117,13 @@ contains
         if (metaType .eq. 'ACIER') then
             phase_scold = phase_tot-zr(jvPhaseIn-1+PAUSTENITE)
             phase_ucold = zr(jvPhaseIn-1+PSUMCOLD)
+            if (abs(phase_scold-phase_ucold) .gt. 1.d-2 .or. phase_ucold .eq. r8vide()) then
+                call utmess('A', 'META1_49')
+                phase_ucold = phase_scold
+            end if
+        elseif (metaType .eq. 'ACIER_REVENU') then
+            phase_scold = phase_tot-zr(jvPhaseIn-1+PRAUSTENITE)
+            phase_ucold = zr(jvPhaseIn-1+PRSUMCOLD)
             if (abs(phase_scold-phase_ucold) .gt. 1.d-2 .or. phase_ucold .eq. r8vide()) then
                 call utmess('A', 'META1_49')
                 phase_ucold = phase_scold
@@ -167,21 +181,37 @@ contains
         real(kind=8), intent(in) :: ms0, phase_ucold
 ! ----- Local
         integer :: iNode, iVari, iPhase
-        real(kind=8) :: metaSteel(nbNodeMaxi*nbVariSteel), tno0
+        real(kind=8) :: metaSteel(nbNodeMaxi*nbVariSteel), temp0
 !   ------------------------------------------------------------------------------------------------
 !
         metaSteel = 0.d0
         if (metaType .eq. 'ACIER') then
             do iNode = 1, nbNode
-                tno0 = zr(jvTemp+iNode-1)
+                temp0 = zr(jvTemp+iNode-1)
                 do iPhase = 1, PSTEEL_NB
                     metaSteel(nbVari*(iNode-1)+iPhase) = zr(jvPhaseIn-1+iPhase)
                 end do
                 metaSteel(nbVari*(iNode-1)+PSUMCOLD) = phase_ucold
                 metaSteel(nbVari*(iNode-1)+nbPhase+SIZE_GRAIN) = zr(jvPhaseIn-1+nbPhase+SIZE_GRAIN)
                 metaSteel(nbVari*(iNode-1)+nbPhase+TEMP_MARTENSITE) = ms0
-                metaSteel(nbVari*(iNode-1)+nbPhase+STEEL_TEMP) = tno0
+                metaSteel(nbVari*(iNode-1)+nbPhase+STEEL_TEMP) = temp0
                 ASSERT(nbVari .eq. PSTEEL_NB+1+3)
+                do iVari = 1, nbVari
+                    zr(jvPhaseOut+nbVari*(iNode-1)-1+iVari) = metaSteel(nbVari*(iNode-1)+iVari)
+                end do
+            end do
+        elseif (metaType .eq. 'ACIER_REVENU') then
+            do iNode = 1, nbNode
+                temp0 = zr(jvTemp+iNode-1)
+                do iPhase = 1, PRSTEEL_NB
+                    metaSteel(nbVari*(iNode-1)+iPhase) = zr(jvPhaseIn-1+iPhase)
+                end do
+                metaSteel(nbVari*(iNode-1)+PRSUMCOLD) = phase_ucold
+                metaSteel(nbVari*(iNode-1)+nbPhase+SIZE_GRAIN) = zr(jvPhaseIn-1+nbPhase+SIZE_GRAIN)
+                metaSteel(nbVari*(iNode-1)+nbPhase+TEMP_MARTENSITE) = ms0
+                metaSteel(nbVari*(iNode-1)+nbPhase+STEEL_TEMP) = temp0
+                metaSteel(nbVari*(iNode-1)+nbPhase+THER_CYCL) = 0.d0
+                ASSERT(nbVari .eq. PRSTEEL_NB+1+4)
                 do iVari = 1, nbVari
                     zr(jvPhaseOut+nbVari*(iNode-1)-1+iVari) = metaSteel(nbVari*(iNode-1)+iVari)
                 end do
@@ -218,6 +248,10 @@ contains
         if (metaType .eq. 'ACIER') then
             if (fieldSize .lt. PVARIINIT) then
                 call utmess("F", "META1_4", ni=2, vali=[PVARIINIT, fieldSize])
+            end if
+        elseif (metaType .eq. 'ACIER_REVENU') then
+            if (fieldSize .ne. PRVARIINIT) then
+                call utmess("F", "META1_4", ni=2, vali=[PRVARIINIT, fieldSize])
             end if
         end if
 !

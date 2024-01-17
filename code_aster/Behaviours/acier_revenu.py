@@ -19,18 +19,33 @@
 
 # person_in_charge: sofiane.hendili at edf.fr
 
+from .cata_comportement import LoiComportement
 
-from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
-import cataelem.Commons.physical_quantities as PHY
-import cataelem.Commons.parameters as SP
-import cataelem.Commons.attributes as AT
-
-PPHASOUT = OutputParameter(
-    phys=PHY.VARI_R, type="ELNO", comment="""Output field for phases in metallurgy"""
-)
-
-META_INIT_ELNO = Option(
-    para_in=(SP.PCOMPME, SP.PMATERC, SP.PPHASII, SP.PTEMPER),
-    para_out=(PPHASOUT,),
-    condition=(CondCalcul("+", ((AT.PHENO, "TH"), (AT.BORD, "0"))),),
+loi = LoiComportement(
+    nom="ACIER_REVENU",
+    lc_type=("PHASE",),
+    doc="""phases metallurgiques de l'acier""",
+    num_lc=0,
+    nb_vari=8,
+    nom_vari=(
+        "FERRITE",
+        "PERLITE",
+        "BAINITE",
+        "BAIN_REVENU",
+        "MARTENSITE",
+        "MARTENS_REVENU",
+        "AUSTENITE",
+        "SUMCOLD",
+    ),
+    mc_mater=("META_ACIER",),
+    modelisation=("3D", "AXIS", "D_PLAN"),
+    deformation=("PETIT", "PETIT_REAC", "GROT_GDEP"),
+    algo_inte=("SANS_OBJET",),
+    type_matr_tang=("PERTURBATION", "VERIFICATION"),
+    proprietes=None,
+    syme_matr_tang=("Yes",),
+    exte_vari=None,
+    deform_ldc=("OLD",),
+    regu_visc=("No",),
+    post_incr=None,
 )

@@ -17,9 +17,10 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine metaSteelGetParameters(jvMaterCode, metaSteelPara)
+    subroutine metaSteelGetParameters(jvMaterCode, metaType, metaSteelPara)
         use Metallurgy_type
         integer, intent(in) :: jvMaterCode
+        character(len=16), intent(in) :: metaType
         type(META_SteelParameters), intent(inout) :: metaSteelPara
     end subroutine metaSteelGetParameters
 end interface
