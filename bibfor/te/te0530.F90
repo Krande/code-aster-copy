@@ -23,9 +23,11 @@ subroutine te0530(option, nomte)
 !
 #include "jeveux.h"
 #include "asterc/r8vide.h"
+#include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvarc.h"
+#include "asterfort/tecach.h"
     character(len=16) :: option, nomte
 !
 ! ......................................................................
@@ -37,6 +39,7 @@ subroutine te0530(option, nomte)
     integer :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano, ipg, iret
     integer :: jpvarc, ivrc
     integer :: nbvarc
+    integer :: jtab(7), idx, nbsp, isp
     parameter(nbvarc=8)
     character(len=8) :: nomvrc(nbvarc)
 !
@@ -44,7 +47,11 @@ subroutine te0530(option, nomte)
 !
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
-    call jevech('PVARC_R', 'E', jpvarc)
+
+    call tecach('OOO', 'PVARC_R', 'E', iret, nval=7, itab=jtab)
+    jpvarc = jtab(1)
+    nbsp = jtab(7)
+    ASSERT(npg .eq. jtab(3))
     rvid = r8vide()
 !
 !     VARC_R   = R    TEMP HYDR SECH IRRA CORR PTOT NEUT1 NEUT2
@@ -58,17 +65,16 @@ subroutine te0530(option, nomte)
     nomvrc(8) = 'NEUT2'
 !
     do ipg = 1, npg
+        do isp = 1, nbsp
 !
-        do ivrc = 1, nbvarc
-            call rcvarc(' ', nomvrc(ivrc), '+', 'RIGI', ipg, &
-                        1, r1, iret)
-            if (iret .eq. 0) then
-                zr(jpvarc-1+nbvarc*(ipg-1)+ivrc) = r1
-            else
-                zr(jpvarc-1+nbvarc*(ipg-1)+ivrc) = rvid
-            end if
+            do ivrc = 1, nbvarc
+                call rcvarc(' ', nomvrc(ivrc), '+', 'RIGI', ipg, isp, r1, iret)
+                idx = jpvarc+nbvarc*((ipg-1)*nbsp+isp-1)+ivrc-1
+                zr(idx) = merge(r1, rvid, iret .eq. 0)
+
+            end do
+!
         end do
-!
     end do
 !
 end subroutine

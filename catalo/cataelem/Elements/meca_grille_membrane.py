@@ -611,6 +611,11 @@ class MEGMTR3(Element):
         OP.TOU_INI_ELNO(
             te=99, para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER), (SP.PTEMPN_R, LC.ETEMPNO))
         ),
+        OP.VARC_ELGA(
+            te=530,
+            para_in=((OP.VARC_ELGA.PVARCPR, LC.ZVARCPG),),
+            para_out=((SP.PVARC_R, LC.EVARC_R),),
+        ),
         OP.VARI_ELNO(
             te=4, para_in=((SP.PVARIGR, ZVARIPG),), para_out=((OP.VARI_ELNO.PVARINR, LC.ZVARINO),)
         ),

@@ -533,6 +533,11 @@ class MECA_DIS_T_N(Element):
                 (OP.TOU_INI_ELNO.PVARI_R, LC.ZVARINO),
             ),
         ),
+        OP.VARC_ELGA(
+            te=530,
+            para_in=((OP.VARC_ELGA.PVARCPR, LC.ZVARCPG),),
+            para_out=((SP.PVARC_R, LC.EVARC_R),),
+        ),
         OP.VARI_ELNO(
             te=4, para_in=((SP.PVARIGR, ZVARIPG),), para_out=((OP.VARI_ELNO.PVARINR, LC.ZVARINO),)
         ),

@@ -1059,6 +1059,11 @@ class MEDKQU4(Element):
                 (OP.TOU_INI_ELNO.PSIEF_R, EEFGENOR),
             ),
         ),
+        OP.VARC_ELGA(
+            te=530,
+            para_in=((OP.VARC_ELGA.PVARCPR, LC.ZVARCPG),),
+            para_out=((SP.PVARC_R, LC.EVARC_R),),
+        ),
         OP.VARI_ELNO(
             te=4, para_in=((SP.PVARIGR, ZVARIPG),), para_out=((OP.VARI_ELNO.PVARINR, LC.ZVARINO),)
         ),
