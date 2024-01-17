@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -328,6 +328,11 @@ Contactez le support technique.
  Puisque on essaie d'imposer également l'onde réfléchie (COOR_REFLECHI),
  l'angle d'inclinaison imposé ne permet pas de calculer le coefficient
  de réflexion à travers la théorie des ondes planes.
+"""
+    ),
+    83: _(
+        """
+Les champs %(k1)s et %(k2)s ne peuvent pas être fournis ensemble.
 """
     ),
 }

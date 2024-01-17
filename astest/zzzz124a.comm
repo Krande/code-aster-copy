@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -16,6 +16,11 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
+
+from code_aster.Commands import *
+import numpy as np
+from code_aster import CA
+
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
@@ -209,6 +214,7 @@ for nom_cmp, valer in EFGE_ELNO["R3_global"].items():
         )
     )
 
+#
 
 IMPR_RESU(UNITE=80, FORMAT="MED", RESU=_F(RESULTAT=MEST1, NOM_CHAM="EFGE_ELNO"))
 
@@ -440,6 +446,52 @@ TEST_TABLE(
     TYPE_TEST="MAX",
     PRECISION=1e-6,
 )
+
+
+RESU03 = MODI_REPERE(
+    RESULTAT=MEST1,
+    reuse=MEST1,
+    TOUT_ORDRE="OUI",
+    MODI_CHAM=(_F(NOM_CHAM="EFGE_ELNO", NOM_CHAM_RESU="EGRU_ELNO", TYPE_CHAM="1D_GENE"),),
+    REPERE="UTILISATEUR",
+    AFFE=_F(ANGL_NAUT=(0.0, 0.0, 0.0), TOUT="OUI"),
+    INFO=1,
+)
+
+
+for nom_cmp, valer in REAC_NODA["R1_global"].items():
+    TEST_RESU(
+        RESU=(
+            _F(
+                NUME_ORDRE=1,
+                REFERENCE="AUTRE_ASTER",
+                RESULTAT=RESU03,
+                GROUP_MA="S12",
+                NOM_CHAM="EGRU_ELNO",
+                GROUP_NO="R1",
+                NOM_CMP=nom_cmp,
+                VALE_CALC=-valer,
+                VALE_REFE=-valer,
+            ),
+        )
+    )
+
+for nom_cmp, valer in EFGE_ELNO["R1_local"].items():
+    TEST_RESU(
+        RESU=(
+            _F(
+                NUME_ORDRE=1,
+                REFERENCE="AUTRE_ASTER",
+                RESULTAT=RESU03,
+                GROUP_MA="S12",
+                NOM_CHAM="EFGE_ELNO",
+                GROUP_NO="R1",
+                NOM_CMP=nom_cmp,
+                VALE_CALC=valer,
+                VALE_REFE=valer,
+            ),
+        )
+    )
 
 
 FIN()

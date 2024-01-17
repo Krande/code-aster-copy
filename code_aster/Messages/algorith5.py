@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -281,6 +281,11 @@ Conseil :
         """
  la déformation courante est supérieure à la dernière valeur spécifiée dans RIGI_POST_FL
  La raideur utilisée est à présent constante
+"""
+    ),
+    87: _(
+        """
+  MODI_REPERE ne traite pas actuellement le champ %(k1)s avec un repère de type %(k2)s
 """
     ),
 }

@@ -50,6 +50,12 @@ class NOM_CHAM_INTO:  # COMMUN#
                 ("lin", "nonlin", "dyna"),
                 tr("Efforts généralisés aux noeuds par élément"),
             ),
+            "EGRU_ELNO": (
+                ("lin", "nonlin", "dyna"),
+                tr(
+                    "Efforts généralisés aux noeuds par élément calculés dans le repère utilisateur"
+                ),
+            ),
             "EFGE_NOEU": (("lin", "nonlin", "dyna"), tr("Efforts généralisés aux noeuds")),
             "SIEF_ELGA": (("lin",), tr("Contraintes et efforts aux points de Gauss")),
             "SIEF_ELNO": (

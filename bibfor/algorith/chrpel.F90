@@ -596,7 +596,7 @@ subroutine chrpel(champ1, repere, nom_cham, icham, type_chamz, &
                 lpain(4) = 'PEFGAIN'
                 paout = 'PEFGAOUT'
                 if (nomgdr(5:6) .eq. '_C') paoutc = 'PEFGAOUC'
-            else if (nomch .eq. 'EFGE_ELNO') then
+            else if ((nomch .eq. 'EFGE_ELNO') .or. (nomch .eq. 'EGRU_ELNO')) then
                 lpain(4) = 'PEFNOIN'
                 paout = 'PEFNOOUT'
                 if (nomgdr(5:6) .eq. '_C') paoutc = 'PEFNOOUC'

@@ -115,11 +115,11 @@ subroutine rscrsd(baseZ, resultNameZ, resultTypeZ, nbStore)
 !     ------------------------------------------------------------------
 !                      For mechanic
 !     ------------------------------------------------------------------
-    integer, parameter :: nbFieldMeca = 131
+    integer, parameter :: nbFieldMeca = 132
     character(len=16), parameter :: fieldMeca(nbFieldMeca) = (/ &
                                     'DEPL            ', 'VITE            ', 'ACCE            ', &
                                     'DEPL_ABSOLU     ', 'VITE_ABSOLU     ', 'ACCE_ABSOLU     ', &
-                                    'EFGE_ELNO       ', 'EFGE_NOEU       ', &
+                                    'EFGE_ELNO       ', 'EFGE_NOEU       ', 'EGRU_ELNO       ', &
                                     'EPSI_ELGA       ', 'EPSI_ELNO       ', &
                                     'EPSI_NOEU       ', 'SIEF_ELGA       ', 'SIMY_ELGA       ', &
                                     'SIGM_ELGA       ', 'EFGE_ELGA       ', &
