@@ -123,6 +123,7 @@ for i in range(Nb_freq):
         MODELE=model,
         TYPE_CALCUL="HARM",
         BASE_CALCUL="PHYS",
+        CHAM_MATER=mater,
         MATR_MASS=M1,
         MATR_RIGI=K1,
         SOLVEUR=_F(METHODE="MUMPS"),

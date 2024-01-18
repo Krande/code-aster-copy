@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,7 +59,7 @@ subroutine op0031()
     complex(kind=8) :: cval
     integer :: nbocag, nboccr, nboccc, nbocc, ldesc, l, lnom, iocc, i
     integer :: ibid, lcoef, ltypec, nbcst, lr, lc, iret, ides1
-    integer :: jrefe, jpomr, n1, n2, k, iexi, jlime, jlime1
+    integer :: jrefe, jpomr, n1, n2, k, iexi
 ! ------------------------------------------------------------------
 !
     call jemarq()
@@ -199,39 +199,6 @@ subroutine op0031()
     call mtdefs(matr19, zk8(lnom+jpomr), base, typres)
     call mtcmbl(nbocc, zk8(ltypec), zr(lcoef), zk8(lnom), matr19, &
                 nomddl, ' ', 'ELIM=')
-!
-!
-! la matrice resultat de la combinaison n'a pas de raison de contenir l'objet .LIME :
-! call jedetr(matr19//'.LIME')
-!
-!   -- Il faut concatener les objets .LIME (voir issue21327) :
-!   -----------------------------------------------------------
-    if (typrep(1:14) .ne. 'MATR_ASSE_GENE') then
-        n1 = 0
-        do iocc = 1, nbocc
-            call getvid(combrc, 'MATR_ASSE', iocc=iocc, scal=matri1, nbret=l)
-            call jeexin(matri1//'           .LIME', iexi)
-            if (iexi .gt. 0) then
-                call jelira(matri1//'           .LIME', 'LONMAX', n2)
-                n1 = n1+n2
-            end if
-        end do
-        call jedetr(matr19//'.LIME')
-        call wkvect(matr19//'.LIME', base//' V K24', n1, jlime)
-        n1 = 0
-        do iocc = 1, nbocc
-            call getvid(combrc, 'MATR_ASSE', iocc=iocc, scal=matri1, nbret=l)
-            call jeexin(matri1//'           .LIME', iexi)
-            if (iexi .gt. 0) then
-                call jelira(matri1//'           .LIME', 'LONMAX', n2)
-                call jeveuo(matri1//'           .LIME', 'L', jlime1)
-                do k = 1, n2
-                    zk24(jlime-1+n1+k) = zk24(jlime1-1+k)
-                end do
-                n1 = n1+n2
-            end if
-        end do
-    end if
 !
 !
 !   -- si la matrice est reentrante, on la detruit et on recopie

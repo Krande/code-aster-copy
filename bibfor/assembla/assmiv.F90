@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -176,7 +176,7 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef, &
 !
 ! --- CALCUL D UN LILI POUR VECAS
 ! --- CREATION D'UN VECAS(1:19).ADNE ET VECAS(1:19).ADLI SUR 'V'
-    call crelil('F', nbvec, ilivec, kvelil, 'V', &
+    call crelil('F', nbvec, tlivec, kvelil, 'V', &
                 kmaila, vecas, gd, ma, nec, &
                 ncmp, ilim, nlili, nbelm, nume_=nume_ddl)
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,7 +63,7 @@ subroutine assgcy(nomres, nugene)
     character(len=14) :: nugene
     character(len=19) :: stomor, resu
 !
-    integer :: iblo, ldlim, neq, ntbloc, nbloc, iaconl, jrefa, iadesc
+    integer :: iblo, neq, ntbloc, nbloc, iaconl, jrefa, iadesc
     integer ::   ldblo, n1bloc, n2bloc, i, j, hc
 !
 !-----------------------------------------------------------------------
@@ -84,12 +84,6 @@ subroutine assgcy(nomres, nugene)
 !
     call jeveuo(nugene//'.NUME.REFN', 'L', vk24=refn)
     modgen = refn(1) (1:8)
-!
-!--------------------------CREATION DU .LIME----------------------------
-!   POUR L'INSTANT ON DONNE LE NOM DU MODELE GENERALISE
-!
-    call wkvect(resu//'.LIME', 'G V K24', 1, ldlim)
-    zk24(ldlim) = modgen
 !
 !--------------------RECUPERATION DES CARACTERISTIQUES BLOCS------------
 !

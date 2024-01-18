@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -208,6 +208,7 @@ DYNA = DYNA_VIBRA(
     TYPE_CALCUL="TRAN",
     BASE_CALCUL="PHYS",
     MODELE=MODELE,
+    CHAM_MATER=CHAMPMAT,
     MATR_MASS=MASSE,
     MATR_RIGI=RIGIDITE,
     MATR_AMOR=AMORT,
@@ -314,6 +315,7 @@ DYNAC = DYNA_VIBRA(
     TYPE_CALCUL="TRAN",
     BASE_CALCUL="PHYS",
     MODELE=MODELE,
+    CHAM_MATER=CHAMATC,
     MATR_MASS=MASSEC,
     MATR_RIGI=RIGIDITC,
     MATR_AMOR=AMORTC,

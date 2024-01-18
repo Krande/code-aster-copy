@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -114,6 +114,8 @@ MODE_ITER_SIMULT_CATA = OPER(
             statut="f", typ="TXM", defaut="QZ_SIMPLE", into=("QZ_QR", "QZ_SIMPLE", "QZ_EQUI")
         ),
     ),
+    CHAM_MATER=SIMP(statut="f", typ=cham_mater),
+    CARA_ELEM=SIMP(statut="f", typ=cara_elem),
     TYPE_RESU=SIMP(
         statut="f",
         typ="TXM",

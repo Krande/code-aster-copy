@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ subroutine inmain(nommat, neq, nozero)
     character(len=19) :: nommat
 !
 !-- VARIABLES DE LA ROUTINE
-    integer :: ibid, jrefa, i1, j1, iret
+    integer :: jrefa, i1, j1, iret
 !
 !-----------C
 !--       --C
@@ -65,11 +65,6 @@ subroutine inmain(nommat, neq, nozero)
     zk24(jrefa-1+9) = 'MS'
     zk24(jrefa-1+10) = 'GENE'
     zk24(jrefa-1+7) = '&&NUME91      .SOLV'
-!
-!
-!-- CREATION DU .LIME
-    call wkvect(nommat//'.LIME', 'V V K24', 1, ibid)
-    zk24(ibid) = '&&MODL91'
 !
 !-- CREATION DU .CONL
     call wkvect(nommat//'.CONL', 'V V R', neq, j1)

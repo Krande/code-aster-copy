@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -117,6 +117,7 @@ MATASM = ASSE_MATRICE(MATR_ELEM=MATELE_M, NUME_DDL=NUM)
 
 MODES = CALC_MODES(
     MATR_RIGI=MATASK,
+    CARA_ELEM=CARA,
     OPTION="BANDE",
     CALC_FREQ=_F(FREQ=(1.0, 50.0)),
     MATR_MASS=MATASM,

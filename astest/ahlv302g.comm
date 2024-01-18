@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,12 @@
 
 import numpy
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
+DEBUT(
+    CODE=_F(NIV_PUB_WEB="INTERNET"),
+    ERREUR=_F(ALARME="EXCEPTION"),
+    DEBUG=_F(SDVERI="OUI"),
+    IMPR_MACRO="OUI",
+)
 
 
 #
@@ -85,6 +90,7 @@ Fmtx = ASSE_VECTEUR(VECT_ELEM=F_elem, NUME_DDL=numedd)
 HARMO = DYNA_VIBRA(
     TYPE_CALCUL="HARM",
     BASE_CALCUL="PHYS",
+    CHAM_MATER=CHM,
     SOLVEUR=_F(METHODE="MULT_FRONT", RENUM="MD"),
     MATR_MASS=MatM,
     MATR_RIGI=MatK,

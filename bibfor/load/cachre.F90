@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -162,9 +162,9 @@ subroutine cachre(load, model, mesh, geomDime, valeType, &
                     call getvc8(keywordFact, 'VY', iocc=iocc, scal=cfy, nbret=nfy)
                     call getvc8(keywordFact, 'VZ', iocc=iocc, scal=cfz, nbret=nfz)
                 else if (keywordFact .eq. 'FORCE_COQUE') then
-                    nrep = 1
                     call getvc8(keywordFact, 'PRES', iocc=iocc, scal=cvpre, nbret=nfz)
                     if (nfz .eq. 0) then
+                        nrep = 1
                         call getvc8(keywordFact, 'F1', iocc=iocc, scal=cfx, nbret=nfx)
                         call getvc8(keywordFact, 'F2', iocc=iocc, scal=cfy, nbret=nfy)
                         call getvc8(keywordFact, 'F3', iocc=iocc, scal=cfz, nbret=nfz)
@@ -172,7 +172,8 @@ subroutine cachre(load, model, mesh, geomDime, valeType, &
                         call getvc8(keywordFact, 'MF2', iocc=iocc, scal=cmy, nbret=nmy)
                         nmz = 0
                     else
-                        cfz = -cvpre
+                        nrep = 3
+                        cfz = cvpre
                         nfx = 0
                         nfy = 0
                         nmx = 0
@@ -262,12 +263,13 @@ subroutine cachre(load, model, mesh, geomDime, valeType, &
                         call getvr8(keywordFact, 'MF2', iocc=iocc, scal=my, nbret=nmy)
                         nmz = 0
                     else
-                        fz = -vpre
+                        fz = vpre
                         nfx = 0
                         nfy = 0
                         nmx = 0
                         nmy = 0
                         nmz = 0
+                        nrep = 3
                     end if
                 end if
             end if
@@ -322,6 +324,9 @@ subroutine cachre(load, model, mesh, geomDime, valeType, &
                 vncmp(ncmp) = 'REP'
                 if (nrep .eq. 1) zr(jvalv-1+ncmp) = 1.d0
                 if (nrep .eq. 2) zr(jvalv-1+ncmp) = 2.d0
+                if (nrep .eq. 3) zr(jvalv-1+ncmp) = 3.d0
+! --           (NREP=3) CAS D UNE PRESSION --> ON PREND L OPPOSE DE
+! --           LA VALEUR LUE DANS LE TE
             end if
         else
             call getvid(keywordFact, 'FX', iocc=iocc, scal=kfx, nbret=nfx)

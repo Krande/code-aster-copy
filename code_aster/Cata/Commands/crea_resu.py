@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -498,6 +498,8 @@ CREA_RESU = OPER(
             statut="o",
             max=1,
             CHARGE=SIMP(statut="o", typ=(char_meca,), max="**"),
+            CHAM_MATER=SIMP(statut="o", typ=cham_mater),
+            CARA_ELEM=SIMP(statut="f", typ=cara_elem),
             MATR_RIGI=SIMP(statut="o", typ=matr_asse_depl_r),
             regles=(UN_PARMI("INST", "LIST_INST"),),
             INST=SIMP(statut="f", typ="R", validators=NoRepeat(), max="**"),

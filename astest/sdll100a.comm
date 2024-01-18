@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -106,6 +106,7 @@ NEWNONA = DYNA_VIBRA(
     BASE_CALCUL="PHYS",
     MATR_MASS=MATRMASS,
     MATR_RIGI=MATRRIGI,
+    CHAM_MATER=CHAMPMAT,
     SCHEMA_TEMPS=_F(SCHEMA="NEWMARK"),
     INCREMENT=_F(LIST_INST=TEMPLI),
     ARCHIVAGE=_F(LIST_INST=TEMLI),
@@ -120,6 +121,7 @@ WILNONA = DYNA_VIBRA(
     BASE_CALCUL="PHYS",
     MATR_MASS=MATRMASS,
     MATR_RIGI=MATRRIGI,
+    CHAM_MATER=CHAMPMAT,
     SCHEMA_TEMPS=_F(SCHEMA="WILSON"),
     INCREMENT=_F(LIST_INST=TEMPLI),
     ARCHIVAGE=_F(LIST_INST=TEMLI),
@@ -145,6 +147,7 @@ NEWAMOR = DYNA_VIBRA(
     BASE_CALCUL="PHYS",
     MATR_MASS=MATRMASS,
     MATR_RIGI=MATRRIGI,
+    CHAM_MATER=CHAMPMAT,
     SCHEMA_TEMPS=_F(SCHEMA="NEWMARK"),
     INCREMENT=_F(LIST_INST=TEMPLI),
     ARCHIVAGE=_F(LIST_INST=TEMLI),
@@ -157,6 +160,7 @@ WILAMOR = DYNA_VIBRA(
     BASE_CALCUL="PHYS",
     MATR_MASS=MATRMASS,
     MATR_RIGI=MATRRIGI,
+    CHAM_MATER=CHAMPMAT,
     SCHEMA_TEMPS=_F(SCHEMA="WILSON"),
     INCREMENT=_F(LIST_INST=TEMPLI),
     ARCHIVAGE=_F(LIST_INST=TEMLI),

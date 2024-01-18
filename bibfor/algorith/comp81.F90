@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -107,13 +107,13 @@ subroutine comp81(nomres, basmod, raidf, noma)
     call dismoi('REF_INTD_PREM', basmod, 'RESU_DYNA', repk=lintf, arret='C')
 !
     call dismoi('NOM_MODELE', numddl, 'NUME_DDL', repk=nomo)
-    if (raidf .ne. blanc) then
-        call dismoi('CHAM_MATER', raidf, 'MATR_ASSE', repk=chmat)
-        call dismoi('CARA_ELEM', raidf, 'MATR_ASSE', repk=chcar)
-    else
-        chmat = blanc
-        chcar = blanc
-    end if
+!    if (raidf .ne. blanc) then
+!        call dismoi('CHAM_MATER', raidf, 'MATR_ASSE', repk=chmat)
+!        call dismoi('CARA_ELEM', raidf, 'MATR_ASSE', repk=chcar)
+!    else
+    chmat = blanc
+    chcar = blanc
+!    end if
 !
     if (lintf .ne. blanc) then
 ! ON RECUPERE LE NBRE DE NOEUDS PRESENTS DANS INTERF_DYNA

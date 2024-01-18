@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -80,6 +80,8 @@ CALC_MODES = MACRO(
         into=("DYNAMIQUE", "MODE_FLAMB", "GENERAL"),
         fr=tr("Type d'analyse"),
     ),
+    CHAM_MATER=SIMP(statut="f", typ=cham_mater),
+    CARA_ELEM=SIMP(statut="f", typ=cara_elem),
     # ========= TYPE_RESU = 'DYNAMIQUE'
     b_dyna=BLOC(
         condition="""equal_to("TYPE_RESU", 'DYNAMIQUE')""",

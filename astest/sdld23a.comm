@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -100,6 +100,7 @@ MATASSA1 = ASSE_MATRICE(MATR_ELEM=MELA1, NUME_DDL=NUM1)
 
 FREQ3 = CALC_MODES(
     MATR_RIGI=MATASSR1,
+    CARA_ELEM=CARELEM1,
     VERI_MODE=_F(SEUIL=1.0e-5),
     OPTION="PLUS_PETITE",
     CALC_FREQ=_F(NMAX_FREQ=8),
@@ -111,6 +112,7 @@ FREQ3 = CALC_MODES(
 # AVEC QZ + OPTION='PLUS_PETITE' + 'QZ_SIMPLE'
 FREQZ = CALC_MODES(
     MATR_RIGI=MATASSR1,
+    CARA_ELEM=CARELEM1,
     VERI_MODE=_F(SEUIL=1.0e-5),
     OPTION="PLUS_PETITE",
     CALC_FREQ=_F(NMAX_FREQ=8),

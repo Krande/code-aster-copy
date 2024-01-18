@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -94,6 +94,7 @@ MATASSM1 = ASSE_MATRICE(MATR_ELEM=MELM1, NUME_DDL=NUM1)
 
 FREQ1 = CALC_MODES(
     MATR_RIGI=MATASSR1,
+    CARA_ELEM=CARELEM1,
     OPTION="AJUSTE",
     SOLVEUR=_F(METHODE="MULT_FRONT"),
     CALC_FREQ=_F(NMAX_FREQ=10, FREQ=(0.1, 3000.0)),
@@ -362,6 +363,7 @@ MATASSM2 = ASSE_MATRICE(MATR_ELEM=MELM2, NUME_DDL=NUM2)
 
 FREQ2 = CALC_MODES(
     MATR_RIGI=MATASSR2,
+    CARA_ELEM=CARELEM1,
     OPTION="AJUSTE",
     SOLVEUR=_F(METHODE="MULT_FRONT"),
     CALC_FREQ=_F(NMAX_FREQ=10, FREQ=(0.1, 3000.0)),
@@ -435,6 +437,7 @@ MATASSM3 = ASSE_MATRICE(MATR_ELEM=MELM3, NUME_DDL=NUM3)
 
 FREQ3 = CALC_MODES(
     MATR_RIGI=MATASSR3,
+    CARA_ELEM=CARELEM1,
     OPTION="AJUSTE",
     SOLVEUR=_F(METHODE="MULT_FRONT"),
     CALC_FREQ=_F(NMAX_FREQ=15, FREQ=(0.1, 3000.0)),

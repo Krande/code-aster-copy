@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -70,6 +70,7 @@ U3 = DYNA_VIBRA(
     MATR_AMOR=dampAsse,
     MODELE=MOPOU,
     CARA_ELEM=POUCA,
+    CHAM_MATER=CHMAT,
     SCHEMA_TEMPS=_F(SCHEMA="NEWMARK"),
     EXCIT=(_F(VECT_ASSE=seismDir, FONC_MULT=ACCELERO), _F(CHARGE=kineClamp, FONC_MULT=FF)),
     INCREMENT=_F(LIST_INST=LINST, INST_FIN=3),

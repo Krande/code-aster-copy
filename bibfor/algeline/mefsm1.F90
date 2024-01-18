@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ subroutine mefsm1(vale, matgen, base, nomnum, nomsto, &
     character(len=1) :: base
     character(len=19) :: nomnum, nomsto
 !
-    integer :: i, j, iblo, iadesc, ialime, iaconl, jrefa, ldblo
+    integer :: i, j, iblo, iadesc, iaconl, jrefa, ldblo
     character(len=19) :: matrge
 ! DEB------------------------------------------------------------------
 !
@@ -48,9 +48,6 @@ subroutine mefsm1(vale, matgen, base, nomnum, nomsto, &
     zi(iadesc) = 2
     zi(iadesc+1) = nbmode
     zi(iadesc+2) = 2
-!
-    call wkvect(matrge//'.LIME', 'G V K24', 1, ialime)
-    zk24(ialime) = '                        '
 !
     call wkvect(matrge//'.CONL', 'G V R', nbmode, iaconl)
     do i = 1, nbmode

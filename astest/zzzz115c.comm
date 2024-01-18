@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -90,6 +90,7 @@ ASSEMBLAGE(
 MODMECA = CALC_MODES(
     MATR_RIGI=RIGIDITE,
     OPTION="BANDE",
+    CARA_ELEM=elemprop,
     CALC_FREQ=_F(FREQ=(0.0, 30.0)),
     MATR_MASS=MASSE,
     NORM_MODE=_F(NORME="MASS_GENE"),  # MASS_GENE
@@ -110,7 +111,13 @@ SPECT = DEFI_NAPPE(
     NOM_PARA="AMOR", INTERPOL=("LIN", "LIN"), PARA=(0.001, 0.1), FONCTION=(ACCE, ACCE)
 )
 
-MODE_STA = MODE_STATIQUE(MATR_RIGI=RIGIDITE, MATR_MASS=MASSE, PSEUDO_MODE=_F(AXE=("X", "Y", "Z")))
+MODE_STA = MODE_STATIQUE(
+    MATR_RIGI=RIGIDITE,
+    MATR_MASS=MASSE,
+    PSEUDO_MODE=_F(AXE=("X", "Y", "Z")),
+    CARA_ELEM=elemprop,
+    CHAM_MATER=fieldmat,
+)
 
 ##########################
 # Verif pour le premier mode seul, acceleration en X uniquement : mode de flexion -> moment d'encastrement a la base
@@ -234,7 +241,7 @@ EXTR3 = EXTR_MODE(FILTRE_MODE=_F(MODE=MODMECA, NUME_MODE=1))
 
 t3 = CALC_COUPURE(
     FORCE="REAC_NODA",
-    RESULTAT=EXTR3,
+    RESULTAT=EXTR,
     MODAL_SPECTRAL="OUI",
     COMB_MODE="CQC",
     AMOR_REDUIT=csi,

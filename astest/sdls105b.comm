@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -115,7 +115,12 @@ MATASMS = ASSE_MATRICE(MATR_ELEM=MEL_MSTR, NUME_DDL=NUSTR)
 
 
 MODES = CALC_MODES(
-    MATR_RIGI=MATASKS, OPTION="BANDE", CALC_FREQ=_F(FREQ=(0.01, 0.1)), MATR_MASS=MATASMS
+    CARA_ELEM=CARA,
+    CHAM_MATER=CHAMMAT2,
+    MATR_RIGI=MATASKS,
+    OPTION="BANDE",
+    CALC_FREQ=_F(FREQ=(0.01, 0.1)),
+    MATR_MASS=MATASMS,
 )
 
 
@@ -148,6 +153,8 @@ MODHUMI = CALC_MODES(
     OPTION="BANDE",
     CALC_FREQ=_F(FREQ=(0.01, 0.1)),
     MATR_MASS=MASTOT,
+    CARA_ELEM=CARA,
+    CHAM_MATER=CHAMMAT2,
 )
 
 

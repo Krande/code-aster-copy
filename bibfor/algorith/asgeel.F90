@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,7 +71,7 @@ subroutine asgeel(nomres, option, nugene)
     integer :: ibid, i1, j1, k1, l1, n1, lres, neq, lneq, lproj, nbddl, indsst
     integer :: lsst, llref, nbmacr, exist, lmacr, indmcr, lresi
     integer :: decal, ddlcp, lselia, nlt, ind, ldconl, iret, nmaddl, ltemp
-    integer :: jrefa, ldlim, nbsst, lsilia, iadesc, ntria, lmacri
+    integer :: jrefa, nbsst, lsilia, iadesc, ntria, lmacri
     character(len=8) :: kbid, k8bid
     integer, pointer :: indices_macro(:) => null()
     character(len=8), pointer :: noms_macro(:) => null()
@@ -113,15 +113,6 @@ subroutine asgeel(nomres, option, nugene)
     call jeveuo(k24bid, 'L', llref)
     modgen = zk24(llref) (1:8)
     nomsst = modgen//'      .MODG.SSNO'
-!
-!--------------------------CREATION DU .LIME----------------------------
-!   POUR L'INSTANT ON DONNE LE NOM DU MODELE GENERALISE
-!
-    call wkvect(nomres//'           .LIME', 'G V K24', 1, ldlim)
-    zk24(ldlim) = modgen
-!      CALL WKVECT(NOMRES//'           .DESC','G V I',1,LDDESC)
-!      ZI(LDDESC)=2
-!
 !
 !------------------RECUPERATION DU NOMBRE DE SOUS-STRUCTURE-------------
 !
@@ -282,8 +273,8 @@ subroutine asgeel(nomres, option, nugene)
 !-- ON FAIT K*T
         do i1 = 1, nbddl
             do j1 = 1, neq
-                zr(lproj+(j1-1)*nbddl+i1-1) = ddot(nbddl, zr(ltemp+(i1- &
-                                                       1)*nbddl), 1, zr(lselia+(j1-1)*nlt+decal), 1)
+                zr(lproj+(j1-1)*nbddl+i1-1) = ddot(nbddl, zr(ltemp+(i1-1)*nbddl), &
+                                                   1, zr(lselia+(j1-1)*nlt+decal), 1)
             end do
         end do
 !
@@ -291,11 +282,11 @@ subroutine asgeel(nomres, option, nugene)
         do j1 = 1, neq
             do i1 = 1, j1
                 ind = int(((j1-1)*j1)/2)+i1-1
-                zr(lres+ind) = zr(lres+ind)+ddot(nbddl, zr(lproj+(j1-1)* &
-                                                          nbddl), 1, zr(lselia+(i1-1)*nlt+decal), 1)
+                zr(lres+ind) = zr(lres+ind)+ddot(nbddl, zr(lproj+(j1-1)*nbddl), &
+                                                 1, zr(lselia+(i1-1)*nlt+decal), 1)
                 if (.not. lsym) then
-                    zr(lresi+ind) = zr(lresi+ind)+ddot(nbddl, zr(lproj+(i1-1)* &
-                                                          nbddl), 1, zr(lselia+(j1-1)*nlt+decal), 1)
+                    zr(lresi+ind) = zr(lresi+ind)+ddot(nbddl, zr(lproj+(i1-1)*nbddl), &
+                                                       1, zr(lselia+(j1-1)*nlt+decal), 1)
                 end if
             end do
         end do

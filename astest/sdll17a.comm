@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -475,6 +475,8 @@ ASSEMBLAGE(
 MODES = CALC_MODES(
     MATR_MASS=MAT_M,
     MATR_RIGI=MAT_K,
+    CHAM_MATER=MATER_F,
+    CARA_ELEM=FE_CAR,
     OPTION="BANDE",
     CALC_FREQ=_F(FREQ=(-0.1, 100.0)),
     NORM_MODE=_F(NORME="TRAN_ROTA"),
@@ -486,8 +488,6 @@ MODES = CALC_CHAMP(
     reuse=MODES,
     RESULTAT=MODES,
     MODELE=MODEL,
-    CHAM_MATER=MATER_F,
-    CARA_ELEM=FE_CAR,
     GROUP_MA=elem_groups,
     CONTRAINTE=("EFGE_ELNO", "SIEF_ELGA"),
     FORCE=("REAC_NODA",),

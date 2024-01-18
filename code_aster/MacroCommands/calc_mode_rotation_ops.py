@@ -70,6 +70,12 @@ def calc_mode_rotation_ops(
         PREC_SHIFT=VERI_MODE["PREC_SHIFT"],
     )
 
+    args = _F(args)
+    if "CARA_ELEM" in args:
+        motscit["CARA_ELEM"] = args["CARA_ELEM"]
+    if "CHAM_MATER" in args:
+        motscit["CHAM_MATER"] = args["CHAM_MATER"]
+
     NBV = len(VITE_ROTA)
 
     _mod = [None] * NBV

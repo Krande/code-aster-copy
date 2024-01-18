@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -154,6 +154,8 @@ MATASSM2 = ASSE_MATRICE(MATR_ELEM=MELM2, NUME_DDL=NUM2)
 # ----- CAS 1
 
 MODE1 = CALC_MODES(
+    CHAM_MATER=CHMAT1,
+    CARA_ELEM=CARELEM1,
     MATR_RIGI=MATASSR1,
     OPTION="AJUSTE",
     SOLVEUR=_F(METHODE="MULT_FRONT"),
@@ -168,6 +170,8 @@ MODE4 = CALC_CHAMP(RESULTAT=MODE1, ENERGIE=("ECIN_ELEM"))
 # ----- CAS 2
 
 MODE2 = CALC_MODES(
+    CHAM_MATER=CHMAT2,
+    CARA_ELEM=CARELEM2,
     MATR_RIGI=MATASSR2,
     OPTION="AJUSTE",
     SOLVEUR=_F(METHODE="MULT_FRONT"),

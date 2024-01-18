@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,6 +49,7 @@ subroutine op0116()
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/tabcor.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtcmbl.h"
 #include "asterfort/wkvect.h"
 !
@@ -97,12 +98,12 @@ subroutine op0116()
     call getvtx(' ', 'POTENTIEL', iocc=1, scal=potentiel, nbret=ib)
     call getvid(' ', 'RIGI_THER', iocc=1, scal=rigthe, nbret=ib)
     call getvid(' ', 'MODE_MECA', iocc=1, scal=modmec, nbret=imod)
+    call getvid(' ', 'CHAM_MATER', iocc=1, scal=mater, nbret=ib)
 !---------------------------------------------------------------------
 !---------- MODELE THERMIQUE ET CHAMP DE MATERIAUX -------------------
 !---------------------------------------------------------------------
     call dismoi('NOM_MODELE', rigthe, 'MATR_ASSE', repk=modele)
-    call dismoi('CHAM_MATER', rigthe, 'MATR_ASSE', repk=mater)
-    if (ib .ne. 0) call rcmfmc(mater, mateco, l_ther_=ASTER_FALSE)
+    call rcmfmc(mater, mateco, l_ther_=ASTER_FALSE)
 !---------------------------------------------------------------------
 !---------- NUMEROTATION DES DDL FLUIDES -----------------------------
 !---------------------------------------------------------------------

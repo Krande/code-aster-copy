@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -83,7 +83,13 @@ MAS = POST_ELEM(MODELE=MODELE, CHAM_MATER=CHAMPMAT, CARA_ELEM=CARA_ELE, MASS_INE
 # CALCUL DES MODES AVEC BLOQUAGE DES ANCRAGES:
 # ---------------------------------------------
 
-MODE = CALC_MODES(MATR_RIGI=RIGIDITE, MATR_MASS=MASSE, CALC_FREQ=_F(NMAX_FREQ=5))
+MODE = CALC_MODES(
+    CARA_ELEM=CARA_ELE,
+    CHAM_MATER=CHAMPMAT,
+    MATR_RIGI=RIGIDITE,
+    MATR_MASS=MASSE,
+    CALC_FREQ=_F(NMAX_FREQ=5),
+)
 
 MODE = NORM_MODE(reuse=MODE, MODE=MODE, NORME="TRAN_ROTA")
 
@@ -269,6 +275,8 @@ TEST_RESU(
 MODE_ST1 = MODE_STATIQUE(
     MATR_RIGI=RIGIDITE,
     MATR_MASS=MASSE,
+    CARA_ELEM=CARA_ELE,
+    CHAM_MATER=CHAMPMAT,
     PSEUDO_MODE=(_F(AXE="X"), _F(GROUP_NO=("N1", "N5", "N9"), AVEC_CMP="DX")),
 )
 
@@ -431,7 +439,11 @@ TEST_RESU(
 # -------------------------------------------------
 
 MODE_STA = MODE_STATIQUE(
-    MATR_RIGI=RIGIDITE, MATR_MASS=MASSE, MODE_STAT=_F(TOUT="OUI", TOUT_CMP="OUI")
+    CARA_ELEM=CARA_ELE,
+    CHAM_MATER=CHAMPMAT,
+    MATR_RIGI=RIGIDITE,
+    MATR_MASS=MASSE,
+    MODE_STAT=_F(TOUT="OUI", TOUT_CMP="OUI"),
 )
 
 MODE_STA = CALC_CHAMP(reuse=MODE_STA, RESULTAT=MODE_STA, CONTRAINTE=("SIEF_ELGA"))

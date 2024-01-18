@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -94,7 +94,7 @@ subroutine meceuc(stop, option, caraez, ligrel, &
     carael = caraez
     ch1 = '&&MECEUC.CH1'
     ch2 = '&&MECEUC.CH2'
-    ldbg = .true.
+    ldbg = .false.
 !
 !
 !     -- 0. LA ROUTINE N'EST UTILE QUE POUR CERTAINES OPTIONS :

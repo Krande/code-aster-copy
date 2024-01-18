@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,7 +63,7 @@ subroutine op0164()
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, i1, i2, iaconl, iadesc, ialime, ic
+    integer :: i, i1, i2, iaconl, iadesc, ic
     integer :: ifmis, ifr, ifreq, ii, j, jfrq, ibin
     integer :: jj, jrefa, jri2, jrig, jrit, ldblo, ldblo2
     integer :: nbmodd, nbmode, nbmods, nfr, nfreq, nit, nsaut
@@ -209,11 +209,11 @@ subroutine op0164()
         do i = 1, ifreq-1
             read (ifmis) a(1)
         end do
-        read (ifmis) ((zr(jrig+2*(i2-1)*nbmode+2*i1-2), zr(jrig+2*(i2- &
-                                                     1)*nbmode+2*i1-1), i1=1, nbmode), i2=1, nbmode)
+        read (ifmis) ((zr(jrig+2*(i2-1)*nbmode+2*i1-2), zr(jrig+2*(i2-1)*nbmode+2*i1-1), &
+                       i1=1, nbmode), i2=1, nbmode)
         if (ic .ge. 1) then
-            read (ifmis) ((zr(jri2+2*(i2-1)*nbmode+2*i1-2), zr(jri2+2*( &
-                                                  i2-1)*nbmode+2*i1-1), i1=1, nbmode), i2=1, nbmode)
+            read (ifmis) ((zr(jri2+2*(i2-1)*nbmode+2*i1-2), zr(jri2+2*(i2-1)*nbmode+2*i1-1), &
+                           i1=1, nbmode), i2=1, nbmode)
             do i1 = 1, nbmode
                 do i2 = 1, nbmode
                     zr(jrig+2*(i2-1)*nbmode+2*i1-2) = zr( &
@@ -257,9 +257,6 @@ subroutine op0164()
                     2)
     end if
     call jeecra(resu//'.VALM', 'LONMAX', nterm)
-!
-    call wkvect(resu//'.LIME', 'G V K24', 1, ialime)
-    zk24(ialime) = '                        '
 !
     call wkvect(resu//'.CONL', 'G V C', nueq, iaconl)
     do i = 1, nueq

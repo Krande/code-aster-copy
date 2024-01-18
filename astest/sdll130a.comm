@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -143,6 +143,8 @@ LINST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=5.0, NOMBRE=500))
 
 U1 = DYNA_VIBRA(
     MODELE=MOPOU,
+    CARA_ELEM=POUCA,
+    CHAM_MATER=CHMAT,
     TYPE_CALCUL="TRAN",
     BASE_CALCUL="PHYS",
     MATR_MASS=MASSE,

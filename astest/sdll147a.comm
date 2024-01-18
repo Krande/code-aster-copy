@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -76,6 +76,8 @@ ASSEMBLAGE(
 )
 
 MODECA = CALC_MODES(
+    CHAM_MATER=CHMAT,
+    CARA_ELEM=CARELEM,
     MATR_RIGI=RIGIDITE,
     VERI_MODE=_F(SEUIL=1.0e-4),
     OPTION="BANDE",
@@ -101,7 +103,13 @@ MODES = CALC_CHAMP(reuse=MODES, RESULTAT=MODES, CONTRAINTE=("SIEF_ELGA"))
 
 MODES = CALC_CHAMP(reuse=MODES, RESULTAT=MODES, FORCE="REAC_NODA")
 
-CORRSTA = MODE_STATIQUE(MATR_RIGI=RIGIDITE, MATR_MASS=MASSE, PSEUDO_MODE=_F(AXE=("X", "Y", "Z")))
+CORRSTA = MODE_STATIQUE(
+    CHAM_MATER=CHMAT,
+    CARA_ELEM=CARELEM,
+    MATR_RIGI=RIGIDITE,
+    MATR_MASS=MASSE,
+    PSEUDO_MODE=_F(AXE=("X", "Y", "Z")),
+)
 
 CORRSTA = CALC_CHAMP(reuse=CORRSTA, RESULTAT=CORRSTA, CONTRAINTE=("SIEF_ELGA"))
 

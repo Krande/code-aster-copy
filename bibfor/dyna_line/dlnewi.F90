@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -213,10 +213,10 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort, &
     limped = ASTER_FALSE
     call dismoi('EXI_IMPE_ABSO', modele, 'MODELE', repk=answer)
     limped = answer .eq. 'OUI'
-    call dismoi('CHAM_MATER', rigid, 'MATR_ASSE', repk=mateFromRigid, arret='C', ier=ierc)
-    if (ierc .ne. 0) then
-        mateFromRigid = ' '
-    end if
+!    call dismoi('CHAM_MATER', rigid, 'MATR_ASSE', repk=mateFromRigid, arret='C', ier=ierc)
+!    if (ierc .ne. 0) then
+    mateFromRigid = ' '
+!    end if
     if (mateFromRigid .eq. ' ') then
         limped = ASTER_FALSE
     end if

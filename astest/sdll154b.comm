@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -105,10 +105,18 @@ ASSEMBLAGE(
     ),
 )
 
-modes_dyn = CALC_MODES(MATR_RIGI=matrice_rigi, MATR_MASS=matrice_mass, CALC_FREQ=_F(NMAX_FREQ=4))
+modes_dyn = CALC_MODES(
+    MATR_RIGI=matrice_rigi,
+    MATR_MASS=matrice_mass,
+    CALC_FREQ=_F(NMAX_FREQ=4),
+    CHAM_MATER=ch_mater,
+    CARA_ELEM=cara_elem,
+)
 modes_dyn = CALC_CHAMP(reuse=modes_dyn, RESULTAT=modes_dyn, CONTRAINTE="EFGE_ELNO")
 
 modes_sta = MODE_STATIQUE(
+    CHAM_MATER=ch_mater,
+    CARA_ELEM=cara_elem,
     SOLVEUR=_F(NB_RHS=2, RESI_RELA=-1.0),
     MATR_RIGI=matrice_rigi,
     MATR_MASS=matrice_mass,

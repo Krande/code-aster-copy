@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,8 +35,7 @@ subroutine mag152(n9, n10, nomres, nugene, modmec, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: indice
-    integer :: jrefa, i, iaconl, iadesc
-    integer :: ialime, iblo
+    integer :: jrefa, i, iaconl, iadesc, iblo
     integer :: somme
     integer :: jsmde, n1bloc, n2bloc
     integer :: nbid, nbloc, ntbloc, nueq, nhmax
@@ -118,7 +117,6 @@ subroutine mag152(n9, n10, nomres, nugene, modmec, &
         call jeecra(nomres//'           .UALF', 'LONMAX', ntbloc)
 !
 !
-        call wkvect(nomres//'           .LIME', 'G V K24', 1, ialime)
         call wkvect(nomres//'           .CONL', 'G V R', nueq, iaconl)
 !
 !       CAS DU CHAM_NO
@@ -133,7 +131,6 @@ subroutine mag152(n9, n10, nomres, nugene, modmec, &
         call jecrec(nomres//'           .UALF', 'G V R', 'NU', 'DISPERSE', 'CONSTANT', &
                     nbloc)
         call jeecra(nomres//'           .UALF', 'LONMAX', ntbloc)
-        call wkvect(nomres//'           .LIME', 'G V K24', 1, ialime)
         call wkvect(nomres//'           .CONL', 'G V R', nueq, iaconl)
 !
     end if
@@ -144,7 +141,7 @@ subroutine mag152(n9, n10, nomres, nugene, modmec, &
     zi(iadesc+1) = ntbloc
     zi(iadesc+2) = 2
 !
-! ----------- REMPLISSAGE DU .REFA ET DU .LIME---------------
+! ----------- REMPLISSAGE DU .REFA
 !---------------------ET DU .CONL ---------------------------
 !
 !
@@ -164,13 +161,6 @@ subroutine mag152(n9, n10, nomres, nugene, modmec, &
     zk24(jrefa-1+2) = nugene
     zk24(jrefa-1+9) = 'MS'
     zk24(jrefa-1+10) = 'GENE'
-!
-    if (n10 .gt. 0) then
-        zk24(ialime) = modgen
-!
-    else
-        zk24(ialime) = '  '
-    end if
 !
     do i = 1, nueq
         zr(iaconl+i-1) = 1.0d0

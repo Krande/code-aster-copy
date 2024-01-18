@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,7 +53,7 @@ subroutine projmc(matras, nomres, basemo, nugene, nu, &
 !
 !-----------------------------------------------------------------------
 !
-    integer :: iddeeq, nueq, ntbloc, nbloc, ialime, iaconl, jrefa, iadesc, nbj
+    integer :: iddeeq, nueq, ntbloc, nbloc, iaconl, jrefa, iadesc, nbj
     integer :: i, j, k, imatra, iblo, ldblo, n1bloc, n2bloc, hc, ldblo1, ldblo2
     integer :: iret
     character(len=1) :: typbase
@@ -102,9 +102,6 @@ subroutine projmc(matras, nomres, basemo, nugene, nu, &
     end if
 !
     call jeecra(resu//'.UALF', 'LONMAX', ntbloc)
-!
-    call wkvect(resu//'.LIME', 'G V K24', 1, ialime)
-    zk24(ialime) = '                        '
 !
     call wkvect(resu//'.CONL', 'G V C', nueq, iaconl)
     do i = 1, nueq

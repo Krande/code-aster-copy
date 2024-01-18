@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -98,6 +98,8 @@ IMPR_TABLE(TABLE=TABL_MAS)
 
 MODE_MEC = CALC_MODES(
     OPTION="PLUS_PETITE",
+    CHAM_MATER=CH_MATE,
+    CARA_ELEM=CARA_ELE,
     MATR_RIGI=RIGIDITE,
     MATR_MASS=MASSE,
     CALC_FREQ=_F(NMAX_FREQ=6),
@@ -115,6 +117,8 @@ MODE_MEC = CALC_CHAMP(reuse=MODE_MEC, RESULTAT=MODE_MEC, FORCE="REAC_NODA")
 
 MODEMEC2 = CALC_MODES(
     OPTION="PLUS_PETITE",
+    CHAM_MATER=CH_MATE,
+    CARA_ELEM=CARA_ELE,
     MATR_RIGI=RIGIDITE,
     MATR_MASS=MASSE,
     CALC_FREQ=_F(NMAX_FREQ=6),
@@ -279,6 +283,8 @@ TEST_RESU(
 MODE_STA = MODE_STATIQUE(
     MATR_RIGI=RIGIDITE,
     MATR_MASS=MASSE,
+    CHAM_MATER=CH_MATE,
+    CARA_ELEM=CARA_ELE,
     SOLVEUR=_F(METHODE="MULT_FRONT"),
     PSEUDO_MODE=(_F(AXE=("X", "Y")), _F(DIRECTION=(0.0, 0.0, 1.0), NOM_DIR="Z")),
 )

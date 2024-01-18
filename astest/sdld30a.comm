@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -212,6 +212,7 @@ MASSINER = POST_ELEM(
 
 MODES = CALC_MODES(
     MATR_RIGI=RIGIDITE,
+    CARA_ELEM=CARA_ELE,
     CALC_FREQ=_F(NMAX_FREQ=3),
     MATR_MASS=MASSE,
     SOLVEUR_MODAL=_F(METHODE="SORENSEN"),
@@ -260,7 +261,7 @@ TEST_RESU(
 # -------------------------------------------------
 
 MODE_STA = MODE_STATIQUE(
-    MATR_RIGI=RIGIDITE, MATR_MASS=MASSE, MODE_STAT=_F(TOUT="OUI", AVEC_CMP="DX")
+    CARA_ELEM=CARA_ELE, MATR_RIGI=RIGIDITE, MATR_MASS=MASSE, MODE_STAT=_F(TOUT="OUI", AVEC_CMP="DX")
 )
 
 MODE_STA = CALC_CHAMP(reuse=MODE_STA, RESULTAT=MODE_STA, CONTRAINTE=("SIEF_ELGA", "EFGE_ELNO"))
@@ -552,7 +553,10 @@ TEST_RESU(
 # ---------------------------------------------------
 
 MODEC = MODE_STATIQUE(
-    MATR_RIGI=RIGIDITE, MATR_MASS=MASSE, PSEUDO_MODE=_F(GROUP_NO=("NO1", "NO4"), AVEC_CMP="DX")
+    CARA_ELEM=CARA_ELE,
+    MATR_RIGI=RIGIDITE,
+    MATR_MASS=MASSE,
+    PSEUDO_MODE=_F(GROUP_NO=("NO1", "NO4"), AVEC_CMP="DX"),
 )
 
 MODEC = CALC_CHAMP(reuse=MODEC, RESULTAT=MODEC, CONTRAINTE=("SIEF_ELGA", "EFGE_ELNO"))

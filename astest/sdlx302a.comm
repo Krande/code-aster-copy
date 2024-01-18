@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -182,7 +182,12 @@ MASSE = ASSE_MATRICE(MATR_ELEM=MASSELEM, NUME_DDL=NUMEDDL)
 # CALCUL MODAL
 #
 MODE1 = CALC_MODES(
-    MATR_RIGI=RIGIDITE, OPTION="PLUS_PETITE", CALC_FREQ=_F(NMAX_FREQ=10), MATR_MASS=MASSE
+    CHAM_MATER=CHMAT,
+    CARA_ELEM=CARAELEM,
+    MATR_RIGI=RIGIDITE,
+    OPTION="PLUS_PETITE",
+    CALC_FREQ=_F(NMAX_FREQ=10),
+    MATR_MASS=MASSE,
 )
 
 

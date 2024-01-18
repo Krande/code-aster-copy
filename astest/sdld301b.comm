@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@
 #
 #
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), IMPR_MACRO="OUI")
 
 #
 
@@ -148,12 +148,12 @@ MAS = POST_ELEM(MODELE=MODELE, CARA_ELEM=CARA, MASS_INER=_F(TOUT="OUI"))
 #
 
 MODES = CALC_MODES(
+    CARA_ELEM=CARA,
     MATR_RIGI=MATRRIGI,
     CALC_FREQ=_F(NMAX_FREQ=2),
     MATR_MASS=MATRMASS,
     SOLVEUR_MODAL=_F(METHODE="SORENSEN"),
 )
-
 
 #
 MODES = NORM_MODE(reuse=MODES, MODE=MODES, NORME="TRAN")
@@ -197,7 +197,10 @@ TEST_RESU(
 #
 
 MODE_STA = MODE_STATIQUE(
-    MATR_RIGI=MATRRIGI, MATR_MASS=MATRMASS, MODE_STAT=_F(GROUP_NO=("P1", "P4"), AVEC_CMP=("DX",))
+    MATR_RIGI=MATRRIGI,
+    MATR_MASS=MATRMASS,
+    CARA_ELEM=CARA,
+    MODE_STAT=_F(GROUP_NO=("P1", "P4"), AVEC_CMP=("DX",)),
 )
 
 #
@@ -264,7 +267,10 @@ TEST_RESU(
 #
 
 MODE_CO2 = MODE_STATIQUE(
-    MATR_RIGI=MATRRIGI, MATR_MASS=MATRMASS, PSEUDO_MODE=_F(GROUP_NO=("P1", "P4"), AVEC_CMP=("DX",))
+    CARA_ELEM=CARA,
+    MATR_RIGI=MATRRIGI,
+    MATR_MASS=MATRMASS,
+    PSEUDO_MODE=_F(GROUP_NO=("P1", "P4"), AVEC_CMP=("DX",)),
 )
 
 #

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -240,6 +240,7 @@ MAS = POST_ELEM(MASS_INER=_F(TOUT="OUI"), MODELE=MODELE, CARA_ELEM=CARA)
 #
 
 MODES = CALC_MODES(
+    CARA_ELEM=CARA,
     MATR_RIGI=MATRRIGI,
     CALC_FREQ=_F(NMAX_FREQ=2),
     MATR_MASS=MATRMASS,
@@ -268,6 +269,7 @@ MODES = CALC_CHAMP(reuse=MODES, RESULTAT=MODES, FORCE="REAC_NODA")
 # -----------------------------------------------------------------------
 
 MODE_STA = MODE_STATIQUE(
+    CARA_ELEM=CARA,
     MATR_RIGI=MATRRIGI,
     MATR_MASS=MATRMASS,
     INFO=2,

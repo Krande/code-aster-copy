@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -83,6 +83,7 @@ MATASSM1 = ASSE_MATRICE(MATR_ELEM=MELM1, NUME_DDL=NUM1)
 
 FREQ1 = CALC_MODES(
     OPTION="AJUSTE",
+    CARA_ELEM=CARELEM1,
     SOLVEUR=_F(METHODE="MULT_FRONT"),
     MATR_RIGI=MATASSR1,
     MATR_MASS=MATASSM1,

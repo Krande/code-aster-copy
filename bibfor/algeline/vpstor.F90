@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine vpstor(ineg, typ, modes, nbmode, neq, &
                   vecpr8, vecpc8, mxresf, nbpari, nbparr, &
                   nbpark, nopara, mod45, resufi, resufr, &
-                  resufk, iprec)
+                  resufk, iprec, modelz, matez, caraz)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -56,6 +56,7 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq, &
     character(len=*) :: typ, modes, resufk(mxresf, *), nopara(*)
     real(kind=8) :: vecpr8(neq, *), resufr(mxresf, *)
     complex(kind=8) :: vecpc8(neq, *)
+    character(len=8), intent(in), optional :: modelz, matez, caraz
 !     STOCKAGE DES VALEURS PROPRES
 !
 !     REMARQUE:
@@ -68,7 +69,7 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq, &
     integer :: vali(3), jpara
     integer :: nmin1, kmode, nordr, iarg, i, ladpa, lmode, lvale
     integer :: nbpast, irang, iret, jmodg, jmacr, jbasm
-    integer :: jmod2, jlime, igd, jrefe
+    integer :: jmod2, igd, jrefe
     parameter(nbpast=19)
     character(len=8) :: res, k8b, modele, chmat, carael, basemo, mesh, nomgd
     character(len=16) :: typcon, nomcmd, nosy, typmod
@@ -175,57 +176,24 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq, &
 !     ON RECUPERE LE NOM DE LA MATRICE DE RAIDEUR AFIN DE
 !     DETERMINER LE NOM DU MODELE, DU MATERIAU ET DES
 !     CARACTERISTIQUES ELEMENTAIRES
+    modele = '        '
     chmat = '        '
+    carael = '        '
     if (lstock) then
+        if (present(modelz)) then
+            modele = modelz
+            chmat = matez
+            carael = caraz
+            go to 39
+        end if
         if (typcon(1:9) .eq. 'MODE_MECA' .or. typcon(1:9) .eq. 'MODE_ACOU' .or. &
             typcon(1:10) .eq. 'MODE_FLAMB' .or. typcon(1:9) .eq. 'MODE_STAB') then
             call dismoi('NOM_MODELE', raide, 'MATR_ASSE', repk=modele)
-            call dismoi('CHAM_MATER', raide, 'MATR_ASSE', repk=chmat, arret='C')
-            call dismoi('CARA_ELEM', raide, 'MATR_ASSE', repk=carael, arret='C')
         else if (typcon(1:9) .eq. 'MODE_GENE') then
-            call jeveuo(raide(1:19)//'.LIME', 'L', jmodg)
-            if (zk24(jmodg) (1:8) .eq. '        ') then
 !            ON EST PASSE PAR UN PROJ_MATR_BASE
-                call jeveuo(raide(1:19)//'.REFA', 'L', jmodg)
-                basemo = zk24(jmodg) (1:8)
-                call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=raide2, arret='C')
-                if (raide2 .eq. ' ') then
-                    call jeveuo(jexnum(basemo//'           .TACH', 1), 'L', jmod2)
-                    sd2 = zk24(jmod2) (1:8)
-                    call rsadpa(sd2, 'L', 1, 'MODELE', 1, &
-                                0, sjv=jpara, styp=k8b)
-                    modele = zk8(jpara)
-                    call rsadpa(sd2, 'L', 1, 'CHAMPMAT', 1, &
-                                0, sjv=jpara, styp=k8b)
-                    chmat = zk8(jpara)
-                    call rsadpa(sd2, 'L', 1, 'CARAELEM', 1, &
-                                0, sjv=jpara, styp=k8b)
-                    carael = zk8(jpara)
-                    goto 39
-                else
-                    call jeveuo(raide2(1:19)//'.LIME', 'L', jlime)
-                    if (zk24(jlime) (1:8) .ne. '        ') then
-!            ON EST PASSE PAR UN ASSE_MATRICE/CALC_MATR_ELEM
-                        call jeexin(zk24(jlime) (1:8)//'      .MODG.SSME', iret)
-                        if (iret .ne. 0) then
-                            call jeveuo(zk24(jlime) (1:8)//'      .MODG.SSME', 'L', jmacr)
-                            call jeveuo(zk8(jmacr)//'.MAEL_INER_REFE', 'L', jbasm)
-                            basemo = zk24(jbasm) (1:8)
-                            call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=raide2)
-                            call jeveuo(raide2(1:19)//'.LIME', 'L', jlime)
-                            call jeveuo(zk24(jlime) (1:8)//'           .RERR', 'L', vk24=rerr)
-                            modele = rerr(1) (1:8)
-                            chmat = rerr(4) (1:8)
-                            carael = rerr(5) (1:8)
-                            goto 39
-                        end if
-                    end if
-                end if
-            else
-!            ON EST PASSE PAR UN DEFI_MODELE_GENE
-                call jeveuo(zk24(jmodg) (1:8)//'      .MODG.SSME', 'L', jmacr)
-                call jeveuo(zk8(jmacr)//'.MAEL_INER_REFE', 'L', jbasm)
-                basemo = zk24(jbasm) (1:8)
+            call jeveuo(raide(1:19)//'.REFA', 'L', jmodg)
+            basemo = zk24(jmodg) (1:8)
+            if (basemo(1:8) .ne. '        ') then
                 call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=raide2, arret='C')
                 if (raide2 .eq. ' ') then
                     call jeveuo(jexnum(basemo//'           .TACH', 1), 'L', jmod2)
@@ -242,9 +210,14 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq, &
                     goto 39
                 end if
             end if
-            call dismoi('NOM_MODELE', raide2(1:8), 'MATR_ASSE', repk=modele)
-            call dismoi('CHAM_MATER', raide2(1:8), 'MATR_ASSE', repk=chmat, arret='C')
-            call dismoi('CARA_ELEM', raide2(1:8), 'MATR_ASSE', repk=carael, arret='C')
+        end if
+        if (chmat .eq. '        ') then
+            call getvid(' ', 'CHAM_MATER', scal=chmat, nbret=ier)
+            if (ier .eq. 0) chmat = '        '
+        end if
+        if (carael .eq. '        ') then
+            call getvid(' ', 'CARA_ELEM', scal=carael, nbret=ier)
+            if (ier .eq. 0) carael = '        '
         end if
     end if
 !
@@ -375,7 +348,7 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq, &
 !
 ! ----- ON STOCKE : MODELE, CARA_ELEM, CHAM_MATER
 !
-        if (lstock) then
+        if (lstock .and. (nomcmd .ne. 'NORM_MODE')) then
             call rsadpa(modes, 'E', 1, 'MODELE', nordr, &
                         0, sjv=ladpa, styp=k8b)
             zk8(ladpa) = modele

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -227,8 +227,9 @@ subroutine crcoch()
     call dismoi('NOM_MODELE', matr, 'MATR_ASSE', repk=modele)
     call dismoi('NUME_EQUA', matr, 'MATR_ASSE', repk=profch)
     call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
-    call dismoi('CHAM_MATER', matr, 'MATR_ASSE', repk=materi)
-    call dismoi('CARA_ELEM', matr, 'MATR_ASSE', repk=carele)
+    call getvid('CONV_CHAR', 'CHAM_MATER', iocc=iocc, scal=materi, nbret=n1)
+    carele = '        '
+    call getvid('CONV_CHAR', 'CARA_ELEM', iocc=iocc, scal=carele, nbret=n1)
     call rcmfmc(materi, mate, l_ther_=ASTER_FALSE)
     typmat = 'R'
     if (typres(1:10) .eq. 'DYNA_TRANS') then

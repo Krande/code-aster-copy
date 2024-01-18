@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -217,6 +217,9 @@ MODEGE = DEFI_MODELE_GENE(
     ),
     VERIF=_F(STOP_ERREUR="OUI", PRECISION=1.0e-6, CRITERE="RELATIF"),
 )
+
+IMPR_CO(UNITE=6, CONCEPT=_F(NOM=MODEGE))
+
 #
 #  NUMEROTATION DU PROBLEME GENERALISE AVEC ELIMINATION
 #
@@ -249,6 +252,8 @@ RESGEN = CALC_MODES(
 #
 #   CREATION DU MAILLAGE SQUELETTE DE LA STRUCTURE GLOBALE
 #
+IMPR_CO(UNITE=6, CONCEPT=_F(NOM=RESGEN))
+
 
 SQUEL = DEFI_SQUELETTE(
     MODELE_GENE=MODEGE,
@@ -269,7 +274,9 @@ MODGLSS = REST_SOUS_STRUC(RESU_GENE=RESGEN, SOUS_STRUC="CARRE2")
 #  TEST DE CALC_CHAMP SUR UN RESULTAT RESTITUE
 #
 
-MODGLSS = CALC_CHAMP(RESULTAT=MODGLSS, reuse=MODGLSS, CONTRAINTE=("SIEF_ELGA"))
+MODGLSS = CALC_CHAMP(
+    RESULTAT=MODGLSS, reuse=MODGLSS, CONTRAINTE=("SIEF_ELGA"), CARA_ELEM=PARAM2, CHAM_MATER=CHAMAT2
+)
 
 
 TEST_RESU(

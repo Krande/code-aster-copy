@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -72,6 +72,8 @@ MODE_ITER_INV_CATA = OPER(
         "Calcul des modes propres par itérations inverses ; valeurs propres et modes réels ou complexes"
     ),
     reentrant="n",
+    CHAM_MATER=SIMP(statut="f", typ=cham_mater),
+    CARA_ELEM=SIMP(statut="f", typ=cara_elem),
     TYPE_RESU=SIMP(
         statut="f",
         typ="TXM",

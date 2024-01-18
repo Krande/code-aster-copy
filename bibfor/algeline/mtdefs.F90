@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,10 +57,10 @@ subroutine mtdefs(matout, matin, base, typc)
     integer :: nbval, ival, jrefao, jrefai
     character(len=1) :: classe, type
     character(len=19) :: nomout, nomin
-    character(len=24) :: valm, refa, lime
+    character(len=24) :: valm, refa
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ibloc, iret, jvalm, lgbloc, nbbloc
+    integer :: ibloc, jvalm, lgbloc, nbbloc
 !-----------------------------------------------------------------------
     call jemarq()
     classe = base(1:1)
@@ -82,26 +82,6 @@ subroutine mtdefs(matout, matin, base, typc)
         zk24(jrefao+ival) = zk24(jrefai+ival)
     end do
     zk24(jrefao-1+8) = 'ASSE'
-!
-!
-!
-!     -- RECOPIE DU .LIME:
-!     --------------------------
-    lime = nomin//'.LIME'
-    call jeexin(lime, iret)
-    if (iret .gt. 0) then
-        call jelira(lime, 'LONMAX', nbval)
-        call jeveuo(lime, 'L', jrefai)
-!
-        lime = nomout//'.LIME'
-        call jecreo(lime, classe//' V K24')
-        call jeecra(lime, 'LONMAX', nbval)
-        call jeecra(lime, 'LONUTI', nbval)
-        call jeveuo(lime, 'E', jrefao)
-        do ival = 0, nbval-1
-            zk24(jrefao+ival) = zk24(jrefai+ival)
-        end do
-    end if
 !
 !
 !     -- CREATION DE LA COLLECTION .VALM :
