@@ -131,6 +131,7 @@
 #include "PythonBindings/NodeInterface.h"
 #include "PythonBindings/NonLinearResultInterface.h"
 #include "PythonBindings/ObjectBalancerInterface.h"
+#include "PythonBindings/ParMetisPartitionerInterface.h"
 #include "PythonBindings/ParallelDOFNumberingInterface.h"
 #include "PythonBindings/ParallelEquationNumberingInterface.h"
 #include "PythonBindings/ParallelFiniteElementDescriptorInterface.h"
@@ -327,8 +328,11 @@ PYBIND11_MODULE( libaster, mod ) {
     exportIncompleteMeshToPython( mod );
 #ifdef ASTER_HAVE_SCOTCH
     exportPtScotchPartitionerToPython( mod );
-    exportMeshConnectionGraphToPython( mod );
 #endif /* ASTER_HAVE_SCOTCH */
+#ifdef ASTER_HAVE_PARMETIS
+    exportParMetisPartitionerToPython( mod );
+#endif /* ASTER_HAVE_PARMETIS */
+    exportMeshConnectionGraphToPython( mod );
 #endif /* ASTER_HAVE_MPI */
 #ifdef ASTER_HAVE_MED
     exportMedFileReaderToPython( mod );

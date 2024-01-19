@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ from ..Utilities import ExecutionParameter, value_is_sequence
 try:
     import matplotlib
 
-    matplotlib.use("Agg")
+    # matplotlib.use("Agg")
     import matplotlib.pyplot as plt
 
     HAS_MATPLOTLIB = True
