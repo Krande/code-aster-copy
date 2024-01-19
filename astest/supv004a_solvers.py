@@ -21,8 +21,9 @@ import unittest
 from enum import IntFlag, auto
 from unittest.mock import MagicMock
 
+
+from code_aster.Commands import *
 from code_aster import CA
-from code_aster.Commands import DEFI_LIST_REEL
 from code_aster.Solvers import (
     BaseFeature,
     ConvergenceManager,
@@ -862,6 +863,31 @@ class TestStorageManager(unittest.TestCase):
         self.assertTrue(done)
         self.assertEqual(store._last_idx, 3)
         self.assertEqual(store._stor_idx, 3)
+
+
+class TestResult(unittest.TestCase):
+    """Check for static methods of Result"""
+
+    def test01_indexes(self):
+        params = {"NUME_ORDRE": (1, 2, 3, 4, 5), "INST": (1.0, 2.0, 3.0, 4.0, 5.0)}
+        # TOUT_ORDRE
+        res = CA.Result.getIndexesFromKeywords(params, {"TOUT_ORDRE": "OUI"})
+        self.assertSequenceEqual(res, (1, 2, 3, 4, 5))
+        # NUME_ORDRE
+        res = CA.Result.getIndexesFromKeywords(params, {"NUME_ORDRE": [1, 3, 5]})
+        self.assertSequenceEqual(res, (1, 3, 5))
+        res = CA.Result.getIndexesFromKeywords(params, {"NUME_ORDRE": [0, 1, 3, 5, 8, 12]})
+        self.assertSequenceEqual(res, (1, 3, 5))
+        # LIST_ORDRE
+        lord = DEFI_LIST_ENTI(VALE=(2, 4))
+        res = CA.Result.getIndexesFromKeywords(params, {"LIST_ORDRE": lord})
+        self.assertSequenceEqual(res, (2, 4))
+        # INST
+        res = CA.Result.getIndexesFromKeywords(params, {"INST": [1.0, 3.0, 5.0]})
+        self.assertSequenceEqual(res, (1, 3, 5))
+        # LIST_INST
+        res = CA.Result.getIndexesFromKeywords(params, {"LIST_INST": listr})
+        self.assertSequenceEqual(res, (1, 2, 3, 4, 5))
 
 
 if __name__ == "__main__":

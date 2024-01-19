@@ -895,71 +895,21 @@ def post_newmark_ops(self, **args):
 
             __instSD = RESULTAT.LIST_PARA()["INST"]
 
-            ## Loop to create dynamic result with stresses from structure mesh using ECLA_PG projection
+            ## Create dynamic result with stresses from structure mesh using ECLA_PG projection
             ## on slinding mesh
             METHODE_PROJECTION = "ECLA_PG"
             if METHODE_PROJECTION == "ECLA_PG":
-                __CSDPGI = CREA_CHAMP(
-                    OPERATION="EXTR",
-                    NOM_CHAM="SIEF_ELGA",
-                    TYPE_CHAM="ELGA_SIEF_R",
-                    RESULTAT=RESULTAT,
-                    INST=__instSD[0],
-                )
 
-                __CSDPGF = PROJ_CHAMP(
+                __recoSD = PROJ_CHAMP(
                     METHODE="ECLA_PG",
-                    CHAM_GD=__CSDPGI,
+                    RESULTAT=RESULTAT,
                     MODELE_1=__model,
                     MODELE_2=__MODYN,
                     CAS_FIGURE="2D",
                     PROL_ZERO="OUI",
-                    #                     DISTANCE_MAX=0.1,
-                )
-
-                ## Create dynamic result with SEIF_ELGA on sliding mesh
-                __recoSD = CREA_RESU(
-                    OPERATION="AFFE",
-                    TYPE_RESU="DYNA_TRANS",
+                    TOUT_ORDRE="OUI",
                     NOM_CHAM="SIEF_ELGA",
-                    AFFE=(
-                        _F(MODELE=__MODYN, CHAM_MATER=__MATDYN, CHAM_GD=__CSDPGF, INST=__instSD[0]),
-                    ),
                 )
-
-                for inst in __instSD[1:]:
-                    __instSD = RESULTAT.LIST_PARA()["INST"]
-
-                    ## Loop to create dynamic result with stresses from structure mesh using ECLA_PG projection
-                    ## on slinding mesh
-                    __CSDPGI = CREA_CHAMP(
-                        OPERATION="EXTR",
-                        NOM_CHAM="SIEF_ELGA",
-                        TYPE_CHAM="ELGA_SIEF_R",
-                        RESULTAT=RESULTAT,
-                        INST=inst,
-                    )
-
-                    __CSDPGF = PROJ_CHAMP(
-                        METHODE="ECLA_PG",
-                        CHAM_GD=__CSDPGI,
-                        MODELE_1=__model,
-                        MODELE_2=__MODYN,
-                        CAS_FIGURE="2D",
-                        PROL_ZERO="OUI",
-                        #                     DISTANCE_MAX=0.1,
-                    )
-
-                    __recoSD = CREA_RESU(
-                        reuse=__recoSD,
-                        RESULTAT=__recoSD,
-                        OPERATION="AFFE",
-                        TYPE_RESU="DYNA_TRANS",
-                        NOM_CHAM="SIEF_ELGA",
-                        AFFE=(
-                            _F(MODELE=__MODYN, CHAM_MATER=__MATDYN, CHAM_GD=__CSDPGF, INST=inst),
-                        ),
-                    )
 
             ## In case static analysis was performed, dynamic safety factor can be calculated
             if args["RESULTAT_PESANTEUR"] is not None:

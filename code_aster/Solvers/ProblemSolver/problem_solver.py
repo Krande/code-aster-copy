@@ -168,8 +168,8 @@ class ProblemSolver(SolverFeature):
                 init_index = None
                 stepper = self.get_feature(SOP.TimeStepper, optional=True)
                 if stepper:
-                    init_index = reuse._getIndexFromParameter(
-                        "INST", stepper.getInitial(), "RELATIF", stepper._eps, True
+                    init_index = reuse.getIndexFromParameter(
+                        "INST", stepper.getInitial(), "RELATIF", stepper._eps
                     )
                 else:
                     init_index = reuse.getLastIndex()
