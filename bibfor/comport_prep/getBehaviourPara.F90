@@ -54,20 +54,20 @@ subroutine getBehaviourPara(l_mfront_offi, l_mfront_proto, l_kit_thm, &
 ! In  algo_inte          : algorithm for integration of behaviour
 ! Out iter_inte_maxi     : value for ITER_INTE_MAXI
 ! Out resi_inte_rela     : value for RESI_INTE_****
+! Out has_resi_inte_rela : existence of user value for RESI_INTE_****
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    iter_inte_maxi = 0.d0
+    resi_inte_rela = 0.d0
 ! - Get
 !
     call nmdocv(keywf, i_comp, algo_inte, 'ITER_INTE_MAXI', vali=iter_inte_maxi)
-    if (l_mfront_offi .or. l_mfront_proto) then
-        if (l_mfront_offi .or. l_kit_thm) then
-            call nmdocv(keywf, i_comp, algo_inte, 'RESI_INTE_RELA', valr=resi_inte_rela)
-        else
-            call nmdocv(keywf, i_comp, algo_inte, 'RESI_INTE_MAXI', valr=resi_inte_rela)
-        end if
+    if (l_mfront_proto .and. .not. l_kit_thm) then
+        call nmdocv(keywf, i_comp, algo_inte, 'RESI_INTE_MAXI', valr=resi_inte_rela)
     else
         call nmdocv(keywf, i_comp, algo_inte, 'RESI_INTE_RELA', valr=resi_inte_rela)
     end if
+
 !
 end subroutine

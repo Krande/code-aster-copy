@@ -107,7 +107,14 @@ class MGISBehaviour : public DataStructure {
     /* Parameters */
     void setParameter( const std::string param, const ASTERDOUBLE value );
     void setParameter( const std::string param, const ASTERINTEGER value );
-    double getMFrontParameter( const std::string param );
+
+    /// @brief Get value of keyword from MFront
+    /// @tparam T Type of return (ASTERDOUBLE or ASTERINTEGER)
+    /// @tparam U Type for cast (double for ASTERDOUBLE, int for ASTERINTEGER)
+    /// @param param keyword parameter
+    /// @return value
+    template < typename T, typename U >
+    T getMFrontParameter( const std::string param );
 
     /* Material Properties */
     int getNumberOfMaterialProperties() const;

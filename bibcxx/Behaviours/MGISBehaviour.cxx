@@ -227,13 +227,15 @@ void MGISBehaviour::setParameter( const std::string param, const ASTERDOUBLE val
     }
 }
 
-double MGISBehaviour::getMFrontParameter( const std::string param ) {
-    //    try {
-    double value = MGB::getParameterDefaultValue< double >( *_behav, param );
-    //    } catch ( std::runtime_error ) {
-    //        // Output a proper erreur
-    //    }
-    return value;
+template ASTERDOUBLE
+MGISBehaviour::getMFrontParameter< ASTERDOUBLE, double >( const std::string param );
+template ASTERINTEGER
+MGISBehaviour::getMFrontParameter< ASTERINTEGER, int >( const std::string param );
+
+template < typename T, typename U >
+T MGISBehaviour::getMFrontParameter( const std::string param ) {
+    mgis::setExceptionHandler( MGISExceptionHandler );
+    return (T)MGB::getParameterDefaultValue< U >( *_behav, param );
 }
 
 void MGISBehaviour::setParameter( const std::string param, const ASTERINTEGER value ) {

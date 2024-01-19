@@ -157,11 +157,12 @@ void DEFSP( MGIS_SET_ROTATION_MATRIX, mgis_set_rotation_matrix, const char *hexi
 }
 
 /* Parameters */
+
 void DEFSSP( MGIS_GET_DOUBLE_MFRONT_PARAMETER, mgis_get_double_mfront_parameter, const char *hexid,
              STRING_SIZE l_id, const char *param_, STRING_SIZE l_par, ASTERDOUBLE *value ) {
 #ifdef ASTER_HAVE_MGIS
     std::string param = strip( std::string( param_, l_par ) );
-    *value = (ASTERDOUBLE)( getPtr( hexid, l_id )->getMFrontParameter( param ) );
+    *value = getPtr( hexid, l_id )->getMFrontParameter< ASTERDOUBLE, double >( param );
 #endif
 }
 
@@ -170,6 +171,15 @@ void DEFSSP( MGIS_SET_DOUBLE_PARAMETER, mgis_set_double_parameter, const char *h
 #ifdef ASTER_HAVE_MGIS
     std::string param = strip( std::string( param_, l_par ) );
     getPtr( hexid, l_id )->setParameter( param, *value );
+#endif
+}
+
+void DEFSSP( MGIS_GET_INTEGER_MFRONT_PARAMETER, mgis_get_integer_mfront_parameter,
+             const char *hexid, STRING_SIZE l_id, const char *param_, STRING_SIZE l_par,
+             ASTERINTEGER *value ) {
+#ifdef ASTER_HAVE_MGIS
+    std::string param = strip( std::string( param_, l_par ) );
+    *value = getPtr( hexid, l_id )->getMFrontParameter< ASTERINTEGER, int >( param );
 #endif
 }
 

@@ -348,6 +348,8 @@ subroutine carc_read(behaviourPrepCrit, model_)
             allocate (behaviourPrepCrit%v_crit(iFactorKeyword)%iter_inte_maxi)
             behaviourPrepCrit%v_crit(iFactorKeyword)%iter_inte_maxi = iter_inte_maxi
         end if
+        behaviourPrepCrit%v_crit(iFactorKeyword)%resi_inte_rela = resi_inte_rela
+        behaviourPrepCrit%v_crit(iFactorKeyword)%iter_inte_maxi = iter_inte_maxi
         behaviourPrepCrit%v_crit(iFactorKeyword)%extern_ptr = paraExte%extern_ptr
         behaviourPrepCrit%v_crit(iFactorKeyword)%extern_type = extern_type
         behaviourPrepCrit%v_crit(iFactorKeyword)%jvariext1 = variExteCode(1)

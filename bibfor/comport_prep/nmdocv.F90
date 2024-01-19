@@ -45,7 +45,7 @@ subroutine nmdocv(keywordfact, iocc, algo_inte, keyword, vali, valr)
 ! In  iocc            : factor keyword index in COMPORTEMENT
 ! In  algo_inte       : integration algorithm
 ! In  keyword         : keyword
-! Out value           : real value of keyword
+! Out is_valid        : real value of keyword is valid
 !
 ! --------------------------------------------------------------------------------------------------
 !
