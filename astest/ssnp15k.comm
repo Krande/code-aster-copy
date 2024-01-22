@@ -84,7 +84,7 @@ U = STAT_NON_LINE(
     ),
     COMPORTEMENT=_F(
         RELATION="VMIS_ISOT_NL",
-        RESI_INTE_RELA=1e-08,
+        RESI_INTE=1e-08,
         ITER_INTE_MAXI=30,
         ITER_CPLAN_MAXI=10,
         RESI_CPLAN_RELA=1.0e-6,

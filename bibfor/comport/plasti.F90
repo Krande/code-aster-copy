@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -93,7 +93,7 @@ subroutine plasti(BEHinteg, &
 !                COMP(3) = TYPE DE DEFORMATION (PETIT,JAUMANN...)
 !        CRIT    CRITERES  LOCAUX
 !                CRIT(1) = NOMBRE D ITERATIONS MAXI (ITER_INTE_MAXI)
-!                CRIT(3) = TOLERANCE DE CONVERGENCE(RESI_INTE_RELA)
+!                CRIT(3) = TOLERANCE DE CONVERGENCE(RESI_INTE)
 !                CRIT(4) = THETA
 !                CRIT(5) = ITER_INTE_PAS (UTILISE PAR REDECE EN AMONT)
 !                CRIT(6) = ALGO_INTE(NEWTON, NEWTON_PERT, NEWTON_RELI)

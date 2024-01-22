@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ CALC_ESSAI_GEOMECA(
     COMPORTEMENT=_F(
         RELATION="HUJEUX",
         ITER_INTE_MAXI=-50,
-        RESI_INTE_RELA=1.0e-7,
+        RESI_INTE=1.0e-7,
         ALGO_INTE="SPECIFIQUE",
         ITER_INTE_PAS=-50,
     ),

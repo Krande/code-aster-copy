@@ -84,12 +84,12 @@ def C_COMPORTEMENT(command):
             # Parametres d'integration
             b_mfront_resi=BLOC(
                 condition="""equal_to('RELATION', 'MFRONT')""",
-                RESI_INTE_MAXI=SIMP(statut="f", typ="R"),
+                RESI_INTE=SIMP(statut="f", typ="R"),
                 ITER_INTE_MAXI=SIMP(statut="f", typ="I"),
             ),
             b_no_mfront=BLOC(
                 condition="""not equal_to('RELATION', 'MFRONT')""",
-                RESI_INTE_RELA=SIMP(statut="f", typ="R", defaut=1.0e-6),
+                RESI_INTE=SIMP(statut="f", typ="R", defaut=1.0e-6),
                 ITER_INTE_MAXI=SIMP(statut="f", typ="I", defaut=20),
             ),
             b_redec_local=BLOC(
@@ -339,7 +339,7 @@ def C_COMPORTEMENT(command):
                     ALGO_CPLAN=SIMP(
                         statut="f", typ="TXM", defaut="DEBORST", into=("DEBORST", "ANALYTIQUE")
                     ),
-                    RESI_INTE_MAXI=SIMP(statut="f", typ="R"),
+                    RESI_INTE=SIMP(statut="f", typ="R", defaut=1.0e-8),
                     ITER_INTE_MAXI=SIMP(statut="f", typ="I"),
                     SYME_MATR_TANG=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="OUI"),
                 ),
@@ -395,17 +395,17 @@ def C_COMPORTEMENT(command):
             # Parametres d'integration
             b_mfront_resi=BLOC(
                 condition="""(equal_to("RELATION", 'MFRONT'))""",
-                RESI_INTE_MAXI=SIMP(statut="f", typ="R"),
+                RESI_INTE=SIMP(statut="f", typ="R"),
                 ITER_INTE_MAXI=SIMP(statut="f", typ="I"),
             ),
             b_flua_resi=BLOC(
                 condition="""is_in("RELATION", ('RGI_BETON','FLUA_PORO_BETON','FLUA_ENDO_PORO', 'RGI_BETON_BA',))""",
-                RESI_INTE_RELA=SIMP(statut="f", typ="R", defaut=1.0e-6),
+                RESI_INTE=SIMP(statut="f", typ="R", defaut=1.0e-6),
                 ITER_INTE_MAXI=SIMP(statut="f", typ="I", defaut=-1),
             ),
             b_other_resi=BLOC(
-                condition="""not is_in("RELATION", ('MFRONT','RGI_BETON','FLUA_PORO_BETON','FLUA_ENDO_PORO'))""",
-                RESI_INTE_RELA=SIMP(statut="f", typ="R", defaut=1.0e-6),
+                condition="""not is_in("RELATION", ('MFRONT','RGI_BETON','FLUA_PORO_BETON','FLUA_ENDO_PORO','RGI_BETON_BA',))""",
+                RESI_INTE=SIMP(statut="f", typ="R", defaut=1.0e-6),
                 ITER_INTE_MAXI=SIMP(statut="f", typ="I", defaut=20),
             ),
             b_redec_local=BLOC(

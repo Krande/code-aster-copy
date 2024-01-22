@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -148,7 +148,7 @@ ZERO = DEFI_CONSTANTE(VALE=0.0)
 EVOL_DP = SIMU_POINT_MAT(
     SUPPORT="ELEMENT",
     MODELISATION="D_PLAN",
-    COMPORTEMENT=_F(RELATION="ENDO_LOCA_EXP", ITER_INTE_MAXI=20, RESI_INTE_RELA=1.0e-8),
+    COMPORTEMENT=_F(RELATION="ENDO_LOCA_EXP", ITER_INTE_MAXI=20, RESI_INTE=1.0e-8),
     MATER=MATE,
     INCREMENT=_F(LIST_INST=DEFLIST1),
     NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),

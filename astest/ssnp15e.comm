@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -81,7 +81,7 @@ U = STAT_NON_LINE(
     CHAM_MATER=CM,
     CARA_ELEM=CARAC,
     EXCIT=(_F(CHARGE=CH_FO, FONC_MULT=RAMPE), _F(CHARGE=CH_LA)),
-    COMPORTEMENT=_F(RELATION="VMIS_ISOT_LINE", ITER_INTE_MAXI=30, RESI_INTE_RELA=1.0e-6),
+    COMPORTEMENT=_F(RELATION="VMIS_ISOT_LINE", ITER_INTE_MAXI=30, RESI_INTE=1.0e-6),
     INCREMENT=_F(LIST_INST=L_INST),
     NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=3),
     RECH_LINEAIRE=_F(RHO_MAX=150),

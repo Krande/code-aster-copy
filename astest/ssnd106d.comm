@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -96,7 +96,7 @@ for icomp, comp in enumerate(compor):
             DEFORMATION=comp[1],
             ITER_INTE_MAXI=iterintemaxi,
             TYPE_MATR_TANG="VERIFICATION",
-            RESI_INTE_RELA=1.0e-8,
+            RESI_INTE=1.0e-8,
         ),
         INCREMENT=_F(LIST_INST=DEFLIST1),
         NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1, PREDICTION="TANGENTE"),
@@ -130,10 +130,7 @@ for icomp, comp in enumerate(compor):
             CHAM_MATER=mat,
             EXCIT=(_F(CHARGE=Rota2[icl], TYPE_CHARGE="DIDI"), _F(CHARGE=ClFixe)),
             COMPORTEMENT=_F(
-                RELATION=comp[0],
-                DEFORMATION=comp[1],
-                ITER_INTE_MAXI=iterintemaxi,
-                RESI_INTE_RELA=1.0e-8,
+                RELATION=comp[0], DEFORMATION=comp[1], ITER_INTE_MAXI=iterintemaxi, RESI_INTE=1.0e-8
             ),
             ETAT_INIT=_F(EVOL_NOLI=resu[icomp]),
             INCREMENT=_F(LIST_INST=DEFLIST2),
@@ -167,7 +164,7 @@ for icomp, comp in enumerate(compor):
                 DEFORMATION=comp[1],
                 ITER_INTE_MAXI=iterintemaxi,
                 TYPE_MATR_TANG="VERIFICATION",
-                RESI_INTE_RELA=1.0e-8,
+                RESI_INTE=1.0e-8,
             ),
             ETAT_INIT=_F(EVOL_NOLI=resu[icomp]),
             INCREMENT=_F(LIST_INST=DEFLIST2, INST_FIN=tfintrac),

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -205,7 +205,7 @@ U = STAT_NON_LINE(
     MODELE=MO,
     CHAM_MATER=CM1,
     EXCIT=(_F(CHARGE=CHMECA, FONC_MULT=FDEPL),),
-    COMPORTEMENT=_F(RELATION="META_LEMA_ANI", RESI_INTE_RELA=1e-10, ITER_INTE_MAXI=100),
+    COMPORTEMENT=_F(RELATION="META_LEMA_ANI", RESI_INTE=1e-10, ITER_INTE_MAXI=100),
     NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
     INCREMENT=_F(LIST_INST=LINST2),
     CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6, ITER_GLOB_MAXI=25),
@@ -329,7 +329,7 @@ for i in range(NCAL):
             MODELE=MO,
             CHAM_MATER=CM2,
             EXCIT=(_F(CHARGE=CHMECA, FONC_MULT=epsimp),),
-            COMPORTEMENT=_F(RELATION="META_LEMA_ANI", RESI_INTE_RELA=1e-10, ITER_INTE_MAXI=100),
+            COMPORTEMENT=_F(RELATION="META_LEMA_ANI", RESI_INTE=1e-10, ITER_INTE_MAXI=100),
             NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
             INCREMENT=_F(LIST_INST=listinst),
             CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6, ITER_GLOB_MAXI=25),
@@ -367,7 +367,7 @@ for i in range(NCAL):
             MODELE=MO,
             CHAM_MATER=CM2,
             EXCIT=(_F(CHARGE=CHMECA, FONC_MULT=epsimp),),
-            COMPORTEMENT=_F(RELATION="META_LEMA_ANI", ITER_INTE_MAXI=100, RESI_INTE_RELA=1e-10),
+            COMPORTEMENT=_F(RELATION="META_LEMA_ANI", ITER_INTE_MAXI=100, RESI_INTE=1e-10),
             NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
             INCREMENT=_F(LIST_INST=listinst),
             ETAT_INIT=_F(DEPL=DEPINI, SIGM=SIGINI, VARI=VARINI),

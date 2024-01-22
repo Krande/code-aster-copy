@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -265,7 +265,7 @@ SOLNL = STAT_NON_LINE(
         RELATION="VENDOCHAB",
         DEFORMATION="PETIT",
         TOUT="OUI",
-        RESI_INTE_RELA=1.0e-6,
+        RESI_INTE=1.0e-6,
         ITER_INTE_MAXI=20,
         ALGO_INTE="RUNGE_KUTTA",
     ),
@@ -534,7 +534,7 @@ SOLNL2 = STAT_NON_LINE(
         RELATION="VENDOCHAB",
         DEFORMATION="PETIT",
         TOUT="OUI",
-        RESI_INTE_RELA=1.0e-6,
+        RESI_INTE=1.0e-6,
         ITER_INTE_MAXI=20,
         ALGO_INTE="NEWTON",
     ),

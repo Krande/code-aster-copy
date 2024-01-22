@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -130,7 +130,7 @@ RESU2 = STAT_NON_LINE(
             RELATION=relation,
             ITER_CPLAN_MAXI=1,
             ITER_INTE_MAXI=20,
-            RESI_INTE_RELA=1.0e-06,
+            RESI_INTE=1.0e-06,
             ITER_INTE_PAS=0,
             RESI_CPLAN_RELA=1.0e-06,
         ),
@@ -138,7 +138,7 @@ RESU2 = STAT_NON_LINE(
             GROUP_MA=("BETON", "BOUT"),
             RELATION="ELAS",
             ITER_INTE_MAXI=20,
-            RESI_INTE_RELA=1.0e-06,
+            RESI_INTE=1.0e-06,
             ITER_INTE_PAS=0,
             RESI_CPLAN_RELA=1.0e-06,
             PARM_THETA=1.0,

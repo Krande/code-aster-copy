@@ -80,7 +80,7 @@ Cette combinaison est connue comme donnant des résultats imprécis voir faux, e
     ),
     16: _(
         """
-La valeur de RESI_INTE_MAXI est renseignée à <%(r1)19.12e> dans le fichier de commande.
+La valeur de RESI_INTE est renseignée à <%(r1)19.12e> dans le fichier de commande.
 Elle est supérieure à la valeur originelle <%(r2)19.12e> de MFront.
 L'intégration de la loi de comportement sera donc moins précise.
         """

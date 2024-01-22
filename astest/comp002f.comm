@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -76,7 +76,7 @@ compor = "VISC_ISOT_LINE"
 tabresu = TEST_COMPOR(
     OPTION="MECA",
     COMPORTEMENT=_F(
-        RELATION=compor, DEFORMATION="SIMO_MIEHE", RESI_INTE_RELA=1.0e-07, RESI_CPLAN_RELA=1.0e-07
+        RELATION=compor, DEFORMATION="SIMO_MIEHE", RESI_INTE=1.0e-07, RESI_CPLAN_RELA=1.0e-07
     ),
     SUPPORT="ELEMENT",
     # RECH_LINEAIRE=_F(ITER_LINE_MAXI=3),

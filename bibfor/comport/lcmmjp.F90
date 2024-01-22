@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ subroutine lcmmjp(mod, nmat, mater, timed, timef, &
 !         NVI    :  NOMBRE DE VARIABLES INTERNES
 !         NR     :  DIMENSION DU SYSTEME A RESOUDRE
 !         ITMAX  :  ITER_INTE_MAXI
-!         TOLER  :  RESI_INTE_RELA
+!         TOLER  :  RESI_INTE
 !         VIND   :  VARIABLES INTERNES A L'INSTANT PRECEDENT T
 !         VINF   :  VARIABLES INTERNES A T+DT
 !         DRDY   :  MATRICE JACOBIENNE

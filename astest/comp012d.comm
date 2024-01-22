@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ nb_cy = 1
 CALC_ESSAI_GEOMECA(
     INFO=1,
     MATER=MATE,
-    COMPORTEMENT=_F(RELATION="Iwan", RESI_INTE_RELA=1e-12, ITER_INTE_MAXI=10),
+    COMPORTEMENT=_F(RELATION="Iwan", RESI_INTE=1e-12, ITER_INTE_MAXI=10),
     CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-8, ITER_GLOB_MAXI=20),
     ESSAI_CISA_DR_C_D=_F(
         PRES_CONF=p_confCISA,

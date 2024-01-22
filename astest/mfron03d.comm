@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -322,7 +322,7 @@ SOLNL = SIMU_POINT_MAT(
         # COMPOR=COMPORP0,
         COMPOR=COMPORP2,
         ALGO_INTE="RUNGE_KUTTA",
-        RESI_INTE_RELA=1.0e-6,
+        RESI_INTE=1.0e-6,
     ),
     NEWTON=_F(MATRICE="ELASTIQUE", PREDICTION="EXTRAPOLE", REAC_ITER=0),
     CONVERGENCE=_F(ITER_GLOB_MAXI=50),
@@ -344,7 +344,7 @@ FEPZZ = RECU_FONCTION(TABLE=SOLNL, PARA_X="INST", PARA_Y="EPZZ", INTERPOL="LIN")
 
 SOLMF = SIMU_POINT_MAT(
     INFO=1,
-    COMPORTEMENT=_F(RELATION="MFRONT", COMPOR_MFRONT=behaviour, RESI_INTE_MAXI=1e-6),
+    COMPORTEMENT=_F(RELATION="MFRONT", COMPOR_MFRONT=behaviour, RESI_INTE=1e-6),
     NEWTON=_F(MATRICE="ELASTIQUE", PREDICTION="EXTRAPOLE", REAC_ITER=0),
     CONVERGENCE=_F(ITER_GLOB_MAXI=50),
     MATER=MATFRONT,

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -143,7 +143,7 @@ ramp = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 1.0, epsc, 2.0, eps, 3.0, 
 
 RESU = STAT_NON_LINE(
     CHAM_MATER=fieldMate,
-    COMPORTEMENT=_F(RELATION="ENDO_LOCA_EXP", ITER_INTE_MAXI=20, RESI_INTE_RELA=1.0e-8),
+    COMPORTEMENT=_F(RELATION="ENDO_LOCA_EXP", ITER_INTE_MAXI=20, RESI_INTE=1.0e-8),
     CONVERGENCE=_F(ITER_GLOB_MAXI=20, RESI_GLOB_MAXI=0.001),
     EXCIT=(_F(CHARGE=CHAR, FONC_MULT=ramp)),
     INCREMENT=_F(INST_FIN=3.0, LIST_INST=TEMPS1),

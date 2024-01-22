@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ subroutine lcmmja(typmod, nmat, materf, timed, &
 !           TIMED  :  ISTANT PRECEDENT
 !           TIMEF  :  INSTANT ACTUEL
 !           ITMAX  :  ITER_INTE_MAXI
-!           TOLER  :  RESI_INTE_RELA
+!           TOLER  :  RESI_INTE
 !           NBCOMM :  INCIDES DES COEF MATERIAU
 !           CPMONO :  NOM DES COMPORTEMENTS
 !           PGL    :  MATRICE DE PASSAGE

@@ -15,15 +15,17 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+#include "asterf_types.h"
 !
 !
 interface
-    subroutine nmdocv(keywordfact, iocc, algo_inte, keyword, vali, valr)
+    subroutine nmdocv(keywordfact, iocc, algo_inte, keyword, l_mfront_proto, l_kit_thm, vali, valr)
         character(len=16), intent(in) :: keywordfact
         integer, intent(in) :: iocc
         character(len=16), intent(in) :: algo_inte
         character(len=14), intent(in) :: keyword
+        aster_logical, intent(in) :: l_mfront_proto
+        aster_logical, intent(in) :: l_kit_thm
         integer, pointer, optional :: vali
         real(kind=8), pointer, optional :: valr
     end subroutine nmdocv

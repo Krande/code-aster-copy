@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -670,7 +670,7 @@ SOLNL = STAT_NON_LINE(
     MODELE=TROISD,
     CHAM_MATER=MAT,
     EXCIT=_F(CHARGE=TR_CS, FONC_MULT=COEF),
-    COMPORTEMENT=_F(RELATION="ROUSS_PR", RESI_INTE_RELA=1.0e-6, ITER_INTE_MAXI=10),
+    COMPORTEMENT=_F(RELATION="ROUSS_PR", RESI_INTE=1.0e-6, ITER_INTE_MAXI=10),
     INCREMENT=_F(LIST_INST=LINST),
     NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
     CONVERGENCE=_F(ITER_GLOB_MAXI=10, RESI_GLOB_RELA=1.0e-6),

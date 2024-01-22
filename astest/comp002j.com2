@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -62,9 +62,7 @@ for i in range(Ncal):
 
     #       Resout le pb a deformation imposee
     RESU[i] = SIMU_POINT_MAT(
-        COMPORTEMENT=_F(
-            RELATION=compor, COMPOR=COMP1[imat], ITER_INTE_MAXI=200, RESI_INTE_RELA=1.0e-10
-        ),
+        COMPORTEMENT=_F(RELATION=compor, COMPOR=COMP1[imat], ITER_INTE_MAXI=200, RESI_INTE=1.0e-10),
         ANGLE=angles[i],
         MASSIF=_F(ANGL_REP=(angles[i])),
         NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),  # PREDICTION='ELASTIQUE',
@@ -152,7 +150,7 @@ RESU_TGT = SIMU_POINT_MAT(
         VALE_PERT_RELA=1.0e-5,
         COMPOR=COMP1[imat],
         ITER_INTE_MAXI=100,
-        RESI_INTE_RELA=1.0e-9,
+        RESI_INTE=1.0e-9,
     ),
     ANGLE=angles[0],
     MASSIF=_F(ANGL_REP=(angles[0])),

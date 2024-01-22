@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -88,7 +88,7 @@ U1 = STAT_NON_LINE(
         _F(CHARGE=CHAR_U2, FONC_MULT=COEF1),
         _F(CHARGE=DEPL_1),
     ),
-    COMPORTEMENT=_F(RELATION="LAIGLE", RESI_INTE_RELA=1.0e-6, ITER_INTE_MAXI=100),
+    COMPORTEMENT=_F(RELATION="LAIGLE", RESI_INTE=1.0e-6, ITER_INTE_MAXI=100),
     NEWTON=_F(MATRICE="TANGENTE"),
     CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-4, ITER_GLOB_MAXI=50),
     INCREMENT=_F(LIST_INST=TEMPS1),
@@ -145,9 +145,7 @@ U2 = STAT_NON_LINE(
         _F(CHARGE=DEPL_1),
         _F(CHARGE=DEPL_2, FONC_MULT=COEF2),
     ),
-    COMPORTEMENT=_F(
-        RELATION="LAIGLE", RESI_INTE_RELA=1.0e-6, ITER_INTE_MAXI=100, ITER_INTE_PAS=-10
-    ),
+    COMPORTEMENT=_F(RELATION="LAIGLE", RESI_INTE=1.0e-6, ITER_INTE_MAXI=100, ITER_INTE_PAS=-10),
     ETAT_INIT=_F(SIGM=SIG_INI, VARI=VAR_INI),
     INCREMENT=_F(LIST_INST=TEMPS2),
     NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),

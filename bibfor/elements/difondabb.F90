@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -164,7 +164,7 @@ subroutine difondabb(for_discret, iret)
     ! nombre d'itérations maxi (ITER_INTE_MAXI) qui doit être renseigné avec la commande de
     !      subdivision
     nbdecp = int(zr(icarcr))
-    ! tolérance de convergence (RESI_INTE_RELA)
+    ! tolérance de convergence (RESI_INTE)
     errmax = zr(icarcr+2)
     ! erreur dans la même dimension des critère de palsticité (multiplié par Vélas))
     error = errmax*valre1(7)
@@ -237,8 +237,10 @@ subroutine difondabb(for_discret, iret)
         ! indique (si vrai) qu'on linéarise à 0.01 Vélas
         calculPetit = .TRUE.
         if (tirela(3) .lt. -r8prem()) then
-            calculPetitH = .NOT. ((abs(tirela(4)-valvarloc(16))/(-lyyy/2.0*tirela(3)) .GT. 0.8) &
-                                 .OR. (abs(tirela(5)-valvarloc(17))/(-lxxx/2.0*tirela(3)) .GT. 0.8))
+            calculPetitH = .NOT. ((abs(tirela(4)-valvarloc(16))/ &
+                                   (-lyyy/2.0*tirela(3)) .GT. 0.8) &
+                                  .OR. (abs(tirela(5)-valvarloc(17))/ &
+                                        (-lxxx/2.0*tirela(3)) .GT. 0.8))
             ! si les moments sont trop important on utilise la même linéarisation que le cas 10%
             !   du Vélas, n'a plus aucun sens si la force verticale est en traction'
         else
@@ -274,9 +276,11 @@ subroutine difondabb(for_discret, iret)
         ! on lance le calcul de la force corrigée
         HCP = ((tirela(1)-valvarloc(13))**2.0+(tirela(2)-valvarloc(14))**2.0)**0.5
         ! on regarde si les moments ou les forces horizontales ne sont pas trop importants
-       if ((HCP .lt. (-tirela(3))) .and. (abs(tirela(4)-valvarloc(16)) .lt. (-lyyy/2.0*tirela(3))) &
+        if ((HCP .lt. (-tirela(3))) .and. &
+            (abs(tirela(4)-valvarloc(16)) .lt. (-lyyy/2.0*tirela(3))) &
             .and. (abs(tirela(5)-valvarloc(17)) .lt. (-lxxx/2.0*tirela(3)))) then
-       call difoncalc(tirela, raidTang, valvarloc, valre1, nbVarloc, nbrePara, iret, nbdecp, errmax)
+            call difoncalc(tirela, raidTang, valvarloc, valre1, &
+                           nbVarloc, nbrePara, iret, nbdecp, errmax)
         else
             iret = 1
         end if
@@ -297,7 +301,8 @@ subroutine difondabb(for_discret, iret)
         call difondmatpetit(tirela, raidTang, valvarloc, valre1, nbVarloc, nbrePara, &
                             klv, errmax, dulMat, iret)
     else
-  call difondmat(tirela, raidTang, valvarloc, valre1, nbVarloc, nbrePara, klv, errmax, dulMat, iret)
+        call difondmat(tirela, raidTang, valvarloc, valre1, &
+                       nbVarloc, nbrePara, klv, errmax, dulMat, iret)
     end if
     !
     ! Sortie : Matrice tangente

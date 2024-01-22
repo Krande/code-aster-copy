@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -213,7 +213,7 @@ UREF28 = STAT_NON_LINE(
         _F(CHARGE=CHARG28),
     ),
     COMPORTEMENT=_F(
-        RELATION="MFRONT", COMPOR_MFRONT=behaviour, RESI_INTE_MAXI=1e-11, VERI_BORNE="MESSAGE"
+        RELATION="MFRONT", COMPOR_MFRONT=behaviour, RESI_INTE=1e-11, VERI_BORNE="MESSAGE"
     ),
     INCREMENT=_F(LIST_INST=LINST28),
     NEWTON=_F(PREDICTION="ELASTIQUE", MATRICE="TANGENTE", REAC_ITER=1),
@@ -231,9 +231,7 @@ UREF29 = STAT_NON_LINE(
         _F(CHARGE=CH21),
         _F(CHARGE=CHARG28),
     ),
-    COMPORTEMENT=_F(
-        RELATION="MFRONT", COMPOR_MFRONT=behaviour, VERI_BORNE="SANS",
-    ),
+    COMPORTEMENT=_F(RELATION="MFRONT", COMPOR_MFRONT=behaviour, VERI_BORNE="SANS"),
     INCREMENT=_F(LIST_INST=LINST28),
     NEWTON=_F(PREDICTION="ELASTIQUE", MATRICE="TANGENTE", REAC_ITER=1),
     CONVERGENCE=_F(RESI_GLOB_MAXI=1.0e-8, ITER_GLOB_MAXI=25),

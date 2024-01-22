@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -269,7 +269,7 @@ DEPLDI2T = MECA_STATIQUE(CARA_ELEM=CARE, CHAM_MATER=CHMATH2, EXCIT=_F(CHARGE=CHD
 U = STAT_NON_LINE(
     CARA_ELEM=CARE,
     CHAM_MATER=CHMAT3,
-    COMPORTEMENT=_F(ITER_INTE_MAXI=30, RELATION="GLRC_DM", RESI_INTE_RELA=1e-08),
+    COMPORTEMENT=_F(ITER_INTE_MAXI=30, RELATION="GLRC_DM", RESI_INTE=1e-08),
     CONVERGENCE=_F(ITER_GLOB_MAXI=30, RESI_GLOB_RELA=1e-07),
     EXCIT=_F(CHARGE=CHDI3),
     INCREMENT=_F(LIST_INST=L_INST),

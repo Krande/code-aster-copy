@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -458,7 +458,7 @@ IMPL2 = STAT_NON_LINE(
             COMPOR=COMPOR2,
             DEFORMATION="PETIT",
             ITER_INTE_MAXI=200,
-            RESI_INTE_RELA=1.0e-6,
+            RESI_INTE=1.0e-6,
             ITER_INTE_PAS=10,
             TOUT="OUI",
         ),
@@ -586,7 +586,7 @@ RESUT2 = STAT_NON_LINE(
             COMPOR=COMPT2,
             DEFORMATION="PETIT",
             ITER_INTE_MAXI=200,
-            RESI_INTE_RELA=1.0e-6,
+            RESI_INTE=1.0e-6,
             ITER_INTE_PAS=20,
             TOUT="OUI",
         ),
@@ -648,7 +648,7 @@ IMPLORTH = STAT_NON_LINE(
         RELATION="MONOCRISTAL",
         COMPOR=COMPORTH,
         DEFORMATION="PETIT",
-        RESI_INTE_RELA=1e-06,
+        RESI_INTE=1e-06,
         ITER_INTE_MAXI=100,
         ITER_INTE_PAS=10,
         TOUT="OUI",
@@ -762,7 +762,7 @@ IMPLZ = STAT_NON_LINE(
             COMPOR=COMPORZ,
             DEFORMATION="PETIT",
             ITER_INTE_MAXI=200,
-            RESI_INTE_RELA=1.0e-6,
+            RESI_INTE=1.0e-6,
             ITER_INTE_PAS=10,
             TOUT="OUI",
         ),
@@ -854,7 +854,7 @@ IMPLZ2 = STAT_NON_LINE(
             COMPOR=COMPORZ2,
             DEFORMATION="PETIT",
             ITER_INTE_MAXI=200,
-            RESI_INTE_RELA=1.0e-6,
+            RESI_INTE=1.0e-6,
             ITER_INTE_PAS=10,
             TOUT="OUI",
         ),
@@ -944,7 +944,7 @@ POLYZ3 = STAT_NON_LINE(
             COMPOR=COMPORZ3,
             DEFORMATION="PETIT",
             # ITER_INTE_MAXI=200,
-            RESI_INTE_RELA=1.0e-6,
+            RESI_INTE=1.0e-6,
             ITER_INTE_PAS=10,
             TOUT="OUI",
         ),
@@ -1120,7 +1120,7 @@ IMPLZ4 = STAT_NON_LINE(
             COMPOR=COMPORZ4,
             DEFORMATION="PETIT",
             ITER_INTE_MAXI=200,
-            RESI_INTE_RELA=1.0e-6,
+            RESI_INTE=1.0e-6,
             ITER_INTE_PAS=10,
             TOUT="OUI",
         ),
@@ -1212,7 +1212,7 @@ POLYZ5 = STAT_NON_LINE(
             COMPOR=COMPORZ5,
             DEFORMATION="PETIT",
             # ITER_INTE_MAXI=200,
-            RESI_INTE_RELA=1.0e-6,
+            RESI_INTE=1.0e-6,
             # ITER_INTE_PAS=10,
             TOUT="OUI",
         ),

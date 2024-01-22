@@ -21,13 +21,13 @@
 interface
     subroutine getBehaviourPara(l_mfront_proto, l_kit_thm, keywf         ,&
                                 i_comp        , algo_inte, iter_inte_maxi,&
-                                resi_inte_rela)
+                                resi_inte)
         aster_logical, intent(in) :: l_mfront_proto
         aster_logical, intent(in) :: l_kit_thm
         character(len=16), intent(in) :: keywf
         integer, intent(in) :: i_comp
         character(len=16), intent(in) :: algo_inte
         integer, pointer :: iter_inte_maxi
-        real(kind=8), pointer :: resi_inte_rela
+        real(kind=8), pointer :: resi_inte
     end subroutine getBehaviourPara
 end interface

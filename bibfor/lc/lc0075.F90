@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -83,7 +83,7 @@ subroutine lc0075(BEHinteg, &
     if (lVari) vip = 0
 
     cl = Init(ndimsi, option, fami, kpg, ksp, imate, &
-              nint(carcri(ITER_INTE_MAXI)), carcri(RESI_INTE_RELA), carcri(PARM_THETA), &
+              nint(carcri(ITER_INTE_MAXI)), carcri(RESI_INTE), carcri(PARM_THETA), &
               instap-instam)
 
     visc = compor(RELA_NAME) (1:4) .eq. 'VISC'

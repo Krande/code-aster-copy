@@ -93,8 +93,8 @@ subroutine carc_read(behaviourPrepCrit, model_)
     integer, pointer :: modelCell(:) => null()
     character(len=16) :: algo_inte
     real(kind=8) :: algo_inte_r
-    real(kind=8), pointer :: resi_inte_rela => null()
-    integer, pointer :: iter_inte_maxi => null()
+    real(kind=8), pointer :: resi_inte_p => null()
+    integer, pointer :: iter_inte_maxi_p => null()
     type(Behaviour_ParaExte) :: paraExte
 !
 ! --------------------------------------------------------------------------------------------------
@@ -311,10 +311,10 @@ subroutine carc_read(behaviourPrepCrit, model_)
                               factorKeyword, iFactorKeyword, &
                               algo_inte, algo_inte_r)
 
-! ----- Get RESI_INTE_RELA/ITER_INTE_MAXI
+! ----- Get RESI_INTE/ITER_INTE_MAXI
         call getBehaviourPara(l_mfront_proto, l_kit_thm, &
                               factorKeyword, iFactorKeyword, algo_inte, &
-                              iter_inte_maxi, resi_inte_rela)
+                              iter_inte_maxi_p, resi_inte_p)
 ! ----- Get external state variables
         call getExternalStateVariable(rela_comp, rela_code_py, &
                                       l_mfront_offi, l_mfront_proto, &
@@ -339,13 +339,15 @@ subroutine carc_read(behaviourPrepCrit, model_)
         behaviourPrepCrit%v_crit(iFactorKeyword)%iveriborne = iveriborne
         behaviourPrepCrit%v_crit(iFactorKeyword)%l_matr_unsymm = l_matr_unsymm
         behaviourPrepCrit%v_crit(iFactorKeyword)%algo_inte_r = algo_inte_r
-        if (associated(resi_inte_rela)) then
-            allocate (behaviourPrepCrit%v_crit(iFactorKeyword)%resi_inte_rela)
-            behaviourPrepCrit%v_crit(iFactorKeyword)%resi_inte_rela = resi_inte_rela
+        if (associated(resi_inte_p)) then
+            allocate (behaviourPrepCrit%v_crit(iFactorKeyword)%resi_inte)
+            behaviourPrepCrit%v_crit(iFactorKeyword)%resi_inte = resi_inte_p
+            deallocate (resi_inte_p)
         end if
-        if (associated(iter_inte_maxi)) then
+        if (associated(iter_inte_maxi_p)) then
             allocate (behaviourPrepCrit%v_crit(iFactorKeyword)%iter_inte_maxi)
-            behaviourPrepCrit%v_crit(iFactorKeyword)%iter_inte_maxi = iter_inte_maxi
+            behaviourPrepCrit%v_crit(iFactorKeyword)%iter_inte_maxi = iter_inte_maxi_p
+            deallocate (iter_inte_maxi_p)
         end if
         behaviourPrepCrit%v_crit(iFactorKeyword)%extern_ptr = paraExte%extern_ptr
         behaviourPrepCrit%v_crit(iFactorKeyword)%extern_type = extern_type
@@ -353,13 +355,6 @@ subroutine carc_read(behaviourPrepCrit, model_)
         behaviourPrepCrit%v_crit(iFactorKeyword)%jvariext2 = variExteCode(2)
         behaviourPrepCrit%v_crit(iFactorKeyword)%exte_strain = exte_strain
         behaviourPrepCrit%v_crit(iFactorKeyword)%paraExte = paraExte
-!
-! --- Reset pointers and avoid memory leaks
-!
-        if (associated(resi_inte_rela)) deallocate (resi_inte_rela)
-        if (associated(iter_inte_maxi)) deallocate (iter_inte_maxi)
-        nullify (resi_inte_rela)
-        nullify (iter_inte_maxi)
     end do
 
 ! - Get SCHEMA_THM parameters

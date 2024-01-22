@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine hujlnf(toler, nmat, mater, nvi, vind, &
 !     ------------------------------------------------------------
 !     CONTROLE DES MECANISMES ACTIVES - POST-TRAITEMENT SPECIFIQUE
 !     ------------------------------------------------------------
-!     IN :TOLER : TOLERANCE ISSUE DE RESI_INTE_RELA
+!     IN :TOLER : TOLERANCE ISSUE DE RESI_INTE
 !         NMAT  : DIMENSION TABLEAU PARAMETRES MATERIAU
 !         MATER : PARAMETRES MATERIAU
 !         NVI   : NOMBRE DE VARIABLES INTERNES

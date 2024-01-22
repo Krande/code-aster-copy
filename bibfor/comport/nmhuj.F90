@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat, &
 !                            0 = EN VITESSE     > SYMETRIQUE
 !                            1 = EN INCREMENTAL > NON-SYMETRIQUE
 !                  CRIT(3) = VALEUR DE LA TOLERANCE DE CONVERGENCE
-!                            (RESI_INTE_RELA == RESCREL)
+!                            (RESI_INTE == RESCREL)
 !                  CRIT(5) = NOMBRE D'INCREMENTS POUR LE
 !                            REDECOUPAGE LOCAL DU PAS DE TEMPS
 !                            (RESI_INTE_PAS == ITEDEC )
@@ -681,7 +681,7 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat, &
 !
 ! On normalise les seuils de la meme facon que dans hujjid
 ! i.e. par le module d'Young materf(1,1)/Pcr0
-! pour assurer la coherence du controle avec RESI_INTE_RELA
+! pour assurer la coherence du controle avec RESI_INTE
                 call hujcrd(i, materf, sigf, variTmp, seuil, iret)
                 if (iret .ne. 0) then
                     goto 999
@@ -699,7 +699,7 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat, &
 !
 ! On normalise les seuils de la meme facon que dans hujjid
 ! i.e. par le module d'Young materf(1,1)/Pcr0
-! pour assurer la coherence du controle avec RESI_INTE_RELA
+! pour assurer la coherence du controle avec RESI_INTE
 !
             call hujcri(materf, sigf, variTmp, seuil)
             seuil = seuil/materf(1, 1)*abs(materf(7, 2))
@@ -715,7 +715,7 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat, &
 !
 ! On normalise les seuils de la meme facon que dans hujjid
 ! i.e. par le module d'Young materf(1,1)/Pcr0
-! pour assurer la coherence du controle avec RESI_INTE_RELA
+! pour assurer la coherence du controle avec RESI_INTE
 !
                 if (i .lt. 8 .and. bid16(i-4) .eq. zero) then
 

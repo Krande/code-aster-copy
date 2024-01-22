@@ -19,7 +19,7 @@
 !
 subroutine getBehaviourPara(l_mfront_proto, l_kit_thm, &
                             keywf, i_comp, algo_inte, &
-                            iter_inte_maxi, resi_inte_rela)
+                            iter_inte_maxi, resi_inte)
 !
     use NonLin_Datastructure_type
 !
@@ -35,7 +35,7 @@ subroutine getBehaviourPara(l_mfront_proto, l_kit_thm, &
     integer, intent(in) :: i_comp
     character(len=16), intent(in) :: algo_inte
     integer, pointer :: iter_inte_maxi
-    real(kind=8), pointer :: resi_inte_rela
+    real(kind=8), pointer :: resi_inte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,23 +46,18 @@ subroutine getBehaviourPara(l_mfront_proto, l_kit_thm, &
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  l_mfront_proto     : .true. if MFront prototype
-! In  l_mfront_offi      : .true. if MFront official
 ! In  l_kit_thm          : .true. if kit THM
 ! In  keywf              : factor keyword to read (COMPORTEMENT)
 ! In  i_comp             : factor keyword index
 ! In  algo_inte          : algorithm for integration of behaviour
 ! Out iter_inte_maxi     : value for ITER_INTE_MAXI
-! Out resi_inte_rela     : value for RESI_INTE_****
-! Out has_resi_inte_rela : existence of user value for RESI_INTE_****
+! Out resi_inte     : value for RESI_INTE
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call nmdocv(keywf, i_comp, algo_inte, 'ITER_INTE_MAXI', vali=iter_inte_maxi)
-    if (l_mfront_proto .and. .not. l_kit_thm) then
-        call nmdocv(keywf, i_comp, algo_inte, 'RESI_INTE_MAXI', valr=resi_inte_rela)
-    else
-        call nmdocv(keywf, i_comp, algo_inte, 'RESI_INTE_RELA', valr=resi_inte_rela)
-    end if
-
+    call nmdocv(keywf, i_comp, algo_inte, 'ITER_INTE_MAXI', &
+                l_mfront_proto, l_kit_thm, vali=iter_inte_maxi)
+    call nmdocv(keywf, i_comp, algo_inte, 'RESI_INTE     ', &
+                l_mfront_proto, l_kit_thm, valr=resi_inte)
 !
 end subroutine

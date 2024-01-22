@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -194,7 +194,7 @@ subroutine disjvp(for_discret, iret)
     call jevech('PCARCRI', 'L', icarcr)
 !   nombre d'itérations maxi (ITER_INTE_MAXI=-20 par defaut)
     nbdecp = abs(int(zr(icarcr)))
-!   tolérance de convergence (RESI_INTE_RELA=1.0E-06 par défaut)
+!   tolérance de convergence (RESI_INTE=1.0E-06 par défaut)
     errmax = zr(icarcr+2)
 !
 ! --------------------------------------------------------------------------------------------------

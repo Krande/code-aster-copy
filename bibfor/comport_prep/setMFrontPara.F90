@@ -51,7 +51,7 @@ subroutine setMFrontPara(behaviourCrit, iFactorKeyword)
     real(kind=8) :: resi_inte_mfront_rela, valr(2)
     integer:: extern_type, iveriborne
     character(len=16) :: extern_addr
-    real(kind=8) :: resi_inte_rela
+    real(kind=8) :: resi_inte
     integer :: iter_inte_maxi, iter_inte_mfront_maxi, vali(2)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -63,20 +63,22 @@ subroutine setMFrontPara(behaviourCrit, iFactorKeyword)
 ! - Set values
 !
     if (extern_type .eq. 1 .or. extern_type .eq. 2) then
-        if (associated(behaviourCrit(iFactorKeyword)%resi_inte_rela)) then
-            resi_inte_rela = behaviourCrit(iFactorKeyword)%resi_inte_rela
+        if (associated(behaviourCrit(iFactorKeyword)%resi_inte)) then
+            resi_inte = behaviourCrit(iFactorKeyword)%resi_inte
             call mgis_get_double_mfront_parameter(extern_addr, "epsilon", resi_inte_mfront_rela)
-            if (resi_inte_rela .gt. resi_inte_mfront_rela) then
-                valr(1) = resi_inte_rela
+            if (resi_inte_mfront_rela .ne. 0.d0 .and. &
+                resi_inte .gt. resi_inte_mfront_rela) then
+                valr(1) = resi_inte
                 valr(2) = resi_inte_mfront_rela
                 call utmess('I', 'COMPOR6_16', nr=2, valr=valr)
             end if
-            call mgis_set_double_parameter(extern_addr, "epsilon", resi_inte_rela)
+            call mgis_set_double_parameter(extern_addr, "epsilon", resi_inte)
         end if
         if (associated(behaviourCrit(iFactorKeyword)%iter_inte_maxi)) then
             iter_inte_maxi = behaviourCrit(iFactorKeyword)%iter_inte_maxi
             call mgis_get_integer_mfront_parameter(extern_addr, "iterMax", iter_inte_mfront_maxi)
-            if (iter_inte_maxi .ne. iter_inte_mfront_maxi) then
+            if (iter_inte_mfront_maxi .ne. 0 .and. &
+                iter_inte_maxi .ne. iter_inte_mfront_maxi) then
                 vali(1) = iter_inte_maxi
                 vali(2) = iter_inte_mfront_maxi
                 call utmess('I', 'COMPOR6_17', ni=2, vali=vali)

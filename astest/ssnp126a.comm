@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -86,7 +86,7 @@ U = STAT_NON_LINE(
     CHAM_MATER=CM,
     EXCIT=(_F(CHARGE=LIAISON), _F(CHARGE=TRACTION, FONC_MULT=FC1)),
     COMPORTEMENT=(
-        _F(RELATION="JOINT_BA", GROUP_MA="CUBEDEG", RESI_INTE_RELA=1.0e-6, ITER_INTE_MAXI=15),
+        _F(RELATION="JOINT_BA", GROUP_MA="CUBEDEG", RESI_INTE=1.0e-6, ITER_INTE_MAXI=15),
         _F(RELATION="ELAS", GROUP_MA="CUBE"),
     ),
     INCREMENT=_F(LIST_INST=L_INST, INST_FIN=30.0),

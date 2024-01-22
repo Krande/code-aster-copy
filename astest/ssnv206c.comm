@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -116,11 +116,7 @@ U1 = STAT_NON_LINE(
         _F(CHARGE=DEPL_1),
     ),
     COMPORTEMENT=_F(
-        RELATION="LETK",
-        ALGO_INTE="NEWTON",
-        RESI_INTE_RELA=1e-12,
-        ITER_INTE_MAXI=100,
-        ITER_INTE_PAS=-5,
+        RELATION="LETK", ALGO_INTE="NEWTON", RESI_INTE=1e-12, ITER_INTE_MAXI=100, ITER_INTE_PAS=-5
     ),
     CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6, ITER_GLOB_MAXI=50),
     INCREMENT=_F(LIST_INST=DEFLIST1),
@@ -220,11 +216,7 @@ U2 = STAT_NON_LINE(
         _F(CHARGE=DEPL_2, FONC_MULT=COEF2),
     ),
     COMPORTEMENT=_F(
-        RELATION="LETK",
-        ALGO_INTE="NEWTON",
-        RESI_INTE_RELA=1e-12,
-        ITER_INTE_MAXI=100,
-        ITER_INTE_PAS=-5,
+        RELATION="LETK", ALGO_INTE="NEWTON", RESI_INTE=1e-12, ITER_INTE_MAXI=100, ITER_INTE_PAS=-5
     ),
     ETAT_INIT=_F(EVOL_NOLI=U1),
     INCREMENT=_F(LIST_INST=DEFLIST2),

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -58,7 +58,7 @@ TIMP = DEFI_CONSTANTE(VALE=TEMP)
 SOLNL = SIMU_POINT_MAT(
     INFO=2,
     COMPORTEMENT=_F(
-        RELATION="POLYCRISTAL", COMPOR=COMPORP, ALGO_INTE="RUNGE_KUTTA", RESI_INTE_RELA=1.0e-4
+        RELATION="POLYCRISTAL", COMPOR=COMPORP, ALGO_INTE="RUNGE_KUTTA", RESI_INTE=1.0e-4
     ),
     NEWTON=_F(MATRICE="ELASTIQUE", PREDICTION="EXTRAPOLE", REAC_ITER=0),
     CONVERGENCE=_F(ITER_GLOB_MAXI=50, RESI_GLOB_RELA=1.0e-5),

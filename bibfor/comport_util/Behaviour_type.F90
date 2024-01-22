@@ -214,7 +214,7 @@ module Behaviour_type
         integer                   :: iveriborne = 0
         aster_logical             :: l_matr_unsymm = ASTER_FALSE
         real(kind=8)              :: algo_inte_r = 0.d0
-        real(kind=8), pointer     :: resi_inte_rela => null()
+        real(kind=8), pointer     :: resi_inte => null()
         integer, pointer          :: iter_inte_maxi => null()
         integer                   :: extern_ptr = 0
         integer                   :: extern_type = 0

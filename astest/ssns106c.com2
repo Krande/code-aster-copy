@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ RESU_G6 = STAT_NON_LINE(
     CHAM_MATER=MATERD,
     CARA_ELEM=CAEL_G,
     EXCIT=(_F(CHARGE=COND_0G, FONC_MULT=chf1), _F(CHARGE=COND_1G, FONC_MULT=chf1)),
-    COMPORTEMENT=_F(RELATION="DHRC", RESI_INTE_RELA=1e-16),
+    COMPORTEMENT=_F(RELATION="DHRC", RESI_INTE=1e-16),
     INCREMENT=_F(LIST_INST=DEFLIST, INST_FIN=t1),
     NEWTON=_F(REAC_ITER=1),
     CONVERGENCE=_F(ITER_GLOB_MAXI=26),

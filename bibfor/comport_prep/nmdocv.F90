@@ -17,10 +17,11 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmdocv(keywordfact, iocc, algo_inte, keyword, vali, valr)
+subroutine nmdocv(keywordfact, iocc, algo_inte, keyword, l_mfront_proto, l_kit_thm, vali, valr)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
@@ -30,6 +31,8 @@ subroutine nmdocv(keywordfact, iocc, algo_inte, keyword, vali, valr)
     integer, intent(in) :: iocc
     character(len=16), intent(in) :: algo_inte
     character(len=14), intent(in) :: keyword
+    aster_logical, intent(in) :: l_mfront_proto
+    aster_logical, intent(in) :: l_kit_thm
     integer, pointer, optional :: vali
     real(kind=8), pointer, optional :: valr
 !
@@ -45,7 +48,10 @@ subroutine nmdocv(keywordfact, iocc, algo_inte, keyword, vali, valr)
 ! In  iocc            : factor keyword index in COMPORTEMENT
 ! In  algo_inte       : integration algorithm
 ! In  keyword         : keyword
-! Out is_valid        : real value of keyword is valid
+! In  l_mfront_proto  : flag for a Mfront law in proto mode
+! In  l_kit_thm       : flag for a law within THM kit
+! Inout  vali         : pointer to the value of ITER_INTE_MAXI
+! Inout  valr         : pointer to the value of RESI_INTE
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -60,11 +66,9 @@ subroutine nmdocv(keywordfact, iocc, algo_inte, keyword, vali, valr)
 !
     iret_r = 0
     iret_i = 0
-    if (keyword .eq. 'RESI_INTE_RELA') then
+    if (keyword .eq. 'RESI_INTE') then
         call getvr8(keywordfact, keyword, iocc=iocc, scal=value_r, nbret=iret_r)
-        ASSERT(iret_r .gt. 0)
-    else if (keyword .eq. 'RESI_INTE_MAXI') then
-        call getvr8(keywordfact, keyword, iocc=iocc, scal=value_r, nbret=iret_r)
+        ASSERT(l_mfront_proto .and. .not. l_kit_thm .or. iret_r .gt. 0)
     else if (keyword .eq. 'ITER_INTE_MAXI') then
         call getvis(keywordfact, keyword, iocc=iocc, scal=value_i, nbret=iret_i)
     end if
@@ -90,7 +94,7 @@ subroutine nmdocv(keywordfact, iocc, algo_inte, keyword, vali, valr)
 !
 ! - Checking
 !
-    if (keyword .eq. 'RESI_INTE_RELA') then
+    if (keyword .eq. 'RESI_INTE') then
         if (value_r .gt. 1.0001d-6) then
             call utmess('A', 'COMPOR4_62')
         end if

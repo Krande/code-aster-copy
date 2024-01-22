@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -81,7 +81,7 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option, &
 !                     0 = EN VITESSE     >SYMETRIQUE
 !                     1 = EN INCREMENTAL >NON-SYMETRIQUE
 !              (3) = VALEUR TOLERANCE DE CONVERGENCE
-!                    (RESI_INTE_RELA == RESCREL)
+!                    (RESI_INTE == RESCREL)
 !              (5) = NOMBRE D'INCREMENTS POUR LE
 !                    REDECOUPAGE LOCAL DU PAS DE TEMPS
 !                    (ITER_INTE_PAS  == ITEDEC)
@@ -438,8 +438,10 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option, &
         vip(7) = (vip(1)*cstseu(1)+vip(2)*cstseu(2))
         vip(8) = vim(8)+(abs(vip(3)-vim(3))*cstseu(3)+abs(vip(4)-vim(4))*cstseu(4) &
                          +abs(vip(5)-vim(5))*cstseu(5)+abs(vip(6)-vim(6))*cstseu(6))
-     vip(10) = 1.d0-(a(1, 1)*a(2, 2)*a(3, 3))**(1.d0/3.d0)/(a0(1, 1)*a0(2, 2)*a0(3, 3))**(1.d0/3.d0)
-     vip(11) = 1.d0-(a(4, 4)*a(5, 5)*a(6, 6))**(1.d0/3.d0)/(a0(4, 4)*a0(5, 5)*a0(6, 6))**(1.d0/3.d0)
+        vip(10) = 1.d0-(a(1, 1)*a(2, 2)*a(3, 3))**(1.d0/3.d0)/ &
+                  (a0(1, 1)*a0(2, 2)*a0(3, 3))**(1.d0/3.d0)
+        vip(11) = 1.d0-(a(4, 4)*a(5, 5)*a(6, 6))**(1.d0/3.d0)/ &
+                  (a0(4, 4)*a0(5, 5)*a0(6, 6))**(1.d0/3.d0)
 !
     else
         do k = 1, 11

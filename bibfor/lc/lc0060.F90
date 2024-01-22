@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1504,W0104,C1509
+! aslint: disable=W1504,W0104,C1505
 
 subroutine lc0060(BEHinteg, &
                   fami, kpg, ksp, ndim, imate, &
@@ -56,7 +56,8 @@ subroutine lc0060(BEHinteg, &
     character(len=8), intent(in) :: typmod(*)
     integer, intent(in) :: icomp
     integer, intent(in) :: ndsde
-    real(kind=8)                 :: dsidep(merge(nsig,6,nsig*neps.eq.ndsde), merge(neps,6,nsig*neps.eq.ndsde))
+    real(kind=8) :: dsidep(merge(nsig, 6, nsig*neps .eq. ndsde), &
+                           merge(neps, 6, nsig*neps .eq. ndsde))
     integer, intent(out):: codret
 ! --------------------------------------------------------------------------------------------------
 !   RELATION ENDO_LOCA_EXP
@@ -82,7 +83,7 @@ subroutine lc0060(BEHinteg, &
     if (lVari) vip = 0
 
     cl = Init(ndimsi, option, fami, kpg, ksp, imate, &
-              nint(carcri(ITER_INTE_MAXI)), carcri(RESI_INTE_RELA), instap-instam)
+              nint(carcri(ITER_INTE_MAXI)), carcri(RESI_INTE), instap-instam)
 
     call Integrate(cl, epsm(1:ndimsi), deps(1:ndimsi), vim(1:nvi), sig, vi, dsde)
 

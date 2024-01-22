@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="NON"))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
 # IGNORE_ALARM= car pour RUNGE_KUTTA, RESI_GLOB_RELA=1.E-3 suffit pour une bonne precision
-# comparaison : resi_inte_rela  CPU total (calibre7)   RESU
+# comparaison : resi_inte  CPU total (calibre7)   RESU
 #                1.E-4           98s                   OK
 #                1.E-3           51s                   OK
 

@@ -62,8 +62,8 @@ subroutine setBehaviourParaValue(behaviourCrit, parm_theta_thm, parm_alpha_thm, 
         if (associated(behaviourCrit(iFactorKeyword)%iter_inte_maxi)) &
             carcriMap_(ITER_INTE_MAXI) = dble(behaviourCrit(iFactorKeyword)%iter_inte_maxi)
         carcriMap_(TYPE_MATR_T) = behaviourCrit(iFactorKeyword)%type_matr_t
-        if (associated(behaviourCrit(iFactorKeyword)%resi_inte_rela)) &
-            carcriMap_(RESI_INTE_RELA) = behaviourCrit(iFactorKeyword)%resi_inte_rela
+        if (associated(behaviourCrit(iFactorKeyword)%resi_inte)) &
+            carcriMap_(RESI_INTE) = behaviourCrit(iFactorKeyword)%resi_inte
         carcriMap_(PARM_THETA) = behaviourCrit(iFactorKeyword)%parm_theta
         carcriMap_(ITER_INTE_PAS) = behaviourCrit(iFactorKeyword)%iter_inte_pas
         carcriMap_(ALGO_INTE_R) = behaviourCrit(iFactorKeyword)%algo_inte_r
@@ -90,8 +90,8 @@ subroutine setBehaviourParaValue(behaviourCrit, parm_theta_thm, parm_alpha_thm, 
         if (associated(behaviourCrit(iFactorKeyword)%iter_inte_maxi)) &
             carcriList_(ITER_INTE_MAXI) = dble(behaviourCrit(iFactorKeyword)%iter_inte_maxi)
         carcriList_(TYPE_MATR_T) = behaviourCrit(iFactorKeyword)%type_matr_t
-        if (associated(behaviourCrit(iFactorKeyword)%resi_inte_rela)) &
-            carcriList_(RESI_INTE_RELA) = behaviourCrit(iFactorKeyword)%resi_inte_rela
+        if (associated(behaviourCrit(iFactorKeyword)%resi_inte)) &
+            carcriList_(RESI_INTE) = behaviourCrit(iFactorKeyword)%resi_inte
         carcriList_(PARM_THETA) = behaviourCrit(iFactorKeyword)%parm_theta
         carcriList_(ITER_INTE_PAS) = behaviourCrit(iFactorKeyword)%iter_inte_pas
         carcriList_(ALGO_INTE_R) = behaviourCrit(iFactorKeyword)%algo_inte_r

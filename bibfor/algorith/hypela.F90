@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) 2005 UCBL LYON1 - T. BARANGER     WWW.CODE-ASTER.ORG
-! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,7 +71,7 @@ subroutine hypela(fami, kpg, ksp, ndim, &
 !                                   0 = EN VITESSE     >SYMETRIQUE
 !                                   1 = EN INCREMENTAL >NON-SYMETRIQUE
 !                             (3) = VALEUR TOLERANCE DE CONVERGENCE
-!                                    (RESI_INTE_RELA == RESCREL)
+!                                    (RESI_INTE == RESCREL)
 ! IN  IMATE  : ADRESSE DU MATERIAU CODE
 ! IN  FAMI   : FAMILLE DE POINTS DE GAUSS
 ! IN  KPG    : NUMERO DU POINT DE GAUSS

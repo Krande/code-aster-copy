@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -101,9 +101,7 @@ ZERO = DEFI_CONSTANTE(VALE=0.0)
 
 U1 = SIMU_POINT_MAT(
     SUPPORT="POINT",
-    COMPORTEMENT=_F(
-        RELATION="DRUCK_PRAGER", ITER_INTE_MAXI=20, RESI_INTE_RELA=1.0e-8, ITER_INTE_PAS=-1
-    ),
+    COMPORTEMENT=_F(RELATION="DRUCK_PRAGER", ITER_INTE_MAXI=20, RESI_INTE=1.0e-8, ITER_INTE_PAS=-1),
     MATER=MATE,
     INCREMENT=_F(LIST_INST=DEFLIST1, NUME_INST_INIT=0, INST_FIN=40.0),
     NEWTON=_F(

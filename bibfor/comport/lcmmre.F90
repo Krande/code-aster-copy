@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ subroutine lcmmre(typmod, nmat, materd, materf, &
 !         NVI    :  NOMBRE DE VARIABLES INTERNES
 !         VIND   :  VARIABLES INTERNES A L'INSTANT PRECEDENT
 !         ITMAX  :  ITER_INTE_MAXI
-!         TOLER  :  RESI_INTE_RELA
+!         TOLER  :  RESI_INTE
 !         TIMED  :  ISTANT PRECEDENT
 !         TIMEF  :  INSTANT ACTUEL
 !         YD     :  VARIABLES A T       = ( SIGD BETAD )

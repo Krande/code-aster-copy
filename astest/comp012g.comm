@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -67,7 +67,7 @@ conf = 5.0e6
 CALC_ESSAI_GEOMECA(
     INFO=2,
     MATER=SOL,
-    COMPORTEMENT=_F(RELATION="NLH_CSRM", RESI_INTE_RELA=1.0e-14),
+    COMPORTEMENT=_F(RELATION="NLH_CSRM", RESI_INTE=1.0e-14),
     CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-10, ITER_GLOB_MAXI=10),
     ESSAI_TRIA_DR_M_D=_F(
         PRES_CONF=conf, EPSI_IMPOSE=epzz_max, NB_INST=nb_inst, TABLE_RESU=CO("TSIMU")
