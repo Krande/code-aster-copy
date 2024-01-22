@@ -3,6 +3,7 @@
 @Author Helfer Thomas;
 @Date 23 / 11 / 06;
 
+@IterMax 100;
 @MaterialProperty stress s0;
 @MaterialProperty stress ET;
 

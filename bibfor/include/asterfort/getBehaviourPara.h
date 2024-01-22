@@ -19,10 +19,9 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine getBehaviourPara(l_mfront_offi , l_mfront_proto, l_kit_thm,&
-                                keywf         , i_comp        , algo_inte,&
-                                iter_inte_maxi, resi_inte_rela)
-        aster_logical, intent(in) :: l_mfront_offi
+    subroutine getBehaviourPara(l_mfront_proto, l_kit_thm, keywf         ,&
+                                i_comp        , algo_inte, iter_inte_maxi,&
+                                resi_inte_rela)
         aster_logical, intent(in) :: l_mfront_proto
         aster_logical, intent(in) :: l_kit_thm
         character(len=16), intent(in) :: keywf

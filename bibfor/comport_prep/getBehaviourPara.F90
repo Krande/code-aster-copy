@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine getBehaviourPara(l_mfront_offi, l_mfront_proto, l_kit_thm, &
+subroutine getBehaviourPara(l_mfront_proto, l_kit_thm, &
                             keywf, i_comp, algo_inte, &
                             iter_inte_maxi, resi_inte_rela)
 !
@@ -29,7 +29,6 @@ subroutine getBehaviourPara(l_mfront_offi, l_mfront_proto, l_kit_thm, &
 #include "asterfort/assert.h"
 #include "asterfort/nmdocv.h"
 !
-    aster_logical, intent(in) :: l_mfront_offi
     aster_logical, intent(in) :: l_mfront_proto
     aster_logical, intent(in) :: l_kit_thm
     character(len=16), intent(in) :: keywf
@@ -57,10 +56,6 @@ subroutine getBehaviourPara(l_mfront_offi, l_mfront_proto, l_kit_thm, &
 ! Out has_resi_inte_rela : existence of user value for RESI_INTE_****
 !
 ! --------------------------------------------------------------------------------------------------
-!
-    iter_inte_maxi = 0.d0
-    resi_inte_rela = 0.d0
-! - Get
 !
     call nmdocv(keywf, i_comp, algo_inte, 'ITER_INTE_MAXI', vali=iter_inte_maxi)
     if (l_mfront_proto .and. .not. l_kit_thm) then

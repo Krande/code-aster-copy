@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -81,8 +81,15 @@ Cette combinaison est connue comme donnant des résultats imprécis voir faux, e
     16: _(
         """
 La valeur de RESI_INTE_MAXI est renseignée à <%(r1)19.12e> dans le fichier de commande.
-Elle est supérieure à la valeur <%(r2)19.12e> de MFront.
+Elle est supérieure à la valeur originelle <%(r2)19.12e> de MFront.
 L'intégration de la loi de comportement sera donc moins précise.
+        """
+    ),
+    17: _(
+        """
+Le nombre maximal d'itérations d'intégration de la loi de comportement
+est mis à %(i2)d par le fichier de commande, à la place de la valeur
+originelle %(i1)d de MFront.
         """
     ),
 }

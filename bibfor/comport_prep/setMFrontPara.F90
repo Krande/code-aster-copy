@@ -24,6 +24,7 @@ subroutine setMFrontPara(behaviourCrit, iFactorKeyword)
     implicit none
 !
 #include "asterc/mgis_get_double_mfront_parameter.h"
+#include "asterc/mgis_get_integer_mfront_parameter.h"
 #include "asterc/mgis_set_double_parameter.h"
 #include "asterc/mgis_set_integer_parameter.h"
 #include "asterc/mgis_set_outofbounds_policy.h"
@@ -51,14 +52,11 @@ subroutine setMFrontPara(behaviourCrit, iFactorKeyword)
     integer:: extern_type, iveriborne
     character(len=16) :: extern_addr
     real(kind=8) :: resi_inte_rela
-    integer :: iter_inte_maxi
+    integer :: iter_inte_maxi, iter_inte_mfront_maxi, vali(2)
 !
 ! --------------------------------------------------------------------------------------------------
 !
     iveriborne = behaviourCrit(iFactorKeyword)%iveriborne
-    if (associated(behaviourCrit(iFactorKeyword)%iter_inte_maxi)) then
-        iter_inte_maxi = behaviourCrit(iFactorKeyword)%iter_inte_maxi
-    end if
     extern_addr = behaviourCrit(iFactorKeyword)%paraExte%extern_addr
     extern_type = behaviourCrit(iFactorKeyword)%extern_type
 !
@@ -71,12 +69,18 @@ subroutine setMFrontPara(behaviourCrit, iFactorKeyword)
             if (resi_inte_rela .gt. resi_inte_mfront_rela) then
                 valr(1) = resi_inte_rela
                 valr(2) = resi_inte_mfront_rela
-                call utmess('A', 'COMPOR6_16', nr=2, valr=valr)
+                call utmess('I', 'COMPOR6_16', nr=2, valr=valr)
             end if
             call mgis_set_double_parameter(extern_addr, "epsilon", resi_inte_rela)
         end if
         if (associated(behaviourCrit(iFactorKeyword)%iter_inte_maxi)) then
             iter_inte_maxi = behaviourCrit(iFactorKeyword)%iter_inte_maxi
+            call mgis_get_integer_mfront_parameter(extern_addr, "iterMax", iter_inte_mfront_maxi)
+            if (iter_inte_maxi .ne. iter_inte_mfront_maxi) then
+                vali(1) = iter_inte_maxi
+                vali(2) = iter_inte_mfront_maxi
+                call utmess('I', 'COMPOR6_17', ni=2, vali=vali)
+            end if
             call mgis_set_integer_parameter(extern_addr, "iterMax", iter_inte_maxi)
         end if
         call mgis_set_outofbounds_policy(extern_addr, iveriborne)

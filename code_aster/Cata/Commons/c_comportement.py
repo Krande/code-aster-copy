@@ -340,7 +340,7 @@ def C_COMPORTEMENT(command):
                         statut="f", typ="TXM", defaut="DEBORST", into=("DEBORST", "ANALYTIQUE")
                     ),
                     RESI_INTE_MAXI=SIMP(statut="f", typ="R"),
-                    ITER_INTE_MAXI=SIMP(statut="f", typ="I", defaut=100),
+                    ITER_INTE_MAXI=SIMP(statut="f", typ="I"),
                     SYME_MATR_TANG=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="OUI"),
                 ),
                 b_mfr_thm_hidden=BLOC(
