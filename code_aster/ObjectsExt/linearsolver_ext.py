@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,6 +34,7 @@ from ..Objects import (
     PetscSolver,
 )
 from ..Utilities import injector, logger, profile
+import gc
 
 
 @injector(LinearSolver)
@@ -54,6 +55,10 @@ class ExtendedLinearSolver:
             :class:`~code_aster.Objects.LinearSolver` (derivated of):
             Instance of a solver.
         """
+        # S'assurer que les objets LinearSolver "out of scope"
+        # sont détruits. Cela permet de libérer les communs PETSc
+        # et d'éviter le bug rencontré dans la fiche 33582.
+        gc.collect()
         if not command:
             command = "STAT_NON_LINE"
         if mcf:

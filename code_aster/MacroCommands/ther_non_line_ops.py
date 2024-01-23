@@ -138,7 +138,13 @@ def ther_non_line_ops(self, **args):
         INCREMENT=args["INCREMENT"],
         REUSE=args["reuse"],
     )
+
+    if param["SOLVEUR"]["METHODE"] == "PETSC":
+        if param["SOLVEUR"]["PRE_COND"] == "LDLT_SP":
+            param["SOLVEUR"]["REAC_PRECOND"] = 0
+
     param["SCHEMA_TEMPS"] = args.get("SCHEMA_TEMPS")
+
     solver.setKeywords(**param)
 
     class PostHookHydr:
