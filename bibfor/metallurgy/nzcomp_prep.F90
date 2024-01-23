@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nzcomp_prep(jv_mater, phase_type, metaPara)
+subroutine nzcomp_prep(jvMaterCode, metaType, metaPara)
 !
     use Metallurgy_type
 !
@@ -28,8 +28,8 @@ subroutine nzcomp_prep(jv_mater, phase_type, metaPara)
 #include "asterfort/metaSteelGetParameters.h"
 #include "asterfort/metaSteelTRCGetParameters.h"
 !
-    integer, intent(in) :: jv_mater
-    character(len=16), intent(in) :: phase_type
+    integer, intent(in) :: jvMaterCode
+    character(len=16), intent(in) :: metaType
     type(META_MaterialParameters), intent(out) :: metaPara
 !
 ! --------------------------------------------------------------------------------------------------
@@ -40,9 +40,9 @@ subroutine nzcomp_prep(jv_mater, phase_type, metaPara)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  jv_mater            : coded material address
-! In  phase_type          : type of phase
-! Out metaPara            : material parameters for metallurgy
+! In  jvMaterCode      : coded material address
+! In  metaType         : type of phase
+! Out metaPara         : material parameters for metallurgy
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,12 +50,12 @@ subroutine nzcomp_prep(jv_mater, phase_type, metaPara)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    if (phase_type .eq. 'ACIER') then
+    if (metaType .eq. 'ACIER') then
 ! ----- Get material parameters for steel
-        call metaSteelGetParameters(jv_mater, metaSteelPara)
+        call metaSteelGetParameters(jvMaterCode, metaSteelPara)
 ! ----- Get material parameters for TRC curve
-        call metaSteelTRCGetParameters(jv_mater, metaSteelPara)
-    elseif (phase_type .eq. 'ZIRC') then
+        call metaSteelTRCGetParameters(jvMaterCode, metaSteelPara)
+    elseif (metaType .eq. 'ZIRC') then
 ! ----- Depending on temperature: too early here !
     else
         ASSERT(ASTER_FALSE)

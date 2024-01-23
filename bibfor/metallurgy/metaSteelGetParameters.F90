@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine metaSteelGetParameters(jv_mater, metaSteelPara)
+subroutine metaSteelGetParameters(jvMaterCode, metaSteelPara)
 !
     use Metallurgy_type
 !
@@ -27,7 +27,7 @@ subroutine metaSteelGetParameters(jv_mater, metaSteelPara)
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
 !
-    integer, intent(in) :: jv_mater
+    integer, intent(in) :: jvMaterCode
     type(META_SteelParameters), intent(inout) :: metaSteelPara
 !
 ! --------------------------------------------------------------------------------------------------
@@ -38,8 +38,8 @@ subroutine metaSteelGetParameters(jv_mater, metaSteelPara)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  jv_mater            : coded material address
-! Out metaSteelPara       : parameters for metallurgy of steel
+! In  jvMaterCode         : coded material address
+! IO  metaSteelPara       : parameters for metallurgy of steel
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -69,7 +69,7 @@ subroutine metaSteelGetParameters(jv_mater, metaSteelPara)
 ! - Get parameters for behaviour law of steel
     para_steel_vale = 0.d0
     call rcvalb(fami, kpg, spt, poum, &
-                jv_mater, ' ', 'META_ACIER', &
+                jvMaterCode, ' ', 'META_ACIER', &
                 1, 'INST', [0.d0], &
                 nb_para_steel, para_steel_name, para_steel_vale, &
                 icodre_steel, iarret=1)
@@ -84,7 +84,7 @@ subroutine metaSteelGetParameters(jv_mater, metaSteelPara)
 ! - Get parameters for austenite grain
     para_auste_vale = 0.d0
     call rcvalb(fami, kpg, spt, poum, &
-                jv_mater, ' ', 'META_ACIER', &
+                jvMaterCode, ' ', 'META_ACIER', &
                 1, 'INST', [0.d0], &
                 nb_para_auste, para_auste_name, para_auste_vale, &
                 icodre_auste, iarret=0, nan='NON')
@@ -96,7 +96,7 @@ subroutine metaSteelGetParameters(jv_mater, metaSteelPara)
         call utmess('F', 'METALLURGY1_73')
     end if
 
-! - Upadate size of martensite grain ?
+! - Update size of martensite grain ?
     if (icodre_auste(1) .eq. 0) then
         metaSteelPara%l_grain_size = ASTER_TRUE
         if (metaSteelPara%austenite%lambda0 .le. r8prem()) then

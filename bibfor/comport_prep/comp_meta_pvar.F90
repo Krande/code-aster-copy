@@ -26,6 +26,7 @@ subroutine comp_meta_pvar(model, comporMeta, comporMetaInfo)
 #include "asterc/lcdiscard.h"
 #include "asterc/lccree.h"
 #include "asterc/lcvari.h"
+#include "asterc/lcinfo.h"
 #include "asterfort/assert.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
@@ -71,21 +72,21 @@ subroutine comp_meta_pvar(model, comporMeta, comporMetaInfo)
     character(len=16), pointer :: comporInfoRela(:) => null()
     character(len=16), pointer :: comporMetaVale(:) => null()
     integer, pointer :: comporMetaDesc(:) => null()
-    !integer, pointer :: v_compor_lima(:) => null()
-    !integer, pointer :: v_compor_lima_lc(:) => null()
     integer, pointer :: comporMetaPtma(:) => null()
-    integer :: nbVale, mapNbCmpMax, mapNbZone, nbVari, nt_vari, nb_vari_maxi, nb_zone_acti
-    integer :: mapZoneNume, iCellMesh, nbCellMesh, iret, numeComp
+    integer :: iret, iDummy, idummy2
+    integer :: nbVale, mapNbCmpMax, mapNbZone, nbZoneActi
+    integer :: mapZoneNume, iCellMesh, nbCellMesh, numeComp
+    integer :: nbVari, ntVari, nbVariMaxi, nbPhase
     character(len=16) :: metaType, metaLaw
-    integer :: nbCompElem, nb_vari_max
-    character(len=16) :: compElem(2), compCodePY
+    integer :: nbCompElem
+    character(len=16) :: compElem(2), compCodePY, metaCodePY
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 
 ! - Initializations
-    nb_zone_acti = 0
+    nbZoneActi = 0
 
 ! - Access to map
     call jeveuo(comporMeta(1:19)//'.DESC', 'L', vi=comporMetaDesc)
@@ -112,20 +113,20 @@ subroutine comp_meta_pvar(model, comporMeta, comporMetaInfo)
     end do
 
 ! - Count total of internal variables
-    nt_vari = 0
-    nb_vari_max = 0
+    ntVari = 0
+    nbVariMaxi = 0
     do mapZoneNume = 1, mapNbZone
         read (comporMetaVale(mapNbCmpMax*(mapZoneNume-1)+2), '(I16)') nbVari
-        nt_vari = nt_vari+nbVari
-        nb_vari_maxi = max(nb_vari_maxi, nbVari)
+        ntVari = ntVari+nbVari
+        nbVariMaxi = max(nbVariMaxi, nbVari)
     end do
     AS_ALLOCATE(vi=zoneRead, size=mapNbZone)
-    if (nt_vari .eq. 0) then
+    if (ntVari .eq. 0) then
         goto 99
     end if
 
 ! - Create list of comportment information
-    call wkvect(comporMetaInfo(1:19)//'.RELA', 'V V K16', 2*mapNbZone, vk16=comporInfoRela)
+    call wkvect(comporMetaInfo(1:19)//'.RELA', 'V V K16', 3*mapNbZone, vk16=comporInfoRela)
 
 ! - Create list of internal variables names
     call jecrec(comporMetaInfo(1:19)//'.VARI', 'V V K16', 'NU', 'DISPERSE', 'VARIABLE', mapNbZone)
@@ -155,9 +156,18 @@ subroutine comp_meta_pvar(model, comporMeta, comporMetaInfo)
             compElem(2) = metaLaw
             call lccree(nbCompElem, compElem, compCodePY)
 
+! --------- Get number of phases
+            nbCompElem = 1
+            compElem(1) = metaType
+            call lccree(nbCompElem, compElem, metaCodePY)
+
+! --------- Get number of variables and index of behaviour
+            call lcinfo(metaCodePY, idummy, nbPhase, idummy2)
+
 ! --------- Save names of relation
-            comporInfoRela(2*(mapZoneNume-1)+1) = metaType
-            comporInfoRela(2*(mapZoneNume-1)+2) = metaLaw
+            comporInfoRela(3*(mapZoneNume-1)+1) = metaType
+            comporInfoRela(3*(mapZoneNume-1)+2) = metaLaw
+            write (comporInfoRela(3*(mapZoneNume-1)+3), '(I16)') nbPhase
 
 ! --------- Save name of internal variables
             call jeecra(jexnum(comporMetaInfo(1:19)//'.VARI', mapZoneNume), 'LONMAX', nbVari)
@@ -165,10 +175,11 @@ subroutine comp_meta_pvar(model, comporMeta, comporMetaInfo)
                         'E', vk16=comporInfoVari)
             call lcvari(compCodePY, nbVari, comporInfoVari)
             call lcdiscard(compCodePY)
+            call lcdiscard(metaCodePY)
 
 ! --------- Save current zone
             zoneRead(mapZoneNume) = 1
-            nb_zone_acti = nb_zone_acti+1
+            nbZoneActi = nbZoneActi+1
         end if
     end do
 !
@@ -178,9 +189,9 @@ subroutine comp_meta_pvar(model, comporMeta, comporMetaInfo)
     call wkvect(comporMetaInfo(1:19)//'.INFO', 'V V I', 5, vi=comporInfoInfo)
     comporInfoInfo(1) = nbCellMesh
     comporInfoInfo(2) = mapNbZone
-    comporInfoInfo(3) = nb_vari_maxi
-    comporInfoInfo(4) = nt_vari
-    comporInfoInfo(5) = nb_zone_acti
+    comporInfoInfo(3) = nbVariMaxi
+    comporInfoInfo(4) = ntVari
+    comporInfoInfo(5) = nbZoneActi
 !
     AS_DEALLOCATE(vi=zoneRead)
 !

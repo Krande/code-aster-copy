@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,6 +28,7 @@ Liste des comportements métallurgiques.
     4: _("""Affecté sur %(i1)d éléments"""),
     5: _("""  Type de phases                       : %(k1)s"""),
     6: _("""  Modèle métallurgique                 : %(k1)s"""),
+    8: _("""  Nombre de phases                     : %(i1)d"""),
     9: _("""  Nombre total de variables internes   : %(i1)d"""),
     73: _(
         """

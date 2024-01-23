@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,11 +17,11 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine comp_meta_save(mesh, compor, nb_cmp, ds_comporMeta)
+    subroutine comp_meta_save(mesh, comporMeta, nbCmp, metaPrepPara)
         use Metallurgy_type
         character(len=8), intent(in) :: mesh
-        character(len=19), intent(in) :: compor
-        integer, intent(in) :: nb_cmp
-        type(META_PrepPara), intent(in) :: ds_comporMeta
+        character(len=19), intent(in) :: comporMeta
+        integer, intent(in) :: nbCmp
+        type(META_PrepPara), intent(in) :: metaPrepPara
     end subroutine comp_meta_save
 end interface
