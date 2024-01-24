@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,8 @@ subroutine ngvlog(fami, option, typmod, ndim, nno, &
     real(kind=8), intent(in)        :: vff(nno, npg), vffb(nnob, npg)
     real(kind=8), intent(in)        :: angmas(3), ddlm(nddl), ddld(nddl), siefm(3*ndim+2, npg)
     real(kind=8), intent(in)        :: vim(lgpg, npg)
-    real(kind=8),intent(out)       :: fint(nddl),matr(nddl,nddl),siefp(3*ndim+2, npg),vip(lgpg,npg)
+    real(kind=8), intent(out)       :: fint(nddl), matr(nddl, nddl)
+    real(kind=8), intent(out)       :: siefp(3*ndim+2, npg), vip(lgpg, npg)
     aster_logical, intent(in)       :: lMatr, lVect, lSigm, lVari
     integer, intent(out)            :: codret
 !
@@ -102,6 +103,8 @@ subroutine ngvlog(fami, option, typmod, ndim, nno, &
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical, parameter               :: grand = ASTER_TRUE
+    real(kind=8), dimension(6), parameter  :: vrac2 = (/1.d0, 1.d0, 1.d0, &
+                                                        sqrt(2.d0), sqrt(2.d0), sqrt(2.d0)/)
 ! ----------------------------------------------------------------------
     type(GDLOG_DS):: gdlm, gdlp
     aster_logical :: axi, resi
@@ -216,7 +219,7 @@ subroutine ngvlog(fami, option, typmod, ndim, nno, &
         eplcp(neu+1:neu+neg) = epefgp
 
         ! Preparation des contraintes generalisees de ldc en t-
-        silcm(1:neu) = vim(lgpg-5:lgpg-6+neu, g)
+        silcm(1:neu) = vim(lgpg-5:lgpg-6+neu, g)*vrac2(1:neu)
         silcm(neu+1:neu+neg) = siefm(neu+1:neu+neg, g)
 
         ! Comportement
@@ -232,7 +235,7 @@ subroutine ngvlog(fami, option, typmod, ndim, nno, &
         ! Archivage des contraintes mecaniques en t+ (tau tilda) dans les vi
         if (lVari) then
             vip(lgpg-1:lgpg, g) = 0.d0
-            vip(lgpg-5:lgpg-6+neu, g) = silcp(1:neu)
+            vip(lgpg-5:lgpg-6+neu, g) = silcp(1:neu)/vrac2(1:neu)
         end if
 
         ! ----------------------------------------!
