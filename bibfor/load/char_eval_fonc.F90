@@ -21,7 +21,6 @@ subroutine char_eval_fonc(load, mesh, geomDime, param)
     implicit none
 !
 #include "jeveux.h"
-#include "asterc/getfac.h"
 #include "asterc/indik8.h"
 #include "asterfort/alcart.h"
 #include "asterfort/assert.h"
@@ -33,6 +32,7 @@ subroutine char_eval_fonc(load, mesh, geomDime, param)
 #include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
 #include "asterfort/fointe.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -62,19 +62,23 @@ subroutine char_eval_fonc(load, mesh, geomDime, param)
 !
     integer :: ibid, jcesdf, jcesdr, nbcmpf, nbcmpr, nbmail, igeom
     integer :: jconne, jtabco, jceslf, jceslr, ii, iadr1, iadr2, nbno, adrm
-    integer :: icompo, inoeu, nunoe, kk, iret, iad, jj, i, jvalv
-    real(kind=8) :: valr(3), fresu
-    character(len=8) :: nomval(3), nomfct, nmcmpf
-    character(len=19) :: carte, cartefonc, celsreel, celsfonc, connex
+    integer :: icompo, inoeu, nunoe, kk, iret, iad, jj, i, jvalv, n1, nbpara
+    integer :: jcesdcoq, nbcmpcoq, jceslcoq
+    real(kind=8) :: valr(4), fresu
+    character(len=8) :: nomval(4), nomfct, nmcmpf, carele
+    character(len=19) :: carte, cartefonc, celsreel, celsfonc, connex, cartco
+    character(len=19) :: celscoq
     character(len=24) :: k24bid
     character(len=8), pointer :: vncmp(:) => null()
     character(len=8), pointer :: cesvf(:) => null()
+    real(kind=8), pointer :: cesvcoq(:) => null()
     real(kind=8), pointer :: cesvr(:) => null()
     character(len=8), pointer :: cescf(:) => null()
     character(len=8), pointer :: cescr(:) => null()
-    aster_logical :: lcoor
+    character(len=8), pointer :: cesccoq(:) => null()
+    aster_logical :: lcoor, l_cara
 
-    data nomval/'X', 'Y', 'Z'/
+    data nomval/'X', 'Y', 'Z', 'EP'/
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -143,6 +147,26 @@ subroutine char_eval_fonc(load, mesh, geomDime, param)
     call jeveuo(celsreel//'.CESL', 'L', jceslr)
     call jeveuo(celsfonc//'.CESV', 'L', vk8=cesvf)
     call jeveuo(celsreel//'.CESV', 'E', vr=cesvr)
+
+!   récupération de l'épaisseur si CARA_ELEM présent
+    l_cara = ASTER_FALSE
+    call getvid(' ', 'CARA_ELEM', scal=carele, nbret=n1)
+    if (n1 .ne. 0) then
+        l_cara = ASTER_TRUE
+        cartco = carele//'.CARCOQUE'
+        call exisd('CARTE', cartco, iret)
+        ASSERT(iret .ne. 0)
+        celscoq = '&&CHAREVALFONC.COQU'
+        call carces(cartco, 'ELEM', ' ', 'V', celscoq, &
+                    'A', ibid)
+        call jeveuo(celscoq//'.CESD', 'L', jcesdcoq)
+        nbcmpcoq = zi(jcesdcoq+1)
+!       ADRESSE DES NOMS DES COMPOSANTES
+        call jeveuo(celscoq//'.CESC', 'L', vk8=cesccoq)
+        call jeveuo(celscoq//'.CESL', 'L', jceslcoq)
+        call jeveuo(celscoq//'.CESV', 'L', vr=cesvcoq)
+    end if
+
 ! --- TRAITEMENT
 !        BOUCLE SUR TOUTES LES MAILLES
 !           BOUCLE SUR LES COMPOSANTES AVEC FONCTIONS DE CELSFONC
@@ -152,6 +176,7 @@ subroutine char_eval_fonc(load, mesh, geomDime, param)
 !                 AFFECTE LE RESULTAT A LA COMPOSANTE DE CELSREEL
     do ii = 1, nbmail
         lcoor = ASTER_FALSE
+        nbpara = 3
         do jj = 1, nbcmpf
             nmcmpf = cescf(jj)
             call cesexi('C', jcesdf, jceslf, ii, 1, &
@@ -186,8 +211,18 @@ subroutine char_eval_fonc(load, mesh, geomDime, param)
                             end do
                             valr(icompo) = valr(icompo)/nbno
                         end do
+!                   epaisseur de la maille
+                        if (l_cara) then
+                            kk = indik8(cesccoq, 'EP', 1, nbcmpcoq)
+                            call cesexi('C', jcesdcoq, jceslcoq, ii, 1, &
+                                        1, kk, iad)
+                            if (iad .gt. 0) then
+                                valr(4) = cesvcoq(iad)
+                                nbpara = 4
+                            end if
+                        end if
                     end if
-                    call fointe('F', nomfct, 3, nomval, valr, &
+                    call fointe('F', nomfct, nbpara, nomval, valr, &
                                 fresu, iret)
                 else
                     cycle

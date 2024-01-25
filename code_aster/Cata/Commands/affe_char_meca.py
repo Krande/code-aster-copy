@@ -105,6 +105,7 @@ AFFE_CHAR_MECA = OPER(
     VERI_AFFE=SIMP(statut="f", typ="TXM", defaut="OUI", into=("OUI", "NON")),
     VERI_NORM=SIMP(statut="f", typ="TXM", defaut="OUI", into=("OUI", "NON")),
     MODELE=SIMP(statut="o", typ=(modele_sdaster)),
+    CARA_ELEM=SIMP(statut="f", typ=cara_elem),
     EVOL_CHAR=SIMP(
         statut="f", fr=tr("Champ de pression issu d'un autre calcul"), typ=evol_char, min=1, max=1
     ),
