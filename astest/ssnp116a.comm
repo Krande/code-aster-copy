@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -204,7 +204,7 @@ COUPLA = STAT_NON_LINE(
         RELATION_KIT=("BETON_GRANGER_V", "BETON_DOUBLE_DP"),
         ITER_INTE_MAXI=20,
         ITER_INTE_PAS=0,
-        RESI_INTE_RELA=1.0e-6,
+        RESI_INTE=1.0e-6,
         DEFORMATION="PETIT",
         TOUT="OUI",
     ),
@@ -451,7 +451,7 @@ COUPLA2 = STAT_NON_LINE(
         DEFORMATION="PETIT",
         ITER_INTE_MAXI=20,
         ITER_INTE_PAS=0,
-        RESI_INTE_RELA=1.0e-6,
+        RESI_INTE=1.0e-6,
         TOUT="OUI",
     ),
     NEWTON=_F(MATRICE="TANGENTE", REAC_INCR=1, REAC_ITER=5),
@@ -553,7 +553,7 @@ COUPLA3 = STAT_NON_LINE(
         DEFORMATION="PETIT",
         ITER_INTE_MAXI=20,
         ITER_INTE_PAS=0,
-        RESI_INTE_RELA=1.0e-6,
+        RESI_INTE=1.0e-6,
         TOUT="OUI",
     ),
     NEWTON=_F(MATRICE="TANGENTE", REAC_INCR=1, REAC_ITER=5),

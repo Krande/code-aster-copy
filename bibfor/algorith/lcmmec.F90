@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ subroutine lcmmec(coeft, ifa, nmat, nbcomm, necrci, &
 !           DGAMMA  :  DERIVEES DES VARIABLES INTERNES A T
 !           ALPHAM  : VARIABLE ECRO CINE A T
 !           ITMAX  :  ITER_INTE_MAXI
-!           TOLER  :  RESI_INTE_RELA
+!           TOLER  :  RESI_INTE
 !     OUT:
 !           DALPHA  : VARIABLE INTERNE ECROUISSAGE CINEMATIQUE
 !           IRET    : CODE RETOUR

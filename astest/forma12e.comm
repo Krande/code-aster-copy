@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -83,7 +83,7 @@ DYNADNL = DYNA_NON_LINE(
         REGU_VISC="NON",
         RELATION="VMIS_CINE_LINE",
         RESI_CPLAN_RELA=1e-06,
-        RESI_INTE_RELA=1e-06,
+        RESI_INTE=1e-06,
         TOUT="OUI",
     ),
     CONVERGENCE=_F(ARRET="OUI", ITER_GLOB_ELAS=25, ITER_GLOB_MAXI=30),

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -54,9 +54,7 @@ CHARMM = AFFE_CHAR_MECA(
 
 nonLine = STAT_NON_LINE(
     CHAM_MATER=CHMAT2,
-    COMPORTEMENT=_F(
-        ITER_INTE_MAXI=30, RELATION="MFRONT", COMPOR_MFRONT=behaviour, RESI_INTE_MAXI=1e-08
-    ),
+    COMPORTEMENT=_F(ITER_INTE_MAXI=30, RELATION="MFRONT", COMPOR_MFRONT=behaviour),
     EXCIT=_F(CHARGE=CHARMM, FONC_MULT=RAMPE),
     INCREMENT=_F(LIST_INST=L_INST),
     MODELE=model,

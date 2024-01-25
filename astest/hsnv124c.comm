@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -139,7 +139,7 @@ U = STAT_NON_LINE(
     CHAM_MATER=CHMATER,
     COMPORTEMENT=_F(
         RELATION="VMIS_CIN1_CHAB",
-        RESI_INTE_RELA=9.99999999999999955e-7,
+        RESI_INTE=9.99999999999999955e-7,
         ITER_INTE_MAXI=50,
         ITER_INTE_PAS=0,
     ),
@@ -237,7 +237,7 @@ U2 = STAT_NON_LINE(
     CHAM_MATER=CHMATER2,
     COMPORTEMENT=_F(
         RELATION="VMIS_CIN2_CHAB",
-        RESI_INTE_RELA=9.99999999999999955e-7,
+        RESI_INTE=9.99999999999999955e-7,
         ITER_INTE_MAXI=50,
         ITER_INTE_PAS=0,
     ),

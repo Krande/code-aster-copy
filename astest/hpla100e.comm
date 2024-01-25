@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -725,7 +725,7 @@ U = STAT_NON_LINE(
     CHAM_MATER=CHMAT3,
     CARA_ELEM=CARE,
     EXCIT=_F(CHARGE=CHDI3),
-    COMPORTEMENT=_F(RELATION="VMIS_ISOT_LINE", ITER_INTE_MAXI=30, RESI_INTE_RELA=1.0e-8),
+    COMPORTEMENT=_F(RELATION="VMIS_ISOT_LINE", ITER_INTE_MAXI=30, RESI_INTE=1.0e-8),
     INCREMENT=_F(LIST_INST=L_INST),
     NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
     CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-7, ITER_GLOB_MAXI=30),

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -99,7 +99,7 @@ REST = STAT_NON_LINE(
     CHAM_MATER=CHMAT1,
     CARA_ELEM=CAREL,
     EXCIT=_F(CHARGE=CHART, FONC_MULT=FONCT),
-    COMPORTEMENT=_F(RELATION="MULTIFIBRE", ITER_INTE_MAXI=50, RESI_INTE_RELA=1.0e-6),
+    COMPORTEMENT=_F(RELATION="MULTIFIBRE", ITER_INTE_MAXI=50, RESI_INTE=1.0e-6),
     INCREMENT=_F(LIST_INST=LINST),
     # RECH_LINEAIRE=_F(METHODE='MIXTE',ITER_LINE_MAXI=5),
     NEWTON=_F(MATRICE="ELASTIQUE"),
@@ -197,7 +197,7 @@ RESM = STAT_NON_LINE(
     CHAM_MATER=CHMAT2,
     CARA_ELEM=CAREL,
     EXCIT=_F(CHARGE=CHARM, FONC_MULT=FONCM),
-    COMPORTEMENT=_F(RELATION="MULTIFIBRE", ITER_INTE_MAXI=100, RESI_INTE_RELA=1.0e-6),
+    COMPORTEMENT=_F(RELATION="MULTIFIBRE", ITER_INTE_MAXI=100, RESI_INTE=1.0e-6),
     INCREMENT=_F(LIST_INST=LINSR),
     CONVERGENCE=_F(ITER_GLOB_MAXI=1000),
     RECH_LINEAIRE=_F(ITER_LINE_MAXI=5),

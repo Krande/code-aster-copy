@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -43,11 +43,7 @@ SYY = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 1.0, 200.0, TEMPSF, 200.0))
 
 U = SIMU_POINT_MAT(
     COMPORTEMENT=_F(
-        RELATION="IRRAD3M",
-        DEFORMATION="PETIT",
-        RESI_INTE_RELA=1.0e-09,
-        ITER_INTE_MAXI=120,
-        TOUT="OUI",
+        RELATION="IRRAD3M", DEFORMATION="PETIT", RESI_INTE=1.0e-09, ITER_INTE_MAXI=120, TOUT="OUI"
     ),
     MATER=ACIER,
     INCREMENT=_F(LIST_INST=DEFLIST),
@@ -170,11 +166,7 @@ STAT = STAT_NON_LINE(
     CHAM_MATER=CHMAT,
     EXCIT=(_F(CHARGE=CL), _F(CHARGE=CS, FONC_MULT=RAMPE)),
     COMPORTEMENT=_F(
-        RELATION="IRRAD3M",
-        DEFORMATION="PETIT",
-        RESI_INTE_RELA=1.0e-09,
-        ITER_INTE_MAXI=120,
-        TOUT="OUI",
+        RELATION="IRRAD3M", DEFORMATION="PETIT", RESI_INTE=1.0e-09, ITER_INTE_MAXI=120, TOUT="OUI"
     ),
     INCREMENT=_F(LIST_INST=DEFLIST),
     NEWTON=_F(REAC_INCR=1, PREDICTION="ELASTIQUE", MATRICE="TANGENTE", REAC_ITER=1),

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,9 +59,11 @@ subroutine setBehaviourParaValue(behaviourCrit, parm_theta_thm, parm_alpha_thm, 
     end if
 !
     if (present(carcriMap_)) then
-        carcriMap_(ITER_INTE_MAXI) = behaviourCrit(iFactorKeyword)%iter_inte_maxi
+        if (associated(behaviourCrit(iFactorKeyword)%iter_inte_maxi)) &
+            carcriMap_(ITER_INTE_MAXI) = dble(behaviourCrit(iFactorKeyword)%iter_inte_maxi)
         carcriMap_(TYPE_MATR_T) = behaviourCrit(iFactorKeyword)%type_matr_t
-        carcriMap_(RESI_INTE_RELA) = behaviourCrit(iFactorKeyword)%resi_inte_rela
+        if (associated(behaviourCrit(iFactorKeyword)%resi_inte)) &
+            carcriMap_(RESI_INTE) = behaviourCrit(iFactorKeyword)%resi_inte
         carcriMap_(PARM_THETA) = behaviourCrit(iFactorKeyword)%parm_theta
         carcriMap_(ITER_INTE_PAS) = behaviourCrit(iFactorKeyword)%iter_inte_pas
         carcriMap_(ALGO_INTE_R) = behaviourCrit(iFactorKeyword)%algo_inte_r
@@ -85,9 +87,11 @@ subroutine setBehaviourParaValue(behaviourCrit, parm_theta_thm, parm_alpha_thm, 
         carcriMap_(EXTE_STRAIN) = behaviourCrit(iFactorKeyword)%exte_strain
     end if
     if (present(carcriList_)) then
-        carcriList_(ITER_INTE_MAXI) = behaviourCrit(iFactorKeyword)%iter_inte_maxi
+        if (associated(behaviourCrit(iFactorKeyword)%iter_inte_maxi)) &
+            carcriList_(ITER_INTE_MAXI) = dble(behaviourCrit(iFactorKeyword)%iter_inte_maxi)
         carcriList_(TYPE_MATR_T) = behaviourCrit(iFactorKeyword)%type_matr_t
-        carcriList_(RESI_INTE_RELA) = behaviourCrit(iFactorKeyword)%resi_inte_rela
+        if (associated(behaviourCrit(iFactorKeyword)%resi_inte)) &
+            carcriList_(RESI_INTE) = behaviourCrit(iFactorKeyword)%resi_inte
         carcriList_(PARM_THETA) = behaviourCrit(iFactorKeyword)%parm_theta
         carcriList_(ITER_INTE_PAS) = behaviourCrit(iFactorKeyword)%iter_inte_pas
         carcriList_(ALGO_INTE_R) = behaviourCrit(iFactorKeyword)%algo_inte_r

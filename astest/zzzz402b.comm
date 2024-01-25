@@ -266,7 +266,7 @@ DYNA_V = DYNA_NON_LINE(
     COMPORTEMENT=(
         #                                _F(
         #                                    RELATION='Iwan',
-        #                               RESI_INTE_RELA=1E-15,
+        #                               RESI_INTE=1E-15,
         #                               ITER_INTE_MAXI=10,
         ##                               ITER_INTE_PAS=12,
         #                               GROUP_MA=mail_barrage,
@@ -274,7 +274,7 @@ DYNA_V = DYNA_NON_LINE(
         _F(RELATION="ELAS", GROUP_MA=mail_barrage),
         _F(
             RELATION="ELAS",
-            #                               RESI_INTE_RELA=1E-8,
+            #                               RESI_INTE=1E-8,
             GROUP_MA=("Fondation", "BAS", "DRO", "GAU"),
         ),
     ),

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -270,7 +270,7 @@ La raideur tangente : 1/K1 + 1/K3 + K2/(K1*K3) ne doit pas être nulle ou trop p
 DYNA_VIBRA : Pour l'élément discret de type DIS_VISC ou DIS_ECRO_TRAC
 
 L'intégration de la loi de comportement du discret pose problème.
-L'erreur est supérieure à RESI_INTE_RELA=%(r1)12.5E pour un nombre
+L'erreur est supérieure à RESI_INTE=%(r1)12.5E pour un nombre
 d'itération maximum de ITER_INTE_MAXI=%(i1)d.
 
 Conseils :

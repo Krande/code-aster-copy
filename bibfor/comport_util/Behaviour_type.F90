@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -214,8 +214,8 @@ module Behaviour_type
         integer                   :: iveriborne = 0
         aster_logical             :: l_matr_unsymm = ASTER_FALSE
         real(kind=8)              :: algo_inte_r = 0.d0
-        real(kind=8)              :: resi_inte_rela = 0.d0
-        real(kind=8)              :: iter_inte_maxi = 0.d0
+        real(kind=8), pointer     :: resi_inte => null()
+        integer, pointer          :: iter_inte_maxi => null()
         integer                   :: extern_ptr = 0
         integer                   :: extern_type = 0
         integer                   :: exte_strain = 0

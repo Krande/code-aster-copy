@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -91,7 +91,7 @@ COEF3 = DEFI_FONCTION(
 
 TSIMU = SIMU_POINT_MAT(
     INFO=2,
-    COMPORTEMENT=_F(RELATION="MohrCoulombAS", RESI_INTE_RELA=1.0e-14),
+    COMPORTEMENT=_F(RELATION="MohrCoulombAS", RESI_INTE=1.0e-14),
     MATER=SOL,
     INCREMENT=_F(LIST_INST=DEFLIST, INST_INIT=0.0, INST_FIN=30.0),
     NEWTON=_F(MATRICE="TANGENTE"),

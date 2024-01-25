@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -68,7 +68,7 @@ U = STAT_NON_LINE(
     CHAM_MATER=CHP_M,
     EXCIT=(_F(CHARGE=CHR_C, FONC_MULT=U_COMP), _F(CHARGE=C_RIGIDE)),
     COMPORTEMENT=_F(
-        RELATION="ENDO_ORTH_BETON", DEFORMATION="PETIT", RESI_INTE_RELA=1.0e-10, ITER_INTE_MAXI=20
+        RELATION="ENDO_ORTH_BETON", DEFORMATION="PETIT", RESI_INTE=1.0e-10, ITER_INTE_MAXI=20
     ),
     INCREMENT=_F(LIST_INST=L_INST, INST_FIN=1.0),
     NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
@@ -83,7 +83,7 @@ U = STAT_NON_LINE(
     CHAM_MATER=CHP_M,
     EXCIT=(_F(CHARGE=CHR_C, TYPE_CHARGE="FIXE_PILO"), _F(CHARGE=C_RIGIDE)),
     COMPORTEMENT=_F(
-        RELATION="ENDO_ORTH_BETON", DEFORMATION="PETIT", RESI_INTE_RELA=1.0e-10, ITER_INTE_MAXI=20
+        RELATION="ENDO_ORTH_BETON", DEFORMATION="PETIT", RESI_INTE=1.0e-10, ITER_INTE_MAXI=20
     ),
     INCREMENT=_F(LIST_INST=L_INST, INST_FIN=2.0),
     NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),

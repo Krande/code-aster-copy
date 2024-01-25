@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ subroutine nmcine_line_gc(fami, kpg, ksp, ndim, typmod, &
 !                   crit(2) = type de jacobien a t+dt (type_matr_comp == macomp)
 !                                   0 = en vitesse     > symétrique
 !                                   1 = en incrémental > non-symétrique
-!                   crit(3) = valeur de la tolérance de convergence (resi_inte_rela == rescrel)
+!                   crit(3) = valeur de la tolérance de convergence (resi_inte == rescrel)
 !                   crit(5) = nombre d'incréments pour le redécoupage local du pas de temps
 !                             (iter_inte_pas == itedec)
 !                                   0 = pas de redécoupage

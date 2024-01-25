@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -78,7 +78,7 @@ U_1F = STAT_NON_LINE(
     EXCIT=(_F(CHARGE=LIAISON), _F(CHARGE=TRAC_1, FONC_MULT=FCT2)),
     RECH_LINEAIRE=_F(ITER_LINE_MAXI=5, METHODE="MIXTE"),
     COMPORTEMENT=(
-        _F(RELATION="MFRONT", COMPOR_MFRONT=behaviour, GROUP_MA="CUBEDEG", RESI_INTE_MAXI=1.0e-8),
+        _F(RELATION="MFRONT", COMPOR_MFRONT=behaviour, GROUP_MA="CUBEDEG"),
         _F(RELATION="ELAS", GROUP_MA="G_CUBE"),
     ),
     INCREMENT=_F(LIST_INST=DEF2),

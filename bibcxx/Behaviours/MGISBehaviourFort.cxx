@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -20,6 +20,9 @@
 
 #include "MGISBehaviour.h"
 
+#ifdef ASTER_HAVE_MGIS
+#include "MGIS/Raise.hxx"
+#endif
 #include "Utilities/Tools.h"
 
 /* ***** Define fortran interfaces ***** */
@@ -158,11 +161,42 @@ void DEFSP( MGIS_SET_ROTATION_MATRIX, mgis_set_rotation_matrix, const char *hexi
 
 /* Parameters */
 
+void DEFSSP( MGIS_GET_DOUBLE_MFRONT_PARAMETER, mgis_get_double_mfront_parameter, const char *hexid,
+             STRING_SIZE l_id, const char *param_, STRING_SIZE l_par, ASTERDOUBLE *value ) {
+#ifdef ASTER_HAVE_MGIS
+    mgis::ExceptionHandler h = nullptr;
+    mgis::setExceptionHandler( h );
+    std::string param = strip( std::string( param_, l_par ) );
+    try {
+        *value = getPtr( hexid, l_id )->getMFrontParameter< ASTERDOUBLE, double >( param );
+    } catch ( ... ) {
+        *value = 0;
+    }
+    mgis::setExceptionHandler( MGISExceptionHandler );
+#endif
+}
+
 void DEFSSP( MGIS_SET_DOUBLE_PARAMETER, mgis_set_double_parameter, const char *hexid,
              STRING_SIZE l_id, const char *param_, STRING_SIZE l_par, ASTERDOUBLE *value ) {
 #ifdef ASTER_HAVE_MGIS
     std::string param = strip( std::string( param_, l_par ) );
     getPtr( hexid, l_id )->setParameter( param, *value );
+#endif
+}
+
+void DEFSSP( MGIS_GET_INTEGER_MFRONT_PARAMETER, mgis_get_integer_mfront_parameter,
+             const char *hexid, STRING_SIZE l_id, const char *param_, STRING_SIZE l_par,
+             ASTERINTEGER *value ) {
+#ifdef ASTER_HAVE_MGIS
+    mgis::ExceptionHandler h = nullptr;
+    mgis::setExceptionHandler( h );
+    std::string param = strip( std::string( param_, l_par ) );
+    try {
+        *value = getPtr( hexid, l_id )->getMFrontParameter< ASTERINTEGER, int >( param );
+    } catch ( ... ) {
+        *value = 0;
+    }
+    mgis::setExceptionHandler( MGISExceptionHandler );
 #endif
 }
 

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -48,7 +48,7 @@ def test_init_ops(self, TINI, TFIN, TMIL, MATER, LIST_INST, **args):
         COMPORTEMENT=_F(
             RELATION="HUJEUX",
             ITER_INTE_MAXI=20,
-            RESI_INTE_RELA=1e-8,
+            RESI_INTE=1e-8,
             ITER_INTE_PAS=-5,
             ALGO_INTE="SPECIFIQUE",
         ),
@@ -86,7 +86,7 @@ def test_init_ops(self, TINI, TFIN, TMIL, MATER, LIST_INST, **args):
         COMPORTEMENT=_F(
             RELATION="HUJEUX",
             ITER_INTE_MAXI=20,
-            RESI_INTE_RELA=1e-8,
+            RESI_INTE=1e-8,
             ITER_INTE_PAS=-5,
             ALGO_INTE="SPECIFIQUE",
         ),

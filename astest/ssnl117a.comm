@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -136,7 +136,7 @@ U1 = STAT_NON_LINE(
     EXCIT=(_F(CHARGE=CHART, FONC_MULT=FONCT), _F(CHARGE=CHARP)),
     INCREMENT=_F(LIST_INST=LINST, NUME_INST_FIN=8),
     COMPORTEMENT=(
-        _F(GROUP_MA="BC", RELATION="VMIS_ISOT_LINE", RESI_INTE_RELA=1.0e-6),
+        _F(GROUP_MA="BC", RELATION="VMIS_ISOT_LINE", RESI_INTE=1.0e-6),
         _F(GROUP_MA=("AB", "CD"), RELATION="ELAS"),
     ),
     NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=3),

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -96,7 +96,7 @@ compor = "VMIS_ISOT_TRAC"
 tabresu = TEST_COMPOR(
     OPTION="MECA",
     INFO=1,
-    COMPORTEMENT=_F(RELATION=compor, RESI_INTE_RELA=1.0e-8),
+    COMPORTEMENT=_F(RELATION=compor, RESI_INTE=1.0e-8),
     NEWTON=_F(REAC_ITER=1),
     LIST_MATER=ACIER,
     YOUNG=YOUNG,
@@ -112,7 +112,7 @@ tabres2 = TEST_COMPOR(
     INFO=1,
     MODELISATION="C_PLAN",
     SUPPORT="ELEMENT",
-    COMPORTEMENT=_F(RELATION=compor, RESI_INTE_RELA=1.0e-8),
+    COMPORTEMENT=_F(RELATION=compor, RESI_INTE=1.0e-8),
     NEWTON=_F(REAC_ITER=1),
     LIST_MATER=ACIER,
     YOUNG=YOUNG,

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,10 +17,11 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmdocv(keywordfact, iocc, algo_inte, keyword, value)
+subroutine nmdocv(keywordfact, iocc, algo_inte, keyword, l_mfront_proto, l_kit_thm, vali, valr)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
@@ -30,7 +31,10 @@ subroutine nmdocv(keywordfact, iocc, algo_inte, keyword, value)
     integer, intent(in) :: iocc
     character(len=16), intent(in) :: algo_inte
     character(len=14), intent(in) :: keyword
-    real(kind=8), intent(out) :: value
+    aster_logical, intent(in) :: l_mfront_proto
+    aster_logical, intent(in) :: l_kit_thm
+    integer, pointer, optional :: vali
+    real(kind=8), pointer, optional :: valr
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -44,57 +48,54 @@ subroutine nmdocv(keywordfact, iocc, algo_inte, keyword, value)
 ! In  iocc            : factor keyword index in COMPORTEMENT
 ! In  algo_inte       : integration algorithm
 ! In  keyword         : keyword
-! Out value           : real value of keyword
+! In  l_mfront_proto  : flag for a Mfront law in proto mode
+! In  l_kit_thm       : flag for a law within THM kit
+! Inout  vali         : pointer to the value of ITER_INTE_MAXI
+! Inout  valr         : pointer to the value of RESI_INTE
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret, vali, iter_cplan
-    real(kind=8) :: inte_rela_anal
+    integer :: value_i, iret_i, iret_r
+    real(kind=8) :: value_r
 !
 ! --------------------------------------------------------------------------------------------------
 !
     ASSERT(keyword(1:9) .eq. 'RESI_INTE' .or. keyword .eq. 'ITER_INTE_MAXI')
-    value = 0.d0
 !
 ! - Get Values
 !
-    if (keyword .eq. 'RESI_INTE_RELA') then
-        call getvr8(keywordfact, keyword, iocc=iocc, scal=value, nbret=iret)
-        if (iret .le. 0) then
-            value = 1.d-6
-        end if
-    else if (keyword .eq. 'RESI_INTE_MAXI') then
-        call getvr8(keywordfact, keyword, iocc=iocc, scal=value, nbret=iret)
-        if (iret .le. 0) then
-            value = 1.d-6
-        end if
+    iret_r = 0
+    iret_i = 0
+    if (keyword .eq. 'RESI_INTE') then
+        call getvr8(keywordfact, keyword, iocc=iocc, scal=value_r, nbret=iret_r)
+        ASSERT(l_mfront_proto .and. .not. l_kit_thm .or. iret_r .gt. 0)
     else if (keyword .eq. 'ITER_INTE_MAXI') then
-        call getvis(keywordfact, keyword, iocc=iocc, scal=vali, nbret=iret)
-        if (iret .le. 0) then
-            value = 20
-            iter_cplan = 20
-        else
-            value = vali
-            iter_cplan = vali
-        end if
+        call getvis(keywordfact, keyword, iocc=iocc, scal=value_i, nbret=iret_i)
     end if
 !
-    ASSERT(iret .ne. 0)
-!
-! - Number of iterations for plane stress
-!
-    inte_rela_anal = -iter_cplan
-!
-! - Checking
+! - ITER_INTE_MAXI makes no sense for ANALYTIQUE
 !
     if (algo_inte .eq. 'ANALYTIQUE') then
         if (keyword .eq. 'ITER_INTE_MAXI') then
-            value = inte_rela_anal
+            value_i = -value_i
         end if
     end if
 !
-    if (keyword .eq. 'RESI_INTE_RELA') then
-        if (value .gt. 1.0001d-6) then
+! - Associating pointer
+!
+    if (iret_r .gt. 0) then
+        if (.not. associated(valr)) allocate (valr)
+        valr = value_r
+    end if
+    if (iret_i .gt. 0) then
+        if (.not. associated(vali)) allocate (vali)
+        vali = value_i
+    end if
+!
+! - Checking
+!
+    if (keyword .eq. 'RESI_INTE') then
+        if (value_r .gt. 1.0001d-6) then
             call utmess('A', 'COMPOR4_62')
         end if
     end if

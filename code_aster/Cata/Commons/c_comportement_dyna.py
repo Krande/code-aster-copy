@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -206,7 +206,7 @@ def C_COMPORTEMENT_DYNA(COMMAND):  # COMMUN#
                 defaut=0.5,
             ),
             ITER_INTE_MAXI=SIMP(statut="f", typ="I", defaut=20),
-            RESI_INTE_RELA=SIMP(statut="f", typ="R", defaut=1.0e-6),
+            RESI_INTE=SIMP(statut="f", typ="R", defaut=1.0e-6),
         ),  # end b_disvisc
         #       C.2.5.2 Discrete nonlinear behavior in axial OR tangent direction
         b_disecro=BLOC(
@@ -237,7 +237,7 @@ def C_COMPORTEMENT_DYNA(COMMAND):  # COMMUN#
                 ECROUISSAGE=SIMP(statut="o", typ="TXM", into=("ISOTROPE", "CINEMATIQUE")),
             ),
             ITER_INTE_MAXI=SIMP(statut="f", typ="I", defaut=20),
-            RESI_INTE_RELA=SIMP(statut="f", typ="R", defaut=1.0e-6),
+            RESI_INTE=SIMP(statut="f", typ="R", defaut=1.0e-6),
         ),  # end b_disecro
         #       C.2.6.3 Discrete elastic nonlinear behavior in axial direction
         b_dischocelastrac=BLOC(

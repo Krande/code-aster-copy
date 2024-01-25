@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -90,14 +90,14 @@ subroutine lceiex(fami, kpg, ksp, mat, option, &
     aster_logical :: resi, rigi, elas
     integer :: regime
     real(kind=8) :: sc, gc, dc, dc1, c, h, ka, sk, val(4), tmp, ga, kap, gap, r
-    real(kind=8) :: dn, tn, t(3), ddndtn, resi_inte_rela
+    real(kind=8) :: dn, tn, t(3), ddndtn, resi_inte
     integer :: cod(4), iter_inte_maxi
     character(len=16) :: nom(4)
     character(len=1) :: poum
     data nom/'GC', 'SIGM_C', 'PENA_LAGR', 'RIGI_GLIS'/
 
     iter_inte_maxi = abs(carcri(1))
-    resi_inte_rela = carcri(3)
+    resi_inte = carcri(3)
 !
 ! OPTION CALCUL DU RESIDU OU CALCUL DE LA MATRICE TANGENTE
 !
@@ -203,7 +203,7 @@ subroutine lceiex(fami, kpg, ksp, mat, option, &
 200     continue
 !         TEST DU CRITERE
         res = sc*exp(-sc*dn/gc)+r*dn-tn
-        if (abs(res) .lt. resi_inte_rela .or. i > iter_inte_maxi) goto 210
+        if (abs(res) .lt. resi_inte .or. i > iter_inte_maxi) goto 210
         i = i+1
 !
 !         NOUVEL ESTIMATEUR
@@ -217,7 +217,7 @@ subroutine lceiex(fami, kpg, ksp, mat, option, &
 !
 210     continue
 !
-        if (abs(res) .lt. resi_inte_rela .and. i > iter_inte_maxi) then
+        if (abs(res) .lt. resi_inte .and. i > iter_inte_maxi) then
             call utmess("I", "RUPTURE2_6")
             codret = 1
             goto 9999

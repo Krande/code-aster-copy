@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -49,9 +49,7 @@ REST = STAT_NON_LINE(
     CHAM_MATER=CHMAT1,
     CARA_ELEM=CAREL,
     EXCIT=_F(CHARGE=CHART),
-    COMPORTEMENT=_F(
-        RELATION="LEMAITRE_IRRA", PARM_THETA=0.5, ITER_INTE_MAXI=50, RESI_INTE_RELA=1.0e-6
-    ),
+    COMPORTEMENT=_F(RELATION="LEMAITRE_IRRA", PARM_THETA=0.5, ITER_INTE_MAXI=50, RESI_INTE=1.0e-6),
     INCREMENT=_F(LIST_INST=LINST),
     NEWTON=_F(REAC_ITER=1),
     CONVERGENCE=_F(ITER_GLOB_MAXI=20),

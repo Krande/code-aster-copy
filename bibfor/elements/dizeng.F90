@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -89,7 +89,8 @@ subroutine dizeng(for_discret, iret)
     parameter(precis=1.0e-08)
 !
 !   paramètres issus de DEFI_MATERIAU
-    integer, parameter  :: nbcar=8, ie1=1, ie2=2, ie3=3, in3=4, ia3=5, is1=6, is2=7, is3=8
+    integer, parameter  :: nbcar = 8, ie1 = 1, ie2 = 2, ie3 = 3, in3 = 4
+    integer, parameter  :: ia3 = 5, is1 = 6, is2 = 7, is3 = 8
     character(len=16)   :: nomcar(nbcar)
     real(kind=8)        :: valcar(nbcar)
     integer             :: codcar(nbcar)
@@ -122,7 +123,8 @@ subroutine dizeng(for_discret, iret)
     call diraidklv(for_discret%nomte, raide, klv)
 !   les incréments de déplacement sont nuls
 !       ==> récupération de la matrice tangente précédente, si possible
-!       ==> si pas possible, calcul d'une tangente pas trop mauvaise, après lecture des paramètres
+!       ==> si pas possible, calcul d'une tangente pas trop mauvaise,
+!           après lecture des paramètres
     if (for_discret%lMatrPred) then
 !       tangente précédente si elle existe
         if (abs(zr(ivarim+3)) .gt. r8miem()) then
@@ -203,7 +205,7 @@ subroutine dizeng(for_discret, iret)
     call jevech('PCARCRI', 'L', icarcr)
 !   nombre d'itérations maxi  (ITER_INTE_MAXI=-20 par défaut)
     nbdecp = abs(nint(zr(icarcr)))
-!   tolérance de convergence (RESI_INTE_RELA)
+!   tolérance de convergence (RESI_INTE)
     errmax = zr(icarcr+2)
 !   comportement non-linéaire suivant le x local
 !   équations du système :

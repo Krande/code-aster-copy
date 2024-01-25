@@ -106,7 +106,7 @@ try:
         COMPORTEMENT=_F(
             RELATION="HUJEUX",
             ITER_INTE_MAXI=-5,
-            RESI_INTE_RELA=1.0e-8,
+            RESI_INTE=1.0e-8,
             ALGO_INTE="SPECIFIQUE",
             ITER_INTE_PAS=-5,
         ),

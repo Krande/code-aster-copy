@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -97,7 +97,7 @@ subroutine lc0145(fami, kpg, ksp, ndim, imate, &
     param_bet_rag%dtemps = instap-instam
     ! Nombre d'itérations maxi (ITER_INTE_MAXI)
     param_bet_rag%nbdecp = int(crit(1))
-    ! Tolérance de convergence (RESI_INTE_RELA)
+    ! Tolérance de convergence (RESI_INTE)
     param_bet_rag%errmax = crit(3)
     !
     param_bet_rag%rigi = rigi
@@ -231,8 +231,10 @@ subroutine lc0145(fami, kpg, ksp, ndim, imate, &
         mater_bet_rag%fluage_dev%n1 = valres(7)
         mater_bet_rag%fluage_dev%n2 = valres(8)
         ! vérification des données
-        isnogood = (valres(1)<=0.0).or.(valres(2)<=0.0).or.(valres(5)<=0.0).or.(valres(6)<=0.0)
-        isnogood = isnogood .or. (valres(3)*valres(4) <= 0.0) .or. (valres(7)*valres(8) <= 0.0)
+        isnogood = (valres(1) <= 0.0) .or. (valres(2) <= 0.0) &
+                   .or. (valres(5) <= 0.0) .or. (valres(6) <= 0.0)
+        isnogood = isnogood .or. (valres(3)*valres(4) <= 0.0) &
+                   .or. (valres(7)*valres(8) <= 0.0)
         if (isnogood) then
             valk(1) = 'FLUA_SPH_* FLUA_DEV_*'
             call utmess('F', 'COMPOR3_54', nk=1, valk=valk)
@@ -350,7 +352,8 @@ subroutine lc0145(fami, kpg, ksp, ndim, imate, &
             vperturb = 0.0d0
             ! La perturbation est dans la direction de l'incrément de déformation
             vperturb(ii) = sign(perturb, depsldc(ii))
-            call ldc_beton_rag(epsmeca, vperturb, sigmldc, vip, mater_bet_rag, param_bet_rag, &
+            call ldc_beton_rag(epsmeca, vperturb, sigmldc, vip, &
+                               mater_bet_rag, param_bet_rag, &
                                sigptb, viptb, dsideptb, iret)
             do jj = 1, 6
                 numerateur = abs(sigptb(jj)-sigp(jj))

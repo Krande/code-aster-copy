@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -71,7 +71,7 @@ P0 = -50e3
 U1 = SIMU_POINT_MAT(
     COMPORTEMENT=_F(
         RELATION="Iwan",
-        RESI_INTE_RELA=1e-12,
+        RESI_INTE=1e-12,
         # ITER_INTE_MAXI=200,
         # ITER_INTE_PAS=12,
     ),
@@ -91,7 +91,7 @@ IMPR_TABLE(TABLE=U1)
 U2 = SIMU_POINT_MAT(
     COMPORTEMENT=_F(
         RELATION="Iwan",
-        RESI_INTE_RELA=1e-12,
+        RESI_INTE=1e-12,
         # ITER_INTE_MAXI=200,
         # ITER_INTE_PAS=12,
     ),

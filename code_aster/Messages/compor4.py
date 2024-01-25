@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -111,7 +111,7 @@ Comportement POLYCRISTAL
     56: _(""" ... jusqu'à V%(i1)d """),
     62: _(
         """
-  -> Le critère de convergence pour intégrer le comportement 'RESI_INTE_RELA'
+  -> Le critère de convergence pour intégrer le comportement 'RESI_INTE'
      est lâche (très supérieur à la valeur par défaut).
   -> Risque & Conseil :
      Cela peut nuire à la qualité de la solution et à la convergence.

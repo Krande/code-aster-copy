@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -107,6 +107,14 @@ class MGISBehaviour : public DataStructure {
     /* Parameters */
     void setParameter( const std::string param, const ASTERDOUBLE value );
     void setParameter( const std::string param, const ASTERINTEGER value );
+
+    /// @brief Get value of keyword from MFront
+    /// @tparam T Type of return (ASTERDOUBLE or ASTERINTEGER)
+    /// @tparam U Type for cast (double for ASTERDOUBLE, int for ASTERINTEGER)
+    /// @param param keyword parameter
+    /// @return value
+    template < typename T, typename U >
+    T getMFrontParameter( const std::string param );
 
     /* Material Properties */
     int getNumberOfMaterialProperties() const;

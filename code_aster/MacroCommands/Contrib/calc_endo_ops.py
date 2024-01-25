@@ -195,7 +195,7 @@ def calc_endo_ops(
         cmprt = [comportement.cree_dict_toutes_valeurs() for comportement in COMPORTEMENT]
         for compor in cmprt:
             if compor["RELATION"] == "ENDO_FISS_EXP":
-                compor["RESI_INTE_RELA"] = da / 10
+                compor["RESI_INTE"] = da / 10
                 compor["ITER_INTE_MAXI"] = 1000
 
         # Use of the secant operator for the unilateral part of ENDO_FISS_EXP

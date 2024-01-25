@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -139,7 +139,7 @@
 !
 #define ITER_INTE_MAXI           1
 #define TYPE_MATR_T              2
-#define RESI_INTE_RELA           3
+#define RESI_INTE                3
 #define PARM_THETA               4
 #define ITER_INTE_PAS            5
 #define ALGO_INTE_R              6
@@ -175,7 +175,7 @@
 ! Slots: for generic parameters
 !
 #define ITER_INTE_MAXI  1
-#define RESI_INTE_RELA  3
+#define RESI_INTE       3
 !
 !        type of external state variables
 !

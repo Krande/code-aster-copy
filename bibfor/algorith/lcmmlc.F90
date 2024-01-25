@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ subroutine lcmmlc(nmat, nbcomm, cpmono, nfs, nsg, &
 !         YD     :  VARIABLES A T
 !         DY     :  SOLUTION ESSAI
 !         ITMAX  :  ITER_INTE_MAXI
-!         TOLER  :  RESI_INTE_RELA
+!         TOLER  :  RESI_INTE
 !         MATERF :  COEFFICIENTS MATERIAU A T+DT
 !         EXPBP  :  EXPONENTIELLES POUR LE COMPORTEMENT VISC1
 !         TAUS   :  SCISSION REDUITE SYSTEME IS

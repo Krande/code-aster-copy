@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -205,7 +205,7 @@ TEMP_CY = DEFI_FONCTION(
 SOLAS = SIMU_POINT_MAT(
     MATER=MATA,
     INFO=1,
-    COMPORTEMENT=_F(RELATION="VISC_CIN1_CHAB", ITER_INTE_MAXI=100, RESI_INTE_RELA=1.0e-9),
+    COMPORTEMENT=_F(RELATION="VISC_CIN1_CHAB", ITER_INTE_MAXI=100, RESI_INTE=1.0e-9),
     AFFE_VARC=_F(NOM_VARC="TEMP", VALE_FONC=TEMP_CY, VALE_REF=0.0),
     INCREMENT=_F(LIST_INST=LSUB),
     NEWTON=_F(REAC_ITER=1),
@@ -220,7 +220,7 @@ SOLAS = SIMU_POINT_MAT(
 SOLMF = SIMU_POINT_MAT(
     MATER=MATF,
     INFO=1,
-    COMPORTEMENT=_F(RELATION="MFRONT", COMPOR_MFRONT=behaviour, RESI_INTE_MAXI=1e-12),
+    COMPORTEMENT=_F(RELATION="MFRONT", COMPOR_MFRONT=behaviour),
     AFFE_VARC=_F(NOM_VARC="TEMP", VALE_FONC=TEMP_CY, VALE_REF=0.0),
     INCREMENT=_F(LIST_INST=LSUB),
     NEWTON=_F(REAC_ITER=1, PREDICTION="ELASTIQUE"),

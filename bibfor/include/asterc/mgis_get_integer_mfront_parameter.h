@@ -15,19 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-!
-#include "asterf_types.h"
-!
+
 interface
-    subroutine getBehaviourPara(l_mfront_proto, l_kit_thm, keywf         ,&
-                                i_comp        , algo_inte, iter_inte_maxi,&
-                                resi_inte)
-        aster_logical, intent(in) :: l_mfront_proto
-        aster_logical, intent(in) :: l_kit_thm
-        character(len=16), intent(in) :: keywf
-        integer, intent(in) :: i_comp
-        character(len=16), intent(in) :: algo_inte
-        integer, pointer :: iter_inte_maxi
-        real(kind=8), pointer :: resi_inte
-    end subroutine getBehaviourPara
+subroutine mgis_get_integer_mfront_parameter(extern_addr, nopara, value)
+    character(len=16), intent(in) :: extern_addr
+    character(len=*), intent(in) :: nopara
+    integer(kind=8), intent(out) :: value
+end subroutine mgis_get_integer_mfront_parameter
 end interface

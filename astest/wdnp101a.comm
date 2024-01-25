@@ -248,7 +248,7 @@ U[0] = STAT_NON_LINE(
         _F(
             ITER_INTE_MAXI=-5,
             ITER_INTE_PAS=-5,
-            RESI_INTE_RELA=1e-8,
+            RESI_INTE=1e-8,
             RELATION="KIT_HM",
             ALGO_INTE="SPECIFIQUE",
             RELATION_KIT=("HUJEUX", "LIQU_SATU", "HYDR_UTIL"),
@@ -542,7 +542,7 @@ for n in range(1, nbcouche - 1):
             _F(
                 ITER_INTE_MAXI=-5,
                 ITER_INTE_PAS=-5,
-                RESI_INTE_RELA=1e-8,
+                RESI_INTE=1e-8,
                 ALGO_INTE="SPECIFIQUE",
                 RELATION="KIT_HM",
                 RELATION_KIT=("HUJEUX", "LIQU_SATU", "HYDR_UTIL"),
@@ -700,7 +700,7 @@ U9B = STAT_NON_LINE(
         _F(
             ITER_INTE_MAXI=-5,
             ITER_INTE_PAS=-5,
-            RESI_INTE_RELA=1e-8,
+            RESI_INTE=1e-8,
             ALGO_INTE="SPECIFIQUE",
             RELATION="KIT_HM",
             RELATION_KIT=("HUJEUX", "LIQU_SATU", "HYDR_UTIL"),
@@ -774,7 +774,7 @@ U9B = STAT_NON_LINE(
         _F(
             ITER_INTE_MAXI=-5,
             ITER_INTE_PAS=-5,
-            RESI_INTE_RELA=1e-8,
+            RESI_INTE=1e-8,
             ALGO_INTE="SPECIFIQUE",
             RELATION="KIT_HM",
             RELATION_KIT=("HUJEUX", "LIQU_SATU", "HYDR_UTIL"),
@@ -848,7 +848,7 @@ CONT = CALCUL(
         _F(
             ITER_INTE_MAXI=-5,
             ITER_INTE_PAS=-5,
-            RESI_INTE_RELA=1e-8,
+            RESI_INTE=1e-8,
             ALGO_INTE="SPECIFIQUE",
             RELATION="KIT_HM",
             RELATION_KIT=("HUJEUX", "LIQU_SATU", "HYDR_UTIL"),
@@ -952,7 +952,7 @@ U9B1 = DYNA_NON_LINE(
         _F(
             ITER_INTE_MAXI=-5,
             ITER_INTE_PAS=-5,
-            RESI_INTE_RELA=1e-8,
+            RESI_INTE=1e-8,
             ALGO_INTE="SPECIFIQUE",
             RELATION="KIT_HM",
             RELATION_KIT=("HUJEUX", "LIQU_SATU", "HYDR_UTIL"),
@@ -1031,7 +1031,7 @@ U9B2 = DYNA_NON_LINE(
         _F(
             ITER_INTE_MAXI=-5,
             ITER_INTE_PAS=-5,
-            RESI_INTE_RELA=1e-3,
+            RESI_INTE=1e-3,
             RELATION="KIT_HM",
             ALGO_INTE="BASCULE_EXPLICITE",
             # ALGO_INTE='SPECIFIQUE',
