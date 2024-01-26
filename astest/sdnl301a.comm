@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -267,7 +267,7 @@ POST = POST_DYNA_MODA_T(RESU_GENE=TRANGENE, CHOC=_F(INST_INIT=TDEB, INST_FIN=TFI
 IMPR_TABLE(TABLE=POST)
 
 TEST_TABLE(
-    VALE_CALC=23.9833137772,
+    VALE_CALC=23.9803025869,
     NOM_PARA="RMS_T_TOTAL",
     TABLE=POST,
     FILTRE=(_F(NOM_PARA="CALCUL", VALE_K="FORCE_NORMALE"), _F(NOM_PARA="NOEUD", VALE_K="N2")),
@@ -584,7 +584,7 @@ POST2 = POST_DYNA_MODA_T(RESU_GENE=TRANGEN2, CHOC=_F(INST_INIT=TDEB, INST_FIN=TF
 IMPR_TABLE(TABLE=POST2)
 
 TEST_TABLE(
-    VALE_CALC=24.5382986473,
+    VALE_CALC=24.5347532050,
     NOM_PARA="RMS_T_TOTAL",
     TABLE=POST2,
     FILTRE=(_F(NOM_PARA="CALCUL", VALE_K="FORCE_NORMALE"), _F(NOM_PARA="NOEUD", VALE_K="N2")),
