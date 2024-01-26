@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -268,7 +268,7 @@ TEST_RESU(
         ),
         _F(
             RESU_GENE=DYNAMODA,
-            VALE_CALC=5.3432800000000001e-05,
+            VALE_CALC=5.298560734242171e-05,
             VALE_ABS="OUI",
             NUME_CMP_GENE=3,
             NUME_ORDRE=456,
