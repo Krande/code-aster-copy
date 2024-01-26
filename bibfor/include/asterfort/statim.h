@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,8 +20,8 @@
 !
 interface
     subroutine statim(nbobst, nbpt, temps, fcho, vgli,&
-                      vint, wk1, wk2, wk3, tdebut,&
-                      tfin, nbloc, offset, trepos, nbclas,&
+                      vint, wk1, wk2, wk3,&
+                      nbloc, offset, trepos, nbclas,&
                       noecho, intitu, nomres, nbvint)
         integer :: nbobst
         integer :: nbpt
@@ -32,8 +32,6 @@ interface
         real(kind=8) :: wk1(*)
         real(kind=8) :: wk2(*)
         real(kind=8) :: wk3(*)
-        real(kind=8) :: tdebut
-        real(kind=8) :: tfin
         integer :: nbloc
         real(kind=8) :: offset
         real(kind=8) :: trepos
