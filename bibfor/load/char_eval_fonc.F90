@@ -34,10 +34,12 @@ subroutine char_eval_fonc(load, mesh, geomDime, param)
 #include "asterfort/fointe.h"
 #include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/nocart.h"
+#include "asterfort/rccome.h"
 !
 
     character(len=8), intent(in) :: load, mesh
@@ -63,22 +65,25 @@ subroutine char_eval_fonc(load, mesh, geomDime, param)
     integer :: ibid, jcesdf, jcesdr, nbcmpf, nbcmpr, nbmail, igeom
     integer :: jconne, jtabco, jceslf, jceslr, ii, iadr1, iadr2, nbno, adrm
     integer :: icompo, inoeu, nunoe, kk, iret, iad, jj, i, jvalv, n1, nbpara
-    integer :: jcesdcoq, nbcmpcoq, jceslcoq
-    real(kind=8) :: valr(4), fresu
-    character(len=8) :: nomval(4), nomfct, nmcmpf, carele
+    integer :: jcesdcoq, nbcmpcoq, jceslcoq, jcesdmat, jceslmat, icodn
+    integer :: jvalk, jvalr, nbcste, icste
+    real(kind=8) :: valr(5), fresu
+    character(len=8) :: nomval(5), nomfct, nmcmpf, carele, chmat
     character(len=19) :: carte, cartefonc, celsreel, celsfonc, connex, cartco
-    character(len=19) :: celscoq
-    character(len=24) :: k24bid
+    character(len=19) :: celscoq, cartmat, celsmat
+    character(len=24) :: k24bid, rcvalk, rcvalr
+    character(len=11) :: k11
     character(len=8), pointer :: vncmp(:) => null()
     character(len=8), pointer :: cesvf(:) => null()
     real(kind=8), pointer :: cesvcoq(:) => null()
+    character(len=8), pointer :: cesvmat(:) => null()
     real(kind=8), pointer :: cesvr(:) => null()
     character(len=8), pointer :: cescf(:) => null()
     character(len=8), pointer :: cescr(:) => null()
     character(len=8), pointer :: cesccoq(:) => null()
-    aster_logical :: lcoor, l_cara
+    aster_logical :: lcoor, l_cara, l_mater
 
-    data nomval/'X', 'Y', 'Z', 'EP'/
+    data nomval/'X', 'Y', 'Z', 'EP', 'RHO'/
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -166,7 +171,25 @@ subroutine char_eval_fonc(load, mesh, geomDime, param)
         call jeveuo(celscoq//'.CESL', 'L', jceslcoq)
         call jeveuo(celscoq//'.CESV', 'L', vr=cesvcoq)
     end if
-
+!   récupération de RHO si CHAM_MATER présent
+    l_mater = ASTER_FALSE
+    call getvid(' ', 'CHAM_MATER', scal=chmat, nbret=n1)
+    if (n1 .ne. 0) then
+        l_mater = ASTER_TRUE
+        cartmat = chmat//'.CHAMP_MAT '
+        call exisd('CARTE', cartmat, iret)
+        ASSERT(iret .ne. 0)
+!        call etenca(carte, ligrmo, iret)
+        celsmat = '&&CHAREVALFONC.MATE'
+        call carces(cartmat, 'ELEM', ' ', 'V', celsmat, &
+                    'A', ibid)
+        call jeveuo(celsmat//'.CESD', 'L', jcesdmat)
+!        nbcmpcoq = zi(jcesdcoq+1)
+!       ADRESSE DES NOMS DES COMPOSANTES
+!        call jeveuo(celscoq//'.CESC', 'L', vk8=cesccoq)
+        call jeveuo(celsmat//'.CESL', 'L', jceslmat)
+        call jeveuo(celsmat//'.CESV', 'L', vk8=cesvmat)
+    end if
 ! --- TRAITEMENT
 !        BOUCLE SUR TOUTES LES MAILLES
 !           BOUCLE SUR LES COMPOSANTES AVEC FONCTIONS DE CELSFONC
@@ -211,14 +234,36 @@ subroutine char_eval_fonc(load, mesh, geomDime, param)
                             end do
                             valr(icompo) = valr(icompo)/nbno
                         end do
-!                   epaisseur de la maille
+!                       epaisseur de la maille
                         if (l_cara) then
                             kk = indik8(cesccoq, 'EP', 1, nbcmpcoq)
                             call cesexi('C', jcesdcoq, jceslcoq, ii, 1, &
                                         1, kk, iad)
                             if (iad .gt. 0) then
-                                valr(4) = cesvcoq(iad)
-                                nbpara = 4
+                                nbpara = nbpara+1
+                                valr(nbpara) = cesvcoq(iad)
+                            end if
+                        end if
+!                       rho
+                        if (l_mater) then
+                            call cesexi('C', jcesdmat, jceslmat, ii, 1, &
+                                        1, 1, iad)
+                            if (iad .gt. 0) then
+                                call rccome(cesvmat(iad), 'ELAS', icodn, &
+                                            k11_ind_nomrc=k11)
+                                if (icodn .eq. 0) then
+                                    rcvalk = cesvmat(iad)//k11//'.VALK'
+                                    rcvalr = cesvmat(iad)//k11//'.VALR'
+                                    call jeveuo(rcvalk, 'L', jvalk)
+                                    call jeveuo(rcvalr, 'L', jvalr)
+                                    call jelira(rcvalr, 'LONMAX', nbcste)
+                                    do icste = 1, nbcste
+                                        if (zk16(jvalk+icste-1) .eq. 'RHO') then
+                                            nbpara = nbpara+1
+                                            valr(nbpara) = zr(jvalr+icste-1)
+                                        end if
+                                    end do
+                                end if
                             end if
                         end if
                     end if
@@ -240,6 +285,8 @@ subroutine char_eval_fonc(load, mesh, geomDime, param)
 !     DESTRUCTION DES CHELEM_S
     call detrsd('CHAM_ELEM_S', celsreel)
     call detrsd('CHAM_ELEM_S', celsfonc)
+    if (l_cara) call detrsd('CHAM_ELEM_S', celscoq)
+    if (l_mater) call detrsd('CHAM_ELEM_S', celsmat)
 
     call jedema()
 end subroutine
