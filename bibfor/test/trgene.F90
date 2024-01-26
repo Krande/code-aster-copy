@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -456,7 +456,13 @@ subroutine trgene(ific, nocc)
             call getvr8('GENE', 'FREQ', iocc=iocc, scal=freq, nbret=n1)
             if (n1 .eq. 0) then
                 call getvis('GENE', 'NUME_ORDRE', iocc=iocc, scal=numord, nbret=n1)
-                freq = zr(jfreq+numord-1)
+                call jeveuo(resu19//'.ORDR', 'L', jordr)
+                do i = 1, nbfreq
+                    if (numord .eq. zi(jordr+i-1)) then
+                        freq = zr(jfreq+i-1)
+                        exit
+                    endif
+                enddo
             end if
 !
             call jeexin(resu19//'.'//nsym(1:4), iret)
@@ -545,7 +551,13 @@ subroutine trgene(ific, nocc)
             call getvr8('GENE', 'INST', iocc=iocc, scal=temps, nbret=n1)
             if (n1 .eq. 0) then
                 call getvis('GENE', 'NUME_ORDRE', iocc=iocc, scal=numord, nbret=n1)
-                temps = zr(jinst+numord-1)
+                call jeveuo(resu19//'.ORDR', 'L', jordr)
+                do i = 1, nbinst
+                    if (numord .eq. zi(jordr+i-1)) then
+                        temps = zr(jinst+i-1)
+                        exit
+                    endif
+                enddo
             end if
 !
             call jeexin(resu19//'.'//nsym(1:4), iret)
