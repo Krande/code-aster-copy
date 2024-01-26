@@ -20,6 +20,9 @@ subroutine trgene(ific, nocc)
 !     COMMANDE:  TEST_RESU      MOT CLE FACTEUR "GENE"
 ! ----------------------------------------------------------------------
 ! aslint: disable=W1501
+
+    use DynaGene_module
+
     implicit none
     integer, intent(in) :: ific
     integer, intent(in) :: nocc
@@ -56,10 +59,10 @@ subroutine trgene(ific, nocc)
     character(len=6) :: nompro
     parameter(nompro='TRGENE')
     integer :: vali, iocc, iret, jlue, jordr, jdesc, jrefe, n1, n2, n3
-    integer :: nbordr, numord, ncmp, nbinst, im, jinst, jcham, nbmode, jvecg
+    integer :: nbordr, numord, ncmp, nbinst, im, jcham, nbmode, jvecg
     integer :: jnume, jdeeq, istru, i, irefr, irefi, irefc, nref, nl1, nl2
     integer :: jfreq, nbfreq
-    integer :: n1r, n2r, n3r, irefrr, irefir, irefcr
+    integer :: n1r, n2r, n3r, irefrr, irefir, irefcr, i_cham, i_bloc
     real(kind=8) :: valr, epsi, epsir, prec, temps, freq
     complex(kind=8) :: valc
     character(len=1) :: typres
@@ -75,6 +78,12 @@ subroutine trgene(ific, nocc)
     aster_logical :: lref
     aster_logical :: skip
     real(kind=8) :: ordgrd
+    integer, pointer :: ordr(:) => null()
+    real(kind=8), pointer :: disc(:) => null()
+    real(kind=8), pointer :: resu(:) => null()
+
+    type(DynaGene) :: dyna_gene
+
 !     ------------------------------------------------------------------
     call jemarq()
     motcle = 'RESU_GENE'
@@ -461,8 +470,8 @@ subroutine trgene(ific, nocc)
                     if (numord .eq. zi(jordr+i-1)) then
                         freq = zr(jfreq+i-1)
                         exit
-                    endif
-                enddo
+                    end if
+                end do
             end if
 !
             call jeexin(resu19//'.'//nsym(1:4), iret)
@@ -541,38 +550,52 @@ subroutine trgene(ific, nocc)
             call jedetr('&&TRGENE.CHAMP')
 !
         else if (tysd .eq. 'TRAN_GENE') then
+
+            call dyna_gene%init(resu19(1:8))
+
             call getvtx('GENE', 'NOM_CHAM', iocc=iocc, scal=nsym, nbret=n1)
             call getvis('GENE', 'NUME_CMP_GENE', iocc=iocc, scal=ncmp, nbret=n1)
 !
             interp = 'NON'
-            call jeveuo(resu19//'.DISC', 'L', jinst)
-            call jelira(resu19//'.DISC', 'LONMAX', nbinst)
 !
             call getvr8('GENE', 'INST', iocc=iocc, scal=temps, nbret=n1)
             if (n1 .eq. 0) then
                 call getvis('GENE', 'NUME_ORDRE', iocc=iocc, scal=numord, nbret=n1)
-                call jeveuo(resu19//'.ORDR', 'L', jordr)
+                call dyna_gene%get_values_by_ordr(dyna_gene%ordr, numord, length=nbinst, vi=ordr)
+                call dyna_gene%get_current_bloc(dyna_gene%ordr, i_bloc)
+                call dyna_gene%get_values(dyna_gene%disc, i_bloc, vr=disc)
                 do i = 1, nbinst
-                    if (numord .eq. zi(jordr+i-1)) then
-                        temps = zr(jinst+i-1)
+                    if (numord .eq. ordr(i)) then
+                        temps = disc(i)
                         exit
-                    endif
-                enddo
+                    end if
+                end do
+            else
+                call dyna_gene%get_values_by_disc(dyna_gene%disc, temps, length=nbinst, vr=disc)
+                call dyna_gene%get_current_bloc(dyna_gene%disc, i_bloc)
             end if
 !
-            call jeexin(resu19//'.'//nsym(1:4), iret)
-            if (iret .eq. 0) then
-                call utmess('F', 'CALCULEL6_99', sk=resu19)
+            if (nsym(1:4) .eq. "DEPL") then
+                i_cham = dyna_gene%depl
+            else if (nsym(1:4) .eq. "VITE") then
+                i_cham = dyna_gene%vite
+            else
+                ASSERT(.false.)
             end if
-            call jeveuo(resu19//'.'//nsym(1:4), 'L', jcham)
+            call dyna_gene%get_current_bloc(dyna_gene%disc, i_bloc)
+            call dyna_gene%get_values(i_cham, i_bloc, vr=resu)
+
             call jeveuo(resu19//'.DESC', 'L', jdesc)
             nbmode = zi(jdesc+2-1)
             call wkvect('&&TRGENE.CHAMP', 'V V R', nbmode, jvecg)
-            call extrac(interp, prec, crit2, nbinst, zr(jinst), &
-                        temps, zr(jcham), nbmode, zr(jvecg), iret)
+            call extrac(interp, prec, crit2, nbinst, disc, &
+                        temps, resu, nbmode, zr(jvecg), iret)
             if (iret .ne. 0) then
                 call utmess('F', 'CALCULEL6_2', sk=resu19)
             end if
+
+            call dyna_gene%free
+
             valr = zr(jvecg+ncmp-1)
 !
             lign1(1:21) = '---- '//motcle(1:9)
