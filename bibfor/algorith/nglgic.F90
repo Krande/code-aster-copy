@@ -53,7 +53,8 @@ subroutine nglgic(fami, option, typmod, ndim, nno, &
     real(kind=8), intent(in)        :: vff(nno, npg), vffb(nnob, npg)
     real(kind=8), intent(in)        :: angmas(3), ddlm(nddl), ddld(nddl), siefm(3*ndim+4, npg)
     real(kind=8), intent(in)        :: vim(lgpg, npg)
-    real(kind=8),intent(out)        :: fint(nddl),matr(nddl,nddl),siefp(3*ndim+4, npg),vip(lgpg,npg)
+    real(kind=8), intent(out)        :: fint(nddl), matr(nddl, nddl)
+    real(kind=8), intent(out)        :: siefp(3*ndim+4, npg), vip(lgpg, npg)
     aster_logical, intent(in)       :: lMatr, lVect, lSigm, lVari
     integer, intent(out)            :: codret
 !
@@ -144,7 +145,8 @@ subroutine nglgic(fami, option, typmod, ndim, nno, &
     real(kind=8)  :: silcm(3*ndim+2), silcp(3*ndim+2)
     real(kind=8)  :: dsde(3*ndim+2, 3*ndim+2)
     real(kind=8)  :: t(2*ndim)
- real(kind=8)  :: dee(2*ndim, 2*ndim), deg(2*ndim, 2+ndim), dge(2+ndim, 2*ndim), dgg(2+ndim, 2+ndim)
+    real(kind=8)  :: dee(2*ndim, 2*ndim), deg(2*ndim, 2+ndim)
+    real(kind=8)  :: dge(2+ndim, 2*ndim), dgg(2+ndim, 2+ndim)
     real(kind=8)  :: kefuu(2*ndim, 2*ndim), kefug(2*ndim, 2+ndim), kefuq(2*ndim, 2)
     real(kind=8)  :: kefgu(2+ndim, 2*ndim), kefgg(2+ndim, 2+ndim), kefgq(2+ndim, 2)
     real(kind=8)  :: kefqu(2, 2*ndim), kefqg(2, 2+ndim), kefqq(2, 2)
