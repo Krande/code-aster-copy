@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -97,6 +97,8 @@ subroutine poslog(lCorr, lMatr, lSigm, lVari, &
     real(kind=8) :: tl(3, 3, 3, 3), tls(6, 6), epse(4), d1(4, 4)
     real(kind=8) :: feta(4), xi(3, 3), me(3, 3, 3, 3)
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
+    real(kind=8), dimension(6), parameter  :: vrac2 = (/1.d0, 1.d0, 1.d0 &
+                                                        , rac2, rac2, rac2/)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -186,7 +188,7 @@ subroutine poslog(lCorr, lMatr, lSigm, lVari, &
 ! - On stocke TP comme variable interne
     if (lVari) then
         vip(lgpg-1:lgpg) = 0.d0
-        call dcopy(2*ndim, tlogCurr, 1, vip(lgpg-6+1), 1)
+        call dcopy(2*ndim, tlogCurr/vrac2, 1, vip(lgpg-6+1), 1)
     end if
 !
 999 continue

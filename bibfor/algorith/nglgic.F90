@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,7 +53,8 @@ subroutine nglgic(fami, option, typmod, ndim, nno, &
     real(kind=8), intent(in)        :: vff(nno, npg), vffb(nnob, npg)
     real(kind=8), intent(in)        :: angmas(3), ddlm(nddl), ddld(nddl), siefm(3*ndim+4, npg)
     real(kind=8), intent(in)        :: vim(lgpg, npg)
-    real(kind=8),intent(out)       :: fint(nddl),matr(nddl,nddl),siefp(3*ndim+4, npg),vip(lgpg,npg)
+    real(kind=8), intent(out)        :: fint(nddl), matr(nddl, nddl)
+    real(kind=8), intent(out)        :: siefp(3*ndim+4, npg), vip(lgpg, npg)
     aster_logical, intent(in)       :: lMatr, lVect, lSigm, lVari
     integer, intent(out)            :: codret
 !
@@ -105,6 +106,8 @@ subroutine nglgic(fami, option, typmod, ndim, nno, &
 !
     aster_logical, parameter               :: grand = ASTER_TRUE
     real(kind=8), parameter                :: tiers = 1.d0/3.d0
+    real(kind=8), dimension(6), parameter  :: vrac2 = (/1.d0, 1.d0, 1.d0, &
+                                                        sqrt(2.d0), sqrt(2.d0), sqrt(2.d0)/)
     real(kind=8), dimension(6), parameter  :: kron = (/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/)
     real(kind=8), dimension(6), parameter  :: projhyd = (/tiers, tiers, tiers, 0.d0, 0.d0, 0.d0/)
     real(kind=8), dimension(6, 6), parameter:: projdev = reshape( &
@@ -142,7 +145,8 @@ subroutine nglgic(fami, option, typmod, ndim, nno, &
     real(kind=8)  :: silcm(3*ndim+2), silcp(3*ndim+2)
     real(kind=8)  :: dsde(3*ndim+2, 3*ndim+2)
     real(kind=8)  :: t(2*ndim)
- real(kind=8)  :: dee(2*ndim, 2*ndim), deg(2*ndim, 2+ndim), dge(2+ndim, 2*ndim), dgg(2+ndim, 2+ndim)
+    real(kind=8)  :: dee(2*ndim, 2*ndim), deg(2*ndim, 2+ndim)
+    real(kind=8)  :: dge(2+ndim, 2*ndim), dgg(2+ndim, 2+ndim)
     real(kind=8)  :: kefuu(2*ndim, 2*ndim), kefug(2*ndim, 2+ndim), kefuq(2*ndim, 2)
     real(kind=8)  :: kefgu(2+ndim, 2*ndim), kefgg(2+ndim, 2+ndim), kefgq(2+ndim, 2)
     real(kind=8)  :: kefqu(2, 2*ndim), kefqg(2, 2+ndim), kefqq(2, 2)
@@ -258,7 +262,7 @@ subroutine nglgic(fami, option, typmod, ndim, nno, &
         eplcp(neu+1:neu+neg) = epefgp
 
         ! Preparation des contraintes generalisees de ldc en t-
-        silcm(1:neu) = vim(lgpg-5:lgpg-6+neu, g)
+        silcm(1:neu) = vim(lgpg-5:lgpg-6+neu, g)*vrac2(1:neu)
         silcm(neu+1:neu+neg) = siefm(neu+1:neu+neg, g)
 
         ! Comportement
@@ -274,7 +278,7 @@ subroutine nglgic(fami, option, typmod, ndim, nno, &
         ! Archivage des contraintes mecaniques en t+ (tau tilda) dans les vi
         if (lVari) then
             vip(lgpg-1:lgpg, g) = 0.d0
-            vip(lgpg-5:lgpg-6+neu, g) = silcp(1:neu)
+            vip(lgpg-5:lgpg-6+neu, g) = silcp(1:neu)/vrac2(1:neu)
         end if
 
         ! ----------------------------------------!

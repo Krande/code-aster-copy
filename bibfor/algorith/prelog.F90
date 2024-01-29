@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,6 @@ subroutine prelog(ndim, lgpg, vim, gn, lamb, &
 #include "asterfort/deflog.h"
 #include "asterfort/lcdetf.h"
 #include "asterc/r8prem.h"
-#include "blas/dcopy.h"
 !
     integer, intent(in) :: ndim, lgpg
     real(kind=8), intent(in) :: vim(lgpg)
@@ -61,6 +60,8 @@ subroutine prelog(ndim, lgpg, vim, gn, lamb, &
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: epslCurr(6), detf
+    real(kind=8), dimension(6), parameter  :: vrac2 = (/1.d0, 1.d0, 1.d0 &
+                                                        , sqrt(2.d0), sqrt(2.d0), sqrt(2.d0)/)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -98,7 +99,7 @@ subroutine prelog(ndim, lgpg, vim, gn, lamb, &
     end if
 
 ! - Get previous stress from internal state variables
-    call dcopy(2*ndim, vim(lgpg-6+1), 1, tlogPrev, 1)
+    tlogPrev(1:2*ndim) = vim(lgpg-6+1:lgpg-6+1+2*ndim)*vrac2
 !
 999 continue
 !
