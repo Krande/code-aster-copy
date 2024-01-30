@@ -50,6 +50,25 @@ from ..CodeCommands import (
 
 DEBUG = False
 
+import time
+
+
+class Timer:
+    def __init__(self, name="", level=0):
+        self.name = name
+        self.level = level
+
+    def __enter__(self):
+        self.start = time.time()
+        return self
+
+    def __exit__(self, *args):
+        self.end = time.time()
+        self.interval = self.end - self.start
+        print("-" * (70 - 10 * min(6, self.level)), flush=True)
+        print(f"Time for <{self.name}> : {self.interval:.2f} s", flush=True)
+        print("-" * (70 - 10 * min(6, self.level)), flush=True)
+
 
 def debugPrint(*args, **kwargs):
     if DEBUG:
@@ -429,54 +448,57 @@ class SubStructure:
 
         createOutputFile = True
 
-        for iName, iDispl, iNodes in zip(self.lIName, self.lIDispl, self.lINodes):
-            for displ in iDispl:
-                Cham = CREA_CHAMP(
-                    MODELE=model,
-                    NUME_DDL=dofNumbering,
-                    PROL_ZERO="OUI",
-                    OPERATION="AFFE",
-                    TYPE_CHAM="NOEU_DEPL_R",
-                    AFFE=(_F(TOUT="OUI", NOM_CMP=("DX",), VALE=(0.0)),),
-                )
+        with Timer("computeInterfaceModes"):
+            for iName, iDispl, iNodes in zip(self.lIName, self.lIDispl, self.lINodes):
+                for displ in iDispl:
+                    Cham = CREA_CHAMP(
+                        MODELE=model,
+                        NUME_DDL=dofNumbering,
+                        PROL_ZERO="OUI",
+                        OPERATION="AFFE",
+                        TYPE_CHAM="NOEU_DEPL_R",
+                        AFFE=(_F(TOUT="OUI", NOM_CMP=("DX",), VALE=(0.0)),),
+                    )
 
-                for i1, no in enumerate(iNodes):
-                    dictDofValues = {}
-                    dictDofValues["NOEUD"] = int(no) + 1
-                    for j1, comp in enumerate(["DX", "DY", "DZ", "PRES"]):
-                        dictDofValues[comp] = displ[i1, j1]
-                    try:
-                        Cham.setDirichletBC(**dictDofValues)
-                    except Exception as e:
-                        print(
-                            "Erreur avec noeud {} comp {} et valeur {}".format(
-                                no + 1, comp, displ[i1, j1]
-                            )
+                    with Timer("setDirichletBC total", level=1):
+                        for i1, no in enumerate(iNodes):
+                            dictDofValues = {}
+                            dictDofValues["NOEUD"] = int(no) + 1
+                            for j1, comp in enumerate(["DX", "DY", "DZ", "PRES"]):
+                                dictDofValues[comp] = displ[i1, j1]
+                            try:
+                                with Timer("setDirichletBC", level=2):
+                                    Cham.setDirichletBC(**dictDofValues)
+                            except Exception as e:
+                                print(
+                                    "Erreur avec noeud {} comp {} et valeur {}".format(
+                                        no + 1, comp, displ[i1, j1]
+                                    )
+                                )
+                                print(e)
+                                pass
+
+                    resu = RESOUDRE(MATR=self.stiffness, CHAM_NO=Cham, RESI_RELA=-1.0)
+
+                    if createOutputFile:
+                        interfModes = CREA_RESU(
+                            OPERATION="AFFE",
+                            TYPE_RESU="MULT_ELAS",
+                            NOM_CHAM="DEPL",
+                            AFFE=_F(CHAM_GD=resu, MODELE=model),
                         )
-                        print(e)
-                        pass
+                        createOutputFile = False
+                    else:
+                        interfModes = CREA_RESU(
+                            reuse=interfModes,
+                            OPERATION="AFFE",
+                            TYPE_RESU="MULT_ELAS",
+                            NOM_CHAM="DEPL",
+                            AFFE=_F(CHAM_GD=resu, MODELE=model),
+                        )
+                    interfModes.userName = "Resu_{}".format(iName)
 
-                resu = RESOUDRE(MATR=self.stiffness, CHAM_NO=Cham, RESI_RELA=-1.0)
-
-                if createOutputFile:
-                    interfModes = CREA_RESU(
-                        OPERATION="AFFE",
-                        TYPE_RESU="MULT_ELAS",
-                        NOM_CHAM="DEPL",
-                        AFFE=_F(CHAM_GD=resu, MODELE=model),
-                    )
-                    createOutputFile = False
-                else:
-                    interfModes = CREA_RESU(
-                        reuse=interfModes,
-                        OPERATION="AFFE",
-                        TYPE_RESU="MULT_ELAS",
-                        NOM_CHAM="DEPL",
-                        AFFE=_F(CHAM_GD=resu, MODELE=model),
-                    )
-                interfModes.userName = "Resu_{}".format(iName)
-
-            self.iModes = interfModes
+                self.iModes = interfModes
 
         return interfModes
 
@@ -572,20 +594,25 @@ class Structure:
         lNumberOfPhysicalEqs = []
 
         # Compute Reduced Matrices
-        Kred, Mred, allModes = self._computeReducedOperators(
-            lNumberOfPhysicalEqs, lIndexOfInterfModes, lNumberOfInterfModes
-        )
+        with Timer("_computeReducedOperators"):
+            Kred, Mred, allModes = self._computeReducedOperators(
+                lNumberOfPhysicalEqs, lIndexOfInterfModes, lNumberOfInterfModes
+            )
         totalNumberOfModes = allModes.shape[1]
         debugPrint(Kred=Kred)
         debugPrint(Mred=Mred)
 
         # Kernel of the constraint matrix
-        T = self._computeKernelBasis(lNumberOfInterfModes, totalNumberOfModes, lIndexOfInterfModes)
+        with Timer("_computeKernelBasis"):
+            T = self._computeKernelBasis(
+                lNumberOfInterfModes, totalNumberOfModes, lIndexOfInterfModes
+            )
         debugPrint(T=T)
 
         # Projection on the kernel
-        Kredred = T.T.dot(Kred.dot(T))
-        Mredred = T.T.dot(Mred.dot(T))
+        with Timer("Projection on the kernel"):
+            Kredred = T.T.dot(Kred.dot(T))
+            Mredred = T.T.dot(Mred.dot(T))
         self.Kredred = Kredred
         self.Mredred = Mredred
         debugPrint(Kredred=Kredred)
@@ -759,35 +786,40 @@ class Structure:
         decalage = 0
 
         for sub in self.lSubS:
-            stiff = sub.stiffness
-            mass = sub.mass
-            values, idx, jdx, neq = stiff.getValuesWithDescription()
-            K = scipy.sparse.coo_matrix((values, (idx, jdx)), shape=(neq, neq))
-            values, idx, jdx, neq = mass.getValuesWithDescription()
-            M = scipy.sparse.coo_matrix((values, (idx, jdx)), shape=(neq, neq))
-            lNumberOfPhysicalEqs.append(neq)
+            with Timer(f"computeReducedOperators {sub.mesh.getName()}", level=1):
+                with Timer(f"Extracting matrices", level=2):
+                    stiff = sub.stiffness
+                    mass = sub.mass
+                    values, idx, jdx, neq = stiff.getValuesWithDescription()
+                    K = scipy.sparse.coo_matrix((values, (idx, jdx)), shape=(neq, neq))
+                    values, idx, jdx, neq = mass.getValuesWithDescription()
+                    M = scipy.sparse.coo_matrix((values, (idx, jdx)), shape=(neq, neq))
+                    lNumberOfPhysicalEqs.append(neq)
 
-            numb = sub.dofNumbering
-            lag = np.array(numb.getLagrangeDOFs())
+                numb = sub.dofNumbering
+                lag = np.array(numb.getLagrangeDOFs())
 
-            modes = sub.modes
-            em = [modes.getField("DEPL", r).getValues() for r in modes.getIndexes()]
-            decalage += len(em)
-            em = np.vstack(em).T
-            em[lag, :] = 0.0  # mise a zero des Lagrange
+                with Timer(f"Extracting modes", level=2):
+                    modes = sub.modes
+                    em = [modes.getField("DEPL", r).getValues() for r in modes.getIndexes()]
+                    decalage += len(em)
+                    em = np.vstack(em).T
+                    em[lag, :] = 0.0  # mise a zero des Lagrange
 
-            imodes = sub.iModes
-            im = [imodes.getField("DEPL", r).getValues() for r in imodes.getIndexes()]
-            lIndexOfInterfModes.append(np.arange(len(im)) + decalage)
-            lNumberOfInterfModes.append(len(im))
-            decalage += len(im)
-            im = np.vstack(im).T
-            im[lag, :] = 0.0  # mise a zero des Lagrange
+                with Timer(f"Extracting interface modes", level=1):
+                    imodes = sub.iModes
+                    im = [imodes.getField("DEPL", r).getValues() for r in imodes.getIndexes()]
+                    lIndexOfInterfModes.append(np.arange(len(im)) + decalage)
+                    lNumberOfInterfModes.append(len(im))
+                    decalage += len(im)
+                    im = np.vstack(im).T
+                    im[lag, :] = 0.0  # mise a zero des Lagrange
 
-            allModesSub = np.hstack((em, im))
-            Kred.append(allModesSub.T.dot(K.tocsr().dot(allModesSub)))
-            Mred.append(allModesSub.T.dot(M.tocsr().dot(allModesSub)))
-            allModes.append(allModesSub)
+                with Timer(f"Projecting matrices", level=2):
+                    allModesSub = np.hstack((em, im))
+                    Kred.append(allModesSub.T.dot(K.tocsr().dot(allModesSub)))
+                    Mred.append(allModesSub.T.dot(M.tocsr().dot(allModesSub)))
+                    allModes.append(allModesSub)
 
         allModes = scipy.sparse.block_diag(allModes)
         Kred = scipy.sparse.block_diag(Kred)
