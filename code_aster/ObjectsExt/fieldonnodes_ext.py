@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -198,13 +198,12 @@ class ExtendedFieldOnNodesReal:
         dofNumbering = [dep for dep in self.getDependencies() if isinstance(dep, DOFNumbering)][-1]
         # build the indirection table between (nodeid, dof) and row
         indir = {}
-        for row in dofNumbering.getLagrangeDOFs():
-            if not dofNumbering.isPhysicalDOF(row):
-                dof = dofNumbering.getComponentFromDOF(row).split(":")[-1]
-                if dof != "MPC":
-                    node = dofNumbering.getNodeFromDOF(row)
-                    # there may be 2 Lagrange multipliers per constraint
-                    indir.setdefault((node, dof), []).append(row)
+        nueq = dofNumbering.getEquationNumbering()
+        phys_cmp = [cmp for cmp in dofNumbering.getComponents() if not cmp.startswith("LAGR")]
+        for cmp in phys_cmp:
+            ldx = nueq.getDOFsWithDescription(f"LAGR:{cmp}")
+            for node, row in enumerate(ldx[-1]):
+                indir.setdefault((ldx[0][0][node], cmp), []).append(row)
         return indir
 
     def toPetsc(self):

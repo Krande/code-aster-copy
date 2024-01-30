@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -75,22 +75,13 @@ class ExtendedDOFNumbering:
         Arguments:
             component (str): the name of the component (aka degree of freedom)
         """
-        if component == "LAGR":
-            return self.getLagrangeDOFs(local)
-        # TODO fix after issue33341
-        if component.startswith("LAGR:"):
-            ret = []
-            for dof in self.getLagrangeDOFs(local):
-                if self.getComponentFromDOF(dof, local) == component:
-                    ret.append(dof)
-            return ret
         available_components = self.getComponents()
         if component not in available_components:
             raise ValueError(f"Component {component} is not in {available_components}")
         return self.getEquationNumbering().getDOFsWithDescription(component, local=local)[-1]
 
     def getDictComponentsToDOFs(self, local=True):
-        """Return the dictionary with the available components as keys and the rows as values."""
+        """Return the dictionary with the available components as keys and the associated DOFs as values."""
         ret = {}
         for cmp in self.getComponents():
             ret[cmp] = self.getDOFsAssociatedToComponent(cmp, local)
