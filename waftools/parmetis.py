@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -87,7 +87,9 @@ def check_parmetis(self):
 @Configure.conf
 def check_parmetis_libs(self):
     opts = self.options
-    check_ = partial(self.check_cc, uselib_store="PARMETIS", use="PARMETIS METIS", mandatory=True)
+    check_ = partial(
+        self.check_cc, uselib_store="PARMETIS", use="PARMETIS METIS GKLIB M", mandatory=True
+    )
     if opts.embed_all or opts.embed_parmetis:
         check = lambda lib: check_(stlib=lib)
     else:
@@ -108,7 +110,11 @@ int main(void) {
     self.start_msg("Checking parmetis version")
     try:
         ret = self.check_cc(
-            fragment=fragment, use="METIS PARMETIS", mandatory=True, execute=True, define_ret=True
+            fragment=fragment,
+            use="PARMETIS METIS GKLIB M",
+            mandatory=True,
+            execute=True,
+            define_ret=True,
         )
         mat5 = re.search(r"PARMETISVER: *(?P<vers>[0-9]+\.[0-9]+\.\w+)", ret)
         vers = mat5 and mat5.group("vers")
