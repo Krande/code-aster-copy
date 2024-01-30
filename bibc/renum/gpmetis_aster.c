@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org             */
 /* Copyright 1994-2011, Regents of the University of Minnesota          */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
@@ -22,19 +22,14 @@
 #include "aster_fort_utils.h"
 
 #ifdef ASTER_HAVE_METIS
-// metis includes order is imposed!
-// clang-format off
-#include "programs/metisbin.h"
-#include "libmetis/rename.h"
-#include "libmetis/proto.h"
-#include "programs/struct.h"
-// clang-format on
+#include "GKlib.h"
+#include "metis.h"
 
 /* Prototypes of internal functions */
 
-graph_t *AffectGraph( ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER4 *, ASTERINTEGER4 *, int * );
+gk_graph_t *AffectGraph( ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER4 *, ASTERINTEGER4 *, int * );
 
-int ComputeFillInL( graph_t *, idx_t *, idx_t *, idx_t *, int *, int *, double *, int *, int * );
+int ComputeFillInL( gk_graph_t *, idx_t *, idx_t *, idx_t *, int *, int *, double *, int *, int * );
 int smbfctl( int, idx_t *, idx_t *, idx_t *, idx_t *, idx_t *, int *, idx_t *, idx_t *, int *,
              idx_t *, idx_t *, int *, int *, double * );
 
@@ -48,7 +43,7 @@ void DEFPPPPPP( GPMETIS_ASTER, gpmetis_aster, ASTERINTEGER *nbnd, ASTERINTEGER *
     idx_t i;
     char *curptr, *newptr;
     idx_t options[METIS_NOPTIONS];
-    graph_t *graph;
+    gk_graph_t *graph;
     idx_t *part;
     idx_t objval;
     params_t *params;
@@ -206,11 +201,11 @@ void DEFPPPPPP( GPMETIS_ASTER, gpmetis_aster, ASTERINTEGER *nbnd, ASTERINTEGER *
 /*************************************************************************/
 /*! This function build a sparse graph */
 /*************************************************************************/
-graph_t *AffectGraph( ASTERINTEGER *nbnd, ASTERINTEGER *nadj, ASTERINTEGER4 *xadjd,
-                      ASTERINTEGER4 *adjnci, int *wgtflag ) {
+gk_graph_t *AffectGraph( ASTERINTEGER *nbnd, ASTERINTEGER *nadj, ASTERINTEGER4 *xadjd,
+                         ASTERINTEGER4 *adjnci, int *wgtflag ) {
     idx_t i, j, k, l, fmt, ncon, nfields, readew, readvw, readvs, edge, ewgt;
     idx_t *xadj, *adjncy, *vwgt, *adjwgt, *vsize;
-    graph_t *graph;
+    gk_graph_t *graph;
 
     /* Pour tester et sortir les arguments */
     /*  printf("\ndébut impression arguments\n");
@@ -407,7 +402,7 @@ void ReadTPwgts( params_t *params, idx_t ncon ) {
 /*************************************************************************/
 /*! This function prints run parameters */
 /*************************************************************************/
-void GPPrintInfo( params_t *params, graph_t *graph ) {
+void GPPrintInfo( params_t *params, gk_graph_t *graph ) {
     idx_t i;
 
     if ( params->ufactor == -1 ) {
@@ -465,7 +460,7 @@ void GPPrintInfo( params_t *params, graph_t *graph ) {
 /*************************************************************************/
 /*! This function does any post-partitioning reporting */
 /*************************************************************************/
-void GPReportResults( params_t *params, graph_t *graph, idx_t *part, idx_t objval ) {
+void GPReportResults( params_t *params, gk_graph_t *graph, idx_t *part, idx_t objval ) {
     gk_startcputimer( params->reporttimer );
     ComputePartitionInfo( params, graph, part );
 
@@ -485,7 +480,7 @@ void GPReportResults( params_t *params, graph_t *graph, idx_t *part, idx_t objva
 /****************************************************************************/
 /*! This function computes various information associated with a partition */
 /****************************************************************************/
-void ComputePartitionInfo( params_t *params, graph_t *graph, idx_t *where ) {
+void ComputePartitionInfo( params_t *params, gk_graph_t *graph, idx_t *where ) {
     idx_t i, ii, j, k, nvtxs, ncon, nparts, tvwgt;
     idx_t *xadj, *adjncy, *vwgt, *adjwgt, *kpwgts;
     real_t *tpwgts, unbalance;

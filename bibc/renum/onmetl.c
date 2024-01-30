@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -21,11 +21,12 @@
 #include "aster_fort_utils.h"
 
 #ifdef ASTER_HAVE_METIS
-#include "programs/metisbin.h"
+#include "GKlib.h"
+#include "metis.h"
 
 /* Prototypes of internal functions */
-int ReadGraphL( graph_t *, int *, int *, int *, int *, int *, int * );
-int ComputeFillInL( graph_t *, idx_t *, int *, int *, int *, int *, double *, int *, int * );
+int ReadGraphL( gk_graph_t *, int *, int *, int *, int *, int *, int * );
+int ComputeFillInL( gk_graph_t *, idx_t *, int *, int *, int *, int *, double *, int *, int * );
 int smbfctl( int, idx_t *, idx_t *, idx_t *, idx_t *, idx_t *, int *, idx_t *, idx_t *, int *,
              int *, int *, int *, int *, double * );
 
@@ -71,7 +72,7 @@ ASTERINTEGER *niv;
     int n, m, i, ret, wgtflag, kkk, debug1, debug2;
     idx_t lll, options[METIS_NOPTIONS], *perm, *iperm;
     float TOTALTmr, METISTmr, IOTmr, SMBTmr;
-    graph_t *graph = NULL;
+    gk_graph_t *graph = NULL;
 
     debug1 = 0; /* si 1 affiche les resultats intermediaires ds .mess*/
     debug2 = 0; /* si 1, force la permutation identite pour bypasser METIS*/
@@ -218,7 +219,7 @@ ASTERINTEGER *niv;
  * This function reads the spd matrix
  **************************************************************************/
 
-int ReadGraphL( graph_t *graph, int *nbnd, int *nadj, int *xadjd, int *adjnci, int *wgtflag,
+int ReadGraphL( gk_graph_t *graph, int *nbnd, int *nadj, int *xadjd, int *adjnci, int *wgtflag,
                 int *debug1 ) {
     int ncon, k, l;
     idx_t *xadj, *adjncy, *vwgt, *adjwgt;
@@ -263,7 +264,7 @@ int ReadGraphL( graph_t *graph, int *nbnd, int *nadj, int *xadjd, int *adjnci, i
 /*************************************************************************
  * This function sets up data structures for fill-in computations
  **************************************************************************/
-int ComputeFillInL( graph_t *graph, idx_t *iperm, int *parent, int *supnd, int *neq, int *nbsn,
+int ComputeFillInL( gk_graph_t *graph, idx_t *iperm, int *parent, int *supnd, int *neq, int *nbsn,
                     double *opc, int *lgindd, int *maxlnz ) {
     int i, j, k, nvtxs, maxsub, lgind;
     idx_t *xadj, *adjncy, idxbuff;
