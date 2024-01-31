@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -109,6 +109,19 @@ Erreur utilisateur dans la commande AFFE_MATERIAU / AFFE_VARC
         """
  Vous utilisez la variable de commande de pression capillaire alors que votre problème est couplé.
  Ce n'est pas possible.
+"""
+    ),
+    60: _(
+        """
+Erreur utilisateur dans la commande AFFE_MATERIAU / CHAM_MATER
+  Le maillage %(k1)s sur lequel repose le champ matériau %(k2)s est différent du maillage 
+  %(k3)s transmis dans AFFE_MATERIAU
+"""
+    ),
+    61: _(
+        """
+  Attention : le champ matériau %(k1)s renseigné sous le mot-clé CHAM_MATER contient des variables de
+  commande. Elles ne seront pas prises en compte ; seules les matériaux le seront.
 """
     ),
 }

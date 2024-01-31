@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ module tenseur_dime_module
 
     implicit none
     private
-    public:: rs, kron, voigt, proten, identity, sph_norm, deviator
+    public:: rs, kron, voigt, proten, identity, sph_norm, deviator, prod_vect
 
 #include "asterfort/assert.h"
 
@@ -149,5 +149,22 @@ contains
         end do
 
     end function proten
+
+! =====================================================================
+!  Produit vectoriel de deux vecteurs de dimension 3
+! =====================================================================
+
+    function prod_vect(u, v) result(w)
+        implicit none
+        real(kind=8), dimension(:), intent(in) :: u, v
+        real(kind=8), dimension(size(u)) :: w
+! ---------------------------------------------------------------------
+        ASSERT(size(u) .eq. 3)
+        ASSERT(size(v) .eq. 3)
+        w(1) = u(2)*v(3)-u(3)*v(2)
+        w(2) = u(3)*v(1)-u(1)*v(3)
+        w(3) = u(1)*v(2)-u(2)*v(1)
+
+    end function prod_vect
 
 end module tenseur_dime_module

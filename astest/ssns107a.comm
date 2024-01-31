@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -93,13 +93,29 @@ CAREL2 = AFFE_CARA_ELEM(
 
 CAREL3 = AFFE_CARA_ELEM(
     MODELE=MO,
-    GRILLE=(_F(GROUP_MA="GM100007", SECTION=sec, VECT_1=(0.0, 1.0, 0.0), EXCENTREMENT=0.0),),
+    GRILLE=_F(
+        GROUP_MA="GM100007",
+        SECTION=sec,
+        VECT_1=(0.0, 0.0, 1.0),
+        REPERE="CYLINDRIQUE",
+        ORIGINE=(0, 0, 0),
+        AXE_Z=(0, 0, 1),
+    ),
 )
 
 CAREL4 = AFFE_CARA_ELEM(
     MODELE=MO,
-    GRILLE=(_F(GROUP_MA="GM100007", SECTION=sec, VECT_2=(0.0, 0.0, 1.0), EXCENTREMENT=0.0),),
+    GRILLE=_F(
+        GROUP_MA="GM100007",
+        SECTION=sec,
+        VECT_2=(0.0, 1.0, 0.0),
+        REPERE="CYLINDRIQUE",
+        ORIGINE=(0, 0, 0),
+        AXE_Z=(0, 0, 1),
+        EXCENTREMENT=0.0,
+    ),
 )
+
 
 CHAR = AFFE_CHAR_MECA(
     MODELE=MO,

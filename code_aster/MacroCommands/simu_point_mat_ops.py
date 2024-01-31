@@ -430,6 +430,7 @@ def simu_point_mat_ops(
                     PHENOMENE="MECANIQUE",
                     MODELISATION="3D",
                 ),
+                DISTRIBUTION=_F(METHODE="CENTRALISE"),
             )
             # ANGLE : rotation de ANGLE autour de Z uniquement, et seulement pour les déformations
             # imposées.
@@ -483,6 +484,7 @@ def simu_point_mat_ops(
                     PHENOMENE="MECANIQUE",
                     MODELISATION=MODELISATION,
                 ),
+                DISTRIBUTION=_F(METHODE="CENTRALISE"),
             )
             # ANGLE : rotation de ANGLE autour de Z uniquement, et seulement pour les déformations
             # imposées.

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -417,6 +417,7 @@ AFFE_CHAR_MECA = OPER(
                 "PRE1",
                 "PRE2",
                 "DNOR",
+                "DRNOR",
                 "DTAN",
             ),
             EXCLUS("DNOR", "DX"),
@@ -443,6 +444,7 @@ AFFE_CHAR_MECA = OPER(
         DRY=SIMP(statut="f", typ="R"),
         DRZ=SIMP(statut="f", typ="R"),
         DNOR=SIMP(statut="f", typ="R"),
+        DRNOR=SIMP(statut="f", typ="R"),
         DTAN=SIMP(statut="f", typ="R"),
         GRX=SIMP(statut="f", typ="R"),
         PRES=SIMP(statut="f", typ="R"),

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -67,9 +67,14 @@ CHPES2 = AFFE_CHAR_MECA(MODELE=MO2, PESANTEUR=_F(GRAVITE=9.81, DIRECTION=(0.0, 0
 
 L_INST0 = DEFI_LIST_REEL(DEBUT=-1.000000e00, INTERVALLE=_F(JUSQU_A=1.000000e00, NOMBRE=2))
 
-CHM2 = AFFE_MATERIAU(
+CH_SIMPL = AFFE_MATERIAU(
     MAILLAGE=MA2,
     AFFE=(_F(GROUP_MA=("O0101010",), MATER=M1), _F(GROUP_MA=("P0101010", "P0101011"), MATER=M1)),
+)
+
+CHM2 = AFFE_MATERIAU(
+    MAILLAGE=MA2,
+    CHAM_MATER=CH_SIMPL,
     AFFE_VARC=_F(TOUT="OUI", VALE_REF=0.0, EVOL=RESUTHER, NOM_VARC="TEMP"),
 )
 

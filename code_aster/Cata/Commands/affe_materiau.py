@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,19 +29,20 @@ AFFE_MATERIAU = MACRO(
     sd_prod=cham_mater,
     fr=tr("Affecter des matériaux à des zones géométriques d'un maillage"),
     reentrant="n",
-    regles=(AU_MOINS_UN("MAILLAGE", "MODELE"),),
+    regles=(AU_MOINS_UN("MAILLAGE", "MODELE"), UN_PARMI("AFFE", "CHAM_MATER")),
     MAILLAGE=SIMP(statut="f", typ=(maillage_sdaster, maillage_p)),
     MODELE=SIMP(statut="f", typ=modele_sdaster),
     #  affectation du nom du matériau (par zone):
     #  ----------------------------------------------
     AFFE=FACT(
-        statut="o",
+        statut="f",
         max="**",
         regles=(UN_PARMI("TOUT", "GROUP_MA"),),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         MATER=SIMP(statut="o", typ=mater_sdaster, max=30),
     ),
+    CHAM_MATER=SIMP(statut="f", typ=cham_mater),
     #  affectation de comportement (multifibres pour l'instant):
     #  ----------------------------------------------
     AFFE_COMPOR=FACT(

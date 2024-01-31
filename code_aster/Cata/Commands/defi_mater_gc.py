@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,6 +19,8 @@
 
 # person_in_charge: jean-luc.flejou at edf.fr
 
+from math import pi
+
 from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
@@ -30,7 +32,9 @@ DEFI_MATER_GC = MACRO(
     reentrant="n",
     fr=tr("Définir des lois matériaux spécifique au Génie Civil"),
     #
-    regles=(UN_PARMI("MAZARS", "ACIER", "ENDO_FISS_EXP", "ENDO_LOCA_EXP", "BETON_GLRC"),),
+    regles=(
+        UN_PARMI("MAZARS", "ACIER", "ENDO_FISS_EXP", "ENDO_LOCA_EXP", "ENDO_LOCA_TC", "BETON_GLRC"),
+    ),
     #
     # ============================================================================
     MAZARS=FACT(
@@ -314,6 +318,52 @@ DEFI_MATER_GC = MACRO(
             val_max=1.00,
             defaut=0.95,
             fr=tr("Restauration de rigidité pour eps=fc/E (0=sans)"),
+        ),
+    ),
+    # ============================================================================
+    ENDO_LOCA_TC=FACT(
+        statut="f",
+        max=1,
+        fr=tr("Définir les paramètres matériaux du béton pour la loi ENDO_LOCA_TC"),
+        E=SIMP(statut="o", typ="R", val_min=0.0e0, fr=tr("Module d'Young")),
+        NU=SIMP(statut="o", typ="R", val_min=0.0e0, val_max=0.5e0, fr=tr("Coefficient de poisson")),
+        FT=SIMP(statut="o", typ="R", val_min=0.0e0, fr=tr("Limite en traction simple")),
+        FC=SIMP(statut="o", typ="R", val_min=0.0e0, fr=tr("Limite en compression simple")),
+        SIG0=SIMP(
+            statut="o", typ="R", val_min=0.0e0, fr=tr("Limite de linéarité compression simple")
+        ),
+        GF=SIMP(statut="o", typ="R", val_min=0.0e0, fr=tr("Energie de fissuration")),
+        P=SIMP(
+            statut="o",
+            typ="R",
+            val_min=(4 / (3 * pi)) ** (-2.0 / 3.0) - 2,
+            fr=tr("Parametre de forme de la reponse cohesive"),
+        ),
+        DIST_FISSURE=SIMP(
+            statut="o", typ="R", val_min=0.0e0, fr=tr("Distance moyenne inter-fissures")
+        ),
+        REST_RIGI_FC=SIMP(
+            statut="f",
+            typ="R",
+            val_min=0.0,
+            val_max=1.0,
+            defaut=0.99,
+            fr=tr("Restauration de rigidité pour eps=fc/E (0=sans)"),
+        ),
+        COEF_REDU_SEUIL=SIMP(
+            statut="f",
+            typ="R",
+            val_min=0.0,
+            val_max=1.0,
+            defaut=0.95,
+            fr=tr("Coefficient de réduction du seuil par régularisation"),
+        ),
+        TAU_REGU_VISC=SIMP(
+            statut="f",
+            typ="R",
+            val_min=0.0,
+            defaut=0.0,
+            fr=tr("Temps caractéristique de la régularisation visqueuse"),
         ),
     ),
     # ============================================================================

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -284,6 +284,16 @@ le centre de rotation doit être confondu avec l'origine.
 Le vecteur définissant l'axe de rotation a une composante non nulle suivant Ox ou Oy,
 ce qui induit des forces centrifuges hors plan. Avec une modélisation C_PLAN ou D_PLAN,
 l'axe de rotation doit être dirigé suivant Oz.
+"""
+    ),
+    68: _(
+        """
+Vous ne pouvez bloquer DRNOR qu'en dimension 3.
+"""
+    ),
+    69: _(
+        """
+L'utilisation de DRNOR n'est pas compatible avec la présence d'une modélisation X-FEM.
 """
     ),
     82: _(

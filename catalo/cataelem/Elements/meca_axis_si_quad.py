@@ -1030,6 +1030,7 @@ class MEAXQS8(Element):
                 (OP.TOU_INI_ELNO.PINST_R, LC.ENINST_R),
                 (OP.TOU_INI_ELNO.PNEUT_F, LC.ENNEUT_F),
                 (OP.TOU_INI_ELNO.PNEUT_R, LC.ENNEUT_R),
+                (SP.PTEMPN_R, LC.ETEMPNO),
                 (OP.TOU_INI_ELNO.PSIEF_R, LC.ESIG2DR),
                 (OP.TOU_INI_ELNO.PVARI_R, LC.ZVARINO),
             ),

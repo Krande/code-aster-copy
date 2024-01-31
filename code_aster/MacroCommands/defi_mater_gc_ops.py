@@ -19,6 +19,7 @@
 
 # person_in_charge: jean-luc.flejou at edf.fr
 
+import math
 import numpy as NP
 
 from ..CodeCommands import DEFI_MATERIAU
@@ -556,6 +557,67 @@ def Endo_Loca_Exp(DMATER, args):
     return mclef
 
 
+def Endo_Loca_TC(DMATER, args):
+    """
+    ENDO_LOCA_TC = Paramètres utilisateurs de la loi ENDO_LOCA_TC
+      E              = Module de Young
+      NU             = Coefficient de Poisson
+      FT             = Limite en traction simple
+      FC             = Limite en compression simple
+      SIG0           = Limite de linearité compression simple
+      GF             = Energie de fissuration
+      P              = Parametre dominant de la loi cohésive asymptotique
+      DIST_FISSURE   = Distance moyenne inter-fissure
+      REST_RIGI_FC   = Restauration de rigidité pour eps=fc/E (0=sans)
+      REGU_REDU_SEUIL= Facteur de reduction du seuil par regularisation
+      TAU_REGU_VISC  = Temps caractéristique de la régularisation visqueuse
+    """
+
+    MATER = DMATER.cree_dict_valeurs(DMATER.mc_liste)
+
+    # Lecture et interprétation des paramètres utilisateurs
+    young = float(MATER["E"])
+    nu = float(MATER["NU"])
+    gf = float(MATER["GF"])
+    ft = float(MATER["FT"])
+    fc = float(MATER["FC"])
+    p = float(MATER["P"])
+    lf = float(MATER["DIST_FISSURE"])
+    rrc = float(MATER["REST_RIGI_FC"])
+    sig0 = float(MATER["SIG0"])
+    eta = float(MATER["COEF_REDU_SEUIL"])
+    tauv = float(MATER["TAU_REGU_VISC"])
+
+    # Paramètres internes au modèle
+    lbd = young * nu / ((1 + nu) * (1 - 2 * nu))
+    dmu = young / (1 + nu)
+    ec = lbd + dmu
+    wc = ft**2 / (2 * ec)
+    kappa = gf / (lf * wc)
+
+    # Controle de la distance inter-fissure
+    dc = 0.75 * math.pi * gf / wc * (p + 2.0) ** (-1.5)
+    if lf > dc:
+        UTMESS("F", "COMPOR1_97", valr=(dc,))
+
+    # Paramètres pour DEFI_MATERIAU
+
+    prms = dict(FT=ft, KAPPA=kappa, P=p, SIG0=sig0, FC=fc)
+
+    gamma = young / (fc * 2.0 * (1 - rrc))
+    prms["REST_RIGIDITE"] = gamma
+
+    regu_p = math.log(3.0) / math.log(1.0 / eta + (1.0 / eta - 1) * 3 * nu / (1 - 2 * nu))
+    prms["CRIT_REGU"] = regu_p
+
+    prms["TAU_REGU_VISC"] = tauv
+
+    mclef = elastic_properties(young, nu, args)
+    mclef["ENDO_LOCA_TC"] = prms
+
+    return mclef
+
+
 def elastic_properties(E, NU, args):
     """Returns the properties for elasticity.
 
@@ -576,10 +638,17 @@ def elastic_properties(E, NU, args):
 
 
 def defi_mater_gc_ops(
-    self, MAZARS=None, ACIER=None, ENDO_FISS_EXP=None, ENDO_LOCA_EXP=None, BETON_GLRC=None, **args
+    self,
+    MAZARS=None,
+    ACIER=None,
+    ENDO_FISS_EXP=None,
+    ENDO_LOCA_EXP=None,
+    ENDO_LOCA_TC=None,
+    BETON_GLRC=None,
+    **args
 ):
     """
-    C'est : un parmi : ACIER  MAZARS  ENDO_FISS_EXP, ENDO_LOCA_EXP, BETON_GLRC
+    C'est : un parmi : ACIER  MAZARS  ENDO_FISS_EXP, ENDO_LOCA_EXP, ENDO_LOCA_TC, BETON_GLRC
     """
 
     #
@@ -591,6 +660,8 @@ def defi_mater_gc_ops(
         mclef = Endo_Fiss_Exp(ENDO_FISS_EXP[0], args)
     if ENDO_LOCA_EXP is not None:
         mclef = Endo_Loca_Exp(ENDO_LOCA_EXP[0], args)
+    if ENDO_LOCA_TC is not None:
+        mclef = Endo_Loca_TC(ENDO_LOCA_TC[0], args)
     if BETON_GLRC is not None:
         mclef = Beton_GLRC(BETON_GLRC[0], args)
 

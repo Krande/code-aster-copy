@@ -146,6 +146,11 @@ class MECA_BARRE(Element):
             ),
             para_out=((SP.PMATUUR, MMATUUR),),
         ),
+        OP.CHAR_MECA_EPSA_R(
+            te=312,
+            para_in=((SP.PMATERC, LC.CMATERC), (OP.CHAR_MECA_EPSA_R.PVARCPR, LC.ZVARCPG)),
+            para_out=((SP.PVECTUR, MVECTUR),),
+        ),
         OP.CHAR_MECA_EPSI_R(
             te=155,
             para_in=(
@@ -701,8 +706,17 @@ class MECA_BARRE(Element):
                 (OP.TOU_INI_ELNO.PINST_R, LC.EEINST_R),
                 (OP.TOU_INI_ELNO.PNEUT_F, LC.EENEUT_F),
                 (OP.TOU_INI_ELNO.PNEUT_R, LC.EENEUT_R),
+                (SP.PTEMPN_R, LC.ETEMPNO),
                 (OP.TOU_INI_ELNO.PSIEF_R, EEFGENO),
                 (OP.TOU_INI_ELNO.PVARI_R, ZVARENO),
             ),
+        ),
+        OP.VARC_ELGA(
+            te=530,
+            para_in=((OP.VARC_ELGA.PVARCPR, LC.ZVARCPG),),
+            para_out=((SP.PVARC_R, LC.EVARC_R),),
+        ),
+        OP.VARI_ELNO(
+            te=4, para_in=((SP.PVARIGR, ZVARIPG),), para_out=((OP.VARI_ELNO.PVARINR, LC.ZVARINO),)
         ),
     )

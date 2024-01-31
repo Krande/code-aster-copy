@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -63,6 +63,14 @@ L'option MATR_DISTRIBUEE='OUI' est interdite avec le contact continu.
         """
 Le MODELE fourni par l'utilisateur sous le mot-clé MODELE est différent de celui présent dans la structure 
 de données renseignée sous le mot-clé INCREMENT/LIST_INST et construite par l'opérateur DEFI_LIST_INST.
+"""
+    ),
+    8: _(
+        """
+Erreur utilisateur :
+  L'élimination des doubles Lagrange (SOLVEUR/ELIM_LAGR='LAGR2') dans STAT_NON_LINE n'est pas 
+  compatible avec les simples Lagrange (AFFE_CHAR_MECA / DOUBLE_LAGRANGE='NON'): 
+  il faut passer à ELIM_LAGR='NON' sous le mot-clé facteur SOLVEUR.
 """
     ),
     23: _(

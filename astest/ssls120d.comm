@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,8 +36,7 @@ MAIL = MODI_MAILLAGE(
 )
 # On définit un repère utilisateur sans signification physique
 CARAEL = AFFE_CARA_ELEM(
-    MODELE=MODMECA,
-    COQUE=_F(GROUP_MA="VIROLE", EPAIS=4.0e-2, COEF_RIGI_DRZ=-1.0e-8, ANGL_REP=(-90.0, 20.0)),
+    MODELE=MODMECA, COQUE=_F(GROUP_MA="VIROLE", EPAIS=4.0e-2, ANGL_REP=(-90.0, 20.0))
 )
 
 ACIER1 = DEFI_MATERIAU(ELAS=_F(E=2.10000000000e11, NU=0.3))
@@ -66,9 +65,10 @@ BLOCAGE = AFFE_CHAR_MECA(
     MODELE=MODMECA,
     DDL_IMPO=(
         _F(GROUP_MA="LIGNEBAS", DZ=0.0),
-        _F(GROUP_MA="SYMET", DY=0.0, DRX=0.0, DRZ=0.0),
+        _F(GROUP_MA="SYMET", DY=0.0, DRZ=0.0),
         _F(GROUP_NO="PM", DX=0.0),
     ),
+    FACE_IMPO=_F(GROUP_MA="VIROLE", DRNOR=0),
 )
 
 PHYDR = DEFI_FONCTION(NOM_PARA="Z", NOM_RESU="TOUTRESU", VALE=(0.0, 15000.0, 16.0, 0.0))
@@ -115,7 +115,7 @@ TEST_RESU(
         NOM_CHAM="DEPL",
         NOM_CMP="DZ",
         PRECISION=3.0e-03,
-        VALE_CALC=-2.44563462051e-05,
+        VALE_CALC=-2.4420200370313877e-05,
         VALE_REFE=-2.4428571428571427e-05,
     )
 )
@@ -129,7 +129,7 @@ TEST_RESU(
         NOM_CHAM="DEPL",
         NOM_CMP="DZ",
         PRECISION=3.0e-03,
-        VALE_CALC=-2.43841652533e-05,
+        VALE_CALC=-2.4420200365249908e-05,
         VALE_REFE=-2.4428571428571427e-05,
     )
 )
@@ -142,7 +142,7 @@ TEST_RESU(
         RESULTAT=ELAS1,
         NOM_CHAM="DEPL",
         NOM_CMP="DY",
-        VALE_CALC=5.78781707056e-05,
+        VALE_CALC=5.7915866220726194e-05,
         VALE_REFE=5.8017857142857143e-05,
         PRECISION=5.0e-3,
     )
@@ -156,7 +156,7 @@ TEST_RESU(
         RESULTAT=ELAS1,
         NOM_CHAM="DEPL",
         NOM_CMP="DX",
-        VALE_CALC=5.79444278767e-05,
+        VALE_CALC=5.791586622292206e-05,
         VALE_REFE=5.8017857142857143e-05,
         PRECISION=5.0e-3,
     )
@@ -170,7 +170,7 @@ TEST_RESU(
         RESULTAT=ELAS1,
         NOM_CHAM="DEPL",
         NOM_CMP="DX",
-        VALE_CALC=-5.7811511131e-05,
+        VALE_CALC=-5.791586625184611e-05,
         VALE_REFE=-5.8017857142857143e-05,
         PRECISION=5.0e-3,
     )
@@ -185,7 +185,7 @@ TEST_RESU(
         NOM_CHAM="SIGM_ELNO",
         NOM_CMP="SIZZ",
         PRECISION=3.0e-03,
-        VALE_CALC=2134223.66621,
+        VALE_CALC=2135653.828859668,
         VALE_REFE=2.137500e6,
         GROUP_MA="M1",
     )
@@ -199,7 +199,7 @@ TEST_RESU(
         NOM_CHAM="SIGM_ELNO",
         NOM_CMP="SIZZ",
         PRECISION=3.0e-03,
-        VALE_CALC=2134223.66621,
+        VALE_CALC=2135653.828859668,
         VALE_REFE=2.137500e6,
         GROUP_MA="M1",
     )
@@ -232,7 +232,7 @@ TEST_RESU(
         RESULTAT=ELAS2,
         NOM_CHAM="DEPL",
         NOM_CMP="DZ",
-        VALE_CALC=-6.10504997074e-06,
+        VALE_CALC=-6.105049970177789e-06,
         VALE_REFE=-6.1071428571428566e-06,
         PRECISION=3.0e-3,
     )
@@ -246,7 +246,7 @@ TEST_RESU(
         RESULTAT=ELAS2,
         NOM_CHAM="DEPL",
         NOM_CMP="DZ",
-        VALE_CALC=-6.10504996947e-06,
+        VALE_CALC=-6.105049968908722e-06,
         VALE_REFE=-6.1071428571428566e-06,
         PRECISION=3.0e-3,
     )
@@ -261,7 +261,7 @@ TEST_RESU(
         NOM_CHAM="DEPL",
         NOM_CMP="DY",
         PRECISION=3.0e-03,
-        VALE_CALC=5.79941564397e-05,
+        VALE_CALC=5.799415643996646e-05,
         VALE_REFE=5.8017857142857143e-05,
     )
 )
@@ -275,7 +275,7 @@ TEST_RESU(
         NOM_CHAM="DEPL",
         NOM_CMP="DX",
         PRECISION=3.0e-03,
-        VALE_CALC=5.79941564377e-05,
+        VALE_CALC=5.799415644715203e-05,
         VALE_REFE=5.8017857142857143e-05,
     )
 )
@@ -289,7 +289,7 @@ TEST_RESU(
         NOM_CHAM="DEPL",
         NOM_CMP="DX",
         PRECISION=3.0e-03,
-        VALE_CALC=-5.79941564402e-05,
+        VALE_CALC=-5.7994156449158554e-05,
         VALE_REFE=-5.8017857142857143e-05,
     )
 )
@@ -302,10 +302,11 @@ TEST_RESU(
         RESULTAT=ELAS2C1M,
         NOM_CHAM="SIGM_ELNO",
         NOM_CMP="SIYY",
-        VALE_CALC=2136664.92549,
+        VALE_CALC=2136664.9255008064,
         VALE_REFE=2.137500e6,
         PRECISION=3.0e-03,
         GROUP_MA="M1",
     )
 )
+
 FIN()

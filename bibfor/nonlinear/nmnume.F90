@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,6 +25,8 @@ subroutine nmnume(model, mesh, result, compor, list_load, &
     implicit none
 !
 #include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nmprof.h"
@@ -64,7 +66,7 @@ subroutine nmnume(model, mesh, result, compor, list_load, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv, i_load, nb_load_init, iret
-    character(len=8) :: lag12
+    character(len=8) :: lag12, elim_lagr
     character(len=24) :: sdnuro, sdnuen, sdnuco
     character(len=24) :: lload_info, lload_list, load_n
     integer, pointer :: v_load_info(:) => null()
@@ -97,7 +99,9 @@ subroutine nmnume(model, mesh, result, compor, list_load, &
                     call jeveuo(load_n(1:8)//'.CHME.LIGRE.LGRF', 'L', vk8=v_lgrf)
                     lag12 = v_lgrf(3)
                     if (lag12 .eq. 'LAG1') then
-                        call utmess('F', 'MECANONLINE_5')
+                        call getvtx('SOLVEUR', 'ELIM_LAGR', iocc=1, scal=elim_lagr, nbret=iret)
+                        ASSERT(iret .eq. 1)
+                        if (elim_lagr .eq. 'LAGR2') call utmess('F', 'MECANONLINE_8')
                     end if
                 end if
             else if (v_tco(1) .eq. 'CHAR_THER') then

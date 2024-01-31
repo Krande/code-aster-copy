@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -1124,6 +1124,12 @@ AFFE_CARA_ELEM = OPER(
             min=3,
             max=3,
             fr=tr("La projection de ce vecteur sert à définir l'axe local y."),
+        ),
+        REPERE=SIMP(statut="f", typ="TXM", into=("CYLINDRIQUE", "GLOBAL"), defaut="GLOBAL"),
+        b_repere=BLOC(
+            condition="""(equal_to("REPERE", "CYLINDRIQUE"))""",
+            ORIGINE=SIMP(statut="o", typ="R", min=3, max=3),
+            AXE_Z=SIMP(statut="o", typ="R", min=3, max=3),
         ),
         COEF_RIGI_DRZ=SIMP(statut="f", typ="R", defaut=1.0e-10),
     ),

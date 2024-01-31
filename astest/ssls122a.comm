@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -155,6 +155,7 @@ CARA = AFFE_CARA_ELEM(
             ANGL_REP=(alpha, beta),
             EXCENTREMENT=excen_P2,
             INER_ROTA="OUI",
+            COEF_RIGI_DRZ=0,
         ),
         # Plaque P2
         _F(
@@ -163,6 +164,7 @@ CARA = AFFE_CARA_ELEM(
             ANGL_REP=(alpha, beta),
             EXCENTREMENT=excen_P2,
             INER_ROTA="OUI",
+            COEF_RIGI_DRZ=0,
         ),
         # Plaque P1
         _F(
@@ -171,6 +173,7 @@ CARA = AFFE_CARA_ELEM(
             ANGL_REP=(alpha, beta),
             EXCENTREMENT=excen_P1S,
             INER_ROTA="OUI",
+            COEF_RIGI_DRZ=0,
         ),
         _F(
             GROUP_MA="PLAQ_P1I",
@@ -178,6 +181,7 @@ CARA = AFFE_CARA_ELEM(
             ANGL_REP=(alpha, beta),
             EXCENTREMENT=excen_P1I,
             INER_ROTA="OUI",
+            COEF_RIGI_DRZ=0,
         ),
     ),
 )
@@ -193,8 +197,9 @@ COND_LIM = AFFE_CHAR_MECA(
     DDL_IMPO=(
         _F(GROUP_NO=("FA", "CD"), DZ=0.0),
         _F(GROUP_NO=("FA",), DX=0.0),
-        _F(GROUP_NO="A", DX=0.0, DY=0.0, DRZ=0.0),
+        _F(GROUP_NO="A", DX=0.0, DY=0.0),
     ),
+    FACE_IMPO=_F(GROUP_MA=("PLAQ_P1", "PLAQ_P2"), DRNOR=0),
 )
 # Chargement
 

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -183,6 +183,7 @@ LIAISON = AFFE_CHAR_MECA(
     MODELE=MO,
     DDL_IMPO=_F(GROUP_NO="INF_INT", DZ=0),
     FACE_IMPO=(_F(GROUP_MA="LNX", DX=0), _F(GROUP_MA="LNY", DY=0)),
+    DOUBLE_LAGRANGE="NON",
 )
 
 
@@ -209,6 +210,7 @@ INIT = STAT_NON_LINE(
     COMPORTEMENT=_F(RELATION="VISC_ISOT_NL"),
     INCREMENT=_F(LIST_INST=L_INST, INST_FIN=0),
     NEWTON=_F(REAC_ITER=1),
+    SOLVEUR=_F(ELIM_LAGR="NON"),
 )
 
 
@@ -225,6 +227,7 @@ EVOL = STAT_NON_LINE(
     COMPORTEMENT=_F(RELATION="VISC_ISOT_NL"),
     INCREMENT=_F(LIST_INST=L_INST),
     NEWTON=_F(REAC_ITER=1),
+    SOLVEUR=_F(ELIM_LAGR="NON"),
 )
 
 

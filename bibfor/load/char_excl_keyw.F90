@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -87,7 +87,7 @@ subroutine char_excl_keyw(keywordfact, keywordexcl, n_keyexcl, n_suffix, list_su
 
 ! - Other keywords - Count
     if (keywordfact .eq. 'FACE_IMPO') then
-        n_keyexcl = n_keyexcl+2
+        n_keyexcl = n_keyexcl+3
     else if (keywordfact .eq. 'ARETE_IMPO') then
         n_keyexcl = n_keyexcl+1
     else if (keywordfact .eq. 'LIAISON_OBLIQUE') then
@@ -140,6 +140,8 @@ subroutine char_excl_keyw(keywordfact, keywordexcl, n_keyexcl, n_suffix, list_su
         if (keywordfact .eq. 'FACE_IMPO') then
             n_keyexcl = n_keyexcl+1
             p_keywordexcl(n_keyexcl) = 'DNOR'
+            n_keyexcl = n_keyexcl+1
+            p_keywordexcl(n_keyexcl) = 'DRNOR'
             n_keyexcl = n_keyexcl+1
             p_keywordexcl(n_keyexcl) = 'DTAN'
         else if (keywordfact .eq. 'ARETE_IMPO') then

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,12 +22,13 @@ module endo_rigi_unil_module
 
     implicit none
     private
-    public:: MATERIAL, ComputeStress, ComputeEnergy
+    public:: MATERIAL, UNILATERAL, Init, ComputeEnergy, ComputeStress, ComputeStiffness
 
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/lcvalp.h"
 #include "asterfort/lcesme.h"
+#include "asterc/r8vide.h"
 
 ! --------------------------------------------------------------------
 
@@ -37,116 +38,166 @@ module endo_rigi_unil_module
         real(kind=8) :: lambda, deuxmu, regam
     end type MATERIAL
 
+    ! Unilateral treatment
+    type UNILATERAL
+        type(MATERIAL)                           :: mat
+        integer                                  :: ndimsi
+        real(kind=8)                             :: eigeps(3)
+        real(kind=8)                             :: treps
+        real(kind=8)                             :: unitr
+        real(kind=8)                             :: dertr
+        real(kind=8), dimension(:), allocatable    :: eps
+        real(kind=8), dimension(:), allocatable    :: unieps
+        real(kind=8), dimension(:, :), allocatable  :: dereps
+    end type UNILATERAL
+
 contains
 
 ! =====================================================================
-!  CONTRAINTES ET RIGIDITE AVEC RESTAURATION DE RIGIDITE
+!  OBJECT CREATION AND INITIALISATION
 ! =====================================================================
 
-    subroutine ComputeStress(mat, eps, rigi, elas, prece, sigpos, signeg, de_spos, de_sneg)
-        implicit none
+    function Init(mat, eps, prece) result(self)
 
-        type(MATERIAL), intent(in):: mat
-        aster_logical, intent(in) :: rigi, elas
-        real(kind=8), intent(in)  :: eps(:), prece
-        real(kind=8), intent(out) :: sigpos(:), signeg(:), de_spos(:, :), de_sneg(:, :)
-! ---------------------------------------------------------------------
-! mat       material characteristics
-! eps       deformation
-! rigi      calcul ou non des matrices tangentes
-! elas      mode secant (.true.) ou tangent (.false.)
+        implicit none
+        type(MATERIAL), intent(in)   :: mat
+        real(kind=8), intent(in)    :: eps(:)
+        real(kind=8), intent(in)    :: prece
+        type(UNILATERAL)            :: self
+! --------------------------------------------------------------------------------------------------
+! mat       Material characterics
+! eps       Current strain state
 ! prece     relative accuracy with respect to the strain components
-! sigpos    contrainte positive (traction)
-! signeg    contrainte negative (compression)
-! de_spos   derivee de la contrainte sigpos / deformation
-! de_sneg   derivee de la contrainte signeg / deformation
-! ---------------------------------------------------------------------
-        integer:: i
+! --------------------------------------------------------------------------------------------------
         real(kind=8):: para(2)
-        real(kind=8)::treps, unitr, dertr
-        real(kind=8), dimension(3):: eigeps
-        real(kind=8), dimension(size(eps)):: unieps, sigall
-        real(kind=8), dimension(size(eps), size(eps)):: dereps, de_sall
+        real(kind=8), dimension(3)::eigeps
         real(kind=8), dimension(6)::unieps_6
         real(kind=8), dimension(6, 6)::dereps_66
-        real(kind=8), dimension(size(eps)):: kr
+! --------------------------------------------------------------------------------------------------
         real(kind=8), parameter::safe = 1.d2
-! ---------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 
-!   Initialisation
-        kr = kron(size(eps))
+        ! Size allocation
+        self%ndimsi = size(eps)
+        allocate (self%eps(self%ndimsi))
+        allocate (self%unieps(self%ndimsi))
+        allocate (self%dereps(self%ndimsi, self%ndimsi))
+
+        ! Initialisation
         para(1) = mat%regam
-        para(2) = merge(1.0d0, 0.d0, elas)
-        treps = sum(eps(1:3))
+        para(2) = 0.d0
 
-!   Unilateral function (negative part)
+        self%mat = mat
+        self%eps = eps
+        self%treps = sum(eps(1:3))
+
+        ! Trace term
+        call NegPart(self%treps, para, self%unitr, self%dertr)
+
+        ! Eigenvalues
         call lcvalp(rs(6, eps), eigeps)
-        call NegPart(treps, para, unitr, dertr)
+        self%eigeps = eigeps
+
+        ! Value and derivative of the tensorial unilateral function (negative part)
         call lcesme(rs(6, eps), eigeps, para, NegPart, prece/safe, unieps_6, dereps_66)
-        unieps = unieps_6(1:size(eps))
-        dereps = dereps_66(1:size(eps), 1:size(eps))
+        self%unieps = unieps_6(1:self%ndimsi)
+        self%dereps = dereps_66(1:self%ndimsi, 1:self%ndimsi)
 
-!   Stress
-        sigall = mat%lambda*treps*kr+mat%deuxmu*eps
-        signeg = mat%lambda*unitr*kr+mat%deuxmu*unieps
-        sigpos = sigall-signeg
-
-!   Derivatives
-        if (rigi) then
-
-!      Matrice totale (Hooke)
-            de_sall = 0.d0
-            de_sall(1:3, 1:3) = mat%lambda
-            do i = 1, size(eps)
-                de_sall(i, i) = de_sall(i, i)+mat%deuxmu
-            end do
-
-!      Matrices negative et positive
-            de_sneg = mat%deuxmu*dereps
-            de_sneg(1:3, 1:3) = de_sneg(1:3, 1:3)+mat%lambda*dertr
-            de_spos = de_sall-de_sneg
-        end if
-
-    end subroutine ComputeStress
+    end function Init
 
 ! =====================================================================
 !  ENERGIE AVEC RESTAURATION DE RIGIDITE
 ! =====================================================================
 
-    subroutine ComputeEnergy(mat, eps, wpos, wneg)
+    subroutine ComputeEnergy(self, wpos, wneg)
         implicit none
 
-        type(MATERIAL), intent(in):: mat
-        real(kind=8), intent(in)  :: eps(:)
-        real(kind=8), intent(out) :: wpos, wneg
+        type(UNILATERAL), intent(in):: self
+        real(kind=8), intent(out)   :: wpos, wneg
 ! ---------------------------------------------------------------------
-! mat       material characteristics
-! eps       strain
-! wpos      tensile contribution to the energy
-! wneg      compressive contribution to the energy
+! wpos      (regularised) tensile contribution to the energy
+! wneg      (regularised) compressive contribution to the energy
 ! ---------------------------------------------------------------------
         integer     :: i
-        real(kind=8):: para(2)
-        real(kind=8):: treps, trNhs, wall
-        real(kind=8), dimension(3):: eigeps, eigNhs
+        real(kind=8):: para(1)
+        real(kind=8):: trNhs, wall
+        real(kind=8), dimension(3):: eigNhs
 ! ---------------------------------------------------------------------
 
 !   Initialisation
-        para(1) = mat%regam
-        para(2) = 0.d0
+        para(1) = self%mat%regam
 
-!   Strain characteristics and total energy
-        treps = sum(eps(1:3))
-        call lcvalp(rs(6, eps), eigeps)
-        wall = 0.5d0*(mat%lambda*treps**2+mat%deuxmu*sum(eigeps**2))
+!   Total energy
+        wall = 0.5d0*(self%mat%lambda*self%treps**2+self%mat%deuxmu*sum(self%eigeps**2))
 
 !   Negative and positive parts
-        trNhs = NegHalfSquare(treps, para)
-        eigNhs = [(NegHalfSquare(eigeps(i), para), i=1, size(eigeps))]
-        wneg = mat%lambda*trNhs+mat%deuxmu*sum(eigNhs)
+        trNhs = NegHalfSquare(self%treps, para)
+        eigNhs = [(NegHalfSquare(self%eigeps(i), para), i=1, size(self%eigeps))]
+        wneg = self%mat%lambda*trNhs+self%mat%deuxmu*sum(eigNhs)
         wpos = wall-wneg
 
     end subroutine ComputeEnergy
+
+! =====================================================================
+!  CONTRAINTES ET RIGIDITE AVEC RESTAURATION DE RIGIDITE
+! =====================================================================
+
+    subroutine ComputeStress(self, sigpos, signeg)
+        implicit none
+
+        type(UNILATERAL), intent(in):: self
+        real(kind=8), intent(out)   :: sigpos(:), signeg(:)
+! ---------------------------------------------------------------------
+! sigpos    contrainte positive (traction)
+! signeg    contrainte negative (compression)
+! ---------------------------------------------------------------------
+        real(kind=8), dimension(self%ndimsi):: sigall, kr
+! ---------------------------------------------------------------------
+
+!   Initialisation
+        kr = kron(self%ndimsi)
+
+!   Stresses
+        sigall = self%mat%lambda*self%treps*kr+self%mat%deuxmu*self%eps
+        signeg = self%mat%lambda*self%unitr*kr+self%mat%deuxmu*self%unieps
+        sigpos = sigall-signeg
+
+    end subroutine ComputeStress
+
+! =====================================================================
+!  RIGIDITE UNILATERALES
+! =====================================================================
+
+    subroutine ComputeStiffness(self, de_spos, de_sneg)
+        implicit none
+
+        type(UNILATERAL), intent(in):: self
+        real(kind=8), intent(out)   :: de_spos(:, :), de_sneg(:, :)
+! ---------------------------------------------------------------------
+! de_spos   derivee de la contrainte sigpos / deformation
+! de_sneg   derivee de la contrainte signeg / deformation
+! ---------------------------------------------------------------------
+        integer:: i
+        real(kind=8), dimension(self%ndimsi, self%ndimsi):: de_sall
+        real(kind=8), dimension(self%ndimsi):: kr
+! ---------------------------------------------------------------------
+
+!   Initialisation
+        kr = kron(self%ndimsi)
+
+        ! Matrice totale (Hooke)
+        de_sall = 0.d0
+        de_sall(1:3, 1:3) = self%mat%lambda
+        do i = 1, self%ndimsi
+            de_sall(i, i) = de_sall(i, i)+self%mat%deuxmu
+        end do
+
+        ! Matrices negative et positive
+        de_sneg = self%mat%deuxmu*self%dereps
+        de_sneg(1:3, 1:3) = de_sneg(1:3, 1:3)+self%mat%lambda*self%dertr
+        de_spos = de_sall-de_sneg
+
+    end subroutine ComputeStiffness
 
 ! =====================================================================
 !   SMOOTHED NEGATIVE HALF SQUARE FUNCTION
@@ -164,12 +215,11 @@ contains
 ! x:   array argument (the function is applied to each x(i))
 ! p:   additional parameters
 !        p(1) = gamma (smoothing parameter)
-!        p(2) unused
 ! ---------------------------------------------------------------------
         real(kind=8) :: ga
 ! ---------------------------------------------------------------------
 
-        ASSERT(size(p) .eq. 2)
+        ASSERT(size(p) .eq. 1)
         ga = p(1)
         if (ga*x .ge. -1.d-3) then
             nhs = 0.d0
@@ -185,17 +235,17 @@ contains
 !     f(x) = 0                                  if x>0
 ! =====================================================================
 
-    subroutine NegPart(x, p, val, der)
+    subroutine NegPart(x, p, fct, der)
         implicit none
 
         real(kind=8), intent(in) :: x, p(:)
-        real(kind=8), intent(out):: val, der
+        real(kind=8), intent(out):: fct, der
 ! ---------------------------------------------------------------------
 ! x:   argument
 ! p:   additional parameters
 !        p(1) = gamma (smoothing parameter)
 !        p(2) = 0 si secant, 1 si tangent
-! val: f(x)
+! fct: f(x)
 ! der: f'(x) ou f(x)/x si secant
 ! ---------------------------------------------------------------------
         aster_logical:: elas
@@ -207,11 +257,11 @@ contains
         elas = p(2) .gt. 0.5d0
 
         if (x*regam .ge. -1.d-3) then
-            val = 0
+            fct = 0
             der = 0
         else
-            val = (x-0.5d0/regam)*exp(1/(regam*x))
-            der = merge(val/x, (1-(regam*x-0.5d0)/(regam*x)**2)*exp(1/(regam*x)), elas)
+            fct = (x-0.5d0/regam)*exp(1/(regam*x))
+            der = merge(fct/x, (1-(regam*x-0.5d0)/(regam*x)**2)*exp(1/(regam*x)), elas)
         end if
 
     end subroutine NegPart

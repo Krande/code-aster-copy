@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ endommagement scalaire, seuil exponentiel et
    non local à gradient d'endommagement - R5.03.25""",
     num_lc=60,
     nb_vari=5,
-    nom_vari=("ENDO", "INDIENDO", "ENDORIGI", "ENERELAS", "ENERDISS"),
+    nom_vari=("ENDO", "INDIENDO", "ENDORIGI", "ENERTRAC", "ENERCOMP"),
     mc_mater=("ELAS", "ENDO_LOCA_EXP"),
     modelisation=("3D", "AXIS", "D_PLAN"),
     deformation=("PETIT", "GDEF_LOG"),

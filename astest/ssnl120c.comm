@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -152,9 +152,11 @@ CHTEMP = CREA_RESU(
     AFFE=(_F(CHAM_GD=TEMP_0, INST=0.0), _F(CHAM_GD=TEMP_1, INST=5.0), _F(CHAM_GD=TEMP_1, INST=7.0)),
 )
 
+CHSIMPL = AFFE_MATERIAU(MAILLAGE=POUT, AFFE=_F(GROUP_MA="POUTRE", MATER=BETON))
+
 CHMAT = AFFE_MATERIAU(
     MAILLAGE=POUT,
-    AFFE=_F(GROUP_MA="POUTRE", MATER=BETON),
+    CHAM_MATER=CHSIMPL,
     AFFE_COMPOR=_F(TOUT="OUI", COMPOR=COMPF),
     AFFE_VARC=(_F(TOUT="OUI", NOM_VARC="TEMP", EVOL=CHTEMP, VALE_REF=TempeRef),),
 )

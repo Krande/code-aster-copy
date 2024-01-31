@@ -278,6 +278,7 @@ DICT_NOM_VARI = {
     "EMT4": _("FLUA_ENDO_PORO deformation plastique maximale atteinte en traction"),
     "EMT5": _("FLUA_ENDO_PORO deformation plastique maximale atteinte en traction"),
     "EMT6": _("FLUA_ENDO_PORO deformation plastique maximale atteinte en traction"),
+    "ENDO": _("endommagement scalaire"),
     "ENDOCOMP": _("endommagement scalaire en compression"),
     "ENDOFL-": _("variable d'endommagement pour la flexion négative"),
     "ENDOFL+": _("variable d'endommagement pour la flexion positive"),
@@ -288,7 +289,7 @@ DICT_NOM_VARI = {
     "ENDORIGI": _("rigidité résiduelle"),
     "ENDOSUP": _("variable d'endommagement pour la moitié supérieure de la plaque"),
     "ENDOTAN": _("endommagement tangentiel"),
-    "ENDO": _("endommagement scalaire"),
+    "ENDOTRAC": _("endommagement scalaire en traction"),
     "ENDOXX": _("tenseur endommagement, direction XX"),
     "ENDOXY": _("tenseur endommagement, direction XY"),
     "ENDOXZ": _("tenseur endommagement, direction XZ"),
@@ -296,8 +297,9 @@ DICT_NOM_VARI = {
     "ENDOYZ": _("tenseur endommagement, direction YZ"),
     "ENDOZZ": _("tenseur endommagement, direction ZZ"),
     "ENEL_RES": _("énergie résiduelle"),
+    "ENERCOMP": _("densite d'energie elastique en compression"),
     "ENERDISS": _("densite d'energie dissipee par endommagement"),
-    "ENERELAS": _("densite d'energie elastique"),
+    "ENERTRAC": _("densite d'energie elastique en traction"),
     "EPAISSJO": _("épaisseur du joint clavé"),
     "EPC1": _("FLUA_ENDO_PORO defromations plastiques de druker prager"),
     "EPC2": _("FLUA_ENDO_PORO defromations plastiques de druker prager"),
@@ -480,6 +482,8 @@ DICT_NOM_VARI = {
     "HIS9": _(
         "Hujeux : variable mémoratrice pour le mécanisme déviatoire cyclique du plan 1, composante 1"
     ),
+    "HISTCOMP": ("Variable d'histoire en compression"),
+    "HISTTRAC": ("Variable d'histoire en traction"),
     "HYDF": _("FLUA_ENDO_PORO hydratation fin de pas"),
     "INDETAC1": _(
         "Hujeux : indicateur d'activation (1) ou non (0) des mécanismes cycliques, composante 1"

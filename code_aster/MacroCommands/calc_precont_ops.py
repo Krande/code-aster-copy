@@ -53,6 +53,7 @@ def calc_precont_ops(
     CHAM_MATER,
     CARA_ELEM,
     EXCIT,
+    DOUBLE_LAGRANGE,
     CABLE_BP,
     COMPORTEMENT,
     METHODE,
@@ -215,6 +216,7 @@ def calc_precont_ops(
         #     Recuperation des cables dans les concepts CABLE_BP
         #     et CABLE_BP_INACTIF
         # ------------------------------------------------------
+
         if type(CABLE_BP) is not type(None):
             if not is_sequence(CABLE_BP):
                 CABLE_BP0 = CABLE_BP
@@ -361,16 +363,18 @@ def calc_precont_ops(
         # --------------------------------------------------
         __GROUP_MA_A = __GROUP_MA_A_SEG2 + __GROUP_MA_A_SEG3
         _B_CA = AFFE_CHAR_MECA(
-            MODELE=__M_CA, DDL_IMPO=_F(GROUP_MA=__GROUP_MA_A, DX=0.0, DY=0.0, DZ=0.0)
+            MODELE=__M_CA,
+            DOUBLE_LAGRANGE=DOUBLE_LAGRANGE,
+            DDL_IMPO=_F(GROUP_MA=__GROUP_MA_A, DX=0.0, DY=0.0, DZ=0.0),
         )
 
         # 1.7 Chargements concernant les cables
         # -------------------------------------
-        _C_CN = AFFE_CHAR_MECA(MODELE=__M_CA, **motscles)
-        _C_CA = AFFE_CHAR_MECA(MODELE=MODELE, **motscle2)
-        _C_CT = AFFE_CHAR_MECA(MODELE=MODELE, **motscle3)
+        _C_CN = AFFE_CHAR_MECA(MODELE=__M_CA, DOUBLE_LAGRANGE=DOUBLE_LAGRANGE, **motscles)
+        _C_CA = AFFE_CHAR_MECA(MODELE=MODELE, DOUBLE_LAGRANGE=DOUBLE_LAGRANGE, **motscle2)
+        _C_CT = AFFE_CHAR_MECA(MODELE=MODELE, DOUBLE_LAGRANGE=DOUBLE_LAGRANGE, **motscle3)
         if CABLE_BP_INACTIF:
-            _C_CI = AFFE_CHAR_MECA(MODELE=MODELE, **motscle6)
+            _C_CI = AFFE_CHAR_MECA(MODELE=MODELE, DOUBLE_LAGRANGE=DOUBLE_LAGRANGE, **motscle6)
 
         # -------------------------------------------------------------
         # 2. CALCULS
@@ -427,7 +431,7 @@ def calc_precont_ops(
             ),
         )
 
-        _F_CA = AFFE_CHAR_MECA(MODELE=MODELE, VECT_ASSE=__REAC)
+        _F_CA = AFFE_CHAR_MECA(MODELE=MODELE, DOUBLE_LAGRANGE=DOUBLE_LAGRANGE, VECT_ASSE=__REAC)
 
         # -----------------------------------------------------------------------
         # 2.2 Deuxieme etape : application de la precontrainte sur le beton
@@ -755,11 +759,11 @@ def calc_precont_ops(
                 )
 
         if CABLE_BP_INACTIF:
-            _C_CI = AFFE_CHAR_MECA(MODELE=MODELE, **motscle6)
+            _C_CI = AFFE_CHAR_MECA(MODELE=MODELE, DOUBLE_LAGRANGE=DOUBLE_LAGRANGE, **motscle6)
             dExcit.append(_F(CHARGE=_C_CI))
 
         # pour recul d'ancrage
-        _C_RA = AFFE_CHAR_MECA(MODELE=MODELE, **motscle5)
+        _C_RA = AFFE_CHAR_MECA(MODELE=MODELE, DOUBLE_LAGRANGE=DOUBLE_LAGRANGE, **motscle5)
         dExcit2 = copy.copy(dExcit)
 
         if __ActifActif:
@@ -772,18 +776,22 @@ def calc_precont_ops(
             __CH1b = CREA_CHAMP(
                 TYPE_CHAM="NOEU_DEPL_R", OPERATION="AFFE", MODELE=MODELE, **motscle3b
             )
-            _C_CAc = AFFE_CHAR_MECA(MODELE=MODELE, VECT_ASSE=__CH1a)
-            _C_CAd = AFFE_CHAR_MECA(MODELE=MODELE, VECT_ASSE=__CH1b)
+            _C_CAc = AFFE_CHAR_MECA(
+                MODELE=MODELE, DOUBLE_LAGRANGE=DOUBLE_LAGRANGE, VECT_ASSE=__CH1a
+            )
+            _C_CAd = AFFE_CHAR_MECA(
+                MODELE=MODELE, DOUBLE_LAGRANGE=DOUBLE_LAGRANGE, VECT_ASSE=__CH1b
+            )
             dExcit1a.append(_F(CHARGE=_C_CAc, FONC_MULT=__FCT1))
 
-            _C_CAe = AFFE_CHAR_MECA(MODELE=MODELE, **motscle2)
-            _C_CAf = AFFE_CHAR_MECA(MODELE=MODELE, **motscle2)
+            _C_CAe = AFFE_CHAR_MECA(MODELE=MODELE, DOUBLE_LAGRANGE=DOUBLE_LAGRANGE, **motscle2)
+            _C_CAf = AFFE_CHAR_MECA(MODELE=MODELE, DOUBLE_LAGRANGE=DOUBLE_LAGRANGE, **motscle2)
             dExcit1a.append(_F(CHARGE=_C_CAe))
             dExcit1b.append(_F(CHARGE=_C_CAf))
 
             # blocage glissement aux noeuds d'ancrage opposés
-            _C_CAa = AFFE_CHAR_MECA(MODELE=MODELE, **motscle2a)
-            _C_CAb = AFFE_CHAR_MECA(MODELE=MODELE, **motscle2b)
+            _C_CAa = AFFE_CHAR_MECA(MODELE=MODELE, DOUBLE_LAGRANGE=DOUBLE_LAGRANGE, **motscle2a)
+            _C_CAb = AFFE_CHAR_MECA(MODELE=MODELE, DOUBLE_LAGRANGE=DOUBLE_LAGRANGE, **motscle2b)
             dExcit1a.append(_F(CHARGE=_C_CAa, TYPE_CHARGE="DIDI"))
             dExcit1b.append(_F(CHARGE=_C_CAb, TYPE_CHARGE="DIDI"))
 
@@ -794,12 +802,12 @@ def calc_precont_ops(
             dExcit1 = copy.copy(dExcit)
             # force de tension
             __CH1 = CREA_CHAMP(TYPE_CHAM="NOEU_DEPL_R", OPERATION="AFFE", MODELE=MODELE, **motscle3)
-            _C_CA1 = AFFE_CHAR_MECA(MODELE=MODELE, VECT_ASSE=__CH1)
+            _C_CA1 = AFFE_CHAR_MECA(MODELE=MODELE, DOUBLE_LAGRANGE=DOUBLE_LAGRANGE, VECT_ASSE=__CH1)
             dExcit1.append(_F(CHARGE=_C_CA1, FONC_MULT=__FCT1))
 
             # blocage glissement aux noeuds d'ancrage opposés
             # et liaisons cables-béton
-            _C_CA = AFFE_CHAR_MECA(MODELE=MODELE, **motscle2)
+            _C_CA = AFFE_CHAR_MECA(MODELE=MODELE, DOUBLE_LAGRANGE=DOUBLE_LAGRANGE, **motscle2)
             dExcit1.append(_F(CHARGE=_C_CA, TYPE_CHARGE="DIDI"))
 
             if __recul_exists:

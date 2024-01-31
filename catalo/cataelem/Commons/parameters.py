@@ -1805,6 +1805,8 @@ PTEMPCR = OutputParameter(phys=PHY.TEMP_R, type="ELEM", comment="""""")
 
 PTEMP_R = OutputParameter(phys=PHY.TEMP_R, type="ELGA", comment="""""")
 
+PTEMPN_R = OutputParameter(phys=PHY.TEMP_R, type="ELNO", comment="""""")
+
 PTRIANO = OutputParameter(
     phys=PHY.ENDO_R,
     type="ELNO",
