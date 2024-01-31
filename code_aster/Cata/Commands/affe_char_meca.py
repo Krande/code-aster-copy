@@ -89,6 +89,7 @@ AFFE_CHAR_MECA = OPER(
             "FORCE_POUTRE",
             "FORCE_TUYAU",
             "FORCE_COQUE",
+            "FORCE_COQUE_FO",
             "LIAISON_COQUE",
             "RELA_CINE_BP",
             "FORCE_ELEC",
@@ -99,10 +100,13 @@ AFFE_CHAR_MECA = OPER(
             "ECHANGE_THM",
         ),
         PRESENT_PRESENT("EFFE_FOND", "PRES_REP"),
+        EXCLUS("FORCE_COQUE", "FORCE_COQUE_FO"),
     ),
     VERI_AFFE=SIMP(statut="f", typ="TXM", defaut="OUI", into=("OUI", "NON")),
     VERI_NORM=SIMP(statut="f", typ="TXM", defaut="OUI", into=("OUI", "NON")),
     MODELE=SIMP(statut="o", typ=(modele_sdaster)),
+    CARA_ELEM=SIMP(statut="f", typ=cara_elem),
+    CHAM_MATER=SIMP(statut="f", typ=cham_mater),
     EVOL_CHAR=SIMP(
         statut="f", fr=tr("Champ de pression issu d'un autre calcul"), typ=evol_char, min=1, max=1
     ),
@@ -1069,6 +1073,18 @@ AFFE_CHAR_MECA = OPER(
         MF2=SIMP(statut="f", typ="R"),
         PRES=SIMP(statut="f", typ="R"),
         PLAN=SIMP(statut="f", typ="TXM", defaut="MAIL", into=("SUP", "INF", "MOY", "MAIL")),
+    ),
+    FORCE_COQUE_FO=FACT(
+        statut="f",
+        max="**",
+        fr=tr(
+            "Applique des forces surfaciques définies par fonctions non dépendantes du temps sur des éléments de types coques"
+        ),
+        regles=(UN_PARMI("TOUT", "GROUP_MA"),),
+        #  rajour d'un mot clé REPERE :/ LOCAL /GLOBAL
+        TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
+        GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+        PRES=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
     ),
     LIAISON_COQUE=FACT(
         statut="f",

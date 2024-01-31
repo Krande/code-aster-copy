@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,6 +24,7 @@ subroutine char_crea_neum(load, model, mesh, geomDime, valeType)
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
 #include "asterfort/cachre.h"
+#include "asterfort/char_eval_fonc.h"
 #include "asterfort/utmess.h"
 !
     character(len=8), intent(in) :: load
@@ -49,17 +50,19 @@ subroutine char_crea_neum(load, model, mesh, geomDime, valeType)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: max_load_type
-    parameter(max_load_type=6)
+    parameter(max_load_type=7)
     integer :: nbocc(max_load_type)
+    character(len=4) valeType2
     character(len=5) :: param(max_load_type)
     character(len=16) :: keywordfact(max_load_type)
 !
     integer :: i
     character(len=5) :: curr_para
     data keywordfact/'FORCE_CONTOUR', 'FORCE_INTERNE', 'FORCE_ARETE',&
-     &                 'FORCE_FACE', 'FORCE_POUTRE', 'FORCE_COQUE'/
+     &                 'FORCE_FACE', 'FORCE_POUTRE', 'FORCE_COQUE',&
+     &                 'FORCE_COQUE_FO'/
     data param/'F1D2D', ' ', 'F1D3D',&
-     &                 'F2D3D', 'F1D1D', ' '/
+     &                 'F2D3D', 'F1D1D', ' ', ' '/
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -85,6 +88,8 @@ subroutine char_crea_neum(load, model, mesh, geomDime, valeType)
 !
 ! - Load affectation
 !
+    valeType2 = valeType
+!
     do i = 1, max_load_type
         if (nbocc(i) .ne. 0) then
             curr_para = param(i)
@@ -93,12 +98,18 @@ subroutine char_crea_neum(load, model, mesh, geomDime, valeType)
 ! --------- FORCE_INTERNE#3D
             if (keywordfact(i) .eq. 'FORCE_INTERNE' .and. geomDime .eq. 3) curr_para = 'F3D3D'
 ! --------- FORCE_COQUE#2D
-            if (keywordfact(i) .eq. 'FORCE_COQUE' .and. geomDime .eq. 2) curr_para = 'FCO2D'
+            if (keywordfact(i) (1:11) .eq. 'FORCE_COQUE' .and. geomDime .eq. 2) curr_para = 'FCO2D'
 ! --------- FORCE_COQUE#3D
-            if (keywordfact(i) .eq. 'FORCE_COQUE' .and. geomDime .eq. 3) curr_para = 'FCO3D'
+            if (keywordfact(i) (1:11) .eq. 'FORCE_COQUE' .and. geomDime .eq. 3) curr_para = 'FCO3D'
+! --------- FORCE_COQUE_F
+            if (keywordfact(i) .eq. 'FORCE_COQUE_FO') valeType2 = 'FONC'
 !
-            call cachre(load, model, mesh, geomDime, valeType, &
+            call cachre(load, model, mesh, geomDime, valeType2, &
                         curr_para, keywordfact(i))
+!
+            if (keywordfact(i) .eq. 'FORCE_COQUE_FO') then
+                call char_eval_fonc(load, mesh, geomDime, curr_para)
+            end if
         end if
     end do
 !
