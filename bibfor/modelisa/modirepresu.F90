@@ -148,7 +148,6 @@ subroutine modirepresu(resuou, resuin)
     modelRefe = " "
     ligrel1 = " "
     option1 = 'EGRU_ELNO       '
-    check = .false.
     optinit = ' '
     n1 = 0
 
@@ -167,6 +166,7 @@ subroutine modirepresu(resuou, resuin)
         call getvtx('MODI_CHAM', 'TYPE_CHAM', iocc=ioc, scal=type_cham, nbret=n0)
         call getvtx('MODI_CHAM', 'NOM_CHAM_RESU', iocc=ioc, scal=cham_resu, nbret=n1)
         optinit = option
+        check = .false.
         do iord = 1, nbordr
             ! SI OPTION CHANGE DANS LE CASE DE EGRU_ELNO
             option = optinit

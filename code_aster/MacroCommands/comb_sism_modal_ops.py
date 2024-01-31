@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2024 EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -661,7 +661,7 @@ def corr_pseudo_mode_mono(
         phi_ps = pseudo_mode.getField(option, index_pseudo_mode).getValues()
         # pseudo-mode
         R_c = (phi_ps - np.sum(pr_wr2_phi, axis=0)) * S_r_freq_coup
-    elif option in ["EFGE_ELNO", "SIEF_ELGA", "SIGM_ELNO", "SIPO_ELNO", "SIEF_ELNO"]:
+    elif option in ["EFGE_ELNO", "EGRU_ELNO", "SIEF_ELGA", "SIGM_ELNO", "SIPO_ELNO", "SIEF_ELNO"]:
         phi_ps = pseudo_mode.getField(option, index_pseudo_mode).getValues()
         # pseudo-mode
         R_c = (phi_ps - np.sum(pr_wr2_phi, axis=0)) * S_r_freq_coup
@@ -736,7 +736,14 @@ def corr_pseudo_mode_mult(
             phi_ps = pseudo_mode.getField(option, ps_nume_mode).getValues()
             # reponse by pseudo-mode
             R_c_noeud = (np.array(phi_ps) - np.sum(pr_wr2_phi, axis=0)) * S_r_freq_coup
-        elif option in ["EFGE_ELNO", "SIEF_ELGA", "SIGM_ELNO", "SIPO_ELNO", "SIEF_ELNO"]:
+        elif option in [
+            "EFGE_ELNO",
+            "EGRU_ELNO",
+            "SIEF_ELGA",
+            "SIGM_ELNO",
+            "SIPO_ELNO",
+            "SIEF_ELNO",
+        ]:
             phi_ps = pseudo_mode.getField(option, ps_nume_mode).getValues()
             # reponse by pseudo-mode
             R_c_noeud = (np.array(phi_ps) - np.sum(pr_wr2_phi, axis=0)) * S_r_freq_coup
@@ -781,7 +788,14 @@ def get_phis(mode_meca, option, nume_ordres):
         for imode in nume_ordres:
             if option in ["DEPL", "REAC_NODA", "FORC_NODA"]:
                 phis.append(mode_meca.getField(option, imode).getValues())
-            elif option in ["EFGE_ELNO", "SIEF_ELGA", "SIGM_ELNO", "SIPO_ELNO", "SIEF_ELNO"]:
+            elif option in [
+                "EFGE_ELNO",
+                "EGRU_ELNO",
+                "SIEF_ELGA",
+                "SIGM_ELNO",
+                "SIPO_ELNO",
+                "SIEF_ELNO",
+            ]:
                 phis.append(mode_meca.getField(option, imode).getValues())
     # eigen-vector
     phis = np.array(phis)
@@ -874,6 +888,7 @@ def impr_vale_spec_mono(
     nbIndexes = output_result.getNumberOfIndexes()
     # Create identical field of option field
     imode = 0
+    field_output = None
     if option in ["DEPL", "REAC_NODA", "FORC_NODA"]:
         field_output = mode_meca.getField(option, imode + 1).copy()
     elif option in ["EFGE_ELNO", "SIEF_ELGA", "SIGM_ELNO", "SIPO_ELNO", "SIEF_ELNO"]:
@@ -952,6 +967,7 @@ def impr_vale_qs_dire(output_result, type_resu, option, mode_meca, dir, R_c):
     nbIndexes = output_result.getNumberOfIndexes()
     # Create identical field of option field
     imode = 0
+    field_output = None
     if option in ["DEPL", "REAC_NODA", "FORC_NODA"]:
         field_output = mode_meca.getField(option, imode + 1).copy()
     elif option in ["EFGE_ELNO", "SIEF_ELGA", "SIGM_ELNO", "SIPO_ELNO", "SIEF_ELNO"]:
@@ -996,6 +1012,7 @@ def impr_vale_dire(output_result, type_resu, option, mode_meca, dir, R_x):
     nbIndexes = output_result.getNumberOfIndexes()
     # Create identical field of option field
     imode = 0
+    field_output = None
     if option in ["DEPL", "REAC_NODA", "FORC_NODA"]:
         field_output = mode_meca.getField(option, imode + 1).copy()
     elif option in ["EFGE_ELNO", "SIEF_ELGA", "SIGM_ELNO", "SIPO_ELNO", "SIEF_ELNO"]:
@@ -1039,9 +1056,10 @@ def impr_vale_tota(output_result, type_resu, option, mode_meca, R_xyz, R_newmark
     nbIndexes = output_result.getNumberOfIndexes()
     # Create identical field of option field
     imode = 0
+    field_output = None
     if option in ["DEPL", "REAC_NODA", "FORC_NODA"]:
         field_output = mode_meca.getField(option, imode + 1).copy()
-    elif option in ["EFGE_ELNO", "SIEF_ELGA", "SIGM_ELNO", "SIPO_ELNO", "SIEF_ELNO"]:
+    elif option in ["EFGE_ELNO", "EGRU_ELNO", "SIEF_ELGA", "SIGM_ELNO", "SIPO_ELNO", "SIEF_ELNO"]:
         field_output = mode_meca.getField(option, imode + 1).copy()
     elif option in ["VITE", "ACCE_ABSOLU"]:
         field_output = mode_meca.getField("DEPL", imode + 1).copy()
@@ -1093,9 +1111,10 @@ def impr_vale_spec_mult(
     nbIndexes = output_result.getNumberOfIndexes()
     # Create identical field of option field
     imode = 0
+    field_output = None
     if option in ["DEPL", "REAC_NODA", "FORC_NODA"]:
         field_output = mode_meca.getField(option, imode + 1).copy()
-    elif option in ["EFGE_ELNO", "SIEF_ELGA", "SIGM_ELNO", "SIPO_ELNO", "SIEF_ELNO"]:
+    elif option in ["EFGE_ELNO", "EGRU_ELNO", "SIEF_ELGA", "SIGM_ELNO", "SIPO_ELNO", "SIEF_ELNO"]:
         field_output = mode_meca.getField(option, imode + 1).copy()
     elif option in ["VITE", "ACCE_ABSOLU"]:
         field_output = mode_meca.getField("DEPL", imode + 1).copy()
@@ -1183,9 +1202,10 @@ def impr_vale_dds_dire(output_result, type_resu, option, mode_meca, dir, R_e_j):
     nbIndexes = output_result.getNumberOfIndexes()
     # Create identical field of option field
     imode = 0
+    field_output = None
     if option in ["DEPL", "REAC_NODA", "FORC_NODA"]:
         field_output = mode_meca.getField(option, imode + 1).copy()
-    elif option in ["EFGE_ELNO", "SIEF_ELGA", "SIGM_ELNO", "SIPO_ELNO", "SIEF_ELNO"]:
+    elif option in ["EFGE_ELNO", "EGRU_ELNO", "SIEF_ELGA", "SIGM_ELNO", "SIPO_ELNO", "SIEF_ELNO"]:
         field_output = mode_meca.getField(option, imode + 1).copy()
     elif option in ["VITE", "ACCE_ABSOLU"]:
         field_output = mode_meca.getField("DEPL", imode + 1).copy()
@@ -1225,9 +1245,10 @@ def impr_vale_iner_dire(output_result, type_resu, option, mode_meca, dir, R_e_j)
     nbIndexes = output_result.getNumberOfIndexes()
     # Create identical field of option field
     imode = 0
+    field_output = None
     if option in ["DEPL", "REAC_NODA", "FORC_NODA"]:
         field_output = mode_meca.getField(option, imode + 1).copy()
-    elif option in ["EFGE_ELNO", "SIEF_ELGA", "SIGM_ELNO", "SIPO_ELNO", "SIEF_ELNO"]:
+    elif option in ["EFGE_ELNO", "EGRU_ELNO", "SIEF_ELGA", "SIGM_ELNO", "SIPO_ELNO", "SIEF_ELNO"]:
         field_output = mode_meca.getField(option, imode + 1).copy()
     elif option in ["VITE", "ACCE_ABSOLU"]:
         field_output = mode_meca.getField("DEPL", imode + 1).copy()
@@ -1267,9 +1288,10 @@ def impr_vale_dyna(output_result, type_resu, option, mode_meca, R_d, Rd_newmark_
     nbIndexes = output_result.getNumberOfIndexes()
     # Create identical field of option field
     imode = 0
+    field_output = None
     if option in ["DEPL", "REAC_NODA", "FORC_NODA"]:
         field_output = mode_meca.getField(option, imode + 1).copy()
-    elif option in ["EFGE_ELNO", "SIEF_ELGA", "SIGM_ELNO", "SIPO_ELNO", "SIEF_ELNO"]:
+    elif option in ["EFGE_ELNO", "EGRU_ELNO", "SIEF_ELGA", "SIGM_ELNO", "SIPO_ELNO", "SIEF_ELNO"]:
         field_output = mode_meca.getField(option, imode + 1).copy()
     elif option in ["VITE", "ACCE_ABSOLU"]:
         field_output = mode_meca.getField("DEPL", imode + 1).copy()
@@ -1332,9 +1354,10 @@ def impr_vale_iner_tota(output_result, type_resu, option, mode_meca, R_prim, R_p
     nbIndexes = output_result.getNumberOfIndexes()
     # Create identical field of option field
     imode = 0
+    field_output = None
     if option in ["DEPL", "REAC_NODA", "FORC_NODA"]:
         field_output = mode_meca.getField(option, imode + 1).copy()
-    elif option in ["EFGE_ELNO", "SIEF_ELGA", "SIGM_ELNO", "SIPO_ELNO", "SIEF_ELNO"]:
+    elif option in ["EFGE_ELNO", "EGRU_ELNO", "SIEF_ELGA", "SIGM_ELNO", "SIPO_ELNO", "SIEF_ELNO"]:
         field_output = mode_meca.getField(option, imode + 1).copy()
     elif option in ["VITE", "ACCE_ABSOLU"]:
         field_output = mode_meca.getField("DEPL", imode + 1).copy()
@@ -1383,9 +1406,10 @@ def impr_vale_dds_tota(output_result, type_resu, option, mode_meca, R_seco, R_se
     nbIndexes = output_result.getNumberOfIndexes()
     # Create identical field of option field
     imode = 0
+    field_output = None
     if option in ["DEPL", "REAC_NODA", "FORC_NODA"]:
         field_output = mode_meca.getField(option, imode + 1).copy()
-    elif option in ["EFGE_ELNO", "SIEF_ELGA", "SIGM_ELNO", "SIPO_ELNO", "SIEF_ELNO"]:
+    elif option in ["EFGE_ELNO", "EGRU_ELNO", "SIEF_ELGA", "SIGM_ELNO", "SIPO_ELNO", "SIEF_ELNO"]:
         field_output = mode_meca.getField(option, imode + 1).copy()
     elif option in ["VITE", "ACCE_ABSOLU"]:
         field_output = mode_meca.getField("DEPL", imode + 1).copy()
@@ -1434,9 +1458,10 @@ def impr_vale_qs_tota(output_result, type_resu, option, mode_meca, R_ps, Rps_new
     nbIndexes = output_result.getNumberOfIndexes()
     # Create identical field of option field
     imode = 0
+    field_output = None
     if option in ["DEPL", "REAC_NODA", "FORC_NODA"]:
         field_output = mode_meca.getField(option, imode + 1).copy()
-    elif option in ["EFGE_ELNO", "SIEF_ELGA", "SIGM_ELNO", "SIPO_ELNO", "SIEF_ELNO"]:
+    elif option in ["EFGE_ELNO", "EGRU_ELNO", "SIEF_ELGA", "SIGM_ELNO", "SIPO_ELNO", "SIEF_ELNO"]:
         field_output = mode_meca.getField(option, imode + 1).copy()
     elif option in ["VITE", "ACCE_ABSOLU"]:
         field_output = mode_meca.getField("DEPL", imode + 1).copy()
@@ -1642,10 +1667,8 @@ def comb_sism_modal_ops(self, **args):
             # step 1: Get eigen-vector to combine from mode_meca
             if option not in ["VITE", "ACCE_ABSOLU"]:
                 phis = get_phis(mode_meca, option, nume_ordres)
-            elif option == "VITE" or option == "ACCE_ABSOLU":
-                phis = get_phis(mode_meca, "DEPL", nume_ordres)
             else:
-                raise Exception("OPTION '{option}' n'est pas pris en compte".format(option=option))
+                phis = get_phis(mode_meca, "DEPL", nume_ordres)
             # step 2: spectral value
             l_R_x = []  # list of directional total result
             l_part_d = []  # list of directional result part dynamique
@@ -1719,11 +1742,11 @@ def comb_sism_modal_ops(self, **args):
                     pr_wr2_phi_all = (fact_partici)[:, None] * phis
                     pr_wr2_phi_c_all = (fact_partici)[:, None] * phis
                 # in case where the first mode is bigger than cutting frequency
-                if freq_coup is not None and freq_coup >= freqs[0]:
+                if freq_coup >= freqs[0]:
                     R_mi = R_mi_all
                     pr_wr2_phi = pr_wr2_phi_all
                     pr_wr2_phi_c = pr_wr2_phi_c_all
-                elif freq_coup < freqs[0]:
+                else:
                     R_mi = np.zeros(np.shape(phis))
                     pr_wr2_phi = np.zeros(np.shape(phis))
                     pr_wr2_phi_c = np.zeros(np.shape(phis))
@@ -1813,7 +1836,6 @@ def comb_sism_modal_ops(self, **args):
                 l_SA[spectre_dir] = S_r_freq
             # step 7 : reponse by directional combinaison
             # Get input COMB_DIRECTION
-            comb_direction = args["COMB_DIRECTION"]
             R_xyz, R_newmark_all = comb_directions(comb_direction, l_R_x)
             # POST_ROCHE / part dynamique et pseudo statique
             R_d, Rd_newmark_all = comb_directions(comb_direction, l_part_d)
@@ -2152,6 +2174,7 @@ def comb_sism_modal_ops(self, **args):
                                     )
                                 elif option in [
                                     "EFGE_ELNO",
+                                    "EGRU_ELNO",
                                     "SIEF_ELGA",
                                     "SIGM_ELNO",
                                     "SIPO_ELNO",
