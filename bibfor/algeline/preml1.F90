@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,6 @@ subroutine preml1(neq, n2, diag, delg, col, &
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/ismaem.h"
-#include "asterc/onmetl.h"
 #include "asterfort/amdapt.h"
 #include "asterfort/amdbar.h"
 #include "asterfort/genmmd.h"
@@ -263,48 +262,6 @@ subroutine preml1(neq, n2, diag, delg, col, &
         call amdapt(neq, nbnd, nbsn, xadjd, suiv, &
                     invpnd, parent, spndnd, adress, lgind, &
                     fctnzs, nbops, llist, qsize)
-    else if (renum .eq. 2) then
-!----------------------------------METIS 4 : METHODE DE BISSECTION
-!
-!
-!     COPIE EN INTEGER*4
-        nbnd4 = nbnd
-        nadj4 = nadj
-        call wkvect(noxadj, ' V V S ', nbnd+1, xadjd4)
-        call wkvect(noadjn, ' V V S ', max(nadj, 1), adjnc4)
-        call wkvect(noinvp, ' V V S ', nbnd, invpn4)
-        call wkvect(noperm, ' V V S ', nbnd, permn4)
-        call wkvect(nopare, ' V V S ', nbnd, paren4)
-        call wkvect(nospnd, ' V V S ', nbnd, spndn4)
-        do i = 1, nbnd+1
-            zi4(xadjd4+i-1) = xadjd(i)
-        end do
-        do i = 1, nadj
-            zi4(adjnc4+i-1) = adjncy(i)
-        end do
-        call onmetl(nbnd4, nadj4, zi4(xadjd4), zi4(adjnc4), zi4(invpn4), &
-                    zi4(permn4), zi4(spndn4), zi4(paren4), nbsn4, nbops, &
-                    fctnz4, lgind4, niv)
-        nbsn = nbsn4
-        fctnzs = fctnz4
-        lgind = lgind4
-        do i = 1, nbnd
-            invpnd(i) = zi4(invpn4+i-1)
-            permnd(i) = zi4(permn4+i-1)
-        end do
-        do i = 1, nbsn
-            parent(i) = zi4(paren4+i-1)
-        end do
-        do i = 1, nbsn+1
-            spndnd(i) = zi4(spndn4+i-1)
-        end do
-!
-        call jedetr(noxadj)
-        call jedetr(noadjn)
-        call jedetr(noinvp)
-        call jedetr(noperm)
-        call jedetr(nopare)
-        call jedetr(nospnd)
     else if (renum .eq. 3) then
 !-----------------MATRICE GENERALISEE PAS DE RENUMEROTATION
 !     ON L'EMULE EN CREANT UN SEUL SUPER NOEUD

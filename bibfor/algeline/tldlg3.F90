@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb, &
 !         POUR LES SOLVEURS LINEAIRES: LDLT, MULT_FRONT, MUMPS
 !
 !     IN  METRES :  /'LDLT' /'MULT_FRONT'/'MUMPS'
-!     IN  RENUM :  /'MD' /'MDA' /'METIS' /' ' (sert a MULT_FRONT)
+!     IN  RENUM :  /'MD' /'MDA' /' ' (sert a MULT_FRONT)
 !     IN  ISTOP :  /0 -> SI IRET>0 : ERREUR <F>
 !                  /1 -> SI IRET=1 : ALARME <A>
 !                        SI IRET=2 : ERREUR <F>

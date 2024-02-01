@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,7 +67,7 @@ subroutine mulfr8(nommat, npivot, neq, typsym, eps, &
 !     :    NPIVOT  < 0 ==> -NPIVOT TERMES DIAGONAUX < 0
 !
 !     IN  NEQ     : IS : NOMBRE TOTAL D'EQUATION
-!     IN  RENUMZ : K* : METHODE DE RENUMEROTATION MD/MDA/METIS
+!     IN  RENUMZ : K* : METHODE DE RENUMEROTATION MD/MDA
 !     :SI RENUMZ=' ' : CELLE DU SOLVEUR PAR DEFAUT DE LA MATRICE
 !
 !     ------------------------------------------------------------------

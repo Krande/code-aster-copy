@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -81,7 +81,7 @@ subroutine op0069()
     if (solv1 .eq. ' ') then
 !       -- on cree un solveur par defaut (qui sera surcharge dans CALC_MODES) :
         solv1 = '&&OP0069.SOLVEUR'
-        call crsolv('MULT_FRONT', 'METIS', k8bid, r8bid, solv1, 'V')
+        call crsolv('MULT_FRONT', 'MDA', k8bid, r8bid, solv1, 'V')
     else
         ASSERT(.false.)
     end if

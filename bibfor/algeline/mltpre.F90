@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -324,13 +324,10 @@ subroutine mltpre(mat19, renumz)
 !
 !     OPTNUM =0 INDIQUE L'APPEL A GENMMD
 !     OPTNUM =1 APPEL A AMDBAR : APPROXIMATE MINIMUM  DEGREE
-!     OPTNUM =2 APPEL A METIS : MULTI LEVEL BISSECTION
     if (renum .eq. 'MDA') then
         optnum = 1
     else if (renum .eq. 'MD') then
         optnum = 0
-    else if (renum .eq. 'METIS') then
-        optnum = 2
     else
         call utmess('F', 'ALGELINE_91', sk=renum)
     end if
@@ -499,9 +496,6 @@ subroutine mltpre(mat19, renumz)
     if (nivdbg) then
 !     ON APPELLE PRNCHK POUR VERIFIER LA COHERENCE
 !     ENTRE L'ARBORESCENCE ET LA RENUMEROTATION
-!     EN PARTICULIER A ACTIVER LORS D'UN PROBLEME AVEC METIS
-!     COMME ON A DEJA VU AVEC DES ELEMENTS 3D FILAIRES OU DES
-!     POUTRES (FICHES 10312 ET 10468)
         call prnchk(nbsn, zi(adress), zi4(global), zi(fils), zi(frere), &
                     zi(lgsn), zi(lfront), zi(invsup), zi(seq))
     end if
