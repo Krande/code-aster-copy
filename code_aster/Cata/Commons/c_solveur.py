@@ -209,7 +209,7 @@ def C_SOLVEUR(command, base=None):  # COMMUN#
     # --------------------------------------------------------------------
 
     #  RENUM
-    _BlocMF["RENUM"] = SIMP(statut="f", typ="TXM", defaut="METIS", into=("MD", "MDA"))
+    _BlocMF["RENUM"] = SIMP(statut="f", typ="TXM", defaut="MDA", into=("MD", "MDA"))
 
     _BlocLD["RENUM"] = SIMP(statut="f", typ="TXM", defaut="RCMK", into=("RCMK",))
 
