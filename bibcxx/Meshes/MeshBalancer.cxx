@@ -3,7 +3,7 @@
  * @brief Implementation de MeshBalancer
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -73,8 +73,6 @@ ParallelMeshPtr MeshBalancer::applyBalancingStrategy( VectorInt &newLocalNodesLi
     }
 
     if ( _mesh != nullptr ) {
-        if ( _mesh->isParallel() )
-            throw std::runtime_error( "Parallel mesh not allowed" );
         if ( _mesh->isIncomplete() ) {
             VectorLong toSend( 1, _mesh->getNumberOfNodes() ), toSendAll;
             AsterMPI::all_gather( toSend, toSendAll );
@@ -84,9 +82,11 @@ ParallelMeshPtr MeshBalancer::applyBalancingStrategy( VectorInt &newLocalNodesLi
                 result[pos + 1] = result[pos] + tmp;
                 ++pos;
             }
-            _range = {result[rank], result[rank + 1]};
+            _range = { result[rank], result[rank + 1] };
+        } else if ( _mesh->isParallel() ) {
+            _range = { -1, -1 };
         } else {
-            _range = {0, _mesh->getNumberOfNodes()};
+            _range = { 0, _mesh->getNumberOfNodes() };
         }
     }
 
@@ -108,12 +108,24 @@ ParallelMeshPtr MeshBalancer::applyBalancingStrategy( VectorInt &newLocalNodesLi
     // Build a global numbering (if there is not)
     VectorLong nodeGlobNum;
     if ( _mesh != nullptr ) {
-        const auto size = _mesh->getNumberOfNodes();
-        nodeGlobNum.reserve( size );
-        for ( int i = 0; i < size; ++i ) {
-            // +1 is mandatory because connectivity starts at 1 in aster
-            // cf. connex = _mesh->getConnectivity();
-            nodeGlobNum.push_back( i + _range[0] + 1 );
+        if ( !_mesh->isParallel() ) {
+            const auto size = _mesh->getNumberOfNodes();
+            nodeGlobNum.reserve( size );
+            for ( int i = 0; i < size; ++i ) {
+                // +1 is mandatory because connectivity starts at 1 in aster
+                // cf. connex = _mesh->getConnectivity();
+                nodeGlobNum.push_back( i + _range[0] + 1 );
+            }
+        } else {
+            const auto &numGlob = _mesh->getLocalToGlobalNodeIds();
+            numGlob->updateValuePointer();
+            const auto size = numGlob->size();
+            nodeGlobNum.reserve( size );
+            for ( int i = 0; i < size; ++i ) {
+                // +1 is mandatory because connectivity starts at 1 in aster
+                // cf. connex = _mesh->getConnectivity();
+                nodeGlobNum[i] = ( *numGlob )[i] + 1;
+            }
         }
     }
 
@@ -212,25 +224,35 @@ ParallelMeshPtr MeshBalancer::applyBalancingStrategy( VectorInt &newLocalNodesLi
     VectorLong globCellNumVect2;
     if ( _mesh != nullptr ) {
         VectorLong cellGlobNumLoc;
-        std::array< ASTERINTEGER, 2 > range2;
-        if ( _mesh->isIncomplete() ) {
-            VectorLong toSend( 1, _mesh->getNumberOfCells() ), toSendAll;
-            AsterMPI::all_gather( toSend, toSendAll );
-            VectorLong result( nbProcs + 1, 0 );
-            int pos = 0;
-            for ( const auto &tmp : toSendAll ) {
-                result[pos + 1] = result[pos] + tmp;
-                ++pos;
+        if ( _mesh->isParallel() ) {
+            const auto &numGlob = _mesh->getLocalToGlobalCellIds();
+            numGlob->updateValuePointer();
+            const auto size = numGlob->size();
+            cellGlobNumLoc.reserve( size );
+            for ( int i = 0; i < size; ++i ) {
+                cellGlobNumLoc[i] = ( *numGlob )[i];
             }
-            range2 = {result[rank], result[rank + 1]};
         } else {
-            range2 = {0, _mesh->getNumberOfCells()};
-        }
+            std::array< ASTERINTEGER, 2 > range2;
+            if ( _mesh->isIncomplete() ) {
+                VectorLong toSend( 1, _mesh->getNumberOfCells() ), toSendAll;
+                AsterMPI::all_gather( toSend, toSendAll );
+                VectorLong result( nbProcs + 1, 0 );
+                int pos = 0;
+                for ( const auto &tmp : toSendAll ) {
+                    result[pos + 1] = result[pos] + tmp;
+                    ++pos;
+                }
+                range2 = { result[rank], result[rank + 1] };
+            } else {
+                range2 = { 0, _mesh->getNumberOfCells() };
+            }
 
-        const auto size = _mesh->getNumberOfCells();
-        cellGlobNumLoc.reserve( size );
-        for ( int i = 0; i < size; ++i ) {
-            cellGlobNumLoc.push_back( i + range2[0] );
+            const auto size = _mesh->getNumberOfCells();
+            cellGlobNumLoc.reserve( size );
+            for ( int i = 0; i < size; ++i ) {
+                cellGlobNumLoc.push_back( i + range2[0] );
+            }
         }
 
         VectorLong globCellNumVect;
@@ -324,8 +346,16 @@ void MeshBalancer::_enrichBalancers( VectorInt &newLocalNodesList, int iProc, in
     for ( const auto &val : test2 )
         filter.insert( val );
     // In returnPairToSend.first ids start at 0 in local numbering
-    for ( const auto &val : returnPairToKeep.first )
-        filter.insert( val + _range[0] );
+    if ( _mesh != nullptr && _mesh->isParallel() ) {
+        const auto l2G = _mesh->getLocalToGlobalNodeIds();
+        std::cout << "Verifier +1 ou -1" << std::endl;
+        for ( const auto &val : returnPairToKeep.first )
+            filter.insert( ( *l2G )[val] );
+    } else {
+        std::cout << "Verifier +1 ou -1" << std::endl;
+        for ( const auto &val : returnPairToKeep.first )
+            filter.insert( val + _range[0] );
+    }
     VectorInt filterV;
     // So in filterV, ids start at 0 in global numbering
     for ( const auto &val : filter )
@@ -365,7 +395,16 @@ void MeshBalancer::buildBalancersAndInterfaces( VectorInt &newLocalNodesList,
     }
 
     VectorOfVectorsLong fastConnect;
+    JeveuxVectorLong meshNodeOwner;
+    std::shared_ptr< MapLong > g2LMap;
+    bool parallelMesh = false;
     if ( _mesh != nullptr ) {
+        if ( _mesh->isParallel() ) {
+            parallelMesh = true;
+            meshNodeOwner = _mesh->getNodesOwner();
+            meshNodeOwner->updateValuePointer();
+            g2LMap = _mesh->getGlobalToLocalNodeIds();
+        }
         buildFastConnectivity( _mesh, fastConnect );
     }
 
@@ -384,15 +423,34 @@ void MeshBalancer::buildBalancersAndInterfaces( VectorInt &newLocalNodesList,
         } else {
             _enrichBalancers( nodesLists, iProc, rank, procInterfaces, fastConnect );
         }
-        if ( iProc == rank ) {
-            for ( const auto &tmp : newLocalNodesList ) {
-                if ( tmp >= _range[0] && tmp < _range[1] )
-                    nodeOwner[tmp - _range[0]] = rank;
+        if ( parallelMesh ) {
+            std::cout << "Verifier +1 ou -1" << std::endl;
+            if ( iProc == rank ) {
+                for ( const auto &tmp : newLocalNodesList ) {
+                    if ( ( *meshNodeOwner )[tmp] == rank ) {
+                        const auto &num = ( *g2LMap )[tmp];
+                        nodeOwner[num] = rank;
+                    }
+                }
+            } else {
+                for ( const auto &tmp : nodesLists ) {
+                    if ( ( *meshNodeOwner )[tmp] == rank ) {
+                        const auto &num = ( *g2LMap )[tmp];
+                        nodeOwner[num] = iProc;
+                    }
+                }
             }
         } else {
-            for ( const auto &tmp : nodesLists ) {
-                if ( tmp >= _range[0] && tmp < _range[1] )
-                    nodeOwner[tmp - _range[0]] = iProc;
+            if ( iProc == rank ) {
+                for ( const auto &tmp : newLocalNodesList ) {
+                    if ( tmp >= _range[0] && tmp < _range[1] )
+                        nodeOwner[tmp - _range[0]] = rank;
+                }
+            } else {
+                for ( const auto &tmp : nodesLists ) {
+                    if ( tmp >= _range[0] && tmp < _range[1] )
+                        nodeOwner[tmp - _range[0]] = iProc;
+                }
             }
         }
     }
@@ -434,6 +492,8 @@ void MeshBalancer::buildBalancersAndInterfaces( VectorInt &newLocalNodesList,
 std::pair< VectorInt, VectorInt > MeshBalancer::findNodesAndElementsInNodesNeighborhood(
     const VectorInt &nodesListIn, std::set< int > &toAddSet, VectorOfVectorsLong &fastConnex ) {
 
+    int rank = 0;
+
     std::pair< VectorInt, VectorInt > toReturn;
     auto &nodesList = toReturn.first;
     auto &elemList = toReturn.second;
@@ -448,6 +508,20 @@ std::pair< VectorInt, VectorInt > MeshBalancer::findNodesAndElementsInNodesNeigh
     }
     const auto endSet = inSet.end();
 
+    bool parallelMesh = _mesh->isParallel();
+    JeveuxVectorLong meshNodeOwner, meshCellOwner;
+    std::shared_ptr< MapLong > g2LMap;
+    if ( parallelMesh ) {
+        rank = getMPIRank();
+        meshNodeOwner = _mesh->getNodesOwner();
+        meshCellOwner = _mesh->getCellsOwner();
+        meshCellOwner->updateValuePointer();
+        g2LMap = _mesh->getGlobalToLocalNodeIds();
+        if ( meshCellOwner->size() != _mesh->getNumberOfCells() ) {
+            throw std::runtime_error( "Size inconsistency" );
+        }
+    }
+
     // Find every nodes and cells in environment on nodes asks by the current process
     // Build from connectivity and reverse connectivity
     // checkedElem and checkedNodes avoid to have cells or nodes marked twice
@@ -455,37 +529,77 @@ std::pair< VectorInt, VectorInt > MeshBalancer::findNodesAndElementsInNodesNeigh
     VectorBool checkedElem( _mesh->getNumberOfCells(), false );
     VectorBool checkedNodes( _mesh->getNumberOfNodes(), false );
     const auto endPtr = reverseConnex.end();
-    for ( const auto &nodeId : nodesListIn ) {
-        if ( nodeId >= _range[0] && nodeId < _range[1] ) {
-            const auto idBis = nodeId - _range[0];
-            if ( !checkedNodes[idBis] ) {
-                nodesList.push_back( idBis );
-                checkedNodes[idBis] = true;
-            }
-        }
-        const auto &elemSetPtr = reverseConnex.find( nodeId );
-        if ( elemSetPtr == endPtr )
-            continue;
-        const auto elemSet = elemSetPtr->second;
-        for ( const auto &elemId : elemSet ) {
-            if ( checkedElem[elemId] )
+    if ( parallelMesh ) {
+        for ( const auto &nodeId : nodesListIn ) {
+            if ( ( *meshNodeOwner )[nodeId] == rank ) {
+                const auto idBis = ( *g2LMap )[nodeId];
+                if ( !checkedNodes[idBis] ) {
+                    nodesList.push_back( idBis );
+                    checkedNodes[idBis] = true;
+                }
+            } else {
                 continue;
-            checkedElem[elemId] = true;
-            // !!!! WARNING : in connex node ids start at 1 (aster convention) !!!!
-            for ( const auto &nodeId2 : fastConnex[elemId] ) {
-                if ( nodeId2 >= _range[0] + 1 && nodeId2 < _range[1] + 1 ) {
-                    const auto idBis = nodeId2 - 1 - _range[0];
-                    if ( !checkedNodes[idBis] ) {
-                        nodesList.push_back( idBis );
-                        checkedNodes[idBis] = true;
-                    }
-                } else {
-                    if ( inSet.find( nodeId2 - 1 ) == endSet ) {
-                        toAddSet.insert( nodeId2 - 1 );
+            }
+            const auto &elemSetPtr = reverseConnex.find( nodeId );
+            if ( elemSetPtr == endPtr )
+                continue;
+            const auto elemSet = elemSetPtr->second;
+            for ( const auto &elemId : elemSet ) {
+                if ( ( *meshCellOwner )[elemId] != rank )
+                    continue;
+                if ( checkedElem[elemId] )
+                    continue;
+                checkedElem[elemId] = true;
+                // !!!! WARNING : in connex node ids starts at 1 (aster convention) !!!!
+                for ( const auto &nodeId2 : fastConnex[elemId] ) {
+                    if ( ( *meshNodeOwner )[nodeId2] == rank ) {
+                        const auto idBis = ( *g2LMap )[nodeId2];
+                        if ( !checkedNodes[idBis] ) {
+                            nodesList.push_back( idBis );
+                            checkedNodes[idBis] = true;
+                        }
+                    } else {
+                        if ( inSet.find( nodeId2 - 1 ) == endSet ) {
+                            toAddSet.insert( nodeId2 - 1 );
+                        }
                     }
                 }
+                elemList.push_back( elemId );
             }
-            elemList.push_back( elemId );
+        }
+    } else {
+        for ( const auto &nodeId : nodesListIn ) {
+            if ( nodeId >= _range[0] && nodeId < _range[1] ) {
+                const auto idBis = nodeId - _range[0];
+                if ( !checkedNodes[idBis] ) {
+                    nodesList.push_back( idBis );
+                    checkedNodes[idBis] = true;
+                }
+            }
+            const auto &elemSetPtr = reverseConnex.find( nodeId );
+            if ( elemSetPtr == endPtr )
+                continue;
+            const auto elemSet = elemSetPtr->second;
+            for ( const auto &elemId : elemSet ) {
+                if ( checkedElem[elemId] )
+                    continue;
+                checkedElem[elemId] = true;
+                // !!!! WARNING : in connex node ids start at 1 (aster convention) !!!!
+                for ( const auto &nodeId2 : fastConnex[elemId] ) {
+                    if ( nodeId2 >= _range[0] + 1 && nodeId2 < _range[1] + 1 ) {
+                        const auto idBis = nodeId2 - 1 - _range[0];
+                        if ( !checkedNodes[idBis] ) {
+                            nodesList.push_back( idBis );
+                            checkedNodes[idBis] = true;
+                        }
+                    } else {
+                        if ( inSet.find( nodeId2 - 1 ) == endSet ) {
+                            toAddSet.insert( nodeId2 - 1 );
+                        }
+                    }
+                }
+                elemList.push_back( elemId );
+            }
         }
     }
     std::sort( nodesList.begin(), nodesList.end() );
@@ -495,17 +609,39 @@ std::pair< VectorInt, VectorInt > MeshBalancer::findNodesAndElementsInNodesNeigh
 
 VectorInt MeshBalancer::findNodesToSend( const VectorInt &nodesListIn ) {
     VectorInt nodesList;
+    int rank = 0;
 
-    for ( const auto &nodeId : nodesListIn ) {
-        if ( nodeId >= _range[0] && nodeId < _range[1] ) {
-            const auto idBis = nodeId - _range[0];
-            nodesList.push_back( idBis );
+    bool parallelMesh = false;
+    JeveuxVectorLong meshNodeOwner;
+    std::shared_ptr< MapLong > g2LMap;
+    if ( _mesh != nullptr ) {
+        if ( _mesh->isParallel() ) {
+            rank = getMPIRank();
+            parallelMesh = true;
+            meshNodeOwner = _mesh->getNodesOwner();
+            g2LMap = _mesh->getGlobalToLocalNodeIds();
+        }
+    }
+
+    if ( parallelMesh ) {
+        for ( const auto &nodeId : nodesListIn ) {
+            if ( ( *meshNodeOwner )[nodeId] == rank ) {
+                const auto idBis = ( *g2LMap )[nodeId];
+                nodesList.push_back( idBis );
+            }
+        }
+    } else {
+        for ( const auto &nodeId : nodesListIn ) {
+            if ( nodeId >= _range[0] && nodeId < _range[1] ) {
+                const auto idBis = nodeId - _range[0];
+                nodesList.push_back( idBis );
+            }
         }
     }
     std::sort( nodesList.begin(), nodesList.end() );
     return nodesList;
 };
-
+// ICI @TODO ICI
 void MeshBalancer::balanceGroups( BaseMeshPtr outMesh, const VectorLong &cellRenumbering ) {
     VectorString toSendCell, toSendNode, toSendCellAll, toSendNodeAll;
     if ( _mesh != nullptr ) {
@@ -539,6 +675,19 @@ void MeshBalancer::balanceGroups( BaseMeshPtr outMesh, const VectorLong &cellRen
     if ( _mesh->getNumberOfNodes() != 0 )
         localNodeGroups = VectorLong( _mesh->getNumberOfNodes(), -1 );
 
+    bool parallelMesh = false;
+    const auto rank = getMPIRank();
+    JeveuxVectorLong meshNodeOwner, meshCellOwner;
+    std::shared_ptr< MapLong > g2LMap;
+    if ( _mesh != nullptr ) {
+        if ( _mesh->isParallel() ) {
+            parallelMesh = true;
+            meshNodeOwner = _mesh->getNodesOwner();
+            meshCellOwner = _mesh->getCellsOwner();
+            g2LMap = _mesh->getGlobalToLocalNodeIds();
+        }
+    }
+
     // Build a numbering of cells and nodes groups names
     // and find group number (group id) of each cells and nodes
     int cmptCells = 0;
@@ -551,15 +700,32 @@ void MeshBalancer::balanceGroups( BaseMeshPtr outMesh, const VectorLong &cellRen
     }
 
     int cmptNodes = 0;
-    for ( const auto &name : toSendNode ) {
-        mapNodesGrpNum[cmptNodes] = name;
-        for ( const auto &id : _mesh->getNodes( name ) ) {
-            const auto id2 = id - _range[0];
-            if ( id2 >= 0 && id2 < _range[1] ) {
-                localNodeGroups[id2] = cmptNodes;
+    if ( parallelMesh ) {
+        for ( const auto &name : toSendNode ) {
+            mapNodesGrpNum[cmptNodes] = name;
+            for ( const auto &id : _mesh->getNodes( name ) ) {
+                if ( ( *meshNodeOwner )[id] == rank ) {
+                    const auto id2 = ( *g2LMap )[id];
+                    localNodeGroups[id2] = cmptNodes;
+                }
             }
+            ++cmptNodes;
         }
-        ++cmptNodes;
+    } else {
+        for ( const auto &name : toSendNode ) {
+            mapNodesGrpNum[cmptNodes] = name;
+            for ( const auto &id : _mesh->getNodes( name ) ) {
+                const auto id2 = id - _range[0];
+                if ( id2 >= 0 && id2 < _range[1] ) {
+                    if ( localNodeGroups[id2] != -1 ) {
+                        std::cout << "ICI" << std::endl << std::flush;
+                        throw std::runtime_error( "Error in groups balancing" );
+                    }
+                    localNodeGroups[id2] = cmptNodes;
+                }
+            }
+            ++cmptNodes;
+        }
     }
     VectorLong bNodeGroups, bCellGroups;
     // "Balance" vector of group id for nodes and cells

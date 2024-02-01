@@ -3,7 +3,7 @@
  * @brief Implementation of an object balancer
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -57,10 +57,19 @@ void ObjectBalancer::prepareCommunications() {
             AsterMPI::send( tmp, proc, tag );
         }
     }
-    const auto tmp = std::set< int >( _toSend.begin(), _toSend.end() );
-    std::set< int > intersect;
-    std::set_intersection( tmp.begin(), tmp.end(), _toKeep.begin(), _toKeep.end(),
-                           std::inserter( intersect, intersect.begin() ) );
+    std::set< int > delInterKeep;
+    std::set_intersection( _toDelete.begin(), _toDelete.end(), _toKeep.begin(), _toKeep.end(),
+                           std::inserter( delInterKeep, delInterKeep.begin() ) );
+    if ( delInterKeep.size() != 0 ) {
+        throw std::runtime_error( "Inconsistent communication definition."
+                                  " Some elements are to keep and to delete at the same time." );
+    }
+    std::set< int > sendInterKeep;
+    std::set_intersection( _toSend.begin(), _toSend.end(), _toKeep.begin(), _toKeep.end(),
+                           std::inserter( sendInterKeep, sendInterKeep.begin() ) );
+    std::set< int > sendDiffDel;
+    std::set_difference( _toSend.begin(), _toSend.end(), _toDelete.begin(), _toDelete.end(),
+                         std::inserter( sendDiffDel, sendDiffDel.begin() ) );
     const auto nbProcs = getMPISize();
 
     // Compute size delta for vectors
@@ -68,7 +77,7 @@ void ObjectBalancer::prepareCommunications() {
     for ( int iProc = 0; iProc < nbProcs; ++iProc ) {
         _sizeDelta += _recvSize[iProc];
     }
-    _sizeDelta -= ( _toSend.size() - intersect.size() );
+    _sizeDelta -= ( sendDiffDel.size() + _toDelete.size() - sendInterKeep.size() );
     _isOk = true;
 };
 

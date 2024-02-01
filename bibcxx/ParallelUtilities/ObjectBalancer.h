@@ -6,7 +6,7 @@
  * @brief Header of an object balancer
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -53,6 +53,8 @@ class ObjectBalancer {
     std::set< int > _toKeep;
     /** @brief Set of elements to send */
     std::set< int > _toSend;
+    /** @brief Set of elements to delete */
+    std::set< int > _toDelete;
     /** @brief Size delta */
     int _sizeDelta;
     /** @brief Graph to browse */
@@ -225,6 +227,16 @@ class ObjectBalancer {
         }
     };
 
+    /**
+     * @brief Set list of elements to delete on local process
+     * @param toDelete vector of index to delete
+     */
+    void setElementsToDelete( const VectorInt &toDelete ) {
+        for ( const auto &id : toDelete ) {
+            this->_toDelete.insert( id );
+        }
+    };
+
     /** @brief Prepare communications (send and receive comm sizes) */
     void prepareCommunications();
 
@@ -286,6 +298,12 @@ void ObjectBalancer::balanceSimpleVectorOverProcesses( const T *in, int sizeIn, 
                         toKeep[vecPos] = false;
                 }
             }
+        }
+    }
+    for ( const auto &id : _toDelete ) {
+        for ( int iCmp = 0; iCmp < nbCmp; ++iCmp ) {
+            const auto vecPos = nbCmp * id + iCmp;
+            toKeep[vecPos] = false;
         }
     }
     // Copy of elements to keep in output vector
@@ -452,6 +470,9 @@ void ObjectBalancer::balanceObjectOverProcesses3( const T &in, T &out, const Mas
             tmp[0] = toSend;
             AsterMPI::send( tmp, proc, tag );
         }
+    }
+    for ( const auto &id : _toDelete ) {
+        toKeep[id] = false;
     }
 
     allocate( out, sizeIn + _sizeDelta, totalSize - toRemoveCum + toReceiveCum );
