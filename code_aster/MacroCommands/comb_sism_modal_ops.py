@@ -1890,7 +1890,9 @@ def comb_sism_modal_ops(self, **args):
                         masse_effe = l_masse_effe[2]
                         masse_effe_un = l_masse_effe_un[2]
                     UTMESS("I", "SEISME_48")
+                    print("masse_effe_un",masse_effe_un)
                     for i_freq in range(len(freqs)):
+                        print("masse_effe_un[i_freq]",masse_effe_un[i_freq])
                         UTMESS(
                             "I",
                             "SEISME_49",
