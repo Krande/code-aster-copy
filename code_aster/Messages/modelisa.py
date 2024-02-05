@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -89,6 +89,11 @@ Le groupe de noeuds fourni via le mot-clé GROUP_NO_ORIG comporte plusieurs noeu
         """
  L'axe AXE est colinéaire à la normale de l'élément. On ne peut pas définir
  l'orientation des armatures.
+"""
+    ),
+    12: _(
+        """
+ Il n'est pas possible de construire une normale à la maille. Celle-ci est dégénérée.
 """
     ),
     14: _(
