@@ -43,7 +43,7 @@ subroutine dtmallo(sd_dtm_)
     character(len=*), intent(in) :: sd_dtm_
 !
 !   -0.2- Local variables
-    integer           :: nbsauv, nbmode, iret, nbnli, nbvint, nbsteps_1mb
+    integer           :: nbsauv, nbmode, iret, nbnli, nbvint, nbsteps
     integer           :: jordr, jdisc, jptem, jdepl
     integer           :: jvite, jacce, jvint
     integer           :: adapt, iarch_sd, iret1, iret2, nltreat
@@ -176,24 +176,39 @@ subroutine dtmallo(sd_dtm_)
         write (*, *) '> TOTAL                  :', taille/(1024*1024), 'MB'
     end if
     write (*, *) '> MEMORY SIZE PER STEP   :', taille/(1024*nbsauv), 'KB'
-    write (*, *) '> NB STEPS PER 1 GB RAM  :', nint(1024*1024/(taille/(1024*nbsauv))), 'STEPS'
 
-    nbsteps_1mb = nint(1024/(taille/(1024*nbsauv)))
-    if (nbsteps_1mb .lt. 2) nbsteps_1mb = 2
-    write (*, *) '> NB STEPS PER 1 MB RAM  :', nbsteps_1mb, 'STEPS'
-    write (*, *) '--------------------------------------------------------'
+    ! implementation en fonction de nbsauv
+    if (nbsauv .le. 2) then
+        ! 1 bloc
+        nbsteps = nbsauv
+    else if (nbsauv .lt. 400) then
+        ! 2 blocs si < 2**2*100
+        nbsteps = (nbsauv-1)/2+1
+    else
+        ! sinon nbsteps ~= 100*n_blocs
+        nbsteps = int(10*sqrt(real(nbsauv)))+1
+    end if
+    ! on limite à 10000 blocs maximum
+    if (nbsauv .ge. nbsteps*10000) then
+        nbsteps = nbsauv/10000
+    end if
+    ! au moins 2 increments par bloc
+    if (nbsteps .lt. 2) then
+        nbsteps = 2
+    end if
+    write (*, *) '> NB STEPS PER BLOC      :', nbsteps, 'STEPS'
+    write (*, *) '> MEMORY SIZE PER BLOC   :', taille/(1024*1024)*nbsteps/nbsauv, 'MB'
 
-    if (nbsauv .gt. nbsteps_1mb) then
+    if (nbsauv .gt. nbsteps) then
         if (iarch_sd .eq. 0) then
             iarch_sd = 1
             call dtmsav(sd_dtm, _ARCH_NB, 1, iscal=nbsauv)
             call dtmsav(sd_dtm, _ADAPT, 1, iscal=adapt)
             call dtmsav(sd_dtm, _IARCH_SD, 1, iscal=iarch_sd)
         end if
-        nbsauv = nbsteps_1mb
+        nbsauv = nbsteps
     end if
 
-    write (*, *) 'IN DTMALLO, iarch_sd =', iarch_sd
     if (iarch_sd .gt. 1) then
         ! copy last value from previous bloc ...
         AS_ALLOCATE(vr=v_depl, size=nbmode)
