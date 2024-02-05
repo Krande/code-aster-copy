@@ -68,7 +68,6 @@ subroutine dtmallo(sd_dtm_)
 
 !
 !   0 - Initializations
-    call jemarq()
     sd_dtm = sd_dtm_
 
     epsi = 100.d0*r8prem()
@@ -241,5 +240,4 @@ subroutine dtmallo(sd_dtm_)
     end if
     call dtmsav(sd_dtm, _IND_ALOC, 7, ivect=[jordr, jdisc, jptem, jdepl, jvite, jacce, jvint])
 
-    call jedema()
 end subroutine

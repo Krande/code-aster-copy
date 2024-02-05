@@ -312,7 +312,7 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes, &
     if (nbsauv .ne. 0) then
 !       BOUCLE SUR LES CHAMPS A SAUVEGARDER (DEPL/VITE/ACCE)
         do inom = 1, nbsym2
-            call crevec(nomres16//bl3pt//nomsym2(inom), attrib, nbstoc, jchmp)
+            call wkvect(nomres16//bl3pt//nomsym2(inom), attrib, nbstoc, jchmp)
 !           INITIALISATION DES CHAMPS A ZERO
             if (typcal .eq. 'TRAN') then
                 call r8inir(nbstoc, 0.d0, zr(jchmp), 1)
@@ -327,10 +327,10 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes, &
         end do
 !
 !       OBJETS COMMUNS
-        call crevec(nomres16//bl3pt//'ORDR', typsau//' I', nbsauv, jordr)
-        call crevec(nomres16//bl3pt//'DISC', typsau//' R', nbsauv, jdisc)
+        call wkvect(nomres16//bl3pt//'ORDR', typsau//' I', nbsauv, jordr)
+        call wkvect(nomres16//bl3pt//'DISC', typsau//' R', nbsauv, jdisc)
         if (typcal .eq. 'TRAN') then
-            call crevec(nomres16//bl3pt//'PTEM', typsau//' R', nbsauv, jptem)
+            call wkvect(nomres16//bl3pt//'PTEM', typsau//' R', nbsauv, jptem)
             zr(jptem) = dt
         end if
     end if
@@ -349,7 +349,7 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes, &
                 call nlget(sd_nl, _INTERNAL_VARS_INDEX, ivect=zi(jvindx))
             end if
 !           Internal variables object
-            call crevec(nomres16//'.NL.VINT', typsau//' R', nbvint*nbsauv, jvint)
+            call wkvect(nomres16//'.NL.VINT', typsau//' R', nbvint*nbsauv, jvint)
             call r8inir(nbvint*nbsauv, 0.d0, zr(jvint), 1)
         end if
 

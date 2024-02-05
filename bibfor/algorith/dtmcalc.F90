@@ -80,7 +80,6 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
 
 !
 !   0 - Initializations
-    call jemarq()
     call infniv(ifm, niv)
 !
     sd_dtm = sd_dtm_
@@ -322,10 +321,10 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
         call nlget(sd_nl, _NB_DIS_ECRO_TRAC, iscal=nbdecr)
         if ((nbdvis+nbdecr) .gt. 0) then
             call dtmget(sd_dtm, _IND_ALOC, vi=allocs)
-            if (nbdvis.gt.0) then
+            if (nbdvis .gt. 0) then
                 call mdidisvisc(sd_nl, nbnli, nomres)
             end if
-            if (nbdecr.gt.0) then
+            if (nbdecr .gt. 0) then
                 call mdidisisot(sd_nl, nbnli, nomres)
             end if
         end if
@@ -333,6 +332,5 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
         call detrsd(' ', sd_nl)
     end if
 !
-    call jedema()
 
 end subroutine

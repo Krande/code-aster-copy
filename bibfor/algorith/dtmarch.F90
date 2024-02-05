@@ -80,7 +80,6 @@ subroutine dtmarch(sd_dtm_, sd_int_, buffdtm, buffint)
     integer, pointer :: buffnl(:) => null()
 !
 !   0 - Initializations
-    call jemarq()
 
     sd_dtm = sd_dtm_
     sd_int = sd_int_
@@ -192,6 +191,5 @@ subroutine dtmarch(sd_dtm_, sd_int_, buffdtm, buffint)
     end if
 
     isto(1) = isto(1)+1
-    call jedema()
 !
 end subroutine
