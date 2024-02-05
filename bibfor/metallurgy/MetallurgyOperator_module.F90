@@ -40,6 +40,7 @@ module MetallurgyOperator_module
 #include "asterfort/getvtx.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/jeveut.h"
 #include "asterfort/mecact.h"
 #include "asterfort/Metallurgy_type.h"
 #include "asterfort/rcadme.h"
@@ -129,7 +130,7 @@ contains
 ! ----- Local
         integer :: iMaterVale, materValeLen
         character(len=8), pointer :: materVale(:) => null()
-        integer :: nbhist, icodre
+        integer :: nbhist, icodre, jvDummy
         character(len=8) :: materPara
         aster_logical :: hasTRC
         character(len=24) :: modelLigrel
@@ -160,8 +161,10 @@ contains
 
 ! ----- Create working field for TRC
         if (hasTRC) then
-            call wkvect('&&SMEVOL_FTRC', 'V V R', 9*nbhist, adrsJv(1))
-            call wkvect('&&SMEVOL_TRC', 'V V R', 15*nbhist, adrsJv(2))
+            call wkvect('&&SMEVOL_FTRC', 'V V R', 9*nbhist, jvDummy)
+            call wkvect('&&SMEVOL_TRC', 'V V R', 15*nbhist, jvDummy)
+            call jeveut('&&SMEVOL_FTRC', "E", adrsJv(1))
+            call jeveut('&&SMEVOL_TRC', "E", adrsJv(2))
             chftrc = '&&SMEVOL.ADRESSES'
             call mecact('V', chftrc, 'LIGREL', modelLigrel, 'ADRSJEVN', &
                         ncmp=nbPara, lnomcmp=paraName, vi=adrsJv)
