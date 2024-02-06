@@ -3,7 +3,7 @@
  * @brief Definition of elementary vectors
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -176,7 +176,7 @@ class BaseElementaryVector : public DataStructure {
         setOption( option );
         _elemComp->setOption( option );
         if ( option != "WRAP_FORTRAN" ) {
-            _elemComp->createDescriptor( _model, _materialField, _elemChara );
+            _elemComp->createDescriptor( _model );
         }
     };
 

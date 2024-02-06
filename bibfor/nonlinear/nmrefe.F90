@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -131,7 +131,7 @@ subroutine nmrefe(model, compor, mate, cara_elem, nume_dof, &
 ! - Preparation of VECT_ELEM
 !
     call detrsd('VECT_ELEM', vect_elem)
-    call memare('V', vect_elem, model, ' ', ' ', 'CHAR_MECA')
+    call memare('V', vect_elem, model, 'CHAR_MECA')
 !
 ! - Input fields
 !

@@ -137,8 +137,7 @@ subroutine verstp(model, lload_name, lload_info, cara_elem, mate, &
 ! - Allocate result
 !
     call detrsd('VECT_ELEM', vect_elem)
-    call memare(base, vect_elem, model, ' ', ' ', &
-                'CHAR_THER')
+    call memare(base, vect_elem, model, 'CHAR_THER')
     call reajre(vect_elem, ' ', base)
 !
 ! - Generate new RESU_ELEM name

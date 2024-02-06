@@ -5,7 +5,7 @@
  * @file ElementaryCompute.h
  * @brief Header of class ElementaryCompute
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -62,8 +62,7 @@ class ElementaryCompute {
         : ElementaryCompute( baseName, "WRAP_FORTRAN" ) {};
 
     /** @brief Create descriptor */
-    void createDescriptor( const ModelPtr &currentModel, const MaterialFieldPtr &currMaterialField,
-                           const ElementaryCharacteristicsPtr &currElemChara );
+    void createDescriptor( const ModelPtr &currentModel );
 
     /** @brief Get option */
     std::string getOption() const { return _option; }

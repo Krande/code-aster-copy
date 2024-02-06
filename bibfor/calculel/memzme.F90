@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,8 +49,7 @@ subroutine memzme(modele, matel)
 !
     call megeom(modele, chgeom)
 !
-    call memare('V', matel, modele, ' ', ' ', &
-                'MASS_ZZ1')
+    call memare('V', matel, modele, 'MASS_ZZ1')
     call jeveuo(matel//'.RERR', 'E', vk24=rerr)
     rerr(3) (1:3) = 'OUI'
 !

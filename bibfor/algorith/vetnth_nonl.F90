@@ -116,14 +116,13 @@ subroutine vetnth_nonl(model, cara_elem, mate, mateco, time, compor, &
 !
     call jeexin(vect_elem_l(1:19)//'.RELR', iret)
     if (iret .eq. 0) then
-        call memare(base, vect_elem_l, model, mate, cara_elem, 'MASS_THER')
+        call memare(base, vect_elem_l, model, 'MASS_THER')
     else
         call jedetr(vect_elem_l(1:19)//'.RELR')
     end if
     call jeexin(vect_elem_nl(1:19)//'.RELR', iret)
     if (iret .eq. 0) then
-        call memare(base, vect_elem_nl, model, mate, cara_elem, &
-                    'MASS_THER')
+        call memare(base, vect_elem_nl, model, 'MASS_THER')
     else
         call jedetr(vect_elem_nl(1:19)//'.RELR')
     end if

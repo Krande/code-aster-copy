@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -84,8 +84,7 @@ subroutine vedpme(modele, charge, infcha, instap, lvediz)
     end if
 !
     call detrsd('VECT_ELEM', lvedip)
-    call memare('V', lvedip, modele(1:8), ' ', ' ', &
-                'CHAR_MECA')
+    call memare('V', lvedip, modele(1:8), 'CHAR_MECA')
     call jedetr(lvedip//'.RELR')
     call reajre(lvedip, ' ', 'V')
     if (bidon) goto 20

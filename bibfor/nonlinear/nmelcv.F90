@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -125,9 +125,9 @@ subroutine nmelcv(mesh, model, &
         ligrel = ds_contact%ligrel_elem_cont
 ! ----- Preparation of elementary vectors
         call detrsd('VECT_ELEM', vect_elem_cont)
-        call memare('V', vect_elem_cont, model, ' ', ' ', 'CHAR_MECA')
+        call memare('V', vect_elem_cont, model, 'CHAR_MECA')
         call detrsd('VECT_ELEM', vect_elem_fric)
-        call memare('V', vect_elem_fric, model, ' ', ' ', 'CHAR_MECA')
+        call memare('V', vect_elem_fric, model, 'CHAR_MECA')
 ! ----- Prepare output fields
         lpaout(1) = 'PVECTCR'
         lchout(1) = vect_elem_cont

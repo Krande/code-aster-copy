@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -74,8 +74,7 @@ subroutine merige(model_, cara_elem_, sigg, strx, matel, &
     call mecham(option, modele, cara, nh, chgeom, &
                 chcara, chharm, icode)
 !
-    call memare(base, matel, modele, ' ', cara, &
-                option)
+    call memare(base, matel, modele, option)
 !
 !  -----CAS DU MODELE X-FEM-----------------------
     call exixfe(modele, ier)

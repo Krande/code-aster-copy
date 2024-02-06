@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -99,7 +99,7 @@ subroutine medime(base, cumul, model, list_load, matr_elem)
 !
     if (cumul .eq. 'ZERO') then
         call jedetr(matr_elem(1:19)//'.RELR')
-        call memare(base, matr_elem, model, ' ', ' ', 'RIGI_MECA')
+        call memare(base, matr_elem, model, 'RIGI_MECA')
         call reajre(matr_elem, ' ', base)
     end if
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -117,8 +117,7 @@ subroutine vedimd(nomo, lischa, instan, vecele)
 !
 ! --- ALLOCATION DU VECT_ELEM RESULTAT
 !
-    call memare('V', vecele, nomo, ' ', ' ', &
-                'CHAR_MECA')
+    call memare('V', vecele, nomo, 'CHAR_MECA')
     call reajre(vecele, ' ', 'V')
 !
 ! --- CHAMP DE GEOMETRIE

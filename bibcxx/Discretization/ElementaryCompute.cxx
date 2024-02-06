@@ -2,7 +2,7 @@
  * @file ElementaryCompute.cxx
  * @brief Implementation of class ElementaryCompute
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -22,10 +22,8 @@
 
 #include "Discretization/ElementaryCompute.h"
 
-void ElementaryCompute::createDescriptor( const ModelPtr &currModel,
-                                          const MaterialFieldPtr &currMaterialField,
-                                          const ElementaryCharacteristicsPtr &currElemChara ) {
-    _rerr->allocate( 5 );
+void ElementaryCompute::createDescriptor( const ModelPtr &currModel ) {
+    _rerr->allocate( 3 );
     if ( currModel ) {
         ( *_rerr )[0] = currModel->getName();
 
@@ -39,11 +37,4 @@ void ElementaryCompute::createDescriptor( const ModelPtr &currModel,
     }
 
     ( *_rerr )[1] = _option;
-
-    if ( currMaterialField ) {
-        ( *_rerr )[3] = currMaterialField->getName();
-    }
-    if ( currElemChara ) {
-        ( *_rerr )[4] = currElemChara->getName();
-    }
 };

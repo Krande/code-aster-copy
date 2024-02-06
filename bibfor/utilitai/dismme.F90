@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -139,12 +139,6 @@ subroutine dismme(questi, nomobz, repi, repkz, ierd)
 3               continue
             end do
         end if
-!
-    else if (questi .eq. 'CHAM_MATER') then
-        repk = rerr(4)
-!
-    else if (questi .eq. 'CARA_ELEM') then
-        repk = rerr(5)
 !
     else if (questi .eq. 'NOM_MAILLA') then
         call dismmo(questi, mo, repi, repk, ierd)

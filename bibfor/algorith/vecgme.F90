@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -143,8 +143,7 @@ subroutine vecgme(model, cara_elem, matez, matecoz, lload_namez, lload_infoz, &
 ! - Allocate result
 !
     call detrsd('VECT_ELEM', vect_elem)
-    call memare(base, vect_elem, model, mate, cara_elem, &
-                'CHAR_MECA')
+    call memare(base, vect_elem, model, 'CHAR_MECA')
     call reajre(vect_elem, ' ', base)
     if (load_empty) then
         goto 99

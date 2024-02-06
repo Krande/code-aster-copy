@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,7 +62,7 @@ subroutine maveElemCreate(base, phenom, mave_elemz, model_, mate_, cara_elem_)
     if (present(mate_)) then
         mate = mate_
     end if
-    call memare(base, mave_elem, model, mate, cara_elem, 'CHAR_'//phenom)
+    call memare(base, mave_elem, model, 'CHAR_'//phenom)
     call reajre(mave_elem, ' ', base)
 !
 end subroutine
