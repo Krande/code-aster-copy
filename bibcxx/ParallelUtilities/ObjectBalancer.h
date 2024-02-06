@@ -265,7 +265,9 @@ class ObjectBalancer {
                                       const Mask &mask = Mask() ) const;
 
 #ifdef ASTER_HAVE_MED
-    MedVectorPtr balanceMedVectorOverProcessesWithRenumbering( const MedVectorPtr & ) const;
+    template < typename TypeName = double >
+    std::shared_ptr< MedVector< TypeName > > balanceMedVectorOverProcessesWithRenumbering(
+        const std::shared_ptr< MedVector< TypeName > > & ) const;
 #endif
 
     VectorLong getRenumbering() const { return _renumbering; };
@@ -570,6 +572,43 @@ void ObjectBalancer::balanceObjectOverProcesses3( const T &in, T &out, const Mas
         }
     }
 };
+
+#ifdef ASTER_HAVE_MED
+template < typename TypeName >
+std::shared_ptr< MedVector< TypeName > >
+ObjectBalancer::balanceMedVectorOverProcessesWithRenumbering(
+    const std::shared_ptr< MedVector< TypeName > > &vecIn ) const {
+    std::shared_ptr< MedVector< TypeName > > vecOut( new MedVector< TypeName >() );
+    balanceObjectOverProcesses3( *vecIn, *vecOut, DummyMaskDouble() );
+    vecOut->setComponentNumber( vecIn->getComponentNumber() );
+    vecOut->setComponentName( vecIn->getComponentName() );
+    if ( _renumbering.size() == 0 ) {
+        return vecOut;
+    }
+    const auto size = vecOut->size();
+    std::shared_ptr< MedVector< TypeName > > vecOut2( new MedVector< TypeName >() );
+    vecOut2->setComponentNumber( vecOut->getComponentNumber() );
+    vecOut2->setComponentName( vecOut->getComponentName() );
+    vecOut2->setSize( size );
+    if ( _renumbering.size() != size )
+        throw std::runtime_error( "Sizes not matching" );
+    for ( int i = 0; i < size; ++i ) {
+        const auto newId = _renumbering[i] - 1;
+        vecOut2->setElement( newId, vecOut->getElement( i ) );
+    }
+    vecOut2->endDefinition();
+    for ( int i = 0; i < size; ++i ) {
+        const auto newId = _renumbering[i] - 1;
+        const auto nbCmp = vecOut->getElement( i );
+        const auto &elInR = ( *vecOut )[i];
+        auto &elOutR = ( *vecOut2 )[newId];
+        for ( int j = 0; j < nbCmp; ++j ) {
+            elOutR[j] = elInR[j];
+        }
+    }
+    return vecOut2;
+};
+#endif
 #endif /* ASTER_HAVE_MPI */
 
 #endif /* OBJECTBALANCER_H_ */

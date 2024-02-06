@@ -3,7 +3,7 @@
  * @brief Interface python de MedVector
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -30,48 +30,48 @@
 #ifdef ASTER_HAVE_MED
 void exportMedVectorToPython( py::module_ &mod ) {
 
-    py::class_< MedVector, MedVectorPtr >( mod, "MedVector" )
-        .def( py::init( &initFactoryPtr< MedVector > ) )
-        .def( py::init( &initFactoryPtr< MedVector, int > ) )
-        .def( define_pickling< MedVector >() )
+    py::class_< MedVector< double >, MedVectorPtr >( mod, "MedVector" )
+        .def( py::init( &initFactoryPtr< MedVector< double > > ) )
+        .def( py::init( &initFactoryPtr< MedVector< double >, int > ) )
+        .def( define_pickling< MedVector< double > >() )
 
-        .def( "getComponentName", &MedVector::getComponentName, R"(
+        .def( "getComponentName", &MedVector< double >::getComponentName, R"(
 Get component name
             )" )
-        .def( "getComponentNumber", &MedVector::getComponentNumber, R"(
+        .def( "getComponentNumber", &MedVector< double >::getComponentNumber, R"(
 Get component name
             )" )
-        .def( "getComponentVector", &MedVector::getComponentVector, R"(
+        .def( "getComponentVector", &MedVector< double >::getComponentVector, R"(
 Get component on element vector
             )" )
-        .def( "getCumulatedSizesVector", &MedVector::getCumulatedSizesVector, R"(
+        .def( "getCumulatedSizesVector", &MedVector< double >::getCumulatedSizesVector, R"(
 Get cumulated sizes vector
 
 Returns:
     list: Cumulated sizes for each element
             )" )
-        .def( "getValues", &MedVector::getValues, R"(
+        .def( "getValues", &MedVector< double >::getValues, R"(
 Get vector values (WARNING values are owned by MedVector: no copy)
 
 Returns:
     numpy array: all field values
             )" )
-        .def( "setComponentName", &MedVector::setComponentName, R"(
+        .def( "setComponentName", &MedVector< double >::setComponentName, R"(
 Set component name
             )" )
-        .def( "setComponentNumber", &MedVector::setComponentNumber, R"(
+        .def( "setComponentNumber", &MedVector< double >::setComponentNumber, R"(
 Set component number
             )" )
-        .def( "setComponentVector", &MedVector::setComponentVector, R"(
+        .def( "setComponentVector", &MedVector< double >::setComponentVector, R"(
 Set component on element vector
             )" )
-        .def( "setCumulatedSizesVector", &MedVector::setCumulatedSizesVector, R"(
+        .def( "setCumulatedSizesVector", &MedVector< double >::setCumulatedSizesVector, R"(
 Set cumulated sizes vector
             )" )
-        .def( "setValues", &MedVector::setValues, R"(
+        .def( "setValues", &MedVector< double >::setValues, R"(
 Set vector values (WARNING values are owned by MedVector: no copy)
             )" )
-        .def( "size", &MedVector::size, R"(
+        .def( "size", &MedVector< double >::size, R"(
 Get vector size, ie: number of elements (cells or nodes)
 )" );
 };

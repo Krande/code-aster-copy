@@ -96,39 +96,4 @@ void ObjectBalancer::balanceObjectOverProcesses( const MeshCoordinatesFieldPtr &
     coordsOut->buildDescriptor();
 };
 
-#ifdef ASTER_HAVE_MED
-MedVectorPtr
-ObjectBalancer::balanceMedVectorOverProcessesWithRenumbering( const MedVectorPtr &vecIn ) const {
-    MedVectorPtr vecOut( new MedVector() );
-    balanceObjectOverProcesses3( *vecIn, *vecOut, DummyMaskDouble() );
-    vecOut->setComponentNumber( vecIn->getComponentNumber() );
-    vecOut->setComponentName( vecIn->getComponentName() );
-    if ( _renumbering.size() == 0 ) {
-        return vecOut;
-    }
-    const auto size = vecOut->size();
-    MedVectorPtr vecOut2( new MedVector() );
-    vecOut2->setComponentNumber( vecOut->getComponentNumber() );
-    vecOut2->setComponentName( vecOut->getComponentName() );
-    vecOut2->setSize( size );
-    if ( _renumbering.size() != size )
-        throw std::runtime_error( "Sizes not matching" );
-    for ( int i = 0; i < size; ++i ) {
-        const auto newId = _renumbering[i] - 1;
-        vecOut2->setElement( newId, vecOut->getElement( i ) );
-    }
-    vecOut2->endDefinition();
-    for ( int i = 0; i < size; ++i ) {
-        const auto newId = _renumbering[i] - 1;
-        const auto nbCmp = vecOut->getElement( i );
-        const auto &elInR = ( *vecOut )[i];
-        auto &elOutR = ( *vecOut2 )[newId];
-        for ( int j = 0; j < nbCmp; ++j ) {
-            elOutR[j] = elInR[j];
-        }
-    }
-    return vecOut2;
-};
-#endif
-
 #endif /* ASTER_HAVE_MPI */

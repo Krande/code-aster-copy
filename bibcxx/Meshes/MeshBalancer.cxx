@@ -27,9 +27,12 @@
 
 #ifdef ASTER_HAVE_MPI
 
+#include "IOManager/MedVector.h"
 #include "Meshes/IncompleteMesh.h"
 #include "Meshes/Mesh.h"
 #include "ParallelUtilities/MeshConnectionGraph.h"
+
+#include <limits.h>
 
 template < typename ValType >
 void decrement( ValType &i ) {
@@ -84,6 +87,7 @@ ParallelMeshPtr MeshBalancer::applyBalancingStrategy( VectorInt &newLocalNodesLi
             }
             _range = { result[rank], result[rank + 1] };
         } else if ( _mesh->isParallel() ) {
+            throw std::runtime_error( "ParallelMesh not allowed" );
             _range = { -1, -1 };
         } else {
             _range = { 0, _mesh->getNumberOfNodes() };
@@ -641,7 +645,26 @@ VectorInt MeshBalancer::findNodesToSend( const VectorInt &nodesListIn ) {
     std::sort( nodesList.begin(), nodesList.end() );
     return nodesList;
 };
-// ICI @TODO ICI
+
+template < class Integer >
+VectorInt decodeIntegerToVector( const Integer &toDecode ) {
+    VectorInt toReturn;
+    constexpr size_t size = CHAR_BIT * sizeof( Integer );
+    constexpr Integer toShift = 1;
+    for ( int i = 0; i < size; ++i ) {
+        const Integer valToTest = toShift << i;
+        if ( toDecode & valToTest )
+            toReturn.push_back( i );
+    }
+    return toReturn;
+}
+
+template < class Integer >
+std::pair< int, int > integerShiftFromComponent( const int &comp ) {
+    constexpr size_t size = CHAR_BIT * sizeof( Integer );
+    return { comp / size, comp % size };
+}
+
 void MeshBalancer::balanceGroups( BaseMeshPtr outMesh, const VectorLong &cellRenumbering ) {
     VectorString toSendCell, toSendNode, toSendCellAll, toSendNodeAll;
     if ( _mesh != nullptr ) {
@@ -666,9 +689,25 @@ void MeshBalancer::balanceGroups( BaseMeshPtr outMesh, const VectorLong &cellRen
     std::sort( toSendCell.begin(), toSendCell.end() );
     std::sort( toSendNode.begin(), toSendNode.end() );
 
+    const auto nbNodeGroups = toSendNode.size();
+    const auto nbCellGroups = toSendCell.size();
+    const auto pairNode = integerShiftFromComponent< long int >( nbNodeGroups );
+    const auto pairCell = integerShiftFromComponent< long int >( nbCellGroups );
+
+    const int nbECNode = ( pairNode.second == 0 ? pairNode.first : pairNode.first + 1 );
+    const int nbECCell = ( pairCell.second == 0 ? pairCell.first : pairCell.first + 1 );
+
     std::map< int, std::string > mapCellsGrpNum;
     std::map< int, std::string > mapNodesGrpNum;
 
+    MedVectorLongPtr localCellGroups0( new MedVector< long int >( _mesh->getNumberOfCells() ) );
+    localCellGroups0->setComponentNumber( nbECCell );
+    localCellGroups0->setSize( _mesh->getNumberOfCells() );
+    localCellGroups0->endDefinition();
+    MedVectorLongPtr localNodeGroups0( new MedVector< long int >( _mesh->getNumberOfNodes() ) );
+    localNodeGroups0->setComponentNumber( nbECNode );
+    localNodeGroups0->setSize( _mesh->getNumberOfNodes() );
+    localNodeGroups0->endDefinition();
     VectorLong localCellGroups, localNodeGroups;
     if ( _mesh->getNumberOfCells() != 0 )
         localCellGroups = VectorLong( _mesh->getNumberOfCells(), -1 );
@@ -693,8 +732,10 @@ void MeshBalancer::balanceGroups( BaseMeshPtr outMesh, const VectorLong &cellRen
     int cmptCells = 0;
     for ( const auto &name : toSendCell ) {
         mapCellsGrpNum[cmptCells] = name;
+        const auto &pair = integerShiftFromComponent< long int >( cmptCells );
         for ( const auto &id : _mesh->getCells( name ) ) {
-            localCellGroups[id] = cmptCells;
+            ( *localCellGroups0 )[id][pair.first] += 1UL << pair.second;
+            // localCellGroups[id] = cmptCells;
         }
         ++cmptCells;
     }
@@ -703,10 +744,11 @@ void MeshBalancer::balanceGroups( BaseMeshPtr outMesh, const VectorLong &cellRen
     if ( parallelMesh ) {
         for ( const auto &name : toSendNode ) {
             mapNodesGrpNum[cmptNodes] = name;
+            const auto &pair = integerShiftFromComponent< long int >( cmptNodes );
             for ( const auto &id : _mesh->getNodes( name ) ) {
                 if ( ( *meshNodeOwner )[id] == rank ) {
                     const auto id2 = ( *g2LMap )[id];
-                    localNodeGroups[id2] = cmptNodes;
+                    ( *localNodeGroups0 )[id][pair.first] += 1UL << pair.second;
                 }
             }
             ++cmptNodes;
@@ -714,34 +756,54 @@ void MeshBalancer::balanceGroups( BaseMeshPtr outMesh, const VectorLong &cellRen
     } else {
         for ( const auto &name : toSendNode ) {
             mapNodesGrpNum[cmptNodes] = name;
+            const auto &pair = integerShiftFromComponent< long int >( cmptNodes );
             for ( const auto &id : _mesh->getNodes( name ) ) {
                 const auto id2 = id - _range[0];
                 if ( id2 >= 0 && id2 < _range[1] ) {
-                    if ( localNodeGroups[id2] != -1 ) {
-                        std::cout << "ICI" << std::endl << std::flush;
-                        throw std::runtime_error( "Error in groups balancing" );
-                    }
-                    localNodeGroups[id2] = cmptNodes;
+                    ( *localNodeGroups0 )[id][pair.first] += 1UL << pair.second;
                 }
             }
             ++cmptNodes;
         }
     }
-    VectorLong bNodeGroups, bCellGroups;
-    // "Balance" vector of group id for nodes and cells
-    _nodesBalancer->balanceObjectOverProcesses( localNodeGroups, bNodeGroups );
-    _cellsBalancer->balanceObjectOverProcesses( localCellGroups, bCellGroups );
+    auto outN = _nodesBalancer->balanceMedVectorOverProcessesWithRenumbering< long int >(
+        localNodeGroups0 );
+    auto outC = _cellsBalancer->balanceMedVectorOverProcessesWithRenumbering< long int >(
+        localCellGroups0 );
 
-    // Finally build groups vectors
-    VectorOfVectorsLong cellsInGrp( cmptCells );
-    int cellId = 1;
-    for ( const auto &grpId : bCellGroups ) {
-        if ( grpId != -1 ) {
-            auto numCell = cellRenumbering[cellId - 1];
-            cellsInGrp[grpId].push_back( numCell );
+    constexpr size_t sizeLong = CHAR_BIT * sizeof( long int );
+
+    const int nbNode = outN->size();
+    VectorOfVectorsLong nodesInGrp( cmptNodes );
+    for ( int i = 0; i < nbNode; ++i ) {
+        const auto &curElem = ( *outN )[i];
+        const int nbCmp = curElem.getComponentNumber();
+        for ( int j = 0; j < nbCmp; ++j ) {
+            const auto &curValue = curElem[j];
+            if ( curValue != 0 ) {
+                const auto decode = decodeIntegerToVector< long int >( curValue );
+                for ( const auto &val : decode ) {
+                    nodesInGrp[j * sizeLong + val].push_back( i + 1 );
+                }
+            }
         }
-        ++cellId;
     }
+    const int nbCell = outC->size();
+    VectorOfVectorsLong cellsInGrp( cmptCells );
+    for ( int i = 0; i < nbCell; ++i ) {
+        const auto &curElem = ( *outC )[i];
+        const int nbCmp = curElem.getComponentNumber();
+        for ( int j = 0; j < nbCmp; ++j ) {
+            const auto &curValue = curElem[j];
+            if ( curValue != 0 ) {
+                const auto decode = decodeIntegerToVector< long int >( curValue );
+                for ( const auto &val : decode ) {
+                    cellsInGrp[j * sizeLong + val].push_back( i + 1 );
+                }
+            }
+        }
+    }
+
     VectorString cellsGrpNames;
     VectorOfVectorsLong cellsGrpList;
     for ( int numGrp = 0; numGrp < cmptCells; ++numGrp ) {
@@ -754,13 +816,6 @@ void MeshBalancer::balanceGroups( BaseMeshPtr outMesh, const VectorLong &cellRen
     if ( cellsGrpNames.size() != 0 )
         outMesh->addGroupsOfCells( cellsGrpNames, cellsGrpList );
 
-    VectorOfVectorsLong nodesInGrp( cmptNodes );
-    int nodeId = 1;
-    for ( const auto &grpId : bNodeGroups ) {
-        if ( grpId != -1 )
-            nodesInGrp[grpId].push_back( nodeId );
-        ++nodeId;
-    }
     VectorString nodesGrpNames;
     VectorOfVectorsLong nodesGrpList;
     for ( int numGrp = 0; numGrp < cmptNodes; ++numGrp ) {

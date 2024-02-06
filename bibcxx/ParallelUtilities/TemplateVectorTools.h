@@ -6,7 +6,7 @@
  * @brief Header of tools to manipulate some vector in templates
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -65,7 +65,8 @@ int getSize( const std::vector< T > *in ) {
 };
 
 #ifdef ASTER_HAVE_MED
-int getSize( const MedVector::ElementValue &in );
+int getSize( const MedVector< double >::ElementValue &in );
+int getSize( const MedVector< long int >::ElementValue &in );
 
 template < typename T >
 int getTotalSize( const std::vector< T > &toCopy ) {
@@ -89,7 +90,8 @@ int getTotalSize( const JeveuxCollectionClass< T > &toCopy ) {
 };
 
 #ifdef ASTER_HAVE_MED
-int getTotalSize( const MedVector &toCopy );
+int getTotalSize( const MedVector< double > &toCopy );
+int getTotalSize( const MedVector< long int > &toCopy );
 #endif
 
 template < typename T >
@@ -155,7 +157,11 @@ struct StartPosition< JeveuxCollectionClass< T > > {
 
 #ifdef ASTER_HAVE_MED
 template <>
-struct StartPosition< MedVector > {
+struct StartPosition< MedVector< double > > {
+    static constexpr int value = 0;
+};
+template <>
+struct StartPosition< MedVector< long int > > {
     static constexpr int value = 0;
 };
 #endif
@@ -176,7 +182,8 @@ void allocate( JeveuxCollectionClass< T > &in, const int &size1, const int &size
 };
 
 #ifdef ASTER_HAVE_MED
-void allocate( MedVector &in, const int &size1, const int &size2 );
+void allocate( MedVector< double > &in, const int &size1, const int &size2 );
+void allocate( MedVector< long int > &in, const int &size1, const int &size2 );
 #endif
 
 template < typename T >
@@ -191,7 +198,8 @@ void update( JeveuxCollectionObject< T > in ) {
 };
 
 #ifdef ASTER_HAVE_MED
-void update( MedVector::ElementValue in );
+void update( MedVector< double >::ElementValue in );
+void update( MedVector< long int >::ElementValue in );
 #endif
 
 template < typename T >
@@ -205,7 +213,8 @@ void allocateOccurence( JeveuxCollectionClass< T > &in, const int &pos, const in
 };
 
 #ifdef ASTER_HAVE_MED
-void allocateOccurence( MedVector &in, const int &pos, const int &size );
+void allocateOccurence( MedVector< double > &in, const int &pos, const int &size );
+void allocateOccurence( MedVector< long int > &in, const int &pos, const int &size );
 #endif
 
 template < typename T >
@@ -213,8 +222,12 @@ struct ObjectTemplateType;
 
 #ifdef ASTER_HAVE_MED
 template <>
-struct ObjectTemplateType< MedVector > {
+struct ObjectTemplateType< MedVector< double > > {
     typedef double value_type;
+};
+template <>
+struct ObjectTemplateType< MedVector< long int > > {
+    typedef long int value_type;
 };
 #endif
 

@@ -3,7 +3,7 @@
  * @brief Interface python de ObjectBalancer
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -64,7 +64,7 @@ Arguments:
               py::arg( "elemList" ) )
 #ifdef ASTER_HAVE_MED
         .def( "balanceMedVectorOverProcessesWithRenumbering",
-              &ObjectBalancer::balanceMedVectorOverProcessesWithRenumbering, R"(
+              &ObjectBalancer::balanceMedVectorOverProcessesWithRenumbering< double >, R"(
 Balance a med vector of reals over processes
 
 Arguments:
