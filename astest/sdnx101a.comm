@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -2412,7 +2412,7 @@ EVOL = STAT_NON_LINE(
     MODELE=MODELE,
     CHAM_MATER=CHMAT,
     CARA_ELEM=ELEMB,
-    SOLVEUR=_F(RENUM="METIS", STOP_SINGULIER="NON", METHODE="MULT_FRONT"),
+    SOLVEUR=_F(RENUM="MD", STOP_SINGULIER="NON", METHODE="MULT_FRONT"),
     EXCIT=(_F(CHARGE=COND_LIB), _F(CHARGE=CHAPP)),
     COMPORTEMENT=(_F(RELATION="ELAS", TOUT="OUI"), _F(RELATION="DIS_CHOC", GROUP_MA="LIGRAD")),
     INCREMENT=_F(LIST_INST=L_INST),

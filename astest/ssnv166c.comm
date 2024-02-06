@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -168,7 +168,7 @@ UTOT = MECA_STATIQUE(
     EXCIT=(_F(CHARGE=CHARBLO), _F(CHARGE=CHARTOFL)),
     LIST_INST=L_INST,
     INST_FIN=2.0,
-    SOLVEUR=_F(METHODE="MULT_FRONT", RENUM="METIS"),
+    SOLVEUR=_F(METHODE="MULT_FRONT", RENUM="MD"),
     INFO=1,
 )
 
@@ -185,7 +185,7 @@ UTOTC = STAT_NON_LINE(
     INCREMENT=_F(LIST_INST=L_INST, INST_INIT=1.0, INST_FIN=2.0),
     NEWTON=_F(MATRICE="ELASTIQUE"),
     CONVERGENCE=_F(RESI_GLOB_RELA=1e-06, ITER_GLOB_MAXI=100),
-    SOLVEUR=_F(METHODE="MULT_FRONT", RENUM="METIS"),
+    SOLVEUR=_F(METHODE="MULT_FRONT", RENUM="MD"),
     ARCHIVAGE=_F(CHAM_EXCLU="VARI_ELGA"),
     INFO=1,
 )

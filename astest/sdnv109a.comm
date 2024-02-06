@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -70,7 +70,7 @@ MODES0 = CALC_MODES(
     VERI_MODE=_F(STOP_ERREUR="NON"),
     OPTION="CENTRE",
     CALC_FREQ=_F(NMAX_FREQ=30, FREQ=(500.0,)),
-    SOLVEUR=_F(RENUM="METIS", METHODE="MULT_FRONT"),
+    SOLVEUR=_F(RENUM="MD", METHODE="MULT_FRONT"),
     MATR_MASS=MASSE,
     SOLVEUR_MODAL=_F(METHODE="SORENSEN"),
     TYPE_RESU="DYNAMIQUE",
@@ -189,7 +189,7 @@ for i in range(nbV):
         VERI_MODE=_F(STOP_ERREUR="NON"),
         OPTION="CENTRE",
         CALC_FREQ=_F(NMAX_FREQ=30, FREQ=(500.0,)),
-        SOLVEUR=_F(RENUM="METIS", METHODE="MULT_FRONT"),
+        SOLVEUR=_F(RENUM="MD", METHODE="MULT_FRONT"),
         MATR_AMOR=GYASSi,
         MATR_MASS=MASSE,
         SOLVEUR_MODAL=_F(METHODE="SORENSEN"),
@@ -201,7 +201,7 @@ for i in range(nbV):
         VERI_MODE=_F(STOP_ERREUR="NON"),
         OPTION="CENTRE",
         CALC_FREQ=_F(NMAX_FREQ=30, FREQ=(500.0,)),
-        SOLVEUR=_F(RENUM="METIS", METHODE="MULT_FRONT"),
+        SOLVEUR=_F(RENUM="MD", METHODE="MULT_FRONT"),
         MATR_AMOR=GYASSi,
         MATR_MASS=MASSE,
         SOLVEUR_MODAL=_F(METHODE="SORENSEN"),

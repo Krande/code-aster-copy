@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -188,7 +188,7 @@ MDST1 = MODE_STATIQUE(
     MATR_RIGI=RIGIDITE,
     MATR_MASS=MASSE,
     MODE_STAT=_F(GROUP_NO="N1", AVEC_CMP=("DX", "DY")),
-    SOLVEUR=_F(RENUM="METIS", STOP_SINGULIER="NON", NPREC=8, METHODE="MULT_FRONT"),
+    SOLVEUR=_F(RENUM="MD", STOP_SINGULIER="NON", NPREC=8, METHODE="MULT_FRONT"),
 )
 
 
@@ -196,7 +196,7 @@ MDST2 = MODE_STATIQUE(
     MATR_RIGI=RIGIDITE,
     MATR_MASS=MASSE,
     MODE_STAT=_F(GROUP_NO="N14", AVEC_CMP=("DX", "DY")),
-    SOLVEUR=_F(RENUM="METIS", STOP_SINGULIER="NON", NPREC=8, METHODE="MULT_FRONT"),
+    SOLVEUR=_F(RENUM="MD", STOP_SINGULIER="NON", NPREC=8, METHODE="MULT_FRONT"),
 )
 
 
