@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -134,7 +134,6 @@ subroutine crtype()
     call getres(resultName, type, oper)
     resu19 = resultName
     call getfac('AFFE', nbfac)
-    call getvtx(' ', 'NOM_CHAM', scal=fieldType, nbret=n1)
     call getvtx(' ', 'TYPE_RESU', scal=resultType, nbret=n1)
 !
 ! - Reuse mode
@@ -169,6 +168,7 @@ subroutine crtype()
     do iocc = 1, nbfac
         model = ' '
         call getvid('AFFE', 'MODELE', iocc=iocc, scal=model, nbret=n1)
+        call getvtx('AFFE', 'NOM_CHAM', iocc=iocc, scal=fieldType, nbret=n1)
 !
 !   on compte les modeles, materiaux et les cara_ele différents d'un pas à l'autre
 !   (y compris la chaine ' ' )
