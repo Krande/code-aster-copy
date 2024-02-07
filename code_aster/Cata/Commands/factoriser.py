@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -77,7 +77,7 @@ FACTORISER = OPER(
     b_mult_front=BLOC(
         condition="""equal_to("METHODE", 'MULT_FRONT')""",
         fr=tr("paramètres associés à la méthode multifrontale"),
-        RENUM=SIMP(statut="f", typ="TXM", into=("MD", "MDA", "METIS"), defaut="METIS"),
+        RENUM=SIMP(statut="f", typ="TXM", into=("MD", "MDA"), defaut="MDA"),
         STOP_SINGULIER=SIMP(statut="f", typ="TXM", defaut="OUI", into=("OUI", "NON")),
         NPREC=SIMP(statut="f", typ="I", defaut=8),
     ),
