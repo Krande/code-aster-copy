@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -263,10 +263,9 @@ VFORCE0 = AFFE_CHAR_MECA(MODELE=MODELE, VECT_ASSE=CHFORCE0, INFO=1)
 RESU_EV = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_CHAR",
-    NOM_CHAM="FORC_NODA",
     AFFE=(
-        _F(CHAM_GD=CHFORCE0, MODELE=MODELE, INST=-1.0),
-        _F(CHAM_GD=CHFORCE0, MODELE=MODELE, INST=1.0),
+        _F(NOM_CHAM="FORC_NODA", CHAM_GD=CHFORCE0, MODELE=MODELE, INST=-1.0),
+        _F(NOM_CHAM="FORC_NODA", CHAM_GD=CHFORCE0, MODELE=MODELE, INST=1.0),
     ),
 )
 

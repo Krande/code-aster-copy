@@ -49,9 +49,11 @@ t_final = CREA_CHAMP(
 
 resu_temp = CREA_RESU(
     TYPE_RESU="EVOL_THER",
-    NOM_CHAM="TEMP",
     OPERATION="AFFE",
-    AFFE=(_F(CHAM_GD=t_ini, INST=0.0), _F(CHAM_GD=t_final, INST=1.0)),
+    AFFE=(
+        _F(NOM_CHAM="TEMP", CHAM_GD=t_ini, INST=0.0),
+        _F(NOM_CHAM="TEMP", CHAM_GD=t_final, INST=1.0),
+    ),
 )
 
 
@@ -256,20 +258,18 @@ sismique_total_2 = CREA_CHAMP(
 resu_dyna = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="DYNA_TRANS",
-    NOM_CHAM="EFGE_ELNO",
     AFFE=(
-        _F(CHAM_GD=sismique_dyn_1, INST=1.0, MODELE=modele),
-        _F(CHAM_GD=sismique_dyn_2, INST=2.0, MODELE=modele),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=sismique_dyn_1, INST=1.0, MODELE=modele),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=sismique_dyn_2, INST=2.0, MODELE=modele),
     ),
 )
 
 resu_corr = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="DYNA_TRANS",
-    NOM_CHAM="EFGE_ELNO",
     AFFE=(
-        _F(CHAM_GD=sismique_total_1, INST=1.0, MODELE=modele),
-        _F(CHAM_GD=sismique_total_2, INST=2.0, MODELE=modele),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=sismique_total_1, INST=1.0, MODELE=modele),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=sismique_total_2, INST=2.0, MODELE=modele),
     ),
 )
 

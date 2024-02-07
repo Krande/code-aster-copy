@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -66,8 +66,10 @@ VAL1 = CREA_CHAMP(
 RES_PRES = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_CHAR",
-    NOM_CHAM="PRES",
-    AFFE=(_F(CHAM_GD=VAL0, MODELE=MOFLUIDE, INST=0.0), _F(CHAM_GD=VAL1, MODELE=MOFLUIDE, INST=1.0)),
+    AFFE=(
+        _F(NOM_CHAM="PRES", CHAM_GD=VAL0, MODELE=MOFLUIDE, INST=0.0),
+        _F(NOM_CHAM="PRES", CHAM_GD=VAL1, MODELE=MOFLUIDE, INST=1.0),
+    ),
 )
 
 # IMPR_RESU(FORMAT='GMSH',

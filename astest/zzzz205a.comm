@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -51,15 +51,14 @@ VITE_2s = CREA_CHAMP(
     AFFE=_F(TOUT="OUI", NOM_CMP=("DX", "DY"), VALE=(1.5, 2.5)),
 )
 VITE = CREA_RESU(
-    OPERATION="AFFE", TYPE_RESU="EVOL_NOLI", NOM_CHAM="VITE", AFFE=_F(CHAM_GD=VITE_1s, INST=1.0)
+    OPERATION="AFFE", TYPE_RESU="EVOL_NOLI", AFFE=_F(NOM_CHAM="VITE", CHAM_GD=VITE_1s, INST=1.0)
 )
 VITE = CREA_RESU(
     reuse=VITE,
     RESULTAT=VITE,
     OPERATION="AFFE",
     TYPE_RESU="EVOL_NOLI",
-    NOM_CHAM="VITE",
-    AFFE=_F(CHAM_GD=VITE_2s, INST=2.0),
+    AFFE=_F(NOM_CHAM="VITE", CHAM_GD=VITE_2s, INST=2.0),
 )
 
 # CALCUL DE LA MASSE  ---------------------------------

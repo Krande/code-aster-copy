@@ -54,8 +54,10 @@ chtemp5 = CREA_CHAMP(
 evolT = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_VARC",
-    NOM_CHAM="TEMP",
-    AFFE=(_F(CHAM_GD=chtemp0, INST=0.0), _F(CHAM_GD=chtemp5, INST=10.0)),
+    AFFE=(
+        _F(NOM_CHAM="TEMP", CHAM_GD=chtemp0, INST=0.0),
+        _F(NOM_CHAM="TEMP", CHAM_GD=chtemp5, INST=10.0),
+    ),
 )
 
 model = AFFE_MODELE(

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -51,8 +51,10 @@ LIST1 = DEFI_LIST_REEL(DEBUT=0, INTERVALLE=_F(JUSQU_A=2, NOMBRE=2))
 RESUTHER = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_THER",
-    NOM_CHAM="TEMP",
-    AFFE=(_F(INST=-1, CHAM_GD=CHTEMP0), _F(LIST_INST=LIST1, CHAM_GD=CHP_TEMP)),
+    AFFE=(
+        _F(NOM_CHAM="TEMP", INST=-1, CHAM_GD=CHTEMP0),
+        _F(NOM_CHAM="TEMP", LIST_INST=LIST1, CHAM_GD=CHP_TEMP),
+    ),
 )
 
 ##CALCUL MECANIQUE AVEC TEMPERATURE, FISSURE FERMEE => RESUMECA, pour champs

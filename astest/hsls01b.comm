@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -78,8 +78,10 @@ T_FIN1 = CREA_CHAMP(
 TEMP = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_THER",
-    NOM_CHAM="TEMP",
-    AFFE=(_F(CHAM_GD=T_INIT, INST=0.0), _F(CHAM_GD=T_FIN1, INST=1.0)),
+    AFFE=(
+        _F(NOM_CHAM="TEMP", CHAM_GD=T_INIT, INST=0.0),
+        _F(NOM_CHAM="TEMP", CHAM_GD=T_FIN1, INST=1.0),
+    ),
 )
 
 TEMPER = CREA_RESU(
@@ -141,16 +143,16 @@ SIE1 = CREA_CHAMP(
 MESTAT = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_ELAS",
-    NOM_CHAM="DEPL",
-    AFFE=_F(INST=1.0, CHAM_GD=DEP1, MODELE=MOD, CHAM_MATER=CHMAT, CARA_ELEM=CARA2),
+    AFFE=_F(NOM_CHAM="DEPL", INST=1.0, CHAM_GD=DEP1, MODELE=MOD, CHAM_MATER=CHMAT, CARA_ELEM=CARA2),
 )
 MESTAT = CREA_RESU(
     reuse=MESTAT,
     RESULTAT=MESTAT,
     OPERATION="AFFE",
     TYPE_RESU="EVOL_ELAS",
-    NOM_CHAM="SIEF_ELGA",
-    AFFE=_F(INST=1.0, CHAM_GD=SIE1, MODELE=MOD, CHAM_MATER=CHMAT, CARA_ELEM=CARA2),
+    AFFE=_F(
+        NOM_CHAM="SIEF_ELGA", INST=1.0, CHAM_GD=SIE1, MODELE=MOD, CHAM_MATER=CHMAT, CARA_ELEM=CARA2
+    ),
 )
 
 MESTAT = CALC_CHAMP(

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -61,8 +61,7 @@ L_INST0 = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=2))
 RES_PRES = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_CHAR",
-    NOM_CHAM="PRES",
-    AFFE=_F(CHAM_GD=VALE, MODELE=MOFLUIDE, LIST_INST=L_INST0),
+    AFFE=_F(NOM_CHAM="PRES", CHAM_GD=VALE, MODELE=MOFLUIDE, LIST_INST=L_INST0),
 )
 
 # IMPR_RESU(FORMAT='GMSH',

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -137,15 +137,14 @@ T6 = CREA_CHAMP(
 LATEMP = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_THER",
-    NOM_CHAM="TEMP",
     AFFE=(
-        _F(CHAM_GD=T0, INST=0.0),
-        _F(CHAM_GD=T1, INST=1.0),
-        _F(CHAM_GD=T2, INST=2.0),
-        _F(CHAM_GD=T3, INST=3.0),
-        _F(CHAM_GD=T4, INST=4.0),
-        _F(CHAM_GD=T5, INST=5.0),
-        _F(CHAM_GD=T6, INST=6.0),
+        _F(NOM_CHAM="TEMP", CHAM_GD=T0, INST=0.0),
+        _F(NOM_CHAM="TEMP", CHAM_GD=T1, INST=1.0),
+        _F(NOM_CHAM="TEMP", CHAM_GD=T2, INST=2.0),
+        _F(NOM_CHAM="TEMP", CHAM_GD=T3, INST=3.0),
+        _F(NOM_CHAM="TEMP", CHAM_GD=T4, INST=4.0),
+        _F(NOM_CHAM="TEMP", CHAM_GD=T5, INST=5.0),
+        _F(NOM_CHAM="TEMP", CHAM_GD=T6, INST=6.0),
     ),
 )
 #

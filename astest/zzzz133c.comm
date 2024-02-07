@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -85,8 +85,10 @@ EPSXYIMP = CREA_CHAMP(
 EPSA1 = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_VARC",
-    NOM_CHAM="EPSA_ELNO",
-    AFFE=(_F(CHAM_GD=EPS0, INST=0.0), _F(CHAM_GD=EPSXXIMP, INST=1.0)),
+    AFFE=(
+        _F(NOM_CHAM="EPSA_ELNO", CHAM_GD=EPS0, INST=0.0),
+        _F(NOM_CHAM="EPSA_ELNO", CHAM_GD=EPSXXIMP, INST=1.0),
+    ),
 )
 
 CHMAT1 = AFFE_MATERIAU(
@@ -123,8 +125,10 @@ TEST_RESU(
 EPSA2 = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_VARC",
-    NOM_CHAM="EPSA_ELNO",
-    AFFE=(_F(CHAM_GD=EPS0, INST=0.0), _F(CHAM_GD=EPSXYIMP, INST=1.0)),
+    AFFE=(
+        _F(NOM_CHAM="EPSA_ELNO", CHAM_GD=EPS0, INST=0.0),
+        _F(NOM_CHAM="EPSA_ELNO", CHAM_GD=EPSXYIMP, INST=1.0),
+    ),
 )
 
 CHMAT2 = AFFE_MATERIAU(

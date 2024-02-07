@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -136,8 +136,10 @@ TEMP1A = CREA_CHAMP(
 TEMPLI1 = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_THER",
-    NOM_CHAM="TEMP",
-    AFFE=(_F(CHAM_GD=TEMP0, INST=0.0), _F(CHAM_GD=TEMP1A, INST=1.0)),
+    AFFE=(
+        _F(NOM_CHAM="TEMP", CHAM_GD=TEMP0, INST=0.0),
+        _F(NOM_CHAM="TEMP", CHAM_GD=TEMP1A, INST=1.0),
+    ),
 )
 
 MATER2 = AFFE_MATERIAU(
@@ -160,8 +162,10 @@ TEMP1B = CREA_CHAMP(
 TEMPLI2 = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_THER",
-    NOM_CHAM="TEMP",
-    AFFE=(_F(CHAM_GD=TEMP0, INST=0.0), _F(CHAM_GD=TEMP1B, INST=1.0)),
+    AFFE=(
+        _F(NOM_CHAM="TEMP", CHAM_GD=TEMP0, INST=0.0),
+        _F(NOM_CHAM="TEMP", CHAM_GD=TEMP1B, INST=1.0),
+    ),
 )
 
 MATER3 = AFFE_MATERIAU(

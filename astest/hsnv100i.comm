@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -149,14 +149,13 @@ EPS5 = CREA_CHAMP(
 EPSA = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_VARC",
-    NOM_CHAM="EPSA_ELNO",
     AFFE=(
-        _F(CHAM_GD=EPS0, INST=0.0),
-        _F(CHAM_GD=EPS1, INST=6.6666e1),
-        _F(CHAM_GD=EPS2, INST=7.3333e1),
-        _F(CHAM_GD=EPS3, INST=80.0),
-        _F(CHAM_GD=EPS4, INST=85.0),
-        _F(CHAM_GD=EPS5, INST=90),
+        _F(NOM_CHAM="EPSA_ELNO", CHAM_GD=EPS0, INST=0.0),
+        _F(NOM_CHAM="EPSA_ELNO", CHAM_GD=EPS1, INST=6.6666e1),
+        _F(NOM_CHAM="EPSA_ELNO", CHAM_GD=EPS2, INST=7.3333e1),
+        _F(NOM_CHAM="EPSA_ELNO", CHAM_GD=EPS3, INST=80.0),
+        _F(NOM_CHAM="EPSA_ELNO", CHAM_GD=EPS4, INST=85.0),
+        _F(NOM_CHAM="EPSA_ELNO", CHAM_GD=EPS5, INST=90),
     ),
 )
 

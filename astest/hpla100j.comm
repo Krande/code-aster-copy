@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -242,8 +242,7 @@ DEPLPES = CALC_CHAMP(reuse=DEPLPES, CONTRAINTE="EFGE_ELNO", RESULTAT=DEPLPES)
 
 TEMPLI2 = CREA_RESU(
     reuse=TEMPLI2,
-    AFFE=_F(CHAM_GD=TEMPHOM, INST=-1.0),
-    NOM_CHAM="TEMP",
+    AFFE=_F(NOM_CHAM="TEMP", CHAM_GD=TEMPHOM, INST=-1.0),
     OPERATION="AFFE",
     RESULTAT=TEMPLI2,
     TYPE_RESU="EVOL_THER",

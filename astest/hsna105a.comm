@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -328,9 +328,11 @@ for k in range(1, NB_PAS + 1):
         #       au pas de temps k + 1 pour que le calcul mecanique puisse a etre realise
         thd = CREA_RESU(
             TYPE_RESU="EVOL_THER",
-            NOM_CHAM="TEMP",
             OPERATION="AFFE",
-            AFFE=(_F(CHAM_GD=t0, INST=times[k]), _F(CHAM_GD=t1, INST=times[k + 1])),
+            AFFE=(
+                _F(NOM_CHAM="TEMP", CHAM_GD=t0, INST=times[k]),
+                _F(NOM_CHAM="TEMP", CHAM_GD=t1, INST=times[k + 1]),
+            ),
         )
 
     # 2.2 Pas de chargement suivant
@@ -556,9 +558,11 @@ for k in range(1, NB_PAS + 1):
             #       pour lequel on modifie les numeros d'ordres k-1 --> k et k --> k+1
             thd = CREA_RESU(
                 TYPE_RESU="EVOL_THER",
-                NOM_CHAM="TEMP",
                 OPERATION="AFFE",
-                AFFE=(_F(CHAM_GD=t0, INST=times[k]), _F(CHAM_GD=t1, INST=times[k + 1])),
+                AFFE=(
+                    _F(NOM_CHAM="TEMP", CHAM_GD=t0, INST=times[k]),
+                    _F(NOM_CHAM="TEMP", CHAM_GD=t1, INST=times[k + 1]),
+                ),
             )
 
 ###################################################################

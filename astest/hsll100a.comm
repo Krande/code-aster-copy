@@ -75,8 +75,10 @@ TEMP_1 = CREA_CHAMP(
 ResuTemp = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_VARC",
-    NOM_CHAM="TEMP",
-    AFFE=(_F(CHAM_GD=TEMP_0, INST=0.0), _F(CHAM_GD=TEMP_1, INST=100.0)),
+    AFFE=(
+        _F(NOM_CHAM="TEMP", CHAM_GD=TEMP_0, INST=0.0),
+        _F(NOM_CHAM="TEMP", CHAM_GD=TEMP_1, INST=100.0),
+    ),
 )
 
 # #########################################################

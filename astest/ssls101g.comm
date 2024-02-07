@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -867,8 +867,11 @@ LINST = DEFI_LIST_REEL(VALE=(1.0, 2.0, 3.0))
 TEMP = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_THER",
-    NOM_CHAM="TEMP",
-    AFFE=(_F(INST=1.0, CHAM_GD=CHT1), _F(INST=2.0, CHAM_GD=CHT2), _F(INST=3.0, CHAM_GD=CHT3)),
+    AFFE=(
+        _F(NOM_CHAM="TEMP", INST=1.0, CHAM_GD=CHT1),
+        _F(NOM_CHAM="TEMP", INST=2.0, CHAM_GD=CHT2),
+        _F(NOM_CHAM="TEMP", INST=3.0, CHAM_GD=CHT3),
+    ),
 )
 
 TEMPER1 = CREA_RESU(

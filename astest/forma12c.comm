@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -167,8 +167,14 @@ depl = RESOUDRE(CHAM_NO=vectCharge, MATR=rigiPhy, RESI_RELA=1e-05, POSTTRAITEMEN
 
 # Création d'une structure de données résultat
 nomres = CREA_RESU(
-    AFFE=_F(CHAM_GD=depl, CHAM_MATER=CHMAT, CHARGE=(GRAV, BLOCAGE), MODELE=MODELE, NOM_CAS="CAS_0"),
-    NOM_CHAM="DEPL",
+    AFFE=_F(
+        NOM_CHAM="DEPL",
+        CHAM_GD=depl,
+        CHAM_MATER=CHMAT,
+        CHARGE=(GRAV, BLOCAGE),
+        MODELE=MODELE,
+        NOM_CAS="CAS_0",
+    ),
     OPERATION="AFFE",
     TYPE_RESU="MULT_ELAS",
 )

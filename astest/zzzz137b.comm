@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -118,11 +118,10 @@ COEF_H3 = CREA_CHAMP(
 EVOL_RE = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_CHAR",
-    NOM_CHAM="T_EXT",
     AFFE=(
-        _F(CHAM_GD=TEMP_EX1, INST=0.0),
-        _F(CHAM_GD=TEMP_EX2, INST=0.5),
-        _F(CHAM_GD=TEMP_EX3, INST=1.0),
+        _F(NOM_CHAM="T_EXT", CHAM_GD=TEMP_EX1, INST=0.0),
+        _F(NOM_CHAM="T_EXT", CHAM_GD=TEMP_EX2, INST=0.5),
+        _F(NOM_CHAM="T_EXT", CHAM_GD=TEMP_EX3, INST=1.0),
     ),
 )
 EVOL_RE = CREA_RESU(
@@ -130,11 +129,10 @@ EVOL_RE = CREA_RESU(
     RESULTAT=EVOL_RE,
     OPERATION="AFFE",
     TYPE_RESU="EVOL_CHAR",
-    NOM_CHAM="COEF_H",
     AFFE=(
-        _F(CHAM_GD=COEF_H1, INST=0.0),
-        _F(CHAM_GD=COEF_H2, INST=0.5),
-        _F(CHAM_GD=COEF_H3, INST=1.0),
+        _F(NOM_CHAM="COEF_H", CHAM_GD=COEF_H1, INST=0.0),
+        _F(NOM_CHAM="COEF_H", CHAM_GD=COEF_H2, INST=0.5),
+        _F(NOM_CHAM="COEF_H", CHAM_GD=COEF_H3, INST=1.0),
     ),
 )
 
@@ -259,11 +257,10 @@ COEF_H30 = CREA_CHAMP(
 EVOL_RE3 = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_CHAR",
-    NOM_CHAM="T_EXT",
     AFFE=(
-        _F(CHAM_GD=TEMPEX10, INST=0.0),
-        _F(CHAM_GD=TEMPEX20, INST=0.5),
-        _F(CHAM_GD=TEMPEX30, INST=1.0),
+        _F(NOM_CHAM="T_EXT", CHAM_GD=TEMPEX10, INST=0.0),
+        _F(NOM_CHAM="T_EXT", CHAM_GD=TEMPEX20, INST=0.5),
+        _F(NOM_CHAM="T_EXT", CHAM_GD=TEMPEX30, INST=1.0),
     ),
 )
 EVOL_RE3 = CREA_RESU(
@@ -271,11 +268,10 @@ EVOL_RE3 = CREA_RESU(
     RESULTAT=EVOL_RE3,
     OPERATION="AFFE",
     TYPE_RESU="EVOL_CHAR",
-    NOM_CHAM="COEF_H",
     AFFE=(
-        _F(CHAM_GD=COEF_H10, INST=0.0),
-        _F(CHAM_GD=COEF_H20, INST=0.5),
-        _F(CHAM_GD=COEF_H30, INST=1.0),
+        _F(NOM_CHAM="COEF_H", CHAM_GD=COEF_H10, INST=0.0),
+        _F(NOM_CHAM="COEF_H", CHAM_GD=COEF_H20, INST=0.5),
+        _F(NOM_CHAM="COEF_H", CHAM_GD=COEF_H30, INST=1.0),
     ),
 )
 

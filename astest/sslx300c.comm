@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -139,8 +139,7 @@ LINST = DEFI_LIST_REEL(VALE=(0.0,))
 RESUTF = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_THER",
-    NOM_CHAM="TEMP",
-    AFFE=_F(CHAM_GD=CHAR_TH2, LIST_INST=LINST),
+    AFFE=_F(NOM_CHAM="TEMP", CHAM_GD=CHAR_TH2, LIST_INST=LINST),
 )
 
 CHMAT = AFFE_MATERIAU(

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -382,9 +382,8 @@ DEP13 = CREA_CHAMP(
 RESU13 = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_ELAS",
-    NOM_CHAM="DEPL",
-    EXCIT=_F(CHARGE=TORSION),
-    AFFE=_F(CHAM_GD=DEP13, MODELE=MO, CHAM_MATER=CHMAT, INST=0.0),
+    EXCIT=_F(NOM_CHAM="DEPL", CHARGE=TORSION),
+    AFFE=_F(NOM_CHAM="DEPL", CHAM_GD=DEP13, MODELE=MO, CHAM_MATER=CHMAT, INST=0.0),
 )
 
 # VALEUR DE REFERENCE MILIEU INFINI MODES 1 ET 3 :

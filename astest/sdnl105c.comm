@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -244,14 +244,12 @@ for k in range(1, 5):
         MODESTAA = CREA_RESU(
             OPERATION="AFFE",
             TYPE_RESU="MULT_ELAS",
-            NOM_CHAM="DEPL",
-            AFFE=(_F(CHAM_GD=CHS1[k], NOM_CAS="CAS A {0}".format(k)),),
+            AFFE=(_F(NOM_CHAM="DEPL", CHAM_GD=CHS1[k], NOM_CAS="CAS A {0}".format(k)),),
         )
         MODESTAB = CREA_RESU(
             OPERATION="AFFE",
             TYPE_RESU="MULT_ELAS",
-            NOM_CHAM="DEPL",
-            AFFE=(_F(CHAM_GD=CHS2[k], NOM_CAS="CAS B {0}".format(k)),),
+            AFFE=(_F(NOM_CHAM="DEPL", CHAM_GD=CHS2[k], NOM_CAS="CAS B {0}".format(k)),),
         )
     else:
         MODESTAA = CREA_RESU(
@@ -259,16 +257,14 @@ for k in range(1, 5):
             RESULTAT=MODESTAA,
             OPERATION="AFFE",
             TYPE_RESU="MULT_ELAS",
-            NOM_CHAM="DEPL",
-            AFFE=(_F(CHAM_GD=CHS1[k], NOM_CAS="CAS A {0}".format(k)),),
+            AFFE=(_F(NOM_CHAM="DEPL", CHAM_GD=CHS1[k], NOM_CAS="CAS A {0}".format(k)),),
         )
         MODESTAB = CREA_RESU(
             reuse=MODESTAB,
             RESULTAT=MODESTAB,
             OPERATION="AFFE",
             TYPE_RESU="MULT_ELAS",
-            NOM_CHAM="DEPL",
-            AFFE=(_F(CHAM_GD=CHS2[k], NOM_CAS="CAS B {0}".format(k)),),
+            AFFE=(_F(NOM_CHAM="DEPL", CHAM_GD=CHS2[k], NOM_CAS="CAS B {0}".format(k)),),
         )
 
 BAMODA = DEFI_BASE_MODALE(

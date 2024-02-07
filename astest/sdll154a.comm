@@ -90,9 +90,11 @@ t_final = CREA_CHAMP(
 
 resu_temp = CREA_RESU(
     TYPE_RESU="EVOL_THER",
-    NOM_CHAM="TEMP",
     OPERATION="AFFE",
-    AFFE=(_F(CHAM_GD=t_ini, INST=0.0), _F(CHAM_GD=t_final, INST=1.0)),
+    AFFE=(
+        _F(NOM_CHAM="TEMP", CHAM_GD=t_ini, INST=0.0),
+        _F(NOM_CHAM="TEMP", CHAM_GD=t_final, INST=1.0),
+    ),
 )
 
 
@@ -124,9 +126,11 @@ tbid2 = CREA_CHAMP(
 
 resu_temp_fo = CREA_RESU(
     TYPE_RESU="EVOL_THER",
-    NOM_CHAM="TEMP",
     OPERATION="AFFE",
-    AFFE=(_F(CHAM_GD=tbid, INST=1.0), _F(CHAM_GD=tbid2, INST=0.0)),
+    AFFE=(
+        _F(NOM_CHAM="TEMP", CHAM_GD=tbid, INST=1.0),
+        _F(NOM_CHAM="TEMP", CHAM_GD=tbid2, INST=0.0),
+    ),
 )
 # l'instant 0 provoque des NOOK, comme attendu
 
@@ -612,20 +616,19 @@ ch_qs = CREA_CHAMP(
 sismique_re = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="MULT_ELAS",
-    NOM_CHAM="EFGE_ELNO",
     AFFE=(
-        _F(CHAM_GD=ch_direX, NOM_CAS="DIRE_X", MODELE=modele),
-        _F(CHAM_GD=ch_direY, NOM_CAS="DIRE_Y", MODELE=modele),
-        _F(CHAM_GD=ch_direZ, NOM_CAS="DIRE_Z", MODELE=modele),
-        _F(CHAM_GD=ch_tota, NOM_CAS="TOTA", MODELE=modele),
-        _F(CHAM_GD=ch_dynaX, NOM_CAS="PART_DYNA_X", MODELE=modele),
-        _F(CHAM_GD=ch_dynaY, NOM_CAS="PART_DYNA_Y", MODELE=modele),
-        _F(CHAM_GD=ch_dynaZ, NOM_CAS="PART_DYNA_Z", MODELE=modele),
-        _F(CHAM_GD=ch_dyna, NOM_CAS="PART_DYNA", MODELE=modele),
-        _F(CHAM_GD=ch_qsX, NOM_CAS="PART_QS_X", MODELE=modele),
-        _F(CHAM_GD=ch_qsY, NOM_CAS="PART_QS_Y", MODELE=modele),
-        _F(CHAM_GD=ch_qsZ, NOM_CAS="PART_QS_Z", MODELE=modele),
-        _F(CHAM_GD=ch_qs, NOM_CAS="PART_QS", MODELE=modele),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=ch_direX, NOM_CAS="DIRE_X", MODELE=modele),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=ch_direY, NOM_CAS="DIRE_Y", MODELE=modele),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=ch_direZ, NOM_CAS="DIRE_Z", MODELE=modele),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=ch_tota, NOM_CAS="TOTA", MODELE=modele),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=ch_dynaX, NOM_CAS="PART_DYNA_X", MODELE=modele),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=ch_dynaY, NOM_CAS="PART_DYNA_Y", MODELE=modele),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=ch_dynaZ, NOM_CAS="PART_DYNA_Z", MODELE=modele),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=ch_dyna, NOM_CAS="PART_DYNA", MODELE=modele),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=ch_qsX, NOM_CAS="PART_QS_X", MODELE=modele),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=ch_qsY, NOM_CAS="PART_QS_Y", MODELE=modele),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=ch_qsZ, NOM_CAS="PART_QS_Z", MODELE=modele),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=ch_qs, NOM_CAS="PART_QS", MODELE=modele),
     ),
 )
 

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -198,8 +198,10 @@ TEST_RESU(
 MODES = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="MODE_MECA",
-    AFFE=(_F(CHAM_GD=M_FLAMB1, NUME_MODE=1), _F(CHAM_GD=M_FLAMB2, NUME_MODE=2)),
-    NOM_CHAM="DEPL",
+    AFFE=(
+        _F(NOM_CHAM="DEPL", CHAM_GD=M_FLAMB1, NUME_MODE=1),
+        _F(NOM_CHAM="DEPL", CHAM_GD=M_FLAMB2, NUME_MODE=2),
+    ),
 )
 
 

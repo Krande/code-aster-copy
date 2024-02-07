@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -50,14 +50,13 @@ CHTEMP_2 = CREA_CHAMP(
 
 CHTEMP = CREA_RESU(
     TYPE_RESU="EVOL_THER",
-    NOM_CHAM="TEMP",
     OPERATION="AFFE",
     AFFE=(
-        _F(CHAM_GD=CHTEMP_1, INST=0.0),
-        _F(CHAM_GD=CHTEMP_1, INST=0.2),
-        _F(CHAM_GD=CHTEMP_2, INST=0.5),
-        _F(CHAM_GD=CHTEMP_2, INST=1.0),
-        _F(CHAM_GD=CHTEMP_2, INST=2.0),
+        _F(NOM_CHAM="TEMP", CHAM_GD=CHTEMP_1, INST=0.0),
+        _F(NOM_CHAM="TEMP", CHAM_GD=CHTEMP_1, INST=0.2),
+        _F(NOM_CHAM="TEMP", CHAM_GD=CHTEMP_2, INST=0.5),
+        _F(NOM_CHAM="TEMP", CHAM_GD=CHTEMP_2, INST=1.0),
+        _F(NOM_CHAM="TEMP", CHAM_GD=CHTEMP_2, INST=2.0),
     ),
 )
 
@@ -77,12 +76,11 @@ CHIRRA_2 = CREA_CHAMP(
 
 CHIRRA = CREA_RESU(
     TYPE_RESU="EVOL_VARC",
-    NOM_CHAM="IRRA",
     OPERATION="AFFE",
     AFFE=(
-        _F(CHAM_GD=CHIRRA_1, INST=0.0),
-        _F(CHAM_GD=CHIRRA_1, INST=1.0),
-        _F(CHAM_GD=CHIRRA_2, INST=2.0),
+        _F(NOM_CHAM="IRRA", CHAM_GD=CHIRRA_1, INST=0.0),
+        _F(NOM_CHAM="IRRA", CHAM_GD=CHIRRA_1, INST=1.0),
+        _F(NOM_CHAM="IRRA", CHAM_GD=CHIRRA_2, INST=2.0),
     ),
 )
 

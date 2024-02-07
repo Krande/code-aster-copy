@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -53,8 +53,7 @@ gg = CREA_CHAMP(
 evol_gg = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_CHAR",
-    NOM_CHAM="PRES",
-    AFFE=_F(CHAM_GD=gg, LIST_INST=CAT, MODELE=MODEL, CHAM_MATER=MATER),
+    AFFE=_F(NOM_CHAM="PRES", CHAM_GD=gg, LIST_INST=CAT, MODELE=MODEL, CHAM_MATER=MATER),
 )
 
 PRES = AFFE_CHAR_MECA(MODELE=MODEL, EVOL_CHAR=evol_gg)

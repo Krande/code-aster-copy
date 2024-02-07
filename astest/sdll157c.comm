@@ -76,9 +76,11 @@ t_final = CREA_CHAMP(
 
 resu_temp = CREA_RESU(
     TYPE_RESU="EVOL_THER",
-    NOM_CHAM="TEMP",
     OPERATION="AFFE",
-    AFFE=(_F(CHAM_GD=t_ini, INST=0.0), _F(CHAM_GD=t_final, INST=1.0)),
+    AFFE=(
+        _F(NOM_CHAM="TEMP", CHAM_GD=t_ini, INST=0.0),
+        _F(NOM_CHAM="TEMP", CHAM_GD=t_final, INST=1.0),
+    ),
 )
 
 ch_mater = AFFE_MATERIAU(
@@ -251,20 +253,19 @@ ch_dyn = CREA_CHAMP(
 # sismique_dyn = CREA_RESU(
 #     OPERATION="AFFE",
 #     TYPE_RESU="MODE_MECA",
-#     NOM_CHAM="EFGE_ELNO",
+#
 #     AFFE=(
-#         _F(CHAM_GD=ch_dyn, NUME_MODE=1, MODELE=modele),
-#         _F(CHAM_GD=ch_dyn, NUME_MODE=2, MODELE=modele),
-#         _F(CHAM_GD=ch_dyn, NUME_MODE=3, MODELE=modele),
-#         _F(CHAM_GD=ch_dyn, NUME_MODE=4, MODELE=modele),
+#         _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=ch_dyn, NUME_MODE=1, MODELE=modele),
+#         _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=ch_dyn, NUME_MODE=2, MODELE=modele),
+#         _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=ch_dyn, NUME_MODE=3, MODELE=modele),
+#         _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=ch_dyn, NUME_MODE=4, MODELE=modele),
 #     ),
 # )
 
 sismique_dyn = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="MULT_ELAS",
-    NOM_CHAM="EFGE_ELNO",
-    AFFE=(_F(CHAM_GD=ch_dyn, NOM_CAS="TOTA", MODELE=modele),),
+    AFFE=(_F(NOM_CHAM="EFGE_ELNO", CHAM_GD=ch_dyn, NOM_CAS="TOTA", MODELE=modele),),
 )
 
 # appel à POST_ROCHE : tous chargements

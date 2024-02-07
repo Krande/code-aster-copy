@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -95,8 +95,7 @@ TEMPIMPO = CREA_CHAMP(
 TEMPRESU = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_THER",
-    NOM_CHAM="TEMP",
-    AFFE=_F(LIST_INST=L_INST, NUME_INIT=1, NUME_FIN=7, CHAM_GD=TEMPIMPO),
+    AFFE=_F(NOM_CHAM="TEMP", LIST_INST=L_INST, NUME_INIT=1, NUME_FIN=7, CHAM_GD=TEMPIMPO),
 )
 
 

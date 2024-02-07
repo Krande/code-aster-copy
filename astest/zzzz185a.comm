@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -153,7 +153,7 @@ dmed01 = LIRE_CHAMP(
 )
 # B.1.c
 resrep1 = CREA_RESU(
-    OPERATION="AFFE", TYPE_RESU="EVOL_THER", NOM_CHAM="TEMP", AFFE=(_F(CHAM_GD=dmed01, INST=1.0),)
+    OPERATION="AFFE", TYPE_RESU="EVOL_THER", AFFE=(_F(NOM_CHAM="TEMP", CHAM_GD=dmed01, INST=1.0),)
 )
 # B.1.d
 momed01 = AFFE_MODELE(
@@ -186,7 +186,7 @@ dmed02 = LIRE_CHAMP(
 )
 # B.3.d
 resrep2 = CREA_RESU(
-    OPERATION="AFFE", TYPE_RESU="EVOL_THER", NOM_CHAM="TEMP", AFFE=(_F(CHAM_GD=dmed02, INST=1.0),)
+    OPERATION="AFFE", TYPE_RESU="EVOL_THER", AFFE=(_F(NOM_CHAM="TEMP", CHAM_GD=dmed02, INST=1.0),)
 )
 # B.3.e
 momed02 = AFFE_MODELE(
@@ -256,7 +256,7 @@ chpnotot = CREA_CHAMP(
 )
 # B.4.f
 rprojec = CREA_RESU(
-    OPERATION="AFFE", TYPE_RESU="EVOL_THER", NOM_CHAM="TEMP", AFFE=(_F(CHAM_GD=chpnotot, INST=1.0),)
+    OPERATION="AFFE", TYPE_RESU="EVOL_THER", AFFE=(_F(NOM_CHAM="TEMP", CHAM_GD=chpnotot, INST=1.0),)
 )
 
 # ==========================================================
@@ -327,7 +327,7 @@ chpnodif = CREA_CHAMP(
 )
 # D.4
 rdiffer = CREA_RESU(
-    OPERATION="AFFE", TYPE_RESU="EVOL_THER", NOM_CHAM="TEMP", AFFE=(_F(CHAM_GD=chpnodif, INST=1.0),)
+    OPERATION="AFFE", TYPE_RESU="EVOL_THER", AFFE=(_F(NOM_CHAM="TEMP", CHAM_GD=chpnodif, INST=1.0),)
 )
 # D.5
 TEST_RESU(

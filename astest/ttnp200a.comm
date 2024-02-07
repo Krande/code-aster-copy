@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -254,8 +254,7 @@ CHAMNO4 = CREA_CHAMP(
 POT_ELRE = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_THER",
-    NOM_CHAM="TEMP",
-    AFFE=_F(CHAM_GD=CHAMNO4, INST=4.0, MODELE=MO, CHAM_MATER=CHMAT),
+    AFFE=_F(NOM_CHAM="TEMP", CHAM_GD=CHAMNO4, INST=4.0, MODELE=MO, CHAM_MATER=CHMAT),
 )
 CALC_CHAMP(reuse=POT_ELRE, RESULTAT=POT_ELRE, THERMIQUE=("SOUR_ELGA"))
 
@@ -353,14 +352,13 @@ for i, coef in enumerate([0.87, 1.6, 1.32, 1.4, 1.5, 1.6]):
 EVOL_FLU = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_CHAR",
-    NOM_CHAM="FLUN",
     AFFE=(
-        _F(CHAM_GD=FLUN[0], INST=-10.3),
-        _F(CHAM_GD=FLUN[1], INST=5.3),
-        _F(CHAM_GD=FLUN[2], INST=7.8),
-        _F(CHAM_GD=FLUN[3], INST=11.2),
-        _F(CHAM_GD=FLUN[4], INST=18.2),
-        _F(CHAM_GD=FLUN[5], INST=25.2),
+        _F(NOM_CHAM="FLUN", CHAM_GD=FLUN[0], INST=-10.3),
+        _F(NOM_CHAM="FLUN", CHAM_GD=FLUN[1], INST=5.3),
+        _F(NOM_CHAM="FLUN", CHAM_GD=FLUN[2], INST=7.8),
+        _F(NOM_CHAM="FLUN", CHAM_GD=FLUN[3], INST=11.2),
+        _F(NOM_CHAM="FLUN", CHAM_GD=FLUN[4], INST=18.2),
+        _F(NOM_CHAM="FLUN", CHAM_GD=FLUN[5], INST=25.2),
     ),
 )
 

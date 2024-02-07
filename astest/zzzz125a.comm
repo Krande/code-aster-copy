@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ for i, t in zip(inst, temp):
     )
     affe.append({"CHAM_GD": champ, "INST": i})
 
-t_proj = CREA_RESU(OPERATION="AFFE", TYPE_RESU="EVOL_THER", NOM_CHAM="TEMP", AFFE=affe)
+t_proj = CREA_RESU(OPERATION="AFFE", TYPE_RESU="EVOL_THER", AFFE=affe)
 
 # construction d'un résultat mécanique bidon contenant les bon matériaux et la variable de commande TEMP
 # ===
@@ -910,7 +910,7 @@ for i in inst:
     )
     affe.append({"CHAM_GD": champ, "INST": i, "MODELE": momec, "CHAM_MATER": MAT_MEC3})
 
-rmec_pl = CREA_RESU(OPERATION="AFFE", TYPE_RESU="EVOL_NOLI", NOM_CHAM="DEPL", AFFE=affe)
+rmec_pl = CREA_RESU(OPERATION="AFFE", TYPE_RESU="EVOL_NOLI", AFFE=affe)
 
 # récupération de la table G
 # ===
