@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -59,7 +59,8 @@ Contactez le support technique.
     ),
     8: _(
         """
- la liste de noms doit être de même longueur que la liste de GROUP_MA
+ la liste de noms doit être de même longueur que la liste de GROUP_MA sauf lorsque un seul
+ nom de GROUP_NO est fourni avec plusieurs GROUP_MA, dans ce cas la fusion est adoptée
 """
     ),
     10: _(
