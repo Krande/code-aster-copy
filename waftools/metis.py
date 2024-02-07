@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -86,19 +86,22 @@ def check_metis(self):
 @Configure.conf
 def check_metis_libs(self):
     opts = self.options
-    check_metis = partial(self.check_cc, uselib_store="METIS", use="METIS", mandatory=True)
+    self.check_cc(lib="GKlib", uselib_store="GKLIB", use="METIS", mandatory=True)
+    check_metis = partial(self.check_cc, uselib_store="METIS", use="METIS GKLIB M", mandatory=True)
     if opts.embed_all or opts.embed_metis:
         check = lambda lib: check_metis(stlib=lib)
     else:
         check = lambda lib: check_metis(lib=lib)
     list(map(check, Utils.to_list(opts.metis_libs)))
+    # revert list because GKlib is always static
+    # self.env.LIB_METIS.reverse()
 
 
 @Configure.conf
 def check_metis_headers(self):
     if self.is_defined("ASTER_PLATFORM_MINGW"):
         self.define("USE_GKREGEX", 1)
-    check = partial(self.check_cc, header_name="metis.h", uselib_store="METIS", use="METIS")
+    check = partial(self.check_cc, header_name="metis.h", uselib_store="METIS", use="METIS GKLIB M")
     self.start_msg("Checking for header metis.h")
     try:
         if not check(mandatory=False):
@@ -119,8 +122,8 @@ def check_metis_headers(self):
             self.env.stash()
             self.check_cc(
                 header_name="GKlib.h",
-                uselib_store="METIS",
-                use="METIS",
+                uselib_store="GKLIB",
+                use="METIS GKLIB M",
                 includes=incdir,
                 mandatory=True,
             )
@@ -156,7 +159,7 @@ int main(void){
     self.start_msg("Checking metis version")
     try:
         ret = self.check_cc(
-            fragment=fragment, use="METIS", mandatory=True, execute=True, define_ret=True
+            fragment=fragment, use="METIS GKLIB M", mandatory=True, execute=True, define_ret=True
         )
         mat4 = re.search(r"METISTITLE: *METIS *(?P<vers>[0-9]+\.[0-9]+\.\w+) ", ret)
         mat5 = re.search(r"METISVER: *(?P<vers>[0-9]+\.[0-9]+\.\w+)", ret)

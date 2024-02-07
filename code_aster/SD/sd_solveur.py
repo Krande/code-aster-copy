@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,7 @@ class sd_solveur(AsBase):
         elif method == "MULT_FRONT":
             assert slvk[1] in ("XXXX",)
             assert slvk[2] in ("XXXX",)
-            assert slvk[3] in ("MD", "MDA", "METIS")
+            assert slvk[3] in ("MD", "MDA")
             assert slvk[5] in ("XXXX",)
             assert slvk[6] in ("XXXX",)
             assert slvk[7] in ("XXXX",)

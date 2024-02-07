@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -115,7 +115,7 @@ TEST_RESU(
             NOM_CMP="DY",
             PRECISION=4.0e-3,
             CHAM_GD=U,
-            VALE_CALC=0.1294645721562308,
+            VALE_CALC=0.12946441188562163,
             VALE_REFE=0.129,
         ),
         _F(
@@ -124,7 +124,7 @@ TEST_RESU(
             NOM_CMP="DY",
             PRECISION=4.0e-3,
             CHAM_GD=U,
-            VALE_CALC=0.12946457011796067,
+            VALE_CALC=0.1294644098473514,
             VALE_REFE=0.129,
         ),
     )
@@ -143,7 +143,7 @@ TEST_RESU(
             NOM_CHAM="SIGM_ELNO",
             GROUP_NO="N1",
             NOM_CMP="SIXX",
-            VALE_CALC=208629594.320195,
+            VALE_CALC=208629296.8378187,
             VALE_REFE=2.04000000e8,
             PRECISION=0.023,
             GROUP_MA="M1",

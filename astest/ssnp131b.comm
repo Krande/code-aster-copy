@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -139,7 +139,7 @@ RESU = STAT_NON_LINE(
     NEWTON=_F(REAC_ITER=3),
     RECH_LINEAIRE=_F(ITER_LINE_MAXI=3),
     CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-8, ITER_GLOB_MAXI=50),
-    SOLVEUR=_F(METHODE="MULT_FRONT", RENUM="METIS"),
+    SOLVEUR=_F(METHODE="MULT_FRONT", RENUM="MD"),
 )
 
 

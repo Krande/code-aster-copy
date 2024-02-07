@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -247,7 +247,7 @@ SOLIMPN = STAT_NON_LINE(
 
 SOLNL = STAT_NON_LINE(
     # ETAT_INIT=_F(EVOL_NOLI=SOLNL),reuse=SOLNL,
-    SOLVEUR=_F(METHODE="MULT_FRONT", RENUM="METIS"),
+    SOLVEUR=_F(METHODE="MULT_FRONT", RENUM="MD"),
     ETAT_INIT=_F(VARI=VAIN11),
     MODELE=TROISD,
     CHAM_MATER=MAT,

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -186,7 +186,7 @@ RESU0 = STAT_NON_LINE(
     ETAT_INIT=_F(DEPL=CHAMNO),
     COMPORTEMENT=_F(RELATION="KIT_THH2", RELATION_KIT=("LIQU_AD_GAZ_VAPE", "HYDR_UTIL")),
     INCREMENT=_F(LIST_INST=LI),
-    SOLVEUR=_F(RENUM="METIS", STOP_SINGULIER="OUI", METHODE="MULT_FRONT"),
+    SOLVEUR=_F(RENUM="MD", STOP_SINGULIER="OUI", METHODE="MULT_FRONT"),
     NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
     CONVERGENCE=_F(ITER_GLOB_MAXI=15, RESI_GLOB_MAXI=5.0e-14),
     ARCHIVAGE=_F(PAS_ARCH=1),
