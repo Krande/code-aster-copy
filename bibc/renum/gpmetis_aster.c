@@ -53,7 +53,7 @@ void DEFPPPPPP( GPMETIS_ASTER, gpmetis_aster, ASTERINTEGER *nbnd, ASTERINTEGER *
     options[METIS_OPTION_UFACTOR] = -1;
     options[METIS_OPTION_DBGLVL] = 0;
     idx_t *xadj, *adjnc;
-    xadj = malloc( ( *nbnd ) * sizeof( idx_t ) );
+    xadj = malloc( ( ( *nbnd ) + 1 ) * sizeof( idx_t ) );
     adjnc = malloc( ( *nadj ) * sizeof( idx_t ) );
     part = malloc( ( *nbnd ) * sizeof( idx_t ) );
 
