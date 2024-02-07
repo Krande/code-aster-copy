@@ -266,6 +266,7 @@ def macro_elas_mult_ops(
                 motscles["AFFE"].append(
                     _F(
                         MODELE=MODELE,
+                        NOM_CHAM="DEPL",
                         CHAM_GD=nomchn[iocc],
                         NOM_CAS=m["NOM_CAS"],
                         CHARGE=lcharg[iocc],
@@ -274,7 +275,13 @@ def macro_elas_mult_ops(
                 )
             else:
                 motscles["AFFE"].append(
-                    _F(MODELE=MODELE, CHAM_GD=nomchn[iocc], NOM_CAS=m["NOM_CAS"], **motscle2)
+                    _F(
+                        NOM_CHAM="DEPL",
+                        MODELE=MODELE,
+                        CHAM_GD=nomchn[iocc],
+                        NOM_CAS=m["NOM_CAS"],
+                        **motscle2
+                    )
                 )
             iocc = iocc + 1
     else:
@@ -284,6 +291,7 @@ def macro_elas_mult_ops(
                 motscles["AFFE"].append(
                     _F(
                         MODELE=MODELE,
+                        NOM_CHAM="DEPL",
                         CHAM_GD=nomchn[iocc],
                         NUME_MODE=m["MODE_FOURIER"],
                         TYPE_MODE=m["TYPE_MODE"],
@@ -295,6 +303,7 @@ def macro_elas_mult_ops(
                 motscles["AFFE"].append(
                     _F(
                         MODELE=MODELE,
+                        NOM_CHAM="DEPL",
                         CHAM_GD=nomchn[iocc],
                         NUME_MODE=m["MODE_FOURIER"],
                         TYPE_MODE=m["TYPE_MODE"],
@@ -306,7 +315,7 @@ def macro_elas_mult_ops(
     if args.get("reuse"):
         motscles["reuse"] = args.get("reuse")
         motscles["RESULTAT"] = args.get("reuse")
-    nomres = CREA_RESU(OPERATION="AFFE", TYPE_RESU=tyresu, NOM_CHAM="DEPL", **motscles)
+    nomres = CREA_RESU(OPERATION="AFFE", TYPE_RESU=tyresu, **motscles)
 
     #
     # boucle sur les items de CAS_CHARGE pour SIEF_ELGA

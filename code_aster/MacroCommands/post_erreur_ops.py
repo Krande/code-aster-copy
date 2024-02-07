@@ -454,9 +454,14 @@ def post_erreur_ops(self, OPTION, CHAM_GD, MODELE, GROUP_MA, **args):
         __SIanaRES = CREA_RESU(
             OPERATION="AFFE",
             TYPE_RESU="EVOL_NOLI",
-            NOM_CHAM="SIEF_ELGA",
             COMPORTEMENT=(_F(RELATION="ELAS", DEFORMATION=DEFORMATION),),
-            AFFE=_F(CHAM_GD=__SI_ana_R, MODELE=MODELE, CHAM_MATER=CHAM_MATER, INST=(1.0)),
+            AFFE=_F(
+                NOM_CHAM="SIEF_ELGA",
+                CHAM_GD=__SI_ana_R,
+                MODELE=MODELE,
+                CHAM_MATER=CHAM_MATER,
+                INST=(1.0),
+            ),
         )
 
         __SIanaRES = CREA_RESU(
@@ -464,18 +469,22 @@ def post_erreur_ops(self, OPTION, CHAM_GD, MODELE, GROUP_MA, **args):
             RESULTAT=__SIanaRES,
             OPERATION="AFFE",
             TYPE_RESU="EVOL_NOLI",
-            NOM_CHAM="DEPL",
             COMPORTEMENT=(_F(RELATION="ELAS", DEFORMATION=DEFORMATION),),
-            AFFE=_F(CHAM_GD=__U, MODELE=MODELE, CHAM_MATER=CHAM_MATER, INST=(1.0)),
+            AFFE=_F(NOM_CHAM="DEPL", CHAM_GD=__U, MODELE=MODELE, CHAM_MATER=CHAM_MATER, INST=(1.0)),
         )
 
         # 7. création d'un champ resultat a partir de champ de contrainte difference
         __SI_DIFFR = CREA_RESU(
             OPERATION="AFFE",
             TYPE_RESU="EVOL_NOLI",
-            NOM_CHAM="SIEF_ELGA",
             COMPORTEMENT=(_F(RELATION="ELAS", DEFORMATION=DEFORMATION),),
-            AFFE=_F(CHAM_GD=__SI_diff, MODELE=MODELE, CHAM_MATER=CHAM_MATER, INST=(1.0)),
+            AFFE=_F(
+                NOM_CHAM="SIEF_ELGA",
+                CHAM_GD=__SI_diff,
+                MODELE=MODELE,
+                CHAM_MATER=CHAM_MATER,
+                INST=(1.0),
+            ),
         )
 
         __SI_DIFFR = CREA_RESU(
@@ -483,9 +492,8 @@ def post_erreur_ops(self, OPTION, CHAM_GD, MODELE, GROUP_MA, **args):
             RESULTAT=__SI_DIFFR,
             OPERATION="AFFE",
             TYPE_RESU="EVOL_NOLI",
-            NOM_CHAM="DEPL",
             COMPORTEMENT=(_F(RELATION="ELAS", DEFORMATION=DEFORMATION),),
-            AFFE=_F(CHAM_GD=__U, MODELE=MODELE, CHAM_MATER=CHAM_MATER, INST=(1.0)),
+            AFFE=_F(NOM_CHAM="DEPL", CHAM_GD=__U, MODELE=MODELE, CHAM_MATER=CHAM_MATER, INST=(1.0)),
         )
 
         # 8. calcul de l'energie a partir du champ de contraintes analytique

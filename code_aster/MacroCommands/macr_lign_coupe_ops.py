@@ -792,9 +792,8 @@ def macr_lign_coupe_ops(
         # création d'un concept résultat à partir du champ CHAM_GD
         __resuch = CREA_RESU(
             OPERATION="AFFE",
-            NOM_CHAM=NOM_CHAM,
             TYPE_RESU=TYPE_RESU,
-            AFFE=_F(CHAM_GD=CHAM_GD, INST=0.0, MODELE=Model),
+            AFFE=_F(NOM_CHAM=NOM_CHAM, CHAM_GD=CHAM_GD, INST=0.0, MODELE=Model),
         )
         RESULTAT = __resuch
 

@@ -1557,8 +1557,7 @@ class LEM_Solver:
         )
 
         __REDEPL = CREA_RESU(
-            AFFE=(_F(CHAM_GD=__CHDEPL, INST=(0.0,)),),
-            NOM_CHAM="DEPL",
+            AFFE=(_F(NOM_CHAM="DEPL", CHAM_GD=__CHDEPL, INST=(0.0,)),),
             OPERATION="AFFE",
             TYPE_RESU="EVOL_NOLI",
         )

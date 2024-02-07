@@ -403,15 +403,15 @@ def post_combinaison_ops(self, TABLE_COEF_FIN=None, **args):
                 field_values[field_mask] = combination_results[field_name][rank]
                 field.setValues(field_values.flatten())
                 l_affe.append(
-                    _F(CHAM_GD=field, NOM_CAS=expanded_combination_names[rank], MODELE=model)
+                    _F(
+                        NOM_CHAM=field_name,
+                        CHAM_GD=field,
+                        NOM_CAS=expanded_combination_names[rank],
+                        MODELE=model,
+                    )
                 )
             # Create result for the first field occurence
-            kwargs = {
-                "AFFE": l_affe,
-                "NOM_CHAM": field_name,
-                "OPERATION": "AFFE",
-                "TYPE_RESU": "MULT_ELAS",
-            }
+            kwargs = {"AFFE": l_affe, "OPERATION": "AFFE", "TYPE_RESU": "MULT_ELAS"}
             if output_result is not None:
                 kwargs["reuse"] = output_result
             output_result = CREA_RESU(**kwargs)

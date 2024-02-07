@@ -89,12 +89,16 @@ def calc_thermeca_mult_ops(self, TEMP_FIN, TEMP_INIT, RESU_MECA_UNIT, RESU_SUPL_
             )
 
             arguments_affe += (
-                _F(CHAM_GD=final[i], CHAM_MATER=cham_mater_ther, INST=(inst,), MODELE=modele_ther),
+                _F(
+                    NOM_CHAM="TEMP",
+                    CHAM_GD=final[i],
+                    CHAM_MATER=cham_mater_ther,
+                    INST=(inst,),
+                    MODELE=modele_ther,
+                ),
             )
 
-        resTmult = CREA_RESU(
-            AFFE=arguments_affe, NOM_CHAM="TEMP", OPERATION="AFFE", TYPE_RESU="EVOL_THER"
-        )
+        resTmult = CREA_RESU(AFFE=arguments_affe, OPERATION="AFFE", TYPE_RESU="EVOL_THER")
 
         RESU_THER = args.get("RESU_THER")
         self.register_result(resTmult, RESU_THER)
@@ -309,20 +313,23 @@ def calc_thermeca_mult_ops(self, TEMP_FIN, TEMP_INIT, RESU_MECA_UNIT, RESU_SUPL_
             )
 
             arguments_affe += (
-                _F(CHAM_GD=chamm[i][j], CHAM_MATER=cham_mater, INST=(inst,), MODELE=modele),
+                _F(
+                    NOM_CHAM=nom,
+                    CHAM_GD=chamm[i][j],
+                    CHAM_MATER=cham_mater,
+                    INST=(inst,),
+                    MODELE=modele,
+                ),
             )
 
         if i == 0:
-            resMmult = CREA_RESU(
-                AFFE=arguments_affe, NOM_CHAM=nom, OPERATION="AFFE", TYPE_RESU="EVOL_ELAS"
-            )
+            resMmult = CREA_RESU(AFFE=arguments_affe, OPERATION="AFFE", TYPE_RESU="EVOL_ELAS")
 
         else:
             resMmult = CREA_RESU(
                 reuse=resMmult,
                 RESULTAT=resMmult,
                 AFFE=arguments_affe,
-                NOM_CHAM=nom,
                 OPERATION="AFFE",
                 TYPE_RESU="EVOL_ELAS",
             )

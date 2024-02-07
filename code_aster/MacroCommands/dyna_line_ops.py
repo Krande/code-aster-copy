@@ -1170,15 +1170,14 @@ class DynaLineBasis:
                 affe_crea_resu.append(
                     _F(
                         CHAM_GD=__champ,
+                        NOM_CHAM="DEPL",
                         MODELE=self.dynaLineFEM.getModele(),
                         NOM_CAS="CHAMP_%i" % ichamp,
                         # NUME_ORDRE = ichamp,
                         # NUME_MODE = ichamp,
                     )
                 )
-        __modeintf = CREA_RESU(
-            OPERATION="AFFE", TYPE_RESU="MULT_ELAS", NOM_CHAM="DEPL", AFFE=affe_crea_resu
-        )
+        __modeintf = CREA_RESU(OPERATION="AFFE", TYPE_RESU="MULT_ELAS", AFFE=affe_crea_resu)
         return __modeintf
 
     def get(self):

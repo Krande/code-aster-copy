@@ -155,7 +155,7 @@ def dyna_visco_modes_calc(
 
     if TYPE_MODE in ["REEL", "BETA_REEL"]:
         type_resu = "MODE_MECA"
-        motcles["AFFE"] = _F(CHAM_GD=__unmod, NUME_MODE=j + 1, FREQ=freq1)
+        motcles["AFFE"] = _F(NOM_CHAM="DEPL", CHAM_GD=__unmod, NUME_MODE=j + 1, FREQ=freq1)
     elif TYPE_MODE == "COMPLEXE":
         type_resu = "MODE_MECA_C"
         motcles["AFFE"] = _F(CHAM_GD=__unmod, NUME_MODE=j + 1, FREQ=freq1, AMOR_REDUIT=amor_red1)
@@ -167,9 +167,7 @@ def dyna_visco_modes_calc(
         motcles["RESULTAT"] = args["co_reuse"]
 
     # fill the concept containing the eigenmodes
-    _modes = CREA_RESU(
-        OPERATION="AFFE", TYPE_RESU=type_resu, NOM_CHAM="DEPL", MATR_MASS=__asseMg, **motcles
-    )
+    _modes = CREA_RESU(OPERATION="AFFE", TYPE_RESU=type_resu, MATR_MASS=__asseMg, **motcles)
 
     freq1 = freq2[__numod + 1]
     return _modes, freq1, nmode

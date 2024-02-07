@@ -101,8 +101,9 @@ def post_decollement_ops(self, RESULTAT, NOM_CHAM, NOM_CMP, GROUP_MA, INFO, **ar
     __resu0 = CREA_RESU(
         OPERATION="AFFE",
         TYPE_RESU="EVOL_ELAS",
-        NOM_CHAM="VARI_ELGA",
-        AFFE=_F(CHAM_MATER=__chmat0, MODELE=__model, CHAM_GD=__chpg0, INST=0.0),
+        AFFE=_F(
+            NOM_CHAM="VARI_ELGA", CHAM_MATER=__chmat0, MODELE=__model, CHAM_GD=__chpg0, INST=0.0
+        ),
     )
 
     __tbSurf0 = POST_ELEM(
@@ -156,8 +157,9 @@ def post_decollement_ops(self, RESULTAT, NOM_CHAM, NOM_CMP, GROUP_MA, INFO, **ar
         __resu = CREA_RESU(
             OPERATION="AFFE",
             TYPE_RESU="EVOL_ELAS",
-            NOM_CHAM="VARI_ELGA",
-            AFFE=_F(CHAM_MATER=__chmat0, MODELE=__model, CHAM_GD=__chg, INST=0.0),
+            AFFE=_F(
+                NOM_CHAM="VARI_ELGA", CHAM_MATER=__chmat0, MODELE=__model, CHAM_GD=__chg, INST=0.0
+            ),
         )
 
         __tb3 = POST_ELEM(

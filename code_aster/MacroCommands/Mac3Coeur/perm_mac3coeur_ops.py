@@ -103,9 +103,13 @@ def perm_mac3coeur_ops(self, **args):
         OPERATION="AFFE",
         TYPE_RESU="EVOL_NOLI",
         COMPORTEMENT=compor,
-        NOM_CHAM="DEPL",
         AFFE=_F(
-            CHAM_GD=__ASSDEP, INST=0.0, CHAM_MATER=_AFSCNP1, CARA_ELEM=_CARANP1, MODELE=_MO_NP1
+            NOM_CHAM="DEPL",
+            CHAM_GD=__ASSDEP,
+            INST=0.0,
+            CHAM_MATER=_AFSCNP1,
+            CARA_ELEM=_CARANP1,
+            MODELE=_MO_NP1,
         ),
     )
 
@@ -115,9 +119,13 @@ def perm_mac3coeur_ops(self, **args):
         COMPORTEMENT=compor,
         OPERATION="AFFE",
         TYPE_RESU="EVOL_NOLI",
-        NOM_CHAM="SIEF_ELGA",
         AFFE=_F(
-            CHAM_GD=__ASSSIE, INST=0.0, CHAM_MATER=_AFSCNP1, CARA_ELEM=_CARANP1, MODELE=_MO_NP1
+            NOM_CHAM="SIEF_ELGA",
+            CHAM_GD=__ASSSIE,
+            INST=0.0,
+            CHAM_MATER=_AFSCNP1,
+            CARA_ELEM=_CARANP1,
+            MODELE=_MO_NP1,
         ),
     )
 
@@ -127,9 +135,13 @@ def perm_mac3coeur_ops(self, **args):
         COMPORTEMENT=compor,
         OPERATION="AFFE",
         TYPE_RESU="EVOL_NOLI",
-        NOM_CHAM="VARI_ELGA",
         AFFE=_F(
-            CHAM_GD=__ASSVAR, CHAM_MATER=_AFSCNP1, CARA_ELEM=_CARANP1, INST=0.0, MODELE=_MO_NP1
+            NOM_CHAM="VARI_ELGA",
+            CHAM_GD=__ASSVAR,
+            CHAM_MATER=_AFSCNP1,
+            CARA_ELEM=_CARANP1,
+            INST=0.0,
+            MODELE=_MO_NP1,
         ),
     )
 
