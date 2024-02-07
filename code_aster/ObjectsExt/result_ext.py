@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,9 +25,11 @@
 
 import aster
 from libaster import Result
+
 from ..Messages import UTMESS
-from ..Utilities import injector, logger, SearchList, is_number, medcoupling as medc
 from ..Objects.Serialization import InternalStateBuilder
+from ..Utilities import SearchList, force_list, injector, is_number, logger
+from ..Utilities import medcoupling as medc
 
 
 class ResultStateBuilder(InternalStateBuilder):
@@ -172,7 +174,6 @@ class ExtendedResult:
 
         Returns:
             index (int) : the corresponding index (index)
-
         """
         acpara = self.getAccessParameters()
         if para not in acpara:
@@ -186,46 +187,112 @@ class ExtendedResult:
 
         return storageIndex
 
-    def _getIndexFromParameter(self, para, value, crit, prec, throw_except):
+    def getIndexFromParameter(self, para, value, crit, prec, throw_except=True):
         """
         Get the index corresponding to a given value of an access parameter.
 
         Arguments:
-            para (str) : name of the access parameter (NUME_ORDRE, INST, etc..)
-            value (float|int|str) : value of the access parameter
-            crit (str) : search criterion ABSOLU or RELATIF
-            prec (float) : precision for the search criterion
+            para (str): name of the access parameter (NUME_ORDRE, INST, etc..)
+            value (float|int|str): value of the access parameter
+            crit (str): search criterion ABSOLU or RELATIF
+            prec (float): precision for the search criterion
+            throw_except (bool): throw an exception in case of error, else it returns -1.
 
         Returns:
             index (int) : the corresponding index (index)
-
         """
+        parameters = self.getAccessParameters()
+        return self._getIndexFromParameter(parameters, para, value, crit, prec, throw_except)
 
-        acpara = self.getAccessParameters()
-        if not para in acpara:
+    @staticmethod
+    def _getIndexFromParameter(parameters, para, value, crit, prec, throw_except=True):
+        if not para in parameters:
             msg = "Missing parameter {}".format(para)
             raise ValueError(msg)
 
-        if para not in acpara:
+        if para not in parameters:
             UTMESS("F", "RESULT1_8")
         if is_number(value):
-            slist = SearchList(acpara[para], prec, crit)
-            internalStorage = slist.index(value)
-
-        elif isinstance(value, str):
-            slist = acpara[para]
-            if throw_except:
+            slist = SearchList(parameters[para], prec, crit)
+            try:
                 internalStorage = slist.index(value)
-            else:
-                try:
-                    internalStorage = slist.index(value)
-                except ValueError:
-                    internalStorage = -1
-                    return internalStorage
+            except ValueError:
+                if throw_except:
+                    raise
+                return -1
+        elif isinstance(value, str):
+            slist = parameters[para]
+            try:
+                internalStorage = slist.index(value)
+            except ValueError:
+                if throw_except:
+                    raise
+                return -1
         else:
             raise ValueError(f"Type of access to result is invalid {value!r}")
 
-        return acpara["NUME_ORDRE"][internalStorage]
+        return parameters["NUME_ORDRE"][internalStorage]
+
+    @classmethod
+    def getIndexesFromKeywords(cls, parameters, keywords):
+        """Get the index corresponding appropriate values to extract from
+        given keywords
+
+        Arguments:
+            parameters (dict): Access parameters as returned by ``getAccessParameters()``.
+            keywords (dict): Dict of keywords
+                Supported keywords (only one value is permitted between):
+                    TOUT_ORDRE, NUME_ORDRE, INST, LIST_INST, FREQ, LIST_FREQ,
+                    LIST_ORDRE
+
+        Return:
+            list: Indexes.
+        """
+        # All supported keywords
+        admissible_keywords = (
+            "TOUT_ORDRE",
+            "NUME_ORDRE",
+            "LIST_ORDRE",
+            "INST",
+            "LIST_INST",
+            "FREQ",
+            "LIST_FREQ",
+        )
+
+        # Elements of keywords that are supported
+        detected_keywords = set(keywords).intersection(admissible_keywords)
+
+        # Error handling for "keywords" input
+        if len(detected_keywords) != 1:
+            raise KeyError(f"Exactly one of {admissible_keywords} is exepected")
+
+        # --- Handling of detected keyword ---
+        processed_kw = detected_keywords.pop()
+
+        # Get CRITERE and PRECISION from keywords if they exist. Otherwise,
+        #   default value are chosen.
+        crit_para = keywords.get("CRITERE", "RELATIF")
+        prec_para = keywords.get("PRECISION", 1.0e-6)
+
+        if processed_kw == "TOUT_ORDRE" and keywords[processed_kw] == "OUI":
+            return parameters["NUME_ORDRE"]
+        if processed_kw.startswith("LIST_"):
+            if processed_kw == "LIST_ORDRE":
+                para = "NUME_ORDRE"
+            else:
+                para = processed_kw[5:]
+            values = keywords[processed_kw].getValues()
+        else:
+            para = processed_kw
+            values = force_list(keywords[processed_kw])
+        indexes = [
+            cls._getIndexFromParameter(
+                parameters, para, value, crit_para, prec_para, throw_except=False
+            )
+            for value in values
+        ]
+        indexes = [idx for idx in indexes if idx >= 0]
+        return indexes
 
     def getField(self, name, value=None, para="NUME_ORDRE", crit="RELATIF", prec=1.0e-6):
         """Get the specified field. This is an overlay to existing methods
@@ -242,13 +309,12 @@ class ExtendedResult:
             Field***: field to get whit type in (FieldOnNodes***/FieldOnCells***/
             ConstantFieldOnCell***)
         """
-
         assert crit in ("ABSOLU", "RELATIF")
 
         if para in ("NUME_ORDRE",):
             storageIndex = value
         else:
-            storageIndex = self._getIndexFromParameter(para, value, crit, prec, throw_except=True)
+            storageIndex = self.getIndexFromParameter(para, value, crit, prec, throw_except=True)
 
         if storageIndex == -1:
             UTMESS("F", "RESULT1_9")
@@ -312,7 +378,7 @@ class ExtendedResult:
         if para in ("NUME_ORDRE",):
             storageIndex = value
         else:
-            storageIndex = self._getIndexFromParameter(para, value, crit, prec, throw_except=False)
+            storageIndex = self.getIndexFromParameter(para, value, crit, prec, throw_except=False)
 
         if storageIndex < 0:
             storageIndex = self._createIndexFromParameter(para, value, crit, prec)

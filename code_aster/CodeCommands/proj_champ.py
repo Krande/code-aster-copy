@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -19,8 +19,10 @@
 
 # person_in_charge: nicolas.sellenet@edf.fr
 
-from ..Objects import FieldOnCellsReal, MeshesMapping, FullResult
+from ..Messages import UTMESS
+from ..Objects import FieldOnCellsReal, FullResult, MeshesMapping
 from ..Supervis import ExecuteCommand
+from ..Utilities import force_list
 
 
 class FieldProjector(ExecuteCommand):
@@ -46,10 +48,66 @@ class FieldProjector(ExecuteCommand):
         if chamGd is not None and methode == "SOUS_POINT":
             self._result = FieldOnCellsReal()
             return
+        self._result = type(chamGd)()
+
+    def exec_(self, keywords):
+        """Execute the command.
+
+        Arguments:
+            keywords (dict): User's keywords.
+        """
+        method = keywords.get("METHODE")
+        if keywords.get("RESULTAT") and method == "ECLA_PG":
+            kwargs = keywords.copy()
+            # check arguments
+            try:
+                result_in = kwargs.pop("RESULTAT")
+                names = force_list(kwargs.pop("NOM_CHAM"))
+                assert kwargs["PROJECTION"] == "OUI"
+                kwargs["MODELE_2"]  # must exist for ECLA_PG
+            except (AssertionError, KeyError) as exc:
+                UTMESS("F", "CALCULEL5_9")
+            result_out = self.result
+            params = result_in.getAccessParameters()
+            indexes = result_in.getIndexesFromKeywords(params, keywords)
+            result_out.allocate(len(indexes))
+            result_out.setModel(kwargs["MODELE_2"])
+            # reduce verbosity: kwargs["INFO"] = 0 !
+
+            # Determine if RESULTAT contains FREQ or INST
+            para = "INST" if "INST" in params else "FREQ"
+
+            # Filter the keywords that are specific to RESULTAT
+            supported_kw_result = (
+                "TOUT_ORDRE",
+                "NUME_ORDRE",
+                "LIST_ORDRE",
+                "INST",
+                "FREQ",
+                "LIST_INST",
+                "LIST_FREQ",
+            )
+            for kw in supported_kw_result:
+                kwargs.pop(kw, None)
+
+            # Create a dictionnary with ALARME="NON" to call PROJ_CHAMP with
+            #   after the first iteration
+            kwargs_no_alarm = dict(kwargs)
+            kwargs_no_alarm["ALARME"] = "NON"
+
+            for n_idx, (idx, value) in enumerate(zip(indexes, params[para])):
+                for field_name in names:
+                    try:
+                        field = result_in.getField(field_name, idx)
+                    except KeyError:
+                        continue
+                    kwargs_to_use = kwargs if n_idx == 0 else kwargs_no_alarm
+                    field_out = PROJ_CHAMP(CHAM_GD=field, **kwargs_to_use)
+                    result_out.setField(field_out, field_name, idx)
+
+                result_out.setParameterValue(para, value, idx)
         else:
-            self._result = type(chamGd)()
-            return
-        raise NameError("Type not allowed")
+            super().exec_(keywords)
 
     def post_exec(self, keywords):
         """Execute the command.
@@ -57,6 +115,8 @@ class FieldProjector(ExecuteCommand):
         Arguments:
             keywords (dict): User's keywords.
         """
+        if self.exception:
+            return
         dofNum = keywords.get("NUME_DDL")
         if dofNum is not None:
             if isinstance(self._result, FullResult):

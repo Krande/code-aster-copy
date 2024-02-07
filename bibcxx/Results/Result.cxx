@@ -3,7 +3,7 @@
  * @brief Implementation de Result
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -1082,7 +1082,7 @@ ASTERINTEGER Result::createIndexFromParameter( const std::string &paraName,
     CALL_JEMARQ();
 
     ASTERINTEGER internalIndex;
-    internalIndex = getParameterValue( paraName, paraValue );
+    internalIndex = getParameterIndex( paraName, paraValue );
     if ( internalIndex != -1 ) {
         AS_ABORT( "Parameter exists" );
     }
@@ -1115,7 +1115,7 @@ ASTERINTEGER Result::createIndexFromParameter( const std::string &paraName,
     return storageIndex;
 };
 
-ASTERINTEGER Result::getParameterValue( std::string paraName, std::string paraValue ) {
+ASTERINTEGER Result::getParameterIndex( std::string paraName, std::string paraValue ) {
 
     ASTERINTEGER internalIndex;
 

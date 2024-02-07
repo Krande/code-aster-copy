@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -97,7 +97,23 @@ MEST22 = CALC_CHAMP(
     MODELE=MO2, CHAM_MATER=CM2, CONTRAINTE=("SIEF_ELGA"), RESULTAT=MEST2, TOUT_ORDRE="OUI"
 )
 
+###############################################################
+#
 
+# PROJECTION DE SIEF_ELGA DE MA1 VERS MA2 AFIN DE TESTER LA METHODE=ECLA_PG :
+# --------------------------------------------------------------------------
+MEST2_PG = PROJ_CHAMP(
+    RESULTAT=MEST1,
+    METHODE="ECLA_PG",
+    NOM_CHAM="SIEF_ELGA",
+    MODELE_1=MO1,
+    MODELE_2=MO2,
+    DISTANCE_ALARME=1.1e-1,
+    TOUT_ORDRE="OUI",
+)
+
+###############################################################
+#
 # LE CHAMP SIEF_ELGA DOIT ETRE HOMOGENE :
 # SIXX=SIXY=0.  SIYY=2.
 
@@ -146,6 +162,29 @@ TEST_RESU(
             NOM_CHAM="SIEF_ELGA",
             NOM_CMP="SIZZ",
             VALE_CALC=1.999995045845239,
+            VALE_REFE=2.0,
+            GROUP_MA="M7",
+        ),
+        _F(
+            INST=3.2000000000000002,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            RESULTAT=MEST2_PG,
+            NOM_CHAM="SIEF_ELGA",
+            NOM_CMP="SIXX",
+            VALE_CALC=-1.0675394e-12,
+            VALE_REFE=0.0,
+            CRITERE="ABSOLU",
+            GROUP_MA="M7",
+        ),
+        _F(
+            INST=3.2000000000000002,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            RESULTAT=MEST2_PG,
+            NOM_CHAM="SIEF_ELGA",
+            NOM_CMP="SIZZ",
+            VALE_CALC=2.000004717225844,
             VALE_REFE=2.0,
             GROUP_MA="M7",
         ),

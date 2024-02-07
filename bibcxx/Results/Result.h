@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe Result
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -266,7 +266,7 @@ class Result : public DataStructure, public ListOfTables {
     /**
      * @brief Get internal index of parameter
      */
-    ASTERINTEGER getParameterValue( std::string paraName, std::string paraValue );
+    ASTERINTEGER getParameterIndex( std::string paraName, std::string paraValue );
 
     /**
      * @brief Create index

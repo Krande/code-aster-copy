@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,38 +24,39 @@ subroutine pjloin(nbnod, nbnodm, m2, geom2, nbmax, tino2m, tdmin2, lino_loin)
     real(kind=8), intent(in) :: geom2(*)
     character(len=8), intent(in) :: m2
 
-#include "asterf_types.h"
-#include "jeveux.h"
 #include "asterc/getres.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
+#include "asterfort/crea_maillage.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/gcncon.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/indiis.h"
+#include "asterfort/infniv.h"
+#include "asterfort/irmail.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/utmess.h"
-#include "asterfort/crea_maillage.h"
-#include "asterfort/irmail.h"
 #include "asterfort/ulaffe.h"
 #include "asterfort/ulnume.h"
 #include "asterfort/ulopen.h"
-#include "asterfort/gcncon.h"
+#include "asterfort/utmess.h"
+#include "jeveux.h"
 !
 !     BUT :
 !       Emettre (eventuellement) le message d'alarme de projection sur
-!       des mailles lointaines
-!       Cette routien sert a mettre en commun du fortran pour plusieurs routines
+!       des mailles lointaines.
+!       En INFO=2, on crée le maillage de ces mailles.
+!       Cette routine sert a mettre en commun du fortran pour plusieurs routines
 ! ----------------------------------------------------------------------
 !
-    character(len=8) ::  alarme, madebug, k8bid, kico
-    character(len=16) :: k16bid, nomcmd, formar
-    integer ::  ibid
+    character(len=8) ::  madebug, k8bid, kico
+    character(len=16) :: alarm, k16bid, nomcmd, formar
 !
     integer :: vali(2)
-    integer :: ii, ino2m, unite, ico
+    integer :: ii, ino2m, unite, ico, iret, ifm, info, ivers
     real(kind=8) :: valr(4)
     character(len=80) :: valk(2)
     character(len=8) :: nono2
@@ -64,15 +65,16 @@ subroutine pjloin(nbnod, nbnodm, m2, geom2, nbmax, tino2m, tdmin2, lino_loin)
 ! --- DEB --------------------------------------------------------------
 !
     call jemarq()
+    call infniv(ifm, info)
 !
     ico = 0
     if (nbnodm .ne. 0) then
-        alarme = 'OUI'
+        alarm = 'OUI'
         call getres(k16bid, k16bid, nomcmd)
         if (nomcmd .eq. 'PROJ_CHAMP') then
-            call getvtx(' ', 'ALARME', scal=alarme, nbret=ibid)
+            call getvtx(' ', 'ALARME', scal=alarm, nbret=iret)
         end if
-        if (alarme .eq. 'OUI') then
+        if (alarm .eq. 'OUI') then
             ico = ico+1
             call codent(ico, 'D0', kico)
             do ii = 1, nbnod
@@ -92,17 +94,19 @@ subroutine pjloin(nbnod, nbnodm, m2, geom2, nbmax, tino2m, tdmin2, lino_loin)
 
 !       -- Creation et impression d'un "petit" maillage contenant juste les noeuds
 !          lointains. Cela peut aider l'utilisateur a les visualiser.
-            call gcncon('_', madebug)
-            call crea_maillage(m2, madebug, 'V', nbno=nbnodm, lino=lino_loin)
+            if (info .eq. 2) then
+                call gcncon('_', madebug)
+                call crea_maillage(m2, madebug, 'V', nbno=nbnodm, lino=lino_loin)
 
-            unite = ulnume()
-            if (unite .le. 0) call utmess('F', 'UTILITAI5_10')
-            call ulaffe(unite, fichier, ' ', 'N', 'O')
-            formar = ' '
-            k8bid = ' '
-            call irmail('MED', unite, ibid, madebug, ASTER_FALSE, k8bid, 1, formar)
-            call ulopen(-unite, k8bid, k8bid, k8bid, k8bid)
-            call detrsd('MAILLAGE', madebug)
+                unite = ulnume()
+                if (unite .le. 0) call utmess('F', 'UTILITAI5_10')
+                call ulaffe(unite, fichier, ' ', 'N', 'O')
+                formar = ' '
+                k8bid = ' '
+                call irmail('MED', unite, ivers, madebug, ASTER_FALSE, k8bid, 1, formar)
+                call ulopen(-unite, k8bid, k8bid, k8bid, k8bid)
+                call detrsd('MAILLAGE', madebug)
+            end if
         end if
     end if
 

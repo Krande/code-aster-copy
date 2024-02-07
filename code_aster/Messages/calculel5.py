@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -44,10 +44,10 @@ Erreur utilisateur :
     ),
     9: _(
         """
-Erreur utilisateur :
-  Vous ne pouvez pas utiliser la méthode ECLA_PG avec le mot-clé RESULTAT.
-Conseil :
-   Extrayez le champ aux ELGA que contient votre résultat puis utilisez la méthode ECLA_PG avec le mot-clé CHAM_GD.
+La méthode ECLA_PG avec le mot-clé RESULTAT ne peut être utilisée que :
+- si PROJECTION="OUI",
+- si MODELE_2 renseigné,
+- et si NOM_CHAM fournit le champ aux points de Gauss à projeter.
 """
     ),
     20: _(
@@ -256,8 +256,8 @@ Risques et Conseils :
         """
 Erreur utilisateur dans la commande PROJ_CHAMP :
   La structure de données résultat à projeter ne contient que des champs 'ELGA'.
-  La méthode de projection adaptée à ces champs est la méthode 'ECLA_PG' mais
-  elle ne fonctionne qu'avec un champ isolé (mot clé CHAM_GD).
+  La méthode de projection adaptée à ces champs est la méthode 'ECLA_PG', et
+  doit être appelée explicitement avec METHODE="ECLA_PG".
 """
     ),
     58: _(
