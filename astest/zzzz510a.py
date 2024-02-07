@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
+
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 
@@ -33,7 +34,9 @@ wb_aster = {
 
 M = LIRE_MAILLAGE(FORMAT="MED")
 
-M = DEFI_GROUP(reuse=M, MAILLAGE=M, CREA_GROUP_NO=(_F(GROUP_MA="SSUP"), _F(GROUP_MA="SINF")))
+M = DEFI_GROUP(MAILLAGE=M, CREA_GROUP_NO=(_F(GROUP_MA=("SSUP", "SINF"), NOM="SUNION")))
+
+M = DEFI_GROUP(MAILLAGE=M, CREA_GROUP_NO=(_F(GROUP_MA="SSUP"), _F(GROUP_MA="SINF")))
 
 MO = AFFE_MODELE(AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"), MAILLAGE=M)
 
@@ -139,5 +142,16 @@ chfmu = CREA_CHAMP(
 )
 
 sigelmoy(RESU_M, chfmu, "mgrplasfull")
+
+# TEST union des nodes de group_ma dans un seul group_no
+test = CA.TestCase()
+
+no_SSUP = set(M.getNodesFromCells("SSUP"))
+no_SINF = set(M.getNodesFromCells("SINF"))
+no_UNION = set(M.getNodes("SUNION"))
+no_SUP_INF = no_SSUP.union(no_SINF)
+test.assertEqual(no_SUP_INF, no_UNION)
+test.printSummary()
+
 
 FIN()

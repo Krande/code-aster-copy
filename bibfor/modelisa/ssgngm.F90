@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,6 +19,7 @@
 subroutine ssgngm(noma, iocc, nbgnaj)
     implicit none
 #include "jeveux.h"
+#include "asterfort/utlisi.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvem.h"
@@ -51,7 +52,8 @@ subroutine ssgngm(noma, iocc, nbgnaj)
     character(len=8) :: k8b, koui
     character(len=16) :: selec
     character(len=24) :: grpma, grpno, nomgno, nomgma
-    integer :: nbgnaj
+    integer :: nbgnaj, nbis, ii
+    integer :: ialii1, ialii2, n, ntrou
     character(len=24), pointer :: v_gno(:) => null(), v_gma(:) => null()
 !
 ! DEB-------------------------------------------------------------------
@@ -66,6 +68,7 @@ subroutine ssgngm(noma, iocc, nbgnaj)
     grpma = noma//'.GROUPEMA       '
     grpno = noma//'.GROUPENO       '
     nbgnaj = 0
+    nbgno = 0
     selec = 'TOUS'
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoto)
     l_parallel_mesh = isParallelMesh(noma)
@@ -99,7 +102,7 @@ subroutine ssgngm(noma, iocc, nbgnaj)
                     nbgma, zk24(ialgma), nb)
         if (no .ne. 0) then
             nbgno = -no
-            if (nbgno .ne. nbgma) then
+            if ((nbgno .ne. nbgma) .and. (nbgno .ne. 1)) then
                 call utmess('F', 'MODELISA7_8')
             end if
 !
@@ -111,8 +114,8 @@ subroutine ssgngm(noma, iocc, nbgnaj)
                 ASSERT(l_parallel_mesh)
                 call wkvect('&&SSGNGM.NOM_TMP', 'V V K24', nbgno, vk24=v_gno)
                 call wkvect('&&SSGNGM.MA_TMP', 'V V K24', nbgma, vk24=v_gma)
-               call getvtx('CREA_GROUP_NO', 'GROUP_MA', iocc=iocc, nbval=nbgma, vect=zk24(ialgma), &
-                            nbret=nb)
+                call getvtx('CREA_GROUP_NO', 'GROUP_MA', iocc=iocc, nbval=nbgma, &
+                            vect=zk24(ialgma), nbret=nb)
                 nb = 0
                 do i = 1, nbgma
                     nomgma = zk24(ialgma-1+i)
@@ -160,7 +163,8 @@ subroutine ssgngm(noma, iocc, nbgnaj)
     call wkvect('&&SSGNGM.LISTE_NO ', 'V V I', nbnoto, ialino)
     call wkvect('&&SSGNGM.TRAV ', 'V V I', nbnoto, jtrav)
     call wkvect('&&SSGNGM.NB_NO    ', 'V V I', nbgma, ianbno)
-!
+! ---------------------------------------------------------------------
+    call jelira(grpno, 'NMAXOC', nbis)
 ! ---------------------------------------------------------------------
 !     -- ON AJOUTE LES NOUVEAUX GROUPES:
 !
@@ -172,15 +176,59 @@ subroutine ssgngm(noma, iocc, nbgnaj)
             call jeveuo(jexnom(grpma, nomgma), 'L', ialima)
             call gmgnre(noma, nbnoto, zi(jtrav), zi(ialima), nbma, &
                         zi(ialino), zi(ianbno-1+i), selec)
-!
-            nomgno = zk24(iangno-1+i)
             n1 = zi(ianbno-1+i)
-            call addGrpNo(noma(1:8), nomgno, zi(ialino), n1, l_added_grpno)
-            if (l_added_grpno) then
-                nbgnaj = nbgnaj+1
+            ! FUSION DES NOEUDS ISSUES DES GROUP_MA
+            if ((nbgno .eq. 1) .and. (nbgno .ne. nbgma)) then
+                if (i .eq. 1) then
+                    if (n1 .gt. nbis) then
+                        nbis = 2*n1
+                        !call jedetr('&&SSCGNO.LII1')
+                        call wkvect('&&SSCGNO.LITMP1', 'V V I', nbis, ialii1)
+                    end if
+                    n = n1
+                    do ii = 1, n
+                        zi(ialii1-1+ii) = zi(ialino-1+ii)
+                    end do
+                end if
+                if (i .ne. 1) then
+                    call wkvect('&&SSCGNO.LITMP2', 'V V I', nbis, ialii2)
+                    call utlisi('UNION', zi(ialii1), n, zi(ialino), n1, &
+                                zi(ialii2), nbis, ntrou)
+                    if (ntrou .lt. 0) then
+                        nbis = -2*ntrou
+                        call jedetr('&&SSCGNO.LITMP2')
+                        call wkvect('&&SSCGNO.LITMP2', 'V V I', nbis, ialii2)
+                        call utlisi('UNION', zi(ialii1), n, zi(ialino), n1, &
+                                    zi(ialii2), nbis, ntrou)
+                        call jedetr('&&SSCGNO.LITMP1')
+                        call wkvect('&&SSCGNO.LITMP1', 'V V I', nbis, ialii1)
+                    end if
+                    n = ntrou
+                    do ii = 1, n
+                        zi(ialii1-1+ii) = zi(ialii2-1+ii)
+                    end do
+                end if
+            end if
+
+            !
+            if ((nbgno .eq. nbgma) .or. (nbgno .eq. 0)) then
+                nomgno = zk24(iangno-1+i)
+                call addGrpNo(noma(1:8), nomgno, zi(ialino), n1, l_added_grpno)
+                if (l_added_grpno) then
+                    nbgnaj = nbgnaj+1
+                end if
             end if
         end if
     end do
+
+    if ((nbgno .eq. 1) .and. (nbgno .ne. nbgma)) then
+        nomgno = zk24(iangno)
+        call addGrpNo(noma(1:8), nomgno, zi(ialii1), n, l_added_grpno)
+        if (l_added_grpno) then
+            nbgnaj = nbgnaj+1
+        end if
+    end if
+
 !
 60  continue
     call jedetr('&&SSGNGM.LISTE_GMA')
@@ -188,6 +236,8 @@ subroutine ssgngm(noma, iocc, nbgnaj)
     call jedetr('&&SSGNGM.LISTE_NO')
     call jedetr('&&SSGNGM.TRAV')
     call jedetr('&&SSGNGM.NB_NO')
+    call jedetr('&&SSCGNO.LITMP1')
+    call jedetr('&&SSCGNO.LITMP2')
     call jedema()
 
 end subroutine
