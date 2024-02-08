@@ -377,7 +377,7 @@ def cleanRuptureMeshwithCreatedGroup(__mail_1):
         reuse=__mail_1,
         MAILLAGE=__mail_1,
         DETR_GROUP_NO=_F(NOM=("LIGNE_", "DOMAIN_")),
-        DETR_GROUP_MA=_F(NOM=("LIGNE_", "DOMAIN_")),
+        DETR_GROUP_MA=_F(NOM=("LIGNE_", "DOMAIN_", "DOMAIN_L")),
     )
     return None
 
@@ -644,13 +644,22 @@ def post_newmark_ops(self, **args):
         ORIE_PEAU=_F(GROUP_MA_PEAU=("LIGNE_",), GROUP_MA_INTERNE=("DOMAIN_")),
     )
 
-    ## Restrain sliding mesh to the commun zone to the structure mesh to increase numerical performance
+    DEFI_GROUP(
+        reuse=__mail_1,
+        MAILLAGE=__mail_1,
+        CREA_GROUP_MA=_F(
+            NOM="DOMAIN_L", OPTION="APPUI", TYPE_APPUI="AU_MOINS_UN", GROUP_NO="LIGNE_"
+        ),
+    ),
+
+    ## Restrain sliding mesh to the common zone to the structure mesh to increase numerical performance
     __mail_2 = CREA_MAILLAGE(
         MAILLAGE=__mail_1,  # INFO=2,
         RESTREINT=_F(
             # GROUP_MA=("LIGNE_", "DOMAIN_", "RUPTURE"), GROUP_NO=("LIGNE_", "DOMAIN_", "RUPTURE")
-            GROUP_MA=("LIGNE_", "DOMAIN_"),
-            GROUP_NO=("LIGNE_", "DOMAIN_"),
+            # GROUP_MA=("LIGNE_", "DOMAIN_", "DOMAIN_L"),
+            GROUP_MA=("LIGNE_", "DOMAIN_L"),
+            GROUP_NO=("LIGNE_",),
         ),
     )
 
@@ -661,8 +670,17 @@ def post_newmark_ops(self, **args):
     )
 
     if TYPE == "MAILLAGE":
-        getMeshwithGLISSEGroupMAILLAGE(__mail, __mail_2)
+        getMeshwithGLISSEGroupMAILLAGE(__mail, __mail_1)
     # IMPR_RESU(RESU=_F(MAILLAGE = __mail_2,),FORMAT='MED',UNITE=23)
+
+    ## Restrain sliding mesh to the common zone to the structure mesh to increase numerical performance
+    __mail_s = CREA_MAILLAGE(
+        MAILLAGE=__mail,  # INFO=2,
+        RESTREINT=_F(
+            GROUP_MA=("GLISSE"),
+            # GROUP_NO=("LIGNE_",),
+        ),
+    )
 
     ###############################################################################
     ####
@@ -678,6 +696,11 @@ def post_newmark_ops(self, **args):
             AFFE=(_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN"),),
             VERI_JACOBIEN="NON",
         )
+        __MODST2 = AFFE_MODELE(
+            MAILLAGE=__mail_s,
+            AFFE=(_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN"),),
+            VERI_JACOBIEN="NON",
+        )
 
         __MODL = AFFE_MODELE(
             MAILLAGE=__mail_L,
@@ -690,29 +713,65 @@ def post_newmark_ops(self, **args):
         __MATBID = DEFI_MATERIAU(ELAS=_F(E=1.0, NU=0.3, RHO=1.0))
 
         __MATST = AFFE_MATERIAU(MAILLAGE=__mail_2, AFFE=_F(MATER=__MATBID, TOUT="OUI"))
+        __MATST2 = AFFE_MATERIAU(MAILLAGE=__mail_s, AFFE=_F(MATER=__MATBID, TOUT="OUI"))
 
         ## Obtain static stress field on the auxiliary model at the sliding mesh
         ## Result with true stresses and flase material for SIRO_ELEM
 
         __instFS = RESULTAT_PESANTEUR.LIST_PARA()["INST"][-1]
 
-        __CSTPGO = CREA_CHAMP(
-            OPERATION="EXTR",
-            NOM_CHAM="SIEF_ELGA",
-            TYPE_CHAM="ELGA_SIEF_R",
-            RESULTAT=RESULTAT_PESANTEUR,
-            INST=__instFS,
-        )
+        if args["METHODE"] == "ECLA_PG":
+            __CSTPGO = CREA_CHAMP(
+                OPERATION="EXTR",
+                NOM_CHAM="SIEF_ELGA",
+                TYPE_CHAM="ELGA_SIEF_R",
+                RESULTAT=RESULTAT_PESANTEUR,
+                INST=__instFS,
+            )
 
-        __CSTPGF = PROJ_CHAMP(
-            METHODE="ECLA_PG",
-            CHAM_GD=__CSTPGO,
-            MODELE_1=__modST,
-            MODELE_2=__MODST,
-            CAS_FIGURE="2D",
-            PROL_ZERO="OUI",
-            #                     DISTANCE_MAX=0.1,
-        )
+            __CSTPGF = PROJ_CHAMP(
+                METHODE="ECLA_PG",
+                CHAM_GD=__CSTPGO,
+                MODELE_1=__modST,
+                MODELE_2=__MODST,
+                CAS_FIGURE="2D",
+                PROL_ZERO="OUI",
+                #                     DISTANCE_MAX=0.1,
+            )
+
+        elif args["METHODE"] == "COLLOCATION":
+            __RSTPGF = PROJ_CHAMP(
+                METHODE="COLLOCATION",
+                RESULTAT=RESULTAT_PESANTEUR,
+                MODELE_1=__modST,
+                MODELE_2=__MODST2,
+                NOM_CHAM="SIEF_NOEU",
+                CAS_FIGURE="2D",
+                PROL_ZERO="OUI",
+                #                     DISTANCE_MAX=0.1,
+            )
+
+            __CSTPGN = CREA_CHAMP(
+                OPERATION="EXTR",
+                NOM_CHAM="SIEF_NOEU",
+                TYPE_CHAM="NOEU_SIEF_R",
+                RESULTAT=__RSTPGF,
+                INST=__instFS,
+            )
+
+            __CSTPGO = CREA_CHAMP(
+                OPERATION="DISC", TYPE_CHAM="ELGA_SIEF_R", CHAM_GD=__CSTPGN, MODELE=__MODST2
+            )
+
+            __CSTPGF = PROJ_CHAMP(
+                METHODE="ECLA_PG",
+                CHAM_GD=__CSTPGO,
+                MODELE_1=__MODST2,
+                MODELE_2=__MODST,
+                CAS_FIGURE="2D",
+                PROL_ZERO="OUI",
+                #                     DISTANCE_MAX=0.1,
+            )
 
         ## Static result with SIEF_ELGA obtained at the sliding mesh
         __recoST = CREA_RESU(
@@ -886,20 +945,24 @@ def post_newmark_ops(self, **args):
                 AFFE=(_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN"),),
                 VERI_JACOBIEN="NON",
             )
+            __MODYNS = AFFE_MODELE(
+                MAILLAGE=__mail_s,
+                AFFE=(_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN"),),
+                VERI_JACOBIEN="NON",
+            )
 
             ## False material only necessary for CREA_RESU
             ## Stress are true as they are projected from structure mesh
             __MATBIDD = DEFI_MATERIAU(ELAS=_F(E=1.0, NU=0.3, RHO=1.0))
 
             __MATDYN = AFFE_MATERIAU(MAILLAGE=__mail_2, AFFE=_F(MATER=__MATBIDD, TOUT="OUI"))
+            __MATDYNS = AFFE_MATERIAU(MAILLAGE=__mail_s, AFFE=_F(MATER=__MATBIDD, TOUT="OUI"))
 
             __instSD = RESULTAT.LIST_PARA()["INST"]
 
             ## Create dynamic result with stresses from structure mesh using ECLA_PG projection
             ## on slinding mesh
-            METHODE_PROJECTION = "ECLA_PG"
-            if METHODE_PROJECTION == "ECLA_PG":
-
+            if args["METHODE"] == "ECLA_PG":
                 __recoSD = PROJ_CHAMP(
                     METHODE="ECLA_PG",
                     RESULTAT=RESULTAT,
@@ -910,6 +973,68 @@ def post_newmark_ops(self, **args):
                     TOUT_ORDRE="OUI",
                     NOM_CHAM="SIEF_ELGA",
                 )
+            ## Loop to create dynamic result with stresses from structure mesh using COLLOCATION projection
+            ## on slinding mesh
+            ## faster but possibly more imprecise results
+            if args["METHODE"] == "COLLOCATION":
+                __RSDPGF = PROJ_CHAMP(
+                    METHODE="COLLOCATION",
+                    RESULTAT=RESULTAT,
+                    MODELE_1=__model,
+                    MODELE_2=__MODYN,
+                    # VIS_A_VIS=_F(GROUP_MA_1="GLISSE", GROUP_MA_2="GLISSE"),
+                    NOM_CHAM="SIEF_NOEU",
+                    CAS_FIGURE="2D",
+                    PROL_ZERO="OUI",
+                    #                     DISTANCE_MAX=0.1,
+                )
+
+                __CSDPGI = CREA_CHAMP(
+                    OPERATION="EXTR",
+                    NOM_CHAM="SIEF_NOEU",
+                    TYPE_CHAM="NOEU_SIEF_R",
+                    RESULTAT=__RSDPGF,
+                    INST=__instSD[0],
+                )
+
+                __CSDPGO = CREA_CHAMP(
+                    OPERATION="DISC", TYPE_CHAM="ELGA_SIEF_R", CHAM_GD=__CSDPGI, MODELE=__MODYN
+                )
+
+                ## Create dynamic result with SIEF_ELGA on sliding mesh
+                __recoSD = CREA_RESU(
+                    OPERATION="AFFE",
+                    TYPE_RESU="DYNA_TRANS",
+                    NOM_CHAM="SIEF_ELGA",
+                    AFFE=(
+                        _F(MODELE=__MODYN, CHAM_MATER=__MATDYN, CHAM_GD=__CSDPGO, INST=__instSD[0]),
+                    ),
+                )
+                for inst in __instSD[1:]:
+
+                    ## Loop to create dynamic result with stresses from structure mesh using ECLA_PG projection
+                    ## on sliding mesh
+                    __CSDPGI = CREA_CHAMP(
+                        OPERATION="EXTR",
+                        NOM_CHAM="SIEF_NOEU",
+                        TYPE_CHAM="NOEU_SIEF_R",
+                        RESULTAT=__RSDPGF,
+                        INST=inst,
+                    )
+                    __CSDPGO = CREA_CHAMP(
+                        OPERATION="DISC", TYPE_CHAM="ELGA_SIEF_R", CHAM_GD=__CSDPGI, MODELE=__MODYN
+                    )
+
+                    __recoSD = CREA_RESU(
+                        reuse=__recoSD,
+                        RESULTAT=__recoSD,
+                        OPERATION="AFFE",
+                        TYPE_RESU="DYNA_TRANS",
+                        NOM_CHAM="SIEF_ELGA",
+                        AFFE=(
+                            _F(MODELE=__MODYN, CHAM_MATER=__MATDYN, CHAM_GD=__CSDPGO, INST=inst),
+                        ),
+                    )
 
             ## In case static analysis was performed, dynamic safety factor can be calculated
             if args["RESULTAT_PESANTEUR"] is not None:

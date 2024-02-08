@@ -17,10 +17,11 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), IMPR_MACRO="OUI")
 
 from numpy import array, shape, reshape, real
 from cmath import *
+
 
 #
 # --------
@@ -184,7 +185,7 @@ STATIC = CALC_CHAMP(
     MODELE=MODSTAT,
     CHAM_MATER=MATSTAT,
     EXCIT=(_F(CHARGE=PES), _F(CHARGE=CL)),
-    CONTRAINTE=("SIEF_ELGA",),
+    CONTRAINTE=("SIEF_ELGA", "SIEF_NOEU"),
 )
 
 ### ===============================================================
@@ -586,7 +587,7 @@ DYNA_VC = CALC_CHAMP(
     RESULTAT=DYNA_VC,
     MODELE=MODYN,
     EXCIT=(_F(CHARGE=CHARGX), _F(CHARGE=ONDELATE)),
-    CONTRAINTE=("SIEF_ELGA",),
+    CONTRAINTE=("SIEF_ELGA", "SIEF_NOEU"),
 )
 
 ky = 0.001

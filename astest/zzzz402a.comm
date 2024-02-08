@@ -22,6 +22,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), IMPR_MACRO="NON")
 from numpy import array, shape, reshape, real
 from cmath import *
 
+
 #
 # --------
 # RECALAGE DES VALEURS D'AMORTISSEMENT DE RAYLEIGH
