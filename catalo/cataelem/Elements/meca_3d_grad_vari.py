@@ -693,6 +693,7 @@ class MVCA_HEXA20(Element):
         OP.TOU_INI_ELGA(
             te=99,
             para_out=(
+                (OP.TOU_INI_ELGA.PDEPL_R, LC.EGDEP3D),
                 (OP.TOU_INI_ELGA.PDOMMAG, LC.EDOMGGA),
                 (OP.TOU_INI_ELGA.PGEOM_R, EGGEOM_R),
                 (OP.TOU_INI_ELGA.PINST_R, LC.EGINST_R),
