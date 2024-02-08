@@ -393,9 +393,9 @@ def cqc_array(amors, freqs):
             wij = w_i * w_j
             amor_ij = amor_i * amor_j
             H[i, j] = (8 * sqrt(amor_ij * wij) * (amor_i * w_i + amor_j * w_j) * wij) / (
-                (w_i ** 2 - w_j ** 2) ** 2
-                + 4 * amor_ij * wij * (w_i ** 2 + w_j ** 2)
-                + 4 * (amor_i ** 2 + amor_j ** 2) * wij ** 2
+                (w_i**2 - w_j**2) ** 2
+                + 4 * amor_ij * wij * (w_i**2 + w_j**2)
+                + 4 * (amor_i**2 + amor_j**2) * wij**2
             )
     # return
     return H
@@ -424,7 +424,7 @@ def dsc_array(amors, freqs, s):
             amor_j_p = amor_j + 2 / (s * w_j)
             H[i, j] = 1 / (
                 1
-                + (w_i * sqrt(1 - amor_i ** 2) - w_j * sqrt(1 - amor_j ** 2)) ** 2
+                + (w_i * sqrt(1 - amor_i**2) - w_j * sqrt(1 - amor_j**2)) ** 2
                 / (w_i * (amor_i + 2 / (s * w_i)) + w_j * (amor_j + 2 / (s * w_j))) ** 2
             )
     # return
@@ -451,7 +451,7 @@ def comb_modal_response(COMB_MODE, type_analyse, R_mi, amors, freqs):
     # preparing for modal combinaisons
     R_m2, R_qs = 0, 0
     if type_comb == "SRSS":
-        R_m2 = np.sum(R_mi ** 2, axis=0)
+        R_m2 = np.sum(R_mi**2, axis=0)
     elif type_comb == "ABS":
         R_m2 = np.sum(np.abs(R_mi), axis=0) ** 2
     elif type_comb == "CQC":
@@ -485,7 +485,7 @@ def comb_modal_response(COMB_MODE, type_analyse, R_mi, amors, freqs):
                 f0 = freq
                 # combinied by abs value
                 l_abs_R_r[-1] += np.abs(r_r)
-        R_m2 = sum(r_x ** 2 for r_x in l_abs_R_r)
+        R_m2 = sum(r_x**2 for r_x in l_abs_R_r)
     elif type_comb == "GUPTA":
         f1 = min(COMB_MODE["FREQ_1"], COMB_MODE["FREQ_2"])
         f2 = max(COMB_MODE["FREQ_1"], COMB_MODE["FREQ_2"])
@@ -504,7 +504,7 @@ def comb_modal_response(COMB_MODE, type_analyse, R_mi, amors, freqs):
         alpha_r[freqs > f2] = 1
         # CQC coefficients
         H_cqc = cqc_array(amors, freqs)
-        coeff_p = np.sqrt(1 - alpha_r ** 2)
+        coeff_p = np.sqrt(1 - alpha_r**2)
         H_p = H_cqc * coeff_p.T * coeff_p
         H_p[np.diag_indices_from(H_p)] /= 2
         for i, r_i in enumerate(R_mi):
@@ -537,7 +537,7 @@ def comb_appui_corr(COMB_MULT_APPUI_CORR, R_mi):
     # preparing for combinaison
     R_m = 0
     if type_comb == "QUAD":
-        R_m = np.sqrt(np.sum(R_mi ** 2, axis=0))
+        R_m = np.sqrt(np.sum(R_mi**2, axis=0))
     elif type_comb == "LINE":
         R_m = np.sum(R_mi, axis=0)
     elif type_comb == "ABS":
@@ -560,7 +560,7 @@ def comb_directions(type_comb_dir, l_R_x):
     nb_direction = len(l_R_x)
     if nb_direction > 1:
         if type_comb_dir == "QUAD":
-            R_xyz = np.sqrt(sum(r_x ** 2 for r_x in l_R_x))
+            R_xyz = np.sqrt(sum(r_x**2 for r_x in l_R_x))
             R_newmark_all = []
 
         else:  # type_comb_dir == "NEWMARK":
@@ -749,7 +749,14 @@ def corr_pseudo_mode_mult(
             for ps_nume_mode in ps_nume_mode_grno:
                 phi_ps.append(pseudo_mode.getField(option, ps_nume_mode).getValues())
             R_c_noeud = (np.sum(phi_ps, axis=0) - np.sum(pr_wr2_phi, axis=0)) * S_r_freq_coup
-        elif option in ["EFGE_ELNO","EGRU_ELNO", "SIEF_ELGA", "SIGM_ELNO", "SIPO_ELNO", "SIEF_ELNO"]:
+        elif option in [
+            "EFGE_ELNO",
+            "EGRU_ELNO",
+            "SIEF_ELGA",
+            "SIGM_ELNO",
+            "SIPO_ELNO",
+            "SIEF_ELNO",
+        ]:
             # phi_ps = pseudo_mode.getField(option, ps_nume_mode).getValues()
             phi_ps = []
             for ps_nume_mode in ps_nume_mode_grno:
@@ -906,7 +913,7 @@ def impr_vale_spec_mono(
     field_output = None
     if option in ["DEPL", "REAC_NODA", "FORC_NODA"]:
         field_output = mode_meca.getField(option, imode + 1).copy()
-    elif option in ["EFGE_ELNO", "EGRU_ELNO","SIEF_ELGA", "SIGM_ELNO", "SIPO_ELNO", "SIEF_ELNO"]:
+    elif option in ["EFGE_ELNO", "EGRU_ELNO", "SIEF_ELGA", "SIGM_ELNO", "SIPO_ELNO", "SIEF_ELNO"]:
         field_output = mode_meca.getField(option, imode + 1).copy()
     elif option in ["VITE", "ACCE_ABSOLU"]:
         field_output = mode_meca.getField("DEPL", imode + 1).copy()
@@ -985,7 +992,7 @@ def impr_vale_qs_dire(output_result, type_resu, option, mode_meca, dir, R_c):
     field_output = None
     if option in ["DEPL", "REAC_NODA", "FORC_NODA"]:
         field_output = mode_meca.getField(option, imode + 1).copy()
-    elif option in ["EFGE_ELNO","EGRU_ELNO", "SIEF_ELGA", "SIGM_ELNO", "SIPO_ELNO", "SIEF_ELNO"]:
+    elif option in ["EFGE_ELNO", "EGRU_ELNO", "SIEF_ELGA", "SIGM_ELNO", "SIPO_ELNO", "SIEF_ELNO"]:
         field_output = mode_meca.getField(option, imode + 1).copy()
     elif option in ["VITE", "ACCE_ABSOLU"]:
         field_output = mode_meca.getField("DEPL", imode + 1).copy()
@@ -1030,7 +1037,7 @@ def impr_vale_dire(output_result, type_resu, option, mode_meca, dir, R_x):
     field_output = None
     if option in ["DEPL", "REAC_NODA", "FORC_NODA"]:
         field_output = mode_meca.getField(option, imode + 1).copy()
-    elif option in ["EFGE_ELNO", "EGRU_ELNO","SIEF_ELGA", "SIGM_ELNO", "SIPO_ELNO", "SIEF_ELNO"]:
+    elif option in ["EFGE_ELNO", "EGRU_ELNO", "SIEF_ELGA", "SIGM_ELNO", "SIPO_ELNO", "SIEF_ELNO"]:
         field_output = mode_meca.getField(option, imode + 1).copy()
     elif option in ["VITE", "ACCE_ABSOLU"]:
         field_output = mode_meca.getField("DEPL", imode + 1).copy()
@@ -1708,7 +1715,7 @@ def comb_sism_modal_ops(self, **args):
                 ]
                 # Correction for frequency by corr_freq
                 if spectre_corr_freq == "OUI":
-                    correct = np.sqrt(1 - amors ** 2)
+                    correct = np.sqrt(1 - amors**2)
                 else:
                     correct = 1
                 # Pulsation afeter corr_freq
@@ -1749,8 +1756,8 @@ def comb_sism_modal_ops(self, **args):
                     )
                 # Spectral response
                 if option not in ["VITE", "ACCE_ABSOLU"]:
-                    R_mi_all = (S_r_freq * fact_partici / w_r ** 2)[:, None] * phis
-                    pr_wr2_phi_all = (fact_partici / w_r ** 2)[:, None] * phis
+                    R_mi_all = (S_r_freq * fact_partici / w_r**2)[:, None] * phis
+                    pr_wr2_phi_all = (fact_partici / w_r**2)[:, None] * phis
                     pr_wr2_phi_c_all = (fact_partici / (2 * np.pi * freqs) ** 2)[
                         :, None
                     ] * phis  # interrogration ??? pq ne pas utiliser omega corrige?
@@ -1795,7 +1802,7 @@ def comb_sism_modal_ops(self, **args):
                     S_r_freq_coup = spectre_nappe(amors[-1], freq_coup) * spectre_coeff
                     R_tt = (acce_unitaire.getValues() - np.sum(pr_wr2_phi, axis=0)) * S_r_freq_coup
                     # add to combined modale responses in square
-                    R_m2 += R_tt ** 2
+                    R_m2 += R_tt**2
                 # modale response
                 R_m = np.sqrt(R_m2)
                 # step 4 : Entrainement zero pour mon_appui
@@ -1917,11 +1924,7 @@ def comb_sism_modal_ops(self, **args):
                             "I",
                             "SEISME_49",
                             vali=nume_modes[i_freq],
-                            valr=(
-                                freqs[i_freq],
-                                fact_partici[i_freq],
-                                masse_effe[i_freq],
-                            ),
+                            valr=(freqs[i_freq], fact_partici[i_freq], masse_effe[i_freq]),
                             valk=direction,
                         )
                 # about spectra
@@ -2029,8 +2032,8 @@ def comb_sism_modal_ops(self, **args):
                         # Correction of spectrum by corr_freq
                         if spectre_corr_freq == "OUI":
                             # pulsation propre amortie
-                            w_r *= np.sqrt(1 - amors ** 2)
-                            correct = np.sqrt(1 - amors ** 2)
+                            w_r *= np.sqrt(1 - amors**2)
+                            correct = np.sqrt(1 - amors**2)
                         else:
                             w_r *= 1
                             correct = 1
@@ -2076,20 +2079,18 @@ def comb_sism_modal_ops(self, **args):
                         # Reac_node for all modes at 1 support
                         reac_noda = np.sum(reac_noda, axis=1)
                         # participation factor for all modes at 1 support
-                        fact_partici = -1.0 * reac_noda / (gene_masses * w_r ** 2)
+                        fact_partici = -1.0 * reac_noda / (gene_masses * w_r**2)
                         # Spectral response at node, mode, direction
                         if option not in ["VITE", "ACCE_ABSOLU"]:
-                            R_mi_all = (S_r_freq * fact_partici / w_r ** 2)[:, None] * phis
-                            pr_wr2_phi_all = (fact_partici / w_r ** 2)[:, None] * phis
+                            R_mi_all = (S_r_freq * fact_partici / w_r**2)[:, None] * phis
+                            pr_wr2_phi_all = (fact_partici / w_r**2)[:, None] * phis
                             pr_wr2_phi_c_all = (fact_partici / (2 * np.pi * freqs) ** 2)[
                                 :, None
                             ] * phis
                         elif option == "VITE":  # ici: phis correspond à DEPL
                             R_mi_all = (S_r_freq * fact_partici / w_r)[:, None] * phis
                             pr_wr2_phi_all = (fact_partici / w_r)[:, None] * phis
-                            pr_wr2_phi_c_all = (fact_partici / (2 * np.pi * freqs))[
-                                :, None
-                            ] * phis
+                            pr_wr2_phi_c_all = (fact_partici / (2 * np.pi * freqs))[:, None] * phis
                         elif option == "ACCE_ABSOLU":  # ici: phis correspond à DEPL
                             R_mi_all = (S_r_freq * fact_partici)[:, None] * phis
                             pr_wr2_phi_all = (fact_partici)[:, None] * phis
@@ -2297,12 +2298,12 @@ def comb_sism_modal_ops(self, **args):
                             acce_unitaire.getValues() - np.sum(pr_wr2_phi, axis=0)
                         ) * S_r_freq_coup
                         # reponse oscillator by adding correction for ACCE_ABSOLU:Not used
-                        R_m2 += R_tt ** 2
+                        R_m2 += R_tt**2
                     # reponse oscillator
                     R_m = np.sqrt(R_m2)
                     # step 7 : reponse by direction for group_appui
                     # ("reponse directionnelle : sqrt(Rm**2 + Rc**2 + Re**2)")
-                    R_x_j = np.sqrt(R_m2 + (R_qs + R_c_group_appui) ** 2 + R_e_group_appui ** 2)
+                    R_x_j = np.sqrt(R_m2 + (R_qs + R_c_group_appui) ** 2 + R_e_group_appui**2)
                     l_R_x_j.append(R_x_j)
                     # RCCM part primaire
                     R_prim_group_appui = np.sqrt(R_m2 + (R_qs + R_c_group_appui) ** 2)
@@ -2424,11 +2425,7 @@ def comb_sism_modal_ops(self, **args):
                             "I",
                             "SEISME_49",
                             vali=nume_modes[i_freq],
-                            valr=(
-                                freqs[i_freq],
-                                fact_partici[i_freq],
-                                masse_effe[i_freq],
-                            ),
+                            valr=(freqs[i_freq], fact_partici[i_freq], masse_effe[i_freq]),
                             valk=direction,
                         )
                 # about spectra
