@@ -309,12 +309,12 @@ Conseil:
         """
  --- GRANDEURS MODALES DES MODES PRIS EN COMPTE---
  --- (*) FACTEUR DE PARTICIPATION CALCULE AVEC MOUVEMENT CORPS RIGIDE---
-                              FACTEUR DE   MASSE MODALE   MASSE MODALE
- MODE     FREQUENCE  DIR   PARTICIPATION(*)      EFFECTIVE   UN EFFECTIVE
+                              FACTEUR DE   MASSE MODALE
+ MODE     FREQUENCE  DIR   PARTICIPATION(*)      EFFECTIVE
 """
     ),
     49: _(
-        """ %(i1)4d  %(r1)12.5e    %(k1)s    %(r2)12.5e    %(r3).5e    %(r4).5e
+        """ %(i1)4d  %(r1)12.5e    %(k1)s    %(r2)12.5e    %(r3).5e
 """
     ),
     50: _(
