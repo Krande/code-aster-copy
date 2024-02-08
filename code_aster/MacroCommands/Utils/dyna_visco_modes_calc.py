@@ -158,7 +158,9 @@ def dyna_visco_modes_calc(
         motcles["AFFE"] = _F(NOM_CHAM="DEPL", CHAM_GD=__unmod, NUME_MODE=j + 1, FREQ=freq1)
     elif TYPE_MODE == "COMPLEXE":
         type_resu = "MODE_MECA_C"
-        motcles["AFFE"] = _F(CHAM_GD=__unmod, NUME_MODE=j + 1, FREQ=freq1, AMOR_REDUIT=amor_red1)
+        motcles["AFFE"] = _F(
+            NOM_CHAM="DEPL", CHAM_GD=__unmod, NUME_MODE=j + 1, FREQ=freq1, AMOR_REDUIT=amor_red1
+        )
     else:
         assert False
 

@@ -37,7 +37,7 @@ for i, t in zip(inst, temp):
         MAILLAGE=MAIL,
         AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE=t),
     )
-    affe.append({"CHAM_GD": champ, "INST": i})
+    affe.append({"NOM_CHAM": "TEMP", "CHAM_GD": champ, "INST": i})
 
 TEMP2 = CREA_RESU(OPERATION="AFFE", TYPE_RESU="EVOL_THER", AFFE=affe)
 
@@ -335,7 +335,9 @@ for i in inst:
         MAILLAGE=MAIL,
         AFFE=_F(TOUT="OUI", NOM_CMP=("DX", "DY", "DZ"), VALE=(0, 0, 0)),
     )
-    affe.append({"CHAM_GD": champ, "INST": i, "MODELE": MO_MECA, "CHAM_MATER": CHMAT_ME})
+    affe.append(
+        {"NOM_CHAM": "DEPL", "CHAM_GD": champ, "INST": i, "MODELE": MO_MECA, "CHAM_MATER": CHMAT_ME}
+    )
 
 SIG_pl = CREA_RESU(OPERATION="AFFE", TYPE_RESU="EVOL_NOLI", AFFE=affe)
 

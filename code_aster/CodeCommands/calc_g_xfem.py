@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -96,8 +96,14 @@ def calc_g_xfem_with_co(self, **args):
             _cham_theta = CREA_RESU(
                 OPERATION="AFFE",
                 TYPE_RESU="EVOL_NOLI",
-                NOM_CHAM="DEPL",
-                AFFE=(_F(CHAM_GD=_cham_theta_no, MODELE=args["RESULTAT"].getModel(), INST=i_cham),),
+                AFFE=(
+                    _F(
+                        NOM_CHAM="DEPL",
+                        CHAM_GD=_cham_theta_no,
+                        MODELE=args["RESULTAT"].getModel(),
+                        INST=i_cham,
+                    ),
+                ),
                 **reuse
             )
             # for next iteration

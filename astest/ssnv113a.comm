@@ -89,7 +89,7 @@ for i, inst in enumerate(list_inst):
         ASSE=_F(TOUT="OUI", CHAM_GD=NEUT, NOM_CMP=("X1",), NOM_CMP_RESU=("IRRA",)),
     )
 
-    affe.append({"CHAM_GD": CHFLU[i], "INST": inst})
+    affe.append({"NOM_CHAM": "IRRA", "CHAM_GD": CHFLU[i], "INST": inst})
 
     DETRUIRE(NOM=(INST0_1, NEUT))
 

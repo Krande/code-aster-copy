@@ -236,7 +236,7 @@ for i in range(8):
         TYPE_CHAM="NOEU_DEPL_R", OPERATION="EXTR", RESULTAT=MOSTi[i], NOM_CHAM="DEPL", NUME_ORDRE=1
     )
 
-    f_depl = {"CHAM_GD": MOSTd[i], "MODELE": MODELNUM, "NOM_CAS": str(i)}
+    f_depl = {"NOM_CHAM": "DEPL", "CHAM_GD": MOSTd[i], "MODELE": MODELNUM, "NOM_CAS": str(i)}
     f_depl["CHAM_MATER"] = MATNUM
     f_depl["CARA_ELEM"] = CARANUM
     l_depl.append(f_depl)
@@ -274,7 +274,7 @@ for i in range(8):
         TYPE_CHAM="NOEU_DEPL_R", OPERATION="EXTR", RESULTAT=MOSTi[j], NOM_CHAM="DEPL", NUME_ORDRE=1
     )
 
-    f_depl = {"CHAM_GD": MOSTd[j], "MODELE": MODELNUM, "NOM_CAS": str(j)}
+    f_depl = {"NOM_CHAM": "DEPL", "CHAM_GD": MOSTd[j], "MODELE": MODELNUM, "NOM_CAS": str(j)}
     f_depl["CHAM_MATER"] = MATNUM
     f_depl["CARA_ELEM"] = CARANUM
     l_depl.append(f_depl)

@@ -180,8 +180,7 @@ l_inst = [0.0, 1.0, 2.0]
 
 TEMP = {}
 HYDR = {}
-l_affe_temp = []
-l_affe_hydr = []
+l_affe = []
 
 for i, inst in enumerate(l_inst):
 
@@ -221,16 +220,11 @@ for i, inst in enumerate(l_inst):
     )
     DETRUIRE(NOM=(TEMP2, HYDR2, INSTN, INSTL))
 
-    l_affe_temp.append(_F(CHAM_GD=TEMP[i], MODELE=MOTHER, INST=inst))
-    l_affe_hydr.append(_F(CHAM_GD=HYDR[i], MODELE=MOTHER, INST=inst))
+    l_affe.append(_F(NOM_CHAM="TEMP", CHAM_GD=TEMP[i], MODELE=MOTHER, INST=inst))
+    l_affe.append(_F(NOM_CHAM="HYDR_ELNO", CHAM_GD=HYDR[i], MODELE=MOTHER, INST=inst))
 
 
-RESUTHER = CREA_RESU(OPERATION="AFFE", TYPE_RESU="EVOL_THER", AFFE=l_affe_temp)
-
-RESUTHER = CREA_RESU(
-    reuse=RESUTHER, RESULTAT=RESUTHER, OPERATION="AFFE", TYPE_RESU="EVOL_THER", AFFE=l_affe_hydr
-)
-
+RESUTHER = CREA_RESU(OPERATION="AFFE", TYPE_RESU="EVOL_THER", AFFE=l_affe)
 
 RESU_SP = PROJ_CHAMP(
     PROJECTION="OUI",

@@ -88,7 +88,7 @@ for i, inst in enumerate(l_inst):
     )
     DETRUIRE(NOM=(TEMP2, INSTN))
 
-    l_affe_temp.append(_F(CHAM_GD=TEMP[i], MODELE=MOTHER, INST=inst))
+    l_affe_temp.append(_F(NOM_CHAM="TEMP", CHAM_GD=TEMP[i], MODELE=MOTHER, INST=inst))
 
 
 RESUTHER = CREA_RESU(OPERATION="AFFE", TYPE_RESU="EVOL_THER", AFFE=l_affe_temp)
@@ -476,7 +476,7 @@ for i, inst in enumerate(l_inst):
 
     DETRUIRE(NOM=(TEMP2_H, TEMP2_B, TEMP_H, TEMP_B, INSTN, TEMPSP_H, TEMPSP_B))
 
-    l_affe_temp.append(_F(CHAM_GD=TEMPSP[i], MODELE=MOPOU, INST=inst))
+    l_affe_temp.append(_F(NOM_CHAM="TEMP", CHAM_GD=TEMPSP[i], MODELE=MOPOU, INST=inst))
 
 
 RESU_SP2 = CREA_RESU(OPERATION="AFFE", TYPE_RESU="EVOL_THER", AFFE=l_affe_temp)

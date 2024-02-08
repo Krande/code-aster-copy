@@ -178,7 +178,9 @@ result = MACR_ADAP_MAIL(
 )
 
 for k in range(nbinst):
-    motcle2["AFFE"].append(_F(CHAM_GD=getattr(result, "PREB_%d" % k), INST=linst[k]))
+    motcle2["AFFE"].append(
+        _F(NOM_CHAM="DEPL", CHAM_GD=getattr(result, "PREB_%d" % k), INST=linst[k])
+    )
 
 RESULINB = CREA_RESU(OPERATION="AFFE", TYPE_RESU="EVOL_NOLI", **motcle2)
 

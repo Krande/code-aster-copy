@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,8 +31,7 @@ chone = CREA_CHAMP(
 # add the field for the 2nd case
 RESU = CREA_RESU(
     reuse=RESU,
-    AFFE=_F(CHAM_GD=chone, NOM_CAS="CHARGE NUMERO 2"),
-    NOM_CHAM="FERR_ELEM",
+    AFFE=_F(NOM_CHAM="FERR_ELEM", CHAM_GD=chone, NOM_CAS="CHARGE NUMERO 2"),
     OPERATION="AFFE",
     RESULTAT=RESU,
     TYPE_RESU="MULT_ELAS",
