@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -85,18 +85,14 @@ DEFI_SPEC_TURB = OPER(
         D_FLUI=SIMP(statut="o", typ="R"),
         COEF_VITE_FLUI_A=SIMP(statut="f", typ="R"),
         COEF_VITE_FLUI_O=SIMP(statut="f", typ="R"),
-        METHODE=SIMP(
-            statut="f", typ="TXM", defaut="GENERALE", into=("AU_YANG", "GENERALE", "CORCOS")
-        ),
+        METHODE=SIMP(statut="f", typ="TXM", defaut="GENERALE", into=("GENERALE", "CORCOS")),
     ),
     SPEC_CORR_CONV_2=FACT(
         statut="f",
         FONCTION=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
         VITE_FLUI=SIMP(statut="o", typ="R"),
         FREQ_COUP=SIMP(statut="f", typ="R"),
-        METHODE=SIMP(
-            statut="f", typ="TXM", defaut="GENERALE", into=("AU_YANG", "GENERALE", "CORCOS")
-        ),
+        METHODE=SIMP(statut="f", typ="TXM", defaut="GENERALE", into=("GENERALE", "CORCOS")),
         COEF_VITE_FLUI_A=SIMP(statut="f", typ="R"),
         COEF_VITE_FLUI_O=SIMP(statut="f", typ="R"),
     ),
