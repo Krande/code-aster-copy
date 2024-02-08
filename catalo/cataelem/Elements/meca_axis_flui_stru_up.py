@@ -46,12 +46,12 @@ class MEAXFSS2P(Element):
     calculs = (
         OP.CHAR_MECA_PRES_F(
             te=204,
-            para_in=((SP.PGEOMER, LC.EGEOM2D), (SP.PPRESSF, LC.CPRE2DF), (SP.PTEMPSR, LC.MTEMPSR)),
+            para_in=((SP.PGEOMER, LC.EGEOM2D), (SP.PPRESSF, LC.CPRE2DF), (SP.PINSTR, LC.MTEMPSR)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.CHAR_MECA_PRES_R(
             te=204,
-            para_in=((SP.PGEOMER, LC.EGEOM2D), (SP.PPRESSR, LC.EPRE2DR), (SP.PTEMPSR, LC.MTEMPSR)),
+            para_in=((SP.PGEOMER, LC.EGEOM2D), (SP.PPRESSR, LC.EPRE2DR), (SP.PINSTR, LC.MTEMPSR)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.CHAR_MECA_VFAC(

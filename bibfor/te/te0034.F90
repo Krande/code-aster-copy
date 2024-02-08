@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,7 +64,7 @@ subroutine te0034(option, nomte)
         mz = zr(iforc-1+6)
     else if (option(11:16) .eq. 'FF1D3D') then
         call jevech('PFF1D3D', 'L', iforc)
-        call jevech('PTEMPSR', 'L', itpsr)
+        call jevech('PINSTR', 'L', itpsr)
 !
         nompar(1) = 'X'
         nompar(2) = 'Y'

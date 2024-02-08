@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -294,7 +294,7 @@ subroutine te0155(option, nomte)
         call jevech('PFF1D1D', 'L', lforc)
         normal = zk8(lforc+3) .eq. 'VENT'
         global = zk8(lforc+3) .eq. 'GLOBAL'
-        call tecach('NNO', 'PTEMPSR', 'L', iret, iad=itemps)
+        call tecach('NNO', 'PINSTR', 'L', iret, iad=itemps)
         if (itemps .ne. 0) then
             temps = zr(itemps)
             nbpar = 13
@@ -362,7 +362,7 @@ subroutine te0155(option, nomte)
         call rcvalb(fami, 1, 1, '+', zi(lmater), ' ', 'ELAS', 0, ' ', [0.d0], &
                     1, 'E', e, codres, 1)
 !       Recuperation de l'instant
-        call tecach('ONO', 'PTEMPSR', 'L', iret, iad=itemps)
+        call tecach('ONO', 'PINSTR', 'L', iret, iad=itemps)
         if (itemps .ne. 0) then
             temps = zr(itemps)
         end if
@@ -400,7 +400,7 @@ subroutine te0155(option, nomte)
         call rcvalb('RIGI', 1, 1, '+', zi(lmater), ' ', 'ELAS', 0, ' ', [0.d0], &
                     1, 'E', e, codres, 1)
 !       Recuperation de l'instant
-        call tecach('ONO', 'PTEMPSR', 'L', iret, iad=itemps)
+        call tecach('ONO', 'PINSTR', 'L', iret, iad=itemps)
         if (itemps .ne. 0) then
             temps = zr(itemps)
         end if
@@ -442,7 +442,7 @@ subroutine te0155(option, nomte)
             epsini = zr(iepsini)
         else
             call jevech('PEPSINF', 'L', iepsini)
-            call jevech('PTEMPSR', 'L', itemps)
+            call jevech('PINSTR', 'L', itemps)
             nompar(1:3) = ['X', 'Y', 'Z']
             nompar(4) = 'INST'
             valpar(1) = (wx(1)+wx(4))/2.d0

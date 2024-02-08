@@ -641,7 +641,7 @@ contains
             call dcopy(mk_total_dofs, this%depl_prev, 1, this%depl_curr, 1)
             call daxpy(mk_total_dofs, 1.d0, this%depl_incr, 1, this%depl_curr, 1)
         elseif (hhoComporState%option == "RIGI_MECA") then
-            call tecach('ONO', 'PTEMPSR', 'L', iret, iad=iinstp)
+            call tecach('ONO', 'PINSTR', 'L', iret, iad=iinstp)
             if (iinstp .ne. 0) then
                 this%time_curr = zr(iinstp)
             end if

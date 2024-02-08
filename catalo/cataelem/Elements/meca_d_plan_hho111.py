@@ -275,7 +275,7 @@ class MECA_DPQ9_HHO111(Element):
         ),
         OP.CHAR_MECA_FF2D2D(
             te=476,
-            para_in=((SP.PFF2D2D, CFORCEF), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
+            para_in=((SP.PFF2D2D, CFORCEF), (SP.PGEOMER, NGEOMER), (SP.PINSTR, CTEMPSR)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.CHAR_MECA_FR2D2D(
@@ -438,7 +438,7 @@ class MECA_DPQ9_HHO111(Element):
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
                 (OP.RIGI_MECA.PVARCPR, LC.ZVARCPG),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PINSTR, CTEMPSR),
             ),
             para_out=((SP.PMATUUR, MMATUUR),),
         ),

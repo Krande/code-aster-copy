@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -107,7 +107,7 @@ subroutine te0282(option, nomte)
         fonc = .true.
         call jevech('PFF1D2D', 'L', iforf)
         call jevech('PPRESSF', 'L', ipref)
-        call jevech('PTEMPSR', 'L', itemps)
+        call jevech('PINSTR', 'L', itemps)
         nompar(1) = 'X'
         nompar(2) = 'Y'
         nompar(3) = 'INST'
@@ -233,7 +233,8 @@ subroutine te0282(option, nomte)
 !
 ! TESTS SUR LA NULLITE DES CHARGEMENTS ET DE LEURS GRADIENTS POUR EVITER
 ! DE FAIRE DES CALCULS INUTILES ET DETECTER LES VRAIS PROBLEMES
-       if ((fx .eq. 0.d0) .and. (fy .eq. 0.d0) .and. (dfxde .eq. 0.d0) .and. (dfyde .eq. 0.d0)) then
+        if ((fx .eq. 0.d0) .and. (fy .eq. 0.d0) .and. (dfxde .eq. 0.d0) &
+            .and. (dfyde .eq. 0.d0)) then
             chargn = .true.
         end if
 !

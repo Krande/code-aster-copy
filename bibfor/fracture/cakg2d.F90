@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -432,7 +432,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta, &
         call mecact('V', chtime, 'MODELE', ligrmo, 'INST_R  ', &
                     ncmp=1, nomcmp='INST   ', sr=time)
         nchin = nchin+1
-        lpain(nchin) = 'PTEMPSR'
+        lpain(nchin) = 'PINSTR'
         lchin(nchin) = chtime
     end if
 !

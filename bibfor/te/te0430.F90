@@ -89,7 +89,7 @@ subroutine te0430(option, nomte)
     else if (option .eq. 'CHAR_MECA_EPSI_F') then
         call jevech('PMATERC', 'L', imate)
         call jevech('PEPSINF', 'L', iepsin)
-        call jevech('PTEMPSR', 'L', itemps)
+        call jevech('PINSTR', 'L', itemps)
 !
     else if (option .eq. 'CHAR_MECA_PESA_R') then
         call jevech('PMATERC', 'L', imate)

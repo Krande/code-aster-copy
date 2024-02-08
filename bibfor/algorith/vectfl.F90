@@ -78,7 +78,7 @@ subroutine vectfl(opt, modele, carele, mate, mateco, templu, &
                 ncmp=1, nomcmp='INST   ', sr=instap)
     call mecact('V', '&VECTFL.VEC', 'MODELE', ligrmo, 'TEMP_R  ', &
                 ncmp=1, nomcmp='TEMP   ', sr=0.d0)
-    lpain(2) = 'PTEMPSR'
+    lpain(2) = 'PINSTR'
     lchin(2) = chtime
     lchin(3) = templu
     lpain(4) = 'PMATERC'

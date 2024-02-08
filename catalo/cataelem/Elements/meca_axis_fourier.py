@@ -186,7 +186,7 @@ class MEFOQU4(Element):
                 (SP.PGEOMER, NGEOMER),
                 (SP.PHARMON, LC.CHARMON),
                 (SP.PMATERC, LC.CMATERC),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PINSTR, CTEMPSR),
                 (OP.CHAR_MECA_EPSI_F.PVARCPR, LC.ZVARCPG),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
@@ -205,7 +205,7 @@ class MEFOQU4(Element):
         ),
         OP.CHAR_MECA_FF2D2D(
             te=200,
-            para_in=((SP.PFF2D2D, CFORCEF), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
+            para_in=((SP.PFF2D2D, CFORCEF), (SP.PGEOMER, NGEOMER), (SP.PINSTR, CTEMPSR)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.CHAR_MECA_FR2D2D(

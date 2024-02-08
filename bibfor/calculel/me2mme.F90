@@ -263,7 +263,7 @@ subroutine me2mme(modelz, nb_load, lchar, mate, mateco, caraz, &
     chtime = '&&ME2MME.CH_INST_R'
     call mecact('V', chtime, 'MODELE', ligrmo, 'INST_R  ', &
                 ncmp=1, nomcmp='INST   ', sr=time)
-    lpain(5) = 'PTEMPSR'
+    lpain(5) = 'PINSTR'
     lchin(5) = chtime
 
     inst_prev = time

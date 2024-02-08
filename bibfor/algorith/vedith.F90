@@ -113,7 +113,7 @@ subroutine vedith(model, lload_name, lload_info, time, vect_elemz)
 !
     lpain(1) = 'PGEOMER'
     lchin(1) = chgeom(1:19)
-    lpain(2) = 'PTEMPSR'
+    lpain(2) = 'PINSTR'
     lchin(2) = time(1:19)
 !
 ! - Output field

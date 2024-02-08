@@ -130,7 +130,7 @@ subroutine metnth(modele, lchar, cara, mate, mateco, time, &
             lchin(2) = mateco
             lpain(3) = 'PCACOQU'
             lchin(3) = chcara(7)
-            lpain(4) = 'PTEMPSR'
+            lpain(4) = 'PINSTR'
             lchin(4) = time
             lpain(5) = 'PVITESR'
             lchin(5) = chvite

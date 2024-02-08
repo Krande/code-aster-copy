@@ -881,7 +881,7 @@ contains
         if (SSH_DBG_GEOM) call dbgObjCellGeom(cellGeom)
 
 ! - Get current time
-        call tecach('ONO', 'PTEMPSR', 'L', iret, iad=jvTime)
+        call tecach('ONO', 'PINSTR', 'L', iret, iad=jvTime)
         if (jvTime .ne. 0) then
             timeCurr = zr(jvTime)
         end if

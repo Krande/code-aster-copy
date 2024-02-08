@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -80,7 +80,7 @@ class THCASE3(Element):
     calculs = (
         OP.CHAR_THER_FLUN_F(
             te=105,
-            para_in=((SP.PFLUXNF, CFLUXNF), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
+            para_in=((SP.PFLUXNF, CFLUXNF), (SP.PGEOMER, NGEOMER), (SP.PINSTR, CTEMPSR)),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
         OP.CHAR_THER_FLUN_R(
@@ -93,7 +93,7 @@ class THCASE3(Element):
             para_in=(
                 (SP.PCOEFHF, CCOEFHF),
                 (SP.PGEOMER, NGEOMER),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PINSTR, CTEMPSR),
                 (SP.PT_EXTF, CT_EXTF),
             ),
             para_out=((SP.PVECTTR, MVECTTR),),
@@ -103,7 +103,7 @@ class THCASE3(Element):
             para_in=(
                 (SP.PCOEFHR, CCOEFHR),
                 (SP.PGEOMER, NGEOMER),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PINSTR, CTEMPSR),
                 (SP.PT_EXTR, LC.CT_EXTR),
             ),
             para_out=((SP.PVECTTR, MVECTTR),),
@@ -117,7 +117,7 @@ class THCASE3(Element):
                 (SP.PCACOQU, CCACOQU),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PINSTR, CTEMPSR),
             ),
             para_out=((OP.MASS_THER.PMATTTR, MMATTTR),),
         ),
@@ -127,18 +127,18 @@ class THCASE3(Element):
                 (SP.PCACOQU, CCACOQU),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PINSTR, CTEMPSR),
             ),
             para_out=((OP.RIGI_THER.PMATTTR, MMATTTR),),
         ),
         OP.RIGI_THER_ECHA_F(
             te=103,
-            para_in=((SP.PCOEFHF, CCOEFHF), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
+            para_in=((SP.PCOEFHF, CCOEFHF), (SP.PGEOMER, NGEOMER), (SP.PINSTR, CTEMPSR)),
             para_out=((OP.RIGI_THER_ECHA_F.PMATTTR, MMATTTR),),
         ),
         OP.RIGI_THER_ECHA_R(
             te=104,
-            para_in=((SP.PCOEFHR, CCOEFHR), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
+            para_in=((SP.PCOEFHR, CCOEFHR), (SP.PGEOMER, NGEOMER), (SP.PINSTR, CTEMPSR)),
             para_out=((OP.RIGI_THER_ECHA_R.PMATTTR, MMATTTR),),
         ),
         OP.TOU_INI_ELGA(te=99, para_out=((OP.TOU_INI_ELGA.PGEOM_R, EGGEOP_R),)),

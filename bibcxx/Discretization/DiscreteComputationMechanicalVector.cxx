@@ -124,7 +124,7 @@ DiscreteComputation::getMechanicalNeumannForces( const ASTERDOUBLE time_curr,
             calcul->setFiniteElementDescriptor( FED );
 
             calcul->clearInputs();
-            calcul->addTimeField( "PTEMPSR", time_curr, time_step, theta );
+            calcul->addTimeField( "PINSTR", time_curr, time_step, theta );
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
             if ( currMater ) {
                 calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
@@ -257,7 +257,7 @@ DiscreteComputation::getMechanicalVolumetricForces( const ASTERDOUBLE time_curr,
             calcul->setFiniteElementDescriptor( FED );
 
             calcul->clearInputs();
-            calcul->addTimeField( "PTEMPSR", time_curr, time_step, theta );
+            calcul->addTimeField( "PINSTR", time_curr, time_step, theta );
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
             if ( currMater ) {
                 calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
@@ -527,7 +527,7 @@ DiscreteComputation::getMechanicalImposedDualBC( const ASTERDOUBLE time_curr,
                 calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
                 calcul->addInputField( name, impo_field );
                 if ( !real ) {
-                    calcul->addTimeField( "PTEMPSR", time_curr );
+                    calcul->addTimeField( "PINSTR", time_curr );
                 }
                 calcul->addOutputElementaryTerm( "PVECTUR",
                                                  std::make_shared< ElementaryTermReal >() );
@@ -569,7 +569,7 @@ DiscreteComputation::getMechanicalImposedDualBC( const ASTERDOUBLE time_curr,
                 calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
                 calcul->addInputField( name, load->getConstantLoadField( "VFACE" ) );
                 if ( !real ) {
-                    calcul->addTimeField( "PTEMPSR", time_curr );
+                    calcul->addTimeField( "PINSTR", time_curr );
                 }
                 calcul->addOutputElementaryTerm( "PVECTUR",
                                                  std::make_shared< ElementaryTermReal >() );

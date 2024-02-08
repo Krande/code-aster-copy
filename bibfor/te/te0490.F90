@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -254,7 +254,7 @@ subroutine te0490(option, nomte)
 !
 ! ---- RECUPERATION DE L'INSTANT DE CALCUL
 !      -----------------------------------
-    call tecach('NNO', 'PTEMPSR', 'L', iret, iad=itemps)
+    call tecach('NNO', 'PINSTR', 'L', iret, iad=itemps)
     if (itemps .ne. 0) instan = zr(itemps)
 !
 ! ----RECUPERATION DU TYPE DE COMPORTEMENT  :
@@ -693,9 +693,10 @@ subroutine te0490(option, nomte)
                 epsel(2) = c1*sigma(2)-c2*trsig
                 epsel(3) = -c2*trsig
 !
-                epsm(3+(igau-1)*nbsig) = epsel(3)+epsthe-epsm(1+( &
-                                                   igau-1)*nbsig)+epsel(1)-epsm(2+(igau-1)*nbsig)+ &
-                                         epsel(2)
+                epsm(3+(igau-1)*nbsig) = epsel(3)+epsthe &
+                                         -epsm(1+(igau-1)*nbsig) &
+                                         +epsel(1)-epsm(2+(igau-1)*nbsig) &
+                                         +epsel(2)
             end if
 !
 ! --- CALCUL DE LA DILATATION VOLUMIQUE AU POINT D'INTEGRATION COURANT:

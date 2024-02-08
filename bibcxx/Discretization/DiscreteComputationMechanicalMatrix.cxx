@@ -2,7 +2,7 @@
  * @file DiscreteComputation.cxx
  * @brief Implementation of class DiscreteComputation
  * @section LICENCE
- *   Copyright (C) 1991 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -89,7 +89,7 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::getElasticStiffnessMatr
         calcul->addElementaryCharacteristicsField( currElemChara );
     }
     calcul->addFourierModeField( modeFourier );
-    calcul->addTimeField( "PTEMPSR", time_curr );
+    calcul->addTimeField( "PINSTR", time_curr );
     if ( currModel->existsXfem() ) {
         XfemModelPtr currXfemModel = currModel->getXfemModel();
         calcul->addXFEMField( currXfemModel );

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -46,12 +46,12 @@ class MEFS_FACE3PSI(Element):
     calculs = (
         OP.CHAR_MECA_PRES_F(
             te=205,
-            para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PPRESSF, LC.CPRE3DF), (SP.PTEMPSR, LC.MTEMPSR)),
+            para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PPRESSF, LC.CPRE3DF), (SP.PINSTR, LC.MTEMPSR)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.CHAR_MECA_PRES_R(
             te=205,
-            para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PPRESSR, LC.EPRE3DR), (SP.PTEMPSR, LC.MTEMPSR)),
+            para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PPRESSR, LC.EPRE3DR), (SP.PINSTR, LC.MTEMPSR)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.CHAR_MECA_VFAC(

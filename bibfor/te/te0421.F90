@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,7 +67,7 @@ subroutine te0421(option, nomte)
     call jevech('PMATERC', 'L', imate)
     call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
 !
-    call tecach('ONO', 'PTEMPSR', 'L', iret, iad=itemps)
+    call tecach('ONO', 'PINSTR', 'L', iret, iad=itemps)
     if (itemps .eq. 0) then
         nbpar = 0
         nompar = ' '
@@ -221,10 +221,10 @@ subroutine te0421(option, nomte)
 !
         else
             do i = 1, nno
-                zr(ivectu+2*i-2) = zr(ivectu+2*i-2)+poids*((a11* &
-                                                     exx+a12*eyy+a13*ezz)*dfdx(i)+2*g12*exy*dfdy(i))
-                zr(ivectu+2*i-1) = zr(ivectu+2*i-1)+poids*((a12* &
-                                                     exx+a22*eyy+a23*ezz)*dfdy(i)+2*g12*exy*dfdx(i))
+                zr(ivectu+2*i-2) = zr(ivectu+2*i-2) &
+                                   +poids*((a11*exx+a12*eyy+a13*ezz)*dfdx(i)+2*g12*exy*dfdy(i))
+                zr(ivectu+2*i-1) = zr(ivectu+2*i-1) &
+                                   +poids*((a12*exx+a22*eyy+a23*ezz)*dfdy(i)+2*g12*exy*dfdx(i))
             end do
         end if
     end do

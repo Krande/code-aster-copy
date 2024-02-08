@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -93,7 +93,7 @@ subroutine te0559(option, nomte)
     if (enr(3:3) .ne. 'C' .and. enr(4:4) .ne. 'C') go to 100
 !
     call jevech('PLSN', 'L', jlsn)
-    call jevech('PTEMPSR', 'L', itemps)
+    call jevech('PINSTR', 'L', itemps)
     call jevech('PFLUXF', 'L', ifluxf)
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PVECTUR', 'E', ires)
@@ -171,12 +171,18 @@ subroutine te0559(option, nomte)
                     if (flux .gt. 0.d0) then
                         call elrfvf(elrefc, inref, ff, nnops)
                         if (nfiss .gt. 1) then
-                       zr(ires-1+(ia-1)*nddls+(ndim+1)*(1+nfh)+(zi(jheano-1+(ia-1)*nfiss+ifiss)-1) &
-                         *(nlag*ndim+3)+1) = zr(ires-1+(ia-1)*nddls+(ndim+1)*(1+nfh)+(zi(jheano-1+ &
-                                          (ia-1)*nfiss+ifiss)-1)*(nlag*ndim+3)+1)-flux*deltat*ff(ia)
-                       zr(ires-1+(ib-1)*nddls+(ndim+1)*(1+nfh)+(zi(jheano-1+(ia-1)*nfiss+ifiss)-1) &
-                         *(nlag*ndim+3)+1) = zr(ires-1+(ib-1)*nddls+(ndim+1)*(1+nfh)+(zi(jheano-1+ &
-                                          (ia-1)*nfiss+ifiss)-1)*(nlag*ndim+3)+1)-flux*deltat*ff(ib)
+                            zr(ires-1+(ia-1)*nddls+(ndim+1)*(1+nfh)+ &
+                               (zi(jheano-1+(ia-1)*nfiss+ifiss)-1)*(nlag*ndim+3)+1) = &
+                                zr(ires-1+(ia-1)*nddls+(ndim+1)*(1+nfh)+(zi(jheano-1+ &
+                                                                            (ia-1)*nfiss+ifiss)-1) &
+                                   *(nlag*ndim+3)+1) &
+                                -flux*deltat*ff(ia)
+                            zr(ires-1+(ib-1)*nddls+(ndim+1)*(1+nfh)+ &
+                               (zi(jheano-1+(ia-1)*nfiss+ifiss)-1)*(nlag*ndim+3)+1) = &
+                                zr(ires-1+(ib-1)*nddls+(ndim+1)*(1+nfh)+(zi(jheano-1+ &
+                                                                            (ia-1)*nfiss+ifiss)-1) &
+                                   *(nlag*ndim+3)+1) &
+                                -flux*deltat*ff(ib)
                         else
                             zr(ires-1+(ia-1)*nddls+(ndim+1)*(1+nfh)+1) = &
                                 zr(ires-1+(ia-1)*nddls+(ndim+1)*(1+nfh)+1)-flux*deltat*ff(ia)
@@ -284,10 +290,11 @@ subroutine te0559(option, nomte)
                         end do
                         do k = 1, nbar
                             if (nfiss .gt. 1) then
-                             zr(ires-1+(f(i, k)-1)*nddls+(ndim+1)*(1+nfh)+(zi(jheano-1+(f(i, k)-1) &
-                         *nfiss+ifiss)-1)*(nlag*ndim+3)+1) = zr(ires-1+(f(i, k)-1)*nddls+(ndim+1)* &
-                                (1+nfh)+(zi(jheano-1+(f(i, k)-1)*nfiss+ifiss)-1)*(nlag*ndim+3)+1)- &
-                                                           flux*deltat*lact(k)*(ff(f(i, k))+phi)*jac
+                                zr(ires-1+(f(i, k)-1)*nddls+(ndim+1)*(1+nfh)+ &
+                                   (zi(jheano-1+(f(i, k)-1)*nfiss+ifiss)-1)*(nlag*ndim+3)+1) = &
+                                    zr(ires-1+(f(i, k)-1)*nddls+(ndim+1)*(1+nfh)+ &
+                                       (zi(jheano-1+(f(i, k)-1)*nfiss+ifiss)-1)*(nlag*ndim+3)+1)- &
+                                    flux*deltat*lact(k)*(ff(f(i, k))+phi)*jac
                             else
                                 zr(ires-1+(f(i, k)-1)*nddls+(ndim+1)*(1+nfh)+1) = &
                                     zr(ires-1+(f(i, k)-1)*nddls+(ndim+1)*(1+nfh)+1)- &

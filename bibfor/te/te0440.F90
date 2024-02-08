@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -118,9 +118,9 @@ subroutine te0440(option, nomte)
         end do
     end if
 !     PROPRE AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
-    if ((ibid .eq. 0) .and. &
-        (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC') .and. .not.iselli(elrefp)) &
-        call jevech('PPMILTO', 'L', jpmilt)
+    if ((ibid .eq. 0) .and. (enr .eq. 'XH' .or. enr .eq. 'XHT' &
+                             .or. enr .eq. 'XT' .or. enr .eq. 'XHC') &
+        .and. .not. iselli(elrefp)) call jevech('PPMILTO', 'L', jpmilt)
     if (nfiss .gt. 1) call jevech('PFISNO', 'L', jfisno)
 !
 !     PARAMÈTRES DES FORCES VOLUMIQUES
@@ -135,7 +135,7 @@ subroutine te0440(option, nomte)
     elseif ((option .eq. 'CHAR_MECA_FF3D3D') .or. (option .eq. 'CHAR_MECA_FF2D2D')) then
 !
         fonc = .true.
-        call jevech('PTEMPSR', 'L', itemps)
+        call jevech('PINSTR', 'L', itemps)
         if (ndim .eq. 3) call jevech('PFF3D3D', 'L', iforc)
         if (ndim .eq. 2) call jevech('PFF2D2D', 'L', iforc)
 !

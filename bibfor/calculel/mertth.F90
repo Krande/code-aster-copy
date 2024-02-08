@@ -141,7 +141,7 @@ subroutine mertth(model, lload_name, lload_info, cara_elem, mate, mateco, &
                 ligrel(2) = load_name//'.CHTH.LIGRE'
                 lpain(1) = 'PGEOMER'
                 lchin(1) = chgeom
-                lpain(3) = 'PTEMPSR'
+                lpain(3) = 'PINSTR'
                 lchin(3) = time
                 lpain(4) = 'PTEMPEI'
                 lchin(4) = temp_iter
@@ -161,7 +161,7 @@ subroutine mertth(model, lload_name, lload_info, cara_elem, mate, mateco, &
                             lpain(2) = nompaf(k)
                         end if
                         if (option(11:14) .eq. 'PARO') then
-                            lpain(3) = 'PTEMPSR'
+                            lpain(3) = 'PINSTR'
                             lchin(3) = time_move
                         end if
                         if (k .eq. 2) lchin(4) = temp_iter

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -74,7 +74,7 @@ class MEPLSE2(Element):
                 (SP.PFF1D2D, LC.CFOR2DF),
                 (SP.PPRESSF, LC.CPRE2DF),
                 (SP.PGEOMER, LC.EGEOM2D),
-                (SP.PTEMPSR, LC.MTEMPSR),
+                (SP.PINSTR, LC.MTEMPSR),
                 (SP.PTHETAR, DDL_MECA),
                 (OP.CALC_G_XFEM_F.PVARCPR, LC.ZVARCPG),
                 (SP.PVITESS, DDL_MECA),
@@ -105,7 +105,7 @@ class MEPLSE2(Element):
                 (SP.PPRESSF, LC.CPRE2DF),
                 (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PMATERC, LC.CMATERC),
-                (SP.PTEMPSR, LC.MTEMPSR),
+                (SP.PINSTR, LC.MTEMPSR),
                 (OP.CALC_G_F.PTHETAR, LC.ETHETA),
                 (OP.CALC_G_F.PVARCPR, LC.ZVARCPG),
                 (SP.PVITESS, DDL_MECA),
@@ -142,7 +142,7 @@ class MEPLSE2(Element):
                 (SP.PPULPRO, LC.CFREQR),
                 (OP.CALC_K_G_F.PLSN, LC.N1NEUT_R),
                 (OP.CALC_K_G_F.PLST, LC.N1NEUT_R),
-                (SP.PTEMPSR, LC.MTEMPSR),
+                (SP.PINSTR, LC.MTEMPSR),
                 (OP.CALC_K_G_F.PTHETAR, LC.ETHETA),
                 (OP.CALC_K_G_F.PVARCPR, LC.ZVARCPG),
                 (SP.PVARCRR, LC.ZVARCPG),
@@ -175,7 +175,7 @@ class MEPLSE2(Element):
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PPRESSF, LC.CPRE2DF),
                 (SP.PPULPRO, LC.CFREQR),
-                (SP.PTEMPSR, LC.MTEMPSR),
+                (SP.PINSTR, LC.MTEMPSR),
                 (SP.PTHETAR, DDL_MECA),
                 (OP.CALC_K_G_XFEM_F.PVARCPR, LC.ZVARCPG),
                 (SP.PVARCRR, LC.ZVARCPG),
@@ -192,7 +192,7 @@ class MEPLSE2(Element):
         ),
         OP.CHAR_MECA_FF1D2D(
             te=91,
-            para_in=((SP.PFF1D2D, LC.CFOR2DF), (SP.PGEOMER, LC.EGEOM2D), (SP.PTEMPSR, LC.MTEMPSR)),
+            para_in=((SP.PFF1D2D, LC.CFOR2DF), (SP.PGEOMER, LC.EGEOM2D), (SP.PINSTR, LC.MTEMPSR)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.CHAR_MECA_FR1D2D(
@@ -202,7 +202,7 @@ class MEPLSE2(Element):
         ),
         OP.CHAR_MECA_PRES_F(
             te=88,
-            para_in=((SP.PGEOMER, LC.EGEOM2D), (SP.PPRESSF, LC.CPRE2DF), (SP.PTEMPSR, LC.MTEMPSR)),
+            para_in=((SP.PGEOMER, LC.EGEOM2D), (SP.PPRESSF, LC.CPRE2DF), (SP.PINSTR, LC.MTEMPSR)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.CHAR_MECA_PRES_R(
@@ -217,7 +217,7 @@ class MEPLSE2(Element):
                 (SP.PDEPLPR, DDL_MECA),
                 (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PPRESSF, LC.CPRE2DF),
-                (SP.PTEMPSR, LC.MTEMPSR),
+                (SP.PINSTR, LC.MTEMPSR),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
@@ -259,7 +259,7 @@ class MEPLSE2(Element):
                 (SP.PDEPLPR, DDL_MECA),
                 (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PPRESSF, LC.CPRE2DF),
-                (SP.PTEMPSR, LC.MTEMPSR),
+                (SP.PINSTR, LC.MTEMPSR),
             ),
             para_out=((SP.PMATUNS, MMATUNS),),
         ),

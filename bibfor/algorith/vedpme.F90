@@ -95,7 +95,7 @@ subroutine vedpme(modele, charge, infcha, instap, lvediz)
 !
     lpain(2) = 'PGEOMER'
     lchin(2) = chgeom
-    lpain(3) = 'PTEMPSR'
+    lpain(3) = 'PINSTR'
 !
     chtime = '&&VEDPME.CH_INST_R'
     call mecact('V', chtime, 'MODELE', modele(1:8)//'.MODELE', 'INST_R  ', &

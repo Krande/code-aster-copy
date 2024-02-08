@@ -116,7 +116,7 @@ subroutine merit2(modele, nchar, lchar, cara, time, &
         ligrel(1) = modele(1:8)//'.MODELE'
         lpain(1) = 'PGEOMER'
         lchin(1) = chgeom
-        lpain(2) = 'PTEMPSR'
+        lpain(2) = 'PINSTR'
         lchin(2) = time
 !
         do icha = 1, nchar

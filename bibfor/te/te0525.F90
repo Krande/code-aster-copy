@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,7 +61,7 @@ subroutine te0525(option, nomte)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
-    call jevech('PTEMPSR', 'L', itemps)
+    call jevech('PINSTR', 'L', itemps)
     call jevech('PTEMPER', 'L', itemp)
     call jevech('PTEMPEI', 'L', itempi)
     call jevech('PLAGRM ', 'L', ilagrm)

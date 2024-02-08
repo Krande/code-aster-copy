@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -110,7 +110,7 @@ subroutine compEnergyPotential(option, modelz, ligrel, compor, l_temp, &
     call ajchca('PMATERC', chmate, lpain, lchin, nbin, maxin, 'N')
     call ajchca('PVARCRR', chvref, lpain, lchin, nbin, maxin, 'N')
     call ajchca('PVARCPR', chvarc, lpain, lchin, nbin, maxin, 'N')
-    call ajchca('PTEMPSR', chtime, lpain, lchin, nbin, maxin, 'N')
+    call ajchca('PINSTR', chtime, lpain, lchin, nbin, maxin, 'N')
 !
 ! - Computation (with preparation for COMPLEX fields)
 !

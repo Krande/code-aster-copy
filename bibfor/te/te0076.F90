@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,7 +58,7 @@ subroutine te0076(option, nomte)
     call FEBasis%initCell(FECell)
 !
     call jevech('PMATERC', 'L', imate)
-    call jevech('PTEMPSR', 'L', itemps)
+    call jevech('PINSTR', 'L', itemps)
     time = zr(itemps)
 !
     call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))

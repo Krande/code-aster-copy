@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -100,7 +100,7 @@ subroutine te0445(nomopt, nomte)
 !
 ! --- Compute rhs = 1/dt * rhs_mass - (1-theta) * rhs_rigi
 !
-    call jevech('PTEMPSR', 'L', itemps)
+    call jevech('PINSTR', 'L', itemps)
     dtime = zr(itemps+1)
     theta = zr(itemps+2)
 !

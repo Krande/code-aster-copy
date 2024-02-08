@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -203,7 +203,7 @@ for cmp in (
             ),
             OP.MECA_DDLI_F(
                 te=330,
-                para_in=((SP.PDDLIMF, LC.MDDLIMF), (SP.PGEOMER, MGEOMER), (SP.PTEMPSR, LC.MTEMPSR)),
+                para_in=((SP.PDDLIMF, LC.MDDLIMF), (SP.PGEOMER, MGEOMER), (SP.PINSTR, LC.MTEMPSR)),
                 para_out=((SP.PVECTUR, MVECTUR),),
             ),
             OP.MECA_DDLI_R(

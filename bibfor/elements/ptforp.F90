@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -240,7 +240,7 @@ subroutine ptforp(itype, option, nomte, a, a2, xl, ist, nno, ncf, pgl, fer, fei)
     else if ((option .eq. 'CHAR_MECA_FF1D1D') .or. (option .eq. 'CHAR_MECA_SF1D1D')) then
         nbpar = 12; temps = 0.0d0
 !       forces reparties par fonctions
-        call tecach('NNO', 'PTEMPSR', 'L', iret, iad=itemps)
+        call tecach('NNO', 'PINSTR', 'L', iret, iad=itemps)
         if (iret .eq. 0) then
             temps = zr(itemps)
             nbpar = 13

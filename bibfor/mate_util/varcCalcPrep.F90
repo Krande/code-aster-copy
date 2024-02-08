@@ -205,14 +205,14 @@ subroutine varcCalcPrep(modelz, cara_elemz, matecoz, &
 !
     if (time_comp .eq. '-') then
         nbin = nbin+1
-        lpain(nbin) = 'PTEMPSR'
+        lpain(nbin) = 'PINSTR'
         lchin(nbin) = time_prev(1:19)
         nbin = nbin+1
         lpain(nbin) = 'PVARCPR'
         lchin(nbin) = vrcmoi(1:19)
     elseif (time_comp .eq. '+') then
         nbin = nbin+1
-        lpain(nbin) = 'PTEMPSR'
+        lpain(nbin) = 'PINSTR'
         lchin(nbin) = time_curr(1:19)
         nbin = nbin+1
         lpain(nbin) = 'PVARCPR'

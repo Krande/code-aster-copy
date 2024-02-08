@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! Copyright (C) 2022 - Anthony McDonald - anthony.mcdonald .at. wave-venture.com
 ! This file is part of code_aster.
 !
@@ -167,7 +167,7 @@ subroutine te0435(option, nomte)
 
     if (option(10:16) .eq. '_PRSU_F') then
         call jevech('PPRESSF', 'L', i_pres)
-        call jevech('PTEMPSR', 'L', i_temp)
+        call jevech('PINSTR', 'L', i_temp)
         valpar(4) = zr(i_temp)
         nompar(4) = 'INST'
         nompar(1) = 'X'

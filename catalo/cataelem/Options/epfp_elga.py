@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ PDEFOPG = OutputParameter(
 
 
 EPFP_ELGA = Option(
-    para_in=(PCOMPOR, SP.PGEOMER, SP.PMATERC, SP.PTEMPSR, PVARCPR, SP.PVARCRR, SP.PVARIGR),
+    para_in=(PCOMPOR, SP.PGEOMER, SP.PMATERC, SP.PINSTR, PVARCPR, SP.PVARCRR, SP.PVARIGR),
     para_out=(PDEFOPG,),
     condition=(CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),),
     comment="""  EPFP_ELGA : DEFORMATIONS DE FLUAGE PROPRE PAR ELEMENTS AUX POINTS DE GAUSS

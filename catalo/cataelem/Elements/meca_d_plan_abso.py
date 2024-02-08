@@ -125,7 +125,7 @@ class MEPASE2(Element):
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PONDPLA, LC.CONDPLA),
                 (SP.PONDPLR, LC.CONDPLR),
-                (SP.PTEMPSR, CTEMPSR),
+                (SP.PINSTR, CTEMPSR),
                 (OP.ONDE_PLAN.PVARCPR, LC.ZVARCPG),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),

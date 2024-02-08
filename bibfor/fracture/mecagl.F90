@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -373,7 +373,7 @@ subroutine mecagl(option, result, modele, depla, thetai, &
             chtime = '&&MECAGL.CH_INST_R'
             call mecact('V', chtime, 'MODELE', modelLigrel, 'INST_R', &
                         ncmp=1, nomcmp='INST', sr=time)
-            lpain(nchin+1) = 'PTEMPSR'
+            lpain(nchin+1) = 'PINSTR'
             lchin(nchin+1) = chtime
             nchin = nchin+1
         end if
