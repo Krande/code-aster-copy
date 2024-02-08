@@ -245,7 +245,6 @@ class MIPLQU8(Element):
             mater=("RIGI", "MASS", "NOEU", "FPG1"),
         ),
         ElrefeLoc(MT.QU4, gauss=("RIGI=FPG9",)),
-        ElrefeLoc(MT.QU4, gauss=("RIGI=FPG9",)),
     )
     calculs = (
         OP.CALC_G(
@@ -826,6 +825,7 @@ class MIPLQU8(Element):
         OP.TOU_INI_ELGA(
             te=99,
             para_out=(
+                (OP.TOU_INI_ELGA.PDEPL_R, LC.EGDEP2D),
                 (OP.TOU_INI_ELGA.PGEOM_R, EGGEOM_R),
                 (OP.TOU_INI_ELGA.PNEUT_F, EGNEUT_F),
                 (OP.TOU_INI_ELGA.PNEUT_R, EGNEUT_R),
