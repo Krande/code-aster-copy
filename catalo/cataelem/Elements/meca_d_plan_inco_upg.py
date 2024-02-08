@@ -245,6 +245,7 @@ class MIPLQU8(Element):
             mater=("RIGI", "MASS", "NOEU", "FPG1"),
         ),
         ElrefeLoc(MT.QU4, gauss=("RIGI=FPG9",)),
+        ElrefeLoc(MT.QU4, gauss=("RIGI=FPG9",)),
     )
     calculs = (
         OP.CALC_G(
