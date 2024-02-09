@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,8 +65,8 @@ subroutine resi_ther(model, cara_elem, mate, time, compor, &
 ! In  time             : time (<CARTE>)
 ! In  temp_prev        : previous temperature
 ! In  temp_iter        : incrementaltemperature field at current Newton iteration
-! In  hydr_prev        : previous hydratation
-! In  hydr_curr        : current hydratation
+! In  hydr_prev        : previous hydration
+! In  hydr_curr        : current hydration
 ! In  dry_curr         : current drying
 ! In  compor           : name of comportment definition (field)
 ! In  varc_curr        : command variable for current time
@@ -157,7 +157,7 @@ subroutine resi_ther(model, cara_elem, mate, time, compor, &
 
     if (.not. l_stat) then
 !
-! --- Compute hydratation
+! --- Compute hydration
 !
         lpain(1) = 'PMATERC'
         lchin(1) = mate(1:19)

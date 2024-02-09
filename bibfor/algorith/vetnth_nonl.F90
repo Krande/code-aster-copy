@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,7 +70,7 @@ subroutine vetnth_nonl(model, cara_elem, mate, mateco, time, compor, &
 ! In  base             : JEVEUX base for object
 ! In  dry_prev         : previous drying
 ! In  dry_curr         : current drying
-! In  hydr_prev        : previous hydratation
+! In  hydr_prev        : previous hydration
 !
 ! --------------------------------------------------------------------------------------------------
 !

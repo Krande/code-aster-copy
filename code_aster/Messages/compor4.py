@@ -155,4 +155,10 @@ RUPT_TURON : Au moins l'un des paramètres matériau (%(k1)s, %(k2)s, %(k3)s, %(
 Ils doivent être non-nuls.
 """
     ),
+    75: _(
+        """
+La loi de comportement MFront que vous utilisez nécessite la variable externe %(k2)s qui correspond à la variable de commande %(k1)s.
+Veuillez renseigner les valeurs de cette variable de commande dans le mot-clé AFFE_VARC de DEFI_MATERIAU.
+"""
+    ),
 }

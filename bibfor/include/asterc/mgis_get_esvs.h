@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,6 +19,6 @@
 interface
     subroutine mgis_get_esvs(extern_addr, names)
         character(len=16), intent(in) :: extern_addr
-        character(len=8), intent(out) :: names(*)
+        character(len=64), intent(out) :: names(*)
     end subroutine mgis_get_esvs
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,8 +51,8 @@ subroutine ntetcr(nume_dof, ds_inout, &
 ! In  nume_dof         : name of nume_dof object (numbering equation)
 ! In  compor           : name of <CARTE> COMPOR
 ! In  list_load        : name of datastructure for list of loads
-! In  hydr             : name of field for hydratation
-! In  hydr_init        : name of field for initialhydratation
+! In  hydr             : name of field for hydration
+! In  hydr_init        : name of field for initialhydration
 ! IO  ds_inout         : datastructure for input/output management
 !
 ! --------------------------------------------------------------------------------------------------

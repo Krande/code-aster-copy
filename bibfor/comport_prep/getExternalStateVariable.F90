@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,6 +22,7 @@ subroutine getExternalStateVariable(rela_comp, rela_code_py, &
                                     extern_addr, variExteCode)
 !
     use NonLin_Datastructure_type
+    use Behaviour_module, only: getAsterVariableName, getMFrontVariableName
 !
     implicit none
 !
@@ -59,21 +60,22 @@ subroutine getExternalStateVariable(rela_comp, rela_code_py, &
 !
     integer :: nb_exte, i_exte, idummy1, idummy2, i_exte_list
     integer, parameter :: nb_exte_list = 32
-    character(len=8) :: name_exte(EXTE_ESVA_NBMAXI)
+    character(len=64) :: name_exte(EXTE_ESVA_NBMAXI)
+    character(len=8) :: varc_aster
 
     integer :: tabcod(60)
-    character(len=16), parameter :: name_varc(nb_exte_list) = (/ &
-                                    'ELTSIZE1', 'ELTSIZE2', 'COORGA  ', &
-                                    'GRADVELO', 'HYGR    ', 'NEUT1   ', &
-                                    'NEUT2   ', 'TEMP    ', 'DTX     ', &
-                                    'DTY     ', 'DTZ     ', 'X       ', &
-                                    'Y       ', 'Z       ', 'SECH    ', &
-                                    'HYDR    ', 'CORR    ', 'IRRA    ', &
-                                    'EPSAXX  ', 'EPSAYY  ', 'EPSAZZ  ', &
-                                    'EPSAXY  ', 'EPSAXZ  ', 'EPSAYZ  ', &
-                                    'PFERRITE', 'PPERLITE', 'PBAINITE', &
-                                    'PMARTENS', 'ALPHPUR ', 'ALPHBET ', &
-                                    'TIME    ', 'TEMPREFE'/)
+    character(len=8), parameter :: name_varc(nb_exte_list) = (/ &
+                                   'ELTSIZE1', 'ELTSIZE2', 'COORGA  ', &
+                                   'GRADVELO', 'HYGR    ', 'NEUT1   ', &
+                                   'NEUT2   ', 'TEMP    ', 'DTX     ', &
+                                   'DTY     ', 'DTZ     ', 'X       ', &
+                                   'Y       ', 'Z       ', 'SECH    ', &
+                                   'HYDR    ', 'CORR    ', 'IRRA    ', &
+                                   'EPSAXX  ', 'EPSAYY  ', 'EPSAZZ  ', &
+                                   'EPSAXY  ', 'EPSAXZ  ', 'EPSAYZ  ', &
+                                   'PFERRITE', 'PPERLITE', 'PBAINITE', &
+                                   'PMARTENS', 'ALPHPUR ', 'ALPHBET ', &
+                                   'TIME    ', 'TEMPREFE'/)
     aster_logical, parameter :: l_allow_mfront(nb_exte_list) = (/.true., .false., .false., &
                                                                  .false., .true., .true., &
                                                                  .true., .true., .true., &
@@ -115,7 +117,8 @@ subroutine getExternalStateVariable(rela_comp, rela_code_py, &
     tabcod = 0
     do i_exte = 1, nb_exte
         do i_exte_list = 1, nb_exte_list
-            if (name_exte(i_exte) .eq. name_varc(i_exte_list)) then
+            varc_aster = getAsterVariableName(name_exte(i_exte))
+            if (varc_aster .eq. name_varc(i_exte_list)) then
                 tabcod(i_exte_list) = 1
                 if (.not. l_allow_mfront(i_exte_list) .and. &
                     (l_mfront_proto .or. l_mfront_offi)) then

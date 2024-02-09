@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,7 +61,7 @@ subroutine nmvccc(model, nbin, nbout, lpain, lchin, &
 ! In  lpaout         : list of output field parameters
 ! IO  lchout         : list of output fields
 ! In  exis_temp      : .true. if temperature variable command exists
-! In  exis_hydr      : .true. if hydratation variable command exists
+! In  exis_hydr      : .true. if hydration variable command exists
 ! In  exis_ptot      : .true. if total pressure (THM) variable command exists
 ! In  exis_sech      : .true. if drying variable command exists
 ! In  exis_epsa      : .true. if non-elastic strain variable command exists
@@ -95,7 +95,7 @@ subroutine nmvccc(model, nbin, nbout, lpain, lchin, &
         call reajre(vect_elem, lchout(1), base)
     end if
 !
-! - Hydratation
+! - Hydration
 !
     if (exis_hydr) then
         nbr = nbr+1

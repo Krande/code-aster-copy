@@ -20,6 +20,7 @@ betaM.setEntryName("betaM");
 @LocalVariable stress pSwellP;     // Swelling pressure at current time step
 
 @ExternalStateVariable stress PCAP; // Declare the capillary pressure
+PCAP.setEntryName("CapillaryPressure");
 
 @AuxiliaryStateVariable strain dSdPCAP; // One of the component of the serivative of sig w.r.t dPCAP
 dSdPCAP.setEntryName("dSdPCAP");

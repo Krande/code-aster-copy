@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ subroutine varcDetect(mate, l_temp, l_hydr, l_ptot, l_sech, l_epsa, l_meta)
 !
 ! In  mate             : name of material characteristics (field)
 ! Out l_temp           : .true. if temperature exists
-! Out l_hydr           : .true. if hydratation exists
+! Out l_hydr           : .true. if hydration exists
 ! Out l_ptot           : .true. if total pressure (THM) exists
 ! Out l_sech           : .true. if drying exists
 ! Out l_epsa           : .true. if non-elastic strain exists

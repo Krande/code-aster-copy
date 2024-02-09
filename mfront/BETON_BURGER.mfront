@@ -54,9 +54,15 @@ nu.setGlossaryName( "PoissonRatio" );
 @StateVariable Stensor EDEVI;
 @StateVariable Stensor Edess;
 
-@ExternalStateVariable real HYGR;
-@ExternalStateVariable real HYDR;
-@ExternalStateVariable real SECH;
+@ExternalStateVariable real C;
+@ExternalStateVariable real H;
+@ExternalStateVariable real xi;
+
+
+C.setEntryName("ConcreteDrying");
+H.setEntryName("Hygrometry");
+xi.setEntryName("ConcreteHydration");
+
 
 @AuxiliaryStateVariable Stensor EF;
 
@@ -94,7 +100,7 @@ nu.setGlossaryName( "PoissonRatio" );
     real stresP = trace( sig ) / 3.;
     Stensor stresD = sig - stresP * Stensor::Id();
     real Tmoy = ( 2. * T + dT ) / 2.;
-    real Vsech = fabs( dHYGR );
+    real Vsech = fabs( dH);
     real KRS_T = K_RS * exp( QSR_K * ( 1. / ( 273. + Tmoy ) - 1. / ( 273 + TEMP_0_C ) ) );
     real KRD_T = K_RD * exp( QSR_K * ( 1. / ( 273. + Tmoy ) - 1. / ( 273 + TEMP_0_C ) ) );
     real NRS_T = ETA_RS * exp( QSR_K * ( 1. / ( 273. + Tmoy ) - 1. / ( 273 + TEMP_0_C ) ) );
@@ -115,10 +121,10 @@ nu.setGlossaryName( "PoissonRatio" );
     }
 
     real eexp = exp( val );
-    fESPHR = dESPHR - ( ( HYGR * stresP - KRS_T * ( ESPHR + dESPHR ) ) / NRS_T ) * dt;
-    fEDEVR = dEDEVR - ( HYGR * stresD - KRD_T * ( EDEVR + dEDEVR ) ) / NRD_T * dt;
-    fESPHI = dESPHI - ( HYGR * stresP / ( NIS_T * eexp ) ) * dt;
-    fEDEVI = dEDEVI - ( HYGR * stresD / ( NID_T * eexp ) ) * dt;
+    fESPHR = dESPHR - ( ( H * stresP - KRS_T * ( ESPHR + dESPHR ) ) / NRS_T ) * dt;
+    fEDEVR = dEDEVR - ( H * stresD - KRD_T * ( EDEVR + dEDEVR ) ) / NRD_T * dt;
+    fESPHI = dESPHI - ( H * stresP / ( NIS_T * eexp ) ) * dt;
+    fEDEVI = dEDEVI - ( H * stresD / ( NID_T * eexp ) ) * dt;
     if ( ETA_FD > 0. ) {
         fEdess = dEdess - ( 1. / ETA_FD ) * Vsech * sig;
     } else {

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,8 +54,8 @@ subroutine nmetcc(field_type, algo_name, init_name, &
 ! In  compor           : name of <CARTE> COMPOR
 ! In  ds_contact       : datastructure for contact management
 ! In  sddyna           : name of dynamic parameters datastructure
-! In  hydr             : name of field for hydratation (HYDR_ELNO)
-! In  hydr_init        : name of field for initial hydratation
+! In  hydr             : name of field for hydration (HYDR_ELNO)
+! In  hydr_init        : name of field for initial hydration
 ! In  temp_init        : name of field for initial temperature
 !
 !     if algo_name = #H#TYPCHA#

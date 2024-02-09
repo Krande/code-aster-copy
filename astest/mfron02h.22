@@ -14,10 +14,10 @@
 @MaterialProperty<constant> 'Ea_R'   0 ;
 @MaterialProperty<constant> 'Tref'   20 ;
 @MaterialProperty<constant> 'NFD'   5.8E9;
-@MaterialProperty<constant> 'SECHini'  1.;
+@MaterialProperty<constant> 'Cini'  1.;
 
 @ExternalStateVariable 'Temperature' 20;
-@ExternalStateVariable 'SECH' 1.;
+@ExternalStateVariable 'ConcreteDrying' 1.;
 
 @Real 't1' '28.*3600.*24.' ;
 @Real 't2' 't1+3600' ;
