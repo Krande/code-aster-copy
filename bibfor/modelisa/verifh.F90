@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ subroutine verifh(fami, kpg, ksp, poum, j_mater, &
 ! In  j_mater      : coded material address
 ! In  materi       : name of material if multi-material Gauss point (PMF)
 ! Out epshy        : strain from autogenous shrinkage (retrait endogène)
-! Out ihydr_       : 0 if hydratation is defined
+! Out ihydr_       : 0 if hydration is defined
 !!                   1 if not
 !
 ! --------------------------------------------------------------------------------------------------

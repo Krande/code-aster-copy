@@ -109,9 +109,12 @@ seq.setGlossaryName( "HillStress" );
 @LocalVariable real M3[6];
 
 // Variables d'état issues d'aster
-@ExternalStateVariable real TIME;     // instant courant
-@ExternalStateVariable real TEMPREFE; // T_REF en °C car donné par Aster, température à laquelle il
-                                      // n'y a pas deformations thermiques
+@ExternalStateVariable real inst; // instant courant
+@ExternalStateVariable real Tref; // T_REF en °C car donné par Aster, température à laquelle il
+                                  // n'y a pas deformations thermiques
+inst.setEntryName("Time");
+Tref.setEntryName("ReferenceTemperature");
+
 
 @IsTangentOperatorSymmetric true;
 @TangentOperator {
@@ -174,13 +177,13 @@ seq.setGlossaryName( "HillStress" );
     if ( pch == 0.0 ) { // Tc ou Tr ne sont à chercher que si on n'est pas en changement de phase
         if ( Zb == 0.0 ) { // cas Zb=0 : on cherche Tc pour initier un chauffage
             if ( ( T + 273.00 < TDEQ_K ) && ( T_ >= TDEQ_K ) ) {
-                tdeq = TIME + ( dt / dT ) * ( TDEQ_K - T_ );
+                tdeq = inst + ( dt / dT ) * ( TDEQ_K - T_ );
             }
             if ( T > TFEQ ) {
                 Zb = 1.0; // pour les cas où on commence à chaud
             } else if ( T_ > TDEQ_K ) {
-                if ( TIME != tdeq ) {
-                    const real Vch = ( T_ - TDEQ_K ) / ( TIME - tdeq );
+                if ( inst != tdeq ) {
+                    const real Vch = ( T_ - TDEQ_K ) / ( inst - tdeq );
                     // température de début de changement de phase au chauffage en °C
                     const real Tc = ( Vch < 0.1 ) ? TDEQ : T1C * pow( Vch, T2C );
                     // température de début de changement de phase au chauffage en °K
@@ -195,10 +198,10 @@ seq.setGlossaryName( "HillStress" );
 
         if ( Zb == 1.0 ) { // cas Z=1 : on cherche Tr pour initier un refroidissement
             if ( ( T + 273.00 > TFEQ_K ) && ( T_ <= TFEQ_K ) ) {
-                tfeq = TIME + ( dt / dT ) * ( TFEQ_K - T_ );
+                tfeq = inst + ( dt / dT ) * ( TFEQ_K - T_ );
             }
             if ( T_ < TFEQ_K ) {
-                const real Vref = fabs( T_ - TFEQ_K ) / ( TIME - tfeq );
+                const real Vref = fabs( T_ - TFEQ_K ) / ( inst - tfeq );
                 // température de début de changement de phase au refroidissement en °C
                 const real Tr = ( Vref < 0.1 ) ? TFEQ : T1R + T2R * log( Vref );
                 // température de début de changement de phase au refroidissement en °K
@@ -261,7 +264,7 @@ seq.setGlossaryName( "HillStress" );
     real alpha_eq_p =
         ( 1 - Zb_ ) * F_ALPHA + Zb_ * C_ALPHA; // alpha equivalent en fin de pas de temps
     fepsther = epsther + depsther -
-               ( alpha_eq_p * ( T_ - ( TEMPREFE + 273 ) ) ); // T_ en K, T en °C, TEMPREFE en °C
+               ( alpha_eq_p * ( T_ - ( Tref + 273 ) ) ); // T_ en K, T en °C, Tref en °C
 
     // Za proportion en phase alpha en milieu de pas de temps
     const real Za = 1.0 - Zb_;

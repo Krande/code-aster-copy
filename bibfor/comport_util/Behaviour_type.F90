@@ -46,7 +46,7 @@ module Behaviour_type
         real(kind=8)  :: temp_prev = 0.d0, temp_curr = 0.d0, temp_incr = 0.d0, temp_refe = 0.d0
 ! ----- Drying
         real(kind=8)  :: sech_prev = 0.d0, sech_curr = 0.d0, sech_incr = 0.d0, sech_refe = 0.d0
-! ----- Hydratation
+! ----- Hydration
         real(kind=8)  :: hydr_prev = 0.d0, hydr_curr = 0.d0, hydr_incr = 0.d0
 ! ----- Hygrometry
         real(kind=8)  :: hygr_prev = 0.d0, hygr_curr = 0.d0, hygr_incr = 0.d0
@@ -247,5 +247,19 @@ module Behaviour_type
 ! ----- Flag for debug
         aster_logical :: lDebug = ASTER_FALSE
     end type Behaviour_PrepPara
+!
+! ----- Correspondance between MFront and code_aster names
+    character(len=64), dimension(2*11), public :: mapping
+    data mapping/"ELTSIZE1", "ElementSize", &
+        "HYDR", "ConcreteHydration", &
+        "HYGR", "Hygrometry", &
+        "PCAP", "CapillaryPressure", &
+        "PBAINITE", "BainitePhaseRatio", &
+        "PFERRITE", "FerritePhaseRatio", &
+        "PMARTENS", "MartensitePhaseRatio", &
+        "PPERLITE", "PerlitePhaseRatio", &
+        "SECH", "ConcreteDrying", &
+        "TEMPREFE", "ReferenceTemperature", &
+        "TIME", "Time"/
 !
 end module

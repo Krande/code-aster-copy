@@ -5,7 +5,7 @@
  * @file ExternalStateVariable.h
  * @brief Header of ExternalStateVariables
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -93,7 +93,7 @@ enum class externVarEnumInt : int {
     Geometry,
     Corrosion,
     IrreversibleStrain,
-    ConcreteHydratation,
+    ConcreteHydration,
     Irradiation,
     SteelPhases,
     ZircaloyPhases,
@@ -119,7 +119,7 @@ class ExternalVariableTraits {
             return std::string( "CORR" );
         } else if ( e == externVarEnumInt::IrreversibleStrain ) {
             return std::string( "EPSA" );
-        } else if ( e == externVarEnumInt::ConcreteHydratation ) {
+        } else if ( e == externVarEnumInt::ConcreteHydration ) {
             return std::string( "HYDR" );
         } else if ( e == externVarEnumInt::Irradiation ) {
             return std::string( "IRRA" );
@@ -162,7 +162,7 @@ class ExternalVariableTraits {
         } else if ( e == "EPSA" ) {
             return externVarEnumInt::IrreversibleStrain;
         } else if ( e == "HYDR" ) {
-            return externVarEnumInt::ConcreteHydratation;
+            return externVarEnumInt::ConcreteHydration;
         } else if ( e == "IRRA" ) {
             return externVarEnumInt::Irradiation;
         } else if ( e == "M_ACIER" ) {
@@ -194,7 +194,7 @@ class ExternalVariableTraits {
             return false;
         } else if ( e == externVarEnumInt::IrreversibleStrain ) {
             return true;
-        } else if ( e == externVarEnumInt::ConcreteHydratation ) {
+        } else if ( e == externVarEnumInt::ConcreteHydration ) {
             return true;
         } else if ( e == externVarEnumInt::Irradiation ) {
             return false;
@@ -223,7 +223,7 @@ class ExternalVariableTraits {
             return std::string( "CHAR_MECA_TEMP_R" );
         } else if ( e == externVarEnumInt::IrreversibleStrain ) {
             return std::string( "CHAR_MECA_EPSA_R" );
-        } else if ( e == externVarEnumInt::ConcreteHydratation ) {
+        } else if ( e == externVarEnumInt::ConcreteHydration ) {
             return std::string( "CHAR_MECA_HYDR_R" );
         } else if ( e == externVarEnumInt::SteelPhases ) {
             return std::string( "CHAR_MECA_META_Z" );

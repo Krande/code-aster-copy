@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,7 +53,7 @@ subroutine varcCalcComp(modelz, chsithz, &
 ! In  model            : name of model
 ! In  chsith           : commande variable for temperature in XFEM
 ! In  l_temp           : .true. if temperature exists
-! In  l_hydr           : .true. if hydratation exists
+! In  l_hydr           : .true. if hydration exists
 ! In  l_ptot           : .true. if total pressure (THM) exists
 ! In  l_sech           : .true. if drying exists
 ! In  l_epsa           : .true. if non-elastic strain exists

@@ -48,7 +48,11 @@ nu.setGlossaryName( "PoissonRatio" );
 @AuxiliaryStateVariable real ksi;
 
 // variables de commande aster
-@ExternalStateVariable real PFERRITE, PPERLITE, PBAINITE, PMARTENS;
+@ExternalStateVariable real PF, PP, PB, PM;
+PF.setEntryName("FerritePhaseRatio");
+PP.setEntryName("PerlitePhaseRatio");
+PB.setEntryName("BainitePhaseRatio");
+PM.setEntryName("MartensitePhaseRatio");
 
 @LocalVariable stress lambda;
 @LocalVariable stress mu;
@@ -62,14 +66,14 @@ nu.setGlossaryName( "PoissonRatio" );
     lambda = computeLambda( young, nu );
     mu = computeMu( young, nu );
     // Calcul des phases a l'instant t+ (stockees dans Z[])
-    Zm[0] = PFERRITE;
-    Zm[1] = PPERLITE;
-    Zm[2] = PBAINITE;
-    Zm[3] = PMARTENS;
-    dZ[0] = dPFERRITE;
-    dZ[1] = dPPERLITE;
-    dZ[2] = dPBAINITE;
-    dZ[3] = dPMARTENS;
+    Zm[0] = PF;
+    Zm[1] = PP;
+    Zm[2] = PB;
+    Zm[3] = PM;
+    dZ[0] = dPF;
+    dZ[1] = dPP;
+    dZ[2] = dPB;
+    dZ[3] = dPM;
     zalpha = 0.;
     for ( unsigned short i = 0; i != 4; ++i ) {
         Z[i] = Zm[i] + dZ[i];

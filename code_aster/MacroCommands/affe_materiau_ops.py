@@ -66,7 +66,7 @@ def affe_materiau_ops(self, **args):
         for (lmat, meshEntity) in refMaterialField.getMaterialsOnMeshEntities():
             entityType = meshEntity.getType()
             if entityType == EntityType.AllMeshEntitiesType:
-                fwk.append(dict(TOUT="OUI", MATER=lmat))
+                fkw.append(dict(TOUT="OUI", MATER=lmat))
             elif entityType == EntityType.GroupOfCellsType:
                 fkw.append(dict(GROUP_MA=meshEntity.getNames(), MATER=lmat))
             else:
@@ -174,38 +174,22 @@ def createExternalStateVariable(fkw, nomVarc, mesh, kwTout, grp):
 
     # Set transient result for value of external state variable
     if evol is not None:
+
+        def _name2field(name):
+            if name == "HYDR":
+                return "HYDR_ELNO"
+            if name in ("M_ACIER", "M_ZIRC"):
+                return "META_ELNO"
+            if name.startswith("NEUT"):
+                return "NEUT"
+            if name == "SECH":
+                return "TEMP"
+            if name not in ("CORR", "EPSA", "GEOM", "IRRA", "PTOT", "TEMP"):
+                raise KeyError("Unknown external state variables")
+            return name
+
         fieldName = fkw.get("NOM_CHAM")
-        if fieldName is None:
-            if nomVarc == "TEMP":
-                evolParameter = EvolutionParameter(evol, "TEMP")
-            elif nomVarc == "NEUT1":
-                evolParameter = EvolutionParameter(evol, "NEUT")
-            elif nomVarc == "NEUT2":
-                evolParameter = EvolutionParameter(evol, "NEUT")
-            elif nomVarc == "NEUT3":
-                evolParameter = EvolutionParameter(evol, "NEUT")
-            elif nomVarc == "GEOM":
-                evolParameter = EvolutionParameter(evol, "GEOM")
-            elif nomVarc == "CORR":
-                evolParameter = EvolutionParameter(evol, "CORR")
-            elif nomVarc == "IRRA":
-                evolParameter = EvolutionParameter(evol, "IRRA")
-            elif nomVarc == "HYDR":
-                evolParameter = EvolutionParameter(evol, "HYDR_ELNO")
-            elif nomVarc == "SECH":
-                evolParameter = EvolutionParameter(evol, "TEMP")
-            elif nomVarc == "PTOT":
-                evolParameter = EvolutionParameter(evol, "PTOT")
-            elif nomVarc == "EPSA":
-                evolParameter = EvolutionParameter(evol, "EPSA")
-            elif nomVarc == "M_ACIER":
-                evolParameter = EvolutionParameter(evol, "META_ELNO")
-            elif nomVarc == "M_ZIRC":
-                evolParameter = EvolutionParameter(evol, "META_ELNO")
-            else:
-                raise RuntimeError("Unknown external state variables")
-        else:
-            evolParameter = EvolutionParameter(evol, fieldName)
+        evolParameter = EvolutionParameter(evol, fieldName or _name2field(nomVarc))
 
         foncInst = fkw.get("FONC_INST")
         if foncInst is not None:

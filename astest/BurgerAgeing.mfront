@@ -27,7 +27,7 @@
 @MaterialProperty real Ea_R;
 @MaterialProperty real Tref;
 @MaterialProperty real NFD;
-@MaterialProperty real SECHini;
+@MaterialProperty real Cini;
 
 @StateVariable real ESPHR;
 @StateVariable real ESPHI;
@@ -38,7 +38,9 @@
 @AuxiliaryStateVariable real t0;
 @AuxiliaryStateVariable Stensor EF;
 
-@ExternalStateVariable real SECH;
+@ExternalStateVariable real C;
+
+C.setEntryName("ConcreteDrying");
 
 @LocalVariable real lambda;
 @LocalVariable real mu;
@@ -64,7 +66,7 @@
 
 @Integrator {
     real stresP = trace( sig ) / 3.;
-    real Vsech = fabs( dSECH );
+    real Vsech = fabs( dC );
     Stensor stresD = sig - stresP * Stensor::Id();
     real Tmoy = ( 2. * T + dT ) / 2.;
     real KRS_T = KRS * exp( Ea_R * ( 1. / ( 273. + Tmoy ) - 1. / ( 273 + Tref ) ) );
@@ -76,15 +78,15 @@
     // real
     // emax=sqrt(((ESPHI+dESPHI)*Stensor::Id()+(EDEVI+dEDEVI))|((ESPHI+dESPHI)*Stensor::Id()+(EDEVI+dEDEVI)));
     // real eexp=exp((emax)/KAPPA);
-    fESPHR = dESPHR - ( ( SECH / SECHini * stresP - KRS_T * ( ESPHR + dESPHR ) ) / NRS_T ) * dt;
-    fEDEVR = dEDEVR - ( ( SECH / SECHini * stresD - KRD_T * ( EDEVR + dEDEVR ) ) / NRD_T ) * dt;
+    fESPHR = dESPHR - ( ( C / Cini * stresP - KRS_T * ( ESPHR + dESPHR ) ) / NRS_T ) * dt;
+    fEDEVR = dEDEVR - ( ( C / Cini * stresD - KRD_T * ( EDEVR + dEDEVR ) ) / NRD_T ) * dt;
 
-    fESPHI = dESPHI - ( SECH / SECHini * stresP / ( NIS_T * pow( t0 + 0.5 * dt, Alpha ) ) ) * dt;
-    fEDEVI = dEDEVI - ( SECH / SECHini * stresD / ( NID_T * pow( t0 + 0.5 * dt, Alpha ) ) ) * dt;
+    fESPHI = dESPHI - ( C / Cini * stresP / ( NIS_T * pow( t0 + 0.5 * dt, Alpha ) ) ) * dt;
+    fEDEVI = dEDEVI - ( C / Cini * stresD / ( NID_T * pow( t0 + 0.5 * dt, Alpha ) ) ) * dt;
     if ( NFD > 0. ) {
-        fEdess = dEdess - ( 1. / NFD ) * Vsech / SECHini * sig;
+        fEdess = dEdess - ( 1. / NFD ) * Vsech / Cini * sig;
     } else {
-        fEdess = dEdess - 0. * Vsech / SECHini * sig;
+        fEdess = dEdess - 0. * Vsech / Cini * sig;
     }
     feel = deel - ( deto - dEDEVR - dEDEVI - dEdess - ( dESPHR + dESPHI ) * Stensor::Id() );
 }

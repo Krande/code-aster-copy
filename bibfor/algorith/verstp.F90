@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -74,8 +74,8 @@ subroutine verstp(model, lload_name, lload_info, cara_elem, mate, &
 ! In  varc_curr        : command variable for current time
 ! In  vect_elem        : name of vect_elem result
 ! In  base             : JEVEUX base for object
-! In  hydr_prev        : previous hydratation
-! In  hydr_curr        : current hydratation
+! In  hydr_prev        : previous hydration
+! In  hydr_curr        : current hydration
 ! In  dry_prev         : previous drying
 ! In  dry_curr         : current drying
 !
