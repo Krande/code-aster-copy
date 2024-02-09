@@ -77,6 +77,37 @@ cata_msg = {
  correction statique non prise en compte pour l'option: %(k1)s
 """
     ),
+    11: _(
+        """
+ trop d'amortissements modaux
+   nombre d'amortissement: %(i1)d
+   nombre de mode        : %(i2)d
+"""
+    ),
+    13: _(
+        """
+ il manque des amortissements modaux
+   nombre d'amortissements: %(i1)d
+   nombre de modes        : %(i2)d
+"""
+    ),
+    14: _(
+        """
+ on ne peut pas demander de réponse secondaire sans la réponse primaire
+"""
+    ),
+    15: _(
+        """
+ analyse spectrale :
+   la base modale utilisée est               : %(k1)s
+   le nombre de vecteurs de base est         : %(i1)d
+   la règle de combinaison modale est        : %(k2)s
+   les options de calcul demandées sont      : %(k3)s """
+    ),
+    16: _(
+        """
+                                               %(k1)s """
+    ),
     17: _(
         """
    la nature de l'excitation est             : %(k1)s """
