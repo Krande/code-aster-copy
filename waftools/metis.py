@@ -75,10 +75,7 @@ def check_metis(self):
     opts = self.options
     if opts.enable_metis is False:
         raise Errors.ConfigurationError("METIS disabled")
-    if opts.metis_libs is None:
-        opts.metis_libs = "metis"
-    if opts.metis_libs:
-        self.check_metis_libs()
+    self.check_metis_libs()
     self.check_metis_headers()
     self.check_metis_version()
 
@@ -86,22 +83,28 @@ def check_metis(self):
 @Configure.conf
 def check_metis_libs(self):
     opts = self.options
-    self.check_cc(lib="GKlib", uselib_store="GKLIB", use="METIS", mandatory=True)
-    check_metis = partial(self.check_cc, uselib_store="METIS", use="METIS GKLIB M", mandatory=True)
+    check_metis = partial(
+        self.check_cc, uselib_store="METIS", use="PARMETIS METIS M", mandatory=True
+    )
     if opts.embed_all or opts.embed_metis:
         check = lambda lib: check_metis(stlib=lib)
     else:
         check = lambda lib: check_metis(lib=lib)
-    list(map(check, Utils.to_list(opts.metis_libs)))
-    # revert list because GKlib is always static
-    # self.env.LIB_METIS.reverse()
+    # METIS is currently provided by ParMETIS
+    if opts.metis_libs is None:
+        if not check_metis(lib="metis", mandatory=False):
+            check_metis(lib="parmetis")
+    else:
+        list(map(check, Utils.to_list(opts.metis_libs)))
 
 
 @Configure.conf
 def check_metis_headers(self):
     if self.is_defined("ASTER_PLATFORM_MINGW"):
         self.define("USE_GKREGEX", 1)
-    check = partial(self.check_cc, header_name="metis.h", uselib_store="METIS", use="METIS GKLIB M")
+    check = partial(
+        self.check_cc, header_name="metis.h", uselib_store="METIS", use="PARMETIS METIS M"
+    )
     self.start_msg("Checking for header metis.h")
     try:
         if not check(mandatory=False):
@@ -110,30 +113,6 @@ def check_metis_headers(self):
     except:
         self.end_msg("no", "YELLOW")
         raise
-    else:
-        self.end_msg("yes")
-    # GKlib
-    self.start_msg("Checking for header GKlib.h")
-    found = False
-    known_dirs = [osp.join(i, "GKlib") for i in self.env.INCLUDES_METIS]
-    known_dirs.insert(0, "")
-    for incdir in known_dirs:
-        try:
-            self.env.stash()
-            self.check_cc(
-                header_name="GKlib.h",
-                uselib_store="GKLIB",
-                use="METIS GKLIB M",
-                includes=incdir,
-                mandatory=True,
-            )
-            found = True
-            break
-        except:
-            self.env.revert()
-    if not found:
-        self.end_msg("no", "YELLOW")
-        raise Errors.ConfigurationError("GKlib.h not found")
     else:
         self.end_msg("yes")
 
@@ -159,7 +138,7 @@ int main(void){
     self.start_msg("Checking metis version")
     try:
         ret = self.check_cc(
-            fragment=fragment, use="METIS GKLIB M", mandatory=True, execute=True, define_ret=True
+            fragment=fragment, use="PARMETIS METIS M", mandatory=True, execute=True, define_ret=True
         )
         mat4 = re.search(r"METISTITLE: *METIS *(?P<vers>[0-9]+\.[0-9]+\.\w+) ", ret)
         mat5 = re.search(r"METISVER: *(?P<vers>[0-9]+\.[0-9]+\.\w+)", ret)

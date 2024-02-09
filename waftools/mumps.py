@@ -79,9 +79,9 @@ def check_mumps(self):
         raise Errors.ConfigurationError("MUMPS disabled")
     self.check_mumps_headers()
     try:
-        self.check_mumps_version(("5.5", "5.4"))
+        self.check_mumps_version(("5.6", "5.5", "5.4"))
     except Errors.ConfigurationError:
-        self.check_mumps_version(("5.6",), beta=True)
+        self.check_mumps_version(("5.7",), beta=True)
     self.check_sizeof_mumps_integer()
     if opts.mumps_libs is None:
         opts.mumps_libs = "dmumps zmumps smumps cmumps mumps_common pord"
@@ -95,7 +95,7 @@ def check_mumps(self):
 def check_mumps_libs(self):
     opts = self.options
     check_mumps = partial(
-        self.check_fc, uselib_store="MUMPS", use="MUMPS MPI OPENMP", mandatory=True
+        self.check_fc, uselib_store="MUMPS", use="MUMPS MPI MATH OPENMP", mandatory=True
     )
     if opts.embed_all or opts.embed_mumps:
         check = lambda lib: check_mumps(stlib=lib)
