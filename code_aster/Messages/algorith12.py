@@ -38,75 +38,11 @@ cata_msg = {
  mentionnant obligatoirement l'interface sous le mot-clé INTERF_DYNA.
 """
     ),
-    7: _(
-        """
- données incompatibles :
- pour les modes mécaniques :  %(k1)s
- il manque l'option        :  %(k2)s
-"""
-    ),
-    12: _(
-        """
- données incompatibles :
- pour les MODE_CORR :  %(k1)s
- il manque le champ :  %(k2)s
-"""
-    ),
-    13: _(
-        """
- données incompatibles :
- pour les MODE_CORR :  %(k1)s
- pour le champ      :  %(k2)s
- le type n'est pas  %(k3)s
-"""
-    ),
-    14: _(
-        """
- données incompatibles :
- pour les statiques :  %(k1)s
- il manque le champ :  %(k2)s
-"""
-    ),
-    15: _(
-        """
- données incompatibles :
- pour les statiques :  %(k1)s
- pour le champ      :  %(k2)s
- le type n'est pas  %(k3)s
-"""
-    ),
     16: _(
         """
  La base modale %(k1)s contient des modes complexes.
  On ne peut pas projeter de matrice sur cette base.
  Conseil : calculez si possible une base modale avec vecteurs propres réels.
-"""
-    ),
-    18: _(
-        """
- on ne sait pas bien traiter l'option de calcul demandée :  %(k1)s
-"""
-    ),
-    20: _(
-        """
- données incompatibles :
- pour les modes mécaniques :  %(k1)s
- pour l'option             :  %(k2)s
- il manque le champ d'ordre  %(i1)d
-"""
-    ),
-    21: _(
-        """
- données incompatibles :
- pour les MODE_CORR :  %(k1)s
- il manque l'option :  %(k2)s
-"""
-    ),
-    22: _(
-        """
- données incompatibles :
- pour les modes statiques :  %(k1)s
- il manque l'option       :  %(k2)s
 """
     ),
     26: _(

@@ -40,20 +40,10 @@ cata_msg = {
  le noeud  %(k1)s  n'appartient pas au maillage :  %(k2)s
 """
     ),
-    25: _(
-        """
- données incompatibles.
-"""
-    ),
     32: _(
         """
   la numérotation n'est pas cohérente avec le modèle généralisé
   si vous avez activé l'option INITIAL dans NUME_DDL_GENE faites de même ici !
-"""
-    ),
-    35: _(
-        """
- les champs " %(k1)s " et " %(k2)s " n'ont pas le même domaine de définition.
 """
     ),
     36: _(
