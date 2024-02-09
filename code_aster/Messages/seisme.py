@@ -55,11 +55,6 @@ cata_msg = {
  vous avez déjà donné un spectre pour le support %(k1)s
 """
     ),
-    8: _(
-        """
- on ne peut pas traiter du MONO_APPUI et du MULTI_APPUI simultanément.
-"""
-    ),
     9: _(
         """
  -------Échantillonnage temporel et fréquentiel des signaux -------
@@ -77,37 +72,6 @@ cata_msg = {
  correction statique non prise en compte pour l'option: %(k1)s
 """
     ),
-    11: _(
-        """
- trop d'amortissements modaux
-   nombre d'amortissement: %(i1)d
-   nombre de mode        : %(i2)d
-"""
-    ),
-    13: _(
-        """
- il manque des amortissements modaux
-   nombre d'amortissements: %(i1)d
-   nombre de modes        : %(i2)d
-"""
-    ),
-    14: _(
-        """
- on ne peut pas demander de réponse secondaire sans la réponse primaire
-"""
-    ),
-    15: _(
-        """
- analyse spectrale :
-   la base modale utilisée est               : %(k1)s
-   le nombre de vecteurs de base est         : %(i1)d
-   la règle de combinaison modale est        : %(k2)s
-   les options de calcul demandées sont      : %(k3)s """
-    ),
-    16: _(
-        """
-                                               %(k1)s """
-    ),
     17: _(
         """
    la nature de l'excitation est             : %(k1)s """
@@ -122,102 +86,12 @@ cata_msg = {
    la règle de combinaison des contributions
    de chaque mouvement d'appui est           : %(k1)s """
     ),
-    20: _(
-        """
- erreur dans les données
-   la masse de la structure n'existe pas dans la table: %(k1)s
-"""
-    ),
-    21: _(
-        """
- il faut au moins 2 occurrences de DEPL_MULT_APPUI pour la combinaison des appuis.
-"""
-    ),
-    22: _(
-        """
- COMB_DEPL_APPUI: il faut au moins définir 2 cas derrière le mot clé LIST_CAS.
-"""
-    ),
-    23: _(
-        """
- données incompatibles
-   pour la direction   : %(k1)s
-   nombre de blocage   : %(i1)d
-   nombre d'excitations: %(i2)d
-"""
-    ),
-    24: _(
-        """
- données incompatibles
-   pour les modes mécaniques : %(k1)s
-   il manque l'option        : %(k2)s
-"""
-    ),
-    25: _(
-        """
-  problème stockage
-    option de calcul: %(k1)s
-    occurrence       : %(i1)d
-    nom du champ    : %(k3)s
-"""
-    ),
     26: _(
         """
   problème stockage
     option de calcul: %(k1)s
     direction       : %(k2)s
     nom du champ    : %(k3)s
-"""
-    ),
-    27: _(
-        """
-  La base modale utilisé %(k1)s ne contient pas tous les paramètres modaux
-  nécessaires au calcul.
-  Il faut que le concept soit issu d'un calcul sur coordonnées physiques et
-  non pas généralisées.
-"""
-    ),
-    28: _(
-        """
-  Dans le cas d'excitations décorrélées,
-  le mot-clé COMB_MULT_APPUI n'est pas pris en compte.
-"""
-    ),
-    29: _(
-        """
-  La définition du groupe d'appuis n'est pas correcte dans le cas décorrélé:
-  au moins une excitation appartient à plusieurs groupes d'appuis.
-  Les groupes d'appuis doivent être disjoints.
-"""
-    ),
-    30: _(
-        """
-  La définition du groupe d'appuis n'est pas correcte dans le cas décorrélé.
-  Un seul groupe d'appuis a été constitué contenant tous les appuis.
-  Relancez le calcul avec le mot-clé MULTI_APPUI=CORRELE.
-"""
-    ),
-    31: _(
-        """
- Attention,
- il n'y a pas de déplacements différentiels pris en compte dans votre calcul
- spectral multiappui.
-"""
-    ),
-    32: _(
-        """
- Il n'est pas possible d'utiliser la combinaison GUPTA en MULTI_APPUI.
-"""
-    ),
-    33: _(
-        """
- Dans le cadre de l'utilisation de la combinaison de type GUPTA il faut que F1 < F2.
-"""
-    ),
-    34: _(
-        """
- Il n'y a pas de points d'appui sur la structure.
-  -> Conseil : Vérifiez dans ASSEMBLAGE que les conditions aux limites sont présentes.
 """
     ),
     35: _(
@@ -249,11 +123,6 @@ Attention:
     Ceci peut conduire à des résultats moins bons.
 Conseil:
     Augmenter NB_POINT ou réduire la durée de la phase forte.
-"""
-    ),
-    40: _(
-        """
- Le MULT_APPUI n'est compatible qu'avec les modes classiques et ne fonctionne pas avec les modes issus de la sous-structuration
 """
     ),
     41: _(
@@ -293,42 +162,12 @@ Conseil:
     calcul de type multi-appui ou avec prise en compte de la correction statique.
 """
     ),
-    46: _(
-        """
- --- GRANDEURS MODALES ISSUES DE LA BASE MODALE ---
- --- (*) FACTEUR DE PARTICIPATION CALCULE AVEC MOUVEMENT CORPS RIGIDE---
-                              FACTEUR DE   MASSE MODALE       FRACTION
- MODE     FREQUENCE  DIR   PARTICIPATION(*)      EFFECTIVE   MASSE TOTALE   CUMUL
-"""
-    ),
-    47: _(
-        """ %(i1)4d  %(r1)12.5e    %(k1)s    %(r2)12.5e   %(r3)12.5e   %(r4)12.4f   %(r5)12.4f
-"""
-    ),
     48: _(
         """
  --- GRANDEURS MODALES DES MODES PRIS EN COMPTE---
  --- (*) FACTEUR DE PARTICIPATION CALCULE AVEC MOUVEMENT CORPS RIGIDE---
                               FACTEUR DE   MASSE MODALE
  MODE     FREQUENCE  DIR   PARTICIPATION(*)      EFFECTIVE
-"""
-    ),
-    49: _(
-        """ %(i1)4d  %(r1)12.5e    %(k1)s    %(r2)12.5e    %(r3).5e
-"""
-    ),
-    50: _(
-        """
- MASSE TOTALE DE LA STRUCTURE :  %(r1).5e
-"""
-    ),
-    51: _(
-        """
- MASSE MODALE EFFECTIVE CUMULÉE :
-"""
-    ),
-    52: _(
-        """       DIRECTION : %(k1)s, CUMUL :  %(r1).5e, SOIT %(r2)12.3f %%
 """
     ),
     53: _(
@@ -353,10 +192,6 @@ Conseil:
     ),
     57: _(
         """         %(k1)s    %(r1)12.5e    %(r2)12.5e    %(k2)s
-"""
-    ),
-    58: _(
-        """                       %(k1)s    %(r1)12.5e   %(r2)12.5e   %(r3)12.4f   %(r4)12.4f
 """
     ),
     59: _(
@@ -387,63 +222,8 @@ Conseil:
         """             %(k1).8s    %(r1)12.5e
 """
     ),
-    65: _(
-        """
---------------------------------------------------------------------------------
-"""
-    ),
-    66: _(
-        """
- --- COMPOSANTE PRIMAIRE ---
- COMBI SUPPORT
-"""
-    ),
-    67: _(
-        """  %(k1)s
-"""
-    ),
-    68: _(
-        """
-  --- COMPOSANTE SECONDAIRE ---
-   CAS      SUPPORT     CMP        VALEUR    NOEUD_REFE  NOM_CAS
-"""
-    ),
-    69: _(
-        """  %(i1)4d      %(k1).8s       %(k2).8s       %(r1)12.5e   %(k3).8s          %(k4).8s
-"""
-    ),
-    70: _(
-        """
- GROUPE DE CAS
- NUME_ORDRE     COMBI     LIST_CAS
-"""
-    ),
-    71: _(
-        """  %(i1)4d            %(k1)s
-"""
-    ),
-    72: _(
-        """
-  SOMME QUADRATIQUE DES OCCURRENCES DE COMB_DEPL_APPUI
-
- NUME_ORDRE     CUMUL
-"""
-    ),
     73: _(
         """                                       %(k1)s     %(k2).8s         %(r1)12.5e
-"""
-    ),
-    74: _(
-        """
-  COMBINAISON DIRECTION :  %(k1)s
-"""
-    ),
-    75: _(
-        """       DIRECTION : %(k1)s , CUMUL :  %(r1)12.5e
-"""
-    ),
-    76: _(
-        """                       %(k1)s    %(r1)12.5e   %(r2)12.5e
 """
     ),
     77: _(
@@ -537,22 +317,6 @@ dans les données fournies. Ce mot-clé n'a donc aucun impact.
         """
 Il y a un spectre vertical dans les données fournies, cependant vous n'avez pas renseigné
 le mot-clé RATIO_HV. Cette valeur est fixée à 1.
-"""
-    ),
-    93: _(
-        """
-En mode multi-appui décorrélé, les appuis doivent obligatoirement être disjoints des
-groupes d'appuis définis avec le mot-clé GROUP_APPUI.
-
-Le noeud %(k1)s est impliqué dans au moins deux groupes d'appuis.
-"""
-    ),
-    94: _(
-        """
-En mode multi-appui décorrélé, les appuis doivent obligatoirement être disjoints des
-groupes d'appuis définis avec le mot-clé GROUP_APPUI.
-
-Le noeud %(k1)s du groupe %(k2)s est impliqué dans au moins deux groupes d'appuis.
 """
     ),
     95: _(
