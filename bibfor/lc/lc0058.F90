@@ -158,10 +158,14 @@ subroutine lc0058(BEHinteg, fami, kpg, ksp, ndim, &
 ! - Strain model
 !
     strain_model = nint(carcri(EXTE_STRAIN))
-!   not yet supported
+
     l_greenlag = defo_comp .eq. 'GREEN_LAGRANGE'
-    ASSERT(.not. l_greenlag)
-    nstran = 2*ndim
+
+    if (ndim == 2) then
+        nstran = 5
+    else if (ndim == 3) then
+        nstran = 9
+    end if
 !
 ! - Pointer to MGISBehaviour
 !
