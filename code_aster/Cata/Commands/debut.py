@@ -172,8 +172,6 @@ DEBUT = MACRO(
         VALE=SIMP(statut="f", typ="I", val_min=0),
         #          par défaut 10% dans le FORTRAN
         POURCENTAGE=SIMP(statut="f", typ="R", val_min=0.0, val_max=1.0),
-        #          valeur en secondes de la réserve maximum bornée à 900 secondes
-        BORNE=SIMP(statut="f", typ="I", val_min=0, defaut=900),
     ),
     IGNORE_ALARM=SIMP(
         statut="f",

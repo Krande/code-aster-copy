@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,10 +34,9 @@ subroutine ibtcpu(ier)
 !            1 ERREUR DANS LA LECTURE DE LA COMMANDE
 !     ------------------------------------------------------------------
 !
-    integer :: l1, l2, l3, lcpu, iborne, itpmax, iret, vali(3), itest
+    integer :: l1, l2, lcpu, iret, vali(3), itest
     real(kind=8) :: pccpu, tpmax, dix, ntmax
     parameter(dix=10.d0)
-    character(len=16) :: cbid, nomcmd
 !
     ier = 0
     tpmax = 0.d0
@@ -47,55 +46,35 @@ subroutine ibtcpu(ier)
 !     RECUPERATION DU TEMPS LIMITE DE L'EXECUTION
     call gtoptr('tpmax', tpmax, iret)
     ASSERT(iret .eq. 0)
-    itpmax = nint(tpmax)
 !
     itest = jdcget('TestMode')
 !
     call getvis('RESERVE_CPU', 'VALE', iocc=1, scal=lcpu, nbret=l1)
     call getvr8('RESERVE_CPU', 'POURCENTAGE', iocc=1, scal=pccpu, nbret=l2)
-    call getvis('RESERVE_CPU', 'BORNE', iocc=1, scal=iborne, nbret=l3)
 !
-!     PERMET D'AFFECTER DES VALEURS PAR DEFAUT EN FONCTION DE LA
-!     PRESENCE DE CODE
-!
-!     SI CODE PRESENT
-!
-    if (itest .ne. 0 .and. l1 .eq. 0 .and. l2 .eq. 0) then
-        ntmax = tpmax-dix
-        call rdtmax(itpmax-ntmax)
-        goto 100
-    end if
-!
-!     SI CODE ABSENT
-!
-    if (itest .eq. 0 .and. l1 .eq. 0 .and. l2 .eq. 0) then
-        pccpu = 0.1d0
-        ntmax = max(tpmax*(1-pccpu), tpmax-iborne)
-        call rdtmax(itpmax-ntmax)
-        goto 100
-    end if
-!
-    if (l1 .gt. 0) then
+    if (l1 .eq. 0 .and. l2 .eq. 0) then
+!       set default values here
+        if (itest .eq. 0) then
+            ntmax = tpmax*0.9d0
+        else
+            ntmax = tpmax-dix
+        end if
+    elseif (l1 .ne. 0) then
         if (lcpu .gt. tpmax) then
-            call getres(cbid, cbid, nomcmd)
             call utmess('F', 'SUPERVIS_31')
             ier = 1
         end if
         ntmax = tpmax-lcpu
-        call rdtmax(itpmax-ntmax)
+    else
+!       l2 .ne. 0
+        ntmax = tpmax*(1.0-pccpu)
     end if
-!
-    if (l2 .gt. 0) then
-        ntmax = max(tpmax*(1-pccpu), tpmax-iborne)
-        call rdtmax(itpmax-ntmax)
-    end if
-!
-!     IMPRESSION D'UN MESSAGE D'INFORMATION
-!
-100 continue
-    vali(1) = itpmax
+
+!   reduce execution time limit
+    call rdtmax(tpmax-ntmax)
+    vali(1) = int(tpmax)
     vali(2) = int(ntmax)
-    vali(3) = int(itpmax-ntmax)
+    vali(3) = int(tpmax-ntmax)
     call utmess('I', 'SUPERVIS_64', ni=3, vali=vali)
 !
 end subroutine
