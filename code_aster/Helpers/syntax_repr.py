@@ -94,6 +94,10 @@ class BaseLine:
     def hidden(self):
         return self._hide
 
+    @property
+    def offset(self):
+        return INDENT * self._lvl
+
 
 class KwdLine(BaseLine):
     """Common for simple and factor keyworeds."""
@@ -118,6 +122,10 @@ class KwdLine(BaseLine):
             self._rules[0].consumed()
             return attrs
         return self._attrs
+
+    @property
+    def offset(self):
+        return INDENT * self._lvl + " ".join(self.attrs) + " "
 
 
 class SimpKwdLine(KwdLine):
@@ -157,7 +165,7 @@ class SimpKwdLine(KwdLine):
         return str(value)
 
     def repr(self):
-        prefix = INDENT * self._lvl + " ".join(self.attrs) + " " + self._name + " = "
+        prefix = self.offset + self._name + " = "
         if not self._into:
             try:
                 value = _var(self._typ)
@@ -192,7 +200,7 @@ class FactLine(KwdLine):
     """
 
     def repr(self):
-        return INDENT * self._lvl + self._name + " = _F("
+        return self.offset + self._name + " = _F("
 
 
 class CmdLine(BaseLine):
@@ -205,18 +213,23 @@ class CmdLine(BaseLine):
     """
 
     def repr(self):
-        return INDENT * self._lvl + self._name + "("
+        return self.offset + self._name + "("
 
 
 class CloseLine(BaseLine):
     """End of a block."""
 
-    def __init__(self, lvl, end=",") -> None:
-        super().__init__(lvl, None)
+    def __init__(self, parent, end=",") -> None:
+        super().__init__(0, "")
+        self._parent = parent
         self._end = end
 
+    @property
+    def offset(self):
+        return " " * len(self._parent.offset)
+
     def repr(self):
-        return INDENT * self._lvl + ")" + self._end
+        return self.offset + ")" + self._end
 
 
 class DocSyntaxVisitor(GenericVisitor):
@@ -229,13 +242,13 @@ class DocSyntaxVisitor(GenericVisitor):
         self._mcsimp = None
         self._mcfact = None
         self._indent = 0
-        self._rules = []
+        self._rstack = []
 
     def _visitComposite(self, step, userDict=None):
         """Visit a composite object (containing BLOC, FACT and SIMP objects)"""
         # loop first on keywords in rules
         # store "rules attrs"...?
-        self._rules = [Rule.factory(rule) for rule in step.rules]
+        self._rstack.append([Rule.factory(rule) for rule in step.rules])
         for name, entity in step.entities.items():
             if entity.getCataTypeId() == IDS.simp:
                 self._mcsimp = name
@@ -244,7 +257,7 @@ class DocSyntaxVisitor(GenericVisitor):
             elif entity.getCataTypeId() == IDS.bloc:
                 self._bloc = name
             entity.accept(self)
-        self._rules = []
+        self._rstack.pop()
 
     def visitCommand(self, step, userDict=None):
         """Visit a Command object"""
@@ -254,7 +267,7 @@ class DocSyntaxVisitor(GenericVisitor):
         self._indent += 1
         self._visitComposite(step, userDict)
         self._indent -= 1
-        self._append(CloseLine(self._indent, end=""))
+        self._append(CloseLine(line, end=""))
 
     def visitBloc(self, step, userDict=None):
         """Visit a Bloc object"""
@@ -264,16 +277,17 @@ class DocSyntaxVisitor(GenericVisitor):
     def visitFactorKeyword(self, step, userDict=None):
         """Visit a FactorKeyword object"""
         line = FactLine(self._indent, self._mcfact)
+        line.set(step.definition, self._rstack[-1])
         self._append(line)
         self._indent += 1
         self._visitComposite(step, userDict)
         self._indent -= 1
-        self._append(CloseLine(self._indent))
+        self._append(CloseLine(line))
 
     def visitSimpleKeyword(self, step, skwValue):
         """Visit a SimpleKeyword object"""
         line = SimpKwdLine(self._indent, self._mcsimp)
-        line.set(step.definition, self._rules)
+        line.set(step.definition, self._rstack[-1])
         self._append(line)
         # print(line.repr())
 
