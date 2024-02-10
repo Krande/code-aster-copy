@@ -25,6 +25,7 @@ import os
 
 from ..Cata.Language.SyntaxObjects import IDS
 from ..Cata.Language import Rules
+from ..Cata.Language import DataStructure as LDS
 from ..Supervis.visitors import GenericVisitor
 from ..Utilities import force_list
 
@@ -33,7 +34,7 @@ OPT = chr(9671)
 DEF = chr(10192)
 XOR = "/"
 ALT = "|"
-EMPTY = chr(8709)
+# EMPTY = chr(8709)
 INDENT = "    "
 
 
@@ -42,6 +43,8 @@ def _symbol(status):
 
 
 def _typ2name(typ):
+    if issubclass(typ, LDS.UnitBaseType):
+        return "unit"
     name = typ.__name__.lower().replace("_sdaster", "")
     # exception for ParallelMesh
     if name.endswith("_p"):
@@ -70,6 +73,8 @@ class Rule:
             return Rule([REQ, XOR], rule_object.ruleArgs)
         if isinstance(rule_object, Rules.AtMostOne):
             return Rule([OPT, XOR], rule_object.ruleArgs)
+        if isinstance(rule_object, Rules.OnlyFirstPresent):
+            return Rule([XOR, XOR], rule_object.ruleArgs)
         raise NotImplementedError(rule_object)
 
     def consumed(self):
@@ -97,6 +102,9 @@ class BaseLine:
     @property
     def offset(self):
         return INDENT * self._lvl
+
+    def set(self, defs, rules):
+        pass
 
 
 class KwdLine(BaseLine):
@@ -216,20 +224,30 @@ class CmdLine(BaseLine):
         return self.offset + self._name + "("
 
 
+class CondLine(BaseLine):
+    """For conditional blocks"""
+
+    def repr(self):
+        return self.offset + "# " + self._name
+
+
 class CloseLine(BaseLine):
     """End of a block."""
 
     def __init__(self, parent, end=",") -> None:
         super().__init__(0, "")
         self._parent = parent
-        self._end = end
+        if isinstance(parent, CondLine):
+            self._mark = ""
+        else:
+            self._mark = ")" + end
 
     @property
     def offset(self):
         return " " * len(self._parent.offset)
 
     def repr(self):
-        return self.offset + ")" + self._end
+        return self.offset + self._mark
 
 
 class DocSyntaxVisitor(GenericVisitor):
@@ -246,43 +264,39 @@ class DocSyntaxVisitor(GenericVisitor):
 
     def _visitComposite(self, step, userDict=None):
         """Visit a composite object (containing BLOC, FACT and SIMP objects)"""
-        # loop first on keywords in rules
-        # store "rules attrs"...?
-        self._rstack.append([Rule.factory(rule) for rule in step.rules])
         for name, entity in step.entities.items():
             if entity.getCataTypeId() == IDS.simp:
                 self._mcsimp = name
             elif entity.getCataTypeId() == IDS.fact:
                 self._mcfact = name
             elif entity.getCataTypeId() == IDS.bloc:
-                self._bloc = name
+                self._bloc = entity.getCondition()
             entity.accept(self)
-        self._rstack.pop()
 
-    def visitCommand(self, step, userDict=None):
+    def _visitCompositeWrap(self, step, name, line_class, end, userDict=None):
         """Visit a Command object"""
-        # + reuse + sd_prod
-        line = CmdLine(self._indent, self._command)
-        self._append(line)
-        self._indent += 1
-        self._visitComposite(step, userDict)
-        self._indent -= 1
-        self._append(CloseLine(line, end=""))
-
-    def visitBloc(self, step, userDict=None):
-        """Visit a Bloc object"""
-        print(self._bloc)
-        self._visitComposite(step, userDict)
-
-    def visitFactorKeyword(self, step, userDict=None):
-        """Visit a FactorKeyword object"""
-        line = FactLine(self._indent, self._mcfact)
+        self._rstack.append([Rule.factory(rule) for rule in step.rules])
+        line = line_class(self._indent, name)
         line.set(step.definition, self._rstack[-1])
         self._append(line)
         self._indent += 1
         self._visitComposite(step, userDict)
         self._indent -= 1
-        self._append(CloseLine(line))
+        self._append(CloseLine(line, end=end))
+        self._rstack.pop()
+
+    def visitCommand(self, step, userDict=None):
+        """Visit a Command object"""
+        # + reuse + sd_prod
+        self._visitCompositeWrap(step, self._command, CmdLine, "", userDict)
+
+    def visitBloc(self, step, userDict=None):
+        """Visit a Bloc object"""
+        self._visitCompositeWrap(step, self._bloc, CondLine, None, userDict)
+
+    def visitFactorKeyword(self, step, userDict=None):
+        """Visit a FactorKeyword object"""
+        self._visitCompositeWrap(step, self._mcfact, FactLine, ",", userDict)
 
     def visitSimpleKeyword(self, step, skwValue):
         """Visit a SimpleKeyword object"""
@@ -294,12 +308,25 @@ class DocSyntaxVisitor(GenericVisitor):
     def _append(self, line):
         self._lines.append(line)
 
-    def repr(self):
+    def repr(self, legend=False):
         """Text representation"""
-        return os.linesep.join([i.repr() for i in self._lines if not i.hidden])
+        text = [i.repr() for i in self._lines if not i.hidden]
+        if legend:
+            text.extend(
+                [
+                    "",
+                    f"{REQ} : obligatoire",
+                    f"{OPT} : optionnel",
+                    f"{DEF} : présent par défaut",
+                    f"{XOR} : un parmi",
+                    f"{ALT} : plusieurs choix possibles",
+                ]
+            )
+        text.append("")
+        return os.linesep.join(text)
 
 
 def testing(cmd):
     syntax = DocSyntaxVisitor(cmd.name)
     cmd.accept(syntax)
-    print(syntax.repr())
+    print(syntax.repr(legend=True))
