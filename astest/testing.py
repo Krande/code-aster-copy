@@ -17,15 +17,19 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+import unittest
+import sys
+
 from code_aster import CA
-from code_aster.Helpers.syntax_repr import testing
-import code_aster.Cata.Commands as CMD
 
-# import debugpy
 
-# debugpy.listen(3000)
-# print("Waiting for debugger attach")
-# debugpy.wait_for_client()
-# debugpy.breakpoint()
+def _test_module(module):
+    print(f"\n\n+++ testing {module}...\n", flush=True)
+    result = unittest.main(argv=["comm"], module=module, exit=False, verbosity=2).result
+    # to flush printings from unittest
+    sys.stdout.flush()
+    sys.stderr.flush()
+    assert result.wasSuccessful()
 
-testing(CMD.STAT_NON_LINE)
+
+_test_module("code_aster.Helpers.syntax_repr")

@@ -22,11 +22,14 @@ This module represents Commands syntax for the documentation.
 """
 
 import os
+import unittest
+from pathlib import Path
 
-from ..Cata.Language.SyntaxObjects import IDS
-from ..Cata.Language import Rules
+from ..Cata import Commands as CMD
 from ..Cata.Language import DataStructure as LDS
-from ..Supervis.visitors import GenericVisitor
+from ..Cata.Language import Rules
+from ..Cata.Language.Syntax import FACT, PRESENT_ABSENT, SIMP
+from ..Cata.Language.SyntaxObjects import IDS
 from ..Utilities import force_list
 
 REQ = chr(9670)
@@ -61,12 +64,17 @@ def _var(typ):
 
 
 class Rule:
-    def __init__(self, attrs, args) -> None:
+    """Store Rules parameters."""
+
+    def __init__(self, attrs, args, next=[]) -> None:
         self._attrs = attrs
         self._args = args
+        self._first = True
+        self._next = next
 
     @classmethod
     def factory(cls, rule_object):
+        """Create an instance from a Cata Rule object."""
         if isinstance(rule_object, Rules.AtLeastOne):
             return Rule([REQ, ALT], rule_object.ruleArgs)
         if isinstance(rule_object, Rules.ExactlyOne):
@@ -74,17 +82,25 @@ class Rule:
         if isinstance(rule_object, Rules.AtMostOne):
             return Rule([OPT, XOR], rule_object.ruleArgs)
         if isinstance(rule_object, Rules.OnlyFirstPresent):
-            return Rule([XOR, XOR], rule_object.ruleArgs)
+            next = [ALT] if len(rule_object.ruleArgs) > 2 else []
+            return Rule([OPT, XOR], rule_object.ruleArgs, next=next)
         raise NotImplementedError(rule_object)
 
     @property
     def args(self):
+        """Return the involved keywords."""
         return self._args
 
     def consumed(self):
         """Mark the rule as consumed/started"""
         assert self._attrs
-        self._attrs[0] = " "
+        for i, symb in enumerate(self._attrs[:-1]):
+            if symb.strip():
+                self._attrs[i] = " "
+                break
+        if self._first:
+            self._attrs.extend(self._next)
+        self._first = False
 
     def involved(self, keyword):
         """Tell if a keyword is involved in the rule"""
@@ -101,13 +117,16 @@ class BaseLine:
 
     @property
     def hidden(self):
+        """Tell if the block should be hidden"""
         return self._hide
 
     @property
     def offset(self):
+        """Current offset/indentation"""
         return INDENT * self._lvl
 
     def set(self, defs, rules):
+        """Set block settings from the keyword definition"""
         pass
 
 
@@ -120,6 +139,7 @@ class KwdLine(BaseLine):
         self._rules = []
 
     def set(self, defs, rules):
+        """Set block settings from the keyword definition"""
         symb = _symbol(defs.get("statut"))
         if not symb:
             return
@@ -128,8 +148,10 @@ class KwdLine(BaseLine):
 
     @property
     def attrs(self):
+        """Return the current symbols."""
         if self._rules:
-            assert len(self._rules) == 1, f"{self._name}: {self._rules}"
+            if len(self._rules) > 1:
+                print(f"WARNING: several rules for {self._name}")
             attrs = self._rules[0]._attrs[:]
             self._rules[0].consumed()
             return attrs
@@ -137,6 +159,7 @@ class KwdLine(BaseLine):
 
     @property
     def offset(self):
+        """Current offset/indentation"""
         return INDENT * self._lvl + " ".join(self.attrs) + " "
 
 
@@ -162,10 +185,12 @@ class SimpKwdLine(KwdLine):
 
     @property
     def hidden(self):
+        """Tell if the block should be hidden"""
         self._hide = not bool(self._attrs) or self._name == "reuse"
         return super().hidden
 
     def set(self, defs, rules):
+        """Set block settings from the keyword definition"""
         super().set(defs, rules)
         self._typ = defs.get("typ")
         self._into = defs.get("into", [])
@@ -177,6 +202,7 @@ class SimpKwdLine(KwdLine):
         return str(value)
 
     def repr(self):
+        """Representation of the block."""
         prefix = self.offset + self._name + " = "
         if not self._into:
             try:
@@ -184,8 +210,8 @@ class SimpKwdLine(KwdLine):
             except AttributeError:
                 raise TypeError(self._name, self._typ)
             if self._default:
-                value += f" (défaut: {self._default})"
-            value = [self._repr_value(value)]
+                value += f" (défaut: {self._repr_value(self._default)})"
+            value = [value]
         else:
             values = list(self._into)
             value = [f"{XOR} {self._repr_value(i)}" for i in values]
@@ -212,6 +238,7 @@ class FactLine(KwdLine):
     """
 
     def repr(self):
+        """Representation of the block."""
         return self.offset + self._name + " = _F("
 
 
@@ -225,6 +252,7 @@ class CmdLine(BaseLine):
     """
 
     def repr(self):
+        """Representation of the block."""
         return self.offset + self._name + "("
 
 
@@ -232,6 +260,7 @@ class CondLine(BaseLine):
     """For conditional blocks"""
 
     def repr(self):
+        """Representation of the block."""
         return self.offset + "# " + self._name
 
 
@@ -241,20 +270,24 @@ class CloseLine(BaseLine):
     def __init__(self, parent, end=",") -> None:
         super().__init__(0, "")
         self._parent = parent
-        if isinstance(parent, CondLine):
-            self._mark = ""
-        else:
-            self._mark = ")" + end
+        self._mark = ")" + end
+
+    @property
+    def hidden(self):
+        """Tell if the block should be hidden"""
+        return isinstance(self._parent, CondLine)
 
     @property
     def offset(self):
+        """Current offset/indentation"""
         return " " * len(self._parent.offset)
 
     def repr(self):
+        """Representation of the block."""
         return self.offset + self._mark
 
 
-class DocSyntaxVisitor(GenericVisitor):
+class DocSyntaxVisitor:
     """Visitor to the syntax of a Command"""
 
     def __init__(self, command):
@@ -307,9 +340,13 @@ class DocSyntaxVisitor(GenericVisitor):
         # + reuse + sd_prod
         self._visitCompositeWrap(step, self._command, CmdLine, "", userDict)
 
+    def visitMacro(self, step, userDict=None):
+        """Visit a MacroCommand object"""
+        self.visitCommand(step, userDict)
+
     def visitBloc(self, step, userDict=None):
         """Visit a Bloc object"""
-        self._visitCompositeWrap(step, self._bloc, CondLine, None, userDict)
+        self._visitCompositeWrap(step, self._bloc, CondLine, "", userDict)
 
     def visitFactorKeyword(self, step, userDict=None):
         """Visit a FactorKeyword object"""
@@ -325,7 +362,7 @@ class DocSyntaxVisitor(GenericVisitor):
     def _append(self, line):
         self._lines.append(line)
 
-    def repr(self, legend=False):
+    def repr(self, legend=False, codeblock=False):
         """Text representation"""
         text = [i.repr() for i in self._lines if not i.hidden]
         if legend:
@@ -340,10 +377,64 @@ class DocSyntaxVisitor(GenericVisitor):
                 ]
             )
         text.append("")
-        return os.linesep.join(text)
+        text = os.linesep.join(text)
+        if codeblock:
+            text = [INDENT + line for line in text.splitlines()]
+            text.insert(0, "")
+            text.insert(0, ".. code-block:: text")
+            text = os.linesep.join(text)
+        return text
 
 
-def testing(cmd):
-    syntax = DocSyntaxVisitor(cmd.name)
-    cmd.accept(syntax)
-    print(syntax.repr(legend=True))
+class TestDoc(unittest.TestCase):
+    """Test for DocSyntaxVisitor"""
+
+    output = None
+    # uncomment the following line to write outputs of DocSyntax
+    output = Path("/tmp/syntax")
+
+    @classmethod
+    def _testcmd(cls, cmd):
+        syntax = DocSyntaxVisitor(cmd.name)
+        cmd.accept(syntax)
+        text = syntax.repr(legend=True, codeblock=True)
+        if cls.output:
+            cls.output.mkdir(parents=True, exist_ok=True)
+            with open(cls.output / (cmd.name.lower() + ".rst"), "w") as frst:
+                frst.write(text)
+        return text
+
+    def test00_lire_maillage(self):
+        text = self._testcmd(CMD.LIRE_MAILLAGE)
+
+    def test00_affe_materiau(self):
+        self._testcmd(CMD.AFFE_MATERIAU)
+
+    def test00_calc_champ(self):
+        self._testcmd(CMD.CALC_CHAMP)
+
+    def test01_onlyfirst(self):
+        fact = FACT(
+            statut="d",
+            regles=(
+                PRESENT_ABSENT(
+                    "RESI_REFE_RELA", "RESI_GLOB_MAXI", "RESI_GLOB_RELA", "RESI_COMP_RELA"
+                ),
+            ),
+            RESI_REFE_RELA=SIMP(statut="f", typ="R"),
+            RESI_GLOB_MAXI=SIMP(statut="f", typ="R"),
+            RESI_GLOB_RELA=SIMP(statut="f", typ="R"),
+            RESI_COMP_RELA=SIMP(statut="f", typ="R"),
+            ITER_GLOB_MAXI=SIMP(statut="f", typ="I", defaut=10),
+            ITER_GLOB_ELAS=SIMP(statut="f", typ="I", defaut=25),
+        )
+        syntax = DocSyntaxVisitor("TEST")
+        syntax._mcfact = "CONVERGENCE"
+        fact.accept(syntax)
+        text = syntax.repr(legend=False)
+        # print(text)
+        self.assertTrue(f"{DEF} CONVERGENCE = _F(" in text, msg="CONVERGENCE")
+        self.assertTrue(f"{OPT} / RESI_REFE_RELA" in text, msg="RESI_REFE_RELA nook")
+        self.assertTrue("/ | RESI_GLOB_MAXI" in text, msg="RESI_GLOB_MAXI nook")
+        self.assertTrue("  | RESI_GLOB_RELA" in text, msg="RESI_GLOB_RELA nook")
+        self.assertTrue("  | RESI_COMP_RELA" in text, msg="RESI_COMP_RELA nook")
