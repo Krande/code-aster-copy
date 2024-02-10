@@ -77,6 +77,10 @@ class Rule:
             return Rule([XOR, XOR], rule_object.ruleArgs)
         raise NotImplementedError(rule_object)
 
+    @property
+    def args(self):
+        return self._args
+
     def consumed(self):
         """Mark the rule as consumed/started"""
         assert self._attrs
@@ -264,7 +268,20 @@ class DocSyntaxVisitor(GenericVisitor):
 
     def _visitComposite(self, step, userDict=None):
         """Visit a composite object (containing BLOC, FACT and SIMP objects)"""
-        for name, entity in step.entities.items():
+        extracted = step.entities
+        entities = []
+        rules = self._rstack[-1][:]
+        while extracted:
+            name, entity = extracted.popitem(last=False)
+            entities.append((name, entity))
+            for rule in rules:
+                if rule.involved(name):
+                    for kwd in rule.args:
+                        ent = extracted.pop(kwd, None)
+                        if ent:
+                            entities.append((kwd, ent))
+
+        for name, entity in entities:
             if entity.getCataTypeId() == IDS.simp:
                 self._mcsimp = name
             elif entity.getCataTypeId() == IDS.fact:

@@ -28,4 +28,4 @@ import code_aster.Cata.Commands as CMD
 # debugpy.wait_for_client()
 # debugpy.breakpoint()
 
-testing(CMD.AFFE_MATERIAU)
+testing(CMD.STAT_NON_LINE)
