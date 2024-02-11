@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ from ..Language.SyntaxObjects import Command
 
 
 def _init_command(ctx, debug):
-    """Import de toutes les commandes et les copie dans le contexte"""
+    """Import all commands and put them in the context"""
     pkgdir = osp.dirname(__file__)
     pkg = osp.basename(pkgdir)
     l_mod = [osp.splitext(osp.basename(modname))[0] for modname in glob(osp.join(pkgdir, "*.py"))]
@@ -34,16 +34,11 @@ def _init_command(ctx, debug):
             continue
         wrkctx = {}
         mod = __import__("code_aster.Cata.{}.{}".format(pkg, modname), wrkctx, wrkctx, [modname])
-        # liste des commandes définies dans le module
+        # search for all commands in the module
         for objname in dir(mod):
             if curDict.get(objname) is not None:
                 if debug:
-                    print(
-                        (
-                            "DEBUG: Module {0}: {1} already seen, "
-                            "ignored!".format(modname, objname)
-                        )
-                    )
+                    print("DEBUG: Module {0}: {1} already seen, ignored!".format(modname, objname))
                 continue
             obj = getattr(mod, objname)
             if isinstance(obj, Command) or (modname == "variable" and objname == "VARIABLE"):
