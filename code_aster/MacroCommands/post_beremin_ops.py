@@ -196,7 +196,7 @@ def post_beremin_ops(self, **args):
             ),
         )
 
-    mawbrest.resetDependencies()
+        mawbrest.resetDependencies()
 
     return table
 
