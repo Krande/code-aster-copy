@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -40,10 +40,10 @@ class sd_dyna_gene_common(AsBase):
     # Pas de temps d'integration sauvegardés aux instants
     # d'archivage
 
-    DISC = AsVR()
+    DISC = Facultatif(AsVR())
     # gros objet. contient la liste des instants du calcul
     # sauvegardes si TRANS et les frequences si HARM
-    ORDR = AsVI()  # gros objet.
+    ORDR = Facultatif(AsVI())  # gros objet.
 
     DESC = AsVI(lonmax=6)
 
@@ -52,6 +52,9 @@ class sd_dyna_gene_common(AsBase):
     FDEP = Facultatif(AsVK8())
     FVIT = Facultatif(AsVK8())
     IPSD = Facultatif(AsVR())
+
+    BLOC = Facultatif(AsVR())
+    BLO2 = Facultatif(AsVI())
 
     def u_dime(self):  # --> ok
 
@@ -72,7 +75,14 @@ class sd_dyna_gene_common(AsBase):
         nbvint = desc[3]
         assert nbvint >= 0
 
-        nbsauv = self.ORDR.lonmax
+        if self.ORDR.exists:
+            nbsauv = self.ORDR.lonmax
+        else:
+            nb_bloc = self.BLOC.lonmax
+            self.ordr = []
+            for i_bloc in range(1, nb_bloc + 1):
+                self.ordr.append(AsVI(self.nomj()[:8] + ".%07d   " % i_bloc + ".ORDR"))
+            nbsauv = sum(ordr.lonmax - 1 for ordr in self.ordr) + 1
         assert nbsauv > 0
 
         if self.FACC.exists:
@@ -98,33 +108,59 @@ class sd_dyna_gene_common(AsBase):
     def check_ORDR_DISC(self, checker):
         type_calcul, nbmode, nbnoli, nbsauv, nbexcit, nbvint = self.u_dime()
 
-        assert self.ORDR.lonmax == nbsauv  # verification de la longueur
-        sdu_tous_differents(self.ORDR, checker)
-        ## verification de tous les elements differents
-        if nbsauv > 1:
-            assert sdu_monotone(self.ORDR.get()) == 1  # test de monotonie croissante
+        if self.ORDR.exists:
+            assert self.ORDR.lonmax == nbsauv  # verification de la longueur
+            sdu_tous_differents(self.ORDR, checker)
 
-        assert self.DISC.lonmax == nbsauv  # verification de la longueur
-        sdu_tous_differents(self.DISC, checker)
-        ## verification de tous les elements differents
+            ## verification de tous les elements differents
+            if nbsauv > 1:
+                assert sdu_monotone(self.ORDR.get()) == 1  # test de monotonie croissante
 
-        if type_calcul == "TRAN" and nbsauv > 1:
-            assert sdu_monotone(self.DISC.get()) == 1  # test de monotonie croissante
-            assert self.PTEM.lonmax == nbsauv
+            assert self.DISC.lonmax == nbsauv  # verification de la longueur
+            sdu_tous_differents(self.DISC, checker)
+            ## verification de tous les elements differents
+
+            if type_calcul == "TRAN" and nbsauv > 1:
+                assert sdu_monotone(self.DISC.get()) == 1  # test de monotonie croissante
+                assert self.PTEM.lonmax == nbsauv
+
+        else:
+            for i_bloc, ordr in enumerate(self.ordr, 1):
+                disc = AsVR(self.nomj()[:8] + ".%07d   " % i_bloc + ".DISC")
+                ptem = AsVR(self.nomj()[:8] + ".%07d   " % i_bloc + ".PTEM")
+                assert ordr.lonmax == disc.lonmax
+                assert ordr.lonmax == ptem.lonmax
+                assert sdu_monotone(ordr.get()) == 1
+                assert sdu_monotone(disc.get()) == 1
+                sdu_tous_differents(ordr, checker)
+                sdu_tous_differents(disc, checker)
 
     def check_DEPL_VITE_ACCE(self, checker):
         type_calcul, nbmode, nbnoli, nbsauv, nbexcit, nbvint = self.u_dime()
 
         if type_calcul == "TRAN":
-            assert (
-                self.DEPL.lonmax == nbsauv * nbmode
-                and self.VITE.lonmax == nbsauv * nbmode
-                and self.ACCE.lonmax == nbsauv * nbmode
-            )
-            # on verifie que les trois objets existent et sont de
-            # la bonne longueur
-            assert self.DEPL.type == "R" and self.VITE.type == "R" and self.ACCE.type == "R"
-            ## on verifie que les valeurs sont reelles
+            if self.ORDR.exists:
+                assert (
+                    self.DEPL.lonmax == nbsauv * nbmode
+                    and self.VITE.lonmax == nbsauv * nbmode
+                    and self.ACCE.lonmax == nbsauv * nbmode
+                )
+                # on verifie que les trois objets existent et sont de
+                # la bonne longueur
+                assert self.DEPL.type == "R" and self.VITE.type == "R" and self.ACCE.type == "R"
+                ## on verifie que les valeurs sont reelles
+            else:
+                for i_bloc, ordr in enumerate(self.ordr, 1):
+                    nbsauv = ordr.lonmax
+                    depl = AsVR(self.nomj()[:8] + ".%07d   " % i_bloc + ".DEPL")
+                    vite = AsVR(self.nomj()[:8] + ".%07d   " % i_bloc + ".VITE")
+                    acce = AsVR(self.nomj()[:8] + ".%07d   " % i_bloc + ".ACCE")
+                    assert (
+                        depl.lonmax == nbsauv * nbmode
+                        and vite.lonmax == nbsauv * nbmode
+                        and acce.lonmax == nbsauv * nbmode
+                    )
+
         elif type_calcul == "HARM":
             # on verifie qu'au moins un des trois objets existe et qu'il
             # est de type complexe
@@ -165,14 +201,22 @@ class sd_dyna_gene_nl(AsBase):
         vindex = self.VIND.get()
         nbvint = vindex[-1] - 1
 
-        nbsaves = self.VINT.lonmax / nbvint
+        if self.VINT.exists:
+            lonmax = self.VINT.lonmax
+        else:
+            lonmax = 0
+            bloc = AsVR(self.nomj()[:8] + "           .BLOC")
+            for i_bloc in range(1, bloc.lonmax + 1):
+                vint = AsVR(self.nomj()[:8] + ".%07d" % i_bloc + self.nomj()[16:19] + ".VINT")
+                lonmax += vint.lonmax - 1
+            lonmax += 1
+        nbsaves = lonmax / nbvint
         return nbnoli, nbvint, nbsaves
 
     def check_NONL(self, checker):
         nbnoli, nbvint, nbsaves = self.u_dime_nl()
         if nbnoli > 0:
             assert self.VIND.lonmax == nbnoli + 1
-            assert self.VINT.lonmax == nbvint * nbsaves
             assert self.INTI.lonmax == 5 * nbnoli
             assert self.TYPE.lonmax == nbnoli
 

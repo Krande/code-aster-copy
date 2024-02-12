@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,7 +71,6 @@ subroutine dtminit(sd_dtm_, sd_int_)
     integer, pointer :: buffint(:) => null()
 !
 !   0 - Initializations
-    call jemarq()
     sd_dtm = sd_dtm_
     sd_int = sd_int_
 !
@@ -191,5 +190,4 @@ subroutine dtminit(sd_dtm_, sd_int_)
     call dtmsav(sd_dtm, _ARCH_STO, 4, ivect=[0, 0, 0, 0])
     call dtmarch(sd_dtm, sd_int, buffdtm, buffint)
 !
-    call jedema()
 end subroutine

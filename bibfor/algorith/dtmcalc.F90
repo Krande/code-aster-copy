@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -80,7 +80,6 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
 
 !
 !   0 - Initializations
-    call jemarq()
     call infniv(ifm, niv)
 !
     sd_dtm = sd_dtm_
@@ -274,9 +273,9 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
 !                   --- resize according to the last archived step, isto(1)
                     call mdsize(calcres, isto(1), nbmode, nbnli)
 !                   --- Concatenate results in the case of an adaptative integration scheme
-                    if (adapt .gt. 0) then
-                        call dtmconc(sd_dtm)
-                    end if
+                    ! if (adapt.gt.0) then
+                    !     call dtmconc(sd_dtm)
+                    ! endif
 !                   --- Append to an existing result in the case of "reuse"
                     if (append .gt. 0) then
                         call resu74(nomres, calcres)
@@ -323,16 +322,15 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
         if ((nbdvis+nbdecr) .gt. 0) then
             call dtmget(sd_dtm, _IND_ALOC, vi=allocs)
             if (nbdvis .gt. 0) then
-                call mdidisvisc(sd_nl, nbnli, nomres, i_nbar+1, zr(allocs(2)))
+                call mdidisvisc(sd_nl, nbnli, nomres)
             end if
             if (nbdecr .gt. 0) then
-                call mdidisisot(sd_nl, nbnli, nomres, i_nbar+1, zr(allocs(2)))
+                call mdidisisot(sd_nl, nbnli, nomres)
             end if
         end if
 
         call detrsd(' ', sd_nl)
     end if
 !
-    call jedema()
 
 end subroutine

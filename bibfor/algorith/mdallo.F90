@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,12 +20,13 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes, &
                   rigi, mass, amor, jordr, jdisc, &
                   nbsym, nomsym, jdepl, jvite, jacce, &
                   method, dt, jptem, nbnli, sd_nl_, &
-                  jvint, sauve, checkarg)
+                  jvint, sauve, sd_index, checkarg)
 ! aslint: disable=W1504
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
+#include "asterfort/codent.h"
 #include "asterfort/crevec.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jeexin.h"
@@ -54,6 +55,7 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes, &
     character(len=*), optional, intent(in) :: sd_nl_
     integer, optional, intent(out) :: jvint
     character(len=4), optional, intent(in) :: sauve
+    integer, optional, intent(in) :: sd_index
     aster_logical, optional, intent(in) :: checkarg
 !
 !     ALLOCATION DES VECTEURS DE SORTIE POUR UN CALCUL TRANSITOIRE
@@ -77,14 +79,14 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes, &
 ! ----------------------------------------------------------------------
     aster_logical :: checkargs, entvid, saved
     integer :: nbstoc, j1refe, inom, i, iret, jchmp, nbnoli, nbvint
-    integer :: jdesc, jinti, nbsym2, nbmode, jnltyp, jvindx
+    integer :: jdesc, jinti, nbsym2, nbmode, jnltyp, jvindx, sd_ind
     real(kind=8) :: dt2
     character(len=3) :: typsau
-    character(len=4) :: sauve2, nomsym2(3)
+    character(len=4) :: sauve2, nomsym2(3), bl3pt
     character(len=8) :: basemo, riggen, masgen, amogen, numgen, blanc, sd_nl
     character(len=5) :: attrib
-    character(len=12) :: bl11pt
-    character(len=16) :: method2
+    character(len=7) :: intk7
+    character(len=16) :: nomres16, method2
     character(len=24) :: matric(3)
 
     integer, pointer :: vindx(:) => null()
@@ -108,6 +110,7 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes, &
     sauve2 = 'GLOB'
     checkargs = .true.
     sd_nl = sd_nl_
+    sd_ind = 0
     if (present(base)) basemo = base
     if (present(nbmodes)) nbmode = nbmodes
     if (present(rigi)) riggen = rigi
@@ -117,6 +120,7 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes, &
     if (present(dt)) dt2 = dt
     if (present(nbnli)) nbnoli = nbnli
     if (present(sauve)) sauve2 = sauve
+    if (present(sd_index)) sd_ind = sd_index
     if (present(checkarg)) checkargs = checkarg
     if (present(nbsym) .and. present(nomsym)) then
         nbsym2 = nbsym
@@ -204,7 +208,16 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes, &
     jchmp = 1
     jdesc = 1
     blanc = '        '
-    bl11pt = '           .'
+    bl3pt = '   .'
+
+!   Hard-encode the sd index into the result name
+    nomres16 = nomres//'        '
+    if (sd_ind .gt. 0) then
+        call codent(sd_ind, 'D0', intk7)
+        nomres16 = nomres//'.'//intk7
+    end if
+
+    write (*, *) 'RESULT SD PART : ', nomres16
 !
     call jeexin(nomres//'           .REFD', iret)
     entvid = .false.
@@ -299,7 +312,7 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes, &
     if (nbsauv .ne. 0) then
 !       BOUCLE SUR LES CHAMPS A SAUVEGARDER (DEPL/VITE/ACCE)
         do inom = 1, nbsym2
-            call crevec(nomres//bl11pt//nomsym2(inom), attrib, nbstoc, jchmp)
+            call wkvect(nomres16//bl3pt//nomsym2(inom), attrib, nbstoc, jchmp)
 !           INITIALISATION DES CHAMPS A ZERO
             if (typcal .eq. 'TRAN') then
                 call r8inir(nbstoc, 0.d0, zr(jchmp), 1)
@@ -314,10 +327,10 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes, &
         end do
 !
 !       OBJETS COMMUNS
-        call crevec(nomres//'           .ORDR', typsau//' I', nbsauv, jordr)
-        call crevec(nomres//'           .DISC', typsau//' R', nbsauv, jdisc)
+        call wkvect(nomres16//bl3pt//'ORDR', typsau//' I', nbsauv, jordr)
+        call wkvect(nomres16//bl3pt//'DISC', typsau//' R', nbsauv, jdisc)
         if (typcal .eq. 'TRAN') then
-            call crevec(nomres//'           .PTEM', typsau//' R', nbsauv, jptem)
+            call wkvect(nomres16//bl3pt//'PTEM', typsau//' R', nbsauv, jptem)
             zr(jptem) = dt
         end if
     end if
@@ -330,10 +343,13 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes, &
 
         if (nbvint*nbsauv .ne. 0) then
 !           Index
-            call crevec(nomres//'        .NL.VIND', typsau//' I', nbnoli+1, jvindx)
-            call nlget(sd_nl, _INTERNAL_VARS_INDEX, ivect=zi(jvindx))
+            call jeexin(nomres//'        .NL.VIND', iret)
+            if (iret .eq. 0) then
+                call crevec(nomres//'        .NL.VIND', typsau//' I', nbnoli+1, jvindx)
+                call nlget(sd_nl, _INTERNAL_VARS_INDEX, ivect=zi(jvindx))
+            end if
 !           Internal variables object
-            call crevec(nomres//'        .NL.VINT', typsau//' R', nbvint*nbsauv, jvint)
+            call wkvect(nomres16//'.NL.VINT', typsau//' R', nbvint*nbsauv, jvint)
             call r8inir(nbvint*nbsauv, 0.d0, zr(jvint), 1)
         end if
 

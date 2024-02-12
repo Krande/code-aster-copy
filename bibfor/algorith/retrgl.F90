@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,6 +17,9 @@
 ! --------------------------------------------------------------------
 
 subroutine retrgl(nomres, resgen, mailsk, profno)
+
+    use DynaGene_module
+
     implicit none
 !  C. VARE     DATE 16/11/94
 !-----------------------------------------------------------------------
@@ -79,12 +82,12 @@ subroutine retrgl(nomres, resgen, mailsk, profno)
     character(len=19) :: numddl, nume_equa_gene, knume, kinst, trange, profno
     character(len=24) :: crefe(2), chamba, indirf, chamno, seliai, sizlia, sst
     character(len=24) :: valk, nomsst
-    integer :: itresu(3), elim, neqet, neqred, lmapro, lsilia, lsst, lmoet
+    integer :: elim, neqet, neqred, lmapro, lsilia, lsst, lmoet
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, i1, iad, iar, iarchi, ibid, ich
-    integer :: idep, idresu, idvecg, ieq, ier, ire1, i_ligr_ss
+    integer :: idep, idvecg, ieq, ier, ire1, i_ligr_ss
     integer :: ire2, ire3, iret, iretou, j, jinst, jnume
     integer :: k, k1, l, ldnew, linst, llchab, llind
     integer :: llinsk, llors, llprs
@@ -94,12 +97,16 @@ subroutine retrgl(nomres, resgen, mailsk, profno)
     character(len=24), pointer :: refn(:) => null()
     integer, pointer :: nueq(:) => null()
     real(kind=8), pointer :: disc(:) => null()
+    real(kind=8), pointer :: resu(:) => null()
+    integer :: i_chmp(3), shift, i_bloc
+    type(DynaGene) :: dyna_gene
 !-----------------------------------------------------------------------
     data pgc/'RETRGL'/
 !-----------------------------------------------------------------------
 !
     call jemarq()
     indirf = '&&'//pgc//'.INDIR.SST'
+    trange = resgen
 !
 ! --- ECRITURE DU TITRE
     call titre()
@@ -112,12 +119,32 @@ subroutine retrgl(nomres, resgen, mailsk, profno)
     end if
     call jeveuo(mailsk//'.INV.SKELETON', 'L', llinsk)
 !
+! --- RECUPERATION DES INSTANTS
+    call getvtx(' ', 'CRITERE', scal=crit, nbret=n1)
+    call getvr8(' ', 'PRECISION', scal=epsi, nbret=n1)
+    call getvtx(' ', 'INTERPOL', scal=interp, nbret=n1)
+!
+    knume = '&&RETREC.NUM_RANG'
+    kinst = '&&RETREC.INSTANT'
+    call rstran(interp, trange, ' ', 1, kinst, &
+                knume, nbinst, iretou)
+    if (iretou .ne. 0) then
+        call utmess('F', 'ALGORITH10_47')
+    end if
+    call jeexin(kinst, iret)
+    if (iret .gt. 0) then
+        call jeveuo(kinst, 'L', jinst)
+        call jeveuo(knume, 'L', jnume)
+    end if
+!
 ! --- DETERMINATION DES CHAMPS A RESTITUER, PARMI DEPL, VITE ET ACCE
-    trange = resgen
-    call jeexin(resgen//'           .DEPL', ire1)
-    call jeexin(resgen//'           .VITE', ire2)
-    call jeexin(resgen//'           .ACCE', ire3)
-    if (ire1 .eq. 0 .and. ire2 .eq. 0 .and. ire3 .eq. 0.d0) then
+
+    call dyna_gene%init(resgen)
+    call dyna_gene%has_field(dyna_gene%depl, ire1)
+    call dyna_gene%has_field(dyna_gene%vite, ire2)
+    call dyna_gene%has_field(dyna_gene%acce, ire3)
+
+    if (ire1 .eq. 0 .and. ire2 .eq. 0 .and. ire3 .eq. 0) then
         valk = resgen
         call utmess('F', 'ALGORITH14_35', sk=valk)
     end if
@@ -137,9 +164,9 @@ subroutine retrgl(nomres, resgen, mailsk, profno)
         chmp(1) = 'DEPL'
         chmp(2) = 'VITE'
         chmp(3) = 'ACCE'
-        call jeveuo(trange//'.DEPL', 'L', itresu(1))
-        call jeveuo(trange//'.VITE', 'L', itresu(2))
-        call jeveuo(trange//'.ACCE', 'L', itresu(3))
+        i_chmp(1) = dyna_gene%depl
+        i_chmp(2) = dyna_gene%vite
+        i_chmp(3) = dyna_gene%acce
     else
         call getvtx(' ', 'NOM_CHAM', scal=k8rep, nbret=n1)
         if (k8rep(1:4) .eq. 'DEPL' .and. ire1 .eq. 0) then
@@ -147,19 +174,16 @@ subroutine retrgl(nomres, resgen, mailsk, profno)
         else if (k8rep(1:4) .eq. 'DEPL' .and. ire1 .ne. 0) then
             nbcham = 1
             chmp(1) = 'DEPL'
-            call jeveuo(trange//'.DEPL', 'L', itresu(1))
         else if (k8rep(1:4) .eq. 'VITE' .and. ire2 .eq. 0) then
             call utmess('F', 'ALGORITH10_45')
         else if (k8rep(1:4) .eq. 'VITE' .and. ire2 .ne. 0) then
             nbcham = 1
             chmp(1) = 'VITE'
-            call jeveuo(trange//'.VITE', 'L', itresu(1))
         else if (k8rep(1:4) .eq. 'ACCE' .and. ire3 .eq. 0) then
             call utmess('F', 'ALGORITH10_46')
         else if (k8rep(1:4) .eq. 'ACCE' .and. ire3 .ne. 0) then
             nbcham = 1
             chmp(1) = 'ACCE'
-            call jeveuo(trange//'.ACCE', 'L', itresu(1))
         end if
     end if
 !
@@ -196,24 +220,6 @@ subroutine retrgl(nomres, resgen, mailsk, profno)
 ! --- INFORMATIONS POUR CREATION DES CHAMNO A PARTIR DES .REFE
     crefe(1) = mailsk
     crefe(2) = profno
-!
-! --- RECUPERATION DES INSTANTS
-    call getvtx(' ', 'CRITERE', scal=crit, nbret=n1)
-    call getvr8(' ', 'PRECISION', scal=epsi, nbret=n1)
-    call getvtx(' ', 'INTERPOL', scal=interp, nbret=n1)
-!
-    knume = '&&RETREC.NUM_RANG'
-    kinst = '&&RETREC.INSTANT'
-    call rstran(interp, trange, ' ', 1, kinst, &
-                knume, nbinst, iretou)
-    if (iretou .ne. 0) then
-        call utmess('F', 'ALGORITH10_47')
-    end if
-    call jeexin(kinst, iret)
-    if (iret .gt. 0) then
-        call jeveuo(kinst, 'E', jinst)
-        call jeveuo(knume, 'E', jnume)
-    end if
 !
 ! --- ALLOCATION DE LA STRUCTURE DE DONNEES RESULTAT-COMPOSE
 !
@@ -252,8 +258,6 @@ subroutine retrgl(nomres, resgen, mailsk, profno)
 !
     if (interp(1:3) .ne. 'NON') then
 !
-        call jeveuo(trange//'.DISC', 'L', vr=disc)
-        call jelira(trange//'.DISC', 'LONMAX', nbinsg)
         if (elim .eq. 0) then
             call wkvect('&&RETREC.VECTGENE', 'V V R', neqgen, idvecg)
         else
@@ -263,9 +267,13 @@ subroutine retrgl(nomres, resgen, mailsk, profno)
         do i = 0, nbinst-1
             iarchi = iarchi+1
 !
+            call dyna_gene%get_values_by_disc(dyna_gene%disc, zr(jinst+i), length=nbinsg, vr=disc)
+            call dyna_gene%get_current_bloc(dyna_gene%disc, i_bloc)
+
             do ich = 1, nbcham
 !
-                idresu = itresu(ich)
+                call dyna_gene%get_values(i_chmp(ich), i_bloc, vr=resu)
+
                 call rsexch(' ', nomres, chmp(ich), iarchi, chamno, &
                             iret)
                 if (iret .eq. 0) then
@@ -278,7 +286,7 @@ subroutine retrgl(nomres, resgen, mailsk, profno)
                 chamno(20:24) = '.VALE'
                 call jeveuo(chamno, 'E', ldnew)
                 call extrac(interp, epsi, crit, nbinsg, disc, &
-                            zr(jinst+i), zr(idresu), neqgen, zr(idvecg), ier)
+                            zr(jinst+i), resu, neqgen, zr(idvecg), ier)
 !
 !-- SI ELIMINATION, ON RESTITUE D'ABORD LES MODES GENERALISES
                 if (elim .ne. 0) then
@@ -379,14 +387,19 @@ subroutine retrgl(nomres, resgen, mailsk, profno)
 !
     else
 !
-        call jeexin(trange//'.ORDR', iret)
+        call dyna_gene%has_field(dyna_gene%ordr, iret)
         if (iret .ne. 0 .and. zi(jnume) .eq. 1) iarchi = -1
 !
         do i = 0, nbinst-1
             iarchi = iarchi+1
 !
+            call dyna_gene%get_values_by_index(dyna_gene%disc, zi(jnume+i), shift, vr=disc)
+            call dyna_gene%get_current_bloc(dyna_gene%disc, i_bloc)
+
             do ich = 1, nbcham
-                idresu = itresu(ich)
+
+                call dyna_gene%get_values(i_chmp(ich), i_bloc, vr=resu)
+
 !-- SI ELIMINATION, ON RESTITUE D'ABORD LES MODES GENERALISES
                 if (elim .ne. 0) then
                     do i1 = 1, neqet
@@ -394,7 +407,7 @@ subroutine retrgl(nomres, resgen, mailsk, profno)
                         do k1 = 1, neqred
                             zr(lmoet+i1-1) = zr(lmoet+i1-1)+ &
                                              zr(lmapro+(k1-1)*neqet+i1-1)* &
-                                             zr(idresu+k1-1+(zi(jnume+i)-1)*neqred)
+                                             resu(k1+(zi(jnume+i)-1-shift)*neqred)
                         end do
                     end do
                 end if
@@ -453,18 +466,20 @@ subroutine retrgl(nomres, resgen, mailsk, profno)
                             call dcapno(basmod, 'DEPL', j, chamba)
                             call jeveuo(chamba, 'L', llchab)
 !
-                            if (elim .ne. 0) then
-                                iad = lmoet+ieq+j-1
-                            else
-                                iad = idresu+(zi(jnume+i)-1)*neqgen+ &
-                                      nueq(1+ieq+j-2)-1
-                            end if
-!
 ! --- BOUCLE SUR LES EQUATIONS PHYSIQUES
 !
-                            do l = 1, neqs
-                                zr(ltvec+l-1) = zr(ltvec+l-1)+zr(llchab+l-1)*zr(iad)
-                            end do
+                            if (elim .ne. 0) then
+                                iad = lmoet+ieq+j-1
+                                do l = 1, neqs
+                                    zr(ltvec+l-1) = zr(ltvec+l-1)+zr(llchab+l-1)*zr(iad)
+                                end do
+                            else
+                                iad = (zi(jnume+i)-1-shift)*neqgen+nueq(1+ieq+j-2)
+                                do l = 1, neqs
+                                    zr(ltvec+l-1) = zr(ltvec+l-1)+zr(llchab+l-1)*resu(iad)
+                                end do
+                            end if
+
                         end do
                         call jeveuo(jexnum(indirf, numsst), 'L', llind)
                         call jelira(jexnum(indirf, numsst), 'LONMAX', nbcou)
@@ -504,6 +519,9 @@ subroutine retrgl(nomres, resgen, mailsk, profno)
     call jedetr('&&'//pgc//'ROTY')
     call jedetr('&&'//pgc//'ROTZ')
     call jedetr('&&'//pgc//'.INDIR.SST')
+
+    call dyna_gene%free()
 !
     call jedema()
+
 end subroutine

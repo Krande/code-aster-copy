@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,6 +17,9 @@
 ! --------------------------------------------------------------------
 
 subroutine tran77(nomres, typres, nomin, basemo)
+
+    use DynaGene_module
+
     implicit none
 !
 !
@@ -60,7 +63,7 @@ subroutine tran77(nomres, typres, nomin, basemo)
 #include "asterfort/as_allocate.h"
     character(len=24) :: valk(2)
 ! ----------------------------------------------------------------------
-    integer :: i, j, itresu(8)
+    integer :: i, j, itresu(8), i_cham(8)
     integer :: foci, focf, fomi, fomf, fomo
     real(kind=8) :: r8b, epsi
     complex(kind=8) :: cbid
@@ -75,16 +78,18 @@ subroutine tran77(nomres, typres, nomin, basemo)
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: iarchi, ibid, ich, iadrif
-    integer :: idec, idefm, idresu, inocmp
+    integer :: idec, idefm, inocmp
     integer :: inoecp, inuddl, inumno, iret, iretou, isk
     integer :: jc, jinst, jnume, linst
     integer :: lvale, n1, n2, n3, n4, nbcham, nbinsg
-    integer :: nbinst, nbmode, nbnoeu, ncmp, neq, nfonct
+    integer :: nbinst, nbmode, nbnoeu, ncmp, neq, nfonct, shift, i_bloc
     real(kind=8), pointer :: base(:) => null()
     real(kind=8), pointer :: vectgene(:) => null()
     character(len=24), pointer :: refn(:) => null()
     integer, pointer :: desc(:) => null()
     real(kind=8), pointer :: disc(:) => null()
+    real(kind=8), pointer :: resu(:) => null()
+    type(DynaGene) :: dyna_gene
     cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
 !      DATA CHAMN2   /'&&TRAN77.CHAMN2'/
@@ -185,7 +190,7 @@ subroutine tran77(nomres, typres, nomin, basemo)
 !     --- ACCELERATION GENERALISES SUIVANT LES CHAMPS SOUHAITES ---
     nfonct = 0
     call rbph01(trange, nbcham, type, itresu, nfonct, &
-                basem2, typref, typbas, tousno, multap)
+                basem2, typref, typbas, tousno, multap, i_cham)
 !
 !     --- RECUPERATION DES NUMEROS DES NOEUDS ET DES DDLS ASSOCIES ---
 !     ---         DANS LE CAS D'UNE RESTITUTION PARTIELLE          ---
@@ -249,9 +254,13 @@ subroutine tran77(nomres, typres, nomin, basemo)
         call utmess('F', 'ALGORITH10_95')
     end if
 !
-    call jeveuo(trange//'.DISC', 'L', vr=disc)
-    call jelira(trange//'.DISC', 'LONMAX', nbinsg)
-    AS_ALLOCATE(vr=vectgene, size=nbmode)
+
+    call dyna_gene%init(trange(1:8))
+
+    if (interp(1:3) .ne. 'NON') then
+        AS_ALLOCATE(vr=vectgene, size=nbmode)
+    end if
+
     do ich = 1, nbcham
         leffor = .true.
         if (type(ich) .eq. 'DEPL' .or. type(ich) .eq. 'VITE' .or. type(ich) .eq. 'ACCE' .or. &
@@ -297,10 +306,9 @@ subroutine tran77(nomres, typres, nomin, basemo)
         end if
         iarchi = 0
         if (interp(1:3) .eq. 'NON') then
-            call jeexin(trange//'.ORDR', iret)
+            call dyna_gene%has_field(dyna_gene%ordr, iret)
             if (iret .ne. 0 .and. zi(jnume) .eq. 1) iarchi = -1
         end if
-        idresu = itresu(ich)
         do i = 0, nbinst-1
             iarchi = iarchi+1
             call rsexch(' ', nomres, type(ich), iarchi, chamno, &
@@ -345,12 +353,16 @@ subroutine tran77(nomres, typres, nomin, basemo)
 !
             if (leffor .or. .not. tousno) call jelira(chamno, 'LONMAX', neq)
             if (interp(1:3) .ne. 'NON') then
+                call dyna_gene%get_values_by_disc(i_cham(ich), zr(jinst+i), length=nbinsg, vr=resu)
+                call dyna_gene%get_current_bloc(i_cham(ich), i_bloc)
+                call dyna_gene%get_values(dyna_gene%disc, i_bloc, vr=disc)
                 call extrac(interp, epsi, crit, nbinsg, disc, &
-                            zr(jinst+i), zr(idresu), nbmode, vectgene, ibid)
-                call mdgeph(neq, nbmode, base, vectgene, zr(lvale))
+                            zr(jinst+i), resu, nbmode, vectgene, ibid)
             else
-                call mdgeph(neq, nbmode, base, zr(idresu+(zi(jnume+i)-1)*nbmode), zr(lvale))
+                call dyna_gene%get_values_by_index(i_cham(ich), zi(jnume+i), shift, vr=resu)
+                vectgene => resu((zi(jnume+i)-1-shift)*nbmode+1:(zi(jnume+i)-shift)*nbmode)
             end if
+            call mdgeph(neq, nbmode, base, vectgene, zr(lvale))
 !
             call rsnoch(nomres, type(ich), iarchi)
             call rsadpa(nomres, 'E', 1, 'INST', iarchi, &
@@ -360,6 +372,13 @@ subroutine tran77(nomres, typres, nomin, basemo)
         AS_DEALLOCATE(vr=base)
     end do
 !
+
+    if (interp(1:3) .ne. 'NON') then
+        AS_DEALLOCATE(vr=vectgene)
+    end if
+
+    call dyna_gene%free()
+
 !
 !
     if (mode .eq. blanc) then
@@ -372,7 +391,6 @@ subroutine tran77(nomres, typres, nomin, basemo)
     call jedetr('&&TRAN77.NUME_DDL    ')
     call jedetr('&&TRAN77.NUM_RANG')
     call jedetr('&&TRAN77.INSTANT')
-    AS_DEALLOCATE(vr=vectgene)
 !
     call titre()
 !

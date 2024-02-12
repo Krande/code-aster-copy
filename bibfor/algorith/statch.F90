@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine statch(nbobst, nbpt, temps, dloc, fcho, &
                   vgli, iadh, wk1, wk2, wk3, &
-                  iwk4, tdebut, tfin, nbloc, offset, &
+                  iwk4, nbloc, offset, &
                   trepos, noecho, intitu, nomres)
     implicit none
 #include "asterc/r8rddg.h"
@@ -37,7 +37,7 @@ subroutine statch(nbobst, nbpt, temps, dloc, fcho, &
 #include "blas/dcopy.h"
     integer :: nbobst, nbpt, nbloc, iadh(*), iwk4(*)
     real(kind=8) :: temps(*), dloc(*), fcho(*), vgli(*), trepos, wk1(*), wk2(*)
-    real(kind=8) :: wk3(*), tdebut, tfin, offset
+    real(kind=8) :: wk3(*), offset
     character(len=*) :: nomres
     character(len=8) :: noecho(*)
     character(len=24) :: intitu(*)
@@ -108,9 +108,9 @@ subroutine statch(nbobst, nbpt, temps, dloc, fcho, &
     else
         dt = temps(2)-temps(1)
     end if
-    idebut = int((tdebut-temps(1))/dt)+1
-    ifin = min(int((tfin-temps(1))/dt)+1, nbpt)
-    nbpas = ifin-idebut+1
+    nbpas = nbpt
+    idebut = 1
+    ifin = idebut+nbpas-1
     if (nbloc .eq. 0) nbloc = 1
     nbval = nbpas/nbloc
 !

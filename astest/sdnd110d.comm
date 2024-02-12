@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -203,13 +203,15 @@ ResuGene = DYNA_VIBRA(
 )
 
 # Récupération de Force, Long
-vint1 = ResuGene.VARI_INTERNE(1)
+
+func_force = RECU_FONCTION(RESU_GENE=ResuGene, GROUP_NO_CHOC="GPT2", PARA_X="INST", PARA_Y="VINT1")
+func_xlong = RECU_FONCTION(RESU_GENE=ResuGene, GROUP_NO_CHOC="GPT2", PARA_X="INST", PARA_Y="VINT2")
 
 # ===================================================================== TEST_FONCTION
 motclef = {}
 force0 = 0.0
 motclef["VALEUR"] = []
-for force, xlong in vint1:
+for force, xlong in zip(func_force.Ordo(), func_xlong.Ordo()):
     if xlong <= 0.0:
         xlong9 = -xlong
     else:

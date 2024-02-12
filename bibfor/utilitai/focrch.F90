@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,6 +19,9 @@
 subroutine focrch(nomfon, resu, noeud, parax, paray, &
                   base, int, intitu, ind, listr, &
                   sst, nsst, ier)
+
+    use DynaGene_module
+
     implicit none
 #include "jeveux.h"
 #include "asterc/getres.h"
@@ -65,10 +68,12 @@ subroutine focrch(nomfon, resu, noeud, parax, paray, &
     integer :: ic, inl, ie, ival, jinst, iparax
     integer :: jparx, jpary, jval, jvalx, jvaly, start, nbvint, iparay
     integer :: lfon, lg, lpro, lval, nbnoli, nbinst, nbpara
-    integer :: nbval, jvint
+    integer :: nbval, jvint, i_bloc, shift, length
     character(len=24), pointer :: nlname(:) => null()
     integer, pointer :: desc(:) => null()
     integer, pointer :: vindx(:) => null()
+    real(kind=8), pointer :: vr(:) => null()
+    type(DynaGene) :: dyna_gene
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -77,9 +82,6 @@ subroutine focrch(nomfon, resu, noeud, parax, paray, &
 !
     call jeveuo(resu//'.DESC', 'L', vi=desc)
     nbnoli = desc(3)
-!
-    call jelira(resu//'.DISC', 'LONUTI', nbinst)
-    call jeveuo(resu//'.DISC', 'L', jinst)
 !
     call jeveuo(resu(1:16)//'.NL.INTI', 'L', vk24=nlname)
 !
@@ -133,11 +135,30 @@ subroutine focrch(nomfon, resu, noeud, parax, paray, &
     goto 999
 16  continue
 !
-    call jeveuo(resu(1:16)//'.NL.VINT', 'L', jvint)
+    call dyna_gene%init(resu(1:8))
+    nbinst = dyna_gene%length
+
+    if (dyna_gene%n_bloc .eq. 0) then
+        call jeveuo(resu(1:16)//'.NL.VINT', 'L', jvint)
+    else
+        jvint = 0
+    end if
     call jeveuo(resu(1:16)//'.NL.VIND', 'L', vi=vindx)
     start = vindx(inl)-1
     nbvint = vindx(nbnoli+1)-1
 !
+    if (dyna_gene%n_bloc .eq. 0) then
+        call jeveuo(resu//'.DISC', 'L', jinst)
+    else
+        if (parax(1:4) .eq. 'INST' .or. paray(1:4) .eq. 'INST' .or. ind .ne. 0) then
+            call wkvect('&&FOCRCH.INST', 'V V R', nbinst, jinst)
+            do i_bloc = 1, dyna_gene%n_bloc
+                call dyna_gene%get_values(dyna_gene%disc, i_bloc, shift, length, vr=vr)
+                call dcopy(length, vr, 1, zr(jinst+shift), 1)
+            end do
+        end if
+    end if
+
     if (parax(1:4) .eq. 'INST') then
         jvalx = jinst
         goto 20
@@ -180,7 +201,15 @@ subroutine focrch(nomfon, resu, noeud, parax, paray, &
         goto 999
     end if
     call wkvect('&&FOCRCH.PARAX', 'V V R', nbinst, jvalx)
-    call dcopy(nbinst, zr(jparx), nbvint, zr(jvalx), 1)
+    if (dyna_gene%n_bloc .eq. 0) then
+        call dcopy(nbinst, zr(jparx), nbvint, zr(jvalx), 1)
+    else
+        do i_bloc = 1, dyna_gene%n_bloc
+            call dyna_gene%get_values(dyna_gene%vint, i_bloc, shift, length, vr=vr)
+            vr => vr(1+jparx:)
+            call dcopy(length, vr, nbvint, zr(jvalx+shift), 1)
+        end do
+    end if
 20  continue
 !
     if (paray(1:4) .eq. 'INST') then
@@ -225,7 +254,15 @@ subroutine focrch(nomfon, resu, noeud, parax, paray, &
         goto 999
     end if
     call wkvect('&&FOCRCH.PARAY', 'V V R', nbinst, jvaly)
-    call dcopy(nbinst, zr(jpary), nbvint, zr(jvaly), 1)
+    if (dyna_gene%n_bloc .eq. 0) then
+        call dcopy(nbinst, zr(jpary), nbvint, zr(jvaly), 1)
+    else
+        do i_bloc = 1, dyna_gene%n_bloc
+            call dyna_gene%get_values(dyna_gene%vint, i_bloc, shift, length, vr=vr)
+            vr => vr(1+jpary:)
+            call dcopy(length, vr, nbvint, zr(jvaly+shift), 1)
+        end do
+    end if
 22  continue
 !
     if (ind .eq. 0) then
@@ -312,7 +349,10 @@ subroutine focrch(nomfon, resu, noeud, parax, paray, &
     end if
     if (parax(1:4) .ne. 'INST') call jedetr('&&FOCRCH.PARAX')
     if (paray(1:4) .ne. 'INST') call jedetr('&&FOCRCH.PARAY')
+    if ((parax(1:4) .eq. 'INST' .or. paray(1:4) .eq. 'INST' .or. ind .ne. 0) &
+        .and. dyna_gene%n_bloc .ne. 0) call jedetr('&&FOCRCH.INST')
 !
+    call dyna_gene%free()
 999 continue
     call jedema()
 end subroutine

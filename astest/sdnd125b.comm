@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -169,17 +169,8 @@ INTEGR = DYNA_VIBRA(
 )
 
 INTEGR.INFO_NONL()
-VINT_CH2 = INTEGR.VARI_INTERNE(2)
-DEF_PLAS = VINT_CH2[-1, 8]  # Cumulated plastic deformation (VINT8 at the final instant)
 
-TEST_F = DEFI_FONCTION(
-    NOM_RESU="DEFO_PLAS",
-    NOM_PARA="INST",
-    PROL_GAUCHE="CONSTANT",
-    PROL_DROITE="CONSTANT",
-    INTERPOL="LIN",
-    VALE=(t1, DEF_PLAS, t1 + dt, DEF_PLAS),
-)
+TEST_F = RECU_FONCTION(RESU_GENE=INTEGR, GROUP_NO_CHOC="RIGHT", PARA_X="INST", PARA_Y="VINT9")
 
 TEST_FONCTION(
     VALEUR=(_F(VALE_CALC=3.768582449313, CRITERE="RELATIF", VALE_PARA=t1, FONCTION=TEST_F))

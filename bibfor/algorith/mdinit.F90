@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,6 +20,7 @@ subroutine mdinit(basemo, nbmode, nbnoli, depgen, vitgen, &
                   vint, ier, tinit, reprise, accgen, &
                   index)
 !
+    use DynaGene_module
 !
     implicit none
 #include "asterf_types.h"
@@ -63,8 +64,8 @@ subroutine mdinit(basemo, nbmode, nbnoli, depgen, vitgen, &
     character(len=19) :: nomdep, nomvit
     character(len=8) :: tran, crit, inter
 ! --------------------------------------------------------------------------------------------------
-    integer               :: jdesc, jrefe, jvint, n1, jvind, vmessi(2)
-    integer               :: nbinst, nc, ni, np, nt, nbvint, nbnoli0, nl_type
+    integer               :: jdesc, jrefe, n1, jvind, vmessi(2)
+    integer               :: nbinst, nc, ni, np, nt, nbvint, nbnoli0, nl_type, i_bloc, shift
     real(kind=8)          :: prec
     character(len=8)      :: sd_nl
     character(len=24)     :: no1_name, no2_name, vmessk(6), nltype_k0, nltype_k1
@@ -73,9 +74,11 @@ subroutine mdinit(basemo, nbmode, nbnoli, depgen, vitgen, &
     real(kind=8), pointer :: disc(:) => null()
     real(kind=8), pointer :: depl(:) => null()
     real(kind=8), pointer :: vite(:) => null()
+    real(kind=8), pointer :: v_vint(:) => null()
     real(kind=8), pointer :: depi(:) => null()
     real(kind=8), pointer :: viti(:) => null()
     character(len=24), pointer :: inti(:) => null()
+    type(DynaGene) :: dyna_gene
 ! --------------------------------------------------------------------------------------------------
     call jemarq()
     sd_nl = '&&OP29NL'
@@ -138,6 +141,7 @@ subroutine mdinit(basemo, nbmode, nbnoli, depgen, vitgen, &
             vmessi(2) = nbnoli
             call utmess('F', 'ALGORITH5_82', ni=2, vali=vmessi)
         end if
+
         if (nbnoli .ne. 0) then
 !           recuperation des donnees sur les non linearites
             call jeveuo(tran//'        .NL.INTI', 'L', vk24=inti)
@@ -169,19 +173,28 @@ subroutine mdinit(basemo, nbmode, nbnoli, depgen, vitgen, &
         if (np .eq. 0) prec = 1.d-6
 
         call getvr8('ETAT_INIT', 'INST_INIT', iocc=1, scal=tinit, nbret=ni)
-        call jeveuo(tran//'           .DISC', 'E', vr=disc)
-        call jelira(tran//'           .DISC', 'LONUTI', nbinst)
-        if (ni .eq. 0) tinit = disc(nbinst)
+
+        call dyna_gene%init(tran)
+
+        if (ni .eq. 0) then
+            call dyna_gene%get_values(dyna_gene%disc, dyna_gene%n_bloc, shift, nbinst, vr=disc)
+            tinit = disc(nbinst)
+        else
+            call dyna_gene%get_values_by_disc(dyna_gene%disc, tinit, shift, nbinst, vr=disc)
+        end if
 !       Deplacement
         inter = 'NON'
-        call jeveuo(tran//'           .DEPL', 'E', vr=depl)
+
+        call dyna_gene%get_current_bloc(dyna_gene%disc, i_bloc)
+        call dyna_gene%get_values(dyna_gene%depl, i_bloc, vr=depl)
         call extrac(inter, prec, crit, nbinst, disc, &
                     tinit, depl, nbmode, depgen, ier, index)
+        index = shift+index
         if (ier .ne. 0) then
             call utmess('F', 'ALGORITH5_46')
         end if
 !       Vitesse
-        call jeveuo(tran//'           .VITE', 'E', vr=vite)
+        call dyna_gene%get_values(dyna_gene%vite, i_bloc, vr=vite)
         inter = 'NON'
         call extrac(inter, prec, crit, nbinst, disc, &
                     tinit, vite, nbmode, vitgen, ier)
@@ -190,7 +203,7 @@ subroutine mdinit(basemo, nbmode, nbnoli, depgen, vitgen, &
         end if
 !       Acceleration
         if (present(accgen)) then
-            call jeveuo(tran//'           .ACCE', 'E', vr=acce)
+            call dyna_gene%get_values(dyna_gene%acce, i_bloc, vr=acce)
             inter = 'NON'
             call extrac(inter, prec, crit, nbinst, disc, &
                         tinit, acce, nbmode, accgen, ier)
@@ -202,16 +215,20 @@ subroutine mdinit(basemo, nbmode, nbnoli, depgen, vitgen, &
         if (nbnoli .gt. 0) then
             call jeveuo(tran//'        .NL.VIND', 'L', jvind)
             nbvint = zi(jvind+nbnoli)-1
-            call jeveuo(tran//'        .NL.VINT', 'E', jvint)
+            call dyna_gene%get_values(dyna_gene%vint, i_bloc, vr=v_vint)
             inter = 'NON'
             call extrac(inter, prec, crit, nbinst, disc, &
-                        tinit, zr(jvint), nbvint, vint, ier)
+                        tinit, v_vint, nbvint, vint, ier)
             if (ier .ne. 0) then
                 call utmess('F', 'ALGORITH5_48')
             end if
         end if
+
+        call dyna_gene%free
+
         if (present(reprise)) reprise = .true.
     end if
 !
     call jedema()
+!
 end subroutine

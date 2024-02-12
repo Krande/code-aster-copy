@@ -12404,22 +12404,19 @@ class TransientGeneralizedResult(GeneralizedResultReal):
         2. __init__(self: libaster.TransientGeneralizedResult, arg0: str) -> None
         """
 
-    def getAbscissasOfSamples(self):
-        pass
-
     def getDOFNumbering(self):
-        pass
-
-    def getDisplacement(self):
         pass
 
     def getGeneralizedDOFNumbering(self):
         pass
 
-    def getIndicesOfSamples(self):
+    def getIndexes(self):
         pass
 
     def getNumberOfModes(self):
+        pass
+
+    def getTimes(self):
         pass
 
     def setDOFNumbering(self, arg0):

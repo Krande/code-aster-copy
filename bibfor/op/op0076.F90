@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,6 +17,9 @@
 ! --------------------------------------------------------------------
 
 subroutine op0076()
+
+    use DynaGene_module
+
     implicit none
 !     RECUPERE LES CHAMPS GENERALISES (DEPL, VITE, ACCE) D'UN CONCEPT
 !     TRAN_GENE.
@@ -46,9 +49,13 @@ subroutine op0076()
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer ::  idcham, iddesc, idrefe, idvecg
-    integer :: ierd, n1, nbinst, nbmode, nt, nf, ni
+    integer :: ierd, n1, nbinst, nbmode, nt, nf, ni, i_bloc, i_cham
     integer, pointer :: desc(:) => null()
     real(kind=8), pointer :: disc(:) => null()
+    real(kind=8), pointer :: resu(:) => null()
+
+    type(DynaGene) :: dyna_gene
+
 !-----------------------------------------------------------------------
     call jemarq()
     call infmaj()
@@ -69,10 +76,8 @@ subroutine op0076()
 !
 !     --- RECUPERATION DES INFORMATIONS MODALES ---
 !
+
     call jeveuo(trange//'           .DESC', 'L', vi=desc)
-    call jeveuo(trange//'           .DISC', 'L', vr=disc)
-    call jelira(trange//'           .DISC', 'LONMAX', nbinst)
-    call jeveuo(trange//'           .'//nomcha(1:4), 'L', idcham)
 !
 !     --- RECUPERATION DE LA NUMEROTATION GENERALISEE NUME_DDL_GENE
     call dismoi('NUME_DDL', trange, 'RESU_DYNA', repk=nddlge)
@@ -98,16 +103,31 @@ subroutine op0076()
             call utmess('E', 'ALGORITH9_51')
         end if
 !
+        call dyna_gene%init(trange)
+
 !       --- CREATION DU VECT_ASSE_GENE RESULTAT ---
         call wkvect(nomres//'           .VALE', 'G V R', nbmode, idvecg)
 !
+        call dyna_gene%get_values_by_disc(dyna_gene%disc, temps, length=nbinst, vr=disc)
+        call dyna_gene%get_current_bloc(dyna_gene%disc, i_bloc)
+        if (nomcha(1:4) .eq. 'DEPL') then
+            i_cham = dyna_gene%depl
+        else if (nomcha(1:4) .eq. 'VITE') then
+            i_cham = dyna_gene%vite
+        else
+            i_cham = dyna_gene%acce
+        end if
+        call dyna_gene%get_values(i_cham, i_bloc, vr=resu)
+
 !       --- RECUPERATION DU CHAMP ---
         call extrac(interp, prec, crit, nbinst, disc, &
-                    temps, zr(idcham), nbmode, zr(idvecg), ierd)
+                    temps, resu, nbmode, zr(idvecg), ierd)
 !
         if (ierd .ne. 0) then
             call utmess('E', 'ALGORITH9_49')
         end if
+
+        call dyna_gene%free
 !
 ! --- CAS DU HARM_GENE
 !
@@ -117,6 +137,10 @@ subroutine op0076()
             call utmess('E', 'ALGORITH9_52')
         end if
 !
+        call jeveuo(trange//'           .DISC', 'L', vr=disc)
+        call jelira(trange//'           .DISC', 'LONMAX', nbinst)
+        call jeveuo(trange//'           .'//nomcha(1:4), 'L', idcham)
+
 !       --- CREATION DU VECT_ASSE_GENE RESULTAT ---
         call wkvect(nomres//'           .VALE', 'G V C', nbmode, idvecg)
 !

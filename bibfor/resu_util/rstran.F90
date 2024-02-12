@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,6 +18,10 @@
 !
 subroutine rstran(interp, resu, motcle, iocc, kdisc, &
                   krang, nbdisc, ier)
+
+    use DynaGene_module
+    use iso_c_binding, only: c_ptr, c_f_pointer
+
     implicit none
 #include "jeveux.h"
 #include "asterc/getres.h"
@@ -30,6 +34,7 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc, &
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
+#include "asterfort/jgetptc.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -77,14 +82,21 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc, &
     integer :: ival, jdisc, jordr, jrang, l, laccr
     integer :: ldisc, lli, lt, n, nbi, nbi2, nbdisc
     integer :: nbtrou, nno, nto, nutrou(1)
-    real(kind=8) :: epsi, tusr
+    real(kind=8) :: epsi, tusr, epsi2
     integer, pointer :: nume(:) => null()
+    integer :: i_bloc, shift
+    integer, pointer :: ordr(:) => null()
+    real(kind=8), pointer :: disc(:) => null()
+    type(DynaGene) :: dyna_gene
+    type(c_ptr) :: pc
 !-----------------------------------------------------------------------
     call jemarq()
 !
     resu_ = resu
     kdisc_ = kdisc
     krang_ = krang
+
+    call dyna_gene%init(resu(1:8))
 !
     ier = 0
     nbdisc = 0
@@ -93,29 +105,33 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc, &
     call getvr8(motcle, 'PRECISION', iocc=iocc, scal=epsi, nbret=n)
     call getvtx(motcle, 'CRITERE', iocc=iocc, scal=crit, nbret=n)
 !
-    call jeexin(resu_//'.DISC', ier1)
-    if (ier1 .gt. 0) then
-!     --- CAS D'UNE SD DYNA_GENE (HARM_GENE OU TRAN_GENE)
-        call jeveuo(resu_//'.DISC', 'L', ldisc)
-        call jelira(resu_//'.DISC', 'LONMAX', nbi)
-    else
-!     --- CAS D'UNE SD RESU_LTAT
-        call rslipa(resu_, 'INST', '&&RSTRAN.LIINST', ldisc, nbi)
-    end if
-!
-    call jeexin(resu_//'.ORDR', iret)
-    if (iret .eq. 0) then
-        call utmess('F', 'ALGORITH17_26')
-!        CALL WKVECT('&&RSTRAN.ORDR','V V I',NBI,JORDR)
-!        DO 10 I = 1,NBI
-!          ZI(JORDR+I-1) = I
-!   10   CONTINUE
-    else
-        call jeveuo(resu_//'.ORDR', 'L', jordr)
-        call jelira(resu_//'.ORDR', 'LONUTI', nbi2)
-        if (nbi .ne. nbi2) then
-            call utmess('F', 'ALGORITH17_27')
+    if (dyna_gene%n_bloc .le. 0) then
+        call jeexin(resu_//'.DISC', ier1)
+        if (ier1 .gt. 0) then
+!         --- CAS D'UNE SD DYNA_GENE (HARM_GENE OU TRAN_GENE)
+            call jeveuo(resu_//'.DISC', 'L', ldisc)
+            call jelira(resu_//'.DISC', 'LONMAX', nbi)
+        else
+!         --- CAS D'UNE SD RESU_LTAT
+            call rslipa(resu_, 'INST', '&&RSTRAN.LIINST', ldisc, nbi)
+            call jgetptc(ldisc, pc, vr=zr(1))
+            call c_f_pointer(pc, disc, [nbi])
         end if
+!
+        call jeexin(resu_//'.ORDR', iret)
+        if (iret .eq. 0) then
+            call utmess('F', 'ALGORITH17_26')
+        else
+            call jeveuo(resu_//'.ORDR', 'L', jordr)
+            call jelira(resu_//'.ORDR', 'LONUTI', nbi2)
+            call jgetptc(ldisc, pc, vi=zi(1))
+            call c_f_pointer(pc, ordr, [nbi2])
+            if (nbi .ne. nbi2) then
+                call utmess('F', 'ALGORITH17_27')
+            end if
+        end if
+    else
+        nbi = dyna_gene%length
     end if
 !
 !     --- RECHERCHE A PARTIR D'UN NUMERO D'ORDRE ---
@@ -129,16 +145,27 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc, &
         call getvis(motcle, 'NUME_ORDRE', iocc=iocc, nbval=nbdisc, vect=nume, &
                     nbret=nno)
         do i = 0, nbdisc-1
-            do iord = 0, nbi-1
-                if (nume(1+i) .eq. zi(jordr+iord)) goto 30
+            if (dyna_gene%n_bloc .eq. -1) then
+                ! cas SD resultat
+                shift = 0
+                nbi2 = nbi
+            else
+                call dyna_gene%get_values_by_ordr(dyna_gene%ordr, nume(1+i), shift, nbi2, vi=ordr)
+            end if
+            do iord = 1, nbi2
+                if (nume(1+i) .eq. ordr(iord)) goto 30
             end do
             ier = ier+110
             vali = nume(1+i)
             call utmess('A', 'UTILITAI8_17', si=vali)
             goto 40
 30          continue
-            zi(jrang+i) = iord+1
-            zr(jdisc+i) = zr(ldisc+iord)
+            zi(jrang+i) = iord+shift
+            if (dyna_gene%n_bloc .ge. 0) then
+                call dyna_gene%get_current_bloc(dyna_gene%ordr, i_bloc)
+                call dyna_gene%get_values(dyna_gene%disc, i_bloc, vr=disc)
+            end if
+            zr(jdisc+i) = disc(iord)
 40          continue
         end do
         goto 100
@@ -170,9 +197,27 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc, &
             zr(jdisc+i) = tusr
             goto 70
         end if
-        call rsindi(type, ldisc, 1, jordr, ival, &
-                    tusr, kval, cval, epsi, crit, &
-                    nbi, nbtrou, nutrou, 1)
+        if (dyna_gene%n_bloc .eq. -1) then
+            ! cas SD resultat
+            shift = 0
+            nbi2 = nbi
+        else
+            call dyna_gene%get_values_by_disc(dyna_gene%disc, tusr, shift, nbi2, vr=disc)
+        end if
+        if (crit(1:4) .eq. 'RELA') then
+            epsi2 = abs(epsi*tusr)
+        else
+            epsi2 = abs(epsi)
+        end if
+        nbtrou = 0
+        do iord = 1, nbi2
+            if (abs(disc(iord)-tusr) .le. epsi2) then
+                nbtrou = nbtrou+1
+                if (nbtrou .eq. 1) then
+                    nutrou(nbtrou) = iord
+                end if
+            end if
+        end do
         if (nbtrou .eq. 0) then
             ier = ier+110
             valr = tusr
@@ -181,16 +226,12 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc, &
         else if (nbtrou .ne. 1) then
             ier = ier+100
             valr = tusr
-            vali = -nbtrou
+            vali = nbtrou
             call utmess('F', 'UTILITAI8_19', si=vali, sr=valr)
             goto 70
         end if
-        do iord = 0, nbi-1
-            if (nutrou(1) .eq. zi(jordr+iord)) goto 60
-        end do
-60      continue
-        zi(jrang+i) = iord+1
-        zr(jdisc+i) = zr(ldisc+iord)
+        zi(jrang+i) = nutrou(1)+shift
+        zr(jdisc+i) = disc(nutrou(1))
 70      continue
     end do
     goto 100
@@ -255,12 +296,25 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc, &
     nbdisc = nbi
     call wkvect(krang_, 'V V I', nbdisc, jrang)
     call wkvect(kdisc_, 'V V R8', nbdisc, jdisc)
-    do iord = 0, nbdisc-1
-        zi(jrang+iord) = iord+1
-        zr(jdisc+iord) = zr(ldisc+iord)
-    end do
+
+    if (dyna_gene%n_bloc .le. 0) then
+        do iord = 1, nbdisc
+            zi(jrang-1+iord) = iord
+            zr(jdisc-1+iord) = zr(ldisc-1+iord)
+        end do
+    else
+        do i_bloc = 1, dyna_gene%n_bloc
+            call dyna_gene%get_values(dyna_gene%disc, i_bloc, shift, nbi2, vr=disc)
+            do iord = 1, nbi2
+                zi(jrang-1+iord+shift) = iord+shift
+                zr(jdisc-1+iord+shift) = disc(iord)
+            end do
+        end do
+    end if
 !
+
 100 continue
+    call dyna_gene%free
     call jedetr('&&RSTRAN.ORDR')
     AS_DEALLOCATE(vi=nume)
     call jedetr('&&RSTRAN.INSTANTS')
@@ -268,4 +322,5 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc, &
     call jedetr('&&RSTRAN.LIINST')
 !
     call jedema()
+
 end subroutine

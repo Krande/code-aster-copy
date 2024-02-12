@@ -3,7 +3,7 @@
  * @brief Interface python de GeneralizedResult
  * @author Natacha Béreux
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -49,10 +49,9 @@ void exportGeneralizedResultToPython( py::module_ &mod ) {
               &TransientGeneralizedResult::getGeneralizedDOFNumbering )
         .def( "setDOFNumbering", &TransientGeneralizedResult::setDOFNumbering )
         .def( "getDOFNumbering", &TransientGeneralizedResult::getDOFNumbering )
-        .def( "getDisplacement", &TransientGeneralizedResult::getDisplacement )
         .def( "getNumberOfModes", &TransientGeneralizedResult::getNumberOfModes )
-        .def( "getAbscissasOfSamples", &TransientGeneralizedResult::getAbscissasOfSamples )
-        .def( "getIndicesOfSamples", &TransientGeneralizedResult::getIndicesOfSamples );
+        .def( "getTimes", &TransientGeneralizedResult::getTimes )
+        .def( "getIndexes", &TransientGeneralizedResult::getIndexes );
 
     py::class_< HarmoGeneralizedResult, HarmoGeneralizedResultPtr, GeneralizedResultComplex >(
         mod, "HarmoGeneralizedResult" )

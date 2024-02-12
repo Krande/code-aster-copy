@@ -21,7 +21,7 @@ import aster
 from ..Messages import UTMESS
 
 from ..Cata.Syntax import _F
-from ..CodeCommands import CREA_TABLE
+from ..CodeCommands import RECU_GENE, CREA_TABLE
 from ..Objects.table_py import Table, merge
 from ..Utilities.misc import get_titre_concept
 
@@ -60,7 +60,6 @@ def post_k_trans_ops(self, **args):
     # Verification de cohérence sur le nombre de modes
     #
     # RESULTAT TRANSITOIRE
-    coef = RESU_TRANS.getDisplacement()
     nmodtr = RESU_TRANS.getNumberOfModes()
     # BASE MODALE
     if DIME == 2:
@@ -77,8 +76,8 @@ def post_k_trans_ops(self, **args):
     #
     # Traitement des mots clés ORDRE/INST/LIST_INST et LIST_ORDRE
     #
-    l0_inst = RESU_TRANS.getAbscissasOfSamples()
-    l0_ord = RESU_TRANS.getIndicesOfSamples()
+    l0_inst = RESU_TRANS.getTimes()
+    l0_ord = RESU_TRANS.getIndexes()
     nbtrans = len(l0_ord)
     li = [[l0_ord[i], l0_inst[i]] for i in range(nbtrans)]
     ln = [[l0_ord[i], i] for i in range(nbtrans)]
@@ -162,9 +161,11 @@ def post_k_trans_ops(self, **args):
             K2t[num * nbno + x] = 0.0
             if DIME == 3:
                 K3t[num * nbno + x] = 0.0
+            vect_gen = RECU_GENE(RESU_GENE=RESU_TRANS, INST=l_inst[num], NOM_CHAM="DEPL")
+            coef = vect_gen.getValues()
             for k in range(0, n_mode):
                 num_ord = d_num[l_ord[num]][0]
-                alpha = coef[n_mode * num_ord + k]
+                alpha = coef[k]
                 K1t[num * nbno + x] = K1t[num * nbno + x] + alpha * K1mod[k * nbno + x]
                 K2t[num * nbno + x] = K2t[num * nbno + x] + alpha * K2mod[k * nbno + x]
                 if DIME == 3:

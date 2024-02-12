@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,9 +53,9 @@ subroutine dtmarch(sd_dtm_, sd_int_, buffdtm, buffint)
     integer           :: ind, iret, nlcase
     integer           :: index, iarch_sd
     real(kind=8)      :: t, dt
-    character(len=4)  :: intk
-    character(len=7)  :: casek7
+    character(len=7)  :: casek7, intk7
     character(len=8)  :: sd_dtm, sd_int, sd_nl
+    character(len=16) :: nomres16
     character(len=24) :: nomres
     type(c_ptr) :: pc
 
@@ -80,7 +80,6 @@ subroutine dtmarch(sd_dtm_, sd_int_, buffdtm, buffint)
     integer, pointer :: buffnl(:) => null()
 !
 !   0 - Initializations
-    call jemarq()
 
     sd_dtm = sd_dtm_
     sd_int = sd_int_
@@ -89,21 +88,18 @@ subroutine dtmarch(sd_dtm_, sd_int_, buffdtm, buffint)
     call intget(sd_int, IND_ARCH, iscal=index, buffer=buffint)
     call dtmget(sd_dtm, _NB_MODES, iscal=nbmode, buffer=buffdtm)
 
+    call dtmget(sd_dtm, _CALC_SD, kscal=nomres, buffer=buffdtm)
     call dtmget(sd_dtm, _IARCH_SD, iscal=iarch_sd)
-
     if (iarch_sd .gt. 0) then
-        call codent(iarch_sd, 'D0', intk)
-        nomres = '&&AD'//intk
-        call jelira(nomres(1:8)//'           .ORDR', 'LONMAX', nbsauv)
+        call codent(iarch_sd, 'D0', intk7)
+        nomres16 = nomres(1:8)//'.'//intk7
+        call jelira(nomres16//'   .ORDR', 'LONMAX', nbsauv)
         if (isto(1) .ge. (nbsauv)) then
             iarch_sd = iarch_sd+1
             call dtmsav(sd_dtm, _IARCH_SD, 1, iscal=iarch_sd)
             call dtmallo(sd_dtm)
-            call codent(iarch_sd, 'D0', intk)
-            nomres = '&&AD'//intk
         end if
     else
-        call dtmget(sd_dtm, _CALC_SD, kscal=nomres, buffer=buffdtm)
         call dtmget(sd_dtm, _ARCH_NB, iscal=nbsauv, buffer=buffdtm)
         if (isto(1) .ge. (nbsauv)) then
             ASSERT(.false.)
@@ -195,6 +191,5 @@ subroutine dtmarch(sd_dtm_, sd_int_, buffdtm, buffint)
     end if
 
     isto(1) = isto(1)+1
-    call jedema()
 !
 end subroutine

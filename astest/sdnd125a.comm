@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -205,20 +205,6 @@ IMPR_FONCTION(
     # PILOTE='INTERACTIF',
     COURBE=(_F(FONCTION=C), _F(FONCTION=L), _F(FONCTION=R)),
 )
-
-
-# Python access methods to the tran_gene concept of DYNA_VIBRA
-import numpy as np
-
-INST = INTEGR.LIST_ARCH()
-FN_CH1 = INTEGR.FORCE_NORMALE(1)
-FN_CH2 = INTEGR.FORCE_NORMALE(2)
-VINT_CH1 = INTEGR.VARI_INTERNE(
-    1
-)  # Check the output or the .mess file for description about the internal vars
-VINT_CH2 = INTEGR.VARI_INTERNE(2)
-np.savetxt("vint_ch1.csv", VINT_CH1, delimiter=",")
-np.savetxt("vint_ch2.csv", VINT_CH2, delimiter=",")
 
 
 FIN()

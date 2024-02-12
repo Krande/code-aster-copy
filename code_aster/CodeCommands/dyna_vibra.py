@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -92,6 +92,8 @@ class VibrationDynamics(ExecuteCommand):
                 self._result.setGeneralizedDOFNumbering(dofGeneNum)
             else:
                 raise Exception("Unknown result type")
+            if keywords["TYPE_CALCUL"] == "TRAN":
+                self._result.build()
 
     def add_dependencies(self, keywords):
         """Register input *DataStructure* objects as dependencies.
