@@ -22,21 +22,40 @@ This module represents Commands syntax for the documentation.
 """
 
 import os
+import re
 import unittest
 from pathlib import Path
 
 from ..Cata import Commands as CMD
 from ..Cata.Language import DataStructure as LDS
 from ..Cata.Language import Rules
-from ..Cata.Language.Syntax import FACT, PRESENT_ABSENT, SIMP
-from ..Cata.Language.SyntaxObjects import IDS
+from ..Cata.Language.Syntax import (
+    EXCLUS,
+    FACT,
+    OPER,
+    PRESENT_ABSENT,
+    PRESENT_PRESENT,
+    SIMP,
+    UN_PARMI,
+)
+from ..Cata.Language.SyntaxObjects import IDS, Command
 from ..Utilities import force_list
+
+
+if int(os.environ.get("DEBUG", 0)):
+    import debugpy
+
+    debugpy.listen(3000)
+    print("Waiting for debugger attach")
+    debugpy.wait_for_client()
+    debugpy.breakpoint()
 
 REQ = chr(9670)
 OPT = chr(9671)
 DEF = chr(10192)
 XOR = "/"
 ALT = "|"
+AND = "&"
 # EMPTY = chr(8709)
 INDENT = "    "
 
@@ -84,6 +103,9 @@ class Rule:
         if isinstance(rule_object, Rules.OnlyFirstPresent):
             next = [ALT] if len(rule_object.ruleArgs) > 2 else []
             return Rule([OPT, XOR], rule_object.ruleArgs, next=next)
+        if isinstance(rule_object, Rules.IfFirstAllPresent):
+            next = [REQ] if len(rule_object.ruleArgs) > 2 else []
+            return Rule([OPT, AND], rule_object.ruleArgs, next=next)
         raise NotImplementedError(rule_object)
 
     @property
@@ -94,6 +116,7 @@ class Rule:
     def consumed(self):
         """Mark the rule as consumed/started"""
         assert self._attrs
+        # print("DEBUG: consumed", self._attrs, "to", end=" ")
         for i, symb in enumerate(self._attrs[:-1]):
             if symb.strip():
                 self._attrs[i] = " "
@@ -101,6 +124,7 @@ class Rule:
         if self._first:
             self._attrs.extend(self._next)
         self._first = False
+        # print(self._attrs)
 
     def involved(self, keyword):
         """Tell if a keyword is involved in the rule"""
@@ -136,6 +160,7 @@ class KwdLine(BaseLine):
     def __init__(self, lvl, name) -> None:
         super().__init__(lvl, name)
         self._attrs = []
+        self._attrstr = None
         self._rules = []
 
     def set(self, defs, rules):
@@ -148,19 +173,24 @@ class KwdLine(BaseLine):
 
     @property
     def attrs(self):
-        """Return the current symbols."""
+        """Return the current symbols as a string."""
+        # only once, must not consumed attrs several times
+        if self._attrstr is not None:
+            return self._attrstr
         if self._rules:
             if len(self._rules) > 1:
-                print(f"WARNING: several rules for {self._name}")
+                print(f"WARNING: several rules for {self._name}, only first used")
             attrs = self._rules[0]._attrs[:]
             self._rules[0].consumed()
-            return attrs
-        return self._attrs
+            self._attrstr = " ".join(attrs)
+        else:
+            self._attrstr = " ".join(self._attrs)
+        return self._attrstr
 
     @property
     def offset(self):
         """Current offset/indentation"""
-        return INDENT * self._lvl + " ".join(self.attrs) + " "
+        return INDENT * self._lvl + self.attrs + " "
 
 
 class SimpKwdLine(KwdLine):
@@ -181,7 +211,6 @@ class SimpKwdLine(KwdLine):
         self._into = []
         self._typ = None
         self._default = None
-        self._cols = []  # maybe column for attrs, name, into/var
 
     @property
     def hidden(self):
@@ -213,15 +242,16 @@ class SimpKwdLine(KwdLine):
                 value += f" (défaut: {self._repr_value(self._default)})"
             value = [value]
         else:
-            values = list(self._into)
-            value = [f"{XOR} {self._repr_value(i)}" for i in values]
-            value = []
-            for i in self._into:
-                value.append(f"{XOR} {self._repr_value(i)}")
-                if self._default is not None and i == self._default:
-                    value[-1] += f" (par défaut)"
-            if not self._default and len(self._into) == 1:
-                value[-1] += " (ou non renseigné)"
+            if len(self._into) == 1:
+                value = [self._repr_value(self._into[0])]
+                if not self._default:
+                    value[-1] += " (ou non renseigné)"
+            else:
+                value = []
+                for i in self._into:
+                    value.append(f"{XOR} {self._repr_value(i)}")
+                    if self._default is not None and i == self._default:
+                        value[-1] += f" (par défaut)"
         lines = [prefix + value.pop(0) + ","]
         for remain in value:
             lines.append(" " * len(prefix) + remain + ",")
@@ -287,7 +317,7 @@ class CloseLine(BaseLine):
         return self.offset + self._mark
 
 
-class DocSyntaxVisitor:
+class DocSyntax:
     """Visitor to the syntax of a Command"""
 
     def __init__(self, command):
@@ -297,7 +327,7 @@ class DocSyntaxVisitor:
         self._mcsimp = None
         self._mcfact = None
         self._indent = 0
-        self._rstack = []
+        self._rstack = [[]]
 
     def _visitComposite(self, step, userDict=None):
         """Visit a composite object (containing BLOC, FACT and SIMP objects)"""
@@ -325,9 +355,9 @@ class DocSyntaxVisitor:
 
     def _visitCompositeWrap(self, step, name, line_class, end, userDict=None):
         """Visit a Command object"""
-        self._rstack.append([Rule.factory(rule) for rule in step.rules])
         line = line_class(self._indent, name)
         line.set(step.definition, self._rstack[-1])
+        self._rstack.append([Rule.factory(rule) for rule in step.rules])
         self._append(line)
         self._indent += 1
         self._visitComposite(step, userDict)
@@ -387,7 +417,7 @@ class DocSyntaxVisitor:
 
 
 class TestDoc(unittest.TestCase):
-    """Test for DocSyntaxVisitor"""
+    """Test for DocSyntax"""
 
     output = None
     # uncomment the following line to write outputs of DocSyntax
@@ -395,7 +425,7 @@ class TestDoc(unittest.TestCase):
 
     @classmethod
     def _testcmd(cls, cmd):
-        syntax = DocSyntaxVisitor(cmd.name)
+        syntax = DocSyntax(cmd.name)
         cmd.accept(syntax)
         text = syntax.repr(legend=True, codeblock=True)
         if cls.output:
@@ -404,14 +434,22 @@ class TestDoc(unittest.TestCase):
                 frst.write(text)
         return text
 
-    def test00_lire_maillage(self):
-        text = self._testcmd(CMD.LIRE_MAILLAGE)
-
-    def test00_affe_materiau(self):
-        self._testcmd(CMD.AFFE_MATERIAU)
-
-    def test00_calc_champ(self):
-        self._testcmd(CMD.CALC_CHAMP)
+    def test01_into(self):
+        fact = FACT(
+            statut="f",
+            regles=(UN_PARMI("TOUT", "GROUP_MA"),),
+            TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
+            GROUP_MA=SIMP(statut="f", typ="TXM", max="**"),
+            INFO=SIMP(statut="f", typ="I", defaut=1, into=(1, 2)),
+        )
+        syntax = DocSyntax("TEST")
+        syntax._mcfact = "AFFE"
+        fact.accept(syntax)
+        text = syntax.repr()
+        # print(text)
+        self.assertTrue(f'{REQ} / TOUT = "OUI" (ou non renseigné),' in text, msg="TOUT")
+        self.assertTrue(f"{OPT} INFO = / 1 (par défaut)," in text, msg="INFO default")
+        self.assertTrue("             / 2," in text, msg="INFO 2")
 
     def test01_onlyfirst(self):
         fact = FACT(
@@ -428,13 +466,66 @@ class TestDoc(unittest.TestCase):
             ITER_GLOB_MAXI=SIMP(statut="f", typ="I", defaut=10),
             ITER_GLOB_ELAS=SIMP(statut="f", typ="I", defaut=25),
         )
-        syntax = DocSyntaxVisitor("TEST")
+        syntax = DocSyntax("TEST")
         syntax._mcfact = "CONVERGENCE"
         fact.accept(syntax)
-        text = syntax.repr(legend=False)
-        # print(text)
+        text = syntax.repr()
+        # print("\n" + text)
         self.assertTrue(f"{DEF} CONVERGENCE = _F(" in text, msg="CONVERGENCE")
         self.assertTrue(f"{OPT} / RESI_REFE_RELA" in text, msg="RESI_REFE_RELA nook")
         self.assertTrue("/ | RESI_GLOB_MAXI" in text, msg="RESI_GLOB_MAXI nook")
         self.assertTrue("  | RESI_GLOB_RELA" in text, msg="RESI_GLOB_RELA nook")
         self.assertTrue("  | RESI_COMP_RELA" in text, msg="RESI_COMP_RELA nook")
+
+    def test01_iffirst(self):
+        cmd = OPER(
+            regles=(PRESENT_PRESENT("MULTIFIBRE", "GEOM_FIBRE"),),
+            MULTIFIBRE=FACT(
+                statut="f",
+                GROUP_FIBRE=SIMP(statut="o", typ="TXM", max="**"),
+                PREC_INERTIE=SIMP(statut="f", typ="R", defaut=0.1),
+            ),
+            GEOM_FIBRE=SIMP(statut="f", max=1, typ="R"),
+            INFO=SIMP(statut="f", typ="I", defaut=1),
+        )
+        syntax = DocSyntax("TEST")
+        syntax._command = "AFFE_CARA_ELEM"
+        cmd.accept(syntax)
+        text = syntax.repr()
+        print("\n" + text)
+
+    def test02_group_by_rule(self):
+        fact = FACT(
+            statut="f",
+            regles=(EXCLUS("NUME_ORDRE", "INST", "FREQ"), PRESENT_ABSENT("TOUT", "GROUP_MA")),
+            NUME_ORDRE=SIMP(statut="f", typ="I", max="**"),
+            TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
+            CRITERE=SIMP(statut="f", typ="TXM", defaut="RELATIF", into=("RELATIF", "ABSOLU")),
+            GROUP_MA=SIMP(statut="f", typ="TXM", max="**"),
+            INST=SIMP(statut="f", typ="R", max="**"),
+            FREQ=SIMP(statut="f", typ="R", max="**"),
+        )
+        syntax = DocSyntax("TEST")
+        syntax._mcfact = "CALC_CHAMP"
+        fact.accept(syntax)
+        text = syntax.repr()
+        # print(text)
+        # order should be: NUME_ORDRE, INST, FREQ, TOUT, GROUP_MA, CRITERE
+        self.assertIsNotNone(
+            re.search("NUME_ORDRE.*INST.*FREQ.*TOUT.*GROUP_MA.*CRITERE", text, re.DOTALL),
+            msg="keywords order",
+        )
+
+    def test10_lire_maillage(self):
+        text = self._testcmd(CMD.LIRE_MAILLAGE)
+        self.assertTrue(f"{DEF} VERI_MAIL = _F(" in text, msg="VERI_MAIL")
+        self.assertTrue(f'{OPT} VERIF = / "OUI" (par défaut),' in text, msg="VERIF default")
+        self.assertIsNotNone(re.search("#.*FORMAT.*MED", text), msg="condition FORMAT=MED")
+
+    def _test10_all(self):
+        for name in dir(CMD):
+            obj = getattr(CMD, name)
+            if hasattr(obj, "getCataTypeId") and obj.getCataTypeId() == IDS.command:
+                self._testcmd(obj)
+
+    # test10_all = _test10_all
