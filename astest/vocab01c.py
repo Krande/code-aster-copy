@@ -41,7 +41,7 @@ def _test_module(module):
 _test_module("code_aster.Helpers.syntax_repr")
 
 # to export all code-blocks into a directory:
-# loop_on_commands("/tmp/syntax")
+# loop_on_commands("/local00/tmp/syntax")
 
 text = repr_command(AFFE_MATERIAU)
 

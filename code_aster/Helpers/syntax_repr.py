@@ -48,7 +48,7 @@ try:
 except ImportError:
     HAS_DEBUGPY = False
 
-if int(os.environ.get("DEBUG", 0)) and HAS_DEBUGPY:
+if os.environ.get("DEBUG", "") == "syntax_repr" and HAS_DEBUGPY:
     debugpy.listen(3000)
     print("Waiting for debugger attach")
     debugpy.wait_for_client()
@@ -64,6 +64,8 @@ ALT = "|"
 AND = "&"
 INDENT = "    "
 IF = "#"
+
+SHOW_RULES = False
 
 
 def _symbol(status):
@@ -91,33 +93,38 @@ def _var(typ):
 class Rule:
     """Store Rules parameters."""
 
-    def __init__(self, attrs, args, next=[], always=False) -> None:
+    def __init__(self, attrs, args, next=[], always=False, score=0) -> None:
         self._attrs = attrs
         self._args = args
         self._first = True
         self._next = next
         self._always = always
+        self._score = score
 
     @classmethod
     def factory(cls, rule_object):
         """Create an instance from a Cata Rule object."""
-        if isinstance(rule_object, Rules.AtLeastOne):
-            return Rule([REQ, ALT], rule_object.ruleArgs)
-        if isinstance(rule_object, Rules.NotEmpty):
-            return Rule([REQ, ALT], rule_object.ruleArgs, always=True)
         if isinstance(rule_object, Rules.ExactlyOne):
-            return Rule([REQ, XOR], rule_object.ruleArgs)
+            return Rule([REQ, XOR], rule_object.ruleArgs, score=60)
+        if isinstance(rule_object, Rules.AtLeastOne):
+            return Rule([REQ, ALT], rule_object.ruleArgs, score=50)
+        if isinstance(rule_object, Rules.NotEmpty):
+            return Rule([REQ, ALT], rule_object.ruleArgs, always=True, score=40)
         if isinstance(rule_object, Rules.AtMostOne):
-            return Rule([OPT, XOR], rule_object.ruleArgs)
+            return Rule([OPT, XOR], rule_object.ruleArgs, score=30)
         if isinstance(rule_object, Rules.AllTogether):
-            return Rule([OPT, AND], rule_object.ruleArgs)
+            return Rule([OPT, AND], rule_object.ruleArgs, score=20)
         if isinstance(rule_object, Rules.OnlyFirstPresent):
             next = [ALT] if len(rule_object.ruleArgs) > 2 else []
-            return Rule([OPT, XOR], rule_object.ruleArgs, next=next)
+            return Rule([OPT, XOR], rule_object.ruleArgs, next=next, score=11)
         if isinstance(rule_object, Rules.IfFirstAllPresent):
             next = [REQ] if len(rule_object.ruleArgs) > 2 else []
-            return Rule([OPT, AND], rule_object.ruleArgs, next=next)
+            return Rule([OPT, AND], rule_object.ruleArgs, next=next, score=10)
         raise NotImplementedError(rule_object)
+
+    def __lt__(self, other):
+        """Sort rules by priority."""
+        return self._score < other._score
 
     @property
     def args(self):
@@ -184,9 +191,12 @@ class KwdLine(BaseLine):
         if not symb:
             return
         self._attrs.append(symb)
-        self._rules = [rule for rule in rules if rule.involved(self._name)]
-        if len(self._rules) > 1:
-            print(f"WARNING: several rules for {self._name}, {self._rules}")
+        self._rules = sorted([rule for rule in rules if rule.involved(self._name)], reverse=True)
+        if SHOW_RULES and len(self._rules) > 1:
+            print(
+                f"INFO: {self._name} first: {self._rules[0]._score}, "
+                f"ignored {[i._score for i in self._rules[1:]]}"
+            )
 
     @property
     def attrs(self):
@@ -298,6 +308,7 @@ class CmdLine(BaseLine):
 
     def repr(self):
         """Representation of the block."""
+        # + reuse + sd_prod
         return self.offset + self._name + "("
 
 
@@ -306,7 +317,8 @@ class CondLine(BaseLine):
 
     def repr(self):
         """Representation of the block."""
-        return self.offset + f"{IF} " + self._name
+        # condition is passed as 'name'
+        return self.offset + f"{IF} Si: " + self._name.strip()
 
 
 class CloseLine(BaseLine):
@@ -382,7 +394,6 @@ class DocSyntax:
 
     def visitCommand(self, step, userDict=None):
         """Visit a Command object"""
-        # + reuse + sd_prod
         self._visitCompositeWrap(step, self._command, CmdLine, "", userDict)
 
     def visitMacro(self, step, userDict=None):
@@ -437,18 +448,6 @@ class DocSyntax:
         return text
 
 
-def loop_on_commands(output_dir=None):
-    """Loop on all Commands.
-
-    Args:
-        output (Path, optional): Output directory (or None).
-    """
-    for name in dir(CMD):
-        obj = getattr(CMD, name)
-        if issubclass(type(obj), Command):
-            TestDoc._testcmd(obj, output_dir)
-
-
 def repr_command(cmd, show=True, output_dir=None):
     """Show the representation of syntax of a Command.
 
@@ -464,6 +463,18 @@ def repr_command(cmd, show=True, output_dir=None):
     if show:
         print(text)
     return text
+
+
+def loop_on_commands(output_dir=None):
+    """Loop on all Commands.
+
+    Args:
+        output (Path, optional): Output directory (or None).
+    """
+    for name in dir(CMD):
+        obj = getattr(CMD, name)
+        if issubclass(type(obj), Command):
+            repr_command(obj, show=False, output_dir=output_dir)
 
 
 class TestDoc(unittest.TestCase):

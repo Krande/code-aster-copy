@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -78,14 +78,10 @@ AFFE_CHAR_MECA_C = OPER(
         fr=tr("Applique des forces linéiques sur des éléments de type poutre"),
         regles=(
             AU_MOINS_UN("TOUT", "GROUP_MA"),
-            PRESENT_ABSENT("TOUT", "GROUP_MA"),
             AU_MOINS_UN("FX", "FY", "FZ", "N", "VY", "VZ"),
             PRESENT_ABSENT("FX", "N", "VY", "VZ"),
             PRESENT_ABSENT("FY", "N", "VY", "VZ"),
             PRESENT_ABSENT("FZ", "N", "VY", "VZ"),
-            PRESENT_ABSENT("N", "FX", "FY", "FZ"),
-            PRESENT_ABSENT("VY", "FX", "FY", "FZ"),
-            PRESENT_ABSENT("VZ", "FX", "FY", "FZ"),
         ),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
