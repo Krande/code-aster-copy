@@ -38,7 +38,7 @@ from ..Cata.Language.Syntax import (
     SIMP,
     UN_PARMI,
 )
-from ..Cata.Language.SyntaxObjects import IDS
+from ..Cata.Language.SyntaxObjects import IDS, Command
 from ..Utilities import force_list
 
 try:
@@ -89,21 +89,26 @@ def _var(typ):
 class Rule:
     """Store Rules parameters."""
 
-    def __init__(self, attrs, args, next=[]) -> None:
+    def __init__(self, attrs, args, next=[], always=False) -> None:
         self._attrs = attrs
         self._args = args
         self._first = True
         self._next = next
+        self._always = always
 
     @classmethod
     def factory(cls, rule_object):
         """Create an instance from a Cata Rule object."""
         if isinstance(rule_object, Rules.AtLeastOne):
             return Rule([REQ, ALT], rule_object.ruleArgs)
+        if isinstance(rule_object, Rules.NotEmpty):
+            return Rule([REQ, ALT], rule_object.ruleArgs, always=True)
         if isinstance(rule_object, Rules.ExactlyOne):
             return Rule([REQ, XOR], rule_object.ruleArgs)
         if isinstance(rule_object, Rules.AtMostOne):
             return Rule([OPT, XOR], rule_object.ruleArgs)
+        if isinstance(rule_object, Rules.AllTogether):
+            return Rule([OPT, AND], rule_object.ruleArgs)
         if isinstance(rule_object, Rules.OnlyFirstPresent):
             next = [ALT] if len(rule_object.ruleArgs) > 2 else []
             return Rule([OPT, XOR], rule_object.ruleArgs, next=next)
@@ -132,7 +137,7 @@ class Rule:
 
     def involved(self, keyword):
         """Tell if a keyword is involved in the rule"""
-        return keyword in self._args
+        return self._always or keyword in self._args
 
 
 class BaseLine:
@@ -542,7 +547,7 @@ class TestDoc(unittest.TestCase):
     def _test10_all(self):
         for name in dir(CMD):
             obj = getattr(CMD, name)
-            if hasattr(obj, "getCataTypeId") and obj.getCataTypeId() == IDS.command:
+            if issubclass(type(obj), Command):
                 self._testcmd(obj)
 
-    # test10_all = _test10_all
+    test10_all = _test10_all
