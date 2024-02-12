@@ -92,9 +92,9 @@ test.assertSequenceEqual(value, [0.2])
 
 kws, types = syntax.getmjm("RESERVE_CPU", 0, 99)
 test.assertEqual(len(kws), len(types))
-test.assertEqual(len(kws), 2)
-test.assertSequenceEqual(kws, ["BORNE", "POURCENTAGE"])
-test.assertSequenceEqual(types, ["IS", "R8"])
+test.assertEqual(len(kws), 1)
+test.assertSequenceEqual(kws, ["POURCENTAGE"])
+test.assertSequenceEqual(types, ["R8"])
 
 kws, types = syntax.getmjm(" ", 0, 99)
 test.assertEqual(len(kws), len(types))

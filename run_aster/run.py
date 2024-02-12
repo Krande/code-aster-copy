@@ -264,7 +264,6 @@ class RunAster:
         else:
             cmd.append(CFG.get("python_interactive", python))
             wrapped = CFG.get("python_interactive_is_wrapped")
-            print("DEBUG:", cmd[-1], wrapped)
             cmd.append("-i")
         # To show executed lines with trace module:
         # import sys
