@@ -54,14 +54,16 @@ if int(os.environ.get("DEBUG", 0)) and HAS_DEBUGPY:
     debugpy.wait_for_client()
     debugpy.breakpoint()
 
+# https://www.compart.com/fr/unicode/
 REQ = chr(9670)
 OPT = chr(9671)
 DEF = chr(10192)
+# DEF = chr(9931)
 XOR = "/"
 ALT = "|"
 AND = "&"
-# EMPTY = chr(8709)
 INDENT = "    "
+IF = "#"
 
 
 def _symbol(status):
@@ -183,6 +185,8 @@ class KwdLine(BaseLine):
             return
         self._attrs.append(symb)
         self._rules = [rule for rule in rules if rule.involved(self._name)]
+        if len(self._rules) > 1:
+            print(f"WARNING: several rules for {self._name}, {self._rules}")
 
     @property
     def attrs(self):
@@ -191,8 +195,6 @@ class KwdLine(BaseLine):
         if self._attrstr is not None:
             return self._attrstr
         if self._rules:
-            if len(self._rules) > 1:
-                print(f"WARNING: several rules for {self._name}, only first used")
             attrs = self._rules[0]._attrs[:]
             self._rules[0].consumed()
             self._attrstr = " ".join(attrs)
@@ -304,7 +306,7 @@ class CondLine(BaseLine):
 
     def repr(self):
         """Representation of the block."""
-        return self.offset + "# " + self._name
+        return self.offset + f"{IF} " + self._name
 
 
 class CloseLine(BaseLine):
@@ -419,7 +421,8 @@ class DocSyntax:
                     f"{REQ} : obligatoire",
                     f"{OPT} : optionnel",
                     f"{DEF} : présent par défaut",
-                    f"{XOR} : un parmi",
+                    f"{AND} : ensemble",
+                    f"{XOR} : un seul parmi",
                     f"{ALT} : plusieurs choix possibles",
                 ]
             )
@@ -429,25 +432,52 @@ class DocSyntax:
             text = [INDENT + line for line in text.splitlines()]
             text.insert(0, "")
             text.insert(0, ".. code-block:: text")
+            text.append("")
             text = os.linesep.join(text)
         return text
+
+
+def loop_on_commands(output_dir=None):
+    """Loop on all Commands.
+
+    Args:
+        output (Path, optional): Output directory (or None).
+    """
+    for name in dir(CMD):
+        obj = getattr(CMD, name)
+        if issubclass(type(obj), Command):
+            TestDoc._testcmd(obj, output_dir)
+
+
+def repr_command(cmd, show=True, output_dir=None):
+    """Show the representation of syntax of a Command.
+
+    Arg:
+        cmd (Command): Command catalog.
+        show (bool, optional): if True, print syntax on stdout.
+        output (Path, optional): Output directory (or None).
+
+    Returns:
+        str: Syntax representation.
+    """
+    text = TestDoc._testcmd(cmd, output_dir)
+    if show:
+        print(text)
+    return text
 
 
 class TestDoc(unittest.TestCase):
     """Test for DocSyntax"""
 
-    output = None
-    # uncomment the following line to write outputs of DocSyntax
-    output = Path("/tmp/syntax")
-
     @classmethod
-    def _testcmd(cls, cmd):
+    def _testcmd(cls, cmd, output=None):
         syntax = DocSyntax(cmd.name)
         cmd.accept(syntax)
         text = syntax.repr(legend=True, codeblock=True)
-        if cls.output:
-            cls.output.mkdir(parents=True, exist_ok=True)
-            with open(cls.output / (cmd.name.lower() + ".rst"), "w") as frst:
+        if output:
+            output = Path(output)
+            output.mkdir(parents=True, exist_ok=True)
+            with open(output / (cmd.name.lower() + ".rst"), "w") as frst:
                 frst.write(text)
         return text
 
@@ -531,7 +561,6 @@ class TestDoc(unittest.TestCase):
         fact.accept(syntax)
         text = syntax.repr()
         # print(text)
-        # order should be: NUME_ORDRE, INST, FREQ, TOUT, GROUP_MA, CRITERE
         self.assertIsNotNone(
             re.search("NUME_ORDRE.*INST.*FREQ.*TOUT.*GROUP_MA.*CRITERE", text, re.DOTALL),
             msg="keywords order",
@@ -544,10 +573,4 @@ class TestDoc(unittest.TestCase):
         self.assertTrue(f'{OPT} VERIF = {XOR} "OUI" (par défaut),' in text, msg="VERIF default")
         self.assertIsNotNone(re.search("#.*FORMAT.*MED", text), msg="condition FORMAT=MED")
 
-    def _test10_all(self):
-        for name in dir(CMD):
-            obj = getattr(CMD, name)
-            if issubclass(type(obj), Command):
-                self._testcmd(obj)
-
-    test10_all = _test10_all
+    test10_all = staticmethod(loop_on_commands)

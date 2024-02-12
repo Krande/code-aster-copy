@@ -17,10 +17,16 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import unittest
 import sys
+import unittest
 
+from code_aster.Commands import *
 from code_aster import CA
+from code_aster.Cata.Commands import AFFE_MATERIAU
+from code_aster.Helpers.syntax_repr import loop_on_commands, repr_command, REQ, OPT, XOR, ALT
+
+CA.init("--test")
+test = CA.TestCase()
 
 
 def _test_module(module):
@@ -33,3 +39,17 @@ def _test_module(module):
 
 
 _test_module("code_aster.Helpers.syntax_repr")
+
+# to export all code-blocks into a directory:
+# loop_on_commands("/tmp/syntax")
+
+text = repr_command(AFFE_MATERIAU)
+
+test.assertTrue(f"{REQ} {ALT} MAILLAGE =" in text, msg="MAILLAGE")
+test.assertTrue(f"  {ALT} MODELE =" in text, msg="MODELE")
+test.assertTrue(f"{REQ} {XOR} AFFE = _F(" in text, msg="AFFE")
+test.assertTrue(f'{REQ} {XOR} TOUT = "OUI"' in text, msg="TOUT AFFE/AFFE_COMPOR")
+test.assertTrue(f'{OPT} {XOR} TOUT = "OUI"' in text, msg="TOUT AFFE_VARC")
+
+test.printSummary()
+CA.close()

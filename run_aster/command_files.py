@@ -87,7 +87,7 @@ def stop_at_end(text):
     Returns:
         str: Changed content.
     """
-    refin = re.compile(r"^(?P<cmd>(FIN|code_aster\.close) *\()", re.M)
+    refin = re.compile(r"^(?P<cmd>(FIN|CA\.close) *\()", re.M)
     subst = r"""
 import code
 import readline
