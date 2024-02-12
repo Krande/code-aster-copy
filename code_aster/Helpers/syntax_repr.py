@@ -23,7 +23,9 @@ This module represents Commands syntax for the documentation.
 
 import os
 import re
+import types
 import unittest
+from itertools import chain
 from pathlib import Path
 
 from ..Cata import Commands as CMD
@@ -39,6 +41,7 @@ from ..Cata.Language.Syntax import (
     UN_PARMI,
 )
 from ..Cata.Language.SyntaxObjects import IDS, Command
+from ..Cata.Language.SyntaxUtils import add_none_sdprod
 from ..Utilities import force_list
 
 try:
@@ -63,7 +66,7 @@ XOR = "/"
 ALT = "|"
 AND = "&"
 INDENT = "    "
-IF = "#"
+CMT = "#"
 
 SHOW_RULES = False
 
@@ -306,10 +309,56 @@ class CmdLine(BaseLine):
             ...
     """
 
+    def __init__(self, lvl, name) -> None:
+        super().__init__(lvl, name)
+        self._results = []
+        self._reused = None
+
+    def set(self, defs, rules):
+        """Set block settings from the keyword definition"""
+        reentr = defs.get("reentrant", "").split(":", 1)
+        if reentr[0] in ("o", "f"):
+            self._reused = reentr
+        all_types = self._get_all_types(defs)
+        try:
+            all_types = list(chain.from_iterable(all_types))
+        except TypeError:
+            pass
+        self._results = list(set([_var(typ) for typ in all_types if typ]))
+
+    @staticmethod
+    def _get_all_types(defs):
+        # same function as in SyntaxObjects.Command
+        sd_prod = defs.get("sd_prod")
+        if type(sd_prod) is types.FunctionType:
+            args = {}
+            add_none_sdprod(sd_prod, args)
+            args["__all__"] = True
+            return force_list(sd_prod(**args))
+        else:
+            return (sd_prod,)
+
     def repr(self):
         """Representation of the block."""
         # + reuse + sd_prod
-        return self.offset + self._name + "("
+        lines = [""]
+        if self._results:
+            if len(self._results) == 1:
+                lines = [self._results[0]]
+            else:
+                lines = [f"{XOR} " + res for res in self._results]
+            lines[-1] += " = "
+        lines[-1] += self._name + "("
+        lines = [self.offset + line for line in lines]
+        if self._reused:
+            cmt = f"{CMT} "
+            if self._reused[0] == "o":
+                cmt += "modifie "
+            else:
+                cmt += "peut modifier "
+            cmt += " ou ".join(["/".join(i.split(":")) for i in self._reused[1].split("|")])
+            lines.append(self.offset + INDENT + cmt)
+        return os.linesep.join(lines)
 
 
 class CondLine(BaseLine):
@@ -318,7 +367,7 @@ class CondLine(BaseLine):
     def repr(self):
         """Representation of the block."""
         # condition is passed as 'name'
-        return self.offset + f"{IF} Si: " + self._name.strip()
+        return self.offset + f"{CMT} Si: " + self._name.strip()
 
 
 class CloseLine(BaseLine):
@@ -459,7 +508,11 @@ def repr_command(cmd, show=True, output_dir=None):
     Returns:
         str: Syntax representation.
     """
-    text = TestDoc._testcmd(cmd, output_dir)
+    try:
+        text = TestDoc.repr_and_write(cmd, output_dir)
+    except:
+        print("ERROR: with command =", cmd.name)
+        raise
     if show:
         print(text)
     return text
@@ -481,7 +534,7 @@ class TestDoc(unittest.TestCase):
     """Test for DocSyntax"""
 
     @classmethod
-    def _testcmd(cls, cmd, output=None):
+    def repr_and_write(cls, cmd, output=None):
         syntax = DocSyntax(cmd.name)
         cmd.accept(syntax)
         text = syntax.repr(legend=True, codeblock=True)
@@ -492,7 +545,7 @@ class TestDoc(unittest.TestCase):
                 frst.write(text)
         return text
 
-    def test01_into(self):
+    def _test01_into(self):
         fact = FACT(
             statut="f",
             regles=(UN_PARMI("TOUT", "GROUP_MA"),),
@@ -509,7 +562,7 @@ class TestDoc(unittest.TestCase):
         self.assertTrue(f"{OPT} INFO = {XOR} 1 (par défaut)," in text, msg="INFO default")
         self.assertTrue(f"             {XOR} 2," in text, msg="INFO 2")
 
-    def test01_onlyfirst(self):
+    def _test01_onlyfirst(self):
         fact = FACT(
             statut="d",
             regles=(
@@ -535,7 +588,7 @@ class TestDoc(unittest.TestCase):
         self.assertTrue(f"  {ALT} RESI_GLOB_RELA" in text, msg="RESI_GLOB_RELA nook")
         self.assertTrue(f"  {ALT} RESI_COMP_RELA" in text, msg="RESI_COMP_RELA nook")
 
-    def test01_iffirst(self):
+    def _test01_iffirst(self):
         cmd = OPER(
             regles=(PRESENT_PRESENT("MULTIFIBRE", "GEOM_FIBRE", "FAKE"),),
             MULTIFIBRE=FACT(
@@ -556,7 +609,7 @@ class TestDoc(unittest.TestCase):
         self.assertTrue(f"  {AND} {REQ} GEOM_FIBRE" in text, msg="GEOM_FIBRE")
         self.assertTrue(f"    {REQ} FAKE" in text, msg="FAKE")
 
-    def test02_group_by_rule(self):
+    def _test02_group_by_rule(self):
         fact = FACT(
             statut="f",
             regles=(EXCLUS("NUME_ORDRE", "INST", "FREQ"), PRESENT_ABSENT("TOUT", "GROUP_MA")),
@@ -577,11 +630,42 @@ class TestDoc(unittest.TestCase):
             msg="keywords order",
         )
 
-    def test10_lire_maillage(self):
-        text = self._testcmd(CMD.LIRE_MAILLAGE)
+    def _test03_results(self):
+        cmd = OPER(sd_prod=LDS.maillage_sdaster, reentrant="n")
+        syntax = DocSyntax("TEST")
+        cmd.accept(syntax)
+        text = syntax.repr()
+        # print(text)
+        self.assertTrue(text.startswith("maillage = TEST("), msg="with one result")
+        self.assertFalse(CMT in text, msg="not reusable")
+
+        def sd_prod(**args):
+            if args.get("__all__"):
+                return (LDS.maillage_sdaster, LDS.squelette, LDS.grille_sdaster, LDS.maillage_p)
+
+        cmd = OPER(sd_prod=sd_prod, reentrant="f:MAILLAGE|GRILLE")
+        syntax = DocSyntax("TEST")
+        cmd.accept(syntax)
+        text = syntax.repr()
+        # print(text)
+        self.assertTrue(f"{XOR} maillage" in text, msg="maillage")
+        self.assertTrue(f"{XOR} squelette" in text, msg="squelette")
+        self.assertTrue(f"{XOR} grille" in text, msg="grille")
+        self.assertIsNotNone(
+            re.search(rf"\{XOR} (maillage|grille|squelette) = TEST\(", text), msg="last line"
+        )
+        self.assertTrue(CMT in text, msg="reusable")
+
+    def _test10_lire_maillage(self):
+        text = self.repr_and_write(CMD.LIRE_MAILLAGE)
         # print(text)
         self.assertTrue(f"{DEF} VERI_MAIL = _F(" in text, msg="VERI_MAIL")
         self.assertTrue(f'{OPT} VERIF = {XOR} "OUI" (par défaut),' in text, msg="VERIF default")
         self.assertIsNotNone(re.search("#.*FORMAT.*MED", text), msg="condition FORMAT=MED")
 
+    test01_into = _test01_into
+    test01_onlyfirst = _test01_onlyfirst
+    test01_iffirst = _test01_iffirst
+    test02_group_by_rule = _test02_group_by_rule
+    test03_results = _test03_results
     test10_all = staticmethod(loop_on_commands)

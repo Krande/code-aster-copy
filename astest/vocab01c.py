@@ -22,7 +22,7 @@ import unittest
 
 from code_aster.Commands import *
 from code_aster import CA
-from code_aster.Cata.Commands import AFFE_MATERIAU
+from code_aster.Cata import Commands as CATA
 from code_aster.Helpers.syntax_repr import loop_on_commands, repr_command, REQ, OPT, XOR, ALT
 
 CA.init("--test")
@@ -43,7 +43,7 @@ _test_module("code_aster.Helpers.syntax_repr")
 # to export all code-blocks into a directory:
 # loop_on_commands("/local00/tmp/syntax")
 
-text = repr_command(AFFE_MATERIAU)
+text = repr_command(CATA.AFFE_MATERIAU)
 
 test.assertTrue(f"{REQ} {ALT} MAILLAGE =" in text, msg="MAILLAGE")
 test.assertTrue(f"  {ALT} MODELE =" in text, msg="MODELE")
