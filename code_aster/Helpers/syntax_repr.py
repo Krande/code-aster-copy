@@ -38,13 +38,17 @@ from ..Cata.Language.Syntax import (
     SIMP,
     UN_PARMI,
 )
-from ..Cata.Language.SyntaxObjects import IDS, Command
+from ..Cata.Language.SyntaxObjects import IDS
 from ..Utilities import force_list
 
-
-if int(os.environ.get("DEBUG", 0)):
+try:
     import debugpy
 
+    HAS_DEBUGPY = True
+except ImportError:
+    HAS_DEBUGPY = False
+
+if int(os.environ.get("DEBUG", 0)) and HAS_DEBUGPY:
     debugpy.listen(3000)
     print("Waiting for debugger attach")
     debugpy.wait_for_client()
@@ -147,7 +151,11 @@ class BaseLine:
     @property
     def offset(self):
         """Current offset/indentation"""
-        return INDENT * self._lvl
+        return self._lvl
+
+    @property
+    def attrs(self):
+        return ""
 
     def set(self, defs, rules):
         """Set block settings from the keyword definition"""
@@ -190,7 +198,7 @@ class KwdLine(BaseLine):
     @property
     def offset(self):
         """Current offset/indentation"""
-        return INDENT * self._lvl + self.attrs + " "
+        return self._lvl + self.attrs + " "
 
 
 class SimpKwdLine(KwdLine):
@@ -326,7 +334,7 @@ class DocSyntax:
         self._command = command
         self._mcsimp = None
         self._mcfact = None
-        self._indent = 0
+        self._indent = [""]
         self._rstack = [[]]
 
     def _visitComposite(self, step, userDict=None):
@@ -355,13 +363,13 @@ class DocSyntax:
 
     def _visitCompositeWrap(self, step, name, line_class, end, userDict=None):
         """Visit a Command object"""
-        line = line_class(self._indent, name)
+        line = line_class(self.indent, name)
         line.set(step.definition, self._rstack[-1])
         self._rstack.append([Rule.factory(rule) for rule in step.rules])
         self._append(line)
-        self._indent += 1
+        self._indent.append(INDENT + " " * len(line.attrs))
         self._visitComposite(step, userDict)
-        self._indent -= 1
+        self._indent.pop()
         self._append(CloseLine(line, end=end))
         self._rstack.pop()
 
@@ -384,10 +392,14 @@ class DocSyntax:
 
     def visitSimpleKeyword(self, step, skwValue):
         """Visit a SimpleKeyword object"""
-        line = SimpKwdLine(self._indent, self._mcsimp)
+        line = SimpKwdLine(self.indent, self._mcsimp)
         line.set(step.definition, self._rstack[-1])
         self._append(line)
         # print(line.repr())
+
+    @property
+    def indent(self):
+        return "".join(self._indent)
 
     def _append(self, line):
         self._lines.append(line)
@@ -447,9 +459,9 @@ class TestDoc(unittest.TestCase):
         fact.accept(syntax)
         text = syntax.repr()
         # print(text)
-        self.assertTrue(f'{REQ} / TOUT = "OUI" (ou non renseigné),' in text, msg="TOUT")
-        self.assertTrue(f"{OPT} INFO = / 1 (par défaut)," in text, msg="INFO default")
-        self.assertTrue("             / 2," in text, msg="INFO 2")
+        self.assertTrue(f'{REQ} {XOR} TOUT = "OUI" (ou non renseigné),' in text, msg="TOUT")
+        self.assertTrue(f"{OPT} INFO = {XOR} 1 (par défaut)," in text, msg="INFO default")
+        self.assertTrue(f"             {XOR} 2," in text, msg="INFO 2")
 
     def test01_onlyfirst(self):
         fact = FACT(
@@ -470,29 +482,33 @@ class TestDoc(unittest.TestCase):
         syntax._mcfact = "CONVERGENCE"
         fact.accept(syntax)
         text = syntax.repr()
-        # print("\n" + text)
+        # print(text)
         self.assertTrue(f"{DEF} CONVERGENCE = _F(" in text, msg="CONVERGENCE")
-        self.assertTrue(f"{OPT} / RESI_REFE_RELA" in text, msg="RESI_REFE_RELA nook")
-        self.assertTrue("/ | RESI_GLOB_MAXI" in text, msg="RESI_GLOB_MAXI nook")
-        self.assertTrue("  | RESI_GLOB_RELA" in text, msg="RESI_GLOB_RELA nook")
-        self.assertTrue("  | RESI_COMP_RELA" in text, msg="RESI_COMP_RELA nook")
+        self.assertTrue(f"{OPT} {XOR} RESI_REFE_RELA" in text, msg="RESI_REFE_RELA nook")
+        self.assertTrue(f"{XOR} {ALT} RESI_GLOB_MAXI" in text, msg="RESI_GLOB_MAXI nook")
+        self.assertTrue(f"  {ALT} RESI_GLOB_RELA" in text, msg="RESI_GLOB_RELA nook")
+        self.assertTrue(f"  {ALT} RESI_COMP_RELA" in text, msg="RESI_COMP_RELA nook")
 
     def test01_iffirst(self):
         cmd = OPER(
-            regles=(PRESENT_PRESENT("MULTIFIBRE", "GEOM_FIBRE"),),
+            regles=(PRESENT_PRESENT("MULTIFIBRE", "GEOM_FIBRE", "FAKE"),),
             MULTIFIBRE=FACT(
                 statut="f",
                 GROUP_FIBRE=SIMP(statut="o", typ="TXM", max="**"),
                 PREC_INERTIE=SIMP(statut="f", typ="R", defaut=0.1),
             ),
             GEOM_FIBRE=SIMP(statut="f", max=1, typ="R"),
+            FAKE=SIMP(statut="f", max=1, typ="R"),
             INFO=SIMP(statut="f", typ="I", defaut=1),
         )
         syntax = DocSyntax("TEST")
         syntax._command = "AFFE_CARA_ELEM"
         cmd.accept(syntax)
         text = syntax.repr()
-        print("\n" + text)
+        # print(text)
+        self.assertTrue(f"{OPT} {AND} MULTIFIBRE = _F(" in text, msg="MULTIFIBRE")
+        self.assertTrue(f"  {AND} {REQ} GEOM_FIBRE" in text, msg="GEOM_FIBRE")
+        self.assertTrue(f"    {REQ} FAKE" in text, msg="FAKE")
 
     def test02_group_by_rule(self):
         fact = FACT(
@@ -518,8 +534,9 @@ class TestDoc(unittest.TestCase):
 
     def test10_lire_maillage(self):
         text = self._testcmd(CMD.LIRE_MAILLAGE)
+        # print(text)
         self.assertTrue(f"{DEF} VERI_MAIL = _F(" in text, msg="VERI_MAIL")
-        self.assertTrue(f'{OPT} VERIF = / "OUI" (par défaut),' in text, msg="VERIF default")
+        self.assertTrue(f'{OPT} VERIF = {XOR} "OUI" (par défaut),' in text, msg="VERIF default")
         self.assertIsNotNone(re.search("#.*FORMAT.*MED", text), msg="condition FORMAT=MED")
 
     def _test10_all(self):
