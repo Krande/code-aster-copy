@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,5 +22,14 @@
 #define ALGO_FIXE   0
 #define ALGO_NEWT   1
 
-
 #define SIZE_MAX_INTE_SL 16
+
+! Projection type
+! -------------------------------------------------------------------------
+#define PROJ_TYPE_NODE  0
+#define PROJ_TYPE_FIXE  1
+
+! Projection algo parameters
+! -------------------------------------------------------------------------
+#define PROJ_ALGO_NONE  0
+#define PROJ_ALGO_GAPI  1
