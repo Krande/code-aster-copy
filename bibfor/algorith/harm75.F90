@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -79,7 +79,7 @@ subroutine harm75(nomres, typres, nomin, basemo)
     character(len=24) :: matric, chamno, crefe(2), chmod, nomcha, objve1, objve2
     character(len=24) :: objve3, objve4
     aster_logical :: tousno, leffor, prems
-    integer :: inocmp, inoecp, inumno, inuddl
+    integer :: inocmp, inoecp, inumno, inuddl, indice, taille, inst
     integer :: j, jc, i, iarchi, ich
     integer :: idvecg, iret, iretou, jfreq
     integer :: jnume, lfreq, lvale, nbcham, nbinsg
@@ -87,11 +87,16 @@ subroutine harm75(nomres, typres, nomin, basemo)
     integer :: nbfreq, neq, nbnoeu, ncmp
     real(kind=8), pointer :: base(:) => null()
     character(len=24), pointer :: refn(:) => null()
+    character(len=4) :: kacce, kprof, kprofold
     integer, pointer :: desc(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 ! ------------------------------------------------------------------
 !
     call jemarq()
+! Init. pour routines mdgep...
+    kacce = 'CAS3'
+    kprof = 'NON'
+    kprofold = kprof
 !
     chamno = '&&HARM75.CHAMNO'
     blanc = '        '
@@ -192,9 +197,7 @@ subroutine harm75(nomres, typres, nomin, basemo)
         call dismoi('NOM_MAILLA', chmod, 'CHAM_NO', repk=mailla)
         crefe(1) = ' '
         crefe(2) = nume_equa
-        if (tousno) then
-            call nueq_chck(nume_equa, nb_equaz=neq)
-        end if
+        if (tousno) call nueq_chck(nume_equa, nb_equaz=neq)
         basem2 = ' '
     end if
 !
@@ -211,9 +214,8 @@ subroutine harm75(nomres, typres, nomin, basemo)
         objve2 = '&&HARM75.NOM_CMP     '
         objve3 = '&&HARM75.NB_NEQ      '
         objve4 = '&&HARM75.NUME_DDL    '
-        call rbph02(mailla, numddl, chmod, nomgd, neq, &
-                    nbnoeu, objve1, ncmp, objve2, objve3, &
-                    objve4)
+        call rbph02(mailla, numddl, chmod, nomgd, neq, nbnoeu, objve1, &
+                    ncmp, objve2, objve3, objve4)
         call jeveuo(objve1, 'L', inumno)
         call jeveuo(objve2, 'L', inocmp)
         call jeveuo(objve3, 'L', inoecp)
@@ -225,20 +227,13 @@ subroutine harm75(nomres, typres, nomin, basemo)
     call getvtx(' ', 'CRITERE', scal=crit, nbret=n1)
     call getvr8(' ', 'PRECISION', scal=epsi, nbret=n1)
     call getvtx(' ', 'INTERPOL', scal=interp, nbret=n1)
-! ON PLANTE LE CALCUL SI ON DEMANDE D'INTERPOLER EN FREQUENCIEL
-    if (interp(1:3) .ne. 'NON') then
-        call utmess('F', 'ALGORITH3_86')
-    end if
+! ON PLANTE LE CALCUL SI ON DEMANDE D'INTERPOLER EN FREQUENTIEL
+    if (interp(1:3) .ne. 'NON') call utmess('F', 'ALGORITH3_86')
 !
     knume = '&&HARM75.NUM_RANG'
     kfreq = '&&HARM75.FREQ'
-!
-    call rstran(interp, hrange, ' ', 1, kfreq, &
-                knume, nbfreq, iretou)
-!
-    if (iretou .ne. 0) then
-        call utmess('F', 'UTILITAI4_24')
-    end if
+    call rstran(interp, hrange, ' ', 1, kfreq, knume, nbfreq, iretou)
+    if (iretou .ne. 0) call utmess('F', 'UTILITAI4_24')
     call jeexin(kfreq, iret)
     if (iret .gt. 0) then
         call jeveuo(kfreq, 'L', jfreq)
@@ -254,6 +249,8 @@ subroutine harm75(nomres, typres, nomin, basemo)
     call jeveuo(hrange//'.DISC', 'L', idinsg)
     call jelira(hrange//'.DISC', 'LONMAX', nbinsg)
     call wkvect('&&HARM75.VECTGENE', 'V V C', nbmode, idvecg)
+!
+!******** Boucle sur les champs
     do ich = 1, nbcham
         leffor = .true.
         if (type(ich) .eq. 'DEPL' .or. type(ich) .eq. 'VITE' .or. type(ich) .eq. 'ACCE') &
@@ -262,8 +259,7 @@ subroutine harm75(nomres, typres, nomin, basemo)
 !            --- RECUPERATION DES DEFORMEES MODALES ---
 !
         typcha = typbas(ich)
-        call rsexch('F', basemo, typcha, 1, nomcha, &
-                    iret)
+        call rsexch('F', basemo, typcha, 1, nomcha, iret)
         nomcha = nomcha(1:19)//'.VALE'
         call jeexin(nomcha, ibid)
         if (ibid .gt. 0) then
@@ -281,8 +277,7 @@ subroutine harm75(nomres, typres, nomin, basemo)
 ! CAS DE LA RESTITUTION SUR UNE PARTIE DE LA STRUCTURE SEULEMENT
         else
             do j = 1, nbmode
-                call rsexch('F', basemo, typcha, j, nomcha, &
-                            iret)
+                call rsexch('F', basemo, typcha, j, nomcha, iret)
                 call jeexin(nomcha(1:19)//'.VALE', ibid)
                 if (ibid .gt. 0) then
                     nomcha(20:24) = '.VALE'
@@ -305,13 +300,23 @@ subroutine harm75(nomres, typres, nomin, basemo)
 !
 !  RESTITUTION PROPREMENT DITE
 !
+!******** Boucle sur les frequences
         iarchi = 0
         idresu = itresu(ich)
         prems = .true.
+        indice = 1
+        taille = neq
         do i = 0, nbfreq-1
+! Pour MDGEP*
+            if (i .eq. (nbfreq-1)) then
+                if (kprof(1:3) .eq. 'OUI') kprof = 'OUIA'
+                inst = -1*nbfreq
+            else
+                inst = i+1
+            end if
+!
             iarchi = iarchi+1
-            call rsexch(' ', nomres, type(ich), iarchi, chamno, &
-                        iret)
+            call rsexch(' ', nomres, type(ich), iarchi, chamno, iret)
             if (iret .eq. 0) then
                 call utmess('A', 'ALGORITH2_64', sk=chamno)
             else if (iret .eq. 100) then
@@ -330,11 +335,7 @@ subroutine harm75(nomres, typres, nomin, basemo)
                 else
                     if (prems) then
                         prems = .false.
-!
-                        if (nomgd .eq. 'DEPL_R') then
-                            nomgd = 'DEPL_C'
-                        end if
-!
+                        if (nomgd .eq. 'DEPL_R') nomgd = 'DEPL_C'
                         call cnocre(mailla, nomgd, nbnoeu, zi(inumno), ncmp, &
                                     zk8(inocmp), zi(inoecp), 'G', ' ', chamno)
                         call dismoi('NUME_EQUA', chamno, 'CHAM_NO', repk=prof)
@@ -363,12 +364,13 @@ subroutine harm75(nomres, typres, nomin, basemo)
 !     &               ZR(JFREQ+I),ZC(IDRESU),NBMODE,ZR(IDVECG), IBID)
 !               CALL MDGPHC(NEQ,NBMODE,ZR(IDBASE),ZC(IDVECG),ZC(LVALE))
 !             ELSE
-            call mdgepc(neq, nbmode, base, zc(idresu+(zi(jnume+i)-1)*nbmode), zc(lvale))
+            call mdgepc(neq, nbmode, base, zc(idresu+(zi(jnume+i)-1)*nbmode), zc(lvale), &
+                        kacce=kacce, kprof=kprof, inst=inst, instt=nbfreq, indice=indice, &
+                        taille=taille, kcham=chamno)
 !             ENDIF
 !
             call rsnoch(nomres, type(ich), iarchi)
-            call rsadpa(nomres, 'E', 1, 'FREQ', iarchi, &
-                        0, sjv=lfreq, styp=k8b)
+            call rsadpa(nomres, 'E', 1, 'FREQ', iarchi, 0, sjv=lfreq, styp=k8b)
             zr(lfreq) = zr(jfreq+i)
         end do
         AS_DEALLOCATE(vr=base)
