@@ -65,6 +65,7 @@ subroutine mdgepc(neq, nbmode, bmodal, xgene, u, &
 !                            OBLIGATOIRE SI KACCE='CAS1' OU 'CAS2' OU 'CAS3'
 ! .________________.____.______________________________________________.
     implicit none
+! aslint: disable=C1513
 !
 #include "jeveux.h"
 #include "blas/zcopy.h"
