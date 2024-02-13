@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,11 +19,19 @@
 !
 !
 interface
-    subroutine mdgeph(neq, nbmode, bmodal, xgene, u)
-        integer :: nbmode
-        integer :: neq
-        real(kind=8) :: bmodal(neq, nbmode)
-        real(kind=8) :: xgene(nbmode)
-        real(kind=8) :: u(neq)
+    subroutine mdgeph(neq, nbmode, bmodal, xgene, u, kacce, kprof, &
+                      inst, instt, indice, taille, kcham)
+        integer, intent(in) :: nbmode
+        integer, intent(in) :: neq
+        real(kind=8), intent(in) :: bmodal(neq, nbmode)
+        real(kind=8), intent(in) :: xgene(nbmode)
+        real(kind=8), intent(out) :: u(neq)
+        character(len=4), intent(in), optional :: kacce
+        character(len=4), intent(in), optional :: kprof
+        integer, intent(in), optional :: inst
+        integer, intent(in), optional :: instt
+        integer, intent(inout), optional :: indice
+        integer, intent(inout), optional :: taille
+        character(len=24), intent(in), optional :: kcham
     end subroutine mdgeph
 end interface

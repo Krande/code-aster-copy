@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,12 +20,17 @@
 !
 interface
     subroutine mdgep3(neq, nbexci, psidel, temps, nomfon,&
-                      tab)
-        integer :: nbexci
-        integer :: neq
-        real(kind=8) :: psidel(neq, nbexci)
-        real(kind=8) :: temps
-        character(len=8) :: nomfon(2*nbexci)
-        real(kind=8) :: tab(neq)
+                      tab, kacce, kprof, inst, indice, taille)
+        integer, intent(in) :: nbexci
+        integer, intent(in) :: neq
+        real(kind=8), intent(in) :: psidel(neq, nbexci)
+        real(kind=8), intent(in) :: temps
+        character(len=8), intent(in) :: nomfon(2*nbexci)
+        real(kind=8), intent(out) :: tab(neq)
+        character(len=4), intent(in), optional :: kacce
+        character(len=4), intent(in), optional :: kprof
+        integer, intent(in), optional :: inst
+        integer, intent(inout), optional :: indice
+        integer, intent(inout), optional :: taille
     end subroutine mdgep3
 end interface

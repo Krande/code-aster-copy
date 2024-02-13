@@ -36,8 +36,12 @@ subroutine tran75(nomres, typres, nomin, basemo)
 ! ----------------------------------------------------------------------
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "blas/daxpy.h"
 #include "asterfort/gettco.h"
 #include "asterc/r8prem.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/assert.h"
 #include "asterfort/cnocre.h"
 #include "asterfort/codent.h"
@@ -50,6 +54,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/idensd.h"
+#include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -71,18 +76,17 @@ subroutine tran75(nomres, typres, nomin, basemo)
 #include "asterfort/rstran.h"
 #include "asterfort/titre.h"
 #include "asterfort/utmess.h"
+#include "asterfort/vecini.h"
 #include "asterfort/vtcopy.h"
 #include "asterfort/vtcrea.h"
 #include "asterfort/vtcreb.h"
 #include "asterfort/vtcrec.h"
 #include "asterfort/vtdefs.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 ! ----------------------------------------------------------------------
     integer :: i, j, itresu(8), i_cham(8)
     integer :: foci, focf, fomi, fomf, fomo
-    real(kind=8) :: r8b, epsi, alpha, xnorm, coef(3), direction(9)
+    real(kind=8) :: r8b, epsi, alpha, xnorm, coef(3), direction(9), zero
     character(len=1) :: typ1
     character(len=8) :: k8b, blanc, basemo, crit, interp, basem2, mailla, nomres
     character(len=8) :: nomin, nomcmp(6), mode, monmot(2), matgen, nomgd
@@ -101,12 +105,13 @@ subroutine tran75(nomres, typres, nomin, basemo)
     integer :: ier, inocmp, inoecp, inuddl, inumno, ipsdel, ir
     integer :: irou, jc, jinst
     integer :: jnume, jpsdel, jvec, linst
-    integer :: lpsdel, lval2, lvale, n1, n2, n3
+    integer :: lpsdel, lval2, lvale, n1, n2, n3, borne1, borne2
     integer :: n4, nbcham, nbd, nbexci, nbinsg, nbinst
-    integer :: nbmode, nbnoeu, ncmp, neq, nfonct, neq0, ifonct, vali(2), neq1, shift, i_bloc
+    integer :: nbmode, nbnoeu, ncmp, neq, nfonct, neq0, ifonct, vali(2), neq1
+    integer :: shift, i_bloc
+    integer :: indice, taille, inst, indice1, taille1, ifm, niv, jddl
     complex(kind=8) :: cbid
     real(kind=8), pointer :: base(:) => null()
-    integer, pointer :: ddl(:) => null()
     real(kind=8), pointer :: vectgene(:) => null()
     character(len=8), pointer :: fvit(:) => null()
     character(len=24), pointer :: refn(:) => null()
@@ -116,14 +121,22 @@ subroutine tran75(nomres, typres, nomin, basemo)
     real(kind=8), pointer :: resu(:) => null()
     character(len=8), pointer :: fdep(:) => null()
     type(DynaGene) :: dyna_gene
+    character(len=4) :: kacce, kprof, kprofold
 !-----------------------------------------------------------------------
     data blanc/'        '/
     data chamn2/'&&TRAN75.CHAMN2'/
     data nomcmp/'DX      ', 'DY      ', 'DZ      ',&
      &               'DRX     ', 'DRY     ', 'DRZ     '/
 !     ------------------------------------------------------------------
-    cbid = dcmplx(0.d0, 0.d0)
     call jemarq()
+! Init. pour routines mdgep...
+    kacce = 'CAS3'
+    kprof = 'NON'
+    kprofold = kprof
+    zero = 0.d0
+    call infniv(ifm, niv)
+!
+    cbid = dcmplx(0.d0, 0.d0)
     mode = basemo
     trange = nomin
     call gettco(nomin, concep)
@@ -279,8 +292,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
         objve3 = '&&TRAN75.NB_NEQ      '
         objve4 = '&&TRAN75.NUME_DDL    '
         call rbph02(mailla, numddl, chmod, nomgd, neq, &
-                    nbnoeu, objve1, ncmp, objve2, objve3, &
-                    objve4)
+                    nbnoeu, objve1, ncmp, objve2, objve3, objve4)
         call jeveuo(objve1, 'L', inumno)
         call jeveuo(objve2, 'L', inocmp)
         call jeveuo(objve3, 'L', inoecp)
@@ -297,9 +309,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
         call jelira(trange//'.FDEP', 'LONMAX', nbexci)
         nbexci = nbexci/2
         if (tousno) then
-            call vtcreb(chamn2, 'V', 'R', &
-                        nume_ddlz=numddl, &
-                        nb_equa_outz=neq)
+            call vtcreb(chamn2, 'V', 'R', nume_ddlz=numddl, nb_equa_outz=neq)
             chamn2(20:24) = '.VALE'
             call jeveuo(chamn2, 'E', lval2)
             lpsdel = ipsdel
@@ -327,11 +337,8 @@ subroutine tran75(nomres, typres, nomin, basemo)
 !
     knume = '&&TRAN75.NUM_RANG'
     kinst = '&&TRAN75.INSTANT'
-    call rstran(interp, trange, ' ', 1, kinst, &
-                knume, nbinst, irou)
-    if (irou .ne. 0) then
-        call utmess('F', 'UTILITAI4_24')
-    end if
+    call rstran(interp, trange, ' ', 1, kinst, knume, nbinst, irou)
+    if (irou .ne. 0) call utmess('F', 'UTILITAI4_24')
     call jeexin(kinst, ir)
     if (ir .gt. 0) then
         call jeveuo(kinst, 'L', jinst)
@@ -371,6 +378,8 @@ subroutine tran75(nomres, typres, nomin, basemo)
     end if
 
     neq0 = neq
+!
+!******** Boucle sur les champs
     do ich = 1, nbcham
         leffor = .true.
         if (type(ich) .eq. 'DEPL' .or. type(ich) .eq. 'VITE' .or. type(ich) .eq. 'ACCE' .or. &
@@ -379,8 +388,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
 !            --- RECUPERATION DES DEFORMEES MODALES ---
 !
         typcha = typbas(ich)
-        call rsexch('F', basemo, typcha, 1, nomcha, &
-                    ir)
+        call rsexch('F', basemo, typcha, 1, nomcha, ir)
         nomcha = nomcha(1:19)//'.VALE'
         call jeexin(nomcha, ibid)
         if (ibid .gt. 0) then
@@ -405,8 +413,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
             tmpcha = '&&TRAN75.CHAMP'
             call dismoi('NB_EQUA', numeq, 'NUME_EQUA', repi=neq1)
             do j = 1, nbmode
-                call rsexch('F', basemo, typcha, j, nomcha, &
-                            ir)
+                call rsexch('F', basemo, typcha, j, nomcha, ir)
                 call jeexin(nomcha(1:19)//'.VALE', iexi)
 !              TOUSNO=.FALSE. => ON NE S'INTERESSE QU'AUX CHAM_NO :
                 ASSERT(iexi .gt. 0)
@@ -445,10 +452,30 @@ subroutine tran75(nomres, typres, nomin, basemo)
             if (ir .ne. 0 .and. zi(jnume) .eq. 1) iarchi = -1
         end if
         prems = .true.
+!
+!******** Boucle sur les instants
+        indice = 1
+        indice1 = 1
+        taille = neq
+        taille1 = neq
+        kprof = kprofold
+!       --- GESTTION DES INCOMPATIBILITES SUIVANT LES ACCELERATIONS
+!       --- CAS DE FIGURES RESTANT A ADAPTER SI BESOIN EN PERFORMANCE
+        if (kacce(1:4) .eq. 'CAS3') then
+            if ((interp(1:3) .ne. 'NON') .or. (multap) .or. &
+                ((type(ich) .eq. 'ACCE_ABSOLU') .and. (nfonct .gt. 0))) kacce = 'CAS2'
+        end if
         do i = 0, nbinst-1
+! Pour MDGEP*
+            if (i .eq. (nbinst-1)) then
+                if (kprof(1:3) .eq. 'OUI') kprof = 'OUIA'
+                inst = -1*nbinst
+            else
+                inst = i+1
+            end if
+!
             iarchi = iarchi+1
-            call rsexch(' ', nomres, type(ich), iarchi, chamno, &
-                        ir)
+            call rsexch(' ', nomres, type(ich), iarchi, chamno, ir)
             if (ir .eq. 0) then
                 call utmess('A', 'ALGORITH2_64', sk=chamno)
             else if (ir .eq. 100) then
@@ -457,9 +484,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
                         if (leffor) then
                             call vtdefs(chamno, typref(ich), 'G', 'R')
                         else
-                            call vtcreb(chamno, 'G', 'R', &
-                                        nume_ddlz=numddl, &
-                                        nb_equa_outz=neq)
+                            call vtcreb(chamno, 'G', 'R', nume_ddlz=numddl, nb_equa_outz=neq)
                         end if
                     else
                         call vtcrec(chamno, chmod, 'G', 'R', neq)
@@ -497,61 +522,77 @@ subroutine tran75(nomres, typres, nomin, basemo)
                 call dyna_gene%get_values_by_index(i_cham(ich), zi(jnume+i), shift, vr=resu)
                 vectgene => resu((zi(jnume+i)-1-shift)*nbmode+1:(zi(jnume+i)-shift)*nbmode)
             end if
-            call mdgeph(neq, nbmode, base, vectgene, zr(lvale))
+            call mdgeph(neq, nbmode, base, vectgene, zr(lvale), &
+                        kacce=kacce, kprof=kprof, inst=inst, instt=nbinst, indice=indice, &
+                        taille=taille, kcham=chamno)
             if (multap) then
-                if (type(ich) .eq. 'DEPL') call mdgep3(neq, nbexci, zr(lpsdel), zr(jinst+i), &
-                                                       fdep, zr(lval2))
-                if (type(ich) .eq. 'VITE') call mdgep3(neq, nbexci, zr(lpsdel), zr(jinst+i), &
-                                                       fvit, zr(lval2))
-                if (type(ich) .eq. 'ACCE') call mdgep3(neq, nbexci, zr(lpsdel), zr(jinst+i), &
-                                                       facc, zr(lval2))
-                if (type(ich) .eq. 'ACCE_ABSOLU') call mdgep3(neq, nbexci, zr(lpsdel), &
-                                                              zr(jinst+i), facc, zr(lval2))
-                do ie = 1, neq
-                    zr(lvale+ie-1) = zr(lvale+ie-1)+zr(lval2+ie-1)
-                end do
+                ASSERT(kacce .ne. 'CAS3')
+                if (type(ich) .eq. 'DEPL') &
+                    call mdgep3(neq, nbexci, zr(lpsdel), zr(jinst+i), fdep, zr(lval2), &
+                                kacce=kacce, kprof=kprof, inst=inst, indice=indice1, taille=taille1)
+                if (type(ich) .eq. 'VITE') &
+                    call mdgep3(neq, nbexci, zr(lpsdel), zr(jinst+i), fvit, zr(lval2), &
+                                kacce=kacce, kprof=kprof, inst=inst, indice=indice1, taille=taille1)
+                if (type(ich) .eq. 'ACCE') &
+                    call mdgep3(neq, nbexci, zr(lpsdel), zr(jinst+i), facc, zr(lval2), &
+                                kacce=kacce, kprof=kprof, inst=inst, indice=indice1, taille=taille1)
+                if (type(ich) .eq. 'ACCE_ABSOLU') &
+                    call mdgep3(neq, nbexci, zr(lpsdel), zr(jinst+i), facc, zr(lval2), &
+                                kacce=kacce, kprof=kprof, inst=inst, indice=indice1, taille=taille1)
+!               --- VERIFICATION AU CAS OU
+                ASSERT((indice .eq. indice1) .and. (taille .eq. taille1))
+                call daxpy(neq, 1.d0, zr(lval2), 1, zr(lvale), 1)
             end if
 !            --- PRISE EN COMPTE D'UNE ACCELERATION D'ENTRAINEMENT
 !            --- PRISE EN COMPTE D'UNE ACCELERATION D'ENTRAINEMENT
             if (type(ich) .eq. 'ACCE_ABSOLU' .and. nfonct .gt. 0) then
+                ASSERT(kacce .ne. 'CAS3')
                 ir = 0
                 coef = 0
                 do ifonct = 1, nfonct
-                    call fointe('F', fonct(ifonct), 1, 'INST', zr(jinst+i), &
-                                alpha, ier)
+                    call fointe('F', fonct(ifonct), 1, 'INST', zr(jinst+i), alpha, ier)
                     coef = coef+alpha*direction(3*(ifonct-1)+1:3*ifonct)
                 end do
 !               --- ACCELERATION ABSOLUE = RELATIVE + ENTRAINEMENT
-                call wkvect('&&TRAN75.VECTEUR', 'V V R', neq, jvec)
                 if (i .eq. 0) then
-                    AS_ALLOCATE(vi=ddl, size=3*neq)
+                    call wkvect('&&TRAN75.VECTEUR', 'V V R', neq, jvec)
+                    call wkvect('&&TRAN75.VECTEUI', 'V V I', 3*neq, jddl)
                     if (tousno) then
-                        call pteddl('NUME_DDL', numddl, 3, nomcmp, neq, &
-                                    tabl_equa=ddl)
+                        call pteddl('NUME_DDL', numddl, 3, nomcmp, neq, tabl_equa=zi(jddl))
                     else
-                        call pteddl('CHAM_NO', chamno, 3, nomcmp, neq, &
-                                    tabl_equa=ddl)
+                        call pteddl('CHAM_NO', chamno, 3, nomcmp, neq, tabl_equa=zi(jddl))
                     end if
+                else
+                    call vecini(neq, zero, zr(jvec))
                 end if
+! Preparation du vecteur auxiliaire zr(jvec)
+                borne1 = indice-1
+                borne2 = indice+taille-2
                 do id = 1, 3
-                    do ie = 0, neq-1
-                        zr(jvec+ie) = zr(jvec+ie)+ddl(1+neq*(id-1)+ie)*coef(id)
+                    do ie = borne1, borne2
+                        zr(jvec+ie) = zr(jvec+ie)+zi(jddl+neq*(id-1)+ie)*coef(id)
                     end do
                 end do
-                do ie = 0, neq-1
-                    zr(lvale+ie) = zr(lvale+ie)+zr(jvec+ie)
-                end do
-                call jedetr('&&TRAN75.VECTEUR')
+! COM MPI sur le vecteur auxiliaire zr(jvec) que si au moins 1 ddl par processus
+                if (taille .ne. neq) call asmpi_comm_vect('MPI_SUM', 'R', nbval=neq, vr=zr(jvec))
+! Somme du vecteur principal, zr(lvale) et du vecteur auxiliaire, zr(jvec)
+                call daxpy(neq, 1.d0, zr(jvec), 1, zr(lvale), 1)
+!
                 if (i .eq. nbinst-1) then
-                    AS_DEALLOCATE(vi=ddl)
+                    call jedetr('&&TRAN75.VECTEUR')
+                    call jedetr('&&TRAN75.VECTEUI')
                 end if
+!            --- FIN PRISE EN COMPTE D'UNE ACCELERATION D'ENTRAINEMENT
             end if
             call rsnoch(nomres, type(ich), iarchi)
-            call rsadpa(nomres, 'E', 1, 'INST', iarchi, &
-                        0, sjv=linst, styp=k8b)
+            call rsadpa(nomres, 'E', 1, 'INST', iarchi, 0, sjv=linst, styp=k8b)
             zr(linst) = zr(jinst+i)
+!
+!******** Fin boucle sur les instants
         end do
         AS_DEALLOCATE(vr=base)
+!
+!******** Fin boucle sur les champs
     end do
 
     if (interp(1:3) .ne. 'NON') then
@@ -565,8 +606,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
     if (mode .eq. blanc) then
         call refdcp(basemo, nomres)
     else
-        call refdaj(' ', nomres, -1, ' ', 'INIT', &
-                    ' ', ir)
+        call refdaj(' ', nomres, -1, ' ', 'INIT', ' ', ir)
     end if
 !
 ! --- MENAGE
