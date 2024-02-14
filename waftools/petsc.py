@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -133,7 +133,7 @@ def check_petsc_libs(self, optlibs):
 @Configure.conf
 def check_petsc_headers(self, filename):
     check = partial(
-        self.check, header_name=filename, use="PETSC MPI", uselib="SCOTCH Z", uselib_store="PETSC"
+        self.check, header_name=filename, use="PETSC MPI", uselib="SCOTCH M Z", uselib_store="PETSC"
     )
 
     self.start_msg("Checking for header " + filename)
@@ -172,7 +172,7 @@ int main(void){
         ret = self.check_cc(
             fragment=fragment,
             use="PETSC MPI",
-            uselib="SCOTCH Z",
+            uselib="SCOTCH M Z",
             mandatory=True,
             execute=True,
             define_ret=True,
