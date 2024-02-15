@@ -426,7 +426,7 @@ class BaseMesh : public DataStructure, public ListOfTables {
         return -1;
     }
 
-    virtual std::shared_ptr< MapLong > getGlobalToLocalNodeIds() const {
+    virtual std::shared_ptr< const MapLong > getGlobalToLocalNodeIds() const {
         AS_ASSERT( false );
         return {};
     };

@@ -233,7 +233,8 @@ class ObjectBalancer {
      */
     void setElementsToDelete( const VectorInt &toDelete ) {
         for ( const auto &id : toDelete ) {
-            this->_toDelete.insert( id );
+            if ( _toKeep.find( id ) == _toKeep.end() )
+                this->_toDelete.insert( id );
         }
     };
 
@@ -291,8 +292,9 @@ void ObjectBalancer::balanceSimpleVectorOverProcesses( const T *in, int sizeIn, 
         for ( int iPos = 0; iPos < curSize; ++iPos ) {
             for ( int iCmp = 0; iCmp < nbCmp; ++iCmp ) {
                 const auto vecPos = nbCmp * curSendList[iPos] + iCmp;
-                if ( vecPos >= sizeIn )
+                if ( vecPos >= sizeIn ) {
                     throw std::runtime_error( "Index to send grower than vector size" );
+                }
                 if ( sizeToKeep == 0 ) {
                     toKeep[vecPos] = false;
                 } else {
@@ -488,7 +490,7 @@ void ObjectBalancer::balanceObjectOverProcesses3( const T &in, T &out, const Mas
             allocateOccurence( out, cmpt, sizetoCopy );
             auto &newObj = out[cmpt];
             for ( int curPos2 = 0; curPos2 < sizetoCopy; ++curPos2 ) {
-                newObj[curPos2] = mask.reverse( toCopy[curPos2] );
+                newObj[curPos2] = mask.reverse( mask.apply( toCopy[curPos2] ) );
             }
             ++cmpt;
         }
