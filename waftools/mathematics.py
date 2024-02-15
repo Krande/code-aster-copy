@@ -136,8 +136,10 @@ def detect_mkl(self):
             blacs = "mkl_blacs_intelmpi" + suffix
     else:
         if self.get_define("ASTER_HAVE_MPI") and opts.enable_mumps:
-            scalapack = "mkl_scalapack" + suffix
-            blacs = "mkl_blacs_openmpi" + suffix
+            # This needs to add all libs into LD_PRELOAD (libmpi.so + all mkl libs...)
+            # scalapack = "mkl_scalapack" + suffix
+            # blacs = "mkl_blacs_openmpi" + suffix
+            scalapack = "scalapack"
         if self.get_define("ASTER_HAVE_OPENMP"):
             thread = "mkl_gnu_thread"
         interf = "mkl_gf" + suffix

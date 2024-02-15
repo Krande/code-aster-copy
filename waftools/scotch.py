@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -102,7 +102,7 @@ def check_scotch(self):
 def check_scotch_libs(self):
     opts = self.options
     check_scotch = partial(
-        self.check_cc, mandatory=True, uselib_store="SCOTCH", use="MPI", uselib="SCOTCH Z"
+        self.check_cc, mandatory=True, uselib_store="SCOTCH", use="MPI", uselib="SCOTCH M Z"
     )
     if opts.embed_all or opts.embed_scotch:
         check_lib = lambda lib: check_scotch(stlib=lib)
