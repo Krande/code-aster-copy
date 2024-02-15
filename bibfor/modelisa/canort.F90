@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -215,6 +215,7 @@ subroutine canort(noma, nbma, listma, ndim, nbno, &
                         a = eksix/norme
                         b = eksiy/norme
                     else
+                        call jenuno(jexnum(noma//'.NOMMAI', numail), knumai)
                         call norlin('SE3', 2, knumai, coor, dfse2, &
                                     in, prec, a, b, c)
                     end if
@@ -226,6 +227,7 @@ subroutine canort(noma, nbma, listma, ndim, nbno, &
                         a = eksiy/norme
                         b = -eksix/norme
                     else
+                        call jenuno(jexnum(noma//'.NOMMAI', numail), knumai)
                         call norlin('SE3', 1, knumai, coor, dfse2, &
                                     in, prec, a, b, c)
                     end if
@@ -334,6 +336,7 @@ subroutine canort(noma, nbma, listma, ndim, nbno, &
                     b = b/norme
                     c = c/norme
                 else
+                    call jenuno(jexnum(noma//'.NOMMAI', numail), knumai)
                     call norlin('QU8', 0, knumai, coor, dfqu4, &
                                 in, prec, a, b, c)
                 end if
@@ -496,6 +499,7 @@ subroutine canort(noma, nbma, listma, ndim, nbno, &
                     b = b/norme
                     c = c/norme
                 else
+                    call jenuno(jexnum(noma//'.NOMMAI', numail), knumai)
                     call norlin('TR6', 0, knumai, coor, dftr3, &
                                 in, prec, a, b, c)
                 end if
@@ -610,10 +614,9 @@ subroutine canort(noma, nbma, listma, ndim, nbno, &
                 end if
             end do
         else if (ndim .eq. 3) then
-            vnorm = zr( &
-                    jnorm-1+3*(n-1)+1)*zr(jnorm-1+3*(n-1)+1)+zr(jnorm-1+3*(n-1)+2)*zr(jnorm-1+3&
-                                             &*(n-1)+2)+zr(jnorm-1+3*(n-1)+3)*zr(jnorm-1+3*(n-1)+3 &
-                                                                                                   )
+            vnorm = zr(jnorm-1+3*(n-1)+1)*zr(jnorm-1+3*(n-1)+1)+ &
+                &zr(jnorm-1+3*(n-1)+2)*zr(jnorm-1+3*(n-1)+2)+&
+                &zr(jnorm-1+3*(n-1)+3)*zr(jnorm-1+3*(n-1)+3)
             vnorm = sqrt(vnorm)
             if (vnorm .lt. 1.0d-2) then
                 call jenuno(jexnum(noma//'.NOMNOE', ino), nomnoe)
