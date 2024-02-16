@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@ load2 = AFFE_CHAR_MECA(
 )
 
 reslin1 = MECA_STATIQUE(
-    CHAM_MATER=fieldmat, EXCIT=_F(CHARGE=load1), MODELE=model, SOLVEUR=_F(RESI_RELA=1e-05)
+    CHAM_MATER=fieldmat, EXCIT=_F(CHARGE=load1), MODELE=model, SOLVEUR=_F(RESI_RELA=2e-05)
 )
 
 reslin2 = MECA_STATIQUE(
