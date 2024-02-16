@@ -70,11 +70,10 @@ subroutine op0145()
 !
     do imcf = 1, 9
         call getfac(mcfac(imcf), iocc)
-        if (iocc .eq. 1) goto 11
+        if (iocc .eq. 1) exit
     end do
-11  continue
-!     NBMCL EST AFFECTE A 12 , IL DOIT ETRE SUPERIEUR AU MAX DES NOMBRE
-!     DE MC SIMPLES DES 9 MC FACTEURS
+!   NBMCL EST AFFECTE A 12 , IL DOIT ETRE SUPERIEUR AU MAX DES NOMBRE
+!   DE MC SIMPLES DES 9 MC FACTEURS
     nbmcl = 12
 !
     nommcf = mcfac(imcf)

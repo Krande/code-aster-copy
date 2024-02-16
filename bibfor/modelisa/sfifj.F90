@@ -233,140 +233,137 @@ subroutine sfifj(nomres)
         vecz(1) = vecx(1+1)*vecy(1+2)-vecy(1+1)*vecx(1+2)
         vecz(1+1) = vecx(1+2)*vecy(1)-vecy(1+2)*vecx(1)
         vecz(1+2) = vecx(1)*vecy(1+1)-vecy(1)*vecx(1+1)
-        do 2 in = 1, 3
+        do in = 1, 3
             dir(1, in) = vecx(in)
             dir(2, in) = vecy(in)
             dir(3, in) = vecz(in)
-2           continue
-            else if (method(1:7) .eq. 'AU_YANG') then
-            yang = .true.
-            call getvr8(' ', 'VECT_X', nbval=0, nbret=nvecx)
-            nvecx = -nvecx
-            if (nvecx .gt. 0) then
-                call getvr8(' ', 'VECT_X', nbval=nvecx, vect=dir(1, 1), nbret=nbid)
-            end if
-            call getvr8(' ', 'ORIG_AXE', nbval=0, nbret=nveco)
-            nveco = -nveco
-            if (nveco .gt. 0) then
-                call getvr8(' ', 'ORIG_AXE', nbval=nveco, vect=dir(1, 2), nbret=nbid)
-            end if
-            if (nvecx .lt. 0 .or. nveco .lt. 0) then
-                call utmess('F', 'MODELISA7_3')
-            end if
-            end if
+        end do
+    else if (method(1:7) .eq. 'AU_YANG') then
+        yang = .true.
+        call getvr8(' ', 'VECT_X', nbval=0, nbret=nvecx)
+        nvecx = -nvecx
+        if (nvecx .gt. 0) then
+            call getvr8(' ', 'VECT_X', nbval=nvecx, vect=dir(1, 1), nbret=nbid)
+        end if
+        call getvr8(' ', 'ORIG_AXE', nbval=0, nbret=nveco)
+        nveco = -nveco
+        if (nveco .gt. 0) then
+            call getvr8(' ', 'ORIG_AXE', nbval=nveco, vect=dir(1, 2), nbret=nbid)
+        end if
+        if (nvecx .lt. 0 .or. nveco .lt. 0) then
+            call utmess('F', 'MODELISA7_3')
+        end if
+    end if
 !
 ! VALEURS NON DEPENDANTES DE LA FREQUENCE
 !
-10          continue
-            if (vate(1) .eq. 'SPEC_CORR_CONV_3') then
-                call accep2(base(1:8), nbm, pg, phi, sphi)
-            else
-                call accep1(base(1:8), ligrmo, nbm, dir, yang)
-            end if
+10  continue
+    if (vate(1) .eq. 'SPEC_CORR_CONV_3') then
+        call accep2(base(1:8), nbm, pg, phi, sphi)
+    else
+        call accep1(base(1:8), ligrmo, nbm, dir, yang)
+    end if
 !
 !
 ! CAS SPEC_CORR_CONV_1 ET 2
-            mxval = nbm*(nbm+1)/2
-            chnumi = nomres//'.NUMI'
-            call wkvect(chnumi, 'G V I', mxval, lnumi)
-            chnumj = nomres//'.NUMJ'
-            call wkvect(chnumj, 'G V I', mxval, lnumj)
-            chvale = nomres//'.VALE'
-            call jecrec(chvale, 'G V R', 'NU', 'DISPERSE', 'VARIABLE', &
-                        mxval)
-            chfreq = nomres//'.DISC'
-            call wkvect(chfreq, 'G V R', nbpoin, lfreq)
+    mxval = nbm*(nbm+1)/2
+    chnumi = nomres//'.NUMI'
+    call wkvect(chnumi, 'G V I', mxval, lnumi)
+    chnumj = nomres//'.NUMJ'
+    call wkvect(chnumj, 'G V I', mxval, lnumj)
+    chvale = nomres//'.VALE'
+    call jecrec(chvale, 'G V R', 'NU', 'DISPERSE', 'VARIABLE', &
+                mxval)
+    chfreq = nomres//'.DISC'
+    call wkvect(chfreq, 'G V R', nbpoin, lfreq)
 !
-            do 310 iff = 0, nbpoin-1
-                f = finit+iff*df
-                zr(lfreq+iff) = f
-310         end do
+    do iff = 0, nbpoin-1
+        f = finit+iff*df
+        zr(lfreq+iff) = f
+    end do
 !
 !  POUR LE CAS SPEC_CORR_CONV_3
-            if (vate(1) .eq. 'SPEC_CORR_CONV_3') then
+    if (vate(1) .eq. 'SPEC_CORR_CONV_3') then
 ! TABLE CONTENANT LES FONCTIONS DE FORME
-                is = vate(2)
-                do 320 iff = 0, nbpoin-1
-                    f = finit+iff*df
-                    zr(lfreq+iff) = f
-                    call evalis(is, pg, phi, sphi, f, &
-                                iff, nomres)
-320                 continue
-                    else
-                    ij = 0
-                    do 220 im2 = 1, nbm
+        is = vate(2)
+        do iff = 0, nbpoin-1
+            f = finit+iff*df
+            zr(lfreq+iff) = f
+            call evalis(is, pg, phi, sphi, f, &
+                        iff, nomres)
+        end do
+    else
+        ij = 0
+        do im2 = 1, nbm
 !
-                        do 210 im1 = im2, nbm
-                            ij = ij+1
+            do im1 = im2, nbm
+                ij = ij+1
 !
-                            zi(lnumi-1+ij) = im1
-                            zi(lnumj-1+ij) = im2
+                zi(lnumi-1+ij) = im1
+                zi(lnumj-1+ij) = im2
 !
-                            call jecroc(jexnum(chvale, ij))
-                            if (im1 .eq. im2) then
-                                nbabs = nbpoin
-                            else
-                                nbabs = 2*nbpoin
-                            end if
+                call jecroc(jexnum(chvale, ij))
+                if (im1 .eq. im2) then
+                    nbabs = nbpoin
+                else
+                    nbabs = 2*nbpoin
+                end if
 !
-                            call jeecra(jexnum(chvale, ij), 'LONMAX', nbabs)
-                            call jeecra(jexnum(chvale, ij), 'LONUTI', nbabs)
-                            call jeveuo(jexnum(chvale, ij), 'E', lvale)
+                call jeecra(jexnum(chvale, ij), 'LONMAX', nbabs)
+                call jeecra(jexnum(chvale, ij), 'LONUTI', nbabs)
+                call jeveuo(jexnum(chvale, ij), 'E', lvale)
 !
 ! BOUCLE SUR LES FREQUENCES ET REMPLISSAGE DU .VALE
 ! IE VALEURS DES INTERSPECTRS
 !
-                            ier = 0
-                            do 201 iff = 0, nbpoin-1
-                                f = finit+iff*df
-                                if (f .gt. fcoup) then
-                                    prs = 0.d0
-                                else if (vate(1) .eq. 'SPEC_CORR_CONV_2') then
-                                    puls = deuxpi*f
-                                    call fointe('F', fonct, 1, ['PULS'], [puls], &
-                                                prs, ier)
+                ier = 0
+                do iff = 0, nbpoin-1
+                    f = finit+iff*df
+                    if (f .gt. fcoup) then
+                        prs = 0.d0
+                    else if (vate(1) .eq. 'SPEC_CORR_CONV_2') then
+                        puls = deuxpi*f
+                        call fointe('F', fonct, 1, ['PULS'], [puls], &
+                                    prs, ier)
 
 ! APPELS AUX LONGUEURS DE CORRELATION
-                                    call fointe('F', long1f, 1, ['PULS'], [puls], &
-                                                long1, ier)
-                                    call fointe('F', long2f, 1, ['PULS'], [puls], &
-                                                long2, ier)
+                        call fointe('F', long1f, 1, ['PULS'], [puls], &
+                                    long1, ier)
+                        call fointe('F', long2f, 1, ['PULS'], [puls], &
+                                    long2, ier)
 
 ! APPEL A LA FONCTION DE CALCUL D ACCEPTANCE
-                                    call accept(f, nbm, method, im2, im1, &
-                                                jc, dir, uc, ut, &
-                                                long1, long2, val_spec)
-                                else
-                                    prs = dspprs(kste, uflui, dhyd, rho, f, fcoup_red)
-                                    call accept(f, nbm, method, im2, im1, &
-                                                jc, dir, uc, ut, &
-                                                long1, long2, val_spec)
+                        call accept(f, nbm, method, im2, im1, &
+                                    jc, dir, uc, ut, &
+                                    long1, long2, val_spec)
+                    else
+                        prs = dspprs(kste, uflui, dhyd, rho, f, fcoup_red)
+                        call accept(f, nbm, method, im2, im1, &
+                                    jc, dir, uc, ut, &
+                                    long1, long2, val_spec)
 
-                                end if
-                                if (im1 .eq. im2) then
-                                    zr(lvale+iff) = prs*jc
-                                else
-                                    zr(lvale+2*iff) = prs*jc
-                                    zr(lvale+2*iff+1) = 0.d0
-                                end if
-201                             continue
+                    end if
+                    if (im1 .eq. im2) then
+                        zr(lvale+iff) = prs*jc
+                    else
+                        zr(lvale+2*iff) = prs*jc
+                        zr(lvale+2*iff+1) = 0.d0
+                    end if
+                end do
+            end do
+        end do
+    end if
 !
-210                             continue
+    AS_DEALLOCATE(vr=vecx)
+    AS_DEALLOCATE(vr=vecy)
+    AS_DEALLOCATE(vr=vecz)
 !
-220                         end do
+    if (vate(1) .eq. 'SPEC_CORR_CONV_3') then
+    else
+        call jedetc('V', '&&329', 1)
+        call jedetc('V', '&&V.M', 1)
+        call jedetc('V', '&&GROTAB.TAB', 1)
+    end if
 !
-                            end if
-!
-                            AS_DEALLOCATE(vr=vecx)
-                            AS_DEALLOCATE(vr=vecy)
-                            AS_DEALLOCATE(vr=vecz)
-!
-                            if (vate(1) .eq. 'SPEC_CORR_CONV_3') then
-                            else
-                                call jedetc('V', '&&329', 1)
-                                call jedetc('V', '&&V.M', 1)
-                                call jedetc('V', '&&GROTAB.TAB', 1)
-                            end if
-!
-                            call jedema()
-                            end subroutine
+    call jedema()
+end subroutine
