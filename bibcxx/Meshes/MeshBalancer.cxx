@@ -808,7 +808,6 @@ void MeshBalancer::balanceGroups( BaseMeshPtr outMesh, const VectorLong &cellRen
         const auto &pair = integerShiftFromComponent< long int >( cmptCells );
         for ( const auto &id : _mesh->getCells( name ) ) {
             ( *localCellGroups0 )[id][pair.first] += 1UL << pair.second;
-            // localCellGroups[id] = cmptCells;
         }
         ++cmptCells;
     }
@@ -820,11 +819,8 @@ void MeshBalancer::balanceGroups( BaseMeshPtr outMesh, const VectorLong &cellRen
             mapNodesGrpNum[cmptNodes] = name;
             const auto &pair = integerShiftFromComponent< long int >( cmptNodes );
             for ( const auto &id : _mesh->getNodes( name ) ) {
+                std::cout << "name " << name << " " << id << std::endl;
                 if ( ( *meshNodeOwner )[id] == rank ) {
-                    const auto &curIter = g2LMap->find( id );
-                    if ( curIter == endIter )
-                        continue;
-                    const auto &id2 = ( *curIter ).second;
                     ( *localNodeGroups0 )[id][pair.first] += 1UL << pair.second;
                 }
             }
