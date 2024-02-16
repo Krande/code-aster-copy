@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,6 +24,7 @@ function ischar_iden(v_load_info, i_load, nb_load, load_type_1, load_type_2, loa
 #include "jeveux.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jeveuo.h"
 !
     aster_logical :: ischar_iden
@@ -64,10 +65,9 @@ function ischar_iden(v_load_info, i_load, nb_load, load_type_1, load_type_2, loa
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: load_nume_diri, load_nume_neum, jafci
+    integer :: load_nume_diri, load_nume_neum, jafci, ier
     aster_logical :: ldiri, lelim, ldual, ldidi, lneum
     aster_logical :: londe, lsigm, lelem, lsuiv, lpilo
-    character(len=19) :: char19
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -85,16 +85,19 @@ function ischar_iden(v_load_info, i_load, nb_load, load_type_1, load_type_2, loa
 !
     load_nume_diri = v_load_info(i_load+1)
     load_nume_neum = v_load_info(i_load+nb_load+1)
+
     if ((load_nume_diri .eq. -1) .or. (load_nume_diri .eq. -2) .or. (load_nume_diri .eq. -3)) then
         if (present(load_name)) then
-            char19 = load_name
-            call jeveuo(char19//'.AFCI', 'L', jafci)
-            if (zi(jafci-1+1) .gt. 0) then
-                ldiri = ASTER_TRUE
-                lelim = ASTER_TRUE
+            call jeexin(load_name(1:19)//'.AFCI', ier)
+            if (ier .ne. 0) then
+                call jeveuo(load_name(1:19)//'.AFCI', 'L', jafci)
+                if (zi(jafci-1+1) .gt. 0) then
+                    ldiri = ASTER_TRUE
+                    lelim = ASTER_TRUE
+                end if
             end if
         else
-            ASSERT(.false.)
+            ASSERT(ASTER_FALSE)
         end if
     else if (load_nume_diri .eq. 1) then
         ldiri = ASTER_TRUE
