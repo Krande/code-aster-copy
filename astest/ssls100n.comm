@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ MESH = CREA_MAILLAGE(
 )
 
 # Material parameters
-MAT = DEFI_MATERIAU(ELAS=_F(NU=0.3, E=200000.0, RHO=1.0))
+MAT = DEFI_MATERIAU(ELAS=_F(NU=0.3, E=1.0, RHO=1.0))
 
 MATERIAL = AFFE_MATERIAU(MAILLAGE=MESH, AFFE=_F(GROUP_MA="volume", MATER=MAT))
 
@@ -42,15 +42,15 @@ MODEL = AFFE_MODELE(
 coorPg = CALC_CHAM_ELEM(MODELE=MODEL, OPTION="COOR_ELGA")
 
 # Test des coordonnées des points de Gauss
-pg1X = 4.9
-pg1Y = 4.9
+pg1X = 0.049
+pg1Y = 0.049
 pg1Z = 0.0
-pg3X = 4.9
-pg3Y = 4.9
-pg3Z = 0.5
-pg5X = 4.9
-pg5Y = 4.9
-pg5Z = 1.0
+pg3X = 0.049
+pg3Y = 0.049
+pg3Z = 0.05
+pg5X = 0.049
+pg5Y = 0.049
+pg5Z = 0.1
 
 TEST_RESU(
     CHAM_ELEM=(
@@ -198,8 +198,26 @@ resuLinear = CALC_CHAMP(
 # To validate ELNO field (issue31254)
 IMPR_RESU(RESU=_F(RESULTAT=resuLinear, NOM_CHAM="EPSI_ELNO"), FORMAT="MED", UNITE=80)
 
+IMPR_RESU(
+    RESU=_F(RESULTAT=resuLinear, GROUP_MA="CellMiddle", NOM_CHAM="SIEF_ELGA"),
+    FORMAT="RESULTAT",
+    UNITE=8,
+)
+
+
 # Test
 deplDZRefe = -1.0
+
+NU = 0.3
+E = 1.0
+t = 0.1
+D = E * t**3 / (12 * (1 - NU**2))
+P = 0.01172
+R = 1
+phi = 16 / 5.0 * (t / R) ** 2 * 1 / (1 - NU)
+deplDZRefe = -P * R**4 / (64 * D) * (1 + phi)
+print("deplDZRefe", deplDZRefe)
+
 deplDZTole = 0.01 * 9.6e-1
 sigmZZInfRefe = -5.6e-5
 sigmZZInfTole = abs(sigmZZInfRefe)
@@ -215,7 +233,7 @@ TEST_RESU(
         NOM_CHAM="DEPL",
         NOM_CMP=("DZ",),
         VALE_REFE=deplDZRefe,
-        VALE_CALC=-0.9990464270297896,
+        VALE_CALC=-2.072928803593559,
         PRECISION=deplDZTole,
     )
 )
@@ -247,7 +265,7 @@ TEST_RESU(
         NOM_CHAM="SIEF_ELGA",
         NOM_CMP=("SIZZ",),
         VALE_REFE=sigmZZSupRefe,
-        VALE_CALC=-0.011775665318594974,
+        VALE_CALC=-0.011772155431722886,
         PRECISION=sigmZZSupTole,
     )
 )
@@ -260,7 +278,7 @@ TEST_RESU(
         GROUP_NO="c1",
         NOM_CHAM="EPSI_ELNO",
         NOM_CMP=("EPXX",),
-        VALE_CALC=-0.00019887254028908588,
+        VALE_CALC=-0.3975915775365405,
     )
 )
 
