@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-!
+
 subroutine sfifj(nomres)
     implicit none
 !     CALCUL DE LA FONCTION ACCEPTANCE
@@ -29,8 +29,6 @@ subroutine sfifj(nomres)
 #include "asterfort/accep1.h"
 #include "asterfort/accep2.h"
 #include "asterfort/accept.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/as_deallocate.h"
 #include "asterfort/chpver.h"
 #include "asterfort/dspprs.h"
 #include "asterfort/evalis.h"
@@ -50,6 +48,8 @@ subroutine sfifj(nomres)
 #include "asterfort/rsadpa.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: nfinit, nfin, nbm, nbpoin, nbid
     integer :: npoin, iff, lvale, ibid, in
@@ -64,7 +64,8 @@ subroutine sfifj(nomres)
     character(len=8) :: k8b, nomres, is
     character(len=8) :: spectr, method
     character(len=19) :: base, fonct, chamno, pg, phi, sphi
-    character(len=24) :: ligrmo
+    character(len=19) :: long1f, long2f
+    character(len=24) :: ligrmo, val_spec
     character(len=24) :: chnumi, chnumj, chfreq, chvale
     aster_logical :: yang
     real(kind=8), pointer :: vecx(:) => null()
@@ -145,10 +146,12 @@ subroutine sfifj(nomres)
     call getvid(' ', 'SPEC_TURB', scal=spectr, nbret=ibid)
     call jeveuo(spectr//'           .VARE', 'L', vr=vare)
     call jeveuo(spectr//'           .VATE', 'L', vk16=vate)
-!
+
 ! RECUPERATION DES CONSTANTES DU SPECTRES DU
 ! MODELE 5 : CONSTANT PUIS NUL POUR FR > 10
 !
+    val_spec = vate(1)
+
     if (vate(1) .eq. 'SPEC_CORR_CONV_1') then
         uflui = vare(3)
         rho = vare(4)
@@ -162,7 +165,7 @@ subroutine sfifj(nomres)
         uc = vare(8)*uflui
 ! VITESSE CONVECTIVE ORTHORADIALE (METHODE AU-YANG)
         ut = vare(9)*uflui
-!
+
 ! CALCUL DE LA FREQUENCE DE COUPURE PRONE PAR LE MODELE
 ! ET COMPARAISON AVEC LA FREQUENCE DE COUPURE DONNEE PAR
 ! L UTILISATEUR
@@ -191,17 +194,16 @@ subroutine sfifj(nomres)
 ! DE COHERENCE
 !
         method = vate(11) (1:8)
+
     else if (vate(1) .eq. 'SPEC_CORR_CONV_2') then
         uflui = vare(1)
-        fcoup = vare(2)
+        fcoup = vare(3)
         method = vate(5) (1:8)
         fonct = vate(2)
-!       on fixe à 1 les longueurs de corrélation pour fix de bug
-        long1 = 1
-        long2 = 1
-!       on fixe les valeurs de uc et ut pour fix un bug
-        uc = 0.65d0*uflui
-        ut = 0.65d0*uflui
+        long1f = vate(3)
+        long2f = vate(4)
+        uc = vare(4)*uflui
+        ut = vare(2)*uflui
     else if (vate(1) .eq. 'SPEC_CORR_CONV_3') then
         fonct = vate(2)
         goto 10
@@ -323,14 +325,23 @@ subroutine sfifj(nomres)
                         puls = deuxpi*f
                         call fointe('F', fonct, 1, ['PULS'], [puls], &
                                     prs, ier)
+
+! APPELS AUX LONGUEURS DE CORRELATION
+                        call fointe('F', long1f, 1, ['PULS'], [puls], &
+                                    long1, ier)
+                        call fointe('F', long2f, 1, ['PULS'], [puls], &
+                                    long2, ier)
+
+! APPEL A LA FONCTION DE CALCUL D ACCEPTANCE
                         call accept(f, nbm, method, im2, im1, &
-                                    uflui, jc, dir, uc, ut, &
-                                    long1, long2)
+                                    jc, dir, uc, ut, &
+                                    long1, long2, val_spec)
                     else
                         prs = dspprs(kste, uflui, dhyd, rho, f, fcoup_red)
                         call accept(f, nbm, method, im2, im1, &
-                                    uflui, jc, dir, uc, ut, &
-                                    long1, long2)
+                                    jc, dir, uc, ut, &
+                                    long1, long2, val_spec)
+
                     end if
                     if (im1 .eq. im2) then
                         zr(lvale+iff) = prs*jc
@@ -339,11 +350,8 @@ subroutine sfifj(nomres)
                         zr(lvale+2*iff+1) = 0.d0
                     end if
                 end do
-!
             end do
-!
         end do
-!
     end if
 !
     AS_DEALLOCATE(vr=vecx)

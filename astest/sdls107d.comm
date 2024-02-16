@@ -35,7 +35,7 @@ MAYA = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
 # MAYA = MAYA.refine(1)
 
 MODEL = AFFE_MODELE(
-    AFFE=_F(GROUP_MA="Interface", MODELISATION="DKT", PHENOMENE="MECANIQUE"), MAILLAGE=MAYA
+    AFFE=_F(GROUP_MA="Solide", MODELISATION="3D", PHENOMENE="MECANIQUE"), MAILLAGE=MAYA
 )
 
 NUSTR = NUME_DDL(MODELE=MODEL)
@@ -54,9 +54,9 @@ INTERF3 = AFFE_MODELE(
     MAILLAGE=MAYA,
 )
 
+
 CHAPPUI = AFFE_CHAR_MECA(
-    DDL_IMPO=(_F(DX=0.0, DY=0.0, DZ=0.0, DRX=0, DRY=0, DRZ=0, GROUP_MA=("Bord_bas",)),),
-    MODELE=MODEL,
+    DDL_IMPO=(_F(DX=0.0, DY=0.0, DZ=0.0, GROUP_MA=("Bord_bas",)),), MODELE=MODEL
 )
 
 # Création d'un champ de déplacement x=z
@@ -94,6 +94,15 @@ Uana = CREA_CHAMP(
     ),
 )
 
+
+# un RESU de type mode_meca est créé à partir du champ
+Mode = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="MODE_MECA",
+    NOM_CHAM="DEPL",
+    AFFE=_F(CHAM_GD=Uana, FREQ=1, NUME_MODE=1),
+)
+
 # definition du spectre
 
 # DEPENDANTE DE LA PULSATION
@@ -126,8 +135,8 @@ spectre = DEFI_SPEC_TURB(
 ###
 spproj1 = PROJ_SPEC_BASE(
     SPEC_TURB=spectre,
-    TOUT="OUI",
-    CHAM_NO=Uana,
+    GROUP_MA="Interface",
+    MODE_MECA=Mode,
     MODELE_INTERFACE=INTERF1,
     VECT_X=(0.0, 0.0, 1.0),
     ORIG_AXE=(0.0, 0.0, 0.0),
@@ -138,8 +147,8 @@ spproj1 = PROJ_SPEC_BASE(
 
 spproj2 = PROJ_SPEC_BASE(
     SPEC_TURB=spectre,
-    TOUT="OUI",
-    CHAM_NO=Uana,
+    GROUP_MA="Interface",
+    MODE_MECA=Mode,
     MODELE_INTERFACE=INTERF2,
     VECT_X=(0.0, 0.0, 1.0),
     ORIG_AXE=(0.0, 0.0, 0.0),
@@ -151,8 +160,8 @@ spproj2 = PROJ_SPEC_BASE(
 
 spproj3 = PROJ_SPEC_BASE(
     SPEC_TURB=spectre,
-    TOUT="OUI",
-    CHAM_NO=Uana,
+    GROUP_MA="Interface",
+    MODE_MECA=Mode,
     MODELE_INTERFACE=INTERF3,
     VECT_X=(0.0, 0.0, 1.0),
     ORIG_AXE=(0.0, 0.0, 0.0),
@@ -160,7 +169,6 @@ spproj3 = PROJ_SPEC_BASE(
     FREQ_FIN=0.1,
     NB_POIN=2,
 )
-
 
 # EXTRACTION DE L AUTOSPECTRE D EFFORT MODAL TURBULENT
 

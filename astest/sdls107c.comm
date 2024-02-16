@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,207 +17,221 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-#
-#      LE CYLINDRE SE BALANCE AUTOUR D'UN AXE
-#          DANS UN ECOULEMENT ANNULAIRE TURBULENT.
-#      CALCUL DES MODES PROPRES ET DE LA MASSE AJOUTEE
-#        POUR UN DEPLACEMENT MODAL DE LA STRUCTURE
-#   ACCEPTANCE CALCULEE AVEC UNE FONCTION DE CORRELATION AU-YANG
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ERREUR_F="ABORT"))
 #
 
-DEBUT(
-    CODE=_F(NIV_PUB_WEB="INTERNET"),
-    DEBUG=_F(SDVERI="OUI"),
-    IGNORE_ALARM=("MODELE1_63", "MODELE1_64"),
+import numpy as np
+import json
+
+# Export des resultats en python
+import numpy as np
+import pickle
+import os
+import os.path as osp
+
+
+MAYA = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
+
+# MAYA = MAYA.refine(1)
+
+MODEL = AFFE_MODELE(
+    AFFE=_F(GROUP_MA="Interface", MODELISATION="DKT", PHENOMENE="MECANIQUE"), MAILLAGE=MAYA
 )
 
-# <MODELE1_63> : DANS UN MODELE, IL EXISTE DES ELEMENTS DE TYPE "BORD" QUI N'ONT PAS DE VOISIN AVEC RIGIDITE
-# <MODELE1_64> : DANS UN MODELE, IL N'Y A AUCUN ELEMENT AVEC AVEC RIGIDITE
-#  LE MODELE PROVOQUANT CES ALARMES EST UN MODELE D'INTERFACE
+NUSTR = NUME_DDL(MODELE=MODEL)
 
-MAYA = LIRE_MAILLAGE(FORMAT="MED")
-
-#
-
-# CARACTERISTIQUES FLUIDES ET SOLIDES
-
-
-EAU = DEFI_MATERIAU(THER=_F(LAMBDA=1.0, RHO_CP=1000.0))
-
-ACIER = DEFI_MATERIAU(ELAS=_F(RHO=7800.0, NU=0.3, E=2.0e11))
-
-CHAMMAT1 = AFFE_MATERIAU(
-    MAILLAGE=MAYA, AFFE=(_F(GROUP_MA="FLUIDE", MATER=EAU), _F(GROUP_MA="INTERFAC", MATER=EAU))
+INTERF1 = AFFE_MODELE(
+    MAILLAGE=MAYA, AFFE=_F(GROUP_MA="Interface", MODELISATION="3D", PHENOMENE="THERMIQUE")
 )
 
-CHAMMAT2 = AFFE_MATERIAU(MAILLAGE=MAYA, AFFE=_F(GROUP_MA="COQUE", MATER=ACIER))
-
-#
-
-
-INTERF = AFFE_MODELE(
-    MAILLAGE=MAYA,
+INTERF2 = AFFE_MODELE(
+    MAILLAGE=MAYA, AFFE=_F(GROUP_MA="Interface", MODELISATION="3D", PHENOMENE="MECANIQUE")
+)
+INTERF3 = AFFE_MODELE(
     AFFE=_F(
-        FORMULATION="U_P", GROUP_MA=("INTERFAC",), MODELISATION="FLUI_STRU", PHENOMENE="MECANIQUE"
+        GROUP_MA="Interface", FORMULATION="U_P", MODELISATION="FLUI_STRU", PHENOMENE="MECANIQUE"
     ),
-)
-
-STRUCT = AFFE_MODELE(
-    MAILLAGE=MAYA, AFFE=_F(GROUP_MA="COQUE", MODELISATION="3D", PHENOMENE="MECANIQUE")
+    MAILLAGE=MAYA,
 )
 
 
-CHARGS = AFFE_CHAR_MECA(MODELE=STRUCT, DDL_IMPO=_F(GROUP_NO="PIVOT", DX=0.0, DY=0.0, DZ=0.0))
+CHAPPUI = AFFE_CHAR_MECA(
+    DDL_IMPO=(_F(DX=0.0, DY=0.0, DZ=0.0, DRX=0, DRY=0, DRZ=0, GROUP_MA=("Bord_bas",)),),
+    MODELE=MODEL,
+)
 
-# MEL_KSTR = CALC_MATR_ELEM(MODELE=STRUCT,
-#                           CHAM_MATER=CHAMMAT2,  OPTION='RIGI_MECA',
-#                           CHARGE=(CHARGS, )
-#                           )
+# Création d'un champ de déplacement x=z
 
+FDX = FORMULE(NOM_PARA=("X", "Y", "Z"), VALE="Z")
+FDY = FORMULE(NOM_PARA=("X", "Y", "Z"), VALE="0")
+FDZ = FORMULE(NOM_PARA=("X", "Y", "Z"), VALE="0")
+ZERO = DEFI_CONSTANTE(VALE=0.0)
 
-# NUSTR = NUME_DDL(MATR_RIGI=MEL_KSTR)
-NUSTR = NUME_DDL(MODELE=STRUCT, CHARGE=(CHARGS,))
-
-
-# CALCUL DES CARACTERISTIQUES MODALES EN EAU
-# AVEC MASSE AJOUTEE SIMPLEMENT
-
-
-#
-#
-# AFFECTATION DU DEPLACEMENT AU CYLINDRE EXTERNE
-# ROTATION AUTOUR D UN PIVOT EN AVAL DE L ECOULEMENT
-
-
-CHAMNO = CREA_CHAMP(
+CH_AFFE = CREA_CHAMP(
     OPERATION="AFFE",
-    PROL_ZERO="OUI",
-    TYPE_CHAM="NOEU_DEPL_R",
+    TYPE_CHAM="NOEU_NEUT_F",
     MAILLAGE=MAYA,
     AFFE=(
-        _F(GROUP_NO="ND001", NOM_CMP=("DX", "DY", "DZ"), VALE=(0.0000000000e00, 0.0, 0.0)),
-        _F(GROUP_NO="ND002", NOM_CMP=("DX", "DY", "DZ"), VALE=(1.000000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND003", NOM_CMP=("DX", "DY", "DZ"), VALE=(2.000000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND004", NOM_CMP=("DX", "DY", "DZ"), VALE=(3.000000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND005", NOM_CMP=("DX", "DY", "DZ"), VALE=(4.000000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND006", NOM_CMP=("DX", "DY", "DZ"), VALE=(5.000000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND007", NOM_CMP=("DX", "DY", "DZ"), VALE=(6.000000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND008", NOM_CMP=("DX", "DY", "DZ"), VALE=(7.000000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND009", NOM_CMP=("DX", "DY", "DZ"), VALE=(8.000000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND010", NOM_CMP=("DX", "DY", "DZ"), VALE=(9.000000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND011", NOM_CMP=("DX", "DY", "DZ"), VALE=(10.00000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND012", NOM_CMP=("DX", "DY", "DZ"), VALE=(11.00000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND013", NOM_CMP=("DX", "DY", "DZ"), VALE=(12.00000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND014", NOM_CMP=("DX", "DY", "DZ"), VALE=(13.00000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND015", NOM_CMP=("DX", "DY", "DZ"), VALE=(14.00000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND016", NOM_CMP=("DX", "DY", "DZ"), VALE=(15.00000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND017", NOM_CMP=("DX", "DY", "DZ"), VALE=(16.00000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND018", NOM_CMP=("DX", "DY", "DZ"), VALE=(17.00000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND019", NOM_CMP=("DX", "DY", "DZ"), VALE=(18.00000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND020", NOM_CMP=("DX", "DY", "DZ"), VALE=(19.00000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND021", NOM_CMP=("DX", "DY", "DZ"), VALE=(20.00000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND022", NOM_CMP=("DX", "DY", "DZ"), VALE=(21.00000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND023", NOM_CMP=("DX", "DY", "DZ"), VALE=(22.00000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND024", NOM_CMP=("DX", "DY", "DZ"), VALE=(23.00000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND025", NOM_CMP=("DX", "DY", "DZ"), VALE=(24.00000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND026", NOM_CMP=("DX", "DY", "DZ"), VALE=(25.00000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND027", NOM_CMP=("DX", "DY", "DZ"), VALE=(26.00000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND028", NOM_CMP=("DX", "DY", "DZ"), VALE=(27.00000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND029", NOM_CMP=("DX", "DY", "DZ"), VALE=(28.00000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND030", NOM_CMP=("DX", "DY", "DZ"), VALE=(29.00000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND031", NOM_CMP=("DX", "DY", "DZ"), VALE=(30.00000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND032", NOM_CMP=("DX", "DY", "DZ"), VALE=(31.00000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND033", NOM_CMP=("DX", "DY", "DZ"), VALE=(32.00000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND034", NOM_CMP=("DX", "DY", "DZ"), VALE=(33.00000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND035", NOM_CMP=("DX", "DY", "DZ"), VALE=(34.00000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND036", NOM_CMP=("DX", "DY", "DZ"), VALE=(35.00000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND037", NOM_CMP=("DX", "DY", "DZ"), VALE=(36.00000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND038", NOM_CMP=("DX", "DY", "DZ"), VALE=(37.00000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND039", NOM_CMP=("DX", "DY", "DZ"), VALE=(38.00000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND040", NOM_CMP=("DX", "DY", "DZ"), VALE=(39.00000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND041", NOM_CMP=("DX", "DY", "DZ"), VALE=(40.00000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND042", NOM_CMP=("DX", "DY", "DZ"), VALE=(41.00000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND043", NOM_CMP=("DX", "DY", "DZ"), VALE=(42.00000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND044", NOM_CMP=("DX", "DY", "DZ"), VALE=(43.00000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND045", NOM_CMP=("DX", "DY", "DZ"), VALE=(44.00000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND046", NOM_CMP=("DX", "DY", "DZ"), VALE=(45.00000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND047", NOM_CMP=("DX", "DY", "DZ"), VALE=(46.00000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND048", NOM_CMP=("DX", "DY", "DZ"), VALE=(47.00000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND049", NOM_CMP=("DX", "DY", "DZ"), VALE=(48.00000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND050", NOM_CMP=("DX", "DY", "DZ"), VALE=(49.00000000, 0.0, 0.0)),
-        _F(GROUP_NO="ND051", NOM_CMP=("DX", "DY", "DZ"), VALE=(50.00000000, 0.0, 0.0)),
+        _F(TOUT="OUI", NOM_CMP="X1", VALE_F=FDX),
+        _F(TOUT="OUI", NOM_CMP="X2", VALE_F=FDY),
+        _F(TOUT="OUI", NOM_CMP="X3", VALE_F=FDZ),
     ),
-    NUME_DDL=NUSTR,
 )
 
-# DEFINITION D'UN SPECTRE DE TURBULENCE DE COUCHE LIMITE
-# A 4 M /S
+CH_GEO = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="NOEU_GEOM_R", NOM_CHAM="GEOMETRIE", MAILLAGE=MAYA, INFO=1
+)
 
-SPECTRE = DEFI_SPEC_TURB(
-    SPEC_CORR_CONV_1=_F(
-        LONG_COR_1=1.0,
-        LONG_COR_2=1.0,
+CH_EVAL = CREA_CHAMP(OPERATION="EVAL", TYPE_CHAM="NOEU_NEUT_R", CHAM_F=CH_AFFE, CHAM_PARA=CH_GEO)
+
+Uana = CREA_CHAMP(
+    OPERATION="ASSE",
+    TYPE_CHAM="NOEU_DEPL_R",
+    MAILLAGE=MAYA,
+    ASSE=(
+        _F(TOUT="OUI", CHAM_GD=CH_EVAL, NOM_CMP="X1", NOM_CMP_RESU="DX"),
+        _F(TOUT="OUI", CHAM_GD=CH_EVAL, NOM_CMP="X2", NOM_CMP_RESU="DY"),
+        _F(TOUT="OUI", CHAM_GD=CH_EVAL, NOM_CMP="X3", NOM_CMP_RESU="DZ"),
+    ),
+)
+
+
+# un RESU de type mode_meca est créé à partir du champ
+Mode = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="MODE_MECA",
+    NOM_CHAM="DEPL",
+    AFFE=_F(CHAM_GD=Uana, FREQ=1, NUME_MODE=1),
+)
+
+# definition du spectre
+
+# DEPENDANTE DE LA PULSATION
+LONG1 = FORMULE(NOM_PARA="PULS", VALE="0.5")
+
+# LONGUEUR DE CORRELATION DANS LE SENS TRANSVERSALE
+# DEPENDANTE DE LA PULSATION
+LONG2 = FORMULE(NOM_PARA="PULS", VALE="0.5")
+
+# EXPRESSION DU SPECTRE TURBULENT (LE MEME QU AU DESSUS)
+GAUSS = FORMULE(NOM_PARA="PULS", VALE="(3.4021e-5)**2*(1000*16)**2*1.5**3")
+
+spectre = DEFI_SPEC_TURB(
+    SPEC_CORR_CONV_2=_F(
+        FONCTION=GAUSS,
+        LONG1_F=LONG1,
+        LONG2_F=LONG2,
         VITE_FLUI=4.0,
         FREQ_COUP=15.0,
-        K=3.4021e-5,
-        RHO_FLUI=1000.0,
-        D_FLUI=1.5,
         COEF_VITE_FLUI_A=0.65,
-        COEF_VITE_FLUI_O=1.0,
         METHODE="AU_YANG",
     )
 )
 
-# PROJECTION DE CE SPECTRE SUR LA BASE MODALE EN
-# EAU DU CYLINDRE ET CALCUL DE LA FONCTION ACCEPTANCE
 
+####################
+##projection de base
+####################
 
-SSPROJ = PROJ_SPEC_BASE(
-    SPEC_TURB=SPECTRE,
+###
+spproj1 = PROJ_SPEC_BASE(
+    SPEC_TURB=spectre,
     TOUT="OUI",
-    CHAM_NO=CHAMNO,
-    MODELE_INTERFACE=INTERF,
+    MODE_MECA=Mode,
+    MODELE_INTERFACE=INTERF1,
     VECT_X=(0.0, 0.0, 1.0),
     ORIG_AXE=(0.0, 0.0, 0.0),
-    FREQ_INIT=1.59155e-3,
-    FREQ_FIN=1.59155e-2,
+    FREQ_INIT=0.01,
+    FREQ_FIN=0.1,
     NB_POIN=2,
 )
 
+spproj2 = PROJ_SPEC_BASE(
+    SPEC_TURB=spectre,
+    TOUT="OUI",
+    MODE_MECA=Mode,
+    MODELE_INTERFACE=INTERF2,
+    VECT_X=(0.0, 0.0, 1.0),
+    ORIG_AXE=(0.0, 0.0, 0.0),
+    FREQ_INIT=0.01,
+    FREQ_FIN=0.1,
+    NB_POIN=2,
+)
+
+
+spproj3 = PROJ_SPEC_BASE(
+    SPEC_TURB=spectre,
+    TOUT="OUI",
+    MODE_MECA=Mode,
+    MODELE_INTERFACE=INTERF3,
+    VECT_X=(0.0, 0.0, 1.0),
+    ORIG_AXE=(0.0, 0.0, 0.0),
+    FREQ_INIT=0.01,
+    FREQ_FIN=0.1,
+    NB_POIN=2,
+)
+
+
 # EXTRACTION DE L AUTOSPECTRE D EFFORT MODAL TURBULENT
 
-AUTOSPEC = RECU_FONCTION(INTE_SPEC=SSPROJ, NUME_ORDRE_I=1)
+auto1 = RECU_FONCTION(INTE_SPEC=spproj1, NUME_ORDRE_I=1)
+auto2 = RECU_FONCTION(INTE_SPEC=spproj2, NUME_ORDRE_I=1)
+auto3 = RECU_FONCTION(INTE_SPEC=spproj3, NUME_ORDRE_I=1)
 
-# VALEURS DE REFERENCE DE LA DSP D EFFORT TURBULENT MODALE
-# CALCULEES AVEC MAPLE
-
-I1 = 2.13612e5
-
-I2 = 2.14159e5
+# TEST VALEURS REF
 
 TEST_FONCTION(
     VALEUR=(
         _F(
-            VALE_CALC=217052.599184,
-            VALE_REFE=2.13612e5,
-            VALE_PARA=1.59155e-3,
+            VALE_CALC=249.3158071188,
+            VALE_REFE=252.701,
+            VALE_PARA=0.01,
             REFERENCE="SOURCE_EXTERNE",
             PRECISION=0.02,
-            FONCTION=AUTOSPEC,
+            FONCTION=auto1,
         ),
         _F(
-            VALE_CALC=216814.619495,
-            VALE_REFE=2.14159e5,
-            VALE_PARA=0.015915499999999999,
+            VALE_CALC=246.3305987712319,
+            VALE_REFE=249.663,
+            VALE_PARA=0.1,
             REFERENCE="SOURCE_EXTERNE",
             PRECISION=0.02,
-            FONCTION=AUTOSPEC,
+            FONCTION=auto1,
+        ),
+        _F(
+            VALE_CALC=249.3158071188,
+            VALE_REFE=252.701,
+            VALE_PARA=0.01,
+            REFERENCE="SOURCE_EXTERNE",
+            PRECISION=0.02,
+            FONCTION=auto2,
+        ),
+        _F(
+            VALE_CALC=246.3305987712319,
+            VALE_REFE=249.663,
+            VALE_PARA=0.1,
+            REFERENCE="SOURCE_EXTERNE",
+            PRECISION=0.02,
+            FONCTION=auto2,
+        ),
+        _F(
+            VALE_CALC=249.3158071188,
+            VALE_REFE=252.701,
+            VALE_PARA=0.01,
+            REFERENCE="SOURCE_EXTERNE",
+            PRECISION=0.02,
+            FONCTION=auto3,
+        ),
+        _F(
+            VALE_CALC=246.3305987712319,
+            VALE_REFE=249.663,
+            VALE_PARA=0.1,
+            REFERENCE="SOURCE_EXTERNE",
+            PRECISION=0.02,
+            FONCTION=auto3,
         ),
     )
 )
 
+
 FIN()
-#
-#
-# FIN()
-#

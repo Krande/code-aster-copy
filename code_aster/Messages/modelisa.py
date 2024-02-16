@@ -62,11 +62,6 @@ Erreur utilisateur dans MODI_MAILLAGE / ABSC_CURV :
 Le groupe de noeuds fourni via le mot-clé GROUP_NO_ORIG comporte plusieurs noeuds.
 """
     ),
-    6: _(
-        """
- méthode AU-YANG : la géométrie doit être cylindrique
-"""
-    ),
     7: _(
         """
  BARRE : une erreur a été détectée lors de l'affectation des valeurs dans le tampon

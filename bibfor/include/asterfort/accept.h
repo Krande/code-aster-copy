@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,24 +15,22 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
     subroutine accept(f, nbm, method, imode, jmode,&
-                      uflui, jc, dir, uc, uct,&
-                      l, lt)
+                      jc, dir, uc, uct,&
+                      l, lt, val_spec)
         real(kind=8) :: f
         integer :: nbm
         character(len=8) :: method
         integer :: imode
         integer :: jmode
-        real(kind=8) :: uflui
         real(kind=8) :: jc
         real(kind=8) :: dir(3, 3)
         real(kind=8) :: uc
         real(kind=8) :: uct
         real(kind=8) :: l
         real(kind=8) :: lt
+        character(len=24) :: val_spec
     end subroutine accept
 end interface

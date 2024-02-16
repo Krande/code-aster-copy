@@ -57,12 +57,10 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
     character(len=7) :: incr, ielem, imode
     character(len=8) :: vetel, lpain(3), lpaout(1), modele, modmec, k8b
     character(len=16) :: option
-    character(len=19) :: nomcha, chgeom, matas, chharm, partit
+    character(len=19) :: nomcha, chgeom, chharm, partit
     character(len=24) :: ligrmo, lchin(3), lchout(1)
     aster_logical :: yang
     character(len=8), pointer :: vec(:) => null()
-    character(len=24), pointer :: noli(:) => null()
-    character(len=24), pointer :: resu(:) => null()
     character(len=8), pointer :: lgrf(:) => null()
 !
 !-----------------------------------------------------------------------
@@ -142,8 +140,7 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
         call detrsd('CARTE', chharm)
     end do
     AS_DEALLOCATE(vk8=vec)
-!
-!
+
 !  --- CREATION D' UN TABLEAU CONTENANT LES INFORMATIONS SUIVANTES :
 !      POUR CHAQUE POINT DE GAUSS DE CHAQUE ELEMENT : 6 VALEURS
 !      1: LA PRESSION     2,3,4: LES COORDONNEES DES POINTS DE GAUSS
@@ -166,6 +163,7 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
 !
 ! CONSTITUTION D'UN TABLEAU CONTENANT COORDONNEES DES PTS DE GAUSS
 ! AINSI QUE LA VALEUR DU MODE
+
     ii = 1
     do imo = 1, nbm
         imode = 'CHBIDON'
@@ -198,9 +196,6 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
                             zr(itab+ii-1) = haut
                             ii = ii+1
                             rayon2 = w1*w1+w2*w2+w3*w3
-                            if (rayon2 .le. 0.d0) then
-                                call utmess('F', 'MODELISA_6')
-                            end if
                             if (ii .eq. 6) then
                                 refer = rayon2
                                 rayon = sqrt(rayon2)
@@ -211,9 +206,6 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
                                 zr(itab+5) = 0.d0
                                 ii = 7
                             else
-                                if (abs(rayon2-refer) .gt. 1.d-3) then
-                                    call utmess('F', 'MODELISA_6')
-                                end if
                                 rap1 = (ref2*w3-ref3*w2)*dir(1, 1)+(ref3*w1-ref1*w3)*dir(2, 1)+ &
                                        &(ref1*w2-ref2*w1)*dir(3, 1)
                                 rap2 = ref1*w1+ref2*w2+ref3*w3

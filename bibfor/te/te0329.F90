@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,6 +24,7 @@ subroutine te0329(option, nomte)
 !....................................................................
 !
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
@@ -39,7 +40,7 @@ subroutine te0329(option, nomte)
     real(kind=8) :: flufn(9), acloc(3, 8)
     real(kind=8) :: x(3, 9)
     integer :: ipoids, ivf, idfdx, idfdy, igeom
-    integer :: ndim, nno, ipg, npg1
+    integer :: ndim, nno, ipg, npg1, npg4
     integer :: idec, jdec, kdec, ldec
     integer :: nnos, jgano
 !     ------------------------------------------------------------------
@@ -54,6 +55,7 @@ subroutine te0329(option, nomte)
                          jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
         idfdy = idfdx+1
 !
+        ASSERT((npg1 == 3) .or. (npg1 == 4))
         call jevech('PACCELR', 'L', iacce)
         call jevech('PGEOMER', 'L', igeom)
         call jevech('PNUMMOD', 'L', iharm)
@@ -97,6 +99,7 @@ subroutine te0329(option, nomte)
                 sx(ino, jno) = zr(i+2)*zr(j+3)-zr(i+3)*zr(j+2)
                 sy(ino, jno) = zr(i+3)*zr(j+1)-zr(i+1)*zr(j+3)
                 sz(ino, jno) = zr(i+1)*zr(j+2)-zr(i+2)*zr(j+1)
+
             end do
         end do
 !
@@ -133,6 +136,7 @@ subroutine te0329(option, nomte)
             norm(1, ipg) = nx(ipg)/jac(ipg)
             norm(2, ipg) = ny(ipg)/jac(ipg)
             norm(3, ipg) = nz(ipg)/jac(ipg)
+
         end do
 !
 !    CALCUL DE COORDONNEES AUX POINTS DE GAUSS
@@ -157,7 +161,6 @@ subroutine te0329(option, nomte)
 ! CALCUL DU FLUX FLUIDE NORMAL AUX POINTS DE GAUSS
 !
             flufn(ipg) = acc(1, ipg)*norm(1, ipg)+acc(2, ipg)*norm(2, ipg)+acc(3, ipg)*norm(3, ipg)
-!
         end do
 !
 ! STOCKAGE DU FLUX FLUIDE DANS UN VECTEUR INDEXE
@@ -172,13 +175,23 @@ subroutine te0329(option, nomte)
 !        ON CONSERVE L'ALLOCATION DYNAMIQUE AU DETRIMENT DE L'ALLOCATION
 !        STATIQUE, CAR VETEL EST UTILIE A L'EXTERIEUR DES ROUTINES
 !        ELEMENTAIRES
-        call wkvect(vetel, 'V V R8', 4*npg1, ivetel)
+!       on écrit toujours le résultat comme si l'élément avait 4 points
+!       de Gauss
+        npg4 = 4
+        call wkvect(vetel, 'V V R8', 4*npg4, ivetel)
         do ipg = 0, npg1-1
             zr(ivetel+4*ipg) = jac(ipg+1)*zr(ipoids+ipg)*flufn(ipg+1)
             zr(ivetel+4*ipg+1) = x(1, ipg+1)
             zr(ivetel+4*ipg+2) = x(2, ipg+1)
             zr(ivetel+4*ipg+3) = x(3, ipg+1)
         end do
+        if (npg1 == 3) then
+            ipg = 3
+            zr(ivetel+4*ipg) = 0.D0
+            zr(ivetel+4*ipg+1) = 0.D0
+            zr(ivetel+4*ipg+2) = 0.D0
+            zr(ivetel+4*ipg+3) = 0.D0
+        end if
 !
 !
     else if (nomte .eq. 'MEDKQU4') then

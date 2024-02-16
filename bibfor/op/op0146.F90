@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -271,18 +271,16 @@ subroutine op0146()
                 do ik = 1, lnoe
                     if (zr(ipv+lnoe+ik-1) .ne. 0.d0) then
                         n1 = ik
-                        goto 121
+                        exit
                     end if
                 end do
-121             continue
 !
                 do ik = lnoe, 1, -1
                     if (zr(ipv+lnoe+ik-1) .ne. 0.d0) then
                         n2 = ik
-                        goto 131
+                        exit
                     end if
                 end do
-131             continue
 !
                 aire = 0.d0
                 x1 = zr(ipv+n1-1)
