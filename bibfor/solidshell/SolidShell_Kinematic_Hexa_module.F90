@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -466,12 +466,14 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         real(kind=8), intent(in)           :: zeta
+        real(kind=8)                       :: demih
         type(SSH_GEOM_HEXA), intent(in)    :: geomHexa
         type(SSH_KINE_HEXA), intent(inout) :: kineHexa
 !   ------------------------------------------------------------------------------------------------
 !
         kineHexa%BCartEAS = 0.d0
-        kineHexa%BCovaEAS = (/0.d0, 0.d0, -2.d0*zeta, 0.d0, 0.d0, 0.d0/)
+        demih = geomHexa%cellGeom%h0*0.5d0
+        kineHexa%BCovaEAS = (/0.d0, 0.d0, -2.d0*zeta*demih, 0.d0, 0.d0, 0.d0/)
         kineHexa%BCartEAS = matmul(geomHexa%T0, kineHexa%BCovaEAS)
 !
 !   ------------------------------------------------------------------------------------------------

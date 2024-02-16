@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -172,6 +172,8 @@ module SolidShell_type
         real(kind=8)        :: JacInv0(3, 3) = 0.d0
 ! - Determinant of jacobian matrix at center of cell on initial configuration
         real(kind=8)        :: detJac0 = 0.d0
+! - Thickness value
+        real(kind=8)        :: h0 = 0.d0
     end type SSH_CELL_GEOM
 
 ! ==================================================================================================
