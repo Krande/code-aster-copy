@@ -625,7 +625,7 @@ contains
 
 ! ----- Compute
             loadNoda(25) = loadNoda(25)+ &
-                           4.d0*(presInf-presSup)*area/3.d0
+                           2.d0*(presInf-presSup)*area/3.d0
 
         elseif (option .eq. 'CHAR_MECA_PESA_R') then
 
@@ -830,7 +830,7 @@ contains
                 matrMassPt(SSH_NBDOF_HEXA, 3*(iNodeGeom-1)+3) = rho(1)*jacob*N(iNodeGeom)*NPinch
                 matrMassPt(3*(iNodeGeom-1)+3, SSH_NBDOF_HEXA) = rho(1)*jacob*N(iNodeGeom)*NPinch
             end do
-            matrMassPt(SSH_NBDOF_HEXA, SSH_NBDOF_HEXA) = rho(1)*poids*NPinch*NPinch
+            matrMassPt(SSH_NBDOF_HEXA, SSH_NBDOF_HEXA) = rho(1)*jacob*NPinch*NPinch
 
 ! ----- Update matrix
             matrMass = matrMass+matrMassPt
