@@ -297,7 +297,7 @@ def C_COMPORTEMENT(command):
                         "Iwan",
                         "JOINT_BANDIS",
                         "NLH_CSRM",
-			"MCC",
+                        "MCC",
                         "LAIGLE",
                         "LETK",
                         "LKR",
