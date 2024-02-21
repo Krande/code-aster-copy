@@ -2735,6 +2735,8 @@ DEFI_MATERIAU = MACRO(
         F3_DURT=SIMP(statut="o", typ="R"),
         F4_DURT=SIMP(statut="o", typ="R"),
         C_DURT=SIMP(statut="o", typ="R"),
+        F3_REVENU_DURT=SIMP(statut="f", typ="R"),
+        F4_REVENU_DURT=SIMP(statut="f", typ="R"),
     ),
     ELAS_META=FACT(
         statut="f",

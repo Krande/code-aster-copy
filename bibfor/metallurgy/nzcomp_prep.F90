@@ -19,14 +19,13 @@
 subroutine nzcomp_prep(jvMaterCode, metaType, metaPara)
 !
     use Metallurgy_type
+    use MetallurgySteel_Compute_module
 !
     implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/Metallurgy_type.h"
-#include "asterfort/metaSteelGetParameters.h"
-#include "asterfort/metaSteelTRCGetParameters.h"
 !
     integer, intent(in) :: jvMaterCode
     character(len=16), intent(in) :: metaType
@@ -52,12 +51,13 @@ subroutine nzcomp_prep(jvMaterCode, metaType, metaPara)
 !
     if (metaType .eq. 'ACIER') then
 ! ----- Get material parameters for steel
-        call metaSteelGetParameters(jvMaterCode, metaType, metaSteelPara)
+        call metaSteelGetParameters(jvMaterCode, metaSteelPara)
 ! ----- Get material parameters for TRC curve
         call metaSteelTRCGetParameters(jvMaterCode, metaSteelPara)
     else if (metaType .eq. 'ACIER_REVENU') then
 ! ----- Get material parameters for steel
-        call metaSteelGetParameters(jvMaterCode, metaType, metaSteelPara)
+        call metaSteelGetParameters(jvMaterCode, metaSteelPara)
+        call metaSteelTemperGetParameters(jvMaterCode, metaSteelPara)
     elseif (metaType .eq. 'ZIRC') then
 ! ----- Depending on temperature: too early here !
     else

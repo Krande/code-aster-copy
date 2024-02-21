@@ -27,6 +27,7 @@ subroutine comp_meta_save(mesh, comporMeta, nbCmp, metaPrepBehaviour)
 #include "asterfort/comp_read_mesh.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/Metallurgy_type.h"
 #include "asterfort/nocart.h"
 !
     character(len=8), intent(in) :: mesh
@@ -76,6 +77,13 @@ subroutine comp_meta_save(mesh, comporMeta, nbCmp, metaPrepBehaviour)
         nbVari = metaPrepBehaviour%paraBehaviour(iFactorKeyword)%nbVari
         numeComp = metaPrepBehaviour%paraBehaviour(iFactorKeyword)%numeComp
         nbPhase = metaPrepBehaviour%paraBehaviour(iFactorKeyword)%nbPhase
+
+! ----- Check define in Metallurgy_type.h
+        if (metaLaw .eq. "WAECKEL") then
+            ASSERT(nbVari .eq. NBVARIWAECKEL)
+        elseif (metaLaw .eq. "JMA") then
+            ASSERT(nbVari .eq. NBVARIJMA)
+        end if
 
 ! ----- Set options
         comporMetaValv(1) = metaType

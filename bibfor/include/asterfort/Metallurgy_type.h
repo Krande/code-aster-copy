@@ -44,6 +44,9 @@
 ! For steel, law : waeckel
 #define NBVARIWAECKEL    9
 
+! For steel, law : jma
+#define NBVARIJMA        12
+
 ! - Phases for zircaloy
 #define PZIRC_NB         3
 #define PALPHA1          1

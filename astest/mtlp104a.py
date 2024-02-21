@@ -389,6 +389,15 @@ TEST_RESU(
     )
 )
 
+hardness = 230.0
+
+hardnessField = result.getField("DURT_ELNO", para="INST", value=L_inst0[-1])
+TEST_RESU(
+    CHAM_ELEM=(
+        _F(CHAM_GD=hardnessField, GROUP_MA="CellToTest", NOM_CMP="HV", POINT=1, VALE_CALC=hardness),
+    )
+)
+
 ####################################################################################################
 #
 #### Tests avec revenu

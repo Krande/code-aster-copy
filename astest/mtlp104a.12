@@ -445,6 +445,13 @@ steel = DEFI_MATERIAU(
         TEMP=temp,
         TEMP_MAINTIEN=temp_maintien,
     ),
-    DURT_META=_F(F1_DURT=200.0, F2_DURT=200.0, F3_DURT=300.0, F4_DURT=400.0, C_DURT=100.0),
+    DURT_META=_F(
+        F1_DURT=200.0,
+        F2_DURT=200.0,
+        F3_DURT=300.0,
+        F4_DURT=400.0,
+        F3_REVENU_DURT=300.0,
+        F4_REVENU_DURT=400.0,
+        C_DURT=100.0),
 )
 #

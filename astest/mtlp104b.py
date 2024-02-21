@@ -109,6 +109,18 @@ result = CREA_RESU(
     ),
 )
 
+result2 = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_THER",
+    NOM_CHAM="TEMP",
+    AFFE=(
+        _F(CHAM_GD=fieldTemp0, INST=0.0, MODELE=thermalModel, CHAM_MATER=materialField),
+        _F(CHAM_GD=fieldTemp1, INST=1.0, MODELE=thermalModel, CHAM_MATER=materialField),
+        _F(CHAM_GD=fieldTemp2, INST=2.0, MODELE=thermalModel, CHAM_MATER=materialField),
+        _F(CHAM_GD=fieldTemp3, INST=3.0, MODELE=thermalModel, CHAM_MATER=materialField),
+    ),
+)
+
 L_inst0 = result.LIST_VARI_ACCES()["INST"]
 
 ####################################################################################################
@@ -211,6 +223,15 @@ TEST_RESU(
             POINT=1,
             VALE_CALC=martensiteTemperWith,
         ),
+    )
+)
+
+hardness = 230.0
+
+hardnessField = result.getField("DURT_ELNO", para="INST", value=L_inst0[-1])
+TEST_RESU(
+    CHAM_ELEM=(
+        _F(CHAM_GD=hardnessField, GROUP_MA="CellToTest", NOM_CMP="HV", POINT=1, VALE_CALC=hardness),
     )
 )
 

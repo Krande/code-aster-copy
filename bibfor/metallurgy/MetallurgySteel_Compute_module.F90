@@ -25,12 +25,17 @@ module MetallurgySteel_Compute_module
     public :: metaInitSteelGetPhases, metaInitSteelCheckGrainSize, metaInitSteelSumCold
     public :: metaInitSteelGetMartensite, metatInitSteelSetField
     public :: metaSteelCheckFieldSize
+    public :: metaSteelGetParameters, metaSteelTemperGetParameters, metaSteelTRCGetParameters
+    public :: metaHardnessGetParameters
 ! ==================================================================================================
     private
 #include "jeveux.h"
 #include "asterf_types.h"
+#include "asterc/r8prem.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
+#include "asterfort/jevech.h"
+#include "asterfort/rcadma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
 #include "asterfort/Metallurgy_type.h"
@@ -149,15 +154,15 @@ contains
 ! ----- Local
         integer, parameter :: kpg = 1, spt = 1
         character(len=8), parameter :: fami = 'FPG1', poum = '+'
-        character(len=24), parameter :: resuName = "MS0"
-        integer :: icodre(1)
-        real(kind=8) :: resuVale(1)
+        character(len=24), parameter :: paraName = "MS0"
+        integer :: codret(1)
+        real(kind=8) :: paraVale(1)
 !   ------------------------------------------------------------------------------------------------
 !
         call rcvalb(fami, kpg, spt, poum, zi(jvMater), &
                     ' ', 'META_ACIER', 0, ' ', [0.d0], &
-                    1, resuName, resuVale, icodre, 1)
-        ms0 = resuVale(1)
+                    1, paraName, paraVale, codret, 1)
+        ms0 = paraVale(1)
 !
 !   ------------------------------------------------------------------------------------------------
     end subroutine
@@ -257,5 +262,259 @@ contains
 !
 !   ------------------------------------------------------------------------------------------------
     end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! metaSteelGetParameters
+!
+! Get parameters for steel behaviour in metallurgy
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine metaSteelGetParameters(jvMaterCode, metaSteelPara)
+!   ------------------------------------------------------------------------------------------------
+! ----- Parameters
+        integer, intent(in) :: jvMaterCode
+        type(META_SteelParameters), intent(inout) :: metaSteelPara
+! ----- Local
+        integer, parameter :: kpg = 1, spt = 1
+        character(len=8), parameter :: fami = 'FPG1', poum = '+'
+        integer, parameter :: nbParaSteel = 7
+        real(kind=8) :: paraSteelVale(nbParaSteel)
+        integer :: codretSteel(nbParaSteel)
+        character(len=16), parameter :: paraSteelName(nbParaSteel) = (/'AR3   ', &
+                                                                       'ALPHA ', &
+                                                                       'MS0   ', &
+                                                                       'AC1   ', &
+                                                                       'AC3   ', &
+                                                                       'TAUX_1', &
+                                                                       'TAUX_3'/)
+        integer, parameter :: nbParaAuste = 4
+        real(kind=8) :: paraAusteVale(nbParaAuste)
+        integer :: codretAuste(nbParaAuste)
+        character(len=16), parameter :: paraAusteName(nbParaAuste) = (/'LAMBDA0', &
+                                                                       'QSR_K  ', &
+                                                                       'D10    ', &
+                                                                       'WSR_K  '/)
+!   ------------------------------------------------------------------------------------------------
+!
+        paraSteelVale = 0.d0
+        call rcvalb(fami, kpg, spt, poum, &
+                    jvMaterCode, ' ', 'META_ACIER', &
+                    1, 'INST', [0.d0], &
+                    nbParaSteel, paraSteelName, paraSteelVale, &
+                    codretSteel, iarret=1)
+        metaSteelPara%ar3 = paraSteelVale(1)
+        metaSteelPara%alpha = paraSteelVale(2)
+        metaSteelPara%ms0 = paraSteelVale(3)
+        metaSteelPara%ac1 = paraSteelVale(4)
+        metaSteelPara%ac3 = paraSteelVale(5)
+        metaSteelPara%taux_1 = paraSteelVale(6)
+        metaSteelPara%taux_3 = paraSteelVale(7)
+
+        paraAusteVale = 0.d0
+        call rcvalb(fami, kpg, spt, poum, &
+                    jvMaterCode, ' ', 'META_ACIER', &
+                    1, 'INST', [0.d0], &
+                    nbParaAuste, paraAusteName, paraAusteVale, &
+                    codretAuste, iarret=0, nan='NON')
+        metaSteelPara%austenite%lambda0 = paraAusteVale(1)
+        metaSteelPara%austenite%qsr_k = paraAusteVale(2)
+        metaSteelPara%austenite%d10 = paraAusteVale(3)
+        metaSteelPara%austenite%wsr_k = paraAusteVale(4)
+        if ((codretAuste(1) .eq. 0) .and. (codretAuste(3) .eq. 1)) then
+            call utmess('F', 'METALLURGY1_73')
+        end if
+
+! ----- Update size of martensite grain ?
+        if (codretAuste(1) .eq. 0) then
+            metaSteelPara%l_grain_size = ASTER_TRUE
+            if (metaSteelPara%austenite%lambda0 .le. r8prem()) then
+                metaSteelPara%l_grain_size = ASTER_FALSE
+            end if
+        else
+            metaSteelPara%l_grain_size = ASTER_FALSE
+        end if
+!
+!   ------------------------------------------------------------------------------------------------
+    end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! metaSteelTemperGetParameters
+!
+! Get parameters for steel with tempering behaviour in metallurgy
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine metaSteelTemperGetParameters(jvMaterCode, metaSteelPara)
+!   ------------------------------------------------------------------------------------------------
+! ----- Parameters
+        integer, intent(in) :: jvMaterCode
+        type(META_SteelParameters), intent(inout) :: metaSteelPara
+! ----- Local
+        integer, parameter :: kpg = 1, spt = 1
+        character(len=8), parameter :: fami = 'FPG1', poum = '+'
+        integer, parameter :: nbParaTemper = 6
+        real(kind=8) :: paraTemperVale(nbParaTemper)
+        integer :: codretTemper(nbParaTemper)
+        character(len=16), parameter :: paraTemperName(nbParaTemper) = (/'BAINITE_B    ', &
+                                                                         'BAINITE_N    ', &
+                                                                         'MARTENSITE_B ', &
+                                                                         'MARTENSITE_N ', &
+                                                                         'TEMP         ', &
+                                                                         'TEMP_MAINTIEN'/)
+!   ------------------------------------------------------------------------------------------------
+!
+        paraTemperVale = 0.d0
+        call rcvalb(fami, kpg, spt, poum, &
+                    jvMaterCode, ' ', 'META_ACIER_REVENU', &
+                    1, 'INST', [0.d0], &
+                    nbParaTemper, paraTemperName, paraTemperVale, &
+                    codretTemper, iarret=0)
+        if ((codretTemper(1) .eq. 0) .and. (codretTemper(2) .eq. 0) .and. &
+            (codretTemper(3) .eq. 0) .and. (codretTemper(4) .eq. 0) .and. &
+            (codretTemper(5) .eq. 0) .and. (codretTemper(6) .eq. 0)) then
+            metaSteelPara%temper%bainite_b = paraTemperVale(1)
+            metaSteelPara%temper%bainite_n = paraTemperVale(2)
+            metaSteelPara%temper%martensite_b = paraTemperVale(3)
+            metaSteelPara%temper%martensite_n = paraTemperVale(4)
+            metaSteelPara%temper%temp = paraTemperVale(5)
+            metaSteelPara%temper%tempHold = paraTemperVale(6)
+        else
+            call utmess('F', 'METALLURGY1_74')
+        end if
+!
+!   ------------------------------------------------------------------------------------------------
+    end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! metaSteelTRCGetParameters
+!
+! Get parameters for TRC curves in metallurgy
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine metaSteelTRCGetParameters(jvMaterCode, metaSteelPara)
+!   ------------------------------------------------------------------------------------------------
+! ----- Parameters
+        integer, intent(in) :: jvMaterCode
+        type(META_SteelParameters), intent(inout) :: metaSteelPara
+! ----- Local
+        real(kind=8), parameter :: toleTemp = 10.
+        integer :: jvPftrc
+        integer :: nbcb1, nbcb2, nblexp
+        integer :: codret, nbTrc, nbHist, nbExp, iHist, iExp
+        integer :: jftrc, jtrc
+        integer :: iadexp, iadckm, iadtrc, shift
+        real(kind=8) :: tempAR3FromMate, tempAR3FromTRC
+        real(kind=8) :: tempPrev, tempCurr
+        aster_logical :: lCooling
+!   ------------------------------------------------------------------------------------------------
+!
+        call jevech('PFTRC', 'L', jvPftrc)
+        jftrc = zi(jvPftrc)
+        jtrc = zi(jvPftrc+1)
+        call rcadma(jvMaterCode, 'META_ACIER', 'TRC', iadtrc, codret, 1)
+        nbcb1 = nint(zr(iadtrc+1))
+        nbHist = nint(zr(iadtrc+2))
+        nbcb2 = nint(zr(iadtrc+1+2+nbcb1*nbHist))
+        nblexp = nint(zr(iadtrc+1+2+nbcb1*nbHist+1))
+        nbTrc = nint(zr(iadtrc+1+2+nbcb1*nbHist+2+nbcb2*nblexp+1))
+        ASSERT(nbTrc .eq. 1)
+        iadexp = 5+nbcb1*nbHist
+        iadckm = 7+nbcb1*nbHist+nbcb2*nblexp
+        metaSteelPara%trc%jv_ftrc = jftrc
+        metaSteelPara%trc%jv_trc = jtrc
+        metaSteelPara%trc%iadexp = iadexp
+        metaSteelPara%trc%iadtrc = iadtrc
+        metaSteelPara%trc%nbHist = nbHist
+
+! ----- Parameters for martensite evolution
+        metaSteelPara%trc%martensiteLaw%austeniteMin = zr(iadtrc+iadckm-1+1)
+        metaSteelPara%trc%martensiteLaw%akm = zr(iadtrc+iadckm-1+2)
+        metaSteelPara%trc%martensiteLaw%bkm = zr(iadtrc+iadckm-1+3)
+        metaSteelPara%trc%martensiteLaw%lowerSpeed = zr(iadtrc+iadckm-1+4)
+
+! ----- Parameters for size of austenite grain
+        metaSteelPara%trc%austeniteGrain%dref = zr(iadtrc+iadckm-1+5)
+        metaSteelPara%trc%austeniteGrain%a = zr(iadtrc+iadckm-1+6)
+
+! ----- Check consistency of temperature
+        tempAR3FromMate = metaSteelPara%ar3
+        shift = 0
+        do iHist = 1, nbHist
+            nbExp = nint(zr(iadtrc+11+9*(iHist-1)))
+            lCooling = ASTER_FALSE
+            do iExp = 1, nbExp-1
+                tempPrev = zr(iadtrc+iadexp-1+4*(shift+iExp))
+                tempCurr = zr(iadtrc+iadexp-1+4*(shift+iExp+1))
+                if (iExp .ge. 2) then
+                    if (tempCurr .le. tempPrev) then
+                        lCooling = ASTER_TRUE
+                        exit
+                    end if
+                end if
+            end do
+            if (lCooling) then
+                iExp = 1
+                tempAR3FromTRC = zr(iadtrc+iadexp-1+4*(shift+iExp))
+                if (abs(tempAR3FromMate-tempAR3FromTRC) .gt. toleTemp) then
+                    call utmess('A', "META1_50", sr=toleTemp)
+                end if
+            end if
+            shift = shift+nbExp
+        end do
+!
+!   ------------------------------------------------------------------------------------------------
+    end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! metaHardnessGetParameters
+!
+! Get parameters for hardness un metallurgy
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine metaHardnessGetParameters(jvMaterCode, metaType, metaHardnessPara)
+!   ------------------------------------------------------------------------------------------------
+! ----- Parameters
+        integer, intent(in) :: jvMaterCode
+        character(len=16), intent(in) :: metaType
+        type(META_HardnessParameters), intent(inout) :: metaHardnessPara
+! ----- Local
+        integer, parameter :: kpg = 1, spt = 1
+        character(len=8), parameter :: fami = 'FPG1', poum = '+'
+        integer, parameter :: nbParaHard = PSTEEL_NB
+        real(kind=8) :: paraHardVale(nbParaHard)
+        integer :: codretHard(nbParaHard)
+        character(len=16), parameter :: paraHardName(nbParaHard) = (/'F1_DURT', &
+                                                                     'F2_DURT', &
+                                                                     'F3_DURT', &
+                                                                     'F4_DURT', &
+                                                                     'C_DURT '/)
+        integer, parameter :: nbParaHardTemp = PRSTEEL_NB
+        real(kind=8) :: paraHardTempVale(nbParaHardTemp)
+        integer :: codretHardTemp(nbParaHardTemp)
+        character(len=16), parameter :: paraHardTempName(nbParaHardTemp) = (/'F1_DURT       ', &
+                                                                             'F2_DURT       ', &
+                                                                             'F3_DURT       ', &
+                                                                             'F3_REVENU_DURT', &
+                                                                             'F4_DURT       ', &
+                                                                             'F4_REVENU_DURT', &
+                                                                             'C_DURT        '/)
+!   ------------------------------------------------------------------------------------------------
+!
+        if (metaType .eq. "ACIER") then
+            call rcvalb(fami, kpg, spt, poum, jvMaterCode, &
+                        ' ', 'DURT_META', 1, 'TEMP', [0.d0], &
+                        nbParaHard, paraHardName, paraHardVale, codretHard, 2)
+            metaHardnessPara%hardSteel(1:PSTEEL_NB) = paraHardVale
+        else if (metaType .eq. "ACIER_REVENU") then
+            call rcvalb(fami, kpg, spt, poum, jvMaterCode, &
+                        ' ', 'DURT_META', 1, 'TEMP', [0.d0], &
+                        nbParaHardTemp, paraHardTempName, paraHardTempVale, codretHardTemp, 2)
+            metaHardnessPara%hardSteel(1:PRSTEEL_NB) = paraHardTempVale
+        else
+            ASSERT(ASTER_FALSE)
+        end if
+!
+!   ------------------------------------------------------------------------------------------------
+    end subroutine
+
 !
 end module MetallurgySteel_Compute_module

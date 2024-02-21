@@ -21,6 +21,7 @@ module Metallurgy_type
     implicit none
 !
 #include "asterf_types.h"
+#include "asterfort/Metallurgy_type.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -157,5 +158,11 @@ module Metallurgy_type
         type(META_SteelParameters) :: steel
         type(META_ZircParameters) :: zirc
     end type META_MaterialParameters
+
+! - Metallurgy - Parameters for hardness
+    type META_HardnessParameters
+        character(len=16) :: metaType = ' '
+        real(kind=8) :: hardSteel(PRSTEEL_NB) = 0.d0
+    end type META_HardnessParameters
 !
 end module
