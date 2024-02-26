@@ -47,6 +47,8 @@ def calc_modes_multi_bandes(self, stop_erreur, sturm, INFO, **args):
     CALC_FREQ = args["CALC_FREQ"]
     METHODE = SOLVEUR_MODAL["METHODE"]
     STOP_BANDE_VIDE = "NON"
+    CARA_ELEM = args.get("CARA_ELEM")
+    CHAM_MATER = args.get("CHAM_MATER")
 
     # ----------------------------------------------------------------------
     #
@@ -202,6 +204,10 @@ def calc_modes_multi_bandes(self, stop_erreur, sturm, INFO, **args):
 
         if (not sb_vide) & do_loop:
             motscit = {}
+            if CARA_ELEM is not None:
+                motscit["CARA_ELEM"] = CARA_ELEM
+            if CHAM_MATER is not None:
+                motscit["CHAM_MATER"] = CHAM_MATER
             motscfa = {}
             if SOLVEUR_MODAL["DIM_SOUS_ESPACE"]:
                 motscfa["DIM_SOUS_ESPACE"] = SOLVEUR_MODAL["DIM_SOUS_ESPACE"]
