@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,6 +36,7 @@ subroutine smevol(temper, modelz, chmat, mateco, compor, option, &
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/jeveut.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/mecact.h"
 #include "asterfort/rcadme.h"
@@ -61,7 +62,7 @@ subroutine smevol(temper, modelz, chmat, mateco, compor, option, &
 !
 !
     integer :: nbhist, iadtrc(2), long, jordr, nbordr(1), i, iret, vali(2), iad
-    integer :: ifm, ibid, num0, num1, num2, num3, iord, iainst, numphi
+    integer :: ifm, ibid, num0, num1, num2, num3, iord, iainst, numphi, jvDummy
     real(kind=8) :: r8b, time(6), inst0, inst1, inst2, dt3
     real(kind=8) :: valr(2)
     integer :: valii
@@ -112,8 +113,10 @@ subroutine smevol(temper, modelz, chmat, mateco, compor, option, &
     end do
 !
     if (test .eq. 0) then
-        call wkvect('&&SMEVOL_FTRC', 'V V R', 9*nbhist, vali(1))
-        call wkvect('&&SMEVOL_TRC', 'V V R', 15*nbhist, vali(2))
+        call wkvect('&&SMEVOL_FTRC', 'V V R', 9*nbhist, jvDummy)
+        call wkvect('&&SMEVOL_TRC', 'V V R', 15*nbhist, jvDummy)
+        call jeveut('&&SMEVOL_FTRC', "E", vali(1))
+        call jeveut('&&SMEVOL_TRC', "E", vali(2))
         chftrc = '&&SMEVOL.ADRESSES'
         call mecact('V', chftrc, 'LIGREL', ligrmo, 'ADRSJEVN', &
                     ncmp=2, lnomcmp=nomcm2, vi=vali)
