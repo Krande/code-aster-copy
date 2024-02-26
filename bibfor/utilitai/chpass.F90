@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -76,7 +76,7 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0, &
     character(len=19) :: chs3, ligrel
     character(len=24) :: cnom, valk(3)
 !
-    aster_logical :: lcoc, bool(1)
+    aster_logical :: lcoc, bool(1), iprem
     character(len=8), pointer :: licmp2(:) => null()
     character(len=8), pointer :: licmpdisp(:) => null()
 !     -----------------------------------------------------------------
@@ -223,6 +223,7 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0, &
 !     4- BOUCLE SUR LES OCCURENCES DU MOT CLE "ASSE" :
 !     -----------------------------------------------------
     nchg = 0
+    iprem = .true.
     do iocc = 1, nbocc
         call getvid('ASSE', 'CHAM_GD', iocc=iocc, scal=champ, nbret=ib)
         call dismoi('TYPE_CHAMP', champ, 'CHAMP', repk=tych2)
@@ -313,6 +314,7 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0, &
 !       ----------------------------------------------------
         call reliem(modele, ma, typem, 'ASSE', iocc, &
                     nbmocl, limocl, tymocl, nutrou, nbtrou)
+        if (nbtrou .eq. 0) cycle
         call jeveuo(nutrou, 'L', jnutro)
 !
 !
@@ -392,7 +394,7 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0, &
 !
 !       4.4 FUSION DU CHAMP REDUIT AVEC LE CHAMP RESULTAT :
 !       ----------------------------------------------------
-        if (iocc .eq. 1) then
+        if (iprem) then
             bool(1) = .false.
             call chsfus(1, chs2, bool(1), [coefr], [coefc], &
                         lcoc, 'V', chs3)
@@ -408,6 +410,7 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0, &
             call chsfus(2, lichs, lcumul, lcoefr, lcoefc, &
                         lcoc, 'V', chs3)
         end if
+        iprem = .false.
 !
         call jedetr('&&CHPASS.LICMP')
         AS_DEALLOCATE(vk8=licmp2)
