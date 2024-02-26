@@ -50,3 +50,9 @@ void allocateOccurence( MedVector< long int > &in, const int &pos, const int &si
     in.setElement( pos, size );
 };
 #endif
+
+int getSize( const ArrayWrapper< JeveuxVectorReal >::ElementValue &in ) {
+    return in.getComponentNumber();
+};
+
+void update( typename ArrayWrapper< JeveuxVectorReal >::ElementValue in ) {};

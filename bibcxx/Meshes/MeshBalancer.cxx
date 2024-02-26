@@ -27,9 +27,11 @@
 
 #ifdef ASTER_HAVE_MPI
 
+#include "DataFields/SimpleFieldOnNodes.h"
 #include "IOManager/MedVector.h"
 #include "Meshes/IncompleteMesh.h"
 #include "Meshes/Mesh.h"
+#include "ParallelUtilities/ArrayWrapper.h"
 #include "ParallelUtilities/MeshConnectionGraph.h"
 
 #include <limits.h>
@@ -271,6 +273,17 @@ ParallelMeshPtr MeshBalancer::applyBalancingStrategy( VectorInt &newLocalNodesLi
         _cellsBalancer->balanceObjectOverProcesses( cellGlobNumLoc, globCellNumVect );
         sortCells( globCellNumVect, globCellNumVect2 );
     }
+    // if( _mesh->isParallel() ) {
+    //     VectorString cmps = { "DX", "DY", "DZ" };
+    //     JeveuxVectorReal medV( "TOTO" );
+    //     medV->allocate( _mesh->getNumberOfNodes() * 3 );
+    //     ArrayWrapperPtr wrap( new ArrayWrapper< JeveuxVectorReal >( medV, 3 ) );
+    //     JeveuxVectorReal medVB( "TOTO2" );
+    //     ArrayWrapperPtr wrapB( new ArrayWrapper< JeveuxVectorReal >( medVB, 3 ) );
+    //     _nodesBalancer->balanceArrayOverProcessesWithRenumbering( wrap, wrapB );
+    //     VectorReal vec1( _mesh->getNumberOfNodes() * 3, 5 );
+    //     ArrayWrapperPtr2 wrap2( new ArrayWrapper< VectorReal >( vec1, 3 ) );
+    // }
 
     // Build "dummy" name vectors (for cells and nodes)
     outMesh->buildNamesVectors();

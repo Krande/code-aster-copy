@@ -270,6 +270,10 @@ class ObjectBalancer {
     std::shared_ptr< MedVector< TypeName > > balanceMedVectorOverProcessesWithRenumbering(
         const std::shared_ptr< MedVector< TypeName > > & ) const;
 #endif
+    template < typename TypeName = double >
+    void
+    balanceArrayOverProcessesWithRenumbering( const std::shared_ptr< ArrayWrapper< TypeName > > &,
+                                              std::shared_ptr< ArrayWrapper< TypeName > > & ) const;
 
     VectorLong getRenumbering() const { return _renumbering; };
 
@@ -391,7 +395,7 @@ template < typename T, int nbCmp >
 void ObjectBalancer::balanceObjectOverProcesses( const T &in, T &out ) const {
     if ( !_isOk )
         throw std::runtime_error( "ObjectBalancer not prepared" );
-    const auto vecSize = getSize< typename ValueType< T >::value_type >( in );
+    const auto vecSize = getSize< typename ValueType< T >::value_type >( (const T &)in );
 
     resize< typename ValueType< T >::value_type >( out, vecSize + _sizeDelta );
     balanceSimpleVectorOverProcesses< typename ValueType< T >::value_type, nbCmp >(
@@ -611,6 +615,42 @@ ObjectBalancer::balanceMedVectorOverProcessesWithRenumbering(
     return vecOut2;
 };
 #endif
+
+template < typename TypeName >
+void ObjectBalancer::balanceArrayOverProcessesWithRenumbering(
+    const std::shared_ptr< ArrayWrapper< TypeName > > &vecIn,
+    std::shared_ptr< ArrayWrapper< TypeName > > &vecOut ) const {
+    // typedef typename std::shared_ptr< TypeName > TypeNamePtr;
+    // std::shared_ptr< ArrayWrapper< TypeName > > vecOut( new ArrayWrapper< TypeName >() );
+    balanceObjectOverProcesses3( *vecIn, *vecOut, DummyMaskDouble() );
+    vecOut->setComponentNumber( vecIn->getComponentNumber() );
+    vecOut->setComponentName( vecIn->getComponentName() );
+    // if ( _renumbering.size() == 0 ) {
+    //     return vecOut;
+    // }
+    // const auto size = vecOut->size();
+    // std::shared_ptr< ArrayWrapper< TypeName > > vecOut2( new ArrayWrapper< TypeName >() );
+    // vecOut2->setComponentNumber( vecOut->getComponentNumber() );
+    // vecOut2->setComponentName( vecOut->getComponentName() );
+    // vecOut2->setSize( size );
+    // if ( _renumbering.size() != size )
+    //     throw std::runtime_error( "Sizes not matching" );
+    // for ( int i = 0; i < size; ++i ) {
+    //     const auto newId = _renumbering[i] - 1;
+    //     vecOut2->setElement( newId, vecOut->getElement( i ) );
+    // }
+    // vecOut2->endDefinition();
+    // for ( int i = 0; i < size; ++i ) {
+    //     const auto newId = _renumbering[i] - 1;
+    //     const auto nbCmp = vecOut->getElement( i );
+    //     const auto &elInR = ( *vecOut )[i];
+    //     auto &elOutR = ( *vecOut2 )[newId];
+    //     for ( int j = 0; j < nbCmp; ++j ) {
+    //         elOutR[j] = elInR[j];
+    //     }
+    // }
+    // return vecOut2;
+};
 #endif /* ASTER_HAVE_MPI */
 
 #endif /* OBJECTBALANCER_H_ */

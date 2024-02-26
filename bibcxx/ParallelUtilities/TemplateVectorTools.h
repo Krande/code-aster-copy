@@ -33,6 +33,7 @@
 #include "MemoryManager/JeveuxCollection.h"
 #include "MemoryManager/JeveuxString.h"
 #include "MemoryManager/JeveuxVector.h"
+#include "ParallelUtilities/ArrayWrapper.h"
 
 template < typename T >
 int getSize( const std::vector< T > &toCopy ) {
@@ -67,12 +68,14 @@ int getSize( const std::vector< T > *in ) {
 #ifdef ASTER_HAVE_MED
 int getSize( const MedVector< double >::ElementValue &in );
 int getSize( const MedVector< long int >::ElementValue &in );
+#endif
+
+int getSize( const ArrayWrapper< JeveuxVectorReal >::ElementValue &in );
 
 template < typename T >
 int getTotalSize( const std::vector< T > &toCopy ) {
     return 0;
 };
-#endif
 
 template < typename T >
 int getTotalSize( const std::vector< std::vector< T > > &toCopy ) {
@@ -93,6 +96,11 @@ int getTotalSize( const JeveuxCollectionClass< T > &toCopy ) {
 int getTotalSize( const MedVector< double > &toCopy );
 int getTotalSize( const MedVector< long int > &toCopy );
 #endif
+
+template < typename T >
+int getTotalSize( const ArrayWrapper< T > &toCopy ) {
+    return toCopy.totalSize();
+};
 
 template < typename T >
 const T *getAddress( const std::vector< T > &toCopy ) {
@@ -143,6 +151,11 @@ struct ValueType< JeveuxVector< T > > {
 };
 
 template < typename T >
+struct ValueType< ArrayWrapper< JeveuxVector< T > > > {
+    typedef T value_type;
+};
+
+template < typename T >
 struct StartPosition;
 
 template < typename T >
@@ -165,6 +178,10 @@ struct StartPosition< MedVector< long int > > {
     static constexpr int value = 0;
 };
 #endif
+template < typename T >
+struct StartPosition< ArrayWrapper< T > > {
+    static constexpr int value = 0;
+};
 
 template < typename T >
 void allocate( std::vector< std::vector< T > > &in, const int &size1, const int &size2 ) {
@@ -187,6 +204,12 @@ void allocate( MedVector< long int > &in, const int &size1, const int &size2 );
 #endif
 
 template < typename T >
+void allocate( ArrayWrapper< T > &in, const int &size1, const int &size2 ) {
+    in.setSize( size1 );
+    in.setTotalSize( size2 );
+};
+
+template < typename T >
 void update( const std::vector< T > &in ) {};
 
 template < typename T >
@@ -202,6 +225,8 @@ void update( MedVector< double >::ElementValue in );
 void update( MedVector< long int >::ElementValue in );
 #endif
 
+void update( typename ArrayWrapper< JeveuxVectorReal >::ElementValue in );
+
 template < typename T >
 void allocateOccurence( std::vector< std::vector< T > > &in, const int &pos, const int &size ) {
     in[pos] = std::vector< T >( size );
@@ -216,6 +241,11 @@ void allocateOccurence( JeveuxCollectionClass< T > &in, const int &pos, const in
 void allocateOccurence( MedVector< double > &in, const int &pos, const int &size );
 void allocateOccurence( MedVector< long int > &in, const int &pos, const int &size );
 #endif
+
+template < typename T >
+void allocateOccurence( ArrayWrapper< T > &in, const int &pos, const int &size ) {
+    in.setElement( pos, size );
+};
 
 template < typename T >
 struct ObjectTemplateType;
@@ -239,6 +269,11 @@ struct ObjectTemplateType< JeveuxCollectionClass< ASTERINTEGER > > {
 template <>
 struct ObjectTemplateType< VectorOfVectorsLong > {
     typedef ASTERINTEGER value_type;
+};
+
+template < typename T >
+struct ObjectTemplateType< ArrayWrapper< JeveuxVector< T > > > {
+    typedef T value_type;
 };
 
 #endif /* TEMPLATEVECTORTOOLS_H_ */
