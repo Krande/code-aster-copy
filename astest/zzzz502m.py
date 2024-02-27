@@ -18,8 +18,9 @@
 # --------------------------------------------------------------------
 
 import os
-from code_aster import CA
+
 from code_aster.Commands import *
+from code_aster import CA
 from code_aster.Utilities import haveMPI
 
 test = CA.TestCase()

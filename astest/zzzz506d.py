@@ -18,8 +18,9 @@
 # --------------------------------------------------------------------
 
 import logging
-from code_aster import CA
+
 from code_aster.Commands import *
+from code_aster import CA
 from code_aster.Utilities import logger
 
 logger.setLevel(logging.DEBUG)

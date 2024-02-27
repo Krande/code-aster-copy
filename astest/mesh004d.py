@@ -19,8 +19,9 @@
 
 from code_aster.Utilities import logger
 import numpy as N
-from code_aster import CA
+
 from code_aster.Commands import *
+from code_aster import CA
 from code_aster.Utilities import PETSc
 
 CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))

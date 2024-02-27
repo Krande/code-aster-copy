@@ -17,10 +17,11 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from code_aster import CA
+
 from code_aster.Cata.DataStructure import maillage_sdaster
 from code_aster.Cata.Syntax import AU_MOINS_UN, EXCLUS, FACT, MACRO, PRESENT_PRESENT, SIMP, UN_PARMI
 from code_aster.Commands import *
+from code_aster import CA
 from code_aster.Supervis.ExecuteCommand import UserMacro
 
 CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))

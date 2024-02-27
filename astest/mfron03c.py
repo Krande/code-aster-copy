@@ -19,8 +19,9 @@
 
 import medcoupling as MEDC
 
-from code_aster import CA
+
 from code_aster.Commands import *
+from code_aster import CA
 
 CA.init("--test", "--continue")
 

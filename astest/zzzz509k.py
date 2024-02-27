@@ -19,8 +19,9 @@
 
 # Copy of hsnv140b test-case with PETIT (and NOT PETIT_REAC) to être plus rapide
 
-from code_aster import CA
+
 from code_aster.Commands import *
+from code_aster import CA
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), INFO=1)
 

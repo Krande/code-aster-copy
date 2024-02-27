@@ -19,8 +19,9 @@
 
 import gc
 
-from code_aster import CA
+
 from code_aster.Commands import *
+from code_aster import CA
 import libaster
 
 CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))

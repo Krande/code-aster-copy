@@ -18,8 +18,9 @@
 # --------------------------------------------------------------------
 
 import os
-from code_aster import CA
+
 from code_aster.Commands import *
+from code_aster import CA
 
 """On teste le bon fonctionnement de la libération de la mémoire pour l'évaluation des fonctions
 

@@ -19,8 +19,9 @@
 
 import numpy as np
 
+
+from code_aster.Commands import *
 from code_aster import CA
-from code_aster.Commands import DEFI_LIST_REEL
 
 CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 

@@ -19,8 +19,9 @@
 
 import sys
 
-from code_aster import CA
+
 from code_aster.Commands import *
+from code_aster import CA
 from code_aster.Utilities import ExecutionParameter, Options
 
 CA.init("--test", ERREUR=_F(ERREUR_F="EXCEPTION", ALARME="EXCEPTION"))

@@ -21,8 +21,9 @@ from math import pi
 
 import numpy
 
-from code_aster import CA
+
 from code_aster.Commands import *
+from code_aster import CA
 
 test = CA.TestCase()
 

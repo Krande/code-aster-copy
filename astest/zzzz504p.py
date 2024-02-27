@@ -16,8 +16,9 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from code_aster import CA
+
 from code_aster.Commands import *
+from code_aster import CA
 from code_aster.CA import MPI
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"))

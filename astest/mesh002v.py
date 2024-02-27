@@ -20,8 +20,9 @@
 import os
 from collections import Counter
 
-from code_aster import CA
+
 from code_aster.Commands import *
+from code_aster import CA
 
 MPI = CA.MPI
 

@@ -18,8 +18,9 @@
 # --------------------------------------------------------------------
 
 # unittest for 'ListOfTables' object and its 'getTable()' accessor
-from code_aster import CA
+
 from code_aster.Commands import *
+from code_aster import CA
 
 CA.init("--test", "--continue", ERREUR=_F(ALARME="EXCEPTION"))
 
