@@ -52,6 +52,7 @@ subroutine dis_contact_frot(for_discret, iret)
 #include "asterfort/ut2mlg.h"
 #include "asterfort/ut2vgl.h"
 #include "asterfort/ut2vlg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpsgl.h"
 #include "asterfort/utpslg.h"
 #include "asterfort/utpvgl.h"
@@ -76,7 +77,7 @@ subroutine dis_contact_frot(for_discret, iret)
     character(len=8) :: k8bid
     aster_logical    :: Prediction, Dynamique
 ! --------------------------------------------------------------------------------------------------
-    integer, parameter  :: nbre1 = 8
+    integer, parameter  :: nbre1 = 9
     real(kind=8)        :: valre1(nbre1)
     integer             :: codre1(nbre1)
     character(len=8)    :: nomre1(nbre1)
@@ -85,8 +86,8 @@ subroutine dis_contact_frot(for_discret, iret)
     character(len=8)    :: nompar
     integer             :: jadre1, jcodre1
 !
-    data nomre1/'RIGI_NOR', 'RIGI_TAN', 'AMOR_NOR', 'AMOR_TAN', &
-        'COULOMB', 'DIST_1', 'DIST_2', 'JEU'/
+    data nomre1/'RIGI_NOR', 'RIGI_TAN', 'AMOR_NOR', 'AMOR_TAN', 'COULOMB', &
+        'DIST_1', 'DIST_2', 'JEU', 'CONTACT'/
 ! --------------------------------------------------------------------------------------------------
 !   Pour l'intégration de la loi de comportement
     real(kind=8)            :: temps0, temps1, dtemps
@@ -105,7 +106,8 @@ subroutine dis_contact_frot(for_discret, iret)
     integer, parameter      :: nbvari = 9, nbcorr = 8, idebut = 9
     integer                 :: Correspond(nbcorr)
     real(kind=8)            :: varmo(nbvari), varpl(nbvari)
-
+!
+    character(len=32)   :: messak(3)
 ! --------------------------------------------------------------------------------------------------
     integer         :: nbout
     real(kind=8)    :: xl(6), xd(3), rignor, rigtan, coulom, deplac, evoljeu0, evoljeu1, xjeu
@@ -202,18 +204,23 @@ subroutine dis_contact_frot(for_discret, iret)
     end if
 !
 !   Caractéristiques du matériau
-!    1          2          3          4          5         6        7        8
-!   'RIGI_NOR','RIGI_TAN','AMOR_NOR','AMOR_TAN','COULOMB','DIST_1','DIST_2','JEU'
+!    1          2          3          4          5         6        7        8     9
+!   'RIGI_NOR','RIGI_TAN','AMOR_NOR','AMOR_TAN','COULOMB','DIST_1','DIST_2','JEU','CONTACT'
     valre1(:) = 0.0
-    nbpar = 0
-    nompar = ' '
-    valpar = 0.d0
+    nbpar = 0; nompar = ' '; valpar = 0.0
 !   Si mot_cle RIGI_NOR ==> rignor = valre1(1) sinon rignor = raide(1)
 !   Si mot_cle RIGI_TAN ==> rigtan = valre1(2) sinon rigtan = 0.0
     rignor = raide(1)
     rigtan = 0.0
     call rcvala(zi(imat), ' ', 'DIS_CONTACT', nbpar, nompar, &
                 [valpar], nbre1, nomre1, valre1, codre1, 0, nan='NON')
+!
+    if (nint(valre1(9)) .ne. 0) then
+        messak(1) = 'DIS_CONTACT'
+        messak(2) = 'DIS_CONTACT'
+        messak(3) = '"1D"'
+        call utmess('F', 'DISCRETS_35', nk=3, valk=messak)
+    end if
 !
     if (codre1(1) .eq. 0) rignor = valre1(1)
     if (codre1(2) .eq. 0) rigtan = valre1(2)
@@ -329,7 +336,7 @@ subroutine dis_contact_frot(for_discret, iret)
 !   Soit on intègre le jeu soit on prend sa valeur
 !       ldcpai(2) = 1 : intégration du jeu
 !       ldcpai(2) = 0 : valeur finale
-    xjeu = y0(14)*ldcpai(2)+ldcpar(ijeu)*(1.0-ldcpai(2))
+    xjeu = y0(14)*float(ldcpai(2))+ldcpar(ijeu)*(1.0-float(ldcpai(2)))
 !
     if (Prediction .and. Dynamique .and. (ldcpai(2) .eq. 0)) then
         r8bid = y0(1)+dy0(1)*dtemps+xjeu
@@ -372,7 +379,7 @@ subroutine dis_contact_frot(for_discret, iret)
     end do
     varpl(idebut) = 1.0
 !   Les raideurs
-    xjeu = resu(14)*ldcpai(2)+ldcpar(ijeu)*(1.0-ldcpai(2))
+    xjeu = resu(14)*float(ldcpai(2))+ldcpar(ijeu)*(1.0-float(ldcpai(2)))
     if (resu(1)+xjeu <= 0.0) then
         raide(1) = rignor
         if (for_discret%option .ne. 'RAPH_MECA') then

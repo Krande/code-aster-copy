@@ -1,0 +1,241 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+import numpy as NP
+import pickle
+
+# Liste des groupes
+ListeAs = ["B", "C"]
+#
+# --------------------------------------------------------------
+# Caractéristiques : Ressorts / Masses
+#
+# Discrets sur le CdG
+# Raideurs
+Kxcdg = Kycdg = Kzcdg = 10000.0
+Krxcdg = Krycdg = Krzcdg = 1000.0
+# Amortissements
+Axcdg = Aycdg = Azcdg = 300.0
+Arxcdg = Arycdg = Arzcdg = 300.0
+# Masse
+Mcdg = 50.0
+# Discrets ELAS
+Kxelas = Kyelas = Kzelas = 10000.0
+# Raideur normale et tangente de contact
+Knorm = 10000000.0
+Ktang = 10000000.0
+# Raideur normale de contact
+KnormParoi = 10000.0
+# Amortissement sur le contact normal
+AmorNor = 0.10
+#
+jeux = 0.005
+jeuy = 0.005
+#
+from code_aster.Utilities import ExecutionParameter
+
+#
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+#
+max_print = ExecutionParameter().get_option("max_print")
+#
+MAIL = LIRE_MAILLAGE(FORMAT="ASTER")
+#
+UNITE = DEFI_FICHIER(
+    ACTION="ASSOCIER", FICHIER="./REPE_OUT/BC_stat_test.mmed", TYPE="LIBRE", ACCES="NEW"
+)
+IMPR_RESU(FORMAT="MED", UNITE=UNITE, RESU=_F(MAILLAGE=MAIL))
+DEFI_FICHIER(ACTION="LIBERER", UNITE=UNITE)
+#
+# Modèle
+Modele = AFFE_MODELE(
+    MAILLAGE=MAIL,
+    AFFE=(
+        # Discrets sur le CdG
+        _F(GROUP_MA=("GMB", "GMC"), PHENOMENE="MECANIQUE", MODELISATION="DIS_TR"),
+        # Discrets sur les contacts
+        _F(GROUP_MA=("GM1",), PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
+        # Discrets sur coins
+        _F(GROUP_MA=("GMPOB", "GMPOC"), PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
+    ),
+)
+#
+caraElem = AFFE_CARA_ELEM(
+    MODELE=Modele,
+    DISCRET=(
+        # Discrets sur le CdG
+        _F(
+            REPERE="LOCAL",
+            CARA="K_TR_D_L",
+            GROUP_MA=("GMB", "GMC"),
+            VALE=(Kxcdg, Kycdg, Kzcdg, Krxcdg, Krycdg, Krzcdg),
+        ),
+        _F(
+            REPERE="LOCAL",
+            CARA="A_TR_D_L",
+            GROUP_MA=("GMB", "GMC"),
+            VALE=(Axcdg, Aycdg, Azcdg, Arxcdg, Arycdg, Arzcdg),
+        ),
+        _F(REPERE="LOCAL", CARA="M_TR_D_L", GROUP_MA=("GMB", "GMC"), VALE=(Mcdg, 0, 0, 0)),
+        # Discrets sur les contacts
+        _F(REPERE="LOCAL", CARA="K_T_D_L", GROUP_MA=("GM1",), VALE=(Kxelas, 0.0, 0.0)),
+        _F(REPERE="LOCAL", CARA="M_T_D_L", GROUP_MA=("GM1",), VALE=(0.0,)),
+        # Discrets sur les coins
+        _F(REPERE="LOCAL", CARA="K_T_D_N", GROUP_MA=("GMPOB", "GMPOC"), VALE=(0.0, 0.0, 0.0)),
+        _F(REPERE="LOCAL", CARA="M_T_D_N", GROUP_MA=("GMPOB", "GMPOC"), VALE=(0.0,)),
+    ),
+)
+#
+MaterELAS = DEFI_MATERIAU(ELAS=_F(E=1.0, NU=0.2))
+MaterChoc = DEFI_MATERIAU(ELAS=_F(E=1.0, NU=0.2), DIS_CONTACT=_F(RIGI_NOR=Knorm, AMOR_NOR=AmorNor))
+MaterParoi = DEFI_MATERIAU(
+    ELAS=_F(E=1.0, NU=0.2), DIS_CONTACT=_F(RIGI_NOR=KnormParoi, AMOR_NOR=AmorNor)
+)
+MaterCoin = DEFI_MATERIAU(ELAS=_F(E=1.0, NU=0.2), DIS_CONTACT=_F(RIGI_NOR=Knorm, CONTACT="COIN_2D"))
+#
+CHMAT = AFFE_MATERIAU(
+    MAILLAGE=MAIL, AFFE=(_F(TOUT="OUI", MATER=MaterELAS), _F(GROUP_MA=("GM1",), MATER=MaterCoin))
+)
+
+# --------------------------------------------------------------
+# condition aux limites en déplacement
+Liaison = AFFE_CHAR_MECA(
+    MODELE=Modele,
+    LIAISON_SOLIDE=(_F(GROUP_NO=("GNB00", "GNBCoins")), _F(GROUP_NO=("GNC00", "GNCCoins"))),
+)
+#
+ZERO = DEFI_CONSTANTE(VALE=0.0)
+
+# Déplacements nuls par défaut
+DeplT = {}
+for ias in ListeAs:
+    DeplT[ias] = {}
+    for iaxe in ["x", "y"]:
+        DeplT[ias][iaxe] = DEFI_CONSTANTE(VALE=0.0)
+
+ExecutionParameter().set_option("max_print", 5)
+linst = NP.arange(17 * 1.0)
+
+DeplT["B"]["x"] = DEFI_FONCTION(
+    NOM_PARA="INST",
+    ABSCISSE=linst,
+    ORDONNEE=[
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.005,
+        0.01,
+        0.015,
+        0.015,
+        0.0,
+        0.005,
+        0.01,
+        0.015,
+        0.015,
+        0.01,
+        0.005,
+        0.0,
+        0.0,
+    ],
+    PROL_GAUCHE="CONSTANT",
+    PROL_DROITE="CONSTANT",
+    INTERPOL="LIN",
+)
+DeplT["B"]["y"] = DEFI_FONCTION(
+    NOM_PARA="INST",
+    ABSCISSE=linst,
+    ORDONNEE=[
+        -0.0,
+        -0.005,
+        -0.01,
+        -0.015,
+        -0.015,
+        -0.01,
+        -0.005,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.005,
+        -0.01,
+        -0.015,
+        -0.015,
+        -0.0,
+    ],
+    PROL_GAUCHE="CONSTANT",
+    PROL_DROITE="CONSTANT",
+    INTERPOL="LIN",
+)
+ExecutionParameter().set_option("max_print", max_print)
+#
+Linst = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=linst[-1], PAS=0.5))
+#
+LLinst = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=Linst))
+#
+CDepla = AFFE_CHAR_MECA_F(
+    MODELE=Modele,
+    DDL_IMPO=(
+        _F(GROUP_NO=("GNB0z", "GNC0z"), DX=ZERO, DY=ZERO, DZ=ZERO, DRX=ZERO, DRY=ZERO, DRZ=ZERO),
+        _F(
+            GROUP_NO=("GNB00",),
+            DX=DeplT["B"]["x"],
+            DY=DeplT["B"]["y"],
+            DZ=ZERO,
+            DRX=ZERO,
+            DRY=ZERO,
+            DRZ=ZERO,
+        ),
+    ),
+)
+
+Rstnl = STAT_NON_LINE(
+    MODELE=Modele,
+    CHAM_MATER=CHMAT,
+    CARA_ELEM=caraElem,
+    EXCIT=(_F(CHARGE=CDepla), _F(CHARGE=Liaison)),
+    COMPORTEMENT=(_F(RELATION="ELAS", TOUT="OUI"), _F(RELATION="DIS_CHOC", GROUP_MA=("GM1",))),
+    INCREMENT=_F(LIST_INST=LLinst),
+    CONVERGENCE=_F(RESI_REFE_RELA=1.0e-02, MOMENT_REFE=1.0, EFFORT_REFE=1.0),
+    ARCHIVAGE=_F(LIST_INST=Linst),
+)
+
+# fmt: off
+TEST_RESU(
+    RESU=(
+        #
+        _F(RESULTAT=Rstnl, INST=  5.0, NOM_CHAM='DEPL', GROUP_NO='GNC00', NOM_CMP='DX',
+           REFERENCE='ANALYTIQUE', PRECISION= 2.5E-03,
+           VALE_REFE=  5.00E-03, VALE_CALC=  4.9900196E-03),
+        _F(RESULTAT=Rstnl, INST=  5.0, NOM_CHAM='DEPL', GROUP_NO='GNC00', NOM_CMP='DY',
+           REFERENCE='ANALYTIQUE', CRITERE="ABSOLU",
+           VALE_REFE=  0.00E-00, VALE_CALC=  0.00E-00, ORDRE_GRANDEUR=0.001),
+        #
+        _F(RESULTAT=Rstnl, INST= 13.0, NOM_CHAM='DEPL', GROUP_NO='GNC00', NOM_CMP='DX',
+           REFERENCE='ANALYTIQUE', CRITERE="ABSOLU",
+           VALE_REFE=  0.00E-00, VALE_CALC=  0.00E-00, ORDRE_GRANDEUR=0.001),
+        _F(RESULTAT=Rstnl, INST= 13.0, NOM_CHAM='DEPL', GROUP_NO='GNC00', NOM_CMP='DY',
+           REFERENCE='ANALYTIQUE', PRECISION= 2.5E-03,
+           VALE_REFE= -5.00E-03, VALE_CALC= -4.9900196E-03),
+    )
+)
+# fmt: on
+
+FIN()

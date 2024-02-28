@@ -1399,6 +1399,7 @@ DEFI_MATERIAU = MACRO(
         DIST_2=SIMP(statut="f", typ="R", val_min=0.0),
         JEU=SIMP(statut="f", typ="R", val_min=0.0),
         INST_COMP_INIT=SIMP(statut="f", typ="R", max=2, min=2),
+        CONTACT=SIMP(statut="f", typ="TXM", into=("1D", "COIN_2D"), defaut="1D", enum=(0, 1)),
     ),
     JONC_ENDO_PLAS=FACT(
         statut="f",

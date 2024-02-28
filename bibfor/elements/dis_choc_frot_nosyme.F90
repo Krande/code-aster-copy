@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,6 +23,7 @@ subroutine dis_choc_frot_nosyme(for_discret, icodma, ulp, xg, klv, &
     implicit none
 #include "asterf_types.h"
 #include "asterfort/rcvala.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
 #include "blas/dcopy.h"
 !
@@ -49,7 +50,7 @@ subroutine dis_choc_frot_nosyme(for_discret, icodma, ulp, xg, klv, &
 ! --------------------------------------------------------------------------------------------------
 ! person_in_charge: jean-luc.flejou at edf.fr
 !
-    integer, parameter   :: nbre1 = 8
+    integer, parameter  :: nbre1 = 9
     integer             :: codre1(nbre1)
     real(kind=8)        :: valre1(nbre1)
     character(len=8)    :: nomre1(nbre1)
@@ -65,8 +66,10 @@ subroutine dis_choc_frot_nosyme(for_discret, icodma, ulp, xg, klv, &
     real(kind=8)        :: coulom, dist12, utot, depx, depy, depz
     real(kind=8)        :: lambda, fort, dist0, rtmp
 !
-    data nomre1/'RIGI_NOR', 'RIGI_TAN', 'AMOR_NOR', 'AMOR_TAN', &
-        'COULOMB', 'DIST_1', 'DIST_2', 'JEU'/
+    character(len=32) :: messak(3)
+!
+    data nomre1/'RIGI_NOR', 'RIGI_TAN', 'AMOR_NOR', 'AMOR_TAN', 'COULOMB', &
+        'DIST_1', 'DIST_2', 'JEU', 'CONTACT'/
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -87,6 +90,12 @@ subroutine dis_choc_frot_nosyme(for_discret, icodma, ulp, xg, klv, &
 !   Caractéristiques du matériau
     call rcvala(icodma, ' ', 'DIS_CONTACT', 0, ' ', [0.0d0], &
                 nbre1, nomre1, valre1, codre1, 0, nan='NON')
+    if (nint(valre1(9)) .ne. 0) then
+        messak(1) = 'DIS_CONTACT'
+        messak(2) = 'DIS_CHOC (cas non symétrique)'
+        messak(3) = '"1D"'
+        call utmess('F', 'DISCRETS_35', nk=3, valk=messak)
+    end if
     rignor = abs(valre1(1))
     rigtan = abs(valre1(2))
     coulom = abs(valre1(5))

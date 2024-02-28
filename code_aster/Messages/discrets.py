@@ -246,8 +246,34 @@ Il faut vérifier les affectations sous AFFE_CARA_ELEM/DISCRET.
 Erreur d'utilisation :
   Pour l'option %(k1)s, l'élément %(k2)s doit avoir des caractéristiques symétriques.
 Risques et conseils :
-  Dans la commande AFFE_CARA_ELEM, il ne faut pas utiliser le mot-clé DISCRET / SYME='NON'
+  Dans la commande AFFE_CARA_ELEM, il ne faut pas utiliser le mot-clé DISCRET/SYME='NON'
   pour ces éléments.
+"""
+    ),
+    33: _(
+        """
+Le discret avec le matériau %(k1)s/CONTACT="COIN_2D" et le comportement %(k2)s n'est pas dans
+un des plans XY, XZ ou YZ.
+"""
+    ),
+    34: _(
+        """
+Le discret avec le matériau %(k1)s/CONTACT="COIN_2D" et le comportement %(k2)s est sur un
+des axes X, Y ou Z.
+Dans ce cas, il faut utiliser CONTACT="1D" (option par défaut)
+"""
+    ),
+    35: _(
+        """
+Le discret avec le matériau %(k1)s et le comportement %(k2)s
+gère seulement CONTACT=%(k3)s.
+"""
+    ),
+    36: _(
+        """
+Pour le discret avec le matériau %(k1)s, le comportement %(k2)s, de CONTACT=%(k3)s.
+Les paramètres suivant ne sont pas pris en compte :
+    DIST_1, DIST_2, JEU, RIGI_TAN, AMOR_NOR, AMOR_TAN, COULOMB
 """
     ),
     40: _(
