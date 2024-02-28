@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -185,7 +185,11 @@ subroutine varcCalcPrep(modelz, cara_elemz, matecoz, &
     lchin(15) = chcara(1) (1:8)//'.CAFIBR'
     lpain(16) = 'PHARMON'
     lchin(16) = chharm(1:19)
-    nbin = 16
+    lpain(17) = 'PCINFDI'
+    lchin(17) = chcara(15) (1:19)
+    lpain(18) = 'PCADISK'
+    lchin(18) = chcara(2) (1:19)
+    nbin = 18
 !
 ! - Behaviour => only for metallurgy (non-linear)
 !

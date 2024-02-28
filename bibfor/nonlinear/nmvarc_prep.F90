@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -165,30 +165,34 @@ subroutine nmvarc_prep(type_comp, model, cara_elem, mateco, varc_refe, &
     lchin(15) = chcara(1) (1:8)//'.CANBSP'
     lpain(16) = 'PFIBRES'
     lchin(16) = chcara(1) (1:8)//'.CAFIBR'
+    lpain(17) = 'PCINFDI'
+    lchin(17) = chcara(15) (1:19)
+    lpain(18) = 'PCADISK'
+    lchin(18) = chcara(2) (1:19)
     call meharm(model, nume_harm, chharm)
-    lpain(17) = 'PHARMON'
-    lchin(17) = chharm(1:19)
+    lpain(19) = 'PHARMON'
+    lchin(19) = chharm(1:19)
+    nbin = 19
 !
 ! - Computation of elementary vectors - Previous
-!
     if (type_comp .eq. '-') then
-        lpain(18) = 'PTEMPSR'
-        lchin(18) = time_prev
-        lpain(19) = 'PVARCPR'
-        lchin(19) = vrcmoi
-        nbin = 19
-    end if
-!
+        nbin = nbin+1
+        lpain(nbin) = 'PTEMPSR'
+        lchin(nbin) = time_prev
+        nbin = nbin+1
+        lpain(nbin) = 'PVARCPR'
+        lchin(nbin) = vrcmoi
 ! - Computation of elementary vectors - Current
-!
-    if (type_comp .eq. '+') then
-        lpain(18) = 'PTEMPSR'
-        lchin(18) = time_curr
-        lpain(19) = 'PVARCPR'
-        lchin(19) = vrcplu
-        lpain(20) = 'PVARCMR'
-        lchin(20) = vrcmoi
-        nbin = 20
+    else if (type_comp .eq. '+') then
+        nbin = nbin+1
+        lpain(nbin) = 'PTEMPSR'
+        lchin(nbin) = time_curr
+        nbin = nbin+1
+        lpain(nbin) = 'PVARCPR'
+        lchin(nbin) = vrcplu
+        nbin = nbin+1
+        lpain(nbin) = 'PVARCMR'
+        lchin(nbin) = vrcmoi
     end if
 !
 ! - XFEM input fields
