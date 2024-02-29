@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -157,7 +157,7 @@ class RunAster:
         timer.stop()
         if self._last or not status.is_completed():
             timer.start("Copying results")
-            self.ending_execution(status.is_completed())
+            self.ending_execution(status.results_saved())
             logger.info("TITLE Execution summary")
             logger.info(timer.report())
             if self._procid == 0:
@@ -221,8 +221,8 @@ class RunAster:
         logger.info(msg)
         self._log_mess(msg)
 
-        if status.is_completed():
-            if not self._last:
+        if status.results_saved():
+            if not self._last and status.is_completed():
                 for vola in glob("vola.*"):
                     os.remove(vola)
                 logger.info("saving result databases to 'BASE_PREC'...")
@@ -344,16 +344,15 @@ class RunAster:
         if status.diag in expected:
             status.state = StateOptions.Ok
             status.exitcode = 0
-        elif expected:
-            status.update(Status(StateOptions.Fatal, 1))
+        # else the status unchanged
         return status
 
-    def ending_execution(self, is_completed):
+    def ending_execution(self, results_saved):
         """Post execution phase : copying results, cleanup...
 
         Arguments:
-            is_completed (bool): *True* if execution succeeded,
-                *False* otherwise.
+            results_saved (bool): *True* if execution did not abort and may have
+                created results, *False* otherwise.
         """
         logger.info("TITLE Content of %s after execution:", os.getcwd())
         logger.info(_ls(".", "REPE_OUT"))
@@ -363,7 +362,7 @@ class RunAster:
         results = self.export.resultfiles
         if results:
             logger.info("TITLE Copying results")
-            copy_resultfiles(results, is_completed, test=self._test)
+            copy_resultfiles(results, results_saved, test=self._test)
 
     def _log_mess(self, msg):
         """Log a message into the *message* file."""

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,6 +34,7 @@ import os
 import pickle
 import re
 import sys
+from enum import IntFlag, auto
 
 
 class Status:
@@ -86,6 +87,15 @@ class Status:
         """
         return bool(self.state & StateOptions.Completed)
 
+    def results_saved(self):
+        """Tell if the result databases should be saved
+        (the calculation is completed or stopped *properly*).
+
+        Returns:
+            bool: *True* if the calculation was completed, *False* otherwise.
+        """
+        return not bool(self.state & StateOptions.Abort)
+
     def update(self, other):
         """Update the status with a new one (from a following execution).
         It keeps the effective state, the worst exit code and the sum of
@@ -120,7 +130,7 @@ class Status:
             return pickle.load(fpick)
 
 
-class StateOptions:
+class StateOptions(IntFlag):
     """
     Enumerator for result state.
 
@@ -145,17 +155,17 @@ class StateOptions:
     """
 
     # null == unknown, no information
-    Warn = 0x001
-    Nook = 0x002
-    NoTest = 0x004
-    CpuLimit = 0x008
-    Convergence = 0x010
-    Memory = 0x020
-    Except = 0x040
-    Syntax = 0x080
-    Fatal = 0x100
-    Abort = 0x200
-    Ok = 0x400
+    Warn = auto()
+    Nook = auto()
+    NoTest = auto()
+    CpuLimit = auto()
+    Convergence = auto()
+    Memory = auto()
+    Except = auto()
+    Syntax = auto()
+    Fatal = auto()
+    Abort = auto()
+    Ok = auto()
 
     Error = CpuLimit | Convergence | Memory | Except | Syntax | Fatal | Abort
     Completed = Ok | Warn | Nook | NoTest
@@ -203,12 +213,12 @@ class StateOptions:
             return "<F>_ERROR"
         if state & StateOptions.Memory:
             return "<S>_MEMORY_ERROR"
+        if state & StateOptions.Except:
+            return "<S>_ERROR"
         if state & StateOptions.Convergence:
             return "<S>_NO_CONVERGENCE"
         if state & StateOptions.CpuLimit:
             return "<S>_CPU_LIMIT"
-        if state & StateOptions.Except:
-            return "<S>_ERROR"
         if state & StateOptions.NoTest:
             return "NO_TEST_RESU"
         if state & StateOptions.Nook:
@@ -226,7 +236,7 @@ RE_WARN = re.compile("^ *. *<A>", re.M)
 RE_DEBUT = re.compile(re.escape("-- CODE_ASTER -- VERSION"))
 RE_FIN = re.compile("<I> <FIN> ARRET NORMAL")
 RE_MEM = re.compile("MEMOIRE INSUFFISANTE POUR ALLOUER")
-RE_TIME = re.compile("(<TimeLimitError>|ARRET PAR MANQUE DE TEMPS)", re.I)
+RE_TIME = re.compile("<TimeLimitError>", re.I)
 RE_CONV = re.compile("<(ConvergenceError|IntegrationError|SolverError|ContactError)>", re.I)
 RE_EXCEPT = re.compile("<(AsterError|EXCEPTION)>")
 RE_ERRS = re.compile("^ *. *<S>", re.M)

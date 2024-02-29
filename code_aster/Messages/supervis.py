@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -259,11 +259,6 @@ Fermeture des bases jeveux afin de permettre la POURSUITE ultérieure du calcul.
 
 """
     ),
-    95: _(
-        """
-    <S> Une exception s'est produite précédemment.
-    """
-    ),
     96: {
         "message": _(
             """
@@ -274,11 +269,5 @@ Fermeture des bases jeveux afin de permettre la POURSUITE ultérieure du calcul.
         ),
         "flags": "DECORATED",
     },
-    # Texte en majuscule car utilisé tel quel pour le diagnostic
-    98: _(
-        """
-    <S> ARRET PAR MANQUE DE TEMPS
-    """
-    ),
     99: _("""Une erreur s'est produite."""),
 }

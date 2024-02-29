@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -84,7 +84,6 @@ def list_unit(code):
 
 
 class MESSAGE_LOGGER(metaclass=Singleton):
-
     """Classe gérant l'impression de messages.
     On ne crée qu'une instance de ce type (singleton).
     Cette instance est accessible dans le module `aster_core` pour les appels
@@ -197,11 +196,6 @@ class MESSAGE_LOGGER(metaclass=Singleton):
             if exception and code[0] in ("S", "F"):
                 if self._mpi_rank is not None:
                     aster_core.MPI_Warn()
-                if self._mpi_rank == 0:
-                    l_unit = list_unit("F")
-                    txt = _("On ne peut pas lever d'exception dans une exécution MPI.")
-                    for unite in l_unit:
-                        self.affiche(unite, txt)
                 exc_typ = dictmess.get("exc_typ")
                 if exc_typ:
                     raise exc_typ(id0, valk, vali, valr)
