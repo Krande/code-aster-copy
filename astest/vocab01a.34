@@ -2744,6 +2744,7 @@ F_SER_FO
 F_T
 F_TTLT
 F_TTTT
+FlowCorrection
 FrictionAngle
 G
 G1_0
@@ -3228,9 +3229,11 @@ I_CORP
 I_TUBU
 IncoPlastIndex
 IncompIndex
+InitConsPress
 InitCritPress
 InitPreconsPress
 InitTensionPress
+InitVoidsRatio
 IsoCompElasLim
 IsoTensElasLim
 Iwan
@@ -4895,6 +4898,10 @@ P_ULTM
 Pa
 PerzynaExpo
 PlastCompIndex
+PlastStrainIndex
+PlastStrainPara1
+PlastStrainPara2
+PlastSuccionIndex
 PoissonRatio
 Q
 Q1
@@ -5248,6 +5255,7 @@ R_ULT
 R_X1
 R_X2
 R_X5
+RefeConsPress
 ReferencePressure
 S
 SA
@@ -5558,6 +5566,8 @@ S_LT
 S_RUP
 S_VP_MELANGE
 ShearModulus
+SuccionIndex
+SuccionModulus
 SwellingIndex
 T
 T1C
@@ -6404,8 +6414,10 @@ Y_CENTRE
 Y_CENTRE2
 Y_MAXI
 Y_MINI
+YieldSuccion
 YieldSurfCapCoef
 YieldSurfLinCoef
+YieldTensSlope
 YoungModulus
 Z
 Z0

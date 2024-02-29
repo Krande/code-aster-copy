@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -84,11 +84,6 @@ La loi de couplage <%(k1)s> est incorrecte pour une modélisation <%(k2)s>.
     43: _(
         """
 La loi hydraulique <%(k1)s> n'est pas compatible avec la loi mécanique <%(k2)s>.
-"""
-    ),
-    44: _(
-        """
-La loi mécanique <%(k1)s> est incorrecte pour une modélisation <%(k2)s>.
 """
     ),
     60: _(

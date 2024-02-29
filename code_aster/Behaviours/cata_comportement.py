@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -664,9 +664,6 @@ class CataLoiComportement(metaclass=Singleton):
             if rela_hydr == "HYDR_ENDO":
                 if rela_meca != "MAZARS" and rela_meca != "ENDO_ISOT_BETON":
                     UTMESS("F", "THM1_43", valk=(rela_hydr, rela_meca))
-            if rela_meca == "BARCELONE":
-                if rela_thmc != "LIQU_GAZ":
-                    UTMESS("F", "THM1_44", valk=(rela_meca, type_kit))
 
         # ----- Return
         return rela_meca, rela_hydr, rela_thmc, rela_ther

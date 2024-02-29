@@ -113,7 +113,7 @@ DICT_NOM_VARI = {
     "BR_SUT22": _("BETON_RAG : contrainte seuil d'endommagement de traction, composante 2"),
     "BR_SUT23": _("BETON_RAG : contrainte seuil d'endommagement de traction, composante 6"),
     "BR_SUT33": _("BETON_RAG : contrainte seuil d'endommagement de traction, composante 3"),
-    "COHESION": _("cohésion"),
+    # "COHESION": _("cohésion"),
     "COMMAX": _(
         "Déformation à l’axe neutre maximale en compression (maximum sur les directions et instants"
     ),
@@ -523,7 +523,7 @@ DICT_NOM_VARI = {
     "INDIENDO": _("indicateur d'endommagement"),
     "INDIENDT": _("indicateur d'endommagement tangentiel =0 sain, =1 endommagé, =2 cassé"),
     "INDIFLAM": _("indicateur de flambement"),
-    "INDIHYDR": _("indicateur d'irréversibilité hydrique"),
+    # "INDIHYDR": _("indicateur d'irréversibilité hydrique"),
     "INDIOUV": _("JOINT_MECA_FROT : indicateur d'ouverture complète =0 fermé, =1 ouvert"),
     "INDIPLAC": _(
         "indicateur de plasticité en compression  (0 : seuil non atteint, 1 ou > 1 : seuil atteint)"
@@ -620,7 +620,7 @@ DICT_NOM_VARI = {
         "CJS signe du produit contracté de la contrainte déviatorique par la déformation plastique déviatorique"
     ),
     "SEUILDEP": _("CZM  seuil correspondant au plus grand saut de déplacement (en norme)"),
-    "SEUILHYD": _("seuil hydrique"),
+    # "SEUILHYD": _("seuil hydrique"),
     "SEUILISO": _("seuil isotrope"),
     "SEUIL": _("seuil"),
     "SHIFT_T1": _("glissement tangentiel 1"),

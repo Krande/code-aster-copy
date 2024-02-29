@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,18 +54,6 @@ subroutine thmCheckPorosity(j_mater, meca, ds_thm)
 !
 ! - Check
 !
-    if (meca .eq. 'BARCELONE') then
-        poro_tole = 1.D-10
-        call rcvala(j_mater, ' ', meca, &
-                    0, ' ', [0.d0], &
-                    1, ['PORO'], para_vale, &
-                    icodre, 0)
-        poro_meca = para_vale(1)
-        poro_diff = abs(poro_meca-poro_init)
-        if (abs(poro_diff) .gt. poro_tole) then
-            call utmess('F', 'THM2_60', sk=meca)
-        end if
-    end if
     if (meca .eq. 'CAM_CLAY') then
         poro_tole = 1.D-6
         call rcvala(j_mater, ' ', meca, &

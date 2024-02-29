@@ -72,6 +72,7 @@ def C_COMPORTEMENT(command):
                     "KH_CSSM",
                     "NLH_CSRM",
                     "MCC",
+                    "Barcelone",
                     "MFRONT",
                 ),
             ),
@@ -298,7 +299,6 @@ def C_COMPORTEMENT(command):
                     max=9,
                     validators=NoRepeat(),
                     into=(
-                        "BARCELONE",
                         "CAM_CLAY",
                         "CJS",
                         "CZM_EXP_REG",
@@ -315,6 +315,7 @@ def C_COMPORTEMENT(command):
                         "JOINT_BANDIS",
                         "NLH_CSRM",
                         "MCC",
+                        "Barcelone",
                         "LAIGLE",
                         "LETK",
                         "LKR",
