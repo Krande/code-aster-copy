@@ -980,15 +980,11 @@ def command_time(counter, cpu, system, elapsed):
 class ExceptHookManager:
     """Object to manager the definition of the *excepthook*."""
 
-    _ctxt = None
     _current_cmd = None
 
     @classmethod
     def enter(cls, command):
         """Assign the excepthook when entering in a command."""
-        # keep the reference of the toplevel context
-        if not cls._ctxt:
-            cls._ctxt = command.caller_context
         # keep the outer command
         if not cls._current_cmd:
             cls._current_cmd = command
@@ -1014,27 +1010,21 @@ class ExceptHookManager:
             value (BaseException): Exception instance.
             traceback (traceback): Exception traceback.
         """
-        if sys.flags.interactive:
-            print("An exception occurred! Return to interactive session.", flush=True)
+        try:
+            assert sys.flags.interactive or "__IPYTHON__" in globals()
+            print("An exception occurred! Return to interactive session.")
             return
-        if cls._ctxt:
+        except AssertionError:
+            pass
+        if cls._current_cmd:
+            print("\nException: Trying to close the database after an uncaught exception...\n")
             print(
-                "\nException: Trying to close the database after an uncaught exception...\n",
+                f"\nPublishing the result of the current command {cls._current_cmd.name}...\n",
                 flush=True,
             )
-            if cls._current_cmd:
-                print(
-                    f"\nPublishing the result of the current command {cls._current_cmd.name}...\n",
-                    flush=True,
-                )
-                cls._current_cmd.publish_result()
-            saveObjectsFromContext(cls._ctxt)
+            cls._current_cmd.publish_result()
+            saveObjectsFromContext(cls._current_cmd.caller_context)
         else:
-            print(
-                "\n<EXCEPTION> An exception was raised outside of commands and "
-                "was not intercepted.\n",
-                flush=True,
-            )
             sys.__excepthook__(type, value, traceback)
 
     @classmethod
