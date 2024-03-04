@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,8 +35,8 @@ MOD = AFFE_MODELE(
 )
 
 
-CL1 = AFFE_CHAR_MECA(
-    DDL_IMPO=(_F(DY=0.0, GROUP_MA="BORD1"), _F(DX=0.0, DY=0.0, GROUP_NO="A")), MODELE=MOD
+CL1 = AFFE_CHAR_CINE(
+    MECA_IMPO=(_F(DY=0.0, GROUP_MA="BORD1"), _F(DX=0.0, DY=0.0, GROUP_NO="A")), MODELE=MOD
 )
 CL2 = AFFE_CHAR_MECA(DDL_IMPO=_F(DY=4.0, GROUP_MA="BORD8"), MODELE=MOD)
 

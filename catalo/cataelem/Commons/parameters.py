@@ -206,6 +206,8 @@ PCHARG = InputParameter(
 """,
 )
 
+PCHCKPR = InputParameter(phys=PHY.NEUT_R, comment="""Parameters for checking in AFFE_MODELE""")
+
 PCHDYNR = InputParameter(
     phys=PHY.DEPL_R,
     comment="""  PCHDYNR : CHAMP D'ACCELERATIONS
@@ -263,7 +265,27 @@ PCOHES = InputParameter(
 """,
 )
 
-PCOMPOR = InputParameter(phys=PHY.COMPOR, comment=""" Informations for non-linear behaviour """)
+PCOMPOR = InputParameter(
+    phys=PHY.COMPOR, comment="""Informations for non-linear behaviour (mechanics)"""
+)
+
+PCOMPME = InputParameter(phys=PHY.COMPOR, comment="""Informations for behaviour (metallurgy)""")
+
+PCOMPMT = InputParameter(
+    phys=PHY.COMPOR, comment="""Informations for behaviour (metallurgy with tempering)"""
+)
+
+PTIMMTR = InputParameter(phys=PHY.INST_R, comment="""Field for time parameters in metallurgy""")
+
+PPHASIN = InputParameter(phys=PHY.VARI_R, comment="""Input field for phases in metallurgy""")
+
+PPHASEP = InputParameter(
+    phys=PHY.VARI_R, comment="""Input field for previous phases in metallurgy"""
+)
+
+PPHASII = InputParameter(
+    phys=PHY.VAR2_R, comment="""Input field for initial phases in metallurgy"""
+)
 
 PCONFR = InputParameter(
     phys=PHY.N120_R,
@@ -1155,7 +1177,6 @@ PTEMPER = InputParameter(
     phys=PHY.TEMP_R,
     container="RESU!TEMP!N",
     comment="""  PTEMPER :
-  PTEMPER : POTENTIEL ELECTRIQUE INSTANT ACTUEL
   PTEMPER : TEMPERATURES INSTANT ACTUEL
 """,
 )
@@ -1357,6 +1378,10 @@ PCAFI_R = OutputParameter(phys=PHY.CAFI_R, type="ELEM", comment="""""")
 PCARAGE = OutputParameter(phys=PHY.MASS_R, type="ELEM", comment="""""")
 
 PCASECT = OutputParameter(phys=PHY.NEUT_R, type="ELEM", comment="""""")
+
+PINDICR = OutputParameter(phys=PHY.NEUT_R, type="ELEM", comment="""Real value for indicator""")
+
+PCOURAN = OutputParameter(phys=PHY.NEUT_R, type="ELEM", comment="""""")
 
 PCODRET = OutputParameter(
     phys=PHY.CODE_I,
@@ -1726,8 +1751,6 @@ PPDIL = OutputParameter(
     comment="""  PKDIL : MODULE DE RIGIDITE DE MICRO-DILATATION
 """,
 )
-
-PPHASNOU = OutputParameter(phys=PHY.VARI_R, type="ELNO", comment="""""")
 
 PPJSIGM = OutputParameter(
     phys=PHY.SIEF_R,

@@ -253,6 +253,7 @@ DEFI_MATERIAU = MACRO(
             "SECH_MENSI",
             "SECH_BAZANT",
             "SECH_NAPPE",
+            "META_ACIER_REVENU",
             "META_ACIER",
             "META_ZIRC",
             "DURT_META",
@@ -2703,6 +2704,15 @@ DEFI_MATERIAU = MACRO(
         D10=SIMP(statut="f", typ="R"),
         WSR_K=SIMP(statut="f", typ="R"),
     ),
+    META_ACIER_REVENU=FACT(
+        statut="f",
+        BAINITE_B=SIMP(statut="o", typ="R"),
+        BAINITE_N=SIMP(statut="o", typ="R"),
+        MARTENSITE_B=SIMP(statut="o", typ="R"),
+        MARTENSITE_N=SIMP(statut="o", typ="R"),
+        TEMP=SIMP(statut="o", typ="R"),
+        TEMP_MAINTIEN=SIMP(statut="f", typ="R", defaut=610.0),
+    ),
     META_ZIRC=FACT(
         statut="f",
         TDEQ=SIMP(statut="o", typ="R"),
@@ -2725,6 +2735,8 @@ DEFI_MATERIAU = MACRO(
         F3_DURT=SIMP(statut="o", typ="R"),
         F4_DURT=SIMP(statut="o", typ="R"),
         C_DURT=SIMP(statut="o", typ="R"),
+        F3_REVENU_DURT=SIMP(statut="f", typ="R"),
+        F4_REVENU_DURT=SIMP(statut="f", typ="R"),
     ),
     ELAS_META=FACT(
         statut="f",

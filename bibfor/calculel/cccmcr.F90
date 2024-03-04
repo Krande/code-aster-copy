@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -109,7 +109,7 @@ subroutine cccmcr(jcesdd, numma, jrepe, jconx2, jconx1, &
         else
             ASSERT(.false.)
         end if
-        call mpglcp('P', nbnol, coordc, alpha, beta, gamma, pgl, codret)
+        call mpglcp('P', nbnol, coordc, alpha, beta, gamma, pgl)
 !
     else if (atdis .eq. 'OUI') then
         if (nbnol .eq. 1) then
@@ -120,7 +120,7 @@ subroutine cccmcr(jcesdd, numma, jrepe, jconx2, jconx1, &
             beta = zr(jcesv-1+iad)
             call cesexi('S', jcesd, jcesl, numma, 1, 1, jgamma, iad)
             gamma = zr(jcesv-1+iad)
-            call mpglcp('1', nbnol, coordc, alpha, beta, gamma, pgl, codret)
+            call mpglcp('1', nbnol, coordc, alpha, beta, gamma, pgl)
         else
             ino1 = zi(jconx1+posin-1)
             ino2 = zi(jconx1+posin)
@@ -131,7 +131,7 @@ subroutine cccmcr(jcesdd, numma, jrepe, jconx2, jconx1, &
 !           lecture de gamma dans .carorien
             call cesexi('S', jcesd, jcesl, numma, 1, 1, jgamma, iad)
             gamma = zr(jcesv-1+iad)
-            call mpglcp('D', nbnol, coordc, alpha, beta, gamma, pgl, codret)
+            call mpglcp('D', nbnol, coordc, alpha, beta, gamma, pgl)
         end if
 !
     else if (atmod .eq. 'CQ3') then
@@ -170,7 +170,7 @@ subroutine cccmcr(jcesdd, numma, jrepe, jconx2, jconx1, &
         alpha = zr(jcesvc-1+iad)
         call cesexi('S', jcesdc, jceslc, numma, 1, 1, ibeta, iad)
         beta = zr(jcesvc-1+iad)
-        call mpglcp('C', nbnol, coordc, alpha, beta, gamma, pgl, codret)
+        call mpglcp('C', nbnol, coordc, alpha, beta, gamma, pgl)
     else
         codret = 3
     end if

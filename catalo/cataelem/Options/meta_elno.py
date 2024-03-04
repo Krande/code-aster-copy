@@ -25,17 +25,24 @@ import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
-
-PCOMPOR = InputParameter(phys=PHY.COMPOR)
-
-
-PPHASIN = InputParameter(phys=PHY.VARI_R)
-
-PTIMMTR = InputParameter(phys=PHY.INST_R)
+PPHASOUT = OutputParameter(
+    phys=PHY.VARI_R, type="ELNO", comment="""Output field for phases in metallurgy"""
+)
 
 
 META_ELNO = Option(
-    para_in=(PCOMPOR, SP.PFTRC, SP.PMATERC, PPHASIN, SP.PTEMPAR, SP.PTEMPER, SP.PTEMPIR, PTIMMTR),
-    para_out=(SP.PPHASNOU,),
+    para_in=(
+        SP.PCOMPME,
+        SP.PCOMPMT,
+        SP.PFTRC,
+        SP.PMATERC,
+        SP.PPHASIN,
+        SP.PTEMPAR,
+        SP.PTEMPER,
+        SP.PTEMPIR,
+        SP.PTIMMTR,
+        SP.PPHASEP,
+    ),
+    para_out=(PPHASOUT,),
     condition=(CondCalcul("+", ((AT.PHENO, "TH"), (AT.BORD, "0"))),),
 )

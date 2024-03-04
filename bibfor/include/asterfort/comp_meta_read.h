@@ -17,8 +17,8 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine comp_meta_read(metaPrepPara)
+    subroutine comp_meta_read(metaPrepBehaviour)
         use Metallurgy_type
-        type(META_PrepPara), intent(inout) :: metaPrepPara
+        type(META_PrepBehaviour), intent(inout) :: metaPrepBehaviour
     end subroutine comp_meta_read
 end interface

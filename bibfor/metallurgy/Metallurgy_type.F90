@@ -21,6 +21,7 @@ module Metallurgy_type
     implicit none
 !
 #include "asterf_types.h"
+#include "asterfort/Metallurgy_type.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -31,8 +32,32 @@ module Metallurgy_type
 ! --------------------------------------------------------------------------------------------------
 !
 
-! - Type: parameters for behaviour
-    type META_Parameters
+! - Metallurgy - Parameters for operator
+    type META_ParaOperator
+! ----- Name of output datastructure
+        character(len=8) :: resultName = " "
+! ----- For storing indexes
+        character(len=19) :: listStoreJv = '&&OP0194.LISTSTORE'
+        integer :: nbStore = 0
+        integer, pointer :: listStore(:) => null()
+! ----- List of options to compute
+        character(len=19) :: listOptionsJv = '&&OP0194.LES_OPTION'
+        integer :: nbOption = 0
+        character(len=16), pointer :: listOption(:) => null()
+! ----- Main parameters
+        character(len=8) :: model = " "
+        character(len=8) :: materialField = " "
+        character(len=24) :: materialCoding = " "
+        character(len=24) :: comporMetaTemper = "&&OP0194.COMPORTEMPER"
+        character(len=24) :: comporMeta = "&&OP0194.COMPOR"
+        aster_logical :: hasTRC = ASTER_FALSE
+        character(len=24) :: TRCField = "&&SMEVOL.ADRESSES"
+! ----- Flag for tempering
+        aster_logical :: hasTemper = ASTER_FALSE
+    end type META_ParaOperator
+
+! - Metallurgy - Parameters for behaviour
+    type META_ParaBehaviour
 ! ----- Keyword RELATION (steel, zirc, etc.)
         character(len=16) :: metaType = ' '
 ! ----- Keyword LOI_META
@@ -43,35 +68,50 @@ module Metallurgy_type
         integer :: nbPhase = 0
 ! ----- Index of behaviour
         integer :: numeComp = 0
-    end type META_Parameters
+    end type META_ParaBehaviour
 
 ! - Metallurgy - Preparation - Map for parameters of behaviours (COMPOR_META)
-    type META_PrepPara
+    type META_PrepBehaviour
+! ----- Factor keyword to read
+        character(len=16) :: factorKeyword = " "
 ! ----- Number of factor keywords
-        integer :: nb_comp = 0
+        integer :: nbFactorKeyword = 0
 ! ----- List of parameters
-        type(META_Parameters), pointer :: para(:) => null()
-    end type META_PrepPara
+        type(META_ParaBehaviour), pointer :: paraBehaviour(:) => null()
+! ----- Flag for tempering
+        aster_logical :: hasTemper = ASTER_FALSE
+    end type META_PrepBehaviour
 
-! - Parameters for austenite phase
+! - Metallurgy - Parameters for austenite phase
     type META_AusteniteParameters
         real(kind=8) :: lambda0 = 0.d0
         real(kind=8) :: qsr_k = 0.d0
         real(kind=8) :: d10 = 0.d0
         real(kind=8) :: wsr_k = 0.d0
     end type META_AusteniteParameters
-!
+    type META_TRCAusteniteGrain
+        real(kind=8) :: dref = 0.d0
+        real(kind=8) :: a = 0.d0
+    end type META_TRCAusteniteGrain
+
+! - Metallurgy - Parameters for martensite phase
     type META_TRCMartensiteLaw
         real(kind=8) :: austeniteMin = 0.d0
         real(kind=8) :: akm = 0.d0, bkm = 0.d0
         real(kind=8) :: lowerSpeed = 0.d0
     end type META_TRCMartensiteLaw
-!
-    type META_TRCAusteniteGrain
-        real(kind=8) :: dref = 0.d0
-        real(kind=8) :: a = 0.d0
-    end type META_TRCAusteniteGrain
-!
+
+! - Metallurgy - Parameters for tempering
+    type META_TemperingParameters
+        real(kind=8) :: bainite_b = 0.d0
+        real(kind=8) :: bainite_n = 0.d0
+        real(kind=8) :: martensite_b = 0.d0
+        real(kind=8) :: martensite_n = 0.d0
+        real(kind=8) :: temp = 0.d0
+        real(kind=8) :: tempHold = 0.d0
+    end type META_TemperingParameters
+
+! - Metallurgy - Parameters for TRC curves
     type META_TRCParameters
         integer :: jv_ftrc = 0, jv_trc = 0
         integer :: iadexp = 0, iadtrc = 0
@@ -79,22 +119,25 @@ module Metallurgy_type
         type(META_TRCMartensiteLaw) :: martensiteLaw
         type(META_TRCAusteniteGrain) :: austeniteGrain
     end type META_TRCParameters
-!
+
+! - Metallurgy - Parameters for steel
     type META_SteelParameters
         real(kind=8) :: ar3 = 0.d0
         real(kind=8) :: alpha = 0.d0
         real(kind=8) :: ms0 = 0.d0
-! Quasi-static temperature at which austenite transformation begins on heating.
+! ----- Quasi-static temperature at which austenite transformation begins on heating.
         real(kind=8) :: ac1 = 0.d0
-        ! Quasi-static temperature at end of austenite transformation
+! ----- Quasi-static temperature at end of austenite transformation
         real(kind=8) :: ac3 = 0.d0
         real(kind=8) :: taux_1 = 0.d0
         real(kind=8) :: taux_3 = 0.d0
         aster_logical :: l_grain_size = ASTER_FALSE
         type(META_AusteniteParameters) :: austenite
+        type(META_TemperingParameters) :: temper
         type(META_TRCParameters) :: trc
     end type META_SteelParameters
-!
+
+! - Metallurgy - Parameters for zircaloy
     type META_ZircParameters
         real(kind=8) :: tdeq = 0.d0
         real(kind=8) :: k = 0.d0
@@ -109,10 +152,17 @@ module Metallurgy_type
         real(kind=8) :: ar = 0.d0
         real(kind=8) :: br = 0.d0
     end type META_ZircParameters
-!
+
+! - Metallurgy - Parameters for material
     type META_MaterialParameters
         type(META_SteelParameters) :: steel
         type(META_ZircParameters) :: zirc
     end type META_MaterialParameters
+
+! - Metallurgy - Parameters for hardness
+    type META_HardnessParameters
+        character(len=16) :: metaType = ' '
+        real(kind=8) :: hardSteel(PRSTEEL_NB) = 0.d0
+    end type META_HardnessParameters
 !
 end module

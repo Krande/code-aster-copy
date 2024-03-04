@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -97,12 +97,52 @@ module contact_type
         aster_logical                       :: l_axis = ASTER_FALSE
         integer                             :: nb_dofs = 0
     end type
+
+    type Cell_Geom
+        integer :: cellDime = 0
+        integer :: nbNode = 0
+        character(len=8) :: cellCode = " "
+        real(kind=8), dimension(3, 9) :: coorNodeGlob = 0.d0
+        real(kind=8), dimension(2, 9) :: coorNodePara = 0.d0
+    end type Cell_Geom
+
+    type Contact_CellGeom
+        integer :: cellDime = 0
+! ----- Slave side
+        type(Cell_Geom) :: slav
+! ----- Master side
+        type(Cell_Geom) :: mast
+    end type Contact_CellGeom
+
+! - Type for parameters of projection algorithm
+    type Contact_ProjAlgoPara
+        aster_logical :: withPrepLine = ASTER_FALSE
+        aster_logical :: newtDebug = ASTER_FALSE
+        integer :: newtIterMaxi = 0
+        real(kind=8) :: newtTole = 0.d0
+    end type Contact_ProjAlgoPara
+
+! - Type for parameters of projection
+    type Contact_ProjPara
+        real(kind=8) :: pointCoor(3) = 0.d0
+        integer :: modelDime = 0
+        type(Cell_Geom) :: geomTarget
+        type(Cell_Geom) :: geomTargetLine
+        real(kind=8):: projVect(3) = 0.d0
+        real(kind=8) :: ksi(2) = 0.d0
+        real(kind=8) :: tau1(3) = 0.d0
+        real(kind=8) :: tau2(3) = 0.d0
+        integer:: errorCode = 0
+    end type Contact_ProjPara
+
 !
 !===================================================================================================
 !
 !===================================================================================================
 !
     public :: ContactParameters, ContactGeom
+    public :: Cell_Geom, Contact_CellGeom
+    public :: Contact_ProjAlgoPara, Contact_ProjPara
 !
 contains
 !

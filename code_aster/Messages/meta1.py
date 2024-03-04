@@ -22,15 +22,14 @@
 from ..Utilities import _
 
 cata_msg = {
-    1: _("""Le résultat thermique doit contenir au moins deux pas de temps."""),
-    2: _(
-        """Le résultat thermique donné pour l'état initial doit être le même que le résultat de CALC_META."""
-    ),
     3: _(
         """Il n'est pas possible de calculer la dureté (DURT_ELNO) pour les phases de type %(k1)s."""
     ),
     4: _(
         """L'état initial donné par l'utilisateur dans CALC_META n'est pas de la bonne taille: on attend au moins %(i1)d variables mais on en a seulement %(i2)d."""
+    ),
+    43: _(
+        """L'état métallurgique initial produit par CREA_CHAMP est incomplet. Pour l'acier revenu, il faut renseigner les sept phases."""
     ),
     44: _(
         """L'état métallurgique initial produit par CREA_CHAMP est incomplet. Pour l'acier, il faut renseigner les cinq phases."""
@@ -46,19 +45,9 @@ cata_msg = {
     ),
     48: _("""Erreur dans CALC_META: La somme des phases vaut %(r1)12.4E."""),
     49: _(
-        """La somme des phases froides donnée par l'utilisateur n'est pas égale à la somme des phases froides, on met la somme."""
+        """La somme des phases froides donnée par l'utilisateur n'est pas égale à la somme des phases froides, on met la vraie somme (et pas celle renseignée par l'utilisateur)."""
     ),
     50: _(
         """La différence entre la température de début de transformation des phases froides en austénite dans le diagramme TRC et celle donnée par DEFI_MATERIAU est supérieure de plus de %(r1)12.4E°C."""
-    ),
-    51: _(
-        """
- On n'a pas trouvé un et un seul instant dans la structure de données résultat pour l'instant demandé %(r1)f.
-"""
-    ),
-    52: _(
-        """
- On n'a pas trouvé de champ META_ELNO dans la structure de données résultat pour l'état initial.
-"""
     ),
 }

@@ -66,11 +66,11 @@ subroutine te0320(option, nomte)
 ! - Input fields
     call jevech('PMATERC', 'L', jvMater)
     call jevech('PTEMPER', 'L', jvTemp)
-    call jevech('PCOMPOR', 'L', jvComporMeta)
-    call jevech('PPHASIN', 'L', jvPhaseIn)
+    call jevech('PCOMPME', 'L', jvComporMeta)
+    call jevech('PPHASII', 'L', jvPhaseIn)
 
 ! - Output fields
-    call jevech('PPHASNOU', 'E', jvPhaseOut)
+    call jevech('PPHASOUT', 'E', jvPhaseOut)
 
 ! - Parameters from map
     metaType = zk16(jvComporMeta-1+ZMETATYPE)

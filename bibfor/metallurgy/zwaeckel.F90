@@ -14,12 +14,12 @@
 !
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
-! --------------------------------------------------------------------
+! -----------------------------------------2---------------------------
 ! aslint: disable=W0413
 !
 subroutine zwaeckel(metaSteelPara, nbPhase, nbVari, &
-                    tpg0, tpg1, tpg2, &
-                    dt10, dt21, &
+                    temp0, temp1, temp2, &
+                    deltaTime01, deltaTime12, &
                     metaPrev, metaCurr)
 !
     use Metallurgy_type
@@ -37,8 +37,8 @@ subroutine zwaeckel(metaSteelPara, nbPhase, nbVari, &
 !
     type(META_SteelParameters), intent(in) :: metaSteelPara
     integer, intent(in) :: nbPhase, nbVari
-    real(kind=8), intent(in) :: tpg0, tpg1, tpg2
-    real(kind=8), intent(in) :: dt10, dt21
+    real(kind=8), intent(in) :: temp0, temp1, temp2
+    real(kind=8), intent(in) :: deltaTime01, deltaTime12
     real(kind=8), intent(in) :: metaPrev(nbVari)
     real(kind=8), intent(out) :: metaCurr(nbVari)
 !
@@ -51,11 +51,11 @@ subroutine zwaeckel(metaSteelPara, nbPhase, nbVari, &
 ! In  metaSteelPara       : material parameters for metallurgy of steel
 ! In  nbPhase             : number of phases
 ! In  nbVari              : number of internal state variables
-! In  tpg0                : temperature at time N-1
-! In  tpg1                : temperature at time N
-! In  tpg2                : temperature at time N+1
-! In  dt10                : increment of time [N-1, N]
-! In  dt21                : increment of time [N, N+1]
+! In  temp0               : temperature at time N-1
+! In  temp1               : temperature at time N
+! In  temp2               : temperature at time N+1
+! In  deltaTime01         : increment of time [N-1, N]
+! In  deltaTime12         : increment of time [N, N+1]
 ! In  metaPrev            : value of internal state variable at previous time step
 ! Out metaCurr            : value of internal state variable at current time step
 !
@@ -74,29 +74,29 @@ subroutine zwaeckel(metaSteelPara, nbPhase, nbVari, &
 ! --------------------------------------------------------------------------------------------------
 !
     epsi = 1.d-10
-    ASSERT(nbPhase .eq. 6)
-    ASSERT(nbVari .eq. 9)
+    ASSERT(nbPhase .eq. NBPHASESTEEL)
+    ASSERT(nbVari .eq. NBVARIWAECKEL)
 
 ! - Get material parameters for steel
     nbHist = metaSteelPara%trc%nbHist
 
 ! - Temperature
-    metaCurr(nbPhase+STEEL_TEMP) = tpg2
+    metaCurr(nbPhase+STEEL_TEMP) = temp2
     metaCurr(nbPhase+TEMP_MARTENSITE) = metaPrev(nbPhase+TEMP_MARTENSITE)
-    tpoint = (tpg1-tpg0)/dt10
+    tpoint = (temp1-temp0)/deltaTime01
 
 ! - Proportion of austenite
     zaust = un-(metaPrev(PFERRITE)+metaPrev(PPERLITE)+ &
                 metaPrev(PBAINITE)+metaPrev(PMARTENS))
 
 ! - Colding or not ?
-    zeq1 = min((tpg1-metaSteelPara%ac1)/(metaSteelPara%ac3-metaSteelPara%ac1), un)
-    zeq2 = min((tpg2-metaSteelPara%ac1)/(metaSteelPara%ac3-metaSteelPara%ac1), un)
+    zeq1 = min((temp1-metaSteelPara%ac1)/(metaSteelPara%ac3-metaSteelPara%ac1), un)
+    zeq2 = min((temp2-metaSteelPara%ac1)/(metaSteelPara%ac3-metaSteelPara%ac1), un)
     if (tpoint .gt. zero) then
         l_cold = ASTER_FALSE
-    else if (tpg2 .gt. metaSteelPara%ar3) then
+    else if (temp2 .gt. metaSteelPara%ar3) then
         l_cold = ASTER_FALSE
-    else if (tpg2 .lt. metaSteelPara%ac1) then
+    else if (temp2 .lt. metaSteelPara%ac1) then
         l_cold = ASTER_TRUE
     else if (tpoint .lt. zero) then
         l_cold = ASTER_TRUE
@@ -107,13 +107,13 @@ subroutine zwaeckel(metaSteelPara, nbPhase, nbVari, &
     end if
 !
     if (l_cold) then
-        if (abs(tpg2-tpg1) .gt. 5.001d0) then
-            nbpas = int(abs(tpg2-tpg1)/5.d0-0.001d0)+1
-            dt21_mod = dt21/dble(nbpas)
+        if (abs(temp2-temp1) .gt. 5.001d0) then
+            nbpas = int(abs(temp2-temp1)/5.d0-0.001d0)+1
+            dt21_mod = deltaTime12/dble(nbpas)
             vari_dumm(:) = metaPrev(:)
             do i = 1, nbpas
-                ti = tpg1+(tpg2-tpg1)*dble(i-1)/dble(nbpas)
-                metaCurr(nbPhase+STEEL_TEMP) = tpg1+(dble(i)*(tpg2-tpg1))/dble(nbpas)
+                ti = temp1+(temp2-temp1)*dble(i-1)/dble(nbpas)
+                metaCurr(nbPhase+STEEL_TEMP) = temp1+(dble(i)*(temp2-temp1))/dble(nbpas)
                 tpi = (metaCurr(nbPhase+STEEL_TEMP)-ti)/dt21_mod
                 call smcarc(nbHist, nbPhase, &
                             zr(metaSteelPara%trc%jv_ftrc), &
@@ -121,7 +121,7 @@ subroutine zwaeckel(metaSteelPara, nbPhase, nbVari, &
                             zr(metaSteelPara%trc%iadtrc+3), &
                             zr(metaSteelPara%trc%iadtrc+metaSteelPara%trc%iadexp), &
                             metaSteelPara, &
-                            ti, tpi, dt10, &
+                            ti, tpi, deltaTime01, &
                             vari_dumm, metaCurr)
                 vari_dumm(:) = metaCurr(:)
             end do
@@ -132,18 +132,18 @@ subroutine zwaeckel(metaSteelPara, nbPhase, nbVari, &
                         zr(metaSteelPara%trc%iadtrc+3), &
                         zr(metaSteelPara%trc%iadtrc+metaSteelPara%trc%iadexp), &
                         metaSteelPara, &
-                        tpg1, tpoint, dt10, &
+                        temp1, tpoint, deltaTime01, &
                         metaPrev, metaCurr)
         end if
     else
-        if (abs(tpg2-tpg1) .gt. 5.001d0) then
+        if (abs(temp2-temp1) .gt. 5.001d0) then
 ! ----------------SUBDIVISION EN PAS DE CING DEGRE MAX
-            nbpas = int(abs(tpg2-tpg1)/5.d0-0.001d0)+1
-            dt21_mod = dt21/dble(nbpas)
+            nbpas = int(abs(temp2-temp1)/5.d0-0.001d0)+1
+            dt21_mod = deltaTime12/dble(nbpas)
             dmoins = metaPrev(nbPhase+SIZE_GRAIN)
             do i = 1, nbpas
-                ti1 = tpg1+(tpg2-tpg1)*dble(i-1)/dble(nbpas)
-                ti2 = tpg1+(tpg2-tpg1)*dble(i)/dble(nbpas)
+                ti1 = temp1+(temp2-temp1)*dble(i-1)/dble(nbpas)
+                ti2 = temp1+(temp2-temp1)*dble(i)/dble(nbpas)
                 tpoint = (ti2-ti1)/dt21_mod
                 zeq1i = min((ti1-metaSteelPara%ac1)/(metaSteelPara%ac3-metaSteelPara%ac1), un)
                 zeq2i = min((ti2-metaSteelPara%ac1)/(metaSteelPara%ac3-metaSteelPara%ac1), un)
@@ -173,7 +173,7 @@ subroutine zwaeckel(metaSteelPara, nbPhase, nbVari, &
                     coef_phase = (1.d0-(z2-zaust)/z2)
                 end if
                 call metaSteelGrainSize(metaSteelPara, &
-                                        ti1, dt10, dt21, &
+                                        ti1, deltaTime01, deltaTime12, &
                                         z2, coef_phase, &
                                         dmoins, metaCurr(nbPhase+SIZE_GRAIN))
                 if (metaSteelPara%l_grain_size) then
@@ -182,9 +182,9 @@ subroutine zwaeckel(metaSteelPara, nbPhase, nbVari, &
                 end if
             end do
         else
-            dt21_mod = dt21
+            dt21_mod = deltaTime12
             taux = metaSteelPara%taux_1+(metaSteelPara%taux_3-metaSteelPara%taux_1)*zeq1
-            if ((tpg1 .lt. (metaSteelPara%ac1-epsi)) .or. (zaust .ge. un)) then
+            if ((temp1 .lt. (metaSteelPara%ac1-epsi)) .or. (zaust .ge. un)) then
                 z2 = zaust
             else
                 if (zeq2 .ge. (un-epsi)) then
@@ -208,7 +208,7 @@ subroutine zwaeckel(metaSteelPara, nbPhase, nbVari, &
                 coef_phase = (1.d0-(z2-zaust)/z2)
             end if
             call metaSteelGrainSize(metaSteelPara, &
-                                    tpg1, dt10, dt21, &
+                                    temp1, deltaTime01, deltaTime12, &
                                     z2, coef_phase, &
                                     metaPrev(nbPhase+SIZE_GRAIN), metaCurr(nbPhase+SIZE_GRAIN))
         end if

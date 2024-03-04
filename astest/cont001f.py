@@ -95,7 +95,7 @@ val = gap.getValues()
 test.assertTrue(numpy.isnan(val[1]))
 val[1] = None
 val[2] = None
-test.assertSequenceEqual(val, [0.0, None, None, 31.093378263431475, 5.980746753595149])
+test.assertSequenceEqual(val, [0.0, None, None, 31.093378263431475, 5.980746753595154])
 test.assertSequenceEqual(i_gap.getValues(), [1.0, 0.0, 0.0, 1.0, 1.0])
 
 

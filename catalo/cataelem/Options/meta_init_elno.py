@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,15 +25,12 @@ import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
-
-PCOMPOR = InputParameter(phys=PHY.COMPOR)
-
-
-PPHASIN = InputParameter(phys=PHY.VAR2_R)
-
+PPHASOUT = OutputParameter(
+    phys=PHY.VARI_R, type="ELNO", comment="""Output field for phases in metallurgy"""
+)
 
 META_INIT_ELNO = Option(
-    para_in=(PCOMPOR, SP.PMATERC, PPHASIN, SP.PTEMPER),
-    para_out=(SP.PPHASNOU,),
+    para_in=(SP.PCOMPME, SP.PMATERC, SP.PPHASII, SP.PTEMPER),
+    para_out=(PPHASOUT,),
     condition=(CondCalcul("+", ((AT.PHENO, "TH"), (AT.BORD, "0"))),),
 )

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -80,7 +80,7 @@ CALC_META = OPER(
         COMPORTEMENT=FACT(
             statut="o",
             max=1,
-            RELATION=SIMP(statut="o", typ="TXM", into=("ACIER", "ZIRC")),
+            RELATION=SIMP(statut="o", typ="TXM", into=("ACIER", "ZIRC", "ACIER_REVENU")),
             b_acier=BLOC(
                 condition="""equal_to("RELATION", 'ACIER')""",
                 LOI_META=SIMP(statut="f", typ="TXM", defaut="WAECKEL", into=("WAECKEL",)),
@@ -92,7 +92,18 @@ CALC_META = OPER(
             regles=(PRESENT_ABSENT("TOUT", "GROUP_MA", "MAILLE"),),
             TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
             GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-            MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
+        ),
+        REVENU=FACT(
+            statut="f",
+            max=1,
+            RELATION=SIMP(statut="o", typ="TXM", into=("ACIER_REVENU",)),
+            b_acier_revenu=BLOC(
+                condition="""equal_to("RELATION", 'ACIER_REVENU')""",
+                LOI_META=SIMP(statut="f", typ="TXM", defaut="JMA", into=("JMA",)),
+            ),
+            regles=(PRESENT_ABSENT("TOUT", "GROUP_MA", "MAILLE"),),
+            TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
+            GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         ),
     ),
 )

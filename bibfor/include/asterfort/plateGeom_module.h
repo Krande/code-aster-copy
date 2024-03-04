@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,17 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+
 !
-interface
-    subroutine metaSteelTRCGetParameters(jv_mater, metaSteelPara)
-        use Metallurgy_type
-        integer, intent(in) :: jv_mater
-        type(META_SteelParameters), intent(inout) :: metaSteelPara
-    end subroutine metaSteelTRCGetParameters
-end interface
+! --------------------------------------------------------------------------------------------------
+!
+! Error codes when defining base
+!
+! --------------------------------------------------------------------------------------------------
+!
+#define BASE_NO_ERROR       0
+#define BASE_CELL_DEGE      1
+#define BASE_NORM_ZERO      2
+#define BASE_QUAD_NOPLANE   3
+
+#define BASE_TOLE_PLANE     1.d-4

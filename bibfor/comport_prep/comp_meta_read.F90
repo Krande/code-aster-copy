@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine comp_meta_read(metaPrepPara)
+subroutine comp_meta_read(metaPrepBehaviour)
 !
     use Metallurgy_type
 !
@@ -28,7 +28,7 @@ subroutine comp_meta_read(metaPrepPara)
 #include "asterc/lcinfo.h"
 #include "asterfort/getvtx.h"
 !
-    type(META_PrepPara), intent(inout) :: metaPrepPara
+    type(META_PrepBehaviour), intent(inout) :: metaPrepBehaviour
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -38,24 +38,27 @@ subroutine comp_meta_read(metaPrepPara)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! IO  metaPrepPara     : datastructure to prepare parameters for behaviour of metallurgy
+! IO  metaPrepBehaviour: datastructure to prepare parameters for behaviour of metallurgy
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=16), parameter :: factorKeyword = 'COMPORTEMENT'
-    integer :: i_comp, nb_comp
+    character(len=16) :: factorKeyword
+    integer :: iFactorKeyword, nbFactorKeyword
     character(len=16) :: metaType, metaLaw
     integer :: nbCompElem, numeComp, nbVari, idummy, idummy2, iret, nbPhase
     character(len=16) :: compElem(2), compCodePY, metaCodePY
+    aster_logical :: hasTemper
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nb_comp = metaPrepPara%nb_comp
+    factorKeyword = metaPrepBehaviour%factorKeyword
+    nbFactorKeyword = metaPrepBehaviour%nbFactorKeyword
+    hasTemper = ASTER_FALSE
 
 ! - Read informations in CALC_META
-    do i_comp = 1, nb_comp
-        call getvtx(factorKeyword, 'RELATION', iocc=i_comp, scal=metaType, nbret=iret)
-        call getvtx(factorKeyword, 'LOI_META', iocc=i_comp, scal=metaLaw, nbret=iret)
+    do iFactorKeyword = 1, nbFactorKeyword
+        call getvtx(factorKeyword, 'RELATION', iocc=iFactorKeyword, scal=metaType, nbret=iret)
+        call getvtx(factorKeyword, 'LOI_META', iocc=iFactorKeyword, scal=metaLaw, nbret=iret)
 
 ! ----- Create composite
         nbCompElem = 2
@@ -65,21 +68,26 @@ subroutine comp_meta_read(metaPrepPara)
         nbCompElem = 1
         compElem(1) = metaType
         call lccree(nbCompElem, compElem, metaCodePY)
+        if (metaType .eq. "ACIER_REVENU") then
+            hasTemper = ASTER_TRUE
+        end if
 
 ! ----- Get number of variables and index of behaviour
         call lcinfo(compCodePY, numeComp, nbVari, idummy)
         call lcinfo(metaCodePY, idummy, nbPhase, idummy2)
 
 ! ----- Save values
-        metaPrepPara%para(i_comp)%metaType = metaType
-        metaPrepPara%para(i_comp)%metaLaw = metaLaw
-        metaPrepPara%para(i_comp)%nbVari = nbVari
-        metaPrepPara%para(i_comp)%nbPhase = nbPhase
-        metaPrepPara%para(i_comp)%numeComp = numeComp
+        metaPrepBehaviour%paraBehaviour(iFactorKeyword)%metaType = metaType
+        metaPrepBehaviour%paraBehaviour(iFactorKeyword)%metaLaw = metaLaw
+        metaPrepBehaviour%paraBehaviour(iFactorKeyword)%nbVari = nbVari
+        metaPrepBehaviour%paraBehaviour(iFactorKeyword)%nbPhase = nbPhase
+        metaPrepBehaviour%paraBehaviour(iFactorKeyword)%numeComp = numeComp
 
 ! ----- Clean
         call lcdiscard(compCodePY)
         call lcdiscard(metaCodePY)
     end do
+
+    metaPrepBehaviour%hasTemper = hasTemper
 !
 end subroutine

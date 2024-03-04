@@ -214,8 +214,19 @@ CTEMPER = LocatedComponents(phys=PHY.TEMP_R, type="ELEM", components=("TEMP",))
 # Field for time parameters in metallurgy
 CTIMMTR = LocatedComponents(phys=PHY.INST_R, type="ELEM", components=("INST", "DELTA01", "DELTA12"))
 
+# For phases in metallurgy
+CPHASES = LocatedComponents(phys=PHY.VAR2_R, type="ELEM", components=("V[9]",))
+
 CTEREFE = LocatedComponents(phys=PHY.TEMP_R, type="ELEM", components=("TEMP",))
 
+# Field for error code
+ECODRET = LocatedComponents(phys=PHY.CODE_I, type="ELEM", components=("IRET",))
+
+# Field for values of indicator (AFFE_MODELE)
+CINDICR = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X[2]",))
+
+# Field for parameters of indicator (AFFE_MODELE)
+CCHCKPR = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X[2]",))
 
 CBORNPI = LocatedComponents(phys=PHY.PILO_R, type="ELEM", components=("A0", "A1"))
 
@@ -470,7 +481,7 @@ CONDPLR = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X[10]",))
 
 CPESANR = LocatedComponents(phys=PHY.PESA_R, type="ELEM", components=("G", "AG", "BG", "CG"))
 
-CPHASIN_ = LocatedComponents(phys=PHY.VAR2_R, type="ELEM", components=("V[7]",))
+CPHASES = LocatedComponents(phys=PHY.VAR2_R, type="ELEM", components=("V[9]",))
 
 CRAYONF = LocatedComponents(phys=PHY.RAYO_F, type="ELEM", components=("SIGMA", "EPSIL", "TPINF"))
 
@@ -616,7 +627,6 @@ ECARAGE = LocatedComponents(
 
 ECHALIM = LocatedComponents(phys=PHY.CHLI_R, type="ELEM", components=("CHLI[3]",))
 
-ECODRET = LocatedComponents(phys=PHY.CODE_I, type="ELEM", components=("IRET",))
 
 ECOOR1R = LocatedComponents(phys=PHY.N120_R, type="ELEM", components=("X[81]",))
 
@@ -760,7 +770,6 @@ EVITEFR = LocatedComponents(
 # ----------------------------------------------------------------------------------------------
 # Located components - ELNO - Field on nodes by element
 # ----------------------------------------------------------------------------------------------
-
 # For TOU_INI_ELNO
 ENNEUT_F = LocatedComponents(phys=PHY.NEUT_F, type="ELNO", components=("X[30]",))
 ENNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type="ELNO", components=("X[30]",))
@@ -909,6 +918,8 @@ NFLUX3R = LocatedComponents(phys=PHY.FLUX_R, type="ELNO", components=("FLUX", "F
 # For body source in thermic
 NSOURCR = LocatedComponents(phys=PHY.SOUR_R, type="ELNO", components=("SOUR",))
 
+# For phases in metallurgy
+EPHASES = LocatedComponents(phys=PHY.VARI_R, type="ELNO", components=("VARI",))
 
 DDL_NOZ1 = LocatedComponents(phys=PHY.SIZZ_R, type="ELNO", components=("SIZZ",))
 
@@ -988,7 +999,6 @@ ENOMIMA = LocatedComponents(
     phys=PHY.SPMX_R, type="ELNO", components=("VAL", "NUCOU", "NUSECT", "NUFIBR", "POSIC", "POSIS")
 )
 
-EPHASNO_ = LocatedComponents(phys=PHY.VARI_R, type="ELNO", components=("VARI",))
 
 EPRACNO = LocatedComponents(phys=PHY.PRAC_R, type="ELNO", components=("PRES_R", "PRES_I", "DB"))
 
@@ -1242,6 +1252,22 @@ EFLUX3R = LocatedComponents(
 
 # Field for hydratation
 EHYDRR = LocatedComponents(phys=PHY.HYDR_R, type="ELGA", location="MASS", components=("HYDR",))
+
+# For generalized forces - Plates (Real-3D)
+EGFG3DR = LocatedComponents(
+    phys=PHY.SIEF_R,
+    type="ELGA",
+    location="RIGI",
+    components=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
+)
+
+# For generalized forces - Plates (Complex-3D)
+EGFG3DC = LocatedComponents(
+    phys=PHY.SIEF_C,
+    type="ELGA",
+    location="RIGI",
+    components=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
+)
 
 EGMATE_R = LocatedComponents(
     phys=PHY.MATE_R,

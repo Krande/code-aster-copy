@@ -17,18 +17,18 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine nzcomp(jvMaterCode, metaPara, &
-                      numeComp, nbPhase, nbVari, &
-                      dt10, dt21, inst2, &
-                      tno0, tno1, tno2, &
+    subroutine nzcomp(jvMaterCode, metaPara, numeComp, &
+                      nbPhase, nbVari, &
+                      deltaTime01, deltaTime12, time2, &
+                      tempInit, temp1, temp2, &
                       metaPrev, metaCurr)
         use Metallurgy_type
         integer, intent(in) :: jvMaterCode
         type(META_MaterialParameters), intent(in) :: metaPara
         integer, intent(in) :: numeComp, nbPhase, nbVari
-        real(kind=8), intent(in) :: dt10, dt21, inst2
-        real(kind=8), intent(in) :: tno0, tno1, tno2
-        real(kind=8), intent(in) :: metaPrev(*)
-        real(kind=8), intent(out) :: metaCurr(*)
+        real(kind=8), intent(in) :: deltaTime01, deltaTime12, time2
+        real(kind=8), intent(in) :: tempInit, temp1, temp2
+        real(kind=8), intent(in) :: metaPrev(nbVari)
+        real(kind=8), intent(out) :: metaCurr(nbVari)
     end subroutine nzcomp
 end interface

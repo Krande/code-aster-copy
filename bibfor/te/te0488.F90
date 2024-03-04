@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -101,7 +101,7 @@ subroutine te0488(option, nomte)
         if (nno .eq. 3) then
             call dxtpgl(zr(jv_geom), pgl)
         else if (nno .eq. 4) then
-            call dxqpgl(zr(jv_geom), pgl, 'S', iret)
+            call dxqpgl(zr(jv_geom), pgl)
         end if
         call utpvlg(1, 3, pgl, gm1, gm2)
     end if
@@ -123,7 +123,7 @@ subroutine te0488(option, nomte)
             if (nno .eq. 3) then
                 call dxtpgl(zr(jv_geom), pgl)
             else if (nno .eq. 4) then
-                call dxqpgl(zr(jv_geom), pgl, 'S', iret)
+                call dxqpgl(zr(jv_geom), pgl)
             end if
             call utpvlg(1, 3, pgl, gm1, gm2)
         end if

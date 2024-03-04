@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -83,12 +83,12 @@ subroutine op0018()
     character(len=19) :: ligrel
     character(len=24) :: mesh_name_elem, kdis
     character(len=32) :: phemod
-    character(len=24) :: list_elem
+    character(len=24), parameter :: list_elem = '&&OP0018.LIST_ELEM'
     integer, pointer :: p_list_elem(:) => null()
     integer :: nb_elem
     aster_logical :: l_elem, l_grandeur_cara, lparallel_mesh
     aster_logical :: l_calc_rigi, l_need_neigh
-    aster_logical :: lCheckJacobian, lCheckFSINorms
+    aster_logical :: lCheckJacobian, lCheckFSINorms, lCheckPlaneity
     integer :: ielem, iaffe
     integer :: vali(4), ico, idx_modelisa
     integer, pointer :: p_cata_dim(:) => null()
@@ -115,64 +115,56 @@ subroutine op0018()
     call jemarq()
     call infmaj()
     call infniv(ifm, niv)
-!
+
 ! - Initializations
-!
     l_elem = .false.
-    list_elem = '&&OP0018.LIST_ELEM'
-!
+
 ! - Get command parameters
-!
     call getres(model, k16dummy, k16dummy)
     ligrel = model//'.MODELE'
-!
+
 ! - Get mesh
-!
     call getvid(' ', 'MAILLAGE', scal=mesh)
     call dismoi('PARALLEL_MESH', mesh, 'MAILLAGE', repk=repk)
     lparallel_mesh = repk .eq. 'OUI'
-!
+
 ! - Check jacobians
-!
     call getvtx(' ', 'VERI_JACOBIEN', scal=repk)
     lCheckJacobian = repk .eq. 'OUI'
-!
+
 ! - Check FSI normals
-!
     call getvtx(' ', 'VERI_NORM_IFS', scal=repk)
     lCheckFSINorms = repk .eq. 'OUI'
-!
+
+! - Check planeity
+    call getvtx(' ', 'VERI_PLAN', scal=repk)
+    lCheckPlaneity = repk .eq. 'OUI'
+
 ! - Grandeurs caracteristiques
-!
     keywordfact = 'GRANDEUR_CARA'
     call getfac(keywordfact, nbocc)
     l_grandeur_cara = nbocc .gt. 0
-!
+
 ! - AFFE_SOUS_STRUC
-!
     keywordfact = 'AFFE_SOUS_STRUC'
     call getfac(keywordfact, nb_affe_ss)
-!
+
 ! - AFFE
-!
     keywordfact = 'AFFE'
     call getfac(keywordfact, nb_affe)
-!
+
 ! - Access to catalog
-!
     call jeveuo('&CATA.TM.TMDIM', 'L', vi=p_cata_dim)
     call jenonu(jexnom('&CATA.TM.NOMTM', 'POI1'), nume_type_poi1)
-!
+
 ! - Common definition for model SD
-!
     call wkvect(model//'.MODELE    .LGRF', 'G V K8', 4, vk8=p_model_lgrf)
     call wkvect(model//'.MODELE    .NBNO', 'G V I', 1, vi=p_model_nbno)
     p_model_lgrf(1) = mesh
     p_model_lgrf(2) = model
     p_model_nbno(1) = 0
-!
+
 ! - Get phenomenon
-!
     if (nb_affe .gt. 0) then
         call getvtx('AFFE', 'PHENOMENE', iocc=1, scal=phenom)
     else if (nb_affe_ss .gt. 0) then
@@ -433,7 +425,7 @@ subroutine op0018()
 !
 ! - Check model
 !
-    call modelCheck(model, lCheckJacobian, lCheckFSINorms)
+    call modelCheck(model, lCheckJacobian, lCheckFSINorms, lCheckPlaneity)
 !
 ! - Create grandeurs caracteristiques
 !

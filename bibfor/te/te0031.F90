@@ -135,7 +135,7 @@ subroutine te0031(option, nomte)
     if (nno .eq. 3) then
         call dxtpgl(zr(jgeom), pgl)
     else if (nno .eq. 4) then
-        call dxqpgl(zr(jgeom), pgl, 'S', iret)
+        call dxqpgl(zr(jgeom), pgl)
     end if
     call utpvgl(nno, 3, pgl, zr(jgeom), xyzl)
 !
@@ -256,7 +256,7 @@ subroutine te0031(option, nomte)
             if (nno .eq. 3) then
                 call dxtpgl(zr(jgeom), pgl)
             else if (nno .eq. 4) then
-                call dxqpgl(zr(jgeom), pgl, 'S', iret)
+                call dxqpgl(zr(jgeom), pgl)
             end if
             call utpvgl(nno, 3, pgl, zr(jgeom), xyzl)
         end if
@@ -317,7 +317,7 @@ subroutine te0031(option, nomte)
                 if (nno .eq. 3) then
                     call dxtpgl(zr(jgeom), pgl)
                 else if (nno .eq. 4) then
-                    call dxqpgl(zr(jgeom), pgl, 'S', iret)
+                    call dxqpgl(zr(jgeom), pgl)
                 end if
                 call utpvgl(nno, 3, pgl, zr(jgeom), xyzl)
             end if

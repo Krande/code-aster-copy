@@ -18,8 +18,9 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine comp_meta_info(metaPrepPara)
+    subroutine comp_meta_info(factorKeyword, metaPrepBehaviour)
         use Metallurgy_type
-        type(META_PrepPara), intent(out) :: metaPrepPara
+        character(len=16), intent(in) :: factorKeyword
+        type(META_PrepBehaviour), intent(out) :: metaPrepBehaviour
     end subroutine comp_meta_info
 end interface

@@ -17,8 +17,8 @@
 ! --------------------------------------------------------------------
 !
 subroutine zacier(metaSteelPara, nbPhase, nbVari, &
-                  tpg0, tpg1, tpg2, &
-                  dt10, dt21, &
+                  temp0, temp1, temp2, &
+                  deltaTime01, deltaTime12, &
                   metaPrev, metaCurr)
 !
     use Metallurgy_type
@@ -32,8 +32,8 @@ subroutine zacier(metaSteelPara, nbPhase, nbVari, &
 !
     type(META_SteelParameters), intent(in) :: metaSteelPara
     integer, intent(in) :: nbPhase, nbVari
-    real(kind=8), intent(in) :: tpg0, tpg1, tpg2
-    real(kind=8), intent(in) :: dt10, dt21
+    real(kind=8), intent(in) :: temp0, temp1, temp2
+    real(kind=8), intent(in) :: deltaTime01, deltaTime12
     real(kind=8), intent(in) :: metaPrev(nbVari)
     real(kind=8), intent(out) :: metaCurr(nbVari)
 !
@@ -48,19 +48,19 @@ subroutine zacier(metaSteelPara, nbPhase, nbVari, &
 ! In  metaSteelPara       : material parameters for metallurgy of steel
 ! In  nbPhase             : number of phases
 ! In  nbVari              : number of internal state variables
-! In  tpg0                : temperature at time N-1
-! In  tpg1                : temperature at time N
-! In  tpg2                : temperature at time N+1
-! In  dt10                : increment of time [N-1, N]
-! In  dt21                : increment of time [N, N+1]
+! In  temp0               : temperature at time N-1
+! In  temp1               : temperature at time N
+! In  temp2               : temperature at time N+1
+! In  deltaTime01         : increment of time [N-1, N]
+! In  deltaTime12         : increment of time [N, N+1]
 ! In  metaPrev            : value of internal state variable at previous time step
 ! Out metaCurr            : value of internal state variable at current time step
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call zwaeckel(metaSteelPara, nbPhase, nbVari, &
-                  tpg0, tpg1, tpg2, &
-                  dt10, dt21, &
+                  temp0, temp1, temp2, &
+                  deltaTime01, deltaTime12, &
                   metaPrev, metaCurr)
 !
 end subroutine

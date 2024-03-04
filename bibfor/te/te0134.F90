@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -95,7 +95,7 @@ subroutine te0134(option, nomte)
     if (nnos .eq. 3) then
         call dxtpgl(coor, pgl)
     else if (nnos .eq. 4) then
-        call dxqpgl(coor, pgl, 'S', iret)
+        call dxqpgl(coor, pgl)
     end if
     alpha = zr(jcacoq+1)*r8dgrd()
     beta = zr(jcacoq+2)*r8dgrd()

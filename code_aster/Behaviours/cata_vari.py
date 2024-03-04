@@ -74,6 +74,7 @@ DICT_NOM_VARI = {
     "ATIL": _("FLUA_ENDO_PORO sulfo aluminates pour la def"),
     "AUSTENITE": _("phase métallurgique acier variable (austenite)"),
     "BAINITE": _("phase métallurgique acier variable (bainite)"),
+    "BAIN_REVENU": _("phase métallurgique acier variable (bainite, partie revenue)"),
     "BETINF": _("Déformation de la nappe inférieure du béton, max. abs sur X et Y"),
     "BETSUP": _("Déformation de la nappe supérieure du béton, max. abs sur X et Y"),
     "BIOG": _("FLUA_ENDO_PORO coeff de Biot effectif pour les RGI"),
@@ -125,6 +126,7 @@ DICT_NOM_VARI = {
     "CRITRUPT": _("Critère de rupture pour CRIT_RUPT"),
     "CRITSIG": _("Critère en contrainte, utilisé en Génie Civil"),
     "CSHR": _("FLUA_ENDO_PORO perte de viscosité par séchage (coeff de consolidation par séchage)"),
+    "CYCL_THER": _("Indicateur de l'état du cyle thermique pour le modèle JMA en métallurgie"),
     "DABSCPZ": _(
         "Fondations discret : Somme des incréments du déplacement plastique selon z, critère de Capacité Portante"
     ),
@@ -551,6 +553,7 @@ DICT_NOM_VARI = {
         "JOINT_MECA_FROT : paramètre croissant indiquant le déplacement tangentiel plastique cumulé (sans orientation)."
     ),
     "MARTENSITE": _("phase métallurgique acier variable (martensite)"),
+    "MARTENS_REVENU": _("phase métallurgique acier variable (martensite, partie revenue)"),
     "MEMOECRO": _("CIN2_MEMO : variable relative à la mémoire d'écrouissage q"),
     "MIXITE_S": _("Taux de mixité calculé à partir des sauts de déplacements"),
     "MIXITE_G": _("Taux de mixité calculé à partir des taux de restitution d'énergie"),

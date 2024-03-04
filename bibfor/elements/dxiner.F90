@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ subroutine dxiner(nnoe, xyzg1, rho, epais, mass, &
 !-----------------------------------------------------------------------
     integer :: i, idec, idfdx, idfdy, ino, ipg, ipoids
     integer :: ivf, j, jdec, jgano, jno, k, kdec
-    integer :: ldec, ndim, nno, nnos, npg1, iret
+    integer :: ldec, ndim, nno, nnos, npg1
     real(kind=8) :: aire, axg, axggau, axl, axlgau, axx, axxgau
     real(kind=8) :: axy, axygau, ayg, ayggau, ayl, aylgau, ayy
     real(kind=8) :: ayygau, azg, azggau, douze, roep, s1
@@ -80,7 +80,7 @@ subroutine dxiner(nnoe, xyzg1, rho, epais, mass, &
     if (nnoe .eq. 3) then
         call dxtpgl(xyzg1, pgl)
     else if (nnoe .eq. 4) then
-        call dxqpgl(xyzg1, pgl, 'S', iret)
+        call dxqpgl(xyzg1, pgl)
     end if
 !
 ! --- DETERMINATION DES COORDONNEES DES NOEUDS DANS LE REPERE LOCAL :

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,8 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine comp_meta_prnt(compor_info)
-        character(len=19), intent(in) :: compor_info
+    subroutine comp_meta_prnt(hasTemper, comporMetaInfo)
+        aster_logical, intent(in) :: hasTemper
+        character(len=19), intent(in) :: comporMetaInfo
     end subroutine comp_meta_prnt
 end interface

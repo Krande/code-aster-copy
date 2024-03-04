@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,8 +19,8 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine modelCheck(model, lCheckJacobian, lCheckFSINorms)
+    subroutine modelCheck(model, lCheckJacobian, lCheckFSINorms, lCheckPlaneity)
         character(len=8), intent(in) :: model
-        aster_logical, intent(in) :: lCheckJacobian, lCheckFSINorms
+        aster_logical, intent(in) :: lCheckJacobian, lCheckFSINorms, lCheckPlaneity
     end subroutine modelCheck
 end interface

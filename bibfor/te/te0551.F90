@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,6 +18,9 @@
 !
 subroutine te0551(option, nomte)
 !
+    use Metallurgy_type
+    use MetallurgySteel_Compute_module
+!
     implicit none
 !
 #include "jeveux.h"
@@ -26,6 +29,8 @@ subroutine te0551(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
+#include "asterfort/Metallurgy_type.h"
+#include "MeshTypes_type.h"
 !
     character(len=16), intent(in) :: option, nomte
 !
@@ -43,50 +48,66 @@ subroutine te0551(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, idurt, iphasi, iret
-    integer :: nb_node, imate, i_node, nb_vari
-    integer :: icodre(5), kpg, spt
-    real(kind=8) :: phase(5), valres(5), durtno
-    character(len=8) :: fami, poum
-    character(len=24) :: nomres(5)
+    integer :: iPhase, jvDurt, jvPhaseIn, iret
+    integer :: nbNode, jvMater, iNode, nbVari, nbPhase
+    real(kind=8) :: phase(PRSTEEL_NB), durtno
+    character(len=16) :: metaType
     integer :: jtab(6)
+    type(META_HardnessParameters) :: metaHardnessPara
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    fami = 'FPG1'
-    kpg = 1
-    spt = 1
-    poum = '+'
-    call elrefe_info(fami='RIGI', nno=nb_node)
-!
+    call elrefe_info(fami='RIGI', nno=nbNode)
+    ASSERT(nbNode .le. MT_NNOMAX3D)
+
+! - Input/Output fields
     call tecach('OOO', 'PPHASIN', 'L', iret, nval=6, itab=jtab)
-    nb_vari = jtab(6)
-    iphasi = jtab(1)
-    call jevech('PMATERC', 'L', imate)
-    call jevech('PDURT_R', 'E', idurt)
+    nbVari = jtab(6)
+    jvPhaseIn = jtab(1)
+    call jevech('PMATERC', 'L', jvMater)
+    call jevech('PDURT_R', 'E', jvDurt)
+
+    ! fami = 'FPG1'
+    ! kpg = 1
+    ! spt = 1
+    ! poum = '+'
+
+! - Type of phases
+    if (nbVari .eq. NBVARIWAECKEL) then
+        nbPhase = PSTEEL_NB
+        metaType = "ACIER"
+    else if (nbVari .eq. NBVARIJMA) then
+        nbPhase = PRSTEEL_NB
+        metaType = "ACIER_REVENU"
+    else
+        ASSERT(ASTER_FALSE)
+    end if
 !
+
 ! - Get material properties
-!
-    nomres(1) = 'F1_DURT'
-    nomres(2) = 'F2_DURT'
-    nomres(3) = 'F3_DURT'
-    nomres(4) = 'F4_DURT'
-    nomres(5) = 'C_DURT'
-    call rcvalb(fami, kpg, spt, poum, zi(imate), &
-                ' ', 'DURT_META', 1, 'TEMP', [0.d0], &
-                5, nomres, valres, icodre, 2)
-!
+    call metaHardnessGetParameters(zi(jvMater), metaType, metaHardnessPara)
+    ! nomres(1) = 'F1_DURT'
+    ! nomres(2) = 'F2_DURT'
+    ! nomres(3) = 'F3_DURT'
+    ! nomres(4) = 'F4_DURT'
+    ! nomres(5) = 'C_DURT'
+    ! call rcvalb(fami, kpg, spt, poum, zi(jvMater), &
+    !             ' ', 'DURT_META', 1, 'TEMP', [0.d0], &
+    !             5, nomres, valres, icodre, 2)
+
 ! - Compute
-!
-    do i_node = 1, nb_node
-        do i = 1, 5
-            phase(i) = zr(iphasi+nb_vari*(i_node-1)+i-1)
+    do iNode = 1, nbNode
+! ----- Get phases
+        do iPhase = 1, nbPhase
+            phase(iPhase) = zr(jvPhaseIn+nbVari*(iNode-1)+iPhase-1)
         end do
+
+! ----- Compute hardness
         durtno = 0.d0
-        do i = 1, 5
-            durtno = durtno+phase(i)*valres(i)
+        do iPhase = 1, nbPhase
+            durtno = durtno+phase(iPhase)*metaHardnessPara%hardSteel(iPhase)
         end do
-        zr(idurt+(i_node-1)) = durtno
+        zr(jvDurt+(iNode-1)) = durtno
     end do
 !
 end subroutine

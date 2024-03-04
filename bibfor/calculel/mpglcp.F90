@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine mpglcp(typecp, nbnolo, coordo, alpha, beta, &
-                  gamma, pgl, iret)
+                  gamma, pgl)
     implicit none
 #include "jeveux.h"
 #include "asterfort/angvx.h"
@@ -27,7 +27,7 @@ subroutine mpglcp(typecp, nbnolo, coordo, alpha, beta, &
 #include "asterfort/dxtpgl.h"
 #include "asterfort/matrot.h"
     character(len=1) :: typecp
-    integer :: nbnolo, iret
+    integer :: nbnolo
     real(kind=8) :: coordo(*), alpha, beta, gamma, pgl(3, 3)
 !     --- ARGUMENTS ---
 ! ----------------------------------------------------------------------
@@ -59,14 +59,11 @@ subroutine mpglcp(typecp, nbnolo, coordo, alpha, beta, &
 !
 ! OUT :
 !   PGL     R*   LA MATRICE DE PASSAGE DE DIMENSION 3*3
-!   IRET    I    CODE RETOUR
 ! ----------------------------------------------------------------------
-! person_in_charge: nicolas.sellenet at edf.fr
 !
     real(kind=8) :: xd(3), angl(3), alphal, betal, t2iu(2, 2), t2ui(2, 2), c, s
     real(kind=8) :: mat1(3, 3), mat2(3, 3)
 !
-    iret = 0
     if ((typecp .eq. 'P') .or. (typecp .eq. 'D')) then
         ASSERT((nbnolo .eq. 2) .or. (nbnolo .eq. 3))
 !       CALCUL DE ALPHA ET BETA
@@ -89,7 +86,7 @@ subroutine mpglcp(typecp, nbnolo, coordo, alpha, beta, &
         if (nbnolo .eq. 3) then
             call dxtpgl(coordo, pgl)
         else if (nbnolo .eq. 4) then
-            call dxqpgl(coordo, pgl, 'C', iret)
+            call dxqpgl(coordo, pgl)
         else
             ASSERT(.false.)
         end if

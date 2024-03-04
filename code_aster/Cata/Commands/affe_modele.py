@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -364,7 +364,14 @@ AFFE_MODELE = OPER(
         typ="TXM",
         into=("OUI", "NON"),
         defaut="OUI",
-        fr=tr("Vérification de l'orientation des normales pur l'IFS"),
+        fr=tr("Vérification de l'orientation des normales pour l'IFS"),
+    ),
+    VERI_PLAN=SIMP(
+        statut="f",
+        typ="TXM",
+        into=("OUI", "NON"),
+        defaut="OUI",
+        fr=tr("Vérification de la planéité des éléments"),
     ),
     translation={
         "AFFE_MODELE": "Assign finite element",
