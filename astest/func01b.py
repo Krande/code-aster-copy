@@ -20,8 +20,9 @@
 from math import sin, pi
 import numpy as np
 
-from code_aster import CA
+
 from code_aster.Commands import *
+from code_aster import CA
 
 CA.init("--test", ERREUR=_F(ERREUR_F="EXCEPTION"))
 

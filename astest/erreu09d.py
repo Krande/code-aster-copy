@@ -17,18 +17,16 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-
 from code_aster.Commands import *
 from code_aster import CA
 
-CA.init("--test", "--continue", ERREUR=_F(ALARME="EXCEPTION"))
+CA.init("--test")
 
 test = CA.TestCase()
 
-test.assertEqual(list_i.size(), 11, msg="nbsteps")
-test.assertIsNone(list_i.getInitial())
-test.assertAlmostEqual(list_i.getFinal(), 10.0)
+nbsteps = RESU.getLastIndex()
 
-print("ACTIONS:", list_i._actions)
+test.assertGreater(nbsteps, 10, msg="number of steps calculated before time limit")
+test.printSummary()
 
 CA.close()

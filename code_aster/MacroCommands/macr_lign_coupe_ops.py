@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import math
 import os
 from math import asin, atan2, cos, pi, sin, sqrt
 
@@ -652,9 +651,11 @@ def crea_mail_lig_coup(dimension, lignes, groups, arcs):
     return resu, arcgma, angles, nbno
 
 
-# extrait les coordonnées du noeud ORIG ou EXTR à partir des coordonnées
-# ou bien d'un groupe de noeuds ne contenant qu'un seul noeud.
 def get_coor(LIGN_COUPE, position, coord, mesh):
+    """
+    Extrait les coordonnées du noeud ORIG ou EXTR à partir des coordonnées
+    ou bien d'un groupe de noeuds ne contenant qu'un seul noeud.
+    """
     assert position in ("ORIG", "EXTR")
     if "GROUP_NO_" + position in LIGN_COUPE:
         group = LIGN_COUPE["GROUP_NO_" + position]
@@ -665,6 +666,8 @@ def get_coor(LIGN_COUPE, position, coord, mesh):
             UTMESS("F", "POST0_27", valk=group, vali=len(nodes))
         node = nodes[0]
         coor = [coord.getNode(node).x(), coord.getNode(node).y(), coord.getNode(node).z()]
+        # only COOR_xxxx can be used further
+        LIGN_COUPE["COOR_" + position] = coor
     elif "COOR_" + position in LIGN_COUPE:
         coor = LIGN_COUPE["COOR_" + position]
     else:

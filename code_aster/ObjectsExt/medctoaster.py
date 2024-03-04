@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,12 +23,13 @@ from ..Messages import UTMESS
 from ..Utilities import MPI, Timer, config
 from ..Utilities import medcoupling as medc
 from ..Utilities import no_new_attributes
-from ..Utilities.MedUtils import MedFileReader, MedFileAccessType
-
-from ..Utilities.MedUtils.medtoasterconnectivity import ASTER_TYPES
-from ..Utilities.MedUtils.medtoasterconnectivity import MED_TYPES
-from ..Utilities.MedUtils.medtoasterconnectivity import MED2ASTER_CONNECT
-from ..Utilities.MedUtils.medtoasterconnectivity import MYMED2ASTER_CONNECT
+from ..Utilities.MedUtils import MedFileAccessType, MedFileReader
+from ..Utilities.MedUtils.medtoasterconnectivity import (
+    ASTER_TYPES,
+    MED2ASTER_CONNECT,
+    MED_TYPES,
+    MYMED2ASTER_CONNECT,
+)
 
 
 # Fonction manquante dans medcoupling

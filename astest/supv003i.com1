@@ -20,8 +20,9 @@
 # aslint: disable=C2020
 # Check other deprecation warnings
 # + 'max' behaviour in commands catalogs
-from code_aster import CA
+
 from code_aster.Commands import *
+from code_aster import CA
 
 POURSUITE(
     CODE="OUI",

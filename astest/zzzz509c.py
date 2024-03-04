@@ -19,8 +19,9 @@
 
 # Copy of hsnv121b test-case
 
-from code_aster import CA
+
 from code_aster.Commands import *
+from code_aster import CA
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), INFO=1)
 

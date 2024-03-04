@@ -26,9 +26,10 @@
 
 import os.path as osp
 
-from code_aster import CA
+
 from code_aster.CA import MPI
 from code_aster.Commands import *
+from code_aster import CA
 
 root = osp.dirname(__file__)
 

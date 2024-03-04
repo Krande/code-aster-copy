@@ -83,7 +83,7 @@ class Closer(ExecuteCommand):
         Arguments:
             keywords (dict): User keywords
         """
-        if cls._is_finalized:
+        if cls._is_finalized or not libaster.jeveux_status():
             return
         super().run(**keywords)
 
@@ -102,6 +102,8 @@ class Closer(ExecuteCommand):
             self._options |= FinalizeOptions.OnlyProc0
         super().exec_(keywords)
         Closer._is_finalized = True
+        # restore excepthook
+        sys.excepthook = sys.__excepthook__
 
     def _call_oper(self, dummy):
         """Save objects that exist in the context of the caller.

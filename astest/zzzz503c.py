@@ -19,9 +19,10 @@
 
 import os.path as osp
 
-from code_aster import CA
+
 from code_aster.CA import MPI
 from code_aster.Commands import *
+from code_aster import CA
 from code_aster.Utilities import shared_tmpdir
 
 CA.init("--test")

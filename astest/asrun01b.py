@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -573,12 +573,14 @@ class TestStatus(unittest.TestCase):
         self.assertEqual(SO.name(status.state), "OK")
         self.assertTrue(status.state & SO.Completed)
         self.assertTrue(status.is_completed())
+        self.assertTrue(status.results_saved())
         self.assertFalse(status.state & SO.Error)
         self.assertSequenceEqual(status.times, [0.0] * 4)
 
         status = get_status(1, "")
         self.assertEqual(status.state, SO.Abort)
         self.assertFalse(status.is_completed())
+        self.assertFalse(status.results_saved())
         self.assertEqual(status.exitcode, 1)
         self.assertEqual(SO.name(status.state), "<F>_ABNORMAL_ABORT")
         self.assertFalse(status.state & SO.Completed)
@@ -597,6 +599,8 @@ class TestStatus(unittest.TestCase):
         self.assertFalse(status.state & SO.Ok)
         self.assertTrue(status.state & SO.Completed)
         self.assertFalse(status.state & SO.Error)
+        self.assertTrue(status.is_completed())
+        self.assertTrue(status.results_saved())
 
         output = "\n".join(["! <A> SUPERVIS_22 !", "NOOK 1. 0...."])
         status = get_status(0, output)
@@ -605,6 +609,8 @@ class TestStatus(unittest.TestCase):
         self.assertFalse(status.state & SO.Ok)
         self.assertTrue(status.state & SO.Completed)
         self.assertFalse(status.state & SO.Error)
+        self.assertTrue(status.is_completed())
+        self.assertTrue(status.results_saved())
 
         status = get_status(1, "<TimeLimitError>")
         self.assertEqual(status.state, SO.CpuLimit)
@@ -612,10 +618,13 @@ class TestStatus(unittest.TestCase):
         self.assertFalse(status.state & SO.Ok)
         self.assertFalse(status.state & SO.Completed)
         self.assertTrue(status.state & SO.Error)
+        self.assertFalse(status.is_completed())
+        self.assertTrue(status.results_saved())
 
         output = "\n".join(
             [
-                "! <S> <MECANONLINE_12> ARRET PAR MANQUE DE TEMPS CPU !",
+                "! <S> Arrêt par manque de temps !",
+                "! <TimeLimitError> <MECANONLINE_12>  !",
                 "SyntaxError: unexpected argument",
             ]
         )
@@ -625,6 +634,8 @@ class TestStatus(unittest.TestCase):
         self.assertFalse(status.state & SO.Ok)
         self.assertFalse(status.state & SO.Completed)
         self.assertTrue(status.state & SO.Error)
+        self.assertFalse(status.is_completed())
+        self.assertTrue(status.results_saved())
 
         output = "\n".join(
             ["! <ConvergenceError> <MECANONLINE_44> bla bla !", "<TimeLimitError>: xxxx"]
@@ -635,6 +646,8 @@ class TestStatus(unittest.TestCase):
         self.assertFalse(status.state & SO.Ok)
         self.assertFalse(status.state & SO.Completed)
         self.assertTrue(status.state & SO.Error)
+        self.assertFalse(status.is_completed())
+        self.assertTrue(status.results_saved())
 
         output = "\n".join(
             ["-- CODE_ASTER -- VERSION : DÉVELOPPEMENT (unstable) --", " OK assert True passed"]
@@ -645,6 +658,8 @@ class TestStatus(unittest.TestCase):
         self.assertFalse(status.state & SO.Ok)
         self.assertFalse(status.state & SO.Completed)
         self.assertTrue(status.state & SO.Error)
+        self.assertFalse(status.is_completed())
+        self.assertFalse(status.results_saved())
 
 
 class TestUtils(unittest.TestCase):

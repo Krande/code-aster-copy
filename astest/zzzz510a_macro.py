@@ -19,10 +19,11 @@
 """
 POST_BEREMIN option SIGM_ELMOY codée par Sébastien Meunier
 """
-from code_aster import CA
+
 import aster
 
-from code_aster.Commands import CALC_CHAM_ELEM, CREA_CHAMP, CALC_CHAMP
+from code_aster.Commands import *
+from code_aster import CA
 
 test = CA.TestCase()
 

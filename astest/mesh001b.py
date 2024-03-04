@@ -17,10 +17,11 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from code_aster import CA
+
 import numpy as np
 
-from code_aster.Commands import DEFI_GROUP
+from code_aster.Commands import *
+from code_aster import CA
 from code_aster.CA import MPI
 
 

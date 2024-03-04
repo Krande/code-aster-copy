@@ -21,8 +21,9 @@ import numpy as np
 from math import pi
 import os
 
-from code_aster import CA
+
 from code_aster.Commands import *
+from code_aster import CA
 
 CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 
