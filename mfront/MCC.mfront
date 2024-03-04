@@ -1,0 +1,245 @@
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+// |                                       |
+// | Constitutive model Modified Cam-Clay  |
+// | Author : G. Bacquaert, EDF R&D ERMES  |
+// |                                       |
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+@Parser Implicit;
+@Behaviour MCC;
+@Author Goustan Bacquaert;
+@Date 05/12/2023;
+
+@Algorithm NewtonRaphson;
+@CompareToNumericalJacobian false;
+@Theta 1.;
+@Epsilon 1.e-14;
+
+/// >>>>>>>>>>>>>>>>>>>
+/// Material properties
+/// <<<<<<<<<<<<<<<<<<<
+
+@MaterialProperty stress k;          // Bulk modulus [Pa]                        @PhysicalBounds k in ]0:*[;
+@MaterialProperty stress mu;         // Shear modulus [Pa]                       @PhysicalBounds mu in ]0:*[;
+@MaterialProperty real kp;           // Swelling index [-]                       @PhysicalBounds kp in [0:*[;
+@MaterialProperty stress pc0;        // Initial critical pressure [Pa]           @PhysicalBounds pc0 in ]0:*[;
+@MaterialProperty real M;            // Criticial state line slope [-]           @PhysicalBounds M in ]0:*[;
+@MaterialProperty stress s0;         // Yield stress in isotropic traction [Pa]  @PhysicalBounds s0 in [0:*[;
+@MaterialProperty real bt;           // Volumetric hardening index [-]           @PhysicalBounds bt in [0:*[;
+k.setGlossaryName("BulkModulus");
+mu.setGlossaryName("ShearModulus");
+kp.setEntryName("SwellingIndex");
+pc0.setEntryName("InitCritPress");
+M.setEntryName("CritStateSlope");
+s0.setEntryName("TensileYieldStress");
+bt.setEntryName("IncoPlastIndex");
+
+/// >>>>>>>>>>>>>>>
+/// Local variables
+/// <<<<<<<<<<<<<<<
+
+@LocalVariable bool b;               // If b=True, plastic loading
+@LocalVariable Stensor id2;          // Identity of order 2
+@LocalVariable Stensor4 id4;         // Identity or order 4
+@LocalVariable Stensor4 k4;          // Deviatoric projector of order 4
+@LocalVariable Stensor4 j4;          // Spheric projector of order 4
+@LocalVariable Stensor sigel;        // Elastic stress prediction
+
+/// >>>>>>>>>>>>>>>
+/// State variables
+/// <<<<<<<<<<<<<<<
+
+@StateVariable real lam;
+@StateVariable real epv;
+lam.setEntryName("CumPlastStrain");
+epv.setEntryName("VolPlastStrain");
+
+/// >>>>>>>>>>>>>>>>>>>>>>>>>
+/// Auxiliary State Variables
+/// <<<<<<<<<<<<<<<<<<<<<<<<<
+
+@AuxiliaryStateVariable stress Rn;   // Old yield stress at previous time
+@AuxiliaryStateVariable stress Hn;   // Yield size increase
+@AuxiliaryStateVariable real Ip;     // Plastic index
+@AuxiliaryStateVariable stress Di;   // Dissipated energy per volume unit
+@AuxiliaryStateVariable real Inst;   // Time for the initialization of elastic strain in case of initial stress state
+Rn.setEntryName("OldYieldSize");
+Hn.setEntryName("YieldSizeGrowth");
+Ip.setEntryName("PlasticIndex");
+Di.setEntryName("Dissipation");
+Inst.setEntryName("IniSigTime");
+
+/// >>>>>>>>>>>>>>>>>>>>
+/// Init Local Variables
+/// <<<<<<<<<<<<<<<<<<<<
+
+@InitLocalVariables{
+	id2=Stensor::Id();
+	k4=Stensor4::K();
+	j4=Stensor4::J();
+	id4=Stensor4::Id();
+	/// Initialize the yield stress
+	if (lam==0.){
+		Rn=pc0+s0;
+	}
+	/// Initialize elastic strain if there is initial stresses without displacements (tunnels or dams)
+	if (Inst==0. && lam==0.){
+		if (kp>0.){
+			eel=(1./kp*log(k/(k-kp*trace(sig)/3.))+kp*k/pow(k-kp*trace(sig)/3.,2.)*(deviator(sig)|deviator(sig))/(4.*mu))*id2/3.+k/(k-kp*trace(sig)/3.)*deviator(sig)/(2.*mu);
+		}
+		else{
+			eel=-k*trace(sig)/3.*id2/3.+deviator(sig)/(2.*mu);
+		}
+	}
+}
+
+/// >>>>>>>>>>>>>>>>>>>>>>>>>>
+/// Stress-strain relationship
+/// <<<<<<<<<<<<<<<<<<<<<<<<<<
+
+@ComputeStress{
+	if (kp>0.){
+		const real Upsilon=exp(-kp*trace(eel)+mu/k*(kp*deviator(eel)|kp*deviator(eel)));
+		sig=Upsilon*(-k/kp*id2+2.*mu*deviator(eel))+k/kp*id2;
+	}
+	else{
+		sig=k*trace(eel)*id2+2.*mu*deviator(eel);
+	}
+}
+
+/// >>>>>>>>>>>>>>>>>>
+/// Elastic Prediction
+/// <<<<<<<<<<<<<<<<<<
+
+@Predictor{
+	if (kp>0.){
+		const real Upsilon=exp(-kp*trace(eel+deto)+mu/k*(kp*deviator(eel+deto)|kp*deviator(eel+deto)));
+		sigel=Upsilon*(-k/kp*id2+2.*mu*deviator(eel+deto))+k/kp*id2;
+	}
+	else{
+		sigel=2.*mu*deviator(eel+deto)+k*trace(eel+deto)*id2;
+	}
+	/// Compute the force Ael
+	const Stensor Ael=sigel+pc0*exp(-bt*epv)*id2;
+	/// Compute the equivalent force Aeq
+	const stress Aeqel=sqrt(pow(sigmaeq(Ael)/M,2.)+pow(trace(Ael)/3.,2.));
+	/// Test if plasticity
+	b=Aeqel-Rn>0;
+}
+
+/// >>>>>>>>>>>
+/// Integration
+/// <<<<<<<<<<<
+
+@Integrator{
+
+	if(b){  /// Plastic loading
+		/// Compute the force A
+		const Stensor A=sig+pc0*exp(-bt*(epv+depv))*id2;
+		/// Compute the equivalent force Aeq
+		const stress Aeq=sqrt(pow(sigmaeq(A)/M,2.)+pow(trace(A)/3.,2.));
+		/// Compute the yield criterion
+		const stress fP=Aeq-(Rn+Hn*dlam);	
+		/// Compute the flow direction
+		const Stensor nP=(3.*deviator(A)/(2.*pow(M,2.))+(trace(A)/3.)*id2/3.)/Aeq;
+		
+		/// Equations to be solved
+		feel=deel-deto+dlam*nP;
+		flam=fP/k;
+		fepv=depv-dlam*trace(nP);
+		
+		/// Jacobian
+		/// Derivatives of the force A
+		const real     Upsilon=exp(-kp*trace(eel+deel)+mu/k*(kp*deviator(eel+deel)|kp*deviator(eel+deel)));
+		const Stensor4 dA_deel=Upsilon*(3.*k*j4+2.*mu*k4-2.*kp*mu*((id2^deviator(eel+deel))+(deviator(eel+deel)^id2))+pow(2.*kp*mu,2.)/k*(deviator(eel+deel)^deviator(eel+deel)));
+		const Stensor  dA_depv=-bt*pc0*exp(-bt*(epv+depv))*id2;
+		
+		/// Derivatives of the yield criterion fP
+		const Stensor dfP_deel=(nP|dA_deel);
+		const stress  dfP_dlam=-Hn;
+		const stress  dfP_depv=(nP|dA_depv);
+		
+		/// Derivatives of the flow direction nP
+		const Stensor4   dnP_dA=(3.*k4/(2.*pow(M,2.))+j4/3.-(nP^nP))/Aeq;
+		const Stensor4 dnP_deel=dnP_dA*dA_deel;
+		const Stensor  dnP_depv=dnP_dA*dA_depv;
+
+		/// 1st line of the jacobian
+		dfeel_ddeel=id4+dlam*dnP_deel;
+		dfeel_ddlam=nP;
+		dfeel_ddepv=dlam*dnP_depv;
+		
+		/// 2nd line of the jacobian
+		dflam_ddeel=dfP_deel/k;
+		dflam_ddlam=dfP_dlam/k;
+		dflam_ddepv=dfP_depv/k;
+		
+		/// 3rd line of the jacobian
+		dfepv_ddeel=-dlam*(id2|dnP_deel);
+		dfepv_ddlam=-trace(nP);
+		dfepv_ddepv=1.-dlam*(id2|dnP_depv);
+	}
+
+	else{   /// Elastic loading
+		feel=deel-deto;
+		flam=dlam;
+		fepv=depv;
+	}
+}
+
+/// <<<<<<<<<<<<<<<<
+/// Tangent operator
+/// >>>>>>>>>>>>>>>>
+
+@TangentOperator{ 
+	const real Upsilon=exp(-kp*trace(eel)+mu/k*(kp*deviator(eel)|kp*deviator(eel)));
+	StiffnessTensor De=Upsilon*(3.*k*j4+2.*mu*k4-2.*kp*mu*((id2^deviator(eel))+(deviator(eel)^id2))+pow(2.*kp*mu,2.)/k*(deviator(eel)^deviator(eel)));
+	Stensor4 Je;
+  	getPartialJacobianInvert(Je);
+  	Dt=De*Je;
+}
+
+/// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+/// Additional convergence checks
+/// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+@AdditionalConvergenceChecks{  	
+	if (converged){
+		/// Compute the force
+		const Stensor A=sig+pc0*exp(-bt*(epv+depv))*id2;
+		/// Compute the equivalent force Aeq
+		const stress Aeq=sqrt(pow(sigmaeq(A)/M,2.)+pow(trace(A)/3.,2.));
+		/// Compute the yield criterion
+		const stress fP=Aeq-(Rn+Hn*dlam);
+		if (b){
+			if (dlam<0.){
+				b=false;
+				converged=false;
+			}
+		} 
+		else if (!b){
+			if (fP>=0.){
+				b=true;
+				converged=false;
+			}
+		}
+	}
+}
+
+/// <<<<<<<<<<<<<<<<<<<<<<<<<
+/// Auxiliary State Variables
+/// >>>>>>>>>>>>>>>>>>>>>>>>>
+
+@UpdateAuxiliaryStateVariables{
+	const Stensor A=sig+pc0*exp(-bt*epv)*id2;
+	Rn=pc0*exp(-bt*epv)+s0;
+	Hn=max(-bt*(Rn-s0)/Rn*trace(A)/3.,0.);
+	if (b){
+		Ip=1.;
+		Di+=(A|(deto-deel));
+	}
+	else{
+		Ip=0.;
+	}
+	Inst+=dt;
+}
