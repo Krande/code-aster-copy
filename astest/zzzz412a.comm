@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -232,6 +232,7 @@ lfreqc = DEFI_LIST_REEL(DEBUT=0.15, INTERVALLE=_F(PAS=0.15, JUSQU_A=8.4))
 
 # IMPR_TABLE(TABLE=tabsol2D)
 
+LCOUCHE_ACCE = ["COUCH1A_", "COUCH1B_"]
 
 tabsol = DEFI_SOL_EQUI(
     MAILLAGE=mailcol,
@@ -581,6 +582,7 @@ tabsol = DEFI_SOL_EQUI(
         ),
     ),
     UNITE_TABLE_RESU=24,
+    UNITE_RESU_TRAN=6,
     LIEU_SIGNAL="CHAMP_LIBRE",
     FONC_SIGNAL_X=ACCEX,
     FONC_SIGNAL_Y=ACCEXL,
@@ -591,6 +593,8 @@ tabsol = DEFI_SOL_EQUI(
     SURF="OUI",
     FREQ_COUP=9.5,
     COEF_AMPL_ACCE=1.0,
+    TOUT_ACCE="NON",
+    LIST_COUCHE_ACCE=LCOUCHE_ACCE,
 )
 
 IMPR_TABLE(TABLE=tabsol)

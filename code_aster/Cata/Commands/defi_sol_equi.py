@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -71,6 +71,17 @@ DEFI_SOL_EQUI = MACRO(
             fr=tr("Signal impose d'accelero dans la direction Z"),
         ),
         TOUT_CHAM=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="OUI"),
+        TOUT_ACCE=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="OUI"),
+        b_TOUTACCE=BLOC(
+            condition="""equal_to("TOUT_ACCE", 'NON')""",
+            LIST_COUCHE_ACCE=SIMP(
+                statut="f",
+                typ=grma,
+                validators=NoRepeat(),
+                max="**",
+                fr=tr("liste des couches pour obtention du signal en accélération"),
+            ),
+        ),
         # Unite d entree de table de signaux
         UNITE_TRAN_INIT=SIMP(statut="f", typ=UnitType(), inout="in"),
         LIAISON=SIMP(statut="f", typ="TXM", into=("PERIODIQUE", "SANS")),
@@ -163,6 +174,17 @@ DEFI_SOL_EQUI = MACRO(
             fr=tr("sollicitation horizontale"),
         ),
         TOUT_CHAM=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="NON"),
+        TOUT_ACCE=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="OUI"),
+        b_TOUTACCE=BLOC(
+            condition="""equal_to("TOUT_ACCE", 'NON')""",
+            LIST_COUCHE_ACCE=SIMP(
+                statut="f",
+                typ=grma,
+                validators=NoRepeat(),
+                max="**",
+                fr=tr("liste des couches pour obtention du signal en accélération"),
+            ),
+        ),
         GROUP_MA_ARRETE_1=SIMP(statut="f", typ=grma),
         GROUP_MA_ARRETE_2=SIMP(statut="f", typ=grma),
         b_MAIL3D=BLOC(
