@@ -62,7 +62,7 @@ restran = DYNA_LINE(
 )
 
 dispRef1 = 0.14537012
-dispCal1 = 0.14640622360368874
+dispCal1 = 0.14640818188593302
 dispTol1 = 0.72 * 0.01
 timeTes1 = 0.05
 
@@ -97,7 +97,7 @@ resgene = DYNA_LINE(
 )
 
 dispRef2 = 0.14537012
-dispCal2 = 0.14639729836990278
+dispCal2 = 0.14639841067174492
 dispTol2 = 1.25 * 0.01
 timeTes2 = 0.05
 
@@ -193,7 +193,7 @@ TEST_FONCTION(VALEUR=_F(FONCTION=DEPL_DZ,
                         VALE_REFE=(dispRef3, )))"""
 
 dispRef3 = 3.253e-03
-dispCal3 = 3.253386824715e-03
+dispCal3 = 3.252066611753e-03
 dispTol3 = 0.05 * 0.01
 timeTes3 = 0.01
 

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,8 @@ module SolidShell_Kinematic_Hexa_module
 ! ==================================================================================================
     implicit none
 ! ==================================================================================================
-public :: compBCovaMatrHexa, compBCartMatrHexa, compBCartEASMatrHexa, compBMatrHexa, compEpsiHexa, &
+    public :: compBCovaMatrHexa, compBCartMatrHexa, compBCartEASMatrHexa, &
+              compBMatrHexa, compEpsiHexa, &
               compECovaMatrHexa, compEpsgHexa, &
               compEpslHexa
     public :: compGCovaMatrHexa, compGCovaSMatrHexa
@@ -195,7 +196,8 @@ contains
         integer, parameter :: nbNodeGeom = SSH_NBNODEG_HEXA
         integer :: iNodeGeom, EH, AD, JM, C1, C2
         real(kind=8) :: aux13(3), aux23(3), aux12(3), aux11(3), aux22(3), aux33(3)
-    real(kind=8) :: dN_dXsi(SSH_NBNODEG_HEXA), dN_dEta(SSH_NBNODEG_HEXA), dN_dZeta(SSH_NBNODEG_HEXA)
+        real(kind=8) :: dN_dXsi(SSH_NBNODEG_HEXA), dN_dEta(SSH_NBNODEG_HEXA)
+        real(kind=8) :: dN_dZeta(SSH_NBNODEG_HEXA)
         real(kind=8) :: J10(3), J1ETA(3), J1ZETA(3), J1ETAZETA(3)
         real(kind=8) :: J20(3), J2XI(3), J2ZETA(3), J2XIZETA(3)
         real(kind=8) :: J30(3), J3ETA(3), J3XI(3), J3XIETA(3)
@@ -291,7 +293,8 @@ contains
             kineHexa%BCovaZETAZETA(1, C1:C2) = hexaVectH3(iNodeGeom)*J1ZETA
             kineHexa%BCovaZETAZETA(2, C1:C2) = hexaVectH2(iNodeGeom)*J2ZETA
             kineHexa%BCovaZETAZETA(3, C1:C2) = 0.d0
-        kineHexa%BCovaZETAZETA(4, C1:C2) = hexaVectH2(iNodeGeom)*J1ZETA+hexaVectH3(iNodeGeom)*J2ZETA
+            kineHexa%BCovaZETAZETA(4, C1:C2) = hexaVectH2(iNodeGeom)* &
+                                               J1ZETA+hexaVectH3(iNodeGeom)*J2ZETA
             kineHexa%BCovaZETAZETA(5, C1:C2) = 0.d0
             kineHexa%BCovaZETAZETA(6, C1:C2) = 0.d0
         end do
@@ -466,12 +469,14 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         real(kind=8), intent(in)           :: zeta
+        real(kind=8)                       :: demih
         type(SSH_GEOM_HEXA), intent(in)    :: geomHexa
         type(SSH_KINE_HEXA), intent(inout) :: kineHexa
 !   ------------------------------------------------------------------------------------------------
 !
         kineHexa%BCartEAS = 0.d0
-        kineHexa%BCovaEAS = (/0.d0, 0.d0, -2.d0*zeta, 0.d0, 0.d0, 0.d0/)
+        demih = geomHexa%cellGeom%h0*0.5d0
+        kineHexa%BCovaEAS = (/0.d0, 0.d0, -2.d0*zeta*demih, 0.d0, 0.d0, 0.d0/)
         kineHexa%BCartEAS = matmul(geomHexa%T0, kineHexa%BCovaEAS)
 !
 !   ------------------------------------------------------------------------------------------------
@@ -575,7 +580,8 @@ contains
         integer :: AD, EH, JM
         real(kind=8) :: aux13, aux23, aux33, auxz12, auxz13, auxz23
         real(kind=8) :: XI(3)
-    real(kind=8) :: dN_dXsi(SSH_NBNODEG_HEXA), dN_dEta(SSH_NBNODEG_HEXA), dN_dZeta(SSH_NBNODEG_HEXA)
+        real(kind=8) :: dN_dXsi(SSH_NBNODEG_HEXA), dN_dEta(SSH_NBNODEG_HEXA)
+        real(kind=8) :: dN_dZeta(SSH_NBNODEG_HEXA)
         real(kind=8) :: GCovaZETAZETA(SSH_SIZE_TENS)
 !   ------------------------------------------------------------------------------------------------
 !
@@ -687,7 +693,8 @@ contains
         integer :: AD, EH, JM
         real(kind=8) :: aux13, aux23, aux33, aux11, aux12, aux22
         real(kind=8) :: XI(3)
-    real(kind=8) :: dN_dXsi(SSH_NBNODEG_HEXA), dN_dEta(SSH_NBNODEG_HEXA), dN_dZeta(SSH_NBNODEG_HEXA)
+        real(kind=8) :: dN_dXsi(SSH_NBNODEG_HEXA), dN_dEta(SSH_NBNODEG_HEXA)
+        real(kind=8) :: dN_dZeta(SSH_NBNODEG_HEXA)
 !   ------------------------------------------------------------------------------------------------
 !
         GCovaXI = 0.d0
