@@ -39,23 +39,44 @@ from ...Objects import ThermalResultDict, ElasticResultDict
 from . import mate_homo_utilities as utilities
 
 
-# fmt: off
 PARAMASSIF = [
-    "E_L", "E_T", "E_N",
-    "NU_LT", "NU_LN", "NU_TN",
-    "G_LT", "G_LN", "G_TN",
-    "ALPHA_L", "ALPHA_T", "ALPHA_N",
+    "E_L",
+    "E_T",
+    "E_N",
+    "NU_LT",
+    "NU_LN",
+    "NU_TN",
+    "G_LT",
+    "G_LN",
+    "G_TN",
+    "ALPHA_L",
+    "ALPHA_T",
+    "ALPHA_N",
     "RHO",
-    "LAMBDA_L", "LAMBDA_T", "LAMBDA_N",
+    "LAMBDA_L",
+    "LAMBDA_T",
+    "LAMBDA_N",
     "RHO_CP",
-    "A1111", "A2222", "A3333",
-    "A1122", "A1133", "A2233",
-    "A1212", "A2323", "A3131",
-    "NU_TL", "NU_NL", "NU_NT",
-    "K11", "K22", "K33",
-    "ISOTRANS", "TEMP_DEF_ALPHA",
+    "A1111",
+    "A2222",
+    "A3333",
+    "A1122",
+    "A1133",
+    "A2233",
+    "A1212",
+    "A2323",
+    "A3131",
+    "NU_TL",
+    "NU_NL",
+    "NU_NT",
+    "K11",
+    "K22",
+    "K33",
+    "ISOTRANS",
+    "TEMP_DEF_ALPHA",
 ]
-# fmt: on
+
+
 def calc_corr_massif_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, ls_group_ma):
     # Chargements pour calcul des correcteurs MECANIQUES
     # =======================================================================
@@ -352,26 +373,49 @@ def calc_tabpara_massif(DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, *
     loimel = calc_loimel_massif(DEPLMATE, ls_group_ma)
     tda = utilities.get_temp_def_alpha(DEPLMATE)
 
-    # fmt: off
     for i, (rank_meca, rank_ther) in enumerate(zip(ranks_meca, ranks_ther)):
 
         enerpot_dila = utilities.combine_enerpot(CORR_DILA, CORR_DILA, rank_meca, ls_group_ma)
 
-        enerpot_ther_11 = utilities.combine_enerpot(CORR_THER11, CORR_THER11, rank_ther, ls_group_ma)
-        enerpot_ther_22 = utilities.combine_enerpot(CORR_THER22, CORR_THER22, rank_ther, ls_group_ma)
-        enerpot_ther_33 = utilities.combine_enerpot(CORR_THER33, CORR_THER33, rank_ther, ls_group_ma)
+        enerpot_ther_11 = utilities.combine_enerpot(
+            CORR_THER11, CORR_THER11, rank_ther, ls_group_ma
+        )
+        enerpot_ther_22 = utilities.combine_enerpot(
+            CORR_THER22, CORR_THER22, rank_ther, ls_group_ma
+        )
+        enerpot_ther_33 = utilities.combine_enerpot(
+            CORR_THER33, CORR_THER33, rank_ther, ls_group_ma
+        )
 
-        enerpot_meca_11_11 = utilities.combine_enerpot(CORR_MECA11, CORR_MECA11, rank_meca, ls_group_ma)
-        enerpot_meca_22_22 = utilities.combine_enerpot(CORR_MECA22, CORR_MECA22, rank_meca, ls_group_ma)
-        enerpot_meca_33_33 = utilities.combine_enerpot(CORR_MECA33, CORR_MECA33, rank_meca, ls_group_ma)
+        enerpot_meca_11_11 = utilities.combine_enerpot(
+            CORR_MECA11, CORR_MECA11, rank_meca, ls_group_ma
+        )
+        enerpot_meca_22_22 = utilities.combine_enerpot(
+            CORR_MECA22, CORR_MECA22, rank_meca, ls_group_ma
+        )
+        enerpot_meca_33_33 = utilities.combine_enerpot(
+            CORR_MECA33, CORR_MECA33, rank_meca, ls_group_ma
+        )
 
-        enerpot_meca_11_22 = utilities.combine_enerpot(CORR_MECA11, CORR_MECA22, rank_meca, ls_group_ma)
-        enerpot_meca_11_33 = utilities.combine_enerpot(CORR_MECA11, CORR_MECA33, rank_meca, ls_group_ma)
-        enerpot_meca_22_33 = utilities.combine_enerpot(CORR_MECA22, CORR_MECA33, rank_meca, ls_group_ma)
+        enerpot_meca_11_22 = utilities.combine_enerpot(
+            CORR_MECA11, CORR_MECA22, rank_meca, ls_group_ma
+        )
+        enerpot_meca_11_33 = utilities.combine_enerpot(
+            CORR_MECA11, CORR_MECA33, rank_meca, ls_group_ma
+        )
+        enerpot_meca_22_33 = utilities.combine_enerpot(
+            CORR_MECA22, CORR_MECA33, rank_meca, ls_group_ma
+        )
 
-        enerpot_meca_12_12 = utilities.combine_enerpot(CORR_MECA12, CORR_MECA12, rank_meca, ls_group_ma)
-        enerpot_meca_23_23 = utilities.combine_enerpot(CORR_MECA23, CORR_MECA23, rank_meca, ls_group_ma)
-        enerpot_meca_31_31 = utilities.combine_enerpot(CORR_MECA31, CORR_MECA31, rank_meca, ls_group_ma)
+        enerpot_meca_12_12 = utilities.combine_enerpot(
+            CORR_MECA12, CORR_MECA12, rank_meca, ls_group_ma
+        )
+        enerpot_meca_23_23 = utilities.combine_enerpot(
+            CORR_MECA23, CORR_MECA23, rank_meca, ls_group_ma
+        )
+        enerpot_meca_31_31 = utilities.combine_enerpot(
+            CORR_MECA31, CORR_MECA31, rank_meca, ls_group_ma
+        )
 
         ########################
         # Matrice homogeneisee
@@ -380,13 +424,17 @@ def calc_tabpara_massif(DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, *
         K22_hom = 1 / volume_ver * (loimel["LAMBDA_THER"][i] - 2 * enerpot_ther_22)
         K33_hom = 1 / volume_ver * (loimel["LAMBDA_THER"][i] - 2 * enerpot_ther_33)
 
-        K_hom = np.array([[K11_hom, 0,       0      ],
-                          [0,       K22_hom, 0      ],
-                          [0,       0,       K33_hom]])
+        K_hom = np.array([[K11_hom, 0, 0], [0, K22_hom, 0], [0, 0, K33_hom]])
 
-        A1111_hom = 1 / volume_ver * (loimel["LAME1"][i] + 2 * loimel["LAME2"][i] - 2 * enerpot_meca_11_11)
-        A2222_hom = 1 / volume_ver * (loimel["LAME1"][i] + 2 * loimel["LAME2"][i] - 2 * enerpot_meca_22_22)
-        A3333_hom = 1 / volume_ver * (loimel["LAME1"][i] + 2 * loimel["LAME2"][i] - 2 * enerpot_meca_33_33)
+        A1111_hom = (
+            1 / volume_ver * (loimel["LAME1"][i] + 2 * loimel["LAME2"][i] - 2 * enerpot_meca_11_11)
+        )
+        A2222_hom = (
+            1 / volume_ver * (loimel["LAME1"][i] + 2 * loimel["LAME2"][i] - 2 * enerpot_meca_22_22)
+        )
+        A3333_hom = (
+            1 / volume_ver * (loimel["LAME1"][i] + 2 * loimel["LAME2"][i] - 2 * enerpot_meca_33_33)
+        )
 
         A1122_hom = 1 / volume_ver * (loimel["LAME1"][i] - 1 * enerpot_meca_11_22)
         A1133_hom = 1 / volume_ver * (loimel["LAME1"][i] - 1 * enerpot_meca_11_33)
@@ -398,12 +446,16 @@ def calc_tabpara_massif(DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, *
 
         check_isotrop_trans = abs(round((2 * A1212_hom - A1111_hom + A1122_hom) / A1212_hom, 12))
 
-        A_hom = np.array([[A1111_hom, A1122_hom, A1133_hom, 0,         0,         0         ],
-                          [A1122_hom, A2222_hom, A2233_hom, 0,         0,         0         ],
-                          [A1133_hom, A2233_hom, A3333_hom, 0,         0,         0         ],
-                          [0,         0,         0,         A1212_hom, 0,         0         ],
-                          [0,         0,         0,         0,         A2323_hom, 0         ],
-                          [0,         0,         0,         0,         0,         A3131_hom]])
+        A_hom = np.array(
+            [
+                [A1111_hom, A1122_hom, A1133_hom, 0, 0, 0],
+                [A1122_hom, A2222_hom, A2233_hom, 0, 0, 0],
+                [A1133_hom, A2233_hom, A3333_hom, 0, 0, 0],
+                [0, 0, 0, A1212_hom, 0, 0],
+                [0, 0, 0, 0, A2323_hom, 0],
+                [0, 0, 0, 0, 0, A3131_hom],
+            ]
+        )
 
         A_inv = np.linalg.inv(A_hom)
         K_inv = np.linalg.inv(K_hom)
@@ -462,7 +514,6 @@ def calc_tabpara_massif(DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, *
         dictpara["ISOTRANS"].append(check_isotrop_trans)
         dictpara["TEMP_DEF_ALPHA"].append(tda)
 
-    # fmt: on
     dictpara[varc_name] = ls_varc
 
     tabpara = CREA_TABLE(LISTE=[_F(PARA=para, LISTE_R=values) for para, values in dictpara.items()])

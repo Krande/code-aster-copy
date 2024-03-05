@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -39,56 +39,93 @@ from .mac3coeur_factory import Mac3Factory
 
 
 class Assemblage:
-
     """Classe définissant un assemblage combustible."""
 
-    # fmt: off
     required_parameters = [
         # Caractéristiques matériau
         # Rigidité en rotation des liaisons grille-tube guide
-        "KR_GM", "KR_GE",
+        "KR_GM",
+        "KR_GE",
         # Rigidité caractéristique des grilles de mélanges
-        "KNAXM", "KY_CM", "KM1", "KM2",
+        "KNAXM",
+        "KY_CM",
+        "KM1",
+        "KM2",
         # Rigidité caractéristique des grilles extremites
-        "KNAXE", "KY_CE", "KE1", "KE2",
+        "KNAXE",
+        "KY_CE",
+        "KE1",
+        "KE2",
         # Caractéristiques géométriques
         # des grilles
-        "altitude", "epaisseur", "longueur",
+        "altitude",
+        "epaisseur",
+        "longueur",
         # des tubes-guides
-        "NBTG", "RAY1GU", "EP1GU", "RAY2GU", "EP2GU",
-        "LONTU", "XINFT", "XSUPT",
+        "NBTG",
+        "RAY1GU",
+        "EP1GU",
+        "RAY2GU",
+        "EP2GU",
+        "LONTU",
+        "XINFT",
+        "XSUPT",
         # des crayons
-        "NBCR", "RAYCRA", "EPCRA", "LONCR", "XINFC", "XSUPC",
+        "NBCR",
+        "RAYCRA",
+        "EPCRA",
+        "LONCR",
+        "XINFC",
+        "XSUPC",
         # des grilles
-        "NBGR", "m_gri",
+        "NBGR",
+        "m_gri",
         # des embouts
-        "EEI0", "EES0",
-        "Leinf", "Keinf", "Lesup", "Kesup",
+        "EEI0",
+        "EES0",
+        "Leinf",
+        "Keinf",
+        "Lesup",
+        "Kesup",
         # Perte de charges
-        "K_EBSU", "K_GRE", "K_GRM", "K_TUB", "K_EBIN",
+        "K_EBSU",
+        "K_GRE",
+        "K_GRM",
+        "K_TUB",
+        "K_EBIN",
         # Poussee d Archimede de chaque élément
-        "AFEBSU_1", "AFGRE_1", "AFGRM_1", "AFTG_1", "AFCRA_1", "AFEBIN_1",
+        "AFEBSU_1",
+        "AFGRE_1",
+        "AFGRM_1",
+        "AFTG_1",
+        "AFCRA_1",
+        "AFEBIN_1",
     ]
     optional_parameters = [
         # Dilatation des grilles due a burnup thermique + alpha_thermique + fluence
-        "dilatBU", "AL_DIL",
-        
-        
+        "dilatBU",
+        "AL_DIL",
     ]
 
     computed_parameters = [
-        # Caractéristiques géométriques calculées à partir d'autres paramètres       
+        # Caractéristiques géométriques calculées à partir d'autres paramètres
         # des tubes-guides
-        "EPMOY", "S_TG_C", "I_TG_C", "S_TG_R", "I_TG_R", "S_TG_B", "I_TG_B",
+        "EPMOY",
+        "S_TG_C",
+        "I_TG_C",
+        "S_TG_R",
+        "I_TG_R",
+        "S_TG_B",
+        "I_TG_B",
         # des crayons
-        "S_CR", "I_CR",
+        "S_CR",
+        "I_CR",
         # des embouts
-        "Heinf", "Hesup",
+        "Heinf",
+        "Hesup",
     ]
 
     parameters = required_parameters + optional_parameters + computed_parameters
-
-    # fmt: on
 
     _nb_cr_mesh = 0
     _nb_tg_mesh = 0
@@ -638,7 +675,6 @@ class AssemblageAFAXL(Assemblage):
 
 
 class ACFactory(Mac3Factory):
-
     """Classe pour construire les objets Assemblage."""
 
     def build_supported_types(self):

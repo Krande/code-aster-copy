@@ -330,7 +330,6 @@ AFFE_CARA_ELEM = OPER(
                 ),
                 TABLE_CARA=SIMP(statut="f", typ=table_sdaster),
                 NOM_SEC=SIMP(statut="f", typ="TXM"),
-                # fmt: off
                 CARA=SIMP(
                     statut="f",
                     typ="TXM",
@@ -339,17 +338,27 @@ AFFE_CARA_ELEM = OPER(
                     fr=tr("A,IY,IZ,JX sont des paramètres obligatoires"),
                     validators=[NoRepeat(), Compulsory(["A", "IY", "IZ", "JX"])],
                     into=(
-                        "A",  "IY",  "IZ",   "AY",   "AZ",
-                        "EY", "EZ",  "JX",   "RY",   "RZ",
-                        "RT", "JG",  "IYR2", "IZR2", "AI",
+                        "A",
+                        "IY",
+                        "IZ",
+                        "AY",
+                        "AZ",
+                        "EY",
+                        "EZ",
+                        "JX",
+                        "RY",
+                        "RZ",
+                        "RT",
+                        "JG",
+                        "IYR2",
+                        "IZR2",
+                        "AI",
                     ),
                 ),
-                # fmt: on
                 VALE=SIMP(statut="f", typ="R", min=4, max=15),
             ),
             b_homothetique=BLOC(
                 condition="""equal_to("VARI_SECT", 'HOMOTHETIQUE')""",
-                # fmt: off
                 CARA=SIMP(
                     statut="o",
                     typ="TXM",
@@ -361,13 +370,36 @@ AFFE_CARA_ELEM = OPER(
                         Compulsory(["A1", "A2", "IY1", "IY2", "IZ1", "IZ2", "JX1", "JX2"]),
                     ],
                     into=(
-                        "A1",  "IY1",  "IZ1",  "AY1",  "AZ1",  "EY1",    "EZ1",
-                        "JX1", "RY1",  "RZ1",  "RT1",  "JG1",  "IYR21",  "IZR21",
-                        "A2",  "IY2",  "IZ2",  "AY2",  "AZ2",  "EY2",    "EZ2",
-                        "JX2", "RY2",  "RZ2",  "RT2",  "JG2",  "IYR22",  "IZR22",
+                        "A1",
+                        "IY1",
+                        "IZ1",
+                        "AY1",
+                        "AZ1",
+                        "EY1",
+                        "EZ1",
+                        "JX1",
+                        "RY1",
+                        "RZ1",
+                        "RT1",
+                        "JG1",
+                        "IYR21",
+                        "IZR21",
+                        "A2",
+                        "IY2",
+                        "IZ2",
+                        "AY2",
+                        "AZ2",
+                        "EY2",
+                        "EZ2",
+                        "JX2",
+                        "RY2",
+                        "RZ2",
+                        "RT2",
+                        "JG2",
+                        "IYR22",
+                        "IZR22",
                     ),
                 ),
-                # fmt: on
                 VALE=SIMP(statut="o", typ="R", min=8, max=30),
             ),
         ),
@@ -390,16 +422,12 @@ AFFE_CARA_ELEM = OPER(
                     validators=[
                         NoRepeat(),
                         OrVal(
-                            [
-                                AndVal([Compulsory(["H"]), Absent(["HY", "HZ", "EPY", "EPZ"])]),
-                                AndVal(
-                                    [
-                                        Compulsory(["HY", "HZ"]),
-                                        Together(["EPY", "EPZ"]),
-                                        Absent(["H", "EP"]),
-                                    ]
-                                ),
-                            ]
+                            AndVal(Compulsory(["H"]), Absent(["HY", "HZ", "EPY", "EPZ"])),
+                            AndVal(
+                                Compulsory(["HY", "HZ"]),
+                                Together(["EPY", "EPZ"]),
+                                Absent(["H", "EP"]),
+                            ),
                         ),
                     ],
                     into=("H", "EP", "HY", "HZ", "EPY", "EPZ"),
@@ -416,33 +444,18 @@ AFFE_CARA_ELEM = OPER(
                     validators=[
                         NoRepeat(),
                         OrVal(
-                            [
-                                AndVal(
-                                    [
-                                        Compulsory(["H1", "H2"]),
-                                        Together(["EP1", "EP2"]),
-                                        Absent(
-                                            [
-                                                "HY1",
-                                                "HY2",
-                                                "HZ1",
-                                                "HZ2",
-                                                "EPY1",
-                                                "EPY2",
-                                                "EPZ1",
-                                                "EPZ2",
-                                            ]
-                                        ),
-                                    ]
+                            AndVal(
+                                Compulsory(["H1", "H2"]),
+                                Together(["EP1", "EP2"]),
+                                Absent(
+                                    ["HY1", "HY2", "HZ1", "HZ2", "EPY1", "EPY2", "EPZ1", "EPZ2"]
                                 ),
-                                AndVal(
-                                    [
-                                        Compulsory(["HY1", "HY2", "HZ1", "HZ2"]),
-                                        Together(["EPY1", "EPY2", "EPZ1", "EPZ2"]),
-                                        Absent(["H1", "H2", "EP1", "EP2"]),
-                                    ]
-                                ),
-                            ]
+                            ),
+                            AndVal(
+                                Compulsory(["HY1", "HY2", "HZ1", "HZ2"]),
+                                Together(["EPY1", "EPY2", "EPZ1", "EPZ2"]),
+                                Absent(["H1", "H2", "EP1", "EP2"]),
+                            ),
                         ),
                     ],
                     into=(
@@ -471,9 +484,7 @@ AFFE_CARA_ELEM = OPER(
                     max=6,
                     validators=[
                         NoRepeat(),
-                        AndVal(
-                            [Compulsory(["HY", "HZ1", "HZ2"]), Together(["EPY", "EPZ1", "EPZ2"])]
-                        ),
+                        AndVal(Compulsory(["HY", "HZ1", "HZ2"]), Together(["EPY", "EPZ1", "EPZ2"])),
                     ],
                     into=("HY", "EPY", "HZ1", "EPZ1", "HZ2", "EPZ2"),
                 ),
@@ -509,9 +520,7 @@ AFFE_CARA_ELEM = OPER(
                     max=4,
                     validators=[
                         NoRepeat(),
-                        AndVal(
-                            [Compulsory(["R_DEBUT", "R_FIN"]), Together(["EP_DEBUT", "EP_FIN"])]
-                        ),
+                        AndVal(Compulsory(["R_DEBUT", "R_FIN"]), Together(["EP_DEBUT", "EP_FIN"])),
                     ],
                     fr=tr("R_DEBUT, R_FIN sont des paramètres obligatoires"),
                     into=("R_DEBUT", "R_FIN", "EP_DEBUT", "EP_FIN"),
@@ -571,16 +580,10 @@ AFFE_CARA_ELEM = OPER(
                 validators=[
                     NoRepeat(),
                     OrVal(
-                        [
-                            AndVal([Compulsory(["H"]), Absent(["HY", "HZ", "EPY", "EPZ"])]),
-                            AndVal(
-                                [
-                                    Compulsory(["HY", "HZ"]),
-                                    Together(["EPY", "EPZ"]),
-                                    Absent(["H", "EP"]),
-                                ]
-                            ),
-                        ]
+                        AndVal(Compulsory(["H"]), Absent(["HY", "HZ", "EPY", "EPZ"])),
+                        AndVal(
+                            Compulsory(["HY", "HZ"]), Together(["EPY", "EPZ"]), Absent(["H", "EP"])
+                        ),
                     ),
                 ],
                 into=("H", "EP", "HZ", "HY", "EPY", "EPZ"),
@@ -649,16 +652,37 @@ AFFE_CARA_ELEM = OPER(
             fr=tr(
                 "SYMETRIQUE: Affectation de matrices de rigidité, de masse ou d'amortissement à des mailles"
             ),
-            # fmt: off
-            CARA=SIMP(statut="f", typ="TXM", max=1,
-                into=(  "K_T_D_N", "K_T_D_L", "K_TR_D_N", "K_TR_D_L",
-                        "K_T_N",   "K_T_L",   "K_TR_N",   "K_TR_L",
-                        "M_T_D_N", "M_T_D_L", "M_TR_D_N", "M_TR_D_L",
-                        "M_T_N",   "M_T_L",   "M_TR_N",   "M_TR_L",
-                        "A_T_D_N", "A_T_D_L", "A_TR_D_N", "A_TR_D_L",
-                        "A_T_N",   "A_T_L",   "A_TR_N",   "A_TR_L", ),
+            CARA=SIMP(
+                statut="f",
+                typ="TXM",
+                max=1,
+                into=(
+                    "K_T_D_N",
+                    "K_T_D_L",
+                    "K_TR_D_N",
+                    "K_TR_D_L",
+                    "K_T_N",
+                    "K_T_L",
+                    "K_TR_N",
+                    "K_TR_L",
+                    "M_T_D_N",
+                    "M_T_D_L",
+                    "M_TR_D_N",
+                    "M_TR_D_L",
+                    "M_T_N",
+                    "M_T_L",
+                    "M_TR_N",
+                    "M_TR_L",
+                    "A_T_D_N",
+                    "A_T_D_L",
+                    "A_TR_D_N",
+                    "A_TR_D_L",
+                    "A_T_N",
+                    "A_T_L",
+                    "A_TR_N",
+                    "A_TR_L",
+                ),
             ),
-            # fmt: on
             #  Affection des caractéristiques de RIGIDITE/AMORTISSEMENT/MASSE
             b_AK_T_D_N=BLOC(
                 condition="""((equal_to("CARA", 'K_T_D_N')or(equal_to("CARA", 'A_T_D_N'))))""",
@@ -746,18 +770,25 @@ AFFE_CARA_ELEM = OPER(
             fr=tr(
                 "NON-SYMETRIQUE: Affectation de matrices de rigidité, de masse ou d'amortissement à des mailles"
             ),
-            # fmt: off
             CARA=SIMP(
                 statut="f",
                 typ="TXM",
                 max=1,
                 into=(
-                    "K_T_N",   "K_T_L",   "K_TR_N",  "K_TR_L",
-                    "M_T_N",   "M_T_L",   "M_TR_N",  "M_TR_L",
-                    "A_T_N",   "A_T_L",   "A_TR_N",  "A_TR_L",
+                    "K_T_N",
+                    "K_T_L",
+                    "K_TR_N",
+                    "K_TR_L",
+                    "M_T_N",
+                    "M_T_L",
+                    "M_TR_N",
+                    "M_TR_L",
+                    "A_T_N",
+                    "A_T_L",
+                    "A_TR_N",
+                    "A_TR_L",
                 ),
             ),
-            # fmt: on
             #  Affection des caractéristiques de RIGIDITE/AMORTISSEMENT/MASSE : NON-SYMETRIQUE
             b_MAK_T_N_NS=BLOC(
                 condition="""((equal_to("CARA", 'K_T_N')or(equal_to("CARA", 'A_T_N')or(equal_to("CARA", 'M_T_N')))))""",
@@ -798,21 +829,37 @@ AFFE_CARA_ELEM = OPER(
             fr=tr(
                 "SYMETRIQUE: Affectation de matrices de rigidité, de masse ou d'amortissement à des mailles"
             ),
-            # fmt: off
             CARA=SIMP(
                 statut="f",
                 typ="TXM",
                 max=1,
                 into=(
-                    "K_T_D_N",  "K_T_D_L",  "K_TR_D_N",  "K_TR_D_L",
-                    "K_T_N",    "K_T_L",    "K_TR_N",    "K_TR_L",
-                    "M_T_D_N",  "M_T_D_L",  "M_TR_D_N",  "M_TR_D_L",
-                    "M_T_N",    "M_T_L",    "M_TR_N",    "M_TR_L",
-                    "A_T_D_N",  "A_T_D_L",  "A_TR_D_N",  "A_TR_D_L",
-                    "A_T_N",    "A_T_L",    "A_TR_N",    "A_TR_L",
+                    "K_T_D_N",
+                    "K_T_D_L",
+                    "K_TR_D_N",
+                    "K_TR_D_L",
+                    "K_T_N",
+                    "K_T_L",
+                    "K_TR_N",
+                    "K_TR_L",
+                    "M_T_D_N",
+                    "M_T_D_L",
+                    "M_TR_D_N",
+                    "M_TR_D_L",
+                    "M_T_N",
+                    "M_T_L",
+                    "M_TR_N",
+                    "M_TR_L",
+                    "A_T_D_N",
+                    "A_T_D_L",
+                    "A_TR_D_N",
+                    "A_TR_D_L",
+                    "A_T_N",
+                    "A_T_L",
+                    "A_TR_N",
+                    "A_TR_L",
                 ),
             ),
-            # fmt: on
             #  Affection des caractéristiques de RIGIDITE/AMORTISSEMENT/MASSE
             b_AK_T_D_N=BLOC(
                 condition="""((equal_to("CARA", 'K_T_D_N')or(equal_to("CARA", 'A_T_D_N'))))""",
@@ -900,18 +947,25 @@ AFFE_CARA_ELEM = OPER(
             fr=tr(
                 "NON-SYMETRIQUE: Affectation de matrices de rigidité, de masse ou d'amortissement à des mailles"
             ),
-            # fmt: off
             CARA=SIMP(
                 statut="f",
                 typ="TXM",
                 max=1,
                 into=(
-                    "K_T_N",  "K_T_L",  "K_TR_N",  "K_TR_L",
-                    "M_T_N",  "M_T_L",  "M_TR_N",  "M_TR_L",
-                    "A_T_N",  "A_T_L",  "A_TR_N",  "A_TR_L",
+                    "K_T_N",
+                    "K_T_L",
+                    "K_TR_N",
+                    "K_TR_L",
+                    "M_T_N",
+                    "M_T_L",
+                    "M_TR_N",
+                    "M_TR_L",
+                    "A_T_N",
+                    "A_T_L",
+                    "A_TR_N",
+                    "A_TR_L",
                 ),
             ),
-            # fmt: on
             #  Affection des caractéristiques de RIGIDITE/AMORTISSEMENT/MASSE : NON-SYMETRIQUE
             b_MAK_T_N_NS=BLOC(
                 condition="""((equal_to("CARA", 'K_T_N')or(equal_to("CARA", 'A_T_N')or(equal_to("CARA", 'M_T_N')))))""",
@@ -1210,13 +1264,23 @@ AFFE_CARA_ELEM = OPER(
         FONC_GROUP=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
         COEF_GROUP=SIMP(statut="f", typ="R", max="**"),
         REPERE=SIMP(statut="f", typ="TXM", into=("LOCAL", "GLOBAL"), defaut="GLOBAL"),
-        # fmt: off
-        CARA=SIMP(statut="o", typ="TXM", validators=NoRepeat(), max=2,
-            into=(  "K_TR_D_N", "K_T_D_N", "K_TR_D_L", "K_T_D_L",
-                    "A_TR_D_N", "A_T_D_N", "A_TR_D_L", "A_T_D_L", ),
+        CARA=SIMP(
+            statut="o",
+            typ="TXM",
+            validators=NoRepeat(),
+            max=2,
+            into=(
+                "K_TR_D_N",
+                "K_T_D_N",
+                "K_TR_D_L",
+                "K_T_D_L",
+                "A_TR_D_N",
+                "A_T_D_N",
+                "A_TR_D_L",
+                "A_T_D_L",
+            ),
             fr=tr("Choix des types de discrets du tapis de ressorts."),
         ),
-        # fmt: on
         b_cara=BLOC(
             condition="""exists("CARA") and (len(CARA)==1 or (len(CARA)==2 and CARA[0][2:]==CARA[1][2:]))""",
             fr=tr("Valeurs pour les discrets du tapis de ressorts."),

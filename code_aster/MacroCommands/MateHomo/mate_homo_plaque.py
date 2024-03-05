@@ -36,15 +36,22 @@ from ...Objects import ThermalResultDict, ElasticResultDict
 
 from . import mate_homo_utilities as utilities
 
-# fmt: off
 PARAPLAQUE = [
-    "MEMB_L", "MEMB_T", "MEMB_LT", "MEMB_G_LT",
-    "FLEX_L", "FLEX_T", "FLEX_LT", "FLEX_G_LT",
-    "CISA_L", "CISA_T",
-    "ALPHA_T", "ALPHA_L",
-    "RHO", "TEMP_DEF_ALPHA",
+    "MEMB_L",
+    "MEMB_T",
+    "MEMB_LT",
+    "MEMB_G_LT",
+    "FLEX_L",
+    "FLEX_T",
+    "FLEX_LT",
+    "FLEX_G_LT",
+    "CISA_L",
+    "CISA_T",
+    "ALPHA_T",
+    "ALPHA_L",
+    "RHO",
+    "TEMP_DEF_ALPHA",
 ]
-# fmt: on
 
 
 def calc_corr_plaque_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, ls_group_ma, dir_plaque):
@@ -254,42 +261,72 @@ def calc_tabpara_plaque(
     h = dirthick[dir_plaque]
     tda = utilities.get_temp_def_alpha(DEPLMATE)
 
-    # fmt: off
     for i, rank_meca in enumerate(ranks_meca):
 
-        enerpot_meca_11_11_mm = utilities.combine_enerpot(CORR_MECA11_MEMB, CORR_MECA11_MEMB, rank_meca, ls_group_ma)
-        enerpot_meca_22_22_mm = utilities.combine_enerpot(CORR_MECA22_MEMB, CORR_MECA22_MEMB, rank_meca, ls_group_ma)
-        enerpot_meca_11_22_mm = utilities.combine_enerpot(CORR_MECA11_MEMB, CORR_MECA22_MEMB, rank_meca, ls_group_ma)
-        enerpot_meca_12_12_mm = utilities.combine_enerpot(CORR_MECA12_MEMB, CORR_MECA12_MEMB, rank_meca, ls_group_ma)
+        enerpot_meca_11_11_mm = utilities.combine_enerpot(
+            CORR_MECA11_MEMB, CORR_MECA11_MEMB, rank_meca, ls_group_ma
+        )
+        enerpot_meca_22_22_mm = utilities.combine_enerpot(
+            CORR_MECA22_MEMB, CORR_MECA22_MEMB, rank_meca, ls_group_ma
+        )
+        enerpot_meca_11_22_mm = utilities.combine_enerpot(
+            CORR_MECA11_MEMB, CORR_MECA22_MEMB, rank_meca, ls_group_ma
+        )
+        enerpot_meca_12_12_mm = utilities.combine_enerpot(
+            CORR_MECA12_MEMB, CORR_MECA12_MEMB, rank_meca, ls_group_ma
+        )
 
-        enerpot_meca_11_11_ff = utilities.combine_enerpot(CORR_MECA11_FLEX, CORR_MECA11_FLEX, rank_meca, ls_group_ma)
-        enerpot_meca_22_22_ff = utilities.combine_enerpot(CORR_MECA22_FLEX, CORR_MECA22_FLEX, rank_meca, ls_group_ma)
-        enerpot_meca_11_22_ff = utilities.combine_enerpot(CORR_MECA11_FLEX, CORR_MECA22_FLEX, rank_meca, ls_group_ma)
-        enerpot_meca_12_12_ff = utilities.combine_enerpot(CORR_MECA12_FLEX, CORR_MECA12_FLEX, rank_meca, ls_group_ma)
+        enerpot_meca_11_11_ff = utilities.combine_enerpot(
+            CORR_MECA11_FLEX, CORR_MECA11_FLEX, rank_meca, ls_group_ma
+        )
+        enerpot_meca_22_22_ff = utilities.combine_enerpot(
+            CORR_MECA22_FLEX, CORR_MECA22_FLEX, rank_meca, ls_group_ma
+        )
+        enerpot_meca_11_22_ff = utilities.combine_enerpot(
+            CORR_MECA11_FLEX, CORR_MECA22_FLEX, rank_meca, ls_group_ma
+        )
+        enerpot_meca_12_12_ff = utilities.combine_enerpot(
+            CORR_MECA12_FLEX, CORR_MECA12_FLEX, rank_meca, ls_group_ma
+        )
 
-        C1111_hom = 2 * h / volume_ver * ((loimel["LAME1_mm"][i] + 2 * loimel["LAME2_mm"][i]) - 2 * enerpot_meca_11_11_mm)
-        C2222_hom = 2 * h / volume_ver * ((loimel["LAME1_mm"][i] + 2 * loimel["LAME2_mm"][i]) - 2 * enerpot_meca_22_22_mm)
+        C1111_hom = (
+            2
+            * h
+            / volume_ver
+            * ((loimel["LAME1_mm"][i] + 2 * loimel["LAME2_mm"][i]) - 2 * enerpot_meca_11_11_mm)
+        )
+        C2222_hom = (
+            2
+            * h
+            / volume_ver
+            * ((loimel["LAME1_mm"][i] + 2 * loimel["LAME2_mm"][i]) - 2 * enerpot_meca_22_22_mm)
+        )
         C1122_hom = 2 * h / volume_ver * (loimel["LAME1_mm"][i] - 1 * enerpot_meca_11_22_mm)
         C1212_hom = 2 * h / volume_ver * (loimel["LAME2_mm"][i] - 0.5 * enerpot_meca_12_12_mm)
 
-        D1111_hom = 2 * h / volume_ver * ((loimel["LAME1_ff"][i] + 2 * loimel["LAME2_ff"][i]) - 2 * enerpot_meca_11_11_ff)
-        D2222_hom = 2 * h / volume_ver * ((loimel["LAME1_ff"][i] + 2 * loimel["LAME2_ff"][i]) - 2 * enerpot_meca_22_22_ff)
+        D1111_hom = (
+            2
+            * h
+            / volume_ver
+            * ((loimel["LAME1_ff"][i] + 2 * loimel["LAME2_ff"][i]) - 2 * enerpot_meca_11_11_ff)
+        )
+        D2222_hom = (
+            2
+            * h
+            / volume_ver
+            * ((loimel["LAME1_ff"][i] + 2 * loimel["LAME2_ff"][i]) - 2 * enerpot_meca_22_22_ff)
+        )
         D1122_hom = 2 * h / volume_ver * (loimel["LAME1_ff"][i] - 1 * enerpot_meca_11_22_ff)
         D1212_hom = 2 * h / volume_ver * (loimel["LAME2_ff"][i] - 0.5 * enerpot_meca_12_12_ff)
 
         G11_hom = 0.0
         G22_hom = 0.0
 
-        C_hom = np.array([[C1111_hom, C1122_hom, 0         ],
-                          [C1122_hom, C2222_hom, 0         ],
-                          [0,         0,         C1212_hom ]])
+        C_hom = np.array([[C1111_hom, C1122_hom, 0], [C1122_hom, C2222_hom, 0], [0, 0, C1212_hom]])
 
-        D_hom = np.array([[D1111_hom, D1122_hom, 0         ],
-                          [D1122_hom, D2222_hom, 0         ],
-                          [0,         0,         D1212_hom ]])
+        D_hom = np.array([[D1111_hom, D1122_hom, 0], [D1122_hom, D2222_hom, 0], [0, 0, D1212_hom]])
 
-        G_hom = np.array([[G11_hom,   0       ],
-                          [0,         G22_hom ]])
+        G_hom = np.array([[G11_hom, 0], [0, G22_hom]])
 
         RHO = 1 / volume_ver * loimel["RHO"][i]
 
@@ -311,7 +348,6 @@ def calc_tabpara_plaque(
         dictpara["RHO"].append(RHO)
         dictpara["TEMP_DEF_ALPHA"].append(tda)
 
-    # fmt: on
     dictpara[varc_name] = ls_varc
 
     tabpara = CREA_TABLE(LISTE=[_F(PARA=para, LISTE_R=values) for para, values in dictpara.items()])

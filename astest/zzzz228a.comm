@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -85,20 +85,34 @@ TEMPER1 = CREA_RESU(
     PREP_VARC=_F(MODELE=MO, CARA_ELEM=CARAC0, INST=(0.0, 5.0), CHAM_GD=CHTEMF1),
 )
 
-# fmt: off
 TEST_RESU(
     RESU=(
-        _F(NUME_ORDRE=1,     REFERENCE="ANALYTIQUE", POINT=1, SOUS_POINT=10,
-           RESULTAT=TEMPER1, NOM_CHAM="TEMP",        NOM_CMP="TEMP",
-           VALE_CALC=10.0,   VALE_REFE=10.0,         GROUP_MA="M2",
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            SOUS_POINT=10,
+            RESULTAT=TEMPER1,
+            NOM_CHAM="TEMP",
+            NOM_CMP="TEMP",
+            VALE_CALC=10.0,
+            VALE_REFE=10.0,
+            GROUP_MA="M2",
         ),
-        _F(NUME_ORDRE=1,     REFERENCE="ANALYTIQUE", POINT=1, SOUS_POINT=10,
-           RESULTAT=TEMPER1, NOM_CHAM="TEMP",        NOM_CMP="TEMP",
-           VALE_CALC=10.0,   VALE_REFE=10.0,         GROUP_MA="M5",
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            SOUS_POINT=10,
+            RESULTAT=TEMPER1,
+            NOM_CHAM="TEMP",
+            NOM_CMP="TEMP",
+            VALE_CALC=10.0,
+            VALE_REFE=10.0,
+            GROUP_MA="M5",
         ),
     )
 )
-# fmt: on
 
 # Validation de PREP_VARC avec un EVOL_THER :
 # -------------------------------------------
@@ -119,20 +133,35 @@ TEMPER2 = CREA_RESU(
     PREP_VARC=_F(MODELE=MO, CARA_ELEM=CARAC0, EVOL_THER=TEMPLI2),
 )
 
-# fmt: off
 TEST_RESU(
     RESU=(
-        _F(NUME_ORDRE=1,     REFERENCE="ANALYTIQUE", POINT=1, SOUS_POINT=10,
-           RESULTAT=TEMPER2, NOM_CHAM="TEMP",        NOM_CMP="TEMP",
-           VALE_CALC=10.0,   VALE_REFE=10.0,         GROUP_MA="M2",
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            SOUS_POINT=10,
+            RESULTAT=TEMPER2,
+            NOM_CHAM="TEMP",
+            NOM_CMP="TEMP",
+            VALE_CALC=10.0,
+            VALE_REFE=10.0,
+            GROUP_MA="M2",
         ),
-        _F(NUME_ORDRE=1,     REFERENCE="ANALYTIQUE", POINT=1, SOUS_POINT=10,
-           RESULTAT=TEMPER2, NOM_CHAM="TEMP",        NOM_CMP="TEMP",
-           VALE_CALC=10.0,   VALE_REFE=10.0,         GROUP_MA="M5",
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            SOUS_POINT=10,
+            RESULTAT=TEMPER2,
+            NOM_CHAM="TEMP",
+            NOM_CMP="TEMP",
+            VALE_CALC=10.0,
+            VALE_REFE=10.0,
+            GROUP_MA="M5",
         ),
     )
 )
-# fmt: on
+
 
 # Validation de PREP_VARC avec un CHAMP et une FONCTION de (INST EPAIS)
 # ---------------------------------------------------------------------
@@ -174,30 +203,60 @@ TEMPER3 = CREA_RESU(
     PREP_VARC=_F(MODELE=MO, CARA_ELEM=CARAC0, INST=(5.0, 10.0), CHAM_GD=CHTEMF3),
 )
 
-# fmt: off
 TEST_RESU(
     RESU=(
         #  Ordre 1 , inst = 5.0
-        _F(NUME_ORDRE=1,     REFERENCE="ANALYTIQUE", POINT=1, SOUS_POINT=10,
-           RESULTAT=TEMPER3, NOM_CHAM="TEMP",        NOM_CMP="TEMP",
-           VALE_CALC=10.0,   VALE_REFE=10.0,         GROUP_MA="M2",
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            SOUS_POINT=10,
+            RESULTAT=TEMPER3,
+            NOM_CHAM="TEMP",
+            NOM_CMP="TEMP",
+            VALE_CALC=10.0,
+            VALE_REFE=10.0,
+            GROUP_MA="M2",
         ),
-        _F(NUME_ORDRE=1,     REFERENCE="ANALYTIQUE", POINT=1, SOUS_POINT=10,
-           RESULTAT=TEMPER3, NOM_CHAM="TEMP",        NOM_CMP="TEMP",
-           VALE_CALC=10.0,   VALE_REFE=10.0,         GROUP_MA="M5",
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            SOUS_POINT=10,
+            RESULTAT=TEMPER3,
+            NOM_CHAM="TEMP",
+            NOM_CMP="TEMP",
+            VALE_CALC=10.0,
+            VALE_REFE=10.0,
+            GROUP_MA="M5",
         ),
         #  Ordre 2 , inst = 10.0
-        _F(NUME_ORDRE=2,     REFERENCE="ANALYTIQUE", POINT=1, SOUS_POINT=10,
-           RESULTAT=TEMPER3, NOM_CHAM="TEMP",        NOM_CMP="TEMP",
-           VALE_CALC=20.0,   VALE_REFE=20.0,         GROUP_MA="M2",
+        _F(
+            NUME_ORDRE=2,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            SOUS_POINT=10,
+            RESULTAT=TEMPER3,
+            NOM_CHAM="TEMP",
+            NOM_CMP="TEMP",
+            VALE_CALC=20.0,
+            VALE_REFE=20.0,
+            GROUP_MA="M2",
         ),
-        _F(NUME_ORDRE=2,     REFERENCE="ANALYTIQUE", POINT=1, SOUS_POINT=10,
-           RESULTAT=TEMPER3, NOM_CHAM="TEMP",        NOM_CMP="TEMP",
-           VALE_CALC=20.0,   VALE_REFE=20.0,         GROUP_MA="M5",
+        _F(
+            NUME_ORDRE=2,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            SOUS_POINT=10,
+            RESULTAT=TEMPER3,
+            NOM_CHAM="TEMP",
+            NOM_CMP="TEMP",
+            VALE_CALC=20.0,
+            VALE_REFE=20.0,
+            GROUP_MA="M5",
         ),
     )
 )
-# fmt: on
 
 # Validation de PREP_VARC avec un CHAMP et une FONCTION de (INST EXCEN)
 # ----------------------------------------------------------------------
@@ -366,6 +425,7 @@ TEST_RESU(
         ),
     )
 )
+
 
 # Validation de PREP_VARC avec un CHAMP et une FONCTION de (INST X Y Z)
 # ---------------------------------------------------------------------
