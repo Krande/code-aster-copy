@@ -420,42 +420,44 @@ def calc_tabpara_massif(DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, *
         ########################
         # Matrice homogeneisee
 
-        K11_hom = 1 / volume_ver * (loimel["LAMBDA_THER"][i] - 2 * enerpot_ther_11)
-        K22_hom = 1 / volume_ver * (loimel["LAMBDA_THER"][i] - 2 * enerpot_ther_22)
-        K33_hom = 1 / volume_ver * (loimel["LAMBDA_THER"][i] - 2 * enerpot_ther_33)
+        K11_hom = (1 / volume_ver) * (loimel["LAMBDA_THER"][i] - 2 * enerpot_ther_11)
+        K22_hom = (1 / volume_ver) * (loimel["LAMBDA_THER"][i] - 2 * enerpot_ther_22)
+        K33_hom = (1 / volume_ver) * (loimel["LAMBDA_THER"][i] - 2 * enerpot_ther_33)
 
-        K_hom = np.array([[K11_hom, 0, 0], [0, K22_hom, 0], [0, 0, K33_hom]])
+        # fmt: off
+        K_hom = np.array([[K11_hom, 0,       0      ],
+                          [0,       K22_hom, 0      ],
+                          [0,       0,       K33_hom]])
+        # fmt: on
 
-        A1111_hom = (
-            1 / volume_ver * (loimel["LAME1"][i] + 2 * loimel["LAME2"][i] - 2 * enerpot_meca_11_11)
+        A1111_hom = (1 / volume_ver) * (
+            loimel["LAME1"][i] + 2 * loimel["LAME2"][i] - 2 * enerpot_meca_11_11
         )
-        A2222_hom = (
-            1 / volume_ver * (loimel["LAME1"][i] + 2 * loimel["LAME2"][i] - 2 * enerpot_meca_22_22)
+        A2222_hom = (1 / volume_ver) * (
+            loimel["LAME1"][i] + 2 * loimel["LAME2"][i] - 2 * enerpot_meca_22_22
         )
-        A3333_hom = (
-            1 / volume_ver * (loimel["LAME1"][i] + 2 * loimel["LAME2"][i] - 2 * enerpot_meca_33_33)
+        A3333_hom = (1 / volume_ver) * (
+            loimel["LAME1"][i] + 2 * loimel["LAME2"][i] - 2 * enerpot_meca_33_33
         )
 
-        A1122_hom = 1 / volume_ver * (loimel["LAME1"][i] - 1 * enerpot_meca_11_22)
-        A1133_hom = 1 / volume_ver * (loimel["LAME1"][i] - 1 * enerpot_meca_11_33)
-        A2233_hom = 1 / volume_ver * (loimel["LAME1"][i] - 1 * enerpot_meca_22_33)
+        A1122_hom = (1 / volume_ver) * (loimel["LAME1"][i] - 1 * enerpot_meca_11_22)
+        A1133_hom = (1 / volume_ver) * (loimel["LAME1"][i] - 1 * enerpot_meca_11_33)
+        A2233_hom = (1 / volume_ver) * (loimel["LAME1"][i] - 1 * enerpot_meca_22_33)
 
-        A1212_hom = 1 / volume_ver * (loimel["LAME2"][i] - 0.5 * enerpot_meca_12_12)
-        A2323_hom = 1 / volume_ver * (loimel["LAME2"][i] - 0.5 * enerpot_meca_23_23)
-        A3131_hom = 1 / volume_ver * (loimel["LAME2"][i] - 0.5 * enerpot_meca_31_31)
+        A1212_hom = (1 / volume_ver) * (loimel["LAME2"][i] - 0.5 * enerpot_meca_12_12)
+        A2323_hom = (1 / volume_ver) * (loimel["LAME2"][i] - 0.5 * enerpot_meca_23_23)
+        A3131_hom = (1 / volume_ver) * (loimel["LAME2"][i] - 0.5 * enerpot_meca_31_31)
 
         check_isotrop_trans = abs(round((2 * A1212_hom - A1111_hom + A1122_hom) / A1212_hom, 12))
 
-        A_hom = np.array(
-            [
-                [A1111_hom, A1122_hom, A1133_hom, 0, 0, 0],
-                [A1122_hom, A2222_hom, A2233_hom, 0, 0, 0],
-                [A1133_hom, A2233_hom, A3333_hom, 0, 0, 0],
-                [0, 0, 0, A1212_hom, 0, 0],
-                [0, 0, 0, 0, A2323_hom, 0],
-                [0, 0, 0, 0, 0, A3131_hom],
-            ]
-        )
+        # fmt: off
+        A_hom = np.array([[A1111_hom, A1122_hom, A1133_hom, 0,         0,         0         ],
+                          [A1122_hom, A2222_hom, A2233_hom, 0,         0,         0         ],
+                          [A1133_hom, A2233_hom, A3333_hom, 0,         0,         0         ],
+                          [0,         0,         0,         A1212_hom, 0,         0         ],
+                          [0,         0,         0,         0,         A2323_hom, 0         ],
+                          [0,         0,         0,         0,         0,         A3131_hom]])
+        # fmt: on
 
         A_inv = np.linalg.inv(A_hom)
         K_inv = np.linalg.inv(K_hom)
@@ -464,7 +466,7 @@ def calc_tabpara_massif(DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, *
 
         E_L, E_T, E_N, G_LT, G_LN, G_TN = A_inv.diagonal() ** -1
 
-        bdil = 1 / volume_ver * (loimel["ALPHA3K"][i] - 2 * enerpot_dila)
+        bdil = (1 / volume_ver) * (loimel["ALPHA3K"][i] - 2 * enerpot_dila)
 
         ALPHA_L, ALPHA_T, ALPHA_N = bdil * np.dot(A_inv, (1, 1, 1, 0, 0, 0))[:3]
 
@@ -476,8 +478,8 @@ def calc_tabpara_massif(DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, *
         NU_LN = -A_inv[2, 0] / A_inv[0, 0]
         NU_TN = -A_inv[2, 1] / A_inv[1, 1]
 
-        RHO = 1 / volume_ver * loimel["RHO"][i]
-        RHO_CP = 1 / volume_ver * loimel["RHO_CP"][i]
+        RHO = (1 / volume_ver) * loimel["RHO"][i]
+        RHO_CP = (1 / volume_ver) * loimel["RHO_CP"][i]
 
         dictpara["E_L"].append(E_L)
         dictpara["E_T"].append(E_T)

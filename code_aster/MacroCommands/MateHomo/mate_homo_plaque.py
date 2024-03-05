@@ -289,46 +289,41 @@ def calc_tabpara_plaque(
             CORR_MECA12_FLEX, CORR_MECA12_FLEX, rank_meca, ls_group_ma
         )
 
-        C1111_hom = (
-            2
-            * h
-            / volume_ver
-            * ((loimel["LAME1_mm"][i] + 2 * loimel["LAME2_mm"][i]) - 2 * enerpot_meca_11_11_mm)
+        C1111_hom = (2 * h / volume_ver) * (
+            (loimel["LAME1_mm"][i] + 2 * loimel["LAME2_mm"][i]) - 2 * enerpot_meca_11_11_mm
         )
-        C2222_hom = (
-            2
-            * h
-            / volume_ver
-            * ((loimel["LAME1_mm"][i] + 2 * loimel["LAME2_mm"][i]) - 2 * enerpot_meca_22_22_mm)
+        C2222_hom = (2 * h / volume_ver) * (
+            (loimel["LAME1_mm"][i] + 2 * loimel["LAME2_mm"][i]) - 2 * enerpot_meca_22_22_mm
         )
-        C1122_hom = 2 * h / volume_ver * (loimel["LAME1_mm"][i] - 1 * enerpot_meca_11_22_mm)
-        C1212_hom = 2 * h / volume_ver * (loimel["LAME2_mm"][i] - 0.5 * enerpot_meca_12_12_mm)
+        C1122_hom = (2 * h / volume_ver) * (loimel["LAME1_mm"][i] - 1 * enerpot_meca_11_22_mm)
+        C1212_hom = (2 * h / volume_ver) * (loimel["LAME2_mm"][i] - 0.5 * enerpot_meca_12_12_mm)
 
-        D1111_hom = (
-            2
-            * h
-            / volume_ver
-            * ((loimel["LAME1_ff"][i] + 2 * loimel["LAME2_ff"][i]) - 2 * enerpot_meca_11_11_ff)
+        D1111_hom = (2 * h / volume_ver) * (
+            (loimel["LAME1_ff"][i] + 2 * loimel["LAME2_ff"][i]) - 2 * enerpot_meca_11_11_ff
         )
-        D2222_hom = (
-            2
-            * h
-            / volume_ver
-            * ((loimel["LAME1_ff"][i] + 2 * loimel["LAME2_ff"][i]) - 2 * enerpot_meca_22_22_ff)
+        D2222_hom = (2 * h / volume_ver) * (
+            (loimel["LAME1_ff"][i] + 2 * loimel["LAME2_ff"][i]) - 2 * enerpot_meca_22_22_ff
         )
-        D1122_hom = 2 * h / volume_ver * (loimel["LAME1_ff"][i] - 1 * enerpot_meca_11_22_ff)
-        D1212_hom = 2 * h / volume_ver * (loimel["LAME2_ff"][i] - 0.5 * enerpot_meca_12_12_ff)
+        D1122_hom = (2 * h / volume_ver) * (loimel["LAME1_ff"][i] - 1 * enerpot_meca_11_22_ff)
+        D1212_hom = (2 * h / volume_ver) * (loimel["LAME2_ff"][i] - 0.5 * enerpot_meca_12_12_ff)
 
         G11_hom = 0.0
         G22_hom = 0.0
 
-        C_hom = np.array([[C1111_hom, C1122_hom, 0], [C1122_hom, C2222_hom, 0], [0, 0, C1212_hom]])
+        # fmt: off
+        C_hom = np.array([[C1111_hom, C1122_hom, 0         ],
+                          [C1122_hom, C2222_hom, 0         ],
+                          [0,         0,         C1212_hom ]])
 
-        D_hom = np.array([[D1111_hom, D1122_hom, 0], [D1122_hom, D2222_hom, 0], [0, 0, D1212_hom]])
+        D_hom = np.array([[D1111_hom, D1122_hom, 0         ],
+                          [D1122_hom, D2222_hom, 0         ],
+                          [0,         0,         D1212_hom ]])
 
-        G_hom = np.array([[G11_hom, 0], [0, G22_hom]])
+        G_hom = np.array([[G11_hom,   0       ],
+                          [0,         G22_hom ]])
+        # fmt: on
 
-        RHO = 1 / volume_ver * loimel["RHO"][i]
+        RHO = (1 / volume_ver) * loimel["RHO"][i]
 
         ALPHA_T, ALPHA_L = [0, 0]
 
