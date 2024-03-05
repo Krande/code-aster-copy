@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,7 +67,7 @@ subroutine nmvcfo(type_comp, model, mater, mateco, cara_elem, compor, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: mxchin, mxchout, nbin, nbout
-    parameter(mxchout=2, mxchin=32)
+    parameter(mxchout=2, mxchin=34)
     character(len=8) :: lpaout(mxchout), lpain(mxchin)
     character(len=19) :: lchout(mxchout), lchin(mxchin)
 !

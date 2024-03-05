@@ -165,13 +165,21 @@ class MECA_DIS_TR_L(Element):
             para_in=((SP.PCINFDI, LC.CCINFDI), (SP.PROTATR, LC.CROTATR)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
-        #       -- les elements discrets ne peuvent pas calculer de dilatation thermique => te0099
         OP.CHAR_MECA_TEMP_R(
-            te=99,
-            para_in=((SP.PGEOMER, NGEOMER), (OP.CHAR_MECA_TEMP_R.PVARCPR, LC.ZVARCPG)),
+            te=357,
+            para_in=(
+                (SP.PGEOMER, NGEOMER),
+                (SP.PCADISK, CCADISK),
+                (SP.PCINFDI, LC.CCINFDI),
+                (SP.PMATERC, LC.CMATERC),
+                (SP.PVARCRR, LC.ZVARCPG),
+                (OP.CHAR_MECA_TEMP_R.PVARCPR, LC.ZVARCPG),
+                (OP.CHAR_MECA_TEMP_R.PCAORIE, CCAORIE),
+                (OP.CHAR_MECA_TEMP_R.PCOMPOR, LC.CCOMPOR),
+            ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
-        #       -- les elements discrets ne peuvent pas calculer de dilatation "hydratation/sechage" => te0099
+        # les éléments discrets ne calculent pas de dilatation "hydratation/sechage" => te0099
         OP.CHAR_MECA_HYDR_R(
             te=99, para_in=((SP.PGEOMER, NGEOMER),), para_out=((SP.PVECTUR, MVECTUR),)
         ),
@@ -263,6 +271,7 @@ class MECA_DIS_TR_L(Element):
                 (SP.PITERAT, LC.CITERAT),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PVARCMR, LC.ZVARCPG),
+                (SP.PVARCRR, LC.ZVARCPG),
                 (OP.FULL_MECA.PVARCPR, LC.ZVARCPG),
                 (OP.FULL_MECA.PVARIMR, ZVARIPG),
                 (SP.PVITENT, DDL_MECA),
@@ -293,6 +302,7 @@ class MECA_DIS_TR_L(Element):
                 (SP.PINSTPR, LC.CINSTPR),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PVARCMR, LC.ZVARCPG),
+                (SP.PVARCRR, LC.ZVARCPG),
                 (OP.FULL_MECA_ELAS.PVARCPR, LC.ZVARCPG),
                 (OP.FULL_MECA_ELAS.PVARIMR, ZVARIPG),
             ),
@@ -397,6 +407,7 @@ class MECA_DIS_TR_L(Element):
                 (SP.PITERAT, LC.CITERAT),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PVARCMR, LC.ZVARCPG),
+                (SP.PVARCRR, LC.ZVARCPG),
                 (OP.RAPH_MECA.PVARCPR, LC.ZVARCPG),
                 (OP.RAPH_MECA.PVARIMR, ZVARIPG),
                 (SP.PVITENT, DDL_MECA),
@@ -435,6 +446,7 @@ class MECA_DIS_TR_L(Element):
                 (SP.PCADISK, CCADISK),
                 (OP.RIGI_MECA.PCAORIE, CCAORIE),
                 (SP.PCINFDI, LC.CCINFDI),
+                (SP.PVARCRR, LC.ZVARCPG),
                 (OP.RIGI_MECA.PVARCPR, LC.ZVARCPG),
             ),
             para_out=((SP.PMATUNS, MMATUNS), (SP.PMATUUR, MMATUUR)),
@@ -455,6 +467,7 @@ class MECA_DIS_TR_L(Element):
                 (SP.PINSTPR, LC.CINSTPR),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PVARCMR, LC.ZVARCPG),
+                (SP.PVARCRR, LC.ZVARCPG),
                 (OP.RIGI_MECA_ELAS.PVARCPR, LC.ZVARCPG),
                 (OP.RIGI_MECA_ELAS.PVARIMR, ZVARIPG),
             ),
@@ -488,6 +501,7 @@ class MECA_DIS_TR_L(Element):
                 (SP.PITERAT, LC.CITERAT),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PVARCMR, LC.ZVARCPG),
+                (SP.PVARCRR, LC.ZVARCPG),
                 (OP.RIGI_MECA_TANG.PVARCPR, LC.ZVARCPG),
                 (OP.RIGI_MECA_TANG.PVARIMR, ZVARIPG),
                 (SP.PVITENT, DDL_MECA),

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,13 +19,13 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine dis_choc_frot_syme(for_discret, icodma, ulp, xg, klv, &
+    subroutine dis_choc_frot_syme(for_discret, icodma, ulp, xg, klv, kgv, &
                                   dvl, dpe, dve, Predic, force, varmo, varpl)
         use te0047_type
         type(te0047_dscr), intent(in) :: for_discret
         integer         :: icodma
         real(kind=8)    :: ulp(*), xg(*)
-        real(kind=8)    :: klv(*)
+        real(kind=8)    :: klv(*), kgv(*)
         real(kind=8)    :: dvl(*), dpe(*) ,dve(*), force(*), varmo(*), varpl(*)
         aster_logical   :: Predic
     end subroutine dis_choc_frot_syme

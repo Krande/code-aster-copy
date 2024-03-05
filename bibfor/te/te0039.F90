@@ -35,6 +35,7 @@ subroutine te0039(option, nomte)
 #include "asterfort/ut2vlg.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpsgl.h"
+#include "asterfort/utpslg.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/utpvlg.h"
 #include "asterfort/lteatt.h"
@@ -44,7 +45,7 @@ subroutine te0039(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
 ! IN OPTION    : K16 :  OPTION DE CALCUL
-!      'SIEQ_ELNO'       'SIEQ_ELGA'
+!     'SIEQ_ELNO'  'SIEQ_ELGA'
 !     'FORC_NODA'  'REFE_FORC_NODA'
 !     'FONL_NOEU'
 ! IN NOMTE     : K16 : NOM DU TYPE ELEMENT
@@ -68,7 +69,7 @@ subroutine te0039(option, nomte)
     real(kind=8) :: pgl(3, 3), force(3)
     real(kind=8) :: fs(12), ugp(12), ulp(12), dvl(12), dpe(12), dve(12)
     real(kind=8) :: sim(12), sip(12), fono(12)
-    real(kind=8) :: klv(78)
+    real(kind=8) :: klv(78), kgv(78)
     real(kind=8) :: forref, momref
     real(kind=8) :: r8bid
 !
@@ -152,13 +153,13 @@ subroutine te0039(option, nomte)
             !   PARAMETRES EN ENTREE
             call jevech('PCAORIE', 'L', lorien)
             call matrot(zr(lorien), for_discret%pgl)
-            ! DEPLACEMENTS DANS LE REPERE GLOBAL
+            ! DÉPLACEMENTS DANS LE REPÈRE GLOBAL
             !   UGM = DEPLACEMENT PRECEDENT
             !   UGP = DEPLACEMENT COURANT
             do ii = 1, neq
                 ugp(ii) = zr(jvDisp+ii-1)
             end do
-            ! Deplacements dans le repere local
+            ! DÉPLACEMENTS DANS LE REPÈRE LOCAL
             !   ULM = DEPLACEMENT PRECEDENT    = PLG * UGM
             !   DUL = INCREMENT DE DEPLACEMENT = PLG * DUG
             !   ULP = DEPLACEMENT COURANT      = PLG * UGP
@@ -179,10 +180,19 @@ subroutine te0039(option, nomte)
             !
             call jevech('PCADISK', 'L', jdc)
             call infdis('REPK', irep, r8bid, k8bid)
-            call dcopy(for_discret%nbt, zr(jdc), 1, klv, 1)
+            ! irep = 1 = matrice en repère global
             if (irep .eq. 1) then
-                call utpsgl(for_discret%nno, for_discret%nc, for_discret%pgl, zr(jdc), klv)
+                ! Matrice dans le repère global
+                call dcopy(for_discret%nbt, zr(jdc), 1, kgv, 1)
+                ! Matrice dans le repère local
+                call utpsgl(for_discret%nno, for_discret%nc, for_discret%pgl, kgv, klv)
+            else
+                ! Matrice dans le repère local
+                call dcopy(for_discret%nbt, zr(jdc), 1, klv, 1)
+                ! Matrice dans le repère global
+                call utpslg(for_discret%nno, for_discret%nc, for_discret%pgl, klv, kgv)
             end if
+            !
             if (zk16(jvCompor) .eq. 'DIS_CHOC') then
                 varmo(:) = 0.0; dvl(:) = 0.0; dpe(:) = 0.0; dve(:) = 0.0
                 ! Relation de comportement de choc : forces nodales
@@ -194,7 +204,7 @@ subroutine te0039(option, nomte)
                 !
                 ilogic = 0; force(1:3) = 0.0
                 call discret_sief(for_discret, klv, ulp, sim, ilogic, sip, fono, force)
-                call dis_choc_frot_syme(for_discret, zi(lmater), ulp, zr(igeom), klv, &
+                call dis_choc_frot_syme(for_discret, zi(lmater), ulp, zr(igeom), klv, kgv, &
                                         dvl, dpe, dve, Predic, force, varmo, varpl)
                 ilogic = 2
                 call discret_sief(for_discret, klv, ulp, sim, ilogic, sip, zr(ifono), force)

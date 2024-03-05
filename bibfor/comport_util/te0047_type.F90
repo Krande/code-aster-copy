@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -86,6 +86,8 @@ module te0047_type
         real(kind=8)        :: dul(12), dug(12)
         real(kind=8)        :: pgl(3, 3)
         real(kind=8)        :: TempsPlus, TempsMoins
+        real(kind=8)        :: Dilatation
+        real(kind=8)        :: DeltaDilatation
         !
     end type te0047_dscr
 !
@@ -100,9 +102,12 @@ module te0047_type
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/infted.h"
 #include "asterfort/jevech.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/tecach.h"
 !
 ! -------------------------------------------------------------------------------------------------
-!
+!&<
 contains
     ! ---------------------------------------------------------------------------------------------
     !
@@ -119,7 +124,9 @@ contains
     subroutine getDiscretInformations(D)
         type(te0047_dscr), intent(inout) :: D
         !
-        integer       :: icompo, codret, itype, ideplm, ideplp, jtempsm, jtempsp, ii
+        integer       :: icompo, itype, ideplm, ideplp, jtempsm, jtempsp, ii
+        integer       :: imate, codret, cod_res(1), igeom
+        real(kind=8)  :: temp_moins, temp_plus, temp_refe, val_res(1), xl2
         aster_logical :: IsOk
         !
         IsOk = (D%nomte .ne. '') .and. (D%option .ne. '') .and. &
@@ -141,6 +148,46 @@ contains
         D%defo_comp = zk16(icompo-1+DEFO)
         D%type_comp = zk16(icompo-1+INCRELAS)
         !
+        ! Si c'est ELAS on calcule la dilatation thermique :
+        !   Dilatation       = alpha*( T+ - Tref )*xl
+        !   DeltaDilatation  = alpha*( T+ - T-   )*xl
+        D%DeltaDilatation = 0.0
+        D%Dilatation = 0.0
+        if ( D%nno .eq. 1 ) goto 100
+        if ( D%rela_comp.eq.'ELAS' ) then
+            ! Température
+            !   Si une température n'existe pas ==> pas de dilatation
+            call rcvarc(' ', 'TEMP', '+',   'RIGI', 1, 1, temp_plus,  codret)
+            if ( codret.ne.0 ) goto 100
+            call rcvarc(' ', 'TEMP', '-',   'RIGI', 1, 1, temp_moins, codret)
+            if ( codret.ne.0 ) goto 100
+            call rcvarc(' ', 'TEMP', 'REF', 'RIGI', 1, 1, temp_refe,  codret)
+            if ( codret.ne.0 ) goto 100
+            ! Matériau
+            !   Il peut ne pas exister sur les discrets
+            call tecach('ONN', 'PMATERC', 'L', codret, iad=imate)
+            if ( codret .ne.0 ) goto 100
+            call rcvalb('RIGI', 1, 1, '+', zi(imate), ' ', 'ELAS', &
+                        0, ' ', [0.0d0], 1, 'ALPHA', val_res, cod_res, 0)
+            !
+            if ( cod_res(1).ne.0 ) goto 100
+            call jevech('PGEOMER', 'L', igeom)
+            igeom = igeom-1
+            if ( D%ndim.eq.3 ) then
+                xl2 = ( zr(igeom+4) - zr(igeom+1) )**2
+                xl2 = ( zr(igeom+5) - zr(igeom+2) )**2 + xl2
+                xl2 = ( zr(igeom+6) - zr(igeom+3) )**2 + xl2
+            else if ( D%ndim.eq.2 ) then
+                xl2 = ( zr(igeom+3) - zr(igeom+1) )**2
+                xl2 = ( zr(igeom+4) - zr(igeom+2) )**2 + xl2
+            else
+                xl2 = 0.0
+            endif
+            D%DeltaDilatation = val_res(1)*(temp_plus-temp_moins)*sqrt(xl2)
+            D%Dilatation      = val_res(1)*(temp_plus-temp_refe)*sqrt(xl2)
+        endif
+100     continue
+        !
         ! Select objects to construct from option name
         !   lVari       : (1:9)'RAPH_MECA'  (1:9)'FULL_MECA'
         !   lSigm       : (1:9)'RAPH_MECA'  (1:9)'FULL_MECA'       'RIGI_MECA_TANG'
@@ -161,19 +208,31 @@ contains
         ! Déplacements dans le repère global :
         !     ugm = déplacement précédent
         !     dug = incrément de déplacement
-        ! Récupération des adresses jeveux
-        call jevech('PDEPLMR', 'L', ideplm)
-        call jevech('PDEPLPR', 'L', ideplp)
-        do ii = 1, D%neq
-            D%ugm(ii) = zr(ideplm+ii-1)
-            D%dug(ii) = zr(ideplp+ii-1)
-        end do
+        D%ugm(:) = 0.0
+        D%dug(:) = 0.0
+        D%ulm(:) = 0.0
+        D%dul(:) = 0.0
+        ! Instants
+        D%TempsPlus  = 0.0
+        D%TempsMoins = 0.0
         !
-        ! Temps + et - , calcul de dt
-        call jevech('PINSTMR', 'L', jtempsm)
-        call jevech('PINSTPR', 'L', jtempsp)
-        D%TempsPlus = zr(jtempsp)
-        D%TempsMoins = zr(jtempsm)
+        ! Récupération : Déplacements, Instants à + et -
+        !   Si déplacement - n'existe pas les autres non plus
+        call tecach('NNN', 'PDEPLMR', 'L', codret, iad=ideplm)
+        if ( codret .eq. 0 ) then
+            ! call jevech('PDEPLMR', 'L', ideplm)
+            call jevech('PDEPLPR', 'L', ideplp)
+            do ii = 1, D%neq
+                D%ugm(ii) = zr(ideplm+ii-1)
+                D%dug(ii) = zr(ideplp+ii-1)
+            end do
+            !
+            ! Temps + et - , calcul de dt
+            call jevech('PINSTMR', 'L', jtempsm)
+            call jevech('PINSTPR', 'L', jtempsp)
+            D%TempsPlus  = zr(jtempsp)
+            D%TempsMoins = zr(jtempsm)
+        endif
         !
     end subroutine getDiscretInformations
     !
@@ -190,5 +249,5 @@ contains
         write (*, '(A)') 'resi rigi'
         write (*, '(2(L1,4X))') D%resi, D%rigi
     end subroutine te0047_dscr_write
-    !
+!&>
 end module te0047_type

@@ -1,0 +1,390 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+import numpy as NP
+
+# Liste des groupes
+ListeAs = ["A", "B", "C", "D"]
+#
+# --------------------------------------------------------------
+# Caractéristiques : Ressorts / Masses
+#
+# Discrets sur le CdG
+# Raideurs
+Kxcdg = Kycdg = Kzcdg = 10000.0
+Krxcdg = Krycdg = Krzcdg = 1000.0
+# Amortissements
+Axcdg = Aycdg = Azcdg = 300.0
+Arxcdg = Arycdg = Arzcdg = 300.0
+# Masse
+Mcdg = 50.0
+# Discrets ELAS
+Kxelas = Kyelas = Kzelas = 10000.0
+# Raideur normale et tangente de contact
+Knorm = 10000000.0
+Ktang = 10000000.0
+# Raideur normale de contact
+KnormParoi = 10000.0
+# Amortissement sur le contact normal
+AmorNor = 0.10
+#
+jeux = 0.002
+jeuy = 0.002
+#
+from code_aster.Utilities import ExecutionParameter
+
+#
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+#
+max_print = ExecutionParameter().get_option("max_print")
+#
+MAIL = LIRE_MAILLAGE(FORMAT="ASTER")
+#
+UNITE = DEFI_FICHIER(
+    ACTION="ASSOCIER", FICHIER="./REPE_OUT/ABCD_dyna_test.mmed", TYPE="LIBRE", ACCES="NEW"
+)
+IMPR_RESU(FORMAT="MED", UNITE=UNITE, RESU=_F(MAILLAGE=MAIL))
+DEFI_FICHIER(ACTION="LIBERER", UNITE=UNITE)
+#
+# Modèle
+Modele = AFFE_MODELE(
+    MAILLAGE=MAIL,
+    AFFE=(
+        # Discrets sur le CdG
+        _F(GROUP_MA=("GMA", "GMB", "GMC", "GMD"), PHENOMENE="MECANIQUE", MODELISATION="DIS_TR"),
+        # Discrets sur les contacts
+        _F(
+            GROUP_MA=("GM1", "GM2", "GM3", "GM4", "GM5", "GM6", "GM7", "GM8", "GM9", "GM10"),
+            PHENOMENE="MECANIQUE",
+            MODELISATION="DIS_T",
+        ),
+        # Discrets sur coins
+        _F(
+            GROUP_MA=("GMPOA", "GMPOB", "GMPOC", "GMPOD"),
+            PHENOMENE="MECANIQUE",
+            MODELISATION="DIS_T",
+        ),
+    ),
+)
+#
+caraElem = AFFE_CARA_ELEM(
+    MODELE=Modele,
+    DISCRET=(
+        # Discrets sur le CdG
+        _F(
+            REPERE="LOCAL",
+            CARA="K_TR_D_L",
+            GROUP_MA=("GMA", "GMB", "GMC", "GMD"),
+            VALE=(Kxcdg, Kycdg, Kzcdg, Krxcdg, Krycdg, Krzcdg),
+        ),
+        _F(
+            REPERE="LOCAL",
+            CARA="A_TR_D_L",
+            GROUP_MA=("GMA", "GMB", "GMC", "GMD"),
+            VALE=(Axcdg, Aycdg, Azcdg, Arxcdg, Arycdg, Arzcdg),
+        ),
+        _F(
+            REPERE="LOCAL",
+            CARA="M_TR_D_L",
+            GROUP_MA=("GMA", "GMB", "GMC", "GMD"),
+            VALE=(Mcdg, 0, 0, 0),
+        ),
+        # Discrets sur les contacts
+        _F(
+            REPERE="LOCAL",
+            CARA="K_T_D_L",
+            GROUP_MA=("GM1", "GM2", "GM3", "GM4", "GM5", "GM6", "GM7", "GM8", "GM9", "GM10"),
+            VALE=(Kxelas, 0.0, 0.0),
+        ),
+        _F(
+            REPERE="LOCAL",
+            CARA="M_T_D_L",
+            GROUP_MA=("GM1", "GM2", "GM3", "GM4", "GM5", "GM6", "GM7", "GM8", "GM9", "GM10"),
+            VALE=(0.0,),
+        ),
+        # Discrets sur les coins
+        _F(
+            REPERE="LOCAL",
+            CARA="K_T_D_N",
+            GROUP_MA=("GMPOA", "GMPOB", "GMPOC", "GMPOD"),
+            VALE=(0.0, 0.0, 0.0),
+        ),
+        _F(
+            REPERE="LOCAL",
+            CARA="M_T_D_N",
+            GROUP_MA=("GMPOA", "GMPOB", "GMPOC", "GMPOD"),
+            VALE=(0.0,),
+        ),
+    ),
+)
+#
+MaterELAS = DEFI_MATERIAU(ELAS=_F(E=1.0, NU=0.2))
+MaterChoc = DEFI_MATERIAU(ELAS=_F(E=1.0, NU=0.2), DIS_CONTACT=_F(RIGI_NOR=Knorm, AMOR_NOR=AmorNor))
+MaterParoi = DEFI_MATERIAU(
+    ELAS=_F(E=1.0, NU=0.2), DIS_CONTACT=_F(RIGI_NOR=KnormParoi, AMOR_NOR=AmorNor)
+)
+MaterCoin = DEFI_MATERIAU(ELAS=_F(E=1.0, NU=0.2), DIS_CONTACT=_F(RIGI_NOR=Knorm, CONTACT="COIN_2D"))
+#
+CHMAT = AFFE_MATERIAU(
+    MAILLAGE=MAIL,
+    AFFE=(
+        _F(TOUT="OUI", MATER=MaterELAS),
+        _F(GROUP_MA=("GM1", "GM2", "GM3", "GM4", "GM5", "GM6", "GM7", "GM8"), MATER=MaterChoc),
+        _F(GROUP_MA=("GM9", "GM10"), MATER=MaterCoin),
+    ),
+)
+
+# --------------------------------------------------------------
+# condition aux limites en déplacement
+Liaison = AFFE_CHAR_MECA(
+    MODELE=Modele,
+    LIAISON_SOLIDE=(
+        _F(GROUP_NO=("GNA00", "GNACoins")),
+        _F(GROUP_NO=("GNB00", "GNBCoins")),
+        _F(GROUP_NO=("GNC00", "GNCCoins")),
+        _F(GROUP_NO=("GND00", "GNDCoins")),
+    ),
+)
+#
+ZERO = DEFI_CONSTANTE(VALE=0.0)
+
+# Fréquences et Amplitudes nulles par défaut
+FreqAmp = {}
+for ias in ListeAs:
+    FreqAmp[ias] = {}
+    for iaxe in ["x", "y"]:
+        FreqAmp[ias][iaxe] = [(0.0,), (0.0,)]
+
+FreqAmp["A"]["x"] = [[1.0, 1.5, 3.0], [0.004, 0.0016, 0.00352]]
+FreqAmp["A"]["y"] = [[2.0, 3.0, 1.0], [0.006, 0.0024, 0.00528]]
+
+#
+def PyDepl(Ass, axe, Inst, Tf1, Tf2):
+    # Pulsations des signaux
+    lpuls = NP.array(FreqAmp[Ass][axe][0]) * 2.0 * pi
+    # Amplitudes des signaux
+    lampl = NP.array(FreqAmp[Ass][axe][1])
+    if Tf1 <= Inst <= Tf2:
+        lampl *= (Tf2 - Inst) / (Tf2 - Tf1)
+    elif Tf2 <= Inst:
+        lampl = 0.0
+    #
+    zz = NP.sin(lpuls * Inst) * lampl
+    return zz.sum()
+
+
+Tfin = 5.0
+Tfinal = Tfin + 2.0
+# Signal fréquence maxi 3.0 : 20 points sur 1/4 d'alternance
+PasSignal = 1.0 / (3.0 * 4 * 20)
+lsignal = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=Tfinal, PAS=PasSignal),))
+#
+FDeplT = {}
+Vites0 = {}
+Tangente = 1.0 / (3.0 * 2 * 200.0)
+DeplT = {}
+ExecutionParameter().set_option("max_print", 5)
+for ias in ListeAs:
+    FDeplT[ias] = {}
+    Vites0[ias] = {}
+    DeplT[ias] = {}
+    for iaxe in ["x", "y"]:
+        FDeplT[ias][iaxe] = FORMULE(
+            VALE="PyDepl('{xas}','{xaxe}',INST,Tfin,Tfinal)".format(xas=ias, xaxe=iaxe),
+            NOM_PARA="INST",
+            PyDepl=PyDepl,
+            Tfin=Tfin,
+            Tfinal=Tfinal,
+        )
+        Vites0[ias][iaxe] = PyDepl(ias, iaxe, Tfin, Tfinal, Tangente) / Tangente
+        # Déplacement
+        DeplT[ias][iaxe] = CALC_FONC_INTERP(
+            FONCTION=FDeplT[ias][iaxe],
+            NOM_PARA="INST",
+            LIST_PARA=lsignal,
+            PROL_GAUCHE="CONSTANT",
+            PROL_DROITE="CONSTANT",
+            INTERPOL="LIN",
+        )
+ExecutionParameter().set_option("max_print", max_print)
+#
+Linst = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=Tfinal, PAS=PasSignal * 2.0),))
+#
+LLinst = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=Linst))
+#
+CDepla = AFFE_CHAR_MECA_F(
+    MODELE=Modele,
+    DDL_IMPO=(
+        _F(
+            GROUP_NO=("GNA0z",),
+            DX=DeplT["A"]["x"],
+            DY=DeplT["A"]["y"],
+            DZ=ZERO,
+            DRX=ZERO,
+            DRY=ZERO,
+            DRZ=ZERO,
+        ),
+        _F(
+            GROUP_NO=("GNB0z",),
+            DX=DeplT["B"]["x"],
+            DY=DeplT["B"]["y"],
+            DZ=ZERO,
+            DRX=ZERO,
+            DRY=ZERO,
+            DRZ=ZERO,
+        ),
+        _F(
+            GROUP_NO=("GNC0z",),
+            DX=DeplT["C"]["x"],
+            DY=DeplT["C"]["y"],
+            DZ=ZERO,
+            DRX=ZERO,
+            DRY=ZERO,
+            DRZ=ZERO,
+        ),
+        _F(
+            GROUP_NO=("GND0z",),
+            DX=DeplT["D"]["x"],
+            DY=DeplT["D"]["y"],
+            DZ=ZERO,
+            DRX=ZERO,
+            DRY=ZERO,
+            DRZ=ZERO,
+        ),
+    ),
+)
+#
+VITE0 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_DEPL_R",
+    OPERATION="AFFE",
+    MODELE=Modele,
+    AFFE=(
+        _F(NOM_CMP=("DX", "DY", "DZ"), TOUT="OUI", VALE=(0.0, 0.0, 0.0)),
+        _F(NOM_CMP=("DX", "DY"), GROUP_NO=("GNA0z",), VALE=(Vites0["A"]["x"], Vites0["A"]["y"])),
+        _F(NOM_CMP=("DX", "DY"), GROUP_NO=("GNB0z",), VALE=(Vites0["B"]["x"], Vites0["B"]["y"])),
+        _F(NOM_CMP=("DX", "DY"), GROUP_NO=("GNC0z",), VALE=(Vites0["C"]["x"], Vites0["C"]["y"])),
+        _F(NOM_CMP=("DX", "DY"), GROUP_NO=("GND0z",), VALE=(Vites0["D"]["x"], Vites0["D"]["y"])),
+    ),
+)
+DEPL0 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_DEPL_R",
+    OPERATION="AFFE",
+    MODELE=Modele,
+    AFFE=_F(NOM_CMP=("DX", "DY", "DZ"), TOUT="OUI", VALE=(0.0, 0.0, 0.0)),
+)
+ACCE0 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_DEPL_R",
+    OPERATION="AFFE",
+    MODELE=Modele,
+    AFFE=_F(NOM_CMP=("DX", "DY", "DZ"), TOUT="OUI", VALE=(0.0, 0.0, 0.0)),
+)
+
+Rstnl = DYNA_NON_LINE(
+    MODELE=Modele,
+    CHAM_MATER=CHMAT,
+    CARA_ELEM=caraElem,
+    EXCIT=(_F(CHARGE=CDepla), _F(CHARGE=Liaison)),
+    ETAT_INIT=_F(DEPL=DEPL0, VITE=VITE0, ACCE=ACCE0),
+    COMPORTEMENT=(
+        _F(RELATION="ELAS", TOUT="OUI"),
+        _F(
+            RELATION="DIS_CHOC",
+            GROUP_MA=("GM1", "GM2", "GM3", "GM4", "GM5", "GM6", "GM7", "GM8", "GM9", "GM10"),
+        ),
+    ),
+    SCHEMA_TEMPS=_F(SCHEMA="NEWMARK", FORMULATION="DEPLACEMENT"),
+    INCREMENT=_F(LIST_INST=LLinst),
+    CONVERGENCE=_F(RESI_REFE_RELA=0.150, MOMENT_REFE=1.0, EFFORT_REFE=1.0),
+    ARCHIVAGE=_F(LIST_INST=Linst),
+    # ARCHIVAGE=_F(PAS_ARCH=5,),
+)
+
+Rstnl = CALC_CHAMP(reuse=Rstnl, RESULTAT=Rstnl, FORCE=("REAC_NODA",))
+
+# fmt: off
+# Inst             ;A_dx          ;A_dy           ;B_dy            ;C_dx           ;D_dx
+Resultat = [
+[ 1.00000000e-01,[ 0.00000000e+00, 0.00000000e+00,-3.36488601e+01,-1.63414366e+01,-1.27649757e+01,],],
+[ 2.33333333e-01,[ 0.00000000e+00, 0.00000000e+00,-1.06940776e+02,-2.66028238e+01,-2.07804949e+01,],],
+[ 4.41666667e-01,[ 0.00000000e+00, 0.00000000e+00, 5.02724631e+01,-1.64566044e+01, 1.28142905e+01,],],
+[ 8.66666667e-01,[ 0.00000000e+00,-3.84275614e+05, 0.00000000e+00,-2.65002717e+01, 0.00000000e+00,],],
+[ 1.20000000e+00,[ 0.00000000e+00,-5.32150617e+05,-1.86168657e+02,-1.04159414e+02, 0.00000000e+00,],],
+[ 1.20833333e+00,[ 0.00000000e+00, 5.35867910e+05,-1.78399244e+02,-1.04411434e+02, 0.00000000e+00,],],
+[ 1.72500000e+00,[ 5.30153032e+05, 7.64914825e+05,-2.70948599e+01, 2.67592384e+01, 0.00000000e+00,],],
+[ 2.05000000e+00,[-6.30026951e+05,-9.09083998e+05, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00,],],
+[ 2.05833333e+00,[ 6.32592934e+05, 9.12814600e+05, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00,],],
+[ 2.06666667e+00,[-6.35167998e+05,-9.16512651e+05, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00,],],
+[ 2.07500000e+00,[ 6.37696352e+05, 9.20174770e+05, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00,],],
+[ 2.08333333e+00,[-6.40304070e+05,-9.23914488e+05,-3.34371231e+01, 0.00000000e+00, 0.00000000e+00,],],
+[ 2.09166667e+00,[ 6.42818982e+05, 9.27574683e+05,-5.96794295e+01,-1.19380057e+01, 0.00000000e+00,],],
+[ 2.10000000e+00,[-6.45412230e+05,-9.31292085e+05,-8.38400109e+01,-2.79445966e+01, 0.00000000e+00,],],
+[ 2.10833333e+00,[ 6.47958993e+05, 9.34976978e+05,-1.05693798e+02,-4.27956396e+01, 0.00000000e+00,],],
+[ 2.11666667e+00,[-6.50517861e+05,-9.38674424e+05,-1.25057816e+02,-5.63467583e+01, 0.00000000e+00,],],
+[ 2.12500000e+00,[ 6.53096602e+05, 9.42374684e+05,-1.41791607e+02,-6.84781500e+01, 0.00000000e+00,],],
+[ 2.16666667e+00,[-6.65849454e+05,-9.60844561e+05,-1.84000040e+02,-1.05390132e+02, 0.00000000e+00,],],
+[ 2.17500000e+00,[ 6.68494718e+05, 9.64546960e+05,-1.84294746e+02,-1.07873147e+02, 0.00000000e+00,],],
+[ 2.18333333e+00,[-6.70964837e+05,-9.68239481e+05,-1.82086337e+02,-1.08778688e+02, 0.00000000e+00,],],
+[ 2.19166667e+00,[ 6.73622587e+05, 9.71933784e+05,-1.77526327e+02,-1.08171216e+02, 0.00000000e+00,],],
+[ 2.20000000e+00,[-6.76082637e+05,-9.75635264e+05,-1.70790621e+02,-1.06132490e+02, 0.00000000e+00,],],
+[ 2.35000000e+00,[-7.22218515e+05,-1.04206748e+06, 0.00000000e+00, 1.22029202e+01,-1.24934727e+01,],],
+[ 2.40000000e+00,[-7.37609448e+05,-1.06421815e+06, 0.00000000e+00, 1.76310802e+01,-1.28950605e+01,],],
+[ 2.88333333e+00,[-8.86135009e+05,-1.27857177e+06, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00,],],
+[ 2.95000000e+00,[-9.06578177e+05,-1.30808051e+06, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00,],],
+[ 2.95833333e+00,[ 9.09253750e+05, 1.31207994e+06, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00,],],
+[ 2.96666667e+00,[-9.11697447e+05,-1.31547443e+06, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00,],],
+[ 2.97500000e+00,[ 9.14376717e+05, 1.31946439e+06, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00,],],
+[ 2.98333333e+00,[-9.16821189e+05,-1.32287620e+06, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00,],],
+[ 2.99166667e+00,[ 9.19495195e+05, 1.32684103e+06, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00,],],
+[ 3.00000000e+00,[-9.21949341e+05,-1.33028560e+06, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00,],],
+[ 3.00833333e+00,[ 9.24609434e+05, 1.33421035e+06, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00,],],
+[ 3.01666667e+00,[-9.27081469e+05,-1.33770190e+06, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00,],],
+[ 3.02500000e+00,[ 9.29720049e+05, 1.34157331e+06, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00,],],
+[ 3.03333333e+00,[-9.32216790e+05,-1.34512392e+06, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00,],],
+[ 3.04166667e+00,[ 9.34827975e+05, 1.34893130e+06, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00,],],
+[ 3.05000000e+00,[-9.37354236e+05,-1.35255007e+06, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00,],],
+[ 3.05833333e+00,[ 9.39934386e+05, 1.35628605e+06, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00,],],
+[ 3.06666667e+00,[-9.42492550e+05,-1.35997850e+06, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00,],],
+[ 3.50833333e+00,[ 1.07820043e+06, 1.55587011e+06, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00,],],
+[ 4.12500000e+00,[ 1.26774800e+06, 1.82932535e+06, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00,],],
+[ 4.17500000e+00,[ 1.28314238e+06, 1.85152117e+06, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00,],],
+[ 4.18333333e+00,[-1.28565158e+06,-1.85513820e+06, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00,],],
+[ 4.19166667e+00,[ 1.28827122e+06, 1.85891106e+06, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00,],],
+[ 4.20000000e+00,[-1.29076795e+06,-1.86253213e+06, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00,],],
+[ 4.20833333e+00,[ 1.29339850e+06, 1.86629814e+06, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00,],],
+[ 4.25000000e+00,[-1.30612817e+06,-1.88472416e+06, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00,],],
+[ 5.45833333e+00,[ 0.00000000e+00, 2.42075067e+06, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00,],],
+]
+
+mclf = {} ; mclf['RESU'] = []
+
+LesClefs = [ ('GNA0z','DX'), ('GNA0z','DY'), ('GNB0z','DY'), ('GNC0z','DX'),  ('GND0z','DX'), ]
+for Inst,LesValeurs in Resultat:
+    for ixx in range(len(LesValeurs)):
+        grp,ddl = LesClefs[ixx]
+        valeur = LesValeurs[ixx]
+        if ( abs(valeur) > 0.1 ):
+            mclf['RESU'].append(
+                _F(RESULTAT=Rstnl, INST=Inst, NOM_CHAM='REAC_NODA', GROUP_NO=grp, NOM_CMP=ddl,
+                   VALE_CALC=  valeur),
+            )
+
+TEST_RESU(**mclf)
+
+# fmt: on
+FIN()
