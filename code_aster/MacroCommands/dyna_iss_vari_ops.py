@@ -493,13 +493,13 @@ class GeneratorTRANS(Generator):
         #  extraction de la partie modes interface
         KRS = MIMPE[nbmodd:nbmodt, nbmodd:nbmodt]
         #  CALCUL FORCE SISMIQUE
-        FSISM = __fosi.EXTR_VECT_GENE_C()
+        FSISM = __fosi.EXTR_VECT_GENE()
         #  extraction de la partie modes interface
         FS = 0.0
         for k1 in range(dict_modes["nbpod"]):
             FS = FS + compute_force_vari(self, dict_modes, VEC[k1], KRS)
         FSISM[nbmodd:nbmodt][:] = FS
-        __fosi.RECU_VECT_GENE_C(FSISM)
+        __fosi.RECU_VECT_GENE(FSISM)
         # CALCUL ISS
         if self.mat_gene_params["MATR_AMOR"] is not None:
             __dyge = DYNA_VIBRA(
@@ -584,14 +584,14 @@ class GeneratorSPEC(Generator):
         #  extraction de la partie modes interface
         KRS = MIMPE[nbmodd:nbmodt, nbmodd:nbmodt]
         #  CALCUL FORCE SISMIQUE AVEC VARIABILITE
-        FSISM = __fosi.EXTR_VECT_GENE_C()
+        FSISM = __fosi.EXTR_VECT_GENE()
         SP = NP.zeros((nbmodt, nbmodt))
         for k1 in range(dict_modes["nbpod"]):
             #  calcul de la force sismique mode POD par mode POD
             FS = compute_force_vari(self, dict_modes, VEC[k1], KRS)
             FSISM[nbmodd:nbmodt][:] = FS
             #  Calcul harmonique
-            __fosi.RECU_VECT_GENE_C(FSISM)
+            __fosi.RECU_VECT_GENE(FSISM)
             if self.mat_gene_params["MATR_AMOR"] is not None:
                 __dyge = DYNA_VIBRA(
                     TYPE_CALCUL="HARM",

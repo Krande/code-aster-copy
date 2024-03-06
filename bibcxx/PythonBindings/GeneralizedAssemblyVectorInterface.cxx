@@ -3,7 +3,7 @@
  * @brief Interface python de GeneralizedAssemblyVector
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -45,6 +45,12 @@ void exportGeneralizedAssemblyVectorToPython( py::module_ &mod ) {
 
             Returns:
                 list[float]: List of values.
+            )" )
+        .def( "setValues", &GeneralizedAssemblyVectorReal::setValues, R"(
+            Set values of vector.
+        
+            Arguments:
+                values [list[float]]: set vector.
             )" );
 
     py::class_< GeneralizedAssemblyVectorComplex, GeneralizedAssemblyVectorComplexPtr,
@@ -57,6 +63,12 @@ void exportGeneralizedAssemblyVectorToPython( py::module_ &mod ) {
             Return a list of values as (x1, y1, z1, x2, y2, z2...)
 
             Returns:
-                list[float]: List of values.
+                list[complex]: List of values.
+            )" )
+        .def( "setValues", &GeneralizedAssemblyVectorComplex::setValues, R"(
+            Set values of vector.
+        
+            Arguments:
+                values [list[complex]]: set vector.
             )" );
 };
