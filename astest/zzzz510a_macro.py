@@ -20,8 +20,6 @@
 POST_BEREMIN option SIGM_ELMOY codée par Sébastien Meunier
 """
 
-import aster
-
 from code_aster.Commands import *
 from code_aster import CA
 
@@ -256,8 +254,7 @@ def sigelmoy(
 
         l_mailles_grma = chbid.getValuesWithDescription("SIXX", [grmapb])[1][0]
         l_mailles_total = chbid.getValuesWithDescription("SIXX", [])[1][0]
-        nomvale = chbid.getName().ljust(19) + ".CELV"
-        nbrvale = len(aster.getvectjev(nomvale))
+        nbrvale = len(chbid.getValues())
         champ = [0] * len(l_mailles_total) * 2 * dim_geom
 
         for (indice, maille) in enumerate(l_mailles_total):
@@ -274,9 +271,7 @@ def sigelmoy(
                 champ[6 * indice + 4] = sxzmoyfinal[maille]
                 champ[6 * indice + 5] = syzmoyfinal[maille]
         bidon = [0] * nbrvale
-        aster.putvectjev(
-            nomvale, nbrvale, tuple(range(1, nbrvale + 1)), tuple(champ), tuple(bidon), 1
-        )
+        chbid.setValues(champ)
 
         rmelmoy.setField(chbid, "SIEF_ELGA", nume_inst)
         rmelmoy.setField(velga, "VARI_ELGA", nume_inst)
