@@ -22,7 +22,7 @@ from math import sqrt
 from ..Messages import UTMESS
 from ..Objects import Function
 from ..Supervis import ExecuteMacro
-from ..Utilities import force_list
+from ..Utilities import force_list, is_number
 
 
 class MaterialDefinition(ExecuteMacro):
@@ -117,8 +117,16 @@ def adapt_elas(keywords):
     Otherwise, assign (E, NU) values.
     """
 
-    def cmp(x, y, epsi=1.0e-3):
-        return abs((x - y) / (x + y) * 2.0) < epsi
+    def is_equal(x, y, epsi=1.0e-3):
+        """Tell if 2 floats are almost equal."""
+        return abs(x - y) < 2.0 * epsi * abs(x + y)
+
+    def compare(par1, val1, par2, val2, epsi=1.0e-3):
+        """Compare and raise an error if the values are not equal."""
+        if not is_number(val1) or not is_number(val2):
+            return
+        if not is_equal(val1, val2):
+            UTMESS("F", "MATERIAL1_13", valr=(val1, val2, epsi), valk=(par1, par2))
 
     elas = keywords.get("ELAS")
     if not elas:
@@ -129,29 +137,43 @@ def adapt_elas(keywords):
     valMU = elas.pop("MU", None)
     celP = elas.pop("CELE_P", None)
     celS = elas.pop("CELE_S", None)
-    if None not in (valK, valMU):
-        if valK <= 0.0:
-            UTMESS("F", "MATERIAL1_14", valk="K")
-        if valMU <= 0.0:
-            UTMESS("F", "MATERIAL1_14", valk="MU")
-        valE = 9.0 * valK * valMU / (3.0 * valK + valMU)
-        valNU = (3.0 * valK - 2.0 * valMU) / (6.0 * valK + 2.0 * valMU)
-        UTMESS("I", "MATERIAL1_12", valr=(valE, valNU), valk="(K, MU)")
-    elif None not in (celP, celS):
-        if celS <= 0.0:
-            UTMESS("F", "MATERIAL1_14", valk="CELE_S")
-        if celP / celS < 2.0 * sqrt(3.0) / 3.0:
-            UTMESS("F", "MATERIAL1_15", valr=(celP / celS, 2.0 * sqrt(3.0) / 3.0))
-        valE = (
-            elas["RHO"] * celS**2 * (3.0 * celP**2 - 4.0 * celS**2) / (celP**2 - celS**2)
-        )
-        valNU = (celP**2 - 2.0 * celS**2) / (celP**2 - celS**2) / 2.0
-        UTMESS("I", "MATERIAL1_12", valr=(valE, valNU), valk="(CELE_P, CELE_S, RHO)")
-    else:
-        return
+    if set([valK, valMU, celP, celS]).difference([None]):
+        if None not in (valK, valMU):
+            if valK <= 0.0:
+                UTMESS("F", "MATERIAL1_14", valk="K")
+            if valMU <= 0.0:
+                UTMESS("F", "MATERIAL1_14", valk="MU")
+            valE = 9.0 * valK * valMU / (3.0 * valK + valMU)
+            valNU = (3.0 * valK - 2.0 * valMU) / (6.0 * valK + 2.0 * valMU)
+            UTMESS("I", "MATERIAL1_12", valr=(valE, valNU), valk="(K, MU)")
+        elif None not in (celP, celS):
+            if celS <= 0.0:
+                UTMESS("F", "MATERIAL1_14", valk="CELE_S")
+            if celP / celS < 2.0 * sqrt(3.0) / 3.0:
+                UTMESS("F", "MATERIAL1_15", valr=(celP / celS, 2.0 * sqrt(3.0) / 3.0))
+            valE = (
+                elas["RHO"]
+                * celS**2
+                * (3.0 * celP**2 - 4.0 * celS**2)
+                / (celP**2 - celS**2)
+            )
+            valNU = (celP**2 - 2.0 * celS**2) / (celP**2 - celS**2) / 2.0
+            UTMESS("I", "MATERIAL1_12", valr=(valE, valNU), valk="(CELE_P, CELE_S, RHO)")
 
-    elas["E"] = valE
-    elas["NU"] = valNU
+        elas["E"] = valE
+        elas["NU"] = valNU
+
+    # check for elastic parameters passed for MFront behaviours with E, nu
+    for key, userDict in keywords.items():
+        if isinstance(userDict, dict):
+            userDict = [userDict]
+        elif not isinstance(userDict, (list, tuple)):
+            continue
+        for occ in userDict:
+            if occ.get("YoungModulus"):
+                compare(key + "/YoungModulus", occ["YoungModulus"], "ELAS/E", elas["E"])
+            if occ.get("PoissonRatio"):
+                compare(key + "/PoissonRatio", occ["PoissonRatio"], "ELAS/NU", elas["NU"])
 
 
 # K = E / (3. * (1 - 2 * NU))

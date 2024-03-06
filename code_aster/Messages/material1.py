@@ -127,6 +127,13 @@ Les valeurs des paramètres E et NU calculées à partir de %(k1)s sont :
     NU = %(r2)g
 """
     ),
+    13: _(
+        """
+Les valeurs des paramètres %(k1)s et %(k2)s ne sont pas cohérents (à %(r3)g près) :
+    %(k1)s = %(r1)g
+    %(k2)s = %(r2)g
+"""
+    ),
     14: _(
         """
 La valeur du paramètre %(k1)s soit être strictement positive.
