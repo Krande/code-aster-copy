@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -126,11 +126,6 @@ void DEFSSPP( WKVECTC, wkvectc, const char *, STRING_SIZE, const char *, STRING_
 extern void DEFSPPPPPPS( GETCON, getcon, char *, STRING_SIZE, ASTERINTEGER *, ASTERINTEGER *,
                          ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *, char **, char *,
                          STRING_SIZE );
-
-#define CALL_PUTCON( nomsd, nbind, ind, valr, valc, num, iret )                                    \
-    CALLSPPPPPP( PUTCON, putcon, nomsd, nbind, ind, valr, valc, num, iret )
-extern void DEFSPPPPPP( PUTCON, putcon, char *, STRING_SIZE, ASTERINTEGER *, ASTERINTEGER *,
-                        ASTERDOUBLE *, ASTERDOUBLE *, ASTERINTEGER *, ASTERINTEGER * );
 
 #define CALL_TAILSD( nom, nomsd, val, nbval ) CALLSSPP( TAILSD, tailsd, nom, nomsd, val, nbval )
 extern void DEFSSPP( TAILSD, tailsd, char *, STRING_SIZE, char *, STRING_SIZE, ASTERINTEGER *,
