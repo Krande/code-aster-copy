@@ -19,7 +19,11 @@
 
 # person_in_charge: nicolas.sellenet@edf.fr
 
-from ..Objects import GeneralizedAssemblyVectorReal, GeneralizedAssemblyVectorComplex, FieldOnNodesComplex
+from ..Objects import (
+    GeneralizedAssemblyVectorReal,
+    GeneralizedAssemblyVectorComplex,
+    FieldOnNodesComplex,
+)
 from ..Supervis import ExecuteCommand
 
 
@@ -37,7 +41,7 @@ class ProjVectBase(ExecuteCommand):
         if "VECT_ASSE_GENE" in keywords:
             self._result = type(keywords["VECT_ASSE_GENE"])()
         else:
-            if type(keywords["VECT_ASSE"])==FieldOnNodesComplex:
+            if type(keywords["VECT_ASSE"]) == FieldOnNodesComplex:
                 self._result = GeneralizedAssemblyVectorComplex()
             else:
                 self._result = GeneralizedAssemblyVectorReal()
