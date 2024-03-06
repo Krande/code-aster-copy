@@ -302,7 +302,7 @@ def C_SOLVEUR(command, base=None):  # COMMUN#
     # --------------------------------------------------------------------
 
     if command == "MODE_STATIQUE":
-        _BlocMU["NB_RHS"] = SIMP(statut="f", typ="I", defaut=32, val_min=1, val_max=1024)
+        _BlocMU["NB_RHS"] = SIMP(statut="f", typ="I", defaut=-128, val_min=-1024, val_max=1024)
     else:
         _BlocMU["NB_RHS"] = SIMP(statut="f", typ="I", defaut=1, val_min=1, val_max=32)
 

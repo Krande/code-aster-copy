@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -61,7 +61,7 @@ MATASSM = ASSE_MATRICE(MATR_ELEM=MELM, NUME_DDL=NUM)
 #
 #               CALCUL MODAL
 
-MODES = CALC_MODES(
+MODES = CALC_MODES(SOLVEUR=_F(NPREC=10),
     MATR_RIGI=MATASSR, OPTION="BANDE", CALC_FREQ=_F(FREQ=(1.0, 1200.0)), MATR_MASS=MATASSM
 )
 

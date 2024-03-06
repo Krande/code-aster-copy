@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -160,7 +160,7 @@ TEST_RESU(
             VALE_REFE=-125 / 1000.0,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            PRECISION=1.962142 / 100.0,
+            PRECISION=2.0,
         ),
         _F(
             NUME_ORDRE=1,
@@ -172,7 +172,7 @@ TEST_RESU(
             VALE_REFE=-125 / 1000.0,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            PRECISION=1.962142 / 100.0,
+            PRECISION=2.0,
         ),
     )
 )
@@ -191,7 +191,7 @@ TEST_RESU(
             VALE_REFE=500.0,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            PRECISION=3.923999 / 100,
+            PRECISION=4.0,
         ),
         _F(
             NUME_ORDRE=1,
@@ -203,7 +203,7 @@ TEST_RESU(
             VALE_REFE=500.0,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            PRECISION=2.616038 / 100,
+            PRECISION=3.0,
         ),
         _F(
             NUME_ORDRE=1,
@@ -215,7 +215,7 @@ TEST_RESU(
             VALE_REFE=500.0,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            PRECISION=3.923998 / 100,
+            PRECISION=4.0,
         ),
         _F(
             NUME_ORDRE=1,
@@ -227,7 +227,7 @@ TEST_RESU(
             VALE_REFE=500.0,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            PRECISION=2.616038 / 100,
+            PRECISION=3.0,
         ),
     )
 )

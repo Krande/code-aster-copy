@@ -197,6 +197,7 @@ ksp_r.setType("preonly")
 ksp_r.getPC().setType("hypre")
 ksp_i.setType("preonly")
 ksp_i.getPC().setType("hypre")
+ksp.setTolerances(rtol=1.0e-6)
 ksp.setFromOptions()
 
 x = y.duplicate()
