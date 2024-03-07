@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,8 +19,8 @@
 !
 !
 interface
-    subroutine elim75(nomres, resgen, matgen)
+    subroutine elim75(nomres, resgen, matgen, massgen)
         character(len=8) :: nomres, resgen
-        character(len=19) :: matgen
+        character(len=19) :: matgen, massgen
     end subroutine elim75
 end interface

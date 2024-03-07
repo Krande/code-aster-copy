@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine elim75(nomres, resgen, matgen)
+subroutine elim75(nomres, resgen, matgen, massgen)
     use aster_petsc_module
     use elg_data_module
     implicit none
@@ -50,7 +50,7 @@ subroutine elim75(nomres, resgen, matgen)
 #include "asterfort/wkvect.h"
 !
     character(len=8) :: nomres, resgen
-    character(len=19) :: matgen
+    character(len=19) :: matgen, massgen
 !-----------------------------------------------------------------------
 !
 !  BUT : < RESTITUTION GENERALISEE > D'UNE MATRICE REDUITE PAR
@@ -69,13 +69,13 @@ subroutine elim75(nomres, resgen, matgen)
     integer :: i, j, ibid, ier, iord
     integer :: jbid, nbmod, neq, nsecm
     integer :: nno, iadpar(13), iadpas(13), tmod(1)
-    real(kind=8) :: rbid
+    real(kind=8) :: rbid, omega2
     complex(kind=8) :: cbid
     character(len=1) :: typsca
     character(len=8) :: kbid
     character(len=14) :: numddl
     character(len=16) :: depl, nompar(13)
-    character(len=19) :: chamne, raid
+    character(len=19) :: chamne, raid, mass
     character(len=24) :: chamol
     aster_logical :: zcmplx
     complex(kind=8), pointer :: vgene_c(:) => null(), vnew_c(:) => null()
@@ -84,7 +84,7 @@ subroutine elim75(nomres, resgen, matgen)
     character(len=24), pointer :: refa(:) => null()
 !
     PetscErrorCode  :: ierr
-    PetscInt :: n1, n2
+    PetscInt :: n1, n2, ke_mass
     !
 !-----------------------------------------------------------------------
     data depl/'DEPL            '/
@@ -135,25 +135,35 @@ subroutine elim75(nomres, resgen, matgen)
 !
 ! ---- RESTITUTION PROPREMENT DITE
 !
-!  on recupère le nomde la matrice d'origine
+!  on recupère le nom de la matrice de rigidité d'origine
     call jeveuo(matgen//'.REFA', 'L', vk24=refa)
     raid = refa(20) (1:19)
-!  on récupère le numéro d'instance associé ke
+!  on recupère le nom de la matrice de masse d'origine
+    call jeveuo(massgen//'.REFA', 'L', vk24=refa)
+    mass = refa(20) (1:19)
+!  on récupère le numéro d'instance ke_mass associé à la matrice de masse
+    call elg_gest_data('CHERCHE', mass, massgen, ' ')
+    ke_mass = ke
+!  on récupère le numéro d'instance ke associé à la matrice de rigidité
     call elg_gest_data('CHERCHE', raid, matgen, ' ')
 !  on construit les vecteurs nécessaires pour la restitution
     call MatGetSize(elg_context(ke)%matc, n2, n1, ierr)
     ASSERT(ierr == 0)
     call elg_allocvr(elg_context(ke)%vecb, int(n1))
+    call elg_allocvr(elg_context(ke)%vecc, int(n2))
 !  on les remplie de 0 car c'est une résolution modale
     call VecZeroEntries(elg_context(ke)%vecb, ierr)
     ASSERT(ierr == 0)
     call VecDuplicate(elg_context(ke)%vecb, elg_context(ke)%vx0, ierr)
+    ASSERT(ierr == 0)
+    call VecZeroEntries(elg_context(ke)%vecc, ierr)
     ASSERT(ierr == 0)
 
     call dismoi('NB_EQUA', raid, 'MATR_ASSE', repi=neq)
     call dismoi('NOM_NUME_DDL', raid, 'MATR_ASSE', repk=numddl)
     call wkvect('&&ELIM75.DEPL_R', 'V V R', neq, vr=deplr)
     call wkvect('&&ELIM75.DEPL_C', 'V V R', neq, vr=deplc)
+!
 !
 ! ------ BOUCLE SUR LES MODES A RESTITUER
 !
@@ -182,12 +192,14 @@ subroutine elim75(nomres, resgen, matgen)
 !
         call rsadpa(resgen, 'L', 13, nompar, iord, 0, tjv=iadpar, styp=kbid, istop=0)
 !
+        omega2 = zr(iadpar(4))
+!
         nsecm = 1
         if (zcmplx) then
             ! dans le cas complexe, on restitue les parties réelle et imaginaire
             ! séparemment et on les somme
-            call elg_calc_solu(raid, nsecm, real(vgene_c), deplr)
-            call elg_calc_solu(raid, nsecm, aimag(vgene_c), deplc)
+            call elg_calc_solu(raid, nsecm, real(vgene_c), deplr, omega2, ke_mass)
+            call elg_calc_solu(raid, nsecm, aimag(vgene_c), deplc, omega2, ke_mass)
             vnew_c = dcmplx(deplr, deplc)
         else
             call elg_calc_solu(raid, nsecm, vgene_r, vnew_r)
