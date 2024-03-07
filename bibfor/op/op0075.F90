@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ subroutine op0075()
     character(len=8) :: k8bid, nomres, resin, mode, blanc8, param(3), val_param(3), ltch
     character(len=16) :: concep, nomcmd, typres, typrep, champ(8), typmat
     character(len=19) :: profno
-    character(len=24) :: matgen, numgen, basemo
+    character(len=24) :: matgen, massgen, numgen, basemo
     aster_logical :: prsimp, l_err
     integer :: nbord, i, iord, lpain(3), lpaout(3), ibid, ir1
     integer :: j, j3refe, jrefn, naccab, nbcham
@@ -122,6 +122,9 @@ subroutine op0075()
             if (typrep(1:16) .eq. 'MAILLAGE_SDASTER') then
                 call gettco(matgen, typmat)
                 ASSERT(typmat .eq. 'MATR_ASSE_ELIM_R')
+                call dismoi('REF_MASS_PREM', resin, 'RESU_DYNA', repk=massgen)
+                call gettco(massgen, typmat)
+                ASSERT(typmat .eq. 'MATR_ASSE_ELIM_R')
             else
                 prsimp = .false.
 !             --- CHERCHER ALORS LE NUME_DDL_GENE POUR Y TROUVER DES INFOS
@@ -164,7 +167,7 @@ subroutine op0075()
 !
 !     --- CALCUL MODAL AVEC ELIM_LAGR='OUI'
     else if (concep(1:9) .eq. 'MODE_MECA') then
-        call elim75(nomres, resin, matgen)
+        call elim75(nomres, resin, matgen, massgen)
 !
 !     --- CALCUL MODAL SANS SOUS-STRUCTURATION
     else if (concep(1:9) .eq. 'MODE_GENE') then

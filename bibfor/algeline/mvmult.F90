@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ subroutine mvmult(mat, vec, res)
     res19 = res
 !
     call mtdscr(mat19)
-    call jeveuo(mat19//'.&INT', 'E', lmat)
+    call jeveuo(mat19//'.&INT', 'L', lmat)
     call jeveuo(vec19//'.VALE', 'L', jchin)
     call jeveuo(res19//'.VALE', 'E', jchout)
 !
