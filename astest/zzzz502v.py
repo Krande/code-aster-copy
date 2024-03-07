@@ -20,6 +20,7 @@
 
 from code_aster.Commands import *
 from code_aster import CA
+
 import numpy as np
 from code_aster.CA import MPI
 from code_aster.Utilities import PETSc
