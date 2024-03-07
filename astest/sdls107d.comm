@@ -99,8 +99,7 @@ Uana = CREA_CHAMP(
 Mode = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="MODE_MECA",
-    NOM_CHAM="DEPL",
-    AFFE=_F(CHAM_GD=Uana, FREQ=1, NUME_MODE=1),
+    AFFE=_F(NOM_CHAM="DEPL", CHAM_GD=Uana, FREQ=1, NUME_MODE=1),
 )
 
 # definition du spectre
