@@ -151,7 +151,7 @@ subroutine elg_calcxl_modal(x1, omega2, ke_mass, vlag)
     call jedema()
 !
 #else
-    integer :: x1, vlag
+    integer :: x1, vlag, ke_mass, omega2
     vlag = x1
     ASSERT(.false.)
 #endif
