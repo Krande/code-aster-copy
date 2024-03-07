@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine elg_calc_solu(matas1, nsecm, rsolu2, rsolu1)
+subroutine elg_calc_solu(matas1, nsecm, rsolu2, rsolu1, omega2, ke_mass)
 #include "asterf_types.h"
 #include "asterf_petsc.h"
 !
@@ -30,6 +30,7 @@ subroutine elg_calc_solu(matas1, nsecm, rsolu2, rsolu1)
 #include "asterfort/dismoi.h"
 #include "asterfort/elg_allocvr.h"
 #include "asterfort/elg_calcxl.h"
+#include "asterfort/elg_calcxl_modal.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -39,6 +40,9 @@ subroutine elg_calc_solu(matas1, nsecm, rsolu2, rsolu1)
     character(len=19) :: matas1
     integer :: nsecm
     real(kind=8) :: rsolu2(*), rsolu1(*)
+    real(kind=8), optional, intent(in)::omega2
+#ifdef ASTER_HAVE_PETSC
+    PetscInt, optional, intent(in):: ke_mass
 !--------------------------------------------------------------
 ! BUT :
 !   calculer les solutions complètes (RSOLU1) correspondant aux
@@ -49,12 +53,11 @@ subroutine elg_calc_solu(matas1, nsecm, rsolu2, rsolu1)
 ! IN  : NSECM  :  nombre de solutions
 ! IN  : RSOLU2(*)  : vecteur de réels de dimension nsecm*neq2
 !                  (valeurs des solutions réduites)
-! IN  : BASE  :  'V' / 'G'
+! IN  : MODAL_  :  vrai si on reconstruit un calcul modal
 ! OUT : RSOLU1(*)  : vecteur de réels de dimension nsecm*neq1
 !                  (valeurs des solutions complètes)
 !---------------------------------------------------------------
 !
-#ifdef ASTER_HAVE_PETSC
 !
 !================================================================
     character(len=1) :: kbid
@@ -68,6 +71,7 @@ subroutine elg_calc_solu(matas1, nsecm, rsolu2, rsolu1)
     integer, pointer :: delg(:) => null()
     integer, pointer :: dlg2(:) => null()
     character(len=24), pointer :: refa(:) => null()
+    aster_logical::modal
     PetscErrorCode :: ierr
     PetscInt :: n1, n2, n3
     PetscScalar :: xx(1), p1
@@ -77,6 +81,12 @@ subroutine elg_calc_solu(matas1, nsecm, rsolu2, rsolu1)
 !
 !----------------------------------------------------------------
     call jemarq()
+!
+    modal = .false.
+    if (present(omega2)) then
+        modal = .true.
+        ASSERT(present(ke_mass))
+    end if
 !
     call jeveuo(matas1//'.REFA', 'L', vk24=refa)
     matas2 = refa(19) (1:19)
@@ -126,11 +136,6 @@ subroutine elg_calc_solu(matas1, nsecm, rsolu2, rsolu1)
     call VecAXPY(x1, p1, tmp1, ierr)
     ASSERT(ierr == 0)
 !
-!     calcul des coefficients de Lagrange :
-    call elg_allocvr(vlag, to_aster_int(n2))
-    call elg_calcxl(x1, vlag)
-!
-!
 !     -- on recopie X1 dans RSOLU1 :
     call VecGetArray(x1, xx, xidx, ierr)
     ASSERT(ierr == 0)
@@ -146,6 +151,14 @@ subroutine elg_calc_solu(matas1, nsecm, rsolu2, rsolu1)
     ASSERT(ierr == 0)
 !
 !
+!     calcul des coefficients de Lagrange :
+    call elg_allocvr(vlag, to_aster_int(n2))
+    if (modal) then
+        call elg_calcxl_modal(x1, omega2, ke_mass, vlag)
+    else
+        call elg_calcxl(x1, vlag)
+    end if
+    !
 !     -- on recopie VLAG dans RSOLU1 :
 !        remarque : il faut diviser VLAG par 2 (2 lagranges)
 !                   Lagrange "1"  et "2" :
@@ -156,7 +169,11 @@ subroutine elg_calc_solu(matas1, nsecm, rsolu2, rsolu1)
     do k1 = 1, neq1
         if (delg(k1) .eq. -1) then
             ico = ico+1
-            val = xx(xidx+ico)*conl(k1)/2.d0
+            if (modal) then
+                val = xx(xidx+ico)/2.d0
+            else
+                val = xx(xidx+ico)*conl(k1)/2.d0
+            end if
             rsolu1(k1) = val
 ! k2 lagrange "2" associé au lagrange "1" k1
             k2 = dlg2(k1)
@@ -182,10 +199,11 @@ subroutine elg_calc_solu(matas1, nsecm, rsolu2, rsolu1)
 #else
     character(len=1) :: kdummy
     integer :: idummy
+    integer, optional, intent(in):: ke_mass
     real(kind=8) :: rdummy
     kdummy = matas1(1:1)
-    idummy = nsecm
-    rdummy = rsolu1(1)+rsolu2(1)
+    idummy = nsecm+ke_mass
+    rdummy = rsolu1(1)+rsolu2(1)+omega2
     call utmess('F', 'ELIMLAGR_1')
 #endif
 !

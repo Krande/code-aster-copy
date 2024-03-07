@@ -15,10 +15,18 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+#include "asterf_petsc.h"
 !
 interface
-    subroutine cldual_maj(listLoad, disp)
-        character(len=19), intent(in) :: listLoad
-        character(len=19), intent(in) :: disp
-    end subroutine cldual_maj
+    subroutine elg_calcxl_modal(x1, omega2, ke_mass, vlag)
+#ifdef ASTER_HAVE_PETSC
+        use aster_petsc_module
+        Vec :: x1, vlag
+        PetscInt :: ke_mass
+        real(kind=8) :: omega2
+# else
+        integer :: x1, vlag, ke_mass
+        real(kind=8) :: omega2
+# endif
+    end subroutine elg_calcxl_modal
 end interface

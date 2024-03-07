@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -51,9 +51,9 @@ CHARGT = AFFE_CHAR_MECA(
 RESU = MECA_STATIQUE(MODELE=model, CHAM_MATER=MATERIAL, EXCIT=_F(CHARGE=CHARGT))
 
 # Test
-sixxCalc = -54.76185332456292
-siyyCalc = -46.86498637504582
-sixyCalc = 50.1696041176199
+sixxCalc = -54.41811844603956
+siyyCalc = -46.50041629108845
+sixyCalc = 50.30197231028531
 
 TEST_RESU(
     RESU=(
@@ -118,13 +118,13 @@ MOD_1 = CALC_MODES(
 
 # Test
 freqRefe1 = 659340.0
-freqCalc1 = 668815.8870339605
+freqCalc1 = 668813.5167237109
 freqTole1 = 0.01 * 1.44
 freqRefe2 = 293040.0
-freqCalc2 = 291377.7285874381
+freqCalc2 = 291377.35299787164
 freqTole2 = 0.01 * 0.57
 freqRefe3 = 73260.0
-freqCalc3 = 71974.00390203038
+freqCalc3 = 71973.98306260597
 freqTole3 = 0.01 * 1.76
 
 TEST_RESU(

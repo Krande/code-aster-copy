@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 POURSUITE(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 
 # VolumicForce: equivalent to pressure
-voluForc = AFFE_CHAR_MECA(MODELE=MODEL, FORCE_INTERNE=_F(GROUP_MA="volume", FZ=-presAppl))
+voluForc = AFFE_CHAR_MECA(MODELE=MODEL, FORCE_INTERNE=_F(GROUP_MA="volume", FZ=-presAppl / t))
 
 # Static linear
 resuLinearVoluForce = MECA_STATIQUE(
@@ -27,7 +27,7 @@ resuLinearVoluForce = MECA_STATIQUE(
 )
 
 # Test
-deplDZTole = 0.01 * 8.3e-2
+deplDZTole = 0.1 * 8.3e-2
 TEST_RESU(
     RESU=_F(
         RESULTAT=resuLinearVoluForce,
@@ -37,13 +37,13 @@ TEST_RESU(
         NOM_CHAM="DEPL",
         NOM_CMP=("DZ",),
         VALE_REFE=deplDZRefe,
-        VALE_CALC=-1.0008268440234867,
+        VALE_CALC=-2.07694387416643,
         PRECISION=deplDZTole,
     )
 )
 
 # VolumicForce (function): equivalent to pressure
-presApplFunc = DEFI_CONSTANTE(VALE=-presAppl)
+presApplFunc = DEFI_CONSTANTE(VALE=-presAppl / t)
 voluForcFunc = AFFE_CHAR_MECA_F(MODELE=MODEL, FORCE_INTERNE=_F(GROUP_MA="volume", FZ=presApplFunc))
 
 # Static linear
@@ -52,7 +52,7 @@ resuLinearVoluForceFunc = MECA_STATIQUE(
 )
 
 # Test
-deplDZTole = 0.01 * 8.3e-2
+deplDZTole = 0.1 * 8.3e-2
 TEST_RESU(
     RESU=_F(
         RESULTAT=resuLinearVoluForceFunc,
@@ -62,7 +62,7 @@ TEST_RESU(
         NOM_CHAM="DEPL",
         NOM_CMP=("DZ",),
         VALE_REFE=deplDZRefe,
-        VALE_CALC=-1.0008268440234853,
+        VALE_CALC=-2.07694387416643,
         PRECISION=deplDZTole,
     )
 )

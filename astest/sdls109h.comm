@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -56,12 +56,12 @@ freqRef8 = 588.88
 
 freqCal1 = 209.66583065214112
 freqCal2 = 209.6658306692303
-freqCal3 = 210.07201614862745
-freqCal4 = 210.07201616242799
-freqCal5 = 585.8691140669524
-freqCal6 = 585.8691140669737
-freqCal7 = 596.9911301863068
-freqCal8 = 596.991130186424
+freqCal3 = 210.15887872138327
+freqCal4 = 210.15887872646198
+freqCal5 = 587.847400773409
+freqCal6 = 587.8474007734218
+freqCal7 = 596.995349460921
+freqCal8 = 596.9953494609745
 
 freqTol1 = 1.9 * 0.01
 freqTol2 = 1.9 * 0.01

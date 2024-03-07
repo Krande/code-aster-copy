@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,6 +29,7 @@ module SolidShell_Elementary_module
     use SolidShell_Utilities_module
     use SolidShell_Debug_module
     use SolidShell_Geometry_module
+    use SolidShell_Geometry_Hexa_module
     use SolidShell_NonLinear_Hexa_module
     use SolidShell_Elementary_Hexa_module
 ! ==================================================================================================
@@ -126,6 +127,7 @@ contains
 ! - Local
         integer      :: iDofGeom, iNodeGeom
         real(kind=8) :: detJac0
+        real(kind=8) :: area0
 !   ------------------------------------------------------------------------------------------------
 !
         if (SSH_DBG_ELEM) SSH_DBG_STRG('> initGeomCell')
@@ -156,6 +158,9 @@ contains
                           cellGeom%Jac0, cellGeom%JacInv0, &
                           detJac0)
         cellGeom%detJac0 = abs(detJac0)
+! - Compute average Thickness
+        call compAhmadFrame(cellGeom, area0)
+        cellGeom%h0 = abs(detJac0)*8/area0
 !
         if (SSH_DBG_ELEM) SSH_DBG_STRG('< initGeomCell')
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -205,7 +205,8 @@ contains
             epsi = epsi-epvcElga(kpg, :)
 
 ! ----- Compute stresses
-        siefElga(1+(kpg-1)*SSH_SIZE_TENS:SSH_SIZE_TENS*kpg) = matmul(matePara%elemHookeMatrix, epsi)
+            siefElga(1+(kpg-1)*SSH_SIZE_TENS:SSH_SIZE_TENS*kpg) = matmul(matePara%elemHookeMatrix, &
+                                                                         epsi)
 
         end do
 !
@@ -353,8 +354,9 @@ contains
         integer, parameter :: nbNodeGeom = SSH_NBNODEG_HEXA
         integer :: iNodeGeom, jNodeGeom
         real(kind=8) :: const(SSH_SIZE_TENS)
-       real(kind=8) :: GCova0(SSH_SIZE_TENS), GCovaZETA(SSH_SIZE_TENS), GCovaZETAZETA(SSH_SIZE_TENS)
-      real(kind=8) :: GPinchZETA(SSH_SIZE_TENS), GPinchZZETA(SSH_SIZE_TENS), GPinchZZ(SSH_SIZE_TENS)
+        real(kind=8) :: GCova0(SSH_SIZE_TENS), GCovaZETA(SSH_SIZE_TENS)
+        real(kind=8) :: GPinchZETA(SSH_SIZE_TENS), GPinchZZETA(SSH_SIZE_TENS)
+        real(kind=8) :: GCovaZETAZETA(SSH_SIZE_TENS), GPinchZZ(SSH_SIZE_TENS)
 !   ------------------------------------------------------------------------------------------------
 !
         matrGeom = 0.d0
@@ -372,7 +374,8 @@ contains
                               matmul(geomHexa%TZETA, GCova0))+ &
                         zeta*zeta*(matmul(geomHexa%T0, GCovaZETAZETA)+ &
                                    matmul(geomHexa%TZETA, GCovaZETA))
-              matrGeom(3*(iNodeGeom-1)+1:3*(iNodeGeom-1)+3, 3*(jNodeGeom-1)+1:3*(jNodeGeom-1)+3) = &
+                matrGeom(3*(iNodeGeom-1)+1:3*(iNodeGeom-1)+3, &
+                         3*(jNodeGeom-1)+1:3*(jNodeGeom-1)+3) = &
                     sum(const*sigm)*matr3Iden
             end do
         end do
@@ -625,7 +628,7 @@ contains
 
 ! ----- Compute
             loadNoda(25) = loadNoda(25)+ &
-                           4.d0*(presInf-presSup)*area/3.d0
+                           2.d0*(presInf-presSup)*area/3.d0
 
         elseif (option .eq. 'CHAR_MECA_PESA_R') then
 
@@ -830,7 +833,7 @@ contains
                 matrMassPt(SSH_NBDOF_HEXA, 3*(iNodeGeom-1)+3) = rho(1)*jacob*N(iNodeGeom)*NPinch
                 matrMassPt(3*(iNodeGeom-1)+3, SSH_NBDOF_HEXA) = rho(1)*jacob*N(iNodeGeom)*NPinch
             end do
-            matrMassPt(SSH_NBDOF_HEXA, SSH_NBDOF_HEXA) = rho(1)*poids*NPinch*NPinch
+            matrMassPt(SSH_NBDOF_HEXA, SSH_NBDOF_HEXA) = rho(1)*jacob*NPinch*NPinch
 
 ! ----- Update matrix
             matrMass = matrMass+matrMassPt
