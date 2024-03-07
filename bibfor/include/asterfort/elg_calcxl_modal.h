@@ -17,17 +17,16 @@
 ! --------------------------------------------------------------------
 #include "asterf_petsc.h"
 !
-interface 
-    subroutine elg_calc_solu(matas1, nsecm, rsolu2, rsolu1, omega2, ke_mass)
-        character(len=19) :: matas1
-        integer :: nsecm
-        real(kind=8) :: rsolu2(*)
-        real(kind=8) :: rsolu1(*)
-        real(kind=8), optional, intent(in)::omega2
+interface
+    subroutine elg_calcxl_modal(x1, omega2, ke_mass, vlag)
 #ifdef ASTER_HAVE_PETSC
-        PetscInt, optional, intent(in) :: ke_mass
-#else
-        integer, optional, intent(in) :: ke_mass
-#endif
-    end subroutine elg_calc_solu
-end interface 
+        use aster_petsc_module
+        Vec :: x1, vlag
+        PetscInt :: ke_mass
+        real(kind=8) :: omega2
+# else
+        integer :: x1, vlag, ke_mass
+        real(kind=8) :: omega2
+# endif
+    end subroutine elg_calcxl_modal
+end interface
