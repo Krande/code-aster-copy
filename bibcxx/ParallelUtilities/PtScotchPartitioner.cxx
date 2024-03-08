@@ -1,5 +1,5 @@
 /**
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -25,16 +25,24 @@
 
 PtScotchPartitioner::PtScotchPartitioner() {
     _graph = new SCOTCH_Dgraph;
+    _graph2 = new SCOTCH_Dgraph;
     _scotchStrat = new SCOTCH_Strat;
+    _context = new SCOTCH_Context;
+    SCOTCH_contextInit( _context );
+    SCOTCH_contextOptionSetNum( _context, SCOTCH_OPTIONNUMDETERMINISTIC, 1 );
     SCOTCH_dgraphInit( _graph, aster_get_current_comm()->id );
+    SCOTCH_dgraphInit( _graph2, aster_get_current_comm()->id );
     SCOTCH_stratInit( _scotchStrat );
 };
 
 PtScotchPartitioner::~PtScotchPartitioner() {
     SCOTCH_dgraphFree( _graph );
+    SCOTCH_dgraphFree( _graph2 );
     SCOTCH_stratFree( _scotchStrat );
+    SCOTCH_contextExit( _context );
     delete _graph;
     delete _scotchStrat;
+    delete _context;
 };
 
 int PtScotchPartitioner::buildGraph( const VectorLong &vertloctab, const VectorLong &edgeloctab ) {
@@ -58,11 +66,16 @@ int PtScotchPartitioner::buildGraph( const MeshConnectionGraphPtr &graph ) {
 
 int PtScotchPartitioner::checkGraph() { return SCOTCH_dgraphCheck( _graph ); };
 
-VectorLong PtScotchPartitioner::partitionGraph() {
+VectorLong PtScotchPartitioner::partitionGraph( bool deterministic ) {
     const auto nbProcs = getMPISize();
     const auto rank = getMPIRank();
     VectorLong partition( _nbVertex, -1 ), distributed;
-    auto cret = SCOTCH_dgraphPart( _graph, nbProcs, _scotchStrat, partition.data() );
+    if ( deterministic ) {
+        SCOTCH_contextBindDgraph( _context, _graph, _graph2 );
+        auto cret = SCOTCH_dgraphPart( _graph2, nbProcs, _scotchStrat, partition.data() );
+    } else {
+        auto cret = SCOTCH_dgraphPart( _graph, nbProcs, _scotchStrat, partition.data() );
+    }
     buildPartition( partition, distributed );
     return distributed;
 };

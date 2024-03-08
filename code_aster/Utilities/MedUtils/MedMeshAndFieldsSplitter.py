@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,9 @@ from . import SimpleFieldOnCellsReal
 from . import MYMED2ASTER_CONNECT, MED_TYPES, ASTER_TYPES
 
 
-def splitMeshAndFieldsFromMedFile(filename, cellBalancer=False, nodeBalancer=False, outMesh=None):
+def splitMeshAndFieldsFromMedFile(
+    filename, cellBalancer=False, nodeBalancer=False, outMesh=None, deterministic=False
+):
     """Split a MED mesh and MED fields from a filename
 
     Arguments:
@@ -49,7 +51,7 @@ def splitMeshAndFieldsFromMedFile(filename, cellBalancer=False, nodeBalancer=Fal
 
     part2 = PtScotchPartitioner()
     part2.buildGraph(meshGraph)
-    scotchPart = part2.partitionGraph()
+    scotchPart = part2.partitionGraph(deterministic)
 
     outMesh = bMesh.applyBalancingStrategy(scotchPart, outMesh)
 

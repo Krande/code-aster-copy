@@ -490,11 +490,21 @@ for i in range(len(local_map)):
 new_mesh = mesh.refine(2)
 
 # test mesh builder
-test.assertEqual(CA.ParallelMesh.buildSquare(refine=4).getNumberOfNodes(), [114, 115, 120][rank])
-test.assertEqual(CA.ParallelMesh.buildCube(refine=4).getNumberOfNodes(), [1955, 2032, 2134][rank])
-test.assertEqual(CA.ParallelMesh.buildDisk(refine=5).getNumberOfNodes(), [5546, 5426, 6027][rank])
 test.assertEqual(
-    CA.ParallelMesh.buildCylinder(refine=3).getNumberOfNodes(), [3321, 3321, 3825][rank]
+    CA.ParallelMesh.buildSquare(refine=4, deterministic=True).getNumberOfNodes(),
+    [114, 115, 120][rank],
+)
+test.assertEqual(
+    CA.ParallelMesh.buildCube(refine=4, deterministic=True).getNumberOfNodes(),
+    [1955, 2151, 2205][rank],
+)
+test.assertEqual(
+    CA.ParallelMesh.buildDisk(refine=5, deterministic=True).getNumberOfNodes(),
+    [5546, 5426, 6027][rank],
+)
+test.assertEqual(
+    CA.ParallelMesh.buildCylinder(refine=3, deterministic=True).getNumberOfNodes(),
+    [3321, 3321, 3825][rank],
 )
 
 test.printSummary()

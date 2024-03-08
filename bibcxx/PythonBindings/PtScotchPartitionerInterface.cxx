@@ -3,7 +3,7 @@
  * @brief Interface python de PtScotchPartitioner
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -62,9 +62,13 @@ Ask PtScotch to check the graph
         .def( "partitionGraph", &PtScotchPartitioner::partitionGraph, R"(
 Call PtScotch partitioning
 
+Arguments:
+    deterministic (bool=false) : argument to force PtScotch to have a deterministic behaviour
+
 Returns:
     list[int]: Owner for each nodes
-        )" )
+        )",
+              py::arg( "deterministic" ) = false )
         .def( "writeGraph", &PtScotchPartitioner::writeGraph, R"(
 Ask PtScotch to write the graph
 
