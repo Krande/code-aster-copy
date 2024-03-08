@@ -23,26 +23,18 @@
 
 #include "ParallelUtilities/ObjectBalancer.h"
 
-PtScotchPartitioner::PtScotchPartitioner() {
+PtScotchPartitioner::PtScotchPartitioner() : _graph2( nullptr ), _context( nullptr ) {
     _graph = new SCOTCH_Dgraph;
-    _graph2 = new SCOTCH_Dgraph;
     _scotchStrat = new SCOTCH_Strat;
-    _context = new SCOTCH_Context;
-    SCOTCH_contextInit( _context );
-    SCOTCH_contextOptionSetNum( _context, SCOTCH_OPTIONNUMDETERMINISTIC, 1 );
     SCOTCH_dgraphInit( _graph, aster_get_current_comm()->id );
-    SCOTCH_dgraphInit( _graph2, aster_get_current_comm()->id );
     SCOTCH_stratInit( _scotchStrat );
 };
 
 PtScotchPartitioner::~PtScotchPartitioner() {
     SCOTCH_dgraphFree( _graph );
-    SCOTCH_dgraphFree( _graph2 );
     SCOTCH_stratFree( _scotchStrat );
-    SCOTCH_contextExit( _context );
     delete _graph;
     delete _scotchStrat;
-    delete _context;
 };
 
 int PtScotchPartitioner::buildGraph( const VectorLong &vertloctab, const VectorLong &edgeloctab ) {
@@ -71,8 +63,17 @@ VectorLong PtScotchPartitioner::partitionGraph( bool deterministic ) {
     const auto rank = getMPIRank();
     VectorLong partition( _nbVertex, -1 ), distributed;
     if ( deterministic ) {
+        _graph2 = new SCOTCH_Dgraph;
+        SCOTCH_dgraphInit( _graph2, aster_get_current_comm()->id );
+        _context = new SCOTCH_Context;
+        SCOTCH_contextInit( _context );
+        SCOTCH_contextOptionSetNum( _context, SCOTCH_OPTIONNUMDETERMINISTIC, 1 );
         SCOTCH_contextBindDgraph( _context, _graph, _graph2 );
         auto cret = SCOTCH_dgraphPart( _graph2, nbProcs, _scotchStrat, partition.data() );
+        SCOTCH_contextExit( _context );
+        SCOTCH_dgraphFree( _graph2 );
+        delete _context;
+        delete _graph2;
     } else {
         auto cret = SCOTCH_dgraphPart( _graph, nbProcs, _scotchStrat, partition.data() );
     }

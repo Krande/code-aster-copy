@@ -26,7 +26,10 @@ CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 
 test = CA.TestCase()
 
-pMesh = LIRE_MAILLAGE(UNITE=20, FORMAT="MED", PARTITIONNEUR="PTSCOTCH", INFO_MED=1)
+from code_aster.Utilities.MedUtils.MedMeshAndFieldsSplitter import splitMeshAndFieldsFromMedFile
+
+ret = splitMeshAndFieldsFromMedFile("fort.20", deterministic=True)
+pMesh = ret[0]
 
 model = AFFE_MODELE(
     MAILLAGE=pMesh, AFFE=_F(MODELISATION="D_PLAN", PHENOMENE="MECANIQUE", TOUT="OUI")
