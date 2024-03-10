@@ -340,7 +340,8 @@ subroutine amumpu(option, type, kxmps, usersm, nprec, &
                 if ((tmaxb .gt. maxmem_ic) .and. (.not. lpbmem)) then
                     icn22 = 0
                     icn23 = max(min(3*maxmem_ic, tmaxb), 1)
-            else if ((tmaxb .gt. maxmem_ooc) .and. (tmaxb .lt. maxmem_ic) .and. (.not. lpbmem)) then
+                else if ((tmaxb .gt. maxmem_ooc) .and. (tmaxb .lt. maxmem_ic) .and. &
+                         (.not. lpbmem)) then
                     icn22 = 1
                     icn23 = max(min(3*maxmem_ooc, tmaxb), 1)
                 else
@@ -370,7 +371,9 @@ subroutine amumpu(option, type, kxmps, usersm, nprec, &
             call utgtme(2, k8tab, rval, iret)
             rval1 = rval(1)
             rval2 = rval(2)
-            if ((rval1 .le. 0) .or. (rval2 .le. 0) .or. (iret .ne. 0)) call utmess('A', 'FACTOR_82')
+            if ((rval1 .le. 0) .or. (rval2 .le. 0) .or. (iret .ne. 0)) then
+                call utmess('A', 'FACTOR_82')
+            end if
             iaux1 = int(nbfact*rval1+rval2)
             vali(1) = n
             vali(2) = max(iaux1, 1)
