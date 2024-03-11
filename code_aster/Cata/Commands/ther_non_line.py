@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,6 +20,7 @@
 # person_in_charge: mickael.abbas at edf.fr
 
 from ..Commons import *
+from ..Commons.c_comportement import compat_syntax as compat_comport
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
@@ -68,7 +69,7 @@ THER_NON_LINE = MACRO(
     nom="THER_NON_LINE",
     op=OPS("code_aster.MacroCommands.ther_non_line_ops.ther_non_line_ops"),
     sd_prod=evol_ther,
-    compat_syntax=compat_syntax,
+    compat_syntax=compat_union(compat_syntax, compat_comport),
     reentrant="f:RESULTAT",
     fr=tr(
         "Résoudre un problème thermique non linéaire (conditions limites ou comportement matériau)"

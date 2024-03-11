@@ -20,7 +20,24 @@
 #
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
+from ..Language.SyntaxUtils import deprecate, force_list
 from .c_relation import C_RELATION
+
+
+def compat_syntax(keywords):
+    """Replace RESI_INTE_MAXI/RESI_INTE_RELA by RESI_INTE (see issue #24065).
+
+    Arguments:
+    keywords (dict): Keywords arguments of user's keywords, changed
+        in place.
+    """
+    fact = force_list(keywords.get("COMPORTEMENT", []))
+    for occ in fact:
+        for old in ("RESI_INTE_MAXI", "RESI_INTE_RELA"):
+            value = occ.pop(old, None)
+            if value is not None:
+                deprecate(old, case=3, help="use 'RESI_INTE' instead")
+                occ["RESI_INTE"] = value
 
 
 def C_COMPORTEMENT(command):

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,6 +25,9 @@ from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
 
+from ..Commons.c_comportement import compat_syntax
+
+
 def macr_ecrevisse_prod(self, TABLE, TEMPER, DEBIT, **args):
     if args.get("__all__"):
         return ([evol_noli], [table_sdaster], [evol_ther], [table_sdaster])
@@ -40,6 +43,7 @@ def macr_ecrevisse_prod(self, TABLE, TEMPER, DEBIT, **args):
 MACR_ECREVISSE = MACRO(
     nom="MACR_ECREVISSE",
     op=OPS("code_aster.MacroCommands.macr_ecrevisse_ops.macr_ecrevisse_ops"),
+    compat_syntax=compat_syntax,
     sd_prod=macr_ecrevisse_prod,
     reentrant="f:ETAT_INIT:EVOL_NOLI",
     fr=tr("Procedure de couplage avec Ecrevisse"),

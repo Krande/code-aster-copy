@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,6 +22,9 @@
 from ...Cata.Commons import *
 from ...Cata.Language.DataStructure import *
 from ...Cata.Language.Syntax import *
+
+
+from ...Cata.Commons.c_comportement import compat_syntax as compat_comport
 
 
 def compat_syntax(keywords):
@@ -74,7 +77,7 @@ THER_NON_LINE_FORT_CATA = OPER(
     nom="THER_NON_LINE_FORT",
     op=186,
     sd_prod=evol_ther,
-    compat_syntax=compat_syntax,
+    compat_syntax=compat_union(compat_syntax, compat_comport),
     reentrant="f:RESULTAT",
     fr=tr(
         "Résoudre un problème thermique non linéaire (conditions limites ou comportement matériau)"

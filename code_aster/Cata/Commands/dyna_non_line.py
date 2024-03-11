@@ -20,10 +20,12 @@
 from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
+from ..Commons.c_comportement import compat_syntax
 
 DYNA_NON_LINE = OPER(
     nom="DYNA_NON_LINE",
     op=70,
+    compat_syntax=compat_syntax,
     sd_prod=evol_noli,
     reentrant="f:RESULTAT",
     fr=tr(

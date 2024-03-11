@@ -20,10 +20,12 @@
 from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
+from ..Commons.c_comportement import compat_syntax
 
 STAT_NON_LINE = OPER(
     nom="STAT_NON_LINE",
     op=70,
+    compat_syntax=compat_syntax,
     sd_prod=evol_noli,
     fr=tr(
         "Calcul de l'évolution mécanique ou thermo-hydro-mécanique couplée, en quasi-statique,"

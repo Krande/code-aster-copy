@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,6 +20,9 @@
 from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
+
+
+from ..Commons.c_comportement import compat_syntax
 
 
 def lire_resu_prod(TYPE_RESU, **args):
@@ -60,6 +63,9 @@ def lire_resu_prod(TYPE_RESU, **args):
     raise AsException("type de concept resultat non prevu")
 
 
+from ..Commons.c_comportement import compat_syntax
+
+
 def lire_resu_type(RESULTAT, **args):
     if args.get("__all__"):
         return (
@@ -79,6 +85,9 @@ def lire_resu_type(RESULTAT, **args):
 
 
 # pour éviter d'écrire 3 fois cette liste :
+from ..Commons.c_comportement import compat_syntax
+
+
 def l_nom_cham_pas_elga():
     return list(set(C_NOM_CHAM_INTO()) - set(C_NOM_CHAM_INTO("ELGA")))
 
@@ -86,6 +95,7 @@ def l_nom_cham_pas_elga():
 LIRE_RESU = OPER(
     nom="LIRE_RESU",
     op=150,
+    compat_syntax=compat_syntax,
     sd_prod=lire_resu_prod,
     reentrant="f:RESULTAT",
     fr=tr(

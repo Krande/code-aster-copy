@@ -18,6 +18,7 @@
 # --------------------------------------------------------------------
 
 from ...Cata.Commons import *
+from ...Cata.Commons.c_comportement import compat_syntax
 from ...Cata.DataStructure import *
 from ...Cata.Syntax import *
 from ...Supervis.ExecuteCommand import UserMacro
@@ -26,6 +27,7 @@ from .macro_bascule_schema_ops import macro_bascule_schema_ops
 MACRO_BASCULE_SCHEMA_CATA = MACRO(
     nom="MACRO_BASCULE_SCHEMA",
     op=OPS("code_aster.MacroCommands.Contrib.macro_bascule_schema_ops.macro_bascule_schema_ops"),
+    compat_syntax=compat_syntax,
     sd_prod=evol_noli,
     reentrant="f",
     fr="Macro permettant la bascule de schema en temps dans DYNA_NON_LINE",
