@@ -3,7 +3,7 @@
  * @brief Interface python de Crack
  * @author Nicolas Pignet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -30,6 +30,12 @@ void exportCrackToPython( py::module_ &mod ) {
     py::class_< Crack, Crack::CrackPtr, DataStructure >( mod, "Crack" )
         .def( py::init( &initFactoryPtr< Crack > ) )
         .def( py::init( &initFactoryPtr< Crack, std::string > ) )
+        .def( "getCrackFrontNodes", &Crack::getCrackFrontNodes, R"(
+            Return the crack front nodes
+
+            Returns:
+                list[str]: the crack nodes
+        )" )
         .def( "getCrackFrontBasis", &Crack::getCrackFrontBasis, R"(
             Return the crack front basis
 
@@ -42,6 +48,7 @@ void exportCrackToPython( py::module_ &mod ) {
             Returns:
                 list[float]: the crack front Position
         )" )
+        .def( "getCrackFrontNodeBasis", &Crack::getCrackFrontNodeBasis )
         .def( "getCrackTipCellsType", &Crack::getCrackTipCellsType )
         .def( "getLowerLipGroupName", &Crack::getLowerLipGroupName )
         .def( "getUpperLipGroupName", &Crack::getUpperLipGroupName )

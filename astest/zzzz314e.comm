@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,11 +36,11 @@ FISS0 = DEFI_FOND_FISS(
 import numpy as np
 
 nb_comp_basloc = 9
-basloc = FISS0.sdj.BASLOC.VALE.get()
+basloc = FISS0.getCrackFrontNodeBasis().getValues()
 basloc = np.array(basloc).reshape((len(basloc) // nb_comp_basloc), nb_comp_basloc)[:, 3:]
 index_by_nodename = {M.getNodeName(i): i for i in M.getNodes()}
-lnoff = FISS0.sdj.FOND_NOEU.get()
-basloc = basloc[[index_by_nodename[nodename.strip()] for nodename in lnoff], :]
+lnoff = FISS0.getCrackFrontNodes()
+basloc = basloc[[index_by_nodename[nodename] for nodename in lnoff], :]
 basloc = basloc.reshape((len(basloc), 2, 3))
 norm = np.linalg.norm(basloc, axis=2)
 norm = norm.reshape((len(basloc), 2, 1))
@@ -91,13 +91,12 @@ vdirZ_ana = []
 
 l_numeros_noeuds_fissure = []
 # Noms des noeuds du fond
-l_noms_noeuds_fissure = FISS0.sdj.FOND_NOEU.get()
+l_noms_noeuds_fissure = FISS0.getCrackFrontNodes()
 
 coords = M.getCoordinates().getValues()
 
 for i in range(0, len(ndfon)):
-    nom = l_noms_noeuds_fissure[i].strip()
-    index = index_by_nodename[nom]
+    index = index_by_nodename[l_noms_noeuds_fissure[i]]
     l_numeros_noeuds_fissure.append(index)
 
     coor = coords[l_numeros_noeuds_fissure[i] * 3 : l_numeros_noeuds_fissure[i] * 3 + 3]
