@@ -13988,7 +13988,8 @@ def assemblyMatrixToPetsc(*args, **kwargs):
 
     Arguments:
         matr (*AssemblyMatrix*): code_aster matrix.
-        local (*bool*): extract only the sequential matrix of the subdomain or the global parallel matrix
+        local (*bool*): extract only the sequential matrix of the subdomain or the global parallel
+                        matrix
 
     Returns:
         *Mat*: PETSc matrix.
@@ -14001,7 +14002,8 @@ def assemblyMatrixToPetsc(*args, **kwargs):
 
     Arguments:
         matr (*AssemblyMatrix*): code_aster matrix.
-        local (*bool*): extract only the sequential matrix of the subdomain or the global parallel matrix
+        local (*bool*): extract only the sequential matrix of the subdomain or the global parallel
+                        matrix
 
     Returns:
         *Mat*: PETSc matrix.
