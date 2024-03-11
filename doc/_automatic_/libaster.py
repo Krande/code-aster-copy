@@ -13981,25 +13981,27 @@ def _petscInitializeWithOptions(options):
 def assemblyMatrixToPetsc(*args, **kwargs):
     """Overloaded function.
 
-    1. assemblyMatrixToPetsc(matr: libaster.AssemblyMatrixDisplacementReal) -> object
+    1. assemblyMatrixToPetsc(matr: libaster.AssemblyMatrixDisplacementReal, local: bool) -> object
 
 
     Convert a *AssemblyMatrix* object to a PETSc *Mat* object.
 
     Arguments:
         matr (*AssemblyMatrix*): code_aster matrix.
+        local (*bool*): extract only the sequential matrix of the subdomain or the global parallel matrix
 
     Returns:
         *Mat*: PETSc matrix.
 
 
-    2. assemblyMatrixToPetsc(matr: libaster.AssemblyMatrixTemperatureReal) -> object
+    2. assemblyMatrixToPetsc(matr: libaster.AssemblyMatrixTemperatureReal, local: bool) -> object
 
 
     Convert a *AssemblyMatrix* object to a PETSc *Mat* object.
 
     Arguments:
         matr (*AssemblyMatrix*): code_aster matrix.
+        local (*bool*): extract only the sequential matrix of the subdomain or the global parallel matrix
 
     Returns:
         *Mat*: PETSc matrix.
