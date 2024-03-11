@@ -4442,6 +4442,13 @@ class ListOfLoads(DataStructure):
             ListParaMecaLoadReal: a list of real parallel mechanical loads
         """
 
+    def hasBeenBuilt(self):
+        """The list of loads has been built or not.
+
+        Returns:
+            bool: True if has been built already.
+        """
+
     def hasDirichletBC(self):
         """Dirichlet BCs have been added or not ?
 
@@ -4454,13 +4461,6 @@ class ListOfLoads(DataStructure):
 
         Returns:
             bool: True if External load have been added
-        """
-
-    def isEmpty(self):
-        """The list of loads is empty or not.
-
-        Returns:
-            bool: True if empty
         """
 
 

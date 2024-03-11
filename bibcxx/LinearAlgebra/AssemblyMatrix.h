@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe AssemblyMatrix
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -498,7 +498,7 @@ bool AssemblyMatrix< ValueType, PhysicalQuantity >::assemble( bool clean ) {
     std::string base( "G" );
     std::string cumul( "ZERO" );
 
-    if ( _listOfLoads->isEmpty() && _listOfLoads->getNumberOfLoads() != 0 )
+    if ( !_listOfLoads->hasBeenBuilt() && _listOfLoads->getNumberOfLoads() != 0 )
         _listOfLoads->build();
 
     CALL_ASMATR( &nbMatrElem, tabNames, list_coef->getName().c_str(), _dofNum->getName().c_str(),

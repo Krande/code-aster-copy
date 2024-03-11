@@ -2,7 +2,7 @@
  * @file ListOfLoadsInterface.cxx
  * @brief Interface python de ListOfLoads
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -33,11 +33,11 @@ void exportListOfLoadsToPython( py::module_ &mod ) {
     c1.def( py::init( &initFactoryPtr< ListOfLoads, std::string > ) );
     c1.def( py::init( &initFactoryPtr< ListOfLoads, ModelPtr > ) );
     c1.def( py::init( &initFactoryPtr< ListOfLoads, std::string, ModelPtr > ) );
-    c1.def( "isEmpty", &ListOfLoads::isEmpty, R"(
-            The list of loads is empty or not.
+    c1.def( "hasBeenBuilt", &ListOfLoads::hasBeenBuilt, R"(
+            The list of loads has been built or not.
 
             Returns:
-                bool: True if empty
+                bool: True if has been built already.
         )" );
     c1.def( "hasDirichletBC", &ListOfLoads::hasDirichletBC, R"(
             Dirichlet BCs have been added or not ?
