@@ -206,8 +206,11 @@ class ExtendedFieldOnNodesReal:
                 indir.setdefault((ldx[0][0][node], cmp), []).append(row)
         return indir
 
-    def toPetsc(self):
+    def toPetsc(self, local=False):
         """Convert the field to a PETSc vector object.
+
+        Arguments:
+            local (bool): extract only the sequential vector of the subdomain or the global parallel vector (default False)
 
         Returns:
             PETSc.Vec: PETSc vector.
@@ -217,20 +220,27 @@ class ExtendedFieldOnNodesReal:
             raise RuntimeError("petsc4py is needed and is not installed")
 
         if mesh.isParallel():
-            comm = MPI.ASTER_COMM_WORLD
+            comm = MPI.ASTER_COMM_SELF if local else MPI.ASTER_COMM_WORLD
             _vec = PETSc.Vec().create(comm=comm)
-            _vec.setType("mpi")
-            globNume = self.getDescription()
-            ownedRows = globNume.getNoGhostDOFs()
-            neql = len(ownedRows)
-            neqg = globNume.getNumberOfDOFs(local=False)
-            _vec.setSizes((neql, neqg))
-            val = self.getValues()
-            l2g = globNume.getLocalToGlobalMapping()
-            extract = operator.itemgetter(*ownedRows)
-            ll2g = extract(l2g)
-            lval = extract(val)
-            _vec.setValues(ll2g, lval, PETSc.InsertMode.INSERT_VALUES)
+            if local:
+                _vec.setType("seq")
+                val = self.getValues()
+                neq = len(val)
+                _vec.setSizes(neq)
+                _vec.setValues(range(neq), val, PETSc.InsertMode.INSERT_VALUES)
+            else:
+                _vec.setType("mpi")
+                globNume = self.getDescription()
+                ownedRows = globNume.getNoGhostDOFs()
+                neql = len(ownedRows)
+                neqg = globNume.getNumberOfDOFs(local=False)
+                _vec.setSizes((neql, neqg))
+                val = self.getValues()
+                l2g = globNume.getLocalToGlobalMapping()
+                extract = operator.itemgetter(*ownedRows)
+                ll2g = extract(l2g)
+                lval = extract(val)
+                _vec.setValues(ll2g, lval, PETSc.InsertMode.INSERT_VALUES)
         else:
             _vec = PETSc.Vec().create()
             _vec.setType("mpi")

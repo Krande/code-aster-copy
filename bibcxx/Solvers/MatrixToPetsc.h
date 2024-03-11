@@ -6,7 +6,7 @@
  * @brief Definition of functions to convert matrix to PETSc
  * @author Mathieu Courtois
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -41,11 +41,11 @@ void petscInitializeWithOptions( const std::string &options );
 
 /** @brief Convert an AssemblyMatrix object to a PETSc Mat object */
 template < class T >
-py::object assemblyMatrixToPetsc( const T matr ) {
+py::object assemblyMatrixToPetsc( const T matr, const bool *local ) {
 #ifdef ASTER_HAVE_PETSC4PY
     py::object petsc_matr = py::module_::import( "petsc4py.PETSc" ).attr( "Mat" )();
 
-    Mat conv = matr->toPetsc();
+    Mat conv = matr->toPetsc( *local );
 
     struct PyPetscMatObject *pyx_mat = (struct PyPetscMatObject *)( petsc_matr.ptr() );
     pyx_mat->mat = conv;

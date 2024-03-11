@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine matass2petsc(matasz, petscMatz, iret)
+subroutine matass2petsc(matasz, local, petscMatz, iret)
 !
 !
 ! person_in_charge: natacha.bereux at edf.fr
@@ -34,6 +34,7 @@ subroutine matass2petsc(matasz, petscMatz, iret)
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
 #include "asterfort/apetsc.h"
+#include "asterfort/apmams.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/crsvfm.h"
@@ -45,6 +46,7 @@ subroutine matass2petsc(matasz, petscMatz, iret)
 !
 ! arguments
     character(len=*), intent(in) :: matasz
+    integer, intent(in) :: local
 #ifdef ASTER_HAVE_PETSC
     PetscErrorCode, intent(out) :: iret
     Mat, intent(out) :: petscMatz
@@ -58,6 +60,8 @@ subroutine matass2petsc(matasz, petscMatz, iret)
 !
 ! IN  : MATASS   (K19) : NOM DE LA MATR_ASSE
 !                       (SI ACTION=PRERES/RESOUD)
+! IN  : LOCAL   (INTEGER) : EXTRAIRE LA MATRICE PARALLÈLE GLOBALE
+!                           OU SUR LE SOUS-DOMAINE COURANT
 ! OUT : petscMatz   (I) : MATRICE PETSC
 ! OUT : IRET       (I) : CODE_RETOUR
 !-----------------------------------------------------------------------
@@ -83,32 +87,43 @@ subroutine matass2petsc(matasz, petscMatz, iret)
     call jemarq()
 !
     matas = matasz
-    rbid = 0.d0
+!
+! -- Export sur le sous-domaine courant
+    if (local == 1) then
+        call MatCreate(PETSC_COMM_SELF, petscMatz, ierr)
+        ASSERT(ierr == 0)
+        call apmams(matas, petscMatz)
+
+! -- Export sur tous les sous-domaines
+    else
+        rbid = 0.d0
 
 !   -- Creation d'un solveur bidon
-    solvbd = '&&MAT2PET'
-   call crsvfm(solvbd, matas, 'D', rank='L', pcpiv=50, usersmz='IN_CORE', blreps=rbid, renumz=' ', &
-                redmpi=-9999)
-    call jeveuo(solvbd//'.SLVK', 'L', vk24=slvk)
-    slvk(2) = 'SANS'
+        solvbd = '&&MAT2PET'
+        call crsvfm(solvbd, matas, 'D', rank='L', pcpiv=50, usersmz='IN_CORE', &
+                    blreps=rbid, renumz=' ', redmpi=-9999)
+        call jeveuo(solvbd//'.SLVK', 'L', vk24=slvk)
+        slvk(2) = 'SANS'
 
 !   -- Effacement si déjà factorisée
-    call jeveuo(matas//'.REFA', 'E', vk24=refa)
-    refa(8) = ' '
+        call jeveuo(matas//'.REFA', 'E', vk24=refa)
+        refa(8) = ' '
 
 !   -- Conversion de matass vers petsc
-    call apetsc('PRERES', solvbd, matas, [0.d0], ' ', &
-                0, ibid, ierror)
-    k = get_mat_id(matas)
-    call MatDuplicate(ap(k), MAT_COPY_VALUES, petscMatz, ierr)
-    ASSERT(ierr .eq. 0)
+        call apetsc('PRERES', solvbd, matas, [0.d0], ' ', &
+                    0, ibid, ierror)
+        k = get_mat_id(matas)
+        call MatDuplicate(ap(k), MAT_COPY_VALUES, petscMatz, ierr)
+        ASSERT(ierr .eq. 0)
 
 !   -- Nettoyage
 !   Destruction des objets petsc
-    call apetsc('DETR_MAT', solvbd, matas, [0.d0], ' ', &
-                0, ibid, ierror)
+        call apetsc('DETR_MAT', solvbd, matas, [0.d0], ' ', &
+                    0, ibid, ierror)
 !   Destruction du solveur bidon
-    call detrsd('SOLVEUR', solvbd)
+        call detrsd('SOLVEUR', solvbd)
+    end if
+!
     iret = 0
 
     call jedema()

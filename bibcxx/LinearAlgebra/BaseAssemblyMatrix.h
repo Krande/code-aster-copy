@@ -127,7 +127,7 @@ class BaseAssemblyMatrix : public DataStructure {
      * @param Args... Liste d'arguments template
      */
     template < typename... Args >
-    void addLoad( const Args &... args ) {
+    void addLoad( const Args &...args ) {
         _listOfLoads->addLoad( args... );
     };
 
@@ -231,16 +231,20 @@ class BaseAssemblyMatrix : public DataStructure {
      * @brief Conversion to petsc4py
      * @return converted matrix
      */
-    Mat toPetsc() {
+    Mat toPetsc( const bool &local ) {
         Mat myMat;
         PetscErrorCode ierr;
+        const ASTERINTEGER local2 = local ? 1 : 0;
 
         if ( _isEmpty )
             throw std::runtime_error( "Assembly matrix is empty" );
         if ( getType() != "MATR_ASSE_DEPL_R" && getType() != "MATR_ASSE_TEMP_R" )
             throw std::runtime_error( "Not yet implemented" );
+        if ( not getMesh()->isParallel() && local )
+            throw std::runtime_error( "local export is only usable on a ParallelMesh" );
 
-        CALLO_MATASS2PETSC( getName(), &myMat, &ierr );
+        /* local2 = local ? 1 : 0;*/
+        CALLO_MATASS2PETSC( getName(), &local2, &myMat, &ierr );
 
         return myMat;
     };

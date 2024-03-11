@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -37,9 +37,10 @@ extern "C" {
 #endif
 
 #ifdef ASTER_HAVE_PETSC
-#define CALLO_MATASS2PETSC( a, b, c ) CALLOPP( MATASS2PETSC, matass2petsc, a, b, c )
-#define CALL_MATASS2PETSC( a, b, c ) CALLSPP( MATASS2PETSC, matass2petsc, a, b, c )
-void DEFSPP( MATASS2PETSC, matass2petsc, const char *, STRING_SIZE, Mat *, PetscErrorCode * );
+#define CALLO_MATASS2PETSC( a, b, c, d ) CALLOPPP( MATASS2PETSC, matass2petsc, a, b, c, d )
+#define CALL_MATASS2PETSC( a, b, c, d ) CALLSPPP( MATASS2PETSC, matass2petsc, a, b, c, d )
+void DEFSPPP( MATASS2PETSC, matass2petsc, const char *, STRING_SIZE, const ASTERINTEGER *, Mat *,
+              PetscErrorCode * );
 
 #define CALLO_AP_ON_OFF( a, b ) CALLOO( AP_ON_OFF, ap_on_off, a, b )
 void DEFSS( AP_ON_OFF, ap_on_off, const char *, STRING_SIZE, const char *, STRING_SIZE );
