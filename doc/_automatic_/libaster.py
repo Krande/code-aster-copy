@@ -14609,8 +14609,11 @@ class PtScotchPartitioner:
     def checkGraph(self):
         """Ask PtScotch to check the graph"""
 
-    def partitionGraph(self):
+    def partitionGraph(self, deterministic=False):
         """Call PtScotch partitioning
+
+        Arguments:
+            deterministic (bool=false) : argument to force PtScotch to have a deterministic behaviour
 
         Returns:
             list[int]: Owner for each nodes

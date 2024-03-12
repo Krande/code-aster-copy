@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -401,14 +401,14 @@ MAC = MAC_MODES(BASE_2=RESET, BASE_1=MODEAIR, INFO=2)
 IMPR_TABLE(TABLE=MAC, UNITE=8)
 
 TEST_TABLE(
-    VALE_CALC=0.924644541874,
+    VALE_CALC=0.9246434109650495,
     NOM_PARA="MAC",
     TABLE=MAC,
     FILTRE=(_F(NOM_PARA="NUME_MODE_1", VALE_I=1), _F(NOM_PARA="NUME_MODE_2", VALE_I=1)),
 )
 
 TEST_TABLE(
-    VALE_CALC=0.924730733693,
+    VALE_CALC=0.9247318709816875,
     NOM_PARA="MAC",
     TABLE=MAC,
     FILTRE=(_F(NOM_PARA="NUME_MODE_1", VALE_I=2), _F(NOM_PARA="NUME_MODE_2", VALE_I=2)),

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -163,7 +163,7 @@ TEST_RESU(
             GROUP_NO="NO180",
             NOM_CMP="DX",
             CHAM_GD=MODE_1,
-            VALE_CALC=0.100260862908,
+            VALE_CALC=0.10026119075066627,
             TOLE_MACHINE=3.0e-6,  # voir ci-dessus
         ),
         _F(GROUP_NO="NO180", NOM_CMP="DY", CHAM_GD=MODE_1, VALE_CALC=-0.661765539826),

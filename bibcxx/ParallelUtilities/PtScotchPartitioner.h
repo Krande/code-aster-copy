@@ -4,7 +4,7 @@
 /**
  * @file PtScotch.h
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -45,8 +45,10 @@ using VectorOfVectorsInt = std::vector< VectorInt >;
 class PtScotchPartitioner {
     /** @brief Pointer to SCOTCH_Dgraph */
     SCOTCH_Dgraph *_graph;
+    SCOTCH_Dgraph *_graph2;
     /** @brief Pointer to SCOTCH_Strat */
     SCOTCH_Strat *_scotchStrat;
+    SCOTCH_Context *_context;
     /** @brief Number of vertices in graph and local minimum id */
     int _nbVertex = 0, _minId = 0;
     /** @brief Graph in PtScotch format */
@@ -80,7 +82,7 @@ class PtScotchPartitioner {
     /**
      * @brief Graph partitioning on all procs
      */
-    VectorLong partitionGraph();
+    VectorLong partitionGraph( bool deterministic = false );
 
     /**
      * @brief Write graph to disk (grf format)

@@ -72,7 +72,9 @@ class ExtendedParallelMesh:
             UTMESS("I", "SUPERVIS_1")
             ExecutionParameter().enable(Options.HPCMode)
 
-    def readMedFile(self, filename, meshname=None, partitioned=False, verbose=0):
+    def readMedFile(
+        self, filename, meshname=None, partitioned=False, deterministic=False, verbose=0
+    ):
         """Read a MED file containing a mesh and eventually partition it.
 
         Arguments:
@@ -80,10 +82,13 @@ class ExtendedParallelMesh:
             meshname (str): Name of the mesh to be read from file.
             partitioned (bool): False if the mesh is not yet partitioned and have to
                 be partitioned before reading.
+            deterministic (bool): True if partitioning must be deterministic
             verbose (int): Verbosity between 0 (a few details) to 2 (more verbosy).
         """
         if not partitioned:
-            self, field = splitMeshAndFieldsFromMedFile(filename, outMesh=self)
+            self, field = splitMeshAndFieldsFromMedFile(
+                filename, outMesh=self, deterministic=deterministic
+            )
             self.show(verbose & 3)
         else:
             mesh_builder.buildFromMedFile(self, filename, meshname, verbose)
@@ -244,7 +249,7 @@ class ExtendedParallelMesh:
         return CREA_MAILLAGE(MAILLAGE=self, RAFFINEMENT=_F(TOUT="OUI", NIVEAU=ntimes), INFO=info)
 
     @classmethod
-    def buildSquare(cls, l=1, refine=0, info=1):
+    def buildSquare(cls, l=1, refine=0, info=1, deterministic=False):
         """Build the quadrilateral mesh of a square.
 
         Arguments:
@@ -267,11 +272,11 @@ class ExtendedParallelMesh:
 
             # Mesh creation
             mesh_p = cls()
-            mesh_p.readMedFile(filename, verbose=info - 1)
+            mesh_p.readMedFile(filename, deterministic=deterministic, verbose=info - 1)
             return mesh_p.refine(refine_1, info)
 
     @classmethod
-    def buildCube(cls, l=1, refine=0, info=1):
+    def buildCube(cls, l=1, refine=0, info=1, deterministic=False):
         """Build the quadrilateral mesh of a cube.
 
         Arguments:
@@ -294,11 +299,11 @@ class ExtendedParallelMesh:
 
             # Mesh creation
             mesh_p = cls()
-            mesh_p.readMedFile(filename, verbose=info - 1)
+            mesh_p.readMedFile(filename, deterministic=deterministic, verbose=info - 1)
             return mesh_p.refine(refine_1, info)
 
     @classmethod
-    def buildDisk(cls, radius=1, refine=0, info=1):
+    def buildDisk(cls, radius=1, refine=0, info=1, deterministic=False):
         """Build the quadrilateral mesh of a disk.
 
         Arguments:
@@ -321,11 +326,11 @@ class ExtendedParallelMesh:
 
             # Mesh creation
             mesh_p = cls()
-            mesh_p.readMedFile(filename, verbose=info - 1)
+            mesh_p.readMedFile(filename, deterministic=deterministic, verbose=info - 1)
             return mesh_p.refine(refine_1, info)
 
     @classmethod
-    def buildCylinder(cls, height=3, radius=1, refine=0, info=1):
+    def buildCylinder(cls, height=3, radius=1, refine=0, info=1, deterministic=False):
         """Build the hexaedral mesh of a cylinder.
 
         Arguments:
@@ -349,7 +354,7 @@ class ExtendedParallelMesh:
 
             # Mesh creation
             mesh_p = cls()
-            mesh_p.readMedFile(filename, verbose=info - 1)
+            mesh_p.readMedFile(filename, deterministic=deterministic, verbose=info - 1)
             return mesh_p.refine(refine_1, info)
 
     def getNodes(self, group_name=[], localNumbering=True, same_rank=None):

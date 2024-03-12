@@ -27,7 +27,10 @@ CA.init("--test")
 
 test = CA.TestCase()
 
-pMesh = LIRE_MAILLAGE(UNITE=20, FORMAT="MED", PARTITIONNEUR="PTSCOTCH")
+from code_aster.Utilities.MedUtils.MedMeshAndFieldsSplitter import splitMeshAndFieldsFromMedFile
+
+ret = splitMeshAndFieldsFromMedFile("fort.20", deterministic=True)
+pMesh = ret[0]
 
 model = AFFE_MODELE(MAILLAGE=pMesh, AFFE=_F(MODELISATION="3D", PHENOMENE="MECANIQUE", TOUT="OUI"))
 
@@ -44,8 +47,8 @@ elif nbproc == 3:
     nbNodes = [355, 418, 344]
     nbCells = [274, 288, 266]
 elif nbproc == 4:
-    nbNodes = [371, 318, 314, 310]
-    nbCells = [258, 225, 225, 209]
+    nbNodes = [360, 328, 308, 312]
+    nbCells = [249, 236, 216, 217]
 
 test.assertEqual(pMesh.getDimension(), 3)
 test.assertEqual(pMesh.getNumberOfNodes(), nbNodes[rank])

@@ -23,6 +23,8 @@ from code_aster.Commands import *
 from code_aster import CA
 from code_aster.CA import MPI
 
+from code_aster.Utilities.MedUtils.MedMeshAndFieldsSplitter import splitMeshAndFieldsFromMedFile
+
 
 CA.init("--test")
 
@@ -41,7 +43,7 @@ else:
 # Split the mesh
 
 ms = CA.ParallelMesh()
-ms.readMedFile("ssnv187a.mmed")
+ms.readMedFile("ssnv187a.mmed", deterministic=True)
 
 # Where to save the mesh in a single folder
 path = os.getcwd()
@@ -66,11 +68,13 @@ pMesh1.checkConsistency("ssnv187a.mmed")
 
 # 3) Directely from a file (without preliminary partioning )
 pMesh3 = CA.ParallelMesh()
-pMesh3.readMedFile("ssnv187a.mmed")
+pMesh3.readMedFile("ssnv187a.mmed", deterministic=True)
 pMesh3.checkConsistency("ssnv187a.mmed")
 
 # 4) With LIRE_MAILLAGE (internal partitioning)
-pMesh4 = LIRE_MAILLAGE(UNITE=20, FORMAT="MED", PARTITIONNEUR="PTSCOTCH", INFO_MED=1)
+
+ret = splitMeshAndFieldsFromMedFile("fort.20", deterministic=True)
+pMesh4 = ret[0]
 
 model = AFFE_MODELE(MAILLAGE=pMesh4, AFFE=_F(MODELISATION="3D", PHENOMENE="MECANIQUE", TOUT="OUI"))
 

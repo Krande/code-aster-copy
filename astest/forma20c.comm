@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -274,14 +274,14 @@ TEST_FONCTION(
             FONCTION=ERREEN0,
         ),
         _F(
-            VALE_CALC=0.01124860723973,
+            VALE_CALC=0.01124862432808,
             CRITERE="RELATIF",
             VALE_PARA=0.0,
             NOM_PARA="BIDON",
             FONCTION=ERREFL4,
         ),
         _F(
-            VALE_CALC=0.01319900514076,
+            VALE_CALC=0.01319902406284,
             CRITERE="RELATIF",
             VALE_PARA=0.0,
             NOM_PARA="BIDON",

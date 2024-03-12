@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -266,7 +266,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec, &
         if (rval1 .le. 0.d0 .or. rval2 .le. 0.d0 .or. rval3 .le. 0.d0 &
             .or. rval2 .le. rval3 .or. iret .ne. 0) then
             lpbmem = .true.
-            call utmess('A', 'FACTOR_82')
+            call utmess('I', 'FACTOR_82')
             if (usersm(1:4) .eq. 'AUTO') then
                 lpb1 = .true.
                 usersm = 'OUT_OF_CORE'
@@ -340,7 +340,8 @@ subroutine amumpu(option, type, kxmps, usersm, nprec, &
                 if ((tmaxb .gt. maxmem_ic) .and. (.not. lpbmem)) then
                     icn22 = 0
                     icn23 = max(min(3*maxmem_ic, tmaxb), 1)
-            else if ((tmaxb .gt. maxmem_ooc) .and. (tmaxb .lt. maxmem_ic) .and. (.not. lpbmem)) then
+                else if ((tmaxb .gt. maxmem_ooc) .and. (tmaxb .lt. maxmem_ic) .and. &
+                         (.not. lpbmem)) then
                     icn22 = 1
                     icn23 = max(min(3*maxmem_ooc, tmaxb), 1)
                 else
@@ -370,7 +371,9 @@ subroutine amumpu(option, type, kxmps, usersm, nprec, &
             call utgtme(2, k8tab, rval, iret)
             rval1 = rval(1)
             rval2 = rval(2)
-            if ((rval1 .le. 0) .or. (rval2 .le. 0) .or. (iret .ne. 0)) call utmess('A', 'FACTOR_82')
+            if ((rval1 .le. 0) .or. (rval2 .le. 0) .or. (iret .ne. 0)) then
+                call utmess('A', 'FACTOR_82')
+            end if
             iaux1 = int(nbfact*rval1+rval2)
             vali(1) = n
             vali(2) = max(iaux1, 1)

@@ -31,7 +31,10 @@ rank = MPI.ASTER_COMM_WORLD.Get_rank()
 print("Nb procs", MPI.ASTER_COMM_WORLD.Get_size())
 print("Rank", MPI.ASTER_COMM_WORLD.Get_rank())
 
-pMesh = LIRE_MAILLAGE(UNITE=20, FORMAT="MED", PARTITIONNEUR="PTSCOTCH")
+from code_aster.Utilities.MedUtils.MedMeshAndFieldsSplitter import splitMeshAndFieldsFromMedFile
+
+ret = splitMeshAndFieldsFromMedFile("fort.20", deterministic=True)
+pMesh = ret[0]
 
 
 # Test full mesh
@@ -82,7 +85,7 @@ test.assertSequenceEqual(
     cMesh3.getNodesGlobalNumbering(), [3, 4, 16, 23, 27, 28, 44, 51, 77, 103, 135]
 )
 test.assertSequenceEqual(
-    sorted(cMesh3.getNodesLocalNumbering()), [4, 5, 10, 11, 25, 33, 49, 55, 58, 64, 72]
+    sorted(cMesh3.getNodesLocalNumbering()), [4, 10, 11, 25, 31, 33, 39, 46, 51, 55, 68]
 )
 
 # Test ConnectionMesh - a part mesh
@@ -128,7 +131,7 @@ print("cMesh8", flush=True)
 cMesh8 = CA.ConnectionMesh(pMesh, [], ["OUEST", "NORD"])
 test.assertEqual(cMesh8.getDimension(), 3)
 test.assertEqual(cMesh8.getNumberOfNodes(), 116)
-test.assertEqual(cMesh8.getNumberOfCells(), 461)
+test.assertEqual(cMesh8.getNumberOfCells(), 460)
 test.assertSequenceEqual(sorted(cMesh8.getGroupsOfCells()), ["NORD", "OUEST"])
 
 
@@ -137,7 +140,7 @@ print("cMesh9", flush=True)
 cMesh9 = CA.ConnectionMesh(pMesh, [], ["OUEST", "NORD", "S1"])
 test.assertEqual(cMesh9.getDimension(), 3)
 test.assertEqual(cMesh9.getNumberOfNodes(), 129)
-test.assertEqual(cMesh9.getNumberOfCells(), 498)
+test.assertEqual(cMesh9.getNumberOfCells(), 497)
 test.assertSequenceEqual(sorted(cMesh9.getGroupsOfCells()), ["NORD", "OUEST", "S1"])
 
 
@@ -146,7 +149,7 @@ print("cMesh10", flush=True)
 cMesh10 = CA.ConnectionMesh(pMesh, ["N1"], ["OUEST"])
 test.assertEqual(cMesh10.getDimension(), 3)
 test.assertEqual(cMesh10.getNumberOfNodes(), 75)
-test.assertEqual(cMesh10.getNumberOfCells(), 271)
+test.assertEqual(cMesh10.getNumberOfCells(), 270)
 test.assertSequenceEqual(sorted(cMesh10.getGroupsOfCells()), ["OUEST"])
 test.assertSequenceEqual(sorted(cMesh10.getGroupsOfNodes()), ["N1"])
 
@@ -183,7 +186,7 @@ cMesh13 = CA.ConnectionMesh(
 test.assertEqual(cMesh13.getParallelMesh().getName(), pMesh.getName())
 test.assertEqual(cMesh13.getDimension(), 3)
 test.assertEqual(cMesh13.getNumberOfNodes(), 174)
-test.assertEqual(cMesh13.getNumberOfCells(), 707)
+test.assertEqual(cMesh13.getNumberOfCells(), 710)
 test.assertSequenceEqual(sorted(cMesh13.getGroupsOfNodes()), ["N0", "N1", "N2"])
 test.assertSequenceEqual(sorted(cMesh13.getGroupsOfCells()), ["ALL_SEG", "BAS", "HAUT", "SUD"])
 

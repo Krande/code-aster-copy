@@ -1,5 +1,5 @@
 /**
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -23,7 +23,7 @@
 
 #include "ParallelUtilities/ObjectBalancer.h"
 
-PtScotchPartitioner::PtScotchPartitioner() {
+PtScotchPartitioner::PtScotchPartitioner() : _graph2( nullptr ), _context( nullptr ) {
     _graph = new SCOTCH_Dgraph;
     _scotchStrat = new SCOTCH_Strat;
     SCOTCH_dgraphInit( _graph, aster_get_current_comm()->id );
@@ -58,11 +58,25 @@ int PtScotchPartitioner::buildGraph( const MeshConnectionGraphPtr &graph ) {
 
 int PtScotchPartitioner::checkGraph() { return SCOTCH_dgraphCheck( _graph ); };
 
-VectorLong PtScotchPartitioner::partitionGraph() {
+VectorLong PtScotchPartitioner::partitionGraph( bool deterministic ) {
     const auto nbProcs = getMPISize();
     const auto rank = getMPIRank();
     VectorLong partition( _nbVertex, -1 ), distributed;
-    auto cret = SCOTCH_dgraphPart( _graph, nbProcs, _scotchStrat, partition.data() );
+    if ( deterministic ) {
+        _graph2 = new SCOTCH_Dgraph;
+        SCOTCH_dgraphInit( _graph2, aster_get_current_comm()->id );
+        _context = new SCOTCH_Context;
+        SCOTCH_contextInit( _context );
+        SCOTCH_contextOptionSetNum( _context, SCOTCH_OPTIONNUMDETERMINISTIC, 1 );
+        SCOTCH_contextBindDgraph( _context, _graph, _graph2 );
+        auto cret = SCOTCH_dgraphPart( _graph2, nbProcs, _scotchStrat, partition.data() );
+        SCOTCH_contextExit( _context );
+        SCOTCH_dgraphFree( _graph2 );
+        delete _context;
+        delete _graph2;
+    } else {
+        auto cret = SCOTCH_dgraphPart( _graph, nbProcs, _scotchStrat, partition.data() );
+    }
     buildPartition( partition, distributed );
     return distributed;
 };

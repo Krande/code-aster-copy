@@ -31,7 +31,10 @@ rank = MPI.ASTER_COMM_WORLD.Get_rank()
 print("Nb procs", MPI.ASTER_COMM_WORLD.Get_size())
 print("Rank", MPI.ASTER_COMM_WORLD.Get_rank())
 
-pMesh = LIRE_MAILLAGE(UNITE=20, FORMAT="MED", PARTITIONNEUR="PTSCOTCH")
+from code_aster.Utilities.MedUtils.MedMeshAndFieldsSplitter import splitMeshAndFieldsFromMedFile
+
+ret = splitMeshAndFieldsFromMedFile("fort.20", deterministic=True)
+pMesh = ret[0]
 
 
 # Test full mesh
@@ -69,7 +72,7 @@ test.assertEqual(sum(list(cMesh2.getCells())), 837865)
 print(len(cMesh2.getCells("AB1")))
 test.assertEqual(sum(list(cMesh2.getCells("AB1"))), 23630)
 test.assertEqual(sum(list(cMesh2.getNodesGlobalNumbering())), 5193300)
-test.assertEqual(sum(list(cMesh2.getNodesLocalNumbering())), 1851772)
+test.assertEqual(sum(list(cMesh2.getNodesLocalNumbering())), 1851688)
 
 test.printSummary()
 

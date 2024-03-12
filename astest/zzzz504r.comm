@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,10 @@ CHT1 = AFFE_CHAR_MECA(
 )
 
 RESU = MECA_STATIQUE(
-    MODELE=MODT, CHAM_MATER=affectMat, EXCIT=(_F(CHARGE=CHT1), _F(CHARGE=charCine))
+    MODELE=MODT,
+    CHAM_MATER=affectMat,
+    EXCIT=(_F(CHARGE=CHT1), _F(CHARGE=charCine)),
+    SOLVEUR=_F(GESTION_MEMOIRE="IN_CORE"),
 )
 
 # la valeur de référence vient de la version std du code

@@ -20,6 +20,7 @@
 
 from code_aster.Commands import *
 from code_aster import CA
+
 import numpy as np
 from code_aster.CA import MPI
 from code_aster.Utilities import PETSc
@@ -197,6 +198,7 @@ ksp_r.setType("preonly")
 ksp_r.getPC().setType("hypre")
 ksp_i.setType("preonly")
 ksp_i.getPC().setType("hypre")
+ksp.setTolerances(rtol=1.0e-6)
 ksp.setFromOptions()
 
 x = y.duplicate()

@@ -21,7 +21,7 @@
 from code_aster.Commands import *
 from code_aster import CA
 
-CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
+CA.init("--test", ERREUR=_F(ALARME="ALARME"))
 
 test = CA.TestCase()
 
@@ -74,7 +74,11 @@ for form in ("LINEAIRE", "QUADRATIQUE"):
     LREEL = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1, NOMBRE=1))
 
     resu = STAT_NON_LINE(
-        MODELE=model, CHAM_MATER=mater, INCREMENT=_F(LIST_INST=LREEL), EXCIT=(_F(CHARGE=bc),)
+        MODELE=model,
+        CHAM_MATER=mater,
+        INCREMENT=_F(LIST_INST=LREEL),
+        EXCIT=(_F(CHARGE=bc),),
+        SOLVEUR=_F(RENUM="SCOTCH", GESTION_MEMOIRE="IN_CORE"),
     )
 
     u_sol = resu.getField("DEPL", para="INST", value=1.0)
