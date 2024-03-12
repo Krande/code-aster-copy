@@ -21,10 +21,15 @@
 from code_aster.Commands import *
 from code_aster import CA
 from code_aster.CA import MPI
+from code_aster.Utilities import petscInitialize, PETSc
+import operator
+from code_aster.Utilities.ExecutionParameter import ExecutionParameter, Options
 
 test = CA.TestCase()
 
 CA.init("--test")
+
+petscInitialize("-on_error_abort ")
 
 rank = MPI.ASTER_COMM_WORLD.Get_rank()
 
@@ -50,7 +55,7 @@ char_meca = AFFE_CHAR_MECA(
 )
 char_meca.debugPrint(10 + rank)
 
-MATER1 = DEFI_MATERIAU(ELAS=_F(E=200000.0, NU=0.499999))
+MATER1 = DEFI_MATERIAU(ELAS=_F(E=200000.0, NU=0.499999, RHO=7.8))
 
 AFFMAT = AFFE_MATERIAU(MAILLAGE=pMesh2, AFFE=_F(TOUT="OUI", MATER=MATER1))
 
@@ -107,5 +112,80 @@ resu2 = MECA_NON_LINE(
 field2 = resu2.getField("DEPL", 1)
 
 test.assertAlmostEqual(field1.norm("NORM_2"), field2.norm("NORM_2"), 6)
+
+
+# -------------------------------------------------------------------------
+
+# Export of the local portions of a vector and a matrix
+
+ExecutionParameter().disable(Options.UseLegacyMode)
+
+model = AFFE_MODELE(
+    MAILLAGE=pMesh2, AFFE=_F(MODELISATION="D_PLAN", PHENOMENE="MECANIQUE", TOUT="OUI")
+)
+
+char_cin = AFFE_CHAR_CINE(
+    MODELE=model,
+    MECA_IMPO=(
+        _F(GROUP_NO="N2", DX=0.0, DY=0.0, DZ=0.0),
+        _F(GROUP_NO="N4", DX=0.0, DY=0.0, DZ=0.0),
+    ),
+)
+
+acier = DEFI_MATERIAU(ELAS=_F(E=200000.0, NU=0.3, RHO=38.0))
+
+chmat = AFFE_MATERIAU(MAILLAGE=pMesh2, AFFE=_F(TOUT="OUI", MATER=acier))
+
+pesa = AFFE_CHAR_MECA(MODELE=model, PESANTEUR=_F(GRAVITE=9.81, DIRECTION=(0.0, -1.0, 0.0)))
+
+asse = ASSEMBLAGE(
+    MODELE=model,
+    CHAM_MATER=chmat,
+    CHARGE=pesa,
+    CHAR_CINE=char_cin,
+    NUME_DDL=CO("numeddl"),
+    MATR_ASSE=_F(MATRICE=CO("K"), OPTION="RIGI_MECA"),
+    VECT_ASSE=(_F(VECTEUR=CO("F"), OPTION="CHAR_MECA")),
+)
+
+K, F = asse.K, asse.F
+
+# Export the parallel matrix and vector
+pK = K.toPetsc()
+print(f"pK.size={pK.size}", flush=True)
+
+pF = F.toPetsc()
+print(f"pF.size={pF.size}", flush=True)
+
+# Export the local matrix and vector
+pK_loc = K.toPetsc(local=True)
+print(f"pK_loc.size={pK_loc.size}", flush=True)
+
+pF_loc = F.toPetsc(local=True)
+print(f"pF_loc.size={pF_loc.size}", flush=True)
+
+# Assemble the local in a parallel one and check it is the same
+pF2 = PETSc.Vec().create(comm=MPI.COMM_WORLD)
+pF2.setType("mpi")
+globNume = F.getDescription()
+ownedRows = globNume.getNoGhostDOFs()
+neql = len(ownedRows)
+neqg = globNume.getNumberOfDOFs(local=False)
+pF2.setSizes((neql, neqg))
+val = pF_loc.getArray()
+l2g = globNume.getLocalToGlobalMapping()
+extract = operator.itemgetter(*ownedRows)
+ll2g = extract(l2g)
+lval = extract(val)
+pF2.setValues(ll2g, lval, PETSc.InsertMode.INSERT_VALUES)
+pF2.assemble()
+
+test.assertAlmostEqual((pF - pF2).norm(), 0.0)
+
+# We only loop on the local rows (no ghost row!)
+for i in ownedRows:
+    for j in range(neql):
+        test.assertAlmostEqual(pK_loc[i, j], pK[l2g[i], l2g[j]])
+
 
 FIN()

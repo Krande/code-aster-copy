@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -47,6 +47,7 @@ try:
 
         # must be override during initialization
         ASTER_COMM_WORLD = mpi4py.MPI.COMM_WORLD
+        ASTER_COMM_SELF = mpi4py.MPI.COMM_SELF
 
         def __getattr__(self, attr):
             if attr == "COMM_WORLD":
@@ -56,6 +57,13 @@ try:
                     stacklevel=2,
                 )
                 return self.ASTER_COMM_WORLD
+            if attr == "COMM_SELF":
+                warnings.warn(
+                    "returns ASTER_COMM_SELF, directly use mpi4py if COMM_SELF is required",
+                    RuntimeWarning,
+                    stacklevel=2,
+                )
+                return self.ASTER_COMM_SELF
             return getattr(mpi4py.MPI, attr)
 
         def use_comm_world(self):

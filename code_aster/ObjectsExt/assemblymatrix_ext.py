@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -72,15 +72,18 @@ class BaseAssemblyMatrix:
     cata_sdj = "SD.sd_matr_asse.sd_matr_asse"
     internalStateBuilder = AssemblyMatrixStateBuilder
 
-    def toPetsc(self):
+    def toPetsc(self, local=False):
         """Convert the matrix to a PETSc matrix object.
+
+        Arguments:
+            local (bool): extract only the sequential matrix of the subdomain or the global parallel matrix (default False)
 
         Returns:
             PetscMat: PETSc matrix.
         """
 
         if isinstance(self, (AssemblyMatrixDisplacementReal, AssemblyMatrixTemperatureReal)):
-            return assemblyMatrixToPetsc(self)
+            return assemblyMatrixToPetsc(self, local)
         else:
             raise NotImplementedError("Type not supported by Petsc")
 
