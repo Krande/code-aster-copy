@@ -547,6 +547,13 @@ contains
             call rsnoch(metaParaOperator%resultName, 'META_ELNO', numeStore_2)
             call utmess('I', 'ARCHIVAGE_6', sk='META_ELNO', si=numeStore_2, sr=time_2)
 
+! --------- Save behaviour map
+            call rsexch(' ', metaParaOperator%resultName, 'COMPORMETA', numeStore_2, resultField, &
+                        iret)
+            call copisd('CHAMP_GD', 'G', metaParaOperator%comporMetaTemper, resultField)
+            call rsnoch(metaParaOperator%resultName, 'COMPORMETA', numeStore_2)
+            call utmess('I', 'ARCHIVAGE_6', sk='COMPORMETA', si=numeStore_2, sr=time_2)
+
         end do
 !
 !   ------------------------------------------------------------------------------------------------
