@@ -5,7 +5,7 @@
  * @file ContactZone.h
  * @brief Fichier entete de la class ContactZone
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -175,8 +175,7 @@ class PairingParameter {
     ASTERDOUBLE _dist_ratio;
     /** @brief initial contact state = CONTACT_INIT */
     InitialState _cont_init;
-    /** @brief initial threshold distance = SEUIL_INIT */
-    ASTERDOUBLE _seuil;
+
     /** @brief fictive distance function = DIST_SUPP */
     GenericFunctionPtr _dist_supp;
     /** @brief if fictive distance for beam = DIST_POUTRE */
@@ -202,7 +201,7 @@ class PairingParameter {
         : _algo( PairingAlgo::Mortar ),
           _cont_init( InitialState::Interpenetrated ),
           _dist_ratio( -1.0 ),
-          _seuil( -1.0 ),
+
           _beam( false ),
           _dist_supp( nullptr ),
           _shell( false ),
@@ -213,15 +212,13 @@ class PairingParameter {
         _algo = tup[0].cast< PairingAlgo >();
         _cont_init = tup[1].cast< InitialState >();
         _dist_ratio = tup[2].cast< ASTERDOUBLE >();
-        _seuil = tup[3].cast< ASTERDOUBLE >();
         _beam = tup[4].cast< bool >();
         _dist_supp = tup[5].cast< GenericFunctionPtr >();
         _shell = tup[6].cast< bool >();
         _cara = tup[7].cast< ElementaryCharacteristicsPtr >();
     };
     py::tuple _getState() const {
-        return py::make_tuple( _algo, _cont_init, _dist_ratio, _seuil, _beam, _dist_supp, _shell,
-                               _cara );
+        return py::make_tuple( _algo, _cont_init, _dist_ratio, _beam, _dist_supp, _shell, _cara );
     };
 
     PairingAlgo getAlgorithm() const { return _algo; };
@@ -229,8 +226,6 @@ class PairingParameter {
     ASTERDOUBLE getDistanceRatio() const { return _dist_ratio; };
 
     InitialState getInitialState() const { return _cont_init; };
-
-    ASTERDOUBLE getThreshold() const { return _seuil; };
 
     GenericFunctionPtr getDistanceFunction() const { return _dist_supp; };
 
@@ -241,8 +236,6 @@ class PairingParameter {
     void setDistanceRatio( const ASTERDOUBLE &dist_ratio ) { _dist_ratio = dist_ratio; };
 
     void setInitialState( const InitialState &cont_init ) { _cont_init = cont_init; };
-
-    void setThreshold( const ASTERDOUBLE &seuil ) { _seuil = seuil; };
 
     void setDistanceFunction( const GenericFunctionPtr &dist_supp ) { _dist_supp = dist_supp; };
 

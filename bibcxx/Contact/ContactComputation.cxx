@@ -1,7 +1,7 @@
 
 /**
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -188,7 +188,7 @@ FieldOnCellsRealPtr ContactComputation::contactData( const ContactPairingPtr pai
                 ( *data )[shift + 31] = double( fric->getAlgorithm() );
                 //  Value for TYPE_FROT
                 ( *data )[shift + 32] = double( fric->getType() );
-                // Value for threshold
+                // Value for coefficient of friction
                 if ( fric->getType() == FrictionType::Tresca ) {
                     //  Value for TRESCA
                     ( *data )[shift + 34] = fric->getTresca();

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -157,7 +157,6 @@ DEFI_CONT_CATA = MACRO(
                 condition="""equal_to("TYPE_FROT", "COULOMB")""", COULOMB=SIMP(statut="o", typ="R")
             ),
             COEF_FROT=SIMP(statut="f", typ="R", defaut=100.0, val_min=0.0),
-            SEUIL_INIT=SIMP(statut="f", typ="R"),
         ),  # fin BLOC
     ),  # fin ZONE
 )
