@@ -18,16 +18,18 @@
 !
 interface
     subroutine nzcompTemper(metaPara, numeComp, &
-                            nbVari, nbVariTemper, &
+                            nbVari, nbVariTemper, nbVariPrev, &
                             deltaTime12, &
                             temp1, temp2, &
+                            prevMetaIsTemper, &
                             metaPrev, metaCurr, metaCurrTemper)
         use Metallurgy_type
         type(META_MaterialParameters), intent(in) :: metaPara
         integer, intent(in) :: numeComp, nbVari, nbVariTemper
         real(kind=8), intent(in) ::  deltaTime12
         real(kind=8), intent(in) :: temp1, temp2
-        real(kind=8), intent(in) :: metaPrev(nbVariTemper)
+        aster_logical, intent(in) :: prevMetaIsTemper
+        real(kind=8), intent(in) :: metaPrev(nbVariPrev)
         real(kind=8), intent(in) :: metaCurr(nbVari)
         real(kind=8), intent(out) :: metaCurrTemper(nbVariTemper)
     end subroutine nzcompTemper
