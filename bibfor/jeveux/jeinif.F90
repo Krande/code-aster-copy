@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -462,7 +462,7 @@ subroutine jeinif(sti, sto, nomf, clas, nrep, &
         end if
 !
 !       calcul de la taille maximale précédemment utilisée
-        mfic_prev = longbl(ic)*nbenrg(ic)*lois
+        mfic_prev = longbl(ic)*nblmax(ic)*lois
         if (mfic_prev .ne. mfic .and. iext(ic) .gt. 0) then
             mfic = mfic_prev
             call utmess("I", "JEVEUX1_79", sr=1.0d0*mfic/1024/1024)
