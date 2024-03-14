@@ -2,7 +2,7 @@
  * @file BehaviourProperty.cxx
  * @brief Implementation for class BehaviourProperty
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -115,10 +115,13 @@ bool BehaviourProperty::hasBehaviour( const std::string &behaviour ) const {
     if ( _COMPOR && _COMPOR->exists() ) {
         auto values = _COMPOR->getValues();
         for ( auto &zone : values ) {
+            auto cmps = zone.getComponents();
             auto val = zone.getValues();
-            AS_ASSERT( val.size() == 1 );
-            if ( val[0].toString() == behaviour ) {
-                return true;
+            for ( int i = 0; i < cmps.size(); i++ ) {
+                if ( strip( cmps[i] ) == "RELCOM" ) {
+                    if ( val[i].toString() == behaviour )
+                        return true;
+                }
             }
         }
     }
