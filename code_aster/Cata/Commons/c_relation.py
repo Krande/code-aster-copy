@@ -226,4 +226,5 @@ def C_RELATION(command):
             "NLH_CSRM",
             "MCC",
             "Barcelone",
+            "CSSM",
         )

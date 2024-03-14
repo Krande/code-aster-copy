@@ -114,16 +114,16 @@ YOUNG_2 = 500.0e06
 NU_2 = 0.49
 RHO_2 = 1800
 # Valeur Sèche
-GammaRef = 1.25e-4
-n_iwan = 0.78
-GamRef_2 = GammaRef
-n_2 = n_iwan
+HypDistortion = 1.25e-4
+HypExponent = 0.78
+HypDistortion_2 = HypDistortion
+HypExponent_2 = HypExponent
 
 BARRAGE = DEFI_MATERIAU(
     ELAS=_F(
         E=YOUNG_2, NU=NU_2, RHO=RHO_2, AMOR_ALPHA=alpha, AMOR_BETA=beta, ALPHA=0.0  # AMOR RAYLEIGH
     ),
-    Iwan=_F(YoungModulus=YOUNG_2, PoissonRatio=NU_2, GammaRef=GamRef_2, n=n_2),
+    Iwan=_F(YoungModulus=YOUNG_2, PoissonRatio=NU_2, HypDistortion=HypDistortion_2, HypExponent=HypExponent_2),
 )
 
 affe_materiau = [

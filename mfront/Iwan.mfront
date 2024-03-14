@@ -43,7 +43,9 @@ young.setGlossaryName( "YoungModulus" );
 nu.setGlossaryName( "PoissonRatio" );
 // Parameters of hyperbolic model
 @MaterialProperty real GammaRef;
+GammaRef.setEntryName("HypDistortion");
 @MaterialProperty real n;
+n.setEntryName("HypExponent");
 
 // State variables
 // Scalar as linear kinematic hardening

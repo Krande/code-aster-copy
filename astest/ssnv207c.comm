@@ -1,0 +1,118 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+# person_in_charge: goustan.bacquaert@edf.fr
+
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+# >>> Shear test with SIMU_POINT_MAT with the CSSM model including small undloadings
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="NON"))
+
+### >>>>>>>>>>>>>>>>>>>
+### Material properties
+### <<<<<<<<<<<<<<<<<<<
+
+k = 516.0e6
+mu = 238.0e6
+rho = 0.1
+M = 1.38
+pc0 = 100.0e3
+bt = 30.0
+eta = 0.99
+om = 32.0
+gammahyp = 2.0e-4
+nhyp = 0.78
+C = 448.0e3
+
+MATER = DEFI_MATERIAU(
+    ELAS=_F(
+        E=9.0 * k * mu / (3.0 * k + mu), NU=(3.0 * k - 2.0 * mu) / (2.0 * (3.0 * k + mu)), ALPHA=0.0
+    ),
+    CSSM=_F(
+        BulkModulus=k,
+        ShearModulus=mu,
+        InitCritPress=pc0,
+        CritStateSlope=M,
+        IncoPlastIndex=bt,
+        HypExponent=nhyp,
+        HypDistortion=gammahyp,
+        MinCritPress=C,
+        ShearModulusRatio=rho,
+        IsoHardRatio=eta,
+        IsoHardIndex=om,
+    ),
+)
+
+### >>>>>>>>>>
+### Time steps
+### <<<<<<<<<<
+
+LI1 = DEFI_LIST_REEL(
+    DEBUT=-1, INTERVALLE=(_F(JUSQU_A=0, NOMBRE=5), _F(JUSQU_A=40, NOMBRE=160))
+)
+
+DEFLIST = DEFI_LIST_INST(
+    DEFI_LIST=_F(LIST_INST=LI1), ECHEC=_F(EVENEMENT="ERREUR", ACTION="DECOUPE", SUBD_METHODE="AUTO")
+)
+
+### >>>>>>>>>>>>>>>>>>>
+### Boundary conditions
+### <<<<<<<<<<<<<<<<<<<
+
+CH_SIGM1 = DEFI_FONCTION(NOM_PARA="INST", PROL_DROITE="CONSTANT", VALE=(-1, 0.0, 0, -50.0e3))
+
+CH_SIGM2 = DEFI_FONCTION(NOM_PARA="INST", PROL_DROITE="CONSTANT", VALE=(-1, 0.0, 0, 0.0, 10, -1.0e4, 15, -6.0e3, 20, -6.3e3, 25, 1.0e4, 30, -5.0e3, 35, -4.7e3, 40, -1.0e4))
+
+RESU = SIMU_POINT_MAT(
+    COMPORTEMENT=_F(RELATION="CSSM", RESI_INTE=1.0e-14),
+    MATER=MATER,
+    INCREMENT=_F(LIST_INST=DEFLIST),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=10, RESI_GLOB_RELA=1.0e-8),
+    SIGM_IMPOSE=_F(SIXX=CH_SIGM1, SIYY=CH_SIGM1, SIZZ=CH_SIGM1, SIXY=CH_SIGM2),
+)
+
+### >>>>>
+### Tests
+### <<<<<
+
+TEST_TABLE(TABLE=RESU,
+           NOM_PARA="EPXY",
+           REFERENCE="SOURCE_EXTERNE",
+           FILTRE=_F(NOM_PARA="INST", VALE=10),
+           VALE_REFE=-3.089980455346781e-05,
+           VALE_CALC=-3.089980003553449E-05)
+
+TEST_TABLE(TABLE=RESU,
+           NOM_PARA="EPXY",
+           REFERENCE="SOURCE_EXTERNE",
+           FILTRE=_F(NOM_PARA="INST", VALE=25),
+           VALE_REFE=2.8294592503898165e-05,
+           VALE_CALC=2.8294595843857578E-05)
+
+TEST_TABLE(TABLE=RESU,
+           NOM_PARA="EPXY",
+           REFERENCE="SOURCE_EXTERNE",
+           FILTRE=_F(NOM_PARA="INST", VALE=40),
+           VALE_REFE=-2.860175539956809e-05,
+           VALE_CALC=-2.860174998121575E-05)
+
+FIN()
+

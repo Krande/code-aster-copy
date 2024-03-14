@@ -2968,7 +2968,6 @@ G_R
 G_TN
 G_X1
 G_X2
-GammaRef
 GonfElas
 GonfElas_FO
 H
@@ -3047,6 +3046,8 @@ HZ
 HZ1
 HZ2
 HardeningCoef
+HypDistortion
+HypExponent
 I
 IDEAS
 IDEAS_DS58
@@ -3235,6 +3236,8 @@ InitPreconsPress
 InitTensionPress
 InitVoidsRatio
 IsoCompElasLim
+IsoHardIndex
+IsoHardRatio
 IsoTensElasLim
 Iwan
 Iwan_FO
@@ -4016,6 +4019,7 @@ M_ULT
 M_ZIRC
 MetaAcierEPIL_PT
 MetaAcierEPIL_PT_FO
+MinCritPress
 MohrCoulombAS
 MohrCoulombAS_FO
 N
@@ -5565,6 +5569,7 @@ S_LT
 S_RUP
 S_VP_MELANGE
 ShearModulus
+ShearModulusRatio
 SuccionIndex
 SuccionModulus
 SwellingIndex
@@ -6450,5 +6455,4 @@ metaFDF_1
 metaFDF_2
 metaFDF_3
 mm
-n
 reuse
