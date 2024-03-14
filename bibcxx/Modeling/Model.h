@@ -349,6 +349,8 @@ class Model : public DataStructure, public ListOfTables {
      */
     bool isXfem() const;
 
+    ASTERINTEGER getXfemContact() const;
+
 #ifdef ASTER_HAVE_MPI
     bool setFrom( const ModelPtr model );
 #endif

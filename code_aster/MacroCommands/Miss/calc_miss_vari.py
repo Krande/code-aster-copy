@@ -295,6 +295,6 @@ def compute_freqk_quelconque(self, k, RESU, VEC, dict_modes):
             EXCIT=_F(VECT_ASSE_GENE=__fosi, COEF_MULT=1.0),
         )
     #  recuperer le vecteur modal depl calcule par dyge
-    RS = NP.array(__dyge.sdj.DEPL.get())
+    RS = NP.array(__dyge.getDisplacement())
     VECRES = self.append_Vec(RS, k, RESU)
     return VECRES

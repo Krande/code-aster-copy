@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -83,10 +83,8 @@ class ExtendedTable:
         (Utile pour récupérer le titre et uniquement le titre d'une table dont
         on souhaite manipuler la dérivée).
         """
-        titj = self.sdj.TITR.get()
-        if titj != None:
-            titr = "\n".join(titj)
-        else:
+        titr = self.getTitle()
+        if titr is None:
             titr = ""
         return titr
 

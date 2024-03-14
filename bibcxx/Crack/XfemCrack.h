@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe XfemCrack
  * @author Nicolas Tardieu
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -300,6 +300,18 @@ class XfemCrack : public DataStructure, public ListOfTables {
     }
 
     void setPointForJunction( const VectorReal point ) { _pointForJunctingCracks = point; }
+
+    const JeveuxVectorReal getCrackTipCoords();
+
+    const JeveuxVectorReal getCrackTipBasis();
+
+    const JeveuxVectorLong getCrackTipMultiplicity();
+
+    const std::string getTipType();
+
+    const JeveuxVectorLong getCrackTipNodeFacesField();
+
+    const JeveuxVectorReal getCrackFrontRadius();
 };
 
 /**

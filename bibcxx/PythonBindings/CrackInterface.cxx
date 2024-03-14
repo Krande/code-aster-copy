@@ -49,9 +49,15 @@ void exportCrackToPython( py::module_ &mod ) {
                 list[float]: the crack front Position
         )" )
         .def( "getCrackFrontNodeBasis", &Crack::getCrackFrontNodeBasis )
+        .def( "getCrackFrontRadius", &Crack::getCrackFrontRadius )
         .def( "getCrackTipCellsType", &Crack::getCrackTipCellsType )
         .def( "getLowerLipGroupName", &Crack::getLowerLipGroupName )
         .def( "getUpperLipGroupName", &Crack::getUpperLipGroupName )
+        .def( "getLowerNormNodes", &Crack::getLowerNormNodes )
+        .def( "getUpperNormNodes", &Crack::getUpperNormNodes )
+        .def( "getLowerNormNodes2", &Crack::getLowerNormNodes2 )
+        .def( "getUpperNormNodes2", &Crack::getUpperNormNodes2 )
+        .def( "getNormal", &Crack::getNormal )
         .def( "isSymmetric", &Crack::isSymmetric, R"(
             Return true if crack is symeric
         )" )

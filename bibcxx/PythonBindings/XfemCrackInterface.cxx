@@ -3,7 +3,7 @@
  * @brief Interface python de XfemCrack
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -70,6 +70,12 @@ void exportXfemCrackToPython( py::module_ &mod ) {
         .def( "getJunctingCracks", &XfemCrack::getJunctingCracks )
         .def( "insertJunctingCracks", &XfemCrack::insertJunctingCracks )
         .def( "setPointForJunction", &XfemCrack::setPointForJunction )
+        .def( "getCrackTipCoords", &XfemCrack::getCrackTipCoords )
+        .def( "getCrackTipBasis", &XfemCrack::getCrackTipBasis )
+        .def( "getCrackTipMultiplicity", &XfemCrack::getCrackTipMultiplicity )
+        .def( "getTipType", &XfemCrack::getTipType )
+        .def( "getCrackTipNodeFacesField", &XfemCrack::getCrackTipNodeFacesField )
+        .def( "getCrackFrontRadius", &XfemCrack::getCrackFrontRadius )
 
         .def( "getTable", &ListOfTables::getTable, R"(
 Extract a Table from the datastructure.

@@ -216,10 +216,10 @@ def calc_gp_ops(self, **args):
             UTMESS("F", "RUPTURE1_19", ["TRANCHE_3D", "3D"])
 
         #    liste des noeuds du fond de fissure
-        l_noeuds_fissure = args["FOND_FISS"].sdj.FOND_NOEU.get()
+        l_noeuds_fissure = args["FOND_FISS"].getCrackFrontNodes()
 
         #    normale au plan de la fissure
-        lnormale = args["FOND_FISS"].sdj.NORMALE.get()
+        lnormale = args["FOND_FISS"].getNormal()
         if lnormale is None:
             UTMESS("F", "POST0_39")
 

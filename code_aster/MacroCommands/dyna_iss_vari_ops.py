@@ -521,7 +521,7 @@ class GeneratorTRANS(Generator):
                 EXCIT=_F(VECT_ASSE_GENE=__fosi, COEF_MULT=1.0),
             )
         #  recuperer le vecteur modal depl calcule par dyge
-        RS = NP.array(__dyge.sdj.DEPL.get())
+        RS = NP.array(__dyge.getDisplacement())
         VECRES = self.append_Vec(RS, k, RESU)
         return VECRES
 
@@ -612,7 +612,7 @@ class GeneratorSPEC(Generator):
                     EXCIT=_F(VECT_ASSE_GENE=__fosi, COEF_MULT=1.0),
                 )
             #  recuperer le vecteur modal depl calcule par dyge
-            RS = NP.array(__dyge.sdj.DEPL.get())
+            RS = NP.array(__dyge.getDisplacement())
             # stockage des matrices résultats: sum(s_q s_q* )
             SP = SP + RS * NP.conj(RS[:, NP.newaxis])
         SPEC = self.append_Vec(SP, k, RESU)

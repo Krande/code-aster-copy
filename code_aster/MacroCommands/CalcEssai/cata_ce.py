@@ -217,13 +217,7 @@ class ModeMeca(Resultat):
 
     def get_nom_cham(self):
         """Recherche le type de champ rempli dans la sd ('ACCE', 'DEPL'...)"""
-        desc = self.obj.sdj.DESC.get()
-        if desc:
-            for ind_cham in range(len(desc)):
-                tach = self.obj.sdj.TACH.get()[ind_cham + 1]
-                if tach[0].strip():
-                    self.nom_cham = desc[ind_cham].strip()
-                    return
+        self.nom_cham = self.obj.getFieldsOnNodesRealNames()[0]
         # cette methode sert a PROJ_MESUR_MODAL dans MACRO_EXPANS : on ne garde
         # donc qu'un seul nom symbolique. Par ordre decroissant de priorite :
         # 'DEPL', 'VITE', 'ACCE', etc...
@@ -288,13 +282,7 @@ class DynaHarmo(Resultat):
 
     def get_nom_cham(self):
         """Recherche le type de champ rempli dans la sd ('ACCE', 'DEPL'...)"""
-        desc = self.obj.sdj.DESC.get()
-        if desc:
-            for ind_cham in range(len(desc)):
-                tach = self.obj.sdj.TACH.get()[ind_cham + 1]
-                if tach[0].strip():
-                    self.nom_cham = desc[ind_cham].strip()
-                    return self.nom_cham
+        self.nom_cham = self.obj.getFieldsOnNodesRealNames()[0]
         # cette methode sert a PROJ_MESU_MODAL dans MACRO_EXPANS : on ne garde
         # donc qu'un seul nom symbolique. Par ordre decroissant de priorite :
         # 'DEPL', 'VITE', 'ACCE', etc...
@@ -670,12 +658,9 @@ class Modele:
         self.mass_name = None  # nom de ma matrice
 
     def get_maillage(self):
-        if self.obj.sdj.MODELE.LGRF.exists:
-            _maillag = self.obj.sdj.MODELE.LGRF.get()
-            self.maya_name = _maillag[0].strip()
-            self.maya = self.objects.maillages[self.maya_name]
-        else:
-            pass
+        self.maya = self.obj.getMesh()
+        if self.maya:
+            self.maya_name = self.maya.getName()
 
     def get_nume(self):
         """Recherche des nume_ddl qui dependent de ce modele
@@ -705,10 +690,10 @@ class Modele:
             for matr_name, matr in list(self.objects.matrices.items()):
                 nom_modele = matr.getModel().getName()
                 if nom_modele == self.nom.strip():
-                    if matr.sdj.REFA.get()[3].strip() == "RIGI_MECA":
+                    if matr.getCalculOption() == "RIGI_MECA":
                         self.kass = matr
                         self.kass_name = matr_name
-                    if matr.sdj.REFA.get()[3].strip() == "MASS_MECA":
+                    if matr.getCalculOption() == "MASS_MECA":
                         self.mass = matr
                         self.mass_name = matr_name
 

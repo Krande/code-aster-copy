@@ -152,6 +152,11 @@ class BaseAssemblyMatrix : public DataStructure {
     bool isSymmetric();
 
     /**
+     * @brief Tell the calcul option
+     */
+    std::string getCalculOption();
+
+    /**
      * @brief Get the size of the matrix
      * @param local [bool] local or global size
      */

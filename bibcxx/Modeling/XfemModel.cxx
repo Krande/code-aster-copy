@@ -3,7 +3,7 @@
  * @brief Implementation de Model
  * @author
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -70,23 +70,28 @@ XfemModel::XfemModel( const std::string name )
       _pre_cond( JeveuxVectorChar8( name + ".PRE_COND" ) ),
       _thermic( JeveuxVectorChar8( name + ".MODELE_THER" ) ) {
     _xfem_nodes->setDescription( std::make_shared< EquationNumbering >( name + ".NOXF.NUMEQ" ) );
-    _listfields.insert( {"PINTTO", _topose.pin} );
-    _listfields.insert( {"CNSETO", _topose.cns} );
-    _listfields.insert( {"HEAVTO", _topose.hea} );
-    _listfields.insert( {"LONCHA", _topose.lon} );
-    _listfields.insert( {"PMILT", _topose.pmi} );
-    _listfields.insert( {"HEAVTO", _topose.hea} );
-    _listfields.insert( {"BASLOC", _local_basis} );
-    _listfields.insert( {"LSN", _normal_levelset} );
-    _listfields.insert( {"LST", _tangent_levelset} );
-    _listfields.insert( {"STANO", _nodal_status} );
-    _listfields.insert( {"FISSNO", _crack_nodes} );
-    _listfields.insert( {"HEAVNO", _topono.hno} );
-    _listfields.insert( {"HEAVSE", _topono.hse} );
-    _listfields.insert( {"HEAVFA", _topono.hfa} );
-    _listfields.insert( {"AINTER", _topofac.intersection_edge} );
-    _listfields.insert( {"PINTER", _topofac.intersection_pt2} );
-    _listfields.insert( {"CFACE", _topofac.connectivity} );
-    _listfields.insert( {"LONGCO", _topofac.length} );
-    _listfields.insert( {"BASECO", _topofac.base} );
+    _listfields.insert( { "PINTTO", _topose.pin } );
+    _listfields.insert( { "CNSETO", _topose.cns } );
+    _listfields.insert( { "HEAVTO", _topose.hea } );
+    _listfields.insert( { "LONCHA", _topose.lon } );
+    _listfields.insert( { "PMILT", _topose.pmi } );
+    _listfields.insert( { "HEAVTO", _topose.hea } );
+    _listfields.insert( { "BASLOC", _local_basis } );
+    _listfields.insert( { "LSN", _normal_levelset } );
+    _listfields.insert( { "LST", _tangent_levelset } );
+    _listfields.insert( { "STANO", _nodal_status } );
+    _listfields.insert( { "FISSNO", _crack_nodes } );
+    _listfields.insert( { "HEAVNO", _topono.hno } );
+    _listfields.insert( { "HEAVSE", _topono.hse } );
+    _listfields.insert( { "HEAVFA", _topono.hfa } );
+    _listfields.insert( { "AINTER", _topofac.intersection_edge } );
+    _listfields.insert( { "PINTER", _topofac.intersection_pt2 } );
+    _listfields.insert( { "CFACE", _topofac.connectivity } );
+    _listfields.insert( { "LONGCO", _topofac.length } );
+    _listfields.insert( { "BASECO", _topofac.base } );
+};
+
+ASTERINTEGER XfemModel::getContact() const {
+    _contact->updateValuePointer();
+    return ( *_contact )[0];
 };

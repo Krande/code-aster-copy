@@ -3,7 +3,7 @@
  * @brief Interface python de MechanicalLoad
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -34,6 +34,7 @@ void exportMechanicalLoadToPython( py::module_ &mod ) {
         .def( "getFiniteElementDescriptor", &MechanicalLoadReal::getFiniteElementDescriptor )
         .def( "hasLoadField", &MechanicalLoadReal::hasLoadField )
         .def( "updateValuePointers", &MechanicalLoadReal::updateValuePointers )
+        .def( "getMechanicalLoadDescription", &MechanicalLoadReal::getMechanicalLoadDescription )
         .def( "getModel", &MechanicalLoadReal::getModel )
         .def( "getMesh", &MechanicalLoadReal::getMesh )
         .def( "getTable", &ListOfTables::getTable, R"(
