@@ -7,4 +7,4 @@ echo "+ checking issues status..."
 
 echo "+ checking that expected documents have been committed..."
 # turn as information during doc migration
-./devtools/bin/maint/check_expected_documents ${flist} || true
+./devtools/bin/maint/check_expected_documents ${flist}
