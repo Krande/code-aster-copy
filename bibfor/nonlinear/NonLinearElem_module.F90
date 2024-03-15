@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -83,7 +83,7 @@ contains
         if (niv .ge. 2) then
             call utmess('I', 'MECANONLINE13_85')
         end if
-        call memare(jvBase, superElem, model, materialField, caraElem, option)
+        call memare(jvBase, superElem, model, option)
         call jeveuo(superElem(1:19)//'.RERR', 'E', vk24=rerr)
         rerr(3) = 'OUI_SOUS_STRUC'
 !

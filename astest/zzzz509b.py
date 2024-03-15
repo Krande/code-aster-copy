@@ -100,8 +100,10 @@ temp_list = [
 temp = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_THER",
-    NOM_CHAM="TEMP",
-    AFFE=[_F(INST=t, CHAM_GD=temp_field) for (t, temp_field) in zip((0, 1), temp_list)],
+    AFFE=[
+        _F(NOM_CHAM="TEMP", INST=t, CHAM_GD=temp_field)
+        for (t, temp_field) in zip((0, 1), temp_list)
+    ],
 )
 
 

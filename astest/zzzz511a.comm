@@ -158,10 +158,9 @@ champ_chaud = CREA_CHAMP(
 evol_th_me = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_THER",
-    NOM_CHAM="TEMP",
     AFFE=(
-        _F(CHAM_GD=champ_zero, INST=0, MODELE=mo_me),
-        _F(CHAM_GD=champ_chaud, INST=1, MODELE=mo_me),
+        _F(NOM_CHAM="TEMP", CHAM_GD=champ_zero, INST=0, MODELE=mo_me),
+        _F(NOM_CHAM="TEMP", CHAM_GD=champ_chaud, INST=1, MODELE=mo_me),
     ),
 )
 

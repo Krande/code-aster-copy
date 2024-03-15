@@ -264,8 +264,7 @@ chmaxsig = CREA_CHAMP(
 print("CHMAX1: ", chmaxsig.getDescription())
 
 chprint = CREA_RESU(
-    AFFE=_F(CHAM_GD=chmaxsig, CRITERE="RELATIF", INST=0.0, PRECISION=0.0),
-    NOM_CHAM="SIEF_ELGA",
+    AFFE=_F(NOM_CHAM="SIEF_ELGA", CHAM_GD=chmaxsig, CRITERE="RELATIF", INST=0.0, PRECISION=0.0),
     OPERATION="AFFE",
     TYPE_RESU="EVOL_NOLI",
     VERI_VARI="OUI",
@@ -289,8 +288,7 @@ print("CHMAX2: ", chmaxsig2.getDescription())
 
 
 chprint2 = CREA_RESU(
-    AFFE=_F(CHAM_GD=chmaxsig2, CRITERE="RELATIF", INST=0.0, PRECISION=0.0),
-    NOM_CHAM="SIEF_ELGA",
+    AFFE=_F(NOM_CHAM="SIEF_ELGA", CHAM_GD=chmaxsig2, CRITERE="RELATIF", INST=0.0, PRECISION=0.0),
     OPERATION="AFFE",
     TYPE_RESU="EVOL_NOLI",
     VERI_VARI="OUI",

@@ -230,7 +230,6 @@ def setup_calcul(type_homo, mesh, ls_group_tout, ls_affe, varc_name, varc_values
     EVOLVARC = CREA_RESU(
         OPERATION="AFFE",
         TYPE_RESU="EVOL_VARC",
-        NOM_CHAM="TEMP",
         AFFE=[
             _F(
                 CHAM_GD=CREA_CHAMP(
@@ -240,6 +239,7 @@ def setup_calcul(type_homo, mesh, ls_group_tout, ls_affe, varc_name, varc_values
                     AFFE=_F(GROUP_MA=ls_group_tout, NOM_CMP="TEMP", VALE=value),
                 ),
                 INST=inst,
+                NOM_CHAM="TEMP",
             )
             for inst, value in enumerate(varc_values)
         ],

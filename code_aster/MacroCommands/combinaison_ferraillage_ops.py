@@ -126,8 +126,9 @@ def combinaison_ferraillage_ops(self, **args):
         RESULTAT=resu,
         OPERATION="AFFE",
         TYPE_RESU="MULT_ELAS",
-        NOM_CHAM="FERR_ELEM",
-        AFFE=(_F(NOM_CAS="COMB_DIME_ACIER", CHAM_GD=maxiferr, MODELE=modele),),
+        AFFE=(
+            _F(NOM_CHAM="FERR_ELEM", NOM_CAS="COMB_DIME_ACIER", CHAM_GD=maxiferr, MODELE=modele),
+        ),
     )
 
     resu = CREA_RESU(
@@ -135,8 +136,9 @@ def combinaison_ferraillage_ops(self, **args):
         RESULTAT=resu,
         OPERATION="AFFE",
         TYPE_RESU="MULT_ELAS",
-        NOM_CHAM="FERR_ELEM",
-        AFFE=(_F(NOM_CAS="COMB_DIME_ORDRE", CHAM_GD=instferr, MODELE=modele),),
+        AFFE=(
+            _F(NOM_CHAM="FERR_ELEM", NOM_CAS="COMB_DIME_ORDRE", CHAM_GD=instferr, MODELE=modele),
+        ),
     )
 
     nc = resu.LIST_VARI_ACCES()["NOM_CAS"]
@@ -320,6 +322,7 @@ def evolElasFromMulti(ncas, comb, lst_inst_value, resu, cara):
             )
 
             lst_AFFE_EFGE[idx_shift] = _F(
+                NOM_CHAM="FERR_ELEM",
                 INST=lst_inst_value[idx_shift],
                 CHAM_GD=__EFGE[idx_shift],
                 MODELE=modele,
@@ -328,8 +331,6 @@ def evolElasFromMulti(ncas, comb, lst_inst_value, resu, cara):
 
             idx_shift = idx_shift + 1
 
-    resferr = CREA_RESU(
-        OPERATION="AFFE", TYPE_RESU="EVOL_ELAS", NOM_CHAM="FERR_ELEM", AFFE=lst_AFFE_EFGE
-    )
+    resferr = CREA_RESU(OPERATION="AFFE", TYPE_RESU="EVOL_ELAS", AFFE=lst_AFFE_EFGE)
 
     return resferr

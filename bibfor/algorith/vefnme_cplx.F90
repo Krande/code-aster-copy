@@ -277,8 +277,7 @@ subroutine vefnme_cplx(option, base, model, mate, carele, &
 ! --- PREPARATION DU VECT_ELEM RESULTAT
 !
     call detrsd('VECT_ELEM', vecele)
-    call memare(base, vecele, model, ' ', carele, &
-                'CHAR_MECA')
+    call memare(base, vecele, model, 'CHAR_MECA')
 !
     lcmplx = .false.
     do k = 1, nbin
@@ -320,8 +319,7 @@ subroutine vefnme_cplx(option, base, model, mate, carele, &
                 lchini(k) = chdeci(k)
             end if
         end do
-        call memare(base, veceli, model, ' ', carele, &
-                    'CHAR_MECA')
+        call memare(base, veceli, model, 'CHAR_MECA')
     end if
 
     if (debug) then

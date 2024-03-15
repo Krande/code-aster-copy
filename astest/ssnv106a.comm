@@ -108,12 +108,11 @@ Ther2 = CREA_CHAMP(
 TEMPER = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_THER",
-    NOM_CHAM="TEMP",
     AFFE=(
-        _F(CHAM_GD=Ther0, INST=0),
-        _F(CHAM_GD=Ther0, INST=1),
-        _F(CHAM_GD=Ther1, INST=2),
-        _F(CHAM_GD=Ther2, INST=3),
+        _F(NOM_CHAM="TEMP", CHAM_GD=Ther0, INST=0),
+        _F(NOM_CHAM="TEMP", CHAM_GD=Ther0, INST=1),
+        _F(NOM_CHAM="TEMP", CHAM_GD=Ther1, INST=2),
+        _F(NOM_CHAM="TEMP", CHAM_GD=Ther2, INST=3),
     ),
 )
 

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -489,8 +489,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 !
 ! --- -----------------------------------------------------------------
 ! --- CREATION DES .RERR DES VECTEURS EN SORTIE DE CALCUL
-    call memare('V', '&&RAPO3D', mod, ' ', ' ', &
-                'CHAR_MECA')
+    call memare('V', '&&RAPO3D', mod, 'CHAR_MECA')
 !
 ! --- -----------------------------------------------------------------
 !     ASSEMBLAGE DE LCHOUT(1) DANS LE CHAMNO DE NOM 'CH_DEPL_1'

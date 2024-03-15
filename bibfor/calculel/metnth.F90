@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -97,7 +97,7 @@ subroutine metnth(modele, lchar, cara, mate, mateco, time, &
     call jeexin(metrnl, iret)
     if (iret .eq. 0) then
         metrnl = '&&METNTH           .RELR'
-        call memare('V', metrnl, modele(1:8), mate, carele, 'RIGI_THER')
+        call memare('V', metrnl, modele(1:8), 'RIGI_THER')
     else
         call jedetr(metrnl)
     end if
@@ -119,7 +119,7 @@ subroutine metnth(modele, lchar, cara, mate, mateco, time, &
             end if
 !
 
-            call memare('V', metrnl, modele(1:8), mate, cara, option)
+            call memare('V', metrnl, modele(1:8), option)
 !
             call jeveuo(convch, 'L', jvites)
             vitess = zk8(jvites)

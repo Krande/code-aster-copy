@@ -136,10 +136,16 @@ def calc_pression_ops(self, MAILLAGE, RESULTAT, GROUP_MA, GEOMETRIE, CRITERE, PR
         reuse=RESULTAT,
         RESULTAT=RESULTAT,
         TYPE_RESU=typ_resu,
-        NOM_CHAM="PRES_NOEU",
         OPERATION="AFFE",
         AFFE=[
-            _F(INST=inst, CHAM_GD=__chp[i], MODELE=model, PRECISION=PRECISION, CRITERE=CRITERE)
+            _F(
+                NOM_CHAM="PRES_NOEU",
+                INST=inst,
+                CHAM_GD=__chp[i],
+                MODELE=model,
+                PRECISION=PRECISION,
+                CRITERE=CRITERE,
+            )
             for i, inst in enumerate(insts)
         ],
     )

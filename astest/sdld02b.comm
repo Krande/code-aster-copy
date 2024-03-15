@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -1435,7 +1435,7 @@ CHT = CREA_CHAMP(
 )
 
 RES = CREA_RESU(
-    OPERATION="AFFE", TYPE_RESU="EVOL_ELAS", NOM_CHAM="DEPL", AFFE=_F(INST=0.0, CHAM_GD=CHT)
+    OPERATION="AFFE", TYPE_RESU="EVOL_ELAS", AFFE=_F(NOM_CHAM="DEPL", INST=0.0, CHAM_GD=CHT)
 )
 
 DEP = CREA_CHAMP(OPERATION="EXTR", TYPE_CHAM="NOEU_DEPL_R", RESULTAT=RES, NOM_CHAM="DEPL", INST=0.0)

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -271,8 +271,10 @@ HELNO1 = CREA_CHAMP(
 RESHYD = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_THER",
-    NOM_CHAM="HYDR_ELGA",
-    AFFE=(_F(CHAM_GD=HELNO0, MODELE=MOTHER, INST=0.0), _F(CHAM_GD=HELNO1, MODELE=MOTHER, INST=90)),
+    AFFE=(
+        _F(NOM_CHAM="HYDR_ELGA", CHAM_GD=HELNO0, MODELE=MOTHER, INST=0.0),
+        _F(NOM_CHAM="HYDR_ELGA", CHAM_GD=HELNO1, MODELE=MOTHER, INST=90),
+    ),
 )
 
 RESHYD = CALC_CHAMP(reuse=RESHYD, RESULTAT=RESHYD, THERMIQUE=("HYDR_ELNO", "HYDR_NOEU"))

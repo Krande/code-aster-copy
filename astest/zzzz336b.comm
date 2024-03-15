@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -88,10 +88,10 @@ for i, inst in enumerate(l_inst):
     )
     DETRUIRE(NOM=(TEMP2, INSTN))
 
-    l_affe_temp.append(_F(CHAM_GD=TEMP[i], MODELE=MOTHER, INST=inst))
+    l_affe_temp.append(_F(NOM_CHAM="TEMP", CHAM_GD=TEMP[i], MODELE=MOTHER, INST=inst))
 
 
-RESUTHER = CREA_RESU(OPERATION="AFFE", TYPE_RESU="EVOL_THER", NOM_CHAM="TEMP", AFFE=l_affe_temp)
+RESUTHER = CREA_RESU(OPERATION="AFFE", TYPE_RESU="EVOL_THER", AFFE=l_affe_temp)
 
 # MATERIAUX
 
@@ -490,10 +490,10 @@ for i, inst in enumerate(l_inst):
 
     DETRUIRE(NOM=(TEMP2_H, TEMP2_B, TEMP_H, TEMP_B, INSTN, TEMPSP_H, TEMPSP_B))
 
-    l_affe_temp.append(_F(CHAM_GD=TEMPSP[i], MODELE=MOPOU, INST=inst))
+    l_affe_temp.append(_F(NOM_CHAM="TEMP", CHAM_GD=TEMPSP[i], MODELE=MOPOU, INST=inst))
 
 
-RESU_SP2 = CREA_RESU(OPERATION="AFFE", TYPE_RESU="EVOL_THER", NOM_CHAM="TEMP", AFFE=l_affe_temp)
+RESU_SP2 = CREA_RESU(OPERATION="AFFE", TYPE_RESU="EVOL_THER", AFFE=l_affe_temp)
 
 
 CHMA_PO2 = AFFE_MATERIAU(

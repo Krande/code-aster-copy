@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -135,8 +135,7 @@ subroutine veondp(modele, mate, mateco, sddyna, temps, vecelz)
     lchout(1) = vecele(1:8)//'.???????'
 !
     call detrsd('VECT_ELEM', vecele)
-    call memare('V', vecele, modele(1:8), ' ', ' ', &
-                'CHAR_MECA')
+    call memare('V', vecele, modele(1:8), 'CHAR_MECA')
 !
 ! -- CALCUL
 !

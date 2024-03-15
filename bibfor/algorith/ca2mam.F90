@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,8 +67,7 @@ subroutine ca2mam(moint, incr, ligrmo, lchin, lpain, &
     lpaout(1) = 'PMATTTR'
     matel = '&&B'//incr(1:3)
     madeel = matel//'.RELR'
-    call memare('V', matel, moint(1:8), ' ', ' ', &
-                'AMOR_AJOU ')
+    call memare('V', matel, moint(1:8), 'AMOR_AJOU ')
     call wkvect(madeel, 'V V K24', 1, jlva)
 !
     lchout(1) = matel(1:8)//'.ME000'

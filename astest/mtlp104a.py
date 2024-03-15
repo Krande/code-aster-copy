@@ -319,12 +319,35 @@ fieldTemp3 = CREA_CHAMP(
 result = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_THER",
-    NOM_CHAM="TEMP",
     AFFE=(
-        _F(CHAM_GD=fieldTemp0, INST=0.0, MODELE=thermalModel, CHAM_MATER=materialField),
-        _F(CHAM_GD=fieldTemp1, INST=1.0, MODELE=thermalModel, CHAM_MATER=materialField),
-        _F(CHAM_GD=fieldTemp2, INST=2.0, MODELE=thermalModel, CHAM_MATER=materialField),
-        _F(CHAM_GD=fieldTemp3, INST=3.0, MODELE=thermalModel, CHAM_MATER=materialField),
+        _F(
+            NOM_CHAM="TEMP",
+            CHAM_GD=fieldTemp0,
+            INST=0.0,
+            MODELE=thermalModel,
+            CHAM_MATER=materialField,
+        ),
+        _F(
+            NOM_CHAM="TEMP",
+            CHAM_GD=fieldTemp1,
+            INST=1.0,
+            MODELE=thermalModel,
+            CHAM_MATER=materialField,
+        ),
+        _F(
+            NOM_CHAM="TEMP",
+            CHAM_GD=fieldTemp2,
+            INST=2.0,
+            MODELE=thermalModel,
+            CHAM_MATER=materialField,
+        ),
+        _F(
+            NOM_CHAM="TEMP",
+            CHAM_GD=fieldTemp3,
+            INST=3.0,
+            MODELE=thermalModel,
+            CHAM_MATER=materialField,
+        ),
     ),
 )
 

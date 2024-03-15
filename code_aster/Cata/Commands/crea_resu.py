@@ -128,10 +128,31 @@ CREA_RESU = OPER(
             CARA_ELEM=SIMP(statut="f", typ=cara_elem),
             NOM_CAS=SIMP(statut="f", typ="TXM"),
             CHARGE=SIMP(statut="f", typ=(char_meca), max="**"),
+            NOM_CHAM=SIMP(statut="o", typ="TXM", validators=NoRepeat(), into=C_NOM_CHAM_INTO()),
         ),
     ),  # fin bloc b_affe_mult_elas
     b_affe_evol_dyn=BLOC(
-        condition="""equal_to("OPERATION", 'AFFE') and is_in('TYPE_RESU', ('EVOL_ELAS', 'EVOL_NOLI', 'EVOL_THER', 'EVOL_VARC', 'EVOL_CHAR', 'DYNA_TRANS'))""",
+        condition="""equal_to("OPERATION", 'AFFE') and is_in('TYPE_RESU', ('EVOL_ELAS', 'EVOL_NOLI', 'EVOL_THER', 'EVOL_VARC', 'DYNA_TRANS'))""",
+        RESULTAT=SIMP(statut="f", typ=(evol_elas, evol_noli, evol_ther, evol_varc, dyna_trans)),
+        AFFE=FACT(
+            statut="o",
+            max="**",
+            CHAM_GD=SIMP(statut="o", typ=(cham_gd_sdaster)),
+            MODELE=SIMP(statut="f", typ=modele_sdaster),
+            CHAM_MATER=SIMP(statut="f", typ=cham_mater),
+            CARA_ELEM=SIMP(statut="f", typ=cara_elem),
+            regles=(UN_PARMI("INST", "LIST_INST"),),
+            INST=SIMP(statut="f", typ="R", validators=NoRepeat(), max="**"),
+            LIST_INST=SIMP(statut="f", typ=listr8_sdaster),
+            NUME_INIT=SIMP(statut="f", typ="I", val_min=1),
+            NUME_FIN=SIMP(statut="f", typ="I", val_min=1),
+            PRECISION=SIMP(statut="f", typ="R", defaut=0.0),
+            CRITERE=SIMP(statut="f", typ="TXM", defaut="RELATIF", into=("RELATIF", "ABSOLU")),
+            NOM_CHAM=SIMP(statut="o", typ="TXM", validators=NoRepeat(), into=C_NOM_CHAM_INTO()),
+        ),
+    ),  # fin bloc b_affe_evol_dyn
+    b_affe_evol_char=BLOC(
+        condition="""equal_to("OPERATION", 'AFFE') and equal_to("TYPE_RESU", 'EVOL_CHAR')""",
         RESULTAT=SIMP(
             statut="f", typ=(evol_elas, evol_noli, evol_ther, evol_varc, evol_char, dyna_trans)
         ),
@@ -149,8 +170,25 @@ CREA_RESU = OPER(
             NUME_FIN=SIMP(statut="f", typ="I", val_min=1),
             PRECISION=SIMP(statut="f", typ="R", defaut=0.0),
             CRITERE=SIMP(statut="f", typ="TXM", defaut="RELATIF", into=("RELATIF", "ABSOLU")),
+            NOM_CHAM=SIMP(
+                statut="o",
+                typ="TXM",
+                validators=NoRepeat(),
+                into=(
+                    "PRES",
+                    "FORC_NODA",
+                    "FSUR_2D",
+                    "FSUR_3D",
+                    "FVOL_2D",
+                    "FVOL_3D",
+                    "VITE_VENT",
+                    "T_EXT",
+                    "COEF_H",
+                    "FLUN",
+                ),
+            ),
         ),
-    ),  # fin bloc b_affe_evol_dyn
+    ),  # fin bloc b_affe_evol_char
     b_affe_fourier_elas=BLOC(
         condition="""equal_to("OPERATION", 'AFFE') and equal_to("TYPE_RESU", 'FOURIER_ELAS')""",
         RESULTAT=SIMP(statut="f", typ=fourier_elas),
@@ -164,6 +202,7 @@ CREA_RESU = OPER(
             NUME_MODE=SIMP(statut="f", typ="I"),
             TYPE_MODE=SIMP(statut="f", typ="TXM", defaut="SYME", into=("SYME", "ANTI", "TOUS")),
             CHARGE=SIMP(statut="f", typ=(char_meca), max="**"),
+            NOM_CHAM=SIMP(statut="o", typ="TXM", validators=NoRepeat(), into=C_NOM_CHAM_INTO()),
         ),
     ),  # fin bloc b_affe_fourier_elas
     b_affe_fourier_ther=BLOC(
@@ -178,34 +217,11 @@ CREA_RESU = OPER(
             CARA_ELEM=SIMP(statut="f", typ=cara_elem),
             NUME_MODE=SIMP(statut="f", typ="I"),
             TYPE_MODE=SIMP(statut="f", typ="TXM", defaut="SYME", into=("SYME", "ANTI", "TOUS")),
+            NOM_CHAM=SIMP(statut="o", typ="TXM", validators=NoRepeat(), into=C_NOM_CHAM_INTO()),
         ),
     ),  # fin bloc b_affe_fourier_ther
     # Creation par affectation de champs :
     # -------------------------------------
-    b_evol_char=BLOC(
-        condition="""equal_to("OPERATION", 'AFFE') and equal_to("TYPE_RESU", 'EVOL_CHAR')""",
-        NOM_CHAM=SIMP(
-            statut="o",
-            typ="TXM",
-            validators=NoRepeat(),
-            into=(
-                "PRES",
-                "FORC_NODA",
-                "FSUR_2D",
-                "FSUR_3D",
-                "FVOL_2D",
-                "FVOL_3D",
-                "VITE_VENT",
-                "T_EXT",
-                "COEF_H",
-                "FLUN",
-            ),
-        ),
-    ),  # fin bloc b_evol_char
-    b_cham_no=BLOC(
-        condition="""equal_to("OPERATION", 'AFFE') and not equal_to("TYPE_RESU", 'EVOL_CHAR')""",
-        NOM_CHAM=SIMP(statut="o", typ="TXM", validators=NoRepeat(), into=C_NOM_CHAM_INTO()),
-    ),  # fin bloc b_cham_no
     b_mode_meca=BLOC(
         condition="""equal_to("OPERATION", 'AFFE') and is_in('TYPE_RESU', ('MODE_MECA', 'MODE_MECA_C', 'DYNA_HARMO', 'DYNA_TRANS'))""",
         MATR_RIGI=SIMP(statut="f", typ=matr_asse_depl_r),
@@ -266,6 +282,7 @@ CREA_RESU = OPER(
             NUME_MODE=SIMP(statut="o", typ="I"),
             FREQ=SIMP(statut="f", typ="R"),
             AXE=SIMP(statut="f", typ="TXM", into=("X", "Y", "Z")),
+            NOM_CHAM=SIMP(statut="o", typ="TXM", validators=NoRepeat(), into=C_NOM_CHAM_INTO()),
         ),
     ),  # fin bloc b_affe_mode_meca
     b_affe_mode_meca_c=BLOC(
@@ -282,6 +299,7 @@ CREA_RESU = OPER(
             FREQ=SIMP(statut="f", typ="R"),
             AXE=SIMP(statut="f", typ="TXM", into=("X", "Y", "Z")),
             AMOR_REDUIT=SIMP(statut="f", typ="R"),
+            NOM_CHAM=SIMP(statut="o", typ="TXM", validators=NoRepeat(), into=C_NOM_CHAM_INTO()),
         ),
     ),  # fin bloc b_affe_mode_meca_c
     b_affe_dyna_harmo=BLOC(
@@ -299,6 +317,7 @@ CREA_RESU = OPER(
             LIST_FREQ=SIMP(statut="f", typ=listr8_sdaster),
             CRITERE=SIMP(statut="f", typ="TXM", defaut="RELATIF", into=("RELATIF", "ABSOLU")),
             PRECISION=SIMP(statut="f", typ="R", defaut=0.0),
+            NOM_CHAM=SIMP(statut="o", typ="TXM", validators=NoRepeat(), into=C_NOM_CHAM_INTO()),
         ),
     ),  # fin b_affe_dyna_harmo
     # Creation par assemblage d'evol_ther :

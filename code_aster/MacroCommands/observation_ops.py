@@ -386,13 +386,12 @@ def observation_ops(
                     mcfact2["CHAM_MATER"] = cham_mater
                 if cara_elem is not None:
                     mcfact2["CARA_ELEM"] = cara_elem
+                mcfact2["NOM_CHAM"] = "EPSI_NOEU"
 
                 liste.append(mcfact2)
 
             resu_epsi = "EPSI_NOEU"
-            RESU = CREA_RESU(
-                OPERATION="AFFE", TYPE_RESU=TYPE_RESU, NOM_CHAM="EPSI_NOEU", AFFE=liste
-            )
+            RESU = CREA_RESU(OPERATION="AFFE", TYPE_RESU=TYPE_RESU, AFFE=liste)
 
     # ***********************************************
     #  BOUCLE SUR LES NOM_CHAM
@@ -691,6 +690,7 @@ def observation_ops(
                         mcfact2["CHAM_MATER"] = cham_mater
                     if cara_elem is not None:
                         mcfact2["CARA_ELEM"] = cara_elem
+                    mcfact2["NOM_CHAM"] = nomcham
 
                     liste.append(mcfact2)
 
@@ -702,14 +702,11 @@ def observation_ops(
                         RESULTAT=RESU,
                         OPERATION="AFFE",
                         TYPE_RESU=TYPE_RESU,
-                        NOM_CHAM=nomcham,
                         AFFE=liste,
                         **argsr
                     )
                 else:
-                    RESU = CREA_RESU(
-                        OPERATION="AFFE", TYPE_RESU=TYPE_RESU, NOM_CHAM=nomcham, AFFE=liste, **argsr
-                    )
+                    RESU = CREA_RESU(OPERATION="AFFE", TYPE_RESU=TYPE_RESU, AFFE=liste, **argsr)
 
         # *************************************************
         # Recopie de __proj dans RESU si celle-ci
@@ -757,15 +754,13 @@ def crea_normale(self, modele_1, modele_2, nume_ddl, cham_mater=None, cara_elem=
         ),
     )
 
-    affe_dct = {"CHAM_GD": __norm2, "INST": 1, "MODELE": modele_1}
+    affe_dct = {"NOM_CHAM": "DEPL", "CHAM_GD": __norm2, "INST": 1, "MODELE": modele_1}
     if cham_mater is not None:
         affe_dct["CHAM_MATER"] = cham_mater
     if cara_elem is not None:
         affe_dct["CARA_ELEM"] = cara_elem
 
-    __norm3 = CREA_RESU(
-        OPERATION="AFFE", TYPE_RESU="EVOL_ELAS", NOM_CHAM="DEPL", AFFE=_F(**affe_dct)
-    )
+    __norm3 = CREA_RESU(OPERATION="AFFE", TYPE_RESU="EVOL_ELAS", AFFE=_F(**affe_dct))
 
     __norm4 = PROJ_CHAMP(
         METHODE="COLLOCATION",

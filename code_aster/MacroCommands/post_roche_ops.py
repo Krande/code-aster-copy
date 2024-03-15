@@ -105,17 +105,15 @@ def post_roche_ops(self, **kwargs):
                 resuOut = CREA_RESU(
                     TYPE_RESU="EVOL_NOLI",
                     OPERATION="AFFE",
-                    NOM_CHAM="UT01_ELNO",
-                    AFFE=_F(CHAM_GD=chOutPutComplet, INST=nume),
+                    AFFE=_F(NOM_CHAM="UT01_ELNO", CHAM_GD=chOutPutComplet, INST=nume),
                 )
             else:
                 resuOut = CREA_RESU(
                     TYPE_RESU="EVOL_NOLI",
                     OPERATION="AFFE",
-                    NOM_CHAM="UT01_ELNO",
                     reuse=resuOut,
                     RESULTAT=resuOut,
-                    AFFE=_F(CHAM_GD=chOutPutComplet, INST=nume),
+                    AFFE=_F(NOM_CHAM="UT01_ELNO", CHAM_GD=chOutPutComplet, INST=nume),
                 )
         else:
             return chOutPutComplet
@@ -134,10 +132,9 @@ def post_roche_ops(self, **kwargs):
     resuOut = CREA_RESU(
         TYPE_RESU="EVOL_NOLI",
         OPERATION="AFFE",
-        NOM_CHAM="UT02_ELNO",
         reuse=resuOut,
         RESULTAT=resuOut,
-        AFFE=_F(CHAM_GD=chMax, INST=0.0),
+        AFFE=_F(NOM_CHAM="UT02_ELNO", CHAM_GD=chMax, INST=0.0),
     )
     return resuOut
 

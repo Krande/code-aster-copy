@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -69,8 +69,7 @@ CsiefQ = CREA_CHAMP(
 ResuQ = CREA_RESU(
     TYPE_RESU="EVOL_NOLI",
     OPERATION="AFFE",
-    NOM_CHAM="SIEF_ELGA",
-    AFFE=_F(CHAM_GD=CsiefQ, MODELE=ModelQ, CARA_ELEM=CaelQ, INST=0.0),
+    AFFE=_F(NOM_CHAM="SIEF_ELGA", CHAM_GD=CsiefQ, MODELE=ModelQ, CARA_ELEM=CaelQ, INST=0.0),
 )
 
 CsiefT = CREA_CHAMP(
@@ -84,8 +83,7 @@ CsiefT = CREA_CHAMP(
 ResuT = CREA_RESU(
     TYPE_RESU="EVOL_NOLI",
     OPERATION="AFFE",
-    NOM_CHAM="SIEF_ELGA",
-    AFFE=_F(CHAM_GD=CsiefT, MODELE=ModelT, CARA_ELEM=CaelT, INST=0.0),
+    AFFE=_F(NOM_CHAM="SIEF_ELGA", CHAM_GD=CsiefT, MODELE=ModelT, CARA_ELEM=CaelT, INST=0.0),
 )
 
 CsiefM = CREA_CHAMP(
@@ -99,8 +97,7 @@ CsiefM = CREA_CHAMP(
 ResuM = CREA_RESU(
     TYPE_RESU="EVOL_NOLI",
     OPERATION="AFFE",
-    NOM_CHAM="SIEF_ELGA",
-    AFFE=_F(CHAM_GD=CsiefM, MODELE=ModelM, CARA_ELEM=CaelM, INST=0.0),
+    AFFE=_F(NOM_CHAM="SIEF_ELGA", CHAM_GD=CsiefM, MODELE=ModelM, CARA_ELEM=CaelM, INST=0.0),
 )
 
 

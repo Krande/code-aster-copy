@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -964,19 +964,18 @@ CREA_RESU(
     RESULTAT=MODE_MEC,
     OPERATION="AFFE",
     TYPE_RESU="MODE_MECA",
-    NOM_CHAM="EFGE_ELNO",
     AFFE=(
-        _F(CHAM_GD=SIGM_01, NUME_MODE=1),
-        _F(CHAM_GD=SIGM_02, NUME_MODE=2),
-        _F(CHAM_GD=SIGM_03, NUME_MODE=3),
-        _F(CHAM_GD=SIGM_04, NUME_MODE=4),
-        _F(CHAM_GD=SIGM_05, NUME_MODE=5),
-        _F(CHAM_GD=SIGM_06, NUME_MODE=6),
-        _F(CHAM_GD=SIGM_07, NUME_MODE=7),
-        _F(CHAM_GD=SIGM_08, NUME_MODE=8),
-        _F(CHAM_GD=SIGM_09, NUME_MODE=9),
-        _F(CHAM_GD=SIGM_10, NUME_MODE=10),
-        _F(CHAM_GD=SIGM_11, NUME_MODE=11),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=SIGM_01, NUME_MODE=1),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=SIGM_02, NUME_MODE=2),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=SIGM_03, NUME_MODE=3),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=SIGM_04, NUME_MODE=4),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=SIGM_05, NUME_MODE=5),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=SIGM_06, NUME_MODE=6),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=SIGM_07, NUME_MODE=7),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=SIGM_08, NUME_MODE=8),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=SIGM_09, NUME_MODE=9),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=SIGM_10, NUME_MODE=10),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=SIGM_11, NUME_MODE=11),
     ),
 )
 
@@ -1072,11 +1071,10 @@ CREA_RESU(
     RESULTAT=MODE_STA,
     OPERATION="AFFE",
     TYPE_RESU="MODE_MECA",
-    NOM_CHAM="EFGE_ELNO",
     AFFE=(
-        _F(CHAM_GD=SIGB_01, NUME_MODE=1),
-        _F(CHAM_GD=SIGB_02, NUME_MODE=2),
-        _F(CHAM_GD=SIGB_03, NUME_MODE=3),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=SIGB_01, NUME_MODE=1),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=SIGB_02, NUME_MODE=2),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=SIGB_03, NUME_MODE=3),
     ),
 )
 

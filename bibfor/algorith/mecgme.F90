@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -126,8 +126,7 @@ subroutine mecgme(modelz, cara_elemz, matez, matecoz, list_load, inst_curr, &
     call jeexin(matr_elem//'.RELR', iret)
     if (iret .eq. 0) then
         l_first_matr = .true.
-        call memare('V', matr_elem, model(1:8), mate, cara_elem, &
-                    'CHAR_MECA')
+        call memare('V', matr_elem, model(1:8), 'CHAR_MECA')
         call reajre(matr_elem, ' ', 'V')
     else
         l_first_matr = .false.

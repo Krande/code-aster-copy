@@ -110,8 +110,7 @@ def cherche_trajet(
     __resu = CREA_RESU(
         OPERATION="AFFE",
         TYPE_RESU="EVOL_NOLI",
-        NOM_CHAM=NOM_CHAM,
-        AFFE=(_F(CHAM_GD=__ENDO, INST=inst),),
+        AFFE=(_F(NOM_CHAM=NOM_CHAM, CHAM_GD=__ENDO, INST=inst),),
     )
 
     # --------------------------------------------------

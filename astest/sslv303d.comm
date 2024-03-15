@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -97,29 +97,25 @@ SIG0_PR = CREA_CHAMP(
 RU0_GR = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="FOURIER_ELAS",
-    NOM_CHAM="DEPL",
-    AFFE=_F(CHAM_GD=U0_GR, NUME_MODE=1, TYPE_MODE="SYME"),
+    AFFE=_F(NOM_CHAM="DEPL", CHAM_GD=U0_GR, NUME_MODE=1, TYPE_MODE="SYME"),
 )
 
 RU0_PR = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="FOURIER_ELAS",
-    NOM_CHAM="DEPL",
-    AFFE=_F(CHAM_GD=U0_PR, NUME_MODE=1, TYPE_MODE="SYME"),
+    AFFE=_F(NOM_CHAM="DEPL", CHAM_GD=U0_PR, NUME_MODE=1, TYPE_MODE="SYME"),
 )
 
 RSIG0_GR = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="FOURIER_ELAS",
-    NOM_CHAM="SIGM_ELNO",
-    AFFE=_F(CHAM_GD=SIG0_GR, NUME_MODE=1, TYPE_MODE="SYME"),
+    AFFE=_F(NOM_CHAM="SIGM_ELNO", CHAM_GD=SIG0_GR, NUME_MODE=1, TYPE_MODE="SYME"),
 )
 
 RSIG0_PR = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="FOURIER_ELAS",
-    NOM_CHAM="SIGM_ELNO",
-    AFFE=_F(CHAM_GD=SIG0_PR, NUME_MODE=1, TYPE_MODE="SYME"),
+    AFFE=_F(NOM_CHAM="SIGM_ELNO", CHAM_GD=SIG0_PR, NUME_MODE=1, TYPE_MODE="SYME"),
 )
 
 CO_FOUR1 = COMB_FOURIER(RESULTAT=RU0_GR, NOM_CHAM=("DEPL",), ANGLE=(0.0,))

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -140,7 +140,7 @@ subroutine nmelcm(mesh, model, &
         ligrel = ds_contact%ligrel_elem_cont
 ! ----- Preparation of elementary matrix
         call detrsd('MATR_ELEM', matr_elem)
-        call memare('V', matr_elem, model, ' ', ' ', 'RIGI_MECA')
+        call memare('V', matr_elem, model, 'RIGI_MECA')
 ! ----- Prepare output fields
         lpaout(1) = 'PMATUNS'
         lchout(1) = matr_elem(1:15)//'.M01'

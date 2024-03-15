@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,8 +58,7 @@ subroutine vectfl(opt, modele, carele, mate, mateco, templu, &
 !
     ve2 = vecel//'.RELR'
     call detrsd('VECT_ELEM', vecel)
-    call memare('V', vecel, modele(1:8), mate, carele, &
-                'CHAR_THER')
+    call memare('V', vecel, modele(1:8), 'CHAR_THER')
     call wkvect(ve2, 'V V K24', 1, jlve)
     if (templu(9:14) .eq. '.BIDON') then
         call jeecra(ve2, 'LONUTI', 0)

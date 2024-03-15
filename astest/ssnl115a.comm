@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -68,14 +68,13 @@ Tempc = CREA_CHAMP(
 
 Temper = CREA_RESU(
     TYPE_RESU="EVOL_THER",
-    NOM_CHAM="TEMP",
     OPERATION="AFFE",
     AFFE=(
-        _F(CHAM_GD=Temp0, INST=0.0),
-        _F(CHAM_GD=Tempa, INST=(1.0, 2.0)),
-        _F(CHAM_GD=Tempb, INST=3.0),
-        _F(CHAM_GD=Tempa, INST=(4.0, 5.0)),
-        _F(CHAM_GD=Tempc, INST=6.0),
+        _F(NOM_CHAM="TEMP", CHAM_GD=Temp0, INST=0.0),
+        _F(NOM_CHAM="TEMP", CHAM_GD=Tempa, INST=(1.0, 2.0)),
+        _F(NOM_CHAM="TEMP", CHAM_GD=Tempb, INST=3.0),
+        _F(NOM_CHAM="TEMP", CHAM_GD=Tempa, INST=(4.0, 5.0)),
+        _F(NOM_CHAM="TEMP", CHAM_GD=Tempc, INST=6.0),
     ),
 )
 

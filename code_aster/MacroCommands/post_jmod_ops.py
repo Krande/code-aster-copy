@@ -645,8 +645,7 @@ def calc_area(self, MAILAREA, nameGroupMa):
     __RESU_AREA = CREA_RESU(
         OPERATION="AFFE",
         TYPE_RESU="EVOL_ELAS",
-        NOM_CHAM="VARI_ELGA",
-        AFFE=_F(MODELE=__MODE, INST=0.0, CHAM_GD=__FIELD_AREA),
+        AFFE=_F(NOM_CHAM="VARI_ELGA", MODELE=__MODE, INST=0.0, CHAM_GD=__FIELD_AREA),
     )
 
     __POST_AREA = POST_ELEM(
@@ -1218,9 +1217,8 @@ def grad_u(self, MAIL, MODE, MATE, namePara, DEPL, lInst):
 
     __DEPU = CREA_RESU(
         OPERATION="AFFE",
-        NOM_CHAM="DEPL",
         TYPE_RESU="EVOL_ELAS",
-        AFFE=_F(CHAM_GD=__DEPU, INST=lInst),
+        AFFE=_F(NOM_CHAM="DEPL", CHAM_GD=__DEPU, INST=lInst),
     )
 
     __GRADEP = CALC_CHAMP(
@@ -1260,9 +1258,8 @@ def grad_q(self, MAIL, MODE, MATE, nameGroupNo, nameCmp, value, lInst):
 
     __RDEPQ = CREA_RESU(
         OPERATION="AFFE",
-        NOM_CHAM="DEPL",
         TYPE_RESU="EVOL_ELAS",
-        AFFE=_F(CHAM_GD=__DEPQ, INST=lInst),
+        AFFE=_F(NOM_CHAM="DEPL", CHAM_GD=__DEPQ, INST=lInst),
     )
 
     __RDEPQ = CALC_CHAMP(
@@ -1303,9 +1300,8 @@ def grad_q_glob(self, MAIL, MODE, MATE, NPP, nameCmp, value, index, lInst):
 
     __RDEPQ = CREA_RESU(
         OPERATION="AFFE",
-        NOM_CHAM="DEPL",
         TYPE_RESU="EVOL_ELAS",
-        AFFE=_F(CHAM_GD=__DEPQ, INST=lInst),
+        AFFE=_F(NOM_CHAM="DEPL", CHAM_GD=__DEPQ, INST=lInst),
     )
 
     __RDEPQ = CALC_CHAMP(
@@ -1366,9 +1362,8 @@ def grad_noeu(self, MAIL, MODE, MATE, __FIELD, inst):
 
     __RFIELD = CREA_RESU(
         OPERATION="AFFE",
-        NOM_CHAM="DEPL",
         TYPE_RESU="EVOL_ELAS",
-        AFFE=_F(CHAM_GD=__FIELD_CAL, INST=inst),
+        AFFE=_F(NOM_CHAM="DEPL", CHAM_GD=__FIELD_CAL, INST=inst),
     )
 
     __GRAD_FIELD = CALC_CHAMP(
@@ -1464,9 +1459,8 @@ def grad_elno(self, MAIL, MODE, MATE, listElemTMAIL, __EPSI_ELGA, __FIELD_CAL, i
 
         __RDEPE = CREA_RESU(
             OPERATION="AFFE",
-            NOM_CHAM="DEPL",
             TYPE_RESU="EVOL_ELAS",
-            AFFE=_F(CHAM_GD=__DEPE, INST=inst),
+            AFFE=_F(NOM_CHAM="DEPL", CHAM_GD=__DEPE, INST=inst),
         )
 
         __RDEPE = CALC_CHAMP(
@@ -1540,8 +1534,7 @@ def cal_j01(self, MODE, TMAIL, lInst, __WELAS, __GQX, __GQY, __GQZ):
     __RESUJ01 = CREA_RESU(
         OPERATION="AFFE",
         TYPE_RESU="EVOL_ELAS",
-        NOM_CHAM="VARI_ELGA",
-        AFFE=_F(MODELE=MODE, INST=lInst, CHAM_GD=__CHJ01INT),
+        AFFE=_F(NOM_CHAM="VARI_ELGA", MODELE=MODE, INST=lInst, CHAM_GD=__CHJ01INT),
     )
 
     __J01 = POST_ELEM(
@@ -1743,8 +1736,7 @@ def cal_j02(self, MODE, TMAIL, lInst, __SIGF, __GDEPX, __GDEPY, __GDEPZ, __GQX, 
     __RESUJ02 = CREA_RESU(
         OPERATION="AFFE",
         TYPE_RESU="EVOL_ELAS",
-        NOM_CHAM="VARI_ELGA",
-        AFFE=_F(MODELE=MODE, INST=lInst, CHAM_GD=__CHJ02INT),
+        AFFE=_F(NOM_CHAM="VARI_ELGA", MODELE=MODE, INST=lInst, CHAM_GD=__CHJ02INT),
     )
 
     __J02 = POST_ELEM(
@@ -1844,8 +1836,7 @@ def cal_j04(
         __RESUJ04 = CREA_RESU(
             OPERATION="AFFE",
             TYPE_RESU="EVOL_ELAS",
-            NOM_CHAM="VARI_ELGA",
-            AFFE=_F(MODELE=MODE, INST=lInst, CHAM_GD=__CHJ04INT),
+            AFFE=_F(NOM_CHAM="VARI_ELGA", MODELE=MODE, INST=lInst, CHAM_GD=__CHJ04INT),
         )
 
         __J04 = POST_ELEM(
@@ -1917,8 +1908,7 @@ def cal_j05(self, MODE, TMAIL, lInst, __GRAD_WELAS, __QX_GAUSS, __QY_GAUSS, __QZ
     __RESUJ05 = CREA_RESU(
         OPERATION="AFFE",
         TYPE_RESU="EVOL_ELAS",
-        NOM_CHAM="VARI_ELGA",
-        AFFE=_F(MODELE=MODE, INST=lInst, CHAM_GD=__CHJ05INT),
+        AFFE=_F(NOM_CHAM="VARI_ELGA", MODELE=MODE, INST=lInst, CHAM_GD=__CHJ05INT),
     )
 
     __J05 = POST_ELEM(
@@ -2723,9 +2713,8 @@ def post_jmod_ops(
 
             __RDEPIX = CREA_RESU(
                 OPERATION="AFFE",
-                NOM_CHAM="DEPL",
                 TYPE_RESU="EVOL_ELAS",
-                AFFE=_F(CHAM_GD=__DEPIX, INST=inst),
+                AFFE=_F(NOM_CHAM="DEPL", CHAM_GD=__DEPIX, INST=inst),
             )
 
             __RDEPIX = CALC_CHAMP(
@@ -2760,9 +2749,8 @@ def post_jmod_ops(
 
             __RDEPIY = CREA_RESU(
                 OPERATION="AFFE",
-                NOM_CHAM="DEPL",
                 TYPE_RESU="EVOL_ELAS",
-                AFFE=_F(CHAM_GD=__DEPIY, INST=inst),
+                AFFE=_F(NOM_CHAM="DEPL", CHAM_GD=__DEPIY, INST=inst),
             )
 
             __RDEPIY = CALC_CHAMP(
@@ -2824,9 +2812,8 @@ def post_jmod_ops(
 
             __DEPUX = CREA_RESU(
                 OPERATION="AFFE",
-                NOM_CHAM="DEPL",
                 TYPE_RESU="EVOL_ELAS",
-                AFFE=_F(CHAM_GD=__DEPUX, INST=inst),
+                AFFE=_F(NOM_CHAM="DEPL", CHAM_GD=__DEPUX, INST=inst),
             )
 
             __GDEPX = CALC_CHAMP(
@@ -2874,9 +2861,8 @@ def post_jmod_ops(
 
             __DEPUY = CREA_RESU(
                 OPERATION="AFFE",
-                NOM_CHAM="DEPL",
                 TYPE_RESU="EVOL_ELAS",
-                AFFE=_F(CHAM_GD=__DEPUY, INST=inst),
+                AFFE=_F(NOM_CHAM="DEPL", CHAM_GD=__DEPUY, INST=inst),
             )
 
             __GDEPY = CALC_CHAMP(
@@ -3066,8 +3052,7 @@ def post_jmod_ops(
             __RESUJ01 = CREA_RESU(
                 OPERATION="AFFE",
                 TYPE_RESU="EVOL_ELAS",
-                NOM_CHAM="VARI_ELGA",
-                AFFE=_F(MODELE=MODE, INST=inst, CHAM_GD=__CHJ01INT),
+                AFFE=_F(NOM_CHAM="VARI_ELGA", MODELE=MODE, INST=inst, CHAM_GD=__CHJ01INT),
             )
 
             __J01 = POST_ELEM(
@@ -3226,8 +3211,7 @@ def post_jmod_ops(
             __RESUJ02 = CREA_RESU(
                 OPERATION="AFFE",
                 TYPE_RESU="EVOL_ELAS",
-                NOM_CHAM="VARI_ELGA",
-                AFFE=_F(MODELE=MODE, INST=inst, CHAM_GD=__CHJ02INT),
+                AFFE=_F(NOM_CHAM="VARI_ELGA", MODELE=MODE, INST=inst, CHAM_GD=__CHJ02INT),
             )
 
             __J02 = POST_ELEM(
@@ -3319,9 +3303,8 @@ def post_jmod_ops(
 
                     __REPS0 = CREA_RESU(
                         OPERATION="AFFE",
-                        NOM_CHAM="DEPL",
                         TYPE_RESU="EVOL_ELAS",
-                        AFFE=_F(CHAM_GD=__CHEPS0, INST=inst),
+                        AFFE=_F(NOM_CHAM="DEPL", CHAM_GD=__CHEPS0, INST=inst),
                     )
 
                     __GREPS0 = CALC_CHAMP(
@@ -3466,8 +3449,7 @@ def post_jmod_ops(
                     __RESUJ03 = CREA_RESU(
                         OPERATION="AFFE",
                         TYPE_RESU="EVOL_ELAS",
-                        NOM_CHAM="VARI_ELGA",
-                        AFFE=_F(MODELE=MODE, INST=inst, CHAM_GD=__CHJ03INT),
+                        AFFE=_F(NOM_CHAM="VARI_ELGA", MODELE=MODE, INST=inst, CHAM_GD=__CHJ03INT),
                     )
 
                     __J03 = POST_ELEM(
@@ -3682,9 +3664,8 @@ def post_jmod_ops(
 
                     __REPS = CREA_RESU(
                         OPERATION="AFFE",
-                        NOM_CHAM="DEPL",
                         TYPE_RESU="EVOL_ELAS",
-                        AFFE=_F(CHAM_GD=__CHEPS, INST=inst),
+                        AFFE=_F(NOM_CHAM="DEPL", CHAM_GD=__CHEPS, INST=inst),
                     )
 
                     __GREPS = CALC_CHAMP(
@@ -3829,8 +3810,7 @@ def post_jmod_ops(
                     __RESUJ04 = CREA_RESU(
                         OPERATION="AFFE",
                         TYPE_RESU="EVOL_ELAS",
-                        NOM_CHAM="VARI_ELGA",
-                        AFFE=_F(MODELE=MODE, INST=inst, CHAM_GD=__CHJ04INT),
+                        AFFE=_F(NOM_CHAM="VARI_ELGA", MODELE=MODE, INST=inst, CHAM_GD=__CHJ04INT),
                     )
 
                     __J04 = POST_ELEM(
@@ -3919,9 +3899,8 @@ def post_jmod_ops(
 
                 __RWELASNOEU = CREA_RESU(
                     OPERATION="AFFE",
-                    NOM_CHAM="DEPL",
                     TYPE_RESU="EVOL_ELAS",
-                    AFFE=_F(CHAM_GD=__CHWELASNOEU, INST=inst),
+                    AFFE=_F(NOM_CHAM="DEPL", CHAM_GD=__CHWELASNOEU, INST=inst),
                 )
 
                 __GRWELAS = CALC_CHAMP(
@@ -4052,8 +4031,7 @@ def post_jmod_ops(
                 __RESUJ05 = CREA_RESU(
                     OPERATION="AFFE",
                     TYPE_RESU="EVOL_ELAS",
-                    NOM_CHAM="VARI_ELGA",
-                    AFFE=_F(MODELE=MODE, INST=inst, CHAM_GD=__CHJ05INT),
+                    AFFE=_F(NOM_CHAM="VARI_ELGA", MODELE=MODE, INST=inst, CHAM_GD=__CHJ05INT),
                 )
 
                 __J05 = POST_ELEM(
@@ -4143,8 +4121,7 @@ def post_jmod_ops(
                 __RESUJ06 = CREA_RESU(
                     OPERATION="AFFE",
                     TYPE_RESU="EVOL_ELAS",
-                    NOM_CHAM="VARI_ELGA",
-                    AFFE=_F(MODELE=MODE, INST=inst, CHAM_GD=__CHJ06INT),
+                    AFFE=_F(NOM_CHAM="VARI_ELGA", MODELE=MODE, INST=inst, CHAM_GD=__CHJ06INT),
                 )
 
                 __J06 = POST_ELEM(
@@ -4213,8 +4190,7 @@ def post_jmod_ops(
                 __RESUJ07 = CREA_RESU(
                     OPERATION="AFFE",
                     TYPE_RESU="EVOL_ELAS",
-                    NOM_CHAM="VARI_ELGA",
-                    AFFE=_F(MODELE=MODE, INST=inst, CHAM_GD=__CHJ07INT),
+                    AFFE=_F(NOM_CHAM="VARI_ELGA", MODELE=MODE, INST=inst, CHAM_GD=__CHJ07INT),
                 )
 
                 __J07 = POST_ELEM(

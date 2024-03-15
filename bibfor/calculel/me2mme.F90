@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -133,8 +133,7 @@ subroutine me2mme(modelz, nb_load, lchar, mate, mateco, caraz, &
 !
 !
 !     -- CALCUL DE .RERR:
-    call memare(base, vect_elem, model, mate, cara_elem, &
-                'CHAR_MECA')
+    call memare(base, vect_elem, model, 'CHAR_MECA')
 !
 !     -- S'IL N' Y A PAS D'ELEMENTS CLASSIQUES, ON RESSORT:
     call dismoi('EXI_ELEM', model, 'MODELE', repk=exiele)

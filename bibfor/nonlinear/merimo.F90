@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -183,8 +183,7 @@ subroutine merimo(base, &
         call detrsd('MATR_ELEM', ds_system%merigi)
         call jeexin(ds_system%merigi//'.RERR', ires)
         if (ires .eq. 0) then
-            call memare(base, ds_system%merigi, model, ds_material%mater, cara_elem, &
-                        'RIGI_MECA')
+            call memare(base, ds_system%merigi, model, 'RIGI_MECA')
         end if
         if (l_macr_elem) then
             call jeveuo(ds_system%merigi//'.RERR', 'E', vk24=v_rerr)
@@ -196,8 +195,7 @@ subroutine merimo(base, &
     if (l_veinte) then
         call jeexin(ds_system%veinte//'.RELR', iret)
         if (iret .eq. 0) then
-            call memare(base, ds_system%veinte, model, ds_material%mater, cara_elem, &
-                        'CHAR_MECA')
+            call memare(base, ds_system%veinte, model, 'CHAR_MECA')
         end if
         call jedetr(ds_system%veinte//'.RELR')
         call reajre(ds_system%veinte, ' ', base)

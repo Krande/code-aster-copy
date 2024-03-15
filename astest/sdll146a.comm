@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -181,13 +181,36 @@ __DZ = CREA_CHAMP(
 MODES_RG = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="MODE_MECA",
-    NOM_CHAM="DEPL",
     MATR_RIGI=KASS,
     MATR_MASS=MASS,
     AFFE=(
-        _F(CHAM_GD=__DX, MODELE=MODEL, CHAM_MATER=CHMAT, CARA_ELEM=ELEM, FREQ=1, NUME_MODE=1),
-        _F(CHAM_GD=__DY, MODELE=MODEL, CHAM_MATER=CHMAT, CARA_ELEM=ELEM, FREQ=1, NUME_MODE=2),
-        _F(CHAM_GD=__DZ, MODELE=MODEL, CHAM_MATER=CHMAT, CARA_ELEM=ELEM, FREQ=1, NUME_MODE=3),
+        _F(
+            NOM_CHAM="DEPL",
+            CHAM_GD=__DX,
+            MODELE=MODEL,
+            CHAM_MATER=CHMAT,
+            CARA_ELEM=ELEM,
+            FREQ=1,
+            NUME_MODE=1,
+        ),
+        _F(
+            NOM_CHAM="DEPL",
+            CHAM_GD=__DY,
+            MODELE=MODEL,
+            CHAM_MATER=CHMAT,
+            CARA_ELEM=ELEM,
+            FREQ=1,
+            NUME_MODE=2,
+        ),
+        _F(
+            NOM_CHAM="DEPL",
+            CHAM_GD=__DZ,
+            MODELE=MODEL,
+            CHAM_MATER=CHMAT,
+            CARA_ELEM=ELEM,
+            FREQ=1,
+            NUME_MODE=3,
+        ),
     ),
 )
 
@@ -214,13 +237,36 @@ mr_py = __MR.toNumpy()
 MOD_RG_D = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="MODE_MECA",
-    NOM_CHAM="DEPL",
     MATR_RIGI=KASS,
     MATR_MASS=MASS_DIA,
     AFFE=(
-        _F(CHAM_GD=__DX, MODELE=MODEL, CHAM_MATER=CHMAT, CARA_ELEM=ELEM, FREQ=1, NUME_MODE=1),
-        _F(CHAM_GD=__DY, MODELE=MODEL, CHAM_MATER=CHMAT, CARA_ELEM=ELEM, FREQ=1, NUME_MODE=2),
-        _F(CHAM_GD=__DZ, MODELE=MODEL, CHAM_MATER=CHMAT, CARA_ELEM=ELEM, FREQ=1, NUME_MODE=3),
+        _F(
+            NOM_CHAM="DEPL",
+            CHAM_GD=__DX,
+            MODELE=MODEL,
+            CHAM_MATER=CHMAT,
+            CARA_ELEM=ELEM,
+            FREQ=1,
+            NUME_MODE=1,
+        ),
+        _F(
+            NOM_CHAM="DEPL",
+            CHAM_GD=__DY,
+            MODELE=MODEL,
+            CHAM_MATER=CHMAT,
+            CARA_ELEM=ELEM,
+            FREQ=1,
+            NUME_MODE=2,
+        ),
+        _F(
+            NOM_CHAM="DEPL",
+            CHAM_GD=__DZ,
+            MODELE=MODEL,
+            CHAM_MATER=CHMAT,
+            CARA_ELEM=ELEM,
+            FREQ=1,
+            NUME_MODE=3,
+        ),
     ),
 )
 

@@ -666,12 +666,10 @@ def simu_point_mat_ops(
                             dicoch = {}
                             dicoch["CHAM_GD"] = __CHV[it]
                             dicoch["INST"] = time
+                            dicoch["NOM_CHAM"] = "TEMP"
                             l_affe_cham.append(dicoch)
                         __EVOV = CREA_RESU(
-                            OPERATION="AFFE",
-                            TYPE_RESU="EVOL_VARC",
-                            NOM_CHAM="TEMP",
-                            AFFE=l_affe_cham,
+                            OPERATION="AFFE", TYPE_RESU="EVOL_VARC", AFFE=l_affe_cham
                         )
                     elif str(lvarc[ivarc]["NOM_VARC"]) == "M_ZIRC":
                         typech = "ELNO_NEUT_R"
@@ -740,12 +738,10 @@ def simu_point_mat_ops(
                             )
                             dicoch["CHAM_GD"] = __CHV[it]
                             dicoch["INST"] = time
+                            dicoch["NOM_CHAM"] = str("META_ELNO")
                             l_affe_cham.append(dicoch)
                         __EVOV = CREA_RESU(
-                            OPERATION="AFFE",
-                            TYPE_RESU="EVOL_THER",
-                            NOM_CHAM=str("META_ELNO"),
-                            AFFE=l_affe_cham,
+                            OPERATION="AFFE", TYPE_RESU="EVOL_THER", AFFE=l_affe_cham
                         )
                         IMPR_RESU(FORMAT="RESULTAT", RESU=_F(RESULTAT=__EVOV))
                     elif str(lvarc[ivarc]["NOM_VARC"]) == "M_ACIER":
@@ -848,12 +844,10 @@ def simu_point_mat_ops(
                             )
                             dicoch["CHAM_GD"] = __CHV[it]
                             dicoch["INST"] = time
+                            dicoch["NOM_CHAM"] = str("META_ELNO")
                             l_affe_cham.append(dicoch)
                         __EVOV = CREA_RESU(
-                            OPERATION="AFFE",
-                            TYPE_RESU="EVOL_THER",
-                            NOM_CHAM=str("META_ELNO"),
-                            AFFE=l_affe_cham,
+                            OPERATION="AFFE", TYPE_RESU="EVOL_THER", AFFE=l_affe_cham
                         )
                         IMPR_RESU(FORMAT="RESULTAT", RESU=_F(RESULTAT=__EVOV))
                     else:
@@ -878,12 +872,10 @@ def simu_point_mat_ops(
                             dicoch = {}
                             dicoch["CHAM_GD"] = __CHV[it]
                             dicoch["INST"] = time
+                            dicoch["NOM_CHAM"] = str(lvarc[ivarc]["NOM_VARC"])
                             l_affe_cham.append(dicoch)
                         __EVOV = CREA_RESU(
-                            OPERATION="AFFE",
-                            TYPE_RESU="EVOL_VARC",
-                            NOM_CHAM=str(lvarc[ivarc]["NOM_VARC"]),
-                            AFFE=l_affe_cham,
+                            OPERATION="AFFE", TYPE_RESU="EVOL_VARC", AFFE=l_affe_cham
                         )
                     dico["GROUP_MA"] = "VOLUME"
                     dico["EVOL"] = __EVOV

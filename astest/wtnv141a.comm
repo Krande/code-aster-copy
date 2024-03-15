@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -186,7 +186,7 @@ DEP_00 = CREA_CHAMP(
 )
 
 DEP_INIB = CREA_RESU(
-    OPERATION="AFFE", TYPE_RESU="EVOL_NOLI", NOM_CHAM="DEPL", AFFE=_F(CHAM_GD=DEP_00, INST=0.0)
+    OPERATION="AFFE", TYPE_RESU="EVOL_NOLI", AFFE=_F(NOM_CHAM="DEPL", CHAM_GD=DEP_00, INST=0.0)
 )
 
 DEPL_INI = CREA_CHAMP(
@@ -310,8 +310,7 @@ for k in range(p_npas + 1):
         CHAME = CREA_RESU(
             OPERATION="AFFE",
             TYPE_RESU="EVOL_CHAR",
-            NOM_CHAM="FVOL_2D",
-            AFFE=_F(CHAM_GD=FORF, INST=eval(instant)),
+            AFFE=_F(NOM_CHAM="FVOL_2D", CHAM_GD=FORF, INST=eval(instant)),
         )
 
     else:
@@ -321,8 +320,7 @@ for k in range(p_npas + 1):
             RESULTAT=CHAME,
             OPERATION="AFFE",
             TYPE_RESU="EVOL_CHAR",
-            NOM_CHAM="FVOL_2D",
-            AFFE=_F(CHAM_GD=FORF, INST=eval(instant)),
+            AFFE=_F(NOM_CHAM="FVOL_2D", CHAM_GD=FORF, INST=eval(instant)),
         )
 
     DETRUIRE(NOM=(FMX, FMY, FORF))

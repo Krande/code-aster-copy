@@ -208,10 +208,16 @@ class Mac3CoeurCalcul:
             full_field = resu.getField("DEPL", idx)
             restricted_field = full_field.restrict(**kws_restrict)
             ls_affe.append(
-                _F(CHAM_GD=restricted_field, INST=time, PRECISION=1.0e-08, MODELE=resu.getModel())
+                _F(
+                    NOM_CHAM="DEPL",
+                    CHAM_GD=restricted_field,
+                    INST=time,
+                    PRECISION=1.0e-08,
+                    MODELE=resu.getModel(),
+                )
             )
 
-        return CREA_RESU(OPERATION="AFFE", TYPE_RESU="EVOL_NOLI", NOM_CHAM="DEPL", AFFE=ls_affe)
+        return CREA_RESU(OPERATION="AFFE", TYPE_RESU="EVOL_NOLI", AFFE=ls_affe)
 
     @property
     def is_lame_computation(self):
@@ -1216,10 +1222,21 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
         self.res_def = CREA_RESU(
             OPERATION="AFFE",
             TYPE_RESU="EVOL_NOLI",
-            NOM_CHAM="DEPL",
             AFFE=(
-                _F(CHAM_GD=depl_tot_ini, INST=_pdt_ini_out, PRECISION=1.0e-08, MODELE=self.model),
-                _F(CHAM_GD=depl_tot_fin, INST=_pdt_fin_out, PRECISION=1.0e-08, MODELE=self.model),
+                _F(
+                    NOM_CHAM="DEPL",
+                    CHAM_GD=depl_tot_ini,
+                    INST=_pdt_ini_out,
+                    PRECISION=1.0e-08,
+                    MODELE=self.model,
+                ),
+                _F(
+                    NOM_CHAM="DEPL",
+                    CHAM_GD=depl_tot_fin,
+                    INST=_pdt_fin_out,
+                    PRECISION=1.0e-08,
+                    MODELE=self.model,
+                ),
             ),
         )
         logger.debug("<MAC3_CALCUL><LAME>: Output result created.")

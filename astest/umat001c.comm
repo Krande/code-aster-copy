@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -64,8 +64,7 @@ TP1 = CREA_CHAMP(
 TEMPE = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_THER",
-    NOM_CHAM="TEMP",
-    AFFE=(_F(CHAM_GD=TP1, LIST_INST=L_INST),),
+    AFFE=(_F(NOM_CHAM="TEMP", CHAM_GD=TP1, LIST_INST=L_INST),),
 )
 
 
@@ -109,16 +108,17 @@ HYDR1 = CREA_CHAMP(
 HYDR = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_THER",
-    NOM_CHAM="HYDR_NOEU",
-    AFFE=(_F(CHAM_GD=HYDR1, INST=-10.0), _F(CHAM_GD=HYDR1, INST=100.0)),
+    AFFE=(
+        _F(NOM_CHAM="HYDR_NOEU", CHAM_GD=HYDR1, INST=-10.0),
+        _F(NOM_CHAM="HYDR_NOEU", CHAM_GD=HYDR1, INST=100.0),
+    ),
 )
 
 # comme la temperature
 SECH = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_THER",
-    NOM_CHAM="TEMP",
-    AFFE=(_F(CHAM_GD=TP1, LIST_INST=L_INST),),
+    AFFE=(_F(NOM_CHAM="TEMP", CHAM_GD=TP1, LIST_INST=L_INST),),
 )
 
 NEUT11 = CREA_CHAMP(
@@ -132,8 +132,10 @@ NEUT11 = CREA_CHAMP(
 NEUT1 = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_VARC",
-    NOM_CHAM="NEUT",
-    AFFE=(_F(CHAM_GD=NEUT11, INST=-10.0), _F(CHAM_GD=NEUT11, INST=100.0)),
+    AFFE=(
+        _F(NOM_CHAM="NEUT", CHAM_GD=NEUT11, INST=-10.0),
+        _F(NOM_CHAM="NEUT", CHAM_GD=NEUT11, INST=100.0),
+    ),
 )
 
 
@@ -148,8 +150,10 @@ NEUT21 = CREA_CHAMP(
 NEUT2 = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_VARC",
-    NOM_CHAM="NEUT",
-    AFFE=(_F(CHAM_GD=NEUT21, INST=-10.0), _F(CHAM_GD=NEUT21, INST=100.0)),
+    AFFE=(
+        _F(NOM_CHAM="NEUT", CHAM_GD=NEUT21, INST=-10.0),
+        _F(NOM_CHAM="NEUT", CHAM_GD=NEUT21, INST=100.0),
+    ),
 )
 
 IRRA1 = CREA_CHAMP(
@@ -163,8 +167,10 @@ IRRA1 = CREA_CHAMP(
 IRRA = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_VARC",
-    NOM_CHAM="IRRA",
-    AFFE=(_F(CHAM_GD=IRRA1, INST=-10.0), _F(CHAM_GD=IRRA1, INST=100.0)),
+    AFFE=(
+        _F(NOM_CHAM="IRRA", CHAM_GD=IRRA1, INST=-10.0),
+        _F(NOM_CHAM="IRRA", CHAM_GD=IRRA1, INST=100.0),
+    ),
 )
 
 CORR = CREA_CHAMP(

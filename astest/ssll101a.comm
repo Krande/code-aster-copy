@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -191,7 +191,7 @@ CHTEMP = CREA_CHAMP(
 )
 
 TEMPER = CREA_RESU(
-    AFFE=_F(CHAM_GD=CHTEMP, INST=0.0), NOM_CHAM="TEMP", OPERATION="AFFE", TYPE_RESU="EVOL_THER"
+    AFFE=_F(NOM_CHAM="TEMP", CHAM_GD=CHTEMP, INST=0.0), OPERATION="AFFE", TYPE_RESU="EVOL_THER"
 )
 
 MATH = AFFE_MATERIAU(

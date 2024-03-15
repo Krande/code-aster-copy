@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -353,12 +353,11 @@ TEMPGD1 = CREA_CHAMP(
 TEMPVC = CREA_RESU(
     TYPE_RESU="EVOL_VARC",
     OPERATION="AFFE",
-    NOM_CHAM="TEMP",
     AFFE=(
-        _F(CHAM_GD=TEMPGD0, INST=0.0),
-        _F(CHAM_GD=TEMPGD0, INST=1.0),
-        _F(CHAM_GD=TEMPGD1, INST=2.0),
-        _F(CHAM_GD=TEMPGD1, INST=10.0),
+        _F(NOM_CHAM="TEMP", CHAM_GD=TEMPGD0, INST=0.0),
+        _F(NOM_CHAM="TEMP", CHAM_GD=TEMPGD0, INST=1.0),
+        _F(NOM_CHAM="TEMP", CHAM_GD=TEMPGD1, INST=2.0),
+        _F(NOM_CHAM="TEMP", CHAM_GD=TEMPGD1, INST=10.0),
     ),
 )
 
@@ -379,12 +378,11 @@ IRRAGD1 = CREA_CHAMP(
 IRRAVC = CREA_RESU(
     TYPE_RESU="EVOL_VARC",
     OPERATION="AFFE",
-    NOM_CHAM="IRRA",
     AFFE=(
-        _F(CHAM_GD=IRRAGD0, INST=0.0),
-        _F(CHAM_GD=IRRAGD0, INST=2.0),
-        _F(CHAM_GD=IRRAGD1, INST=3.0),
-        _F(CHAM_GD=IRRAGD1, INST=10.0),
+        _F(NOM_CHAM="IRRA", CHAM_GD=IRRAGD0, INST=0.0),
+        _F(NOM_CHAM="IRRA", CHAM_GD=IRRAGD0, INST=2.0),
+        _F(NOM_CHAM="IRRA", CHAM_GD=IRRAGD1, INST=3.0),
+        _F(NOM_CHAM="IRRA", CHAM_GD=IRRAGD1, INST=10.0),
     ),
 )
 
@@ -523,12 +521,11 @@ TEMPGD12 = CREA_CHAMP(
 TEMPVC2 = CREA_RESU(
     TYPE_RESU="EVOL_VARC",
     OPERATION="AFFE",
-    NOM_CHAM="TEMP",
     AFFE=(
-        _F(CHAM_GD=TEMPGD02, INST=0.0),
-        _F(CHAM_GD=TEMPGD02, INST=1.0),
-        _F(CHAM_GD=TEMPGD12, INST=2.0),
-        _F(CHAM_GD=TEMPGD12, INST=10.0),
+        _F(NOM_CHAM="TEMP", CHAM_GD=TEMPGD02, INST=0.0),
+        _F(NOM_CHAM="TEMP", CHAM_GD=TEMPGD02, INST=1.0),
+        _F(NOM_CHAM="TEMP", CHAM_GD=TEMPGD12, INST=2.0),
+        _F(NOM_CHAM="TEMP", CHAM_GD=TEMPGD12, INST=10.0),
     ),
 )
 
@@ -549,12 +546,11 @@ IRRAGD12 = CREA_CHAMP(
 IRRAVC2 = CREA_RESU(
     TYPE_RESU="EVOL_VARC",
     OPERATION="AFFE",
-    NOM_CHAM="IRRA",
     AFFE=(
-        _F(CHAM_GD=IRRAGD02, INST=0.0),
-        _F(CHAM_GD=IRRAGD02, INST=2.0),
-        _F(CHAM_GD=IRRAGD12, INST=3.0),
-        _F(CHAM_GD=IRRAGD12, INST=10.0),
+        _F(NOM_CHAM="IRRA", CHAM_GD=IRRAGD02, INST=0.0),
+        _F(NOM_CHAM="IRRA", CHAM_GD=IRRAGD02, INST=2.0),
+        _F(NOM_CHAM="IRRA", CHAM_GD=IRRAGD12, INST=3.0),
+        _F(NOM_CHAM="IRRA", CHAM_GD=IRRAGD12, INST=10.0),
     ),
 )
 

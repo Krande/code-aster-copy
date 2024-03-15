@@ -328,8 +328,8 @@ def post_liquefaction_ops(self, AXE, RESULTAT, CRITERE, **args):
 
     __liste = []
     for k, linst in enumerate(__numo2):
-        __liste.append(_F(CHAM_GD=__siff[k], MODELE=__model, INST=linst))
+        __liste.append(_F(NOM_CHAM="SIEF_ELGA", CHAM_GD=__siff[k], MODELE=__model, INST=linst))
 
-    LIQ = CREA_RESU(OPERATION="AFFE", TYPE_RESU="EVOL_NOLI", NOM_CHAM="SIEF_ELGA", AFFE=(__liste))
+    LIQ = CREA_RESU(OPERATION="AFFE", TYPE_RESU="EVOL_NOLI", AFFE=(__liste))
 
     return LIQ

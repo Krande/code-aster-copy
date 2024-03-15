@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -90,8 +90,7 @@ X7 = CREA_CHAMP(OPERATION="DISC", TYPE_CHAM="ELNO_PRES_R", MODELE=MO2, CHAM_GD=X
 XXX2 = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_CHAR",
-    NOM_CHAM="PRES",
-    AFFE=(_F(CHAM_GD=X6, INST=1.0, MODELE=MO2)),
+    AFFE=(_F(NOM_CHAM="PRES", CHAM_GD=X6, INST=1.0, MODELE=MO2)),
 )
 
 XXX3 = POST_ELEM(
@@ -132,8 +131,7 @@ DETRUIRE(NOM=(XXX3))
 XXX2 = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_CHAR",
-    NOM_CHAM="PRES",
-    AFFE=(_F(CHAM_GD=X4, INST=1.0, MODELE=MO2)),
+    AFFE=(_F(NOM_CHAM="PRES", CHAM_GD=X4, INST=1.0, MODELE=MO2)),
 )
 
 XXX3 = POST_ELEM(
@@ -173,8 +171,7 @@ DETRUIRE(NOM=(XXX3))
 XXX2 = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_CHAR",
-    NOM_CHAM="PRES",
-    AFFE=(_F(CHAM_GD=X5, INST=1.0, MODELE=MO2)),
+    AFFE=(_F(NOM_CHAM="PRES", CHAM_GD=X5, INST=1.0, MODELE=MO2)),
 )
 
 XXX3 = POST_ELEM(
@@ -219,8 +216,7 @@ DETRUIRE(NOM=(XXX3))
 XXX2 = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_CHAR",
-    NOM_CHAM="PRES",
-    AFFE=(_F(CHAM_GD=X5, INST=1.0, MODELE=MO2)),
+    AFFE=(_F(NOM_CHAM="PRES", CHAM_GD=X5, INST=1.0, MODELE=MO2)),
 )
 
 XXX3 = POST_ELEM(

@@ -996,15 +996,14 @@ class Coeur:
 
         _FLUENC = CREA_RESU(
             TYPE_RESU="EVOL_VARC",
-            NOM_CHAM="IRRA",
             OPERATION="AFFE",
             AFFE=(
-                _F(CHAM_GD=_RES_M, INST=-1, PRECISION=1.0e-8),
-                _F(CHAM_GD=_RES_M, INST=-0.75, PRECISION=1.0e-8),
-                _F(CHAM_GD=_RES_0, INST=-0.25, PRECISION=1.0e-8),
-                _F(CHAM_GD=_RES_0, INST=self.temps_simu["T4"], PRECISION=1.0e-8),
-                _F(CHAM_GD=_RES_1, INST=self.temps_simu["T5"], PRECISION=1.0e-8),
-                _F(CHAM_GD=_RES_1, INST=self.temps_simu["T9"], PRECISION=1.0e-8),
+                _F(NOM_CHAM="IRRA", CHAM_GD=_RES_M, INST=-1, PRECISION=1.0e-8),
+                _F(NOM_CHAM="IRRA", CHAM_GD=_RES_M, INST=-0.75, PRECISION=1.0e-8),
+                _F(NOM_CHAM="IRRA", CHAM_GD=_RES_0, INST=-0.25, PRECISION=1.0e-8),
+                _F(NOM_CHAM="IRRA", CHAM_GD=_RES_0, INST=self.temps_simu["T4"], PRECISION=1.0e-8),
+                _F(NOM_CHAM="IRRA", CHAM_GD=_RES_1, INST=self.temps_simu["T5"], PRECISION=1.0e-8),
+                _F(NOM_CHAM="IRRA", CHAM_GD=_RES_1, INST=self.temps_simu["T9"], PRECISION=1.0e-8),
             ),
         )
 
@@ -1257,22 +1256,21 @@ class Coeur:
 
         _CHTH_1 = CREA_RESU(
             TYPE_RESU="EVOL_THER",
-            NOM_CHAM="TEMP",
             OPERATION="AFFE",
             AFFE=(
-                _F(CHAM_GD=_CHTEM10, INST=-1, PRECISION=1.0e-8),
-                _F(CHAM_GD=_CHTEM41, INST=-0.75, PRECISION=1.0e-8),
-                _F(CHAM_GD=_CHTEM41, INST=-0.25, PRECISION=1.0e-8),
-                _F(CHAM_GD=_CHTEM11, INST=0.0, PRECISION=1.0e-8),
-                _F(CHAM_GD=_CHTEM11, INST=self.temps_simu["T1"], PRECISION=1.0e-8),
-                _F(CHAM_GD=_CHTEM21, INST=self.temps_simu["T2"], PRECISION=1.0e-8),
-                _F(CHAM_GD=_CHTEM31, INST=self.temps_simu["T3"], PRECISION=1.0e-8),
-                _F(CHAM_GD=_CHTEM41, INST=self.temps_simu["T4"], PRECISION=1.0e-8),
-                _F(CHAM_GD=_CHTEM41, INST=self.temps_simu["T5"], PRECISION=1.0e-8),
-                _F(CHAM_GD=_CHTEM31, INST=self.temps_simu["T6"], PRECISION=1.0e-8),
-                _F(CHAM_GD=_CHTEM21, INST=self.temps_simu["T7"], PRECISION=1.0e-8),
-                _F(CHAM_GD=_CHTEM11, INST=self.temps_simu["T8"], PRECISION=1.0e-8),
-                _F(CHAM_GD=_CHTEM11, INST=self.temps_simu["T9"], PRECISION=1.0e-8),
+                _F(NOM_CHAM="TEMP", CHAM_GD=_CHTEM10, INST=-1, PRECISION=1.0e-8),
+                _F(NOM_CHAM="TEMP", CHAM_GD=_CHTEM41, INST=-0.75, PRECISION=1.0e-8),
+                _F(NOM_CHAM="TEMP", CHAM_GD=_CHTEM41, INST=-0.25, PRECISION=1.0e-8),
+                _F(NOM_CHAM="TEMP", CHAM_GD=_CHTEM11, INST=0.0, PRECISION=1.0e-8),
+                _F(NOM_CHAM="TEMP", CHAM_GD=_CHTEM11, INST=self.temps_simu["T1"], PRECISION=1.0e-8),
+                _F(NOM_CHAM="TEMP", CHAM_GD=_CHTEM21, INST=self.temps_simu["T2"], PRECISION=1.0e-8),
+                _F(NOM_CHAM="TEMP", CHAM_GD=_CHTEM31, INST=self.temps_simu["T3"], PRECISION=1.0e-8),
+                _F(NOM_CHAM="TEMP", CHAM_GD=_CHTEM41, INST=self.temps_simu["T4"], PRECISION=1.0e-8),
+                _F(NOM_CHAM="TEMP", CHAM_GD=_CHTEM41, INST=self.temps_simu["T5"], PRECISION=1.0e-8),
+                _F(NOM_CHAM="TEMP", CHAM_GD=_CHTEM31, INST=self.temps_simu["T6"], PRECISION=1.0e-8),
+                _F(NOM_CHAM="TEMP", CHAM_GD=_CHTEM21, INST=self.temps_simu["T7"], PRECISION=1.0e-8),
+                _F(NOM_CHAM="TEMP", CHAM_GD=_CHTEM11, INST=self.temps_simu["T8"], PRECISION=1.0e-8),
+                _F(NOM_CHAM="TEMP", CHAM_GD=_CHTEM11, INST=self.temps_simu["T9"], PRECISION=1.0e-8),
             ),
         )
 

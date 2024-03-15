@@ -146,9 +146,12 @@ def import_array(np_array, reference_matrix=None):
             MODELE=_model,
             DISCRET_2D=(_F(GROUP_MA="LICOU1", CARA="K_T_L", VALE=[1.0] * 16, SYME="NON"),),
         )
-        mc_affe = [{"CHAM_GD": _field, "NUME_MODE": i, "CARA_ELEM": _cara} for i in range(neqg)]
+        mc_affe = [
+            {"NOM_CHAM": "DEPL", "CHAM_GD": _field, "NUME_MODE": i, "CARA_ELEM": _cara}
+            for i in range(neqg)
+        ]
         type_resu = "MODE_MECA_C" if np_array.dtype == np.complex128 else "MODE_MECA"
-        _modes = CREA_RESU(OPERATION="AFFE", TYPE_RESU=type_resu, NOM_CHAM="DEPL", AFFE=mc_affe)
+        _modes = CREA_RESU(OPERATION="AFFE", TYPE_RESU=type_resu, AFFE=mc_affe)
         _numgen = NUME_DDL_GENE(BASE=_modes, STOCKAGE="PLEIN")
 
     if is_vect:
@@ -484,8 +487,7 @@ class SubStructure:
                         interfModes = CREA_RESU(
                             OPERATION="AFFE",
                             TYPE_RESU="MULT_ELAS",
-                            NOM_CHAM="DEPL",
-                            AFFE=_F(CHAM_GD=resu, MODELE=model),
+                            AFFE=_F(NOM_CHAM="DEPL", CHAM_GD=resu, MODELE=model),
                         )
                         createOutputFile = False
                     else:
@@ -493,8 +495,7 @@ class SubStructure:
                             reuse=interfModes,
                             OPERATION="AFFE",
                             TYPE_RESU="MULT_ELAS",
-                            NOM_CHAM="DEPL",
-                            AFFE=_F(CHAM_GD=resu, MODELE=model),
+                            AFFE=_F(NOM_CHAM="DEPL", CHAM_GD=resu, MODELE=model),
                         )
                     interfModes.userName = "Resu_{}".format(iName)
 
@@ -548,8 +549,7 @@ class SubStructure:
                 Resu = CREA_RESU(
                     OPERATION="AFFE",
                     TYPE_RESU="MODE_MECA",
-                    NOM_CHAM="DEPL",
-                    AFFE=_F(CHAM_GD=Cham, NUME_MODE=idx, FREQ=eig),
+                    AFFE=_F(NOM_CHAM="DEPL", CHAM_GD=Cham, NUME_MODE=idx, FREQ=eig),
                 )
                 Resu.setDOFNumbering(dofNumbering)
             else:
@@ -557,8 +557,7 @@ class SubStructure:
                     reuse=Resu,
                     OPERATION="AFFE",
                     TYPE_RESU="MODE_MECA",
-                    NOM_CHAM="DEPL",
-                    AFFE=_F(CHAM_GD=Cham, NUME_MODE=idx, FREQ=eig),
+                    AFFE=_F(NOM_CHAM="DEPL", CHAM_GD=Cham, NUME_MODE=idx, FREQ=eig),
                 )
             Resu.userName = "Modes_{}".format(model.getName())
 

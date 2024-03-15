@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -219,19 +219,14 @@ for i, inst in enumerate(l_inst):
     )
     DETRUIRE(NOM=(TEMP2, HYDR2, INSTN, INSTL))
 
-    l_affe_temp.append(_F(CHAM_GD=TEMP[i], MODELE=MOTHER, INST=inst))
-    l_affe_hydr.append(_F(CHAM_GD=HYDR[i], MODELE=MOTHER, INST=inst))
+    l_affe_temp.append(_F(NOM_CHAM="TEMP", CHAM_GD=TEMP[i], MODELE=MOTHER, INST=inst))
+    l_affe_hydr.append(_F(NOM_CHAM="HYDR_ELNO", CHAM_GD=HYDR[i], MODELE=MOTHER, INST=inst))
 
 
-RESUTHER = CREA_RESU(OPERATION="AFFE", TYPE_RESU="EVOL_THER", NOM_CHAM="TEMP", AFFE=l_affe_temp)
+RESUTHER = CREA_RESU(OPERATION="AFFE", TYPE_RESU="EVOL_THER", AFFE=l_affe_temp)
 
 RESUTHER = CREA_RESU(
-    reuse=RESUTHER,
-    RESULTAT=RESUTHER,
-    OPERATION="AFFE",
-    TYPE_RESU="EVOL_THER",
-    NOM_CHAM="HYDR_ELNO",
-    AFFE=l_affe_hydr,
+    reuse=RESUTHER, RESULTAT=RESUTHER, OPERATION="AFFE", TYPE_RESU="EVOL_THER", AFFE=l_affe_hydr
 )
 
 

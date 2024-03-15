@@ -232,8 +232,7 @@ def dyna_visco_harm(
                 RESULTAT=dyna_harm,
                 OPERATION="AFFE",
                 TYPE_RESU="DYNA_HARMO",
-                NOM_CHAM=champ,
-                AFFE=_F(CHAM_GD=__resveu, FREQ=list_FREQ[num_freq]),
+                AFFE=_F(NOM_CHAM=champ, CHAM_GD=__resveu, FREQ=list_FREQ[num_freq]),
             )
 
     return dyna_harm

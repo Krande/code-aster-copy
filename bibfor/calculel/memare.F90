@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine memare(base, matr_vect_elemz, modelz, mater, cara_elem, &
-                  suropt)
+subroutine memare(base, matr_vect_elemz, modelz, suropt)
 !
     implicit none
 !
@@ -29,8 +28,6 @@ subroutine memare(base, matr_vect_elemz, modelz, mater, cara_elem, &
     character(len=1), intent(in) :: base
     character(len=*), intent(in) :: matr_vect_elemz
     character(len=*), intent(in) :: modelz
-    character(len=*), intent(in) :: mater
-    character(len=*), intent(in) :: cara_elem
     character(len=*), intent(in) :: suropt
 !
 ! --------------------------------------------------------------------------------------------------
@@ -44,8 +41,6 @@ subroutine memare(base, matr_vect_elemz, modelz, mater, cara_elem, &
 ! In  base           : JEVEUX basis
 ! In  matr_vect_elem : name of matr_elem or vect_elem
 ! In  modelz         : name of model
-! In  mater          : name of material field (and not the coded material)
-! In  cara_elem      : name of elementary characteristics (field)
 ! In  suropt         : name of "SUR_OPTION"
 !
 ! --------------------------------------------------------------------------------------------------
@@ -59,14 +54,11 @@ subroutine memare(base, matr_vect_elemz, modelz, mater, cara_elem, &
     matr_vect_elem = matr_vect_elemz
     model = modelz
     ASSERT(model .ne. ' ')
-    ASSERT(mater(1:8) .ne. '&&MATECO')
 !
     call jedetr(matr_vect_elem//'.RERR')
-    call wkvect(matr_vect_elem//'.RERR', base//' V K24', 5, vk24=p_rerr)
+    call wkvect(matr_vect_elem//'.RERR', base//' V K24', 3, vk24=p_rerr)
     p_rerr(1) = model
     p_rerr(2) = suropt
     p_rerr(3) = 'NON_SOUS_STRUC'
-    p_rerr(4) = mater
-    p_rerr(5) = cara_elem
 !
 end subroutine

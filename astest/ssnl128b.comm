@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -208,15 +208,14 @@ RES55_1 = CREA_CHAMP(
 FLUENC1 = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_VARC",
-    NOM_CHAM="IRRA",
     AFFE=(
-        _F(CHAM_GD=RES00_1, INST=0.0),
-        _F(CHAM_GD=RES11_1, INST=1.0),
-        _F(CHAM_GD=RES22_1, INST=864.99),
-        _F(CHAM_GD=RES33_1, INST=1728.98),
-        _F(CHAM_GD=RES44_1, INST=2592.97),
-        _F(CHAM_GD=RES55_1, INST=3456.96),
-        _F(CHAM_GD=RES55_1, INST=5000.0),
+        _F(NOM_CHAM="IRRA", CHAM_GD=RES00_1, INST=0.0),
+        _F(NOM_CHAM="IRRA", CHAM_GD=RES11_1, INST=1.0),
+        _F(NOM_CHAM="IRRA", CHAM_GD=RES22_1, INST=864.99),
+        _F(NOM_CHAM="IRRA", CHAM_GD=RES33_1, INST=1728.98),
+        _F(NOM_CHAM="IRRA", CHAM_GD=RES44_1, INST=2592.97),
+        _F(NOM_CHAM="IRRA", CHAM_GD=RES55_1, INST=3456.96),
+        _F(NOM_CHAM="IRRA", CHAM_GD=RES55_1, INST=5000.0),
     ),
 )
 FIN()

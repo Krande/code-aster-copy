@@ -777,8 +777,15 @@ def post_newmark_ops(self, **args):
         __recoST = CREA_RESU(
             OPERATION="AFFE",
             TYPE_RESU="DYNA_TRANS",
-            NOM_CHAM="SIEF_ELGA",
-            AFFE=(_F(MODELE=__MODST, CHAM_MATER=__MATST, CHAM_GD=__CSTPGF, INST=0.0),),
+            AFFE=(
+                _F(
+                    NOM_CHAM="SIEF_ELGA",
+                    MODELE=__MODST,
+                    CHAM_MATER=__MATST,
+                    CHAM_GD=__CSTPGF,
+                    INST=0.0,
+                ),
+            ),
         )
 
         __recoST = CALC_CHAMP(
@@ -1005,9 +1012,14 @@ def post_newmark_ops(self, **args):
                 __recoSD = CREA_RESU(
                     OPERATION="AFFE",
                     TYPE_RESU="DYNA_TRANS",
-                    NOM_CHAM="SIEF_ELGA",
                     AFFE=(
-                        _F(MODELE=__MODYN, CHAM_MATER=__MATDYN, CHAM_GD=__CSDPGO, INST=__instSD[0]),
+                        _F(
+                            NOM_CHAM="SIEF_ELGA",
+                            MODELE=__MODYN,
+                            CHAM_MATER=__MATDYN,
+                            CHAM_GD=__CSDPGO,
+                            INST=__instSD[0],
+                        ),
                     ),
                 )
                 for inst in __instSD[1:]:
@@ -1030,9 +1042,14 @@ def post_newmark_ops(self, **args):
                         RESULTAT=__recoSD,
                         OPERATION="AFFE",
                         TYPE_RESU="DYNA_TRANS",
-                        NOM_CHAM="SIEF_ELGA",
                         AFFE=(
-                            _F(MODELE=__MODYN, CHAM_MATER=__MATDYN, CHAM_GD=__CSDPGO, INST=inst),
+                            _F(
+                                NOM_CHAM="SIEF_ELGA",
+                                MODELE=__MODYN,
+                                CHAM_MATER=__MATDYN,
+                                CHAM_GD=__CSDPGO,
+                                INST=inst,
+                            ),
                         ),
                     )
 

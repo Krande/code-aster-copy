@@ -209,12 +209,11 @@ CHT3 = CREA_CHAMP(
 TEMP = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_THER",
-    NOM_CHAM="TEMP",
     AFFE=(
-        _F(INST=0.0, CHAM_GD=CHT0),
-        _F(INST=1.0, CHAM_GD=CHT1),
-        _F(INST=2.0, CHAM_GD=CHT2),
-        _F(INST=3.0, CHAM_GD=CHT3),
+        _F(NOM_CHAM="TEMP", INST=0.0, CHAM_GD=CHT0),
+        _F(NOM_CHAM="TEMP", INST=1.0, CHAM_GD=CHT1),
+        _F(NOM_CHAM="TEMP", INST=2.0, CHAM_GD=CHT2),
+        _F(NOM_CHAM="TEMP", INST=3.0, CHAM_GD=CHT3),
     ),
 )
 

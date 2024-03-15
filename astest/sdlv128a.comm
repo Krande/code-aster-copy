@@ -236,7 +236,7 @@ for i in range(8):
         TYPE_CHAM="NOEU_DEPL_R", OPERATION="EXTR", RESULTAT=MOSTi[i], NOM_CHAM="DEPL", NUME_ORDRE=1
     )
 
-    f_depl = {"CHAM_GD": MOSTd[i], "MODELE": MODELNUM, "NOM_CAS": str(i)}
+    f_depl = {"NOM_CHAM": "DEPL", "CHAM_GD": MOSTd[i], "MODELE": MODELNUM, "NOM_CAS": str(i)}
     f_depl["CHAM_MATER"] = MATNUM
     f_depl["CARA_ELEM"] = CARANUM
     l_depl.append(f_depl)
@@ -274,14 +274,14 @@ for i in range(8):
         TYPE_CHAM="NOEU_DEPL_R", OPERATION="EXTR", RESULTAT=MOSTi[j], NOM_CHAM="DEPL", NUME_ORDRE=1
     )
 
-    f_depl = {"CHAM_GD": MOSTd[j], "MODELE": MODELNUM, "NOM_CAS": str(j)}
+    f_depl = {"NOM_CHAM": "DEPL", "CHAM_GD": MOSTd[j], "MODELE": MODELNUM, "NOM_CAS": str(j)}
     f_depl["CHAM_MATER"] = MATNUM
     f_depl["CARA_ELEM"] = CARANUM
     l_depl.append(f_depl)
 
 
 # Avec CREA_RESU, on rassemble les deformees statiques dans une sd resultat MULT_ELAS
-MODESTA = CREA_RESU(OPERATION="AFFE", TYPE_RESU="MULT_ELAS", NOM_CHAM="DEPL", AFFE=l_depl)
+MODESTA = CREA_RESU(OPERATION="AFFE", TYPE_RESU="MULT_ELAS", AFFE=l_depl)
 
 MODESTA = CALC_CHAMP(reuse=MODESTA, RESULTAT=MODESTA, GROUP_MA="TUBE_MA", DEFORMATION=("EPSI_ELNO"))
 

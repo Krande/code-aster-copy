@@ -178,11 +178,11 @@ for k in range(nb_mode):
 champr = []
 champi = []
 for k in range(nb_mode):
-    champr.append({"CHAM_GD": BR[k], "NUME_MODE": k + 1})
-    champi.append({"CHAM_GD": BI[k], "NUME_MODE": k + 1})
+    champr.append({"NOM_CHAM": "DEPL", "CHAM_GD": BR[k], "NUME_MODE": k + 1})
+    champi.append({"NOM_CHAM": "DEPL", "CHAM_GD": BI[k], "NUME_MODE": k + 1})
 
-BASER = CREA_RESU(OPERATION="AFFE", TYPE_RESU="MODE_MECA", AFFE=champr, NOM_CHAM="DEPL")
-BASEI = CREA_RESU(OPERATION="AFFE", TYPE_RESU="MODE_MECA", AFFE=champi, NOM_CHAM="DEPL")
+BASER = CREA_RESU(OPERATION="AFFE", TYPE_RESU="MODE_MECA", AFFE=champr)
+BASEI = CREA_RESU(OPERATION="AFFE", TYPE_RESU="MODE_MECA", AFFE=champi)
 
 MDST1 = MODE_STATIQUE(
     MATR_RIGI=RIGIDITE,

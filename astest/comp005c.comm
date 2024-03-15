@@ -75,8 +75,7 @@ for i in range(0, len(modelisation)):
     TEMP[i] = CREA_RESU(
         OPERATION="AFFE",
         TYPE_RESU="EVOL_THER",
-        NOM_CHAM="TEMP",
-        AFFE=_F(LIST_INST=L_INST, CHAM_GD=CHP_T[i]),
+        AFFE=_F(NOM_CHAM="TEMP", LIST_INST=L_INST, CHAM_GD=CHP_T[i]),
     )
 
     CHP_M[i] = AFFE_MATERIAU(

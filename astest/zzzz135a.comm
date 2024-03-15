@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -345,8 +345,10 @@ CHPtotm = CREA_CHAMP(
 )
 
 PRE1OK = CREA_RESU(
-    AFFE=(_F(CHAM_GD=CHPtotm, INST=(instm,)), _F(CHAM_GD=CHPtotp, INST=(instp,))),
-    NOM_CHAM="PTOT",
+    AFFE=(
+        _F(NOM_CHAM="PTOT", CHAM_GD=CHPtotm, INST=(instm,)),
+        _F(NOM_CHAM="PTOT", CHAM_GD=CHPtotp, INST=(instp,)),
+    ),
     OPERATION="AFFE",
     TYPE_RESU="EVOL_VARC",
 )

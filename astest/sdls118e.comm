@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -341,8 +341,7 @@ DYNA_REF = CREA_RESU(
     TYPE_RESU="DYNA_TRANS",
     MATR_RIGI=rigid0,
     MATR_MASS=masse0,
-    NOM_CHAM="DEPL",
-    AFFE=(_F(CHAM_GD=DEPLA, INST=0.0),),
+    AFFE=(_F(NOM_CHAM="DEPL", CHAM_GD=DEPLA, INST=0.0),),
 )
 
 DYNA_REF = CREA_RESU(
@@ -352,8 +351,7 @@ DYNA_REF = CREA_RESU(
     TYPE_RESU="DYNA_TRANS",
     MATR_RIGI=rigid0,
     MATR_MASS=masse0,
-    NOM_CHAM="VITE",
-    AFFE=(_F(CHAM_GD=VITEA, INST=0.0),),
+    AFFE=(_F(NOM_CHAM="VITE", CHAM_GD=VITEA, INST=0.0),),
 )
 DYNA_REF = CREA_RESU(
     reuse=DYNA_REF,
@@ -362,8 +360,7 @@ DYNA_REF = CREA_RESU(
     TYPE_RESU="DYNA_TRANS",
     MATR_RIGI=rigid0,
     MATR_MASS=masse0,
-    NOM_CHAM="ACCE",
-    AFFE=(_F(CHAM_GD=ACCEA, INST=0.0),),
+    AFFE=(_F(NOM_CHAM="ACCE", CHAM_GD=ACCEA, INST=0.0),),
 )
 
 

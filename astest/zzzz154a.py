@@ -55,8 +55,10 @@ test.assertEqual(ther_dict.getType(), "EVOL_THER_DICT", msg="check type")
 r12 = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_THER",
-    NOM_CHAM="TEMP",
-    AFFE=(_F(CHAM_GD=ther1, INST=1.0), _F(CHAM_GD=ther2, INST=2.0)),
+    AFFE=(
+        _F(NOM_CHAM="TEMP", CHAM_GD=ther1, INST=1.0),
+        _F(NOM_CHAM="TEMP", CHAM_GD=ther2, INST=2.0),
+    ),
 )
 ther_dict["12"] = r12
 
@@ -64,8 +66,10 @@ ther_dict["12"] = r12
 ther_dict["13"] = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_THER",
-    NOM_CHAM="TEMP",
-    AFFE=(_F(CHAM_GD=ther1, INST=1.0), _F(CHAM_GD=ther3, INST=3.0)),
+    AFFE=(
+        _F(NOM_CHAM="TEMP", CHAM_GD=ther1, INST=1.0),
+        _F(NOM_CHAM="TEMP", CHAM_GD=ther3, INST=3.0),
+    ),
 )
 
 test.assertEqual(len(ther_dict), 2, msg="check len()")

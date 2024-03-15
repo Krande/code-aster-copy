@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -354,8 +354,7 @@ HY100 = CREA_CHAMP(
 RESU_100 = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_THER",
-    NOM_CHAM="TEMP",
-    AFFE=_F(CHAM_GD=T100, MODELE=MOTHER_2, INST=100.0),
+    AFFE=_F(NOM_CHAM="TEMP", CHAM_GD=T100, MODELE=MOTHER_2, INST=100.0),
 )
 
 RESU_100 = CREA_RESU(
@@ -363,8 +362,7 @@ RESU_100 = CREA_RESU(
     RESULTAT=RESU_100,
     OPERATION="AFFE",
     TYPE_RESU="EVOL_THER",
-    NOM_CHAM="HYDR_ELGA",
-    AFFE=_F(CHAM_GD=HY100, MODELE=MOTHER_2, INST=100.0),
+    AFFE=_F(NOM_CHAM="HYDR_ELGA", CHAM_GD=HY100, MODELE=MOTHER_2, INST=100.0),
 )
 
 # SMP : NOUVEAU THER_NON_LINE EN PARTANT DE L'ETAT INITIAL CREE SUR L'ENSEMBLE DU MODELE

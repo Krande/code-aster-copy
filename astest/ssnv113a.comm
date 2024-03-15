@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -89,11 +89,11 @@ for i, inst in enumerate(list_inst):
         ASSE=_F(TOUT="OUI", CHAM_GD=NEUT, NOM_CMP=("X1",), NOM_CMP_RESU=("IRRA",)),
     )
 
-    affe.append({"CHAM_GD": CHFLU[i], "INST": inst})
+    affe.append({"NOM_CHAM": "IRRA", "CHAM_GD": CHFLU[i], "INST": inst})
 
     DETRUIRE(NOM=(INST0_1, NEUT))
 
-FLUX1 = CREA_RESU(OPERATION="AFFE", TYPE_RESU="EVOL_VARC", NOM_CHAM="IRRA", AFFE=affe)
+FLUX1 = CREA_RESU(OPERATION="AFFE", TYPE_RESU="EVOL_VARC", AFFE=affe)
 
 from ssnv113a_mater import *
 

@@ -105,7 +105,7 @@ subroutine nmvcfo(type_comp, model, mater, mateco, cara_elem, compor, &
 !
     call jeexin(vect_elem(1:19)//'.RELR', iret)
     if (iret .eq. 0) then
-        call memare('V', vect_elem, model, mater, cara_elem, 'CHAR_MECA')
+        call memare('V', vect_elem, model, 'CHAR_MECA')
     end if
     call jedetr(vect_elem(1:19)//'.RELR')
     call reajre(vect_elem, ' ', 'V')

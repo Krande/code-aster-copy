@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -96,8 +96,7 @@ subroutine merit1(modele, nchar, lchar, mate, mateco, &
         call jedetr(matel//'.RERR')
         call jedetr(matel//'.RELR')
     end if
-    call memare('V', matel, modele, mate, cara, &
-                'RIGI_THER')
+    call memare('V', matel, modele, 'RIGI_THER')
 !
     lpaout(1) = 'PMATTTR'
     lchout(1) = prefch(1:8)//'.ME000'

@@ -269,8 +269,7 @@ tempField = CREA_CHAMP(
 tempResult = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="EVOL_THER",
-    NOM_CHAM="TEMP",
-    AFFE=_F(LIST_INST=timeList, CHAM_GD=tempField),
+    AFFE=_F(NOM_CHAM="TEMP", LIST_INST=timeList, CHAM_GD=tempField),
 )
 
 # Boundary conditions
