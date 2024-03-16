@@ -21,3 +21,5 @@ vola.*
 .jenkins*
 .vscode/*
 devtools
+.idea/*
+build_env_setup.bat
