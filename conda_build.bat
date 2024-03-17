@@ -18,19 +18,21 @@ if not exist "%CC%" (
   echo "Setting compiler env vars"
   set "CC=cl.exe"
   set "CXX=cl.exe"
-  rem set "FC=ifort.exe"
+  set "FC=ifort.exe"
 )
 where python
 where cl
 where ifort
-
-
+SET PARENT_DIR=%~dp0..
 
 REM Install for standard sequential
-waf distclean configure ^
+waf distclean
+waf configure ^
+  --use-config-dir=%PARENT_DIR%\conda ^
   --prefix=%LIBRARY_PREFIX% ^
   --libdir=%LIBRARY_PREFIX%\libs\python312.lib ^
   --pythondir=%LIBRARY_PREFIX% ^
+  --disable-mpi ^
   --install-tests ^
   --embed-metis ^
   --without-hg ^

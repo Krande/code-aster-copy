@@ -170,7 +170,7 @@ def check_mfront_version(self, minver=None):
     cmd = self.env.MFRONT + ["--version"]
     res = self.cmd_and_log(cmd)
     mfrver = "0.0.0"
-    regexp = re.compile("version *: *([0-9]+\.[0-9]+\..*) *", re.I | re.M)
+    regexp = re.compile(r"version *: *([0-9]+\.[0-9]+\..*) *", re.I | re.M)
     mat = regexp.search(res.strip())
     if mat:
         mfrver = mat.group(1).strip()
