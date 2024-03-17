@@ -41,7 +41,7 @@ from waftools.wafutils import remove_previous
 from waflib.Tools.compiler_fc import fc_compiler
 from waflib.Tools.ifort import all_ifort_platforms
 
-all_ifort_platforms.append(('intel 19', 'intel 19'))
+# all_ifort_platforms.append(('intel 19', 'intel 19'))
 fc_compiler['win32'] = ['ifort']
 
 top = "."
