@@ -58,6 +58,7 @@ def configure(self):
     if self.options.maths_libs in (None, "auto"):
         # try MKL first, then automatic blas/lapack
         if not self.detect_mkl():
+            Logs.info("Unable to detect MKL libraries")
             self.detect_math_lib()
     elif self.options.maths_libs:
         self.check_opts_math_lib()
@@ -146,6 +147,10 @@ def detect_mkl(self):
         interf = "mkl_gf" + suffix
     if scalapack:
         libs.append(scalapack)
+    if self.env.CXX_NAME == 'msvc':
+        interf += "_dll"
+        thread += "_dll"
+        core += "_dll"
     libs.append(interf)
     libs.append(thread)
     libs.append(core)
@@ -154,8 +159,11 @@ def detect_mkl(self):
     try:
         self.env.stash()
         self.env.append_value("LIB_MATH", libs)
-        self.env.append_value("LIBPATH_MATH", os.environ["MKLROOT"] + "/lib/intel64")
-        self.check_math_libs_call(color="YELLOW")
+        if self.env.CXX_NAME == 'msvc':
+            self.env.append_value("LIBPATH_MATH", os.environ["MKLROOT"] + "/lib")
+        else:
+            self.env.append_value("LIBPATH_MATH", os.environ["MKLROOT"] + "/lib/intel64")
+        #self.check_math_libs_call(color="YELLOW")
     except:
         self.env.revert()
         self.end_msg("no", color="YELLOW")
@@ -174,7 +182,10 @@ def detect_math_lib(self):
     varlib = ("ST" if embed else "") + "LIB_MATH"
 
     # blas
-    blaslibs, lapacklibs = self.get_mathlib_from_numpy()
+    if self.env.CXX_NAME == 'msvc':
+        blaslibs, lapacklibs = self.get_mathlib_from_numpy_win()
+    else:
+        blaslibs, lapacklibs = self.get_mathlib_from_numpy()
     self.check_math_libs(list(BLAS) + blaslibs, embed)
     # lapack
     opt_lapack = False
@@ -274,17 +285,27 @@ def check_math_libs(self, libs, embed, optional=False):
 def check_number_cores(self):
     """Check for the number of available cores."""
     self.start_msg("Checking for number of cores")
-    try:
-        self.find_program("nproc")
+    if self.env.CXX_NAME == 'msvc':
+        # Example: Using WMIC to get CPU count
+        import subprocess
         try:
-            res = self.cmd_and_log(["nproc"])
-            nproc = int(res)
-        except Errors.WafError:
-            raise Errors.ConfigurationError
-    except Errors.ConfigurationError:
-        nproc = 1
+            nproc = int(subprocess.check_output("WMIC CPU Get NumberOfCores /Value", shell=True).strip().split(b'=')[1])
+        except Errors.ConfigurationError:
+            nproc = 1
+        else:
+            self.end_msg(nproc)
     else:
-        self.end_msg(nproc)
+        try:
+            self.find_program("nproc")
+            try:
+                res = self.cmd_and_log(["nproc"])
+                nproc = int(res)
+            except Errors.WafError:
+                raise Errors.ConfigurationError
+        except Errors.ConfigurationError:
+            nproc = 1
+        else:
+            self.end_msg(nproc)
     self.env["NPROC"] = nproc
 
 
@@ -317,6 +338,46 @@ def get_mathlib_from_numpy(self):
             libblas.append(lib)
     return libblas, liblapack
 
+@Configure.conf
+def get_mathlib_from_numpy_win(self):
+    """Adapted for Windows to find BLAS and LAPACK libraries linked with NumPy."""
+    import subprocess
+
+    libblas = []
+    pathblas = []
+    liblapack = []
+    pathlapack = []
+
+    # numpy already checked
+    pymodule_path = self.get_python_variables(
+        ["lapack_lite.__file__"], ["from numpy.linalg import lapack_lite"]
+    )[0]
+
+    # Logs.info('Checking libraries linked with NumPy: %s' % pymodule_path)
+    # Path to dumpbin.exe - adjust as necessary for your environment
+    dumpbin_path = "dumpbin.exe"
+    cmd = [dumpbin_path, '/DEPENDENTS', pymodule_path]
+
+    try:
+        # Execute dumpbin command
+        result = subprocess.run(cmd, capture_output=True, text=True, check=True)
+        out = result.stdout
+
+        for line in out.splitlines():
+            # This is a placeholder for logic to detect specific BLAS and LAPACK libraries from the output
+            # You might need to adjust the detection logic based on the actual output and libraries used
+            if 'blas' in line.lower():
+                # Extract and append the BLAS library to libblas
+                pass
+            elif 'lapack' in line.lower():
+                # Extract and append the LAPACK library to liblapack
+                pass
+    except subprocess.CalledProcessError as e:
+        self.fatal('Failed to run dumpbin: %s' % str(e))
+
+    # Logs.info('BLAS libraries: %s' % libblas)
+    # Logs.info('LAPACK libraries: %s' % liblapack)
+    return libblas, liblapack
 
 def _detect_libnames_in_ldd_line(line, libnames):
     if not list(filter(line.__contains__, libnames)):

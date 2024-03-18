@@ -82,7 +82,7 @@ def check_numpy_headers(self):
     numpy_includes.append(pathlib.Path(python_include_dir).as_posix())
     numpy_includes.append(pathlib.Path(python_libs_dir).as_posix())
 
-    Logs.warn(f"{numpy_includes=}")
+    #Logs.warn(f"{numpy_includes=}")
 
     if self.is_defined("ASTER_PLATFORM_MINGW"):
         incs = [PureWindowsPath(i) for i in numpy_includes]

@@ -1,5 +1,6 @@
 @echo off
 setlocal
+set CLICOLOR_FORCE=1
 
 rem Set the python library prefix
 set PYTHON_ENV=codeaster-deps
@@ -36,6 +37,9 @@ SET PARENT_DIR=%PARENT_DIR:\=/%
 
 set ASTER_PLATFORM_MSVC=1
 
+set MKLROOT=%LIBRARY_PREFIX%
+SET MKLROOT=%MKLROOT:\=/%
+
 waf distclean
 
 REM Install for standard sequential
@@ -46,9 +50,10 @@ waf configure ^
   --pythondir=%LIBRARY_PREFIX% ^
   --disable-mpi ^
   --install-tests ^
+  --maths-libs=auto ^
   --embed-metis ^
   --without-hg
 
-waf install
+waf install_debug
 
 endlocal

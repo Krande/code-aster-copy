@@ -19,7 +19,7 @@
 
 import os.path as osp
 from functools import partial
-from waflib import Configure, Utils, Errors
+from waflib import Configure, Utils, Errors, Logs
 
 
 def options(self):
@@ -145,7 +145,13 @@ def check_hdf5_libs(self):
 
 @Configure.conf
 def check_hdf5_headers(self):
-    check = partial(self.check_cc, header_name="hdf5.h", uselib_store="HDF5", use="HDF5 Z")
+    Logs.info(f"{self.env.INCLUDEDIR=}")
+    #check = partial(self.check_cc, header_name="hdf5.h", uselib_store="HDF5", use="HDF5 Z")
+    if self.env.DEST_OS == "win32":
+        check = partial(self.check_cc, header_name="hdf5.h", uselib_store="HDF5", use="HDF5", lib="z")
+    else:
+        check = partial(self.check_cc, header_name="hdf5.h", uselib_store="HDF5", use="HDF5")
+
     self.start_msg("Checking for header hdf5.h")
     try:
         if not check(mandatory=False):

@@ -15,3 +15,17 @@ mamba env update -f environment.yml
 ```cmd
 conda_build.bat
 ```
+
+## Windows Dependencies Compiler versions
+
+| Dependency  | version | C compiler | C++ compiler | Fortran compiler    | 
+|-------------|---------|------------|--------------|---------------------|
+| HDF5        | 1.10.7  | VS2022     | VS2022       | N/A                 |
+| MED         | 4.1.0   | VS2022     | VS2022       | N/A                 |
+| MEDCOUPLING | 9.10.0  | VS2022     | VS2022       | N/A                 |
+| MFront      | 4.2.0   | CLANG-CL   | CLANG-CL     | N/A                 |
+| MGIS        | 2.2.0   | VS2022     | VS2022       | N/A                 |
+| METIS       | 5.1.0   | VS2022     | VS2022       | N/A                 |
+| Code Aster  | 17.0.10 | VS2022     | VS2022       | Intel OneAPI 2024.0 |
+
+

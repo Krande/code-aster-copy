@@ -6,6 +6,7 @@ dependencies:
   - vswhere
   - mfront=4.2.0
   - mgis=2.2
+  - mkl-devel
   - libmed=4.1.1
   - medcoupling=9.10.0
   - scotch=7.0.4
