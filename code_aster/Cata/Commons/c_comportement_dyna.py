@@ -22,6 +22,9 @@ from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
 
+from ..Commons.c_comportement import compat_syntax
+
+
 def C_COMPORTEMENT_DYNA(COMMAND):  # COMMUN#
     assert COMMAND in ("DYNA_VIBRA", "DYNA_LINE")
 

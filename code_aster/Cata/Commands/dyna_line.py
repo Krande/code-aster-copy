@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,6 +23,9 @@ from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
 
+from ..Commons.c_comportement import compat_syntax
+
+
 def dyna_line_sdprod(self, TYPE_CALCUL, BASE_RESU=None, RESU_GENE=None, **args):
     if args.get("__all__"):
         return ([dyna_trans, dyna_harmo], [None, mode_meca], [None, tran_gene, harm_gene])
@@ -43,6 +46,7 @@ def dyna_line_sdprod(self, TYPE_CALCUL, BASE_RESU=None, RESU_GENE=None, **args):
 DYNA_LINE = MACRO(
     nom="DYNA_LINE",
     op=OPS("code_aster.MacroCommands.dyna_line_ops.dyna_line_ops"),
+    compat_syntax=compat_syntax,
     sd_prod=dyna_line_sdprod,
     reentrant="n",
     fr=tr("Calcul dynamique transitoire ou harmonique"),

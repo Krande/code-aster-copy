@@ -23,6 +23,9 @@ from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
 
+from ..Commons.c_comportement import compat_syntax
+
+
 def crea_resu_prod(TYPE_RESU, **args):
     if args.get("__all__"):
         return (
@@ -70,6 +73,7 @@ def crea_resu_prod(TYPE_RESU, **args):
 CREA_RESU = OPER(
     nom="CREA_RESU",
     op=124,
+    compat_syntax=compat_syntax,
     sd_prod=crea_resu_prod,
     reentrant="f:RESULTAT|RESU_FINAL",
     fr=tr("Creer ou enrichir une structure de donnees resultat a partir de champs aux noeuds"),

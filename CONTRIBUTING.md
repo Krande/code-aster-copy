@@ -12,14 +12,14 @@ Then, clone the repository on your laptop.
 git clone https://gitlab.com/your-username/your-forkname.git
 ```
 
-Once this is done, you can setup the *codeaster/src* repository as the upstream
+Once this is done, you can setup the *codeaster/src* repository as the *upstream*
 of your clone to simplify the update of your fork repository.
 
 ```shell
 git remote add upstream https://gitlab.com/codeaster/src.git
 ```
 
-Now, you have your repository configured, and you want to create a new pull request.
+Now, you have your repository configured, and you want to create a new merge request.
 The first step is to create a branch from the HEAD of the **main** branch of
 your fork repository.
 

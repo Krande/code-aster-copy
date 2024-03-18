@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -120,6 +120,31 @@ sont extraits de la table %(k2)s
         ),
         "flags": "DECORATED",
     },
+    12: _(
+        """
+Les valeurs des paramètres E et NU calculées à partir de %(k1)s sont :
+    E = %(r1)g
+    NU = %(r2)g
+"""
+    ),
+    13: _(
+        """
+Les valeurs des paramètres %(k1)s et %(k2)s ne sont pas cohérents (à %(r3)g près) :
+    %(k1)s = %(r1)g
+    %(k2)s = %(r2)g
+"""
+    ),
+    14: _(
+        """
+La valeur du paramètre %(k1)s soit être strictement positive.
+"""
+    ),
+    15: _(
+        """
+Le rapport CELE_P / CELE_S doit être supérieur à 2*sqrt(3)/3 (= %(r2)f).
+Or il vaut : %(r1)f
+"""
+    ),
     42: _(
         """
 Erreur utilisateur :

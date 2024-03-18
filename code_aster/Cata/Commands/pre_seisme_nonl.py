@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,6 +24,9 @@ from .affe_cara_elem import AFFE_CARA_ELEM
 from .affe_char_meca import AFFE_CHAR_MECA
 from .affe_materiau import AFFE_MATERIAU
 from .affe_modele import AFFE_MODELE
+
+
+from ..Commons.c_comportement import compat_syntax
 
 
 def pre_seisme_nonl_sdprod(self, RESULTAT, **args):
@@ -73,12 +76,18 @@ def pre_seisme_nonl_sdprod(self, RESULTAT, **args):
             self.type_sdprod(mcfact["NOM"], char_meca)
 
 
+from ..Commons.c_comportement import compat_syntax
+
+
 def affe_char_meca_keywords():
     """Keywords for AFFE_CHAR_MECA with small changes"""
     # DO NOT CHANGE ORIGINAL KEYWORDS!!!
     orig = AFFE_CHAR_MECA.entites.copy()
     orig["MODELE"] = SIMP(statut="f", typ=modele_sdaster)
     return orig
+
+
+from ..Commons.c_comportement import compat_syntax
 
 
 def affe_cara_elem_keywords():
@@ -92,6 +101,7 @@ def affe_cara_elem_keywords():
 PRE_SEISME_NONL = MACRO(
     nom="PRE_SEISME_NONL",
     op=OPS("code_aster.MacroCommands.pre_seisme_nonl_ops.pre_seisme_nonl_ops"),
+    compat_syntax=compat_syntax,
     sd_prod=pre_seisme_nonl_sdprod,
     fr=tr("description"),
     reentrant="n",

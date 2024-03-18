@@ -26,7 +26,8 @@ test = CA.TestCase()
 
 nbsteps = RESU.getLastIndex()
 
-test.assertGreater(nbsteps, 10, msg="number of steps calculated before time limit")
+# may be 8 to 20 depending on the velocity of the host!
+test.assertGreater(nbsteps, 2, msg="number of steps calculated before time limit")
 test.printSummary()
 
 CA.close()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -59,7 +59,19 @@ LI1 = DEFI_LIST_REEL(
 
 
 MATER = DEFI_MATERIAU(
-    ELAS=_F(E=1.0e7, NU=0.3, ALPHA=0.0),
+    ELAS=_F(
+        # we can provide either E, NU:
+        # E=1.0e7,
+        # NU=0.3,
+        # or K, MU:
+        # K=8333333.333333333,
+        # MU=3846153.846153846,
+        # or CELE_P, CELE_S, RHO:
+        CELE_P=3668.996928526714,
+        CELE_S=1961.1613513818402,
+        RHO=1.0,
+        ALPHA=0.0,
+    ),
     CAM_CLAY=_F(
         MU=3.846154e6,
         PORO=0.5,

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,6 +22,9 @@ from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
 
+from ..Commons.c_comportement import compat_syntax
+
+
 def calc_stab_pente_prod(self, CHAM_DEFO, **args):
     """Return result type of CALC_STAB_PENTE."""
     if args.get("__all__"):
@@ -36,6 +39,7 @@ def calc_stab_pente_prod(self, CHAM_DEFO, **args):
 CALC_STAB_PENTE = MACRO(
     nom="CALC_STAB_PENTE",
     op=OPS("code_aster.MacroCommands.calc_stab_pente_ops.calc_stab_pente_ops"),
+    compat_syntax=compat_syntax,
     sd_prod=calc_stab_pente_prod,
     reentrant="n",
     docu="U4.xx.xx",
