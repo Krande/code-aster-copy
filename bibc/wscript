@@ -157,7 +157,8 @@ def build_libaster(self, env):
 
 @Configure.conf
 def check_c_compiler_flags(self):
-    self.check_c_compiler_options("-fPIC")
+    if self.env.CXX_NAME != 'msvc':
+        self.check_c_compiler_options("-fPIC")
     self.start_msg("C compiler flags")
     self.end_msg(self.env["CFLAGS"])
 

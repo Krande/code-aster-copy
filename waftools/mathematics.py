@@ -51,8 +51,9 @@ def options(self):
 
 def configure(self):
     # always check for libpthread, libm (never in static)
-    self.check_cc(uselib_store="M", lib="m")
-    self.check_cc(uselib_store="Z", lib="z")
+    if self.env.CXX_NAME != 'msvc':
+        self.check_cc(uselib_store="M", lib="m")
+        self.check_cc(uselib_store="Z", lib="z")
     self.check_number_cores()
     if self.options.maths_libs in (None, "auto"):
         # try MKL first, then automatic blas/lapack

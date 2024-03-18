@@ -19,7 +19,7 @@
 
 import os.path as osp
 
-from waflib import Configure, Utils
+from waflib import Configure, Utils, Logs
 
 
 def options(self):
@@ -86,7 +86,7 @@ def build(self):
 @Configure.conf
 def check_bibcxx_depends(self):
     """check dependencies of bibcxx"""
-    self.check_cxx(uselib_store="CXX", lib="stdc++")
+    # self.check_cxx(uselib_store="CXX", lib="stdc++")
     # if int(self.env.CC_VERSION[0] or 0) < 9:
     #     self.check_cxx(uselib_store="CXX", lib="stdc++fs")
 
@@ -95,10 +95,11 @@ def check_bibcxx_depends(self):
 def check_cxx_compiler_flags(self):
     """check C++ compiler flags"""
     # compiler independent (ifort & g++)
-    self.check_cxx_compiler_options("-fPIC")
-    self.check_cxx_compiler_options("-std=c++17")
-    # FIXME: should globally add -fvisibility-hidden
-    self.check_cxx_compiler_options("-Wno-attributes")
+    if self.env.CXX_NAME != 'msvc':
+        self.check_cxx_compiler_options("-fPIC")
+        self.check_cxx_compiler_options("-std=c++17")
+        # FIXME: should globally add -fvisibility-hidden
+        self.check_cxx_compiler_options("-Wno-attributes")
 
     self.start_msg("C++ compiler flags")
     self.end_msg(self.env["CXXFLAGS"])

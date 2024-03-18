@@ -20,7 +20,7 @@
 import os
 import os.path as osp
 from functools import partial
-from waflib import Configure, Errors, Utils
+from waflib import Configure, Errors, Utils, Logs
 
 
 def options(self):
@@ -173,7 +173,7 @@ def check_openmp(self):
     # Define CFLAGS_x and CCFLAGS_x to avoid ambiguous behaviour
     ifort = "ifort" in self.env.FC_NAME.lower()
     icc = "icc" in self.env.CC_NAME.lower()
-    if ifort and icc:
+    if ifort:
         self.env["FCFLAGS_OPENMP"] = ["-qopenmp"]
         self.env["FCLINKFLAGS_OPENMP"] = ["-qopenmp"]
         self.env["CFLAGS_OPENMP"] = self.env["FCFLAGS_OPENMP"]

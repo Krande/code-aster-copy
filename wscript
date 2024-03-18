@@ -39,11 +39,8 @@ from waflib.Tools.fc import fc
 
 from waftools.wafutils import remove_previous
 from waflib.Tools.compiler_fc import fc_compiler
-from waflib.Tools.ifort import all_ifort_platforms
 
-# all_ifort_platforms.append(('intel 19', 'intel 19'))
 fc_compiler['win32'] = ['ifort']
-
 top = "."
 out = "build"
 install_suffix = os.environ.get("WAF_DEFAULT_VARIANT") or os.environ.get("WAF_SUFFIX", "mpi")
@@ -226,6 +223,8 @@ def all_components(self):
 
 
 def configure(self):
+    self.load("ifort", tooldir="conda")
+
     opts = self.options
     self.setenv("default")
     self.load("official_platforms", tooldir="waftools")
@@ -320,6 +319,7 @@ def configure(self):
 
 
 def build(self):
+
     fc._use_custom_sig = self.options.custom_fc_sig
     # shared the list of dependencies between bibc/bibfor
     # the order may be important
@@ -465,7 +465,8 @@ def check_platform(self):
     if os_name == "cygwin":
         os_name = "linux"
     elif os_name == "win32":
-        os_name = "mingw32"
+        # os_name = "mingw32"
+        os_name = "msvc"
     if "64" in self.env.DEST_CPU:
         if os_name.endswith("32"):
             os_name = os_name[:-2]

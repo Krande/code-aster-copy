@@ -18,10 +18,11 @@
 # --------------------------------------------------------------------
 
 import os
+import pathlib
 from pathlib import PureWindowsPath
 from subprocess import PIPE, Popen
 
-from waflib import Configure, Errors
+from waflib import Configure, Errors, Logs
 
 
 def options(self):
@@ -40,7 +41,11 @@ def configure(self):
 def check_python(self):
     self.load("python")
     self.check_python_version((3, 5, 0))
-    self.check_python_headers()
+    #self.check_python_headers()
+    path = self.env["PATH"]
+    include_dir = os.environ["CONDA_PREFIX"] + "/include"
+    self.env["PATH"] = f"{path};{include_dir}"
+
     if "icc" in self.env.CC_NAME.lower():
         self.env["LIB_PYEXT"] = list(set(self.env["LIB_PYEXT"]))
         # Best is to clear PYEMBED and PYEXT {c/cxx}flags
@@ -69,9 +74,16 @@ def check_numpy_headers(self):
     self.start_msg("Checking for numpy include")
     # retrieve includes dir from numpy module
     numpy_includes = self.get_python_variables(
-        ['"\\n".join(misc_util.get_numpy_include_dirs())'],
-        ["from numpy.distutils import misc_util"],
+        ['"\\n".join([np.get_include()])'],
+        ["import numpy as np"],
     )
+    python_include_dir = os.environ["CONDA_PREFIX"] + "/include"
+    python_libs_dir = os.environ["CONDA_PREFIX"] + "/libs"
+    numpy_includes.append(pathlib.Path(python_include_dir).as_posix())
+    numpy_includes.append(pathlib.Path(python_libs_dir).as_posix())
+
+    Logs.warn(f"{numpy_includes=}")
+
     if self.is_defined("ASTER_PLATFORM_MINGW"):
         incs = [PureWindowsPath(i) for i in numpy_includes]
         numpy_includes = []
@@ -84,6 +96,7 @@ def check_numpy_headers(self):
                     parts[i] = "Lib"
             numpy_includes.append(PureWindowsPath(*parts).as_posix())
 
+
     # check the given includes dirs
     self.check(
         feature="c",
@@ -92,6 +105,7 @@ def check_numpy_headers(self):
         use=["PYEXT"],
         uselib_store="NUMPY",
         errmsg="Could not find the numpy development headers",
+        linkflags=["/LIBPATH:" + python_libs_dir, "/LIBPATH:" + python_include_dir],
     )
     self.end_msg(numpy_includes)
 
