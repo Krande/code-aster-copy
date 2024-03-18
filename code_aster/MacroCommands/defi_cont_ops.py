@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -150,9 +150,6 @@ def defi_cont_ops(self, **keywords):
             pairParam.setElementaryCharacteristics(zone["CARA_ELEM"])
             pairParam.hasBeamDistance = zone["DIST_POUTRE"] == "OUI"
             pairParam.hasShellDistance = zone["DIST_COQUE"] == "OUI"
-
-        if zone.get("SEUIL_INIT") is not None:
-            pairParam.setThreshold(zone["SEUIL_INIT"])
 
         if zone.get("DIST_SUPP") is not None:
             pairParam.setDistanceFunction(zone["DIST_SUPP"])

@@ -5624,13 +5624,6 @@ class PairingParameter:
             InitialState: Initial contact state.
         """
 
-    def getThreshold(self):
-        """Return the distance threshold. It is a value of a float
-
-        Returns:
-            float: distance threshold.
-        """
-
     def setAlgorithm(self, algo):
         """Set the Pairing algorithm used. It is a value of an enum
 
@@ -5664,13 +5657,6 @@ class PairingParameter:
 
         Arguments:
             InitialState: Initial contact state.
-        """
-
-    def setThreshold(self, seuil):
-        """Set the distance threshold used. It is a value of a float
-
-        Arguments:
-            float: distance threshold.
         """
 
     # ----------------------------------------------------------------------

@@ -57,12 +57,12 @@ subroutine te0067(option, nomte)
     character(len=16) :: metaType
     integer :: numeComp
     integer :: nbVari, nbPhase
-    integer :: nbVariTemper, nbPhaseTemper
+    integer :: nbVariTemper, nbPhaseTemper, nbVariPrev
     integer :: itempi
     integer :: jvPhaseIn, jvPhaseOut, jvPhasePrev
     integer :: jvMaterCode
-    integer :: jvComporMeta, itab(1), iret, jvComporMetaTemper
-    aster_logical :: hasTemper
+    integer :: jvComporMeta, itab(7), iret, jvComporMetaTemper
+    aster_logical :: hasTemper, prevMetaIsTemper
     type(META_MaterialParameters) :: metaPara
 !
 ! --------------------------------------------------------------------------------------------------
@@ -88,7 +88,7 @@ subroutine te0067(option, nomte)
 
 ! - Specific input/output fields
     hasTemper = ASTER_FALSE
-    call tecach("ONN", "PCOMPMT", 'L', iret, nval=1, itab=itab)
+    call tecach("ONN", "PCOMPMT", 'L', iret, nval=7, itab=itab)
     if (iret .eq. 0) then
         jvComporMetaTemper = itab(1)
         hasTemper = ASTER_TRUE
@@ -96,6 +96,15 @@ subroutine te0067(option, nomte)
             ASSERT(ASTER_FALSE)
         end if
         call jevech('PPHASEP', 'L', jvPhasePrev)
+        call tecach("ONN", "PPHASEP", 'L', iret, nval=7, itab=itab)
+        nbVariPrev = itab(6)
+        if (nbVariPrev .eq. NBVARIJMA) then
+            prevMetaIsTemper = ASTER_TRUE
+        elseif (nbVariPrev .eq. NBVARIWAECKEL) then
+            prevMetaIsTemper = ASTER_FALSE
+        else
+            ASSERT(ASTER_FALSE)
+        end if
     else
         call jevech('PTEMPAR', 'L', jvTempInit)
     end if
@@ -127,12 +136,14 @@ subroutine te0067(option, nomte)
 ! ----- General switches
         if (hasTemper) then
             call nzcompTemper(metaPara, numeComp, &
-                              nbVari, nbVariTemper, &
+                              nbVari, nbVariTemper, nbVariPrev, &
                               deltaTime12, &
                               temp1, temp2, &
-                              zr(jvPhasePrev+nbVariTemper*(iNode-1)), &
+                              prevMetaIsTemper, &
+                              zr(jvPhasePrev+nbVariPrev*(iNode-1)), &
                               zr(jvPhaseIn+nbVari*(iNode-1)), &
                               zr(jvPhaseOut+nbVariTemper*(iNode-1)))
+
         else
             deltaTime01 = zr(jvTime+1)
             tempInit = zr(jvTempInit+iNode-1)
