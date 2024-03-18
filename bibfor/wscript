@@ -85,8 +85,11 @@ def check_fortran_compiler_flags(self):
     if "ifort" in self.env.FC_NAME.lower():
         self.check_fortran_compiler_options(["-fpe0", "-traceback"])
         if "64" in self.env.DEST_CPU:
-            self.check_fortran_compiler_options(["-i8", "-r8"])
-        self.check_fortran_compiler_options(["-nogen-interfaces", "-xCORE-AVX2"])
+            if self.env.CC_NAME.lower() == "msvc":
+                self.check_fortran_compiler_options(["/nodefines", "-i8", "/allow:nofpp-comments"])
+            else:
+                self.check_fortran_compiler_options(["-i8", "-r8"])
+        self.check_fortran_compiler_options(["/QxCORE-AVX2"])
         # all Intel specific features must use:
         #   ASTER_HAVE_INTEL_IFORT && ASTER_HAVE_xxx
         # this marker must be specified on command line (using -D)

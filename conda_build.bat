@@ -82,6 +82,6 @@ waf configure ^
   --embed-metis ^
   --without-hg
 
-waf install_debug
+waf install_debug -v
 
 endlocal
