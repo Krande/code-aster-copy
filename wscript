@@ -465,22 +465,33 @@ def check_platform(self):
     if os_name == "cygwin":
         os_name = "linux"
     elif os_name == "win32":
-        # os_name = "mingw32"
-        os_name = "msvc"
+        if self.env.CC_NAME == "msvc":
+            os_name = "msvc"
+        else:
+            os_name = "mingw32"
+
     if "64" in self.env.DEST_CPU:
         if os_name.endswith("32"):
             os_name = os_name[:-2]
         os_name += "64"
         self.define("ASTER_HAVE_64_BITS", 1)
     plt = "ASTER_PLATFORM_" + os_name.upper()
-    if not os_name.startswith("mingw"):
-        self.define("ASTER_PLATFORM_POSIX", 1)
-        self.env.ASTER_PLATFORM_POSIX = True
-        self.undefine("ASTER_PLATFORM_MINGW")
-    else:
+    if os_name.startswith("mingw"):
         self.define("ASTER_PLATFORM_MINGW", 1)
         self.env.ASTER_PLATFORM_MINGW = True
         self.undefine("ASTER_PLATFORM_POSIX")
+        self.undefine("ASTER_PLATFORM_MSVC64")
+    elif os_name.startswith("msvc"):
+        self.define("ASTER_PLATFORM_MSVC64", 1)
+        self.env.ASTER_PLATFORM_MSVC64 = True
+        self.undefine("ASTER_PLATFORM_POSIX")
+        self.undefine("ASTER_PLATFORM_MINGW")
+    else:
+        self.define("ASTER_PLATFORM_POSIX", 1)
+        self.env.ASTER_PLATFORM_POSIX = True
+        self.undefine("ASTER_PLATFORM_MINGW")
+        self.undefine("ASTER_PLATFORM_MSVC64")
+
     self.define(plt, 1)
     self.end_msg(plt)
 
@@ -491,9 +502,15 @@ def check_optimization_options(self):
     self.setenv("debug", env=self.all_envs["default"])
     self.setenv("release", env=self.all_envs["default"])
     # these functions must switch between each environment
-    self.check_optimization_cflags()
-    self.check_optimization_cxxflags()
-    self.check_optimization_fcflags()
+    if self.env.CC_NAME != "msvc":
+        self.check_optimization_cflags()
+        self.check_optimization_cxxflags()
+        self.check_optimization_fcflags()
+    else:
+        self.check_optimization_cflags_msvc()
+        self.check_optimization_cxxflags_msvc()
+        self.check_optimization_fcflags_msvc()
+
     self.check_optimization_python()
     self.check_variant_vars()
 

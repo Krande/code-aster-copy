@@ -146,7 +146,7 @@ def build_libaster(self, env):
     extlib = ".so"
     mods = ["aster", "aster_core", "aster_fonctions", "med_aster"]
     libaster = "libaster.so"
-    if env.ASTER_PLATFORM_MINGW:
+    if env.ASTER_PLATFORM_MINGW or  env.ASTER_PLATFORM_MSVC64:
         extlib = ".pyd"
         mods.append("libaster")
         libaster = "aster.dll"
@@ -196,3 +196,27 @@ def check_optimization_cflags(self):
     flags = ["-O2"]
     self.env.append_unique("CFLAGS", flags)
     self.end_msg(flags)
+
+@Configure.conf
+def check_optimization_cflags_msvc(self):
+    self.setenv("debug")
+    self.start_msg("Setting C debug flags for MSVC")
+    self.remove_optflags("CFLAGS")
+    debug_flags = ["/Zi", "/Od"]  # Debug information and no optimization
+    self.env.append_unique("CFLAGS", debug_flags)
+    if self.options.enable_coverage:
+        # Note: MSVC does not have a direct --coverage equivalent
+        # You may need to use external tools or Visual Studio features for coverage
+        pass
+    if self.options.enable_asan:
+        # Enable Address Sanitizer (available in recent MSVC versions)
+        asan_flags = ["/fsanitize=address"]
+        self.env.append_unique("CFLAGS", asan_flags)
+        self.env.append_unique("LINKFLAGS", asan_flags)
+    self.end_msg(debug_flags)
+
+    self.setenv("release")
+    self.start_msg("Setting C optimization flags for MSVC")
+    optimization_flags = ["/O2"]  # Maximize speed
+    self.env.append_unique("CFLAGS", optimization_flags)
+    self.end_msg(optimization_flags)

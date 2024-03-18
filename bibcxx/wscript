@@ -100,6 +100,8 @@ def check_cxx_compiler_flags(self):
         self.check_cxx_compiler_options("-std=c++17")
         # FIXME: should globally add -fvisibility-hidden
         self.check_cxx_compiler_options("-Wno-attributes")
+    else:
+        self.check_cxx_compiler_options("/std:c++17")
 
     self.start_msg("C++ compiler flags")
     self.end_msg(self.env["CXXFLAGS"])
@@ -137,6 +139,28 @@ def check_optimization_cxxflags(self):
     self.setenv("release")
     self.start_msg("Setting C++ optimization flags")
     flags = ["-O2"]
+    self.env.append_unique("CXXFLAGS", flags)
+    self.end_msg(flags)
+
+@Configure.conf
+def check_optimization_cxxflags_msvc(self):
+    self.setenv("debug")
+    self.start_msg("Setting C++ debug flags for MSVC")
+    self.define("ASTER_DEBUG_CXX", 1)
+    self.remove_optflags("CXXFLAGS")
+    flags = ["/Zi", "/Od"] + Utils.to_list(self.env["CXXFLAGS_ASTER_DEBUG"])
+    if self.options.enable_coverage:
+        # Note: MSVC uses different mechanisms for code coverage; adjust as necessary for your tooling.
+        pass
+    if self.options.enable_asan:
+        flags.extend(["/fsanitize=address"])
+        self.env.append_unique("LINKFLAGS", ["/fsanitize=address"])
+    self.env.append_unique("CXXFLAGS", flags)
+    self.end_msg(flags)
+
+    self.setenv("release")
+    self.start_msg("Setting C++ optimization flags for MSVC")
+    flags = ["/O2"]
     self.env.append_unique("CXXFLAGS", flags)
     self.end_msg(flags)
 

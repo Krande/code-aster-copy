@@ -25,7 +25,7 @@
 #include <sys/param.h>
 #include <sys/sysctl.h>
 #include <sys/user.h>
-#elif defined ASTER_PLATFORM_MINGW
+#elif defined ASTER_PLATFORM_MINGW || defined ASTER_PLATFORM_MSVC64
 #include <psapi.h>
 #include <windows.h>
 #else

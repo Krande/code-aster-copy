@@ -135,6 +135,9 @@ def check_hdf5(self):
 @Configure.conf
 def check_hdf5_libs(self):
     opts = self.options
+    #Logs.info(f"{self.env.INCLUDEDIR=}")
+    #Logs.info(f"{self.env.LIBDIR=}")
+
     check_hdf5 = partial(self.check_cc, mandatory=True, uselib_store="HDF5", use="HDF5 Z")
     if opts.embed_all or opts.embed_hdf5:
         check_lib = lambda lib: check_hdf5(stlib=lib)
@@ -145,13 +148,8 @@ def check_hdf5_libs(self):
 
 @Configure.conf
 def check_hdf5_headers(self):
-    Logs.info(f"{self.env.INCLUDEDIR=}")
-    #check = partial(self.check_cc, header_name="hdf5.h", uselib_store="HDF5", use="HDF5 Z")
-    if self.env.DEST_OS == "win32":
-        check = partial(self.check_cc, header_name="hdf5.h", uselib_store="HDF5", use="HDF5", lib="z")
-    else:
-        check = partial(self.check_cc, header_name="hdf5.h", uselib_store="HDF5", use="HDF5")
 
+    check = partial(self.check_cc, header_name="hdf5.h", uselib_store="HDF5", use="HDF5")
     self.start_msg("Checking for header hdf5.h")
     try:
         if not check(mandatory=False):
@@ -251,7 +249,10 @@ def check_med(self):
 @Configure.conf
 def check_med_libs(self):
     opts = self.options
-    check_med = partial(self.check_cc, mandatory=True, uselib_store="MED", use="MED HDF5 Z")
+    if self.env.CC_NAME == 'msvc':
+        check_med = partial(self.check_cc, mandatory=True, uselib_store="MED", use="MED HDF5 Z")
+    else:
+        check_med = partial(self.check_cc, mandatory=True, uselib_store="MED", use="MED HDF5 Z")
     if opts.embed_all or opts.embed_med:
         check_lib = lambda lib: check_med(stlib=lib)
     else:

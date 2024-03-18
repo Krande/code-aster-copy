@@ -201,7 +201,12 @@ def build(self):
     cfgext = self.env["CFG_EXT"]
     assert cfgext in ("yaml", "json"), cfgext
     # src/srcbin distinction exists for exec mode (644 vs 755)
-    shext = ".bat" if self.env.ASTER_PLATFORM_MINGW else ""
+    Logs.info(f"{self.env.ASTER_PLATFORM_MINGW=}, {self.env.ASTER_PLATFORM_MSVC64=}")
+    if self.env.ASTER_PLATFORM_MINGW or self.env.ASTER_PLATFORM_MSVC64:
+        shext = ".bat"
+    else:
+        shext = ""
+
     src = [
         "CTestTestfile.cmake.tmpl",
         "code_aster_dict.aspell.per",

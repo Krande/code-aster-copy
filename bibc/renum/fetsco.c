@@ -24,7 +24,7 @@
 
 #include <sys/types.h>
 
-#ifdef ASTER_PLATFORM_MINGW
+#ifdef ASTER_PLATFORM_MINGW || ASTER_PLATFORM_MSVC64
 #include <stdint.h>
 #endif
 #endif

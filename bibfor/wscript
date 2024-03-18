@@ -71,8 +71,8 @@ MAIN = "      program main\n      end program main\n"
 
 @Configure.conf
 def check_fortran_compiler_flags(self):
-    self.check_fortran_compiler_options("-fPIC")
     if "gfortran" in self.env.FC_NAME.lower():
+        self.check_fortran_compiler_options("-fPIC")
         if "64" in self.env.DEST_CPU:
             flags = ["-fdefault-%s-%i" % (name, 8) for name in ("double", "integer", "real")]
             self.check_fortran_compiler_options(flags)
@@ -81,6 +81,7 @@ def check_fortran_compiler_flags(self):
         self.check_fortran_compiler_options("-fno-aggressive-loop-optimizations")
         # long lines after preprocessing
         self.check_fortran_compiler_options("-ffree-line-length-none")
+
     if "ifort" in self.env.FC_NAME.lower():
         self.check_fortran_compiler_options(["-fpe0", "-traceback"])
         if "64" in self.env.DEST_CPU:
@@ -347,8 +348,9 @@ def check_sizeof_string_size(self):
         typ = "size_t"
     else:
         typ = "unsigned int"
+
     # because win64
-    if self.env.ASTER_PLATFORM_MINGW:
+    if self.env.ASTER_PLATFORM_MINGW or self.env.ASTER_PLATFORM_MSVC64:
         typ = "size_t"
     self.define("ASTER_C_STRING_SIZE", typ, quote=False)
     self.end_msg(typ)
@@ -521,6 +523,25 @@ def check_optimization_fcflags(self):
     self.env.append_unique("FCFLAGS", optflag)
     self.end_msg(optflag)
 
+@Configure.conf
+def check_optimization_fcflags_msvc(self):
+    self.setenv("debug")
+    self.start_msg("Setting Fortran debug flags for IFort")
+    self.remove_optflags("FCFLAGS")
+    flags = ["/debug:full", "/Od"] + Utils.to_list(self.env["FCFLAGS_ASTER_DEBUG"])
+    # Note: IFort uses different tools for memory checking and code coverage.
+    self.env.append_unique("FCFLAGS", flags)
+    self.end_msg(flags)
+
+    self.setenv("release")
+    self.start_msg("Setting Fortran optimization flags for IFort")
+    flags = ["/O2"]
+    self.env.append_unique("FCFLAGS", flags)
+    self.end_msg(flags)
+
+    # Additional checks and configurations specific to your application's needs
+    # IFort-specific settings for loop optimization and other considerations
+    # can be added here, following IFort documentation and best practices.
 
 @Configure.conf
 def check_optional_features(self):

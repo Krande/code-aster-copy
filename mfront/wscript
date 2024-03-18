@@ -157,7 +157,8 @@ def check_mfront(self):
     # MFront
     self.check_mfront_version((4, 1, 0))
     self.check_mfront_libs()
-    self.check_cxx11_abi()
+    if self.env.CC_NAME != "msvc":
+        self.check_cxx11_abi()
     self.check_mfront_obsolete_source()
 
 

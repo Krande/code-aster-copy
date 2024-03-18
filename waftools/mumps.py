@@ -16,11 +16,12 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
-
+import os
+import pathlib
 import re
 from functools import partial
 
-from waflib import Configure, Errors, Utils
+from waflib import Configure, Errors, Utils, Logs
 
 
 def options(self):
@@ -56,6 +57,10 @@ def options(self):
 
 
 def configure(self):
+    if self.env.CC_NAME == "msvc":
+        mumps_seq_incl = pathlib.Path(os.environ.get("CONDA_PREFIX")) / 'Library/include/mumps_seq'
+        self.env.append_value('INCLUDES', [mumps_seq_incl.as_posix()])
+
     try:
         self.env.stash()
         self.check_mumps()
@@ -85,7 +90,7 @@ def check_mumps(self):
     self.check_sizeof_mumps_integer()
     if opts.mumps_libs is None:
         opts.mumps_libs = "dmumps zmumps smumps cmumps mumps_common pord"
-    if not self.env.BUILD_MPI:
+    if not self.env.BUILD_MPI and self.env.CC_NAME != "msvc":
         opts.mumps_libs += " mpiseq"
     if opts.mumps_libs:
         self.check_mumps_libs()
@@ -112,6 +117,8 @@ def check_mumps_headers(self):
       PRINT *, 'ok'
       END PROGRAM MAIN
 """
+
+    # Logs.warn(f"{self.env['INCLUDES']=}")
     headers = [i + "mumps_struc.h" for i in "sdcz"] + ["mpif.h"]
     if self.get_define("ASTER_HAVE_MPI"):
         for path in self.env["INCLUDES"][:]:
@@ -121,6 +128,7 @@ def check_mumps_headers(self):
                 self.end_msg(path, "YELLOW")
     for inc in headers:
         try:
+
             self.start_msg("Checking for {0}".format(inc))
             self.check_fc(
                 fragment=fragment.format(inc),
