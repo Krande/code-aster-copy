@@ -68,7 +68,7 @@ DiscreteComputation::_getDirichletBC( const ASTERDOUBLE time_curr ) const {
 
     // Prepare loads
     const auto &_listOfLoads = _phys_problem->getListOfLoads();
-    if ( !_listOfLoads->hasBeenBuilt() )
+    if ( !_listOfLoads->isBuilt() )
         _listOfLoads->build( _phys_problem->getModel() );
 
     JeveuxVectorChar24 listOfLoadsList = _listOfLoads->getListVector();

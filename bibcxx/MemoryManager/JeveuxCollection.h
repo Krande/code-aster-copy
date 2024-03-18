@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe JeveuxCollection
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -87,8 +87,8 @@ private:
   /** @brief std::map associant une chaine a un JeveuxCollObjValType */
   typedef std::map<std::string, ASTERINTEGER> mapStrInt;
 
-  /** @brief La collection est-elle vide ? */
-  bool _isEmpty;
+  /** @brief La collection a-t-elle été construite ? */
+  bool _isBuilt;
   /** @brief La collection est-elle nommée ? */
   bool _isNamed;
   /** @brief Listes de objets de collection */
@@ -134,7 +134,7 @@ private:
       typeColl3 = "CONSTANT";
 
     CALLO_JECREC(_name, carac, typeColl1, typeColl2, typeColl3, &taille);
-    _isEmpty = false;
+    _isBuilt = true;
     if (storage == Contiguous) {
       if (totalSize <= 0) {
         AS_ABORT("Total size of a contiguous collection must be grower than 0");
@@ -171,7 +171,7 @@ public:
    */
   template <typename T1 = AccessType, typename = IsSame<T1, ASTERINTEGER>>
   JeveuxCollectionClass(const std::string &name)
-      : JeveuxObjectClass(name), _isNamed(false), _isEmpty(true), _namesMap(0),
+      : JeveuxObjectClass(name), _isNamed(false), _isBuilt(false), _namesMap(0),
         _capacity(0), _totalSize(0) {}
 
   /**
@@ -180,7 +180,7 @@ public:
    */
   template <typename T1 = AccessType, typename = IsNotSame<T1, ASTERINTEGER>>
   JeveuxCollectionClass(const std::string &name, AccessType ptr)
-      : JeveuxObjectClass(name), _isNamed(false), _isEmpty(true),
+      : JeveuxObjectClass(name), _isNamed(false), _isBuilt(false),
         _namesMap(ptr), _capacity(0), _totalSize(0){};
 
   ~JeveuxCollectionClass() {
@@ -480,7 +480,7 @@ public:
   inline const JeveuxCollObjValType &
   operator[](const ASTERINTEGER &position) const {
 #ifdef ASTER_DEBUG_CXX
-    if (_isEmpty) {
+    if (!_isBuilt) {
       AS_ABORT("Collection not built: " + _name);
     }
 
@@ -493,7 +493,7 @@ public:
 
   inline JeveuxCollObjValType &operator[](const ASTERINTEGER &position) {
 #ifdef ASTER_DEBUG_CXX
-    if (_isEmpty) {
+    if (!_isBuilt) {
       AS_ABORT("Collection not built: " + _name);
     }
 
@@ -506,7 +506,7 @@ public:
 
   inline const JeveuxCollObjValType &operator[](const std::string &name) const {
 #ifdef ASTER_DEBUG_CXX
-    if (_isEmpty) {
+    if (!_isBuilt) {
       AS_ABORT("Collection not built: " + _name);
     }
 
@@ -523,7 +523,7 @@ public:
 
   inline JeveuxCollObjValType &operator[](const std::string &name) {
 #ifdef ASTER_DEBUG_CXX
-    if (_isEmpty) {
+    if (!_isBuilt) {
       AS_ABORT("Collection not built: " + _name);
     }
 
@@ -570,7 +570,7 @@ public:
     }
   };
 
-  inline bool empty() const { return _isEmpty; };
+  inline bool isBuilt() const { return _isBuilt; };
 
   /**
    * @brief Surcharge de l'operateur =
@@ -664,7 +664,7 @@ bool JeveuxCollectionClass<ValueType, AccessType>::build(bool force) {
   JeveuxChar8 param2("NMAXOC");
   CALLO_JELIRA(_name, param2, &_capacity, charval);
 
-  if (!force && !_isEmpty && size() == nbColObj) {
+  if (!force && _isBuilt && size() == nbColObj) {
     return true;
   }
 
@@ -689,7 +689,7 @@ bool JeveuxCollectionClass<ValueType, AccessType>::build(bool force) {
     }
   }
 
-  _isEmpty = false;
+  _isBuilt = true;
   return true;
 };
 

@@ -139,7 +139,7 @@ class AssemblyMatrix : public BaseAssemblyMatrix {
      */
     void addElementaryMatrix( const ElementaryMatrixPtr &currentElemMatrix,
                               ASTERDOUBLE coeff = 1.0 ) {
-        if ( currentElemMatrix && !currentElemMatrix->isEmpty() ) {
+        if ( currentElemMatrix && currentElemMatrix->isBuilt() ) {
             if ( currentElemMatrix->hasElementaryTerms() ||
                  currentElemMatrix->existsSuperElement() ) {
                 _elemMatrix.push_back( currentElemMatrix );
@@ -259,7 +259,7 @@ class AssemblyMatrix : public BaseAssemblyMatrix {
         AS_ASSERT( mat.isSimilarTo( mat2 ) );
         const ASTERDOUBLE c1 = 1.0, c2 = 1.0;
         CALL_ADDMATRASSE( mat1.getName(), mat2.getName(), &c1, &c2, mat.getName() );
-        mat._isEmpty = false;
+        mat._isBuilt = true;
         return mat;
     };
 
@@ -276,7 +276,7 @@ class AssemblyMatrix : public BaseAssemblyMatrix {
         AS_ASSERT( mat.isSimilarTo( mat2 ) );
         const ASTERDOUBLE c1 = 1.0, c2 = -1.0;
         CALL_ADDMATRASSE( mat1.getName(), mat2.getName(), &c1, &c2, mat.getName() );
-        mat._isEmpty = false;
+        mat._isBuilt = true;
         return mat;
     };
 
@@ -498,13 +498,13 @@ bool AssemblyMatrix< ValueType, PhysicalQuantity >::assemble( bool clean ) {
     std::string base( "G" );
     std::string cumul( "ZERO" );
 
-    if ( !_listOfLoads->hasBeenBuilt() && _listOfLoads->getNumberOfLoads() != 0 )
+    if ( !_listOfLoads->isBuilt() && _listOfLoads->getNumberOfLoads() != 0 )
         _listOfLoads->build();
 
     CALL_ASMATR( &nbMatrElem, tabNames, list_coef->getName().c_str(), _dofNum->getName().c_str(),
                  _listOfLoads->getName().c_str(), cumul.c_str(), base.c_str(), &typscal,
                  getName().c_str() );
-    _isEmpty = false;
+    _isBuilt = true;
 
     // free matr_elem string
     FreeStr( tabNames );

@@ -38,7 +38,7 @@ ListOfLoads::ListOfLoads( const std::string &name, const ModelPtr model )
       _loadInformations( JeveuxVectorLong( getName() + ".INFC" ) ),
       _list( JeveuxVectorChar24( getName() + ".LCHA" ) ),
       _listOfFunctions( JeveuxVectorChar24( getName() + ".FCHA" ) ),
-      _hasBeenBuilt( false ),
+      _isBuilt( false ),
       _model( model ) {};
 
 ListOfLoads::ListOfLoads( const ModelPtr model )
@@ -79,7 +79,7 @@ int ListOfLoads::getPhysics( void ) const {
 };
 
 bool ListOfLoads::build( ModelPtr model, std::string command_name ) {
-    if ( _hasBeenBuilt )
+    if ( _isBuilt )
         return true;
 
     int physic;
@@ -270,7 +270,7 @@ bool ListOfLoads::build( ModelPtr model, std::string command_name ) {
         AS_ABORT( "Should not be here" );
     }
 
-    _hasBeenBuilt = true;
+    _isBuilt = true;
     return true;
 };
 

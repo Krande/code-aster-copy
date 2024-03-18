@@ -3,7 +3,7 @@
  * @brief Initialisation des renumeroteurs autorises pour les solvers
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -34,7 +34,7 @@
 
 LinearSolver::LinearSolver( const std::string name )
     : DataStructure( name, 19, "SOLVEUR" ),
-      _isEmpty( true ),
+      _isBuilt( false ),
       _charValues( JeveuxVectorChar24( getName() + ".SLVK" ) ),
       _doubleValues( JeveuxVectorReal( getName() + ".SLVR" ) ),
       _integerValues( JeveuxVectorLong( getName() + ".SLVI" ) ),
@@ -48,7 +48,7 @@ LinearSolver::LinearSolver( const std::string name )
       };
 
 void LinearSolver::setKeywords( py::object &user_keywords ) {
-    _isEmpty = true;
+    _isBuilt = false;
     _keywords = user_keywords;
 #ifdef ASTER_DEBUG_CXX
     PYDBG( "setKeywords:", _keywords.ptr() );
@@ -87,7 +87,7 @@ bool LinearSolver::build() {
         xfem = "OUI";
     }
     CALLO_CRESOL_WRAP( newName, base, xfem );
-    _isEmpty = false;
+    _isBuilt = true;
 
     return true;
 };
@@ -113,7 +113,7 @@ bool LinearSolver::factorize( const BaseAssemblyMatrixPtr currentMatrix, bool ra
         }
     }
 
-    if ( _isEmpty )
+    if ( !_isBuilt )
         build();
 
     const std::string solverName( getName() + "           " );

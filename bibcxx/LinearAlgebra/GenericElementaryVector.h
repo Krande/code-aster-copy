@@ -3,7 +3,7 @@
  * @brief Definition of elementary vectors
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -209,7 +209,7 @@ class GenericElementaryVector : public BaseElementaryVector {
             }
         }
 
-        _isEmpty = false;
+        _isBuilt = true;
         return true;
     };
 
@@ -229,7 +229,7 @@ class GenericElementaryVector : public BaseElementaryVector {
     bool isMPIFull() {
 #ifdef ASTER_HAVE_MPI
         for ( auto &elemTerm : _elemTerm ) {
-            if ( !elemTerm->isEmpty() && !elemTerm->isMPIFull() ) {
+            if ( elemTerm->isEmpty() && !elemTerm->isMPIFull() ) {
                 return false;
             }
         }
@@ -276,7 +276,7 @@ class GenericElementaryVector : public BaseElementaryVector {
      * @param dofNume object DOFNumbering
      */
     FieldOnNodesPtr assemble( const BaseDOFNumberingPtr dofNume = nullptr ) const {
-        if ( _isEmpty )
+        if ( !_isBuilt )
             raiseAsterError( "The ElementaryVector is empty. Call build before" );
 
         BaseDOFNumberingPtr nume = dofNume;

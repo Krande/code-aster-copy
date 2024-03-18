@@ -6,7 +6,7 @@
  * @brief Definition of elementary matrices
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -44,8 +44,8 @@
  */
 class BaseElementaryMatrix : public DataStructure {
   protected:
-    /** @brief Flag for empty datastructure */
-    bool _isEmpty;
+    /** @brief Flag for empty datastructure (either empty or built)*/
+    bool _isBuilt;
 
     /** @brief Model */
     ModelPtr _model;
@@ -85,15 +85,15 @@ class BaseElementaryMatrix : public DataStructure {
 
     /**
      * @brief Detect state of datastructure
-     * @return true if empty datastructure
+     * @return true if datastructure is not empty
      */
-    bool isEmpty() const { return _isEmpty; };
+    bool isBuilt() const { return _isBuilt; };
 
     /**
      * @brief Set state of datastructure
-     * @param bEmpty flag for state of datastructure
+     * @param bBuilt flag for state of datastructure
      */
-    void isEmpty( bool bEmpty ) { _isEmpty = bEmpty; };
+    void isBuilt( bool bBuilt ) { _isBuilt = bBuilt; };
 
     /**
      * @brief Set the field of material parameters

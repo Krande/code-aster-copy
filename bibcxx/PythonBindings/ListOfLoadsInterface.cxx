@@ -33,7 +33,7 @@ void exportListOfLoadsToPython( py::module_ &mod ) {
     c1.def( py::init( &initFactoryPtr< ListOfLoads, std::string > ) );
     c1.def( py::init( &initFactoryPtr< ListOfLoads, ModelPtr > ) );
     c1.def( py::init( &initFactoryPtr< ListOfLoads, std::string, ModelPtr > ) );
-    c1.def( "hasBeenBuilt", &ListOfLoads::hasBeenBuilt, R"(
+    c1.def( "isBuilt", &ListOfLoads::isBuilt, R"(
             The list of loads has been built or not.
 
             Returns:

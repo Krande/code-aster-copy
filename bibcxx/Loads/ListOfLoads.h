@@ -102,7 +102,7 @@ class ListOfLoads : public DataStructure {
     /** @brief FiniteElementDescriptor for contact - Slave element / Pairing couple */
     std::pair< FiniteElementDescriptorPtr, FiniteElementDescriptorPtr > _contact;
     /** @brief Le chargement a-t-il été construit ? */
-    bool _hasBeenBuilt;
+    bool _isBuilt;
     /** @brief Model */
     ModelPtr _model;
 
@@ -137,7 +137,7 @@ class ListOfLoads : public DataStructure {
      * @param func multiplier function
      */
     void addLoad( const DirichletBCPtr &currentLoad, const FunctionPtr &func ) {
-        _hasBeenBuilt = false;
+        _isBuilt = false;
         this->setModel( currentLoad->getModel() );
         _listOfDirichletBCs.push_back( currentLoad );
         _listOfDiriFun.push_back( func );
@@ -149,7 +149,7 @@ class ListOfLoads : public DataStructure {
      * @param func multiplier formula
      */
     void addLoad( const DirichletBCPtr &currentLoad, const FormulaPtr &func ) {
-        _hasBeenBuilt = false;
+        _isBuilt = false;
         this->setModel( currentLoad->getModel() );
         _listOfDirichletBCs.push_back( currentLoad );
         _listOfDiriFun.push_back( func );
@@ -161,7 +161,7 @@ class ListOfLoads : public DataStructure {
      * @param func multiplier function2d
      */
     void addLoad( const DirichletBCPtr &currentLoad, const Function2DPtr &func ) {
-        _hasBeenBuilt = false;
+        _isBuilt = false;
         this->setModel( currentLoad->getModel() );
         _listOfDirichletBCs.push_back( currentLoad );
         _listOfDiriFun.push_back( func );
@@ -177,7 +177,7 @@ class ListOfLoads : public DataStructure {
      * @param func multiplier function
      */
     void addLoad( const MechanicalLoadRealPtr &currentLoad, const FunctionPtr &func ) {
-        _hasBeenBuilt = false;
+        _isBuilt = false;
         this->setModel( currentLoad->getModel() );
         _listOfMechanicalLoadsReal.push_back( currentLoad );
         _listOfMechaFuncReal.push_back( func );
@@ -189,7 +189,7 @@ class ListOfLoads : public DataStructure {
      * @param func multiplier formula
      */
     void addLoad( const MechanicalLoadRealPtr &currentLoad, const FormulaPtr &func ) {
-        _hasBeenBuilt = false;
+        _isBuilt = false;
         this->setModel( currentLoad->getModel() );
         _listOfMechanicalLoadsReal.push_back( currentLoad );
         _listOfMechaFuncReal.push_back( func );
@@ -201,7 +201,7 @@ class ListOfLoads : public DataStructure {
      * @param func multiplier function2d
      */
     void addLoad( const MechanicalLoadRealPtr &currentLoad, const Function2DPtr &func ) {
-        _hasBeenBuilt = false;
+        _isBuilt = false;
         this->setModel( currentLoad->getModel() );
         _listOfMechanicalLoadsReal.push_back( currentLoad );
         _listOfMechaFuncReal.push_back( func );
@@ -217,7 +217,7 @@ class ListOfLoads : public DataStructure {
      * @param func multiplier function
      */
     void addLoad( const MechanicalLoadComplexPtr &currentLoad, const FunctionPtr &func ) {
-        _hasBeenBuilt = false;
+        _isBuilt = false;
         this->setModel( currentLoad->getModel() );
         _listOfMechanicalLoadsComplex.push_back( currentLoad );
         _listOfMechaFuncComplex.push_back( func );
@@ -229,7 +229,7 @@ class ListOfLoads : public DataStructure {
      * @param func multiplier formula
      */
     void addLoad( const MechanicalLoadComplexPtr &currentLoad, const FormulaPtr &func ) {
-        _hasBeenBuilt = false;
+        _isBuilt = false;
         this->setModel( currentLoad->getModel() );
         _listOfMechanicalLoadsComplex.push_back( currentLoad );
         _listOfMechaFuncComplex.push_back( func );
@@ -241,7 +241,7 @@ class ListOfLoads : public DataStructure {
      * @param func multiplier function2d
      */
     void addLoad( const MechanicalLoadComplexPtr &currentLoad, const Function2DPtr &func ) {
-        _hasBeenBuilt = false;
+        _isBuilt = false;
         this->setModel( currentLoad->getModel() );
         _listOfMechanicalLoadsComplex.push_back( currentLoad );
         _listOfMechaFuncComplex.push_back( func );
@@ -257,7 +257,7 @@ class ListOfLoads : public DataStructure {
      * @param func multiplier function
      */
     void addLoad( const MechanicalLoadFunctionPtr &currentLoad, const FunctionPtr &func ) {
-        _hasBeenBuilt = false;
+        _isBuilt = false;
         this->setModel( currentLoad->getModel() );
         _listOfMechanicalLoadsFunction.push_back( currentLoad );
         _listOfMechaFuncFunction.push_back( func );
@@ -269,7 +269,7 @@ class ListOfLoads : public DataStructure {
      * @param func multiplier formula
      */
     void addLoad( const MechanicalLoadFunctionPtr &currentLoad, const FormulaPtr &func ) {
-        _hasBeenBuilt = false;
+        _isBuilt = false;
         this->setModel( currentLoad->getModel() );
         _listOfMechanicalLoadsFunction.push_back( currentLoad );
         _listOfMechaFuncFunction.push_back( func );
@@ -281,7 +281,7 @@ class ListOfLoads : public DataStructure {
      * @param func multiplier function2d
      */
     void addLoad( const MechanicalLoadFunctionPtr &currentLoad, const Function2DPtr &func ) {
-        _hasBeenBuilt = false;
+        _isBuilt = false;
         this->setModel( currentLoad->getModel() );
         _listOfMechanicalLoadsFunction.push_back( currentLoad );
         _listOfMechaFuncFunction.push_back( func );
@@ -298,7 +298,7 @@ class ListOfLoads : public DataStructure {
      * @param func multiplier function
      */
     void addLoad( const ParallelMechanicalLoadRealPtr &currentLoad, const FunctionPtr &func ) {
-        _hasBeenBuilt = false;
+        _isBuilt = false;
         this->setModel( currentLoad->getModel() );
         _listOfParallelMechanicalLoadsReal.push_back( currentLoad );
         _listOfParaMechaFuncReal.push_back( func );
@@ -310,7 +310,7 @@ class ListOfLoads : public DataStructure {
      * @param func multiplier formula
      */
     void addLoad( const ParallelMechanicalLoadRealPtr &currentLoad, const FormulaPtr &func ) {
-        _hasBeenBuilt = false;
+        _isBuilt = false;
         this->setModel( currentLoad->getModel() );
         _listOfParallelMechanicalLoadsReal.push_back( currentLoad );
         _listOfParaMechaFuncReal.push_back( func );
@@ -322,7 +322,7 @@ class ListOfLoads : public DataStructure {
      * @param func multiplier function2d
      */
     void addLoad( const ParallelMechanicalLoadRealPtr &currentLoad, const Function2DPtr &func ) {
-        _hasBeenBuilt = false;
+        _isBuilt = false;
         this->setModel( currentLoad->getModel() );
         _listOfParallelMechanicalLoadsReal.push_back( currentLoad );
         _listOfParaMechaFuncReal.push_back( func );
@@ -338,7 +338,7 @@ class ListOfLoads : public DataStructure {
      * @param func multiplier function
      */
     void addLoad( const ParallelMechanicalLoadFunctionPtr &currentLoad, const FunctionPtr &func ) {
-        _hasBeenBuilt = false;
+        _isBuilt = false;
         this->setModel( currentLoad->getModel() );
         _listOfParallelMechanicalLoadsFunction.push_back( currentLoad );
         _listOfParaMechaFuncFunction.push_back( func );
@@ -350,7 +350,7 @@ class ListOfLoads : public DataStructure {
      * @param func multiplier formula
      */
     void addLoad( const ParallelMechanicalLoadFunctionPtr &currentLoad, const FormulaPtr &func ) {
-        _hasBeenBuilt = false;
+        _isBuilt = false;
         this->setModel( currentLoad->getModel() );
         _listOfParallelMechanicalLoadsFunction.push_back( currentLoad );
         _listOfParaMechaFuncFunction.push_back( func );
@@ -363,7 +363,7 @@ class ListOfLoads : public DataStructure {
      */
     void addLoad( const ParallelMechanicalLoadFunctionPtr &currentLoad,
                   const Function2DPtr &func ) {
-        _hasBeenBuilt = false;
+        _isBuilt = false;
         this->setModel( currentLoad->getModel() );
         _listOfParallelMechanicalLoadsFunction.push_back( currentLoad );
         _listOfParaMechaFuncFunction.push_back( func );
@@ -380,7 +380,7 @@ class ListOfLoads : public DataStructure {
      * @param func multiplier function
      */
     void addLoad( const ThermalLoadRealPtr &currentLoad, const FunctionPtr &func ) {
-        _hasBeenBuilt = false;
+        _isBuilt = false;
         this->setModel( currentLoad->getModel() );
         _listOfThermalLoadsReal.push_back( currentLoad );
         _listOfTherFuncReal.push_back( func );
@@ -392,7 +392,7 @@ class ListOfLoads : public DataStructure {
      * @param func multiplier formula
      */
     void addLoad( const ThermalLoadRealPtr &currentLoad, const FormulaPtr &func ) {
-        _hasBeenBuilt = false;
+        _isBuilt = false;
         this->setModel( currentLoad->getModel() );
         _listOfThermalLoadsReal.push_back( currentLoad );
         _listOfTherFuncReal.push_back( func );
@@ -404,7 +404,7 @@ class ListOfLoads : public DataStructure {
      * @param func multiplier function2d
      */
     void addLoad( const ThermalLoadRealPtr &currentLoad, const Function2DPtr &func ) {
-        _hasBeenBuilt = false;
+        _isBuilt = false;
         this->setModel( currentLoad->getModel() );
         _listOfThermalLoadsReal.push_back( currentLoad );
         _listOfTherFuncReal.push_back( func );
@@ -420,7 +420,7 @@ class ListOfLoads : public DataStructure {
      * @param func multiplier function
      */
     void addLoad( const ThermalLoadFunctionPtr &currentLoad, const FunctionPtr &func ) {
-        _hasBeenBuilt = false;
+        _isBuilt = false;
         this->setModel( currentLoad->getModel() );
         _listOfThermalLoadsFunction.push_back( currentLoad );
         _listOfTherFuncFunction.push_back( func );
@@ -432,7 +432,7 @@ class ListOfLoads : public DataStructure {
      * @param func multiplier formula
      */
     void addLoad( const ThermalLoadFunctionPtr &currentLoad, const FormulaPtr &func ) {
-        _hasBeenBuilt = false;
+        _isBuilt = false;
         this->setModel( currentLoad->getModel() );
         _listOfThermalLoadsFunction.push_back( currentLoad );
         _listOfTherFuncFunction.push_back( func );
@@ -444,7 +444,7 @@ class ListOfLoads : public DataStructure {
      * @param func multiplier function2d
      */
     void addLoad( const ThermalLoadFunctionPtr &currentLoad, const Function2DPtr &func ) {
-        _hasBeenBuilt = false;
+        _isBuilt = false;
         this->setModel( currentLoad->getModel() );
         _listOfThermalLoadsFunction.push_back( currentLoad );
         _listOfTherFuncFunction.push_back( func );
@@ -462,7 +462,7 @@ class ListOfLoads : public DataStructure {
      * @param func multiplier function
      */
     void addLoad( const ParallelThermalLoadRealPtr &currentLoad, const FunctionPtr &func ) {
-        _hasBeenBuilt = false;
+        _isBuilt = false;
         this->setModel( currentLoad->getModel() );
         _listOfParallelThermalLoadsReal.push_back( currentLoad );
         _listOfParaTherFuncReal.push_back( func );
@@ -474,7 +474,7 @@ class ListOfLoads : public DataStructure {
      * @param func multiplier formula
      */
     void addLoad( const ParallelThermalLoadRealPtr &currentLoad, const FormulaPtr &func ) {
-        _hasBeenBuilt = false;
+        _isBuilt = false;
         this->setModel( currentLoad->getModel() );
         _listOfParallelThermalLoadsReal.push_back( currentLoad );
         _listOfParaTherFuncReal.push_back( func );
@@ -486,7 +486,7 @@ class ListOfLoads : public DataStructure {
      * @param func multiplier function2d
      */
     void addLoad( const ParallelThermalLoadRealPtr &currentLoad, const Function2DPtr &func ) {
-        _hasBeenBuilt = false;
+        _isBuilt = false;
         this->setModel( currentLoad->getModel() );
         _listOfParallelThermalLoadsReal.push_back( currentLoad );
         _listOfParaTherFuncReal.push_back( func );
@@ -502,7 +502,7 @@ class ListOfLoads : public DataStructure {
      * @param func multiplier function
      */
     void addLoad( const ParallelThermalLoadFunctionPtr &currentLoad, const FunctionPtr &func ) {
-        _hasBeenBuilt = false;
+        _isBuilt = false;
         this->setModel( currentLoad->getModel() );
         _listOfParallelThermalLoadsFunction.push_back( currentLoad );
         _listOfParaTherFuncFunction.push_back( func );
@@ -514,7 +514,7 @@ class ListOfLoads : public DataStructure {
      * @param func multiplier formula
      */
     void addLoad( const ParallelThermalLoadFunctionPtr &currentLoad, const FormulaPtr &func ) {
-        _hasBeenBuilt = false;
+        _isBuilt = false;
         this->setModel( currentLoad->getModel() );
         _listOfParallelThermalLoadsFunction.push_back( currentLoad );
         _listOfParaTherFuncFunction.push_back( func );
@@ -526,7 +526,7 @@ class ListOfLoads : public DataStructure {
      * @param func multiplier function2d
      */
     void addLoad( const ParallelThermalLoadFunctionPtr &currentLoad, const Function2DPtr &func ) {
-        _hasBeenBuilt = false;
+        _isBuilt = false;
         this->setModel( currentLoad->getModel() );
         _listOfParallelThermalLoadsFunction.push_back( currentLoad );
         _listOfParaTherFuncFunction.push_back( func );
@@ -544,7 +544,7 @@ class ListOfLoads : public DataStructure {
      * @param func multiplier function
      */
     void addLoad( const AcousticLoadComplexPtr &currentLoad, const FunctionPtr &func ) {
-        _hasBeenBuilt = false;
+        _isBuilt = false;
         this->setModel( currentLoad->getModel() );
         _listOfAcousticLoadsComplex.push_back( currentLoad );
         _listOfAcouFuncComplex.push_back( func );
@@ -556,7 +556,7 @@ class ListOfLoads : public DataStructure {
      * @param func multiplier formula
      */
     void addLoad( const AcousticLoadComplexPtr &currentLoad, const FormulaPtr &func ) {
-        _hasBeenBuilt = false;
+        _isBuilt = false;
         this->setModel( currentLoad->getModel() );
         _listOfAcousticLoadsComplex.push_back( currentLoad );
         _listOfAcouFuncComplex.push_back( func );
@@ -568,7 +568,7 @@ class ListOfLoads : public DataStructure {
      * @param func multiplier function2d
      */
     void addLoad( const AcousticLoadComplexPtr &currentLoad, const Function2DPtr &func ) {
-        _hasBeenBuilt = false;
+        _isBuilt = false;
         this->setModel( currentLoad->getModel() );
         _listOfAcousticLoadsComplex.push_back( currentLoad );
         _listOfAcouFuncComplex.push_back( func );
@@ -579,7 +579,7 @@ class ListOfLoads : public DataStructure {
      */
     void addContactLoadDescriptor( const FiniteElementDescriptorPtr fedSlave,
                                    const FiniteElementDescriptorPtr fedPair ) {
-        _hasBeenBuilt = false;
+        _isBuilt = false;
         this->setModel( fedSlave->getModel() );
         _contact = std::make_pair( fedSlave, fedPair );
     };
@@ -711,7 +711,7 @@ class ListOfLoads : public DataStructure {
      * @brief Methode permettant de savoir si le chargement a été construit
      * @return true si construit
      */
-    bool hasBeenBuilt() { return _hasBeenBuilt; };
+    bool isBuilt() { return _isBuilt; };
 
     /**
      * @brief Nombre de charges

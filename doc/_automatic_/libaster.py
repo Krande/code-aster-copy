@@ -4442,13 +4442,6 @@ class ListOfLoads(DataStructure):
             ListParaMecaLoadReal: a list of real parallel mechanical loads
         """
 
-    def hasBeenBuilt(self):
-        """The list of loads has been built or not.
-
-        Returns:
-            bool: True if has been built already.
-        """
-
     def hasDirichletBC(self):
         """Dirichlet BCs have been added or not ?
 
@@ -4461,6 +4454,13 @@ class ListOfLoads(DataStructure):
 
         Returns:
             bool: True if External load have been added
+        """
+
+    def isBuilt(self):
+        """The list of loads has been built or not.
+
+        Returns:
+            bool: True if has been built already.
         """
 
 
@@ -6239,11 +6239,11 @@ class BaseAssemblyMatrix(DataStructure):
             bool: *True* if matrix has some DOFs eliminated by Dirichlet boundaries conditions else *False*
         """
 
-    def isEmpty(self):
-        """Tell if the matrix is empty.
+    def isBuilt(self):
+        """Tell if the matrix has already been built.
 
         Returns:
-            bool: *True* if the matrix is empty.
+            bool: *True* if the matrix has been built.
         """
 
     def isFactorized(self):

@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe StructureInterface
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -53,7 +53,7 @@ class StructureInterface : public DataStructure {
     /** @brief Numérotation */
     const DOFNumberingPtr _dofNum;
     ASTERDOUBLE _frequency;
-    bool _isEmpty;
+    bool _isBuilt;
 
     JeveuxCollectionLong _codingNumbers;
     JeveuxVectorLong _numbering;
@@ -115,7 +115,7 @@ class StructureInterface : public DataStructure {
     StructureInterface( const std::string name )
         : DataStructure( name, 8, "INTERF_DYNA_CLAS" ),
           _frequency( 1. ),
-          _isEmpty( true ),
+          _isBuilt( false ),
           _codingNumbers( JeveuxCollectionLong( getName() + ".IDC_DDAC" ) ),
           _numbering( JeveuxVectorLong( getName() + ".IDC_DEFO" ) ),
           _description( JeveuxVectorLong( getName() + ".IDC_DESC" ) ),
@@ -138,7 +138,7 @@ class StructureInterface : public DataStructure {
     StructureInterface( const std::string name, const DOFNumberingPtr &curDof )
         : DataStructure( name, 8, "INTERF_DYNA_CLAS" ),
           _frequency( 1. ),
-          _isEmpty( true ),
+          _isBuilt( false ),
           _codingNumbers( JeveuxCollectionLong( getName() + ".IDC_DDAC" ) ),
           _numbering( JeveuxVectorLong( getName() + ".IDC_DEFO" ) ),
           _description( JeveuxVectorLong( getName() + ".IDC_DESC" ) ),

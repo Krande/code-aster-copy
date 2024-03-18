@@ -41,8 +41,8 @@
  */
 class BaseElementaryVector : public DataStructure {
   protected:
-    /** @brief Flag for empty datastructure */
-    bool _isEmpty;
+    /** @brief Flag for empty datastructure (either built or empty)*/
+    bool _isBuilt;
 
     /** @brief Model */
     ModelPtr _model;
@@ -69,7 +69,7 @@ class BaseElementaryVector : public DataStructure {
     /** @brief Constructor with a name */
     BaseElementaryVector( const std::string name, const std::string type = "VECT_ELEM" )
         : DataStructure( name, 19, type ),
-          _isEmpty( true ),
+          _isBuilt( false ),
           _model( nullptr ),
           _materialField( nullptr ),
           _elemChara( nullptr ),
@@ -121,15 +121,15 @@ class BaseElementaryVector : public DataStructure {
 
     /**
      * @brief Detect state of datastructure
-     * @return true if empty datastructure
+     * @return true if datastructure has been built (not empty)
      */
-    bool isEmpty() { return _isEmpty; };
+    bool isBuilt() { return _isBuilt; };
 
     /**
      * @brief Set state of datastructure
-     * @param bEmpty flag for state of datastructure
+     * @param bBuilt flag for state of datastructure
      */
-    void isEmpty( bool bEmpty ) { _isEmpty = bEmpty; };
+    void isBuilt( bool bBuilt ) { _isBuilt = bBuilt; };
 
     /**
      * @brief Set physical problem
