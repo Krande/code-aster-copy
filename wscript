@@ -52,6 +52,7 @@ if sys.version_info < (3, 6):
 
 
 def options(self):
+    self.load('clang_compilation_database', tooldir="conda")
     orig_get_usage = self.parser.get_usage
 
     def _usage():
@@ -98,7 +99,7 @@ def options(self):
     # replace path in description
     new_descr = descr.replace("/usr/local", default_prefix)
     new_descr += (
-        ". Using 'waf_variant', '%s' will be automatically replaced by 'variant'." % install_suffix
+            ". Using 'waf_variant', '%s' will be automatically replaced by 'variant'." % install_suffix
     )
     group.set_description(new_descr)
     # change default value for '--prefix'
@@ -119,14 +120,14 @@ def options(self):
         action="store_true",
         default=False,
         help="use fast algorithm based on modification time to "
-        "check for dependencies of fortran sources",
+             "check for dependencies of fortran sources",
     )
     group.add_option(
         "--safe",
         dest="custom_fc_sig",
         action="store_false",
         help="use safe algorithm based on content to check for "
-        "implicit dependencies of fortran sources",
+             "implicit dependencies of fortran sources",
     )
     group.add_option(
         "--coverage",
@@ -185,14 +186,14 @@ def options(self):
         action="store_true",
         default=None,
         help="activate all 'enable-*' options, means that all prerequisites are required"
-        "(same as ENABLE_ALL=1 environment variable)",
+             "(same as ENABLE_ALL=1 environment variable)",
     )
     group.add_option(
         "--no-enable-all",
         dest="enable_all",
         action="store_false",
         help="try to build with some missing prerequisites (same as "
-        "ENABLE_ALL=0 environment variable)",
+             "ENABLE_ALL=0 environment variable)",
     )
 
 
@@ -317,9 +318,10 @@ def configure(self):
     self.check_optimization_options()
     self.write_config_headers()
 
+    self.load('clang_compilation_database', tooldir="conda")
+
 
 def build(self):
-
     fc._use_custom_sig = self.options.custom_fc_sig
     # shared the list of dependencies between bibc/bibfor
     # the order may be important
@@ -339,6 +341,16 @@ def build(self):
         )
 
     self.load("ext_aster", tooldir="waftools")
+    # Need to remove Windows Kits includes from INCLUDES
+    if self.env.CC_NAME == "msvc":
+        pops = []
+        for i, inc in enumerate(self.env.INCLUDES):
+            if "Windows Kits" in inc:
+                pops.append(inc)
+        for inc_to_be_removed in pops:
+            i = self.env.INCLUDES.index(inc_to_be_removed)
+            self.env.INCLUDES.pop(i)
+
     self.recurse("bibfor")
     self.recurse("code_aster")
     self.recurse("run_aster")
@@ -354,6 +366,7 @@ def build(self):
         osp.join(self.env.ASTERLIBDIR, "code_aster", "Utilities", "aster_config.py"),
         ["aster_config.py"],
     )
+
 
 
 def build_elements(self):
@@ -382,7 +395,6 @@ def init(self):
 
     # default to release
     for y in _all:
-
         class tmp(y):
             variant = os.environ.get("WAF_DEFAULT_VARIANT") or "release"
 
@@ -483,7 +495,9 @@ def check_platform(self):
         self.undefine("ASTER_PLATFORM_MSVC64")
     elif os_name.startswith("msvc"):
         self.define("ASTER_PLATFORM_MSVC64", 1)
+        self.define("ASTER_PLATFORM_WINDOWS", 1)
         self.env.ASTER_PLATFORM_MSVC64 = True
+        self.env.ASTER_PLATFORM_WINDOWS = True
         self.undefine("ASTER_PLATFORM_POSIX")
         self.undefine("ASTER_PLATFORM_MINGW")
     else:

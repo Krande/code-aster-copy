@@ -20,11 +20,11 @@
 
 #include "aster.h"
 
-#ifndef ASTER_PLATFORM_MINGW
+#ifndef ASTER_PLATFORM_WINDOWS
 #include <execinfo.h>
 #else
-#include <dbghelp.h>
 #include <windows.h>
+#include <dbghelp.h>
 #endif
 
 #include <stdio.h>

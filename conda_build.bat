@@ -6,7 +6,7 @@ rem Set the python library prefix
 set PYTHON_ENV=codeaster-deps
 set LIBRARY_PREFIX=C:\Work\mambaforge\envs\%PYTHON_ENV%\Library
 
-REM Set the path to the VS Cl and Intel fortran compiler
+REM Set the path to the VS Cl (or clang-cl) and Intel fortran compiler
 set "INTEL_VARS_PATH=C:\Program Files (x86)\Intel\oneAPI\compiler\latest\env"
 set "VS_VARS_PATH=C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Auxiliary\Build"
 
@@ -22,8 +22,8 @@ call "%VS_VARS_PATH%\vcvars64.bat"
 rem if not exist CC
 if not exist "%CC%" (
   echo "Setting compiler env vars"
-  set "CC=cl.exe"
-  set "CXX=cl.exe"
+  set "CC=clang-cl.exe"
+  set "CXX=clang-cl.exe"
   set "FC=ifx.exe"
 )
 
@@ -39,13 +39,10 @@ rem convert to forward slashes
 SET PARENT_DIR=%PARENT_DIR:\=/%
 
 set ASTER_PLATFORM_MSVC=1
+set ASTER_PLATFORM_WINDOWS=1
 
 set MKLROOT=%LIBRARY_PREFIX%
 SET MKLROOT=%MKLROOT:\=/%
-
-waf distclean
-
-REM Dependency Paths
 
 SET LIB_PATH_ROOT=%LIBRARY_PREFIX:\=/%
 
@@ -68,6 +65,9 @@ set TFELHOME=%LIB_PATH_ROOT%
 
 set LIBPATH_MGIS=%LIB_PATH_ROOT%/bin
 set INCLUDES_MGIS=%LIB_PATH_ROOT%/include
+
+waf distclean
+
 
 REM Install for standard sequential
 waf configure ^

@@ -21,8 +21,9 @@
 #include "aster_fort_utils.h"
 #include "definition_pt.h"
 #include "dll_register.h"
-
+#ifndef ASTER_PLATFORM_WINDOWS
 #include <dlfcn.h>
+#endif
 
 /* *********************************************************************
  *

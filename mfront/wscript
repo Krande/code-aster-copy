@@ -117,7 +117,8 @@ def check_mfront(self):
     if tfelhome:
         paths.insert(0, osp.join(tfelhome[0], "bin"))
     self.env.TFELHOME = tfelhome
-    ext = ".exe" if self.env.ASTER_PLATFORM_MINGW else ""
+    # Extension .ext is handled by waf automatically
+    ext = ""  # ".exe" if self.env.ASTER_PLATFORM_WINDOWS else ""
     # export TFELHOME for future checkings
     os.environ["TFELHOME"] = tfelhome[0]
     # takes TFELVERS from env (wafcfg) or environment

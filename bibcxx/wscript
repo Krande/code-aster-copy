@@ -102,6 +102,16 @@ def check_cxx_compiler_flags(self):
         self.check_cxx_compiler_options("-Wno-attributes")
     else:
         self.check_cxx_compiler_options("/std:c++17")
+        # Allow writing to PDB files from multiple processes
+        self.check_cxx_compiler_options("/FS")
+        # Enable unwind semantics for C++ exceptions
+        self.check_cxx_compiler_options("/EHsc")
+        # extern "C" defaults to nothrow
+        self.check_cxx_compiler_options("/EHc")
+        # Enable strict conformance to the C++ Standard
+        self.check_cxx_compiler_options("/permissive-")
+        # Disable language extensions
+        #self.check_cxx_compiler_options("/Za")
 
     self.start_msg("C++ compiler flags")
     self.end_msg(self.env["CXXFLAGS"])

@@ -55,7 +55,7 @@ void DEFP( MATFPE, matfpe, ASTERINTEGER *enable ) {
     compteur_fpe = compteur_fpe + *enable;
 
     if ( compteur_fpe < 1 ) {
-#if defined ASTER_PLATFORM_MINGW
+#if defined ASTER_PLATFORM_MINGW || defined ASTER_PLATFORM_MSVC64
         _controlfp( _MCW_EM, _MCW_EM );
 #else
         fedisableexcept( FE_DIVBYZERO | FE_OVERFLOW | FE_INVALID );
@@ -64,7 +64,7 @@ void DEFP( MATFPE, matfpe, ASTERINTEGER *enable ) {
         signal( SIGFPE, hanfpe );
     } else if ( compteur_fpe >= 1 ) {
         /* avant de reactiver le controle des FPE, on abaisse les flags */
-#if defined ASTER_PLATFORM_MINGW
+#if defined ASTER_PLATFORM_MINGW || defined ASTER_PLATFORM_MSVC64
         _clearfp();
         _controlfp( _EM_UNDERFLOW | _EM_DENORMAL | _EM_INEXACT, _MCW_EM );
 #else
