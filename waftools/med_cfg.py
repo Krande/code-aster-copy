@@ -135,9 +135,6 @@ def check_hdf5(self):
 @Configure.conf
 def check_hdf5_libs(self):
     opts = self.options
-    #Logs.info(f"{self.env.INCLUDEDIR=}")
-    #Logs.info(f"{self.env.LIBDIR=}")
-
     check_hdf5 = partial(self.check_cc, mandatory=True, uselib_store="HDF5", use="HDF5 Z")
     if opts.embed_all or opts.embed_hdf5:
         check_lib = lambda lib: check_hdf5(stlib=lib)

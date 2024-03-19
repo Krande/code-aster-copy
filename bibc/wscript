@@ -54,17 +54,21 @@ def configure(self):
     self.load("compiler_c")
     opts = self.options
     # preserve symbols in the dyn table for stdcalls
-    if sys.platform != "darwin":
-        self.env.append_unique("LINKFLAGS", ["-Wl,--export-dynamic"])
-    else:
+    if sys.platform == "darwin":
         # '--export-dynamic' is '-export_dynamic' in OS X linker
         # http://stackoverflow.com/questions/21279036/what-is-clangs-equivalent-to-rdynamic-gcc-flag
         self.env.append_unique("LINKFLAGS", ["-Wl,-export_dynamic"])
+        # prefer memory usage over speed
+        self.env.append_unique("LINKFLAGS", ["-Wl,--no-keep-memory"])
+        self.env.append_unique("LINKFLAGS_LIBASTER", ["-Wl,--no-as-needed"])
+    elif sys.platform == "win32":
+        pass
+    else:
+        self.env.append_unique("LINKFLAGS", ["-Wl,--export-dynamic"])
 
-    # prefer memory usage over speed
-    self.env.append_unique("LINKFLAGS", ["-Wl,--no-keep-memory"])
-
-    self.env.append_unique("LINKFLAGS_LIBASTER", ["-Wl,--no-as-needed"])
+        # prefer memory usage over speed
+        self.env.append_unique("LINKFLAGS", ["-Wl,--no-keep-memory"])
+        self.env.append_unique("LINKFLAGS_LIBASTER", ["-Wl,--no-as-needed"])
 
     incpath = osp.join(self.path.get_src().abspath(), "include")
     self.env.append_value("INCLUDES_BIBC", incpath)
@@ -146,7 +150,7 @@ def build_libaster(self, env):
     extlib = ".so"
     mods = ["aster", "aster_core", "aster_fonctions", "med_aster"]
     libaster = "libaster.so"
-    if env.ASTER_PLATFORM_MINGW or  env.ASTER_PLATFORM_MSVC64:
+    if env.ASTER_PLATFORM_MINGW or env.ASTER_PLATFORM_MSVC64:
         extlib = ".pyd"
         mods.append("libaster")
         libaster = "aster.dll"

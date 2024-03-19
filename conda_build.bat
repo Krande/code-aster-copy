@@ -4,7 +4,8 @@ set CLICOLOR_FORCE=1
 
 rem Set the python library prefix
 set PYTHON_ENV=codeaster-deps
-set LIBRARY_PREFIX=C:\Work\mambaforge\envs\%PYTHON_ENV%\Library
+set PREFIX=C:\Work\mambaforge\envs\%PYTHON_ENV%
+set LIBRARY_PREFIX=%PREFIX%\Library
 
 REM Set the path to the VS Cl (or clang-cl) and Intel fortran compiler
 set "INTEL_VARS_PATH=C:\Program Files (x86)\Intel\oneAPI\compiler\latest\env"
@@ -45,6 +46,7 @@ set MKLROOT=%LIBRARY_PREFIX%
 SET MKLROOT=%MKLROOT:\=/%
 
 SET LIB_PATH_ROOT=%LIBRARY_PREFIX:\=/%
+SET PREF_ROOT=%PREFIX:\=/%
 
 set LIBPATH_HDF5=%LIB_PATH_ROOT%/lib
 set INCLUDES_HDF5=%LIB_PATH_ROOT%/include
@@ -66,20 +68,22 @@ set TFELHOME=%LIB_PATH_ROOT%
 set LIBPATH_MGIS=%LIB_PATH_ROOT%/bin
 set INCLUDES_MGIS=%LIB_PATH_ROOT%/include
 
-waf distclean
+set LINKFLAGS=%LINKFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib pthread.lib
 
+set INCLUDES_BIBC=%PREF_ROOT%/include
+
+set DEFINES=H5_BUILT_AS_DYNAMIC_LIB
+
+waf distclean
 
 REM Install for standard sequential
 waf configure ^
   --use-config-dir=%PARENT_DIR%/conda/ ^
   --med-libs=medC ^
   --prefix=%LIBRARY_PREFIX% ^
-  --libdir=%LIBRARY_PREFIX%\lib ^
-  --pythondir=%LIBRARY_PREFIX% ^
   --disable-mpi ^
   --install-tests ^
   --maths-libs=auto ^
-  --embed-metis ^
   --without-hg
 
 waf install_debug -v

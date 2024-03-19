@@ -34,7 +34,7 @@
 
 #include <sys/types.h>
 
-#ifdef ASTER_PLATFORM_MINGW
+#ifdef ASTER_PLATFORM_WINDOWS
 #include <stdint.h>
 #endif
 #endif

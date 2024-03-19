@@ -19,7 +19,7 @@
 !
 !
 interface
-    subroutine fclose(unit)
+    subroutine fclose2(unit)
         integer :: unit
-    end subroutine fclose
+    end subroutine fclose2
 end interface

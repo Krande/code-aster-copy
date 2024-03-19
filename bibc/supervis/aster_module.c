@@ -1612,7 +1612,7 @@ static PyObject *aster_fclose( PyObject *self, PyObject *args ) {
     int iunit = 0;
     ASTERINTEGER unit;
 
-    if ( !PyArg_ParseTuple( args, "i:fclose", &iunit ) )
+    if ( !PyArg_ParseTuple( args, "i:fclose2", &iunit ) )
         return NULL;
     unit = (ASTERINTEGER)iunit;
     CALL_FCLOSE( &unit );
@@ -2227,7 +2227,7 @@ static PyObject *aster_argv( _UNUSED PyObject *self, _IN PyObject *args ) {
 /* List of functions defined in the module */
 static PyMethodDef aster_methods[] = {
     // {"onFatalError", aster_onFatalError, METH_VARARGS},
-    { "fclose", aster_fclose, METH_VARARGS },
+    { "fclose2", aster_fclose, METH_VARARGS },
     { "ulopen", aster_ulopen, METH_VARARGS },
     { "affiche", aster_affich, METH_VARARGS },
     { "impers", aster_impers, METH_VARARGS },

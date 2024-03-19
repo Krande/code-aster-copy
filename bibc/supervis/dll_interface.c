@@ -21,9 +21,12 @@
 #include "aster_fort_utils.h"
 #include "definition_pt.h"
 #include "dll_register.h"
-#ifndef ASTER_PLATFORM_WINDOWS
+#ifdef ASTER_PLATFORM_WINDOWS
+#include <windows.h>
+#else
 #include <dlfcn.h>
 #endif
+
 
 /* *********************************************************************
  *
@@ -50,11 +53,24 @@ PyObject *get_dll_register_dict() {
     return DLL_DICT;
 }
 
-void DEF0( DLLCLS, dllcls ) {
-    /* Unload all components
-     */
+#ifdef ASTER_PLATFORM_WINDOWS
+// Windows-specific implementation of a function to unload libraries
+static void windows_dlclose(void *handle) {
+    FreeLibrary((HMODULE)handle);
+}
+#define dlclose windows_dlclose
+#endif
+
+void DEF0(DLLCLS, dllcls) {
+    /* Unload all components */
     dll_init();
+#ifdef ASTER_PLATFORM_WINDOWS
+    // Use the Windows-specific dlclose equivalent
+    libsymb_apply_on_all(DLL_DICT, (FUNC_PTR)windows_dlclose, 1);
+#else
+    // Original Unix-like implementation
     libsymb_apply_on_all( DLL_DICT, (FUNC_PTR)dlclose, 1 );
-    Py_DECREF( DLL_DICT );
+#endif
+    Py_DECREF(DLL_DICT);
     DLL_DICT = NULL;
 }

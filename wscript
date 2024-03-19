@@ -31,6 +31,7 @@ Note:
 
 import os
 import os.path as osp
+import pathlib
 import sys
 
 from waflib import Build, Configure, Logs, Utils
@@ -351,6 +352,12 @@ def build(self):
             i = self.env.INCLUDES.index(inc_to_be_removed)
             self.env.INCLUDES.pop(i)
 
+        # Add the python include dir
+        py_incl = pathlib.Path(os.environ["PREFIX"]) / "include"
+        self.env.INCLUDES.append(py_incl.as_posix())
+
+        Logs.info(f"INCLUDES: {self.env.INCLUDES}")
+
     self.recurse("bibfor")
     self.recurse("code_aster")
     self.recurse("run_aster")
@@ -496,6 +503,7 @@ def check_platform(self):
     elif os_name.startswith("msvc"):
         self.define("ASTER_PLATFORM_MSVC64", 1)
         self.define("ASTER_PLATFORM_WINDOWS", 1)
+        self.define("H5_BUILT_AS_DYNAMIC_LIB", 1)
         self.env.ASTER_PLATFORM_MSVC64 = True
         self.env.ASTER_PLATFORM_WINDOWS = True
         self.undefine("ASTER_PLATFORM_POSIX")

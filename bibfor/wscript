@@ -393,7 +393,7 @@ def check_c_fortran_integer(self):
         "unexpected value for C integer type: %(size)s",
         into=into,
     )
-    if self.env["ASTER_C_FORTRAN_INT"] == "long long":
+    if self.env["ASTER_C_FORTRAN_INT"] == "long long" and self.env.CC_NAME != 'msvc':
         self.define("ASTER_HAVE_LONG_LONG", 1)
 
 
