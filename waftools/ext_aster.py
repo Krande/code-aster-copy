@@ -263,6 +263,16 @@ def dynamic_post(self):
                     node.sig = Utils.h_file(node.abspath())
 
 
+# @TaskGen.feature('cprogram')
+# @TaskGen.after('process_use')
+# def bibc_fixorder(self):
+#     """Add missing compiled object to the link command line."""
+#     # https://gitlab.com/ita1024/waf/-/issues/2391
+#     # https://gitlab.com/ita1024/waf/-/issues/2404
+#     # Only valid for the linking
+#     self.env.append_unique("LDFLAGS", "build/debug/bibfor/utilitai/utgtme.F90.1.o")
+
+
 ###############################################################################
 @Configure.conf
 def safe_remove(self, var, value):

@@ -2,23 +2,7 @@
 setlocal
 set CLICOLOR_FORCE=1
 
-rem "INTEL_VARS_PATH=C:\Program Files (x86)\Intel\oneAPI\compiler\latest\env"
-rem "VS_VARS_PATH=C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Auxiliary\Build"
-rem "CONDA_ROOT=C:\Work\miniconda3"
-
-REM set the local path variables, INTEL_VARS_PATH, VS_VARS_PATH and CONDA_ROOT from .env file
-for /f "tokens=*" %%a in (.env) do set %%a
-
-rem Set the python library prefix
-set PYTHON_ENV=codeaster-deps
-set PREFIX=%CONDA_ROOT%\envs\%PYTHON_ENV%
-set LIBRARY_PREFIX=%PREFIX%\Library
-
-
-REM Activate python env, env variables for VS Cl (or clang-cl) and Intel fortran compiler
-@call "%CONDA_ROOT%\Scripts\activate.bat" %PYTHON_ENV%
-call "%VS_VARS_PATH%\vcvars64.bat"
-@call "%INTEL_VARS_PATH%\vars.bat" -arch intel64 vs2022
+call conda_env.bat
 
 rem if not exist CC
 if not exist "%CC%" (
@@ -66,7 +50,10 @@ set TFELHOME=%LIB_PATH_ROOT%
 set LIBPATH_MGIS=%LIB_PATH_ROOT%/bin
 set INCLUDES_MGIS=%LIB_PATH_ROOT%/include
 
-set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib pthread.lib libucrt.lib
+set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib pthread.lib
+
+REM link with MSVCRT.lib
+set CFLAGS=%CFLAGS% /MD
 
 set INCLUDES_BIBC=%PREF_ROOT%/include
 
@@ -81,6 +68,7 @@ waf configure ^
   --prefix=%LIBRARY_PREFIX% ^
   --disable-mpi ^
   --install-tests ^
+  --disable-petsc ^
   --maths-libs=auto ^
   --without-hg
 
