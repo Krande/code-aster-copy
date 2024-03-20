@@ -30,6 +30,7 @@
 #include "Loads/UnitaryLoad.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "Modeling/Model.h"
+#include "Utilities/SyntaxSaver.h"
 
 /**
  * @class DirichletBC
@@ -63,6 +64,7 @@ class DirichletBC : public DataStructure {
     JeveuxVectorReal _doubleParam;
     /** @brief La SD a-t-elle été construite ? */
     bool _isBuilt;
+    SyntaxSaverPtr _syntax;
 
     DirichletBC( void ) = delete;
 
@@ -83,15 +85,21 @@ class DirichletBC : public DataStructure {
      */
     typedef std::shared_ptr< DirichletBC > DirichletBCPtr;
 
+    DirichletBC( const DirichletBCPtr &toCopy, const ModelPtr &model );
+
     /**
      * @brief Construction de la charge (appel a OP0101)
      * @return Booleen indiquant que tout s'est bien passe
      */
     bool build();
 
+    bool buildFromSyntax();
+
     ModelPtr getModel() const { return _model; }
 
     virtual int getPhysics( void ) const { AS_ABORT( "Not allowed" ); };
+
+    void setSyntax( SyntaxSaverPtr syntax ) { _syntax = syntax; };
 
   private:
     /**
@@ -114,23 +122,25 @@ class DirichletBC : public DataStructure {
 class MechanicalDirichletBC : public DirichletBC {
   public:
     /**
+     * @typedef MechanicalDirichletBCPtr
+     * @brief Pointeur intelligent vers un MechanicalDirichletBC
+     */
+    typedef std::shared_ptr< MechanicalDirichletBC > MechanicalDirichletBCPtr;
+
+    /**
      * @brief Constructeur
      */
     MechanicalDirichletBC( void ) = delete;
 
     MechanicalDirichletBC( const ModelPtr &model ) : DirichletBC( "_MECA", model ) {};
 
+    MechanicalDirichletBC( const MechanicalDirichletBCPtr &toCopy, const ModelPtr &model );
+
     /**
      * @brief Constructeur
      */
     MechanicalDirichletBC( const std::string name, const ModelPtr &model )
         : DirichletBC( name, "_MECA", model ) {};
-
-    /**
-     * @typedef MechanicalDirichletBCPtr
-     * @brief Pointeur intelligent vers un MechanicalDirichletBC
-     */
-    typedef std::shared_ptr< MechanicalDirichletBC > MechanicalDirichletBCPtr;
 
     virtual int getPhysics( void ) const { return Physics::Mechanics; };
 
@@ -203,6 +213,12 @@ class MechanicalDirichletBC : public DirichletBC {
 class ThermalDirichletBC : public DirichletBC {
   public:
     /**
+     * @typedef ThermalDirichletBCPtr
+     * @brief Pointeur intelligent vers un ThermalDirichletBC
+     */
+    typedef std::shared_ptr< ThermalDirichletBC > ThermalDirichletBCPtr;
+
+    /**
      * @brief Constructeur
      */
     ThermalDirichletBC( void ) = delete;
@@ -212,17 +228,13 @@ class ThermalDirichletBC : public DirichletBC {
      */
     ThermalDirichletBC( const ModelPtr &model ) : DirichletBC( "_THER", model ) {};
 
+    ThermalDirichletBC( const ThermalDirichletBCPtr &toCopy, const ModelPtr &model );
+
     /**
      * @brief Constructeur
      */
     ThermalDirichletBC( const std::string name, const ModelPtr &model )
         : DirichletBC( name, "_THER", model ) {};
-
-    /**
-     * @typedef ThermalDirichletBCPtr
-     * @brief Pointeur intelligent vers un ThermalDirichletBC
-     */
-    typedef std::shared_ptr< ThermalDirichletBC > ThermalDirichletBCPtr;
 
     virtual int getPhysics( void ) const { return Physics::Thermal; };
 
@@ -325,6 +337,12 @@ class ThermalDirichletBC : public DirichletBC {
 class AcousticDirichletBC : public DirichletBC {
   public:
     /**
+     * @typedef AcousticDirichletBCPtr
+     * @brief Pointeur intelligent vers un AcousticDirichletBC
+     */
+    typedef std::shared_ptr< AcousticDirichletBC > AcousticDirichletBCPtr;
+
+    /**
      * @brief Constructeur
      */
     AcousticDirichletBC( void ) = delete;
@@ -334,17 +352,13 @@ class AcousticDirichletBC : public DirichletBC {
      */
     AcousticDirichletBC( const ModelPtr &model ) : DirichletBC( "_ACOU", model ) {};
 
+    AcousticDirichletBC( const AcousticDirichletBCPtr &toCopy, const ModelPtr &model );
+
     /**
      * @brief Constructeur
      */
     AcousticDirichletBC( const std::string name, const ModelPtr &model )
         : DirichletBC( name, "_ACOU", model ) {};
-
-    /**
-     * @typedef AcousticDirichletBCPtr
-     * @brief Pointeur intelligent vers un AcousticDirichletBC
-     */
-    typedef std::shared_ptr< AcousticDirichletBC > AcousticDirichletBCPtr;
 
     virtual int getPhysics( void ) const { return Physics::Acoustic; };
 

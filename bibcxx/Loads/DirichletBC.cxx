@@ -37,7 +37,8 @@ DirichletBC::DirichletBC( const std::string &type, const ModelPtr &model )
       _intParam( JeveuxVectorLong( getName() + ".AFCI" ) ),
       _charParam( JeveuxVectorChar8( getName() + ".AFCK" ) ),
       _doubleParam( JeveuxVectorReal( getName() + ".AFCV" ) ),
-      _isBuilt( false ) {
+      _isBuilt( false ),
+      _syntax( nullptr ) {
     this->setModel( model );
 };
 
@@ -46,7 +47,8 @@ DirichletBC::DirichletBC( const std::string &name, const std::string &type, cons
       _intParam( JeveuxVectorLong( getName() + ".AFCI" ) ),
       _charParam( JeveuxVectorChar8( getName() + ".AFCK" ) ),
       _doubleParam( JeveuxVectorReal( getName() + ".AFCV" ) ),
-      _isBuilt( false ) {
+      _isBuilt( false ),
+      _syntax( nullptr ) {
     this->setModel( model );
 };
 
@@ -118,4 +120,45 @@ bool DirichletBC::build() {
     _isBuilt = true;
 
     return true;
+};
+
+bool DirichletBC::buildFromSyntax() {
+    std::string cmd = "AFFE_CHAR_CINE";
+    if ( _listOfFunctionImposedTemperature.size() != 0 ) {
+        cmd += "_F";
+        throw std::runtime_error( "Not implemented" );
+    }
+    CommandSyntax cmdSt( cmd );
+    cmdSt.setResult( getName(), getType() );
+    auto keywords = _syntax->keywords();
+    keywords["MODELE"] = _model->getName();
+    cmdSt.define( py::reinterpret_steal< py::object >( keywords ), false );
+
+    ASTERINTEGER op = 101;
+    CALL_EXECOP( &op );
+    _isBuilt = true;
+
+    return true;
+};
+
+DirichletBC::DirichletBC( const DirichletBCPtr &toCopy, const ModelPtr &model )
+    : DirichletBC( std::string( toCopy->getType(), 9, 5 ), model ) {
+    _syntax = toCopy->_syntax;
+};
+
+MechanicalDirichletBC::MechanicalDirichletBC( const MechanicalDirichletBCPtr &toCopy,
+                                              const ModelPtr &model )
+    : MechanicalDirichletBC( model ) {
+    _syntax = toCopy->_syntax;
+};
+
+ThermalDirichletBC::ThermalDirichletBC( const ThermalDirichletBCPtr &toCopy, const ModelPtr &model )
+    : ThermalDirichletBC( model ) {
+    _syntax = toCopy->_syntax;
+};
+
+AcousticDirichletBC::AcousticDirichletBC( const AcousticDirichletBCPtr &toCopy,
+                                          const ModelPtr &model )
+    : AcousticDirichletBC( model ) {
+    _syntax = toCopy->_syntax;
 };

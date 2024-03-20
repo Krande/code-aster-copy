@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe ElementaryModeling
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -44,15 +44,18 @@ class ElementaryModeling {
     Physics _physic;
     /** @brief Modelisation de la modelisation elementaire */
     Modelings _modelisation;
+    /** @brief Formulation de la modelisation elementaire */
+    Formulation _formulation;
 
   public:
     /**
      * @brief Constructeur
      * @param phys Physique
      * @param mod Modelisation
+     * @param form Formulation
      */
-    ElementaryModeling( const Physics phys, const Modelings mod )
-        : _physic( phys ), _modelisation( mod ) {
+    ElementaryModeling( const Physics phys, const Modelings mod, const Formulation form )
+        : _physic( phys ), _modelisation( mod ), _formulation( form ) {
         bool retour = PhysicsChecker::isAllowedModelingForPhysics( phys, mod );
         if ( !retour ) {
             std::string error( std::string( PhysicNames[_physic] ) + " with " +
@@ -60,6 +63,9 @@ class ElementaryModeling {
             throw std::runtime_error( error );
         }
     };
+
+    /** @brief Get formulation*/
+    const std::string getFormulation() const { return FormulationNames[_formulation]; };
 
     /**
      * @brief Recuperation de la chaine modelisation

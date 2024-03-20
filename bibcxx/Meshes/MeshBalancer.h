@@ -5,7 +5,7 @@
  * @file MeshBalancer.h
  * @brief Fichier entete de la classe MeshBalancer
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -46,7 +46,7 @@ class MeshBalancer {
     /** @brief True if _reverseConnex already build */
     bool _bReverseConnex;
     /** @brief Range of node ids of _mesh (!!! no overlaping between processes) */
-    std::array< ASTERINTEGER, 2 > _range = {-1, -1};
+    std::array< ASTERINTEGER, 2 > _range = { -1, -1 };
     /** @brief nodes and cells object balancers */
     ObjectBalancerPtr _nodesBalancer, _cellsBalancer;
     /** @brief cells renumbering (in order to be sorte by type) */
@@ -99,7 +99,8 @@ class MeshBalancer {
      * @param list vector of nodes to get on local process
      * @return ParalleMesh
      */
-    ParallelMeshPtr applyBalancingStrategy( VectorInt &list, ParallelMeshPtr outMesh = nullptr );
+    ParallelMeshPtr applyBalancingStrategy( const VectorInt &list,
+                                            ParallelMeshPtr outMesh = nullptr );
 
     void buildFromBaseMesh( const BaseMeshPtr &mesh ) { _mesh = mesh; };
 

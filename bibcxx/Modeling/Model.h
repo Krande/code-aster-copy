@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe Model
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -99,7 +99,8 @@ class Model : public DataStructure, public ListOfTables {
     /** @brief Pointeur intelligent vers un VirtualMeshEntity */
     typedef std::shared_ptr< VirtualMeshEntity > MeshEntityPtr;
     /** @brief std::list de std::pair de ElementaryModeling et MeshEntityPtr */
-    typedef std::vector< std::pair< ElementaryModeling, MeshEntityPtr > > listOfModsAndGrps;
+    typedef std::vector< std::pair< ElementaryModeling, std::vector< MeshEntityPtr > > >
+        listOfModsAndGrps;
     /** @brief Valeur contenue dans listOfModsAndGrps */
     typedef listOfModsAndGrps::value_type listOfModsAndGrpsValue;
     /** @brief Iterateur sur un listOfModsAndGrps */
@@ -120,6 +121,8 @@ class Model : public DataStructure, public ListOfTables {
     ModelPtr _saneModel;
     /** @brief Model with XFEM */
     XfemModelPtr _xfemModel;
+    /** @brief To know if model is balanceable */
+    bool _isBalanceable = true;
 
 /**
  * @brief Maillage sur lequel repose la modelisation
@@ -170,28 +173,25 @@ class Model : public DataStructure, public ListOfTables {
     Model( const ConnectionMeshPtr mesh );
 #endif /* ASTER_HAVE_MPI */
 
+    Model( const BaseMeshPtr mesh, const ModelPtr model );
+
     /**
      * @brief Ajout d'une nouvelle modelisation sur tout le maillage
      * @param phys Physique a ajouters
      * @param mod Modelisation a ajouter
+     * @param formumation Formulation
      */
-    void addModelingOnMesh( Physics phys, Modelings mod );
+    void addModelingOnMesh( Physics phys, Modelings mod, Formulation form = NoFormulation );
 
     /**
      * @brief Ajout d'une nouvelle modelisation sur une entite du maillage
      * @param phys Physique a ajouter
      * @param mod Modelisation a ajouter
      * @param nameOfGroup Nom du groupe de mailles
+     * @param formumation Formulation
      */
-    void addModelingOnGroupOfCells( Physics phys, Modelings mod, std::string nameOfGroup );
-
-    /**
-     * @brief Ajout d'une nouvelle modelisation sur une entite du maillage
-     * @param phys Physique a ajouter
-     * @param mod Modelisation a ajouter
-     * @param nameOfGroup Nom du groupe de noeuds
-     */
-    void addModelingOnGroupOfNodes( Physics phys, Modelings mod, std::string nameOfGroup );
+    void addModelingOnGroupOfCells( Physics phys, Modelings mod, std::string nameOfGroup,
+                                    Formulation form = NoFormulation );
 
     /**
      * @brief Construction (au sens Jeveux fortran) de la sd_modele
@@ -291,6 +291,12 @@ class Model : public DataStructure, public ListOfTables {
      * @return true si le modele est vide
      */
     bool isEmpty() const;
+
+    /** @brief To set if a model will be balanceable */
+    void banBalancing() { _isBalanceable = false; };
+
+    /** @brief To know if a model will be balanceable */
+    bool balanceable() { return _isBalanceable; };
 
     /**
      * @brief Set the sane base model

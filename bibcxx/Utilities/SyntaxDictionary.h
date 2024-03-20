@@ -6,7 +6,7 @@
  * @brief Fichier entete de la struct SyntaxMapContainer
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -69,7 +69,6 @@ class SyntaxMapContainer {
         return *this;
     };
 
-  protected:
     /**
      * @brief Convertisseur du conteneur en dictionnaire python
      * @return un dict python contenant la syntaxe valorisable par l'objet CommandSyntax

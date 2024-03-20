@@ -3,7 +3,7 @@
  * @brief Interface python de DirichletBC
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -42,7 +42,14 @@ To know the physics supported by the model
 
 Returns:
     str: Mechanics or Thermal or Acoustic
-        )" );
+        )" )
+        .def( "setSyntax", &DirichletBC::setSyntax, R"(
+Function to set the syntax used to build object
+
+Arguments:
+    syntax: the syntax
+        )",
+              py::arg( "syntax" ) );
 
     py::class_< MechanicalDirichletBC, MechanicalDirichletBC::MechanicalDirichletBCPtr,
                 DirichletBC >( mod, "MechanicalDirichletBC" )

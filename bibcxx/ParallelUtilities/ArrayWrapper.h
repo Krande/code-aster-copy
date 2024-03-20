@@ -1,5 +1,5 @@
-#ifndef ArrayWrapper_H_
-#define ArrayWrapper_H_
+#ifndef ARRAYWRAPPER_H_
+#define ARRAYWRAPPER_H_
 
 /**
  * @file ArrayWrapper.h
@@ -247,4 +247,4 @@ class ArrayWrapper : public VectorInterface< ClassWrap > {
 typedef std::shared_ptr< ArrayWrapper< JeveuxVector< double > > > ArrayWrapperPtr;
 typedef std::shared_ptr< ArrayWrapper< VectorReal > > ArrayWrapperPtr2;
 
-#endif /* ArrayWrapper_H_ */
+#endif /* ARRAYWRAPPER_H_ */
