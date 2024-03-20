@@ -2,6 +2,10 @@
 setlocal
 set CLICOLOR_FORCE=1
 
+rem "INTEL_VARS_PATH=C:\Program Files (x86)\Intel\oneAPI\compiler\latest\env"
+rem "VS_VARS_PATH=C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Auxiliary\Build"
+rem "CONDA_ROOT=C:\Work\miniconda3"
+
 REM set the local path variables, INTEL_VARS_PATH, VS_VARS_PATH and CONDA_ROOT from .env file
 for /f "tokens=*" %%a in (.env) do set %%a
 
@@ -10,8 +14,6 @@ set PYTHON_ENV=codeaster-deps
 set PREFIX=%CONDA_ROOT%\envs\%PYTHON_ENV%
 set LIBRARY_PREFIX=%PREFIX%\Library
 
-rem "INTEL_VARS_PATH=C:\Program Files (x86)\Intel\oneAPI\compiler\latest\env"
-rem "VS_VARS_PATH=C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Auxiliary\Build"
 
 REM Activate python env, env variables for VS Cl (or clang-cl) and Intel fortran compiler
 @call "%CONDA_ROOT%\Scripts\activate.bat" %PYTHON_ENV%
@@ -33,8 +35,6 @@ where cl
 where ifort
 
 SET PARENT_DIR=%~dp0
-echo PARENT_DIR=%PARENT_DIR%
-rem convert to forward slashes
 SET PARENT_DIR=%PARENT_DIR:\=/%
 
 set ASTER_PLATFORM_MSVC=1
@@ -66,7 +66,7 @@ set TFELHOME=%LIB_PATH_ROOT%
 set LIBPATH_MGIS=%LIB_PATH_ROOT%/bin
 set INCLUDES_MGIS=%LIB_PATH_ROOT%/include
 
-set LINKFLAGS=%LINKFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib pthread.lib
+set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib pthread.lib libucrt.lib
 
 set INCLUDES_BIBC=%PREF_ROOT%/include
 
