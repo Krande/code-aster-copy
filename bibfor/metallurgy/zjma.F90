@@ -17,9 +17,10 @@
 ! --------------------------------------------------------------------
 !
 subroutine zjma(metaSteelPara, &
-                nbVari, nbVariTemper, &
+                nbVari, nbVariTemper, nbVariPrev, &
                 temp1, temp2, &
                 deltaTime12, &
+                prevMetaIsTemper, &
                 metaPrev, metaCurr, metaCurrTemper)
 !
     use Metallurgy_type
@@ -31,10 +32,11 @@ subroutine zjma(metaSteelPara, &
 #include "asterfort/assert.h"
 #include "asterfort/Metallurgy_type.h"
 !
-    integer, intent(in) :: nbVari, nbVariTemper
+    integer, intent(in) :: nbVari, nbVariTemper, nbVariPrev
     type(META_SteelParameters), intent(in) :: metaSteelPara
     real(kind=8), intent(in) :: deltaTime12, temp1, temp2
-    real(kind=8), intent(in) :: metaPrev(nbVariTemper)
+    aster_logical, intent(in) :: prevMetaIsTemper
+    real(kind=8), intent(in) :: metaPrev(nbVariPrev)
     real(kind=8), intent(in) :: metaCurr(nbVari)
     real(kind=8), intent(out) :: metaCurrTemper(nbVariTemper)
 !
@@ -72,10 +74,17 @@ subroutine zjma(metaSteelPara, &
     deltaTemp = abs(temp2-temp1)
 
 ! - Get previous internal state variables
-    tempPgPrev = metaPrev(STEEL_TEMP+NBPHASESTEELR)
-    cyclTherPrev = nint(metaPrev(THER_CYCL+NBPHASESTEELR))
-    ZBainRevePrev = metaPrev(PRBAINITER)
-    ZMartRevePrev = metaPrev(PRMARTENSR)
+    if (prevMetaIsTemper) then
+        tempPgPrev = metaPrev(STEEL_TEMP+NBPHASESTEELR)
+        cyclTherPrev = nint(metaPrev(THER_CYCL+NBPHASESTEELR))
+        ZBainRevePrev = metaPrev(PRBAINITER)
+        ZMartRevePrev = metaPrev(PRMARTENSR)
+    else
+        tempPgPrev = metaPrev(STEEL_TEMP+NBPHASESTEEL)
+        ZBainRevePrev = 0.d0
+        ZMartRevePrev = 0.d0
+        cyclTherPrev = 0
+    end if
 
 ! - Get internal state variables without tempering
     tempPgCurr = metaCurr(STEEL_TEMP+NBPHASESTEEL)
@@ -160,6 +169,9 @@ subroutine zjma(metaSteelPara, &
                 if (ZBainBrut .ge. r8prem() .or. ZMartBrut .ge. r8prem()) then
                     cyclTherCurr = 1
                 end if
+            else
+                WRITE (6, *) "cyclTherPrev: ", cyclTherPrev
+                ASSERT(ASTER_FALSE)
             end if
         end if
         ZMartReveCurr = ZMartBrut*ZTildeMartCurr

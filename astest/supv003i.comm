@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -69,11 +69,12 @@ INSTANTS = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=1))
 
 RAMPE = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 1.0, 1.0))
 
+# Replaced by 'RESI_INTE'
 RESU = STAT_NON_LINE(
     MODELE=MO,
     CHAM_MATER=CH_MATER,
     EXCIT=(_F(CHARGE=CHARGE, FONC_MULT=RAMPE), _F(CHARGE=SYMETRIE)),
-    COMPORTEMENT=_F(RELATION="ELAS"),
+    COMPORTEMENT=_F(RELATION="ELAS", RESI_INTE_MAXI=1.0e-6),
     INCREMENT=_F(LIST_INST=INSTANTS),
     NEWTON=_F(REAC_ITER=1),
     ARCHIVAGE=_F(LIST_INST=INSTANTS),

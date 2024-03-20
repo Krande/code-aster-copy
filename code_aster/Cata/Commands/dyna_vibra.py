@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,6 +24,9 @@ from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
 
+from ..Commons.c_comportement import compat_syntax
+
+
 def dyna_vibra_sdprod(BASE_CALCUL, TYPE_CALCUL, MATR_RIGI, **args):
     if args.get("__all__"):
         return (dyna_trans, dyna_harmo, acou_harmo, tran_gene, harm_gene)
@@ -43,6 +46,7 @@ def dyna_vibra_sdprod(BASE_CALCUL, TYPE_CALCUL, MATR_RIGI, **args):
 DYNA_VIBRA = OPER(
     nom="DYNA_VIBRA",
     op=29,
+    compat_syntax=compat_syntax,
     sd_prod=dyna_vibra_sdprod,
     reentrant="f:RESULTAT",
     fr=tr("Calcul dynamique transitoire ou harminque, sur base physique ou généralisée"),

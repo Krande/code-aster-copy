@@ -18,15 +18,17 @@
 !
 interface
     subroutine zjma(metaSteelPara, &
-                    nbVari, nbVariTemper, &
+                    nbVari, nbVariTemper, nbVariPrev, &
                     temp1, temp2, &
                     deltaTime12, &
+                    prevMetaIsTemper, &
                     metaPrev, metaCurr, metaCurrTemper)
         use Metallurgy_type
         integer, intent(in) :: nbVari, nbVariTemper
         type(META_SteelParameters), intent(in) :: metaSteelPara
         real(kind=8), intent(in) :: deltaTime12, temp1, temp2
-        real(kind=8), intent(in) :: metaPrev(nbVariTemper)
+        aster_logical, intent(in) :: prevMetaIsTemper
+        real(kind=8), intent(in) :: metaPrev(nbVariPrev)
         real(kind=8), intent(in) :: metaCurr(nbVari)
         real(kind=8), intent(out) :: metaCurrTemper(nbVariTemper)
     end subroutine zjma
