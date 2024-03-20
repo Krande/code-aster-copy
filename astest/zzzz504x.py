@@ -81,7 +81,7 @@ matrAsse *= 0.5
 matrAsse2 = matrAsse.copy()
 
 test.assertNotEqual(matrAsse.getName(), matrAsse2.getName())
-test.assertEqual(matrAsse.isEmpty(), matrAsse2.isEmpty())
+test.assertEqual(matrAsse.isBuilt(), matrAsse2.isBuilt())
 test.assertEqual(matrAsse.getDOFNumbering(), matrAsse2.getDOFNumbering())
 test.assertEqual(matrAsse.getListOfLoads(), matrAsse2.getListOfLoads())
 test.assertAlmostEqual(matrAsse.getLagrangeScaling(), matrAsse2.getLagrangeScaling())
@@ -91,7 +91,7 @@ test.assertAlmostEqual(ref_matr, petscMat2.norm(), delta=ref_matr * 1.0e-6)
 
 matrAsse3 = -(-1.0 * matrAsse)
 test.assertNotEqual(matrAsse.getName(), matrAsse3.getName())
-test.assertEqual(matrAsse.isEmpty(), matrAsse3.isEmpty())
+test.assertEqual(matrAsse.isBuilt(), matrAsse3.isBuilt())
 test.assertEqual(matrAsse.getDOFNumbering(), matrAsse3.getDOFNumbering())
 test.assertEqual(matrAsse.getListOfLoads(), matrAsse3.getListOfLoads())
 test.assertAlmostEqual(matrAsse.getLagrangeScaling(), matrAsse3.getLagrangeScaling())
@@ -100,7 +100,7 @@ test.assertAlmostEqual(ref_matr, petscMat3.norm(), delta=ref_matr * 1.0e-6)
 
 matrAsse4 = 3.0 * matrAsse + 2.0 * matrAsse2 - 4.0 * matrAsse3
 test.assertNotEqual(matrAsse.getName(), matrAsse4.getName())
-test.assertEqual(matrAsse.isEmpty(), matrAsse4.isEmpty())
+test.assertEqual(matrAsse.isBuilt(), matrAsse4.isBuilt())
 test.assertEqual(matrAsse.getDOFNumbering(), matrAsse4.getDOFNumbering())
 test.assertEqual(matrAsse.getListOfLoads(), matrAsse4.getListOfLoads())
 test.assertAlmostEqual(matrAsse.getLagrangeScaling(), matrAsse4.getLagrangeScaling())
@@ -111,7 +111,7 @@ matrAsse5 = matrAsse.copy()
 matrAsse5 += matrAsse
 matrAsse5 -= matrAsse
 test.assertNotEqual(matrAsse.getName(), matrAsse5.getName())
-test.assertEqual(matrAsse.isEmpty(), matrAsse5.isEmpty())
+test.assertEqual(matrAsse.isBuilt(), matrAsse5.isBuilt())
 test.assertEqual(matrAsse.getDOFNumbering(), matrAsse5.getDOFNumbering())
 test.assertEqual(matrAsse.getListOfLoads(), matrAsse5.getListOfLoads())
 test.assertAlmostEqual(matrAsse.getLagrangeScaling(), matrAsse5.getLagrangeScaling())
