@@ -23,3 +23,4 @@ vola.*
 devtools
 .idea/*
 build_env_setup.bat
+.env

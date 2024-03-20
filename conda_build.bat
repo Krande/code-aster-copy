@@ -2,21 +2,19 @@
 setlocal
 set CLICOLOR_FORCE=1
 
+REM set the local path variables, INTEL_VARS_PATH, VS_VARS_PATH and CONDA_ROOT from .env file
+for /f "tokens=*" %%a in (.env) do set %%a
+
 rem Set the python library prefix
 set PYTHON_ENV=codeaster-deps
-set PREFIX=C:\Work\mambaforge\envs\%PYTHON_ENV%
+set PREFIX=%CONDA_ROOT%\envs\%PYTHON_ENV%
 set LIBRARY_PREFIX=%PREFIX%\Library
 
-REM Set the path to the VS Cl (or clang-cl) and Intel fortran compiler
-set "INTEL_VARS_PATH=C:\Program Files (x86)\Intel\oneAPI\compiler\latest\env"
-set "VS_VARS_PATH=C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Auxiliary\Build"
+rem "INTEL_VARS_PATH=C:\Program Files (x86)\Intel\oneAPI\compiler\latest\env"
+rem "VS_VARS_PATH=C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Auxiliary\Build"
 
-rem check if regular VS2022 exists if not check if build tools 2022 exists
-if not exist "%VS_VARS_PATH%" (
-  set "VS_VARS_PATH=C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build"
-)
-
-@call "C:\Work\mambaforge\Scripts\activate.bat" %PYTHON_ENV%
+REM Activate python env, env variables for VS Cl (or clang-cl) and Intel fortran compiler
+@call "%CONDA_ROOT%\Scripts\activate.bat" %PYTHON_ENV%
 call "%VS_VARS_PATH%\vcvars64.bat"
 @call "%INTEL_VARS_PATH%\vars.bat" -arch intel64 vs2022
 

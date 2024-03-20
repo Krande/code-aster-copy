@@ -9,7 +9,15 @@ mamba env update -f environment.yml
 ```
 
 2. Install VS Build Tools (or the full installation of) VS2022 and Intel Fortran OneAPI 2024.0
-3. Update the paths relevant to the installation of the VS Build Tools and Intel Fortran OneAPI 2024.0 in the `conda_build.bat` file
+3. Create an `.env` file containing the paths to the installation of python, VS Build Tools and Intel Fortran OneAPI 2024.0
+
+Example `.env` file:
+```
+CONDA_ROOT=C:\work\miniforge3
+INTEL_VARS_PATH=C:\Program Files (x86)\Intel\oneAPI\compiler\latest\env
+VS_VARS_PATH=C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build
+```
+
 4. Run the batch file `conda_build.bat` to compile Code Aster for Windows
 
 ```cmd
