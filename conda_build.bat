@@ -1,5 +1,7 @@
 @echo off
 setlocal
+
+set USE_LOG=0
 set CLICOLOR_FORCE=1
 
 call conda_env.bat
@@ -52,8 +54,8 @@ set INCLUDES_MGIS=%LIB_PATH_ROOT%/include
 
 set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib pthread.lib
 
-REM link with MSVCRT.lib
-set CFLAGS=%CFLAGS% /MD
+REM /MD link with MSVCRT.lib. /FS allow for multithreaded c compiler calls to vc140.pdb (for cl.exe only)
+set CFLAGS=%CFLAGS% /MD /FS
 
 set INCLUDES_BIBC=%PREF_ROOT%/include
 
@@ -72,6 +74,13 @@ waf configure ^
   --maths-libs=auto ^
   --without-hg
 
-waf install_debug -v
+REM if USE_LOG is set, then log the output to a file
+if %USE_LOG%==1 (
+    REM set a datetime variable down to the minute
+    @call conda_datetime.bat
+    waf install_debug -v > install_debug_%datetimeString%.log 2>&1
+) else (
+    waf install_debug -v
+)
 
 endlocal

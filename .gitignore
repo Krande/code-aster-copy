@@ -22,5 +22,5 @@ vola.*
 .vscode/*
 devtools
 .idea/*
-build_env_setup.bat
 .env
+install_*.log

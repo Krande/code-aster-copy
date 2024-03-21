@@ -120,7 +120,7 @@ def build_libbibc(self, env):
     use = ["BIBCXX", "PETSC", "SCOTCH", "PARMETIS", "METIS", "MED", "HDF5", "NUMPY", "PYEXT"]
     get_srcs = self.path.get_src().ant_glob
 
-    self.env.append_unique("LDFLAGS", "build/debug/bibfor/utilitai/utgtme.F90.1.o")
+    self.env.append_unique("LDFLAGS", "C:/AibelProgs/code/code-aster-src/build/debug/bibfor/utilitai/utgtme.F90.1.o")
     # compile *.c
     self(
         features="c cshlib",

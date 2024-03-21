@@ -355,8 +355,7 @@ def build(self):
         # Add the python include dir
         py_incl = pathlib.Path(os.environ["PREFIX"]) / "include"
         self.env.INCLUDES.append(py_incl.as_posix())
-
-        Logs.info(f"INCLUDES: {self.env.INCLUDES}")
+        #Logs.info(f"INCLUDES: {self.env.INCLUDES}")
 
     self.recurse("bibfor")
     self.recurse("code_aster")
