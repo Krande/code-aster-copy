@@ -38,3 +38,13 @@ conda_build.bat
 | Code Aster  | 17.0.10 | VS2022     | VS2022       | Intel OneAPI 2024.0 |
 
 
+## Packages
+
+
+### Intel Fortran
+```
+# wget and 
+curl https://registrationcenter-download.intel.com/akdlm/IRC_NAS/3a64aab4-3c35-40ba-bc9c-f80f136a8005/w_fortran-compiler_p_2024.0.2.27_offline.exe -o w_fortran-compiler_p_2024.0.2.27_offline.exe
+w_fortran-compiler_p_2024.0.2.27_offline.exe -s
+
+```
