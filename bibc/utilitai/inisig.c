@@ -29,9 +29,9 @@
 #include "aster_fort_utils.h"
 
 #include <signal.h>
-
+#ifndef ASTER_PLATFORM_WINDOWS
 void abort();
-
+#endif
 void hancpu( int sig );
 
 #if defined ASTER_PLATFORM_SOLARIS

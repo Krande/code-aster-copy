@@ -277,8 +277,8 @@ def get_ifort_versions(self, eval_and_save=True):
 def _get_prog_names(self, compiler):
     if compiler == 'intel':
         compiler_name = 'ifort'
-        linker_name = 'XILINK'
-        lib_name = 'XILIB'
+        linker_name = 'LINK'
+        lib_name = 'LIB'
     else:
         compiler_name = 'CL'
         linker_name = 'LINK'

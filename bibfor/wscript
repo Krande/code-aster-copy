@@ -48,8 +48,10 @@ def configure(self):
     self.check_fortran_compiler_flags()
     self.check_fortran_mangling()
     if self.env.FORTRAN_MANGLING and self.env.FORTRAN_MANGLING[0] == "":
+        Logs.info("No mangling detected, using no underscore")
         self.define("ASTER_NO_UNDERSCORE", 1)
     else:
+        Logs.info("Mangling detected, using underscore")
         self.undefine("ASTER_NO_UNDERSCORE")
     self.check_fortran_types()
     self.check_fortran_preprocessor()
@@ -100,7 +102,7 @@ def check_fortran_compiler_flags(self):
             self.check_fortran_compiler_options(["-fpe0", "-traceback"])
         if "64" in self.env.DEST_CPU:
             if self.env.CC_NAME.lower() == "msvc":
-                self.check_fortran_compiler_options(["/nologo", "/real-size:64", "-i8", "/names:lowercase", "/MD"])
+                self.check_fortran_compiler_options(["/nologo", "/real-size:64", "-i8"])
             else:
                 self.check_fortran_compiler_options(["-i8", "-r8"])
 

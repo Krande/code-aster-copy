@@ -52,10 +52,11 @@ set TFELHOME=%LIB_PATH_ROOT%
 set LIBPATH_MGIS=%LIB_PATH_ROOT%/bin
 set INCLUDES_MGIS=%LIB_PATH_ROOT%/include
 
-set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib pthread.lib z.lib
+set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib pthread.lib /DEBUG
 
 REM /MD link with MSVCRT.lib. /FS allow for multithreaded c compiler calls to vc140.pdb (for cl.exe only)
-set CFLAGS=%CFLAGS% /MD /FS
+set CFLAGS=%CFLAGS% /FS /MD
+set FCFLAGS=%FCFLAGS% /MD /names:lowercase
 
 set INCLUDES_BIBC=%PREF_ROOT%/include
 
@@ -65,7 +66,7 @@ waf distclean
 
 REM Install for standard sequential
 waf configure ^
-  --use-config-dir=%PARENT_DIR%/conda/ ^
+  --use-config-dir=%PARENT_DIR%/config/ ^
   --med-libs=medC ^
   --prefix=%LIBRARY_PREFIX% ^
   --disable-mpi ^

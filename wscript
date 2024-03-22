@@ -53,7 +53,7 @@ if sys.version_info < (3, 6):
 
 
 def options(self):
-    self.load('clang_compilation_database', tooldir="conda")
+    self.load('clang_compilation_database', tooldir="config")
     orig_get_usage = self.parser.get_usage
 
     def _usage():
@@ -225,7 +225,7 @@ def all_components(self):
 
 
 def configure(self):
-    self.load("ifort", tooldir="conda")
+    self.load("ifort", tooldir="config")
 
     opts = self.options
     self.setenv("default")
@@ -319,7 +319,7 @@ def configure(self):
     self.check_optimization_options()
     self.write_config_headers()
 
-    self.load('clang_compilation_database', tooldir="conda")
+    self.load('clang_compilation_database', tooldir="config")
 
 
 def build(self):
@@ -346,7 +346,7 @@ def build(self):
     if self.env.CC_NAME == "msvc":
         pops = []
         for i, inc in enumerate(self.env.INCLUDES):
-            if "Windows Kits" in inc:
+            if "Windows" in inc or 'Microsoft' in inc:
                 pops.append(inc)
         for inc_to_be_removed in pops:
             i = self.env.INCLUDES.index(inc_to_be_removed)

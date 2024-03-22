@@ -118,7 +118,7 @@ ASTERINTEGER DEFP( MEMPID, mempid, ASTERINTEGER *val ) {
     return iret;
 
 #elif defined ASTER_PLATFORM_MINGW || defined ASTER_PLATFORM_MSVC64
-    PROCESS_MEMORY_COUNTERS_EX pmc;
+    PROCESS_MEMORY_COUNTERS pmc;
     GetProcessMemoryInfo( GetCurrentProcess(), &pmc, sizeof( pmc ) );
     /* VmSize */
     val[0] = (ASTERINTEGER)pmc.WorkingSetSize / 1024;

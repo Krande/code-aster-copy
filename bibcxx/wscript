@@ -66,6 +66,7 @@ def build(self):
         source=get_srcs("**/*.cxx", excl="MFront/*.cxx"),
         target="bibcxx",
         use=[
+            "bibfor",
             "BIBCXX",
             "PYBIND11",
             "PETSC",
