@@ -6,13 +6,10 @@ set CLICOLOR_FORCE=1
 
 call conda_env.bat
 
-rem if not exist CC
-if not exist "%CC%" (
-  echo "Setting compiler env vars"
-  set "CC=clang-cl.exe"
-  set "CXX=clang-cl.exe"
-  set "FC=ifx.exe"
-)
+echo "Setting compiler env vars"
+set "CC=clang-cl.exe"
+set "CXX=clang-cl.exe"
+set "FC=ifx.exe"
 
 set FCFLAGS=%FCFLAGS% -fpp
 
