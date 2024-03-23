@@ -11,8 +11,6 @@ set "CC=clang-cl.exe"
 set "CXX=clang-cl.exe"
 set "FC=ifx.exe"
 
-set FCFLAGS=%FCFLAGS% -fpp
-
 where python
 where cl
 where ifort
@@ -49,16 +47,20 @@ set TFELHOME=%LIB_PATH_ROOT%
 set LIBPATH_MGIS=%LIB_PATH_ROOT%/bin
 set INCLUDES_MGIS=%LIB_PATH_ROOT%/include
 
-set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib pthread.lib /DEBUG
+REM Compiler flags
 
 REM /MD link with MSVCRT.lib. /FS allow for multithreaded c compiler calls to vc140.pdb (for cl.exe only)
 set CFLAGS=%CFLAGS% /FS /MD
-set FCFLAGS=%FCFLAGS% /MD /names:lowercase
+
+set FCFLAGS=%FCFLAGS% -fpp /MD /names:lowercase
+
+set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib pthread.lib /DEBUG
 
 set INCLUDES_BIBC=%PREF_ROOT%/include
 
 set DEFINES=H5_BUILT_AS_DYNAMIC_LIB
 
+REM Clean the build directory
 waf distclean
 
 REM Install for standard sequential
