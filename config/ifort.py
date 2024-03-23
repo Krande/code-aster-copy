@@ -3,6 +3,8 @@
 # WARNING! Do not edit! https://waf.io/book/index.html#_obtaining_the_waf_file
 
 import os, re, traceback
+import pathlib
+
 from waflib import Utils, Logs, Errors
 from waflib.Tools import fc, fc_config, fc_scan, ar, ccroot
 from waflib.Configure import conf
@@ -70,7 +72,6 @@ def get_ifort_version(conf, fc):
 
 def configure(conf):
     if Utils.is_win32:
-        Logs.info('Configure block inside ')
         compiler, version, path, includes, libdirs, arch = conf.detect_ifort()
         v = conf.env
         v.DEST_CPU = arch
@@ -98,6 +99,18 @@ all_ifort_platforms = [('intel64', 'amd64'), ('em64t', 'amd64'), ('ia32', 'x86')
 
 @conf
 def gather_ifort_versions(conf, versions):
+    # arch='amd64', version='192.49896', target='intel64', batch_file='C:\\Program Files (x86)\\Intel\\oneAPI\\compiler\\2024.0\\env\\vars.bat'
+    ifort_batch_file = pathlib.Path(os.getenv("INTEL_VARS_PATH")+'\\vars.bat')
+    if ifort_batch_file.exists():
+        Logs.info(f"Ifort env var batch found at {ifort_batch_file=}")
+        arch = 'amd64'
+        version = '192.49896'
+        target = 'intel64'
+        targets = dict(intel64=target_compiler(conf, 'intel', arch, version, target, ifort_batch_file.as_posix()))
+        major = version[0:2]
+        versions['intel ' + major] = targets
+        return
+
     version_pattern = re.compile(r'^...?.?\....?.?')
     try:
         all_versions = Utils.winreg.OpenKey(Utils.winreg.HKEY_LOCAL_MACHINE,
@@ -136,6 +149,7 @@ def gather_ifort_versions(conf, versions):
                 else:
                     batch_file = os.path.join(path, 'env', 'vars.bat')
                     if os.path.isfile(batch_file):
+                        Logs.info(f"{conf=}, {arch=}, {version=}, {target=}, {batch_file=}")
                         targets[target] = target_compiler(conf, 'intel', arch, version, target, batch_file)
         for target, arch in all_ifort_platforms:
             try:

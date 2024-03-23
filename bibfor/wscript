@@ -102,7 +102,7 @@ def check_fortran_compiler_flags(self):
             self.check_fortran_compiler_options(["-fpe0", "-traceback"])
         if "64" in self.env.DEST_CPU:
             if self.env.CC_NAME.lower() == "msvc":
-                self.check_fortran_compiler_options(["/nologo", "/real-size:64", "-i8"])
+                self.check_fortran_compiler_options(["/nologo", "/real-size:64", "/4I8", "/integer-size:64", "/libs:dll", "/LD"])
             else:
                 self.check_fortran_compiler_options(["-i8", "-r8"])
 
