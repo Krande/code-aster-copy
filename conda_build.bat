@@ -13,7 +13,7 @@ set "FC=ifx.exe"
 
 where python
 where cl
-where ifort
+where ifx
 
 SET PARENT_DIR=%~dp0
 SET PARENT_DIR=%PARENT_DIR:\=/%
