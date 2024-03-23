@@ -99,10 +99,9 @@ all_ifort_platforms = [('intel64', 'amd64'), ('em64t', 'amd64'), ('ia32', 'x86')
 
 @conf
 def gather_ifort_versions(conf, versions):
-    # arch='amd64', version='192.49896', target='intel64', batch_file='C:\\Program Files (x86)\\Intel\\oneAPI\\compiler\\2024.0\\env\\vars.bat'
     ifort_batch_file = pathlib.Path(os.getenv("INTEL_VARS_PATH")+'\\vars.bat')
     if ifort_batch_file.exists():
-        Logs.info(f"Ifort env var batch found at {ifort_batch_file=}")
+        # Logs.info(f"Ifort env var batch found at {ifort_batch_file=}")
         arch = 'amd64'
         version = '192.49896'
         target = 'intel64'
