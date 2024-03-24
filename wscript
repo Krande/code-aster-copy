@@ -344,9 +344,19 @@ def build(self):
     self.load("ext_aster", tooldir="waftools")
     # Need to remove Windows Kits includes from INCLUDES
     if self.env.CC_NAME == "msvc":
+        # Logs.info(f"{self.env}")
+        pops = []
+        for i, lib in enumerate(self.env.LIBPATH):
+            if "Windows" in lib or 'Microsoft' in lib or 'oneAPI' in lib:
+                pops.append(lib)
+
+        for inc_to_be_removed in pops:
+            i = self.env.LIBPATH.index(inc_to_be_removed)
+            self.env.LIBPATH.pop(i)
+
         pops = []
         for i, inc in enumerate(self.env.INCLUDES):
-            if "Windows" in inc or 'Microsoft' in inc:
+            if "Windows" in inc or 'Microsoft' in inc or 'oneAPI' in inc:
                 pops.append(inc)
         for inc_to_be_removed in pops:
             i = self.env.INCLUDES.index(inc_to_be_removed)

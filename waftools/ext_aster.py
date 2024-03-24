@@ -77,8 +77,8 @@ fc.fc.signature = signature
 ###############################################################################
 # original run_str command line is store as hcode
 for feature in ("program", "shlib"):
-    ccroot.USELIB_VARS["c" + feature].add("CCLINKFLAGS")
     ccroot.USELIB_VARS["fc" + feature].add("FCLINKFLAGS")
+    ccroot.USELIB_VARS["c" + feature].add("CCLINKFLAGS")
     ccroot.USELIB_VARS["cxx" + feature].add("CXXLINKFLAGS")
 
 

@@ -118,7 +118,7 @@ def process_h(self, node):
 
 
 def build_libbibc(self, env):
-    use = ["bibfor", "BIBCXX", "PETSC", "SCOTCH", "PARMETIS", "METIS", "MED", "HDF5", "NUMPY", "PYEXT"]
+    use = ["BIBFOR", "BIBCXX", "PETSC", "SCOTCH", "PARMETIS", "METIS", "MED", "HDF5", "NUMPY", "PYEXT"]
     get_srcs = self.path.get_src().ant_glob
     get_srcs("**/*.c", excl=[PYMAIN])
     LDFLAGS = self.env["LDFLAGS"]

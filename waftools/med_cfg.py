@@ -246,10 +246,7 @@ def check_med(self):
 @Configure.conf
 def check_med_libs(self):
     opts = self.options
-    if self.env.CC_NAME == 'msvc':
-        check_med = partial(self.check_cc, mandatory=True, uselib_store="MED", use="MED HDF5 Z")
-    else:
-        check_med = partial(self.check_cc, mandatory=True, uselib_store="MED", use="MED HDF5 Z")
+    check_med = partial(self.check_cc, mandatory=True, uselib_store="MED", use="MED HDF5 Z")
     if opts.embed_all or opts.embed_med:
         check_lib = lambda lib: check_med(stlib=lib)
     else:
