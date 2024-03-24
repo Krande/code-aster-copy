@@ -341,7 +341,11 @@ def fix_specific_c_bibfor_includes(self):
 
         "cxxshlib": ["bibfor/jeveux/wkvectc.F90", "bibfor/jeveux/jeecra_wrap.F90", "bibfor/jeveux/juveca.F90",
                      "bibc/supervis/aster_utils.c", "bibfor/jeveux/jedema.F90", "bibfor/jeveux/jemarq.F90",
-                     "bibfor/jeveux/jexnom.F90", "bibfor/matrix/delete_matrix.F90"]
+                     "bibfor/jeveux/jexnom.F90", "bibfor/matrix/delete_matrix.F90", "bibfor/jeveux/jenonu.F90",
+                     "bibfor/calculel/chpchd.F90", "bibfor/utilitai/dismoi.F90", "bibfor/supervis/execop.F90",
+                     "bibfor/jeveux/jeecra_string_wrap.F90", "bibfor/cont_pair/aplcpgn.F90",
+                     "bibfor/cont_algo/mmelem_data_laga.F90", "bibfor/algeline/vtcreb_wrap.F90",
+                     "bibfor/jeveux/jeexin.F90", "bibfor/jeveux/jenuno.F90", "bibfor/utilitai/sdmpic.F90"]
     }
     top_dir = pathlib.Path(self.bld.top_dir)
     lib_deps = {}
@@ -356,17 +360,18 @@ def fix_specific_c_bibfor_includes(self):
     for task in self.bld.get_tgen_by_name("asterbibc").tasks:
         tname = task.__class__.__name__
         if tname != 'cshlib':
+            fp_in = pathlib.Path(task.inputs[0].abspath())
+            lib_deps[fp_in] = task
             continue
         # task.inputs.extend(all_outputs)
         deps = added_links[tname]
         for dep in deps:
-            fp_in = pathlib.Path(task.inputs[0].abspath())
             dep_fp = top_dir / dep
             if dep_fp not in lib_deps:
-                Logs.error(f"Dependency {dep_fp} not found in bibfor_deps")
+                Logs.error(f"Dependency {dep_fp} not found for bibc")
                 continue
             dep_task = lib_deps[dep_fp]
-            lib_deps[fp_in] = task
+
             task.inputs.extend(dep_task.outputs)
             Logs.info(f"Adding {dep_task} to {task}")
             Logs.info(f"{task.inputs=}")
@@ -380,7 +385,7 @@ def fix_specific_c_bibfor_includes(self):
         for dep in deps:
             dep_fp = top_dir / dep
             if dep_fp not in lib_deps:
-                Logs.error(f"Dependency {dep_fp} not found in bibfor_deps")
+                Logs.error(f"Dependency {dep_fp} not found for bibcxx")
                 continue
             dep_task = lib_deps[dep_fp]
             task.inputs.extend(dep_task.outputs)
@@ -429,9 +434,11 @@ def def_prep_fc_c_linking(self):
     Logs.info(f"{cxx_task.dep_nodes=}")
 
     # These will Force linking order: bibfor -> bibc -> bibcxx
-    c_task.dep_nodes.append(fc_task)
-    cxx_task.dep_nodes.append(fc_task)
-    cxx_task.dep_nodes.append(c_task)
+    if os.getenv("FORCE_BIBFOR_SEQUENCE"):
+        Logs.info("Forcing linking order: bibfor -> bibc -> bibcxx")
+        c_task.dep_nodes.append(fc_task)
+        cxx_task.dep_nodes.append(fc_task)
+        cxx_task.dep_nodes.append(c_task)
 
     # Not quite sure about these two lines
     # c_task.inputs.extend(fc_task.outputs)

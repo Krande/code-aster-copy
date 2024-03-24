@@ -63,6 +63,8 @@ set DEFINES=H5_BUILT_AS_DYNAMIC_LIB
 REM Clean the build directory
 waf distclean
 
+REM set FORCE_BIBFOR_SEQUENCE=1
+
 REM Install for standard sequential
 waf configure ^
   --use-config-dir=%PARENT_DIR%/config/ ^
