@@ -121,30 +121,11 @@ def build_libbibc(self, env):
     use = ["bibfor", "BIBCXX", "PETSC", "SCOTCH", "PARMETIS", "METIS", "MED", "HDF5", "NUMPY", "PYEXT"]
     get_srcs = self.path.get_src().ant_glob
     get_srcs("**/*.c", excl=[PYMAIN])
-
-    root_dir = pathlib.Path(self.top_dir)
-    Logs.info(f"{root_dir=}")
     LDFLAGS = self.env["LDFLAGS"]
     Logs.info(f"{LDFLAGS=}")
     # self.env.append_unique("LDFLAGS", "/DEFAULTLIB:msvcrt.lib")
     self.env.append_unique("LDFLAGS", "/VERBOSE")
     # self.env.append_unique("LDFLAGS", "msvcrt.lib")
-    build_type = 'debug'
-    if os.environ.get('ASTER_DEBUG_CXX', '1') == '0':
-        build_type = "release"
-
-    Logs.info(f"{build_type=}")
-    root_dir: pathlib.Path
-    # fortran_files = [root_dir / f"build/{build_type}" / f for f in
-    #                  (root_dir / 'config/bibfor.list').read_text().splitlines()]
-    # Logs.info(f"{fortran_files=}")
-    # for ffile in fortran_files:
-    #     if not ffile.exists():
-    #         Logs.error(f"{ffile} does not exist")
-    #         continue
-    #     self.env.append_unique("LDFLAGS", ffile.as_posix())
-    # for name in ['utilitai/utgtme', "utilitai/utptme", "parallel/asmpi_warn"]:
-    #     self.env.append_unique("LDFLAGS", f"{root_dir.as_posix()}/build/{build_type}/bibfor/{name}.F90.1.o")
 
     # compile *.c
     self(

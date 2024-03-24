@@ -19,6 +19,7 @@
 
 import os
 import os.path as osp
+import pathlib
 import re
 
 from waflib import Configure, Logs, TaskGen, Utils
@@ -317,3 +318,37 @@ def remove_duplicates(self, list_in):
     dset = set()
     # relies on the fact that dset.add() always returns None.
     return [path for path in list_in if path not in dset and not dset.add(path)]
+
+
+@TaskGen.feature("cshlib")
+@TaskGen.after_method('apply_link')
+def def_prep_fc_c_linking(self):
+    if not getattr(self, 'link_task', None):
+        return
+    root_dir = pathlib.Path(self.bld.top_dir)
+    Logs.info(f"{root_dir=}")
+    build_type = 'debug'
+    if os.environ.get('ASTER_DEBUG_CXX', '1') == '0':
+        build_type = "release"
+    fc_outputs = []
+    fc_inputs = []
+    for task in self.bld.get_tgen_by_name("asterbibfor").tasks:
+        if task.__class__.__name__ != 'fcshlib':
+            continue
+        Logs.info(f"{task.__class__.__name__=}")
+        Logs.info(f"{task.outputs=}")
+        Logs.info(f"{task.inputs=}")
+        Logs.info(f"{task}")
+        fc_inputs = task.inputs
+        fc_outputs = task.outputs
+
+    c_inputs = []
+    c_outputs = []
+    for task in self.bld.get_tgen_by_name("asterbibc").tasks:
+        if task.__class__.__name__ != 'cshlib':
+            continue
+        c_inputs = task.inputs
+        c_outputs = task.outputs
+
+    Logs.info(f"{build_type=}")
+    root_dir: pathlib.Path
