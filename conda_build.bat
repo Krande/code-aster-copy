@@ -70,10 +70,6 @@ waf configure ^
   --prefix=%LIBRARY_PREFIX% ^
   --disable-mpi ^
   --install-tests ^
-  --disable-petsc ^
-  --disable-metis ^
-  --disable-scotch ^
-  --disable-mumps ^
   --maths-libs=auto ^
   --without-hg
 
