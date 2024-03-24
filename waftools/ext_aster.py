@@ -340,7 +340,8 @@ def fix_specific_c_bibfor_includes(self):
                    "bibfor/utilifor/utmess_cwrap.F90", "bibfor/utilifor/utmess_core.F90"],
 
         "cxxshlib": ["bibfor/jeveux/wkvectc.F90", "bibfor/jeveux/jeecra_wrap.F90", "bibfor/jeveux/juveca.F90",
-                     "bibc/supervis/aster_utils.c", "bibfor/jeveux/jedema.F90", "bibfor/jeveux/jemarq.F90"]
+                     "bibc/supervis/aster_utils.c", "bibfor/jeveux/jedema.F90", "bibfor/jeveux/jemarq.F90",
+                     "bibfor/jeveux/jexnom.F90", "bibfor/matrix/delete_matrix.F90"]
     }
     top_dir = pathlib.Path(self.bld.top_dir)
     lib_deps = {}
@@ -428,9 +429,9 @@ def def_prep_fc_c_linking(self):
     Logs.info(f"{cxx_task.dep_nodes=}")
 
     # These will Force linking order: bibfor -> bibc -> bibcxx
-    # c_task.dep_nodes.append(fc_task)
-    # cxx_task.dep_nodes.append(fc_task)
-    # cxx_task.dep_nodes.append(c_task)
+    c_task.dep_nodes.append(fc_task)
+    cxx_task.dep_nodes.append(fc_task)
+    cxx_task.dep_nodes.append(c_task)
 
     # Not quite sure about these two lines
     # c_task.inputs.extend(fc_task.outputs)
