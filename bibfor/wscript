@@ -1,4 +1,3 @@
-
 # coding=utf-8
 # --------------------------------------------------------------------
 # Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
@@ -25,6 +24,7 @@ from waflib import Configure, Errors, Logs, Utils
 
 import platform
 
+
 def get_cpu_vendor():
     """Get CPU vendor."""
     if 'AMD' in platform.processor():
@@ -33,6 +33,7 @@ def get_cpu_vendor():
         return 'Intel'
     else:
         return 'Unknown'
+
 
 def options(self):
     self.load("compiler_fc")
@@ -102,7 +103,9 @@ def check_fortran_compiler_flags(self):
             self.check_fortran_compiler_options(["-fpe0", "-traceback"])
         if "64" in self.env.DEST_CPU:
             if self.env.CC_NAME.lower() == "msvc":
-                self.check_fortran_compiler_options(["/nologo", "/real-size:64", "/4I8", "/integer-size:64", "/libs:dll", "/LD"])
+                self.check_fortran_compiler_options(
+                    ["/nologo", "/real-size:64", "/double-size:64", "/4R8", "/4I8", "/integer-size:64", "/libs:dll",
+                     "/LD"])
             else:
                 self.check_fortran_compiler_options(["-i8", "-r8"])
 
@@ -154,8 +157,8 @@ def check_fortran_preprocessor(self):
     def _check(define, msg, fragment):
         """"""
         program = (
-            "\n".join(["program main", "%s", "print *, str(hello)", "end program main", ""])
-            % fragment
+                "\n".join(["program main", "%s", "print *, str(hello)", "end program main", ""])
+                % fragment
         )
         self.start_msg("Checking fpp stringify using %s" % msg)
         res = self.check_fc(
@@ -185,10 +188,10 @@ def check_fortran_preprocessor(self):
         ]
     )
     if not self.check_fc(
-        msg="Checking compilation with long lines",
-        fragment=fragment,
-        mandatory=False,
-        compile_filename="test.F90",
+            msg="Checking compilation with long lines",
+            fragment=fragment,
+            mandatory=False,
+            compile_filename="test.F90",
     ):
         Logs.warn(
             "The compiler failed on long lines that may be generated "
@@ -199,16 +202,16 @@ def check_fortran_preprocessor(self):
 
 @Configure.conf
 def code_checker(
-    self,
-    define,
-    check,
-    fragment,
-    start_msg,
-    error_msg,
-    into=None,
-    optional=False,
-    setbool=False,
-    use="",
+        self,
+        define,
+        check,
+        fragment,
+        start_msg,
+        error_msg,
+        into=None,
+        optional=False,
+        setbool=False,
+        use="",
 ):
     """Check the size of a type compiling 'fragment' code with 'check',
     add 'define' macro."""
@@ -547,6 +550,7 @@ def check_optimization_fcflags(self):
     self.env.append_unique("FCFLAGS", optflag)
     self.end_msg(optflag)
 
+
 @Configure.conf
 def check_optimization_fcflags_msvc(self):
     self.setenv("debug")
@@ -566,6 +570,7 @@ def check_optimization_fcflags_msvc(self):
     # Additional checks and configurations specific to your application's needs
     # IFort-specific settings for loop optimization and other considerations
     # can be added here, following IFort documentation and best practices.
+
 
 @Configure.conf
 def check_optional_features(self):

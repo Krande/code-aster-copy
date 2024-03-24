@@ -124,7 +124,7 @@ def build_libbibc(self, env):
     LDFLAGS = self.env["LDFLAGS"]
     Logs.info(f"{LDFLAGS=}")
     # self.env.append_unique("LDFLAGS", "/DEFAULTLIB:msvcrt.lib")
-    self.env.append_unique("LDFLAGS", "/VERBOSE")
+    # self.env.append_unique("LDFLAGS", "/VERBOSE")
     # self.env.append_unique("LDFLAGS", "msvcrt.lib")
 
     # compile *.c

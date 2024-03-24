@@ -85,7 +85,7 @@ void DEF0( INISIG, inisig ) {
 
     signal( SIGFPE, hanfpe );
 
-#elif defined ASTER_PLATFORM_MINGW || defined ASTER_PLATFORM_MSVC64
+#elif defined ASTER_PLATFORM_MINGW
     _clearfp();
     cw = _controlfp( 0, 0 );
     cw &= ~( _EM_OVERFLOW | _EM_ZERODIVIDE );
@@ -103,7 +103,7 @@ void DEF0( INISIG, inisig ) {
    il faudra essayer de trouver autre chose... */
 #if defined ASTER_PLATFORM_POSIX
     signal( SIGUSR1, stpusr1 );
-#elif defined ASTER_PLATFORM_MINGW || defined ASTER_PLATFORM_MSVC64
+#elif defined ASTER_PLATFORM_MINGW
     signal( SIGSEGV, sigsegv );
 #endif
 }
