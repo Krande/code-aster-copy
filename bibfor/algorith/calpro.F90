@@ -69,7 +69,7 @@ subroutine calpro(nomres, classe, basmod, nommat)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iad, idbase, ier, iret, jrefa, jdeb
+    integer :: i, iad, idbase, ier, iret, jrefa
     integer :: j, lddes, ldref, ldres, ldres2, lmat, ltvec1, nbdef
     integer :: neq, ntail
     aster_logical :: lsym
@@ -160,32 +160,39 @@ subroutine calpro(nomres, classe, basmod, nommat)
                     .true._1)
         call zerlag(neq, deeq, vectr=zr(ltvec1))
 !
-! ----- PRODUIT AVEC LA DEFORMEE COURANTE
+! ----- CALCUL DES TERMES DIAGONAUX
 !
         xprod = ddot(neq, zr(ltvec1), 1, zr(idbase+(i-1)*neq), 1)
         iad = i*(i+1)/2
         zr(ldres+iad-1) = xprod
         if (.not. lsym) zr(ldres2+iad-1) = xprod
+!
+! ----- CALCUL DES TERMES EXTRA-DIAGONAUX
+!
         if (lsym) then
-            jdeb = i+1
-        else
-            jdeb = 1
-        end if
 !
-! ----- PRODUIT AVEC DEFORMEES D'ORDRE SUPERIEURE
+! ------- CAS SYMETRIQUE
 !
-!       if (i .lt. nbdef) then
-        do j = jdeb, nbdef
-            xprod = ddot(neq, zr(ltvec1), 1, zr(idbase+(j-1)*neq), 1)
-            if (j .gt. i) then
+            do j = i+1, nbdef
+                xprod = ddot(neq, zr(ltvec1), 1, zr(idbase+(j-1)*neq), 1)
                 iad = i+(j-1)*j/2
                 zr(ldres+iad-1) = xprod
-            else
-                iad = j+(i-1)*i/2
-                zr(ldres2+iad-1) = xprod
-            end if
-        end do
-!       endif
+            end do
+!
+! ------- CAS NON SYMETRIQUE
+!
+        else
+            do j = 1, nbdef
+                xprod = ddot(neq, zr(ltvec1), 1, zr(idbase+(j-1)*neq), 1)
+                if (j .gt. i) then
+                    iad = i+(j-1)*j/2
+                    zr(ldres2+iad-1) = xprod
+                else
+                    iad = j+(i-1)*i/2
+                    zr(ldres+iad-1) = xprod
+                end if
+            end do
+        end if 
 !
     end do
 !
