@@ -62,8 +62,8 @@ set DEFINES=H5_BUILT_AS_DYNAMIC_LIB
 REM Clean the build directory
 waf distclean
 
-REM set FORCE_BIBFOR_SEQUENCE=1
-set MANUALLY_ADD_BIBFOR_DEPS=1
+set FORCE_BIBFOR_SEQUENCE=1
+REM set MANUALLY_ADD_BIBFOR_DEPS=1
 
 REM Install for standard sequential
 waf configure ^
@@ -74,7 +74,6 @@ waf configure ^
   --install-tests ^
   --shared-aster ^
   --maths-libs=auto ^
-  --safe ^
   --without-hg
 
 REM if USE_LOG is set, then log the output to a file
