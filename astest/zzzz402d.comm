@@ -22,6 +22,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), IMPR_MACRO="NON")
 from numpy import array, shape, reshape, real
 from cmath import *
 
+
 #
 # --------
 # RECALAGE DES VALEURS D'AMORTISSEMENT DE RAYLEIGH
@@ -65,7 +66,7 @@ MA1 = LIRE_MAILLAGE(FORMAT="MED")
 ### CALCUL AVEC MALLAGE RAFFINEE 1 FOIS
 ###############################################################################
 
-# MACR_ADAP_MAIL(MAILLAGE_N = MA1, MAILLAGE_NP1=CO('MA'), ADAPTATION='RAFFINEMENT_UNIFORME',)
+MACR_ADAP_MAIL(MAILLAGE_N=MA1, MAILLAGE_NP1=CO("MA"), ADAPTATION="RAFFINEMENT_UNIFORME")
 # posx = 80.0
 # posy = 220.0
 # r = 50.0
@@ -83,34 +84,34 @@ MA1 = LIRE_MAILLAGE(FORMAT="MED")
 # IMPR_RESU(RESU=_F(MAILLAGE = NEWMESH1,),FORMAT='MED',UNITE=24)
 
 
-# MA = DEFI_GROUP(reuse=MA, MAILLAGE=MA, CREA_GROUP_NO=_F(TOUT_GROUP_MA="OUI"))
+MA = DEFI_GROUP(reuse=MA, MAILLAGE=MA, CREA_GROUP_NO=_F(TOUT_GROUP_MA="OUI"))
 
 
-# # Orientation des mailles surfaciques
-# MA = MODI_MAILLAGE(
-#     reuse=MA, MAILLAGE=MA, ORIE_PEAU=_F(GROUP_MA_PEAU=("SLATD", "SLATG", "SFREEDRO", "SFREEGAU"))
-# )
+# Orientation des mailles surfaciques
+MA = MODI_MAILLAGE(
+    reuse=MA, MAILLAGE=MA, ORIE_PEAU=_F(GROUP_MA_PEAU=("SLATD", "SLATG", "SFREEDRO", "SFREEGAU"))
+)
 
 mail_barrage = ("ENR", "ENRW", "ENROC", "ENROCW", "TRANS", "TRANSW", "NOYAU", "FILTRE")
 Cotes = ("DRO", "GAU")
 Paraxiaux = ("BAS",)
 
-# ##Orientation des mailles surfaciques
-# MA = MODI_MAILLAGE(
-#     reuse=MA,
-#     MAILLAGE=MA,
-#     ORIE_PEAU=_F(GROUP_MA_PEAU=Paraxiaux + Cotes, GROUP_MA_INTERNE=("Fondation")),
-# )
+##Orientation des mailles surfaciques
+MA = MODI_MAILLAGE(
+    reuse=MA,
+    MAILLAGE=MA,
+    ORIE_PEAU=_F(GROUP_MA_PEAU=Paraxiaux + Cotes, GROUP_MA_INTERNE=("Fondation")),
+)
 
-# MODYN = AFFE_MODELE(
-#     MAILLAGE=MA,
-#     AFFE=(
-#         _F(GROUP_MA=mail_barrage, PHENOMENE="MECANIQUE", MODELISATION="D_PLAN"),
-#         _F(GROUP_MA=("Fondation"), PHENOMENE="MECANIQUE", MODELISATION="D_PLAN"),
-#         _F(GROUP_MA=Paraxiaux + Cotes, PHENOMENE="MECANIQUE", MODELISATION="D_PLAN_ABSO"),
-#     ),
-#     VERI_JACOBIEN="NON",
-# )
+MODYN = AFFE_MODELE(
+    MAILLAGE=MA,
+    AFFE=(
+        _F(GROUP_MA=mail_barrage, PHENOMENE="MECANIQUE", MODELISATION="D_PLAN"),
+        _F(GROUP_MA=("Fondation"), PHENOMENE="MECANIQUE", MODELISATION="D_PLAN"),
+        _F(GROUP_MA=Paraxiaux + Cotes, PHENOMENE="MECANIQUE", MODELISATION="D_PLAN_ABSO"),
+    ),
+    VERI_JACOBIEN="NON",
+)
 
 # ================================================================================
 #     MATERIAUX
@@ -167,8 +168,7 @@ Tout = (
 )
 
 
-# MATDYN=AFFE_MATERIAU(INFO=1,MAILLAGE=MA,
-#                            AFFE = affe_materiau)
+MATDYN = AFFE_MATERIAU(INFO=1, MAILLAGE=MA, AFFE=affe_materiau)
 
 
 ### ===============================================================
@@ -199,29 +199,29 @@ x1 = 0.0
 z1 = 146.0
 
 
-# CHARGX = AFFE_CHAR_MECA_F(
-#     MODELE=MODYN,
-#     VERI_NORM="OUI",
-#     ONDE_PLANE=_F(
-#         GROUP_MA=("BAS"),
-#         TYPE_ONDE="S",
-#         COOR_SOURCE=(x0, z0),
-#         DIRECTION=(0, 1, 0),
-#         FONC_SIGNAL=VITX1,
-#     ),
-# )
+CHARGX = AFFE_CHAR_MECA_F(
+    MODELE=MODYN,
+    VERI_NORM="OUI",
+    ONDE_PLANE=_F(
+        GROUP_MA=("BAS"),
+        TYPE_ONDE="S",
+        COOR_SOURCE=(x0, z0),
+        DIRECTION=(0, 1, 0),
+        FONC_SIGNAL=VITX1,
+    ),
+)
 
-# ONDELATE = AFFE_CHAR_MECA_F(
-#     MODELE=MODYN,
-#     ONDE_PLANE=_F(
-#         DIRECTION=(0.0, 1.0, 0.0),
-#         TYPE_ONDE="S",
-#         GROUP_MA=Cotes,
-#         COOR_SOURCE=(x0, z0),
-#         COOR_REFLECHI=(x1, z1),
-#         FONC_SIGNAL=VITX1,
-#     ),
-# )
+ONDELATE = AFFE_CHAR_MECA_F(
+    MODELE=MODYN,
+    ONDE_PLANE=_F(
+        DIRECTION=(0.0, 1.0, 0.0),
+        TYPE_ONDE="S",
+        GROUP_MA=Cotes,
+        COOR_SOURCE=(x0, z0),
+        COOR_REFLECHI=(x1, z1),
+        FONC_SIGNAL=VITX1,
+    ),
+)
 
 
 TEMPS = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, PAS=0.01))
@@ -246,9 +246,9 @@ DEFLIST = DEFI_LIST_INST(
 # )
 
 
-###############################################
-# Etape de calcul dynamique####################
-###############################################
+# ##############################################
+# ########## Etape de calcul dynamique##########
+# ##############################################
 
 # morime = CALC_MODES(
 #     OPTION="PLUS_PETITE",
@@ -268,6 +268,7 @@ DEFLIST = DEFI_LIST_INST(
 #     TYPE_RESU="DYNA_TRANS",
 #     CONV_CHAR=_F(
 #         MATR_RIGI=MATRRIGI,
+#         CHAM_MATER=MATDYN,
 #         CHARGE=(CHARGX, ONDELATE),
 #         PRECISION=1.0e-6,
 #         CRITERE="RELATIF",
@@ -296,7 +297,7 @@ DEFLIST = DEFI_LIST_INST(
 #     BASE_CALCUL="PHYS",
 #     TYPE_CALCUL="TRAN",
 #     MODELE=MODYN,
-#     CHAM_MATER = MATDYN,
+#     CHAM_MATER=MATDYN,
 #     MATR_MASS=MATRMASS,
 #     MATR_RIGI=MATRRIGI,
 #     MATR_AMOR=MATRAMOR,
@@ -325,16 +326,10 @@ DEFLIST = DEFI_LIST_INST(
 
 # ##### CALCUL AVEC MAILLAGE RAFFINEE
 # TAB_RESU = POST_NEWMARK(
-#     RESULTAT=DYNA_V,
-#     KY=ky,
-#     RAYON=r,
-#     CENTRE_X=posx,
-#     CENTRE_Y=posy,
-#     GROUP_MA_CALC=Tout,
-#     INFO=2,
+#     RESULTAT=DYNA_V, KY=ky, RAYON=r, CENTRE_X=posx, CENTRE_Y=posy, GROUP_MA_CALC=Tout, INFO=2
 # )
 
-# IMPR_TABLE(UNITE=38,TABLE=TAB_RESU)
+# IMPR_TABLE(UNITE=38, TABLE=TAB_RESU)
 # # IMPR_RESU(RESU=_F(MAILLAGE = MA,),FORMAT='MED',UNITE=22)
 
 
@@ -343,8 +338,8 @@ DEFLIST = DEFI_LIST_INST(
 #     NOM_PARA="DEPL",
 #     FILTRE=_F(NOM_PARA="INST", VALE=6.00000e-01, CRITERE="RELATIF"),
 #     REFERENCE="NON_DEFINI",
-#     VALE_REFE=0.00042663670972473394,
-#     VALE_CALC=0.00042663670972473394,
+#     VALE_REFE=0.000538816821918905,
+#     VALE_CALC=0.000538816821918905,
 #     PRECISION=0.00001,
 #     CRITERE="RELATIF",
 #     VALE_ABS="NON",
@@ -355,8 +350,8 @@ DEFLIST = DEFI_LIST_INST(
 #     NOM_PARA="DEPL",
 #     FILTRE=_F(NOM_PARA="INST", VALE=9.00000e-01, CRITERE="RELATIF"),
 #     REFERENCE="NON_DEFINI",
-#     VALE_REFE=0.0004828535538202319,
-#     VALE_CALC=0.0004828535538202319,
+#     VALE_REFE=0.0007241669686476854,
+#     VALE_CALC=0.0007241669686476854,
 #     PRECISION=0.00001,
 #     CRITERE="RELATIF",
 #     VALE_ABS="NON",
@@ -542,8 +537,8 @@ TEST_TABLE(
     NOM_PARA="DEPL",
     FILTRE=_F(NOM_PARA="INST", VALE=6.00000e-01, CRITERE="RELATIF"),
     REFERENCE="AUTRE_ASTER",
-    VALE_REFE=0.00042663670972473394,
-    VALE_CALC=0.0003980948059178923,
+    VALE_REFE=0.000538816821918905,
+    VALE_CALC=0.0005103115041484796,
     PRECISION=0.1,
     CRITERE="RELATIF",
     VALE_ABS="NON",
@@ -554,8 +549,8 @@ TEST_TABLE(
     NOM_PARA="DEPL",
     FILTRE=_F(NOM_PARA="INST", VALE=9.00000e-01, CRITERE="RELATIF"),
     REFERENCE="AUTRE_ASTER",
-    VALE_REFE=0.0004828535538202319,
-    VALE_CALC=0.0004388687269972643,
+    VALE_REFE=0.0007241669686476854,
+    VALE_CALC=0.0006872526889421416,
     PRECISION=0.1,
     CRITERE="RELATIF",
     VALE_ABS="NON",
@@ -588,8 +583,8 @@ TEST_TABLE(
     NOM_PARA="DEPL",
     FILTRE=_F(NOM_PARA="INST", VALE=6.00000e-01, CRITERE="RELATIF"),
     REFERENCE="AUTRE_ASTER",
-    VALE_REFE=0.00042663670972473394,
-    VALE_CALC=0.00044331030628417406,
+    VALE_REFE=0.000538816821918905,
+    VALE_CALC=0.000556078208066942,
     PRECISION=0.05,
     CRITERE="RELATIF",
     VALE_ABS="NON",
@@ -600,8 +595,8 @@ TEST_TABLE(
     NOM_PARA="DEPL",
     FILTRE=_F(NOM_PARA="INST", VALE=9.00000e-01, CRITERE="RELATIF"),
     REFERENCE="AUTRE_ASTER",
-    VALE_REFE=0.0004828535538202319,
-    VALE_CALC=0.00049553408788952,
+    VALE_REFE=0.0007241669686476854,
+    VALE_CALC=0.0007488881607594306,
     PRECISION=0.05,
     CRITERE="RELATIF",
     VALE_ABS="NON",

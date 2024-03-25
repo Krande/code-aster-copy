@@ -1315,57 +1315,13 @@ def post_newmark_ops(self, **args):
                     text = "Accélération critique : " + str(ky) + " g"
                     aster.affiche("MESSAGE", text)
 
-        ## Modification of mean acceleration to consider ay limit value
-        ## Counting of bins a<ay in order to maintain the same bin values after a<ay
-        ## This allows to correctly integrate acceleration to velocity and displacements
-        ## This part needs to be adapted if ay is not constant (NEWMARK-D approach)
-
-        accA = np.zeros(len(time))
-        count = 0
-        for i in range(len(time)):
-            if acc[i] > ay:
-                accA[i] = acc[i] - ay
-                count = count + 1
-            else:
-                if count > 0:
-                    accA[i] = acc[i] - ay
-                    count = count - 1
-                else:
-                    count = 0
-
-        ## New acceleration corrected by ay
-        __accAF = (
-            DEFI_FONCTION(NOM_RESU="ACCE", NOM_PARA="INST", ABSCISSE=time, ORDONNEE=list(accA)),
-        )
-
-        __vitAFa = CALC_FONCTION(INTEGRE=_F(FONCTION=__accAF))
-
-        ### Velocity correction by imposing v>0 only
-        ### necessary to get correct residual displacements
-        vitAFv = __vitAFa.Ordo()
-        vitA = np.zeros(len(time))
-        ind = [False] * len(time)
-        eps = 1e-9
-        for i in range(len(time) - 1):
-            if (vitAFv[i + 1] - vitAFv[i]) > eps or (vitAFv[i + 1] - vitAFv[i]) < (-1.0) * eps:
-                vitA[i] = vitAFv[i]
-                ind[i] = True
-
-        initial = True
-        vini = 0.0
-        for i in range(len(time)):
-            if ind[i]:
-                vitA[i] = vitA[i] - vini
-                initial = False
-            else:
-                initial = True
-                vini = vitAFv[i]
-                ##print vini
-
+        ## Velocity calculation without without imposing ay value on accelerations
+        ## Then imposes velocity always positive
+        __vitxFL = CALC_FONCTION(INTEGRE=_F(FONCTION=__accxFL))
+        vitA = __vitxFL.Ordo()
         for i in range(len(time)):
             if vitA[i] < 0:
                 vitA[i] = 0.0
-
         __vitAF = (
             DEFI_FONCTION(NOM_RESU="VITE", NOM_PARA="INST", ABSCISSE=time, ORDONNEE=list(vitA)),
         )
@@ -1374,14 +1330,12 @@ def post_newmark_ops(self, **args):
 
         ## Output table
 
-        __tabaAF = CREA_TABLE(FONCTION=_F(FONCTION=__accAF))
         __tabvAF = CREA_TABLE(FONCTION=_F(FONCTION=__vitAF))
         __tabdAF = CREA_TABLE(FONCTION=_F(FONCTION=__deplAF))
 
         tabout = CREA_TABLE(FONCTION=_F(FONCTION=__accxFL))
 
         act_table = []
-        act_table.append(_F(OPERATION="COMB", TABLE=__tabaAF, NOM_PARA="INST"))
         act_table.append(_F(OPERATION="COMB", TABLE=__tabvAF, NOM_PARA="INST"))
         act_table.append(_F(OPERATION="COMB", TABLE=__tabdAF, NOM_PARA="INST"))
 
