@@ -192,7 +192,7 @@ subroutine calpro(nomres, classe, basmod, nommat)
                     zr(ldres+iad-1) = xprod
                 end if
             end do
-        end if 
+        end if
 !
     end do
 !
