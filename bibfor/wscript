@@ -97,6 +97,7 @@ def check_fortran_compiler_flags(self):
         self.check_fortran_compiler_options("-ffree-line-length-none")
 
     if "ifort" in self.env.FC_NAME.lower():
+        self.check_fortran_compiler_options(["/nologo", "/nogen-interfaces"])
         if self.env.CC_NAME.lower() == "msvc":
             self.check_fortran_compiler_options(["/fpe:0", "/traceback"])
         else:
@@ -104,8 +105,7 @@ def check_fortran_compiler_flags(self):
         if "64" in self.env.DEST_CPU:
             if self.env.CC_NAME.lower() == "msvc":
                 self.check_fortran_compiler_options(
-                    ["/nologo", "/real-size:64", "/double-size:64", "/4R8", "/4I8", "/integer-size:64", "/libs:dll",
-                     "/LD"])
+                    ["/real-size:64", "/double-size:64", "/4R8", "/4I8", "/integer-size:64"])
             else:
                 self.check_fortran_compiler_options(["-i8", "-r8"])
 

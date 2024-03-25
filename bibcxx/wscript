@@ -19,7 +19,7 @@
 
 import os.path as osp
 
-from waflib import Configure, Utils, Logs
+from waflib import Configure, Utils
 
 
 def options(self):
@@ -66,7 +66,6 @@ def build(self):
         source=get_srcs("**/*.cxx", excl="MFront/*.cxx"),
         target="bibcxx",
         use=[
-            "BIBFOR",
             "BIBCXX",
             "PYBIND11",
             "PETSC",
@@ -87,7 +86,8 @@ def build(self):
 @Configure.conf
 def check_bibcxx_depends(self):
     """check dependencies of bibcxx"""
-    # self.check_cxx(uselib_store="CXX", lib="stdc++")
+    if self.env.CC_NAME != 'msvc':
+        self.check_cxx(uselib_store="CXX", lib="stdc++")
     # if int(self.env.CC_VERSION[0] or 0) < 9:
     #     self.check_cxx(uselib_store="CXX", lib="stdc++fs")
 

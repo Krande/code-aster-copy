@@ -26,7 +26,7 @@ from dataclasses import dataclass
 from waflib import Configure, Logs, TaskGen, Utils
 from waflib.Context import Context
 from waflib.Task import CRASHED, Task
-from waflib.Tools import c, ccroot, cxx, fc
+from waflib.Tools import c, ccroot, cxx, fc, fc_scan
 
 
 def sig_explicit_deps(self):
@@ -311,59 +311,46 @@ def remove_duplicates(self, list_in):
     return [path for path in list_in if path not in dset and not dset.add(path)]
 
 
-@TaskGen.feature("cshlib")
-@TaskGen.before_method('apply_link')
-def fix_bibc_deps(self):
-    for task in self.bld.get_tgen_by_name("asterbibc").tasks:
-        Logs.info(f"{task.__class__.__name__=}")
-        Logs.info(f"{task.inputs=}")
-        Logs.info(f"{task=}")
-
-
-@dataclass
-class ExtraDep:
-    source_task: Task
-    dep_nodes: list[Task]
+def scrape_all_tasks(self):
+    """Scrape all outputs from all tasks."""
+    all_outputs = []
+    lib_deps = {}
+    for mod in ["asterbibfor", "asterbibc", "asterbibcxx"]:
+        for task in self.bld.get_tgen_by_name(mod).tasks:
+            if task.__class__.__name__ not in ("c", "cxx", "fc"):
+                continue
+            fp_in = pathlib.Path(task.inputs[0].abspath())
+            lib_deps[fp_in] = task
+            all_outputs.extend(task.outputs)
+    return all_outputs, lib_deps
 
 
 def fix_specific_c_bibfor_includes(self):
-    added_links = {
-        "cshlib": ["bibfor/utilitai/utgtme.F90", "bibfor/utilitai/utptme.F90", "bibfor/parallel/asmpi_warn.F90",
-                   "bibfor/utilitai/fclose.F90", "bibfor/utilitai/ulopen.F90", "bibfor/supervis/affich.F90",
-                   "bibfor/supervis/impers.F90", "bibfor/prepost/mdnoma.F90", "bibfor/prepost/mdnoch.F90",
-                   "bibfor/modelisa/rcvale_wrap.F90", "bibfor/modelisa/gmardm.F90", "bibfor/utilifor/postkutil.F90",
-                   "bibfor/jeveux/jemarq.F90", "bibfor/supervis/getcon.F90", "bibfor/jeveux/jedema.F90",
-                   "bibfor/jeveux/jedetr.F90", "bibfor/supervis/putcon.F90", "bibfor/supervis/tailsd.F90",
-                   "bibfor/resu_util/rsacch.F90", "bibfor/resu_util/rsacpa.F90", "bibfor/jeveux/jelst3.F90",
-                   "bibfor/jeveux/jelira.F90", "bibfor/jeveux/jeexin.F90", "bibfor/supervis/gcncon.F90",
-                   "bibfor/utilifor/abortf.F90", "bibfor/supervis/sigcpu.F90", "bibfor/utilitai/utmfpe.F90",
-                   "bibfor/utilifor/utmess_cwrap.F90", "bibfor/utilifor/utmess_core.F90"],
+    config_dir = pathlib.Path(__file__).parent.parent / "config"
+    cshlib_txt = config_dir / "cshlib.txt"
+    cxxshlib_txt = config_dir / "cxxshlib.txt"
 
-        "cxxshlib": ["bibfor/jeveux/wkvectc.F90", "bibfor/jeveux/jeecra_wrap.F90", "bibfor/jeveux/juveca.F90",
-                     "bibc/supervis/aster_utils.c", "bibfor/jeveux/jedema.F90", "bibfor/jeveux/jemarq.F90",
-                     "bibfor/jeveux/jexnom.F90", "bibfor/matrix/delete_matrix.F90", "bibfor/jeveux/jenonu.F90",
-                     "bibfor/calculel/chpchd.F90", "bibfor/utilitai/dismoi.F90", "bibfor/supervis/execop.F90",
-                     "bibfor/jeveux/jeecra_string_wrap.F90", "bibfor/cont_pair/aplcpgn.F90",
-                     "bibfor/cont_algo/mmelem_data_laga.F90", "bibfor/algeline/vtcreb_wrap.F90",
-                     "bibfor/jeveux/jeexin.F90", "bibfor/jeveux/jenuno.F90", "bibfor/utilitai/sdmpic.F90"]
+    added_links = {
+        "cshlib": cshlib_txt.read_text().splitlines(),
+        "cxxshlib": cxxshlib_txt.read_text().splitlines(),
     }
     top_dir = pathlib.Path(self.bld.top_dir)
-    lib_deps = {}
-    all_outputs = []
-    for task in self.bld.get_tgen_by_name("asterbibfor").tasks:
-        if task.__class__.__name__ != 'fc':
-            continue
-        fp_in = pathlib.Path(task.inputs[0].abspath())
-        lib_deps[fp_in] = task
-        all_outputs.extend(task.outputs)
+    all_outputs, lib_deps = scrape_all_tasks(self)
+    # Logs.info(f"{all_outputs=}, {lib_deps=}")
+    # Logs.info(f"{self.bld.env.INCLUDES_BIBFOR=}")
+
+    # fscan = fc_scan.fortran_parser(self.bld.env.INCLUDES_BIBFOR)
+    # fp1 = top_dir / added_links["cshlib"][1]
+    # dep_task = lib_deps[fp1]
+    # n = self.path.find_node(dep_task.inputs[0])
+    # Logs.info(f"{n}")
+    # fscan.start(n)
+    # Logs.info(f"{fscan.nodes=}")
 
     for task in self.bld.get_tgen_by_name("asterbibc").tasks:
         tname = task.__class__.__name__
         if tname != 'cshlib':
-            fp_in = pathlib.Path(task.inputs[0].abspath())
-            lib_deps[fp_in] = task
             continue
-        # task.inputs.extend(all_outputs)
         deps = added_links[tname]
         for dep in deps:
             dep_fp = top_dir / dep
@@ -371,10 +358,9 @@ def fix_specific_c_bibfor_includes(self):
                 Logs.error(f"Dependency {dep_fp} not found for bibc")
                 continue
             dep_task = lib_deps[dep_fp]
-
             task.inputs.extend(dep_task.outputs)
             Logs.info(f"Adding {dep_task} to {task}")
-            Logs.info(f"{task.inputs=}")
+            # Logs.info(f"{task.inputs=}")
 
     for task in self.bld.get_tgen_by_name("asterbibcxx").tasks:
         tname = task.__class__.__name__
@@ -390,14 +376,12 @@ def fix_specific_c_bibfor_includes(self):
             dep_task = lib_deps[dep_fp]
             task.inputs.extend(dep_task.outputs)
             Logs.info(f"Adding {dep_task} to {task}")
-            Logs.info(f"{task.inputs=}")
+            # Logs.info(f"{task.inputs=}")
 
 
 @TaskGen.feature("cshlib")
 @TaskGen.after_method('apply_link')
 def def_prep_fc_c_linking(self):
-    fix_specific_c_bibfor_includes(self)
-
     fc_task = None
     for task in self.bld.get_tgen_by_name("asterbibfor").tasks:
         if task.__class__.__name__ != 'fcshlib':
@@ -436,13 +420,17 @@ def def_prep_fc_c_linking(self):
     # These will Force linking order: bibfor -> bibc -> bibcxx
     if os.getenv("FORCE_BIBFOR_SEQUENCE"):
         Logs.info("Forcing linking order: bibfor -> bibc -> bibcxx")
-        c_task.dep_nodes.append(fc_task)
-        cxx_task.dep_nodes.append(fc_task)
-        cxx_task.dep_nodes.append(c_task)
+        c_task.dep_nodes.extend(fc_task.outputs)
+        cxx_task.dep_nodes.extend(fc_task.outputs)
+        cxx_task.dep_nodes.extend(c_task.outputs)
 
-    # Not quite sure about these two lines
-    # c_task.inputs.extend(fc_task.outputs)
-    # cxx_task.inputs.extend(fc_task.outputs)
+        # Not quite sure about these lines
+        # c_task.inputs.extend(fc_task.outputs)
+        # cxx_task.inputs.extend(fc_task.outputs)
+        # cxx_task.inputs.extend(c_task.outputs)
+
+    if os.getenv('MANUALLY_ADD_BIBFOR_DEPS'):
+        fix_specific_c_bibfor_includes(self)
 
     Logs.info(f"{c_task.priority()=}")
     Logs.info(f"{cxx_task.priority()=}")

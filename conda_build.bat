@@ -51,7 +51,6 @@ REM Compiler flags
 
 REM /MD link with MSVCRT.lib. /FS allow for multithreaded c compiler calls to vc140.pdb (for cl.exe only)
 set CFLAGS=%CFLAGS% /FS /MD
-
 set FCFLAGS=%FCFLAGS% -fpp /MD /names:lowercase
 
 set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib pthread.lib /DEBUG
@@ -64,6 +63,7 @@ REM Clean the build directory
 waf distclean
 
 REM set FORCE_BIBFOR_SEQUENCE=1
+set MANUALLY_ADD_BIBFOR_DEPS=1
 
 REM Install for standard sequential
 waf configure ^
@@ -72,7 +72,9 @@ waf configure ^
   --prefix=%LIBRARY_PREFIX% ^
   --disable-mpi ^
   --install-tests ^
+  --shared-aster ^
   --maths-libs=auto ^
+  --safe ^
   --without-hg
 
 REM if USE_LOG is set, then log the output to a file

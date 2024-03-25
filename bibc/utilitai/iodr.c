@@ -132,7 +132,7 @@ void DEFSP( CLOSDR, closdr, char *dfname, STRING_SIZE len_dfname, ASTERINTEGER *
     if ( iu < 0 ) {
         *ierr = -1;
     } else {
-        fclose2( fpfile[iu] );
+        fort_fclose( fpfile[iu] );
         fpfile[iu] = NULL;
         nenr[iu] = -1;
         *ierr = 0;

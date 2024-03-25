@@ -106,7 +106,7 @@ void PtScotchPartitioner::buildPartition( const VectorLong &partition, VectorLon
 void PtScotchPartitioner::writeGraph( const std::string &filename ) {
     auto file = fopen( filename.c_str(), "w" );
     SCOTCH_dgraphSave( _graph, file );
-    fclose2( file );
+    fort_fclose( file );
 };
 
 #endif /* ASTER_HAVE_PTSCOTCH */

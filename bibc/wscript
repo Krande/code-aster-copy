@@ -16,12 +16,11 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
-import os
+
 import os.path as osp
-import pathlib
 import sys
 
-from waflib import Configure, TaskGen, Utils, Logs
+from waflib import Configure, TaskGen, Utils
 
 
 def options(self):
@@ -118,15 +117,8 @@ def process_h(self, node):
 
 
 def build_libbibc(self, env):
-    use = ["BIBFOR", "BIBCXX", "PETSC", "SCOTCH", "PARMETIS", "METIS", "MED", "HDF5", "NUMPY", "PYEXT"]
+    use = ["BIBCXX", "PETSC", "SCOTCH", "PARMETIS", "METIS", "MED", "HDF5", "NUMPY", "PYEXT"]
     get_srcs = self.path.get_src().ant_glob
-    get_srcs("**/*.c", excl=[PYMAIN])
-    LDFLAGS = self.env["LDFLAGS"]
-    Logs.info(f"{LDFLAGS=}")
-    # self.env.append_unique("LDFLAGS", "/DEFAULTLIB:msvcrt.lib")
-    # self.env.append_unique("LDFLAGS", "/VERBOSE")
-    # self.env.append_unique("LDFLAGS", "msvcrt.lib")
-
     # compile *.c
     self(
         features="c cshlib",
@@ -141,7 +133,7 @@ def build_libbibc(self, env):
 
 
 def build_libaster(self, env):
-    use = ["LIBASTER", "bibfor", "asterbibfor", "asterbibc", "asterbibcxx"]
+    use = ["LIBASTER", "asterbibfor", "asterbibc", "asterbibcxx"]
     if env.BUILD_MFRONT:
         use.append("astermfront")
     # {bibfor, bibc, bibcxx}/*.o

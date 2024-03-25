@@ -339,6 +339,8 @@ def apply_flags_ifort(self):
         subsystem = '/subsystem:%s' % subsystem
         flags = is_static and 'ARFLAGS' or 'LINKFLAGS'
         self.env.append_value(flags, subsystem)
+
+    # Logs.info(f"{is_static=}, {self.link_task.outputs=}")
     if not is_static:
         for f in self.env.LINKFLAGS:
             d = f.lower()
