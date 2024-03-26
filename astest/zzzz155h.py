@@ -165,6 +165,9 @@ for initArray, newArray in zip(initDepl, newDepl):
     for initVal, newVal in zip(initArray, newArray):
         test.assertEqual(initVal, newVal)
 
+test.assertEqual(outResu.getType(), "EVOL_ELAS")
+test.assertTrue(isinstance(outResu, CA.ElasticResult))
+
 del bMesh
 
 FIN()

@@ -27,11 +27,52 @@
 
 #include "aster_pybind.h"
 
+#include "Results/ElasticResult.h"
+#include "Results/NonLinearResult.h"
+#include "Results/ThermalResult.h"
+
 #include <Results/ResultBalancer.h>
 
 void exportResultBalancerToPython( py::module_ &mod ) {
 
-    mod.def( "applyBalancingStrategy", &applyBalancingStrategy, R"(
+    mod.def( "applyBalancingStrategy",
+             py::overload_cast< const ElasticResultPtr, const VectorInt & >(
+                 applyBalancingStrategy< ElasticResult > ),
+             R"(
+Apply balancing strategy to given result. User must give nodes that local process
+will own (without ghost nodes).
+This function returns a PhysicalProblem with joints, ghosts and so on.
+
+Arguments:
+    result: result to balance
+    vector: list of nodes to get on local process
+
+Returns:
+    mesh: PhysicalProblem
+        )",
+             py::arg( "result" ), py::arg( "vector" ) );
+
+    mod.def( "applyBalancingStrategy",
+             py::overload_cast< const NonLinearResultPtr, const VectorInt & >(
+                 applyBalancingStrategy< NonLinearResult > ),
+             R"(
+Apply balancing strategy to given result. User must give nodes that local process
+will own (without ghost nodes).
+This function returns a PhysicalProblem with joints, ghosts and so on.
+
+Arguments:
+    result: result to balance
+    vector: list of nodes to get on local process
+
+Returns:
+    mesh: PhysicalProblem
+        )",
+             py::arg( "result" ), py::arg( "vector" ) );
+
+    mod.def( "applyBalancingStrategy",
+             py::overload_cast< const ThermalResultPtr, const VectorInt & >(
+                 applyBalancingStrategy< ThermalResult > ),
+             R"(
 Apply balancing strategy to given result. User must give nodes that local process
 will own (without ghost nodes).
 This function returns a PhysicalProblem with joints, ghosts and so on.
