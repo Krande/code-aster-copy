@@ -3678,7 +3678,7 @@ def defi_sol_equi_ops(self, INFO=None, **args):
                     ),
                 )
 
-        if deltaE < tole:
+        if deltaE <= tole:
             etat = "fin"
 
         if etat == "fin":
