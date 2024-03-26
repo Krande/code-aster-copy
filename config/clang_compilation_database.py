@@ -65,6 +65,7 @@ class ClangDbContext(Build.BuildContext):
         """
         Build dry run
         """
+        Logs.info('clangdb: processing %r' % self.cmd)
         self.restore()
         self.cur_tasks = []
         self.clang_compilation_database_tasks = []
@@ -131,7 +132,9 @@ def patch_execute():
         Invoke clangdb command before build
         """
         if self.cmd.startswith('build'):
-            Scripting.run_command(self.cmd.replace('build', 'clangdb'))
+            new_cmd = self.cmd.replace('build', 'clangdb')
+            ClangDbContext.cmd = new_cmd
+            Scripting.run_command(new_cmd)
 
         old_execute_build(self)
 

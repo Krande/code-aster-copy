@@ -14,3 +14,8 @@ REM Activate python env, env variables for VS Cl (or clang-cl) and Intel fortran
 @call "%CONDA_ROOT%\Scripts\activate.bat" %PYTHON_ENV%
 call "%VS_VARS_PATH%\vcvars64.bat"
 @call "%INTEL_VARS_PATH%\vars.bat" -arch intel64 vs2022
+
+REM if variable "print" is passed, call printenv
+if "%1" == "print" (
+    set
+)

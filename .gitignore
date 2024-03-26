@@ -22,7 +22,7 @@ vola.*
 .vscode/*
 devtools
 .idea/*
-.env
+.env*
 install_*.log
 tmp_b*
 med_aster_module.c.1.dll.manifest

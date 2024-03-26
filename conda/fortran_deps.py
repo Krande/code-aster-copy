@@ -28,7 +28,7 @@ cxx_include_dir = cxx_src_dir / "include"
 
 def resolve_dependencies(ffile1: pathlib.Path) -> list[Node]:
     if not ffile1.exists():
-        print(f"File {file1} does not exist")
+        print(f"File {ffile1} does not exist")
     txt = ffile1.read_text()
     incs = []
 
@@ -60,22 +60,21 @@ class Node:
 
 
 def main(start_files: list[pathlib.Path]) -> list[Node]:
-    nodes = start_files
+    files_for_processing = start_files
     processed_nodes = []
-    while nodes:
-        node = nodes.pop()
-        incs, uses, mods = resolve_dependencies(node)
-        for inc in incs:
-            if inc not in nodes:
-                nodes.append(inc)
+    while files_for_processing:
+        input_file = files_for_processing.pop()
+        deps = resolve_dependencies(input_file)
+        for inc in deps:
+            if inc not in files_for_processing:
+                files_for_processing.append(inc)
 
-        processed_nodes.append(Node(target=node, header_dependencies=incs, source_dependencies=[]))
+        processed_nodes.append(Node(target=input_file, header_dependencies=incs, source_dependencies=[]))
 
     return processed_nodes
 
 
 if __name__ == '__main__':
-    file1 = ROOT_DIR / "bibfor/utilitai/utgtme.F90"
-
-    result = main([file1])
+    all_files = list(for_src_dir.rglob('*.F90'))
+    result = main(all_files)
     print(result)

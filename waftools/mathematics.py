@@ -53,7 +53,8 @@ def configure(self):
     # always check for libpthread, libm (never in static)
     if self.env.CXX_NAME != 'msvc':
         self.check_cc(uselib_store="M", lib="m")
-        self.check_cc(uselib_store="Z", lib="z")
+
+    self.check_cc(uselib_store="Z", lib="z")
     self.check_number_cores()
     if self.options.maths_libs in (None, "auto"):
         # try MKL first, then automatic blas/lapack
@@ -163,7 +164,7 @@ def detect_mkl(self):
             self.env.append_value("LIBPATH_MATH", os.environ["MKLROOT"] + "/lib")
         else:
             self.env.append_value("LIBPATH_MATH", os.environ["MKLROOT"] + "/lib/intel64")
-        #self.check_math_libs_call(color="YELLOW")
+        self.check_math_libs_call(color="YELLOW")
     except:
         self.env.revert()
         self.end_msg("no", color="YELLOW")
@@ -375,8 +376,8 @@ def get_mathlib_from_numpy_win(self):
     except subprocess.CalledProcessError as e:
         self.fatal('Failed to run dumpbin: %s' % str(e))
 
-    # Logs.info('BLAS libraries: %s' % libblas)
-    # Logs.info('LAPACK libraries: %s' % liblapack)
+    Logs.info('BLAS libraries: %s' % libblas)
+    Logs.info('LAPACK libraries: %s' % liblapack)
     return libblas, liblapack
 
 def _detect_libnames_in_ldd_line(line, libnames):
