@@ -156,6 +156,15 @@ Documentation of all other types.
 
 
 ********************************************************************************
+:py:class:`~code_aster.Objects.Formulation` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.Formulation
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
 :py:class:`~code_aster.Objects.FrictionAlgo` object
 ********************************************************************************
 
@@ -524,6 +533,15 @@ Documentation of all other types.
 ********************************************************************************
 
 .. autoclass:: code_aster.Objects.StructuralForceReal
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
+:py:class:`~code_aster.Objects.SyntaxSaver` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.SyntaxSaver
    :show-inheritance:
    :members:
 

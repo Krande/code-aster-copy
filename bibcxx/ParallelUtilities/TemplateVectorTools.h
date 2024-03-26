@@ -71,6 +71,10 @@ int getSize( const MedVector< long int >::ElementValue &in );
 #endif
 
 int getSize( const ArrayWrapper< JeveuxVectorReal >::ElementValue &in );
+int getSize( const ArrayWrapper< JeveuxVectorLogical >::ElementValue &in );
+int getSize( const ArrayWrapper< JeveuxVectorLong >::ElementValue &in );
+int getSize( const ArrayWrapper< VectorReal >::ElementValue &in );
+int getSize( const ArrayWrapper< VectorLong >::ElementValue &in );
 
 template < typename T >
 int getTotalSize( const std::vector< T > &toCopy ) {
@@ -226,6 +230,10 @@ void update( MedVector< long int >::ElementValue in );
 #endif
 
 void update( typename ArrayWrapper< JeveuxVectorReal >::ElementValue in );
+void update( typename ArrayWrapper< JeveuxVectorLogical >::ElementValue in );
+void update( typename ArrayWrapper< JeveuxVectorLong >::ElementValue in );
+void update( typename ArrayWrapper< VectorReal >::ElementValue in );
+void update( typename ArrayWrapper< VectorLong >::ElementValue in );
 
 template < typename T >
 void allocateOccurence( std::vector< std::vector< T > > &in, const int &pos, const int &size ) {
@@ -273,6 +281,11 @@ struct ObjectTemplateType< VectorOfVectorsLong > {
 
 template < typename T >
 struct ObjectTemplateType< ArrayWrapper< JeveuxVector< T > > > {
+    typedef T value_type;
+};
+
+template < typename T >
+struct ObjectTemplateType< ArrayWrapper< std::vector< T > > > {
     typedef T value_type;
 };
 

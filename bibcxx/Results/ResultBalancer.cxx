@@ -58,9 +58,112 @@ balanceFieldOnNodesFromResult( const MeshBalancer &meshB, const ParallelMeshPtr 
     std::shared_ptr< Field > toReturn(
         new Field( newMesh, field->getPhysicalQuantity(), components, true ) );
 
-    const auto &values = field->getValues();
-    const auto &lValues = field->getLogicalValues();
-    ( *toReturn )( 0, 0 ) = 3.0;
+    const auto compNb = components.size();
+    auto values = field->getValues();
+    auto lValues = field->getLogicalValues();
+    auto wrapValues = ArrayWrapperPtr( new ArrayWrapper< JeveuxVectorReal >( values, compNb ) );
+    JeveuxVectorReal medVB( "TemporaryObject" );
+    ArrayWrapperPtr wrapB( new ArrayWrapper< JeveuxVectorReal >( medVB, compNb ) );
+    auto nodeB = meshB.getNodeObjectBalancer();
+    nodeB->balanceArrayOverProcessesWithRenumbering( wrapValues, wrapB );
+
+    JeveuxVectorLong jvVL( "TemporaryObject3" );
+    jvVL->allocate( lValues->size() );
+    int cmpt = 0;
+    for ( const auto &val : lValues ) {
+        val ? ( *jvVL )[cmpt] = 1 : ( *jvVL )[cmpt] = 0;
+        ++cmpt;
+    }
+
+    auto wrapLValues = ArrayWrapperLongPtr( new ArrayWrapper< JeveuxVectorLong >( jvVL, compNb ) );
+    JeveuxVectorLong medVC( "TemporaryObject2" );
+    ArrayWrapperLongPtr wrapC( new ArrayWrapper< JeveuxVectorLong >( medVC, compNb ) );
+    nodeB->balanceArrayOverProcessesWithRenumbering( wrapLValues, wrapC );
+
+    for ( int i = 0; i < newMesh->getNumberOfNodes(); ++i ) {
+        for ( int j = 0; j < compNb; ++j ) {
+            if ( ( *medVC )[i * compNb + j] == 1 ) {
+                ( *toReturn )( i, j ) = ( *medVB )[i * compNb + j];
+            }
+        }
+    }
+    return toReturn;
+};
+
+template < typename FieldType >
+std::shared_ptr< SimpleFieldOnCells< FieldType > >
+balanceFieldOnCellsFromResult( const MeshBalancer &meshB, const ParallelMeshPtr newMesh,
+                               const std::shared_ptr< SimpleFieldOnCells< FieldType > > &field ) {
+    field->updateValuePointers();
+    typedef SimpleFieldOnCells< FieldType > Field;
+    const auto components = field->getComponents();
+    componentsCheck( components );
+    std::shared_ptr< Field > toReturn(
+        new Field( newMesh, field->getLocalization(), field->getPhysicalQuantity(), components,
+                   field->getMaxNumberOfPoints(), field->getMaxNumberOfSubPoints() ) );
+
+    const auto compNb = components.size();
+    const auto nbCells = field->getNumberOfCells();
+    VectorLong cmps, lValues, cmps2;
+    std::vector< FieldType > values;
+    for ( int iCell = 0; iCell < nbCells; ++iCell ) {
+        const auto nbPt = field->getNumberOfPointsOfCell( iCell );
+        const auto nbSPt = field->getNumberOfSubPointsOfCell( iCell );
+        const auto nbCmp = field->getNumberOfComponentsForSubpointsOfCell( iCell );
+        for ( int iCmp = 0; iCmp < nbCmp; ++iCmp ) {
+            for ( int iPt = 0; iPt < nbPt; ++iPt ) {
+                for ( int iSPt = 0; iSPt < nbSPt; ++iSPt ) {
+                    if ( field->hasValue( iCell, iCmp, iPt, iSPt ) ) {
+                        values.push_back( field->getValue( iCell, iCmp, iPt, iSPt ) );
+                        lValues.push_back( 1 );
+                    } else {
+                        values.push_back( 0. );
+                        lValues.push_back( 0 );
+                    }
+                }
+            }
+        }
+        cmps.push_back( nbPt * nbSPt * nbCmp );
+        cmps2.push_back( nbPt );
+        cmps2.push_back( nbSPt );
+        cmps2.push_back( nbCmp );
+    }
+
+    auto wrapValues =
+        ArrayWrapperVectorReal( new ArrayWrapper< std::vector< FieldType > >( values, cmps ) );
+    VectorReal valuesOut;
+    ArrayWrapperVectorReal wrapValueOut( new ArrayWrapper< VectorReal >( valuesOut, 0 ) );
+    auto cellB = meshB.getCellObjectBalancer();
+    cellB->balanceArrayOverProcessesWithRenumbering( wrapValues, wrapValueOut );
+
+    auto wrapCmp2In = ArrayWrapperVectorLong( new ArrayWrapper< VectorLong >( cmps2, 3 ) );
+    VectorLong cmps2Out;
+    ArrayWrapperVectorLong wrapCmp2Out( new ArrayWrapper< VectorLong >( cmps2Out, 3 ) );
+    cellB->balanceArrayOverProcessesWithRenumbering( wrapCmp2In, wrapCmp2Out );
+
+    auto wrapLIn = ArrayWrapperVectorLong( new ArrayWrapper< VectorLong >( lValues, cmps ) );
+    VectorLong lOut;
+    ArrayWrapperVectorLong wrapLOut( new ArrayWrapper< VectorLong >( lOut, 0 ) );
+    cellB->balanceArrayOverProcessesWithRenumbering( wrapLIn, wrapLOut );
+
+    ASTERINTEGER cumSize = 0;
+    const auto nbCellsNew = toReturn->getNumberOfCells();
+    for ( int iCell = 0; iCell < nbCellsNew; ++iCell ) {
+        const auto nbPt = cmps2Out[iCell * 3];
+        const auto nbSPt = cmps2Out[iCell * 3 + 1];
+        const auto nbCmp = cmps2Out[iCell * 3 + 2];
+        for ( int iCmp = 0; iCmp < nbCmp; ++iCmp ) {
+            for ( int iPt = 0; iPt < nbPt; ++iPt ) {
+                for ( int iSPt = 0; iSPt < nbSPt; ++iSPt ) {
+                    if ( lOut[cumSize] == 1 ) {
+                        ( *toReturn )( iCell, iCmp, iPt, iSPt ) = valuesOut[cumSize];
+                    }
+                    ++cumSize;
+                }
+            }
+        }
+    }
+
     return toReturn;
 };
 
@@ -78,7 +181,6 @@ ResultPtr applyBalancingStrategy( const ResultPtr resuIn, const VectorInt &newLo
     MaterialFieldPtr materOut( new MaterialField( meshOut, materIn ) );
     materOut->build();
 
-    const auto &indexes = resuIn->getIndexes();
     const auto &lastIndex = resuIn->getLastIndex();
 
     const ListOfLoadsPtr lOLoadsIn = resuIn->getListOfLoads( lastIndex );
@@ -94,16 +196,31 @@ ResultPtr applyBalancingStrategy( const ResultPtr resuIn, const VectorInt &newLo
     resuOut->setModel( modelOut );
     resuOut->setMaterialField( materOut );
     resuOut->allocate( 1 );
-    resuOut->setListOfLoads( lOLoadsIn, 1 );
+    resuOut->setListOfLoads( lOLoadsOut, 1 );
 
     const auto fONList = resuIn->getFieldsOnNodesRealNames();
     for ( const auto &curName : fONList ) {
-        std::cout << "Champ " << curName << std::endl;
         const auto &curFON = resuIn->getFieldOnNodesReal( curName, lastIndex );
         const auto &curSFON = toSimpleFieldOnNodes( curFON );
         auto newSFON = balanceFieldOnNodesFromResult( meshB, meshOut, curSFON );
         auto newFON = toFieldOnNodes( newSFON );
         resuOut->setField( newFON, curName, 1 );
+    }
+
+    const auto fOCList = resuIn->getFieldsOnCellsRealNames();
+    const auto fED = modelOut->getFiniteElementDescriptor();
+    for ( const auto &curName : fOCList ) {
+        const auto &curFOC = resuIn->getFieldOnCellsReal( curName, lastIndex );
+        const auto &curSFOC = toSimpleFieldOnCells( curFOC );
+        auto newSFOC = balanceFieldOnCellsFromResult( meshB, meshOut, curSFOC );
+        if ( meshIn->getNumberOfCells() != curSFOC->getNumberOfCells() )
+            throw std::runtime_error( "Size inconsistency" );
+        auto newFOC = toFieldOnCells( newSFOC, fED );
+        resuOut->setField( newFOC, curName, 1 );
+    }
+    if ( resuIn->getFieldsOnNodesComplexNames().size() != 0 ||
+         resuIn->getFieldsOnCellsComplexNames().size() != 0 ) {
+        throw std::runtime_error( "Complex fields are not yet allowed" );
     }
 
     return resuOut;

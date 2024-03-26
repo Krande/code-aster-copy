@@ -26,6 +26,7 @@
    * - :py:class:`~code_aster.Objects.ExternalVariableTraits`
    * - :py:class:`~code_aster.Objects.FieldCharacteristics`
    * - :py:class:`~code_aster.Objects.ForceReal`
+   * - :py:class:`~code_aster.Objects.Formulation`
    * - :py:class:`~code_aster.Objects.FrictionAlgo`
    * - :py:class:`~code_aster.Objects.FrictionParameter`
    * - :py:class:`~code_aster.Objects.FrictionType`
@@ -68,6 +69,7 @@
    * - :py:class:`~code_aster.Objects.PythonBool`
    * - :py:class:`~code_aster.Objects.ResultNaming`
    * - :py:class:`~code_aster.Objects.StructuralForceReal`
+   * - :py:class:`~code_aster.Objects.SyntaxSaver`
    * - :py:class:`~code_aster.Objects.externVarEnumInt`
    * - :py:class:`~code_aster.Objects.AsterError`
    * - :py:class:`~code_aster.Objects.ContactError`

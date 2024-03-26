@@ -54,9 +54,15 @@ class VectorInterface< std::vector< T > > {
 
     void allocate( const int &nbElem ) { _object = std::vector< T >( nbElem, -1 ); };
 
-    value_type *getPointer() const { return &( _object[0] ); };
+    void deallocate() { _object = std::vector< T >(); };
 
-    int totalSize() const { return _object.size(); };
+    value_type *getPointer() const {
+        const T &ref = _object[0];
+        T *pointer = const_cast< T * >( &ref );
+        return pointer;
+    };
+
+    ASTERINTEGER totalSize() const { return _object.size(); };
 };
 
 template < class T >
@@ -73,6 +79,8 @@ class VectorInterface< JeveuxVector< T > > {
 
     void allocate( const int &nbElem ) { _object->allocate( nbElem ); };
 
+    void deallocate() { _object->deallocate(); };
+
     value_type *getPointer() const {
         if ( _object->exists() ) {
             _object->updateValuePointer();
@@ -82,7 +90,7 @@ class VectorInterface< JeveuxVector< T > > {
         }
     };
 
-    int totalSize() const { return _object->size(); };
+    ASTERINTEGER totalSize() const { return _object->size(); };
 };
 
 /**
@@ -97,8 +105,8 @@ class ArrayWrapper : public VectorInterface< ClassWrap > {
     class ElementValue {
         typedef typename VectorInterface< ClassWrap >::value_type value_type;
         value_type *_vector;
-        int _index = -1;
-        int _nbCmp = 0;
+        ASTERINTEGER _index = -1;
+        ASTERINTEGER _nbCmp = 0;
 
         ElementValue( value_type *vec ) : _vector( vec ) {};
 
@@ -108,7 +116,7 @@ class ArrayWrapper : public VectorInterface< ClassWrap > {
         };
 
       public:
-        int getComponentNumber() const { return _nbCmp; };
+        ASTERINTEGER getComponentNumber() const { return _nbCmp; };
 
         value_type &operator[]( const int &cmp ) { return _vector[_index + cmp]; };
         const value_type &operator[]( const int &cmp ) const { return _vector[_index + cmp]; };
@@ -120,13 +128,13 @@ class ArrayWrapper : public VectorInterface< ClassWrap > {
     /** @brief value vector */
     typename VectorInterface< ClassWrap >::value_type *_pointer;
     /** @brief cumulated size vector (used to explore _vector element by element) */
-    VectorInt _cumSize;
+    VectorLong _cumSize;
     /** @brief component number of each element */
-    VectorInt _cmps;
+    VectorLong _cmps;
     /** @brief element number */
-    int _size = 0;
+    ASTERINTEGER _size = 0;
     /** @brief component number */
-    int _cmpNb = 0;
+    ASTERINTEGER _cmpNb = 0;
     /** @brief iterator on current element */
     ElementValue _curVal;
     /** @brief component name */
@@ -134,9 +142,9 @@ class ArrayWrapper : public VectorInterface< ClassWrap > {
 
   public:
     /**
-     * @brief Constructor
+     * @brief Constructors
      */
-    ArrayWrapper( ClassWrap &curObj, int cmpNb )
+    ArrayWrapper( ClassWrap &curObj, ASTERINTEGER cmpNb )
         : VectorInterface< ClassWrap >( curObj ),
           _pointer( VectorInterface< ClassWrap >::getPointer() ),
           _cmpNb( cmpNb ),
@@ -150,20 +158,67 @@ class ArrayWrapper : public VectorInterface< ClassWrap > {
             }
             _size = v1;
             int pos = 0;
-            _cmps = VectorInt( _size, _cmpNb );
-            _cumSize.reserve( _size );
-            for ( int i = 0; i < _size; ++i ) {
+            _cmps = VectorLong( _size, _cmpNb );
+            _cumSize.reserve( _size + 1 );
+            for ( int i = 0; i < _size + 1; ++i ) {
                 _cumSize.push_back( pos );
                 pos += _cmpNb;
             }
         }
     };
 
+    ArrayWrapper( ClassWrap &curObj, const VectorLong &cmps )
+        : VectorInterface< ClassWrap >( curObj ),
+          _pointer( VectorInterface< ClassWrap >::getPointer() ),
+          _cmps( cmps ),
+          _curVal( ElementValue( _pointer ) ) {
+        const auto size = VectorInterface< ClassWrap >::totalSize();
+        if ( size != 0 ) {
+            _size = cmps.size();
+            int pos = 0;
+            _cmpNb = 0;
+            _cumSize.reserve( _size + 1 );
+            for ( int i = 0; i < _size; ++i ) {
+                const auto &curCmpNb = _cmps[i];
+                _cmpNb = std::max( _cmpNb, curCmpNb );
+                _cumSize.push_back( pos );
+                pos += curCmpNb;
+            }
+            _cumSize.push_back( pos );
+            if ( size != pos ) {
+                throw std::runtime_error( "Sizes are not consistents" );
+            }
+        }
+    };
+
+    void deallocate() {
+        VectorInterface< ClassWrap >::deallocate();
+        _cumSize = VectorLong();
+        _cmps = VectorLong();
+        _size = 0;
+        _cmpNb = 0;
+        _cmpName = VectorString();
+    };
+
+    /** @brief end vector definition -> vector allocation */
+    void endDefinition() {
+        _cumSize[0] = 0;
+        for ( int i = 0; i < _size; ++i ) {
+            _cumSize[i + 1] = _cumSize[i] + _cmps[i];
+        }
+        VectorInterface< ClassWrap >::allocate( _cumSize[_size] );
+        _pointer = VectorInterface< ClassWrap >::getPointer();
+        _curVal.setPointer( _pointer );
+    };
+
     /** @brief get component name */
     const VectorString &getComponentName() const { return _cmpName; };
 
     /** @brief get component number */
-    int getComponentNumber() const { return _cmpNb; };
+    ASTERINTEGER getComponentNumber() const { return _cmpNb; };
+
+    /** @brief get element component number */
+    int getElement( int index ) const { return _cmps[index]; };
 
     /** @brief set component name */
     void setComponentName( const VectorString &cmpName ) {
@@ -180,7 +235,7 @@ class ArrayWrapper : public VectorInterface< ClassWrap > {
     void setComponentNumber( int nbCmp ) { _cmpNb = nbCmp; };
 
     /** @brief set element component number */
-    void setElement( int index, int nbCmp ) {
+    void setElement( ASTERINTEGER index, ASTERINTEGER nbCmp ) {
         if ( _size == 0 )
             throw std::runtime_error( "Number of elements must be set before set elements" );
         // if ( nbCmp < 1 )
@@ -195,7 +250,7 @@ class ArrayWrapper : public VectorInterface< ClassWrap > {
     };
 
     /** @brief set elements component number (slice) */
-    void setElements( int index, int size, int nbCmp ) {
+    void setElements( ASTERINTEGER index, ASTERINTEGER size, ASTERINTEGER nbCmp ) {
         if ( _size == 0 )
             throw std::runtime_error( "Number of elements must be set before set elements" );
         if ( nbCmp < 1 )
@@ -208,24 +263,24 @@ class ArrayWrapper : public VectorInterface< ClassWrap > {
     };
 
     /** @brief set total element number */
-    void setSize( int nbElement ) {
-        _cumSize = VectorInt( nbElement + 1, -1 );
-        _cmps = VectorInt( nbElement, _cmpNb );
+    void setSize( ASTERINTEGER nbElement ) {
+        _cumSize = VectorLong( nbElement + 1, -1 );
+        _cmps = VectorLong( nbElement, _cmpNb );
         _size = nbElement;
     };
 
     /** @brief set total size (usefull for memory preallocation) */
-    void setTotalSize( int totalSize ) {
+    void setTotalSize( ASTERINTEGER totalSize ) {
         VectorInterface< ClassWrap >::allocate( totalSize );
         _pointer = VectorInterface< ClassWrap >::getPointer();
         _curVal.setPointer( _pointer );
     };
 
     /** @brief get element number */
-    int size() const { return _size; };
+    ASTERINTEGER size() const { return _size; };
 
     /** @brief get value vector size */
-    int totalSize() const { return VectorInterface< ClassWrap >::totalSize(); };
+    ASTERINTEGER totalSize() const { return VectorInterface< ClassWrap >::totalSize(); };
 
     const ElementValue &operator[]( const int &index ) const {
         const_cast< ArrayWrapper< ClassWrap > * >( this )->_curVal._index = _cumSize[index];
@@ -245,6 +300,9 @@ class ArrayWrapper : public VectorInterface< ClassWrap > {
  * @brief Pointeur intelligent vers un ArrayWrapper
  */
 typedef std::shared_ptr< ArrayWrapper< JeveuxVector< double > > > ArrayWrapperPtr;
-typedef std::shared_ptr< ArrayWrapper< VectorReal > > ArrayWrapperPtr2;
+typedef std::shared_ptr< ArrayWrapper< JeveuxVector< bool > > > ArrayWrapperLogicalPtr;
+typedef std::shared_ptr< ArrayWrapper< JeveuxVector< ASTERINTEGER > > > ArrayWrapperLongPtr;
+typedef std::shared_ptr< ArrayWrapper< VectorReal > > ArrayWrapperVectorReal;
+typedef std::shared_ptr< ArrayWrapper< VectorLong > > ArrayWrapperVectorLong;
 
 #endif /* ARRAYWRAPPER_H_ */

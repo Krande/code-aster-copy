@@ -138,5 +138,5 @@ SyntaxSaver::SyntaxSaver( const std::string &commandName, const ASTERINTEGER &op
             dict.container[keyStr] = py::cast< std::complex< ASTERDOUBLE > >( value );
         }
     }
-    _keywords = py::reinterpret_steal< py::dict >( dict.convertToPythonDictionnary() );
+    _keywords = dict.convertToPyDict();
 }

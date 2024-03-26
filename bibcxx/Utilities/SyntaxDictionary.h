@@ -26,6 +26,8 @@
 
 #include "astercxx.h"
 
+#include "aster_pybind.h"
+
 #include <typeinfo>
 
 struct SyntaxMapContainer;
@@ -77,6 +79,7 @@ class SyntaxMapContainer {
      * @todo ajouter un const pour this
      */
     PyObject *convertToPythonDictionnary( PyObject *returnDict = NULL ) const;
+    py::dict convertToPyDict() const;
 
   private:
     friend class CommandSyntax;

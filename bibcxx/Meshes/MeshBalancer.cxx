@@ -136,7 +136,7 @@ ParallelMeshPtr MeshBalancer::applyBalancingStrategy( const VectorInt &newLocalN
     // Build mask to apply to distribute connectivity
     // Before sending, conversion to global numbering
     // After received go back to "new" local numbering
-    auto dMask = ObjectBalancer::DistributedMaskOut( *_nodesBalancer, nodeGlobNum );
+    ObjectBalancer::DistributedMaskOut dMask( *_nodesBalancer, nodeGlobNum );
     const auto &globNodeNumVect = dMask.getBalancedMask();
 
     // interface completion with local id of opposite nodes
@@ -201,7 +201,7 @@ ParallelMeshPtr MeshBalancer::applyBalancingStrategy( const VectorInt &newLocalN
         _cellsBalancer->balanceObjectOverProcesses2( connex, connexTmp, dMask );
     } else {
         if ( _mesh->isParallel() ) {
-            auto dMask2 = ObjectBalancer::DistributedMask( *_nodesBalancer, nodeGlobNum );
+            ObjectBalancer::DistributedMask dMask2( *_nodesBalancer, nodeGlobNum );
             _cellsBalancer->balanceObjectOverProcesses2( connex, connexTmp, dMask2 );
         } else {
             _cellsBalancer->balanceObjectOverProcesses2( connex, connexTmp, dMask );
@@ -328,9 +328,11 @@ void MeshBalancer::sortCells( JeveuxVectorLong &typeIn, JeveuxCollectionLong &co
 void MeshBalancer::sortCells( VectorLong &vectIn, VectorLong &vectOut ) const {
     AS_ASSERT( !_cellRenumbering.empty() );
     vectOut.clear();
-    vectOut.reserve( vectIn.size() );
+    vectOut = VectorLong( vectIn.size(), -1 );
+    ASTERINTEGER count = 0;
     for ( const auto &num : _cellRenumbering ) {
-        vectOut.push_back( vectIn[num - 1] );
+        vectOut[num - 1] = vectIn[count];
+        ++count;
     }
 };
 
@@ -468,7 +470,7 @@ void MeshBalancer::buildBalancersAndInterfaces( VectorInt &newLocalNodesList,
     VectorOfVectorsLong procInterfaces, balanceProcInterfaces;
     VectorLong nodeOwner;
     if ( _mesh != nullptr ) {
-        procInterfaces = VectorOfVectorsLong( _mesh->getNumberOfNodes() );
+        procInterfaces = VectorOfVectorsLong( _mesh->getNumberOfNodes(), VectorLong() );
         nodeOwner = VectorLong( _mesh->getNumberOfNodes(), -1 );
     }
 
@@ -513,6 +515,25 @@ void MeshBalancer::buildBalancersAndInterfaces( VectorInt &newLocalNodesList,
                         nodeOwner[tmp - _range[0]] = iProc;
                 }
             }
+        } else {
+            const auto endGlob = g2LMap->end();
+            if ( iProc == rank ) {
+                for ( const auto &tmp : newLocalNodesList ) {
+                    const auto locIter = g2LMap->find( tmp );
+                    if ( locIter == endGlob )
+                        continue;
+                    const auto nodeIdL = ( *locIter ).second;
+                    nodeOwner[nodeIdL] = rank;
+                }
+            } else {
+                for ( const auto &tmp : nodesLists ) {
+                    const auto locIter = g2LMap->find( tmp );
+                    if ( locIter == endGlob )
+                        continue;
+                    const auto nodeIdL = ( *locIter ).second;
+                    nodeOwner[nodeIdL] = iProc;
+                }
+            }
         }
     }
     // Save memory by destroying reverse connectivity
@@ -524,14 +545,6 @@ void MeshBalancer::buildBalancersAndInterfaces( VectorInt &newLocalNodesList,
     // Prepare ObjectBalancer (graph and sizes of what to send)
     _nodesBalancer->prepareCommunications();
     _cellsBalancer->prepareCommunications();
-
-    if ( parallelMesh ) {
-        const auto nbNodes = _mesh->getNumberOfNodes();
-        for ( int locId = 0; locId < nbNodes; ++locId ) {
-            if ( ( *meshNodeOwner )[locId] == rank )
-                nodeOwner[locId] = rank;
-        }
-    }
 
     _nodesBalancer->balanceObjectOverProcesses2( procInterfaces, balanceProcInterfaces );
     _nodesBalancer->balanceObjectOverProcesses( nodeOwner, nOwners );

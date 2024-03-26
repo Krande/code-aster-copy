@@ -248,12 +248,12 @@ class SimpleFieldOnNodes : public DataField {
     /**
      * @brief Return value vector
      */
-    const JeveuxVector< ValueType > getValues() const { return _values; }
+    JeveuxVector< ValueType > getValues() const { return _values; }
 
     /**
      * @brief Return logical value vector
      */
-    const JeveuxVectorLogical getLogicalValues() const { return _allocated; }
+    JeveuxVectorLogical getLogicalValues() const { return _allocated; }
 
     /**
      * @brief Get values with mask

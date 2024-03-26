@@ -132,7 +132,7 @@ bool DirichletBC::buildFromSyntax() {
     cmdSt.setResult( getName(), getType() );
     auto keywords = _syntax->keywords();
     keywords["MODELE"] = _model->getName();
-    cmdSt.define( py::reinterpret_steal< py::object >( keywords ), false );
+    cmdSt.define( keywords, false );
 
     ASTERINTEGER op = 101;
     CALL_EXECOP( &op );

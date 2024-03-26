@@ -178,6 +178,14 @@ class ObjectBalancer {
         const double reverse( const double &valueIn ) const { return valueIn; };
     };
 
+    template < typename Type >
+    struct DummyMaskType {
+      public:
+        const Type apply( const Type &valueIn ) const { return valueIn; };
+
+        const Type reverse( const Type &valueIn ) const { return valueIn; };
+    };
+
   private:
     template < typename T, typename Mask = ObjectBalancer::DummyMask >
     void balanceObjectOverProcesses3( const T &, T &, const Mask &mask = Mask() ) const;
@@ -620,36 +628,55 @@ template < typename TypeName >
 void ObjectBalancer::balanceArrayOverProcessesWithRenumbering(
     const std::shared_ptr< ArrayWrapper< TypeName > > &vecIn,
     std::shared_ptr< ArrayWrapper< TypeName > > &vecOut ) const {
+    typedef typename ArrayWrapper< TypeName >::value_type ValueType;
     // typedef typename std::shared_ptr< TypeName > TypeNamePtr;
     // std::shared_ptr< ArrayWrapper< TypeName > > vecOut( new ArrayWrapper< TypeName >() );
-    balanceObjectOverProcesses3( *vecIn, *vecOut, DummyMaskDouble() );
+    balanceObjectOverProcesses3( *vecIn, *vecOut, DummyMaskType< ValueType >() );
     vecOut->setComponentNumber( vecIn->getComponentNumber() );
     vecOut->setComponentName( vecIn->getComponentName() );
-    // if ( _renumbering.size() == 0 ) {
-    //     return vecOut;
-    // }
-    // const auto size = vecOut->size();
-    // std::shared_ptr< ArrayWrapper< TypeName > > vecOut2( new ArrayWrapper< TypeName >() );
-    // vecOut2->setComponentNumber( vecOut->getComponentNumber() );
-    // vecOut2->setComponentName( vecOut->getComponentName() );
-    // vecOut2->setSize( size );
-    // if ( _renumbering.size() != size )
-    //     throw std::runtime_error( "Sizes not matching" );
-    // for ( int i = 0; i < size; ++i ) {
-    //     const auto newId = _renumbering[i] - 1;
-    //     vecOut2->setElement( newId, vecOut->getElement( i ) );
-    // }
-    // vecOut2->endDefinition();
-    // for ( int i = 0; i < size; ++i ) {
-    //     const auto newId = _renumbering[i] - 1;
-    //     const auto nbCmp = vecOut->getElement( i );
-    //     const auto &elInR = ( *vecOut )[i];
-    //     auto &elOutR = ( *vecOut2 )[newId];
-    //     for ( int j = 0; j < nbCmp; ++j ) {
-    //         elOutR[j] = elInR[j];
-    //     }
-    // }
-    // return vecOut2;
+    if ( _renumbering.size() != 0 ) {
+        const auto size = vecOut->size();
+        std::vector< ValueType > tmpVec;
+        ArrayWrapper< std::vector< ValueType > > tmpArray =
+            ArrayWrapper< std::vector< ValueType > >( tmpVec, vecOut->getComponentNumber() );
+        tmpArray.setComponentNumber( vecOut->getComponentNumber() );
+        tmpArray.setComponentName( vecOut->getComponentName() );
+        tmpArray.setSize( size );
+        if ( _renumbering.size() != size )
+            throw std::runtime_error( "Sizes not matching" );
+        for ( int i = 0; i < size; ++i ) {
+            const auto newId = _renumbering[i] - 1;
+            tmpArray.setElement( newId, vecOut->getElement( i ) );
+        }
+        tmpArray.endDefinition();
+        for ( int i = 0; i < size; ++i ) {
+            const auto newId = _renumbering[i] - 1;
+            const auto nbCmp = vecOut->getElement( i );
+            const auto &elInR = ( *vecOut )[i];
+            auto &elOutR = tmpArray[newId];
+            for ( int j = 0; j < nbCmp; ++j ) {
+                elOutR[j] = elInR[j];
+            }
+        }
+        vecOut->deallocate();
+        vecOut->setComponentNumber( tmpArray.getComponentNumber() );
+        vecOut->setComponentName( tmpArray.getComponentName() );
+        vecOut->setSize( tmpArray.size() );
+        for ( int i = 0; i < size; ++i ) {
+            const auto newId = i;
+            vecOut->setElement( newId, tmpArray.getElement( i ) );
+        }
+        vecOut->endDefinition();
+        for ( int i = 0; i < size; ++i ) {
+            const auto newId = i;
+            const auto nbCmp = tmpArray.getElement( i );
+            const auto &elInR = tmpArray[i];
+            auto &elOutR = ( *vecOut )[newId];
+            for ( int j = 0; j < nbCmp; ++j ) {
+                elOutR[j] = elInR[j];
+            }
+        }
+    }
 };
 #endif /* ASTER_HAVE_MPI */
 

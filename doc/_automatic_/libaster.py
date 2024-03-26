@@ -3629,6 +3629,9 @@ class SimpleFieldOnCellsReal(DataField):
     def getMaxNumberOfSubPoints(self):
         pass
 
+    def getMesh(self):
+        """Returns base mesh"""
+
     def getNumberOfCells(self):
         pass
 
@@ -3802,6 +3805,9 @@ class SimpleFieldOnNodesReal(DataField):
     def getComponents(self):
         pass
 
+    def getMesh(self):
+        """Returns base mesh"""
+
     def getNumberOfComponents(self):
         pass
 
@@ -3870,6 +3876,9 @@ class SimpleFieldOnNodesComplex(DataField):
 
     def getComponents(self):
         pass
+
+    def getMesh(self):
+        """Returns base mesh"""
 
     def getNumberOfComponents(self):
         pass
@@ -8190,6 +8199,13 @@ class DirichletBC(DataStructure):
             str: Mechanics or Thermal or Acoustic
         """
 
+    def setSyntax(self, syntax):
+        """Function to set the syntax used to build object
+
+        Arguments:
+            syntax: the syntax
+        """
+
 
 # class MechanicalDirichletBC in libaster
 
@@ -10382,6 +10398,580 @@ class GeneralizedModel(DataStructure):
         pass
 
 
+# class Physics in libaster
+
+
+class Physics:
+    pass
+
+    # Method resolution order:
+    #     Physics
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __eq__(self, other):
+        pass
+
+    def __getstate__(self):
+        pass
+
+    def __hash__(self):
+        pass
+
+    def __index__(self):
+        pass
+
+    def __init__(self, value):
+        pass
+
+    def __int__(self):
+        pass
+
+    def __ne__(self, other):
+        pass
+
+    def __repr__(self):
+        pass
+
+    def __setstate__(self, state):
+        pass
+
+    def name(self):
+        pass
+
+    # ----------------------------------------------------------------------
+    # Data descriptors defined here:
+
+    @property
+    def __members__(self):
+        pass
+
+    @property
+    def name(self):
+        """name(self: handle) -> str"""
+
+    @property
+    def value(self):
+        pass
+
+    # ----------------------------------------------------------------------
+    # Data and other attributes defined here:
+
+    Acoustic = 2
+
+    Mechanics = 0
+
+    Thermal = 1
+
+
+# class Modelings in libaster
+
+
+class Modelings:
+    pass
+
+    # Method resolution order:
+    #     Modelings
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __eq__(self, other):
+        pass
+
+    def __getstate__(self):
+        pass
+
+    def __hash__(self):
+        pass
+
+    def __index__(self):
+        pass
+
+    def __init__(self, value):
+        pass
+
+    def __int__(self):
+        pass
+
+    def __ne__(self, other):
+        pass
+
+    def __repr__(self):
+        pass
+
+    def __setstate__(self, state):
+        pass
+
+    def name(self):
+        pass
+
+    # ----------------------------------------------------------------------
+    # Data descriptors defined here:
+
+    @property
+    def __members__(self):
+        pass
+
+    @property
+    def name(self):
+        """name(self: handle) -> str"""
+
+    @property
+    def value(self):
+        pass
+
+    # ----------------------------------------------------------------------
+    # Data and other attributes defined here:
+
+    AXIS_FLUIDE = 63
+
+    AXIS_FLUI_ABSO = 64
+
+    AXIS_FLUI_STRU = 65
+
+    AXIS_FOURIER = 66
+
+    AXIS_GRAD_INCO = 67
+
+    AXIS_GRAD_VARI = 68
+
+    AXIS_GVNO = 69
+
+    AXIS_HH2D = 70
+
+    AXIS_HH2MD = 71
+
+    AXIS_HH2MS = 72
+
+    AXIS_HH2S = 73
+
+    AXIS_HHD = 74
+
+    AXIS_HHM = 75
+
+    AXIS_HHMD = 76
+
+    AXIS_HHMS = 77
+
+    AXIS_HHS = 79
+
+    AXIS_HM = 80
+
+    AXIS_HMD = 81
+
+    AXIS_HMS = 82
+
+    AXIS_INCO_UP = 83
+
+    AXIS_INCO_UPG = 84
+
+    AXIS_INCO_UPO = 85
+
+    AXIS_INTERFACE = 86
+
+    AXIS_INTERFACE_S = 87
+
+    AXIS_JHMS = 88
+
+    AXIS_JOINT = 89
+
+    AXIS_SI = 90
+
+    AXIS_THH2D = 91
+
+    AXIS_THH2MD = 92
+
+    AXIS_THH2MS = 93
+
+    AXIS_THH2S = 94
+
+    AXIS_THHD = 95
+
+    AXIS_THHMD = 96
+
+    AXIS_THHMS = 97
+
+    AXIS_THHS = 98
+
+    AXIS_THM = 99
+
+    AXIS_THMD = 100
+
+    AXIS_THMS = 101
+
+    AXIS_THVD = 102
+
+    AXIS_THVS = 103
+
+    Axisymmetrical = 61
+
+    BARRE = 104
+
+    CABLE = 105
+
+    CABLE_GAINE = 106
+
+    CABLE_POULIE = 107
+
+    COQUE_3D = 109
+
+    COQUE_AXIS = 110
+
+    COQUE_SOLIDE = 112
+
+    C_PLAN_SI = 114
+
+    DIL_3D = 10
+
+    DIS_T = 115
+
+    DIS_TR = 116
+
+    DIS_TR_2D = 2
+
+    DIS_T_2D = 1
+
+    DKT = 117
+
+    DKTG = 118
+
+    DST = 119
+
+    D_PLAN_2DG = 121
+
+    D_PLAN_ABSO = 122
+
+    D_PLAN_DIL = 123
+
+    D_PLAN_GRAD_HHO = 124
+
+    D_PLAN_GRAD_INCO = 125
+
+    D_PLAN_GRAD_SIGM = 126
+
+    D_PLAN_GRAD_VARI = 127
+
+    D_PLAN_GVNO = 128
+
+    D_PLAN_HH2D = 129
+
+    D_PLAN_HH2MD = 130
+
+    D_PLAN_HH2MS = 131
+
+    D_PLAN_HH2MS_DIL = 132
+
+    D_PLAN_HH2M_SI = 133
+
+    D_PLAN_HH2S = 134
+
+    D_PLAN_HH2SUDA = 135
+
+    D_PLAN_HHD = 136
+
+    D_PLAN_HHM = 137
+
+    D_PLAN_HHMD = 138
+
+    D_PLAN_HHMS = 139
+
+    D_PLAN_HHO = 140
+
+    D_PLAN_HHS = 141
+
+    D_PLAN_HM = 142
+
+    D_PLAN_HMD = 143
+
+    D_PLAN_HMS = 144
+
+    D_PLAN_HMS_DIL = 145
+
+    D_PLAN_HM_SI = 146
+
+    D_PLAN_HM_SI_DIL = 147
+
+    D_PLAN_HS = 148
+
+    D_PLAN_INCO_UP = 149
+
+    D_PLAN_INCO_UPG = 150
+
+    D_PLAN_INCO_UPO = 151
+
+    D_PLAN_SI = 152
+
+    D_PLAN_THH2D = 153
+
+    D_PLAN_THH2MD = 154
+
+    D_PLAN_THH2MS = 155
+
+    D_PLAN_THH2S = 156
+
+    D_PLAN_THHD = 157
+
+    D_PLAN_THHMD = 158
+
+    D_PLAN_THHMS = 159
+
+    D_PLAN_THHS = 160
+
+    D_PLAN_THM = 161
+
+    D_PLAN_THMD = 162
+
+    D_PLAN_THMS = 163
+
+    D_PLAN_THMS_DIL = 164
+
+    D_PLAN_THVD = 165
+
+    D_PLAN_THVS = 166
+
+    FAISCEAU_3D = 11
+
+    FLUIDE_2D = 3
+
+    FLUIDE_3D = 12
+
+    FLUI_ABSO_2D = 4
+
+    FLUI_ABSO_3D = 13
+
+    FLUI_PESA_2D = 5
+
+    FLUI_STRU = 167
+
+    FLUI_STRU_2D = 6
+
+    GRAD_HHO_3D = 14
+
+    GRAD_INCO_3D = 15
+
+    GRAD_VARI_3D = 16
+
+    GRILLE_EXCENTRE = 168
+
+    GRILLE_MEMBRANE = 169
+
+    GVNO_3D = 17
+
+    HH2D_3D = 18
+
+    HH2MD_3D = 19
+
+    HH2MS_3D = 20
+
+    HH2MS_DIL_3D = 21
+
+    HH2M_SI_3D = 22
+
+    HH2SUDA_3D = 24
+
+    HH2S_3D = 23
+
+    HHD_3D = 25
+
+    HHMD_3D = 27
+
+    HHMS_3D = 28
+
+    HHM_3D = 26
+
+    HHO_3D = 29
+
+    HHS_3D = 30
+
+    HMD_3D = 32
+
+    HMS_3D = 33
+
+    HMS_DIL_3D = 34
+
+    HM_3D = 31
+
+    HM_SI_3D = 35
+
+    HM_SI_DIL_3D = 36
+
+    HS_3D = 37
+
+    INCO_UPG_3D = 39
+
+    INCO_UPO_3D = 40
+
+    INCO_UP_3D = 38
+
+    INTERFACE_3D = 41
+
+    INTERFACE_S_3D = 42
+
+    JOINT_3D = 43
+
+    JOINT_HYME_3D = 44
+
+    MEMBRANE = 170
+
+    PLAN_INTERFACE = 175
+
+    PLAN_INTERFACE_S = 176
+
+    PLAN_JHMS = 177
+
+    PLAN_JOINT = 178
+
+    PLAN_JOINT_HYME = 179
+
+    POU_D_E = 180
+
+    POU_D_EM = 181
+
+    POU_D_SQUE = 182
+
+    POU_D_T = 183
+
+    POU_D_TG = 184
+
+    POU_D_TGM = 185
+
+    POU_D_T_GD = 186
+
+    POU_FLUI_STRU = 187
+
+    PlanarBar = 0
+
+    PlaneStrain = 120
+
+    PlaneStress = 113
+
+    Q4G = 188
+
+    Q4GG = 189
+
+    SI_3D = 45
+
+    THH2D_3D = 46
+
+    THH2MD_3D = 47
+
+    THH2MS_3D = 48
+
+    THH2S_3D = 49
+
+    THHD_3D = 50
+
+    THHMD_3D = 52
+
+    THHMS_3D = 53
+
+    THHM_3D = 51
+
+    THHS_3D = 54
+
+    THMD_3D = 56
+
+    THMS_3D = 57
+
+    THMS_DIL_3D = 58
+
+    THM_3D = 55
+
+    THVD_3D = 59
+
+    THVS_3D = 60
+
+    TUYAU_3M = 190
+
+    TUYAU_6M = 191
+
+    Tridimensional = 7
+
+    TridimensionalAbsorbingBoundary = 8
+
+
+# class Formulation in libaster
+
+
+class Formulation:
+    pass
+
+    # Method resolution order:
+    #     Formulation
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __eq__(self, other):
+        pass
+
+    def __getstate__(self):
+        pass
+
+    def __hash__(self):
+        pass
+
+    def __index__(self):
+        pass
+
+    def __init__(self, value):
+        pass
+
+    def __int__(self):
+        pass
+
+    def __ne__(self, other):
+        pass
+
+    def __repr__(self):
+        pass
+
+    def __setstate__(self, state):
+        pass
+
+    def name(self):
+        pass
+
+    # ----------------------------------------------------------------------
+    # Data descriptors defined here:
+
+    @property
+    def __members__(self):
+        pass
+
+    @property
+    def name(self):
+        """name(self: handle) -> str"""
+
+    @property
+    def value(self):
+        pass
+
+    # ----------------------------------------------------------------------
+    # Data and other attributes defined here:
+
+    Dil = 6
+
+    DilInco = 7
+
+    Linear = 1
+
+    NoFormulation = 0
+
+    Quadratic = 2
+
+    UP = 4
+
+    UPPhi = 3
+
+    UPsi = 5
+
+
 # class ModelSplitingMethod in libaster
 
 
@@ -10546,14 +11136,27 @@ class Model(DataStructure):
         6. __init__(self: libaster.Model, arg0: str, arg1: libaster.FiniteElementDescriptor, arg2: bool) -> None
         """
 
-    def addModelingOnGroupOfCells(self, arg0, arg1, arg2):
-        pass
+    def addModelingOnGroupOfCells(self, physics, modeling, grpma, formulation=0):
+        """Add modeling on all mesh
 
-    def addModelingOnGroupOfNodes(self, arg0, arg1, arg2):
-        pass
+        Arguments:
+            physics (Physics): Physics
+            modeling (Modelings): Modeling
+            grpma (str): Name of element group
+            formulation (Formulation): Formulation (optional)
+        """
 
-    def addModelingOnMesh(self, arg0, arg1):
-        pass
+    def addModelingOnMesh(self, physics, modeling, formulation=0):
+        """Add modeling on all mesh
+
+        Arguments:
+            physics (Physics): Physics
+            modeling (Modelings): Modeling
+            formulation (Formulation): Formulation (optional)
+        """
+
+    def banBalancing(self):
+        """Prohibit model balancing"""
 
     def build(self):
         pass
@@ -10692,154 +11295,6 @@ class Model(DataStructure):
 
     def xfemPreconditioningEnable(self):
         pass
-
-
-# class Physics in libaster
-
-
-class Physics:
-    pass
-
-    # Method resolution order:
-    #     Physics
-    #     pybind11_builtins.pybind11_object
-    #     builtins.object
-
-    # Methods defined here:
-
-    def __eq__(self, other):
-        pass
-
-    def __getstate__(self):
-        pass
-
-    def __hash__(self):
-        pass
-
-    def __index__(self):
-        pass
-
-    def __init__(self, value):
-        pass
-
-    def __int__(self):
-        pass
-
-    def __ne__(self, other):
-        pass
-
-    def __repr__(self):
-        pass
-
-    def __setstate__(self, state):
-        pass
-
-    def name(self):
-        pass
-
-    # ----------------------------------------------------------------------
-    # Data descriptors defined here:
-
-    @property
-    def __members__(self):
-        pass
-
-    @property
-    def name(self):
-        """name(self: handle) -> str"""
-
-    @property
-    def value(self):
-        pass
-
-    # ----------------------------------------------------------------------
-    # Data and other attributes defined here:
-
-    Acoustic = 2
-
-    Mechanics = 0
-
-    Thermal = 1
-
-
-# class Modelings in libaster
-
-
-class Modelings:
-    pass
-
-    # Method resolution order:
-    #     Modelings
-    #     pybind11_builtins.pybind11_object
-    #     builtins.object
-
-    # Methods defined here:
-
-    def __eq__(self, other):
-        pass
-
-    def __getstate__(self):
-        pass
-
-    def __hash__(self):
-        pass
-
-    def __index__(self):
-        pass
-
-    def __init__(self, value):
-        pass
-
-    def __int__(self):
-        pass
-
-    def __ne__(self, other):
-        pass
-
-    def __repr__(self):
-        pass
-
-    def __setstate__(self, state):
-        pass
-
-    def name(self):
-        pass
-
-    # ----------------------------------------------------------------------
-    # Data descriptors defined here:
-
-    @property
-    def __members__(self):
-        pass
-
-    @property
-    def name(self):
-        """name(self: handle) -> str"""
-
-    @property
-    def value(self):
-        pass
-
-    # ----------------------------------------------------------------------
-    # Data and other attributes defined here:
-
-    Axisymmetrical = 0
-
-    DKT = 6
-
-    DKTG = 7
-
-    Planar = 3
-
-    PlanarBar = 8
-
-    PlaneStrain = 4
-
-    PlaneStress = 5
-
-    Tridimensional = 1
-
-    TridimensionalAbsorbingBoundary = 2
 
 
 # class PrestressingCable in libaster
@@ -15221,3 +15676,44 @@ class FieldCharacteristics:
 
     def getQuantity(self):
         pass
+
+
+# built-in function getModelings in libaster
+
+
+def getModelings():
+    pass
+
+
+# class SyntaxSaver in libaster
+
+
+class SyntaxSaver:
+    pass
+
+    # Method resolution order:
+    #     SyntaxSaver
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self, arg0, arg1, arg2):
+        pass
+
+
+# built-in function applyBalancingStrategy in libaster
+
+
+def applyBalancingStrategy(result, vector):
+    """Apply balancing strategy to given result. User must give nodes that local process
+    will own (without ghost nodes).
+    This function returns a PhysicalProblem with joints, ghosts and so on.
+
+    Arguments:
+        result: result to balance
+        vector: list of nodes to get on local process
+
+    Returns:
+        mesh: PhysicalProblem
+    """

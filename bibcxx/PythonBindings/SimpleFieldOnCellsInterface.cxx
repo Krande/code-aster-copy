@@ -3,7 +3,7 @@
  * @brief Interface python de SimpleFieldOnCells
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -124,6 +124,7 @@ Returns:
         .def( "getNumberOfCells", &SimpleFieldOnCellsReal::getNumberOfCells )
         .def( "getMaxNumberOfPoints", &SimpleFieldOnCellsReal::getMaxNumberOfPoints )
         .def( "getMaxNumberOfSubPoints", &SimpleFieldOnCellsReal::getMaxNumberOfSubPoints )
+        .def( "getMesh", &SimpleFieldOnCellsReal::getMesh, R"(Returns base mesh)" )
         .def( "getNumberOfPointsOfCell", &SimpleFieldOnCellsReal::getNumberOfPointsOfCell )
         .def( "getNumberOfSubPointsOfCell", &SimpleFieldOnCellsReal::getNumberOfSubPointsOfCell )
         .def( "getNumberOfComponentsForSubpointsOfCell",

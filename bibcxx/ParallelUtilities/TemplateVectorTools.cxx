@@ -56,3 +56,27 @@ int getSize( const ArrayWrapper< JeveuxVectorReal >::ElementValue &in ) {
 };
 
 void update( typename ArrayWrapper< JeveuxVectorReal >::ElementValue in ) {};
+
+int getSize( const ArrayWrapper< JeveuxVectorLogical >::ElementValue &in ) {
+    return in.getComponentNumber();
+};
+
+void update( typename ArrayWrapper< JeveuxVectorLogical >::ElementValue in ) {};
+
+int getSize( const ArrayWrapper< JeveuxVectorLong >::ElementValue &in ) {
+    return in.getComponentNumber();
+};
+
+void update( typename ArrayWrapper< JeveuxVectorLong >::ElementValue in ) {};
+
+int getSize( const ArrayWrapper< VectorReal >::ElementValue &in ) {
+    return in.getComponentNumber();
+};
+
+void update( typename ArrayWrapper< VectorReal >::ElementValue in ) {};
+
+int getSize( const ArrayWrapper< VectorLong >::ElementValue &in ) {
+    return in.getComponentNumber();
+};
+
+void update( typename ArrayWrapper< VectorLong >::ElementValue in ) {};
