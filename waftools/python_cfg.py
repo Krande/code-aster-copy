@@ -19,6 +19,7 @@
 
 import os
 import pathlib
+import platform
 from pathlib import PureWindowsPath
 from subprocess import PIPE, Popen
 
@@ -41,10 +42,12 @@ def configure(self):
 def check_python(self):
     self.load("python")
     self.check_python_version((3, 5, 0))
-    #self.check_python_headers()
-    path = self.env["PATH"]
-    include_dir = os.environ["CONDA_PREFIX"] + "/include"
-    self.env["PATH"] = f"{path};{include_dir}"
+    if platform.system() == "Windows":
+        path = self.env["PATH"]
+        include_dir = os.environ["CONDA_PREFIX"] + "/include"
+        self.env["PATH"] = f"{path};{include_dir}"
+    else:
+        self.check_python_headers()
 
     if "icc" in self.env.CC_NAME.lower():
         self.env["LIB_PYEXT"] = list(set(self.env["LIB_PYEXT"]))
@@ -77,12 +80,15 @@ def check_numpy_headers(self):
         ['"\\n".join([np.get_include()])'],
         ["import numpy as np"],
     )
-    python_include_dir = os.environ["CONDA_PREFIX"] + "/include"
-    python_libs_dir = os.environ["CONDA_PREFIX"] + "/libs"
-    numpy_includes.append(pathlib.Path(python_include_dir).as_posix())
-    numpy_includes.append(pathlib.Path(python_libs_dir).as_posix())
+    extra_flags = dict()
+    if platform.system() == "Windows":
+        python_include_dir = os.environ["CONDA_PREFIX"] + "/include"
+        python_libs_dir = os.environ["CONDA_PREFIX"] + "/libs"
+        numpy_includes.append(pathlib.Path(python_include_dir).as_posix())
+        numpy_includes.append(pathlib.Path(python_libs_dir).as_posix())
+        extra_flags.update(dict(linkflags=["/LIBPATH:" + python_libs_dir, "/LIBPATH:" + python_include_dir]))
 
-    #Logs.warn(f"{numpy_includes=}")
+    Logs.info(f"{numpy_includes=}")
 
     if self.is_defined("ASTER_PLATFORM_MINGW"):
         incs = [PureWindowsPath(i) for i in numpy_includes]
@@ -105,7 +111,7 @@ def check_numpy_headers(self):
         use=["PYEXT"],
         uselib_store="NUMPY",
         errmsg="Could not find the numpy development headers",
-        linkflags=["/LIBPATH:" + python_libs_dir, "/LIBPATH:" + python_include_dir],
+        **extra_flags
     )
     self.end_msg(numpy_includes)
 

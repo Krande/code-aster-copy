@@ -21,7 +21,6 @@
 !
 !---------- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 #include "asterf_types.h"
-#include "asterfort/Behaviour_type.h"
 !
     volatile           zi4, zi, zr, zc, zl
     volatile           zk8, zk16, zk24, zk32, zk80
@@ -41,6 +40,6 @@
     character(len=24)                         :: zk24
     character(len=32)                                  :: zk32
     character(len=80)                                           :: zk80
-    common  / kvarje / zk8(1), zk16(COMPOR_SIZE), zk24(1), zk32(1), zk80(1)
+    common  / kvarje / zk8(1), zk16(1), zk24(1), zk32(1), zk80(1)
 !---------- FIN  COMMUNS NORMALISES  JEVEUX ----------------------------
 #endif

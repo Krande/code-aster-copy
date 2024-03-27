@@ -30,6 +30,7 @@ Note:
 """
 
 import os
+import platform
 import os.path as osp
 import pathlib
 import sys
@@ -225,7 +226,8 @@ def all_components(self):
 
 
 def configure(self):
-    self.load("ifort", tooldir="config")
+    if platform.system() == "Windows":
+        self.load("ifort", tooldir="config")
 
     opts = self.options
     self.setenv("default")
