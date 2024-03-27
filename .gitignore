@@ -27,3 +27,4 @@ install_*.log
 tmp_b*
 med_aster_module.c.1.dll.manifest
 tmp_blink.bat
+build*/

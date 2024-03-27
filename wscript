@@ -53,7 +53,6 @@ if sys.version_info < (3, 6):
 
 
 def options(self):
-    self.load('clang_compilation_database', tooldir="config")
     orig_get_usage = self.parser.get_usage
 
     def _usage():
@@ -320,9 +319,6 @@ def configure(self):
     self.check_optimization_options()
     self.write_config_headers()
 
-    self.load('clang_compilation_database', tooldir="config")
-
-
 def build(self):
     fc._use_custom_sig = self.options.custom_fc_sig
     # shared the list of dependencies between bibc/bibfor
@@ -345,6 +341,7 @@ def build(self):
     self.load("ext_aster", tooldir="waftools")
     # Need to remove Windows Kits includes from INCLUDES
     if self.env.CC_NAME == "msvc":
+        self.load("msvc", tooldir="waftools")
         # Logs.info(f"{self.env}")
         pops = []
         for i, lib in enumerate(self.env.LIBPATH):
@@ -366,7 +363,7 @@ def build(self):
         # Add the python include dir
         py_incl = pathlib.Path(os.environ["PREFIX"]) / "include"
         self.env.INCLUDES.append(py_incl.as_posix())
-        #Logs.info(f"INCLUDES: {self.env.INCLUDES}")
+        # Logs.info(f"INCLUDES: {self.env.INCLUDES}")
 
     self.recurse("bibfor")
     self.recurse("code_aster")

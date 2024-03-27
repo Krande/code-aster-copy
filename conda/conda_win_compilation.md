@@ -9,9 +9,11 @@ mamba env update -f environment.yml
 ```
 
 2. Install VS Build Tools (or the full installation of) VS2022 and Intel Fortran OneAPI 2024.0
-3. Create an `.env` file containing the paths to the installation of python, VS Build Tools and Intel Fortran OneAPI 2024.0
+3. Create an `.env` file containing the paths to the installation of python, VS Build Tools and Intel Fortran OneAPI
+   2024.0
 
 Example `.env` file:
+
 ```
 CONDA_ROOT=C:\work\miniforge3
 INTEL_VARS_PATH=C:\Program Files (x86)\Intel\oneAPI\compiler\latest\env
@@ -37,14 +39,24 @@ conda_build.bat
 | SCOTCH      | 7.0.4   | VS2022     | VS2022       | N/A                 |
 | Code Aster  | 17.0.10 | VS2022     | VS2022       | Intel OneAPI 2024.0 |
 
-
 ## Packages
 
-
 ### Intel Fortran
+
 ```
 # wget and 
 curl https://registrationcenter-download.intel.com/akdlm/IRC_NAS/3a64aab4-3c35-40ba-bc9c-f80f136a8005/w_fortran-compiler_p_2024.0.2.27_offline.exe -o w_fortran-compiler_p_2024.0.2.27_offline.exe
 w_fortran-compiler_p_2024.0.2.27_offline.exe -s
 
 ```
+
+## Debugging
+
+To manually re-link the compiled .o sources for either bibfor or bibc using different flags or included libraries, 
+you can activate the conda environment and run the following commands from the root directory from this repository:
+
+```cmd
+python conda\manual_link.py --bibfor
+```
+
+Use the `--bibc` flag to re-link the compiled .o sources for bibc.
