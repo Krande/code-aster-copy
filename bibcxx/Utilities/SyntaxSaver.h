@@ -51,7 +51,7 @@ class SyntaxSaver {
 
     const std::string &commandName() const { return _commandName; };
 
-    const py::dict keywords() const { return _keywords; };
+    const py::dict &keywords() const { return _keywords; };
 
     const ASTERINTEGER &operatorNumber() const { return _op; };
 };

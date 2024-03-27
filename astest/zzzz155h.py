@@ -117,14 +117,15 @@ cl = AFFE_CHAR_CINE(
     MECA_IMPO=(_F(GROUP_MA="BAS", DX=0.0, DY=0.0, DZ=0.0), _F(GROUP_MA="HAUT", DZ=1.0)),
 )
 
+
+###########################################
+# First MECA_STATIQUE with AFFE_CHAR_CINE #
+###########################################
 resu = MECA_STATIQUE(
-    MODELE=model,
-    CHAM_MATER=mater,
-    EXCIT=_F(CHARGE=cl),
-    INST=0.0,
-    SOLVEUR=_F(METHODE="PETSC", PRE_COND="ML"),
+    MODELE=model, CHAM_MATER=mater, EXCIT=_F(CHARGE=cl), INST=0.0, SOLVEUR=_F(METHODE="MUMPS")
 )
 
+# Balancing ElasticResult
 bMesh = CA.MeshBalancer()
 bMesh.buildFromBaseMesh(mesh)
 outResu = None
@@ -145,6 +146,8 @@ elif rank == 3:
         resu, [5, 8, 31, 32, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80]
     )
 
+del bMesh
+
 oldSiefElga = resu.getField("SIEF_ELGA", 1).toSimpleFieldOnCells()
 initSief = buildCompleteFieldOnCells(oldSiefElga)
 
@@ -157,10 +160,12 @@ newSief = buildCompleteFieldOnCells(newSiefElga)
 depl = outResu.getField("DEPL", 1).toSimpleFieldOnNodes()
 newDepl = buildCompleteFieldOnNodes(depl)
 
+# Compare SIEF_ELGA (reference and balanced)
 for initArray, newArray in zip(initSief, newSief):
     for initVal, newVal in zip(initArray, newArray):
         test.assertEqual(initVal, newVal)
 
+# Compare DEPL (reference and balanced)
 for initArray, newArray in zip(initDepl, newDepl):
     for initVal, newVal in zip(initArray, newArray):
         test.assertEqual(initVal, newVal)
@@ -168,6 +173,115 @@ for initArray, newArray in zip(initDepl, newDepl):
 test.assertEqual(outResu.getType(), "EVOL_ELAS")
 test.assertTrue(isinstance(outResu, CA.ElasticResult))
 
+
+#######################################
+# MECA_STATIQUE with balanced objects #
+#######################################
+bModel = outResu.getModel()
+bMater = outResu.getMaterialField()
+bLoads = outResu.getListOfLoads(1)
+bBCLoad = bLoads.getDirichletBCs()
+assert len(bBCLoad) == 1
+
+resuBis = MECA_STATIQUE(
+    MODELE=bModel,
+    CHAM_MATER=bMater,
+    EXCIT=_F(CHARGE=bBCLoad[0]),
+    INST=0.0,
+    SOLVEUR=_F(METHODE="MUMPS"),
+)
+
+newSiefElga = resuBis.getField("SIEF_ELGA", 1).toSimpleFieldOnCells()
+newSief = buildCompleteFieldOnCells(newSiefElga)
+
+depl = resuBis.getField("DEPL", 1).toSimpleFieldOnNodes()
+newDepl = buildCompleteFieldOnNodes(depl)
+
+# Compare SIEF_ELGA (reference and with balanced objects)
+for initArray, newArray in zip(initSief, newSief):
+    for initVal, newVal in zip(initArray, newArray):
+        test.assertAlmostEqual(initVal, newVal, delta=5.0e-10)
+
+# Compare DEPL (reference and balanced)
+for initArray, newArray in zip(initDepl, newDepl):
+    for initVal, newVal in zip(initArray, newArray):
+        test.assertAlmostEqual(initVal, newVal, delta=1.0e-15)
+
+
+########################################################
+# MECA_STATIQUE with AFFE_CHAR_CINE and AFFE_CHAR_MECA #
+########################################################
+clCine = AFFE_CHAR_CINE(MODELE=model, MECA_IMPO=(_F(GROUP_MA="BAS", DX=0.0, DY=0.0, DZ=0.0),))
+
+clMeca = AFFE_CHAR_MECA(MODELE=model, DDL_IMPO=(_F(GROUP_MA="HAUT", DZ=1.0),))
+
+resu2 = MECA_STATIQUE(
+    MODELE=model,
+    CHAM_MATER=mater,
+    EXCIT=(_F(CHARGE=clCine), _F(CHARGE=clMeca)),
+    INST=0.0,
+    SOLVEUR=_F(METHODE="MUMPS"),
+)
+
+# Balancing ElasticResult
+bMesh = CA.MeshBalancer()
+bMesh.buildFromBaseMesh(mesh)
+outResu = None
+if rank == 0:
+    outResu = CA.applyBalancingStrategy(
+        resu2, [1, 2, 3, 4, 9, 10, 11, 12, 13, 14, 15, 16, 20, 26, 33, 34, 35, 36, 41, 43]
+    )
+elif rank == 1:
+    outResu = CA.applyBalancingStrategy(
+        resu2, [17, 18, 29, 30, 37, 38, 39, 45, 46, 47, 49, 50, 51, 52, 57, 59, 61, 62, 63, 64]
+    )
+elif rank == 2:
+    outResu = CA.applyBalancingStrategy(
+        resu2, [6, 7, 19, 21, 22, 23, 24, 25, 27, 28, 40, 42, 44, 48, 53, 54, 55, 56, 58, 60]
+    )
+elif rank == 3:
+    outResu = CA.applyBalancingStrategy(
+        resu2, [5, 8, 31, 32, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80]
+    )
+
 del bMesh
+
+bModel = outResu.getModel()
+bMater = outResu.getMaterialField()
+bLoads = outResu.getListOfLoads(1)
+bBCLoad = bLoads.getDirichletBCs()
+assert len(bBCLoad) == 1
+bMLLoad = bLoads.getParallelMechanicalLoadsReal()
+assert len(bMLLoad) == 1
+
+resuBis = MECA_STATIQUE(
+    MODELE=bModel,
+    CHAM_MATER=bMater,
+    EXCIT=(_F(CHARGE=bBCLoad[0]), _F(CHARGE=bMLLoad[0])),
+    INST=0.0,
+    SOLVEUR=_F(METHODE="MUMPS"),
+)
+
+oldSiefElga = resu2.getField("SIEF_ELGA", 1).toSimpleFieldOnCells()
+initSief = buildCompleteFieldOnCells(oldSiefElga)
+
+oldDepl = resu2.getField("DEPL", 1).toSimpleFieldOnNodes()
+initDepl = buildCompleteFieldOnNodes(oldDepl)
+
+newSiefElga = resuBis.getField("SIEF_ELGA", 1).toSimpleFieldOnCells()
+newSief = buildCompleteFieldOnCells(newSiefElga)
+
+depl = resuBis.getField("DEPL", 1).toSimpleFieldOnNodes()
+newDepl = buildCompleteFieldOnNodes(depl)
+
+# Compare SIEF_ELGA (reference and with balanced objects)
+for initArray, newArray in zip(initSief, newSief):
+    for initVal, newVal in zip(initArray, newArray):
+        test.assertAlmostEqual(initVal, newVal, delta=5.0e-10)
+
+# Compare DEPL (reference and balanced)
+for initArray, newArray in zip(initDepl, newDepl):
+    for initVal, newVal in zip(initArray, newArray):
+        test.assertAlmostEqual(initVal, newVal, delta=1.0e-15)
 
 FIN()

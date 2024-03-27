@@ -183,16 +183,34 @@ std::shared_ptr< ResultType > applyBalancingStrategy( const std::shared_ptr< Res
     ListOfLoadsPtr lOLoadsOut( new ListOfLoads( modelOut ) );
     const auto &BClist = lOLoadsIn->getDirichletBCs();
     for ( const auto &curBC : BClist ) {
-        auto curBCOut = DirichletBCPtr( new DirichletBC( curBC, modelOut ) );
-        curBCOut->buildFromSyntax();
-        lOLoadsOut->addLoad( curBCOut );
+        if ( curBC->getType() == "CHAR_CINE_MECA" ) {
+            auto curBC2 = std::static_pointer_cast< MechanicalDirichletBC >( curBC );
+            auto curBCOut =
+                MechanicalDirichletBCPtr( new MechanicalDirichletBC( curBC2, modelOut ) );
+            curBCOut->buildFromSyntax();
+            lOLoadsOut->addLoad( curBCOut );
+        } else if ( curBC->getType() == "CHAR_CINE_THER" ) {
+            auto curBC2 = std::static_pointer_cast< ThermalDirichletBC >( curBC );
+            auto curBCOut = ThermalDirichletBCPtr( new ThermalDirichletBC( curBC2, modelOut ) );
+            curBCOut->buildFromSyntax();
+            lOLoadsOut->addLoad( curBCOut );
+        } else if ( curBC->getType() == "CHAR_CINE_ACOU" ) {
+            auto curBC2 = std::static_pointer_cast< AcousticDirichletBC >( curBC );
+            auto curBCOut = AcousticDirichletBCPtr( new AcousticDirichletBC( curBC2, modelOut ) );
+            curBCOut->buildFromSyntax();
+            lOLoadsOut->addLoad( curBCOut );
+        }
+    }
+
+    const auto &PMLlist = lOLoadsIn->getParallelMechanicalLoadsReal();
+    for ( const auto &curBPML : PMLlist ) {
+        auto curMLOut =
+            ParallelMechanicalLoadRealPtr( new ParallelMechanicalLoadReal( curBPML, modelOut ) );
+        lOLoadsOut->addLoad( curMLOut );
     }
 
     std::shared_ptr< ResultType > resuOut( new ResultType() );
-    resuOut->setModel( modelOut );
-    resuOut->setMaterialField( materOut );
     resuOut->allocate( 1 );
-    resuOut->setListOfLoads( lOLoadsOut, 1 );
 
     const auto fONList = resuIn->getFieldsOnNodesRealNames();
     for ( const auto &curName : fONList ) {
@@ -218,6 +236,9 @@ std::shared_ptr< ResultType > applyBalancingStrategy( const std::shared_ptr< Res
          resuIn->getFieldsOnCellsComplexNames().size() != 0 ) {
         throw std::runtime_error( "Complex fields are not yet allowed" );
     }
+    resuOut->setModel( modelOut );
+    resuOut->setMaterialField( materOut );
+    resuOut->setListOfLoads( lOLoadsOut, 1 );
 
     return resuOut;
 };

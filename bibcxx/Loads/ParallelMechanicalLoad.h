@@ -11,7 +11,7 @@
  * @brief Fichier entete de la classe ParallelMechanicalLoad
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -32,12 +32,14 @@
 #include "DataFields/ConstantFieldOnCells.h"
 #include "DataStructures/DataStructure.h"
 #include "Loads/MechanicalLoad.h"
+#include "Meshes/ConnectionMesh.h"
 #include "Meshes/MeshExplorer.h"
 #include "Modeling/FiniteElementDescriptor.h"
 #include "Modeling/Model.h"
 #include "Modeling/ParallelFiniteElementDescriptor.h"
 #include "ParallelUtilities/AsterMPI.h"
 #include "Supervis/ResultNaming.h"
+#include "Utilities/SyntaxSaver.h"
 
 #include <fstream>
 
@@ -49,6 +51,8 @@ template < typename ConstantFieldOnCellsType >
 class ParallelMechanicalLoad : public DataStructure {
   public:
     using ConstantFieldOnCellsTypePtr = std::shared_ptr< ConstantFieldOnCellsType >;
+
+    using ParallelMechanicalLoadPtr = std::shared_ptr< ParallelMechanicalLoad >;
 
   private:
     template < typename ConstantFieldOnCellsType2Ptr >
@@ -92,6 +96,21 @@ class ParallelMechanicalLoad : public DataStructure {
         fieldOut->build();
     };
 
+    void allocateFields( const MechanicalLoadPtr< ConstantFieldOnCellsType > &load ) {
+        auto typeLoadStd = load->getType();
+        typeLoadStd->updateValuePointer();
+
+        _type->allocate( 1 );
+        ( *_type )[0] = ( *typeLoadStd )[0];
+        _modelName->allocate( 1 );
+        ( *_modelName )[0] = _model->getName();
+
+        transferConstantFieldOnCells( load->getMechanicalLoadDescription()->getImposedField(),
+                                      _cimpo );
+        transferConstantFieldOnCells(
+            load->getMechanicalLoadDescription()->getMultiplicativeField(), _cmult );
+    };
+
   protected:
     /** @brief Modele */
     ModelPtr _model;
@@ -105,6 +124,10 @@ class ParallelMechanicalLoad : public DataStructure {
     JeveuxVectorChar8 _type;
     /** @brief Vecteur Jeveux '.MODEL.NOMO' */
     JeveuxVectorChar8 _modelName;
+    /** @brief Syntax used to build object */
+    SyntaxSaverPtr _syntax;
+    /** @brief node and cell support groups of ParallelMechnicalLoad */
+    VectorString _grpNo, _grpMa;
 
   public:
     /**
@@ -119,6 +142,32 @@ class ParallelMechanicalLoad : public DataStructure {
     ParallelMechanicalLoad( const MechanicalLoadPtr< ConstantFieldOnCellsType > &load,
                             const ModelPtr &model )
         : ParallelMechanicalLoad( ResultNaming::getNewResultName(), load, model ) {};
+
+    /** @brief Constructor */
+    ParallelMechanicalLoad( const ParallelMechanicalLoadPtr load, const ModelPtr &model )
+        : DataStructure( ResultNaming::getNewResultName(), 8, "CHAR_MECA" ),
+          _type( getName() + ".TYPE" ),
+          _modelName( getName() + ".CHME.MODEL.NOMO" ),
+          _model( model ) {
+        _syntax = load->_syntax;
+        _grpNo = load->_grpNo;
+        _grpMa = load->_grpMa;
+        auto pMesh = std::static_pointer_cast< ParallelMesh >( model->getMesh() );
+        ConnectionMeshPtr connectionMesh( new ConnectionMesh( pMesh, _grpNo, _grpMa ) );
+        ModelPtr connectionModel( new Model( connectionMesh ) );
+        connectionModel->setFrom( model );
+        MechanicalLoadPtr< ConstantFieldOnCellsType > partialMechanicalLoad(
+            new MechanicalLoad< ConstantFieldOnCellsType >( connectionModel ) );
+        partialMechanicalLoad->buildFromSyntax( _syntax );
+
+        _FEDesc = std::make_shared< ParallelFiniteElementDescriptor >(
+            getName() + ".CHME.LIGRE", partialMechanicalLoad->getFiniteElementDescriptor(),
+            partialMechanicalLoad->getModel()->getConnectionMesh(), model );
+        _cimpo = std::make_shared< ConstantFieldOnCellsType >( getName() + ".CHME.CIMPO", _FEDesc );
+        _cmult = std::make_shared< ConstantFieldOnCellsReal >( getName() + ".CHME.CMULT", _FEDesc );
+
+        allocateFields( partialMechanicalLoad );
+    };
 
     /**
      * @brief Constructeur
@@ -137,18 +186,7 @@ class ParallelMechanicalLoad : public DataStructure {
           _type( getName() + ".TYPE" ),
           _modelName( getName() + ".CHME.MODEL.NOMO" ),
           _model( model ) {
-        auto typeLoadStd = load->getType();
-        typeLoadStd->updateValuePointer();
-
-        _type->allocate( 1 );
-        ( *_type )[0] = ( *typeLoadStd )[0];
-        _modelName->allocate( 1 );
-        ( *_modelName )[0] = model->getName();
-
-        transferConstantFieldOnCells( load->getMechanicalLoadDescription()->getImposedField(),
-                                      _cimpo );
-        transferConstantFieldOnCells(
-            load->getMechanicalLoadDescription()->getMultiplicativeField(), _cmult );
+        allocateFields( load );
     };
 
     /**
@@ -216,11 +254,22 @@ class ParallelMechanicalLoad : public DataStructure {
         return _model;
     };
 
-    using ParallelMechanicalLoadPtr = std::shared_ptr< ParallelMechanicalLoad >;
-
     ConstantFieldOnCellsRealPtr getMultiplicativeField() const { return _cmult; };
 
     ConstantFieldOnCellsTypePtr getImposedField() const { return _cimpo; };
+
+    /**
+     * @brief Function to set rebuild parameters (used for balancing)
+     * @param syntax aster syntax
+     * @param grpNo cell groups
+     * @param syntax node groups
+     */
+    void setRebuildParameters( SyntaxSaverPtr syntax, const VectorString &grpNo,
+                               const VectorString &grpMa ) {
+        _syntax = syntax;
+        _grpNo = grpNo;
+        _grpMa = grpMa;
+    };
 };
 
 /**
