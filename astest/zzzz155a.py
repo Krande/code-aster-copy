@@ -587,6 +587,36 @@ part2 = CA.PtScotchPartitioner()
 part2.buildGraph(meshGraph)
 scotchPart = part2.partitionGraph()
 outMesh3 = bMesh.applyBalancingStrategy(scotchPart)
+innerNodes1 = len(outMesh3.getInnerNodes())
+
+meshGraph = CA.MeshConnectionGraph()
+weights = [1] * 55
+if rank == 0:
+    # Add load on first node
+    weights[0] = 10
+    meshGraph.buildFromIncompleteMeshWithVertexWeights(mesh3, weights)
+elif rank == 1:
+    meshGraph.buildFromIncompleteMeshWithVertexWeights(mesh3, weights)
+elif rank == 2:
+    meshGraph.buildFromIncompleteMeshWithVertexWeights(mesh3, weights)
+elif rank == 3:
+    meshGraph.buildFromIncompleteMeshWithVertexWeights(mesh3, weights)
+test.assertTrue(meshGraph.debugCheck())
+part2 = CA.PtScotchPartitioner()
+part2.buildGraph(meshGraph)
+scotchPart = part2.partitionGraph()
+outMesh4 = bMesh.applyBalancingStrategy(scotchPart)
+index = -1
+try:
+    index = scotchPart.index(1)
+except:
+    pass
+if index != -1:
+    # Node 1 has been loaded
+    # The processor that will contain it, will have fewer inner nodes than before
+    test.assertTrue(len(outMesh4.getInnerNodes()) < innerNodes1)
+else:
+    test.assertTrue(len(outMesh4.getInnerNodes()) >= innerNodes1)
 
 checkJoints(outMesh3)
 

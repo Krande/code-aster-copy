@@ -6,7 +6,7 @@
  * @brief Header of connection graph
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -41,6 +41,8 @@
 class MeshConnectionGraph {
     /** @brief PtScotch graph */
     VectorLong _vertices, _edges;
+    /** @brief Weights */
+    VectorLong _vertexWeights;
     /** @brief Range of node ids on local process */
     VectorLong _range;
     /** @brief Total number of nodes */
@@ -55,6 +57,13 @@ class MeshConnectionGraph {
      */
     void buildFromIncompleteMesh( const IncompleteMeshPtr &mesh );
 
+    /**
+     * @brief Build graph from IncompleteMeshPtr
+     * @param mesh IncompleteMeshPtr
+     */
+    void buildFromIncompleteMeshWithVertexWeights( const IncompleteMeshPtr &mesh,
+                                                   const VectorLong &weights );
+
     /** @brief check if graph is NOT a directed graph */
     bool debugCheck() const;
 
@@ -66,6 +75,9 @@ class MeshConnectionGraph {
 
     /** @brief get vertices (PtSctoch format) */
     const VectorLong &getVertices() const { return _vertices; };
+
+    /** @brief get vertices (PtSctoch format) */
+    const VectorLong &getVertexWeights() const { return _vertexWeights; };
 };
 
 void buildFastConnectivity( const BaseMeshPtr &, VectorOfVectorsLong & );

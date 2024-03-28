@@ -13791,6 +13791,15 @@ class ParallelMechanicalLoadReal(DataStructure):
     def getModel(self):
         pass
 
+    def setRebuildParameters(self, syntax, grpNo, grpMa):
+        """Set parameters to be able to rebuild object in case of balancing
+
+        Arguments:
+            syntax (SyntaxSaver): syntax used to build object
+            grpNo (list of strings): list of node groups
+            grpMa (list of strings): list of cell groups
+        """
+
 
 # class ParallelMechanicalLoadFunction in libaster
 
@@ -13850,6 +13859,15 @@ class ParallelThermalLoadReal(DataStructure):
 
     def getModel(self):
         pass
+
+    def setRebuildParameters(self, syntax, grpNo, grpMa):
+        """Set parameters to be able to rebuild object in case of balancing
+
+        Arguments:
+            syntax (SyntaxSaver): syntax used to build object
+            grpNo (list of strings): list of node groups
+            grpMa (list of strings): list of cell groups
+        """
 
 
 # class ParallelThermalLoadFunction in libaster
@@ -15082,6 +15100,14 @@ class MeshConnectionGraph:
             mesh: IncompleteMesh.
         """
 
+    def buildFromIncompleteMeshWithVertexWeights(self, mesh, weights):
+        """Create the graph corresponding to given IncompleteMesh to be used by PtScotchPartitioner
+
+        Arguments:
+            mesh: IncompleteMesh.
+            weights: vertex weights.
+        """
+
     def debugCheck(self):
         """Check graph"""
 
@@ -15705,8 +15731,43 @@ class SyntaxSaver:
 # built-in function applyBalancingStrategy in libaster
 
 
-def applyBalancingStrategy(result, vector):
-    """Apply balancing strategy to given result. User must give nodes that local process
+def applyBalancingStrategy(*args, **kwargs):
+    """Overloaded function.
+
+    1. applyBalancingStrategy(result: libaster.ElasticResult, vector: List[int]) -> libaster.ElasticResult
+
+
+    Apply balancing strategy to given result. User must give nodes that local process
+    will own (without ghost nodes).
+    This function returns a PhysicalProblem with joints, ghosts and so on.
+
+    Arguments:
+        result: result to balance
+        vector: list of nodes to get on local process
+
+    Returns:
+        mesh: PhysicalProblem
+
+
+    2. applyBalancingStrategy(result: libaster.NonLinearResult, vector: List[int]) -> libaster.NonLinearResult
+
+
+    Apply balancing strategy to given result. User must give nodes that local process
+    will own (without ghost nodes).
+    This function returns a PhysicalProblem with joints, ghosts and so on.
+
+    Arguments:
+        result: result to balance
+        vector: list of nodes to get on local process
+
+    Returns:
+        mesh: PhysicalProblem
+
+
+    3. applyBalancingStrategy(result: libaster.ThermalResult, vector: List[int]) -> libaster.ThermalResult
+
+
+    Apply balancing strategy to given result. User must give nodes that local process
     will own (without ghost nodes).
     This function returns a PhysicalProblem with joints, ghosts and so on.
 
