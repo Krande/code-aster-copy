@@ -50,7 +50,10 @@ def configure(self):
     self.check_fortran_mangling()
     if self.env.FORTRAN_MANGLING and self.env.FORTRAN_MANGLING[0] == "":
         Logs.info("No mangling detected, using no underscore")
-        self.define("ASTER_NO_UNDERSCORE", 1)
+        if self.env.CC_NAME == 'msvc':
+            self.undefine("ASTER_NO_UNDERSCORE")
+        else:
+            self.define("ASTER_NO_UNDERSCORE", 1)
     else:
         Logs.info("Mangling detected, using underscore")
         self.undefine("ASTER_NO_UNDERSCORE")

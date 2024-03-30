@@ -82,12 +82,13 @@ def check_numpy_headers(self):
     )
     extra_flags = dict()
     if platform.system() == "Windows":
-        prefix_ = pathlib.Path(self.env.PREFIX)
+        library_prefix_ = pathlib.Path(self.env.PREFIX)
+        prefix_ = library_prefix_.parent
         python_include_dir = prefix_ / "include"
-        python_libs_dir = prefix_ + "libs"
+        python_libs_dir = prefix_ / "libs"
         numpy_includes.append(python_include_dir.as_posix())
         numpy_includes.append(python_libs_dir.as_posix())
-        extra_flags.update(dict(linkflags=["/LIBPATH:" + python_libs_dir, "/LIBPATH:" + python_include_dir]))
+        extra_flags.update(dict(linkflags=[f"/LIBPATH:{python_libs_dir}", f"/LIBPATH:{python_include_dir}"]))
 
     Logs.info(f"{numpy_includes=}")
 

@@ -58,7 +58,7 @@ def options(self):
 
 def configure(self):
     if self.env.CC_NAME == "msvc":
-        mumps_seq_incl = pathlib.Path(self.env.PREFIX) / 'Library/include/mumps_seq'
+        mumps_seq_incl = pathlib.Path(self.env.PREFIX) / 'include/mumps_seq'
         self.env.append_value('INCLUDES', [mumps_seq_incl.as_posix()])
 
     try:
