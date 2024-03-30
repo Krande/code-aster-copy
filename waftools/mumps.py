@@ -58,7 +58,7 @@ def options(self):
 
 def configure(self):
     if self.env.CC_NAME == "msvc":
-        mumps_seq_incl = pathlib.Path(os.environ.get("CONDA_PREFIX")) / 'Library/include/mumps_seq'
+        mumps_seq_incl = pathlib.Path(self.env.PREFIX) / 'Library/include/mumps_seq'
         self.env.append_value('INCLUDES', [mumps_seq_incl.as_posix()])
 
     try:
@@ -117,8 +117,6 @@ def check_mumps_headers(self):
       PRINT *, 'ok'
       END PROGRAM MAIN
 """
-
-    # Logs.warn(f"{self.env['INCLUDES']=}")
     headers = [i + "mumps_struc.h" for i in "sdcz"] + ["mpif.h"]
     if self.get_define("ASTER_HAVE_MPI"):
         for path in self.env["INCLUDES"][:]:
@@ -128,7 +126,6 @@ def check_mumps_headers(self):
                 self.end_msg(path, "YELLOW")
     for inc in headers:
         try:
-
             self.start_msg("Checking for {0}".format(inc))
             self.check_fc(
                 fragment=fragment.format(inc),

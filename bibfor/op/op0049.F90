@@ -86,7 +86,7 @@ subroutine op0049()
     if (ulisop(nfigi, k16nom) .ne. 0) then
         call ulopen(-nfigi, ' ', ' ', 'NEW', 'O')
     end if
-    call fort_fclose(nfias)
+    call fclose(nfias)
 !
     goto 99999
 !

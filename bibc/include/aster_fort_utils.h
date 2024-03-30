@@ -44,9 +44,9 @@ extern void DEFPSS( CODENT, codent, ASTERINTEGER *, const char *, STRING_SIZE, c
 extern void DEFPSSS( CODLET_WRAP, codlet_wrap, ASTERINTEGER *, const char *, STRING_SIZE,
                      const char *, STRING_SIZE, const char *, STRING_SIZE );
 
-#define CALL_DISMOI( a, b, c, d, e, f, g ) CALLSSSPSSP( DISMOI, dismoi2, a, b, c, d, e, f, g )
-#define CALLO_DISMOI( a, b, c, d, e, f, g ) CALLOOOPOOP( DISMOI, dismoi2, a, b, c, d, e, f, g )
-extern void DEFSSSPSSP( DISMOI, dismoi2, const char *, STRING_SIZE, const char *, STRING_SIZE,
+#define CALL_DISMOI( a, b, c, d, e, f, g ) CALLSSSPSSP( DISMOI, dismoi, a, b, c, d, e, f, g )
+#define CALLO_DISMOI( a, b, c, d, e, f, g ) CALLOOOPOOP( DISMOI, dismoi, a, b, c, d, e, f, g )
+extern void DEFSSSPSSP( DISMOI, dismoi, const char *, STRING_SIZE, const char *, STRING_SIZE,
                         const char *, STRING_SIZE, ASTERINTEGER *, const char *, STRING_SIZE,
                         const char *, STRING_SIZE, ASTERINTEGER * );
 
@@ -55,8 +55,8 @@ extern void DEFSSSSS( CARCHA, carcha, const char *, STRING_SIZE, const char *, S
                       const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
                       STRING_SIZE );
 
-#define CALL_FCLOSE( a ) CALLP( FCLOSE, fort_fclose, a )
-extern void DEFP( FCLOSE, fort_fclose, ASTERINTEGER * );
+#define CALL_FCLOSE( a ) CALLP( FCLOSE, fclose, a )
+extern void DEFP( FCLOSE, fclose, ASTERINTEGER * );
 
 #define CALL_INFMAJ_EXT( a ) CALLP( INFMAJ_EXT, infmaj_ext, a )
 extern void DEFP( INFMAJ_EXT, infmaj_ext, const ASTERINTEGER *const );

@@ -18,6 +18,8 @@ which gcc
 which g++
 which gfortran
 
+./waf distclean
+
 ./waf_std \
      --python=$PYTHON \
      --prefix="${PREFIX}" \
@@ -30,4 +32,4 @@ which gfortran
      --without-repo \
      configure
 
-./waf_std install_debug
+./waf_std install_debug -v

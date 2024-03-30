@@ -44,8 +44,8 @@ def check_python(self):
     self.check_python_version((3, 5, 0))
     if platform.system() == "Windows":
         path = self.env["PATH"]
-        include_dir = os.environ["CONDA_PREFIX"] + "/include"
-        self.env["PATH"] = f"{path};{include_dir}"
+        include_dir = pathlib.Path(self.env.PREFIX) / "include"
+        self.env["PATH"] = f"{path};{include_dir.as_posix()}"
     else:
         self.check_python_headers()
 
@@ -82,10 +82,11 @@ def check_numpy_headers(self):
     )
     extra_flags = dict()
     if platform.system() == "Windows":
-        python_include_dir = os.environ["CONDA_PREFIX"] + "/include"
-        python_libs_dir = os.environ["CONDA_PREFIX"] + "/libs"
-        numpy_includes.append(pathlib.Path(python_include_dir).as_posix())
-        numpy_includes.append(pathlib.Path(python_libs_dir).as_posix())
+        prefix_ = pathlib.Path(self.env.PREFIX)
+        python_include_dir = prefix_ / "include"
+        python_libs_dir = prefix_ + "libs"
+        numpy_includes.append(python_include_dir.as_posix())
+        numpy_includes.append(python_libs_dir.as_posix())
         extra_flags.update(dict(linkflags=["/LIBPATH:" + python_libs_dir, "/LIBPATH:" + python_include_dir]))
 
     Logs.info(f"{numpy_includes=}")

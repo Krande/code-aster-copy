@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine fort_fclose(unit)
+subroutine fclose(unit)
 ! aslint: disable=
     implicit none
 #include "asterfort/utmess.h"

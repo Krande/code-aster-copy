@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -79,16 +79,15 @@ subroutine deflg2(gn, lamb, logl, pes, feta, &
         xi(2, 3) = (theta(2, 3)-0.5d0*di(3))/(lamb(2)-lamb(3))
         xi(1, 3) = (theta(1, 3)-0.5d0*di(3))/(lamb(1)-lamb(3))
         xi(3, 1) = (theta(3, 1)-0.5d0*di(1))/(lamb(3)-lamb(1))
-        do i = 1, 3
-            do j = 1, 3
-                do k = 1, 3
-                    if ((j .ne. i) .and. (j .ne. k) .and. (k .ne. i)) then
-                        feta(4) = feta(4)+logl(i)*0.5d0/(lamb(i)-lamb( &
-                                                         j))/(lamb(i)-lamb(k))
-                    end if
-                end do
-            end do
-        end do
+
+        feta(4) &
+            = logl(1)*0.5d0/(lamb(1)-lamb(2))/(lamb(1)-lamb(3)) &
+              +logl(1)*0.5d0/(lamb(1)-lamb(3))/(lamb(1)-lamb(2)) &
+              +logl(2)*0.5d0/(lamb(2)-lamb(1))/(lamb(2)-lamb(3)) &
+              +logl(2)*0.5d0/(lamb(2)-lamb(3))/(lamb(2)-lamb(1)) &
+              +logl(3)*0.5d0/(lamb(3)-lamb(1))/(lamb(3)-lamb(2)) &
+              +logl(3)*0.5d0/(lamb(3)-lamb(2))/(lamb(3)-lamb(1))
+
     else if (icas .eq. 12) then
         theta(1, 2) = di(1)/2.d0
         theta(2, 1) = di(1)/2.d0
@@ -163,32 +162,22 @@ subroutine deflg2(gn, lamb, logl, pes, feta, &
 !
     call r8inir(81, 0.d0, pe, 1)
 !
-    do i = 1, 3
-        do k = 1, 3
-            do l = 1, 3
-                do a = 1, 3
-                    do b = 1, 3
-                        pe(k, l, a, b) = pe(k, l, a, b)+di(i)*gn(k, i)*gn(l, i) &
-                                         *me(a, b, i, i)/2.d0
-                    end do
+    do a = 1, 3
+        do b = 1, 3
+            do k = 1, 3
+                do l = 1, 3
+                    pe(k, l, a, b) &
+                        = theta(1, 2)*gn(k, 1)*gn(l, 2)*me(a, b, 1, 2) &
+                          +theta(1, 3)*gn(k, 1)*gn(l, 3)*me(a, b, 1, 3) &
+                          +theta(2, 1)*gn(k, 2)*gn(l, 1)*me(a, b, 2, 1) &
+                          +theta(2, 3)*gn(k, 2)*gn(l, 3)*me(a, b, 2, 3) &
+                          +theta(3, 1)*gn(k, 3)*gn(l, 1)*me(a, b, 3, 1) &
+                          +theta(3, 2)*gn(k, 3)*gn(l, 2)*me(a, b, 3, 2) &
+                          +di(1)*gn(k, 1)*gn(l, 1)*me(a, b, 1, 1)/2.d0 &
+                          +di(2)*gn(k, 2)*gn(l, 2)*me(a, b, 2, 2)/2.d0 &
+                          +di(3)*gn(k, 3)*gn(l, 3)*me(a, b, 3, 3)/2.d0
                 end do
             end do
-        end do
-    end do
-    do i = 1, 3
-        do j = 1, 3
-            if (i .ne. j) then
-                do k = 1, 3
-                    do l = 1, 3
-                        do a = 1, 3
-                            do b = 1, 3
-                                pe(k, l, a, b) = pe(k, l, a, b)+theta(i, j)* &
-                                                 gn(k, i)*gn(l, j)*me(a, b, i, j)
-                            end do
-                        end do
-                    end do
-                end do
-            end if
         end do
     end do
 !

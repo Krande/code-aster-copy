@@ -24,7 +24,7 @@ import re
 from waflib import Configure, Logs, TaskGen, Utils
 from waflib.Context import Context
 from waflib.Task import CRASHED, Task
-from waflib.Tools import c, ccroot, cxx, fc, fc_scan
+from waflib.Tools import c, ccroot, cxx, fc
 
 
 def sig_explicit_deps(self):
@@ -76,8 +76,8 @@ fc.fc.signature = signature
 ###############################################################################
 # original run_str command line is store as hcode
 for feature in ("program", "shlib"):
-    ccroot.USELIB_VARS["fc" + feature].add("FCLINKFLAGS")
     ccroot.USELIB_VARS["c" + feature].add("CCLINKFLAGS")
+    ccroot.USELIB_VARS["fc" + feature].add("FCLINKFLAGS")
     ccroot.USELIB_VARS["cxx" + feature].add("CXXLINKFLAGS")
 
 
@@ -307,5 +307,3 @@ def remove_duplicates(self, list_in):
     dset = set()
     # relies on the fact that dset.add() always returns None.
     return [path for path in list_in if path not in dset and not dset.add(path)]
-
-

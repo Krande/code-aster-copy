@@ -19,7 +19,7 @@
 !
 !
 interface
-    subroutine fort_fclose(unit)
+    subroutine fclose(unit)
         integer :: unit
-    end subroutine fort_fclose
+    end subroutine fclose
 end interface

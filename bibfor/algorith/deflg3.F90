@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,108 +34,70 @@ subroutine deflg3(gn, feta, xi, me, t, &
 #include "asterfort/tnsvec.h"
     real(kind=8) :: gn(3, 3), t(6), tl(3, 3, 3, 3)
     real(kind=8) :: dzeta(3, 3), t33(3, 3), me(3, 3, 3, 3), xi(3, 3), feta(4)
-    integer :: i, j, k, a, b, c, d
+    integer :: a, b, c, d
 ! ----------------------------------------------------------------------
 !
 !     CALCUL DU TERME T.L
 !
-    call r8inir(81, 0.d0, tl, 1)
     call r8inir(9, 0.d0, dzeta, 1)
     call tnsvec(6, 3, t33, t, 1.d0/sqrt(2.d0))
 !
 !     A,B sont les composantes, J,I sont les modes propres
-    do i = 1, 3
-        do j = 1, 3
-            do a = 1, 3
-                do b = 1, 3
-                    dzeta(i, j) = dzeta(i, j)+t33(a, b)*gn(a, i)*gn(b, j)
-                end do
-            end do
+
+    do a = 1, 3
+        do b = 1, 3
+            dzeta(1, 1) = dzeta(1, 1)+t33(a, b)*gn(a, 1)*gn(b, 1)
+            dzeta(1, 2) = dzeta(1, 2)+t33(a, b)*gn(a, 1)*gn(b, 2)
+            dzeta(1, 3) = dzeta(1, 3)+t33(a, b)*gn(a, 1)*gn(b, 3)
+            dzeta(2, 1) = dzeta(2, 1)+t33(a, b)*gn(a, 2)*gn(b, 1)
+            dzeta(2, 2) = dzeta(2, 2)+t33(a, b)*gn(a, 2)*gn(b, 2)
+            dzeta(2, 3) = dzeta(2, 3)+t33(a, b)*gn(a, 2)*gn(b, 3)
+            dzeta(3, 1) = dzeta(3, 1)+t33(a, b)*gn(a, 3)*gn(b, 1)
+            dzeta(3, 2) = dzeta(3, 2)+t33(a, b)*gn(a, 3)*gn(b, 2)
+            dzeta(3, 3) = dzeta(3, 3)+t33(a, b)*gn(a, 3)*gn(b, 3)
         end do
     end do
 !
-    do i = 1, 3
-        do a = 1, 3
-            do b = 1, 3
-                do c = 1, 3
-                    do d = 1, 3
-                        tl(a, b, c, d) = tl(a, b, c, d)+0.25d0*feta(i)*dzeta( &
-                                         i, i)*me(a, b, i, i)*me(c, d, i, i)
-                    end do
+    do a = 1, 3
+        do b = 1, 3
+            do c = 1, 3
+                do d = 1, 3
+                    tl(a, b, c, d) &
+                        = 0.25d0*feta(1)*dzeta(1, 1)*me(a, b, 1, 1)*me(c, d, 1, 1) &
+                          +0.25d0*feta(2)*dzeta(2, 2)*me(a, b, 2, 2)*me(c, d, 2, 2) &
+                          +0.25d0*feta(3)*dzeta(3, 3)*me(a, b, 3, 3)*me(c, d, 3, 3) &
+                          !
+                          +2.d0*feta(4)*dzeta(1, 2)*me(a, b, 1, 3)*me(c, d, 2, 3) &
+                          +2.d0*feta(4)*dzeta(1, 3)*me(a, b, 1, 2)*me(c, d, 3, 2) &
+                          +2.d0*feta(4)*dzeta(2, 1)*me(a, b, 2, 3)*me(c, d, 1, 3) &
+                          +2.d0*feta(4)*dzeta(2, 3)*me(a, b, 2, 1)*me(c, d, 3, 1) &
+                          +2.d0*feta(4)*dzeta(3, 1)*me(a, b, 3, 2)*me(c, d, 1, 2) &
+                          +2.d0*feta(4)*dzeta(3, 2)*me(a, b, 3, 1)*me(c, d, 2, 1) &
+                          !
+                          +2.d0*xi(1, 2)*dzeta(1, 2)*me(a, b, 1, 2)*me(c, d, 2, 2) &
+                          +2.d0*xi(1, 3)*dzeta(1, 3)*me(a, b, 1, 3)*me(c, d, 3, 3) &
+                          +2.d0*xi(2, 1)*dzeta(2, 1)*me(a, b, 2, 1)*me(c, d, 1, 1) &
+                          +2.d0*xi(2, 3)*dzeta(2, 3)*me(a, b, 2, 3)*me(c, d, 3, 3) &
+                          +2.d0*xi(3, 1)*dzeta(3, 1)*me(a, b, 3, 1)*me(c, d, 1, 1) &
+                          +2.d0*xi(3, 2)*dzeta(3, 2)*me(a, b, 3, 2)*me(c, d, 2, 2) &
+                          !
+                          +2.d0*xi(1, 2)*dzeta(1, 2)*me(a, b, 2, 2)*me(c, d, 1, 2) &
+                          +2.d0*xi(1, 3)*dzeta(1, 3)*me(a, b, 3, 3)*me(c, d, 1, 3) &
+                          +2.d0*xi(2, 1)*dzeta(2, 1)*me(a, b, 1, 1)*me(c, d, 2, 1) &
+                          +2.d0*xi(2, 3)*dzeta(2, 3)*me(a, b, 3, 3)*me(c, d, 2, 3) &
+                          +2.d0*xi(3, 1)*dzeta(3, 1)*me(a, b, 1, 1)*me(c, d, 3, 1) &
+                          +2.d0*xi(3, 2)*dzeta(3, 2)*me(a, b, 2, 2)*me(c, d, 3, 2) &
+                          !
+                          +2.d0*xi(1, 2)*dzeta(2, 2)*me(a, b, 1, 2)*me(c, d, 1, 2) &
+                          +2.d0*xi(1, 3)*dzeta(3, 3)*me(a, b, 1, 3)*me(c, d, 1, 3) &
+                          +2.d0*xi(2, 1)*dzeta(1, 1)*me(a, b, 2, 1)*me(c, d, 2, 1) &
+                          +2.d0*xi(2, 3)*dzeta(3, 3)*me(a, b, 2, 3)*me(c, d, 2, 3) &
+                          +2.d0*xi(3, 1)*dzeta(1, 1)*me(a, b, 3, 1)*me(c, d, 3, 1) &
+                          +2.d0*xi(3, 2)*dzeta(2, 2)*me(a, b, 3, 2)*me(c, d, 3, 2)
                 end do
             end do
         end do
     end do
-!
-    do i = 1, 3
-        do j = 1, 3
-            do k = 1, 3
-                do a = 1, 3
-                    do b = 1, 3
-                        do c = 1, 3
-                            do d = 1, 3
-                                if ((j .ne. i) .and. (j .ne. k) .and. (k .ne. i)) then
-                                    tl(a, b, c, d) = tl(a, b, c, d)+2.d0* &
-                                                     feta(4)*dzeta(i, j)*me(a, b, i, k)*me( &
-                                                     c, d, j, k)
-                                end if
-                            end do
-                        end do
-                    end do
-                end do
-            end do
-        end do
-    end do
-!
-    do i = 1, 3
-        do j = 1, 3
-            do a = 1, 3
-                do b = 1, 3
-                    do c = 1, 3
-                        do d = 1, 3
-                            if (j .ne. i) then
-                                tl(a, b, c, d) = tl(a, b, c, d)+2.d0*xi(i, j)* &
-                                                 dzeta(i, j)*me(a, b, i, j)*me(c, d, j, j)
-                            end if
-                        end do
-                    end do
-                end do
-            end do
-        end do
-    end do
-!
-    do i = 1, 3
-        do j = 1, 3
-            do a = 1, 3
-                do b = 1, 3
-                    do c = 1, 3
-                        do d = 1, 3
-                            if (j .ne. i) then
-                                tl(a, b, c, d) = tl(a, b, c, d)+2.d0*xi(i, j)* &
-                                                 dzeta(i, j)*me(a, b, j, j)*me(c, d, i, j)
-                            end if
-                        end do
-                    end do
-                end do
-            end do
-        end do
-    end do
-!
-    do i = 1, 3
-        do j = 1, 3
-            do a = 1, 3
-                do b = 1, 3
-                    do c = 1, 3
-                        do d = 1, 3
-                            if (j .ne. i) then
-                                tl(a, b, c, d) = tl(a, b, c, d)+2.d0*xi(i, j)* &
-                                                 dzeta(j, j)*me(a, b, i, j)*me(c, d, i, j)
-                            end if
-                        end do
-                    end do
-                end do
-            end do
-        end do
-    end do
+
 !
 end subroutine

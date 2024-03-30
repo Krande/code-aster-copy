@@ -20,7 +20,7 @@
 import os
 import os.path as osp
 from functools import partial
-from waflib import Configure, Errors, Utils, Logs
+from waflib import Configure, Errors, Utils
 
 
 def options(self):
