@@ -416,6 +416,7 @@ def init(self):
 
     # default to release
     for y in _all:
+
         class tmp(y):
             variant = os.environ.get("WAF_DEFAULT_VARIANT") or "release"
 

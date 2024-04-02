@@ -49,7 +49,7 @@ which gfortran
 ./waf_std \
      --python=$PYTHON \
      --prefix="${PREFIX}" \
-     --med-libs=medC \
+     --med-libs="med medC medfwrap medimport" \
      --mumps-libs="dmumps_seq zmumps_seq smumps_seq cmumps_seq mumps_common_seq pord_seq" \
      --install-tests \
      --maths-libs=auto \
