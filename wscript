@@ -149,7 +149,12 @@ def options(self):
         action="store_false",
         help="disable address sanitizer in debug mode",
     )
-
+    group.add_option(
+        "--conda-build",
+        dest="conda_build",
+        action="store_true",
+        help="Adds build customizations for conda packaging",
+    )
     group = self.add_option_group("code_aster options")
 
     self.load("parallel", tooldir="waftools")

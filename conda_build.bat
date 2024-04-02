@@ -74,6 +74,7 @@ waf configure ^
   --install-tests ^
   --shared-aster ^
   --maths-libs=auto ^
+  --conda-build ^
   --without-hg
 
 REM if USE_LOG is set, then log the output to a file
