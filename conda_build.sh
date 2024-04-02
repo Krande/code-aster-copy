@@ -1,12 +1,18 @@
 #!/bin/bash
-export -e
+set -e
+
 export CLICOLOR_FORCE=1
+
+which python
 
 export PREFIX="${CONDA_PREFIX}"
 echo "PREFIX=${PREFIX}"
-
-#export LD_LIBRARY_PATH=${PREFIX}/lib:$LD_LIBRARY_PATH
+# If prefix is not set, activate CONDA environment
+#export LD_LIBRARY_PATH="${PREFIX}/lib ${LD_LIBRARY_PATH}"
 #export LDFLAGS=${PREFIX}/lib:${LDFLAGS}
+echo "LDFLAGS"
+#export LIBPATH="$PREFIX/lib $LIBPATH"
+#export LDFLAGS="-Wl,--no-as-needed -L$PREFIX/lib -lm -lpthread -ldl -lz -lgomp ${LDFLAGS}"
 
 export CC=gcc
 export CXX=g++
@@ -22,7 +28,7 @@ export LIBPATH_METIS=${PREFIX}/lib
 export INCLUDES_METIS=${PREFIX}/include
 
 export LIBPATH_MUMPS=${PREFIX}/lib
-export INCLUDES_MUMPS=${PREFIX}/include
+export INCLUDES_MUMPS="${PREFIX}/include ${PREFIX}/include/mumps_seq"
 
 export LIBPATH_SCOTCH=${PREFIX}/lib
 export INCLUDES_SCOTCH=${PREFIX}/include
@@ -50,7 +56,6 @@ which gfortran
      --disable-mpi \
      --without-hg \
      --without-repo \
-     --conda-build \
      configure
 
 ./waf_std install_debug -v
