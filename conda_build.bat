@@ -51,7 +51,7 @@ REM Compiler flags
 
 REM /MD link with MSVCRT.lib. /FS allow for multithreaded c compiler calls to vc140.pdb (for cl.exe only)
 set CFLAGS=%CFLAGS% /FS /MD
-set FCFLAGS=%FCFLAGS% -fpp /MD /names:lowercase
+set FCFLAGS=%FCFLAGS% -fpp /MD
 
 set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib pthread.lib /DEBUG
 
