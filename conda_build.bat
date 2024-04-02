@@ -51,7 +51,7 @@ REM Compiler flags
 
 REM /MD link with MSVCRT.lib. /FS allow for multithreaded c compiler calls to vc140.pdb (for cl.exe only)
 set CFLAGS=%CFLAGS% /FS /MD
-set FCFLAGS=%FCFLAGS% -fpp /MD /names:lowercase
+set FCFLAGS=%FCFLAGS% -fpp /MD
 
 set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib pthread.lib /DEBUG
 
@@ -60,21 +60,20 @@ set INCLUDES_BIBC=%PREF_ROOT%/include
 set DEFINES=H5_BUILT_AS_DYNAMIC_LIB
 
 REM Clean the build directory
-waf distclean
+@REM waf distclean
 
-REM set FORCE_BIBFOR_SEQUENCE=1
+set FORCE_BIBFOR_SEQUENCE=1
 REM set MANUALLY_ADD_BIBFOR_DEPS=1
 
 REM Install for standard sequential
-waf configure ^
-  --use-config-dir=%PARENT_DIR%/config/ ^
-  --med-libs=medC ^
-  --prefix=%LIBRARY_PREFIX% ^
-  --disable-mpi ^
-  --install-tests ^
-  --shared-aster ^
-  --maths-libs=auto ^
-  --without-hg
+@REM waf configure ^
+@REM   --use-config-dir=%PARENT_DIR%/config/ ^
+@REM   --med-libs=medC ^
+@REM   --prefix=%LIBRARY_PREFIX% ^
+@REM   --disable-mpi ^
+@REM   --install-tests ^
+@REM   --maths-libs=auto ^
+@REM   --without-hg
 
 REM if USE_LOG is set, then log the output to a file
 if %USE_LOG%==1 (
@@ -82,7 +81,7 @@ if %USE_LOG%==1 (
     @call conda_datetime.bat
     waf install_debug -v > install_debug_%datetimeString%.log 2>&1
 ) else (
-    waf install_debug -v
+    waf install_debug -v -j 16
 )
 
 endlocal
